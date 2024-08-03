@@ -46,7 +46,7 @@ public class DylibPanelInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public void enableFocus(ScritchPanelBracket __panel,
+	public void panelEnableFocus(ScritchPanelBracket __panel,
 		boolean __enabled, boolean __default)
 		throws MLECallError
 	{
@@ -65,7 +65,7 @@ public class DylibPanelInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public ScritchPanelBracket newPanel()
+	public ScritchPanelBracket panelNew()
 	{
 		long panelP = NativeScritchDylib.__panelNew(this.dyLib._stateP);
 		if (panelP == 0)
@@ -79,7 +79,7 @@ public class DylibPanelInterface
 	 * @since 2024/06/30
 	 */
 	@Override
-	public void setInputListener(@NotNull ScritchPanelBracket __component,
+	public void panelSetInputListener(@NotNull ScritchPanelBracket __component,
 		@Nullable ScritchInputListener __listener)
 		throws MLECallError
 	{

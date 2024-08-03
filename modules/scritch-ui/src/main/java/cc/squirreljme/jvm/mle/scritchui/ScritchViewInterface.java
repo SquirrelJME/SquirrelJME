@@ -37,7 +37,7 @@ public interface ScritchViewInterface
 	 * @since 2024/07/29
 	 */
 	@SquirrelJMEVendorApi
-	void getView(@NotNull ScritchViewBracket __view,
+	void viewGetView(@NotNull ScritchViewBracket __view,
 		@NotNull int[] __outRect)
 		throws MLECallError;
 	
@@ -52,7 +52,7 @@ public interface ScritchViewInterface
 	 * @since 2024/07/29
 	 */
 	@SquirrelJMEVendorApi
-	void setArea(@NotNull ScritchViewBracket __view,
+	void viewSetArea(@NotNull ScritchViewBracket __view,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __width,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __height)
 		throws MLECallError;
@@ -70,7 +70,7 @@ public interface ScritchViewInterface
 	 * @since 2024/07/29
 	 */
 	@SquirrelJMEVendorApi
-	void setView(@NotNull ScritchViewBracket __view,
+	void viewSetView(@NotNull ScritchViewBracket __view,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __x,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __y,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __width,
@@ -86,7 +86,7 @@ public interface ScritchViewInterface
 	 * @since 2024/07/29
 	 */
 	@SquirrelJMEVendorApi
-	void setSizeSuggestListener(@NotNull ScritchViewBracket __view,
+	void viewSetSizeSuggestListener(@NotNull ScritchViewBracket __view,
 		@Nullable ScritchSizeSuggestListener __listener)
 		throws MLECallError;
 	
@@ -100,7 +100,7 @@ public interface ScritchViewInterface
 	 * @since 2024/07/29
 	 */
 	@SquirrelJMEVendorApi
-	void setViewListener(@NotNull ScritchViewBracket __view,
+	void viewSetViewListener(@NotNull ScritchViewBracket __view,
 		@Nullable ScritchViewListener __listener)
 		throws MLECallError;
 }

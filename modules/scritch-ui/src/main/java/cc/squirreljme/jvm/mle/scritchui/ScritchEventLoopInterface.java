@@ -35,7 +35,7 @@ public interface ScritchEventLoopInterface
 	@SquirrelJMEVendorApi
 	@Async.Execute
 	@Async.Schedule
-	void execute(@NotNull Runnable __task)
+	void loopExecute(@NotNull Runnable __task)
 		throws MLECallError;
 	
 	/**
@@ -47,7 +47,7 @@ public interface ScritchEventLoopInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Async.Schedule
-	void executeLater(@NotNull Runnable __task)
+	void loopExecuteLater(@NotNull Runnable __task)
 		throws MLECallError;
 	
 	/**
@@ -63,7 +63,7 @@ public interface ScritchEventLoopInterface
 	@SquirrelJMEVendorApi
 	@Async.Execute
 	@Async.Schedule
-	void executeWait(@NotNull Runnable __task)
+	void loopExecuteWait(@NotNull Runnable __task)
 		throws MLECallError;
 	
 	/**

@@ -39,7 +39,7 @@ public interface ScritchComponentInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Nullable
-	ScritchComponentBracket getParent(
+	ScritchComponentBracket componentGetParent(
 		@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
 	
@@ -53,7 +53,7 @@ public interface ScritchComponentInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	int height(@NotNull ScritchComponentBracket __component)
+	int componentGetHeight(@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
 	
 	/**
@@ -64,7 +64,7 @@ public interface ScritchComponentInterface
 	 * @since 2024/03/17
 	 */
 	@SquirrelJMEVendorApi
-	void revalidate(@NotNull ScritchComponentBracket __component)
+	void componentRevalidate(@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
 	
 	/**
@@ -76,7 +76,7 @@ public interface ScritchComponentInterface
 	 * @since 2024/07/17
 	 */
 	@SquirrelJMEVendorApi
-	void setActivateListener(ScritchComponentBracket __component,
+	void componentSetActivateListener(ScritchComponentBracket __component,
 		ScritchActivateListener __listener)
 		throws MLECallError;
 	
@@ -89,7 +89,7 @@ public interface ScritchComponentInterface
 	 * @since 2024/04/28
 	 */
 	@SquirrelJMEVendorApi
-	void setSizeListener(ScritchComponentBracket __component,
+	void componentSetSizeListener(ScritchComponentBracket __component,
 		ScritchSizeListener __listener)
 		throws MLECallError;
 	
@@ -102,7 +102,7 @@ public interface ScritchComponentInterface
 	 * @since 2024/07/17
 	 */
 	@SquirrelJMEVendorApi
-	void setValueUpdateListener(ScritchComponentBracket __component,
+	void componentSetValueUpdateListener(ScritchComponentBracket __component,
 		ScritchValueUpdateListener __listener)
 		throws MLECallError;
 	
@@ -115,7 +115,7 @@ public interface ScritchComponentInterface
 	 * @since 2024/06/28
 	 */
 	@SquirrelJMEVendorApi
-	void setVisibleListener(ScritchComponentBracket __component,
+	void componentSetVisibleListener(ScritchComponentBracket __component,
 		ScritchVisibleListener __listener)
 		throws MLECallError;
 	
@@ -129,6 +129,6 @@ public interface ScritchComponentInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	int width(@NotNull ScritchComponentBracket __component)
+	int componentWidth(@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
 }

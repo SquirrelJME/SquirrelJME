@@ -61,7 +61,7 @@ public abstract class Frame
 		
 		// Use default background color
 		this._bgColor = new __BGColor__(DisplayManager.instance().scritch()
-			.environment().lookAndFeel().elementColor(null,
+			.environment().lookAndFeel().lafElementColor(null,
 				ScritchLAFElementColor.PANEL_BACKGROUND) | 0xFF_000000);
 	}
 	

@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchChoiceInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchChoiceBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Choice;
 
 /**
@@ -74,7 +73,7 @@ final class __ExecChoiceSelectedFlags__
 		boolean[] flags = this._flags;
 		
 		// Make sure we can actually set the flags
-		int n = choiceApi.length(choice);
+		int n = choiceApi.choiceLength(choice);
 		if (flags.length < n)
 		{
 			/* {@squirreljme.error EB1o Passed flags too small for choice.} */
@@ -95,7 +94,7 @@ final class __ExecChoiceSelectedFlags__
 				anyTrue = true;
 			
 			// Set item
-			choiceApi.setSelected(choice, i, set);
+			choiceApi.choiceSetSelected(choice, i, set);
 			
 			// If this is implicit, then no longer allow being set
 			if (type == Choice.IMPLICIT && set)
@@ -105,6 +104,6 @@ final class __ExecChoiceSelectedFlags__
 		// If everything is false, force the first item to be set
 		if (!anyTrue && (type == Choice.EXCLUSIVE || type == Choice.IMPLICIT ||
 			type == Choice.POPUP) && n > 0)
-				choiceApi.setSelected(choice, 0, true);
+				choiceApi.choiceSetSelected(choice, 0, true);
 	}
 }

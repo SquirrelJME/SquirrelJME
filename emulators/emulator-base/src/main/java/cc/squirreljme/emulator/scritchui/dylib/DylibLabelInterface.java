@@ -44,7 +44,7 @@ public class DylibLabelInterface
 	 * @since 2024/07/21
 	 */
 	@Override
-	public void setString(@NotNull ScritchLabelBracket __label,
+	public void labelSetString(@NotNull ScritchLabelBracket __label,
 		@Nullable String __string)
 		throws MLECallError
 	{

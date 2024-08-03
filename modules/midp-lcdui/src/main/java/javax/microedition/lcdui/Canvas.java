@@ -301,21 +301,21 @@ public abstract class Canvas
 		ScritchPanelBracket scritchPanel = state.scritchPanel();
 		
 		// Set listener for painting
-		scritchApi.paintable().setPaintListener(scritchPanel,
+		scritchApi.paintable().componentSetPaintListener(scritchPanel,
 			new __ExecCanvasPaint__(this));
 		
 		// Listener for visibility changes
-		scritchApi.component().setVisibleListener(scritchPanel,
+		scritchApi.component().componentSetVisibleListener(scritchPanel,
 			new __ExecCanvasVisible__(this));
 		
 		// Input events
-		panelApi.setInputListener(scritchPanel,
+		panelApi.panelSetInputListener(scritchPanel,
 			new __ExecCanvasInput__(this));
 		
 		// Canvases take focus and inputs, so enable it
 		// There should also be the default so that it is selected without
 		// needing to tab to it
-		panelApi.enableFocus(scritchPanel, true, true);
+		panelApi.panelEnableFocus(scritchPanel, true, true);
 		
 		// Setup repaint callback
 		this._repainter = new __ExecCanvasRepainter__(this);
@@ -681,7 +681,7 @@ public abstract class Canvas
 		// We need to actually queue the repaint rather than doing the
 		// repaint in the event loop potentially because MIDP expects it
 		// to be queued.
-		this._state.scritchApi().eventLoop().executeLater(this._repainter);
+		this._state.scritchApi().eventLoop().loopExecuteLater(this._repainter);
 	}
 	
 	/**
@@ -710,7 +710,7 @@ public abstract class Canvas
 			return;
 		
 		// Same as repaint, but just draw the entire region
-		this._state.scritchApi().eventLoop().executeLater(this._repainter);
+		this._state.scritchApi().eventLoop().loopExecuteLater(this._repainter);
 	}
 	
 	/**
@@ -959,7 +959,7 @@ public abstract class Canvas
 			ScritchPanelBracket panel = this._state.scritchPanel();
 			
 			// Determine the color to draw
-			int bgColor = lafApi.elementColor(panel,
+			int bgColor = lafApi.lafElementColor(panel,
 				ScritchLAFElementColor.PANEL_BACKGROUND);
 			
 			// Draw entire background
@@ -967,7 +967,7 @@ public abstract class Canvas
 			subGfx.fillRect(0, 0, __sw, __sh);
 			
 			// Use a default pen color
-			int fgColor = lafApi.elementColor(panel,
+			int fgColor = lafApi.lafElementColor(panel,
 				ScritchLAFElementColor.PANEL_FOREGROUND);
 			subGfx.setAlphaColor(fgColor | 0xFF_000000);
 		}

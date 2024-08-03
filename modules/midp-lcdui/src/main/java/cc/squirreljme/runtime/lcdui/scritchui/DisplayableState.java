@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
@@ -66,7 +65,7 @@ public final class DisplayableState
 		// Initialize basic panel
 		ScritchInterface scritchApi = DisplayManager.instance().scritch();
 		this.scritchApi = scritchApi;
-		this.panel = scritchApi.panel().newPanel(); 
+		this.panel = scritchApi.panel().panelNew(); 
 	}
 	
 	/**

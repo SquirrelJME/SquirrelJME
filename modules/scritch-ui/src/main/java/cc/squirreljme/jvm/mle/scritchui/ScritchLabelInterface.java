@@ -33,7 +33,7 @@ public interface ScritchLabelInterface
 	 * @since 2024/07/21
 	 */
 	@SquirrelJMEVendorApi
-	void setString(@NotNull ScritchLabelBracket __label,
+	void labelSetString(@NotNull ScritchLabelBracket __label,
 		@Nullable String __string)
 		throws MLECallError;
 }

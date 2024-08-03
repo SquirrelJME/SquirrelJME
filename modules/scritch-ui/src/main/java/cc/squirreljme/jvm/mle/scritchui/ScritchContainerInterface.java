@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.mle.scritchui;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -35,7 +34,7 @@ public interface ScritchContainerInterface
 	 * @since 2024/03/17
 	 */
 	@SquirrelJMEVendorApi
-	void add(@NotNull ScritchContainerBracket __container,
+	void containerAdd(@NotNull ScritchContainerBracket __container,
 		@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
 	
@@ -47,7 +46,7 @@ public interface ScritchContainerInterface
 	 * @since 2024/03/17
 	 */
 	@SquirrelJMEVendorApi
-	void removeAll(@NotNull ScritchContainerBracket __container)
+	void containerRemoveAll(@NotNull ScritchContainerBracket __container)
 		throws MLECallError;
 	
 	/**
@@ -64,7 +63,7 @@ public interface ScritchContainerInterface
 	 * @since 2024/03/26
 	 */
 	@SquirrelJMEVendorApi
-	void setBounds(@NotNull ScritchContainerBracket __container,
+	void containerSetBounds(@NotNull ScritchContainerBracket __container,
 		@NotNull ScritchComponentBracket __component,
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,

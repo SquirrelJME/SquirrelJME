@@ -87,7 +87,7 @@ public abstract class ObjectTracker<T, L>
 		
 		// Since we connected a listener, we want to make sure it has the
 		// most up-to-date information
-		this.loop.execute(new __ExecObjectTracker__<T, L>(this));
+		this.loop.loopExecute(new __ExecObjectTracker__<T, L>(this));
 	}
 	
 	/**
@@ -123,6 +123,6 @@ public abstract class ObjectTracker<T, L>
 		
 		// Inform listener of the change?
 		if (listener != null)
-			this.loop.execute(new __ExecObjectTracker__<T, L>(this));
+			this.loop.loopExecute(new __ExecObjectTracker__<T, L>(this));
 	}
 }

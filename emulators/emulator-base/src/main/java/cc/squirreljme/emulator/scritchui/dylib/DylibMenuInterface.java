@@ -125,7 +125,7 @@ public class DylibMenuInterface
 	 * @since 2024/07/23
 	 */
 	@Override
-	public void removeAll(@NotNull ScritchMenuHasChildrenBracket __menuKind)
+	public void menuRemoveAll(@NotNull ScritchMenuHasChildrenBracket __menuKind)
 		throws MLECallError
 	{
 		if (__menuKind == null)

@@ -34,7 +34,7 @@ public interface ScritchScreenInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	int dpi(@NotNull ScritchScreenBracket __screen)
+	int screenDpi(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 	
 	/**
@@ -47,7 +47,7 @@ public interface ScritchScreenInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	int height(@NotNull ScritchScreenBracket __screen)
+	int screenHeight(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 	
 	/**
@@ -59,7 +59,7 @@ public interface ScritchScreenInterface
 	 * @since 2024/03/10
 	 */
 	@SquirrelJMEVendorApi
-	boolean isBuiltIn(@NotNull ScritchScreenBracket __screen)
+	boolean screenIsBuiltIn(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 	
 	/**
@@ -71,7 +71,7 @@ public interface ScritchScreenInterface
 	 * @since 2024/03/11
 	 */
 	@SquirrelJMEVendorApi
-	boolean isPortrait(@NotNull ScritchScreenBracket __screen)
+	boolean screenIsPortrait(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 	
 	/**
@@ -84,7 +84,7 @@ public interface ScritchScreenInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	int id(@NotNull ScritchScreenBracket __screen)
+	int screenId(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 	
 	/**
@@ -97,6 +97,6 @@ public interface ScritchScreenInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	int width(@NotNull ScritchScreenBracket __screen)
+	int screenWidth(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 }

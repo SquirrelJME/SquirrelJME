@@ -123,14 +123,14 @@ final class __ExecChoiceUpsert__
 			// Do we need to insert the item?
 			int result = this._atIndex;
 			if (this._insert)
-				result = choiceApi.insert(widget, result);
+				result = choiceApi.choiceInsert(widget, result);
 			
 			// Set string data
-			choiceApi.setString(widget, result, this._string);
+			choiceApi.choiceSetString(widget, result, this._string);
 			
 			// Set image data?
 			if (this._imageData != null)
-				choiceApi.setImage(widget, result, this._imageData, 0,
+				choiceApi.choiceSetImage(widget, result, this._imageData, 0,
 					this._imageWidth, this._imageWidth, this._imageHeight);
 				
 			// Make sure result is set 

@@ -9,7 +9,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.StringTrackerListener;
@@ -51,6 +50,6 @@ final class __ExecDisplaySetTitle__
 		DisplayState display = this._display;
 		
 		DisplayManager.instance().scritch().label()
-			.setString(display.scritchWindow(), __s);
+			.labelSetString(display.scritchWindow(), __s);
 	}
 }

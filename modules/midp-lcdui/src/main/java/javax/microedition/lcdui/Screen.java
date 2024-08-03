@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchViewBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
@@ -72,7 +71,7 @@ public abstract class Screen
 		DisplayableState state = this._state;
 		if (state.currentDisplay() != null)
 			state.scritchApi().component()
-				.height(this.__scritchComponent());
+				.componentGetHeight(this.__scritchComponent());
 		
 		// Otherwise, fallback to the owning or default display
 		return ScritchLcdUiUtils.lcduiDisplaySize(state,
@@ -91,7 +90,7 @@ public abstract class Screen
 		DisplayableState state = this._state;
 		if (state.currentDisplay() != null)
 			state.scritchApi().component()
-				.width(this.__scritchComponent());
+				.componentWidth(this.__scritchComponent());
 		
 		// Otherwise, fallback to the owning or default display
 		return ScritchLcdUiUtils.lcduiDisplaySize(state,
@@ -123,7 +122,7 @@ public abstract class Screen
 		// has the given size
 		DisplayableState state = this._state;
 		ScritchInterface scritchApi = state.scritchApi();
-		scritchApi.container().setBounds(
+		scritchApi.container().containerSetBounds(
 			state.scritchPanel(),
 			(view != null ? view : this.__scritchComponent()),
 			0, 0, w, h);
@@ -150,12 +149,12 @@ public abstract class Screen
 			.scrollPanelNew();
 		
 		// Put the item into the view
-		__scritchApi.container().add(newView,
+		__scritchApi.container().containerAdd(newView,
 			__newItem);
 		
 		// Setup size suggestion interface so whenever the item gives its
 		// suggested size, it will automatically update accordingly
-		__scritchApi.view().setSizeSuggestListener(newView,
+		__scritchApi.view().viewSetSizeSuggestListener(newView,
 			new __ExecViewSizeSuggest__(__scritchApi));
 		
 		// Return the used view

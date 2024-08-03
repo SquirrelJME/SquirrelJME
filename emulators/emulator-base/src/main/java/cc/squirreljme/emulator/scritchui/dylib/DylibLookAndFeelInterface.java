@@ -44,7 +44,7 @@ public class DylibLookAndFeelInterface
 	 * @since 2024/05/17
 	 */
 	@Override
-	public PencilFontBracket font(int __element)
+	public PencilFontBracket lafFont(int __element)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -55,7 +55,7 @@ public class DylibLookAndFeelInterface
 	 * @since 2024/07/27
 	 */
 	@Override
-	public int elementColor(ScritchComponentBracket __context, int __element)
+	public int lafElementColor(ScritchComponentBracket __context, int __element)
 		throws MLECallError
 	{
 		return NativeScritchDylib.__lafElementColor(this.dyLib._stateP,
@@ -64,20 +64,20 @@ public class DylibLookAndFeelInterface
 	}
 	
 	@Override
-	public int focusBorderStyle(boolean __focused)
+	public int lafFocusBorderStyle(boolean __focused)
 	{
 		return 0;
 	}
 	
 	@Override
-	public int imageSize(int __elem, boolean __height)
+	public int lafImageSize(int __elem, boolean __height)
 		throws MLECallError
 	{
 		return 16;
 	}
 	
 	@Override
-	public boolean isDarkMode()
+	public boolean lafIsDarkMode()
 	{
 		return false;
 	}

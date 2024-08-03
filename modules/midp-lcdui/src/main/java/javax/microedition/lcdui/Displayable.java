@@ -135,7 +135,7 @@ public abstract class Displayable
 		
 		// Have the event loop handle this
 		this._state.scritchApi().eventLoop()
-			.execute(new __ExecDisplayableDefaultCommand__(this,
+			.loopExecute(new __ExecDisplayableDefaultCommand__(this,
 				__c, true));
 	}
 	
@@ -296,7 +296,7 @@ public abstract class Displayable
 		
 		// Have the event loop handle this
 		this._state.scritchApi().eventLoop()
-			.execute(new __ExecDisplayableDefaultCommand__(this,
+			.loopExecute(new __ExecDisplayableDefaultCommand__(this,
 				__c, false));
 	}
 	
@@ -513,7 +513,7 @@ public abstract class Displayable
 		
 		// Set absolute bounds of this displayable
 		DisplayableState state = this._state;
-		state.scritchApi().container().setBounds(
+		state.scritchApi().container().containerSetBounds(
 			__parent.scritchWindow(),
 			state.scritchPanel(), 0, 0, w, h);
 	}

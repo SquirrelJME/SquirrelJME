@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLabelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchMenuInterface;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuKindBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasLabelBracket;
@@ -161,7 +160,7 @@ public final class MenuActionTree
 				__add.length);
 			
 			// Clear everything from the menu beforehand
-			menuApi.removeAll((ScritchMenuHasChildrenBracket)scritch);
+			menuApi.menuRemoveAll((ScritchMenuHasChildrenBracket)scritch);
 			
 			// Map all menu nodes to leaves first, so that they have created
 			// ScritchUI objects as required... if applicable
@@ -196,7 +195,7 @@ public final class MenuActionTree
 			if (label == null || label.isEmpty())
 				label = action._shortLabel.get();
 			
-			labelApi.setString((ScritchMenuHasLabelBracket)scritch, label);
+			labelApi.labelSetString((ScritchMenuHasLabelBracket)scritch, label);
 		}
 	}
 	

@@ -79,7 +79,7 @@ public final class ChoiceManager
 	{
 		try
 		{
-			this.scritchApi.choice().delete(this._widget, __atIndex);
+			this.scritchApi.choice().choiceDelete(this._widget, __atIndex);
 		}
 		catch (MLECallError __e)
 		{
@@ -97,7 +97,7 @@ public final class ChoiceManager
 	{
 		try
 		{
-			this.scritchApi.choice().deleteAll(this._widget);
+			this.scritchApi.choice().choiceDeleteAll(this._widget);
 		}
 		catch (MLECallError __e)
 		{
@@ -115,7 +115,7 @@ public final class ChoiceManager
 	{
 		try
 		{
-			return this.scritchApi.choice().getSelectedIndex(this._widget);
+			return this.scritchApi.choice().choiceGetSelectedIndex(this._widget);
 		}
 		catch (MLECallError __e)
 		{
@@ -154,7 +154,7 @@ public final class ChoiceManager
 				__str, __img);
 			
 			// Wait for it to run and finish
-			this.scritchApi.eventLoop().executeWait(upsert);
+			this.scritchApi.eventLoop().loopExecuteWait(upsert);
 			
 			// Return whatever result
 			if (upsert._error != null)
@@ -196,7 +196,7 @@ public final class ChoiceManager
 				__str, __img);
 			
 			// Wait for it to run and finish
-			this.scritchApi.eventLoop().executeWait(upsert);
+			this.scritchApi.eventLoop().loopExecuteWait(upsert);
 			
 			// Did this fail?
 			if (upsert._error != null)
@@ -225,7 +225,7 @@ public final class ChoiceManager
 		
 		try
 		{
-			this.scritchApi.choice().setEnabled(this._widget, __atIndex,
+			this.scritchApi.choice().choiceSetEnabled(this._widget, __atIndex,
 				__enabled);
 		}
 		catch (MLECallError __e)
@@ -251,7 +251,7 @@ public final class ChoiceManager
 		
 		try
 		{
-			this.scritchApi.choice().setSelected(this._widget, __atIndex,
+			this.scritchApi.choice().choiceSetSelected(this._widget, __atIndex,
 				__selected);
 		}
 		catch (MLECallError __e)
@@ -284,7 +284,7 @@ public final class ChoiceManager
 					__flags, this.type);
 			
 			// Wait for it to run and finish
-			this.scritchApi.eventLoop().executeWait(select);
+			this.scritchApi.eventLoop().loopExecuteWait(select);
 			
 			// Did this fail?
 			Throwable error = select._error;
@@ -313,7 +313,7 @@ public final class ChoiceManager
 	{
 		try
 		{
-			return this.scritchApi.choice().length(this._widget);
+			return this.scritchApi.choice().choiceLength(this._widget);
 		}
 		catch (MLECallError __e)
 		{

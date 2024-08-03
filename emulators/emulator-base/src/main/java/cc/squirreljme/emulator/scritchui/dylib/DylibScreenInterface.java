@@ -48,7 +48,7 @@ public class DylibScreenInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public int dpi(
+	public int screenDpi(
 		ScritchScreenBracket __screen)
 		throws MLECallError
 	{
@@ -60,7 +60,7 @@ public class DylibScreenInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public int height(
+	public int screenHeight(
 		ScritchScreenBracket __screen)
 		throws MLECallError
 	{
@@ -72,7 +72,7 @@ public class DylibScreenInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public boolean isBuiltIn(ScritchScreenBracket __screen)
+	public boolean screenIsBuiltIn(ScritchScreenBracket __screen)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -83,7 +83,7 @@ public class DylibScreenInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public boolean isPortrait(ScritchScreenBracket __screen)
+	public boolean screenIsPortrait(ScritchScreenBracket __screen)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -94,7 +94,7 @@ public class DylibScreenInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public int id(ScritchScreenBracket __screen)
+	public int screenId(ScritchScreenBracket __screen)
 		throws MLECallError
 	{
 		if (__screen == null)
@@ -112,7 +112,7 @@ public class DylibScreenInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public int width(
+	public int screenWidth(
 		ScritchScreenBracket __screen)
 		throws MLECallError
 	{

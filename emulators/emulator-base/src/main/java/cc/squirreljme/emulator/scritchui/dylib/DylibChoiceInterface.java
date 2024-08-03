@@ -46,7 +46,7 @@ public class DylibChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@Override
-	public void delete(ScritchChoiceBracket __choice,
+	public void choiceDelete(ScritchChoiceBracket __choice,
 		int __atIndex)
 		throws MLECallError
 	{
@@ -62,7 +62,7 @@ public class DylibChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@Override
-	public void deleteAll(ScritchChoiceBracket __choice)
+	public void choiceDeleteAll(ScritchChoiceBracket __choice)
 		throws MLECallError
 	{
 		if (__choice == null)
@@ -77,7 +77,7 @@ public class DylibChoiceInterface
 	 * @since 2024/07/28
 	 */
 	@Override
-	public int getSelectedIndex(ScritchChoiceBracket __choice)
+	public int choiceGetSelectedIndex(ScritchChoiceBracket __choice)
 		throws MLECallError
 	{
 		if (__choice == null)
@@ -94,7 +94,7 @@ public class DylibChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@Override
-	public int insert(ScritchChoiceBracket __choice,
+	public int choiceInsert(ScritchChoiceBracket __choice,
 		int __atIndex)
 		throws MLECallError
 	{
@@ -110,7 +110,7 @@ public class DylibChoiceInterface
 	 * @since 2024/07/28
 	 */
 	@Override
-	public int length(ScritchChoiceBracket __choice)
+	public int choiceLength(ScritchChoiceBracket __choice)
 		throws MLECallError
 	{
 		if (__choice == null)
@@ -125,7 +125,7 @@ public class DylibChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@Override
-	public void setEnabled(ScritchChoiceBracket __choice,
+	public void choiceSetEnabled(ScritchChoiceBracket __choice,
 		int __atIndex,
 		boolean __enabled)
 		throws MLECallError
@@ -143,7 +143,7 @@ public class DylibChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@Override
-	public void setImage(ScritchChoiceBracket __choice,
+	public void choiceSetImage(ScritchChoiceBracket __choice,
 		int __atIndex,
 		int[] __data,
 		int __off,
@@ -165,7 +165,7 @@ public class DylibChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@Override
-	public void setSelected(ScritchChoiceBracket __choice,
+	public void choiceSetSelected(ScritchChoiceBracket __choice,
 		int __atIndex,
 		boolean __selected)
 		throws MLECallError
@@ -183,7 +183,7 @@ public class DylibChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@Override
-	public void setString(ScritchChoiceBracket __choice,
+	public void choiceSetString(ScritchChoiceBracket __choice,
 		int __atIndex,
 		String __string)
 		throws MLECallError

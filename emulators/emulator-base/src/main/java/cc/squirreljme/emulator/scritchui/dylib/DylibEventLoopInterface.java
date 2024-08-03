@@ -43,7 +43,7 @@ public class DylibEventLoopInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public void execute(Runnable __task)
+	public void loopExecute(Runnable __task)
 		throws MLECallError
 	{
 		if (__task == null)
@@ -60,7 +60,7 @@ public class DylibEventLoopInterface
 	 * @since 2024/04/25
 	 */
 	@Override
-	public void executeLater(@NotNull Runnable __task)
+	public void loopExecuteLater(@NotNull Runnable __task)
 		throws MLECallError
 	{
 		if (__task == null)
@@ -77,7 +77,7 @@ public class DylibEventLoopInterface
 	 * @since 2024/04/17
 	 */
 	@Override
-	public void executeWait(@NotNull Runnable __task)
+	public void loopExecuteWait(@NotNull Runnable __task)
 		throws MLECallError
 	{
 		if (__task == null)

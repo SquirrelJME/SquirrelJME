@@ -35,7 +35,7 @@ public interface ScritchChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@SquirrelJMEVendorApi
-	void delete(@NotNull ScritchChoiceBracket __choice,
+	void choiceDelete(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex)
 		throws MLECallError;
 	
@@ -48,7 +48,7 @@ public interface ScritchChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@SquirrelJMEVendorApi
-	void deleteAll(@NotNull ScritchChoiceBracket __choice)
+	void choiceDeleteAll(@NotNull ScritchChoiceBracket __choice)
 		throws MLECallError;
 	
 	/**
@@ -61,7 +61,7 @@ public interface ScritchChoiceInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = -1, to = Integer.MAX_VALUE)
-	int getSelectedIndex(@NotNull ScritchChoiceBracket __choice)
+	int choiceGetSelectedIndex(@NotNull ScritchChoiceBracket __choice)
 		throws MLECallError;
 	
 	/**
@@ -76,7 +76,7 @@ public interface ScritchChoiceInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	int insert(@NotNull ScritchChoiceBracket __choice,
+	int choiceInsert(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex)
 		throws MLECallError;
 	
@@ -90,7 +90,7 @@ public interface ScritchChoiceInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	int length(@Nullable ScritchChoiceBracket __choice)
+	int choiceLength(@Nullable ScritchChoiceBracket __choice)
 		throws MLECallError;
 	
 	/**
@@ -104,7 +104,7 @@ public interface ScritchChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@SquirrelJMEVendorApi
-	void setEnabled(@NotNull ScritchChoiceBracket __choice,
+	void choiceSetEnabled(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex,
 		boolean __enabled)
 		throws MLECallError;
@@ -125,7 +125,7 @@ public interface ScritchChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@SquirrelJMEVendorApi
-	void setImage(@NotNull ScritchChoiceBracket __choice,
+	void choiceSetImage(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex,
 		@Nullable int[] __data,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
@@ -145,7 +145,7 @@ public interface ScritchChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@SquirrelJMEVendorApi
-	void setSelected(@NotNull ScritchChoiceBracket __choice,
+	void choiceSetSelected(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex,
 		boolean __selected)
 		throws MLECallError;
@@ -161,7 +161,7 @@ public interface ScritchChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@SquirrelJMEVendorApi
-	void setString(@NotNull ScritchChoiceBracket __choice,
+	void choiceSetString(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex,
 		@Nullable String __string)
 		throws MLECallError;

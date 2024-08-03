@@ -114,10 +114,10 @@ public class List
 		
 		// Put the view in the panel
 		ScritchPanelBracket inPanel = state.scritchPanel();
-		scritchApi.container().add(inPanel, newView);
+		scritchApi.container().containerAdd(inPanel, newView);
 		
 		// Setup list activation
-		scritchApi.component().setActivateListener(newList,
+		scritchApi.component().componentSetActivateListener(newList,
 			new __ExecListActivate__(this));
 		
 		// Setup manager

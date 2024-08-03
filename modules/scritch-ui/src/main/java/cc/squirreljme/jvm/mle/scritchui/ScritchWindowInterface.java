@@ -11,7 +11,6 @@ package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchMenuItemActivateListener;
@@ -40,7 +39,7 @@ public interface ScritchWindowInterface
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	void callAttention(@NotNull ScritchWindowBracket __window)
+	void windowCallAttention(@NotNull ScritchWindowBracket __window)
 		throws MLECallError;
 	
 	/**
@@ -54,7 +53,7 @@ public interface ScritchWindowInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	int contentHeight(@NotNull ScritchWindowBracket __window)
+	int windowContentHeight(@NotNull ScritchWindowBracket __window)
 		throws MLECallError;
 	
 	/**
@@ -68,7 +67,7 @@ public interface ScritchWindowInterface
 	 * @since 2024/03/18
 	 */
 	@SquirrelJMEVendorApi
-	void contentMinimumSize(@NotNull ScritchWindowBracket __window,
+	void windowContentMinimumSize(@NotNull ScritchWindowBracket __window,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __h)
 		throws MLECallError;
@@ -84,7 +83,7 @@ public interface ScritchWindowInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	int contentWidth(@NotNull ScritchWindowBracket __window)
+	int windowContentWidth(@NotNull ScritchWindowBracket __window)
 		throws MLECallError;
 	
 	/**
@@ -96,7 +95,7 @@ public interface ScritchWindowInterface
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	boolean hasFocus(@NotNull ScritchWindowBracket __window)
+	boolean windowHasFocus(@NotNull ScritchWindowBracket __window)
 		throws MLECallError;
 	
 	/**
@@ -108,7 +107,7 @@ public interface ScritchWindowInterface
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	boolean isVisible(@NotNull ScritchWindowBracket __window)
+	boolean windowIsVisible(@NotNull ScritchWindowBracket __window)
 		throws MLECallError;
 	
 	/**
@@ -122,7 +121,7 @@ public interface ScritchWindowInterface
 	 */
 	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ScritchInputMethodType.class)
-	int inputTypes(@NotNull ScritchWindowBracket __window)
+	int windowInputTypes(@NotNull ScritchWindowBracket __window)
 		throws MLECallError;
 	
 	/**
@@ -133,7 +132,7 @@ public interface ScritchWindowInterface
 	 */
 	@SquirrelJMEVendorApi
 	@NotNull
-	ScritchWindowBracket newWindow();
+	ScritchWindowBracket windowNew();
 	
 	/**
 	 * Sets the listener to be called when a window is requested to be closed.
@@ -145,7 +144,7 @@ public interface ScritchWindowInterface
 	 * @since 2024/05/13
 	 */
 	@SquirrelJMEVendorApi
-	void setCloseListener(@NotNull ScritchWindowBracket __window,
+	void windowSetCloseListener(@NotNull ScritchWindowBracket __window,
 		@Nullable ScritchCloseListener __listener)
 		throws MLECallError;
 	
@@ -159,7 +158,7 @@ public interface ScritchWindowInterface
 	 * @since 2024/07/23
 	 */
 	@SquirrelJMEVendorApi
-	void setMenuBar(@NotNull ScritchWindowBracket __window,
+	void windowSetMenuBar(@NotNull ScritchWindowBracket __window,
 		@Nullable ScritchMenuBarBracket __menuBar)
 		throws MLECallError;
 	
@@ -173,7 +172,8 @@ public interface ScritchWindowInterface
 	 * @since 2024/07/30
 	 */
 	@SquirrelJMEVendorApi
-	void setMenuItemActivateListener(@NotNull ScritchWindowBracket __window,
+	void windowSetMenuItemActivateListener(
+		@NotNull ScritchWindowBracket __window,
 		@Nullable ScritchMenuItemActivateListener __listener)
 		throws MLECallError;
 	
@@ -186,6 +186,7 @@ public interface ScritchWindowInterface
 	 * @since 2024/03/17
 	 */
 	@SquirrelJMEVendorApi
-	void setVisible(@NotNull ScritchWindowBracket __window, boolean __visible)
+	void windowSetVisible(@NotNull ScritchWindowBracket __window,
+		boolean __visible)
 		throws MLECallError;
 }

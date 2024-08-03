@@ -284,7 +284,7 @@ public final class MenuActionNode
 		if (parents == null)
 		{
 			// Setup an actual menu updater
-			this.scritch.eventLoop().executeLater(
+			this.scritch.eventLoop().loopExecuteLater(
 				new __ExecUpdateMenuTree__(this));
 			
 			return;

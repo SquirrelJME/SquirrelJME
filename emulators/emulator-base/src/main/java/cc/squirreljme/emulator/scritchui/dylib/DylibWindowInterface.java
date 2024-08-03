@@ -49,7 +49,7 @@ public class DylibWindowInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public void callAttention(ScritchWindowBracket __window)
+	public void windowCallAttention(ScritchWindowBracket __window)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -60,7 +60,7 @@ public class DylibWindowInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public int contentHeight(
+	public int windowContentHeight(
 		ScritchWindowBracket __window)
 		throws MLECallError
 	{
@@ -72,7 +72,7 @@ public class DylibWindowInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public void contentMinimumSize(ScritchWindowBracket __window,
+	public void windowContentMinimumSize(ScritchWindowBracket __window,
 		int __w, int __h)
 		throws MLECallError
 	{
@@ -95,7 +95,7 @@ public class DylibWindowInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public int contentWidth(
+	public int windowContentWidth(
 		ScritchWindowBracket __window)
 		throws MLECallError
 	{
@@ -107,7 +107,7 @@ public class DylibWindowInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public boolean hasFocus(ScritchWindowBracket __window)
+	public boolean windowHasFocus(ScritchWindowBracket __window)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -118,7 +118,7 @@ public class DylibWindowInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public boolean isVisible(ScritchWindowBracket __window)
+	public boolean windowIsVisible(ScritchWindowBracket __window)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -129,7 +129,7 @@ public class DylibWindowInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public int inputTypes(ScritchWindowBracket __window)
+	public int windowInputTypes(ScritchWindowBracket __window)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -140,7 +140,7 @@ public class DylibWindowInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public ScritchWindowBracket newWindow()
+	public ScritchWindowBracket windowNew()
 	{
 		long windowP = NativeScritchDylib.__windowNew(this.dyLib._stateP);
 		if (windowP == 0)
@@ -154,7 +154,7 @@ public class DylibWindowInterface
 	 * @since 2024/05/13
 	 */
 	@Override
-	public void setCloseListener(@NotNull ScritchWindowBracket __window,
+	public void windowSetCloseListener(@NotNull ScritchWindowBracket __window,
 		@Nullable ScritchCloseListener __listener)
 		throws MLECallError
 	{
@@ -170,7 +170,7 @@ public class DylibWindowInterface
 	 * @since 2024/07/23
 	 */
 	@Override
-	public void setMenuBar(@NotNull ScritchWindowBracket __window,
+	public void windowSetMenuBar(@NotNull ScritchWindowBracket __window,
 		@Nullable ScritchMenuBarBracket __menuBar)
 		throws MLECallError
 	{
@@ -189,7 +189,7 @@ public class DylibWindowInterface
 	 * @since 2024/07/30
 	 */
 	@Override
-	public void setMenuItemActivateListener(
+	public void windowSetMenuItemActivateListener(
 		ScritchWindowBracket __window,
 		ScritchMenuItemActivateListener __listener)
 		throws MLECallError
@@ -207,7 +207,7 @@ public class DylibWindowInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public void setVisible(ScritchWindowBracket __window,
+	public void windowSetVisible(ScritchWindowBracket __window,
 		boolean __visible)
 		throws MLECallError
 	{

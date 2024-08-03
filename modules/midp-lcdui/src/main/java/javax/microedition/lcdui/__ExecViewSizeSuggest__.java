@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchViewBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeSuggestListener;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Size suggestions for scrolling views.
@@ -56,9 +55,9 @@ class __ExecViewSizeSuggest__
 		
 		// Just pass this through directly as we only care for this
 		// single component being wrapped
-		this.scritchApi.view().setArea(__view,
+		this.scritchApi.view().viewSetArea(__view,
 			__w, __h);
-		this.scritchApi.container().setBounds(__view, __subComponent,
+		this.scritchApi.container().containerSetBounds(__view, __subComponent,
 			0, 0, __w, __h);
 	}
 }

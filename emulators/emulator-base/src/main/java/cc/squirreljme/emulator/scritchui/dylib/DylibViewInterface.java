@@ -45,7 +45,7 @@ public class DylibViewInterface
 	}
 	
 	@Override
-	public void getView(ScritchViewBracket __view,
+	public void viewGetView(ScritchViewBracket __view,
 		int[] __outRect)
 		throws MLECallError
 	{
@@ -57,7 +57,7 @@ public class DylibViewInterface
 	 * @since 2024/07/30
 	 */
 	@Override
-	public void setArea(ScritchViewBracket __view,
+	public void viewSetArea(ScritchViewBracket __view,
 		int __width, int __height)
 		throws MLECallError
 	{
@@ -70,7 +70,7 @@ public class DylibViewInterface
 	}
 	
 	@Override
-	public void setView(ScritchViewBracket __view,
+	public void viewSetView(ScritchViewBracket __view,
 		int __x, int __y, int __width, int __height)
 		throws MLECallError
 	{
@@ -82,7 +82,7 @@ public class DylibViewInterface
 	 * @since 2024/07/29
 	 */
 	@Override
-	public void setSizeSuggestListener(ScritchViewBracket __view,
+	public void viewSetSizeSuggestListener(ScritchViewBracket __view,
 		ScritchSizeSuggestListener __listener)
 		throws MLECallError
 	{
@@ -100,7 +100,7 @@ public class DylibViewInterface
 	 * @since 2024/07/29
 	 */
 	@Override
-	public void setViewListener(ScritchViewBracket __view,
+	public void viewSetViewListener(ScritchViewBracket __view,
 		ScritchViewListener __listener)
 		throws MLECallError
 	{

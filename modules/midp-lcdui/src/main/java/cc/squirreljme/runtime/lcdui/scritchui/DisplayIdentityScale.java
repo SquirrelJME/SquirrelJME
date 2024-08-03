@@ -91,7 +91,7 @@ public class DisplayIdentityScale
 	@Override
 	public int textureH()
 	{
-		return this.scritch.window().contentHeight(this.window);
+		return this.scritch.window().windowContentHeight(this.window);
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class DisplayIdentityScale
 	@Override
 	public int textureMaxH()
 	{
-		return this.scritch.screen().height(this.screen);
+		return this.scritch.screen().screenHeight(this.screen);
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class DisplayIdentityScale
 	@Override
 	public int textureMaxW()
 	{
-		return this.scritch.screen().width(this.screen);
+		return this.scritch.screen().screenWidth(this.screen);
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public class DisplayIdentityScale
 	@Override
 	public int textureW()
 	{
-		return this.scritch.window().contentWidth(this.window);
+		return this.scritch.window().windowContentWidth(this.window);
 	}
 	
 	/**

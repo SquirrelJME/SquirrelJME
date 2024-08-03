@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -36,7 +35,7 @@ public interface ScritchPanelInterface
 	 * @since 2024/03/24
 	 */
 	@SquirrelJMEVendorApi
-	void enableFocus(ScritchPanelBracket __panel, boolean __enabled,
+	void panelEnableFocus(ScritchPanelBracket __panel, boolean __enabled,
 		boolean __default)
 		throws MLECallError;
 	
@@ -49,7 +48,7 @@ public interface ScritchPanelInterface
 	 */
 	@SquirrelJMEVendorApi
 	@NotNull
-	ScritchPanelBracket newPanel()
+	ScritchPanelBracket panelNew()
 		throws MLECallError;
 	
 	/**
@@ -62,7 +61,7 @@ public interface ScritchPanelInterface
 	 * @since 2024/06/30
 	 */
 	@SquirrelJMEVendorApi
-	void setInputListener(@NotNull ScritchPanelBracket __panel,
+	void panelSetInputListener(@NotNull ScritchPanelBracket __panel,
 		@Nullable ScritchInputListener __listener)
 		throws MLECallError;
 }

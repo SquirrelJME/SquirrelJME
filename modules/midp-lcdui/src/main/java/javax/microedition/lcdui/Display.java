@@ -323,11 +323,11 @@ public class Display
 		this._listenerTitle = new __ExecDisplaySetTitle__(state);
 		
 		// Handle window closing for the display
-		__scritch.window().setCloseListener(__window,
+		__scritch.window().windowSetCloseListener(__window,
 			new __ExecDisplayClose__(state));
 		
 		// Handle menu items being activated
-		__scritch.window().setMenuItemActivateListener(__window,
+		__scritch.window().windowSetMenuItemActivateListener(__window,
 			new __ExecDisplayMenuItemActivate__(state));
 	}
 	
@@ -355,7 +355,7 @@ public class Display
 		
 		// Always execute later because we do not want to actually block
 		// if we were able to execute now, this strictly schedules.
-		this._scritch.eventLoop().executeLater(__run);
+		this._scritch.eventLoop().loopExecuteLater(__run);
 	}
 	
 	/**
@@ -377,7 +377,7 @@ public class Display
 			throw new IllegalArgumentException("EB30");
 		
 		// Just call attention to the user
-		this._scritch.window().callAttention(this._window);
+		this._scritch.window().windowCallAttention(this._window);
 		return false;
 	}
 	
@@ -422,7 +422,7 @@ public class Display
 		ScritchLAFInterface laf =
 			this._scritch.environment().lookAndFeel();
 		
-		return laf.imageSize(
+		return laf.lafImageSize(
 			ScritchLcdUiUtils.scritchElementType(__elem), true);
 	}
 	
@@ -451,7 +451,7 @@ public class Display
 		ScritchLAFInterface laf =
 			this._scritch.environment().lookAndFeel();
 		
-		return laf.imageSize(
+		return laf.lafImageSize(
 			ScritchLcdUiUtils.scritchElementType(__elem), false);
 	}
 	
@@ -471,7 +471,7 @@ public class Display
 			this._scritch.environment().lookAndFeel();
 		
 		return ScritchLcdUiUtils.lcduiLineStyle(
-			laf.focusBorderStyle(__highlight));
+			laf.lafFocusBorderStyle(__highlight));
 	}
 	
 	/**
@@ -529,7 +529,7 @@ public class Display
 	{
 		try
 		{
-			return this._scritch.environment().lookAndFeel().elementColor(
+			return this._scritch.environment().lookAndFeel().lafElementColor(
 				this.__state().scritchWindow(),
 				ScritchLcdUiUtils.scritchElementColor(__c)) & 0xFFFFFF;
 		}
@@ -599,9 +599,9 @@ public class Display
 	{
 		ScritchWindowInterface scritch = this._scritch.window();
 		
-		if (scritch.isVisible(this._window))
+		if (scritch.windowIsVisible(this._window))
 		{
-			if (scritch.hasFocus(this._window))
+			if (scritch.windowHasFocus(this._window))
 				return Display.STATE_FOREGROUND;
 			return Display.STATE_VISIBLE;
 		}
@@ -750,7 +750,7 @@ public class Display
 	@Api
 	public int getOrientation()
 	{
-		if (this._scritch.screen().isPortrait(this._screen))
+		if (this._scritch.screen().screenIsPortrait(this._screen))
 			return Display.ORIENTATION_PORTRAIT;
 		return Display.ORIENTATION_LANDSCAPE;
 	}
@@ -776,7 +776,7 @@ public class Display
 	@Api
 	public boolean hasPointerEvents()
 	{
-		int types = this._scritch.window().inputTypes(this._window);
+		int types = this._scritch.window().windowInputTypes(this._window);
 		return 0 != (types & (ScritchInputMethodType.MOUSE_BUTTON_PRESSED |
 			ScritchInputMethodType.MOUSE_BUTTON_RELEASED |
 			ScritchInputMethodType.MOUSE_MOTION |
@@ -798,7 +798,7 @@ public class Display
 	@Api
 	public boolean hasPointerMotionEvents()
 	{
-		int types = this._scritch.window().inputTypes(this._window);
+		int types = this._scritch.window().windowInputTypes(this._window);
 		return 0 != (types & (ScritchInputMethodType.MOUSE_MOTION |
 			ScritchInputMethodType.TOUCH_DRAG_MOTION |
 			ScritchInputMethodType.STYLUS_DRAG_MOTION |
@@ -814,7 +814,7 @@ public class Display
 	@Api
 	public boolean isBuiltIn()
 	{
-		return this._scritch.screen().isBuiltIn(this._screen);
+		return this._scritch.screen().screenIsBuiltIn(this._screen);
 	}
 	
 	/**
@@ -922,7 +922,7 @@ public class Display
 	{
 		// Make sure this happens in the event loop as we might need to
 		// update widgets and otherwise
-		this._scritch.eventLoop().executeWait(
+		this._scritch.eventLoop().loopExecuteWait(
 			new __ExecDisplaySetCurrent__(this._scritch, this,
 				null, null));
 	}
@@ -994,7 +994,7 @@ public class Display
 		
 		// Make sure this happens in the event loop as we might need to
 		// update widgets and otherwise
-		this._scritch.eventLoop().executeWait(
+		this._scritch.eventLoop().loopExecuteWait(
 			new __ExecDisplaySetCurrent__(this._scritch, this,
 				__show, __exit));
 	}
@@ -1030,7 +1030,7 @@ public class Display
 		
 		// Make sure this happens in the event loop as we might need to
 		// update widgets and otherwise
-		this._scritch.eventLoop().executeWait(
+		this._scritch.eventLoop().loopExecuteWait(
 			new __ExecDisplaySetCurrent__(this._scritch, this, __show,
 				null));
 	}

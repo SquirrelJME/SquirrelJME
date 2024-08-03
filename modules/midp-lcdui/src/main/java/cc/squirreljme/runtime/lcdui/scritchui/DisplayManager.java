@@ -130,7 +130,7 @@ public final class DisplayManager
 				// One frame per screen
 			case ScritchWindowManagerType.ONE_FRAME_PER_SCREEN:
 				for (ScritchScreenBracket screen : screens)
-					result.add(this.__mapScreen(screenApi.id(screen),
+					result.add(this.__mapScreen(screenApi.screenId(screen),
 						screen, __factory));
 				break;
 				
@@ -186,7 +186,7 @@ public final class DisplayManager
 				return display.display();
 			
 			// Setup new window for this display
-			ScritchWindowBracket window = winApi.newWindow();
+			ScritchWindowBracket window = winApi.windowNew();
 			
 			// Otherwise it needs to be created
 			display = __factory.create(scritchApi, window, __screen);

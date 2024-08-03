@@ -50,7 +50,7 @@ public class DylibComponentInterface
 	 * @since 2024/07/29
 	 */
 	@Override
-	public @Nullable ScritchComponentBracket getParent(
+	public @Nullable ScritchComponentBracket componentGetParent(
 		@NotNull ScritchComponentBracket __component)
 		throws MLECallError
 	{
@@ -67,7 +67,7 @@ public class DylibComponentInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public int height(
+	public int componentGetHeight(
 		ScritchComponentBracket __component)
 		throws MLECallError
 	{
@@ -84,7 +84,7 @@ public class DylibComponentInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public void revalidate(ScritchComponentBracket __component)
+	public void componentRevalidate(ScritchComponentBracket __component)
 		throws MLECallError
 	{
 		if (__component == null)
@@ -99,7 +99,7 @@ public class DylibComponentInterface
 	 * @since 2024/07/17
 	 */
 	@Override
-	public void setActivateListener(ScritchComponentBracket __component,
+	public void componentSetActivateListener(ScritchComponentBracket __component,
 		ScritchActivateListener __listener)
 		throws MLECallError
 	{
@@ -117,7 +117,7 @@ public class DylibComponentInterface
 	 * @since 2024/04/28
 	 */
 	@Override
-	public void setSizeListener(ScritchComponentBracket __component,
+	public void componentSetSizeListener(ScritchComponentBracket __component,
 		ScritchSizeListener __listener)
 		throws MLECallError
 	{
@@ -132,7 +132,7 @@ public class DylibComponentInterface
 	 * @since 2024/07/17
 	 */
 	@Override
-	public void setValueUpdateListener(ScritchComponentBracket __component,
+	public void componentSetValueUpdateListener(ScritchComponentBracket __component,
 		ScritchValueUpdateListener __listener)
 		throws MLECallError
 	{
@@ -144,7 +144,7 @@ public class DylibComponentInterface
 	 * @since 2024/06/28
 	 */
 	@Override
-	public void setVisibleListener(ScritchComponentBracket __component,
+	public void componentSetVisibleListener(ScritchComponentBracket __component,
 		ScritchVisibleListener __listener)
 		throws MLECallError
 	{
@@ -162,7 +162,7 @@ public class DylibComponentInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public int width(
+	public int componentWidth(
 		ScritchComponentBracket __component)
 		throws MLECallError
 	{

@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.mle.scritchui;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPaintableBracket;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +34,7 @@ public interface ScritchPaintableInterface
 	 * @since 2024/03/19
 	 */
 	@SquirrelJMEVendorApi
-	void repaint(@NotNull ScritchComponentBracket __component)
+	void componentRepaint(@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
 	
 	/**
@@ -47,7 +46,8 @@ public interface ScritchPaintableInterface
 	 * @since 2024/03/19
 	 */
 	@SquirrelJMEVendorApi
-	void setPaintListener(@NotNull ScritchPaintableBracket __component,
+	void componentSetPaintListener(
+		@NotNull ScritchPaintableBracket __component,
 		@Nullable ScritchPaintListener __listener)
 		throws MLECallError;
 }

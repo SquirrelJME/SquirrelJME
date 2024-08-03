@@ -40,7 +40,7 @@ public interface ScritchLAFInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Nullable
-	PencilFontBracket font(
+	PencilFontBracket lafFont(
 		@MagicConstant(valuesFromClass = ScritchLAFFontElementType.class)
 			int __element)
 		throws MLECallError;
@@ -56,7 +56,7 @@ public interface ScritchLAFInterface
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	int elementColor(@Nullable ScritchComponentBracket __context,
+	int lafElementColor(@Nullable ScritchComponentBracket __context,
 		@MagicConstant(valuesFromClass = ScritchLAFElementColor.class)
 		int __element)
 		throws MLECallError;
@@ -70,7 +70,7 @@ public interface ScritchLAFInterface
 	 */
 	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ScritchLineStyle.class)
-	int focusBorderStyle(boolean __focused);
+	int lafFocusBorderStyle(boolean __focused);
 	
 	/**
 	 * Returns the image size that best represents the given element.
@@ -84,7 +84,7 @@ public interface ScritchLAFInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	int imageSize(
+	int lafImageSize(
 		@MagicConstant(valuesFromClass = ScritchLAFImageElementType.class)
 		int __elem, boolean __height)
 		throws MLECallError;
@@ -96,5 +96,5 @@ public interface ScritchLAFInterface
 	 * @since 2024/03/24
 	 */
 	@SquirrelJMEVendorApi
-	boolean isDarkMode();
+	boolean lafIsDarkMode();
 }

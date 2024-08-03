@@ -65,8 +65,8 @@ public final class ScritchLcdUiUtils
 			ScritchComponentInterface componentApi = scritchApi.component();
 			
 			if (__height)
-				return componentApi.height(panel);
-			return componentApi.width(panel);
+				return componentApi.componentGetHeight(panel);
+			return componentApi.componentWidth(panel);
 		}
 		
 		// Otherwise use the default display size

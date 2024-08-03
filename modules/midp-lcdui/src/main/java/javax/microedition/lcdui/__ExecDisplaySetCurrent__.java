@@ -21,7 +21,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
-import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNode;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNodeOnly;
 
 /**
@@ -131,7 +130,7 @@ class __ExecDisplaySetCurrent__
 			// Remove everything from the window, since every display always
 			// has just a single displayable, and we do not care what else
 			// was even here...
-			containerApi.removeAll(window);
+			containerApi.containerRemoveAll(window);
 			
 			// Disassociate both ends
 			current.setParent(null);
@@ -148,37 +147,37 @@ class __ExecDisplaySetCurrent__
 			
 			// Get the needed panel and add it in
 			panel = showNowState.scritchPanel();
-			containerApi.add(window, panel);
+			containerApi.containerAdd(window, panel);
 			
 			// Set the frame's preferred and minimum sizes for the content area
 			DisplayScale scale = display._scale;
-			windowApi.contentMinimumSize(window,
+			windowApi.windowContentMinimumSize(window,
 				scale.textureMaxW(), scale.textureMaxH());
 			
 			// Make sure the parent is set
 			showNowState.setParent(displayState);
 			
 			// Revalidate so it gets updated
-			componentApi.revalidate(panel);
+			componentApi.componentRevalidate(panel);
 			
 			// Update text tracker of displayable to use the one that is
 			// attached to the display
 			showNow._trackerTitle.connect(display._listenerTitle);
 			
 			// Set the menu bar of the window to that of this displayable
-			windowApi.setMenuBar(window,
+			windowApi.windowSetMenuBar(window,
 				MenuActionNodeOnly.rootTree(showNow)
 					.map(MenuActionNodeOnly.node(showNow))
 					.scritchWidget(ScritchMenuBarBracket.class));
 			
 			// Show the display window
-			windowApi.setVisible(window, true);
+			windowApi.windowSetVisible(window, true);
 			
 			// Internal revalidation logic
 			showNow.__execRevalidate(displayState);
 			
 			// Force it to be painted
-			paintableApi.repaint(panel);
+			paintableApi.componentRepaint(panel);
 		}
 	}
 }

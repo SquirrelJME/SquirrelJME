@@ -44,7 +44,7 @@ public class DylibPaintableInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public void repaint(ScritchComponentBracket __component)
+	public void componentRepaint(ScritchComponentBracket __component)
 		throws MLECallError
 	{
 		if (__component == null)
@@ -63,7 +63,7 @@ public class DylibPaintableInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public void setPaintListener(ScritchPaintableBracket __component,
+	public void componentSetPaintListener(ScritchPaintableBracket __component,
 		ScritchPaintListener __listener)
 		throws MLECallError
 	{

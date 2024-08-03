@@ -92,11 +92,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void add(ScritchContainerBracket __container,
+	public void containerAdd(ScritchContainerBracket __container,
 		ScritchComponentBracket __component)
 		throws MLECallError
 	{
-		this.api.container().add(__container, __component);
+		this.api.container().containerAdd(__container, __component);
 	}
 	
 	/**
@@ -114,10 +114,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void callAttention(ScritchWindowBracket __window)
+	public void windowCallAttention(ScritchWindowBracket __window)
 		throws MLECallError
 	{
-		this.api.window().callAttention(__window);
+		this.api.window().windowCallAttention(__window);
 	}
 	
 	/**
@@ -155,11 +155,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int contentHeight(
+	public int windowContentHeight(
 		ScritchWindowBracket __window)
 		throws MLECallError
 	{
-		return this.api.window().contentHeight(__window);
+		return this.api.window().windowContentHeight(__window);
 	}
 	
 	/**
@@ -167,12 +167,12 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void contentMinimumSize(ScritchWindowBracket __window,
+	public void windowContentMinimumSize(ScritchWindowBracket __window,
 		int __w,
 		int __h)
 		throws MLECallError
 	{
-		this.api.window().contentMinimumSize(__window, __w, __h);
+		this.api.window().windowContentMinimumSize(__window, __w, __h);
 	}
 	
 	/**
@@ -180,11 +180,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int contentWidth(
+	public int windowContentWidth(
 		ScritchWindowBracket __window)
 		throws MLECallError
 	{
-		return this.api.window().contentWidth(__window);
+		return this.api.window().windowContentWidth(__window);
 	}
 	
 	/**
@@ -192,11 +192,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void delete(ScritchChoiceBracket __choice,
+	public void choiceDelete(ScritchChoiceBracket __choice,
 		int __atIndex)
 		throws MLECallError
 	{
-		this.api.choice().delete(__choice, __atIndex);
+		this.api.choice().choiceDelete(__choice, __atIndex);
 	}
 	
 	/**
@@ -204,10 +204,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void deleteAll(ScritchChoiceBracket __choice)
+	public void choiceDeleteAll(ScritchChoiceBracket __choice)
 		throws MLECallError
 	{
-		this.api.choice().deleteAll(__choice);
+		this.api.choice().choiceDeleteAll(__choice);
 	}
 	
 	/**
@@ -215,11 +215,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int dpi(
+	public int screenDpi(
 		ScritchScreenBracket __screen)
 		throws MLECallError
 	{
-		return this.api.screen().dpi(__screen);
+		return this.api.screen().screenDpi(__screen);
 	}
 	
 	/**
@@ -227,12 +227,12 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int elementColor(@Nullable ScritchComponentBracket __context,
+	public int lafElementColor(@Nullable ScritchComponentBracket __context,
 		int __element)
 		throws MLECallError
 	{
 		return this.api.environment().lookAndFeel()
-			.elementColor(__context, __element);
+			.lafElementColor(__context, __element);
 	}
 	
 	/**
@@ -240,11 +240,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void enableFocus(ScritchPanelBracket __panel, boolean __enabled,
+	public void panelEnableFocus(ScritchPanelBracket __panel, boolean __enabled,
 		boolean __default)
 		throws MLECallError
 	{
-		this.api.panel().enableFocus(__panel, __enabled, __default);
+		this.api.panel().panelEnableFocus(__panel, __enabled, __default);
 	}
 	
 	/**
@@ -272,10 +272,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void execute(Runnable __task)
+	public void loopExecute(Runnable __task)
 		throws MLECallError
 	{
-		this.api.eventLoop().execute(__task);
+		this.api.eventLoop().loopExecute(__task);
 	}
 	
 	/**
@@ -283,10 +283,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void executeLater(Runnable __task)
+	public void loopExecuteLater(Runnable __task)
 		throws MLECallError
 	{
-		this.api.eventLoop().executeLater(__task);
+		this.api.eventLoop().loopExecuteLater(__task);
 	}
 	
 	/**
@@ -294,10 +294,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void executeWait(Runnable __task)
+	public void loopExecuteWait(Runnable __task)
 		throws MLECallError
 	{
-		this.api.eventLoop().executeWait(__task);
+		this.api.eventLoop().loopExecuteWait(__task);
 	}
 	
 	/**
@@ -305,10 +305,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int focusBorderStyle(boolean __focused)
+	public int lafFocusBorderStyle(boolean __focused)
 	{
 		return this.api.environment().lookAndFeel()
-			.focusBorderStyle(__focused);
+			.lafFocusBorderStyle(__focused);
 	}
 	
 	/**
@@ -316,10 +316,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public @Nullable PencilFontBracket font(int __element)
+	public @Nullable PencilFontBracket lafFont(int __element)
 		throws MLECallError
 	{
-		return this.api.environment().lookAndFeel().font(__element);
+		return this.api.environment().lookAndFeel().lafFont(__element);
 	}
 	
 	/**
@@ -340,11 +340,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public @Nullable ScritchComponentBracket getParent(
+	public @Nullable ScritchComponentBracket componentGetParent(
 		ScritchComponentBracket __component)
 		throws MLECallError
 	{
-		return this.api.component().getParent(__component);
+		return this.api.component().componentGetParent(__component);
 	}
 	
 	/**
@@ -352,11 +352,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int getSelectedIndex(
+	public int choiceGetSelectedIndex(
 		ScritchChoiceBracket __choice)
 		throws MLECallError
 	{
-		return this.api.choice().getSelectedIndex(__choice);
+		return this.api.choice().choiceGetSelectedIndex(__choice);
 	}
 	
 	/**
@@ -364,11 +364,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void getView(ScritchViewBracket __view,
+	public void viewGetView(ScritchViewBracket __view,
 		int[] __outRect)
 		throws MLECallError
 	{
-		this.api.view().getView(__view, __outRect);
+		this.api.view().viewGetView(__view, __outRect);
 	}
 	
 	/**
@@ -393,10 +393,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public boolean hasFocus(ScritchWindowBracket __window)
+	public boolean windowHasFocus(ScritchWindowBracket __window)
 		throws MLECallError
 	{
-		return this.api.window().hasFocus(__window);
+		return this.api.window().windowHasFocus(__window);
 	}
 	
 	/**
@@ -404,11 +404,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int height(
+	public int screenHeight(
 		ScritchScreenBracket __screen)
 		throws MLECallError
 	{
-		return this.api.screen().height(__screen);
+		return this.api.screen().screenHeight(__screen);
 	}
 	
 	/**
@@ -416,11 +416,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int height(
+	public int componentGetHeight(
 		ScritchComponentBracket __component)
 		throws MLECallError
 	{
-		return this.api.component().height(__component);
+		return this.api.component().componentGetHeight(__component);
 	}
 	
 	/**
@@ -428,11 +428,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int id(
+	public int screenId(
 		ScritchScreenBracket __screen)
 		throws MLECallError
 	{
-		return this.api.screen().id(__screen);
+		return this.api.screen().screenId(__screen);
 	}
 	
 	/**
@@ -440,12 +440,12 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int imageSize(int __elem,
+	public int lafImageSize(int __elem,
 		boolean __height)
 		throws MLECallError
 	{
 		return this.api.environment().lookAndFeel()
-			.imageSize(__elem, __height);
+			.lafImageSize(__elem, __height);
 	}
 	
 	/**
@@ -463,10 +463,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int inputTypes(ScritchWindowBracket __window)
+	public int windowInputTypes(ScritchWindowBracket __window)
 		throws MLECallError
 	{
-		return this.api.window().inputTypes(__window);
+		return this.api.window().windowInputTypes(__window);
 	}
 	
 	/**
@@ -474,12 +474,12 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int insert(
+	public int choiceInsert(
 		ScritchChoiceBracket __choice,
 		int __atIndex)
 		throws MLECallError
 	{
-		return this.api.choice().insert(__choice, __atIndex);
+		return this.api.choice().choiceInsert(__choice, __atIndex);
 	}
 	
 	/**
@@ -487,10 +487,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public boolean isBuiltIn(ScritchScreenBracket __screen)
+	public boolean screenIsBuiltIn(ScritchScreenBracket __screen)
 		throws MLECallError
 	{
-		return this.api.screen().isBuiltIn(__screen);
+		return this.api.screen().screenIsBuiltIn(__screen);
 	}
 	
 	/**
@@ -498,9 +498,9 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public boolean isDarkMode()
+	public boolean lafIsDarkMode()
 	{
-		return this.api.environment().lookAndFeel().isDarkMode();
+		return this.api.environment().lookAndFeel().lafIsDarkMode();
 	}
 	
 	/**
@@ -528,10 +528,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public boolean isPortrait(ScritchScreenBracket __screen)
+	public boolean screenIsPortrait(ScritchScreenBracket __screen)
 		throws MLECallError
 	{
-		return this.api.screen().isPortrait(__screen);
+		return this.api.screen().screenIsPortrait(__screen);
 	}
 	
 	/**
@@ -539,10 +539,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public boolean isVisible(ScritchWindowBracket __window)
+	public boolean windowIsVisible(ScritchWindowBracket __window)
 		throws MLECallError
 	{
-		return this.api.window().isVisible(__window);
+		return this.api.window().windowIsVisible(__window);
 	}
 	
 	/**
@@ -560,11 +560,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int length(
+	public int choiceLength(
 		@Nullable ScritchChoiceBracket __choice)
 		throws MLECallError
 	{
-		return this.api.choice().length(__choice);
+		return this.api.choice().choiceLength(__choice);
 	}
 	
 	/**
@@ -671,10 +671,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public ScritchPanelBracket newPanel()
+	public ScritchPanelBracket panelNew()
 		throws MLECallError
 	{
-		return this.api.panel().newPanel();
+		return this.api.panel().panelNew();
 	}
 	
 	/**
@@ -682,9 +682,9 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public ScritchWindowBracket newWindow()
+	public ScritchWindowBracket windowNew()
 	{
-		return this.api.window().newWindow();
+		return this.api.window().windowNew();
 	}
 	
 	/**
@@ -723,10 +723,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void removeAll(ScritchMenuHasChildrenBracket __menuKind)
+	public void menuRemoveAll(ScritchMenuHasChildrenBracket __menuKind)
 		throws MLECallError
 	{
-		this.api.menu().removeAll(__menuKind);
+		this.api.menu().menuRemoveAll(__menuKind);
 	}
 	
 	/**
@@ -734,10 +734,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void removeAll(ScritchContainerBracket __container)
+	public void containerRemoveAll(ScritchContainerBracket __container)
 		throws MLECallError
 	{
-		this.api.container().removeAll(__container);
+		this.api.container().containerRemoveAll(__container);
 	}
 	
 	/**
@@ -745,10 +745,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void repaint(ScritchComponentBracket __component)
+	public void componentRepaint(ScritchComponentBracket __component)
 		throws MLECallError
 	{
-		this.api.paintable().repaint(__component);
+		this.api.paintable().componentRepaint(__component);
 	}
 	
 	/**
@@ -756,10 +756,10 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void revalidate(ScritchComponentBracket __component)
+	public void componentRevalidate(ScritchComponentBracket __component)
 		throws MLECallError
 	{
-		this.api.component().revalidate(__component);
+		this.api.component().componentRevalidate(__component);
 	}
 	
 	/**
@@ -808,11 +808,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setActivateListener(ScritchComponentBracket __component,
+	public void componentSetActivateListener(ScritchComponentBracket __component,
 		ScritchActivateListener __listener)
 		throws MLECallError
 	{
-		this.api.component().setActivateListener(__component, __listener);
+		this.api.component().componentSetActivateListener(__component, __listener);
 	}
 	
 	/**
@@ -820,12 +820,12 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setArea(ScritchViewBracket __view,
+	public void viewSetArea(ScritchViewBracket __view,
 		int __width,
 		int __height)
 		throws MLECallError
 	{
-		this.api.view().setArea(__view, __width, __height);
+		this.api.view().viewSetArea(__view, __width, __height);
 	}
 	
 	/**
@@ -833,13 +833,13 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setBounds(ScritchContainerBracket __container,
+	public void containerSetBounds(ScritchContainerBracket __container,
 		ScritchComponentBracket __component, int __x, int __y,
 		int __w,
 		int __h)
 		throws MLECallError
 	{
-		this.api.container().setBounds(__container, __component,
+		this.api.container().containerSetBounds(__container, __component,
 			__x, __y, __w, __h);
 	}
 	
@@ -848,11 +848,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setCloseListener(ScritchWindowBracket __window,
+	public void windowSetCloseListener(ScritchWindowBracket __window,
 		@Nullable ScritchCloseListener __listener)
 		throws MLECallError
 	{
-		this.api.window().setCloseListener(__window, __listener);
+		this.api.window().windowSetCloseListener(__window, __listener);
 	}
 	
 	/**
@@ -860,12 +860,12 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setEnabled(ScritchChoiceBracket __choice,
+	public void choiceSetEnabled(ScritchChoiceBracket __choice,
 		int __atIndex,
 		boolean __enabled)
 		throws MLECallError
 	{
-		this.api.choice().setEnabled(__choice, __atIndex, __enabled);
+		this.api.choice().choiceSetEnabled(__choice, __atIndex, __enabled);
 	}
 	
 	/**
@@ -873,7 +873,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setImage(ScritchChoiceBracket __choice,
+	public void choiceSetImage(ScritchChoiceBracket __choice,
 		int __atIndex,
 		@Nullable int[] __data,
 		int __off,
@@ -882,7 +882,7 @@ public class ScritchUnifiedWrapper
 		int __height)
 		throws MLECallError
 	{
-		this.api.choice().setImage(__choice, __atIndex, __data, __off,
+		this.api.choice().choiceSetImage(__choice, __atIndex, __data, __off,
 			__scanLen, __width, __height);
 	}
 	
@@ -901,11 +901,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setInputListener(ScritchPanelBracket __panel,
+	public void panelSetInputListener(ScritchPanelBracket __panel,
 		@Nullable ScritchInputListener __listener)
 		throws MLECallError
 	{
-		this.api.panel().setInputListener(__panel, __listener);
+		this.api.panel().panelSetInputListener(__panel, __listener);
 	}
 	
 	/**
@@ -913,11 +913,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setMenuBar(ScritchWindowBracket __window,
+	public void windowSetMenuBar(ScritchWindowBracket __window,
 		@Nullable ScritchMenuBarBracket __menuBar)
 		throws MLECallError
 	{
-		this.api.window().setMenuBar(__window, __menuBar);
+		this.api.window().windowSetMenuBar(__window, __menuBar);
 	}
 	
 	/**
@@ -925,12 +925,12 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setMenuItemActivateListener(
+	public void windowSetMenuItemActivateListener(
 		ScritchWindowBracket __window,
 		@Nullable ScritchMenuItemActivateListener __listener)
 		throws MLECallError
 	{
-		this.api.window().setMenuItemActivateListener(__window, __listener);
+		this.api.window().windowSetMenuItemActivateListener(__window, __listener);
 	}
 	
 	/**
@@ -938,11 +938,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setPaintListener(ScritchPaintableBracket __component,
+	public void componentSetPaintListener(ScritchPaintableBracket __component,
 		@Nullable ScritchPaintListener __listener)
 		throws MLECallError
 	{
-		this.api.paintable().setPaintListener(__component, __listener);
+		this.api.paintable().componentSetPaintListener(__component, __listener);
 	}
 	
 	/**
@@ -950,12 +950,12 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setSelected(ScritchChoiceBracket __choice,
+	public void choiceSetSelected(ScritchChoiceBracket __choice,
 		int __atIndex,
 		boolean __selected)
 		throws MLECallError
 	{
-		this.api.choice().setSelected(__choice, __atIndex, __selected);
+		this.api.choice().choiceSetSelected(__choice, __atIndex, __selected);
 	}
 	
 	/**
@@ -963,11 +963,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setSizeListener(ScritchComponentBracket __component,
+	public void componentSetSizeListener(ScritchComponentBracket __component,
 		ScritchSizeListener __listener)
 		throws MLECallError
 	{
-		this.api.component().setSizeListener(__component, __listener);
+		this.api.component().componentSetSizeListener(__component, __listener);
 	}
 	
 	/**
@@ -975,11 +975,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setSizeSuggestListener(ScritchViewBracket __view,
+	public void viewSetSizeSuggestListener(ScritchViewBracket __view,
 		@Nullable ScritchSizeSuggestListener __listener)
 		throws MLECallError
 	{
-		this.api.view().setSizeSuggestListener(__view, __listener);
+		this.api.view().viewSetSizeSuggestListener(__view, __listener);
 	}
 	
 	/**
@@ -987,11 +987,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setString(ScritchLabelBracket __label,
+	public void labelSetString(ScritchLabelBracket __label,
 		@Nullable String __string)
 		throws MLECallError
 	{
-		this.api.label().setString(__label, __string);
+		this.api.label().labelSetString(__label, __string);
 	}
 	
 	/**
@@ -999,12 +999,12 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setString(ScritchChoiceBracket __choice,
+	public void choiceSetString(ScritchChoiceBracket __choice,
 		int __atIndex,
 		@Nullable String __string)
 		throws MLECallError
 	{
-		this.api.choice().setString(__choice, __atIndex, __string);
+		this.api.choice().choiceSetString(__choice, __atIndex, __string);
 	}
 	
 	/**
@@ -1012,11 +1012,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setValueUpdateListener(ScritchComponentBracket __component,
+	public void componentSetValueUpdateListener(ScritchComponentBracket __component,
 		ScritchValueUpdateListener __listener)
 		throws MLECallError
 	{
-		this.api.component().setValueUpdateListener(__component, __listener);
+		this.api.component().componentSetValueUpdateListener(__component, __listener);
 	}
 	
 	/**
@@ -1024,14 +1024,14 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setView(ScritchViewBracket __view,
+	public void viewSetView(ScritchViewBracket __view,
 		int __x,
 		int __y,
 		int __width,
 		int __height)
 		throws MLECallError
 	{
-		this.api.view().setView(__view, __x, __y, __width, __height);
+		this.api.view().viewSetView(__view, __x, __y, __width, __height);
 	}
 	
 	/**
@@ -1039,11 +1039,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setViewListener(ScritchViewBracket __view,
+	public void viewSetViewListener(ScritchViewBracket __view,
 		@Nullable ScritchViewListener __listener)
 		throws MLECallError
 	{
-		this.api.view().setViewListener(__view, __listener);
+		this.api.view().viewSetViewListener(__view, __listener);
 	}
 	
 	/**
@@ -1051,11 +1051,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setVisible(ScritchWindowBracket __window,
+	public void windowSetVisible(ScritchWindowBracket __window,
 		boolean __visible)
 		throws MLECallError
 	{
-		this.api.window().setVisible(__window, __visible);
+		this.api.window().windowSetVisible(__window, __visible);
 	}
 	
 	/**
@@ -1063,11 +1063,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public void setVisibleListener(ScritchComponentBracket __component,
+	public void componentSetVisibleListener(ScritchComponentBracket __component,
 		ScritchVisibleListener __listener)
 		throws MLECallError
 	{
-		this.api.component().setVisibleListener(__component, __listener);
+		this.api.component().componentSetVisibleListener(__component, __listener);
 	}
 	
 	/**
@@ -1085,11 +1085,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int width(
+	public int screenWidth(
 		ScritchScreenBracket __screen)
 		throws MLECallError
 	{
-		return this.api.screen().width(__screen);
+		return this.api.screen().screenWidth(__screen);
 	}
 	
 	/**
@@ -1097,11 +1097,11 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	public int width(
+	public int componentWidth(
 		ScritchComponentBracket __component)
 		throws MLECallError
 	{
-		return this.api.component().width(__component);
+		return this.api.component().componentWidth(__component);
 	}
 	
 	/**

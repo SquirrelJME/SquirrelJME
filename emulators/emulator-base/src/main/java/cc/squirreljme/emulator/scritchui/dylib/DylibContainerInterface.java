@@ -44,7 +44,7 @@ public class DylibContainerInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public void add(ScritchContainerBracket __container,
+	public void containerAdd(ScritchContainerBracket __container,
 		ScritchComponentBracket __component)
 		throws MLECallError
 	{
@@ -64,7 +64,7 @@ public class DylibContainerInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public void removeAll(ScritchContainerBracket __container)
+	public void containerRemoveAll(ScritchContainerBracket __container)
 		throws MLECallError
 	{
 		if (__container == null)
@@ -82,7 +82,7 @@ public class DylibContainerInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public void setBounds(ScritchContainerBracket __container,
+	public void containerSetBounds(ScritchContainerBracket __container,
 		ScritchComponentBracket __component, int __x, int __y,
 		int __w,
 		int __h)
