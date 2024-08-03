@@ -39,6 +39,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringUnmappableObjectException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -284,7 +285,7 @@ public final class SpringThreadWorker
 		/* {@squirreljme.error BK20 Do not know how to convert the given class
 		to a native machine object. (The input class)} */
 		else
-			throw new SpringFatalException(
+			throw new SpringUnmappableObjectException(
 				String.format("BK20 %s", __in.getClass()));
 	}
 	
@@ -516,14 +517,10 @@ public final class SpringThreadWorker
 			}
 		}
 		
-		// Everything else
-		else if (true)
-			return this.asMagicProxy(__in);
-		
 		/* {@squirreljme.error BK21 Do not know how to convert the given class
 		to a virtual machine object. (The input class)} */
 		else
-			throw new RuntimeException(
+			throw new SpringUnmappableObjectException(
 				String.format("BK21 %s", __in.getClass()));
 	}
 	
