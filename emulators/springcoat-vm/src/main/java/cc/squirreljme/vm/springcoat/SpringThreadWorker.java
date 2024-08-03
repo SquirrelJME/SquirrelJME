@@ -516,6 +516,10 @@ public final class SpringThreadWorker
 			}
 		}
 		
+		// Everything else
+		else if (true)
+			return this.asMagicProxy(__in);
+		
 		/* {@squirreljme.error BK21 Do not know how to convert the given class
 		to a virtual machine object. (The input class)} */
 		else

@@ -34,18 +34,7 @@ public enum MLEScritchUI
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			try
-			{
-				ScritchInterface scritchApi =
-					NativeScritchInterface.nativeInterface();
-				
-				return new ScritchUnifiedProxy(__thread.machine,
-					new ScritchUnifiedWrapper(scritchApi));
-			}
-			catch (MLECallError __e)
-			{
-				throw new SpringMLECallError(__e);
-			}
+			throw new SpringMLECallError("Unsupported in SpringCoat");
 		}
 	},
 	

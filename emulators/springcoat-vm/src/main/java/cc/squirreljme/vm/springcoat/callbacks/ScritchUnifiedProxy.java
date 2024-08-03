@@ -86,10 +86,10 @@ public class ScritchUnifiedProxy
 			// Normalize arguments
 			Object[] normal = new Object[argCount];
 			for (int i = 0; i < argCount; i++)
-				normal[i] = this.__asNativeObject(__thread, __args[i]);
+				normal[i] = __thread.asNativeObject(__args[i]);
 			
 			// Call into it
-			return this.__asVMObject(__thread,
+			return __thread.asVMObject(
 				method.invoke(this.wrapped, normal));
 		}
 		catch (NoSuchMethodException|IllegalAccessException|
