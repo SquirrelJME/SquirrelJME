@@ -21,7 +21,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2021/02/25
  */
 public abstract class SpringProxyObject
-	implements SpringObject, SpringProxyObjectType
+	implements SpringObject
 {
 	/** The machine used for the proxy. */
 	private final SpringMachine machine;
@@ -61,6 +61,18 @@ public abstract class SpringProxyObject
 		this.type = __type;
 		this.machine = __machine;
 	}
+	
+	/**
+	 * Invokes the given proxy method.
+	 * 
+	 * @param __thread The thread is invoke on.
+	 * @param __method The method to invoke.
+	 * @param __args The arguments of the method.
+	 * @return The resultant value, if any.
+	 * @since 2021/02/25
+	 */
+	protected abstract Object invokeProxy(SpringThreadWorker __thread,
+		MethodNameAndType __method, Object[] __args);
 	
 	/**
 	 * {@inheritDoc}

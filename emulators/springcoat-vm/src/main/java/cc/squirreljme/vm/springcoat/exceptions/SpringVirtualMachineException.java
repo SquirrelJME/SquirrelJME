@@ -18,7 +18,7 @@ import cc.squirreljme.vm.springcoat.SpringException;
  * @since 2018/09/01
  */
 public class SpringVirtualMachineException
-	extends SpringFatalException
+	extends SpringException
 {
 	/**
 	 * Initialize the exception with no message or cause.

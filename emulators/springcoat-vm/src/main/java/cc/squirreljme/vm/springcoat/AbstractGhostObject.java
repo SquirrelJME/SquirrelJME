@@ -36,7 +36,7 @@ public abstract class AbstractGhostObject
 	public AbstractGhostObject(SpringMachine __machine, Class<?> __rep)
 		throws NullPointerException
 	{
-		if (__machine == null || __rep == null)
+		if (__rep == null)
 			throw new NullPointerException("NARG");
 		
 		this.represents = __machine.classLoader().loadClass(
