@@ -383,6 +383,17 @@ public final class SpringClass
 	}
 	
 	/**
+	 * The base index for fields.
+	 *
+	 * @return The field base index.
+	 * @since 2024/08/02
+	 */
+	public int fieldLookupBase()
+	{
+		return this._fieldLookupBase;
+	}
+	
+	/**
 	 * Returns the fields which are only declared in this class.
 	 *
 	 * @return The fields only declared in this class.
@@ -669,8 +680,8 @@ public final class SpringClass
 	{
 		try
 		{
-			return this.lookupMethodNonVirtual(new MethodNameAndType("<init>",
-				"()V"));
+			return this.lookupMethodNonVirtual(
+				new MethodNameAndType("<init>", "()V"));
 		}
 		catch (SpringNoSuchMethodException e)
 		{
@@ -928,6 +939,17 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Returns the base index for method lookup within this class.
+	 *
+	 * @return The method lookup base.
+	 * @since 2024/08/02
+	 */
+	public int methodLookupBase()
+	{
+		return this._methodLookupBase;
+	}
+	
+	/**
 	 * Returns the name of this class.
 	 *
 	 * @return The name of this class.
@@ -936,6 +958,20 @@ public final class SpringClass
 	public final ClassName name()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * Sets the class object.
+	 *
+	 * @param __rv The object to use.
+	 * @since 2024/08/02
+	 */
+	public void setClassObject(SpringObject __rv)
+	{
+		synchronized (this)
+		{
+			this._instance = __rv;
+		}
 	}
 	
 	/**
@@ -958,6 +994,28 @@ public final class SpringClass
 			
 			this._initialized = true;
 		}
+	}
+	
+	/**
+	 * Returns the base for static fields.
+	 *
+	 * @return The static field base.
+	 * @since 2024/08/02
+	 */
+	public int staticFieldBase()
+	{
+		return this._staticFieldBase;
+	}
+	
+	/**
+	 * Returns the static field storage.
+	 *
+	 * @return The static field storage.
+	 * @since 2024/08/02
+	 */
+	public SpringFieldStorage[] staticFields()
+	{
+		return this._staticFields;
 	}
 	
 	/**

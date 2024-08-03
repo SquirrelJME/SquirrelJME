@@ -156,7 +156,7 @@ public final class SpringThreadWorker
 		// Verbose debug?
 		if (this.verboseCheck(VerboseDebugFlag.ALLOCATION))
 			this.verboseEmit("Allocate array: %s[%d]",
-				__cl.name, __l);
+				__cl.name(), __l);
 		
 		// Depends on the type to be allocated
 		switch (__cl.componentType().name().toString())
@@ -505,10 +505,7 @@ public final class SpringThreadWorker
 					new TypeObject(machine, resClass));
 				
 				// Store it
-				synchronized (classClass)
-				{
-					classClass._instance = rv;
-				}
+				classClass.setClassObject(rv);
 				
 				// Cache and use it
 				com.put(name, rv);
@@ -1465,7 +1462,7 @@ public final class SpringThreadWorker
 		// Verbose debug?
 		if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION))
 			this.verboseEmit("Handling exception: %s",
-				__o.type().name);
+				__o.type().name());
 			
 		// Are we exiting in the middle of an exception throwing?
 		this.machine.exitCheck();
@@ -1513,7 +1510,7 @@ public final class SpringThreadWorker
 		// Verbose debug?
 		if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION))
 			this.verboseEmit("Frame handles %s? %b",
-				__o.type().name, useeh != null);
+				__o.type().name(), useeh != null);
 		
 		// Signal that we caught an exception
 		JDWPHostController jdwp = this.machine.tasks.jdwpController;
@@ -1708,8 +1705,8 @@ public final class SpringThreadWorker
 			int index = field.index;
 			
 			// Look into the class storage
-			SpringFieldStorage[] store = inClass._staticFields;
-			if (index >= inClass._staticFieldBase && index < store.length &&
+			SpringFieldStorage[] store = inClass.staticFields();
+			if (index >= inClass.staticFieldBase() && index < store.length &&
 				store[index] != null)
 				return store[index];
 				
