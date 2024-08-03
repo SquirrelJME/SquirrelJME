@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
@@ -9,58 +9,54 @@
 
 package cc.squirreljme.vm.springcoat.exceptions;
 
-import cc.squirreljme.vm.springcoat.SpringException;
-
 /**
- * This is thrown when the virtual machine has been detected to not be
- * operating properly, this is an error.
+ * This is thrown when a type is not mappable.
  *
- * @since 2018/09/01
+ * @since 2024/08/02
  */
-public class SpringVirtualMachineException
+public class SpringUnmappableTypeException
 	extends SpringFatalException
 {
 	/**
-	 * Initialize the exception with no message or cause.
-	 *
-	 * @since 2018/09/01
+	 * Initializes the exception.
+	 * 
+	 * @since 2024/08/02
 	 */
-	public SpringVirtualMachineException()
+	public SpringUnmappableTypeException()
 	{
 	}
 	
 	/**
-	 * Initialize the exception with a message and no cause.
-	 *
+	 * Initializes the exception.
+	 * 
 	 * @param __m The message.
-	 * @since 2018/09/01
+	 * @since 2024/08/02
 	 */
-	public SpringVirtualMachineException(String __m)
+	public SpringUnmappableTypeException(String __m)
 	{
 		super(__m);
 	}
 	
 	/**
-	 * Initialize the exception with a message and cause.
-	 *
+	 * Initializes the exception.
+	 * 
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/09/01
+	 * @since 2024/08/02
 	 */
-	public SpringVirtualMachineException(String __m, Throwable __c)
+	public SpringUnmappableTypeException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
 	
 	/**
-	 * Initialize the exception with no message and with a cause.
-	 *
+	 * Initializes the exception.
+	 * 
 	 * @param __c The cause.
-	 * @since 2018/09/01
+	 * @since 2024/08/02
 	 */
-	public SpringVirtualMachineException(Throwable __c)
+	public SpringUnmappableTypeException(Throwable __c)
 	{
 		super(__c);
 	}
 }
-

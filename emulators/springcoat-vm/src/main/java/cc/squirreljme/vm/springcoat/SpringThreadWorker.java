@@ -11,8 +11,8 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.emulator.vm.VMTraceFlagTracker;
-import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPClassStatus;
+import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.host.JDWPHostController;
 import cc.squirreljme.jdwp.host.JDWPHostStepTracker;
 import cc.squirreljme.jdwp.host.JDWPHostThreadSuspension;
@@ -25,6 +25,7 @@ import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import cc.squirreljme.vm.springcoat.brackets.DynamicSuperProxy;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
@@ -39,6 +40,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringUnmappableTypeException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -228,11 +230,12 @@ public final class SpringThreadWorker
 	 * @param __in The input object.
 	 * @return The resulting native object.
 	 * @throws NullPointerException On null arguments.
-	 * @throws SpringFatalException If the object cannot be translated.
+	 * @throws SpringUnmappableTypeException If the object cannot be
+	 * translated.
 	 * @since 2018/09/20
 	 */
 	public final Object asNativeObject(Object __in)
-		throws NullPointerException, SpringFatalException
+		throws NullPointerException, SpringUnmappableTypeException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
@@ -246,8 +249,12 @@ public final class SpringThreadWorker
 			__in instanceof Float || __in instanceof Double)
 			return __in;
 		
+		// Proxied object?
+		else if (__in instanceof DynamicSuperProxy)
+			return ((DynamicSuperProxy)__in).wrapped;
+		
 		// Array type
-		if (__in instanceof SpringArrayObject)
+		else if (__in instanceof SpringArrayObject)
 			return ((SpringArrayObject)__in).array();
 		
 		// Class type
@@ -276,7 +283,7 @@ public final class SpringThreadWorker
 					given virtual machine class to a native machine object.
 					(The input class)} */
 				default:
-					throw new RuntimeException(
+					throw new SpringUnmappableTypeException(
 						String.format("BK1z %s", type));
 			}
 		}
@@ -284,7 +291,7 @@ public final class SpringThreadWorker
 		/* {@squirreljme.error BK20 Do not know how to convert the given class
 		to a native machine object. (The input class)} */
 		else
-			throw new SpringFatalException(
+			throw new SpringUnmappableTypeException(
 				String.format("BK20 %s", __in.getClass()));
 	}
 	
@@ -312,9 +319,11 @@ public final class SpringThreadWorker
 	 *
 	 * @param __in The input object.
 	 * @return The resulting VM object.
+	 * @throws SpringUnmappableTypeException If the type could not be mapped.
 	 * @since 2018/09/16
 	 */
 	public final Object asVMObject(Object __in)
+		throws SpringUnmappableTypeException
 	{
 		return this.asVMObject(__in, false);
 	}
@@ -325,9 +334,11 @@ public final class SpringThreadWorker
 	 * @param __in The input object.
 	 * @param __noclassres Do not use class resolution? Just load the class?
 	 * @return The resulting VM object.
+	 * @throws SpringUnmappableTypeException If the object cannot be mapped.
 	 * @since 2018/09/16
 	 */
 	public final Object asVMObject(Object __in, boolean __noclassres)
+		throws SpringUnmappableTypeException
 	{
 		// Null is converted to null
 		if (__in == null)
@@ -516,10 +527,14 @@ public final class SpringThreadWorker
 			}
 		}
 		
+		// Anything else
+		else if (true)
+			return this.machine.asProxy(this, __in);
+		
 		/* {@squirreljme.error BK21 Do not know how to convert the given class
 		to a virtual machine object. (The input class)} */
 		else
-			throw new RuntimeException(
+			throw new SpringUnmappableTypeException(
 				String.format("BK21 %s", __in.getClass()));
 	}
 	
@@ -811,7 +826,7 @@ public final class SpringThreadWorker
 			
 			// Executing a proxy method?
 			if (!__static && __args[0] instanceof SpringProxyObject)
-				this.__invokeProxy(method.nameAndType(), __args);
+				this.invokeProxy(method.nameAndType(), __args);
 			
 			// Normal call
 			else
@@ -1035,6 +1050,17 @@ public final class SpringThreadWorker
 		
 		// Return the input class
 		return __cl;
+	}
+	
+	/**
+	 * Returns the owning machine.
+	 *
+	 * @return The owning machine.
+	 * @since 2024/08/02
+	 */
+	public SpringMachine machine()
+	{
+		return this.machine;
 	}
 	
 	/**
@@ -1572,7 +1598,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/02/25
 	 */
-	private Object __invokeProxy(MethodNameAndType __method, Object... __args)
+	public Object invokeProxy(MethodNameAndType __method, Object... __args)
 		throws NullPointerException
 	{
 		if (__method == null || __args == null)
@@ -1582,7 +1608,7 @@ public final class SpringThreadWorker
 		if (!(__args[0] instanceof SpringProxyObject))
 			throw new SpringVirtualMachineException("Not a proxy object.");
 		
-		SpringProxyObject instance = (SpringProxyObject)__args[0];
+		SpringProxyObjectType instance = (SpringProxyObjectType)__args[0];
 		
 		// Used for context and return value handling
 		SpringThread thread = this.thread;
@@ -1605,7 +1631,7 @@ public final class SpringThreadWorker
 		catch (RuntimeException e)
 		{
 			throw new SpringVirtualMachineException(String.format(
-				"Could not proxy invoke %s.", __method));
+				"Could not proxy invoke %s.", __method), e);
 		}
 		
 		return rv;
@@ -3763,8 +3789,8 @@ public final class SpringThreadWorker
 				String.format("BK32 %s %s %s", refclass, objClass, args[0]));
 				
 		// Executing a proxy method?
-		if (instance instanceof SpringProxyObject)
-			this.__invokeProxy(ref.memberNameAndType(), args);
+		if (instance instanceof SpringProxyObjectType)
+			this.invokeProxy(ref.memberNameAndType(), args);
 		
 		// Re-lookup the method since we need to the right one! Then invoke it
 		else
@@ -4010,7 +4036,7 @@ public final class SpringThreadWorker
 		
 		// Calling onto a proxy?
 		if (instance instanceof SpringProxyObject)
-			this.__invokeProxy(refmethod.nameAndType(), args);
+			this.invokeProxy(refmethod.nameAndType(), args);
 		
 		// Enter frame as like a static method
 		else

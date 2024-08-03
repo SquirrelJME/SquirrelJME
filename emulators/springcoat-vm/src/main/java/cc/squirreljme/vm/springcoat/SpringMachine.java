@@ -16,6 +16,7 @@ import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.brackets.DynamicSuperProxy;
 import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
@@ -125,6 +126,10 @@ public final class SpringMachine
 	private final Map<SpringMachine, Reference<TaskObject>> _taskObject =
 		new WeakHashMap<>();
 	
+	/** Cache of proxies. */
+	private final WeakHashMap<Object, SpringObject> _proxyCache =
+		new WeakHashMap<>();
+	
 	/** Main entry point arguments. */
 	private final String[] _args;
 	
@@ -205,6 +210,56 @@ public final class SpringMachine
 				__cl.bootLibrary().name(),
 				SpringMachine._nextVmNumber++,
 				System.identityHashCode(this));
+		}
+	}
+	
+	/**
+	 * Wraps the input as a proxy object.
+	 *
+	 * @param __thread The context thread.
+	 * @param __in The input.
+	 * @return The wrapped proxy.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/02
+	 */
+	public SpringObject asProxy(SpringThreadWorker __thread, Object __in)
+		throws NullPointerException
+	{
+		if (__thread == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		WeakHashMap<Object, SpringObject> cache = this._proxyCache;
+		synchronized (this)
+		{
+			// Already cached?
+			SpringObject result = cache.get(__in);
+			if (result != null)
+				return result;
+			
+			// Array?
+			if (__in.getClass().isArray())
+			{
+				Object[] from = (Object[])__in;
+				
+				// Wrap individual values
+				int n = from.length;
+				SpringObject[] sub = new SpringObject[n];
+				for (int i = 0; i < n; i++)
+					sub[i] = (SpringObject)__thread.asVMObject(from[i]);
+				
+				// Wrap in array
+				result = new SpringArrayObjectGeneric(
+					__thread.resolveClass(__in.getClass()
+						.getName().replace('.', '/')), sub);
+			}
+			
+			// Setup new proxy wrapper
+			else
+				result = DynamicSuperProxy.of(this, __in);
+			
+			// Cache and use it
+			cache.put(__in, result);
+			return result;
 		}
 	}
 	
