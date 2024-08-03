@@ -203,7 +203,7 @@ public final class SpringClassLoader
 				component = this.loadClass(__cn.componentType());
 			
 			// Load class information
-			rv = new SpringClass(superclass, interfaceclasses, cf,
+			rv = new SpringVMClass(superclass, interfaceclasses, cf,
 				component, inJar[0], this._machineRef);
 			
 			// Store for later use
