@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -130,6 +131,10 @@ public final class SpringMachine
 	
 	/** System properties. */
 	final Map<String, String> _sysproperties;
+	
+	/** Virtualized classes. */
+	private final Map<Class<?>, Reference<SpringVisClass>> _visClasses =
+		new LinkedHashMap<>();
 	
 	/** Callback threads that are available for use. */
 	private final Collection<CallbackThread> _cbThreads =
@@ -766,6 +771,36 @@ public final class SpringMachine
 	public final String toString()
 	{
 		return this.vmId;
+	}
+	
+	/**
+	 * Virtualizes the given class.
+	 *
+	 * @param __class The class to virtualize.
+	 * @return The resultant virtualized class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/04
+	 */
+	public SpringVisClass virtualizeClass(Class<?> __class)
+		throws NullPointerException
+	{
+		if (__class == null)
+			throw new NullPointerException("NARG");
+		
+		Map<Class<?>, Reference<SpringVisClass>> visClasses = this._visClasses;
+		synchronized (this)
+		{
+			// Does this need to be created?
+			Reference<SpringVisClass> ref = visClasses.get(__class);
+			SpringVisClass result = null;
+			if (ref == null || (result = ref.get()) == null)
+			{
+				result = new SpringVisClass(this, __class);
+				visClasses.put(__class, new WeakReference<>(result));
+			}
+			
+			return result;
+		}
 	}
 	
 	/**
