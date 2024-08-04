@@ -277,7 +277,7 @@ public final class SpringThreadWorker
 					given virtual machine class to a native machine object.
 					(The input class)} */
 				default:
-					throw new RuntimeException(
+					throw new SpringUnmappableObjectException(
 						String.format("BK1z %s", type));
 			}
 		}
@@ -1602,8 +1602,13 @@ public final class SpringThreadWorker
 		// Wrap any exceptions
 		catch (RuntimeException e)
 		{
+			// Convertable? Rethrow it and let SpringCoat handle the conversion
+			if (e instanceof SpringConvertableThrowable)
+				throw e;
+			
+			// Otherwise fail
 			throw new SpringVirtualMachineException(String.format(
-				"Could not proxy invoke %s.", __method));
+				"Could not proxy invoke %s.", __method), e);
 		}
 		
 		return rv;

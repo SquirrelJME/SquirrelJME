@@ -358,6 +358,49 @@ public final class SpringMachine
 	}
 	
 	/**
+	 * Returns the SpringCoat thread for the current thread.
+	 *
+	 * @return The current SpringCoat thread or {@code null} if there is none.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/04
+	 */
+	public final SpringThread getCurrentThread()
+		throws NullPointerException
+	{
+		return this.getThread(Thread.currentThread());
+	}
+	
+	/**
+	 * Returns the SpringCoat thread that uses the given thread.
+	 *
+	 * @param __realThread The real thread to unmap from.
+	 * @return The resultant SpringCoat thread or {@code null} if there is
+	 * none.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/04
+	 */
+	public final SpringThread getThread(Thread __realThread)
+		throws NullPointerException
+	{
+		if (__realThread == null)
+			throw new NullPointerException("NARG");
+		
+		// Try to find the real thread
+		synchronized (this)
+		{
+			for (SpringThread t : this.getThreads())
+			{
+				SpringThreadWorker worker = t._worker;
+				if (worker != null && worker == __realThread)
+					return t;
+			}
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
 	 * Gets the thread by the given ID.
 	 *
 	 * @param __id The ID of the thread.
@@ -380,9 +423,9 @@ public final class SpringMachine
 	}
 	
 	/**
-	 * Returns all of the process threads.
+	 * Returns all the process threads.
 	 *
-	 * @return All of the current process threads.
+	 * @return All the current process threads.
 	 * @since 2020/06/17
 	 */
 	public final SpringThread[] getThreads()
