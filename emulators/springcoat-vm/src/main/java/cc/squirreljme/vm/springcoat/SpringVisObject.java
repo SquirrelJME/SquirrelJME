@@ -10,6 +10,8 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
@@ -31,7 +33,7 @@ import net.multiphasicapps.classfile.PrimitiveType;
  */
 public class SpringVisObject
 	extends SpringProxyObject
-	implements SpringObject
+	implements SpringArray, SpringObject
 {
 	/** The real object to access. */
 	protected final Object real;
@@ -61,6 +63,84 @@ public class SpringVisObject
 		
 		this.real = __real;
 		this.realClass = __real.getClass();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/04
+	 */
+	@Override
+	public Object array()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/04
+	 */
+	@Override
+	public <C> C get(Class<C> __cl, int __dx)
+		throws NullPointerException, SpringArrayIndexOutOfBoundsException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the thread to call under
+		SpringMachine machine = this.machine;
+		SpringThread contextThread = machine.getCurrentThread();
+		try (CallbackThread callbackThread = (contextThread == null ?
+			machine.obtainCallbackThread(true) : null))
+		{
+			// Re-obtain context thread accordingly
+			if (contextThread == null)
+				contextThread = callbackThread.thread();
+			
+			// Get worker
+			SpringThreadWorker worker = contextThread._worker;
+			if (worker == null)
+				throw new SpringFatalException(
+					String.format("No worker thread for %s", contextThread));
+			
+			// Convert to native type
+			return __cl.cast(SpringVisObject.asVm(worker,
+				this.realClass.getComponentType(),
+				Array.get(this.real, __dx)));
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/04
+	 */
+	@Override
+	public boolean isArray()
+	{
+		return this.realClass.isArray();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/04
+	 */
+	@Override
+	public void set(int __dx, Object __v)
+		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/04
+	 */
+	@Override
+	public int length()
+	{
+		if (!this.isArray())
+			return -1;
+		
+		return Array.getLength(this.real);
 	}
 	
 	/**
@@ -101,13 +181,14 @@ public class SpringVisObject
 		int n = realTypes.length;
 		Object[] realArgs = new Object[n];
 		for (int i = 0; i < n; i++)
-			realArgs[i] = SpringVisObject.asNative(__thread, __args[i]);
+			realArgs[i] = SpringVisObject.asNative(__thread,
+				__method.type().argument(i), __args[i]);
 		
 		// Invoke the method
 		try
 		{
 			// Invoke call
-			return SpringVisObject.asVm(__thread,
+			return SpringVisObject.asVm(__thread, realMethod.getReturnType(),
 				realMethod.invoke(this.real, realArgs));
 		}
 		catch (InvocationTargetException __e)
@@ -119,6 +200,14 @@ public class SpringVisObject
 			throw new SpringFatalException(
 				String.format("Could not invoke real %s::%s",
 					realClass.getName(), __method), __e);
+		}
+		catch (IllegalArgumentException __e)
+		{
+			__e.printStackTrace(System.err);
+			throw Debugging.todo(__thread, __method,
+				Arrays.asList(__args),
+				Arrays.asList(realTypes),
+				Arrays.asList(realArgs));
 		}
 	}
 	
@@ -148,17 +237,25 @@ public class SpringVisObject
 	 * Maps the object as a native object.
 	 *
 	 * @param __thread The context thread.
+	 * @param __context The context class.
 	 * @param __in The input VM object.
 	 * @return The resultant native object.
 	 * @throws NullPointerException If no thread was specified.
 	 * @since 2024/08/04
 	 */
-	public static Object asNative(SpringThreadWorker __thread, Object __in)
+	public static Object asNative(SpringThreadWorker __thread,
+		FieldDescriptor __context, Object __in)
 		throws NullPointerException
 	{
 		if (__thread == null)
 			throw new NullPointerException("NARG");
 		
+		// Boolean value?
+		if (__context != null &&
+			__context.primitiveType() == PrimitiveType.BOOLEAN)
+			return ((Integer)__in != 0);
+		
+		// Try mapping it
 		try
 		{
 			// If this is a vis object, then unwrap it
@@ -187,12 +284,14 @@ public class SpringVisObject
 	 * Maps the object as a VM object.
 	 *
 	 * @param __thread The context thread.
+	 * @param __context The context class.
 	 * @param __in The input real object.
 	 * @return The resultant VM object.
 	 * @throws NullPointerException If no thread was specified.
 	 * @since 2024/08/04
 	 */
-	public static Object asVm(SpringThreadWorker __thread, Object __in)
+	public static Object asVm(SpringThreadWorker __thread,
+		Class<?> __context, Object __in)
 		throws NullPointerException
 	{
 		if (__thread == null)
@@ -316,6 +415,10 @@ public class SpringVisObject
 	{
 		if (__machine == null || __type == null)
 			throw new NullPointerException("NARG");
+		
+		// Void maps to null
+		if (__type == Void.TYPE)
+			return null;
 		
 		// Primitive type?
 		if (__type == Boolean.TYPE)

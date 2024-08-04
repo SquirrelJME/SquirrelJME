@@ -235,11 +235,8 @@ public final class SpringThreadWorker
 	public final Object asNativeObject(Object __in)
 		throws NullPointerException, SpringFatalException
 	{
-		if (__in == null)
-			throw new NullPointerException("NARG");
-		
-		// Is null reference
-		else if (__in == SpringNullObject.NULL)
+		// Is null reference?
+		if (__in == null || __in == SpringNullObject.NULL)
 			return null;
 		
 		// Boxed types remain the same
@@ -248,8 +245,8 @@ public final class SpringThreadWorker
 			return __in;
 		
 		// Array type
-		if (__in instanceof SpringArrayObject)
-			return ((SpringArrayObject)__in).array();
+		if ((__in instanceof SpringArray) && ((SpringArray)__in).isArray())
+			return ((SpringArray)__in).array();
 		
 		// Class type
 		else if (__in instanceof SpringSimpleObject)
@@ -1858,8 +1855,8 @@ public final class SpringThreadWorker
 				case InstructionIndex.AALOAD:
 					{
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						frame.pushToStack(obj.<SpringObject>get(
 							SpringObject.class, dx));
@@ -1872,8 +1869,8 @@ public final class SpringThreadWorker
 						SpringObject value = frame.<SpringObject>popFromStack(
 							SpringObject.class);
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						obj.set(dx, value);
 					}
@@ -1920,8 +1917,8 @@ public final class SpringThreadWorker
 					// Length of array
 				case InstructionIndex.ARRAYLENGTH:
 					frame.pushToStack(
-						frame.<SpringArrayObject>popFromStackNotNull(
-						SpringArrayObject.class).length());
+						frame.<SpringArray>popFromStackNotNull(
+						SpringArray.class).length());
 					break;
 					
 					// Store reference to local variable
@@ -2593,8 +2590,8 @@ public final class SpringThreadWorker
 				case InstructionIndex.IALOAD:
 					{
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						frame.pushToStack(obj.<Integer>get(Integer.class, dx));
 					}
@@ -2604,8 +2601,8 @@ public final class SpringThreadWorker
 				case InstructionIndex.DALOAD:
 					{
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						frame.pushToStack(obj.<Double>get(Double.class, dx));
 					}
@@ -2615,8 +2612,8 @@ public final class SpringThreadWorker
 				case InstructionIndex.FALOAD:
 					{
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						frame.pushToStack(obj.<Float>get(Float.class, dx));
 					}
@@ -2627,8 +2624,8 @@ public final class SpringThreadWorker
 				case InstructionIndex.LALOAD:
 					{
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						frame.pushToStack(obj.<Long>get(Long.class, dx));
 					}
@@ -2642,8 +2639,8 @@ public final class SpringThreadWorker
 					{
 						int value = frame.<Integer>popFromStack(Integer.class);
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						obj.set(dx, value);
 					}
@@ -2655,8 +2652,8 @@ public final class SpringThreadWorker
 						double value = frame.<Double>popFromStack(
 							Double.class);
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						obj.set(dx, value);
 					}
@@ -2667,8 +2664,8 @@ public final class SpringThreadWorker
 					{
 						float value = frame.<Float>popFromStack(Float.class);
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						obj.set(dx, value);
 					}
@@ -2679,8 +2676,8 @@ public final class SpringThreadWorker
 					{
 						long value = frame.<Long>popFromStack(Long.class);
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						obj.set(dx, value);
 					}

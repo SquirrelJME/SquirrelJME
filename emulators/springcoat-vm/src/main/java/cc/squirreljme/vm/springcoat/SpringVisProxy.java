@@ -90,12 +90,14 @@ public class SpringVisProxy
 			Object[] vmArgs = new Object[n + 1];
 			vmArgs[0] = this.vmObject;
 			for (int i = 0; i < n; i++)
-				vmArgs[i + 1] = SpringVisObject.asVm(worker, __args[i]);
+				vmArgs[i + 1] = SpringVisObject.asVm(worker, null,
+					__args[i]);
 			
 			// Call method and return its result
 			try
 			{
 				return SpringVisObject.asNative(worker,
+					nat.type().returnValue(),
 					contextThread.invokeMethod(false,
 						this.vmObject.type().name(), nat, vmArgs));
 			}

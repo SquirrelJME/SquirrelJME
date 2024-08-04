@@ -102,7 +102,20 @@ public class SpringVisClass
 	@Override
 	public int dimensions()
 	{
-		throw Debugging.todo();
+		// Need to count the number of brackets at the start
+		Class<?> real = this.real;
+		if (real.isArray())
+		{
+			String name = real.getName();
+			for (int i = 0, n = name.length(); i < n; i++)
+				if (name.charAt(i) != '[')
+					return i;
+			
+			// Is all just array????
+			return name.length() - 1;
+		}
+		
+		return 0;
 	}
 	
 	/**
@@ -512,6 +525,8 @@ public class SpringVisClass
 	@Override
 	public SpringClass superClass()
 	{
-		throw Debugging.todo();
+		// VisClasses always are based directly on object
+		return this.machine.classLoader().loadClass(
+			new ClassName("java/lang/Object"));
 	}
 }
