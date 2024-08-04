@@ -844,8 +844,13 @@ public final class SpringMachine
 			SpringVisClass result = null;
 			if (ref == null || (result = ref.get()) == null)
 			{
+				// Setup VisClass and cache it
 				result = new SpringVisClass(this, __class);
 				visClasses.put(__class, new WeakReference<>(result));
+				
+				// Register to native virtual machine, so it knows about it
+				// and can find it
+				this.classloader.registerClass(result.visName, result);
 			}
 			
 			return result;

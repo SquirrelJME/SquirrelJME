@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.ClassFlag;
 import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldDescriptor;
@@ -37,14 +38,25 @@ import net.multiphasicapps.classfile.MethodNameAndType;
 public class SpringVisClass
 	implements SpringClass
 {
+	/** The class flags for a vis class. */
+	public static final ClassFlags CLASS_FLAGS =
+		new ClassFlags(ClassFlag.PUBLIC, ClassFlag.FINAL,
+			ClassFlag.SYNTHETIC);
+	
 	/** The machine to use. */
 	protected final SpringMachine machine;
+	
+	/** The VisName of this class. */
+	protected final ClassName visName;
 	
 	/** The real class to wrap. */
 	protected final Class<?> real;
 	
 	/** The interfaces this class implements. */
 	private volatile SpringClass[] _interfaceClasses;
+	
+	/** The super class, which is always {@link Object}. */
+	private volatile SpringClass _superClass;
 	
 	/**
 	 * Initializes the virtual class. 
@@ -60,6 +72,10 @@ public class SpringVisClass
 		if (__machine == null || __real == null)
 			throw new NullPointerException("NARG");
 		
+		this.visName = new ClassName("$$VIS$$/" +
+			__real.getName().replace(".", "/")
+				.replace('[', '_')
+				.replace(';', '_'));
 		this.machine = __machine;
 		this.real = __real;
 	}
@@ -186,7 +202,7 @@ public class SpringVisClass
 	@Override
 	public ClassFlags flags()
 	{
-		throw Debugging.todo();
+		return SpringVisClass.CLASS_FLAGS;
 	}
 	
 	/**
@@ -240,8 +256,9 @@ public class SpringVisClass
 				}
 			
 			// Debug
+			/*
 			Debugging.debugNote("VIS.interfaceClasses() = %s",
-				build);
+				build);*/
 			
 			// Cache and use it
 			result = build.toArray(new SpringClass[build.size()]);
@@ -299,7 +316,8 @@ public class SpringVisClass
 	@Override
 	public boolean isInitialized()
 	{
-		throw Debugging.todo();
+		// VisClasses are always initialized
+		return true;
 	}
 	
 	/**
@@ -309,7 +327,8 @@ public class SpringVisClass
 	@Override
 	public boolean isObjectClass()
 	{
-		throw Debugging.todo();
+		// VisClasses is always not the Object class
+		return false;
 	}
 	
 	/**
@@ -319,7 +338,8 @@ public class SpringVisClass
 	@Override
 	public boolean isPrimitive()
 	{
-		throw Debugging.todo();
+		// VisClasses are never primitive
+		return false;
 	}
 	
 	/**
@@ -411,7 +431,8 @@ public class SpringVisClass
 		throws NullPointerException, SpringIncompatibleClassChangeException,
 		SpringNoSuchMethodException
 	{
-		throw Debugging.todo();
+		// Use object class instead
+		return this.superClass().lookupMethod(__static, __nat);
 	}
 	
 	/**
@@ -434,7 +455,8 @@ public class SpringVisClass
 		throws NullPointerException, SpringIncompatibleClassChangeException,
 		SpringNoSuchMethodException
 	{
-		throw Debugging.todo();
+		// There are no methods
+		return null;
 	}
 	
 	/**
@@ -474,7 +496,7 @@ public class SpringVisClass
 	@Override
 	public ClassName name()
 	{
-		throw Debugging.todo();
+		return this.visName;
 	}
 	
 	/**
@@ -526,7 +548,14 @@ public class SpringVisClass
 	public SpringClass superClass()
 	{
 		// VisClasses always are based directly on object
-		return this.machine.classLoader().loadClass(
-			new ClassName("java/lang/Object"));
+		SpringClass result = this._superClass;
+		if (result == null)
+		{
+			result = this.machine.classLoader().loadClass(
+				new ClassName("java/lang/Object"));
+			this._superClass = result;
+		}
+		
+		return result;
 	}
 }

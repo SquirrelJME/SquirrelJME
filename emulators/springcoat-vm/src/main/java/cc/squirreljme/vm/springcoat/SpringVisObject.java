@@ -160,6 +160,35 @@ public class SpringVisObject
 		Debugging.debugNote("VIS.invokeProxy(%s, %s, %s)",
 			__thread, __method, Arrays.toString(__args));
 		
+		// If this is get class, always return the class instance
+		// If we do not do this here then there will be infinite recursion
+		// which is very bad
+		if ("getClass:()Ljava/lang/Class;".equals(__method.toString()))
+			return __thread.asVMObject(this.type());
+		
+		// Check if this is one of Object's methods
+		SpringClass superClass = this.type().superClass();
+		try
+		{
+			// Lookup first before we try invoking it
+			superClass.lookupMethod(false, __method);
+			
+			// We need to put our type as the first argument
+			int n = __args.length;
+			Object[] args = new Object[n + 1];
+			args[0] = this;
+			for (int i = 0; i < n; i++)
+				args[i + 1] = __args[i];
+					
+			// Invoke it
+			return __thread.invokeMethod(false, superClass.name(),
+				__method, args);
+		}
+		catch (SpringNoSuchMethodException __ignored)
+		{
+			// There is no method in Object, so forward to real VM
+		}
+		
 		// Resolve the real method type
 		Class<?>[] realTypes = SpringVisObject.realType(__method.type());
 		
@@ -269,6 +298,10 @@ public class SpringVisObject
 		}
 		catch (SpringUnmappableObjectException __e)
 		{
+			// Try mapping an exception
+			if (__in instanceof Throwable)
+				return SpringException.convert((Throwable)__in);
+			
 			// We can only map VM objects natively
 			if (!(__in instanceof SpringObject))
 				throw new SpringFatalException(

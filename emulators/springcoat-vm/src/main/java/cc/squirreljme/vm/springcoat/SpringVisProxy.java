@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringUnmappableObjectException;
@@ -93,18 +94,26 @@ public class SpringVisProxy
 				vmArgs[i + 1] = SpringVisObject.asVm(worker, null,
 					__args[i]);
 			
-			// Call method and return its result
-			try
+			// Call VM method, if it fails then this returns an exception
+			Object result = contextThread.invokeMethod(false,
+				this.vmObject.type().name(), nat, vmArgs);
+			if (result instanceof MethodInvokeException)
 			{
-				return SpringVisObject.asNative(worker,
-					nat.type().returnValue(),
-					contextThread.invokeMethod(false,
-						this.vmObject.type().name(), nat, vmArgs));
+				MethodInvokeException t = (MethodInvokeException)result;
+				
+				// Emit the exception
+				t.printStackTrace();
+				t.printVmTrace(System.err);
+				
+				// Wrap
+				throw new MLECallError(String.format("VM Exception: %s",
+					t.exception), t);
 			}
-			catch (MethodInvokeException __e)
-			{
-				throw __e;
-			}
+			
+			// As native object
+			return SpringVisObject.asNative(worker,
+				nat.type().returnValue(),
+				result);
 		}
 	}
 	

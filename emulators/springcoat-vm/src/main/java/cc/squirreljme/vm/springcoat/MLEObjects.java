@@ -19,7 +19,6 @@ import cc.squirreljme.vm.springcoat.brackets.MidiDeviceObject;
 import cc.squirreljme.vm.springcoat.brackets.MidiPortObject;
 import cc.squirreljme.vm.springcoat.brackets.NativeArchiveEntryObject;
 import cc.squirreljme.vm.springcoat.brackets.NativeArchiveObject;
-import cc.squirreljme.vm.springcoat.brackets.PencilObject;
 import cc.squirreljme.vm.springcoat.brackets.PipeObject;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.brackets.TaskObject;
@@ -28,7 +27,6 @@ import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.callbacks.NativeImageLoadCallbackAdapter;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 /**
@@ -234,24 +232,6 @@ public final class MLEObjects
 			throw new SpringMLECallError("Null object.");
 		
 		return (SpringObject)__object;
-	}
-	
-	/**
-	 * Ensures that this is a {@link PencilObject} and returns the graphics
-	 * object for it.
-	 * 
-	 * @param __object The object to check.
-	 * @return As a {@link PencilObject}.
-	 * @throws SpringMLECallError If this is not one.
-	 * @since 2021/12/05
-	 */
-	public static Graphics pencilGraphics(Object __object)
-		throws SpringMLECallError
-	{
-		if (!(__object instanceof PencilObject))
-			throw new SpringMLECallError("Not a PencilObject.");
-		
-		return ((PencilObject)__object).graphics; 
 	}
 	
 	/**

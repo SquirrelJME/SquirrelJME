@@ -122,7 +122,8 @@ public class SpringException
 			return new SpringNullPointerException(__t);
 		
 		// Nothing to wrap to?
-		throw new SpringFatalException("Not wrappable.", __t);
+		throw new SpringFatalException(
+			"Not wrappable: " + __t.getClass(), __t);
 	}
 }
 

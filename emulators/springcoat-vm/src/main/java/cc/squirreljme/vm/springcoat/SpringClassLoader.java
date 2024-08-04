@@ -341,6 +341,26 @@ public final class SpringClassLoader
 	}
 	
 	/**
+	 * Registers the given class into the class loader.
+	 *
+	 * @param __name The name of the class.
+	 * @param __class The class to register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/04
+	 */
+	public void registerClass(ClassName __name, SpringClass __class)
+		throws NullPointerException
+	{
+		if (__name == null || __class == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			this._classes.put(__name, __class);
+		}
+	}
+	
+	/**
 	 * Returns the root library.
 	 * 
 	 * @return The root library.
