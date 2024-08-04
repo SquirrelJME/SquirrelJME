@@ -356,7 +356,7 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - persist-gradle
       - save-test-results:
@@ -436,7 +436,7 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - persist-gradle
       - save-test-results:
@@ -492,7 +492,7 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - persist-gradle
       - save-test-results:
@@ -509,7 +509,7 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - persist-gradle
       - save-test-results:
@@ -545,7 +545,7 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -581,7 +581,7 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -616,7 +616,7 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 120m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 120m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 120m
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -811,18 +811,10 @@ workflows:
                 - trunk
 
       # Windows 64-bit
-      - build_windows_amd64_setup:
-          filters:
-            branches:
-              only:
-                - trunk
+      - build_windows_amd64_setup
       - build_windows_amd64:
           requires:
             - build_windows_amd64_setup
-          filters:
-            branches:
-              only:
-                - trunk
       - build_windows_amd64_standalone:
           requires:
             - build_windows_amd64
@@ -834,16 +826,8 @@ workflows:
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
       # Currently, I have an overabundance of credits...
-      - build_macosx_amd64:
-          filters:
-            branches:
-              only:
-                - trunk
-      - build_macosx_arm64:
-          filters:
-            branches:
-              only:
-                - trunk
+      - build_macosx_amd64
+      - build_macosx_arm64
       - build_macosx_amd64_standalone:
           requires:
             - build_macosx_amd64
