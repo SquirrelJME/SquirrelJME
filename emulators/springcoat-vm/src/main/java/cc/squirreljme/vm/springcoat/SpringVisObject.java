@@ -157,8 +157,10 @@ public class SpringVisObject
 			throw new NullPointerException("NARG");
 		
 		// Debug
+		/*
 		Debugging.debugNote("VIS.invokeProxy(%s, %s, %s)",
 			__thread, __method, Arrays.toString(__args));
+		 */
 		
 		// If this is get class, always return the class instance
 		// If we do not do this here then there will be infinite recursion
@@ -332,6 +334,10 @@ public class SpringVisObject
 	{
 		if (__thread == null || __as == null)
 			throw new NullPointerException("NARG");
+		
+		// Boolean?
+		if (__as == Boolean.class)
+			return __as.cast(((Integer)__in != 0));
 		
 		return __as.cast(SpringVisObject.asNative(__thread,
 			ClassName.fromRuntimeName(__as.getName()).field(), __in));

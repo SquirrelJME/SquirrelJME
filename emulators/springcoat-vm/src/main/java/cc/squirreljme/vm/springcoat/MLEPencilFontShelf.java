@@ -50,7 +50,8 @@ public enum MLEPencilFontShelf
 	},
 	
 	/** {@link PencilFontShelf#metricCharValid}. */
-	METRIC_CHAR_VALID("metricCharValid")
+	METRIC_CHAR_VALID("metricCharValid:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;)Z")
 	{
 		/**
 		 * {@inheritDoc}
@@ -59,7 +60,11 @@ public enum MLEPencilFontShelf
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			return PencilFontShelf.metricCharValid(
+				SpringVisObject.asNative(__thread,
+					PencilFontBracket.class, __args[0]),
+				SpringVisObject.asNative(__thread,
+					Integer.class, __args[1]));
 		}
 	},
 	
@@ -74,7 +79,7 @@ public enum MLEPencilFontShelf
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return PencilFontShelf.metricFontName(
+			return PencilFontShelf.metricFontFace(
 				SpringVisObject.asNative(__thread,
 					PencilFontBracket.class, __args[0]));
 		}
@@ -99,7 +104,8 @@ public enum MLEPencilFontShelf
 	},
 	
 	/** {@link PencilFontShelf#metricFontStyle}. */
-	METRIC_FONT_STYLE("metricFontStyle")
+	METRIC_FONT_STYLE("metricFontStyle:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -108,12 +114,15 @@ public enum MLEPencilFontShelf
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			return PencilFontShelf.metricFontStyle(
+				SpringVisObject.asNative(__thread,
+					PencilFontBracket.class, __args[0]));
 		}
 	},
 	
 	/** {@link PencilFontShelf#metricPixelAscent}. */
-	METRIC_PIXEL_ASCENT("metricPixelAscent")
+	METRIC_PIXEL_ASCENT("metricPixelAscent:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;Z)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -122,12 +131,17 @@ public enum MLEPencilFontShelf
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			return PencilFontShelf.metricPixelAscent(
+				SpringVisObject.asNative(__thread,
+					PencilFontBracket.class, __args[0]),
+				SpringVisObject.asNative(__thread,
+					Boolean.class, __args[1]));
 		}
 	},
 	
 	/** {@link PencilFontShelf#metricPixelBaseline}. */
-	METRIC_PIXEL_BASELINE("metricPixelBaseline")
+	METRIC_PIXEL_BASELINE("metricPixelBaseline:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -136,12 +150,15 @@ public enum MLEPencilFontShelf
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			return PencilFontShelf.metricPixelBaseline(
+				SpringVisObject.asNative(__thread,
+					PencilFontBracket.class, __args[0]));
 		}
 	},
 	
 	/** {@link PencilFontShelf#metricPixelDescent}. */
-	METRIC_PIXEL_DESCENT("metricPixelDescent")
+	METRIC_PIXEL_DESCENT("metricPixelDescent:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;Z)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -150,12 +167,17 @@ public enum MLEPencilFontShelf
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			return PencilFontShelf.metricPixelDescent(
+				SpringVisObject.asNative(__thread,
+					PencilFontBracket.class, __args[0]),
+				SpringVisObject.asNative(__thread,
+					Boolean.class, __args[1]));
 		}
 	},
 	
 	/** {@link PencilFontShelf#metricPixelLeading}. */
-	METRIC_PIXEL_LEADING("metricPixelLeading")
+	METRIC_PIXEL_LEADING("metricPixelLeading:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -164,12 +186,15 @@ public enum MLEPencilFontShelf
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			return PencilFontShelf.metricPixelLeading(
+				SpringVisObject.asNative(__thread,
+					PencilFontBracket.class, __args[0]));
 		}
 	},
 	
 	/** {@link PencilFontShelf#metricPixelSize}. */
-	METRIC_PIXEL_SIZE("metricPixelSize")
+	METRIC_PIXEL_SIZE("metricPixelSize:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -178,12 +203,15 @@ public enum MLEPencilFontShelf
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			return PencilFontShelf.metricPixelSize(
+				SpringVisObject.asNative(__thread,
+					PencilFontBracket.class, __args[0]));
 		}
 	},
 	
 	/** {@link PencilFontShelf#pixelCharWidth}. */
-	PIXEL_CHAR_WIDTH("pixelCharWidth")
+	PIXEL_CHAR_WIDTH("pixelCharWidth:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;I)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -192,7 +220,11 @@ public enum MLEPencilFontShelf
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			return PencilFontShelf.pixelCharWidth(
+				SpringVisObject.asNative(__thread,
+					PencilFontBracket.class, __args[0]),
+				SpringVisObject.asNative(__thread,
+					Integer.class, __args[1]));
 		}
 	},
 	

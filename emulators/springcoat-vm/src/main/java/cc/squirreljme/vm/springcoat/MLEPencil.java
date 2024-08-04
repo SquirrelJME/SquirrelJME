@@ -540,7 +540,7 @@ public enum MLEPencil
 					SpringVisObject.asNative(__thread,
 						PencilBracket.class, __args[0]),
 					SpringVisObject.asNative(__thread,
-						PencilFontBracket.class, __args[0]));
+						PencilFontBracket.class, __args[1]));
 				return null;
 			}
 			catch (MLECallError __e)
