@@ -218,8 +218,11 @@ public class SpringVisObject
 		try
 		{
 			// Invoke call
-			return SpringVisObject.asVm(__thread, realMethod.getReturnType(),
-				realMethod.invoke(this.real, realArgs));
+			Object result = realMethod.invoke(this.real, realArgs);
+			if (realMethod.getReturnType() != Void.TYPE)
+				return SpringVisObject.asVm(__thread,
+					realMethod.getReturnType(), result);
+			return null;
 		}
 		catch (InvocationTargetException __e)
 		{

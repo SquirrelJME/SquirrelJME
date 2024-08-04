@@ -111,9 +111,11 @@ public class SpringVisProxy
 			}
 			
 			// As native object
-			return SpringVisObject.asNative(worker,
-				nat.type().returnValue(),
-				result);
+			if (result != null)
+				return SpringVisObject.asNative(worker,
+					nat.type().returnValue(),
+					result);
+			return null;
 		}
 	}
 	
