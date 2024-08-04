@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.MidiShelf;
 import cc.squirreljme.jvm.mle.NativeArchiveShelf;
 import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.PencilFontShelf;
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.ReferenceShelf;
 import cc.squirreljme.jvm.mle.ReflectionShelf;
@@ -72,6 +73,10 @@ public enum MLEDispatcher
 	/** {@link PencilShelf}. */
 	PENCIL("cc/squirreljme/jvm/mle/PencilShelf",
 		MLEPencil.values()),
+	
+	/** {@link PencilFontShelf}. */
+	PENCIL_FONT("cc/squirreljme/jvm/mle/PencilFontShelf",
+		MLEPencilFontShelf.values()),
 	
 	/** {@link ReferenceShelf}. */
 	REFERENCE("cc/squirreljme/jvm/mle/ReferenceShelf",

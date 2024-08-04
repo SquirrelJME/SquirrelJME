@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;
@@ -281,6 +282,26 @@ public class SpringVisObject
 	}
 	
 	/**
+	 * Maps the object as a native object.
+	 *
+	 * @param __thread The context thread.
+	 * @param __as The class to cast as.
+	 * @param __in The input VM object.
+	 * @return The resultant native object.
+	 * @throws NullPointerException If no thread was specified.
+	 * @since 2024/08/04
+	 */
+	public static <T> T asNative(SpringThreadWorker __thread,
+		Class<T> __as, Object __in)
+	{
+		if (__thread == null || __as == null)
+			throw new NullPointerException("NARG");
+		
+		return __as.cast(SpringVisObject.asNative(__thread,
+			ClassName.fromRuntimeName(__as.getName()).field(), __in));
+	}
+	
+	/**
 	 * Maps the object as a VM object.
 	 *
 	 * @param __thread The context thread.
@@ -306,7 +327,7 @@ public class SpringVisObject
 		// Otherwise, wrap in a vis object like this one
 		catch (SpringUnmappableObjectException __ignored)
 		{
-			return new SpringVisObject(__thread.machine, __in);
+			return __thread.machine.virtualizeObject(__in);
 		}
 	}
 	

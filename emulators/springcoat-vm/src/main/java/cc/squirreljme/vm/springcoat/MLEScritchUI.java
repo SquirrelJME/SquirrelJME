@@ -36,7 +36,7 @@ public enum MLEScritchUI
 		{
 			try
 			{
-				return new SpringVisObject(__thread.machine,
+				return __thread.machine.virtualizeObject(
 					NativeScritchInterface.nativeInterface());
 			}
 			catch (MLECallError __e)

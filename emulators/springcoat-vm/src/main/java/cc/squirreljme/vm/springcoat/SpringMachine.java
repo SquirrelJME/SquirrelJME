@@ -14,6 +14,8 @@ import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TaskObject;
@@ -135,6 +137,10 @@ public final class SpringMachine
 	/** Virtualized classes. */
 	private final Map<Class<?>, Reference<SpringVisClass>> _visClasses =
 		new LinkedHashMap<>();
+	
+	/** Virtualized objects. */
+	private final Map<Object, SpringVisObject> _visObjects =
+		new WeakHashMap<>();
 	
 	/** Callback threads that are available for use. */
 	private final Collection<CallbackThread> _cbThreads =
@@ -842,6 +848,35 @@ public final class SpringMachine
 				visClasses.put(__class, new WeakReference<>(result));
 			}
 			
+			return result;
+		}
+	}
+	
+	/**
+	 * Virtualizes the given object.
+	 *
+	 * @param __in The object to virtualize.
+	 * @return The resultant virtualized object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/04
+	 */
+	public SpringVisObject virtualizeObject(Object __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		Map<Object, SpringVisObject> visObjects = this._visObjects;
+		synchronized (this)
+		{
+			// Has this already been virtualized?
+			SpringVisObject result = visObjects.get(__in);
+			if (result != null)
+				return result;
+			
+			// Virtualize and cache it
+			result = new SpringVisObject(this, __in);
+			visObjects.put(__in, result);
 			return result;
 		}
 	}
