@@ -34,7 +34,14 @@ public enum MLEScritchUI
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw new SpringMLECallError("Unsupported in SpringCoat");
+			try
+			{
+				return NativeScritchInterface.nativeInterface();
+			}
+			catch (MLECallError __e)
+			{
+				throw new SpringMLECallError(__e);
+			}
 		}
 	},
 	

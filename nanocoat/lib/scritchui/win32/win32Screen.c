@@ -16,5 +16,5 @@ sjme_errorCode sjme_scritchui_win32_screens(
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens)
 {
-	return sjme_error_notImplemented(0;)
+	return sjme_error_notImplemented(0);
 }
