@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import java.util.Arrays;
@@ -61,15 +62,26 @@ public final class SingleBuffer
 	 * Copies from the source buffer.
 	 * 
 	 * @param __source The source buffer.
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __w The width.
+	 * @param __h The height.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/25
 	 */
-	public void copyFrom(SingleBuffer __source)
+	public void copyFrom(SingleBuffer __source,
+		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
 		if (__source == null)
 			throw new NullPointerException("NARG");
-			
+		
+		// Force in bounds
+		if (__x < 0)
+			__x = 0;
+		if (__y < 0)
+			__y = 0;
+		
 		// Get destination parameters
 		int[] destPixels = this._pixels;
 		int destLimit = destPixels.length;
@@ -80,15 +92,35 @@ public final class SingleBuffer
 		int srcHeight = __source._height;
 		int srcArea = srcWidth * srcHeight;
 		
+		// Cap dimensions
+		int ex = __x + __w;
+		int ey = __y + __h;
+		if (ex > srcWidth)
+			ex = srcWidth;
+		if (ey > srcHeight)
+			ey = srcHeight;
+		__w = ex - __x;
+		__h = ey - __y;
+		
 		// If the source is larger, we need a new and bigger array but we
 		// can just automatically copy that array over
 		if (srcArea > destLimit)
 			this._pixels = Arrays.copyOf(srcPixels, srcArea);
 		
-		// Only copy what is needed
-		else
-			System.arraycopy(srcPixels, 0,
+		// Full copy? We can just copy everything at once
+		else if (__x == 0 && __y == 0 && __w == srcWidth && __h == srcHeight)
+			ObjectShelf.arrayCopy(srcPixels, 0,
 				destPixels, 0, srcArea);
+		
+		// Copying only a certain region
+		else
+		{
+			// Quick copy each row
+			int scanBase = __x;
+			for (int y = __y; y < ey; y++, scanBase += srcWidth)
+				ObjectShelf.arrayCopy(srcPixels, scanBase,
+					destPixels, scanBase, __w);
+		}
 		
 		// Copy the parameters over
 		this._width = srcWidth;

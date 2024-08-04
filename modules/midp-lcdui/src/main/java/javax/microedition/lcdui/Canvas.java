@@ -949,6 +949,12 @@ public abstract class Canvas
 			
 			// Draw onto this image instead for scaling
 			subGfx = buffer.getGraphics();
+			
+			// Make sure the clip is copied
+			subGfx.setClip(__gfx.getClipX(),
+				__gfx.getClipY(),
+				__gfx.getClipWidth(),
+				__gfx.getClipHeight());
 		}
 		
 		// Draw background?
@@ -980,7 +986,15 @@ public abstract class Canvas
 			
 			// Draw image accordingly with scaling, if needed
 			if (buffer != null)
+			{
+				// Make sure it is not translated
+				__gfx.translate(-__gfx.getTranslateX(),
+					-__gfx.getTranslateX());
+				__gfx.setClip(0, 0, __sw, __sh);
+				
+				// Copy it over
 				__gfx.drawImage(buffer, 0, 0, 0);
+			}
 		}
 		
 		// Handle repaint servicing

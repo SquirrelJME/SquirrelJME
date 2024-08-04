@@ -34,12 +34,6 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	if (w < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	/* SRC or SRC_OVER in hardware supported? Use if so... */
-	if (!g->state.applyAlpha && g->impl->drawHorizSrc != NULL)
-		return g->impl->drawHorizSrc(g, x, y, w);
-	else if (g->state.applyAlpha && g->impl->drawHorizSrcOver != NULL)
-		return g->impl->drawHorizSrcOver(g, x, y, w);
-	
 	/* Determine end coordinate. */
 	ex = x + w;
 	
@@ -66,6 +60,12 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	if (w <= 0 || y < 0 || y > g->height ||
 		y < clipLine->s.y || y > clipLine->e.y)
 		return SJME_ERROR_NONE;
+	
+	/* SRC or SRC_OVER in hardware supported? Use if so... */
+	if (!g->state.applyAlpha && g->impl->drawHorizSrc != NULL)
+		return g->impl->drawHorizSrc(g, x, y, w);
+	else if (g->state.applyAlpha && g->impl->drawHorizSrcOver != NULL)
+		return g->impl->drawHorizSrcOver(g, x, y, w);
 	
 	/* Allocate buffer. */
 	rgbScan = sjme_alloca(sizeof(*rgbScan) * w);

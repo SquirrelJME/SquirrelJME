@@ -101,6 +101,10 @@ public abstract class GameCanvas
 		// Set
 		this._suppressGameKeys = __suppressGameKeys;
 		this._preserveBuffer = __preserveBuffer;
+		
+		// Default to full screen mode and where all pixels are modified
+		this.setFullScreenMode(true);
+		this.setPaintMode(true);
 	}
 	
 	/**
@@ -116,7 +120,7 @@ public abstract class GameCanvas
 			return;
 		
 		// Flip!
-		this.__flip();
+		this.__flip(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
 	}
 	
 	/**
@@ -147,7 +151,7 @@ public abstract class GameCanvas
 			throw new IllegalStateException("EB2w");
 		
 		// Flip!
-		this.__flip();
+		this.__flip(__x, __y, __w, __h);
 	}
 	
 	/**
@@ -184,13 +188,17 @@ public abstract class GameCanvas
 	/**
 	 * Performs the graphics flip.
 	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __w The width.
+	 * @param __h The height.
 	 * @since 2019/06/30
 	 */
-	private void __flip()
+	private void __flip(int __x, int __y, int __w, int __h)
 	{
 		// Flush off-screen to on-screen
 		DoubleBuffer doubleBuffer = this._doubleBuffer;
-		doubleBuffer.flush();
+		doubleBuffer.flush(__x, __y, __w, __h);
 		
 		// If we are not preserving the buffer, clear to white
 		if (!this._preserveBuffer)
