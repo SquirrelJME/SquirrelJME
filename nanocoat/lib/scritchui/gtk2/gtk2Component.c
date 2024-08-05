@@ -426,6 +426,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 {
 	sjme_errorCode error;
 	GtkWidget* widget;
+	GtkWidget* topWidget;
 	sjme_scritchui_uiPaintable paint;
 	sjme_scritchui_listener_paint* infoCore;
 	
@@ -444,12 +445,23 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	/* Recover widget. */
 	widget = (GtkWidget*)inComponent->common
 		.handle[SJME_SUI_GTK2_H_WIDGET];
+	topWidget = (GtkWidget*)inComponent->common
+		.handle[SJME_SUI_GTK2_H_TOP_WIDGET];
 	
 	/* Disconnect old signal. */
 	if (paint->extra != 0)
 	{
 		/* No longer painted by us. */
 		gtk_widget_set_app_paintable(widget, FALSE);
+		if (topWidget != NULL)
+			gtk_widget_set_app_paintable(topWidget,
+				FALSE);
+		
+		/* Make not double buffered. */
+		gtk_widget_set_double_buffered(widget, FALSE);
+		if (topWidget != NULL)
+			gtk_widget_set_double_buffered(topWidget,
+				FALSE);
 	}
 	
 	/* Basic signal connection. */
@@ -470,6 +482,15 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	{
 		/* We want to handle paints now. */
 		gtk_widget_set_app_paintable(widget, TRUE);
+		if (topWidget != NULL)
+			gtk_widget_set_app_paintable(topWidget,
+				TRUE);
+				
+		/* Make double buffered. */
+		gtk_widget_set_double_buffered(widget, TRUE);
+		if (topWidget != NULL)
+			gtk_widget_set_double_buffered(topWidget,
+				TRUE);
 	}
 	
 	/* Success? */

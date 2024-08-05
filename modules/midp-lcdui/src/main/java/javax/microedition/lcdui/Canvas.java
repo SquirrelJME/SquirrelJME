@@ -899,7 +899,7 @@ public abstract class Canvas
 		DisplayScale scale = __parent.display()._scale;
 		
 		// Setup new image with a raw buffer, if scaling is required
-		if (scale.requiresBuffer())
+		if (true || scale.requiresBuffer())
 		{
 			// Get the current texture size of the window
 			int w = Math.max(1, scale.textureW());
@@ -936,15 +936,7 @@ public abstract class Canvas
 		
 		// Is a buffer used for scaling?
 		Image buffer;
-		if (!display.display()._scale.requiresBuffer())
-		{
-			// No buffer is used
-			buffer = null;
-			
-			// Use the directly passed graphics
-			subGfx = __gfx;
-		}
-		else
+		if (true || display.display()._scale.requiresBuffer())
 		{
 			// Use this buffer
 			buffer = this._buffer;
@@ -955,12 +947,14 @@ public abstract class Canvas
 			
 			// Draw onto this image instead for scaling
 			subGfx = buffer.getGraphics();
+		}
+		else
+		{
+			// No buffer is used
+			buffer = null;
 			
-			// Make sure the clip is copied
-			subGfx.setClip(__gfx.getClipX(),
-				__gfx.getClipY(),
-				__gfx.getClipWidth(),
-				__gfx.getClipHeight());
+			// Use the directly passed graphics
+			subGfx = __gfx;
 		}
 		
 		// Draw background?
