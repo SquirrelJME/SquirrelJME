@@ -7,23 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package com.j_phone.io;
+package com.j_phone.system;
 
-import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
-@Api
-public class FileUtility
+/**
+ * Default device control handler.
+ *
+ * @since 2024/08/04
+ */
+class __DefaultDeviceControl__
+	extends DeviceControl
 {
-	@Api
-	public void play(byte[] __a, int __b)
-	{
-		throw Debugging.todo();
-	}
-	
-	@Api
-	public static FileUtility getInstance()
-	{
-		throw Debugging.todo();
-	}
 }
