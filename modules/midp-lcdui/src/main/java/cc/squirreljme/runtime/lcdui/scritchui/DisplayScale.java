@@ -13,6 +13,8 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import javax.microedition.midlet.MIDlet;
 
 /**
  * Interface for display scaling.
@@ -120,6 +122,61 @@ public abstract class DisplayScale
 		ScritchScreenBracket __screen, ScritchWindowBracket __window)
 		throws NullPointerException
 	{
+		// Try to figure out what a MIDlet desires as far as size is concerned
+		MIDlet midlet = ActiveMidlet.optional();
+		if (midlet != null)
+		{
+			// MEXA API
+			String mexa = midlet.getAppProperty("MIDxlet-ScreenSize");
+			if (mexa != null)
+				return new DisplayFixedFlatScale(
+					DisplayScale.__parse(mexa, ',', false),
+					DisplayScale.__parse(mexa, ',', true));
+		}
+		
+		// Use default otherwise
 		return new DisplayFixedFlatScale(240, 320);
+	}
+	
+	/**
+	 * Parses the given dimension.
+	 *
+	 * @param __s The input string.
+	 * @param __delim The delimiter to use.
+	 * @param __height Reading the height?
+	 * @return The resultant value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/04
+	 */
+	private static int __parse(String __s, char __delim, boolean __height)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Try parsing values
+		int at = __s.indexOf(__delim);
+		if (at >= 0)
+			try
+			{
+				// Read in value
+				int v;
+				if (!__height)
+					v = Integer.parseInt(
+						__s.substring(0, at), 10);
+				else
+					v = Integer.parseInt(
+						__s.substring(at + 1), 10);
+				
+				// Only consider if it makes sense
+				if (v >= 32 && v <= 1024)
+					return v;
+			}
+			catch (NumberFormatException __ignored)
+			{
+			}
+		
+		// Fallback
+		return (__height ? 320 : 240);
 	}
 }
