@@ -536,11 +536,9 @@ sjme_errorCode sjme_scritchpen_core_setClip(
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-#if 0
+	
 	/* Translate coordinates. */
 	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
-#endif
 	
 	/* Minimum bounds. */
 	if (w <= 0)
