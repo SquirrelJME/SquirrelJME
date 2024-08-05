@@ -43,7 +43,7 @@ public class DisplayFixedFlatScale
 	@Override
 	public boolean requiresBuffer()
 	{
-		return false;
+		return true;
 	}
 	
 	/**

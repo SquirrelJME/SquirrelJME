@@ -690,7 +690,7 @@ public abstract class Canvas
 	 * The clipping region when {@link #paint(Graphics)} is called will have
 	 * its clip set to the region to be redrawn.
 	 *
-	 * It is unspecified whether the drawing operation will happen immedietely,
+	 * It is unspecified whether the drawing operation will happen immediately,
 	 * be enqueued, or not happen at all (for example if the canvas is
 	 * currently being painted).
 	 *
@@ -905,10 +905,16 @@ public abstract class Canvas
 			int w = Math.max(1, scale.textureW());
 			int h = Math.max(1, scale.textureH());
 			
-			// Draw onto this buffer
-			this._buffer = new Image(new int[w * h], w * h, w, h,
-				true, false);
+			// Draw onto this buffer, recreate if needed
+			Image oldBuffer = this._buffer;
+			if (oldBuffer == null ||
+				w > oldBuffer.getWidth() ||
+				h > oldBuffer.getHeight())
+				this._buffer = new Image(new int[w * h], w * h, w, h,
+					true, false);
 		}
+		
+		// Otherwise no buffer is used
 		else
 			this._buffer = null;
 	}
