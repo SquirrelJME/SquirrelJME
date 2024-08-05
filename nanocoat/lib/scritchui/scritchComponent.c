@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include <string.h>
+#include <stdio.h>
 
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -714,7 +715,11 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 	/* Pre-initialize? */
 	else
 	{
-		/* Currently only common initialization. */
+		/* If a window, make up a string ID for this. */
+		if (uiType == SJME_SCRITCHUI_TYPE_WINDOW)
+			snprintf(((sjme_scritchui_uiWindow)inComponent)->strId,
+				SJME_SCRITCHUI_UI_WINDOW_ID_STRLEN - 1,
+				"sjme%p", inComponent);
 	}
 	
 	/* Success! */

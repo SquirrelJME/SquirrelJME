@@ -44,8 +44,6 @@ sjme_errorCode sjme_scritchui_win32_loopIterate(
 {
 	MSG message;
 	BOOL messageResult;
-	sjme_thread_mainFunc threadMain;
-	sjme_thread_parameter threadAnything;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -91,31 +89,7 @@ sjme_errorCode sjme_scritchui_win32_loopIterate(
 			SJME_ERROR_INVALID_ARGUMENT);
 	
 	/* Handle message. */
-	switch (message.message)
-	{
-			/* Callback function. */
-		case WM_USER:
-			threadMain = (sjme_thread_mainFunc)message.wParam;
-			threadAnything = (sjme_thread_parameter)message.lParam;
-			
-			if (threadMain == NULL)
-				return SJME_ERROR_NULL_ARGUMENTS;
-				
-			return SJME_THREAD_RESULT_AS_ERROR(threadMain(threadAnything));
-		
-			/* Unknown, let Windows handle it. */
-		default:
-#if defined(SJME_CONFIG_DEBUG)
-			/* Debug. */
-			sjme_message("Skipping message: %d (%p, %p)",
-				message.message, message.wParam, message.lParam);
-#endif
-				
-			DefWindowProc(message.hwnd, message.message,
-				message.wParam, message.lParam);
-			break;
-	}
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	return inState->implIntern->windowProc(inState,
+		message.hwnd, message.message, message.wParam, message.lParam,
+		NULL);
 }

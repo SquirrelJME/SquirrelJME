@@ -134,6 +134,7 @@ public class VMFullSuiteTaskAction
 		// Did the task fail?
 		int exitValue = exitResult.getExitValue();
 		if (exitValue != 0)
-			throw new RuntimeException("Task exited with: " + exitValue);
+			throw new RuntimeException(
+				String.format("Task exited with: %d %08x", exitValue, exitValue));
 	}
 }

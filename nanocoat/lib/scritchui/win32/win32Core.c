@@ -56,7 +56,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	.viewSetView = NULL,
 	.viewSetViewListener = NULL,
 	.windowContentMinimumSize = NULL,
-	.windowNew = NULL,
+	.windowNew = sjme_scritchui_win32_windowNew,
 	.windowSetCloseListener = NULL,
 	.windowSetMenuBar = NULL,
 	.windowSetVisible = NULL,
@@ -66,6 +66,7 @@ static const sjme_scritchui_implInternFunctions
 	sjme_scritchui_win32InternFunctions =
 {
 	.getLastError = sjme_scritchui_win32_intern_getLastError,
+	.windowProc = sjme_scritchui_win32_intern_windowProc,
 };
 
 static sjme_thread_result sjme_scritchui_win32_loopMain(

@@ -40,15 +40,46 @@ typedef sjme_errorCode (*sjme_scritchui_win32_intern_getLastErrorFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_errorCode ifOkay);
 
+/**
+ * Internal window procedure handler.
+ * 
+ * @param inState The ScritchUI state.
+ * @param hWnd The window that generated the message.
+ * @param message The message type.
+ * @param wParam The upper value.
+ * @param lParam The lower value.
+ * @param lResult Option value where lresult goes.
+ * @return Any resultant error, if any.
+ * @since 2024/08/05
+ */
+typedef sjme_errorCode (*sjme_scritchui_win32_intern_windowProcFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable HWND hWnd,
+	sjme_attrInValue UINT message,
+	sjme_attrInValue WPARAM wParam,
+	sjme_attrInValue LPARAM lParam,
+	sjme_attrOutNullable LRESULT* lResult);
+
 struct sjme_scritchui_implInternFunctions
 {
 	/** Translates the last error code to SquirrelJME errors. */
 	sjme_scritchui_win32_intern_getLastErrorFunc getLastError;
+	
+	/** Window process handling. */
+	sjme_scritchui_win32_intern_windowProcFunc windowProc;
 };
 
 sjme_errorCode sjme_scritchui_win32_intern_getLastError(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_errorCode ifOkay);
+
+sjme_errorCode sjme_scritchui_win32_intern_windowProc(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable HWND hWnd,
+	sjme_attrInValue UINT message,
+	sjme_attrInValue WPARAM wParam,
+	sjme_attrInValue LPARAM lParam,
+	sjme_attrOutNullable LRESULT* lResult);
 
 /*--------------------------------------------------------------------------*/
 

@@ -40,6 +40,9 @@ extern "C"
 /** Menu sub handle. */
 #define SJME_SUI_WIN32_H_HSUBMENU 1
 
+/** Window class atom. */
+#define SJME_SUI_WIN32_H_HWNDATOM 2
+
 /** Void window handle. */
 #define SJME_SUI_WIN32_H_VOID 3
 	
@@ -113,6 +116,11 @@ sjme_errorCode sjme_scritchui_win32_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
+
+sjme_errorCode sjme_scritchui_win32_windowNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_pointer ignored);
 
 /*--------------------------------------------------------------------------*/
 
