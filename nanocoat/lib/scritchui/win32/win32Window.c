@@ -19,6 +19,8 @@ sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
 {
 	HWND window;
 	WINDOWPLACEMENT placement;
+	RECT winRect;
+	POINT clientPoint;
 	sjme_scritchui_dim* overhead;
 	
 	if (inState == NULL || inWindow == NULL)
@@ -27,11 +29,22 @@ sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
 	/* Recover window. */
 	window = inWindow->component.common.handle[SJME_SUI_WIN32_H_HWND];
 	
-	/* Calculate the overhead of the window. */
+	/* Calculate the overhead of the window, we need to do this with knowing */
+	/* the client rectangle and the window rectangle as GetSystemMetrics */
+	/* returns old information for compatibility purposes, which breaks */
+	/* on HiDPI or Vista Glass. */
 	overhead = &inWindow->minOverhead;
-	overhead->width = GetSystemMetrics(SM_CXSIZEFRAME);
-	overhead->height = GetSystemMetrics(SM_CYSIZEFRAME) +
-		GetSystemMetrics(SM_CYCAPTION);
+	memset(&winRect, 0, sizeof(winRect));
+	memset(&clientPoint, 0, sizeof(clientPoint));
+	
+	GetWindowRect(window, &winRect);
+	ClientToScreen(window, &clientPoint);
+	
+	overhead->width = ((clientPoint.x - winRect.left) * 2) +
+		(GetSystemMetrics(SM_CXSIZEFRAME) * 2);
+	overhead->height = (clientPoint.y - winRect.top) +
+		(GetSystemMetrics(SM_CYSIZEFRAME) * 2) +
+		(GetSystemMetrics(SM_CYEDGE) * 2);
 	
 	/* Add menu bar height? */
 	if (inWindow->menuBar != NULL)
