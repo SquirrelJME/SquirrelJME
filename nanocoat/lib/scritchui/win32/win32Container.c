@@ -54,7 +54,7 @@ sjme_errorCode sjme_scritchui_win32_containerSetBounds(
 	HWND componentWindow;
 	
 	if (inState == NULL || inContainer == NULL || inComponent == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Get the component to modify. */
 	componentWindow = inComponent->common.handle[SJME_SUI_WIN32_H_HWND];

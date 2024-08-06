@@ -49,7 +49,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	sjme_scritchui_uiComponent inComponent;
 	sjme_scritchui_uiPaintable paint;
 	sjme_scritchui_listener_paint* infoCore;
-	sjme_scritchui_pencilBase pencil;
+	sjme_scritchui_pencil pencil;
 	sjme_jint w, h;
 	sjme_frontEnd frontEnd;
 	sjme_scritchui_pencilFont defaultFont;
@@ -95,8 +95,10 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		return FALSE;
 	
 	/* Setup pencil for drawing. */
-	memset(&pencil, 0, sizeof(pencil));
-	if (sjme_error_is(sjme_scritchpen_initStatic(&pencil,
+	pencil = &paint->pencil;
+	memset(pencil, 0, sizeof(*pencil));
+	if (sjme_error_is(sjme_scritchpen_initStatic(pencil,
+		inState,
 		&sjme_scritchui_gtk2_pencilFunctions,
 		NULL, NULL,
 		SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888,
@@ -104,12 +106,12 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		return FALSE;
 	
 	/* The clipping area is set to the region that needs redrawing. */
-	pencil.api->setClip(&pencil, event->area.x, event->area.y,
+	pencil->api->setClip(pencil, event->area.x, event->area.y,
 		event->area.width, event->area.height);
 	
 	/* Forward to callback. */
 	error = infoCore->callback(inState, inComponent,
-		&pencil,
+		pencil,
 		w, h, 0);
 	
 	/* Do not perform standard drawing, unless an error occurs. */

@@ -18,6 +18,7 @@
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiImpl.h"
+#include "lib/scritchui/scritchuiPencil.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -48,6 +49,10 @@ extern "C"
 	
 /** Are we on Windows 9x? */
 #define SJME_SUI_WIN32_V_WIN9X 3
+
+/** Win32 pencil functions. */
+extern const sjme_scritchui_pencilImplFunctions
+	sjme_scritchui_win32_pencilFunctions;
 
 sjme_errorCode sjme_scritchui_win32_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
@@ -83,6 +88,12 @@ sjme_errorCode sjme_scritchui_win32_containerSetBounds(
 	sjme_attrInPositive sjme_jint y,
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height);
+	
+sjme_errorCode sjme_scritchui_win32_componentSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outWidth,
+	sjme_attrOutNullable sjme_jint* outHeight);
 	
 sjme_errorCode sjme_scritchui_win32_loopExecuteLater(
 	sjme_attrInNotNull sjme_scritchui inState,

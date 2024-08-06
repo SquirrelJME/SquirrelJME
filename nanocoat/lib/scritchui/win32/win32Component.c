@@ -23,7 +23,7 @@ sjme_errorCode sjme_scritchui_win32_componentRepaint(
 	sjme_jboolean noRect;
 	
 	if (inState == NULL || inComponent == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	memset(&rect, 0, sizeof(rect));
 	noRect = (width == INT32_MAX || height == INT32_MAX);
@@ -61,8 +61,40 @@ sjme_errorCode sjme_scritchui_win32_componentSetPaintListener(
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(paint))
 {
 	if (inState == NULL || inComponent == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Nothing needs to be done as we handle WM_PAINT elsewhere. */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_win32_componentSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outWidth,
+	sjme_attrOutNullable sjme_jint* outHeight)
+{
+	HWND window;
+	RECT rect;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover window. */
+	window = inComponent->common.handle[SJME_SUI_WIN32_H_HWND];
+	
+	/* Get window rect. */
+	memset(&rect, 0, sizeof(rect));
+	SetLastError(0);
+	if (0 == GetWindowRect(window, &rect))
+		return inState->implIntern->getLastError(inState,
+			SJME_ERROR_NATIVE_WIDGET_FAILURE);
+	
+	/* Calculate dimension from the corner coordinates. */
+	if (outWidth != NULL)
+		*outWidth = rect.right - rect.left;
+	if (outHeight != NULL)
+		*outHeight = rect.bottom - rect.top;
+	
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
 }

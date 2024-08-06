@@ -368,10 +368,9 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 		
 		/* Fill in. */
 		infoCore->extra = (sjme_intPointer)idList;
-		infoCore->callback = inListener;
-		if (copyFrontEnd != NULL)
-			memmove(&infoCore->frontEnd, copyFrontEnd,
-				sizeof(*copyFrontEnd));
+		if (sjme_error_is(error = inState->intern->setSimpleListener(inState,
+			infoCore, inListener, copyFrontEnd)))
+			return sjme_error_default(error);
 		
 		/* Start argument handling. */
 		va_start(argList, numSignals);

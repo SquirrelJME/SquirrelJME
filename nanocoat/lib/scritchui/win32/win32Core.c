@@ -30,7 +30,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 		sjme_scritchui_win32_componentSetPaintListener,
 	.componentSetSizeListener = NULL,
 	.componentSetVisibleListener = NULL,
-	.componentSize = NULL,
+	.componentSize = sjme_scritchui_win32_componentSize,
 	.containerAdd = sjme_scritchui_win32_containerAdd,
 	.containerRemove = NULL,
 	.containerSetBounds = sjme_scritchui_win32_containerSetBounds,

@@ -1154,6 +1154,7 @@ sjme_errorCode sjme_scritchpen_initBuffer(
  * Creates a hardware reference bracket to the native hardware graphics.
  * 
  * @param inOutPencil The input and output pencil.
+ * @param inState The input ScritchUI state.
  * @param pf The @c sjme_gfx_pixelFormat used for the draw.
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
@@ -1169,6 +1170,7 @@ sjme_errorCode sjme_scritchpen_initBuffer(
  */
 sjme_errorCode sjme_scritchpen_initBufferStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inOutPencil,
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
@@ -1185,6 +1187,7 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
  * Static pencil function initialization.
  * 
  * @param inPencil The pencil to be initialized.
+ * @param inState The input ScritchUI state.
  * @param inFunctions The functions to set.
  * @param inLockFuncs Functions for native locking.
  * @param inLockFrontEndCopy Front end copy data for locks.
@@ -1199,6 +1202,7 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
  */
 sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,

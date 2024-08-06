@@ -318,7 +318,9 @@ public class VMRunTaskDetached
 			int exitValue = proc.waitFor();
 			if (exitValue != 0)
 				throw new RuntimeException(
-					String.format("Task exited with: %d %08x", exitValue, exitValue));
+					String.format("Task exited with: %d %08x",
+						exitValue, exitValue));
+			
 		}
 		catch (IOException|InterruptedException __e)
 		{

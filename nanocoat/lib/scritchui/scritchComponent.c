@@ -464,10 +464,10 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	memmove(&undo, infoUser, sizeof(undo));
 	
 	/* Set new listener data. */
-	infoUser->callback = inListener;
-	if (copyFrontEnd != NULL)
-		memmove(&infoUser->frontEnd, copyFrontEnd,
-			sizeof(*copyFrontEnd));
+	if (sjme_error_is(error = inState->intern->setSimpleListener(
+		inState, (sjme_scritchui_listener_void*)infoUser,
+		(sjme_scritchui_voidListenerFunc)inListener, copyFrontEnd)))
+		return sjme_error_default(error);
 	
 	/* Which core callback is being used? */
 	coreCallback = (inListener != NULL ? sjme_scritchui_basePaintListener :
@@ -475,10 +475,20 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	
 	/* Is this callback changing? We need to set a new one! */
 	if (infoCore->callback != coreCallback)
+	{
 		if (sjme_error_is(error =
 			inState->impl->componentSetPaintListener(inState, inComponent,
 				coreCallback, NULL)))
 			goto fail_coreSet;
+		
+		/* Set new listener data, if it was not changed. */
+		if (infoCore->callback != coreCallback)
+			if (sjme_error_is(error = inState->intern->setSimpleListener(
+				inState, (sjme_scritchui_listener_void*)infoCore,
+				(sjme_scritchui_voidListenerFunc)inListener,
+				copyFrontEnd)))
+				return sjme_error_default(error);
+	}
 	
 	/* If there is a repaint handler, then run it but ignore any errors. */
 	if (inState->apiInThread->componentRepaint != NULL)

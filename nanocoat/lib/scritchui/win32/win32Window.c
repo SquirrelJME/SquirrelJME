@@ -98,7 +98,7 @@ sjme_errorCode sjme_scritchui_win32_windowNew(
 	memset(&windowClass, 0, sizeof(windowClass));
 	windowClass.cbSize = sizeof(windowClass);
 	windowClass.hInstance = GetModuleHandle(NULL);
-	windowClass.hbrBackground = (HBRUSH)(COLOR_BACKGROUND + 1);
+	windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	windowClass.lpszClassName = inWindow->strId;
 	windowClass.lpfnWndProc = sjme_scritchui_win32_windowProcForward;
 	SetLastError(0);

@@ -129,6 +129,7 @@ static const sjme_scritchui_pencilUtilFunctions
 
 sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
@@ -142,7 +143,8 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_scritchui_pencilBase result;
 	
 	if (inPencil == NULL || inFunctions == NULL || defaultFont == NULL ||
-		(inLockFrontEndCopy != NULL && inLockFuncs == NULL))
+		(inLockFrontEndCopy != NULL && inLockFuncs == NULL) ||
+		inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (sw <= 0 || sh <= 0 || bw <= 0)
@@ -163,6 +165,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	/* Setup base result. */
 	memset(&result, 0, sizeof(result));
 	result.common.type = SJME_SCRITCHUI_TYPE_PENCIL;
+	result.common.state = inState;
 	result.api = &sjme_scritchpen_core_functions;
 	result.util = &sjme_scritchpen_coreUtil_functions;
 	result.impl = inFunctions;

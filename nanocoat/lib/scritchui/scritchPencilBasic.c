@@ -294,7 +294,8 @@ sjme_errorCode sjme_scritchpen_initBuffer(
 	
 	/* Initialize it. */
 	if (sjme_error_is(error = sjme_scritchpen_initBufferStatic(
-		result, pf, bw, bh, inLockFuncs, inLockFrontEndCopy,
+		result, inState,
+		pf, bw, bh, inLockFuncs, inLockFrontEndCopy,
 		sx, sy, sw, sh, defaultFont, copyFrontEnd)))
 		goto fail_initBuffer;
 	
@@ -322,6 +323,7 @@ fail_initBuffer:
 
 sjme_errorCode sjme_scritchpen_initBufferStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inOutPencil,
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositive sjme_jint bw,
 	sjme_attrInPositive sjme_jint bh,
@@ -336,7 +338,8 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
 {
 	const sjme_scritchui_pencilImplFunctions* chosen;
 	
-	if (inOutPencil == NULL || inLockFuncs == NULL || defaultFont == NULL)
+	if (inOutPencil == NULL || inLockFuncs == NULL || defaultFont == NULL ||
+		inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (bw <= 0 || bh <= 0 || sx < 0 || sy < 0 || sw <= 0 || sh <= 0 ||
@@ -392,6 +395,7 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
 	
 	/* Forward. */
 	return sjme_scritchpen_initStatic(inOutPencil,
+		inState,
 		chosen, inLockFuncs, inLockFrontEndCopy, pf,
 		sw, sh, bw, defaultFont, copyFrontEnd);
 }

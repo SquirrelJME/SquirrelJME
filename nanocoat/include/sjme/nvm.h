@@ -1910,8 +1910,11 @@ typedef enum sjme_errorCode
 	/** Could not enqueue onto the message loop. */
 	SJME_ERROR_LOOP_ENQUEUE_FAILED = -76,
 	
+	/** Use fallback. */
+	SJME_ERROR_USE_FALLBACK = -77,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -77
+	SJME_NUM_ERROR_CODES = -78
 } sjme_errorCode;
 
 /**
