@@ -750,11 +750,10 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 	/* Pre-initialize? */
 	else
 	{
-		/* If a window, make up a string ID for this. */
-		if (uiType == SJME_SCRITCHUI_TYPE_WINDOW)
-			snprintf(((sjme_scritchui_uiWindow)inComponent)->strId,
-				SJME_SCRITCHUI_UI_WINDOW_ID_STRLEN - 1,
-				"sjme%p", inComponent);
+		/* Make up a string based ID for the component. */
+		snprintf(inComponent->strId,
+			SJME_SCRITCHUI_UI_COMPONENT_ID_STRLEN - 1,
+			"sjme%p", inComponent);
 	}
 	
 	/* Success! */

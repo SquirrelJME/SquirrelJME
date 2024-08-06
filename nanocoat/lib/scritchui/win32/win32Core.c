@@ -11,6 +11,34 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
+static LRESULT sjme_scritchui_win32_windowProcForward(
+	HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	sjme_scritchui inState;
+	sjme_scritchui_uiWindow inWindow;
+	LRESULT result;
+	
+	/* Ignore if no window was specified. */
+	if (hWnd == NULL)
+		return DefWindowProc(hWnd, message, wParam, lParam);
+	
+	/* Link back to this window. */
+	SetLastError(0);
+	inWindow = (sjme_scritchui_uiWindow)GetWindowLongPtr(hWnd,
+		GWLP_USERDATA);
+	if (inWindow == NULL)
+		return DefWindowProc(hWnd, message, wParam, lParam);
+	
+	/* Recover state. */
+	inState = inWindow->component.common.state;
+	
+	/* Handle message. */
+	result = 0;
+	inState->implIntern->windowProc(inState,
+		hWnd, message, wParam, lParam, &result);
+	return result;
+}
+
 static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 {
 	.apiInit = sjme_scritchui_win32_apiInit,
@@ -69,6 +97,7 @@ static const sjme_scritchui_implInternFunctions
 	.getLastError = sjme_scritchui_win32_intern_getLastError,
 	.recoverComponent = sjme_scritchui_win32_intern_recoverComponent,
 	.windowProc = sjme_scritchui_win32_intern_windowProc,
+	.windowProcWin32 = sjme_scritchui_win32_windowProcForward,
 };
 
 static sjme_thread_result sjme_scritchui_win32_loopMain(

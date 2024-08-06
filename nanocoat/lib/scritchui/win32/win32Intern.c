@@ -206,7 +206,8 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_USER(
 		threadMain(threadAnything))))
 		return sjme_error_defaultOr(error, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 	
-	return error;
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_win32_intern_getLastError(
@@ -297,7 +298,7 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 			error = sjme_scritchui_win32_windowProc_GETMINMAXINFO(
 				inState, hWnd, message, wParam, lParam, &useResult);
 			break;
-			
+
 			/* Paint window. */
 		case WM_PAINT:
 			error = sjme_scritchui_win32_windowProc_PAINT(
@@ -312,10 +313,11 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 		
 			/* Unknown, let Windows handle it. */
 		default:
+			error = SJME_ERROR_USE_FALLBACK;
 			break;
 	}
 	
-#if defined(SJME_CONFIG_DEBUG)
+#if 0 && defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
 	if (sjme_error_is(error))
 		sjme_message("Win32 message FAIL: %p %d %p %p -> %d)",

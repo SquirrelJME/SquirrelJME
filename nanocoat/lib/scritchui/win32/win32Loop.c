@@ -32,11 +32,6 @@ sjme_errorCode sjme_scritchui_win32_loopExecuteLater(
 	return SJME_ERROR_NONE;
 }
 
-#if !defined(WM_DWMNCRENDERINGCHANGED)
-	/** Window manager rendering changed. */
-	#define WM_DWMNCRENDERINGCHANGED 799
-#endif
-
 sjme_errorCode sjme_scritchui_win32_loopIterate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_jboolean blocking,
@@ -83,13 +78,17 @@ sjme_errorCode sjme_scritchui_win32_loopIterate(
 		}
 	}
 	
-	/* Error? */
-	if (messageResult < 0)
-		return inState->implIntern->getLastError(inState,
-			SJME_ERROR_INVALID_ARGUMENT);
+	/* If there is no window, we handle it ourselves. */
+	if (message.hwnd == NULL && !(message.message == WM_TIMER))
+		return inState->implIntern->windowProc(inState,
+			message.hwnd, message.message, message.wParam, message.lParam,
+			NULL);
 	
-	/* Handle message. */
-	return inState->implIntern->windowProc(inState,
-		message.hwnd, message.message, message.wParam, message.lParam,
-		NULL);
+	/* Otherwise dispatch to a window procedure handler. */
+	SetLastError(0);
+	TranslateMessage(&message);
+	DispatchMessage(&message);
+	
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
 }

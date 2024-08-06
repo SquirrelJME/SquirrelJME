@@ -136,6 +136,9 @@ typedef struct sjme_scritchui_pencilBase
 	} palette;
 } sjme_scritchui_pencilBase;
 
+/** The string length of a component ID. */
+#define SJME_SCRITCHUI_UI_COMPONENT_ID_STRLEN 32
+
 typedef struct sjme_scritchui_uiComponentBase
 {
 	/** Common data. */
@@ -149,6 +152,9 @@ typedef struct sjme_scritchui_uiComponentBase
 	
 	/** The bounds which were set for this component. */
 	sjme_scritchui_rect bounds;
+	
+	/** String ID for this component. */
+	sjme_cchar strId[SJME_SCRITCHUI_UI_COMPONENT_ID_STRLEN];
 	
 	/** General component state. */
 	struct
@@ -432,9 +438,6 @@ struct sjme_scritchui_uiScrollPanelBase
 	sjme_scritchui_uiViewBase view;
 };
 
-/** The string length of a window ID. */
-#define SJME_SCRITCHUI_UI_WINDOW_ID_STRLEN 32
-
 typedef struct sjme_scritchui_uiWindowBase
 {
 	/** Common data. */
@@ -448,9 +451,6 @@ typedef struct sjme_scritchui_uiWindowBase
 	
 	/** The current menu bar. */
 	sjme_scritchui_uiMenuBar menuBar;
-	
-	/** String ID for this window. */
-	sjme_cchar strId[SJME_SCRITCHUI_UI_WINDOW_ID_STRLEN];
 	
 	/** Listeners. */
 	sjme_scritchui_uiWindowListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];

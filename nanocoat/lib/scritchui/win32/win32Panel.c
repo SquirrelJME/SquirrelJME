@@ -68,14 +68,30 @@ sjme_errorCode sjme_scritchui_win32_panelNew(
 	sjme_attrInNullable sjme_pointer ignored)
 {
 	HWND window;
+	WNDCLASSEX windowClass;
+	ATOM classAtom;
 	
 	if (inState == NULL || inPanel == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Register window class for this window. */
+	memset(&windowClass, 0, sizeof(windowClass));
+	windowClass.cbSize = sizeof(windowClass);
+	windowClass.style = CS_VREDRAW | CS_HREDRAW | CS_OWNDC;
+	windowClass.hInstance = GetModuleHandle(NULL);
+	windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	windowClass.lpszClassName = inPanel->component.strId;
+	windowClass.lpfnWndProc = inState->implIntern->windowProcWin32;
+	SetLastError(0);
+	classAtom = RegisterClassEx(&windowClass);
+	if (classAtom == 0)
+		return inState->implIntern->getLastError(inState,
+			SJME_ERROR_NATIVE_WIDGET_FAILURE);
 	
 	/* Create window, child windows must always have a parent. */
 	SetLastError(0);
 	window = CreateWindowEx(WS_EX_TRANSPARENT,
-		"Static",
+		inPanel->component.strId,
 		"SquirrelJME",
 		WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 		CW_USEDEFAULT, CW_USEDEFAULT,
@@ -90,6 +106,8 @@ sjme_errorCode sjme_scritchui_win32_panelNew(
 	
 	/* Store handle. */
 	inPanel->component.common.handle[SJME_SUI_WIN32_H_HWND] = window;
+	inPanel->component.common.handle[SJME_SUI_WIN32_H_HWNDATOM] =
+		(sjme_scritchui_handle)classAtom;
 	
 	/* Link back to this panel. */
 	SetLastError(0);

@@ -25,7 +25,7 @@ extern "C"
 {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif /* #ifdef __cplusplus */
-
+	
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -85,6 +85,9 @@ struct sjme_scritchui_implInternFunctions
 	
 	/** Window process handling. */
 	sjme_scritchui_win32_intern_windowProcFunc windowProc;
+	
+	/** Direct Win32 window processor. */
+	void* windowProcWin32;
 };
 
 sjme_errorCode sjme_scritchui_win32_intern_getLastError(

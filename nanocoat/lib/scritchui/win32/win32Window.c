@@ -11,34 +11,6 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
-static LRESULT sjme_scritchui_win32_windowProcForward(
-	HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	sjme_scritchui inState;
-	sjme_scritchui_uiWindow inWindow;
-	LRESULT result;
-	
-	/* Ignore if no window was specified. */
-	if (hWnd == NULL)
-		return DefWindowProc(hWnd, message, wParam, lParam);
-	
-	/* Link back to this window. */
-	SetLastError(0);
-	inWindow = (sjme_scritchui_uiWindow)GetWindowLongPtr(hWnd,
-		GWLP_USERDATA);
-	if (inWindow == NULL)
-		return DefWindowProc(hWnd, message, wParam, lParam);
-	
-	/* Recover state. */
-	inState = inWindow->component.common.state;
-	
-	/* Handle message. */
-	result = 0;
-	inState->implIntern->windowProc(inState,
-		hWnd, message, wParam, lParam, &result);
-	return result;
-}
-
 sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
@@ -93,15 +65,13 @@ sjme_errorCode sjme_scritchui_win32_windowNew(
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+	
 	/* Register window class for this window. */
 	memset(&windowClass, 0, sizeof(windowClass));
 	windowClass.cbSize = sizeof(windowClass);
-	windowClass.style = CS_VREDRAW | CS_HREDRAW | CS_DROPSHADOW | CS_OWNDC;
 	windowClass.hInstance = GetModuleHandle(NULL);
-	windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	windowClass.lpszClassName = inWindow->strId;
-	windowClass.lpfnWndProc = sjme_scritchui_win32_windowProcForward;
+	windowClass.lpszClassName = inWindow->component.strId;
+	windowClass.lpfnWndProc = inState->implIntern->windowProcWin32;
 	SetLastError(0);
 	classAtom = RegisterClassEx(&windowClass);
 	if (classAtom == 0)
@@ -113,7 +83,7 @@ sjme_errorCode sjme_scritchui_win32_windowNew(
 	window = CreateWindowEx(
 		WS_EX_APPWINDOW | WS_EX_CONTROLPARENT |
 			WS_EX_OVERLAPPEDWINDOW,
-		(LPCSTR)classAtom,
+		inWindow->component.strId,
 		"SquirrelJME",
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
