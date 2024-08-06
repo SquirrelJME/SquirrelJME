@@ -100,7 +100,13 @@ sjme_errorCode sjme_scritchui_win32_componentSize(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNullable sjme_jint* outWidth,
 	sjme_attrOutNullable sjme_jint* outHeight);
-	
+
+sjme_errorCode sjme_scritchui_win32_lafElementColor(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrOutNotNull sjme_jint* outRGB,
+	sjme_attrInValue sjme_scritchui_lafElementColorType elementColor);
+
 sjme_errorCode sjme_scritchui_win32_loopExecuteLater(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
