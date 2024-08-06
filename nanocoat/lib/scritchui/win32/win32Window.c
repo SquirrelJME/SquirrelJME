@@ -47,6 +47,7 @@ sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
 {
 	HWND window;
 	WINDOWPLACEMENT placement;
+	sjme_scritchui_dim* overhead;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -54,12 +55,22 @@ sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
 	/* Recover window. */
 	window = inWindow->component.common.handle[SJME_SUI_WIN32_H_HWND];
 	
+	/* Calculate the overhead of the window. */
+	overhead = &inWindow->minOverhead;
+	overhead->width = GetSystemMetrics(SM_CXSIZEFRAME);
+	overhead->height = GetSystemMetrics(SM_CYSIZEFRAME) +
+		GetSystemMetrics(SM_CYCAPTION);
+	
+	/* Add menu bar height? */
+	if (inWindow->menuBar != NULL)
+		overhead->height += GetSystemMetrics(SM_CYMENU);
+	
 	/* Setup new placement information. */
 	memset(&placement, 0, sizeof(placement));
 	placement.length = sizeof(placement);
 	placement.flags = WPF_SETMINPOSITION;
-	placement.ptMinPosition.x = width;
-	placement.ptMinPosition.y = height;
+	placement.ptMinPosition.x = width + overhead->width;
+	placement.ptMinPosition.y = height + overhead->height;
 	
 	/* Set the window placement. */
 	SetLastError(0);

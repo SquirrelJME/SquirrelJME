@@ -120,8 +120,10 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 				if (minMax != NULL && inWindow->min.width != 0 &&
 					inWindow->min.height != 0)
 				{
-					minMax->ptMinTrackSize.x = inWindow->min.width;
-					minMax->ptMinTrackSize.y = inWindow->min.height;
+					minMax->ptMinTrackSize.x =
+						inWindow->min.width + inWindow->minOverhead.width;
+					minMax->ptMinTrackSize.y =
+						inWindow->min.height + inWindow->minOverhead.height;
 				}
 			}
 			break;
