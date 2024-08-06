@@ -58,8 +58,8 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	.windowContentMinimumSize = sjme_scritchui_win32_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_win32_windowNew,
 	.windowSetCloseListener = NULL,
-	.windowSetMenuBar = NULL,
-	.windowSetVisible = NULL,
+	.windowSetMenuBar = sjme_scritchui_win32_windowSetMenuBar,
+	.windowSetVisible = sjme_scritchui_win32_windowSetVisible,
 };
 
 static const sjme_scritchui_implInternFunctions

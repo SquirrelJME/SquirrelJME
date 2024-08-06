@@ -121,7 +121,6 @@ sjme_errorCode sjme_scritchui_win32_windowNew(
 		NULL,
 		GetModuleHandle(NULL),
 		NULL);
-	sjme_message("LR %lu %p", GetLastError(), window);
 	if (window == NULL)
 		return inState->implIntern->getLastError(inState,
 			SJME_ERROR_NATIVE_WIDGET_CREATE_FAILED);
@@ -135,6 +134,53 @@ sjme_errorCode sjme_scritchui_win32_windowNew(
 	SetLastError(0);
 	SetWindowLongPtr(window, GWLP_USERDATA,
 		(LONG_PTR)inWindow);
+	
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+}
+
+sjme_errorCode sjme_scritchui_win32_windowSetMenuBar(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar)
+{
+	HWND window;
+	HMENU menu;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover window and menu. */
+	window = inWindow->component.common.handle[SJME_SUI_WIN32_H_HWND];
+	menu = (inMenuBar == NULL ? NULL :
+		inMenuBar->menuKind.common.handle[SJME_SUI_WIN32_H_HMENU]);
+	
+	/* Set the new menu. */
+	SetLastError(0);
+	if (0 == SetMenu(window, menu))
+		return inState->implIntern->getLastError(inState,
+			SJME_ERROR_NATIVE_WIDGET_FAILURE);
+	
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+}
+
+sjme_errorCode sjme_scritchui_win32_windowSetVisible(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInValue sjme_jboolean isVisible)
+{
+	HWND window;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover window. */
+	window = inWindow->component.common.handle[SJME_SUI_WIN32_H_HWND];
+	
+	/* Change visibility. */
+	SetLastError(0);
+	ShowWindow(window, (isVisible ? SW_SHOW : SW_HIDE));
 	
 	/* Success? */
 	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);

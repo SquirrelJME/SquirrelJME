@@ -147,6 +147,16 @@ sjme_errorCode sjme_scritchui_win32_windowNew(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInNullable sjme_pointer ignored);
 
+sjme_errorCode sjme_scritchui_win32_windowSetMenuBar(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar);
+
+sjme_errorCode sjme_scritchui_win32_windowSetVisible(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInValue sjme_jboolean isVisible);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
