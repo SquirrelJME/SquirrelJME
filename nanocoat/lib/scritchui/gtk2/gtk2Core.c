@@ -24,6 +24,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	.choiceItemSetString = NULL,
 	.componentFocusGrab = sjme_scritchui_gtk2_componentFocusGrab,
 	.componentFocusHas = sjme_scritchui_gtk2_componentFocusHas,
+	.componentPosition = NULL,
 	.componentRepaint = sjme_scritchui_gtk2_componentRepaint,
 	.componentRevalidate = sjme_scritchui_gtk2_componentRevalidate,
 	.componentSetActivateListener = NULL,

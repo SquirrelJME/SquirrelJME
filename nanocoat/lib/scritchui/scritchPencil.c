@@ -134,6 +134,8 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInValue sjme_jint tx,
+	sjme_attrInValue sjme_jint ty,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInPositiveNonZero sjme_jint bw,
@@ -175,6 +177,8 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	result.width = sw;
 	result.height = sh;
 	result.scanLenPixels = bw;
+	result.forceTranslate.x = tx;
+	result.forceTranslate.y = ty;
 	
 	/* Determine bits per pixel. */
 	result.bitsPerPixel = -1;
@@ -348,7 +352,9 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	if (sjme_error_is(error = sjme_scritchpen_initBuffer(
 		inState, &result, &resultWeak,
 		pf, bw, bh,
-		inLockFuncs, inLockFrontEndCopy, sx, sy, sw, sh,
+		inLockFuncs, inLockFrontEndCopy,
+		0, 0,
+		sx, sy, sw, sh,
 		defaultFont, pencilFrontEndCopy)) ||
 		result == NULL || resultWeak == NULL)
 		return sjme_error_default(error);

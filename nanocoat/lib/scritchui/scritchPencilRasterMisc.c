@@ -441,9 +441,9 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyTranslate(
 	if (g == NULL || x == NULL || y == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Apply translation. */
-	(*x) += g->state.translate.x;
-	(*y) += g->state.translate.y;
+	/* Apply translation, use the real one. */
+	(*x) += g->state.translateReal.x;
+	(*y) += g->state.translateReal.y;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -675,6 +675,10 @@ sjme_errorCode sjme_scritchpen_core_translate(
 	/* Add to the translation. */
 	g->state.translate.x += x;
 	g->state.translate.y += y;
+	
+	/* Determine the actual real translation. */
+	g->state.translateReal.x = g->state.translate.x + g->forceTranslate.x;
+	g->state.translateReal.y = g->state.translate.y + g->forceTranslate.y;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

@@ -1126,6 +1126,8 @@ extern const sjme_scritchui_pencilBitLineFunc
  * @param bh The buffer height.
  * @param inLockFuncs The locking functions to use for buffer access.
  * @param inLockFrontEndCopy Front end copy data for locks.
+ * @param tx Forced X translate.
+ * @param ty Forced Y translate.
  * @param sx Starting surface X coordinate.
  * @param sy Starting surface Y coordinate.
  * @param sw Surface width.
@@ -1143,6 +1145,8 @@ sjme_errorCode sjme_scritchpen_initBuffer(
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInValue sjme_jint tx,
+	sjme_attrInValue sjme_jint ty,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
@@ -1160,6 +1164,8 @@ sjme_errorCode sjme_scritchpen_initBuffer(
  * @param bh The buffer height.
  * @param inLockFuncs The locking functions to use for buffer access.
  * @param inLockFrontEndCopy Front end copy data for locks.
+ * @param tx Forced X translate.
+ * @param ty Forced Y translate.
  * @param sx Starting surface X coordinate.
  * @param sy Starting surface Y coordinate.
  * @param sw Surface width.
@@ -1176,6 +1182,8 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInValue sjme_jint tx,
+	sjme_attrInValue sjme_jint ty,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
@@ -1192,6 +1200,8 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
  * @param inLockFuncs Functions for native locking.
  * @param inLockFrontEndCopy Front end copy data for locks.
  * @param pf The pixel format used.
+ * @param tx Forced X translate.
+ * @param ty Forced Y translate.
  * @param sw The surface width.
  * @param sh The surface height.
  * @param bw The buffer width, the scanline length.
@@ -1207,6 +1217,8 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInValue sjme_jint tx,
+	sjme_attrInValue sjme_jint ty,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInPositiveNonZero sjme_jint bw,
@@ -1248,6 +1260,9 @@ typedef struct sjme_scritchui_pencilState
 	
 	/** Transformation coordinates. */
 	sjme_scritchui_pencilPoint translate;
+	
+	/** The real transformation coordinates, after adjustment. */
+	sjme_scritchui_pencilPoint translateReal;
 	
 	/** The clipping region. */
 	sjme_scritchui_rect clip;

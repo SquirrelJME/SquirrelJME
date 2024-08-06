@@ -102,7 +102,8 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		&sjme_scritchui_gtk2_pencilFunctions,
 		NULL, NULL,
 		SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888,
-		w, h, w, defaultFont, &frontEnd)))
+		0, 0, w, h, w,
+		defaultFont, &frontEnd)))
 		return FALSE;
 	
 	/* The clipping area is set to the region that needs redrawing. */

@@ -79,6 +79,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c componentGetParent . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_GET_PARENT,
 	
+	/** @c componentPosition . */
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_POSITION,
+	
 	/** @c componentRepaint . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REPAINT,
 	
@@ -297,6 +300,11 @@ SUD_STRUCT_DEF(componentGetParent,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SDU_VARP(sjme_scritchui_uiComponent*, outParent););
 
+SUD_STRUCT_DEF(componentPosition,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VARP(sjme_jint*, outX);
+	SDU_VARP(sjme_jint*, outY););
+
 SUD_STRUCT_DEF(componentRepaint,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SDU_VAR(sjme_jint, x);
@@ -509,6 +517,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(componentFocusGrab);
 	SJME_SCRITCHUI_SDU_DEF(componentFocusHas);
 	SJME_SCRITCHUI_SDU_DEF(componentGetParent);
+	SJME_SCRITCHUI_SDU_DEF(componentPosition);
 	SJME_SCRITCHUI_SDU_DEF(componentRepaint);
 	SJME_SCRITCHUI_SDU_DEF(componentRevalidate);
 	SJME_SCRITCHUI_SDU_DEF(componentSetActivateListener);
@@ -648,7 +657,13 @@ sjme_errorCode sjme_scritchui_coreSerial_componentGetParent(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNotNull sjme_scritchui_uiComponent* outParent);
-
+	
+sjme_errorCode sjme_scritchui_coreSerial_componentPosition(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outX,
+	sjme_attrOutNullable sjme_jint* outY);
+	
 sjme_errorCode sjme_scritchui_coreSerial_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

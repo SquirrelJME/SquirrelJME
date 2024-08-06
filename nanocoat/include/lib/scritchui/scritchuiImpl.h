@@ -248,6 +248,9 @@ struct sjme_scritchui_implFunctions
 	/** Checks if this component has focus. */
 	SJME_SCRITCHUI_QUICK_SAME(componentFocusHas);
 	
+	/** Get the position of a component. */
+	SJME_SCRITCHUI_QUICK_SAME(componentPosition);
+	
 	/** Repaint component. */
 	SJME_SCRITCHUI_QUICK_SAME(componentRepaint);
 	

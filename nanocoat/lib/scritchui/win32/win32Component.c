@@ -11,6 +11,38 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
+sjme_errorCode sjme_scritchui_win32_componentPosition(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outX,
+	sjme_attrOutNullable sjme_jint* outY)
+{
+	HWND window;
+	RECT rect;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover window. */
+	window = inComponent->common.handle[SJME_SUI_WIN32_H_HWND];
+	
+	/* Get window rect. */
+	memset(&rect, 0, sizeof(rect));
+	SetLastError(0);
+	if (0 == GetWindowRect(window, &rect))
+		return inState->implIntern->getLastError(inState,
+			SJME_ERROR_NATIVE_WIDGET_FAILURE);
+	
+	/* Just copy left/top coordinates. */
+	if (outX != NULL)
+		*outX = rect.left;
+	if (outY != NULL)
+		*outY = rect.top;
+	
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+}
+
 sjme_errorCode sjme_scritchui_win32_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

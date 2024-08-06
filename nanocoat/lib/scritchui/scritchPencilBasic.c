@@ -270,6 +270,8 @@ sjme_errorCode sjme_scritchpen_initBuffer(
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInValue sjme_jint tx,
+	sjme_attrInValue sjme_jint ty,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
@@ -296,6 +298,7 @@ sjme_errorCode sjme_scritchpen_initBuffer(
 	if (sjme_error_is(error = sjme_scritchpen_initBufferStatic(
 		result, inState,
 		pf, bw, bh, inLockFuncs, inLockFrontEndCopy,
+		tx, ty,
 		sx, sy, sw, sh, defaultFont, copyFrontEnd)))
 		goto fail_initBuffer;
 	
@@ -329,6 +332,8 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
 	sjme_attrInPositive sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInValue sjme_jint tx,
+	sjme_attrInValue sjme_jint ty,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositive sjme_jint sw,
@@ -397,5 +402,5 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
 	return sjme_scritchpen_initStatic(inOutPencil,
 		inState,
 		chosen, inLockFuncs, inLockFrontEndCopy, pf,
-		sw, sh, bw, defaultFont, copyFrontEnd);
+		0, 0, sw, sh, bw, defaultFont, copyFrontEnd);
 }

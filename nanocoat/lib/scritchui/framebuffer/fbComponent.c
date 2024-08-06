@@ -161,6 +161,28 @@ sjme_errorCode sjme_scritchui_fb_componentFocusHas(
 		wrappedComponent, outHasFocus);
 }
 
+sjme_errorCode sjme_scritchui_fb_componentPosition(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outX,
+	sjme_attrOutNullable sjme_jint* outY)
+{
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiComponent wrappedComponent;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedComponent =
+		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	/* Forward call. */
+	return wrappedState->apiInThread->componentPosition(wrappedState,
+		wrappedComponent, outX, outY);
+}
+
 sjme_errorCode sjme_scritchui_fb_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

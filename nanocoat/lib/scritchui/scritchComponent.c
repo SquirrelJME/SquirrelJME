@@ -306,6 +306,31 @@ sjme_errorCode sjme_scritchui_core_componentGetParent(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_core_componentPosition(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outX,
+	sjme_attrOutNullable sjme_jint* outY)
+{
+	if (inState == NULL || inComponent == NULL ||
+		(outX == NULL && outY == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If there is native position information, use it. */
+	if (inState->impl->componentPosition != NULL)
+		return inState->impl->componentPosition(inState, inComponent,
+			outX, outY);
+	
+	/* Otherwise, fallback to last known bounds. */
+	if (outX != NULL)
+		*outX = inComponent->bounds.s.x;
+	if (outY != NULL)
+		*outY = inComponent->bounds.s.y;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_core_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

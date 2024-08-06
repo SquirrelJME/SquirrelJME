@@ -22,6 +22,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	.choiceItemSetString = NULL,
 	.componentFocusGrab = NULL,
 	.componentFocusHas = NULL,
+	.componentPosition = sjme_scritchui_win32_componentPosition,
 	.componentRepaint = sjme_scritchui_win32_componentRepaint,
 	.componentRevalidate = sjme_scritchui_win32_componentRevalidate,
 	.componentSetActivateListener = NULL,

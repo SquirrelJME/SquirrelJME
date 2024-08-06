@@ -122,6 +122,9 @@ typedef struct sjme_scritchui_pencilBase
 	/** The bytes per pixel. */
 	sjme_jint bytesPerPixel;
 	
+	/** Forced X/Y translate. */
+	sjme_scritchui_point forceTranslate;
+	
 	/** Color palette. */
 	struct
 	{

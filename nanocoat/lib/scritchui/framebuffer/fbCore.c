@@ -25,6 +25,7 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	.choiceItemSetString = sjme_scritchui_fb_choiceItemSetString,
 	.componentFocusGrab = sjme_scritchui_fb_componentFocusGrab,
 	.componentFocusHas = sjme_scritchui_fb_componentFocusHas,
+	.componentPosition = sjme_scritchui_fb_componentPosition,
 	.componentRepaint = sjme_scritchui_fb_componentRepaint,
 	.componentRevalidate = sjme_scritchui_fb_componentRevalidate,
 	.componentSetActivateListener = NULL,

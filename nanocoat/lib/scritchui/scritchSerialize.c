@@ -223,6 +223,13 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		(state,
 		as->componentGetParent.inComponent,
 		as->componentGetParent.outParent));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(componentPosition,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_POSITION,
+		(state,
+		as->componentPosition.inComponent,
+		as->componentPosition.outX,
+		as->componentPosition.outY));
 	
 	SJME_SCRITCHUI_DISPATCH_CASE(componentRepaint,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REPAINT,
@@ -735,6 +742,24 @@ sjme_errorCode sjme_scritchui_coreSerial_componentGetParent(
 		
 	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
 	SJME_SCRITCHUI_SERIAL_PASS(outParent);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_componentPosition(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outX,
+	sjme_attrOutNullable sjme_jint* outY)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(componentPosition,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_POSITION,
+		(inState, inComponent, outX, outY));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(outX);
+	SJME_SCRITCHUI_SERIAL_PASS(outY);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

@@ -109,7 +109,13 @@ sjme_errorCode sjme_scritchui_core_componentGetParent(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNotNull sjme_scritchui_uiComponent* outParent);
-	
+
+sjme_errorCode sjme_scritchui_core_componentPosition(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outX,
+	sjme_attrOutNullable sjme_jint* outY);
+
 sjme_errorCode sjme_scritchui_core_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

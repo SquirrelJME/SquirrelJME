@@ -57,6 +57,12 @@ extern const sjme_scritchui_pencilImplFunctions
 sjme_errorCode sjme_scritchui_win32_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
 	
+sjme_errorCode sjme_scritchui_win32_componentPosition(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outX,
+	sjme_attrOutNullable sjme_jint* outY);
+	
 sjme_errorCode sjme_scritchui_win32_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

@@ -21,6 +21,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_toolboxFunctions =
 	.choiceItemSetString = NULL,
 	.componentFocusGrab = NULL,
 	.componentFocusHas = NULL,
+	.componentPosition = NULL,
 	.componentRepaint = NULL,
 	.componentRevalidate = NULL,
 	.componentSetActivateListener = NULL,

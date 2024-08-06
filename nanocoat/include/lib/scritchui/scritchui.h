@@ -976,6 +976,22 @@ typedef sjme_errorCode (*sjme_scritchui_componentGetParentFunc)(
 	sjme_attrOutNotNull sjme_scritchui_uiComponent* outParent);
 
 /**
+ * Returns the position of the given component.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component to get the position of.
+ * @param outX The output X coordinate.
+ * @param outY The output Y coordinate.
+ * @return Any resultant error, if any.
+ * @since 2024/08/06
+ */
+typedef sjme_errorCode (*sjme_scritchui_componentPositionFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outX,
+	sjme_attrOutNullable sjme_jint* outY);
+
+/**
  * Repaints the given component.
  * 
  * @param inState The input state.
@@ -1706,6 +1722,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Gets the parent component of this one. */
 	SJME_SCRITCHUI_QUICK_API(componentGetParent);
+	
+	/** Get size of component. */
+	SJME_SCRITCHUI_QUICK_API(componentPosition);
 	
 	/** Repaints the given component. */
 	SJME_SCRITCHUI_QUICK_API(componentRepaint);

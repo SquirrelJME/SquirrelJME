@@ -70,7 +70,11 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	sjme_frontEnd frontEnd;
 	HDC hDc;
 	PAINTSTRUCT paintInfo;
-	sjme_jint w, h;
+	sjme_jint x, y, w, h;
+	
+	/* Initially set that we did not paint this. */
+	if (lResult != NULL)
+		*lResult = 1;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -86,6 +90,13 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	h = 0;
 	if (sjme_error_is(error = inState->apiInThread->componentSize(inState,
 		inComponent, &w, &h)))
+		return sjme_error_default(error);
+	
+	/* Get component position. */
+	x = 0;
+	y = 0;
+	if (sjme_error_is(error = inState->apiInThread->componentPosition(inState,
+		inComponent, &x, &y)))
 		return sjme_error_default(error);
 	
 	/* Can this actually be painted on? */
@@ -131,6 +142,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 		&sjme_scritchui_win32_pencilFunctions,
 		NULL, NULL,
 		SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888,
+		x, y,
 		w, h, w,
 		defaultFont, &frontEnd)))
 		goto fail_badPaint;
@@ -150,6 +162,10 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	/* Stop painting. */
 	SetLastError(0);
 	EndPaint(hWnd, &paintInfo);
+	
+	/* We did paint this successfully. */
+	if (lResult != NULL)
+		*lResult = 0;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -287,7 +303,7 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 			error = sjme_scritchui_win32_windowProc_PAINT(
 				inState, hWnd, message, wParam, lParam, &useResult);
 			break;
-		
+			
 			/* Callback function. */
 		case WM_USER:
 			error = sjme_scritchui_win32_windowProc_USER(
@@ -301,7 +317,7 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 	
 #if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
-	if (sjme_error_is(error) && error != SJME_ERROR_USE_FALLBACK)
+	if (sjme_error_is(error))
 		sjme_message("Win32 message FAIL: %p %d %p %p -> %d)",
 			hWnd, message, wParam, lParam, error);
 #endif
