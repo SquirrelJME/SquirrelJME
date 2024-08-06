@@ -81,12 +81,26 @@ sjme_errorCode sjme_scritchui_core_windowNew(
 		NULL)) || result == NULL)
 		goto fail_genericInit;
 	
-	/* Set close listener to use. */
+	/* Set close listener to use, if supported natively. */
 	if (inState->impl->windowSetCloseListener != NULL)
+	{
 		if (sjme_error_is(error = inState->impl->windowSetCloseListener(
 			inState, result,
 			sjme_scritchui_baseCloseListener, NULL)))
 			goto fail_postCloseSet;
+	}
+	
+	/* Otherwise use internal handling. */
+	else
+	{
+		if (sjme_error_is(error = inState->intern->setSimpleListener(
+			inState,
+			(sjme_scritchui_listener_void*)
+				&SJME_SCRITCHUI_LISTENER_CORE(result, close),
+			(sjme_scritchui_voidListenerFunc)
+				sjme_scritchui_baseCloseListener, NULL)))
+			goto fail_postCloseSet;
+	}
 	
 	/* Success! */
 	*outWindow = result;

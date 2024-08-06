@@ -11,6 +11,47 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
+static sjme_errorCode sjme_scritchui_win32_windowProc_CLOSE(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable HWND hWnd,
+	sjme_attrInValue UINT message,
+	sjme_attrInValue WPARAM wParam,
+	sjme_attrInValue LPARAM lParam,
+	sjme_attrOutNullable LRESULT* lResult)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiComponent inComponent;
+	sjme_scritchui_uiWindow inWindow;
+	sjme_scritchui_listener_close* infoCore;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* We always treat this as handled. */
+	lResult = 0;
+		
+	/* Recover component, if not one then not one of ours. */
+	inComponent = NULL;
+	if (sjme_error_is(inState->implIntern->recoverComponent(inState,
+		hWnd, &inComponent)))
+		return SJME_ERROR_NONE;
+	
+	/* We can only do this on windows. */
+	if (inComponent->common.type != SJME_SCRITCHUI_TYPE_WINDOW)
+		return SJME_ERROR_NONE;
+	inWindow = (sjme_scritchui_uiWindow)inComponent;
+	
+	/* Get target listener. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inWindow, close);
+	
+	/* Invoke callback if there is one. */
+	if (infoCore->callback != NULL)
+		return infoCore->callback(inState, inWindow);
+	
+	/* Success when there is nothing to call! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_win32_windowProc_GETMINMAXINFO(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable HWND hWnd,
@@ -286,6 +327,12 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 	error = SJME_ERROR_NONE;
 	switch (message)
 	{
+			/* Window is closed. */
+		case WM_CLOSE:
+			error = sjme_scritchui_win32_windowProc_CLOSE(
+				inState, hWnd, message, wParam, lParam, &useResult);
+			break;
+		
 			/* Get minimum and maximum window bounds. */
 		case WM_GETMINMAXINFO:
 			error = sjme_scritchui_win32_windowProc_GETMINMAXINFO(
