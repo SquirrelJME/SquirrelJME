@@ -406,3 +406,101 @@ sjme_errorCode sjme_scritchui_intern_menuItemActivate(
 	/* It does not, so stop. */
 	return SJME_ERROR_NONE;
 }
+
+sjme_errorCode sjme_scritchui_intern_menuItemActivateById(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind atRover,
+	sjme_attrInNotNull sjme_jint itemActivated,
+	sjme_attrInValue sjme_jint itemMask)
+{
+	sjme_errorCode error;
+	sjme_scritchui_listener_menuItemActivate* infoCore;
+	sjme_scritchui_uiMenuHasChildren child;
+	sjme_scritchui_uiMenuItem menuItem;
+	sjme_jint i, n, opaqueId;
+	sjme_scritchui_uiMenuKind* children;
+	sjme_scritchui_uiMenuKind tryChild;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (itemMask == 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+#if 0
+	/* Debug. */
+	sjme_message("menuItemActivateById(%p, %p, %p, %d)",
+		inState, inWindow, atRover, itemActivated);
+#endif
+	
+	/* If the window has no listener or no bar, ignore. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_USER(inWindow, menuItemActivate);
+	if (infoCore->callback == NULL || inWindow->menuBar == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Check to see if this has a child. */
+	child = NULL;
+	if (sjme_error_is(error = inState->intern->getMenuHasChildren(inState,
+		atRover, &child)) || child == NULL)
+	{
+		/* There is no child, so this is a menu item. */ 
+		if (error == SJME_ERROR_INVALID_ARGUMENT &&
+			atRover->common.type == SJME_SCRITCHUI_TYPE_MENU_ITEM)
+		{
+			/* Recover item. */
+			menuItem = (sjme_scritchui_uiMenuItem)atRover;
+			
+			/* Forward to callback if this is the item. */
+			opaqueId = menuItem->opaqueId;
+			if (opaqueId != 0 &&
+				(opaqueId & itemMask) == (itemActivated & itemMask))
+				return infoCore->callback(inState, inWindow,
+					(sjme_scritchui_uiMenuKind)menuItem);
+			
+			/* Continue otherwise. */
+			return SJME_ERROR_CONTINUE;
+		}
+		
+		/* Some other kind of menu item? */
+		if (error == SJME_ERROR_INVALID_ARGUMENT)
+			return SJME_ERROR_CONTINUE;
+		
+		/* Failed. */
+		return sjme_error_default(error);
+	}
+	
+	/* Make copy of children, so it does not change in the middle. */
+	n = child->numChildren;
+	children = sjme_alloca(sizeof(*children) * n);
+	if (children == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	memmove(children, child->children->elements,
+		sizeof(*children) * n);
+	
+	/* Go through each child. */
+	for (i = 0; i < n; i++)
+	{
+		/* Get child here. */
+		tryChild = children[i];
+		
+		/* Recursive search for the menu command. */
+		error = inState->intern->menuItemActivateById(inState, inWindow,
+			tryChild, itemActivated, itemMask);
+		
+		/* Try next child? */
+		if (error == SJME_ERROR_CONTINUE)
+			continue;
+		
+		/* Fail? */
+		else if (sjme_error_is(error))
+			return sjme_error_default(error);
+		
+		/* We found the menu item. */
+		else
+			break;
+	}
+	
+	/* Nothing left to check. */
+	return SJME_ERROR_NONE;
+}

@@ -1913,8 +1913,11 @@ typedef enum sjme_errorCode
 	/** Use fallback. */
 	SJME_ERROR_USE_FALLBACK = -77,
 	
+	/** Continue operation. */
+	SJME_ERROR_CONTINUE = -78,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -78
+	SJME_NUM_ERROR_CODES = -79
 } sjme_errorCode;
 
 /**

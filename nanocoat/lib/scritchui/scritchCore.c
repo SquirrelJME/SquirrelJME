@@ -191,6 +191,7 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	.initComponent = sjme_scritchui_core_intern_initComponent,
 	.mapScreen = sjme_scritchui_core_intern_mapScreen,
 	.menuItemActivate = sjme_scritchui_intern_menuItemActivate,
+	.menuItemActivateById = sjme_scritchui_intern_menuItemActivateById,
 	.setSimpleListener = sjme_scritchui_core_intern_setSimpleListener,
 	.updateVisibleContainer =
 		sjme_scritchui_core_intern_updateVisibleContainer,

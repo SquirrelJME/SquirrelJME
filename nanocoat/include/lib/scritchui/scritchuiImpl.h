@@ -532,6 +532,24 @@ typedef sjme_errorCode (*sjme_scritchui_intern_menuItemActivateFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind itemActivated);
 
 /**
+ * Activates a menu item by propagating downwards from the bar.
+ * 
+ * @param inState The input state.
+ * @param inWindow The window this is starting from.
+ * @param atRover The current menu item, menu, or menu bar.
+ * @param itemActivated The item ID that was activated, this does not change.
+ * @param itemMask The mask that is valid for item IDs.
+ * @return Any resultant error, if any.
+ * @since 2024/08/06
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_menuItemActivateByIdFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind atRover,
+	sjme_attrInNotNull sjme_jint itemActivated,
+	sjme_attrInValue sjme_jint itemMask);
+
+/**
  * Sets a simpler listener.
  * 
  * @param inState The ScritchUI state.
@@ -638,8 +656,11 @@ struct sjme_scritchui_internFunctions
 	/** Maps the given screen. */
 	sjme_scritchui_intern_mapScreenFunc mapScreen;
 	
-	/** Menu item activation propagation. */
+	/** Menu item activation propagation, from bottom up. */
 	sjme_scritchui_intern_menuItemActivateFunc menuItemActivate;
+	
+	/** Menu item activation propagation, from top down. */
+	sjme_scritchui_intern_menuItemActivateByIdFunc menuItemActivateById;
 	
 	/** Update visibility recursively on container. */
 	sjme_scritchui_intern_updateVisibleContainerFunc updateVisibleContainer;

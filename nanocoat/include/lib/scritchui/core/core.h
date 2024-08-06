@@ -426,6 +426,13 @@ sjme_errorCode sjme_scritchui_intern_menuItemActivate(
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind atRover,
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind itemActivated);
 
+sjme_errorCode sjme_scritchui_intern_menuItemActivateById(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind atRover,
+	sjme_attrInNotNull sjme_jint itemActivated,
+	sjme_attrInValue sjme_jint itemMask);
+
 sjme_errorCode sjme_scritchui_core_intern_setSimpleListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoAny,

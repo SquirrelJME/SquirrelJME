@@ -19,7 +19,6 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_CLOSE(
 	sjme_attrInValue LPARAM lParam,
 	sjme_attrOutNullable LRESULT* lResult)
 {
-	sjme_errorCode error;
 	sjme_scritchui_uiComponent inComponent;
 	sjme_scritchui_uiWindow inWindow;
 	sjme_scritchui_listener_close* infoCore;
@@ -52,6 +51,59 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_CLOSE(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_scritchui_win32_windowProc_COMMAND(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable HWND hWnd,
+	sjme_attrInValue UINT message,
+	sjme_attrInValue WPARAM wParam,
+	sjme_attrInValue LPARAM lParam,
+	sjme_attrOutNullable LRESULT* lResult)
+{
+	sjme_scritchui_uiComponent inComponent;
+	sjme_scritchui_uiWindow inWindow;
+	sjme_scritchui_uiMenuBar menuBar;
+	sjme_scritchui_listener_menuItemActivate* infoCore;
+	sjme_jint id;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Initially set that we did not handle this. */
+	if (lResult != NULL)
+		*lResult = 1;
+	
+	/* Recover component, if not one then not one of ours. */
+	inComponent = NULL;
+	if (sjme_error_is(inState->implIntern->recoverComponent(inState,
+		hWnd, &inComponent)))
+		return SJME_ERROR_USE_FALLBACK;
+	
+	/* Must be a window to activate menu items. */
+	if (inComponent->common.type != SJME_SCRITCHUI_TYPE_WINDOW)
+		return SJME_ERROR_USE_FALLBACK;
+	inWindow = (sjme_scritchui_uiWindow)inComponent;
+	
+	/* We can handle this. */
+	if (lResult != NULL)
+		*lResult = 0;
+	
+	/* Get target listener. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_USER(inWindow, menuItemActivate);
+	
+	/* If there is none or there is no bar, then we do not care. */
+	menuBar = inWindow->menuBar;
+	if (infoCore->callback == NULL || menuBar == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Recover the menu ID used. */
+	id = LOWORD(wParam);
+	
+	/* Go through the menu system to find a matching ID. */
+	return inState->intern->menuItemActivateById(inState, inWindow,
+		(sjme_scritchui_uiMenuKind)menuBar,
+		id, 0xFFFF);
+}
+
 static sjme_errorCode sjme_scritchui_win32_windowProc_GETMINMAXINFO(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable HWND hWnd,
@@ -70,9 +122,9 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_GETMINMAXINFO(
 	
 	/* Recover component. */
 	inComponent = NULL;
-	if (sjme_error_is(error = inState->implIntern->recoverComponent(inState,
+	if (sjme_error_is(inState->implIntern->recoverComponent(inState,
 		hWnd, &inComponent)))
-		return sjme_error_default(error);
+		return SJME_ERROR_USE_FALLBACK;
 	
 	/* We can only do this on windows. */
 	if (inComponent->common.type != SJME_SCRITCHUI_TYPE_WINDOW)
@@ -330,6 +382,12 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 			/* Window is closed. */
 		case WM_CLOSE:
 			error = sjme_scritchui_win32_windowProc_CLOSE(
+				inState, hWnd, message, wParam, lParam, &useResult);
+			break;
+			
+			/* Menu or button command. */
+		case WM_COMMAND:
+			error = sjme_scritchui_win32_windowProc_COMMAND(
 				inState, hWnd, message, wParam, lParam, &useResult);
 			break;
 		
