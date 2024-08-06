@@ -39,6 +39,38 @@ static LRESULT sjme_scritchui_win32_windowProcForward(
 	return result;
 }
 
+sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height)
+{
+	HWND window;
+	WINDOWPLACEMENT placement;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover window. */
+	window = inWindow->component.common.handle[SJME_SUI_WIN32_H_HWND];
+	
+	/* Setup new placement information. */
+	memset(&placement, 0, sizeof(placement));
+	placement.length = sizeof(placement);
+	placement.flags = WPF_SETMINPOSITION;
+	placement.ptMinPosition.x = width;
+	placement.ptMinPosition.y = height;
+	
+	/* Set the window placement. */
+	SetLastError(0);
+	if (0 == SetWindowPlacement(window, &placement))
+		return inState->implIntern->getLastError(inState,
+			SJME_ERROR_NATIVE_WIDGET_FAILURE);
+	
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+}
+
 sjme_errorCode sjme_scritchui_win32_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,

@@ -44,6 +44,17 @@ sjme_errorCode sjme_scritchui_win32_componentRepaint(
 	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
 }
 
+sjme_errorCode sjme_scritchui_win32_componentRevalidate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Nothing needs to be done. */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_win32_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

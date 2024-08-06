@@ -50,6 +50,10 @@ sjme_errorCode sjme_scritchui_core_windowContentMinimumSize(
 	if (inState->impl->windowContentMinimumSize == NULL)
 		return sjme_error_notImplemented(0);
 	
+	/* Store dimension set in the window. */
+	inWindow->min.width = width;
+	inWindow->min.height = height;
+	
 	/* Forward call. */
 	return inState->impl->windowContentMinimumSize(inState, inWindow, width,
 		height);

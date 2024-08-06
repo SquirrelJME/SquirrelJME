@@ -23,7 +23,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	.componentFocusGrab = NULL,
 	.componentFocusHas = NULL,
 	.componentRepaint = sjme_scritchui_win32_componentRepaint,
-	.componentRevalidate = NULL,
+	.componentRevalidate = sjme_scritchui_win32_componentRevalidate,
 	.componentSetActivateListener = NULL,
 	.componentSetInputListener = NULL,
 	.componentSetPaintListener =
@@ -31,9 +31,9 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	.componentSetSizeListener = NULL,
 	.componentSetVisibleListener = NULL,
 	.componentSize = NULL,
-	.containerAdd = NULL,
+	.containerAdd = sjme_scritchui_win32_containerAdd,
 	.containerRemove = NULL,
-	.containerSetBounds = NULL,
+	.containerSetBounds = sjme_scritchui_win32_containerSetBounds,
 	.hardwareGraphics = NULL,
 	.labelSetString = NULL,
 	.lafElementColor = NULL,
@@ -55,7 +55,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	.viewSetArea = NULL,
 	.viewSetView = NULL,
 	.viewSetViewListener = NULL,
-	.windowContentMinimumSize = NULL,
+	.windowContentMinimumSize = sjme_scritchui_win32_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_win32_windowNew,
 	.windowSetCloseListener = NULL,
 	.windowSetMenuBar = NULL,
@@ -66,6 +66,7 @@ static const sjme_scritchui_implInternFunctions
 	sjme_scritchui_win32InternFunctions =
 {
 	.getLastError = sjme_scritchui_win32_intern_getLastError,
+	.recoverComponent = sjme_scritchui_win32_intern_recoverComponent,
 	.windowProc = sjme_scritchui_win32_intern_windowProc,
 };
 

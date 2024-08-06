@@ -60,10 +60,29 @@ sjme_errorCode sjme_scritchui_win32_componentRepaint(
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height);
 
+sjme_errorCode sjme_scritchui_win32_componentRevalidate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+	
 sjme_errorCode sjme_scritchui_win32_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(paint));
+	
+sjme_errorCode sjme_scritchui_win32_containerAdd(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
+	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
+
+sjme_errorCode sjme_scritchui_win32_containerSetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height);
 	
 sjme_errorCode sjme_scritchui_win32_loopExecuteLater(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -116,6 +135,12 @@ sjme_errorCode sjme_scritchui_win32_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
+
+sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height);
 
 sjme_errorCode sjme_scritchui_win32_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,

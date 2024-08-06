@@ -96,6 +96,6 @@ sjme_errorCode sjme_scritchui_win32_panelNew(
 	SetWindowLongPtr(window, GWLP_USERDATA,
 		(LONG_PTR)inPanel);
 	
-	/* Success! */
+	/* Success? */
 	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
 }

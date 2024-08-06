@@ -451,6 +451,9 @@ typedef struct sjme_scritchui_uiWindowBase
 	
 	/** Listeners. */
 	sjme_scritchui_uiWindowListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
+	
+	/** The minimum window size. */
+	sjme_scritchui_dim min;
 } sjme_scritchui_uiWindowBase;
 
 struct sjme_scritchui_pencilFontBase
