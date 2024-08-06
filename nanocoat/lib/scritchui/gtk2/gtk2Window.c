@@ -85,7 +85,10 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 {
 	sjme_errorCode error;
 	GtkWindow* gtkWindow;
+	GtkWidget* menuBar;
 	GdkGeometry geometry;
+	sjme_scritchui_dim* overhead;
+	GtkAllocation alloc;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -95,13 +98,28 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	
 	/* Recover window. */
 	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
+	menuBar = inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBAR];
+	
+	/* Calculate window overhead, we can only consider this if there is */
+	/* a menu bar that would add overhead. */
+	overhead = &inWindow->minOverhead;
+	memset(overhead, 0, sizeof(*overhead));
+	if (menuBar != NULL)
+	{
+		/* Get the size allocation of the menu bar. */
+		memset(&alloc, 0, sizeof(alloc));
+		gtk_widget_get_allocation(menuBar, &alloc);
+		
+		/* Add its height. */
+		overhead->height = alloc.height;
+	}
 	
 	/* Setup geometry. */
 	memset(&geometry, 0, sizeof(geometry));
-	geometry.min_width = width;
-	geometry.min_height = height;
-	geometry.base_width = width;
-	geometry.base_height = height;
+	geometry.min_width = width + overhead->width;
+	geometry.min_height = height + overhead->height;
+	geometry.base_width = width + overhead->width;
+	geometry.base_height = height + overhead->height;
 	
 	/* Set minimum size. */
 	gtk_window_set_geometry_hints(gtkWindow,

@@ -168,6 +168,12 @@ sjme_errorCode sjme_scritchui_core_windowSetMenuBar(
 			return sjme_error_default(error);
 	}
 	
+	/* The overhead might have changed natively if there is a minimum set. */
+	if (inWindow->min.width != 0 && inWindow->min.height != 0)
+		if (sjme_error_is(error = inState->api->windowContentMinimumSize(
+			inState, inWindow, inWindow->min.width, inWindow->min.height)))
+			return sjme_error_default(error);
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
