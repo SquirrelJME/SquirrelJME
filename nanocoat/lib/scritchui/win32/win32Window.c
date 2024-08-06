@@ -97,6 +97,7 @@ sjme_errorCode sjme_scritchui_win32_windowNew(
 	/* Register window class for this window. */
 	memset(&windowClass, 0, sizeof(windowClass));
 	windowClass.cbSize = sizeof(windowClass);
+	windowClass.style = CS_VREDRAW | CS_HREDRAW | CS_DROPSHADOW | CS_OWNDC;
 	windowClass.hInstance = GetModuleHandle(NULL);
 	windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	windowClass.lpszClassName = inWindow->strId;
@@ -117,7 +118,7 @@ sjme_errorCode sjme_scritchui_win32_windowNew(
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		HWND_DESKTOP,
+		NULL,
 		NULL,
 		GetModuleHandle(NULL),
 		NULL);
