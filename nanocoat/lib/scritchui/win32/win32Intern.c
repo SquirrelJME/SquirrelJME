@@ -70,7 +70,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	sjme_frontEnd frontEnd;
 	HDC hDc;
 	PAINTSTRUCT paintInfo;
-	sjme_jint x, y, w, h;
+	sjme_jint w, h;
 	
 	/* Initially set that we did not paint this. */
 	if (lResult != NULL)
@@ -90,13 +90,6 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	h = 0;
 	if (sjme_error_is(error = inState->apiInThread->componentSize(inState,
 		inComponent, &w, &h)))
-		return sjme_error_default(error);
-	
-	/* Get component position. */
-	x = 0;
-	y = 0;
-	if (sjme_error_is(error = inState->apiInThread->componentPosition(inState,
-		inComponent, &x, &y)))
 		return sjme_error_default(error);
 	
 	/* Can this actually be painted on? */
@@ -142,7 +135,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 		&sjme_scritchui_win32_pencilFunctions,
 		NULL, NULL,
 		SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888,
-		x, y,
+		0, 0,
 		w, h, w,
 		defaultFont, &frontEnd)))
 		goto fail_badPaint;
