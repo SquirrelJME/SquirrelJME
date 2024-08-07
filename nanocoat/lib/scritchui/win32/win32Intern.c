@@ -613,19 +613,19 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+	
 	/* Recover component, ignore if this is something else. */
 	inComponent = NULL;
 	if (sjme_error_is(inState->implIntern->recoverComponent(inState,
 		hWnd, &inComponent)))
-		return SJME_ERROR_USE_FALLBACK;
+		goto fail_fallback;
 	
 	/* Get component size. */
 	w = 0;
 	h = 0;
 	if (sjme_error_is(error = inState->apiInThread->componentSize(inState,
 		inComponent, &w, &h)))
-		return sjme_error_default(error);
+		goto fail_badPaint;
 	
 	/* Can this actually be painted on? */
 	paintable = NULL;
@@ -633,21 +633,29 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 		inComponent, &paintable)) || paintable == NULL)
 	{
 		if (error == SJME_ERROR_INVALID_ARGUMENT)
-			return SJME_ERROR_USE_FALLBACK;
-		return sjme_error_default(error);
+			goto fail_fallback;
+		goto fail_badPaint;
 	}
 	
 	/* Get callback info, if there is none then do nothing */
 	infoPaintCore = &SJME_SCRITCHUI_LISTENER_CORE(paintable, paint);
 	if (infoPaintCore->callback == NULL)
-		return SJME_ERROR_USE_FALLBACK;
+		goto fail_fallback;
+	
+	/* Begin painting. */
+	memset(&paintInfo, 0, sizeof(paintInfo));
+	SetLastError(0);
+	hDc = BeginPaint(hWnd, &paintInfo);
+	if (hDc == NULL)
+		return inState->implIntern->getLastError(inState,
+			SJME_ERROR_NATIVE_WIDGET_FAILURE);
 	
 	/* A default font is required. */
 	defaultFont = NULL;
 	if (sjme_error_is(inState->intern->fontBuiltin(
 		inState, &defaultFont)) ||
 		defaultFont == NULL)
-		return sjme_error_default(error);
+		goto fail_badPaint;
 	
 	/* If there is a parent, and it is a view, get the view offset. */
 	view = NULL;
@@ -655,7 +663,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 		if (sjme_error_is(error = inState->intern->getView(inState,
 			inComponent->parent, &view)))
 			if (error != SJME_ERROR_INVALID_ARGUMENT)
-				return sjme_error_default(error);
+				goto fail_badPaint;
 	
 	/* Is this in a view? */
 	tx = 0;
@@ -666,14 +674,6 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 		ty = -view->view.s.y;
 	}
 	
-	/* Begin painting. */
-	memset(&paintInfo, 0, sizeof(paintInfo));
-	SetLastError(0);
-	hDc = BeginPaint(hWnd, &paintInfo);
-	if (hDc == NULL)
-		return inState->implIntern->getLastError(inState,
-			SJME_ERROR_NATIVE_WIDGET_FAILURE);
-		
 	/* Setup frontend info. */
 	memset(&frontEnd, 0, sizeof(frontEnd));
 	frontEnd.wrapper = hWnd;
@@ -715,6 +715,8 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	/* Success! */
 	return SJME_ERROR_NONE;
 
+fail_fallback:
+	error = SJME_ERROR_USE_FALLBACK;
 fail_badPaint:
 	if (hDc != NULL)
 	{
