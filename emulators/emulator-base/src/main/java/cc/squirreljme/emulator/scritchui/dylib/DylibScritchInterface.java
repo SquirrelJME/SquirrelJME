@@ -327,11 +327,11 @@ public class DylibScritchInterface
 	 * Returns the native ScritchUI interface.
 	 *
 	 * @return The default instance interface.
-	 * @throws UnsupportedOperationException If this is not supported.
+	 * @throws MLECallError If this is not supported.
 	 * @since 2024/03/30
 	 */
 	public static DylibScritchInterface instance()
-		throws UnsupportedOperationException
+		throws MLECallError
 	{
 		DylibScritchInterface instance = DylibScritchInterface._INSTANCE;
 		if (instance != null)
@@ -343,7 +343,7 @@ public class DylibScritchInterface
 			.getResourceAsStream("/libsquirreljme-scritchui.list"))
 		{
 			if (in == null)
-				throw new UnsupportedOperationException(
+				throw new MLECallError(
 					"No native ScritchUI libraries.");
 			
 			// Which interfaces are available?
@@ -353,7 +353,7 @@ public class DylibScritchInterface
 		}
 		catch (IOException __e)
 		{
-			throw new RuntimeException(__e);
+			throw new MLECallError(__e);
 		}
 		
 		// Preferred library
@@ -425,7 +425,7 @@ public class DylibScritchInterface
 		}
 		
 		// Not found
-		UnsupportedOperationException fail = new UnsupportedOperationException(
+		MLECallError fail = new MLECallError(
 			"Did not find a ScritchUI library to select.");
 		for (Throwable e : defer)
 			fail.addSuppressed(e);
