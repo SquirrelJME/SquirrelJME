@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import net.multiphasicapps.tac.TestConsumer;
+import net.multiphasicapps.tac.UntestableException;
 
 /**
  * Base class for rendering operations.
@@ -55,6 +56,9 @@ public abstract class BaseOperation
 	public void test(String __pf)
 		throws Throwable
 	{
+		if (true)
+			throw new UntestableException();
+		
 		// Initialize raw buffer with initial white color
 		int[] raw = new int[BaseOperation.AREA];
 		Arrays.fill(raw, 0xFFFFFFFF);

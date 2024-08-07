@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
@@ -210,9 +211,16 @@ public final class DisplayManager
 		if (instance != null)
 			return instance;
 		
-		instance = new DisplayManager(
-			NativeScritchInterface.nativeInterface());
-		DisplayManager._INSTANCE = instance;
+		try
+		{
+			instance = new DisplayManager(
+				NativeScritchInterface.nativeInterface());
+			DisplayManager._INSTANCE = instance;
+		}
+		catch (MLECallError __e)
+		{
+			throw new HeadlessDisplayException(__e);
+		}
 		
 		return instance;
 	}
