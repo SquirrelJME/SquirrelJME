@@ -737,6 +737,10 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_SCROLL(
 	sjme_scritchui_uiComponent inComponent;
 	sjme_scritchui_uiView view;
 	sjme_scritchui_rect rect;
+	sjme_jboolean tracking;
+	sjme_jint* adjust;
+	sjme_jint* page;
+	sjme_jint by;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -757,10 +761,6 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_SCROLL(
 		&view)) || view == NULL)
 		return SJME_ERROR_USE_FALLBACK;
 		
-	/* We are handling this now. */
-	if (lResult != NULL)
-		*lResult = 0;
-		
 	/* Get base view rectangle. */
 	memset(&rect, 0, sizeof(rect));
 	if (sjme_error_is(error = inState->apiInThread->viewGetView(inState,
@@ -773,20 +773,60 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_SCROLL(
 		rect.s.x, rect.s.y, rect.d.width, rect.d.height);
 #endif
 	
-	/* Actively tracking scrolling? */
-	if (LOWORD(wParam) == SB_THUMBPOSITION ||
-		LOWORD(wParam) == SB_THUMBTRACK)
+	/* Which are we adjusting? */
+	if (message == WM_HSCROLL)
 	{
-		/* Which position is getting adjusted? */
-		if (message == WM_HSCROLL)
-			rect.s.x = HIWORD(wParam);
-		else
-			rect.s.y = HIWORD(wParam);
+		adjust = &rect.s.x;
+		page = &view->pageSize.width;
+	}
+	else
+	{
+		adjust = &rect.s.y;
+		page = &view->pageSize.height;
 	}
 	
+	/* Actively tracking scrolling? */
+	tracking = (LOWORD(wParam) == SB_THUMBPOSITION ||
+		LOWORD(wParam) == SB_THUMBTRACK);
+	if (tracking)
+	{
+		/* We only say we handled this if we are doing active tracking. */
+		if (lResult != NULL)
+			*lResult = 0;
+		
+		/* Which position is getting adjusted? */
+		*adjust = HIWORD(wParam);
+	}
+	
+	/* Button actions. */
+	else if (LOWORD(wParam) == SB_LINELEFT)
+	{
+		by = *page / 8;
+		if (by <= 0)
+			by = 1;
+		
+		*adjust -= by;
+	}
+	else if (LOWORD(wParam) == SB_LINERIGHT)
+	{
+		by = *page / 8;
+		if (by <= 0)
+			by = 1;
+		
+		*adjust += by;
+	}
+	else if (LOWORD(wParam) == SB_PAGELEFT)
+		*adjust -= *page;
+	else if (LOWORD(wParam) == SB_PAGERIGHT)
+		*adjust += *page;
+	
 	/* Set new scroll position. */
-	return inState->apiInThread->viewSetView(inState, inComponent,
-		&rect.s);
+	if (sjme_error_is(error = inState->apiInThread->viewSetView(inState,
+		inComponent, &rect.s)))
+		return sjme_error_default(error);
+	
+	/* Unless we are tracking, let Windows handle this. */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_win32_windowProc_SHOWWINDOW(
