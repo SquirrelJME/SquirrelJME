@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_GTK2_H
 #define SQUIRRELJME_GTK2_H
 
-#include <gtk-2.0/gtk/gtk.h>
+#include <gtk/gtk.h>
 #include <gdk/gdk.h>
 
 #include "lib/scritchui/scritchui.h"
