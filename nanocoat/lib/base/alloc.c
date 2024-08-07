@@ -1025,9 +1025,14 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
 	charLen = strlen(stringToCopy) + 1;
 	
 	/* Then just forward to copy. */
+#if defined(SJME_CONFIG_DEBUG)
 	return sjme_alloc_copyR(inPool, charLen,
 		outString, stringToCopy,
 		file, line, func);
+#else
+	return sjme_alloc_copy(inPool, charLen,
+		outString, stringToCopy);
+#endif
 }
 
 sjme_errorCode sjme_noOptimize sjme_alloc_weakDelete(
@@ -1243,7 +1248,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 		&resultPtr, file, line, func)) ||
 		resultPtr == NULL)
 #else
-	if (sjme_error_is(error = sjme_allocR(inPool, size,
+	if (sjme_error_is(error = sjme_alloc(inPool, size,
 		&resultPtr)) ||
 		resultPtr == NULL)
 #endif
