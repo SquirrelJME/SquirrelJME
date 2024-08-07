@@ -266,6 +266,46 @@ fail_badPaint:
 	return sjme_error_default(error);
 }
 
+static sjme_errorCode sjme_scritchui_win32_windowProc_SHOWWINDOW(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable HWND hWnd,
+	sjme_attrInValue UINT message,
+	sjme_attrInValue WPARAM wParam,
+	sjme_attrInValue LPARAM lParam,
+	sjme_attrOutNullable LRESULT* lResult)
+{
+	sjme_scritchui_uiComponent inComponent;
+	
+	/* Default to unhandled. */
+	if (lResult != NULL)
+		*lResult = 1;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover component, ignore if this is something else. */
+	inComponent = NULL;
+	if (sjme_error_is(inState->implIntern->recoverComponent(inState,
+		hWnd, &inComponent)))
+		return SJME_ERROR_USE_FALLBACK;
+	
+	/* We need to recurse and have ScritchUI handle this. */
+	if (inComponent->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
+	{
+		/* We are handling this. */
+		if (lResult != NULL)
+			*lResult = 0;
+		
+		/* Let ScritchUI determine this. */
+		return inState->intern->updateVisibleWindow(
+			inState, inComponent,
+			wParam != FALSE);
+	}
+	
+	/* Let Windows handle this. */
+	return SJME_ERROR_USE_FALLBACK;
+}
+
 static sjme_errorCode sjme_scritchui_win32_windowProc_USER(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable HWND hWnd,
@@ -400,6 +440,12 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 			/* Paint window. */
 		case WM_PAINT:
 			error = sjme_scritchui_win32_windowProc_PAINT(
+				inState, hWnd, message, wParam, lParam, &useResult);
+			break;
+			
+			/* Window being shown or hidden. */
+		case WM_SHOWWINDOW:
+			error = sjme_scritchui_win32_windowProc_SHOWWINDOW(
 				inState, hWnd, message, wParam, lParam, &useResult);
 			break;
 			
