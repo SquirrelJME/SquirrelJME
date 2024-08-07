@@ -6,13 +6,15 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# We need to know where Motif is
-pkg_check_modules(X11 x11)
+# We need to know where X11 is
+find_package(PkgConfig)
+pkg_check_modules(X11 REQUIRED x11)
 
 # Declare base library
 add_library(ScritchUIX11 SHARED
 	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:ScritchUICorePIC>
+	$<TARGET_OBJECTS:ScritchUIFBPIC>
 	x11Component.c
 	x11Container.c
 	x11Core.c
@@ -39,7 +41,9 @@ target_include_directories(ScritchUIX11 PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
 	${X11_INCLUDE_DIR})
 
-# Link in Motif
+# Link in X11
+target_link_directories(ScritchUIX11 PUBLIC
+	${X11_LIBRARY_DIRS})
 target_link_libraries(ScritchUIX11
 	${X11_LIBRARIES})
 
