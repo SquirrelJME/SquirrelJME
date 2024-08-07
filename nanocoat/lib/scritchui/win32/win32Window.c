@@ -40,11 +40,15 @@ sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
 	GetWindowRect(window, &winRect);
 	ClientToScreen(window, &clientPoint);
 	
-	overhead->width = ((clientPoint.x - winRect.left) * 2) +
-		(GetSystemMetrics(SM_CXSIZEFRAME) * 2);
+	/* The X coordinates are effectively a lie. */
+	overhead->width = (clientPoint.x - winRect.left) +
+		(GetSystemMetrics(SM_CXSIZEFRAME) * 2) +
+		(GetSystemMetrics(SM_CXEDGE) * 2);
+	
+	/* This is correct. */
 	overhead->height = (clientPoint.y - winRect.top) +
-		(GetSystemMetrics(SM_CYSIZEFRAME) * 2) +
-		(GetSystemMetrics(SM_CYEDGE) * 2);
+		GetSystemMetrics(SM_CYSIZEFRAME) +
+		GetSystemMetrics(SM_CYEDGE);
 	
 	/* Add menu bar height? */
 	if (inWindow->menuBar != NULL)
