@@ -15,7 +15,7 @@ static sjme_jint sjme_scritchui_win32_mouseButtons(sjme_jint inMod)
 {
 	sjme_jint result;
 	
-	/* Mice in Windows are left handed. */
+	/* Mice in Windows are left-handed. */
 	result = 0;
 	if (inMod & MK_RBUTTON)
 		result |= (1 << 0);
@@ -192,6 +192,8 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_MOUSE(
 	sjme_scritchui_uiComponent inComponent;
 	sjme_scritchui_listener_input* infoCore;
 	sjme_scritchinput_event inputEvent;
+	sjme_jint normalButton, normalShift;
+	sjme_jboolean pressed;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -215,16 +217,58 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_MOUSE(
 	if (lResult != NULL)
 		*lResult = 0;
 	
+	/* Normalize press. */
+	pressed = SJME_JNI_FALSE;
+	if (message == WM_LBUTTONDOWN || message == WM_MBUTTONDOWN ||
+		message == WM_RBUTTONDOWN || message == WM_XBUTTONDOWN)
+		pressed = SJME_JNI_TRUE;
+	
+	/* Normalize button, mice are left-handed in Windows. */
+	normalButton = 0;
+	if (message == WM_LBUTTONDOWN || message == WM_LBUTTONUP)
+		normalButton = 2;
+	else if (message == WM_MBUTTONDOWN || message == WM_MBUTTONUP)
+		normalButton = 3;
+	else if (message == WM_RBUTTONDOWN || message == WM_RBUTTONUP)
+		normalButton = 1;
+	
+	/* Determine button mask shift. */
+	normalShift = 0;
+	if (normalButton != 0)
+		normalShift = (1 << (normalButton - 1));
+	
 	/* Setup event. */
 	memset(&inputEvent, 0, sizeof(inputEvent));
-	inputEvent.type = SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION;
 	inState->nanoTime(&inputEvent.time);
-	inputEvent.data.mouseMotion.buttonMask =
-		sjme_scritchui_win32_mouseButtons(LOWORD(wParam));
-	inputEvent.data.mouseMotion.modifiers =
-		sjme_scritchui_win32_mouseModifiers(LOWORD(wParam));
-	inputEvent.data.mouseMotion.x = LOWORD(lParam);
-	inputEvent.data.mouseMotion.y = HIWORD(lParam);
+	if (message == WM_MOUSEMOVE)
+	{
+		inputEvent.type = SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION;
+		inputEvent.data.mouseMotion.buttonMask =
+			sjme_scritchui_win32_mouseButtons(LOWORD(wParam));
+		inputEvent.data.mouseMotion.modifiers =
+			sjme_scritchui_win32_mouseModifiers(LOWORD(wParam));
+		inputEvent.data.mouseMotion.x = LOWORD(lParam);
+		inputEvent.data.mouseMotion.y = HIWORD(lParam);
+	}
+	
+	/* Pressed or released. */
+	else
+	{
+		/* Which one? */
+		if (pressed)
+			inputEvent.type = SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED;
+		else
+			inputEvent.type = SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED;
+		
+		inputEvent.data.mouseButton.button = normalButton;
+		inputEvent.data.mouseButton.buttonMask =
+			sjme_scritchui_win32_mouseButtons(LOWORD(wParam)) |
+			(pressed ? normalShift : 0);
+		inputEvent.data.mouseButton.modifiers =
+			sjme_scritchui_win32_mouseModifiers(LOWORD(wParam));
+		inputEvent.data.mouseButton.x = LOWORD(lParam);
+		inputEvent.data.mouseButton.y = HIWORD(lParam);
+	}
 	
 	/* Call listener. */
 	return infoCore->callback(inState, inComponent, &inputEvent);
@@ -526,11 +570,11 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 		case WM_LBUTTONUP:
 		case WM_MBUTTONDOWN:
 		case WM_MBUTTONUP:
-		case WM_MOUSEMOVE:
 		case WM_RBUTTONDOWN:
 		case WM_RBUTTONUP:
 		case WM_XBUTTONDOWN:
 		case WM_XBUTTONUP:
+		case WM_MOUSEMOVE:
 			error = sjme_scritchui_win32_windowProc_MOUSE(
 				inState, hWnd, message, wParam, lParam, &useResult);
 			break;

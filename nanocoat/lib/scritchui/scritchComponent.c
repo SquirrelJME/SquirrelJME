@@ -14,13 +14,130 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
+static sjme_errorCode sjme_scritchui_baseInputListenerMouse(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull const sjme_scritchinput_event* inEvent)
+{
+	sjme_scritchui_listener_input* infoUser;
+	sjme_scritchui_uiMouseState* currentMouse;
+	sjme_scritchui_uiMouseState* logicalMouse;
+	sjme_scritchinput_event emit;
+	sjme_jint buttonChange, shift;
+	sjme_jboolean pressed;
+	
+	if (inState == NULL || inComponent == NULL || inEvent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* We are adjusting with multiple mouse states. */
+	currentMouse = &inComponent->state.mouse[0];
+	logicalMouse = &inComponent->state.mouse[1];
+	
+	/* Get callback information. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inComponent, input);
+	
+	/* Always copy modifiers over. */
+	logicalMouse->mouseModifiers = currentMouse->mouseModifiers;
+	
+	/* Has there been a change to buttons? */
+	if (currentMouse->mouseButtons != logicalMouse->mouseButtons)
+	{
+		/* Store new position, if valid. */
+		if (currentMouse->mouseX != 0)
+			logicalMouse->mouseX = currentMouse->mouseX;
+		if (currentMouse->mouseY != 0)
+			logicalMouse->mouseY = currentMouse->mouseY;
+		
+		/* Determine the buttons that changed. */
+		buttonChange = (currentMouse->mouseButtons ^
+			logicalMouse->mouseButtons);
+		
+		/* If anything changed, go through each button. */
+		for (shift = 0; buttonChange != 0 && shift <= 31; shift++)
+		{
+			/* Button did not change? */
+			int mask = (1 << shift);
+			if ((buttonChange & mask) == 0)
+				continue;
+			
+			/* We are changing this, so flip to new state. */
+			logicalMouse->mouseButtons ^= mask;
+				
+			/* Is this being pressed or released? */
+			pressed = ((logicalMouse->mouseButtons & mask) != 0);
+				
+			/* Setup event. */
+			memset(&emit, 0, sizeof(emit));
+			if (pressed)
+				emit.type = SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED;
+			else
+				emit.type = SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED;
+			emit.time = inEvent->time;
+			emit.data.mouseButton.button = shift + 1;
+			emit.data.mouseButton.buttonMask = logicalMouse->mouseButtons;
+			emit.data.mouseButton.modifiers = logicalMouse->mouseModifiers;
+			emit.data.mouseButton.x = logicalMouse->mouseX;
+			emit.data.mouseButton.y = logicalMouse->mouseY;
+			
+			/* Debug. */
+			sjme_message("Mouse Button: %s %d %08x (%d, %d) [sh=%d, bc=%08x]",
+				(pressed ? "pressed" : "released"),
+				emit.data.mouseButton.buttonMask,
+				emit.data.mouseButton.button,
+				emit.data.mouseButton.x,
+				emit.data.mouseButton.y,
+				shift, buttonChange);
+			
+			/* Emit a button event. */
+			if (infoUser->callback != NULL)
+				return infoUser->callback(inState, inComponent, &emit);
+		}
+	}
+	
+	/* Has there been a change of position? */
+	if (currentMouse->mouseX != logicalMouse->mouseX ||
+		currentMouse->mouseY != logicalMouse->mouseY)
+	{
+		/* Store new position. */
+		logicalMouse->mouseX = currentMouse->mouseX;
+		logicalMouse->mouseY = currentMouse->mouseY;
+		
+		/* Setup event. */
+		memset(&emit, 0, sizeof(emit));
+		emit.type = SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION;
+		emit.time = inEvent->time;
+		emit.data.mouseMotion.buttonMask = logicalMouse->mouseButtons;
+		emit.data.mouseMotion.modifiers = logicalMouse->mouseModifiers;
+		emit.data.mouseMotion.x = logicalMouse->mouseX;
+		emit.data.mouseMotion.y = logicalMouse->mouseY;
+		
+		/* Debug. */
+#if 0
+		sjme_message("Mouse Motion: %08x (%d, %d)",
+			emit.data.mouseMotion.buttonMask,
+			emit.data.mouseMotion.x,
+			emit.data.mouseMotion.y);
+#endif
+		
+		/* Emit a motion event. */
+		if (infoUser->callback != NULL)
+			return infoUser->callback(inState, inComponent, &emit);
+	}
+	
+	/* Nothing changed, we want to reduce duplication. */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_baseInputListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull const sjme_scritchinput_event* inEvent)
 {
 	sjme_scritchui_listener_input* infoUser;
+	sjme_scritchui_uiMouseState* currentMouse;
 	sjme_scritchinput_event clone;
+	sjme_jboolean isMouse;
+	sjme_jint bit;
 	
 	if (inState == NULL || inComponent == NULL || inEvent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -31,43 +148,81 @@ static sjme_errorCode sjme_scritchui_baseInputListener(
 	/* Clone event data for normalization. */
 	memmove(&clone, inEvent, sizeof(clone));
 	
+	/* Clear event flags. */
+	isMouse = SJME_JNI_FALSE;
+	
+	/* We are only adjusting the current mouse state. */
+	currentMouse = &inComponent->state.mouse[0];
+	
 	/* Store last mouse position for any motion. */
 	if (clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION)
 	{
+		/* This is a mouse event. */
+		isMouse = SJME_JNI_TRUE;
+		
 		/* Remember position of last motion. */
-		inComponent->state.mouseX = clone.data.mouseMotion.x;
-		inComponent->state.mouseY = clone.data.mouseMotion.y;
+		currentMouse->mouseX = clone.data.mouseMotion.x;
+		currentMouse->mouseY = clone.data.mouseMotion.y;
 		
 		/* Do we need to restore a button mask? Some GUIs do not have this */
 		/* information during motion events. */
 		if (clone.data.mouseMotion.buttonMask == 0)
 			clone.data.mouseMotion.buttonMask =
-				inComponent->state.mouseButtons;
+				currentMouse->mouseButtons;
+		
+		/* Otherwise store the button mask. */
+		else
+			currentMouse->mouseButtons = clone.data.mouseMotion.buttonMask;
+		
+		/* Set modifiers. */
+		if (clone.data.mouseMotion.modifiers !=
+			SJME_SCRITCHINPUT_MODIFIER_UNSUPPORTED)
+			currentMouse->mouseModifiers = clone.data.mouseMotion.modifiers;
 	}
 	
 	/* Do we need to set the position for mouse button clicks? */
 	else if (clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED ||
 		clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED)
 	{
-		/* Either set or clear the mouse button bit. */
-		sjme_jint bit = (1 << clone.data.mouseButton.button); 
-		if (clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED)
-			inComponent->state.mouseButtons |= bit;
+		/* This is a mouse event. */
+		isMouse = SJME_JNI_TRUE;
+		
+		/* Either set or clear the mouse button bit, if known. */
+		if (clone.data.mouseButton.button != 0)
+		{
+			bit = (1 << clone.data.mouseButton.button); 
+			if (clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED)
+				currentMouse->mouseButtons |= bit;
+			else
+				currentMouse->mouseButtons &= ~bit;
+		}
+		
+		/* Set via mask. */
 		else
-			inComponent->state.mouseButtons &= ~bit;
+			currentMouse->mouseButtons = clone.data.mouseButton.buttonMask;
 		
 		/* Restore X or save it? */
 		if (clone.data.mouseButton.x == 0)
-			clone.data.mouseButton.x = inComponent->state.mouseX;
+			clone.data.mouseButton.x = currentMouse->mouseX;
 		else
-			inComponent->state.mouseX = clone.data.mouseButton.x;
+			currentMouse->mouseX = clone.data.mouseButton.x;
 			
 		/* Restore Y or save it? */
 		if (clone.data.mouseButton.y == 0)
-			clone.data.mouseButton.y = inComponent->state.mouseY;
+			clone.data.mouseButton.y = currentMouse->mouseY;
 		else
-			inComponent->state.mouseY = clone.data.mouseButton.y;
+			currentMouse->mouseY = clone.data.mouseButton.y;
+		
+		/* Set modifiers. */
+		if (clone.data.mouseButton.modifiers !=
+			SJME_SCRITCHINPUT_MODIFIER_UNSUPPORTED)
+			currentMouse->mouseModifiers = clone.data.mouseButton.modifiers;
 	}
+	
+	/* If this is the mouse, transition and normalize states. */
+	if (isMouse)
+		return sjme_scritchui_baseInputListenerMouse(inState, inComponent,
+			&clone);
 	
 	/* Forward to callback! */
 	if (infoUser->callback != NULL)

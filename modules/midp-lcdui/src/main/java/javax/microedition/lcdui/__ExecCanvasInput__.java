@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Input event handler for canvases.
@@ -52,11 +53,11 @@ class __ExecCanvasInput__
 		KeyListener keyCustom = canvas._keyListener;
 		
 		// Debug
-		/*
-		Debugging.debugNote("Event %d %d %d %d %d %d %d %d %d %d %d %d " +
-			"%d %d",
-			__type, __time, __a, __b, __c, __d, __e, __f, __g, __h, __i, __j,
-			__k, __l);*/
+		if (false)
+			Debugging.debugNote(
+				"Event %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+				__type, __time, __a, __b, __c, __d, __e, __f, __g, __h,
+				__i, __j, __k, __l);
 		
 		// Depends on the actual event that occurred
 		switch (__type)
@@ -75,19 +76,19 @@ class __ExecCanvasInput__
 				
 			case ScritchInputMethodType.MOUSE_MOTION:
 				// Only care for the first mouse button
-				if ((__a & 2) != 0)
+				if ((__a & 1) != 0)
 					canvas.pointerDragged(__c, __d);
 				break;
 				
 			case ScritchInputMethodType.MOUSE_BUTTON_PRESSED:
 				// Only care for the first mouse button
-				if (__a == 1)
+				if (__e == 1)
 					canvas.pointerPressed(__c, __d);
 				break;
 				
 			case ScritchInputMethodType.MOUSE_BUTTON_RELEASED:
 				// Only care for the first mouse button
-				if (__a == 1)
+				if (__e == 1)
 					canvas.pointerReleased(__c, __d);
 				break;
 		}

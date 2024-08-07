@@ -345,6 +345,9 @@ typedef enum sjme_scritchinput_key
 
 typedef enum sjme_scritchinput_modifier
 {
+	/** Modifier status not supported. */
+	SJME_SCRITCHINPUT_MODIFIER_UNSUPPORTED = -1,
+	
 	/** Alt key modifier. */
 	SJME_SCRITCHINPUT_MODIFIER_ALT = 65536,
 		
@@ -419,8 +422,8 @@ typedef struct sjme_scritchinput_eventDataKey
 
 typedef struct sjme_scritchinput_eventDataMouseButton
 {
-	/** The button being pressed. */
-	sjme_jint button;
+	/** The buttons being pressed. */
+	sjme_jint buttonMask;
 	
 	/** The modifiers held down, from @c sjme_scritchinput_modifier . */
 	sjme_jint modifiers;
@@ -430,6 +433,9 @@ typedef struct sjme_scritchinput_eventDataMouseButton
 	
 	/** The Y coordinate. */
 	sjme_jint y;
+	
+	/** The button being pressed. */
+	sjme_jint button;
 } sjme_scritchinput_eventDataMouseButton;
 
 typedef struct sjme_scritchinput_eventDataMouseMotion

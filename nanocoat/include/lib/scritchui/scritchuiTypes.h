@@ -139,6 +139,26 @@ typedef struct sjme_scritchui_pencilBase
 /** The string length of a component ID. */
 #define SJME_SCRITCHUI_UI_COMPONENT_ID_STRLEN 32
 
+/**
+ * Stores the mouse state.
+ * 
+ * @since 2024/08/07
+ */
+typedef struct sjme_scritchui_uiMouseState
+{
+	/** The mouse buttons being held down. */
+	sjme_jint mouseButtons;
+	
+	/** The modifiers being held down. */
+	sjme_jint mouseModifiers;
+		
+	/** Last mouse X position. */
+	sjme_jint mouseX;
+		
+	/** Last mouse Y position. */
+	sjme_jint mouseY;
+} sjme_scritchui_uiMouseState;
+
 typedef struct sjme_scritchui_uiComponentBase
 {
 	/** Common data. */
@@ -165,14 +185,8 @@ typedef struct sjme_scritchui_uiComponentBase
 		/** Is this visible to the user? */
 		sjme_jboolean isUserVisible;
 		
-		/** The mouse buttons being held down. */
-		sjme_jint mouseButtons;
-		
-		/** Last mouse X position. */
-		sjme_jint mouseX;
-		
-		/** Last mouse Y position. */
-		sjme_jint mouseY;
+		/** Current and next logical mouse state. */
+		sjme_scritchui_uiMouseState mouse[2];
 	} state;
 } sjme_scritchui_uiComponentBase;
 
