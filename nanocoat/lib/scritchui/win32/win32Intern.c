@@ -11,6 +11,173 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
+static sjme_jint sjme_scritchui_win32_keyModifiers(void)
+{
+	sjme_jint result;
+	
+	result = 0;
+	if (GetKeyState(VK_SHIFT))
+		result |= SJME_SCRITCHINPUT_MODIFIER_SHIFT;
+	if (GetKeyState(VK_CONTROL))
+		result |= SJME_SCRITCHINPUT_MODIFIER_CTRL;
+	if (GetKeyState(VK_MENU))
+		result |= SJME_SCRITCHINPUT_MODIFIER_ALT;
+	if (GetKeyState(VK_LWIN) || GetKeyState(VK_RWIN))
+		result |= SJME_SCRITCHINPUT_MODIFIER_COMMAND;
+	
+	return result;
+}
+
+static sjme_jint sjme_scritchui_win32_keyCode(sjme_jint inKey)
+{
+	/* Common keys. */
+	if ((inKey >= '0' && inKey <= '9') ||
+		(inKey >= 'A' && inKey <= 'Z'))
+		return inKey;
+	
+	/* Map specific virtual codes first. */
+	switch (inKey)
+	{
+		case VK_MENU:
+			return SJME_SCRITCHINPUT_KEY_ALT;
+		case VK_BACK:
+			return SJME_SCRITCHINPUT_KEY_BACKSPACE;
+		case VK_CAPITAL:
+			return SJME_SCRITCHINPUT_KEY_CAPSLOCK;
+		case VK_LMENU:
+		case VK_RMENU:
+			return SJME_SCRITCHINPUT_KEY_CONTEXT_MENU;
+		case VK_CONTROL:
+			return SJME_SCRITCHINPUT_KEY_CONTROL;
+		case VK_DELETE:
+			return SJME_SCRITCHINPUT_KEY_DELETE;
+		case VK_DOWN:
+			return SJME_SCRITCHINPUT_KEY_DOWN;
+		case VK_END:
+			return SJME_SCRITCHINPUT_KEY_END;
+		case VK_RETURN:
+			return SJME_SCRITCHINPUT_KEY_ENTER;
+		case VK_ESCAPE:
+			return SJME_SCRITCHINPUT_KEY_ESCAPE;
+		case VK_F1:
+			return SJME_SCRITCHINPUT_KEY_F1;
+		case VK_F2:
+			return SJME_SCRITCHINPUT_KEY_F2;
+		case VK_F3:
+			return SJME_SCRITCHINPUT_KEY_F3;
+		case VK_F4:
+			return SJME_SCRITCHINPUT_KEY_F4;
+		case VK_F5:
+			return SJME_SCRITCHINPUT_KEY_F5;
+		case VK_F6:
+			return SJME_SCRITCHINPUT_KEY_F6;
+		case VK_F7:
+			return SJME_SCRITCHINPUT_KEY_F7;
+		case VK_F8:
+			return SJME_SCRITCHINPUT_KEY_F8;
+		case VK_F9:
+			return SJME_SCRITCHINPUT_KEY_F9;
+		case VK_F10:
+			return SJME_SCRITCHINPUT_KEY_F10;
+		case VK_F11:
+			return SJME_SCRITCHINPUT_KEY_F11;
+		case VK_F12:
+			return SJME_SCRITCHINPUT_KEY_F12;
+		case VK_F13:
+			return SJME_SCRITCHINPUT_KEY_F13;
+		case VK_F14:
+			return SJME_SCRITCHINPUT_KEY_F14;
+		case VK_F15:
+			return SJME_SCRITCHINPUT_KEY_F15;
+		case VK_F16:
+			return SJME_SCRITCHINPUT_KEY_F16;
+		case VK_F17:
+			return SJME_SCRITCHINPUT_KEY_F17;
+		case VK_F18:
+			return SJME_SCRITCHINPUT_KEY_F18;
+		case VK_F19:
+			return SJME_SCRITCHINPUT_KEY_F19;
+		case VK_F20:
+			return SJME_SCRITCHINPUT_KEY_F20;
+		case VK_F21:
+			return SJME_SCRITCHINPUT_KEY_F21;
+		case VK_F22:
+			return SJME_SCRITCHINPUT_KEY_F22;
+		case VK_F23:
+			return SJME_SCRITCHINPUT_KEY_F23;
+		case VK_F24:
+			return SJME_SCRITCHINPUT_KEY_F24;
+		case VK_HOME:
+			return SJME_SCRITCHINPUT_KEY_HOME;
+		case VK_INSERT:
+			return SJME_SCRITCHINPUT_KEY_INSERT;
+		case VK_LEFT:
+			return SJME_SCRITCHINPUT_KEY_LEFT;
+		case VK_LWIN:
+		case VK_RWIN:
+			return SJME_SCRITCHINPUT_KEY_LOGO;
+		case VK_NUMLOCK:
+			return SJME_SCRITCHINPUT_KEY_NUMLOCK;
+		case VK_NUMPAD0:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_0;
+		case VK_NUMPAD1:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_1;
+		case VK_NUMPAD2:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_2;
+		case VK_NUMPAD3:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_3;
+		case VK_NUMPAD4:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_4;
+		case VK_NUMPAD5:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_5;
+		case VK_NUMPAD6:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_6;
+		case VK_NUMPAD7:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_7;
+		case VK_NUMPAD8:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_8;
+		case VK_NUMPAD9:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_9;
+		case VK_DECIMAL:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_DECIMAL;
+		case VK_DIVIDE:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_DIVIDE;
+#if 0
+		case VK_NUMPAD_ENTER:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_ENTER;
+#endif
+		case VK_SUBTRACT:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_MINUS;
+		case VK_MULTIPLY:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_MULTIPLY;
+		case VK_ADD:
+			return SJME_SCRITCHINPUT_KEY_NUMPAD_PLUS;
+		case VK_PRIOR:
+			return SJME_SCRITCHINPUT_KEY_PAGE_DOWN;
+		case VK_NEXT:
+			return SJME_SCRITCHINPUT_KEY_PAGE_UP;
+		case VK_PAUSE:
+			return SJME_SCRITCHINPUT_KEY_PAUSE;
+		case VK_SNAPSHOT:
+			return SJME_SCRITCHINPUT_KEY_PRINTSCREEN;
+		case VK_RIGHT:
+			return SJME_SCRITCHINPUT_KEY_RIGHT;
+		case VK_SCROLL:
+			return SJME_SCRITCHINPUT_KEY_SCROLLLOCK;
+		case VK_SHIFT:
+			return SJME_SCRITCHINPUT_KEY_SHIFT;
+		case VK_SPACE:
+			return SJME_SCRITCHINPUT_KEY_SPACE;
+		case VK_TAB:
+			return SJME_SCRITCHINPUT_KEY_TAB;
+		case VK_UP:
+			return SJME_SCRITCHINPUT_KEY_UP;
+	}
+	
+	/* Unknown. */
+	return SJME_SCRITCHINPUT_KEY_UNKNOWN;
+}
+
 static sjme_jint sjme_scritchui_win32_mouseButtons(sjme_jint inMod)
 {
 	sjme_jint result;
@@ -43,7 +210,61 @@ static sjme_jint sjme_scritchui_win32_mouseModifiers(sjme_jint inMod)
 	if (inMod & MK_SHIFT)
 		result |= SJME_SCRITCHINPUT_MODIFIER_SHIFT;
 	
-	return result;
+	/* Have key modifiers on top, except for CTRL and SHIFT. */
+	return result | (sjme_scritchui_win32_keyModifiers() &
+		~(SJME_SCRITCHINPUT_MODIFIER_CTRL |
+		SJME_SCRITCHINPUT_MODIFIER_SHIFT));
+}
+
+static sjme_errorCode sjme_scritchui_win32_windowProc_CHAR(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable HWND hWnd,
+	sjme_attrInValue UINT message,
+	sjme_attrInValue WPARAM wParam,
+	sjme_attrInValue LPARAM lParam,
+	sjme_attrOutNullable LRESULT* lResult)
+{
+	sjme_scritchui_uiComponent inComponent;
+	sjme_scritchui_listener_input* infoCore;
+	sjme_scritchinput_event inputEvent;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Initially set that we did not handle this. */
+	if (lResult != NULL)
+		*lResult = 1;
+	
+	/* Recover component. */
+	inComponent = NULL;
+	if (sjme_error_is(inState->implIntern->recoverComponent(inState,
+		hWnd, &inComponent)))
+		return SJME_ERROR_USE_FALLBACK;
+	
+	/* If this is a window, we need the bound component. */
+	if (inComponent->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
+		inComponent = ((sjme_scritchui_uiWindow)inComponent)->focusedComponent;
+	if (inComponent == NULL)
+		return SJME_ERROR_USE_FALLBACK;
+	
+	/* Only call if there is a handler for it. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, input);
+	if (infoCore->callback == NULL)
+		return SJME_ERROR_USE_FALLBACK;
+		
+	/* We are handling this now. */
+	if (lResult != NULL)
+		*lResult = 0;
+	
+	/* Setup event. */
+	memset(&inputEvent, 0, sizeof(inputEvent));
+	inputEvent.type = SJME_SCRITCHINPUT_TYPE_KEY_CHAR_PRESSED;
+	inState->nanoTime(&inputEvent.time);
+	inputEvent.data.key.code = wParam & 0xFFFF;
+	inputEvent.data.key.modifiers = sjme_scritchui_win32_keyModifiers();
+	
+	/* Call listener. */
+	return infoCore->callback(inState, inComponent, &inputEvent);
 }
 
 static sjme_errorCode sjme_scritchui_win32_windowProc_CLOSE(
@@ -179,6 +400,65 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_GETMINMAXINFO(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_win32_windowProc_KEY(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable HWND hWnd,
+	sjme_attrInValue UINT message,
+	sjme_attrInValue WPARAM wParam,
+	sjme_attrInValue LPARAM lParam,
+	sjme_attrOutNullable LRESULT* lResult)
+{
+	sjme_scritchui_uiComponent inComponent;
+	sjme_scritchui_listener_input* infoCore;
+	sjme_scritchinput_event inputEvent;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Initially set that we did not handle this. */
+	if (lResult != NULL)
+		*lResult = 1;
+	
+	/* Recover component. */
+	inComponent = NULL;
+	if (sjme_error_is(inState->implIntern->recoverComponent(inState,
+		hWnd, &inComponent)))
+		return SJME_ERROR_USE_FALLBACK;
+	
+	/* If this is a window, we need the bound component. */
+	if (inComponent->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
+		inComponent = ((sjme_scritchui_uiWindow)inComponent)->focusedComponent;
+	if (inComponent == NULL)
+		return SJME_ERROR_USE_FALLBACK;
+	
+	/* Only call if there is a handler for it. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, input);
+	if (infoCore->callback == NULL)
+		return SJME_ERROR_USE_FALLBACK;
+		
+	/* We are handling this now. */
+	if (lResult != NULL)
+		*lResult = 0;
+	
+	/* Setup event. */
+	memset(&inputEvent, 0, sizeof(inputEvent));
+	inState->nanoTime(&inputEvent.time);
+	if (message == WM_KEYDOWN)
+	{
+		if ((lParam & 0x0F) > 1)
+			inputEvent.type = SJME_SCRITCHINPUT_TYPE_KEY_REPEATED;
+		else
+			inputEvent.type = SJME_SCRITCHINPUT_TYPE_KEY_PRESSED;
+	}
+	else
+		inputEvent.type = SJME_SCRITCHINPUT_TYPE_KEY_RELEASED;
+	inputEvent.data.key.modifiers = sjme_scritchui_win32_keyModifiers();
+	inputEvent.data.key.code = sjme_scritchui_win32_keyCode(wParam);
+	
+	/* Call listener. */
+	return infoCore->callback(inState, inComponent, &inputEvent);
 }
 
 static sjme_errorCode sjme_scritchui_win32_windowProc_MOUSE(
@@ -550,6 +830,12 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 	error = SJME_ERROR_NONE;
 	switch (message)
 	{
+			/* Unicode character. */
+		case WM_CHAR:
+			error = sjme_scritchui_win32_windowProc_CHAR(
+				inState, hWnd, message, wParam, lParam, &useResult);
+			break;
+		
 			/* Window is closed. */
 		case WM_CLOSE:
 			error = sjme_scritchui_win32_windowProc_CLOSE(
@@ -565,6 +851,12 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 			/* Get minimum and maximum window bounds. */
 		case WM_GETMINMAXINFO:
 			error = sjme_scritchui_win32_windowProc_GETMINMAXINFO(
+				inState, hWnd, message, wParam, lParam, &useResult);
+			break;
+		
+		case WM_KEYDOWN:
+		case WM_KEYUP:
+			error = sjme_scritchui_win32_windowProc_KEY(
 				inState, hWnd, message, wParam, lParam, &useResult);
 			break;
 			

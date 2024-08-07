@@ -477,6 +477,9 @@ typedef struct sjme_scritchui_uiWindowBase
 	
 	/** The window overhead size, to account for menus, titlebar, etc. */
 	sjme_scritchui_dim minOverhead;
+	
+	/** The component that has the focus. */
+	sjme_scritchui_uiComponent focusedComponent;
 } sjme_scritchui_uiWindowBase;
 
 struct sjme_scritchui_pencilFontBase

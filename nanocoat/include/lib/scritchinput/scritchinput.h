@@ -92,10 +92,13 @@ typedef enum sjme_scritchinput_type
 	
 	/** Device action (flip open/close, shaken, not stirred). */
 	SJME_SCRITCHINPUT_TYPE_DEVICE_ACTION = 131072,
+	
+	/** A character key was pressed. */
+	SJME_SCRITCHINPUT_TYPE_KEY_CHAR_PRESSED = 262144,
 } sjme_scritchinput_type;
 
 typedef enum sjme_scritchinput_key
-{	
+{
 	/** Backspace. */
 	SJME_SCRITCHINPUT_KEY_BACKSPACE = 8,
 		

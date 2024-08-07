@@ -126,6 +126,13 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 		inState, addComponent)))
 		return sjme_error_default(error);
 	
+	/* If our component has the default focus, then grab it. */
+	if (addComponent->common.type == SJME_SCRITCHUI_TYPE_PANEL &&
+		((sjme_scritchui_uiPanel)addComponent)->defaultFocus)
+		if (sjme_error_is(error = inState->apiInThread->componentFocusGrab(
+			inState, addComponent)))
+			return sjme_error_default(error);
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -157,6 +164,11 @@ sjme_errorCode sjme_scritchui_core_containerRemove(
 	list = container->components;
 	if (list == NULL)
 		return SJME_ERROR_NOT_IN_CONTAINER;
+		
+	/* Lose the focus if we are the focused item. */
+	if (sjme_error_is(error = inState->intern->bindFocus(inState,
+		removeComponent, removeComponent, SJME_JNI_FALSE)))
+		return sjme_error_default(error);
 	
 	/* Go through and find the index of the item. */
 	for (i = 0, n = list->length; i < n; i++)

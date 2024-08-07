@@ -95,6 +95,12 @@ sjme_errorCode sjme_scritchui_win32_containerAdd(
 	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
 
+sjme_errorCode sjme_scritchui_win32_containerRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
+	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent);
+
 sjme_errorCode sjme_scritchui_win32_containerSetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,

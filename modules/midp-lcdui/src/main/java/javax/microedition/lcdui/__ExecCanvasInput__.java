@@ -74,6 +74,12 @@ class __ExecCanvasInput__
 					keyCustom.keyReleased(__a, __b);
 				break;
 				
+			case ScritchInputMethodType.KEY_REPEATED:
+				keyDefault.keyRepeated(__a, __b);
+				if (keyCustom != null)
+					keyCustom.keyRepeated(__a, __b);
+				break;
+				
 			case ScritchInputMethodType.MOUSE_MOTION:
 				// Only care for the first mouse button
 				if ((__a & 1) != 0)

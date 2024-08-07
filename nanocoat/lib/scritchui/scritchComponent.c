@@ -408,12 +408,20 @@ sjme_errorCode sjme_scritchui_core_componentFocusGrab(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
 {
+	sjme_errorCode error;
+	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Not implemented? */
 	if (inState->impl->componentFocusGrab == NULL)
 		return sjme_error_notImplemented(0);
+	
+	/* For Windows, keyboard input happens on the window itself and not */
+	/* the component, so we need to refer back. */
+	if (sjme_error_is(error = inState->intern->bindFocus(inState,
+		inComponent, inComponent, SJME_JNI_TRUE)))
+		return sjme_error_default(error);
 	
 	/* Direct forward. */
 	return inState->impl->componentFocusGrab(inState, inComponent);

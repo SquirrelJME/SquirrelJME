@@ -113,4 +113,9 @@ public interface ScritchInputMethodType
 	@SquirrelJMEVendorApi
 	int DEVICE_ACTION =
 		131072;
+	
+	/** A keyboard character was typed. */
+	@SquirrelJMEVendorApi
+	int KEY_CHAR_PRESSED =
+		262144;
 }

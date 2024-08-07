@@ -53,6 +53,49 @@ static sjme_errorCode sjme_scritchui_core_choiceItem(
 	return SJME_ERROR_NONE; 
 }
 
+sjme_errorCode sjme_scritchui_core_intern_bindFocus(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent atRover,
+	sjme_attrInNotNull sjme_scritchui_uiComponent bindComponent,
+	sjme_attrInValue sjme_jboolean isGrabbing)
+{
+	sjme_scritchui_uiComponent parent;
+	sjme_scritchui_uiWindow window;
+	
+	if (inState == NULL || atRover == NULL || bindComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Ignore any attempts to bind focus to a window. */
+	if (bindComponent->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
+		return SJME_ERROR_NONE;
+	
+	/* We are at the top? */
+	parent = atRover->parent;
+	if (parent == NULL)
+	{
+		/* Only valid if a window. */
+		if (atRover->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
+		{
+			window = (sjme_scritchui_uiWindow)atRover;
+			
+			/* If we are grabbing, we just take it. */
+			if (isGrabbing)
+				window->focusedComponent = bindComponent;
+			
+			/* Otherwise, we only clear if we have the grab. */
+			else if (window->focusedComponent == bindComponent)
+				window->focusedComponent = NULL;
+		}
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Continue going up. */
+	return inState->intern->bindFocus(inState, parent, bindComponent,
+		isGrabbing);
+}
+
 sjme_errorCode sjme_scritchui_core_intern_getChoice(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

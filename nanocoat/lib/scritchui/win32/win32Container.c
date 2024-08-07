@@ -42,6 +42,36 @@ sjme_errorCode sjme_scritchui_win32_containerAdd(
 	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
 }
 
+sjme_errorCode sjme_scritchui_win32_containerRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
+	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent)
+{
+	HWND componentWindow;
+	
+	if (inState == NULL || inContainer == NULL || inContainerData == NULL ||
+		removeComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover window. */
+	componentWindow = removeComponent->common.handle[SJME_SUI_WIN32_H_HWND];
+	
+	/* Make the child window invisible. */
+	SetLastError(0);
+	ShowWindow(componentWindow, SW_HIDE);
+	
+	/* Reparent window, there should always be a parent returned. */
+	SetLastError(0);
+	if (NULL == SetParent(componentWindow,
+		inState->common.handle[SJME_SUI_WIN32_H_VOID]))
+		return inState->implIntern->getLastError(inState,
+			SJME_ERROR_NOT_SUB_COMPONENT);
+	
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+}
+
 sjme_errorCode sjme_scritchui_win32_containerSetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,

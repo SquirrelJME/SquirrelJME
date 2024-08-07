@@ -35,6 +35,13 @@ sjme_errorCode sjme_scritchui_core_panelEnableFocus(
 	inPanel->enableFocus = enableFocus;
 	inPanel->defaultFocus = defaultFocus;
 	
+	/* If we are removing focus, make sure we are unbound from the window, */
+	/* otherwise we bind to the focus if we are the default. */
+	if (sjme_error_is(error = inState->intern->bindFocus(inState,
+		inPanel, inPanel,
+			(enableFocus ? defaultFocus : SJME_JNI_FALSE))))
+		return sjme_error_default(error);
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }

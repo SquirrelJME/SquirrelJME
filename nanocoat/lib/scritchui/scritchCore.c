@@ -179,6 +179,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 /** Internal functions for ScritchUI implementations. */
 static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 {
+	.bindFocus = sjme_scritchui_core_intern_bindFocus,
 	.fontBuiltin = sjme_scritchui_core_intern_fontBuiltin,
 	.getChoice = sjme_scritchui_core_intern_getChoice,
 	.getContainer = sjme_scritchui_core_intern_getContainer,

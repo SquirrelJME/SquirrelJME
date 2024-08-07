@@ -367,6 +367,22 @@ struct sjme_scritchui_implFunctions
 #undef SJME_SCRITCHUI_QUICK_SAME
 
 /**
+ * This is called to bind the focus to a parent window.
+ * 
+ * @param inState The input state.
+ * @param atRover The current roving component.
+ * @param bindComponent The component to bind.
+ * @param isGrabbing Is focus being grabbed?
+ * @return Any resultant error, if any.
+ * @since 2024/08/07
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_bindFocusFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent atRover,
+	sjme_attrInNotNull sjme_scritchui_uiComponent bindComponent,
+	sjme_attrInValue sjme_jboolean isGrabbing);
+
+/**
  * Returns the choice for the given component.
  * 
  * @param inState The input state.
@@ -620,6 +636,9 @@ typedef sjme_errorCode (*sjme_scritchui_intern_updateVisibleWindowFunc)(
 
 struct sjme_scritchui_internFunctions
 {
+	/** Binds focus to a window. */
+	sjme_scritchui_intern_bindFocusFunc bindFocus;
+	
 	/** Returns the built-in font, this can handle layers. */
 	sjme_scritchui_fontBuiltinFunc fontBuiltin;
 		
