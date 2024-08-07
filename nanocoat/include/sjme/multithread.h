@@ -65,11 +65,19 @@ extern "C" {
 	/** A single thread. */
 	typedef pthread_t sjme_thread;
 
-	/** The type of a thread. */
-	#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_intPointer
-
-	/** Is a thread a pointer? */
-	#define SJME_TYPEOF_IS_POINTER_sjme_thread 0
+	#if defined(SJME_CONFIG_HAS_MACOS)
+		/** The type of a thread. */
+		#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
+	
+		/** Is a thread a pointer? */
+		#define SJME_TYPEOF_IS_POINTER_sjme_thread 1
+	#else
+		/** The type of a thread. */
+		#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_intPointer
+	
+		/** Is a thread a pointer? */
+		#define SJME_TYPEOF_IS_POINTER_sjme_thread 0
+	#endif
 	
 	/** Thread result. */
 	typedef sjme_pointer sjme_thread_result;
