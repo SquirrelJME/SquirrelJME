@@ -686,7 +686,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 		pencil, inState,
 		&sjme_scritchui_win32_pencilFunctions,
 		NULL, NULL,
-		SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888,
+		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
 		tx, ty,
 		w, h, w,
 		defaultFont, &frontEnd)))

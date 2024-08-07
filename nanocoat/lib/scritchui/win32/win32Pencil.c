@@ -49,7 +49,9 @@ static sjme_errorCode sjme_scritchui_win32_pencilRawScanPutPure(
 	sjme_scritchui inState;
 	HWND hWnd;
 	HDC hDc;
-	BITMAPINFO bitmap;
+	LPBITMAPINFO bitmap;
+	DWORD* bmi;
+	sjme_jint bmpLen;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -59,15 +61,27 @@ static sjme_errorCode sjme_scritchui_win32_pencilRawScanPutPure(
 	hWnd = g->frontEnd.wrapper;
 	hDc = g->frontEnd.data;
 	
+	/* Allocate bitmap info. */
+	bmpLen = sizeof(BITMAPINFO) + (sizeof(DWORD) * 4);
+	bitmap = sjme_alloca(bmpLen);
+	if (bitmap == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	memset(bitmap, 0, bmpLen);
+	
 	/* Setup bitmap for the scan. */
-	memset(&bitmap, 0, sizeof(bitmap));
-	bitmap.bmiHeader.biSize = sizeof(bitmap.bmiHeader);
-	bitmap.bmiHeader.biBitCount = 24;
-	bitmap.bmiHeader.biWidth = srcNumPixels;
-	bitmap.bmiHeader.biHeight = 1;
-	bitmap.bmiHeader.biPlanes = 1;
-	bitmap.bmiHeader.biSizeImage = srcRawLen;
-	bitmap.bmiHeader.biCompression = BI_RGB;
+	bitmap->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bitmap->bmiHeader.biBitCount = 32;
+	bitmap->bmiHeader.biWidth = srcNumPixels;
+	bitmap->bmiHeader.biHeight = 1;
+	bitmap->bmiHeader.biPlanes = 1;
+	bitmap->bmiHeader.biSizeImage = srcRawLen;
+	bitmap->bmiHeader.biCompression = BI_RGB | BI_BITFIELDS;
+	
+	/* Set RGB plane. */
+	bmi = (DWORD*)(&bitmap->bmiColors[0]);
+	bmi[0] = 0xFF0000;
+	bmi[1] = 0x00FF00;
+	bmi[2] = 0x0000FF;
 	
 	/* Perform the drawing. */
 	SetLastError(0);
@@ -77,7 +91,7 @@ static sjme_errorCode sjme_scritchui_win32_pencilRawScanPutPure(
 		0, 0,
 		srcNumPixels, 1,
 		srcRaw,
-		&bitmap,
+		bitmap,
 		DIB_RGB_COLORS,
 		SRCCOPY))
 		return inState->implIntern->getLastError(inState,
