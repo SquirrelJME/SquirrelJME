@@ -9,6 +9,9 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.lcdui.scritchui.HeadlessDisplayException;
+import net.multiphasicapps.tac.InvalidTestException;
 import net.multiphasicapps.tac.TestBoolean;
 
 /**
@@ -28,20 +31,27 @@ public class TestHasApps
 	@Override
 	public boolean test()
 	{
-		MidletMain main = new MidletMain();
-		
-		// Perform refresh
-		main.refresh(null);
-		
-		// Wait until refreshing is done
-		for (;;)
-			synchronized (main)
-			{
-				if (!main._refreshLock)
-					break;
-			}
-		
-		// This must have stuff inside of it
-		return !main._listedSuites.isEmpty();
+		try
+		{
+			MidletMain main = new MidletMain();
+			
+			// Perform refresh
+			main.refresh(null);
+			
+			// Wait until refreshing is done
+			for (;;)
+				synchronized (main)
+				{
+					if (!main._refreshLock)
+						break;
+				}
+			
+			// This must have stuff inside of it
+			return !main._listedSuites.isEmpty();
+		}
+		catch (HeadlessDisplayException __e)
+		{
+			throw new InvalidTestException(__e);
+		}
 	}
 }
