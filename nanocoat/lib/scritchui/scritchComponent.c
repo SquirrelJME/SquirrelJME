@@ -189,7 +189,7 @@ static sjme_errorCode sjme_scritchui_baseInputListener(
 			currentMouse->mouseModifiers = clone.data.mouseMotion.modifiers;
 		
 		/* If no buttons are down, pull from logical. Otherwise, use the */
-		/* mask from the event. Some GUIs will not pass modifiers during */
+		/* mask from the event. Some GUIs will not pass buttons during */
 		/* motion events, but will for normal press/release. */
 		if (clone.data.mouseMotion.buttonMask == 0)
 			currentMouse->mouseButtons = logicalMouse->mouseButtons;
@@ -209,6 +209,16 @@ static sjme_errorCode sjme_scritchui_baseInputListener(
 		/* Forward to handler to further clean up. */
 		return sjme_scritchui_baseInputListenerMouse(inState, inComponent,
 			&clone);
+	}
+	
+	/* Normalize key. */
+	else if (clone.type == SJME_SCRITCHINPUT_TYPE_KEY_PRESSED ||
+		clone.type == SJME_SCRITCHINPUT_TYPE_KEY_RELEASED)
+	{
+		/* If any lowercase keys were passed, make them capitalized. */
+		bit = clone.data.key.code;
+		if (bit >= 'a' && bit <= 'z')
+			clone.data.key.code = 'A' + (bit - 'a');
 	}
 	
 	/* Forward to callback! */

@@ -20,7 +20,7 @@ sjme_errorCode sjme_scritchui_gtk2_labelSetString(
 	GtkWidget* gtkWidget;
 	GtkWidget* gtkWidgetB;
 	
-	if (inState == NULL || inComponent == NULL)
+	if (inState == NULL || inCommon == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover handle. */

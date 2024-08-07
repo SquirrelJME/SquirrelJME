@@ -129,7 +129,8 @@ static sjme_errorCode sjme_scritchui_gtk2_eventInputButton(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	GdkEventButton* event,
-	sjme_attrInNotNull sjme_scritchinput_event* fill)
+	sjme_attrInNotNull sjme_scritchinput_event* fill,
+	sjme_attrInNotNull sjme_scritchinput_event* fillTwo)
 {
 	if (inState == NULL || inComponent == NULL || event == NULL ||
 		fill == NULL)
@@ -158,30 +159,41 @@ static sjme_errorCode sjme_scritchui_gtk2_eventInputKey(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	GdkEventKey* event,
-	sjme_attrInNotNull sjme_scritchinput_event* fill)
+	sjme_attrInNotNull sjme_scritchinput_event* fill,
+	sjme_attrInNotNull sjme_scritchinput_event* fillTwo)
 {
 	sjme_jint code;
+	guint unicode;
 	
 	if (inState == NULL || inComponent == NULL || event == NULL ||
-		fill == NULL)
+		fill == NULL || fillTwo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Map to standard key */
-	code = inState->implIntern->mapGtkToScritchKey(event->keyval);
+	unicode = 0;
+	code = inState->implIntern->mapGtkToScritchKey(event->keyval,
+		&unicode);
 	if (code == SJME_SCRITCHINPUT_KEY_UNKNOWN)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
+	/* Unicode key? */
+	if (event->type == GDK_KEY_PRESS)
+	{
+		fillTwo->type = SJME_SCRITCHINPUT_TYPE_KEY_CHAR_PRESSED;
+		fill->data.key.code = (sjme_jint)unicode;
+	}
+	
 	/* Determine type. */
 	if (event->type == GDK_KEY_PRESS)
-		fill->type = SJME_SCRITCHINPUT_TYPE_KEY_PRESSED;
+		fillTwo->type = SJME_SCRITCHINPUT_TYPE_KEY_PRESSED;
 	else if (event->type == GDK_KEY_RELEASE)
-		fill->type = SJME_SCRITCHINPUT_TYPE_KEY_RELEASED;
+		fillTwo->type = SJME_SCRITCHINPUT_TYPE_KEY_RELEASED;
 	else
 		return SJME_ERROR_INVALID_ARGUMENT;
 		
 	/* Setup data. */
-	fill->data.key.code = code;
-	fill->data.key.modifiers =
+	fillTwo->data.key.code = code;
+	fillTwo->data.key.modifiers =
 		inState->implIntern->mapGtkToScritchMod(event->state);
 	
 	/* Success!. */
@@ -192,7 +204,8 @@ static sjme_errorCode sjme_scritchui_gtk2_eventInputMotion(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	GdkEventMotion* event,
-	sjme_attrInNotNull sjme_scritchinput_event* fill)
+	sjme_attrInNotNull sjme_scritchinput_event* fill,
+	sjme_attrInNotNull sjme_scritchinput_event* fillTwo)
 {
 	if (inState == NULL || inComponent == NULL || event == NULL ||
 		fill == NULL)
@@ -221,7 +234,7 @@ static gboolean sjme_scritchui_gtk2_eventInput(
 	sjme_scritchui inState;
 	sjme_scritchui_uiComponent inComponent;
 	sjme_scritchui_listener_input* infoCore;
-	sjme_scritchinput_event fill;
+	sjme_scritchinput_event fill, fillTwo;
 	
 	if (widget == NULL || event == NULL || data == NULL)
 		return FALSE;
@@ -232,7 +245,9 @@ static gboolean sjme_scritchui_gtk2_eventInput(
 	
 	/* Setup base event. */
 	memset(&fill, 0, sizeof(fill));
+	memset(&fillTwo, 0, sizeof(fillTwo));
 	inState->nanoTime(&fill.time);
+	inState->nanoTime(&fillTwo.time);
 	
 	/* Get listener info. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, input);
@@ -241,25 +256,26 @@ static gboolean sjme_scritchui_gtk2_eventInput(
 	if (infoCore->callback == NULL)
 		return FALSE;
 	
-	/* Key event. */
+	/* Mouse button. */
 	if (event->type == GDK_BUTTON_PRESS ||
 		event->type == GDK_BUTTON_RELEASE)
 		error = sjme_scritchui_gtk2_eventInputButton(
 			inState, inComponent,
-			(GdkEventButton*)event, &fill);
+			(GdkEventButton*)event, &fill, &fillTwo);
 	
-	/* Mouse button. */
+		
+	/* Keyboard key. */
 	else if (event->type == GDK_KEY_PRESS ||
 		event->type == GDK_KEY_RELEASE)
 		error = sjme_scritchui_gtk2_eventInputKey(
 			inState, inComponent,
-			(GdkEventKey*)event, &fill);
+			(GdkEventKey*)event, &fill, &fillTwo);
 		
 	/* Mouse motion. */
 	else if (event->type == GDK_MOTION_NOTIFY)
 		error = sjme_scritchui_gtk2_eventInputMotion(
 			inState, inComponent,
-			(GdkEventMotion*)event, &fill);
+			(GdkEventMotion*)event, &fill, &fillTwo);
 	
 	/* Unknown, so ignore. */
 	else
@@ -270,8 +286,16 @@ static gboolean sjme_scritchui_gtk2_eventInput(
 		return FALSE;
 	
 	/* Forward accordingly. */
-	if (sjme_error_is(infoCore->callback(inState, inComponent,
-		&fill)))
+	error = SJME_ERROR_NONE;
+	if (fill.type != SJME_SCRITCHINPUT_TYPE_UNKNOWN)
+		error |= sjme_error_is(infoCore->callback(inState, inComponent,
+			&fill));
+	if (fillTwo.type != SJME_SCRITCHINPUT_TYPE_UNKNOWN)
+		error |= sjme_error_is(infoCore->callback(inState, inComponent,
+			&fillTwo));
+	
+	/* Failed? */
+	if (sjme_error_is(error))
 		return FALSE;
 	
 	/* We handled this, so stop. */

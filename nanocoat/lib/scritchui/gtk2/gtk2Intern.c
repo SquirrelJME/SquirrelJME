@@ -251,10 +251,19 @@ sjme_errorCode sjme_scritchui_gtk2_intern_disconnectSignal(
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
-sjme_jint sjme_scritchui_gtk2_intern_mapGtkToScritchKey(guint in)
+sjme_jint sjme_scritchui_gtk2_intern_mapGtkToScritchKey(guint in,
+	guint* outUnicode)
 {
 	const sjme_scritchui_gtk2_intern_keyMap* map;
 	guint32 unicode;
+	
+	/* Map unicode key. */
+	unicode = gdk_keyval_to_unicode(in);
+	if (unicode >= ' ' && unicode <= 0xFFFF)
+	{
+		if (outUnicode != NULL)
+			*outUnicode = unicode;
+	}
 	
 	/* Map to hard keys first for specific keys such as number pad keys */
 	/* as they technically map to unicode, theoretically. */
@@ -263,7 +272,6 @@ sjme_jint sjme_scritchui_gtk2_intern_mapGtkToScritchKey(guint in)
 			return map->scritch;
 	
 	/* Is this a unicode key? Map to char if so... */
-	unicode = gdk_keyval_to_unicode(in);
 	if (unicode >= ' ' && unicode <= 0xFFFF)
 		return unicode;
 	

@@ -47,7 +47,7 @@ typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_disconnectSignalFunc)(
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore);
 
 typedef sjme_jint (*sjme_scritchui_gtk2_intern_mapGtkToScritchKeyFunc)(
-	guint in);
+	guint in, guint* outUnicode);
 
 typedef sjme_jint (*sjme_scritchui_gtk2_intern_mapGtkToScritchModFunc)(
 	guint in);
@@ -119,7 +119,8 @@ sjme_errorCode sjme_scritchui_gtk2_intern_disconnectSignal(
 	sjme_attrInNotNull GtkWidget* inWidget,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore);
 
-sjme_jint sjme_scritchui_gtk2_intern_mapGtkToScritchKey(guint in);
+sjme_jint sjme_scritchui_gtk2_intern_mapGtkToScritchKey(guint in,
+	guint* outUnicode);
 
 sjme_jint sjme_scritchui_gtk2_intern_mapGtkToScritchMod(guint in);
 
