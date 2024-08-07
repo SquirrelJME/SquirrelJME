@@ -128,6 +128,10 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 	/* Associate parent. */
 	childMenu->parent = SJME_SUI_CAST_MENU_KIND(intoMenu);
 	
+	/* Recount index position. */
+	for (i = 0; i <= n; i++)
+		childList->elements[i]->index = i;
+	
 	/* Forward to native implementation. */
 	return inState->impl->menuInsert(inState, intoMenu, atIndex, childItem);
 }

@@ -398,14 +398,14 @@ typedef sjme_errorCode (*sjme_scritchui_intern_getContainerFunc)(
  * Returns the labeled item for the given component.
  * 
  * @param inState The input state.
- * @param inComponent The input component.
+ * @param inCommon The input common item.
  * @param outLabeled The resultant labeled item.
  * @return Any error code if applicable, such as the component is not valid.
  * @since 2024/07/22 
  */
 typedef sjme_errorCode (*sjme_scritchui_intern_getLabeledFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInOutNotNull sjme_scritchui_uiLabeled* outLabeled);
 
 /**

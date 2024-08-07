@@ -215,7 +215,7 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 
 sjme_errorCode sjme_scritchui_core_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInNullable sjme_lpcstr inString);
 	
 sjme_errorCode sjme_scritchui_core_lafElementColor(
@@ -378,7 +378,7 @@ sjme_errorCode sjme_scritchui_core_intern_getContainer(
 
 sjme_errorCode sjme_scritchui_core_intern_getLabeled(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInOutNotNull sjme_scritchui_uiLabeled* outLabeled);
 
 sjme_errorCode sjme_scritchui_core_intern_getMenuHasChildren(

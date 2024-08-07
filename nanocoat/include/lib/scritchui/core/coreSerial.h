@@ -388,7 +388,7 @@ SUD_STRUCT_DEF(hardwareGraphics,
 	SDU_VARP(const sjme_frontEnd*, pencilFrontEndCopy););
 
 SUD_STRUCT_DEF(labelSetString,
-	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VAR(sjme_scritchui_uiCommon, inCommon);
 	SDU_VAR(sjme_lpcstr, inString););
 
 SUD_STRUCT_DEF(lafElementColor,
@@ -763,7 +763,7 @@ sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	
 sjme_errorCode sjme_scritchui_coreSerial_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInNullable sjme_lpcstr inString);
 	
 sjme_errorCode sjme_scritchui_coreSerial_lafElementColor(

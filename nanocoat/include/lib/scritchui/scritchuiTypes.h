@@ -289,6 +289,9 @@ struct sjme_scritchui_uiMenuKindBase
 {
 	/** Common data. */
 	sjme_scritchui_uiCommonBase common;
+	
+	/** The index of this item in the parent. */
+	sjme_jint index;
 };
 
 struct sjme_scritchui_uiMenuHasChildrenBase

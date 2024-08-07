@@ -13,20 +13,20 @@
 
 sjme_errorCode sjme_scritchui_fb_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInNullable sjme_lpcstr inString)
 {
 	sjme_scritchui wrappedState;
-	sjme_scritchui_uiComponent wrappedComponent;
+	sjme_scritchui_uiCommon wrappedCommon;
 	
-	if (inState == NULL || inComponent == NULL)
+	if (inState == NULL || inCommon == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedComponent = inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	wrappedCommon = inCommon->handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Just forward to the wrapper. */
 	return wrappedState->apiInThread->labelSetString(wrappedState,
-		wrappedComponent, inString);
+		wrappedCommon, inString);
 }

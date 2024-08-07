@@ -11,6 +11,45 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
+sjme_errorCode sjme_scritchui_win32_componentFocusGrab(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	HWND window;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover window. */
+	window = inComponent->common.handle[SJME_SUI_WIN32_H_HWND];
+	
+	/* Grab the focus for our window. */
+	SetLastError(0);
+	SetFocus(window);
+	
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+}
+
+sjme_errorCode sjme_scritchui_win32_componentFocusHas(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jboolean* outHasFocus)
+{
+	HWND window;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover window. */
+	window = inComponent->common.handle[SJME_SUI_WIN32_H_HWND];
+	
+	/* We have the focus if our window is returned here. */
+	SetLastError(0);
+	*outHasFocus = (window == GetFocus());
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_win32_componentPosition(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

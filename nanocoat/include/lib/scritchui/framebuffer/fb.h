@@ -196,7 +196,7 @@ sjme_errorCode sjme_scritchui_fb_containerSetBounds(
 	
 sjme_errorCode sjme_scritchui_fb_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInNullable sjme_lpcstr inString);
 
 sjme_errorCode sjme_scritchui_fb_lafElementColor(

@@ -1261,14 +1261,14 @@ typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
  * Sets the label of the specified component.
  * 
  * @param inState The input state.
- * @param inWindow The component to set the label of.
+ * @param inCommon The item to set the label for.
  * @param inString The label to set.
  * @return Any resultant error, if any.
  * @since 2024/07/21
  */
 typedef sjme_errorCode (*sjme_scritchui_labelSetStringFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInNullable sjme_lpcstr inString);
 
 /**

@@ -337,7 +337,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_CASE(labelSetString,
 		SJME_SCRITCHUI_SERIAL_TYPE_LABEL_SET_STRING,
 		(state,
-		as->labelSetString.inComponent,
+		as->labelSetString.inCommon,
 		as->labelSetString.inString));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(lafElementColor,
@@ -987,14 +987,14 @@ sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	
 sjme_errorCode sjme_scritchui_coreSerial_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInNullable sjme_lpcstr inString)
 {
 	SJME_SCRITCHUI_SERIAL_CHUNK(labelSetString,
 		SJME_SCRITCHUI_SERIAL_TYPE_LABEL_SET_STRING,
-		(inState, inComponent, inString));
+		(inState, inCommon, inString));
 		
-	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(inCommon);
 	SJME_SCRITCHUI_SERIAL_PASS(inString);
 	
 	/* Invoke and wait. */

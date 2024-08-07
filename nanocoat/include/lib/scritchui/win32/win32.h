@@ -56,6 +56,15 @@ extern const sjme_scritchui_pencilImplFunctions
 
 sjme_errorCode sjme_scritchui_win32_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
+
+sjme_errorCode sjme_scritchui_win32_componentFocusGrab(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
+sjme_errorCode sjme_scritchui_win32_componentFocusHas(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jboolean* outHasFocus);
 	
 sjme_errorCode sjme_scritchui_win32_componentPosition(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -100,6 +109,11 @@ sjme_errorCode sjme_scritchui_win32_componentSize(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNullable sjme_jint* outWidth,
 	sjme_attrOutNullable sjme_jint* outHeight);
+	
+sjme_errorCode sjme_scritchui_win32_labelSetString(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
+	sjme_attrInNullable sjme_lpcstr inString);
 
 sjme_errorCode sjme_scritchui_win32_lafElementColor(
 	sjme_attrInNotNull sjme_scritchui inState,

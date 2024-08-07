@@ -13,18 +13,18 @@
 
 sjme_errorCode sjme_scritchui_core_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInNullable sjme_lpcstr inString)
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiLabeled labeled;
 	
-	if (inState == NULL || inComponent == NULL)
+	if (inState == NULL || inCommon == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Get labeled item. */
 	if (sjme_error_is(error = inState->intern->getLabeled(inState,
-		inComponent, &labeled)) || labeled == NULL)
+		inCommon, &labeled)) || labeled == NULL)
 		return sjme_error_default(error);
 	
 	/* Clear label if already allocated. */
@@ -50,33 +50,33 @@ sjme_errorCode sjme_scritchui_core_labelSetString(
 		return SJME_ERROR_NONE;
 	
 	/* Forward implementation, use stored pointer. */
-	return inState->impl->labelSetString(inState, inComponent,
+	return inState->impl->labelSetString(inState, inCommon,
 		labeled->label);
 }
 
 sjme_errorCode sjme_scritchui_core_intern_getLabeled(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInOutNotNull sjme_scritchui_uiLabeled* outLabeled)
 {
 	sjme_scritchui_uiLabeled labeled;
 	
-	if (inState == NULL || inComponent == NULL || outLabeled == NULL)
+	if (inState == NULL || inCommon == NULL || outLabeled == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Only certain types can be labeled. */
-	switch (inComponent->common.type)
+	switch (inCommon->type)
 	{
 		case SJME_SCRITCHUI_TYPE_MENU:
-			labeled = &((sjme_scritchui_uiMenu)inComponent)->labeled;
+			labeled = &((sjme_scritchui_uiMenu)inCommon)->labeled;
 			break;
 			
 		case SJME_SCRITCHUI_TYPE_MENU_ITEM:
-			labeled = &((sjme_scritchui_uiMenuItem)inComponent)->labeled;
+			labeled = &((sjme_scritchui_uiMenuItem)inCommon)->labeled;
 			break;
 		
 		case SJME_SCRITCHUI_TYPE_WINDOW:
-			labeled = &((sjme_scritchui_uiWindow)inComponent)->labeled;
+			labeled = &((sjme_scritchui_uiWindow)inCommon)->labeled;
 			break;
 		
 		default:

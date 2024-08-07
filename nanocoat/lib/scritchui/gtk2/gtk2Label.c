@@ -14,7 +14,7 @@
 
 sjme_errorCode sjme_scritchui_gtk2_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInNullable sjme_lpcstr inString)
 {
 	GtkWidget* gtkWidget;
@@ -24,11 +24,11 @@ sjme_errorCode sjme_scritchui_gtk2_labelSetString(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover handle. */
-	gtkWidget = inComponent->common.handle[SJME_SUI_GTK2_H_WIDGET];
-	gtkWidgetB = inComponent->common.handle[SJME_SUI_GTK2_H_TOP_WIDGET];
+	gtkWidget = inCommon->handle[SJME_SUI_GTK2_H_WIDGET];
+	gtkWidgetB = inCommon->handle[SJME_SUI_GTK2_H_TOP_WIDGET];
 	
 	/* Depends on the type. */
-	switch (inComponent->common.type)
+	switch (inCommon->type)
 	{
 			/* Menus consist of an item and an actual menu. */
 		case SJME_SCRITCHUI_TYPE_MENU:
