@@ -441,6 +441,9 @@ struct sjme_scritchui_uiViewBase
 	
 	/** The current view rectangle. */
 	sjme_scritchui_rect view;
+	
+	/** The current page size. */
+	sjme_scritchui_dim pageSize;
 };
 
 struct sjme_scritchui_uiScrollPanelBase

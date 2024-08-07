@@ -58,7 +58,7 @@ sjme_errorCode sjme_scritchui_win32_panelEnableFocus(
 	/* set to something else, despite being successful. */
 	SetLastError(0);
 	
-	/* Success! */
+	/* Success? */
 	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
 }
 
@@ -90,7 +90,7 @@ sjme_errorCode sjme_scritchui_win32_panelNew(
 	
 	/* Create window, child windows must always have a parent. */
 	SetLastError(0);
-	window = CreateWindowEx(WS_EX_TRANSPARENT,
+	window = CreateWindowEx(WS_EX_TRANSPARENT | WS_EX_COMPOSITED,
 		inPanel->component.strId,
 		"SquirrelJME",
 		WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,

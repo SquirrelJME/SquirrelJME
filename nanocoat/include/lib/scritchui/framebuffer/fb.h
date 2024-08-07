@@ -280,12 +280,13 @@ sjme_errorCode sjme_scritchui_fb_viewGetView(
 sjme_errorCode sjme_scritchui_fb_viewSetArea(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull const sjme_scritchui_dim* inViewArea);
+	sjme_attrInNotNull const sjme_scritchui_dim* inViewArea,
+	sjme_attrInNotNull const sjme_scritchui_dim* inViewPage);
 
 sjme_errorCode sjme_scritchui_fb_viewSetView(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect);
+	sjme_attrInNotNull const sjme_scritchui_point* inViewPos);
 
 sjme_errorCode sjme_scritchui_fb_viewSetViewListener(
 	sjme_attrInNotNull sjme_scritchui inState,

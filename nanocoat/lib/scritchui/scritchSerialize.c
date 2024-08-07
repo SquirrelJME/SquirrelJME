@@ -436,7 +436,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_VIEW,
 		(state,
 		as->viewSetView.inComponent,
-		as->viewSetView.inViewRect));
+		as->viewSetView.inViewPos));
 	
 	SJME_SCRITCHUI_DISPATCH_CASE(viewSetSizeSuggestListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_SIZE_SUGGEST_LISTENER,
@@ -1251,14 +1251,14 @@ sjme_errorCode sjme_scritchui_coreSerial_viewSetArea(
 sjme_errorCode sjme_scritchui_coreSerial_viewSetView(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect)
+	sjme_attrInNotNull const sjme_scritchui_point* inViewPos)
 {
 	SJME_SCRITCHUI_SERIAL_CHUNK(viewSetView,
 		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_VIEW,
-		(inState, inComponent, inViewRect));
+		(inState, inComponent, inViewPos));
 	
 	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
-	SJME_SCRITCHUI_SERIAL_PASS(inViewRect);
+	SJME_SCRITCHUI_SERIAL_PASS(inViewPos);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

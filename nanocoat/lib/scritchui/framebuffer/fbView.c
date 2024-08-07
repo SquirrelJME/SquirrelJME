@@ -34,7 +34,8 @@ sjme_errorCode sjme_scritchui_fb_viewGetView(
 sjme_errorCode sjme_scritchui_fb_viewSetArea(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull const sjme_scritchui_dim* inViewArea)
+	sjme_attrInNotNull const sjme_scritchui_dim* inViewArea,
+	sjme_attrInNotNull const sjme_scritchui_dim* inViewPage)
 {
 	sjme_scritchui wrappedState;
 	sjme_scritchui_uiComponent wrappedComponent;
@@ -54,7 +55,7 @@ sjme_errorCode sjme_scritchui_fb_viewSetArea(
 sjme_errorCode sjme_scritchui_fb_viewSetView(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect)
+	sjme_attrInNotNull const sjme_scritchui_point* inViewPos)
 {
 	sjme_scritchui wrappedState;
 	sjme_scritchui_uiComponent wrappedComponent;
@@ -68,7 +69,7 @@ sjme_errorCode sjme_scritchui_fb_viewSetView(
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->viewSetView(wrappedState,
-		wrappedComponent, inViewRect);
+		wrappedComponent, inViewPos);
 }
 
 sjme_errorCode sjme_scritchui_fb_viewSetViewListener(

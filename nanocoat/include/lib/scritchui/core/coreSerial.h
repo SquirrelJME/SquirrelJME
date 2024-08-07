@@ -452,7 +452,7 @@ SUD_STRUCT_DEF(viewSetArea,
 
 SUD_STRUCT_DEF(viewSetView,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SDU_VARP(const sjme_scritchui_rect*, inViewRect););
+	SDU_VARP(const sjme_scritchui_point*, inViewPos););
 
 SUD_STRUCT_DEF(viewSetSizeSuggestListener,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
@@ -844,7 +844,7 @@ sjme_errorCode sjme_scritchui_coreSerial_viewSetArea(
 sjme_errorCode sjme_scritchui_coreSerial_viewSetView(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect);
+	sjme_attrInNotNull const sjme_scritchui_point* inViewPos);
 	
 sjme_errorCode sjme_scritchui_coreSerial_viewSetSizeSuggestListener(
 	sjme_attrInNotNull sjme_scritchui inState,

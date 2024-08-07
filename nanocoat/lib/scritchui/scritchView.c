@@ -13,6 +13,7 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
+#include "sjme/fixed.h"
 
 sjme_errorCode sjme_scritchui_core_intern_getView(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -49,6 +50,8 @@ sjme_errorCode sjme_scritchui_core_intern_viewSuggest(
 	sjme_scritchui_uiComponent parent;
 	sjme_scritchui_uiView view;
 	sjme_scritchui_listener_sizeSuggest* infoUser;
+	sjme_scritchui_rect rect;
+	sjme_scritchui_dim realSuggest;
 	
 	if (inState == NULL || inComponent == NULL || suggestDim == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -76,11 +79,24 @@ sjme_errorCode sjme_scritchui_core_intern_viewSuggest(
 		return sjme_error_default(error);
 	}
 
+	/* Get the view rectangle. */
+	memset(&rect, 0, sizeof(rect));
+	if (sjme_error_is(error = inState->apiInThread->viewGetView(
+		inState, parent, &rect)))
+		return sjme_error_default(error);
+	
+	/* If the view rectangle is larger than the suggestion, increase it. */
+	memmove(&realSuggest, suggestDim, sizeof(realSuggest));
+	if (rect.d.width > realSuggest.width)
+		realSuggest.width = rect.d.width;
+	if (rect.d.height > realSuggest.height)
+		realSuggest.height = rect.d.height;
+	
 	/* Call suggestion function. */
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(view, sizeSuggest);
 	if (infoUser->callback != NULL)
 		return infoUser->callback(inState, parent,
-			inComponent, suggestDim);
+			inComponent, &realSuggest);
 	
 	/* There was nothing to suggest to. */
 	return SJME_ERROR_NONE;
@@ -109,10 +125,13 @@ sjme_errorCode sjme_scritchui_core_viewGetView(
 		return sjme_error_default(error);
 	
 	/* Forward call. */
-	memset(&viewRect, 0, sizeof(&viewRect));
+	memset(&viewRect, 0, sizeof(viewRect));
 	if (sjme_error_is(error = inState->impl->viewGetView(inState,
 		inComponent, &viewRect)))
 		return sjme_error_default(error);
+	
+	/* Remember the current view area. */
+	memmove(&view->view, &viewRect, sizeof(viewRect));
 	
 	/* Success! */
 	memmove(outViewRect, &viewRect, sizeof(*outViewRect));
@@ -126,8 +145,9 @@ sjme_errorCode sjme_scritchui_core_viewSetArea(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiView view;
-	sjme_scritchui_dim fullArea;
+	sjme_scritchui_dim fullArea, oldArea, oldPageSize;
 	sjme_scritchui_rect viewRect;
+	sjme_scritchui_dim* pageSize;
 	
 	if (inState == NULL || inComponent == NULL || inViewArea == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -155,25 +175,53 @@ sjme_errorCode sjme_scritchui_core_viewSetArea(
 	if (viewRect.d.height > fullArea.height)
 		fullArea.height = viewRect.d.height;
 	
+	/* Get previous view area to check if it changed. */
+	memmove(&oldArea, &view->area, sizeof(oldArea));
+	memmove(&oldPageSize, pageSize, sizeof(oldPageSize));
+	
+	/* Cache the new view area. */
+	memmove(&view->area, &fullArea, sizeof(view->area));
+	
+	/* Update the page size. */
+	pageSize = &view->pageSize;
+	pageSize->width = viewRect.d.width;
+	pageSize->height = viewRect.d.height;
+	
+	/* If the viewport has not changed, do nothing. */
+	if (memcmp(&oldArea, &fullArea, sizeof(oldArea)) == 0 &&
+		memcmp(&oldPageSize, pageSize, sizeof(oldPageSize)) == 0)
+		return SJME_ERROR_NONE;
+	
 	/* Forward call. */
 	if (sjme_error_is(error = inState->impl->viewSetArea(inState,
-		inComponent, &fullArea)))
+		inComponent, &fullArea, pageSize)))
 		return sjme_error_default(error);
 	
-	/* Revalidate after setting the area. */
-	return inState->apiInThread->componentRevalidate(inState, inComponent);
+	/* Revalidate and repaint after setting the area. */
+	if (sjme_error_is(error = inState->apiInThread->componentRevalidate(
+		inState, inComponent)))
+		return sjme_error_default(error);
+	return inState->apiInThread->componentRepaint(inState, inComponent,
+		0, 0, INT32_MAX, INT32_MAX);
 }
 
 sjme_errorCode sjme_scritchui_core_viewSetView(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect)
+	sjme_attrInNotNull const sjme_scritchui_point* inViewPos)
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiView view;
+	sjme_scritchui_rect rect;
+	sjme_scritchui_rect oldRect;
+	const sjme_scritchui_dim* area;
+	sjme_jint sx, sy, ex, ey;
 	
-	if (inState == NULL || inComponent == NULL || inViewRect == NULL)
+	if (inState == NULL || inComponent == NULL || inViewPos == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inState->impl->viewSetView == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Obtain view. */
 	view = NULL;
@@ -181,8 +229,61 @@ sjme_errorCode sjme_scritchui_core_viewSetView(
 		inComponent, &view)) || view == NULL)
 		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Get the view rectangle. */
+	memset(&rect, 0, sizeof(rect));
+	if (sjme_error_is(error = inState->apiInThread->viewGetView(
+		inState, inComponent, &rect)))
+		return sjme_error_default(error);
+	
+	/* Get the current viewing area. */
+	area = &view->area;
+	
+	/* Calculate all coordinates. */
+	sx = inViewPos->x;
+	sy = inViewPos->y;
+	ex = sx + rect.d.width;
+	ey = sy + rect.d.height;
+	
+	/* Clip into bounds, make sure the entire page fits as well. */
+	if (ex > area->width)
+	{
+		sx = area->width - rect.d.width;
+		ex = area->width;
+	}
+	if (ey > area->height)
+	{
+		sy = area->height - rect.d.height;
+		ey = area->height;
+	}
+	if (sx < 0)
+		sx = 0;
+	if (sy < 0)
+		sy = 0;
+	
+	/* Remember old view rect before we change it. */
+	memmove(&oldRect, &view->view, sizeof(oldRect));
+	
+	/* Set new viewing positions. */
+	view->view.s.x = sx;
+	view->view.s.y = sy;
+	view->view.d.width = ex - sx;
+	view->view.d.height = ey - sy;
+	
+	/* If the viewport has not changed, do nothing. */
+	if (memcmp(&oldRect, &view->view, sizeof(oldRect)) == 0)
+		return SJME_ERROR_NONE;
+	
+	/* Forward set of new viewing area. */
+	if (sjme_error_is(error = inState->impl->viewSetView(inState, inComponent,
+		&view->view.s)))
+		return sjme_error_default(error);
+		
+	/* Revalidate and repaint after setting this. */
+	if (sjme_error_is(error = inState->apiInThread->componentRevalidate(
+		inState, inComponent)))
+		return sjme_error_default(error);
+	return inState->apiInThread->componentRepaint(inState, inComponent,
+		0, 0, INT32_MAX, INT32_MAX);
 }
 
 sjme_errorCode sjme_scritchui_core_viewSetSizeSuggestListener(

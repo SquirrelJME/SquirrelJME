@@ -153,9 +153,9 @@ static sjme_jint sjme_scritchui_win32_keyCode(sjme_jint inKey)
 		case VK_ADD:
 			return SJME_SCRITCHINPUT_KEY_NUMPAD_PLUS;
 		case VK_PRIOR:
-			return SJME_SCRITCHINPUT_KEY_PAGE_DOWN;
-		case VK_NEXT:
 			return SJME_SCRITCHINPUT_KEY_PAGE_UP;
+		case VK_NEXT:
+			return SJME_SCRITCHINPUT_KEY_PAGE_DOWN;
 		case VK_PAUSE:
 			return SJME_SCRITCHINPUT_KEY_PAUSE;
 		case VK_SNAPSHOT:
@@ -360,6 +360,17 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_COMMAND(
 		id, 0xFFFF);
 }
 
+static sjme_errorCode sjme_scritchui_win32_windowProc_ERASEBKGND(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable HWND hWnd,
+	sjme_attrInValue UINT message,
+	sjme_attrInValue WPARAM wParam,
+	sjme_attrInValue LPARAM lParam,
+	sjme_attrOutNullable LRESULT* lResult)
+{
+	return SJME_ERROR_USE_FALLBACK;
+}
+
 static sjme_errorCode sjme_scritchui_win32_windowProc_GETMINMAXINFO(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable HWND hWnd,
@@ -469,11 +480,13 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_MOUSE(
 	sjme_attrInValue LPARAM lParam,
 	sjme_attrOutNullable LRESULT* lResult)
 {
+	sjme_errorCode error;
 	sjme_scritchui_uiComponent inComponent;
 	sjme_scritchui_listener_input* infoCore;
 	sjme_scritchinput_event inputEvent;
-	sjme_jint normalButton, normalShift;
+	sjme_jint normalButton, normalShift, tx, ty;
 	sjme_jboolean pressed;
+	sjme_scritchui_uiView view;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -519,6 +532,23 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_MOUSE(
 	normalShift = 0;
 	if (normalButton != 0)
 		normalShift = (1 << (normalButton - 1));
+		
+	/* If there is a parent, and it is a view, get the view offset. */
+	view = NULL;
+	if (inComponent->parent != NULL)
+		if (sjme_error_is(error = inState->intern->getView(inState,
+			inComponent->parent, &view)))
+			if (error != SJME_ERROR_INVALID_ARGUMENT)
+				return sjme_error_default(error);
+	
+	/* Is this in a view? */
+	tx = 0;
+	ty = 0;
+	if (view != NULL)
+	{
+		tx = view->view.s.x;
+		ty = view->view.s.y;
+	}
 	
 	/* Setup event. */
 	memset(&inputEvent, 0, sizeof(inputEvent));
@@ -530,8 +560,8 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_MOUSE(
 			sjme_scritchui_win32_mouseButtons(LOWORD(wParam));
 		inputEvent.data.mouseMotion.modifiers =
 			sjme_scritchui_win32_mouseModifiers(LOWORD(wParam));
-		inputEvent.data.mouseMotion.x = LOWORD(lParam);
-		inputEvent.data.mouseMotion.y = HIWORD(lParam);
+		inputEvent.data.mouseMotion.x = LOWORD(lParam) + tx;
+		inputEvent.data.mouseMotion.y = HIWORD(lParam) + ty;
 	}
 	
 	/* Pressed or released. */
@@ -549,8 +579,8 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_MOUSE(
 			(pressed ? normalShift : 0);
 		inputEvent.data.mouseButton.modifiers =
 			sjme_scritchui_win32_mouseModifiers(LOWORD(wParam));
-		inputEvent.data.mouseButton.x = LOWORD(lParam);
-		inputEvent.data.mouseButton.y = HIWORD(lParam);
+		inputEvent.data.mouseButton.x = LOWORD(lParam) + tx;
+		inputEvent.data.mouseButton.y = HIWORD(lParam) + ty;
 	}
 	
 	/* Call listener. */
@@ -574,7 +604,8 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	sjme_frontEnd frontEnd;
 	HDC hDc;
 	PAINTSTRUCT paintInfo;
-	sjme_jint w, h;
+	sjme_jint w, h, tx, ty;
+	sjme_scritchui_uiView view;
 	
 	/* Initially set that we did not paint this. */
 	if (lResult != NULL)
@@ -618,6 +649,23 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 		defaultFont == NULL)
 		return sjme_error_default(error);
 	
+	/* If there is a parent, and it is a view, get the view offset. */
+	view = NULL;
+	if (inComponent->parent != NULL)
+		if (sjme_error_is(error = inState->intern->getView(inState,
+			inComponent->parent, &view)))
+			if (error != SJME_ERROR_INVALID_ARGUMENT)
+				return sjme_error_default(error);
+	
+	/* Is this in a view? */
+	tx = 0;
+	ty = 0;
+	if (view != NULL)
+	{
+		tx = -view->view.s.x;
+		ty = -view->view.s.y;
+	}
+	
 	/* Begin painting. */
 	memset(&paintInfo, 0, sizeof(paintInfo));
 	SetLastError(0);
@@ -639,7 +687,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 		&sjme_scritchui_win32_pencilFunctions,
 		NULL, NULL,
 		SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888,
-		0, 0,
+		tx, ty,
 		w, h, w,
 		defaultFont, &frontEnd)))
 		goto fail_badPaint;
@@ -675,6 +723,70 @@ fail_badPaint:
 	}
 	
 	return sjme_error_default(error);
+}
+
+static sjme_errorCode sjme_scritchui_win32_windowProc_SCROLL(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable HWND hWnd,
+	sjme_attrInValue UINT message,
+	sjme_attrInValue WPARAM wParam,
+	sjme_attrInValue LPARAM lParam,
+	sjme_attrOutNullable LRESULT* lResult)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiComponent inComponent;
+	sjme_scritchui_uiView view;
+	sjme_scritchui_rect rect;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Initially set that we did not handle this. */
+	if (lResult != NULL)
+		*lResult = 1;
+	
+	/* Recover component, if not one then not one of ours. */
+	inComponent = NULL;
+	if (sjme_error_is(inState->implIntern->recoverComponent(inState,
+		hWnd, &inComponent)))
+		return SJME_ERROR_USE_FALLBACK;
+	
+	/* Recover view from component, ignore if not one. */
+	view = NULL;
+	if (sjme_error_is(inState->intern->getView(inState, inComponent,
+		&view)) || view == NULL)
+		return SJME_ERROR_USE_FALLBACK;
+		
+	/* We are handling this now. */
+	if (lResult != NULL)
+		*lResult = 0;
+		
+	/* Get base view rectangle. */
+	memset(&rect, 0, sizeof(rect));
+	if (sjme_error_is(error = inState->apiInThread->viewGetView(inState,
+		inComponent, &rect)))
+		return sjme_error_default(error);
+	
+#if 0
+	/* Debug. */
+	sjme_message("View rect: (%d, %d) [%d, %d]",
+		rect.s.x, rect.s.y, rect.d.width, rect.d.height);
+#endif
+	
+	/* Actively tracking scrolling? */
+	if (LOWORD(wParam) == SB_THUMBPOSITION ||
+		LOWORD(wParam) == SB_THUMBTRACK)
+	{
+		/* Which position is getting adjusted? */
+		if (message == WM_HSCROLL)
+			rect.s.x = HIWORD(wParam);
+		else
+			rect.s.y = HIWORD(wParam);
+	}
+	
+	/* Set new scroll position. */
+	return inState->apiInThread->viewSetView(inState, inComponent,
+		&rect.s);
 }
 
 static sjme_errorCode sjme_scritchui_win32_windowProc_SHOWWINDOW(
@@ -848,6 +960,12 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 				inState, hWnd, message, wParam, lParam, &useResult);
 			break;
 		
+			/* Erase background. */
+		case WM_ERASEBKGND:
+			error = sjme_scritchui_win32_windowProc_ERASEBKGND(
+				inState, hWnd, message, wParam, lParam, &useResult);
+			break;
+		
 			/* Get minimum and maximum window bounds. */
 		case WM_GETMINMAXINFO:
 			error = sjme_scritchui_win32_windowProc_GETMINMAXINFO(
@@ -877,6 +995,13 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 			/* Paint window. */
 		case WM_PAINT:
 			error = sjme_scritchui_win32_windowProc_PAINT(
+				inState, hWnd, message, wParam, lParam, &useResult);
+			break;
+			
+			/* Window is scrolled. */
+		case WM_HSCROLL:
+		case WM_VSCROLL:
+			error = sjme_scritchui_win32_windowProc_SCROLL(
 				inState, hWnd, message, wParam, lParam, &useResult);
 			break;
 			

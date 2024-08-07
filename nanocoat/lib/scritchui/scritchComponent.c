@@ -501,6 +501,9 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiPaintable paint;
+	sjme_scritchui_uiContainer container;
+	sjme_scritchui_uiComponent* subComponents;
+	sjme_jint i, n;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -509,11 +512,52 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 	if (inState->impl->componentRepaint == NULL)
 		return sjme_error_notImplemented(0);
 		
-	/* Only certain types are paintable. */
+	/* Only certain types are paintable, ignore if requested. */
 	paint = NULL;
 	if (sjme_error_is(error = inState->intern->getPaintable(inState,
 		inComponent, &paint)) || paint == NULL)
-		return sjme_error_default(error);
+	{
+		/* An actual error? */
+		if (error != SJME_ERROR_INVALID_ARGUMENT)
+			return sjme_error_default(error);
+
+#if 1
+		/* If this is a container, repaint all children. */
+		container = NULL;
+		if (sjme_error_is(error = inState->intern->getContainer(inState,
+			inComponent, &container)) || container == NULL)
+			return sjme_error_default(error);
+		
+		/* Do not bother? */
+		if (container->components == NULL ||
+			container->components->length == 0)
+			return SJME_ERROR_NONE;
+		
+		/* Allocate storage for components. */
+		n = container->components->length;
+		subComponents = sjme_alloca(sizeof(*subComponents) * n);
+		if (subComponents == NULL)
+			return SJME_ERROR_OUT_OF_MEMORY;
+		
+		/* Get all components. */
+		memmove(subComponents, container->components->elements,
+			sizeof(*subComponents) * n);
+		
+		/* Go through each and request repainting. */
+		for (i = 0; i < n; i++)
+			if (subComponents[i] != NULL)
+				if (sjme_error_is(error = inState->apiInThread
+					->componentRepaint(inState, subComponents[i],
+					x, y, width, height)))
+				{
+					if (error != SJME_ERROR_INVALID_ARGUMENT)
+						return sjme_error_default(error);
+				}
+#endif
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
 	
 	/* Rather than failing, just normalize. */
 	if (x < 0)

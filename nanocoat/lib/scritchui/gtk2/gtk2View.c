@@ -47,19 +47,23 @@ sjme_errorCode sjme_scritchui_gtk2_viewGetView(
 			
 			if (hAdjust != NULL)
 			{
-				outViewRect->s.x = gtk_adjustment_get_value(hAdjust);
+				outViewRect->s.x = gtk_adjustment_get_value(
+					hAdjust);
 				
-				outViewRect->d.width = gtk_adjustment_get_page_size(hAdjust);
+				outViewRect->d.width = gtk_adjustment_get_page_size(
+					hAdjust);
 				if (alloc.width > outViewRect->d.width)
 					outViewRect->d.width = alloc.width;
 			}
 			
 			if (vAdjust != NULL)
 			{
-				outViewRect->s.y = gtk_adjustment_get_value(vAdjust);
+				outViewRect->s.y = gtk_adjustment_get_value(
+					vAdjust);
 				
 				/* Get the higher of the two widths/heights. */
-				outViewRect->d.height = gtk_adjustment_get_page_size(vAdjust);
+				outViewRect->d.height = gtk_adjustment_get_page_size(
+					vAdjust);
 				if (alloc.height > outViewRect->d.height)
 					outViewRect->d.height = alloc.height;
 			}
@@ -76,7 +80,8 @@ sjme_errorCode sjme_scritchui_gtk2_viewGetView(
 sjme_errorCode sjme_scritchui_gtk2_viewSetArea(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull const sjme_scritchui_dim* inViewArea)
+	sjme_attrInNotNull const sjme_scritchui_dim* inViewArea,
+	sjme_attrInNotNull const sjme_scritchui_dim* inViewPage)
 {
 	GtkWidget* topWidget;
 	GtkAdjustment* hAdjust;
@@ -115,7 +120,7 @@ sjme_errorCode sjme_scritchui_gtk2_viewSetArea(
 sjme_errorCode sjme_scritchui_gtk2_viewSetView(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect)
+	sjme_attrInNotNull const sjme_scritchui_point* inViewPos)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

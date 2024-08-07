@@ -167,7 +167,8 @@ sjme_errorCode sjme_scritchui_core_containerRemove(
 		
 	/* Lose the focus if we are the focused item. */
 	if (sjme_error_is(error = inState->intern->bindFocus(inState,
-		removeComponent, removeComponent, SJME_JNI_FALSE)))
+		removeComponent, removeComponent,
+		SJME_JNI_FALSE)))
 		return sjme_error_default(error);
 	
 	/* Go through and find the index of the item. */

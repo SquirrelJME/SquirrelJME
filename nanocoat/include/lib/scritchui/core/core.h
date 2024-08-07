@@ -320,7 +320,7 @@ sjme_errorCode sjme_scritchui_core_viewSetArea(
 sjme_errorCode sjme_scritchui_core_viewSetView(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect);
+	sjme_attrInNotNull const sjme_scritchui_point* inViewPos);
 
 sjme_errorCode sjme_scritchui_core_viewSetSizeSuggestListener(
 	sjme_attrInNotNull sjme_scritchui inState,

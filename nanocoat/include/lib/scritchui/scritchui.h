@@ -1532,14 +1532,14 @@ typedef sjme_errorCode (*sjme_scritchui_viewSetAreaFunc)(
  * 
  * @param inState The ScritchUI state.
  * @param inComponent The viewport.
- * @param inViewRect The view rectangle to set.
+ * @param inViewPos The new view position to set.
  * @return Any resultant error, if any.
  * @since 2024/07/29
  */
 typedef sjme_errorCode (*sjme_scritchui_viewSetViewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect);
+	sjme_attrInNotNull const sjme_scritchui_point* inViewPos);
 
 /**
  * Sets the listener which is called for a viewport when a contained component

@@ -199,6 +199,23 @@ typedef sjme_errorCode (*sjme_scritchui_impl_scrollPanelNewFunc)(
 	sjme_attrInNullable sjme_pointer ignored);
 
 /**
+ * Sets the area that the scroll panel provides a viewport area, this area
+ * may be larger than the viewport and widgets may be placed inside.
+ * 
+ * @param inState The ScritchUI state.
+ * @param inComponent The viewport.
+ * @param inViewArea The view area to set.
+ * @param inViewPage The viewing page to set.
+ * @return Any resultant error, if any.
+ * @since 2024/07/07
+ */
+typedef sjme_errorCode (*sjme_scritchui_impl_viewSetAreaFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull const sjme_scritchui_dim* inViewArea,
+	sjme_attrInNotNull const sjme_scritchui_dim* inViewPage);
+
+/**
  * Creates a new window.
  * 
  * @param inState The input state.
@@ -339,7 +356,7 @@ struct sjme_scritchui_implFunctions
 	SJME_SCRITCHUI_QUICK_SAME(viewGetView);
 	
 	/** Set the area of the viewport's bounds, the entire scrollable area. */
-	SJME_SCRITCHUI_QUICK_SAME(viewSetArea);
+	SJME_SCRITCHUI_QUICK_IMPL(viewSetArea);
 	
 	/** Sets the view rect of a viewport. */
 	SJME_SCRITCHUI_QUICK_SAME(viewSetView);
