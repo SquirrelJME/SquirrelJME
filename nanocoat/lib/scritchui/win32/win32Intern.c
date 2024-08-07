@@ -15,11 +15,11 @@ static sjme_jint sjme_scritchui_win32_mouseButtons(sjme_jint inMod)
 {
 	sjme_jint result;
 	
-	/* Mice in Windows are left-handed. */
+	/* Primary mouse buttons. */
 	result = 0;
-	if (inMod & MK_RBUTTON)
-		result |= (1 << 0);
 	if (inMod & MK_LBUTTON)
+		result |= (1 << 0);
+	if (inMod & MK_RBUTTON)
 		result |= (1 << 1);
 	if (inMod & MK_MBUTTON)
 		result |= (1 << 2);
@@ -223,14 +223,17 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_MOUSE(
 		message == WM_RBUTTONDOWN || message == WM_XBUTTONDOWN)
 		pressed = SJME_JNI_TRUE;
 	
-	/* Normalize button, mice are left-handed in Windows. */
+	/* Normalize button, oddly the window events here are right-handed */
+	/* mice while the modifiers in wParam are left-handed, but then also */
+	/* as well they might not be depending on the types of events we */
+	/* handle? This makes absolutely zero sense. *facepaw* */
 	normalButton = 0;
 	if (message == WM_LBUTTONDOWN || message == WM_LBUTTONUP)
-		normalButton = 2;
+		normalButton = 1;
 	else if (message == WM_MBUTTONDOWN || message == WM_MBUTTONUP)
 		normalButton = 3;
 	else if (message == WM_RBUTTONDOWN || message == WM_RBUTTONUP)
-		normalButton = 1;
+		normalButton = 2;
 	
 	/* Determine button mask shift. */
 	normalShift = 0;

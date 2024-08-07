@@ -78,7 +78,8 @@ static sjme_errorCode sjme_scritchui_baseInputListenerMouse(
 			emit.data.mouseButton.modifiers = logicalMouse->mouseModifiers;
 			emit.data.mouseButton.x = logicalMouse->mouseX;
 			emit.data.mouseButton.y = logicalMouse->mouseY;
-			
+
+#if 0
 			/* Debug. */
 			sjme_message("Mouse Button: %s %d %08x (%d, %d) [sh=%d, bc=%08x]",
 				(pressed ? "pressed" : "released"),
@@ -87,6 +88,7 @@ static sjme_errorCode sjme_scritchui_baseInputListenerMouse(
 				emit.data.mouseButton.x,
 				emit.data.mouseButton.y,
 				shift, buttonChange);
+#endif
 			
 			/* Emit a button event. */
 			if (infoUser->callback != NULL)
