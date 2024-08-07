@@ -431,6 +431,7 @@ sjme_errorCode sjme_scritchui_core_componentSetInputListener(
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(input))
 {
 	sjme_errorCode error;
+	sjme_scritchui_inputListenerFunc coreListener;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -439,13 +440,31 @@ sjme_errorCode sjme_scritchui_core_componentSetInputListener(
 	if (inComponent->common.type != SJME_SCRITCHUI_TYPE_PANEL)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
+	/* Using core input listener? */
+	coreListener = NULL;
+	if (inListener != NULL)
+		coreListener = sjme_scritchui_baseInputListener;
+	
 	/* Set core listener events which is forwarded to for handling. */
 	if (inState->impl->componentSetInputListener != NULL)
+	{
 		if (sjme_error_is(error = inState->impl->
 			componentSetInputListener(inState, inComponent,
-			(inListener != NULL ? sjme_scritchui_baseInputListener :
-				NULL), NULL)))
+			coreListener, NULL)))
 			return sjme_error_default(error);
+	}
+	
+	/* Set one regardless, there might be another way to handle. */
+	else
+	{
+		if (sjme_error_is(error = inState->intern->setSimpleListener(
+			inState,
+			(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
+				inComponent, input),
+			(sjme_scritchui_voidListenerFunc)coreListener,
+			copyFrontEnd)))
+			return sjme_error_default(error);
+	}
 
 	/* Set user listener. */
 	return inState->intern->setSimpleListener(

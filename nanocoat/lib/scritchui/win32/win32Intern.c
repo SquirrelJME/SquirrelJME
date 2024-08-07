@@ -11,6 +11,41 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
+static sjme_jint sjme_scritchui_win32_mouseButtons(sjme_jint inMod)
+{
+	sjme_jint result;
+	
+	/* Mice in Windows are left handed. */
+	result = 0;
+	if (inMod & MK_RBUTTON)
+		result |= (1 << 0);
+	if (inMod & MK_LBUTTON)
+		result |= (1 << 1);
+	if (inMod & MK_MBUTTON)
+		result |= (1 << 2);
+	
+	/* Extra side buttons. */
+	if (inMod & MK_XBUTTON1)
+		result |= (1 << 3);
+	if (inMod & MK_XBUTTON2)
+		result |= (1 << 4);
+	
+	return result;
+}
+
+static sjme_jint sjme_scritchui_win32_mouseModifiers(sjme_jint inMod)
+{
+	sjme_jint result;
+	
+	result = 0;
+	if (inMod & MK_CONTROL)
+		result |= SJME_SCRITCHINPUT_MODIFIER_CTRL;
+	if (inMod & MK_SHIFT)
+		result |= SJME_SCRITCHINPUT_MODIFIER_SHIFT;
+	
+	return result;
+}
+
 static sjme_errorCode sjme_scritchui_win32_windowProc_CLOSE(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable HWND hWnd,
@@ -144,6 +179,55 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_GETMINMAXINFO(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_win32_windowProc_MOUSE(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable HWND hWnd,
+	sjme_attrInValue UINT message,
+	sjme_attrInValue WPARAM wParam,
+	sjme_attrInValue LPARAM lParam,
+	sjme_attrOutNullable LRESULT* lResult)
+{
+	sjme_scritchui_uiComponent inComponent;
+	sjme_scritchui_listener_input* infoCore;
+	sjme_scritchinput_event inputEvent;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Initially set that we did not handle this. */
+	if (lResult != NULL)
+		*lResult = 1;
+	
+	/* Recover component. */
+	inComponent = NULL;
+	if (sjme_error_is(inState->implIntern->recoverComponent(inState,
+		hWnd, &inComponent)))
+		return SJME_ERROR_USE_FALLBACK;
+	
+	/* Only call if there is a handler for it. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, input);
+	if (infoCore->callback == NULL)
+		return SJME_ERROR_USE_FALLBACK;
+		
+	/* We are handling this now. */
+	if (lResult != NULL)
+		*lResult = 0;
+	
+	/* Setup event. */
+	memset(&inputEvent, 0, sizeof(inputEvent));
+	inputEvent.type = SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION;
+	inState->nanoTime(&inputEvent.time);
+	inputEvent.data.mouseMotion.buttonMask =
+		sjme_scritchui_win32_mouseButtons(LOWORD(wParam));
+	inputEvent.data.mouseMotion.modifiers =
+		sjme_scritchui_win32_mouseModifiers(LOWORD(wParam));
+	inputEvent.data.mouseMotion.x = LOWORD(lParam);
+	inputEvent.data.mouseMotion.y = HIWORD(lParam);
+	
+	/* Call listener. */
+	return infoCore->callback(inState, inComponent, &inputEvent);
 }
 
 static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
@@ -434,6 +518,20 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 			/* Get minimum and maximum window bounds. */
 		case WM_GETMINMAXINFO:
 			error = sjme_scritchui_win32_windowProc_GETMINMAXINFO(
+				inState, hWnd, message, wParam, lParam, &useResult);
+			break;
+			
+			/* Mouse interaction in window. */
+		case WM_LBUTTONDOWN:
+		case WM_LBUTTONUP:
+		case WM_MBUTTONDOWN:
+		case WM_MBUTTONUP:
+		case WM_MOUSEMOVE:
+		case WM_RBUTTONDOWN:
+		case WM_RBUTTONUP:
+		case WM_XBUTTONDOWN:
+		case WM_XBUTTONUP:
+			error = sjme_scritchui_win32_windowProc_MOUSE(
 				inState, hWnd, message, wParam, lParam, &useResult);
 			break;
 
