@@ -95,8 +95,10 @@ target_include_directories(BasicTestLibPIC PUBLIC
 	"${CMAKE_CURRENT_BINARY_DIR}/blobs")
 
 # Make sure the PIC libraries are position independent!
-set_target_properties(BasicTestLibPIC PROPERTIES
-	POSITION_INDEPENDENT_CODE ON)
+if(SQUIRRELJME_ENABLE_FPIC)
+	set_target_properties(BasicTestLibPIC PROPERTIES
+		POSITION_INDEPENDENT_CODE ON)
+endif()
 
 # Make sure we have our headers included accordingly
 target_include_directories(BasicTest PUBLIC

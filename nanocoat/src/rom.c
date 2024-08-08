@@ -20,7 +20,7 @@
 sjme_errorCode sjme_rom_libraryFromZipMemory(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
-	sjme_attrInNotNull const void* base,
+	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length)
 {
 	sjme_seekable seekable;
@@ -130,7 +130,7 @@ sjme_errorCode sjme_rom_libraryNew(
 
 sjme_errorCode sjme_rom_libraryRawRead(
 	sjme_attrInNotNull sjme_rom_library library,
-	sjme_attrOutNotNullBuf(length) void* destPtr,
+	sjme_attrOutNotNullBuf(length) sjme_pointer destPtr,
 	sjme_attrInPositive sjme_jint srcPos,
 	sjme_attrInPositive sjme_jint length)
 {
@@ -141,7 +141,7 @@ sjme_errorCode sjme_rom_libraryRawRead(
 
 sjme_errorCode sjme_rom_libraryRawReadIter(
 	sjme_attrInNotNull sjme_rom_library library,
-	sjme_attrOutNotNullBuf(length) void* destPtr,
+	sjme_attrOutNotNullBuf(length) sjme_pointer destPtr,
 	sjme_attrInPositive sjme_jint destOffset,
 	sjme_attrInPositive sjme_jint srcPos,
 	sjme_attrInPositive sjme_jint srcOffset,
@@ -192,7 +192,7 @@ sjme_errorCode sjme_rom_libraryRawReadIter(
 
 	/* Call native library handler, which takes simpler arguments. */
 	return library->functions->rawData(library,
-		(void*)(((uintptr_t)destPtr) + destOffset),
+		(sjme_pointer)(((uintptr_t)destPtr) + destOffset),
 		srcPos + srcOffset, length);
 }
 

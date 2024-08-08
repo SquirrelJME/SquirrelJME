@@ -95,7 +95,7 @@ typedef sjme_errorCode (*sjme_stream_inputCloseFunc)(
 typedef sjme_errorCode (*sjme_stream_inputReadFunc)(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
-	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint length);
 
 /**
@@ -171,7 +171,7 @@ struct sjme_stream_inputCore
  */
 typedef sjme_errorCode (*sjme_stream_outputCloseFunc)(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrOutNullable void** optResult);
+	sjme_attrOutNullable sjme_pointer* optResult);
 
 /**
  * Writes to the given output stream.
@@ -184,7 +184,7 @@ typedef sjme_errorCode (*sjme_stream_outputCloseFunc)(
  */
 typedef sjme_errorCode (*sjme_stream_outputWriteFunc)(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrInNotNull const void* buf,
+	sjme_attrInNotNull sjme_cpointer buf,
 	sjme_attrInPositiveNonZero sjme_jint length);
 
 /**
@@ -285,7 +285,7 @@ sjme_errorCode sjme_stream_inputClose(
 sjme_errorCode sjme_stream_inputOpenMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
-	sjme_attrInNotNull const void* base,
+	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length);
 
 /**
@@ -302,7 +302,7 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 sjme_errorCode sjme_stream_inputRead(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
-	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint length);
 
 /**
@@ -320,7 +320,7 @@ sjme_errorCode sjme_stream_inputRead(
 sjme_errorCode sjme_stream_inputReadIter(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
-	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInPositive sjme_jint length);
 
@@ -362,7 +362,7 @@ sjme_errorCode sjme_stream_inputReadValueJ(
  */
 sjme_errorCode sjme_stream_outputClose(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrOutNullable void** optResult);
+	sjme_attrOutNullable sjme_pointer* optResult);
 
 /**
  * Contains the result of the written byte array.
@@ -386,10 +386,10 @@ typedef struct sjme_stream_resultByteArray
 	sjme_jboolean free;
 
 	/** The input whatever value. */
-	void* whatever;
+	sjme_pointer whatever;
 
 	/** The optional output result. */
-	void** optResult;
+	sjme_pointer* optResult;
 } sjme_stream_resultByteArray;
 
 typedef struct sjme_stream_outputData sjme_stream_outputData;
@@ -502,7 +502,7 @@ sjme_errorCode sjme_stream_outputOpenByteArray(
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInPositive sjme_jint initialLimit,
 	sjme_attrInNotNull sjme_stream_outputByteArrayFinishFunc finish,
-	sjme_attrInNullable void* whatever);
+	sjme_attrInNullable sjme_pointer whatever);
 
 /**
  * Initializes a simplified data output stream.
@@ -530,7 +530,7 @@ sjme_errorCode sjme_stream_outputOpenDataStatic(
 sjme_errorCode sjme_stream_outputOpenMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
-	sjme_attrInNotNull void* base,
+	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length);
 
 /**
@@ -544,7 +544,7 @@ sjme_errorCode sjme_stream_outputOpenMemory(
  */
 sjme_errorCode sjme_stream_outputWrite(
 	sjme_attrInNotNull sjme_stream_output outStream,
-	sjme_attrOutNotNullBuf(length) void* src,
+	sjme_attrOutNotNullBuf(length) sjme_pointer src,
 	sjme_attrInPositive sjme_jint length);
 
 /**
@@ -559,7 +559,7 @@ sjme_errorCode sjme_stream_outputWrite(
  */
 sjme_errorCode sjme_stream_outputWriteIter(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrOutNotNullBuf(length) void* src,
+	sjme_attrOutNotNullBuf(length) sjme_pointer src,
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInPositive sjme_jint length);
 

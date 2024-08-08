@@ -9,14 +9,21 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.PencilFontShelf;
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
+import cc.squirreljme.jvm.mle.constants.PencilFontFace;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
-import cc.squirreljme.runtime.lcdui.font.SQFFont;
+import cc.squirreljme.runtime.lcdui.mle.PencilFontProvider;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.ApiStatus;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * This class represents a font which is a representation of the glyphs which
@@ -26,6 +33,7 @@ import java.util.List;
  */
 @Api
 public final class Font
+	extends PencilFontProvider
 {
 	/** The monospace font. */
 	@Api
@@ -107,11 +115,14 @@ public final class Font
 	/** The default font. */
 	private static Font _DEFAULT_FONT;
 	
-	/** SQF font data. */
-	private final SQFFont _sqf;
+	/** The bracket used to access the font. */
+	final PencilFontBracket _font;
 	
 	/** The name of this font. */
 	private final String _name;
+	
+	/** The ScritchUI interface used. */
+	private final ScritchInterface _scritch;
 	
 	/** The style of this font. */
 	private final int _style;
@@ -127,33 +138,38 @@ public final class Font
 		-1;
 	
 	/**
-	 * Initializes the font.
+	 * Initializes a font that wraps a bracket.
 	 *
-	 * @param __n The name of this font.
-	 * @param __st The style of this font.
-	 * @param __px The pixel size of this font.
-	 * @since 2017/10/20
+	 * @param __scritch The ScritchUI API.
+	 * @param __bracket The bracket to wrap.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/05/17
 	 */
-	private Font(String __n, int __st, int __px)
+	Font(ScritchInterface __scritch, PencilFontBracket __bracket)
 		throws NullPointerException
 	{
-		if (__n == null)
+		if (__scritch == null || __bracket == null)
 			throw new NullPointerException("NARG");
 		
-		this._name = __n;
-		this._style = __st;
-		this._pixelsize = __px;
+		// Store for later
+		this._scritch = __scritch;
+		this._font = __bracket;
 		
-		// Load SQF
-		SQFFont sqf;
-		this._sqf = (sqf = SQFFont.cacheFont(__n, __px));
+		// Get information on the font
+		this._name = PencilFontShelf.metricFontName(__bracket);
 		
-		// Determine if the font is monospaced or proportional
-		int totalwidth = 0;
-		for (char c = 0; c < 128; c++)
-			totalwidth += sqf.charWidth(c);
-		this._face = ((totalwidth / 128) == sqf.charWidth('\0') ?
-			Font.FACE_MONOSPACE : Font.FACE_PROPORTIONAL);
+		// What is the face of this font?
+		int face = PencilFontShelf.metricFontFace(__bracket);
+		if ((face & PencilFontFace.MONOSPACE) != 0)
+			this._face = Font.FACE_MONOSPACE;
+		else
+			this._face = Font.FACE_PROPORTIONAL;
+		
+		// Get pixel size of font
+		this._pixelsize = PencilFontShelf.metricPixelSize(__bracket);
+		
+		// Font style directly maps
+		this._style = PencilFontShelf.metricFontStyle(__bracket);
 	}
 	
 	/**
@@ -166,11 +182,15 @@ public final class Font
 	@Api
 	public int charWidth(char __c)
 	{
+		throw Debugging.todo();
+		/*
 		return this._sqf.charWidth(SQFFont.mapChar(__c));
+		
+		 */
 	}
 	
 	/**
-	 * Returns the width of the specified charaters, as if it were drawn
+	 * Returns the width of the specified characters, as if it were drawn
 	 * on the screen.
 	 *
 	 * @param __c The characters to check.
@@ -191,6 +211,8 @@ public final class Font
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __c.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
+		throw Debugging.todo();
+		/*
 		SQFFont sqf = this._sqf;
 		
 		// Calculate width
@@ -219,58 +241,65 @@ public final class Font
 		
 		// Return the higher of the two
 		return (x > max ? x : max);
+		
+		 */
 	}
 	
 	/**
 	 * Derives a font using the given pixel size.
 	 *
-	 * @param __pxs The pixel size of the font.
+	 * @param __pixelSize The pixel size of the font.
 	 * @return The derived font.
 	 * @throws IllegalArgumentException If this font is a bitmap font and
 	 * no font is available using that size.
 	 * @since 2018/11/24
 	 */
 	@Api
-	public Font deriveFont(int __pxs)
+	public Font deriveFont(int __pixelSize)
 		throws IllegalArgumentException
 	{
-		return this.deriveFont(this.getStyle(), __pxs);
+		return this.deriveFont(this.getStyle(), __pixelSize);
 	}
 	
 	/**
 	 * Derives a font using the given style and pixel size.
 	 *
 	 * @param __style The style of the font.
-	 * @param __pxs The pixel size of the font.
+	 * @param __pixelSize The pixel size of the font.
 	 * @return The derived font.
 	 * @throws IllegalArgumentException If this font is a bitmap font and
 	 * no font is available using that size, or the style is not valid.
 	 * @since 2018/11/24
 	 */
 	@Api
-	public Font deriveFont(int __style, int __pxs)
+	public Font deriveFont(int __style, int __pixelSize)
 		throws IllegalArgumentException
 	{
-		/* {@squirreljme.error EB1t Invalid font style specified. (The style)} */
-		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
+		/* {@squirreljme.error EB1t Invalid font style specified.
+		(The style)} */
+		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED |
+			Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1t %d",
 				__style));
 		
 		// Use default font size?
-		if (__pxs == 0)
-			__pxs = FontUtilities.logicalSizeToPixelSize(Font.SIZE_MEDIUM);
+		if (__pixelSize == 0)
+			__pixelSize = FontUtilities.logicalSizeToPixelSize(
+				Font.SIZE_MEDIUM);
 		
 		/* {@squirreljme.error EB1u The pixel size of a font cannot be
 		negative.} */
-		else if (__pxs < 0)
+		else if (__pixelSize < 0)
 			throw new IllegalArgumentException("EB1u");
 		
 		// Same exact font?
-		if (this._style == __style && this._pixelsize == __pxs)
+		if (this._style == __style && this._pixelsize == __pixelSize)
 			return this;
 		
-		// Create font handle
-		return new Font(this._name, __style, __pxs);
+		// Derive font
+		ScritchInterface scritch = this._scritch;
+		return new Font(scritch, scritch.environment()
+			.fontDerive(this._font, __style, __pixelSize));
 	}
 	
 	/**
@@ -291,7 +320,8 @@ public final class Font
 		Font o = (Font)__o;
 		return this._pixelsize == o._pixelsize &&
 			this._style == o._style &&
-			this._name.equals(o._name);
+			this._name.equals(o._name) &&
+			PencilFontShelf.equals(this._font, o._font);
 	}
 	
 	/**
@@ -304,11 +334,12 @@ public final class Font
 	@Api
 	public int getAscent()
 	{
-		return this._sqf.ascent;
+		return PencilFontShelf.metricPixelAscent(this._font, false);
 	}
 	
 	/**
-	 * Returns the baseline position of the font which is the maximum baseline.
+	 * Returns the baseline position of the font which will be the maximum
+	 * baseline position of every character.
 	 *
 	 * @return The baseline of the font.
 	 * @since 2018/11/29
@@ -316,7 +347,7 @@ public final class Font
 	@Api
 	public int getBaselinePosition()
 	{
-		return this._sqf.maxascent;
+		return PencilFontShelf.metricPixelBaseline(this._font);
 	}
 	
 	/**
@@ -329,7 +360,7 @@ public final class Font
 	@Api
 	public int getDescent()
 	{
-		return this._sqf.descent;
+		return PencilFontShelf.metricPixelDescent(this._font, false);
 	}
 	
 	/**
@@ -391,7 +422,7 @@ public final class Font
 	@Api
 	public int getLeading()
 	{
-		return this._sqf.leading;
+		return PencilFontShelf.metricPixelLeading(this._font);
 	}
 	
 	@Api
@@ -514,47 +545,37 @@ public final class Font
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 ||
+			(__o + __l) > __s.length())
+			throw new StringIndexOutOfBoundsException("IOOB");
 		
-		try
+		// Access this font always
+		PencilFontBracket font = this._font;
+		
+		// Basic width calculation
+		int totalW = 0;
+		for (int i = 0, at = __o; i < __l; i++, at++)
 		{
-			SQFFont sqf = this._sqf;
+			// Get character here
+			char c = __s.charAt(at);
 			
-			// Need to know the max width due to newlines
-			int maxwidth = 0,
-				curwidth = 0;
-			for (int e = __o + __l; __o < e; __o++)
-			{
-				char c = __s.charAt(__o);
-				if (c == '\r' || c == '\n')
-				{
-					// Only use longer lines
-					if (curwidth > maxwidth)
-						maxwidth = curwidth;
-					
-					// Reset because at start of line now
-					curwidth = 0;
-					continue;
-				}
-				
-				// Add the character's width
-				curwidth += sqf.charWidth(SQFFont.mapChar(c));
-			}
-			
-			// Use the greater width
-			if (curwidth > maxwidth)
-				return curwidth;
-			return maxwidth;
+			// Add to the width
+			totalW += PencilFontShelf.pixelCharWidth(font, c);
 		}
 		
-		// For compatibility just wrap out of bounds, since it is
-		// confusidly used
-		catch (IndexOutOfBoundsException e)
-		{
-			StringIndexOutOfBoundsException t =
-				new StringIndexOutOfBoundsException(e.getMessage());
-			t.initCause(e);
-			throw t;
-		}
+		// Give the total
+		return totalW;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/06/25
+	 */
+	@Override
+	@ApiStatus.Internal
+	protected PencilFontBracket __squirreljmePencilFont()
+	{
+		return this._font;
 	}
 	
 	@Api
@@ -565,9 +586,9 @@ public final class Font
 	}
 	
 	/**
-	 * Returns all of the fonts which are available.
+	 * Returns all the fonts which are available.
 	 *
-	 * @return All of the available fonts.
+	 * @return All the available fonts.
 	 * @since 2018/11/24
 	 */
 	@Api
@@ -578,19 +599,26 @@ public final class Font
 		if (rv != null)
 			return rv.clone();
 		
-		// There are currently just three built-in fonts
-		Font._BUILTIN_FONTS = (rv = new Font[]
-			{
-				new Font("sansserif", 0, Font._DEFAULT_FONT_SIZE),
-				new Font("serif", 0, Font._DEFAULT_FONT_SIZE),
-				new Font("monospace", 0, Font._DEFAULT_FONT_SIZE),
-				new Font("symbol", 0, Font._DEFAULT_FONT_SIZE),
-			});
+		DisplayManager manager = DisplayManager.instance();
+		
+		// Obtain built-in fonts
+		ScritchInterface scritch = manager.scritch();
+		PencilFontBracket[] builtin = scritch.environment()
+			.builtinFonts();
+		
+		// Wrap built-in fonts
+		int n = builtin.length;
+		rv = new Font[n]; 
+		for (int i = 0; i < n; i++)
+			rv[i] = new Font(scritch, builtin[i]);
+		
+		// Cache and use
+		Font._BUILTIN_FONTS = rv;
 		return rv.clone();
 	}
 	
 	/**
-	 * Returns all of the fonts which are available on the system using the
+	 * Returns all the fonts which are available on the system using the
 	 * standard font size.
 	 *
 	 * @param __style The style of the font, may be a combination of styles.
@@ -622,7 +650,7 @@ public final class Font
 	}
 	
 	/**
-	 * Returns all of the fonts which are available in the given format.
+	 * Returns all the fonts which are available in the given format.
 	 *
 	 * @param __face The font face, this is a single value, one of:
 	 * {@link Font#FACE_SYSTEM}, {@link Font#FACE_MONOSPACE}, or
@@ -793,14 +821,42 @@ public final class Font
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		// Find the font then derive it
+		Font first = null;
+		Font closest = null;
+		
+		// Find the closest font then derive it
 		for (Font f : Font.getAvailableFonts())
+		{
+			// Same name?
 			if (__name.equals(f.getFontName()))
-				return f.deriveFont(__style, __pxs);
+			{
+				// First font of this name?
+				if (closest == null)
+					closest = f;
+				
+				// Closest in terms of size?
+				else if (Math.abs(f.getPixelSize() - __pxs) <
+					Math.abs(closest.getPixelSize() - __pxs))
+					closest = f;
+			}
+			
+			// Fallback font
+			else if (first == null)
+				first = f;
+		}
+		
+		// Derive the closest font
+		if (closest != null)
+			return closest.deriveFont(__style, __pxs);
+		
+		// Or the first font?
+		if (first != null)
+			return first.deriveFont(__style, __pxs);
 		
 		/* {@squirreljme.error EB20 Could not locate a font by the given
-		name. (The font name)} */
-		throw new IllegalArgumentException("EB20 " + __name);
+		name. (The font name; The style; The pixel size)} */
+		throw new IllegalArgumentException(__error__("EB20",
+			__name, __style, __pxs));
 	}
 	
 	/**

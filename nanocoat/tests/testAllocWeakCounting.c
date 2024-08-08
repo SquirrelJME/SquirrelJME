@@ -21,7 +21,7 @@ SJME_TEST_DECLARE(testAllocWeakCounting)
 {
 	sjme_alloc_weak weak;
 	sjme_alloc_weak weakB;
-	void* p;
+	sjme_pointer p;
 	
 	/* Allocate weak reference. */
 	p = NULL;

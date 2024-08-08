@@ -1,7 +1,7 @@
 /* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
-//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+//	 Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
@@ -59,11 +59,11 @@ FORWARD_IMPL(NativeArchive, entryUncompressedSize, jlong, Long, \
 static const JNINativeMethod mleNativeArchiveMethods[] =
 {
 	FORWARD_list(NativeArchive, archiveClose),
-    FORWARD_list(NativeArchive, archiveEntry),
-    FORWARD_list(NativeArchive, archiveOpenZip),
-    FORWARD_list(NativeArchive, entryIsDirectory),
-    FORWARD_list(NativeArchive, entryOpen),
-    FORWARD_list(NativeArchive, entryUncompressedSize)
+	FORWARD_list(NativeArchive, archiveEntry),
+	FORWARD_list(NativeArchive, archiveOpenZip),
+	FORWARD_list(NativeArchive, entryIsDirectory),
+	FORWARD_list(NativeArchive, entryOpen),
+	FORWARD_list(NativeArchive, entryUncompressedSize)
 };
 
 FORWARD_init(mleNativeArchiveInit, mleNativeArchiveMethods)

@@ -159,6 +159,9 @@ public class VMRomTaskAction
 					new ArrayList<>(libPaths));
 			}
 			
+			// Recompress it
+			VMHelpers.recompressZip(tempFile);
+			
 			// Move the file over
 			Files.move(tempFile,
 				__task.getOutputs().getFiles().getSingleFile().toPath(),

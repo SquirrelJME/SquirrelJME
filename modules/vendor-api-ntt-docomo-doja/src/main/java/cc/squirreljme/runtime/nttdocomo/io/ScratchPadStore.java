@@ -9,11 +9,12 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
-import cc.squirreljme.jvm.launch.IModeApplication;
+import cc.squirreljme.jvm.launch.IModeProperty;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -263,11 +264,11 @@ public final class ScratchPadStore
 			throw new NullPointerException("NARG");
 		
 		// Is a seed specified?
-		String libName = System.getProperty(
-			IModeApplication.SEED_SCRATCHPAD_PREFIX + "." + __pad);
+		String libName = DoJaRuntime.getProperty(
+			IModeProperty.SEED_SCRATCHPAD_PREFIX + "." + __pad);
 		if (libName == null)
-			libName = System.getProperty(
-				IModeApplication.SEED_SCRATCHPAD_PREFIX + ".0");
+			libName = DoJaRuntime.getProperty(
+				IModeProperty.SEED_SCRATCHPAD_PREFIX + ".0");
 		
 		// None was found?
 		if (libName == null)

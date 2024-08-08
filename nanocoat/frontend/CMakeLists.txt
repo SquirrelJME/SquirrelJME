@@ -39,12 +39,5 @@ if(SQUIRRELJME_ENABLE_FRONTEND_LIBRETRO)
 	add_subdirectory(libretro)
 endif()
 
-# Not doing a special build for RetroArch only...
-if(NOT DEFINED ENV{SQUIRRELJME_SPECIAL_BUILD_LIBRETRO} OR
-	NOT ENV{SQUIRRELJME_SPECIAL_BUILD_LIBRETRO})
-	# SDL1
-	add_subdirectory(sdl1)
-
-	# SDL2
-	add_subdirectory(sdl2)
-endif()
+# Standard C front-end
+add_subdirectory(stdc)

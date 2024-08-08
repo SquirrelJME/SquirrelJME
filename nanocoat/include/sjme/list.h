@@ -20,6 +20,7 @@
 
 #include "sjme/nvm.h"
 #include "sjme/comparator.h"
+#include "sjme/alloc.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -140,10 +141,11 @@ SJME_LIST_DECLARE(sjme_intPointer, 0);
 sjme_errorCode sjme_list_allocR(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInPositive sjme_jint inLength,
-	sjme_attrOutNotNull void** outList,
+	sjme_attrOutNotNull sjme_pointer* outList,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
-	sjme_attrInValue sjme_jint pointerCheck);
+	sjme_attrInValue sjme_jint pointerCheck
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
  * Allocates the given list without setting any of the values.
@@ -158,10 +160,10 @@ sjme_errorCode sjme_list_allocR(
  */
 #define sjme_list_alloc(inPool, inLength, outList, type, numPointerStars) \
 	sjme_list_allocR((inPool), (inLength), \
-		(void**)(outList), \
+		(sjme_pointer*)(outList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
-		sizeof(**(outList)))
+		sizeof(**(outList)) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC)
 
 /**
  * Allocates a given list generically.
@@ -179,11 +181,12 @@ sjme_errorCode sjme_list_allocR(
 sjme_errorCode sjme_list_copyR(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInPositive sjme_jint inNewLength,
-	sjme_attrInNotNull void* inOldList,
-	sjme_attrOutNotNull void** outNewList,
+	sjme_attrInNotNull sjme_pointer inOldList,
+	sjme_attrOutNotNull sjme_pointer* outNewList,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
-	sjme_attrInValue sjme_jint pointerCheck);
+	sjme_attrInValue sjme_jint pointerCheck
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
  * Allocates a new list that is a copy of the old list.
@@ -200,10 +203,10 @@ sjme_errorCode sjme_list_copyR(
 #define sjme_list_copy(inPool, inNewLength, inOldList, outNewList, type, \
 	numPointerStars) \
     sjme_list_copyR((inPool), (inNewLength), (inOldList), \
-		(void**)(outNewList), \
+		(sjme_pointer*)(outNewList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
-		sizeof(**(outNewList)))
+		sizeof(**(outNewList)) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC)
 
 /**
  * Directly initializes a list.
@@ -218,7 +221,7 @@ sjme_errorCode sjme_list_copyR(
  */
 sjme_errorCode sjme_list_directInitR(
 	sjme_attrInPositive sjme_jint inLength,
-	sjme_attrOutNotNull void* outList,
+	sjme_attrOutNotNull sjme_pointer outList,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
 	sjme_attrInValue sjme_jint pointerCheck);
@@ -235,7 +238,7 @@ sjme_errorCode sjme_list_directInitR(
  */
 #define sjme_list_directInit(inLength, outList, type, numPointerStars) \
 	sjme_list_directInitR((inLength), \
-		(void*)(outList), \
+		(sjme_pointer)(outList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(*(outList)))
@@ -265,8 +268,8 @@ sjme_errorCode sjme_list_newAR(
 	sjme_attrInNotNull sjme_basicTypeId basicTypeId,
 	sjme_attrInPositive sjme_jint numPointerStars,
 	sjme_attrInPositive sjme_jint length,
-	sjme_attrOutNotNull void** outList,
-	sjme_attrInNotNull void* inElements);
+	sjme_attrOutNotNull sjme_pointer* outList,
+	sjme_attrInNotNull sjme_pointer inElements);
 
 /**
  * Create a new list with the given set of arguments.
@@ -287,7 +290,7 @@ sjme_errorCode sjme_list_newAR(
 		sizeof(type), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(**(outList)), SJME_TYPEOF_BASIC(type), (numPointerStars), \
-		(inLength), (void**)(outList), (void*)(inElements))
+		(inLength), (sjme_pointer*)(outList), (sjme_pointer)(inElements))
 
 /**
  * Create a new list with the given set of arguments.
@@ -314,7 +317,7 @@ sjme_errorCode sjme_list_newVR(
 	sjme_attrInNotNull sjme_basicTypeId basicTypeId,
 	sjme_attrInPositive sjme_jint numPointerStars,
 	sjme_attrInPositive sjme_jint length,
-	sjme_attrOutNotNull void** outList,
+	sjme_attrOutNotNull sjme_pointer* outList,
 	...);
 
 /**
@@ -336,7 +339,7 @@ sjme_errorCode sjme_list_newVR(
 		sizeof(type), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(**(outList)), SJME_TYPEOF_BASIC(type), (numPointerStars), \
-		(inLength), (void**)(outList), __VA_ARGS__)
+		(inLength), (sjme_pointer*)(outList), __VA_ARGS__)
 
 /**
  * Create a new list with the given set of arguments.
@@ -363,7 +366,7 @@ sjme_errorCode sjme_list_newVAR(
 	sjme_attrInNotNull sjme_basicTypeId basicType,
 	sjme_attrInPositive sjme_jint numPointerStars,
 	sjme_attrInPositive sjme_jint length,
-	sjme_attrOutNotNull void** outList,
+	sjme_attrOutNotNull sjme_pointer* outList,
 	va_list elements);
 
 /**
@@ -385,7 +388,7 @@ sjme_errorCode sjme_list_newVAR(
 		sizeof(type), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(**(outList)), SJME_TYPEOF_BASIC(type), (numPointerStars), \
-		(inLength), (void**)(outList), (elements))
+		(inLength), (sjme_pointer*)(outList), (elements))
 
 /**
  * Flattens argc/argv style lists into a single allocation where the pointers
@@ -431,9 +434,9 @@ sjme_errorCode sjme_list_flattenArgNul(
  * @since 2024/01/03
  */
 sjme_errorCode sjme_list_search(
-	sjme_attrInNotNull void* inList,
+	sjme_attrInNotNull sjme_pointer inList,
 	sjme_attrInNotNull sjme_comparator comparator,
-	sjme_attrInNotNull const void* findWhat,
+	sjme_attrInNotNull sjme_cpointer findWhat,
 	sjme_attrOutNotNull sjme_jint* outIndex);
 
 /**
@@ -450,9 +453,9 @@ sjme_errorCode sjme_list_search(
  * @since 2024/01/03
  */
 sjme_errorCode sjme_list_searchBinary(
-	sjme_attrInNotNull void* inList,
+	sjme_attrInNotNull sjme_pointer inList,
 	sjme_attrInNotNull sjme_comparator comparator,
-	sjme_attrInNotNull const void* findWhat,
+	sjme_attrInNotNull sjme_cpointer findWhat,
 	sjme_attrOutNotNull sjme_jint* outIndex);
 
 /**
@@ -477,9 +480,9 @@ sjme_errorCode sjme_list_searchBinary(
  * @since 2024/01/03
  */
 sjme_errorCode sjme_list_searchReverse(
-	sjme_attrInNotNull void* inList,
+	sjme_attrInNotNull sjme_pointer inList,
 	sjme_attrInNotNull sjme_comparator comparator,
-	sjme_attrInNotNull const void* findWhat,
+	sjme_attrInNotNull sjme_cpointer findWhat,
 	sjme_attrOutNotNull sjme_jint* outIndex);
 
 /**
@@ -491,7 +494,7 @@ sjme_errorCode sjme_list_searchReverse(
  * @since 2024/01/03
  */
 sjme_errorCode sjme_list_sort(
-	sjme_attrInNotNull void* inList,
+	sjme_attrInNotNull sjme_pointer inList,
 	sjme_attrInNotNull sjme_comparator comparator);
 
 /*--------------------------------------------------------------------------*/

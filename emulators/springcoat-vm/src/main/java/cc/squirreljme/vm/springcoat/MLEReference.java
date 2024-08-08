@@ -366,5 +366,4 @@ public enum MLEReference
 	{
 		return this.key;
 	}
-	
 }

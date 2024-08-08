@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.event;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -21,6 +22,7 @@ import net.multiphasicapps.collections.UnmodifiableArrayList;
  *
  * @since 2018/12/09
  */
+@SquirrelJMEVendorApi
 public final class EventTranslate
 {
 	/** Event translators. */
@@ -43,6 +45,7 @@ public final class EventTranslate
 	 * valid.
 	 * @since 2019/04/14
 	 */
+	@SquirrelJMEVendorApi
 	public static int gameActionToKeyCode(int __gc)
 	{
 		// This performs the reverse of keyCodeToGameAction() except that
@@ -75,6 +78,7 @@ public final class EventTranslate
 	 * @since 2018/12/09
 	 */
 	@SuppressWarnings("DuplicateBranchesInSwitch")
+	@SquirrelJMEVendorApi
 	public static int keyCodeToGameAction(int __kc)
 	{
 		// Game actions are mapped to physical keys such as left/right/up/down
@@ -138,6 +142,7 @@ public final class EventTranslate
 	 * @return The adapters which are available.
 	 * @since 2022/02/03
 	 */
+	@SquirrelJMEVendorApi
 	public static Iterable<KeyCodeTranslator> translators()
 	{
 		// Already cached?

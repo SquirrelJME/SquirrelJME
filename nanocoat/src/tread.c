@@ -18,7 +18,7 @@
 		sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor, \
 		sjme_attrInNotNull sjme_nvm_frameTread* tread, \
 		sjme_attrInPositive sjme_jint treadIndex, \
-		sjme_attrOutNotNull void** outAddress) \
+		sjme_attrOutNotNull sjme_pointer* outAddress) \
 	{ \
 		if (frame == NULL || accessor == NULL || tread == NULL || \
 			outAddress == NULL) \
@@ -57,9 +57,9 @@ static sjme_errorCode sjme_nvm_frameTreadAccessorReadGeneric(
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull const sjme_nvm_frameTread* tread,
 	sjme_attrInPositive sjme_jint treadIndex,
-	sjme_attrOutNotNull void* outVal)
+	sjme_attrOutNotNull sjme_pointer outVal)
 {
-	void* fromAddr;
+	sjme_pointer fromAddr;
 	
 	if (frame == NULL || tread == NULL || outVal == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -83,9 +83,9 @@ static sjme_errorCode sjme_nvm_frameTreadAccessorWriteGeneric(
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull sjme_nvm_frameTread* tread,
 	sjme_attrInPositive sjme_jint treadIndex,
-	sjme_attrInNotNull const void* inVal)
+	sjme_attrInNotNull sjme_cpointer inVal)
 {
-	void* toAddr;
+	sjme_pointer toAddr;
 	
 	if (frame == NULL || tread == NULL || inVal == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

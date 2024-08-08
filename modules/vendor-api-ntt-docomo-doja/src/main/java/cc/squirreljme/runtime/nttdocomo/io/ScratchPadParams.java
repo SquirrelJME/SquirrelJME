@@ -9,10 +9,11 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
-import cc.squirreljme.jvm.launch.IModeApplication;
+import cc.squirreljme.jvm.launch.IModeProperty;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.IntegerList;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
+import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -93,8 +94,8 @@ public final class ScratchPadParams
 			return rv;
 		
 		// This system property comes from the SquirrelJME launch API
-		String prop = System.getProperty(
-			IModeApplication.SCRATCH_PAD_PROPERTY);
+		String prop = DoJaRuntime.getProperty(
+			IModeProperty.SCRATCH_PAD_PROPERTY);
 		if (prop == null)
 			return null;
 		

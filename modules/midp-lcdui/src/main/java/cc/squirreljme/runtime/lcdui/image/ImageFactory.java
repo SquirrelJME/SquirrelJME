@@ -8,9 +8,6 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
-import javax.microedition.lcdui.AnimatedImage;
-import javax.microedition.lcdui.Image;
-
 /**
  * This factory is used for creating images.
  *

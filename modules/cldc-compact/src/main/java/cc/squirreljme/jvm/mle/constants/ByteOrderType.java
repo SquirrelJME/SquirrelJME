@@ -9,18 +9,23 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * Specifies the byte order that is used.
  *
  * @since 2021/02/09
  */
+@SquirrelJMEVendorApi
 public interface ByteOrderType
 {
 	/** Big endian. */
+	@SquirrelJMEVendorApi
 	byte BIG_ENDIAN =
 		0;
 		
 	/** Little endian. */
+	@SquirrelJMEVendorApi
 	byte LITTLE_ENDIAN =
 		1;
 }

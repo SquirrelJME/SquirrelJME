@@ -198,7 +198,7 @@ static void dumpPool(sjme_alloc_pool* pool, sjme_lpcstr what)
  */
 SJME_TEST_DECLARE(testAllocFreeMerge)
 {
-	void* chunk;
+	sjme_pointer chunk;
 	sjme_jboolean isLast, isFree, wantFree;
 	sjme_jint chunkLen, linkNum, scenario, numUsed, numFree, x, atId;
 	uint8_t* block;
@@ -206,13 +206,13 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 	sjme_alloc_pool* pool;
 	sjme_alloc_link* rover;
 	sjme_alloc_link* at;
-	void* blocks[NUM_WHICH];
+	sjme_pointer blocks[NUM_WHICH];
 	sjme_alloc_link* links[NUM_WHICH];
 	const testOrderType* order;
 	const testSequenceType* sequence;
 	
 	/* Allocate data on the stack so it gets cleared. */
-	chunkLen = 32768;
+	chunkLen = 65536;
 	chunk = sjme_alloca(chunkLen);
 	if (chunk == NULL)
 		return sjme_unit_skip(test, "Could not alloca(%d).",

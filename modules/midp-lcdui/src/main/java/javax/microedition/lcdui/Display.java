@@ -9,27 +9,27 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.ThreadShelf;
-import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
-import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
-import cc.squirreljme.jvm.mle.constants.UIInputFlag;
-import cc.squirreljme.jvm.mle.constants.UIItemPosition;
-import cc.squirreljme.jvm.mle.constants.UIMetricType;
-import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.common.CommonColors;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
+import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
+import cc.squirreljme.runtime.lcdui.scritchui.StringTrackerListener;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.NonBlocking;
@@ -37,15 +37,7 @@ import org.jetbrains.annotations.NonBlocking;
 @SuppressWarnings("OverlyComplexClass")
 @Api
 public class Display
-	implements DisplayWidget
 {
-	/** The soft-key for the left command. */
-	static final int _SOFTKEY_LEFT_COMMAND =
-		Display.SOFTKEY_BOTTOM + 1;
-	
-	/** The soft-key for the right command. */
-	static final int _SOFTKEY_RIGHT_COMMAND =
-		Display.SOFTKEY_BOTTOM + 2;
 	
 	@Api
 	public static final int ALERT =
@@ -263,67 +255,72 @@ public class Display
 	public static final int TAB =
 		4;
 	
-	/** Serial runs of a given method for this display. */
-	final Map<Integer, Runnable> _serialRuns =
-		new LinkedHashMap<>();
+	/** The display state. */
+	final Reference<DisplayState> _state;
+	
+	/** The associated screen this display is for. */
+	private final ScritchScreenBracket _screen;
+	
+	/** The listener for title changes. */
+	final StringTrackerListener _listenerTitle;
+	
+	/** The owning native window. */
+	private final ScritchWindowBracket _window;
+	
+	/** The ScritchUI interface in use. */
+	private final ScritchInterface _scritch;
+	
+	/** Display scaling. */
+	final DisplayScale _scale;
 	
 	/** The number of times there has been a non-unique serial run. */
+	@Deprecated
 	private static volatile int _NON_UNIQUE_SERIAL_RUNS;
 	
-	/** The native display instance. */ 
-	final UIDisplayBracket _uiDisplay;
-	
-	/** The displayable to show. */
-	private volatile Displayable _current;
-	
 	/** The displayable to show on exit. */
+	@Deprecated
 	private volatile Displayable _exit;
 	
 	/** The layout policy of this display. */
+	@Deprecated
 	private CommandLayoutPolicy _layoutPolicy;
 	
 	/**
 	 * Initializes the display instance.
 	 *
-	 * @param __uiDisplay The native display.
+	 * @param __scritch The ScritchUI interface used.
+	 * @param __window The ScritchUI Window to use.
+	 * @param __screen The screen this displays on.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
-	Display(UIDisplayBracket __uiDisplay)
+	Display(ScritchInterface __scritch, ScritchWindowBracket __window,
+		ScritchScreenBracket __screen)
 		throws NullPointerException
 	{
-		if (__uiDisplay == null)
+		if (__scritch == null || __window == null || __screen == null)
 			throw new NullPointerException("NARG");
 		
-		this._uiDisplay = __uiDisplay;
+		// Initialize Display state
+		DisplayState state = new DisplayState(this, __window,
+			__screen);
+		this._state = new WeakReference<>(state);
+		this._scritch = __scritch;
+		this._screen = __screen;
+		this._window = __window;
+		this._scale = DisplayScale.currentScale(__scritch,
+			__screen, __window);
 		
-		// Check and ensure that the background thread exists
-		synchronized (StaticDisplayState.class)
-		{
-			// If there is no background thread yet, initialize it
-			Thread bgThread = StaticDisplayState.backgroundThread();
-			if (bgThread == null)
-			{
-				// The user interface thread to use
-				__MLEUIThread__ uiRunner = new __MLEUIThread__();
-				
-				// Initialize thread and make it a background worker
-				bgThread = new Thread(uiRunner, "SquirrelJME-LCDUI");
-				ThreadShelf.javaThreadSetDaemon(bgThread);
-				
-				// Set background thread state and start it
-				StaticDisplayState.setBackgroundThread(bgThread, uiRunner);
-				bgThread.start();
-			}
-			
-			// Register this object for the native display
-			UIDisplayBracket uiDisplay = this._uiDisplay;
-			StaticDisplayState.register(this, uiDisplay);
-			
-			// Register the display for callbacks
-			UIBackendFactory.getInstance(true).callback(uiDisplay,
-				(UIDisplayCallback)StaticDisplayState.callback());
-		}
+		// Set listener for title updates
+		this._listenerTitle = new __ExecDisplaySetTitle__(state);
+		
+		// Handle window closing for the display
+		__scritch.window().windowSetCloseListener(__window,
+			new __ExecDisplayClose__(state));
+		
+		// Handle menu items being activated
+		__scritch.window().windowSetMenuItemActivateListener(__window,
+			new __ExecDisplayMenuItemActivate__(state));
 	}
 	
 	/**
@@ -345,16 +342,18 @@ public class Display
 	public void callSerially(Runnable __run)
 		throws NullPointerException
 	{
-		// Enqueue serialized call
-		this.__queueSerialRunner(__run);
+		if (__run == null)
+			throw new NullPointerException("NARG");
+		
+		// Always execute later because we do not want to actually block
+		// if we were able to execute now, this strictly schedules.
+		this._scritch.eventLoop().loopExecuteLater(__run);
 	}
 	
 	/**
-	 * Flashes the display LED for the given number of milliseconds.
-	 *
-	 * In SquirrelJME this flashes an LED and not the back light, since it is
-	 * not a popular means to notify the user and additionally due to
-	 * medical concerns such as epilepsy.
+	 * Flashes the backlight for the purpose of getting attention from the
+	 * user. In SquirrelJME this just uses the system's notification system
+	 * to call attention to the display window.
 	 *
 	 * @param __ms The number of milliseconds to flash for.
 	 * @return {@code true} if the backlight is controlled by the application
@@ -369,19 +368,9 @@ public class Display
 		if (__ms < 0)
 			throw new IllegalArgumentException("EB30");
 		
-		throw Debugging.todo();
-		/*
-		// Blink!
-		throw Debugging.todo();
-		/*
-		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
-			DeviceFeedbackType.BLINK_LED, __ms);
-		
-		// Only return true if no error was generated
-		return (SystemCallError.NO_ERROR ==
-			Assembly.sysCallV(SystemCallIndex.ERROR_GET,
-				SystemCallIndex.DEVICE_FEEDBACK));*/
-				
+		// Just call attention to the user
+		this._scritch.window().windowCallAttention(this._window);
+		return false;
 	}
 	
 	/**
@@ -389,12 +378,15 @@ public class Display
 	 * active mode is set then the display will inhibit power saving features.
 	 *
 	 * @return Either {@link #MODE_ACTIVE} or {@link #MODE_NORMAL}.
+	 * @see Display#setActivityMode(int) 
 	 * @since 2016/10/08
 	 */
 	@Api
 	public int getActivityMode()
 	{
-		throw Debugging.todo();
+		if (this._scritch.environment().isInhibitingSleep())
+			return Display.MODE_ACTIVE;
+		return Display.MODE_NORMAL;
 	}
 	
 	/**
@@ -410,16 +402,20 @@ public class Display
 	 * {@link #NOTIFICATION}, and
 	 * {@link #MENU}.
 	 *
-	 * @param __a If display element.
+	 * @param __elem If display element.
 	 * @return The height of the image for that element.
-	 * @throws IllegalArgumentException On null arguments.
+	 * @throws IllegalArgumentException If the element is not valid.
 	 * @since 2016/10/14
 	 */
 	@Api
-	public int getBestImageHeight(int __a)
+	public int getBestImageHeight(int __elem)
 		throws IllegalArgumentException
 	{
-		return this.__bestImageSize(__a, true);
+		ScritchLAFInterface laf =
+			this._scritch.environment().lookAndFeel();
+		
+		return laf.lafImageSize(
+			ScritchLcdUiUtils.scritchElementType(__elem), true);
 	}
 	
 	/**
@@ -435,22 +431,39 @@ public class Display
 	 * {@link #NOTIFICATION}, and
 	 * {@link #MENU}.
 	 *
-	 * @param __a If display element.
+	 * @param __elem If display element.
 	 * @return The width of the image for that element.
-	 * @throws IllegalArgumentException On null arguments.
+	 * @throws IllegalArgumentException If the element is not valid.
 	 * @since 2016/10/14
 	 */
 	@Api
-	public int getBestImageWidth(int __a)
+	public int getBestImageWidth(int __elem)
 		throws IllegalArgumentException
 	{
-		return this.__bestImageSize(__a, false);
+		ScritchLAFInterface laf =
+			this._scritch.environment().lookAndFeel();
+		
+		return laf.lafImageSize(
+			ScritchLcdUiUtils.scritchElementType(__elem), false);
 	}
 	
+	/**
+	 * Returns the border style for items which are highlighted or otherwise
+	 * not.
+	 *
+	 * @param __highlight If {@code true} then this should return the style
+	 * for borders which are highlighted.
+	 * @return The style for the given item.
+	 * @since 2024/03/09
+	 */
 	@Api
-	public int getBorderStyle(boolean __a)
+	public int getBorderStyle(boolean __highlight)
 	{
-		throw Debugging.todo();
+		ScritchLAFInterface laf =
+			this._scritch.environment().lookAndFeel();
+		
+		return ScritchLcdUiUtils.lcduiLineStyle(
+			laf.lafFocusBorderStyle(__highlight));
 	}
 	
 	/**
@@ -467,6 +480,8 @@ public class Display
 	@Api
 	public int getCapabilities()
 	{
+		throw Debugging.todo();
+		/*
 		// These are all standard and expected to always be supported
 		int rv = Display.__defaultCapabilities();
 			
@@ -476,7 +491,7 @@ public class Display
 		if (0 != backend.metric(_uiDisplay, UIMetricType.INPUT_FLAGS))
 			rv |= Display.SUPPORTS_INPUT_EVENTS;
 		
-		return rv;
+		return rv;*/
 	}
 	
 	/**
@@ -504,45 +519,16 @@ public class Display
 	public int getColor(int __c)
 		throws IllegalArgumentException
 	{
-		int rv;
-		switch (__c)
+		try
 		{
-			case Display.COLOR_BORDER:
-				rv = CommonColors.BORDER;
-				break;
-			
-			case Display.COLOR_BACKGROUND:
-			case Display.COLOR_IDLE_BACKGROUND:
-				rv = CommonColors.BACKGROUND;
-				break;
-			
-			case Display.COLOR_FOREGROUND:
-			case Display.COLOR_IDLE_FOREGROUND:
-				rv = CommonColors.FOREGROUND;
-				break;
-			
-			case Display.COLOR_HIGHLIGHTED_BORDER:
-				rv = CommonColors.HIGHLIGHTED_BORDER;
-				break;
-				
-			case Display.COLOR_HIGHLIGHTED_BACKGROUND:
-			case Display.COLOR_IDLE_HIGHLIGHTED_BACKGROUND:
-				rv = CommonColors.HIGHLIGHTED_BACKGROUND;
-				break;
-			
-			case Display.COLOR_HIGHLIGHTED_FOREGROUND:
-			case Display.COLOR_IDLE_HIGHLIGHTED_FOREGROUND:
-				rv = CommonColors.HIGHLIGHTED_FOREGROUND;
-				break;
-		
-				/* {@squirreljme.error EB1h Unknown color specifier. (The
-				color specifier)} */
-			default:
-				throw new IllegalArgumentException("EB1h " + __c);
+			return this._scritch.environment().lookAndFeel().lafElementColor(
+				this.__state().scritchWindow(),
+				ScritchLcdUiUtils.scritchElementColor(__c)) & 0xFFFFFF;
 		}
-		
-		// Clip the alpha away
-		return (rv & 0xFFFFFF);
+		catch (MLECallError __e)
+		{
+			throw __e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -587,13 +573,32 @@ public class Display
 	@Api
 	public Displayable getCurrent()
 	{
-		return this._current;
+		DisplayableState current = this.__state().current();
+		if (current == null)
+			return null;
+		return current.displayable();
 	}
 	
+	/**
+	 * Gets the state of the display. 
+	 *
+	 * @return One of {@link #STATE_BACKGROUND}, {@link #STATE_VISIBLE},
+	 * or {@link #STATE_FOREGROUND}.
+	 * @since 2024/03/09
+	 */
 	@Api
 	public int getDisplayState()
 	{
-		throw Debugging.todo();
+		ScritchWindowInterface scritch = this._scritch.window();
+		
+		if (scritch.windowIsVisible(this._window))
+		{
+			if (scritch.windowHasFocus(this._window))
+				return Display.STATE_FOREGROUND;
+			return Display.STATE_VISIBLE;
+		}
+		
+		return Display.STATE_BACKGROUND;
 	}
 	
 	/**
@@ -613,7 +618,7 @@ public class Display
 	}
 	
 	/**
-	 * Returns all of the possible exact placements where items may go on
+	 * Returns all the possible exact placements where items may go on
 	 * a given border.
 	 * 
 	 * The orientation of the display does affect the border positions, if
@@ -637,6 +642,8 @@ public class Display
 	public int[] getExactPlacementPositions(int __b)
 		throws IllegalArgumentException
 	{
+		throw Debugging.todo();
+		/*
 		// Un-project the layout to get the correct order
 		__b = this.__layoutProject(__b);
 		
@@ -656,10 +663,11 @@ public class Display
 					this.__layoutProject(Display.SOFTKEY_BOTTOM + 1),
 					this.__layoutProject(Display.SOFTKEY_BOTTOM + 2)};
 			
-				/* {@squirreljme.error EB1p Invalid border. (The border)} */
+				/* {@squirreljme.error EB1p Invalid border. (The border)} * /
 			default:
 				throw new IllegalArgumentException("EB1p " + __b);
 		}
+		*/
 	}
 	
 	/**
@@ -688,8 +696,7 @@ public class Display
 	@Api
 	public int getHeight()
 	{
-		return UIBackendFactory.getInstance(true)
-			.metric(_uiDisplay, UIMetricType.DISPLAY_MAX_HEIGHT);
+		return this._scale.textureMaxH();
 	}
 	
 	@Api
@@ -713,7 +720,7 @@ public class Display
 	}
 	
 	/**
-	 * Returns all of the placements which support menu items.
+	 * Returns all the placements which support menu items.
 	 *  
 	 * @return The list of supported menu item placements.
 	 * @since 2020/09/27
@@ -735,28 +742,9 @@ public class Display
 	@Api
 	public int getOrientation()
 	{
-		int width, height;
-		
-		// If a form is being shown, use those dimensions
-		Displayable form = this._current;
-		if (form != null)
-		{
-			width = Displayable.__getWidth(form, null);
-			height = Displayable.__getHeight(form, null);
-		}
-		
-		// Otherwise use the display dimensions
-		else
-		{
-			width = this.getWidth();
-			height = this.getHeight();
-		}
-		
-		// Landscape just means a longer width
-		if (width > height)
-			return Display.ORIENTATION_LANDSCAPE;
-		else
+		if (this._scritch.screen().screenIsPortrait(this._screen))
 			return Display.ORIENTATION_PORTRAIT;
+		return Display.ORIENTATION_LANDSCAPE;
 	}
 	
 	/**
@@ -768,8 +756,7 @@ public class Display
 	@Api
 	public int getWidth()
 	{
-		return UIBackendFactory.getInstance(true)
-			.metric(_uiDisplay, UIMetricType.DISPLAY_MAX_WIDTH);
+		return this._scale.textureMaxW();
 	}
 	
 	/**
@@ -781,9 +768,17 @@ public class Display
 	@Api
 	public boolean hasPointerEvents()
 	{
-		return (UIBackendFactory.getInstance(true).metric(_uiDisplay,
-			UIMetricType.INPUT_FLAGS) & UIInputFlag.POINTER) ==
-			(UIInputFlag.POINTER);
+		int types = this._scritch.window().windowInputTypes(this._window);
+		return 0 != (types & (ScritchInputMethodType.MOUSE_BUTTON_PRESSED |
+			ScritchInputMethodType.MOUSE_BUTTON_RELEASED |
+			ScritchInputMethodType.MOUSE_MOTION |
+			ScritchInputMethodType.TOUCH_FINGER_PRESSED |
+			ScritchInputMethodType.TOUCH_FINGER_RELEASED |
+			ScritchInputMethodType.TOUCH_DRAG_MOTION |
+			ScritchInputMethodType.STYLUS_PEN_PRESSED |
+			ScritchInputMethodType.STYLUS_PEN_RELEASED |
+			ScritchInputMethodType.STYLUS_DRAG_MOTION |
+			ScritchInputMethodType.STYLUS_HOVER_MOTION));
 	}
 	
 	/**
@@ -795,10 +790,11 @@ public class Display
 	@Api
 	public boolean hasPointerMotionEvents()
 	{
-		return (UIBackendFactory.getInstance(true).metric(_uiDisplay,
-			UIMetricType.INPUT_FLAGS) &
-			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION)) ==
-			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION);
+		int types = this._scritch.window().windowInputTypes(this._window);
+		return 0 != (types & (ScritchInputMethodType.MOUSE_MOTION |
+			ScritchInputMethodType.TOUCH_DRAG_MOTION |
+			ScritchInputMethodType.STYLUS_DRAG_MOTION |
+			ScritchInputMethodType.STYLUS_HOVER_MOTION));
 	}
 	
 	/**
@@ -810,7 +806,7 @@ public class Display
 	@Api
 	public boolean isBuiltIn()
 	{
-		throw Debugging.todo();
+		return this._scritch.screen().screenIsBuiltIn(this._screen);
 	}
 	
 	/**
@@ -822,8 +818,8 @@ public class Display
 	@Api
 	public boolean isColor()
 	{
-		return UIBackendFactory.getInstance(true).metric(_uiDisplay,
-			UIMetricType.DISPLAY_MONOCHROMATIC) == 0;
+		Debugging.todoNote("Actual color check.");
+		return true;
 	}
 	
 	/**
@@ -840,6 +836,8 @@ public class Display
 	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches"})
 	public int numAlphaLevels()
 	{
+		throw Debugging.todo();
+		/*
 		switch (UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.DISPLAY_PIXEL_FORMAT))
 		{
@@ -851,7 +849,7 @@ public class Display
 				// alpha colors calculated.
 			default:
 				return 256;
-		}
+		}*/
 	}
 	
 	/**
@@ -868,6 +866,8 @@ public class Display
 	@SuppressWarnings("MagicNumber")
 	public int numColors()
 	{
+		throw Debugging.todo();
+		/*
 		int pf;
 		switch ((pf = UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.DISPLAY_PIXEL_FORMAT)))
@@ -897,10 +897,11 @@ public class Display
 			case UIPixelFormat.PACKED_INDEXED1:
 				return 2;
 			
-				/* {@squirreljme.error EB3j Unhandled pixel format. (Format)} */
+				/* {@squirreljme.error EB3j Unhandled pixel format. (Format)} * /
 			default:
 				throw Debugging.oops("EB3j", pf);
 		}
+		*/
 	}
 	
 	/**
@@ -911,8 +912,11 @@ public class Display
 	@Api
 	public void removeCurrent()
 	{
-		// Just performs the internal hiding logic
-		this.__doHideCurrent();
+		// Make sure this happens in the event loop as we might need to
+		// update widgets and otherwise
+		this._scritch.eventLoop().loopExecuteWait(
+			new __ExecDisplaySetCurrent__(this._scritch, this,
+				null, null));
 	}
 	
 	/**
@@ -928,13 +932,10 @@ public class Display
 	public void setActivityMode(int __m)
 		throws IllegalArgumentException
 	{
-		// Active?
-		if (__m == Display.MODE_ACTIVE)
-			throw Debugging.todo();
-	
-		// Normal
-		else if (__m == Display.MODE_NORMAL)
-			throw Debugging.todo();
+		// Valid?
+		if (__m == Display.MODE_ACTIVE || __m == Display.MODE_NORMAL)
+			this._scritch.environment().setInhibitSleep(
+				__m == Display.MODE_ACTIVE);
 	
 		/* {@squirreljme.error EB1i Unknown activity mode specified.} */
 		else
@@ -983,34 +984,11 @@ public class Display
 		if (__exit instanceof Alert)
 			throw new IllegalStateException("EB1k");
 		
-		// Debug
-		Debugging.debugNote("Showing alert \"%s\"", __show._message);
-		
-		// Perform call on this display
-		throw Debugging.todo();
-		/*
-		try
-		{
-			// Set widgets
-			if (true)
-				throw new todo.TODO();
-			/*
-			LcdServiceCall.<VoidType>call(VoidType.class,
-				LcdFunction.WIDGET_ALERT_SHOW, this._handle,
-				__show._handle, __exit._handle);
-			* /
-			
-			// Hold onto these so they do not get GCed
-			this._heldcurrent = __show;
-			this._heldexit = __exit;
-		}
-		
-		/* {@squirreljme.error EB1l Could not set the alert and its exit
-		displayable because it is already set on a display.} * /
-		catch (LcdWidgetOwnedException e)
-		{
-			throw new IllegalStateException("EB1l", e);
-		}*/
+		// Make sure this happens in the event loop as we might need to
+		// update widgets and otherwise
+		this._scritch.eventLoop().loopExecuteWait(
+			new __ExecDisplaySetCurrent__(this._scritch, this,
+				__show, __exit));
 	}
 	
 	/**
@@ -1042,34 +1020,11 @@ public class Display
 		if (__show == null)
 			return;
 		
-		// If we are trying to show the same display, force foreground
-		Displayable current = this._current;
-		if (current == __show)
-		{
-			// This will force the form to be currently shown on the screen
-			// even if another task has set the form. Since displays may only
-			// have a single form associated with them, this effectively
-			// retakes control accordingly
-			this.__doShowCurrent(__show);
-			
-			return;
-		}
-		
-		// If showing an alert, it gets displayed instead
-		if (__show instanceof Alert)
-		{
-			this.setCurrent((Alert)__show, this.getCurrent());
-			return;
-		}
-		
-		/* {@squirreljme.error EB1m The displayable to be displayed is already
-		being displayed.} */
-		if (__show._display != null)
-			throw new IllegalStateException("EB1m");
-		
-		// Hide the current display then show the new one
-		this.__doHideCurrent();
-		this.__doShowCurrent(__show);
+		// Make sure this happens in the event loop as we might need to
+		// update widgets and otherwise
+		this._scritch.eventLoop().loopExecuteWait(
+			new __ExecDisplaySetCurrent__(this._scritch, this, __show,
+				null));
 	}
 	
 	@Api
@@ -1119,49 +1074,6 @@ public class Display
 	}
 	
 	/**
-	 * This wraps getting the best image size.
-	 *
-	 * @param __e The element to get it for.
-	 * @param __h Return the height?
-	 * @return The best image size.
-	 * @throws IllegalArgumentException If the element type is not valid.
-	 * @since 2016/10/14
-	 */
-	private int __bestImageSize(int __e, boolean __h)
-		throws IllegalArgumentException
-	{
-		// Depends
-		UIBackend backend = UIBackendFactory.getInstance(true);
-		switch (__e)
-		{
-			case Display.CHOICE_GROUP_ELEMENT:
-				throw Debugging.todo();
-				
-			case Display.ALERT:
-				throw Debugging.todo();
-				
-			case Display.TAB:
-				throw Debugging.todo();
-				
-			case Display.NOTIFICATION:
-				throw Debugging.todo();
-				
-			case Display.LIST_ELEMENT:
-				return backend.metric(_uiDisplay, UIMetricType.LIST_ITEM_HEIGHT);
-				
-			case Display.MENU:
-			case Display.COMMAND:
-				return backend.metric(_uiDisplay, UIMetricType.COMMAND_BAR_HEIGHT);
-				
-				/* {@squirreljme.error EB1o Cannot get the best image size of
-				the specified element. (The element specifier)} */
-			default:
-				throw new IllegalArgumentException(String.format("EB1o %d",
-					__e));
-		}
-	}
-	
-	/**
 	 * Hides the current displayable.
 	 * 
 	 * @return The currently displayed displayable unless not set.
@@ -1169,6 +1081,8 @@ public class Display
 	 */
 	private Displayable __doHideCurrent()
 	{
+		throw Debugging.todo();
+		/*
 		// Nothing was ever visible on this display?
 		Displayable current = this._current;
 		if (current == null)
@@ -1189,7 +1103,7 @@ public class Display
 		if (current instanceof Canvas)
 			((Canvas)current).hideNotify();
 		
-		return current;
+		return current;*/
 	}
 	
 	/**
@@ -1202,6 +1116,8 @@ public class Display
 	final void __doShowCurrent(Displayable __show)
 		throws NullPointerException
 	{
+		throw Debugging.todo();
+		/*
 		if (__show == null)
 			throw new NullPointerException("NARG");
 		
@@ -1234,6 +1150,7 @@ public class Display
 		
 		// Notify that it was shown
 		this.__queueSerialRunner(new __NotifyShow__(__show));
+		 */
 	}
 	
 	/**
@@ -1293,79 +1210,20 @@ public class Display
 	}
 	
 	/**
-	 * Queues the serial runner.
+	 * Returns the display state.
 	 *
-	 * @param __run The method to run.
-	 * @return The identifier for the runner item.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/11/27
+	 * @return The display state.
+	 * @throws IllegalStateException If the state has been GCed.
+	 * @since 2024/05/12
 	 */
-	@SuppressWarnings({"WrapperTypeMayBePrimitive"})
-	final int __queueSerialRunner(Runnable __run)
-		throws NullPointerException
+	DisplayState __state()
+		throws IllegalStateException
 	{
-		if (__run == null)
-			throw new NullPointerException("NARG");
+		DisplayState rv = this._state.get();
+		if (rv == null)
+			throw new IllegalStateException("GCGC");
 		
-		// Get next ID to use.
-		Integer idRunner;
-		synchronized (Display.class)
-		{
-			idRunner = (++Display._NON_UNIQUE_SERIAL_RUNS);
-		}
-		
-		// Perform the serialization call
-		synchronized (this)
-		{
-			// Store into the serial runner
-			Map<Integer, Runnable> serialRuns = this._serialRuns;
-			serialRuns.put(idRunner, __run);
-		}
-		
-		// Perform the call so it is done later
-		UIBackendFactory.getInstance(true)
-			.later(this._uiDisplay, idRunner);
-		
-		// This is the ID used to refer to this runner
-		return idRunner;
-	}
-	
-	/**
-	 * Performs a serial run.
-	 * 
-	 * @param __serialId The serial run ID.
-	 * @since 2023/01/14
-	 */
-	@SerializedEvent
-	@Async.Execute
-	protected void __serialRun(int __serialId)
-	{
-		// Look to see if it is a valid call
-		Integer key = __serialId;
-		Runnable runner;
-		synchronized (this)
-		{
-			// Locate the runner
-			runner = this._serialRuns.get(key);
-		}
-		
-		// Run it
-		try
-		{
-			if (runner != null)
-				runner.run();
-		}
-		finally
-		{
-			synchronized (this)
-			{
-				// Always clear it, even with failures
-				this._serialRuns.remove(key);
-				
-				// Notify all the display threads that something happened
-				this.notifyAll();
-			}
-		}
+		return rv;
 	}
 	
 	/**
@@ -1382,7 +1240,7 @@ public class Display
 	public static void addDisplayListener(DisplayListener __dl)
 		throws NullPointerException
 	{
-		StaticDisplayState.addListener(__dl);
+		DisplayManager.instance().displayListenerAdd(__dl);
 	}
 	
 	/**
@@ -1429,28 +1287,11 @@ public class Display
 	public static Display[] getDisplays(int __caps)
 		throws IllegalStateException
 	{
-		// Use cached displays, but otherwise load them
-		Display[] all = StaticDisplayState.DISPLAYS;
-		if (all == null)
-		{
-			// Get the displays that are attached to the system
-			UIDisplayBracket[] uiDisplays =
-				UIBackendFactory.getInstance(true).displays();
-			int n = uiDisplays.length;
-			
-			// Initialize display instances
-			all = new Display[n];
-			for (int i = 0; i < n; i++)
-				all[i] = new Display(uiDisplays[i]);
-			
-			// Use these for future calls
-			StaticDisplayState.DISPLAYS = all;
-			
-			// Inform any listeners that the displays exist now
-			for (DisplayListener listener : StaticDisplayState.listeners())
-				for (Display display : all) 
-					listener.displayAdded(display);
-		}
+		// Get display interface
+		DisplayManager manager = DisplayManager.instance();
+		
+		// Get tracker so we can map to actual displays and windows
+		Display[] all = manager.mapScreens(new __NewDisplay__());
 		
 		// If we do not care for the capabilities of the displays then just
 		// return all of them
@@ -1475,7 +1316,7 @@ public class Display
 	 * when events occur.
 	 *
 	 * @param __dl The listener to remove.
-	 * @throws IllegalStateException If the listener is not in the display.
+	 * @throws IllegalStateException If the listener is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
@@ -1483,67 +1324,10 @@ public class Display
 	public static void removeDisplayListener(DisplayListener __dl)
 		throws IllegalStateException, NullPointerException
 	{
-		StaticDisplayState.removeListener(__dl);
-	}
-	
-	/**
-	 * The default display capabilities.
-	 * 
-	 * @return The default display capabilities.
-	 * @since 2021/11/30
-	 */
-	static int __defaultCapabilities()
-	{
-		return Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS |
-			Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS |
-			Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES |
-			Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES |
-			Display.SUPPORTS_MENUS;
-	}
-	
-	/**
-	 * Converts a {@link UIItemPosition} to a softkey.
-	 * 
-	 * @param __pos The {@link UIItemPosition} to get the soft key of.
-	 * @return The softkey position or a negative value if not valid.
-	 * @since 2020/10/03
-	 */
-	static int __layoutPosToSoftKey(int __pos)
-	{
-		switch (__pos)
-		{
-			case UIItemPosition.LEFT_COMMAND:
-				return Display._SOFTKEY_LEFT_COMMAND;
-				
-			case UIItemPosition.RIGHT_COMMAND:
-				return Display._SOFTKEY_RIGHT_COMMAND;
-			
-			default:
-				return -1;
-		}
-	}
-	
-	/**
-	 * Returns the position where the soft key belongs.
-	 * 
-	 * @param __softKey The soft key to get the UI position from.
-	 * @return The {@link UIItemPosition} of the item, or
-	 * {@link UIItemPosition#NOT_ON_FORM} if not valid.
-	 * @since 2020/10/03
-	 */
-	static int __layoutSoftKeyToPos(int __softKey)
-	{
-		switch (__softKey)
-		{
-			case Display._SOFTKEY_LEFT_COMMAND:
-				return UIItemPosition.LEFT_COMMAND;
-				
-			case Display._SOFTKEY_RIGHT_COMMAND:
-				return UIItemPosition.RIGHT_COMMAND;
-			
-			default:
-				return UIItemPosition.NOT_ON_FORM;
-		}
+		if (__dl == null)
+			throw new NullPointerException("NARG");
+		
+		DisplayManager.instance().displayListenerRemove(__dl);
 	}
 }
 

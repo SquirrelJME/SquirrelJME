@@ -113,7 +113,8 @@ public class VMFullSuiteTaskAction
 			{
 				// Use filled JVM arguments
 				this.classifier.getVmType().spawnJvmArguments(
-					(VMBaseTask)__task,
+					__task.getProject(),
+					this.classifier,
 					true,
 					new GradleJavaExecSpecFiller(__spec),
 					UnassistedLaunchEntry.MIDLET_MAIN_CLASS,
@@ -133,6 +134,7 @@ public class VMFullSuiteTaskAction
 		// Did the task fail?
 		int exitValue = exitResult.getExitValue();
 		if (exitValue != 0)
-			throw new RuntimeException("Task exited with: " + exitValue);
+			throw new RuntimeException(
+				String.format("Task exited with: %d %08x", exitValue, exitValue));
 	}
 }

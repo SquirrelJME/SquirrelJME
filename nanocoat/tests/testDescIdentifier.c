@@ -41,7 +41,7 @@ SJME_TEST_DECLARE(testDescIdentifier)
 	/* Make sure it was calculated correctly. */
 	sjme_unit_equalI(test, result.hash, stringHash,
 		"Hash set incorrectly?");
-	sjme_unit_equalP(test, result.whole.pointer, (void*)string,
+	sjme_unit_equalP(test, result.whole.pointer, (sjme_pointer)string,
 		"Pointer not valid?");
 	sjme_unit_equalI(test, result.whole.length, strlen(string),
 		"Pointer length not valid?");

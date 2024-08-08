@@ -30,11 +30,11 @@
  */
 SJME_TEST_DECLARE(testAllocRealloc)
 {
-	void* chunk;
+	sjme_pointer chunk;
 	sjme_jint chunkLen, j, newLen;
 	sjme_alloc_pool* pool;
-	void* block;
-	void* oldBlockP;
+	sjme_pointer block;
+	sjme_pointer oldBlockP;
 	sjme_alloc_link* link;
 	sjme_alloc_link* oldNext;
 	

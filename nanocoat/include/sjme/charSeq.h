@@ -154,6 +154,19 @@ sjme_errorCode sjme_charSeq_newStatic(
 	sjme_attrInNullable sjme_pointer inOptContext,
 	sjme_attrInNullable sjme_frontEnd* inOptFrontEnd);
 
+/**
+ * Creates a character sequence that accesses the given standard C string
+ * as Utf characters. 
+ * 
+ * @param inOutSeq The resultant sequence.
+ * @param inString The string to wrap.
+ * @return Any resultant error, if any.
+ * @since 2024/07/26
+ */
+sjme_errorCode sjme_charSeq_newUtfStatic(
+	sjme_attrInNotNull sjme_charSeq* inOutSeq,
+	sjme_attrInNotNull sjme_lpcstr inString);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

@@ -11,11 +11,13 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPCommandSetVirtualMachine;
+import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPStepDepth;
 import cc.squirreljme.jdwp.JDWPStepSize;
+import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -43,6 +46,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * Primary display window.
@@ -282,9 +287,16 @@ public class PrimaryFrame
 		vendorProbeItem.setMnemonic('p');
 		vendorProbeItem.addActionListener(this::__probeVendorCommands);
 		
+		// Enable every possible breakpoint to handle missed throws/catches
+		JMenuItem paranoidThrows = new JMenuItem(
+			"Paranoid Throwable");
+		paranoidThrows.setMnemonic('t');
+		paranoidThrows.addActionListener(this::__paranoidThrows);
+		
 		// Advanced Menu
 		JMenu advancedMenu = new JMenu("Advanced");
 		advancedMenu.add(vendorProbeItem);
+		advancedMenu.add(paranoidThrows);
 		
 		// Menu bar
 		JMenuBar mainMenu = new JMenuBar();
@@ -517,8 +529,15 @@ public class PrimaryFrame
 						// Setup class
 						InfoClass infoClass = classes.get(__state, typeId);
 						if (infoClass != null)
-							infoClass.thisName.set(
-								new FieldDescriptor(name).className());
+							try
+							{
+								infoClass.thisName.set(
+									new FieldDescriptor(name).className());
+							}
+							catch (InvalidClassFormatException __e)
+							{
+								__e.printStackTrace(System.err);
+							}
 					}
 					
 					this.__inspect(state.storedInfo.getClasses());
@@ -527,162 +546,122 @@ public class PrimaryFrame
 	}
 	
 	/**
-	 * Views a class stored on the disk.
+	 * Enables many breakpoints for trying to find throwables that are missed.
 	 *
-	 * @param __event The event.
-	 * @since 2024/01/22
+	 * @param __event Ignored.
+	 * @since 2024/07/27
 	 */
-	private void __viewClassDisk(ActionEvent __event)
+	private void __paranoidThrows(ActionEvent __event)
 	{
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setFileFilter(new FileNameExtensionFilter(
-			"Java Class Files", "class"));
+		DebuggerState state = this.state;
 		
-		if (fileChooser.showOpenDialog(this) ==
-			JFileChooser.APPROVE_OPTION)
+		// Run for all of these classes
+		for (String classNameRaw : Arrays.asList(
+			"java.io.IOException",
+			"java.lang.ArrayIndexOutOfBoundsException",
+			"java.lang.ArrayStoreException",
+			"java.lang.AssertionError",
+			"java.lang.ClassCastException",
+			"java.lang.ClassNotFoundException",
+			"java.lang.Error",
+			"java.lang.IllegalAccessException",
+			"java.lang.IllegalArgumentException",
+			"java.lang.IllegalMonitorStateException",
+			"java.lang.IllegalStateException",
+			"java.lang.IllegalThreadStateException",
+			"java.lang.IncompatibleClassChangeError",
+			"java.lang.IndexOutOfBoundsException",
+			"java.lang.InterruptedException",
+			"java.lang.NegativeArraySizeException",
+			"java.lang.NoClassDefFoundError",
+			"java.lang.NoSuchFieldError",
+			"java.lang.NullPointerException",
+			"java.lang.NumberFormatException",
+			"java.lang.OutOfMemoryError",
+			"java.lang.RuntimeException",
+			"java.lang.SecurityException",
+			"java.lang.StackOverflowError",
+			"java.lang.StringIndexOutOfBoundsException",
+			"java.lang.Throwable",
+			"java.lang.Throwable",
+			"java.lang.UnsupportedClassVersionError",
+			"java.lang.UnsupportedOperationException",
+			"java.lang.VirtualMachineError"))
 		{
-			try (InputStream in = Files.newInputStream(
-				fileChooser.getSelectedFile().toPath(),
-				StandardOpenOption.READ))
-			{
-				// Decode the class
-				ClassFile classFile = ClassFile.decode(in);
+			// Note
+			Debugging.debugNote("Paranoid: %s", classNameRaw);
+			
+			// Class matching
+			ClassName className = new ClassName(
+				classNameRaw.replace('.', '/'));
+			EventModifierClassMatch classMatch =
+				new EventModifierClassMatch(classNameRaw);
+			
+			// Exception thrown for this class
+			state.eventSet(JDWPEventKind.EXCEPTION,
+				JDWPSuspendPolicy.ALL,
+				new EventModifier[]{classMatch},
+				(__state, __reply) -> {}, null);
+			state.eventSet(JDWPEventKind.EXCEPTION_CATCH,
+				JDWPSuspendPolicy.ALL,
+				new EventModifier[]{classMatch},
+				(__state, __reply) -> {}, null);
+			
+			// Exception by class ID
+			state.lookupClass(className, (__info) -> {
+				// Note
+				Debugging.debugNote("Catching: %s (%d)", className);
 				
-				// Use standard viewer
-				this.__viewClass(new JavaClassViewer(classFile));
-			}
-			catch (IOException __e)
-			{
-				Utils.throwableTraceDialog(this,
-					"Failed to load class from disk", __e);
-			}
-		}
-	}
-	
-	/**
-	 * Views the given class.
-	 *
-	 * @param __viewer The class to view.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/22
-	 */
-	private void __viewClass(ClassViewer __viewer)
-		throws NullPointerException
-	{
-		if (__viewer == null)
-			throw new NullPointerException("NARG");
-		
-		ShownClassDialog dialog = new ShownClassDialog(this,
-			this.state, __viewer);
-		dialog.setLocationRelativeTo(null);
-		dialog.setVisible(true);
-	}
-	
-	/**
-	 * Views a local class.
-	 *
-	 * @param __event Not used.
-	 * @since 2024/01/29
-	 */
-	private void __viewClassLocal(ActionEvent __event)
-	{
-		String option = (String)JOptionPane.showInputDialog(
-			this,
-			"Choose local class",
-			"Choose local class",
-			JOptionPane.QUESTION_MESSAGE,
-			null,
-			null,
-			"java/lang/Class");
-		
-		// Was a class specified?
-		if (option != null)
-		{
-			// If there are dots, it really should be slashes
-			if (option.indexOf('.') >= 0)
-				option = option.replace('.', '/');
-			
-			// Perform lookup
-			ClassName className = new ClassName(option);
-			ClassFile[] classFiles = Utils.loadClass(className,
-				this.preferences);
-			
-			// No class?
-			if (classFiles == null || classFiles.length == 0)
-			{
-				Utils.throwableTraceDialog(this,
-					"Could not find class: " + className,
-					new Throwable());
-				return;
-			}
-			
-			// What do we look at?
-			ClassFile lookAt;
-			if (classFiles.length == 1)
-				lookAt = classFiles[0];
-			else
-				lookAt = (ClassFile)JOptionPane.showInputDialog(
-					this,
-					"Select class:",
-					"Multiple classes found",
-					JOptionPane.QUESTION_MESSAGE,
-					null,
-					classFiles,
-					classFiles[0]);
-			
-			// Look at the given class
-			if (lookAt != null)
-				this.__viewClass(new JavaClassViewer(lookAt));
-		}
-	}
-	
-	/**
-	 * Views a class from the remote virtual machine.
-	 *
-	 * @param __event The event.
-	 * @since 2024/01/22
-	 */
-	private void __viewClassNetwork(ActionEvent __event)
-	{
-		String option = (String)JOptionPane.showInputDialog(
-			this,
-			"Choose remote class",
-			"Choose remote class",
-			JOptionPane.QUESTION_MESSAGE,
-			null,
-			null,
-			"java/lang/Class");
-		
-		// Was a class specified?
-		if (option != null)
-		{
-			// If there are dots, it really should be slashes
-			if (option.indexOf('.') >= 0)
-				option = option.replace('.', '/');
-			
-			// Perform lookup
-			ClassName className = new ClassName(option);
-			this.state.lookupClass(className, (__info) -> {
-				InfoClass lookAt;
-				if (__info.length == 1)
-					lookAt = __info[0];
-				else
-					lookAt = (InfoClass)JOptionPane.showInputDialog(
-						this,
-						"Select class:",
-						"Multiple classes found",
-						JOptionPane.QUESTION_MESSAGE,
-						null,
-						__info,
-						__info[0]);
+				// Setup ID catch
+				InfoClass lookAt = __info[0];
+				EventModifierClassOnly onlyClass =
+					new EventModifierClassOnly(lookAt.id);
 				
-				// Look at the given class
-				if (lookAt != null)
-					this.__viewClass(new RemoteClassViewer(
-						this.state, lookAt));
+				// Exception thrown for this class, as its ID
+				state.eventSet(JDWPEventKind.EXCEPTION,
+					JDWPSuspendPolicy.ALL,
+					new EventModifier[]{onlyClass},
+					(__state, __reply) -> {}, null);
+				state.eventSet(JDWPEventKind.EXCEPTION_CATCH,
+					JDWPSuspendPolicy.ALL,
+					new EventModifier[]{onlyClass},
+					(__state, __reply) -> {}, null);
+				
+				lookAt.methods();
+				InfoMethod[] methods = lookAt.methods();
+				
+				// Try breaking on any <init> method
+				if (methods != null)
+					for (InfoMethod methodInfo : methods)
+					{
+						// Wrap viewer to find out what this is
+						MethodViewer mv = new  RemoteMethodViewer(state,
+							methodInfo);
+						
+						// Resolve method name and type
+						// We mostly just care for the type
+						mv.methodNameAndType();
+						MethodNameAndType nat = mv.methodNameAndType();
+						
+						// If this is a constructor, then breakpoint when
+						// entered
+						if (nat != null && "<init>".equals(nat.name()
+							.toString()))
+						{
+							// Set breakpoint
+							EventModifierLocationOnly mod =
+								new EventModifierLocationOnly(
+									lookAt.id,
+									methodInfo.id,
+									0);
+							state.eventSet(JDWPEventKind.BREAKPOINT,
+								JDWPSuspendPolicy.ALL,
+								new EventModifier[]{mod},
+								(__state, __reply) -> {}, null);
+						}
+					}
 			}, (__e) -> {
-				Utils.throwableTraceDialog(this,
-					"Could not find class: " + className, __e);
+				Debugging.debugNote("Ignoring unknown: %s", className);
 			});
 		}
 	}
@@ -894,6 +873,167 @@ public class PrimaryFrame
 			this.state.threadSuspend(thread, () -> {
 				this.update();
 			});
+	}
+	
+	/**
+	 * Views a class stored on the disk.
+	 *
+	 * @param __event The event.
+	 * @since 2024/01/22
+	 */
+	private void __viewClassDisk(ActionEvent __event)
+	{
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileFilter(new FileNameExtensionFilter(
+			"Java Class Files", "class"));
+		
+		if (fileChooser.showOpenDialog(this) ==
+			JFileChooser.APPROVE_OPTION)
+		{
+			try (InputStream in = Files.newInputStream(
+				fileChooser.getSelectedFile().toPath(),
+				StandardOpenOption.READ))
+			{
+				// Decode the class
+				ClassFile classFile = ClassFile.decode(in);
+				
+				// Use standard viewer
+				this.__viewClass(new JavaClassViewer(classFile));
+			}
+			catch (IOException __e)
+			{
+				Utils.throwableTraceDialog(this,
+					"Failed to load class from disk", __e);
+			}
+		}
+	}
+	
+	/**
+	 * Views the given class.
+	 *
+	 * @param __viewer The class to view.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/22
+	 */
+	private void __viewClass(ClassViewer __viewer)
+		throws NullPointerException
+	{
+		if (__viewer == null)
+			throw new NullPointerException("NARG");
+		
+		ShownClassDialog dialog = new ShownClassDialog(this,
+			this.state, __viewer);
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
+	}
+	
+	/**
+	 * Views a local class.
+	 *
+	 * @param __event Not used.
+	 * @since 2024/01/29
+	 */
+	private void __viewClassLocal(ActionEvent __event)
+	{
+		String option = (String)JOptionPane.showInputDialog(
+			this,
+			"Choose local class",
+			"Choose local class",
+			JOptionPane.QUESTION_MESSAGE,
+			null,
+			null,
+			"java/lang/Class");
+		
+		// Was a class specified?
+		if (option != null)
+		{
+			// If there are dots, it really should be slashes
+			if (option.indexOf('.') >= 0)
+				option = option.replace('.', '/');
+			
+			// Perform lookup
+			ClassName className = new ClassName(option);
+			ClassFile[] classFiles = Utils.loadClass(className,
+				this.preferences);
+			
+			// No class?
+			if (classFiles == null || classFiles.length == 0)
+			{
+				Utils.throwableTraceDialog(this,
+					"Could not find class: " + className,
+					new Throwable());
+				return;
+			}
+			
+			// What do we look at?
+			ClassFile lookAt;
+			if (classFiles.length == 1)
+				lookAt = classFiles[0];
+			else
+				lookAt = (ClassFile)JOptionPane.showInputDialog(
+					this,
+					"Select class:",
+					"Multiple classes found",
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					classFiles,
+					classFiles[0]);
+			
+			// Look at the given class
+			if (lookAt != null)
+				this.__viewClass(new JavaClassViewer(lookAt));
+		}
+	}
+	
+	/**
+	 * Views a class from the remote virtual machine.
+	 *
+	 * @param __event The event.
+	 * @since 2024/01/22
+	 */
+	private void __viewClassNetwork(ActionEvent __event)
+	{
+		String option = (String)JOptionPane.showInputDialog(
+			this,
+			"Choose remote class",
+			"Choose remote class",
+			JOptionPane.QUESTION_MESSAGE,
+			null,
+			null,
+			"java/lang/Class");
+		
+		// Was a class specified?
+		if (option != null)
+		{
+			// If there are dots, it really should be slashes
+			if (option.indexOf('.') >= 0)
+				option = option.replace('.', '/');
+			
+			// Perform lookup
+			ClassName className = new ClassName(option);
+			this.state.lookupClass(className, (__info) -> {
+				InfoClass lookAt;
+				if (__info.length == 1)
+					lookAt = __info[0];
+				else
+					lookAt = (InfoClass)JOptionPane.showInputDialog(
+						this,
+						"Select class:",
+						"Multiple classes found",
+						JOptionPane.QUESTION_MESSAGE,
+						null,
+						__info,
+						__info[0]);
+				
+				// Look at the given class
+				if (lookAt != null)
+					this.__viewClass(new RemoteClassViewer(
+						this.state, lookAt));
+			}, (__e) -> {
+				Utils.throwableTraceDialog(this,
+					"Could not find class: " + className, __e);
+			});
+		}
 	}
 	
 	/**

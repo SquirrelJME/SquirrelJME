@@ -224,7 +224,7 @@ typedef sjme_errorCode (*sjme_rom_libraryPathFunc)();
  */
 typedef sjme_errorCode (*sjme_rom_libraryRawData)(
 	sjme_attrInNotNull sjme_rom_library inLibrary,
-	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint srcPos,
 	sjme_attrInPositive sjme_jint length);
 
@@ -378,7 +378,7 @@ struct sjme_rom_suiteCore
 sjme_errorCode sjme_rom_libraryFromZipMemory(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
-	sjme_attrInNotNull const void* base,
+	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length);
 
 /**
@@ -435,7 +435,7 @@ sjme_errorCode sjme_rom_libraryNew(
  */
 sjme_errorCode sjme_rom_libraryRawRead(
 	sjme_attrInNotNull sjme_rom_library library,
-	sjme_attrOutNotNullBuf(length) void* destPtr,
+	sjme_attrOutNotNullBuf(length) sjme_pointer destPtr,
 	sjme_attrInPositive sjme_jint srcPos,
 	sjme_attrInPositive sjme_jint length);
 

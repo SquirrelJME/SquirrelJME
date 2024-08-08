@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
-//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+//	 Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
@@ -85,6 +85,73 @@ void sjme_jni_throwVMException(JNIEnv* env, sjme_errorCode code)
 {
 	sjme_jni_throwThrowable(env, code,
 		"cc/squirreljme/emulator/vm/VMException");
+}
+
+void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
+	jobject instance)
+{
+	jclass classy;
+	jclass baseClassy;
+	jmethodID pointerMethod;
+	
+	/* Does not map. */
+	if (instance == NULL)
+		return NULL;
+	
+	/* Fail. */
+	if (env == NULL || className == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return NULL;
+	}
+
+	/* Locate class. */
+	classy = (*env)->FindClass(env, className);
+	baseClassy = (*env)->FindClass(env, DESC_DYLIB_HAS_OBJECT_POINTER);
+	if (classy == NULL || baseClassy == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_INVALID_CLASS_NAME);
+		return NULL;
+	}
+	
+	/* Incorrect type. */
+	if (!(*env)->IsInstanceOf(env, instance, classy) ||
+		!(*env)->IsInstanceOf(env, instance, baseClassy))
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_CLASS_CAST);
+		return NULL;
+	}
+	
+	/* Get pointer object method. */
+	pointerMethod = (*env)->GetMethodID(env, baseClassy,
+		"objectPointer", "()J");
+	if (pointerMethod == NULL)
+		sjme_die("No objectPointer() in instance?");
+	
+	/* Cast pencil data. */
+	return (void*)((intptr_t)((*env)->CallLongMethod(
+		env, instance, pointerMethod)));
+}
+
+sjme_scritchui_pencil sjme_jni_recoverPencil(JNIEnv* env, jobject g)
+{
+	/* Does not map. */
+	if (g == NULL)
+		return NULL;
+	
+	return (sjme_scritchui_pencil)sjme_jni_recoverPointer(env,
+		DESC_DYLIB_PENCIL, g);
+}
+
+sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
+	jobject fontInstance)
+{
+	/* Does not map. */
+	if (fontInstance == NULL)
+		return NULL;
+	
+	return (sjme_scritchui_pencilFont)sjme_jni_recoverPointer(env,
+		DESC_DYLIB_PENCILFONT, fontInstance);
 }
 
 sjme_errorCode sjme_jni_fillFrontEnd(JNIEnv* env, sjme_frontEnd* into,

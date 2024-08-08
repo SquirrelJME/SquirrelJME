@@ -104,7 +104,7 @@ public class VMFullSuiteDepends
 				
 				// Use all of their dependencies, if not yet added
 				for (VMLibraryTask subDep : new VMRunDependencies(
-					(VMExecutableTask)libTask,
+					libTask.getProject(),
 						this.classifier.withSourceSet(sourceSet))
 					.call())
 					tasks.add(subDep);

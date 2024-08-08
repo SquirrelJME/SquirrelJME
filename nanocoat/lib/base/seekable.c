@@ -29,7 +29,7 @@ sjme_errorCode sjme_seekable_asInputStream(
 sjme_errorCode sjme_seekable_fromMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
-	sjme_attrInNotNull void* base,
+	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length)
 {
 	uintptr_t rawBase;

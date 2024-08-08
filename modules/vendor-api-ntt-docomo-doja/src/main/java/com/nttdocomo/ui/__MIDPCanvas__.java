@@ -105,12 +105,26 @@ final class __MIDPCanvas__
 		if (rv == null)
 			return;
 		
+		// Draw with this buffer size
+		int w = rv.getWidth();
+		int h = rv.getHeight();
+		
 		// Perform a standard paint within i-mode using our double buffered
 		// image
 		DoubleBuffer doubleBuffer = this._doubleBuffer;
-		rv.paint(new com.nttdocomo.ui.Graphics(
-			doubleBuffer.getGraphics(rv.getWidth(), rv.getHeight()),
-			rv._bgColor, null));
+		__BGColor__ bgColor = rv._bgColor;
+		Graphics mg = doubleBuffer.getGraphics(w, h);
+		com.nttdocomo.ui.Graphics g = new com.nttdocomo.ui.Graphics(
+			mg, bgColor, null);
+		
+		// Fill with the background color
+		/*int oldColor = mg.getAlphaColor();
+		mg.setAlphaColor(bgColor._bgColor | 0xFF_000000);
+		mg.fillRect(0, 0, w, h);
+		mg.setAlphaColor(oldColor);*/
+		
+		// Forward paint call
+		rv.paint(g);
 		
 		// Paint the buffer to the given target
 		doubleBuffer.flush();

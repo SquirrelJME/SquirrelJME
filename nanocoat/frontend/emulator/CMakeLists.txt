@@ -25,8 +25,10 @@ add_library(libEmulator SHARED
 	nativeVirtualSuite.c)
 
 # Always make this position independent
-set_property(TARGET libEmulator
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+if(SQUIRRELJME_ENABLE_FPIC)
+	set_property(TARGET libEmulator
+		PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif()
 
 # The base SquirrelJME core needs to be built
 add_dependencies(libEmulator

@@ -9,18 +9,23 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * The type of memory profile that is used.
  *
  * @since 2021/02/19
  */
+@SquirrelJMEVendorApi
 public interface MemoryProfileType
 {
 	/** Minimal memory. */
+	@SquirrelJMEVendorApi
 	byte MINIMAL =
 		-1;
 	
 	/** Normal memory. */
+	@SquirrelJMEVendorApi
 	byte NORMAL =
 		0;
 }

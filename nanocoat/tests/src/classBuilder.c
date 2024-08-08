@@ -14,7 +14,7 @@ sjme_errorCode sjme_classBuilder_addAttribute(
 	sjme_attrInNegativeOnePositive sjme_jint order,
 	sjme_attrInNotNull sjme_classBuilder* builder,
 	sjme_attrInPositiveNonZero sjme_jint inNameIndex,
-	sjme_attrInNotNull void* inData,
+	sjme_attrInNotNull sjme_pointer inData,
 	sjme_attrInPositive sjme_jint inLength)
 {
 	sjme_todo("Implement this?");
@@ -131,7 +131,7 @@ sjme_errorCode sjme_classBuilder_build(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_classBuilder* outBuilder,
 	sjme_attrInValue sjme_jboolean allowInvalid,
-	sjme_attrInNullable void* whatever)
+	sjme_attrInNullable sjme_pointer whatever)
 {
 	sjme_errorCode error;
 	sjme_classBuilder* result;
@@ -209,7 +209,7 @@ sjme_errorCode sjme_classBuilder_declareClassV(
 
 sjme_errorCode sjme_classBuilder_finish(
 	sjme_attrInNotNull sjme_classBuilder* builder,
-	sjme_attrOutNotNull void** rawClass)
+	sjme_attrOutNotNull sjme_pointer* rawClass)
 {
 	if (builder == NULL || rawClass == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

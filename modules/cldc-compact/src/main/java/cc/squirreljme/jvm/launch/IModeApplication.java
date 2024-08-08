@@ -21,7 +21,9 @@ import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.Profile;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -33,98 +35,6 @@ import java.util.Objects;
 public class IModeApplication
 	extends Application
 {
-	/** The prefix for ADF properties. */
-	public static final String ADF_PROPERTY_PREFIX =
-		"cc.squirreljme.imode.adf";
-	
-	/** Property for the application name. */
-	public static final String NAME_PROPERTY =
-		"cc.squirreljme.imode.name";
-	
-	/** Property for the scratch pad sizes. */
-	public static final String SCRATCH_PAD_PROPERTY =
-		"cc.squirreljme.imode.scratchpads";
-	
-	/** Initial seed for the scratch pad. */
-	public static final String SEED_SCRATCHPAD_PREFIX =
-		"cc.squirreljme.imode.seedscratchpad";
-	
-	/** Property for the application vendor. */
-	public static final String VENDOR_PROPERTY =
-		"cc.squirreljme.imode.vendor";
-	
-	/** Boot class for DoJa. */
-	private static final String _DOJA_BOOT_CLASS =
-		"com.nttdocomo.ui.__AppLaunch__";
-	
-	/** Boot class for Star. */
-	private static final String _STAR_BOOT_CLASS =
-		"com.docomostar.__StarAppLaunch__";
-	
-	/** The application launch class. */
-	static final String _APP_CLASS =
-		"AppClass";
-	
-	/** Application icon. */
-	static final String _APP_ICON =
-		"AppIcon";
-	
-	/** The application name. */
-	static final String _APP_NAME =
-		"AppName";
-	
-	/** Application parameters. */
-	static final String _APP_PARAMS =
-		"AppParam";
-	
-	/** Application size of the Jar. */
-	static final String _APP_SIZE =
-		"AppSize";
-	
-	/** Application tracing enabled? */
-	static final String _APP_TRACE =
-		"AppTrace";
-	
-	/** Application type (Star). */
-	static final String _APP_TYPE =
-		"AppType";
-	
-	/** Application version. */
-	static final String _APP_VERSION =
-		"AppVer";
-	
-	/** The configuration to use. */
-	static final String _CONFIGURATION_VER =
-		"Configurationver";
-	
-	/** Draw area. */
-	static final String _DRAW_AREA =
-		"DrawArea";
-	
-	/** KVM Version, same as {@link #_CONFIGURATION_VER}. */
-	static final String _KVM_VER =
-		"KvmVer";
-	
-	/** Last modified time. */
-	static final String _LAST_MODIFIED =
-		"LastModified";
-	
-	/** Launch at given time. */
-	static final String _LAUNCH_AT =
-		"LaunchAt";
-	
-	/** Package URL. */
-	static final String _PACKAGE_URL =
-		"PackageURL";
-	
-	/** Profile version (DoJa 2.0+). */
-	static final String _PROFILE_VER =
-		"ProfileVer";
-	
-	/** Scratch pad sizes. */
-	static final String _SP_SIZE =
-		"SPsize";
-	
 	/** The Jar path. */
 	protected final String jarPath;
 	
@@ -175,8 +85,8 @@ public class IModeApplication
 		this._extraSysProps = __sysProps;
 		this.jarPath = __jarPath;
 		
-		if (!__adfProps.containsKey(IModeApplication._APP_NAME) ||
-			!__adfProps.containsKey(IModeApplication._APP_CLASS))
+		if (!__adfProps.containsKey(IModeProperty._APP_NAME) ||
+			!__adfProps.containsKey(IModeProperty._APP_CLASS))
 			throw new InvalidSuiteException();
 	}
 	
@@ -187,8 +97,8 @@ public class IModeApplication
 	@Override
 	public String displayName()
 	{
-		String appName = this._adfProps.get(IModeApplication._APP_NAME);
-		String appClass = this._adfProps.get(IModeApplication._APP_CLASS);
+		String appName = this._adfProps.get(IModeProperty._APP_NAME);
+		String appClass = this._adfProps.get(IModeProperty._APP_CLASS);
 		
 		if (appName != null)
 		{
@@ -226,8 +136,8 @@ public class IModeApplication
 	{
 		Map<String, String> adfProps = this._adfProps;
 		return new EntryPoint(this.displayName(),
-			adfProps.get(IModeApplication._APP_CLASS),
-			adfProps.get(IModeApplication._APP_ICON),
+			adfProps.get(IModeProperty._APP_CLASS),
+			adfProps.get(IModeProperty._APP_ICON),
 			false); 
 	}
 	
@@ -260,13 +170,13 @@ public class IModeApplication
 		// This determines which library set to load
 		Map<String, String> adfProps = this._adfProps;
 		String config = Objects.toString(
-			adfProps.get(IModeApplication._CONFIGURATION_VER),
-			adfProps.get(IModeApplication._KVM_VER));
-		String profile = adfProps.get(IModeApplication._PROFILE_VER);
-		String scratchPad = adfProps.get(IModeApplication._SP_SIZE);
+			adfProps.get(IModeProperty._CONFIGURATION_VER),
+			adfProps.get(IModeProperty._KVM_VER));
+		String profile = adfProps.get(IModeProperty._PROFILE_VER);
+		String scratchPad = adfProps.get(IModeProperty._SP_SIZE);
 		
 		// Used as heuristic for versioning
-		String drawArea = adfProps.get(IModeApplication._DRAW_AREA);
+		String drawArea = adfProps.get(IModeProperty._DRAW_AREA);
 		
 		// Try to guess a reasonable version to use
 		if (config == null || config.isEmpty())
@@ -275,7 +185,7 @@ public class IModeApplication
 		{
 			// The AppType property essentially specifies that this is a Star
 			// application, otherwise it will be a DoJa application
-			if (adfProps.get(IModeApplication._APP_TYPE) != null)
+			if (adfProps.get(IModeProperty._APP_TYPE) != null)
 				profile = "Star-1.0";
 			
 			// Based on which properties exist, try to guess the specific
@@ -300,11 +210,21 @@ public class IModeApplication
 	public String[] loaderEntryArgs()
 	{
 		EntryPoint entry = this.entryPoint();
-		String args = this._adfProps.get(IModeApplication._APP_PARAMS);
+		String appArgs = this._adfProps.get(IModeProperty._APP_PARAMS);
 		
-		if (args == null)
-			return new String[]{entry.entryPoint()};
-		return new String[]{entry.entryPoint(), args};
+		// Set initial base property set
+		List<String> args = new ArrayList<>();
+		for (Map.Entry<String, String> e : this.__properties().entrySet())
+			args.add(String.format("-Xadf:%s=%s",
+				e.getKey(), e.getValue()));
+		
+		// Application entry point and arguments as its main
+		args.add(entry.entryPoint());
+		if (appArgs != null)
+			args.add(appArgs);
+		
+		// Give it
+		return args.toArray(new String[args.size()]);
 	}
 	
 	/**
@@ -316,8 +236,8 @@ public class IModeApplication
 	{
 		// Always use the application helper
 		if (this.isStarApplication())
-			return IModeApplication._STAR_BOOT_CLASS;
-		return IModeApplication._DOJA_BOOT_CLASS;
+			return IModeProperty._STAR_BOOT_CLASS;
+		return IModeProperty._DOJA_BOOT_CLASS;
 	}
 	
 	/**
@@ -326,6 +246,11 @@ public class IModeApplication
 	 */
 	@Override
 	public Map<String, String> loaderSystemProperties()
+	{
+		return this.__properties();
+	}
+	
+	private Map<String, String> __properties()
 	{
 		Map<String, String> adfProps = this._adfProps;
 		Map<String, String> rv = new LinkedHashMap<>();
@@ -337,15 +262,19 @@ public class IModeApplication
 		
 		// Application name and vendor, needed for RMS
 		String nameProp = Objects.toString(
-			adfProps.get(IModeApplication._APP_NAME),
-			adfProps.get(IModeApplication._APP_CLASS));
-		rv.put(IModeApplication.NAME_PROPERTY, nameProp);
-		rv.put(IModeApplication.VENDOR_PROPERTY, "SquirrelJME-i-Mode");
+			adfProps.get(IModeProperty._APP_NAME),
+			adfProps.get(IModeProperty._APP_CLASS));
+		rv.put(IModeProperty.NAME_PROPERTY, nameProp);
+		rv.put(IModeProperty.VENDOR_PROPERTY, "SquirrelJME-i-Mode");
+		
+		// Encoding and locale override
+		rv.put(Application.OVERRIDE_ENCODING, "shift-jis");
+		rv.put(Application.OVERRIDE_LOCALE, "ja-JP");
 		
 		// Scratch pad sizes
-		String spSize = adfProps.get(IModeApplication._SP_SIZE);
+		String spSize = adfProps.get(IModeProperty._SP_SIZE);
 		if (spSize != null && !spSize.isEmpty())
-			rv.put(IModeApplication.SCRATCH_PAD_PROPERTY, spSize);
+			rv.put(IModeProperty.SCRATCH_PAD_PROPERTY, spSize);
 		
 		// If a specific phone model is used, set the platform property
 		// explicitly
@@ -356,7 +285,7 @@ public class IModeApplication
 		// Copy all ADF properties to system properties, it can be used in
 		// the future to access specific properties accordingly
 		for (Map.Entry<String, String> property : adfProps.entrySet())
-			rv.put(IModeApplication.ADF_PROPERTY_PREFIX + "." +
+			rv.put(IModeProperty.ADF_PROPERTY_PREFIX + "." +
 				property.getKey(), property.getValue());
 		
 		return rv;

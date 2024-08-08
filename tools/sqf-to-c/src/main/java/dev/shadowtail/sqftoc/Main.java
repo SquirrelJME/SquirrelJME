@@ -74,7 +74,7 @@ public class Main
 			
 			// Output structure for the font
 			ps.println("/** SQF Defined Font. */");
-			ps.println("static sjme_sqf sjme_font =");
+			ps.println("static sjme_scritchui_sqf sjme_font =");
 			ps.println("{");
 			
 			// All four fields in the header

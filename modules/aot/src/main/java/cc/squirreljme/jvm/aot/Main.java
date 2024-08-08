@@ -120,8 +120,8 @@ public class Main
 				name = arg.substring("-Xname:".length());
 			
 			// The current clutter level
-			else if (arg.startsWith("-XclutterLevel"))
-				clutterLevel = arg.substring("-XclutterLevel:".length());
+			else if (arg.startsWith("-Xclutter"))
+				clutterLevel = arg.substring("-Xclutter:".length());
 			
 			// The source set being compiled
 			else if (arg.startsWith("-XsourceSet"))

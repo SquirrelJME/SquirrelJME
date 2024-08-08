@@ -9,22 +9,21 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.constants.UIItemPosition;
-import cc.squirreljme.jvm.mle.constants.UIItemType;
-import cc.squirreljme.jvm.mle.constants.UIMetricType;
-import cc.squirreljme.jvm.mle.constants.UISpecialCode;
-import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
+import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
 import org.jetbrains.annotations.Async;
 
 /**
@@ -263,6 +262,12 @@ public abstract class Canvas
 	private final Object _repaintLock =
 		new Object();
 	
+	/** Callback for repainting. */
+	private final __ExecCanvasRepainter__ _repainter;
+	
+	/** The current image buffer. */
+	volatile Image _buffer;
+	
 	/** The key listener to use. */
 	KeyListener _keyListener;
 	
@@ -270,7 +275,7 @@ public abstract class Canvas
 	boolean _isOpaque =
 		true;
 	
-	/** Should this be ran full-screen? */
+	/** Should this be run full-screen? */
 	volatile boolean _isFullScreen;
 	
 	/** The number of pending paints. */
@@ -290,12 +295,36 @@ public abstract class Canvas
 	@Api
 	protected Canvas()
 	{
+		DisplayableState state = this._state;
+		ScritchInterface scritchApi = state.scritchApi();
+		ScritchPanelInterface panelApi = scritchApi.panel();
+		ScritchPanelBracket scritchPanel = state.scritchPanel();
+		
+		// Set listener for painting
+		scritchApi.paintable().componentSetPaintListener(scritchPanel,
+			new __ExecCanvasPaint__(this));
+		
+		// Listener for visibility changes
+		scritchApi.component().componentSetVisibleListener(scritchPanel,
+			new __ExecCanvasVisible__(this));
+		
+		// Input events
+		panelApi.panelSetInputListener(scritchPanel,
+			new __ExecCanvasInput__(this));
+		
+		// Canvases take focus and inputs, so enable it
+		// There should also be the default so that it is selected without
+		// needing to tab to it
+		panelApi.panelEnableFocus(scritchPanel, true, true);
+		
+		// Setup repaint callback
+		this._repainter = new __ExecCanvasRepainter__(this);
 	}
 	
 	/**
 	 * This is called when this is to be painted. The clipping area will
 	 * be set to the area that needs updating and as such drawing should only
-	 * occur within the region. Any pixels drawn outside of the clipping area
+	 * occur within the region. Any pixels drawn outside the clipping area
 	 * might not be updated and may have no effect when drawing.
 	 *
 	 * If this is transparent then the background will automatically be filled
@@ -333,8 +362,14 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		return Displayable.__getHeight(this,
-			this.__state(__CanvasState__.class)._uiCanvas);
+		// Use the actual buffer size first
+		Image buffer = this._buffer;
+		if (buffer != null)
+			return buffer.getHeight();
+		
+		// Otherwise, fallback to the owning or default display
+		return ScritchLcdUiUtils.lcduiDisplaySize(this._state,
+			true);
 	}
 	
 	/**
@@ -389,6 +424,8 @@ public abstract class Canvas
 	public int[] getSoftkeyLabelCoordinates(int __sk)
 		throws IllegalArgumentException
 	{
+		throw Debugging.todo();
+		/*
 		// Remove any rotation from the soft key
 		Display display = this._display;
 		if (display != null)
@@ -397,11 +434,12 @@ public abstract class Canvas
 		int index = (__sk & Display.SOFTKEY_INDEX_MASK);
 		
 		/* {@squirreljme.error EB17 The placement is not valid or not supported
-		on this device/implementation. (The placement)} */
+		on this device/implementation. (The placement)} * /
 		if (index == 0 || (__sk != Display._SOFTKEY_LEFT_COMMAND &&
 			__sk != Display._SOFTKEY_RIGHT_COMMAND))
 			throw new IllegalArgumentException("EB17 " + __sk);
 		
+		throw Debugging.todo();/*
 		UIBackend backend = this.__backend();
 		
 		// Use the item's actual position
@@ -434,7 +472,7 @@ public abstract class Canvas
 			
 			default:
 				throw Debugging.oops(__sk);
-		}
+		}*/
 	}
 	
 	/**
@@ -444,8 +482,14 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		return Displayable.__getWidth(this,
-			this.__state(__CanvasState__.class)._uiCanvas);
+		// Use the actual buffer size first
+		Image buffer = this._buffer;
+		if (buffer != null)
+			return buffer.getWidth();
+		
+		// Otherwise, fallback to the owning or default display
+		return ScritchLcdUiUtils.lcduiDisplaySize(this._state,
+			false);
 	}
 	
 	/**
@@ -459,9 +503,13 @@ public abstract class Canvas
 	@ApiDefinedDeprecated
 	public boolean hasPointerEvents()
 	{
+		throw Debugging.todo();
+		/*
 		Display d = this._display;
 		return (d != null ? d :
 			Display.getDisplays(0)[0]).hasPointerEvents();
+			
+		 */
 	}
 	
 	/**
@@ -475,9 +523,13 @@ public abstract class Canvas
 	@ApiDefinedDeprecated
 	public boolean hasPointerMotionEvents()
 	{
+		throw Debugging.todo();
+		/*
 		Display d = this._display;
 		return (d != null ? d : Display.getDisplays(0)[0]).
 			hasPointerMotionEvents();
+			
+		 */
 	}
 	
 	/**
@@ -626,10 +678,10 @@ public abstract class Canvas
 	@Api
 	public final void repaint()
 	{
-		// A remote repaint call is performed for the canvas so it is
-		// possible that the width/height are not valid. Internally the code
-		// will clip the rectangle to be in bounds.
-		this.repaint(0, 0, this.getWidth(), this.getHeight());
+		// We need to actually queue the repaint rather than doing the
+		// repaint in the event loop potentially because MIDP expects it
+		// to be queued.
+		this._state.scritchApi().eventLoop().loopExecuteLater(this._repainter);
 	}
 	
 	/**
@@ -638,7 +690,7 @@ public abstract class Canvas
 	 * The clipping region when {@link #paint(Graphics)} is called will have
 	 * its clip set to the region to be redrawn.
 	 *
-	 * It is unspecified whether the drawing operation will happen immedietely,
+	 * It is unspecified whether the drawing operation will happen immediately,
 	 * be enqueued, or not happen at all (for example if the canvas is
 	 * currently being painted).
 	 *
@@ -657,33 +709,8 @@ public abstract class Canvas
 		if (__w <= 0 || __h <= 0)
 			return;
 		
-		// Request repainting
-		UIBackend instance = this.__backend();
-		
-		// Send repaint properties
-		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
-				UISpecialCode.REPAINT_KEY_X | __x);
-		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
-				UISpecialCode.REPAINT_KEY_Y | __y);
-		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
-				UISpecialCode.REPAINT_KEY_WIDTH | __w);
-		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
-				UISpecialCode.REPAINT_KEY_HEIGHT | __h);
-		
-		// Count pending paints up before we signal the final repaint
-		synchronized (this._repaintLock)
-		{
-			this._pendingPaints++;
-		}
-		
-		// Execute the paint
-		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
-			UISpecialCode.REPAINT_EXECUTE);
+		// Same as repaint, but just draw the entire region
+		this._state.scritchApi().eventLoop().loopExecuteLater(this._repainter);
 	}
 	
 	/**
@@ -702,8 +729,8 @@ public abstract class Canvas
 	public final void serviceRepaints()
 	{
 		// If there is no current display then nothing can ever be repainted
-		Display display = this._display;
-		if (display == null)
+		DisplayState current = this._state.currentDisplay();
+		if (current == null)
 			return;
 		
 		// Lock on display since that is where the main serialized event loop
@@ -754,17 +781,6 @@ public abstract class Canvas
 		
 		// Set new mode
 		this._isFullScreen = __f;
-		
-		// Depending on full-screen either choose the first position or the
-		// full-screen body of the form
-		UIBackend backend = this.__backend();
-		backend.formItemPosition(
-			this.__state(__DisplayableState__.class)._uiForm,
-			this.__state(__CanvasState__.class)._uiCanvas, (__f ?
-			UIItemPosition.BODY : 0));
-		
-		// Update form title
-		this.__updateFormTitle(true, __f);
 	}
 	
 	/**
@@ -829,20 +845,6 @@ public abstract class Canvas
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2021/06/24
-	 */
-	@Override
-	public void setTitle(String __t)
-	{
-		// Set the title
-		super.setTitle(__t);
-		
-		// Update the form's title
-		this.__updateFormTitle(true, this._isFullScreen);
-	}
-	
-	/**
 	 * This is called when the canvas has been shown.
 	 *
 	 * @since 2018/12/02.
@@ -852,7 +854,7 @@ public abstract class Canvas
 	@Async.Execute
 	protected void showNotify()
 	{
-		// Implemented by sub-classes
+		// Implemented by subclasses
 	}
 	
 	/**
@@ -885,12 +887,36 @@ public abstract class Canvas
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/10/17
+	 * @since 2024/03/18
 	 */
 	@Override
-	boolean __isPainted()
+	void __execRevalidate(DisplayState __parent)
 	{
-		return true;
+		// Setup super first
+		super.__execRevalidate(__parent);
+		
+		// Get the display scale to determine how the canvas should be drawn
+		DisplayScale scale = __parent.display()._scale;
+		
+		// Setup new image with a raw buffer, if scaling is required
+		if (true || scale.requiresBuffer())
+		{
+			// Get the current texture size of the window
+			int w = Math.max(1, scale.textureW());
+			int h = Math.max(1, scale.textureH());
+			
+			// Draw onto this buffer, recreate if needed
+			Image oldBuffer = this._buffer;
+			if (oldBuffer == null ||
+				w > oldBuffer.getWidth() ||
+				h > oldBuffer.getHeight())
+				this._buffer = new Image(new int[w * h], w * h, w, h,
+					true, false);
+		}
+		
+		// Otherwise no buffer is used
+		else
+			this._buffer = null;
 	}
 	
 	/**
@@ -898,32 +924,77 @@ public abstract class Canvas
 	 * @since 2020/09/21
 	 */
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
-	@Override
 	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
+		// Not on screen?
+		DisplayState display = this._state.currentDisplay();
+		if (display == null)
+			return;
+		
+		// The target graphics to use
+		Graphics subGfx;
+		
+		// Is a buffer used for scaling?
+		Image buffer;
+		if (true || display.display()._scale.requiresBuffer())
+		{
+			// Use this buffer
+			buffer = this._buffer;
+		
+			// Only paint if there is a buffer
+			if (buffer == null)
+				return;
+			
+			// Draw onto this image instead for scaling
+			subGfx = buffer.getGraphics();
+		}
+		else
+		{
+			// No buffer is used
+			buffer = null;
+			
+			// Use the directly passed graphics
+			subGfx = __gfx;
+		}
+		
 		// Draw background?
 		if (!this._isOpaque)
 		{
-			// Store old color for future operations
-			int old = __gfx.getAlphaColor();
+			ScritchLAFInterface lafApi =
+				this._state.scritchApi().environment().lookAndFeel();
+			ScritchPanelBracket panel = this._state.scritchPanel();
 			
 			// Determine the color to draw
-			int bgColor = this.__backend()
-				.metric(this._display._uiDisplay,
-					UIMetricType.COLOR_CANVAS_BACKGROUND);
+			int bgColor = lafApi.lafElementColor(panel,
+				ScritchLAFElementColor.PANEL_BACKGROUND);
 			
 			// Draw entire background
-			__gfx.setAlphaColor(bgColor | 0xFF_000000);
-			__gfx.fillRect(0, 0, __sw, __sh);
+			subGfx.setAlphaColor(bgColor | 0xFF_000000);
+			subGfx.fillRect(0, 0, __sw, __sh);
 			
-			// Restore the original drawing color
-			__gfx.setAlphaColor(old);
+			// Use a default pen color
+			int fgColor = lafApi.lafElementColor(panel,
+				ScritchLAFElementColor.PANEL_FOREGROUND);
+			subGfx.setAlphaColor(fgColor | 0xFF_000000);
 		}
 		
 		// Forward Draw
 		try
 		{
-			this.paint(__gfx);
+			// Use buffer paint
+			this.paint(subGfx);
+			
+			// Draw image accordingly with scaling, if needed
+			if (buffer != null)
+			{
+				// Make sure it is not translated
+				__gfx.translate(-__gfx.getTranslateX(),
+					-__gfx.getTranslateX());
+				__gfx.setClip(0, 0, __sw, __sh);
+				
+				// Copy it over
+				__gfx.drawImage(buffer, 0, 0, 0);
+			}
 		}
 		
 		// Handle repaint servicing
@@ -945,114 +1016,6 @@ public abstract class Canvas
 					repaintLock.notifyAll();
 				}
 			}
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/10/17
-	 */
-	@Override
-	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
-		int __intProp, int __sub, int __old, int __new)
-	{
-		UIBackend instance = this.__backend();
-		
-		// Only act on the canvas item
-		if (!instance.equals(__item,
-			this.__state(__CanvasState__.class)._uiCanvas))
-			return false;
-		
-		// Depends on the property
-		switch (__intProp)
-		{
-				// Shown state changed?
-			case UIWidgetProperty.INT_IS_SHOWN:
-				if (__new == 0)
-					this.hideNotify();
-				else
-					this.__showNotifyCanvas();
-				return true;
-			
-				// New width?
-			case UIWidgetProperty.INT_WIDTH:
-				this.sizeChanged(__new, this.getHeight());
-				return true;
-				
-				// Height changed?
-			case UIWidgetProperty.INT_HEIGHT:
-				this.sizeChanged(this.getWidth(), __new);
-				return true;
-				
-				// Both changed?
-			case UIWidgetProperty.INT_WIDTH_AND_HEIGHT:
-				this.sizeChanged(__old, __new);
-				return true;
-			
-				// Un-Handled
-			default:
-				return false;
-		}
-	}
-	
-	/**
-	 * Notifies that this canvas has been shown.
-	 * 
-	 * @since 2021/11/28
-	 */
-	final void __showNotifyCanvas()
-	{
-		// Signal focus on this canvas since it has been shown
-		UIBackend backend = this.__backend();
-		backend.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_FOCUS, 0, 0);
-		
-		// Call the notification handler
-		this.showNotify();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
-	@Override
-	final __CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
-	{
-		return new __CanvasState__(__backend, this);
-	}
-	
-	/**
-	 * File selector state.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __CanvasState__
-		extends Displayable.__DisplayableState__
-	{
-		/** The native display instance. */
-		final UIItemBracket _uiCanvas;
-		
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__CanvasState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-			
-			// Build new canvas
-			UIItemBracket uiCanvas = __backend.itemNew(UIItemType.CANVAS);
-			this._uiCanvas = uiCanvas;
-			
-			// Register self for future paint events
-			StaticDisplayState.register(__self, uiCanvas);
-			
-			// Show it on the form for this displayable
-			__backend.formItemPosition(this._uiForm, uiCanvas, 0);
 		}
 	}
 }

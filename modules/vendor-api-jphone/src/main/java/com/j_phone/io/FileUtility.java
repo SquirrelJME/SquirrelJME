@@ -9,15 +9,19 @@
 
 package com.j_phone.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class FileUtility
 {
+	@Api
 	public void play(byte[] __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static FileUtility getInstance()
 	{
 		throw Debugging.todo();

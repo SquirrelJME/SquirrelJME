@@ -88,11 +88,11 @@ public class DebugViewType
 	{
 		// Is this a valid class with a pool?
 		SpringClass classy = DebugViewType.__class(__which);
-		if (classy.file == null || classy.isArray() ||
+		if (classy.file() == null || classy.isArray() ||
 			classy.isPrimitive())
 			return -1;
 		
-		return classy.file.pool().size();
+		return classy.file().pool().size();
 	}
 	
 	/**
@@ -104,11 +104,11 @@ public class DebugViewType
 	{
 		// Is this a valid class with a pool?
 		SpringClass classy = DebugViewType.__class(__which);
-		if (classy.file == null || classy.isArray() ||
+		if (classy.file() == null || classy.isArray() ||
 			classy.isPrimitive())
 			return null;
 		
-		return classy.file.pool().rawData();
+		return classy.file().pool().rawData();
 	}
 	
 	/**
@@ -196,7 +196,7 @@ public class DebugViewType
 		SpringField[] fields = type.fieldLookup();
 		
 		// Use base field since we only care about our own fields
-		int base = type._fieldLookupBase;
+		int base = type.fieldLookupBase();
 		
 		// Get these field IDs
 		int n = fields.length - base;
@@ -499,7 +499,7 @@ public class DebugViewType
 		SpringMethod[] methods = type.methodLookup();
 		
 		// Get base for this method, we do not want inherited methods!
-		int base = type._methodLookupBase;
+		int base = type.methodLookupBase();
 		
 		// Only get our own methods
 		int n = methods.length - base;
@@ -520,8 +520,8 @@ public class DebugViewType
 		SpringClass classy = DebugViewType.__class(__which);
 		
 		// Get the static field storage for the class
-		SpringFieldStorage[] store = classy._staticFields;
-		if (__index >= classy._staticFieldBase && __index < store.length)
+		SpringFieldStorage[] store = classy.staticFields();
+		if (__index >= classy.staticFieldBase() && __index < store.length)
 			return DebugViewType.__readValue(__out, store[__index],
 				classy.classLoader().machine());
 		
@@ -536,7 +536,7 @@ public class DebugViewType
 	@Override
 	public String signature(Object __which)
 	{
-		return DebugViewType.__class(__which).name.field().toString();
+		return DebugViewType.__class(__which).name().field().toString();
 	}
 	
 	/**
@@ -546,7 +546,7 @@ public class DebugViewType
 	@Override
 	public String sourceFile(Object __which)
 	{
-		return DebugViewType.__class(__which).file.sourceFile();
+		return DebugViewType.__class(__which).file().sourceFile();
 	}
 	
 	/**
@@ -556,7 +556,7 @@ public class DebugViewType
 	@Override
 	public Object superType(Object __which)
 	{
-		return DebugViewType.__class(__which).superclass;
+		return DebugViewType.__class(__which).superClass();
 	}
 	
 	/**
@@ -573,7 +573,7 @@ public class DebugViewType
 		
 		// Not Class object?
 		SpringSimpleObject object = (SpringSimpleObject)__object;
-		if (!"java/lang/Class".equals(object.type().name.toString()))
+		if (!"java/lang/Class".equals(object.type().name().toString()))
 			return null;
 		
 		// Lookup the field for the type

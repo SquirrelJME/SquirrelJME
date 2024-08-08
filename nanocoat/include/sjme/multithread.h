@@ -46,6 +46,7 @@
 #endif
 
 #include "sjme/nvm.h"
+#include "sjme/atomic.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -63,24 +64,53 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	/** A single thread. */
 	typedef pthread_t sjme_thread;
+
+	/* On these systems pthread_t is a pointer. */
+	#if defined(SJME_CONFIG_HAS_MACOS) || \
+		defined(SJME_CONFIG_HAS_EMSCRIPTEN)
+		/** The type of a thread. */
+		#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
+	
+		/** Is a thread a pointer? */
+		#define SJME_TYPEOF_IS_POINTER_sjme_thread 1
+	#else
+		/** The type of a thread. */
+		#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_intPointer
+	
+		/** Is a thread a pointer? */
+		#define SJME_TYPEOF_IS_POINTER_sjme_thread 0
+	#endif
 	
 	/** Thread result. */
-	typedef void* sjme_thread_result;
+	typedef sjme_pointer sjme_thread_result;
 	
 	/** Thread parameter. */
-	typedef void* sjme_thread_parameter;
+	typedef sjme_pointer sjme_thread_parameter;
 	
 	/** Null thread handle. */
 	#define SJME_THREAD_NULL ((unsigned long)0)
 	
 	/** Error as thread result. */
-	#define SJME_THREAD_RESULT(err) ((void*)(err))
+	#define SJME_THREAD_RESULT(err) ((sjme_pointer)(err))
+
+	/** Thread result cast to error. */
+	#define SJME_THREAD_RESULT_AS_ERROR(result) \
+		((sjme_errorCode)((sjme_intPointer)(result)))
 	
 	/** Calling convention to use for thread entry points. */
-	#define SJME_THREAD_CONVENTION
+	#define sjme_attrThreadCall
+
+	/** Thread memory barrier. */
+	#define sjme_thread_barrier() __sync_synchronize()
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/** A single thread. */
 	typedef HANDLE sjme_thread;
+
+	/** The type of a thread. */
+	#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
+
+	/** Is a thread a pointer? */
+	#define SJME_TYPEOF_IS_POINTER_sjme_thread 1
 	
 	/** Thread result. */
 	typedef DWORD sjme_thread_result;
@@ -93,9 +123,15 @@ extern "C" {
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((DWORD)(err))
+
+	/** Thread result cast to error. */
+	#define SJME_THREAD_RESULT_AS_ERROR(result) ((sjme_errorCode)(result))
 	
 	/** Calling convention to use for thread entry points. */
-	#define SJME_THREAD_CONVENTION __stdcall
+	#define sjme_attrThreadCall WINAPI
+
+	/** Thread memory barrier. */
+	#define sjme_thread_barrier() MemoryBarrier()
 #else
 	/** Threads not supported. */
 	typedef struct sjme_thread_unsupported
@@ -105,24 +141,38 @@ extern "C" {
 	
 	/** A single thread. */
 	typedef sjme_thread_unsupported* sjme_thread;
+
+	/** The type of a thread. */
+	#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
+
+	/** Is a thread a pointer? */
+	#define SJME_TYPEOF_IS_POINTER_sjme_thread 1
 	
 	/** Thread result. */
 	typedef int sjme_thread_result;
 	
 	/** Thread parameter. */
-	typedef void* sjme_thread_parameter;
+	typedef sjme_pointer sjme_thread_parameter;
 	
 	/** Null thread handle. */
 	#define SJME_THREAD_NULL NULL
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((int)(err))
+
+	/** Thread result cast to error. */
+	#define SJME_THREAD_RESULT_AS_ERROR(result) ((sjme_errorCode)(result))
 	
 	/** Calling convention to use for thread entry points. */
-	#define SJME_THREAD_CONVENTION
+	#define sjme_attrThreadCall
+
+	/** Thread memory barrier. */
+	#define sjme_thread_barrier() do {} while(0)
 #endif
 
 /* clang-format on */
+
+SJME_ATOMIC_DECLARE(sjme_thread, 0);
 
 /**
  * Main thread function type.
@@ -131,15 +181,25 @@ extern "C" {
  * @return Thread resultant value.
  * @since 2024/04/16
  */
-typedef sjme_thread_result (SJME_THREAD_CONVENTION *sjme_thread_mainFunc)(
+typedef sjme_thread_result (sjme_attrThreadCall *sjme_thread_mainFunc)(
 	sjme_attrInNullable sjme_thread_parameter anything);
 
 /**
- * Memory barrier.
+ * Basic spin lock.
  * 
- * @since 2024/04/17
+ * @since 2024/07/19
  */
-void sjme_thread_barrier(void);
+typedef struct sjme_thread_spinLock
+{
+	/** The thread that is currently poking this lock. */
+	sjme_atomic_sjme_thread poke;
+	
+	/** The thread that owns this lock. */
+	sjme_atomic_sjme_thread owner;
+	
+	/** Lock count. */
+	sjme_atomic_sjme_jint count;
+} sjme_thread_spinLock;
 
 /**
  * Returns the current thread.
@@ -175,7 +235,28 @@ sjme_jboolean sjme_thread_equal(
 sjme_errorCode sjme_thread_new(
 	sjme_attrInOutNotNull sjme_thread* outThread,
 	sjme_attrInNotNull sjme_thread_mainFunc inMain,
-	sjme_attrInNullable void* anything);
+	sjme_attrInNullable sjme_pointer anything);
+
+/**
+ * Grabs a spin lock.
+ * 
+ * @param inLock The lock to grab. 
+ * @return Any resultant error, if any.
+ * @since 2024/07/19
+ */
+sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock);
+
+/**
+ * Releases a spin lock.
+ * 
+ * @param inLock The lock to release. 
+ * @param outCount Optional count after lock.
+ * @return Any resultant error, if any.
+ * @since 2024/07/19
+ */
+sjme_errorCode sjme_thread_spinLockRelease(
+	sjme_attrInNotNull sjme_thread_spinLock* inLock,
+	sjme_attrOutNullable sjme_jint* outCount);
 
 /**
  * Yields execution.

@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.launch;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -162,63 +161,63 @@ final class __AdfUtils__
 		
 		// Store application name
 		if (lengthAppName > 0)
-			__outProps.put(IModeApplication._APP_NAME,
+			__outProps.put(IModeProperty._APP_NAME,
 				new String(varData, varDataOffsetAppName, lengthAppName,
 					"shift-jis"));
 		
 		// Store application class
 		if (lengthAppClass > 0)
-			__outProps.put(IModeApplication._APP_CLASS,
+			__outProps.put(IModeProperty._APP_CLASS,
 				new String(varData, varDataOffsetAppClass, lengthAppClass,
 					"shift-jis"));
 		
 		// Store application parameters
 		if (lengthAppParam > 0)
-			__outProps.put(IModeApplication._APP_PARAMS,
+			__outProps.put(IModeProperty._APP_PARAMS,
 				new String(varData, varDataOffsetAppParam, lengthAppParam,
 					"shift-jis"));
 		
 		// Store application version
 		if (lengthAppVer > 0)
-			__outProps.put(IModeApplication._APP_VERSION,
+			__outProps.put(IModeProperty._APP_VERSION,
 				new String(varData, varDataOffsetAppVer, lengthAppVer,
 					"shift-jis"));
 		
 		// Store Package URL
 		if (lengthPackageUrl > 0)
-			__outProps.put(IModeApplication._PACKAGE_URL,
+			__outProps.put(IModeProperty._PACKAGE_URL,
 				new String(varData, varDataOffsetPackageUrl,
 					lengthPackageUrl, "shift-jis"));
 		
 		// Last modified time
 		if (lengthLastModified > 0)
-			__outProps.put(IModeApplication._LAST_MODIFIED,
+			__outProps.put(IModeProperty._LAST_MODIFIED,
 				new String(varData, varDataOffsetLastModified,
 					lengthLastModified, "shift-jis"));
 		
 		// Store size of JAR
 		if (jarSize > 0)
-			__outProps.put(IModeApplication._APP_SIZE,
+			__outProps.put(IModeProperty._APP_SIZE,
 				Integer.toString(jarSize));
 		
 		// Store size of scratchpad
 		if (stoSize > 0)
-			__outProps.put(IModeApplication._SP_SIZE,
+			__outProps.put(IModeProperty._SP_SIZE,
 				Integer.toString(stoSize));
 		
 		// Store drawing area size
 		if (drawAreaWidth > 0 && drawAreaHeight > 0)
-			__outProps.put(IModeApplication._DRAW_AREA,
+			__outProps.put(IModeProperty._DRAW_AREA,
 				String.format("%dx%d", drawAreaWidth, drawAreaHeight));
 		
 		// Store start interval
 		if (autoStartIntervalHours > 0)
-			__outProps.put(IModeApplication._LAUNCH_AT,
+			__outProps.put(IModeProperty._LAUNCH_AT,
 				String.format("I %d", autoStartIntervalHours));
 		
 		// Application tracing enabled?
 		if (enableTracing == 1)
-			__outProps.put(IModeApplication._APP_TRACE,
+			__outProps.put(IModeProperty._APP_TRACE,
 				"on");
 		
 		// Debugging

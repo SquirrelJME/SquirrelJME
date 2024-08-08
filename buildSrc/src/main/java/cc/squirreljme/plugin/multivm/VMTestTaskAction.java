@@ -477,7 +477,7 @@ public class VMTestTaskAction
 		}
 		
 		// Can we directly refer to the emulator library already?
-		Path emuLib = VMHelpers.findEmulatorLib(__task);
+		Path emuLib = VMHelpers.findEmulatorLib(__task.getProject());
 		if (emuLib != null && Files.exists(emuLib))
 			sysProps.put("squirreljme.emulator.libpath", emuLib.toString());
 		
@@ -547,7 +547,8 @@ public class VMTestTaskAction
 		
 		// Determine the arguments that are used to spawn the JVM
 		JavaExecSpecFiller execSpec = new SimpleJavaExecSpecFiller();
-		__classifier.getVmType().spawnJvmArguments(__task, true,
+		__classifier.getVmType().spawnJvmArguments(__task.getProject(),
+			__classifier, true,
 			execSpec, mainClass, __testName, sysProps,
 			classPath, classPath, mainArgs);
 		

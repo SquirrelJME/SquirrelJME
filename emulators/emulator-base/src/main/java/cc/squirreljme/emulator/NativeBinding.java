@@ -161,10 +161,10 @@ public final class NativeBinding
 			getResourceAsStream("/" + libName))
 		{
 			if (in == null)
-				throw new RuntimeException(String.format(
+				throw new IOException(String.format(
 					"Library %s not found in resource.", libName));
 			
-			// Place all of the native libraries in the same location
+			// Place all the native libraries in the same location
 			tempDir = NativeBinding.tempLibPath;
 			if (tempDir == null)
 			{
@@ -181,9 +181,9 @@ public final class NativeBinding
 			
 			// Write to the disk as we can only load there
 			try (OutputStream out = Files.newOutputStream(libFile,
-					StandardOpenOption.CREATE,
-					StandardOpenOption.TRUNCATE_EXISTING,
-					StandardOpenOption.WRITE))
+				StandardOpenOption.CREATE,
+				StandardOpenOption.TRUNCATE_EXISTING,
+				StandardOpenOption.WRITE))
 			{
 				// Store here
 				byte[] buf = new byte[262144];

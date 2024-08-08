@@ -43,7 +43,10 @@ extern "C" {
 #endif
 
 /* The current operating system. */
-#if defined(__3DS__) || defined(_3DS)
+#if defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN)
+	/** Emscripten (WASM). */
+	#define SJME_CONFIG_HAS_EMSCRIPTEN
+#elif defined(__3DS__) || defined(_3DS)
 	/** Nintendo 3DS is available. */
 	#define SJME_CONFIG_HAS_NINTENDO_3DS
 #elif defined(__linux__) || defined(linux) || defined(__linux)
@@ -349,6 +352,9 @@ extern "C" {
 	/** Deprecated. */
 	#define sjme_attrDeprecated __attribute__((deprecated))
 	
+	/** Disable optimization. */
+	#define sjme_noOptimize __attribute__((optimize("O0")))
+	
 	/**
 	 * Formatted string.
 	 * 
@@ -534,9 +540,19 @@ extern "C" {
 	#define sjme_inline inline
 #endif
 
+#if !defined(sjme_noOptimize)
+	/** Disable optimization. */
+	#define sjme_noOptimize
+#endif
+
 #if defined(__GNUC__)
 	/** GNU C Compiler. */
 	#define SJME_CONFIG_HAS_GCC
+#endif
+
+#if defined(_MSC_VER)
+	/** Microsoft Visual C++ Compiler. */
+	#define SJME_CONFIG_HAS_MSVC
 #endif
 
 #if defined(SJME_CONFIG_HAS_WINDOWS)
@@ -602,6 +618,17 @@ extern "C" {
 #else
 	/** SquirrelJME calling convention. */
 	#define SJME_CALL
+#endif
+
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/** Align to 64-bit. */
+	#define sjme_align64 __declspec(align(8))
+#elif defined(SJME_CONFIG_HAS_GCC)
+	/** Align to 64-bit. */
+	#define sjme_align64 __attribute__((aligned(8)))
+#else
+	/** Align to 64-bit. */
+	#define sjme_align64 
 #endif
 
 /*--------------------------------------------------------------------------*/

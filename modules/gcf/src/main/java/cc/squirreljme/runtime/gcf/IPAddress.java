@@ -42,7 +42,7 @@ public final class IPAddress
 	 * @param __p The port, may be {@link #ASSIGNED_PORT}.
 	 * @throws IllegalArgumentException If the hostname or port is not valid.
 	 * @since 2019/05/06
-	 */
+	 */                                                                       
 	public IPAddress(String __h, int __p)
 		throws IllegalArgumentException
 	{

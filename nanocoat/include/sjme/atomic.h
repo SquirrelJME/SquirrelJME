@@ -20,6 +20,7 @@
 	#include <stdatomic.h>
 #endif
 
+#include "sjme/config.h"
 #include "sjme/nvm.h"
 
 /* Anti-C++. */
@@ -134,7 +135,7 @@ extern "C" {
  * @since 2024/01/08
  */
 #define SJME_ATOMIC_DECLARE(type, numPointerStars) \
-	typedef struct SJME_ATOMIC_NAME(type, numPointerStars) \
+	typedef sjme_align64 struct SJME_ATOMIC_NAME(type, numPointerStars) \
 	{ \
 		/** The atomic type. */ \
 		SJME_TOKEN_TYPE(type, numPointerStars) _Atomic value; \
@@ -153,7 +154,7 @@ extern "C" {
  * @since 2024/01/08
  */
 #define SJME_ATOMIC_DECLARE(type, numPointerStars) \
-	typedef struct SJME_ATOMIC_NAME(type, numPointerStars) \
+	typedef sjme_align64 struct SJME_ATOMIC_NAME(type, numPointerStars) \
 	{ \
 		/** The atomic value. */ \
 		SJME_TOKEN_TYPE(type, numPointerStars) volatile value; \
@@ -183,6 +184,9 @@ SJME_ATOMIC_DECLARE(sjme_jobject, 0);
 
 /** Atomic @c sjme_pointer. */
 SJME_ATOMIC_DECLARE(sjme_pointer, 0);
+
+/** Atomic pointer declaration. */
+SJME_ATOMIC_DECLARE(sjme_intPointer , 0);
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_OLD)
 

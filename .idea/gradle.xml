@@ -19,7 +19,6 @@
             <option value="$PROJECT_DIR$/modules/aot" />
             <option value="$PROJECT_DIR$/modules/aot-springcoat" />
             <option value="$PROJECT_DIR$/modules/bluetooth" />
-            <option value="$PROJECT_DIR$/modules/c-source-writer" />
             <option value="$PROJECT_DIR$/modules/cdc" />
             <option value="$PROJECT_DIR$/modules/cdc-applet" />
             <option value="$PROJECT_DIR$/modules/cdc-pbp" />
@@ -71,6 +70,7 @@
             <option value="$PROJECT_DIR$/modules/meep-swm" />
             <option value="$PROJECT_DIR$/modules/midp-lcdui" />
             <option value="$PROJECT_DIR$/modules/profile-meep" />
+            <option value="$PROJECT_DIR$/modules/scritch-ui" />
             <option value="$PROJECT_DIR$/modules/squirrel-quarrel" />
             <option value="$PROJECT_DIR$/modules/std-apps-core" />
             <option value="$PROJECT_DIR$/modules/std-apps-core-lcdui" />
@@ -98,6 +98,8 @@
             <option value="$PROJECT_DIR$/modules/zip" />
             <option value="$PROJECT_DIR$/sdk" />
             <option value="$PROJECT_DIR$/tools" />
+            <option value="$PROJECT_DIR$/tools/c-source-writer" />
+            <option value="$PROJECT_DIR$/tools/fake-javadoc-sdk" />
             <option value="$PROJECT_DIR$/tools/markdown-javadoc" />
             <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
             <option value="$PROJECT_DIR$/tools/sqf-to-c" />

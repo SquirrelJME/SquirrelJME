@@ -356,7 +356,7 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - persist-gradle
       - save-test-results:
@@ -436,7 +436,7 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - persist-gradle
       - save-test-results:
@@ -492,7 +492,7 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - persist-gradle
       - save-test-results:
@@ -509,7 +509,7 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - persist-gradle
       - save-test-results:
@@ -545,7 +545,7 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -581,7 +581,7 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -616,7 +616,7 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 120m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 120m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 120m
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -732,6 +732,10 @@ workflows:
       - test_springcoat_debug:
           requires:
             - construct_testJars
+          filters:
+            branches:
+              only:
+                - trunk
       - test_springcoat_release:
           requires:
             - construct_testJars
@@ -755,7 +759,11 @@ workflows:
                 - trunk
 
       # ARM64
-      - build_linux_arm64
+      - build_linux_arm64:
+          filters:
+            branches:
+              only:
+                - trunk
       - build_linux_arm64_standalone:
           requires:
             - build_linux_arm64
@@ -782,10 +790,18 @@ workflows:
 #                - trunk
 
       # Windows 32-bit
-      - build_windows_i386_setup
+      - build_windows_i386_setup:
+          filters:
+            branches:
+              only:
+                - trunk
       - build_windows_i386:
           requires:
             - build_windows_i386_setup
+          filters:
+            branches:
+              only:
+                - trunk
       - build_windows_i386_standalone:
           requires:
             - build_windows_i386
@@ -841,6 +857,10 @@ workflows:
       - construct_testJars:
           requires:
             - build_linux_amd64
+          filters:
+            branches:
+              only:
+                - trunk
 
       ############################## DEPLOYMENT ##############################
       - bundle:
