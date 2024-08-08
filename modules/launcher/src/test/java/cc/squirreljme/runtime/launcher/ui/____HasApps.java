@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.lcdui.scritchui.HeadlessDisplayException;
 import net.multiphasicapps.tac.InvalidTestException;
 import net.multiphasicapps.tac.TestBoolean;
@@ -20,7 +19,7 @@ import net.multiphasicapps.tac.TestBoolean;
  *
  * @since 2023/02/11
  */
-public class TestHasApps
+public class ____HasApps
 	extends TestBoolean
 {
 	/**
