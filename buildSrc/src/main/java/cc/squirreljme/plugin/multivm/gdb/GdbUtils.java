@@ -147,8 +147,9 @@ public final class GdbUtils
 				Path maybe = PathUtils.findPathInstalled("windbg",
 					Paths.get("Windows Kits", kit,
 						"Debuggers", arch));
-				if (Files.exists(maybe) && Files.isExecutable(maybe))
-					return maybe;
+				if (maybe != null)
+					if (Files.exists(maybe) && Files.isExecutable(maybe))
+						return maybe;
 			}
 		
 		// Not found
