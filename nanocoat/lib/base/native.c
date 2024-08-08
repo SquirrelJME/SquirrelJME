@@ -75,6 +75,30 @@ static sjme_errorCode sjme_nal_default_nanoTime(
 #endif
 }
 
+static sjme_errorCode sjme_nal_default_stdErrF(
+	sjme_attrInNotNull sjme_lpcstr format,
+	...)
+{
+	va_list list;
+	sjme_errorCode error;
+	
+	/* Start argument parsing. */
+	va_start(list, format);
+	
+	/* Print directly to formatted output. */
+	error = SJME_ERROR_NONE;
+	if (vfprintf(stderr, format, list) < 0)
+		error = SJME_ERROR_IO_EXCEPTION;
+	if (EOF == fflush(stderr))
+		error = SJME_ERROR_IO_EXCEPTION;
+		
+	/* End argument parsing. */
+	va_end(list);
+	
+	/* Success? */
+	return error;
+}
+
 static sjme_errorCode sjme_nal_default_stdOutF(
 	sjme_attrInNotNull sjme_lpcstr format,
 	...)
@@ -104,5 +128,6 @@ const sjme_nal sjme_nal_default =
 	.currentTimeMillis = NULL,
 	.getEnv = NULL,
 	.nanoTime = sjme_nal_default_nanoTime,
+	.stdErrF = sjme_nal_default_stdErrF,
 	.stdOutF = sjme_nal_default_stdOutF,
 };

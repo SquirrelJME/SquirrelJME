@@ -70,14 +70,14 @@ typedef sjme_errorCode (*sjme_nal_nanoTimeFunc)(
 	sjme_attrCheckReturn;
 
 /**
- * Formatted text to standard output.
+ * Formatted text to standard stream.
  * 
  * @param format The format string.
  * @param ... Format arguments.
  * @return Any resultant error code.
  * @since 2024/08/08
  */
-typedef sjme_errorCode (*sjme_nal_stdOutFFunc)(
+typedef sjme_errorCode (*sjme_nal_stdFFunc)(
 	sjme_attrInNotNull sjme_lpcstr format,
 	...);
 
@@ -97,8 +97,11 @@ typedef struct sjme_nal
 	/** Get the current monotonic nanosecond time. */
 	sjme_nal_nanoTimeFunc nanoTime;
 	
+	/** Formatted output to standard error. */
+	sjme_nal_stdFFunc stdErrF;
+	
 	/** Formatted output to standard output. */
-	sjme_nal_stdOutFFunc stdOutF;
+	sjme_nal_stdFFunc stdOutF;
 } sjme_nal;
 
 /** Default native abstraction layer. */

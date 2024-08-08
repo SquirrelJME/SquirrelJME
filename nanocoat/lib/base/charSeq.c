@@ -104,10 +104,55 @@ sjme_errorCode sjme_charSeq_equalsCharSeq(
 	sjme_attrOutNotNull sjme_jboolean* outResult,
 	sjme_attrInNotNull const sjme_charSeq* equalsSeq)
 {
+	sjme_errorCode error;
+	sjme_jint aLen, bLen;
+	sjme_jint at;
+	sjme_jchar a, b;
+	
 	if (inSeq == NULL || outResult == NULL || equalsSeq == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	return sjme_error_notImplemented(0);
+	/* Get length of both first. */
+	aLen = -1;
+	bLen = -1;
+	if (sjme_error_is(error = sjme_charSeq_length(inSeq,
+		&aLen)) || aLen < 0)
+		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_charSeq_length(equalsSeq,
+		&bLen)) || bLen < 0)
+		return sjme_error_default(error);
+	
+	/* Cannot possibly be equal? */
+	if (aLen != bLen)
+	{
+		*outResult = SJME_JNI_FALSE;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Compare each character. */
+	for (at = 0; at < aLen; at++)
+	{
+		/* Get both characters. */
+		a = 0;
+		b = 0;
+		if (sjme_error_is(error = sjme_charSeq_charAt(inSeq,
+			at, &a)))
+			return sjme_error_default(error);
+		if (sjme_error_is(error = sjme_charSeq_charAt(equalsSeq,
+			at, &b)))
+			return sjme_error_default(error);
+		
+		/* Are they not the same? */
+		if (a != b)
+		{
+			*outResult = SJME_JNI_FALSE;
+			return SJME_ERROR_NONE;
+		}
+	}
+	
+	/* There were no failed matches, so they are the same! */
+	*outResult = SJME_JNI_TRUE;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_charSeq_equalsUtf(
@@ -206,8 +251,20 @@ sjme_errorCode sjme_charSeq_startsWithCharSeq(
 	sjme_attrOutNotNull sjme_jboolean* outResult,
 	sjme_attrInNotNull const sjme_charSeq* startsWithSeq)
 {
+	sjme_errorCode error;
+	sjme_jint aLen, bLen;
+	
 	if (inSeq == NULL || outResult == NULL || startsWithSeq == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Get length of both first. */
+	aLen = -1;
+	bLen = -1;
+	if (sjme_error_is(error = sjme_charSeq_length(inSeq, &aLen)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_charSeq_length(startsWithSeq,
+		&bLen)))
+		return sjme_error_default(error);
 	
 	return sjme_error_notImplemented(0);
 }

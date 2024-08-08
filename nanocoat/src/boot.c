@@ -19,6 +19,68 @@
 #include "sjme/charSeq.h"
 #include "sjme/native.h"
 
+/**
+ * Help parameter storage.
+ * 
+ * @since 2024/08/08
+ */
+typedef struct sjme_nvm_helpParam
+{
+	/** The argument. */
+	sjme_lpcstr arg;
+	
+	/** Description of the parameter. */
+	sjme_lpcstr desc;
+} sjme_nvm_helpParam;
+
+static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
+{
+	{"-Xclutter:<release|debug>",
+		"If available, selects the given clutter level."},
+	{"-Xdebug", 
+		"Starts debugging with the built-in debugger."},
+	{"-Xemulator:<vm>",
+		"Ignored, this will always be \"nanocoat\"."},
+	{"-Xentry:id", 
+		"If launching a MIDlet, choose a MIDlet entry."},
+	{"-Xjdwp:[hostname]:port",
+		"Listens or connects to a JDWP debugger."},
+	{"-Xlibraries:<class:path:...>",
+		"Libraries to include in the library path, not the classpath."},
+	{"-Xscritchui:<ui>",
+		"Default interface to choose for ScritchUI."},
+	{"-Xsnapshot:<path-to-nps>",
+		"Write a VisualVM snapshot (.nps) to the given path."},
+	{"-Xthread:<single|coop|multi|smt>",
+		"The threading model to use."},
+	{"-Xtrace:<flag|...>",
+		"Trace flags to permanently set on by default."},
+	{"-Xint",
+		"Force pure interpreter, do not JIT/AOT compilation."},
+	{"-D<sysprop>=<value>",
+		"Declare system property <sysprop> and set to <value>."},
+	{"-classpath <class:path:...>",
+		"The additional classpath to use for the application."},
+	{"-client",
+		"Ignored."},
+	{"-? -h -help",
+		"Hopefully what you are reading currently, to StdErr."},
+	{"--help",
+		"Hopefully what you are reading currently, to StdOut."},
+	{"-jar <Jar>",
+		"Launch the specified Jar."},
+	{"-server",
+		"Ignored."},
+	{"-version",
+		"SquirrelJME version information, to StdErr."},
+	{"--version",
+		"SquirrelJME version information, to StdOut."},
+	{"-zero",
+		"Same as -Xint."},
+	
+	{NULL, NULL}
+};
+
 sjme_errorCode sjme_nvm_allocReservedPool(
 	sjme_attrInNotNull sjme_alloc_pool* mainPool,
 	sjme_attrOutNotNull sjme_alloc_pool** outReservedPool)
@@ -250,6 +312,8 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_jint argAt;
 	sjme_charSeq argSeq;
 	sjme_jboolean jarSpecified;
+	const sjme_nvm_helpParam* help;
+	sjme_nal_stdFFunc helpOut;
 	
 	if (inPool == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -259,7 +323,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	
 	/* Command line format is: */
 	jarSpecified = SJME_JNI_FALSE;
-	for (argAt = 0; argAt < argc; argAt++)
+	for (argAt = 1; argAt < argc; argAt++)
 	{
 		/* Setup sequence to wrap argument for parsing. */
 		memset(&argSeq, 0, sizeof(argSeq));
@@ -267,37 +331,72 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			&argSeq, argv[argAt])))
 			return sjme_error_default(error);
 		
-		/* -Xemulator:(vm) */
-		if (sjme_charSeq_startsWithUtfR(&argSeq,
-			"-Xemulator:"))
+		/* -version */
+		if (sjme_charSeq_equalsUtfR(&argSeq,
+				"-version") ||
+			sjme_charSeq_equalsUtfR(&argSeq,
+				"--version"))
 		{
-			sjme_todo("Impl? %s", argv[argAt]);
+			/* Where is this information going? */
+			helpOut = sjme_nal_default.stdErrF;
+			if (sjme_charSeq_equalsUtfR(&argSeq, "--version"))
+				helpOut = sjme_nal_default.stdOutF;
+			
+			/* Print version information to stdout. */
+			/* https://www.oracle.com/java/technologies/javase/ */
+			/* versioning-naming.html */
+			helpOut(
+				"java version \"1.8.0\"\n");
+			helpOut(
+				"SquirrelJME Class Library, Micro Edition (build %s)\n",
+				SQUIRRELJME_VERSION);
+			helpOut(
+				"SquirrelJME NanoCoat VM (build %s)\n",
+				SQUIRRELJME_VERSION);
+			
+			/* Exit. */
+			return SJME_ERROR_EXIT;
 		}
 		
-		/* -Xsnapshot:(path-to-nps) */
-		else if (sjme_charSeq_startsWithUtfR(&argSeq,
-			"-Xsnapshot:"))
+		/* -help */
+		else if (sjme_charSeq_equalsUtfR(&argSeq,
+				"-?") ||
+			sjme_charSeq_equalsUtfR(&argSeq,
+				"-h") ||
+			sjme_charSeq_equalsUtfR(&argSeq,
+				"-help") ||
+			sjme_charSeq_equalsUtfR(&argSeq,
+				"--help"))
 		{
-			sjme_todo("Impl? %s", argv[argAt]);
+			/* Where is this information going? */
+			helpOut = sjme_nal_default.stdErrF;
+			if (sjme_charSeq_equalsUtfR(&argSeq, "--help"))
+				helpOut = sjme_nal_default.stdOutF;
+			
+			/* Normal usage. */
+			helpOut(
+				"Usage: %s [Options] <MainClass> [Args...]\n", argv[0]);
+			helpOut(
+				"Usage: %s [Options] -jar <Jar> [Args...]\n", argv[0]);
+			helpOut("\n");
+			
+			/* And all the help parameters. */
+			helpOut("Options are:\n");
+			for (help = &sjme_nvm_helpParams[0]; help->arg != NULL; help++)
+			{
+				helpOut("  %s\n",
+					help->arg);
+				helpOut("    %s\n",
+					help->desc);
+			}
+			
+			/* Exit. */
+			return SJME_ERROR_EXIT;
 		}
 		
-		/* -Xentry:id */
+		/* -Xclutter:(release|debug) */
 		else if (sjme_charSeq_startsWithUtfR(&argSeq,
-			"-Xentry:"))
-		{
-			sjme_todo("Impl? %s", argv[argAt]);
-		}
-		
-		/* -Xlibraries:(class:path:...) */
-		else if (sjme_charSeq_startsWithUtfR(&argSeq,
-			"-Xlibraries:"))
-		{
-			sjme_todo("Impl? %s", argv[argAt]);
-		}
-		
-		/* -Xjdwp:[hostname]:port */
-		else if (sjme_charSeq_startsWithUtfR(&argSeq,
-			"-Xjdwp:"))
+			"-Xclutter:"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
@@ -309,23 +408,51 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
+		/* -Xemulator:(vm) */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xemulator:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xentry:id */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xentry:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xjdwp:[hostname]:port */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xjdwp:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xlibraries:(class:path:...) */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xlibraries:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xscritchui:(ui) */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xscritchui:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xsnapshot:(path-to-nps) */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xsnapshot:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
 		/* -Xthread:(single|coop|multi|smt) */
 		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xthread:"))
-		{
-			sjme_todo("Impl? %s", argv[argAt]);
-		}
-		
-		/* -Dsysprop=value */
-		else if (sjme_charSeq_startsWithUtfR(&argSeq,
-			"-D"))
-		{
-			sjme_todo("Impl? %s", argv[argAt]);
-		}
-		
-		/* -Xclutter:(release|debug) */
-		else if (sjme_charSeq_startsWithUtfR(&argSeq,
-			"-Xclutter:"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
@@ -337,9 +464,9 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
-		/* -Xscritchui:(ui) */
+		/* -Dsysprop=value */
 		else if (sjme_charSeq_startsWithUtfR(&argSeq,
-			"-Xscritchui:"))
+			"-D"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
@@ -373,36 +500,6 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			jarSpecified = SJME_JNI_TRUE;
 			
 			sjme_todo("Impl? %s", argv[argAt]);
-		}
-		
-		/* -version */
-		else if (sjme_charSeq_equalsUtfR(&argSeq,
-			"-version"))
-		{
-			/* Print version information to stdout. */
-			/* https://www.oracle.com/java/technologies/javase/ */
-			/* versioning-naming.html */
-			sjme_nal_default.stdOutF(
-				"java version \"1.8.0\"\n");
-			sjme_nal_default.stdOutF(
-				"SquirrelJME Class Library, Micro Edition (build %s)\n",
-				SQUIRRELJME_VERSION);
-			sjme_nal_default.stdOutF(
-				"SquirrelJME NanoCoat VM (build %s)\n",
-				SQUIRRELJME_VERSION);
-			
-			/* Exit. */
-			return SJME_ERROR_EXIT;
-		}
-		
-		/* -help */
-		else if (sjme_charSeq_equalsUtfR(&argSeq,
-			"-help"))
-		{
-			sjme_todo("Impl? %s", argv[argAt]);
-			
-			/* Exit. */
-			return SJME_ERROR_EXIT;
 		}
 		
 		/* Invalid, fail. */
