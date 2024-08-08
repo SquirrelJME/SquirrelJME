@@ -9,12 +9,13 @@
 
 #include <string.h>
 
+#include "sjme/nvm.h"
 #include "sjme/tread.h"
 
 #define SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(cType, javaType, jType) \
 	sjme_errorCode SJME_TOKEN_PASTE_PP( \
 			sjme_nvm_frameTreadAccessorAddress, javaType)( \
-		sjme_attrInNotNull sjme_nvm_frame* frame, \
+		sjme_attrInNotNull sjme_nvm_frame frame, \
 		sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor, \
 		sjme_attrInNotNull sjme_nvm_frameTread* tread, \
 		sjme_attrInPositive sjme_jint treadIndex, \
@@ -40,7 +41,7 @@ SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jdouble, Double, jdouble)
 SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jobject, Object, jobject)
 
 static sjme_errorCode sjme_nvm_frameTreadAccessorGetTreadGeneric(
-	sjme_attrInNotNull sjme_nvm_frame* frame,
+	sjme_attrInNotNull sjme_nvm_frame frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInOutNotNull sjme_nvm_frameTread** outTread)
 {
@@ -53,7 +54,7 @@ static sjme_errorCode sjme_nvm_frameTreadAccessorGetTreadGeneric(
 }
 
 static sjme_errorCode sjme_nvm_frameTreadAccessorReadGeneric(
-	sjme_attrInNotNull sjme_nvm_frame* frame,
+	sjme_attrInNotNull sjme_nvm_frame frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull const sjme_nvm_frameTread* tread,
 	sjme_attrInPositive sjme_jint treadIndex,
@@ -79,7 +80,7 @@ static sjme_errorCode sjme_nvm_frameTreadAccessorReadGeneric(
 }
 
 static sjme_errorCode sjme_nvm_frameTreadAccessorWriteGeneric(
-	sjme_attrInNotNull sjme_nvm_frame* frame,
+	sjme_attrInNotNull sjme_nvm_frame frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull sjme_nvm_frameTread* tread,
 	sjme_attrInPositive sjme_jint treadIndex,

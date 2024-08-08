@@ -1021,16 +1021,30 @@ typedef struct sjme_any
 /**
  * Represents the virtual machine state.
  * 
+ * @since 2023/08/08
+ */
+typedef struct sjme_nvm_stateBase sjme_nvm_stateBase;
+
+/**
+ * Represents the virtual machine state.
+ * 
  * @since 2023/07/28
  */
-typedef struct sjme_nvm_state sjme_nvm_state;
+typedef sjme_nvm_stateBase* sjme_nvm;
+
+/**
+ * Frame of execution within a thread.
+ * 
+ * @since 2023/08/08
+ */
+typedef struct sjme_nvm_frameBase sjme_nvm_frameBase;
 
 /**
  * Frame of execution within a thread.
  * 
  * @since 2023/07/25
  */
-typedef struct sjme_nvm_frame sjme_nvm_frame;
+typedef sjme_nvm_frameBase* sjme_nvm_frame;
 
 /**
  * Exception stack trace mechanism storage.
@@ -1039,10 +1053,24 @@ typedef struct sjme_nvm_frame sjme_nvm_frame;
  */
 typedef struct sjme_exceptTrace sjme_exceptTrace;
 
-typedef struct sjme_nvm_thread
+/**
+ * Base structure for virtual machine threads.
+ * 
+ * @since 2024/08/08
+ */
+typedef struct sjme_nvm_threadBase sjme_nvm_threadBase;
+
+/**
+ * A thread within SquirrelJME.
+ * 
+ * @since 2024/08/08
+ */
+typedef sjme_nvm_threadBase* sjme_nvm_thread;
+
+struct sjme_nvm_threadBase
 {
 	/** The VM state this thread is in. */
-	sjme_nvm_state* inState;
+	sjme_nvm inState;
 	
 	/** The wrapper in the front end. */
 	sjme_frontEnd frontEnd;
@@ -1051,14 +1079,14 @@ typedef struct sjme_nvm_thread
 	sjme_jint threadId;
 	
 	/** The top of the stack. */
-	sjme_nvm_frame* top;
+	sjme_nvm_frame top;
 	
 	/** The number of frames. */
 	sjme_jint numFrames;
 
 	/** Current exception handler go back. */
 	sjme_exceptTrace* except;
-} sjme_nvm_thread;
+};
 
 typedef struct sjme_static_constValue
 {
@@ -1135,8 +1163,8 @@ typedef struct sjme_static_classFields
  * @since 2023/07/25
  */
 typedef sjme_jboolean (*sjme_methodCodeFunction)(
-	struct sjme_nvm_state* currentState,
-	struct sjme_nvm_thread* currentThread);
+	sjme_nvm currentState,
+	sjme_nvm_thread currentThread);
 
 /**
  * The variable mapping and setup for any given method.
@@ -1551,16 +1579,16 @@ typedef struct sjme_nvm_frameLocalMap
 	(sizeof(sjme_nvm_frameLocalMap) + \
 	(SJME_SIZEOF_STRUCT_MEMBER(sjme_nvm_frameLocalMap, maps[0]) * (count)))
 
-struct sjme_nvm_frame
+struct sjme_nvm_frameBase
 {
 	/** The thread this frame is in. */
-	sjme_nvm_thread* inThread;
+	sjme_nvm_thread inThread;
 	
 	/** The wrapper in the front end. */
 	sjme_frontEnd frontEnd;
 	
 	/** The parent frame. */
-	sjme_nvm_frame* parent;
+	sjme_nvm_frame parent;
 	
 	/** The frame index in the thread. */
 	sjme_jint frameIndex;
@@ -1608,7 +1636,7 @@ typedef struct sjme_payload_config sjme_payload_config;
  * @return Returns @c SJME_JNI_TRUE if garbage collection should continue.
  * @since 2023/11/17
  */
-typedef sjme_jboolean (*sjme_nvm_stateHookGcFunc)(sjme_nvm_frame* frame,
+typedef sjme_jboolean (*sjme_nvm_stateHookGcFunc)(sjme_nvm_frame frame,
 	sjme_jobject gcWhat);
 
 /**
@@ -1662,7 +1690,7 @@ typedef struct sjme_nvm_taskCore* sjme_nvm_task;
  * 
  * @since 2023/07/28
  */
-struct sjme_nvm_state
+struct sjme_nvm_stateBase
 {
 	/** The wrapper in the front end. */
 	sjme_frontEnd frontEnd;

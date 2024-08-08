@@ -27,7 +27,7 @@ typedef struct testHookResult
 	sjme_jobject gc[SJME_MOCK_MAX_OBJECTS];
 } testHookResult;
 
-static sjme_jboolean hookGcNvmLocalPopReference(sjme_nvm_frame* frame,
+static sjme_jboolean hookGcNvmLocalPopReference(sjme_nvm_frame frame,
 	sjme_jobject instance)
 {
 	sjme_mock* mock;
@@ -113,7 +113,7 @@ SJME_TEST_DECLARE(testNvmLocalPopReference)
 {
 	sjme_jbyte firstId, secondId;
 	sjme_mock state;
-	sjme_nvm_frame* frame;
+	sjme_nvm_frame frame;
 	sjme_jint oldNumStack;
 	sjme_nvm_frameTread* objectsTread;
 	sjme_nvm_frameStack* stack;

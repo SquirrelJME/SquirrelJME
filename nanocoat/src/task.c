@@ -12,7 +12,7 @@
 #include "sjme/nvm.h"
 
 sjme_errorCode sjme_task_start(
-	sjme_attrInNotNull sjme_nvm_state* inState,
+	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull const sjme_task_startConfig* startConfig,
 	sjme_attrOutNullable sjme_nvm_task* outTask)
 {

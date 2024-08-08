@@ -16,7 +16,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_NVM_STATE, _1_1nvmBoot)
 	(JNIEnv* env, jclass classy, jlong poolPtr, jlong reservedPtr,
 		jobject wrapper, jlong paramPtr)
 {
-	sjme_nvm_state* state;
+	sjme_nvm state;
 	sjme_errorCode error;
 
 	if (poolPtr == 0 || reservedPtr == 0 || wrapper == NULL || paramPtr == 0)

@@ -32,6 +32,9 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/** Special enqueue data that represents this is a state. */
+#define SJME_NVM_ENQUEUE_STATE ((sjme_pointer)(0x1234))
+
 struct sjme_nvm_bootParam
 {
 	/** The payload to use for booting the virtual machine. */
@@ -85,7 +88,7 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool* mainPool,
 	sjme_attrInNotNull sjme_alloc_pool* reservedPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
-	sjme_attrOutNotNull sjme_nvm_state** outState)
+	sjme_attrOutNotNull sjme_nvm* outState)
 	sjme_attrCheckReturn;
 	
 /**
@@ -96,9 +99,23 @@ sjme_errorCode sjme_nvm_boot(
  * @since 2023/07/27
  */
 sjme_errorCode sjme_nvm_destroy(
-	sjme_attrInNotNull sjme_nvm_state* state,
+	sjme_attrInNotNull sjme_nvm state,
 	sjme_attrOutNullable sjme_jint* exitCode)
 	sjme_attrCheckReturn;
+
+/**
+ * Handler for any weak references which have been enqueued.
+ * 
+ * @param weak The weak reference.
+ * @param data The data for the enqueue.
+ * @param isBlockFree Is this a block free or a weak free?
+ * @return Any resultant error, if any.
+ * @since 2024/08/08
+ */
+sjme_errorCode sjme_nvm_enqueueHandler(
+	sjme_attrInNotNull sjme_alloc_weak weak,
+	sjme_attrInNullable sjme_pointer data,
+	sjme_attrInValue sjme_jboolean isBlockFree);
 
 /*--------------------------------------------------------------------------*/
 

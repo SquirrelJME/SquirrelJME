@@ -10,9 +10,9 @@
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 
-sjme_errorCode sjme_nvm_tick(sjme_nvm_state* state, sjme_jint maxTics)
+sjme_errorCode sjme_nvm_tick(sjme_nvm inState, sjme_jint maxTics)
 {
-	if (state == NULL)
+	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("sjme_nvm_tick()");

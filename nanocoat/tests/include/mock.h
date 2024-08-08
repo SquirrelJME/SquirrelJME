@@ -93,7 +93,7 @@ typedef struct sjme_mock
 	sjme_alloc_pool* allocPool;
 
 	/** The virtual machine state. */
-	sjme_nvm_state* nvmState;
+	sjme_nvm nvmState;
 	
 	/** The number of active threads. */
 	sjme_jint numThreads;
@@ -102,7 +102,7 @@ typedef struct sjme_mock
 	struct
 	{
 		/** The actual native thread. */
-		sjme_nvm_thread* nvmThread;
+		sjme_nvm_thread nvmThread;
 	} threads[SJME_MOCK_MAX_THREADS];
 	
 	/** The number of objects which were created. */

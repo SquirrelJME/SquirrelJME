@@ -714,7 +714,7 @@ typedef enum sjme_byteCode_instruction
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/18
  */
-typedef sjme_jboolean (*sjme_byteCode_function)(sjme_nvm_frame* frame);
+typedef sjme_jboolean (*sjme_byteCode_function)(sjme_nvm_frame frame);
 
 /**
  * Contains a mapping of a byte code instruction to an actual operation.

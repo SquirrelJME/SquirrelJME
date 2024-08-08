@@ -53,13 +53,13 @@ sjme_errorCode sjme_nvm_allocReservedPool(
 
 sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	sjme_alloc_pool* reservedPool, const sjme_nvm_bootParam* param,
-	sjme_nvm_state** outState)
+	sjme_nvm* outState)
 {
 #define FIXED_SUITE_COUNT 16
 	sjme_errorCode error;
 	sjme_exceptTrace* trace;
 	sjme_jint i, n;
-	sjme_nvm_state* result;
+	sjme_nvm result;
 	sjme_rom_suite mergeSuites[FIXED_SUITE_COUNT];
 	sjme_jint numMergeSuites;
 	sjme_task_startConfig initTaskConfig;
@@ -78,8 +78,9 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 
 	/* Allocate resultant state. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(reservedPool,
-		sizeof(*result), (sjme_pointer*)&result)) || result == NULL)
+	if (sjme_error_is(error = sjme_alloc_weakNew(reservedPool,
+		sizeof(*result), sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_STATE,
+		(sjme_pointer*)&result, NULL)) || result == NULL)
 		goto fail_resultAlloc;
 
 	/* Make a defensive copy of the boot parameters. */
@@ -199,7 +200,7 @@ fail_reservedPoolAlloc:
 	return sjme_error_defaultOr(error, SJME_ERROR_BOOT_FAILURE);
 }
 
-sjme_errorCode sjme_nvm_destroy(sjme_nvm_state* state, sjme_jint* exitCode)
+sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
 {
 	if (state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -219,4 +220,12 @@ sjme_errorCode sjme_nvm_destroy(sjme_nvm_state* state, sjme_jint* exitCode)
 	/* Finished. */
 	sjme_todo("sjme_nvm_destroy()");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_nvm_enqueueHandler(
+	sjme_attrInNotNull sjme_alloc_weak weak,
+	sjme_attrInNullable sjme_pointer data,
+	sjme_attrInValue sjme_jboolean isBlockFree)
+{
+	return sjme_error_notImplemented(0);
 }

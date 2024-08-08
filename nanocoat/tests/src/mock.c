@@ -226,7 +226,7 @@ sjme_jboolean sjme_mock_doNvmState(
 	sjme_attrInNotNull sjme_mock* inState,
 	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
-	sjme_nvm_state* newState;
+	sjme_nvm newState;
 	
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
@@ -253,8 +253,8 @@ sjme_jboolean sjme_mock_doNvmFrame(
 {
 	sjme_jint threadIndex, treadMax, tallyLocals, stackBase, desireMaxLocals;
 	sjme_jint tallyStack, desireMaxStack, localIndex;
-	sjme_nvm_thread* thread;
-	sjme_nvm_frame* newFrame;
+	sjme_nvm_thread thread;
+	sjme_nvm_frame newFrame;
 	sjme_basicTypeId typeId;
 	sjme_nvm_frameTread* tread;
 	sjme_nvm_frameStack* stack;
@@ -394,7 +394,7 @@ sjme_jboolean sjme_mock_doNvmThread(
 	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
 	sjme_jint threadIndex;
-	sjme_nvm_thread* newThread;
+	sjme_nvm_thread newThread;
 	
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");

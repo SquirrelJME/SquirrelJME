@@ -48,7 +48,7 @@ typedef struct sjme_nvm_frameTreadAccessor sjme_nvm_frameTreadAccessor;
  * @since 2023/11/16
  */
 typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorAddress)(
-	sjme_attrInNotNull sjme_nvm_frame* frame,
+	sjme_attrInNotNull sjme_nvm_frame frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull sjme_nvm_frameTread* tread,
 	sjme_attrInPositive sjme_jint treadIndex,
@@ -63,7 +63,7 @@ typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorAddress)(
  * @since 2023/11/16
  */
 typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorGetTread)(
-	sjme_attrInNotNull sjme_nvm_frame* frame,
+	sjme_attrInNotNull sjme_nvm_frame frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInOutNotNull sjme_nvm_frameTread** outTread);
 
@@ -79,7 +79,7 @@ typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorGetTread)(
  * @since 2023/11/16
  */
 typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorRead)(
-	sjme_attrInNotNull sjme_nvm_frame* frame,
+	sjme_attrInNotNull sjme_nvm_frame frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull const sjme_nvm_frameTread* tread,
 	sjme_attrInPositive sjme_jint treadIndex,
@@ -97,7 +97,7 @@ typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorRead)(
  * @since 2023/11/16
  */
 typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorWrite)(
-	sjme_attrInNotNull sjme_nvm_frame* frame,
+	sjme_attrInNotNull sjme_nvm_frame frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull sjme_nvm_frameTread* tread,
 	sjme_attrInPositive sjme_jint treadIndex,
