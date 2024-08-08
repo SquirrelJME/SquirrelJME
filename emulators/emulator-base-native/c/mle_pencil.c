@@ -63,7 +63,6 @@
 	DESC_PENCIL DESC_INT DESC_INT ")" DESC_VOID
 
 /* Forwards */
-#define FORWARD_DESC_capabilities "(I)I"
 #define FORWARD_DESC_nativeImageLoadRGBA \
 	"(I[BIILcc/squirreljme/jvm/mle/callbacks/NativeImageLoadCallback;)" \
 	"Ljava/lang/Object;"
@@ -450,10 +449,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareTranslate)
 	if (sjme_error_is(error = p->api->translate(p, x, y)))
 		sjme_jni_throwMLECallError(env, error);\
 }
-	
-FORWARD_IMPL(PencilShelf, capabilities, jint, Integer, \
-	FORWARD_IMPL_args(jint pixelFormat), \
-	FORWARD_IMPL_pass(pixelFormat))
+
 FORWARD_IMPL(PencilShelf, nativeImageLoadRGBA, jobject, Object, \
 	FORWARD_IMPL_args(jint type, jbyteArray buf, jint off, jint len, \
 		jobject callback), \
@@ -463,7 +459,6 @@ FORWARD_IMPL(PencilShelf, nativeImageLoadTypes, jint, Integer, \
 
 static const JNINativeMethod mlePencilMethods[] =
 {
-	FORWARD_list(PencilShelf, capabilities),
 	FORWARD_list(PencilShelf, hardwareCopyArea),
 	FORWARD_list(PencilShelf, hardwareDrawChars),
 	FORWARD_list(PencilShelf, hardwareDrawHoriz),

@@ -13,8 +13,6 @@ import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
-import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
-import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -43,24 +41,6 @@ public final class PencilShelf
 	private PencilShelf()
 	{
 	}
-	
-	/**
-	 * Returns the capabilities of the native possibly hardware accelerated
-	 * pencil graphics drawing for the given pixel format.
-	 * 
-	 * @param __pf The {@link UIPixelFormat} being used for drawing.
-	 * @throws MLECallError If the pixel format is not valid.
-	 * @return The capabilities, will be the bit-field of
-	 * {@link PencilCapabilities}. If there is not capability for this format
-	 * then {@code 0} will be returned.
-	 * @since 2020/09/25
-	 */
-	@SquirrelJMEVendorApi
-	@CheckReturnValue
-	@MagicConstant(flagsFromClass = PencilCapabilities.class)
-	public static native int capabilities(
-		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf)
-		throws MLECallError;
 	
 	/**
 	 * This copies one region of the image to another region.

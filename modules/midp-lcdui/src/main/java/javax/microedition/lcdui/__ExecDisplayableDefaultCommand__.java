@@ -9,8 +9,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Executes adjustments to the default menu which contains commands.
  *

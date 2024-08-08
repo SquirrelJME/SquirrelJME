@@ -14,7 +14,6 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionHasParent;
-import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNodeOnly;
 
 @Api
 public class Command

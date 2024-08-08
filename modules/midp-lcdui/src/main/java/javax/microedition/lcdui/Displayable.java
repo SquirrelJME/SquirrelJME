@@ -9,7 +9,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -736,50 +735,6 @@ public abstract class Displayable
 			if (usePlace > 0)
 				__layout.set(action, usePlace);
 		}*/
-	}
-	
-	/**
-	 * Executes the given layout.
-	 * 
-	 * @param __layout The layout to execute.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/09/27
-	 */
-	@SerializedEvent
-	@Async.Execute
-	private void __layoutExecute(__Layout__ __layout)
-		throws NullPointerException
-	{
-		if (__layout == null)
-			throw new NullPointerException("NARG");
-		
-		// Left command item
-		this.__layoutExecute(__layout, Display._SOFTKEY_LEFT_COMMAND, 
-			Display.__layoutSoftKeyToPos(Display._SOFTKEY_LEFT_COMMAND));
-		
-		// Right command item
-		this.__layoutExecute(__layout, Display._SOFTKEY_RIGHT_COMMAND,
-			Display.__layoutSoftKeyToPos(Display._SOFTKEY_RIGHT_COMMAND));
-	}
-	
-	/**
-	 * Executes the given layout.
-	 * 
-	 * @param __layout The layout to execute.
-	 * @param __from The from position, one of the softkey positions.
-	 * @param __to The target position, one of {@link UIItemPosition}.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/09/27
-	 */
-	@SerializedEvent
-	@Async.Execute
-	private void __layoutExecute(__Layout__ __layout, int __from, int __to)
-		throws NullPointerException
-	{
-		if (__layout == null)
-			throw new NullPointerException("NARG");
-		
-		throw Debugging.todo();
 	}
 	
 	/**

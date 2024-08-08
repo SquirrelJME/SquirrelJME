@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/05/17
  */
+@SquirrelJMEVendorApi
 public interface PencilFontStyle
 {
 	/** Bold text. */

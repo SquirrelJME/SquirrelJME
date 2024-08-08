@@ -33,25 +33,6 @@ import javax.microedition.lcdui.ScalableImage;
 public enum MLEPencil
 	implements MLEFunction
 {
-	/** {@link PencilShelf#capabilities(int)}. */
-	CAPABILITIES("capabilities:(I)I")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/09/26
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			int pf = (int)__args[0];
-			if (pf < 0 || pf >= UIPixelFormat.NUM_PIXEL_FORMATS)
-				throw new SpringMLECallError("Invalid pixel format: " +
-					pf);
-			
-			return 0xFFFFFFFF;
-		}
-	},
-	
 	/**
 	 * {@link PencilShelf#hardwareCopyArea(PencilBracket, int, int, int, int,
 	 * int, int, int)}.

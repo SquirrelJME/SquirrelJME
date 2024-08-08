@@ -9,7 +9,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
@@ -39,13 +38,6 @@ import org.jetbrains.annotations.NonBlocking;
 @Api
 public class Display
 {
-	/** The soft-key for the left command. */
-	static final int _SOFTKEY_LEFT_COMMAND =
-		Display.SOFTKEY_BOTTOM + 1;
-	
-	/** The soft-key for the right command. */
-	static final int _SOFTKEY_RIGHT_COMMAND =
-		Display.SOFTKEY_BOTTOM + 2;
 	
 	@Api
 	public static final int ALERT =
@@ -1336,66 +1328,6 @@ public class Display
 			throw new NullPointerException("NARG");
 		
 		DisplayManager.instance().displayListenerRemove(__dl);
-	}
-	
-	/**
-	 * The default display capabilities.
-	 * 
-	 * @return The default display capabilities.
-	 * @since 2021/11/30
-	 */
-	static int __defaultCapabilities()
-	{
-		return Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS |
-			Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS |
-			Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES |
-			Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES |
-			Display.SUPPORTS_MENUS;
-	}
-	
-	/**
-	 * Converts a {@link UIItemPosition} to a softkey.
-	 * 
-	 * @param __pos The {@link UIItemPosition} to get the soft key of.
-	 * @return The softkey position or a negative value if not valid.
-	 * @since 2020/10/03
-	 */
-	static int __layoutPosToSoftKey(int __pos)
-	{
-		switch (__pos)
-		{
-			case UIItemPosition.LEFT_COMMAND:
-				return Display._SOFTKEY_LEFT_COMMAND;
-				
-			case UIItemPosition.RIGHT_COMMAND:
-				return Display._SOFTKEY_RIGHT_COMMAND;
-			
-			default:
-				return -1;
-		}
-	}
-	
-	/**
-	 * Returns the position where the soft key belongs.
-	 * 
-	 * @param __softKey The soft key to get the UI position from.
-	 * @return The {@link UIItemPosition} of the item, or
-	 * {@link UIItemPosition#NOT_ON_FORM} if not valid.
-	 * @since 2020/10/03
-	 */
-	static int __layoutSoftKeyToPos(int __softKey)
-	{
-		switch (__softKey)
-		{
-			case Display._SOFTKEY_LEFT_COMMAND:
-				return UIItemPosition.LEFT_COMMAND;
-				
-			case Display._SOFTKEY_RIGHT_COMMAND:
-				return UIItemPosition.RIGHT_COMMAND;
-			
-			default:
-				return UIItemPosition.NOT_ON_FORM;
-		}
 	}
 }
 

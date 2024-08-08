@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
-import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
+import cc.squirreljme.jvm.mle.constants.NonStandardKey;
 import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
@@ -82,7 +82,7 @@ public interface ScritchMenuInterface
 	 */
 	@SquirrelJMEVendorApi
 	void menuItemSetKey(@NotNull ScritchMenuItemBracket __item,
-		@MagicConstant(valuesFromClass = UIKeyEventType.class)
+		@MagicConstant(valuesFromClass = NonStandardKey.class)
 			@Range(from = 0, to = 65536) int __key,
 		@MagicConstant(flagsFromClass = UIKeyModifier.class)
 			int __modifier)

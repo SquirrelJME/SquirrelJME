@@ -23,6 +23,7 @@ public class MLECallError
 	extends VirtualMachineError
 {
 	/** the distinctive error code. */
+	@SquirrelJMEVendorApi
 	public final int distinction;
 	
 	/**

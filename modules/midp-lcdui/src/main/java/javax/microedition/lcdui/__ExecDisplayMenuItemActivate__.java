@@ -12,11 +12,9 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuKindBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchMenuItemActivateListener;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionApplicable;
-import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNode;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNodeOnly;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionTree;
 
