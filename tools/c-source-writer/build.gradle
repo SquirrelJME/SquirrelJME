@@ -1,15 +1,10 @@
-import cc.squirreljme.plugin.swm.JavaMEMidletType
+plugins {
+	id "java-library"
+	id "idea"
+}
 
 description = "Object-oriented C source code writer."
 version = rootProject.version
-
-squirreljme
-{
-	javaDocErrorCode = "CW"
-	swmType = JavaMEMidletType.LIBRARY
-	swmName = "C Source Writer"
-	swmVendor = "Stephanie Gawroriski"
-}
 
 dependencies
 {
