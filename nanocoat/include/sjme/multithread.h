@@ -98,7 +98,7 @@ extern "C" {
 		((sjme_errorCode)((sjme_intPointer)(result)))
 	
 	/** Calling convention to use for thread entry points. */
-	#define SJME_THREAD_CONVENTION
+	#define sjme_attrThreadCall
 
 	/** Thread memory barrier. */
 	#define sjme_thread_barrier() __sync_synchronize()
@@ -128,7 +128,7 @@ extern "C" {
 	#define SJME_THREAD_RESULT_AS_ERROR(result) ((sjme_errorCode)(result))
 	
 	/** Calling convention to use for thread entry points. */
-	#define SJME_THREAD_CONVENTION __stdcall
+	#define sjme_attrThreadCall WINAPI
 
 	/** Thread memory barrier. */
 	#define sjme_thread_barrier() MemoryBarrier()
@@ -164,7 +164,7 @@ extern "C" {
 	#define SJME_THREAD_RESULT_AS_ERROR(result) ((sjme_errorCode)(result))
 	
 	/** Calling convention to use for thread entry points. */
-	#define SJME_THREAD_CONVENTION
+	#define sjme_attrThreadCall
 
 	/** Thread memory barrier. */
 	#define sjme_thread_barrier() do {} while(0)
@@ -181,7 +181,7 @@ SJME_ATOMIC_DECLARE(sjme_thread, 0);
  * @return Thread resultant value.
  * @since 2024/04/16
  */
-typedef sjme_thread_result (SJME_THREAD_CONVENTION *sjme_thread_mainFunc)(
+typedef sjme_thread_result (sjme_attrThreadCall *sjme_thread_mainFunc)(
 	sjme_attrInNullable sjme_thread_parameter anything);
 
 /**

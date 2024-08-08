@@ -28,7 +28,7 @@ typedef struct sjme_scritchui_core_waitData
 	sjme_errorCode result;
 } sjme_scritchui_core_waitData;
 
-static sjme_thread_result sjme_scritchui_core_waitAdapter(
+static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_waitAdapter(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	sjme_scritchui_core_waitData* waitData;

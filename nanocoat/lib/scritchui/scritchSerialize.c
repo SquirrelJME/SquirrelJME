@@ -112,7 +112,7 @@
 /* ------------------------------------------------------------------------ */
 /* clang-format on */
 
-static sjme_thread_result sjme_scritchui_serialDispatch(
+static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 #define SJME_SCRITCHUI_DISPATCH_SWITCH_BEGIN switch (data->type) {

@@ -385,7 +385,8 @@ static sjme_errorCode sjme_scritchui_core_baseVisibleListener(
  * @return On any error.
  * @since 2024/04/26
  */
-static sjme_thread_result sjme_scritchui_core_componentRepaintBelay(
+static sjme_thread_result sjme_attrThreadCall
+	sjme_scritchui_core_componentRepaintBelay(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	sjme_errorCode error;

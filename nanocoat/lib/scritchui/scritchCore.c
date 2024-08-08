@@ -202,7 +202,7 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	.viewSuggest = sjme_scritchui_core_intern_viewSuggest,
 };
 
-static sjme_thread_result SJME_THREAD_CONVENTION sjme_scritchui_core_fbBelay(
+static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	sjme_scritchui topState;

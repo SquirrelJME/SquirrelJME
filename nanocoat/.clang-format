@@ -88,7 +88,7 @@ AttributeMacros:
   - sjme_attrUnusedEnum
   - SJME_DYLIB_EXPORT
   - SJME_DYLIB_IMPORT
-  - SJME_THREAD_CONVENTION
+  - sjme_attrThreadCall
   - JNIEXPORT
   - JNIIMPORT
   - JNICALL

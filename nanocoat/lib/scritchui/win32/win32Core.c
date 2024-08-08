@@ -100,7 +100,7 @@ static const sjme_scritchui_implInternFunctions
 	.windowProcWin32 = sjme_scritchui_win32_windowProcForward,
 };
 
-static sjme_thread_result sjme_scritchui_win32_loopMain(
+static sjme_thread_result sjme_attrThreadCall sjme_scritchui_win32_loopMain(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	sjme_errorCode error;
