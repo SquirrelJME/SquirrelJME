@@ -65,7 +65,9 @@ extern "C" {
 	/** A single thread. */
 	typedef pthread_t sjme_thread;
 
-	#if defined(SJME_CONFIG_HAS_MACOS)
+	/* On these systems pthread_t is a pointer. */
+	#if defined(SJME_CONFIG_HAS_MACOS) || \
+		defined(SJME_CONFIG_HAS_EMSCRIPTEN)
 		/** The type of a thread. */
 		#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
 	
