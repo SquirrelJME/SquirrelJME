@@ -686,9 +686,6 @@ struct sjme_scritchui_internFunctions
 	/** Common component initialization. */
 	sjme_scritchui_intern_initComponentFunc initComponent;
 	
-	/** Set of simple user listener. */
-	sjme_scritchui_intern_setSimpleListenerFunc setSimpleListener;
-	
 	/** Maps the given screen. */
 	sjme_scritchui_intern_mapScreenFunc mapScreen;
 	
@@ -697,6 +694,9 @@ struct sjme_scritchui_internFunctions
 	
 	/** Menu item activation propagation, from top down. */
 	sjme_scritchui_intern_menuItemActivateByIdFunc menuItemActivateById;
+	
+	/** Set of simple user listener. */
+	sjme_scritchui_intern_setSimpleListenerFunc setSimpleListener;
 	
 	/** Update visibility recursively on container. */
 	sjme_scritchui_intern_updateVisibleContainerFunc updateVisibleContainer;

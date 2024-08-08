@@ -87,7 +87,8 @@ sjme_errorCode sjme_scritchui_gtk2_viewSetArea(
 	GtkAdjustment* hAdjust;
 	GtkAdjustment* vAdjust;
 	
-	if (inState == NULL || inComponent == NULL || inViewArea == NULL)
+	if (inState == NULL || inComponent == NULL || inViewArea == NULL ||
+		inViewPage == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Get wrapped widget. */

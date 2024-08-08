@@ -174,6 +174,9 @@ sjme_errorCode sjme_scritchui_core_viewSetArea(
 		fullArea.width = viewRect.d.width;
 	if (viewRect.d.height > fullArea.height)
 		fullArea.height = viewRect.d.height;
+		
+	/* Get page size before we cache it. */
+	pageSize = &view->pageSize;
 	
 	/* Get previous view area to check if it changed. */
 	memmove(&oldArea, &view->area, sizeof(oldArea));
@@ -183,7 +186,6 @@ sjme_errorCode sjme_scritchui_core_viewSetArea(
 	memmove(&view->area, &fullArea, sizeof(view->area));
 	
 	/* Update the page size. */
-	pageSize = &view->pageSize;
 	pageSize->width = viewRect.d.width;
 	pageSize->height = viewRect.d.height;
 	
