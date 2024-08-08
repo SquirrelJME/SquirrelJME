@@ -1975,8 +1975,14 @@ typedef enum sjme_errorCode
 	/** Interrupted. */
 	SJME_ERROR_INTERRUPTED = -79,
 	
+	/** Exit. */
+	SJME_ERROR_EXIT = -80,
+	
+	/** Input/Output Exception. */
+	SJME_ERROR_IO_EXCEPTION = -81,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -80
+	SJME_NUM_ERROR_CODES = -82
 } sjme_errorCode;
 
 /**

@@ -278,7 +278,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	state->intern = &sjme_scritchUI_coreIntern;
 	state->impl = inImplFunc;
 	state->wmInfo = &sjme_scritchUI_coreWmInfo;
-	state->nanoTime = sjme_nal_default_nanoTime;
+	state->nanoTime = sjme_nal_default.nanoTime;
 	
 	/* Common initialize. */
 	if (sjme_error_is(error = state->intern->initCommon(state,

@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <stdio.h>
 #include <string.h>
 
 #include "sjme/allocSizeOf.h"
@@ -15,6 +16,8 @@
 #include "sjme/except.h"
 #include "sjme/nvm.h"
 #include "sjme/task.h"
+#include "sjme/charSeq.h"
+#include "sjme/native.h"
 
 sjme_errorCode sjme_nvm_allocReservedPool(
 	sjme_attrInNotNull sjme_alloc_pool* mainPool,
@@ -234,5 +237,197 @@ sjme_errorCode sjme_nvm_enqueueHandler(
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInValue sjme_jboolean isBlockFree)
 {
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_parseCommandLine(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInOutNotNull sjme_nvm_bootParam* outParam,
+	sjme_attrInPositiveNonZero sjme_jint argc,
+	sjme_attrInNotNull sjme_lpcstr* argv)
+{
+	sjme_errorCode error;
+	sjme_jint argAt;
+	sjme_charSeq argSeq;
+	sjme_jboolean jarSpecified;
+	
+	if (inPool == NULL || outParam == NULL || argv == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (argc <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Command line format is: */
+	jarSpecified = SJME_JNI_FALSE;
+	for (argAt = 0; argAt < argc; argAt++)
+	{
+		/* Setup sequence to wrap argument for parsing. */
+		memset(&argSeq, 0, sizeof(argSeq));
+		if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
+			&argSeq, argv[argAt])))
+			return sjme_error_default(error);
+		
+		/* -Xemulator:(vm) */
+		if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xemulator:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xsnapshot:(path-to-nps) */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xsnapshot:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xentry:id */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xentry:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xlibraries:(class:path:...) */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xlibraries:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xjdwp:[hostname]:port */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xjdwp:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xdebug */
+		else if (sjme_charSeq_equalsUtfR(&argSeq,
+			"-Xdebug"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xthread:(single|coop|multi|smt) */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xthread:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Dsysprop=value */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-D"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xclutter:(release|debug) */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xclutter:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xtrace:(flag|...) */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xtrace:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xscritchui:(ui) */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xscritchui:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -classpath (class:path:...) */
+		else if (sjme_charSeq_equalsUtfR(&argSeq,
+			"-classpath"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -zero/-Xint */
+		else if (sjme_charSeq_equalsUtfR(&argSeq, "-zero") ||
+			sjme_charSeq_equalsUtfR(&argSeq, "-Xint"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -client/-server. */
+		else if (sjme_charSeq_equalsUtfR(&argSeq,
+			"-client") ||
+			sjme_charSeq_equalsUtfR(&argSeq, "-server"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -jar */
+		else if (sjme_charSeq_equalsUtfR(&argSeq, "-jar"))
+		{
+			/* We are using a Jar now. */
+			jarSpecified = SJME_JNI_TRUE;
+			
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -version */
+		else if (sjme_charSeq_equalsUtfR(&argSeq,
+			"-version"))
+		{
+			/* Print version information to stdout. */
+			/* https://www.oracle.com/java/technologies/javase/ */
+			/* versioning-naming.html */
+			sjme_nal_default.stdOutF(
+				"java version \"1.8.0\"\n");
+			sjme_nal_default.stdOutF(
+				"SquirrelJME Class Library, Micro Edition (%s)\n",
+				SQUIRRELJME_VERSION);
+			sjme_nal_default.stdOutF(
+				"SquirrelJME NanoCoat VM (%s)\n",
+				SQUIRRELJME_VERSION);
+			
+			/* Exit. */
+			return SJME_ERROR_EXIT;
+		}
+		
+		/* -help */
+		else if (sjme_charSeq_equalsUtfR(&argSeq,
+			"-help"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+			
+			/* Exit. */
+			return SJME_ERROR_EXIT;
+		}
+		
+		/* Invalid, fail. */
+		else
+		{
+			sjme_message("Invalid command line: %s",
+				argv[argAt]);
+			
+			return SJME_ERROR_INVALID_ARGUMENT;
+		}
+		
+		sjme_todo("impl?");
+	}
+	
+	/* Main-class, if not -jar */
+	if (!jarSpecified)
+	{
+		sjme_todo("impl?");
+	}
+	
+	/* Arguments... */
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("impl?");
+	}
+	
 	return sjme_error_notImplemented(0);
 }

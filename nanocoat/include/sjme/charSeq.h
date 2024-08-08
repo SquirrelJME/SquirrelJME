@@ -139,6 +139,47 @@ sjme_errorCode sjme_charSeq_length(
 	sjme_attrOutNotNull sjme_jint* outLen);
 
 /**
+ * Checks if the given character sequence equals the given character sequence.
+ * 
+ * @param inSeq The sequence to check.
+ * @param outResult The result of the check.
+ * @param equalsSeq The char sequence to check for equality against.
+ * @return Any resultant error, if any.
+ * @since 2024/08/08 
+ */
+sjme_errorCode sjme_charSeq_equalsCharSeq(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrOutNotNull sjme_jboolean* outResult,
+	sjme_attrInNotNull const sjme_charSeq* equalsSeq);
+
+/**
+ * Checks if the given character sequence equals the given UTF string.
+ * 
+ * @param inSeq The sequence to check.
+ * @param outResult The result of the check.
+ * @param equalsUtf The UTF sequence to check for equality against.
+ * @return Any resultant error, if any.
+ * @since 2024/08/08 
+ */
+sjme_errorCode sjme_charSeq_equalsUtf(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrOutNotNull sjme_jboolean* outResult,
+	sjme_attrInNotNull sjme_lpcstr equalsUtf);
+	
+/**
+ * Checks if the given character sequence equals the given UTF string.
+ * 
+ * @param inSeq The sequence to check.
+ * @param equalsUtf The UTF sequence to check for equality against.
+ * @return Returns whether it matches, note that if there is an error
+ * then @c SJME_JNI_FALSE will be returned and the error will be hidden.
+ * @since 2024/08/08 
+ */
+sjme_jboolean sjme_charSeq_equalsUtfR(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull sjme_lpcstr equalsUtf);
+
+/**
  * Initializes the given static character sequence.
  * 
  * @param inOutSeq The input/output sequence.
@@ -166,6 +207,48 @@ sjme_errorCode sjme_charSeq_newStatic(
 sjme_errorCode sjme_charSeq_newUtfStatic(
 	sjme_attrInNotNull sjme_charSeq* inOutSeq,
 	sjme_attrInNotNull sjme_lpcstr inString);
+
+/**
+ * Checks if the given character sequence starts with the given character
+ * sequence.
+ * 
+ * @param inSeq The sequence to check.
+ * @param outResult The result of the check.
+ * @param startsWithSeq The char sequence to check the start for.
+ * @return Any resultant error, if any.
+ * @since 2024/08/08 
+ */
+sjme_errorCode sjme_charSeq_startsWithCharSeq(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrOutNotNull sjme_jboolean* outResult,
+	sjme_attrInNotNull const sjme_charSeq* startsWithSeq);
+
+/**
+ * Checks if the given character sequence starts with the given UTF string.
+ * 
+ * @param inSeq The sequence to check.
+ * @param outResult The result of the check.
+ * @param startsWithSeq The UTF sequence to check the start for.
+ * @return Any resultant error, if any.
+ * @since 2024/08/08 
+ */
+sjme_errorCode sjme_charSeq_startsWithUtf(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrOutNotNull sjme_jboolean* outResult,
+	sjme_attrInNotNull sjme_lpcstr startsWithUtf);
+	
+/**
+ * Checks if the given character sequence starts with the given UTF string.
+ * 
+ * @param inSeq The sequence to check.
+ * @param startsWithUtf The UTF sequence to check the start for.
+ * @return Returns whether it matches, note that if there is an error
+ * then @c SJME_JNI_FALSE will be returned and the error will be hidden.
+ * @since 2024/08/08 
+ */
+sjme_jboolean sjme_charSeq_startsWithUtfR(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull sjme_lpcstr startsWithUtf);
 
 /*--------------------------------------------------------------------------*/
 

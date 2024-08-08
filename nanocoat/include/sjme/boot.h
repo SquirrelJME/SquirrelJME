@@ -90,7 +90,7 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
 	sjme_attrOutNotNull sjme_nvm* outState)
 	sjme_attrCheckReturn;
-	
+
 /**
  * Destroys the virtual machine.
  * 
@@ -116,6 +116,23 @@ sjme_errorCode sjme_nvm_enqueueHandler(
 	sjme_attrInNotNull sjme_alloc_weak weak,
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInValue sjme_jboolean isBlockFree);
+
+/**
+ * Parses a standard command line sequence.
+ * 
+ * @param inPool The pool to allocate values wihtin.
+ * @param param The output parameters. 
+ * @param argc The argument count.
+ * @param argv The arguments.
+ * @return Any resultant error, if any. Returns @c SJME_ERROR_EXIT if the
+ * parsing should just exit.
+ * @since 2024/08/08
+ */
+sjme_errorCode sjme_nvm_parseCommandLine(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInOutNotNull sjme_nvm_bootParam* outParam,
+	sjme_attrInPositiveNonZero sjme_jint argc,
+	sjme_attrInNotNull sjme_lpcstr* argv);
 
 /*--------------------------------------------------------------------------*/
 

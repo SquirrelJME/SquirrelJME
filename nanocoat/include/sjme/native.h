@@ -70,24 +70,39 @@ typedef sjme_errorCode (*sjme_nal_nanoTimeFunc)(
 	sjme_attrCheckReturn;
 
 /**
+ * Formatted text to standard output.
+ * 
+ * @param format The format string.
+ * @param ... Format arguments.
+ * @return Any resultant error code.
+ * @since 2024/08/08
+ */
+typedef sjme_errorCode (*sjme_nal_stdOutFFunc)(
+	sjme_attrInNotNull sjme_lpcstr format,
+	...);
+
+/**
  * Native Abstraction Layer functions.
  * 
  * @since 2023/07/29
  */
 typedef struct sjme_nal
 {
-	int todo;
+	/** Current time in milliseconds. */
+	sjme_nal_currentTimeMillisFunc currentTimeMillis;
+	
+	/** Get environment variable. */
+	sjme_nal_getEnvFunc getEnv;
+	
+	/** Get the current monotonic nanosecond time. */
+	sjme_nal_nanoTimeFunc nanoTime;
+	
+	/** Formatted output to standard output. */
+	sjme_nal_stdOutFFunc stdOutF;
 } sjme_nal;
 
-/**
- * Default implementation of the current nanosecond time.
- * 
- * @param result The resultant time. 
- * @return Any resultant error code.
- * @since 2024/06/30
- */
-sjme_errorCode sjme_nal_default_nanoTime(
-	sjme_attrOutNotNull sjme_jlong* result);
+/** Default native abstraction layer. */
+extern const sjme_nal sjme_nal_default;
 
 /*--------------------------------------------------------------------------*/
 

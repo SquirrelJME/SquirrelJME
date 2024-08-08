@@ -23,7 +23,7 @@
  * @param argv Arguments passed.
  * @return Returns @c 0 on success, otherwise another exit code.
  */
-int main(int argc, char** argv)
+int main(int argc, sjme_lpcstr* argv)
 {
 	sjme_errorCode error;
 	sjme_alloc_pool* pool;
@@ -40,6 +40,20 @@ int main(int argc, char** argv)
 	
 	/* Setup boot parameters. */
 	memset(&bootParam, 0, sizeof(bootParam));
+	
+	/* Parse main arguments. */
+	if (sjme_error_is(error = sjme_nvm_parseCommandLine(pool,
+		&bootParam, argc, argv)))
+	{
+		/* Exit instead of continuing? */
+		if (error == SJME_ERROR_EXIT)
+		{
+			exitCode = 0;
+			goto okay_shortExit;
+		}
+		
+		goto fail_argParse;
+	}
 	
 	/* Boot the virtual machine. */
 	inState = NULL;
@@ -70,6 +84,7 @@ int main(int argc, char** argv)
 	if (sjme_error_is(error = sjme_nvm_destroy(inState, &exitCode)))
 		goto fail_destroy;
 	
+okay_shortExit:
 	/* Destroy the main memory pool. */
 	if (sjme_error_is(error = sjme_alloc_poolDestroy(pool)))
 		goto fail_destroyPool;
@@ -84,6 +99,7 @@ fail_boot:
 	if (inState != NULL)
 		sjme_nvm_destroy(inState, NULL);
 	
+fail_argParse:
 fail_poolInit:
 	if (pool != NULL)
 		sjme_alloc_poolDestroy(pool);

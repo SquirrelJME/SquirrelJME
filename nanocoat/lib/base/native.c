@@ -7,7 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <stdarg.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "sjme/config.h"
 
@@ -29,7 +31,7 @@
 
 #include "sjme/native.h"
 
-sjme_errorCode sjme_nal_default_nanoTime(
+static sjme_errorCode sjme_nal_default_nanoTime(
 	sjme_attrOutNotNull sjme_jlong* result)
 {
 #if defined(SJME_CONFIG_HAS_WINDOWS)
@@ -72,3 +74,35 @@ sjme_errorCode sjme_nal_default_nanoTime(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 #endif
 }
+
+static sjme_errorCode sjme_nal_default_stdOutF(
+	sjme_attrInNotNull sjme_lpcstr format,
+	...)
+{
+	va_list list;
+	sjme_errorCode error;
+	
+	/* Start argument parsing. */
+	va_start(list, format);
+	
+	/* Print directly to formatted output. */
+	error = SJME_ERROR_NONE;
+	if (vfprintf(stdout, format, list) < 0)
+		error = SJME_ERROR_IO_EXCEPTION;
+	if (EOF == fflush(stdout))
+		error = SJME_ERROR_IO_EXCEPTION;
+		
+	/* End argument parsing. */
+	va_end(list);
+	
+	/* Success? */
+	return error;
+}
+
+const sjme_nal sjme_nal_default =
+{
+	.currentTimeMillis = NULL,
+	.getEnv = NULL,
+	.nanoTime = sjme_nal_default_nanoTime,
+	.stdOutF = sjme_nal_default_stdOutF,
+};
