@@ -49,7 +49,7 @@ public class TestHasApps
 			// This must have stuff inside of it
 			return !main._listedSuites.isEmpty();
 		}
-		catch (HeadlessDisplayException __e)
+		catch (HeadlessDisplayException|ExceptionInInitializerError __e)
 		{
 			throw new InvalidTestException(__e);
 		}
