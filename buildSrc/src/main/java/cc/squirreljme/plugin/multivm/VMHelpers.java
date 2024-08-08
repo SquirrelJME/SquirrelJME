@@ -54,6 +54,7 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import org.apache.tools.ant.taskdefs.Zip;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
@@ -515,11 +516,8 @@ public final class VMHelpers
 				if (entry == null)
 					break;
 				
-				// Make sure it is compressed
-				entry.setMethod(ZipOutputStream.DEFLATED);
-				
 				// Start entry
-				outZip.putNextEntry(entry);
+				outZip.putNextEntry(new ZipEntry(entry.getName()));
 				
 				// Copy entry data
 				VMHelpers.copy(inZip, outZip);
