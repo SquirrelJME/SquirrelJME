@@ -11,4 +11,6 @@ dependencies
 	api project(":modules:cldc-compact")
 	api project(":modules:collections")
 	api project(":modules:io")
+	
+	testImplementation project(":modules:tac")
 }
