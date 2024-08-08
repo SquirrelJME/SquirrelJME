@@ -2112,7 +2112,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuItemNew)
 	state = (sjme_scritchui)stateP;
 	if (stateP == 0)
 	{
-		state = SJME_ERROR_NULL_ARGUMENTS;
+		error = SJME_ERROR_NULL_ARGUMENTS;
 		goto fail_nullArgs;
 	}
 	
