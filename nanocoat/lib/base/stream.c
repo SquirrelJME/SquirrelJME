@@ -22,7 +22,7 @@
 typedef struct sjme_stream_cacheMemory
 {
 	/** The base address. */
-	void* base;
+	sjme_pointer base;
 
 	/** The number of bytes in the memory stream. */
 	sjme_jint length;
@@ -42,7 +42,7 @@ typedef struct sjme_stream_cacheByteArray
 	sjme_jint limit;
 
 	/** Whatever value to store, passed on close. */
-	void* whatever;
+	sjme_pointer whatever;
 
 	/** The function to call when the output is finished. */
 	sjme_stream_outputByteArrayFinishFunc finish;
@@ -96,7 +96,7 @@ static sjme_errorCode sjme_stream_inputMemoryClose(
 static sjme_errorCode sjme_stream_inputMemoryRead(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
-	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint length)
 {
 	sjme_stream_cacheMemory* cache;
@@ -125,7 +125,7 @@ static sjme_errorCode sjme_stream_inputMemoryRead(
 
 	/* Do a direct memory copy. */
 	memmove(dest,
-		(void*)(((uintptr_t)cache->base) + stream->totalRead), limit);
+		(sjme_pointer)(((uintptr_t)cache->base) + stream->totalRead), limit);
 
 	/* Indicate read count and consider success! */
 	*readCount = limit;
@@ -142,7 +142,7 @@ static const sjme_stream_inputFunctions sjme_stream_inputMemoryFunctions =
 
 static sjme_errorCode sjme_stream_outputMemoryClose(
 	sjme_attrInNotNull sjme_stream_output outStream,
-	sjme_attrOutNullable void** optResult)
+	sjme_attrOutNullable sjme_pointer* optResult)
 {
 	if (outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -153,7 +153,7 @@ static sjme_errorCode sjme_stream_outputMemoryClose(
 
 static sjme_errorCode sjme_stream_outputMemoryWrite(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrInNotNull const void* buf,
+	sjme_attrInNotNull sjme_cpointer buf,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
 	uintptr_t realBuf;
@@ -177,7 +177,7 @@ static sjme_errorCode sjme_stream_outputMemoryWrite(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	/* Copy the data directly. */
-	memmove((void*)((uintptr_t)cache->base + written), buf, length);
+	memmove((sjme_pointer)((uintptr_t)cache->base + written), buf, length);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -191,7 +191,7 @@ static const sjme_stream_outputFunctions sjme_stream_outputMemoryFunctions =
 
 static sjme_errorCode sjme_stream_outputByteArrayClose(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrOutNullable void** optResult)
+	sjme_attrOutNullable sjme_pointer* optResult)
 {
 	sjme_stream_cacheByteArray* cache;
 	sjme_stream_resultByteArray result;
@@ -241,7 +241,7 @@ static sjme_errorCode sjme_stream_outputByteArrayClose(
 
 static sjme_errorCode sjme_stream_outputByteArrayWrite(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrInNotNull const void* buf,
+	sjme_attrInNotNull sjme_cpointer buf,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
 #define GROW_SIZE 32
@@ -346,7 +346,7 @@ sjme_errorCode sjme_stream_inputClose(
 sjme_errorCode sjme_stream_inputOpenMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
-	sjme_attrInNotNull const void* base,
+	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length)
 {
 	sjme_stream_input result;
@@ -384,7 +384,7 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 sjme_errorCode sjme_stream_inputRead(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutPositive sjme_jint* readCount,
-	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint length)
 {
 	/* This is just a simplified wrapper. */
@@ -394,14 +394,14 @@ sjme_errorCode sjme_stream_inputRead(
 sjme_errorCode sjme_stream_inputReadIter(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutPositive sjme_jint* readCount,
-	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInPositive sjme_jint length)
 {
 	uintptr_t rawDest;
 	sjme_jint count, newTotal, totalRead;
 	sjme_errorCode error;
-	void* trueDest;
+	sjme_pointer trueDest;
 
 	if (stream == NULL || readCount == NULL || dest == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -416,7 +416,7 @@ sjme_errorCode sjme_stream_inputReadIter(
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Calculate the true target address. */
-	trueDest = (void*)(rawDest + offset);
+	trueDest = (sjme_pointer)(rawDest + offset);
 
 	/* Overflowing write? */
 	totalRead = stream->totalRead;
@@ -558,7 +558,7 @@ sjme_errorCode sjme_stream_inputReadValueJ(
 
 sjme_errorCode sjme_stream_outputClose(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrOutNullable void** optResult)
+	sjme_attrOutNullable sjme_pointer* optResult)
 {
 	sjme_errorCode error;
 
@@ -587,12 +587,12 @@ sjme_errorCode sjme_stream_outputOpenByteArray(
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInPositive sjme_jint initialLimit,
 	sjme_attrInNullable sjme_stream_outputByteArrayFinishFunc finish,
-	sjme_attrInNullable void* whatever)
+	sjme_attrInNullable sjme_pointer whatever)
 {
 	sjme_stream_output result;
 	sjme_stream_cacheByteArray* cache;
 	sjme_errorCode error;
-	void* initBuf;
+	sjme_pointer initBuf;
 
 	if (inPool == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -648,7 +648,7 @@ fail_initBufAlloc:
 sjme_errorCode sjme_stream_outputOpenMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
-	sjme_attrInNotNull void* base,
+	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length)
 {
 	sjme_stream_output result;
@@ -687,7 +687,7 @@ sjme_errorCode sjme_stream_outputOpenMemory(
 
 sjme_errorCode sjme_stream_outputWrite(
 	sjme_attrInNotNull sjme_stream_output outStream,
-	sjme_attrOutNotNullBuf(length) void* src,
+	sjme_attrOutNotNullBuf(length) sjme_pointer src,
 	sjme_attrInPositive sjme_jint length)
 {
 	/* Forwards to iter variant. */
@@ -696,7 +696,7 @@ sjme_errorCode sjme_stream_outputWrite(
 
 sjme_errorCode sjme_stream_outputWriteIter(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrOutNotNullBuf(length) void* src,
+	sjme_attrOutNotNullBuf(length) sjme_pointer src,
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInPositive sjme_jint length)
 {
@@ -724,7 +724,7 @@ sjme_errorCode sjme_stream_outputWriteIter(
 
 	/* Forward call. */
 	if (sjme_error_is(error = stream->functions->write(stream,
-		(void*)(realSrc + offset), length)))
+		(sjme_pointer)(realSrc + offset), length)))
 		return sjme_error_default(error);
 
 	/* Increase write count. */

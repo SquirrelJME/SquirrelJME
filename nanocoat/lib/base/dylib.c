@@ -22,6 +22,12 @@
 
 #if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
 	#include <dlfcn.h>
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	#define WIN32_LEAN_AND_MEAN 1
+
+	#include <windows.h>
+
+	#undef WIN32_LEAN_AND_MEAN
 #endif
 
 #include "sjme/dylib.h"
@@ -36,6 +42,17 @@ sjme_errorCode sjme_dylib_close(
 #if defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
 	return SJME_ERROR_UNSUPPORTED_OPERATION;
 #elif defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
+	if (dlclose(inLib) == 0)
+		return SJME_ERROR_COULD_NOT_UNLOAD_LIBRARY;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	if (FreeLibrary(inLib) == 0)
+		return SJME_ERROR_COULD_NOT_UNLOAD_LIBRARY;
+		
+	/* Success! */
+	return SJME_ERROR_NONE;
 #else
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
@@ -45,10 +62,12 @@ sjme_errorCode sjme_dylib_close(
 sjme_errorCode sjme_dylib_lookup(
 	sjme_attrInNotNull sjme_dylib inLib,
 	sjme_attrInNotNull sjme_lpcstr inSymbol,
-	void** outPtr)
+	sjme_pointer* outPtr)
 {
 #if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
-	void* handle;
+	sjme_pointer handle;
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	FARPROC handle;
 #endif
 
 	if (inLib == NULL || inSymbol == NULL || outPtr == NULL)
@@ -68,6 +87,14 @@ sjme_errorCode sjme_dylib_lookup(
 		return SJME_ERROR_INVALID_LIBRARY_SYMBOL;
 	}
 		
+	/* Success! */
+	*outPtr = handle;
+	return SJME_ERROR_NONE;
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	handle = GetProcAddress(inLib, inSymbol);
+	if (handle == NULL)
+		return SJME_ERROR_INVALID_LIBRARY_SYMBOL;
+	
 	/* Success! */
 	*outPtr = handle;
 	return SJME_ERROR_NONE;
@@ -122,7 +149,9 @@ sjme_errorCode sjme_dylib_open(
 	sjme_attrInOutNotNull sjme_dylib* outLib)
 {
 #if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
-	void* handle;
+	sjme_pointer handle;
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	HMODULE handle;
 #endif
 	
 	if (libPath == NULL || outLib == NULL)
@@ -141,6 +170,14 @@ sjme_errorCode sjme_dylib_open(
 		
 		return SJME_ERROR_COULD_NOT_LOAD_LIBRARY;
 	}
+	
+	/* Success! */
+	*outLib = handle;
+	return SJME_ERROR_NONE;
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	handle = LoadLibraryExA(libPath, NULL, 0);
+	if (handle == NULL)
+		return SJME_ERROR_COULD_NOT_LOAD_LIBRARY;
 	
 	/* Success! */
 	*outLib = handle;

@@ -292,13 +292,13 @@ public abstract class SerializedGraphics
 	 */
 	@Override
 	public void drawRoundRect(int __x, int __y, int __w, int __h,
-		int __aw, int __ah)
+		int __arcWidth, int __arcHeight)
 	{
 		int transx = this.transx,
 			transy = this.transy;
 		
 		this.serialize(GraphicsFunction.DRAW_ROUND_RECT,
-			__x + transx, __y + transy, __w, __h, __aw, __ah);
+			__x + transx, __y + transy, __w, __h, __arcWidth, __arcHeight);
 	}
 	
 	/**
@@ -371,10 +371,10 @@ public abstract class SerializedGraphics
 	 */
 	@Override
 	public void fillRoundRect(int __x, int __y, int __w, int __h,
-		int __aw, int __ah)
+		int __arcWidth, int __arcHeight)
 	{
 		this.serialize(GraphicsFunction.FILL_ROUND_RECT,
-			__x, __y, __w, __h, __aw, __ah);
+			__x, __y, __w, __h, __arcWidth, __arcHeight);
 	}
 	
 	/**

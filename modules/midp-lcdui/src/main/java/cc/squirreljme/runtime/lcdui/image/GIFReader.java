@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.lcdui.image;
 
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import java.io.IOException;
-import javax.microedition.lcdui.Image;
 import net.multiphasicapps.io.ExtendedDataInputStream;
 
 /**

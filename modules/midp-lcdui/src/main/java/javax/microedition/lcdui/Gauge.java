@@ -11,8 +11,6 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 @Api
 public class Gauge
@@ -133,13 +131,17 @@ public class Gauge
 	public void setLabel(String __l)
 		throws IllegalArgumentException
 	{
+		throw Debugging.todo();
+		/*
 		/* {@squirreljme.error EB27 Cannot set the label of a gauge associated
-		with an alert.} */
+		with an alert.} * /
 		if (this._displayable instanceof Alert)
 			throw new IllegalArgumentException("EB27");
 		
 		// Use super logic
 		super.setLabel(__l);
+		
+		 */
 	}
 	
 	@Api
@@ -158,38 +160,6 @@ public class Gauge
 	public void setValue(int __a)
 	{
 		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
-	@Override
-	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
-	{
-		return new __GaugeState__(__backend, this);
-	}
-	
-	/**
-	 * Gauge state.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __GaugeState__
-		extends Item.__ItemState__
-	{
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__GaugeState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-		}
 	}
 }
 

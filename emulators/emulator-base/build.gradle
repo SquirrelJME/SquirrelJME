@@ -29,6 +29,7 @@ dependencies
 	api project(":modules:zip")
 	api project(":modules:debug-jdwp")
 	api project(":modules:debug-jdwp-vm-host")
+	api project(":modules:scritch-ui")
 }
 
 // Native emulator support library
@@ -40,13 +41,13 @@ Provider<CMakeBuildTask> libNativeEmulatorBase = tasks.register(
 	System.mapLibraryName("emulator-base"),
 	["libEmulatorBase"])
 
-// Native implementations
+// ScritchUI native implementations
 Provider<CMakeBuildTask> libsNativeNanoCoat = tasks.register(
 	"libsNativeNanoCoat",
 	CMakeBuildTask.class,
 	rootProject.getProjectDir().toPath().resolve("nanocoat"),
-	"",
-	["BaseStatic"])
+	"libsquirreljme-scritchui.zip",
+	["ScritchUICollectZip", "BaseStatic"])
 
 // The base library needs to exist first
 libNativeEmulatorBase.get().dependsOn(libsNativeNanoCoat)
@@ -74,6 +75,9 @@ jar {
 	dependsOn mimeDecode, libNativeEmulatorBase, libsNativeNanoCoat
 
 	from libNativeEmulatorBase.get().cmakeOutFile.toFile()
+	from project.provider({ ->
+		zipTree(libsNativeNanoCoat.get().cmakeOutFile.toFile())
+			.getElements() })
 	into "/"
 }
 

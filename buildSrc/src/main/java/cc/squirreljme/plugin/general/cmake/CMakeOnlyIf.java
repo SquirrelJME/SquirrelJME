@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.general.cmake;
 
+import java.nio.file.Path;
 import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 

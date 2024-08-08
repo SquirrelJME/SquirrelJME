@@ -30,15 +30,18 @@ message(STATUS "NanoCoat include is: ${nanocoatIncludePath}")
 add_library(libEmulatorBase SHARED
 	c/jniHelper.c
 	c/mle_debug.c
-	c/mle_form.c
 	c/mle_jar.c
 	c/mle_math.c
 	c/mle_midi.c
 	c/mle_nativearchive.c
 	c/mle_object.c
 	c/mle_pencil.c
+    c/mle_pencilfont.c
 	c/mle_reflection.c
 	c/mle_runtime.c
+	c/mle_scritchui.c
+	c/mle_scritchuibaseobject.c
+	c/mle_scritchuidylib.c
 	c/mle_task.c
 	c/mle_terminal.c
 	c/mle_thread.c

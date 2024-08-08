@@ -18,8 +18,10 @@ add_library(libJvm SHARED
 	vmNativeLib.c)
 
 # Always make this position independent
-set_property(TARGET libJvm
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+if(SQUIRRELJME_ENABLE_FPIC)
+	set_property(TARGET libJvm
+		PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif()
 
 # The base SquirrelJME core needs to be built
 add_dependencies(libJvm

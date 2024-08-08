@@ -14,8 +14,8 @@
 #include "sjme/debug.h"
 
 sjme_jint sjme_compare_null(
-	sjme_attrInNullable const void* a,
-	sjme_attrInNullable const void* b)
+	sjme_attrInNullable sjme_cpointer a,
+	sjme_attrInNullable sjme_cpointer b)
 {
 	/* Nulls before non-null. */
 	if (a == NULL)
@@ -330,8 +330,8 @@ sjme_jint sjme_string_lengthN(sjme_lpcstr string, sjme_jint limit)
 }
 
 sjme_errorCode sjme_swap_shu8_uint_memmove(
-	sjme_attrInNotNull void* dest,
-	sjme_attrInNotNull void* src,
+	sjme_attrInNotNull sjme_pointer dest,
+	sjme_attrInNotNull sjme_pointer src,
 	sjme_attrInPositiveNonZero sjme_jint n)
 {
 	sjme_juint* iDest;
@@ -361,8 +361,8 @@ sjme_errorCode sjme_swap_shu8_uint_memmove(
 }
 
 sjme_errorCode sjme_swap_uint_memmove(
-	sjme_attrInNotNull void* dest,
-	sjme_attrInNotNull void* src,
+	sjme_attrInNotNull sjme_pointer dest,
+	sjme_attrInNotNull sjme_pointer src,
 	sjme_attrInPositiveNonZero sjme_jint n)
 {
 	sjme_juint* iDest;

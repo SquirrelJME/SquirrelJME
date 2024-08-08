@@ -94,7 +94,7 @@ typedef struct sjme_classBuilder
 	sjme_stream_output stream;
 
 	/** Whatever data that is needed. */
-	void* whatever;
+	sjme_pointer whatever;
 
 	/** Offsets to various structures. */
 	struct
@@ -422,7 +422,7 @@ sjme_errorCode sjme_classBuilder_declareClassV(
  */
 sjme_errorCode sjme_classBuilder_finish(
 	sjme_attrInNotNull sjme_classBuilder* builder,
-	sjme_attrOutNotNull void** rawClass);
+	sjme_attrOutNotNull sjme_pointer* rawClass);
 
 /**
  * Finishes the current attribute and moves onto the next. 

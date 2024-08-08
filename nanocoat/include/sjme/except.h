@@ -67,7 +67,7 @@ struct sjme_exceptTrace
  */
 #define SJME_EXCEPT_WITH(exceptionState) \
     do { \
-		memset((void*)&exceptTrace_sjme, 0, sizeof(exceptTrace_sjme)); \
+		memset((sjme_pointer)&exceptTrace_sjme, 0, sizeof(exceptTrace_sjme)); \
 		exceptTraceE_sjme = SJME_NUM_ERROR_CODES; \
 		exceptTrace_sjme.file = __FILE__; \
 		exceptTrace_sjme.line = __LINE__; \

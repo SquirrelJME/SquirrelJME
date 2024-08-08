@@ -439,6 +439,24 @@ public class ClassName
 	}
 	
 	/**
+	 * Parses a runtime class name to a virtual machine class name.
+	 *
+	 * @param __in The input runtime string.
+	 * @return The resultant class name.
+	 * @throws InvalidClassFormatException If the class name is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/04
+	 */
+	public static ClassName fromRuntimeName(String __in)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		return new ClassName(__in.replace('.', '/'));
+	}
+	
+	/**
 	 * Checks if this class name is valid or not.
 	 *
 	 * @param __cn The class-name to check.

@@ -172,6 +172,11 @@ public enum VMType
 						emuLib.toString());
 			}
 			
+			// Forward the ScritchUI interface
+			String scritchui = System.getProperty("cc.squirreljme.scritchui");
+			if (scritchui != null)
+				sysProps.put("cc.squirreljme.scritchui", scritchui);
+			
 			// Bring in any system defined properties we want to truly set?
 			VMType.__copySysProps(sysProps);
 			
@@ -1039,7 +1044,7 @@ public enum VMType
 		args.add("-Xname:" + __task.getProject().getName());
 		
 		// The current clutter level
-		args.add("-XclutterLevel:" +
+		args.add("-Xclutter:" +
 			__task.getClassifier().getTargetClassifier()
 				.getClutterLevel());
 		

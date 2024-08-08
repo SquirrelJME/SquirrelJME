@@ -124,7 +124,7 @@ typedef struct sjme_mock
 	sjme_rom_library romLibraries[SJME_MOCK_MAX_ROM_LIBRARIES];
 	
 	/** Special data, if needed. */
-	void* special;
+	sjme_pointer special;
 } sjme_mock;
 
 /**
@@ -347,7 +347,7 @@ sjme_jboolean sjme_mock_act(
  * @return The allocated buffer, returns @c NULL if allocation failed.
  * @since 2023/11/11
  */
-void* sjme_mock_alloc(
+sjme_pointer sjme_mock_alloc(
 	sjme_attrInNotNull sjme_mock* inState,
 	sjme_attrInPositiveNonZero size_t inLen);
 	

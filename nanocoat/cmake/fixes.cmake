@@ -141,3 +141,8 @@ endmacro()
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	add_compile_options("-Werror=implicit-function-declaration")
 endif()
+
+# Make symbols hidden by default in GCC, which may prefer them visible
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	add_compile_options("-fvisibility=hidden")
+endif()

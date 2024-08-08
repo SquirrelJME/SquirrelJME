@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+secondary-y00: string[8]:fg,#88,bg,bg,bg,bg,bg,bg
+secondary-y01: string[8]:bg,fg,#88,bg,bg,bg,bg,bg

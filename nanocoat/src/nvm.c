@@ -29,8 +29,8 @@ static sjme_errorCode sjme_nvm_localPopGeneric(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInPositive volatile sjme_jint localIndex,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
-	sjme_attrOutNullable void* outOldLocalValue,
-	sjme_attrOutNullable void* outStackValue)
+	sjme_attrOutNullable sjme_pointer outOldLocalValue,
+	sjme_attrOutNullable sjme_pointer outStackValue)
 {
 	SJME_EXCEPT_VDEF;
 	sjme_javaTypeId topType;
@@ -38,7 +38,7 @@ static sjme_errorCode sjme_nvm_localPopGeneric(
 	sjme_nvm_frameTread* tread;
 	const sjme_nvm_frameLocalMap* localMap;
 	sjme_jbyte indexMapTo;
-	void* valueAddr;
+	sjme_pointer valueAddr;
 	
 SJME_EXCEPT_WITH_FRAME:
 	if (frame == NULL || accessor == NULL)

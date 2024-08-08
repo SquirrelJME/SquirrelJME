@@ -9,6 +9,7 @@
 package cc.squirreljme.runtime.nokia;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.event.KeyCodeTranslator;
 import com.nokia.mid.ui.FullCanvas;
 
@@ -17,6 +18,7 @@ import com.nokia.mid.ui.FullCanvas;
  *
  * @since 2022/02/03
  */
+@SquirrelJMEVendorApi
 public class NokiaKeyCodeTranslator
 	implements KeyCodeTranslator
 {
@@ -26,6 +28,7 @@ public class NokiaKeyCodeTranslator
 	 * @since 2022/02/03
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int keyCodeToGameAction(int __kc)
 	{
 		switch (__kc)
@@ -58,6 +61,7 @@ public class NokiaKeyCodeTranslator
 	 * @since 2022/02/03
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int normalizeKeyCode(int __kc)
 	{
 		// Nokia exposes these as physical Key IDs, so do the same here

@@ -78,6 +78,9 @@ The available options are:
      you wish to debug you should use `-jar`.
    * Optionally, `fork` or `nofork` can be specified to where the
      internal debugger to launched as a separate process or not.
+ * `-Xscritchui:(ui)`
+   * Rather than the default, use a specific user interface library.
+   * This may also be set by using `cc.squirreljme.scritchui`.
  * `-Xthread:(single|coop|multi|smt)`
    * Sets the threading mode of the virtual machine.
    * `single`/`coop` -- Single threaded using cooperative multitasking.
@@ -105,6 +108,7 @@ The available options are:
    * Specifies the class path to use for the current application, the entries
      must be visible from the library path.
  * `-zero` -- Alias for `-Xemulator:springcoat`.
+ * `-Xint` -- Alias for `-Xemulator:springcoat`.
  * `-client` -- Ignored.
  * `-server` -- Ignored.
 

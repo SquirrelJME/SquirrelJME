@@ -18,15 +18,6 @@
 
 #include "sjme/debug.h"
 
-void sjme_thread_barrier(void)
-{
-#if defined(SJME_CONFIG_HAS_GCC)
-	__sync_synchronize();
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
-	MemoryBarrier();
-#endif
-}
-
 sjme_errorCode sjme_thread_current(
 	sjme_attrInOutNotNull sjme_thread* outThread)
 {
@@ -108,6 +99,127 @@ sjme_errorCode sjme_thread_new(
 	
 	/* Success! */
 	*outThread = result;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
+{
+	sjme_errorCode error;
+	sjme_thread current;
+	sjme_jboolean keepSpinning;
+	
+	if (inLock == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* We need the current thread. */
+	current = SJME_THREAD_NULL;
+	if (sjme_error_is(error = sjme_thread_current(
+		&current)) || current == SJME_THREAD_NULL)
+		return sjme_error_defaultOr(error,
+			SJME_ERROR_INVALID_THREAD_STATE);
+	
+	/* This is done in a loop until we own the lock. */
+	for (keepSpinning = SJME_JNI_TRUE; keepSpinning;)
+	{
+		/* Grab the peek lock. */
+		while (SJME_JNI_FALSE == sjme_atomic_sjme_thread_compareSet(
+			&inLock->poke, SJME_THREAD_NULL, current))
+		{
+			sjme_thread_barrier();
+			sjme_thread_yield();
+			sjme_thread_barrier();
+		}
+		
+		/* We own the lock already, or we just owned it, so count up. */
+		if (sjme_atomic_sjme_thread_compareSet(&inLock->owner,
+			current, current) ||
+			sjme_atomic_sjme_thread_compareSet(&inLock->owner,
+				SJME_THREAD_NULL, current))
+		{
+			sjme_atomic_sjme_jint_getAdd(&inLock->count, 1);
+			
+			keepSpinning = SJME_JNI_FALSE;
+		}
+		
+		/* Clear the peek lock. */
+		sjme_atomic_sjme_thread_compareSet(&inLock->poke,
+			current, SJME_THREAD_NULL);
+	}
+		
+	/* Do this just for good measure for the wierd CPUs. */
+	sjme_thread_barrier();
+	sjme_thread_yield();
+	sjme_thread_barrier();
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_thread_spinLockRelease(
+	sjme_attrInNotNull sjme_thread_spinLock* inLock,
+	sjme_attrOutNullable sjme_jint* outCount)
+{
+	sjme_errorCode error;
+	sjme_thread current;
+	sjme_jboolean owned;
+	sjme_jint count;
+	
+	if (inLock == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* We need the current thread. */
+	current = SJME_THREAD_NULL;
+	if (sjme_error_is(error = sjme_thread_current(
+		&current)) || current == SJME_THREAD_NULL)
+		return sjme_error_defaultOr(error,
+			SJME_ERROR_INVALID_THREAD_STATE);
+	
+	/* Grab the peek lock. */
+	while (SJME_JNI_FALSE == sjme_atomic_sjme_thread_compareSet(
+		&inLock->poke, SJME_THREAD_NULL, current))
+	{
+		sjme_thread_barrier();
+		sjme_thread_yield();
+		sjme_thread_barrier();
+	}
+	
+	/* We own the lock hopefully, so count down. */
+	if ((owned = sjme_atomic_sjme_thread_compareSet(&inLock->owner,
+		current, current)))
+	{
+		/* If we count down to zero, then we no longer own the lock. */
+		if ((count = sjme_atomic_sjme_jint_getAdd(&inLock->count,
+			-1)) <= 1)
+		{
+			sjme_atomic_sjme_thread_set(&inLock->owner,
+				SJME_THREAD_NULL);
+			sjme_atomic_sjme_jint_set(&inLock->count,
+				(count = 0));
+		}
+	}
+	
+	/* Clear the peek lock. */
+	sjme_atomic_sjme_thread_compareSet(&inLock->poke,
+		current, SJME_THREAD_NULL);
+		
+	/* Do this just for good measure for the wierd CPUs. */
+	sjme_thread_barrier();
+	sjme_thread_yield();
+	sjme_thread_barrier();
+	
+	/* Do we not own the lock? */
+	if (!owned)
+		return sjme_error_fatal(SJME_ERROR_NOT_LOCK_OWNER);
+	
+	/* Give the lock count that is left. */
+	if (outCount != NULL)
+	{
+		if (count > 0)
+			*outCount = count - 1;
+		else
+			*outCount = 0;
+	}
+	
 	return SJME_ERROR_NONE;
 }
 

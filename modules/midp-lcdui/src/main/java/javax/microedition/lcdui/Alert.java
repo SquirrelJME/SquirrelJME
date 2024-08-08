@@ -9,10 +9,13 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.scritchui.ImageTracker;
+import cc.squirreljme.runtime.lcdui.scritchui.StringTracker;
 
 @Api
 public class Alert
@@ -32,10 +35,10 @@ public class Alert
 		-2;
 	
 	/** The message to display. */
-	volatile String _message;
+	final StringTracker _message;
 	
 	/** The image to use. */
-	volatile Image _image;
+	final ImageTracker _image;
 	
 	/** The type of alert this is. */
 	volatile AlertType _type;
@@ -68,14 +71,15 @@ public class Alert
 	public Alert(String __title, String __message, Image __icon,
 		AlertType __type)
 	{
-		this._message = __message;
-		this._image = __icon;
-		this._type = __type;
+		ScritchInterface scritch = DisplayManager.instance().scritch();
 		
-		// Set titles
-		this._userTitle = __title;
-		if (__title != null)
-			this._displayTitle = __title;
+		// Title for this alert
+		this._trackerTitle.set(__title);
+		
+		// Alert details
+		this._message = new StringTracker(scritch.eventLoop(), __message);
+		this._image = new ImageTracker(scritch.eventLoop(), __icon);
+		this._type = __type;
 	}
 	
 	@Override
@@ -243,36 +247,10 @@ public class Alert
 		*/
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
 	@Override
-	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
+	ScritchComponentBracket __scritchComponent()
 	{
-		return new __AlertState__(__backend, this);
-	}
-	
-	/**
-	 * State for alerts.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __AlertState__
-		extends Screen.__ScreenState__
-	{
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__AlertState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-		}
+		throw Debugging.todo();
 	}
 }
 

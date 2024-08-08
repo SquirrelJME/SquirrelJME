@@ -193,9 +193,10 @@ public class BasicForwardingGraphics
 	 */
 	@Override
 	public void drawRoundRect(int __a, int __b, int __c, int __d,
-		int __e,  int __f)
+		int __arcWidth,  int __arcHeight)
 	{
-		this.graphics.drawRoundRect(__a, __b, __c, __d, __e, __f);
+		this.graphics.drawRoundRect(__a, __b, __c, __d, __arcWidth,
+			__arcHeight);
 	}
 	
 	/**
@@ -256,9 +257,10 @@ public class BasicForwardingGraphics
 	 */
 	@Override
 	public void fillRoundRect(int __a, int __b, int __c, int __d,
-		int __e, int __f)
+		int __arcWidth, int __arcHeight)
 	{
-		this.graphics.fillRoundRect(__a, __b, __c, __d, __e, __f);
+		this.graphics.fillRoundRect(__a, __b, __c, __d, __arcWidth,
+			__arcHeight);
 	}
 	
 	/**

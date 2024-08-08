@@ -11,21 +11,17 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
-import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
-import cc.squirreljme.jvm.mle.constants.PencilShelfError;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.SoftwareGraphicsFactory;
-import cc.squirreljme.vm.springcoat.brackets.PencilObject;
 import cc.squirreljme.vm.springcoat.callbacks.NativeImageLoadCallbackAdapter;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.AnimatedImage;
-import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.ScalableImage;
 
@@ -37,32 +33,6 @@ import javax.microedition.lcdui.ScalableImage;
 public enum MLEPencil
 	implements MLEFunction
 {
-	/** {@link PencilShelf#capabilities(int)}. */
-	CAPABILITIES("capabilities:(I)I")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/09/26
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			int pf = (int)__args[0];
-			if (pf < 0 || pf >= UIPixelFormat.NUM_PIXEL_FORMATS)
-				throw new SpringMLECallError("Invalid pixel format: " +
-					pf);
-			
-			return PencilCapabilities.MINIMUM |
-				PencilCapabilities.COPY_AREA |
-				PencilCapabilities.DRAW_LINE |
-				PencilCapabilities.DRAW_RECT |
-				PencilCapabilities.DRAW_XRGB32_REGION |
-				PencilCapabilities.FILL_RECT |
-				PencilCapabilities.FILL_TRIANGLE |
-				PencilCapabilities.TEXT_BASIC;
-		}
-	},
-	
 	/**
 	 * {@link PencilShelf#hardwareCopyArea(PencilBracket, int, int, int, int,
 	 * int, int, int)}.
@@ -79,27 +49,29 @@ public enum MLEPencil
 		{
 			try
 			{
-				MLEObjects.pencilGraphics(__args[0])
-					.copyArea((Integer)__args[1],
-						(Integer)__args[2],
-						(Integer)__args[3],
-						(Integer)__args[4],
-						(Integer)__args[5],
-						(Integer)__args[6],
-						(Integer)__args[7]);
+				PencilShelf.hardwareCopyArea(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[5]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[6]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[7]));
+				return null;
 			}
-			catch (IllegalArgumentException e)
+			catch (MLECallError __e)
 			{
-				throw new SpringMLECallError(e,
-					PencilShelfError.ILLEGAL_ARGUMENT);
+				return new SpringMLECallError(__e, __e.distinction);
 			}
-			catch (IllegalStateException e)
-			{
-				throw new SpringMLECallError(e, 
-					PencilShelfError.ILLEGAL_STATE);
-			}
-			
-			return null;
 		}
 	},
 	
@@ -119,26 +91,27 @@ public enum MLEPencil
 		{
 			try
 			{
-				MLEObjects.pencilGraphics(__args[0])
-					.drawChars(((SpringArrayObjectChar)__args[1]).array(),
-						(Integer)__args[2],
-						(Integer)__args[3],
-						(Integer)__args[4],
-						(Integer)__args[5],
-						(Integer)__args[6]);
+				PencilShelf.hardwareDrawChars(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						char[].class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[5]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[6]));
+				return null;
 			}
-			catch (IllegalArgumentException e)
+			catch (MLECallError __e)
 			{
-				throw new SpringMLECallError(e,
-					PencilShelfError.ILLEGAL_ARGUMENT);
+				return new SpringMLECallError(__e, __e.distinction);
 			}
-			catch (IndexOutOfBoundsException e)
-			{
-				throw new SpringMLECallError(e,
-					PencilShelfError.INDEX_OUT_OF_BOUNDS);
-			}
-			
-			return null;
 		}
 	},
 	
@@ -155,13 +128,25 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEObjects.pencilGraphics(__args[0])
-				.drawLine((Integer)__args[1],
-					(Integer)__args[2],
-					(Integer)__args[3],
-					(Integer)__args[4]);
-			
-			return null;
+			try
+			{
+				PencilShelf.hardwareDrawLine(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
 		}
 	},
 	
@@ -178,13 +163,25 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEObjects.pencilGraphics(__args[0])
-				.drawRect((Integer)__args[1],
-					(Integer)__args[2],
-					(Integer)__args[3],
-					(Integer)__args[4]);
-			
-			return null;
+			try
+			{
+				PencilShelf.hardwareDrawRect(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
 		}
 	},
 	
@@ -205,27 +202,27 @@ public enum MLEPencil
 		{
 			try
 			{
-				MLEObjects.pencilGraphics(__args[0])
-					.drawSubstring(
-						__thread.asNativeObject(String.class, __args[1]),
-						(Integer)__args[2],
-						(Integer)__args[3],
-						(Integer)__args[4],
-						(Integer)__args[5],
-						(Integer)__args[6]);
+				PencilShelf.hardwareDrawSubstring(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						String.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[5]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[6]));
+				return null;
 			}
-			catch (IllegalArgumentException e)
+			catch (MLECallError __e)
 			{
-				throw new SpringMLECallError(e,
-					PencilShelfError.ILLEGAL_ARGUMENT);
+				return new SpringMLECallError(__e, __e.distinction);
 			}
-			catch (StringIndexOutOfBoundsException e)
-			{
-				throw new SpringMLECallError(e,
-					PencilShelfError.INDEX_OUT_OF_BOUNDS);
-			}
-			
-			return null;
 		}
 	},
 	
@@ -244,81 +241,49 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			// Try to get our buffer
-			SpringArrayObjectInteger objBuf;
-			
 			try
 			{
-				objBuf = SpringNullObject.<SpringArrayObjectInteger>checkCast(
-						SpringArrayObjectInteger.class, __args[1]);
-				if (objBuf == null)
-					throw new MLECallError("Null arguments.");
+				PencilShelf.hardwareDrawXRGB32Region(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						int[].class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Boolean.class, __args[4]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[5]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[6]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[7]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[8]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[9]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[10]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[11]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[12]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[13]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[14]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[15]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[16]));
+				return null;
 			}
-			catch (ClassCastException e)
+			catch (MLECallError __e)
 			{
-				throw new MLECallError("Wrong buffer type.", e);
+				return new SpringMLECallError(__e, __e.distinction);
 			}
-			
-			// Extract all the arguments
-			int[] __buf = objBuf.array();
-			int __off = (Integer)__args[2];
-			int __scanLen = (Integer)__args[3];
-			boolean __alpha = ((Integer)__args[4] != 0);
-			int __xSrc = (Integer)__args[5];
-			int __ySrc = (Integer)__args[6];
-			int __wSrc = (Integer)__args[7];
-			int __hSrc = (Integer)__args[8];
-			int __trans = (Integer)__args[9];
-			int __xDest = (Integer)__args[10];
-			int __yDest = (Integer)__args[11];
-			int __anch = (Integer)__args[12];
-			int __wDest = (Integer)__args[13];
-			int __hDest = (Integer)__args[14];
-			int __origImgWidth = (Integer)__args[15];
-			int __origImgHeight = (Integer)__args[16];
-			
-			// If the offset and/or the scan length is off, we need to correct
-			// and move this over for the plain region call
-			boolean booped = false;
-			if (__off != 0 || __scanLen != __origImgWidth)
-			{
-				// Setup new buffer
-				int maxSize = __origImgWidth * __origImgHeight;
-				int[] newBuf = new int[maxSize];
-				
-				// Copy each scanline off
-				int xSrc = __off;
-				int xDst = 0;
-				for (int y = 0; y < __origImgHeight; y++)
-				{
-					// Copy row
-					System.arraycopy(__buf, xSrc,
-						newBuf, xDst, __origImgWidth);
-					
-					// Go to the next scan
-					xSrc += __scanLen;
-					xDst += __origImgWidth;
-				}
-				
-				// We un-quirked the image, so reset these
-				__buf = newBuf;
-				__off = 0;
-				__scanLen = __origImgWidth;
-				booped = true;
-			}
-			
-			// Load in source image
-			Image wrapped = Image.createRGBImage(__buf,
-				__origImgWidth, __origImgHeight, __alpha);
-			
-			// Forward to normal call and have our own graphics code handle
-			// this one
-			MLEObjects.pencilGraphics(__args[0])
-				.drawRegion(wrapped, __xSrc, __ySrc, __wSrc, __hSrc,
-					__trans, __xDest, __yDest, __anch, __wDest, __hDest);
-			
-			// No result from this one
-			return null;
 		}
 	},
 	
@@ -335,13 +300,25 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEObjects.pencilGraphics(__args[0])
-				.fillRect((Integer)__args[1],
-					(Integer)__args[2],
-					(Integer)__args[3],
-					(Integer)__args[4]);
-			
-			return null;
+			try
+			{
+				PencilShelf.hardwareFillRect(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
 		}
 	},
 	
@@ -359,61 +336,53 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEObjects.pencilGraphics(__args[0])
-				.fillTriangle((Integer)__args[1],
-					(Integer)__args[2],
-					(Integer)__args[3],
-					(Integer)__args[4],
-					(Integer)__args[5],
-					(Integer)__args[6]);
-			
-			return null;
+			try
+			{
+				PencilShelf.hardwareFillTriangle(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[5]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[6]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
 		}
 	},
 	
-	/**
-	 * {@link PencilShelf#hardwareGraphics(int, int, int, Object, int, int[],
-	 * int, int, int, int)}.
-	 */ 
-	HARDWARE_GRAPHICS("hardwareGraphics:(IIILjava/lang/Object;I[IIIII)" +
-		"Lcc/squirreljme/jvm/mle/brackets/PencilBracket;")
+	/** {@link PencilShelf#hardwareHasAlpha(PencilBracket)}. */
+	HARDWARE_HAS_ALPHA("hardwareHasAlpha:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;)Z")
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2021/12/05
+		 * @since 2024/08/04
 		 */
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			// Attempt to initialize the graphics
 			try
 			{
-				int __pf = (Integer)__args[0];
-				int __bw = (Integer)__args[1];
-				int __bh = (Integer)__args[2];
-				SpringArrayObject __buf =
-					SpringNullObject.<SpringArrayObject>checkCast(
-						SpringArrayObject.class, __args[3]);
-				int __offset = (Integer)__args[4];
-				SpringArrayObjectInteger __pal =
-					SpringNullObject.<SpringArrayObjectInteger>checkCast(
-						SpringArrayObjectInteger.class, __args[5]);
-				int __sx = (Integer)__args[6];
-				int __sy = (Integer)__args[7];
-				int __sw = (Integer)__args[8];
-				int __sh = (Integer)__args[9];
-				
-				return new PencilObject(__thread.machine,
-					SoftwareGraphicsFactory.softwareGraphics(
-						__pf, __bw, __bh,
-						(__buf != null ? __buf.array() : null),
-						__offset, (__pal != null ? __pal.array() : null),
-						__sx, __sy, __sw, __sh));
+				return SpringVisObject.asVm(__thread, Boolean.TYPE,
+					PencilShelf.hardwareHasAlpha(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0])));
 			}
-			catch (ClassCastException|IllegalArgumentException|
-				NullPointerException __e)
+			catch (MLECallError __e)
 			{
-				throw new SpringMLECallError(__e);
+				return new SpringMLECallError(__e, __e.distinction);
 			}
 		}
 	},
@@ -429,10 +398,19 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEObjects.pencilGraphics(__args[0])
-				.setAlphaColor((Integer)__args[1]);
-			
-			return null;
+			try
+			{
+				PencilShelf.hardwareSetAlphaColor(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
 		}
 	}, 
 	
@@ -447,10 +425,19 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEObjects.pencilGraphics(__args[0])
-				.setBlendingMode((Integer)__args[1]);
-			
-			return null;
+			try
+			{
+				PencilShelf.hardwareSetBlendingMode(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
 		}
 	},
 	
@@ -467,13 +454,25 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEObjects.pencilGraphics(__args[0])
-				.setClip((Integer)__args[1],
-					(Integer)__args[2],
-					(Integer)__args[3],
-					(Integer)__args[4]);
-			
-			return null;
+			try
+			{
+				PencilShelf.hardwareSetClip(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
 		}
 	},
 	
@@ -488,36 +487,49 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEObjects.pencilGraphics(__args[0])
-				.setFont(null);
-			
-			return null;
+			try
+			{
+				PencilShelf.hardwareSetDefaultFont(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
 		}
 	},
 	
 	/**
-	 * {@link PencilShelf#hardwareSetFont(PencilBracket, String, int, int)}.
+	 * {@link PencilShelf#hardwareSetFont(PencilBracket, PencilFontBracket)}.
 	 */
 	HARDWARE_SET_FONT("hardwareSetFont:" +
 		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;" +
-		"Ljava/lang/String;II)V")
+		"Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			/**
-			 * {@inheritDoc}
-			 * @since 2023/02/19
-			 */
-			@Override
-			public Object handle(SpringThreadWorker __thread, Object... __args)
+			try
 			{
-				MLEObjects.pencilGraphics(__args[0])
-					.setFont(Font.getFont(
-						__thread.asNativeObject(String.class, __args[1]),
-						(Integer)__args[2],
-						(Integer)__args[3]));
-				
+				PencilShelf.hardwareSetFont(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						PencilFontBracket.class, __args[1]));
 				return null;
 			}
-		},
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
+		}
+	},
 	
 	/** {@link PencilShelf#hardwareSetStrokeStyle(PencilBracket, int)}. */
 	HARDWARE_SET_STROKE_STYLE("hardwareSetStrokeStyle:" +
@@ -530,10 +542,19 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEObjects.pencilGraphics(__args[0])
-				.setStrokeStyle((Integer)__args[1]);
-			
-			return null;
+			try
+			{
+				PencilShelf.hardwareSetStrokeStyle(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
 		}
 	}, 
 	
@@ -548,11 +569,21 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEObjects.pencilGraphics(__args[0])
-				.translate((Integer)__args[1],
-					(Integer)__args[2]);
-			
-			return null;
+			try
+			{
+				PencilShelf.hardwareTranslate(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
 		}
 	}, 
 	

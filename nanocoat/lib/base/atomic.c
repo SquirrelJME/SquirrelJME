@@ -27,9 +27,9 @@
 		{ \
 			if (__atomic_compare_exchange_n( \
 					SJME_TYPEOF_IF_POINTER(type, numPointerStars, \
-						(volatile void**))&atomic->value, \
+						(volatile sjme_pointer*))&atomic->value, \
 					SJME_TYPEOF_IF_POINTER(type, numPointerStars, \
-						(volatile void**)) &expected, \
+						(volatile sjme_pointer*)) &expected, \
 					set, 0, SJME_ATOMIC_GCC_MEMORY_ORDER, \
 						SJME_ATOMIC_GCC_MEMORY_ORDER)) \
 				return SJME_JNI_TRUE; \
@@ -69,7 +69,7 @@
 	#if SJME_CONFIG_HAS_POINTER == 64
 		#define SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
 			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
-				InterlockedAdd, InterlockedAdd64)
+				InterlockedExchangeAdd, InterlockedExchangeAdd64)
 
 		#define SJME_ATOMIC_WIN32_S(type, numPointerStars) \
 			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
@@ -101,7 +101,8 @@
 				(SJME_ATOMIC_WIN32_TYPE(type, numPointerStars))set, \
 				(SJME_ATOMIC_WIN32_TYPE(type, numPointerStars))expected); \
 			\
-			if ((SJME_TOKEN_TYPE(type, numPointerStars))was == expected) \
+			if ((SJME_TOKEN_TYPE(type, numPointerStars))was == \
+				(SJME_TOKEN_TYPE(type, numPointerStars))expected) \
 				return SJME_JNI_TRUE; \
 			return SJME_JNI_FALSE; \
 		}
@@ -113,7 +114,7 @@
 				SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
 				((volatile \
 				SJME_ATOMIC_WIN32_TYPEGA(type, \
-					numPointerStars)*)&atomic->value, 0); \
+					numPointerStars)*)&atomic->value, add); \
 		}
 
 	#define SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \
@@ -180,6 +181,8 @@
 
 #endif
 
+#include "sjme/multithread.h"
+
 #define SJME_ATOMIC_FUNCTION_GET(type, numPointerStars) \
 	SJME_ATOMIC_PROTOTYPE_GET(type, numPointerStars) \
 	{ \
@@ -212,3 +215,7 @@ SJME_ATOMIC_FUNCTION(sjme_lpcstr, 0) /* NOLINT(*-non-const-parameter) */
 SJME_ATOMIC_FUNCTION(sjme_jobject, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_pointer, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_intPointer, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_thread, 0)

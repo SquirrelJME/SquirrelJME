@@ -190,7 +190,7 @@ sjme_testResult sjme_unit_operatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 sjme_testResult sjme_unit_operatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInValue sjme_unit_operator operator,
 	sjme_attrInNotNull sjme_test* test,
-	sjme_attrInNullable void* a,
+	sjme_attrInNullable sjme_pointer a,
 	sjme_attrInNullable void* b,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 	sjme_attrFormatOuter(7, 8);

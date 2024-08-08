@@ -86,6 +86,27 @@ sjme_lpcstr sjme_debug_shortenFile(sjme_lpcstr file)
 	return file;
 }
 
+sjme_errorCode sjme_error_fatalR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_errorCode error)
+{
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_dieR(file, line, func, "FATAL ERROR: %d!", error);
+#endif
+	
+	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_intPointer context)
+{
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_todoR(file, line, func, "NOT IMPLEMENTED: %d %p!",
+		(int)context, (void*)context);
+#endif
+	
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 void sjme_genericMessage(sjme_lpcstr file, int line,
 	sjme_lpcstr func, sjme_lpcstr prefix, sjme_lpcstr format, va_list args)
 {

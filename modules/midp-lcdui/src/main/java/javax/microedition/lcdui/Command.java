@@ -12,15 +12,13 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionHasParent;
 
 @Api
 public class Command
-	extends __Action__
+	extends MenuAction
+	implements MenuActionHasParent
 { 
 	/** Returns the user to the previous screen.. */
 	@Api
@@ -78,10 +76,6 @@ public class Command
 	
 	/** Is this an implementation specific command with fixed text? */
 	private final boolean _implspec;
-	
-	/** The widgets this command is being used by. */
-	private final Collection<Reference<__CommandWidget__>> _widgets =
-		new LinkedList<>();
 	
 	/**
 	 * Creates a new command with the specified parameters.
@@ -175,6 +169,8 @@ public class Command
 		boolean __implspec)
 		throws IllegalArgumentException, NullPointerException
 	{
+		super(__sl, __ll, __i);
+		
 		// Check
 		if (__sl == null)
 			throw new NullPointerException("NARG");
@@ -189,11 +185,6 @@ public class Command
 		this._implspec = __implspec;
 		this._type = __type;
 		this._priority = __pri;
-		
-		// Part of action
-		this._shortLabel = __sl;
-		this._longLabel = __ll;
-		this._image = __i;
 	}
 	
 	/**
@@ -259,7 +250,11 @@ public class Command
 		if (this._implspec)
 			return "";
 		
+		throw Debugging.todo();
+		/*
 		return this._shortLabel;
+		
+		 */
 	}
 	
 	/**
@@ -275,7 +270,11 @@ public class Command
 		if (this._implspec)
 			return null;
 		
+		throw Debugging.todo();
+		/*
 		return this._longLabel;
+		
+		 */
 	}
 	
 	/**
@@ -389,7 +388,8 @@ public class Command
 		if (this._implspec)
 			return;
 		
-		this.__setLabels(__s, this._longLabel, this._image);
+		// Forward set of label
+		MenuAction.setLabel(this, false, __s);
 	}
 	
 	/**
@@ -405,75 +405,8 @@ public class Command
 		if (this._implspec)
 			return;
 		
-		this.__setLabels(this._shortLabel, __s, this._image);
-	}
-	
-	/**
-	 * Registers the command widget wrapper for this command.
-	 * 
-	 * @param __wrapper The wrapper to register.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/11/30
-	 */
-	final void __register(__CommandWidget__ __wrapper)
-		throws NullPointerException
-	{
-		if (__wrapper == null)
-			throw new NullPointerException("NARG");
-		
-		// Inform any command widgets of the change
-		Collection<Reference<__CommandWidget__>> widgets = this._widgets;
-		for (Iterator<Reference<__CommandWidget__>> it = widgets.iterator();
-			 it.hasNext();)
-		{
-			// Cleanup any old stale widget references
-			Reference<__CommandWidget__> ref = it.next();
-			__CommandWidget__ widget = ref.get();
-			if (widget == null)
-				it.remove();
-			
-			// Is already in here, so do nothing
-			else if (widget == __wrapper)
-				return;
-		}
-		
-		// Add it
-		widgets.add(new WeakReference<>(__wrapper));
-	}
-	
-	/**
-	 * Sets the labels for this command.
-	 * 
-	 * @param __shortLabel The short label.
-	 * @param __longLabel The long label.
-	 * @param __image The image used.
-	 * @since 2021/11/30
-	 */
-	private void __setLabels(String __shortLabel, String __longLabel,
-		Image __image)
-	{
-		// Store the text data
-		this._shortLabel = __shortLabel;
-		this._longLabel = __longLabel;
-		this._image = __image;
-		
-		// Inform any command widgets of the change
-		Collection<Reference<__CommandWidget__>> widgets = this._widgets;
-		for (Iterator<Reference<__CommandWidget__>> it = widgets.iterator();
-			 it.hasNext();)
-		{
-			// Cleanup any old stale widget references
-			Reference<__CommandWidget__> ref = it.next();
-			__CommandWidget__ widget = ref.get();
-			if (widget == null)
-			{
-				it.remove();
-				continue;
-			}
-			
-			// Inform of the change
-			widget.__update();
-		}
+		// Forward set of label
+		MenuAction.setLabel(this, true, __s);
 	}
 }
 

@@ -24,10 +24,10 @@ public abstract class SpringProxyObject
 	implements SpringObject
 {
 	/** The machine used for the proxy. */
-	private final SpringMachine machine;
+	protected final SpringMachine machine;
 	
 	/** The type this is for. */
-	private final ClassName type;
+	protected final ClassName type;
 	
 	/**
 	 * Initializes the proxy object.
@@ -99,7 +99,7 @@ public abstract class SpringProxyObject
 	 * @since 2021/02/25
 	 */
 	@Override
-	public final SpringClass type()
+	public SpringClass type()
 	{
 		return this.machine.classLoader().loadClass(this.type);
 	}

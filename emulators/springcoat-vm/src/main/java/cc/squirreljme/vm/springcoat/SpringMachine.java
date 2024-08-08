@@ -14,6 +14,8 @@ import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TaskObject;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -130,6 +133,14 @@ public final class SpringMachine
 	
 	/** System properties. */
 	final Map<String, String> _sysproperties;
+	
+	/** Virtualized classes. */
+	private final Map<Class<?>, Reference<SpringVisClass>> _visClasses =
+		new LinkedHashMap<>();
+	
+	/** Virtualized objects. */
+	private final Map<Object, SpringVisObject> _visObjects =
+		new WeakHashMap<>();
 	
 	/** Callback threads that are available for use. */
 	private final Collection<CallbackThread> _cbThreads =
@@ -353,6 +364,49 @@ public final class SpringMachine
 	}
 	
 	/**
+	 * Returns the SpringCoat thread for the current thread.
+	 *
+	 * @return The current SpringCoat thread or {@code null} if there is none.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/04
+	 */
+	public final SpringThread getCurrentThread()
+		throws NullPointerException
+	{
+		return this.getThread(Thread.currentThread());
+	}
+	
+	/**
+	 * Returns the SpringCoat thread that uses the given thread.
+	 *
+	 * @param __realThread The real thread to unmap from.
+	 * @return The resultant SpringCoat thread or {@code null} if there is
+	 * none.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/04
+	 */
+	public final SpringThread getThread(Thread __realThread)
+		throws NullPointerException
+	{
+		if (__realThread == null)
+			throw new NullPointerException("NARG");
+		
+		// Try to find the real thread
+		synchronized (this)
+		{
+			for (SpringThread t : this.getThreads())
+			{
+				SpringThreadWorker worker = t._worker;
+				if (worker != null && worker == __realThread)
+					return t;
+			}
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
 	 * Gets the thread by the given ID.
 	 *
 	 * @param __id The ID of the thread.
@@ -375,9 +429,9 @@ public final class SpringMachine
 	}
 	
 	/**
-	 * Returns all of the process threads.
+	 * Returns all the process threads.
 	 *
-	 * @return All of the current process threads.
+	 * @return All the current process threads.
 	 * @since 2020/06/17
 	 */
 	public final SpringThread[] getThreads()
@@ -766,6 +820,70 @@ public final class SpringMachine
 	public final String toString()
 	{
 		return this.vmId;
+	}
+	
+	/**
+	 * Virtualizes the given class.
+	 *
+	 * @param __class The class to virtualize.
+	 * @return The resultant virtualized class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/04
+	 */
+	public SpringVisClass virtualizeClass(Class<?> __class)
+		throws NullPointerException
+	{
+		if (__class == null)
+			throw new NullPointerException("NARG");
+		
+		Map<Class<?>, Reference<SpringVisClass>> visClasses = this._visClasses;
+		synchronized (this)
+		{
+			// Does this need to be created?
+			Reference<SpringVisClass> ref = visClasses.get(__class);
+			SpringVisClass result = null;
+			if (ref == null || (result = ref.get()) == null)
+			{
+				// Setup VisClass and cache it
+				result = new SpringVisClass(this, __class);
+				visClasses.put(__class, new WeakReference<>(result));
+				
+				// Register to native virtual machine, so it knows about it
+				// and can find it
+				this.classloader.registerClass(result.visName, result);
+			}
+			
+			return result;
+		}
+	}
+	
+	/**
+	 * Virtualizes the given object.
+	 *
+	 * @param __in The object to virtualize.
+	 * @return The resultant virtualized object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/04
+	 */
+	public SpringVisObject virtualizeObject(Object __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		Map<Object, SpringVisObject> visObjects = this._visObjects;
+		synchronized (this)
+		{
+			// Has this already been virtualized?
+			SpringVisObject result = visObjects.get(__in);
+			if (result != null)
+				return result;
+			
+			// Virtualize and cache it
+			result = new SpringVisObject(this, __in);
+			visObjects.put(__in, result);
+			return result;
+		}
 	}
 	
 	/**

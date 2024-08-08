@@ -16,10 +16,10 @@
 
 SJME_TEST_DECLARE(testAlloc)
 {
-	void* chunk;
+	sjme_pointer chunk;
 	sjme_jint chunkLen;
 	sjme_alloc_pool* pool;
-	void* block;
+	sjme_pointer block;
 	sjme_alloc_link* link;
 	sjme_alloc_link* freeFirstFixed;
 	sjme_alloc_link* freeLastFixed;

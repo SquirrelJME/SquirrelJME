@@ -60,6 +60,7 @@ AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes
 AttributeMacros:
   - sjme_inline
+  - sjme_noOptimize
   - sjme_attrArtificial
   - sjme_attrCallback
   - sjme_attrCheckReturn

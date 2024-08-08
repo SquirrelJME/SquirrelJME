@@ -37,7 +37,7 @@ sjme_errorCode sjme_alloc_sizeOf(
 			break;
 
 		case SJME_ALLOC_SIZEOF_POINTER:
-			*outSize = sizeof(void*);
+			*outSize = sizeof(sjme_pointer);
 			break;
 
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)

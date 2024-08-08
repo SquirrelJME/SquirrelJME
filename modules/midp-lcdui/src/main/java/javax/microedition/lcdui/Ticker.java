@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * A ticker contains an infinitely scrolling message.
@@ -23,10 +24,6 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 @Api
 public class Ticker
 {
-	/** {@code Displayable}s this ticker is attached to. */
-	final __VolatileList__<Displayable> _displayables =
-		new __VolatileList__<>();
-	
 	/** The text used. */
 	volatile String _text;
 	
@@ -86,6 +83,8 @@ public class Ticker
 	 */
 	private void __setString(String __s)
 	{
+		throw Debugging.todo();
+		/*
 		// Set new
 		this._text = __s;
 		
@@ -93,6 +92,8 @@ public class Ticker
 		// this ticker
 		for (Displayable di : this._displayables)
 			di.__updateTicker();
+			
+		 */
 	}
 }
 

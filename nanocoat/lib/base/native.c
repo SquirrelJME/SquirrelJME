@@ -56,7 +56,8 @@ sjme_errorCode sjme_nal_default_nanoTime(
 	/* Calculate time. */
 	/* Freq: A pointer to a variable that receives the current */
 	/* performance-counter frequency, in counts per second. */
-	result->full = ticks.QuadPart / (freq.QuadPart / UINT64_C(1000000000));
+	result->full = (ticks.QuadPart / (freq.QuadPart * UINT64_C(1000000000)) /
+		UINT64_C(1000000000));
 	return SJME_ERROR_NONE;
 #elif defined(SJME_CONFIG_POSIX_CLOCK_GET_TIME)
 	/* Get system native clock. */

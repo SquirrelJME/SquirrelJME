@@ -11,8 +11,6 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
-import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.OverlayVMClassLibrary;
 import cc.squirreljme.vm.RawVMClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -21,20 +19,14 @@ import cc.squirreljme.vm.springcoat.brackets.MidiDeviceObject;
 import cc.squirreljme.vm.springcoat.brackets.MidiPortObject;
 import cc.squirreljme.vm.springcoat.brackets.NativeArchiveEntryObject;
 import cc.squirreljme.vm.springcoat.brackets.NativeArchiveObject;
-import cc.squirreljme.vm.springcoat.brackets.PencilObject;
 import cc.squirreljme.vm.springcoat.brackets.PipeObject;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
-import cc.squirreljme.vm.springcoat.brackets.UIDisplayObject;
-import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
-import cc.squirreljme.vm.springcoat.brackets.UIItemObject;
-import cc.squirreljme.vm.springcoat.brackets.UIWidgetObject;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.callbacks.NativeImageLoadCallbackAdapter;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 /**
@@ -243,24 +235,6 @@ public final class MLEObjects
 	}
 	
 	/**
-	 * Ensures that this is a {@link PencilObject} and returns the graphics
-	 * object for it.
-	 * 
-	 * @param __object The object to check.
-	 * @return As a {@link PencilObject}.
-	 * @throws SpringMLECallError If this is not one.
-	 * @since 2021/12/05
-	 */
-	public static Graphics pencilGraphics(Object __object)
-		throws SpringMLECallError
-	{
-		if (!(__object instanceof PencilObject))
-			throw new SpringMLECallError("Not a PencilObject.");
-		
-		return ((PencilObject)__object).graphics; 
-	}
-	
-	/**
 	 * Ensures that this is a {@link PipeObject}.
 	 * 
 	 * @param __object The object to check.
@@ -389,90 +363,4 @@ public final class MLEObjects
 		return (TypeObject)__object; 
 	}
 	
-	/**
-	 * Gets the object as a {@link UIDisplayObject}.
-	 * 
-	 * @param __o The object.
-	 * @return As the desired {@link UIDisplayObject}.
-	 * @throws SpringMLECallError If the object is not this type.
-	 * @since 2020/07/01
-	 */
-	public static UIDisplayObject uiDisplay(Object __o)
-		throws SpringMLECallError
-	{
-		if (!(__o instanceof UIDisplayObject))
-			throw new SpringMLECallError("Not a UIDisplayObject.");
-		
-		return (UIDisplayObject)__o;
-	}
-	
-	/**
-	 * Maps the drawable bracket.
-	 *
-	 * @param __arg The argument to map.
-	 * @return The drawable bracket.
-	 * @since 2023/01/13
-	 */
-	public static UIDrawableBracket uiDrawable(Object __arg)
-	{
-		if (__arg instanceof UIFormObject)
-			return uiForm(__arg).form;
-		else if (__arg instanceof UIItemObject)
-			return uiItem(__arg).item;
-		else if (__arg instanceof UIDisplayObject)
-			return uiDisplay(__arg).display;
-		else
-			throw Debugging.todo(__arg.getClass().toString());
-	}
-	
-	/**
-	 * Gets the object as a {@link UIFormObject}.
-	 * 
-	 * @param __o The object.
-	 * @return As the desired {@link UIFormObject}.
-	 * @throws SpringMLECallError If the object is not this type.
-	 * @since 2020/07/01
-	 */
-	public static UIFormObject uiForm(Object __o)
-		throws SpringMLECallError
-	{
-		if (!(__o instanceof UIFormObject))
-			throw new SpringMLECallError("Not a UIFormObject.");
-		
-		return (UIFormObject)__o;
-	}
-	
-	/**
-	 * Gets the object as a {@link UIItemObject}.
-	 * 
-	 * @param __o The object.
-	 * @return As the desired {@link UIItemObject}.
-	 * @throws SpringMLECallError If the object is not this type.
-	 * @since 2020/07/01
-	 */
-	public static UIItemObject uiItem(Object __o)
-		throws SpringMLECallError
-	{
-		if (!(__o instanceof UIItemObject))
-			throw new SpringMLECallError("Not a UIItemObject.");
-		
-		return (UIItemObject)__o;
-	}
-	
-	/**
-	 * Gets the widget from this object.
-	 * 
-	 * @param __o The object to get from.
-	 * @throws SpringMLECallError If not one.
-	 * @return The widget.
-	 * @since 2020/09/20
-	 */
-	public static UIWidgetObject uiWidget(Object __o)
-		throws SpringMLECallError
-	{
-		if (!(__o instanceof UIWidgetObject))
-			throw new SpringMLECallError("Not a UIWidgetObject.");
-		
-		return (UIWidgetObject)__o;
-	}
 }

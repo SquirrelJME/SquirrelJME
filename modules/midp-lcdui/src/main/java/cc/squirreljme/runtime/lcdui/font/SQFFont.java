@@ -36,31 +36,40 @@ import javax.microedition.lcdui.Font;
  *
  * @since 2018/11/27
  */
+@Deprecated
 public final class SQFFont
 {
 	/** SQF Font data. */
+	@Deprecated
 	private static final Map<SQFFontSpecifier, SQFFont> _FONT_CACHE =
 		new HashMap<>();
 	
 	/** The pixel height of the font. */
+	@Deprecated
 	public final byte pixelheight;
 	
 	/** The ascent of the font. */
+	@Deprecated
 	public final byte ascent;
 	
 	/** The maximum ascent of the font. */
+	@Deprecated
 	public final byte maxascent;
 	
 	/** The descent of the font. */
+	@Deprecated
 	public final byte descent;
 	
 	/** The bytes per scan. */
+	@Deprecated
 	public final byte bytesperscan;
 	
 	/** The bits per scan. */
+	@Deprecated
 	public final byte bitsperscan;
 	
 	/** The number of bytes that make up a character's bitmap. */
+	@Deprecated
 	public final int charbitmapsize;
 	
 	/**
@@ -68,16 +77,20 @@ public final class SQFFont
 	 * It is unspecified what this value actually should be so for now it is
 	 * just a constant.
 	 */
+	@Deprecated
 	public final byte leading =
 		2;
 	
 	/** Is this character valid? */
+	@Deprecated
 	private final boolean[] _isvalidchar;
 	
 	/** The character widths. */
+	@Deprecated
 	private final byte[] _charwidths;
 	
 	/** The character bitmap. */
+	@Deprecated
 	private final byte[] _charbmp;
 	
 	/**
@@ -93,6 +106,7 @@ public final class SQFFont
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/27
 	 */
+	@Deprecated
 	private SQFFont(byte __ph, byte __a, byte __d, byte __bps, byte[] __cw,
 		boolean[] __ivc, byte[] __bmp)
 		throws NullPointerException
@@ -122,6 +136,7 @@ public final class SQFFont
 	 * @return The character bitmap size.
 	 * @since 2018/12/01
 	 */
+	@Deprecated
 	public final int charBitmapSize()
 	{
 		return this.charbitmapsize;
@@ -134,6 +149,7 @@ public final class SQFFont
 	 * @return The width of the given character.
 	 * @since 2018/11/30
 	 */
+	@Deprecated
 	public final int charWidth(char __c)
 	{
 		byte[] charwidths = this._charwidths;
@@ -149,6 +165,7 @@ public final class SQFFont
 	 * @return If the character is valid.
 	 * @since 2019/06/16
 	 */
+	@Deprecated
 	public final boolean isValid(char __c)
 	{
 		if (__c > 256)
@@ -166,6 +183,7 @@ public final class SQFFont
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/01
 	 */
+	@Deprecated
 	public final int loadCharBitmap(char __c, byte[] __bmp)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -192,6 +210,7 @@ public final class SQFFont
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/01
 	 */
+	@Deprecated
 	public final void printGlyphs(PrintStream __ps)
 		throws NullPointerException
 	{
@@ -282,6 +301,7 @@ public final class SQFFont
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/29
 	 */
+	@Deprecated
 	public static final SQFFont cacheFont(String __n, int __pxs)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -339,6 +359,7 @@ public final class SQFFont
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/29
 	 */
+	@Deprecated
 	public static final SQFFont cacheFont(Font __f)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -357,6 +378,7 @@ public final class SQFFont
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/27
 	 */
+	@Deprecated
 	public static final SQFFont read(InputStream __in)
 		throws IOException, NullPointerException
 	{
@@ -401,6 +423,7 @@ public final class SQFFont
 	 * @return The mapped character.
 	 * @since 2019/04/29
 	 */
+	@Deprecated
 	public static final char mapChar(char __c)
 	{
 		switch (__c)

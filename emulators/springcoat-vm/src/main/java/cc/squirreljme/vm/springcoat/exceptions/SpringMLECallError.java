@@ -59,7 +59,10 @@ public class SpringMLECallError
 	{
 		super(__m, __c);
 		
-		this.distinction = 0;
+		if (__c instanceof MLECallError)
+			this.distinction = ((MLECallError)__c).distinction;
+		else
+			this.distinction = 0;
 	}
 	
 	/**
@@ -72,7 +75,10 @@ public class SpringMLECallError
 	{
 		super(__c);
 		
-		this.distinction = 0;
+		if (__c instanceof MLECallError)
+			this.distinction = ((MLECallError)__c).distinction;
+		else
+			this.distinction = 0;
 	}
 	
 	/**

@@ -216,6 +216,7 @@ public abstract class VMFactory
 		// -zero
 		// -client
 		// -server
+		// -Xscritchui:(ui)
 		// Optionally `-jar`
 		// Main-class
 		// Arguments...
@@ -350,13 +351,20 @@ public abstract class VMFactory
 			}
 			
 			// Alias for SpringCoat
-			else if (item.equals("-zero"))
+			else if (item.equals("-zero") || item.equals("-Xint"))
 				vmName = "springcoat";
 			
 			// Ignored
 			else if (item.equals("-client") || item.equals("-server"))
 			{
 				// Ignored
+			}
+			
+			// ScritchUI library
+			else if (item.startsWith("-Xscritchui:"))
+			{
+				systemProperties.put("cc.squirreljme.scritchui",
+					item.substring("-Xscritchui:".length()));
 			}
 			
 			// Unknown

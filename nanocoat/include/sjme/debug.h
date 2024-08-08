@@ -168,7 +168,7 @@ sjme_errorCode sjme_dieR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return Never returns.
  * @since 2023/11/11 
  */
-#define sjme_dieP(...) ((void*)((intptr_t)sjme_dieR(\
+#define sjme_dieP(...) ((sjme_pointer)((intptr_t)sjme_dieR(\
 	SJME_DEBUG_FILE_LINE_FUNC, __VA_ARGS__)))
 
 /**
@@ -212,6 +212,47 @@ void sjme_debug_abort(void);
  * @since 2024/02/08
  */
 sjme_lpcstr sjme_debug_shortenFile(sjme_lpcstr file);
+
+/**
+ * Allows for optional debug abort when a fatal error is hit.
+ *
+ * @param error The error to return.
+ * @return The @c error value.
+ * @since 2024/07/31
+ */
+sjme_errorCode sjme_error_fatalR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_errorCode error);
+
+/**
+ * Allows for optional debug abort when a fatal error is hit.
+ *
+ * @param error The error to return.
+ * @return The @c error value.
+ * @since 2024/07/31
+ */
+#define sjme_error_fatal(error) \
+	sjme_error_fatalR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, error)
+
+/**
+ * Allows for optional debug abort when unimplemented code is hit.
+ *
+ * @param context Any value.
+ * @return Always @c SJME_ERROR_NOT_IMPLEMENTED .
+ * @since 2024/07/30
+ */
+sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_intPointer context);
+
+/**
+ * Allows for optional debug abort when unimplemented code is hit.
+ *
+ * @param context Any value.
+ * @return Always @c SJME_ERROR_NOT_IMPLEMENTED .
+ * @since 2024/07/30
+ */
+#define sjme_error_notImplemented(context) \
+	sjme_error_notImplementedR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, \
+	(sjme_intPointer)(context))
 
 /**
  * Handles specific debug abort scenarios.
