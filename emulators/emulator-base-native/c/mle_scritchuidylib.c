@@ -659,7 +659,7 @@ static sjme_errorCode mle_scritchUiListenerVisible(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_thread_result mle_loopExecuteMain(
+static sjme_thread_result sjme_attrThreadCall mle_loopExecuteMain(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	mle_loopExecuteData* data;
@@ -723,7 +723,7 @@ static sjme_thread_result mle_loopExecuteMain(
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
-static sjme_thread_result mle_bindEventThread(
+static sjme_thread_result sjme_attrThreadCall mle_bindEventThread(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	sjme_scritchui state;
