@@ -385,10 +385,10 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			sjme_nal_default.stdOutF(
 				"java version \"1.8.0\"\n");
 			sjme_nal_default.stdOutF(
-				"SquirrelJME Class Library, Micro Edition (%s)\n",
+				"SquirrelJME Class Library, Micro Edition (build %s)\n",
 				SQUIRRELJME_VERSION);
 			sjme_nal_default.stdOutF(
-				"SquirrelJME NanoCoat VM (%s)\n",
+				"SquirrelJME NanoCoat VM (build %s)\n",
 				SQUIRRELJME_VERSION);
 			
 			/* Exit. */
