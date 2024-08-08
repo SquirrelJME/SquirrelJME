@@ -268,6 +268,16 @@ sjme_errorCode sjme_alloc_poolInitStatic(
 	sjme_attrInPositive sjme_jint size);
 
 /**
+ * Destroys the given allocation pool.
+ * 
+ * @param inPool The pool to destroy.
+ * @return Any resultant error, if any.
+ * @since 2024/08/08
+ */
+sjme_errorCode sjme_alloc_poolDestroy(
+	sjme_attrOutNotNull sjme_alloc_pool* inPool);
+
+/**
  * Returns the total space that is available within the pool, includes both
  * free and used spaces.
  *

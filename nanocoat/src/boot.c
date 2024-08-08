@@ -51,9 +51,11 @@ sjme_errorCode sjme_nvm_allocReservedPool(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
-	sjme_alloc_pool* reservedPool, const sjme_nvm_bootParam* param,
-	sjme_nvm* outState)
+sjme_errorCode sjme_nvm_boot(
+	sjme_attrInNotNull sjme_alloc_pool* mainPool,
+	sjme_attrInNotNull sjme_alloc_pool* reservedPool,
+	sjme_attrInNotNull const sjme_nvm_bootParam* param,
+	sjme_attrOutNotNull sjme_nvm* outState)
 {
 #define FIXED_SUITE_COUNT 16
 	sjme_errorCode error;
@@ -73,7 +75,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	/* But only if one does not exist. */
 	if (reservedPool == NULL)
 		if (sjme_error_is(error = sjme_nvm_allocReservedPool(mainPool,
-			&reservedPool)))
+			&reservedPool)) || reservedPool == NULL)
 			goto fail_reservedPoolAlloc;
 
 	/* Allocate resultant state. */
@@ -124,7 +126,12 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 
 	/* No suites at all? Running with absolutely nothing??? */
 	if (numMergeSuites <= 0)
+	{
+		/* Debug. */
+		sjme_message("No suites are available, cannot run.");
+		
 		goto fail_noSuites;
+	}
 
 	/* Use the single suite only. */
 	else if (numMergeSuites == 1)

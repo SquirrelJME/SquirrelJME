@@ -1972,8 +1972,11 @@ typedef enum sjme_errorCode
 	/** Continue operation. */
 	SJME_ERROR_CONTINUE = -78,
 	
+	/** Interrupted. */
+	SJME_ERROR_INTERRUPTED = -79,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -79
+	SJME_NUM_ERROR_CODES = -80
 } sjme_errorCode;
 
 /**

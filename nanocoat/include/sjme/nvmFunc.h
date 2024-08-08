@@ -286,11 +286,14 @@ sjme_errorCode sjme_nvm_topFrame(
  *
  * @param inState The state to tick, @c -1 means to tick forever.
  * @param maxTics The number of ticks to execute before returning.
- * @return Returns @c SJME_JNI_TRUE if the machine is still running.
+ * @param isTerminated Optional output to check if the VM terminated.
+ * @return Any resultant error, if any.
  * @since 2023/07/27
  */
-sjme_errorCode sjme_nvm_tick(sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInValue sjme_attrInPositive sjme_jint maxTics)
+sjme_errorCode sjme_nvm_tick(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInValue sjme_attrInPositive sjme_jint maxTics,
+	sjme_attrOutNullable sjme_jboolean* isTerminated)
 	sjme_attrCheckReturn;
 
 /*--------------------------------------------------------------------------*/

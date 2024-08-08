@@ -391,6 +391,15 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitStatic(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_alloc_poolDestroy(
+	sjme_attrOutNotNull sjme_alloc_pool* inPool)
+{
+	if (inPool == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_alloc_poolSpaceTotalSize(
 	sjme_attrInNotNull const sjme_alloc_pool* pool,
 	sjme_attrOutNullable sjme_jint* outTotal,
