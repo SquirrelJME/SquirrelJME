@@ -41,9 +41,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/bluetooth/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/bluetooth/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/bluetooth/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/c-source-writer/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/c-source-writer/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/c-source-writer/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cldc-compact/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cldc-compact/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cldc-compact/out" />
@@ -320,6 +317,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/c-source-writer/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/c-source-writer/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/c-source-writer/out" />
     </content>
   </component>
 </module>

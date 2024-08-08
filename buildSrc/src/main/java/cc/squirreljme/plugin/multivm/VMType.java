@@ -95,7 +95,7 @@ public enum VMType
 				throw new NullPointerException("NARG");
 			
 			// Is just pure copy of the JAR
-			VMHelpers.copy(__in, __out);
+			VMHelpers.copyRecompressZip(__in, __out);
 		}
 		
 		/**
@@ -379,7 +379,7 @@ public enum VMType
 				throw new NullPointerException("NARG");
 			
 			// Is just pure copy of the JAR
-			VMHelpers.copy(__in, __out);
+			VMHelpers.copyRecompressZip(__in, __out);
 		}
 		
 		/**
@@ -479,7 +479,7 @@ public enum VMType
 				throw new NullPointerException("NARG");
 			
 			// Is just pure copy of the JAR
-			VMHelpers.copy(__in, __out);
+			VMHelpers.copyRecompressZip(__in, __out);
 			
 			/*
 			// Determine checksum sum of the library, used to detect changes

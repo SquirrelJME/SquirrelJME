@@ -17,6 +17,7 @@ import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.FileLocation;
 import cc.squirreljme.plugin.util.TestDetection;
 import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +51,9 @@ import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
@@ -479,6 +483,58 @@ public final class VMHelpers
 			
 			__out.write(buf, 0, rc);
 		}
+	}
+	
+	/**
+	 * Copies from the input into the output while recompressing the Zip file.
+	 * 
+	 * @param __in The input.
+	 * @param __out The output.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/08
+	 */
+	public static void copyRecompressZip(InputStream __in, OutputStream __out)
+		throws IOException, NullPointerException
+	{
+		if (__in == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		try (ZipInputStream inZip = new ZipInputStream(__in);
+			 ZipOutputStream outZip = new ZipOutputStream(__out))
+		{
+			// Maximum compression
+			outZip.setMethod(ZipOutputStream.DEFLATED);
+			outZip.setLevel(9);
+			
+			// Recompress each entry
+			for (;;)
+			{
+				// Get next entry, if null there are none left
+				ZipEntry entry = inZip.getNextEntry();
+				if (entry == null)
+					break;
+				
+				// Make sure it is compressed
+				entry.setMethod(ZipOutputStream.DEFLATED);
+				
+				// Start entry
+				outZip.putNextEntry(entry);
+				
+				// Copy entry data
+				VMHelpers.copy(inZip, outZip);
+				
+				// Finished writing
+				outZip.closeEntry();
+			}
+			
+			// Finalize zip
+			outZip.finish();
+			outZip.flush();
+		}
+		
+		// Make sure output is flushed
+		__out.flush();
 	}
 	
 	/**
@@ -964,6 +1020,41 @@ public final class VMHelpers
 				out.write(buf, 0, rc);
 			}
 		}
+	}
+	
+	/**
+	 * Recompresses the given Zip file.
+	 *
+	 * @param __zip The ZIP to recompress.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/08
+	 */
+	public static void recompressZip(Path __zip)
+		throws IOException, NullPointerException
+	{
+		if (__zip == null)
+			throw new NullPointerException("NARG");
+		
+		// Load in everything for copy
+		byte[] result;
+		byte[] inZip = Files.readAllBytes(__zip);
+		try (InputStream in = new ByteArrayInputStream(inZip);
+			 ByteArrayOutputStream out = new ByteArrayOutputStream(
+				 inZip.length))
+		{
+			// Perform recompression
+			VMHelpers.copyRecompressZip(in, out);
+			
+			// Get resultant output
+			result = out.toByteArray();
+		}
+		
+		// Replace everything
+		Files.write(__zip, result,
+			StandardOpenOption.TRUNCATE_EXISTING,
+			StandardOpenOption.WRITE,
+			StandardOpenOption.CREATE);
 	}
 	
 	/**
