@@ -109,9 +109,14 @@ sjme_errorCode sjme_list_allocR(
 
 	/* Forward allocation. */
 	result = NULL;
+#if defined(SJME_CONFIG_DEBUG)
 	if (sjme_error_is(error = sjme_allocR(inPool, size,
 		&result SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)) ||
 		result == NULL)
+#else
+	if (sjme_error_is(error = sjme_alloc(inPool, size, &result)) ||
+		result == NULL)
+#endif
 		return sjme_error_default(error);
 
 	/* Perform direct list initialization. */
