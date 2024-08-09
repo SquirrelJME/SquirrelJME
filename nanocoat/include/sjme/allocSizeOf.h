@@ -16,7 +16,8 @@
 #ifndef SQUIRRELJME_ALLOCSIZEOF_H
 #define SQUIRRELJME_ALLOCSIZEOF_H
 
-#include "sjme/nvm.h"
+#include "sjme/error.h"
+#include "sjme/stdTypes.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

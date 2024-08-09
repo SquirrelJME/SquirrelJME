@@ -18,9 +18,12 @@
 
 #include <stdarg.h>
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
+#include "sjme/tokenUtils.h"
 #include "sjme/comparator.h"
 #include "sjme/alloc.h"
+#include "sjme/error.h"
+#include "sjme/debug.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -111,9 +114,6 @@ SJME_LIST_DECLARE(sjme_lpstr, 0);
 /** List of @c sjme_lpcstr . */
 SJME_LIST_DECLARE(sjme_lpcstr, 0);
 
-/** List of @c sjme_jobject . */
-SJME_LIST_DECLARE(sjme_jobject, 0);
-
 /** List of @c sjme_pointer . */
 SJME_LIST_DECLARE(sjme_pointer, 0);
 
@@ -125,6 +125,9 @@ SJME_LIST_DECLARE(sjme_pointerLen, 0);
 
 /** List of @c sjme_intPointer . */
 SJME_LIST_DECLARE(sjme_intPointer, 0);
+
+/** List of @c sjme_jobject . */
+SJME_LIST_DECLARE(sjme_jobject, 0);
 
 /**
  * Allocates a given list generically.

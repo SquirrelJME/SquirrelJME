@@ -21,7 +21,8 @@
 #endif
 
 #include "sjme/config.h"
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
+#include "sjme/tokenUtils.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -179,14 +180,14 @@ SJME_ATOMIC_DECLARE(sjme_lpstr, 0);
 /** Atomic @c sjme_lpcstr. */
 SJME_ATOMIC_DECLARE(sjme_lpcstr, 0);
 
-/** Atomic @c sjme_jobject. */
-SJME_ATOMIC_DECLARE(sjme_jobject, 0);
-
 /** Atomic @c sjme_pointer. */
 SJME_ATOMIC_DECLARE(sjme_pointer, 0);
 
 /** Atomic pointer declaration. */
 SJME_ATOMIC_DECLARE(sjme_intPointer , 0);
+
+/** Atomic @c sjme_jobject. */
+SJME_ATOMIC_DECLARE(sjme_jobject, 0);
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_OLD)
 

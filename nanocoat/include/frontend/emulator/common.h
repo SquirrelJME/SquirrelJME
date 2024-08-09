@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_COMMON_H
 #define SQUIRRELJME_COMMON_H
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

@@ -16,6 +16,7 @@
 #ifndef SQUIRRELJME_MODELESSSTARS_H
 #define SQUIRRELJME_MODELESSSTARS_H
 
+#include "sjme/error.h"
 #include "sjme/nvm.h"
 
 /* Anti-C++. */

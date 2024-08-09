@@ -17,7 +17,9 @@
 #ifndef SQUIRRELJME_STREAM_H
 #define SQUIRRELJME_STREAM_H
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
+#include "sjme/error.h"
+#include "alloc.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

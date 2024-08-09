@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
 
 #if defined(SJME_CONFIG_HAS_WINDOWS)
 	#define WIN32_LEAN_AND_MEAN 1

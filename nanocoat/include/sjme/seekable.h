@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_SEEKABLE_H
 #define SQUIRRELJME_SEEKABLE_H
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
 #include "sjme/stream.h"
 
 /* Anti-C++. */

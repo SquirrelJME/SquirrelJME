@@ -18,8 +18,8 @@
 
 #include <stdarg.h>
 
-#include "sjme/nvm.h"
-#include "sjme/dylib.h"
+#include "sjme/stdTypes.h"
+#include "sjme/error.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -300,10 +300,6 @@ typedef struct sjme_debug_handlerFunctions
 	/** The dangling message implementation to use. */
 	sjme_debug_messageHandlerFunc message;
 } sjme_debug_handlerFunctions;
-
-/** The debug handlers to use. */
-extern SJME_DYLIB_EXPORT
-	sjme_debug_handlerFunctions* sjme_debug_handlers;
 
 /*--------------------------------------------------------------------------*/
 

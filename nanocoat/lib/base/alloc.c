@@ -20,6 +20,7 @@
 #include "sjme/debug.h"
 #include "sjme/atomic.h"
 #include "sjme/multithread.h"
+#include "sjme/dylib.h"
 
 /** The minimum size permitted for allocation pools. */
 #define SJME_ALLOC_MIN_SIZE (((SJME_SIZEOF_ALLOC_POOL(0) + \

@@ -9,7 +9,7 @@
 
 #include <string.h>
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
 #include "sjme/util.h"
 #include "sjme/debug.h"
 

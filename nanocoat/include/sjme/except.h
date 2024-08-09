@@ -17,7 +17,9 @@
 #define SQUIRRELJME_EXCEPT_H
 
 #include <setjmp.h>
+
 #include "sjme/nvm.h"
+#include "sjme/tokenUtils.h"
 #include "sjme/debug.h"
 
 /* Anti-C++. */

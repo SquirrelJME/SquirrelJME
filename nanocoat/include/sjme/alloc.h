@@ -16,8 +16,9 @@
 #ifndef SQUIRRELJME_ALLOC_H
 #define SQUIRRELJME_ALLOC_H
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
 #include "sjme/debug.h"
+#include "sjme/error.h"
 #include "sjme/atomic.h"
 #include "sjme/multithread.h"
 
@@ -31,6 +32,13 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * Structure which stores the pooled memory allocator.
+ *
+ * @since 2023/11/18
+ */
+typedef struct sjme_alloc_pool sjme_alloc_pool;
 
 /**
  * Allocation link chain, each is a chain between each allocation.
