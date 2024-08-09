@@ -35,6 +35,11 @@ extern "C"
 /** The maximum path length in SquirrelJME. */
 #define SJME_MAX_PATH 1024
 
+#if defined(SJME_CONFIG_HAS_DOS)
+	/** Short paths. */
+	#defne SJME_PATH_SHORT
+#endif
+
 /**
  * Resolves the given path onto the given path buffer.
  * 

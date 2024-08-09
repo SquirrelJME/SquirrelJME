@@ -18,7 +18,7 @@ sjme_errorCode sjme_path_resolveAppend(
 	if (outPath == NULL || subPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (outPath <= 0)
+	if (outPathLen <= 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	return sjme_error_notImplemented(0);

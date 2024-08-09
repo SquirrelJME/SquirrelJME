@@ -21,6 +21,14 @@
 #include "sjme/cleanup.h"
 #include "sjme/path.h"
 
+#if defined(SJME_PATH_SHORT)
+	/** The name of the SquirrelJME Jar. */
+	#define SJME_JAR_NAME "sjme.jar"
+#else
+	/** The name of the SquirrelJME Jar. */
+	#define SJME_JAR_NAME "squirreljme.jar"
+#endif
+
 /**
  * Help parameter storage.
  * 
@@ -305,7 +313,7 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 	/* Use ROM from here. */
 	if (sjme_error_is(error = sjme_path_resolveAppend(
 		dataPath, SJME_MAX_PATH - 1,
-		"squirreljme.jar")))
+		SJME_JAR_NAME)))
 		return sjme_error_default(error);
 	
 	return sjme_error_notImplemented(0);
@@ -330,7 +338,19 @@ sjme_errorCode sjme_nvm_defaultDir(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 #if defined(SJME_CONFIG_HAS_WINDOWS)
+	if (1)
+		sjme_todo("Impl?");
+#elif defined(SJME_CONFIG_HAS_DOS)
+	if (1)
+		sjme_todo("Impl?");
+#elif defined(SJME_CONFIG_HAS_LINUX) || \
+	defined(SJME_CONFIG_HAS_BSD) || \
+	defined(SJME_CONFIG_HAS_MACOS) || \
+	defined(SJME_CONFIG_HAS_CYGWIN)
+	if (1)
+		sjme_todo("Impl?");
 #else
+	return sjme_error_notImplemented(0);
 #endif
 	
 	return sjme_error_notImplemented(0);
