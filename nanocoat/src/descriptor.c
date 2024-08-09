@@ -13,6 +13,7 @@
 #include "sjme/debug.h"
 #include "sjme/descriptor.h"
 #include "sjme/util.h"
+#include "sjme/cleanup.h"
 
 /**
  * Field type link, used for method type parsing.
@@ -683,8 +684,9 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 			SJME_ERROR_INVALID_BINARY_NAME);
 	
 	/* Return a copy. */
-	return sjme_alloc_copy(inPool, resultLen, outName,
-		result);
+	return sjme_alloc_copyWeak(inPool, resultLen,
+		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
+		outName, result, NULL);
 }
 
 sjme_errorCode sjme_desc_interpretClassName(
@@ -780,8 +782,9 @@ sjme_errorCode sjme_desc_interpretClassName(
 	}
 	
 	/* Return a copy. */
-	return sjme_alloc_copy(inPool, allocLen, outName,
-		result);
+	return sjme_alloc_copyWeak(inPool, allocLen,
+		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
+		outName, result, NULL);
 }
 
 sjme_errorCode sjme_desc_interpretFieldType(
@@ -829,8 +832,9 @@ sjme_errorCode sjme_desc_interpretFieldType(
 			SJME_ERROR_INVALID_FIELD_TYPE);
 	
 	/* Return copy of it. */
-	return sjme_alloc_copy(inPool, allocLen, outType,
-		result);
+	return sjme_alloc_copyWeak(inPool, allocLen,
+		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
+		outType, result, NULL);
 }
 
 sjme_errorCode sjme_desc_interpretIdentifier(
@@ -1039,6 +1043,7 @@ sjme_errorCode sjme_desc_interpretMethodType(
 	}
 	
 	/* Success! */
-	return sjme_alloc_copy(inPool, allocLen, outType,
-		result);
+	return sjme_alloc_copyWeak(inPool, allocLen,
+		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
+		outType, result, NULL);
 }

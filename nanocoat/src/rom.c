@@ -16,6 +16,7 @@
 #include "sjme/romInternal.h"
 #include "sjme/util.h"
 #include "sjme/zip.h"
+#include "sjme/cleanup.h"
 
 sjme_errorCode sjme_rom_libraryFromZipMemory(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
@@ -96,9 +97,10 @@ sjme_errorCode sjme_rom_libraryNew(
 
 	/* Allocate resultant library. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(pool,
+	if (sjme_error_is(error = sjme_alloc_weakNew(pool,
 		SJME_SIZEOF_LIBRARY_CORE_N(inFunctions->uncommonTypeSize),
-		&result)) || result == NULL)
+		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
+		&result, NULL)) || result == NULL)
 		return sjme_error_default(error);
 
 	/* Setup some basic cache details. */
@@ -562,9 +564,10 @@ sjme_errorCode sjme_rom_suiteNew(
 
 	/* Allocate resultant suite. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(pool,
+	if (sjme_error_is(error = sjme_alloc_weakNew(pool,
 		SJME_SIZEOF_SUITE_CORE_N(inFunctions->uncommonTypeSize),
-		&result)) || result == NULL)
+		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
+		&result, NULL)) || result == NULL)
 		return sjme_error_default(error);
 
 	/* Setup some basic cache details. */

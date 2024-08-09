@@ -18,6 +18,7 @@
 #include "sjme/task.h"
 #include "sjme/charSeq.h"
 #include "sjme/native.h"
+#include "sjme/cleanup.h"
 
 /**
  * Help parameter storage.
@@ -146,14 +147,15 @@ sjme_errorCode sjme_nvm_boot(
 	/* Allocate resultant state. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(reservedPool,
-		sizeof(*result), sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_STATE,
+		sizeof(*result), sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
 		(sjme_pointer*)&result, NULL)) || result == NULL)
 		goto fail_resultAlloc;
 
 	/* Make a defensive copy of the boot parameters. */
-	if (sjme_error_is(error = sjme_alloc_copy(reservedPool,
+	if (sjme_error_is(error = sjme_alloc_copyWeak(reservedPool,
 		sizeof(sjme_nvm_bootParam),
-		(sjme_pointer*)&result->bootParamCopy, param)) ||
+		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
+		(sjme_pointer*)&result->bootParamCopy, param, NULL)) ||
 		result == NULL)
 		goto fail_bootParamCopy;
 
@@ -292,14 +294,6 @@ sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
 	/* Finished. */
 	sjme_todo("sjme_nvm_destroy()");
 	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
-sjme_errorCode sjme_nvm_enqueueHandler(
-	sjme_attrInNotNull sjme_alloc_weak weak,
-	sjme_attrInNullable sjme_pointer data,
-	sjme_attrInValue sjme_jboolean isBlockFree)
-{
-	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_parseCommandLine(
@@ -514,17 +508,29 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		sjme_todo("impl?");
 	}
 	
-	/* Main-class, if not -jar */
-	if (!jarSpecified)
+	/* Launching a specific Jar? */
+	if (argAt < argc)
 	{
-		sjme_todo("impl?");
+		/* Main-class, if not -jar */
+		if (!jarSpecified)
+		{
+			sjme_todo("impl?");
+		}
+		
+		/* Arguments... */
+		if (SJME_JNI_TRUE)
+		{
+			sjme_todo("impl?");
+		}
 	}
 	
-	/* Arguments... */
-	if (SJME_JNI_TRUE)
+	/* Default launching. */
+	else
 	{
-		sjme_todo("impl?");
+		outParam->mainArgs = NULL;
+		outParam->mainClass = NULL;
 	}
 	
-	return sjme_error_notImplemented(0);
+	/* Success! */
+	return SJME_ERROR_NONE;
 }

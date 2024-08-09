@@ -38,10 +38,10 @@ extern "C" {
  *
  * @since 2023/12/12
  */
-typedef struct sjme_rom_libraryCore sjme_rom_libraryCore;
+typedef struct sjme_rom_libraryBase sjme_rom_libraryBase;
 
 /** Synthetic library structure. */
-typedef sjme_rom_libraryCore* sjme_rom_library;
+typedef sjme_rom_libraryBase* sjme_rom_library;
 
 /** List of ROM libraries. */
 SJME_LIST_DECLARE(sjme_rom_library, 0);
@@ -153,7 +153,7 @@ typedef struct sjme_rom_suiteCache
  */
 typedef struct sjme_rom_libraryFunctions sjme_rom_libraryFunctions;
 
-struct sjme_rom_libraryCore
+struct sjme_rom_libraryBase
 {
 	/** Functions used to access library information. */
 	const sjme_rom_libraryFunctions* functions;
@@ -179,7 +179,7 @@ struct sjme_rom_libraryCore
  * @since 2023/12/29
  */
 #define SJME_SIZEOF_LIBRARY_CORE_N(uncommonSize) \
-    (sizeof(sjme_rom_libraryCore) + \
+    (sizeof(sjme_rom_libraryBase) + \
 		(SJME_SIZEOF_LIBRARY_CACHE_N(uncommonSize) - \
 		sizeof(sjme_rom_libraryCache)))
 
@@ -191,7 +191,7 @@ struct sjme_rom_libraryCore
  * @since 2023/12/29
  */
 #define SJME_SIZEOF_LIBRARY_CORE(uncommonType) \
-    SJME_SIZEOF_LIBRARY_CORE_N(sizeof(sjme_rom_libraryCore))
+    SJME_SIZEOF_LIBRARY_CORE_N(sizeof(sjme_rom_libraryBase))
 
 /**
  * Functions used to access a suite, which is an entire ROM.
@@ -335,7 +335,7 @@ struct sjme_rom_suiteFunctions
 	sjme_rom_suiteLoadLibraryFunc loadLibrary;
 };
 
-struct sjme_rom_suiteCore
+struct sjme_rom_suiteBase
 {
 	/** Functions. */
 	const sjme_rom_suiteFunctions* functions;
@@ -352,7 +352,7 @@ struct sjme_rom_suiteCore
  * @since 2023/12/29
  */
 #define SJME_SIZEOF_SUITE_CORE_N(uncommonSize) \
-    (sizeof(sjme_rom_suiteCore) + (SJME_SIZEOF_SUITE_CACHE_N(uncommonSize) - \
+    (sizeof(sjme_rom_suiteBase) + (SJME_SIZEOF_SUITE_CACHE_N(uncommonSize) - \
 		sizeof(sjme_rom_suiteCache)))
 
 /**

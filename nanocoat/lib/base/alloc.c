@@ -702,6 +702,37 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copyWeak)(
+	sjme_attrInNotNull volatile sjme_alloc_pool* pool,
+	sjme_attrInPositiveNonZero sjme_jint size,
+	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
+	sjme_attrInNullable sjme_pointer inEnqueueData,
+	sjme_attrOutNotNull sjme_pointer* outAddr,
+	sjme_attrInNotNull sjme_pointer inAddr,
+	sjme_attrOutNullable sjme_alloc_weak* outWeak
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
+{
+	sjme_errorCode error;
+	sjme_pointer dest;
+
+	if (pool == NULL || outAddr == NULL || inAddr == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Allocate new copy first. */
+	dest = NULL;
+	if (sjme_error_is(error = SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
+		pool, size, inEnqueue, inEnqueueData, &dest, outWeak
+		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)) || dest == NULL)
+		return sjme_error_default(error);
+
+	/* Copy over. */
+	memmove(dest, inAddr, size);
+	*outAddr = dest;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_lpstr* outString,
@@ -1148,7 +1179,7 @@ sjme_errorCode sjme_alloc_weakGetPointer(
 
 static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 	sjme_attrInNotNull sjme_pointer addr,
-	sjme_attrOutNotNull sjme_alloc_weak* outWeak,
+	sjme_attrOutNullable sjme_alloc_weak* outWeak,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData)
 {
@@ -1231,7 +1262,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData,
 	sjme_attrOutNotNull sjme_pointer* outAddr,
-	sjme_attrOutNotNull sjme_alloc_weak* outWeak
+	sjme_attrOutNullable sjme_alloc_weak* outWeak
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_pointer resultPtr;
@@ -1298,7 +1329,7 @@ fail_allocBlock:
 
 sjme_errorCode sjme_alloc_weakRef(
 	sjme_attrInNotNull sjme_pointer addr,
-	sjme_attrOutNotNull sjme_alloc_weak* outWeak,
+	sjme_attrOutNullable sjme_alloc_weak* outWeak,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData)
 {

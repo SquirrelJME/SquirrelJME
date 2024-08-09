@@ -1669,21 +1669,21 @@ typedef struct sjme_nvm_bootParam sjme_nvm_bootParam;
  *
  * @since 2023/12/12
  */
-typedef struct sjme_rom_suiteCore sjme_rom_suiteCore;
+typedef struct sjme_rom_suiteBase sjme_rom_suiteBase;
 
 /**
  * Opaque suite structure type.
  *
  * @since 2023/12/22
  */
-typedef struct sjme_rom_suiteCore* sjme_rom_suite;
+typedef struct sjme_rom_suiteBase* sjme_rom_suite;
 
 /**
  * Structure for a single task.
  *
  * @since 2023/12/17
  */
-typedef struct sjme_nvm_taskCore* sjme_nvm_task;
+typedef struct sjme_nvm_taskBase* sjme_nvm_task;
 
 /**
  * Represents the virtual machine state.

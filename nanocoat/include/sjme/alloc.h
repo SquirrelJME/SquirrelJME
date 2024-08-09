@@ -330,7 +330,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData,
 	sjme_attrOutNotNull sjme_pointer* outAddr,
-	sjme_attrOutNotNull sjme_alloc_weak* outWeak
+	sjme_attrOutNullable sjme_alloc_weak* outWeak
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
@@ -348,6 +348,29 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull sjme_pointer* outAddr,
 	sjme_attrInNotNull sjme_pointer inAddr
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Allocates a copy of the given data as a weak reference.
+ *
+ * @param pool The pool to allocate within.
+ * @param size The allocation size.
+ * @param inEnqueue The enqueue which is called for cleanup.
+ * @param inEnqueueData Any data for cleaning up.
+ * @param outAddr The output address.
+ * @param inAddr The input address.
+ * @param outWeak The resultant weak reference.
+ * @return Returns an error code.
+ * @since 2024/08/09
+ */
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copyWeak)(
+	sjme_attrInNotNull volatile sjme_alloc_pool* pool,
+	sjme_attrInPositiveNonZero sjme_jint size,
+	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
+	sjme_attrInNullable sjme_pointer inEnqueueData,
+	sjme_attrOutNotNull sjme_pointer* outAddr,
+	sjme_attrInNotNull sjme_pointer inAddr,
+	sjme_attrOutNullable sjme_alloc_weak* outWeak
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
@@ -444,6 +467,24 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
 #define sjme_alloc_copy(pool, size, outAddr, inAddr) \
 	sjme_alloc_copyR((pool), (size), (outAddr), (inAddr), \
 		SJME_DEBUG_FILE_LINE_FUNC)
+
+/**
+ * Allocates a copy of the given data as a weak reference.
+ *
+ * @param pool The pool to allocate within.
+ * @param size The allocation size.
+ * @param inEnqueue The enqueue which is called for cleanup.
+ * @param inEnqueueData Any data for cleaning up.
+ * @param outAddr The output address.
+ * @param inAddr The input address.
+ * @param outWeak The resultant weak reference.
+ * @return Returns an error code.
+ * @since 2024/08/09
+ */
+#define sjme_alloc_copyWeak(pool, size, inEnqueue, inEnqueueData, \
+	outAddr, inAddr, outWeak) \
+	sjme_alloc_copyWeakR((pool), (size), (inEnqueue), (inEnqueueData), \
+	(outAddr), (inAddr), (outWeak), SJME_DEBUG_FILE_LINE_FUNC)
 
 /**
  * Allocates a formatted string.
@@ -551,7 +592,7 @@ sjme_errorCode sjme_alloc_weakGetPointer(
  */
 sjme_errorCode sjme_alloc_weakRef(
 	sjme_attrInNotNull sjme_pointer addr,
-	sjme_attrOutNotNull sjme_alloc_weak* outWeak,
+	sjme_attrOutNullable sjme_alloc_weak* outWeak,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData);
 

@@ -423,7 +423,7 @@ sjme_jboolean sjme_mock_doRomLibrary(
 	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
 	sjme_jint libraryIndex;
-	sjme_rom_libraryCore* library;
+	sjme_rom_libraryBase* library;
 	sjme_mock_configDataRomLibrary* data;
 	sjme_rom_libraryFunctions* functions;
 

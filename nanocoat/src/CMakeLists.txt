@@ -11,6 +11,7 @@ squirreljme_multilib_add_static_library(Core
 	boot.c
 	bytecode.c
 	classy.c
+	cleanup.c
 	descriptor.c
 	gfx.c
 	jdwp.c
