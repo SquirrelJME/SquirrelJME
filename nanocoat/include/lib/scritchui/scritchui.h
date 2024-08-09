@@ -18,12 +18,14 @@
 
 #include "sjme/config.h"
 #include "sjme/multithread.h"
+#include "sjme/tokenUtils.h"
 #include "sjme/gfxConst.h"
 #include "sjme/stdTypes.h"
 #include "sjme/list.h"
 #include "sjme/native.h"
 #include "lib/scritchinput/scritchinput.h"
 #include "sjme/alloc.h"
+#include "sjme/dylib.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
