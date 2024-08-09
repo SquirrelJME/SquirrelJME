@@ -20,6 +20,7 @@
 #include "sjme/alloc.h"
 #include "sjme/rom.h"
 #include "sjme/list.h"
+#include "sjme/native.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -32,13 +33,44 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * The type of default directory used.
+ * 
+ * This is the same as @c cc.squirreljme.runtime.cldc.full.SystemPathProvider .
+ * 
+ * @since 2024/08/09
+ */
+typedef enum sjme_nvm_defaultDirectoryType
+{
+	/** Unknown. */
+	SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN,
+	
+	/** The cache directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_CACHE,
+	
+	/** The config directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_CONFIG,
+	
+	/** The data directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_DATA,
+	
+	/** The state directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_STATE,
+	
+	/** The number of default directory types. */
+	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE
+} sjme_nvm_defaultDirectoryType;
+
 struct sjme_nvm_bootParam
 {
 	/** The payload to use for booting the virtual machine. */
 	const sjme_payload_config* payload;
+	
+	/** The boot suite to use. */
+	sjme_rom_suite bootSuite;
 
 	/** The suite to use for the library set. */
-	sjme_rom_suite suite;
+	sjme_rom_suite librarySuite;
 
 	/** The class path for main by library IDs. */
 	const sjme_list_sjme_jint* mainClassPathById;
@@ -54,6 +86,9 @@ struct sjme_nvm_bootParam
 
 	/** System properties. */
 	const sjme_list_sjme_lpcstr* sysProps;
+	
+	/** The native abstraction layer to use. */
+	const sjme_nal* nal;
 };
 
 /**
@@ -89,6 +124,38 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_attrCheckReturn;
 
 /**
+ * Locates the default boot suite.
+ * 
+ * @param inPool The pool for allocations.
+ * @param nal The native abstraction layer to use.
+ * @param outSuite The resultant suite.
+ * @return Any resultant error code, if any.
+ * @since 2024/08/09
+ */
+sjme_errorCode sjme_nvm_defaultBootSuite(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite);
+
+/**
+ * Obtains the default directory for the given type.
+ * 
+ * This is the same as @c cc.squirreljme.runtime.cldc.full.SystemPathProvider .
+ * 
+ * @param type The type of directory to get. 
+ * @param nal The native abstraction layer to use.
+ * @param outPath The path where the directory is written to.
+ * @param outPathLen The length of the path.
+ * @return Any resultant error, if any.
+ * @since 2024/08/09
+ */
+sjme_errorCode sjme_nvm_defaultDir(
+	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrOutNotNull sjme_lpstr outPath,
+	sjme_attrInPositiveNonZero sjme_jint outPathLen);
+
+/**
  * Destroys the virtual machine.
  * 
  * @param state The state to destroy.
@@ -103,7 +170,8 @@ sjme_errorCode sjme_nvm_destroy(
 /**
  * Parses a standard command line sequence.
  * 
- * @param inPool The pool to allocate values wihtin.
+ * @param inPool The pool to allocate values within.
+ * @param nal The native abstraction layer to use.
  * @param param The output parameters. 
  * @param argc The argument count.
  * @param argv The arguments.
@@ -113,6 +181,7 @@ sjme_errorCode sjme_nvm_destroy(
  */
 sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrInOutNotNull sjme_nvm_bootParam* outParam,
 	sjme_attrInPositiveNonZero sjme_jint argc,
 	sjme_attrInNotNull sjme_lpcstr* argv);

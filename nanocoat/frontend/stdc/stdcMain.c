@@ -31,6 +31,10 @@ int main(int argc, sjme_lpcstr* argv)
 	sjme_nvm_bootParam bootParam;
 	sjme_jint exitCode;
 	sjme_jboolean terminated;
+	const sjme_nal* nal;
+	
+	/* Use default NAL. */
+	nal = &sjme_nal_default;
 	
 	/* Allocate main pool. */
 	pool = NULL;
@@ -40,10 +44,11 @@ int main(int argc, sjme_lpcstr* argv)
 	
 	/* Setup boot parameters. */
 	memset(&bootParam, 0, sizeof(bootParam));
+	bootParam.nal = nal;
 	
 	/* Parse main arguments. */
 	if (sjme_error_is(error = sjme_nvm_parseCommandLine(pool,
-		&bootParam, argc, argv)))
+		nal, &bootParam, argc, argv)))
 	{
 		/* Exit instead of continuing? */
 		if (error == SJME_ERROR_EXIT)
@@ -54,6 +59,13 @@ int main(int argc, sjme_lpcstr* argv)
 		
 		goto fail_argParse;
 	}
+	
+	/* If there was no boot suite specified, load a default one. */
+	if (bootParam.bootSuite == NULL)
+		if (sjme_error_is(error = sjme_nvm_defaultBootSuite(pool,
+			nal, &bootParam.bootSuite)) ||
+			bootParam.bootSuite == NULL)
+			goto fail_bootSuiteBackup;
 	
 	/* Boot the virtual machine. */
 	inState = NULL;
@@ -98,7 +110,8 @@ fail_loop:
 fail_boot:
 	if (inState != NULL)
 		sjme_nvm_destroy(inState, NULL);
-	
+
+fail_bootSuiteBackup:
 fail_argParse:
 fail_poolInit:
 	if (pool != NULL)

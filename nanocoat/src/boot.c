@@ -19,6 +19,7 @@
 #include "sjme/charSeq.h"
 #include "sjme/native.h"
 #include "sjme/cleanup.h"
+#include "sjme/path.h"
 
 /**
  * Help parameter storage.
@@ -186,10 +187,17 @@ sjme_errorCode sjme_nvm_boot(
 			numMergeSuites++;
 	}
 
-	/* Is there a pre-existing suite to use? */
-	if (result->bootParamCopy->suite != NULL)
-		mergeSuites[numMergeSuites++] =
-			(sjme_rom_suite)result->bootParamCopy->suite;
+	/* Is there a pre-existing boot suite to use? */
+	if (result->bootParamCopy->bootSuite != NULL)
+		if (numMergeSuites < FIXED_SUITE_COUNT)
+			mergeSuites[numMergeSuites++] =
+				(sjme_rom_suite)result->bootParamCopy->bootSuite;
+	
+	/* Is there a library suite to use? */
+	if (result->bootParamCopy->librarySuite != NULL)
+		if (numMergeSuites < FIXED_SUITE_COUNT)
+			mergeSuites[numMergeSuites++] =
+				(sjme_rom_suite)result->bootParamCopy->librarySuite;
 
 	/* No suites at all? Running with absolutely nothing??? */
 	if (numMergeSuites <= 0)
@@ -274,6 +282,60 @@ fail_reservedPoolAlloc:
 	return sjme_error_defaultOr(error, SJME_ERROR_BOOT_FAILURE);
 }
 
+sjme_errorCode sjme_nvm_defaultBootSuite(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite)
+{
+	sjme_errorCode error;
+	sjme_cchar dataPath[SJME_MAX_PATH];
+	
+	if (inPool == NULL || nal == NULL || outSuite == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Initialize. */
+	memset(&dataPath, 0, sizeof(dataPath));
+	
+	/* Get default data directory. */
+	if (sjme_error_is(error = sjme_nvm_defaultDir(
+		SJME_NVM_DEFAULT_DIRECTORY_DATA, nal,
+		dataPath, SJME_MAX_PATH - 1)))
+		return sjme_error_default(error);
+	
+	/* Use ROM from here. */
+	if (sjme_error_is(error = sjme_path_resolveAppend(
+		dataPath, SJME_MAX_PATH - 1,
+		"squirreljme.jar")))
+		return sjme_error_default(error);
+	
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_defaultDir(
+	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrOutNotNull sjme_lpstr outPath,
+	sjme_attrInPositiveNonZero sjme_jint outPathLen)
+{
+	sjme_errorCode error;
+	
+	if (nal == NULL || outPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (type <= SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN ||
+		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (outPathLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+#if defined(SJME_CONFIG_HAS_WINDOWS)
+#else
+#endif
+	
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
 {
 	if (state == NULL)
@@ -298,6 +360,7 @@ sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
 
 sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrInOutNotNull sjme_nvm_bootParam* outParam,
 	sjme_attrInPositiveNonZero sjme_jint argc,
 	sjme_attrInNotNull sjme_lpcstr* argv)
@@ -309,7 +372,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	const sjme_nvm_helpParam* help;
 	sjme_nal_stdFFunc helpOut;
 	
-	if (inPool == NULL || outParam == NULL || argv == NULL)
+	if (inPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (argc <= 0)
@@ -332,9 +395,9 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				"--version"))
 		{
 			/* Where is this information going? */
-			helpOut = sjme_nal_default.stdErrF;
+			helpOut = nal->stdErrF;
 			if (sjme_charSeq_equalsUtfR(&argSeq, "--version"))
-				helpOut = sjme_nal_default.stdOutF;
+				helpOut = nal->stdOutF;
 			
 			/* Print version information to stdout. */
 			/* https://www.oracle.com/java/technologies/javase/ */
@@ -363,9 +426,9 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				"--help"))
 		{
 			/* Where is this information going? */
-			helpOut = sjme_nal_default.stdErrF;
+			helpOut = nal->stdErrF;
 			if (sjme_charSeq_equalsUtfR(&argSeq, "--help"))
-				helpOut = sjme_nal_default.stdOutF;
+				helpOut = nal->stdOutF;
 			
 			/* Normal usage. */
 			helpOut(

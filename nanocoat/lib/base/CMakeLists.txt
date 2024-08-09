@@ -20,6 +20,7 @@ squirreljme_multilib_add_library(Base
 	list.c
 	multithread.c
 	native.c
+	path.c
 	seekable.c
 	stream.c
 	tree.c
