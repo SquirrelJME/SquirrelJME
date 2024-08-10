@@ -44,6 +44,7 @@ extern "C"
  * Gets the given name at the given index.
  * 
  * @param inPath The input path. 
+ * @param inPathLen The input path length.
  * @param inName The name index to get, if @c -1 this will return the
  * root component if there is one.
  * @param outBase The pointer to the path base.
@@ -57,6 +58,7 @@ extern "C"
  */
 sjme_errorCode sjme_path_getName(
 	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrInNegativeOnePositive sjme_jint inName,
 	sjme_attrOutNullable sjme_lpcstr* outBase,
 	sjme_attrOutNullable sjme_jint* outBaseDx,
@@ -68,24 +70,28 @@ sjme_errorCode sjme_path_getName(
  * Gets the number of names that appear in the given path.
  * 
  * @param inPath The input path.
+ * @param inPathLen The input path length.
  * @param outCount The resultant name count.
  * @return Any resultant error, if any.
  * @since 2024/08/10
  */
 sjme_errorCode sjme_path_getNameCount(
 	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrOutNotNull sjme_attrOutPositive sjme_jint* outCount); 
 
 /**
  * Returns whether the given path as a root.
  * 
  * @param inPath The path to check. 
+ * @param inPathLen The input path length.
  * @param hasRoot If there is a root or not.
  * @return Any resultant error, if any.
  * @since 2024/08/10 
  */
 sjme_errorCode sjme_path_hasRoot(
 	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrOutNotNull sjme_jboolean* hasRoot);
 
 /**

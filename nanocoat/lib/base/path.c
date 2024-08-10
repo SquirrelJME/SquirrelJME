@@ -14,6 +14,7 @@
 
 sjme_errorCode sjme_path_getName(
 	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrInNegativeOnePositive sjme_jint inName,
 	sjme_attrOutNullable sjme_lpcstr* outBase,
 	sjme_attrOutNullable sjme_jint* outBaseDx,
@@ -25,6 +26,9 @@ sjme_errorCode sjme_path_getName(
 		outEnd == NULL && outEndDx == NULL && outLen == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	if (inPathLen < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
 	if (inName < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
@@ -33,22 +37,53 @@ sjme_errorCode sjme_path_getName(
 
 sjme_errorCode sjme_path_getNameCount(
 	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrOutNotNull sjme_attrOutPositive sjme_jint* outCount)
 {
 	if (inPath == NULL || outCount == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inPathLen < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_path_hasRoot(
 	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrOutNotNull sjme_jboolean* hasRoot)
 {
+	sjme_errorCode error;
+	sjme_jint len;
+	
 	if (inPath == NULL || hasRoot == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	return sjme_error_notImplemented(0);
+	if (inPathLen < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Try to get the root. */
+	len = -1;
+	if (sjme_error_is(error = sjme_path_getName(inPath, inPathLen,
+		-1,
+		NULL, NULL, NULL, NULL,
+		&len)) || len <= 0)
+	{
+		/* Does not have one? */
+		if (error == SJME_ERROR_NO_SUCH_ELEMENT)
+		{
+			*hasRoot = SJME_JNI_TRUE;
+			return SJME_ERROR_NONE;
+		}
+		
+		/* Other failure. */
+		return sjme_error_default(error);
+	}
+	
+	/* If this was reached, there is none. */
+	*hasRoot = SJME_JNI_FALSE;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_path_resolveAppend(
@@ -87,6 +122,10 @@ sjme_errorCode sjme_path_resolveAppend(
 	else if (subLen > subPathLen)
 		subLen = subPathLen;
 	
+	/* Nothing to do? */
+	if (subLen == 0)
+		return SJME_ERROR_NONE;
+	
 	/* Pre-determine if this will overflow. */
 	if (outLen < 0 || subLen < 0 || (outLen + subLen) < 0 ||
 		(outLen + subLen) + 1 > outPathLen)
@@ -95,7 +134,7 @@ sjme_errorCode sjme_path_resolveAppend(
 	/* How many names does the sub-path have? */
 	subNames = -1;
 	if (sjme_error_is(error = sjme_path_getNameCount(subPath,
-		&subNames)) || subNames < 0)
+		subPathLen, &subNames)) || subNames < 0)
 		return error;
 	
 	/* Pointless? */
@@ -119,7 +158,8 @@ sjme_errorCode sjme_path_resolveAppend(
 			/* Get subcomponent to add individually. */
 			subBase = NULL;
 			subBaseLen = -1;
-			if (sjme_error_is(error = sjme_path_getName(subPath,
+			if (sjme_error_is(error = sjme_path_getName(
+				subPath, subPathLen,
 				subName, &subBase, NULL,
 				NULL, NULL, &subBaseLen)) ||
 				subBase == NULL || subBaseLen < 0)
