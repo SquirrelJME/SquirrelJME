@@ -155,6 +155,9 @@ typedef struct sjme_rom_libraryFunctions sjme_rom_libraryFunctions;
 
 struct sjme_rom_libraryBase
 {
+	/** Common data. */
+	sjme_nvm_commonBase common;
+	
 	/** Functions used to access library information. */
 	const sjme_rom_libraryFunctions* functions;
 
@@ -337,6 +340,9 @@ struct sjme_rom_suiteFunctions
 
 struct sjme_rom_suiteBase
 {
+	/** Common data. */
+	sjme_nvm_commonBase common;
+	
 	/** Functions. */
 	const sjme_rom_suiteFunctions* functions;
 

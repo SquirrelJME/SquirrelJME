@@ -101,6 +101,9 @@ typedef enum sjme_nvm_structType
 	/** Unknown. */
 	SJME_NVM_STRUCTTYPE_UNKNOWN,
 	
+	/** NanoCoat state. */
+	SJME_NVM_STRUCTTYPE_STATE,
+	
 	/** The number of structure types. */
 	SJME_NVM_NUM_STRUCTTYPE
 } sjme_nvm_structType;
@@ -111,6 +114,13 @@ typedef enum sjme_nvm_structType
  * @since 2024/08/09
  */
 typedef struct sjme_nvm_commonBase sjme_nvm_commonBase;
+
+/**
+ * Common data structure pointer.
+ * 
+ * @since 2024/08/10
+ */
+typedef sjme_nvm_commonBase* sjme_nvm_common;
 
 /**
  * Represents the virtual machine state.
@@ -783,6 +793,9 @@ struct sjme_nvm_commonBase
 
 struct sjme_nvm_stateBase
 {
+	/** Common data. */
+	sjme_nvm_commonBase common;
+	
 	/** The memory pool to use for allocations. */
 	sjme_alloc_pool* allocPool;
 

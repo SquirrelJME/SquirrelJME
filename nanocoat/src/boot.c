@@ -165,6 +165,11 @@ sjme_errorCode sjme_nvm_boot(
 		sizeof(*result), sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
 		(sjme_pointer*)&result, NULL)) || result == NULL)
 		goto fail_resultAlloc;
+	
+	/* Initialize. */
+	if (sjme_error_is(error = sjme_nvm_objectInit(result, 
+		SJME_NVM_STRUCTTYPE_STATE)))
+		goto fail_resultInit;
 
 	/* Make a defensive copy of the boot parameters. */
 	if (sjme_error_is(error = sjme_alloc_copyWeak(reservedPool,
@@ -286,6 +291,7 @@ fail_bootParamCopy:
 	if (result != NULL && result->bootParamCopy != NULL)
 		sjme_alloc_free(result->bootParamCopy);
 
+fail_resultInit:
 fail_resultAlloc:
 	if (result != NULL)
 		sjme_alloc_free(result);

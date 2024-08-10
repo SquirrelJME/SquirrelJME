@@ -1372,3 +1372,34 @@ sjme_errorCode sjme_alloc_weakRef(
 	
 	return error;
 }
+
+sjme_errorCode sjme_alloc_weakRefGet(
+	sjme_attrInNotNull sjme_pointer addr,
+	sjme_attrOutNullable sjme_alloc_weak* outWeak)
+{
+	sjme_errorCode error;
+	sjme_alloc_link* link;
+	sjme_alloc_weak weak;
+	
+	if (addr == NULL || outWeak == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+		
+	/* Recover the link. */
+	link = NULL;
+	if (sjme_error_is(error = sjme_alloc_getLink(addr,
+		&link)) || link == NULL)
+		return sjme_error_default(error);
+	
+	/* No weak reference here? */
+	weak = link->weak;
+	if (weak == NULL)
+		return SJME_ERROR_NOT_WEAK_REFERENCE;
+	
+	/* Otherwise give it. */
+	*outWeak = weak;
+	return SJME_ERROR_NONE;
+}
+

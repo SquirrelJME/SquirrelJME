@@ -48,6 +48,18 @@ sjme_errorCode sjme_nvm_enqueueHandler(
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInValue sjme_jboolean isBlockFree);
 
+/**
+ * Initializes the given object.
+ * 
+ * @param inCommon The object. 
+ * @param inType The type of object this is.
+ * @return Any resultant error, if any.
+ * @since 2024/08/10
+ */
+sjme_errorCode sjme_nvm_objectInit(
+	sjme_attrInNotNull sjme_nvm_common inCommon,
+	sjme_attrInValue sjme_nvm_structType inType);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

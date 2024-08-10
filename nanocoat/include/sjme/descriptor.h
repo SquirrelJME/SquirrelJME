@@ -37,6 +37,9 @@ extern "C" {
  */
 typedef struct sjme_desc_identifier
 {
+	/** Common data. */
+	sjme_nvm_commonBase common;
+	
 	/** The hash of the identifier. */
 	sjme_jint hash;
 	
@@ -113,6 +116,9 @@ SJME_LIST_DECLARE(sjme_desc_fieldTypeComponent, 0);
 
 struct sjme_desc_fieldType
 {
+	/** Common data. */
+	sjme_nvm_commonBase common;
+	
 	/** The hash of the field. */
 	sjme_jint hash;
 	
@@ -140,6 +146,9 @@ SJME_LIST_DECLARE(sjme_desc_fieldType, 1);
  */
 typedef struct sjme_desc_className
 {
+	/** Common data. */
+	sjme_nvm_commonBase common;
+	
 	/** The hash for this class. */
 	sjme_jint hash;
 
@@ -167,6 +176,9 @@ typedef struct sjme_desc_className
  */
 typedef struct sjme_desc_methodType
 {
+	/** Common data. */
+	sjme_nvm_commonBase common;
+	
 	/** The hash of the descriptor. */
 	sjme_jint hash;
 	

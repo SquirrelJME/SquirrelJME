@@ -17,3 +17,34 @@ sjme_errorCode sjme_nvm_enqueueHandler(
 	return sjme_error_notImplemented(0);
 }
 
+sjme_errorCode sjme_nvm_objectInit(
+	sjme_attrInNotNull sjme_nvm_common inCommon,
+	sjme_attrInValue sjme_nvm_structType inType)
+{
+	sjme_errorCode error;
+	sjme_alloc_weak weak;
+	
+	if (inCommon == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inType <= SJME_NVM_STRUCTTYPE_UNKNOWN ||
+		inType >= SJME_NVM_NUM_STRUCTTYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Must be a weak pointer. */
+	weak = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakRefGet(inCommon,
+		&weak)) || weak == NULL)
+		return sjme_error_default(error);
+	
+	/* And must have enqueue cleanup. */
+	if (weak->enqueue != sjme_nvm_enqueueHandler)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Set type information. */
+	inCommon->type = inType;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+

@@ -604,6 +604,18 @@ sjme_errorCode sjme_alloc_weakRef(
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData);
 
+/**
+ * Obtains a weak reference without incrementation or creation.
+ * 
+ * @param addr The address to get the weak pointer of.
+ * @param outWeak The resultant weak pointer.
+ * @return Any resultant error, if any.
+ * @since 2024/08/10
+ */
+sjme_errorCode sjme_alloc_weakRefGet(
+	sjme_attrInNotNull sjme_pointer addr,
+	sjme_attrOutNullable sjme_alloc_weak* outWeak);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
