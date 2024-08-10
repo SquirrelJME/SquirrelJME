@@ -325,7 +325,7 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 	/* Use ROM from here. */
 	if (sjme_error_is(error = sjme_path_resolveAppend(
 		dataPath, SJME_MAX_PATH - 1,
-		SJME_JAR_NAME)))
+		SJME_JAR_NAME, INT32_MAX)))
 		return sjme_error_default(error);
 	
 	return sjme_error_notImplemented(0);
@@ -420,7 +420,7 @@ sjme_errorCode sjme_nvm_defaultDir(
 		
 		/* Append subdirectory path. */
 		if (sjme_error_is(error = sjme_path_resolveAppend(work,
-			limit - 1, insteadSub)))
+			limit - 1, insteadSub, INT32_MAX)))
 			return sjme_error_default(error);
 	}
 		
@@ -430,7 +430,7 @@ sjme_errorCode sjme_nvm_defaultDir(
 	
 	/* Append SquirrelJME on top. */
 	if (sjme_error_is(error = sjme_path_resolveAppend(work,
-		limit - 1, SJME_DIRECTORY_NAME)))
+		limit - 1, SJME_DIRECTORY_NAME, INT32_MAX)))
 		return sjme_error_default(error);
 	
 	/* Is there enough room to fit? */
