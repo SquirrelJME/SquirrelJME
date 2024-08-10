@@ -46,16 +46,16 @@ typedef sjme_errorCode (*sjme_nal_currentTimeMillisFunc)(
  * Reads from the system environment a variable.
  * 
  * @param buf The output buffer.
- * @param off The offset into the buffer.
- * @param len The length of the buffer, used for both input and output where
- * the output is the true length of the returned buffer.
- * @return Any resultant error code.
+ * @param bufLen The length of the buffer to store within.
+ * @param env The environment variable to lookup.
+ * @return Any resultant error code. Will return @c SJME_ERROR_NO_SUCH_ELEMENT
+ * if there is no environment variable with the given name.
  * @since 2023/08/05
  */
 typedef sjme_errorCode (*sjme_nal_getEnvFunc)(
-	sjme_attrInNotNull sjme_attrOutNotNullBuf(len) sjme_jbyte* buf,
-	sjme_attrInValue sjme_attrInPositive sjme_jint off,
-	sjme_attrInOutNotNull sjme_attrInPositive sjme_jint* len)
+	sjme_attrInNotNull sjme_attrOutNotNullBuf(len) sjme_lpstr buf,
+	sjme_attrInPositiveNonZero sjme_jint bufLen,
+	sjme_attrInNotNull sjme_lpcstr env)
 	sjme_attrCheckReturn; 
 
 /**

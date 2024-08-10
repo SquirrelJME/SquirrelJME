@@ -24,9 +24,15 @@
 #if defined(SJME_PATH_SHORT)
 	/** The name of the SquirrelJME Jar. */
 	#define SJME_JAR_NAME "sjme.jar"
+
+	/** The name of the SquirrelJME directory. */
+	#define SJME_DIRECTORY_NAME "sjme"
 #else
 	/** The name of the SquirrelJME Jar. */
 	#define SJME_JAR_NAME "squirreljme.jar"
+
+	/** The name of the SquirrelJME directory. */
+	#define SJME_DIRECTORY_NAME "squirreljme"
 #endif
 
 /**
@@ -326,6 +332,9 @@ sjme_errorCode sjme_nvm_defaultDir(
 	sjme_attrInPositiveNonZero sjme_jint outPathLen)
 {
 	sjme_errorCode error;
+	sjme_lpcstr useEnv, insteadSub;
+	sjme_jint limit;
+	sjme_lpstr work;
 	
 	if (nal == NULL || outPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -337,23 +346,95 @@ sjme_errorCode sjme_nvm_defaultDir(
 	if (outPathLen <= 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
+	if (nal->getEnv == NULL)
+		return sjme_error_notImplemented(0);
+	
+	/* Initialize. */
+	limit = (SJME_MAX_PATH > outPathLen ? SJME_MAX_PATH : outPathLen);
+	work = sjme_alloca(sizeof(*work) * limit);
+	if (work == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	memset(work, 0, sizeof(*work) * limit);
+	
 #if defined(SJME_CONFIG_HAS_WINDOWS)
 	if (1)
 		sjme_todo("Impl?");
 #elif defined(SJME_CONFIG_HAS_DOS)
 	if (1)
 		sjme_todo("Impl?");
+		
 #elif defined(SJME_CONFIG_HAS_LINUX) || \
 	defined(SJME_CONFIG_HAS_BSD) || \
 	defined(SJME_CONFIG_HAS_MACOS) || \
 	defined(SJME_CONFIG_HAS_CYGWIN)
-	if (1)
-		sjme_todo("Impl?");
+	
+	/* Which are we interested in? */
+	useEnv = NULL;
+	insteadSub = NULL;
+	switch (type)
+	{
+		case SJME_NVM_DEFAULT_DIRECTORY_CACHE:
+			useEnv = "XDG_CACHE_HOME";
+			insteadSub = ".cache";
+			break;
+			
+		case SJME_NVM_DEFAULT_DIRECTORY_CONFIG:
+			useEnv = "XDG_CONFIG_HOME";
+			insteadSub = ".config";
+			break;
+			
+		case SJME_NVM_DEFAULT_DIRECTORY_DATA:
+			useEnv = "XDG_DATA_HOME";
+			insteadSub = ".local/share";
+			break;
+			
+		case SJME_NVM_DEFAULT_DIRECTORY_STATE:
+			useEnv = "XDG_STATE_HOME";
+			insteadSub = ".local/state";
+			break;
+		
+			/* Unknown. */
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
+	/* Check if environment variable is available. */
+	if (sjme_error_is(error = nal->getEnv(
+		work, limit - 1, useEnv)))
+	{
+		/* This is not considered an error, we just try something else. */
+		if (error != SJME_ERROR_NO_SUCH_ELEMENT)
+			return sjme_error_default(error);
+		
+		/* Get home variable instead, to add onto. */
+		memset(&work, 0, sizeof(work));
+		if (sjme_error_is(error = nal->getEnv(
+			work, limit - 1, "HOME")))
+			return sjme_error_default(error);
+		
+		/* Append subdirectory path. */
+		if (sjme_error_is(error = sjme_path_resolveAppend(work,
+			limit - 1, insteadSub)))
+			return sjme_error_default(error);
+	}
+		
 #else
 	return sjme_error_notImplemented(0);
 #endif
 	
-	return sjme_error_notImplemented(0);
+	/* Append SquirrelJME on top. */
+	if (sjme_error_is(error = sjme_path_resolveAppend(work,
+		limit - 1, SJME_DIRECTORY_NAME)))
+		return sjme_error_default(error);
+	
+	/* Is there enough room to fit? */
+	limit = strlen(work);
+	if (limit > outPathLen)
+		return SJME_ERROR_PATH_TOO_LONG;
+	
+	/* Copy it over. */
+	memmove(outPath, work, sizeof(*outPath) * limit);
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
