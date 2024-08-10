@@ -413,7 +413,7 @@ sjme_errorCode sjme_nvm_defaultDir(
 			return sjme_error_default(error);
 		
 		/* Get home variable instead, to add onto. */
-		memset(&work, 0, sizeof(work));
+		memset(work, 0, sizeof(work));
 		if (sjme_error_is(error = nal->getEnv(
 			work, limit - 1, "HOME")))
 			return sjme_error_default(error);
@@ -434,7 +434,7 @@ sjme_errorCode sjme_nvm_defaultDir(
 		return sjme_error_default(error);
 	
 	/* Is there enough room to fit? */
-	limit = strlen(work);
+	limit = strlen(work) + 1;
 	if (limit > outPathLen)
 		return SJME_ERROR_PATH_TOO_LONG;
 	

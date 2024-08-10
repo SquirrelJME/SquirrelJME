@@ -31,6 +31,37 @@
 
 #include "sjme/native.h"
 
+static sjme_errorCode sjme_nal_default_getEnv(
+	sjme_attrInNotNull sjme_attrOutNotNullBuf(len) sjme_lpstr buf,
+	sjme_attrInPositiveNonZero sjme_jint bufLen,
+	sjme_attrInNotNull sjme_lpcstr env)
+{
+	sjme_lpcstr value;
+	sjme_jint len;
+	
+	if (buf == NULL || env == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (bufLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Get value. */
+	value = getenv(env);
+	
+	/* If missing, fail. */
+	if (value == NULL)
+		return SJME_ERROR_NO_SUCH_ELEMENT;
+	
+	/* Check bounds. */
+	len = strlen(value);
+	if (len < 0 || len + 1 > bufLen)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Copy over. */
+	memmove(buf, value, sizeof(*buf) * (len + 1));
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nal_default_nanoTime(
 	sjme_attrOutNotNull sjme_jlong* result)
 {
@@ -126,7 +157,7 @@ static sjme_errorCode sjme_nal_default_stdOutF(
 const sjme_nal sjme_nal_default =
 {
 	.currentTimeMillis = NULL,
-	.getEnv = NULL,
+	.getEnv = sjme_nal_default_getEnv,
 	.nanoTime = sjme_nal_default_nanoTime,
 	.stdErrF = sjme_nal_default_stdErrF,
 	.stdOutF = sjme_nal_default_stdOutF,
