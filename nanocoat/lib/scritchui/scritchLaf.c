@@ -60,15 +60,17 @@ sjme_errorCode sjme_scritchui_core_lafElementColor(
 		elementColor >= SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	if (inState->impl->lafElementColor == NULL)
-		return sjme_error_notImplemented(0);
-	
 	/* Panels are always black on white. */
 	rgb = 0;
 	if (elementColor == SJME_SCRITCHUI_LAF_ELEMENT_COLOR_PANEL_BACKGROUND)
 		rgb = 0xFFFFFFFF;
 	else if (elementColor == SJME_SCRITCHUI_LAF_ELEMENT_COLOR_PANEL_FOREGROUND)
 		rgb = 0xFF000000;
+	
+	/* Native theming not supported, use fallback. */
+	else if (inState->impl->lafElementColor == NULL)
+		sjme_scritchui_core_lafFallbackColor(elementColor,
+			&rgb);
 	
 	/* Obtain theme color. */
 	else if (sjme_error_is(error = inState->impl->lafElementColor(
