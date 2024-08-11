@@ -118,6 +118,9 @@ public class Graphics
 		this._graphics = __g;
 		this._bgColor = __bgColor;
 		this._lockFlush = __flush;
+		
+		// Default to the default font to use
+		__g.setFont(Font.getDefaultFont()._midpFont);
 	}
 	
 	@Api
