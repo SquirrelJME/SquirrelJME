@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Range;
  */
 @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 public final class NativeScritchDylib
-{
+{ 
 	/** The state pointer. */
 	final long _stateP;
 	
@@ -489,14 +489,14 @@ public final class NativeScritchDylib
 	 */
 	static native PencilBracket __hardwareGraphics(
 		long __stateP,
-		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
-		@NotNull Object __buf,
-		@Nullable int[] __pal,
+		int __pf,
+		int __bw,
+		int __bh,
+		Object __buf,
+		int[] __pal,
 		int __sx, int __sy,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sh)
+		int __sw,
+		int __sh)
 		throws MLECallError;
 	
 	/**

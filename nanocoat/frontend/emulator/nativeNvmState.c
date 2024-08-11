@@ -38,8 +38,8 @@ jlong SJME_JNI_METHOD(SJME_CLASS_NVM_STATE, _1_1nvmBoot)
 	}
 
 	/* Set self reference object, we need a global reference for it. */
-	state->frontEnd.data = env;
-	state->frontEnd.wrapper = SJME_FRONT_END_WRAP(
+	state->common.frontEnd.data = env;
+	state->common.frontEnd.wrapper = SJME_FRONT_END_WRAP(
 		(*env)->NewGlobalRef(env, wrapper));
 
 	/* Use pointer to the state. */
