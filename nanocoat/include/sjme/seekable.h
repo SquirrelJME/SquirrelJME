@@ -140,6 +140,8 @@ typedef struct sjme_seekable_functions
  * @param outStream The resultant stream.
  * @param base The base address within the seekable.
  * @param length The number of bytes to stream.
+ * @param forwardClose If the input stream is closed, should the seekable
+ * also be closed?
  * @return Any resultant error, if any.
  * @since 2024/01/01
  */
@@ -147,7 +149,8 @@ sjme_errorCode sjme_seekable_asInputStream(
 	sjme_attrInNotNull sjme_seekable seekable,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInPositive sjme_jint base,
-	sjme_attrInPositive sjme_jint length);
+	sjme_attrInPositive sjme_jint length,
+	sjme_attrInValue sjme_jboolean forwardClose);
 
 /**
  * Closes the given seekable.
@@ -194,6 +197,7 @@ sjme_errorCode sjme_seekable_openMemory(
 /**
  * Wraps a seekable and provides a sub-seekable within this.
  *
+ * @param inPool The pool to allocate within.
  * @param inSeekable The input seekable, to get the sub-seekable of.
  * @param outSeekable The output seekable.
  * @param base The base address to get.
@@ -202,6 +206,7 @@ sjme_errorCode sjme_seekable_openMemory(
  * @since 2024/01/01
  */
 sjme_errorCode sjme_seekable_openSeekable(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInPositive sjme_jint base,

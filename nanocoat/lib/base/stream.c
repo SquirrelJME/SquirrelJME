@@ -343,6 +343,19 @@ sjme_errorCode sjme_stream_inputClose(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_stream_inputOpenDeflate(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull sjme_stream_input inCompressed,
+	sjme_attrInValue sjme_jboolean forwardClose)
+{
+	if (inPool == NULL || outStream == NULL || inCompressed == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_stream_inputOpenMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,

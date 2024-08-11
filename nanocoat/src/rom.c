@@ -236,7 +236,7 @@ sjme_errorCode sjme_rom_libraryRawSize(
 	return SJME_ERROR_NONE;
 
 fail_unsupported:
-	/* Cache whether this is supported so we need not bother? */
+	/* Cache whether this is supported, so we need not bother? */
 	if (!library->cache.checkedRawAccess)
 	{
 		library->cache.checkedRawAccess = SJME_JNI_TRUE;
@@ -349,7 +349,8 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 
 			/* Get the library ID. */
 			if (sjme_error_is(error = inSuite->functions->libraryId(
-				inSuite, checkLibrary, &libId)))
+				inSuite, checkLibrary,
+				&libId)))
 				return sjme_error_default(error);
 
 			/* Library ID function did not store it? */
@@ -493,6 +494,7 @@ sjme_errorCode sjme_rom_suiteLibraries(
 	*outLibs = result;
 	return SJME_ERROR_NONE;
 }
+
 sjme_errorCode sjme_rom_suiteFromMerge(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,

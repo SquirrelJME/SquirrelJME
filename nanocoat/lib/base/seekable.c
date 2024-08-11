@@ -47,7 +47,8 @@ sjme_errorCode sjme_seekable_asInputStream(
 	sjme_attrInNotNull sjme_seekable seekable,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInPositive sjme_jint base,
-	sjme_attrInPositive sjme_jint length)
+	sjme_attrInPositive sjme_jint length,
+	sjme_attrInValue sjme_jboolean forwardClose)
 {
 	if (seekable == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -125,12 +126,13 @@ sjme_errorCode sjme_seekable_openMemory(
 }
 
 sjme_errorCode sjme_seekable_openSeekable(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInPositive sjme_jint base,
 	sjme_attrInPositive sjme_jint length)
 {
-	if (inSeekable == NULL || outSeekable == NULL)
+	if (inPool == NULL || inSeekable == NULL || outSeekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (base < 0 || length < 0 || (base + length) < 0)

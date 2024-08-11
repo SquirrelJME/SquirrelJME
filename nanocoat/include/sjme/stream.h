@@ -37,28 +37,28 @@ extern "C" {
  *
  * @since 2023/12/30
  */
-typedef struct sjme_stream_inputCore sjme_stream_inputCore;
+typedef struct sjme_stream_inputBase sjme_stream_inputBase;
 
 /**
  * Represents a data stream that can be read from.
  *
  * @since 2023/12/30
  */
-typedef struct sjme_stream_inputCore* sjme_stream_input;
+typedef struct sjme_stream_inputBase* sjme_stream_input;
 
 /**
  * The core output stream which is written to with data.
  *
  * @since 2024/01/09
  */
-typedef struct sjme_stream_outputCore sjme_stream_outputCore;
+typedef struct sjme_stream_outputBase sjme_stream_outputBase;
 
 /**
  * Represents a data stream that can be written to.
  *
  * @since 2023/12/30
  */
-typedef struct sjme_stream_outputCore* sjme_stream_output;
+typedef struct sjme_stream_outputBase* sjme_stream_output;
 
 /**
  * Determines the number of bytes which are quickly available before blocking
@@ -117,7 +117,7 @@ typedef struct sjme_stream_inputFunctions
 	sjme_stream_inputReadFunc read;
 } sjme_stream_inputFunctions;
 
-struct sjme_stream_inputCore
+struct sjme_stream_inputBase
 {
 	/** Functions for input. */
 	const sjme_stream_inputFunctions* functions;
@@ -140,7 +140,7 @@ struct sjme_stream_inputCore
  * @since 2024/01/01
  */
 #define SJME_INPUT_UNCOMMON(uncommonType, base) \
-	SJME_UNCOMMON_MEMBER(sjme_stream_inputCore, uncommon, \
+	SJME_UNCOMMON_MEMBER(sjme_stream_inputBase, uncommon, \
 		uncommonType, (base))
 
 /**
@@ -151,7 +151,7 @@ struct sjme_stream_inputCore
  * @since 2024/01/01
  */
 #define SJME_SIZEOF_INPUT_STREAM_N(uncommonSize) \
-    SJME_SIZEOF_UNCOMMON_N(sjme_stream_inputCore, uncommon, uncommonSize)
+    SJME_SIZEOF_UNCOMMON_N(sjme_stream_inputBase, uncommon, uncommonSize)
 
 /**
  * Determines the size of the input stream structure.
@@ -203,7 +203,7 @@ typedef struct sjme_stream_outputFunctions
 	sjme_stream_outputWriteFunc write;
 } sjme_stream_outputFunctions;
 
-struct sjme_stream_outputCore
+struct sjme_stream_outputBase
 {
 	/** Functions for output. */
 	const sjme_stream_outputFunctions* functions;
@@ -226,7 +226,7 @@ struct sjme_stream_outputCore
  * @since 2024/01/09
  */
 #define SJME_OUTPUT_UNCOMMON(uncommonType, base) \
-	SJME_UNCOMMON_MEMBER(sjme_stream_outputCore, uncommon, \
+	SJME_UNCOMMON_MEMBER(sjme_stream_outputBase, uncommon, \
 		uncommonType, (base))
 
 /**
@@ -237,7 +237,7 @@ struct sjme_stream_outputCore
  * @since 2024/01/09
  */
 #define SJME_SIZEOF_OUTPUT_STREAM_N(uncommonSize) \
-    SJME_SIZEOF_UNCOMMON_N(sjme_stream_outputCore, uncommon, uncommonSize)
+    SJME_SIZEOF_UNCOMMON_N(sjme_stream_outputBase, uncommon, uncommonSize)
 
 /**
  * Determines the size of the output stream structure.
@@ -272,6 +272,23 @@ sjme_errorCode sjme_stream_inputAvailable(
 sjme_errorCode sjme_stream_inputClose(
 	sjme_attrInNotNull sjme_stream_input stream);
 
+/**
+ * Opens a decompressing input stream from the given compressed input stream.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param outStream The resultant stream.
+ * @param inCompressed The stream to decompress.
+ * @param forwardClose If the input stream is closed, should the compressed
+ * input stream also be closed?
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+sjme_errorCode sjme_stream_inputOpenDeflate(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull sjme_stream_input inCompressed,
+	sjme_attrInValue sjme_jboolean forwardClose);
+	
 /**
  * Creates a stream which reads from the given block of memory.
  *
