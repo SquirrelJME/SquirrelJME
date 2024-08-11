@@ -169,6 +169,22 @@ sjme_errorCode sjme_seekable_fromSeekable(
 	sjme_attrInPositive sjme_jint length);
 
 /**
+ * Reads from the given seekable.
+ * 
+ * @param seekable The seekable to read from. 
+ * @param outBuf The output buffer.
+ * @param seekBase The base of the seekable to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+sjme_errorCode sjme_seekable_read(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_jbyte* outBuf,
+	sjme_attrInPositive sjme_jint seekBase,
+	sjme_attrInPositive sjme_jint length);
+
+/**
  * Locks a region of a seekable so that the data stored there can be accessed
  * directly via memory access. Depending on the seekable implementation, there
  * are multiple possibilities as to what may occur: if the seekable is
@@ -222,6 +238,18 @@ sjme_errorCode sjme_seekable_regionUnlock(
 	sjme_attrInNotNull sjme_seekable_lock inLock,
 	sjme_attrInRange(0, SJME_NUM_SEEKABLE_UNLOCK_ACTION)
 		sjme_seekable_unlockAction action);
+
+/**
+ * Returns the size of the given seekable.
+ * 
+ * @param seekable The seekable to get the size of. 
+ * @param outSize The size of the seekable.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+sjme_errorCode sjme_seekable_size(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_jint* outSize);
 
 /*--------------------------------------------------------------------------*/
 
