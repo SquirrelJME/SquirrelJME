@@ -61,32 +61,77 @@ typedef struct sjme_stream_outputBase sjme_stream_outputBase;
 typedef struct sjme_stream_outputBase* sjme_stream_output;
 
 /**
+ * Implementation state within streams.
+ * 
+ * @since 2024/08/11
+ */
+typedef struct sjme_stream_implState
+{
+	/** Internal handle. */
+	sjme_pointer handle;
+	
+	/** Internal buffer. */
+	sjme_pointer buffer;
+	
+	/** Internal offset. */
+	sjme_jint offset;
+	
+	/** Internal limit. */
+	sjme_jint limit;
+	
+	/** Internal index. */
+	sjme_jint index;
+	
+	/** Internal length. */
+	sjme_jint length;
+} sjme_stream_implState;
+
+/**
  * Determines the number of bytes which are quickly available before blocking
  * takes effect.
  *
  * @param stream The stream to read from.
+ * @param inImplState The implementation state.
  * @param outAvail The number of bytes which are available.
  * @return On any resultant error.
  * @since 2024/01/01
  */
 typedef sjme_errorCode (*sjme_stream_inputAvailableFunc)(
 	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail);
 
 /**
  * Closes the given input stream and frees up any resources.
  *
  * @param stream The stream to close.
+ * @param inImplState The implementation state.
  * @return On any resultant error.
  * @since 2024/01/01
  */
 typedef sjme_errorCode (*sjme_stream_inputCloseFunc)(
-	sjme_attrInNotNull sjme_stream_input stream);
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState);
+
+/**
+ * Initializes the new input stream.
+ * 
+ * @param stream The current stream.
+ * @param inImplState The implementation state.
+ * @param data Any passed in data through initialize.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+typedef sjme_errorCode (*sjme_stream_inputInitFunc)(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState,
+	sjme_attrInNullable sjme_pointer data);
 
 /**
  * Reads from the given input stream and writes to the destination buffer.
  *
  * @param stream The stream to read from.
+ * @param inImplState The implementation state.
  * @param readCount The number of bytes which were read, if end of stream is
  * reached this will be @c -1 .
  * @param dest The destination buffer.
@@ -96,6 +141,7 @@ typedef sjme_errorCode (*sjme_stream_inputCloseFunc)(
  */
 typedef sjme_errorCode (*sjme_stream_inputReadFunc)(
 	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
 	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint length);
@@ -112,6 +158,9 @@ typedef struct sjme_stream_inputFunctions
 
 	/** Close stream. */
 	sjme_stream_inputCloseFunc close;
+	
+	/** Stream initialization. */
+	sjme_stream_inputInitFunc init;
 
 	/** Read from stream. */
 	sjme_stream_inputReadFunc read;
@@ -119,66 +168,52 @@ typedef struct sjme_stream_inputFunctions
 
 struct sjme_stream_inputBase
 {
+	/** Implementation state. */
+	sjme_stream_implState implState;
+	
+	/** Front end holders. */
+	sjme_frontEnd frontEnd;
+	
 	/** Functions for input. */
 	const sjme_stream_inputFunctions* functions;
 
-	/** Front end holders. */
-	sjme_frontEnd frontEnd;
-
 	/** The current number of read bytes. */
 	sjme_jint totalRead;
-
-	/** Uncommon stream specific data. */
-	sjme_jlong uncommon[sjme_flexibleArrayCount];
 };
-
-/**
- * Gets the state information from the given input stream.
- *
- * @param uncommonType The uncommon type.
- * @param base The base pointer.
- * @since 2024/01/01
- */
-#define SJME_INPUT_UNCOMMON(uncommonType, base) \
-	SJME_UNCOMMON_MEMBER(sjme_stream_inputBase, uncommon, \
-		uncommonType, (base))
-
-/**
- * Determines the size of the input stream structure.
- *
- * @param uncommonSize The uncommon size.
- * @return The input stream structure size.
- * @since 2024/01/01
- */
-#define SJME_SIZEOF_INPUT_STREAM_N(uncommonSize) \
-    SJME_SIZEOF_UNCOMMON_N(sjme_stream_inputBase, uncommon, uncommonSize)
-
-/**
- * Determines the size of the input stream structure.
- *
- * @param uncommonType The uncommon type.
- * @return The input stream structure size.
- * @since 2024/01/01
- */
-#define SJME_SIZEOF_INPUT_STREAM(uncommonType) \
-	SJME_SIZEOF_INPUT_STREAM_N(sizeof(uncommonType))
 
 /**
  * Closes the specified output stream.
  *
  * @param stream The output stream to close.
+ * @param inImplState The implementation state.
  * @param optResult Optional output result.
  * @return On any resultant error, if any.
  * @since 2024/01/09
  */
 typedef sjme_errorCode (*sjme_stream_outputCloseFunc)(
 	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState,
 	sjme_attrOutNullable sjme_pointer* optResult);
+
+/**
+ * Initializes the new output stream.
+ * 
+ * @param stream The current stream.
+ * @param inImplState The implementation state.
+ * @param data Any passed in data through initialize.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+typedef sjme_errorCode (*sjme_stream_outputInitFunc)(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState,
+	sjme_attrInNullable sjme_pointer data);
 
 /**
  * Writes to the given output stream.
  *
  * @param stream The stream to write to.
+ * @param inImplState The implementation state.
  * @param buf The bytes to write.
  * @param length The number of bytes to write.
  * @return On any resultant error, if any.
@@ -186,6 +221,7 @@ typedef sjme_errorCode (*sjme_stream_outputCloseFunc)(
  */
 typedef sjme_errorCode (*sjme_stream_outputWriteFunc)(
 	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState,
 	sjme_attrInNotNull sjme_cpointer buf,
 	sjme_attrInPositiveNonZero sjme_jint length);
 
@@ -198,6 +234,9 @@ typedef struct sjme_stream_outputFunctions
 {
 	/** Closes the specified stream. */
 	sjme_stream_outputCloseFunc close;
+	
+	/** Stream initialization. */
+	sjme_stream_outputInitFunc init;
 
 	/** Writes to the given output stream. */
 	sjme_stream_outputWriteFunc write;
@@ -205,49 +244,18 @@ typedef struct sjme_stream_outputFunctions
 
 struct sjme_stream_outputBase
 {
-	/** Functions for output. */
-	const sjme_stream_outputFunctions* functions;
-
+	/** Implementation state. */
+	sjme_stream_implState implState;
+	
 	/** Front end holders. */
 	sjme_frontEnd frontEnd;
-
+	
+	/** Functions for output. */
+	const sjme_stream_outputFunctions* functions;
+	
 	/** The current number of written bytes. */
 	sjme_jint totalWritten;
-
-	/** Uncommon stream specific data. */
-	sjme_jlong uncommon[sjme_flexibleArrayCount];
 };
-
-/**
- * Gets the state information from the given output stream.
- *
- * @param uncommonType The uncommon type.
- * @param base The base pointer.
- * @since 2024/01/09
- */
-#define SJME_OUTPUT_UNCOMMON(uncommonType, base) \
-	SJME_UNCOMMON_MEMBER(sjme_stream_outputBase, uncommon, \
-		uncommonType, (base))
-
-/**
- * Determines the size of the output stream structure.
- *
- * @param uncommonSize The uncommon size.
- * @return The output stream structure size.
- * @since 2024/01/09
- */
-#define SJME_SIZEOF_OUTPUT_STREAM_N(uncommonSize) \
-    SJME_SIZEOF_UNCOMMON_N(sjme_stream_outputBase, uncommon, uncommonSize)
-
-/**
- * Determines the size of the output stream structure.
- *
- * @param uncommonType The uncommon type.
- * @return The output stream structure size.
- * @since 2024/01/09
- */
-#define SJME_SIZEOF_OUTPUT_STREAM(uncommonType) \
-	SJME_SIZEOF_OUTPUT_STREAM_N(sizeof(uncommonType))
 
 /**
  * Determines the number of bytes which are quickly available before blocking
@@ -271,6 +279,24 @@ sjme_errorCode sjme_stream_inputAvailable(
  */
 sjme_errorCode sjme_stream_inputClose(
 	sjme_attrInNotNull sjme_stream_input stream);
+
+/**
+ * Opens an input stream.
+ * 
+ * @param inPool The pool to allocate within. 
+ * @param outStream The resultant stream.
+ * @param inFunctions Stream implementation functions.
+ * @param data Any data to pass to the initialization routine.
+ * @param copyFrontEnd Any front end data to copy.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+sjme_errorCode sjme_stream_inputOpen(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull const sjme_stream_inputFunctions* inFunctions,
+	sjme_attrInNullable sjme_pointer data,
+	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
 /**
  * Opens a decompressing input stream from the given compressed input stream.
@@ -503,6 +529,24 @@ struct sjme_stream_outputData
 typedef sjme_errorCode (*sjme_stream_outputByteArrayFinishFunc)(
 	sjme_attrInNotNull sjme_stream_output stream,
 	sjme_attrInNotNull sjme_stream_resultByteArray* result);
+
+/**
+ * Opens an output stream.
+ * 
+ * @param inPool The pool to allocate within. 
+ * @param outStream The resultant stream.
+ * @param inFunctions Stream implementation functions.
+ * @param data Any data to pass to the initialization routine.
+ * @param copyFrontEnd Any front end data to copy.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+sjme_errorCode sjme_stream_outputOpen(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_stream_output* outStream,
+	sjme_attrInNotNull const sjme_stream_inputFunctions* inFunctions,
+	sjme_attrInNullable sjme_pointer data,
+	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
 /**
  * Opens a dynamically resizing output byte array.

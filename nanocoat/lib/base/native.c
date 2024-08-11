@@ -33,10 +33,22 @@
 
 
 static sjme_errorCode sjme_nal_default_cFileClose(
-	sjme_attrInNotNull sjme_seekable* inSeekable,
-	sjme_attrInNotNull sjme_frontEnd* inFrontEnd)
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState)
 {
-	if (inSeekable == NULL || inFrontEnd == NULL)
+	if (inSeekable == NULL || inImplState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nal_default_cFileInit(
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState,
+	sjme_attrInNullable sjme_pointer data)
+{
+	if (inSeekable == NULL || inImplState == NULL || data == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -44,13 +56,13 @@ static sjme_errorCode sjme_nal_default_cFileClose(
 }
 
 static sjme_errorCode sjme_nal_default_cFileRead(
-	sjme_attrInNotNull sjme_seekable* inSeekable,
-	sjme_attrInNotNull sjme_frontEnd* inFrontEnd,
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState,
 	sjme_attrOutNotNullBuf(length) sjme_jbyte* outBuf,
 	sjme_attrInPositive sjme_jint base,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
-	if (inSeekable == NULL || inFrontEnd == NULL || outBuf == NULL)
+	if (inSeekable == NULL || inImplState == NULL || outBuf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -58,11 +70,11 @@ static sjme_errorCode sjme_nal_default_cFileRead(
 }
 
 static sjme_errorCode sjme_nal_default_cFileSize(
-	sjme_attrInNotNull sjme_seekable* inSeekable,
-	sjme_attrInNotNull sjme_frontEnd* inFrontEnd,
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState,
 	sjme_attrOutNotNull sjme_jint* outSize)
 {
-	if (inSeekable == NULL || inFrontEnd == NULL || outSize == NULL)
+	if (inSeekable == NULL || inImplState == NULL || outSize == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -73,6 +85,7 @@ static sjme_errorCode sjme_nal_default_cFileSize(
 static const sjme_seekable_functions sjme_nal_default_cFileFunctions =
 {
 	.close = sjme_nal_default_cFileClose,
+	.init = sjme_nal_default_cFileInit,
 	.read = sjme_nal_default_cFileRead,
 	.size = sjme_nal_default_cFileSize,
 };
@@ -84,7 +97,6 @@ static sjme_errorCode sjme_nal_default_fileOpen(
 {
 	sjme_errorCode error;
 	FILE* cFile;
-	sjme_frontEnd frontEnd;
 	sjme_seekable result;
 	
 	if (inPool == NULL || inPath == NULL || outSeekable == NULL)
@@ -95,15 +107,11 @@ static sjme_errorCode sjme_nal_default_fileOpen(
 	if (cFile == NULL)
 		return sjme_nal_errno(errno);
 	
-	/* Setup front end data. */
-	memset(&frontEnd, 0, sizeof(frontEnd));
-	frontEnd.wrapper = cFile;
-	
 	/* Setup stream. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_seekable_open(inPool,
 		&result, &sjme_nal_default_cFileFunctions,
-		&frontEnd)) || result == NULL)
+		cFile, NULL)) || result == NULL)
 	{
 		/* Close before we fail. */
 		fclose(cFile);

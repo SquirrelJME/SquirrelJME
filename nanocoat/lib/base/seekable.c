@@ -14,6 +14,9 @@
 
 struct sjme_seekableBase
 {
+	/** Implementation state. */
+	sjme_seekable_implState implState;
+	
 	/** Front end data. */
 	sjme_frontEnd frontEnd;
 	
@@ -73,6 +76,7 @@ sjme_errorCode sjme_seekable_open(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull const sjme_seekable_functions* inFunctions,
+	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
 {
 	sjme_errorCode error;
@@ -84,6 +88,7 @@ sjme_errorCode sjme_seekable_open(
 	/* These are required. */
 	if (inFunctions->size == NULL ||
 		inFunctions->read == NULL ||
+		inFunctions->init == NULL ||
 		inFunctions->close == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
@@ -99,6 +104,16 @@ sjme_errorCode sjme_seekable_open(
 	if (copyFrontEnd != NULL)
 		memmove(&result->frontEnd,
 			copyFrontEnd, sizeof(*copyFrontEnd));
+	
+	/* Initialize. */
+	if (sjme_error_is(error = result->functions->init(result,
+		&result->implState, data)))
+	{
+		/* Free before failing. */
+		sjme_alloc_free(result);
+		
+		return sjme_error_default(error);
+	}
 	
 	/* Success! */
 	*outSeekable = result;

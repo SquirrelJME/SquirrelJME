@@ -98,20 +98,76 @@ typedef enum sjme_seekable_unlockAction
 	SJME_NUM_SEEKABLE_UNLOCK_ACTION
 } sjme_seekable_unlockAction;
 
-typedef sjme_errorCode (*sjme_seekable_streamCloseFunc)(
-	sjme_attrInNotNull sjme_seekable* inSeekable,
-	sjme_attrInNotNull sjme_frontEnd* inFrontEnd);
+/**
+ * Implementation state within seekables.
+ * 
+ * @since 2024/08/11
+ */
+typedef struct sjme_seekable_implState
+{
+	/** Internal handle. */
+	sjme_pointer handle;
+	
+	/** Internal index. */
+	sjme_jint index;
+} sjme_seekable_implState;
 
+/**
+ * Closes the seekable stream.
+ * 
+ * @param inSeekable The current seekable.
+ * @param inImplState The implementation state.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+typedef sjme_errorCode (*sjme_seekable_streamCloseFunc)(
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState);
+
+/**
+ * Initializes the new seekable.
+ * 
+ * @param inSeekable The current seekable.
+ * @param inImplState The implementation state.
+ * @param data Any passed in data through initialize.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+typedef sjme_errorCode (*sjme_seekable_streamInitFunc)(
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState,
+	sjme_attrInNullable sjme_pointer data);
+
+/**
+ * Reads from the given seekable.
+ * 
+ * @param inSeekable The current seekable.
+ * @param inImplState The implementation state.
+ * @param outBuf The buffer to write to.
+ * @param base The base address to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
 typedef sjme_errorCode (*sjme_seekable_streamReadFunc)(
-	sjme_attrInNotNull sjme_seekable* inSeekable,
-	sjme_attrInNotNull sjme_frontEnd* inFrontEnd,
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState,
 	sjme_attrOutNotNullBuf(length) sjme_jbyte* outBuf,
 	sjme_attrInPositive sjme_jint base,
 	sjme_attrInPositiveNonZero sjme_jint length);
 
+/**
+ * Returns the size of the seekable.
+ * 
+ * @param inSeekable The current seekable.
+ * @param inImplState The implementation state.
+ * @param outSize The resultant size of the seekable.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
 typedef sjme_errorCode (*sjme_seekable_streamSizeFunc)(
-	sjme_attrInNotNull sjme_seekable* inSeekable,
-	sjme_attrInNotNull sjme_frontEnd* inFrontEnd,
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState,
 	sjme_attrOutNotNull sjme_jint* outSize);
 
 /**
@@ -123,6 +179,9 @@ typedef struct sjme_seekable_functions
 {
 	/** Closes the stream. */
 	sjme_seekable_streamCloseFunc close;
+	
+	/** Initializes the stream. */
+	sjme_seekable_streamInitFunc init;
 	
 	/** Read from the given stream. */
 	sjme_seekable_streamReadFunc read;
@@ -168,6 +227,7 @@ sjme_errorCode sjme_seekable_close(
  * @param inPool The pool to allocate within.
  * @param outSeekable The resultant seekable.
  * @param inFunctions The seekable functions.
+ * @param data Any data to pass to the initialize function.
  * @param copyFrontEnd Front-end data as needed.
  * @return Any resultant error, if any,
  * @since 2024/08/11
@@ -176,6 +236,7 @@ sjme_errorCode sjme_seekable_open(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull const sjme_seekable_functions* inFunctions,
+	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
 /**

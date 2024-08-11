@@ -23,6 +23,9 @@ squirreljme_multilib_add_library(Base
 	path.c
 	seekable.c
 	stream.c
+	streamByte.c
+	streamDeflate.c
+	streamMemory.c
 	tree.c
 	util.c
 	zip.c)

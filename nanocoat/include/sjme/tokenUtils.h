@@ -240,31 +240,6 @@ extern "C"
 	(sizeof((*((type*)0)).member))
 
 /**
- * Uncommon structure size.
- *
- * @param structType The structure type.
- * @param uncommonMember The uncommon member.
- * @param uncommonSize The uncommon size to use.
- * @since 2024/01/01
- */
-#define SJME_SIZEOF_UNCOMMON_N(structType, uncommonMember, uncommonSize) \
-	(sizeof(structType) + (offsetof(structType, \
-		uncommonMember[0]) - offsetof(structType, uncommonMember)) + \
-		(uncommonSize))
-
-/**
- * Returns the uncommon member.
- *
- * @param structType The structure type.
- * @param uncommonMember The uncommon member.
- * @param uncommonType The uncommon type.
- * @param base The base structure pointer to access.
- * @since 2024/01/01
- */
-#define SJME_UNCOMMON_MEMBER(structType, uncommonMember, uncommonType, base) \
-	((uncommonType*)(sjme_pointer)(&((structType*)((base)))->uncommonMember))
-
-/**
  * Returns the basic type ID of the given type.
  *
  * @param type The type to get the basic type of.
