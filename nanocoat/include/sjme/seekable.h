@@ -35,30 +35,30 @@ extern "C" {
  *
  * @since 2024/01/01
  */
-typedef struct sjme_seekableCore sjme_seekableCore;
+typedef struct sjme_seekableBase sjme_seekableBase;
 
 /**
  * Opaque seekable data.
  *
  * @since 2024/01/01
  */
-typedef struct sjme_seekableCore* sjme_seekable;
+typedef struct sjme_seekableBase* sjme_seekable;
 
 /**
  * Seekable lock core structure.
  *
  * @since 2024/01/01
  */
-typedef struct sjme_seekable_lockCore sjme_seekable_lockCore;
+typedef struct sjme_seekable_lockBase sjme_seekable_lockBase;
 
 /**
  * Opaque locked seekable structure.
  *
  * @since 2024/01/01
  */
-typedef struct sjme_seekable_lockCore* sjme_seekable_lock;
+typedef struct sjme_seekable_lockBase* sjme_seekable_lock;
 
-struct sjme_seekable_lockCore
+struct sjme_seekable_lockBase
 {
 	/** The owning seekable. */
 	sjme_seekable seekable;
@@ -99,6 +99,16 @@ typedef enum sjme_seekable_unlockAction
 } sjme_seekable_unlockAction;
 
 /**
+ * Functions for seekable implementations.
+ * 
+ * @since 2024/08/11
+ */
+typedef struct sjme_seekable_functions
+{
+	int todo;
+} sjme_seekable_functions;
+
+/**
  * Provides an input stream to read data from a seekable, note that
  * unlike @c sjme_seekable_regionLockAsInputStream there is no locking
  * involved and as such there may be a performance penalty or otherwise.
@@ -115,6 +125,16 @@ sjme_errorCode sjme_seekable_asInputStream(
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInPositive sjme_jint base,
 	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Closes the given seekable.
+ * 
+ * @param seekable The seekable to close. 
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+sjme_errorCode sjme_seekable_close(
+	sjme_attrInNotNull sjme_seekable seekable);
 
 /**
  * Initializes a seekable from the given memory range.

@@ -23,7 +23,16 @@ sjme_errorCode sjme_seekable_asInputStream(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_seekable_close(
+	sjme_attrInNotNull sjme_seekable seekable)
+{
+	if (seekable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_seekable_fromMemory(
@@ -43,7 +52,7 @@ sjme_errorCode sjme_seekable_fromMemory(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_seekable_fromSeekable(
@@ -59,7 +68,7 @@ sjme_errorCode sjme_seekable_fromSeekable(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_seekable_regionLock(
@@ -75,7 +84,7 @@ sjme_errorCode sjme_seekable_regionLock(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_seekable_regionLockAsInputStream(
@@ -91,7 +100,7 @@ sjme_errorCode sjme_seekable_regionLockAsInputStream(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_seekable_regionUnlock(
@@ -106,5 +115,5 @@ sjme_errorCode sjme_seekable_regionUnlock(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }

@@ -309,9 +309,15 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 {
 	sjme_errorCode error;
 	sjme_cchar dataPath[SJME_MAX_PATH];
+	sjme_seekable rom;
+	sjme_rom_suite result;
 	
 	if (inPool == NULL || nal == NULL || outSuite == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* We cannot load if filesystem access is not supported. */
+	if (nal->fileOpen == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Initialize. */
 	memset(&dataPath, 0, sizeof(dataPath));
@@ -328,7 +334,27 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 		SJME_JAR_NAME, INT32_MAX)))
 		return sjme_error_default(error);
 	
-	return sjme_error_notImplemented(0);
+	/* Open main ROM file. */
+	rom = NULL;
+	if (sjme_error_is(error = nal->fileOpen(dataPath,
+		&rom)) || rom == NULL)
+		return sjme_error_default(error);
+	
+	/* Load suite from the ZIP. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_rom_suiteFromZipSeekable(inPool,
+		&result, rom)) || result == NULL)
+	{
+		/* Make sure to close the file. */
+		sjme_seekable_close(rom);
+		
+		/* Fail. */
+		return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	*outSuite = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_defaultDir(

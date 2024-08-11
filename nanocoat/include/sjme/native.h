@@ -18,6 +18,7 @@
 
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
+#include "sjme/seekable.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -41,6 +42,18 @@ extern "C" {
 typedef sjme_errorCode (*sjme_nal_currentTimeMillisFunc)(
 	sjme_attrOutNotNull sjme_jlong* result)
 	sjme_attrCheckReturn;
+
+/**
+ * Opens the given file natively.
+ * 
+ * @param inPath The path to open.
+ * @param outSeekable The seekable to open within.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+typedef sjme_errorCode (*sjme_nal_fileOpenFunc)(
+	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrOutNotNull sjme_seekable* outSeekable);
 
 /**
  * Reads from the system environment a variable.
@@ -91,6 +104,9 @@ typedef struct sjme_nal
 {
 	/** Current time in milliseconds. */
 	sjme_nal_currentTimeMillisFunc currentTimeMillis;
+	
+	/** Opens a given native file. */
+	sjme_nal_fileOpenFunc fileOpen;
 	
 	/** Get environment variable. */
 	sjme_nal_getEnvFunc getEnv;

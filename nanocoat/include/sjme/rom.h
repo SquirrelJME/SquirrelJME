@@ -552,6 +552,20 @@ sjme_errorCode sjme_rom_suiteFromPayload(
 	sjme_attrInNotNull const sjme_payload_config* payloadConfig);
 
 /**
+ * Initializes a suite from a Zip.
+ *
+ * @param pool The pool to use for allocations.
+ * @param outSuite The resultant suite.
+ * @param seekable The seekable to access the Zip through.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+sjme_errorCode sjme_rom_suiteFromZipSeekable(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrInNotNull sjme_seekable seekable);
+
+/**
  * Returns all of the libraries which are available within this suite.
  *
  * @param inSuite The input suite.

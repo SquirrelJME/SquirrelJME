@@ -31,6 +31,13 @@
 
 #include "sjme/native.h"
 
+static sjme_errorCode sjme_nal_default_fileOpen(
+	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrOutNotNull sjme_seekable* outSeekable)
+{
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_nal_default_getEnv(
 	sjme_attrInNotNull sjme_attrOutNotNullBuf(len) sjme_lpstr buf,
 	sjme_attrInPositiveNonZero sjme_jint bufLen,
@@ -157,6 +164,7 @@ static sjme_errorCode sjme_nal_default_stdOutF(
 const sjme_nal sjme_nal_default =
 {
 	.currentTimeMillis = NULL,
+	.fileOpen = sjme_nal_default_fileOpen,
 	.getEnv = sjme_nal_default_getEnv,
 	.nanoTime = sjme_nal_default_nanoTime,
 	.stdErrF = sjme_nal_default_stdErrF,

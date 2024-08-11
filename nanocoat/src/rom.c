@@ -544,6 +544,17 @@ sjme_errorCode sjme_rom_suiteFromPayload(
 	return SJME_ERROR_UNKNOWN;
 }
 
+sjme_errorCode sjme_rom_suiteFromZipSeekable(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrInNotNull sjme_seekable seekable)
+{
+	if (pool == NULL || outSuite == NULL || seekable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_rom_suiteNew(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
