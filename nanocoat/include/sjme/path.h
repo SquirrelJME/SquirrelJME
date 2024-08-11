@@ -40,6 +40,68 @@ extern "C"
 	#defne SJME_PATH_SHORT
 #endif
 
+#if defined(SJME_CONFIG_HAS_WINDOWS) || defined(SJME_CONFIG_HAS_MACOS_CLASSIC)
+	/** Separator for PATH and classpath. */
+	#define SJME_CONFIG_PATH_SEPARATOR ";"
+#else
+	/** Separator for PATH and classpath. */
+	#define SJME_CONFIG_PATH_SEPARATOR ":"
+#endif
+
+/** DOS path style. */
+#define SJME_CONFIG_PATH_STYLE_DOS 1
+
+/** Macintosh path style. */
+#define SJME_CONFIG_PATH_STYLE_MACOS_CLASSIC 2
+
+/** UNIX path style. */
+#define SJME_CONFIG_PATH_STYLE_UNIX 3
+
+#if defined(SJME_CONFIG_HAS_WINDOWS) || defined(SJME_CONFIG_HAS_DOS)
+	/** Path style in use. */
+	#define SJME_CONFIG_PATH_STYLE SJME_CONFIG_PATH_STYLE_DOS
+#elif defined(SJME_CONFIG_HAS_MACOS_CLASSIC)
+	/** Path style in use. */
+	#define SJME_CONFIG_PATH_STYLE SJME_CONFIG_PATH_STYLE_MACOS_CLASSIC
+#else
+	/** Path style in use. */
+	#define SJME_CONFIG_PATH_STYLE SJME_CONFIG_PATH_STYLE_UNIX
+#endif
+
+#if SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_DOS
+	/** Separator for file paths. */
+	#define SJME_CONFIG_FILE_SEPARATOR "\\"
+#elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_MACOS_CLASSIC
+	/** Separator for file paths. */
+	#define SJME_CONFIG_FILE_SEPARATOR ":"
+#elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_UNIX
+	/** Separator for file paths. */
+	#define SJME_CONFIG_FILE_SEPARATOR "/"
+#else
+	#error Unknown native path style.
+#endif
+
+/**
+ * Gets the given name at the given index, usage is more basic than the
+ * full version.
+ * 
+ * @param inPath The input path. 
+ * @param inPathLen The input path length.
+ * @param inName The name index to get, if @c -1 this will return the
+ * root component if there is one.
+ * @param outBase The pointer to the path base.
+ * @param outLen The length of the path name.
+ * @return Any resultant error, if any. Returns @c SJME_ERROR_NO_SUCH_ELEMENT
+ * if the root component was requested and there was none.
+ * @since 2024/08/10
+ */
+sjme_errorCode sjme_path_getName(
+	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInPositive sjme_jint inPathLen,
+	sjme_attrInNegativeOnePositive sjme_jint inName,
+	sjme_attrOutNullable sjme_lpcstr* outBase,
+	sjme_attrOutNullable sjme_jint* outLen);
+
 /**
  * Gets the given name at the given index.
  * 
@@ -52,11 +114,13 @@ extern "C"
  * @param outEnd The pointer to the path end.
  * @param outEndDx The index of the path end.
  * @param outLen The length of the path name.
+ * @param outCount The number of name components, exclusive to all the
+ * other arguments.
  * @return Any resultant error, if any. Returns @c SJME_ERROR_NO_SUCH_ELEMENT
  * if the root component was requested and there was none.
  * @since 2024/08/10
  */
-sjme_errorCode sjme_path_getName(
+sjme_errorCode sjme_path_getNameF(
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrInNegativeOnePositive sjme_jint inName,
@@ -64,7 +128,8 @@ sjme_errorCode sjme_path_getName(
 	sjme_attrOutNullable sjme_jint* outBaseDx,
 	sjme_attrOutNullable sjme_lpcstr* outEnd,
 	sjme_attrOutNullable sjme_jint* outEndDx,
-	sjme_attrOutNullable sjme_jint* outLen);
+	sjme_attrOutNullable sjme_jint* outLen,
+	sjme_attrOutNullable sjme_jint* outCount);
 
 /**
  * Gets the number of names that appear in the given path.

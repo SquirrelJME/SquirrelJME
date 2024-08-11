@@ -631,25 +631,6 @@ extern "C" {
 	#define sjme_align64 
 #endif
 
-#if defined(SJME_CONFIG_HAS_WINDOWS) || defined(SJME_CONFIG_HAS_MACOS_CLASSIC)
-	/** Separator for PATH and classpath. */
-	#define SJME_CONFIG_PATH_SEPARATOR ";"
-#else
-	/** Separator for PATH and classpath. */
-	#define SJME_CONFIG_PATH_SEPARATOR ":"
-#endif
-
-#if defined(SJME_CONFIG_HAS_WINDOWS) || defined(SJME_CONFIG_HAS_DOS)
-	/** Separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR "\\"
-#elif defined(SJME_CONFIG_HAS_MACOS_CLASSIC)
-	/** Separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR ":"
-#else
-	/** Separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR "/"
-#endif
-
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
