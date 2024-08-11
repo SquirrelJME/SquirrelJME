@@ -64,7 +64,7 @@ typedef struct sjme_test
 	sjme_alloc_pool* pool;
 
 	/** Any extra global value that is needed. */
-	void* global;
+	sjme_pointer global;
 } sjme_test;
 
 /**

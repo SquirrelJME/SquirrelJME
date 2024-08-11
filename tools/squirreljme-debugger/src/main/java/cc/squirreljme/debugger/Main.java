@@ -12,12 +12,15 @@ package cc.squirreljme.debugger;
 import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.jdwp.JDWPCommLink;
 import cc.squirreljme.jdwp.JDWPCommLinkDirection;
-import java.awt.Frame;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.jetbrains.annotations.NotNull;
@@ -149,7 +152,7 @@ public class Main
 		
 		// Connect?
 		else
-			socket = new Socket(__connect.substring(0, lastCol), port);
+			socket = Main.__connectTry(__connect.substring(0, lastCol), port);
 		
 		// Set some socket options
 		socket.setKeepAlive(true);
@@ -223,5 +226,67 @@ public class Main
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		Utils.maximize(frame);
+	}
+	
+	/**
+	 * Attempts to connect to the given host and port.
+	 *
+	 * @param __host The host to connect to.
+	 * @param __port The port to connect to.
+	 * @return The connected socket.
+	 * @throws IOException If it could not be connected to.
+	 * @since 2024/06/25
+	 */
+	@NotNull
+	static Socket __connectTry(String __host, int __port)
+		throws IOException
+	{
+		// Try connecting multiple times
+		List<ConnectException> fails = new ArrayList<>();
+		for (int i = 0; i < 15; i++)
+		{
+			// Attempt connection
+			try
+			{
+				return new Socket(__host, __port);
+			}
+			
+			// Try to see if this is a connection refused, there is no
+			// other way to check unfortunately
+			catch (ConnectException __e)
+			{
+				// This might have refused in it, possibly
+				String msg = String.format("%s %s",
+					__e.getMessage(), __e.getLocalizedMessage()).toLowerCase();
+				if (!msg.contains("refuse"))
+					throw __e;
+				
+				// Add to failures for later suppression
+				fails.add(__e);
+			}
+			
+			// Sleep before trying again
+			try
+			{
+				// A second should be enough to try again
+				Thread.sleep(1_000);
+			}
+			
+			// If interrupted, just stop
+			catch (InterruptedException __ignored)
+			{
+				break;
+			}
+		}
+		
+		// Setup throwable
+		IOException fail = new IOException(String.format(
+			"Could not connect to %s:%d.", __host, __port));
+		
+		// Add all the failures as connection issues
+		for (ConnectException sup : fails)
+			fail.addSuppressed(sup);
+		
+		throw fail;
 	}
 }

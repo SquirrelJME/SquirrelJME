@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "proto.h"
 #include "sjme/alloc.h"
 #include "test.h"
@@ -170,6 +172,25 @@ const testOrderType testLinkOrder[NUM_SCENARIO] =
 	}
 };
 
+static void dumpPool(sjme_alloc_pool* pool, sjme_lpcstr what)
+{
+	sjme_alloc_link* rover;
+	sjme_jint x;
+	
+	/* Debug view. */
+	sjme_message("---------------------------------------------");
+	for (rover = pool->frontLink,
+		x = 0; rover != NULL; rover = rover->next, x++)
+	{
+		sjme_message("%s %d: @%p %s %d/%d bytes",
+			what, x, rover, (rover->space == SJME_ALLOC_POOL_SPACE_FREE ?
+			"FREE" : (rover->space == SJME_ALLOC_POOL_SPACE_USED ?
+			"USED" : "OTHER")),
+			rover->allocSize, rover->blockSize);
+	}
+	sjme_message("---------------------------------------------");
+}
+
 /**
  * Tests merging of allocation blocks when freeing them accordingly.
  * 
@@ -177,7 +198,7 @@ const testOrderType testLinkOrder[NUM_SCENARIO] =
  */
 SJME_TEST_DECLARE(testAllocFreeMerge)
 {
-	void* chunk;
+	sjme_pointer chunk;
 	sjme_jboolean isLast, isFree, wantFree;
 	sjme_jint chunkLen, linkNum, scenario, numUsed, numFree, x, atId;
 	uint8_t* block;
@@ -185,13 +206,13 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 	sjme_alloc_pool* pool;
 	sjme_alloc_link* rover;
 	sjme_alloc_link* at;
-	void* blocks[NUM_LINKS];
+	sjme_pointer blocks[NUM_WHICH];
 	sjme_alloc_link* links[NUM_WHICH];
 	const testOrderType* order;
 	const testSequenceType* sequence;
 	
 	/* Allocate data on the stack so it gets cleared. */
-	chunkLen = 32768;
+	chunkLen = 65536;
 	chunk = sjme_alloca(chunkLen);
 	if (chunk == NULL)
 		return sjme_unit_skip(test, "Could not alloca(%d).",
@@ -208,6 +229,10 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 		if (sjme_error_is(sjme_alloc_poolInitStatic(&pool,
 			chunk, chunkLen)) || pool == NULL)
 			return sjme_unit_fail(test, "Could not initialize static pool?");
+		
+		/* Cleanup for run. */
+		memset(&blocks, 0, sizeof(blocks));
+		memset(&links, 0, sizeof(links));
 
 		/* Allocate each of the links. */
 		for (linkNum = 0; linkNum < NUM_LINKS; linkNum++)
@@ -253,11 +278,17 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 			/* Which link is this? */
 			block = blocks[order->order[linkNum]];
 			link = links[order->order[linkNum]];
+			
+			/* Debug view. */
+			dumpPool(pool, "BEFORE FREE");
 
 			/* Free the link. */
 			if (sjme_error_is(sjme_alloc_free(block)))
 				return sjme_unit_fail(test, "Could not free link.");
 
+			/* Debug view. */
+			dumpPool(pool, "AFTER FREE");
+			
 			/* Go through the entire chain. */
 			numUsed = numFree = 0;
 			rover = pool->frontLink;
@@ -268,12 +299,13 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 					break;
 
 				/* Get the link this is. */
-				atId = x & FREE_MASK;
-				at = links[sequence->which[atId]];
+				atId = sequence->which[x] & FREE_MASK;
+				at = links[atId];
 
 				/* Must be this one. */
 				sjme_unit_equalP(test, rover, at,
-					"Incorrect sequence %d.%d.%d?", scenario, linkNum, x);
+					"Incorrect pointer %p != %p... %d.%d.%d?",
+					rover, at, scenario, linkNum, x);
 
 				/* Is the block free or not? */
 				if (atId != FRONT && atId != BACK)
@@ -282,7 +314,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 					isFree = (rover->space == SJME_ALLOC_POOL_SPACE_FREE);
 
 					/* The freeness should match. */
-					wantFree = !!(sequence->which[atId] & FREE);
+					wantFree = ((sequence->which[x] & FREE) != 0);
 					sjme_unit_equalI(test,
 						isFree, wantFree,
 						"Incorrect freeness %d.%d.%d?", scenario, linkNum, x);

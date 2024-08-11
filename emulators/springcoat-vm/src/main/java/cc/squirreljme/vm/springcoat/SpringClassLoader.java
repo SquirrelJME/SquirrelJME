@@ -203,7 +203,7 @@ public final class SpringClassLoader
 				component = this.loadClass(__cn.componentType());
 			
 			// Load class information
-			rv = new SpringClass(superclass, interfaceclasses, cf,
+			rv = new SpringVMClass(superclass, interfaceclasses, cf,
 				component, inJar[0], this._machineRef);
 			
 			// Store for later use
@@ -337,6 +337,26 @@ public final class SpringClassLoader
 				throw new IllegalStateException("Owner GCed.");
 			
 			return rv;
+		}
+	}
+	
+	/**
+	 * Registers the given class into the class loader.
+	 *
+	 * @param __name The name of the class.
+	 * @param __class The class to register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/04
+	 */
+	public void registerClass(ClassName __name, SpringClass __class)
+		throws NullPointerException
+	{
+		if (__name == null || __class == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			this._classes.put(__name, __class);
 		}
 	}
 	

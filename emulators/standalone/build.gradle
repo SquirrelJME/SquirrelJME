@@ -138,8 +138,43 @@ shadowJar {
 	}
 }
 
+/**
+ * Fills the execution specification.
+ * 
+ * @param __exec The specification to fill.
+ * @param __emulator The emulator to use.
+ * @param __isCluttered Is this cluttered?
+ * @param __isDebug Is this debugging?
+ * @since 2024/06/25
+ */
+void __fillSpec(JavaExec __exec, VMType __emulator, boolean __isCluttered,
+	boolean __isDebug) {
+	// These are always the same
+	__exec.classpath(project.providers.provider {
+		tasks.named("shadowJar").get().getOutputs().getFiles()})
+	__exec.mainClass = "cc.squirreljme.vm.standalone.main.Main"
+	
+	// Build arguments to use
+	List<String> args = new ArrayList<>()
+	
+	// Which emulator is used?
+	args += ("-Xemulator:" + __emulator.vmName(VMNameFormat.LOWERCASE))
+	
+	// Cluttered?
+	if (__isCluttered) {
+		args += "-Xclutter:debug"
+	}
+	
+	// Debugging?
+	if (__isDebug) {
+		args += "-Xdebug"
+	}
+	
+	// Use these args
+	__exec.args = args
+}
+
 // Shadow run tasks for the various emulator choices
-Provider<Task> shadowJarTask = tasks.named("shadowJar")
 [false, true].each { isDebug ->
 	[false, true].each { isCluttered ->
 		VMType.values().each { vmType ->
@@ -147,35 +182,16 @@ Provider<Task> shadowJarTask = tasks.named("shadowJar")
 					(isDebug ? "Debug" : "") +
 					(isCluttered ? "Cluttered" : ""),
 				JavaExec) { sub ->
-				sub.dependsOn shadowJarTask
+				sub.dependsOn tasks.named("shadowJar")
 	
 				sub.description = "Runs the standalone VM via " +
 					"${vmType.properName}" +
 					(isDebug ? " with debugging" : "") +
 					(isCluttered ? " with cluttering" : "") + ".";
 				sub.group = "squirreljme"
-	
-				sub.classpath = shadowJarTask.get().getOutputs().getFiles()
-				sub.mainClass = "cc.squirreljme.vm.standalone.main.Main"
-				if (isCluttered) {
-					if (isDebug) {
-						sub.args = ["-Xemulator:" + 
-							vmType.vmName(VMNameFormat.LOWERCASE), "-Xdebug",
-							"-Xclutter:debug"]
-					} else {
-						sub.args = ["-Xemulator:" + 
-							vmType.vmName(VMNameFormat.LOWERCASE),
-							"-Xclutter:debug"]
-					}
-				} else {
-					if (isDebug) {
-						sub.args = ["-Xemulator:" + 
-							vmType.vmName(VMNameFormat.LOWERCASE), "-Xdebug"]
-					} else {
-						sub.args = ["-Xemulator:" + 
-							vmType.vmName(VMNameFormat.LOWERCASE)]
-					}
-				}
+				
+				// Use simplified filler
+				__fillSpec(sub, vmType, isCluttered, isDebug)
 			}
 		}
 	}

@@ -14,8 +14,8 @@
 #include "sjme/debug.h"
 
 sjme_jint sjme_compare_null(
-	sjme_attrInNullable const void* a,
-	sjme_attrInNullable const void* b)
+	sjme_attrInNullable sjme_cpointer a,
+	sjme_attrInNullable sjme_cpointer b)
 {
 	/* Nulls before non-null. */
 	if (a == NULL)
@@ -327,4 +327,66 @@ sjme_jint sjme_string_lengthN(sjme_lpcstr string, sjme_jint limit)
 
 	/* Use whatever length we found. */
 	return result;
+}
+
+sjme_errorCode sjme_swap_shu8_uint_memmove(
+	sjme_attrInNotNull sjme_pointer dest,
+	sjme_attrInNotNull sjme_pointer src,
+	sjme_attrInPositiveNonZero sjme_jint n)
+{
+	sjme_juint* iDest;
+	sjme_jint i, count;
+	
+	if (dest == NULL || src == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (n < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Pointless? */
+	if (n == 0)
+		return SJME_ERROR_NONE;
+	
+	/* Perform initial move. */
+	memmove(dest, src, n);
+	
+	/* Then perform swapping. */
+	iDest = dest;
+	count = n / sizeof(sjme_juint);
+	for (i = 0; i < count; i++)
+		iDest[i] = sjme_swap_uint(iDest[i] << 8);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_swap_uint_memmove(
+	sjme_attrInNotNull sjme_pointer dest,
+	sjme_attrInNotNull sjme_pointer src,
+	sjme_attrInPositiveNonZero sjme_jint n)
+{
+	sjme_juint* iDest;
+	sjme_jint i, count;
+	
+	if (dest == NULL || src == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (n < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Pointless? */
+	if (n == 0)
+		return SJME_ERROR_NONE;
+	
+	/* Perform initial move. */
+	memmove(dest, src, n);
+	
+	/* Then perform swapping. */
+	iDest = dest;
+	count = n / sizeof(sjme_juint);
+	for (i = 0; i < count; i++)
+		iDest[i] = sjme_swap_uint(iDest[i]);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }

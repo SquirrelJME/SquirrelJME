@@ -86,6 +86,9 @@ public class EmulatedRuntimeShelf
 			case VMDescriptionType.VM_SECURITY_POLICY:
 				return null;
 				
+			case VMDescriptionType.PATH_SEPARATOR:
+				return System.getProperty("file.separator");
+				
 			default:
 				throw new MLECallError("Invalid " + __type);
 		}

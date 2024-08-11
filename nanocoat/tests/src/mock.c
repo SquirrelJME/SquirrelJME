@@ -59,7 +59,7 @@ struct
 
 static sjme_errorCode sjme_mock_defaultRomLibraryRawData(
 	sjme_attrInNotNull sjme_rom_library inLibrary,
-	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint srcPos,
 	sjme_attrInPositive sjme_jint length)
 {
@@ -83,7 +83,7 @@ static sjme_errorCode sjme_mock_defaultRomLibraryRawData(
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Just do a normal copy over. */
-	memmove(dest, (void*)(((uintptr_t)mock->data) + srcPos), length);
+	memmove(dest, (sjme_pointer)(((uintptr_t)mock->data) + srcPos), length);
 	return SJME_ERROR_NONE;
 }
 
@@ -110,7 +110,7 @@ static sjme_errorCode sjme_mock_defaultRomMockLibraryResourceStream(
 	sjme_attrInNotNull sjme_lpcstr resourceName)
 {
 	sjme_alloc_pool* pool;
-	const void* data;
+	sjme_cpointer data;
 	sjme_jint len;
 
 	if (inLibrary == NULL || resourceName == NULL || outStream == NULL)
@@ -204,11 +204,11 @@ sjme_jboolean sjme_mock_act(
 	return SJME_JNI_TRUE;
 }
 
-void* sjme_mock_alloc(
+sjme_pointer sjme_mock_alloc(
 	sjme_attrInNotNull sjme_mock* inState,
 	sjme_attrInPositiveNonZero size_t inLen)
 {
-	void* rv;
+	sjme_pointer rv;
 	
 	/* Check. */
 	if (inState == NULL)

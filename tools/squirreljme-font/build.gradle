@@ -30,7 +30,7 @@ jar.dependsOn("mimeDecode")
 dependencies {
 	implementation project(":emulators:emulator-base")
 	implementation project(":modules:cldc-compact")
-	implementation project(":modules:c-source-writer")
+	implementation project(":tools:c-source-writer")
 	implementation project(":modules:io")
 	implementation project(":modules:io-file")
 	implementation project(":modules:zip")
@@ -136,8 +136,8 @@ class CompileFontTask extends DefaultTask {
 				// Did the task fail?
 				int exitValue = exitResult.getExitValue()
 				if (exitValue != 0)
-					throw new RuntimeException("Task exited with: " +
-						exitValue)
+					throw new RuntimeException(
+						String.format("Task exited with: %d %08x", exitValue, exitValue))
 				
 				// Move it over
 				Files.createDirectories(compiledPath.getParent())

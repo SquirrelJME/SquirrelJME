@@ -18,6 +18,8 @@
 
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
+#include "sjme/atomic.h"
+#include "sjme/multithread.h"
 
 /** The minimum size permitted for allocation pools. */
 #define SJME_ALLOC_MIN_SIZE (((SJME_SIZEOF_ALLOC_POOL(0) + \
@@ -25,6 +27,12 @@
 
 /** The minimum size for splits. */
 #define SJME_ALLOC_SPLIT_MIN_SIZE 64
+
+/** The front guard value. */
+#define SJME_ALLOC_GUARD_FRONT INT32_C(0x53716B21)
+
+/** The back guard value. */
+#define SJME_ALLOC_GUARD_BACK INT32_C(0x6C65783F)
 
 #if defined(SJME_CONFIG_DEBUG)
 /**
@@ -37,7 +45,9 @@
  * @since 2023/12/29
  */
 static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
-	sjme_alloc_pool* pool, sjme_alloc_link* atLink, const char* trigger)
+	volatile sjme_alloc_pool* pool,
+	volatile sjme_alloc_link* atLink,
+	const char* trigger)
 {
 	sjme_message("Corrupted Link %p: %s", atLink, trigger);
 
@@ -46,6 +56,7 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
 		return SJME_JNI_TRUE;
 
 	/* Dump everything about the link. */
+	sjme_message("link->guardFront: %08x", atLink->guardFront);
 	sjme_message("link->pool: %p (should be %p)", atLink->pool, pool);
 	sjme_message("link->prev: %p", atLink->prev);
 	sjme_message("link->next: %p", atLink->next);
@@ -57,10 +68,16 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
 		sjme_message("link->space: NUM");
 	else
 		sjme_message("link->space: %d", (int)atLink->space);
+	sjme_message("link->weak: %p", atLink->weak);
 	sjme_message("link->freePrev: %p", atLink->freePrev);
 	sjme_message("link->freeNext: %p", atLink->freeNext);
 	sjme_message("link->allocSize: %d", (int)atLink->allocSize);
 	sjme_message("link->blockSize: %d", (int)atLink->blockSize);
+	sjme_message("link->guardBack: %08x", atLink->guardBack);
+	
+	/* Abort. */
+	if (sjme_debug_handlers != NULL && sjme_debug_handlers->abort != NULL)
+		sjme_debug_handlers->abort();
 
 	/* Always indicate failure here. */
 	return SJME_JNI_TRUE;
@@ -108,8 +125,9 @@ static sjme_inline sjme_jboolean sjme_alloc_checkCorruptionRange(
  * @return If there is corruption or not.
  * @since 2023/12/29
  */
-static sjme_jboolean sjme_alloc_checkCorruption(sjme_alloc_pool* pool,
-	sjme_alloc_link* atLink)
+static sjme_jboolean sjme_noOptimize sjme_alloc_checkCorruption(
+	volatile sjme_alloc_pool* pool,
+	volatile sjme_alloc_link* atLink)
 {
 	uintptr_t poolStart, poolEnd;
 
@@ -119,11 +137,24 @@ static sjme_jboolean sjme_alloc_checkCorruption(sjme_alloc_pool* pool,
 	/* If no link is specified, ignore. */
 	if (atLink == NULL)
 		return SJME_JNI_FALSE;
+	
+	/* Check front and back guards. */
+	if (atLink->guardFront != SJME_ALLOC_GUARD_FRONT)
+		return sjme_alloc_corruptFail(pool, atLink,
+			"Wrong front guard");
+	if (atLink->guardBack != SJME_ALLOC_GUARD_BACK)
+		return sjme_alloc_corruptFail(pool, atLink,
+			"Wrong back guard");
 
 	/* Link is in the wrong pool. */
 	if (atLink->pool != pool)
 		return sjme_alloc_corruptFail(pool, atLink,
 			"Wrong pool");
+	
+	/* Allocation size larger than block? */
+	if (atLink->allocSize > atLink->blockSize)
+		return sjme_alloc_corruptFail(pool, atLink,
+			"Allocation size larger than block.");
 
 	/* Next link is in the wrong location? */
 	if (atLink->next != NULL && (uintptr_t)atLink->next !=
@@ -205,7 +236,7 @@ static sjme_jboolean sjme_alloc_checkCorruption(sjme_alloc_pool* pool,
 }
 
 static sjme_errorCode sjme_alloc_getLinkOptional(
-	sjme_attrInNotNull void* addr,
+	sjme_attrInNotNull sjme_pointer addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink,
 	sjme_attrInValue sjme_jboolean checkCorruption)
 {
@@ -227,11 +258,11 @@ static sjme_errorCode sjme_alloc_getLinkOptional(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_alloc_poolInitMalloc(
+sjme_errorCode sjme_noOptimize sjme_alloc_poolInitMalloc(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInPositive sjme_jint size)
 {
-	void* result;
+	sjme_pointer result;
 	sjme_jint useSize;
 
 	/* Make sure the size is not wonky. */
@@ -249,9 +280,9 @@ sjme_errorCode sjme_alloc_poolInitMalloc(
 	return sjme_alloc_poolInitStatic(outPool, result, useSize);
 }
 
-sjme_errorCode sjme_alloc_poolInitStatic(
+sjme_errorCode sjme_noOptimize sjme_alloc_poolInitStatic(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
-	sjme_attrInNotNull void* baseAddr,
+	sjme_attrInNotNull sjme_pointer baseAddr,
 	sjme_attrInPositive sjme_jint size)
 {
 	sjme_alloc_pool* pool;
@@ -274,15 +305,16 @@ sjme_errorCode sjme_alloc_poolInitStatic(
 	pool->size = (size & (~7)) - SJME_SIZEOF_ALLOC_POOL(0);
 	
 	/* Setup front link. */
-	frontLink = (void*)&pool->block[0];
+	frontLink = (sjme_pointer)&pool->block[0];
 	pool->frontLink = frontLink;
 	
 	/* Setup back link. */
-	backLink = (void*)&pool->block[pool->size - SJME_SIZEOF_ALLOC_LINK(0)];
+	backLink = (sjme_pointer)&pool->block[pool->size -
+		SJME_SIZEOF_ALLOC_LINK(0)];
 	pool->backLink = backLink;
 	
 	/* Setup middle link, which is between the two. */
-	midLink = (void*)&frontLink->block[0];
+	midLink = (sjme_pointer)&frontLink->block[0];
 	midLink->prev = frontLink;
 	frontLink->next = midLink;
 	midLink->next = backLink;
@@ -291,6 +323,9 @@ sjme_errorCode sjme_alloc_poolInitStatic(
 	/* Determine size of the middle link, which is free space. */
 	midLink->blockSize = (sjme_jint)((uintptr_t)backLink -
 		(uintptr_t)&midLink->block[0]);
+	
+	/* The mid-link is considered free. */
+	midLink->space = SJME_ALLOC_POOL_SPACE_FREE;
 		
 	/* The front and back links are in the "invalid" space. */
 	frontLink->space = SJME_NUM_ALLOC_POOL_SPACE;
@@ -308,11 +343,30 @@ sjme_errorCode sjme_alloc_poolInitStatic(
 	pool->freeLastLink = backLink;
 	backLink->freePrev = midLink;
 	midLink->freeNext = backLink;
+	
+	/* Guards for all links. */
+	frontLink->guardFront = SJME_ALLOC_GUARD_FRONT;
+	frontLink->guardBack = SJME_ALLOC_GUARD_BACK;
+	midLink->guardFront = SJME_ALLOC_GUARD_FRONT;
+	midLink->guardBack = SJME_ALLOC_GUARD_BACK;
+	backLink->guardFront = SJME_ALLOC_GUARD_FRONT;
+	backLink->guardBack = SJME_ALLOC_GUARD_BACK;
 
 	/* Link in pools. */
 	frontLink->pool = pool;
 	midLink->pool = pool;
 	backLink->pool = pool;
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug source line init blocks. */
+	pool->frontLink->debugFile = "<FRONT LINK>";
+	pool->frontLink->debugLine = 1;
+	pool->frontLink->debugFunction = "<FRONT LINK>";
+	
+	pool->backLink->debugFile = "<BACK LINK>";
+	pool->backLink->debugLine = 1;
+	pool->backLink->debugFunction = "<BACK LINK>";
+#endif
 	
 #if defined(SJME_CONFIG_HAS_VALGRIND)
 	/* Reserve front side in Valgrind. */
@@ -377,19 +431,28 @@ sjme_errorCode sjme_alloc_poolSpaceTotalSize(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
+	sjme_attrInNotNull volatile sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
-	sjme_attrOutNotNull void** outAddr
+	sjme_attrOutNotNull sjme_pointer* outAddr
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
+	sjme_errorCode error;
 	sjme_alloc_link* scanLink;
 	sjme_alloc_link* rightLink;
 	sjme_jint splitMinSize, roundSize;
 	sjme_jboolean splitBlock;
+	sjme_alloc_pool* nextPool;
+	volatile sjme_alloc_link* nextFree;
 	
 	if (pool == NULL || size <= 0 || outAddr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+#if defined(SJME_CONFIG_DEBUG)
+	if ((size * 8) == SJME_CONFIG_HAS_POINTER)
+		sjme_message("Alloc of single pointer in %s (%s:%d).",
+			func, file, line);
+#endif
 	
 	/* Determine the size this will actually take up, which includes the */
 	/* link to be created following this. */
@@ -399,6 +462,14 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		(sjme_jint)SJME_SIZEOF_ALLOC_LINK(0);
 	if (size > splitMinSize || splitMinSize < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
+		
+	/* Take ownership of lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&pool->spinLock)))
+		return sjme_error_default(error);
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
 	
 	/* Find the first free link that this fits in. */
 	scanLink = NULL;
@@ -407,8 +478,14 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		scanLink != NULL; scanLink = scanLink->freeNext)
 	{
 		/* Has memory been corrupted? */
-		if (sjme_alloc_checkCorruption(pool, scanLink))
-			return SJME_ERROR_MEMORY_CORRUPTION;
+		nextFree = scanLink->freeNext;
+		if (sjme_alloc_checkCorruption(pool, scanLink) ||
+			(nextFree != NULL &&
+				sjme_alloc_checkCorruption(pool, nextFree)))
+		{
+			error = SJME_ERROR_MEMORY_CORRUPTION;
+			goto fail_corrupt;
+		}
 
 		/* Block is in the "invalid" space, skip it. */
 		if (scanLink->space == SJME_NUM_ALLOC_POOL_SPACE)
@@ -432,10 +509,16 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		/* If there is an adjacent pool, if allocation fails then we shall */
 		/* try the next pool, this means multiple pools can work together */
 		/* accordingly. */
-		if (pool->nextPool != NULL)
+		nextPool = pool->nextPool;
+		if (nextPool != NULL)
 		{
+			/* Release ownership of lock. */
+			if (sjme_error_is(error = sjme_thread_spinLockRelease(
+				&pool->spinLock, NULL)))
+				return sjme_error_default(error);
+			
 #if defined(SJME_CONFIG_DEBUG)
-			return sjme_allocR(pool->nextPool, size, outAddr,
+			return sjme_allocR(nextPool, size, outAddr,
 				file, line, func);
 #else
 			return sjme_alloc(pool->nextPool, size, outAddr);
@@ -443,12 +526,15 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		}
 		
 		/* Otherwise fail! */
-		return SJME_ERROR_OUT_OF_MEMORY;
+		error = SJME_ERROR_OUT_OF_MEMORY;
+		goto fail_noMemory;
 	}
 
+#if 0
 	/* Debug. */
 	sjme_message("Found link at %p: %d bytes, we need %d with split %d.",
 		scanLink, (int)scanLink->blockSize, (int)roundSize, (int)splitBlock);
+#endif
 
 	/* Does this block need to be split? */
 	if (splitBlock)
@@ -458,13 +544,20 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 			sjme_alloc_checkCorruption(pool, scanLink->prev) ||
 			sjme_alloc_checkCorruption(pool, scanLink->freeNext) ||
 			sjme_alloc_checkCorruption(pool, scanLink->freePrev))
-			return SJME_ERROR_MEMORY_CORRUPTION;
+		{
+			error = SJME_ERROR_MEMORY_CORRUPTION;
+			goto fail_corrupt;
+		}
 
 		/* Make it so this block can actually fit in here. */
 		rightLink = (sjme_alloc_link*)&scanLink->block[roundSize];
 
 		/* Initialize block to remove any old data. */
 		memset(rightLink, 0, sizeof(*rightLink));
+		
+		/* Guards for link. */
+		rightLink->guardFront = SJME_ALLOC_GUARD_FRONT;
+		rightLink->guardBack = SJME_ALLOC_GUARD_BACK;
 
 		/* Set the right link's pool accordingly. */
 		rightLink->pool = pool;
@@ -476,6 +569,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		rightLink->blockSize =
 			(sjme_jint)((intptr_t)&scanLink->block[scanLink->blockSize] -
 				(intptr_t)&rightLink->block[0]);
+		rightLink->allocSize = rightLink->blockSize;
 
 		/* Link in physical links. */
 		rightLink->next = scanLink->next;
@@ -492,6 +586,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		/* Set size of the left block. */
 		scanLink->blockSize =
 			(sjme_jint)((intptr_t)rightLink - (intptr_t)&scanLink->block[0]);
+		scanLink->allocSize = scanLink->blockSize;
 
 		/* Adjust reserved and usable space. */
 		pool->space[SJME_ALLOC_POOL_SPACE_FREE].reserved +=
@@ -502,7 +597,10 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		/* Make sure we did not cause corruption. */
 		if (sjme_alloc_checkCorruption(pool, scanLink) ||
 			sjme_alloc_checkCorruption(pool, rightLink))
-			return SJME_ERROR_MEMORY_CORRUPTION;
+		{
+			error = SJME_ERROR_MEMORY_CORRUPTION;
+			goto fail_corrupt;
+		}
 	}
 
 	/* Setup block information. */
@@ -537,23 +635,45 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 #endif
 
 	/* Make sure we did not cause corruption. */
-	if (sjme_alloc_checkCorruption(pool, scanLink))
-		return SJME_ERROR_MEMORY_CORRUPTION;
-
+	if (sjme_alloc_checkCorruption(pool, scanLink) ||
+		sjme_alloc_checkCorruption(pool, scanLink->prev) ||
+		sjme_alloc_checkCorruption(pool, scanLink->next))
+	{
+		error = SJME_ERROR_MEMORY_CORRUPTION;
+		goto fail_corrupt;
+	}
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
+	/* Release ownership of lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&pool->spinLock, NULL)))
+		return sjme_error_default(error);
+	
 	/* Use the given link. */
 	*outAddr = &scanLink->block[0];
 	return SJME_ERROR_NONE;
+
+fail_corrupt:
+fail_noMemory:
+	/* Release ownership of lock before we leave. */
+	if (sjme_error_is(sjme_thread_spinLockRelease(
+		&pool->spinLock, NULL)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull volatile sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
-	sjme_attrOutNotNull void** outAddr,
-	sjme_attrInNotNull void* inAddr
+	sjme_attrOutNotNull sjme_pointer* outAddr,
+	sjme_attrInNotNull sjme_pointer inAddr
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
-	void* dest;
+	sjme_pointer dest;
 
 	if (pool == NULL || outAddr == NULL || inAddr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -606,36 +726,142 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
 
 	/* Copy it. */
 	return SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(inPool, len + 1,
-		(void**)outString, buf
+		(sjme_pointer*)outString, buf
 		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
 #undef BUF_SIZE
 }
 
-sjme_errorCode sjme_alloc_free(
-	sjme_attrInNotNull void* addr)
+static sjme_errorCode sjme_alloc_mergeFree(sjme_alloc_link* link)
+{
+	sjme_alloc_pool* pool;
+	sjme_alloc_link* right;
+	sjme_alloc_link* oldRightFreeNext;
+	sjme_alloc_link* rightRight;
+	sjme_alloc_link* checkLeft;
+	sjme_jint addedSize;
+	
+	if (link == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Need pool for all operations. */
+	pool = link->pool;
+	
+	/* If the previous block is free, pivot to there. */
+	checkLeft = link->prev;
+	if (checkLeft->space == SJME_ALLOC_POOL_SPACE_FREE)
+		return sjme_alloc_mergeFree(checkLeft);
+	
+	/* Is the block on the right a candidate for merge? */
+	right = link->next;
+	if (right->space != SJME_ALLOC_POOL_SPACE_FREE)
+		return SJME_ERROR_NONE;
+	
+	/* We need the block after to relink. */
+	rightRight = right->next;
+	
+	/* Disconnect in the middle. */
+	link->next = rightRight;
+	rightRight->prev = link;
+	
+	/* Remove from the free chain. */
+	oldRightFreeNext = right->freeNext;
+	right->freePrev->freeNext = right->freeNext;
+	oldRightFreeNext->freePrev = right->freePrev;
+	
+	/* Reclaim the right link data area. */
+	addedSize = right->blockSize + SJME_SIZEOF_ALLOC_LINK(0);
+	link->blockSize += addedSize;
+	
+	/* Update pool sizes. */
+	pool->space[SJME_ALLOC_POOL_SPACE_FREE].usable += addedSize;
+	pool->space[SJME_ALLOC_POOL_SPACE_FREE].reserved -=
+		SJME_SIZEOF_ALLOC_LINK(0);
+	
+	/* Synchronize allocation size. */
+	link->allocSize = link->blockSize;
+	
+	/* Wipe next side block to remove any stale data. */
+	memset(right, 0, sizeof(*right));
+	
+	/* Should not have corrupted the block. */
+	if (sjme_alloc_checkCorruption(pool, link) ||
+		sjme_alloc_checkCorruption(pool, link->prev) ||
+		sjme_alloc_checkCorruption(pool, link->next) ||
+		sjme_alloc_checkCorruption(pool, link->freePrev) ||
+		sjme_alloc_checkCorruption(pool, link->freeNext))
+		return SJME_ERROR_MEMORY_CORRUPTION;
+	
+	/* We merged a block, so check again. */
+	return sjme_alloc_mergeFree(link);
+}
+
+sjme_errorCode sjme_noOptimize sjme_alloc_free(
+	sjme_attrInNotNull sjme_pointer addr)
 {
 	sjme_alloc_link* link;
-	sjme_alloc_pool* pool;
+	volatile sjme_alloc_pool* pool;
 	sjme_errorCode error;
+	sjme_alloc_weak weak;
 
 	if (addr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
 
 	/* Get the link. */
 	link = NULL;
 	if (sjme_error_is(error = sjme_alloc_getLink(addr, &link)))
 		return sjme_error_default(error);
 
-	/* Check the integrity of it. */
+	/* Get the pool we are in. */
+	pool = link->pool;
+		
+	/* Take ownership of lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&pool->spinLock)))
+		return sjme_error_default(error);
+	
+	/* Check the integrity of the block before we free it. */
 	pool = link->pool;
 	if (sjme_alloc_checkCorruption(pool, link))
-		return SJME_ERROR_MEMORY_CORRUPTION;
+	{
+		error = SJME_ERROR_MEMORY_CORRUPTION;
+		goto fail_corrupt;
+	}
+	
+	/* If there is a weak reference, clear it. */
+	weak = link->weak;
+	if (weak != NULL)
+	{
+		/* Call enqueue handler. */
+		if (weak->enqueue != NULL)
+			if (sjme_error_is(error = weak->enqueue(weak,
+				weak->enqueueData, SJME_JNI_TRUE)))
+			{
+				/* Keeping a weak reference is not considered an error */
+				/* although at this point it has no effect. */
+				if (error != SJME_ERROR_ENQUEUE_KEEP_WEAK)
+					goto fail_weakEnqueueCall;
+			}
+		
+		/* Remove everything. */
+		link->weak = NULL;
+		weak->link = NULL;
+		weak->pointer = NULL;
+	}
 
 	/* Mark block as free. */
 	link->space = SJME_ALLOC_POOL_SPACE_FREE;
 	
 	/* Clear flags, if any. */
 	link->flags = 0;
+	
+	/* Clear block memory so stale memory is not around. */
+	memset(&link->block[0], 0, link->blockSize);
+	
+	/* Restore allocation size to block size. */
+	link->allocSize = link->blockSize;
 
 #if defined(SJME_CONFIG_DEBUG)
 	/* Remove debug information. */
@@ -645,19 +871,39 @@ sjme_errorCode sjme_alloc_free(
 #endif
 
 	/* Link into free chain. */
-	link->freeNext = pool->freeFirstLink;
-	pool->freeFirstLink->freePrev = link;
-	pool->freeFirstLink = link;
+	link->freeNext = pool->freeFirstLink->freeNext;
+	pool->freeFirstLink->freeNext = link;
+	link->freeNext->freePrev = link;
+	link->freePrev = pool->freeFirstLink;
 
-	/* TODO: Implement merging of free blocks. */
-	sjme_message("Implement free merging...");
+	/* Merge together free blocks. */
+	if (sjme_error_is(error = sjme_alloc_mergeFree(link)))
+		goto fail_merge;
+		
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
+	/* Release ownership of lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&pool->spinLock, NULL)))
+		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+	
+	/* Release ownership of lock. */
+fail_corrupt:
+fail_weakEnqueueCall:
+fail_merge:
+	if (sjme_error_is(sjme_thread_spinLockRelease(
+		&pool->spinLock, NULL)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_alloc_getLink(
-	sjme_attrInNotNull void* addr,
+	sjme_attrInNotNull sjme_pointer addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink)
 {
 	return sjme_alloc_getLinkOptional(addr, outLink,
@@ -665,13 +911,13 @@ sjme_errorCode sjme_alloc_getLink(
 }
 
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
-	sjme_attrInOutNotNull void** inOutAddr,
+	sjme_attrInOutNotNull sjme_pointer* inOutAddr,
 	sjme_attrInPositive sjme_jint newSize
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_alloc_link* link;
-	void* result;
-	void* source;
+	sjme_pointer result;
+	sjme_pointer source;
 	sjme_jint limit;
 	sjme_errorCode error;
 
@@ -680,6 +926,9 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 
 	if (newSize < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
 
 	/* Alias for free. */
 	source = *inOutAddr;
@@ -701,6 +950,10 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 	if (sjme_error_is(error = sjme_alloc_getLink(source,
 		&link)) || link == NULL)
 		return sjme_error_default(error);
+	
+	/* If there is a weak reference, then we cannot touch this. */
+	if (link->weak != NULL)
+		return SJME_ERROR_WEAK_REFERENCE_ATTACHED;
 
 	/* Pointless operation. */
 	if (newSize == link->allocSize)
@@ -711,6 +964,9 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 	{
 		/* Just set the new allocation size. */
 		link->allocSize = newSize;
+		
+		/* Emit barrier. */
+		sjme_thread_barrier();
 
 		/* Success! */
 		return SJME_ERROR_NONE;
@@ -744,9 +1000,334 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 		/* Free the old block. */
 		if (sjme_error_is(error = sjme_alloc_free(source)))
 			return sjme_error_default(error);
+		
+		/* Emit barrier. */
+		sjme_thread_barrier();
 
 		/* Success! */
 		*inOutAddr = result;
 		return SJME_ERROR_NONE;
 	}
+}
+
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_lpcstr* outString,
+	sjme_attrInNotNull sjme_lpcstr stringToCopy
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
+{
+	sjme_jint charLen;
+	
+	if (inPool == NULL || outString == NULL || stringToCopy == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Use standard string length, include NUL. */
+	charLen = strlen(stringToCopy) + 1;
+	
+	/* Then just forward to copy. */
+#if defined(SJME_CONFIG_DEBUG)
+	return sjme_alloc_copyR(inPool, charLen,
+		outString, stringToCopy,
+		file, line, func);
+#else
+	return sjme_alloc_copy(inPool, charLen,
+		outString, stringToCopy);
+#endif
+}
+
+sjme_errorCode sjme_noOptimize sjme_alloc_weakDelete(
+	sjme_attrInOutNotNull sjme_alloc_weak* inOutWeak)
+{
+	sjme_errorCode error;
+	sjme_alloc_weak weak;
+	sjme_jint count;
+	sjme_jboolean keepWeak;
+	sjme_alloc_link* link;
+	sjme_pointer block;
+	
+	if (inOutWeak == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Operate on this weak. */
+	weak = *inOutWeak;
+	
+	/* Already free? */
+	if (weak == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
+	/* Get the current count. */
+	count = sjme_atomic_sjme_jint_get(&weak->count);
+	
+	/* If zero is reached, it is eligible for free. */
+	/* Provided, the data is still there. */
+	link = weak->link;
+	block = weak->pointer;
+	if (count <= 1 && link != NULL && block != NULL)
+	{
+		/* Call enqueue handler if it exists. */
+		keepWeak = SJME_JNI_FALSE;
+		if (weak->enqueue != NULL)
+			if (sjme_error_is(error = weak->enqueue(weak,
+				weak->enqueueData, SJME_JNI_FALSE)))
+			{
+				/* Only fail if we are not keeping it. */
+				keepWeak = (error == SJME_ERROR_ENQUEUE_KEEP_WEAK);
+				if (!keepWeak)
+					return sjme_error_default(error);
+			}
+		
+		/* Clear weak count to zero. */
+		sjme_atomic_sjme_jint_set(&weak->count, 0);
+		
+		/* Unlink weak reference from block. */
+		/* So that enqueue is not called multiple times. */
+		link->weak = NULL;
+		weak->link = NULL;
+		weak->pointer = NULL;
+		
+		/* Free the block we point to. */
+		if (sjme_error_is(error = sjme_alloc_free(block)))
+			return sjme_error_default(error);
+		
+		/* Delete the weak reference as well? */
+		if (!keepWeak)
+		{
+			/* Inform our pointer that it is gone. */
+			*inOutWeak = NULL;
+			
+			/* Free the weak reference itself. */
+			if (sjme_error_is(error = sjme_alloc_free(weak)))
+				return sjme_error_default(error);
+		}
+	}
+	
+	/* Otherwise, just count it down. */
+	else if (count > 1)
+		sjme_atomic_sjme_jint_set(&weak->count, count - 1);
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_alloc_weakGetPointer(
+	sjme_attrInNotNull sjme_alloc_weak inWeak,
+	sjme_attrOutNotNull sjme_pointer* outPointer)
+{
+	if (inWeak == NULL || outPointer == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
+	if (inWeak->link == NULL || inWeak->pointer == NULL)
+		*outPointer = NULL;
+	else
+		*outPointer = inWeak->pointer;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
+	sjme_attrInNotNull sjme_pointer addr,
+	sjme_attrOutNotNull sjme_alloc_weak* outWeak,
+	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
+	sjme_attrInNullable sjme_pointer inEnqueueData)
+{
+	sjme_errorCode error;
+	sjme_alloc_link* link;
+	sjme_alloc_weak result;
+	
+	if (addr == NULL || outWeak == NULL ||
+		(inEnqueue == NULL && inEnqueueData != NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+		
+	/* Recover the link. */
+	link = NULL;
+	if (sjme_error_is(error = sjme_alloc_getLink(addr,
+		&link)) || link == NULL)
+		return sjme_error_default(error);
+	
+	/* Is there already a weak reference? */
+	result = link->weak;
+	if (result != NULL)
+	{
+		/* Enqueue can be set, but not overwritten. */
+		if (inEnqueue != NULL)
+		{
+			/* Set it? */
+			if (result->enqueue == NULL)
+			{
+				result->enqueue = inEnqueue;
+				result->enqueueData = inEnqueueData;
+			}
+			
+			/* Must be the same function. */
+			else if (result->enqueue != inEnqueue ||
+				result->enqueueData != inEnqueueData)
+				return SJME_ERROR_ENQUEUE_ALREADY_SET;
+		}
+		
+		/* Count up. */
+		sjme_atomic_sjme_jint_getAdd(&result->count, 1);
+		
+		/* Emit barrier. */
+		sjme_thread_barrier();
+		
+		/* Use it. */
+		*outWeak = result;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* We need to allocate the link. */
+	if (sjme_error_is(error = sjme_alloc(link->pool, sizeof(*result),
+		&result)))
+		return sjme_error_default(error);
+	
+	/* Setup link information. */
+	sjme_atomic_sjme_jint_set(&result->valid,
+		SJME_ALLOC_WEAK_VALID);
+	result->link = link;
+	result->pointer = addr;
+	result->enqueue = inEnqueue;
+	result->enqueueData = inEnqueueData;
+	sjme_atomic_sjme_jint_set(&result->count, 1);
+	
+	/* Join link back to this. */
+	link->weak = result;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
+	/* Success! */
+	*outWeak = result;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
+	sjme_attrInNotNull volatile sjme_alloc_pool* inPool,
+	sjme_attrInPositiveNonZero sjme_jint size,
+	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
+	sjme_attrInNullable sjme_pointer inEnqueueData,
+	sjme_attrOutNotNull sjme_pointer* outAddr,
+	sjme_attrOutNotNull sjme_alloc_weak* outWeak
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
+{
+	sjme_pointer resultPtr;
+	sjme_alloc_weak resultWeak;
+	sjme_errorCode error;
+	
+	if (inPool == NULL || outAddr == NULL ||
+		(inEnqueueData != NULL && inEnqueue == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Take ownership of lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&inPool->spinLock)))
+		return sjme_error_default(error);
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
+	/* Attempt block allocation first. */
+	resultPtr = NULL;
+#if defined(SJME_CONFIG_DEBUG)
+	if (sjme_error_is(error = sjme_allocR(inPool, size,
+		&resultPtr, file, line, func)) ||
+		resultPtr == NULL)
+#else
+	if (sjme_error_is(error = sjme_alloc(inPool, size,
+		&resultPtr)) ||
+		resultPtr == NULL)
+#endif
+		goto fail_allocBlock;
+	
+	/* Then create the weak reference. */
+	resultWeak = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakRefInternal(resultPtr,
+		&resultWeak, inEnqueue, inEnqueueData)) || resultWeak == NULL)
+		goto fail_allocWeak;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
+	/* Release ownership of lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&inPool->spinLock, NULL)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	*outAddr = resultPtr;
+	if (outWeak != NULL)
+		*outWeak = resultWeak;
+	return SJME_ERROR_NONE;
+
+fail_allocWeak:
+fail_allocBlock:
+	if (resultPtr != NULL)
+		sjme_alloc_free(resultPtr);
+	
+	/* Release ownership of lock. */
+	if (sjme_error_is(sjme_thread_spinLockRelease(
+		&inPool->spinLock, NULL)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_alloc_weakRef(
+	sjme_attrInNotNull sjme_pointer addr,
+	sjme_attrOutNotNull sjme_alloc_weak* outWeak,
+	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
+	sjme_attrInNullable sjme_pointer inEnqueueData)
+{
+	volatile sjme_alloc_pool* pool;
+	sjme_errorCode error;
+	sjme_alloc_link* link;
+	
+	if (addr == NULL || outWeak == NULL ||
+		(inEnqueue == NULL && inEnqueueData != NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+		
+	/* Recover the link. */
+	link = NULL;
+	if (sjme_error_is(error = sjme_alloc_getLink(addr,
+		&link)) || link == NULL)
+		return sjme_error_default(error);
+	
+	/* No weak reference here? */
+	if (link->weak == NULL)
+		return SJME_ERROR_NOT_WEAK_REFERENCE;
+		
+	/* Take ownership of lock. */
+	pool = link->pool;
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&pool->spinLock)))
+		return sjme_error_default(error);
+	
+	/* Forward. */
+	error = sjme_alloc_weakRefInternal(addr, outWeak, inEnqueue,
+		inEnqueueData);
+		
+	/* Release ownership of lock. */
+	if (sjme_error_is(sjme_thread_spinLockRelease(
+		&pool->spinLock, NULL)))
+		return sjme_error_default(error);
+	
+	return error;
 }

@@ -11,30 +11,66 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionHasChildren;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionHasParent;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNodeOnly;
 
+/**
+ * This is a menu which contains sub-menus and menu items made up of
+ * any {@link Command}.
+ * 
+ * @since 2024/07/18
+ */
 @Api
 public class Menu
-	extends __Action__
+	extends MenuAction
+	implements MenuActionHasChildren, MenuActionHasParent
 {
-	/** The image used. */
-	private volatile Image _image;
-	
 	@Api
 	public Menu(String __short, String __long, Image __i)
 	{
-		throw Debugging.todo();
+		super(__short, __long, __i);
 	}
 	
+	/**
+	 * Appends the given command to the menu.
+	 *
+	 * @param __c The command to append.
+	 * @return The index of where the item was added.
+	 * @throws IllegalArgumentException If the command is already part of
+	 * the menu.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/18
+	 */
 	@Api
 	public int append(Command __c)
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		return MenuActionNodeOnly.node(this).insert(Integer.MAX_VALUE, __c);
 	}
 	
+	/**
+	 * Appends the given menu to the menu.
+	 *
+	 * @param __m The menu to append.
+	 * @return The index of where the item was added.
+	 * @throws IllegalArgumentException If the menu is already part of
+	 * the menu.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/18
+	 */
 	@Api
 	public int append(Menu __m)
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		return MenuActionNodeOnly.node(this).insert(Integer.MAX_VALUE, __m);
 	}
 	
 	@Api
@@ -98,22 +134,76 @@ public class Menu
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the depth of this menu, note that this value might not be
+	 * reliable to use as {@link Menu} may be added to
+	 * multiple {@link Displayable}s, and as such this should only be used
+	 * as a suggestion or approximated.
+	 *
+	 * @return The menu depth.
+	 * @since 2024/07/18
+	 */
 	@Api
 	public int getMenuDepth()
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			return MenuAction.approxDepth(this);
+		}
 	}
 	
+	/**
+	 * Appends the given command to the menu.
+	 *
+	 * @param __at The index to insert at.
+	 * @param __c The command to append.
+	 * @throws IllegalArgumentException If the command is already part of
+	 * the menu.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/18
+	 */
 	@Api
-	public void insert(int __i, Command __c)
+	public void insert(int __at, Command __c)
+		throws IllegalArgumentException, IndexOutOfBoundsException,
+			NullPointerException
 	{
-		throw Debugging.todo();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Our internal binding uses this as a special value, so if this is
+		// passed internally we should fail on it
+		if (__at == Integer.MAX_VALUE)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		MenuActionNodeOnly.node(this).insert(__at, __c);
 	}
 	
+	/**
+	 * Appends the given menu to the menu.
+	 *
+	 * @param __at The index to insert at.
+	 * @param __m The menu to append.
+	 * @throws IllegalArgumentException If the menu is already part of
+	 * the menu.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/18
+	 */
 	@Api
-	public void insert(int __i, Menu __m)
+	public void insert(int __at, Menu __m)
+		throws IllegalArgumentException, IndexOutOfBoundsException,
+			NullPointerException
 	{
-		throw Debugging.todo();
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		// Our internal binding uses this as a special value, so if this is
+		// passed internally we should fail on it
+		if (__at == Integer.MAX_VALUE)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		MenuActionNodeOnly.node(this).insert(__at, __m);
 	}
 	
 	@Api
@@ -245,10 +335,16 @@ public class Menu
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the max supported menu depth, this is always at least {@code 5}.
+	 * 
+	 * @return The max supported menu depth.
+	 * @since 2024/07/18
+	 */
 	@Api
 	public static int getMaxMenuDepth()
 	{
-		throw Debugging.todo();
+		return 5;
 	}
 }
 

@@ -11,8 +11,6 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 @Api
 public class Spacer
@@ -74,38 +72,6 @@ public class Spacer
 	public void setMinimumSize(int __a, int __b)
 	{
 		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
-	@Override
-	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
-	{
-		return new __SpacerState__(__backend, this);
-	}
-	
-	/**
-	 * Spacer state.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __SpacerState__
-		extends Item.__ItemState__
-	{
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__SpacerState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-		}
 	}
 }
 

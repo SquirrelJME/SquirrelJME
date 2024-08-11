@@ -7,7 +7,6 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Asset support
 
-
 # Packing asset base directories
 set(SQUIRRELJME_ASSET_RAW
 	"${CMAKE_SOURCE_DIR}/cmake/packing")

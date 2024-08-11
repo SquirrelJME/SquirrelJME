@@ -21,10 +21,10 @@
  */
 SJME_TEST_DECLARE(testAllocSplit)
 {
-	void* chunk;
+	sjme_pointer chunk;
 	sjme_jint chunkLen;
 	sjme_alloc_pool* pool;
-	void* block;
+	sjme_pointer block;
 	sjme_alloc_link* initLink;
 	sjme_alloc_link* link;
 	sjme_alloc_link* next;

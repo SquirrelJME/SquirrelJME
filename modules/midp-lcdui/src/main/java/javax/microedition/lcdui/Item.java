@@ -9,17 +9,14 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.constants.UIItemType;
-import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.scritchui.StringTracker;
 
 @Api
 public abstract class Item
-	extends __CommonWidget__
 {
 	@Api
 	public static final int BUTTON =
@@ -89,15 +86,12 @@ public abstract class Item
 	public static final int PLAIN =
 		0;
 	
-	/** The owning displayable. */
-	volatile Displayable _displayable;
+	/** The label of this item. */
+	final StringTracker _labelTracker;
 	
 	/** The current layout of the item. */
 	volatile int _layout =
 		Item.LAYOUT_DEFAULT;
-	
-	/** The label of this item. */
-	volatile String _label;
 	
 	/** The preferred width. */
 	volatile int _preferredW =
@@ -125,8 +119,10 @@ public abstract class Item
 	 */
 	Item(String __l)
 	{
-		// Set the label accordingly
-		this.__setLabel(__l);
+		ScritchInterface scritch = DisplayManager.instance().scritch();
+		
+		// Setup tracker
+		this._labelTracker = new StringTracker(scritch.eventLoop(), __l);
 	}
 	
 	@Api
@@ -150,7 +146,7 @@ public abstract class Item
 	@Api
 	public String getLabel()
 	{
-		return this._label;
+		return this._labelTracker.get();
 	}
 	
 	@Api
@@ -261,7 +257,7 @@ public abstract class Item
 	@Api
 	public void setLabel(String __l)
 	{
-		this.__setLabel(__l);
+		this._labelTracker.set(__l);
 	}
 	
 	/**
@@ -302,62 +298,16 @@ public abstract class Item
 		if (__w < -1 || __h < -1)
 			throw new IllegalArgumentException("EB35");
 		
+		throw Debugging.todo();
+		/*
 		/* {@squirreljme.error EB36 Cannot set preferred size of item within
-		an alert.} */
+		an alert.} * /
 		if (this._displayable instanceof Alert)
 			throw new IllegalStateException("EB36");
 		
 		this._preferredW = __w;
 		this._preferredH = __h;
-	}
-	
-	/**
-	 * Sets the label for this item.
-	 * 
-	 * @param __l The label to use, {@code null} will clear it.
-	 * @since 2021/11/27
-	 */
-	final void __setLabel(String __l)
-	{
-		// Record the string to be used
-		this._label = __l;
-		
-		// Update the label
-		UIBackend backend = this.__backend();
-		backend.widgetProperty(this.__state(__ItemState__.class)._labelItem,
-			UIWidgetProperty.STRING_LABEL, 0, __l);
-		
-		// Perform an update on the form
-		Displayable displayable = this._displayable;
-		if (displayable instanceof Form)
-			((Form)displayable).__update();
-	}
-	
-	/**
-	 * Base state for items.
-	 * 
-	 * @since 2023/01/14
-	 */
-	abstract static class __ItemState__
-		extends Displayable.__CommonState__
-	{
-		/** The label item. */
-		final UIItemBracket _labelItem;
-		
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__ItemState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-			
-			// Setup label item
-			this._labelItem = __backend.itemNew(UIItemType.LABEL);
-		}
+		*/
 	}
 }
 

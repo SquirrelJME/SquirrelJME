@@ -70,37 +70,47 @@ The available options are:
    * `release` includes obfuscation and no debugging and thus runs faster.
    * `debug` does not have any obfuscation and may work in cases where
      obfuscation and optimization may cause issues.
- * `-Xdebug`
+ * `-Xdebug[:fork|nofork]`
    * Enable debugging but with the internal built-in SquirrelJME debugger and
      not a JDWP connection over TCP.
    * This is supported under the `hosted` emulator, however if you launch
      another application within it will not debug that process, therefor if
      you wish to debug you should use `-jar`.
+   * Optionally, `fork` or `nofork` can be specified to where the
+     internal debugger to launched as a separate process or not.
+ * `-Xscritchui:(ui)`
+   * Rather than the default, use a specific user interface library.
+   * This may also be set by using `cc.squirreljme.scritchui`.
  * `-Xthread:(single|coop|multi|smt)`
    * Sets the threading mode of the virtual machine.
    * `single`/`coop` -- Single threaded using cooperative multitasking.
    * `multi`/`smt` -- Multi threaded using asynchronous multitasking.
  * `-Xtrace=option[,option[,...]]` -- Trace options
    * `all` -- Enable all.
-   * `instructions` -- Instructions being executed.
-   * `methodEntry` -- Entry of methods.
-   * `methodExit` -- Exit of methods.
-   * `mleCall` -- SquirrelJME MLE Native Calls.
-   * `invokeStatic` -- Static invocations.
    * `allocation` -- Allocations such as `new`.
    * `classInitialize` -- Class is initialized.
-   * `vmException` -- Virtual machine exceptions.
+   * `ignoredException` -- Exception that may be ignored.
+   * `instructions` -- Instructions being executed.
+   * `invokeStatic` -- Static invocations.
+   * `methodEntry` -- Entry of methods.
+   * `methodExit` -- Exit of methods.
    * `missingClass` -- Class does not exist.
+   * `mleCall` -- SquirrelJME MLE Native Calls.
    * `monitorEnter` -- Monitor is entered.
    * `monitorExit` -- Exiting a monitor.
-   * `monitorWait` -- Monitor is waited on.
    * `monitorNotify` -- Monitor is notified.
+   * `monitorWait` -- Monitor is waited on.
    * `threadNew` -- New thread is created.
+   * `vmException` -- Virtual machine exceptions.
  * `-Dsysprop=value`
    * Defines the given system property. 
  * `-classpath (class:path:...)`
    * Specifies the class path to use for the current application, the entries
      must be visible from the library path.
+ * `-zero` -- Alias for `-Xemulator:springcoat`.
+ * `-Xint` -- Alias for `-Xemulator:springcoat`.
+ * `-client` -- Ignored.
+ * `-server` -- Ignored.
 
 ## Default Configuration and Library Paths
 

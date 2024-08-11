@@ -73,7 +73,7 @@ public class SimpleJavaExecSpecFiller
 		List<String> result = new ArrayList<>();
 		
 		// Find the Java executable
-		result.add(SimpleJavaExecSpecFiller.__findJavaExe().toString());
+		result.add(SimpleJavaExecSpecFiller.findJavaExe().toString());
 		
 		// Define the classpath
 		StringBuilder classPath = new StringBuilder();
@@ -167,7 +167,7 @@ public class SimpleJavaExecSpecFiller
 	 * @return The Java executable.
 	 * @since 2020/12/27
 	 */
-	private static Path __findJavaExe()
+	public static Path findJavaExe()
 	{
 		String javaHomeRaw = System.getProperty("java.home");
 		Path javaHome = (javaHomeRaw != null ? Paths.get(javaHomeRaw) : null);

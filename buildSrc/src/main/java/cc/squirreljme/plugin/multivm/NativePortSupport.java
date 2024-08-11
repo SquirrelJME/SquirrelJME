@@ -22,9 +22,6 @@ import org.gradle.api.tasks.TaskContainer;
  */
 public enum NativePortSupport
 {
-	/** RatufaCoat. */
-	RATUFACOAT,
-	
 	/** NanoCoat. */
 	NANOCOAT
 	{

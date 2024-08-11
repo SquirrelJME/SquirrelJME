@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # Declare library
-squirreljme_multilib_add_library(Core
+squirreljme_multilib_add_static_library(Core
 	boot.c
 	bytecode.c
 	classy.c
@@ -16,7 +16,6 @@ squirreljme_multilib_add_library(Core
 	jdwp.c
 	loop.c
 	modelessStars.c
-	native.c
 	nvm.c
 	rom.c
 	task.c
@@ -24,12 +23,8 @@ squirreljme_multilib_add_library(Core
 	vmConfig.c)
 
 # Include main headers
-squirreljme_multilib_target_include_directories(Core
+squirreljme_multilib_static_target_include_directories(Core
 	"${CMAKE_SOURCE_DIR}/include")
-
-# Libraries for linking
-squirreljme_multilib_target_link_libraries(Core
-	$<TARGET_PROPERTY:Base,SQUIRRELJME_LINK_LIBRARIES>)
 
 # Doxygen
 squirreljme_doxygen(Core)

@@ -39,6 +39,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringUnmappableObjectException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -155,7 +156,7 @@ public final class SpringThreadWorker
 		// Verbose debug?
 		if (this.verboseCheck(VerboseDebugFlag.ALLOCATION))
 			this.verboseEmit("Allocate array: %s[%d]",
-				__cl.name, __l);
+				__cl.name(), __l);
 		
 		// Depends on the type to be allocated
 		switch (__cl.componentType().name().toString())
@@ -234,11 +235,8 @@ public final class SpringThreadWorker
 	public final Object asNativeObject(Object __in)
 		throws NullPointerException, SpringFatalException
 	{
-		if (__in == null)
-			throw new NullPointerException("NARG");
-		
-		// Is null reference
-		else if (__in == SpringNullObject.NULL)
+		// Is null reference?
+		if (__in == null || __in == SpringNullObject.NULL)
 			return null;
 		
 		// Boxed types remain the same
@@ -247,8 +245,8 @@ public final class SpringThreadWorker
 			return __in;
 		
 		// Array type
-		if (__in instanceof SpringArrayObject)
-			return ((SpringArrayObject)__in).array();
+		if ((__in instanceof SpringArray) && ((SpringArray)__in).isArray())
+			return ((SpringArray)__in).array();
 		
 		// Class type
 		else if (__in instanceof SpringSimpleObject)
@@ -276,7 +274,7 @@ public final class SpringThreadWorker
 					given virtual machine class to a native machine object.
 					(The input class)} */
 				default:
-					throw new RuntimeException(
+					throw new SpringUnmappableObjectException(
 						String.format("BK1z %s", type));
 			}
 		}
@@ -284,7 +282,7 @@ public final class SpringThreadWorker
 		/* {@squirreljme.error BK20 Do not know how to convert the given class
 		to a native machine object. (The input class)} */
 		else
-			throw new SpringFatalException(
+			throw new SpringUnmappableObjectException(
 				String.format("BK20 %s", __in.getClass()));
 	}
 	
@@ -504,10 +502,7 @@ public final class SpringThreadWorker
 					new TypeObject(machine, resClass));
 				
 				// Store it
-				synchronized (classClass)
-				{
-					classClass._instance = rv;
-				}
+				classClass.setClassObject(rv);
 				
 				// Cache and use it
 				com.put(name, rv);
@@ -519,7 +514,7 @@ public final class SpringThreadWorker
 		/* {@squirreljme.error BK21 Do not know how to convert the given class
 		to a virtual machine object. (The input class)} */
 		else
-			throw new RuntimeException(
+			throw new SpringUnmappableObjectException(
 				String.format("BK21 %s", __in.getClass()));
 	}
 	
@@ -1464,7 +1459,7 @@ public final class SpringThreadWorker
 		// Verbose debug?
 		if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION))
 			this.verboseEmit("Handling exception: %s",
-				__o.type().name);
+				__o.type().name());
 			
 		// Are we exiting in the middle of an exception throwing?
 		this.machine.exitCheck();
@@ -1491,10 +1486,28 @@ public final class SpringThreadWorker
 			}
 		}
 		
+		// Possibly ignored exception?
+		if (this.verboseCheck(VerboseDebugFlag.IGNORED_EXCEPTION) &&
+			useeh != null)
+		{
+			// Catching these is pretty 
+			switch (useeh.type().toString())
+			{
+				case "java/lang/Throwable":
+				case "java/lang/Exception":
+				case "java/lang/RuntimeException":
+				case "java/lang/Error":
+					this.verboseEmit("Possible ignored exception?: %s",
+						__o);
+					this.thread.printStackTrace(System.err);
+					break;
+			}
+		}
+		
 		// Verbose debug?
 		if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION))
 			this.verboseEmit("Frame handles %s? %b",
-				__o.type().name, useeh != null);
+				__o.type().name(), useeh != null);
 		
 		// Signal that we caught an exception
 		JDWPHostController jdwp = this.machine.tasks.jdwpController;
@@ -1586,8 +1599,13 @@ public final class SpringThreadWorker
 		// Wrap any exceptions
 		catch (RuntimeException e)
 		{
+			// Convertable? Rethrow it and let SpringCoat handle the conversion
+			if (e instanceof SpringConvertableThrowable)
+				throw e;
+			
+			// Otherwise fail
 			throw new SpringVirtualMachineException(String.format(
-				"Could not proxy invoke %s.", __method));
+				"Could not proxy invoke %s.", __method), e);
 		}
 		
 		return rv;
@@ -1689,8 +1707,8 @@ public final class SpringThreadWorker
 			int index = field.index;
 			
 			// Look into the class storage
-			SpringFieldStorage[] store = inClass._staticFields;
-			if (index >= inClass._staticFieldBase && index < store.length &&
+			SpringFieldStorage[] store = inClass.staticFields();
+			if (index >= inClass.staticFieldBase() && index < store.length &&
 				store[index] != null)
 				return store[index];
 				
@@ -1837,8 +1855,8 @@ public final class SpringThreadWorker
 				case InstructionIndex.AALOAD:
 					{
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						frame.pushToStack(obj.<SpringObject>get(
 							SpringObject.class, dx));
@@ -1851,8 +1869,8 @@ public final class SpringThreadWorker
 						SpringObject value = frame.<SpringObject>popFromStack(
 							SpringObject.class);
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						obj.set(dx, value);
 					}
@@ -1899,8 +1917,8 @@ public final class SpringThreadWorker
 					// Length of array
 				case InstructionIndex.ARRAYLENGTH:
 					frame.pushToStack(
-						frame.<SpringArrayObject>popFromStackNotNull(
-						SpringArrayObject.class).length());
+						frame.<SpringArray>popFromStackNotNull(
+						SpringArray.class).length());
 					break;
 					
 					// Store reference to local variable
@@ -2572,8 +2590,8 @@ public final class SpringThreadWorker
 				case InstructionIndex.IALOAD:
 					{
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						frame.pushToStack(obj.<Integer>get(Integer.class, dx));
 					}
@@ -2583,8 +2601,8 @@ public final class SpringThreadWorker
 				case InstructionIndex.DALOAD:
 					{
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						frame.pushToStack(obj.<Double>get(Double.class, dx));
 					}
@@ -2594,8 +2612,8 @@ public final class SpringThreadWorker
 				case InstructionIndex.FALOAD:
 					{
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						frame.pushToStack(obj.<Float>get(Float.class, dx));
 					}
@@ -2606,8 +2624,8 @@ public final class SpringThreadWorker
 				case InstructionIndex.LALOAD:
 					{
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						frame.pushToStack(obj.<Long>get(Long.class, dx));
 					}
@@ -2621,8 +2639,8 @@ public final class SpringThreadWorker
 					{
 						int value = frame.<Integer>popFromStack(Integer.class);
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						obj.set(dx, value);
 					}
@@ -2634,8 +2652,8 @@ public final class SpringThreadWorker
 						double value = frame.<Double>popFromStack(
 							Double.class);
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						obj.set(dx, value);
 					}
@@ -2646,8 +2664,8 @@ public final class SpringThreadWorker
 					{
 						float value = frame.<Float>popFromStack(Float.class);
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						obj.set(dx, value);
 					}
@@ -2658,8 +2676,8 @@ public final class SpringThreadWorker
 					{
 						long value = frame.<Long>popFromStack(Long.class);
 						int dx = frame.<Integer>popFromStack(Integer.class);
-						SpringArrayObject obj = frame.<SpringArrayObject>
-							popFromStackNotNull(SpringArrayObject.class);
+						SpringArray obj = frame.<SpringArray>
+							popFromStackNotNull(SpringArray.class);
 						
 						obj.set(dx, value);
 					}

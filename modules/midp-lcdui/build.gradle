@@ -86,4 +86,5 @@ dependencies
 	api project(":modules:gcf")
 	api project(":modules:io")
 	api project(":modules:collections")
+	api project(":modules:scritch-ui")
 }

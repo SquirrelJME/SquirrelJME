@@ -97,7 +97,7 @@ public class SqfSourceWriter
 	
 	/** SQF Structure type. */
 	private static final CType _TYPE_SQF =
-		CStructTypeBuilder.builder(CStructKind.STRUCT, "sjme_sqf")
+		CStructTypeBuilder.builder(CStructKind.STRUCT, "sjme_scritchui_sqf")
 			.member(SqfSourceWriter._TYPE_LPCSTR, "name")
 			.member(SqfSourceWriter._TYPE_INT, "family")
 			.member(SqfSourceWriter._TYPE_INT, "pixelHeight")
@@ -124,7 +124,7 @@ public class SqfSourceWriter
 	/** SQF Codepage structure type. */
 	private static final CType _TYPE_SQF_CODEPAGE =
 		CStructTypeBuilder.builder(CStructKind.STRUCT,
-			"sjme_sqf_codepage")
+			"sjme_scritchui_sqfCodepage")
 			.member(SqfSourceWriter._TYPE_LPCSTR, "name")
 			.member(SqfSourceWriter._TYPE_INT, "numCodepages")
 			.member(SqfSourceWriter._TYPE_SQF.constType().pointerType(),

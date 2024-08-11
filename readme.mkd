@@ -23,12 +23,27 @@ ability to play older J2ME software and games designed for flip-phones.
 
 Please support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
-Dedicated to _Emily_ (1998-2020), the developer of
-[Mu](https://github.com/meepingsnesroms/Mu), you will not be forgotten.
-Rest in peace.
+> Dedicated to _Emily_ (1998-2020), the developer
+> of [Mu](https://github.com/meepingsnesroms/Mu), I valued our friendship
+> greatly and all the time we would spend together nerding about technical
+> stuff, programming, and random topics. I do miss when we would play SNES
+> and NeoGeo games for hours, they were cherished moments. The times goofing
+> about in Kirby's Dream Course (SNES) were some of the most fun times spent
+> with you. We both loves PalmOS devices and I always loved to hear about the
+> new odd and quirky things you discovered about them.
+> -- You will not be forgotten, rest in peace.
 
-Dedicated to _Near_ (1983-2021), the developer of Higan, Ares, etc., may
-your soul rest in peace. You will not be forgotten.
+> Dedicated to _Near_ (1983-2021), the developer of Higan, Ares, etc. and
+> otherwise. You were and still are one of the kindest and most caring person
+> that I knew. You showed me lots of support and encouragement with my own
+> preservation work, and also helped me find the right people to connect with
+> to further that goal. I still do miss our daily conversations, even though
+> it is ironic that we rarely if ever spoke about emulation development there
+> were so many other topics of conversation to go through. Honestly without
+> you, I would not be where I am today and to this day I am holding you close
+> and true to my heart. I push forward for you while holding myself high, I
+> know that you would be proud of where I am today.
+> -- You will not be forgotten, rest in peace.
 
 _I am currently searching for employment! Check out my_
 _[LinkedIn](https://www.linkedin.com/in/xerthesquirrel/)!_

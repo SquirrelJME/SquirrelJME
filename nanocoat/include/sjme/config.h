@@ -43,7 +43,10 @@ extern "C" {
 #endif
 
 /* The current operating system. */
-#if defined(__3DS__) || defined(_3DS)
+#if defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN)
+	/** Emscripten (WASM). */
+	#define SJME_CONFIG_HAS_EMSCRIPTEN
+#elif defined(__3DS__) || defined(_3DS)
 	/** Nintendo 3DS is available. */
 	#define SJME_CONFIG_HAS_NINTENDO_3DS
 #elif defined(__linux__) || defined(linux) || defined(__linux)
@@ -52,10 +55,19 @@ extern "C" {
 #elif defined(__CYGWIN__)
 	/** Cygwin is available. */
 	#define SJME_CONFIG_HAS_CYGWIN
+#elif defined(_WIN16) || defined(__WIN16__) || defined(__WIN16)
+	/** Using Windows 16-bit. */
+	#define SJME_CONFIG_HAS_WINDOWS_16
+
+	/** Windows is available however. */
+	#define SJME_CONFIG_HAS_WINDOWS 16
 #elif defined(_WIN32) || defined(__WIN32__) || \
 	defined(__WIN32) || defined(_WINDOWS)
+	/** Using Windows 32-bit. */
+	#define SJME_CONFIG_HAS_WINDOWS_32
+	
 	/** Windows is available. */
-	#define SJME_CONFIG_HAS_WINDOWS
+	#define SJME_CONFIG_HAS_WINDOWS 32
 #elif defined(__APPLE__) && defined(__MACH__)
 	/** macOS 10+ is available. */
 	#define SJME_CONFIG_HAS_MACOS
@@ -99,6 +111,41 @@ extern "C" {
 	#endif
 #endif
 
+#if defined(__amd64__) || defined(__amd64__) || defined(__x86_64__) || \
+	defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64)
+	/** Has AMD64. */
+	#define SJME_CONFIG_HAS_ARCH_AMD64
+#elif defined(_M_ARM64) || defined(_M_ARM64EC) || defined(__aarch64__)
+	/** Has ARM64. */
+	#define SJME_CONFIG_HAS_ARCH_ARM64 
+#elif defined(__ia64__) || defined(_IA64) || \
+	defined(__IA64__) || defined(__ia64) || defined(_M_IA64) || \
+	defined(__itanium__)
+	/** Has Itanium. */
+	#define SJME_CONFIG_HAS_ARCH_IA64
+#elif defined(__powerpc64__) || defined(__ppc64__) || defined(__PPC64__) || \
+	defined(_ARCH_PPC64)
+	/** Has PowerPC. */
+	#define SJME_CONFIG_HAS_ARCH_POWERPC 32
+	
+	/** Has PowerPC 64-bit. */
+	#define SJME_CONFIG_HAS_ARCH_POWERPC_64
+#elif defined(_M_PPC) || defined(__powerpc) || defined(__powerpc__) || \
+	defined(__POWERPC__) || defined(__ppc__) || \
+	defined(__PPC__) || defined(_ARCH_PPC)
+	/** Has PowerPC. */
+	#define SJME_CONFIG_HAS_ARCH_POWERPC 32
+	
+	/** Has PowerPC 32-bit. */
+	#define SJME_CONFIG_HAS_ARCH_POWERPC_32
+#elif defined(_M_I86) || defined(_M_IX86) || defined(__X86__) || \
+	defined(_X86_) || defined(__I86__) || defined(__i386) || \
+	defined(__i386__) || defined(__i486__) || defined(__i586__) || \
+	defined(__i686__)
+	/** Has Intel 32-bit (x86). */
+	#define SJME_CONFIG_HAS_ARCH_IA32
+#endif
+
 /* Attempt detection of pointer sizes based on architecture? */
 #if (defined(__SIZEOF_POINTER__) && __SIZEOF_POINTER__ == 4) || \
 	defined(_ILP32) || defined(__ILP32__)
@@ -110,13 +157,10 @@ extern "C" {
 	#define SJME_CONFIG_HAS_POINTER 64
 #else
 	/* 64-bit seeming architecture, common 64-bit ones? */
-	#if defined(__amd64__) || defined(__amd64__) || defined(__x86_64__) || \
-		defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64) || \
-        defined(_M_ARM64) || defined(_M_ARM64EC) || \
-        defined(__aarch64__) || defined(__ia64__) || defined(_IA64) || \
-        defined(__IA64__) || defined(__ia64) || defined(_M_IA64) || \
-        defined(__itanium__) || defined(__powerpc64__) || \
-		defined(__ppc64__) || defined(__PPC64__) || defined(_ARCH_PPC64) || \
+	#if defined(SJME_CONFIG_HAS_ARCH_AMD64) || \
+        defined(SJME_CONFIG_HAS_ARCH_ARM64) || \
+		defined(SJME_CONFIG_HAS_ARCH_IA64) || \
+		defined(SJME_CONFIG_HAS_ARCH_POWERPC_64) || \
         defined(_WIN64)
 		/** Pointer size. */
 		#define SJME_CONFIG_HAS_POINTER 64
@@ -308,6 +352,9 @@ extern "C" {
 	/** Deprecated. */
 	#define sjme_attrDeprecated __attribute__((deprecated))
 	
+	/** Disable optimization. */
+	#define sjme_noOptimize __attribute__((optimize("O0")))
+	
 	/**
 	 * Formatted string.
 	 * 
@@ -336,6 +383,12 @@ extern "C" {
 		/** Flexible array size count, GCC is fine with blank. */
 		#define sjme_flexibleArrayCount
 	#endif
+#elif defined(__WATCOMC__)
+	/** Flexible array size count. */
+	#define sjme_flexibleArrayCount
+
+	/** Flexible array count but for unions. */
+	#define sjme_flexibleArrayCountUnion 1
 #endif
 
 #if !defined(sjme_attrCallback)
@@ -419,6 +472,11 @@ extern "C" {
 	#define sjme_attrInOutNotNull sjme_attrInNotNull sjme_attrOutNotNull 
 #endif
 
+#if !defined(sjme_attrInNotNullBuf)
+	/** Input to buffer. */
+	#define sjme_attrInNotNullBuf(lenArg) sjme_attrInNotNull
+#endif
+
 #if !defined(sjme_attrOutNotNullBuf)
 	/** Output to buffer. */
 	#define sjme_attrOutNotNullBuf(lenArg) sjme_attrOutNotNull
@@ -482,9 +540,19 @@ extern "C" {
 	#define sjme_inline inline
 #endif
 
+#if !defined(sjme_noOptimize)
+	/** Disable optimization. */
+	#define sjme_noOptimize
+#endif
+
 #if defined(__GNUC__)
 	/** GNU C Compiler. */
 	#define SJME_CONFIG_HAS_GCC
+#endif
+
+#if defined(_MSC_VER)
+	/** Microsoft Visual C++ Compiler. */
+	#define SJME_CONFIG_HAS_MSVC
 #endif
 
 #if defined(SJME_CONFIG_HAS_WINDOWS)
@@ -541,6 +609,26 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_NINTENDO_3DS)
 	/** Use fallback threading regardless of the system. */
 	#define SJME_CONFIG_HAS_THREADS_FALLBACK
+#endif
+
+#if defined(SJME_CONFIG_HAS_WINDOWS_16)
+	#define SJME_CALL FAR PASCAL
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	#define SJME_CALL __stdcall 
+#else
+	/** SquirrelJME calling convention. */
+	#define SJME_CALL
+#endif
+
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/** Align to 64-bit. */
+	#define sjme_align64 __declspec(align(8))
+#elif defined(SJME_CONFIG_HAS_GCC)
+	/** Align to 64-bit. */
+	#define sjme_align64 __attribute__((aligned(8)))
+#else
+	/** Align to 64-bit. */
+	#define sjme_align64 
 #endif
 
 /*--------------------------------------------------------------------------*/

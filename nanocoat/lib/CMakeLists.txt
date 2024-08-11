@@ -11,3 +11,7 @@
 
 # Third party support libraries that come from outside SquirrelJME
 add_subdirectory(3rdparty)
+
+# ScritchUI and related
+add_subdirectory(scritchinput)
+add_subdirectory(scritchui)

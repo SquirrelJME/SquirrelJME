@@ -10,7 +10,7 @@
 #include "sjme/comparator.h"
 #include "sjme/debug.h"
 
-sjme_jint SJME_COMPARATOR(sjme_lpcstr, 0)(const void* a, const void* b,
+sjme_jint SJME_COMPARATOR(sjme_lpcstr, 0)(sjme_cpointer a, sjme_cpointer b,
 	int elementSize)
 {
 	if (a == NULL || b == NULL)
@@ -21,7 +21,7 @@ sjme_jint SJME_COMPARATOR(sjme_lpcstr, 0)(const void* a, const void* b,
 }
 
 sjme_jint SJME_COMPARATOR_INSENSITIVE(sjme_lpcstr, 0)(
-	const void* a, const void* b, int elementSize)
+	sjme_cpointer a, sjme_cpointer b, int elementSize)
 {
 	if (a == NULL || b == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

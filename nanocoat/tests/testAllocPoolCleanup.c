@@ -19,7 +19,7 @@
  */
 SJME_TEST_DECLARE(testAllocPoolCleanup)
 {
-	void* chunk;
+	sjme_pointer chunk;
 	sjme_jint chunkLen;
 	uint8_t* block;
 	sjme_alloc_pool* pool;

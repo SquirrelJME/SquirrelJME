@@ -199,7 +199,8 @@ public abstract class Graphics
 	@Api
 	public abstract void drawArc(int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __h, int __startAngle,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		int __startAngle,
 		int __arcAngle);
 	
 	@Api
@@ -332,7 +333,7 @@ public abstract class Graphics
 		int __xsrc, int __ysrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wsrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __hsrc,
-		@MagicConstant(valuesFromClass = Graphics.class) int __trans,
+		@MagicConstant(valuesFromClass = Sprite.class) int __trans,
 		int __xdest, int __ydest,
 		@MagicConstant(valuesFromClass = Graphics.class) int __anch)
 		throws IllegalArgumentException, NullPointerException;
@@ -363,19 +364,32 @@ public abstract class Graphics
 		int __xsrc, int __ysrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wsrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __hsrc,
-		@MagicConstant(valuesFromClass = Graphics.class) int __trans,
+		@MagicConstant(valuesFromClass = Sprite.class) int __trans,
 		int __xdest, int __ydest,
 		@MagicConstant(valuesFromClass = Graphics.class) int __anch,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wdest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __hdest)
 		throws IllegalArgumentException, NullPointerException;
 	
+	/**
+	 * Draws a round rectangle.
+	 * 
+	 * If the width and/or height are zero or negative, nothing is drawn.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width of the rectangle.
+	 * @param __h The height of the rectangle.
+	 * @param __arcWidth The horizontal diameter of the arc on the corners.
+	 * @param __arcHeight The vertical diameter of the arc on the corners.
+	 * @since 2024/07/14
+	 */
 	@Api
 	public abstract void drawRoundRect(int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __aw,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __ah);
+		@Range(from = 0, to = Integer.MAX_VALUE) int __arcWidth,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __arcHeight);
 	
 	/**
 	 * Same as {@code drawSubstring(__s, 0, __s.length(), __x, __y, __anchor)}.
@@ -443,16 +457,39 @@ public abstract class Graphics
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
 		int __startAngle, int __arcAngle);
 	
+	/**
+	 * Draws a filled rectangle in the same manner
+	 * as {@link #drawRect(int, int, int, int)}.
+	 * 
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2024/07/14
+	 */
 	@Api
 	public abstract void fillRect(int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h);
 	
+	/**
+	 * Draws a filled round rectangle in the same manner
+	 * as {@link #fillRoundRect(int, int, int, int, int, int)}.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @param __arcWidth The width of the arc at each corner.
+	 * @param __arcHeight The height of the arc at each corner.
+	 * @since 2024/07/14
+	 */
 	@Api
 	public abstract void fillRoundRect(int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
-		int __aw, int __ah);
+		int __arcWidth,
+		int __arcHeight);
 	
 	/**
 	 * Draws a filled triangle using the current color, the lines which make

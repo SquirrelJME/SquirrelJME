@@ -87,7 +87,7 @@ int sjme_test_main(int argc, sjme_lpstr* argv, sjme_lpcstr* nextTest)
 	sjme_testResult result;
 	sjme_test test;
 	sjme_jint i, jumpId;
-	void* chunk;
+	sjme_pointer chunk;
 	sjme_jint chunkLen;
 	
 	if (argc <= 1)

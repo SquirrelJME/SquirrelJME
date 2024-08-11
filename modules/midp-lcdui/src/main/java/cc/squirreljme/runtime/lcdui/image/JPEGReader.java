@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInputStream;
 import java.io.InputStream;
-import javax.microedition.lcdui.Image;
 
 /**
  * This class is used to process JPEG image files.

@@ -56,7 +56,7 @@ public class VMFullSuite
 		
 		// This depends on everything!
 		this.dependsOn(new VMFullSuiteDepends(this, __classifier),
-			new VMEmulatorDependencies(this,
+			new VMEmulatorDependencies(this.getProject(),
 				__classifier.getTargetClassifier()));
 		
 		// Actual running of everything

@@ -10,10 +10,9 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
-import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
-import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -42,24 +41,6 @@ public final class PencilShelf
 	private PencilShelf()
 	{
 	}
-	
-	/**
-	 * Returns the capabilities of the native possibly hardware accelerated
-	 * pencil graphics drawing for the given pixel format.
-	 * 
-	 * @param __pf The {@link UIPixelFormat} being used for drawing.
-	 * @throws MLECallError If the pixel format is not valid.
-	 * @return The capabilities, will be the bit-field of
-	 * {@link PencilCapabilities}. If there is not capability for this format
-	 * then {@code 0} will be returned.
-	 * @since 2020/09/25
-	 */
-	@SquirrelJMEVendorApi
-	@CheckReturnValue
-	@MagicConstant(flagsFromClass = PencilCapabilities.class)
-	public static native int capabilities(
-		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf)
-		throws MLECallError;
 	
 	/**
 	 * This copies one region of the image to another region.
@@ -94,6 +75,47 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * This draws the outer edge of the ellipse from the given angles using
+	 * the color, alpha, and stroke style.
+	 *
+	 * The coordinates are treated as if they were in a rectangular region. As
+	 * such the center of the ellipse to draw the outline of is in the center
+	 * of the specified rectangle.
+	 *
+	 * Note that no lines are drawn to the center point, so the shape does not
+	 * result in a pie slice.
+	 *
+	 * The angles are in degrees and visually the angles match those of the
+	 * unit circle correctly transformed to the output surface. As such, zero
+	 * degrees has the point of {@code (__w, __h / 2)}, that is it points to
+	 * the right. An angle at 45 degrees will always point to the top right
+	 * corner.
+	 *
+	 * If the width or height are zero, then nothing is drawn. The arc will
+	 * cover an area of {@code __w + 1} and {@code __h + 1}.
+	 *
+	 * @param __g The hardware graphics to draw with.
+	 * @param __x The X position of the upper left corner, will be translated.
+	 * @param __y The Y position of the upper left corner, will be translated.
+	 * @param __w The width of the arc.
+	 * @param __h The height of the arc.
+	 * @param __startAngle The starting angle in degrees, 
+	 * @param __arcAngle The offset from the starting angle, negative values
+	 * indicate clockwise direction while positive values are counterclockwise.
+	 * @throws MLECallError If the pencil is not valid; or the arc requested
+	 * to draw is not valid.
+	 * @since 2024/07/14
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawArc(@NotNull PencilBracket __g,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		int __startAngle,
+		int __arcAngle)
+		throws MLECallError;
+	
+	/**
 	 * Draws the given characters.
 	 *
 	 * @param __g The hardware graphics to draw with.
@@ -117,6 +139,22 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * Draws a horizontal line in hardware.
+	 *
+	 * @param __g The graphics to draw with.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width of the line.
+	 * @throws MLECallError On null arguments; if the pencil is not valid; or
+	 * the width is negative.
+	 * @since 2024/05/17
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawHoriz(@NotNull PencilBracket __g,
+		int __x, int __y, @Range(from = 1, to = Integer.MAX_VALUE) int __w)
+		throws MLECallError;
+	
+	/**
 	 * Draws a line in hardware.
 	 * 
 	 * @param __g The hardware graphics to draw with.
@@ -130,6 +168,42 @@ public final class PencilShelf
 	@SquirrelJMEVendorApi
 	public static native void hardwareDrawLine(@NotNull PencilBracket __g,
 		int __x1, int __y1, int __x2, int __y2)
+		throws MLECallError;
+	
+	/**
+	 * Draws a single pixel.
+	 *
+	 * @param __g The graphics to draw on.
+	 * @param __x The X coordinate.
+	 * @param __y The y coordinate.
+	 * @throws MLECallError On null arguments or if the pencil is not valid.
+	 * @since 2024/05/17
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawPixel(@NotNull PencilBracket __g,
+		int __x, int __y)
+		throws MLECallError;
+	
+	/**
+	 * Draws the outline of a polygon. 
+	 *
+	 * @param __g The graphics to draw with.
+	 * @param __x The X coordinate.
+	 * @param __xOff The offset into the X array.
+	 * @param __y The Y coordinate.
+	 * @param __yOff The offset into the Y array.
+	 * @param __n The number of sides to draw.
+	 * @throws MLECallError If the graphics is not valid; or if the sides
+	 * are not valid.
+	 * @since 2024/07/14
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawPolyline(@NotNull PencilBracket __g,
+		@NotNull int[] __x,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __xOff,
+		@NotNull int[] __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __yOff,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __n)
 		throws MLECallError;
 	
 	/**
@@ -153,6 +227,30 @@ public final class PencilShelf
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h)
+		throws MLECallError;
+	
+	/**
+	 * Draws a round rectangle.
+	 * 
+	 * If the width and/or height are zero or negative, nothing is drawn.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width of the rectangle.
+	 * @param __h The height of the rectangle.
+	 * @param __arcWidth The horizontal diameter of the arc on the corners.
+	 * @param __arcHeight The vertical diameter of the arc on the corners.
+	 * @throws MLECallError If the pencil is invalid; or if the requested
+	 * round rectangle is not valid.
+	 * @since 2024/07/14
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawRoundRect(@NotNull PencilBracket __g,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __arcWidth,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __arcHeight)
 		throws MLECallError;
 	
 	/**
@@ -194,7 +292,7 @@ public final class PencilShelf
 	 * {@code javax.microedition.lcdui.game.Sprite}.
 	 * @param __xDest The destination X position, is translated.
 	 * @param __yDest The destination Y position, is translated.
-	 * @param __anch The anchor point.
+	 * @param __anchor The anchor point.
 	 * @param __wDest The destination width.
 	 * @param __hDest The destination height.
 	 * @param __origImgWidth Original image width.
@@ -210,11 +308,66 @@ public final class PencilShelf
 		boolean __alpha, int __xSrc, int __ySrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wSrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __hSrc,
-		int __trans, int __xDest, int __yDest, int __anch,
+		int __trans, int __xDest, int __yDest, int __anchor,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wDest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __hDest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __origImgWidth,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __origImgHeight)
+		throws MLECallError;
+	
+	/**
+	 * This draws the filled slice of an ellipse (like a pie slice) from the
+	 * given angles using the color, alpha, and stroke style.
+	 *
+	 * Unlike {@link #hardwareDrawArc(PencilBracket, int, int, int, int, int,
+	 * int)}, the width and height are not increased by a single pixel.
+	 *
+	 * Otherwise, this follows the same set of rules as
+	 * {@link #hardwareDrawArc(PencilBracket, int, int, int, int, int, int)}.
+	 *
+	 * @param __g The hardware graphics to draw with.
+	 * @param __x The X position of the upper left corner, will be translated.
+	 * @param __y The Y position of the upper left corner, will be translated.
+	 * @param __w The width of the arc.
+	 * @param __h The height of the arc.
+	 * @param __startAngle The starting angle in degrees, 
+	 * @param __arcAngle The offset from the starting angle, negative values
+	 * indicate clockwise direction while positive values are counterclockwise.
+	 * @see #hardwareDrawArc(PencilBracket, int, int, int, int, int, int)
+	 * @throws MLECallError If the pencil is not valid; or if the requested
+	 * arc is not valid.
+	 * @since 2024/07/14
+	 */
+	@Api
+	public static native void hardwareFillArc(@NotNull PencilBracket __g,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		int __startAngle, int __arcAngle)
+		throws MLECallError;
+	
+	/**
+	 * Draws a filled polygon in the same manner
+	 * as {@link #hardwareDrawPolyline(PencilBracket, int[], int, int[],
+	 * int, int)}.
+	 *
+	 * @param __g The graphics to draw with.
+	 * @param __x The X coordinate.
+	 * @param __xOff The offset into the X array.
+	 * @param __y The Y coordinate.
+	 * @param __yOff The offset into the Y array.
+	 * @param __n The number of sides to draw.
+	 * @throws MLECallError If the graphics is not valid; if the sides
+	 * are not valid; or if the values are out of bounds of the array.
+	 * @since 2024/07/14
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareFillPolygon(@NotNull PencilBracket __g,
+		@NotNull int[] __x,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __xOff,
+		@NotNull int[] __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __yOff,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __n)
 		throws MLECallError;
 	
 	/**
@@ -233,6 +386,31 @@ public final class PencilShelf
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h)
+		throws MLECallError;
+	
+	/**
+	 * Draws a filled round rectangle in the same manner
+	 * as {@link #hardwareDrawRoundRect(PencilBracket, int, int, int, int,
+	 * int, int)} 
+	 *
+	 * @param __g The graphics to use.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @param __arcWidth The width of the arc at each corner.
+	 * @param __arcHeight The height of the arc at each corner.
+	 * @throws MLECallError If the graphics is not valid; or the requested
+	 * round rectangle is not valid.
+	 * @since 2024/07/14
+	 */
+	@Api
+	public static native void hardwareFillRoundRect(@NotNull PencilBracket __g,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		int __arcWidth,
+		int __arcHeight)
 		throws MLECallError;
 	
 	/**
@@ -256,34 +434,15 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
-	 * Creates a hardware reference bracket to the native hardware graphics.
-	 * 
-	 * @param __pf The {@link UIPixelFormat} used for the draw.
-	 * @param __bw The buffer width, this is the scanline width of the buffer.
-	 * @param __bh The buffer height.
-	 * @param __buf The target buffer to draw to, this is cast to the correct
-	 * buffer format.
-	 * @param __offset The offset to the start of the buffer.
-	 * @param __pal The color palette, may be {@code null}. 
-	 * @param __sx Starting surface X coordinate.
-	 * @param __sy Starting surface Y coordinate.
-	 * @param __sw Surface width.
-	 * @param __sh Surface height.
-	 * @return The bracket capable of drawing hardware accelerated graphics.
-	 * @throws MLECallError If the requested graphics are not valid.
-	 * @since 2020/09/25
+	 * Is there an alpha channel for this pencil?
+	 *
+	 * @param __g The graphics to check.
+	 * @return If there is an alpha channel or not.
+	 * @throws MLECallError On null arguments or if the pencil is not valid.
+	 * @since 2024/05/12
 	 */
 	@SquirrelJMEVendorApi
-	public static native PencilBracket hardwareGraphics(
-		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
-		@NotNull Object __buf,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
-		@Nullable int[] __pal,
-		int __sx, int __sy,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sh)
+	public static native boolean hardwareHasAlpha(@NotNull PencilBracket __g)
 		throws MLECallError;
 	
 	/**
@@ -347,17 +506,14 @@ public final class PencilShelf
 	 * Sets to use the specified font.
 	 *
 	 * @param __g The graphics used.
-	 * @param __name The font name.
-	 * @param __style The style of the font.
-	 * @param __pixelSize The pixel size of the font.
+	 * @param __font The font to set.
 	 * @throws MLECallError If the graphics is not valid or does not support
 	 * this operation.
 	 * @since 2023/02/19
 	 */
 	@SquirrelJMEVendorApi
 	public static native void hardwareSetFont(@NotNull PencilBracket __g,
-		@NotNull String __name, int __style,
-		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
+		@NotNull PencilFontBracket __font)
 		throws MLECallError;
 	
 	/**

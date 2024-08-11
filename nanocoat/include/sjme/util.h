@@ -36,7 +36,7 @@ extern "C" {
  * @return The number of items in the tree.
  * @since 2023/07/26
  */
-typedef sjme_jint (*sjme_tree_findCount)(void* tree);
+typedef sjme_jint (*sjme_tree_findCount)(sjme_pointer tree);
 
 /**
  * Function for returning the hash of the search item.
@@ -100,8 +100,8 @@ typedef struct sjme_tree_findFunc
  * @since 2024/02/14
  */
 sjme_jint sjme_compare_null(
-	sjme_attrInNullable const void* a,
-	sjme_attrInNullable const void* b);
+	sjme_attrInNullable sjme_cpointer a,
+	sjme_attrInNullable sjme_cpointer b);
 
 /**
  * Initializes the random number generator.
@@ -272,13 +272,13 @@ static sjme_inline sjme_attrArtificial sjme_jlong sjme_swap_long(
 	sjme_juint temp;
 
 	/* Swap high and low first. */
-	temp = in.hi;
-	in.hi = (sjme_jint)in.lo;
-	in.lo = temp;
+	temp = in.part.hi;
+	in.part.hi = (sjme_jint)in.part.lo;
+	in.part.lo = temp;
 
 	/* Then finish swap each side. */
-	in.hi = sjme_swap_int(in.hi);
-	in.lo = sjme_swap_uint(in.lo);
+	in.part.hi = sjme_swap_int(in.part.hi);
+	in.part.lo = sjme_swap_uint(in.part.lo);
 
 	/* Return the result. */
 	return in;
@@ -309,6 +309,35 @@ static sjme_inline sjme_attrArtificial sjme_jshort sjme_swap_short(
 {
 	return (sjme_jchar)sjme_swap_ushort((sjme_jchar)in);
 }
+
+/**
+ * Performs @c memmove() followed by shifting up by 8 the destination buffer,
+ * then following a byte swap.
+ * 
+ * @param dest The destination.
+ * @param src The source.
+ * @param n The number of bytes to copy.
+ * @return Any resultant error, if any.
+ * @since 2024/07/10
+ */
+sjme_errorCode sjme_swap_shu8_uint_memmove(
+	sjme_attrInNotNull void* dest,
+	sjme_attrInNotNull void* src,
+	sjme_attrInPositiveNonZero sjme_jint n);
+	
+/**
+ * Performs @c memmove() followed by swapping the destination buffer.
+ * 
+ * @param dest The destination.
+ * @param src The source.
+ * @param n The number of bytes to copy.
+ * @return Any resultant error, if any.
+ * @since 2024/07/10
+ */
+sjme_errorCode sjme_swap_uint_memmove(
+	sjme_attrInNotNull void* dest,
+	sjme_attrInNotNull void* src,
+	sjme_attrInPositiveNonZero sjme_jint n);
 
 /**
  * Locates an item within a tree.

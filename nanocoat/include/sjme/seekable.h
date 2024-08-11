@@ -69,7 +69,7 @@ struct sjme_seekable_lockCore
 	 * Depending on the implementation, if the memory within the lock is
 	 * modified it may directly change the resultant memory or file.
 	 */
-	void* base;
+	sjme_pointer base;
 
 	/** The length of the lock. */
 	sjme_jint length;
@@ -129,7 +129,7 @@ sjme_errorCode sjme_seekable_asInputStream(
 sjme_errorCode sjme_seekable_fromMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
-	sjme_attrInNotNull void* base,
+	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length);
 
 /**

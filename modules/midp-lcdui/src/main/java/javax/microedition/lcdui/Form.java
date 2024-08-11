@@ -9,23 +9,14 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import org.jetbrains.annotations.Async;
 
 @Api
 public class Form
 	extends Screen
 {
-	/** Items on the form. */
-	final __VolatileList__<Item> _items =
-		new __VolatileList__<>();
-		
 	/** The layout policy for this form. */
 	volatile FormLayoutPolicy _layout =
 		new __DefaultFormLayoutPolicy__(this);
@@ -139,8 +130,10 @@ public class Form
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
+		throw Debugging.todo();
+		/*
 		/* {@squirreljme.error EB23 Cannot append an item which has already
-		been associated with a form.} */
+		been associated with a form.} * /
 		if (__i._displayable != null)
 			throw new IllegalStateException("EB23");
 		__i._displayable = this;
@@ -153,6 +146,7 @@ public class Form
 		this.__update();
 		
 		return rv;
+		*/
 	}
 	
 	/**
@@ -166,11 +160,15 @@ public class Form
 	public void delete(int __i)
 		throws IndexOutOfBoundsException
 	{
+		throw Debugging.todo();
+		/*
 		// Delete item
 		this._items.remove(__i);
 		
 		// Update display
 		this.__update();
+		
+		 */
 	}
 	
 	@Api
@@ -191,7 +189,11 @@ public class Form
 	public Item get(int __i)
 		throws IndexOutOfBoundsException
 	{
+		throw Debugging.todo();
+		/*
 		return this._items.get(__i);
+		
+		 */
 	}
 	
 	/**
@@ -214,7 +216,7 @@ public class Form
 	@Override
 	public int getHeight()
 	{
-		return Displayable.__getHeight(this, null);
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -241,7 +243,7 @@ public class Form
 	@Override
 	public int getWidth()
 	{
-		return Displayable.__getWidth(this, null);
+		throw Debugging.todo();
 	}
 	
 	@Api
@@ -293,90 +295,17 @@ public class Form
 	@Api
 	public int size()
 	{
+		throw Debugging.todo();
+		/*
 		return this._items.size();
+		
+		 */
 	}
 	
-	/**
-	 * This is called so that the form layout is actually done.
-	 * 
-	 * @since 2022/07/20
-	 */
-	@SerializedEvent
-	@Async.Execute
-	void __performLayout()
+	@Override
+	ScritchComponentBracket __scritchComponent()
 	{
-		// If this form is not on a display, do not calculate the layout as
-		// we might still be loading everything in
-		Display display = this._display;
-		if (display == null)
-			return;
-		
-		// Only perform this if the current layout is stale and must be
-		// updated
-		if (!this._staleLayout)
-			return;
-		this._staleLayout = false;
-		
-		UIBackend backend = this.__backend();
-		UIFormBracket uiForm = this.__state(
-			__DisplayableState__.class)._uiForm;
-		FormLayoutPolicy layout = this._layout;
-		
-		// Indicate we are in an update
-		synchronized (layout)
-		{
-			// Do not double update
-			if (layout._inUpdate)
-				return;
-			
-			layout._inUpdate = true;
-		}
-		
-		// Perform the update, revert to the default if there is an error
-		// with the layout policy
-		__LayoutLock__ lock = layout._lock;
-		try
-		{
-			// Set the lock
-			lock.lock();
-			
-			// Initialize the layout for these items
-			Item[] items = this._items.toArray(new Item[0]);
-			layout.__init(items);
-			
-			// Perform update traversal
-			/*layout.doLayout(
-			doLayout(int __viewportX, int __viewportY,
-				int __viewportW, int __viewportH, int[] __totalSize)*/
-			
-			if (true)
-				throw Debugging.todo();
-		}
-		catch (RuntimeException e)
-		{
-			// If this is the default, just throw the exception since we
-			// cannot do anything otherwise regarding this... would otherwise
-			// cause an infinite loop here and just not work at all.
-			if (layout.getClass() == __DefaultFormLayoutPolicy__.class)
-				throw e;
-			
-			// Return the policy to the default
-			this.__setLayoutPolicy(null);
-			
-			// Try laying out again
-			this.__update();
-		}
-		finally
-		{
-			// We are no longer in an update
-			synchronized (layout)
-			{
-				layout._inUpdate = false;
-			}
-			
-			// Clear the lock
-			lock.unlock();
-		}
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -411,57 +340,6 @@ public class Form
 		// Set and make stale
 		this._layout = __layout;
 		this._staleLayout = true;
-	}
-	
-	/**
-	 * Signals that the form should be refreshed and update all of its
-	 * stored items accordingly.
-	 * 
-	 * @since 2021/11/26
-	 */
-	@SquirrelJMEVendorApi
-	void __update()
-	{
-		// Indicate that the layout is now stale and must be updated
-		this._staleLayout = true;
-		
-		// Queue this up for later, so it is forced to be redrawn
-		Display display = this._display;
-		if (display != null)
-			this.__backend()
-				.formRefresh(this.__state(__DisplayableState__.class)._uiForm);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
-	@Override
-	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
-	{
-		return new __FormState__(__backend, this);
-	}
-	
-	/**
-	 * File selector state.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __FormState__
-		extends Screen.__ScreenState__
-	{
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__FormState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-		}
 	}
 }
 

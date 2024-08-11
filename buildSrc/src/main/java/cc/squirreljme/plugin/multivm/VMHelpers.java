@@ -17,11 +17,13 @@ import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.FileLocation;
 import cc.squirreljme.plugin.util.TestDetection;
 import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,6 +51,10 @@ import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+import org.apache.tools.ant.taskdefs.Zip;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
@@ -481,6 +487,55 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Copies from the input into the output while recompressing the Zip file.
+	 * 
+	 * @param __in The input.
+	 * @param __out The output.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/08
+	 */
+	public static void copyRecompressZip(InputStream __in, OutputStream __out)
+		throws IOException, NullPointerException
+	{
+		if (__in == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		try (ZipInputStream inZip = new ZipInputStream(__in);
+			 ZipOutputStream outZip = new ZipOutputStream(__out))
+		{
+			// Maximum compression
+			outZip.setMethod(ZipOutputStream.DEFLATED);
+			outZip.setLevel(9);
+			
+			// Recompress each entry
+			for (;;)
+			{
+				// Get next entry, if null there are none left
+				ZipEntry entry = inZip.getNextEntry();
+				if (entry == null)
+					break;
+				
+				// Start entry
+				outZip.putNextEntry(new ZipEntry(entry.getName()));
+				
+				// Copy entry data
+				VMHelpers.copy(inZip, outZip);
+				
+				// Finished writing
+				outZip.closeEntry();
+			}
+			
+			// Finalize zip
+			outZip.finish();
+			outZip.flush();
+		}
+		
+		// Make sure output is flushed
+		__out.flush();
+	}
+	
+	/**
 	 * Deletes the given directory tree.
 	 *
 	 * @param __task The task deleting for.
@@ -557,23 +612,20 @@ public final class VMHelpers
 	 * Attempts to find the emulator library so that can be loaded directly
 	 * instead of being extracted by each test process, if possible.
 	 * 
-	 * @param __task The task running under.
+	 * @param __anyProject Any project.
 	 * @return The path to the emulator library.
 	 * @since 2020/12/01
 	 */
 	@SuppressWarnings("ConstantConditions")
-	public static Path findEmulatorLib(Task __task)
+	public static Path findEmulatorLib(Project __anyProject)
 		throws NullPointerException
 	{
-		if (__task == null)
+		if (__anyProject == null)
 			throw new NullPointerException("NARG");
-		
-		// Figure out what the library is called
-		String libName = System.mapLibraryName("emulator-base");
 		
 		// We need to look through the emulator base tasks to determine
 		// the library to select
-		Project emuBase = __task.getProject().getRootProject()
+		Project emuBase = __anyProject.getRootProject()
 			.findProject(":emulators:emulator-base");
 		
 		// Get the CMake Task for this
@@ -707,7 +759,7 @@ public final class VMHelpers
 	 * Returns the main class to execute.
 	 *
 	 * @param __cfg The configuration.
-	 * @param __midlet The MIDlet to be ran.
+	 * @param __midlet The MIDlet to be run.
 	 * @return The main class.
 	 * @throws NullPointerException If {@code __cfg} is {@code null}.
 	 * @since 2020/03/06
@@ -720,10 +772,28 @@ public final class VMHelpers
 			throw new NullPointerException("NARG");
 		
 		// We either run the MIDlet or we do not
-		return (__midlet != null ?
-			UnassistedLaunchEntry.MIDLET_MAIN_CLASS :
-			Objects.requireNonNull(__cfg.mainClass,
-			"No main class in project."));
+		return VMHelpers.mainClass(__midlet, __cfg.mainClass);
+	}
+	
+	/**
+	 * Determines the main class to use.
+	 *
+	 * @param __midlet The MIDlet to execute.
+	 * @param __mainClass The main class to run.
+	 * @return The class for execution.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/28
+	 */
+	public static String mainClass(JavaMEMidlet __midlet, String __mainClass)
+		throws NullPointerException
+	{
+		if (__midlet == null && __mainClass == null)
+			throw new NullPointerException("No main class specified.");
+		
+		// We either run the MIDlet or we do not
+		if (__midlet != null)
+			return UnassistedLaunchEntry.MIDLET_MAIN_CLASS;
+		return __mainClass;
 	}
 	
 	/**
@@ -948,6 +1018,41 @@ public final class VMHelpers
 				out.write(buf, 0, rc);
 			}
 		}
+	}
+	
+	/**
+	 * Recompresses the given Zip file.
+	 *
+	 * @param __zip The ZIP to recompress.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/08
+	 */
+	public static void recompressZip(Path __zip)
+		throws IOException, NullPointerException
+	{
+		if (__zip == null)
+			throw new NullPointerException("NARG");
+		
+		// Load in everything for copy
+		byte[] result;
+		byte[] inZip = Files.readAllBytes(__zip);
+		try (InputStream in = new ByteArrayInputStream(inZip);
+			 ByteArrayOutputStream out = new ByteArrayOutputStream(
+				 inZip.length))
+		{
+			// Perform recompression
+			VMHelpers.copyRecompressZip(in, out);
+			
+			// Get resultant output
+			result = out.toByteArray();
+		}
+		
+		// Replace everything
+		Files.write(__zip, result,
+			StandardOpenOption.TRUNCATE_EXISTING,
+			StandardOpenOption.WRITE,
+			StandardOpenOption.CREATE);
 	}
 	
 	/**

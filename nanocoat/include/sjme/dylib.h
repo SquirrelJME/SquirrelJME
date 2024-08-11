@@ -30,11 +30,22 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 #if defined(SJME_CONFIG_HAS_WINDOWS)
+	/** Symbol is exported through a library. */
 	#define SJME_DYLIB_EXPORT __declspec(dllexport)
 #elif defined(SJME_CONFIG_HAS_GCC)
+	/** Symbol is exported through a library. */
 	#define SJME_DYLIB_EXPORT __attribute__((visibility("default")))
 #else
+	/** Symbol is exported through a library. */
 	#define SJME_DYLIB_EXPORT
+#endif
+
+#if defined(SJME_CONFIG_HAS_GCC)
+	/** Symbol is hidden in a library. */
+	#define SJME_DYLIB_HIDDEN __attribute__((visibility("hidden")))
+#else
+	/** Symbol is hidden in a library. */
+	#define SJME_DYLIB_HIDDEN
 #endif
 
 /**
@@ -42,7 +53,7 @@ extern "C" {
  * 
  * @since 2024/03/27
  */
-typedef void* sjme_dylib;
+typedef sjme_pointer sjme_dylib;
 
 /**
  * Closes the given dynamic library.
@@ -66,7 +77,7 @@ sjme_errorCode sjme_dylib_close(
 sjme_errorCode sjme_dylib_lookup(
 	sjme_attrInNotNull sjme_dylib inLib,
 	sjme_attrInNotNull sjme_lpcstr inSymbol,
-	void** outPtr);
+	sjme_pointer* outPtr);
 
 /**
  * Calculates the name of the given library for the current system.

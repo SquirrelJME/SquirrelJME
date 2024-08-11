@@ -118,6 +118,33 @@ extern "C" {
 #define SJME_TOKEN_PASTE5_PP(a, b, c, d, e) SJME_TOKEN_PASTE5(a, b, c, d, e)
 
 /**
+ * Pastes six tokens together.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @param f The sixth token.
+ * @since 2024/07/01
+ */
+#define SJME_TOKEN_PASTE6(a, b, c, d, e, f) a##b##c##d##e##f
+
+/**
+ * Pasting six tokens but with preprocessing.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @param f The sixth token.
+ * @since 2024/07/01
+ */
+#define SJME_TOKEN_PASTE6_PP(a, b, c, d, e, f) \
+	SJME_TOKEN_PASTE6(a, b, c, d, e, f)
+
+/**
  * Stringifies the given token.
  * 
  * @param s The token to stringify.
@@ -237,7 +264,7 @@ extern "C" {
  * @since 2024/01/01
  */
 #define SJME_UNCOMMON_MEMBER(structType, uncommonMember, uncommonType, base) \
-	((uncommonType*)(void*)(&((structType*)((base)))->uncommonMember))
+	((uncommonType*)(sjme_pointer)(&((structType*)((base)))->uncommonMember))
 
 /**
  * Basic data type identifier.
@@ -538,6 +565,13 @@ typedef uint32_t sjme_juint;
 #define SJME_TYPEOF_IS_POINTER_sjme_juint 0
 
 /**
+ * Fixed point.
+ * 
+ * @since 2024/06/27 
+ */
+typedef sjme_jint sjme_fixed;
+
+/**
  * C Character.
  *
  * @since 2024/01/03
@@ -561,12 +595,21 @@ typedef char sjme_cchar;
 /** Is a pointer for @c sjme_cchar ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_cchar 0
 
-/**
- * Pointer to C string.
- *
- * @since 2023/12/17
- */
-typedef sjme_cchar* sjme_lpstr;
+#if defined(SJME_CONFIG_HAS_ARCH_IA16)
+	/**
+	 * Pointer to C string.
+	 *
+	 * @since 2023/12/17
+	 */
+	typedef sjme_cchar huge* sjme_lpstr;
+#else
+	/**
+	 * Pointer to C string.
+	 *
+	 * @since 2023/12/17
+	 */
+	typedef sjme_cchar* sjme_lpstr;
+#endif
 
 /** Basic @c sjme_lpstr type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_lpstr SJME_BASIC_TYPE_ID_OBJECT
@@ -574,12 +617,21 @@ typedef sjme_cchar* sjme_lpstr;
 /** Is a pointer for @c sjme_lpstr ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_lpstr 1
 
-/**
- * Pointer to constant C string.
- *
- * @since 2023/12/17
- */
-typedef const sjme_cchar* sjme_lpcstr;
+#if defined(SJME_CONFIG_HAS_ARCH_IA16)
+	/**
+	 * Pointer to constant C string.
+	 *
+	 * @since 2023/12/17
+	 */
+	typedef const sjme_cchar huge* sjme_lpcstr;
+#else
+	/**
+	 * Pointer to constant C string.
+	 *
+	 * @since 2023/12/17
+	 */
+	typedef const sjme_cchar* sjme_lpcstr;
+#endif
 
 /** Basic @c sjme_lpcstr type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_lpcstr SJME_BASIC_TYPE_ID_OBJECT
@@ -587,18 +639,49 @@ typedef const sjme_cchar* sjme_lpcstr;
 /** Is a pointer for @c sjme_lpcstr ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_lpcstr 1
 
-/**
- * Generic pointer.
- *
- * @since 2023/12/27
- */
-typedef void* sjme_pointer;
+#if defined(SJME_CONFIG_HAS_ARCH_IA16)
+	/**
+	 * Generic pointer.
+	 *
+	 * @since 2023/12/27
+	 */
+	typedef void huge* sjme_pointer;
+#else
+	/**
+	 * Generic pointer.
+	 *
+	 * @since 2023/12/27
+	 */
+	typedef void* sjme_pointer;
+#endif
 
 /** Basic @c sjme_pointer type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_pointer SJME_BASIC_TYPE_ID_OBJECT
 
 /** Is a pointer for @c sjme_pointer ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_pointer 1
+
+#if defined(SJME_CONFIG_HAS_ARCH_IA16)
+	/**
+	 * Generic pointer to const data.
+	 *
+	 * @since 2023/12/27
+	 */
+	typedef void huge* sjme_cpointer;
+#else
+	/**
+	 * Generic pointer to const data.
+	 *
+	 * @since 2023/12/27
+	 */
+	typedef void* sjme_cpointer;
+#endif
+
+/** Basic @c sjme_cpointer type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_cpointer SJME_BASIC_TYPE_ID_OBJECT
+
+/** Is a pointer for @c sjme_cpointer ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_cpointer 1
 
 /**
  * Integer based pointer.
@@ -609,28 +692,43 @@ typedef intptr_t sjme_intPointer;
 
 /** Calculates a pointer offset. */
 #define SJME_POINTER_OFFSET(base, off) \
-	(void*)(((sjme_intPointer)(base)) + ((sjme_intPointer)(off)))
+	(sjme_pointer)(((sjme_intPointer)(base)) + ((sjme_intPointer)(off)))
+
+#if defined(SJME_CONFIG_HAS_POINTER64)
+	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_jpointer
+#else
+	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_juint
+#endif
+
+#define SJME_TYPEOF_IS_POINTER_sjme_intPointer 0
 
 /**
  * Long value.
  * 
  * @since 2023/07/25
  */
-typedef struct sjme_jlong
+typedef union sjme_jlong
 {
+	/** Parts of the long. */
+	struct
+	{
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
-	/** Low value. */
-	sjme_juint lo;
-
-	/** High value. */
-	sjme_jint hi;
-#else
-	/** High value. */
-	sjme_jint hi;
+		/** Low value. */
+		sjme_juint lo;
 	
-	/** Low value. */
-	sjme_juint lo;
+		/** High value. */
+		sjme_jint hi;
+#else
+		/** High value. */
+		sjme_jint hi;
+		
+		/** Low value. */
+		sjme_juint lo;
 #endif
+	} part;
+	
+	/** The full long. */
+	int64_t full;
 } sjme_jlong;
 
 /** Basic @c sjme_jlong type identifier. */
@@ -911,7 +1009,7 @@ typedef struct sjme_nvm_frame sjme_nvm_frame;
  *
  * @since 2023/12/08
  */
-typedef volatile struct sjme_exceptTrace sjme_exceptTrace;
+typedef struct sjme_exceptTrace sjme_exceptTrace;
 
 typedef struct sjme_nvm_thread
 {
@@ -1061,7 +1159,7 @@ typedef struct sjme_static_methodType
 	sjme_jint argCount;
 	
 	/** The arguments to the method. */
-	const sjme_static_fieldType* argTypes[0];
+	const sjme_static_fieldType* argTypes[sjme_flexibleArrayCount];
 } sjme_static_methodType;
 
 typedef struct sjme_static_classMethod
@@ -1752,8 +1850,74 @@ typedef enum sjme_errorCode
 	/** The font is not valid. */
 	SJME_ERROR_INVALID_FONT = -56,
 	
+	/** There is no Java environment. */
+	SJME_ERROR_NO_JAVA_ENVIRONMENT = -57,
+	
+	/** Font has negative height. */
+	SJME_ERROR_FONT_NEGATIVE_HEIGHT = -58,
+	
+	/** Could not create native widget. */
+	SJME_ERROR_NATIVE_WIDGET_CREATE_FAILED = -59,
+	
+	/** Clock failure. */
+	SJME_ERROR_NATIVE_SYSTEM_CLOCK_FAILURE = -60,
+	
+	/** A weak reference it attached. */
+	SJME_ERROR_WEAK_REFERENCE_ATTACHED = -61,
+	
+	/** An enqueue has already been set for the weak reference. */
+	SJME_ERROR_ENQUEUE_ALREADY_SET = -62,
+	
+	/** Keep the weak reference, do not free it on zero references. */
+	SJME_ERROR_ENQUEUE_KEEP_WEAK = -63,
+	
+	/** Not a weak reference. */
+	SJME_ERROR_NOT_WEAK_REFERENCE = -64,
+	
+	/** Could not access array natively. */
+	SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED = -65,
+	
+	/** The graphics buffer is not locked. */
+	SJME_ERROR_BUFFER_NOT_LOCKED = -66,
+	
+	/** Component is not in this container. */
+	SJME_ERROR_NOT_IN_CONTAINER = -67,
+	
+	/** Invalid link. */
+	SJME_ERROR_INVALID_LINK = -68,
+	
+	/** We are not the owner of the lock. */
+	SJME_ERROR_NOT_LOCK_OWNER = -69,
+	
+	/** Item already has a parent. */
+	SJME_ERROR_HAS_PARENT = -70,
+	
+	/** Member already exists. */
+	SJME_ERROR_MEMBER_EXISTS = -71,
+	
+	/** The native widget system failed for some reason. */
+	SJME_ERROR_NATIVE_WIDGET_FAILURE = -72,
+	
+	/** Scan out of bounds. */
+	SJME_ERROR_SCAN_OUT_OF_BOUNDS = -73,
+	
+	/** Native graphics access not yet valid. */
+	SJME_ERROR_FRAMEBUFFER_NOT_READY = -74,
+	
+	/** Could not unload native library. */
+	SJME_ERROR_COULD_NOT_UNLOAD_LIBRARY = -75,
+	
+	/** Could not enqueue onto the message loop. */
+	SJME_ERROR_LOOP_ENQUEUE_FAILED = -76,
+	
+	/** Use fallback. */
+	SJME_ERROR_USE_FALLBACK = -77,
+	
+	/** Continue operation. */
+	SJME_ERROR_CONTINUE = -78,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -57
+	SJME_NUM_ERROR_CODES = -79
 } sjme_errorCode;
 
 /**

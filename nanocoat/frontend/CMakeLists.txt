@@ -7,35 +7,37 @@
 # ---------------------------------------------------------------------------
 
 # SquirrelJME Java SE Emulator Front-End
-if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_CROSS_BUILD)
+if(NOT EMSCRIPTEN AND
+	NOT SQUIRRELJME_IS_CROSS_COMPILE AND
+	SQUIRRELJME_ENABLE_DYLIB)
 	squirreljme_include("jni.cmake")
 
 	if(JNI_FOUND)
-		# Emulator front end used by the Java base emulator
-		add_subdirectory(emulator)
-
 		# Native JVM library to use with OpenJDK?
 		add_subdirectory(libjvm)
 	endif()
 endif()
 
+# Emulator front end used by the Java base emulator
+if(NOT SQUIRRELJME_GRADLE STREQUAL "")
+	add_subdirectory(emulator)
+endif()
+
 # Netscape JRI (Usually for retro systems such as MacOS Classic)
-add_subdirectory(libjri)
+if(SQUIRRELJME_ENABLE_FRONTEND_JRI)
+	add_subdirectory(libjri)
+endif()
 
 # Netscape Plugin API (NPAPI)
-if(SQUIRRELJME_IS_UNIX OR SQUIRRELJME_IS_WINDOWS)
+if(SQUIRRELJME_ENABLE_DYLIB AND
+	(SQUIRRELJME_IS_UNIX OR SQUIRRELJME_IS_WINDOWS))
 	add_subdirectory(npapi)
 endif()
 
 # RetroArch/LibRetro
-add_subdirectory(libretro)
-
-# Not doing a special build for RetroArch only...
-if(NOT DEFINED ENV{SQUIRRELJME_SPECIAL_BUILD_LIBRETRO} OR
-	NOT ENV{SQUIRRELJME_SPECIAL_BUILD_LIBRETRO})
-	# SDL1
-	add_subdirectory(sdl1)
-
-	# SDL2
-	add_subdirectory(sdl2)
+if(SQUIRRELJME_ENABLE_FRONTEND_LIBRETRO)
+	add_subdirectory(libretro)
 endif()
+
+# Standard C front-end
+add_subdirectory(stdc)

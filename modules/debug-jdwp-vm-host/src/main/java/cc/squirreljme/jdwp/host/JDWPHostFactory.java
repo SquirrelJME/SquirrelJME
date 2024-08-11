@@ -30,15 +30,19 @@ public final class JDWPHostFactory
 	/** The output communication stream. */
 	protected final OutputStream out;
 	
+	/** The port the debugger is on. */
+	protected final int port;
+	
 	/**
 	 * Initializes the factory for the given stream connections.
-	 * 
+	 *
 	 * @param __in The input stream to read from.
 	 * @param __out The output stream to write to.
+	 * @param __port The port the debugger is on.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/08
 	 */
-	public JDWPHostFactory(InputStream __in, OutputStream __out)
+	public JDWPHostFactory(InputStream __in, OutputStream __out, int __port)
 		throws NullPointerException
 	{
 		if (__in == null || __out == null)
@@ -46,6 +50,7 @@ public final class JDWPHostFactory
 		
 		this.in = new DataInputStream(__in);
 		this.out = new DataOutputStream(__out);
+		this.port = __port;
 	}
 	
 	/**

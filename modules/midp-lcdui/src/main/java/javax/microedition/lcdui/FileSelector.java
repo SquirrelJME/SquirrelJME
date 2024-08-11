@@ -9,10 +9,9 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import java.io.IOException;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.StreamConnection;
@@ -127,36 +126,10 @@ public class FileSelector
 		throw Debugging.todo();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
 	@Override
-	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
+	ScritchComponentBracket __scritchComponent()
 	{
-		return new __FileSelectorState__(__backend, this);
-	}
-	
-	/**
-	 * File selector state.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __FileSelectorState__
-		extends Screen.__ScreenState__
-	{
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__FileSelectorState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-		}
+		throw Debugging.todo();
 	}
 }
 

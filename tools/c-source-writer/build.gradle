@@ -1,0 +1,16 @@
+plugins {
+	id "java-library"
+	id "idea"
+}
+
+description = "Object-oriented C source code writer."
+version = rootProject.version
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+	api project(":modules:collections")
+	api project(":modules:io")
+	
+	testImplementation project(":modules:tac")
+}

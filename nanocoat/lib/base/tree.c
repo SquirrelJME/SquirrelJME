@@ -11,7 +11,7 @@
 #include "sjme/debug.h"
 #include "sjme/util.h"
 
-sjme_jint sjme_tree_find(void* in, void* what,
+sjme_jint sjme_tree_find(sjme_pointer in, sjme_pointer what,
 	const sjme_tree_findFunc* functions)
 {
 	if (in == NULL || functions == NULL)

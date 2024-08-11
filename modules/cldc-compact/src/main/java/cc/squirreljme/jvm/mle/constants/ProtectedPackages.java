@@ -9,12 +9,15 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This class contains all of the packages which are protected and are not
  * permitted to have additional classes added within.
  *
  * @since 2020/06/21
  */
+@SquirrelJMEVendorApi
 public final class ProtectedPackages
 {
 	/**
@@ -38,6 +41,7 @@ public final class ProtectedPackages
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/21
 	 */
+	@SquirrelJMEVendorApi
 	public static boolean isProtectedPackage(String __name)
 		throws IllegalArgumentException, NullPointerException
 	{

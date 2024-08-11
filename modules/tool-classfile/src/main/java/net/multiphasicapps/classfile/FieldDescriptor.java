@@ -101,7 +101,8 @@ public final class FieldDescriptor
 				this.dimensions = dims;
 				
 				// Parse component
-				this.component = new FieldDescriptor(__n.substring(1));
+				this.component = new FieldDescriptor(
+					__n.substring(1));
 				break;
 				
 				// Class
@@ -314,6 +315,20 @@ public final class FieldDescriptor
 			default:
 				return null;
 		}
+	}
+	
+	/**
+	 * Returns the root component type.
+	 *
+	 * @return The root component type.
+	 * @since 2024/08/02
+	 */
+	public final FieldDescriptor rootComponentType()
+	{
+		if (this.isArray())
+			return this.componentType().rootComponentType();
+		
+		return null;
 	}
 	
 	/**
