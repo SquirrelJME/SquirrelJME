@@ -374,16 +374,35 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the first day of the week.
+	 *
+	 * @return The first day of the week.
+	 * @since 2024/08/11
+	 */
 	@Api
 	public int getFirstDayOfWeek()
 	{
-		throw Debugging.todo();
+		// ISO6801 says this to be Monday, so unless replaced this will
+		// always return as such
+		return Calendar.MONDAY;
 	}
 	
+	/**
+	 * Returns the minimal days in the first week of the year. This essentially
+	 * means the minimum length of how many days the first week is, thus this
+	 * can range from {@code [1, 7]} accordingly.
+	 *
+	 * @return The minimal possible number of days in the first week.
+	 * @since 2024/08/11
+	 */
 	@Api
 	public int getMinimalDaysInFirstWeek()
 	{
-		throw Debugging.todo();
+		// ISO8601 says the first Thursday of the week is the start of the
+		// year, Week 1 and not Week 53, and since days start on Monday
+		// this means the first week will always have at least 4 days
+		return 4;
 	}
 	
 	@Api
@@ -392,10 +411,27 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the time in UTC milliseconds since the epoch.
+	 *
+	 * @return The UTC milliseconds since the epoch.
+	 * @since 2024/08/11
+	 */
 	@Api
 	public long getTimeInMillis()
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// Has this been set?
+			if (this.isTimeSet)
+				return this.time;
+			
+			// Requires calculation
+			this.computeTime();
+			
+			// Give the time that was calculated
+			return this.time;
+		}
 	}
 	
 	@Api
@@ -416,10 +452,18 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns whether the calendar implementation is lenient in incorrect
+	 * fields and will correct them accordingly.
+	 *
+	 * @return If the implementation is lenient.
+	 * @since 2024/08/11
+	 */
 	@Api
 	public boolean isLenient()
 	{
-		throw Debugging.todo();
+		// Always lenient by default
+		return true;
 	}
 	
 	@Api
