@@ -90,6 +90,9 @@ public class Font
 	private static final int _VALID_BITS =
 		Font._FACE_MASK | Font._SIZE_MASK | Font._STYLE_MASK;
 	
+	/** The default font. */
+	private static volatile Font _DEFAULT;
+	
 	/** The MIDP font to be based upon. */
 	final javax.microedition.lcdui.Font _midpFont;
 	
@@ -176,10 +179,28 @@ public class Font
 		return this._midpFont.stringWidth(__s);
 	}
 	
+	/**
+	 * Returns the default font.
+	 *
+	 * @return The default font.
+	 * @since 2024/08/11
+	 */
 	@Api
 	public static Font getDefaultFont()
 	{
-		throw Debugging.todo();
+		synchronized (Font.class)
+		{
+			// Need to seed a default?
+			Font result = Font._DEFAULT;
+			if (result == null)
+			{
+				result = new Font(
+					javax.microedition.lcdui.Font.getDefaultFont());
+				Font._DEFAULT = result;
+			}
+			
+			return result;
+		}
 	}
 	
 	/**
@@ -278,5 +299,25 @@ public class Font
 		// Setup font wrapper
 		return new Font(javax.microedition.lcdui.Font.getFont(midpFace,
 			midpStyle, midpSize));
+	}
+	
+	/**
+	 * Sets the default font. 
+	 *
+	 * @param __f The default font to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/11
+	 */
+	@Api
+	public static void setDefaultFont(Font __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (Font.class)
+		{
+			Font._DEFAULT = __f;
+		}
 	}
 }
