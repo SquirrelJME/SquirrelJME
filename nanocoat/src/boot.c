@@ -336,7 +336,7 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 	
 	/* Open main ROM file. */
 	rom = NULL;
-	if (sjme_error_is(error = nal->fileOpen(dataPath,
+	if (sjme_error_is(error = nal->fileOpen(inPool, dataPath,
 		&rom)) || rom == NULL)
 		return sjme_error_default(error);
 	

@@ -46,12 +46,14 @@ typedef sjme_errorCode (*sjme_nal_currentTimeMillisFunc)(
 /**
  * Opens the given file natively.
  * 
+ * @param inPool The pool for allocations.
  * @param inPath The path to open.
  * @param outSeekable The seekable to open within.
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
 typedef sjme_errorCode (*sjme_nal_fileOpenFunc)(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrOutNotNull sjme_seekable* outSeekable);
 
@@ -123,6 +125,15 @@ typedef struct sjme_nal
 
 /** Default native abstraction layer. */
 extern const sjme_nal sjme_nal_default;
+
+/**
+ * Maps @c errno to a SquirrelJME error.
+ * 
+ * @param errNum The error number. 
+ * @return The resultant error.
+ * @since 2024/08/11
+ */
+sjme_errorCode sjme_nal_errno(sjme_jint errNum);
 
 /*--------------------------------------------------------------------------*/
 

@@ -292,8 +292,11 @@ typedef enum sjme_errorCode
 	/** Path too long. */
 	SJME_ERROR_PATH_TOO_LONG = -83,
 	
+	/** File not found. */
+	SJME_ERROR_FILE_NOT_FOUND = -84,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -84
+	SJME_NUM_ERROR_CODES = -85
 } sjme_errorCode;
 
 /**

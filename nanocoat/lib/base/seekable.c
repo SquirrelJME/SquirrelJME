@@ -7,8 +7,41 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "sjme/seekable.h"
 #include "sjme/debug.h"
+
+struct sjme_seekableBase
+{
+	/** Front end data. */
+	sjme_frontEnd frontEnd;
+	
+	/** Functions for stream access. */
+	const sjme_seekable_functions* functions;
+	
+	/** Spinlock for stream access. */
+	sjme_thread_spinLock lock;
+};
+
+static sjme_errorCode sjme_seekable_autoClose(
+	sjme_attrInNotNull sjme_alloc_weak weak,
+	sjme_attrInNullable sjme_pointer data,
+	sjme_attrInValue sjme_jboolean isBlockFree)
+{
+	sjme_seekable seekable;
+	
+	if (weak == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover seekable. */
+	seekable = weak->pointer;
+	if (seekable == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Forward close. */
+	return sjme_seekable_close(seekable);
+}
 
 sjme_errorCode sjme_seekable_asInputStream(
 	sjme_attrInNotNull sjme_seekable seekable,
@@ -35,7 +68,43 @@ sjme_errorCode sjme_seekable_close(
 	return sjme_error_notImplemented(0);
 }
 
-sjme_errorCode sjme_seekable_fromMemory(
+sjme_errorCode sjme_seekable_open(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_seekable* outSeekable,
+	sjme_attrInNotNull const sjme_seekable_functions* inFunctions,
+	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
+{
+	sjme_errorCode error;
+	sjme_seekable result;
+	
+	if (inPool == NULL || outSeekable == NULL || inFunctions == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* These are required. */
+	if (inFunctions->size == NULL ||
+		inFunctions->read == NULL ||
+		inFunctions->close == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Setup result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
+		sizeof(*result), sjme_seekable_autoClose, NULL,
+		&result, NULL)) || result == NULL)
+		return sjme_error_default(error);
+	
+	/* Copy in details. */
+	result->functions = inFunctions;
+	if (copyFrontEnd != NULL)
+		memmove(&result->frontEnd,
+			copyFrontEnd, sizeof(*copyFrontEnd));
+	
+	/* Success! */
+	*outSeekable = result;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_seekable_openMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull sjme_pointer base,
@@ -55,7 +124,7 @@ sjme_errorCode sjme_seekable_fromMemory(
 	return sjme_error_notImplemented(0);
 }
 
-sjme_errorCode sjme_seekable_fromSeekable(
+sjme_errorCode sjme_seekable_openSeekable(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInPositive sjme_jint base,

@@ -35,7 +35,7 @@ sjme_errorCode sjme_rom_libraryFromZipMemory(
 
 	/* Get source seekable. */
 	seekable = NULL;
-	if (sjme_error_is(error = sjme_seekable_fromMemory(pool,
+	if (sjme_error_is(error = sjme_seekable_openMemory(pool,
 		&seekable, base, length)) || seekable == NULL)
 
 	/* This is just an alias for the other function. */

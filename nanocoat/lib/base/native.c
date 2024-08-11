@@ -31,11 +31,90 @@
 
 #include "sjme/native.h"
 
+
+static sjme_errorCode sjme_nal_default_cFileClose(
+	sjme_attrInNotNull sjme_seekable* inSeekable,
+	sjme_attrInNotNull sjme_frontEnd* inFrontEnd)
+{
+	if (inSeekable == NULL || inFrontEnd == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nal_default_cFileRead(
+	sjme_attrInNotNull sjme_seekable* inSeekable,
+	sjme_attrInNotNull sjme_frontEnd* inFrontEnd,
+	sjme_attrOutNotNullBuf(length) sjme_jbyte* outBuf,
+	sjme_attrInPositive sjme_jint base,
+	sjme_attrInPositiveNonZero sjme_jint length)
+{
+	if (inSeekable == NULL || inFrontEnd == NULL || outBuf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nal_default_cFileSize(
+	sjme_attrInNotNull sjme_seekable* inSeekable,
+	sjme_attrInNotNull sjme_frontEnd* inFrontEnd,
+	sjme_attrOutNotNull sjme_jint* outSize)
+{
+	if (inSeekable == NULL || inFrontEnd == NULL || outSize == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+/** Functions for C File access. */
+static const sjme_seekable_functions sjme_nal_default_cFileFunctions =
+{
+	.close = sjme_nal_default_cFileClose,
+	.read = sjme_nal_default_cFileRead,
+	.size = sjme_nal_default_cFileSize,
+};
+
 static sjme_errorCode sjme_nal_default_fileOpen(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrOutNotNull sjme_seekable* outSeekable)
 {
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	FILE* cFile;
+	sjme_frontEnd frontEnd;
+	sjme_seekable result;
+	
+	if (inPool == NULL || inPath == NULL || outSeekable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Open file. */
+	cFile = fopen(inPath, "rb");
+	if (cFile == NULL)
+		return sjme_nal_errno(errno);
+	
+	/* Setup front end data. */
+	memset(&frontEnd, 0, sizeof(frontEnd));
+	frontEnd.wrapper = cFile;
+	
+	/* Setup stream. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_seekable_open(inPool,
+		&result, &sjme_nal_default_cFileFunctions,
+		&frontEnd)) || result == NULL)
+	{
+		/* Close before we fail. */
+		fclose(cFile);
+		
+		/* Fail. */
+		return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	*outSeekable = result;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_nal_default_getEnv(
@@ -170,3 +249,17 @@ const sjme_nal sjme_nal_default =
 	.stdErrF = sjme_nal_default_stdErrF,
 	.stdOutF = sjme_nal_default_stdOutF,
 };
+
+sjme_errorCode sjme_nal_errno(sjme_jint errNum)
+{
+	switch (errNum)
+	{
+		case EIO:
+			return SJME_ERROR_IO_EXCEPTION;
+		
+		case ENOENT:
+			return SJME_ERROR_FILE_NOT_FOUND;
+	}
+	
+	return SJME_ERROR_UNKNOWN;
+}

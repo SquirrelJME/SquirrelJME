@@ -42,7 +42,7 @@ typedef struct sjme_seekableBase sjme_seekableBase;
  *
  * @since 2024/01/01
  */
-typedef struct sjme_seekableBase* sjme_seekable;
+typedef sjme_seekableBase* sjme_seekable;
 
 /**
  * Seekable lock core structure.
@@ -98,6 +98,22 @@ typedef enum sjme_seekable_unlockAction
 	SJME_NUM_SEEKABLE_UNLOCK_ACTION
 } sjme_seekable_unlockAction;
 
+typedef sjme_errorCode (*sjme_seekable_streamCloseFunc)(
+	sjme_attrInNotNull sjme_seekable* inSeekable,
+	sjme_attrInNotNull sjme_frontEnd* inFrontEnd);
+
+typedef sjme_errorCode (*sjme_seekable_streamReadFunc)(
+	sjme_attrInNotNull sjme_seekable* inSeekable,
+	sjme_attrInNotNull sjme_frontEnd* inFrontEnd,
+	sjme_attrOutNotNullBuf(length) sjme_jbyte* outBuf,
+	sjme_attrInPositive sjme_jint base,
+	sjme_attrInPositiveNonZero sjme_jint length);
+
+typedef sjme_errorCode (*sjme_seekable_streamSizeFunc)(
+	sjme_attrInNotNull sjme_seekable* inSeekable,
+	sjme_attrInNotNull sjme_frontEnd* inFrontEnd,
+	sjme_attrOutNotNull sjme_jint* outSize);
+
 /**
  * Functions for seekable implementations.
  * 
@@ -105,7 +121,14 @@ typedef enum sjme_seekable_unlockAction
  */
 typedef struct sjme_seekable_functions
 {
-	int todo;
+	/** Closes the stream. */
+	sjme_seekable_streamCloseFunc close;
+	
+	/** Read from the given stream. */
+	sjme_seekable_streamReadFunc read;
+	
+	/** Return the size of the stream. */
+	sjme_seekable_streamSizeFunc size;
 } sjme_seekable_functions;
 
 /**
@@ -137,6 +160,22 @@ sjme_errorCode sjme_seekable_close(
 	sjme_attrInNotNull sjme_seekable seekable);
 
 /**
+ * Opens a generic stream.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param outSeekable The resultant seekable.
+ * @param inFunctions The seekable functions.
+ * @param copyFrontEnd Front-end data as needed.
+ * @return Any resultant error, if any,
+ * @since 2024/08/11
+ */
+sjme_errorCode sjme_seekable_open(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_seekable* outSeekable,
+	sjme_attrInNotNull const sjme_seekable_functions* inFunctions,
+	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
+
+/**
  * Initializes a seekable from the given memory range.
  *
  * @param inPool The pool to allocate within.
@@ -146,7 +185,7 @@ sjme_errorCode sjme_seekable_close(
  * @return Any resultant error, if any.
  * @since 2024/01/01
  */
-sjme_errorCode sjme_seekable_fromMemory(
+sjme_errorCode sjme_seekable_openMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull sjme_pointer base,
@@ -162,7 +201,7 @@ sjme_errorCode sjme_seekable_fromMemory(
  * @return Any resultant error, if any.
  * @since 2024/01/01
  */
-sjme_errorCode sjme_seekable_fromSeekable(
+sjme_errorCode sjme_seekable_openSeekable(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInPositive sjme_jint base,
