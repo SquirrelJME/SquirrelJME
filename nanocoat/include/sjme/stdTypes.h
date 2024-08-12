@@ -352,14 +352,14 @@ typedef char sjme_cchar;
 	 *
 	 * @since 2023/12/27
 	 */
-	typedef void huge* sjme_cpointer;
+	typedef const void huge* sjme_cpointer;
 #else
 	/**
 	 * Generic pointer to const data.
 	 *
 	 * @since 2023/12/27
 	 */
-	typedef void* sjme_cpointer;
+	typedef const void* sjme_cpointer;
 #endif
 
 /** Basic @c sjme_cpointer type identifier. */
