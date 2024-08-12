@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.nttdocomo.ui.EightBitImageStore;
 import com.nttdocomo.opt.ui.Graphics2;
+import javax.microedition.lcdui.game.Sprite;
 
 /**
  * This is used for drawing graphics onto a raster surface.
@@ -36,6 +37,38 @@ public class Graphics
 	@Api
 	public static final int BLUE = 1;
 	
+	/** Flip horizontal. */
+	@Api
+	public static final int	FLIP_HORIZONTAL = 1;
+	
+	/** No flipping. */
+	@Api
+	public static final int	FLIP_NONE = 0;
+	
+	/** Rotate 180 degrees . */
+	@Api
+	public static final int	FLIP_ROTATE = 3;
+	
+	/** Rotate left. */
+	@Api
+	public static final int	FLIP_ROTATE_LEFT = 4;
+	
+	/** Rotate Right . */
+	@Api
+	public static final int	FLIP_ROTATE_RIGHT = 5;
+	
+	/** Rotate right, flip horizontal . */
+	@Api
+	public static final int	FLIP_ROTATE_RIGHT_HORIZONTAL = 6;
+	
+	/** Rotate right, flip vertical . */
+	@Api
+	public static final int	FLIP_ROTATE_RIGHT_VERTICAL = 7;
+	
+	/** Flip vertically. */
+	@Api
+	public static final int	FLIP_VERTICAL = 2;
+		
 	/** {@code #FF0000} via {@link #getColorOfName(int)}. */
 	@Api
 	public static final int FUCHSIA = 5;
@@ -96,6 +129,10 @@ public class Graphics
 	
 	/** The base graphics to forward to. */
 	private final javax.microedition.lcdui.Graphics _graphics;
+	
+	/** The default image flip mode. */
+	private volatile int _flipMode =
+		Graphics.FLIP_NONE;
 	
 	/**
 	 * Wraps the given graphics object.
@@ -232,49 +269,82 @@ public class Graphics
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("ILLA");
 		
-		// Native 32-bit MIDP Image?
+		// Which image is being drawn?
+		javax.microedition.lcdui.Image target;
 		if (__i instanceof __MIDPImage__)
-		{
-			// Forward base image
-			__MIDPImage__ midpImage = (__MIDPImage__)__i;
-			this._graphics.drawRegion(midpImage.__midpImage(), __sx, __sy,
-				__w, __h, 0, __dx, __dy,
-				javax.microedition.lcdui.Graphics.TOP |
-				javax.microedition.lcdui.Graphics.LEFT);
-			
-			// Stop
-			return;
-		}
+			target = ((__MIDPImage__)__i).__midpImage();
 		
-		// A 256 color image
+		// Mutable image
+		else if (__i instanceof __MutableImage__)
+			target = __i._midpImage;
+		
+		// 8-bit image
 		else if (__i instanceof __8BitImage__)
 		{
 			// Get the actual image to be drawn
 			__8BitImage__ bitImage = (__8BitImage__)__i;
 			EightBitImageStore store = bitImage._store;
+			
+			// Disposed?
 			if (store == null)
 				throw new UIException(UIException.ILLEGAL_STATE);
 			
-			// Setup temporary RGB buffer
-			int a = __w * __h;
-			int[] rgb = new int[a];
-			
-			// Read in RGB data
-			Palette palette = bitImage.getPalette();
-			int transDx = bitImage.getTransparentIndex();
-			store.getRGB(rgb, 0, __w, palette, __sx, __sy, __w, __h,
-				transDx);
-			
-			// Forward to RGB draw
-			this._graphics.drawRGB(rgb, 0, __w, __dx, __dy, __w, __h,
-				bitImage.__hasAlpha() || transDx >= 0);
-			
-			// Stop
-			return;
+			// Get realized image
+			target = store.midpImage();
 		}
 		
 		// Not supported at all
-		throw new UIException(UIException.UNSUPPORTED_FORMAT);
+		else
+		{
+			// Debug
+			Debugging.todoNote("Unsupported image %s", __i.getClass());
+			
+			throw new UIException(UIException.UNSUPPORTED_FORMAT);
+		}
+		
+		// Which flip mode
+		int trans;
+		switch (this._flipMode)
+		{
+			case Graphics.FLIP_HORIZONTAL:
+				trans = Sprite.TRANS_MIRROR;
+				break;
+			
+			case Graphics.FLIP_ROTATE:
+				trans = Sprite.TRANS_ROT180;
+				break;
+			
+			case Graphics.FLIP_ROTATE_LEFT:
+				trans = Sprite.TRANS_ROT270;
+				break;
+			
+			case Graphics.FLIP_ROTATE_RIGHT:
+				trans = Sprite.TRANS_ROT90;
+				break;
+			
+			case Graphics.FLIP_ROTATE_RIGHT_HORIZONTAL:
+				trans = Sprite.TRANS_MIRROR_ROT270;
+				break;
+			
+			case Graphics.FLIP_ROTATE_RIGHT_VERTICAL:
+				trans = Sprite.TRANS_MIRROR_ROT90;
+				break;
+				
+			case Graphics.FLIP_VERTICAL:
+				trans = Sprite.TRANS_MIRROR_ROT180;
+				break;
+				
+			case Graphics.FLIP_NONE:
+			default:
+				trans = Sprite.TRANS_NONE;
+				break;
+		}
+		
+		// Draw it
+		this._graphics.drawRegion(target, __sx, __sy,
+			__w, __h, trans, __dx, __dy,
+			javax.microedition.lcdui.Graphics.TOP |
+			javax.microedition.lcdui.Graphics.LEFT);
 	}
 	
 	@Api
@@ -408,6 +478,32 @@ public class Graphics
 		throws IllegalArgumentException
 	{
 		this._graphics.setColor(__c);
+	}
+	
+	/**
+	 * Sets the default flip mode to use when drawing images.
+	 *
+	 * @param __mode The flip mode to use.
+	 * @throws IllegalArgumentException If the flip mode is not valid.
+	 * @since 2024/08/11
+	 */
+	@Api
+	public void setFlipMode(int __mode)
+		throws IllegalArgumentException
+	{
+		/** {@squirreljme.error AH1f Invalid flip mode. (The mode)} */
+		if (__mode != Graphics.FLIP_HORIZONTAL &&
+			__mode != Graphics.FLIP_NONE &&
+			__mode != Graphics.FLIP_ROTATE &&
+			__mode != Graphics.FLIP_ROTATE_LEFT &&
+			__mode != Graphics.FLIP_ROTATE_RIGHT &&
+			__mode != Graphics.FLIP_ROTATE_RIGHT_HORIZONTAL &&
+			__mode != Graphics.FLIP_ROTATE_RIGHT_VERTICAL &&
+			__mode != Graphics.FLIP_VERTICAL)
+			throw new IllegalArgumentException("AH1f " + __mode);
+		
+		// Set it
+		this._flipMode = __mode;
 	}
 	
 	/**

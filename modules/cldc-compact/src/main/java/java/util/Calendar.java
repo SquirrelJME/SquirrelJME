@@ -11,6 +11,7 @@ package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.runtime.cldc.time.ISO6801Calendar;
 
 @Api
@@ -182,14 +183,19 @@ public abstract class Calendar
 	public static final int ZONE_OFFSET =
 		15;
 	
+	/** Have fields been set? */
 	@Api
 	protected boolean areFieldsSet;
 	
+	/** Fields within the calendar. */
 	@Api
-	protected int[] fields;
+	protected int[] fields =
+		new int[Calendar.FIELD_COUNT];
 	
+	/** Has a specific field been set? */
 	@Api
-	protected boolean[] isSet;
+	protected boolean[] isSet =
+		new boolean[Calendar.FIELD_COUNT];
 	
 	/** Has the time been set? */
 	@Api
@@ -228,26 +234,64 @@ public abstract class Calendar
 	@Api
 	public abstract void roll(int __a, boolean __b);
 	
+	/**
+	 * Checks if this is after the given {@link Calendar} instance.
+	 *
+	 * @param __against The {@link Calendar} to check against.
+	 * @return If this is after another {@link Calendar}, if the other
+	 * object is not one then this returns {@link false}.
+	 * @since 2024/06/24
+	 */
 	@Api
-	public boolean after(Object __a)
+	public boolean after(Object __against)
 	{
-		throw Debugging.todo();
+		if (!(__against instanceof Calendar))
+			return false;
+		
+		return this.compareTo((Calendar)__against) > 0;
 	}
 	
+	/**
+	 * Checks if this is before the given {@link Calendar} instance.
+	 *
+	 * @param __against The {@link Calendar} to check against.
+	 * @return If this is before another {@link Calendar}, if the other
+	 * object is not one then this returns {@link false}.
+	 * @since 2024/06/24
+	 */
 	@Api
-	public boolean before(Object __a)
+	public boolean before(Object __against)
 	{
-		throw Debugging.todo();
+		if (!(__against instanceof Calendar))
+			return false;
+		
+		return this.compareTo((Calendar)__against) < 0;
 	}
 	
+	/**
+	 * Clears all the calendar fields back to zero.
+	 *
+	 * @since 2024/02/03
+	 */
 	@Api
 	public final void clear()
 	{
-		throw Debugging.todo();
+		// Clear all fields
+		int[] fields = this.fields;
+		boolean[] isSet = this.isSet;
+		for (int field = 0; field < Calendar.FIELD_COUNT; field++)
+		{
+			fields[field] = 0;
+			isSet[field] = false;
+		}
+		
+		// Time and fields are no longer set
+		this.areFieldsSet = false;
+		this.isTimeSet = false;
 	}
 	
 	@Api
-	public final void clear(int __a)
+	public final void clear(int __field)
 	{
 		throw Debugging.todo();
 	}
@@ -258,10 +302,30 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Compares this {@link #getTimeInMillis()} against the other
+	 * calendar's {@link #getTimeInMillis()}.
+	 *
+	 * @param __other The other calendar.
+	 * @return The comparison value.
+	 * @throws IllegalArgumentException If this or the other calendar
+	 * is not valid.
+	 * @since 2024/06/24
+	 */
 	@Override
-	public int compareTo(Calendar __a)
+	public int compareTo(Calendar __other)
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__other == null)
+			throw new NullPointerException("NARG");
+		
+		long a = this.getTimeInMillis();
+		long b = __other.getTimeInMillis();
+		if (a < b)
+			return -1;
+		else if (a > b)
+			return 1;
+		return 0;
 	}
 	
 	@Api
@@ -275,13 +339,27 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the value of the given field.
+	 *
+	 * @param __fieldId The field ID to get.
+	 * @return The resultant field value.
+	 * @throws ArrayIndexOutOfBoundsException If the ID is not valid.
+	 * @since 2024/03/04
+	 */
 	@Api
 	public int get(int __fieldId)
+		throws ArrayIndexOutOfBoundsException
 	{
-		// Debug
-		Debugging.debugNote("Calendar.get(%d)", __fieldId);
+		/* {@squirreljme.error ZZ40 Calendar field is not valid. (The
+		field ID; The number of fields available.} */
+		int[] fields = this.fields;
+		if (__fieldId < 0 || __fieldId >= fields.length)
+			throw new ArrayIndexOutOfBoundsException(
+				ErrorCode.__error__("ZZ40", __fieldId,
+					fields.length));
 		
-		throw Debugging.todo();
+		return fields[__fieldId];
 	}
 	
 	@Api
@@ -296,16 +374,35 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the first day of the week.
+	 *
+	 * @return The first day of the week.
+	 * @since 2024/08/11
+	 */
 	@Api
 	public int getFirstDayOfWeek()
 	{
-		throw Debugging.todo();
+		// ISO6801 says this to be Monday, so unless replaced this will
+		// always return as such
+		return Calendar.MONDAY;
 	}
 	
+	/**
+	 * Returns the minimal days in the first week of the year. This essentially
+	 * means the minimum length of how many days the first week is, thus this
+	 * can range from {@code [1, 7]} accordingly.
+	 *
+	 * @return The minimal possible number of days in the first week.
+	 * @since 2024/08/11
+	 */
 	@Api
 	public int getMinimalDaysInFirstWeek()
 	{
-		throw Debugging.todo();
+		// ISO8601 says the first Thursday of the week is the start of the
+		// year, Week 1 and not Week 53, and since days start on Monday
+		// this means the first week will always have at least 4 days
+		return 4;
 	}
 	
 	@Api
@@ -314,10 +411,27 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the time in UTC milliseconds since the epoch.
+	 *
+	 * @return The UTC milliseconds since the epoch.
+	 * @since 2024/08/11
+	 */
 	@Api
 	public long getTimeInMillis()
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// Has this been set?
+			if (this.isTimeSet)
+				return this.time;
+			
+			// Requires calculation
+			this.computeTime();
+			
+			// Give the time that was calculated
+			return this.time;
+		}
 	}
 	
 	@Api
@@ -338,10 +452,18 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns whether the calendar implementation is lenient in incorrect
+	 * fields and will correct them accordingly.
+	 *
+	 * @return If the implementation is lenient.
+	 * @since 2024/08/11
+	 */
 	@Api
 	public boolean isLenient()
 	{
-		throw Debugging.todo();
+		// Always lenient by default
+		return true;
 	}
 	
 	@Api

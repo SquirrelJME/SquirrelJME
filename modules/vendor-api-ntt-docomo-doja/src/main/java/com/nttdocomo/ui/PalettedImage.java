@@ -10,6 +10,7 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.runtime.nttdocomo.ui.EightBitImageStore;
@@ -23,9 +24,11 @@ public abstract class PalettedImage
 	extends Image
 {
 	/** The overriding palette. */
+	@SquirrelJMEVendorApi
 	volatile Palette _paletteOverride;
 	
 	/** Override transparent index? */
+	@SquirrelJMEVendorApi
 	volatile int _overrideTransDx =
 		-1;
 	
@@ -34,6 +37,7 @@ public abstract class PalettedImage
 	 * 
 	 * @since 2024/01/14
 	 */
+	@SquirrelJMEVendorApi
 	protected PalettedImage()
 	{
 	}
@@ -118,8 +122,8 @@ public abstract class PalettedImage
 		if (result >= 0)
 			return result;
 		
-		// Not possible
-		throw new UIException(UIException.ILLEGAL_STATE);
+		// Not set, so always zero
+		return 0;
 	}
 	
 	/**
@@ -208,17 +212,6 @@ public abstract class PalettedImage
 		
 		// Set
 		this._overrideTransDx = __index;
-	}
-	
-	/**
-	 * Does this image currently have an alpha color?
-	 *
-	 * @return If this has an alpha color currently.
-	 * @since 2024/01/14
-	 */
-	boolean __hasAlpha()
-	{
-		return false;
 	}
 	
 	/**

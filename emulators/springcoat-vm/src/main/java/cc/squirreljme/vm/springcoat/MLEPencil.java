@@ -587,6 +587,31 @@ public enum MLEPencil
 		}
 	}, 
 	
+	/** {@link PencilShelf#hardwareTranslateXY(PencilBracket, boolean)}. */
+	HARDWARE_TRANSLATE_XY("hardwareTranslateXY:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;Z)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/05
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				return PencilShelf.hardwareTranslateXY(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					(int)__args[1] != 0);
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
+		}
+	}, 
+	
 	/** {@link PencilShelf#nativeImageLoadTypes()}. */
 	NATIVE_IMAGE_LOAD_TYPES("nativeImageLoadTypes:()I")
 	{
