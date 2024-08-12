@@ -45,7 +45,7 @@ typedef struct sjme_stream_inputBase sjme_stream_inputBase;
  *
  * @since 2023/12/30
  */
-typedef struct sjme_stream_inputBase* sjme_stream_input;
+typedef sjme_stream_inputBase* sjme_stream_input;
 
 /**
  * The core output stream which is written to with data.
@@ -59,7 +59,7 @@ typedef struct sjme_stream_outputBase sjme_stream_outputBase;
  *
  * @since 2023/12/30
  */
-typedef struct sjme_stream_outputBase* sjme_stream_output;
+typedef sjme_stream_outputBase* sjme_stream_output;
 
 /**
  * Implementation state within streams.
@@ -196,14 +196,12 @@ struct sjme_stream_inputBase
  *
  * @param stream The output stream to close.
  * @param inImplState The implementation state.
- * @param optResult Optional output result.
  * @return On any resultant error, if any.
  * @since 2024/01/09
  */
 typedef sjme_errorCode (*sjme_stream_outputCloseFunc)(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrInNotNull sjme_stream_implState* inImplState,
-	sjme_attrOutNullable sjme_pointer* optResult);
+	sjme_attrInNotNull sjme_stream_implState* inImplState);
 
 /**
  * Initializes the new output stream.
@@ -423,9 +421,6 @@ typedef struct sjme_stream_resultByteArray
 
 	/** The input whatever value. */
 	sjme_pointer whatever;
-
-	/** The optional output result. */
-	sjme_pointer* optResult;
 } sjme_stream_resultByteArray;
 
 typedef struct sjme_stream_outputData sjme_stream_outputData;
@@ -514,12 +509,14 @@ struct sjme_stream_outputData
  *
  * @param stream The stream that is finished and is about to be closed.
  * @param result The result of the array operation.
+ * @param data Any data for the finish.
  * @return Any resultant error, if any.
  * @since 2024/01/09
  */
 typedef sjme_errorCode (*sjme_stream_outputByteArrayFinishFunc)(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrInNotNull sjme_stream_resultByteArray* result);
+	sjme_attrInNotNull sjme_stream_resultByteArray* result,
+	sjme_attrInNullable sjme_pointer data);
 
 /**
  * Opens an output stream.
@@ -557,18 +554,6 @@ sjme_errorCode sjme_stream_outputOpenByteArray(
 	sjme_attrInPositive sjme_jint initialLimit,
 	sjme_attrInNotNull sjme_stream_outputByteArrayFinishFunc finish,
 	sjme_attrInNullable sjme_pointer finishData);
-
-/**
- * Initializes a simplified data output stream.
- * 
- * @param inStream The input stream.
- * @param outData The data output to initialize.
- * @return Any resultant error, if any.
- * @since 2024/06/20
- */
-sjme_errorCode sjme_stream_outputOpenDataStatic(
-	sjme_attrInNotNull sjme_stream_output inStream,
-	sjme_attrInOutNotNull sjme_stream_outputData outData);
 
 /**
  * Opens an output stream which writes to the given block of memory, note that

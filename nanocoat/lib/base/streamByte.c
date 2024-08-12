@@ -53,8 +53,7 @@ typedef struct sjme_stream_cacheByteArray
 
 static sjme_errorCode sjme_stream_outputByteArrayClose(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrInNotNull sjme_stream_implState* inImplState,
-	sjme_attrOutNullable sjme_pointer* optResult)
+	sjme_attrInNotNull sjme_stream_implState* inImplState)
 {
 	sjme_stream_outputByteArrayFinishFunc finish;
 	sjme_pointer finishData;
@@ -69,29 +68,17 @@ static sjme_errorCode sjme_stream_outputByteArrayClose(
 	result.array = inImplState->buffer;
 	result.length = stream->totalWritten;
 	result.free = SJME_JNI_TRUE;
-	result.whatever = inImplState->handle;
-	result.optResult = optResult;
+	result.whatever = inImplState->handleTwo;
 	
 	/* Recover finisher. */
 	finish = inImplState->handle;
 	finishData = inImplState->handleTwo;
 	
-	/* No finish function? */
-	if (finish == NULL)
-	{
-		/* Do not free if this was specified, just return it there. */
-		if (optResult != NULL)
-		{
-			*optResult = inImplState->buffer;
-			result.free = SJME_JNI_FALSE;
-		}
-	}
-
-	/* Otherwise, call the finish handler. */
-	else
+	/* Call the finish handler, if there is one. */
+	if (finish != NULL)
 	{
 		/* Call handler, if it fails just stop. */
-		if (sjme_error_is(error = finish(stream, &result)))
+		if (sjme_error_is(error = finish(stream, &result, finishData)))
 			return sjme_error_default(error);
 	}
 

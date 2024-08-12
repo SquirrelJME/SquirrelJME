@@ -15,10 +15,13 @@
 #include "sjme/util.h"
 
 static sjme_errorCode sjme_stream_inputClose(
-	sjme_attrInNotNull sjme_stream_input stream)
+	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_errorCode error;
+	sjme_stream_input stream;
 
+	/* Recover stream. */
+	stream = (sjme_stream_input)closeable;
 	if (stream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -31,20 +34,18 @@ static sjme_errorCode sjme_stream_inputClose(
 		&stream->implState)))
 		return sjme_error_default(error);
 
-	/* Cleanup after it. */
-	if (sjme_error_is(error = sjme_alloc_free(stream)))
-		return sjme_error_default(error);
-
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_stream_outputClose(
-	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrOutNullable sjme_pointer* optResult)
+	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_errorCode error;
+	sjme_stream_output stream;
 
+	/* Recover stream. */
+	stream = (sjme_stream_output)closeable;
 	if (stream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -54,11 +55,7 @@ sjme_errorCode sjme_stream_outputClose(
 
 	/* Close the stream. */
 	if (sjme_error_is(error = stream->functions->close(stream,
-		&stream->implState, optResult)))
-		return sjme_error_default(error);
-
-	/* Cleanup after it. */
-	if (sjme_error_is(error = sjme_alloc_free(stream)))
+		&stream->implState)))
 		return sjme_error_default(error);
 
 	/* Success! */
@@ -97,11 +94,46 @@ sjme_errorCode sjme_stream_inputOpen(
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
 {
+	sjme_errorCode error;
+	sjme_stream_input result;
+	
 	if (inPool == NULL || outStream == NULL || inFunctions == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* These are required. */
+	if (inFunctions->read == NULL || inFunctions->init == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
+		sizeof(*result), sjme_closeable_autoEnqueue, NULL,
+		&result, NULL)))
+		return sjme_error_default(error);
+	
+	/* Setup details. */
+	result->implState.inPool = inPool;
+	result->functions = inFunctions;
+	result->closable.closeHandler = sjme_stream_inputClose;
+	
+	/* Copy front end? */
+	if (copyFrontEnd != NULL)
+		memmove(&result->frontEnd, copyFrontEnd,
+			sizeof(*copyFrontEnd));
+		
+	/* Call sub-init. */
+	if (sjme_error_is(error = result->functions->init(result,
+		&result->implState, data)))
+	{
+		/* Free before failure. */
+		sjme_alloc_free(result);
+		
+		return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	*outStream = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_stream_inputRead(
@@ -288,21 +320,46 @@ sjme_errorCode sjme_stream_outputOpen(
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
 {
+	sjme_errorCode error;
+	sjme_stream_output result;
+	
 	if (inPool == NULL || outStream == NULL || inFunctions == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Allocate target stream. */
+	/* These are required. */
+	if (inFunctions->write == NULL || inFunctions->init == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-sjme_errorCode sjme_stream_outputOpenDataStatic(
-	sjme_attrInNotNull sjme_stream_output inStream,
-	sjme_attrInOutNotNull sjme_stream_outputData outData)
-{
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
+		sizeof(*result), sjme_closeable_autoEnqueue, NULL,
+		&result, NULL)))
+		return sjme_error_default(error);
+	
+	/* Setup details. */
+	result->implState.inPool = inPool;
+	result->functions = inFunctions;
+	result->closable.closeHandler = sjme_stream_outputClose;
+	
+	/* Copy front end? */
+	if (copyFrontEnd != NULL)
+		memmove(&result->frontEnd, copyFrontEnd,
+			sizeof(*copyFrontEnd));
+		
+	/* Call sub-init. */
+	if (sjme_error_is(error = result->functions->init(result,
+		&result->implState, data)))
+	{
+		/* Free before failure. */
+		sjme_alloc_free(result);
+		
+		return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	*outStream = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_stream_outputWrite(

@@ -92,7 +92,7 @@ sjme_attrUnused RETRO_API bool retro_load_game(
 {
 	static sjme_jint trigger;
 	
-	/* If we requested no game then we do not really care do we? */
+	/* If we requested no game then we do not really care, do we? */
 	if (game == NULL)
 		return true;
 		
