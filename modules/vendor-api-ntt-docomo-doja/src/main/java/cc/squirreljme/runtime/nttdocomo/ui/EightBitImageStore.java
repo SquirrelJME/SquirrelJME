@@ -10,34 +10,47 @@
 package cc.squirreljme.runtime.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import com.nttdocomo.ui.Palette;
+import javax.microedition.lcdui.Image;
 
 /**
  * This contains the storage for an 8-bit image.
  *
  * @since 2024/01/14
  */
+@SquirrelJMEVendorApi
 public final class EightBitImageStore
 {
 	/** The image width. */
+	@SquirrelJMEVendorApi
 	protected final int width;
 	
 	/** The image height. */
+	@SquirrelJMEVendorApi
 	protected final int height;
 	
 	/** Is there an alpha channel? */
+	@SquirrelJMEVendorApi
 	protected final boolean hasAlpha;
 	
 	/** Internal Image palette. */
+	@SquirrelJMEVendorApi
 	protected final Palette palette;
 	
 	/** The transparent index, if any. */
+	@SquirrelJMEVendorApi
 	protected final int transparentIndex;
 	
 	/** Image pixel data. */
+	@SquirrelJMEVendorApi
 	private final byte[] _pixels;
+	
+	/** Cached MIDP image. */
+	@SquirrelJMEVendorApi
+	private volatile Image _image;
 	
 	/**
 	 * Initializes the image store.
@@ -51,6 +64,7 @@ public final class EightBitImageStore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/14
 	 */
+	@SquirrelJMEVendorApi
 	EightBitImageStore(byte[] __pixels, int __width, int __height,
 		int[] __palette, boolean __hasAlpha, int __transIndex)
 		throws NullPointerException
@@ -73,6 +87,7 @@ public final class EightBitImageStore
 	 * @return The image height.
 	 * @since 2024/01/14
 	 */
+	@SquirrelJMEVendorApi
 	public int getHeight()
 	{
 		return this.height;
@@ -84,6 +99,7 @@ public final class EightBitImageStore
 	 * @return The palette of the image store.
 	 * @since 2024/01/14
 	 */
+	@SquirrelJMEVendorApi
 	public Palette getPalette()
 	{
 		return this.palette;
@@ -111,7 +127,7 @@ public final class EightBitImageStore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/14
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public void getRGB(int[] __b, int __o, int __sl, Palette __palette,
 		int __x, int __y, int __w, int __h, int __transparentIndex)
 		throws IllegalArgumentException, NullPointerException,
@@ -162,6 +178,7 @@ public final class EightBitImageStore
 	 * @return The transparent color image or {@code -1} if not valid.
 	 * @since 2024/01/15
 	 */
+	@SquirrelJMEVendorApi
 	public int getTransparentIndex()
 	{
 		return this.transparentIndex;
@@ -173,8 +190,43 @@ public final class EightBitImageStore
 	 * @return The image width.
 	 * @since 2024/01/14
 	 */
+	@SquirrelJMEVendorApi
 	public int getWidth()
 	{
 		return this.width;
+	}
+	
+	/**
+	 * Returns a MIDP compatible image from the image data.
+	 *
+	 * @return The MIDP image from the data.
+	 * @since 2024/08/11
+	 */
+	@SquirrelJMEVendorApi
+	public Image midpImage()
+	{
+		// Has the image already been cached?
+		Image result = this._image;
+		if (result != null)
+			return result;
+		
+		int w = this.width;
+		int h = this.height;
+		
+		// Setup temporary RGB buffer
+		int a = w * h;
+		int[] rgb = new int[a];
+		
+		// Read in RGB data
+		Palette palette = this.getPalette();
+		int transDx = this.getTransparentIndex();
+		this.getRGB(rgb, 0, w, palette, 0, 0, w, h,
+			transDx);
+		
+		// Cache image
+		result = Image.createRGBImage(rgb, w, h, true);
+		this._image = result;
+		
+		return result;
 	}
 }

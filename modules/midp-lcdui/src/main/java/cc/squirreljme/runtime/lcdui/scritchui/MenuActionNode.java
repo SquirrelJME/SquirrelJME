@@ -16,6 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.collections.IdentityHashSet;
 
@@ -229,6 +230,63 @@ public final class MenuActionNode
 	}
 	
 	/**
+	 * Removes the item from the menu.
+	 *
+	 * @param __item The item being removed.
+	 * @throws IllegalArgumentException If the menu does not contain the item.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/11
+	 */
+	public void remove(MenuActionHasParent __item)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__item == null)
+			throw new NumberFormatException("NARG");
+		
+		/* {@squirreljme.error EB1l Menu node does not support children.} */
+		List<MenuActionHasParent> children = this._children;
+		if (children == null)
+			throw new IllegalStateException("EB1l");
+		
+		// Obtain owner
+		MenuActionApplicable owner = this.owner();
+		
+		synchronized (this)
+		{
+			int n = children.size();
+			
+			// Check to see if it is not here
+			/* {@squirreljme.error EB1m Item is already in this menu.} */
+			int dx = -1;
+			for (int i = 0; i <= n; i++)
+			{
+				if (i == n)
+					throw new IllegalStateException("NSEE");
+				
+				// Check index
+				if (children.get(i) == __item)
+				{
+					dx = i;
+					break;
+				}
+			}
+			
+			// Debug
+			Debugging.debugNote("Menu %s.children.remove(%d, %s)",
+				this.owner(), dx, __item);
+			
+			// Remove it from here
+			children.remove(dx);
+			
+			// Link to parent
+			((MenuActionNodeOnly)__item)._menuNode.__removeParent(owner);
+		}
+		
+		// Enqueue an update
+		this.__enqueueUpdate();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/07/20
 	 */
@@ -300,5 +358,34 @@ public final class MenuActionNode
 		// Update all parents now
 		for (MenuActionHasChildren parent : copy)
 			MenuAction.node(parent).__enqueueUpdate();
+	}
+	
+	/**
+	 * Removes a parent from the menu.
+	 *
+	 * @param __node The node to remove the parent from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/11
+	 */
+	private void __removeParent(MenuActionApplicable __node)
+		throws NullPointerException
+	{
+		if (__node == null)
+			throw new NullPointerException("NARG");
+		
+		/* {@squirreljme.error EB1n Menu node does not support parents.} */
+		Set<MenuActionHasChildren> parents = this._parents;
+		if (parents == null)
+			throw new IllegalStateException("EB1n");
+		
+		// Debug
+		Debugging.debugNote("Menu %s.__removeParent(%s)",
+			this.owner(), __node);
+		
+		// Add into parent set
+		synchronized (this)
+		{
+			parents.remove((MenuActionHasChildren)__node);
+		}
 	}
 }

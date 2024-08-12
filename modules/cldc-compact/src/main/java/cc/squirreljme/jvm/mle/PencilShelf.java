@@ -545,6 +545,20 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * Returns the current hardware translation.
+	 *
+	 * @param __g The pencil to read from.
+	 * @param __y Read the Y coordinate?
+	 * @return The current translation.
+	 * @throws MLECallError If the pencil is not valid.
+	 * @since 2024/08/11
+	 */
+	@SquirrelJMEVendorApi
+	public static native int hardwareTranslateXY(@NotNull PencilBracket __g,
+		boolean __y)
+		throws MLECallError;
+	
+	/**
 	 * Performs native image loading
 	 * 
 	 * @param __type The {@link NativeImageLoadType} to load.

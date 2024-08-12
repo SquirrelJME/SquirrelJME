@@ -209,6 +209,14 @@ public enum MLEDebug
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
+			if (true)
+			{
+				System.err.println("*******************************");
+				__thread.thread.printStackTrace(System.err);
+				System.err.println("*******************************");
+				System.err.flush();
+			}
+			
 			CallTraceElement[] trace = __thread.thread.getStackTrace();
 			
 			int n = trace.length;
