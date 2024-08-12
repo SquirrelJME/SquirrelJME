@@ -95,6 +95,10 @@ sjme_errorCode sjme_rom_libraryNew(
 	if (initCacheFunc == NULL)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
+	
 	/* Allocate resultant library. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(pool,
@@ -128,6 +132,7 @@ sjme_errorCode sjme_rom_libraryNew(
 	/* Use result. */
 	*outLibrary = result;
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_errorCode sjme_rom_libraryRawRead(
@@ -575,6 +580,10 @@ sjme_errorCode sjme_rom_suiteNew(
 	if (initCacheFunc == NULL)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+
+#if 0
 	/* Allocate resultant suite. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(pool,
@@ -608,4 +617,5 @@ sjme_errorCode sjme_rom_suiteNew(
 	/* Use result. */
 	*outSuite = result;
 	return SJME_ERROR_NONE;
+#endif
 }

@@ -13,6 +13,7 @@
 #include "sjme/debug.h"
 #include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
+#include "sjme/dylib.h"
 
 static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 	sjme_lpcstr partMessage)

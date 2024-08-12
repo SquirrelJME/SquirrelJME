@@ -127,7 +127,7 @@ SJME_TEST_DECLARE(testStreamWriteValueJ)
 		"Number of written bytes incorrect?");
 
 	/* Close stream. */
-	if (sjme_error_is(sjme_stream_outputClose(stream, NULL)))
+	if (sjme_error_is(sjme_closeable_close(stream)))
 		return sjme_unit_fail(test, "Could not close output stream.");
 
 	/* Success! */

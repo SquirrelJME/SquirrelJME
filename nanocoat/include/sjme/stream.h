@@ -20,6 +20,7 @@
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
 #include "alloc.h"
+#include "closeable.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -67,8 +68,14 @@ typedef struct sjme_stream_outputBase* sjme_stream_output;
  */
 typedef struct sjme_stream_implState
 {
+	/** The pool this is in. */
+	sjme_alloc_pool* inPool;
+	
 	/** Internal handle. */
 	sjme_pointer handle;
+	
+	/** Second internal handle. */
+	sjme_pointer handleTwo;
 	
 	/** Internal buffer. */
 	sjme_pointer buffer;
@@ -168,6 +175,9 @@ typedef struct sjme_stream_inputFunctions
 
 struct sjme_stream_inputBase
 {
+	/** Closeable. */
+	sjme_closeableBase closable;
+	
 	/** Implementation state. */
 	sjme_stream_implState implState;
 	
@@ -244,6 +254,9 @@ typedef struct sjme_stream_outputFunctions
 
 struct sjme_stream_outputBase
 {
+	/** Closeable. */
+	sjme_closeableBase closable;
+	
 	/** Implementation state. */
 	sjme_stream_implState implState;
 	
@@ -269,16 +282,6 @@ struct sjme_stream_outputBase
 sjme_errorCode sjme_stream_inputAvailable(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail);
-
-/**
- * Closes an input stream.
- *
- * @param stream The stream to close.
- * @return Any resultant error, if any.
- * @since 2023/12/31
- */
-sjme_errorCode sjme_stream_inputClose(
-	sjme_attrInNotNull sjme_stream_input stream);
 
 /**
  * Opens an input stream.
@@ -396,18 +399,6 @@ sjme_errorCode sjme_stream_inputReadValueJ(
 	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS)
 		sjme_basicTypeId typeId,
 	sjme_attrOutNotNull sjme_jvalue* outValue);
-
-/**
- * Closes an output stream.
- *
- * @param stream The stream to close.
- * @param optResult Optional resultant output value, if any.
- * @return Any resultant error, if any.
- * @since 2023/12/31
- */
-sjme_errorCode sjme_stream_outputClose(
-	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrOutNullable sjme_pointer* optResult);
 
 /**
  * Contains the result of the written byte array.
@@ -544,7 +535,7 @@ typedef sjme_errorCode (*sjme_stream_outputByteArrayFinishFunc)(
 sjme_errorCode sjme_stream_outputOpen(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
-	sjme_attrInNotNull const sjme_stream_inputFunctions* inFunctions,
+	sjme_attrInNotNull const sjme_stream_outputFunctions* inFunctions,
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
@@ -555,7 +546,7 @@ sjme_errorCode sjme_stream_outputOpen(
  * @param outStream The resultant output stream.
  * @param initialLimit The initial buffer limit.
  * @param finish The function to call when the stream is closed.
- * @param whatever Can be used to pass whatever is needed for the finish
+ * @param finishData Can be used to pass whatever is needed for the finish
  * processor.
  * @return On any error, if any.
  * @since 2024/01/09
@@ -565,7 +556,7 @@ sjme_errorCode sjme_stream_outputOpenByteArray(
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInPositive sjme_jint initialLimit,
 	sjme_attrInNotNull sjme_stream_outputByteArrayFinishFunc finish,
-	sjme_attrInNullable sjme_pointer whatever);
+	sjme_attrInNullable sjme_pointer finishData);
 
 /**
  * Initializes a simplified data output stream.

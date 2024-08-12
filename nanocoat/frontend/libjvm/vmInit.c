@@ -93,8 +93,8 @@ sjme_attrUnused jint JNICALL JNI_CreateJavaVM(
 	resultEnv->reserved2 = nvmState;
 	
 	/* Then link back to both. */
-	nvmState->frontEnd.wrapper = resultVm;
-	nvmState->frontEnd.data = resultEnv;
+	nvmState->common.frontEnd.wrapper = resultVm;
+	nvmState->common.frontEnd.data = resultEnv;
 	
 	/* Success! */
 	**outVm = resultVm;

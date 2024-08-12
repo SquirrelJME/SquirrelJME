@@ -37,7 +37,7 @@ static sjme_jboolean hookGcNvmLocalPopReference(sjme_nvm_frame frame,
 	sjme_message("GC of %p...", instance);
 	
 	/* Mock must be set. */
-	mock = frame->inThread->inState->frontEnd.data;
+	mock = frame->inThread->inState->common.frontEnd.data;
 	if (mock == NULL)
 		return SJME_JNI_FALSE;
 	

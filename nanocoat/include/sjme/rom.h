@@ -61,9 +61,6 @@ typedef struct sjme_rom_cache
 
 	/** Wrapped object, if applicable. */
 	sjme_frontEnd frontEnd;
-
-	/** Non-common cache size. */
-	sjme_jint uncommonSize;
 } sjme_rom_cache;
 
 /**
@@ -84,30 +81,7 @@ typedef struct sjme_rom_libraryCache
 
 	/** Is raw access valid. */
 	sjme_jboolean validRawAccess : 1;
-
-	/** Uncommon cache generic structure. */
-	sjme_jlong uncommon[sjme_flexibleArrayCount];
 } sjme_rom_libraryCache;
-
-/**
- * Determines the size of the library cache.
- *
- * @param uncommonSize The uncommon cache size.
- * @return The library cache size.
- * @since 2023/12/29
- */
-#define SJME_SIZEOF_LIBRARY_CACHE_N(uncommonSize) \
-    SJME_SIZEOF_UNCOMMON_N(sjme_rom_libraryCache, uncommon, uncommonSize)
-
-/**
- * Determines the size of the library cache.
- *
- * @param uncommonType The uncommon cache type.
- * @return The library cache size.
- * @since 2023/12/29
- */
-#define SJME_SIZEOF_LIBRARY_CACHE(uncommonType) \
-	SJME_SIZEOF_LIBRARY_CACHE_N(sizeof(uncommonType))
 
 /**
  * Internal cache for ROM suites.
@@ -125,26 +99,6 @@ typedef struct sjme_rom_suiteCache
 	/** Uncommon cache generic structure. */
 	sjme_jlong uncommon[sjme_flexibleArrayCount];
 } sjme_rom_suiteCache;
-
-/**
- * Determines the size of the suite cache.
- *
- * @param uncommonSize The uncommon type size.
- * @return The suite cache size.
- * @since 2023/12/29
- */
-#define SJME_SIZEOF_SUITE_CACHE_N(uncommonSize) \
-    SJME_SIZEOF_UNCOMMON_N(sjme_rom_suiteCache, uncommon, uncommonSize)
-
-/**
- * Determines the size of the suite cache.
- *
- * @param uncommonType The uncommon cache type.
- * @return The suite cache size.
- * @since 2023/12/21
- */
-#define SJME_SIZEOF_SUITE_CACHE(uncommonType) \
-	SJME_SIZEOF_SUITE_CACHE_N(sizeof(uncommonType))
 
 /**
  * Functions used to access a single library.
@@ -173,28 +127,6 @@ struct sjme_rom_libraryBase
 	/** Internal cache, used by internal library functions. */
 	sjme_rom_libraryCache cache;
 };
-
-/**
- * Determines the size of the library core.
- *
- * @param uncommonSize The uncommon cache size.
- * @return The library core size.
- * @since 2023/12/29
- */
-#define SJME_SIZEOF_LIBRARY_CORE_N(uncommonSize) \
-    (sizeof(sjme_rom_libraryBase) + \
-		(SJME_SIZEOF_LIBRARY_CACHE_N(uncommonSize) - \
-		sizeof(sjme_rom_libraryCache)))
-
-/**
- * Determines the size of the library core.
- *
- * @param uncommonType The uncommon cache type.
- * @return The library core size.
- * @since 2023/12/29
- */
-#define SJME_SIZEOF_LIBRARY_CORE(uncommonType) \
-    SJME_SIZEOF_LIBRARY_CORE_N(sizeof(sjme_rom_libraryBase))
 
 /**
  * Functions used to access a suite, which is an entire ROM.
@@ -349,27 +281,6 @@ struct sjme_rom_suiteBase
 	/** Internal cache, used by suite implementations. */
 	sjme_rom_suiteCache cache;
 };
-
-/**
- * Determines the size of the suite core.
- *
- * @param uncommonSize The uncommon cache size.
- * @return The suite core size.
- * @since 2023/12/29
- */
-#define SJME_SIZEOF_SUITE_CORE_N(uncommonSize) \
-    (sizeof(sjme_rom_suiteBase) + (SJME_SIZEOF_SUITE_CACHE_N(uncommonSize) - \
-		sizeof(sjme_rom_suiteCache)))
-
-/**
- * Determines the size of the suite core.
- *
- * @param uncommonType The uncommon cache type.
- * @return The suite core size.
- * @since 2023/12/29
- */
-#define SJME_SIZEOF_SUITE_CORE(uncommonType) \
-    SJME_SIZEOF_SUITE_CORE_N(sizeof(sjme_rom_suiteCache))
 
 /**
  * Initializes a library from a Zip.

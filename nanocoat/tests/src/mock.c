@@ -237,7 +237,7 @@ sjme_jboolean sjme_mock_doNvmState(
 	inState->nvmState = newState;
 	
 	/* Store test state, as required for some tests. */
-	newState->frontEnd.data = inState;
+	newState->common.frontEnd.data = inState;
 	
 	/* Register any hooks? */
 	if (inData->current.data.nvmState.hooks != NULL)
@@ -590,8 +590,7 @@ sjme_jboolean sjme_mock_doRomSuite(
 
 	/* If there is no cache init, just initialize it to something... */
 	if (writeFunctions->initCache == NULL)
-		memset(&suite->cache, 0,
-			SJME_SIZEOF_SUITE_CACHE_N(writeFunctions->uncommonTypeSize));
+		memset(&suite->cache, 0, sizeof(suite->cache));
 
 	/* Otherwise call the initializer. */
 	else

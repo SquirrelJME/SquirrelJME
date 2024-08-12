@@ -105,6 +105,9 @@ typedef enum sjme_seekable_unlockAction
  */
 typedef struct sjme_seekable_implState
 {
+	/** The pool this is in. */
+	sjme_alloc_pool* inPool;
+	
 	/** Internal handle. */
 	sjme_pointer handle;
 	
@@ -120,7 +123,7 @@ typedef struct sjme_seekable_implState
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
-typedef sjme_errorCode (*sjme_seekable_streamCloseFunc)(
+typedef sjme_errorCode (*sjme_seekable_closeFunc)(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState);
 
@@ -133,7 +136,7 @@ typedef sjme_errorCode (*sjme_seekable_streamCloseFunc)(
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
-typedef sjme_errorCode (*sjme_seekable_streamInitFunc)(
+typedef sjme_errorCode (*sjme_seekable_initFunc)(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState,
 	sjme_attrInNullable sjme_pointer data);
@@ -149,7 +152,7 @@ typedef sjme_errorCode (*sjme_seekable_streamInitFunc)(
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
-typedef sjme_errorCode (*sjme_seekable_streamReadFunc)(
+typedef sjme_errorCode (*sjme_seekable_readFunc)(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState,
 	sjme_attrOutNotNullBuf(length) sjme_jbyte* outBuf,
@@ -165,7 +168,7 @@ typedef sjme_errorCode (*sjme_seekable_streamReadFunc)(
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
-typedef sjme_errorCode (*sjme_seekable_streamSizeFunc)(
+typedef sjme_errorCode (*sjme_seekable_sizeFunc)(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState,
 	sjme_attrOutNotNull sjme_jint* outSize);
@@ -178,16 +181,16 @@ typedef sjme_errorCode (*sjme_seekable_streamSizeFunc)(
 typedef struct sjme_seekable_functions
 {
 	/** Closes the stream. */
-	sjme_seekable_streamCloseFunc close;
+	sjme_seekable_closeFunc close;
 	
 	/** Initializes the stream. */
-	sjme_seekable_streamInitFunc init;
+	sjme_seekable_initFunc init;
 	
 	/** Read from the given stream. */
-	sjme_seekable_streamReadFunc read;
+	sjme_seekable_readFunc read;
 	
 	/** Return the size of the stream. */
-	sjme_seekable_streamSizeFunc size;
+	sjme_seekable_sizeFunc size;
 } sjme_seekable_functions;
 
 /**
@@ -210,16 +213,6 @@ sjme_errorCode sjme_seekable_asInputStream(
 	sjme_attrInPositive sjme_jint base,
 	sjme_attrInPositive sjme_jint length,
 	sjme_attrInValue sjme_jboolean forwardClose);
-
-/**
- * Closes the given seekable.
- * 
- * @param seekable The seekable to close. 
- * @return Any resultant error, if any.
- * @since 2024/08/11
- */
-sjme_errorCode sjme_seekable_close(
-	sjme_attrInNotNull sjme_seekable seekable);
 
 /**
  * Opens a generic stream.

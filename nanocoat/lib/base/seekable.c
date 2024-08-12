@@ -11,9 +11,13 @@
 
 #include "sjme/seekable.h"
 #include "sjme/debug.h"
+#include "sjme/closeable.h"
 
 struct sjme_seekableBase
 {
+	/** Closeable. */
+	sjme_closeableBase closable;
+	
 	/** Implementation state. */
 	sjme_seekable_implState implState;
 	
@@ -27,23 +31,23 @@ struct sjme_seekableBase
 	sjme_thread_spinLock lock;
 };
 
-static sjme_errorCode sjme_seekable_autoClose(
-	sjme_attrInNotNull sjme_alloc_weak weak,
-	sjme_attrInNullable sjme_pointer data,
-	sjme_attrInValue sjme_jboolean isBlockFree)
+static sjme_errorCode sjme_seekable_closeHandler(
+	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_seekable seekable;
 	
-	if (weak == NULL)
+	/* Recover seekable. */
+	seekable = (sjme_seekable)closeable;
+	if (seekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Recover seekable. */
-	seekable = weak->pointer;
-	if (seekable == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
+	/* Forward to close handler. */
+	if (seekable->functions->close != NULL)
+		return seekable->functions->close(seekable,
+			&seekable->implState);
 	
-	/* Forward close. */
-	return sjme_seekable_close(seekable);
+	/* No handler, just success. */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_seekable_asInputStream(
@@ -60,15 +64,6 @@ sjme_errorCode sjme_seekable_asInputStream(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	sjme_todo("Implement this?");
-	return sjme_error_notImplemented(0);
-}
-
-sjme_errorCode sjme_seekable_close(
-	sjme_attrInNotNull sjme_seekable seekable)
-{
-	if (seekable == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
 	return sjme_error_notImplemented(0);
 }
 
@@ -95,11 +90,12 @@ sjme_errorCode sjme_seekable_open(
 	/* Setup result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
-		sizeof(*result), sjme_seekable_autoClose, NULL,
+		sizeof(*result), sjme_closeable_autoEnqueue, NULL,
 		&result, NULL)) || result == NULL)
 		return sjme_error_default(error);
 	
 	/* Copy in details. */
+	result->closable.closeHandler = sjme_seekable_closeHandler;
 	result->functions = inFunctions;
 	if (copyFrontEnd != NULL)
 		memmove(&result->frontEnd,

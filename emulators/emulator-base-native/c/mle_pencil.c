@@ -61,6 +61,8 @@
 	DESC_PENCIL DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareTranslate "(" \
 	DESC_PENCIL DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareTranslateXY "(" \
+	DESC_PENCIL DESC_BOOLEAN ")" DESC_INT
 
 /* Forwards */
 #define FORWARD_DESC_nativeImageLoadRGBA \

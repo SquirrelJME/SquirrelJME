@@ -75,7 +75,7 @@ SJME_TEST_DECLARE(testStream)
 		"Incorrect number of read cycles?");
 
 	/* Close the stream. */
-	if (sjme_error_is(sjme_stream_inputClose(inputStream)))
+	if (sjme_error_is(sjme_closeable_close(inputStream)))
 		return sjme_unit_fail(test, "Could not close stream?");
 
 	/* Success! */

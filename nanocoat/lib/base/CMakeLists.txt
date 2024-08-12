@@ -12,6 +12,7 @@ squirreljme_multilib_add_library(Base
 	allocSizeOf.c
 	atomic.c
 	charSeq.c
+	closeable.c
 	comparator.c
 	debug.c
 	dylib.c

@@ -14,6 +14,57 @@
 #include "sjme/debug.h"
 #include "sjme/util.h"
 
+static sjme_errorCode sjme_stream_inputClose(
+	sjme_attrInNotNull sjme_stream_input stream)
+{
+	sjme_errorCode error;
+
+	if (stream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Function needs to exist. */
+	if (stream->functions == NULL || stream->functions->close == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Close the stream. */
+	if (sjme_error_is(error = stream->functions->close(stream,
+		&stream->implState)))
+		return sjme_error_default(error);
+
+	/* Cleanup after it. */
+	if (sjme_error_is(error = sjme_alloc_free(stream)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_stream_outputClose(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrOutNullable sjme_pointer* optResult)
+{
+	sjme_errorCode error;
+
+	if (stream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Function needs to exist. */
+	if (stream->functions == NULL || stream->functions->close == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Close the stream. */
+	if (sjme_error_is(error = stream->functions->close(stream,
+		&stream->implState, optResult)))
+		return sjme_error_default(error);
+
+	/* Cleanup after it. */
+	if (sjme_error_is(error = sjme_alloc_free(stream)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_stream_inputAvailable(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail)
@@ -36,31 +87,6 @@ sjme_errorCode sjme_stream_inputAvailable(
 
 	/* Return result. */
 	*outAvail = result;
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_stream_inputClose(
-	sjme_attrInNotNull sjme_stream_input stream)
-{
-	sjme_errorCode error;
-
-	if (stream == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Function needs to exist. */
-	if (stream->functions == NULL || stream->functions->close == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-
-	/* Close the stream. */
-	if (sjme_error_is(error = stream->functions->close(stream,
-		&stream->implState)))
-		return sjme_error_default(error);
-
-	/* Cleanup after it. */
-	if (sjme_error_is(error = sjme_alloc_free(stream)))
-		return sjme_error_default(error);
-
-	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -255,41 +281,17 @@ sjme_errorCode sjme_stream_inputReadValueJ(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_stream_outputClose(
-	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrOutNullable sjme_pointer* optResult)
-{
-	sjme_errorCode error;
-
-	if (stream == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Function needs to exist. */
-	if (stream->functions == NULL || stream->functions->close == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-
-	/* Close the stream. */
-	if (sjme_error_is(error = stream->functions->close(stream,
-		&stream->implState, optResult)))
-		return sjme_error_default(error);
-
-	/* Cleanup after it. */
-	if (sjme_error_is(error = sjme_alloc_free(stream)))
-		return sjme_error_default(error);
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
 sjme_errorCode sjme_stream_outputOpen(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
-	sjme_attrInNotNull const sjme_stream_inputFunctions* inFunctions,
+	sjme_attrInNotNull const sjme_stream_outputFunctions* inFunctions,
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
 {
 	if (inPool == NULL || outStream == NULL || inFunctions == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Allocate target stream. */
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

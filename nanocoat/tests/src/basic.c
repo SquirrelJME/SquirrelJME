@@ -15,6 +15,7 @@
 #include "sjme/debug.h"
 #include "sjme/nvm.h"
 #include "test.h"
+#include "sjme/dylib.h"
 
 const sjme_availableTest sjme_availableTests[] =
 {

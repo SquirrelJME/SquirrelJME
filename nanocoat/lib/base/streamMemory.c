@@ -14,6 +14,20 @@
 #include "sjme/debug.h"
 #include "sjme/util.h"
 
+/**
+ * Stream initialization data.
+ * 
+ * @since 2024/08/12
+ */
+typedef struct sjme_stream_ioInit
+{
+	/** The base pointer to use. */
+	sjme_cpointer base;
+	
+	/** The length of the memory area. */
+	sjme_jint length;
+} sjme_stream_ioInit;
+
 static sjme_errorCode sjme_stream_inputMemoryAvailable(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
@@ -35,6 +49,27 @@ static sjme_errorCode sjme_stream_inputMemoryClose(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Nothing needs to happen here. */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_stream_inputMemoryInit(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState,
+	sjme_attrInNullable sjme_pointer data)
+{
+	sjme_stream_ioInit* init;
+	
+	if (stream == NULL || inImplState == NULL || data == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Recover initializer. */
+	init = data;
+	
+	/* Set initial state information. */
+	inImplState->buffer = init->base;
+	inImplState->length = init->length;
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -66,7 +101,7 @@ static sjme_errorCode sjme_stream_inputMemoryRead(
 		limit = length;
 
 	/* Do a direct memory copy. */
-	memmove(dest, (sjme_pointer)(((uintptr_t)inImplState->handle) +
+	memmove(dest, (sjme_pointer)(((uintptr_t)inImplState->buffer) +
 		stream->totalRead), limit);
 
 	/* Indicate read count and consider success! */
@@ -78,6 +113,7 @@ static sjme_errorCode sjme_stream_inputMemoryRead(
 static const sjme_stream_inputFunctions sjme_stream_inputMemoryFunctions =
 {
 	.available = sjme_stream_inputMemoryAvailable,
+	.init = sjme_stream_inputMemoryInit,
 	.close = sjme_stream_inputMemoryClose,
 	.read = sjme_stream_inputMemoryRead,
 };
@@ -91,6 +127,27 @@ static sjme_errorCode sjme_stream_outputMemoryClose(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Nothing to be done here. */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_stream_outputMemoryInit(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState,
+	sjme_attrInNullable sjme_pointer data)
+{
+	sjme_stream_ioInit* init;
+	
+	if (stream == NULL || inImplState == NULL || data == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Recover initializer. */
+	init = data;
+	
+	/* Set initial state information. */
+	inImplState->buffer = init->base;
+	inImplState->length = init->length;
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -117,7 +174,7 @@ static sjme_errorCode sjme_stream_outputMemoryWrite(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	/* Copy the data directly. */
-	memmove((sjme_pointer)((uintptr_t)inImplState->handle +
+	memmove((sjme_pointer)((uintptr_t)inImplState->buffer +
 		written), buf, length);
 
 	/* Success! */
@@ -137,38 +194,27 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length)
 {
-	sjme_stream_input result;
-	sjme_stream_cacheMemory* cache;
-	sjme_errorCode error;
+	sjme_stream_ioInit init;
+	uintptr_t realBase;
 
 	if (inPool == NULL || outStream == NULL || base == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (length < 0 || (((uintptr_t)base) + length) < ((uintptr_t)base))
+	
+	/* Make sure memory does not overflow. */
+	realBase = (uintptr_t)base;
+	if (length < 0 || (realBase + length) < realBase)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-
-	/* Allocate result. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inPool,
-		SJME_SIZEOF_INPUT_STREAM(sjme_stream_cacheMemory),
-		&result)) || result == NULL)
-		return sjme_error_default(error);
-
-	/* Set base information. */
-	result->functions = &sjme_stream_inputMemoryFunctions;
-
-	/* Get the cache. */
-	cache = SJME_INPUT_MEMORY_UNCOMMON(result);
-
-	/* Set initial state information. */
-	cache->base = base;
-	cache->length = length;
-
-	/* Return result. */
-	*outStream = result;
-	return SJME_ERROR_NONE;
+	
+	/* Setup initialization input. */
+	memset(&init, 0, sizeof(init));
+	init.base = base;
+	init.length = length;
+	
+	/* Forward initialization. */
+	return sjme_stream_inputOpen(inPool, outStream,
+		&sjme_stream_inputMemoryFunctions, &init,
+		NULL);
 }
-
 
 sjme_errorCode sjme_stream_outputOpenMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
@@ -176,35 +222,24 @@ sjme_errorCode sjme_stream_outputOpenMemory(
 	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length)
 {
-	sjme_stream_output result;
+	sjme_stream_ioInit init;
 	uintptr_t realBase;
-	sjme_errorCode error;
 
 	if (inPool == NULL || outStream == NULL || base == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
+	
+	/* Make sure memory does not overflow. */
 	realBase = (uintptr_t)base;
 	if (length < 0 || (realBase + length) < realBase)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-
-	/* Allocate result. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inPool,
-		SJME_SIZEOF_OUTPUT_STREAM(sjme_stream_cacheMemory),
-		&result)) || result == NULL)
-		return sjme_error_default(error);
-
-	/* Set base information. */
-	result->functions = &sjme_stream_outputMemoryFunctions;
-
-	/* Get the cache. */
-	cache = SJME_OUTPUT_MEMORY_UNCOMMON(result);
-
-	/* Set initial state information. */
-	cache->base = base;
-	cache->length = length;
-
-	/* Return result. */
-	*outStream = result;
-	return SJME_ERROR_NONE;
+	
+	/* Setup initialization input. */
+	memset(&init, 0, sizeof(init));
+	init.base = base;
+	init.length = length;
+	
+	/* Forward initialization. */
+	return sjme_stream_outputOpen(inPool, outStream,
+		&sjme_stream_outputMemoryFunctions, &init,
+		NULL);
 }

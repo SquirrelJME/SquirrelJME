@@ -65,7 +65,7 @@ SJME_TEST_DECLARE(testRomLibraryFindResourceJar)
 		return sjme_unit_fail(test, "Did not find resource?");
 
 	/* Just close the stream. */
-	if (sjme_error_is(sjme_stream_inputClose(inputStream)))
+	if (sjme_error_is(sjme_closeable_close(inputStream)))
 		return sjme_unit_fail(test, "Could not close stream?");
 
 	/* Success! */

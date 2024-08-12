@@ -74,7 +74,7 @@ SJME_TEST_DECLARE(testStreamWriteBlockBA)
 			return sjme_unit_fail(test, "Could not write chunk %d?", i);
 
 	/* Close stream. */
-	if (sjme_error_is(sjme_stream_outputClose(stream, NULL)))
+	if (sjme_error_is(sjme_closeable_close(stream)))
 		return sjme_unit_fail(test, "Could not close output stream.");
 
 	/* Success! */

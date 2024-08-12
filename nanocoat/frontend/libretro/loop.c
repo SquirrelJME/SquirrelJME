@@ -17,6 +17,7 @@
 
 #if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_UNIT_TEST)
 	#include "sjme/test/externTest.h"
+	#include "sjme/dylib.h"
 #endif
 
 #if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_UNIT_TEST)
