@@ -340,6 +340,35 @@ public class Graphics
 				break;
 		}
 		
+		// DoJa is more lenient when drawing out of range graphics, it just
+		// gets clipped into range
+		if (__sx < 0)
+		{
+			__w -= __sx;
+			__sx = 0;
+		}
+		
+		if (__sy < 0)
+		{
+			__h -= __sy;
+			__sy = 0;
+		}
+		
+		int ex = __sx + __w;
+		int ey = __sy + __h;
+		if (ex > target.getWidth())
+			ex = target.getWidth();
+		if (ey > target.getHeight())
+			ey = target.getHeight();
+		
+		// Get corrected size
+		__w = ex - __sx;
+		__h = ey - __sy;
+		
+		// Not drawing anything after correcting?
+		if (__w <= 0 || __h <= 0)
+			return;
+		
 		// Draw it
 		this._graphics.drawRegion(target, __sx, __sy,
 			__w, __h, trans, __dx, __dy,
