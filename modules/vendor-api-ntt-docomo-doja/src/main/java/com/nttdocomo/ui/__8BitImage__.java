@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.nttdocomo.ui.DoJa8BitImageLoader;
@@ -22,10 +23,12 @@ import java.io.InputStream;
  *
  * @since 2024/01/14
  */
+@SquirrelJMEVendorApi
 class __8BitImage__
 	extends PalettedImage
 {
 	/** The image that is currently stored here. */
+	@SquirrelJMEVendorApi
 	volatile EightBitImageStore _store;
 	
 	/**
@@ -94,6 +97,21 @@ class __8BitImage__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/08/11
+	 */
+	@Override
+	public int getHeight()
+		throws UIException
+	{
+		EightBitImageStore store = this._store;
+		if (store == null)
+			throw new UIException(UIException.ILLEGAL_STATE);
+		
+		return store.getHeight();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/01/15
 	 */
 	@Override
@@ -114,5 +132,20 @@ class __8BitImage__
 			// Use the color from the store
 			return store.getTransparentIndex();
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/11
+	 */
+	@Override
+	public int getWidth()
+		throws UIException
+	{
+		EightBitImageStore store = this._store;
+		if (store == null)
+			throw new UIException(UIException.ILLEGAL_STATE);
+		
+		return store.getWidth();
 	}
 }

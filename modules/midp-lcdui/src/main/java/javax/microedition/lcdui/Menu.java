@@ -50,7 +50,8 @@ public class Menu
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		return MenuActionNodeOnly.node(this).insert(Integer.MAX_VALUE, __c);
+		return MenuActionNodeOnly.node(this)
+			.insert(Integer.MAX_VALUE, __c);
 	}
 	
 	/**
@@ -236,10 +237,21 @@ public class Menu
 		// The default implementation does nothing
 	}
 	
+	/**
+	 * Removes the given command.
+	 *
+	 * @param __c The command to remove.
+	 * @throws IllegalArgumentException If it is not in the menu.
+	 * @since 2024/08/11
+	 */
 	@Api
 	public void remove(Command __c)
+		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		if (__c == null)
+			throw new IllegalArgumentException("NOPE");
+		
+		MenuActionNodeOnly.node(this).remove(__c);
 	}
 	
 	@Api

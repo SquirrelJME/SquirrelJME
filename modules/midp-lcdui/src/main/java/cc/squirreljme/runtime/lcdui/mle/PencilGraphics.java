@@ -73,12 +73,6 @@ public final class PencilGraphics
 	/** The current stroke style. */
 	private int _strokeStyle;
 	
-	/** The current X translation. */
-	private int _transX;
-	
-	/** The current Y translation. */
-	private int _transY;
-	
 	/**
 	 * Initializes the pencil graphics system.
 	 *
@@ -528,7 +522,7 @@ public final class PencilGraphics
 	@Override
 	public int getClipX()
 	{
-		return this._clipX - this._transX;
+		return this._clipX - this.getTranslateX();
 	}
 	
 	/**
@@ -538,7 +532,7 @@ public final class PencilGraphics
 	@Override
 	public int getClipY()
 	{
-		return this._clipY - this._transY;
+		return this._clipY - this.getTranslateY();
 	}
 	
 	/**
@@ -623,7 +617,7 @@ public final class PencilGraphics
 	@Override
 	public int getTranslateX()
 	{
-		return this._transX;
+		return PencilShelf.hardwareTranslateXY(this.hardware, false);
 	}
 	
 	/**
@@ -633,7 +627,7 @@ public final class PencilGraphics
 	@Override
 	public int getTranslateY()
 	{
-		return this._transY;
+		return PencilShelf.hardwareTranslateXY(this.hardware, true);
 	}
 	
 	/**
@@ -711,8 +705,8 @@ public final class PencilGraphics
 	public void setClip(int __x, int __y, int __w, int __h)
 	{
 		// Calculate the base clip coordinates
-		int startX = __x + this._transX;
-		int startY = __y + this._transY;
+		int startX = __x + this.getTranslateX();
+		int startY = __y + this.getTranslateY();
 		int endX = startX + __w;
 		int endY = startY + __h;
 		
@@ -826,11 +820,6 @@ public final class PencilGraphics
 	@Override
 	public void translate(int __x, int __y)
 	{
-		// Set locally
-		this._transX += __x;
-		this._transY += __y;
-		
-		// Forward to both software and hardware graphics
 		PencilShelf.hardwareTranslate(this.hardware, __x, __y);
 	}
 	
