@@ -113,6 +113,9 @@ typedef struct sjme_seekable_implState
 	
 	/** Internal index. */
 	sjme_jint index;
+	
+	/** Internal length. */
+	sjme_jint length;
 } sjme_seekable_implState;
 
 /**
@@ -192,6 +195,24 @@ typedef struct sjme_seekable_functions
 	/** Return the size of the stream. */
 	sjme_seekable_sizeFunc size;
 } sjme_seekable_functions;
+
+struct sjme_seekableBase
+{
+	/** Closeable. */
+	sjme_closeableBase closable;
+	
+	/** Implementation state. */
+	sjme_seekable_implState implState;
+	
+	/** Front end data. */
+	sjme_frontEnd frontEnd;
+	
+	/** Functions for stream access. */
+	const sjme_seekable_functions* functions;
+	
+	/** Spinlock for stream access. */
+	sjme_thread_spinLock lock;
+};
 
 /**
  * Provides an input stream to read data from a seekable, note that

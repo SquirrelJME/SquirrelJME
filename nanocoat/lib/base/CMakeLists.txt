@@ -23,6 +23,7 @@ squirreljme_multilib_add_library(Base
 	native.c
 	path.c
 	seekable.c
+	seekableMemory.c
 	stream.c
 	streamByte.c
 	streamDeflate.c

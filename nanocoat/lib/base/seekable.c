@@ -13,24 +13,6 @@
 #include "sjme/debug.h"
 #include "sjme/closeable.h"
 
-struct sjme_seekableBase
-{
-	/** Closeable. */
-	sjme_closeableBase closable;
-	
-	/** Implementation state. */
-	sjme_seekable_implState implState;
-	
-	/** Front end data. */
-	sjme_frontEnd frontEnd;
-	
-	/** Functions for stream access. */
-	const sjme_seekable_functions* functions;
-	
-	/** Spinlock for stream access. */
-	sjme_thread_spinLock lock;
-};
-
 static sjme_errorCode sjme_seekable_closeHandler(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -114,26 +96,6 @@ sjme_errorCode sjme_seekable_open(
 	/* Success! */
 	*outSeekable = result;
 	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_seekable_openMemory(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_seekable* outSeekable,
-	sjme_attrInNotNull sjme_pointer base,
-	sjme_attrInPositive sjme_jint length)
-{
-	uintptr_t rawBase;
-
-	if (inPool == NULL || outSeekable == NULL || base == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Check for overflow. */
-	rawBase = (uintptr_t)base;
-	if (length < 0 || (rawBase + length) < rawBase)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-
-	sjme_todo("Implement this?");
-	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_seekable_openSeekable(
