@@ -452,6 +452,25 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareTranslate)
 		sjme_jni_throwMLECallError(env, error);\
 }
 
+JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareTranslateXY)
+	(JNIEnv* env, jclass classy, jobject g, jboolean y)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return -1;
+	}
+	
+	if (y)
+		return p->state.translate.y;
+	return p->state.translate.x;
+}
+
 FORWARD_IMPL(PencilShelf, nativeImageLoadRGBA, jobject, Object, \
 	FORWARD_IMPL_args(jint type, jbyteArray buf, jint off, jint len, \
 		jobject callback), \
@@ -479,6 +498,7 @@ static const JNINativeMethod mlePencilMethods[] =
 	FORWARD_list(PencilShelf, hardwareSetFont),
 	FORWARD_list(PencilShelf, hardwareSetStrokeStyle),
 	FORWARD_list(PencilShelf, hardwareTranslate),
+	FORWARD_list(PencilShelf, hardwareTranslateXY),
 	FORWARD_list(PencilShelf, nativeImageLoadRGBA),
 	FORWARD_list(PencilShelf, nativeImageLoadTypes),
 };
