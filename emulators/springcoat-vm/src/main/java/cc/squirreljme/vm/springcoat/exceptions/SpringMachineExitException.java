@@ -17,7 +17,7 @@ import cc.squirreljme.vm.springcoat.SpringException;
  * @since 2018/10/13
  */
 public class SpringMachineExitException
-	extends SpringException
+	extends SpringFatalException
 {
 	/** The exit code. */
 	protected final int code;
