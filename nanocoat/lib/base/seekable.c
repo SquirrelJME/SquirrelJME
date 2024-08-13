@@ -126,9 +126,13 @@ sjme_errorCode sjme_seekable_read(
 	
 	if (seekBase < 0 || length < 0 || (seekBase + length) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-		
-	sjme_todo("Implement this?");
-	return sjme_error_notImplemented(0);
+	
+	if (seekable->functions->read == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Forward read. */
+	return seekable->functions->read(seekable,
+		&seekable->implState, outBuf, seekBase, length);
 }
 
 sjme_errorCode sjme_seekable_regionLock(
