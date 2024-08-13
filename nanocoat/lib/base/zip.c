@@ -55,7 +55,7 @@ static sjme_errorCode sjme_zip_findCentralDir(
 	{
 		/* Read in magic number. */
 		magic = -1;
-		if (sjme_error_is(error = sjme_seekable_read(seekable,
+		if (sjme_error_is(error = sjme_seekable_readLittle(seekable, 4,
 			&magic, scanAt, sizeof(magic))))
 			return sjme_error_default(error);
 		
@@ -64,7 +64,7 @@ static sjme_errorCode sjme_zip_findCentralDir(
 		{
 			/* Read in the comment length. */
 			commentLen = 65535;
-			if (sjme_error_is(error = sjme_seekable_read(seekable,
+			if (sjme_error_is(error = sjme_seekable_readLittle(seekable, 2,
 				&commentLen,
 				scanAt + SJME_ZIP_ECDIR_OFF_COMMENT_LEN,
 				sizeof(commentLen))))

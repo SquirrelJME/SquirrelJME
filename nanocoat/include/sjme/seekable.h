@@ -304,6 +304,98 @@ sjme_errorCode sjme_seekable_read(
 	sjme_attrInPositive sjme_jint length);
 
 /**
+ * Reads from the given seekable in reverse byte order for every @c wordSize
+ * that is read from the input. 
+ * 
+ * @param seekable The seekable to read from.
+ * @param wordSize The word size for the read, every number of this many
+ * bytes will be reversed.
+ * @param outBuf The output buffer.
+ * @param seekBase The base of the seekable to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/13
+ */
+sjme_errorCode sjme_seekable_readReverse(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrInRange(2, 8) sjme_jint wordSize,
+	sjme_attrOutNotNull sjme_jbyte* outBuf,
+	sjme_attrInPositive sjme_jint seekBase,
+	sjme_attrInPositive sjme_jint length);
+
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+
+/**
+ * Reads big endian data from the given seekable.
+ * 
+ * @param seekable The seekable to read from.
+ * @param wordSize The word size for the read, every number of bytes will
+ * be possibly reversed if required.
+ * @param outBuf The output buffer.
+ * @param seekBase The base of the seekable to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/13
+ */
+#define sjme_seekable_readBig(seekable, wordSize, outBuf, seekBase, \
+	length) \
+	(sjme_seekable_readReverse((seekable), (wordSize), (outBuf), (seekBase), \
+	(length)))	
+
+/**
+ * Reads little endian data from the given seekable.
+ * 
+ * @param seekable The seekable to read from.
+ * @param wordSize The word size for the read, every number of bytes will
+ * be possibly reversed if required.
+ * @param outBuf The output buffer.
+ * @param seekBase The base of the seekable to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/13
+ */
+#define sjme_seekable_readLittle(seekable, wordSize, outBuf, seekBase, \
+	length) \
+	(sjme_seekable_read((seekable), (outBuf), (seekBase), (length)))
+
+#else
+
+/**
+ * Reads big endian data from the given seekable.
+ * 
+ * @param seekable The seekable to read from.
+ * @param wordSize The word size for the read, every number of bytes will
+ * be possibly reversed if required.
+ * @param outBuf The output buffer.
+ * @param seekBase The base of the seekable to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/13
+ */
+#define sjme_seekable_readBig(seekable, wordSize, outBuf, seekBase, \
+	length) \
+	(sjme_seekable_read((seekable), (outBuf), (seekBase), (length)))
+
+/**
+ * Reads little endian data from the given seekable.
+ * 
+ * @param seekable The seekable to read from.
+ * @param wordSize The word size for the read, every number of bytes will
+ * be possibly reversed if required.
+ * @param outBuf The output buffer.
+ * @param seekBase The base of the seekable to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/13
+ */
+#define sjme_seekable_readLittle(seekable, wordSize, outBuf, seekBase, \
+	length) \
+	(sjme_seekable_readReverse((seekable), (wordSize), (outBuf), (seekBase), \
+	(length)))
+
+#endif
+
+/**
  * Locks a region of a seekable so that the data stored there can be accessed
  * directly via memory access. Depending on the seekable implementation, there
  * are multiple possibilities as to what may occur: if the seekable is

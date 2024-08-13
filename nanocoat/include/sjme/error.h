@@ -301,8 +301,11 @@ typedef enum sjme_errorCode
 	/** Not a Zip. */
 	SJME_ERROR_NOT_ZIP = -86,
 	
+	/** Access it not aligned. */
+	SJME_ERROR_UNALIGNED_ACCESS = -87,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -87
+	SJME_NUM_ERROR_CODES = -88
 } sjme_errorCode;
 
 /**

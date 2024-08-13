@@ -135,6 +135,59 @@ sjme_errorCode sjme_seekable_read(
 		&seekable->implState, outBuf, seekBase, length);
 }
 
+sjme_errorCode sjme_seekable_readReverse(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrInRange(2, 8) sjme_jint wordSize,
+	sjme_attrOutNotNull sjme_jbyte* outBuf,
+	sjme_attrInPositive sjme_jint seekBase,
+	sjme_attrInPositive sjme_jint length)
+{
+	sjme_errorCode error;
+	sjme_jbyte* tempBuf;
+	sjme_jint flipBase, hi, lo, halfWord, temp;
+	
+	if (seekable == NULL || outBuf == NULL)
+		return SJME_ERROR_NONE;
+	
+	if (wordSize < 2 || wordSize > 8 || (wordSize & 1) != 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (seekBase < 0 || length < 0 || (seekBase + length) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	if ((length % wordSize) != 0)
+		return SJME_ERROR_UNALIGNED_ACCESS;
+	
+	if (seekable->functions->read == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Setup temporary buffer. */
+	tempBuf = sjme_alloca(length);
+	if (tempBuf == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	memset(tempBuf, 0, length);
+	
+	/* Read in data. */
+	if (sjme_error_is(error = seekable->functions->read(seekable,
+		&seekable->implState, tempBuf, seekBase,
+		length)))
+		return sjme_error_default(error);
+	
+	/* Flip all the contained data. */
+	halfWord = wordSize / 2;
+	for (flipBase = 0; flipBase < length; flipBase += wordSize)
+		for (lo = 0, hi = wordSize - 1; lo < halfWord; lo++, hi--)
+		{
+			temp = tempBuf[flipBase + lo];
+			tempBuf[flipBase + lo] = tempBuf[flipBase + hi];
+			tempBuf[flipBase + hi] = temp;
+		}
+	
+	/* Give the flipped data! */
+	memmove(outBuf, tempBuf, length);
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_seekable_regionLock(
 	sjme_attrInNotNull sjme_seekable seekable,
 	sjme_attrOutNotNull sjme_seekable_lock* outLock,
