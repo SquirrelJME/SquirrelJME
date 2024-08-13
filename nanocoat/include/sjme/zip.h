@@ -18,6 +18,7 @@
 
 #include "sjme/nvm.h"
 #include "sjme/stream.h"
+#include "seekable.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -35,46 +36,36 @@ extern "C" {
  *
  * @since 2023/12/31
  */
-typedef struct sjme_zipCore* sjme_zip;
+typedef struct sjme_zipBase* sjme_zip;
 
 /**
  * Opaque Zip entry structure.
  *
  * @since 2023/12/31
  */
-typedef struct sjme_zip_entryCore* sjme_zip_entry;
+typedef struct sjme_zip_entryBase* sjme_zip_entry;
 
 /**
  * Zip access information.
  *
  * @since 2023/12/31
  */
-typedef struct sjme_zipCore
+typedef struct sjme_zipBase
 {
-	/** Todo. */
-	sjme_jint todo;
-} sjme_zipCore;
+	/** The closeable for this Zip. */
+	sjme_closeableBase closeable;
+} sjme_zipBase;
 
 /**
  * Zip entry.
  *
  * @since 2023/12/31
  */
-typedef struct sjme_zip_entryCore
+typedef struct sjme_zip_entryBase
 {
 	/** Todo. */
 	sjme_jint todo;
-} sjme_zip_entryCore;
-
-/**
- * Closes the specified Zip.
- *
- * @param inZip The Zip to close.
- * @return On any resultant error, if any.
- * @since 2023/12/31
- */
-sjme_errorCode sjme_zip_close(
-	sjme_attrInNotNull sjme_zip inZip);
+} sjme_zip_entryBase;
 
 /**
  * Opens a stream to read the given Zip entry.
@@ -112,11 +103,25 @@ sjme_errorCode sjme_zip_locateEntry(
  * @return Any resultant error code, if any.
  * @since 2023/12/31
  */
-sjme_errorCode sjme_zip_open(
+sjme_errorCode sjme_zip_openMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_zip* outZip,
 	sjme_attrInNotNull void* rawData,
 	sjme_attrInPositive sjme_jint rawSize);
+
+/**
+ * Opens a Zip from the given seekable.
+ * 
+ * @param inPool The pool to allocate from.
+ * @param outZip The resultant opened Zip.
+ * @param inSeekable The seekable to use for accessing data.
+ * @return Any resultant error, if any.
+ * @since 2024/08/12
+ */
+sjme_errorCode sjme_zip_openSeekable(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_zip* outZip,
+	sjme_attrInNotNull sjme_seekable inSeekable); 
 
 /*--------------------------------------------------------------------------*/
 
