@@ -48,9 +48,18 @@ sjme_errorCode sjme_rom_libraryFromZipSeekable(
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_seekable seekable)
 {
+	sjme_errorCode error;
+	sjme_zip zip;
+	
 	if (pool == NULL || outLibrary == NULL || seekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
+	
+	/* Try opening as a Zip file. */
+	zip = NULL;
+	if (sjme_error_is(error = sjme_zip_openSeekable(pool, &zip,
+		seekable)) || zip == NULL)
+		return sjme_error_default(error);
+	
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }

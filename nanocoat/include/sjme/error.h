@@ -295,8 +295,14 @@ typedef enum sjme_errorCode
 	/** File not found. */
 	SJME_ERROR_FILE_NOT_FOUND = -84,
 	
+	/** Input is too short. */
+	SJME_ERROR_TOO_SHORT = -85,
+	
+	/** Not a Zip. */
+	SJME_ERROR_NOT_ZIP = -86,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -85
+	SJME_NUM_ERROR_CODES = -87
 } sjme_errorCode;
 
 /**

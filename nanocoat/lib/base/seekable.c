@@ -182,9 +182,22 @@ sjme_errorCode sjme_seekable_size(
 	sjme_attrInNotNull sjme_seekable seekable,
 	sjme_attrOutNotNull sjme_jint* outSize)
 {
+	sjme_errorCode error;
+	sjme_jint size;
+	
 	if (seekable == NULL || outSize == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Implement this?");
-	return sjme_error_notImplemented(0);
+	if (seekable->functions->size == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Forward size call. */
+	size = -1;
+	if (sjme_error_is(error = seekable->functions->size(seekable,
+		&seekable->implState, &size)) || size < 0)
+		return sjme_error_default(error);
+	
+	/* Success! */
+	*outSize = size;
+	return SJME_ERROR_NONE;
 }
