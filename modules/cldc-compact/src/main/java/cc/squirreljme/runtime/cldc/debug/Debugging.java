@@ -11,16 +11,21 @@ package cc.squirreljme.runtime.cldc.debug;
 
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
+import cc.squirreljme.jvm.mle.constants.StandardBusIds;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import org.intellij.lang.annotations.PrintFormat;
 import org.jetbrains.annotations.Contract;
@@ -229,6 +234,11 @@ public final class Debugging
 		}
 		Debugging._tripped = true;
 		
+		// Used to figure out where this is
+		String inClass = null;
+		String inMethod = null;
+		String inMethodType = null;
+		
 		// This try is here so that in event this fails or throws another
 		// exception, we always terminal no matter what
 		boolean stackTracePrinted = false;
@@ -238,6 +248,36 @@ public final class Debugging
 			Debugging.todoNote(
 				"*****************************************");
 			Debugging.todoNote("INCOMPLETE CODE HAS BEEN REACHED: ");
+			
+			// Get the current trace
+			TracePointBracket[] trace = DebugShelf.traceStack();
+			
+			// Figure out the base method where it occurred
+			for (int i = 0, n = trace.length; i < n; i++)
+			{
+				TracePointBracket point = trace[i];
+				if (point == null)
+					continue;
+				
+				// Get all three
+				inClass = DebugShelf.pointClass(point);
+				inMethod = DebugShelf.pointMethodName(point);
+				inMethodType = DebugShelf.pointMethodType(point);
+				
+				// Ignore this class
+				if ("cc.squirreljme.runtime.cldc.debug.Debugging"
+						.equals(inClass) ||
+					"cc/squirreljme/runtime/cldc/debug/Debugging"
+						.equals(inClass))
+						continue;
+				
+				// Otherwise use these
+				break;
+			}
+				
+			// Note where it was
+			Debugging.todoNote("IN %s.%s %s",
+				inClass, inMethod, inMethodType);
 			
 			// If running on Java SE use its method of printing traces
 			// because the SquirrelJME trace support may be missing
@@ -252,7 +292,6 @@ public final class Debugging
 			{
 				// Print the stack trace first like this so it does not
 				// possibly get trashed
-				TracePointBracket[] trace = DebugShelf.traceStack();
 				CallTraceUtils.printStackTrace(new PrintStream(
 					new NonClosedOutputStream(
 					new ConsoleOutputStream(StandardPipeType.STDERR,
@@ -347,6 +386,41 @@ public final class Debugging
 		{
 			// Try to emit a breakpoint
 			DebugShelf.breakpoint();
+			
+			// Figure out what to send over the bus
+			byte[] todoBus;
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				 DataOutputStream dos = new DataOutputStream(baos))
+			{
+				// Class
+				if (inClass != null)
+					dos.writeUTF(inClass);
+				else
+					dos.writeShort(0);
+				
+				// Method
+				if (inMethod != null)
+					dos.writeUTF(inMethod);
+				else
+					dos.writeShort(0);
+
+				// Type
+				if (inMethodType != null)
+					dos.writeUTF(inMethodType);
+				else
+					dos.writeShort(0);
+				
+				dos.flush();
+				todoBus = baos.toByteArray();
+			}
+			catch (IOException __ignored)
+			{
+				todoBus = new byte[0];
+			}
+			
+			// Broadcast the To-Do on the bus
+			TaskShelf.busSend(null, StandardBusIds.BUS_TODO,
+				todoBus, 0, todoBus.length);
 			
 			// Just exit directly so there is no way to continue, if we can
 			try

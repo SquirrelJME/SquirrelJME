@@ -16,7 +16,9 @@ import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.mle.constants.TaskStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.util.LinkedHashMap;
@@ -50,6 +52,84 @@ public enum MLETask
 			
 			return __thread.asVMObjectArray(__thread.resolveClass(
 				"[Lcc/squirreljme/jvm/mle/brackets/TaskBracket;"), result);
+		}
+	},
+	
+	/**
+	 * {@link TaskShelf#busReceive(TaskBracket[], int, boolean, byte[], int,
+	 * int)}.
+	 */
+	BUS_RECEIVE("busReceive:" +
+		"([Lcc/squirreljme/jvm/mle/brackets/TaskBracket;IZ[BII)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2024/08/13
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			if (__args[0] == null || __args[0] == SpringNullObject.NULL ||
+				__args[3] == null || __args[3] == SpringNullObject.NULL)
+				throw new SpringMLECallError("Null arguments.");
+				
+			SpringObject[] __from =
+				((SpringArrayObjectGeneric)__args[0]).array();
+			int __busId = (int)__args[1];
+			boolean __blocking = ((int)__args[2] != 0);
+			byte[] __b = ((SpringArrayObjectByte)__args[3]).array();
+			int __o = (int)__args[4];
+			int __l = (int)__args[5];
+			
+			if (__b == null || __o < 0 || __l < 0 || __from.length < 1 ||
+				(__o + __l) < 0 || (__o + __l) > __b.length)
+				throw new SpringMLECallError("Illegal arguments.");
+			
+			// Receive from the task manager
+			SpringMachine[] from = new SpringMachine[1];
+			int len = __thread.machine.tasks.bus(__busId)
+				.receive(__thread.machine, from, __blocking, __b, __o, __l);
+			
+			if (from[0] != null)
+				__from[0] = new TaskObject(from[0]);
+			
+			return len;
+		}
+	},
+	
+	/** {@link TaskShelf#busSend(TaskBracket, int, byte[], int, int)}. */
+	BUS_SEND("busSend:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/TaskBracket;I[BII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2024/08/13
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			if (__args[2] == null || __args[2] == SpringNullObject.NULL)
+				throw new SpringMLECallError("Null arguments.");
+			
+			// Get call properties
+			SpringMachine __to;
+			if (__args[0] == null || __args[0] == SpringNullObject.NULL)
+				__to = null;
+			else
+				__to = MLEObjects.task(__args[0]).getMachine();
+			int __busId = (int)__args[1];
+			byte[] __b = ((SpringArrayObjectByte)__args[2]).array();
+			int __o = (int)__args[3];
+			int __l = (int)__args[4];
+			
+			if (__b == null || __o < 0 || __l < 0 || 
+				(__o + __l) < 0 || (__o + __l) > __b.length)
+				throw new SpringMLECallError("Illegal arguments.");
+			
+			// Send to the task manager
+			__thread.machine.tasks.busSend(__thread.machine,
+				__to, __busId, __b, __o, __l);
+			return null;
 		}
 	},
 	

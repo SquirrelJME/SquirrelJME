@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
+import cc.squirreljme.jvm.mle.constants.StandardBusIds;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.mle.constants.TaskStatusType;
@@ -23,6 +24,7 @@ import java.io.Closeable;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -51,6 +53,57 @@ public final class TaskShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native TaskBracket[] active();
+	
+	/**
+	 * Receives the next message from the SquirrelJME bus. 
+	 *
+	 * @param __from The task that this message is from.
+	 * @param __busId The channel to read from.
+	 * @param __blocking Block until the next message occurs?
+	 * @param __data The data to send.
+	 * @param __off The offset into the data.
+	 * @param __len The length of the data.
+	 * @return The number of bytes for the message, if this value is negative
+	 * it means the buffer is too small to receive the data. The negative size
+	 * will be the number of bytes required as a negative value. If there
+	 * is no message or this was interrupted, this will
+	 * return {@link Integer#MIN_VALUE}.
+	 * @throws MLECallError If the data could not be received; on null
+	 * arguments or if the offset and/or length are invalid or exceed the
+	 * array bounds.
+	 * @since 2024/08/13
+	 */
+	@SquirrelJMEVendorApi 
+	@CheckReturnValue
+	public static native int busReceive(@NotNull TaskBracket[] __from,
+		@MagicConstant(valuesFromClass = StandardBusIds.class) int __busId,
+		boolean __blocking,
+		@NotNull byte[] __data,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
+		throws MLECallError;
+	
+	/**
+	 * Transmits data over the SquirrelJME bus.
+	 *
+	 * @param __to The target task, if {@code null} this is a broadcast
+	 * message to every task.
+	 * @param __busId The bus channel identifier, may be one of
+	 * the IDs from {@link StandardBusIds}.
+	 * @param __data The data to send.
+	 * @param __off The offset into the data.
+	 * @param __len The length of the data.
+	 * @throws MLECallError If the data could not be sent; or if the offset
+	 * and/or length are invalid or exceed the array bounds.
+	 * @since 2024/08/13
+	 */
+	@SquirrelJMEVendorApi
+	public static native void busSend(@Nullable TaskBracket __to,
+		@MagicConstant(valuesFromClass = StandardBusIds.class) int __busId,
+		@NotNull byte[] __data,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
+		throws MLECallError;
 	
 	/**
 	 * Returns the current task.

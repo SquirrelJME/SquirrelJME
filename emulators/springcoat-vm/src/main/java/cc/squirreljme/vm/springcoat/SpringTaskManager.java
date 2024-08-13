@@ -57,6 +57,10 @@ public final class SpringTaskManager
 	private final Collection<Reference<SpringMachine>> _machines =
 		new LinkedList<>();
 	
+	/** The buses for each ID. */
+	private final Map<Integer, SpringBus> _buses =
+		new LinkedHashMap<>();
+	
 	/** Controller for JDWP Connections. */
 	protected JDWPHostController jdwpController;
 	
@@ -80,6 +84,57 @@ public final class SpringTaskManager
 		this.suites = __sm;
 		this.profiler = (__ps == null ? new ProfilerSnapshot() : __ps);
 		this.globalState = new GlobalState();
+	}
+	
+	/**
+	 * Returns the bus for the given ID.
+	 *
+	 * @param __id The ID of the bus to get.
+	 * @return The resultant bus.
+	 * @since 2024/08/13
+	 */
+	public SpringBus bus(int __id)
+	{
+		Map<Integer, SpringBus> buses = this._buses;
+		synchronized (this)
+		{
+			// Do we need to create the bus?
+			SpringBus result = buses.get(__id);
+			if (result == null)
+			{
+				result = new SpringBus(__id);
+				buses.put(__id, result);
+			}
+			
+			// Return the bus
+			return result;
+		}
+	}
+	
+	/**
+	 * Sends a message over the SquirrelJME bus.
+	 *
+	 * @param __from The machine this is from.
+	 * @param __to The machine this is being sent to.
+	 * @param __busId The bus ID number.
+	 * @param __b The data to send.
+	 * @param __o The offset into the data.
+	 * @param __l The length of the data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/13
+	 */
+	public void busSend(SpringMachine __from, SpringMachine __to,
+		int __busId, byte[] __b, int __o, int __l)
+		throws NullPointerException
+	{
+		if (__from == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		// Which bus is this being sent to?
+		SpringBus bus = this.bus(__busId);
+		
+		// Queue into the bus
+		bus.send(__from, __to, __b, __o, __l);
 	}
 	
 	/**

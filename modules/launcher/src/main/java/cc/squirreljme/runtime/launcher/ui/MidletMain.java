@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.launcher.ui;
 import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.SuiteScanListener;
 import cc.squirreljme.jvm.launch.SuiteScanner;
+import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
@@ -216,6 +217,12 @@ public class MidletMain
 		// MIDlets that could actually be run
 		Display display = Display.getDisplay(this);
 		MidletMain._MAIN_DISPLAY = display;
+		
+		// Make a thread listen on the To-Do bus
+		Thread todoBus = new Thread(new ToDoBusListener(display),
+			"SquirrelJME-TODO-BusListener");
+		ThreadShelf.javaThreadSetDaemon(todoBus);
+		todoBus.start();
 		
 		// Add commands to the list so things can be done with them
 		List programList = this.programList;
