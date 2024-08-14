@@ -242,6 +242,7 @@ sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 	sjme_jint clipsx, clipex, clipsy, clipey;
 	register sjme_jint dx, dy, xp1, yp1, xp2, yp2, n, d, na, np, cp, x, y;
 	sjme_scritchui_pencilDrawPixelFunc pixelFunc;
+	sjme_jboolean dot, dotFlip;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -284,6 +285,10 @@ sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 		pixelFunc = g->impl->drawPixelSrcOver;
 	else
 		pixelFunc = sjme_scritchpen_corePrim_drawPixelThunk;
+	
+	/* Dotted line? */
+	dot = SJME_JNI_TRUE;
+	dotFlip = (g->state.stroke == SJME_SCRITCHUI_PENCIL_STROKE_DOTTED);
 	
 	/* Copy Position */
 	x = x1;
@@ -338,7 +343,9 @@ sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 	for (cp = 0; cp <= np; cp++)
 	{
 		/* Put Pixel */
-		error |= pixelFunc(g, x, y);
+		if (dot)
+			error |= pixelFunc(g, x, y);
+		dot ^= dotFlip;
 		
 		n += na;
 		
