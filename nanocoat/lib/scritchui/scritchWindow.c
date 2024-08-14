@@ -213,6 +213,8 @@ sjme_errorCode sjme_scritchui_core_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInValue sjme_jboolean isVisible)
 {
+	sjme_errorCode error;
+	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -221,7 +223,19 @@ sjme_errorCode sjme_scritchui_core_windowSetVisible(
 		return sjme_error_notImplemented(0);
 	
 	/* Forward call. */
-	return inState->impl->windowSetVisible(inState, inWindow, isVisible);
+	if (sjme_error_is(error = inState->impl->windowSetVisible(inState,
+		inWindow, isVisible)))
+		return sjme_error_default(error);
+	
+	/* If we have a minimum size set, making this window visible should */
+	/* be able to tell us the overhead of the window, so reset minimum */
+	/* size here to handle that. */
+	if (inWindow->min.width != 0 && inWindow->min.height != 0)
+		return inState->apiInThread->windowContentMinimumSize(
+			inState, inWindow, inWindow->min.width, inWindow->min.height);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_intern_updateVisibleWindow(
