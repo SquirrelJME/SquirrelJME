@@ -49,7 +49,12 @@ static sjme_errorCode sjme_rom_zipLibraryResourceStream(
 	memset(&entry, 0, sizeof(entry));
 	if (sjme_error_is(error = sjme_zip_locateEntry(zip,
 		&entry, resourceName)))
+	{
+		if (error == SJME_ERROR_FILE_NOT_FOUND)
+			return error;
+		
 		return sjme_error_default(error);
+	}
 	
 	/* Open input stream over resource. */
 	return sjme_zip_entryRead(&entry, outStream);

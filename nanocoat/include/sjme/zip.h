@@ -59,6 +59,9 @@ typedef struct sjme_zipBase
 	
 	/** The seekable where the Zip is. */
 	sjme_seekable seekable;
+	
+	/** The lock for accessing the Zip. */
+	sjme_thread_spinLock lock;
 } sjme_zipBase;
 
 /**

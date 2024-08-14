@@ -304,6 +304,9 @@ typedef enum sjme_errorCode
 	/** Access it not aligned. */
 	SJME_ERROR_UNALIGNED_ACCESS = -87,
 	
+	/** Zip is corrupt. */
+	SJME_ERROR_CORRUPT_ZIP = -88,
+	
 	/** The number of error codes. */
 	SJME_NUM_ERROR_CODES = -88
 } sjme_errorCode;

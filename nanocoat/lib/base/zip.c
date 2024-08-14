@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "sjme/zip.h"
 #include "sjme/debug.h"
 
@@ -43,17 +45,35 @@ static sjme_errorCode sjme_zip_close(
 	sjme_message("Zip close %p", zip);
 #endif
 	
+	/* Lock the zip. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&zip->lock)))
+		return sjme_error_default(error);
+	
 	/* Close the seekable. */
 	if (sjme_error_is(error = sjme_closeable_close(
 		SJME_AS_CLOSEABLE(zip->seekable))))
-		return sjme_error_default(error);
+		goto fail_seekableClose;
 		
 	/* Un-ref the seekable we just closed. */
 	if (sjme_error_is(error = sjme_alloc_weakUnRef(zip->seekable)))
+		goto fail_seekableUnref;
+		
+	/* Release the lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(&zip->lock,
+		NULL)))
 		return sjme_error_default(error);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+
+fail_seekableUnref:
+fail_seekableClose:
+	/* Release lock before failing. */
+	if (sjme_error_is(sjme_thread_spinLockRelease(&zip->lock,
+		NULL)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_zip_findCentralDir(
@@ -150,6 +170,10 @@ sjme_errorCode sjme_zip_entryRead(
 	if (inEntry == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Not an actually valid entry? */
+	if (inEntry->zip == NULL)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
 	sjme_todo("Implement this?");
 	return sjme_error_notImplemented(0);
 }
@@ -159,11 +183,66 @@ sjme_errorCode sjme_zip_locateEntry(
 	sjme_attrOutNotNull sjme_zip_entry* outEntry,
 	sjme_attrInNotNull sjme_lpcstr entryName)
 {
+	sjme_errorCode error;
+	sjme_jint dirBase, magic;
+	sjme_seekable seekable;
+	sjme_zip_entry result;
+	
 	if (inZip == NULL || outEntry == NULL || entryName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Implement this?");
-	return sjme_error_notImplemented(0);
+	/* Grab the lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&inZip->lock)))
+		return sjme_error_default(error);
+	
+	/* Clear result. */
+	memset(&result, 0, sizeof(result));
+	
+	/* Go through and scan for the entry. */
+	seekable = inZip->seekable;
+	for (dirBase = inZip->centralDirPos;;)
+	{
+		/* Read in magic number. */
+		magic = -1;
+		if (sjme_error_is(error = sjme_seekable_readLittle(seekable, 4,
+			&magic, dirBase, sizeof(magic))) || magic == -1)
+			return sjme_error_default(error);
+		
+		/* End of directory hit? */
+		if (magic == SJME_ZIP_ECDIR_MAGIC)
+		{
+			error = SJME_ERROR_FILE_NOT_FOUND;
+			goto fail_notFound;
+		}
+		
+		/* Read something else? */
+		else if (magic != SJME_ZIP_CDIR_MAGIC)
+		{
+			error = SJME_ERROR_CORRUPT_ZIP;
+			goto fail_corrupt;
+		}
+		
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+	
+	/* Release the lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(&inZip->lock,
+		NULL)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	memmove(outEntry, &result, sizeof(*outEntry));
+	return SJME_ERROR_NONE;
+
+fail_corrupt:
+fail_notFound:
+	/* Release lock before failing. */
+	if (sjme_error_is(sjme_thread_spinLockRelease(&inZip->lock,
+		NULL)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_zip_openMemory(
