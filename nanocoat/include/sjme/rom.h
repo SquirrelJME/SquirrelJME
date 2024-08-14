@@ -95,9 +95,6 @@ typedef struct sjme_rom_suiteCache
 
 	/** Libraries that exist within the suite. */
 	sjme_list_sjme_rom_library* libraries;
-
-	/** Uncommon cache generic structure. */
-	sjme_jlong uncommon[sjme_flexibleArrayCount];
 } sjme_rom_suiteCache;
 
 /**
@@ -114,6 +111,9 @@ struct sjme_rom_libraryBase
 	
 	/** Functions used to access library information. */
 	const sjme_rom_libraryFunctions* functions;
+	
+	/** The handle, may be to a seekable. */
+	sjme_pointer handle;
 
 	/** The library ID. */
 	sjme_jint id;
