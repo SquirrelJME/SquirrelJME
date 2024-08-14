@@ -55,25 +55,25 @@ SJME_TEST_DECLARE(testAllocWeakEnqueueSetFirst)
 	
 	/* Referencing a weak with the same enqueue should not fail. */
 	weakB = NULL;
-	error = sjme_alloc_weakRef(p, &weakB,
+	error = sjme_alloc_weakRefE(p, &weakB,
 		testEnqueue, test);
 	sjme_unit_equalI(test, error, SJME_ERROR_NONE,
 		"Set of same enqueue failed?");
 	
 	/* Changing the data should fail. */
-	error = sjme_alloc_weakRef(p, &weakB,
+	error = sjme_alloc_weakRefE(p, &weakB,
 		testEnqueue, p);
 	sjme_unit_equalI(test, error, SJME_ERROR_ENQUEUE_ALREADY_SET,
 		"Set of different data passed?");
 	
 	/* Changing the function should fail. */
-	error = sjme_alloc_weakRef(p, &weakB,
+	error = sjme_alloc_weakRefE(p, &weakB,
 		testEnqueueOther, test);
 	sjme_unit_equalI(test, error, SJME_ERROR_ENQUEUE_ALREADY_SET,
 		"Set of different data passed?");
 	
 	/* Changing both should fail. */
-	error = sjme_alloc_weakRef(p, &weakB,
+	error = sjme_alloc_weakRefE(p, &weakB,
 		testEnqueueOther, p);
 	sjme_unit_equalI(test, error, SJME_ERROR_ENQUEUE_ALREADY_SET,
 		"Set of different both passed?");

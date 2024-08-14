@@ -36,7 +36,7 @@ SJME_TEST_DECLARE(testAllocWeakRefRef)
 	
 	/* Reference again. */
 	weakB = NULL;
-	if (sjme_error_is(sjme_alloc_weakRef(p, &weakB,
+	if (sjme_error_is(sjme_alloc_weakRefE(p, &weakB,
 		NULL, NULL)))
 		return sjme_unit_fail(test, "Could not re-ref weak?");
 	

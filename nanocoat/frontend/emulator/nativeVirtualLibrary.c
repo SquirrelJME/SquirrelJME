@@ -16,7 +16,7 @@
 #include "sjme/debug.h"
 #include "sjme/rom.h"
 
-sjme_errorCode sjme_jni_virtualLibrary_initCache(
+sjme_errorCode sjme_jni_virtualLibrary_init(
 	sjme_attrInNotNull sjme_rom_library inLibrary)
 {
 	JNIEnv* env;
@@ -175,8 +175,7 @@ static sjme_errorCode sjme_jni_virtualLibrary_resourceStream(
 /** Functions for JNI accessed libraries. */
 static const sjme_rom_libraryFunctions sjme_jni_virtualLibrary_functions =
 {
-	.uncommonTypeSize = sizeof(sjme_jni_virtualLibrary_cache),
-	.initCache = sjme_jni_virtualLibrary_initCache,
+	.init = sjme_jni_virtualLibrary_init,
 	.path = NULL,
 	.rawData = sjme_jni_virtualLibrary_rawData,
 	.rawSize = sjme_jni_virtualLibrary_rawSize,
@@ -184,13 +183,15 @@ static const sjme_rom_libraryFunctions sjme_jni_virtualLibrary_functions =
 };
 
 jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_LIBRARY, _1_1init)
-	(JNIEnv* env, jclass classy, jobject self, jlong suitePtr)
+	(JNIEnv* env, jclass classy, jobject self, jlong suitePtr, jstring libName)
 {
 	sjme_rom_suite suite;
 	sjme_alloc_pool* pool;
 	sjme_rom_library result;
 	sjme_errorCode error;
 	sjme_frontEnd frontEnd;
+	sjme_lpcstr libNameChars;
+	jboolean libNameCopy;
 
 	/* Get the original owning suite among other details. */
 	suite = SJME_JLONG_TO_POINTER(sjme_rom_suite, suitePtr);
@@ -201,16 +202,25 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_LIBRARY, _1_1init)
 	frontEnd.data = env;
 	frontEnd.wrapper = SJME_FRONT_END_WRAP(
 		(*env)->NewGlobalRef(env, self));
+	
+	/* Get library name. */
+	libNameCopy = JNI_FALSE;
+	libNameChars = (*env)->GetStringUTFChars(env, libName, &libNameCopy);
 
 	/* Setup resultant library. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_rom_libraryNew(pool,
-		&result, &sjme_jni_virtualLibrary_functions,
+		&result, libNameChars,
+		&sjme_jni_virtualLibrary_functions, 
 		&frontEnd)) || result == NULL)
 	{
+		(*env)->ReleaseStringUTFChars(env, libName, libNameChars);
+		
 		sjme_jni_throwVMException(env, error);
 		return 0;
 	}
+	
+	(*env)->ReleaseStringUTFChars(env, libName, libNameChars);
 
 	/* Success! */
 	return SJME_POINTER_TO_JLONG(result);

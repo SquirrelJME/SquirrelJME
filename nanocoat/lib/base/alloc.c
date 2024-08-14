@@ -1337,7 +1337,7 @@ fail_allocBlock:
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_alloc_weakRef(
+sjme_errorCode sjme_alloc_weakRefE(
 	sjme_attrInNotNull sjme_pointer addr,
 	sjme_attrOutNullable sjme_alloc_weak* outWeak,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,

@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.RawVMClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 /**
  * Provides a virtual library.
@@ -67,7 +68,9 @@ public final class VirtualLibrary
 		
 		// Initialize natively
 		long nativePtr = VirtualLibrary.__init(this,
-			__suite.pointerAddress());
+			__suite.pointerAddress(),
+			Objects.toString(__lib.name(),
+				__lib.path().getFileName().toString()));
 		if (nativePtr == 0)
 			throw new VMException("Could not wrap library.");
 		
@@ -165,10 +168,12 @@ public final class VirtualLibrary
 	 *
 	 * @param __self Self reference.
 	 * @param __suitePtr The pointer to the owning suite.
+	 * @param __libName The library name.
 	 * @return The pointer to the library structure.
 	 * @throws VMException If it could not be initialized.
 	 * @since 2023/12/28
 	 */
-	private static native long __init(VirtualLibrary __self, long __suitePtr)
+	private static native long __init(VirtualLibrary __self, long __suitePtr,
+		String __libName)
 		throws VMException;
 }

@@ -242,8 +242,7 @@ sjme_errorCode sjme_zip_openSeekable(
 	result->seekable = inSeekable;
 	
 	/* Count the seekable up, since we are using it. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(result,
-		NULL, NULL, NULL)))
+	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
 		return sjme_error_default(error);
 	
 	/* Success! */

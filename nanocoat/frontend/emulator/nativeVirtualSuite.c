@@ -16,7 +16,7 @@
 #include "sjme/debug.h"
 #include "sjme/rom.h"
 
-static sjme_errorCode sjme_jni_virtualSuite_initCache(
+static sjme_errorCode sjme_jni_virtualSuite_init(
 	sjme_attrInNotNull sjme_rom_suite inSuite)
 {
 	if (inSuite == NULL)
@@ -74,8 +74,7 @@ static sjme_errorCode sjme_jni_virtualSuite_loadLibrary()
 /** Functions for JNI accessed suites. */
 static const sjme_rom_suiteFunctions sjme_jni_virtualSuite_functions =
 {
-	.uncommonTypeSize = sizeof(sjme_jni_virtualSuite_cache),
-	.initCache = sjme_jni_virtualSuite_initCache,
+	.init = sjme_jni_virtualSuite_init,
 	.libraryId = NULL,
 	.list = sjme_jni_virtualSuite_list,
 	.loadLibrary = NULL,

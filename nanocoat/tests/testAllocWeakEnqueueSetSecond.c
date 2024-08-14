@@ -46,7 +46,7 @@ SJME_TEST_DECLARE(testAllocWeakEnqueueSetSecond)
 	
 	/* Add enqueue and data in. */
 	weakB = NULL;
-	if (sjme_error_is(sjme_alloc_weakRef(p, &weakB,
+	if (sjme_error_is(sjme_alloc_weakRefE(p, &weakB,
 		testEnqueue, test)))
 		return sjme_unit_fail(test, "Weak ref failed?");
 	

@@ -497,6 +497,7 @@ sjme_jboolean sjme_mock_doRomMockLibrary(
 	sjme_attrInNotNull sjme_mock* inState,
 	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
+	sjme_errorCode error;
 	sjme_jint libraryIndex;
 	sjme_mock_configDataRomLibrary* data;
 	sjme_jboolean isJar;
@@ -518,10 +519,10 @@ sjme_jboolean sjme_mock_doRomMockLibrary(
 
 		/* Open it. */
 		result = NULL;
-		if (sjme_error_is(sjme_rom_libraryFromZipMemory(
-			inState->allocPool, &result,
+		if (sjme_error_is(error = sjme_rom_libraryFromZipMemory(
+			inState->allocPool, &result, "mock.jar",
 			mock_jar__bin, mock_jar__len)) || result == NULL)
-			return sjme_die("Could not open library.");
+			return sjme_die("Could not open library: %d", error);
 
 		/* Register it. */
 		inState->romLibraries[inState->numRomLibraries++] = result;
@@ -590,13 +591,13 @@ sjme_jboolean sjme_mock_doRomSuite(
 	writeFunctions = (sjme_rom_suiteFunctions*)suite->functions;
 
 	/* If there is no cache init, just initialize it to something... */
-	if (writeFunctions->initCache == NULL)
+	if (writeFunctions->init == NULL)
 		memset(&suite->cache, 0, sizeof(suite->cache));
 
 	/* Otherwise call the initializer. */
 	else
 	{
-		if (sjme_error_is(writeFunctions->initCache(
+		if (sjme_error_is(writeFunctions->init(
 			suite)))
 			return sjme_die("Could not initialize suite via cache init.");
 	}

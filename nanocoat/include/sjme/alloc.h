@@ -598,11 +598,23 @@ sjme_errorCode sjme_alloc_weakGetPointer(
  * @return Any resultant error, if any.
  * @since 2024/07/01
  */
-sjme_errorCode sjme_alloc_weakRef(
+sjme_errorCode sjme_alloc_weakRefE(
 	sjme_attrInNotNull sjme_pointer addr,
 	sjme_attrOutNullable sjme_alloc_weak* outWeak,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData);
+
+/**
+ * Creates or returns a weak reference to the given block. If the reference
+ * already exists, then it will be incremented.
+ * 
+ * @param addr The address to reference.
+ * @param outWeak The resultant weak reference for the type.
+ * @return Any resultant error, if any.
+ * @since 2024/07/01
+ */
+#define sjme_alloc_weakRef(addr, outWeak) \
+	(sjme_alloc_weakRefE((addr), (outWeak), NULL, NULL))
 
 /**
  * Obtains a weak reference without incrementation or creation.

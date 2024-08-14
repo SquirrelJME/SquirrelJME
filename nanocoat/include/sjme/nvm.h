@@ -101,6 +101,12 @@ typedef enum sjme_nvm_structType
 	/** Unknown. */
 	SJME_NVM_STRUCTTYPE_UNKNOWN,
 	
+	/** Rom Library. */
+	SJME_NVM_STRUCTTYPE_ROM_LIBRARY,
+	
+	/** Rom Suite. */
+	SJME_NVM_STRUCTTYPE_ROM_SUITE,
+	
 	/** NanoCoat state. */
 	SJME_NVM_STRUCTTYPE_STATE,
 	
@@ -792,6 +798,9 @@ struct sjme_nvm_commonBase
 	
 	/** The wrapper in the front end. */
 	sjme_frontEnd frontEnd;
+	
+	/** The lock to access this common item. */
+	sjme_thread_spinLock lock;
 };
 
 struct sjme_nvm_stateBase

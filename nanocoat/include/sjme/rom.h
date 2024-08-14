@@ -16,8 +16,8 @@
 #ifndef SQUIRRELJME_ROM_H
 #define SQUIRRELJME_ROM_H
 
-#include "sjme/list.h"
 #include "sjme/nvm.h"
+#include "sjme/list.h"
 #include "sjme/romInternal.h"
 #include "sjme/stream.h"
 #include "sjme/seekable.h"
@@ -104,6 +104,13 @@ typedef struct sjme_rom_suiteCache
  */
 typedef struct sjme_rom_libraryFunctions sjme_rom_libraryFunctions;
 
+/**
+ * Functions used to access a suite, which is an entire ROM.
+ *
+ * @since 2023/12/12
+ */
+typedef struct sjme_rom_suiteFunctions sjme_rom_suiteFunctions;
+
 struct sjme_rom_libraryBase
 {
 	/** Common data. */
@@ -129,20 +136,13 @@ struct sjme_rom_libraryBase
 };
 
 /**
- * Functions used to access a suite, which is an entire ROM.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_rom_suiteFunctions sjme_rom_suiteFunctions;
-
-/**
- * Initializes the library cache.
+ * Initializes the library.
  *
  * @param inLibrary The input library.
  * @return Any resultant error, if any.
  * @since 2023/12/29
  */
-typedef sjme_errorCode (*sjme_rom_libraryInitCacheFunc)(
+typedef sjme_errorCode (*sjme_rom_libraryInitFunc)(
 	sjme_attrInNotNull sjme_rom_library inLibrary);
 
 typedef sjme_errorCode (*sjme_rom_libraryPathFunc)();
@@ -193,13 +193,13 @@ typedef sjme_errorCode (*sjme_rom_libraryResourceStreamFunc)(
 	sjme_attrInNotNull sjme_lpcstr resourceName);
 
 /**
- * Function used to initialize the suite cache.
+ * Function used to initialize the suite.
  *
  * @param inSuite The input suite.
  * @return Any error state.
  * @since 2023/12/15
  */
-typedef sjme_errorCode (*sjme_rom_suiteInitCacheFunc)(
+typedef sjme_errorCode (*sjme_rom_suiteinitFunc)(
 	sjme_attrInNotNull sjme_rom_suite inSuite);
 
 /**
@@ -233,11 +233,8 @@ typedef sjme_errorCode (*sjme_rom_suiteLoadLibraryFunc)();
 
 struct sjme_rom_libraryFunctions
 {
-	/** Size of the cache type. */
-	sjme_jint uncommonTypeSize;
-
-	/** Initializes the library cache. */
-	sjme_rom_libraryInitCacheFunc initCache;
+	/** Initializes the library, implementation specific. */
+	sjme_rom_libraryInitFunc init;
 
 	/** Function to get the path of a library. */
 	sjme_rom_libraryPathFunc path;
@@ -254,11 +251,8 @@ struct sjme_rom_libraryFunctions
 
 struct sjme_rom_suiteFunctions
 {
-	/** Size of the cache type. */
-	sjme_jint uncommonTypeSize;
-
 	/** Initialize suite cache. */
-	sjme_rom_suiteInitCacheFunc initCache;
+	sjme_rom_suiteinitFunc init;
 
 	/** Returns the ID of the given library. */
 	sjme_rom_suiteLibraryId libraryId;
@@ -277,6 +271,9 @@ struct sjme_rom_suiteBase
 	
 	/** Functions. */
 	const sjme_rom_suiteFunctions* functions;
+	
+	/** The handle, may be to a seekable. */
+	sjme_pointer handle;
 
 	/** Internal cache, used by suite implementations. */
 	sjme_rom_suiteCache cache;
@@ -287,6 +284,7 @@ struct sjme_rom_suiteBase
  *
  * @param pool The pool to use for allocations.
  * @param outLibrary The resultant library.
+ * @param libName The library name.
  * @param base The base address where the Zip is.
  * @param length The length of the Zip.
  * @return Any resultant error, if any.
@@ -295,6 +293,7 @@ struct sjme_rom_suiteBase
 sjme_errorCode sjme_rom_libraryFromZipMemory(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length);
 
@@ -303,6 +302,7 @@ sjme_errorCode sjme_rom_libraryFromZipMemory(
  *
  * @param pool The pool to use for allocations.
  * @param outLibrary The resultant library.
+ * @param libName The library name.
  * @param seekable The seekable to access the Zip through.
  * @return Any resultant error, if any.
  * @since 2024/01/01
@@ -310,6 +310,7 @@ sjme_errorCode sjme_rom_libraryFromZipMemory(
 sjme_errorCode sjme_rom_libraryFromZipSeekable(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNotNull sjme_seekable seekable);
 
 /**
@@ -329,6 +330,7 @@ sjme_errorCode sjme_rom_libraryHash(
  *
  * @param pool The pool to allocate within.
  * @param outLibrary The output library.
+ * @param libName The library name.
  * @param inFunctions The functions which define how to access the library.
  * @param inFrontEnd Input front end initialization, is optional.
  * @return Any error code.
@@ -337,8 +339,9 @@ sjme_errorCode sjme_rom_libraryHash(
 sjme_errorCode sjme_rom_libraryNew(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNotNull const sjme_rom_libraryFunctions* inFunctions,
-	sjme_attrInNullable const sjme_frontEnd* inFrontEnd);
+	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
 /**
  * Reads from a library directly to access its raw bytes.

@@ -20,6 +20,8 @@ squirreljme_multilib_add_static_library(Core
 	modelessStars.c
 	nvm.c
 	rom.c
+	romLibrary.c
+	romSuite.c
 	task.c
 	tread.c
 	vmConfig.c)

@@ -39,11 +39,6 @@ sjme_errorCode sjme_closeable_close(
 	if (closeable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
-	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG)
-	sjme_message("Closeable closing %p", closeable);
-#endif
-	
 	/* Only close once! */
 	if (sjme_atomic_sjme_jint_compareSet(&closeable->isClosed,
 		0, 1))
