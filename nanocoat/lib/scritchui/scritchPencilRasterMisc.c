@@ -307,7 +307,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColor(
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Otherwise, use our own colormapping code. */
+	/* Otherwise, use our own color mapping code. */
 	if (fromRaw)
 		return sjme_scritchpen_corePrim_mapColorFromRaw(g,
 			inRgbOrRaw, outColor);
