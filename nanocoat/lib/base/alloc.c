@@ -1235,7 +1235,8 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 #endif
 		
 		/* Use it. */
-		*outWeak = result;
+		if (outWeak != NULL)
+			*outWeak = result;
 		return SJME_ERROR_NONE;
 	}
 	
@@ -1260,7 +1261,8 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 	sjme_thread_barrier();
 	
 	/* Success! */
-	*outWeak = result;
+	if (outWeak != NULL)
+		*outWeak = result;
 	return SJME_ERROR_NONE;
 }
 

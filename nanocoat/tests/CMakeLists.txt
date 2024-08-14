@@ -150,7 +150,7 @@ foreach(basicTestSource ${basicTestSources})
 	message(STATUS "Registering test ${basicTestLongName}...")
 	add_test(NAME "${basicTestLongName}"
 		WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-		COMMAND "$<TARGET_FILE:BasicTest>" "${basicTestName}"
+		COMMAND BasicTest "${basicTestName}"
 			"${basicTestFullPath}")
 
 	# Code for skipped tests
