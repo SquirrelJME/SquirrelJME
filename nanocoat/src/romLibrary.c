@@ -46,13 +46,13 @@ static sjme_errorCode sjme_rom_zipLibraryResourceStream(
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Locate the entry. */
-	entry = NULL;
+	memset(&entry, 0, sizeof(entry));
 	if (sjme_error_is(error = sjme_zip_locateEntry(zip,
-		&entry, resourceName)) || entry == NULL)
+		&entry, resourceName)))
 		return sjme_error_default(error);
 	
 	/* Open input stream over resource. */
-	return sjme_zip_entryRead(entry, outStream);
+	return sjme_zip_entryRead(&entry, outStream);
 }
 
 /** Library functions for Zip access. */

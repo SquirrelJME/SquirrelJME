@@ -39,13 +39,6 @@ extern "C" {
 typedef struct sjme_zipBase* sjme_zip;
 
 /**
- * Opaque Zip entry structure.
- *
- * @since 2023/12/31
- */
-typedef struct sjme_zip_entryBase* sjme_zip_entry;
-
-/**
  * Zip access information.
  *
  * @since 2023/12/31
@@ -73,11 +66,11 @@ typedef struct sjme_zipBase
  *
  * @since 2023/12/31
  */
-typedef struct sjme_zip_entryBase
+typedef struct sjme_zip_entry
 {
-	/** Todo. */
-	sjme_jint todo;
-} sjme_zip_entryBase;
+	/** The Zip this is in. */
+	sjme_zip zip;
+} sjme_zip_entry;
 
 /**
  * Opens a stream to read the given Zip entry.
@@ -88,7 +81,7 @@ typedef struct sjme_zip_entryBase
  * @since 2023/12/31
  */
 sjme_errorCode sjme_zip_entryRead(
-	sjme_attrInNotNull sjme_zip_entry inEntry,
+	sjme_attrInNotNull const sjme_zip_entry* inEntry,
 	sjme_attrOutNotNull sjme_stream_input* outStream);
 
 /**

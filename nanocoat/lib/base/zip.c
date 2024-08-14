@@ -144,7 +144,7 @@ static sjme_errorCode sjme_zip_findCentralDir(
 }
 
 sjme_errorCode sjme_zip_entryRead(
-	sjme_attrInNotNull sjme_zip_entry inEntry,
+	sjme_attrInNotNull const sjme_zip_entry* inEntry,
 	sjme_attrOutNotNull sjme_stream_input* outStream)
 {
 	if (inEntry == NULL || outStream == NULL)
