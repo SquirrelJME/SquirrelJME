@@ -115,6 +115,9 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		pencil,
 		w, h, 0);
 	
+	/* Reset state. */
+	pencil->api->setDefaults(pencil);
+	
 	/* Do not perform standard drawing, unless an error occurs. */
 	if (!sjme_error_is(error))
 		return TRUE;

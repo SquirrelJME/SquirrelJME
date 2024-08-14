@@ -105,6 +105,7 @@ static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 	.setBlendingMode = sjme_scritchpen_core_setBlendingMode,
 	.setClip = sjme_scritchpen_core_setClip,
 	.setDefaultFont = sjme_scritchpen_core_setDefaultFont,
+	.setDefaults = sjme_scritchpen_core_setDefaults,
 	.setFont = sjme_scritchpen_core_setFont,
 	.setParametersFrom = sjme_scritchpen_core_setParametersFrom,
 	.setStrokeStyle = sjme_scritchpen_core_setStrokeStyle,
@@ -278,18 +279,8 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	else
 		result.prim.rawScanFill = sjme_scritchpen_corePrim_rawScanFillByte;
 	
-	/* Reset translation. */
-	result.state.translate.x = 0;
-	result.state.translate.y = 0;
-	
-	/* Set initial state, ignore any errors. */
-	result.api->setClip(&result, 0, 0, sw, sh);
-	result.api->setAlphaColor(&result, 0xFF000000);
-	result.api->setStrokeStyle(&result,
-		SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
-	result.api->setBlendingMode(&result,
-		SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER);
-	result.api->setDefaultFont(&result);
+	/* Set defaults. */
+	result.api->setDefaults(&result);
 	
 	/* Success! Copy back. */
 	memmove(inPencil, &result, sizeof(result));
@@ -363,5 +354,27 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	*outPencil = result;
 	if (outWeakPencil != NULL)
 		*outWeakPencil = resultWeak;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchpen_core_setDefaults(
+	sjme_attrInNotNull sjme_scritchui_pencil g)
+{
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Reset translation. */
+	g->api->translate(g, -g->state.translate.x, -g->state.translate.y);
+	
+	/* Set initial state, ignore any errors. */
+	g->api->setClip(g, 0, 0, g->width, g->height);
+	g->api->setAlphaColor(g, 0xFF000000);
+	g->api->setStrokeStyle(g,
+		SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
+	g->api->setBlendingMode(g,
+		SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER);
+	g->api->setDefaultFont(g);
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
