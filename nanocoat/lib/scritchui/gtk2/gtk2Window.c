@@ -88,7 +88,10 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	GtkWidget* menuBar;
 	GdkGeometry geometry;
 	sjme_scritchui_dim* overhead;
+	gint w, h;
+	gint ox, oy;
 	GtkAllocation alloc;
+	GdkRectangle extent;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -108,10 +111,43 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	{
 		/* Get the size allocation of the menu bar. */
 		memset(&alloc, 0, sizeof(alloc));
+		w = 0;
+		h = 0;
+		gtk_widget_get_size_request(menuBar, &w, &h);
 		gtk_widget_get_allocation(menuBar, &alloc);
 		
 		/* Add its height. */
-		overhead->height = alloc.height;
+		if (h > alloc.height)
+			overhead->height += h;
+		else
+			overhead->height += alloc.height;
+	}
+	
+	/* Get the frame extents of the window. */
+	memset(&extent, 0, sizeof(extent));
+	ox = oy = 0;
+	if (GTK_WIDGET(gtkWindow)->window != NULL)
+	{
+		/* Get the frame extents, from the window manager. */
+		gdk_window_get_frame_extents(GTK_WIDGET(gtkWindow)->window,
+			&extent);
+		
+		/* Then get the origin of where our actual window is in terms */
+		/* that GTK uses. */
+		gdk_window_get_origin(GTK_WIDGET(gtkWindow)->window,
+			&ox, &oy);
+
+#if 0
+		sjme_message("EXTENT %d %d %d %d -- ORIGIN %d %d",
+			extent.x, extent.y, extent.width, extent.height, ox, oy);
+#endif
+		
+		/* We need to add to the overhead of our window. */
+		/* This does not work perfectly, but it should allow for the */
+		/* entire content of the window to be visible. */
+		/* EXTENT 836 379 248 378 -- ORIGIN 840 432 */
+		overhead->width += abs(ox - extent.x);
+		overhead->height += abs(oy - extent.y);
 	}
 	
 	/* Setup geometry. */

@@ -46,7 +46,7 @@ class __ExecCanvasRepainter__
 			return;
 		
 		// Forward repaint call
-		DisplayableState state = canvas._state;
+		DisplayableState state = canvas.__state();
 		state.scritchApi().paintable().componentRepaint(state.scritchPanel());
 	}
 }

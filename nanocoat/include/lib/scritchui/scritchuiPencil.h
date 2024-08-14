@@ -844,6 +844,17 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetDefaultFontFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g);
 
 /**
+ * Sets the default for the pencil.
+ * 
+ * @param g The graphics used.
+ * @return An error if the graphics is not valid or does not support
+ * this operation.
+ * @since 2024/08/13
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilSetDefaultsFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g);
+
+/**
  * Sets to use the specified font.
  *
  * @param g The graphics used.
@@ -958,6 +969,9 @@ typedef struct sjme_scritchui_pencilFunctions
 	
 	/** @c SetDefaultFont . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetDefaultFont, setDefaultFont);
+	
+	/** @c SetDefaults . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetDefaults, setDefaults);
 	
 	/** @c SetFont . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetFont, setFont);

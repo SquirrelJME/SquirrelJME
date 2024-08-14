@@ -96,7 +96,7 @@ public class List
 				throw Debugging.oops(__type);
 		}
 		
-		DisplayableState state = this._state;
+		DisplayableState state = this.__state();
 		ScritchInterface scritchApi = state.scritchApi();
 		ScritchListInterface listApi = scritchApi.list();
 		ScritchViewInterface viewApi = scritchApi.view();

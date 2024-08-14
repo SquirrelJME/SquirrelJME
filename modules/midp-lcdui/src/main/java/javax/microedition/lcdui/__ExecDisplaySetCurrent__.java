@@ -99,13 +99,18 @@ class __ExecDisplaySetCurrent__
 		ScritchWindowBracket window =
 			displayState.scritchWindow();
 		
+		// The displayable we are showing
+		Displayable showNow = this.showNow;
+		DisplayableState showNowState = (showNow != null ? showNow.__state() :
+			null);
+		
 		// Debug
 		Debugging.debugNote("setCurrent(%p)", this.showNow);
 		
-		// The displayable we are showing
-		Displayable showNow = this.showNow;
-		DisplayableState showNowState = (showNow != null ? showNow._state :
-			null);
+		// No-op?
+		DisplayableState current = displayState.current();
+		if (current == showNowState)
+			return;
 		
 		// Do we need to remove the displayable from its old display?
 		if (showNowState != null)
@@ -120,7 +125,6 @@ class __ExecDisplaySetCurrent__
 		}
 		
 		// Are we removing a displayable?
-		DisplayableState current = displayState.current();
 		if (showNow == null)
 		{
 			// If there is no current display, we can just do nothing

@@ -126,7 +126,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerRemove(
 	{
 		case SJME_SCRITCHUI_TYPE_WINDOW:
 			windowTarget = inContainer->common
-				.handle[SJME_SUI_GTK2_H_TOP_WIDGET];
+				.handle[SJME_SUI_GTK2_H_WINTABLE];
 			gtk_container_remove(GTK_CONTAINER(windowTarget),
 				removeWidget);
 			break;

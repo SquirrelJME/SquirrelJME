@@ -87,16 +87,16 @@ public final class DisplayableState
 	 * Returns the associated displayable.
 	 *
 	 * @return The associated displayable.
+	 * @throws IllegalStateException If it was garbage collected.
 	 * @since 2024/03/08
 	 */
 	@SquirrelJMEVendorApi
 	public final Displayable displayable()
+		throws IllegalStateException
 	{
 		Displayable result = this.displayable.get();
-		
 		if (result == null)
 			throw new IllegalStateException("GCGC");
-		
 		return result;
 	}
 	

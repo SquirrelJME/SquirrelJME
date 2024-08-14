@@ -68,7 +68,7 @@ public abstract class Screen
 	final int __getHeight()
 	{
 		// Get direct widget size
-		DisplayableState state = this._state;
+		DisplayableState state = this.__state();
 		if (state.currentDisplay() != null)
 			state.scritchApi().component()
 				.componentGetHeight(this.__scritchComponent());
@@ -87,7 +87,7 @@ public abstract class Screen
 	final int __getWidth()
 	{
 		// Get direct widget size
-		DisplayableState state = this._state;
+		DisplayableState state = this.__state();
 		if (state.currentDisplay() != null)
 			state.scritchApi().component()
 				.componentWidth(this.__scritchComponent());
@@ -120,7 +120,7 @@ public abstract class Screen
 		// Make sure the displayable has the correct texture size and that
 		// either the view or the actual component if there is no view also
 		// has the given size
-		DisplayableState state = this._state;
+		DisplayableState state = this.__state();
 		ScritchInterface scritchApi = state.scritchApi();
 		scritchApi.container().containerSetBounds(
 			state.scritchPanel(),

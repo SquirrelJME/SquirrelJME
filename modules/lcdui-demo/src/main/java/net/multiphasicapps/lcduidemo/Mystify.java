@@ -305,7 +305,8 @@ public class Mystify
 				// screen instead
 				if (newx < 0 || newx >= __w)
 				{
-					if (newx < -Mystify.WAY_OFF || newy > __w + Mystify.WAY_OFF)
+					if (newx < -Mystify.WAY_OFF ||
+						newy > __w + Mystify.WAY_OFF)
 						newx = random.nextInt((__w > 0 ? __w : 1));
 					else
 					{

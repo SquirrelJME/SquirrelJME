@@ -271,74 +271,10 @@ public class Graphics
 		
 		// Which image is being drawn?
 		javax.microedition.lcdui.Image target;
-		if (__i instanceof __MIDPImage__)
-			target = ((__MIDPImage__)__i).__midpImage();
-		
-		// Mutable image
-		else if (__i instanceof __MutableImage__)
-			target = __i._midpImage;
-		
-		// 8-bit image
-		else if (__i instanceof __8BitImage__)
-		{
-			// Get the actual image to be drawn
-			__8BitImage__ bitImage = (__8BitImage__)__i;
-			EightBitImageStore store = bitImage._store;
-			
-			// Disposed?
-			if (store == null)
-				throw new UIException(UIException.ILLEGAL_STATE);
-			
-			// Get realized image
-			target = store.midpImage();
-		}
-		
-		// Not supported at all
-		else
-		{
-			// Debug
-			Debugging.todoNote("Unsupported image %s", __i.getClass());
-			
-			throw new UIException(UIException.UNSUPPORTED_FORMAT);
-		}
+		target = Graphics.__recoverImage(__i);
 		
 		// Which flip mode
-		int trans;
-		switch (this._flipMode)
-		{
-			case Graphics.FLIP_HORIZONTAL:
-				trans = Sprite.TRANS_MIRROR;
-				break;
-			
-			case Graphics.FLIP_ROTATE:
-				trans = Sprite.TRANS_ROT180;
-				break;
-			
-			case Graphics.FLIP_ROTATE_LEFT:
-				trans = Sprite.TRANS_ROT270;
-				break;
-			
-			case Graphics.FLIP_ROTATE_RIGHT:
-				trans = Sprite.TRANS_ROT90;
-				break;
-			
-			case Graphics.FLIP_ROTATE_RIGHT_HORIZONTAL:
-				trans = Sprite.TRANS_MIRROR_ROT270;
-				break;
-			
-			case Graphics.FLIP_ROTATE_RIGHT_VERTICAL:
-				trans = Sprite.TRANS_MIRROR_ROT90;
-				break;
-				
-			case Graphics.FLIP_VERTICAL:
-				trans = Sprite.TRANS_MIRROR_ROT180;
-				break;
-				
-			case Graphics.FLIP_NONE:
-			default:
-				trans = Sprite.TRANS_NONE;
-				break;
-		}
+		int trans = this.__mapFlip();
 		
 		// DoJa is more lenient when drawing out of range graphics, it just
 		// gets clipped into range
@@ -402,6 +338,19 @@ public class Graphics
 			return;
 		
 		this._graphics.drawRect(__x, __y, __w, __h);
+	}
+	
+	@Api
+	public void drawScaledImage(Image __i, int __dx, int __dy,
+		int __dw, int __dh, int __sx, int __sy, int __sw, int __sh)
+		throws IllegalArgumentException, UIException, NullPointerException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		if (__dw < 0 || __dh < 0 || __sw < 0 || __sh < 0)
+			throw new IllegalArgumentException("ILLA");
+		
+		throw Debugging.todo();
 	}
 	
 	@Api
@@ -583,6 +532,43 @@ public class Graphics
 			lockFlush.__unlock(__forced);
 	}
 	
+	/**
+	 * Maps the flip mode.
+	 *
+	 * @return The flip mode.
+	 * @since 2024/08/13
+	 */
+	private int __mapFlip()
+	{
+		switch (this._flipMode)
+		{
+			case Graphics.FLIP_HORIZONTAL:
+				return Sprite.TRANS_MIRROR;
+			
+			case Graphics.FLIP_ROTATE:
+				return Sprite.TRANS_ROT180;
+			
+			case Graphics.FLIP_ROTATE_LEFT:
+				return Sprite.TRANS_ROT270;
+			
+			case Graphics.FLIP_ROTATE_RIGHT:
+				return Sprite.TRANS_ROT90;
+			
+			case Graphics.FLIP_ROTATE_RIGHT_HORIZONTAL:
+				return Sprite.TRANS_MIRROR_ROT270;
+			
+			case Graphics.FLIP_ROTATE_RIGHT_VERTICAL:
+				return Sprite.TRANS_MIRROR_ROT90;
+				
+			case Graphics.FLIP_VERTICAL:
+				return Sprite.TRANS_MIRROR_ROT180;
+				
+			case Graphics.FLIP_NONE:
+			default:
+				return Sprite.TRANS_NONE;
+		}
+	}
+	
 	@SuppressWarnings("MagicNumber")
 	@Api
 	public static int getColorOfName(int __name)
@@ -660,5 +646,50 @@ public class Graphics
 			(__r << 16) |
 			(__g << 8) |
 			__b;
+	}
+	
+	
+	/**
+	 * Recovers the image to draw.
+	 *
+	 * @param __i The source image.
+	 * @return The resultant image.
+	 * @throws UIException If the image has been disposed of or is otherwise
+	 * invalid.
+	 * @since 2024/08/13
+	 */
+	private static javax.microedition.lcdui.Image __recoverImage(Image __i)
+		throws UIException
+	{
+		if (__i instanceof __MIDPImage__)
+			return ((__MIDPImage__)__i).__midpImage();
+		
+		// Mutable image
+		else if (__i instanceof __MutableImage__)
+			return __i._midpImage;
+		
+		// 8-bit image
+		else if (__i instanceof __8BitImage__)
+		{
+			// Get the actual image to be drawn
+			__8BitImage__ bitImage = (__8BitImage__)__i;
+			EightBitImageStore store = bitImage._store;
+			
+			// Disposed?
+			if (store == null)
+				throw new UIException(UIException.ILLEGAL_STATE);
+			
+			// Get realized image
+			return store.midpImage();
+		}
+		
+		// Not supported at all
+		else
+		{
+			// Debug
+			Debugging.todoNote("Unsupported image %s", __i.getClass());
+			
+			throw new UIException(UIException.UNSUPPORTED_FORMAT);
+		}
 	}
 }
