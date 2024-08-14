@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * State for {@link Display}.
@@ -39,6 +40,10 @@ public final class DisplayState
 	
 	/** The display to show on exit. */
 	private volatile DisplayableState _onExit;
+	
+	/** The current displayable hold. */
+	@SquirrelJMEVendorApi
+	private volatile Displayable _currentHold;
 	
 	/**
 	 * Initializes the display state.
@@ -112,6 +117,9 @@ public final class DisplayState
 		synchronized (this)
 		{
 			this._current = __displayable;
+			
+			if (__displayable != null)
+				this._currentHold = __displayable.displayable();
 		}
 	}
 }

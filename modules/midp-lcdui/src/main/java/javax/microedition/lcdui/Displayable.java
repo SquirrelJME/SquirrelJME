@@ -25,6 +25,8 @@ import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutLock;
 import cc.squirreljme.runtime.lcdui.scritchui.StringTracker;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import javax.microedition.midlet.MIDlet;
 import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -43,7 +45,7 @@ public abstract class Displayable
 	implements MenuActionHasChildren
 {
 	/** The displayable state. */
-	final DisplayableState _state;
+	private final DisplayableState _state;
 	
 	/** The command listener to call into when commands are generated. */
 	volatile CommandListener _cmdListener;
@@ -133,7 +135,7 @@ public abstract class Displayable
 			throw new NullPointerException("NARG");
 		
 		// Have the event loop handle this
-		this._state.scritchApi().eventLoop()
+		this.__state().scritchApi().eventLoop()
 			.loopExecute(new __ExecDisplayableDefaultCommand__(this,
 				__c, true));
 	}
@@ -294,7 +296,7 @@ public abstract class Displayable
 		}
 		
 		// Have the event loop handle this
-		this._state.scritchApi().eventLoop()
+		this.__state().scritchApi().eventLoop()
 			.loopExecute(new __ExecDisplayableDefaultCommand__(this,
 				__c, false));
 	}
@@ -501,7 +503,7 @@ public abstract class Displayable
 	void __execRevalidate(DisplayState __parent)
 	{
 		// Reparent the display
-		this._state.setParent(__parent);
+		this.__state().setParent(__parent);
 		
 		// Get the display scale to determine how big the widget should be
 		DisplayScale scale = __parent.display()._scale;
@@ -511,7 +513,7 @@ public abstract class Displayable
 		int h = Math.max(1, scale.textureH());
 		
 		// Set absolute bounds of this displayable
-		DisplayableState state = this._state;
+		DisplayableState state = this.__state();
 		state.scritchApi().container().containerSetBounds(
 			__parent.scritchWindow(),
 			state.scritchPanel(), 0, 0, w, h);
@@ -541,7 +543,7 @@ public abstract class Displayable
 	@SquirrelJMEVendorApi
 	private Display __getCurrentDisplay()
 	{
-		DisplayState display = this._state.currentDisplay();
+		DisplayState display = this.__state().currentDisplay();
 		
 		if (display != null)
 			return display.display();
@@ -735,6 +737,19 @@ public abstract class Displayable
 			if (usePlace > 0)
 				__layout.set(action, usePlace);
 		}*/
+	}
+	
+	/**
+	 * Returns the current displayable state holder.
+	 *
+	 * @return The current displayable state.
+	 * @throws IllegalStateException If it has been garbage collected.
+	 * @since 2024/08/13
+	 */
+	final DisplayableState __state()
+		throws IllegalStateException
+	{
+		return this._state;
 	}
 	
 	/**
