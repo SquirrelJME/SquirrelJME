@@ -376,7 +376,7 @@ sjme_jint sjme_desc_compareMethodS(
  */
 sjme_errorCode sjme_desc_interpretBinaryName(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull const sjme_desc_binaryName** outName,
+	sjme_attrOutNotNull sjme_desc_binaryName** outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
 
@@ -392,7 +392,7 @@ sjme_errorCode sjme_desc_interpretBinaryName(
  */
 sjme_errorCode sjme_desc_interpretClassName(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull const sjme_desc_className** outName,
+	sjme_attrOutNotNull sjme_desc_className** outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
 
@@ -408,7 +408,7 @@ sjme_errorCode sjme_desc_interpretClassName(
  */
 sjme_errorCode sjme_desc_interpretFieldType(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull const sjme_desc_fieldType** outType,
+	sjme_attrOutNotNull sjme_desc_fieldType** outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
 
@@ -438,7 +438,7 @@ sjme_errorCode sjme_desc_interpretIdentifier(
  */
 sjme_errorCode sjme_desc_interpretMethodType(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull const sjme_desc_methodType** outType,
+	sjme_attrOutNotNull sjme_desc_methodType** outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
 

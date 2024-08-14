@@ -122,6 +122,9 @@ typedef struct sjme_nvm_commonBase sjme_nvm_commonBase;
  */
 typedef sjme_nvm_commonBase* sjme_nvm_common;
 
+/** Cast to common type. */
+#define SJME_AS_COMMON(x) ((sjme_nvm_common)(x))
+
 /**
  * Represents the virtual machine state.
  * 

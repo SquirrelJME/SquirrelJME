@@ -167,7 +167,8 @@ sjme_errorCode sjme_nvm_boot(
 		goto fail_resultAlloc;
 	
 	/* Initialize. */
-	if (sjme_error_is(error = sjme_nvm_objectInit(result, 
+	if (sjme_error_is(error = sjme_nvm_objectInit(
+		SJME_AS_COMMON(result), 
 		SJME_NVM_STRUCTTYPE_STATE)))
 		goto fail_resultInit;
 
@@ -346,7 +347,7 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 		&result, rom)) || result == NULL)
 	{
 		/* Make sure to close the file. */
-		sjme_closeable_close(rom);
+		sjme_closeable_close(SJME_AS_CLOSEABLE(rom));
 		
 		/* Fail. */
 		return sjme_error_default(error);

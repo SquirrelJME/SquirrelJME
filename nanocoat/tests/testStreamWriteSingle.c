@@ -49,7 +49,8 @@ SJME_TEST_DECLARE(testStreamWriteSingle)
 		"Value was not written?");
 
 	/* Close stream. */
-	if (sjme_error_is(sjme_closeable_close(stream)))
+	if (sjme_error_is(sjme_closeable_close(
+		SJME_AS_CLOSEABLE(stream))))
 		return sjme_unit_fail(test, "Could not close output stream.");
 
 	/* Success! */

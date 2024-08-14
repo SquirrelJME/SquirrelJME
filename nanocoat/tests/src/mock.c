@@ -438,7 +438,8 @@ sjme_jboolean sjme_mock_doRomLibrary(
 	/* Allocate library. */
 	library = NULL;
 	if (sjme_error_is(sjme_alloc(inState->allocPool,
-		sizeof(*library), &library)) || library == NULL)
+		sizeof(*library), (void**)&library)) ||
+		library == NULL)
 		return sjme_die("Could not allocate library.");
 
 	/* Make a copy of the input data to be used as front end specific data. */
@@ -479,7 +480,7 @@ sjme_jboolean sjme_mock_doRomLibrary(
 	else
 	{
 		if (sjme_error_is(sjme_alloc_format(inState->allocPool,
-			&library->name,
+			(sjme_lpstr*)&library->name,
 			"unnamed%d.jar", (int)(inData->current.indexType + 1))) ||
 			library->name == NULL)
 			return sjme_die("Could not set default library name.");
@@ -567,7 +568,7 @@ sjme_jboolean sjme_mock_doRomSuite(
 	/* Allocate suite. */
 	suite = NULL;
 	if (sjme_error_is(sjme_alloc(inState->allocPool,
-		sizeof(*suite), &suite)) || suite == NULL)
+		sizeof(*suite), (void**)&suite)) || suite == NULL)
 		return sjme_die("Could not allocate suite.");
 
 	/* Quicker this way... */
@@ -580,7 +581,7 @@ sjme_jboolean sjme_mock_doRomSuite(
 	suite->functions = NULL;
 	if (sjme_error_is(sjme_alloc_copy(inState->allocPool,
 		sizeof(*suite->functions),
-		&suite->functions,
+		(void**)&suite->functions,
 		&suiteData->functions)) ||
 		suite->functions == NULL)
 		return sjme_die("Could not copy functions.");

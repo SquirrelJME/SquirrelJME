@@ -108,7 +108,7 @@ sjme_errorCode sjme_stream_inputOpen(
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
 		sizeof(*result), sjme_closeable_autoEnqueue, NULL,
-		&result, NULL)))
+		(void**)&result, NULL)))
 		return sjme_error_default(error);
 	
 	/* Setup details. */
@@ -334,7 +334,7 @@ sjme_errorCode sjme_stream_outputOpen(
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
 		sizeof(*result), sjme_closeable_autoEnqueue, NULL,
-		&result, NULL)))
+		(void**)&result, NULL)))
 		return sjme_error_default(error);
 	
 	/* Setup details. */

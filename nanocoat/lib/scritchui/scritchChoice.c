@@ -228,7 +228,7 @@ sjme_errorCode sjme_scritchui_core_choiceItemInsert(
 	/* Allocate item to be injected. */
 	inject = NULL;
 	if (sjme_error_is(error = sjme_alloc(inState->pool,
-		sizeof(*inject), &inject)) || inject == NULL)
+		sizeof(*inject), (void**)&inject)) || inject == NULL)
 		goto fail_injectAlloc;
 	
 	/* Default values. */

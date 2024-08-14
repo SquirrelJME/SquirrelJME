@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/descriptor.h"
 #include <stdlib.h>
 #include <string.h>
 

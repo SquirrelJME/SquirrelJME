@@ -642,7 +642,7 @@ sjme_jint sjme_desc_compareMethodS(
 
 sjme_errorCode sjme_desc_interpretBinaryName(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull const sjme_desc_binaryName** outName,
+	sjme_attrOutNotNull sjme_desc_binaryName** outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
@@ -686,12 +686,12 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 	/* Return a copy. */
 	return sjme_alloc_copyWeak(inPool, resultLen,
 		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
-		outName, result, NULL);
+		(void**)outName, (void*)result, NULL);
 }
 
 sjme_errorCode sjme_desc_interpretClassName(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull const sjme_desc_className** outName,
+	sjme_attrOutNotNull sjme_desc_className** outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
@@ -784,12 +784,12 @@ sjme_errorCode sjme_desc_interpretClassName(
 	/* Return a copy. */
 	return sjme_alloc_copyWeak(inPool, allocLen,
 		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
-		outName, result, NULL);
+		(void**)outName, (void*)result, NULL);
 }
 
 sjme_errorCode sjme_desc_interpretFieldType(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull const sjme_desc_fieldType** outType,
+	sjme_attrOutNotNull sjme_desc_fieldType** outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
@@ -834,7 +834,7 @@ sjme_errorCode sjme_desc_interpretFieldType(
 	/* Return copy of it. */
 	return sjme_alloc_copyWeak(inPool, allocLen,
 		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
-		outType, result, NULL);
+		(void**)outType, (void*)result, NULL);
 }
 
 sjme_errorCode sjme_desc_interpretIdentifier(
@@ -873,7 +873,7 @@ sjme_errorCode sjme_desc_interpretIdentifier(
 	/* Fill in info. */
 	memset(outIdent, 0, sizeof(*outIdent));
 	outIdent->hash = sjme_string_hashN(inStr, inLen);
-	outIdent->whole.pointer = inStr;
+	outIdent->whole.pointer = (sjme_pointer)inStr;
 	outIdent->whole.length = end - inStr;
 	
 	/* Success! */
@@ -882,7 +882,7 @@ sjme_errorCode sjme_desc_interpretIdentifier(
 
 sjme_errorCode sjme_desc_interpretMethodType(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull const sjme_desc_methodType** outType,
+	sjme_attrOutNotNull sjme_desc_methodType** outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
@@ -1045,5 +1045,5 @@ sjme_errorCode sjme_desc_interpretMethodType(
 	/* Success! */
 	return sjme_alloc_copyWeak(inPool, allocLen,
 		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
-		outType, result, NULL);
+		(void**)outType, (void*)result, NULL);
 }

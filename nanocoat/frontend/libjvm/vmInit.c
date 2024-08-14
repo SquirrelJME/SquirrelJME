@@ -68,13 +68,15 @@ sjme_attrUnused jint JNICALL JNI_CreateJavaVM(
 		
 	/* Allocate resultant function structure. */
 	resultVm = NULL;
-	if (sjme_error_is(sjme_alloc(pool, sizeof(*resultVm), &resultVm)) ||
+	if (sjme_error_is(sjme_alloc(pool, sizeof(*resultVm),
+		(void**)&resultVm)) ||
 		resultVm == NULL)
 		goto fail_allocResultVm;
 	
 	/* Allocate environment based functions. */
 	resultEnv = NULL;
-	if (sjme_error_is(sjme_alloc(pool, sizeof(*resultEnv), &resultEnv)) ||
+	if (sjme_error_is(sjme_alloc(pool, sizeof(*resultEnv),
+		(void**)&resultEnv)) ||
 		resultEnv == NULL)
 		goto fail_allocResultEnv;
 	

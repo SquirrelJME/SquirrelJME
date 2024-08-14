@@ -32,6 +32,9 @@ static sjme_errorCode sjme_nvm_localPopGeneric(
 	sjme_attrOutNullable sjme_pointer outOldLocalValue,
 	sjme_attrOutNullable sjme_pointer outStackValue)
 {
+	sjme_todo("Implement");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+#if 0
 	SJME_EXCEPT_VDEF;
 	sjme_javaTypeId topType;
 	sjme_nvm_frameStack* stack;
@@ -112,6 +115,7 @@ SJME_EXCEPT_FAIL:
 			frame->localMap->max),
 		(frame == NULL || frame->stack == NULL ? -1 :
 			frame->stack->count));
+#endif
 }
 
 sjme_errorCode sjme_nvm_arrayLength(sjme_nvm_frame frame,
@@ -176,6 +180,9 @@ sjme_errorCode sjme_nvm_gcObject(
 	sjme_attrInNotNull sjme_nvm_frame frame,
 	sjme_attrInNullable sjme_jobject instance)
 {
+	sjme_todo("Implement");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+#if 0
 	SJME_EXCEPT_VDEF;
 	sjme_nvm state;
 
@@ -202,6 +209,7 @@ SJME_EXCEPT_WITH_FRAME:
 SJME_EXCEPT_FAIL:
 	return sjme_except_gracefulDeath("Could not GC %p.",
 		instance);
+#endif
 }
 
 sjme_errorCode sjme_nvm_invoke(sjme_nvm_frame frame,
@@ -250,6 +258,9 @@ sjme_errorCode sjme_nvm_localPopLong(sjme_nvm_frame frame,
 sjme_errorCode sjme_nvm_localPopReference(sjme_nvm_frame frame,
 	sjme_jint localIndex)
 {
+	sjme_todo("Implement");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+#if 0
 	SJME_EXCEPT_VDEF;
 	sjme_jobject oldLocalValue, stackValue;
 
@@ -276,6 +287,7 @@ SJME_EXCEPT_WITH_FRAME:
 
 SJME_EXCEPT_FAIL:
 	return sjme_except_gracefulDeath("Could not refcount objects.");
+#endif
 }
 
 sjme_errorCode sjme_nvm_localPushDouble(sjme_nvm_frame frame,

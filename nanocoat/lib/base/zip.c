@@ -10,11 +10,16 @@
 #include "sjme/zip.h"
 #include "sjme/debug.h"
 
+#define SJME_ZIP_CDIR_MAGIC INT32_C(0x02014B50)
+
 /** Magic number for the central directory. */
 #define SJME_ZIP_ECDIR_MAGIC INT32_C(0x06054B50)
 
 /** Minimum length of the end central directory record. */
 #define SJME_ZIP_ECDIR_MIN_LENGTH 22
+
+/** Offset to the central directory size. */
+#define SJME_ZIP_ECDIR_CDIR_LEN_OFFSET 12
 
 /** Maximum length of the end central directory record. */
 #define SJME_ZIP_ECDIR_MAX_LENGTH (SJME_ZIP_ECDIR_MIN_LENGTH + 65535)
@@ -24,14 +29,15 @@
 
 static sjme_errorCode sjme_zip_findCentralDir(
 	sjme_attrInNotNull sjme_seekable seekable,
-	sjme_attrOutNotNull sjme_jint* outPos)
+	sjme_attrOutNotNull sjme_jint* outCDirPos)
 {
 	sjme_errorCode error;
-	sjme_jint seekLen, scanAt, stopAt;
+	sjme_jint seekLen, endCDirAt, stopAt, cDirAt;
 	sjme_jint magic;
+	sjme_jint cDirLen; 
 	sjme_jchar commentLen;
 	
-	if (seekable == NULL || outPos == NULL)
+	if (seekable == NULL || outCDirPos == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Need to know the length of the seekable first. */
@@ -49,14 +55,14 @@ static sjme_errorCode sjme_zip_findCentralDir(
 	if (stopAt < 0)
 		stopAt = 0;
 	
-	/* Constantly scan for the central directory. */
-	scanAt = seekLen - SJME_ZIP_ECDIR_MIN_LENGTH;
-	for (; scanAt >= stopAt; scanAt--)
+	/* Constantly scan for the end of central directory record. */
+	endCDirAt = seekLen - SJME_ZIP_ECDIR_MIN_LENGTH;
+	for (; endCDirAt >= stopAt; endCDirAt--)
 	{
 		/* Read in magic number. */
 		magic = -1;
 		if (sjme_error_is(error = sjme_seekable_readLittle(seekable, 4,
-			&magic, scanAt, sizeof(magic))))
+			&magic, endCDirAt, sizeof(magic))))
 			return sjme_error_default(error);
 		
 		/* Is this the one? */
@@ -66,16 +72,38 @@ static sjme_errorCode sjme_zip_findCentralDir(
 			commentLen = 65535;
 			if (sjme_error_is(error = sjme_seekable_readLittle(seekable, 2,
 				&commentLen,
-				scanAt + SJME_ZIP_ECDIR_OFF_COMMENT_LEN,
+				endCDirAt + SJME_ZIP_ECDIR_OFF_COMMENT_LEN,
 				sizeof(commentLen))))
 				return sjme_error_default(error);
 			
 			/* Cannot exceed the file size. */
-			if (scanAt + SJME_ZIP_ECDIR_MIN_LENGTH + commentLen > seekLen)
+			if (endCDirAt + SJME_ZIP_ECDIR_MIN_LENGTH + commentLen > seekLen)
+				continue;
+			
+			/* Read in length of the central directory. */
+			cDirLen = -1;
+			if (sjme_error_is(error = sjme_seekable_readLittle(seekable, 4,
+				&cDirLen, endCDirAt + SJME_ZIP_ECDIR_CDIR_LEN_OFFSET, 4)) ||
+				cDirLen < 0)
+				return sjme_error_default(error);
+			
+			/* Impossible position? */
+			cDirAt = endCDirAt - cDirLen;
+			if (cDirAt < 0 || cDirAt >= endCDirAt)
+				continue;
+			
+			/* Read in central directory start magic. */
+			magic = -1;
+			if (sjme_error_is(error = sjme_seekable_readLittle(seekable, 4,
+				&magic, cDirAt, sizeof(magic))))
+				return sjme_error_default(error);
+			
+			/* Not the magic we are looking for? */
+			if (magic != SJME_ZIP_CDIR_MAGIC)
 				continue;
 			
 			/* Should be here! */
-			*outPos = scanAt;
+			*outCDirPos = cDirAt;
 			return SJME_ERROR_NONE;
 		}
 	}

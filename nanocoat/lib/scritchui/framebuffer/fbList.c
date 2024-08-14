@@ -377,7 +377,8 @@ sjme_errorCode sjme_scritchui_fb_listNew(
 	/* Lightweight initialization. */
 	wState = NULL;
 	if (sjme_error_is(error = inState->implIntern->lightweightInit(
-		inState, inList, &wState,
+		inState, SJME_SUI_CAST_COMPONENT(inList),
+		&wState,
 		SJME_JNI_TRUE,
 		sjme_scritchui_fb_list_draw)) || wState == NULL)
 		return sjme_error_default(error);

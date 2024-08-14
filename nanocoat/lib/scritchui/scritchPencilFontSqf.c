@@ -379,12 +379,12 @@ sjme_errorCode sjme_scritchui_core_fontBuiltin(
 	if (only == NULL)
 	{
 		if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-			sizeof(*only), NULL, NULL, &only, NULL)) || only == NULL)
+			sizeof(*only), NULL, NULL, (void**)&only, NULL)) || only == NULL)
 			return sjme_error_default(error);
 			
 		/* Common initialize. */
 		if (sjme_error_is(error = inState->intern->initCommon(inState,
-			only, SJME_JNI_FALSE,
+			SJME_SUI_CAST_COMMON(only), SJME_JNI_FALSE,
 			SJME_SCRITCHUI_TYPE_ROOT_STATE)))
 			goto fail_commonInit;
 		

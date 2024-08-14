@@ -14,6 +14,7 @@
 #include "sjme/util.h"
 #include "test.h"
 #include "unit.h"
+#include "sjme/descriptor.h"
 
 /** The max permitted array size. */
 #define MAX_ARRAY 8
@@ -384,8 +385,8 @@ static const testDescFieldTypeEntry testEntries[] =
 SJME_TEST_DECLARE(testDescFieldType)
 {
 	const testDescFieldTypeEntry* entry;
-	const sjme_desc_fieldType* result;
-	const sjme_desc_binaryName* objectResult; 
+	sjme_desc_fieldType* result;
+	sjme_desc_binaryName* objectResult; 
 	sjme_lpcstr string;
 	sjme_jint strLen, strHash, atEntry, i;
 	sjme_errorCode error;

@@ -62,7 +62,7 @@ static sjme_errorCode sjme_seekable_memoryInit(
 static sjme_errorCode sjme_seekable_memoryRead(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState,
-	sjme_attrOutNotNullBuf(length) sjme_jbyte* outBuf,
+	sjme_attrOutNotNullBuf(length) sjme_buffer outBuf,
 	sjme_attrInPositive sjme_jint base,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {

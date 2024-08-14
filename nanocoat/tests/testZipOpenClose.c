@@ -30,7 +30,8 @@ SJME_TEST_DECLARE(testZipOpenClose)
 		return sjme_unit_fail(test, "Could not open Zip");
 
 	/* Immediately close it without doing anything. */
-	if (sjme_error_is(sjme_closeable_close(zip)))
+	if (sjme_error_is(sjme_closeable_close(
+		SJME_AS_CLOSEABLE(zip))))
 		return sjme_unit_fail(test, "Could not close Zip");
 
 	/* Passed! */

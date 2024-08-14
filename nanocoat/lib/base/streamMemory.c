@@ -120,8 +120,7 @@ static const sjme_stream_inputFunctions sjme_stream_inputMemoryFunctions =
 
 static sjme_errorCode sjme_stream_outputMemoryClose(
 	sjme_attrInNotNull sjme_stream_output outStream,
-	sjme_attrInNotNull sjme_stream_implState* inImplState,
-	sjme_attrOutNullable sjme_pointer* optResult)
+	sjme_attrInNotNull sjme_stream_implState* inImplState)
 {
 	if (outStream == NULL || inImplState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

@@ -73,7 +73,7 @@ sjme_errorCode sjme_seekable_open(
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
 		sizeof(*result), sjme_closeable_autoEnqueue, NULL,
-		&result, NULL)) || result == NULL)
+		(void**)&result, NULL)) || result == NULL)
 		return sjme_error_default(error);
 	
 	/* Copy in details. */
@@ -117,7 +117,7 @@ sjme_errorCode sjme_seekable_openSeekable(
 
 sjme_errorCode sjme_seekable_read(
 	sjme_attrInNotNull sjme_seekable seekable,
-	sjme_attrOutNotNull sjme_jbyte* outBuf,
+	sjme_attrOutNotNull sjme_buffer outBuf,
 	sjme_attrInPositive sjme_jint seekBase,
 	sjme_attrInPositive sjme_jint length)
 {
@@ -138,7 +138,7 @@ sjme_errorCode sjme_seekable_read(
 sjme_errorCode sjme_seekable_readReverse(
 	sjme_attrInNotNull sjme_seekable seekable,
 	sjme_attrInRange(2, 8) sjme_jint wordSize,
-	sjme_attrOutNotNull sjme_jbyte* outBuf,
+	sjme_attrOutNotNull sjme_buffer outBuf,
 	sjme_attrInPositive sjme_jint seekBase,
 	sjme_attrInPositive sjme_jint length)
 {

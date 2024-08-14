@@ -89,9 +89,22 @@ typedef enum sjme_scritchui_uiType
 #define SJME_SUI_CAST(uiType, type, v) \
 	((type)sjme_scritchui_checkCast((type), (v)))
 
+/** Common type. */
+#define SJME_SUI_CAST_COMMON(v) \
+	((sjme_scritchui_uiCommon)(v))
+
 /** Check cast to menu kind. */
 #define SJME_SUI_CAST_MENU_KIND(v) \
 	((sjme_scritchui_uiMenuKind)sjme_scritchui_checkCast_menuKind((v)))
+
+/** Check cast to component kind. */
+#define SJME_SUI_CAST_COMPONENT(v) \
+	((sjme_scritchui_uiComponent)sjme_scritchui_checkCast_component((v)))
+
+/** Check cast to panel. */
+#define SJME_SUI_CAST_PANEL(v) \
+	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_PANEL, \
+	sjme_scritchui_uiPanel, (v))
 
 /** Check cast to menu. */
 #define SJME_SUI_CAST_MENU(v) \
@@ -2028,6 +2041,15 @@ typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
  */
 sjme_pointer sjme_scritchui_checkCast(sjme_scritchui_uiType inType,
 	sjme_pointer inPtr);
+
+/**
+ * Check cast of a given type against a component.
+ * 
+ * @param inPtr The input pointer.
+ * @return Always @c inPtr .
+ * @since 2024/07/23
+ */
+sjme_pointer sjme_scritchui_checkCast_component(sjme_pointer inPtr);
 
 /**
  * Check cast of a given type against a menu kind.

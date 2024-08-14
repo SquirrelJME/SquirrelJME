@@ -158,7 +158,7 @@ typedef sjme_errorCode (*sjme_seekable_initFunc)(
 typedef sjme_errorCode (*sjme_seekable_readFunc)(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState,
-	sjme_attrOutNotNullBuf(length) sjme_jbyte* outBuf,
+	sjme_attrOutNotNullBuf(length) sjme_buffer outBuf,
 	sjme_attrInPositive sjme_jint base,
 	sjme_attrInPositiveNonZero sjme_jint length);
 
@@ -299,7 +299,7 @@ sjme_errorCode sjme_seekable_openSeekable(
  */
 sjme_errorCode sjme_seekable_read(
 	sjme_attrInNotNull sjme_seekable seekable,
-	sjme_attrOutNotNull sjme_jbyte* outBuf,
+	sjme_attrOutNotNull sjme_buffer outBuf,
 	sjme_attrInPositive sjme_jint seekBase,
 	sjme_attrInPositive sjme_jint length);
 
@@ -319,7 +319,7 @@ sjme_errorCode sjme_seekable_read(
 sjme_errorCode sjme_seekable_readReverse(
 	sjme_attrInNotNull sjme_seekable seekable,
 	sjme_attrInRange(2, 8) sjme_jint wordSize,
-	sjme_attrOutNotNull sjme_jbyte* outBuf,
+	sjme_attrOutNotNull sjme_buffer outBuf,
 	sjme_attrInPositive sjme_jint seekBase,
 	sjme_attrInPositive sjme_jint length);
 

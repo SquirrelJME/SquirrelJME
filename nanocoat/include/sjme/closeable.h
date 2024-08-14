@@ -47,6 +47,9 @@ typedef struct sjme_closeableBase sjme_closeableBase;
  */
 typedef sjme_closeableBase* sjme_closeable;
 
+/** Cast to a closeable. */
+#define SJME_AS_CLOSEABLE(x) ((sjme_closeable)(x))
+
 /**
  * This function is called when a closeable has been closed.
  * 

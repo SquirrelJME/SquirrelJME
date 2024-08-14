@@ -58,7 +58,7 @@ static sjme_errorCode sjme_nal_default_cFileInit(
 static sjme_errorCode sjme_nal_default_cFileRead(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState,
-	sjme_attrOutNotNullBuf(length) sjme_jbyte* outBuf,
+	sjme_attrOutNotNullBuf(length) sjme_buffer outBuf,
 	sjme_attrInPositive sjme_jint base,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {

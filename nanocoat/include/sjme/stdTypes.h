@@ -369,6 +369,20 @@ typedef char sjme_cchar;
 #define SJME_TYPEOF_IS_POINTER_sjme_cpointer 1
 
 /**
+ * Buffer type.
+ * 
+ * @since 2024/08/13
+ */
+typedef sjme_pointer sjme_buffer;
+
+/**
+ * Const buffer type.
+ * 
+ * @since 2024/08/13
+ */
+typedef sjme_cpointer sjme_cbuffer;
+
+/**
  * Integer based pointer.
  * 
  * @since 2024/04/06

@@ -1068,7 +1068,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
 	/* Then just forward to copy. */
 #if defined(SJME_CONFIG_DEBUG)
 	return sjme_alloc_copyR(inPool, charLen,
-		outString, stringToCopy,
+		(void**)outString, (void*)stringToCopy,
 		file, line, func);
 #else
 	return sjme_alloc_copy(inPool, charLen,
@@ -1234,7 +1234,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 	
 	/* We need to allocate the link. */
 	if (sjme_error_is(error = sjme_alloc(link->pool, sizeof(*result),
-		&result)))
+		(void**)&result)))
 		return sjme_error_default(error);
 	
 	/* Setup link information. */

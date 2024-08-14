@@ -55,7 +55,6 @@ file(APPEND "${outTestProtosH}"
 # Basic test library
 add_library(BasicTestLib OBJECT
 	src/basic.c
-	src/classBuilder.c
 	src/blobs.c
 	src/mock.c
 	src/unit.c
@@ -65,7 +64,6 @@ add_library(BasicTestLib OBJECT
 # Basic test library
 add_library(BasicTestLibPIC OBJECT
 	src/basic.c
-	src/classBuilder.c
 	src/blobs.c
 	src/mock.c
 	src/unit.c

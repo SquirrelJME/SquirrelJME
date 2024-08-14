@@ -22,7 +22,7 @@ static gboolean sjme_scritchui_gtk2_eventDelete(GtkWidget* widget,
 	sjme_scritchui_listener_close* infoCore;
 	
 	/* Restore component. */
-	inWindow = (sjme_scritchui_uiComponent)data;
+	inWindow = (sjme_scritchui_uiWindow)data;
 	if (inWindow == NULL)
 		return TRUE;
 	
@@ -58,7 +58,7 @@ static gboolean sjme_scritchui_gtk2_eventVisibilityNotify(
 		return FALSE;
 	
 	/* Restore. */
-	inWindow = (sjme_scritchui_uiComponent)data;
+	inWindow = (sjme_scritchui_uiWindow)data;
 	inState = inWindow->component.common.state;
 	
 	/* We need to recurse and have ScritchUI handle this. */
@@ -123,7 +123,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	
 	/* Set minimum size. */
 	gtk_window_set_geometry_hints(gtkWindow,
-		gtkWindow,
+		GTK_WIDGET(gtkWindow),
 		&geometry,
 		GDK_HINT_MIN_SIZE | GDK_HINT_BASE_SIZE);
 	
@@ -217,7 +217,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
 	return inState->implIntern->reconnectSignal(inState,
 		GTK_WIDGET(gtkWindow),
 		inWindow,
-		infoCore,
+		(sjme_scritchui_listener_void*)infoCore,
 		inListener,
 		copyFrontEnd,
 		G_CALLBACK(sjme_scritchui_gtk2_eventDelete),

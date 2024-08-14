@@ -14,6 +14,7 @@
 #include "sjme/util.h"
 #include "test.h"
 #include "unit.h"
+#include "sjme/descriptor.h"
 
 /**
  * What to test and the expected values for method descriptors.
@@ -237,8 +238,8 @@ static const testDescMethodTypeEntry testEntries[] =
 SJME_TEST_DECLARE(testDescMethodType)
 {
 	const testDescMethodTypeEntry* entry;
-	const sjme_desc_methodType* result;
-	const sjme_desc_fieldType* field;
+	sjme_desc_methodType* result;
+	sjme_desc_fieldType* field;
 	sjme_list_sjme_lpcstr* fieldStrings;
 	sjme_lpcstr string, subString;
 	sjme_jint strLen, subStrLen, strHash, atEntry, i;
