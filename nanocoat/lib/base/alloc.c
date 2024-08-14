@@ -1187,8 +1187,9 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 	sjme_errorCode error;
 	sjme_alloc_link* link;
 	sjme_alloc_weak result;
+	sjme_jint was;
 	
-	if (addr == NULL || outWeak == NULL ||
+	if (addr == NULL ||
 		(inEnqueue == NULL && inEnqueueData != NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -1222,10 +1223,16 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 		}
 		
 		/* Count up. */
-		sjme_atomic_sjme_jint_getAdd(&result->count, 1);
+		was = sjme_atomic_sjme_jint_getAdd(&result->count, 1);
 		
 		/* Emit barrier. */
 		sjme_thread_barrier();
+		
+		/* Debug. */
+#if defined(SJME_CONFIG_DEBUG)
+		sjme_message("Weak ref %p (%p) count up to %d.",
+			result->pointer, result, was + 1);
+#endif
 		
 		/* Use it. */
 		*outWeak = result;
@@ -1338,7 +1345,7 @@ sjme_errorCode sjme_alloc_weakRef(
 	sjme_errorCode error;
 	sjme_alloc_link* link;
 	
-	if (addr == NULL || outWeak == NULL ||
+	if (addr == NULL ||
 		(inEnqueue == NULL && inEnqueueData != NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -1377,6 +1384,7 @@ sjme_errorCode sjme_alloc_weakRefGet(
 	sjme_attrInNotNull sjme_pointer addr,
 	sjme_attrOutNullable sjme_alloc_weak* outWeak)
 {
+	volatile sjme_alloc_pool* pool;
 	sjme_errorCode error;
 	sjme_alloc_link* link;
 	sjme_alloc_weak weak;
@@ -1393,13 +1401,53 @@ sjme_errorCode sjme_alloc_weakRefGet(
 		&link)) || link == NULL)
 		return sjme_error_default(error);
 	
+	/* Take ownership of lock. */
+	pool = link->pool;
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&pool->spinLock)))
+		return sjme_error_default(error);
+	
 	/* No weak reference here? */
 	weak = link->weak;
 	if (weak == NULL)
-		return SJME_ERROR_NOT_WEAK_REFERENCE;
+		error = SJME_ERROR_NOT_WEAK_REFERENCE;
+	else
+		error = SJME_ERROR_NONE;
+		
+	/* Release ownership of lock. */
+	if (sjme_error_is(sjme_thread_spinLockRelease(
+		&pool->spinLock, NULL)))
+		return sjme_error_default(error);
 	
-	/* Otherwise give it. */
+	/* Did it fail? */
+	if (sjme_error_is(error))
+		return sjme_error_default(error);
+	
+	/* Give it! */
 	*outWeak = weak;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_alloc_weakUnRef(
+	sjme_attrInNotNull sjme_pointer addr)
+{
+	sjme_errorCode error;
+	sjme_alloc_weak weak;
+	
+	if (addr == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Obtain weak reference. */
+	weak = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakRefGet(addr, &weak)) ||
+		weak == NULL)
+		return sjme_error_default(error);
+	
+	/* Delete it. */
+	if (sjme_error_is(error = sjme_alloc_weakDelete(&weak)))
+		return sjme_error_default(error);
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 

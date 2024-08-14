@@ -10,9 +10,10 @@
 #include "sjme/zip.h"
 #include "sjme/debug.h"
 
+/** Magic number for the central directory header. */
 #define SJME_ZIP_CDIR_MAGIC INT32_C(0x02014B50)
 
-/** Magic number for the central directory. */
+/** Magic number for the end central directory record. */
 #define SJME_ZIP_ECDIR_MAGIC INT32_C(0x06054B50)
 
 /** Minimum length of the end central directory record. */
@@ -27,9 +28,38 @@
 /** The offset to the comment length. */
 #define SJME_ZIP_ECDIR_OFF_COMMENT_LEN (SJME_ZIP_ECDIR_MIN_LENGTH - 2)
 
+static sjme_errorCode sjme_zip_close(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_errorCode error;
+	sjme_zip zip;
+	
+	zip = (sjme_zip)closeable;
+	if (zip == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Debug. */
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_message("Zip close %p", zip);
+#endif
+	
+	/* Close the seekable. */
+	if (sjme_error_is(error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(zip->seekable))))
+		return sjme_error_default(error);
+		
+	/* Un-ref the seekable we just closed. */
+	if (sjme_error_is(error = sjme_alloc_weakUnRef(zip->seekable)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_zip_findCentralDir(
 	sjme_attrInNotNull sjme_seekable seekable,
-	sjme_attrOutNotNull sjme_jint* outCDirPos)
+	sjme_attrOutNotNull sjme_jint* outCDirPos,
+	sjme_attrOutNotNull sjme_jint* outEndCDirPos)
 {
 	sjme_errorCode error;
 	sjme_jint seekLen, endCDirAt, stopAt, cDirAt;
@@ -37,7 +67,7 @@ static sjme_errorCode sjme_zip_findCentralDir(
 	sjme_jint cDirLen; 
 	sjme_jchar commentLen;
 	
-	if (seekable == NULL || outCDirPos == NULL)
+	if (seekable == NULL || outCDirPos == NULL || outEndCDirPos == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Need to know the length of the seekable first. */
@@ -104,6 +134,7 @@ static sjme_errorCode sjme_zip_findCentralDir(
 			
 			/* Should be here! */
 			*outCDirPos = cDirAt;
+			*outEndCDirPos = endCDirAt;
 			return SJME_ERROR_NONE;
 		}
 	}
@@ -166,6 +197,10 @@ sjme_errorCode sjme_zip_openMemory(
 		return sjme_error_default(error);
 	}
 	
+	/* Un-reference the original memory area as we are on top of it. */
+	if (sjme_error_is(error = sjme_alloc_weakUnRef(seekable)))
+		return sjme_error_default(error);
+	
 	/* Success! */
 	*outZip = result;
 	return SJME_ERROR_NONE;
@@ -177,17 +212,41 @@ sjme_errorCode sjme_zip_openSeekable(
 	sjme_attrInNotNull sjme_seekable inSeekable)
 {
 	sjme_errorCode error;
-	sjme_jint centralDirPos;
+	sjme_jint centralDirPos, endCentralDirPos;
+	sjme_zip result;
 	
 	if (inPool == NULL || outZip == NULL || inSeekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Locate the central directory within the Zip. */
 	centralDirPos = -1;
+	endCentralDirPos = -1;
 	if (sjme_error_is(error = sjme_zip_findCentralDir(inSeekable,
-		&centralDirPos)) || centralDirPos < 0)
+		&centralDirPos, &endCentralDirPos)) ||
+		centralDirPos < 0 || endCentralDirPos < 0)
 		return sjme_error_default(error);
 	
-	sjme_todo("Implement this?");
-	return sjme_error_notImplemented(0);
+	/* Allocate Zip state structure. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
+		sizeof(*result),
+		sjme_closeable_autoEnqueue, NULL,
+		(void**)&result, NULL)))
+		return sjme_error_default(error);
+	
+	/* Store info. */
+	result->closeable.closeHandler = sjme_zip_close;
+	result->inPool = inPool;
+	result->centralDirPos = centralDirPos;
+	result->endCentralDirPos = endCentralDirPos;
+	result->seekable = inSeekable;
+	
+	/* Count the seekable up, since we are using it. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(result,
+		NULL, NULL, NULL)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	*outZip = result;
+	return SJME_ERROR_NONE;
 }

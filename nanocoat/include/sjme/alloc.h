@@ -616,6 +616,16 @@ sjme_errorCode sjme_alloc_weakRefGet(
 	sjme_attrInNotNull sjme_pointer addr,
 	sjme_attrOutNullable sjme_alloc_weak* outWeak);
 
+/**
+ * Un-references a weak pointer.
+ * 
+ * @param addr The address to count down. 
+ * @return Any resultant error, if any.
+ * @since 2024/08/14
+ */
+sjme_errorCode sjme_alloc_weakUnRef(
+	sjme_attrInNotNull sjme_pointer addr);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

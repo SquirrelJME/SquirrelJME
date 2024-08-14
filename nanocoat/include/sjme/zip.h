@@ -54,6 +54,18 @@ typedef struct sjme_zipBase
 {
 	/** The closeable for this Zip. */
 	sjme_closeableBase closeable;
+	
+	/** The pool this was allocated within. */
+	sjme_alloc_pool* inPool;
+	
+	/** The central directory position. */
+	sjme_jint centralDirPos;
+	
+	/** The end central directory record position. */
+	sjme_jint endCentralDirPos;
+	
+	/** The seekable where the Zip is. */
+	sjme_seekable seekable;
 } sjme_zipBase;
 
 /**
