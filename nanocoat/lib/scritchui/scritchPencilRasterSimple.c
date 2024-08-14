@@ -176,6 +176,10 @@ sjme_errorCode sjme_scritchpen_core_drawLine(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Actually a horizontal line? Use faster drawing. */
+	if (y1 == y2)
+		return g->api->drawHoriz(g, x1, y1, x2 - x1);
+	
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
