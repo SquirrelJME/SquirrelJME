@@ -253,7 +253,7 @@ static void mle_scritchUiRecoverEnv(
 		
 	/* Relocate env. */
 	env = NULL;
-	error = (*vm)->GetEnv(vm, &env, JNI_VERSION_1_1);
+	error = (*vm)->GetEnv(vm, (void**)&env, JNI_VERSION_1_1);
 	if (env == NULL)
 		sjme_die("Could not relocate env: %d??", error);
 	
@@ -686,7 +686,7 @@ static sjme_thread_result sjme_attrThreadCall mle_loopExecuteMain(
 	
 	/* Relocate env. */
 	env = NULL;
-	error = (*vm)->GetEnv(vm, &env, JNI_VERSION_1_1);
+	error = (*vm)->GetEnv(vm, (void**)&env, JNI_VERSION_1_1);
 	if (env == NULL)
 		sjme_die("Could not relocate env: %d??", error);
 	
@@ -747,7 +747,7 @@ static sjme_thread_result sjme_attrThreadCall mle_bindEventThread(
 	
 	/* If this thread is already attached, only attach once. */
 	checkEnv = NULL;
-	error = (*vm)->GetEnv(vm, &checkEnv, JNI_VERSION_1_1);
+	error = (*vm)->GetEnv(vm, (void**)&checkEnv, JNI_VERSION_1_1);
 	if (error == JNI_OK)
 	{
 		sjme_message("ScritchUI already attached.");
@@ -765,7 +765,7 @@ static sjme_thread_result sjme_attrThreadCall mle_bindEventThread(
 
 	/* Attach event loop to the JVM. */
 	env = NULL;
-	error = (*vm)->AttachCurrentThreadAsDaemon(vm, &env, &attachArgs);
+	error = (*vm)->AttachCurrentThreadAsDaemon(vm, (void**)&env, &attachArgs);
 	if (env == NULL)
 		sjme_die("Could not attach thread: %d??", error);
 	
@@ -1719,7 +1719,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 	/* Forward call. */
 	error = state->api->labelSetString(
-		state, component, chars);	
+		state, (sjme_scritchui_uiCommon)component, chars);	
 	
 	/* Cleanup. */
 	if (string != NULL)
@@ -1797,7 +1797,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	/* Find function that returns the ScritchUI API interface. */
 	apiInitFunc = NULL;
 	if (sjme_error_is(error = sjme_dylib_lookup(lib, buf,
-		&apiInitFunc)) || apiInitFunc == NULL)
+		(sjme_pointer*)&apiInitFunc)) || apiInitFunc == NULL)
 		goto fail_dyLibLookup;
 	
 	/* Release path. */
@@ -2672,7 +2672,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		return;
 	}
 	
-	mle_simpleListenerSet(env, state, window, javaListener,
+	mle_simpleListenerSet(env, state,
+		(sjme_scritchui_uiComponent)window, javaListener,
 		(sjme_scritchui_voidSetVoidListenerFunc)
 			state->api->windowSetMenuItemActivateListener,
 		(sjme_scritchui_voidListenerFunc)
