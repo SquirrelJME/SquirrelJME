@@ -19,9 +19,9 @@
 
 static const sjme_jubyte expectedRawBin[EXPECTED_SIZE] =
 {
-	83, 113, 117, 105, 114, 114, 101, 108, 115,
-	32, 97, 114, 101, 32, 115, 111, 32,
-	99, 117, 116, 101, 10, 116
+	83,113,117,105,114,114,101,108,
+	115,32,97,114,101,32,115,
+	111,32,99,117,116,101,33,10
 };
 
 static sjme_jboolean funcRomLibraryRawData(
