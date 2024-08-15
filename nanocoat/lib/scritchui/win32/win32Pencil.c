@@ -12,6 +12,95 @@
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
 
+static sjme_errorCode sjme_scritchui_win32_pencilUpdatePen(
+	sjme_scritchui_pencil g)
+{
+	sjme_scritchui inState;
+	HWND hWnd;
+	HDC hDc;
+	LOGPEN penInfo;
+	HPEN hPen, oldHPen;
+	
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover window and drawing context. */
+	inState = g->common.state;
+	hWnd = g->frontEnd.wrapper;
+	hDc = g->frontEnd.data;
+	
+	/* Setup pen details. */
+	memset(&penInfo, 0, sizeof(penInfo));
+	penInfo.lopnColor = RGB(g->state.color.r,
+		g->state.color.g,
+		g->state.color.b);
+	penInfo.lopnWidth.x = 1;
+	if (g->state.stroke == SJME_SCRITCHUI_PENCIL_STROKE_DOTTED)
+		penInfo.lopnStyle = PS_DOT;
+	else
+		penInfo.lopnStyle = PS_SOLID;
+	
+	/* Create new pen. */
+	hPen = CreatePenIndirect(&penInfo);
+	
+	/* Select new pen. */
+	oldHPen = SelectObject(hDc, hPen);
+	if (oldHPen != NULL)
+		DeleteObject(oldHPen);
+	
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+}
+
+static sjme_errorCode sjme_scritchui_win32_pencilDrawHorizSrc(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInValue sjme_jint w)
+{
+	sjme_scritchui inState;
+	HDC hDc;
+	
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover window and drawing context. */
+	inState = g->common.state;
+	hDc = g->frontEnd.data;
+	
+	/* Draw line. */
+	MoveToEx(hDc, x, y, NULL);
+	LineTo(hDc, x + w, y);
+	
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+}
+
+static sjme_errorCode sjme_scritchui_win32_pencilDrawLineSrc(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x1,
+	sjme_attrInValue sjme_jint y1,
+	sjme_attrInValue sjme_jint x2,
+	sjme_attrInValue sjme_jint y2)
+{
+	sjme_scritchui inState;
+	HDC hDc;
+	
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover window and drawing context. */
+	inState = g->common.state;
+	hDc = g->frontEnd.data;
+	
+	/* Draw line. */
+	MoveToEx(hDc, x1, y1, NULL);
+	LineTo(hDc, x2, y2);
+	
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+}
+
 static sjme_errorCode sjme_scritchui_win32_pencilRawScanGet(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
@@ -101,6 +190,13 @@ static sjme_errorCode sjme_scritchui_win32_pencilRawScanPutPure(
 	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
 }
 
+static sjme_errorCode sjme_scritchui_win32_pencilSetAlphaColor(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint argb)
+{
+	return sjme_scritchui_win32_pencilUpdatePen(g);
+}
+
 static sjme_errorCode sjme_scritchui_win32_pencilSetClip(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -146,19 +242,27 @@ fail_setClip:
 		SJME_ERROR_NATIVE_WIDGET_FAILURE);
 }
 
+static sjme_errorCode sjme_scritchui_win32_pencilSetStrokeStyle(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
+		sjme_scritchui_pencilStrokeMode style)
+{
+	return sjme_scritchui_win32_pencilUpdatePen(g);
+}
+
 const sjme_scritchui_pencilImplFunctions sjme_scritchui_win32_pencilFunctions =
 {
 	.copyArea = NULL,
-	.drawHorizSrc = NULL,
+	.drawHorizSrc = sjme_scritchui_win32_pencilDrawHorizSrc,
 	.drawHorizSrcOver = NULL,
-	.drawLineSrc = NULL,
+	.drawLineSrc = sjme_scritchui_win32_pencilDrawLineSrc,
 	.drawLineSrcOver = NULL,
 	.drawPixelSrc = NULL,
 	.drawPixelSrcOver = NULL,
 	.rawScanGet = sjme_scritchui_win32_pencilRawScanGet,
 	.rawScanPutPure = sjme_scritchui_win32_pencilRawScanPutPure,
-	.setAlphaColor = NULL,
+	.setAlphaColor = sjme_scritchui_win32_pencilSetAlphaColor,
 	.setBlendingMode = NULL,
 	.setClip = sjme_scritchui_win32_pencilSetClip,
-	.setStrokeStyle = NULL,
+	.setStrokeStyle = sjme_scritchui_win32_pencilSetStrokeStyle,
 };
