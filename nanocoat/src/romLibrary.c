@@ -50,8 +50,9 @@ static sjme_errorCode sjme_rom_zipLibraryResourceStream(
 	if (sjme_error_is(error = sjme_zip_locateEntry(zip,
 		&entry, resourceName)))
 	{
+		/* File not found maps to resource not found. */
 		if (error == SJME_ERROR_FILE_NOT_FOUND)
-			return error;
+			return SJME_ERROR_RESOURCE_NOT_FOUND;
 		
 		return sjme_error_default(error);
 	}
@@ -362,7 +363,7 @@ sjme_errorCode sjme_rom_libraryResourceAsStream(
 	resourceFunc = library->functions->resourceStream;
 
 	/* Ask for the resource. */
-	/* Remember to remove any starting slash, because internall everything */
+	/* Remember to remove any starting slash, because internally everything */
 	/* is treated as absolute. */
 	result = NULL;
 	if (sjme_error_is(error = resourceFunc(library,

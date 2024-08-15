@@ -117,6 +117,9 @@ typedef struct sjme_seekable_implState
 	
 	/** Internal length. */
 	sjme_jint length;
+	
+	/** Forward close? */
+	sjme_jboolean forwardClose;
 } sjme_seekable_implState;
 
 /**
@@ -213,6 +216,9 @@ struct sjme_seekableBase
 	
 	/** Spinlock for stream access. */
 	sjme_thread_spinLock lock;
+	
+	/** The pool this is in. */
+	sjme_alloc_pool* inPool;
 };
 
 /**

@@ -92,6 +92,9 @@ typedef struct sjme_stream_implState
 	
 	/** Internal length. */
 	sjme_jint length;
+	
+	/** Forward close? */
+	sjme_jboolean forwardClose;
 } sjme_stream_implState;
 
 /**

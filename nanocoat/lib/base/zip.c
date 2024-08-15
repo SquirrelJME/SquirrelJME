@@ -16,6 +16,9 @@
 /** Local header magic number. */
 #define SJME_ZIP_LOCAL_MAGIC INT32_C(0x04034B50)
 
+/** File and extra data lengths offset. */
+#define SJME_ZIP_LOCAL_LENS_OFFSET 26
+
 /** File name offset in local header. */
 #define SJME_ZIP_LOCAL_NAME_OFFSET 30
 
@@ -305,11 +308,12 @@ sjme_errorCode sjme_zip_entryRead(
 	/* Read file lengths. */
 	memset(lens, 0, sizeof(lens));
 	if (sjme_error_is(error = sjme_seekable_readLittle(inZip->seekable,
-		2, lens, localHeaderPos + SJME_ZIP_LOCAL_NAME_OFFSET, 4)))
+		2, lens, localHeaderPos + SJME_ZIP_LOCAL_LENS_OFFSET, 4)))
 		goto fail_readLens;
 	
 	/* The actual data position follows the header. */
-	actualDataPos = SJME_ZIP_LOCAL_LENGTH + lens[0] + lens[1];
+	actualDataPos = localHeaderPos + SJME_ZIP_LOCAL_LENGTH +
+		lens[0] + lens[1];
 	
 	/* The actual size for the low stream depends on the compression. */
 	if (inEntry->method == SJME_ZIP_METHOD_DEFLATE)

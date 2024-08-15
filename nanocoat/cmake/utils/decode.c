@@ -46,7 +46,7 @@ int decodeAsBase64(void)
 {
 	uint8_t buf[BUF_SIZE];
 	uint8_t out[3];
-	int i, c, at;
+	int i, c, at, d, col, hitPadding;
 	int32_t bits, numBits, symbol;
 	
 	/* Set all alpha bits to the max value for invalidness. */
@@ -88,6 +88,8 @@ int decodeAsBase64(void)
 	}
 	
 	/* Begin decoding sequence, character by character. */
+	col = 0;
+	hitPadding = 0;
 	for (bits = 0, numBits = 0;;)
 	{
 		/* Read in character. */
@@ -100,6 +102,14 @@ int decodeAsBase64(void)
 			return EXIT_FAILURE;
 		}
 		
+		/* Reset column? */
+		if (c == '\r' || c == '\n')
+			col = 0;
+		
+		/* Otherwise increment column. */
+		else
+			col++;
+		
 		/* Determine the symbol bit meaning, ignore unknowns. */
 		symbol = alphaToBits[c & 0xFF];
 		if (symbol == INVALID_BITS)
@@ -107,25 +117,32 @@ int decodeAsBase64(void)
 			/* Special handling with padding character. */
 			if (c == base64Padding)
 			{
-				/* No actual bits to decode? */
-				if (numBits == 0)
+				/* Already hit padding and we are on the first column? */
+				/* Stop decoding. */
+				if (hitPadding && col == 0)
 					break;
 				
-				/* Single character pad. */
-				else if (numBits < 16)
+				/* We hit padding. */
+				hitPadding = 1;
+				
+				/* Get next padding character. */
+				d = fgetc(stdin);
+				
+				/* Single character? */
+				if (c == base64Padding && d != base64Padding)
 				{
-					out[0] = (bits >> 4) & 0xFF;
-					fwrite(out, 1, 1, stdout);
+					out[0] = (bits >> 10) & 0xFF;
+					out[1] = (bits >> 2) & 0xFF;
+					fwrite(out, 2, 1, stdout);
 					
 					break;
 				}
 				
-				/* Double character pad. */
-				else
+				/* Double character? */
+				else if (c == base64Padding && d == base64Padding)
 				{
-					out[0] = (bits >> 10) & 0xFF;
-					out[0] = (bits >> 2) & 0xFF;
-					fwrite(out, 1, 2, stdout);
+					out[0] = (bits >> 4) & 0xFF;
+					fwrite(out, 1, 1, stdout);
 					
 					break;
 				}

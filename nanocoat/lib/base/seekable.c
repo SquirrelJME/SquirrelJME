@@ -60,6 +60,7 @@ sjme_errorCode sjme_seekable_open(
 		return sjme_error_default(error);
 	
 	/* Copy in details. */
+	result->inPool = inPool;
 	result->closable.closeHandler = sjme_seekable_closeHandler;
 	result->functions = inFunctions;
 	if (copyFrontEnd != NULL)

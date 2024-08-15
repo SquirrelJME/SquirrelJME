@@ -51,7 +51,7 @@ SJME_TEST_DECLARE(testRomLibraryResourceStreamJar)
 	sjme_rom_library library;
 	sjme_mock mock;
 	sjme_stream_input inputStream;
-	sjme_jint readCount;
+	sjme_jint readCount, i;
 	sjme_jint bufLen;
 	sjme_jubyte* buf;
 
@@ -72,7 +72,7 @@ SJME_TEST_DECLARE(testRomLibraryResourceStreamJar)
 			error);
 
 	/* Allocate target buffer. */
-	bufLen = hello_txt__len + 1;
+	bufLen = hello_txt__len + 20;
 	buf = sjme_alloca(bufLen);
 	memset(buf, 0, bufLen);
 
@@ -87,6 +87,8 @@ SJME_TEST_DECLARE(testRomLibraryResourceStreamJar)
 		"Read count incorrect?");
 
 	/* Test that the actual bytes are correct. */
+	for (i = 0; i < readCount; i++)
+		sjme_message("b[%d] %c ?= %c", i, buf[i], hello_txt__bin[i]);
 	sjme_unit_equalI(test, 0, memcmp(buf, hello_txt__bin, readCount),
 		"Read bytes are not correct?");
 
