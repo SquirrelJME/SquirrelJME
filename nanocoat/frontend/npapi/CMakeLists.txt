@@ -30,3 +30,6 @@ target_include_directories(npapi PUBLIC
 target_link_libraries(npapi PUBLIC
 	${SQUIRRELJME_LINK_LIBRARIES_Base}
 	${SQUIRRELJME_LINK_LIBRARIES_Core})
+
+# Exports for Windows, etc.
+squirreljme_target_shared_library_exports(npapi)

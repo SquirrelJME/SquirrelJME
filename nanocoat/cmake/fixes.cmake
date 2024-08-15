@@ -137,6 +137,19 @@ macro(squirreljme_target_binary_output target where)
 	endforeach()
 endmacro()
 
+# Generate exports, mostly for Windows
+macro(squirreljme_target_shared_library_exports target)
+	get_target_property(squirreljme_dylib_output_dir
+		${target} RUNTIME_OUTPUT_DIRECTORY)
+	get_target_property(squirreljme_dylib_output_name
+		${target} RUNTIME_OUTPUT_NAME)
+
+	if(MSVC)
+		target_link_options(${target} PRIVATE
+			"/IMPLIB:${squirreljme_dylib_output_dir}/${squirreljme_dylib_output_name}.lib")
+	endif()
+endmacro()
+
 # Turn some warnings into errors
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	add_compile_options("-Werror=implicit-function-declaration")

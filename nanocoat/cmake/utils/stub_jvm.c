@@ -9,23 +9,27 @@
 
 #include <stdlib.h>
 
+#if defined(_WIN32)
+	#define SJME_DYLIB_EXPORT __declspec(dllexport)
+#endif
+
 #define _JNI_IMPLEMENTATION_
 #include "../../include/3rdparty/jni/jni.h"
 
-JNIEXPORT jint JNICALL JNI_GetDefaultJavaVMInitArgs(void* args)
+SJME_DYLIB_EXPORT JNIEXPORT jint JNICALL JNI_GetDefaultJavaVMInitArgs(void* args)
 {
 	abort();
 	return -1;
 }
 
-JNIEXPORT jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
+SJME_DYLIB_EXPORT JNIEXPORT jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	void* args)
 {
 	abort();
 	return -1;
 }
 
-JNIEXPORT jint JNICALL JNI_GetCreatedJavaVMs(JavaVM** pvm,
+SJME_DYLIB_EXPORT JNIEXPORT jint JNICALL JNI_GetCreatedJavaVMs(JavaVM** pvm,
 	jsize a, jsize* b)
 {
 	abort();

@@ -43,3 +43,6 @@ target_link_libraries(libJvm PUBLIC
 squirreljme_target_binary_name(libJvm
 	"jvm")
 
+# Exports for Windows, etc.
+squirreljme_target_shared_library_exports(libJvm)
+

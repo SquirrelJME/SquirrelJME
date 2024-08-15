@@ -146,8 +146,7 @@ else()
 		"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
 
 	# Use stubbed libraries
-	set(JAVA_JVM_LIBRARY
-		"${SQUIRRELJME_UTIL_DIR}/${SQUIRRELJME_HOST_DYLIB_PREFIX}jvm${SQUIRRELJME_HOST_DYLIB_SUFFIX}")
+	squirreljme_library_set(JAVA_JVM_LIBRARY jvm)
 endif()
 
 # Use host AWT?
@@ -165,8 +164,7 @@ else()
 		"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
 
 	# Stubbed library
-	set(JAVA_AWT_LIBRARY
-		"${SQUIRRELJME_UTIL_DIR}/${SQUIRRELJME_HOST_DYLIB_PREFIX}jawt${SQUIRRELJME_HOST_DYLIB_SUFFIX}")
+	squirreljme_library_set(JAVA_AWT_LIBRARY jawt)
 endif()
 
 # Debugging
