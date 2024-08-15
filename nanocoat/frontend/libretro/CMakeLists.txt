@@ -83,6 +83,11 @@ set_target_properties(squirreljme_libretro PROPERTIES
 target_include_directories(squirreljme_libretro PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
+# Exports for Windows, etc.
+if(NOT libRetroIsStatic)
+	squirreljme_target_shared_library_exports(npapi)
+endif()
+
 # Allow running the binary, as long as it is not static and we are on the
 # same system...
 find_program(retroArchExe "retroarch")

@@ -301,6 +301,10 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 		memmove(&state->common.frontEnd, initFrontEnd,
 			sizeof(*initFrontEnd));
 	
+	/* Set wrapped state. */
+	if (wrappedState != NULL)
+		state->wrappedState = wrappedState;
+	
 	/* Perform API specific initialization. */
 	if (sjme_error_is(error = state->impl->apiInit(state)))
 		goto fail_apiInit;
@@ -313,7 +317,6 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 			state, wrappedState);
 		
 		/* Link together. */
-		state->wrappedState = wrappedState;
 		sjme_atomic_sjme_pointer_set(&wrappedState->topState,
 			state);
 		

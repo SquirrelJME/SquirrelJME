@@ -51,5 +51,14 @@ add_executable(platform
 # JVM and JAWT stubs
 add_library(jvm SHARED
 	stub_jvm.c)
+
 add_library(jawt SHARED
 	stub_jawt.c)
+
+if (MSVC)
+	target_link_options(jvm PRIVATE
+		"/IMPLIB:${CMAKE_BINARY_DIR}/jvm.lib")
+
+	target_link_options(jawt PRIVATE
+		"/IMPLIB:${CMAKE_BINARY_DIR}/jawt.lib")
+endif()

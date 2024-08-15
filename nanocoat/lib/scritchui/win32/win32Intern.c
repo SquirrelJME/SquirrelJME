@@ -616,6 +616,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	
 	/* Recover component, ignore if this is something else. */
 	inComponent = NULL;
+	hDc = NULL;
 	if (sjme_error_is(inState->implIntern->recoverComponent(inState,
 		hWnd, &inComponent)))
 		goto fail_fallback;

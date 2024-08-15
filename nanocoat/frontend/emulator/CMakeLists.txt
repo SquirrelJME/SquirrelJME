@@ -53,3 +53,6 @@ squirreljme_target_binary_output(libEmulator
 # Use a simpler name for the library
 squirreljme_target_binary_name(libEmulator
 	"emulator-nanocoat")
+
+# Exports for Windows, etc.
+squirreljme_target_shared_library_exports(libEmulator)
