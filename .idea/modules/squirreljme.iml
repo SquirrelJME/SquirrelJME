@@ -292,6 +292,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/out" />

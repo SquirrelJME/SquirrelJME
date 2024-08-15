@@ -60,8 +60,7 @@ public class DylibScritchInterface
 	
 	/** The internal default order of interfaces. */
 	private static final List<String> _ORDER =
-		UnmodifiableList.of(Arrays.asList("win32", "gtk2"/*, "motif", "gtk3",
-			"x11", "jawt", "palmos", "toolbox"*/));
+		UnmodifiableList.of(Arrays.asList("cocoa", "win32", "gtk2"));
 	
 	/** The default instance of this. */
 	private static volatile DylibScritchInterface _INSTANCE;

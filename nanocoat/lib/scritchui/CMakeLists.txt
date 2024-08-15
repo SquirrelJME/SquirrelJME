@@ -71,6 +71,13 @@ if(NOT SQUIRRELJME_SCRITCHUI_NO_DYLIB)
 		squirreljme_scritchui_build(WIN32 win32 Win32)
 	endif()
 
+	# Mac OS Cocoa
+	option(SQUIRRELJME_ENABLE_GUI_COCOA "Enable Cocoa GUI"
+		${SQUIRRELJME_ON_IF_APPLE_DESKTOP})
+	if (SQUIRRELJME_ENABLE_GUI_COCOA)
+		squirreljme_scritchui_build(SQUIRRELJME_ENABLE_GUI_COCOA cocoa Cocoa)
+	endif()
+
 	# Motif?
 	find_package(Motif)
 
