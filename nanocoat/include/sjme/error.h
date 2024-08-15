@@ -307,8 +307,11 @@ typedef enum sjme_errorCode
 	/** Zip is corrupt. */
 	SJME_ERROR_CORRUPT_ZIP = -88,
 	
+	/** Unsupported Zip format. */
+	SJME_ERROR_UNSUPPORTED_ZIP_FORMAT = -89,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -88
+	SJME_NUM_ERROR_CODES = -90
 } sjme_errorCode;
 
 /**

@@ -76,6 +76,9 @@
 /** The offset to the comment length. */
 #define SJME_ZIP_ECDIR_OFF_COMMENT_LEN (SJME_ZIP_ECDIR_MIN_LENGTH - 2)
 
+/** The deflate method. */
+#define SJME_ZIP_METHOD_DEFLATE 8
+
 static sjme_errorCode sjme_zip_close(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -219,6 +222,20 @@ sjme_errorCode sjme_zip_entryRead(
 	/* Not an actually valid entry? */
 	if (inEntry->zip == NULL)
 		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Non-deflate and Zip64 are not supported! */
+	if (inEntry->compressedSize == -1 ||
+		inEntry->uncompressedSize == -1 ||
+		inEntry->offset == -1 ||
+		inEntry->diskNum == 0xFFFF ||
+		(inEntry->method != 0 && inEntry->method != SJME_ZIP_METHOD_DEFLATE))
+		return SJME_ERROR_UNSUPPORTED_ZIP_FORMAT;
+	
+	/* These cannot be larger than 2GiB. */
+	if (inEntry->compressedSize < 0 ||
+		inEntry->uncompressedSize < 0 ||
+		inEntry->offset < 0)
+		return SJME_ERROR_CORRUPT_ZIP;
 	
 	/* Debug. */
 	sjme_message("Open Zip entry: %s",
