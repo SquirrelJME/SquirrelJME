@@ -20,6 +20,7 @@
 #include "sjme/seekable.h"
 #include "sjme/list.h"
 #include "sjme/descriptor.h"
+#include "sjme/stream.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

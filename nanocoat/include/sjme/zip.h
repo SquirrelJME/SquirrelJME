@@ -55,8 +55,14 @@ typedef struct sjme_zipBase
 	/** The central directory position. */
 	sjme_jint centralDirPos;
 	
+	/** The logical start position of the central directory. */
+	sjme_jint logicalCentralDirPos;
+	
 	/** The end central directory record position. */
 	sjme_jint endCentralDirPos;
+	
+	/** The start position of the Zip in the seekable. */
+	sjme_jint archiveStartPos;
 	
 	/** The seekable where the Zip is. */
 	sjme_seekable seekable;

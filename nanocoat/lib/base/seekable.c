@@ -201,22 +201,6 @@ sjme_errorCode sjme_seekable_regionLock(
 	return sjme_error_notImplemented(0);
 }
 
-sjme_errorCode sjme_seekable_regionLockAsInputStream(
-	sjme_attrInNotNull sjme_seekable seekable,
-	sjme_attrOutNotNull sjme_stream_input* outStream,
-	sjme_attrInPositive sjme_jint base,
-	sjme_attrInPositive sjme_jint length)
-{
-	if (seekable == NULL || outStream == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (base < 0 || length < 0 || (base + length) < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-
-	sjme_todo("Implement this?");
-	return sjme_error_notImplemented(0);
-}
-
 sjme_errorCode sjme_seekable_regionUnlock(
 	sjme_attrInNotNull sjme_seekable_lock inLock,
 	sjme_attrInRange(0, SJME_NUM_SEEKABLE_UNLOCK_ACTION)

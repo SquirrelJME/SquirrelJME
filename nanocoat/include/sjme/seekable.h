@@ -17,6 +17,8 @@
 #define SQUIRRELJME_SEEKABLE_H
 
 #include "sjme/stdTypes.h"
+#include "sjme/alloc.h"
+#include "sjme/closeable.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -393,23 +395,6 @@ sjme_errorCode sjme_seekable_readReverse(
 sjme_errorCode sjme_seekable_regionLock(
 	sjme_attrInNotNull sjme_seekable seekable,
 	sjme_attrOutNotNull sjme_seekable_lock* outLock,
-	sjme_attrInPositive sjme_jint base,
-	sjme_attrInPositive sjme_jint length);
-
-/**
- * Similar to @c sjme_seekable_regionLock except that instead of returning a
- * lock it returns a stream.
- *
- * @param seekable The seekable to lock within.
- * @param outStream The resultant stream.
- * @param base The base address within the seekable to lock.
- * @param length The number of bytes to lock.
- * @return Any resultant error, if any.
- * @since 2024/01/01
- */
-sjme_errorCode sjme_seekable_regionLockAsInputStream(
-	sjme_attrInNotNull sjme_seekable seekable,
-	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInPositive sjme_jint base,
 	sjme_attrInPositive sjme_jint length);
 

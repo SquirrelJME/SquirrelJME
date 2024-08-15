@@ -13,6 +13,15 @@
 #include "sjme/debug.h"
 #include "sjme/path.h"
 
+/** Local header magic number. */
+#define SJME_ZIP_LOCAL_MAGIC INT32_C(0x04034B50)
+
+/** File name offset in local header. */
+#define SJME_ZIP_LOCAL_NAME_OFFSET 30
+
+/** Base size of the local file header. */
+#define SJME_ZIP_LOCAL_LENGTH 30
+
 /** Magic number for the central directory header. */
 #define SJME_ZIP_CDIR_MAGIC INT32_C(0x02014B50)
 
@@ -69,6 +78,9 @@
 
 /** Offset to the central directory size. */
 #define SJME_ZIP_ECDIR_CDIR_LEN_OFFSET 12
+
+/** Logical offset of the central directory from archive start. */
+#define SJME_ZIP_ECDIR_CDIR_LOGICAL_POS_OFFSET 16
 
 /** Maximum length of the end central directory record. */
 #define SJME_ZIP_ECDIR_MAX_LENGTH (SJME_ZIP_ECDIR_MIN_LENGTH + 65535)
@@ -128,15 +140,17 @@ fail_seekableClose:
 static sjme_errorCode sjme_zip_findCentralDir(
 	sjme_attrInNotNull sjme_seekable seekable,
 	sjme_attrOutNotNull sjme_jint* outCDirPos,
-	sjme_attrOutNotNull sjme_jint* outEndCDirPos)
+	sjme_attrOutNotNull sjme_jint* outEndCDirPos,
+	sjme_attrOutNotNull sjme_jint* outLogicalCentralDirPos)
 {
 	sjme_errorCode error;
-	sjme_jint seekLen, endCDirAt, stopAt, cDirAt;
+	sjme_jint seekLen, endCDirAt, stopAt, cDirAt, logicalCDirAt;
 	sjme_jint magic;
 	sjme_jint cDirLen; 
 	sjme_jchar commentLen;
 	
-	if (seekable == NULL || outCDirPos == NULL || outEndCDirPos == NULL)
+	if (seekable == NULL || outCDirPos == NULL || outEndCDirPos == NULL ||
+		outLogicalCentralDirPos == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Need to know the length of the seekable first. */
@@ -201,8 +215,17 @@ static sjme_errorCode sjme_zip_findCentralDir(
 			if (magic != SJME_ZIP_CDIR_MAGIC)
 				continue;
 			
+			/* Read in logical offset of the central directory. */
+			logicalCDirAt = -1;
+			if (sjme_error_is(error = sjme_seekable_readLittle(seekable, 4,
+				&logicalCDirAt,
+				endCDirAt + SJME_ZIP_ECDIR_CDIR_LOGICAL_POS_OFFSET, 4)) ||
+				logicalCDirAt == -1)
+				return sjme_error_default(error);
+			
 			/* Should be here! */
 			*outCDirPos = cDirAt;
+			*outLogicalCentralDirPos = logicalCDirAt;
 			*outEndCDirPos = endCDirAt;
 			return SJME_ERROR_NONE;
 		}
@@ -216,13 +239,24 @@ sjme_errorCode sjme_zip_entryRead(
 	sjme_attrInNotNull const sjme_zip_entry* inEntry,
 	sjme_attrOutNotNull sjme_stream_input* outStream)
 {
-	sjme_jint nameLen;
+	sjme_errorCode error;
+	sjme_jint nameLen, localHeaderPos, magic, actualDataPos, rawSize;
+	sjme_stream_input lowStream;
+	sjme_stream_input hiStream;
+	sjme_alloc_pool* inPool;
+	sjme_zip inZip;
+	sjme_jchar lens[2];
 	
 	if (inEntry == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Not an actually valid entry? */
-	if (inEntry->zip == NULL)
+	inZip = inEntry->zip;
+	if (inZip == NULL)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	inPool = inZip->inPool;
+	if (inPool == NULL)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Non-deflate and Zip64 are not supported! */
@@ -248,8 +282,94 @@ sjme_errorCode sjme_zip_entryRead(
 	sjme_message("Open Zip entry: %s",
 		inEntry->name);
 	
-	sjme_todo("Implement this?");
-	return sjme_error_notImplemented(0);
+	/* Lock the Zip. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&inZip->lock)))
+		return sjme_error_default(error);
+	
+	/* Determine local file header position. */
+	localHeaderPos = inZip->archiveStartPos + inEntry->offset;
+	
+	/* Check magic number. */
+	magic = -1;
+	if (sjme_error_is(error = sjme_seekable_readLittle(inZip->seekable,
+		4, &magic, localHeaderPos, 4)))
+		goto fail_readLocalMagic;
+	
+	/* Wrong magic number? */
+	if (magic != SJME_ZIP_LOCAL_MAGIC)
+	{
+		error = SJME_ERROR_CORRUPT_ZIP;
+		goto fail_checkMagic;
+	}
+	
+	/* Read file lengths. */
+	memset(lens, 0, sizeof(lens));
+	if (sjme_error_is(error = sjme_seekable_readLittle(inZip->seekable,
+		2, lens, localHeaderPos + SJME_ZIP_LOCAL_NAME_OFFSET, 4)))
+		goto fail_readLens;
+	
+	/* The actual data position follows the header. */
+	actualDataPos = SJME_ZIP_LOCAL_LENGTH + lens[0] + lens[1];
+	
+	/* The actual size for the low stream depends on the compression. */
+	if (inEntry->method == SJME_ZIP_METHOD_DEFLATE)
+		rawSize = inEntry->compressedSize;
+	else
+		rawSize = inEntry->uncompressedSize;
+	
+	/* Open stream over the raw data. */
+	lowStream = NULL;
+	if (sjme_error_is(error = sjme_stream_inputOpenSeekable(inZip->seekable,
+		&lowStream, actualDataPos, rawSize,
+		SJME_JNI_FALSE)) || lowStream == NULL)
+		goto fail_openLow;
+	
+	/* If compressed, open stream over the compressed data. */
+	hiStream = NULL;
+	if (inEntry->method == SJME_ZIP_METHOD_DEFLATE)
+	{
+		/* Actively decompress incoming data. */
+		if (sjme_error_is(error = sjme_stream_inputOpenDeflate(
+			inPool, &hiStream, lowStream,
+			SJME_JNI_TRUE)) ||
+			hiStream == NULL)
+			goto fail_openHi;
+	}
+	
+	/* Release the lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(&inZip->lock,
+		NULL)))
+		return sjme_error_default(error);
+	
+	/* Give the uncompressed stream. */
+	if (hiStream != NULL)
+		*outStream = hiStream;
+	else
+		*outStream = lowStream;
+	return SJME_ERROR_NONE;
+
+fail_openHi:
+	/* Close high stream. */
+	if (hiStream != NULL)
+		if (sjme_error_is(sjme_closeable_close(
+			SJME_AS_CLOSEABLE(hiStream))))
+			return sjme_error_default(error);
+	
+fail_openLow:
+	/* Close low stream. */
+	if (lowStream != NULL)
+		if (sjme_error_is(sjme_closeable_close(
+			SJME_AS_CLOSEABLE(lowStream))))
+			return sjme_error_default(error);
+fail_readLens:
+fail_readLocalMagic:
+fail_checkMagic:
+	/* Release the lock. */
+	if (sjme_error_is(sjme_thread_spinLockRelease(&inZip->lock,
+		NULL)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_zip_locateEntry(
@@ -446,7 +566,8 @@ sjme_errorCode sjme_zip_openSeekable(
 	sjme_attrInNotNull sjme_seekable inSeekable)
 {
 	sjme_errorCode error;
-	sjme_jint centralDirPos, endCentralDirPos;
+	sjme_jint centralDirPos, endCentralDirPos, logicalCentralDirPos;
+	sjme_jint archiveStartPos;
 	sjme_zip result;
 	
 	if (inPool == NULL || outZip == NULL || inSeekable == NULL)
@@ -454,11 +575,18 @@ sjme_errorCode sjme_zip_openSeekable(
 	
 	/* Locate the central directory within the Zip. */
 	centralDirPos = -1;
+	logicalCentralDirPos = -1;
 	endCentralDirPos = -1;
 	if (sjme_error_is(error = sjme_zip_findCentralDir(inSeekable,
-		&centralDirPos, &endCentralDirPos)) ||
+		&centralDirPos, &endCentralDirPos,
+		&logicalCentralDirPos)) ||
 		centralDirPos < 0 || endCentralDirPos < 0)
 		return sjme_error_default(error);
+	
+	/* Check archive start position. */
+	archiveStartPos = centralDirPos - logicalCentralDirPos;
+	if (archiveStartPos < 0)
+		return SJME_ERROR_CORRUPT_ZIP;
 	
 	/* Allocate Zip state structure. */
 	result = NULL;
@@ -468,11 +596,16 @@ sjme_errorCode sjme_zip_openSeekable(
 		(void**)&result, NULL)))
 		return sjme_error_default(error);
 	
+	/* Debug. */
+	sjme_message("Zip starts at %d", archiveStartPos);
+	
 	/* Store info. */
 	result->closeable.closeHandler = sjme_zip_close;
 	result->inPool = inPool;
 	result->centralDirPos = centralDirPos;
+	result->logicalCentralDirPos = logicalCentralDirPos;
 	result->endCentralDirPos = endCentralDirPos;
+	result->archiveStartPos = archiveStartPos;
 	result->seekable = inSeekable;
 	
 	/* Count the seekable up, since we are using it. */
