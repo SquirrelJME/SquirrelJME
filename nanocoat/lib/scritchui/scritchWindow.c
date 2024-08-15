@@ -184,9 +184,8 @@ sjme_errorCode sjme_scritchui_core_windowSetMenuBar(
 	
 	/* The overhead might have changed natively if there is a minimum set. */
 	if (inWindow->min.width != 0 && inWindow->min.height != 0)
-		if (sjme_error_is(error = inState->api->windowContentMinimumSize(
-			inState, inWindow, inWindow->min.width, inWindow->min.height)))
-			return sjme_error_default(error);
+		return inState->apiInThread->windowContentMinimumSize(
+			inState, inWindow, inWindow->min.width, inWindow->min.height);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -230,7 +229,8 @@ sjme_errorCode sjme_scritchui_core_windowSetVisible(
 	/* If we have a minimum size set, making this window visible should */
 	/* be able to tell us the overhead of the window, so reset minimum */
 	/* size here to handle that. */
-	if (inWindow->min.width != 0 && inWindow->min.height != 0)
+	if (inWindow->min.width != 0 && inWindow->min.height != 0 &&
+		!inState->bugs.noContentSizeWhenVisible)
 		return inState->apiInThread->windowContentMinimumSize(
 			inState, inWindow, inWindow->min.width, inWindow->min.height);
 	

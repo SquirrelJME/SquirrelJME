@@ -22,6 +22,7 @@ sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
 	RECT winRect;
 	POINT clientPoint;
 	sjme_scritchui_dim* overhead;
+	sjme_jboolean notReady;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -37,8 +38,17 @@ sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
 	memset(&winRect, 0, sizeof(winRect));
 	memset(&clientPoint, 0, sizeof(clientPoint));
 	
-	GetWindowRect(window, &winRect);
-	ClientToScreen(window, &clientPoint);
+	/* If either of these fail, the window exists but is not on the screen */
+	/* so any attempts to place it will fail. */
+	notReady = SJME_JNI_FALSE;
+	if (0 == GetWindowRect(window, &winRect))
+		notReady = SJME_JNI_TRUE;
+	if (0 == ClientToScreen(window, &clientPoint))
+		notReady = SJME_JNI_TRUE;
+	
+	/* Do nothing yet if this is the case. */
+	if (notReady)
+		return SJME_ERROR_NONE;
 	
 	/* The X coordinates are effectively a lie. */
 	overhead->width = (clientPoint.x - winRect.left) +

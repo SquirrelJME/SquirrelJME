@@ -1919,6 +1919,17 @@ typedef struct sjme_scritchui_wmInfo
 	sjme_lpcstr xwsClass;
 } sjme_scritchui_wmInfo;
 
+/**
+ * Windowing system specific bugs.
+ * 
+ * @since 2024/08/15
+ */
+typedef struct sjme_scritchui_bugs
+{
+	/** Do not set content size when the window is made visible. */
+	sjme_jboolean noContentSizeWhenVisible;
+} sjme_scritchui_bugs;
+
 struct sjme_scritchui_stateBase
 {
 	/** Common data. */
@@ -1980,6 +1991,9 @@ struct sjme_scritchui_stateBase
 	
 	/** The next ID for opaque menu items. */
 	sjme_jint nextMenuItemId;
+	
+	/** Windowing system specific bugs. */
+	sjme_scritchui_bugs bugs;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */
