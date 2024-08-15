@@ -17,7 +17,6 @@
 #define SQUIRRELJME_SEEKABLE_H
 
 #include "sjme/stdTypes.h"
-#include "sjme/stream.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -213,27 +212,6 @@ struct sjme_seekableBase
 	/** Spinlock for stream access. */
 	sjme_thread_spinLock lock;
 };
-
-/**
- * Provides an input stream to read data from a seekable, note that
- * unlike @c sjme_seekable_regionLockAsInputStream there is no locking
- * involved and as such there may be a performance penalty or otherwise.
- *
- * @param seekable The seekable to access.
- * @param outStream The resultant stream.
- * @param base The base address within the seekable.
- * @param length The number of bytes to stream.
- * @param forwardClose If the input stream is closed, should the seekable
- * also be closed?
- * @return Any resultant error, if any.
- * @since 2024/01/01
- */
-sjme_errorCode sjme_seekable_asInputStream(
-	sjme_attrInNotNull sjme_seekable seekable,
-	sjme_attrOutNotNull sjme_stream_input* outStream,
-	sjme_attrInPositive sjme_jint base,
-	sjme_attrInPositive sjme_jint length,
-	sjme_attrInValue sjme_jboolean forwardClose);
 
 /**
  * Opens a generic stream.

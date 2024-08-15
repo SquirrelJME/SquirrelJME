@@ -19,8 +19,9 @@
 
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
-#include "alloc.h"
-#include "closeable.h"
+#include "sjme/alloc.h"
+#include "sjme/closeable.h"
+#include "sjme/seekable.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -333,6 +334,27 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Provides an input stream to read data from a seekable, note that
+ * unlike @c sjme_seekable_regionLockAsInputStream there is no locking
+ * involved and as such there may be a performance penalty or otherwise.
+ *
+ * @param seekable The seekable to access.
+ * @param outStream The resultant stream.
+ * @param base The base address within the seekable.
+ * @param length The number of bytes to stream.
+ * @param forwardClose If the input stream is closed, should the seekable
+ * also be closed?
+ * @return Any resultant error, if any.
+ * @since 2024/01/01
+ */
+sjme_errorCode sjme_stream_inputOpenSeekable(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInPositive sjme_jint base,
+	sjme_attrInPositive sjme_jint length,
+	sjme_attrInValue sjme_jboolean forwardClose);
 
 /**
  * Reads from the given input stream and writes to the destination buffer.

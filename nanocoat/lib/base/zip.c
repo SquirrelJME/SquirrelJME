@@ -216,6 +216,8 @@ sjme_errorCode sjme_zip_entryRead(
 	sjme_attrInNotNull const sjme_zip_entry* inEntry,
 	sjme_attrOutNotNull sjme_stream_input* outStream)
 {
+	sjme_jint nameLen;
+	
 	if (inEntry == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -236,6 +238,11 @@ sjme_errorCode sjme_zip_entryRead(
 		inEntry->uncompressedSize < 0 ||
 		inEntry->offset < 0)
 		return SJME_ERROR_CORRUPT_ZIP;
+	
+	/* Cannot open directories. */
+	nameLen = strlen(inEntry->name);
+	if (inEntry->name[nameLen - 1] == '/')
+		return SJME_ERROR_IS_DIRECTORY;
 	
 	/* Debug. */
 	sjme_message("Open Zip entry: %s",

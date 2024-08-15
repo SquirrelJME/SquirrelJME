@@ -310,8 +310,11 @@ typedef enum sjme_errorCode
 	/** Unsupported Zip format. */
 	SJME_ERROR_UNSUPPORTED_ZIP_FORMAT = -89,
 	
+	/** Path is a directory. */
+	SJME_ERROR_IS_DIRECTORY = -90,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -90
+	SJME_NUM_ERROR_CODES = -91
 } sjme_errorCode;
 
 /**
