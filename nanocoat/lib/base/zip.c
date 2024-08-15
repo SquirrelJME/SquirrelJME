@@ -119,7 +119,8 @@ static sjme_errorCode sjme_zip_close(
 		goto fail_seekableClose;
 		
 	/* Un-ref the seekable we just closed. */
-	if (sjme_error_is(error = sjme_alloc_weakUnRef(zip->seekable)))
+	if (sjme_error_is(error = sjme_alloc_weakUnRef(
+		(sjme_pointer*)&zip->seekable)))
 		goto fail_seekableUnref;
 		
 	/* Release the lock. */
@@ -546,7 +547,7 @@ sjme_errorCode sjme_zip_openMemory(
 	
 	/* Open Zip from this seekable now. */
 	result = NULL;
-	if (sjme_error_is(sjme_zip_openSeekable(inPool,
+	if (sjme_error_is(error = sjme_zip_openSeekable(inPool,
 		&result, seekable)) || result == NULL)
 	{
 		/* Destroy seekable before failing. */
@@ -555,8 +556,9 @@ sjme_errorCode sjme_zip_openMemory(
 		return sjme_error_default(error);
 	}
 	
-	/* Un-reference the original memory area as we are on top of it. */
-	if (sjme_error_is(error = sjme_alloc_weakUnRef(seekable)))
+	/* Un-reference the original memory area as the zip references it. */
+	if (sjme_error_is(error = sjme_alloc_weakUnRef(
+		(sjme_pointer*)&seekable)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -613,7 +615,7 @@ sjme_errorCode sjme_zip_openSeekable(
 	result->seekable = inSeekable;
 	
 	/* Count the seekable up, since we are using it. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
+	if (sjme_error_is(error = sjme_alloc_weakRef(inSeekable, NULL)))
 		return sjme_error_default(error);
 	
 	/* Success! */
