@@ -18,7 +18,8 @@
 
 #include "sjme/nvm.h"
 #include "sjme/stream.h"
-#include "seekable.h"
+#include "sjme/seekable.h"
+#include "sjme/path.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -73,6 +74,48 @@ typedef struct sjme_zip_entry
 {
 	/** The Zip this is in. */
 	sjme_zip zip;
+	
+	/** The version this was made by. */
+	sjme_jchar versionMadeBy;
+	
+	/** The version needed to extract. */
+	sjme_jchar versionNeeded;
+	
+	/** General purpose bits. */
+	sjme_jchar generalBits;
+	
+	/** Compression method. */
+	sjme_jchar method;
+	
+	/** Last modification time. */
+	sjme_jchar lastModTime;
+	
+	/** Last modification date. */
+	sjme_jchar lastModDate;
+	
+	/** Uncompressed CRC. */
+	sjme_jint uncompressedCrc;
+	
+	/** Compressed size. */
+	sjme_jint compressedSize;
+	
+	/** Uncompressed size. */
+	sjme_jint uncompressedSize;
+	
+	/** Disk number. */
+	sjme_jchar diskNum;
+	
+	/** Internal attributes. */
+	sjme_jchar internalAttrib;
+	
+	/** External attributes. */
+	sjme_jint externalAttrib;
+	
+	/** Relative offset where the data starts. */
+	sjme_jint offset;
+	
+	/** The file name. */
+	sjme_cchar name[SJME_MAX_FILE_NAME];
 } sjme_zip_entry;
 
 /**

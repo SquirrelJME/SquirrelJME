@@ -11,9 +11,55 @@
 
 #include "sjme/zip.h"
 #include "sjme/debug.h"
+#include "sjme/path.h"
 
 /** Magic number for the central directory header. */
 #define SJME_ZIP_CDIR_MAGIC INT32_C(0x02014B50)
+
+/** Base offset for variable length data. */
+#define SJME_ZIP_CDIR_VAR_LEN_OFFSET 28
+
+/** Central directory version made by offset. */
+#define SJME_ZIP_CDIR_VERSION_MADE_BY_OFFSET 4
+
+/** Central directory version needed offset. */
+#define SJME_ZIP_CDIR_VERSION_NEEDED_OFFSET 6
+
+/** Central directory general bits offset. */
+#define SJME_ZIP_CDIR_GENERAL_BITS_OFFSET 8
+
+/** Central directory method offset. */
+#define SJME_ZIP_CDIR_METHOD_OFFSET 10
+
+/** Central directory last modification time offset. */
+#define SJME_ZIP_CDIR_LAST_MOD_TIME_OFFSET 12
+
+/** Central directory last modification date offset. */
+#define SJME_ZIP_CDIR_LAST_MOD_DATE_OFFSET 14
+
+/** Central directory uncompressed CRC offset. */
+#define SJME_ZIP_CDIR_UNCOMPRESSED_CRC_OFFSET 16
+
+/** Central directory compressed size offset. */
+#define SJME_ZIP_CDIR_COMPRESSED_SIZE_OFFSET 20
+
+/** Central directory uncompressed size offset. */
+#define SJME_ZIP_CDIR_UNCOMPRESSED_SIZE_OFFSET 24
+
+/** Central directory disk number offset. */
+#define SJME_ZIP_CDIR_DISK_NUM_OFFSET 34
+
+/** Central directory internal attributes offset. */
+#define SJME_ZIP_CDIR_INTERNAL_ATTRIB_OFFSET 36
+
+/** Central directory external attributes offset. */
+#define SJME_ZIP_CDIR_EXTERNAL_ATTRIB_OFFSET 38
+
+/** Central directory relative offset, offset. */
+#define SJME_ZIP_CDIR_OFFSET_OFFSET 42
+
+/** Base offset for the file name in the central directory. */
+#define SJME_ZIP_CDIR_NAME_OFFSET 46
 
 /** Magic number for the end central directory record. */
 #define SJME_ZIP_ECDIR_MAGIC INT32_C(0x06054B50)
@@ -174,6 +220,10 @@ sjme_errorCode sjme_zip_entryRead(
 	if (inEntry->zip == NULL)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
+	/* Debug. */
+	sjme_message("Open Zip entry: %s",
+		inEntry->name);
+	
 	sjme_todo("Implement this?");
 	return sjme_error_notImplemented(0);
 }
@@ -187,6 +237,8 @@ sjme_errorCode sjme_zip_locateEntry(
 	sjme_jint dirBase, magic;
 	sjme_seekable seekable;
 	sjme_zip_entry result;
+	sjme_jchar lens[3];
+	sjme_cchar atName[SJME_MAX_FILE_NAME];
 	
 	if (inZip == NULL || outEntry == NULL || entryName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -222,8 +274,86 @@ sjme_errorCode sjme_zip_locateEntry(
 			goto fail_corrupt;
 		}
 		
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Read in name lengths and otherwise. */
+		memset(lens, 0, sizeof(lens));
+		if (sjme_error_is(error = sjme_seekable_readLittle(seekable,
+			2, lens, dirBase + SJME_ZIP_CDIR_VAR_LEN_OFFSET, 3 * 2)))
+			goto fail_badRead;
+		
+		/* Only if the name can fit, ignore long names */
+		if (lens[0] < SJME_MAX_FILE_NAME)
+		{
+			/* Read in entry name. */
+			memset(atName, 0, sizeof(atName));
+			if (sjme_error_is(error = sjme_seekable_read(seekable,
+				atName,
+				dirBase + SJME_ZIP_CDIR_NAME_OFFSET,
+				lens[0])))
+				goto fail_badRead;
+			
+			/* Make sure it is not too out there. */
+			atName[SJME_MAX_FILE_NAME - 1] = 0;
+			
+			/* Is it this file? */
+			if (0 == strcmp(atName, entryName))
+			{
+				/* Bulk read could fail. */
+				error = SJME_ERROR_NONE;
+				
+				/* Refer to the owning Zip. */
+				result.zip = inZip;
+				
+				/* Read in details, lots of duplication here! */
+#define SJME_ZIP_READ(len, what, off) \
+	error |= sjme_seekable_readLittle(seekable, \
+		(len), &result.what, \
+		dirBase + (off), \
+		(len))
+				
+				SJME_ZIP_READ(2, versionMadeBy,
+					SJME_ZIP_CDIR_VERSION_MADE_BY_OFFSET);
+				SJME_ZIP_READ(2, versionNeeded,
+					SJME_ZIP_CDIR_VERSION_NEEDED_OFFSET);
+				SJME_ZIP_READ(2, generalBits,
+					SJME_ZIP_CDIR_GENERAL_BITS_OFFSET);
+				SJME_ZIP_READ(2, method,
+					SJME_ZIP_CDIR_METHOD_OFFSET);
+				SJME_ZIP_READ(2, lastModTime,
+					SJME_ZIP_CDIR_LAST_MOD_TIME_OFFSET);
+				SJME_ZIP_READ(2, lastModDate,
+					SJME_ZIP_CDIR_LAST_MOD_DATE_OFFSET);
+				SJME_ZIP_READ(4, uncompressedCrc,
+					SJME_ZIP_CDIR_UNCOMPRESSED_CRC_OFFSET);
+				SJME_ZIP_READ(4, compressedSize,
+					SJME_ZIP_CDIR_COMPRESSED_SIZE_OFFSET);
+				SJME_ZIP_READ(4, uncompressedSize,
+					SJME_ZIP_CDIR_UNCOMPRESSED_SIZE_OFFSET);
+				SJME_ZIP_READ(2, diskNum,
+					SJME_ZIP_CDIR_DISK_NUM_OFFSET);
+				SJME_ZIP_READ(2, internalAttrib,
+					SJME_ZIP_CDIR_INTERNAL_ATTRIB_OFFSET);
+				SJME_ZIP_READ(4, externalAttrib,
+					SJME_ZIP_CDIR_EXTERNAL_ATTRIB_OFFSET);
+				SJME_ZIP_READ(4, offset,
+					SJME_ZIP_CDIR_OFFSET_OFFSET);
+#undef SJME_ZIP_READ
+				
+				/* Copy name over. */
+				memmove(result.name, atName,
+					sizeof(*atName) * SJME_MAX_FILE_NAME);
+				
+				/* Failed read? */
+				if (sjme_error_is(error))
+					goto fail_badRead;
+				
+				/* Stop. */
+				break;
+			}
+		}
+		
+		/* Go to next entry. */
+		dirBase += SJME_ZIP_CDIR_NAME_OFFSET +
+			lens[0] + lens[1] + lens[2];
 	}
 	
 	/* Release the lock. */
@@ -235,6 +365,7 @@ sjme_errorCode sjme_zip_locateEntry(
 	memmove(outEntry, &result, sizeof(*outEntry));
 	return SJME_ERROR_NONE;
 
+fail_badRead:
 fail_corrupt:
 fail_notFound:
 	/* Release lock before failing. */

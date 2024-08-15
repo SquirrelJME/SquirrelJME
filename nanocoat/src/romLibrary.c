@@ -362,9 +362,13 @@ sjme_errorCode sjme_rom_libraryResourceAsStream(
 	resourceFunc = library->functions->resourceStream;
 
 	/* Ask for the resource. */
+	/* Remember to remove any starting slash, because internall everything */
+	/* is treated as absolute. */
 	result = NULL;
 	if (sjme_error_is(error = resourceFunc(library,
-		&result, rcName)) || result == NULL)
+		&result,
+		(rcName[0] == '/' ? rcName + 1 : rcName))) ||
+		result == NULL)
 		goto fail_locateResource;
 	
 	/* Unlock library. */

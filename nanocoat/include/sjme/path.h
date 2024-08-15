@@ -32,6 +32,9 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/** The maximum file name length in SquirrelJME. */
+#define SJME_MAX_FILE_NAME 128
+
 /** The maximum path length in SquirrelJME. */
 #define SJME_MAX_PATH 1024
 
