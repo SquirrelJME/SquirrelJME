@@ -21,6 +21,7 @@
 #include "sjme/romInternal.h"
 #include "sjme/stream.h"
 #include "sjme/seekable.h"
+#include "sjme/zip.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -284,7 +285,23 @@ struct sjme_rom_suiteBase
 };
 
 /**
- * Initializes a library from a Zip.
+ * Initializes a library from a Zip that is already loaded.
+ *
+ * @param pool The pool to use for allocations.
+ * @param outLibrary The resultant library.
+ * @param libName The library name.
+ * @param zip The Zip to access as a library.
+ * @return Any resultant error, if any.
+ * @since 2024/08/16
+ */
+sjme_errorCode sjme_rom_libraryFromZip(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrInNotNull sjme_lpcstr libName,
+	sjme_attrInNotNull sjme_zip zip);
+
+/**
+ * Initializes a library from a Zip that is in memory, this will load the Zip.
  *
  * @param pool The pool to use for allocations.
  * @param outLibrary The resultant library.
@@ -302,7 +319,8 @@ sjme_errorCode sjme_rom_libraryFromZipMemory(
 	sjme_attrInPositive sjme_jint length);
 
 /**
- * Initializes a library from a Zip.
+ * Initializes a library from a Zip that is a given seekable, this will load
+ * the Zip.
  *
  * @param pool The pool to use for allocations.
  * @param outLibrary The resultant library.

@@ -69,6 +69,42 @@ static const sjme_rom_libraryFunctions sjme_rom_zipLibraryFunctions =
 	.resourceStream = sjme_rom_zipLibraryResourceStream,
 };
 
+sjme_errorCode sjme_rom_libraryFromZip(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrInNotNull sjme_lpcstr libName,
+	sjme_attrInNotNull sjme_zip zip)
+{
+	sjme_errorCode error;
+	sjme_rom_library result;
+	
+	if (pool == NULL || outLibrary == NULL || zip == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Setup new library. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_rom_libraryNew(pool,
+		&result, libName, NULL,
+		&sjme_rom_zipLibraryFunctions, NULL)) ||
+		result == NULL)
+		goto fail_libraryNew;
+	
+	/* Count up Zip, since we are using it now. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(zip, NULL)))
+		goto fail_refUp;
+	
+	/* Set handle. */
+	result->handle = zip;
+	
+	/* Success! */
+	*outLibrary = result;
+	return SJME_ERROR_NONE;
+	
+fail_refUp:
+fail_libraryNew:
+	return sjme_error_default(error);
+}
+
 sjme_errorCode sjme_rom_libraryFromZipMemory(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
@@ -104,7 +140,6 @@ sjme_errorCode sjme_rom_libraryFromZipSeekable(
 {
 	sjme_errorCode error;
 	sjme_zip zip;
-	sjme_rom_library result;
 	
 	if (pool == NULL || outLibrary == NULL || seekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -115,29 +150,6 @@ sjme_errorCode sjme_rom_libraryFromZipSeekable(
 		seekable)) || zip == NULL)
 		return sjme_error_default(error);
 	
-	/* Setup new library. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_rom_libraryNew(pool,
-		&result, libName, NULL,
-		&sjme_rom_zipLibraryFunctions, NULL)) ||
-		result == NULL)
-		goto fail_libraryNew;
-	
-	/* Count up Zip. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(zip, NULL)))
-		goto fail_refUp;
-	
-	/* Set handle. */
-	result->handle = zip;
-	
-	/* Success! */
-	*outLibrary = result;
-	return SJME_ERROR_NONE;
-	
-fail_refUp:
-fail_libraryNew:
-	/* Close the zip before failing. */
-	sjme_closeable_closeUnRef(SJME_AS_CLOSEABLE(zip));
-	
-	return sjme_error_default(error);
+	/* Forward Zip loading. */
+	return sjme_rom_libraryFromZip(pool, outLibrary, libName, zip);
 }
