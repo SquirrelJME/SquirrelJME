@@ -267,13 +267,13 @@ static sjme_errorCode sjme_stream_outputByteArrayWrite(
 		/* Resultant buffer would overflow? Way too big? */
 		desireSize = cache->limit + length + GROW_SIZE;
 		if (desireSize < 0)
-			return SJME_ERROR_OUT_OF_MEMORY;
+			return sjme_error_outOfMemory(NULL, desireSize);
 
 		/* Reallocate memory here. */
 		if (sjme_error_is(error = sjme_alloc_realloc(
 			&cache->array, desireSize)))
 			return sjme_error_defaultOr(error,
-				SJME_ERROR_OUT_OF_MEMORY);
+				sjme_error_outOfMemory(NULL, desireSize));
 
 		/* The buffer's limit has now increased. */
 		cache->limit = desireSize;

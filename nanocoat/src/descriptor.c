@@ -65,7 +65,7 @@ static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 		/* Allocate. */
 		ident = sjme_alloca(sizeof(*ident));
 		if (ident == NULL)
-			return SJME_ERROR_OUT_OF_MEMORY;
+			return sjme_error_outOfMemory(NULL, 0);
 			
 		/* Initialize. */
 		memset(ident, 0, sizeof(*ident));
@@ -671,7 +671,7 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 	
 	/* Check that it is valid. */
 	if (result == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(inPool, resultLen);
 		
 	/* Initialize. */
 	memset(result, 0, resultLen);
@@ -743,7 +743,7 @@ sjme_errorCode sjme_desc_interpretClassName(
 	/* Allocate. */
 	result = sjme_alloca(allocLen);
 	if (result == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(inPool, allocLen);
 	
 	/* Initialize. */
 	memset(result, 0, allocLen);
@@ -817,7 +817,7 @@ sjme_errorCode sjme_desc_interpretFieldType(
 	/* Allocate result. */
 	result = sjme_alloca(allocLen);
 	if (result == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(inPool, allocLen);
 	
 	/* Initialize. */
 	memset(result, 0, allocLen);
@@ -951,7 +951,7 @@ sjme_errorCode sjme_desc_interpretMethodType(
 		/* Allocate. */
 		currentField = sjme_alloca(sizeof(*currentField) + allocLen);
 		if (currentField == NULL)
-			return SJME_ERROR_OUT_OF_MEMORY;
+			return sjme_error_outOfMemory(inPool, allocLen);
 		
 		/* Initialize. */
 		memset(currentField, 0, allocLen);
@@ -994,7 +994,7 @@ sjme_errorCode sjme_desc_interpretMethodType(
 	allocLen = SJME_SIZEOF_DESC_METHOD_TYPE(fieldCount);
 	result = sjme_alloca(allocLen);
 	if (result == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(inPool, allocLen);
 	
 	/* Initialize. */
 	memset(result, 0, allocLen);

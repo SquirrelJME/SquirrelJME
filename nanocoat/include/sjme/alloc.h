@@ -545,6 +545,20 @@ sjme_errorCode sjme_alloc_weakRef(
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData);
 
+#if defined(SJME_CONFIG_DEBUG)
+
+/**
+ * Dumps the entire pool.
+ *
+ * @param inPool The pool to dump.
+ * @return Any resultant error, if any.
+ * @since 2024/08/16
+ */
+sjme_errorCode sjme_alloc_poolDump(
+	sjme_attrInNotNull sjme_alloc_pool* inPool);
+
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

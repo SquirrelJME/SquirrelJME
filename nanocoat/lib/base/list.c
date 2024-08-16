@@ -309,7 +309,7 @@ sjme_errorCode sjme_list_flattenArgNul(
 	/* Allocate. */	
 	argV = sjme_alloca(count * sizeof(*argV));
 	if (argV == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(inPool, 0);
 	
 	/* Allocate temporary argument set. */
 	memset(argV, 0, count * sizeof(*argV));
