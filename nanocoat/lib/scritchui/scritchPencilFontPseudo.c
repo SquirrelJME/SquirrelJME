@@ -302,7 +302,7 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	area = sizeof(*src) * (scanLen * ch);
 	src = sjme_alloca(area);
 	if (src == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, area);
 	
 	/* Initialize. */
 	memset(src, 0, area);

@@ -41,3 +41,8 @@ endif()
 if(SQUIRRELJME_ENABLE_FRONTEND_LIBRETRO)
 	add_subdirectory(libretro)
 endif()
+
+# GUI Command Line Launcher
+if(SQUIRRELJME_ENABLE_DYLIB)
+	add_subdirectory(gui-cmd)
+endif()

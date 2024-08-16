@@ -154,7 +154,7 @@ static sjme_errorCode sjme_scritchui_win32_pencilRawScanPutPure(
 	bmpLen = sizeof(BITMAPINFO) + (sizeof(DWORD) * 4);
 	bitmap = sjme_alloca(bmpLen);
 	if (bitmap == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, bmpLen);
 	memset(bitmap, 0, bmpLen);
 	
 	/* Setup bitmap for the scan. */

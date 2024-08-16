@@ -680,6 +680,20 @@ sjme_errorCode sjme_alloc_weakRefGet(
 	sjme_attrInNotNull sjme_pointer addr,
 	sjme_attrOutNullable sjme_alloc_weak* outWeak);
 
+#if defined(SJME_CONFIG_DEBUG)
+
+/**
+ * Dumps the entire pool.
+ *
+ * @param inPool The pool to dump.
+ * @return Any resultant error, if any.
+ * @since 2024/08/16
+ */
+sjme_errorCode sjme_alloc_poolDump(
+	sjme_attrInNotNull sjme_alloc_pool* inPool);
+
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

@@ -275,7 +275,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitMalloc(
 	/* Attempt allocation. */
 	result = malloc(useSize);
 	if (!result)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, useSize);
 	
 	/* Use static pool initializer to set up structures. */
 	return sjme_alloc_poolInitStatic(outPool, result, useSize);
@@ -536,7 +536,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		}
 		
 		/* Otherwise fail! */
-		error = SJME_ERROR_OUT_OF_MEMORY;
+		error = sjme_error_outOfMemory(pool, size);
 		goto fail_noMemory;
 	}
 
@@ -1033,7 +1033,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)) ||
 			result == NULL)
 			return sjme_error_defaultOr(error,
-				SJME_ERROR_OUT_OF_MEMORY);
+				sjme_error_outOfMemory(link->pool, limit));
 
 		/* Copy all the data over. */
 		memmove(result, source, limit);
@@ -1489,4 +1489,33 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakUnRef)(
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
+
+#if defined(SJME_CONFIG_DEBUG)
+
+sjme_errorCode sjme_alloc_poolDump(
+	sjme_attrInNotNull sjme_alloc_pool* inPool)
+{
+	sjme_alloc_link* rover;
+
+	if (inPool == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Dump information on every link. */
+	for (rover = inPool->frontLink; rover != NULL; rover = rover->next)
+	{
+		sjme_messageR(NULL, -1, NULL,
+			SJME_JNI_TRUE,
+			"Link %08p: %s %dB in %s (%s:%d)",
+				rover,
+				(rover->space == SJME_ALLOC_POOL_SPACE_USED ? "USED" : "FREE"),
+				rover->blockSize,
+				rover->debugFunction,
+				rover->debugFile,
+				rover->debugLine);
+	}
+
+	return SJME_ERROR_NONE;
+}
+
+#endif
 

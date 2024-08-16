@@ -34,7 +34,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_FLAT_LIST, _1_1flatten)
 	
 	if (utfStrings == NULL || isCopies == NULL)
 	{
-		sjme_jni_throwVMException(env, SJME_ERROR_OUT_OF_MEMORY);
+		sjme_jni_throwVMException(env, sjme_error_outOfMemory(NULL, arrayLen));
 		return 0;
 	}
 
@@ -136,7 +136,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_FLAT_LIST, _1_1fromArrayP)
 	
 	if (primPtrs == NULL)
 	{
-		sjme_jni_throwVMException(env, SJME_ERROR_OUT_OF_MEMORY);
+		sjme_jni_throwVMException(env, sjme_error_outOfMemory(NULL, arrayLen));
 		return 0;
 	}
 

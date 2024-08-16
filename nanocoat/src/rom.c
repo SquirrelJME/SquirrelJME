@@ -47,7 +47,7 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 	/* Allocate temporary storage on the stack for the libraries we want. */
 	working = sjme_alloca(sizeof(*working) * length);
 	if (working == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, length);
 
 	/* Make sure it is cleared. */
 	memset(working, 0, sizeof(*working) * length);
@@ -146,7 +146,7 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 	working = sjme_alloca(sizeof(*working) * length);
 	inHashes = sjme_alloca(sizeof(*inHashes) * length);
 	if (working == NULL || inHashes == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, length);
 
 	/* Clear memory. */
 	memset(working, 0, sizeof(*working) * length);

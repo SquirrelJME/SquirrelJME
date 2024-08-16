@@ -2031,9 +2031,13 @@ typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
 	sjme_attrInOutNotNull sjme_scritchui* outState);
 
+/** The base name for the ScritchUI dynamic library. */
+#define SJME_SCRITCHUI_DYLIB_NAME_BASE \
+	"squirreljme-scritchui-"
+
 /** The name of the dynamic library for ScritchUI. */
 #define SJME_SCRITCHUI_DYLIB_NAME(x) \
-	"squirreljme-scritchui-" SJME_TOKEN_STRING_PP(x)
+	SJME_SCRITCHUI_DYLIB_NAME_BASE SJME_TOKEN_STRING_PP(x)
 
 /** The path name for the dynamic library for ScritchUI. */
 #define SJME_SCRITCHUI_DYLIB_PATHNAME(x) \

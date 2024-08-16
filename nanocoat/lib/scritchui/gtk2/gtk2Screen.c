@@ -47,7 +47,7 @@ sjme_errorCode sjme_scritchui_gtk2_screens(
 	/* Allocate screen set. */
 	gdkScreens = sjme_alloca(sizeof(*gdkScreens) * numScreens);
 	if (gdkScreens == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, numScreens);
 	memset(gdkScreens, 0, sizeof(*gdkScreens) * numScreens);
 	
 	/* Request all screens. */

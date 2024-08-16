@@ -24,6 +24,7 @@
 #endif
 
 #include "sjme/debug.h"
+#include "sjme/alloc.h"
 
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
@@ -105,6 +106,23 @@ sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 #endif
 	
 	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInNullable sjme_alloc_pool* inPool,
+	sjme_attrInValue sjme_intPointer context)
+{
+#if defined(SJME_CONFIG_DEBUG)
+	/* Dump entire pool contents. */
+	if (inPool != NULL)
+		sjme_alloc_poolDump(inPool);
+
+	/* It could be huge... */
+	sjme_todoR(file, line, func, "OUT OF MEMORY %p: %d %p!",
+		inPool, (int)context, (void*)context);
+#endif
+
+	return SJME_ERROR_OUT_OF_MEMORY;
 }
 
 void sjme_genericMessage(sjme_lpcstr file, int line,

@@ -70,7 +70,7 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	/* Allocate buffer. */
 	rgbScan = sjme_alloca(sizeof(*rgbScan) * w);
 	if (rgbScan == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, w);
 	
 	/* Fill RGB buffer. */
 	memset(rgbScan, 0, sizeof(*rgbScan) * w);
