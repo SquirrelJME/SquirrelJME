@@ -41,3 +41,8 @@ endif()
 
 # Standard C front-end
 add_subdirectory(stdc)
+
+# GUI Command Line Launcher
+if(SQUIRRELJME_ENABLE_DYLIB)
+	add_subdirectory(gui-cmd)
+endif()
