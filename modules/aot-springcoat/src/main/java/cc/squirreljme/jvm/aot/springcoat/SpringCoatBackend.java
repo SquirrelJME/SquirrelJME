@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
+import java.util.List;
 import net.multiphasicapps.zip.queue.ArchiveOutputQueue;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
@@ -74,7 +75,8 @@ public class SpringCoatBackend
 	 * @since 2021/08/21
 	 */
 	@Override
-	public LinkGlob linkGlob(AOTSettings __aotSettings, CompileSettings __compileSettings,
+	public LinkGlob linkGlob(AOTSettings __aotSettings,
+		CompileSettings __compileSettings,
 		OutputStream __out)
 		throws IOException, NullPointerException
 	{
@@ -108,6 +110,27 @@ public class SpringCoatBackend
 		try (ZipStreamWriter zip = new ZipStreamWriter(__out);
 			 ArchiveOutputQueue queue = new ArchiveOutputQueue(zip))
 		{
+			// Launcher properties
+			try (PrintStream launcher = queue.nextPrintStream(
+				"SQUIRRELJME.SQC/launcher.main"))
+			{
+				launcher.println(__settings.launcherMainClass);
+			}
+			
+			try (PrintStream launcher = queue.nextPrintStream(
+				"SQUIRRELJME.SQC/launcher.args"))
+			{
+				for (String arg : __settings.launcherArgs)
+					launcher.println(arg);
+			}
+			
+			try (PrintStream launcher = queue.nextPrintStream(
+				"SQUIRRELJME.SQC/launcher.path"))
+			{
+				for (Integer arg : __settings.launcherClassPath)
+					launcher.println(arg);
+			}
+			
 			// Setup queue for SQC output
 			PrintStream suiteList =
 				queue.nextPrintStream("SQUIRRELJME.SQC/suites.list");
