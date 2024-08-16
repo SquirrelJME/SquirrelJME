@@ -497,7 +497,7 @@ sjme_errorCode sjme_rom_suiteLibraries(
  * @param pool The pool to allocate within.
  * @param outSuite The output suite.
  * @param inFunctions The functions which define how to access the suite.
- * @param inFrontEnd Input front end initialization, is optional.
+ * @param copyFrontEnd Input front end initialization, is optional.
  * @return Any error code.
  * @since 2023/12/15
  */
@@ -505,7 +505,7 @@ sjme_errorCode sjme_rom_suiteNew(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,
-	sjme_attrInNullable const sjme_frontEnd* inFrontEnd);
+	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
 /*--------------------------------------------------------------------------*/
 

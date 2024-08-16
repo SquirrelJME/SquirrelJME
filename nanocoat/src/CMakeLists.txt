@@ -21,7 +21,9 @@ squirreljme_multilib_add_static_library(Core
 	nvm.c
 	rom.c
 	romLibrary.c
+	romLibraryZip.c
 	romSuite.c
+	romSuiteZip.c
 	task.c
 	tread.c
 	vmConfig.c)
