@@ -39,3 +39,7 @@ target_include_directories(ScritchUICocoa PUBLIC
 # ScritchUI requires a normalized library name
 squirreljme_target_binary_name(ScritchUICocoa
 	"squirreljme-scritchui-cocoa")
+
+target_link_libraries(ScritchUICocoa
+	"-framework Foundation"
+	"-framework Cocoa")

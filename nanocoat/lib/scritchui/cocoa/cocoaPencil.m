@@ -7,4 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/core/core.h"
+#include "lib/scritchui/cocoa/cocoa.h"
+#include "lib/scritchui/cocoa/cocoaIntern.h"
