@@ -85,10 +85,15 @@ sjme_errorCode sjme_rom_libraryNew(
 	if (sjme_error_is(error = sjme_alloc_strdup(pool, &result->name, libName)))
 		goto fail_strdup;
 	
+	/* Library is valid now, so count up. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
+		goto fail_refUp;
+	
 	/* Success! */
 	*outLibrary = result;
 	return SJME_ERROR_NONE;
 
+fail_refUp:
 fail_strdup:
 fail_init:
 fail_alloc:

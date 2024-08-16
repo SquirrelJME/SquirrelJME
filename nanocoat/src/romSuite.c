@@ -184,10 +184,15 @@ sjme_errorCode sjme_rom_suiteNew(
 	if (sjme_error_is(error = inFunctions->init(result, data)))
 		goto fail_init;
 	
+	/* Suite is valid now, so count up. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
+		goto fail_refUp;
+	
 	/* Success! */
 	*outSuite = result;
 	return SJME_ERROR_NONE;
 
+fail_refUp:
 fail_init:
 fail_alloc:
 	if (result != NULL)
