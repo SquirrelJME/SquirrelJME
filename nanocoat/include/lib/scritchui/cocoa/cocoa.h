@@ -40,6 +40,11 @@ extern "C"
 sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
 
+sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_thread_mainFunc callback,
+	sjme_attrInNullable sjme_thread_parameter anything);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

@@ -39,7 +39,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_cocoaFunctions =
 	.lafElementColor = NULL,
 	.listNew = NULL,
 	.loopExecute = NULL,
-	.loopExecuteLater = NULL,
+	.loopExecuteLater = sjme_scritchui_cocoa_loopExecuteLater,
 	.loopExecuteWait = NULL,
 	.loopIterate = NULL,
 	.menuBarNew = NULL,
@@ -67,12 +67,21 @@ static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 {
 	sjme_scritchui inState;
 	NSRunLoop* runLoop;
-	sjme_jboolean once;
+	int argc;
+	char** argv;
 
 	/* Recover state. */
 	inState = (sjme_scritchui)anything;
 	if (inState == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+
+	/* Setup main arguments. */
+	argc = 1;
+	argv = sjme_alloca(argc * sizeof(*argv));
+	if (argv == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_OUT_OF_MEMORY);
+
+	argv[0] = "squirreljme";
 
 	/* Obtain the Cocoa loop. */
 	runLoop = [NSRunLoop currentRunLoop];
@@ -80,21 +89,19 @@ static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 	/* Debug. */
 	sjme_message("Before Cocoa main loop...");
 
-	/* Run the loop. */
-	for (once = SJME_JNI_FALSE;;)
-	{
-		/* Run loop. */
-		[runLoop runMode:NSDefaultRunLoopMode
-			beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+	/* Run loop, once. */
+	[runLoop runMode:NSDefaultRunLoopMode
+		beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 
-		/* Signal that we are ready after running once. */
-		if (!once)
-		{
-			once = SJME_JNI_TRUE;
-			sjme_atomic_sjme_jint_set(&inState->loopThreadReady,
-				1);
-		}
-	}
+	/* Signal that we are ready after running once. */
+	sjme_atomic_sjme_jint_set(&inState->loopThreadReady,
+		1);
+
+	/* Debug. */
+	sjme_message("Before Cocoa NSApplicationMain()...");
+
+	/* Run main application. */
+	NSApplicationMain(argc, argv);
 
 	/* Debug. */
 	sjme_message("After Cocoa main loop?");
@@ -132,9 +139,16 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState)
 {
 	sjme_errorCode error;
+	NSApplication* currentApp;
 
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get the current application. */
+	currentApp = NSApp;
+
+	/* Debug. */
+	sjme_message("Current NSApp: %p", currentApp);
 
 	/* Debug. */
 	sjme_message("Starting Cocoa event thread...");
