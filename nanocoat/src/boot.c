@@ -244,12 +244,12 @@ sjme_errorCode sjme_nvm_boot(
 
 	/* Resolve class path libraries. */
 	classPath = NULL;
-	error = SJME_ERROR_UNKNOWN;
+	error = SJME_ERROR_NO_SUITES;
 	if (result->bootParamCopy->mainClassPathById != NULL)
 		error = sjme_rom_resolveClassPathById(result->suite,
 			result->bootParamCopy->mainClassPathById,
 			&classPath);
-	else
+	else if (result->bootParamCopy->mainClassPathByName != NULL)
 		error = sjme_rom_resolveClassPathByName(result->suite,
 			result->bootParamCopy->mainClassPathByName,
 			&classPath);
@@ -258,7 +258,10 @@ sjme_errorCode sjme_nvm_boot(
 	if (sjme_error_is(error) || classPath == NULL)
 	{
 		/* Debug. */
-		sjme_message("Classpath resolve failure: %d %p", error, classPath);
+		sjme_message("Classpath resolve failure: %d %p %s",
+			error, classPath,
+			(result->bootParamCopy->mainClassPathById != NULL ?
+				"byId" : "byName"));
 
 		goto fail_badClassPath;
 	}
