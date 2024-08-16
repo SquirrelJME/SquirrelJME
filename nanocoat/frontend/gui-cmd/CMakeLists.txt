@@ -32,10 +32,11 @@ target_link_libraries(GuiCmd PUBLIC
 	${SQUIRRELJME_LINK_LIBRARIES_Base}
 	${SQUIRRELJME_LINK_LIBRARIES_Core})
 
-# It is easier to find this when it is in the build root
-squirreljme_target_binary_output(GuiCmd
-	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
-
 # Standard Executable name
 squirreljme_target_binary_name(GuiCmd
 	"squirreljme-gui-cmd")
+
+# Do not run this by default
+set_target_properties(GuiCmd PROPERTIES
+	EXCLUDE_FROM_ALL TRUE
+	EXCLUDE_FROM_DEFAULT_BUILD TRUE)
