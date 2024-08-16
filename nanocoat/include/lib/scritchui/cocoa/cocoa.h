@@ -37,6 +37,12 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/** Application handle in the ScritchUI state. */
+#define SJME_SUI_COCOA_H_NSAPP 0
+
+/** Main event loop thread. */
+#define SJME_SUI_COCOA_H_NSTHREAD 1
+
 sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
 

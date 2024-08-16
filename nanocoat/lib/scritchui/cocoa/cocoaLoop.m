@@ -16,10 +16,24 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
+	NSApplication* currentApp;
+	NSTimer* exec;
+	NSRunLoop* mainLoop;
+	NSObject* obj;
+
 	if (inState == NULL || callback == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Recover application. */
+	currentApp =
+		(NSApplication*)inState->common.handle[SJME_SUI_COCOA_H_NSAPP];
 
+	/* Get the main loop. */
+	mainLoop = [NSRunLoop mainRunLoop];
+
+	/* Run within it. */
+	obj = (NSObject*)mainLoop;
+	[obj performSelectorOnMainThread:callback];
 
 	/* Success! */
 	return SJME_ERROR_NONE;

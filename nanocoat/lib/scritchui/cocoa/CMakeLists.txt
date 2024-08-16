@@ -40,6 +40,10 @@ target_include_directories(ScritchUICocoa PUBLIC
 squirreljme_target_binary_name(ScritchUICocoa
 	"squirreljme-scritchui-cocoa")
 
+# It is easier to find this when it is in the build root
+squirreljme_target_binary_output(ScritchUICocoa
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+
 target_link_libraries(ScritchUICocoa
 	"-framework Foundation"
 	"-framework Cocoa")
