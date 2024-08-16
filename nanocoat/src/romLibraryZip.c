@@ -19,7 +19,8 @@
 #include "sjme/cleanup.h"
 
 static sjme_errorCode sjme_rom_zipLibraryInit(
-	sjme_attrInNotNull sjme_rom_library inLibrary)
+	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNullable sjme_pointer data)
 {
 	if (inLibrary == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -117,7 +118,7 @@ sjme_errorCode sjme_rom_libraryFromZipSeekable(
 	/* Setup new library. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_rom_libraryNew(pool,
-		&result, libName,
+		&result, libName, NULL,
 		&sjme_rom_zipLibraryFunctions, NULL)) ||
 		result == NULL)
 		goto fail_libraryNew;

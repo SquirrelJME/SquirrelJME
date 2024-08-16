@@ -146,6 +146,7 @@ sjme_errorCode sjme_rom_suiteFromPayload(
 sjme_errorCode sjme_rom_suiteNew(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
 {
@@ -161,43 +162,36 @@ sjme_errorCode sjme_rom_suiteNew(
 		inFunctions->list == NULL ||
 		inFunctions->loadLibrary == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
-
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-
-#if 0
+		
 	/* Allocate resultant suite. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(pool,
-		SJME_SIZEOF_SUITE_CORE_N(inFunctions->uncommonTypeSize),
+		sizeof(*result),
 		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
-		&result, NULL)) || result == NULL)
-		return sjme_error_default(error);
-
-	/* Setup some basic cache details. */
+		(void**)&result, NULL)) || result == NULL)
+		goto fail_alloc;
+	
+	/* Setup result. */
+	result->common.type = SJME_NVM_STRUCTTYPE_ROM_SUITE;
 	result->functions = inFunctions;
-	result->cache.common.allocPool = pool;
-	result->cache.common.uncommonSize = inFunctions->uncommonTypeSize;
-
-	/* Seed front end information? */
-	if (inFrontEnd != NULL)
-		result->cache.common.frontEnd = *inFrontEnd;
-
-	/* Initialize cache. */
-	if (sjme_error_is(error = initFunc(result)))
-	{
-		/* Cleanup bad pointer. */
-		sjme_alloc_free(result);
-
-		return sjme_error_default(error);
-	}
-
-	/* Initialize fields. */
-	result->functions = inFunctions;
-	result->cache.common.allocPool = pool;
-
-	/* Use result. */
+	
+	/* Copy front end data? */
+	if (copyFrontEnd != NULL)
+		memmove(&result->common.frontEnd, copyFrontEnd,
+			sizeof(*copyFrontEnd));
+	
+	/* Call initializer. */
+	if (sjme_error_is(error = inFunctions->init(result, data)))
+		goto fail_init;
+	
+	/* Success! */
 	*outSuite = result;
 	return SJME_ERROR_NONE;
-#endif
+
+fail_init:
+fail_alloc:
+	if (result != NULL)
+		sjme_alloc_free(result);
+	
+	return sjme_error_default(error);
 }

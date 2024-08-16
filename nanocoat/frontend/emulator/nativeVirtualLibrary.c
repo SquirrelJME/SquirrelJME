@@ -17,7 +17,8 @@
 #include "sjme/rom.h"
 
 sjme_errorCode sjme_jni_virtualLibrary_init(
-	sjme_attrInNotNull sjme_rom_library inLibrary)
+	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNullable sjme_pointer data)
 {
 	JNIEnv* env;
 	jobject self;
@@ -210,7 +211,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_LIBRARY, _1_1init)
 	/* Setup resultant library. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_rom_libraryNew(pool,
-		&result, libNameChars,
+		&result, libNameChars, NULL,
 		&sjme_jni_virtualLibrary_functions, 
 		&frontEnd)) || result == NULL)
 	{

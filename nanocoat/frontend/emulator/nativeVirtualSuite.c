@@ -17,7 +17,8 @@
 #include "sjme/rom.h"
 
 static sjme_errorCode sjme_jni_virtualSuite_init(
-	sjme_attrInNotNull sjme_rom_suite inSuite)
+	sjme_attrInNotNull sjme_rom_suite inSuite,
+	sjme_attrInNullable sjme_pointer data)
 {
 	if (inSuite == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -102,7 +103,8 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_SUITE, _1_1init)
 	/* Initialize new suite. */
 	if (sjme_error_is(error = sjme_rom_suiteNew(
 		SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr),
-		&result, &sjme_jni_virtualSuite_functions,
+		&result, NULL,
+		&sjme_jni_virtualSuite_functions,
 		&frontEnd)) ||
 		result == NULL)
 	{

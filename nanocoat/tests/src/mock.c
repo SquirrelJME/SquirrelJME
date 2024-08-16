@@ -598,7 +598,7 @@ sjme_jboolean sjme_mock_doRomSuite(
 	else
 	{
 		if (sjme_error_is(writeFunctions->init(
-			suite)))
+			suite, NULL)))
 			return sjme_die("Could not initialize suite via cache init.");
 	}
 

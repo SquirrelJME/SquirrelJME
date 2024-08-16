@@ -139,11 +139,13 @@ struct sjme_rom_libraryBase
  * Initializes the library.
  *
  * @param inLibrary The input library.
+ * @param data Any data passed to init.
  * @return Any resultant error, if any.
  * @since 2023/12/29
  */
 typedef sjme_errorCode (*sjme_rom_libraryInitFunc)(
-	sjme_attrInNotNull sjme_rom_library inLibrary);
+	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNullable sjme_pointer data);
 
 typedef sjme_errorCode (*sjme_rom_libraryPathFunc)();
 
@@ -196,11 +198,13 @@ typedef sjme_errorCode (*sjme_rom_libraryResourceStreamFunc)(
  * Function used to initialize the suite.
  *
  * @param inSuite The input suite.
+ * @param data Any data passed to init.
  * @return Any error state.
  * @since 2023/12/15
  */
 typedef sjme_errorCode (*sjme_rom_suiteInitFunc)(
-	sjme_attrInNotNull sjme_rom_suite inSuite);
+	sjme_attrInNotNull sjme_rom_suite inSuite,
+	sjme_attrInNullable sjme_pointer data);
 
 /**
  * Returns the ID of the library for the given suite.
@@ -331,6 +335,7 @@ sjme_errorCode sjme_rom_libraryHash(
  * @param pool The pool to allocate within.
  * @param outLibrary The output library.
  * @param libName The library name.
+ * @param data Any data to forward to the initializer.
  * @param inFunctions The functions which define how to access the library.
  * @param inFrontEnd Input front end initialization, is optional.
  * @return Any error code.
@@ -340,6 +345,7 @@ sjme_errorCode sjme_rom_libraryNew(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
+	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNotNull const sjme_rom_libraryFunctions* inFunctions,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
@@ -496,6 +502,7 @@ sjme_errorCode sjme_rom_suiteLibraries(
  *
  * @param pool The pool to allocate within.
  * @param outSuite The output suite.
+ * @param data Any data to pass to the initializer.
  * @param inFunctions The functions which define how to access the suite.
  * @param copyFrontEnd Input front end initialization, is optional.
  * @return Any error code.
@@ -504,6 +511,7 @@ sjme_errorCode sjme_rom_suiteLibraries(
 sjme_errorCode sjme_rom_suiteNew(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 

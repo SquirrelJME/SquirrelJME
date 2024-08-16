@@ -19,13 +19,17 @@
 #include "sjme/cleanup.h"
 
 static sjme_errorCode sjme_rom_zipSuiteInit(
-	sjme_attrInNotNull sjme_rom_suite inSuite)
+	sjme_attrInNotNull sjme_rom_suite inSuite,
+	sjme_attrInNullable sjme_pointer data)
 {
 	if (inSuite == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Set handle, which is the Zip itself. */
+	inSuite->handle = data;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_rom_zipSuiteLibraryId(
@@ -87,7 +91,7 @@ sjme_errorCode sjme_rom_suiteFromZipSeekable(
 	/* Setup new suite. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_rom_suiteNew(pool,
-		&result,
+		&result, zip,
 		&sjme_rom_zipSuiteFunctions, NULL)) ||
 		result == NULL)
 		goto fail_suiteNew;
@@ -95,9 +99,6 @@ sjme_errorCode sjme_rom_suiteFromZipSeekable(
 	/* Count up Zip. */
 	if (sjme_error_is(error = sjme_alloc_weakRef(zip, NULL)))
 		goto fail_refUp;
-	
-	/* Set handle. */
-	result->handle = zip;
 	
 	/* Success! */
 	*outSuite = result;

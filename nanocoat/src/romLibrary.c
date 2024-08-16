@@ -45,6 +45,7 @@ sjme_errorCode sjme_rom_libraryNew(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
+	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNotNull const sjme_rom_libraryFunctions* inFunctions,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
 {
@@ -76,7 +77,7 @@ sjme_errorCode sjme_rom_libraryNew(
 			sizeof(*copyFrontEnd));
 	
 	/* Call initializer. */
-	if (sjme_error_is(error = inFunctions->init(result)))
+	if (sjme_error_is(error = inFunctions->init(result, data)))
 		goto fail_init;
 	
 	/* Set library name. */
