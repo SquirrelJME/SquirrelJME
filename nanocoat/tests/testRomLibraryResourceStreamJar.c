@@ -93,7 +93,7 @@ SJME_TEST_DECLARE(testRomLibraryResourceStreamJar)
 		"Read bytes are not correct?");
 
 	/* Just close the stream. */
-	if (sjme_error_is(sjme_closeable_close(
+	if (sjme_error_is(sjme_closeable_closeUnRef(
 		SJME_AS_CLOSEABLE(inputStream))))
 		return sjme_unit_fail(test, "Could not close stream?");
 

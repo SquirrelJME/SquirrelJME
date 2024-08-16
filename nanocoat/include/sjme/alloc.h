@@ -314,6 +314,9 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 /**
  * Allocates a weak reference within the given pool.
  * 
+ * The count starts at zero, so it is required for it to be counted up by
+ * the allocator.
+ * 
  * @param inPool The pool to allocate within.
  * @param size The number of bytes to allocate.
  * @param inEnqueue The optional function to call when this reference is

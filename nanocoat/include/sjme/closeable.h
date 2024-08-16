@@ -94,6 +94,16 @@ sjme_errorCode sjme_closeable_autoEnqueue(
 sjme_errorCode sjme_closeable_close(
 	sjme_attrInNotNull sjme_closeable closeable);
 
+/**
+ * Closes the given closeable and un-references the weak reference.
+ * 
+ * @param closeable The closeable to close. 
+ * @return Any resultant error, if any.
+ * @since 2024/08/16
+ */
+sjme_errorCode sjme_closeable_closeUnRef(
+	sjme_attrInNotNull sjme_closeable closeable);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

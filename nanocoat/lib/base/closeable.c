@@ -33,9 +33,12 @@ sjme_errorCode sjme_closeable_autoEnqueue(
 	return sjme_closeable_close(closeable);
 }
 
-sjme_errorCode sjme_closeable_close(
-	sjme_attrInNotNull sjme_closeable closeable)
+static sjme_errorCode sjme_closeable_closeCommon(
+	sjme_attrInNotNull sjme_closeable closeable,
+	sjme_attrInValue sjme_jboolean unref)
 {
+	sjme_errorCode error;
+	
 	if (closeable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
@@ -50,9 +53,27 @@ sjme_errorCode sjme_closeable_close(
 		
 		/* Forward close call. */
 		if (closeable->closeHandler != NULL)
-			return closeable->closeHandler(closeable);
+			if (sjme_error_is(error = closeable->closeHandler(closeable)))
+				return sjme_error_default(error);
 	}
+	
+	/* Un-reference? */
+	if (unref)
+		if (sjme_error_is(error = sjme_alloc_weakUnRef((void**)&closeable)))
+			return sjme_error_default(error);
 	
 	/* Success if already closed, or there was no close handler. */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_closeable_close(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	return sjme_closeable_closeCommon(closeable, SJME_JNI_FALSE);
+}
+
+sjme_errorCode sjme_closeable_closeUnRef(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	return sjme_closeable_closeCommon(closeable, SJME_JNI_TRUE);
 }

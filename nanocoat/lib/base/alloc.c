@@ -890,6 +890,11 @@ sjme_errorCode sjme_noOptimize sjme_alloc_free(
 		link->weak = NULL;
 		weak->link = NULL;
 		weak->pointer = NULL;
+		
+		/* Was this never referenced ever? */
+		if (sjme_atomic_sjme_jint_get(&weak->count) <= 0)
+			if (sjme_error_is(error = sjme_alloc_free(weak)))
+				goto fail_weakFree;
 	}
 
 	/* Mark block as free. */
@@ -920,7 +925,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_free(
 	/* Merge together free blocks. */
 	if (sjme_error_is(error = sjme_alloc_mergeFree(link)))
 		goto fail_merge;
-		
+	
 	/* Emit barrier. */
 	sjme_thread_barrier();
 	
@@ -933,6 +938,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_free(
 	return SJME_ERROR_NONE;
 	
 	/* Release ownership of lock. */
+fail_weakFree:
 fail_corrupt:
 fail_weakEnqueueCall:
 fail_merge:
@@ -1262,7 +1268,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 	result->pointer = addr;
 	result->enqueue = inEnqueue;
 	result->enqueueData = inEnqueueData;
-	sjme_atomic_sjme_jint_set(&result->count, 1);
+	sjme_atomic_sjme_jint_set(&result->count, 0);
 	
 	/* Join link back to this. */
 	link->weak = result;

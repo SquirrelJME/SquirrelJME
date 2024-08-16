@@ -114,7 +114,7 @@ static sjme_errorCode sjme_zip_close(
 		return sjme_error_default(error);
 	
 	/* Close the seekable. */
-	if (sjme_error_is(error = sjme_closeable_close(
+	if (sjme_error_is(error = sjme_closeable_closeUnRef(
 		SJME_AS_CLOSEABLE(zip->seekable))))
 		goto fail_seekableClose;
 		
@@ -356,14 +356,14 @@ sjme_errorCode sjme_zip_entryRead(
 fail_openHi:
 	/* Close high stream. */
 	if (hiStream != NULL)
-		if (sjme_error_is(sjme_closeable_close(
+		if (sjme_error_is(sjme_closeable_closeUnRef(
 			SJME_AS_CLOSEABLE(hiStream))))
 			return sjme_error_default(error);
 	
 fail_openLow:
 	/* Close low stream. */
 	if (lowStream != NULL)
-		if (sjme_error_is(sjme_closeable_close(
+		if (sjme_error_is(sjme_closeable_closeUnRef(
 			SJME_AS_CLOSEABLE(lowStream))))
 			return sjme_error_default(error);
 fail_readLens:
@@ -613,6 +613,10 @@ sjme_errorCode sjme_zip_openSeekable(
 	result->endCentralDirPos = endCentralDirPos;
 	result->archiveStartPos = archiveStartPos;
 	result->seekable = inSeekable;
+	
+	/* Count the Zip us as it is valid now. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
+		return sjme_error_default(error);
 	
 	/* Count the seekable up, since we are using it. */
 	if (sjme_error_is(error = sjme_alloc_weakRef(inSeekable, NULL)))

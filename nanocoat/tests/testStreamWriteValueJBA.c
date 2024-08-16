@@ -141,7 +141,7 @@ SJME_TEST_DECLARE(testStreamWriteValueJBA)
 	STREAM_SEQ2(DOUBLE, d.hi, d.lo, 0x87654321, 0x87654321);
 
 	/* Close stream. */
-	if (sjme_error_is(sjme_closeable_close(
+	if (sjme_error_is(sjme_closeable_closeUnRef(
 		SJME_AS_CLOSEABLE(stream))))
 		return sjme_unit_fail(test, "Could not close output stream.");
 

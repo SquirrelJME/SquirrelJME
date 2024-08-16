@@ -20,6 +20,7 @@
 SJME_TEST_DECLARE(testAllocWeakRef)
 {
 	sjme_alloc_weak weak;
+	sjme_alloc_weak weakSecond;
 	sjme_alloc_link* link;
 	sjme_pointer p;
 	
@@ -59,6 +60,19 @@ SJME_TEST_DECLARE(testAllocWeakRef)
 		"Enqueue was set?");
 	sjme_unit_equalP(test, weak->enqueueData, NULL,
 		"Enqueue data was set?");
+	
+	/* Reference count should be zero. */
+	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 0,
+		"Reference count not one?");
+	
+	/* Count up. */
+	weakSecond = NULL;
+	if (sjme_error_is(sjme_alloc_weakRef(p, &weakSecond)))
+		return sjme_unit_fail(test, "Could not weak ref count up?");
+	
+	/* Weak reference should be returned. */
+	sjme_unit_equalP(test, weak, weakSecond,
+		"Different or un-passed weak pointer?");
 	
 	/* Reference count should be one. */
 	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 1,
