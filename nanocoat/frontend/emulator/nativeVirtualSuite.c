@@ -27,8 +27,8 @@ static sjme_errorCode sjme_jni_virtualSuite_init(
 }
 
 sjme_errorCode sjme_jni_virtualSuite_libraryId(
-	sjme_attrInNotNull sjme_rom_suite targetSuite,
-	sjme_attrInNotNull sjme_rom_library targetLibrary,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
+	sjme_attrInNotNull sjme_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_jint* outId)
 {
 	sjme_todo("Implement this?");
@@ -36,7 +36,7 @@ sjme_errorCode sjme_jni_virtualSuite_libraryId(
 }
 
 static sjme_errorCode sjme_jni_virtualSuite_list(
-	sjme_attrInNotNull sjme_rom_suite targetSuite,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibraries)
 {
 	JNIEnv* env;
@@ -45,12 +45,12 @@ static sjme_errorCode sjme_jni_virtualSuite_list(
 	jclass classy;
 	sjme_list_sjme_rom_library* result;
 
-	if (targetSuite == NULL || outLibraries == NULL)
+	if (inSuite == NULL || outLibraries == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Get instance that we need to call into. */
-	env = targetSuite->cache.common.frontEnd.data;
-	virtualSuite = targetSuite->cache.common.frontEnd.wrapper;
+	env = inSuite->cache.common.frontEnd.data;
+	virtualSuite = inSuite->cache.common.frontEnd.wrapper;
 	classy = (*env)->GetObjectClass(env, virtualSuite);
 
 	/* Execute method accordingly. */

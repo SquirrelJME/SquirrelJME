@@ -102,8 +102,8 @@ sjme_errorCode sjme_rom_libraryFromZipSeekable(
 	sjme_attrInNotNull sjme_seekable seekable)
 {
 	sjme_errorCode error;
-	sjme_rom_library result;
 	sjme_zip zip;
+	sjme_rom_library result;
 	
 	if (pool == NULL || outLibrary == NULL || seekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

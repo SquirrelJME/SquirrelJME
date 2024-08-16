@@ -18,6 +18,54 @@
 #include "sjme/zip.h"
 #include "sjme/cleanup.h"
 
+static sjme_errorCode sjme_rom_zipSuiteInit(
+	sjme_attrInNotNull sjme_rom_suite inSuite)
+{
+	if (inSuite == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_rom_zipSuiteLibraryId(
+	sjme_attrInNotNull sjme_rom_suite inSuite,
+	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_jint* outId)
+{
+	if (inSuite == NULL || inLibrary == NULL || outId == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_rom_zipSuiteListLibraries(
+	sjme_attrInNotNull sjme_rom_suite inSuite,
+	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibraries)
+{
+	if (inSuite == NULL || outLibraries == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_rom_zipSuiteLoadLibrary()
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+/** Functions for Zip based suites. */
+static sjme_rom_suiteFunctions sjme_rom_zipSuiteFunctions =
+{
+	.init = sjme_rom_zipSuiteInit,
+	.libraryId = sjme_rom_zipSuiteLibraryId,
+	.list = sjme_rom_zipSuiteListLibraries,
+	.loadLibrary = sjme_rom_zipSuiteLoadLibrary,
+};
+
 sjme_errorCode sjme_rom_suiteLibraries(
 	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
@@ -26,6 +74,7 @@ sjme_errorCode sjme_rom_suiteLibraries(
 	sjme_rom_suiteListLibrariesFunc listFunc;
 	sjme_list_sjme_rom_library* result;
 	sjme_errorCode error;
+	sjme_jint i, n;
 
 	if (inSuite == NULL || outLibs == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -48,20 +97,47 @@ sjme_errorCode sjme_rom_suiteLibraries(
 	/* Check list function. */
 	listFunc = inSuite->functions->list;
 	if (listFunc == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Lock suite. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&inSuite->common.lock)))
+		return sjme_error_default(error);
 
 	/* Call the list function. */
 	result = NULL;
 	if (sjme_error_is(error = listFunc(inSuite,
 		&result)) || result == NULL)
-		return sjme_error_default(error);
+		goto fail_list;
 
 	/* Store it within the cache. */
 	cache->libraries = result;
+	
+	/* All of these must be valid libraries. */
+	for (i = 0, n = result->length; i < n; i++)
+		if (result->elements[i] == NULL)
+		{
+			error = SJME_ERROR_LIBRARY_NOT_FOUND;
+			goto fail_missingLib;
+		}
+	
+	/* Unlock suite. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&inSuite->common.lock, NULL)))
+		return sjme_error_default(error);
 
 	/* Success! */
 	*outLibs = result;
 	return SJME_ERROR_NONE;
+
+fail_missingLib:
+fail_list:
+	/* Release lock before failing. */
+	if (sjme_error_is(sjme_thread_spinLockRelease(
+		&inSuite->common.lock, NULL)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_rom_suiteFromMerge(
@@ -120,10 +196,44 @@ sjme_errorCode sjme_rom_suiteFromZipSeekable(
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
 	sjme_attrInNotNull sjme_seekable seekable)
 {
+	sjme_errorCode error;
+	sjme_zip zip;
+	sjme_rom_suite result;
+	
 	if (pool == NULL || outSuite == NULL || seekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	return sjme_error_notImplemented(0);
+	/* Try opening as a Zip file. */
+	zip = NULL;
+	if (sjme_error_is(error = sjme_zip_openSeekable(pool, &zip,
+		seekable)) || zip == NULL)
+		return sjme_error_default(error);
+	
+	/* Setup new suite. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_rom_suiteNew(pool,
+		&result,
+		&sjme_rom_zipSuiteFunctions, NULL)) ||
+		result == NULL)
+		goto fail_suiteNew;
+	
+	/* Count up Zip. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(zip, NULL)))
+		goto fail_refUp;
+	
+	/* Set handle. */
+	result->handle = zip;
+	
+	/* Success! */
+	*outSuite = result;
+	return SJME_ERROR_NONE;
+	
+fail_refUp:
+fail_suiteNew:
+	/* Close the zip before failing. */
+	sjme_closeable_close(SJME_AS_CLOSEABLE(zip));
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_rom_suiteNew(
@@ -132,17 +242,18 @@ sjme_errorCode sjme_rom_suiteNew(
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,
 	sjme_attrInNullable const sjme_frontEnd* inFrontEnd)
 {
-	sjme_rom_suiteinitFunc initFunc;
 	sjme_rom_suite result;
 	sjme_errorCode error;
 
 	if (pool == NULL || outSuite == NULL || inFunctions == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* There needs to be a cache initializer. */
-	initFunc = inFunctions->init;
-	if (initFunc == NULL)
-		return SJME_ERROR_INVALID_ARGUMENT;
+	/* These functions are required. */
+	if (inFunctions->init == NULL ||
+		inFunctions->libraryId == NULL ||
+		inFunctions->list == NULL ||
+		inFunctions->loadLibrary == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

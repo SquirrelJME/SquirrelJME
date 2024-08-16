@@ -199,34 +199,34 @@ typedef sjme_errorCode (*sjme_rom_libraryResourceStreamFunc)(
  * @return Any error state.
  * @since 2023/12/15
  */
-typedef sjme_errorCode (*sjme_rom_suiteinitFunc)(
+typedef sjme_errorCode (*sjme_rom_suiteInitFunc)(
 	sjme_attrInNotNull sjme_rom_suite inSuite);
 
 /**
  * Returns the ID of the library for the given suite.
  *
  * @param functions The suite functions.
- * @param targetSuite The current suite being accessed.
- * @param targetLibrary The library to get the ID of.
+ * @param inSuite The current suite being accessed.
+ * @param inLibrary The library to get the ID of.
  * @param outId The output library ID, cannot be zero.
  * @return Any resultant error code.
  * @since 2023/12/18
  */
-typedef sjme_errorCode (*sjme_rom_suiteLibraryId)(
-	sjme_attrInNotNull sjme_rom_suite targetSuite,
-	sjme_attrInNotNull sjme_rom_library targetLibrary,
+typedef sjme_errorCode (*sjme_rom_suiteLibraryIdFunc)(
+	sjme_attrInNotNull sjme_rom_suite inSuite,
+	sjme_attrInNotNull sjme_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_jint* outId);
 
 /**
  * Determines the list of libraries within the suite.
  *
- * @param targetSuite The suite the request is being made in.
+ * @param inSuite The suite the request is being made in.
  * @param outLibraries The output library list.
  * @return Any resultant error code.
  * @since 2023/12/21
  */
 typedef sjme_errorCode (*sjme_rom_suiteListLibrariesFunc)(
-	sjme_attrInNotNull sjme_rom_suite targetSuite,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibraries);
 
 typedef sjme_errorCode (*sjme_rom_suiteLoadLibraryFunc)();
@@ -252,10 +252,10 @@ struct sjme_rom_libraryFunctions
 struct sjme_rom_suiteFunctions
 {
 	/** Initialize suite cache. */
-	sjme_rom_suiteinitFunc init;
+	sjme_rom_suiteInitFunc init;
 
 	/** Returns the ID of the given library. */
-	sjme_rom_suiteLibraryId libraryId;
+	sjme_rom_suiteLibraryIdFunc libraryId;
 
 	/** Lists the libraries in the suite. */
 	sjme_rom_suiteListLibrariesFunc list;

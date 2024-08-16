@@ -36,11 +36,20 @@ static sjme_errorCode sjme_nal_default_cFileClose(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState)
 {
+	FILE* file;
+	
 	if (inSeekable == NULL || inImplState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover file handle. */
+	file = inSeekable->implState.handle;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Close the file. */
+	if (0 != fclose(file))
+		return sjme_nal_errno(errno);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_nal_default_cFileInit(
@@ -51,8 +60,11 @@ static sjme_errorCode sjme_nal_default_cFileInit(
 	if (inSeekable == NULL || inImplState == NULL || data == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* We can just set the file handle here. */
+	inImplState->handle = data;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_nal_default_cFileRead(
@@ -62,11 +74,43 @@ static sjme_errorCode sjme_nal_default_cFileRead(
 	sjme_attrInPositive sjme_jint base,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
+	FILE* file;
+	sjme_jint left, destAt, rc;
+	
 	if (inSeekable == NULL || inImplState == NULL || outBuf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover file handle. */
+	file = inSeekable->implState.handle;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Seek to read position. */
+	if (fseek(file, base, SEEK_SET))
+		return sjme_nal_errno(errno);
+	
+	/* Make sure it is a valid position. */
+	if (ftell(file) < 0)
+		return sjme_nal_errno(errno);
+	
+	/* fread() can result in short reads, so read everything fully. */
+	destAt = 0;
+	left = length;
+	while (left > 0)
+	{
+		/* Read chunk. */
+		rc = fread(SJME_POINTER_OFFSET(outBuf, destAt),
+			1, left, file);
+		
+		/* These should never happen. */
+		if (feof(file) || ferror(file))
+			return sjme_nal_errno(errno);
+		
+		/* Move shift up. */
+		destAt += rc;
+		left -= rc;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_nal_default_cFileSize(
@@ -74,11 +118,27 @@ static sjme_errorCode sjme_nal_default_cFileSize(
 	sjme_attrInNotNull sjme_seekable_implState* inImplState,
 	sjme_attrOutNotNull sjme_jint* outSize)
 {
+	FILE* file;
+	sjme_jint result;
+	
 	if (inSeekable == NULL || inImplState == NULL || outSize == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Recover file handle. */
+	file = inSeekable->implState.handle;
+	
+	/* Seek to end. */
+	if (fseek(file, 0, SEEK_END) < 0)
+		return sjme_nal_errno(errno);
+	
+	/* File size is the given position. */
+	result = ftell(file);
+	if (result < 0)
+		return sjme_nal_errno(errno);
+	
+	/* Success! */
+	*outSize = result;
+	return SJME_ERROR_NONE;
 }
 
 /** Functions for C File access. */

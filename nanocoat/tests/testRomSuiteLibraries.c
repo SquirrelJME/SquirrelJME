@@ -23,7 +23,7 @@ static sjme_list_sjme_rom_library testFakeSuiteList =
 };
 
 static sjme_errorCode testSuiteList(
-	sjme_attrInNotNull sjme_rom_suite targetSuite,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibraries)
 {
 	*outLibraries = &testFakeSuiteList;
