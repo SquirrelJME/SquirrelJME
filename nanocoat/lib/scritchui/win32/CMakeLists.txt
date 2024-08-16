@@ -36,6 +36,10 @@ endif()
 target_include_directories(ScritchUIWin32 PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
+# It is easier to find this when it is in the build root
+squirreljme_target_binary_output(ScritchUIWin32
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+
 # ScritchUI requires a normalized library name
 squirreljme_target_binary_name(ScritchUIWin32
 	"squirreljme-scritchui-win32")
