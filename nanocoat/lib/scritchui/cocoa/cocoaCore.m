@@ -67,6 +67,7 @@ static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 {
 	sjme_scritchui inState;
 	NSRunLoop* runLoop;
+	sjme_jboolean once;
 
 	/* Recover state. */
 	inState = (sjme_scritchui)anything;
@@ -76,9 +77,27 @@ static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 	/* Obtain the Cocoa loop. */
 	runLoop = [NSRunLoop currentRunLoop];
 
+	/* Debug. */
+	sjme_message("Before Cocoa main loop...");
+
 	/* Run the loop. */
-	[runLoop runMode:NSDefaultRunLoopMode
-		beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+	for (once = SJME_JNI_FALSE;;)
+	{
+		/* Run loop. */
+		[runLoop runMode:NSDefaultRunLoopMode
+			beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+
+		/* Signal that we are ready after running once. */
+		if (!once)
+		{
+			once = SJME_JNI_TRUE;
+			sjme_atomic_sjme_jint_set(&inState->loopThreadReady,
+				1);
+		}
+	}
+
+	/* Debug. */
+	sjme_message("After Cocoa main loop?");
 
 	/* Success! */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
