@@ -91,7 +91,7 @@ sjme_errorCode sjme_closeable_autoEnqueue(
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
-sjme_errorCode sjme_closeable_close(
+sjme_errorCode sjme_closeable_closeNoUnRef(
 	sjme_attrInNotNull sjme_closeable closeable);
 
 /**
@@ -101,7 +101,7 @@ sjme_errorCode sjme_closeable_close(
  * @return Any resultant error, if any.
  * @since 2024/08/16
  */
-sjme_errorCode sjme_closeable_closeUnRef(
+sjme_errorCode sjme_closeable_close(
 	sjme_attrInNotNull sjme_closeable closeable);
 
 /*--------------------------------------------------------------------------*/

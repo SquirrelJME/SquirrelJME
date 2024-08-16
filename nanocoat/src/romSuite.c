@@ -18,6 +18,16 @@
 #include "sjme/zip.h"
 #include "sjme/cleanup.h"
 
+static sjme_errorCode sjme_rom_suiteClose(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	if (closeable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_rom_suiteLibraries(
 	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
@@ -172,6 +182,7 @@ sjme_errorCode sjme_rom_suiteNew(
 		goto fail_alloc;
 	
 	/* Setup result. */
+	result->common.closeable.closeHandler = sjme_rom_suiteClose;
 	result->common.type = SJME_NVM_STRUCTTYPE_ROM_SUITE;
 	result->functions = inFunctions;
 	

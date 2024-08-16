@@ -49,7 +49,7 @@ static sjme_errorCode sjme_stream_inputSeekableClose(
 	
 	/* Only forward close if it was requested. */
 	if (inImplState->forwardClose)
-		if (sjme_error_is(error = sjme_closeable_closeUnRef(
+		if (sjme_error_is(error = sjme_closeable_close(
 			SJME_AS_CLOSEABLE(inImplState->handle))))
 			return sjme_error_default(error);
 	

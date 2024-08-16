@@ -66,6 +66,7 @@ static const sjme_mock_configSet configRomLibraryRawData =
  */
 SJME_TEST_DECLARE(testRomLibraryRawData)
 {
+	sjme_errorCode error;
 	sjme_rom_library library;
 	sjme_mock mock;
 	sjme_jint size;
@@ -107,7 +108,7 @@ SJME_TEST_DECLARE(testRomLibraryRawData)
 	sjme_unit_equalI(test,
 		0, memcmp(expectedRawBin, raw, EXPECTED_SIZE),
 		"Data is wrong?");
-
+	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
 }

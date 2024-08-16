@@ -114,7 +114,7 @@ static sjme_errorCode sjme_zip_close(
 		return sjme_error_default(error);
 	
 	/* Close the seekable. */
-	if (sjme_error_is(error = sjme_closeable_closeUnRef(
+	if (sjme_error_is(error = sjme_closeable_close(
 		SJME_AS_CLOSEABLE(zip->seekable))))
 		goto fail_seekableClose;
 		
@@ -245,8 +245,7 @@ sjme_errorCode sjme_zip_entryRead(
 {
 	sjme_errorCode error;
 	sjme_jint nameLen, localHeaderPos, magic, actualDataPos, rawSize;
-	sjme_stream_input lowStream;
-	sjme_stream_input hiStream;
+	sjme_stream_input lowStream, hiStream, useStream;
 	sjme_alloc_pool* inPool;
 	sjme_zip inZip;
 	sjme_jchar lens[2];
@@ -346,24 +345,28 @@ sjme_errorCode sjme_zip_entryRead(
 		NULL)))
 		return sjme_error_default(error);
 	
+	/* Give the stream over the uncompressed data. */
+	useStream = (hiStream != NULL ? hiStream : lowStream);
+	
+	/* Is valid, so count accordingly. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(useStream, NULL)))
+		return sjme_error_default(error);
+	
 	/* Give the uncompressed stream. */
-	if (hiStream != NULL)
-		*outStream = hiStream;
-	else
-		*outStream = lowStream;
+	*outStream = useStream;
 	return SJME_ERROR_NONE;
 
 fail_openHi:
 	/* Close high stream. */
 	if (hiStream != NULL)
-		if (sjme_error_is(sjme_closeable_closeUnRef(
+		if (sjme_error_is(sjme_closeable_close(
 			SJME_AS_CLOSEABLE(hiStream))))
 			return sjme_error_default(error);
 	
 fail_openLow:
 	/* Close low stream. */
 	if (lowStream != NULL)
-		if (sjme_error_is(sjme_closeable_closeUnRef(
+		if (sjme_error_is(sjme_closeable_close(
 			SJME_AS_CLOSEABLE(lowStream))))
 			return sjme_error_default(error);
 fail_readLens:
@@ -614,7 +617,7 @@ sjme_errorCode sjme_zip_openSeekable(
 	result->archiveStartPos = archiveStartPos;
 	result->seekable = inSeekable;
 	
-	/* Count the Zip us as it is valid now. */
+	/* Count the Zip as it is valid now. */
 	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
 		return sjme_error_default(error);
 	

@@ -73,7 +73,7 @@ SJME_TEST_DECLARE(testStreamReadSingle)
 	}
 
 	/* Close the stream. */
-	if (sjme_error_is(sjme_closeable_closeUnRef(
+	if (sjme_error_is(sjme_closeable_close(
 		SJME_AS_CLOSEABLE(inputStream))))
 		return sjme_unit_fail(test, "Could not close stream?");
 

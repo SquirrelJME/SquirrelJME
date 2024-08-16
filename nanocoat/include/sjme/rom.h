@@ -137,6 +137,16 @@ struct sjme_rom_libraryBase
 };
 
 /**
+ * Closes the library.
+ * 
+ * @param inLibrary The library being closed.
+ * @return Any resultant error, if any.
+ * @since 2024/08/16
+ */
+typedef sjme_errorCode (*sjme_rom_libraryCloseFunc)(
+	sjme_attrInNotNull sjme_rom_library inLibrary);
+
+/**
  * Initializes the library.
  *
  * @param inLibrary The input library.
@@ -238,6 +248,9 @@ typedef sjme_errorCode (*sjme_rom_suiteLoadLibraryFunc)();
 
 struct sjme_rom_libraryFunctions
 {
+	/** Closes the library. */
+	sjme_rom_libraryCloseFunc close;
+	
 	/** Initializes the library, implementation specific. */
 	sjme_rom_libraryInitFunc init;
 

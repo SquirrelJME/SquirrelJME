@@ -18,6 +18,25 @@
 #include "sjme/zip.h"
 #include "sjme/cleanup.h"
 
+static sjme_errorCode sjme_rom_libraryClose(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_rom_library inLibrary;
+	
+	if (closeable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover library. */
+	inLibrary = (sjme_rom_library)closeable;
+	
+	/* Forward close handler. */
+	if (inLibrary->functions->close != NULL)
+		return inLibrary->functions->close(inLibrary);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_rom_libraryHash(
 	sjme_attrInNotNull sjme_rom_library library,
 	sjme_attrOutNotNull sjme_jint* outHash)
@@ -57,7 +76,8 @@ sjme_errorCode sjme_rom_libraryNew(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Required. */
-	if (inFunctions->init == NULL)
+	if (inFunctions->init == NULL ||
+		inFunctions->close == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Allocate result. */
@@ -68,6 +88,7 @@ sjme_errorCode sjme_rom_libraryNew(
 		goto fail_alloc;
 	
 	/* Setup result. */
+	result->common.closeable.closeHandler = sjme_rom_libraryClose;
 	result->common.type = SJME_NVM_STRUCTTYPE_ROM_LIBRARY;
 	result->functions = inFunctions;
 	
@@ -259,7 +280,7 @@ sjme_errorCode sjme_rom_libraryResourceAsStream(
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&library->common.lock, NULL)))
 		return sjme_error_default(error);
-
+	
 	/* Success! */
 	*outStream = result;
 	return SJME_ERROR_NONE;

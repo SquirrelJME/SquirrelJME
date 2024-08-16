@@ -18,6 +18,7 @@
 
 #include <setjmp.h>
 
+#include "sjme/closeable.h"
 #include "sjme/config.h"
 #include "sjme/stdTypes.h"
 #include "sjme/tokenUtils.h"
@@ -793,6 +794,9 @@ typedef struct sjme_nvm_taskBase* sjme_nvm_task;
 
 struct sjme_nvm_commonBase
 {
+	/** Closeable for this NanoCoat object. */
+	sjme_closeableBase closeable;
+	
 	/** The type of item this is. */
 	sjme_nvm_structType type;	
 	

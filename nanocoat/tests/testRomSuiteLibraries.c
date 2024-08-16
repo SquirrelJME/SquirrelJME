@@ -91,7 +91,7 @@ SJME_TEST_DECLARE(testRomSuiteLibraries)
 	/* The cache should get our libraries. */
 	sjme_unit_equalP(test, suite->cache.libraries, &testFakeSuiteList,
 		"Library list was not cached?");
-
+		
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
 }

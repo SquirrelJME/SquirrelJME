@@ -347,7 +347,7 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 		&result, rom)) || result == NULL)
 	{
 		/* Make sure to close the file. */
-		sjme_closeable_closeUnRef(SJME_AS_CLOSEABLE(rom));
+		sjme_closeable_close(SJME_AS_CLOSEABLE(rom));
 		
 		/* Fail. */
 		return sjme_error_default(error);

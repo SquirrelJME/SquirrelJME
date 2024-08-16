@@ -30,7 +30,7 @@ sjme_errorCode sjme_closeable_autoEnqueue(
 #endif
 	
 	/* Forward close. */
-	return sjme_closeable_close(closeable);
+	return sjme_closeable_closeNoUnRef(closeable);
 }
 
 static sjme_errorCode sjme_closeable_closeCommon(
@@ -66,13 +66,13 @@ static sjme_errorCode sjme_closeable_closeCommon(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_closeable_close(
+sjme_errorCode sjme_closeable_closeNoUnRef(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	return sjme_closeable_closeCommon(closeable, SJME_JNI_FALSE);
 }
 
-sjme_errorCode sjme_closeable_closeUnRef(
+sjme_errorCode sjme_closeable_close(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	return sjme_closeable_closeCommon(closeable, SJME_JNI_TRUE);

@@ -14,7 +14,23 @@ sjme_errorCode sjme_nvm_enqueueHandler(
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInValue sjme_jboolean isBlockFree)
 {
-	return sjme_error_notImplemented(0);
+	sjme_nvm_common common;
+	
+	/* Recover common. */
+	common = (sjme_nvm_common)data;
+	
+	/* Do nothing if this was already cleared. */
+	if (common == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Specific handling depends on the type. */
+	switch (common->type)
+	{
+			/* Forward to enqueue handler for closeable, since we do */
+			/* not have anything special to do. */
+		default:
+			return sjme_closeable_autoEnqueue(weak, data, isBlockFree);
+	}
 }
 
 sjme_errorCode sjme_nvm_objectInit(

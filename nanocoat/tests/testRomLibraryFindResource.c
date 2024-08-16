@@ -32,6 +32,7 @@ static const sjme_mock_configSet configRomLibraryFindResource =
  */
 SJME_TEST_DECLARE(testRomLibraryFindResource)
 {
+	sjme_errorCode error;
 	sjme_rom_library library;
 	sjme_mock mock;
 	sjme_stream_input inputStream;
@@ -52,10 +53,10 @@ SJME_TEST_DECLARE(testRomLibraryFindResource)
 		return sjme_unit_fail(test, "Did not find resource?");
 
 	/* Just close the stream. */
-	if (sjme_error_is(sjme_closeable_closeUnRef(
+	if (sjme_error_is(sjme_closeable_close(
 		SJME_AS_CLOSEABLE(inputStream))))
 		return sjme_unit_fail(test, "Could not close stream?");
-
+	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
 }

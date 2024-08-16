@@ -107,7 +107,7 @@ sjme_errorCode sjme_rom_suiteFromZipSeekable(
 fail_refUp:
 fail_suiteNew:
 	/* Close the zip before failing. */
-	sjme_closeable_closeUnRef(SJME_AS_CLOSEABLE(zip));
+	sjme_closeable_close(SJME_AS_CLOSEABLE(zip));
 	
 	return sjme_error_default(error);
 }

@@ -18,6 +18,32 @@
 #include "sjme/zip.h"
 #include "sjme/cleanup.h"
 
+static sjme_errorCode sjme_rom_zipLibraryClose(
+	sjme_attrInNotNull sjme_rom_library inLibrary)
+{
+	sjme_errorCode error;
+	sjme_zip zip;
+	
+	if (inLibrary == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover zip, ignore if already closed. */
+	zip = inLibrary->handle;
+	if (zip == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Close it. */
+	if (sjme_error_is(error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(zip))))
+		return sjme_error_default(error);
+	
+	/* Remove reference to it. */
+	inLibrary->handle = NULL;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_rom_zipLibraryInit(
 	sjme_attrInNotNull sjme_rom_library inLibrary,
 	sjme_attrInNullable sjme_pointer data)
@@ -65,6 +91,7 @@ static sjme_errorCode sjme_rom_zipLibraryResourceStream(
 /** Library functions for Zip access. */
 static const sjme_rom_libraryFunctions sjme_rom_zipLibraryFunctions =
 {
+	.close = sjme_rom_zipLibraryClose,
 	.init = sjme_rom_zipLibraryInit,
 	.resourceStream = sjme_rom_zipLibraryResourceStream,
 };
