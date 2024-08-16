@@ -636,6 +636,13 @@ typedef union sjme_jvalue
 	sjme_jobject l;
 } sjme_jvalue;
 
+/**
+ * Structure which stores the pooled memory allocator.
+ *
+ * @since 2023/11/18
+ */
+typedef struct sjme_alloc_pool sjme_alloc_pool;
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
