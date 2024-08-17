@@ -48,7 +48,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_cocoaFunctions =
 	.menuNew = NULL,
 	.menuRemove = NULL,
 	.panelEnableFocus = NULL,
-	.panelNew = NULL,
+	.panelNew = sjme_scritchui_cocoa_panelNew,
 	.screens = NULL,
 	.scrollPanelNew = NULL,
 	.viewGetView = NULL,
@@ -200,7 +200,7 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 
 		/* But we need to actually get the pthread_t of the main thread */
 		/* and then set loop ready from there... */
-		sjme_todo("Impl?");
+		sjme_todo("Inject into already existing NSApplication?");
 
 #if 0
 		/* Because we are using an existing application, we are ready */

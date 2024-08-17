@@ -69,6 +69,16 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
 
 @end
 
+/**
+ * Panel object. This is based on @c NSView as that is a low level way to
+ * create custom widgets and otherwise.
+ * 
+ * @since 2024/08/17
+ */
+@interface SJMEPanel : NSView
+
+@end
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

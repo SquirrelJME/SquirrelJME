@@ -57,6 +57,11 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything);
 
+sjme_errorCode sjme_scritchui_cocoa_panelNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
+	sjme_attrInNullable sjme_pointer ignored);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

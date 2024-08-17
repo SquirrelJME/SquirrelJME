@@ -41,7 +41,6 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 		forKey:@"loopExecuteInfo"];
 
 	/* Post notification. */
-#if 1
 	[[super class] performSelector:@selector(postNotification:)
 		onThread:mainThread
 		withObject:[NSNotification
@@ -49,13 +48,6 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 			object:super
 			userInfo:dict]
 		waitUntilDone:NO];
-#else
-	notifCenter = [NSNotificationCenter defaultCenter];
-	[notifCenter
-		postNotificationName:sjme_scritchui_cocoa_loopExecuteNotif
-		object:super
-		userInfo:dict];
-#endif
 
 	/* Success! */
 	return SJME_ERROR_NONE;

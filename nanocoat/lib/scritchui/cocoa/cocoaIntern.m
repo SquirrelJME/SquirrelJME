@@ -23,7 +23,6 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 - (void)sjmeLoopExecute:(NSNotification*)notif
 {
 	SJMELoopExecute* loopExecuteInfo;
-	sjme_thread_result result;
 	sjme_errorCode error;
 	sjme_scritchui inState;
 	NSThread* currentThread;
@@ -44,15 +43,13 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 			currentThread, desireThread);
 	}
 
-	/* Debug. */
-	sjme_message("Cocoa loopExecute!");
-
 	/* Execute the function. */
-	result = loopExecuteInfo->callback(loopExecuteInfo->anything);
-	error = SJME_THREAD_RESULT_AS_ERROR(result);
+	error = SJME_THREAD_RESULT_AS_ERROR(
+		loopExecuteInfo->callback(loopExecuteInfo->anything));
 
-	/* Error? */
-	sjme_message("Loop execute: %d", error);
+	/* Emit notice if it failed. */
+	if (sjme_error_is(error))
+		sjme_message("Loop execute failed: %d", error);
 }
 
 /**
