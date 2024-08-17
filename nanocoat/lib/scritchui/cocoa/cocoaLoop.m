@@ -17,23 +17,33 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	NSApplication* currentApp;
-	NSTimer* exec;
-	NSRunLoop* mainLoop;
-	NSObject* obj;
+	NSNotificationCenter* notifCenter;
+	SJMESuperObject* super;
+	NSDictionary* dict;
+	SJMELoopExecute* loopExecuteInfo;
 
 	if (inState == NULL || callback == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Recover application. */
+	/* Recover application and super object. */
 	currentApp =
 		(NSApplication*)inState->common.handle[SJME_SUI_COCOA_H_NSAPP];
+	super = (SJMESuperObject*)inState->common.handle[SJME_SUI_COCOA_H_SUPER];
 
-	/* Get the main loop. */
-	mainLoop = [NSRunLoop mainRunLoop];
+	/* Setup dictionary parameters. */
+	loopExecuteInfo = [SJMELoopExecute new];
+	loopExecuteInfo->inState = inState;
+	loopExecuteInfo->callback = callback;
+	loopExecuteInfo->anything = anything;
+	dict = [NSDictionary dictionaryWithObject:loopExecuteInfo
+		forKey:@"loopExecuteInfo"];
 
-	/* Run within it. */
-	obj = (NSObject*)mainLoop;
-	[obj performSelectorOnMainThread:callback];
+	/* Post notification. */
+	notifCenter = [NSNotificationCenter defaultCenter];
+	[notifCenter
+		postNotificationName:sjme_scritchui_cocoa_loopExecuteNotif
+		object:super
+		userInfo:dict];
 
 	/* Success! */
 	return SJME_ERROR_NONE;

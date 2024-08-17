@@ -67,7 +67,8 @@ static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 {
 	sjme_scritchui inState;
 	NSApplication* currentApp;
-	NSThread* self;
+	NSThread* selfThread;
+	SJMESuperObject* super;
 	int argc;
 	char** argv;
 
@@ -92,14 +93,24 @@ static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 	inState->common.handle[SJME_SUI_COCOA_H_NSAPP] = currentApp;
 
 	/* Get our current thread as well, as a NSThread. */
-	self = [NSThread currentThread];
-	inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD] = self;
+	selfThread = [NSThread currentThread];
+	inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD] = selfThread;
+
+	/* Debug. */
+	sjme_message("Main NSThread is %p", selfThread);
+
+	/* Setup super object. */
+	super = [SJMESuperObject new];
+	inState->common.handle[SJME_SUI_COCOA_H_SUPER] = super;
 
 	/* Debug. */
 	sjme_message("Created NSApplication %p!", currentApp);
 
 	/* Because we created this, we are ready now! */
 	sjme_atomic_sjme_jint_set(&inState->loopThreadReady, 1);
+
+	/* Debug. */
+	sjme_message("Before Cocoa main loop...");
 
 	/* Run main application. */
 	NSApplicationMain(argc, argv);
@@ -142,7 +153,6 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	sjme_errorCode error;
 	NSApplication* currentApp;
 	NSThread* mainThread;
-	NSEvent* boopWitchcraft;
 
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -180,8 +190,7 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 
 		/* But we need to actually get the pthread_t of the main thread */
 		/* and then set loop ready from there... */
-		boopWitchcraft = NULL;
-		[currentApp postEvent:boopWitchcraft];
+		sjme_todo("Impl?");
 
 #if 0
 		/* Because we are using an existing application, we are ready */

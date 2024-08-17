@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_COCOAINTERN_H
 #define SQUIRRELJME_COCOAINTERN_H
 
+#import <objc/Object.h>
+
 #include "lib/scritchui/cocoa/cocoa.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -31,6 +33,39 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/** Notification for loop execution. */
+extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
+
+/**
+ * SquirrelJME loop execute data.
+ * 
+ * @since 2024/08/16
+ */
+@interface SJMELoopExecute : NSObject
+{
+@public
+	/** The state this is for. */
+	sjme_scritchui inState;
+	
+	/** The callback to execute. */
+	sjme_thread_mainFunc callback;
+	
+	/** The thread parameter. */
+	sjme_thread_parameter anything;
+}
+@end
+
+/**
+ * SquirrelJME Super Object.
+ * 
+ * @since 2024/08/16
+ */
+@interface SJMESuperObject : NSObject
+{
+}
+
+@end
 
 /*--------------------------------------------------------------------------*/
 
