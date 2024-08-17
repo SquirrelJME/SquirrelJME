@@ -69,12 +69,42 @@ if(SQUIRRELJME_IS_APPLE_DESKTOP)
 		"-framework Foundation"
 		"-framework Cocoa")
 elseif(SQUIRRELJME_IS_GNUSTEP_DESKTOP)
+	# gnustep-config can accept multiple switches however it ignores other
+	# specified ones, so this has to be done multiple times!
+	# Objective C
 	execute_process(
-		COMMAND "${GNUSTEP_EXE_PATH}" --objc-libs --base-libs --gui-libs
-		OUTPUT_VARIABLE SQUIRRELJME_GNUSTEP_LIBS
+		COMMAND "${GNUSTEP_EXE_PATH}" --objc-libs
+		OUTPUT_VARIABLE SQUIRRELJME_GNUSTEP_LIBS_OBJC
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
-	separate_arguments(SQUIRRELJME_GNUSTEP_LIBS UNIX_COMMAND
-		${SQUIRRELJME_GNUSTEP_LIBS})
+	separate_arguments(SQUIRRELJME_GNUSTEP_LIBS_OBJC UNIX_COMMAND
+		${SQUIRRELJME_GNUSTEP_LIBS_OBJC})
+
+	# Base Libraries
+	execute_process(
+		COMMAND "${GNUSTEP_EXE_PATH}" --base-libs
+		OUTPUT_VARIABLE SQUIRRELJME_GNUSTEP_LIBS_BASE
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
+	separate_arguments(SQUIRRELJME_GNUSTEP_LIBS_BASE UNIX_COMMAND
+		${SQUIRRELJME_GNUSTEP_LIBS_BASE})
+
+	# GUI Libraries
+	execute_process(
+		COMMAND "${GNUSTEP_EXE_PATH}" --gui-libs
+		OUTPUT_VARIABLE SQUIRRELJME_GNUSTEP_LIBS_GUI
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
+	separate_arguments(SQUIRRELJME_GNUSTEP_LIBS_GUI UNIX_COMMAND
+		${SQUIRRELJME_GNUSTEP_LIBS_GUI})
+
+	# Add everything in
 	target_link_options(ScritchUICocoa PRIVATE
-		${SQUIRRELJME_GNUSTEP_LIBS})
+		${SQUIRRELJME_GNUSTEP_LIBS_OBJC}
+		${SQUIRRELJME_GNUSTEP_LIBS_BASE}
+		${SQUIRRELJME_GNUSTEP_LIBS_GUI})
+
+	# These specifically are needed, otherwise GOBJC will link against
+	# static libraries and as such the .so will not be referenced by
+	# the ScritchUI .so, thus it will have no idea it needs to bring in
+	# GNUStep at all
+	target_link_libraries(ScritchUICocoa PUBLIC
+		-l:libgnustep-base.so -l:libgnustep-gui.so)
 endif()
