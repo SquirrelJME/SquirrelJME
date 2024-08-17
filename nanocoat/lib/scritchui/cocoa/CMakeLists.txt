@@ -63,10 +63,6 @@ endif()
 squirreljme_target_binary_name(ScritchUICocoa
 	"squirreljme-scritchui-cocoa")
 
-# It is easier to find this when it is in the build root
-squirreljme_target_binary_output(ScritchUICocoa
-	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
-
 # Apple and GNUStep specific link options
 if(SQUIRRELJME_IS_APPLE_DESKTOP)
 	target_link_libraries(ScritchUICocoa
