@@ -118,11 +118,6 @@ static sjme_errorCode sjme_zip_close(
 		SJME_AS_CLOSEABLE(zip->seekable))))
 		goto fail_seekableClose;
 		
-	/* Un-ref the seekable we just closed. */
-	if (sjme_error_is(error = sjme_alloc_weakUnRef(
-		(sjme_pointer*)&zip->seekable)))
-		goto fail_seekableUnref;
-		
 	/* Release the lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(&zip->lock,
 		NULL)))
