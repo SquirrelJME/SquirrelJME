@@ -117,6 +117,9 @@ static sjme_errorCode sjme_zip_close(
 	if (sjme_error_is(error = sjme_closeable_close(
 		SJME_AS_CLOSEABLE(zip->seekable))))
 		goto fail_seekableClose;
+	
+	/* Invalidate it. */
+	zip->seekable = NULL;
 		
 	/* Release the lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(&zip->lock,
@@ -276,6 +279,10 @@ sjme_errorCode sjme_zip_entryRead(
 	if (inEntry->name[nameLen - 1] == '/')
 		return SJME_ERROR_IS_DIRECTORY;
 	
+	/* Closed? */
+	if (inZip->seekable == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Debug. */
 	sjme_message("Open Zip entry: %s",
 		inEntry->name);
@@ -343,10 +350,6 @@ sjme_errorCode sjme_zip_entryRead(
 	/* Give the stream over the uncompressed data. */
 	useStream = (hiStream != NULL ? hiStream : lowStream);
 	
-	/* Is valid, so count accordingly. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(useStream, NULL)))
-		return sjme_error_default(error);
-	
 	/* Give the uncompressed stream. */
 	*outStream = useStream;
 	return SJME_ERROR_NONE;
@@ -389,6 +392,10 @@ sjme_errorCode sjme_zip_locateEntry(
 	
 	if (inZip == NULL || outEntry == NULL || entryName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Closed? */
+	if (inZip->seekable == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Grab the lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(&inZip->lock)))
@@ -554,11 +561,6 @@ sjme_errorCode sjme_zip_openMemory(
 		return sjme_error_default(error);
 	}
 	
-	/* Un-reference the original memory area as the zip references it. */
-	if (sjme_error_is(error = sjme_alloc_weakUnRef(
-		(sjme_pointer*)&seekable)))
-		return sjme_error_default(error);
-	
 	/* Success! */
 	*outZip = result;
 	return SJME_ERROR_NONE;
@@ -611,10 +613,6 @@ sjme_errorCode sjme_zip_openSeekable(
 	result->endCentralDirPos = endCentralDirPos;
 	result->archiveStartPos = archiveStartPos;
 	result->seekable = inSeekable;
-	
-	/* Count the Zip as it is valid now. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
-		return sjme_error_default(error);
 	
 	/* Count the seekable up, since we are using it. */
 	if (sjme_error_is(error = sjme_alloc_weakRef(inSeekable, NULL)))

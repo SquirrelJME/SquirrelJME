@@ -77,10 +77,6 @@ sjme_errorCode sjme_seekable_open(
 		return sjme_error_default(error);
 	}
 	
-	/* This is valid now, so count up. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
-		return sjme_error_default(error);
-	
 	/* Success! */
 	*outSeekable = result;
 	return SJME_ERROR_NONE;

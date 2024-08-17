@@ -131,10 +131,6 @@ sjme_errorCode sjme_stream_inputOpen(
 		return sjme_error_default(error);
 	}
 	
-	/* Result is valid now, so count it. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
-		return sjme_error_default(error);
-	
 	/* Success! */
 	*outStream = result;
 	return SJME_ERROR_NONE;
@@ -403,10 +399,6 @@ sjme_errorCode sjme_stream_outputOpen(
 		
 		return sjme_error_default(error);
 	}
-	
-	/* Result is valid now, so count it. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
-		return sjme_error_default(error);
 	
 	/* Success! */
 	*outStream = result;

@@ -42,6 +42,18 @@ static sjme_errorCode sjme_rom_libraryClose(
 		inLibrary->prefix = NULL;
 	}
 	
+	/* Delete name if there is one. */
+	if (inLibrary->name != NULL)
+	{
+		/* Free it. */
+		if (sjme_error_is(error = sjme_alloc_free(
+			(sjme_pointer)inLibrary->name)))
+			return sjme_error_default(error);
+		
+		/* Clear. */
+		inLibrary->name = NULL;
+	}
+	
 	/* Forward close handler. */
 	if (inLibrary->functions->close != NULL)
 		return inLibrary->functions->close(inLibrary);
@@ -118,10 +130,6 @@ sjme_errorCode sjme_rom_libraryNew(
 	result->name = NULL;
 	if (sjme_error_is(error = sjme_alloc_strdup(pool, &result->name, libName)))
 		goto fail_strdup;
-	
-	/* Library is valid now, so count up. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
-		goto fail_refUp;
 	
 	/* Success! */
 	*outLibrary = result;
