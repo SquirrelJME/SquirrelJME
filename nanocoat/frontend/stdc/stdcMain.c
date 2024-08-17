@@ -67,6 +67,28 @@ int main(int argc, sjme_lpcstr* argv)
 			bootParam.bootSuite == NULL)
 			goto fail_bootSuiteBackup;
 	
+	/* If no classpath was specified, load the launcher instead. */
+	if (bootParam.mainClassPathById == NULL &&
+		bootParam.mainClassPathByName == NULL)
+	{
+		/* Try to find default launcher. */
+		if (sjme_error_is(error = sjme_rom_suiteDefaultLaunch(pool,
+			bootParam.bootSuite,
+			(sjme_lpstr*)&bootParam.mainClass,
+			(sjme_list_sjme_lpstr**)&bootParam.mainArgs,
+			(sjme_list_sjme_jint**)&bootParam.mainClassPathById,
+			(sjme_list_sjme_lpstr**)&bootParam.mainClassPathByName)))
+			goto fail_defaultLaunch;
+		
+		/* Still failed? */
+		if (bootParam.mainClassPathById == NULL &&
+			bootParam.mainClassPathByName == NULL)
+		{
+			error = SJME_ERROR_NO_CLASS;
+			goto fail_defaultLaunch;
+		}
+	}
+	
 	/* Boot the virtual machine. */
 	inState = NULL;
 	if (sjme_error_is(error = sjme_nvm_boot(pool,
@@ -111,6 +133,7 @@ fail_boot:
 	if (inState != NULL)
 		sjme_nvm_destroy(inState, NULL);
 
+fail_defaultLaunch:
 fail_bootSuiteBackup:
 fail_argParse:
 fail_poolInit:

@@ -21,6 +21,7 @@
 static sjme_errorCode sjme_rom_libraryClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
+	sjme_errorCode error;
 	sjme_rom_library inLibrary;
 	
 	if (closeable == NULL)
@@ -28,6 +29,18 @@ static sjme_errorCode sjme_rom_libraryClose(
 	
 	/* Recover library. */
 	inLibrary = (sjme_rom_library)closeable;
+	
+	/* Delete the prefix if there is one. */
+	if (inLibrary->prefix != NULL)
+	{
+		/* Free it. */
+		if (sjme_error_is(error = sjme_alloc_free(
+			(sjme_pointer)inLibrary->prefix)))
+			return sjme_error_default(error);
+		
+		/* Clear. */
+		inLibrary->prefix = NULL;
+	}
 	
 	/* Forward close handler. */
 	if (inLibrary->functions->close != NULL)

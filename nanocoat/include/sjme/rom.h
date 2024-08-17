@@ -122,6 +122,9 @@ struct sjme_rom_libraryBase
 	
 	/** The handle, may be to a seekable. */
 	sjme_pointer handle;
+	
+	/** The prefix, if applicable. */
+	sjme_lpcstr prefix;
 
 	/** The library ID. */
 	sjme_jint id;
@@ -206,6 +209,26 @@ typedef sjme_errorCode (*sjme_rom_libraryResourceStreamFunc)(
 	sjme_attrInNotNull sjme_lpcstr resourceName);
 
 /**
+ * Obtains the default launch parameters from the given suite.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param inSuite The suite to get the launch parameters from.
+ * @param outMainClass The main class to launch.
+ * @param outMainArgs The arguments to pass to the main class.
+ * @param outById The main class path by ID.
+ * @param outByName The main class path by name.
+ * @return Any resultant error, if any.
+ * @since 2024/08/16
+ */
+typedef sjme_errorCode (*sjme_rom_suiteDefaultLaunchFunc)(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
+	sjme_attrOutNotNull sjme_lpstr* outMainClass,
+	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
+	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
+	sjme_attrOutNotNull sjme_list_sjme_lpstr** outByName);
+
+/**
  * Function used to initialize the suite.
  *
  * @param inSuite The input suite.
@@ -269,6 +292,9 @@ struct sjme_rom_libraryFunctions
 
 struct sjme_rom_suiteFunctions
 {
+	/** Optional default launch parameters. */
+	sjme_rom_suiteDefaultLaunchFunc defaultLaunch;
+	
 	/** Initialize suite cache. */
 	sjme_rom_suiteInitFunc init;
 
@@ -303,6 +329,7 @@ struct sjme_rom_suiteBase
  * @param pool The pool to use for allocations.
  * @param outLibrary The resultant library.
  * @param libName The library name.
+ * @param prefix Optional prefix when accessing Zip contents.
  * @param zip The Zip to access as a library.
  * @return Any resultant error, if any.
  * @since 2024/08/16
@@ -311,6 +338,7 @@ sjme_errorCode sjme_rom_libraryFromZip(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
+	sjme_attrInNullable sjme_lpcstr prefix,
 	sjme_attrInNotNull sjme_zip zip);
 
 /**
@@ -471,6 +499,26 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrInNotNull const sjme_list_sjme_lpcstr* inNames,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
+
+/**
+ * Obtains the default launch parameters from the given suite.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param inSuite The suite to get the launch parameters from.
+ * @param outMainClass The main class to launch.
+ * @param outMainArgs The arguments to pass to the main class.
+ * @param outById The main class path by ID.
+ * @param outByName The main class path by name.
+ * @return Any resultant error, if any.
+ * @since 2024/08/16
+ */
+sjme_errorCode sjme_rom_suiteDefaultLaunch(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
+	sjme_attrOutNotNull sjme_lpstr* outMainClass,
+	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
+	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
+	sjme_attrOutNotNull sjme_list_sjme_lpstr** outByName);
 
 /**
  * Combines multiple suites into one.

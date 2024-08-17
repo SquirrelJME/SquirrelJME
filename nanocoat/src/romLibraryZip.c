@@ -100,6 +100,7 @@ sjme_errorCode sjme_rom_libraryFromZip(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
+	sjme_attrInNullable sjme_lpcstr prefix,
 	sjme_attrInNotNull sjme_zip zip)
 {
 	sjme_errorCode error;
@@ -116,17 +117,22 @@ sjme_errorCode sjme_rom_libraryFromZip(
 		result == NULL)
 		goto fail_libraryNew;
 	
+	/* Set handle and prefix, if applicable. */
+	result->handle = zip;
+	if (prefix != NULL)
+		 if (sjme_error_is(error = sjme_alloc_strdup(pool, &result->prefix,
+		 	prefix)))
+		 	goto fail_prefixDup;
+	
 	/* Count up Zip, since we are using it now. */
 	if (sjme_error_is(error = sjme_alloc_weakRef(zip, NULL)))
 		goto fail_refUp;
 	
-	/* Set handle. */
-	result->handle = zip;
-	
 	/* Success! */
 	*outLibrary = result;
 	return SJME_ERROR_NONE;
-	
+
+fail_prefixDup:
 fail_refUp:
 fail_libraryNew:
 	return sjme_error_default(error);
@@ -178,5 +184,6 @@ sjme_errorCode sjme_rom_libraryFromZipSeekable(
 		return sjme_error_default(error);
 	
 	/* Forward Zip loading. */
-	return sjme_rom_libraryFromZip(pool, outLibrary, libName, zip);
+	return sjme_rom_libraryFromZip(pool, outLibrary, libName,
+		NULL, zip);
 }

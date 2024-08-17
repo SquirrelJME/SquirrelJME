@@ -28,6 +28,93 @@ static sjme_errorCode sjme_rom_suiteClose(
 	return sjme_error_notImplemented(0);
 }
 
+sjme_errorCode sjme_rom_suiteDefaultLaunch(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
+	sjme_attrOutNotNull sjme_lpstr* outMainClass,
+	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
+	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
+	sjme_attrOutNotNull sjme_list_sjme_lpstr** outByName)
+{
+	sjme_errorCode error;
+	
+	if (inPool == NULL || inSuite == NULL || outMainClass == NULL ||
+		outMainArgs == NULL || outById == NULL || outByName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Not supported internally? */
+	if (inSuite->functions->defaultLaunch == NULL)
+		return SJME_ERROR_UNSUPPORTED_OPERATION;
+	
+	/* Lock suite. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&inSuite->common.lock)))
+		return sjme_error_default(error);
+	
+	/* Forward call. */
+	error = inSuite->functions->defaultLaunch(inPool,
+		inSuite, outMainClass, outMainArgs, outById, outByName);
+		
+	/* Unlock suite. */
+	if (sjme_error_is(sjme_thread_spinLockRelease(
+		&inSuite->common.lock, NULL)))
+		return sjme_error_default(error);
+	
+	/* Success? */
+	return error;
+}
+
+sjme_errorCode sjme_rom_suiteFromMerge(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrInNotNull sjme_rom_suite* inSuites,
+	sjme_attrInPositive sjme_jint numInSuites)
+{
+	if (pool == NULL || outSuite == NULL || inSuites == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (numInSuites < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	sjme_todo("Implement this?");
+	return SJME_ERROR_UNKNOWN;
+}
+
+sjme_errorCode sjme_rom_suiteFromPayload(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrInNotNull const sjme_payload_config* payloadConfig)
+{
+	sjme_jint i, numActive, numLibraries;
+
+	if (pool == NULL || outSuite == NULL || payloadConfig == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Count the number of active ROMs. */
+	numActive = 0;
+	numLibraries = 0;
+	for (i = 0; i < SJME_NVM_PAYLOAD_MAX_ROMS; i++)
+		if (payloadConfig->roms[i].isActive)
+		{
+			/* Count up! */
+			numActive++;
+
+			/* Anything that is a library we need to build a container. */
+			if (payloadConfig->roms[i].isLibrary)
+				numLibraries++;
+		}
+
+	/* If there is nothing active then nothing needs to be done. */
+	if (numActive == 0)
+	{
+		*outSuite = NULL;
+		return SJME_ERROR_NONE;
+	}
+
+	sjme_todo("Implement this?");
+	return SJME_ERROR_UNKNOWN;
+}
+
 sjme_errorCode sjme_rom_suiteLibraries(
 	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
@@ -100,57 +187,6 @@ fail_list:
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
-}
-
-sjme_errorCode sjme_rom_suiteFromMerge(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull sjme_rom_suite* inSuites,
-	sjme_attrInPositive sjme_jint numInSuites)
-{
-	if (pool == NULL || outSuite == NULL || inSuites == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (numInSuites < 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	sjme_todo("Implement this?");
-	return SJME_ERROR_UNKNOWN;
-}
-
-sjme_errorCode sjme_rom_suiteFromPayload(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull const sjme_payload_config* payloadConfig)
-{
-	sjme_jint i, numActive, numLibraries;
-
-	if (pool == NULL || outSuite == NULL || payloadConfig == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Count the number of active ROMs. */
-	numActive = 0;
-	numLibraries = 0;
-	for (i = 0; i < SJME_NVM_PAYLOAD_MAX_ROMS; i++)
-		if (payloadConfig->roms[i].isActive)
-		{
-			/* Count up! */
-			numActive++;
-
-			/* Anything that is a library we need to build a container. */
-			if (payloadConfig->roms[i].isLibrary)
-				numLibraries++;
-		}
-
-	/* If there is nothing active then nothing needs to be done. */
-	if (numActive == 0)
-	{
-		*outSuite = NULL;
-		return SJME_ERROR_NONE;
-	}
-
-	sjme_todo("Implement this?");
-	return SJME_ERROR_UNKNOWN;
 }
 
 sjme_errorCode sjme_rom_suiteNew(

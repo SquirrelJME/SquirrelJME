@@ -18,6 +18,38 @@
 #include "sjme/zip.h"
 #include "sjme/cleanup.h"
 
+static sjme_errorCode sjme_rom_zipSuiteDefaultLaunch(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
+	sjme_attrOutNotNull sjme_lpstr* outMainClass,
+	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
+	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
+	sjme_attrOutNotNull sjme_list_sjme_lpstr** outByName)
+{
+	sjme_errorCode error;
+	sjme_zip zip;
+	
+	if (inPool == NULL || inSuite == NULL || outMainClass == NULL ||
+		outMainArgs == NULL || outById == NULL || outByName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover Zip. */
+	zip = inSuite->handle;
+	
+	/* These are available from three entries essentially */
+	/* launcher.main */
+	sjme_todo("Impl?");
+	
+	/* launcher.args */
+	sjme_todo("Impl?");
+	
+	/* launcher.path */
+	sjme_todo("Impl?");
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_rom_zipSuiteInit(
 	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrInNullable sjme_pointer data)
@@ -64,6 +96,7 @@ static sjme_errorCode sjme_rom_zipSuiteLoadLibrary()
 /** Functions for Zip based suites. */
 static sjme_rom_suiteFunctions sjme_rom_zipSuiteFunctions =
 {
+	.defaultLaunch = sjme_rom_zipSuiteDefaultLaunch,
 	.init = sjme_rom_zipSuiteInit,
 	.libraryId = sjme_rom_zipSuiteLibraryId,
 	.list = sjme_rom_zipSuiteListLibraries,
