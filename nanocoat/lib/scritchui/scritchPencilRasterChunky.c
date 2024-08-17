@@ -199,7 +199,7 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	srcRgb = sjme_alloca(srcRgbBytes);
 	if (srcRgb == NULL)
 		return sjme_error_defaultOr(error,
-			SJME_ERROR_OUT_OF_MEMORY);
+			sjme_error_outOfMemory(NULL, srcRgbBytes));
 	
 	/* Clear buffers. */
 	memset(srcRgb, 0, srcRgbBytes);

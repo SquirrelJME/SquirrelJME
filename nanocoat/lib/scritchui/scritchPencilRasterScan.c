@@ -547,7 +547,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanGet(
 	/* Allocate. */
 	rawScan = sjme_alloca(rawScanBytes);
 	if (rawScan == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, rawScanBytes);
 	
 	/* Clear. */
 	memset(rawScan, 0, rawScanBytes);
@@ -614,7 +614,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 		/* Allocate dest RGB data. */
 		destRgb = sjme_alloca(rgbBytes);
 		if (destRgb == NULL)
-			return SJME_ERROR_OUT_OF_MEMORY;
+			return sjme_error_outOfMemory(NULL, rgbBytes);
 		
 		/* Clear. */
 		memset(destRgb, 0, rgbBytes);
@@ -638,7 +638,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 	/* Allocate raw scan data. */
 	rawScan = sjme_alloca(rawScanBytes);
 	if (rawScan == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, rawScanBytes);
 	
 	/* Clear. */
 	memset(rawScan, 0, rawScanBytes);

@@ -255,6 +255,30 @@ sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	(sjme_intPointer)(context))
 
 /**
+ * Allows for optional debug abort when out of memory is hit.
+ *
+ * @param inPool The pool the allocation was within, if applicable.
+ * @param context Any value.
+ * @return Always @c SJME_ERROR_OUT_OF_MEMORY .
+ * @since 2024/08/15
+ */
+sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInNullable sjme_alloc_pool* inPool,
+	sjme_attrInValue sjme_intPointer context);
+
+/**
+ * Allows for optional debug abort when out of memory is hit.
+ *
+ * @param inPool The pool the allocation was within, if applicable.
+ * @param context Any value.
+ * @return Always @c SJME_ERROR_OUT_OF_MEMORY .
+ * @since 2024/08/15
+ */
+#define sjme_error_outOfMemory(inPool, context) \
+	sjme_error_outOfMemoryR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, \
+	(inPool), (sjme_intPointer)(context))
+
+/**
  * Handles specific debug abort scenarios.
  *
  * @return Return @c SJME_JNI_TRUE if it was handled and abort should be

@@ -67,7 +67,7 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	/* Allocate display list. */
 	dlFull = sjme_alloca(sizeof(*dlFull) * dlCount);
 	if (dlFull == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, dlCount);
 	memset(dlFull, 0, sizeof(*dlFull) * dlCount);
 	
 	/* Get component actual size. */

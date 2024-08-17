@@ -478,7 +478,7 @@ sjme_errorCode sjme_scritchui_intern_menuItemActivateById(
 	n = child->numChildren;
 	children = sjme_alloca(sizeof(*children) * n);
 	if (children == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, n);
 	memmove(children, child->children->elements,
 		sizeof(*children) * n);
 	

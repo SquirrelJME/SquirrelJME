@@ -47,10 +47,6 @@ target_link_directories(ScritchUIGTK2 PUBLIC
 target_link_libraries(ScritchUIGTK2 PUBLIC
 	${GTK2_LIBRARIES})
 
-# It is easier to find this when it is in the build root
-squirreljme_target_binary_output(ScritchUIGTK2
-	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
-
 # ScritchUI requires a normalized library name
 squirreljme_target_binary_name(ScritchUIGTK2
 	"squirreljme-scritchui-gtk2")
