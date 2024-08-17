@@ -43,8 +43,11 @@ extern "C"
 /** Main event loop thread. */
 #define SJME_SUI_COCOA_H_NSTHREAD 1
 
+/** Main run loop. */
+#define SJME_SUI_COCOA_H_NSRUNLOOP 2
+
 /** SquirrelJME super object. */
-#define SJME_SUI_COCOA_H_SUPER 2
+#define SJME_SUI_COCOA_H_SUPER 3
 
 sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);

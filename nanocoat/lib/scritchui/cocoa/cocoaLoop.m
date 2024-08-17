@@ -21,6 +21,7 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 	SJMESuperObject* super;
 	NSDictionary* dict;
 	SJMELoopExecute* loopExecuteInfo;
+	NSThread* mainThread;
 
 	if (inState == NULL || callback == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -28,6 +29,7 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 	/* Recover application and super object. */
 	currentApp =
 		(NSApplication*)inState->common.handle[SJME_SUI_COCOA_H_NSAPP];
+	mainThread = (NSThread*)inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD];
 	super = (SJMESuperObject*)inState->common.handle[SJME_SUI_COCOA_H_SUPER];
 
 	/* Setup dictionary parameters. */
@@ -39,11 +41,21 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 		forKey:@"loopExecuteInfo"];
 
 	/* Post notification. */
+#if 1
+	[[super class] performSelector:@selector(postNotification:)
+		onThread:mainThread
+		withObject:[NSNotification
+			notificationWithName:sjme_scritchui_cocoa_loopExecuteNotif
+			object:super
+			userInfo:dict]
+		waitUntilDone:NO];
+#else
 	notifCenter = [NSNotificationCenter defaultCenter];
 	[notifCenter
 		postNotificationName:sjme_scritchui_cocoa_loopExecuteNotif
 		object:super
 		userInfo:dict];
+#endif
 
 	/* Success! */
 	return SJME_ERROR_NONE;

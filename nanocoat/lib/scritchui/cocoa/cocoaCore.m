@@ -67,7 +67,8 @@ static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 {
 	sjme_scritchui inState;
 	NSApplication* currentApp;
-	NSThread* selfThread;
+	NSThread* currentThread;
+	NSRunLoop* currentLoop;
 	SJMESuperObject* super;
 	int argc;
 	char** argv;
@@ -93,11 +94,15 @@ static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 	inState->common.handle[SJME_SUI_COCOA_H_NSAPP] = currentApp;
 
 	/* Get our current thread as well, as a NSThread. */
-	selfThread = [NSThread currentThread];
-	inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD] = selfThread;
+	currentThread = [NSThread currentThread];
+	inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD] = currentThread;
 
 	/* Debug. */
-	sjme_message("Main NSThread is %p", selfThread);
+	sjme_message("Main NSThread is %p", currentThread);
+
+	/* Get the current run loop. */
+	currentLoop = [NSRunLoop currentRunLoop];
+	inState->common.handle[SJME_SUI_COCOA_H_NSRUNLOOP] = currentLoop;
 
 	/* Setup super object. */
 	super = [SJMESuperObject new];
@@ -105,6 +110,11 @@ static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 
 	/* Debug. */
 	sjme_message("Created NSApplication %p!", currentApp);
+
+	/* Need to call thread specific initializer? */
+	/* Usually this is for binding a thread to a JavaVM. */
+	if (inState->loopThreadInit != NULL)
+		inState->loopThreadInit(inState);
 
 	/* Because we created this, we are ready now! */
 	sjme_atomic_sjme_jint_set(&inState->loopThreadReady, 1);

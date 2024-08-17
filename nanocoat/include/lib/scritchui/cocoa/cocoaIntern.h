@@ -65,6 +65,8 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
 {
 }
 
++ (void)postNotification:(NSNotification *)notif;
+
 @end
 
 /*--------------------------------------------------------------------------*/

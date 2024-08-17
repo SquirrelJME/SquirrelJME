@@ -25,21 +25,34 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 	SJMELoopExecute* loopExecuteInfo;
 	sjme_thread_result result;
 	sjme_errorCode error;
-
-	/* Debug. */
-	sjme_message("Cocoa loopExecute!");
+	sjme_scritchui inState;
+	NSThread* currentThread;
+	NSThread* desireThread;
 
 	/* Recover info. */
 	loopExecuteInfo = [[notif userInfo] objectForKey:@"loopExecuteInfo"];
+	inState = loopExecuteInfo->inState;
+
+	/* Can only be on the main thread. */
+	currentThread = [NSThread currentThread];
+	desireThread = inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD];
+	if (currentThread != desireThread)
+	{
+		/* Debug. */
+		NSLog(@"Notification is %@", notif);
+		sjme_todo("Notification in wrong thread: %p != %p",
+			currentThread, desireThread);
+	}
+
+	/* Debug. */
+	sjme_message("Cocoa loopExecute!");
 
 	/* Execute the function. */
 	result = loopExecuteInfo->callback(loopExecuteInfo->anything);
 	error = SJME_THREAD_RESULT_AS_ERROR(result);
 
 	/* Error? */
-	if (sjme_error_is(error))
-		NSLog(@"Loop execute %@ failed: %d",
-			notif, error);
+	sjme_message("Loop execute: %d", error);
 }
 
 /**
@@ -61,6 +74,11 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 
 	/* Return self. */
 	return self;
+}
+
++ (void)postNotification:(NSNotification *)notif
+{
+    [[NSNotificationCenter defaultCenter] postNotification:notif];
 }
 
 @end
