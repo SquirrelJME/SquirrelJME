@@ -29,6 +29,10 @@ SJME_TEST_DECLARE(testZipOpenClose)
 	if (sjme_error_is(sjme_zip_openMemory(test->pool, &zip,
 		mock_jar__bin, mock_jar__len)) || zip == NULL)
 		return sjme_unit_fail(test, "Could not open Zip");
+	
+	/* Reference up, since the Zip is valid. */
+	if (sjme_error_is(sjme_alloc_weakRef(zip, NULL)))
+		return sjme_unit_fail(test, "Could not count up Zip?");
 
 	/* Immediately close it without doing anything. */
 	if (sjme_error_is(error = sjme_closeable_close(

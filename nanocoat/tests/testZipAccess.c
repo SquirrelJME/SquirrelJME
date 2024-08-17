@@ -32,6 +32,10 @@ SJME_TEST_DECLARE(testZipAccess)
 		mock_jar__bin, mock_jar__len)) || zip == NULL)
 		return sjme_unit_fail(test, "Could not open Zip");
 	
+	/* Reference up, since the Zip is valid. */
+	if (sjme_error_is(sjme_alloc_weakRef(zip, NULL)))
+		return sjme_unit_fail(test, "Could not count up Zip?");
+	
 	/* Locate entry. */
 	memset(&entry, 0, sizeof(entry));
 	if (sjme_error_is(error = sjme_zip_locateEntry(zip,

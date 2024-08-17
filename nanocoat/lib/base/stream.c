@@ -151,6 +151,49 @@ sjme_errorCode sjme_stream_inputRead(
 		dest, 0, length);
 }
 
+sjme_errorCode sjme_stream_inputReadFully(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
+	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
+	sjme_attrInPositive sjme_jint length)
+{
+	sjme_errorCode error;
+	sjme_intPointer rawDest;
+	sjme_jint at, left, subRead;
+	
+	if (stream == NULL || readCount == NULL || dest == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	rawDest = (uintptr_t)dest;
+	if (length < 0 || (rawDest + length) < rawDest)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Read until nothing is left. */
+	at = 0;
+	left = length;
+	while (left > 0)
+	{
+		/* Read as big as a chunk as possible. */
+		subRead = -2;
+		if (sjme_error_is(error = sjme_stream_inputRead(stream,
+			&subRead, SJME_POINTER_OFFSET(dest, at),
+			left)) || subRead < -1)
+			return sjme_error_default(error);
+		
+		/* EOF, stop. */
+		if (subRead < 0)
+			break;
+		
+		/* Move counters. */
+		at += subRead;
+		left -= subRead;
+	}
+	
+	/* Success! */
+	*readCount = at;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_stream_inputReadIter(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutPositive sjme_jint* readCount,
@@ -158,7 +201,7 @@ sjme_errorCode sjme_stream_inputReadIter(
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInPositive sjme_jint length)
 {
-	uintptr_t rawDest;
+	sjme_intPointer rawDest;
 	sjme_jint count, newTotal, totalRead;
 	sjme_errorCode error;
 	sjme_pointer trueDest;

@@ -377,6 +377,25 @@ sjme_errorCode sjme_stream_inputRead(
 	sjme_attrInPositive sjme_jint length);
 
 /**
+ * Reads from the given input stream and writes to the destination buffer,
+ * this will read and fill the entire buffer to its maximum extent and will
+ * always result in a full read and not any partial reads.
+ *
+ * @param stream The stream to read from.
+ * @param readCount The number of bytes which were read, if end of stream is
+ * reached this will be @c -1 .
+ * @param dest The destination buffer.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/17
+ */
+sjme_errorCode sjme_stream_inputReadFully(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
+	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
+	sjme_attrInPositive sjme_jint length);
+
+/**
  * Reads from the given input stream and writes to the destination buffer.
  *
  * @param stream The stream to read from.
