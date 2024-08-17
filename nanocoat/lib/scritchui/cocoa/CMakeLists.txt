@@ -36,6 +36,29 @@ endif()
 target_include_directories(ScritchUICocoa PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
+# Flags needed for GNUStep
+if(SQUIRRELJME_IS_GNUSTEP_DESKTOP)
+	# Flags needed for build
+	execute_process(
+		COMMAND "${GNUSTEP_EXE_PATH}" --objc-flags
+		OUTPUT_VARIABLE SQUIRRELJME_GNUSTEP_CFLAGS
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
+	separate_arguments(SQUIRRELJME_GNUSTEP_CFLAGS UNIX_COMMAND
+		${SQUIRRELJME_GNUSTEP_CFLAGS})
+	target_compile_options(ScritchUICocoa PRIVATE
+		${SQUIRRELJME_GNUSTEP_CFLAGS})
+
+	# Additional includes, mostly needed for CLion to properly show them
+	execute_process(
+		COMMAND "${GNUSTEP_EXE_PATH}" --variable=GNUSTEP_SYSTEM_HEADERS
+		OUTPUT_VARIABLE SQUIRRELJME_GNUSTEP_HEADERS
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
+	separate_arguments(SQUIRRELJME_GNUSTEP_HEADERS UNIX_COMMAND
+		${SQUIRRELJME_GNUSTEP_HEADERS})
+	target_include_directories(ScritchUICocoa PRIVATE
+		${SQUIRRELJME_GNUSTEP_HEADERS})
+endif()
+
 # ScritchUI requires a normalized library name
 squirreljme_target_binary_name(ScritchUICocoa
 	"squirreljme-scritchui-cocoa")
@@ -44,6 +67,18 @@ squirreljme_target_binary_name(ScritchUICocoa
 squirreljme_target_binary_output(ScritchUICocoa
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
-target_link_libraries(ScritchUICocoa
-	"-framework Foundation"
-	"-framework Cocoa")
+# Apple and GNUStep specific link options
+if(SQUIRRELJME_IS_APPLE_DESKTOP)
+	target_link_libraries(ScritchUICocoa
+		"-framework Foundation"
+		"-framework Cocoa")
+elseif(SQUIRRELJME_IS_GNUSTEP_DESKTOP)
+	execute_process(
+		COMMAND "${GNUSTEP_EXE_PATH}" --objc-libs --base-libs --gui-libs
+		OUTPUT_VARIABLE SQUIRRELJME_GNUSTEP_LIBS
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
+	separate_arguments(SQUIRRELJME_GNUSTEP_LIBS UNIX_COMMAND
+		${SQUIRRELJME_GNUSTEP_LIBS})
+	target_link_options(ScritchUICocoa PRIVATE
+		${SQUIRRELJME_GNUSTEP_LIBS})
+endif()

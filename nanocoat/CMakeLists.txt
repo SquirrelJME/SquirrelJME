@@ -54,7 +54,7 @@ squirreljme_include("platform.cmake")
 squirreljme_include("fixes.cmake")
 
 # Mac OS X Desktop?
-if(SQUIRRELJME_IS_APPLE_DESKTOP)
+if(SQUIRRELJME_IS_APPLE_OR_GNUSTEP_DESKTOP)
 	enable_language(OBJC)
 endif()
 
