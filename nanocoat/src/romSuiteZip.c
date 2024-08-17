@@ -129,7 +129,7 @@ sjme_errorCode sjme_rom_suiteFromZipSeekable(
 		result == NULL)
 		goto fail_suiteNew;
 	
-	/* Count up Zip. */
+	/* Count up Zip as we are using it. */
 	if (sjme_error_is(error = sjme_alloc_weakRef(zip, NULL)))
 		goto fail_refUp;
 	
