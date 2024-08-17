@@ -52,12 +52,6 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 		sjme_message("Loop execute failed: %d", error);
 }
 
-/**
- * Initialization method.
- *
- * @return Always @c self .
- * @since 2024/08/16
- */
 - (id)init
 {
 	NSNotificationCenter* notifCenter;

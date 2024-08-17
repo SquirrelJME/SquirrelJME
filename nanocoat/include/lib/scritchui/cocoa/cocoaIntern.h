@@ -57,15 +57,13 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
 @end
 
 /**
- * SquirrelJME Super Object.
+ * Menu which holds menus and menu items.
  * 
- * @since 2024/08/16
+ * @since 2024/08/17
  */
-@interface SJMESuperObject : NSObject
+@interface SJMEMenu : NSMenu
 {
 }
-
-+ (void)postNotification:(NSNotification *)notif;
 
 @end
 
@@ -76,6 +74,24 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
  * @since 2024/08/17
  */
 @interface SJMEPanel : NSView
+{
+@public
+	/** The panel this is attached to. */
+	sjme_scritchui_uiPanel inPanel;
+}
+
+@end
+
+/**
+ * SquirrelJME Super Object.
+ * 
+ * @since 2024/08/16
+ */
+@interface SJMESuperObject : NSObject
+{
+}
+
++ (void)postNotification:(NSNotification *)notif;
 
 @end
 

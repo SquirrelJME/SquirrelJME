@@ -48,14 +48,57 @@ extern "C"
 
 /** SquirrelJME super object. */
 #define SJME_SUI_COCOA_H_SUPER 3
+	
+/** Widget. */
+#define SJME_SUI_COCOA_H_NSVIEW 0
 
 sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
+
+sjme_errorCode sjme_scritchui_cocoa_componentRepaint(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height);
+
+sjme_errorCode sjme_scritchui_cocoa_componentSetPaintListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(paint));
 
 sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything);
+
+sjme_errorCode sjme_scritchui_cocoa_menuBarNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar,
+	sjme_attrInNullable sjme_pointer ignored);
+
+sjme_errorCode sjme_scritchui_cocoa_menuInsert(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind intoMenu,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem);
+
+sjme_errorCode sjme_scritchui_cocoa_menuNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu,
+	sjme_attrInNullable sjme_pointer ignored);
+
+sjme_errorCode sjme_scritchui_cocoa_menuRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu,
+	sjme_attrInPositive sjme_jint atIndex);
+
+sjme_errorCode sjme_scritchui_cocoa_panelEnableFocus(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
+	sjme_attrInValue sjme_jboolean enableFocus,
+	sjme_attrInValue sjme_jboolean defaultFocus);
 
 sjme_errorCode sjme_scritchui_cocoa_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
