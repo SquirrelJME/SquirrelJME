@@ -31,8 +31,11 @@ typedef enum sjme_stream_inflateStep
 	/** Parse BTYPE and determine how to continue. */
 	SJME_INFLATE_STEP_CHECK_BTYPE,
 	
+	/** Literal uncompressed data header. */
+	SJME_INFLATE_STEP_LITERAL_HEADER,
+	
 	/** Literal uncompressed data. */
-	SJME_INFLATE_STEP_LITERAL,
+	SJME_INFLATE_STEP_LITERAL_DATA,
 	
 	/** Load in dynamic huffman table. */
 	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD,
@@ -65,6 +68,20 @@ typedef struct sjme_stream_inflateBuffer
 } sjme_stream_inflateBuffer;
 
 /**
+ * The window for output inflated data.
+ * 
+ * @since 2024/08/18
+ */
+typedef struct sjme_stream_inflateWindow
+{
+	/** The number of bytes in the window. */
+	sjme_jint windowLen;
+	
+	/** The window buffer. */
+	sjme_jubyte window[SJME_INFLATE_WINDOW_SIZE];
+} sjme_stream_inflateWindow;
+
+/**
  * Inflation state.
  * 
  * @since 2024/08/17
@@ -77,11 +94,11 @@ typedef struct sjme_stream_inflateState
 	/** Was the final block hit? */
 	sjme_jboolean finalHit;
 	
-	/** The number of bytes in the window. */
-	sjme_jint windowLen;
+	/** The output window. */
+	sjme_stream_inflateWindow window;
 	
-	/** The window buffer. */
-	sjme_jubyte window[SJME_INFLATE_WINDOW_SIZE];
+	/** The amount of literal bytes left to read. */
+	sjme_jint literalLeft;
 	
 	/** The input buffer. */
 	sjme_stream_inflateBuffer input;
@@ -103,6 +120,58 @@ typedef struct sjme_stream_inflateInit
 	/** Decompression state. */
 	sjme_stream_inflateState* handleTwo;
 } sjme_stream_inflateInit;
+
+static sjme_errorCode sjme_stream_bitNeed(
+	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
+	sjme_attrInRange(1, 32) sjme_jint bitCount)
+{
+	if (buffer == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (bitCount <= 0 || bitCount > 32)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* SJME_ERROR_TOO_SHORT */
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_bitIn(
+	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
+	sjme_attrInRange(1, 32) sjme_jint bitCount,
+	sjme_attrOutNotNull sjme_jint* readValue)
+{
+	sjme_errorCode error;
+	
+	if (buffer == NULL || readValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (bitCount <= 0 || bitCount > 32)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Can we actually read this much in? */
+	if (sjme_error_is(error = sjme_stream_bitNeed(buffer, bitCount)))
+		return sjme_error_default(error);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_bitOut(
+	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
+	sjme_attrOutNotNull sjme_stream_inflateWindow* window,
+	sjme_attrInRange(1, 32) sjme_jint bitCount,
+	sjme_attrOutNotNull sjme_jint writeValue)
+{
+	if (buffer == NULL || window == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (bitCount <= 0 || bitCount > 32)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
 
 static sjme_errorCode sjme_stream_inputInflateClose(
 	sjme_attrInNotNull sjme_stream_input stream,
@@ -162,36 +231,151 @@ static sjme_errorCode sjme_stream_inputInflateInit(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inputInflateDecode(
-	sjme_attrInNotNull sjme_stream_implState* inImplState,
+static sjme_errorCode sjme_stream_decodeBType(
 	sjme_attrInNotNull sjme_stream_input source,
 	sjme_attrInNotNull sjme_stream_inflateState* state)
 {
-	if (inImplState == NULL || source == NULL || state == NULL)
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_errorCode error;
+	
+	if (source == NULL || state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Which step are we on? */
-	switch (state->step)
-	{
-		default:
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(state->step);
-	}
+	/* Can we actually read in the final flag and block type? */
+	inBuffer = &state->input;
+	if (sjme_error_is(error = sjme_stream_bitNeed(
+		inBuffer, 3)))
+		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
+static sjme_errorCode sjme_stream_decodeLiteralHeader(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_errorCode error;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Can we actually read in the literal data header? */
+	inBuffer = &state->input;
+	if (sjme_error_is(error = sjme_stream_bitNeed(
+		inBuffer, 32)))
+		return sjme_error_default(error);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_decodeLiteralData(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_stream_inflateBuffer* outBuffer;
+	sjme_errorCode error;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_decodeDynLoad(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_errorCode error;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_decodeDynInflate(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_stream_inflateBuffer* outBuffer;
+	sjme_errorCode error;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_decodeFixInflate(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_stream_inflateBuffer* outBuffer;
+	sjme_errorCode error;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_decode(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Which step are we on? */
+	switch (state->step)
+	{
+			/* Parse the block type. */
+		case SJME_INFLATE_STEP_CHECK_BTYPE:
+			return sjme_stream_decodeBType(source, state);
+			
+			/** Literal uncompressed header. */
+		case SJME_INFLATE_STEP_LITERAL_HEADER:
+			return sjme_stream_decodeLiteralHeader(source, state);
+			
+			/** Literal uncompressed data. */
+		case SJME_INFLATE_STEP_LITERAL_DATA:
+			return sjme_stream_decodeLiteralData(source, state);
+		
+			/** Load in dynamic huffman table. */
+		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD:
+			return sjme_stream_decodeDynLoad(source, state);
+		
+			/** Process data through the dynamic huffman table. */
+		case SJME_INFLATE_STEP_DYNAMIC_TABLE_INFLATE:
+			return sjme_stream_decodeDynInflate(source, state);
+		
+			/** Fixed static huffman table. */
+		case SJME_INFLATE_STEP_FIXED_TABLE_INFLATE:
+			return sjme_stream_decodeFixInflate(source, state);
+	}
+	
+	/* Should not be reached. */
+	return SJME_ERROR_ILLEGAL_STATE;
+}
+
 static sjme_errorCode sjme_stream_inputInflateFlushOut(
-	sjme_attrInNotNull sjme_stream_input stream,
-	sjme_attrInNotNull sjme_stream_implState* inImplState,
 	sjme_attrInNotNull sjme_stream_inflateState* state,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
 	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint length)
 {
-	if (stream == NULL || inImplState == NULL || state == NULL ||
-		readCount == NULL || dest == NULL)
+	if (state == NULL || readCount == NULL || dest == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -225,7 +409,7 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 	
 	/* Is there data to be written to the output? */
 	if (state->output.ready > 0)
-		return sjme_stream_inputInflateFlushOut(stream, inImplState, state,
+		return sjme_stream_inputInflateFlushOut(state,
 			readCount, dest, length);
 	
 	/* If there is nothing ready to output and the output hit EOF, then */
@@ -280,14 +464,14 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		lastRemainder = remainder;
 		
 		/* Perform inflation. */
-		if (sjme_error_is(error = sjme_stream_inputInflateDecode(
-			inImplState, source, state)))
+		if (sjme_error_is(error = sjme_stream_decode(
+			source, state)))
 			return sjme_error_default(error);
 	}
 	
 	/* Try flushing to the output again? */
 	if (state->output.ready > 0)
-		return sjme_stream_inputInflateFlushOut(stream, inImplState,
+		return sjme_stream_inputInflateFlushOut(
 			state, readCount, dest, length);
 	
 	/* If all ends hit EOF, then we are in the EOF state. */
