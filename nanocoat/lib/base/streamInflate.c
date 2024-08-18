@@ -18,6 +18,35 @@
 /** The size of the input/output buffer. */
 #define SJME_INFLATE_IO_BUFFER_SIZE 2048
 
+/** The window size. */
+#define SJME_INFLATE_WINDOW_SIZE 16384
+
+/**
+ * The inflation step.
+ * 
+ * @since 2024/08/17
+ */
+typedef enum sjme_stream_inflateStep
+{
+	/** Parse BTYPE and determine how to continue. */
+	SJME_INFLATE_STEP_CHECK_BTYPE,
+	
+	/** Literal uncompressed data. */
+	SJME_INFLATE_STEP_LITERAL,
+	
+	/** Load in dynamic huffman table. */
+	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD,
+	
+	/** Process data through the dynamic huffman table. */
+	SJME_INFLATE_STEP_DYNAMIC_TABLE_INFLATE,
+	
+	/** Fixed static huffman table. */
+	SJME_INFLATE_STEP_FIXED_TABLE_INFLATE,
+	
+	/** Finished, nothing is left. */
+	SJME_INFLATE_STEP_FINISHED,
+} sjme_stream_inflateStep;
+
 /**
  * Inflation buffer state.
  * 
@@ -39,6 +68,18 @@ typedef struct sjme_stream_inflateBuffer
  */
 typedef struct sjme_stream_inflateState
 {
+	/** The current step in inflation. */
+	sjme_stream_inflateStep step;
+	
+	/** Was the final block hit? */
+	sjme_jboolean finalHit;
+	
+	/** The number of bytes in the window. */
+	sjme_jint windowLen;
+	
+	/** The window buffer. */
+	sjme_jubyte window[SJME_INFLATE_WINDOW_SIZE];
+	
 	/** The input buffer. */
 	sjme_stream_inflateBuffer input;
 	
@@ -126,6 +167,14 @@ static sjme_errorCode sjme_stream_inputInflateDecode(
 	if (inImplState == NULL || source == NULL || state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Which step are we on? */
+	switch (state->step)
+	{
+		default:
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+	}
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -209,8 +258,11 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		return sjme_stream_inputInflateFlushOut(stream, inImplState,
 			state, readCount, dest, length);
 	
-	/* Success! Nothing was decoded... */
-	*readCount = 0;
+	/* If the stream is finished indicate EOF, otherwise we need more input. */
+	if (state->step == SJME_INFLATE_STEP_FINISHED)
+		*readCount = -1;
+	else
+		*readCount = 0;
 	return SJME_ERROR_NONE;
 }
 
