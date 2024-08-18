@@ -34,9 +34,13 @@
 /** Disable ZLib compatibility in MiniZ. */
 #define MINIZ_NO_ZLIB_APIS
 
+/** Disable memory allocation. */
+#define MINIZ_NO_MALLOC
+
 /* Include core library. */
 #define MINIZ_HEADER_FILE_ONLY
 #include "3rdparty/miniz/__zinim_.h"
+#undef MINIZ_HEADER_FILE_ONLY
 
 /* Anti-C++. */
 #ifdef __cplusplus

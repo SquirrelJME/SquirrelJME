@@ -6,8 +6,16 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
+# MiniZ being used?
+if(SQUIRRELJME_ENABLE_MINIZ)
+	set(SQUIRRELJME_MINIZ_SOURCE ../../lib/3rdparty/miniz/miniz.c)
+else()
+	set(SQUIRRELJME_MINIZ_SOURCE)
+endif()
+
 # Declare Base library
 squirreljme_multilib_add_library(Base
+	${SQUIRRELJME_MINIZ_SOURCE}
 	alloc.c
 	allocSizeOf.c
 	atomic.c

@@ -95,6 +95,9 @@ typedef struct sjme_stream_implState
 	
 	/** Forward close? */
 	sjme_jboolean forwardClose;
+	
+	/** EOF hit? */
+	sjme_jboolean hitEof;
 } sjme_stream_implState;
 
 /**
@@ -309,16 +312,13 @@ sjme_errorCode sjme_stream_inputOpen(
  * @param inPool The pool to allocate within.
  * @param outStream The resultant stream.
  * @param inCompressed The stream to decompress.
- * @param forwardClose If the input stream is closed, should the compressed
- * input stream also be closed?
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
 sjme_errorCode sjme_stream_inputOpenDeflate(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
-	sjme_attrInNotNull sjme_stream_input inCompressed,
-	sjme_attrInValue sjme_jboolean forwardClose);
+	sjme_attrInNotNull sjme_stream_input inCompressed);
 	
 /**
  * Creates a stream which reads from the given block of memory.

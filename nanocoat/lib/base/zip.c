@@ -336,8 +336,7 @@ sjme_errorCode sjme_zip_entryRead(
 	{
 		/* Actively decompress incoming data. */
 		if (sjme_error_is(error = sjme_stream_inputOpenDeflate(
-			inPool, &hiStream, lowStream,
-			SJME_JNI_TRUE)) ||
+			inPool, &hiStream, lowStream)) ||
 			hiStream == NULL)
 			goto fail_openHi;
 	}
@@ -357,16 +356,13 @@ sjme_errorCode sjme_zip_entryRead(
 fail_openHi:
 	/* Close high stream. */
 	if (hiStream != NULL)
-		if (sjme_error_is(sjme_closeable_close(
-			SJME_AS_CLOSEABLE(hiStream))))
-			return sjme_error_default(error);
+		sjme_closeable_close(SJME_AS_CLOSEABLE(hiStream));
 	
 fail_openLow:
 	/* Close low stream. */
 	if (lowStream != NULL)
-		if (sjme_error_is(sjme_closeable_close(
-			SJME_AS_CLOSEABLE(lowStream))))
-			return sjme_error_default(error);
+		sjme_closeable_close(SJME_AS_CLOSEABLE(lowStream));
+	
 fail_readLens:
 fail_readLocalMagic:
 fail_checkMagic:

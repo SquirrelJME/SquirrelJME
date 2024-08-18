@@ -113,8 +113,8 @@ static sjme_errorCode sjme_stream_inputMemoryRead(
 static const sjme_stream_inputFunctions sjme_stream_inputMemoryFunctions =
 {
 	.available = sjme_stream_inputMemoryAvailable,
-	.init = sjme_stream_inputMemoryInit,
 	.close = sjme_stream_inputMemoryClose,
+	.init = sjme_stream_inputMemoryInit,
 	.read = sjme_stream_inputMemoryRead,
 };
 

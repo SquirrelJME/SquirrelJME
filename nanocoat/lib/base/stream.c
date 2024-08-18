@@ -71,11 +71,14 @@ sjme_errorCode sjme_stream_inputAvailable(
 
 	if (stream == NULL || outAvail == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Function needs to exist. */
-	if (stream->functions == NULL || stream->functions->available == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-
+	
+	/* If this is not implemented, then we cannot do anything. */
+	if (stream->functions->available == NULL)
+	{
+		*outAvail = 0;
+		return SJME_ERROR_NONE;
+	}
+	
 	/* Request the number of available bytes. */
 	result = -1;
 	if (sjme_error_is(error = stream->functions->available(stream,

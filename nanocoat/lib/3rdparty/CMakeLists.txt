@@ -10,8 +10,3 @@
 if(SQUIRRELJME_ENABLE_LUA)
 	add_subdirectory(lua)
 endif()
-
-# Mini Zip implementation
-if(SQUIRRELJME_ENABLE_MINIZ)
-	add_subdirectory(miniz)
-endif()

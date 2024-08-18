@@ -9,6 +9,12 @@
 
 #include "3rdparty/miniz/miniz.h"
 
-#undef MINIZ_HEADER_FILE_ONLY
+#if defined(MINIZ_HEADER_FILE_ONLY)
+	#undef MINIZ_HEADER_FILE_ONLY
+#endif
+
+#if !defined(MINIZ_HEADER_INCLUDED)
+	#define MINIZ_HEADER_INCLUDED
+#endif
 
 #include "3rdparty/miniz/__zinim_.h"
