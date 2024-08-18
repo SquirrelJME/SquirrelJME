@@ -59,6 +59,9 @@ typedef struct sjme_stream_inflateBuffer
 	
 	/** The buffer storage. */
 	sjme_jubyte buffer[SJME_INFLATE_IO_BUFFER_SIZE];
+	
+	/** Was EOF hit in this buffer? */
+	sjme_jboolean hitEof;
 } sjme_stream_inflateBuffer;
 
 /**
@@ -172,7 +175,7 @@ static sjme_errorCode sjme_stream_inputInflateDecode(
 	{
 		default:
 			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			return sjme_error_notImplemented(state->step);
 	}
 	
 	sjme_todo("Impl?");
@@ -205,7 +208,7 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 	sjme_errorCode error;
 	sjme_stream_input source;
 	sjme_stream_inflateState* state;
-	sjme_jint remainder, sourceRead;
+	sjme_jint remainder, sourceRead, lastRemainder;
 	
 	if (stream == NULL || inImplState == NULL || readCount == NULL ||
 		dest == NULL)
@@ -225,10 +228,24 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		return sjme_stream_inputInflateFlushOut(stream, inImplState, state,
 			readCount, dest, length);
 	
-	/* Is there room to read in more data? */
-	remainder = SJME_INFLATE_IO_BUFFER_SIZE - state->input.ready;
-	if (remainder > 0)
+	/* If there is nothing ready to output and the output hit EOF, then */
+	/* there will never be data ready. */
+	if (state->output.ready <= 0 && state->output.hitEof)
 	{
+		*readCount = -1;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Fill the input buffer as much as possible before we decompress as it */
+	/* is more efficient to operate in larger chunks. */
+	/* Naturally we stop when there is no input anyway. */
+	while (!state->input.hitEof)
+	{
+		/* Can we even read in more data? */
+		remainder = SJME_INFLATE_IO_BUFFER_SIZE - state->input.ready;
+		if (remainder <= 0)
+			break;
+		
 		/* Read in data. */
 		sourceRead = -2;
 		if (sjme_error_is(error = sjme_stream_inputRead(source,
@@ -237,15 +254,30 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 			remainder)) || sourceRead < -1)
 			return sjme_error_default(error);
 		
-		/* Reached EOF? If so we cannot inflate anything else. */
-		if (sourceRead < 0)
-		{
-			*readCount = -1;
-			return SJME_ERROR_NONE;
-		}
+		/* If no data was read in, it might not be ready. */
+		if (sourceRead == 0)
+			break;
 		
-		/* Add to our source. */
-		state->input.ready += sourceRead;
+		/* Otherwise if EOF was hit, indicate as such. */
+		else if (sourceRead == -1)
+			state->input.hitEof = SJME_JNI_TRUE;
+	}
+	
+	/* Try to decompress as much data as possible into the output buffer. */
+	lastRemainder = -1;
+	while (!state->output.hitEof)
+	{
+		/* How much room is left in the output? */
+		remainder = SJME_INFLATE_IO_BUFFER_SIZE - state->output.ready;
+		
+		/* If this did not change, we probably need more input or the */
+		/* output buffer does not have enough space. */
+		if (remainder == lastRemainder)
+			break;
+		
+		/* Used to determine if we should run the loop again, and if we */
+		/* get stuck in a zero-read/write loop. */
+		lastRemainder = remainder;
 		
 		/* Perform inflation. */
 		if (sjme_error_is(error = sjme_stream_inputInflateDecode(
@@ -258,8 +290,8 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		return sjme_stream_inputInflateFlushOut(stream, inImplState,
 			state, readCount, dest, length);
 	
-	/* If the stream is finished indicate EOF, otherwise we need more input. */
-	if (state->step == SJME_INFLATE_STEP_FINISHED)
+	/* If all ends hit EOF, then we are in the EOF state. */
+	if (state->input.hitEof && state->output.hitEof)
 		*readCount = -1;
 	else
 		*readCount = 0;
