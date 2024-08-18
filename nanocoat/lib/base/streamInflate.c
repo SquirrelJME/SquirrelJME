@@ -18,6 +18,9 @@
 /** The size of the input/output buffer. */
 #define SJME_INFLATE_IO_BUFFER_SIZE 2048
 
+/** The mask for the input/output buffer position. */
+#define SJME_INFLATE_IO_BUFFER_MASK 2047
+
 /** The window size. */
 #define SJME_INFLATE_WINDOW_SIZE 16384
 
@@ -60,11 +63,23 @@ typedef struct sjme_stream_inflateBuffer
 	/** The amount of data that is ready for processing. */
 	sjme_jint ready;
 	
+	/** The current read head. */
+	sjme_jint readHead;
+	
+	/** The current write head. */
+	sjme_jint writeHead;
+	
 	/** The buffer storage. */
 	sjme_jubyte buffer[SJME_INFLATE_IO_BUFFER_SIZE];
 	
 	/** Was EOF hit in this buffer? */
 	sjme_jboolean hitEof;
+	
+	/** The current bit buffer. */
+	sjme_jint bitBuffer;
+	
+	/** The amount of bits in the buffer. */
+	sjme_jint bitCount;
 } sjme_stream_inflateBuffer;
 
 /**
@@ -121,19 +136,90 @@ typedef struct sjme_stream_inflateInit
 	sjme_stream_inflateState* handleTwo;
 } sjme_stream_inflateInit;
 
+static sjme_errorCode sjme_stream_bufferArea(
+	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
+	sjme_attrOutNotNull sjme_jint* outRemainder,
+	sjme_attrOutNotNull sjme_pointer* outBufOpPos,
+	sjme_attrOutNotNull sjme_jint* outBufOpLen)
+{
+	sjme_jint remainder, chunkSize;
+	sjme_jboolean leftSide;
+	
+	if (buffer == NULL || outBufOpPos == NULL || outBufOpLen == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Can we even read/write more data? */
+	remainder = SJME_INFLATE_IO_BUFFER_SIZE - buffer->ready;
+	if (remainder <= 0)
+		return SJME_ERROR_TOO_SHORT;
+	
+	/* If nothing is ready, reset heads. */
+	if (buffer->ready == 0)
+	{
+		buffer->readHead = 0;
+		buffer->writeHead = 0;
+	}
+	
+	/* Is the write head on the left, or the right? */
+	leftSide = (buffer->writeHead <= buffer->readHead) &&
+		buffer->ready != 0;
+	if (leftSide)
+		chunkSize = buffer->readHead - buffer->writeHead;
+	else
+		chunkSize = SJME_INFLATE_IO_BUFFER_SIZE - buffer->writeHead;
+	
+	/* Limit to the remainder amount. */
+	if (remainder < chunkSize)
+		chunkSize = remainder;
+	
+	/* Give what was calculated. */
+	*outRemainder = remainder;
+	*outBufOpPos = &buffer->buffer[buffer->writeHead];
+	*outBufOpLen = chunkSize;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_stream_bufferShift(
+	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
+	sjme_attrInPositiveNonZero sjme_jint count)
+{
+	if (buffer == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (count < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Move count up. */
+	buffer->ready += count;
+	buffer->writeHead = (buffer->writeHead + count) &
+		SJME_INFLATE_IO_BUFFER_MASK;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_stream_bitNeed(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
 	sjme_attrInRange(1, 32) sjme_jint bitCount)
 {
+	sjme_jint readyBits;
+	
 	if (buffer == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (bitCount <= 0 || bitCount > 32)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	/* SJME_ERROR_TOO_SHORT */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* How many full bytes are ready? */
+	readyBits = buffer->ready * 8;
+	
+	/* Then add whatever is in the current bit count. */
+	readyBits += buffer->bitCount;
+	
+	/* Too little, or has enough? */
+	if (readyBits < bitCount)
+		return SJME_ERROR_TOO_SHORT;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_stream_bitIn(
@@ -392,6 +478,9 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 	sjme_errorCode error;
 	sjme_stream_input source;
 	sjme_stream_inflateState* state;
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_pointer bufOpPos;
+	sjme_jint bufOpLen;
 	sjme_jint remainder, sourceRead, lastRemainder;
 	
 	if (stream == NULL || inImplState == NULL || readCount == NULL ||
@@ -425,17 +514,32 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 	/* Naturally we stop when there is no input anyway. */
 	while (!state->input.hitEof)
 	{
-		/* Can we even read in more data? */
-		remainder = SJME_INFLATE_IO_BUFFER_SIZE - state->input.ready;
-		if (remainder <= 0)
-			break;
+		/* We just use this buffer for input. */
+		inBuffer = &state->input;
+		
+		/* Determine the read/write positions and how much we can chunk at */
+		/* the same time. */
+		remainder = -1;
+		bufOpPos = NULL;
+		bufOpLen = -1;
+		if (sjme_error_is(error = sjme_stream_bufferArea(inBuffer,
+			&remainder,
+			&bufOpPos, &bufOpLen)) ||
+			remainder < 0 || bufOpPos == NULL || bufOpLen < 0)
+		{
+			/* No room for anything, just skip. */
+			if (error == SJME_ERROR_TOO_SHORT)
+				break;
+			
+			return sjme_error_default(error);
+		}
 		
 		/* Read in data. */
 		sourceRead = -2;
 		if (sjme_error_is(error = sjme_stream_inputRead(source,
 			&sourceRead,
-			&state->input.buffer[state->input.ready],
-			remainder)) || sourceRead < -1)
+			bufOpPos,
+			bufOpLen)) || sourceRead < -1)
 			return sjme_error_default(error);
 		
 		/* If no data was read in, it might not be ready. */
@@ -444,7 +548,16 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		
 		/* Otherwise if EOF was hit, indicate as such. */
 		else if (sourceRead == -1)
-			state->input.hitEof = SJME_JNI_TRUE;
+			inBuffer->hitEof = SJME_JNI_TRUE;
+		
+		/* Otherwise, move the write head up and up the ready count. */
+		else
+		{
+			/* Count source data. */
+			if (sjme_error_is(error = sjme_stream_bufferShift(inBuffer,
+				sourceRead)))
+				return sjme_error_default(error);
+		}
 	}
 	
 	/* Try to decompress as much data as possible into the output buffer. */
@@ -466,7 +579,13 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		/* Perform inflation. */
 		if (sjme_error_is(error = sjme_stream_decode(
 			source, state)))
+		{
+			/* Do not fail if there is not enough input data, just stop */
+			/* trying to decompress. */
+			if (error == SJME_ERROR_TOO_SHORT)
+				break;
 			return sjme_error_default(error);
+		}
 	}
 	
 	/* Try flushing to the output again? */
