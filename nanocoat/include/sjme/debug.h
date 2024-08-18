@@ -107,6 +107,17 @@ void sjme_messageR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message, ...)
 	sjme_attrFormatOuter(4, 5);
 
+/**
+ * Hex dumps the given data.
+ * 
+ * @param inData The data to dump. 
+ * @param inLen The data length.
+ * @since 2024/08/17
+ */
+void sjme_message_hexDump(
+	sjme_attrInNullable sjme_buffer inData,
+	sjme_attrInPositive sjme_jint inLen);
+
 #if defined(SJME_CONFIG_DEBUG)
 /**
  * Prints a debug message.

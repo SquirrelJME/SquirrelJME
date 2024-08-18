@@ -67,9 +67,12 @@ SJME_TEST_DECLARE(testZipReadDeflate)
 		&readCount, read, TEST_MAX_SIZE)) || readCount < 0)
 		return sjme_unit_fail(test, "Could not read data: %d", error);
 	
-	/* Check data. */
+	/* Check read length. */
 	sjme_unit_equalI(test, sample_txt__len, readCount,
 		"Read incorrect number of bytes?");
+	
+	/* Check actual data read. */
+	sjme_message_hexDump(read, sample_txt__len);
 	sjme_unit_equalI(test,
 		0, memcmp(read, sample_txt__bin, sample_txt__len),
 		"Read incorrect data?");

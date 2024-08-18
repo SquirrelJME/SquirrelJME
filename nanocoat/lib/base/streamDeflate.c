@@ -130,7 +130,7 @@ static sjme_errorCode sjme_stream_inputDeflateRead(
 	sjme_stream_input uncompressed;
 	tinfl_decompressor* state;
 	sjme_buffer inBuffer, outBuffer;
-	sjme_jint readLimit, writeLimit, inRead;
+	sjme_jint readLimit, writeLimit, inRead, readLeft;
 	size_t inSize, outSize, i;
 	tinfl_status status;
 	
@@ -149,6 +149,91 @@ static sjme_errorCode sjme_stream_inputDeflateRead(
 	if (uncompressed == NULL || state == NULL || inBuffer == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
+	/* Can we read in more data? */
+	if (inImplState->length == 0 &&
+		(!inImplState->hitEof ||
+		(inImplState->hitEof && inImplState->offset > 0)))
+	{
+		/* Determine how much data we can read in. */
+		readLimit = SJME_DEFLATE_BUFFER_IN_LEN - inImplState->offset;
+		
+		/* Read in from the base stream. */
+		inRead = -2;
+		if (sjme_error_is(error = sjme_stream_inputRead(uncompressed,
+			&inRead,
+			SJME_POINTER_OFFSET(inBuffer, inImplState->offset),
+			readLimit)) || inRead < -1)
+			return sjme_error_default(error);
+		
+		/* Pure EOF? */
+		if (inRead < 0 && inImplState->offset == 0)
+		{
+			*readCount = -1;
+			return SJME_ERROR_NONE;
+		}
+		
+		/* Shift up count. */
+		inImplState->offset += inRead;
+		
+		/* How much can be written? */
+		writeLimit = SJME_DEFLATE_BUFFER_OUT_LEN - inImplState->length;
+		
+#if 0 && defined(SJME_CONFIG_DEBUG)
+		/* Debug. */
+		for (i = 0; i < readLimit; i++)
+			printf("%c ", ((sjme_jubyte*)inBuffer)[i]);
+		printf("\n");
+		for (i = 0; i < readLimit; i++)
+			printf("%02x ", ((sjme_jubyte*)inBuffer)[i]);
+		printf("\n");
+#endif
+		
+		/* Perform decompression logic. */
+		inSize = inImplState->offset;
+		outSize = writeLimit;
+		status = tinfl_decompress(state,
+			inBuffer,
+			&inSize,
+			outBuffer,
+			SJME_POINTER_OFFSET(outBuffer, inImplState->length),
+			&outSize,
+			TINFL_FLAG_HAS_MORE_INPUT);
+		
+		/* Debug. */
+		sjme_message("status: %d, inSize %d -> %d; outSize %d -> %d W@%d",
+			status,
+			inImplState->offset, (sjme_jint)inSize,
+			writeLimit, (sjme_jint)outSize,
+			inImplState->length);
+		
+		/* Failed? */
+		if (status == TINFL_STATUS_FAILED)
+			return SJME_ERROR_IO_EXCEPTION;
+		
+		/* Was EOF hit? */
+		else if (status == TINFL_STATUS_DONE)
+			inImplState->hitEof = SJME_JNI_TRUE;
+		
+		/* How much data was left in the read? */
+		readLeft = inImplState->offset - inSize;
+		
+		/* Debug. */
+		sjme_message("readLeft = %d - %d = %d",
+			inImplState->offset, (sjme_jint)inSize, readLeft);
+		
+		/* Move the input data down, if we still have input data. */
+		if (readLeft > 0)
+			memmove(inBuffer,
+				SJME_POINTER_OFFSET(inBuffer, inSize),
+				readLeft);
+		
+		/* Set whatever amount is still in the input buffer. */
+		inImplState->offset = readLeft;
+		
+		/* Output buffer got whatever data was output. */
+		inImplState->length = outSize;
+	}
+	
 	/* There is output data waiting to be read in? */
 	if (inImplState->length > 0)
 	{
@@ -156,11 +241,17 @@ static sjme_errorCode sjme_stream_inputDeflateRead(
 		writeLimit = (length < inImplState->length ? length :
 			inImplState->length);
 		
+		/* Debug. */
+		sjme_message("Draining %d of %d (off %d)...",
+			writeLimit, inImplState->length,
+			inImplState->offset);
+		
 		/* Copy data over. */
 		memmove(dest, outBuffer, writeLimit);
 		
 		/* Move buffer data down and trim it. */
-		memmove(outBuffer, SJME_POINTER_OFFSET(outBuffer, writeLimit),
+		memmove(outBuffer,
+			SJME_POINTER_OFFSET(outBuffer, writeLimit),
 			inImplState->length - writeLimit);
 		inImplState->length -= writeLimit;
 		
@@ -169,59 +260,23 @@ static sjme_errorCode sjme_stream_inputDeflateRead(
 		return SJME_ERROR_NONE;
 	}
 	
-	/* Determine how much data we can read in. */
-	readLimit = SJME_DEFLATE_BUFFER_IN_LEN - inImplState->offset;
-	
-	/* Read in from the base stream. */
-	inRead = -2;
-	if (sjme_error_is(error = sjme_stream_inputRead(uncompressed,
-		&inRead,
-		SJME_POINTER_OFFSET(inBuffer, inImplState->offset),
-		readLimit)) || inRead < -1)
-		return sjme_error_default(error);
-	
-	/* Pure EOF? */
-	if (inRead < 0 && inImplState->offset == 0)
-	{
+	/* Is there absolutely nothing left and we hit EOF? */
+	if (inImplState->hitEof &&
+		inImplState->length == 0 &&
+		inImplState->offset == 0)
 		*readCount = -1;
-		return SJME_ERROR_NONE;
-	}
 	
-	/* Shift up count. */
-	inImplState->offset += inRead;
+	/* Otherwise no-op. */
+	else
+		*readCount = 0;
 	
-	/* How much can be written? */
-	writeLimit = SJME_DEFLATE_BUFFER_OUT_LEN - inImplState->length;
+	sjme_message("RC %d; EOF %d; LEN %d; OFF %d",
+		*readCount,
+		inImplState->hitEof,
+		inImplState->length,
+		inImplState->offset);
 	
-	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG)
-	for (i = 0; i < readLimit; i++)
-		printf("%c ", ((sjme_jubyte*)inBuffer)[i]);
-	printf("\n");
-	for (i = 0; i < readLimit; i++)
-		printf("%02x ", ((sjme_jubyte*)inBuffer)[i]);
-	printf("\n");
-#endif
-	
-	/* Perform decompression logic. */
-	inSize = readLimit;
-	outSize = writeLimit;
-	status = tinfl_decompress(state,
-		SJME_POINTER_OFFSET(inBuffer, inImplState->offset),
-		&inSize,
-		outBuffer,
-		SJME_POINTER_OFFSET(outBuffer, inImplState->length),
-		&outSize,
-		TINFL_FLAG_HAS_MORE_INPUT);
-	
-	/* Debug. */
-	sjme_message("status: %d, inSize %d -> %d; outSize %d -> %d",
-		status,
-		readLimit, (sjme_jint)inSize,
-		writeLimit, (sjme_jint)outSize);
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	return SJME_ERROR_NONE;
 }
 
 /** Input deflate functions. */
