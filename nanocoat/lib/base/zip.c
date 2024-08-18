@@ -335,7 +335,7 @@ sjme_errorCode sjme_zip_entryRead(
 	if (inEntry->method == SJME_ZIP_METHOD_DEFLATE)
 	{
 		/* Actively decompress incoming data. */
-		if (sjme_error_is(error = sjme_stream_inputOpenDeflate(
+		if (sjme_error_is(error = sjme_stream_inputOpenInflate(
 			inPool, &hiStream, lowStream)) ||
 			hiStream == NULL)
 			goto fail_openHi;

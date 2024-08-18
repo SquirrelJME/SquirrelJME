@@ -315,7 +315,7 @@ sjme_errorCode sjme_stream_inputOpen(
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
-sjme_errorCode sjme_stream_inputOpenDeflate(
+sjme_errorCode sjme_stream_inputOpenInflate(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_stream_input inCompressed);
