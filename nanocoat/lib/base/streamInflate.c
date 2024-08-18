@@ -161,8 +161,7 @@ static sjme_errorCode sjme_stream_bufferArea(
 	}
 	
 	/* Is the write head on the left, or the right? */
-	leftSide = (buffer->writeHead <= buffer->readHead) &&
-		buffer->ready != 0;
+	leftSide = (buffer->writeHead <= buffer->readHead) && buffer->ready != 0;
 	if (leftSide)
 		chunkSize = buffer->readHead - buffer->writeHead;
 	else
@@ -179,7 +178,7 @@ static sjme_errorCode sjme_stream_bufferArea(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_bufferShift(
+static sjme_errorCode sjme_stream_bufferGive(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
 	sjme_attrInPositiveNonZero sjme_jint count)
 {
@@ -189,9 +188,28 @@ static sjme_errorCode sjme_stream_bufferShift(
 	if (count < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	/* Move count up. */
+	/* Move count up and adjust write head. */
 	buffer->ready += count;
 	buffer->writeHead = (buffer->writeHead + count) &
+		SJME_INFLATE_IO_BUFFER_MASK;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_stream_bufferConsume(
+	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
+	sjme_attrInPositiveNonZero sjme_jint count)
+{
+	if (buffer == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (count < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Move count down and adjust read head. */
+	buffer->ready -= count;
+	buffer->readHead = (buffer->readHead + count) &
 		SJME_INFLATE_IO_BUFFER_MASK;
 	
 	/* Success! */
@@ -554,7 +572,7 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		else
 		{
 			/* Count source data. */
-			if (sjme_error_is(error = sjme_stream_bufferShift(inBuffer,
+			if (sjme_error_is(error = sjme_stream_bufferGive(inBuffer,
 				sourceRead)))
 				return sjme_error_default(error);
 		}
