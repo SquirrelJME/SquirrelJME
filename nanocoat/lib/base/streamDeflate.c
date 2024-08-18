@@ -23,7 +23,7 @@
 #define SJME_DEFLATE_BUFFER_IN_OFFSET 0
 
 /** The length of the input buffer. */
-#define SJME_DEFLATE_BUFFER_IN_LEN 2048
+#define SJME_DEFLATE_BUFFER_IN_LEN (SJME_DEFLATE_BUFFER_FULL_LEN >> 1)
 
 /** The offset to the output buffer. */
 #define SJME_DEFLATE_BUFFER_OUT_OFFSET SJME_DEFLATE_BUFFER_IN_LEN
@@ -115,6 +115,9 @@ static sjme_errorCode sjme_stream_inputDeflateInit(
 	inImplState->handleTwo = init->handleTwo;
 	inImplState->buffer = init->buffer;
 	
+	/* Initialize the inflater. */
+	tinfl_init(init->handleTwo);
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -175,9 +178,6 @@ static sjme_errorCode sjme_stream_inputDeflateRead(
 		/* Shift up count. */
 		inImplState->offset += inRead;
 		
-		/* How much can be written? */
-		writeLimit = SJME_DEFLATE_BUFFER_OUT_LEN - inImplState->length;
-		
 #if 0 && defined(SJME_CONFIG_DEBUG)
 		/* Debug. */
 		for (i = 0; i < readLimit; i++)
@@ -188,26 +188,33 @@ static sjme_errorCode sjme_stream_inputDeflateRead(
 		printf("\n");
 #endif
 		
+		/* Clear output. */
+		memset(outBuffer, 0, SJME_DEFLATE_BUFFER_OUT_LEN);
+		
 		/* Perform decompression logic. */
 		inSize = inImplState->offset;
-		outSize = writeLimit;
+		outSize = SJME_DEFLATE_BUFFER_OUT_LEN / 2;
 		status = tinfl_decompress(state,
 			inBuffer,
 			&inSize,
 			outBuffer,
-			SJME_POINTER_OFFSET(outBuffer, inImplState->length),
+			outBuffer,
 			&outSize,
 			TINFL_FLAG_HAS_MORE_INPUT);
+		
+		/* Store index for wrap around. */
+		inImplState->index = outSize;
 		
 		/* Debug. */
 		sjme_message("status: %d, inSize %d -> %d; outSize %d -> %d W@%d",
 			status,
 			inImplState->offset, (sjme_jint)inSize,
-			writeLimit, (sjme_jint)outSize,
+			SJME_DEFLATE_BUFFER_OUT_LEN, (sjme_jint)outSize,
 			inImplState->length);
+		sjme_message_hexDump(outBuffer, outSize);
 		
 		/* Failed? */
-		if (status == TINFL_STATUS_FAILED)
+		if (status == TINFL_STATUS_FAILED || status == TINFL_STATUS_BAD_PARAM)
 			return SJME_ERROR_IO_EXCEPTION;
 		
 		/* Was EOF hit? */
@@ -230,7 +237,7 @@ static sjme_errorCode sjme_stream_inputDeflateRead(
 		/* Set whatever amount is still in the input buffer. */
 		inImplState->offset = readLeft;
 		
-		/* Output buffer got whatever data was output. */
+		/* Output buffer gets whatever data was output. */
 		inImplState->length = outSize;
 	}
 	
