@@ -313,8 +313,14 @@ typedef enum sjme_errorCode
 	/** Path is a directory. */
 	SJME_ERROR_IS_DIRECTORY = -90,
 	
+	/** Invalid literal length values in inflate. */
+	SJME_ERROR_INFLATE_INVALID_INVERT = -91,
+	
+	/** Invalid block type in inflate stream. */
+	SJME_ERROR_INFLATE_INVALID_BTYPE = -92,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -91
+	SJME_NUM_ERROR_CODES = -93
 } sjme_errorCode;
 
 /**

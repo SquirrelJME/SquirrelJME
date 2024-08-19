@@ -636,7 +636,8 @@ public class InflaterInputStream
 		
 		// Read all bytes
 		for (int i = 0; i < len; i++)
-			this.__write(this.__readBits(8, false), 8, false);
+			this.__write(this.__readBits(8, false),
+				8, false);
 	}
 	
 	/**

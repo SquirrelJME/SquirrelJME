@@ -351,7 +351,27 @@ sjme_errorCode sjme_swap_uint_memmove(
  */
 sjme_jint sjme_tree_find(void* tree, void* what,
 	const sjme_tree_findFunc* functions);
-	
+
+/**
+ * Reverses the bits in the given integer value.
+ * 
+ * @param v The input value. 
+ * @return The value with the reversed bits.
+ * @since 2024/08/18 
+ */
+sjme_jint sjme_util_reverseBits(
+	sjme_attrInValue sjme_jint v);
+
+/**
+ * Reverses the bits in the given integer value.
+ * 
+ * @param v The input value. 
+ * @return The value with the reversed bits.
+ * @since 2024/08/18 
+ */
+sjme_juint sjme_util_reverseBitsU(
+	sjme_attrInValue sjme_juint v);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

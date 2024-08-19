@@ -390,3 +390,18 @@ sjme_errorCode sjme_swap_uint_memmove(
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
+
+sjme_jint sjme_util_reverseBits(sjme_jint v)
+{
+	return (sjme_jint)sjme_util_reverseBitsU((sjme_juint)v);
+}
+
+sjme_juint sjme_util_reverseBitsU(sjme_juint v)
+{
+	v = (((v & 0xAAAAAAAA) >> 1) | ((v & 0x55555555) << 1));
+	v = (((v & 0xCCCCCCCC) >> 2) | ((v & 0x33333333) << 2));
+	v = (((v & 0xF0F0F0F0) >> 4) | ((v & 0x0F0F0F0F) << 4));
+	v = (((v & 0xFF00FF00) >> 8) | ((v & 0x00FF00FF) << 8));
+	
+	return ((v >> 16) | (v << 16));
+}

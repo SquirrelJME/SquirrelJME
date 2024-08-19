@@ -25,6 +25,20 @@
 #define SJME_INFLATE_WINDOW_SIZE 16384
 
 /**
+ * Zip bit reading mode.
+ * 
+ * @since 2024/08/18
+ */
+typedef enum sjme_stream_inflateOrder
+{
+	/** Least significant bit. */
+	SJME_INFLATE_LSB,
+	
+	/** Most significant bit. */
+	SJME_INFLATE_MSB,
+} sjme_stream_inflateOrder;
+
+/**
  * The inflation step.
  * 
  * @since 2024/08/17
@@ -76,7 +90,7 @@ typedef struct sjme_stream_inflateBuffer
 	sjme_jboolean hitEof;
 	
 	/** The current bit buffer. */
-	sjme_jint bitBuffer;
+	sjme_juint bitBuffer;
 	
 	/** The amount of bits in the buffer. */
 	sjme_jint bitCount;
@@ -108,6 +122,9 @@ typedef struct sjme_stream_inflateState
 	
 	/** Was the final block hit? */
 	sjme_jboolean finalHit;
+	
+	/** Is the input data corrupted? */
+	sjme_jboolean invalidInput;
 	
 	/** The output window. */
 	sjme_stream_inflateWindow window;
@@ -242,10 +259,12 @@ static sjme_errorCode sjme_stream_bitNeed(
 
 static sjme_errorCode sjme_stream_bitIn(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
+	sjme_attrInValue sjme_stream_inflateOrder order,
 	sjme_attrInRange(1, 32) sjme_jint bitCount,
-	sjme_attrOutNotNull sjme_jint* readValue)
+	sjme_attrOutNotNull sjme_juint* readValue)
 {
 	sjme_errorCode error;
+	sjme_juint result, val;
 	
 	if (buffer == NULL || readValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -253,16 +272,53 @@ static sjme_errorCode sjme_stream_bitIn(
 	if (bitCount <= 0 || bitCount > 32)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
+	if (order != SJME_INFLATE_LSB && order != SJME_INFLATE_MSB)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
 	/* Can we actually read this much in? */
 	if (sjme_error_is(error = sjme_stream_bitNeed(buffer, bitCount)))
 		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Is there room to read into the tiny bit buffer? */
+	while (buffer->bitCount <= 32 && buffer->ready > 0)
+	{
+		/* Read the next byte from the buffer. */
+		val = buffer->buffer[buffer->readHead] & 0xFF;
+		
+		/* Move counters as we consumed a byte. */
+		buffer->ready--;
+		buffer->readHead = (buffer->readHead + 1) &
+			SJME_INFLATE_IO_BUFFER_MASK;
+		
+		/* Shift in the read bytes to the higher positions, so this way */
+		/* they are always added onto the top-most value. */
+		/* First make sure the bits above are clear. */
+		buffer->bitBuffer &= ((1 << buffer->bitCount) - 1);
+		
+		/* Then layer the bits at the highest position. */
+		buffer->bitBuffer |= val << buffer->bitCount; 
+		buffer->bitCount += 8;
+	}
+	
+	/* Mask in the value, which is always at the lower bits */
+	result = buffer->bitBuffer & ((1 << bitCount) - 1);
+	
+	/* Shift down the mini window for the next read. */
+	buffer->bitBuffer >>= (sjme_juint)bitCount;
+	buffer->bitCount -= bitCount;
+	
+	/* If in MSB, the bits need to be reversed. */
+	if (order == SJME_INFLATE_MSB)
+		result = sjme_util_reverseBitsU(result) >> (32 - bitCount);
+	
+	/* Success! */
+	*readValue = result;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_stream_bitOut(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
+	sjme_attrInValue sjme_stream_inflateOrder order,
 	sjme_attrOutNotNull sjme_stream_inflateWindow* window,
 	sjme_attrInRange(1, 32) sjme_jint bitCount,
 	sjme_attrOutNotNull sjme_jint writeValue)
@@ -271,6 +327,9 @@ static sjme_errorCode sjme_stream_bitOut(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (bitCount <= 0 || bitCount > 32)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (order != SJME_INFLATE_LSB && order != SJME_INFLATE_MSB)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	sjme_todo("Impl?");
@@ -341,6 +400,8 @@ static sjme_errorCode sjme_stream_decodeBType(
 {
 	sjme_stream_inflateBuffer* inBuffer;
 	sjme_errorCode error;
+	sjme_juint finalFlag;
+	sjme_juint blockType;
 	
 	if (source == NULL || state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -351,8 +412,39 @@ static sjme_errorCode sjme_stream_decodeBType(
 		inBuffer, 3)))
 		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Read in the final flag. */
+	finalFlag = 0;
+	if (sjme_error_is(error = sjme_stream_bitIn(inBuffer,
+		SJME_INFLATE_LSB, 1, &finalFlag)))
+		return sjme_error_default(error);
+	
+	/* If it was indicated, then flag it for later. */
+	if (finalFlag != 0)
+		state->finalHit = SJME_JNI_TRUE;
+	
+	/* Read in the type that this is. */
+	blockType = 0;
+	if (sjme_error_is(error = sjme_stream_bitIn(inBuffer,
+		SJME_INFLATE_LSB, 2, &blockType)))
+		return sjme_error_default(error);
+	
+	/* Switch state to what was indicated. */
+	if (blockType == 0)
+		state->step = SJME_INFLATE_STEP_LITERAL_HEADER;
+	else if (blockType == 1)
+		state->step = SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD;
+	else if (blockType == 2)
+		state->step = SJME_INFLATE_STEP_FIXED_TABLE_INFLATE;
+	
+	/* Invalid block. */
+	else
+	{
+		state->invalidInput = SJME_JNI_TRUE;
+		return SJME_ERROR_INFLATE_INVALID_BTYPE;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_stream_decodeLiteralHeader(
@@ -361,6 +453,7 @@ static sjme_errorCode sjme_stream_decodeLiteralHeader(
 {
 	sjme_stream_inflateBuffer* inBuffer;
 	sjme_errorCode error;
+	sjme_juint len, nel;
 	
 	if (source == NULL || state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -371,8 +464,30 @@ static sjme_errorCode sjme_stream_decodeLiteralHeader(
 		inBuffer, 32)))
 		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Read in the length and their complement. */
+	len = 9991234;
+	nel = 9996789;
+	if (sjme_error_is(error = sjme_stream_bitIn(inBuffer,
+		SJME_INFLATE_LSB, 16, &len)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_stream_bitIn(inBuffer,
+		SJME_INFLATE_LSB, 16, &nel)))
+		return sjme_error_default(error);
+	
+	/* Debug. */
+	sjme_message("Literal %d/%d %08x/%08x",
+		len, nel, len, nel);
+	
+	/* These should be the inverse of each other. */
+	if (len != (nel ^ 0xFFFF))
+		return SJME_ERROR_INFLATE_INVALID_INVERT;
+	
+	/* Setup for next step. */
+	state->step = SJME_INFLATE_STEP_LITERAL_DATA;
+	state->literalLeft = len;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_stream_decodeLiteralData(
@@ -526,6 +641,10 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		*readCount = -1;
 		return SJME_ERROR_NONE;
 	}
+	
+	/* The zip data is corrupted or invalid. */
+	if (state->invalidInput)
+		return SJME_ERROR_IO_EXCEPTION;
 	
 	/* Fill the input buffer as much as possible before we decompress as it */
 	/* is more efficient to operate in larger chunks. */
