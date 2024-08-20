@@ -319,8 +319,11 @@ typedef enum sjme_errorCode
 	/** Invalid block type in inflate stream. */
 	SJME_ERROR_INFLATE_INVALID_BTYPE = -92,
 	
+	/** Invalid dynamic tree length in inflate stream. */
+	SJME_ERROR_INFLATE_INVALID_TREE_LENGTH = -93,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -93
+	SJME_NUM_ERROR_CODES = -94
 } sjme_errorCode;
 
 /**
