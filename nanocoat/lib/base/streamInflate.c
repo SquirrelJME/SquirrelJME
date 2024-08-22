@@ -24,6 +24,21 @@
 /** The window size. */
 #define SJME_INFLATE_WINDOW_SIZE 16384
 
+/** The limit for code lengths. */
+#define SJME_INFLATE_CODE_LEN_LIMIT 19
+
+/** The maximum number of bits in the code length tree. */
+#define SJME_INFLATE_CODE_LEN_MAX_BITS 15
+
+/** Code length shuffled bit order, for "optimal" bit placement. */
+static const sjme_jubyte sjme_stream_inflateShuffleBits[
+	SJME_INFLATE_CODE_LEN_LIMIT] =
+{
+	16, 17, 18, 0, 8, 7, 9,
+	6, 10, 5, 11, 4, 12, 3,
+	13, 2, 14, 1, 15
+};
+
 /**
  * Zip bit reading mode.
  * 
@@ -134,11 +149,11 @@ typedef struct sjme_stream_inflateWindow
 } sjme_stream_inflateWindow;
 
 /**
- * Huffman tree parameters.
+ * Initial code length huffman tree building values.
  * 
- * @since 2024/08/20
+ * @since 2024/08/22
  */
-typedef struct sjme_stream_inflateHuffTree
+typedef struct sjme_stream_inflateHuffInit
 {
 	/** Literal length. */
 	sjme_juint litLen;
@@ -146,8 +161,36 @@ typedef struct sjme_stream_inflateHuffTree
 	/** Distance length. */
 	sjme_juint distLen;
 	
-	/** Code length. */
+	/** The code length count. */
 	sjme_juint codeLen;
+	
+	/** The raw code length bit values. */
+	sjme_juint rawCodeLens[SJME_INFLATE_CODE_LEN_LIMIT];
+} sjme_stream_inflateHuffInit;
+
+/**
+ * Huffman tree building parameters, used as input.
+ * 
+ * @since 2024/08/22
+ */
+typedef struct sjme_stream_inflateHuffParam
+{
+	/** Code lengths to input. */
+	sjme_juint* lengths;
+	
+	/** The number of code lengths. */
+	sjme_juint count;
+} sjme_stream_inflateHuffParam;
+
+/**
+ * Huffman tree parameters.
+ * 
+ * @since 2024/08/20
+ */
+typedef struct sjme_stream_inflateHuffTree
+{
+	/* Todo. */
+	sjme_jint todo;
 } sjme_stream_inflateHuffTree;
 
 /**
@@ -172,8 +215,17 @@ typedef struct sjme_stream_inflateState
 	/** The amount of literal bytes left to read. */
 	sjme_jint literalLeft;
 	
-	/** The dynamic huffman tree. */
-	sjme_stream_inflateHuffTree huffman;
+	/** Initialization data for the initial huffman tree. */
+	sjme_stream_inflateHuffInit huffInit;
+	
+	/** Code length tree. */
+	sjme_stream_inflateHuffTree codeLenTree;
+	
+	/** Distance tree. */
+	sjme_stream_inflateHuffTree distanceTree;
+	
+	/** Literal tree, not literally. */
+	sjme_stream_inflateHuffTree literalTree;
 	
 	/** The input buffer. */
 	sjme_stream_inflateBuffer input;
@@ -196,7 +248,7 @@ typedef struct sjme_stream_inflateInit
 	sjme_stream_inflateState* handleTwo;
 } sjme_stream_inflateInit;
 
-static sjme_errorCode sjme_stream_bufferArea(
+static sjme_errorCode sjme_stream_inflateBufferArea(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
 	sjme_attrOutNotNull sjme_jint* outRemainder,
 	sjme_attrOutNotNull sjme_pointer* outBufOpPos,
@@ -238,7 +290,7 @@ static sjme_errorCode sjme_stream_bufferArea(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_bufferGive(
+static sjme_errorCode sjme_stream_inflateBufferGive(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
 	sjme_attrInPositiveNonZero sjme_jint count)
 {
@@ -257,7 +309,7 @@ static sjme_errorCode sjme_stream_bufferGive(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_bufferConsume(
+static sjme_errorCode sjme_stream_inflateBufferConsume(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
 	sjme_attrInPositiveNonZero sjme_jint count)
 {
@@ -276,7 +328,7 @@ static sjme_errorCode sjme_stream_bufferConsume(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_bitNeed(
+static sjme_errorCode sjme_stream_inflateBitNeed(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
 	sjme_attrInRange(1, 32) sjme_jint bitCount)
 {
@@ -300,7 +352,7 @@ static sjme_errorCode sjme_stream_bitNeed(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_bitIn(
+static sjme_errorCode sjme_stream_inflateBitIn(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
 	sjme_attrInValue sjme_stream_inflateOrder order,
 	sjme_attrInValue sjme_stream_inflatePeek popPeek,
@@ -323,8 +375,10 @@ static sjme_errorCode sjme_stream_bitIn(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Can we actually read this much in? */
-	if (sjme_error_is(error = sjme_stream_bitNeed(buffer, bitCount)))
-		return sjme_error_default(error);
+	/* If not we illegal state because bitNeed should have been called */
+	/* before this to check that this is actually valid! */
+	if (sjme_error_is(sjme_stream_inflateBitNeed(buffer, bitCount)))
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Is there room to read into the tiny bit buffer? */
 	while (buffer->bitCount <= 32 && buffer->ready > 0)
@@ -366,7 +420,7 @@ static sjme_errorCode sjme_stream_bitIn(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_bitOut(
+static sjme_errorCode sjme_stream_inflateBitOut(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
 	sjme_attrInValue sjme_stream_inflateOrder order,
 	sjme_attrOutNotNull sjme_stream_inflateWindow* window,
@@ -384,6 +438,378 @@ static sjme_errorCode sjme_stream_bitOut(
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_inflateBuildTree(
+	sjme_attrInNotNull sjme_stream_inflateState* state,
+	sjme_attrInNotNull sjme_stream_inflateHuffParam* param,
+	sjme_attrInNotNull sjme_stream_inflateHuffTree* outTree)
+{
+	sjme_jint i, code;
+	sjme_juint blCount[SJME_INFLATE_CODE_LEN_MAX_BITS + 1];
+	sjme_juint nextCode[SJME_INFLATE_CODE_LEN_MAX_BITS + 1];
+	
+	if (state == NULL || param == NULL || outTree == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Initialize working space. */
+	memset(blCount, 0, sizeof(blCount));
+	memset(nextCode, 0, sizeof(nextCode));
+	
+	/* Wipe the target tree. */
+	memset(outTree, 0, sizeof(*outTree));
+	
+	/* Determine the bit-length for the input counts. */
+	for (i = 0; i < param->count; i++)
+		blCount[param->lengths[i]]++;
+	blCount[0] = 0;
+	
+	/* Find the numerical value of the smallest code for each code length. */
+	for (i = 1, code = 0; i <= SJME_INFLATE_CODE_LEN_MAX_BITS; i++)
+	{
+		code = (code + blCount[i - 1]) << 1;
+		nextCode[i] = code;
+	}
+	
+	/* Assign values to codes and build the huffman tree. */
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_inflateDecodeBType(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_errorCode error;
+	sjme_juint finalFlag;
+	sjme_juint blockType;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Can we actually read in the final flag and block type? */
+	inBuffer = &state->input;
+	if (sjme_error_is(error = sjme_stream_inflateBitNeed(
+		inBuffer, 3)))
+		return sjme_error_default(error);
+	
+	/* Read in the final flag. */
+	finalFlag = 0;
+	if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+		SJME_INFLATE_LSB, SJME_INFLATE_POP,
+		1, &finalFlag)))
+		return sjme_error_default(error);
+	
+	/* If it was indicated, then flag it for later. */
+	if (finalFlag != 0)
+		state->finalHit = SJME_JNI_TRUE;
+	
+	/* Read in the type that this is. */
+	blockType = 0;
+	if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+		SJME_INFLATE_LSB, SJME_INFLATE_POP, 2,
+		&blockType)))
+		return sjme_error_default(error);
+	
+	/* Switch state to what was indicated. */
+	if (blockType == 0)
+		state->step = SJME_INFLATE_STEP_LITERAL_HEADER;
+	else if (blockType == 1)
+		state->step = SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD;
+	else if (blockType == 2)
+		state->step = SJME_INFLATE_STEP_FIXED_TABLE_INFLATE;
+	
+	/* Invalid block. */
+	else
+	{
+		state->invalidInput = SJME_JNI_TRUE;
+		return SJME_ERROR_INFLATE_INVALID_BTYPE;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_stream_inflateDecodeLiteralHeader(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_errorCode error;
+	sjme_juint len, nel;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Can we actually read in the literal data header? */
+	inBuffer = &state->input;
+	if (sjme_error_is(error = sjme_stream_inflateBitNeed(
+		inBuffer, 32)))
+		return sjme_error_default(error);
+	
+	/* Read in the length and their complement. */
+	len = 9991234;
+	nel = 9996789;
+	if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+		SJME_INFLATE_LSB, SJME_INFLATE_POP,
+		16, &len)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+		SJME_INFLATE_LSB, SJME_INFLATE_POP,
+		16, &nel)))
+		return sjme_error_default(error);
+	
+	/* Debug. */
+	sjme_message("Literal %d/%d %08x/%08x",
+		len, nel, len, nel);
+	
+	/* These should be the inverse of each other. */
+	if (len != (nel ^ 0xFFFF))
+		return SJME_ERROR_INFLATE_INVALID_INVERT;
+	
+	/* Setup for next step. */
+	state->step = SJME_INFLATE_STEP_LITERAL_DATA;
+	state->literalLeft = len;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_stream_inflateDecodeLiteralData(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_stream_inflateBuffer* outBuffer;
+	sjme_errorCode error;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_inflateDecodeDynLoad(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_errorCode error;
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_stream_inflateHuffInit* init;
+	
+	sjme_juint lit, dist, codeLen;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Need 14 bits for all the combined lengths. */
+	inBuffer = &state->input;
+	if (sjme_error_is(error = sjme_stream_inflateBitNeed(inBuffer,
+		14)))
+		return sjme_error_default(error);
+	
+	/* Clear out any previous tree state. */
+	init = &state->huffInit;
+	memset(init, 0, sizeof(*init));
+	memset(&state->codeLenTree, 0, sizeof(state->codeLenTree));
+	memset(&state->distanceTree, 0, sizeof(state->distanceTree));
+	memset(&state->literalTree, 0, sizeof(state->literalTree));
+	
+	/* Load in tree parameters. */
+	lit = -1;
+	if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+		SJME_INFLATE_LSB, SJME_INFLATE_POP,
+		5, &lit)) || lit < 0)
+		return sjme_error_defaultOr(error,
+			SJME_ERROR_INFLATE_INVALID_TREE_LENGTH);
+			
+	dist = -1;
+	if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+		SJME_INFLATE_LSB, SJME_INFLATE_POP,
+		5, &dist)) || dist < 0)
+		return sjme_error_defaultOr(error,
+			SJME_ERROR_INFLATE_INVALID_TREE_LENGTH);
+	
+	codeLen = -1;
+	if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+		SJME_INFLATE_LSB, SJME_INFLATE_POP,
+		4, &codeLen)) || codeLen < 0)
+		return sjme_error_defaultOr(error,
+			SJME_ERROR_INFLATE_INVALID_TREE_LENGTH);
+	
+	/* There can only be so many codes. */
+	if (codeLen + 4 > SJME_INFLATE_CODE_LEN_LIMIT)
+		return SJME_ERROR_INFLATE_INVALID_CODE_LENGTH;
+	
+	/* Fill in tree parameters. */
+	init->litLen = lit + 257;
+	init->distLen = dist + 1;
+	init->codeLen = codeLen + 4;
+	
+	/* Start reading the code length tree. */
+	state->step = SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_CODE_LEN;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_stream_inflateDecodeDynLoadCodeLen(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_stream_inflateHuffInit* init;
+	sjme_stream_inflateHuffParam param;
+	sjme_errorCode error;
+	sjme_jint i;
+	sjme_juint v;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* We need 3 bits for each length. */
+	inBuffer = &state->input;
+	init = &state->huffInit;
+	if (sjme_error_is(error = sjme_stream_inflateBitNeed(inBuffer,
+		init->codeLen * 3)))
+		return sjme_error_default(error);
+	
+	/* Read in every raw code length, shuffling accordingly. */
+	for (i = 0; i < init->codeLen; i++)
+	{
+		/* Read in bits and make sure it is valid. */
+		v = 9999;
+		if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+			SJME_INFLATE_LSB, SJME_INFLATE_POP,
+			3,
+			&v)) || v >= 8)
+			return sjme_error_default(error);
+		
+		/* Set. */
+		init->rawCodeLens[sjme_stream_inflateShuffleBits[i]] = v;
+	}
+	
+	/* We can now parse the code length tree, which needs no input bits! */
+	/* This is pretty magical. */
+	memset(&param, 0, sizeof(param));
+	param.lengths = &init->rawCodeLens[0];
+	param.count = SJME_INFLATE_CODE_LEN_LIMIT;
+	return sjme_stream_inflateBuildTree(state,
+		&param,
+		&state->codeLenTree);
+}
+
+static sjme_errorCode sjme_stream_inflateDecodeDynLoadLiteral(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_errorCode error;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_inflateDecodeDynLoadDistance(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_errorCode error;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+		
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_inflateDecodeDynInflate(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_stream_inflateBuffer* outBuffer;
+	sjme_errorCode error;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_inflateDecodeFixInflate(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_stream_inflateBuffer* outBuffer;
+	sjme_errorCode error;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_inflateDecode(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Which step are we on? */
+	switch (state->step)
+	{
+			/* Parse the block type. */
+		case SJME_INFLATE_STEP_CHECK_BTYPE:
+			return sjme_stream_inflateDecodeBType(source, state);
+			
+			/** Literal uncompressed header. */
+		case SJME_INFLATE_STEP_LITERAL_HEADER:
+			return sjme_stream_inflateDecodeLiteralHeader(source, state);
+			
+			/** Literal uncompressed data. */
+		case SJME_INFLATE_STEP_LITERAL_DATA:
+			return sjme_stream_inflateDecodeLiteralData(source, state);
+		
+			/** Load in dynamic huffman table. */
+		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD:
+			return sjme_stream_inflateDecodeDynLoad(source, state);
+	
+			/** Load in dynamic huffman table: Code length tree. */
+		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_CODE_LEN:
+			return sjme_stream_inflateDecodeDynLoadCodeLen(source, state);
+		
+			/** Load in dynamic huffman table: Literal tree. */
+		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LITERAL:
+			return sjme_stream_inflateDecodeDynLoadLiteral(source, state);
+		
+			/** Load in dynamic huffman table: Distance tree. */
+		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_DISTANCE:
+			return sjme_stream_inflateDecodeDynLoadDistance(source, state);
+		
+			/** Process data through the dynamic huffman table. */
+		case SJME_INFLATE_STEP_DYNAMIC_TABLE_INFLATE:
+			return sjme_stream_inflateDecodeDynInflate(source, state);
+		
+			/** Fixed static huffman table. */
+		case SJME_INFLATE_STEP_FIXED_TABLE_INFLATE:
+			return sjme_stream_inflateDecodeFixInflate(source, state);
+	}
+	
+	/* Should not be reached. */
+	return SJME_ERROR_ILLEGAL_STATE;
 }
 
 static sjme_errorCode sjme_stream_inputInflateClose(
@@ -442,300 +868,6 @@ static sjme_errorCode sjme_stream_inputInflateInit(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
-}
-
-static sjme_errorCode sjme_stream_decodeBType(
-	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
-{
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_errorCode error;
-	sjme_juint finalFlag;
-	sjme_juint blockType;
-	
-	if (source == NULL || state == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Can we actually read in the final flag and block type? */
-	inBuffer = &state->input;
-	if (sjme_error_is(error = sjme_stream_bitNeed(
-		inBuffer, 3)))
-		return sjme_error_default(error);
-	
-	/* Read in the final flag. */
-	finalFlag = 0;
-	if (sjme_error_is(error = sjme_stream_bitIn(inBuffer,
-		SJME_INFLATE_LSB, SJME_INFLATE_POP,
-		1, &finalFlag)))
-		return sjme_error_default(error);
-	
-	/* If it was indicated, then flag it for later. */
-	if (finalFlag != 0)
-		state->finalHit = SJME_JNI_TRUE;
-	
-	/* Read in the type that this is. */
-	blockType = 0;
-	if (sjme_error_is(error = sjme_stream_bitIn(inBuffer,
-		SJME_INFLATE_LSB, SJME_INFLATE_POP, 2,
-		&blockType)))
-		return sjme_error_default(error);
-	
-	/* Switch state to what was indicated. */
-	if (blockType == 0)
-		state->step = SJME_INFLATE_STEP_LITERAL_HEADER;
-	else if (blockType == 1)
-		state->step = SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD;
-	else if (blockType == 2)
-		state->step = SJME_INFLATE_STEP_FIXED_TABLE_INFLATE;
-	
-	/* Invalid block. */
-	else
-	{
-		state->invalidInput = SJME_JNI_TRUE;
-		return SJME_ERROR_INFLATE_INVALID_BTYPE;
-	}
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-static sjme_errorCode sjme_stream_decodeLiteralHeader(
-	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
-{
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_errorCode error;
-	sjme_juint len, nel;
-	
-	if (source == NULL || state == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Can we actually read in the literal data header? */
-	inBuffer = &state->input;
-	if (sjme_error_is(error = sjme_stream_bitNeed(
-		inBuffer, 32)))
-		return sjme_error_default(error);
-	
-	/* Read in the length and their complement. */
-	len = 9991234;
-	nel = 9996789;
-	if (sjme_error_is(error = sjme_stream_bitIn(inBuffer,
-		SJME_INFLATE_LSB, SJME_INFLATE_POP,
-		16, &len)))
-		return sjme_error_default(error);
-	if (sjme_error_is(error = sjme_stream_bitIn(inBuffer,
-		SJME_INFLATE_LSB, SJME_INFLATE_POP,
-		16, &nel)))
-		return sjme_error_default(error);
-	
-	/* Debug. */
-	sjme_message("Literal %d/%d %08x/%08x",
-		len, nel, len, nel);
-	
-	/* These should be the inverse of each other. */
-	if (len != (nel ^ 0xFFFF))
-		return SJME_ERROR_INFLATE_INVALID_INVERT;
-	
-	/* Setup for next step. */
-	state->step = SJME_INFLATE_STEP_LITERAL_DATA;
-	state->literalLeft = len;
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-static sjme_errorCode sjme_stream_decodeLiteralData(
-	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
-{
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_stream_inflateBuffer* outBuffer;
-	sjme_errorCode error;
-	
-	if (source == NULL || state == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-static sjme_errorCode sjme_stream_decodeDynLoad(
-	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
-{
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_errorCode error;
-	sjme_stream_inflateHuffTree* huffman;
-	sjme_juint lit, dist, codeLen;
-	
-	if (source == NULL || state == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Need 14 bits for all the combined lengths. */
-	inBuffer = &state->input;
-	if (sjme_error_is(error = sjme_stream_bitNeed(inBuffer,
-		14)))
-		return sjme_error_default(error);
-	
-	/* Initialize a base blank tree. */
-	huffman = &state->huffman;
-	memset(huffman, 0, sizeof(*huffman));
-	
-	/* Load in tree parameters. */
-	lit = -1;
-	if (sjme_error_is(error = sjme_stream_bitIn(inBuffer,
-		SJME_INFLATE_LSB, SJME_INFLATE_POP,
-		5, &lit)) || lit < 0)
-		return sjme_error_defaultOr(error,
-			SJME_ERROR_INFLATE_INVALID_TREE_LENGTH);
-			
-	dist = -1;
-	if (sjme_error_is(error = sjme_stream_bitIn(inBuffer,
-		SJME_INFLATE_LSB, SJME_INFLATE_POP,
-		5, &dist)) || dist < 0)
-		return sjme_error_defaultOr(error,
-			SJME_ERROR_INFLATE_INVALID_TREE_LENGTH);
-	
-	codeLen = -1;
-	if (sjme_error_is(error = sjme_stream_bitIn(inBuffer,
-		SJME_INFLATE_LSB, SJME_INFLATE_POP,
-		4, &codeLen)) || codeLen < 0)
-		return sjme_error_defaultOr(error,
-			SJME_ERROR_INFLATE_INVALID_TREE_LENGTH);
-	
-	/* Fill in tree parameters. */
-	huffman->litLen = lit + 257;
-	huffman->distLen = dist + 1;
-	huffman->codeLen = codeLen + 4;
-	
-	/* Start reading the code length tree. */
-	state->step = SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_CODE_LEN;
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-static sjme_errorCode sjme_stream_decodeDynLoadCodeLen(
-	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
-{
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_errorCode error;
-	
-	if (source == NULL || state == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-static sjme_errorCode sjme_stream_decodeDynLoadLiteral(
-	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
-{
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_errorCode error;
-	
-	if (source == NULL || state == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-static sjme_errorCode sjme_stream_decodeDynLoadDistance(
-	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
-{
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_errorCode error;
-	
-	if (source == NULL || state == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-static sjme_errorCode sjme_stream_decodeDynInflate(
-	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
-{
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_stream_inflateBuffer* outBuffer;
-	sjme_errorCode error;
-	
-	if (source == NULL || state == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-static sjme_errorCode sjme_stream_decodeFixInflate(
-	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
-{
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_stream_inflateBuffer* outBuffer;
-	sjme_errorCode error;
-	
-	if (source == NULL || state == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-static sjme_errorCode sjme_stream_decode(
-	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
-{
-	if (source == NULL || state == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Which step are we on? */
-	switch (state->step)
-	{
-			/* Parse the block type. */
-		case SJME_INFLATE_STEP_CHECK_BTYPE:
-			return sjme_stream_decodeBType(source, state);
-			
-			/** Literal uncompressed header. */
-		case SJME_INFLATE_STEP_LITERAL_HEADER:
-			return sjme_stream_decodeLiteralHeader(source, state);
-			
-			/** Literal uncompressed data. */
-		case SJME_INFLATE_STEP_LITERAL_DATA:
-			return sjme_stream_decodeLiteralData(source, state);
-		
-			/** Load in dynamic huffman table. */
-		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD:
-			return sjme_stream_decodeDynLoad(source, state);
-	
-			/** Load in dynamic huffman table: Code length tree. */
-		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_CODE_LEN:
-			return sjme_stream_decodeDynLoadCodeLen(source, state);
-		
-			/** Load in dynamic huffman table: Literal tree. */
-		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LITERAL:
-			return sjme_stream_decodeDynLoadLiteral(source, state);
-		
-			/** Load in dynamic huffman table: Distance tree. */
-		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_DISTANCE:
-			return sjme_stream_decodeDynLoadDistance(source, state);
-		
-			/** Process data through the dynamic huffman table. */
-		case SJME_INFLATE_STEP_DYNAMIC_TABLE_INFLATE:
-			return sjme_stream_decodeDynInflate(source, state);
-		
-			/** Fixed static huffman table. */
-		case SJME_INFLATE_STEP_FIXED_TABLE_INFLATE:
-			return sjme_stream_decodeFixInflate(source, state);
-	}
-	
-	/* Should not be reached. */
-	return SJME_ERROR_ILLEGAL_STATE;
 }
 
 static sjme_errorCode sjme_stream_inputInflateFlushOut(
@@ -809,7 +941,7 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		remainder = -1;
 		bufOpPos = NULL;
 		bufOpLen = -1;
-		if (sjme_error_is(error = sjme_stream_bufferArea(inBuffer,
+		if (sjme_error_is(error = sjme_stream_inflateBufferArea(inBuffer,
 			&remainder,
 			&bufOpPos, &bufOpLen)) ||
 			remainder < 0 || bufOpPos == NULL || bufOpLen < 0)
@@ -841,7 +973,8 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		else
 		{
 			/* Count source data. */
-			if (sjme_error_is(error = sjme_stream_bufferGive(inBuffer,
+			if (sjme_error_is(error = sjme_stream_inflateBufferGive(
+				inBuffer,
 				sourceRead)))
 				return sjme_error_default(error);
 		}
@@ -864,7 +997,7 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		lastRemainder = remainder;
 		
 		/* Perform inflation. */
-		if (sjme_error_is(error = sjme_stream_decode(
+		if (sjme_error_is(error = sjme_stream_inflateDecode(
 			source, state)))
 		{
 			/* Do not fail if there is not enough input data, just stop */

@@ -322,8 +322,11 @@ typedef enum sjme_errorCode
 	/** Invalid dynamic tree length in inflate stream. */
 	SJME_ERROR_INFLATE_INVALID_TREE_LENGTH = -93,
 	
+	/** The code length is invalid. */
+	SJME_ERROR_INFLATE_INVALID_CODE_LENGTH = -94,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -94
+	SJME_NUM_ERROR_CODES = -95
 } sjme_errorCode;
 
 /**
