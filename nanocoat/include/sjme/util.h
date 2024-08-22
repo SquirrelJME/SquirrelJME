@@ -353,6 +353,36 @@ sjme_jint sjme_tree_find(void* tree, void* what,
 	const sjme_tree_findFunc* functions);
 
 /**
+ * Returns the number of bits in the value.
+ * 
+ * @param v The value to get the number of bits in. 
+ * @return The number of bits in the value.
+ * @since 2024/08/22
+ */
+sjme_juint sjme_util_bitCountU(
+	sjme_attrInValue sjme_juint v);
+
+/**
+ * Returns the value with the highest bit set.
+ * 
+ * @param v The value to return the highest bit of. 
+ * @return The highest bit of the value.
+ * @since 2024/08/22
+ */
+sjme_juint sjme_util_highestOneBit(
+	sjme_attrInValue sjme_juint v);
+
+/**
+ * Returns the number of leading zeroes in the value.
+ * 
+ * @param v The value to check. 
+ * @return The resultant number of leading zeroes.
+ * @since 2024/08/22
+ */
+sjme_juint sjme_util_numLeadingZeroesU(
+	sjme_attrInValue sjme_juint v);
+
+/**
  * Reverses the bits in the given integer value.
  * 
  * @param v The input value. 

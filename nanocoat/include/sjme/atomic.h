@@ -136,7 +136,7 @@ extern "C" {
  * @since 2024/01/08
  */
 #define SJME_ATOMIC_DECLARE(type, numPointerStars) \
-	typedef sjme_align64 struct SJME_ATOMIC_NAME(type, numPointerStars) \
+	typedef struct sjme_align64 SJME_ATOMIC_NAME(type, numPointerStars) \
 	{ \
 		/** The atomic type. */ \
 		SJME_TOKEN_TYPE(type, numPointerStars) _Atomic value; \
@@ -155,7 +155,7 @@ extern "C" {
  * @since 2024/01/08
  */
 #define SJME_ATOMIC_DECLARE(type, numPointerStars) \
-	typedef sjme_align64 struct SJME_ATOMIC_NAME(type, numPointerStars) \
+	typedef struct sjme_align64 SJME_ATOMIC_NAME(type, numPointerStars) \
 	{ \
 		/** The atomic value. */ \
 		SJME_TOKEN_TYPE(type, numPointerStars) volatile value; \

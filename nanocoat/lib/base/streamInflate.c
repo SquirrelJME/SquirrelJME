@@ -24,6 +24,9 @@
 /** The window size. */
 #define SJME_INFLATE_WINDOW_SIZE 16384
 
+/** Maximum huffman tree size, ~ceil^2((288 * 24 * 3) * 0.50 for lower mem). */
+#define SJME_INFLATE_HUFF_STORAGE_SIZE 10240
+
 /** The limit for code lengths. */
 #define SJME_INFLATE_CODE_LEN_LIMIT 19
 
@@ -68,6 +71,23 @@ typedef enum sjme_stream_inflatePeek
 } sjme_stream_inflatePeek;
 
 /**
+ * Which type of node is this in the tree?
+ * 
+ * @since 2024/08/22
+ */
+typedef enum sjme_stream_inflateHuffNodeType
+{
+	/** Unknown. */
+	SJME_INFLATE_UNKNOWN,
+	
+	/** Node. */
+	SJME_INFLATE_NODE,
+	
+	/** Leaf. */
+	SJME_INFLATE_LEAF,
+} sjme_stream_inflateHuffNodeType;
+
+/**
  * The inflation step.
  * 
  * @since 2024/08/17
@@ -89,11 +109,8 @@ typedef enum sjme_stream_inflateStep
 	/** Load in dynamic huffman table: Code length tree. */
 	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_CODE_LEN,
 	
-	/** Load in dynamic huffman table: Literal tree. */
-	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LITERAL,
-	
-	/** Load in dynamic huffman table: Distance tree. */
-	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_DISTANCE,
+	/** Load in dynamic huffman table: Literal and distance tree. */
+	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LIST_DIST,
 	
 	/** Process data through the dynamic huffman table. */
 	SJME_INFLATE_STEP_DYNAMIC_TABLE_INFLATE,
@@ -183,15 +200,67 @@ typedef struct sjme_stream_inflateHuffParam
 } sjme_stream_inflateHuffParam;
 
 /**
+ * Huffman tree node.
+ * 
+ * @since 2024/08/22
+ */
+typedef struct sjme_align64 sjme_stream_inflateHuffNode
+	sjme_stream_inflateHuffNode;
+
+struct sjme_align64 sjme_stream_inflateHuffNode
+{
+	/** Node data. */
+	union
+	{
+		/** Data if a leaf. */
+		struct
+		{
+			/** Zero branch. */
+			sjme_stream_inflateHuffNode* zero;
+			
+			/** One branch. */
+			sjme_stream_inflateHuffNode* one;
+		} node;
+		
+		/** Data if a node. */
+		struct
+		{
+			/** The code stored here. */
+			sjme_juint code;
+		} leaf;
+	} data;
+	
+	/** Which type of node is this? */
+	sjme_stream_inflateHuffNodeType type;
+};
+
+/**
  * Huffman tree parameters.
  * 
  * @since 2024/08/20
  */
 typedef struct sjme_stream_inflateHuffTree
 {
-	/* Todo. */
-	sjme_jint todo;
+	/** The root node. */
+	sjme_stream_inflateHuffNode* root;
 } sjme_stream_inflateHuffTree;
+
+/**
+ * Storage for huffman tree nodes.
+ * 
+ * @since 2024/08/22
+ */
+typedef struct sjme_stream_inflateHuffTreeStorage
+{
+	/** Storage for the huffman tree nodes. */
+	sjme_align64 sjme_jubyte storage[SJME_INFLATE_HUFF_STORAGE_SIZE];
+	
+	/** Next free node. */
+	sjme_stream_inflateHuffNode* next;
+	
+	/** Final end of tree. */
+	sjme_stream_inflateHuffNode* finalEnd;
+} sjme_stream_inflateHuffTreeStorage;
 
 /**
  * Inflation state.
@@ -217,6 +286,9 @@ typedef struct sjme_stream_inflateState
 	
 	/** Initialization data for the initial huffman tree. */
 	sjme_stream_inflateHuffInit huffInit;
+	
+	/** Huffman tree node storage. */
+	sjme_stream_inflateHuffTreeStorage huffStorage;
 	
 	/** Code length tree. */
 	sjme_stream_inflateHuffTree codeLenTree;
@@ -440,16 +512,131 @@ static sjme_errorCode sjme_stream_inflateBitOut(
 	return sjme_error_notImplemented(0);
 }
 
+static sjme_errorCode sjme_stream_inflateBuildTreeInsertNext(
+	sjme_attrInNotNull sjme_stream_inflateHuffTree* outTree,
+	sjme_attrInNotNull sjme_stream_inflateHuffTreeStorage* inStorage,
+	sjme_attrOutNotNull sjme_stream_inflateHuffNode** outNode)
+{
+	if (outTree == NULL || inStorage == NULL || outNode == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Does the storage need initialization? */
+	if (inStorage->next == NULL || inStorage->finalEnd == NULL)
+	{
+		inStorage->next = (sjme_stream_inflateHuffNode*)
+			&inStorage->storage[0];
+		inStorage->finalEnd = (sjme_stream_inflateHuffNode*)
+			&inStorage->storage[SJME_INFLATE_HUFF_STORAGE_SIZE /
+				sizeof(sjme_stream_inflateHuffNode)];
+	}
+	
+	/* Is the tree now full? */
+	if ((sjme_intPointer)inStorage->next >=
+		(sjme_intPointer)inStorage->finalEnd)
+		return SJME_ERROR_INFLATE_HUFF_TREE_FULL;
+	
+	/* Move pointer up. */
+	*outNode = (inStorage->next++);
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_stream_inflateBuildTreeInsert(
+	sjme_attrInNotNull sjme_stream_inflateState* state,
+	sjme_attrInNotNull sjme_stream_inflateHuffTree* outTree,
+	sjme_attrInNotNull sjme_stream_inflateHuffTreeStorage* inStorage,
+	sjme_attrInPositive sjme_juint value,
+	sjme_attrInValue sjme_juint sym,
+	sjme_attrInPositiveNonZero sjme_juint symMask)
+{
+	sjme_errorCode error;
+	sjme_juint maskBitCount, sh;
+	sjme_stream_inflateHuffNode* atNode;
+	sjme_stream_inflateHuffNode** dirNode;
+	sjme_jboolean one;
+	
+	if (state == NULL || outTree == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Make sure the correct inputs are used for adding to a tree. */
+	maskBitCount = sjme_util_bitCountU(symMask);
+	if ((sym & (~symMask)) != 0 ||
+		maskBitCount == 0 ||
+		maskBitCount != (32 - sjme_util_numLeadingZeroesU(symMask)) ||
+		(symMask & 1) == 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Debug. */
+	sjme_message("treeInsert(%d, %d, %x)",
+		value, sym, symMask);
+	
+	/* If there is no root node, create it. */
+	if (outTree->root == NULL)
+	{
+		/* Grab next node. */
+		if (sjme_error_is(error = sjme_stream_inflateBuildTreeInsertNext(
+			outTree, inStorage, &outTree->root)) ||
+			outTree->root == NULL)
+			return sjme_error_default(error);
+		
+		/* Set as node type, pointers go nowhere currently. */
+		outTree->root->type = SJME_INFLATE_NODE;
+	}
+	
+	/* Start at the top of the shift and continue down the tree, */
+	/* create any nodes as needed for leaf placement. */
+	atNode = outTree->root;
+	for (sh = sjme_util_highestOneBit(symMask); sh > 0; sh >>= 1)
+	{
+		/* Are we going right or left? */
+		one = (sym & symMask) != 0;
+		
+		/* Must always be a node! */
+		if (atNode->type != SJME_INFLATE_NODE)
+			return SJME_ERROR_INFLATE_HUFF_TREE_COLLISION;
+		
+		/* Get direction to go into. */
+		dirNode = (one ? &atNode->data.node.one : &atNode->data.node.zero);
+		
+		/* If null, it needs to be created. */
+		if ((*dirNode) == NULL)
+		{
+			if (sjme_error_is(error = sjme_stream_inflateBuildTreeInsertNext(
+				outTree, inStorage, dirNode)) || (*dirNode) == NULL)
+				return sjme_error_default(error);
+			
+			/* Set to node, provided we are not at the last shift. */
+			if (sh != 1)
+				(*dirNode)->type = SJME_INFLATE_NODE;
+		}
+		
+		/* Set new position. */
+		atNode = (*dirNode);
+	}
+	
+	/* We must be at an unknown node! */
+	if (atNode->type != SJME_INFLATE_UNKNOWN)
+		return SJME_ERROR_INFLATE_HUFF_TREE_COLLISION;
+	
+	/* Set leaf details. */
+	atNode->type = SJME_INFLATE_LEAF;
+	atNode->data.leaf.code = value;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_stream_inflateBuildTree(
 	sjme_attrInNotNull sjme_stream_inflateState* state,
 	sjme_attrInNotNull sjme_stream_inflateHuffParam* param,
-	sjme_attrInNotNull sjme_stream_inflateHuffTree* outTree)
+	sjme_attrInNotNull sjme_stream_inflateHuffTree* outTree,
+	sjme_attrInNotNull sjme_stream_inflateHuffTreeStorage* inStorage)
 {
-	sjme_jint i, code;
+	sjme_errorCode error;
+	sjme_jint i, code, len;
 	sjme_juint blCount[SJME_INFLATE_CODE_LEN_MAX_BITS + 1];
 	sjme_juint nextCode[SJME_INFLATE_CODE_LEN_MAX_BITS + 1];
 	
-	if (state == NULL || param == NULL || outTree == NULL)
+	if (state == NULL || param == NULL || outTree == NULL || inStorage == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Initialize working space. */
@@ -458,6 +645,9 @@ static sjme_errorCode sjme_stream_inflateBuildTree(
 	
 	/* Wipe the target tree. */
 	memset(outTree, 0, sizeof(*outTree));
+	
+	/* Initialize tree with basic parameters. */
+	outTree->root = NULL;
 	
 	/* Determine the bit-length for the input counts. */
 	for (i = 0; i < param->count; i++)
@@ -472,9 +662,19 @@ static sjme_errorCode sjme_stream_inflateBuildTree(
 	}
 	
 	/* Assign values to codes and build the huffman tree. */
+	for (i = 0; i < param->count; i++)
+	{
+		len = param->lengths[i];
+		if (len != 0)
+			if (sjme_error_is(error = sjme_stream_inflateBuildTreeInsert(
+				state, outTree, inStorage, i,
+				nextCode[len]++,
+				(1 << len) - 1)))
+				return sjme_error_default(error);
+	}
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_stream_inflateDecodeBType(
@@ -651,8 +851,6 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoad(
 	
 	/* Start reading the code length tree. */
 	state->step = SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_CODE_LEN;
-	
-	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -692,17 +890,27 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoadCodeLen(
 		init->rawCodeLens[sjme_stream_inflateShuffleBits[i]] = v;
 	}
 	
+	/* Clear the huffman node storage as we are recreating the tree. */
+	memset(&state->huffStorage, 0, sizeof(state->huffStorage));
+	
 	/* We can now parse the code length tree, which needs no input bits! */
 	/* This is pretty magical. */
 	memset(&param, 0, sizeof(param));
 	param.lengths = &init->rawCodeLens[0];
 	param.count = SJME_INFLATE_CODE_LEN_LIMIT;
-	return sjme_stream_inflateBuildTree(state,
+	if (sjme_error_is(error = sjme_stream_inflateBuildTree(state,
 		&param,
-		&state->codeLenTree);
+		&state->codeLenTree,
+		&state->huffStorage)))
+		return sjme_error_default(error);
+	
+	/* Start reading the code length tree. */
+	state->step = SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LIST_DIST;
+	return SJME_ERROR_NONE;
+	
 }
 
-static sjme_errorCode sjme_stream_inflateDecodeDynLoadLiteral(
+static sjme_errorCode sjme_stream_inflateDecodeDynLoadLitDist(
 	sjme_attrInNotNull sjme_stream_input source,
 	sjme_attrInNotNull sjme_stream_inflateState* state)
 {
@@ -711,21 +919,6 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoadLiteral(
 	
 	if (source == NULL || state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-static sjme_errorCode sjme_stream_inflateDecodeDynLoadDistance(
-	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
-{
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_errorCode error;
-	
-	if (source == NULL || state == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
 		
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -792,12 +985,8 @@ static sjme_errorCode sjme_stream_inflateDecode(
 			return sjme_stream_inflateDecodeDynLoadCodeLen(source, state);
 		
 			/** Load in dynamic huffman table: Literal tree. */
-		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LITERAL:
-			return sjme_stream_inflateDecodeDynLoadLiteral(source, state);
-		
-			/** Load in dynamic huffman table: Distance tree. */
-		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_DISTANCE:
-			return sjme_stream_inflateDecodeDynLoadDistance(source, state);
+		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LIST_DIST:
+			return sjme_stream_inflateDecodeDynLoadLitDist(source, state);
 		
 			/** Process data through the dynamic huffman table. */
 		case SJME_INFLATE_STEP_DYNAMIC_TABLE_INFLATE:
