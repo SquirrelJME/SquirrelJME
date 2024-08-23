@@ -692,6 +692,20 @@ static sjme_errorCode sjme_stream_inflateDecodeBType(
 	if (source == NULL || state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* If this is called after we hit the end, we are done decompressing */
+	/* and there will be no more output. */
+	if (state->finalHit)
+	{
+		/* No more output data! */
+		state->output.hitEof = SJME_JNI_TRUE;
+		
+		/* Set next step to finished, which should never be run. */
+		state->step = SJME_INFLATE_STEP_FINISHED;
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+	
 	/* Can we actually read in the final flag and block type? */
 	inBuffer = &state->input;
 	if (sjme_error_is(error = sjme_stream_inflateBitNeed(
