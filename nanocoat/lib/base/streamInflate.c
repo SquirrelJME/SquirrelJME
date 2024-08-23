@@ -21,6 +21,9 @@
 /** The mask for the input/output buffer position. */
 #define SJME_INFLATE_IO_BUFFER_MASK 2047
 
+/** When the output buffer is considered saturated. */
+#define SJME_INFLATE_IO_BUFFER_SATURATED 1700
+
 /** The window size. */
 #define SJME_INFLATE_WINDOW_SIZE 16384
 
@@ -120,9 +123,6 @@ typedef enum sjme_stream_inflateStep
 	
 	/** Fixed static huffman table. */
 	SJME_INFLATE_STEP_FIXED_TABLE_INFLATE,
-	
-	/** Fixed static huffman table continuation. */
-	SJME_INFLATE_STEP_FIXED_TABLE_INFLATE_NEXT,
 	
 	/** Inflate from a given huffman tree. */
 	SJME_INFLATE_STEP_INFLATE_FROM_TREE,
@@ -276,7 +276,18 @@ typedef struct sjme_stream_inflateHuffTreeStorage
  * 
  * @since 2024/08/17
  */
-typedef struct sjme_stream_inflateState
+typedef struct sjme_stream_inflateState sjme_stream_inflateState;
+
+typedef sjme_errorCode (*sjme_stream_inflateReadCodeFunc)(
+	sjme_attrInNotNull sjme_stream_inflateState* state,
+	sjme_attrOutNotNull sjme_juint* outValue);
+
+/**
+ * Inflation state.
+ * 
+ * @since 2024/08/17
+ */
+struct sjme_stream_inflateState
 {
 	/** The current step in inflation. */
 	sjme_stream_inflateStep step;
@@ -296,6 +307,9 @@ typedef struct sjme_stream_inflateState
 	/** Initialization data for the initial huffman tree. */
 	sjme_stream_inflateHuffInit huffInit;
 	
+	/** The function for reading codes. */
+	sjme_stream_inflateReadCodeFunc readCode;
+	
 	/** Huffman tree node storage. */
 	sjme_stream_inflateHuffTreeStorage huffStorage;
 	
@@ -313,7 +327,7 @@ typedef struct sjme_stream_inflateState
 	
 	/** The output buffer. */
 	sjme_stream_inflateBuffer output;
-} sjme_stream_inflateState;
+};
 
 /**
  * Inflate stream initialization.
@@ -549,7 +563,7 @@ static sjme_errorCode sjme_stream_inflateBitInTree(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateBitInCode(
+static sjme_errorCode sjme_stream_inflateBitInCodeLen(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* inBuffer,
 	sjme_attrInNotNull sjme_stream_inflateHuffTree* codeLenTree,
 	sjme_attrInOutNotNull sjme_juint* index,
@@ -813,71 +827,76 @@ static sjme_errorCode sjme_stream_inflateBuildTree(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateBuildTreeFixed(
+static sjme_errorCode sjme_stream_inflateReadCodeDynamic(
 	sjme_attrInNotNull sjme_stream_inflateState* state,
-	sjme_attrInNotNull sjme_stream_inflateHuffTree* outTree,
-	sjme_attrInNotNull sjme_stream_inflateHuffTreeStorage* inStorage)
+	sjme_attrOutNotNull sjme_juint* outValue)
 {
-	sjme_errorCode error;
-	sjme_juint code, sym, symMask;
-	sjme_stream_inflateHuffParam param;
-	
-	if (state == NULL || outTree == NULL || inStorage == NULL)
+	if (state == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Wipe the target tree. */
-	memset(outTree, 0, sizeof(*outTree));
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_inflateReadCodeFixed(
+	sjme_attrInNotNull sjme_stream_inflateState* state,
+	sjme_attrOutNotNull sjme_juint* outValue)
+{
+	if (state == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Generate all 288 code lengths! */
-	for (code = 0; code < SJME_INFLATE_NUM_CODES; code++)
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_inflateProcessCodes(
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_errorCode error;
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_stream_inflateBuffer* outBuffer;
+	sjme_juint code;
+	
+	if (state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* This must be set!! */
+	if (state->readCode == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Read as much as possible until we hit saturation. */
+	inBuffer = &state->input;
+	outBuffer = &state->output;
+	while (outBuffer->ready < SJME_INFLATE_IO_BUFFER_SATURATED)
 	{
-		/* 8 bits: 0 - 143, 00110000 - 10111111 */
-		if (code >= 0 && code <= 143)
-		{
-			sym = 48 + (code);
-			symMask = (1 << 8) - 1;
-		}
-		
-		/* 9 bits: 144 - 255, 110010000 - 111111111 */
-		else if (code >= 144 && code <= 255)
-		{
-			sym = 400 + (code - 144);
-			symMask = (1 << 9) - 1;
-		}
-		
-		/* 7 bits: 256 - 279, 0000000 - 0010111 */
-		else if (code >= 256 && code <= 279)
-		{
-			sym = 0 + (code - 256);
-			symMask = (1 << 7) - 1;
-		}
-		
-		/* 8 bits: 280 - 287, 11000000 - 11000111 */
-		else
-		{
-			sym = 192 + (code - 280);
-			symMask = (1 << 8) - 1;
-		}
-		
-		/* Place into tree. */
-		if (sjme_error_is(error = sjme_stream_inflateBuildTreeInsert(
-			state, outTree, inStorage, code,
-			sym, symMask)))
-		{
-			/* Debug. */
-			sjme_todo("Bad fixed? %d %d %x: %d",
-				code, sym, symMask, error);
-			
+		/* Read in code. */
+		code = INT32_MAX;
+		if (sjme_error_is(error = state->readCode(state, &code)) ||
+			code == INT32_MAX)
 			return sjme_error_default(error);
+		
+		/* Stop decoding! */
+		if (code == 256)
+		{
+			/* Reset back to initial step. */
+			state->step = SJME_INFLATE_STEP_CHECK_BTYPE;
+			state->readCode = NULL;
+			
+			/* Success! */
+			return SJME_ERROR_NONE;
 		}
+		
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
 	}
 	
-	/* Success! */
+	/* If we over-saturated, just stop and give all the data. */
+	if (outBuffer->ready >= SJME_INFLATE_IO_BUFFER_SATURATED)
+		return SJME_ERROR_BUFFER_SATURATED;
 	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_stream_inflateDecodeBType(
-	sjme_attrInNotNull sjme_stream_input source,
 	sjme_attrInNotNull sjme_stream_inflateState* state)
 {
 	sjme_stream_inflateBuffer* inBuffer;
@@ -885,7 +904,7 @@ static sjme_errorCode sjme_stream_inflateDecodeBType(
 	sjme_juint finalFlag;
 	sjme_juint blockType;
 	
-	if (source == NULL || state == NULL)
+	if (state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* If this is called after we hit the end, we are done decompressing */
@@ -946,14 +965,13 @@ static sjme_errorCode sjme_stream_inflateDecodeBType(
 }
 
 static sjme_errorCode sjme_stream_inflateDecodeLiteralHeader(
-	sjme_attrInNotNull sjme_stream_input source,
 	sjme_attrInNotNull sjme_stream_inflateState* state)
 {
 	sjme_stream_inflateBuffer* inBuffer;
 	sjme_errorCode error;
 	sjme_juint len, nel;
 	
-	if (source == NULL || state == NULL)
+	if (state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Can we actually read in the literal data header? */
@@ -991,14 +1009,13 @@ static sjme_errorCode sjme_stream_inflateDecodeLiteralHeader(
 }
 
 static sjme_errorCode sjme_stream_inflateDecodeLiteralData(
-	sjme_attrInNotNull sjme_stream_input source,
 	sjme_attrInNotNull sjme_stream_inflateState* state)
 {
 	sjme_stream_inflateBuffer* inBuffer;
 	sjme_stream_inflateBuffer* outBuffer;
 	sjme_errorCode error;
 	
-	if (source == NULL || state == NULL)
+	if (state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	sjme_todo("Impl?");
@@ -1006,7 +1023,6 @@ static sjme_errorCode sjme_stream_inflateDecodeLiteralData(
 }
 
 static sjme_errorCode sjme_stream_inflateDecodeDynLoad(
-	sjme_attrInNotNull sjme_stream_input source,
 	sjme_attrInNotNull sjme_stream_inflateState* state)
 {
 	sjme_errorCode error;
@@ -1015,7 +1031,7 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoad(
 	
 	sjme_juint lit, dist, codeLen;
 	
-	if (source == NULL || state == NULL)
+	if (state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Need 14 bits for all the combined lengths. */
@@ -1068,7 +1084,6 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoad(
 }
 
 static sjme_errorCode sjme_stream_inflateDecodeDynLoadCodeLen(
-	sjme_attrInNotNull sjme_stream_input source,
 	sjme_attrInNotNull sjme_stream_inflateState* state)
 {
 	sjme_stream_inflateBuffer* inBuffer;
@@ -1078,7 +1093,7 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoadCodeLen(
 	sjme_jint i;
 	sjme_juint v;
 	
-	if (source == NULL || state == NULL)
+	if (state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* We need 3 bits for each length. */
@@ -1123,7 +1138,6 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoadCodeLen(
 }
 
 static sjme_errorCode sjme_stream_inflateDecodeDynLoadLitDist(
-	sjme_attrInNotNull sjme_stream_input source,
 	sjme_attrInNotNull sjme_stream_inflateState* state,
 	sjme_attrInPositive sjme_juint count,
 	sjme_attrInNotNull sjme_stream_inflateHuffTree* outTree)
@@ -1135,7 +1149,7 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoadLitDist(
 	sjme_juint* lengths;
 	sjme_stream_inflateHuffParam param;
 	
-	if (source == NULL || state == NULL)
+	if (state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* This cannot be empty. */
@@ -1152,7 +1166,7 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoadLitDist(
 	inBuffer = &state->input;
 	codeLenTree = &state->codeLenTree;
 	for (index = 0; index < count;)
-		if (sjme_error_is(error = sjme_stream_inflateBitInCode(
+		if (sjme_error_is(error = sjme_stream_inflateBitInCodeLen(
 			inBuffer, codeLenTree, &index, lengths, count)))
 		{
 			if (error == SJME_ERROR_TOO_SHORT)
@@ -1164,50 +1178,19 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoadLitDist(
 	memset(&param, 0, sizeof(param));
 	param.lengths = lengths;
 	param.count = count;
-	return sjme_stream_inflateBuildTree(
-		state, &param, outTree, &state->huffStorage);
-}
-
-static sjme_errorCode sjme_stream_inflateDecodeFixInflate(
-	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
-{
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_stream_inflateBuffer* outBuffer;
-	sjme_stream_inflateHuffTree* fixedTree;
-	sjme_errorCode error;
+	if (sjme_error_is(error = sjme_stream_inflateBuildTree(
+		state, &param, outTree, &state->huffStorage)))
+		return sjme_error_default(error);
 	
-	if (source == NULL || state == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* We can use a dynamic huffman tree to save on memory. */
-	fixedTree = &state->distanceTree;
-	
-	/* Does this need initialization? */
-	if (state->step == SJME_INFLATE_STEP_FIXED_TABLE_INFLATE)
-	{
-		/* Wipe any pre-existing data. */
-		memset(&state->huffStorage, 0, sizeof(state->huffStorage));
-		memset(fixedTree, 0, sizeof(*fixedTree));
-		
-		/* Initialize fixed tree. */
-		if (sjme_error_is(error = sjme_stream_inflateBuildTreeFixed(state,
-			fixedTree, &state->huffStorage)))
-			return sjme_error_default(error);
-		
-		/* Do not do this again. */
-		state->step = SJME_INFLATE_STEP_FIXED_TABLE_INFLATE_NEXT;
-	}
-		
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_stream_inflateDecode(
-	sjme_attrInNotNull sjme_stream_input source,
 	sjme_attrInNotNull sjme_stream_inflateState* state)
 {
-	if (source == NULL || state == NULL)
+	sjme_errorCode error;
+	
+	if (state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Which step are we on? */
@@ -1215,45 +1198,58 @@ static sjme_errorCode sjme_stream_inflateDecode(
 	{
 			/* Parse the block type. */
 		case SJME_INFLATE_STEP_CHECK_BTYPE:
-			return sjme_stream_inflateDecodeBType(source, state);
+			return sjme_stream_inflateDecodeBType(state);
 			
 			/* Literal uncompressed header. */
 		case SJME_INFLATE_STEP_LITERAL_HEADER:
-			return sjme_stream_inflateDecodeLiteralHeader(source, state);
+			return sjme_stream_inflateDecodeLiteralHeader(state);
 			
 			/* Literal uncompressed data. */
 		case SJME_INFLATE_STEP_LITERAL_DATA:
-			return sjme_stream_inflateDecodeLiteralData(source, state);
+			return sjme_stream_inflateDecodeLiteralData(state);
 		
 			/* Load in dynamic huffman table. */
 		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD:
-			return sjme_stream_inflateDecodeDynLoad(source, state);
+			return sjme_stream_inflateDecodeDynLoad(state);
 	
 			/* Load in dynamic huffman table: Code length tree. */
 		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_CODE_LEN:
-			return sjme_stream_inflateDecodeDynLoadCodeLen(source, state);
+			return sjme_stream_inflateDecodeDynLoadCodeLen(state);
 		
 			/* Load in dynamic huffman table: Literal tree. */
 		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LITERAL:
-			return sjme_stream_inflateDecodeDynLoadLitDist(source, state,
+			if (sjme_error_is(error = sjme_stream_inflateDecodeDynLoadLitDist(
+				state,
 				state->huffInit.litLen,
-				&state->literalTree);
+				&state->literalTree)))
+				return sjme_error_default(error);
+			
+			/* Read in distance codes next. */
+			state->step = SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_DISTANCE;
+			return SJME_ERROR_NONE;
 		
 			/* Load in dynamic huffman table: Distance tree. */
 		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_DISTANCE:
-			return sjme_stream_inflateDecodeDynLoadLitDist(source, state,
+			if (sjme_error_is(error = sjme_stream_inflateDecodeDynLoadLitDist(
+				state,
 				state->huffInit.distLen,
-				&state->distanceTree);
+				&state->distanceTree)))
+				return sjme_error_default(error);
+				
+			/* Set the source for input codes. */
+			state->step = SJME_INFLATE_STEP_INFLATE_FROM_TREE;
+			state->readCode = sjme_stream_inflateReadCodeDynamic;
+			return SJME_ERROR_NONE;
 		
 			/* Fixed static huffman table. */
 		case SJME_INFLATE_STEP_FIXED_TABLE_INFLATE:
-		case SJME_INFLATE_STEP_FIXED_TABLE_INFLATE_NEXT:
-			return sjme_stream_inflateDecodeFixInflate(source, state);
+			state->step = SJME_INFLATE_STEP_INFLATE_FROM_TREE;
+			state->readCode = sjme_stream_inflateReadCodeFixed;
+			return SJME_ERROR_NONE;
 			
 			/* Decode from the given huffman tree. */
 		case SJME_INFLATE_STEP_INFLATE_FROM_TREE:
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			return sjme_stream_inflateProcessCodes(state);
 	}
 	
 	/* Should not be reached. */
@@ -1438,7 +1434,9 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 	while (!state->output.hitEof)
 	{
 		/* How much room is left in the output? */
-		remainder = SJME_INFLATE_IO_BUFFER_SIZE - state->output.ready;
+		/* We can go over the saturation limit, however we do not want */
+		/* to fill past it, so we do not hit the end of the buffer. */
+		remainder = SJME_INFLATE_IO_BUFFER_SATURATED - state->output.ready;
 		
 		/* If this did not change, we probably need more input or the */
 		/* output buffer does not have enough space. */
@@ -1468,11 +1466,12 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		
 		/* Perform inflation. */
 		if (sjme_error_is(error = sjme_stream_inflateDecode(
-			source, state)))
+			state)))
 		{
 			/* Do not fail if there is not enough input data, just stop */
 			/* trying to decompress. */
-			if (error == SJME_ERROR_TOO_SHORT)
+			if (error == SJME_ERROR_TOO_SHORT ||
+				error == SJME_ERROR_BUFFER_SATURATED)
 				break;
 			return sjme_error_default(error);
 		}
