@@ -27,6 +27,9 @@
 /** The window size. */
 #define SJME_INFLATE_WINDOW_SIZE 16384
 
+/** The window mask. */
+#define SJME_INFLATE_WINDOW_MASK 16383
+
 /** Maximum huffman tree size, ~ceil^2((288 * 24 * 3) * 0.50 for lower mem). */
 #define SJME_INFLATE_HUFF_STORAGE_SIZE 10240
 
@@ -168,7 +171,10 @@ typedef struct sjme_stream_inflateBuffer
 typedef struct sjme_stream_inflateWindow
 {
 	/** The number of bytes in the window. */
-	sjme_jint windowLen;
+	sjme_jint length;
+	
+	/** The end position of the window. */
+	sjme_jint end;
 	
 	/** The window buffer. */
 	sjme_jubyte window[SJME_INFLATE_WINDOW_SIZE];
@@ -613,6 +619,9 @@ static sjme_errorCode sjme_stream_inflateBitOut(
 	sjme_attrInRange(1, 32) sjme_juint bitCount,
 	sjme_attrOutNotNull sjme_juint writeValue)
 {
+	sjme_juint mask;
+	sjme_jubyte single;
+	
 	if (buffer == NULL || window == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -622,8 +631,48 @@ static sjme_errorCode sjme_stream_inflateBitOut(
 	if (order != SJME_INFLATE_LSB && order != SJME_INFLATE_MSB)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Buffer overflowing? */
+	if (buffer->bitCount + bitCount > 32)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Calculate the data mask, make sure the value is valid. */
+	mask = (1 << bitCount) - 1;
+	writeValue &= mask;
+	
+	/* If writing MSB, reverse bits. */
+	if (order == SJME_INFLATE_MSB)
+		writeValue = (sjme_util_reverseBitsU(writeValue) >>
+			(32 - bitCount)) & mask;
+	
+	/* Place into the bit buffer. */
+	buffer->bitBuffer |= writeValue << buffer->bitCount;
+	buffer->bitCount += bitCount;
+	
+	/* Drain the buffer out. */
+	while (buffer->bitCount > 8)
+	{
+		/* Read in byte value to store. */
+		single = buffer->bitBuffer & 0xFF;
+		
+		/* Shift down. */
+		buffer->bitBuffer >>= 8;
+		buffer->bitCount -= 8;
+		
+		/* Store into output buffer and shift head. */
+		buffer->buffer[buffer->writeHead] = single;
+		buffer->writeHead = (buffer->writeHead + 1) &
+			SJME_INFLATE_IO_BUFFER_MASK;
+		buffer->ready += 1;
+		
+		/* Store into the window as well! Shifting the end there also */
+		window->window[window->end] = single;
+		window->end = (window->end + 1) & SJME_INFLATE_WINDOW_MASK;
+		if (window->length < SJME_INFLATE_WINDOW_SIZE)
+			window->length++;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_stream_inflateBitOutCode(
