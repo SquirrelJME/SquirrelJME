@@ -280,7 +280,7 @@ typedef struct sjme_stream_inflateState sjme_stream_inflateState;
 
 typedef sjme_errorCode (*sjme_stream_inflateReadCodeFunc)(
 	sjme_attrInNotNull sjme_stream_inflateState* state,
-	sjme_attrOutNotNull sjme_juint* outValue);
+	sjme_attrOutNotNull sjme_juint* outCode);
 
 /**
  * Inflation state.
@@ -829,9 +829,9 @@ static sjme_errorCode sjme_stream_inflateBuildTree(
 
 static sjme_errorCode sjme_stream_inflateReadCodeDynamic(
 	sjme_attrInNotNull sjme_stream_inflateState* state,
-	sjme_attrOutNotNull sjme_juint* outValue)
+	sjme_attrOutNotNull sjme_juint* outCode)
 {
-	if (state == NULL || outValue == NULL)
+	if (state == NULL || outCode == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -840,13 +840,77 @@ static sjme_errorCode sjme_stream_inflateReadCodeDynamic(
 
 static sjme_errorCode sjme_stream_inflateReadCodeFixed(
 	sjme_attrInNotNull sjme_stream_inflateState* state,
-	sjme_attrOutNotNull sjme_juint* outValue)
+	sjme_attrOutNotNull sjme_juint* outCode)
 {
-	if (state == NULL || outValue == NULL)
+	sjme_errorCode error;
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_juint hiSeven, bitsNeeded, litBase, litSub, raw;
+	
+	if (state == NULL || outCode == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* We at least need 7 bits for the minimum code length. */
+	inBuffer = &state->input;
+	if (sjme_error_is(error = sjme_stream_inflateBitNeed(inBuffer,
+		7)))
+		return sjme_error_default(error);
+	
+	/* Read in upper 7 bits first, as a peek. */
+	hiSeven = INT32_MAX;
+	if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+		SJME_INFLATE_MSB, SJME_INFLATE_PEEK, 7,
+		&hiSeven)) || hiSeven == INT32_MAX)
+		return sjme_error_default(error);
+	
+	/* Determine the actual number of bits we need. */
+	/* 0b0000000 - 0b0010111 */
+	if (hiSeven >= 0 && hiSeven <= 23)
+	{
+		bitsNeeded = 7;
+		litBase = 256;
+		litSub = 0;
+	}
+		
+	/* 0b0011000[0] - 0b1011111[1] */
+	else if ((hiSeven >= 24 && hiSeven <= 95))
+	{
+		bitsNeeded = 8;
+		litBase = 0;
+		litSub = 48;
+	}
+	
+	/* 0b1100000[0] - 0b1100011[1] */
+	else if (hiSeven >= 96 && hiSeven <= 99)
+	{
+		bitsNeeded = 8;
+		litBase = 280;
+		litSub = 192;
+	}
+	
+	/* 0b1100100[00] - 0b1111111[11] */
+	else
+	{
+		bitsNeeded = 9;
+		litBase = 144;
+		litSub = 400;
+	}
+	
+	/* Now that we know what we need, make sure we have it. */
+	if (sjme_error_is(error = sjme_stream_inflateBitNeed(inBuffer,
+		bitsNeeded)))
+		return sjme_error_default(error);
+	
+	/* Pop everything off now, so we can recover the code. */
+	raw = INT32_MAX;
+	if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+		SJME_INFLATE_MSB, SJME_INFLATE_POP,
+		bitsNeeded,
+		&raw)) || raw == INT32_MAX)
+		return sjme_error_default(error);
+	
+	/* Recover the code. */
+	*outCode = litBase + (raw - litSub);
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_stream_inflateProcessCodes(
