@@ -495,6 +495,68 @@ static sjme_errorCode sjme_stream_inflateBitIn(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_stream_inflateBitInTree(
+	sjme_attrInNotNull sjme_stream_inflateBuffer* inBuffer,
+	sjme_attrInNotNull sjme_stream_inflateHuffTree* fromTree,
+	sjme_attrOutNotNull sjme_juint* outValue)
+{
+	sjme_stream_inflateHuffNode* atNode;
+	
+	if (inBuffer == NULL || fromTree == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Start at the root node. */
+	atNode = fromTree->root;
+	if (atNode == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_inflateBitInCode(
+	sjme_attrInNotNull sjme_stream_inflateBuffer* inBuffer,
+	sjme_attrInNotNull sjme_stream_inflateHuffTree* codeLenTree,
+	sjme_attrInOutNotNull sjme_juint* index,
+	sjme_attrOutNotNull sjme_juint* outLengths,
+	sjme_attrInPositive sjme_juint count)
+{
+	sjme_errorCode error;
+	sjme_juint code;
+	
+	if (inBuffer == NULL || codeLenTree == NULL || index == NULL ||
+		outLengths == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (count < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Read in the next code. */
+	code = INT32_MAX;
+	if (sjme_error_is(error = sjme_stream_inflateBitInTree(inBuffer,
+		codeLenTree, &code)) || code == INT32_MAX)
+		return sjme_error_default(error);
+	
+	/* Literal value? */
+	if (code >= 0 && code < 16)
+	{
+		/* Make sure we do not write out of the length buffer. */
+		if ((*index) >= count)
+			return SJME_ERROR_INFLATE_INVALID_CODE;
+		
+		/* Store in value. */
+		outLengths[(*index)++] = code;
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Repeating sequence. */
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_stream_inflateBitOut(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
 	sjme_attrInValue sjme_stream_inflateOrder order,
@@ -767,15 +829,15 @@ static sjme_errorCode sjme_stream_inflateDecodeLiteralHeader(
 		return sjme_error_default(error);
 	
 	/* Read in the length and their complement. */
-	len = 9991234;
-	nel = 9996789;
+	len = INT32_MAX;
+	nel = INT32_MAX;
 	if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
 		SJME_INFLATE_LSB, SJME_INFLATE_POP,
-		16, &len)))
+		16, &len)) || len == INT32_MAX)
 		return sjme_error_default(error);
 	if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
 		SJME_INFLATE_LSB, SJME_INFLATE_POP,
-		16, &nel)))
+		16, &nel)) || nel == INT32_MAX)
 		return sjme_error_default(error);
 	
 	/* Debug. */
@@ -896,7 +958,7 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoadCodeLen(
 	for (i = 0; i < init->codeLen; i++)
 	{
 		/* Read in bits and make sure it is valid. */
-		v = 9999;
+		v = INT32_MAX;
 		if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
 			SJME_INFLATE_LSB, SJME_INFLATE_POP,
 			3,
@@ -933,17 +995,43 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoadLitDist(
 	sjme_attrInNotNull sjme_stream_inflateHuffTree* outTree)
 {
 	sjme_stream_inflateBuffer* inBuffer;
+	sjme_stream_inflateHuffTree* codeLenTree;
 	sjme_errorCode error;
-	sjme_jint* lengths;
+	sjme_juint index, v;
+	sjme_juint* lengths;
+	sjme_stream_inflateHuffParam param;
 	
 	if (source == NULL || state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* This cannot be empty. */
+	if (count <= 0)
+		return SJME_ERROR_INFLATE_INVALID_TREE_LENGTH;
+	
 	/* Allocate stack memory for the lengths we need to process. */
+	lengths = sjme_alloca(sizeof(*lengths) * count);
+	if (lengths == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	memset(lengths, 0, sizeof(*lengths) * count);
 	
+	/* Read in all code values. */
+	inBuffer = &state->input;
+	codeLenTree = &state->codeLenTree;
+	for (index = 0; index < count;)
+		if (sjme_error_is(error = sjme_stream_inflateBitInCode(
+			inBuffer, codeLenTree, &index, lengths, count)))
+		{
+			if (error == SJME_ERROR_TOO_SHORT)
+				return SJME_ERROR_ILLEGAL_STATE;
+			return sjme_error_default(error);
+		}
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Build tree from this. */
+	memset(&param, 0, sizeof(param));
+	param.lengths = lengths;
+	param.count = count;
+	return sjme_stream_inflateBuildTree(
+		state, &param, outTree, &state->huffStorage);
 }
 
 static sjme_errorCode sjme_stream_inflateDecodeDynInflate(

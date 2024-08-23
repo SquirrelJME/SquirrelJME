@@ -334,8 +334,14 @@ typedef enum sjme_errorCode
 	/** The buffer is full. */
 	SJME_ERROR_BUFFER_FULL = -97,
 	
+	/** Huffman tree is incomplete. */
+	SJME_ERROR_INFLATE_HUFF_TREE_INCOMPLETE = -98,
+	
+	/** Tree value has invalid code. */
+	SJME_ERROR_INFLATE_INVALID_CODE = -99,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -98
+	SJME_NUM_ERROR_CODES = -100
 } sjme_errorCode;
 
 /**
