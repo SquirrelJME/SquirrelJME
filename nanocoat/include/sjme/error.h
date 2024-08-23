@@ -340,8 +340,11 @@ typedef enum sjme_errorCode
 	/** Tree value has invalid code. */
 	SJME_ERROR_INFLATE_INVALID_CODE = -99,
 	
+	/** Stop operation. */
+	SJME_ERROR_STOP = -100,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -100
+	SJME_NUM_ERROR_CODES = -101
 } sjme_errorCode;
 
 /**
