@@ -919,6 +919,7 @@ static sjme_errorCode sjme_stream_inflateProcessCodes(
 	sjme_errorCode error;
 	sjme_stream_inflateBuffer* inBuffer;
 	sjme_stream_inflateBuffer* outBuffer;
+	sjme_stream_inflateWindow* window;
 	sjme_juint code;
 	
 	if (state == NULL)
@@ -931,6 +932,7 @@ static sjme_errorCode sjme_stream_inflateProcessCodes(
 	/* Read as much as possible until we hit saturation. */
 	inBuffer = &state->input;
 	outBuffer = &state->output;
+	window = &state->window;
 	while (outBuffer->ready < SJME_INFLATE_IO_BUFFER_SATURATED)
 	{
 		/* Read in code. */
@@ -948,6 +950,16 @@ static sjme_errorCode sjme_stream_inflateProcessCodes(
 			
 			/* Success! */
 			return SJME_ERROR_NONE;
+		}
+		
+		/* Literal byte value. */
+		else if (code >= 0 && code <= 255)
+		{
+			if (sjme_error_is(error = sjme_stream_inflateBitOut(
+				outBuffer,
+				SJME_INFLATE_LSB, window,
+				8, code)))
+				return sjme_error_default(error); 
 		}
 		
 		sjme_todo("Impl?");
