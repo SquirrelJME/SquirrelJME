@@ -288,6 +288,10 @@ typedef sjme_errorCode (*sjme_stream_inflateReadCodeFunc)(
 	sjme_attrInNotNull sjme_stream_inflateState* state,
 	sjme_attrOutNotNull sjme_juint* outCode);
 
+typedef sjme_errorCode (*sjme_stream_inflateReadDistFunc)(
+	sjme_attrInNotNull sjme_stream_inflateState* state,
+	sjme_attrOutNotNull sjme_juint* outDist);
+
 /**
  * Inflation state.
  * 
@@ -315,6 +319,9 @@ struct sjme_stream_inflateState
 	
 	/** The function for reading codes. */
 	sjme_stream_inflateReadCodeFunc readCode;
+	
+	/** The function for reading distances. */
+	sjme_stream_inflateReadDistFunc readDist;
 	
 	/** Huffman tree node storage. */
 	sjme_stream_inflateHuffTreeStorage huffStorage;
@@ -887,6 +894,17 @@ static sjme_errorCode sjme_stream_inflateReadCodeDynamic(
 	return sjme_error_notImplemented(0);
 }
 
+static sjme_errorCode sjme_stream_inflateReadDistDynamic(
+	sjme_attrInNotNull sjme_stream_inflateState* state,
+	sjme_attrOutNotNull sjme_juint* outDist)
+{
+	if (state == NULL || outDist == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_stream_inflateReadCodeFixed(
 	sjme_attrInNotNull sjme_stream_inflateState* state,
 	sjme_attrOutNotNull sjme_juint* outCode)
@@ -962,6 +980,91 @@ static sjme_errorCode sjme_stream_inflateReadCodeFixed(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_stream_inflateReadDistFixed(
+	sjme_attrInNotNull sjme_stream_inflateState* state,
+	sjme_attrOutNotNull sjme_juint* outDist)
+{
+	if (state == NULL || outDist == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_inflateProcessLength(
+	sjme_attrInNotNull sjme_stream_inflateState* state,
+	sjme_attrInNotNull sjme_stream_inflateBuffer* inBuffer,
+	sjme_attrInRange(257, 285) sjme_juint code,
+	sjme_attrOutNotNull sjme_juint* outLength)
+{
+	sjme_errorCode error;
+	sjme_juint base, result, i, readIn;
+	
+	if (state == NULL || inBuffer == NULL || outLength == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (code < 257 || code > 285)
+		return SJME_ERROR_INFLATE_INVALID_CODE;
+	
+	/* Maximum distance possible? */
+	if (code == 285)
+	{
+		*outLength = 258;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Get the base distance code. */
+	base = code - 257;
+	
+	/* Calculate the required length to use */
+	result = 3;
+	for (i = 0; i < base; i++)
+	{
+		/* Determine how many groups of 4 the code is long. Since zero */
+		/* appears as items then subtract 1 to make it longer. However */
+		/* after the first 8 it goes up in a standard pattern. */
+		if (i < 8)
+			result += 1;
+		else
+			result += (1 << ((((i / 4)) - 1)));
+	}
+	
+	/* Also any extra bits needed as part of the length. */
+	if (base < 8)
+	{
+		/* Calculate needed amount. Same as the length, it goes up in */
+		/* a specific pattern as well except without single increments. */
+		i = ((base / 4)) - 1;
+		
+		/* Read in given bits. */
+		readIn = INT32_MAX;
+		if (sjme_error_is(error = sjme_stream_inflateBitIn(
+			inBuffer,
+			SJME_INFLATE_LSB, SJME_INFLATE_POP,
+			i, &readIn)) ||
+			readIn == INT32_MAX)
+			return sjme_error_default(error);
+		
+		/* Add in extra value. */
+		result += readIn;
+	}
+	
+	/* Give the result. */
+	*outLength = result;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_stream_inflateProcessWindow(
+	sjme_attrInNotNull sjme_stream_inflateState* state,
+	sjme_attrInNotNull sjme_stream_inflateBuffer* outBuffer,
+	sjme_attrInNotNull sjme_stream_inflateWindow* window,
+	sjme_attrInPositive sjme_juint windowDist,
+	sjme_attrInPositive sjme_juint windowLen)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_stream_inflateProcessCodes(
 	sjme_attrInNotNull sjme_stream_inflateState* state)
 {
@@ -969,13 +1072,14 @@ static sjme_errorCode sjme_stream_inflateProcessCodes(
 	sjme_stream_inflateBuffer* inBuffer;
 	sjme_stream_inflateBuffer* outBuffer;
 	sjme_stream_inflateWindow* window;
-	sjme_juint code;
+	sjme_juint code, windowReadLen, windowReadDist;
 	
 	if (state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* This must be set!! */
-	if (state->readCode == NULL)
+	if (state->readCode == NULL ||
+		state->readDist == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Read as much as possible until we hit saturation. */
@@ -1011,8 +1115,33 @@ static sjme_errorCode sjme_stream_inflateProcessCodes(
 				return sjme_error_default(error); 
 		}
 		
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Window. */
+		else if (code >= 257 && code <= 285)
+		{
+			/* Read in window length. */
+			windowReadLen = INT32_MAX;
+			if (sjme_error_is(error = sjme_stream_inflateProcessLength(
+				state, inBuffer, code, &windowReadLen)) ||
+				windowReadLen == INT32_MAX)
+				return sjme_error_default(error);
+			
+			/* Read in distance. */
+			windowReadDist = INT32_MAX;
+			if (sjme_error_is(error = state->readDist(
+				state, &windowReadDist)) ||
+				windowReadDist == INT32_MAX)
+				return sjme_error_default(error);
+			
+			/* Copy from the input window. */
+			if (sjme_error_is(error = sjme_stream_inflateProcessWindow(
+				state, outBuffer, window,
+				windowReadDist, windowReadLen)))
+				return sjme_error_default(error);
+		}
+		
+		/* Invalid. */
+		else
+			return SJME_ERROR_INFLATE_INVALID_CODE;
 	}
 	
 	/* If we over-saturated, just stop and give all the data. */
@@ -1364,12 +1493,14 @@ static sjme_errorCode sjme_stream_inflateDecode(
 			/* Set the source for input codes. */
 			state->step = SJME_INFLATE_STEP_INFLATE_FROM_TREE;
 			state->readCode = sjme_stream_inflateReadCodeDynamic;
+			state->readDist = sjme_stream_inflateReadDistDynamic;
 			return SJME_ERROR_NONE;
 		
 			/* Fixed static huffman table. */
 		case SJME_INFLATE_STEP_FIXED_TABLE_INFLATE:
 			state->step = SJME_INFLATE_STEP_INFLATE_FROM_TREE;
 			state->readCode = sjme_stream_inflateReadCodeFixed;
+			state->readDist = sjme_stream_inflateReadDistFixed;
 			return SJME_ERROR_NONE;
 			
 			/* Decode from the given huffman tree. */
