@@ -109,8 +109,11 @@ typedef enum sjme_stream_inflateStep
 	/** Load in dynamic huffman table: Code length tree. */
 	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_CODE_LEN,
 	
-	/** Load in dynamic huffman table: Literal and distance tree. */
-	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LIST_DIST,
+	/** Load in dynamic huffman table: Literal. */
+	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LITERAL,
+	
+	/** Load in dynamic huffman table: Distance tree. */
+	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_DISTANCE,
 	
 	/** Process data through the dynamic huffman table. */
 	SJME_INFLATE_STEP_DYNAMIC_TABLE_INFLATE,
@@ -904,22 +907,27 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoadCodeLen(
 		&state->huffStorage)))
 		return sjme_error_default(error);
 	
-	/* Start reading the code length tree. */
-	state->step = SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LIST_DIST;
+	/* Load the literal tree now that we have the code lengths. */
+	state->step = SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LITERAL;
 	return SJME_ERROR_NONE;
-	
 }
 
 static sjme_errorCode sjme_stream_inflateDecodeDynLoadLitDist(
 	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
+	sjme_attrInNotNull sjme_stream_inflateState* state,
+	sjme_attrInPositive sjme_juint count,
+	sjme_attrInNotNull sjme_stream_inflateHuffTree* outTree)
 {
 	sjme_stream_inflateBuffer* inBuffer;
 	sjme_errorCode error;
+	sjme_jint* lengths;
 	
 	if (source == NULL || state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+	
+	/* Allocate stack memory for the lengths we need to process. */
+	
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -985,8 +993,16 @@ static sjme_errorCode sjme_stream_inflateDecode(
 			return sjme_stream_inflateDecodeDynLoadCodeLen(source, state);
 		
 			/** Load in dynamic huffman table: Literal tree. */
-		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LIST_DIST:
-			return sjme_stream_inflateDecodeDynLoadLitDist(source, state);
+		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LITERAL:
+			return sjme_stream_inflateDecodeDynLoadLitDist(source, state,
+				state->huffInit.litLen,
+				&state->literalTree);
+		
+			/** Load in dynamic huffman table: Distance tree. */
+		case SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_DISTANCE:
+			return sjme_stream_inflateDecodeDynLoadLitDist(source, state,
+				state->huffInit.distLen,
+				&state->distanceTree);
 		
 			/** Process data through the dynamic huffman table. */
 		case SJME_INFLATE_STEP_DYNAMIC_TABLE_INFLATE:
@@ -1059,6 +1075,66 @@ static sjme_errorCode sjme_stream_inputInflateInit(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_stream_inputInflateFlushIn(
+	sjme_attrInNotNull sjme_stream_input source,
+	sjme_attrInNotNull sjme_stream_inflateState* state)
+{
+	sjme_errorCode error;
+	sjme_stream_inflateBuffer* inBuffer;
+	sjme_pointer bufOpPos;
+	sjme_jint bufOpLen;
+	sjme_jint remainder, sourceRead;
+	
+	if (source == NULL || state == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* We just use this buffer for input. */
+	inBuffer = &state->input;
+	
+	/* Determine the read/write positions and how much we can chunk at */
+	/* the same time. */
+	remainder = -1;
+	bufOpPos = NULL;
+	bufOpLen = -1;
+	if (sjme_error_is(error = sjme_stream_inflateBufferArea(
+		inBuffer,
+		&remainder,
+		&bufOpPos, &bufOpLen)) ||
+		remainder < 0 || bufOpPos == NULL || bufOpLen < 0)
+	{
+		/* No room for anything, just skip. */
+		if (error == SJME_ERROR_TOO_SHORT)
+			return SJME_ERROR_BUFFER_FULL;
+		
+		return sjme_error_default(error);
+	}
+	
+	/* Read in data. */
+	sourceRead = -2;
+	if (sjme_error_is(error = sjme_stream_inputRead(source,
+		&sourceRead,
+		bufOpPos,
+		bufOpLen)) || sourceRead < -1)
+		return sjme_error_default(error);
+	
+	/* If EOF was hit, indicate as such. */
+	if (sourceRead == -1)
+		inBuffer->hitEof = SJME_JNI_TRUE;
+	
+	/* Otherwise, move the write head up and up the ready count. */
+	else if (sourceRead > 0)
+	{
+		/* Count source data. */
+		if (sjme_error_is(error = sjme_stream_inflateBufferGive(
+			inBuffer,
+			sourceRead)))
+			return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_stream_inputInflateFlushOut(
 	sjme_attrInNotNull sjme_stream_inflateState* state,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
@@ -1082,10 +1158,7 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 	sjme_errorCode error;
 	sjme_stream_input source;
 	sjme_stream_inflateState* state;
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_pointer bufOpPos;
-	sjme_jint bufOpLen;
-	sjme_jint remainder, sourceRead, lastRemainder;
+	sjme_jint remainder, lastRemainder;
 	
 	if (stream == NULL || inImplState == NULL || readCount == NULL ||
 		dest == NULL)
@@ -1117,58 +1190,6 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 	if (state->invalidInput)
 		return SJME_ERROR_IO_EXCEPTION;
 	
-	/* Fill the input buffer as much as possible before we decompress as it */
-	/* is more efficient to operate in larger chunks. */
-	/* Naturally we stop when there is no input anyway. */
-	while (!state->input.hitEof)
-	{
-		/* We just use this buffer for input. */
-		inBuffer = &state->input;
-		
-		/* Determine the read/write positions and how much we can chunk at */
-		/* the same time. */
-		remainder = -1;
-		bufOpPos = NULL;
-		bufOpLen = -1;
-		if (sjme_error_is(error = sjme_stream_inflateBufferArea(inBuffer,
-			&remainder,
-			&bufOpPos, &bufOpLen)) ||
-			remainder < 0 || bufOpPos == NULL || bufOpLen < 0)
-		{
-			/* No room for anything, just skip. */
-			if (error == SJME_ERROR_TOO_SHORT)
-				break;
-			
-			return sjme_error_default(error);
-		}
-		
-		/* Read in data. */
-		sourceRead = -2;
-		if (sjme_error_is(error = sjme_stream_inputRead(source,
-			&sourceRead,
-			bufOpPos,
-			bufOpLen)) || sourceRead < -1)
-			return sjme_error_default(error);
-		
-		/* If no data was read in, it might not be ready. */
-		if (sourceRead == 0)
-			break;
-		
-		/* Otherwise if EOF was hit, indicate as such. */
-		else if (sourceRead == -1)
-			inBuffer->hitEof = SJME_JNI_TRUE;
-		
-		/* Otherwise, move the write head up and up the ready count. */
-		else
-		{
-			/* Count source data. */
-			if (sjme_error_is(error = sjme_stream_inflateBufferGive(
-				inBuffer,
-				sourceRead)))
-				return sjme_error_default(error);
-		}
-	}
-	
 	/* Try to decompress as much data as possible into the output buffer. */
 	lastRemainder = -1;
 	while (!state->output.hitEof)
@@ -1180,6 +1201,23 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		/* output buffer does not have enough space. */
 		if (remainder == lastRemainder)
 			break;
+		
+		/* Fill the input buffer as much as possible before we decompress */
+		/* as it is more efficient to operate in larger chunks. */
+		/* Naturally we stop when there is no input anyway. */
+		while (!state->input.hitEof)
+		{
+			/* Read in. */
+			if (sjme_error_is(error = sjme_stream_inputInflateFlushIn(
+				source, state)))
+			{
+				/* If the input buffer is full, it is not an error! */
+				if (error == SJME_ERROR_BUFFER_FULL)
+					break;
+				
+				return sjme_error_default(error);
+			}
+		}
 		
 		/* Used to determine if we should run the loop again, and if we */
 		/* get stuck in a zero-read/write loop. */
