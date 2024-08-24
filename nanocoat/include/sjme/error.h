@@ -349,8 +349,17 @@ typedef enum sjme_errorCode
 	/** Window distance out of range. */
 	SJME_ERROR_INFLATE_DISTANCE_OUT_OF_RANGE = -102,
 	
+	/** Invalid code length count. */
+	SJME_ERROR_INFLATE_INVALID_CODE_LENGTH_COUNT = -103,
+	
+	/** Invalid repeat of first entry. */
+	SJME_ERROR_INFLATE_INVALID_FIRST_REPEAT = -104,
+	
+	/** Inflation index overflow. */
+	SJME_ERROR_INFLATE_INDEX_OVERFLOW = -105,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -103
+	SJME_NUM_ERROR_CODES = -106
 } sjme_errorCode;
 
 /**
