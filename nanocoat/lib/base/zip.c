@@ -313,14 +313,15 @@ sjme_errorCode sjme_zip_entryRead(
 		2, lens, localHeaderPos + SJME_ZIP_LOCAL_LENS_OFFSET, 4)))
 		goto fail_readLens;
 	
-	sjme_message("Lens: %d %d", lens[0], lens[1]);
-	
 	/* The actual data position follows the header. */
 	actualDataPos = localHeaderPos + SJME_ZIP_LOCAL_LENGTH +
 		lens[0] + lens[1];
-	
+
+#if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
+	sjme_message("Lens: %d %d", lens[0], lens[1]);
 	sjme_message("Entry data at %d", actualDataPos);
+#endif
 	
 	/* The actual size for the low stream depends on the compression. */
 	if (inEntry->method == SJME_ZIP_METHOD_DEFLATE)

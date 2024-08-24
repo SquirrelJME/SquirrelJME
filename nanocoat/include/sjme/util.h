@@ -373,6 +373,22 @@ sjme_juint sjme_util_highestOneBit(
 	sjme_attrInValue sjme_juint v);
 
 /**
+ * Converts integer value to binary.
+ * 
+ * @param destBuf The destination buffer.
+ * @param destLen The destination length.
+ * @param inVal The value to convert to binary.
+ * @param bitCount The number of bits to output, if zero then this is all bits.
+ * @return Any resultant error, if any.
+ * @since 2024/08/24
+ */
+sjme_errorCode sjme_util_intToBinary(
+	sjme_attrInNotNullBuf(destLen) sjme_lpstr destBuf,
+	sjme_attrInPositiveNonZero sjme_jint destLen,
+	sjme_attrInValue sjme_juint inVal,
+	sjme_attrInPositiveNonZero sjme_juint bitCount);
+
+/**
  * Returns the number of leading zeroes in the value.
  * 
  * @param v The value to check. 

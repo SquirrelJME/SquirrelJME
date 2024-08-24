@@ -441,14 +441,14 @@ static sjme_errorCode sjme_stream_inflateBufferConsume(
 
 static sjme_errorCode sjme_stream_inflateBitNeed(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
-	sjme_attrInRange(1, 32) sjme_jint bitCount)
+	sjme_attrInPositiveNonZero sjme_jint bitCount)
 {
 	sjme_jint readyBits;
 	
 	if (buffer == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (bitCount <= 0 || bitCount > 32)
+	if (bitCount <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* How many full bytes are ready? */
@@ -472,6 +472,10 @@ static sjme_errorCode sjme_stream_inflateBitIn(
 {
 	sjme_errorCode error;
 	sjme_juint result, val;
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_cchar binary[40];
+	sjme_cchar binary2[40];
+#endif
 	
 	if (buffer == NULL || readValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -497,9 +501,6 @@ static sjme_errorCode sjme_stream_inflateBitIn(
 		/* Read the next byte from the buffer. */
 		val = buffer->buffer[buffer->readHead] & 0xFF;
 		
-		/* Debug. */
-		sjme_message("Inflate Raw In: %d 0x%02x", val, val);
-		
 		/* Move counters as we consumed a byte. */
 		buffer->ready--;
 		buffer->readHead = (buffer->readHead + 1) &
@@ -507,12 +508,20 @@ static sjme_errorCode sjme_stream_inflateBitIn(
 		
 		/* Shift in the read bytes to the higher positions, so this way */
 		/* they are always added onto the top-most value. */
-		/* First make sure the bits above are clear. */
-		buffer->bitBuffer &= ((1 << buffer->bitCount) - 1);
-		
 		/* Then layer the bits at the highest position. */
 		buffer->bitBuffer |= (val << buffer->bitCount); 
 		buffer->bitCount += 8;
+
+#if defined(SJME_CONFIG_DEBUG)
+		memset(binary, 0, sizeof(binary));
+		memset(binary2, 0, sizeof(binary2));
+		sjme_util_intToBinary(binary, sizeof(binary) - 1,
+			buffer->bitBuffer, buffer->bitCount);
+		sjme_util_intToBinary(binary2, sizeof(binary2) - 1,
+			val, 8);
+		sjme_message("bitBuffer %s (%d) << %s %d %02x",
+			binary, buffer->bitCount, binary2, val, val);
+#endif
 	}
 	
 	/* Mask in the value, which is always at the lower bits */
@@ -532,8 +541,17 @@ static sjme_errorCode sjme_stream_inflateBitIn(
 #if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
 	if (popPeek == SJME_INFLATE_POP)
-		sjme_message("Read %d 0x%02x (%d bits)",
-			result, result, bitCount);
+	{
+		memset(binary, 0, sizeof(binary));
+		memset(binary2, 0, sizeof(binary2));
+		sjme_util_intToBinary(binary, sizeof(binary) - 1,
+			buffer->bitBuffer, buffer->bitCount);
+		sjme_util_intToBinary(binary2, sizeof(binary2) - 1,
+			result, bitCount);
+		sjme_message("bitBuffer %s (%d) >> %s %d 0x%02x (%d bits)",
+			binary, buffer->bitCount,
+			binary2, result, result, bitCount);
+	}
 #endif
 	
 	/* Success! */
@@ -1429,6 +1447,12 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoad(
 	init->distLen = dist + 1;
 	init->codeLen = codeLen + 4;
 	
+	/* Debug. */
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_message("Dynamic tree: litLen:%d; distLen:%d; codeLen:%d",
+		init->litLen, init->distLen, init->codeLen);
+#endif
+	
 	/* Start reading the code length tree. */
 	state->step = SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_CODE_LEN;
 	return SJME_ERROR_NONE;
@@ -1467,6 +1491,11 @@ static sjme_errorCode sjme_stream_inflateDecodeDynLoadCodeLen(
 		
 		/* Set. */
 		init->rawCodeLens[sjme_stream_inflateShuffleBits[i]] = v;
+
+#if defined(SJME_CONFIG_DEBUG)
+		/* Debug. */
+		sjme_message("codeLen %d: %d", i, v);
+#endif
 	}
 	
 	/* Clear the huffman node storage as we are recreating the tree. */

@@ -411,6 +411,40 @@ sjme_juint sjme_util_highestOneBit(
 	return v - (v >> 1);
 }
 
+sjme_errorCode sjme_util_intToBinary(
+	sjme_attrInNotNullBuf(destLen) sjme_lpstr destBuf,
+	sjme_attrInPositiveNonZero sjme_jint destLen,
+	sjme_attrInValue sjme_juint inVal,
+	sjme_attrInPositiveNonZero sjme_juint bitCount)
+{
+	sjme_juint sh;
+	sjme_cchar* wp;
+	
+	if (destBuf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Correct bit count. */
+	if (bitCount <= 0 || bitCount > 32)
+		bitCount = 32;
+	
+	/* 0b([01]*32). */
+	if (destLen <= (3 + bitCount))
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Start with the prefix. */	
+	wp = destBuf;
+	*(wp++) = '0';
+	*(wp++) = 'b';
+	
+	/* Start from the top and go down. */
+	for (sh = (1 << (bitCount - 1)); sh > 0; sh >>= 1)
+		*(wp++) = ((inVal & sh) != 0 ? '1' : '0');
+	
+	/* End with NUL. */
+	*(wp++) = '\0';
+	return SJME_ERROR_NONE;
+}
+
 sjme_juint sjme_util_numLeadingZeroesU(
 	sjme_attrInValue sjme_juint v)
 {
