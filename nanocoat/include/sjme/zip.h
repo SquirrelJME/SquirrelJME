@@ -117,7 +117,7 @@ typedef struct sjme_zip_entry
 	/** External attributes. */
 	sjme_jint externalAttrib;
 	
-	/** Relative offset where the data starts. */
+	/** Relative offset to the local file header. */
 	sjme_jint offset;
 	
 	/** The file name. */

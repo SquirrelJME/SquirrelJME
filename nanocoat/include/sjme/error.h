@@ -346,8 +346,11 @@ typedef enum sjme_errorCode
 	/** Buffer is saturated. */
 	SJME_ERROR_BUFFER_SATURATED = -101,
 	
+	/** Window distance out of range. */
+	SJME_ERROR_INFLATE_DISTANCE_OUT_OF_RANGE = -102,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -102
+	SJME_NUM_ERROR_CODES = -103
 } sjme_errorCode;
 
 /**

@@ -24,6 +24,9 @@
 /** When the output buffer is considered saturated. */
 #define SJME_INFLATE_IO_BUFFER_SATURATED 1700
 
+/** The maximum window size. */
+#define SJME_INFLATE_WINDOW_MAX_SIZE 32768
+
 /** The window size. */
 #define SJME_INFLATE_WINDOW_SIZE 16384
 
@@ -160,7 +163,7 @@ typedef struct sjme_stream_inflateBuffer
 	sjme_juint bitBuffer;
 	
 	/** The amount of bits in the buffer. */
-	sjme_jint bitCount;
+	sjme_juint bitCount;
 } sjme_stream_inflateBuffer;
 
 /**
@@ -171,10 +174,10 @@ typedef struct sjme_stream_inflateBuffer
 typedef struct sjme_stream_inflateWindow
 {
 	/** The number of bytes in the window. */
-	sjme_jint length;
+	sjme_juint length;
 	
 	/** The end position of the window. */
-	sjme_jint end;
+	sjme_juint end;
 	
 	/** The window buffer. */
 	sjme_jubyte window[SJME_INFLATE_WINDOW_SIZE];
@@ -464,7 +467,7 @@ static sjme_errorCode sjme_stream_inflateBitIn(
 	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
 	sjme_attrInValue sjme_stream_inflateOrder order,
 	sjme_attrInValue sjme_stream_inflatePeek popPeek,
-	sjme_attrInRange(1, 32) sjme_jint bitCount,
+	sjme_attrInRange(1, 32) sjme_juint bitCount,
 	sjme_attrOutNotNull sjme_juint* readValue)
 {
 	sjme_errorCode error;
@@ -494,6 +497,9 @@ static sjme_errorCode sjme_stream_inflateBitIn(
 		/* Read the next byte from the buffer. */
 		val = buffer->buffer[buffer->readHead] & 0xFF;
 		
+		/* Debug. */
+		sjme_message("Inflate Raw In: %d 0x%02x", val, val);
+		
 		/* Move counters as we consumed a byte. */
 		buffer->ready--;
 		buffer->readHead = (buffer->readHead + 1) &
@@ -505,7 +511,7 @@ static sjme_errorCode sjme_stream_inflateBitIn(
 		buffer->bitBuffer &= ((1 << buffer->bitCount) - 1);
 		
 		/* Then layer the bits at the highest position. */
-		buffer->bitBuffer |= val << buffer->bitCount; 
+		buffer->bitBuffer |= (val << buffer->bitCount); 
 		buffer->bitCount += 8;
 	}
 	
@@ -523,9 +529,12 @@ static sjme_errorCode sjme_stream_inflateBitIn(
 	if (order == SJME_INFLATE_MSB)
 		result = sjme_util_reverseBitsU(result) >> (32 - bitCount);
 	
+#if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
-	sjme_message("Read %d (%d bits)",
-		result, bitCount);
+	if (popPeek == SJME_INFLATE_POP)
+		sjme_message("Read %d 0x%02x (%d bits)",
+			result, result, bitCount);
+#endif
 	
 	/* Success! */
 	*readValue = result;
@@ -651,15 +660,22 @@ static sjme_errorCode sjme_stream_inflateBitOut(
 		writeValue = (sjme_util_reverseBitsU(writeValue) >>
 			(32 - bitCount)) & mask;
 	
+	/* Debug. */	
+	sjme_message("Shift in %d %x (bc=%d)",
+		writeValue, writeValue, buffer->bitCount);
+	
 	/* Place into the bit buffer. */
-	buffer->bitBuffer |= writeValue << buffer->bitCount;
+	buffer->bitBuffer |= (writeValue << buffer->bitCount);
 	buffer->bitCount += bitCount;
 	
 	/* Drain the buffer out. */
-	while (buffer->bitCount > 8)
+	while (buffer->bitCount >= 8)
 	{
 		/* Read in byte value to store. */
-		single = buffer->bitBuffer & 0xFF;
+		single = (buffer->bitBuffer & 0xFF);
+		
+		sjme_message("Out: %d %x (we=%d)",
+			single, single, window->end);
 		
 		/* Shift down. */
 		buffer->bitBuffer >>= 8;
@@ -673,50 +689,13 @@ static sjme_errorCode sjme_stream_inflateBitOut(
 		
 		/* Store into the window as well! Shifting the end there also */
 		window->window[window->end] = single;
-		window->end = (window->end + 1) & SJME_INFLATE_WINDOW_MASK;
+		window->end = ((window->end + 1) & SJME_INFLATE_WINDOW_MASK);
 		if (window->length < SJME_INFLATE_WINDOW_SIZE)
 			window->length++;
 	}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
-}
-
-static sjme_errorCode sjme_stream_inflateBitOutCode(
-	sjme_attrInNotNull sjme_stream_inflateState* state,
-	sjme_attrInRange(1, 32) sjme_juint bitCount,
-	sjme_attrOutNotNull sjme_juint code)
-{
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_stream_inflateBuffer* outBuffer;
-	sjme_stream_inflateWindow* window;
-	
-	if (state == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Input is only needed for window based copies. */
-	inBuffer = &state->input;
-	outBuffer = &state->output;
-	window = &state->window;
-	
-	/* Literal byte value? */
-	if (code >= 0 && code <= 255)
-		return sjme_stream_inflateBitOut(outBuffer,
-			SJME_INFLATE_LSB, window, 8, code);
-	
-	/* Stop decompression. */
-	else if (code == 256)
-		return SJME_ERROR_STOP;
-	
-	/* Window. */
-	else if (code >= 257 && code <= 285)
-	{	
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-	
-	/* Fail otherwise. */
-	return SJME_ERROR_INFLATE_INVALID_CODE;
 }
 
 static sjme_errorCode sjme_stream_inflateBuildTreeInsertNext(
@@ -939,7 +918,7 @@ static sjme_errorCode sjme_stream_inflateReadCodeFixed(
 	}
 		
 	/* 0b0011000[0] - 0b1011111[1] */
-	else if ((hiSeven >= 24 && hiSeven <= 95))
+	else if (hiSeven >= 24 && hiSeven <= 95)
 	{
 		bitsNeeded = 8;
 		litBase = 0;
@@ -987,8 +966,67 @@ static sjme_errorCode sjme_stream_inflateReadDistFixed(
 	if (state == NULL || outDist == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Just a basic bit read. */
+	return sjme_stream_inflateBitIn(&state->input,
+		SJME_INFLATE_MSB, SJME_INFLATE_POP,
+		5, outDist);
+}
+
+static sjme_errorCode sjme_stream_inflateProcessDistance(
+	sjme_attrInNotNull sjme_stream_inflateState* state,
+	sjme_attrInNotNull sjme_stream_inflateBuffer* inBuffer,
+	sjme_attrInRange(257, 285) sjme_juint origCode,
+	sjme_attrOutNotNull sjme_juint* outDist)
+{
+	sjme_errorCode error;
+	sjme_juint base, result, i, readIn;
+	
+	if (state == NULL || inBuffer == NULL || outDist == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Read in distance code. */
+	base = INT32_MAX;
+	if (sjme_error_is(error = state->readDist(
+		state, &base)) || base == INT32_MAX)
+		return sjme_error_default(error);
+	
+	/* Must be too high of a code! */
+	if (base > 29)
+		return SJME_ERROR_INFLATE_INVALID_CODE;
+	
+	/* Calculate the required distance to use */
+	result = 1;
+	for (i = 0; i < base; i++)
+	{
+		/* Similar to length but in groups of two. */
+		if (i >= 2)
+			result += 1;
+		else
+			result += (1 << ((((i / 2)) - 1)));
+	}
+	
+	/* Also any extra bits needed as part of the distance. */
+	if (base >= 4)
+	{
+		/* Similarly the same as length, just smaller parts. */
+		i = ((base / 2)) - 1;
+		
+		/* Read in given bits. */
+		readIn = INT32_MAX;
+		if (sjme_error_is(error = sjme_stream_inflateBitIn(
+			inBuffer,
+			SJME_INFLATE_LSB, SJME_INFLATE_POP,
+			i, &readIn)) ||
+			readIn == INT32_MAX)
+			return sjme_error_default(error);
+		
+		/* Add in extra value. */
+		result += readIn;
+	}
+	
+	/* Give the result. */
+	*outDist = result;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_stream_inflateProcessLength(
@@ -1030,7 +1068,7 @@ static sjme_errorCode sjme_stream_inflateProcessLength(
 	}
 	
 	/* Also any extra bits needed as part of the length. */
-	if (base < 8)
+	if (base >= 8)
 	{
 		/* Calculate needed amount. Same as the length, it goes up in */
 		/* a specific pattern as well except without single increments. */
@@ -1061,8 +1099,62 @@ static sjme_errorCode sjme_stream_inflateProcessWindow(
 	sjme_attrInPositive sjme_juint windowDist,
 	sjme_attrInPositive sjme_juint windowLen)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_juint maxLen, i, w, readBase;
+	sjme_jubyte* chunk;
+	
+	if (state == NULL || outBuffer == NULL || window == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* The length chunk can never exceed the distance, however it does */
+	/* wrap around accordingly. */
+	maxLen = (windowLen > windowDist ? windowDist : windowLen);
+	
+	sjme_message("Dist %d > %d", windowDist, window->length);
+	
+	/* Cannot read more than what there is. */
+	if (windowDist > window->length)
+		return SJME_ERROR_INFLATE_DISTANCE_OUT_OF_RANGE;
+	
+	/* Setup buffer for the sliding window chunk. */
+	chunk = sjme_alloca(sizeof(*chunk) * maxLen);
+	if (chunk == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	memset(chunk, 0, sizeof(*chunk) * maxLen);
+	
+	/* Can read in one full slice? */
+	readBase = (window->end - windowDist) & SJME_INFLATE_WINDOW_MASK;
+	if (readBase < window->end)
+		memmove(chunk, &window->window[readBase], maxLen);
+	
+	/* Need to copy in two slices. */
+	else
+	{
+		i = SJME_INFLATE_WINDOW_SIZE - readBase;
+		memmove(&chunk[0], &window->window[readBase], i);
+		memmove(&chunk[i], &window->window[0], maxLen - i);
+	}
+	
+	/* Debug. */
+	sjme_message("Dist chunk: %d", maxLen);
+	sjme_message_hexDump(chunk, maxLen);
+	
+	/* Write output. */
+	for (i = 0, w = 0; i < windowLen; i++)
+	{
+		/* Write value to the output. */
+		if (sjme_error_is(error = sjme_stream_inflateBitOut(
+			outBuffer, SJME_INFLATE_LSB, window,
+			8, chunk[w] & 0xFF)))
+			return sjme_error_default(error);
+		
+		/* Move window up, handle wrap around. */
+		if ((++w) >= maxLen)
+			w = 0;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_stream_inflateProcessCodes(
@@ -1112,7 +1204,7 @@ static sjme_errorCode sjme_stream_inflateProcessCodes(
 				outBuffer,
 				SJME_INFLATE_LSB, window,
 				8, code)))
-				return sjme_error_default(error); 
+				return sjme_error_default(error);
 		}
 		
 		/* Window. */
@@ -1127,8 +1219,8 @@ static sjme_errorCode sjme_stream_inflateProcessCodes(
 			
 			/* Read in distance. */
 			windowReadDist = INT32_MAX;
-			if (sjme_error_is(error = state->readDist(
-				state, &windowReadDist)) ||
+			if (sjme_error_is(error = sjme_stream_inflateProcessDistance(
+				state, inBuffer, code, &windowReadDist)) ||
 				windowReadDist == INT32_MAX)
 				return sjme_error_default(error);
 			
@@ -1142,6 +1234,11 @@ static sjme_errorCode sjme_stream_inflateProcessCodes(
 		/* Invalid. */
 		else
 			return SJME_ERROR_INFLATE_INVALID_CODE;
+			
+		/* Debug. */
+		sjme_message("Code: %d 0x%x", code, code);
+		sjme_message_hexDump(&window->window[0],
+			window->length);
 	}
 	
 	/* If we over-saturated, just stop and give all the data. */
@@ -1203,9 +1300,9 @@ static sjme_errorCode sjme_stream_inflateDecodeBType(
 	if (blockType == 0)
 		state->step = SJME_INFLATE_STEP_LITERAL_HEADER;
 	else if (blockType == 1)
-		state->step = SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD;
-	else if (blockType == 2)
 		state->step = SJME_INFLATE_STEP_FIXED_TABLE_INFLATE;
+	else if (blockType == 2)
+		state->step = SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD;
 	
 	/* Invalid block. */
 	else

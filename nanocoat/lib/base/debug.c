@@ -262,7 +262,7 @@ void sjme_message_hexDump(
 		for (sub = at, i = 0; sub < inLen && i < SJME_HEX_LINE; sub++, i++)
 		{
 			/* Get byte from the input. */
-			c = ((sjme_juint*)inData)[sub];
+			c = ((sjme_jubyte*)inData)[sub];
 			
 			/* Write hex. */
 			sjme_message_hexDumpHex(&w, end, (c >> 4) & 0xF);
@@ -279,7 +279,7 @@ void sjme_message_hexDump(
 		for (sub = at, i = 0; sub < inLen && i < SJME_HEX_LINE; sub++, i++)
 		{
 			/* Get byte from the input. */
-			c = ((sjme_juint*)inData)[sub];
+			c = ((sjme_jubyte*)inData)[sub];
 			
 			if (c >= ' ' && c < 0x7F)
 				sjme_message_hexDumpChar(&w, end, c);
