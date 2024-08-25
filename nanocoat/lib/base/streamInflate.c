@@ -16,15 +16,6 @@
 #include "sjme/util.h"
 #include "sjme/inflate.h"
 
-/** Code length shuffled bit order, for "optimal" bit placement. */
-static const sjme_jubyte sjme_stream_inflateShuffleBits[
-	SJME_INFLATE_CODE_LEN_LIMIT] =
-{
-	16, 17, 18, 0, 8, 7, 9,
-	6, 10, 5, 11, 4, 12, 3,
-	13, 2, 14, 1, 15
-};
-
 static sjme_errorCode sjme_stream_inputInflateClose(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrInNotNull sjme_stream_implState* inImplState)
@@ -69,7 +60,7 @@ static sjme_errorCode sjme_stream_inputInflateInit(
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
 	sjme_attrInNullable sjme_pointer data)
 {
-	sjme_stream_inflateInit* init;
+	sjme_inflate_init* init;
 	
 	init = data;
 	if (stream == NULL || inImplState == NULL || init == NULL)
@@ -85,10 +76,10 @@ static sjme_errorCode sjme_stream_inputInflateInit(
 
 static sjme_errorCode sjme_stream_inputInflateFlushIn(
 	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_stream_inflateState* state)
+	sjme_attrInNotNull sjme_inflate_state* state)
 {
 	sjme_errorCode error;
-	sjme_stream_inflateBuffer* inBuffer;
+	sjme_inflate_buffer* inBuffer;
 	sjme_pointer bufOpPos;
 	sjme_jint bufOpLen;
 	sjme_jint remainder, sourceRead;
@@ -104,7 +95,7 @@ static sjme_errorCode sjme_stream_inputInflateFlushIn(
 	remainder = -1;
 	bufOpPos = NULL;
 	bufOpLen = -1;
-	if (sjme_error_is(error = sjme_stream_inflateBufferArea(
+	if (sjme_error_is(error = sjme_inflate_bufferArea(
 		inBuffer,
 		&remainder,
 		&bufOpPos, &bufOpLen)) ||
@@ -133,7 +124,7 @@ static sjme_errorCode sjme_stream_inputInflateFlushIn(
 	else if (sourceRead > 0)
 	{
 		/* Count source data. */
-		if (sjme_error_is(error = sjme_stream_inflateBufferGive(
+		if (sjme_error_is(error = sjme_inflate_bufferGive(
 			inBuffer,
 			sourceRead)))
 			return sjme_error_default(error);
@@ -144,7 +135,7 @@ static sjme_errorCode sjme_stream_inputInflateFlushIn(
 }
 
 static sjme_errorCode sjme_stream_inputInflateFlushOut(
-	sjme_attrInNotNull sjme_stream_inflateState* state,
+	sjme_attrInNotNull sjme_inflate_state* state,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
 	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint length)
@@ -165,7 +156,7 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 {
 	sjme_errorCode error;
 	sjme_stream_input source;
-	sjme_stream_inflateState* state;
+	sjme_inflate_state* state;
 	sjme_jint remainder, lastRemainder;
 	
 	if (stream == NULL || inImplState == NULL || readCount == NULL ||
@@ -234,7 +225,7 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		lastRemainder = remainder;
 		
 		/* Perform inflation. */
-		if (sjme_error_is(error = sjme_stream_inflateDecode(
+		if (sjme_error_is(error = sjme_inflate_decode(
 			state)))
 		{
 			/* Do not fail if there is not enough input data, just stop */
@@ -274,7 +265,7 @@ sjme_errorCode sjme_stream_inputOpenInflate(
 {
 	sjme_errorCode error;
 	sjme_stream_input result;
-	sjme_stream_inflateInit init;
+	sjme_inflate_init init;
 	
 	if (inPool == NULL || outStream == NULL || inCompressed == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -285,7 +276,7 @@ sjme_errorCode sjme_stream_inputOpenInflate(
 	
 	/* Setup decompression state data. */
 	if (sjme_error_is(error = sjme_alloc(inPool,
-		sizeof(sjme_stream_inflateState),
+		sizeof(sjme_inflate_state),
 		(sjme_pointer*)&init.handleTwo)) ||
 		init.handleTwo == NULL)
 		goto fail_allocState;

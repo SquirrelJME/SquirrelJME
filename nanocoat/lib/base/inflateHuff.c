@@ -7,40 +7,73 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "sjme/inflate.h"
+#include "sjme/util.h"
+#include "sjme/debug.h"
 
-
-static sjme_errorCode sjme_inflate_buildTreeInsertNext(
+sjme_errorCode sjme_inflate_buildTree(
+	sjme_attrInNotNull sjme_inflate_state* state,
+	sjme_attrInNotNull sjme_inflate_huffParam* param,
 	sjme_attrInNotNull sjme_inflate_huffTree* outTree,
-	sjme_attrInNotNull sjme_inflate_huffTreeStorage* inStorage,
-	sjme_attrOutNotNull sjme_inflate_huffNode** outNode)
+	sjme_attrInNotNull sjme_inflate_huffTreeStorage* inStorage)
 {
-	if (outTree == NULL || inStorage == NULL || outNode == NULL)
-		return SJME_ERROR_NONE;
+	sjme_errorCode error;
+	sjme_jint i, code, len;
+	sjme_juint blCount[SJME_INFLATE_CODE_LEN_MAX_BITS + 1];
+	sjme_juint nextCode[SJME_INFLATE_CODE_LEN_MAX_BITS + 1];
 	
-	/* Does the storage need initialization? */
-	if (inStorage->next == NULL || inStorage->finalEnd == NULL)
+	if (state == NULL || param == NULL || outTree == NULL || inStorage == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Wipe the target tree. */
+	memset(outTree, 0, sizeof(*outTree));
+	
+	/* Determine the bit-length for the input counts. */
+	memset(blCount, 0, sizeof(blCount));
+	for (i = 0; i < param->count; i++)
+		blCount[param->lengths[i]] += 1;
+	blCount[0] = 0;
+	
+	/* Find the numerical value of the smallest code for each code length. */
+	memset(nextCode, 0, sizeof(nextCode));
+	code = 0;
+	for (i = 1; i <= SJME_INFLATE_CODE_LEN_MAX_BITS; i++)
 	{
-		inStorage->next = (sjme_inflate_huffNode*)
-			&inStorage->storage[0];
-		inStorage->finalEnd = (sjme_inflate_huffNode*)
-			&inStorage->storage[SJME_INFLATE_HUFF_STORAGE_SIZE /
-				sizeof(sjme_inflate_huffNode)];
+		code = (code + blCount[i - 1]) << 1;
+		nextCode[i] = code;
 	}
 	
-	/* Is the tree now full? */
-	if ((sjme_intPointer)inStorage->next >=
-		(sjme_intPointer)inStorage->finalEnd)
-		return SJME_ERROR_INFLATE_HUFF_TREE_FULL;
+	/* Assign values to codes and build the huffman tree. */
+	for (i = 0; i < param->count; i++)
+	{
+		/* Ignore zero lengths. */
+		len = param->lengths[i];
+		if (len == 0)
+			continue;
+		
+#if defined(SJME_CONFIG_DEBUG)
+		/* Debug. */
+		sjme_message("param[%d] = %d", i, param->lengths[i]);
+#endif
+			
+		/* Insert into the tree. */
+		if (sjme_error_is(error = sjme_inflate_buildTreeInsert(
+			state, outTree, inStorage, i,
+			nextCode[len],
+			(1 << len) - 1)))
+			return sjme_error_default(error);
+		
+		/* Increment up the next code. */
+		nextCode[len]++;
+	}
 	
-	/* Move pointer up. */
-	*outNode = (inStorage->next);
-	inStorage->next = SJME_POINTER_OFFSET(inStorage->next,
-		sizeof(*inStorage->next));
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_inflate_buildTreeInsert(
+sjme_errorCode sjme_inflate_buildTreeInsert(
 	sjme_attrInNotNull sjme_inflate_state* state,
 	sjme_attrInNotNull sjme_inflate_huffTree* outTree,
 	sjme_attrInNotNull sjme_inflate_huffTreeStorage* inStorage,
@@ -138,62 +171,32 @@ static sjme_errorCode sjme_inflate_buildTreeInsert(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_inflate_buildTree(
-	sjme_attrInNotNull sjme_inflate_state* state,
-	sjme_attrInNotNull sjme_inflate_huffParam* param,
+sjme_errorCode sjme_inflate_buildTreeInsertNext(
 	sjme_attrInNotNull sjme_inflate_huffTree* outTree,
-	sjme_attrInNotNull sjme_inflate_huffTreeStorage* inStorage)
+	sjme_attrInNotNull sjme_inflate_huffTreeStorage* inStorage,
+	sjme_attrOutNotNull sjme_inflate_huffNode** outNode)
 {
-	sjme_errorCode error;
-	sjme_jint i, code, len;
-	sjme_juint blCount[SJME_INFLATE_CODE_LEN_MAX_BITS + 1];
-	sjme_juint nextCode[SJME_INFLATE_CODE_LEN_MAX_BITS + 1];
+	if (outTree == NULL || inStorage == NULL || outNode == NULL)
+		return SJME_ERROR_NONE;
 	
-	if (state == NULL || param == NULL || outTree == NULL || inStorage == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Wipe the target tree. */
-	memset(outTree, 0, sizeof(*outTree));
-	
-	/* Determine the bit-length for the input counts. */
-	memset(blCount, 0, sizeof(blCount));
-	for (i = 0; i < param->count; i++)
-		blCount[param->lengths[i]] += 1;
-	blCount[0] = 0;
-	
-	/* Find the numerical value of the smallest code for each code length. */
-	memset(nextCode, 0, sizeof(nextCode));
-	code = 0;
-	for (i = 1; i <= SJME_INFLATE_CODE_LEN_MAX_BITS; i++)
+	/* Does the storage need initialization? */
+	if (inStorage->next == NULL || inStorage->finalEnd == NULL)
 	{
-		code = (code + blCount[i - 1]) << 1;
-		nextCode[i] = code;
+		inStorage->next = (sjme_inflate_huffNode*)
+			&inStorage->storage[0];
+		inStorage->finalEnd = (sjme_inflate_huffNode*)
+			&inStorage->storage[SJME_INFLATE_HUFF_STORAGE_SIZE /
+				sizeof(sjme_inflate_huffNode)];
 	}
 	
-	/* Assign values to codes and build the huffman tree. */
-	for (i = 0; i < param->count; i++)
-	{
-		/* Ignore zero lengths. */
-		len = param->lengths[i];
-		if (len == 0)
-			continue;
-		
-#if defined(SJME_CONFIG_DEBUG)
-		/* Debug. */
-		sjme_message("param[%d] = %d", i, param->lengths[i]);
-#endif
-			
-		/* Insert into the tree. */
-		if (sjme_error_is(error = sjme_inflate_buildTreeInsert(
-			state, outTree, inStorage, i,
-			nextCode[len],
-			(1 << len) - 1)))
-			return sjme_error_default(error);
-		
-		/* Increment up the next code. */
-		nextCode[len]++;
-	}
+	/* Is the tree now full? */
+	if ((sjme_intPointer)inStorage->next >=
+		(sjme_intPointer)inStorage->finalEnd)
+		return SJME_ERROR_INFLATE_HUFF_TREE_FULL;
 	
-	/* Success! */
+	/* Move pointer up. */
+	*outNode = (inStorage->next);
+	inStorage->next = SJME_POINTER_OFFSET(inStorage->next,
+		sizeof(*inStorage->next));
 	return SJME_ERROR_NONE;
 }

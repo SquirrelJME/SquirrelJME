@@ -9,7 +9,7 @@
 
 #include "sjme/inflate.h"
 
-static sjme_errorCode sjme_inflate_bufferArea(
+sjme_errorCode sjme_inflate_bufferArea(
 	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrOutNotNull sjme_jint* outRemainder,
 	sjme_attrOutNotNull sjme_pointer* outBufOpPos,
@@ -51,26 +51,7 @@ static sjme_errorCode sjme_inflate_bufferArea(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_inflate_bufferGive(
-	sjme_attrInNotNull sjme_inflate_buffer* buffer,
-	sjme_attrInPositiveNonZero sjme_jint count)
-{
-	if (buffer == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (count < 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* Move count up and adjust write head. */
-	buffer->ready += count;
-	buffer->writeHead = (buffer->writeHead + count) &
-		SJME_INFLATE_IO_BUFFER_MASK;
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-static sjme_errorCode sjme_inflate_bufferConsume(
+sjme_errorCode sjme_inflate_bufferConsume(
 	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrInPositiveNonZero sjme_jint count)
 {
@@ -83,6 +64,25 @@ static sjme_errorCode sjme_inflate_bufferConsume(
 	/* Move count down and adjust read head. */
 	buffer->ready -= count;
 	buffer->readHead = (buffer->readHead + count) &
+		SJME_INFLATE_IO_BUFFER_MASK;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_inflate_bufferGive(
+	sjme_attrInNotNull sjme_inflate_buffer* buffer,
+	sjme_attrInPositiveNonZero sjme_jint count)
+{
+	if (buffer == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (count < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Move count up and adjust write head. */
+	buffer->ready += count;
+	buffer->writeHead = (buffer->writeHead + count) &
 		SJME_INFLATE_IO_BUFFER_MASK;
 	
 	/* Success! */

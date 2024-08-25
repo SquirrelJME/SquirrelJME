@@ -7,33 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "sjme/inflate.h"
+#include "sjme/util.h"
 
-static sjme_errorCode sjme_inflate_bitNeed(
-	sjme_attrInNotNull sjme_inflate_buffer* buffer,
-	sjme_attrInPositiveNonZero sjme_jint bitCount)
-{
-	sjme_jint readyBits;
-	
-	if (buffer == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (bitCount <= 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* How many full bytes are ready? */
-	readyBits = buffer->ready * 8;
-	
-	/* Then add whatever is in the current bit count. */
-	readyBits += buffer->bitCount;
-	
-	/* Too little, or has enough? */
-	if (readyBits < bitCount)
-		return SJME_ERROR_TOO_SHORT;
-	return SJME_ERROR_NONE;
-}
-
-static sjme_errorCode sjme_inflate_bitIn(
+sjme_errorCode sjme_inflate_bitIn(
 	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrInValue sjme_inflate_order order,
 	sjme_attrInValue sjme_inflate_peek popPeek,
@@ -129,75 +108,7 @@ static sjme_errorCode sjme_inflate_bitIn(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_inflate_bitInTree(
-	sjme_attrInNotNull sjme_inflate_buffer* inBuffer,
-	sjme_attrInNotNull sjme_inflate_huffTree* fromTree,
-	sjme_attrOutNotNull sjme_juint* outValue)
-{
-	sjme_inflate_huffNode* atNode;
-	sjme_errorCode error;
-	sjme_juint v;
-#if defined(SJME_CONFIG_DEBUG)
-	sjme_juint fullBits, fullBitCount;
-	sjme_cchar binary[40];
-	sjme_cchar binary2[40];
-#endif
-	
-	if (inBuffer == NULL || fromTree == NULL || outValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Start at the root node. */
-	atNode = fromTree->root;
-	if (atNode == NULL)
-		return SJME_ERROR_INFLATE_HUFF_TREE_INCOMPLETE;
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug: clear the total bits. */
-	fullBits = 0;
-	fullBitCount = 0;
-#endif
-	
-	/* Read in bits and go in the given direction. */
-	while (atNode != NULL && atNode->type == SJME_INFLATE_NODE)
-	{
-		/* Read in single bit. */
-		v = INT32_MAX;
-		if (sjme_error_is(error = sjme_inflate_bitIn(inBuffer,
-			SJME_INFLATE_LSB, SJME_INFLATE_POP,
-			1, &v)) || v == INT32_MAX)
-			return sjme_error_default(error);
-
-#if defined(SJME_CONFIG_DEBUG)
-		/* Debug: shift in full bits. */
-		fullBits <<= 1;
-		fullBits |= (v != 0);
-		fullBitCount++;
-#endif
-		
-		/* Traverse in the given direction. */
-		atNode = (v != 0 ? atNode->data.node.one : atNode->data.node.zero);
-	}
-	
-	/* If we stopped, then this is not even a complete/valid tree. */
-	if (atNode == NULL || atNode->type != SJME_INFLATE_LEAF)
-		return SJME_ERROR_INFLATE_HUFF_TREE_INCOMPLETE;
-	
-#if defined(SJME_CONFIG_DEBUG)
-	sjme_util_intToBinary(binary, sizeof(binary) - 1,
-		fullBits, fullBitCount);
-	sjme_util_intToBinary(binary2, sizeof(binary2) - 1,
-		atNode->data.leaf.code, 10);
-	sjme_message("Give node %p %d %s (%d) -> %d %s",
-		atNode, fullBits, binary, fullBitCount,
-		atNode->data.leaf.code, binary2);
-#endif
-	
-	/* Give the value here. */
-	*outValue = atNode->data.leaf.code;
-	return SJME_ERROR_NONE;
-}
-
-static sjme_errorCode sjme_inflate_bitInCodeLen(
+sjme_errorCode sjme_inflate_bitInCodeLen(
 	sjme_attrInNotNull sjme_inflate_buffer* inBuffer,
 	sjme_attrInNotNull sjme_inflate_huffTree* codeLenTree,
 	sjme_attrInOutNotNull sjme_juint* index,
@@ -319,7 +230,99 @@ static sjme_errorCode sjme_inflate_bitInCodeLen(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_inflate_bitOut(
+sjme_errorCode sjme_inflate_bitInTree(
+	sjme_attrInNotNull sjme_inflate_buffer* inBuffer,
+	sjme_attrInNotNull sjme_inflate_huffTree* fromTree,
+	sjme_attrOutNotNull sjme_juint* outValue)
+{
+	sjme_inflate_huffNode* atNode;
+	sjme_errorCode error;
+	sjme_juint v;
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_juint fullBits, fullBitCount;
+	sjme_cchar binary[40];
+	sjme_cchar binary2[40];
+#endif
+	
+	if (inBuffer == NULL || fromTree == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Start at the root node. */
+	atNode = fromTree->root;
+	if (atNode == NULL)
+		return SJME_ERROR_INFLATE_HUFF_TREE_INCOMPLETE;
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug: clear the total bits. */
+	fullBits = 0;
+	fullBitCount = 0;
+#endif
+	
+	/* Read in bits and go in the given direction. */
+	while (atNode != NULL && atNode->type == SJME_INFLATE_NODE)
+	{
+		/* Read in single bit. */
+		v = INT32_MAX;
+		if (sjme_error_is(error = sjme_inflate_bitIn(inBuffer,
+			SJME_INFLATE_LSB, SJME_INFLATE_POP,
+			1, &v)) || v == INT32_MAX)
+			return sjme_error_default(error);
+
+#if defined(SJME_CONFIG_DEBUG)
+		/* Debug: shift in full bits. */
+		fullBits <<= 1;
+		fullBits |= (v != 0);
+		fullBitCount++;
+#endif
+		
+		/* Traverse in the given direction. */
+		atNode = (v != 0 ? atNode->data.node.one : atNode->data.node.zero);
+	}
+	
+	/* If we stopped, then this is not even a complete/valid tree. */
+	if (atNode == NULL || atNode->type != SJME_INFLATE_LEAF)
+		return SJME_ERROR_INFLATE_HUFF_TREE_INCOMPLETE;
+	
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_util_intToBinary(binary, sizeof(binary) - 1,
+		fullBits, fullBitCount);
+	sjme_util_intToBinary(binary2, sizeof(binary2) - 1,
+		atNode->data.leaf.code, 10);
+	sjme_message("Give node %p %d %s (%d) -> %d %s",
+		atNode, fullBits, binary, fullBitCount,
+		atNode->data.leaf.code, binary2);
+#endif
+	
+	/* Give the value here. */
+	*outValue = atNode->data.leaf.code;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_inflate_bitNeed(
+	sjme_attrInNotNull sjme_inflate_buffer* buffer,
+	sjme_attrInPositiveNonZero sjme_jint bitCount)
+{
+	sjme_jint readyBits;
+	
+	if (buffer == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (bitCount <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* How many full bytes are ready? */
+	readyBits = buffer->ready * 8;
+	
+	/* Then add whatever is in the current bit count. */
+	readyBits += buffer->bitCount;
+	
+	/* Too little, or has enough? */
+	if (readyBits < bitCount)
+		return SJME_ERROR_TOO_SHORT;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_inflate_bitOut(
 	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrInValue sjme_inflate_order order,
 	sjme_attrOutNotNull sjme_inflate_window* window,
