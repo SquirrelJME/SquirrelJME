@@ -42,8 +42,11 @@ typedef enum sjme_circleBuffer_operation
  */
 typedef struct sjme_circleBuffer_slice
 {
-	/** The base pointer position. */
-	sjme_pointer base;
+	/** Non-circle buffer pointer? */
+	sjme_pointer externalBuf;
+	
+	/** The base position. */
+	sjme_jint base;
 		
 	/** The length. */
 	sjme_jint len;
@@ -81,6 +84,10 @@ static sjme_errorCode sjme_circleBuffer_calc(
 	sjme_attrInValue sjme_circleBuffer_seekEnd seekType,
 	sjme_attrInPositiveNonZero sjme_jint seekPos)
 {
+	sjme_circleBuffer_slice (*circleSl)[2];
+	sjme_circleBuffer_slice (*externSl)[2];
+	sjme_jint cutLen, cutPos;
+	
 	if (buffer == NULL || result == NULL || opData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -101,8 +108,57 @@ static sjme_errorCode sjme_circleBuffer_calc(
 	if (operation == SJME_CIRCLE_BUFFER_PUSH_QUEUE ||
 		operation == SJME_CIRCLE_BUFFER_PUSH_WINDOW)
 	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Source slice is the data we want to put in. */
+		result->src[0].externalBuf = opData;
+		result->src[0].base = 0;
+		result->src[0].len = length;
+		
+		/* Should always be the same. */
+		result->dest[0].len = length;
+		
+		/* Calculate new current data in the buffer. */
+		result->newReady = buffer->ready + length;
+		if (result->newReady > buffer->size)
+		{
+			if (operation != SJME_CIRCLE_BUFFER_PUSH_WINDOW)
+				return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+			
+			/* Cannot add more than what the buffer can contain. */
+			if (length > buffer->size)
+				return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+			
+			/* Clip back into bounds. */
+			result->newReady = buffer->size;
+			
+			/* Completely erasing the entire buffer? */
+			if (length == buffer->size)
+			{
+				/* Write over everything. */
+				result->dest[0].base = 0;
+				result->dest[0].len = length;
+				
+				/* Set new details. */
+				result->newReadHead = 0;
+				result->newWriteHead = 0;
+				
+				/* Success! */
+				return SJME_ERROR_NONE;
+			}
+		}
+		
+		/* Writing at end */
+		if (seekType == SJME_CIRCLE_BUFFER_LAST)
+		{
+			result->newWriteHead = buffer->writeHead + length;
+			result->dest[0].base = buffer->writeHead;
+		}
+		
+		/* Writing at start */
+		else
+		{
+			result->newReadHead = buffer->readHead - length;
+			result->dest[0].base = result->newReadHead;
+		}
 	}
 	
 	/* Popping? */
@@ -120,7 +176,81 @@ static sjme_errorCode sjme_circleBuffer_calc(
 	}
 	
 	/* Invalid. */
-	return SJME_ERROR_INVALID_ARGUMENT;
+	else
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Get appropriate slice for clipping. */
+	if (result->src[0].externalBuf)
+	{
+		externSl = &result->src;
+		circleSl = &result->dest;
+	}
+	else
+	{
+		externSl = &result->dest;
+		circleSl = &result->src;
+	}
+	
+	/* Slice lower region? */
+	if ((*circleSl)[0].base < 0)
+	{
+		/* How much to cut? */
+		cutLen = -((*circleSl)[0].base);
+		
+		/* Second slice gets what was trimmed off. */
+		(*circleSl)[1].base = buffer->size - cutLen;
+		(*circleSl)[1].len = cutLen;
+		(*externSl)[1].base = length - cutLen;
+		(*externSl)[1].len = cutLen;
+		
+		/* Make sure second slice gets the buffer! */
+		(*externSl)[1].externalBuf = (*externSl)[0].externalBuf;
+		
+		/* First slice is adjusted accordingly. */
+		(*circleSl)[0].base = 0;
+		(*circleSl)[0].len = (*circleSl)[0].len - cutLen;
+		(*externSl)[0].base = 0;
+		(*externSl)[0].len = (*externSl)[0].len - cutLen;
+	}
+	
+	/* Slice higher region? */
+	else if ((*circleSl)[0].base + (*circleSl)[0].len > buffer->size)
+	{
+		/* How much to cut? */
+		cutLen = buffer->size - ((*circleSl)[0].base);
+		cutPos = length - cutLen;
+		
+		/* Second slice gets what was trimmed off. */
+		(*circleSl)[1].base = 0;
+		(*circleSl)[1].len = cutLen;
+		(*externSl)[1].base = cutPos;
+		(*externSl)[1].len = cutLen;
+		
+		/* Make sure second slice gets the buffer! */
+		(*externSl)[1].externalBuf = (*externSl)[0].externalBuf;
+		
+		/* First slice is adjusted accordingly. */
+		(*circleSl)[0].base = (*circleSl)[0].base;
+		(*circleSl)[0].len = cutPos - (*circleSl)[0].base;
+		(*externSl)[0].base = (*externSl)[0].base;
+		(*externSl)[0].len = cutPos - (*externSl)[0].base;
+	}
+	
+	/* Make sure read/write heads are wrapped properly. */
+	/* From negative position. */
+	while (result->newReadHead < 0)
+		result->newReadHead += buffer->size;
+	while (result->newWriteHead < 0)
+		result->newWriteHead += buffer->size;
+	
+	/* From positive position. */
+	while (result->newReadHead >= buffer->size)
+		result->newReadHead -= buffer->size;
+	while (result->newWriteHead >= buffer->size)
+		result->newWriteHead -= buffer->size;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_circleBuffer_operate(
@@ -134,30 +264,45 @@ static sjme_errorCode sjme_circleBuffer_operate(
 	if (buffer == NULL || result == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* These must be in range. */
+	if (result->newReady < 0 || result->newReady > buffer->size ||
+		result->newReadHead < 0 || result->newReadHead > buffer->size ||
+		result->newWriteHead < 0 || result->newWriteHead > buffer->size)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Copy each slice, if valid. */
 	for (i = 0; i < 2; i++)
 	{
 		src = &result->src[i];
 		dest = &result->dest[i];
 		
-		/* At least the first should be set. */
-		if (i == 0 && (src->base == NULL || dest->base == NULL))
-			return SJME_ERROR_ILLEGAL_STATE;
-		
-		/* Fail if null mismatches. */
-		if ((src->base == NULL) != (dest->base == NULL))
-			return SJME_ERROR_ILLEGAL_STATE;
-		
-		/* Stop if there is no slice here. */
-		if (src->base == NULL && dest->base == NULL)
+		/* Skip if nothing here. */
+		if (src->len == 0 && dest->len == 0)
 			continue;
 		
-		/* These must always be the same. */
-		if (src->len != dest->len || src->base == NULL || dest->base == NULL)
+		/* Fail if both external or both internal. */
+		if ((src->externalBuf == NULL) == (dest->externalBuf == NULL))
 			return SJME_ERROR_ILLEGAL_STATE;
 		
-		/* Move the slice data over. */
-		memmove(dest->base, src->base, src->len);
+		/* These must always be the same. */
+		if (src->len != dest->len)
+			return SJME_ERROR_ILLEGAL_STATE;
+		
+		/* External to internal. */
+		if (src->externalBuf != NULL && dest->externalBuf == NULL)
+			memmove(&buffer->buffer[dest->base],
+				SJME_POINTER_OFFSET(src->externalBuf, src->base),
+				src->len);
+		
+		/* Internal to external. */
+		else if (src->externalBuf == NULL && dest->externalBuf != NULL)
+			memmove(SJME_POINTER_OFFSET(dest->externalBuf, dest->base),
+				&buffer->buffer[src->base],
+				src->len);
+		
+		/* Should not occur. */
+		else
+			return SJME_ERROR_ILLEGAL_STATE;
 	}
 	
 	/* Set new heads. */
