@@ -43,7 +43,7 @@ SJME_TEST_DECLARE(testCircleBufferStride)
 		/* Setup new buffer. */
 		buffer = NULL;
 		if (sjme_error_is(test->error = sjme_circleBuffer_new(
-			&buffer,
+			test->pool, &buffer,
 			SJME_CIRCLE_BUFFER_QUEUE, TEST_BUF_SIZE)) ||
 			buffer == NULL)
 			return sjme_unit_fail(test, "Could not make buffer.");

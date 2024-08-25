@@ -18,6 +18,7 @@
 
 #include "sjme/error.h"
 #include "sjme/stdTypes.h"
+#include "sjme/alloc.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -87,6 +88,9 @@ typedef struct sjme_circleBuffer
 	/** The buffer mode. */
 	sjme_circleBuffer_mode mode;
 	
+	/** The size of the buffer. */
+	sjme_jint size;
+	
 	/** The amount of data that is in the buffer. */
 	sjme_jint ready;
 	
@@ -129,7 +133,7 @@ sjme_errorCode sjme_circleBuffer_destroy(
  * 
  * @param buffer The buffer to read from. 
  * @param outData The destination buffer.
- * @param inLen The number of bytes to read.
+ * @param length The number of bytes to read.
  * @param seekType Seek from the head or tail?
  * @param seekPos The seek position, relative to @c seekType .
  * @return Any resultant error, if any.
@@ -138,13 +142,14 @@ sjme_errorCode sjme_circleBuffer_destroy(
 sjme_errorCode sjme_circleBuffer_get(
 	sjme_attrInNotNull sjme_circleBuffer* buffer,
 	sjme_attrOutNotNullBuf(inLen) sjme_pointer outData,
-	sjme_attrInPositiveNonZero sjme_jint inLen,
+	sjme_attrInPositiveNonZero sjme_jint length,
 	sjme_attrInValue sjme_circleBuffer_seekEnd seekType,
 	sjme_attrInPositiveNonZero sjme_jint seekPos);
 
 /**
  * Allocates a new circular buffer.
  * 
+ * @param inPool The pool to allocate within.
  * @param outBuffer The resultant newly created buffer. 
  * @param inMode The mode that the buffer should be using.
  * @param length The maximum length of the buffer to allocate.
@@ -152,6 +157,7 @@ sjme_errorCode sjme_circleBuffer_get(
  * @since 2024/08/25
  */
 sjme_errorCode sjme_circleBuffer_new(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_circleBuffer** outBuffer,
 	sjme_attrInValue sjme_circleBuffer_mode inMode,
 	sjme_attrInPositiveNonZero sjme_jint length);
