@@ -141,7 +141,7 @@ sjme_errorCode sjme_circleBuffer_destroy(
  */
 sjme_errorCode sjme_circleBuffer_get(
 	sjme_attrInNotNull sjme_circleBuffer* buffer,
-	sjme_attrOutNotNullBuf(inLen) sjme_pointer outData,
+	sjme_attrOutNotNullBuf(length) sjme_pointer outData,
 	sjme_attrInPositiveNonZero sjme_jint length,
 	sjme_attrInValue sjme_circleBuffer_seekEnd seekType,
 	sjme_attrInPositiveNonZero sjme_jint seekPos);
@@ -174,7 +174,7 @@ sjme_errorCode sjme_circleBuffer_new(
  */
 sjme_errorCode sjme_circleBuffer_pop(
 	sjme_attrInNotNull sjme_circleBuffer* buffer,
-	sjme_attrOutNotNullBuf(outDataLen) sjme_pointer outData,
+	sjme_attrOutNotNullBuf(length) sjme_pointer outData,
 	sjme_attrInPositiveNonZero sjme_jint length,
 	sjme_attrInValue sjme_circleBuffer_seekEnd seekType);
 
@@ -190,7 +190,7 @@ sjme_errorCode sjme_circleBuffer_pop(
  */
 sjme_errorCode sjme_circleBuffer_push(
 	sjme_attrInNotNull sjme_circleBuffer* buffer,
-	sjme_attrInNotNullBuf(outDataLen) sjme_cpointer inData,
+	sjme_attrInNotNullBuf(length) sjme_cpointer inData,
 	sjme_attrInPositiveNonZero sjme_jint length,
 	sjme_attrInValue sjme_circleBuffer_seekEnd seekType);
 
