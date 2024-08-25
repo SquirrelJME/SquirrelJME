@@ -157,19 +157,19 @@ typedef enum sjme_inflate_step
  * 
  * @since 2024/08/17
  */
-typedef struct sjme_inflate_buffer
+sjme_attrDeprecated typedef struct sjme_attrDeprecated sjme_inflate_buffer
 {
 	/** The amount of data that is ready for processing. */
-	sjme_jint ready;
+	sjme_attrDeprecated sjme_jint ready;
 	
 	/** The current read head. */
-	sjme_jint readHead;
+	sjme_attrDeprecated sjme_jint readHead;
 	
 	/** The current write head. */
-	sjme_jint writeHead;
+	sjme_attrDeprecated sjme_jint writeHead;
 	
 	/** The buffer storage. */
-	sjme_jubyte buffer[SJME_INFLATE_IO_BUFFER_SIZE];
+	sjme_attrDeprecated sjme_jubyte buffer[SJME_INFLATE_IO_BUFFER_SIZE];
 	
 	/** Was EOF hit in this buffer? */
 	sjme_jboolean hitEof;
@@ -186,16 +186,16 @@ typedef struct sjme_inflate_buffer
  * 
  * @since 2024/08/18
  */
-typedef struct sjme_inflate_window
+sjme_attrDeprecated typedef sjme_attrDeprecated struct sjme_inflate_window
 {
 	/** The number of bytes in the window. */
-	sjme_juint length;
+	sjme_attrDeprecated sjme_juint length;
 	
 	/** The end position of the window. */
-	sjme_juint end;
+	sjme_attrDeprecated sjme_juint end;
 	
 	/** The window buffer. */
-	sjme_jubyte window[SJME_INFLATE_WINDOW_SIZE];
+	sjme_attrDeprecated sjme_jubyte window[SJME_INFLATE_WINDOW_SIZE];
 } sjme_inflate_window;
 
 /**
@@ -420,17 +420,17 @@ sjme_errorCode sjme_inflate_bitOut(
 	sjme_attrInRange(1, 32) sjme_juint bitCount,
 	sjme_attrOutNotNull sjme_juint writeValue);
 
-sjme_errorCode sjme_inflate_bufferArea(
+sjme_attrDeprecated sjme_errorCode sjme_inflate_bufferArea(
 	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrOutNotNull sjme_jint* outRemainder,
 	sjme_attrOutNotNull sjme_pointer* outBufOpPos,
 	sjme_attrOutNotNull sjme_jint* outBufOpLen);
 
-sjme_errorCode sjme_inflate_bufferConsume(
+sjme_attrDeprecated sjme_errorCode sjme_inflate_bufferConsume(
 	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrInPositiveNonZero sjme_jint count);
 
-sjme_errorCode sjme_inflate_bufferGive(
+sjme_attrDeprecated sjme_errorCode sjme_inflate_bufferGive(
 	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrInPositiveNonZero sjme_jint count);
 

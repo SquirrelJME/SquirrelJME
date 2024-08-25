@@ -9,7 +9,7 @@
 
 #include "sjme/inflate.h"
 
-sjme_errorCode sjme_inflate_bufferArea(
+sjme_errorCode sjme_attrDeprecated sjme_inflate_bufferArea(
 	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrOutNotNull sjme_jint* outRemainder,
 	sjme_attrOutNotNull sjme_pointer* outBufOpPos,
@@ -51,7 +51,7 @@ sjme_errorCode sjme_inflate_bufferArea(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_inflate_bufferConsume(
+sjme_errorCode sjme_attrDeprecated sjme_inflate_bufferConsume(
 	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrInPositiveNonZero sjme_jint count)
 {
@@ -70,7 +70,7 @@ sjme_errorCode sjme_inflate_bufferConsume(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_inflate_bufferGive(
+sjme_errorCode sjme_attrDeprecated sjme_inflate_bufferGive(
 	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrInPositiveNonZero sjme_jint count)
 {

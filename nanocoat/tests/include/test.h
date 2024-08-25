@@ -20,6 +20,7 @@
 
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
+#include "sjme/error.h"
 #include "sjme/test/externTest.h"
 
 /* Anti-C++. */
@@ -65,6 +66,9 @@ typedef struct sjme_test
 
 	/** Any extra global value that is needed. */
 	sjme_pointer global;
+	
+	/** Error code. */
+	sjme_errorCode error;
 } sjme_test;
 
 /**
