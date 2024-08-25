@@ -9,8 +9,8 @@
 
 #include "sjme/inflate.h"
 
-static sjme_errorCode sjme_stream_inflateBufferArea(
-	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
+static sjme_errorCode sjme_inflate_bufferArea(
+	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrOutNotNull sjme_jint* outRemainder,
 	sjme_attrOutNotNull sjme_pointer* outBufOpPos,
 	sjme_attrOutNotNull sjme_jint* outBufOpLen)
@@ -51,8 +51,8 @@ static sjme_errorCode sjme_stream_inflateBufferArea(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateBufferGive(
-	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
+static sjme_errorCode sjme_inflate_bufferGive(
+	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrInPositiveNonZero sjme_jint count)
 {
 	if (buffer == NULL)
@@ -70,8 +70,8 @@ static sjme_errorCode sjme_stream_inflateBufferGive(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateBufferConsume(
-	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
+static sjme_errorCode sjme_inflate_bufferConsume(
+	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrInPositiveNonZero sjme_jint count)
 {
 	if (buffer == NULL)

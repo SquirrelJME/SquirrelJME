@@ -73,35 +73,35 @@ extern "C"
  * 
  * @since 2024/08/18
  */
-typedef enum sjme_stream_inflateOrder
+typedef enum sjme_inflate_order
 {
 	/** Least significant bit. */
 	SJME_INFLATE_LSB,
 	
 	/** Most significant bit. */
 	SJME_INFLATE_MSB,
-} sjme_stream_inflateOrder;
+} sjme_inflate_order;
 
 /**
  * Used to either peek or pop from the bit stream.
  * 
  * @since 2024/08/20
  */
-typedef enum sjme_stream_inflatePeek
+typedef enum sjme_inflate_peek
 {
 	/** Pop value. */
 	SJME_INFLATE_POP,
 	
 	/** Peek value. */
 	SJME_INFLATE_PEEK,
-} sjme_stream_inflatePeek;
+} sjme_inflate_peek;
 
 /**
  * Which type of node is this in the tree?
  * 
  * @since 2024/08/22
  */
-typedef enum sjme_stream_inflateHuffNodeType
+typedef enum sjme_inflate_huffNodeType
 {
 	/** Unknown. */
 	SJME_INFLATE_UNKNOWN,
@@ -111,14 +111,14 @@ typedef enum sjme_stream_inflateHuffNodeType
 	
 	/** Leaf. */
 	SJME_INFLATE_LEAF,
-} sjme_stream_inflateHuffNodeType;
+} sjme_inflate_huffNodeType;
 
 /**
  * The inflation step.
  * 
  * @since 2024/08/17
  */
-typedef enum sjme_stream_inflateStep
+typedef enum sjme_inflate_step
 {
 	/** Parse BTYPE and determine how to continue. */
 	SJME_INFLATE_STEP_CHECK_BTYPE,
@@ -149,14 +149,14 @@ typedef enum sjme_stream_inflateStep
 	
 	/** Finished, nothing is left. */
 	SJME_INFLATE_STEP_FINISHED,
-} sjme_stream_inflateStep;
+} sjme_inflate_step;
 
 /**
  * Inflation buffer state.
  * 
  * @since 2024/08/17
  */
-typedef struct sjme_stream_inflateBuffer
+typedef struct sjme_inflate_buffer
 {
 	/** The amount of data that is ready for processing. */
 	sjme_jint ready;
@@ -178,14 +178,14 @@ typedef struct sjme_stream_inflateBuffer
 	
 	/** The amount of bits in the buffer. */
 	sjme_juint bitCount;
-} sjme_stream_inflateBuffer;
+} sjme_inflate_buffer;
 
 /**
  * The window for output inflated data.
  * 
  * @since 2024/08/18
  */
-typedef struct sjme_stream_inflateWindow
+typedef struct sjme_inflate_window
 {
 	/** The number of bytes in the window. */
 	sjme_juint length;
@@ -195,14 +195,14 @@ typedef struct sjme_stream_inflateWindow
 	
 	/** The window buffer. */
 	sjme_jubyte window[SJME_INFLATE_WINDOW_SIZE];
-} sjme_stream_inflateWindow;
+} sjme_inflate_window;
 
 /**
  * Initial code length huffman tree building values.
  * 
  * @since 2024/08/22
  */
-typedef struct sjme_stream_inflateHuffInit
+typedef struct sjme_inflate_huffInit
 {
 	/** Literal length. */
 	sjme_juint litLen;
@@ -215,31 +215,31 @@ typedef struct sjme_stream_inflateHuffInit
 	
 	/** The raw code length bit values. */
 	sjme_juint rawCodeLens[SJME_INFLATE_CODE_LEN_LIMIT];
-} sjme_stream_inflateHuffInit;
+} sjme_inflate_huffInit;
 
 /**
  * Huffman tree building parameters, used as input.
  * 
  * @since 2024/08/22
  */
-typedef struct sjme_stream_inflateHuffParam
+typedef struct sjme_inflate_huffParam
 {
 	/** Code lengths to input. */
 	sjme_juint* lengths;
 	
 	/** The number of code lengths. */
 	sjme_juint count;
-} sjme_stream_inflateHuffParam;
+} sjme_inflate_huffParam;
 
 /**
  * Huffman tree node.
  * 
  * @since 2024/08/22
  */
-typedef struct sjme_align64 sjme_stream_inflateHuffNode
-	sjme_stream_inflateHuffNode;
+typedef struct sjme_align64 sjme_inflate_huffNode
+	sjme_inflate_huffNode;
 
-struct sjme_align64 sjme_stream_inflateHuffNode
+struct sjme_align64 sjme_inflate_huffNode
 {
 	/** Node data. */
 	union
@@ -248,10 +248,10 @@ struct sjme_align64 sjme_stream_inflateHuffNode
 		struct
 		{
 			/** Zero branch. */
-			sjme_stream_inflateHuffNode* zero;
+			sjme_inflate_huffNode* zero;
 			
 			/** One branch. */
-			sjme_stream_inflateHuffNode* one;
+			sjme_inflate_huffNode* one;
 		} node;
 		
 		/** Data if a node. */
@@ -263,7 +263,7 @@ struct sjme_align64 sjme_stream_inflateHuffNode
 	} data;
 	
 	/** Which type of node is this? */
-	sjme_stream_inflateHuffNodeType type;
+	sjme_inflate_huffNodeType type;
 };
 
 /**
@@ -271,42 +271,42 @@ struct sjme_align64 sjme_stream_inflateHuffNode
  * 
  * @since 2024/08/20
  */
-typedef struct sjme_stream_inflateHuffTree
+typedef struct sjme_inflate_huffTree
 {
 	/** The root node. */
-	sjme_stream_inflateHuffNode* root;
-} sjme_stream_inflateHuffTree;
+	sjme_inflate_huffNode* root;
+} sjme_inflate_huffTree;
 
 /**
  * Storage for huffman tree nodes.
  * 
  * @since 2024/08/22
  */
-typedef struct sjme_stream_inflateHuffTreeStorage
+typedef struct sjme_inflate_huffTreeStorage
 {
 	/** Storage for the huffman tree nodes. */
 	sjme_align64 sjme_jubyte storage[SJME_INFLATE_HUFF_STORAGE_SIZE];
 	
 	/** Next free node. */
-	sjme_stream_inflateHuffNode* next;
+	sjme_inflate_huffNode* next;
 	
 	/** Final end of tree. */
-	sjme_stream_inflateHuffNode* finalEnd;
-} sjme_stream_inflateHuffTreeStorage;
+	sjme_inflate_huffNode* finalEnd;
+} sjme_inflate_huffTreeStorage;
 
 /**
  * Inflation state.
  * 
  * @since 2024/08/17
  */
-typedef struct sjme_stream_inflateState sjme_stream_inflateState;
+typedef struct sjme_inflate_state sjme_inflate_state;
 
-typedef sjme_errorCode (*sjme_stream_inflateReadCodeFunc)(
-	sjme_attrInNotNull sjme_stream_inflateState* state,
+typedef sjme_errorCode (*sjme_inflate_readCodeFunc)(
+	sjme_attrInNotNull sjme_inflate_state* state,
 	sjme_attrOutNotNull sjme_juint* outCode);
 
-typedef sjme_errorCode (*sjme_stream_inflateReadDistFunc)(
-	sjme_attrInNotNull sjme_stream_inflateState* state,
+typedef sjme_errorCode (*sjme_inflate_readDistFunc)(
+	sjme_attrInNotNull sjme_inflate_state* state,
 	sjme_attrOutNotNull sjme_juint* outDist);
 
 /**
@@ -314,10 +314,10 @@ typedef sjme_errorCode (*sjme_stream_inflateReadDistFunc)(
  * 
  * @since 2024/08/17
  */
-struct sjme_stream_inflateState
+struct sjme_inflate_state
 {
 	/** The current step in inflation. */
-	sjme_stream_inflateStep step;
+	sjme_inflate_step step;
 	
 	/** Was the final block hit? */
 	sjme_jboolean finalHit;
@@ -326,37 +326,37 @@ struct sjme_stream_inflateState
 	sjme_jboolean invalidInput;
 	
 	/** The output window. */
-	sjme_stream_inflateWindow window;
+	sjme_inflate_window window;
 	
 	/** The amount of literal bytes left to read. */
 	sjme_jint literalLeft;
 	
 	/** Initialization data for the initial huffman tree. */
-	sjme_stream_inflateHuffInit huffInit;
+	sjme_inflate_huffInit huffInit;
 	
 	/** The function for reading codes. */
-	sjme_stream_inflateReadCodeFunc readCode;
+	sjme_inflate_readCodeFunc readCode;
 	
 	/** The function for reading distances. */
-	sjme_stream_inflateReadDistFunc readDist;
+	sjme_inflate_readDistFunc readDist;
 	
 	/** Huffman tree node storage. */
-	sjme_stream_inflateHuffTreeStorage huffStorage;
+	sjme_inflate_huffTreeStorage huffStorage;
 	
 	/** Code length tree. */
-	sjme_stream_inflateHuffTree codeLenTree;
+	sjme_inflate_huffTree codeLenTree;
 	
 	/** Distance tree. */
-	sjme_stream_inflateHuffTree distanceTree;
+	sjme_inflate_huffTree distanceTree;
 	
 	/** Literal tree, not literally. */
-	sjme_stream_inflateHuffTree literalTree;
+	sjme_inflate_huffTree literalTree;
 	
 	/** The input buffer. */
-	sjme_stream_inflateBuffer input;
+	sjme_inflate_buffer input;
 	
 	/** The output buffer. */
-	sjme_stream_inflateBuffer output;
+	sjme_inflate_buffer output;
 };
 
 /**
@@ -364,14 +364,14 @@ struct sjme_stream_inflateState
  * 
  * @since 2024/08/17
  */
-typedef struct sjme_stream_inflateInit
+typedef struct sjme_inflate_init
 {
 	/** The compressed data stream. */
 	sjme_stream_input handle;
 	
 	/** Decompression state. */
-	sjme_stream_inflateState* handleTwo;
-} sjme_stream_inflateInit;
+	sjme_inflate_state* handleTwo;
+} sjme_inflate_init;
 
 /*--------------------------------------------------------------------------*/
 

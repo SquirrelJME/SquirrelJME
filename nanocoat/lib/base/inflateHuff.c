@@ -10,10 +10,10 @@
 #include "sjme/inflate.h"
 
 
-static sjme_errorCode sjme_stream_inflateBuildTreeInsertNext(
-	sjme_attrInNotNull sjme_stream_inflateHuffTree* outTree,
-	sjme_attrInNotNull sjme_stream_inflateHuffTreeStorage* inStorage,
-	sjme_attrOutNotNull sjme_stream_inflateHuffNode** outNode)
+static sjme_errorCode sjme_inflate_buildTreeInsertNext(
+	sjme_attrInNotNull sjme_inflate_huffTree* outTree,
+	sjme_attrInNotNull sjme_inflate_huffTreeStorage* inStorage,
+	sjme_attrOutNotNull sjme_inflate_huffNode** outNode)
 {
 	if (outTree == NULL || inStorage == NULL || outNode == NULL)
 		return SJME_ERROR_NONE;
@@ -21,11 +21,11 @@ static sjme_errorCode sjme_stream_inflateBuildTreeInsertNext(
 	/* Does the storage need initialization? */
 	if (inStorage->next == NULL || inStorage->finalEnd == NULL)
 	{
-		inStorage->next = (sjme_stream_inflateHuffNode*)
+		inStorage->next = (sjme_inflate_huffNode*)
 			&inStorage->storage[0];
-		inStorage->finalEnd = (sjme_stream_inflateHuffNode*)
+		inStorage->finalEnd = (sjme_inflate_huffNode*)
 			&inStorage->storage[SJME_INFLATE_HUFF_STORAGE_SIZE /
-				sizeof(sjme_stream_inflateHuffNode)];
+				sizeof(sjme_inflate_huffNode)];
 	}
 	
 	/* Is the tree now full? */
@@ -40,18 +40,18 @@ static sjme_errorCode sjme_stream_inflateBuildTreeInsertNext(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateBuildTreeInsert(
-	sjme_attrInNotNull sjme_stream_inflateState* state,
-	sjme_attrInNotNull sjme_stream_inflateHuffTree* outTree,
-	sjme_attrInNotNull sjme_stream_inflateHuffTreeStorage* inStorage,
+static sjme_errorCode sjme_inflate_buildTreeInsert(
+	sjme_attrInNotNull sjme_inflate_state* state,
+	sjme_attrInNotNull sjme_inflate_huffTree* outTree,
+	sjme_attrInNotNull sjme_inflate_huffTreeStorage* inStorage,
 	sjme_attrInPositive sjme_juint code,
 	sjme_attrInValue sjme_juint sym,
 	sjme_attrInPositiveNonZero sjme_juint symMask)
 {
 	sjme_errorCode error;
 	sjme_juint maskBitCount, sh;
-	sjme_stream_inflateHuffNode* atNode;
-	sjme_stream_inflateHuffNode** dirNode;
+	sjme_inflate_huffNode* atNode;
+	sjme_inflate_huffNode** dirNode;
 	sjme_jboolean one;
 #if defined(SJME_CONFIG_DEBUG)
 	sjme_cchar binary[40];
@@ -86,7 +86,7 @@ static sjme_errorCode sjme_stream_inflateBuildTreeInsert(
 	if (outTree->root == NULL)
 	{
 		/* Grab next node. */
-		if (sjme_error_is(error = sjme_stream_inflateBuildTreeInsertNext(
+		if (sjme_error_is(error = sjme_inflate_buildTreeInsertNext(
 			outTree, inStorage, &outTree->root)) ||
 			outTree->root == NULL)
 			return sjme_error_default(error);
@@ -113,7 +113,7 @@ static sjme_errorCode sjme_stream_inflateBuildTreeInsert(
 		/* If null, it needs to be created. */
 		if ((*dirNode) == NULL)
 		{
-			if (sjme_error_is(error = sjme_stream_inflateBuildTreeInsertNext(
+			if (sjme_error_is(error = sjme_inflate_buildTreeInsertNext(
 				outTree, inStorage, dirNode)) || (*dirNode) == NULL)
 				return sjme_error_default(error);
 			
@@ -138,11 +138,11 @@ static sjme_errorCode sjme_stream_inflateBuildTreeInsert(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateBuildTree(
-	sjme_attrInNotNull sjme_stream_inflateState* state,
-	sjme_attrInNotNull sjme_stream_inflateHuffParam* param,
-	sjme_attrInNotNull sjme_stream_inflateHuffTree* outTree,
-	sjme_attrInNotNull sjme_stream_inflateHuffTreeStorage* inStorage)
+static sjme_errorCode sjme_inflate_buildTree(
+	sjme_attrInNotNull sjme_inflate_state* state,
+	sjme_attrInNotNull sjme_inflate_huffParam* param,
+	sjme_attrInNotNull sjme_inflate_huffTree* outTree,
+	sjme_attrInNotNull sjme_inflate_huffTreeStorage* inStorage)
 {
 	sjme_errorCode error;
 	sjme_jint i, code, len;
@@ -184,7 +184,7 @@ static sjme_errorCode sjme_stream_inflateBuildTree(
 #endif
 			
 		/* Insert into the tree. */
-		if (sjme_error_is(error = sjme_stream_inflateBuildTreeInsert(
+		if (sjme_error_is(error = sjme_inflate_buildTreeInsert(
 			state, outTree, inStorage, i,
 			nextCode[len],
 			(1 << len) - 1)))

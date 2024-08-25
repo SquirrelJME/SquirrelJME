@@ -9,8 +9,8 @@
 
 #include "sjme/inflate.h"
 
-static sjme_errorCode sjme_stream_inflateReadCodeDynamic(
-	sjme_attrInNotNull sjme_stream_inflateState* state,
+static sjme_errorCode sjme_inflate_readCodeDynamic(
+	sjme_attrInNotNull sjme_inflate_state* state,
 	sjme_attrOutNotNull sjme_juint* outCode)
 {
 	if (state == NULL || outCode == NULL)
@@ -20,8 +20,8 @@ static sjme_errorCode sjme_stream_inflateReadCodeDynamic(
 	return sjme_error_notImplemented(0);
 }
 
-static sjme_errorCode sjme_stream_inflateReadDistDynamic(
-	sjme_attrInNotNull sjme_stream_inflateState* state,
+static sjme_errorCode sjme_inflate_readDistDynamic(
+	sjme_attrInNotNull sjme_inflate_state* state,
 	sjme_attrOutNotNull sjme_juint* outDist)
 {
 	if (state == NULL || outDist == NULL)
@@ -31,12 +31,12 @@ static sjme_errorCode sjme_stream_inflateReadDistDynamic(
 	return sjme_error_notImplemented(0);
 }
 
-static sjme_errorCode sjme_stream_inflateReadCodeFixed(
-	sjme_attrInNotNull sjme_stream_inflateState* state,
+static sjme_errorCode sjme_inflate_readCodeFixed(
+	sjme_attrInNotNull sjme_inflate_state* state,
 	sjme_attrOutNotNull sjme_juint* outCode)
 {
 	sjme_errorCode error;
-	sjme_stream_inflateBuffer* inBuffer;
+	sjme_inflate_buffer* inBuffer;
 	sjme_juint hiSeven, bitsNeeded, litBase, litSub, raw;
 	
 	if (state == NULL || outCode == NULL)
@@ -44,13 +44,13 @@ static sjme_errorCode sjme_stream_inflateReadCodeFixed(
 	
 	/* We at least need 7 bits for the minimum code length. */
 	inBuffer = &state->input;
-	if (sjme_error_is(error = sjme_stream_inflateBitNeed(inBuffer,
+	if (sjme_error_is(error = sjme_inflate_bitNeed(inBuffer,
 		7)))
 		return sjme_error_default(error);
 	
 	/* Read in upper 7 bits first, as a peek. */
 	hiSeven = INT32_MAX;
-	if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+	if (sjme_error_is(error = sjme_inflate_bitIn(inBuffer,
 		SJME_INFLATE_MSB, SJME_INFLATE_PEEK, 7,
 		&hiSeven)) || hiSeven == INT32_MAX)
 		return sjme_error_default(error);
@@ -89,13 +89,13 @@ static sjme_errorCode sjme_stream_inflateReadCodeFixed(
 	}
 	
 	/* Now that we know what we need, make sure we have it. */
-	if (sjme_error_is(error = sjme_stream_inflateBitNeed(inBuffer,
+	if (sjme_error_is(error = sjme_inflate_bitNeed(inBuffer,
 		bitsNeeded)))
 		return sjme_error_default(error);
 	
 	/* Pop everything off now, so we can recover the code. */
 	raw = INT32_MAX;
-	if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+	if (sjme_error_is(error = sjme_inflate_bitIn(inBuffer,
 		SJME_INFLATE_MSB, SJME_INFLATE_POP,
 		bitsNeeded,
 		&raw)) || raw == INT32_MAX)
@@ -106,22 +106,22 @@ static sjme_errorCode sjme_stream_inflateReadCodeFixed(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateReadDistFixed(
-	sjme_attrInNotNull sjme_stream_inflateState* state,
+static sjme_errorCode sjme_inflate_readDistFixed(
+	sjme_attrInNotNull sjme_inflate_state* state,
 	sjme_attrOutNotNull sjme_juint* outDist)
 {
 	if (state == NULL || outDist == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Just a basic bit read. */
-	return sjme_stream_inflateBitIn(&state->input,
+	return sjme_inflate_bitIn(&state->input,
 		SJME_INFLATE_MSB, SJME_INFLATE_POP,
 		5, outDist);
 }
 
-static sjme_errorCode sjme_stream_inflateProcessDistance(
-	sjme_attrInNotNull sjme_stream_inflateState* state,
-	sjme_attrInNotNull sjme_stream_inflateBuffer* inBuffer,
+static sjme_errorCode sjme_inflate_processDistance(
+	sjme_attrInNotNull sjme_inflate_state* state,
+	sjme_attrInNotNull sjme_inflate_buffer* inBuffer,
 	sjme_attrInRange(257, 285) sjme_juint origCode,
 	sjme_attrOutNotNull sjme_juint* outDist)
 {
@@ -160,7 +160,7 @@ static sjme_errorCode sjme_stream_inflateProcessDistance(
 		
 		/* Read in given bits. */
 		readIn = INT32_MAX;
-		if (sjme_error_is(error = sjme_stream_inflateBitIn(
+		if (sjme_error_is(error = sjme_inflate_bitIn(
 			inBuffer,
 			SJME_INFLATE_LSB, SJME_INFLATE_POP,
 			i, &readIn)) ||
@@ -176,9 +176,9 @@ static sjme_errorCode sjme_stream_inflateProcessDistance(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateProcessLength(
-	sjme_attrInNotNull sjme_stream_inflateState* state,
-	sjme_attrInNotNull sjme_stream_inflateBuffer* inBuffer,
+static sjme_errorCode sjme_inflate_processLength(
+	sjme_attrInNotNull sjme_inflate_state* state,
+	sjme_attrInNotNull sjme_inflate_buffer* inBuffer,
 	sjme_attrInRange(257, 285) sjme_juint code,
 	sjme_attrOutNotNull sjme_juint* outLength)
 {
@@ -223,7 +223,7 @@ static sjme_errorCode sjme_stream_inflateProcessLength(
 		
 		/* Read in given bits. */
 		readIn = INT32_MAX;
-		if (sjme_error_is(error = sjme_stream_inflateBitIn(
+		if (sjme_error_is(error = sjme_inflate_bitIn(
 			inBuffer,
 			SJME_INFLATE_LSB, SJME_INFLATE_POP,
 			i, &readIn)) ||
@@ -239,10 +239,10 @@ static sjme_errorCode sjme_stream_inflateProcessLength(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateProcessWindow(
-	sjme_attrInNotNull sjme_stream_inflateState* state,
-	sjme_attrInNotNull sjme_stream_inflateBuffer* outBuffer,
-	sjme_attrInNotNull sjme_stream_inflateWindow* window,
+static sjme_errorCode sjme_inflate_processWindow(
+	sjme_attrInNotNull sjme_inflate_state* state,
+	sjme_attrInNotNull sjme_inflate_buffer* outBuffer,
+	sjme_attrInNotNull sjme_inflate_window* window,
 	sjme_attrInPositive sjme_juint windowDist,
 	sjme_attrInPositive sjme_juint windowLen)
 {
@@ -290,7 +290,7 @@ static sjme_errorCode sjme_stream_inflateProcessWindow(
 	for (i = 0, w = 0; i < windowLen; i++)
 	{
 		/* Write value to the output. */
-		if (sjme_error_is(error = sjme_stream_inflateBitOut(
+		if (sjme_error_is(error = sjme_inflate_bitOut(
 			outBuffer, SJME_INFLATE_LSB, window,
 			8, chunk[w] & 0xFF)))
 			return sjme_error_default(error);
@@ -304,13 +304,13 @@ static sjme_errorCode sjme_stream_inflateProcessWindow(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateProcessCodes(
-	sjme_attrInNotNull sjme_stream_inflateState* state)
+static sjme_errorCode sjme_inflate_processCodes(
+	sjme_attrInNotNull sjme_inflate_state* state)
 {
 	sjme_errorCode error;
-	sjme_stream_inflateBuffer* inBuffer;
-	sjme_stream_inflateBuffer* outBuffer;
-	sjme_stream_inflateWindow* window;
+	sjme_inflate_buffer* inBuffer;
+	sjme_inflate_buffer* outBuffer;
+	sjme_inflate_window* window;
 	sjme_juint code, windowReadLen, windowReadDist;
 	
 	if (state == NULL)
@@ -347,7 +347,7 @@ static sjme_errorCode sjme_stream_inflateProcessCodes(
 		/* Literal byte value. */
 		else if (code >= 0 && code <= 255)
 		{
-			if (sjme_error_is(error = sjme_stream_inflateBitOut(
+			if (sjme_error_is(error = sjme_inflate_bitOut(
 				outBuffer,
 				SJME_INFLATE_LSB, window,
 				8, code)))
@@ -359,20 +359,20 @@ static sjme_errorCode sjme_stream_inflateProcessCodes(
 		{
 			/* Read in window length. */
 			windowReadLen = INT32_MAX;
-			if (sjme_error_is(error = sjme_stream_inflateProcessLength(
+			if (sjme_error_is(error = sjme_inflate_processLength(
 				state, inBuffer, code, &windowReadLen)) ||
 				windowReadLen == INT32_MAX)
 				return sjme_error_default(error);
 			
 			/* Read in distance. */
 			windowReadDist = INT32_MAX;
-			if (sjme_error_is(error = sjme_stream_inflateProcessDistance(
+			if (sjme_error_is(error = sjme_inflate_processDistance(
 				state, inBuffer, code, &windowReadDist)) ||
 				windowReadDist == INT32_MAX)
 				return sjme_error_default(error);
 			
 			/* Copy from the input window. */
-			if (sjme_error_is(error = sjme_stream_inflateProcessWindow(
+			if (sjme_error_is(error = sjme_inflate_processWindow(
 				state, outBuffer, window,
 				windowReadDist, windowReadLen)))
 				return sjme_error_default(error);

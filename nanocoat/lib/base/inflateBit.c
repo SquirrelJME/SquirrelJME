@@ -9,8 +9,8 @@
 
 #include "sjme/inflate.h"
 
-static sjme_errorCode sjme_stream_inflateBitNeed(
-	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
+static sjme_errorCode sjme_inflate_bitNeed(
+	sjme_attrInNotNull sjme_inflate_buffer* buffer,
 	sjme_attrInPositiveNonZero sjme_jint bitCount)
 {
 	sjme_jint readyBits;
@@ -33,10 +33,10 @@ static sjme_errorCode sjme_stream_inflateBitNeed(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateBitIn(
-	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
-	sjme_attrInValue sjme_stream_inflateOrder order,
-	sjme_attrInValue sjme_stream_inflatePeek popPeek,
+static sjme_errorCode sjme_inflate_bitIn(
+	sjme_attrInNotNull sjme_inflate_buffer* buffer,
+	sjme_attrInValue sjme_inflate_order order,
+	sjme_attrInValue sjme_inflate_peek popPeek,
 	sjme_attrInRange(1, 32) sjme_juint bitCount,
 	sjme_attrOutNotNull sjme_juint* readValue)
 {
@@ -62,7 +62,7 @@ static sjme_errorCode sjme_stream_inflateBitIn(
 	/* Can we actually read this much in? */
 	/* If not we illegal state because bitNeed should have been called */
 	/* before this to check that this is actually valid! */
-	if (sjme_error_is(sjme_stream_inflateBitNeed(buffer, bitCount)))
+	if (sjme_error_is(sjme_inflate_bitNeed(buffer, bitCount)))
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Is there room to read into the tiny bit buffer? */
@@ -129,12 +129,12 @@ static sjme_errorCode sjme_stream_inflateBitIn(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateBitInTree(
-	sjme_attrInNotNull sjme_stream_inflateBuffer* inBuffer,
-	sjme_attrInNotNull sjme_stream_inflateHuffTree* fromTree,
+static sjme_errorCode sjme_inflate_bitInTree(
+	sjme_attrInNotNull sjme_inflate_buffer* inBuffer,
+	sjme_attrInNotNull sjme_inflate_huffTree* fromTree,
 	sjme_attrOutNotNull sjme_juint* outValue)
 {
-	sjme_stream_inflateHuffNode* atNode;
+	sjme_inflate_huffNode* atNode;
 	sjme_errorCode error;
 	sjme_juint v;
 #if defined(SJME_CONFIG_DEBUG)
@@ -162,7 +162,7 @@ static sjme_errorCode sjme_stream_inflateBitInTree(
 	{
 		/* Read in single bit. */
 		v = INT32_MAX;
-		if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+		if (sjme_error_is(error = sjme_inflate_bitIn(inBuffer,
 			SJME_INFLATE_LSB, SJME_INFLATE_POP,
 			1, &v)) || v == INT32_MAX)
 			return sjme_error_default(error);
@@ -197,9 +197,9 @@ static sjme_errorCode sjme_stream_inflateBitInTree(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateBitInCodeLen(
-	sjme_attrInNotNull sjme_stream_inflateBuffer* inBuffer,
-	sjme_attrInNotNull sjme_stream_inflateHuffTree* codeLenTree,
+static sjme_errorCode sjme_inflate_bitInCodeLen(
+	sjme_attrInNotNull sjme_inflate_buffer* inBuffer,
+	sjme_attrInNotNull sjme_inflate_huffTree* codeLenTree,
 	sjme_attrInOutNotNull sjme_juint* index,
 	sjme_attrOutNotNull sjme_juint* outLengths,
 	sjme_attrInPositive sjme_juint count)
@@ -216,7 +216,7 @@ static sjme_errorCode sjme_stream_inflateBitInCodeLen(
 	
 	/* Read in the next code. */
 	code = INT32_MAX;
-	if (sjme_error_is(error = sjme_stream_inflateBitInTree(inBuffer,
+	if (sjme_error_is(error = sjme_inflate_bitInTree(inBuffer,
 		codeLenTree, &code)) || code == INT32_MAX)
 		return sjme_error_default(error);
 
@@ -251,7 +251,7 @@ static sjme_errorCode sjme_stream_inflateBitInCodeLen(
 		
 		/* The input specifies how much to repeat for. */
 		repeatCode = INT32_MAX;
-		if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+		if (sjme_error_is(error = sjme_inflate_bitIn(inBuffer,
 			SJME_INFLATE_LSB, SJME_INFLATE_POP,
 			2, &repeatCode)) || repeatCode == INT32_MAX)
 			return sjme_error_default(error);
@@ -268,7 +268,7 @@ static sjme_errorCode sjme_stream_inflateBitInCodeLen(
 		
 		/* The input specifies how much to repeat for. */
 		repeatCode = INT32_MAX;
-		if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+		if (sjme_error_is(error = sjme_inflate_bitIn(inBuffer,
 			SJME_INFLATE_LSB, SJME_INFLATE_POP,
 			3, &repeatCode)) || repeatCode == INT32_MAX)
 			return sjme_error_default(error);
@@ -285,7 +285,7 @@ static sjme_errorCode sjme_stream_inflateBitInCodeLen(
 		
 		/* The input specifies how much to repeat for. */
 		repeatCode = INT32_MAX;
-		if (sjme_error_is(error = sjme_stream_inflateBitIn(inBuffer,
+		if (sjme_error_is(error = sjme_inflate_bitIn(inBuffer,
 			SJME_INFLATE_LSB, SJME_INFLATE_POP,
 			7, &repeatCode)) || repeatCode == INT32_MAX)
 			return sjme_error_default(error);
@@ -319,10 +319,10 @@ static sjme_errorCode sjme_stream_inflateBitInCodeLen(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stream_inflateBitOut(
-	sjme_attrInNotNull sjme_stream_inflateBuffer* buffer,
-	sjme_attrInValue sjme_stream_inflateOrder order,
-	sjme_attrOutNotNull sjme_stream_inflateWindow* window,
+static sjme_errorCode sjme_inflate_bitOut(
+	sjme_attrInNotNull sjme_inflate_buffer* buffer,
+	sjme_attrInValue sjme_inflate_order order,
+	sjme_attrOutNotNull sjme_inflate_window* window,
 	sjme_attrInRange(1, 32) sjme_juint bitCount,
 	sjme_attrOutNotNull sjme_juint writeValue)
 {
