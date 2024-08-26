@@ -171,8 +171,22 @@ static sjme_errorCode sjme_circleBuffer_calc(
 	/* Getting? */
 	else if (operation == SJME_CIRCLE_BUFFER_GET)
 	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Cannot get more data than exists in the buffer. */
+		if (seekPos + length < 0 ||
+			seekPos + length > buffer->ready)
+			return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		
+		/* We want to copy to the destination output buffer. */
+		result->dest[0].externalBuf = opData;
+		result->dest[0].base = 0;
+		result->dest[0].len = length;
+		
+		/* The positions in the circle buffer are relative to the heads. */
+		result->src[0].len = length;
+		if (seekType == SJME_CIRCLE_BUFFER_LAST)
+			result->src[0].base = buffer->writeHead - seekPos;
+		else
+			result->src[0].base = buffer->readHead + seekPos;
 	}
 	
 	/* Invalid. */
@@ -210,7 +224,7 @@ static sjme_errorCode sjme_circleBuffer_calc(
 		(*circleSl)[0].base = 0;
 		(*circleSl)[0].len = (*circleSl)[0].len - cutLen;
 		(*externSl)[0].base = 0;
-		(*externSl)[0].len = (*externSl)[0].len - cutLen;
+		(*externSl)[0].len = (*externSl)[1].base;
 	}
 	
 	/* Slice higher region? */
@@ -231,9 +245,9 @@ static sjme_errorCode sjme_circleBuffer_calc(
 		
 		/* First slice is adjusted accordingly. */
 		(*circleSl)[0].base = (*circleSl)[0].base;
-		(*circleSl)[0].len = cutPos - (*circleSl)[0].base;
+		(*circleSl)[0].len = buffer->size - cutLen;
 		(*externSl)[0].base = (*externSl)[0].base;
-		(*externSl)[0].len = cutPos - (*externSl)[0].base;
+		(*externSl)[0].len = cutPos;
 	}
 	
 	/* Make sure read/write heads are wrapped properly. */
