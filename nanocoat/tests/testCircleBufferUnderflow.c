@@ -73,16 +73,20 @@ SJME_TEST_DECLARE(testCircleBufferUnderflow)
 		everything, TEST_TOTAL_COUNT,
 		SJME_CIRCLE_BUFFER_HEAD, 0)))
 		return sjme_unit_fail(test, "Could not read head everything?");
+	sjme_message_hexDump(everything, TEST_TOTAL_COUNT);
+	sjme_message_hexDump(testEverything, TEST_TOTAL_COUNT);
 	sjme_unit_equalI(test,
 		0, memcmp(everything, testEverything, TEST_TOTAL_COUNT),
 		"Everything head data mismatched?");
 	
-	/* Get everything from the buffer, again. */
-	memset(everything, 0, sizeof(everything));
+	/* Get everything from the buffer, again from the opposite end. */
+	memset(everything, 0xFE, sizeof(everything));
 	if (sjme_error_is(test->error = sjme_circleBuffer_get(buffer,
 		everything, TEST_TOTAL_COUNT,
-		SJME_CIRCLE_BUFFER_TAIL, 0)))
+		SJME_CIRCLE_BUFFER_TAIL, TEST_TOTAL_COUNT)))
 		return sjme_unit_fail(test, "Could not read tail everything?");
+	sjme_message_hexDump(everything, TEST_TOTAL_COUNT);
+	sjme_message_hexDump(testEverything, TEST_TOTAL_COUNT);
 	sjme_unit_equalI(test,
 		0, memcmp(everything, testEverything, TEST_TOTAL_COUNT),
 		"Everything tail data mismatched?");
@@ -101,7 +105,7 @@ SJME_TEST_DECLARE(testCircleBufferUnderflow)
 	memset(everything, 0, sizeof(everything));
 	if (sjme_error_is(test->error = sjme_circleBuffer_get(buffer,
 		everything, TEST_SUB_COUNT,
-		SJME_CIRCLE_BUFFER_TAIL, 0)))
+		SJME_CIRCLE_BUFFER_TAIL, TEST_SUB_COUNT)))
 		return sjme_unit_fail(test, "Could not read half tail?");
 	sjme_unit_equalI(test,
 		0, memcmp(everything, testRight, TEST_SUB_COUNT),
@@ -111,6 +115,6 @@ SJME_TEST_DECLARE(testCircleBufferUnderflow)
 	if (sjme_error_is(test->error = sjme_circleBuffer_destroy(buffer)))
 		return sjme_unit_fail(test, "Could not destroy buffer?");
 	
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	/* Pass! */
+	return SJME_TEST_RESULT_PASS;
 }
