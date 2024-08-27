@@ -10,6 +10,9 @@
 # clean and pristine and patches are placed here because they affect the
 # entire project.
 
+# Needed for C compiler checks
+include(CheckCCompilerFlag)
+
 # Cross-compiling the build?
 if(NOT "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}" OR
 	NOT "${CMAKE_HOST_SYSTEM_PROCESSOR}" STREQUAL "${CMAKE_SYSTEM_PROCESSOR}")
@@ -150,12 +153,18 @@ macro(squirreljme_target_shared_library_exports target)
 	endif()
 endmacro()
 
-# Turn some warnings into errors
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	add_compile_options("-Werror=implicit-function-declaration")
-endif()
+	# Turn some warnings into errors
+	check_c_compiler_flag("-Werror=implicit-function-declaration"
+		SQUIRRELJME_HAS_GCC_WERROR_IMPLICIT)
+	if (SQUIRRELJME_HAS_GCC_WERROR_IMPLICIT)
+		add_compile_options("-Werror=implicit-function-declaration")
+	endif()
 
-# Make symbols hidden by default in GCC, which may prefer them visible
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	add_compile_options("-fvisibility=hidden")
+	# Make symbols hidden by default in GCC, which may prefer them visible
+	check_c_compiler_flag("-fvisibility=hidden"
+		SQUIRRELJME_HAS_GCC_FVISIBILITY_HIDDEN)
+	if(SQUIRRELJME_HAS_GCC_FVISIBILITY_HIDDEN)
+		add_compile_options("-fvisibility=hidden")
+	endif()
 endif()
