@@ -697,7 +697,8 @@ were additional fixes to task launching.
 
 ### 2021
 
-To be written...
+This was written up until August 3 years ago, as it is now 2024, however I
+am completing it now. A few years to catch up but they were quite some years.
 
 #### January
 
@@ -819,5 +820,352 @@ an unoptimized, but working, solution.
 
 #### August
 
+There was not much done this month, I mostly just continued work on the
+RatufaCoat refactor.
+
+#### September
+
+Apart from RatufaCoat work, I did update the branding for this month, updating
+and simplifying the copyrights and making sure all the logos or otherwise
+have been placed in the repository.
+
+#### October
+
+More RatufaCoat work, this was starting to drag on.
+
+#### November
+
+More RatufaCoat work still, definitely continuing to drag on. I started some
+work on UI reworks, however I would stop and pick this up a bit later.
+
+#### December
+
+Not much done other than RatufaCoat work.
+
+### 2022
+
+This year was more or less much the same. Looking back at it from 2024 in
+this retrospective, even though I did not have much free time to actually
+work on things, there were a few good things in here. Unfortunately, I did
+not have the time to really sit down and think what I wanted RatufaCoat and
+otherwise to become.
+
+#### January
+
+More RatufaCoat work.
+
+At the end of the month I did some Gradle refactors in `trunk` to make
+testing better and easier, along with debugging.
+
+Additionally, at the end of the month I finished the work in the UI branch
+and merged that in. It was mostly just minor improvements and DoJa support.
+
+#### February
+
+I performed some cleaning up of the modules to get them more organized and
+neat. I did open up the GIF support branch, although did not work on it much.
+Most other cleanups I did were UI related. There were also various other
+fixes and adjustments to the UI. I definitely had a thought on making new
+UI code, however that would be quite a thing to figure out first.
+
+Shift-JIS support was added for decoding Japanese text such as those in
+DoJa titles.
+
+Some minor work into running a few DoJa titles.
+
+#### March
+
+Adding support for handling KJX files, which are just JADs prefixed to
+a JAR. Additionally, to support this, raw Jar access was added in so that
+libraries could be read directly.
+
+More RatufaCoat work.
+
+#### April
+
+I took a break from RatufaCoat this month to work on MIDI support, I spent
+the month working on this mostly.
+
+#### May
+
+Continued MIDI work.
+
+A cherry-picked a bunch of nice changes I had in the RatufaCoat refactor
+branch such as the ability to perform full complete tests.
+
+Other than these, I continued work on RatufaCoat.
+
+#### June
+
+More work on RatufaCoat, I did some more cherry-picking surrounding various
+fixes I have done since it was a long-running huge branch at this point.
+
+I did fix PNGs being corrupted, however.
+
+TODOs and Debugging notes were completely refactored, which ended up being
+a very good thing to do for consistency purposes.
+
+I also worked on more GIF reading support.
+
+#### July
+
+Minor work was put into GIF reading.
+
+Made fixes for M1 macOS systems since those were not working too well.
+
+There were some additional methods in `Collections` implemented.
+
+I also started an experiment on a framebuffer based UI interface, however
+that did not go anywhere.
+
+#### August
+
+I started work on SummerCoat AOT code generation.
+
+Also worked on JavaDoc writing to markdown, partially.
+
+#### September
+
+There was a bunch of SummerCoat AOT work, but like RatufaCoat it started to
+feel like a bad idea.
+
+On the otherwise, there was a positive which was a complete rewrite of the
+testing framework to take advantage of Gradle's testing features. This
+would allow me to see test results in _IntelliJ_ which was pretty important
+as the number of tests have been growing constantly. I still use this to
+this day, and it was well worth it.
+
+I additionally made some debugger improvements.
+
+#### October
+
+More SummerCoat and RatufaCoat work, reluctantly.
+
+I added some more support for DoJa titles.
+
+#### November
+
+I took a break this month.
+
+#### December
+
+I continued work on SummerCoat and RatufaCoat. Making lots of new code.
+
+### 2023
+
+This was quite a year, most of it I feel was wasted, but it started to turn
+around in July.
+
+#### January
+
+More RatufaCoat and SummerCoat.
+
+I started work on some ideas I had surrounding the UI, but ultimately that
+would not really lead anywhere.
+
+One of the bigger and more important things was tagging all the methods,
+classes, interfaces, and packages with the new `@Api` annotation.
+
+At the start of the month I started to work on utilizing ProGuard to make
+SquirrelJME ROMs a bit smaller by obfuscating them, mostly using it as just
+compression of sorts.
+
+#### February
+
+The work with ProGuard continued, this was merged in after about a month of
+work and has been going very well so far. I made a very extensible system
+and the ability to add some extra options for use when building libraries
+that get obfuscated. Additionally, there is `@SquirrelJMEVendorApi` which
+was very important. ProGuard I would learn would delete lots of code and
+otherwise, which SquirrelJME being a library for the most part was very
+problematic. Luckily it was worked around. This work was merged into `trunk`!
+
+I did more cleanups and any vendor specific APIs I prefixed with `vendor-api`
+in the modules, this kept everything nice and organized and easy to find.
+Very helpful in the long run.
+
+#### March
+
+More RatufaCoat work!
+
+#### April
+
+I added support for JVLite2 binary ADFs which were the raw storage types used
+for some DoJa phones.
+
+More RatufaCoat work, however at this point I was completely drained from
+working on it.
+
+#### May
+
+For most of the month, I took a break from things.
+
+However, despite the break at the end of the month I would do something
+pivotal to the project, and that is abandon RatufaCoat and SummerCoat. I
+created the new NanoCoat which I intended to be much smaller and otherwise.
+It would be simpler, be a basic interpreter, and otherwise be much cleaner.
+Seeing as I am writing this August 2024, I will say that NanoCoat has been
+progressing very well. I will say also that some projects are not meant to
+be.
+
+#### June
+
+I was pretty much excited with NanoCoat, so I worked on it much, building it
+up and otherwise. I was being more thoughtful and careful this time around.
+
+#### July
+
+I continued work on the foundations of NanoCoat.
+
+I added a number of tests for Java byte code instructions and otherwise to
+test out in SpringCoat and ultimately eventually NanoCoat. These were
+very helpful in figuring out some weird quirks of the JVM.
+
+I also started using the JetBrains annotations for code inspections, which
+to this day have been rather helpful. Those are more for reference and so
+that the code inspecting and otherwise would have an easier time of things.
+
+There was an old DoJa branch which was sitting around as well, I merged
+that in since it was pretty stale.
+
+#### August
+
+More work on NanoCoat.
+
+For IntelliJ, I added file scope colors and otherwise, which helps at a glance
+see which class I am looking at. Java standard APIs are purple for the
+most part. Out of tree stuff is a different set of colors.
+
+I also fixed a SpringCoat issue that I would say is
+called: `invokespecial super.__packagePrivateMethod()`. Which is a very
+one off edge case which one would likely not hit.
+
+I also started an experimental branch for JFR, however that has not been
+worked on since. That was mostly just an idea of getting profiling working
+in IntelliJ, but VisualVM works fine for now.
+
+#### September
+
+Mostly just minor NanoCoat housekeeping.
+
+#### October
+
+Most of these days I was not working on the project, if I did for the few days
+I just made some NanoCoat changes.
+
+I also got laid off from my job at Philips, so after the shock of that I
+would definitely have more time than I thought I would have to think.
+
+#### November
+
+I continued work on NanoCoat.
+
+#### December
+
+This month I merged in NanoCoat, it cannot run anything yet however I did
+not want it to drag on like RatufaCoat and NanoCoat. I felt that it was
+fine enough to merge in, which ended up being a very good decision to make.
+
+I mostly worked in `trunk` this month, making a bunch of fixes and
+refactorings to the standalone environment.
+
+There were also some more core NanoCoat code along with their tests as well,
+such as memory management. I did so much foundational work in NanoCoat for
+stuff that is still around to this day. I was invigorated and energized from
+this.
+
+### 2024
+
 To be written...
 
+#### January
+
+I did much to improve and refactor the JDWP support in SpringCoat, along
+with building my own debugger interface. This was a very nice month
+for debugging.
+
+#### February
+
+I started work on a `Calendar` implementation to run one of the MMBN games
+which for some reason used that class, not sure why.
+
+I also additionally worked on descriptor and name parsing in NanoCoat which
+has gone very well.
+
+I finally got back around to MIDI support and merged that in. With the help
+of my musically inclined wife, she was able to help me figure out MIDI timings
+and otherwise. So very much thanks to her!
+
+At the end of the month, I had a new idea for the UI: ScritchUI.
+
+#### March
+
+I started work on ScritchUI, basically to replace the old UIForm interface
+which was a giant mess and difficult to work with. This would be very pivotal
+work in terms of UI support.
+
+I added building of FlatPak containers as well, so you could run standalone
+as a Flatpak.
+
+At the end of the month, I closed all the branches for RatufaCoat, SummerCoat,
+and  even an extended version of SpringCoat. I was feeling very good about
+NanoCoat and ScritchUI, like a breakthrough very good feeling.
+
+#### April
+
+I did mostly cleanups and work on ScritchUI.
+
+#### May
+
+More of the same, ScritchUI work and otherwise. ScritchUI has been really
+shaping up very well. It was clean, efficient, and easy to implement for.
+It also fixed some glaring issues with some software.
+
+#### June
+
+ScritchUI had a bunch of nice changes that were not entirely related to it,
+so I cherry-picked those into `trunk`. This helped reduce the scope of the
+branch and made the nice features of it mainline. It was at this point that
+I decided it would be best to finish off what I had, get Windows support
+in and worry about macOS later.
+
+#### July
+
+I continued the ScritchUI finalization and Windows support and spent most
+of the month doing final cleanups, specifically around images and buffer
+support, such as drawing and otherwise. I made ScritchUI serialized and single
+threaded, where it would force everything to happen in the UI thread. This
+was very important for all the different UI frameworks and how broken
+they are generally. Also as well, how broken applications are in a modern
+multithreaded multi-CPU world.
+
+#### August
+
+I finalized ScritchUI and got it merged into `trunk`. I was very happy about
+this. ScritchUI took about five months to develop from scratch, but it turned
+out very nice.
+
+I did start a branch for Cocoa support in ScritchUI, but that is a side
+project for now.
+
+Otherwise, I started work on Zip support along with many helper
+utilizes and weak references in NanoCoat.
+
+I do start a new job back at Philips at the start of next month, so we
+shall see how that goes.
+
+#### September
+
+...
+
+#### October
+
+...
+
+#### November
+
+....
+
+#### December
+
+....
