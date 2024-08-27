@@ -270,8 +270,24 @@ static sjme_errorCode sjme_circleBuffer_calc(
 		srcSl = &circleSl;
 		destSl = &externSl;
 		
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Calculate new size. */
+		result->newReady = buffer->ready - length;
+		if (result->newReady < 0)
+			return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		
+		/* Removing from end? */
+		if (seekType == SJME_CIRCLE_BUFFER_LAST)
+		{
+			result->newWriteHead = buffer->writeHead - length;
+			circleSl.base = result->newWriteHead;
+		}
+		
+		/* Removing from start? */
+		else
+		{
+			result->newReadHead = buffer->readHead + length;
+			circleSl.base = buffer->readHead;
+		}
 	}
 	
 	/* Getting? */
