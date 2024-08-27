@@ -33,6 +33,20 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Order for when reading or writing multiple bits.
+ * 
+ * @since 2024/08/28
+ */
+typedef enum sjme_bitStream_order
+{
+	/** Least significant bit. */
+	SJME_BITSTREAM_LSB,
+	
+	/** Most significant bit. */
+	SJME_BITSTREAM_MSB,
+} sjme_bitStream_order;
+
+/**
  * Bit stream state structure, generic.
  * 
  * @since 2024/08/26
@@ -164,6 +178,22 @@ sjme_errorCode sjme_bitStream_inputOpenStream(
 	sjme_attrInValue sjme_jboolean forwardClose);
 
 /**
+ * Reads bits from the input source. 
+ * 
+ * @param inStream The stream to read bits from.
+ * @param bitOrder The order of the bit read.
+ * @param outValue The resultant value.
+ * @param bitCount The number of bits to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/27
+ */
+sjme_errorCode sjme_bitStream_inputRead(
+	sjme_attrInNotNull sjme_bitStream_input inStream,
+	sjme_attrInValue sjme_bitStream_order bitOrder,
+	sjme_attrOutNotNull sjme_juint* outValue,
+	sjme_attrInPositiveNonZero sjme_jint bitCount);
+
+/**
  * Opens an output bit stream.
  * 
  * @param inPool The pool to allocate within.
@@ -180,6 +210,22 @@ sjme_errorCode sjme_bitStream_outputOpen(
 	sjme_attrInNotNull sjme_bitStream_outputWriteByteFunc writeFunc,
 	sjme_attrInNullable sjme_pointer writeFuncData,
 	sjme_attrInNullable sjme_closeable forwardClose);
+
+/**
+ * Writes bits to the output destination. 
+ * 
+ * @param outStream The stream to write bits to.
+ * @param bitOrder The order of the bit write.
+ * @param inValue The value to write.
+ * @param bitCount The number of bits to write.
+ * @return Any resultant error, if any.
+ * @since 2024/08/27
+ */
+sjme_errorCode sjme_bitStream_outputWrite(
+	sjme_attrInNotNull sjme_bitStream_input outStream,
+	sjme_attrInValue sjme_bitStream_order bitOrder,
+	sjme_attrInValue sjme_juint outValue,
+	sjme_attrInPositiveNonZero sjme_jint bitCount);
 
 /*--------------------------------------------------------------------------*/
 

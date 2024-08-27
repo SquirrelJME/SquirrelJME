@@ -225,6 +225,12 @@ static sjme_errorCode sjme_circleBuffer_calc(
 	/* Debug. */
 	sjme_message("OPERATE %d", operation);
 	
+	/* The window buffer can be pushed the same as a queue as long as it */
+	/* does not exceed the buffer size. */
+	if (operation == SJME_CIRCLE_BUFFER_PUSH_WINDOW)
+		if (buffer->ready + length <= buffer->size)
+			operation = SJME_CIRCLE_BUFFER_PUSH_QUEUE;
+	
 	/* Pushing as a queue? */
 	if (operation == SJME_CIRCLE_BUFFER_PUSH_QUEUE)
 	{

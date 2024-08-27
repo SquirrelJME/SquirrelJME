@@ -16,8 +16,11 @@ sjme_errorCode sjme_bitStream_inputOpen(
 	sjme_attrInNullable sjme_pointer readFuncData,
 	sjme_attrInNullable sjme_closeable forwardClose)
 {
+	if (inPool == NULL || resultStream == NULL || readFunc == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NULL_ARGUMENTS;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_bitStream_inputOpenStream(
@@ -26,8 +29,30 @@ sjme_errorCode sjme_bitStream_inputOpenStream(
 	sjme_attrInNotNull sjme_stream_input inputStream,
 	sjme_attrInValue sjme_jboolean forwardClose)
 {
+	if (inPool == NULL || resultStream == NULL || inputStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NULL_ARGUMENTS;
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_bitStream_inputRead(
+	sjme_attrInNotNull sjme_bitStream_input inStream,
+	sjme_attrInValue sjme_bitStream_order bitOrder,
+	sjme_attrOutNotNull sjme_juint* outValue,
+	sjme_attrInPositiveNonZero sjme_jint bitCount)
+{
+	if (inStream == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (bitOrder != SJME_BITSTREAM_LSB && bitOrder != SJME_BITSTREAM_MSB)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (bitCount <= 0 || bitCount > 32)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_bitStream_outputOpen(
@@ -37,6 +62,25 @@ sjme_errorCode sjme_bitStream_outputOpen(
 	sjme_attrInNullable sjme_pointer writeFuncData,
 	sjme_attrInNullable sjme_closeable forwardClose)
 {
+	if (inPool == NULL || resultStream == NULL || writeFunc == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NULL_ARGUMENTS;
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_bitStream_outputWrite(
+	sjme_attrInNotNull sjme_bitStream_input outStream,
+	sjme_attrInValue sjme_bitStream_order bitOrder,
+	sjme_attrInValue sjme_juint outValue,
+	sjme_attrInPositiveNonZero sjme_jint bitCount)
+{
+	if (outStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (bitOrder != SJME_BITSTREAM_LSB && bitOrder != SJME_BITSTREAM_MSB)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
