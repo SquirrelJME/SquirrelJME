@@ -23,6 +23,22 @@ sjme_errorCode sjme_bitStream_inputOpen(
 	return sjme_error_notImplemented(0);
 }
 
+sjme_errorCode sjme_bitStream_inputOpenMemory(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_bitStream_input* resultStream,
+	sjme_attrInNotNull sjme_cpointer base,
+	sjme_attrInPositive sjme_jint length)
+{
+	if (inPool == NULL || resultStream == NULL || base == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (length <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_bitStream_inputOpenStream(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_bitStream_input* resultStream,

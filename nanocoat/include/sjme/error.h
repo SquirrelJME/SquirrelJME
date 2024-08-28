@@ -358,8 +358,11 @@ typedef enum sjme_errorCode
 	/** Inflation index overflow. */
 	SJME_ERROR_INFLATE_INDEX_OVERFLOW = -105,
 	
+	/** End of file reached. */
+	SJME_ERROR_END_OF_FILE = -106,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -106
+	SJME_NUM_ERROR_CODES = -107
 } sjme_errorCode;
 
 /**

@@ -17,10 +17,16 @@ public class DeflateExample
 	public static void main(String... __args)
 		throws Throwable
 	{
+		/*
 		byte[] seq =
 			("Squirrels are really cute and adorable" +
 			"they are also very energetic and curious." +
-			"1234567890QWERTYUIOPASDFGHJKLZXCVBNM").getBytes("utf-8");
+			"1234567890QWERTYUIOPASDFGHJKLZXCVBNM").getBytes("utf-8");*/
+		byte[] seq =
+			("squirrel squirrel squirrel squirrel squirrel squirrel " +
+			"squirrel squirrel squirrel squirrel squirrel squirrel " +
+			"squirrel squirrel squirrel squirrel squirrel squirrel ")
+			.getBytes("utf-8");
 		
 		Map<Integer, byte[]> outputs = new LinkedHashMap<>();
 		

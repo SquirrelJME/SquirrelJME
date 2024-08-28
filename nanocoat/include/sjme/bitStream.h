@@ -162,6 +162,22 @@ sjme_errorCode sjme_bitStream_inputOpen(
 	sjme_attrInNullable sjme_closeable forwardClose);
 
 /**
+ * Opens a bit stream from a memory location.
+ * 
+ * @param inPool The pool to allocate within. 
+ * @param resultStream The resultant stream.
+ * @param base The base memory address.
+ * @param length The length of the memory block.
+ * @return Any resultant error, if any.
+ * @since 2024/08/27
+ */
+sjme_errorCode sjme_bitStream_inputOpenMemory(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_bitStream_input* resultStream,
+	sjme_attrInNotNull sjme_cpointer base,
+	sjme_attrInPositive sjme_jint length);
+
+/**
  * Opens a bit stream which reads from the given @c sjme_stream_input .
  * 
  * @param inPool The pool to allocate within.
