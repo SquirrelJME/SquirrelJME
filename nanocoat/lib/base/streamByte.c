@@ -218,3 +218,39 @@ sjme_errorCode sjme_stream_outputOpenByteArray(
 		&init,
 		NULL);
 }
+
+static sjme_errorCode sjme_stream_outputOpenByteArrayToTarget(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_resultByteArray* result,
+	sjme_attrInNullable sjme_pointer data)
+{
+	sjme_stream_resultByteArray* target;
+	
+	if (stream == NULL || result == NULL || data == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover target result. */
+	target = data;
+	
+	/* Do not free the buffer. */
+	result->free = SJME_JNI_FALSE;
+	
+	/* Copy everything over and continue. */
+	memmove(target, result, sizeof(*result));
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_stream_outputOpenByteArrayTo(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_stream_output* outStream,
+	sjme_attrInPositive sjme_jint initialLimit,
+	sjme_attrInNotNull sjme_stream_resultByteArray* result)
+{
+	if (inPool == NULL || outStream == NULL || result == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Forward. */
+	return sjme_stream_outputOpenByteArray(inPool, outStream,
+		initialLimit, sjme_stream_outputOpenByteArrayToTarget,
+		result);
+}

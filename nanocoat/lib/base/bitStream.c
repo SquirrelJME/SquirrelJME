@@ -85,8 +85,21 @@ sjme_errorCode sjme_bitStream_outputOpen(
 	return sjme_error_notImplemented(0);
 }
 
+sjme_errorCode sjme_bitStream_outputOpenStream(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_bitStream_output* resultStream,
+	sjme_attrInNotNull sjme_stream_output outputStream,
+	sjme_attrInValue sjme_jboolean forwardClose)
+{
+	if (inPool == NULL || resultStream == NULL || outputStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_bitStream_outputWrite(
-	sjme_attrInNotNull sjme_bitStream_input outStream,
+	sjme_attrInNotNull sjme_bitStream_output outStream,
 	sjme_attrInValue sjme_bitStream_order bitOrder,
 	sjme_attrInValue sjme_juint outValue,
 	sjme_attrInPositiveNonZero sjme_jint bitCount)

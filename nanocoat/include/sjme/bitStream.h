@@ -228,6 +228,22 @@ sjme_errorCode sjme_bitStream_outputOpen(
 	sjme_attrInNullable sjme_closeable forwardClose);
 
 /**
+ * Opens an output bit stream which writes to the given output stream.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param resultStream The resultant output bit stream.
+ * @param outputStream The stream to write.
+ * @param forwardClose If this is closed, should @c outputStream be closed?
+ * @return Any resultant error, if any.
+ * @since 2024/08/28
+ */
+sjme_errorCode sjme_bitStream_outputOpenStream(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_bitStream_output* resultStream,
+	sjme_attrInNotNull sjme_stream_output outputStream,
+	sjme_attrInValue sjme_jboolean forwardClose);
+
+/**
  * Writes bits to the output destination. 
  * 
  * @param outStream The stream to write bits to.
@@ -238,7 +254,7 @@ sjme_errorCode sjme_bitStream_outputOpen(
  * @since 2024/08/27
  */
 sjme_errorCode sjme_bitStream_outputWrite(
-	sjme_attrInNotNull sjme_bitStream_input outStream,
+	sjme_attrInNotNull sjme_bitStream_output outStream,
 	sjme_attrInValue sjme_bitStream_order bitOrder,
 	sjme_attrInValue sjme_juint outValue,
 	sjme_attrInPositiveNonZero sjme_jint bitCount);

@@ -600,6 +600,25 @@ sjme_errorCode sjme_stream_outputOpenByteArray(
 	sjme_attrInNullable sjme_pointer finishData);
 
 /**
+ * Opens a dynamically resizing output byte array, on close the result will
+ * be written to the following pointer. This is intended for short term single
+ * function use, for simplicity purposes. One should be aware of where the
+ * result variable is stored and that it remains valid.
+ *
+ * @param inPool The pool to allocate within.
+ * @param outStream The resultant output stream.
+ * @param initialLimit The initial buffer limit.
+ * @param result Where the result is to be written on close.
+ * @return On any error, if any.
+ * @since 2024/08/28
+ */
+sjme_errorCode sjme_stream_outputOpenByteArrayTo(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_stream_output* outStream,
+	sjme_attrInPositive sjme_jint initialLimit,
+	sjme_attrInNotNull sjme_stream_resultByteArray* result);
+
+/**
  * Opens an output stream which writes to the given block of memory, note that
  * when it reaches the end of the block it will fail to write following it.
  *
