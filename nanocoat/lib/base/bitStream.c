@@ -10,28 +10,28 @@
 #include "sjme/bitStream.h"
 #include "sjme/util.h"
 
-static sjme_errorCode sjme_bitStream_inputClose(
+static sjme_errorCode sjme_bitStream_inputOutputClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_errorCode error;
-	sjme_bitStream_input stream;
+	sjme_bitStream_base* stream;
 	
 	if (closeable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Recover stream. */
-	stream = (sjme_bitStream_input)closeable;
+	stream = (sjme_bitStream_base*)closeable;
 	
 	/* If there is a forward close, then close it. */
-	if (stream->base.forwardClose != NULL)
+	if (stream->forwardClose != NULL)
 	{
 		/* Forward close. */
 		if (sjme_error_is(error = sjme_closeable_close(
-			stream->base.forwardClose)))
+			stream->forwardClose)))
 			return sjme_error_default(error);
 		
 		/* Clear so it is not closed again. */
-		stream->base.forwardClose = NULL;
+		stream->forwardClose = NULL;
 	}
 	
 	/* Success! */
@@ -52,9 +52,9 @@ static sjme_errorCode sjme_bitStream_inputReadStream(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Read in single byte. */
+	source = functionData;
 	do
 	{
-		source = functionData;
 		count = INT32_MAX;
 		value = 0;
 		if (sjme_error_is(error = sjme_stream_inputRead(source,
@@ -72,6 +72,61 @@ static sjme_errorCode sjme_bitStream_inputReadStream(
 	
 	/* Otherwise mask in. */
 	*readByte = value & 0xFF;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_bitStream_outputWriteStream(
+	sjme_attrInNotNull sjme_bitStream_output outStream,
+	sjme_attrInNullable sjme_pointer functionData,
+	sjme_attrInValue sjme_jint writeByte)
+{
+	sjme_errorCode error;
+	sjme_stream_output dest;
+	sjme_jubyte single;
+	
+	if (outStream == NULL || functionData == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Write single byte. */
+	dest = functionData;
+	single = writeByte & 0xFF;
+	if (sjme_error_is(error = sjme_stream_outputWrite(dest,
+		&single, 1)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_bitStream_overToQueue(
+	sjme_attrInNotNull sjme_bitStream_base* base)
+{
+	sjme_jint limit;
+	sjme_juint mask, result;
+	
+	if (base == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	while (base->overCount > 0 && base->bitCount < 32)
+	{
+		/* How many bits can we actually take? */
+		limit = 32 - base->bitCount;
+		if (limit > base->overCount)
+			limit = base->overCount;
+		
+		/* Take in from the overflow. */
+		mask = sjme_util_intOverShiftU(1, limit) - 1;
+		result = base->overQueue & mask;
+		base->bitQueue |= (result << base->bitCount);
+		base->bitCount += limit;
+		
+		/* Reduce the overflow. */
+		base->overQueue = sjme_util_intOverShiftU(
+			base->overQueue, -limit);
+		base->overCount -= limit;
+	}
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -96,7 +151,7 @@ sjme_errorCode sjme_bitStream_inputOpen(
 		goto fail_alloc;
 	
 	/* Setup result. */
-	result->base.closeable.closeHandler = sjme_bitStream_inputClose;
+	result->base.closeable.closeHandler = sjme_bitStream_inputOutputClose;
 	result->base.forwardClose = forwardClose;
 	result->base.funcData = readFuncData;
 	result->readFunc = readFunc;
@@ -217,40 +272,10 @@ sjme_errorCode sjme_bitStream_inputRead(
 				inStream->base.overCount += 8;
 			}
 		}
-
-#if defined(SJME_CONFIG_DEBUG)
-		/* Debug. */
-		sjme_message("Queue [%d:%d] A (%08x:%08x)",
-			inStream->base.overCount, inStream->base.bitCount,
-			inStream->base.overQueue, inStream->base.bitQueue);
-#endif
 		
 		/* Can we take from the overflow? */
-		while (inStream->base.overCount > 0 && inStream->base.bitCount < 32)
-		{
-			/* How many bits can we actually take? */
-			limit = 32 - inStream->base.bitCount;
-			if (limit > inStream->base.overCount)
-				limit = inStream->base.overCount;
-			
-			/* Take in from the overflow. */
-			mask = sjme_util_intOverShiftU(1, limit) - 1;
-			result = inStream->base.overQueue & mask;
-			inStream->base.bitQueue |= (result << inStream->base.bitCount);
-			inStream->base.bitCount += limit;
-			
-			/* Reduce the overflow. */
-			inStream->base.overQueue = sjme_util_intOverShiftU(
-				inStream->base.overQueue, -limit);
-			inStream->base.overCount -= limit;
-		}
-
-#if defined(SJME_CONFIG_DEBUG)
-		/* Debug. */
-		sjme_message("Queue [%d:%d] B (%08x:%08x)",
-			inStream->base.overCount, inStream->base.bitCount,
-			inStream->base.overQueue, inStream->base.bitQueue);
-#endif
+		if (sjme_error_is(error = sjme_bitStream_overToQueue(&inStream->base)))
+			return sjme_error_default(error);
 	} while (!inStream->eofHit && inStream->base.bitCount < 32);
 	
 	/* Not enough bits in the input? */
@@ -306,11 +331,34 @@ sjme_errorCode sjme_bitStream_outputOpen(
 	sjme_attrInNullable sjme_pointer writeFuncData,
 	sjme_attrInNullable sjme_closeable forwardClose)
 {
+	sjme_errorCode error;
+	sjme_bitStream_output result;
+	
 	if (inPool == NULL || resultStream == NULL || writeFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
+		sizeof(*result), sjme_closeable_autoEnqueue,
+		NULL, (sjme_pointer*)&result, NULL)) || result == NULL)
+		goto fail_alloc;
+	
+	/* Setup result. */
+	result->base.closeable.closeHandler = sjme_bitStream_inputOutputClose;
+	result->base.forwardClose = forwardClose;
+	result->base.funcData = writeFuncData;
+	result->writeFunc = writeFunc;
+	
+	/* Success! */
+	*resultStream = result;
+	return SJME_ERROR_NONE;
+
+fail_alloc:
+	if (result != NULL)
+		sjme_alloc_free(result);
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_bitStream_outputOpenStream(
@@ -322,8 +370,11 @@ sjme_errorCode sjme_bitStream_outputOpenStream(
 	if (inPool == NULL || resultStream == NULL || outputStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Forward to general open. */
+	return sjme_bitStream_outputOpen(inPool,
+		resultStream, sjme_bitStream_outputWriteStream,
+		outputStream,
+		(forwardClose ? SJME_AS_CLOSEABLE(outputStream) : NULL));
 }
 
 sjme_errorCode sjme_bitStream_outputWrite(
@@ -332,12 +383,54 @@ sjme_errorCode sjme_bitStream_outputWrite(
 	sjme_attrInValue sjme_juint outValue,
 	sjme_attrInPositiveNonZero sjme_jint bitCount)
 {
+	sjme_errorCode error;
+	sjme_juint mask, single;
+	
 	if (outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (bitOrder != SJME_BITSTREAM_LSB && bitOrder != SJME_BITSTREAM_MSB)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	if (bitCount <= 0 || bitCount > 32)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Reverse? */
+	if (bitOrder == SJME_BITSTREAM_MSB)
+		outValue = sjme_util_intOverShiftU(
+			sjme_util_intReverseU(outValue), -32 + bitCount);
+	
+	/* Shift in on top of the overflow queue. */
+	mask = sjme_util_intOverShiftU(1, bitCount) - 1;
+	outStream->base.overQueue |= ((outValue & mask) <<
+		outStream->base.overCount);
+	outStream->base.overCount += bitCount;
+		
+	/* Can we take from the overflow? */
+	if (sjme_error_is(error = sjme_bitStream_overToQueue(&outStream->base)))
+		return sjme_error_default(error);
+	
+	/* Can we write more bytes? */
+	while (outStream->base.bitCount >= 8)
+	{
+		/* Get byte to write. */
+		single = outStream->base.bitQueue & 0xFF;
+		
+		/* Shift queue down. */
+		outStream->base.bitQueue >>= 8;
+		outStream->base.bitCount -= 8;
+		
+		/* Write to target. */
+		if (sjme_error_is(error = outStream->writeFunc(outStream,
+			outStream->base.funcData, single)))
+			return sjme_error_default(error);
+		
+		/* Can we take from the overflow? */
+		if (sjme_error_is(error = sjme_bitStream_overToQueue(
+			&outStream->base)))
+			return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }

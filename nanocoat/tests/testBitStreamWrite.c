@@ -51,7 +51,7 @@ SJME_TEST_DECLARE(testBitStreamWrite)
 	sjme_bitStream_output output;
 	sjme_bitStream_order order;
 	sjme_stream_resultByteArray result;
-	sjme_jint i;
+	sjme_jint i, actual;
 
 	/* Output target byte array. */
 	baos = NULL;
@@ -72,14 +72,17 @@ SJME_TEST_DECLARE(testBitStreamWrite)
 	/* Write all bits. */
 	for (i = 1; i <= 64; i++)
 	{
+		/* Zero is really 32. */
+		actual = ((i % 32) == 0 ? 32 : i % 32);
+		
 		/* Write in both orders. */
 		order = (i <= 32 ? SJME_BITSTREAM_LSB : SJME_BITSTREAM_MSB);
 		
 		/* Write value. */
 		if (sjme_error_is(test->error = sjme_bitStream_outputWrite(
 			output, order,
-			i % 32, i % 32)))
-			return sjme_unit_fail(test, "Could not write %d bits?", i % 32);
+			actual, actual)))
+			return sjme_unit_fail(test, "Could not write %d bits?", actual);
 	}
 	
 	/* Close the bit stream. */
@@ -92,6 +95,7 @@ SJME_TEST_DECLARE(testBitStreamWrite)
 		"There was no output array?");
 	
 	/* Should result in a match. */
+	sjme_message_hexDump(result.array, result.length);
 	sjme_unit_equalI(test, sizeof(testData), result.length,
 		"Length did not match?");
 	sjme_unit_equalI(test,

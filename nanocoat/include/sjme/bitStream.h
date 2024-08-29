@@ -51,7 +51,7 @@ typedef enum sjme_bitStream_order
  * 
  * @since 2024/08/26
  */
-typedef struct sjme_bitStreamBase
+typedef struct sjme_bitStream_base
 {
 	/** Closeable data, as bit streams may be closed. */
 	sjme_closeableBase closeable;
@@ -73,7 +73,7 @@ typedef struct sjme_bitStreamBase
 	
 	/** The overflow count. */
 	sjme_juint overCount;
-} sjme_bitStreamBase;
+} sjme_bitStream_base;
 
 /**
  * Input bit stream source.
@@ -134,7 +134,7 @@ typedef sjme_errorCode (*sjme_bitStream_outputWriteByteFunc)(
 struct sjme_bitStream_inputBase
 {
 	/** Base bit stream data. */
-	sjme_bitStreamBase base;
+	sjme_bitStream_base base;
 	
 	/** The read function. */
 	sjme_bitStream_inputReadByteFunc readFunc;
@@ -146,7 +146,7 @@ struct sjme_bitStream_inputBase
 struct sjme_bitStream_outputBase
 {
 	/** Base bit stream data. */
-	sjme_bitStreamBase base;
+	sjme_bitStream_base base;
 	
 	/** The write function. */
 	sjme_bitStream_outputWriteByteFunc writeFunc;
