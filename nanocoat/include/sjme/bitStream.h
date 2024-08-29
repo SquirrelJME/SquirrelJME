@@ -67,6 +67,12 @@ typedef struct sjme_bitStreamBase
 	
 	/** The amount of bits in the buffer. */
 	sjme_juint bitCount;
+	
+	/** Overflow bits. */
+	sjme_juint overQueue;
+	
+	/** The overflow count. */
+	sjme_juint overCount;
 } sjme_bitStreamBase;
 
 /**
@@ -132,6 +138,9 @@ struct sjme_bitStream_inputBase
 	
 	/** The read function. */
 	sjme_bitStream_inputReadByteFunc readFunc;
+	
+	/** Was EOF hit? */
+	sjme_jboolean eofHit;
 };
 
 struct sjme_bitStream_outputBase

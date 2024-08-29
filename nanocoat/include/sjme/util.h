@@ -359,7 +359,7 @@ sjme_jint sjme_tree_find(void* tree, void* what,
  * @return The number of bits in the value.
  * @since 2024/08/22
  */
-sjme_juint sjme_util_bitCountU(
+sjme_juint sjme_util_intBitCountU(
 	sjme_attrInValue sjme_juint v);
 
 /**
@@ -369,7 +369,50 @@ sjme_juint sjme_util_bitCountU(
  * @return The highest bit of the value.
  * @since 2024/08/22
  */
-sjme_juint sjme_util_highestOneBit(
+sjme_juint sjme_util_intHighestOneBit(
+	sjme_attrInValue sjme_juint v);
+
+/**
+ * Returns the number of leading zeroes in the value.
+ * 
+ * @param v The value to check. 
+ * @return The resultant number of leading zeroes.
+ * @since 2024/08/22
+ */
+sjme_juint sjme_util_intLeadingZeroesU(
+	sjme_attrInValue sjme_juint v);
+
+/**
+ * Allows for shifting left/right by 32 for certain CPUs.
+ * 
+ * @param v The value to shift.
+ * @param sh The shift amount, positive is left shift and negative is right
+ * shift.
+ * @return The resultant shifted value.
+ * @since 2024/08/29
+ */
+sjme_juint sjme_util_intOverShiftU(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInRange(-32, 32) sjme_jint sh);
+
+/**
+ * Reverses the bits in the given integer value.
+ * 
+ * @param v The input value. 
+ * @return The value with the reversed bits.
+ * @since 2024/08/18 
+ */
+sjme_jint sjme_util_intReverse(
+	sjme_attrInValue sjme_jint v);
+
+/**
+ * Reverses the bits in the given integer value.
+ * 
+ * @param v The input value. 
+ * @return The value with the reversed bits.
+ * @since 2024/08/18 
+ */
+sjme_juint sjme_util_intReverseU(
 	sjme_attrInValue sjme_juint v);
 
 /**
@@ -387,36 +430,6 @@ sjme_errorCode sjme_util_intToBinary(
 	sjme_attrInPositiveNonZero sjme_jint destLen,
 	sjme_attrInValue sjme_juint inVal,
 	sjme_attrInPositiveNonZero sjme_juint bitCount);
-
-/**
- * Returns the number of leading zeroes in the value.
- * 
- * @param v The value to check. 
- * @return The resultant number of leading zeroes.
- * @since 2024/08/22
- */
-sjme_juint sjme_util_numLeadingZeroesU(
-	sjme_attrInValue sjme_juint v);
-
-/**
- * Reverses the bits in the given integer value.
- * 
- * @param v The input value. 
- * @return The value with the reversed bits.
- * @since 2024/08/18 
- */
-sjme_jint sjme_util_reverseBits(
-	sjme_attrInValue sjme_jint v);
-
-/**
- * Reverses the bits in the given integer value.
- * 
- * @param v The input value. 
- * @return The value with the reversed bits.
- * @since 2024/08/18 
- */
-sjme_juint sjme_util_reverseBitsU(
-	sjme_attrInValue sjme_juint v);
 
 /*--------------------------------------------------------------------------*/
 

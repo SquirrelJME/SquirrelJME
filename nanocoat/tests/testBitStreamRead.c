@@ -47,19 +47,23 @@ SJME_TEST_DECLARE(testBitStreamRead)
 {
 	sjme_bitStream_input input;
 	sjme_bitStream_order order;
-	sjme_jint i;
+	sjme_jint i, actual;
 	sjme_juint val;
 	
 	/* Open the bit stream. */
 	input = NULL;
 	if (sjme_error_is(test->error = sjme_bitStream_inputOpenMemory(
-		test->pool, &input, NULL, -1)) ||
+		test->pool, &input,
+		testData, sizeof(testData))) ||
 		input == NULL)
 		return sjme_unit_fail(test, "Could not open bit stream?");
 	
 	/* Read in all bits. */
 	for (i = 1; i <= 64; i++)
 	{
+		/* Zero is really 32. */
+		actual = ((i % 32) == 0 ? 32 : i % 32);
+		
 		/* Write in both orders. */
 		order = (i <= 32 ? SJME_BITSTREAM_LSB : SJME_BITSTREAM_MSB);
 		
@@ -67,12 +71,12 @@ SJME_TEST_DECLARE(testBitStreamRead)
 		val = INT32_MAX;
 		if (sjme_error_is(test->error = sjme_bitStream_inputRead(
 			input, order,
-			&val, i % 32)))
-			return sjme_unit_fail(test, "Could not read %d bits?", i % 32);
+			&val, actual)))
+			return sjme_unit_fail(test, "Could not read %d bits?", actual);
 		
 		/* Should match the number given in. */
-		sjme_unit_equalI(test, i % 32, val,
-			"Read value did not match?"); 
+		sjme_unit_equalI(test, actual, val,
+			"Read value did not match? %d", actual); 
 	}
 	
 	/* Close the bit stream. */

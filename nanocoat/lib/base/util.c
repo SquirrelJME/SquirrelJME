@@ -391,7 +391,7 @@ sjme_errorCode sjme_swap_uint_memmove(
 	return SJME_ERROR_NONE;
 }
 
-sjme_juint sjme_util_bitCountU(
+sjme_juint sjme_util_intBitCountU(
 	sjme_attrInValue sjme_juint v)
 {
 	v = v - ((v >> 1) & UINT32_C(0x55555555));
@@ -399,7 +399,7 @@ sjme_juint sjme_util_bitCountU(
 	return ((v + (v >> 4) & UINT32_C(0xF0F0F0F)) * UINT32_C(0x1010101)) >> 24;
 }
 
-sjme_juint sjme_util_highestOneBit(
+sjme_juint sjme_util_intHighestOneBit(
 	sjme_attrInValue sjme_juint v)
 {
 	v = v | (v >> 1);
@@ -409,6 +409,55 @@ sjme_juint sjme_util_highestOneBit(
 	v = v | (v >> 16);
 	
 	return v - (v >> 1);
+}
+
+sjme_juint sjme_util_intLeadingZeroesU(
+	sjme_attrInValue sjme_juint v)
+{
+	v = v | (v >> 1);
+	v = v | (v >> 2);
+	v = v | (v >> 4);
+	v = v | (v >> 8);
+	v = v | (v >> 16);
+	
+	return sjme_util_intBitCountU(~v);
+}
+
+sjme_juint sjme_util_intOverShiftU(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInRange(-32, 32) sjme_jint sh)
+{
+	/* Shifting more than this always results in zero. */
+	if (sh <= -32 || sh >= 32)
+		return 0;
+	
+	/* Shift by zero does nothing. */
+	else if (sh == 0)
+		return v;
+	
+	/* Otherwise the shifted amount. */
+	if (sh < 0)
+		return v >> (sjme_juint)(-sh);
+	return v << (sjme_juint)sh;
+}
+
+sjme_jint sjme_util_intReverse(sjme_jint v)
+{
+	return (sjme_jint)sjme_util_intReverseU((sjme_juint)v);
+}
+
+sjme_juint sjme_util_intReverseU(sjme_juint v)
+{
+	v = (((v & UINT32_C(0xAAAAAAAA)) >> 1) |
+		((v & UINT32_C(0x55555555)) << 1));
+	v = (((v & UINT32_C(0xCCCCCCCC)) >> 2) |
+		((v & UINT32_C(0x33333333)) << 2));
+	v = (((v & UINT32_C(0xF0F0F0F0)) >> 4) |
+		((v & UINT32_C(0x0F0F0F0F)) << 4));
+	v = (((v & UINT32_C(0xFF00FF00)) >> 8) |
+		((v & UINT32_C(0x00FF00FF)) << 8));
+	
+	return ((v >> 16) | (v << 16));
 }
 
 sjme_errorCode sjme_util_intToBinary(
@@ -443,35 +492,4 @@ sjme_errorCode sjme_util_intToBinary(
 	/* End with NUL. */
 	*(wp++) = '\0';
 	return SJME_ERROR_NONE;
-}
-
-sjme_juint sjme_util_numLeadingZeroesU(
-	sjme_attrInValue sjme_juint v)
-{
-	v = v | (v >> 1);
-	v = v | (v >> 2);
-	v = v | (v >> 4);
-	v = v | (v >> 8);
-	v = v | (v >> 16);
-	
-	return sjme_util_bitCountU(~v);
-}
-
-sjme_jint sjme_util_reverseBits(sjme_jint v)
-{
-	return (sjme_jint)sjme_util_reverseBitsU((sjme_juint)v);
-}
-
-sjme_juint sjme_util_reverseBitsU(sjme_juint v)
-{
-	v = (((v & UINT32_C(0xAAAAAAAA)) >> 1) |
-		((v & UINT32_C(0x55555555)) << 1));
-	v = (((v & UINT32_C(0xCCCCCCCC)) >> 2) |
-		((v & UINT32_C(0x33333333)) << 2));
-	v = (((v & UINT32_C(0xF0F0F0F0)) >> 4) |
-		((v & UINT32_C(0x0F0F0F0F)) << 4));
-	v = (((v & UINT32_C(0xFF00FF00)) >> 8) |
-		((v & UINT32_C(0x00FF00FF)) << 8));
-	
-	return ((v >> 16) | (v << 16));
 }

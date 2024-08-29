@@ -74,7 +74,7 @@ sjme_errorCode sjme_inflate_bitIn(
 	}
 	
 	/* Mask in the value, which is always at the lower bits */
-	result = buffer->bitBuffer & ((1 << bitCount) - 1);
+	result = buffer->bitBuffer & (sjme_util_intOverShiftU(1, bitCount) - 1);
 	
 	/* Shift down the mini window for the next read, if not peeking. */
 	if (popPeek == SJME_INFLATE_POP)
@@ -85,7 +85,7 @@ sjme_errorCode sjme_inflate_bitIn(
 	
 	/* If in MSB, the bits need to be reversed. */
 	if (order == SJME_INFLATE_MSB)
-		result = sjme_util_reverseBitsU(result) >> (32 - bitCount);
+		result = sjme_util_intReverseU(result) >> (32 - bitCount);
 	
 #if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
@@ -346,12 +346,12 @@ sjme_errorCode sjme_inflate_bitOut(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Calculate the data mask, make sure the value is valid. */
-	mask = (1 << bitCount) - 1;
+	mask = sjme_util_intOverShiftU(1, bitCount) - 1;
 	writeValue &= mask;
 	
 	/* If writing MSB, reverse bits. */
 	if (order == SJME_INFLATE_MSB)
-		writeValue = (sjme_util_reverseBitsU(writeValue) >>
+		writeValue = (sjme_util_intReverseU(writeValue) >>
 			(32 - bitCount)) & mask;
 	
 	/* Debug. */	

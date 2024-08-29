@@ -62,7 +62,7 @@ sjme_errorCode sjme_inflate_buildTree(
 		if (sjme_error_is(error = sjme_inflate_buildTreeInsert(
 			state, outTree, inStorage, i,
 			nextCode[len],
-			(1 << len) - 1)))
+			sjme_util_intOverShiftU(1, len) - 1)))
 			return sjme_error_default(error);
 		
 		/* Increment up the next code. */
@@ -95,10 +95,10 @@ sjme_errorCode sjme_inflate_buildTreeInsert(
 		return SJME_ERROR_NONE;
 	
 	/* Make sure the correct inputs are used for adding to a tree. */
-	maskBitCount = sjme_util_bitCountU(symMask);
+	maskBitCount = sjme_util_intBitCountU(symMask);
 	if ((sym & (~symMask)) != 0 ||
 		maskBitCount == 0 ||
-		maskBitCount != (32 - sjme_util_numLeadingZeroesU(symMask)) ||
+		maskBitCount != (32 - sjme_util_intLeadingZeroesU(symMask)) ||
 		(symMask & 1) == 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
@@ -131,7 +131,7 @@ sjme_errorCode sjme_inflate_buildTreeInsert(
 	/* Start at the top of the shift and continue down the tree, */
 	/* create any nodes as needed for leaf placement. */
 	atNode = outTree->root;
-	for (sh = sjme_util_highestOneBit(symMask); sh > 0; sh >>= 1)
+	for (sh = sjme_util_intHighestOneBit(symMask); sh > 0; sh >>= 1)
 	{
 		/* Are we going right or left? */
 		one = (sym & sh) != 0;
