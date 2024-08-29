@@ -1,16 +1,21 @@
 # SquirrelJME
 
 **SquirrelJME** is a Java ME 8 Virtual Machine for embedded and Internet of
-Things devices. It has the ultimate goal of being 99.9% compatible with the
-Java ME standard.
+Things devices, it also is a platform for the _Software Preservation_ of
+mobile Java ME devices. It has the ultimate goal of being _99.9%_ compatible
+with the Java ME standard.
 
-This project is purely written in Java, with a small secondary C project, and 
-is very easy to port to different hardware. For running on native hardware, a
-compiler handles the conversion of Java byte code to machine code (in an
-intermediate format). Any system specific APIs are accessed via standardized
-system calls that handle the logic the compiler cannot provide. An execution
-engine which is written in C, it offers a lightweight method of code
-execution.
+**SquirrelJME**'s runtime library is written purely in Java with a simple
+abstraction layer on top of native hardware, or otherwise. This allows the
+runtime to be portable across various different systems along with
+separation of concerns between software running in Java and the hardware. All
+native access is performed via this abstraction layer and as such there are
+no usages of `native` in any specific class, thus only the classes in the
+abstraction layer require a native implementation.
+
+There additionally is _NanoCoat_, which is an execution engine written in C
+to allow for running SquirrelJME in a cross-platform way without a dependent
+host virtual machine.
 
 Additionally, there is a port of SquirrelJME to RetroArch which enables the
 ability to play older J2ME software and games designed for flip-phones.
@@ -32,6 +37,8 @@ Please support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 > with you. We both loves PalmOS devices and I always loved to hear about the
 > new odd and quirky things you discovered about them.
 > -- You will not be forgotten, rest in peace.
+
+And...
 
 > Dedicated to _Near_ (1983-2021), the developer of Higan, Ares, etc. and
 > otherwise. You were and still are one of the kindest and most caring person
