@@ -76,10 +76,10 @@ static sjme_errorCode sjme_stream_inputInflateInit(
 
 static sjme_errorCode sjme_stream_inputInflateFlushIn(
 	sjme_attrInNotNull sjme_stream_input source,
-	sjme_attrInNotNull sjme_inflate_state* state)
+	sjme_attrInNotNull sjme_inflate_state* inState)
 {
 	sjme_errorCode error;
-	sjme_inflate_buffer* inBuffer;
+	sjme_bitStream_input* inBits;
 	sjme_pointer bufOpPos;
 	sjme_jint bufOpLen;
 	sjme_jint remainder, sourceRead;
@@ -135,7 +135,7 @@ static sjme_errorCode sjme_stream_inputInflateFlushIn(
 }
 
 static sjme_errorCode sjme_stream_inputInflateFlushOut(
-	sjme_attrInNotNull sjme_inflate_state* state,
+	sjme_attrInNotNull sjme_inflate_state* inState,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
 	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint length)
@@ -156,7 +156,7 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 {
 	sjme_errorCode error;
 	sjme_stream_input source;
-	sjme_inflate_state* state;
+	sjme_inflate_state* inState;
 	sjme_jint remainder, lastRemainder;
 	
 	if (stream == NULL || inImplState == NULL || readCount == NULL ||

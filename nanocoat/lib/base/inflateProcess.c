@@ -13,12 +13,12 @@
 #include "sjme/debug.h"
 
 sjme_errorCode sjme_inflate_processCodes(
-	sjme_attrInNotNull sjme_inflate_state* state)
+	sjme_attrInNotNull sjme_inflate_state* inState)
 {
 	sjme_errorCode error;
-	sjme_inflate_buffer* inBuffer;
-	sjme_inflate_buffer* outBuffer;
-	sjme_inflate_window* window;
+	sjme_bitStream_input* inBits;
+	sjme_bitStream_output* outBits;
+	sjme_circleBuffer* window;
 	sjme_juint code, windowReadLen, windowReadDist;
 	
 	if (state == NULL)
@@ -103,8 +103,8 @@ sjme_errorCode sjme_inflate_processCodes(
 }
 
 sjme_errorCode sjme_inflate_processDistance(
-	sjme_attrInNotNull sjme_inflate_state* state,
-	sjme_attrInNotNull sjme_inflate_buffer* inBuffer,
+	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_bitStream_input* inBits,
 	sjme_attrInRange(257, 285) sjme_juint origCode,
 	sjme_attrOutNotNull sjme_juint* outDist)
 {
@@ -160,8 +160,8 @@ sjme_errorCode sjme_inflate_processDistance(
 }
 
 sjme_errorCode sjme_inflate_processLength(
-	sjme_attrInNotNull sjme_inflate_state* state,
-	sjme_attrInNotNull sjme_inflate_buffer* inBuffer,
+	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_bitStream_input* inBits,
 	sjme_attrInRange(257, 285) sjme_juint code,
 	sjme_attrOutNotNull sjme_juint* outLength)
 {
@@ -223,9 +223,9 @@ sjme_errorCode sjme_inflate_processLength(
 }
 
 sjme_errorCode sjme_inflate_processWindow(
-	sjme_attrInNotNull sjme_inflate_state* state,
-	sjme_attrInNotNull sjme_inflate_buffer* outBuffer,
-	sjme_attrInNotNull sjme_inflate_window* window,
+	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_bitStream_output* outBits,
+	sjme_attrInNotNull sjme_circleBuffer* window,
 	sjme_attrInPositive sjme_juint windowDist,
 	sjme_attrInPositive sjme_juint windowLen)
 {
@@ -289,7 +289,7 @@ sjme_errorCode sjme_inflate_processWindow(
 
 
 sjme_errorCode sjme_inflate_readCodeDynamic(
-	sjme_attrInNotNull sjme_inflate_state* state,
+	sjme_attrInNotNull sjme_inflate_state* inState,
 	sjme_attrOutNotNull sjme_juint* outCode)
 {
 	if (state == NULL || outCode == NULL)
@@ -300,7 +300,7 @@ sjme_errorCode sjme_inflate_readCodeDynamic(
 }
 
 sjme_errorCode sjme_inflate_readDistDynamic(
-	sjme_attrInNotNull sjme_inflate_state* state,
+	sjme_attrInNotNull sjme_inflate_state* inState,
 	sjme_attrOutNotNull sjme_juint* outDist)
 {
 	if (state == NULL || outDist == NULL)
@@ -311,11 +311,11 @@ sjme_errorCode sjme_inflate_readDistDynamic(
 }
 
 sjme_errorCode sjme_inflate_readCodeFixed(
-	sjme_attrInNotNull sjme_inflate_state* state,
+	sjme_attrInNotNull sjme_inflate_state* inState,
 	sjme_attrOutNotNull sjme_juint* outCode)
 {
 	sjme_errorCode error;
-	sjme_inflate_buffer* inBuffer;
+	sjme_bitStream_input* inBits;
 	sjme_juint hiSeven, bitsNeeded, litBase, litSub, raw;
 	
 	if (state == NULL || outCode == NULL)
@@ -386,7 +386,7 @@ sjme_errorCode sjme_inflate_readCodeFixed(
 }
 
 sjme_errorCode sjme_inflate_readDistFixed(
-	sjme_attrInNotNull sjme_inflate_state* state,
+	sjme_attrInNotNull sjme_inflate_state* inState,
 	sjme_attrOutNotNull sjme_juint* outDist)
 {
 	if (state == NULL || outDist == NULL)

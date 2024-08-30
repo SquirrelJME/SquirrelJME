@@ -20,8 +20,7 @@ squirreljme_multilib_add_library(Base
 	dylib.c
 	error.c
 	fixed.c
-	inflateBit.c
-	inflateBuffer.c
+	inflate.c
 	inflateDecode.c
 	inflateHuff.c
 	inflateProcess.c
