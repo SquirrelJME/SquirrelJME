@@ -117,6 +117,10 @@ sjme_errorCode sjme_dylib_open(
 sjme_errorCode sjme_dylib_self(
 	sjme_attrInOutNotNull sjme_dylib* outLib);
 
+/** The debug handlers to use. */
+extern SJME_DYLIB_EXPORT
+	sjme_debug_handlerFunctions* sjme_debug_handlers;
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
