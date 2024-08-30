@@ -8,11 +8,9 @@
 // -------------------------------------------------------------------------*/
 
 #include <string.h>
-#include <stdio.h>
 
 #include "sjme/stream.h"
 #include "sjme/alloc.h"
-#include "sjme/debug.h"
 #include "sjme/util.h"
 #include "sjme/inflate.h"
 

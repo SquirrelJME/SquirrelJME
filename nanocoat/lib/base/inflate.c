@@ -9,6 +9,27 @@
 
 #include "sjme/inflate.h"
 
+static sjme_errorCode sjme_inflate_bitRead(
+	sjme_attrInNotNull sjme_bitStream_input inStream,
+	sjme_attrInNullable sjme_pointer functionData,
+	sjme_attrOutNotNull sjme_jint* readCount,
+	sjme_attrOutNotNullBuf(length) sjme_pointer outBuf,
+	sjme_attrInPositiveNonZero sjme_jint length)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_inflate_bitWrite(
+	sjme_attrInNotNull sjme_bitStream_output outStream,
+	sjme_attrInNullable sjme_pointer functionData,
+	sjme_attrInNotNullBuf(length) sjme_buffer writeBuf,
+	sjme_attrInPositiveNonZero sjme_jint length)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_inflate_destroy(
 	sjme_attrInNotNull sjme_inflate* inState)
 {
@@ -40,9 +61,97 @@ sjme_errorCode sjme_inflate_new(
 	sjme_attrInNotNull sjme_inflate** outState,
 	sjme_attrInNotNull sjme_stream_input source)
 {
+	sjme_errorCode error;
+	sjme_inflate* result;
+	sjme_circleBuffer* inputBuffer;
+	sjme_circleBuffer* outputBuffer;
+	sjme_circleBuffer* window;
+	sjme_bitStream_input input;
+	sjme_bitStream_output output;
+	
 	if (inPool == NULL || outState == NULL || source == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Allocate resultant state. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc(inPool, sizeof(*result),
+		(sjme_pointer*)&result)) ||
+		result == NULL)
+		goto fail_allocResult;
+	
+	/* Allocate the input buffer. */
+	inputBuffer = NULL;
+	if (sjme_error_is(error = sjme_circleBuffer_new(inPool,
+		&inputBuffer,
+		SJME_CIRCLE_BUFFER_QUEUE,
+		SJME_INFLATE_IO_BUFFER_SIZE)) || inputBuffer == NULL)
+		goto fail_allocInputBuffer;
+	
+	/* Allocate the output buffer. */
+	outputBuffer = NULL;
+	if (sjme_error_is(error = sjme_circleBuffer_new(inPool,
+		&outputBuffer,
+		SJME_CIRCLE_BUFFER_QUEUE,
+		SJME_INFLATE_IO_BUFFER_SIZE)) || outputBuffer == NULL)
+		goto fail_allocOutputBuffer;
+	
+	/* Allocate window. */
+	window = NULL;
+	if (sjme_error_is(error = sjme_circleBuffer_new(inPool,
+		&window,
+		SJME_CIRCLE_BUFFER_WINDOW,
+		SJME_INFLATE_WINDOW_SIZE)) || window == NULL)
+		goto fail_allocWindow;
+	
+	/* Open input bit stream. */
+	input = NULL;
+	if (sjme_error_is(error = sjme_bitStream_inputOpen(inPool,
+		&input, sjme_inflate_bitRead,
+		result, NULL)) || input == NULL)
+		goto fail_openInput;
+	
+	/* Open output bit stream. */
+	output = NULL;
+	if (sjme_error_is(error = sjme_bitStream_outputOpen(inPool,
+		&output, sjme_inflate_bitWrite,
+		result, NULL)) || output == NULL)
+		goto fail_openOutput;
+	
+	/* Store everything in the result now. */
+	result->source = source;
+	result->input = input;
+	result->inputBuffer = inputBuffer;
+	result->output = output;
+	result->outputBuffer = outputBuffer;
+	result->window = window;
+	
+	/* Since we hold onto the source, count it up. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(source, NULL)))
+		goto fail_countSource;
+	
+	/* Success! */
+	*outState = result;
+	return SJME_ERROR_NONE;
+
+fail_countSource:
+fail_openOutput:
+	if (output != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(output));
+fail_openInput:
+	if (input != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(input));
+fail_allocWindow:
+	if (window != NULL)
+		sjme_circleBuffer_destroy(window);
+fail_allocOutputBuffer:
+	if (outputBuffer != NULL)
+		sjme_circleBuffer_destroy(outputBuffer);
+fail_allocInputBuffer:
+	if (inputBuffer != NULL)
+		sjme_circleBuffer_destroy(inputBuffer);
+fail_allocResult:
+	if (result != NULL)
+		sjme_alloc_free(result);
+		
+	return sjme_error_default(error);
 }

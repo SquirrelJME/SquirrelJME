@@ -260,15 +260,25 @@ typedef sjme_errorCode (*sjme_inflate_readDistFunc)(
  */
 struct sjme_inflate
 {
+	/** The inflation data source. */
+	sjme_stream_input source;
+	
 	/** The input bit stream. */
 	sjme_bitStream_input input;
+	
+	/** The input data buffer. */
+	sjme_circleBuffer* inputBuffer;
 	
 	/** The output bit stream. */
 	sjme_bitStream_output output;
 	
-	/** The output data window. */
-	sjme_circleBuffer window;
+	/** The output data buffer. */
+	sjme_circleBuffer* outputBuffer;
 	
+	/** The output data window. */
+	sjme_circleBuffer* window;
+
+#if 0
 	/** The current step in inflation. */
 	sjme_inflate_step step;
 	
@@ -301,6 +311,7 @@ struct sjme_inflate
 	
 	/** Literal tree, not literally. */
 	sjme_inflate_huffTree literalTree;
+#endif
 };
 
 /**
