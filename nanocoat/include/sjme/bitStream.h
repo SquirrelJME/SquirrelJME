@@ -126,14 +126,16 @@ typedef sjme_errorCode (*sjme_bitStream_inputReadByteFunc)(
  * 
  * @param outStream The bit stream.
  * @param functionData The optional data passed to this function.
- * @param writeByte The byte to write, only the lowest 8-bits are written.
+ * @param writeBuf The bytes to write.
+ * @param length The number of bytes to write.
  * @return On any resultant error, if any.
  * @since 2024/08/26
  */
 typedef sjme_errorCode (*sjme_bitStream_outputWriteByteFunc)(
 	sjme_attrInNotNull sjme_bitStream_output outStream,
 	sjme_attrInNullable sjme_pointer functionData,
-	sjme_attrInValue sjme_jint writeByte);
+	sjme_attrInNotNullBuf(length) sjme_buffer writeBuf,
+	sjme_attrInPositiveNonZero sjme_jint length);
 
 struct sjme_bitStream_inputBase
 {

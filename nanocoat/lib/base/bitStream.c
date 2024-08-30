@@ -70,20 +70,22 @@ static sjme_errorCode sjme_bitStream_inputReadStream(
 static sjme_errorCode sjme_bitStream_outputWriteStream(
 	sjme_attrInNotNull sjme_bitStream_output outStream,
 	sjme_attrInNullable sjme_pointer functionData,
-	sjme_attrInValue sjme_jint writeByte)
+	sjme_attrInNotNullBuf(length) sjme_buffer writeBuf,
+	sjme_attrInPositiveNonZero sjme_jint length)
 {
 	sjme_errorCode error;
 	sjme_stream_output dest;
-	sjme_jubyte single;
 	
-	if (outStream == NULL || functionData == NULL)
+	if (outStream == NULL || functionData == NULL || writeBuf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Write single byte. */
+	if (length <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Forward write. */
 	dest = functionData;
-	single = writeByte & 0xFF;
 	if (sjme_error_is(error = sjme_stream_outputWrite(dest,
-		&single, 1)))
+		writeBuf, length)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -387,8 +389,10 @@ sjme_errorCode sjme_bitStream_outputWrite(
 	sjme_attrInValue sjme_juint outValue,
 	sjme_attrInPositiveNonZero sjme_jint bitCount)
 {
+#define CHUNK_SIZE 4
 	sjme_errorCode error;
-	sjme_juint mask, single;
+	sjme_juint mask, length;
+	sjme_jubyte chunk[CHUNK_SIZE];
 	
 	if (outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -414,19 +418,23 @@ sjme_errorCode sjme_bitStream_outputWrite(
 	if (sjme_error_is(error = sjme_bitStream_overToQueue(&outStream->base)))
 		return sjme_error_default(error);
 	
-	/* Can we write more bytes? */
+	/* Can we write more bytes to the output? */
 	while (outStream->base.bitCount >= 8)
 	{
-		/* Get byte to write. */
-		single = outStream->base.bitQueue & 0xFF;
+		/* Copy to the small chunk buffer. */
+		for (length = 0; outStream->base.bitCount >= 8; length++)
+		{
+			/* Get byte to write. */
+			chunk[length] = outStream->base.bitQueue & 0xFF;
 		
-		/* Shift queue down. */
-		outStream->base.bitQueue >>= 8;
-		outStream->base.bitCount -= 8;
+			/* Shift queue down. */
+			outStream->base.bitQueue >>= 8;
+			outStream->base.bitCount -= 8;
+		}
 		
 		/* Write to target. */
 		if (sjme_error_is(error = outStream->writeFunc(outStream,
-			outStream->base.funcData, single)))
+			outStream->base.funcData, chunk, length)))
 			return sjme_error_default(error);
 		
 		/* Can we take from the overflow? */
@@ -437,4 +445,5 @@ sjme_errorCode sjme_bitStream_outputWrite(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+#undef CHUNK_SIZE
 }
