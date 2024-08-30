@@ -21,9 +21,6 @@ squirreljme_multilib_add_library(Base
 	error.c
 	fixed.c
 	inflate.c
-	inflateDecode.c
-	inflateHuff.c
-	inflateProcess.c
 	list.c
 	multithread.c
 	native.c

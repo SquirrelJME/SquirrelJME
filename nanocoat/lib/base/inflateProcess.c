@@ -13,7 +13,7 @@
 #include "sjme/debug.h"
 
 sjme_errorCode sjme_inflate_processCodes(
-	sjme_attrInNotNull sjme_inflate_state* inState)
+	sjme_attrInNotNull sjme_inflate* inState)
 {
 	sjme_errorCode error;
 	sjme_bitStream_input* inBits;
@@ -103,7 +103,7 @@ sjme_errorCode sjme_inflate_processCodes(
 }
 
 sjme_errorCode sjme_inflate_processDistance(
-	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_inflate* inState,
 	sjme_attrInNotNull sjme_bitStream_input* inBits,
 	sjme_attrInRange(257, 285) sjme_juint origCode,
 	sjme_attrOutNotNull sjme_juint* outDist)
@@ -160,7 +160,7 @@ sjme_errorCode sjme_inflate_processDistance(
 }
 
 sjme_errorCode sjme_inflate_processLength(
-	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_inflate* inState,
 	sjme_attrInNotNull sjme_bitStream_input* inBits,
 	sjme_attrInRange(257, 285) sjme_juint code,
 	sjme_attrOutNotNull sjme_juint* outLength)
@@ -223,7 +223,7 @@ sjme_errorCode sjme_inflate_processLength(
 }
 
 sjme_errorCode sjme_inflate_processWindow(
-	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_inflate* inState,
 	sjme_attrInNotNull sjme_bitStream_output* outBits,
 	sjme_attrInNotNull sjme_circleBuffer* window,
 	sjme_attrInPositive sjme_juint windowDist,
@@ -289,7 +289,7 @@ sjme_errorCode sjme_inflate_processWindow(
 
 
 sjme_errorCode sjme_inflate_readCodeDynamic(
-	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_inflate* inState,
 	sjme_attrOutNotNull sjme_juint* outCode)
 {
 	if (state == NULL || outCode == NULL)
@@ -300,7 +300,7 @@ sjme_errorCode sjme_inflate_readCodeDynamic(
 }
 
 sjme_errorCode sjme_inflate_readDistDynamic(
-	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_inflate* inState,
 	sjme_attrOutNotNull sjme_juint* outDist)
 {
 	if (state == NULL || outDist == NULL)
@@ -311,7 +311,7 @@ sjme_errorCode sjme_inflate_readDistDynamic(
 }
 
 sjme_errorCode sjme_inflate_readCodeFixed(
-	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_inflate* inState,
 	sjme_attrOutNotNull sjme_juint* outCode)
 {
 	sjme_errorCode error;
@@ -386,7 +386,7 @@ sjme_errorCode sjme_inflate_readCodeFixed(
 }
 
 sjme_errorCode sjme_inflate_readDistFixed(
-	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_inflate* inState,
 	sjme_attrOutNotNull sjme_juint* outDist)
 {
 	if (state == NULL || outDist == NULL)

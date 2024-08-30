@@ -22,7 +22,7 @@ static const sjme_jubyte sjme_inflate_shuffleBits[
 };
 
 sjme_errorCode sjme_inflate_decode(
-	sjme_attrInNotNull sjme_inflate_state* inState)
+	sjme_attrInNotNull sjme_inflate* inState)
 {
 	sjme_errorCode error;
 	
@@ -97,7 +97,7 @@ sjme_errorCode sjme_inflate_decode(
 }
 
 sjme_errorCode sjme_inflate_decodeBType(
-	sjme_attrInNotNull sjme_inflate_state* inState)
+	sjme_attrInNotNull sjme_inflate* inState)
 {
 	sjme_bitStream_input* inBits;
 	sjme_errorCode error;
@@ -165,7 +165,7 @@ sjme_errorCode sjme_inflate_decodeBType(
 }
 
 sjme_errorCode sjme_inflate_decodeDynLoad(
-	sjme_attrInNotNull sjme_inflate_state* inState)
+	sjme_attrInNotNull sjme_inflate* inState)
 {
 	sjme_errorCode error;
 	sjme_bitStream_input* inBits;
@@ -232,7 +232,7 @@ sjme_errorCode sjme_inflate_decodeDynLoad(
 }
 
 sjme_errorCode sjme_inflate_decodeDynLoadCodeLen(
-	sjme_attrInNotNull sjme_inflate_state* inState)
+	sjme_attrInNotNull sjme_inflate* inState)
 {
 	sjme_bitStream_input* inBits;
 	sjme_inflate_huffInit* init;
@@ -299,7 +299,7 @@ sjme_errorCode sjme_inflate_decodeDynLoadCodeLen(
 }
 
 sjme_errorCode sjme_inflate_decodeDynLoadLitDist(
-	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_inflate* inState,
 	sjme_attrInPositive sjme_juint count,
 	sjme_attrInNotNull sjme_inflate_huffTree* outTree,
 	sjme_attrInPositiveNonZero sjme_juint maxCount)
@@ -352,7 +352,7 @@ sjme_errorCode sjme_inflate_decodeDynLoadLitDist(
 }
 
 sjme_errorCode sjme_inflate_decodeLiteralData(
-	sjme_attrInNotNull sjme_inflate_state* inState)
+	sjme_attrInNotNull sjme_inflate* inState)
 {
 	sjme_bitStream_input* inBits;
 	sjme_bitStream_output* outBits;
@@ -366,7 +366,7 @@ sjme_errorCode sjme_inflate_decodeLiteralData(
 }
 
 sjme_errorCode sjme_inflate_decodeLiteralHeader(
-	sjme_attrInNotNull sjme_inflate_state* inState)
+	sjme_attrInNotNull sjme_inflate* inState)
 {
 	sjme_bitStream_input* inBits;
 	sjme_errorCode error;

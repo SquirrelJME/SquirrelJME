@@ -14,7 +14,7 @@
 #include "sjme/debug.h"
 
 sjme_errorCode sjme_inflate_buildTree(
-	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_inflate* inState,
 	sjme_attrInNotNull sjme_inflate_huffParam* param,
 	sjme_attrInNotNull sjme_inflate_huffTree* outTree,
 	sjme_attrInNotNull sjme_inflate_huffTreeStorage* inStorage)
@@ -74,7 +74,7 @@ sjme_errorCode sjme_inflate_buildTree(
 }
 
 sjme_errorCode sjme_inflate_buildTreeInsert(
-	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_inflate* inState,
 	sjme_attrInNotNull sjme_inflate_huffTree* outTree,
 	sjme_attrInNotNull sjme_inflate_huffTreeStorage* inStorage,
 	sjme_attrInPositive sjme_juint code,

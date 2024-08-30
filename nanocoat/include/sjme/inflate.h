@@ -18,9 +18,9 @@
 
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
-#include "stream.h"
-#include "bitStream.h"
-#include "circleBuffer.h"
+#include "sjme/stream.h"
+#include "sjme/bitStream.h"
+#include "sjme/circleBuffer.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -227,7 +227,7 @@ typedef struct sjme_inflate_huffTreeStorage
  * 
  * @since 2024/08/17
  */
-typedef struct sjme_inflate_state sjme_inflate_state;
+typedef struct sjme_inflate sjme_inflate;
 
 /**
  * Reads a code from the input.
@@ -238,7 +238,7 @@ typedef struct sjme_inflate_state sjme_inflate_state;
  * @since 2024/08/25
  */
 typedef sjme_errorCode (*sjme_inflate_readCodeFunc)(
-	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_inflate* inState,
 	sjme_attrOutNotNull sjme_juint* outCode);
 
 /**
@@ -250,7 +250,7 @@ typedef sjme_errorCode (*sjme_inflate_readCodeFunc)(
  * @since 2024/08/25
  */
 typedef sjme_errorCode (*sjme_inflate_readDistFunc)(
-	sjme_attrInNotNull sjme_inflate_state* inState,
+	sjme_attrInNotNull sjme_inflate* inState,
 	sjme_attrOutNotNull sjme_juint* outDist);
 
 /**
@@ -258,7 +258,7 @@ typedef sjme_errorCode (*sjme_inflate_readDistFunc)(
  * 
  * @since 2024/08/17
  */
-struct sjme_inflate_state
+struct sjme_inflate
 {
 	/** The input bit stream. */
 	sjme_bitStream_input input;
@@ -311,7 +311,24 @@ struct sjme_inflate_state
  * @since 2024/08/30 
  */
 sjme_errorCode sjme_inflate_destroy(
-	sjme_attrInNotNull sjme_inflate_state* inState);
+	sjme_attrInNotNull sjme_inflate* inState);
+
+/**
+ * Inflates data from the given inflation state and returns it.
+ * 
+ * @param inState The inflation state.
+ * @param readCount The number of bytes inflated, will be @c -1 if the end
+ * of the compressed stream is reached.
+ * @param outBuf The resultant buffer to receive the inflated data.
+ * @param length The maximum number of bytes to decompress.
+ * @return Any resultant error, if any.
+ * @since 2024/08/30
+ */
+sjme_errorCode sjme_inflate_inflate(
+	sjme_attrInNotNull sjme_inflate* inState,
+	sjme_attrOutNotNull sjme_jint* readCount,
+	sjme_attrOutNotNullBuf(length) sjme_buffer outBuf,
+	sjme_attrInPositiveNonZero sjme_jint length);
 
 /**
  * Initializes a new blank inflation state for the inflation of deflate
@@ -319,105 +336,14 @@ sjme_errorCode sjme_inflate_destroy(
  * 
  * @param inPool The pool to allocate within.
  * @param outState The resultant state.
+ * @param source Source compressed input data.
  * @return Any resultant error, if any.
  * @since 2024/08/30
  */
 sjme_errorCode sjme_inflate_new(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrInNotNull sjme_inflate_state** outState);
-
-sjme_errorCode sjme_inflate_bitInCodeLen(
-	sjme_attrInNotNull sjme_bitStream_input* inBits,
-	sjme_attrInNotNull sjme_inflate_huffTree* codeLenTree,
-	sjme_attrInOutNotNull sjme_juint* index,
-	sjme_attrOutNotNull sjme_juint* outLengths,
-	sjme_attrInPositive sjme_juint count);
-
-sjme_errorCode sjme_inflate_bitInTree(
-	sjme_attrInNotNull sjme_bitStream_input* inBits,
-	sjme_attrInNotNull sjme_inflate_huffTree* fromTree,
-	sjme_attrOutNotNull sjme_juint* outValue);
-
-sjme_errorCode sjme_inflate_decode(
-	sjme_attrInNotNull sjme_inflate_state* inState);
-
-sjme_errorCode sjme_inflate_decodeBType(
-	sjme_attrInNotNull sjme_inflate_state* inState);
-
-sjme_errorCode sjme_inflate_decodeDynLoad(
-	sjme_attrInNotNull sjme_inflate_state* inState);
-
-sjme_errorCode sjme_inflate_decodeDynLoadCodeLen(
-	sjme_attrInNotNull sjme_inflate_state* inState);
-
-sjme_errorCode sjme_inflate_decodeDynLoadLitDist(
-	sjme_attrInNotNull sjme_inflate_state* inState,
-	sjme_attrInPositive sjme_juint count,
-	sjme_attrInNotNull sjme_inflate_huffTree* outTree,
-	sjme_attrInPositiveNonZero sjme_juint maxCount);
-
-sjme_errorCode sjme_inflate_decodeLiteralData(
-	sjme_attrInNotNull sjme_inflate_state* inState);
-
-sjme_errorCode sjme_inflate_decodeLiteralHeader(
-	sjme_attrInNotNull sjme_inflate_state* inState);
-
-sjme_errorCode sjme_inflate_buildTree(
-	sjme_attrInNotNull sjme_inflate_state* inState,
-	sjme_attrInNotNull sjme_inflate_huffParam* param,
-	sjme_attrInNotNull sjme_inflate_huffTree* outTree,
-	sjme_attrInNotNull sjme_inflate_huffTreeStorage* inStorage);
-
-sjme_errorCode sjme_inflate_buildTreeInsert(
-	sjme_attrInNotNull sjme_inflate_state* inState,
-	sjme_attrInNotNull sjme_inflate_huffTree* outTree,
-	sjme_attrInNotNull sjme_inflate_huffTreeStorage* inStorage,
-	sjme_attrInPositive sjme_juint code,
-	sjme_attrInValue sjme_juint sym,
-	sjme_attrInPositiveNonZero sjme_juint symMask);
-
-sjme_errorCode sjme_inflate_buildTreeInsertNext(
-	sjme_attrInNotNull sjme_inflate_huffTree* outTree,
-	sjme_attrInNotNull sjme_inflate_huffTreeStorage* inStorage,
-	sjme_attrOutNotNull sjme_inflate_huffNode** outNode);
-
-sjme_errorCode sjme_inflate_processCodes(
-	sjme_attrInNotNull sjme_inflate_state* inState);
-
-sjme_errorCode sjme_inflate_processDistance(
-	sjme_attrInNotNull sjme_inflate_state* inState,
-	sjme_attrInNotNull sjme_bitStream_input* inBits,
-	sjme_attrInRange(257, 285) sjme_juint origCode,
-	sjme_attrOutNotNull sjme_juint* outDist);
-
-sjme_errorCode sjme_inflate_processLength(
-	sjme_attrInNotNull sjme_inflate_state* inState,
-	sjme_attrInNotNull sjme_bitStream_input* inBits,
-	sjme_attrInRange(257, 285) sjme_juint code,
-	sjme_attrOutNotNull sjme_juint* outLength);
-
-sjme_errorCode sjme_inflate_processWindow(
-	sjme_attrInNotNull sjme_inflate_state* inState,
-	sjme_attrInNotNull sjme_bitStream_output* outBits,
-	sjme_attrInNotNull sjme_circleBuffer* window,
-	sjme_attrInPositive sjme_juint windowDist,
-	sjme_attrInPositive sjme_juint windowLen);
-
-sjme_errorCode sjme_inflate_readCodeDynamic(
-	sjme_attrInNotNull sjme_inflate_state* inState,
-	sjme_attrOutNotNull sjme_juint* outCode);
-
-sjme_errorCode sjme_inflate_readDistDynamic(
-	sjme_attrInNotNull sjme_inflate_state* inState,
-	sjme_attrOutNotNull sjme_juint* outDist);
-
-sjme_errorCode sjme_inflate_readCodeFixed(
-	sjme_attrInNotNull sjme_inflate_state* inState,
-	sjme_attrOutNotNull sjme_juint* outCode);
-
-sjme_errorCode sjme_inflate_readDistFixed(
-	sjme_attrInNotNull sjme_inflate_state* inState,
-	sjme_attrOutNotNull sjme_juint* outDist);
+	sjme_attrInNotNull sjme_inflate** outState,
+	sjme_attrInNotNull sjme_stream_input source);
 
 /*--------------------------------------------------------------------------*/
 
