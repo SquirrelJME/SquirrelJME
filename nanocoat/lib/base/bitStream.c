@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "sjme/bitStream.h"
 #include "sjme/util.h"
 
@@ -41,37 +43,27 @@ static sjme_errorCode sjme_bitStream_inputOutputClose(
 static sjme_errorCode sjme_bitStream_inputReadStream(
 	sjme_attrInNotNull sjme_bitStream_input inStream,
 	sjme_attrInNullable sjme_pointer functionData,
-	sjme_attrOutNotNull sjme_jint* readByte)
+	sjme_attrOutNotNull sjme_jint* readCount,
+	sjme_attrOutNotNullBuf(length) sjme_pointer outBuf,
+	sjme_attrInPositiveNonZero sjme_jint length)
 {
 	sjme_errorCode error;
 	sjme_stream_input source;
-	sjme_jint count;
-	sjme_jubyte value;
 	
-	if (inStream == NULL || functionData == NULL || readByte == NULL)
+	if (inStream == NULL || functionData == NULL || readCount == NULL ||
+		outBuf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Read in single byte. */
+	if (length <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Read in value. */
 	source = functionData;
-	do
-	{
-		count = INT32_MAX;
-		value = 0;
-		if (sjme_error_is(error = sjme_stream_inputRead(source,
-			&count, &value, 1)) ||
-			count == INT32_MAX)
-			return sjme_error_default(error);
-	} while (count == 0);
+	if (sjme_error_is(error = sjme_stream_inputRead(source,
+		readCount, outBuf, length)))
+		return sjme_error_default(error);
 	
-	/* EOF? */
-	if (count < 0)
-	{
-		*readByte = -1;
-		return SJME_ERROR_NONE;
-	}
-	
-	/* Otherwise mask in. */
-	*readByte = value & 0xFF;
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -230,10 +222,12 @@ sjme_errorCode sjme_bitStream_inputRead(
 	sjme_attrOutNotNull sjme_juint* outValue,
 	sjme_attrInPositiveNonZero sjme_jint bitCount)
 {
+#define CHUNK_SIZE 4
 	sjme_errorCode error;
 	sjme_jint shiftIn;
 	sjme_juint result, mask;
-	sjme_jint limit;
+	sjme_jint limit, i;
+	sjme_jubyte chunk[CHUNK_SIZE];
 	
 	if (inStream == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -250,10 +244,19 @@ sjme_errorCode sjme_bitStream_inputRead(
 		/* Fill into the overflow */
 		while (!inStream->eofHit && inStream->base.overCount <= 24)
 		{
+			/* How many full bytes can we read in? */
+			limit = (32 - inStream->base.overCount) / 8;
+			if (limit > CHUNK_SIZE)
+				limit = CHUNK_SIZE;
+			
+			/* Read in multiple bytes at once. */
+			memset(chunk, 0, sizeof(chunk));
+			
 			/* Read in next byte from the input. */
 			shiftIn = INT32_MAX;
 			if (sjme_error_is(error = inStream->readFunc(inStream,
-				inStream->base.funcData, &shiftIn)) ||
+				inStream->base.funcData,
+				&shiftIn, chunk, limit)) ||
 				shiftIn == INT32_MAX)
 				return sjme_error_default(error);
 			
@@ -265,9 +268,9 @@ sjme_errorCode sjme_bitStream_inputRead(
 			}
 			
 			/* Place on top of the current set of bits. */
-			else
+			for (i = 0; i < shiftIn; i++)
 			{
-				inStream->base.overQueue |= ((shiftIn & 0xFF) <<
+				inStream->base.overQueue |= ((((sjme_juint)chunk[i]) & 0xFF) <<
 					inStream->base.overCount);
 				inStream->base.overCount += 8;
 			}
@@ -322,6 +325,7 @@ sjme_errorCode sjme_bitStream_inputRead(
 	/* Success! */
 	*outValue = result;
 	return SJME_ERROR_NONE;
+#undef CHUNK_SIZE
 }
 
 sjme_errorCode sjme_bitStream_outputOpen(

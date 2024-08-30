@@ -108,14 +108,18 @@ typedef struct sjme_bitStream_outputBase* sjme_bitStream_output;
  * 
  * @param inStream The bit stream.
  * @param functionData The optional data passed to this function.
- * @param readByte The resultant read byte, negative value means EOF.
+ * @param readCount The resultant read count, negative value means EOF.
+ * @param outBuf The buffer of read bytes.
+ * @param length The number of bytes to read.
  * @return On any resultant error, if any.
  * @since 2024/08/26
  */
 typedef sjme_errorCode (*sjme_bitStream_inputReadByteFunc)(
 	sjme_attrInNotNull sjme_bitStream_input inStream,
 	sjme_attrInNullable sjme_pointer functionData,
-	sjme_attrOutNotNull sjme_jint* readByte);
+	sjme_attrOutNotNull sjme_jint* readCount,
+	sjme_attrOutNotNullBuf(length) sjme_pointer outBuf,
+	sjme_attrInPositiveNonZero sjme_jint length);
 
 /**
  * Writes a single byte to the output.
