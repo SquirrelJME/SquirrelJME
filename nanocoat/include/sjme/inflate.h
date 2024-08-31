@@ -260,6 +260,9 @@ struct sjme_inflate
 	/** The input data buffer. */
 	sjme_circleBuffer* inputBuffer;
 	
+	/** The input reached EOF. */
+	sjme_jboolean inputEof;
+	
 	/** The output bit stream. */
 	sjme_bitStream_output output;
 	

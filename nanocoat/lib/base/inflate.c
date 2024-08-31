@@ -11,6 +11,62 @@
 
 #include "sjme/inflate.h"
 
+static sjme_errorCode sjme_inflate_bitFill(
+	sjme_attrInNotNull sjme_inflate* inState)
+{
+	sjme_errorCode error;
+	sjme_jint avail, readCount;
+	sjme_jubyte* buffer;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Pointless if the input hit EOF. */
+	if (inState->inputEof)
+		return SJME_ERROR_NONE;
+		
+	/* How much space is left in the input buffer? */
+	avail = INT32_MAX;
+	if (sjme_error_is(error = sjme_circleBuffer_available(
+		inState->inputBuffer, &avail)) ||
+		avail == INT32_MAX)
+		return sjme_error_default(error);
+	
+	/* It is as full as it can get. */
+	if (avail <= 0)
+		return SJME_ERROR_NONE;
+	
+	/* Setup target buffer to read into. */
+	buffer = sjme_alloca(avail);
+	if (buffer == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	memset(buffer, 0, avail);
+	
+	/* Read everything in as much as possible. */
+	readCount = INT32_MAX;
+	if (sjme_error_is(error = sjme_stream_inputReadFully(
+		inState->source, &readCount, buffer, avail)) ||
+		readCount == INT32_MAX)
+		return sjme_error_default(error);
+	
+	/* EOF? */
+	if (readCount < 0)
+	{
+		inState->inputEof = SJME_JNI_TRUE;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Push onto the buffer. */
+	if (sjme_error_is(error = sjme_circleBuffer_push(
+		inState->inputBuffer,
+		buffer, readCount,
+		SJME_CIRCLE_BUFFER_TAIL)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_inflate_bitRead(
 	sjme_attrInNotNull sjme_bitStream_input inStream,
 	sjme_attrInNullable sjme_pointer functionData,
@@ -30,12 +86,30 @@ static sjme_errorCode sjme_inflate_bitRead(
 	if (length <= 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
+	/* Always fill in before read. */
+	if (sjme_error_is(error = sjme_inflate_bitFill(inState)))
+		return sjme_error_default(error);
+	
 	/* How much is in the input buffer? */
 	limit = INT32_MAX;
 	if (sjme_error_is(error = sjme_circleBuffer_stored(
 		inState->inputBuffer, &limit)) ||
 		limit == INT32_MAX)
 		return sjme_error_default(error);
+	
+	/* If this is zero then we do not have enough to read from. */
+	if (limit == 0)
+	{
+		/* However if EOF was hit, we stop. */
+		if (inState->inputEof)
+		{
+			*readCount = -1;
+			return SJME_ERROR_NONE;
+		}
+		
+		/* Otherwise, we need more data! */
+		return SJME_ERROR_TOO_SHORT;
+	}
 	
 	/* Do not exceed the storage limit. */
 	if (limit > length)
@@ -68,8 +142,53 @@ static sjme_errorCode sjme_inflate_bitWrite(
 	if (length <= 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Push onto the window. */
+	if (sjme_error_is(error = sjme_circleBuffer_push(
+		inState->window, writeBuf, length,
+		SJME_CIRCLE_BUFFER_TAIL)))
+		return sjme_error_default(error);
+	
+	/* And onto the output buffer. */
+	if (sjme_error_is(error = sjme_circleBuffer_push(
+		inState->outputBuffer, writeBuf, length,
+		SJME_CIRCLE_BUFFER_TAIL)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_inflate_bufferSaturation(
+	sjme_attrInNotNull sjme_inflate* inState,
+	sjme_attrInPositiveNonZero sjme_jint bitsNeeded)
+{
+	sjme_errorCode error;
+	sjme_jint ready;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (bitsNeeded <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+			
+	/* The output buffer is saturated? */
+	if (inState->outputBuffer->ready >= SJME_INFLATE_IO_BUFFER_SATURATED)
+		return SJME_ERROR_BUFFER_SATURATED;
+	
+	/* How many bits are already in the window? */
+	ready = INT32_MAX;
+	if (sjme_error_is(error = sjme_bitStream_bitsReady(
+		SJME_AS_BITSTREAM(inState->input),
+		&ready)) || ready == INT32_MAX)
+		return sjme_error_default(error);
+	
+	/* Add in all the input buffer bytes. */
+	ready += (inState->inputBuffer->ready * 8);
+	
+	/* Do we have enough? */
+	if (ready >= bitsNeeded)
+		return SJME_ERROR_NONE;
+	return SJME_ERROR_TOO_SHORT;
 }
 
 static sjme_errorCode sjme_inflate_drain(
@@ -79,7 +198,7 @@ static sjme_errorCode sjme_inflate_drain(
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
 	sjme_errorCode error;
-	sjme_jint avail, limit;
+	sjme_jint stored, limit;
 	
 	if (inState == NULL || drainOff == NULL || outBuf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -88,16 +207,16 @@ static sjme_errorCode sjme_inflate_drain(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 		
 	/* How much is in the output buffer? */
-	avail = INT32_MAX;
-	if (sjme_error_is(error = sjme_circleBuffer_available(
-		inState->outputBuffer, &avail)) ||
-		avail == INT32_MAX)
+	stored = INT32_MAX;
+	if (sjme_error_is(error = sjme_circleBuffer_stored(
+		inState->outputBuffer, &stored)) ||
+		stored == INT32_MAX)
 		return sjme_error_default(error);
 	
 	/* How much can be drained? */
 	limit = length - (*drainOff);
-	if (limit > avail)
-		limit = avail;
+	if (limit > stored)
+		limit = stored;
 		
 	/* Nothing to do? */
 	if (limit == 0)
@@ -114,55 +233,6 @@ static sjme_errorCode sjme_inflate_drain(
 	(*drainOff) += limit;
 	
 	/* Success! */
-	return SJME_ERROR_NULL_ARGUMENTS;
-}
-
-static sjme_errorCode sjme_inflate_fill(
-	sjme_attrInNotNull sjme_inflate* inState)
-{
-	sjme_errorCode error;
-	sjme_jint avail, readCount;
-	sjme_jubyte* buffer;
-	
-	if (inState == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	/* How much space is left in the input buffer? */
-	avail = INT32_MAX;
-	if (sjme_error_is(error = sjme_circleBuffer_available(
-		inState->inputBuffer, &avail)) ||
-		avail == INT32_MAX)
-		return sjme_error_default(error);
-	
-	/* It is as full as it can get. */
-	if (avail <= 0)
-		return SJME_ERROR_NONE;
-	
-	/* Setup target buffer to read into. */
-	buffer = sjme_alloca(avail);
-	if (buffer == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
-	memset(buffer, 0, avail);
-	
-	/* Read everything as much as possible. */
-	readCount = INT32_MAX;
-	if (sjme_error_is(error = sjme_stream_inputReadFully(
-		inState->source, &readCount, buffer, avail)) ||
-		readCount == INT32_MAX)
-		return sjme_error_default(error);
-	
-	/* EOF? */
-	if (readCount < 0)
-		return SJME_ERROR_END_OF_FILE;
-	
-	/* Push onto the buffer. */
-	if (sjme_error_is(error = sjme_circleBuffer_push(
-		inState->inputBuffer,
-		buffer, readCount,
-		SJME_CIRCLE_BUFFER_TAIL)))
-		return sjme_error_default(error);
-	
-	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -174,6 +244,18 @@ static sjme_errorCode sjme_inflate_stepBType(
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If final was hit, then we are done. */
+	if (inState->finalHit)
+	{
+		inState->step = SJME_INFLATE_STEP_FINISHED;
+		return SJME_ERROR_NONE;
+	}
+		
+	/* Can we actually read the block? */
+	if (sjme_error_is(error = sjme_inflate_bufferSaturation(
+		inState, 3)))
+		return sjme_error_default(error);
 	
 	/* Read in final block flag. */
 	isFinal = INT32_MAX;
@@ -215,12 +297,57 @@ sjme_errorCode sjme_inflate_stepLiteralData(
 	sjme_attrInNotNull sjme_inflate* inState)
 {
 	sjme_errorCode error;
+	sjme_jint left;
+	sjme_juint raw;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Copy in what we can, provided the buffers are not saturated */
+	/* and we have input data. */
+	left = inState->sub.literalLeft;
+	while (left > 0)
+	{
+		/* Can we actually read a byte? */
+		if (sjme_error_is(error = sjme_inflate_bufferSaturation(
+			inState, 8)))
+			goto fail_saturated;
+		
+		/* Read in byte. */
+		raw = INT32_MAX;
+		if (sjme_error_is(error = sjme_bitStream_inputRead(
+			inState->input,
+			SJME_BITSTREAM_LSB, &raw, 8)) ||
+			raw == INT32_MAX)
+			goto fail_read;
+		
+		/* Write out bits. */
+		if (sjme_error_is(error = sjme_bitStream_outputWrite(
+			inState->output,
+			SJME_BITSTREAM_LSB, raw, 8)))
+			goto fail_write;
+		
+		/* We consumed a byte. */
+		left--;
+	}
+	
+	/* Store for next run. */
+	inState->sub.literalLeft = left;
+	
+	/* Did we read in all the data? Go back to the block type parse. */
+	if (left == 0)
+		inState->step = SJME_INFLATE_STEP_CHECK_BTYPE;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_write:
+fail_read:
+fail_saturated:
+	/* Store for next run. */
+	inState->sub.literalLeft = left;
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_inflate_stepLiteralSetup(
@@ -236,6 +363,11 @@ sjme_errorCode sjme_inflate_stepLiteralSetup(
 	if (sjme_error_is(error = sjme_bitStream_inputAlign(
 		inState->input,
 		8, NULL)))
+		return sjme_error_default(error);
+		
+	/* Can we actually read the lengths? */
+	if (sjme_error_is(error = sjme_inflate_bufferSaturation(
+		inState, 32)))
 		return sjme_error_default(error);
 	
 	/* Read both the length and its complement. */
@@ -319,15 +451,25 @@ sjme_errorCode sjme_inflate_inflate(
 		
 		/* Fill in the input buffer as much as possible, this will */
 		/* reduce any subsequent disk activity as it is done in bulk. */
-		if (sjme_error_is(error = sjme_inflate_fill(inState)))
+		if (sjme_error_is(error = sjme_inflate_bitFill(inState)))
 		{
 			inState->failed = error;
 			return sjme_error_default(error);
 		}
 		
-		/* The output buffer is too saturated, we do not want to overfill. */
-		if (inState->outputBuffer->ready >= SJME_INFLATE_IO_BUFFER_SATURATED)
-			break;
+		/* Check the ready state, stop if not yet ready */
+		if (sjme_error_is(sjme_inflate_bufferSaturation(inState,
+			1)))
+		{
+			if (error == SJME_ERROR_TOO_SHORT)
+				continue;
+			
+			if (error == SJME_INFLATE_IO_BUFFER_SATURATED)
+				break;
+			
+			inState->failed = error;
+			return sjme_error_default(error);
+		}
 		
 		/* Which step at inflation are we at? */
 		error = SJME_ERROR_UNKNOWN;
@@ -366,10 +508,12 @@ sjme_errorCode sjme_inflate_inflate(
 		if (sjme_error_is(error))
 		{
 			/* Not enough input data, need to fill more! */
+			if (error == SJME_ERROR_TOO_SHORT)
+				continue;
+				
 			/* Or we filled the output buffer as much as possible and */
 			/* cannot fit anymore. */
-			if (error == SJME_ERROR_TOO_SHORT ||
-				error == SJME_INFLATE_IO_BUFFER_SATURATED)
+			if (error == SJME_INFLATE_IO_BUFFER_SATURATED)
 				break;
 			
 			/* Set as failed. */

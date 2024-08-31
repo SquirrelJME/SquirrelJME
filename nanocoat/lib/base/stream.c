@@ -181,7 +181,15 @@ sjme_errorCode sjme_stream_inputReadFully(
 		
 		/* EOF, stop. */
 		if (subRead < 0)
-			break;
+		{
+			/* Normal exit with the read count. */
+			if (at > 0)
+				break;
+			
+			/* Otherwise indicate EOF. */
+			*readCount = -1;
+			return SJME_ERROR_NONE;
+		}
 		
 		/* Move counters. */
 		at += subRead;

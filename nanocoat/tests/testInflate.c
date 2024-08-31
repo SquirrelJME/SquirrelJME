@@ -18,6 +18,7 @@
 #include "deflFixedA.bin.h"
 #include "deflDyn.bin.h"
 #include "deflDynFiltered.bin.h"
+#include "squirrel.txt.h"
 
 typedef struct testDataInfo
 {
@@ -33,13 +34,24 @@ typedef struct testDataInfo
 static const testDataInfo testData[] =
 {
 	{&defllit_bin__bin,
-		&defllit_bin__len},
+		&defllit_bin__len,
+		&squirrel_txt__bin,
+		&squirrel_txt__len},
+		
 	{&deflfixeda_bin__bin,
-		&deflfixeda_bin__len},
+		&deflfixeda_bin__len,
+		&squirrel_txt__bin,
+		&squirrel_txt__len},
+		
 	{&defldyn_bin__bin,
-		&defldyn_bin__len},
+		&defldyn_bin__len,
+		&squirrel_txt__bin,
+		&squirrel_txt__len},
+		
 	{&defldynfiltered_bin__bin,
-		&defldynfiltered_bin__len},
+		&defldynfiltered_bin__len,
+		&squirrel_txt__bin,
+		&squirrel_txt__len},
 	
 	{NULL}
 };

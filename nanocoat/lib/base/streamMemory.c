@@ -85,7 +85,7 @@ static sjme_errorCode sjme_stream_inputMemoryRead(
 	if (stream == NULL || readCount == NULL || dest == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (length < 0)
+	if (length <= 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* End of stream? */
@@ -101,7 +101,7 @@ static sjme_errorCode sjme_stream_inputMemoryRead(
 		limit = length;
 
 	/* Do a direct memory copy. */
-	memmove(dest, (sjme_pointer)(((uintptr_t)inImplState->buffer) +
+	memmove(dest, SJME_POINTER_OFFSET(inImplState->buffer,
 		stream->totalRead), limit);
 
 	/* Indicate read count and consider success! */

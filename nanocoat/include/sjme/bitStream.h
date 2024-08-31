@@ -79,6 +79,16 @@ typedef struct sjme_bitStream_base
 } sjme_bitStream_base;
 
 /**
+ * Base bitstream type.
+ * 
+ * @since 2024/08/31
+ */
+typedef sjme_bitStream_base* sjme_bitStream;
+
+/** Cast to a bit stream base. */
+#define SJME_AS_BITSTREAM(x) ((sjme_bitStream)(x))
+
+/**
  * Input bit stream source.
  * 
  * @since 2024/08/26
@@ -160,6 +170,18 @@ struct sjme_bitStream_outputBase
 	/** The write function. */
 	sjme_bitStream_outputWriteByteFunc writeFunc;
 };
+
+/**
+ * Returns the number of bits that are ready.
+ * 
+ * @param ofStream The stream to get the ready count for. 
+ * @param readyBits The number of ready bits.
+ * @return Any resultant error, if any.
+ * @since 2024/08/31 
+ */
+sjme_errorCode sjme_bitStream_bitsReady(
+	sjme_attrInNotNull sjme_bitStream ofStream,
+	sjme_attrOutNotNull sjme_jint* readyBits);
 
 /**
  * Skips the given number of bits until the input bit stream is aligned with

@@ -452,6 +452,9 @@ sjme_errorCode sjme_circleBuffer_get(
 	if (buffer == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	if (length <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
 	/* Calculate result. */
 	memset(&result, 0, sizeof(result));
 	if (sjme_error_is(error = sjme_circleBuffer_calc(
@@ -527,6 +530,9 @@ sjme_errorCode sjme_circleBuffer_pop(
 	if (buffer == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	if (length <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
 	/* Calculate result. */
 	memset(&result, 0, sizeof(result));
 	if (sjme_error_is(error = sjme_circleBuffer_calc(
@@ -550,6 +556,9 @@ sjme_errorCode sjme_circleBuffer_push(
 	
 	if (buffer == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (length <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Calculate result. */
 	memset(&result, 0, sizeof(result));

@@ -124,6 +124,18 @@ static sjme_errorCode sjme_bitStream_overToQueue(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_bitStream_bitsReady(
+	sjme_attrInNotNull sjme_bitStream ofStream,
+	sjme_attrOutNotNull sjme_jint* readyBits)
+{
+	if (ofStream == NULL || readyBits == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Is simple addition of the bits in both windows. */
+	*readyBits = ofStream->bitCount + ofStream->overCount;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_bitStream_inputAlign(
 	sjme_attrInNotNull sjme_bitStream_input inStream,
 	sjme_attrInRange(2, 32) sjme_jint alignBit,
