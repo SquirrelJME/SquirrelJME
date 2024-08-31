@@ -271,10 +271,20 @@ struct sjme_inflate
 	
 	/** The current step in inflation. */
 	sjme_inflate_step step;
-#if 0
+	
+	/** Has decompression failed? */
+	sjme_errorCode failed;
 	
 	/** Was the final block hit? */
 	sjme_jboolean finalHit;
+	
+	/** Sub-state. */
+	union
+	{
+		/** The amount of literal data left. */
+		sjme_jint literalLeft;
+	} sub;
+#if 0
 	
 	/** Is the input data corrupted? */
 	sjme_jboolean invalidInput;

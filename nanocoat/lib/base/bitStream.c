@@ -124,6 +124,43 @@ static sjme_errorCode sjme_bitStream_overToQueue(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_bitStream_inputAlign(
+	sjme_attrInNotNull sjme_bitStream_input inStream,
+	sjme_attrInRange(2, 32) sjme_jint alignBit,
+	sjme_attrOutNullable sjme_jint* outSkipped)
+{
+	sjme_errorCode error;
+	sjme_jint at, skip;
+	sjme_juint discard;
+	
+	if (inStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (alignBit < 2 || alignBit > 32)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Which alignment are we at? Do we even need to align? */
+	at = inStream->base.streamCount % alignBit;
+	if (at == 0)
+	{
+		if (outSkipped != NULL)
+			*outSkipped = 0;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Skip bits until we reach the alignment amount. */
+	skip = alignBit - at;
+	if (sjme_error_is(error = sjme_bitStream_inputRead(
+		inStream, SJME_BITSTREAM_LSB,
+		&discard, skip)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	if (outSkipped != NULL)
+		*outSkipped = skip;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_bitStream_inputOpen(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_bitStream_input* resultStream,
@@ -324,6 +361,9 @@ sjme_errorCode sjme_bitStream_inputRead(
 		inStream->base.bitQueue, -bitCount);
 	inStream->base.bitCount -= bitCount;
 	
+	/* Count up read. */
+	inStream->base.streamCount += bitCount;
+	
 	/* Success! */
 	*outValue = result;
 	return SJME_ERROR_NONE;
@@ -413,6 +453,9 @@ sjme_errorCode sjme_bitStream_outputWrite(
 	outStream->base.overQueue |= ((outValue & mask) <<
 		outStream->base.overCount);
 	outStream->base.overCount += bitCount;
+	
+	/* Count up write. */
+	outStream->base.streamCount += bitCount;
 		
 	/* Can we take from the overflow? */
 	if (sjme_error_is(error = sjme_bitStream_overToQueue(&outStream->base)))

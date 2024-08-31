@@ -98,9 +98,11 @@ static sjme_errorCode sjme_circleBuffer_splice(
 	circleBase = circleSl->base;
 	externBase = externSl->base;
 	len = circleSl->len;
-	
+
+#if 0
 	/* Debug. */
 	sjme_message("len: %d", len);
+#endif
 	
 	/* Completely an inside slice? */
 	if (circleBase >= 0 && circleBase < buffer->size &&
@@ -221,9 +223,6 @@ static sjme_errorCode sjme_circleBuffer_calc(
 	
 	/* Circle slice is always the same length. */
 	circleSl.len = length;
-	
-	/* Debug. */
-	sjme_message("OPERATE %d", operation);
 	
 	/* The window buffer can be pushed the same as a queue as long as it */
 	/* does not exceed the buffer size. */
@@ -375,11 +374,13 @@ static sjme_errorCode sjme_circleBuffer_operate(
 		/* These must always be the same. */
 		if (src->len != dest->len)
 			return SJME_ERROR_ILLEGAL_STATE;
-			
+
+#if 0
 		/* Debug. */
 		sjme_message("Slice %d [%p %d %d] <- [%p %d %d]",
 			i, dest->externalBuf, dest->base, dest->len,
 			src->externalBuf, src->base, src->len);
+#endif
 		
 		/* External to internal. */
 		if (src->externalBuf != NULL && dest->externalBuf == NULL)

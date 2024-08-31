@@ -62,6 +62,9 @@ typedef struct sjme_bitStream_base
 	/** Pointer to pass to the function as data. */
 	sjme_pointer funcData;
 	
+	/** The number of bits read/written. */
+	sjme_juint streamCount;
+	
 	/** The current bit queue. */
 	sjme_juint bitQueue;
 	
@@ -157,6 +160,21 @@ struct sjme_bitStream_outputBase
 	/** The write function. */
 	sjme_bitStream_outputWriteByteFunc writeFunc;
 };
+
+/**
+ * Skips the given number of bits until the input bit stream is aligned with
+ * the given alignment, that is the modulo of it is zero.
+ * 
+ * @param inStream The input bit stream.
+ * @param alignBit The bit to align to.
+ * @param outSkipped The number of bits that were skipped, optional.
+ * @return On any resultant error, if any.
+ * @since 2024/08/31
+ */
+sjme_errorCode sjme_bitStream_inputAlign(
+	sjme_attrInNotNull sjme_bitStream_input inStream,
+	sjme_attrInRange(2, 32) sjme_jint alignBit,
+	sjme_attrOutNullable sjme_jint* outSkipped);
 
 /**
  * Opens an input bit stream.
