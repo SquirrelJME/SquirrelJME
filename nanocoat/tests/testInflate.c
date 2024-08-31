@@ -89,6 +89,10 @@ SJME_TEST_DECLARE(testInflate)
 			compressed)) || inflate == NULL)
 			return sjme_unit_fail(test, "Could not open compressed stream.");
 		
+		/* We are using this, so count up. */
+		if (sjme_error_is(test->error = sjme_alloc_weakRef(inflate, NULL)))
+			return sjme_unit_fail(test, "Could not count inflate stream?");
+		
 		/* Decompress all data. */
 		readLen = INT32_MAX;
 		memset(buf, 0, sizeof(buf));

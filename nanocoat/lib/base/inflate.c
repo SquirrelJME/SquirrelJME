@@ -398,11 +398,73 @@ sjme_errorCode sjme_inflate_stepLiteralSetup(
 sjme_errorCode sjme_inflate_destroy(
 	sjme_attrInNotNull sjme_inflate* inState)
 {
+	sjme_errorCode error;
+	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Close the input bit stream. */
+	if (inState->input != NULL)
+	{
+		if (sjme_error_is(error = sjme_closeable_close(
+			SJME_AS_CLOSEABLE(inState->input))))
+			return sjme_error_default(error);
+		
+		inState->input = NULL;
+	}
+	
+	/* Close the output bit stream. */
+	if (inState->output != NULL)
+	{
+		if (sjme_error_is(error = sjme_closeable_close(
+			SJME_AS_CLOSEABLE(inState->output))))
+			return sjme_error_default(error);
+		
+		inState->output = NULL;
+	}
+	
+	/* Close the source stream. */
+	if (inState->source != NULL)
+	{
+		if (sjme_error_is(error = sjme_closeable_close(
+			SJME_AS_CLOSEABLE(inState->source))))
+			return sjme_error_default(error);
+		
+		inState->source = NULL;
+	}
+	
+	/* Destroy the input buffer. */
+	if (inState->inputBuffer != NULL)
+	{
+		if (sjme_error_is(error = sjme_circleBuffer_destroy(
+			inState->inputBuffer)))
+			return sjme_error_default(error);
+		
+		inState->inputBuffer = NULL;
+	}
+	
+	/* Destroy the output buffer. */
+	if (inState->outputBuffer != NULL)
+	{
+		if (sjme_error_is(error = sjme_circleBuffer_destroy(
+			inState->outputBuffer)))
+			return sjme_error_default(error);
+		
+		inState->outputBuffer = NULL;
+	}
+	
+	/* Destroy the output window. */
+	if (inState->window != NULL)
+	{
+		if (sjme_error_is(error = sjme_circleBuffer_destroy(
+			inState->window)))
+			return sjme_error_default(error);
+		
+		inState->window = NULL;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_inflate_inflate(
@@ -599,6 +661,14 @@ sjme_errorCode sjme_inflate_new(
 	
 	/* Since we hold onto the source, count it up. */
 	if (sjme_error_is(error = sjme_alloc_weakRef(source, NULL)))
+		goto fail_countSource;
+	
+	/* Along with the input... */
+	if (sjme_error_is(error = sjme_alloc_weakRef(input, NULL)))
+		goto fail_countSource;
+	
+	/* and output bit streams! */
+	if (sjme_error_is(error = sjme_alloc_weakRef(output, NULL)))
 		goto fail_countSource;
 	
 	/* Success! */
