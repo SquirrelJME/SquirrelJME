@@ -97,26 +97,17 @@ typedef enum sjme_inflate_step
 	/** Parse BTYPE and determine how to continue. */
 	SJME_INFLATE_STEP_CHECK_BTYPE,
 	
-	/** Literal uncompressed data header. */
-	SJME_INFLATE_STEP_LITERAL_HEADER,
+	/** Literal uncompressed data setup. */
+	SJME_INFLATE_STEP_LITERAL_SETUP,
 	
 	/** Literal uncompressed data. */
 	SJME_INFLATE_STEP_LITERAL_DATA,
 	
-	/** Load in dynamic huffman table. */
-	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD,
+	/** Setup for dynamic huffman data. */
+	SJME_INFLATE_STEP_DYNAMIC_SETUP,
 	
-	/** Load in dynamic huffman table: Code length tree. */
-	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_CODE_LEN,
-	
-	/** Load in dynamic huffman table: Literal. */
-	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_LITERAL,
-	
-	/** Load in dynamic huffman table: Distance tree. */
-	SJME_INFLATE_STEP_DYNAMIC_TABLE_LOAD_DISTANCE,
-	
-	/** Fixed static huffman table. */
-	SJME_INFLATE_STEP_FIXED_TABLE_INFLATE,
+	/** Setup for fixed huffman data. */
+	SJME_INFLATE_STEP_FIXED_SETUP,
 	
 	/** Inflate from a given huffman tree. */
 	SJME_INFLATE_STEP_INFLATE_FROM_TREE,
@@ -277,10 +268,10 @@ struct sjme_inflate
 	
 	/** The output data window. */
 	sjme_circleBuffer* window;
-
-#if 0
+	
 	/** The current step in inflation. */
 	sjme_inflate_step step;
+#if 0
 	
 	/** Was the final block hit? */
 	sjme_jboolean finalHit;

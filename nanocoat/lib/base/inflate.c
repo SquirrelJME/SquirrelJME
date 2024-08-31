@@ -16,6 +16,13 @@ static sjme_errorCode sjme_inflate_bitRead(
 	sjme_attrOutNotNullBuf(length) sjme_pointer outBuf,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
+	if (inStream == NULL || functionData == NULL || readCount == NULL ||
+		outBuf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (length <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -26,6 +33,52 @@ static sjme_errorCode sjme_inflate_bitWrite(
 	sjme_attrInNotNullBuf(length) sjme_buffer writeBuf,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
+	if (outStream == NULL || functionData == NULL || writeBuf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (length <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_inflate_drain(
+	sjme_attrInNotNull sjme_inflate* inState,
+	sjme_attrInOutNotNull sjme_jint* drainOff,
+	sjme_attrOutNotNullBuf(length) sjme_buffer outBuf,
+	sjme_attrInPositiveNonZero sjme_jint length)
+{
+	if (inState == NULL || drainOff == NULL || outBuf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (length <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_inflate_fill(
+	sjme_attrInNotNull sjme_inflate* inState)
+{
+	sjme_errorCode error;
+	sjme_jint avail;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* How much space is left in the input buffer? */
+	avail = INT32_MAX;
+	if (sjme_error_is(error = sjme_circleBuffer_available(
+		inState->inputBuffer, &avail)) ||
+		avail == INT32_MAX)
+		return sjme_error_default(error);
+	
+	/* It is as full as it can get. */
+	if (avail <= 0)
+		return SJME_ERROR_NONE;
+		
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -46,14 +99,90 @@ sjme_errorCode sjme_inflate_inflate(
 	sjme_attrOutNotNullBuf(length) sjme_buffer outBuf,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
+	sjme_errorCode error;
+	sjme_jint drainOff;
+	
 	if (inState == NULL || readCount == NULL || outBuf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (length <= 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Constant inflation loop. */
+	drainOff = 0;
+	for (;;)
+	{
+		/* Can anything be drained? */
+		if (sjme_error_is(error = sjme_inflate_drain(inState, &drainOff,
+			outBuf, length)))
+			return sjme_error_default(error);
+			
+		/* EOF? */
+		if (drainOff == 0 && inState->step == SJME_INFLATE_STEP_FINISHED)
+		{
+			*readCount = -1;
+			return SJME_ERROR_NONE;
+		}
+		
+		/* Fill in the input buffer as much as possible, this will */
+		/* reduce any subsequent disk activity as it is done in bulk. */
+		if (sjme_error_is(error = sjme_inflate_fill(inState)))
+			return sjme_error_default(error);
+		
+		/* The output buffer is too saturated, we do not want to overfill. */
+		if (inState->outputBuffer->ready >= SJME_INFLATE_IO_BUFFER_SATURATED)
+			break;
+		
+		/* Which step at inflation are we at? */
+		error = SJME_ERROR_UNKNOWN;
+		switch (inState->step)
+		{
+			case SJME_INFLATE_STEP_CHECK_BTYPE:
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+				
+			case SJME_INFLATE_STEP_LITERAL_SETUP:
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+				
+			case SJME_INFLATE_STEP_LITERAL_DATA:
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+				
+			case SJME_INFLATE_STEP_DYNAMIC_SETUP:
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+				
+			case SJME_INFLATE_STEP_FIXED_SETUP:
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+				
+			case SJME_INFLATE_STEP_INFLATE_FROM_TREE:
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+				
+			case SJME_INFLATE_STEP_FINISHED:
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+		}
+		
+		/* Did inflation fail? */
+		if (sjme_error_is(error))
+		{
+			/* Not enough input data, need to fill more! */
+			/* Or we filled the output buffer as much as possible and */
+			/* cannot fit anymore. */
+			if (error == SJME_ERROR_TOO_SHORT ||
+				error == SJME_INFLATE_IO_BUFFER_SATURATED)
+				break;
+			
+			return sjme_error_default(error);
+		}
+	}
+	
+	/* The amount written is the amount drained. */
+	*readCount = drainOff;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_inflate_new(
