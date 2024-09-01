@@ -19,9 +19,12 @@
 #include "deflDyn.bin.h"
 #include "deflDynFiltered.bin.h"
 #include "squirrel.txt.h"
+#include "sqksqksqk.txt.h"
 
 typedef struct testDataInfo
 {
+	sjme_lpcstr what;
+	
 	const sjme_jubyte (*deflBin)[];
 	
 	const sjme_jint* deflLen;
@@ -33,22 +36,22 @@ typedef struct testDataInfo
 
 static const testDataInfo testData[] =
 {
-	{&defllit_bin__bin,
+	{"lit", &defllit_bin__bin,
 		&defllit_bin__len,
 		&squirrel_txt__bin,
 		&squirrel_txt__len},
 		
-	{&deflfixeda_bin__bin,
+	{"fixeda", &deflfixeda_bin__bin,
 		&deflfixeda_bin__len,
-		&squirrel_txt__bin,
-		&squirrel_txt__len},
+		&sqksqksqk_txt__bin,
+		&sqksqksqk_txt__len},
 		
-	{&defldyn_bin__bin,
+	{"dyn", &defldyn_bin__bin,
 		&defldyn_bin__len,
 		&squirrel_txt__bin,
 		&squirrel_txt__len},
 		
-	{&defldynfiltered_bin__bin,
+	{"filt", &defldynfiltered_bin__bin,
 		&defldynfiltered_bin__len,
 		&squirrel_txt__bin,
 		&squirrel_txt__len},
@@ -74,6 +77,9 @@ SJME_TEST_DECLARE(testInflate)
 	/* Go through all data chunks. */
 	for (info = &testData[0]; info->deflBin != NULL; info++)
 	{
+		/* What is being worked on? */
+		sjme_message("Decoding: %s", info->what);
+		
 		/* Open compressed stream first. */
 		compressed = NULL;
 		if (sjme_error_is(test->error = sjme_stream_inputOpenMemory(

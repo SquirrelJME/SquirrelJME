@@ -411,7 +411,7 @@ static sjme_errorCode sjme_inflate_fixedReadDist(
 	/* Fixed huffman distance codes are always 5 bits. */
 	result = INT32_MAX;
 	if (sjme_error_is(error = sjme_bitStream_inputRead(
-		inState->input, SJME_BITSTREAM_LSB,
+		inState->input, SJME_BITSTREAM_MSB,
 		&result, 5)) || result == INT32_MAX)
 		return sjme_error_default(error);
 	
@@ -897,6 +897,11 @@ sjme_errorCode sjme_inflate_inflate(
 				inState->failed = error;
 				return sjme_error_default(error);
 			}
+		
+		/* Did we actually finish? */
+		if (inState->step == SJME_INFLATE_STEP_CHECK_BTYPE &&
+			inState->finalHit)
+			inState->step = SJME_INFLATE_STEP_FINISHED;
 		
 		/* Finished? */
 		if (inState->step == SJME_INFLATE_STEP_FINISHED)

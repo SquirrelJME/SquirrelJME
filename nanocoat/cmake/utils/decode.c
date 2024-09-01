@@ -104,7 +104,10 @@ int decodeAsBase64(void)
 		
 		/* Reset column? */
 		if (c == '\r' || c == '\n')
+		{
 			col = 0;
+			continue;
+		}
 		
 		/* Otherwise increment column. */
 		else
@@ -119,7 +122,14 @@ int decodeAsBase64(void)
 			{
 				/* Already hit padding and we are on the first column? */
 				/* Stop decoding. */
-				if (hitPadding && col == 0)
+				if (hitPadding && col <= 1)
+					break;
+				
+				/* If we are on the first column, and we are the correct */
+				/* number of output bytes, then stop decoding. */
+				fprintf(stderr, "left over: %d %d\n",
+					col, numBits);
+				if (col <= 1 && numBits == 0)
 					break;
 				
 				/* We hit padding. */
