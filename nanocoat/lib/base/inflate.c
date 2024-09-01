@@ -313,7 +313,7 @@ static sjme_errorCode sjme_inflate_fixedReadCode(
 	sjme_attrOutNotNull sjme_juint* outCode)
 {
 	sjme_errorCode error;
-	sjme_juint nine, nextBits, codeBase, mask, fragment;
+	sjme_juint nine, nextBits, codeBase, nineBase, fragment;
 	
 	if (inState == NULL || outCode == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -339,14 +339,14 @@ static sjme_errorCode sjme_inflate_fixedReadCode(
 	/* The mask is {upper range - lower range}, and is added to the base. */
 	codeBase = INT32_MAX;
 	nextBits = INT32_MAX;
-	mask = INT32_MAX;
+	nineBase = INT32_MAX;
 		
 	/* 256 - 279 / 0000000.. - 0010111.. */
 	if (nine >= 0x000 && nine <= 0x05F)
 	{
 		codeBase = 256;
 		nextBits = 0;
-		mask = 0x05F;
+		nineBase = 0x000;
 	}
 	
 	/*   0 - 143 / 00110000. - 10111111. */
@@ -354,7 +354,7 @@ static sjme_errorCode sjme_inflate_fixedReadCode(
 	{
 		codeBase = 0;
 		nextBits = 1;
-		mask = 0x11F;
+		nineBase = 0x060;
 	}
 		
 	/* 280 - 287 / 11000000. - 11000111. */
@@ -362,7 +362,7 @@ static sjme_errorCode sjme_inflate_fixedReadCode(
 	{
 		codeBase = 280;
 		nextBits = 1;
-		mask = 0x00F;
+		nineBase = 0x180;
 	}
 	
 	/* 144 - 255 / 110010000 - 111111111 */
@@ -370,11 +370,12 @@ static sjme_errorCode sjme_inflate_fixedReadCode(
 	{
 		codeBase = 144;
 		nextBits = 2;
-		mask = 0x06F;
+		nineBase = 0x190;
 	}
 	
 	/* Invalid code? */
-	if (codeBase == INT32_MAX || nextBits == INT32_MAX || mask == INT32_MAX)
+	if (codeBase == INT32_MAX || nextBits == INT32_MAX ||
+		nineBase == INT32_MAX)
 		return SJME_ERROR_INFLATE_INVALID_CODE;
 	
 	/* If there are more bits to read, read them in now. */
@@ -391,7 +392,7 @@ static sjme_errorCode sjme_inflate_fixedReadCode(
 	
 	/* Recompose the code, remember that we shifted left twice to make */
 	/* a consistent 9 bits, if we did not need to do that, then undo it. */
-	*outCode = codeBase + (((nine >> (2 - nextBits)) | fragment) & mask);
+	*outCode = codeBase + ((((nine - nineBase) >> (2 - nextBits)) | fragment));
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
