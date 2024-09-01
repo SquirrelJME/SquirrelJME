@@ -705,11 +705,24 @@ sjme_errorCode sjme_inflate_stepLiteralSetup(
 static sjme_errorCode sjme_inflate_stepDynamicSetup(
 	sjme_attrInNotNull sjme_inflate* inState)
 {
+	sjme_errorCode error;
+	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+	
+	/* Set state for code reading. */
+	memset(&inState->sub, 0, sizeof(inState->sub));
+	inState->sub.huffman.readCode = sjme_inflate_dynamicReadCode;
+	inState->sub.huffman.readDist = sjme_inflate_dynamicReadDist;
+	
+	/* Move onto decompression stage. */
+	inState->step = SJME_INFLATE_STEP_INFLATE_FROM_TREE;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_inflate_stepFixedSetup(

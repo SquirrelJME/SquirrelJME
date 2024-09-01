@@ -71,23 +71,6 @@ extern "C"
 #define SJME_INFLATE_NUM_DIST_LENS 33
 
 /**
- * Which type of node is this in the tree?
- * 
- * @since 2024/08/22
- */
-typedef enum sjme_inflate_huffNodeType
-{
-	/** Unknown. */
-	SJME_INFLATE_UNKNOWN,
-	
-	/** Node. */
-	SJME_INFLATE_NODE,
-	
-	/** Leaf. */
-	SJME_INFLATE_LEAF,
-} sjme_inflate_huffNodeType;
-
-/**
  * The inflation step.
  * 
  * @since 2024/08/17
@@ -135,83 +118,6 @@ typedef struct sjme_inflate_huffInit
 	/** The raw code length bit values. */
 	sjme_juint rawCodeLens[SJME_INFLATE_CODE_LEN_LIMIT];
 } sjme_inflate_huffInit;
-
-/**
- * Huffman tree building parameters, used as input.
- * 
- * @since 2024/08/22
- */
-typedef struct sjme_inflate_huffParam
-{
-	/** Code lengths to input. */
-	sjme_juint* lengths;
-	
-	/** The number of code lengths. */
-	sjme_juint count;
-} sjme_inflate_huffParam;
-
-/**
- * Huffman tree node.
- * 
- * @since 2024/08/22
- */
-typedef struct sjme_align64 sjme_inflate_huffNode
-	sjme_inflate_huffNode;
-
-struct sjme_align64 sjme_inflate_huffNode
-{
-	/** Node data. */
-	union
-	{
-		/** Data if a leaf. */
-		struct
-		{
-			/** Zero branch. */
-			sjme_inflate_huffNode* zero;
-			
-			/** One branch. */
-			sjme_inflate_huffNode* one;
-		} node;
-		
-		/** Data if a node. */
-		struct
-		{
-			/** The code stored here. */
-			sjme_juint code;
-		} leaf;
-	} data;
-	
-	/** Which type of node is this? */
-	sjme_inflate_huffNodeType type;
-};
-
-/**
- * Huffman tree parameters.
- * 
- * @since 2024/08/20
- */
-typedef struct sjme_inflate_huffTree
-{
-	/** The root node. */
-	sjme_inflate_huffNode* root;
-} sjme_inflate_huffTree;
-
-/**
- * Storage for huffman tree nodes.
- * 
- * @since 2024/08/22
- */
-typedef struct sjme_inflate_huffTreeStorage
-{
-	/** Storage for the huffman tree nodes. */
-	sjme_align64 sjme_jubyte storage[SJME_INFLATE_HUFF_STORAGE_SIZE];
-	
-	/** Next free node. */
-	sjme_inflate_huffNode* next;
-	
-	/** Final end of tree. */
-	sjme_inflate_huffNode* finalEnd;
-} sjme_inflate_huffTreeStorage;
 
 /**
  * Inflation state.
@@ -297,35 +203,6 @@ struct sjme_inflate
 			sjme_inflate_readDistFunc readDist;
 		} huffman;
 	} sub;
-#if 0
-	
-	/** Is the input data corrupted? */
-	sjme_jboolean invalidInput;
-	
-	/** The amount of literal bytes left to read. */
-	sjme_jint literalLeft;
-	
-	/** Initialization data for the initial huffman tree. */
-	sjme_inflate_huffInit huffInit;
-	
-	/** The function for reading codes. */
-	sjme_inflate_readCodeFunc readCode;
-	
-	/** The function for reading distances. */
-	sjme_inflate_readDistFunc readDist;
-	
-	/** Huffman tree node storage. */
-	sjme_inflate_huffTreeStorage huffStorage;
-	
-	/** Code length tree. */
-	sjme_inflate_huffTree codeLenTree;
-	
-	/** Distance tree. */
-	sjme_inflate_huffTree distanceTree;
-	
-	/** Literal tree, not literally. */
-	sjme_inflate_huffTree literalTree;
-#endif
 };
 
 /**
