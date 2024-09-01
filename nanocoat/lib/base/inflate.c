@@ -154,6 +154,9 @@ static sjme_errorCode sjme_inflate_bitWrite(
 		SJME_CIRCLE_BUFFER_TAIL)))
 		return sjme_error_default(error);
 	
+	/* Debug. */
+	sjme_message_hexDump(writeBuf, length);
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -189,6 +192,53 @@ static sjme_errorCode sjme_inflate_bufferSaturation(
 	if (ready >= bitsNeeded)
 		return SJME_ERROR_NONE;
 	return SJME_ERROR_TOO_SHORT;
+}
+
+static sjme_errorCode sjme_inflate_copyWindow(
+	sjme_attrInNotNull sjme_inflate* inState,
+	sjme_attrInValue sjme_jint length,
+	sjme_attrInValue sjme_jint dist)
+{
+	sjme_errorCode error;
+	sjme_jint maxLen, i, at;
+	sjme_jubyte* buf;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* The maximum length that is valid is the smaller of the two values, */
+	/* essentially the length could be 5 but the distance 2, we cannot */
+	/* read past the end of the window, we can only read 2 bytes. */
+	maxLen = (length < dist ? length : dist);
+	
+	/* Allocate window buffer. */
+	buf = sjme_alloca(maxLen);
+	if (buf == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	memset(buf, 0, maxLen);
+	
+	/* Read in from the window. */
+	if (sjme_error_is(error = sjme_circleBuffer_get(inState->window,
+		buf, maxLen,
+		SJME_CIRCLE_BUFFER_TAIL, dist)))
+		return sjme_error_default(error);
+	
+	/* Write in bytes from the window, this always wraps around the buffer. */
+	for (i = 0, at = 0; i < length; i++)
+	{
+		/* Write single byte. */
+		if (sjme_error_is(error = sjme_bitStream_outputWrite(
+			inState->output, SJME_BITSTREAM_LSB,
+			buf[at], 8)))
+			return sjme_error_default(error);
+		
+		/* Overflowing? */
+		if ((++at) >= maxLen)
+			at = 0;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_inflate_drain(
@@ -233,6 +283,262 @@ static sjme_errorCode sjme_inflate_drain(
 	(*drainOff) += limit;
 	
 	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_inflate_dynamicReadCode(
+	sjme_attrInNotNull sjme_inflate* inState,
+	sjme_attrOutNotNull sjme_juint* outCode)
+{
+	if (inState == NULL || outCode == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_inflate_dynamicReadDist(
+	sjme_attrInNotNull sjme_inflate* inState,
+	sjme_attrOutNotNull sjme_juint* outDist)
+{
+	if (inState == NULL || outDist == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_inflate_fixedReadCode(
+	sjme_attrInNotNull sjme_inflate* inState,
+	sjme_attrOutNotNull sjme_juint* outCode)
+{
+	sjme_errorCode error;
+	sjme_juint nine, nextBits, codeBase, mask, fragment;
+	
+	if (inState == NULL || outCode == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Make sure we at least have 7 bits available. */
+	if (sjme_error_is(error = sjme_inflate_bufferSaturation(inState,
+		7)))
+		return sjme_error_default(error);
+	
+	/* Read in the first, or only, seven bits. */
+	nine = INT32_MAX;
+	if (sjme_error_is(error = sjme_bitStream_inputRead(
+		inState->input,
+		SJME_BITSTREAM_MSB, &nine, 7)) ||
+		nine == INT32_MAX)
+		return sjme_error_default(error);
+	
+	/* Make this nine bits for consistency. */
+	nine <<= 2;
+	
+	/* Based on the current bit set, determine the code and remaining */
+	/* bits we can read. */
+	/* The mask is {upper range - lower range}, and is added to the base. */
+	codeBase = INT32_MAX;
+	nextBits = INT32_MAX;
+	mask = INT32_MAX;
+		
+	/* 256 - 279 / 0000000.. - 0010111.. */
+	if (nine >= 0x000 && nine <= 0x05F)
+	{
+		codeBase = 256;
+		nextBits = 0;
+		mask = 0x05F;
+	}
+	
+	/*   0 - 143 / 00110000. - 10111111. */
+	else if (nine >= 0x060 && nine <= 0x17F)
+	{
+		codeBase = 0;
+		nextBits = 1;
+		mask = 0x11F;
+	}
+		
+	/* 280 - 287 / 11000000. - 11000111. */
+	else if (nine >= 0x180 && nine <= 0x18F)
+	{
+		codeBase = 280;
+		nextBits = 1;
+		mask = 0x00F;
+	}
+	
+	/* 144 - 255 / 110010000 - 111111111 */
+	else if (nine >= 0x190 && nine <= 0x1FF)
+	{
+		codeBase = 144;
+		nextBits = 2;
+		mask = 0x06F;
+	}
+	
+	/* Invalid code? */
+	if (codeBase == INT32_MAX || nextBits == INT32_MAX || mask == INT32_MAX)
+		return SJME_ERROR_INFLATE_INVALID_CODE;
+	
+	/* If there are more bits to read, read them in now. */
+	fragment = 0;
+	if (nextBits != 0)
+	{
+		/* Read in bits. */
+		fragment = INT32_MAX;
+		if (sjme_error_is(error = sjme_bitStream_inputRead(
+			inState->input, SJME_BITSTREAM_MSB,
+			&fragment, nextBits)) || fragment == INT32_MAX)
+			return sjme_error_default(error);
+	}
+	
+	/* Recompose the code, remember that we shifted left twice to make */
+	/* a consistent 9 bits, if we did not need to do that, then undo it. */
+	*outCode = codeBase + (((nine >> (2 - nextBits)) | fragment) & mask);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_inflate_fixedReadDist(
+	sjme_attrInNotNull sjme_inflate* inState,
+	sjme_attrOutNotNull sjme_juint* outDist)
+{
+	sjme_errorCode error;
+	sjme_juint result;
+	
+	if (inState == NULL || outDist == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Fixed huffman distance codes are always 5 bits. */
+	result = INT32_MAX;
+	if (sjme_error_is(error = sjme_bitStream_inputRead(
+		inState->input, SJME_BITSTREAM_LSB,
+		&result, 5)) || result == INT32_MAX)
+		return sjme_error_default(error);
+	
+	/* Success! */
+	*outDist = result;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_inflate_readDistance(
+	sjme_attrInNotNull sjme_inflate* inState,
+	sjme_attrOutNotNull sjme_juint* outDist)
+{
+	sjme_errorCode error;
+	sjme_juint code, result, i, group;
+	
+	if (inState == NULL || outDist == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Read in the base distance code. */
+	code = INT32_MAX;
+	if (sjme_error_is(error = inState->sub.huffman.readDist(
+		inState, &code)) || code == INT32_MAX)
+		return sjme_error_default(error);
+	
+	/* Distance codes can only be so high. */
+	if (code > 29)
+		return SJME_ERROR_INFLATE_INVALID_CODE;
+		
+	/* Distances always start at 1. */
+	result = 1;
+	
+	/* Determine if any bits repeat. */
+	for (i = 0; i < code; i++)
+	{
+		/* Too short to repeat? */
+		if (i < 2)
+		{
+			result++;
+			continue;
+		}
+		
+		/* Otherwise, repeats in groups of two. */
+		group = ((i / 2) - 1);
+		result += (1 << group);
+	}
+	
+	/* Do we need to read in any extra bits to the distance value? */
+	if (code >= 4)
+	{
+		/* How many bits to read? */
+		group = (code / 2) - 1;
+		
+		/* Read in those extra bits. */
+		i = INT32_MAX;
+		if (sjme_error_is(error = sjme_bitStream_inputRead(
+			inState->input, SJME_BITSTREAM_LSB,
+			&i, group)) || i == INT32_MAX)
+			return sjme_error_default(error);
+		
+		/* Add in those bits. */
+		result += i;
+	}
+	
+	/* Success! */
+	*outDist = result;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_inflate_readLength(
+	sjme_attrInNotNull sjme_inflate* inState,
+	sjme_attrInRange(257, 285) sjme_juint code,
+	sjme_attrOutNotNull sjme_juint* outLength)
+{
+	sjme_errorCode error;
+	sjme_juint result, base, i, group;
+	
+	if (inState == NULL || outLength == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (code < 257 || code > 285)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* The max code is 258, note the fifty-eight and not eighty-five. */
+	/* Previously in my Java inflate code, getting these wrong was bad. */
+	if (code == 285)
+	{
+		*outLength = 258;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Resultant length always starts at three. */
+	result = 3;
+	
+	/* Determine if there are any repeating bits. */
+	for (base = code - 257, i = 0; i < base; i++)
+	{
+		/* Is too short to be in a group. */
+		if (i < 8)
+		{
+			result++;
+			continue;
+		}
+		
+		/* Code lengths are in groups of 4, which get shifted up by their */
+		/* group index. */
+		group = ((i / 4) - 1);
+		result += (1 << group);
+	}
+	
+	/* Do we need to read in any extra bits to the length value? */
+	if (base >= 8)
+	{
+		/* How many bits to read? */
+		group = (base / 4) - 1;
+		
+		/* Read in those extra bits. */
+		i = INT32_MAX;
+		if (sjme_error_is(error = sjme_bitStream_inputRead(
+			inState->input, SJME_BITSTREAM_LSB,
+			&i, group)) || i == INT32_MAX)
+			return sjme_error_default(error);
+		
+		/* Add in those bits. */
+		result += i;
+	}
+	
+	/* Success! */
+	*outLength = result;
 	return SJME_ERROR_NONE;
 }
 
@@ -395,6 +701,98 @@ sjme_errorCode sjme_inflate_stepLiteralSetup(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_inflate_stepDynamicSetup(
+	sjme_attrInNotNull sjme_inflate* inState)
+{
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_inflate_stepFixedSetup(
+	sjme_attrInNotNull sjme_inflate* inState)
+{
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Setup for new state, which is very simple. */
+	memset(&inState->sub, 0, sizeof(inState->sub));
+	inState->sub.huffman.readCode = sjme_inflate_fixedReadCode;
+	inState->sub.huffman.readDist = sjme_inflate_fixedReadDist;
+	
+	/* Move onto decompression stage. */
+	inState->step = SJME_INFLATE_STEP_INFLATE_FROM_TREE;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_inflate_stepInflateFromTree(
+	sjme_attrInNotNull sjme_inflate* inState)
+{
+	sjme_errorCode error;
+	sjme_juint code, length, dist;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Continual code reading loop, provided not saturated. */
+	for (;;)
+	{
+		/* Read in next code. */
+		code = INT32_MAX;
+		if (sjme_error_is(error = inState->sub.huffman.readCode(inState,
+			&code)) || code == INT32_MAX)
+			return sjme_error_default(error);
+		
+		/* Invalid. */
+		if (code > 285)
+			return SJME_ERROR_INFLATE_INVALID_CODE;
+		
+		/* Stop decompression. */
+		else if (code == 256)
+		{
+			/* Read the next block type. */
+			inState->step = SJME_INFLATE_STEP_CHECK_BTYPE;
+			break;
+		}
+		
+		/* Literal byte value. */
+		else if (code >= 0 && code <= 255)
+		{
+			/* Standard write. */
+			if (sjme_error_is(error = sjme_bitStream_outputWrite(
+				inState->output, SJME_BITSTREAM_LSB,
+				code, 8)))
+				return sjme_error_default(error);
+			
+			continue;
+		}
+		
+		/* Read the length value, which is based on the code and may */
+		/* read in more values. */
+		length = INT32_MAX;
+		if (sjme_error_is(error = sjme_inflate_readLength(inState,
+			code, &length)) ||
+			length == INT32_MAX)
+			return sjme_error_default(error);
+		
+		/* Read in the distance. */
+		dist = INT32_MAX;
+		if (sjme_error_is(error = sjme_inflate_readDistance(inState,
+			&dist)) || dist == INT32_MAX)
+			return sjme_error_default(error);
+		
+		/* Copy from the window. */
+		if (sjme_error_is(error = sjme_inflate_copyWindow(
+			inState, (sjme_jint)length, (sjme_jint)dist)))
+			return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_inflate_destroy(
 	sjme_attrInNotNull sjme_inflate* inState)
 {
@@ -550,20 +948,16 @@ sjme_errorCode sjme_inflate_inflate(
 				break;
 				
 			case SJME_INFLATE_STEP_DYNAMIC_SETUP:
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
+				error = sjme_inflate_stepDynamicSetup(inState);
+				break;
 				
 			case SJME_INFLATE_STEP_FIXED_SETUP:
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
+				error = sjme_inflate_stepFixedSetup(inState);
+				break;
 				
 			case SJME_INFLATE_STEP_INFLATE_FROM_TREE:
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
-				
-			case SJME_INFLATE_STEP_FINISHED:
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
+				error = sjme_inflate_stepInflateFromTree(inState);
+				break;
 		}
 		
 		/* Did inflation fail? */

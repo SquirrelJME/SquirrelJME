@@ -367,6 +367,10 @@ static sjme_errorCode sjme_circleBuffer_operate(
 		if (src->len == 0 && dest->len == 0)
 			continue;
 		
+		/* Length cannot be negative! */
+		if (src->len < 0 || dest->len < 0)
+			return SJME_ERROR_ILLEGAL_STATE;
+		
 		/* Fail if both external or both internal. */
 		if ((src->externalBuf == NULL) == (dest->externalBuf == NULL))
 			return SJME_ERROR_ILLEGAL_STATE;

@@ -286,6 +286,16 @@ struct sjme_inflate
 	{
 		/** The amount of literal data left. */
 		sjme_jint literalLeft;
+		
+		/** Huffman based decompression. */
+		struct
+		{
+			/** Read code. */
+			sjme_inflate_readCodeFunc readCode;
+			
+			/** Read distance value. */
+			sjme_inflate_readDistFunc readDist;
+		} huffman;
 	} sub;
 #if 0
 	
