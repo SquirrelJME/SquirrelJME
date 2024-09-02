@@ -45,8 +45,13 @@ sjme_errorCode sjme_traverse_clear(
 	if (traverse == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Reset nodes to initial state. */
+	traverse->root = NULL;
+	traverse->next = traverse->start;
+	memset(&traverse->storage[0], 0, traverse->storageBytes);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_traverse_destroy(
