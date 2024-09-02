@@ -53,6 +53,11 @@ SJME_TEST_DECLARE(testTraversePut)
 	sjme_unit_equalI(test,
 		SJME_TRAVERSE_LEAF, traverse->root->data.node.zero->type,
 		"Zero facing is not a leaf?");
+	sjme_unit_equalI(test,
+		0, memcmp(&value,
+			&traverse->root->data.node.zero->data.data[0],
+			sizeof(test_data)),
+		"Incorrect value?");
 	
 	/* Store second value. */
 	memset(&value, 0, sizeof(value));
@@ -74,6 +79,11 @@ SJME_TEST_DECLARE(testTraversePut)
 	sjme_unit_equalI(test,
 		SJME_TRAVERSE_LEAF, traverse->root->data.node.one->type,
 		"One facing is not a leaf?");
+	sjme_unit_equalI(test,
+		0, memcmp(&value,
+			&traverse->root->data.node.one->data.data[0],
+			sizeof(test_data)),
+		"Incorrect value?");
 	
 	/* Destroy traverse. */
 	if (sjme_error_is(test->error = sjme_traverse_destroy(

@@ -90,6 +90,12 @@ SJME_TEST_DECLARE(testTraverseIterate)
 					leafValue,
 					&traverse->root->data.node.zero->data.data,
 					"Value pointing to wrong location?");
+				
+				/* Value should match. */
+				sjme_unit_equalI(test, 1, leafValue->a,
+					"Wrong A value?");
+				sjme_unit_equalI(test, 10, leafValue->a,
+					"Wrong B value?");
 			}
 			
 			/* Single bit to one. */
@@ -125,6 +131,12 @@ SJME_TEST_DECLARE(testTraverseIterate)
 					leafValue,
 					&traverse->root->data.node.one->data.node.one->data.data,
 					"Value pointing to wrong location?");
+					
+				/* Value should match. */
+				sjme_unit_equalI(test, 2, leafValue->a,
+					"Wrong A value?");
+				sjme_unit_equalI(test, 20, leafValue->a,
+					"Wrong B value?");
 			}
 			
 			/* Skip if this was an error case. */
