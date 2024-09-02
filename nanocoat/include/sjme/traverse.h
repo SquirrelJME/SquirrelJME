@@ -115,6 +115,9 @@ typedef struct sjme_traverse_base
 	/** The actual size of node structures. */
 	sjme_jint structSize;
 	
+	/** The size of leaf values. */
+	sjme_jint leafLength;
+	
 	/** The number of bytes in storage. */
 	sjme_jint storageBytes;
 	
@@ -263,7 +266,7 @@ sjme_errorCode sjme_traverse_iterateNextR(
  * 
  * @param inPool The pool to allocate within.
  * @param outTraverse The resultant traversal tree.
- * @param elementSize The size of the tree elements.
+ * @param leafLength The size of the tree elements.
  * @param maxElements The maximum number of elements permitted in the tree.
  * @return On any resultant error, if any.
  * @since 2024/09/01
@@ -271,7 +274,7 @@ sjme_errorCode sjme_traverse_iterateNextR(
 sjme_errorCode sjme_traverse_newR(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_traverse* outTraverse,
-	sjme_attrInPositiveNonZero sjme_jint elementSize,
+	sjme_attrInPositiveNonZero sjme_jint leafLength,
 	sjme_attrInPositiveNonZero sjme_jint maxElements);
 
 /**

@@ -33,23 +33,24 @@ SJME_TEST_DECLARE(testTraversePutOverfill)
 	if (sjme_error_is(test->error = sjme_traverse_new(test->pool,
 		&traverse, MAX_ELEMENTS, test_data, 0)) || traverse == NULL)
 		return sjme_unit_fail(test, "Could not create traverse?");
-	
-	/* Add in many values. */
-	for (i = 0; i < MAX_ELEMENTS * 2; i++)
-	{
-		memset(&value, 0, sizeof(value));
-		value.a = i;
-		value.b = i * 10;
-		test->error = sjme_traverse_put(traverse,
-			&value, i, 32, test_data, 0);
 		
-		if (i < MAX_ELEMENTS)
-			sjme_unit_equalI(test, test->error, SJME_ERROR_NONE,
-				"Adding %d failed?", i);
-		else
-			sjme_unit_equalI(test, test->error, SJME_ERROR_CAPACITY_EXCEEDED,
-				"Adding %d succeeded?", i);
-	}
+	/* Force creation of 32 nodes. */
+	memset(&value, 0, sizeof(value));
+	value.a = 1;
+	value.b = 10;
+	test->error = sjme_traverse_put(traverse,
+		&value, 0, 31, test_data, 0);
+	sjme_unit_equalI(test, test->error, SJME_ERROR_NONE,
+		"Adding 31 failed?");
+		
+	/* Adding the next one should fail. */
+	memset(&value, 0, sizeof(value));
+	value.a = 2;
+	value.b = 20;
+	test->error = sjme_traverse_put(traverse,
+		&value, 1, 1, test_data, 0);
+	sjme_unit_equalI(test, test->error, SJME_ERROR_TRAVERSE_FULL,
+		"Adding just one more succeeded?");
 	
 	/* Destroy traverse. */
 	if (sjme_error_is(test->error = sjme_traverse_destroy(

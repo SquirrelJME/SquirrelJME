@@ -41,11 +41,32 @@ SJME_TEST_DECLARE(testTraversePutDuplicate)
 		&value, 0, 1, test_data, 0)))
 		return sjme_unit_fail(test, "Could not put in value?");
 	
-	/* Put it in again */
+	/* Put it in again, replacing it. */
+	memset(&value, 0, sizeof(value));
+	value.a = 2;
+	value.b = 20;
 	test->error = sjme_traverse_put(traverse,
 		&value, 0, 1, test_data, 0);
-	sjme_unit_equalI(test, test->error, SJME_ERROR_ELEMENT_EXISTS,
-		"Putting value ");
+	sjme_unit_equalI(test, test->error, SJME_ERROR_NONE,
+		"Putting replacement value failed?");
+	
+	/* There should be a root and one facing leaf. */
+	sjme_unit_notEqualP(test, NULL, traverse->root,
+		"Root node missing?");
+	sjme_unit_notEqualP(test,
+		(void*)SJME_TRAVERSE_LEAF_KEY, (void*)traverse->root->leaf.key,
+		"Root node not a node?");
+	sjme_unit_notEqualP(test, NULL, traverse->root->node.zero,
+		"There is no one node?");
+	sjme_unit_equalP(test,
+		(void*)SJME_TRAVERSE_LEAF_KEY,
+		(void*)traverse->root->node.zero->leaf.key,
+		"zero facing is not a leaf?");
+	sjme_unit_equalI(test,
+		0, memcmp(&value,
+			&traverse->root->node.zero->leaf.value[0],
+			sizeof(test_data)),
+		"Incorrect value?");
 	
 	/* Destroy traverse. */
 	if (sjme_error_is(test->error = sjme_traverse_destroy(

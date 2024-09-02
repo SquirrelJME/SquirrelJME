@@ -326,7 +326,7 @@ typedef enum sjme_errorCode
 	SJME_ERROR_INFLATE_INVALID_CODE_LENGTH = -94,
 	
 	/** Huffman tree is full. */
-	SJME_ERROR_INFLATE_HUFF_TREE_FULL = -95,
+	SJME_ERROR_TRAVERSE_FULL = -95,
 	
 	/** There is a collision in the huffman tree, which means bad data! */
 	SJME_ERROR_TREE_COLLISION = -96,
