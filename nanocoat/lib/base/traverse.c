@@ -65,13 +65,35 @@ sjme_errorCode sjme_traverse_newR(
 	sjme_attrInPositiveNonZero sjme_jint elementSize,
 	sjme_attrInPositiveNonZero sjme_jint maxElements)
 {
+	sjme_jint structSize, nodeSize, leafSize;
+	sjme_jint storageSize, pointerBytes;
+	sjme_traverse_storage* storage;
+	
 	if (inPool == NULL || outTraverse == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (elementSize <= 0 || maxElements <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	if ((elementSize * maxElements) < 0)
+	/* Determine the size for nodes and leaves, then determine struct size. */
+	nodeSize = sizeof(sjme_traverse_nodeNode);
+	leafSize = sizeof(sjme_traverse_nodeLeaf) + elementSize;
+	structSize = (nodeSize > leafSize ? nodeSize : leafSize);
+	
+	/* If not divisible by the pointer bits, round up. */
+	/* The nodes themselves are pointers, but our container data might */
+	/* also be pointers. */
+	pointerBytes = (SJME_CONFIG_HAS_POINTER / 8);
+	if ((structSize % pointerBytes) != 0)
+		structSize += pointerBytes - (structSize % pointerBytes);
+	
+	/* Make sure calculated sizes are valid. */
+	if (nodeSize <= 0 || leafSize <= 0 || structSize <= 0)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	
+	/* Then make sure we can actually store this many. */
+	storageSize = structSize * maxElements;
+	if (storageSize <= 0)
 		return SJME_ERROR_OUT_OF_MEMORY;
 	
 	sjme_todo("Impl?");

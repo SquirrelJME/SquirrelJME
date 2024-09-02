@@ -631,6 +631,28 @@ extern "C" {
 	#define sjme_align64 
 #endif
 
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/** Align to 32-bit. */
+	#define sjme_align32 __declspec(align(4))
+#elif defined(SJME_CONFIG_HAS_GCC)
+	/** Align to 32-bit. */
+	#define sjme_align32 __attribute__((aligned(4)))
+#else
+	/** Align to 32-bit. */
+	#define sjme_align32 
+#endif
+
+#if SJME_CONFIG_HAS_POINTER == 64
+	/** Align to pointer. */
+	#define sjme_alignPointer sjme_align64
+#elif SJME_CONFIG_HAS_POINTER == 32
+	/** Align to pointer. */
+	#define sjme_alignPointer sjme_align32
+#else
+	/** Align to pointer. */
+	#define sjme_alignPointer
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

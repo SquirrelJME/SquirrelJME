@@ -84,11 +84,11 @@ SJME_TEST_DECLARE(testTraverseIterate)
 					"Leaf value was null?");
 				sjme_unit_equalP(test,
 					iterator.atNode, 
-					traverse->root->data.node.zero,
+					traverse->root->node.zero,
 					"At wrong node?");
 				sjme_unit_equalP(test,
 					leafValue,
-					&traverse->root->data.node.zero->data.data,
+					&traverse->root->node.zero->leaf.value[0],
 					"Value pointing to wrong location?");
 				
 				/* Value should match. */
@@ -105,7 +105,7 @@ SJME_TEST_DECLARE(testTraverseIterate)
 					"Leaf value was not null?");
 				sjme_unit_equalP(test,
 					iterator.atNode, 
-					traverse->root->data.node.one,
+					traverse->root->node.one,
 					"At wrong node?");
 			}
 				
@@ -125,11 +125,11 @@ SJME_TEST_DECLARE(testTraverseIterate)
 					"Leaf value was null?");
 				sjme_unit_equalP(test,
 					iterator.atNode, 
-					traverse->root->data.node.one->data.node.one,
+					traverse->root->node.one->node.one,
 					"At wrong node?");
 				sjme_unit_equalP(test,
 					leafValue,
-					&traverse->root->data.node.one->data.node.one->data.data,
+					&traverse->root->node.one->node.one->leaf.value[0],
 					"Value pointing to wrong location?");
 					
 				/* Value should match. */

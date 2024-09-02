@@ -58,14 +58,17 @@ SJME_TEST_DECLARE(testTraverseRemove)
 	/* The zero node should be gone. */
 	sjme_unit_notEqualP(test, NULL, traverse->root,
 		"Root node missing?");
-	sjme_unit_equalI(test, SJME_TRAVERSE_NODE, traverse->root->type,
+	sjme_unit_notEqualP(test,
+		(void*)SJME_TRAVERSE_LEAF_KEY,
+		(void*)traverse->root->leaf.key,
 		"Root node not a node?");
-	sjme_unit_equalP(test, NULL, traverse->root->data.node.zero,
+	sjme_unit_equalP(test, NULL, traverse->root->node.zero,
 		"There is a zero node?");
-	sjme_unit_notEqualP(test, NULL, traverse->root->data.node.one,
+	sjme_unit_notEqualP(test, NULL, traverse->root->node.one,
 		"There is no one node?");
-	sjme_unit_equalI(test,
-		SJME_TRAVERSE_LEAF, traverse->root->data.node.one->type,
+	sjme_unit_equalP(test,
+		(void*)SJME_TRAVERSE_LEAF_KEY,
+		(void*)traverse->root->node.one->leaf.key,
 		"One facing is not a leaf?");
 	
 	/* Destroy traverse. */

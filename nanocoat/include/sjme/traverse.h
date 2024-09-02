@@ -33,51 +33,64 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * Which type of node is this in the tree?
- * 
- * @since 2024/08/22
- */
-typedef enum sjme_traverse_nodeType
-{
-	/** Unknown. */
-	SJME_TRAVERSE_UNKNOWN,
-	
-	/** Node. */
-	SJME_TRAVERSE_NODE,
-	
-	/** Leaf. */
-	SJME_TRAVERSE_LEAF,
-} sjme_traverse_nodeType;
-
-/**
  * Traversal tree node.
  * 
  * @since 2024/08/22
  */
-typedef struct sjme_align64 sjme_traverse_node
+typedef union sjme_alignPointer sjme_traverse_node
 	sjme_traverse_node;
 
-struct sjme_align64 sjme_traverse_node
+#if SJME_CONFIG_HAS_POINTER == 64
+	/** Key for leaf values. */
+	#define SJME_TRAVERSE_LEAF_KEY \
+		((sjme_intPointer)UINT64_C(0x6C4541664C656146))
+#elif SJME_CONFIG_HAS_POINTER == 32
+	/** Key for leaf values. */
+	#define SJME_TRAVERSE_LEAF_KEY \
+		((sjme_intPointer)UINT32_C(0x6C454166))
+#elif SJME_CONFIG_HAS_POINTER == 16
+	/** Key for leaf values. */
+	#define SJME_TRAVERSE_LEAF_KEY \
+		((sjme_intPointer)UINT16_C(0x6C45))
+#else
+	#error Unknown pointer size for node leaf?
+#endif
+
+/**
+ * Node type storage.
+ * 
+ * @since 2024/09/02
+ */
+typedef sjme_alignPointer struct sjme_traverse_nodeNode
 {
-	/** Which type of node is this? */
-	sjme_traverse_nodeType type;
+	/** Zero branch. */
+	sjme_traverse_node* zero;
 	
-	/** Node data. */
-	sjme_align64 union
-	{
-		/** Data if a node. */
-		sjme_align64 struct
-		{
-			/** Zero branch. */
-			sjme_traverse_node* zero;
-			
-			/** One branch. */
-			sjme_traverse_node* one;
-		} node;
-		
-		/** Data if a leaf. */
-		sjme_align64 sjme_jubyte data[sjme_flexibleArrayCountUnion];
-	} data;
+	/** One branch. */
+	sjme_traverse_node* one;
+} sjme_traverse_nodeNode;
+
+/**
+ * Leaf type storage.
+ * 
+ * @since 2024/09/02
+ */
+typedef sjme_alignPointer struct sjme_traverse_nodeLeaf
+{
+	/** Node type identifier. */
+	sjme_intPointer key;
+	
+	/** Leaf value. */
+	sjme_alignPointer sjme_jubyte value[sjme_flexibleArrayCountUnion];
+} sjme_traverse_nodeLeaf;
+
+union sjme_alignPointer sjme_traverse_node
+{
+	/** Data if a node. */
+	sjme_alignPointer sjme_traverse_nodeNode node;
+	
+	/** Data if a leaf. */
+	sjme_alignPointer sjme_traverse_nodeLeaf leaf;
 };
 
 /**
@@ -103,7 +116,7 @@ typedef struct sjme_traverse_storage
 	sjme_traverse_node* finalEnd;
 	
 	/** Storage for tree nodes. */
-	sjme_align64 sjme_jubyte storage[sjme_flexibleArrayCount];
+	sjme_alignPointer sjme_jubyte storage[sjme_flexibleArrayCount];
 } sjme_traverse_storage;
 
 /**

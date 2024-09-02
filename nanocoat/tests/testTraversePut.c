@@ -44,18 +44,20 @@ SJME_TEST_DECLARE(testTraversePut)
 	/* There should be a root and zero facing leaf. */
 	sjme_unit_notEqualP(test, NULL, traverse->root,
 		"Root node missing?");
-	sjme_unit_equalI(test, SJME_TRAVERSE_NODE, traverse->root->type,
+	sjme_unit_notEqualP(test,
+		(void*)SJME_TRAVERSE_LEAF_KEY, (void*)traverse->root->leaf.key,
 		"Root node not a node?");
-	sjme_unit_notEqualP(test, NULL, traverse->root->data.node.zero,
+	sjme_unit_notEqualP(test, NULL, traverse->root->node.zero,
 		"There is no zero node?");
-	sjme_unit_equalP(test, NULL, traverse->root->data.node.one,
+	sjme_unit_equalP(test, NULL, traverse->root->node.one,
 		"There is a one node?");
-	sjme_unit_equalI(test,
-		SJME_TRAVERSE_LEAF, traverse->root->data.node.zero->type,
+	sjme_unit_equalP(test,
+		(void*)SJME_TRAVERSE_LEAF_KEY,
+		(void*)traverse->root->node.zero->leaf.key,
 		"Zero facing is not a leaf?");
 	sjme_unit_equalI(test,
 		0, memcmp(&value,
-			&traverse->root->data.node.zero->data.data[0],
+			&traverse->root->node.zero->leaf.value[0],
 			sizeof(test_data)),
 		"Incorrect value?");
 	
@@ -70,18 +72,20 @@ SJME_TEST_DECLARE(testTraversePut)
 	/* There should be a root and one facing leaf. */
 	sjme_unit_notEqualP(test, NULL, traverse->root,
 		"Root node missing?");
-	sjme_unit_equalI(test, SJME_TRAVERSE_NODE, traverse->root->type,
+	sjme_unit_notEqualP(test,
+		(void*)SJME_TRAVERSE_LEAF_KEY, (void*)traverse->root->leaf.key,
 		"Root node not a node?");
-	sjme_unit_notEqualP(test, NULL, traverse->root->data.node.zero,
+	sjme_unit_notEqualP(test, NULL, traverse->root->node.zero,
 		"There is no zero node?");
-	sjme_unit_notEqualP(test, NULL, traverse->root->data.node.one,
+	sjme_unit_notEqualP(test, NULL, traverse->root->node.one,
 		"There is no one node?");
-	sjme_unit_equalI(test,
-		SJME_TRAVERSE_LEAF, traverse->root->data.node.one->type,
+	sjme_unit_equalP(test,
+		(void*)SJME_TRAVERSE_LEAF_KEY,
+		(void*)traverse->root->node.one->leaf.key,
 		"One facing is not a leaf?");
 	sjme_unit_equalI(test,
 		0, memcmp(&value,
-			&traverse->root->data.node.one->data.data[0],
+			&traverse->root->node.one->leaf.value[0],
 			sizeof(test_data)),
 		"Incorrect value?");
 	

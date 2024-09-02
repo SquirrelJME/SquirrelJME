@@ -42,13 +42,15 @@ SJME_TEST_DECLARE(testTraversePutLeafToNode)
 		return sjme_unit_fail(test, "Could not put in value?");
 	
 	/* There should be a one facing node to a one facing leaf. */
-	sjme_unit_notEqualP(test, NULL, traverse->root->data.node.one,
+	sjme_unit_notEqualP(test, NULL, traverse->root->node.one,
 		"There is no one node?");
-	sjme_unit_equalI(test,
-		SJME_TRAVERSE_NODE, traverse->root->data.node.one->type,
+	sjme_unit_notEqualP(test,
+		(void*)SJME_TRAVERSE_LEAF_KEY,
+		(void*)traverse->root->node.one->leaf.key,
 		"One facing is not a node?");
-	sjme_unit_equalI(test,
-		SJME_TRAVERSE_LEAF, traverse->root->data.node.one->data.node.one->type,
+	sjme_unit_equalP(test,
+		(void*)SJME_TRAVERSE_LEAF_KEY,
+		(void*)traverse->root->node.one->node.one->leaf.key,
 		"One+one facing is not a leaf?");
 		
 	/* Put putting in a value higher up. */
@@ -61,13 +63,15 @@ SJME_TEST_DECLARE(testTraversePutLeafToNode)
 		"Adding entry did not indicate collision?");
 		
 	/* Should be untouched. */
-	sjme_unit_notEqualP(test, NULL, traverse->root->data.node.one,
+	sjme_unit_notEqualP(test, NULL, traverse->root->node.one,
 		"There is no one node?");
-	sjme_unit_equalI(test,
-		SJME_TRAVERSE_NODE, traverse->root->data.node.one->type,
+	sjme_unit_notEqualP(test,
+		(void*)SJME_TRAVERSE_LEAF_KEY,
+		(void*)traverse->root->node.one->leaf.key,
 		"One facing is not a node?");
-	sjme_unit_equalI(test,
-		SJME_TRAVERSE_LEAF, traverse->root->data.node.one->data.node.one->type,
+	sjme_unit_equalP(test,
+		(void*)SJME_TRAVERSE_LEAF_KEY,
+		(void*)traverse->root->node.one->node.one->leaf.key,
 		"One+one facing is not a leaf?");
 	
 	/* Destroy traverse. */
