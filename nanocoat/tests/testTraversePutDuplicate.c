@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "test.h"
 #include "proto.h"
 #include "mock.h"
@@ -23,15 +25,27 @@
 SJME_TEST_DECLARE(testTraversePutDuplicate)
 {
 	sjme_traverse_test_data traverse;
+	test_data value;
 	
 	/* Setup traverse. */
 	traverse = NULL;
 	if (sjme_error_is(test->error = sjme_traverse_new(test->pool,
 		&traverse, MAX_ELEMENTS, test_data, 0)) || traverse == NULL)
 		return sjme_unit_fail(test, "Could not create traverse?");
+		
+	/* Put in a value. */
+	memset(&value, 0, sizeof(value));
+	value.a = 1;
+	value.b = 10;
+	if (sjme_error_is(test->error = sjme_traverse_put(traverse,
+		&value, 0, 1, test_data, 0)))
+		return sjme_unit_fail(test, "Could not put in value?");
 	
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	/* Put it in again */
+	test->error = sjme_traverse_put(traverse,
+		&value, 0, 1, test_data, 0);
+	sjme_unit_equalI(test, test->error, SJME_ERROR_ELEMENT_EXISTS,
+		"Putting value ");
 	
 	/* Destroy traverse. */
 	if (sjme_error_is(test->error = sjme_traverse_destroy(

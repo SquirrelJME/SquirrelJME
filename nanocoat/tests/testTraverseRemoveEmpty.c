@@ -16,13 +16,14 @@
 #include "testTraverse.h"
 
 /**
- * Tests iteration to a leaf.
+ * Tests removal of something from an empty traversal tree.
  *  
  * @since 2024/09/01 
  */
-SJME_TEST_DECLARE(testTraverseIterateLeaf)
+SJME_TEST_DECLARE(testTraverseRemoveEmpty)
 {
 	sjme_traverse_test_data traverse;
+	sjme_jint i;
 	
 	/* Setup traverse. */
 	traverse = NULL;
@@ -30,8 +31,15 @@ SJME_TEST_DECLARE(testTraverseIterateLeaf)
 		&traverse, MAX_ELEMENTS, test_data, 0)) || traverse == NULL)
 		return sjme_unit_fail(test, "Could not create traverse?");
 	
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	/* Constantly try to remove. */
+	for (i = 0; i <= 32; i++)
+	{
+		test->error = sjme_traverse_remove(
+			SJME_AS_TRAVERSE(traverse),
+			i, i);
+		sjme_unit_equalI(test, test->error, SJME_ERROR_NO_SUCH_ELEMENT,
+			"Element was found in the tree?");
+	}
 	
 	/* Destroy traverse. */
 	if (sjme_error_is(test->error = sjme_traverse_destroy(

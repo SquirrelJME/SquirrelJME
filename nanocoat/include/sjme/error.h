@@ -329,7 +329,7 @@ typedef enum sjme_errorCode
 	SJME_ERROR_INFLATE_HUFF_TREE_FULL = -95,
 	
 	/** There is a collision in the huffman tree, which means bad data! */
-	SJME_ERROR_INFLATE_HUFF_TREE_COLLISION = -96,
+	SJME_ERROR_TREE_COLLISION = -96,
 	
 	/** The buffer is full. */
 	SJME_ERROR_BUFFER_FULL = -97,
@@ -361,8 +361,14 @@ typedef enum sjme_errorCode
 	/** End of file reached. */
 	SJME_ERROR_END_OF_FILE = -106,
 	
+	/** Element already exists. */
+	SJME_ERROR_ELEMENT_EXISTS = -107,
+	
+	/** Capacity exceeded? */
+	SJME_ERROR_CAPACITY_EXCEEDED = -108,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -107
+	SJME_NUM_ERROR_CODES = -109
 } sjme_errorCode;
 
 /**

@@ -87,11 +87,17 @@ struct sjme_align64 sjme_traverse_node
  */
 typedef struct sjme_traverse_storage
 {
+	/** The number of bytes in storage. */
+	sjme_jint storageBytes;
+	
 	/** The actual size of nodes. */
 	sjme_jint nodeSize;
 	
 	/** Next free node. */
 	sjme_traverse_node* next;
+	
+	/** The start of the storage tree. */
+	sjme_traverse_node* start;
 	
 	/** Final end of tree. */
 	sjme_traverse_node* finalEnd;
@@ -111,7 +117,7 @@ typedef struct sjme_traverse_base
 	sjme_traverse_node* root;
 	
 	/** The storage for the tree. */
-	sjme_traverse_storage storage;
+	sjme_traverse_storage* storage;
 } sjme_traverse_base;
 
 /**
@@ -133,6 +139,12 @@ typedef struct sjme_traverse_iterator
 {
 	/** Which node are we at. */
 	sjme_traverse_node* atNode;
+	
+	/** The bit sequence to reach this node. */
+	sjme_juint bits;
+	
+	/** The number of bits in the sequence. */
+	sjme_jint bitCount;
 } sjme_traverse_iterator;
 
 /**
@@ -170,6 +182,16 @@ typedef struct sjme_traverse_iterator
 	typedef sjme_traverse SJME_TRAVERSE_NAME(type, numPointerStars)
 
 SJME_TRAVERSE_DECLARE(sjme_jint, 0);
+
+/**
+ * Clears the traversal tree, making it empty.
+ * 
+ * @param traverse The tree to empty. 
+ * @return Any resultant error, if any.
+ * @since 2024/09/02
+ */
+sjme_errorCode sjme_traverse_clear(
+	sjme_attrInNotNull sjme_traverse traverse);
 
 /**
  * Destroys the traversal tree.

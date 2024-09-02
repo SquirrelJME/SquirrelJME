@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "test.h"
 #include "proto.h"
 #include "mock.h"
@@ -16,11 +18,11 @@
 #include "testTraverse.h"
 
 /**
- * Tests removing an invalid item from the traversal tree.
+ * Tests clearing a traversal tree.
  *  
- * @since 2024/09/01 
+ * @since 2024/09/02 
  */
-SJME_TEST_DECLARE(testTraverseRemoveInvalid)
+SJME_TEST_DECLARE(testTraverseClear)
 {
 	sjme_traverse_test_data traverse;
 	test_data value;
@@ -38,7 +40,7 @@ SJME_TEST_DECLARE(testTraverseRemoveInvalid)
 	if (sjme_error_is(test->error = sjme_traverse_put(traverse,
 		&value, 0, 1, test_data, 0)))
 		return sjme_unit_fail(test, "Could not put in first value?");
-		
+	
 	/* Store second value. */
 	memset(&value, 0, sizeof(value));
 	value.a = 2;
@@ -47,17 +49,20 @@ SJME_TEST_DECLARE(testTraverseRemoveInvalid)
 		&value, 1, 1, test_data, 0)))
 		return sjme_unit_fail(test, "Could not put in second value?");
 	
-	/* Remove some other invalid value. */
-	test->error = sjme_traverse_remove(
-		SJME_AS_TRAVERSE(traverse), 0, 2);
-	sjme_unit_equalI(test, test->error, SJME_ERROR_NO_SUCH_ELEMENT,
-		"Wrong result removing double zero?");
+	/* Clear it. */
+	if (sjme_error_is(test->error = sjme_traverse_clear(
+		SJME_AS_TRAVERSE(traverse))))
+		return sjme_unit_fail(test, "Could not clear traversal tree?");
 	
-	/* And another. */
-	test->error = sjme_traverse_remove(
-		SJME_AS_TRAVERSE(traverse), 3, 2);
-	sjme_unit_equalI(test, test->error, SJME_ERROR_NO_SUCH_ELEMENT,
-		"Wrong result removing double one?");
+	/* There should be no root node. */
+	sjme_unit_equalP(test, NULL, traverse->root,
+		"There was a root node on a cleared tree?");
+	
+	/* There should be storage, however. */
+	sjme_unit_notEqualP(test, NULL, traverse->storage,
+		"Storage is missing?");
+	sjme_unit_equalP(test, traverse->storage->start, traverse->storage->next,
+		"Next storage node not at start?");
 	
 	/* Destroy traverse. */
 	if (sjme_error_is(test->error = sjme_traverse_destroy(

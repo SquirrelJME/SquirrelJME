@@ -10,9 +10,22 @@
 #include "sjme/traverse.h"
 #include "sjme/debug.h"
 
+sjme_errorCode sjme_traverse_clear(
+	sjme_attrInNotNull sjme_traverse traverse)
+{
+	if (traverse == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_traverse_destroy(
 	sjme_attrInNotNull sjme_traverse traverse)
 {
+	if (traverse == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -21,6 +34,9 @@ sjme_errorCode sjme_traverse_iterate(
 	sjme_attrInNotNull sjme_traverse traverse,
 	sjme_attrOutNotNull sjme_traverse_iterator* iterator)
 {
+	if (traverse == NULL || iterator == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -33,6 +49,12 @@ sjme_errorCode sjme_traverse_iterateNextR(
 	sjme_attrInPositive sjme_juint bits,
 	sjme_attrInPositiveNonZero sjme_jint numBits)
 {
+	if (traverse == NULL || iterator == NULL || leafValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (leafLength <= 0 || numBits <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -43,6 +65,15 @@ sjme_errorCode sjme_traverse_newR(
 	sjme_attrInPositiveNonZero sjme_jint elementSize,
 	sjme_attrInPositiveNonZero sjme_jint maxElements)
 {
+	if (inPool == NULL || outTraverse == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (elementSize <= 0 || maxElements <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if ((elementSize * maxElements) < 0)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -54,6 +85,12 @@ sjme_errorCode sjme_traverse_putR(
 	sjme_attrInPositive sjme_juint bits,
 	sjme_attrInPositiveNonZero sjme_jint numBits)
 {
+	if (traverse == NULL || leafValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (leafLength <= 0 || numBits <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -63,6 +100,12 @@ sjme_errorCode sjme_traverse_remove(
 	sjme_attrInPositive sjme_juint bits,
 	sjme_attrInPositiveNonZero sjme_jint numBits)
 {
+	if (traverse == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (numBits <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
