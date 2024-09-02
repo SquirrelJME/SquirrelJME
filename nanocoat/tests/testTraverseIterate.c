@@ -94,7 +94,7 @@ SJME_TEST_DECLARE(testTraverseIterate)
 				/* Value should match. */
 				sjme_unit_equalI(test, 1, leafValue->a,
 					"Wrong A value?");
-				sjme_unit_equalI(test, 10, leafValue->a,
+				sjme_unit_equalI(test, 10, leafValue->b,
 					"Wrong B value?");
 			}
 			
@@ -135,7 +135,7 @@ SJME_TEST_DECLARE(testTraverseIterate)
 				/* Value should match. */
 				sjme_unit_equalI(test, 2, leafValue->a,
 					"Wrong A value?");
-				sjme_unit_equalI(test, 20, leafValue->a,
+				sjme_unit_equalI(test, 20, leafValue->b,
 					"Wrong B value?");
 			}
 			

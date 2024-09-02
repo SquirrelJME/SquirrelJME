@@ -39,6 +39,75 @@ static sjme_errorCode sjme_traverse_next(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_traverse_traverse(
+	sjme_attrInNotNull sjme_traverse traverse,
+	sjme_attrOutNotNull sjme_traverse_node** outNode,
+	sjme_attrOutNullable sjme_traverse_node** outParent,
+	sjme_attrInValue sjme_jboolean create,
+	sjme_attrInPositive sjme_juint bits,
+	sjme_attrInPositiveNonZero sjme_jint numBits)
+{
+	sjme_errorCode error;
+	sjme_traverse_node* at;
+	sjme_traverse_node* atParent;
+	sjme_traverse_node** next;
+	sjme_juint sh;
+	sjme_jboolean finalShift;
+	
+	if (traverse == NULL || outNode == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Go through all bits in the shift. */
+	at = traverse->root;
+	atParent = traverse->root;
+	for (sh = sjme_util_intOverShiftU(1, numBits) - 1;
+		sh >= 1 && at != NULL; sh >>= 1)
+	{
+		/* Is this the final shift? */
+		finalShift = (sh == 1);
+		
+		/* Are we at a leaf? We should never be on one. */
+		if (at->leaf.key == SJME_TRAVERSE_LEAF_KEY)
+			return (create ? SJME_ERROR_TREE_COLLISION :
+				SJME_ERROR_NO_SUCH_ELEMENT);
+		
+		/* Are we going zero or one? */
+		next = ((bits & sh) != 0 ? &at->node.one : &at->node.zero);
+		
+		/* If there is no node here, create it, possibly. */
+		if ((*next) == NULL)
+		{
+			/* Not creating, so fail here. */
+			if (!create)
+				return SJME_ERROR_NO_SUCH_ELEMENT;
+			
+			/* Allocate node. */
+			if (sjme_error_is(error = sjme_traverse_next(traverse,
+				next)) || (*next) == NULL)
+				return sjme_error_default(error);
+			
+			/* If this is the last item, it becomes a leaf. */
+			if (finalShift)
+				(*next)->leaf.key = SJME_TRAVERSE_LEAF_KEY;
+		}
+		
+		/* Go the next node. */
+		atParent = at;
+		at = (*next);
+	}
+	
+	/* Nothing here? This means the tree might be corrupted, or it may */
+	/* actually be missing. */
+	if (at == NULL)
+		return SJME_ERROR_NO_SUCH_ELEMENT;
+	
+	/* Return the target node. */
+	*outNode = at;
+	if (outParent != NULL)
+		*outParent = atParent;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_traverse_clear(
 	sjme_attrInNotNull sjme_traverse traverse)
 {
@@ -74,8 +143,12 @@ sjme_errorCode sjme_traverse_iterate(
 	if (traverse == NULL || iterator == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Start traversal. */
+	memset(iterator, 0, sizeof(*iterator));
+	iterator->atNode = traverse->root;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_traverse_iterateNextR(
@@ -86,14 +159,84 @@ sjme_errorCode sjme_traverse_iterateNextR(
 	sjme_attrInPositive sjme_juint bits,
 	sjme_attrInPositiveNonZero sjme_jint numBits)
 {
+	sjme_traverse_node* at;
+	sjme_traverse_node** next;
+	sjme_juint sh;
+	sjme_jboolean finalShift, set;
+	
 	if (traverse == NULL || iterator == NULL || leafValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (leafLength <= 0 || numBits <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Wrong length for this tree? */
+	if (traverse->leafLength != leafLength)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Invalid? */
+	at = iterator->atNode;
+	if (at == NULL)
+		return SJME_ERROR_NO_SUCH_ELEMENT;
+	
+	/* We cannot iterate past a leaf. */
+	if ((sjme_intPointer)at == SJME_TRAVERSE_LEAF_KEY)
+		return SJME_ERROR_NO_SUCH_ELEMENT; 
+		
+	/* Continue where this was left off. */
+	for (sh = sjme_util_intOverShiftU(1, numBits) - 1;
+		sh >= 1 && at != NULL; sh >>= 1)
+	{
+		/* Is this the final shift? */
+		finalShift = (sh == 1);
+		
+		/* Is this set? */
+		set = ((bits & sh) != 0);
+		
+		/* We cannot iterate past a leaf. */
+		if ((sjme_intPointer)at == SJME_TRAVERSE_LEAF_KEY)
+			return SJME_ERROR_NO_SUCH_ELEMENT; 
+		
+		/* Are we going zero or one? */
+		next = (set ? &at->node.one : &at->node.zero);
+		
+		/* Nothing here? */
+		if ((*next) == NULL)
+			return SJME_ERROR_NO_SUCH_ELEMENT;
+		
+		/* Next is a leaf? */
+		if ((sjme_intPointer)((*next)->leaf.key) == SJME_TRAVERSE_LEAF_KEY)
+		{
+			/* Must be the final bit! */
+			if (!finalShift)
+				return SJME_ERROR_NO_SUCH_ELEMENT;
+			
+			/* Set leaf value. */
+			*leafValue = &((*next)->leaf.value[0]);
+		}
+		
+		/* In too deep? */
+		if (iterator->bitCount >= 32)
+			return SJME_ERROR_TREE_TOO_DEEP;
+		
+		/* Shift in bit. */
+		iterator->bits <<= 1;
+		iterator->bits |= (set ? 1 : 0);
+		iterator->bitCount += 1;
+		
+		/* Go the next node. */
+		at = (*next);
+	}
+	
+	/* Not valid? */
+	if (at == NULL)
+		return SJME_ERROR_NO_SUCH_ELEMENT;
+	
+	/* Set at this position. */
+	iterator->atNode = at;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_traverse_newR(
@@ -170,9 +313,6 @@ sjme_errorCode sjme_traverse_putR(
 {
 	sjme_errorCode error;
 	sjme_traverse_node* at;
-	sjme_traverse_node** next;
-	sjme_juint sh;
-	sjme_jboolean finalShift;
 	
 	if (traverse == NULL || leafValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -190,41 +330,13 @@ sjme_errorCode sjme_traverse_putR(
 			&traverse->root)) || traverse->root == NULL)
 			return sjme_error_default(error);
 	
-	/* Go through all bits in the shift. */
-	at = traverse->root;
-	for (sh = sjme_util_intOverShiftU(1, numBits) - 1;
-		sh >= 1; sh >>= 1)
-	{
-		/* Is this the final shift? */
-		finalShift = (sh == 1);
-		
-		/* If not the final shift, this must be a node. */
-		if (!finalShift && at->leaf.key == SJME_TRAVERSE_LEAF_KEY)
-			return SJME_ERROR_TREE_COLLISION;
-		
-		/* Are we going zero or one? */
-		next = ((bits & sh) != 0 ? &at->node.one : &at->node.zero);
-		
-		/* If there is no node here, create it. */
-		if ((*next) == NULL)
-		{
-			/* Allocate node. */
-			if (sjme_error_is(error = sjme_traverse_next(traverse,
-				next)) || (*next) == NULL)
-				return sjme_error_default(error);
-			
-			/* If this is the last item, it becomes a leaf. */
-			if (finalShift)
-				(*next)->leaf.key = SJME_TRAVERSE_LEAF_KEY;
-		}
-		
-		/* Go the next node. */
-		at = (*next);
-	}
-	
-	/* Nothing here? This means the tree might be corrupted. */
-	if (at == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
+	/* Traverse the tree. */
+	at = NULL;
+	if (sjme_error_is(error = sjme_traverse_traverse(
+		traverse, &at, NULL,
+		SJME_JNI_TRUE, bits, numBits)) ||
+		at == NULL)
+		return sjme_error_default(error);
 	
 	/* The leaf key must be set to be a leaf! */
 	if (at->leaf.key != SJME_TRAVERSE_LEAF_KEY)
@@ -243,12 +355,41 @@ sjme_errorCode sjme_traverse_remove(
 	sjme_attrInPositive sjme_juint bits,
 	sjme_attrInPositiveNonZero sjme_jint numBits)
 {
+	sjme_errorCode error;
+	sjme_traverse_node* at;
+	sjme_traverse_node* atParent;
+	
 	if (traverse == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (numBits <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
+		
+	/* Traverse the tree. */
+	at = NULL;
+	atParent = NULL;
+	if (sjme_error_is(error = sjme_traverse_traverse(
+		traverse, &at, &atParent,
+		SJME_JNI_FALSE, bits, numBits)))
+		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Nothing is here? */
+	if (at == NULL)
+		return SJME_ERROR_NO_SUCH_ELEMENT;
+	
+	/* Clear it out. */
+	if (atParent != NULL)
+	{
+		if (atParent->node.zero == at)
+			atParent->node.zero = NULL;
+		else if (atParent->node.one == at)
+			atParent->node.one = NULL;
+	}
+	
+	/* Wipe as long as this is not a leaf. */
+	if ((sjme_intPointer)at != SJME_TRAVERSE_LEAF_KEY)
+		memset(at, 0, sizeof(*at));
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }

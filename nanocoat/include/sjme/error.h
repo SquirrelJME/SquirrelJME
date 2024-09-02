@@ -367,8 +367,11 @@ typedef enum sjme_errorCode
 	/** Capacity exceeded? */
 	SJME_ERROR_CAPACITY_EXCEEDED = -108,
 	
+	/** Tree traversal is too deep. */
+	SJME_ERROR_TREE_TOO_DEEP = -109,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -109
+	SJME_NUM_ERROR_CODES = -110
 } sjme_errorCode;
 
 /**

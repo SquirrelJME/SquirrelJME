@@ -32,7 +32,7 @@ SJME_TEST_DECLARE(testTraverseRemoveEmpty)
 		return sjme_unit_fail(test, "Could not create traverse?");
 	
 	/* Constantly try to remove. */
-	for (i = 0; i <= 32; i++)
+	for (i = 1; i <= 32; i++)
 	{
 		test->error = sjme_traverse_remove(
 			SJME_AS_TRAVERSE(traverse),
