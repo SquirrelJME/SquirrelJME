@@ -131,6 +131,8 @@ typedef sjme_traverse_base* sjme_traverse;
  */
 typedef struct sjme_traverse_iterator
 {
+	/** Which node are we at. */
+	sjme_traverse_node* atNode;
 } sjme_traverse_iterator;
 
 /**
