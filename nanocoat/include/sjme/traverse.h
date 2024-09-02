@@ -8,7 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Bit based traversal tree.
+ * Binary bit based traversal tree.
  * 
  * @since 2024/09/01
  */
@@ -169,13 +169,40 @@ typedef struct sjme_traverse_iterator
 
 SJME_TRAVERSAL_DECLARE(sjme_jint, 0);
 
+/**
+ * Destroys the traversal tree.
+ * 
+ * @param traverse The tree to destroy. 
+ * @return On any resultant error, if any.
+ * @since 2024/09/01
+ */
 sjme_errorCode sjme_traverse_destroy(
 	sjme_attrInNotNull sjme_traverse traverse);
 
+/**
+ * Starts iteration of the traversal tree.
+ * 
+ * @param traverse The tree to iterate.
+ * @param iterator The resultant iterator state.
+ * @return On any resultant error, if any.
+ * @since 2024/09/01
+ */
 sjme_errorCode sjme_traverse_iterate(
 	sjme_attrInNotNull sjme_traverse traverse,
 	sjme_attrOutNotNull sjme_traverse_iterator* iterator);
 
+/**
+ * Iterates the next set of values down the tree, reaching a node potentially.
+ * 
+ * @param traverse The tree to iterate.
+ * @param iterator The current iterator state.
+ * @param leafValue Pointer to the leaf value, if the node is a leaf then this
+ * will be set to the value, otherwise it will be set to null.
+ * @param bits The bit values to traverse with.
+ * @param numBits The number of bits in the traversal value.
+ * @return On any resultant error, if any.
+ * @since 2024/09/01
+ */
 sjme_errorCode sjme_traverse_iterateNextR(
 	sjme_attrInNotNull sjme_traverse traverse,
 	sjme_attrOutNotNull sjme_traverse_iterator* iterator,
@@ -183,11 +210,54 @@ sjme_errorCode sjme_traverse_iterateNextR(
 	sjme_attrInPositive sjme_juint bits,
 	sjme_attrInPositiveNonZero sjme_jint numBits);
 
+/**
+ * Allocates a new traversal tree.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param outTraverse The resultant traversal tree.
+ * @param elementSize The size of the tree elements.
+ * @param maxElements The maximum number of elements permitted in the tree.
+ * @return On any resultant error, if any.
+ * @since 2024/09/01
+ */
 sjme_errorCode sjme_traverse_newR(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_traverse* outTraverse,
 	sjme_attrInPositiveNonZero sjme_jint elementSize,
 	sjme_attrInPositiveNonZero sjme_jint maxElements);
+	
+/**
+ * Puts a value into the traversal tree.
+ * 
+ * @param traverse The traversal tree to write into.
+ * @param leafValue The pointer to the leaf's value.
+ * @param leafLength The length of the leaf value.
+ * @param bits The bit values to get to the leaf.
+ * @param numBits The number of bits in the value.
+ * @return On any resultant error, if any.
+ * @since 2024/09/01
+ */
+sjme_errorCode sjme_traverse_putR(
+	sjme_attrInNotNull sjme_traverse traverse,
+	sjme_attrInNotNullBuf(leafLength) sjme_pointer leafValue,
+	sjme_attrInPositiveNonZero sjme_jint leafLength,
+	sjme_attrInPositive sjme_juint bits,
+	sjme_attrInPositiveNonZero sjme_jint numBits);
+
+/**
+ * Removes the given leaf and/or node from a tree, if this is a node then all
+ * children will be removed as well.
+ * 
+ * @param traverse The tree to remove from.
+ * @param bits The bit values to remove.
+ * @param numBits The number of bits in the value.
+ * @return On any resultant error, if any.
+ * @since 2024/09/01
+ */
+sjme_errorCode sjme_traverse_remove(
+	sjme_attrInNotNull sjme_traverse traverse,
+	sjme_attrInPositive sjme_juint bits,
+	sjme_attrInPositiveNonZero sjme_jint numBits);
 
 /*--------------------------------------------------------------------------*/
 
