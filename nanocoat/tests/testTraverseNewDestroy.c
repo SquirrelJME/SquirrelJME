@@ -37,7 +37,7 @@ SJME_TEST_DECLARE(testTraverseNewDestroy)
 	/* There should be storage, however. */
 	sjme_unit_notEqualP(test, NULL, traverse->storage,
 		"Storage is missing?");
-	sjme_unit_equalP(test, traverse->storage->start, traverse->storage->next,
+	sjme_unit_equalP(test, traverse->start, traverse->next,
 		"Next storage node not at start?");
 	
 	/* Destroy traverse. */

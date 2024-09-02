@@ -94,32 +94,6 @@ union sjme_alignPointer sjme_traverse_node
 };
 
 /**
- * Storage for traversal tree nodes.
- * 
- * @since 2024/08/22
- */
-typedef struct sjme_traverse_storage
-{
-	/** The number of bytes in storage. */
-	sjme_jint storageBytes;
-	
-	/** The actual size of nodes. */
-	sjme_jint nodeSize;
-	
-	/** Next free node. */
-	sjme_traverse_node* next;
-	
-	/** The start of the storage tree. */
-	sjme_traverse_node* start;
-	
-	/** Final end of tree. */
-	sjme_traverse_node* finalEnd;
-	
-	/** Storage for tree nodes. */
-	sjme_alignPointer sjme_jubyte storage[sjme_flexibleArrayCount];
-} sjme_traverse_storage;
-
-/**
  * Traversal tree.
  * 
  * @since 2024/08/20
@@ -129,8 +103,23 @@ typedef struct sjme_traverse_base
 	/** The root node. */
 	sjme_traverse_node* root;
 	
-	/** The storage for the tree. */
-	sjme_traverse_storage* storage;
+	/** Next free node. */
+	sjme_traverse_node* next;
+	
+	/** The start of the storage tree. */
+	sjme_traverse_node* start;
+	
+	/** Final end of tree. */
+	sjme_traverse_node* end;
+	
+	/** The actual size of node structures. */
+	sjme_jint structSize;
+	
+	/** The number of bytes in storage. */
+	sjme_jint storageBytes;
+	
+	/** Storage for tree nodes. */
+	sjme_alignPointer sjme_jubyte storage[sjme_flexibleArrayCount];
 } sjme_traverse_base;
 
 /**

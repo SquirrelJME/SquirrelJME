@@ -7,8 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "sjme/traverse.h"
 #include "sjme/debug.h"
+#include "sjme/alloc.h"
 
 sjme_errorCode sjme_traverse_clear(
 	sjme_attrInNotNull sjme_traverse traverse)
@@ -26,8 +29,11 @@ sjme_errorCode sjme_traverse_destroy(
 	if (traverse == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Wipe entire structure. */
+	memset(traverse, 0, sizeof(*traverse));
+	
+	/* Then free it. */
+	return sjme_alloc_free(traverse);
 }
 
 sjme_errorCode sjme_traverse_iterate(
@@ -65,9 +71,10 @@ sjme_errorCode sjme_traverse_newR(
 	sjme_attrInPositiveNonZero sjme_jint elementSize,
 	sjme_attrInPositiveNonZero sjme_jint maxElements)
 {
+	sjme_errorCode error;
 	sjme_jint structSize, nodeSize, leafSize;
 	sjme_jint storageSize, pointerBytes;
-	sjme_traverse_storage* storage;
+	sjme_traverse result;
 	
 	if (inPool == NULL || outTraverse == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -96,8 +103,30 @@ sjme_errorCode sjme_traverse_newR(
 	if (storageSize <= 0)
 		return SJME_ERROR_OUT_OF_MEMORY;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Allocate entire tree with storage. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc(inPool,
+		offsetof(sjme_traverse_base, storage) + storageSize,
+		(sjme_pointer*)&result)) || result == NULL)
+		goto fail_allocResult;
+	
+	/* Setup tree parameters. */
+	result->structSize = structSize;
+	result->storageBytes = storageSize;
+	result->start = (sjme_traverse_node*)&result->storage[0];
+	result->end = (sjme_traverse_node*)SJME_POINTER_OFFSET(result->start,
+		storageSize - structSize);
+	result->next = result->start;
+	
+	/* Success! */
+	*outTraverse = result;
+	return SJME_ERROR_NONE;
+	
+fail_allocResult:
+	if (result != NULL)
+		sjme_alloc_free(result);
+	
+	return sjme_error_default(error);
 }
 	
 sjme_errorCode sjme_traverse_putR(
