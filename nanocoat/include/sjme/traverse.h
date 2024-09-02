@@ -142,7 +142,7 @@ typedef struct sjme_traverse_iterator
  * @param numPointerStars The number of pointer stars.
  * @since 2024/09/01
  */
-#define SJME_TRAVERSAL_TYPE_NAME(type, numPointerStars) \
+#define SJME_TRAVERSE_TYPE_NAME(type, numPointerStars) \
 	SJME_TOKEN_PASTE_PP(type, \
 		SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_C##numPointerStars))
 
@@ -154,9 +154,9 @@ typedef struct sjme_traverse_iterator
  * @return The resultant name.
  * @since 2024/09/01
  */
-#define SJME_TRAVERSAL_NAME(type, numPointerStars) \
-	SJME_TOKEN_PASTE_PP(sjme_traversal_, \
-		SJME_TRAVERSAL_TYPE_NAME(type, numPointerStars))
+#define SJME_TRAVERSE_NAME(type, numPointerStars) \
+	SJME_TOKEN_PASTE_PP(sjme_traverse_, \
+		SJME_TRAVERSE_TYPE_NAME(type, numPointerStars))
 
 /**
  * Declares a traversal tree type.
@@ -166,10 +166,10 @@ typedef struct sjme_traverse_iterator
  * @return The resultant type declaration.
  * @since 2024/09/01
  */
-#define SJME_TRAVERSAL_DECLARE(type, numPointerStars) \
-	typedef sjme_traverse SJME_TRAVERSAL_NAME(type, numPointerStars)
+#define SJME_TRAVERSE_DECLARE(type, numPointerStars) \
+	typedef sjme_traverse SJME_TRAVERSE_NAME(type, numPointerStars)
 
-SJME_TRAVERSAL_DECLARE(sjme_jint, 0);
+SJME_TRAVERSE_DECLARE(sjme_jint, 0);
 
 /**
  * Destroys the traversal tree.
@@ -200,6 +200,7 @@ sjme_errorCode sjme_traverse_iterate(
  * @param iterator The current iterator state.
  * @param leafValue Pointer to the leaf value, if the node is a leaf then this
  * will be set to the value, otherwise it will be set to null.
+ * @param leafLength The length of the leaf value.
  * @param bits The bit values to traverse with.
  * @param numBits The number of bits in the traversal value.
  * @return On any resultant error, if any.
@@ -209,8 +210,29 @@ sjme_errorCode sjme_traverse_iterateNextR(
 	sjme_attrInNotNull sjme_traverse traverse,
 	sjme_attrOutNotNull sjme_traverse_iterator* iterator,
 	sjme_attrOutNotNull sjme_pointer* leafValue,
+	sjme_attrInPositiveNonZero sjme_jint leafLength,
 	sjme_attrInPositive sjme_juint bits,
 	sjme_attrInPositiveNonZero sjme_jint numBits);
+
+/**
+ * Iterates the next set of values down the tree, reaching a node potentially.
+ * 
+ * @param traverse The tree to iterate.
+ * @param iterator The current iterator state.
+ * @param leafValue Pointer to the leaf value, if the node is a leaf then this
+ * will be set to the value, otherwise it will be set to null.
+ * @param bits The bit values to traverse with.
+ * @param numBits The number of bits in the traversal value.
+ * @param type The type being stored.
+ * @param numPointerStars the pointer star count for the stored type.
+ * @return On any resultant error, if any.
+ * @since 2024/09/02
+ */
+#define sjme_traverse_iterateNext(traverse, iterator, leafValue, bits, \
+	numBits, type, numPointerStars) \
+	(sjme_traverse_iterateNextR(SJME_AS_TRAVERSE((traverse)), (iterator), \
+	((sjme_pointer*)(leafValue)), \
+	sizeof((*(leafValue))), (bits), (numBits)))
 
 /**
  * Allocates a new traversal tree.
@@ -227,7 +249,23 @@ sjme_errorCode sjme_traverse_newR(
 	sjme_attrOutNotNull sjme_traverse* outTraverse,
 	sjme_attrInPositiveNonZero sjme_jint elementSize,
 	sjme_attrInPositiveNonZero sjme_jint maxElements);
-	
+
+/**
+ * Allocates a new traversal tree.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param outTraverse The resultant traversal tree.
+ * @param maxElements The maximum number of elements permitted in the tree.
+ * @param type The type being stored.
+ * @param numPointerStars the pointer star count for the stored type.
+ * @return On any resultant error, if any.
+ * @since 2024/09/02
+ */
+#define sjme_traverse_new(inPool, outTraverse, maxElements, \
+	type, numPointerStars) \
+	(sjme_traverse_newR((inPool), ((sjme_traverse*)(outTraverse)), \
+	sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), maxElements))
+
 /**
  * Puts a value into the traversal tree.
  * 
@@ -245,6 +283,23 @@ sjme_errorCode sjme_traverse_putR(
 	sjme_attrInPositiveNonZero sjme_jint leafLength,
 	sjme_attrInPositive sjme_juint bits,
 	sjme_attrInPositiveNonZero sjme_jint numBits);
+
+/**
+ * Puts a value into the traversal tree.
+ * 
+ * @param traverse The traversal tree to write into.
+ * @param leafValue The pointer to the leaf's value.
+ * @param bits The bit values to get to the leaf.
+ * @param numBits The number of bits in the value.
+ * @param type The type being stored.
+ * @param numPointerStars the pointer star count for the stored type.
+ * @return On any resultant error, if any.
+ * @since 2024/09/02
+ */
+#define sjme_traverse_put(traverse, leafValue, bits, numBits, \
+	type, numPointerStars) \
+	(sjme_traverse_putR((traverse), ((sjme_pointer)(leafValue)), \
+	sizeof((*(leafValue))), (bits), (numBits)))
 
 /**
  * Removes the given leaf and/or node from a tree, if this is a node then all

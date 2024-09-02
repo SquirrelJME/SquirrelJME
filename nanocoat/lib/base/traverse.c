@@ -29,6 +29,7 @@ sjme_errorCode sjme_traverse_iterateNextR(
 	sjme_attrInNotNull sjme_traverse traverse,
 	sjme_attrOutNotNull sjme_traverse_iterator* iterator,
 	sjme_attrOutNotNull sjme_pointer* leafValue,
+	sjme_attrInPositiveNonZero sjme_jint leafLength,
 	sjme_attrInPositive sjme_juint bits,
 	sjme_attrInPositiveNonZero sjme_jint numBits)
 {

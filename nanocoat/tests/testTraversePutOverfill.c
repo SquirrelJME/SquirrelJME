@@ -16,11 +16,11 @@
 #include "testTraverse.h"
 
 /**
- * Tests removal of items from the traversal tree.
+ * Tests filling the tree past the maximum.
  *  
- * @since 2024/09/01 
+ * @since 2024/09/02 
  */
-SJME_TEST_DECLARE(testTraverseRemove)
+SJME_TEST_DECLARE(testTraversePutOverfill)
 {
 	sjme_traverse_test_data traverse;
 	

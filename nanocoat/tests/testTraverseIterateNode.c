@@ -12,6 +12,9 @@
 #include "mock.h"
 #include "unit.h"
 
+#include "sjme/traverse.h"
+#include "testTraverse.h"
+
 /**
  * Tests iteration to a node.
  *  
@@ -19,6 +22,22 @@
  */
 SJME_TEST_DECLARE(testTraverseIterateNode)
 {
+	sjme_traverse_test_data traverse;
+	
+	/* Setup traverse. */
+	traverse = NULL;
+	if (sjme_error_is(test->error = sjme_traverse_new(test->pool,
+		&traverse, MAX_ELEMENTS, test_data, 0)) || traverse == NULL)
+		return sjme_unit_fail(test, "Could not create traverse?");
+	
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;
+	
+	/* Destroy traverse. */
+	if (sjme_error_is(test->error = sjme_traverse_destroy(
+		SJME_AS_TRAVERSE(traverse))))
+		return sjme_unit_fail(test, "Could not destroy traverse?");
+	
+	/* Success! */
+	return SJME_TEST_RESULT_PASS;
 }
