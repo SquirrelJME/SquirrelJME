@@ -710,8 +710,6 @@ static sjme_errorCode sjme_inflate_stepDynamicSetup(
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	
-	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 	
