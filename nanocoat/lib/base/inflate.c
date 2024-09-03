@@ -11,6 +11,14 @@
 
 #include "sjme/inflate.h"
 
+/** Shuffled code length bits. */
+static const sjme_jubyte sjme_inflate_shuffleBits[SJME_INFLATE_NUM_CODE_LEN] =
+{
+	16, 17, 18, 0, 8, 7, 9, 6,
+	10, 5, 11, 4, 12, 3, 13,
+	2, 14, 1, 15
+};
+
 static sjme_errorCode sjme_inflate_bitFill(
 	sjme_attrInNotNull sjme_inflate* inState)
 {
@@ -284,6 +292,40 @@ static sjme_errorCode sjme_inflate_drain(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_inflate_dynamicBuildReadCode(
+	sjme_attrInNotNull sjme_inflate* inState,
+	sjme_attrOutNotNull sjme_juint* codes,
+	sjme_attrInOutNotNull sjme_jint* i,
+	sjme_attrInPositiveNonZero sjme_jint count,
+	sjme_attrInPositiveNonZero sjme_jint maxCount)
+{
+	if (inState == NULL || codes == NULL || i == NULL)
+		return SJME_ERROR_NONE;
+	
+	if (count <= 0 || maxCount <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_inflate_dynamicBuildTree(
+	sjme_attrInNotNull sjme_inflate* inState,
+	sjme_attrOutNotNull sjme_traverse_sjme_jint* outTree,
+	sjme_attrInNotNullBuf(count) sjme_juint* codeLens,
+	sjme_attrInPositiveNonZero sjme_jint count,
+	sjme_attrInPositiveNonZero sjme_jint maxCount)
+{
+	if (inState == NULL || outTree == NULL || codeLens == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (count <= 0 || maxCount <= 0 || count > maxCount)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 static sjme_errorCode sjme_inflate_dynamicReadCode(
@@ -706,12 +748,107 @@ static sjme_errorCode sjme_inflate_stepDynamicSetup(
 	sjme_attrInNotNull sjme_inflate* inState)
 {
 	sjme_errorCode error;
+	sjme_jint i;
+	sjme_juint rawCodeLen[SJME_INFLATE_NUM_CODE_LEN];
+	sjme_juint rawLit[SJME_INFLATE_NUM_LIT_LENS];
+	sjme_juint rawDist[SJME_INFLATE_NUM_DIST_LENS];
+	sjme_juint hLit, hDist, hcLen, raw;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Read in literal count. */
+	hLit = INT32_MAX;
+	if (sjme_error_is(error = sjme_bitStream_inputRead(
+		inState->input, SJME_BITSTREAM_LSB,
+		&hLit, 5)) ||
+		hLit == INT32_MAX)
+		return sjme_error_default(error);
+		
+	/* Read in distance count. */
+	hDist = INT32_MAX;
+	if (sjme_error_is(error = sjme_bitStream_inputRead(
+		inState->input, SJME_BITSTREAM_LSB,
+		&hDist, 5)) ||
+		hDist == INT32_MAX)
+		return sjme_error_default(error);
+		
+	/* Read in code length count. */
+	hcLen = INT32_MAX;
+	if (sjme_error_is(error = sjme_bitStream_inputRead(
+		inState->input, SJME_BITSTREAM_LSB,
+		&hcLen, 4)) ||
+		hcLen == INT32_MAX)
+		return sjme_error_default(error);
+	
+	/* Determine their actual values. */
+	hLit += 257;
+	hDist += 1;
+	hcLen += 4;
+	
+	/* Read in raw code lengths. */
+	memset(rawCodeLen, 0, sizeof(rawCodeLen));
+	for (i = 0; i < hcLen; i++)
+	{
+		/* Read in raw code length. */
+		raw = INT32_MAX;
+		if (sjme_error_is(error = sjme_bitStream_inputRead(
+			inState->input, SJME_BITSTREAM_LSB,
+			&raw, 3)) || raw == INT32_MAX)
+			return sjme_error_default(error);
+		
+		/* Shuffle it in appropriately, the shuffle is "optimized" according */
+		/* to RFC1951 so the most importing bits are set first. */
+		rawCodeLen[sjme_inflate_shuffleBits[i]] = raw;
+	}
+	
+	/* Build code length tree. */
+	if (sjme_error_is(error = sjme_inflate_dynamicBuildTree(
+		inState, &inState->treeCodeLen,
+		&rawCodeLen[0],
+		SJME_INFLATE_NUM_CODE_LEN,
+		SJME_INFLATE_NUM_CODE_LEN)))
+		return sjme_error_default(error);
+	
+	/* Read literal values. */
+	memset(rawLit, 0xFF, sizeof(rawLit));
+	for (i = 0; i < hLit;)
+	{
+		/* Read in raw code. */
+		if (sjme_error_is(error = sjme_inflate_dynamicBuildReadCode(
+			inState, &rawLit[0], &i,
+			hLit, SJME_INFLATE_NUM_LIT_LENS)) ||
+			rawLit[i] == UINT32_MAX)
+			return sjme_error_default(error);
+	}
+	
+	/* Build literal tree. */
+	if (sjme_error_is(error = sjme_inflate_dynamicBuildTree(
+		inState, &inState->treeLit,
+		&rawLit[0],
+		hLit,
+		SJME_INFLATE_NUM_LIT_LENS)))
+		return sjme_error_default(error);
+	
+	/* Read distance values. */
+	memset(rawDist, 0xFF, sizeof(rawDist));
+	for (i = 0; i < hDist;)
+	{
+		/* Read in raw code. */
+		if (sjme_error_is(error = sjme_inflate_dynamicBuildReadCode(
+			inState, &rawDist[0], &i, hDist,
+			SJME_INFLATE_NUM_DIST_LENS)) ||
+			rawDist[i] == UINT32_MAX)
+			return sjme_error_default(error);
+	}
+	
+	/* Build Distance tree. */
+	if (sjme_error_is(error = sjme_inflate_dynamicBuildTree(
+		inState, &inState->treeDist,
+		&rawDist[0],
+		hDist,
+		SJME_INFLATE_NUM_DIST_LENS)))
+		return sjme_error_default(error);
 	
 	/* Set state for code reading. */
 	memset(&inState->sub, 0, sizeof(inState->sub));
@@ -871,6 +1008,36 @@ sjme_errorCode sjme_inflate_destroy(
 			return sjme_error_default(error);
 		
 		inState->window = NULL;
+	}
+	
+	/* Destroy code length tree. */
+	if (inState->treeCodeLen != NULL)
+	{
+		if (sjme_error_is(error = sjme_traverse_destroy(
+			SJME_AS_TRAVERSE(inState->treeCodeLen))))
+			return sjme_error_default(error);
+		
+		inState->treeCodeLen = NULL;
+	}
+	
+	/* Destroy literal tree. */
+	if (inState->treeLit != NULL)
+	{
+		if (sjme_error_is(error = sjme_traverse_destroy(
+			SJME_AS_TRAVERSE(inState->treeLit))))
+			return sjme_error_default(error);
+		
+		inState->treeLit = NULL;
+	}
+	
+	/* Destroy distance tree. */
+	if (inState->treeDist != NULL)
+	{
+		if (sjme_error_is(error = sjme_traverse_destroy(
+			SJME_AS_TRAVERSE(inState->treeDist))))
+			return sjme_error_default(error);
+		
+		inState->treeDist = NULL;
 	}
 	
 	/* Success! */
@@ -1062,6 +1229,7 @@ sjme_errorCode sjme_inflate_new(
 		goto fail_openOutput;
 	
 	/* Store everything in the result now. */
+	result->inPool = inPool;
 	result->failed = SJME_ERROR_NONE;
 	result->source = source;
 	result->input = input;

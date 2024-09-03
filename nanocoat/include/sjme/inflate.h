@@ -21,6 +21,7 @@
 #include "sjme/stream.h"
 #include "sjme/bitStream.h"
 #include "sjme/circleBuffer.h"
+#include "traverse.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -56,7 +57,7 @@ extern "C"
 #define SJME_INFLATE_HUFF_STORAGE_SIZE 16383
 
 /** The limit for code lengths. */
-#define SJME_INFLATE_CODE_LEN_LIMIT 19
+#define SJME_INFLATE_NUM_CODE_LEN 19
 
 /** The maximum number of bits in the code length tree. */
 #define SJME_INFLATE_CODE_LEN_MAX_BITS 15
@@ -116,7 +117,7 @@ typedef struct sjme_inflate_huffInit
 	sjme_juint codeLen;
 	
 	/** The raw code length bit values. */
-	sjme_juint rawCodeLens[SJME_INFLATE_CODE_LEN_LIMIT];
+	sjme_juint rawCodeLens[SJME_INFLATE_NUM_CODE_LEN];
 } sjme_inflate_huffInit;
 
 /**
@@ -157,6 +158,9 @@ typedef sjme_errorCode (*sjme_inflate_readDistFunc)(
  */
 struct sjme_inflate
 {
+	/** The pool this allocates within. */
+	sjme_alloc_pool* inPool;
+	
 	/** The inflation data source. */
 	sjme_stream_input source;
 	
@@ -177,6 +181,15 @@ struct sjme_inflate
 	
 	/** The output data window. */
 	sjme_circleBuffer* window;
+	
+	/** Code length tree. */
+	sjme_traverse_sjme_jint treeCodeLen;
+	
+	/** Literal tree. */
+	sjme_traverse_sjme_jint treeLit;
+	
+	/* Distance tree. */
+	sjme_traverse_sjme_jint treeDist;
 	
 	/** The current step in inflation. */
 	sjme_inflate_step step;
