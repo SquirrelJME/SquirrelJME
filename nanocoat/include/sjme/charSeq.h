@@ -16,6 +16,7 @@
 #ifndef SQUIRRELJME_CHARSEQ_H
 #define SQUIRRELJME_CHARSEQ_H
 
+#include "sjme/frontEnd.h"
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
 

@@ -524,43 +524,6 @@ typedef struct sjme_pointerLen
 	sjme_jint length;
 } sjme_pointerLen;
 
-/**
- * A wrapper used by front ends, which is reserved for use, which stores a
- * natively bound object accordingly as needed.
- * 
- * @since 2023/12/06
- */
-typedef sjme_pointer sjme_frontEndWrapper;
-
-/**
- * Any data that is needed by the front end, which is reserved for use.
- *
- * @since 2023/12/14
- */
-typedef sjme_pointer sjme_frontEndData;
-
-/**
- * This structure stores any front end data as needed.
- *
- * @since 2023/12/14
- */
-typedef struct sjme_frontEnd
-{
-	/** Any wrapper as needed. */
-	sjme_frontEndWrapper wrapper;
-
-	/** Any data as needed. */
-	sjme_frontEndData data;
-} sjme_frontEnd;
-
-/**
- * Wraps the given front end pointer.
- *
- * @param p The pointer to wrap.
- * @since 2023/12/08
- */
-#define SJME_FRONT_END_WRAP(p) ((sjme_frontEndWrapper)(p))
-
 /** The Java type ID. */
 typedef sjme_basicTypeId sjme_javaTypeId;
 

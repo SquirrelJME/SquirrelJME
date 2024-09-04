@@ -16,6 +16,7 @@
 #ifndef SQUIRRELJME_ALLOC_H
 #define SQUIRRELJME_ALLOC_H
 
+#include "sjme/frontEnd.h"
 #include "sjme/stdTypes.h"
 #include "sjme/debug.h"
 #include "sjme/error.h"
