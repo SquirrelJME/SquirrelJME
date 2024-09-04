@@ -318,14 +318,64 @@ static sjme_errorCode sjme_inflate_dynamicBuildTree(
 	sjme_attrInPositiveNonZero sjme_jint count,
 	sjme_attrInPositiveNonZero sjme_jint maxCount)
 {
+	sjme_errorCode error;
+	sjme_juint blCount[SJME_INFLATE_CODE_LEN_MAX_BITS + 1];
+	sjme_juint nextCode[SJME_INFLATE_CODE_LEN_MAX_BITS + 1];
+	sjme_juint code, len, nextCodeLen;
+	sjme_jint i;
+	
 	if (inState == NULL || outTree == NULL || codeLens == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (count <= 0 || maxCount <= 0 || count > maxCount)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Need to allocate the tree? */
+	if ((*outTree) == NULL)
+		if (sjme_error_is(error = sjme_traverse_new(
+			inState->inPool, outTree, maxCount, sjme_jint, 0)) ||
+			(*outTree) == NULL)
+			return sjme_error_default(error);
+	
+	/* Wipe working arrays. */
+	memset(blCount, 0, sizeof(blCount));
+	memset(nextCode, 0, sizeof(nextCode));
+	
+	/* Determine the bit length count for all the inputs */
+	for (i = 0; i < count; i++)
+		blCount[codeLens[i]]++;
+	blCount[0] = 0;
+	
+	/* Find the numerical value of the smallest code for each code length. */
+	code = 0;
+	for (i = 1; i <= SJME_INFLATE_CODE_LEN_MAX_BITS; i++)
+	{
+		code = (code + blCount[i - 1]) << 1;
+		nextCode[i] = code;
+	}
+	
+	/* Clear the target tree. */
+	if (sjme_error_is(error = sjme_traverse_clear(
+		SJME_AS_TRAVERSE((*outTree)))))
+		return sjme_error_default(error);
+	
+	/* Assign all values to codes. */
+	for (i = 0; i < count; i++)
+	{
+		/* Add code length to the huffman tree */
+		len = codeLens[i];
+		if (len != 0)
+		{
+			nextCodeLen = (nextCode[len])++;
+			if (sjme_error_is(error = sjme_traverse_put(
+				SJME_AS_TRAVERSE((*outTree)), &i, nextCodeLen, len,
+				sjme_jint, 0)))
+				return sjme_error_default(error);
+		}
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_inflate_dynamicReadCode(
