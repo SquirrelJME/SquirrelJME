@@ -8,4 +8,21 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/frontEnd.h"
+#include "sjme/debug.h"
 
+sjme_errorCode sjme_frontEnd_bind(
+	sjme_attrInNotNull sjme_pointer owner,
+	sjme_attrInOutNotNull sjme_frontEndData* frontEnd,
+	sjme_attrOutNotNull sjme_pointer* resultData)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_frontEnd_release(
+	sjme_attrInNotNull sjme_pointer owner,
+	sjme_attrInOutNotNull sjme_frontEndData* frontEnd)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}

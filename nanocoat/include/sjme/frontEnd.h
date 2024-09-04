@@ -128,6 +128,34 @@ struct sjme_frontEnd
  */
 #define SJME_FRONT_END_WRAP(p) ((sjme_frontEndWrapper)(p))
 
+/**
+ * This function is called when the front end binding needs to be obtained,
+ * it may allocate and bind the data when this is called if applicable.
+ * 
+ * @param owner The owning object of the front end.
+ * @param frontEnd The front end data.
+ * @param resultData The resultant bound data, which points to the native
+ * binding reference.
+ * @return Any resultant error, if any.
+ * @since 2024/09/04
+ */
+sjme_errorCode sjme_frontEnd_bind(
+	sjme_attrInNotNull sjme_pointer owner,
+	sjme_attrInOutNotNull sjme_frontEndData* frontEnd,
+	sjme_attrOutNotNull sjme_pointer* resultData);
+
+/**
+ * This is called when a front end reference needs to be released.
+ * 
+ * @param owner The owning object of the front end.
+ * @param frontEnd The front end data.
+ * @return Any resultant error, if any.
+ * @since 2024/09/04
+ */
+sjme_errorCode sjme_frontEnd_release(
+	sjme_attrInNotNull sjme_pointer owner,
+	sjme_attrInOutNotNull sjme_frontEndData* frontEnd);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
