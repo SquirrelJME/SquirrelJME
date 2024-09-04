@@ -18,6 +18,7 @@
 
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
+#include "sjme/multithread.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -113,11 +114,14 @@ struct sjme_frontEnd
 	/** Any data as needed. */
 	sjme_frontEndData data;
 	
+	/** The lock when binding/releasing is being performed on this. */
+	sjme_thread_spinLock bindLock;
+	
 	/** The binding type used. */
 	sjme_frontEnd_bindType bindType;
 	
 	/** Binder to call when the front end data is needed. */
-	sjme_frontEnd_binderFunc binder;
+	sjme_frontEnd_binderFunc bindHandler;
 };
 
 /**
