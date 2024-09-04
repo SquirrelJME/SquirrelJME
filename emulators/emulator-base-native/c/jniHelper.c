@@ -169,9 +169,27 @@ sjme_errorCode sjme_jni_fillFrontEnd(JNIEnv* env, sjme_frontEnd* into,
 	
 	/* Need to reference an object? */
 	if (ref != NULL)
-		into->wrapper = (*env)->NewGlobalRef(env, ref);
+		into->wrapper = (*env)->NewWeakGlobalRef(env, ref);
 	else
 		into->wrapper = NULL;
+	
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_jni_wipeFrontEnd(JNIEnv* env, sjme_frontEnd* into)
+{
+	jweak weak;
+	
+	if (env == NULL || into == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Delete the weak reference. */
+	weak = into->wrapper;
+	if (weak != NULL)
+	{
+		(*env)->DeleteWeakGlobalRef(env, weak);
+		into->wrapper = NULL;
+	}
 	
 	return SJME_ERROR_NONE;
 }

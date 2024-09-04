@@ -307,6 +307,16 @@ sjme_errorCode sjme_jni_fillFrontEnd(JNIEnv* env, sjme_frontEnd* into,
 	jobject ref);
 
 /**
+ * Wipes the front end so there is no longer a Java reference to it.
+ * 
+ * @param env The Java environment.
+ * @param into The front end to clear.
+ * @return On any resultant error, if any.
+ * @since 2024/09/04
+ */
+sjme_errorCode sjme_jni_wipeFrontEnd(JNIEnv* env, sjme_frontEnd* into);
+
+/**
  * Recovers the Java environment pointer.
  * 
  * @param outEnv The resultant environment. 

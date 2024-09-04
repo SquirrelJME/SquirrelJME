@@ -227,6 +227,8 @@ static void mle_scritchUiRecoverCallback(JNIEnv* env,
 	
 	/* Recover the callback we want to call. */
 	callbackData->javaCallback = frontEndP->wrapper;
+	if (callbackData->javaCallback == NULL)
+		sjme_die("Listener as no object?");
 	
 	/* Get class of the listener. */
 	listenerClass = (*env)->GetObjectClass(env, callbackData->javaCallback);
@@ -2516,13 +2518,20 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __weakDelete)
 {
 	sjme_errorCode error;
 	sjme_alloc_weak weak;
+	sjme_scritchui_uiCommon common;
 	
 	if (weakP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-
+	
+	/* Wipe front end. */
+	common = (sjme_scritchui_uiCommon)weakP;
+	if (sjme_error_is(error = sjme_jni_wipeFrontEnd(env,
+		&common->frontEnd)))
+		sjme_jni_throwMLECallError(env, error);
+	
 	/* Call deletion handler. */
 	weak = (sjme_alloc_weak)weakP;
 	if (sjme_error_is(error = sjme_alloc_weakDelete(&weak)))

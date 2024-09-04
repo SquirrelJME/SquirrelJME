@@ -44,13 +44,24 @@ final class __Collector__
 	@Override
 	public void run()
 	{
+		// Debug
+		Debugging.debugNote("Starting collection loop...");
+		
+		// Run loop
 		ReferenceQueue<? super Object> queue = __Collector__._QUEUE;
 		Map<Reference<?>, Long> natives = __Collector__._NATIVES;
 		for (;;)
 			try
 			{
 				// Wait for object to come in
+				Runtime.getRuntime().gc();
 				Reference<?> ref = queue.remove(1_000);
+				if (ref == null)
+					continue;
+					
+				// Debug
+				Debugging.debugNote("Collecting %s...",
+					ref);
 				
 				// Remove from queue if it is found
 				synchronized (__Collector__.class)
@@ -76,6 +87,10 @@ final class __Collector__
 							// Tell native code to delete this
 							NativeScritchDylib.__weakDelete(weakP);
 							
+							// Debug
+							Debugging.debugNote("Collected 0x%08x",
+								weakP);
+							
 							// Stop
 							break;
 						}
@@ -86,6 +101,9 @@ final class __Collector__
 			{
 				break;
 			}
+		
+		// Debug
+		Debugging.debugNote("Stopping collection loop...");
 	}
 	
 	/**
@@ -106,9 +124,14 @@ final class __Collector__
 		Reference<Object> ref = new WeakReference<>(__object,
 			__Collector__._QUEUE);
 		
+		// Debug
+		Debugging.debugNote("Storing 0x%08x (%s)",
+			__weakP, __object);
+		
 		// Store native in the map
 		synchronized (__Collector__.class)
 		{
+			// Make sure it gets collected
 			__Collector__._NATIVES.put(ref, __weakP);
 			
 			// Need to setup thread to watch references?
