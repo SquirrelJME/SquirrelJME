@@ -47,6 +47,23 @@ typedef sjme_pointer sjme_frontEndWrapper;
 typedef sjme_pointer sjme_frontEndData;
 
 /**
+ * The action to perform when binding.
+ * 
+ * @since 2024/09/04
+ */
+typedef enum sjme_frontEnd_bindAction
+{	
+	/** Obtain the binding. */
+	SJME_FRONTEND_BIND,
+	
+	/** Release the binding. */
+	SJME_FRONTEND_RELEASE,
+	
+	/** The number of actions. */
+	SJME_FRONTEND_NUM_BIND_ACTION,
+} sjme_frontEnd_bindAction;
+
+/**
  * The type of binding this is.
  * 
  * @since 2024/09/04
@@ -76,12 +93,17 @@ typedef struct sjme_frontEnd sjme_frontEnd;
  * 
  * @param owner The owning object of the front end.
  * @param frontEnd The front end data.
+ * @param resultData The resultant bound data, which points to the native
+ * binding reference.
+ * @param action The action being performed on the instance.
  * @return Any resultant error, if any.
  * @since 2024/09/04
  */
 typedef sjme_errorCode (*sjme_frontEnd_binderFunc)(
 	sjme_attrInNotNull sjme_pointer owner,
-	sjme_attrInOutNotNull sjme_frontEnd* frontEnd);
+	sjme_attrInOutNotNull sjme_frontEndData* frontEnd,
+	sjme_attrOutNotNull sjme_pointer* resultData,
+	sjme_attrInValue sjme_frontEnd_bindAction action);
 
 struct sjme_frontEnd
 {

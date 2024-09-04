@@ -20,6 +20,7 @@ squirreljme_multilib_add_library(Base
 	dylib.c
 	error.c
 	fixed.c
+	frontEnd.c
 	inflate.c
 	list.c
 	multithread.c
