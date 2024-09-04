@@ -71,10 +71,38 @@ typedef enum sjme_frontEnd_bindAction
  */
 typedef enum sjme_frontEnd_bindType
 {
-	/** Strong reference to the binding. */
+	/**
+	 * Strong reference to the binding, this means that the data referred
+	 * to by the front end will not disappear.
+	 * 
+	 * An example of a strong reference would be a Java callback that needs
+	 * both it's own object along with the native structure to always exist.
+	 */
 	SJME_FRONTEND_STRONG,
 	
-	/** Weak reference to the binding. */
+	/**
+	 * Weak reference to the binding, this means that the data referred to
+	 * by the front end may disappear in the front end, for example if
+	 * the front end has a garbage collection scheme.
+	 * 
+	 * An example of a weak reference would be a ScritchUI type that needs
+	 * access from a garbage collected virtual machine, such as the
+	 * emulator/standalone variant of SquirrelJME, in that the object this
+	 * points to only exists to point back to a native structure. To continue
+	 * the graphics example, a PencilBracket only needs to exist during
+	 * drawing and once that gets garbage collected the native structure can
+	 * be freed if nothing else refers to it. If a context is reused after
+	 * the Java object was garbage collected, then that reference object
+	 * will just be recreated to point to the native structure. Only once
+	 * the native structure is no longer needed AND the Java object is garbage
+	 * collected, then the native structure may be freed. Effectively, this
+	 * allows objects in Java to exist and then stop existing, only accessing
+	 * a native structure when it is needed and accessible on the Java end.
+	 * Since memory management in SquirrelJME's NanoCoat is more manual
+	 * with reference counting, there needs to be this information and
+	 * linkage in this way to prevent native structures from being
+	 * destroyed while a Java object still points to it.
+	 */
 	SJME_FRONTEND_WEAK,
 	
 	/** The number of bind types permitted. */
