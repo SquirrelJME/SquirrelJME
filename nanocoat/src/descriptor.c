@@ -683,7 +683,7 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 			SJME_ERROR_INVALID_BINARY_NAME);
 	
 	/* Return a copy. */
-	return sjme_alloc_copy(inPool, resultLen, outName,
+	return sjme_alloc_copy(inPool, resultLen, (sjme_pointer*)outName,
 		result);
 }
 
@@ -780,7 +780,7 @@ sjme_errorCode sjme_desc_interpretClassName(
 	}
 	
 	/* Return a copy. */
-	return sjme_alloc_copy(inPool, allocLen, outName,
+	return sjme_alloc_copy(inPool, allocLen, (sjme_pointer*)outName,
 		result);
 }
 
@@ -829,7 +829,7 @@ sjme_errorCode sjme_desc_interpretFieldType(
 			SJME_ERROR_INVALID_FIELD_TYPE);
 	
 	/* Return copy of it. */
-	return sjme_alloc_copy(inPool, allocLen, outType,
+	return sjme_alloc_copy(inPool, allocLen, (sjme_pointer*)outType,
 		result);
 }
 
@@ -966,6 +966,10 @@ sjme_errorCode sjme_desc_interpretMethodType(
 		/* Link in otherwise. */
 		else
 		{
+			/* Should not be null at this point. */
+			if (lastField == NULL)
+				return SJME_ERROR_ILLEGAL_STATE;
+			
 			lastField->next = currentField;
 			currentField->prev = lastField;
 			lastField = currentField;
@@ -1039,6 +1043,6 @@ sjme_errorCode sjme_desc_interpretMethodType(
 	}
 	
 	/* Success! */
-	return sjme_alloc_copy(inPool, allocLen, outType,
+	return sjme_alloc_copy(inPool, allocLen, (sjme_pointer*)outType,
 		result);
 }

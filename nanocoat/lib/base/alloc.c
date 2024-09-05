@@ -1193,7 +1193,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 	
 	/* We need to allocate the link. */
 	if (sjme_error_is(error = sjme_alloc(link->pool, sizeof(*result),
-		&result)))
+		(sjme_pointer*)&result)))
 		return sjme_error_default(error);
 	
 	/* Setup link information. */
@@ -1245,11 +1245,11 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	resultPtr = NULL;
 #if defined(SJME_CONFIG_DEBUG)
 	if (sjme_error_is(error = sjme_allocR(inPool, size,
-		&resultPtr, file, line, func)) ||
+		(sjme_pointer*)&resultPtr, file, line, func)) ||
 		resultPtr == NULL)
 #else
 	if (sjme_error_is(error = sjme_alloc(inPool, size,
-		&resultPtr)) ||
+		(sjme_pointer*)&resultPtr)) ||
 		resultPtr == NULL)
 #endif
 		goto fail_allocBlock;
