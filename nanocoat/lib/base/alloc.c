@@ -1074,11 +1074,11 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
 	/* Then just forward to copy. */
 #if defined(SJME_CONFIG_DEBUG)
 	return sjme_alloc_copyR(inPool, charLen,
-		(void**)outString, (void*)stringToCopy,
+		(sjme_pointer*)outString, (sjme_pointer)stringToCopy,
 		file, line, func);
 #else
 	return sjme_alloc_copy(inPool, charLen,
-		outString, stringToCopy);
+		(sjme_pointer*)outString, (sjme_pointer)stringToCopy);
 #endif
 }
 
@@ -1258,7 +1258,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 	
 	/* We need to allocate the link. */
 	if (sjme_error_is(error = sjme_alloc(link->pool, sizeof(*result),
-		(void**)&result)))
+		(sjme_pointer*)&result)))
 		return sjme_error_default(error);
 	
 	/* Setup link information. */
@@ -1318,11 +1318,11 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	resultPtr = NULL;
 #if defined(SJME_CONFIG_DEBUG)
 	if (sjme_error_is(error = sjme_allocR(inPool, size,
-		&resultPtr, file, line, func)) ||
+		(sjme_pointer*)&resultPtr, file, line, func)) ||
 		resultPtr == NULL)
 #else
 	if (sjme_error_is(error = sjme_alloc(inPool, size,
-		&resultPtr)) ||
+		(sjme_pointer*)&resultPtr)) ||
 		resultPtr == NULL)
 #endif
 		goto fail_allocBlock;

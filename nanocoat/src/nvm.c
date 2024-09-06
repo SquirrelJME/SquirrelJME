@@ -11,7 +11,6 @@
 
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
-#include "sjme/except.h"
 #include "sjme/tread.h"
 
 /**

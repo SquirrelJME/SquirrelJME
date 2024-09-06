@@ -13,7 +13,6 @@
 #include "sjme/allocSizeOf.h"
 #include "sjme/boot.h"
 #include "sjme/debug.h"
-#include "sjme/except.h"
 #include "sjme/nvm.h"
 #include "sjme/task.h"
 #include "sjme/charSeq.h"

@@ -13,7 +13,6 @@ squirreljme_multilib_add_static_library(Core
 	classy.c
 	cleanup.c
 	descriptor.c
-	except.c
 	gfx.c
 	jdwp.c
 	loop.c

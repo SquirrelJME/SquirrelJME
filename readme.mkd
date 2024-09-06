@@ -2,8 +2,8 @@
 
 **SquirrelJME** is a Java ME 8 Virtual Machine for embedded and Internet of
 Things devices, it also is a platform for the _Software Preservation_ of
-mobile Java ME devices. It has the ultimate goal of being _99.9%_ compatible
-with the Java ME standard.
+mobile Java ME devices. This includes Japanese Keitai software as well! It
+has the ultimate goal of being _99.9%_ compatible with the Java ME standard.
 
 **SquirrelJME**'s runtime library is written purely in Java with a simple
 abstraction layer on top of native hardware, or otherwise. This allows the
