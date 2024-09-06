@@ -45,6 +45,9 @@ typedef enum sjme_traverse_createMode
 	/** Allow branches to replace leaves. */
 	SJME_TRAVERSE_BRANCH_REPLACE,
 	
+	/** Turn leaf into branch and leaf off of branch. */
+	SJME_TRAVERSE_BRANCH_FROM_LEAF,
+	
 	/** The number of modes. */
 	SJME_TRAVERSE_NUM_CREATE_MODE,
 } sjme_traverse_createMode;
@@ -276,7 +279,7 @@ sjme_errorCode sjme_traverse_iterateNextR(
 	numBits, type, numPointerStars) \
 	(sjme_traverse_iterateNextR(SJME_AS_TRAVERSE((traverse)), (iterator), \
 	((sjme_pointer*)(leafValue)), \
-	sizeof((*(leafValue))), (bits), (numBits)))
+	sizeof((**(leafValue))), (bits), (numBits)))
 
 /**
  * Allocates a new traversal tree.

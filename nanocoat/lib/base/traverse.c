@@ -51,7 +51,9 @@ static sjme_errorCode sjme_traverse_traverse(
 	sjme_errorCode error;
 	sjme_traverse_node* at;
 	sjme_traverse_node* atParent;
+	sjme_traverse_node* clone;
 	sjme_traverse_node** next;
+	sjme_traverse_node** other;
 	sjme_juint sh;
 	sjme_jboolean finalShift;
 	
@@ -61,18 +63,23 @@ static sjme_errorCode sjme_traverse_traverse(
 	if (create)
 	{
 		if (createMode != SJME_TRAVERSE_NORMAL &&
-			createMode != SJME_TRAVERSE_BRANCH_REPLACE)
+			createMode != SJME_TRAVERSE_BRANCH_REPLACE &&
+			createMode != SJME_TRAVERSE_BRANCH_FROM_LEAF)
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}
 	
 	/* Go through all bits in the shift. */
 	at = traverse->root;
 	atParent = traverse->root;
-	for (sh = sjme_util_intOverShiftU(1, numBits) - 1;
+	for (sh = sjme_util_intOverShiftU(1, numBits - 1);
 		sh >= 1 && at != NULL; sh >>= 1)
 	{
 		/* Is this the final shift? */
 		finalShift = (sh == 1);
+		
+		/* Are we going zero or one? */
+		next = (((bits & sh) != 0) ? &at->node.one : &at->node.zero);
+		other = (((bits & sh) == 0) ? &at->node.one : &at->node.zero);
 		
 		/* Are we at a leaf? We should never be on one. */
 		if (at->leaf.key == SJME_TRAVERSE_LEAF_KEY)
@@ -81,16 +88,34 @@ static sjme_errorCode sjme_traverse_traverse(
 				return SJME_ERROR_NO_SUCH_ELEMENT;
 			
 			/* Not turning into a branch? */
-			if (createMode != SJME_TRAVERSE_BRANCH_REPLACE)
+			if (createMode != SJME_TRAVERSE_BRANCH_REPLACE &&
+				createMode != SJME_TRAVERSE_BRANCH_FROM_LEAF)
 				return SJME_ERROR_TREE_COLLISION;
 			
+			/* Make copy of this leaf and set it to the other sub-node. */
+			if (createMode == SJME_TRAVERSE_BRANCH_FROM_LEAF)
+			{
+				/* Get new entry which will contain this leaf. */
+				clone = NULL;
+				if (sjme_error_is(error = sjme_traverse_next(
+					traverse, &clone)) || clone == NULL)
+					return sjme_error_default(error);
+				
+				/* Copy leaf directly. */
+				memmove(clone, at, traverse->structSize);
+				
+				/* Make this a branch and point to the new leaf. */
+				(*next) = clone;
+				(*other) = NULL; 
+			}
+			
 			/* Just wipe the values here. */
-			at->node.zero = NULL;
-			at->node.one = NULL;
+			else
+			{
+				at->node.zero = NULL;
+				at->node.one = NULL;
+			}
 		}
-		
-		/* Are we going zero or one? */
-		next = ((bits & sh) != 0 ? &at->node.one : &at->node.zero);
 		
 		/* If there is no node here, create it, possibly. */
 		if ((*next) == NULL)
@@ -202,7 +227,7 @@ sjme_errorCode sjme_traverse_iterateNextR(
 		return SJME_ERROR_NO_SUCH_ELEMENT; 
 		
 	/* Continue where this was left off. */
-	for (sh = sjme_util_intOverShiftU(1, numBits) - 1;
+	for (sh = sjme_util_intOverShiftU(1, numBits - 1);
 		sh >= 1 && at != NULL; sh >>= 1)
 	{
 		/* Is this the final shift? */
@@ -210,6 +235,15 @@ sjme_errorCode sjme_traverse_iterateNextR(
 		
 		/* Is this set? */
 		set = ((bits & sh) != 0);
+		
+		/* In too deep? */
+		if (iterator->bitCount >= 32)
+			return SJME_ERROR_TREE_TOO_DEEP;
+		
+		/* Shift in bit. */
+		iterator->bits <<= 1;
+		iterator->bits |= (set ? 1 : 0);
+		iterator->bitCount += 1;
 		
 		/* We cannot iterate past a leaf. */
 		if ((sjme_intPointer)at == SJME_TRAVERSE_LEAF_KEY)
@@ -232,15 +266,6 @@ sjme_errorCode sjme_traverse_iterateNextR(
 			/* Set leaf value. */
 			*leafValue = &((*next)->leaf.value[0]);
 		}
-		
-		/* In too deep? */
-		if (iterator->bitCount >= 32)
-			return SJME_ERROR_TREE_TOO_DEEP;
-		
-		/* Shift in bit. */
-		iterator->bits <<= 1;
-		iterator->bits |= (set ? 1 : 0);
-		iterator->bitCount += 1;
 		
 		/* Go the next node. */
 		at = (*next);
@@ -340,7 +365,8 @@ sjme_errorCode sjme_traverse_putMR(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	if (createMode != SJME_TRAVERSE_NORMAL &&
-		createMode != SJME_TRAVERSE_BRANCH_REPLACE)
+		createMode != SJME_TRAVERSE_BRANCH_REPLACE &&
+		createMode != SJME_TRAVERSE_BRANCH_FROM_LEAF)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Wrong length for this tree? */
@@ -365,7 +391,8 @@ sjme_errorCode sjme_traverse_putMR(
 	if (at->leaf.key != SJME_TRAVERSE_LEAF_KEY)
 	{
 		/* Not replacing it. */
-		if (createMode != SJME_TRAVERSE_BRANCH_REPLACE)
+		if (createMode != SJME_TRAVERSE_BRANCH_REPLACE &&
+			createMode != SJME_TRAVERSE_BRANCH_FROM_LEAF)
 			return SJME_ERROR_TREE_COLLISION;
 	}
 	
