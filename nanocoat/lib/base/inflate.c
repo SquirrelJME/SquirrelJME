@@ -367,8 +367,10 @@ static sjme_errorCode sjme_inflate_dynamicBuildTree(
 		if (len != 0)
 		{
 			nextCodeLen = (nextCode[len])++;
-			if (sjme_error_is(error = sjme_traverse_put(
-				SJME_AS_TRAVERSE((*outTree)), &i, nextCodeLen, len,
+			if (sjme_error_is(error = sjme_traverse_putM(
+				SJME_AS_TRAVERSE((*outTree)),
+				SJME_TRAVERSE_BRANCH_REPLACE,
+				&i, nextCodeLen, len,
 				sjme_jint, 0)))
 				return sjme_error_default(error);
 		}

@@ -44,6 +44,7 @@ static sjme_errorCode sjme_traverse_traverse(
 	sjme_attrOutNotNull sjme_traverse_node** outNode,
 	sjme_attrOutNullable sjme_traverse_node** outParent,
 	sjme_attrInValue sjme_jboolean create,
+	sjme_attrInValue sjme_traverse_createMode createMode,
 	sjme_attrInPositive sjme_juint bits,
 	sjme_attrInPositiveNonZero sjme_jint numBits)
 {
@@ -57,6 +58,13 @@ static sjme_errorCode sjme_traverse_traverse(
 	if (traverse == NULL || outNode == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	if (create)
+	{
+		if (createMode != SJME_TRAVERSE_NORMAL &&
+			createMode != SJME_TRAVERSE_BRANCH_REPLACE)
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
 	/* Go through all bits in the shift. */
 	at = traverse->root;
 	atParent = traverse->root;
@@ -68,8 +76,18 @@ static sjme_errorCode sjme_traverse_traverse(
 		
 		/* Are we at a leaf? We should never be on one. */
 		if (at->leaf.key == SJME_TRAVERSE_LEAF_KEY)
-			return (create ? SJME_ERROR_TREE_COLLISION :
-				SJME_ERROR_NO_SUCH_ELEMENT);
+		{
+			if (!create)
+				return SJME_ERROR_NO_SUCH_ELEMENT;
+			
+			/* Not turning into a branch? */
+			if (createMode != SJME_TRAVERSE_BRANCH_REPLACE)
+				return SJME_ERROR_TREE_COLLISION;
+			
+			/* Just wipe the values here. */
+			at->node.zero = NULL;
+			at->node.one = NULL;
+		}
 		
 		/* Are we going zero or one? */
 		next = ((bits & sh) != 0 ? &at->node.one : &at->node.zero);
@@ -304,8 +322,9 @@ fail_allocResult:
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_traverse_putR(
+sjme_errorCode sjme_traverse_putMR(
 	sjme_attrInNotNull sjme_traverse traverse,
+	sjme_attrInValue sjme_traverse_createMode createMode,
 	sjme_attrInNotNullBuf(leafLength) sjme_pointer leafValue,
 	sjme_attrInPositiveNonZero sjme_jint leafLength,
 	sjme_attrInPositive sjme_juint bits,
@@ -318,6 +337,10 @@ sjme_errorCode sjme_traverse_putR(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (leafLength <= 0 || numBits <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (createMode != SJME_TRAVERSE_NORMAL &&
+		createMode != SJME_TRAVERSE_BRANCH_REPLACE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Wrong length for this tree? */
@@ -334,13 +357,17 @@ sjme_errorCode sjme_traverse_putR(
 	at = NULL;
 	if (sjme_error_is(error = sjme_traverse_traverse(
 		traverse, &at, NULL,
-		SJME_JNI_TRUE, bits, numBits)) ||
+		SJME_JNI_TRUE, createMode, bits, numBits)) ||
 		at == NULL)
 		return sjme_error_default(error);
 	
 	/* The leaf key must be set to be a leaf! */
 	if (at->leaf.key != SJME_TRAVERSE_LEAF_KEY)
-		return SJME_ERROR_TREE_COLLISION;
+	{
+		/* Not replacing it. */
+		if (createMode != SJME_TRAVERSE_BRANCH_REPLACE)
+			return SJME_ERROR_TREE_COLLISION;
+	}
 	
 	/* Initialize leaf. */
 	at->leaf.key = SJME_TRAVERSE_LEAF_KEY;
@@ -370,7 +397,7 @@ sjme_errorCode sjme_traverse_remove(
 	atParent = NULL;
 	if (sjme_error_is(error = sjme_traverse_traverse(
 		traverse, &at, &atParent,
-		SJME_JNI_FALSE, bits, numBits)))
+		SJME_JNI_FALSE, 0, bits, numBits)))
 		return sjme_error_default(error);
 	
 	/* Nothing is here? */

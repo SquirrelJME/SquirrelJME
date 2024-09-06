@@ -33,6 +33,23 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * This specifies how nodes should be created.
+ * 
+ * @since 2024/09/05
+ */
+typedef enum sjme_traverse_createMode
+{
+	/** Normal creation. */
+	SJME_TRAVERSE_NORMAL,
+	
+	/** Allow branches to replace leaves. */
+	SJME_TRAVERSE_BRANCH_REPLACE,
+	
+	/** The number of modes. */
+	SJME_TRAVERSE_NUM_CREATE_MODE,
+} sjme_traverse_createMode;
+
+/**
  * Traversal tree node.
  * 
  * @since 2024/08/22
@@ -297,6 +314,7 @@ sjme_errorCode sjme_traverse_newR(
  * Puts a value into the traversal tree.
  * 
  * @param traverse The traversal tree to write into.
+ * @param createMode The creation mode.
  * @param leafValue The pointer to the leaf's value.
  * @param leafLength The length of the leaf value.
  * @param bits The bit values to get to the leaf.
@@ -304,8 +322,9 @@ sjme_errorCode sjme_traverse_newR(
  * @return On any resultant error, if any.
  * @since 2024/09/01
  */
-sjme_errorCode sjme_traverse_putR(
+sjme_errorCode sjme_traverse_putMR(
 	sjme_attrInNotNull sjme_traverse traverse,
+	sjme_attrInValue sjme_traverse_createMode createMode,
 	sjme_attrInNotNullBuf(leafLength) sjme_pointer leafValue,
 	sjme_attrInPositiveNonZero sjme_jint leafLength,
 	sjme_attrInPositive sjme_juint bits,
@@ -325,7 +344,27 @@ sjme_errorCode sjme_traverse_putR(
  */
 #define sjme_traverse_put(traverse, leafValue, bits, numBits, \
 	type, numPointerStars) \
-	(sjme_traverse_putR((traverse), ((sjme_pointer)(leafValue)), \
+	(sjme_traverse_putMR((traverse), (SJME_TRAVERSE_NORMAL), \
+	((sjme_pointer)(leafValue)), \
+	sizeof((*(leafValue))), (bits), (numBits)))
+
+/**
+ * Puts a value into the traversal tree.
+ * 
+ * @param traverse The traversal tree to write into.
+ * @param createMode The creation mode.
+ * @param leafValue The pointer to the leaf's value.
+ * @param bits The bit values to get to the leaf.
+ * @param numBits The number of bits in the value.
+ * @param type The type being stored.
+ * @param numPointerStars the pointer star count for the stored type.
+ * @return On any resultant error, if any.
+ * @since 2024/09/05
+ */
+#define sjme_traverse_putM(traverse, createMode, leafValue, bits, numBits, \
+	type, numPointerStars) \
+	(sjme_traverse_putMR((traverse), (createMode), \
+	((sjme_pointer)(leafValue)), \
 	sizeof((*(leafValue))), (bits), (numBits)))
 
 /**
