@@ -98,7 +98,7 @@ sjme_errorCode sjme_rom_libraryNew(
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc(pool,
 		SJME_SIZEOF_LIBRARY_CORE_N(inFunctions->uncommonTypeSize),
-		&result)) || result == NULL)
+		(sjme_pointer*)&result)) || result == NULL)
 		return sjme_error_default(error);
 
 	/* Setup some basic cache details. */
@@ -564,7 +564,7 @@ sjme_errorCode sjme_rom_suiteNew(
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc(pool,
 		SJME_SIZEOF_SUITE_CORE_N(inFunctions->uncommonTypeSize),
-		&result)) || result == NULL)
+		(sjme_pointer*)&result)) || result == NULL)
 		return sjme_error_default(error);
 
 	/* Setup some basic cache details. */

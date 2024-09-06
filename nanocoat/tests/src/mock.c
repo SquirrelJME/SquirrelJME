@@ -9,7 +9,6 @@
 
 #include <string.h>
 
-#include "sjme/except.h"
 #include "mock.h"
 #include "mock.jar.h"
 #include "hello.txt.h"

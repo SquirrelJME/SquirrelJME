@@ -1027,11 +1027,11 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
 	/* Then just forward to copy. */
 #if defined(SJME_CONFIG_DEBUG)
 	return sjme_alloc_copyR(inPool, charLen,
-		outString, stringToCopy,
+		(sjme_pointer*)outString, (sjme_pointer)stringToCopy,
 		file, line, func);
 #else
 	return sjme_alloc_copy(inPool, charLen,
-		outString, stringToCopy);
+		(sjme_pointer*)outString, (sjme_pointer)stringToCopy);
 #endif
 }
 
