@@ -443,6 +443,30 @@ sjme_errorCode sjme_stream_inputReadValueJ(
 	sjme_attrOutNotNull sjme_jvalue* outValue);
 
 /**
+ * Reads a Java integer from the given stream.
+ *
+ * @param stream The stream to read from.
+ * @param outValue The resultant value.
+ * @return On any error, if any.
+ * @since 2024/09/07
+ */
+sjme_errorCode sjme_stream_inputReadValueJI(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_jint* outValue);
+
+/**
+ * Reads a Java short from the given stream.
+ *
+ * @param stream The stream to read from.
+ * @param outValue The resultant value.
+ * @return On any error, if any.
+ * @since 2024/09/07
+ */
+sjme_errorCode sjme_stream_inputReadValueJS(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_jshort* outValue);
+
+/**
  * Contains the result of the written byte array.
  *
  * @since 2024/01/09

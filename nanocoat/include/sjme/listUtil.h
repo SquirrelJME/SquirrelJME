@@ -32,39 +32,12 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/**
- * Maps a line to a value.
- * 
- * @param inString The input string line.
- * @param outElement The pointer to the direct list element.
- * @return Any resultant error, if any.
- * @since 2024/09/07
- */
-typedef sjme_errorCode (*sjme_listUtil_mapLineFunc)(
-	sjme_attrInNotNull sjme_lpcstr inString,
-	sjme_attrOutNotNull sjme_pointer outElementPtr);
-
-/**
- * Allocates a new list.
- * 
- * @param inPool The pool to allocate within.
- * @param outList The resultant list.
- * @return Any resultant error, if any.
- * @since 2024/09/07
- */
-typedef sjme_errorCode (*sjme_listUtil_newListFunc)(
+sjme_errorCode sjme_listUtil_binListInt(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_void** outList,
-	sjme_attrInPositive sjme_jint length);
+	sjme_attrOutNotNull sjme_list_sjme_jint** outList,
+	sjme_attrInNotNull sjme_stream_input inputStream);
 
-sjme_errorCode sjme_listUtil_mapAllLines(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_void** outList,
-	sjme_attrInNotNull sjme_stream_input inputStream,
-	sjme_attrInNotNull sjme_listUtil_newListFunc newList,
-	sjme_attrInNotNull sjme_listUtil_mapLineFunc mapper);
-
-sjme_errorCode sjme_listUtil_readAllLines(
+sjme_errorCode sjme_listUtil_binListUtf(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInNotNull sjme_stream_input inputStream);

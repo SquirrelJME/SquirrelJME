@@ -367,6 +367,48 @@ sjme_errorCode sjme_stream_inputReadValueJ(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_stream_inputReadValueJI(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_jint* outValue)
+{
+	sjme_errorCode error;
+	sjme_jvalue value;
+	
+	if (stream == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Read in value. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_stream_inputReadValueJ(
+		stream, SJME_BASIC_TYPE_ID_INTEGER, &value)))
+		return sjme_error_default(error);
+	
+	/* Give the value! */
+	*outValue = value.i;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_stream_inputReadValueJS(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_jshort* outValue)
+{
+	sjme_errorCode error;
+	sjme_jvalue value;
+	
+	if (stream == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Read in value. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_stream_inputReadValueJ(
+		stream, SJME_BASIC_TYPE_ID_SHORT, &value)))
+		return sjme_error_default(error);
+	
+	/* Give the value! */
+	*outValue = value.s;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_stream_outputOpen(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,

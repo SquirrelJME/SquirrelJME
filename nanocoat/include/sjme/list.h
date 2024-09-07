@@ -417,7 +417,7 @@ sjme_errorCode sjme_list_newVAR(
  */
 sjme_errorCode sjme_list_flattenArgCV(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpcstr** outList,
+	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNull sjme_lpcstr* argV);
 

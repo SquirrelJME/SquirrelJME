@@ -220,6 +220,7 @@ sjme_errorCode sjme_rom_suiteNew(
 	/* Setup result. */
 	result->common.closeable.closeHandler = sjme_rom_suiteClose;
 	result->common.type = SJME_NVM_STRUCTTYPE_ROM_SUITE;
+	result->cache.common.allocPool = pool;
 	result->functions = inFunctions;
 	
 	/* Copy front end data? */

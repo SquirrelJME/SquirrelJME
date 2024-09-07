@@ -65,15 +65,10 @@ static sjme_errorCode sjme_rom_zipSuiteDefaultLaunch(
 			buf, BUF_SIZE - 1)) || valid == INT32_MAX)
 			return sjme_error_default(error);
 		
-		/* Strip ending whitespace. */
-		if (sjme_error_is(error = sjme_util_lpstrTrimEnd(buf,
-			BUF_SIZE - 1)))
-			return sjme_error_default(error);
-		
 		/* Duplicate main class. */
 		str = NULL;
 		if (sjme_error_is(error = sjme_alloc_strdup(
-			inPool, &str, (sjme_lpcstr)&buf[0])) || str == NULL)
+			inPool, &str, (sjme_lpcstr)&buf[2])) || str == NULL)
 			return sjme_error_default(error);
 		
 		/* Give it. */
@@ -98,10 +93,9 @@ static sjme_errorCode sjme_rom_zipSuiteDefaultLaunch(
 		
 		/* Parse strings. */
 		strings = NULL;
-		if (sjme_error_is(error = sjme_listUtil_readAllLines(
+		if (sjme_error_is(error = sjme_listUtil_binListUtf(
 			inPool, &strings,
-			inputStream)) || 
-			strings == NULL)
+			inputStream)) || strings == NULL)
 			return sjme_error_default(error);
 		
 		/* Give it. */
@@ -126,10 +120,9 @@ static sjme_errorCode sjme_rom_zipSuiteDefaultLaunch(
 			
 		/* Parse integers. */
 		ints = NULL;
-		if (sjme_error_is(error = sjme_listUtil_mapAllLines(
+		if (sjme_error_is(error = sjme_listUtil_binListInt(
 			inPool, SJME_AS_LISTP_VOID(&ints),
-			inputStream, NULL, NULL)) || 
-			ints == NULL)
+			inputStream)) || ints == NULL)
 			return sjme_error_default(error);
 		
 		/* Give it. */

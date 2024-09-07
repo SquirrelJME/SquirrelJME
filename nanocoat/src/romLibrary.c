@@ -115,6 +115,7 @@ sjme_errorCode sjme_rom_libraryNew(
 	/* Setup result. */
 	result->common.closeable.closeHandler = sjme_rom_libraryClose;
 	result->common.type = SJME_NVM_STRUCTTYPE_ROM_LIBRARY;
+	result->cache.common.allocPool = pool;
 	result->functions = inFunctions;
 	
 	/* Copy front end? */
