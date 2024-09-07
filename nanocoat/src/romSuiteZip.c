@@ -17,6 +17,7 @@
 #include "sjme/util.h"
 #include "sjme/zip.h"
 #include "sjme/cleanup.h"
+#include "sjme/listUtil.h"
 
 static sjme_errorCode sjme_rom_zipSuiteDefaultLaunch(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
@@ -34,6 +35,8 @@ static sjme_errorCode sjme_rom_zipSuiteDefaultLaunch(
 	sjme_jint valid;
 	sjme_cchar buf[BUF_SIZE];
 	sjme_lpstr str;
+	sjme_list_sjme_lpstr* strings;
+	sjme_list_sjme_jint* ints;
 	
 	if (inPool == NULL || inSuite == NULL || outMainClass == NULL ||
 		outMainArgs == NULL || outById == NULL || outByName == NULL)
@@ -94,14 +97,14 @@ static sjme_errorCode sjme_rom_zipSuiteDefaultLaunch(
 			return sjme_error_default(error);
 		
 		/* Read everything in. */
-		memset(buf, 0, sizeof(buf));
-		valid = INT32_MAX;
-		if (sjme_error_is(error = sjme_stream_inputReadFully(
-			inputStream, &valid,
-			buf, BUF_SIZE - 1)) || valid == INT32_MAX)
+		strings = NULL;
+		if (sjme_error_is(error = sjme_listUtil_stringsFromStream(
+			inPool, &strings, -1, inputStream)) || 
+			strings == NULL)
 			return sjme_error_default(error);
 		
-		sjme_todo("Impl?");
+		/* Give it. */
+		*outMainArgs = strings;
 		
 		/* Close. */
 		if (sjme_error_is(error = sjme_closeable_close(
@@ -121,14 +124,14 @@ static sjme_errorCode sjme_rom_zipSuiteDefaultLaunch(
 			return sjme_error_default(error);
 		
 		/* Read everything in. */
-		memset(buf, 0, sizeof(buf));
-		valid = INT32_MAX;
-		if (sjme_error_is(error = sjme_stream_inputReadFully(
-			inputStream, &valid,
-			buf, BUF_SIZE - 1)) || valid == INT32_MAX)
+		ints = NULL;
+		if (sjme_error_is(error = sjme_listUtil_intStringsFromStream(
+			inPool, &ints, -1, inputStream)) || 
+			ints == NULL)
 			return sjme_error_default(error);
 		
-		sjme_todo("Impl?");
+		/* Give it. */
+		*outById = ints;
 		
 		/* Close. */
 		if (sjme_error_is(error = sjme_closeable_close(

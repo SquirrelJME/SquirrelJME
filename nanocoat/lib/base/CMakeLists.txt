@@ -23,6 +23,7 @@ squirreljme_multilib_add_library(Base
 	frontEnd.c
 	inflate.c
 	list.c
+	listUtil.c
 	multithread.c
 	native.c
 	path.c
