@@ -132,6 +132,12 @@ SJME_LIST_DECLARE(sjme_jobject, 0);
 /** Void list. */
 typedef sjme_list_sjme_jint sjme_list_void;
 
+/** Cast to void list. */
+#define SJME_AS_LIST_VOID(x) ((sjme_list_void*)(x))
+
+/** Cast to void list. */
+#define SJME_AS_LISTP_VOID(x) ((sjme_list_void**)(x))
+
 /**
  * Allocates a given list generically.
  *

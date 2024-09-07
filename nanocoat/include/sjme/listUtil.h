@@ -33,63 +33,41 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * Reads the next value to store in the list.
+ * Maps a line to a value.
  * 
- * @param index The index of the value.
- * @param outValue The value to read.
- * @param source The source value.
- * @param sourceParam The source parameter.
+ * @param inString The input string line.
+ * @param outElement The pointer to the direct list element.
  * @return Any resultant error, if any.
- * @since 2024/09/06
+ * @since 2024/09/07
  */
-typedef sjme_errorCode (*sjme_listUtil_buildNextValueFunc)(
-	sjme_attrInPositive sjme_jint index,
-	sjme_attrOutNotNull sjme_pointer outValue,
-	sjme_attrInNotNull sjme_pointer source,
-	sjme_attrInNullable sjme_intPointer* sourceParam);
+typedef sjme_errorCode (*sjme_listUtil_mapLineFunc)(
+	sjme_attrInNotNull sjme_lpcstr inString,
+	sjme_attrOutNotNull sjme_pointer outElementPtr);
 
 /**
- * Functions used to build lists from inputs.
- * 
- * @since 2024/09/06
- */
-typedef struct sjme_listUtil_buildFunctions
-{
-	/** Reads the next value. */
-	sjme_listUtil_buildNextValueFunc nextValue;
-} sjme_listUtil_buildFunctions;
-
-/** Build an integer list using strings as a source. */
-extern const sjme_listUtil_buildFunctions sjme_listUtil_buildAToI;
-
-/** Build strings into a list. */
-extern const sjme_listUtil_buildFunctions sjme_listUtil_buildStrings;
-
-/** Cast to void list. */
-#define SJME_AS_LIST_VOID(x) ((sjme_list_void*)(x))
-
-/** Cast to void list. */
-#define SJME_AS_LISTP_VOID(x) ((sjme_list_void**)(x))
-
-/**
- * Builds a list using the given functions.
+ * Allocates a new list.
  * 
  * @param inPool The pool to allocate within.
  * @param outList The resultant list.
- * @param limit The maximum size of the list, @c -1 means no limit.
- * @param functions The functions to use during list building.
- * @param source The source.
- * @param sourceParam Source parameter, if needed.
  * @return Any resultant error, if any.
- * @since 2024/09/06
+ * @since 2024/09/07
  */
-sjme_errorCode sjme_listUtil_build(
+typedef sjme_errorCode (*sjme_listUtil_newListFunc)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_list_void** outList,
-	sjme_attrInNegativeOnePositive sjme_jint limit,
-	sjme_attrInNotNull const sjme_listUtil_buildFunctions* functions,
-	sjme_attrInNotNull sjme_pointer source,
-	sjme_attrInNullable sjme_intPointer* sourceParam);
+	sjme_attrInPositive sjme_jint length);
+
+sjme_errorCode sjme_listUtil_mapAllLines(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_list_void** outList,
+	sjme_attrInNotNull sjme_stream_input inputStream,
+	sjme_attrInNotNull sjme_listUtil_newListFunc newList,
+	sjme_attrInNotNull sjme_listUtil_mapLineFunc mapper);
+
+sjme_errorCode sjme_listUtil_readAllLines(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
+	sjme_attrInNotNull sjme_stream_input inputStream);
 
 /*--------------------------------------------------------------------------*/
 

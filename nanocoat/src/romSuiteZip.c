@@ -96,12 +96,11 @@ static sjme_errorCode sjme_rom_zipSuiteDefaultLaunch(
 			&inputStream)) || inputStream == NULL)
 			return sjme_error_default(error);
 		
-		/* Read everything in. */
+		/* Parse strings. */
 		strings = NULL;
-		if (sjme_error_is(error = sjme_listUtil_build(
-			inPool, SJME_AS_LISTP_VOID(&strings),
-			-1, &sjme_listUtil_buildStrings,
-			inputStream, 0)) || 
+		if (sjme_error_is(error = sjme_listUtil_readAllLines(
+			inPool, &strings,
+			inputStream)) || 
 			strings == NULL)
 			return sjme_error_default(error);
 		
@@ -124,13 +123,12 @@ static sjme_errorCode sjme_rom_zipSuiteDefaultLaunch(
 		if (sjme_error_is(error = sjme_zip_entryRead(&zipEntry,
 			&inputStream)) || inputStream == NULL)
 			return sjme_error_default(error);
-		
-		/* Read everything in. */
+			
+		/* Parse integers. */
 		ints = NULL;
-		if (sjme_error_is(error = sjme_listUtil_build(
+		if (sjme_error_is(error = sjme_listUtil_mapAllLines(
 			inPool, SJME_AS_LISTP_VOID(&ints),
-			-1, &sjme_listUtil_buildAToI,
-			inputStream, 0)) || 
+			inputStream, NULL, NULL)) || 
 			ints == NULL)
 			return sjme_error_default(error);
 		

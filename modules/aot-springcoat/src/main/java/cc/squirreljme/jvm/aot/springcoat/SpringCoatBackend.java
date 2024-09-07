@@ -14,6 +14,8 @@ import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
+import java.io.DataOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.zip.queue.ArchiveOutputQueue;
 import cc.squirreljme.jvm.suite.SuiteUtils;
@@ -111,29 +113,33 @@ public class SpringCoatBackend
 			 ArchiveOutputQueue queue = new ArchiveOutputQueue(zip))
 		{
 			// Launcher properties
-			try (PrintStream launcher = queue.nextPrintStream(
-				"SQUIRRELJME.SQC/launcher.main"))
+			try (OutputStream launcherRaw = queue.nextEntry(
+				"SQUIRRELJME.SQC/launcher.main");
+				DataOutputStream launcher = new DataOutputStream(launcherRaw))
 			{
-				launcher.println(__settings.launcherMainClass);
+				launcher.writeUTF(__settings.launcherMainClass);
 			}
 			
-			try (PrintStream launcher = queue.nextPrintStream(
-				"SQUIRRELJME.SQC/launcher.args"))
+			try (OutputStream launcherRaw = queue.nextEntry(
+				"SQUIRRELJME.SQC/launcher.args");
+				DataOutputStream launcher = new DataOutputStream(launcherRaw))
 			{
+				launcher.writeInt(__settings.launcherArgs.size());
 				for (String arg : __settings.launcherArgs)
-					launcher.println(arg);
+					launcher.writeUTF(arg);
 			}
 			
-			try (PrintStream launcher = queue.nextPrintStream(
-				"SQUIRRELJME.SQC/launcher.path"))
+			try (OutputStream launcherRaw = queue.nextEntry(
+				"SQUIRRELJME.SQC/launcher.path");
+				DataOutputStream launcher = new DataOutputStream(launcherRaw))
 			{
+				launcher.writeInt(__settings.launcherClassPath.size());
 				for (Integer arg : __settings.launcherClassPath)
-					launcher.println(arg);
+					launcher.writeInt(arg);
 			}
 			
 			// Setup queue for SQC output
-			PrintStream suiteList =
-				queue.nextPrintStream("SQUIRRELJME.SQC/suites.list");
+			List<String> suites = new ArrayList<>();
 			
 			// Copy each library individually
 			for (VMClassLibrary lib : __libs)
@@ -150,15 +156,13 @@ public class SpringCoatBackend
 					libName = libName + ".jar";
 				
 				// Store suite
-				suiteList.println(libName);
+				suites.add(libName);
 				
 				// Base name for everything within
 				String outBase = "SQUIRRELJME.SQC/" + libName + "/";
 				
 				// Setup resource list
-				PrintStream rcList =
-					queue.nextPrintStream(outBase +
-						"META-INF/squirreljme/resources.list");
+				List<String> rcList = new ArrayList<>();
 				
 				// Copy all entries over
 				for (String rcName : lib.listResources())
@@ -168,7 +172,7 @@ public class SpringCoatBackend
 						continue;
 					
 					// Record name of entry
-					rcList.println(rcName);
+					rcList.add(rcName);
 					
 					// Copy
 					try (InputStream libIn = lib.resourceAsStream(rcName);
@@ -179,12 +183,28 @@ public class SpringCoatBackend
 					}
 				}
 				
-				// Finish resources
-				rcList.close();
+				// Finish resource list
+				try (OutputStream launcherRaw = queue.nextEntry(
+					outBase +
+						"META-INF/squirreljme/resources.list");
+					DataOutputStream launcher = new DataOutputStream(
+						launcherRaw))
+				{
+					launcher.writeInt(rcList.size());
+					for (String arg : rcList)
+						launcher.writeUTF(arg);
+				}
 			}
 			
 			// Finish the suite list
-			suiteList.close();
+			try (OutputStream launcherRaw = queue.nextEntry(
+				"SQUIRRELJME.SQC/suites.list");
+				DataOutputStream launcher = new DataOutputStream(launcherRaw))
+			{
+				launcher.writeInt(suites.size());
+				for (String arg : suites)
+					launcher.writeUTF(arg);
+			}
 		}
 		
 		// Make sure it is all written
