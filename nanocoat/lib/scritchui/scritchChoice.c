@@ -533,7 +533,7 @@ sjme_errorCode sjme_scritchui_core_choiceItemSetString(
 	dup = NULL;
 	if (inString != NULL)
 		if (sjme_error_is(error = sjme_alloc_strdup(inState->pool,
-			&dup, inString)) || dup == NULL)
+			(sjme_lpstr*)&dup, inString)) || dup == NULL)
 			return sjme_error_default(error); 
 	
 	/* Delete old string. */

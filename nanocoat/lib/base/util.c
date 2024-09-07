@@ -493,3 +493,51 @@ sjme_errorCode sjme_util_intToBinary(
 	*(wp++) = '\0';
 	return SJME_ERROR_NONE;
 }
+
+sjme_errorCode sjme_util_lpstrTrimEnd(
+	sjme_attrInNotNullBuf(length) sjme_lpstr buf,
+	sjme_attrInPositiveNonZero sjme_jint length)
+{
+	sjme_jint at;
+	sjme_cchar c;
+	
+	if (buf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (length <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Find end of string first. */
+	for (at = 0; at < length;)
+	{
+		if (buf[at] == 0)
+		{
+			if (at > 0)
+				at--;
+			break;
+		}
+		
+		at++;
+	}
+	
+	/* Past the end? */
+	if (at >= length)
+		at = length - 1;
+	
+	/* Remove any whitespace. */
+	while (at >= 0)
+	{
+		c = buf[at];
+		
+		/* NUL out whitespace. */
+		if (c == ' ' || c == '\r' || c == '\n' || c == '\t')
+			buf[at--] = 0;
+		
+		/* Nothing here anymore. */
+		else
+			break;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}

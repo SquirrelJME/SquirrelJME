@@ -128,7 +128,8 @@ sjme_errorCode sjme_rom_libraryNew(
 	
 	/* Set library name. */
 	result->name = NULL;
-	if (sjme_error_is(error = sjme_alloc_strdup(pool, &result->name, libName)))
+	if (sjme_error_is(error = sjme_alloc_strdup(pool,
+		(sjme_lpstr*)&result->name, libName)))
 		goto fail_strdup;
 	
 	/* Success! */

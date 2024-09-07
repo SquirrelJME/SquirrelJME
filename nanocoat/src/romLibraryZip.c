@@ -120,8 +120,8 @@ sjme_errorCode sjme_rom_libraryFromZip(
 	/* Set handle and prefix, if applicable. */
 	result->handle = zip;
 	if (prefix != NULL)
-		 if (sjme_error_is(error = sjme_alloc_strdup(pool, &result->prefix,
-		 	prefix)))
+		 if (sjme_error_is(error = sjme_alloc_strdup(pool,
+		 	(sjme_lpstr*)&result->prefix, prefix)))
 		 	goto fail_prefixDup;
 	
 	/* Count up Zip, since we are using it now. */

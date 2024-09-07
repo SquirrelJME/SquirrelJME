@@ -243,7 +243,7 @@ typedef struct sjme_static_fieldType
 typedef struct sjme_static_classField
 {
 	/** Field name. */
-	sjme_lpcstr name;
+	sjme_lpstr name;
 	
 	/** The field type. */
 	const sjme_static_fieldType* type;

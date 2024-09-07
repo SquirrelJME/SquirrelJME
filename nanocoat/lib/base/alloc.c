@@ -1059,7 +1059,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_lpcstr* outString,
+	sjme_attrOutNotNull sjme_lpstr* outString,
 	sjme_attrInNotNull sjme_lpcstr stringToCopy
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {

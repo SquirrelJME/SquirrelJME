@@ -431,6 +431,18 @@ sjme_errorCode sjme_util_intToBinary(
 	sjme_attrInValue sjme_juint inVal,
 	sjme_attrInPositiveNonZero sjme_juint bitCount);
 
+/**
+ * Trims ending whitespace from the end of the string.
+ * 
+ * @param buf The buffer to trim from. 
+ * @param length The length of the input buffer.
+ * @return On any resultant error, if any.
+ * @since 2024/09/06
+ */
+sjme_errorCode sjme_util_lpstrTrimEnd(
+	sjme_attrInNotNullBuf(length) sjme_lpstr buf,
+	sjme_attrInPositiveNonZero sjme_jint length);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

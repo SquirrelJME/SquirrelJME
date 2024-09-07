@@ -26,8 +26,14 @@ static sjme_errorCode sjme_rom_zipSuiteDefaultLaunch(
 	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outByName)
 {
+#define BUF_SIZE 256
 	sjme_errorCode error;
 	sjme_zip zip;
+	sjme_zip_entry zipEntry;
+	sjme_stream_input inputStream;
+	sjme_jint valid;
+	sjme_cchar buf[BUF_SIZE];
+	sjme_lpstr str;
 	
 	if (inPool == NULL || inSuite == NULL || outMainClass == NULL ||
 		outMainArgs == NULL || outById == NULL || outByName == NULL)
@@ -38,16 +44,101 @@ static sjme_errorCode sjme_rom_zipSuiteDefaultLaunch(
 	
 	/* These are available from three entries essentially */
 	/* launcher.main */
-	sjme_todo("Impl?");
+	memset(&zipEntry, 0, sizeof(zipEntry));
+	if (!sjme_error_is(sjme_zip_locateEntry(zip,
+		&zipEntry, "SQUIRRELJME.SQC/launcher.main")))
+	{
+		/* Open entry. */
+		inputStream = NULL;
+		if (sjme_error_is(error = sjme_zip_entryRead(&zipEntry,
+			&inputStream)) || inputStream == NULL)
+			return sjme_error_default(error);
+		
+		/* Read everything in. */
+		memset(buf, 0, sizeof(buf));
+		valid = INT32_MAX;
+		if (sjme_error_is(error = sjme_stream_inputReadFully(
+			inputStream, &valid,
+			buf, BUF_SIZE - 1)) || valid == INT32_MAX)
+			return sjme_error_default(error);
+		
+		/* Strip ending whitespace. */
+		if (sjme_error_is(error = sjme_util_lpstrTrimEnd(buf,
+			BUF_SIZE - 1)))
+			return sjme_error_default(error);
+		
+		/* Duplicate main class. */
+		str = NULL;
+		if (sjme_error_is(error = sjme_alloc_strdup(
+			inPool, &str, (sjme_lpcstr)&buf[0])) || str == NULL)
+			return sjme_error_default(error);
+		
+		/* Give it. */
+		*outMainClass = str;
+		
+		/* Close. */
+		if (sjme_error_is(error = sjme_closeable_close(
+			SJME_AS_CLOSEABLE(inputStream))))
+			return sjme_error_default(error);
+	}
 	
 	/* launcher.args */
-	sjme_todo("Impl?");
+	memset(&zipEntry, 0, sizeof(zipEntry));
+	if (!sjme_error_is(sjme_zip_locateEntry(zip,
+		&zipEntry, "SQUIRRELJME.SQC/launcher.args")))
+	{
+		/* Open entry. */
+		inputStream = NULL;
+		if (sjme_error_is(error = sjme_zip_entryRead(&zipEntry,
+			&inputStream)) || inputStream == NULL)
+			return sjme_error_default(error);
+		
+		/* Read everything in. */
+		memset(buf, 0, sizeof(buf));
+		valid = INT32_MAX;
+		if (sjme_error_is(error = sjme_stream_inputReadFully(
+			inputStream, &valid,
+			buf, BUF_SIZE - 1)) || valid == INT32_MAX)
+			return sjme_error_default(error);
+		
+		sjme_todo("Impl?");
+		
+		/* Close. */
+		if (sjme_error_is(error = sjme_closeable_close(
+			SJME_AS_CLOSEABLE(inputStream))))
+			return sjme_error_default(error);
+	}
 	
 	/* launcher.path */
-	sjme_todo("Impl?");
+	memset(&zipEntry, 0, sizeof(zipEntry));
+	if (!sjme_error_is(sjme_zip_locateEntry(zip,
+		&zipEntry, "SQUIRRELJME.SQC/launcher.path")))
+	{
+		/* Open entry. */
+		inputStream = NULL;
+		if (sjme_error_is(error = sjme_zip_entryRead(&zipEntry,
+			&inputStream)) || inputStream == NULL)
+			return sjme_error_default(error);
+		
+		/* Read everything in. */
+		memset(buf, 0, sizeof(buf));
+		valid = INT32_MAX;
+		if (sjme_error_is(error = sjme_stream_inputReadFully(
+			inputStream, &valid,
+			buf, BUF_SIZE - 1)) || valid == INT32_MAX)
+			return sjme_error_default(error);
+		
+		sjme_todo("Impl?");
+		
+		/* Close. */
+		if (sjme_error_is(error = sjme_closeable_close(
+			SJME_AS_CLOSEABLE(inputStream))))
+			return sjme_error_default(error);
+	}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+#undef BUF_SIZE
 }
 
 static sjme_errorCode sjme_rom_zipSuiteInit(
