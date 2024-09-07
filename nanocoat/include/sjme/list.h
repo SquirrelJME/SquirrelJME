@@ -129,6 +129,9 @@ SJME_LIST_DECLARE(sjme_intPointer, 0);
 /** List of @c sjme_jobject . */
 SJME_LIST_DECLARE(sjme_jobject, 0);
 
+/** Void list. */
+typedef sjme_list_sjme_jint sjme_list_void;
+
 /**
  * Allocates a given list generically.
  *

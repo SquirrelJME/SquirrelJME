@@ -9,44 +9,29 @@
 
 #include "sjme/listUtil.h"
 
-sjme_errorCode sjme_listUtil_intStringsFromBuffer(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_sjme_jint** outList,
-	sjme_attrInNegativeOnePositive sjme_jint limit,
-	sjme_attrInNotNullBuf(length) sjme_lpcstr buf,
-	sjme_attrInPositiveNonZero sjme_jint length)
+const sjme_listUtil_buildFunctions sjme_listUtil_buildAToI =
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
+};
 
-sjme_errorCode sjme_listUtil_intStringsFromStream(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_sjme_jint** outList,
-	sjme_attrInNegativeOnePositive sjme_jint limit,
-	sjme_attrInNotNull sjme_stream_input inputStream)
+const sjme_listUtil_buildFunctions sjme_listUtil_buildStrings =
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
+};
 
-sjme_errorCode sjme_listUtil_stringsFromBuffer(
+sjme_errorCode sjme_listUtil_build(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
+	sjme_attrOutNotNull sjme_list_void** outList,
 	sjme_attrInNegativeOnePositive sjme_jint limit,
-	sjme_attrInNotNullBuf(length) sjme_lpcstr buf,
-	sjme_attrInPositiveNonZero sjme_jint length)
+	sjme_attrInNotNull const sjme_listUtil_buildFunctions* functions,
+	sjme_attrInNotNull sjme_pointer source,
+	sjme_attrInNullable sjme_intPointer* sourceParam)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-sjme_errorCode sjme_listUtil_stringsFromStream(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
-	sjme_attrInNegativeOnePositive sjme_jint limit,
-	sjme_attrInNotNull sjme_stream_input inputStream)
-{
+	if (inPool == NULL || outList == NULL || functions == NULL ||
+		source == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (limit < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+		
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }

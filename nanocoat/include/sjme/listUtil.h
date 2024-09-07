@@ -8,7 +8,8 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Various list utilities.
+ * Various list utilities, this is mostly to reduce the amount of duplicate
+ * code which also has the benefit of reducing the program size.
  * 
  * @since 2024/09/06
  */
@@ -32,72 +33,63 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * Reads integer values represented as strings from the given buffer.
+ * Reads the next value to store in the list.
  * 
- * @param inPool The pool to allocate within.
- * @param outList The resultant list.
- * @param limit The maximum size of the list, @c -1 means no limit.
- * @param buf The buffer to read values from.
- * @param length The length of the buffer.
+ * @param index The index of the value.
+ * @param outValue The value to read.
+ * @param source The source value.
+ * @param sourceParam The source parameter.
  * @return Any resultant error, if any.
  * @since 2024/09/06
  */
-sjme_errorCode sjme_listUtil_intStringsFromBuffer(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_sjme_jint** outList,
-	sjme_attrInNegativeOnePositive sjme_jint limit,
-	sjme_attrInNotNullBuf(length) sjme_lpcstr buf,
-	sjme_attrInPositiveNonZero sjme_jint length);
+typedef sjme_errorCode (*sjme_listUtil_buildNextValueFunc)(
+	sjme_attrInPositive sjme_jint index,
+	sjme_attrOutNotNull sjme_pointer outValue,
+	sjme_attrInNotNull sjme_pointer source,
+	sjme_attrInNullable sjme_intPointer* sourceParam);
 
 /**
- * Reads integer values represented as strings from the given stream.
+ * Functions used to build lists from inputs.
  * 
- * @param inPool The pool to allocate within.
- * @param outList The resultant list.
- * @param limit The maximum size of the list, @c -1 means no limit.
- * @param inputStream The stream to read from.
- * @return Any resultant error, if any.
  * @since 2024/09/06
  */
-sjme_errorCode sjme_listUtil_intStringsFromStream(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_sjme_jint** outList,
-	sjme_attrInNegativeOnePositive sjme_jint limit,
-	sjme_attrInNotNull sjme_stream_input inputStream);
+typedef struct sjme_listUtil_buildFunctions
+{
+	/** Reads the next value. */
+	sjme_listUtil_buildNextValueFunc nextValue;
+} sjme_listUtil_buildFunctions;
+
+/** Build an integer list using strings as a source. */
+extern const sjme_listUtil_buildFunctions sjme_listUtil_buildAToI;
+
+/** Build strings into a list. */
+extern const sjme_listUtil_buildFunctions sjme_listUtil_buildStrings;
+
+/** Cast to void list. */
+#define SJME_AS_LIST_VOID(x) ((sjme_list_void*)(x))
+
+/** Cast to void list. */
+#define SJME_AS_LISTP_VOID(x) ((sjme_list_void**)(x))
 
 /**
- * Reads string values from the given buffer.
+ * Builds a list using the given functions.
  * 
  * @param inPool The pool to allocate within.
  * @param outList The resultant list.
  * @param limit The maximum size of the list, @c -1 means no limit.
- * @param buf The buffer to read values from.
- * @param length The length of the buffer.
+ * @param functions The functions to use during list building.
+ * @param source The source.
+ * @param sourceParam Source parameter, if needed.
  * @return Any resultant error, if any.
  * @since 2024/09/06
  */
-sjme_errorCode sjme_listUtil_stringsFromBuffer(
+sjme_errorCode sjme_listUtil_build(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
+	sjme_attrOutNotNull sjme_list_void** outList,
 	sjme_attrInNegativeOnePositive sjme_jint limit,
-	sjme_attrInNotNullBuf(length) sjme_lpcstr buf,
-	sjme_attrInPositiveNonZero sjme_jint length);
-
-/**
- * Reads string values from the given stream.
- * 
- * @param inPool The pool to allocate within.
- * @param outList The resultant list.
- * @param limit The maximum size of the list, @c -1 means no limit.
- * @param inputStream The stream to read from.
- * @return Any resultant error, if any.
- * @since 2024/09/06
- */
-sjme_errorCode sjme_listUtil_stringsFromStream(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
-	sjme_attrInNegativeOnePositive sjme_jint limit,
-	sjme_attrInNotNull sjme_stream_input inputStream);
+	sjme_attrInNotNull const sjme_listUtil_buildFunctions* functions,
+	sjme_attrInNotNull sjme_pointer source,
+	sjme_attrInNullable sjme_intPointer* sourceParam);
 
 /*--------------------------------------------------------------------------*/
 
