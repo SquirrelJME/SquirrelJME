@@ -228,6 +228,10 @@ extern "C"
 /** SquirrelJME version string. */
 #define SQUIRRELJME_VERSION SJME_TOKEN_STRING_PP(SQUIRRELJME_VERSION_TRIM)
 
+/** Description of NanoCoat. */
+#define SQUIRRELJME_VERSION_NANOCOAT \
+	"Inline caching interpreter"
+
 /**
  * Calculates the size of a struct member.
  * 

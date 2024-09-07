@@ -544,8 +544,8 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				"SquirrelJME Class Library, Micro Edition (build %s)\n",
 				SQUIRRELJME_VERSION);
 			helpOut(
-				"SquirrelJME NanoCoat VM (build %s)\n",
-				SQUIRRELJME_VERSION);
+				"SquirrelJME NanoCoat VM (build %s, %s)\n",
+				SQUIRRELJME_VERSION, SQUIRRELJME_VERSION_NANOCOAT);
 			
 			/* Exit. */
 			return SJME_ERROR_EXIT;
