@@ -39,22 +39,19 @@ extern "C"
 #define SJME_INFLATE_IO_BUFFER_SIZE 2048
 
 /** The mask for the input/output buffer position. */
-#define SJME_INFLATE_IO_BUFFER_MASK 2047
+#define SJME_INFLATE_IO_BUFFER_MASK (SJME_INFLATE_IO_BUFFER_SIZE - 1)
 
 /** When the output buffer is considered saturated. */
-#define SJME_INFLATE_IO_BUFFER_SATURATED 1700
+#define SJME_INFLATE_IO_BUFFER_SATURATED (SJME_INFLATE_IO_BUFFER_SIZE - 512)
 
 /** The maximum window size. */
 #define SJME_INFLATE_WINDOW_MAX_SIZE 32768
 
 /** The window size. */
-#define SJME_INFLATE_WINDOW_SIZE 16384
+#define SJME_INFLATE_WINDOW_SIZE SJME_INFLATE_WINDOW_MAX_SIZE
 
 /** The window mask. */
-#define SJME_INFLATE_WINDOW_MASK 32768
-
-/** Maximum huffman tree size. */
-#define SJME_INFLATE_HUFF_STORAGE_SIZE 16383
+#define SJME_INFLATE_WINDOW_MASK (SJME_INFLATE_WINDOW_SIZE - 1)
 
 /** The limit for code lengths. */
 #define SJME_INFLATE_NUM_CODE_LEN 19

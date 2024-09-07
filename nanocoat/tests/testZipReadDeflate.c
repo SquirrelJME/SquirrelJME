@@ -62,10 +62,11 @@ SJME_TEST_DECLARE(testZipReadDeflate)
 		
 	/* Read as much as possible. */
 	memset(read, 0, sizeof(read));
-	readCount = -1;
-	if (sjme_error_is(error = sjme_stream_inputReadFully(stream,
+	readCount = -2;
+	if (sjme_error_is(test->error = sjme_stream_inputReadFully(stream,
 		&readCount, read, TEST_MAX_SIZE)) || readCount < 0)
-		return sjme_unit_fail(test, "Could not read data: %d", error);
+		return sjme_unit_fail(test, "Could not read data: %d",
+			test->error);
 	
 	/* Check read length. */
 	sjme_unit_equalI(test, sample_txt__len, readCount,

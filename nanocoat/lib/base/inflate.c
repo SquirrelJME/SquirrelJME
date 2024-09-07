@@ -474,7 +474,7 @@ static sjme_errorCode sjme_inflate_dynamicBuildTree(
 	/* Need to allocate the tree? */
 	if ((*outTree) == NULL)
 		if (sjme_error_is(error = sjme_traverse_new(
-			inState->inPool, outTree, maxCount, sjme_jint, 0)) ||
+			inState->inPool, outTree, maxCount + 32, sjme_jint, 0)) ||
 			(*outTree) == NULL)
 			return sjme_error_default(error);
 	
@@ -517,9 +517,10 @@ static sjme_errorCode sjme_inflate_dynamicBuildTree(
 				binary, i);
 #endif
 			
+			/* Put into the tree. */
 			if (sjme_error_is(error = sjme_traverse_putM(
 				SJME_AS_TRAVERSE((*outTree)),
-				0/*SJME_TRAVERSE_BRANCH_REPLACE*/,
+				SJME_TRAVERSE_NORMAL,
 				&i, nextCodeLen, len,
 				sjme_jint, 0)))
 				return sjme_error_default(error);
@@ -539,6 +540,11 @@ static sjme_errorCode sjme_inflate_dynamicReadCode(
 	
 	if (inState == NULL || outCode == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* At least 1 bit of data. */
+	if (sjme_error_is(error = sjme_inflate_bufferSaturation(inState,
+		1)))
+		return sjme_error_default(error);
 	
 	/* Read in code. */
 	code = INT32_MAX;
@@ -561,6 +567,11 @@ static sjme_errorCode sjme_inflate_dynamicReadDist(
 	
 	if (inState == NULL || outDist == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* At least 1 bit of data. */
+	if (sjme_error_is(error = sjme_inflate_bufferSaturation(inState,
+		1)))
+		return sjme_error_default(error);
 	
 	/* Read in code. */
 	code = INT32_MAX;
@@ -1333,7 +1344,7 @@ sjme_errorCode sjme_inflate_inflate(
 			if (error == SJME_ERROR_TOO_SHORT)
 				continue;
 			
-			if (error == SJME_INFLATE_IO_BUFFER_SATURATED)
+			if (error == SJME_ERROR_BUFFER_SATURATED)
 				break;
 			
 			inState->failed = error;
@@ -1378,7 +1389,7 @@ sjme_errorCode sjme_inflate_inflate(
 				
 			/* Or we filled the output buffer as much as possible and */
 			/* cannot fit anymore. */
-			if (error == SJME_INFLATE_IO_BUFFER_SATURATED)
+			if (error == SJME_ERROR_BUFFER_SATURATED)
 				break;
 			
 			/* Set as failed. */
