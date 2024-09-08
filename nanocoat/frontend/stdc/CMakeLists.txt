@@ -26,3 +26,6 @@ squirreljme_target_binary_name(StdC
 # Include main headers
 target_include_directories(StdC PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
+
+# Strip on release
+squirreljme_executable_strip(StdC)

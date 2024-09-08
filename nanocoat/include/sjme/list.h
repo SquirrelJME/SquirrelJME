@@ -19,11 +19,11 @@
 #include <stdarg.h>
 
 #include "sjme/stdTypes.h"
+#include "sjme/debug.h"
 #include "sjme/tokenUtils.h"
 #include "sjme/comparator.h"
 #include "sjme/alloc.h"
 #include "sjme/error.h"
-#include "sjme/debug.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -175,7 +175,8 @@ sjme_errorCode sjme_list_allocR(
 		(sjme_pointer*)(outList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
-		sizeof(**(outList)) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC)
+		sizeof(**(outList)) SJME_DEBUG_ONLY_COMMA \
+		SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Allocates a given list generically.
@@ -218,7 +219,8 @@ sjme_errorCode sjme_list_copyR(
 		(sjme_pointer*)(outNewList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
-		sizeof(**(outNewList)) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC)
+		sizeof(**(outNewList)) SJME_DEBUG_ONLY_COMMA \
+		SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Directly initializes a list.

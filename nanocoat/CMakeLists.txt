@@ -79,6 +79,20 @@ squirreljme_include("i-miss-you.cmake")
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
+# Optimization for size, since embedded, if not debugging
+if(SQUIRRELJME_IS_RELEASE)
+	if(CMAKE_COMPILER_IS_GNUCC OR
+		CMAKE_COMPILER_IS_GNUCXX OR
+		CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
+		CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+		add_compile_options("-Os")
+	elseif(MSVC OR
+		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
+		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+		add_compile_options("/Os")
+	endif()
+endif()
+
 # Assets and otherwise, such as icons, etc.
 squirreljme_include("assets.cmake")
 

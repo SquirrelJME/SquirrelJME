@@ -230,7 +230,7 @@ extern "C"
 
 /** Description of NanoCoat. */
 #define SQUIRRELJME_VERSION_NANOCOAT \
-	"Inline caching interpreter"
+	"Stack caching interpreter"
 
 /**
  * Calculates the size of a struct member.
