@@ -19,6 +19,7 @@
 #include "sjme/list.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/rom.h"
+#include "sjme/nvm/classyVm.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -75,6 +76,9 @@ typedef struct sjme_task_startConfig
 
 	/** System properties. */
 	sjme_list_sjme_lpcstr* sysProps;
+	
+	/** The class loader for this task. */
+	sjme_vmClass_loader classLoader;
 } sjme_task_startConfig;
 
 /**

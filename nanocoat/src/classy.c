@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/classy.h"
+#include "sjme/nvm/classy.h"
 #include "sjme/debug.h"
 
 sjme_errorCode sjme_class_parse(

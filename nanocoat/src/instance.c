@@ -7,20 +7,5 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
+#include "sjme/nvm/instance.h"
 
-#include "mock.h"
-#include "proto.h"
-#include "test.h"
-#include "unit.h"
-
-/**
- * Tests parsing of the new StackMapTable.
- *  
- * @since 2024/01/01 
- */
-SJME_TEST_DECLARE(testClassParseAttributeStackMapTable)
-{
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
-}
