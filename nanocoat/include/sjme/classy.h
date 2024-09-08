@@ -16,10 +16,10 @@
 #ifndef SQUIRRELJME_CLASSY_H
 #define SQUIRRELJME_CLASSY_H
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/seekable.h"
 #include "sjme/list.h"
-#include "sjme/descriptor.h"
+#include "sjme/nvm/descriptor.h"
 #include "sjme/stream.h"
 
 /* Anti-C++. */

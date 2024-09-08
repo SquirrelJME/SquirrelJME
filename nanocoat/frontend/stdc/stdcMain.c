@@ -12,9 +12,9 @@
 
 #include "sjme/debug.h"
 #include "sjme/alloc.h"
-#include "sjme/boot.h"
-#include "sjme/nvm.h"
-#include "sjme/nvmFunc.h"
+#include "sjme/nvm/boot.h"
+#include "sjme/nvm/nvm.h"
+#include "sjme/nvm/nvmFunc.h"
 
 /**
  * Main program entry point.

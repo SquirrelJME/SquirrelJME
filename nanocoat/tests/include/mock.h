@@ -18,8 +18,8 @@
 
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
-#include "sjme/nvm.h"
-#include "sjme/romInternal.h"
+#include "sjme/nvm/nvm.h"
+#include "sjme/nvm/romInternal.h"
 
 #include "test.h"
 

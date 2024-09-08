@@ -16,9 +16,9 @@
 #ifndef SQUIRRELJME_ROM_H
 #define SQUIRRELJME_ROM_H
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/list.h"
-#include "sjme/romInternal.h"
+#include "sjme/nvm/romInternal.h"
 #include "sjme/stream.h"
 #include "sjme/seekable.h"
 #include "sjme/zip.h"

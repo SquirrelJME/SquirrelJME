@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_VMCONFIG_H
 #define SQUIRRELJME_VMCONFIG_H
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

@@ -9,9 +9,9 @@
 
 #include <string.h>
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
-#include "sjme/modelessStars.h"
+#include "sjme/nvm/modelessStars.h"
 #include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
 

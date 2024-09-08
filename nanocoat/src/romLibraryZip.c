@@ -10,11 +10,11 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "sjme/rom.h"
+#include "sjme/nvm/rom.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
-#include "sjme/payload.h"
-#include "sjme/romInternal.h"
+#include "sjme/nvm/payload.h"
+#include "sjme/nvm/romInternal.h"
 #include "sjme/util.h"
 #include "sjme/zip.h"
 #include "sjme/cleanup.h"

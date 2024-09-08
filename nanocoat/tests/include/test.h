@@ -18,7 +18,7 @@
 
 #include <setjmp.h>
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
 #include "sjme/error.h"
 #include "sjme/test/externTest.h"

@@ -17,7 +17,7 @@
 #ifndef SQUIRRELJME_PAYLOAD_H
 #define SQUIRRELJME_PAYLOAD_H
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/config.h"
 
 /* Anti-C++. */

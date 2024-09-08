@@ -10,11 +10,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "sjme/allocSizeOf.h"
-#include "sjme/boot.h"
+#include "sjme/nvm/allocSizeOf.h"
+#include "sjme/nvm/boot.h"
 #include "sjme/debug.h"
-#include "sjme/nvm.h"
-#include "sjme/task.h"
+#include "sjme/nvm/nvm.h"
+#include "sjme/nvm/task.h"
 #include "sjme/charSeq.h"
 #include "sjme/native.h"
 #include "sjme/cleanup.h"

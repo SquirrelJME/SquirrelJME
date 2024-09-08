@@ -16,9 +16,9 @@
 #ifndef SQUIRRELJME_TASK_H
 #define SQUIRRELJME_TASK_H
 
-#include "list.h"
-#include "sjme/nvm.h"
-#include "sjme/rom.h"
+#include "sjme/list.h"
+#include "sjme/nvm/nvm.h"
+#include "sjme/nvm/rom.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

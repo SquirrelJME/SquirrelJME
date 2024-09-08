@@ -7,9 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/rom.h"
-#include "sjme/boot.h"
-#include "sjme/allocSizeOf.h"
+#include "sjme/nvm/rom.h"
+#include "sjme/nvm/boot.h"
+#include "sjme/nvm/allocSizeOf.h"
 
 sjme_errorCode sjme_alloc_sizeOf(
 	sjme_alloc_sizeOfId id, sjme_jint count,

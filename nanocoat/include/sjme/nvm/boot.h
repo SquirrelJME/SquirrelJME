@@ -16,9 +16,9 @@
 #ifndef SQUIRRELJME_BOOT_H
 #define SQUIRRELJME_BOOT_H
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/alloc.h"
-#include "sjme/rom.h"
+#include "sjme/nvm/rom.h"
 #include "sjme/list.h"
 #include "sjme/native.h"
 

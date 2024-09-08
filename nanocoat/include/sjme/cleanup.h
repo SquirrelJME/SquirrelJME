@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_CLEANUP_H
 #define SQUIRRELJME_CLEANUP_H
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/alloc.h"
 
 /* Anti-C++. */

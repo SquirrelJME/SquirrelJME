@@ -7,9 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/task.h"
+#include "sjme/nvm/task.h"
 #include "sjme/debug.h"
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 
 sjme_errorCode sjme_task_start(
 	sjme_attrInNotNull sjme_nvm inState,

@@ -9,8 +9,8 @@
 
 #include <string.h>
 
-#include "sjme/nvm.h"
-#include "sjme/tread.h"
+#include "sjme/nvm/nvm.h"
+#include "sjme/nvm/tread.h"
 
 #define SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(cType, javaType, jType) \
 	sjme_errorCode SJME_TOKEN_PASTE_PP( \

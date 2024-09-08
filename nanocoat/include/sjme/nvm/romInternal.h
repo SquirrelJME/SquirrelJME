@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_ROMINTERNAL_H
 #define SQUIRRELJME_ROMINTERNAL_H
 
-#include "sjme/rom.h"
+#include "sjme/nvm/rom.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

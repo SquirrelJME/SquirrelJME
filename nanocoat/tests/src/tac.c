@@ -9,10 +9,10 @@
 
 #include <string.h>
 
-#include "sjme/boot.h"
-#include "sjme/nvm.h"
-#include "sjme/nvmFunc.h"
-#include "sjme/payload.h"
+#include "sjme/nvm/boot.h"
+#include "sjme/nvm/nvm.h"
+#include "sjme/nvm/nvmFunc.h"
+#include "sjme/nvm/payload.h"
 #include "test.h"
 
 int main(int argc, sjme_lpstr* argv)

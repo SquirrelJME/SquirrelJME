@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_DESCRIPTOR_H
 #define SQUIRRELJME_DESCRIPTOR_H
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/list.h"
 
 /* Anti-C++. */

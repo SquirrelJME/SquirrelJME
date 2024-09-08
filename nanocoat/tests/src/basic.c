@@ -13,7 +13,7 @@
 #include "proto.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "test.h"
 #include "sjme/dylib.h"
 

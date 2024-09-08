@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_UNIT_H
 #define SQUIRRELJME_UNIT_H
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
 #include "test.h"
 

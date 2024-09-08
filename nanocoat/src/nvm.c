@@ -9,9 +9,9 @@
 
 #include <string.h>
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
-#include "sjme/tread.h"
+#include "sjme/nvm/tread.h"
 
 /**
  * Pops a generic value from the stack into a local variable.

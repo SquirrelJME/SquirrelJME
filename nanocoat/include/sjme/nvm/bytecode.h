@@ -17,7 +17,7 @@
 #define SQUIRRELJME_BYTECODE_H
 
 #include "sjme/error.h"
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

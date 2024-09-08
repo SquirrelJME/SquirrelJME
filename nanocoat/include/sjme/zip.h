@@ -16,7 +16,6 @@
 #ifndef SQUIRRELJME_ZIP_H
 #define SQUIRRELJME_ZIP_H
 
-#include "sjme/nvm.h"
 #include "sjme/stream.h"
 #include "sjme/seekable.h"
 #include "sjme/path.h"

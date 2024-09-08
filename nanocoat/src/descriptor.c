@@ -11,7 +11,7 @@
 
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
-#include "sjme/descriptor.h"
+#include "sjme/nvm/descriptor.h"
 #include "sjme/util.h"
 #include "sjme/cleanup.h"
 
