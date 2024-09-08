@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/nvm/classy.h"
 #include <string.h>
 
 #include "mock.h"
@@ -16,17 +17,23 @@
 
 #include "classes.zip.h"
 
+typedef sjme_errorCode (*testRunFunc)(sjme_test* test,
+	sjme_class_info info);
+
 typedef struct testClassInfo
 {
 	sjme_lpcstr fileName;
 	
 	sjme_lpcstr binaryName;
+	
+	testRunFunc testRun;
 } testClassInfo;
 
-#define TRY_CLASS(what, testFunc) \
+#define TRY_CLASS(what, useFunc) \
 	{ \
 		SJME_TOKEN_STRING(what) ".class", \
 		"java/lang/" SJME_TOKEN_STRING(what), \
+		useFunc, \
 	}
 
 static const testClassInfo testClassInfos[] =
@@ -101,6 +108,7 @@ static const testClassInfo testClassInfos[] =
 	TRY_CLASS(UnsupportedClassVersionError, NULL),
 	TRY_CLASS(UnsupportedOperationException, NULL),
 	TRY_CLASS(VirtualMachineError, NULL),
+	{NULL},
 }; 
 
 /**
@@ -110,6 +118,68 @@ static const testClassInfo testClassInfos[] =
  */
 SJME_TEST_DECLARE(testClassParse)
 {
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	const testClassInfo* testInfo;
+	sjme_zip zip;
+	sjme_zip_entry zipEntry;
+	sjme_stream_input in;
+	sjme_class_info info;
+	
+	/* Load the Zip that is full of classes. */
+	zip = NULL;
+	if (sjme_error_is(test->error = sjme_zip_openMemory(
+		test->pool, &zip,
+		(sjme_pointer)&classes_zip__bin[0],
+		classes_zip__len)) || zip == NULL)
+		return sjme_unit_fail(test, "Could not open Zip.");
+	
+	/* Go through and load every single class. */
+	for (testInfo = &testClassInfos[0]; testInfo->binaryName != NULL;
+		testInfo++)
+	{
+		/* Locate entry. */
+		memset(&zipEntry, 0, sizeof(zipEntry));
+		if (sjme_error_is(test->error = sjme_zip_locateEntry(
+			zip, &zipEntry, testInfo->fileName)))
+			return sjme_unit_fail(test, "Could not locate %s",
+				testInfo->fileName);
+			
+		/* Open entry. */
+		in = NULL;
+		if (sjme_error_is(test->error = sjme_zip_entryRead(
+			&zipEntry, &in)) || in == NULL)
+			return sjme_unit_fail(test, "Could not open %s",
+				testInfo->fileName);
+		
+		/* Load the class. */
+		info = NULL;
+		if (sjme_error_is(test->error = sjme_class_parse(test->pool,
+			in, &info)) || info == NULL)
+			return sjme_unit_fail(test, "Could not parse %s: %d",
+				testInfo->fileName, test->error);
+		
+		/* Run individual test on it? */
+		if (testInfo->testRun != NULL)
+			if (sjme_error_is(test->error = testInfo->testRun(
+				test, info)))
+				return sjme_unit_fail(test, "Class test unit failed %s: %d",
+					testInfo->fileName, test->error);
+		
+		/* Close the class. */
+		if (sjme_error_is(test->error = sjme_closeable_close(
+			SJME_AS_CLOSEABLE(info))))
+			return sjme_unit_fail(test, "Could not close class.");
+		
+		/* Close the entry. */
+		if (sjme_error_is(test->error = sjme_closeable_close(
+			SJME_AS_CLOSEABLE(in))))
+			return sjme_unit_fail(test, "Could not close entry.");
+	}
+	
+	/* Close the Zip. */
+	if (sjme_error_is(test->error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(zip))))
+		return sjme_unit_fail(test, "Could not close Zip.");
+	
+	/* Success! */
+	return SJME_TEST_RESULT_PASS;
 }
