@@ -176,7 +176,7 @@ sjme_errorCode sjme_list_allocR(
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(**(outList)) SJME_DEBUG_ONLY_COMMA \
-		SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
+		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Allocates a given list generically.
@@ -220,7 +220,7 @@ sjme_errorCode sjme_list_copyR(
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(**(outNewList)) SJME_DEBUG_ONLY_COMMA \
-		SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
+		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Directly initializes a list.

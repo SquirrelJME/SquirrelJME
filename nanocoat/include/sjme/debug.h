@@ -50,6 +50,9 @@ extern "C" {
 	/** File, line, and function. */
 	#define SJME_DEBUG_FILE_LINE_FUNC NULL, -1, NULL
 	
+	/** Optional usage of file, line, and function. */
+	#define SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL
+	
 	/** Copy of file line and function. */
 	#define SJME_DEBUG_FILE_LINE_COPY
 
@@ -74,6 +77,9 @@ extern "C" {
 
 	/** File, line, and function. */
 	#define SJME_DEBUG_FILE_LINE_FUNC SJME_DEBUG_FILE_LINE_FUNC_ALWAYS
+	
+	/** Optional usage of file, line, and function. */
+	#define SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL SJME_DEBUG_FILE_LINE_FUNC
 	
 	/** Copy of file line and function. */
 	#define SJME_DEBUG_FILE_LINE_COPY file, line, func
