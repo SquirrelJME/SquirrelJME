@@ -11,7 +11,7 @@
 
 #include "mock.h"
 #include "proto.h"
-#include "sjme/romInternal.h"
+#include "sjme/nvm/romInternal.h"
 #include "test.h"
 #include "unit.h"
 

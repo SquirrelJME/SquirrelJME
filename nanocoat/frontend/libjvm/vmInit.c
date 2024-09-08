@@ -10,7 +10,7 @@
 #include <jni.h>
 
 #include "sjme/alloc.h"
-#include "sjme/boot.h"
+#include "sjme/nvm/boot.h"
 #include "sjme/debug.h"
 
 /** Default amount of memory. */

@@ -14,7 +14,7 @@
 #include "frontend/emulator/jniHelper.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
-#include "sjme/rom.h"
+#include "sjme/nvm/rom.h"
 
 static sjme_errorCode sjme_jni_virtualSuite_init(
 	sjme_attrInNotNull sjme_rom_suite inSuite,

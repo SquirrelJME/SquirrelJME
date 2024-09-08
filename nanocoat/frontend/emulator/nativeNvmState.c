@@ -10,7 +10,7 @@
 #include <jni.h>
 
 #include "frontend/emulator/jniHelper.h"
-#include "sjme/boot.h"
+#include "sjme/nvm/boot.h"
 
 jlong SJME_JNI_METHOD(SJME_CLASS_NVM_STATE, _1_1nvmBoot)
 	(JNIEnv* env, jclass classy, jlong poolPtr, jlong reservedPtr,

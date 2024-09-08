@@ -10,7 +10,7 @@
 #include <jni.h>
 
 #include "frontend/emulator/jniHelper.h"
-#include "sjme/boot.h"
+#include "sjme/nvm/boot.h"
 #include "sjme/alloc.h"
 
 void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setMainArgs)

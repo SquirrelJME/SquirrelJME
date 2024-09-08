@@ -14,7 +14,7 @@
 #include "sjme/util.h"
 #include "test.h"
 #include "unit.h"
-#include "sjme/descriptor.h"
+#include "sjme/nvm/descriptor.h"
 
 /**
  * What to test and the expected values for method descriptors.
