@@ -370,8 +370,14 @@ typedef enum sjme_errorCode
 	/** Tree traversal is too deep. */
 	SJME_ERROR_TREE_TOO_DEEP = -109,
 	
+	/** Invalid class magic number. */
+	SJME_ERROR_INVALID_CLASS_MAGIC = -110,
+	
+	/** Invalid class version. */
+	SJME_ERROR_INVALID_CLASS_VERSION = -111,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -110
+	SJME_NUM_ERROR_CODES = -112,
 } sjme_errorCode;
 
 /**

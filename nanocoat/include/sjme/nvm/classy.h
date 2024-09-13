@@ -34,6 +34,23 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * The version of the class.
+ * 
+ * @since 2024/09/13
+ */
+typedef enum sjme_class_version
+{
+	/** CLDC 1.1 (JSR 30). */
+	SJME_CLASS_CLDC_1_0 = 2949123,
+	
+	/** CLDC 1.1 (JSR 139). */
+	SJME_CLASS_CLDC_1_1 = 3080192,
+	
+	/** CLDC 8. */
+	SJME_CLASS_CLDC_1_8 = 3342336,
+} sjme_class_version;
+
+/**
  * Core class information structure.
  *
  * @since 2024/01/01
