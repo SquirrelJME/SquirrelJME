@@ -161,14 +161,14 @@ sjme_errorCode sjme_nvm_boot(
 	/* Allocate resultant state. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(reservedPool,
-		sizeof(*result), sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
+		sizeof(*result), NULL, NULL,
 		(sjme_pointer*)&result, NULL)) || result == NULL)
 		goto fail_resultAlloc;
 	
 	/* Initialize. */
 	if (sjme_error_is(error = sjme_nvm_objectInit(
 		SJME_AS_COMMON(result), 
-		SJME_NVM_STRUCTTYPE_STATE)))
+		SJME_NVM_STRUCT_STATE)))
 		goto fail_resultInit;
 
 	/* Make a defensive copy of the boot parameters. */

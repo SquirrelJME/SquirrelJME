@@ -100,19 +100,22 @@ typedef struct sjme_any
 typedef enum sjme_nvm_structType
 {
 	/** Unknown. */
-	SJME_NVM_STRUCTTYPE_UNKNOWN,
+	SJME_NVM_STRUCT_UNKNOWN,
 	
 	/** Rom Library. */
-	SJME_NVM_STRUCTTYPE_ROM_LIBRARY,
+	SJME_NVM_STRUCT_ROM_LIBRARY,
 	
 	/** Rom Suite. */
-	SJME_NVM_STRUCTTYPE_ROM_SUITE,
+	SJME_NVM_STRUCT_ROM_SUITE,
+	
+	/** Constant pool. */
+	SJME_NVM_STRUCT_POOL,
 	
 	/** NanoCoat state. */
-	SJME_NVM_STRUCTTYPE_STATE,
+	SJME_NVM_STRUCT_STATE,
 	
 	/** The number of structure types. */
-	SJME_NVM_NUM_STRUCTTYPE
+	SJME_NVM_NUM_STRUCT
 } sjme_nvm_structType;
 
 /**

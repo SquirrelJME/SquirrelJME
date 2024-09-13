@@ -65,6 +65,20 @@ typedef struct sjme_class_infoCore sjme_class_infoCore;
 typedef struct sjme_class_infoCore* sjme_class_info;
 
 /**
+ * Opaque constant pool information.
+ * 
+ * @since 2024/09/13
+ */
+typedef struct sjme_class_poolInfoCore sjme_class_poolInfoCore;
+
+/**
+ * Opaque constant pool information.
+ * 
+ * @since 2024/09/13
+ */
+typedef sjme_class_poolInfoCore* sjme_class_poolInfo;
+
+/**
  * Core method information structure.
  *
  * @since 2024/01/03
@@ -345,6 +359,9 @@ typedef enum sjme_class_poolType
  */
 typedef struct sjme_class_poolEntryClass
 {
+	/** The type of entry that this is. */
+	sjme_class_poolType type;
+	
 	/** The descriptor this represents. */
 	sjme_lpcstr descriptor;
 } sjme_class_poolEntryClass;
@@ -356,6 +373,9 @@ typedef struct sjme_class_poolEntryClass
  */
 typedef struct sjme_class_poolEntryDouble
 {
+	/** The type of entry that this is. */
+	sjme_class_poolType type;
+	
 	/** The constant value. */
 	sjme_jdouble value;
 } sjme_class_poolEntryDouble;
@@ -369,26 +389,6 @@ typedef struct sjme_class_poolEntryDouble
 typedef struct sjme_class_poolEntryNameAndType sjme_class_poolEntryNameAndType;
 
 /**
- * The type of entry 
- * 
- * @since 2024/01/16
- */
-typedef enum sjme_class_poolEntryMemberType
-{
-	/** Reference to field member. */
-	SJME_CLASS_POOL_ENTRY_MEMBER_TYPE_FIELD,
-	
-	/** Reference to method member. */
-	SJME_CLASS_POOL_ENTRY_MEMBER_TYPE_METHOD,
-	
-	/** Reference to interface method member. */
-	SJME_CLASS_POOL_ENTRY_MEMBER_TYPE_INTERFACE_METHOD,
-	
-	/** The number of member types. */
-	SJME_NUM_CLASS_POOL_ENTRY_MEMBER_TYPE
-} sjme_class_poolEntryMemberType;
-
-/**
  * Either @c SJME_CLASS_POOL_TYPE_FIELD , @c SJME_CLASS_POOL_TYPE_METHOD ,
  * or @c SJME_CLASS_POOL_TYPE_INTERFACE_METHOD which represents a reference
  * to a class member.
@@ -397,8 +397,8 @@ typedef enum sjme_class_poolEntryMemberType
  */
 typedef struct sjme_class_poolEntryMember
 {
-	/** The type of entry this. */
-	sjme_class_poolEntryMemberType type;
+	/** The type of entry that this is. */
+	sjme_class_poolType type;
 
 	/** The class this refers to. */
 	sjme_lpcstr inClass;
@@ -414,6 +414,9 @@ typedef struct sjme_class_poolEntryMember
  */
 typedef struct sjme_class_poolEntryFloat
 {
+	/** The type of entry that this is. */
+	sjme_class_poolType type;
+	
 	/** The constant value. */
 	sjme_jfloat value;
 } sjme_class_poolEntryFloat;
@@ -425,6 +428,9 @@ typedef struct sjme_class_poolEntryFloat
  */
 typedef struct sjme_class_poolEntryInteger
 {
+	/** The type of entry that this is. */
+	sjme_class_poolType type;
+	
 	/** The constant value. */
 	sjme_jint value;
 } sjme_class_poolEntryInteger;
@@ -436,17 +442,23 @@ typedef struct sjme_class_poolEntryInteger
  */
 typedef struct sjme_class_poolEntryLong
 {
+	/** The type of entry that this is. */
+	sjme_class_poolType type;
+	
 	/** The constant value. */
 	sjme_jlong value;
 } sjme_class_poolEntryLong;
 
 struct sjme_class_poolEntryNameAndType
 {
+	/** The type of entry that this is. */
+	sjme_class_poolType type;
+	
 	/** The name. */
 	sjme_lpcstr name;
 
 	/** The type. */
-	sjme_lpcstr type;
+	sjme_lpcstr descriptor;
 };
 
 /**
@@ -456,6 +468,9 @@ struct sjme_class_poolEntryNameAndType
  */
 typedef struct sjme_class_poolEntryUtf
 {
+	/** The type of entry that this is. */
+	sjme_class_poolType type;
+	
 	/** The hash code for the entry. */
 	sjme_jint hash;
 
@@ -468,47 +483,55 @@ typedef struct sjme_class_poolEntryUtf
  *
  * @since 2024/01/04
  */
-typedef struct sjme_class_poolEntry
+typedef union sjme_class_poolEntry
 {
 	/** The type of entry that this is. */
 	sjme_class_poolType type;
+	
+	/** Class. */
+	sjme_class_poolEntryClass classRef;
 
-	/** The data for the entry. */
-	union
-	{
-		/** Class. */
-		sjme_class_poolEntryClass classRef;
+	/** Double. */
+	sjme_class_poolEntryDouble constDouble;
 
-		/** Double. */
-		sjme_class_poolEntryDouble constDouble;
+	/** Float. */
+	sjme_class_poolEntryFloat constFloat;
 
-		/** Float. */
-		sjme_class_poolEntryFloat constFloat;
+	/** Integer. */
+	sjme_class_poolEntryInteger constInteger;
 
-		/** Integer. */
-		sjme_class_poolEntryInteger constInteger;
+	/** Long. */
+	sjme_class_poolEntryLong constLong;
 
-		/** Long. */
-		sjme_class_poolEntryLong constLong;
+	/** A class member. */
+	sjme_class_poolEntryMember member;
 
-		/** A class member. */
-		sjme_class_poolEntryMember member;
+	/** Name and type. */
+	sjme_class_poolEntryNameAndType nameAndType;
 
-		/** Name and type. */
-		sjme_class_poolEntryNameAndType nameAndType;
-
-		/** UTF pool entry. */
-		sjme_class_poolEntryUtf utf;
-	} data;
+	/** UTF pool entry. */
+	sjme_class_poolEntryUtf utf;
 } sjme_class_poolEntry;
 
 /** A list of constant pool entries. */
 SJME_LIST_DECLARE(sjme_class_poolEntry, 0);
 
+struct sjme_class_poolInfoCore
+{
+	/** The common NanoCoat base. */
+	sjme_nvm_commonBase common;
+	
+	/** Constant pool entries. */
+	sjme_list_sjme_class_poolEntry* pool;
+};
+
 struct sjme_class_infoCore
 {
+	/** The common NanoCoat base. */
+	sjme_nvm_commonBase common;
+	
 	/** The constant pool of this class. */
-	const sjme_list_sjme_class_poolEntry* pool;
+	sjme_class_poolInfo pool;
 
 	/** The name of this class. */
 	sjme_lpcstr name;
@@ -634,10 +657,19 @@ sjme_errorCode sjme_class_parseAttributeStackMapNew(
 	sjme_attrOutNotNull sjme_class_codeInfo inCode,
 	sjme_attrOutNotNull sjme_class_stackMap* outStackMap);
 
+/**
+ * Parses the constant pool of an input class.
+ * 
+ * @param inPool The input pool. 
+ * @param inStream The stream to read from.
+ * @param outPool The resultant read constant pool.
+ * @return Any resultant error, if any.
+ * @since 2024/09/13
+ */
 sjme_errorCode sjme_class_parseConstantPool(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrInNotNull sjme_class_info inClass,
-	sjme_attrOutNotNull sjme_list_sjme_class_poolEntry* outPool);
+	sjme_attrOutNotNull sjme_class_poolInfo* outPool);
 
 sjme_errorCode sjme_class_parseField(
 	sjme_attrInNotNull sjme_stream_input inStream,

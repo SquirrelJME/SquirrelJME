@@ -31,6 +31,7 @@ sjme_errorCode sjme_class_parse(
 	sjme_jint magic, fullVersion;
 	sjme_jshort major, minor;
 	sjme_class_version actualVersion;
+	sjme_class_poolInfo pool;
 	
 	if (inPool == NULL || inStream == NULL || outClass == NULL)
 		return SJME_ERROR_NONE;
@@ -78,13 +79,34 @@ sjme_errorCode sjme_class_parse(
 		goto fail_badVersion;
 	}
 	
-	sjme_todo("Implement this?");
+	/* Parse the constant pool. */
+	pool = NULL;
+	if (sjme_error_is(error = sjme_class_parseConstantPool(
+		inPool, inStream, &pool)) || pool == NULL)
+		goto fail_parsePool;
+	
+	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 
+fail_parsePool:
+	if (pool != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(pool));
 fail_badVersion:
 fail_readMinor:
 fail_readMajor:
 fail_badMagic:
 fail_readMagic:
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_class_parseConstantPool(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrOutNotNull sjme_class_poolInfo* outPool)
+{
+	if (inPool == NULL || inStream == NULL || outPool == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }

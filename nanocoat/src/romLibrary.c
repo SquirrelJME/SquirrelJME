@@ -18,50 +18,6 @@
 #include "sjme/zip.h"
 #include "sjme/cleanup.h"
 
-static sjme_errorCode sjme_rom_libraryClose(
-	sjme_attrInNotNull sjme_closeable closeable)
-{
-	sjme_errorCode error;
-	sjme_rom_library inLibrary;
-	
-	if (closeable == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Recover library. */
-	inLibrary = (sjme_rom_library)closeable;
-	
-	/* Delete the prefix if there is one. */
-	if (inLibrary->prefix != NULL)
-	{
-		/* Free it. */
-		if (sjme_error_is(error = sjme_alloc_free(
-			(sjme_pointer)inLibrary->prefix)))
-			return sjme_error_default(error);
-		
-		/* Clear. */
-		inLibrary->prefix = NULL;
-	}
-	
-	/* Delete name if there is one. */
-	if (inLibrary->name != NULL)
-	{
-		/* Free it. */
-		if (sjme_error_is(error = sjme_alloc_free(
-			(sjme_pointer)inLibrary->name)))
-			return sjme_error_default(error);
-		
-		/* Clear. */
-		inLibrary->name = NULL;
-	}
-	
-	/* Forward close handler. */
-	if (inLibrary->functions->close != NULL)
-		return inLibrary->functions->close(inLibrary);
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
 sjme_errorCode sjme_rom_libraryHash(
 	sjme_attrInNotNull sjme_rom_library library,
 	sjme_attrOutNotNull sjme_jint* outHash)
@@ -108,13 +64,17 @@ sjme_errorCode sjme_rom_libraryNew(
 	/* Allocate result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(pool,
-		sizeof(*result), sjme_nvm_enqueueHandler, NULL,
+		sizeof(*result), NULL, NULL,
 		(void**)&result, NULL)) || result == NULL)
 		goto fail_alloc;
 	
+	/* Initialize. */
+	if (sjme_error_is(error = sjme_nvm_objectInit(
+		SJME_AS_COMMON(result),
+		SJME_NVM_STRUCT_ROM_LIBRARY)))
+		goto fail_commonInit;
+	
 	/* Setup result. */
-	result->common.closeable.closeHandler = sjme_rom_libraryClose;
-	result->common.type = SJME_NVM_STRUCTTYPE_ROM_LIBRARY;
 	result->cache.common.allocPool = pool;
 	result->functions = inFunctions;
 	
@@ -140,9 +100,10 @@ sjme_errorCode sjme_rom_libraryNew(
 fail_refUp:
 fail_strdup:
 fail_init:
+fail_commonInit:
 fail_alloc:
 	if (result != NULL)
-		sjme_alloc_free(result);
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 	
 	return sjme_error_default(error);
 }

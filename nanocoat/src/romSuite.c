@@ -18,16 +18,6 @@
 #include "sjme/zip.h"
 #include "sjme/cleanup.h"
 
-static sjme_errorCode sjme_rom_suiteClose(
-	sjme_attrInNotNull sjme_closeable closeable)
-{
-	if (closeable == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
 sjme_errorCode sjme_rom_suiteDefaultLaunch(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_rom_suite inSuite,
@@ -212,14 +202,17 @@ sjme_errorCode sjme_rom_suiteNew(
 	/* Allocate resultant suite. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(pool,
-		sizeof(*result),
-		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
+		sizeof(*result), NULL, NULL,
 		(void**)&result, NULL)) || result == NULL)
 		goto fail_alloc;
 	
+	/* Common initialize. */
+	if (sjme_error_is(error = sjme_nvm_objectInit(
+		SJME_AS_COMMON(result),
+		SJME_NVM_STRUCT_ROM_SUITE)))
+		goto fail_commonInit;
+	
 	/* Setup result. */
-	result->common.closeable.closeHandler = sjme_rom_suiteClose;
-	result->common.type = SJME_NVM_STRUCTTYPE_ROM_SUITE;
 	result->cache.common.allocPool = pool;
 	result->functions = inFunctions;
 	
@@ -238,9 +231,10 @@ sjme_errorCode sjme_rom_suiteNew(
 
 fail_refUp:
 fail_init:
+fail_commonInit:
 fail_alloc:
 	if (result != NULL)
-		sjme_alloc_free(result);
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 	
 	return sjme_error_default(error);
 }
