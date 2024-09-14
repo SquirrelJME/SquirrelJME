@@ -201,11 +201,11 @@ libretro-build-osx-x64:
     - .libretro-osx-cmake-x86_64
     - .core-nanocoat
 
-# ps2-static-cmake.yml
-libretro-build-ps2:
-  extends:
-    - .libretro-ps2-static-cmake-retroarch-master
-    - .core-nanocoat
+# ps2-static-cmake.yml !! TODO: TEMPORARILY UNTIL wip-nanocoatclassparse
+#libretro-build-ps2:
+#  extends:
+#    - .libretro-ps2-static-cmake-retroarch-master
+#    - .core-nanocoat
 
 # psp-static-cmake.yml
 libretro-build-psp:

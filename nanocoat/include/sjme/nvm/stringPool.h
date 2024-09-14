@@ -61,20 +61,32 @@ typedef struct sjme_stringPool_stringBase sjme_stringPool_stringBase;
  */
 typedef sjme_stringPool_stringBase* sjme_stringPool_string;
 
+/** A list of string pool strings. */
+SJME_LIST_DECLARE(sjme_stringPool_string, 0);
+
 struct sjme_stringPool_base
 {
 	/** The virtual machine common base. */
 	sjme_nvm_common common;
+	
+	/** Strings which are in the pool. */
+	sjme_list_sjme_stringPool_string* strings;
 };
 
 struct sjme_stringPool_stringBase
 {
 	/** The virtual machine common base. */
 	sjme_nvm_common common;
+	
+	/** The char sequence for this string. */
+	sjme_charSeq seq;
+	
+	/** The hash code for this string. */
+	sjme_jint hashCode;
+	
+	/** The length of the string. */
+	sjme_jint length;
 };
-
-/** A list of string pool strings. */
-SJME_LIST_DECLARE(sjme_stringPool_string, 0);
 
 /**
  * Locates the given string in the string pool.
@@ -115,7 +127,7 @@ sjme_errorCode sjme_stringPool_locateStream(
  */
 sjme_errorCode sjme_stringPool_locateUtf(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
-	sjme_attrInNotNull sjme_lpcstr* inUtf,
+	sjme_attrInNotNull sjme_lpcstr inUtf,
 	sjme_attrOutNotNull sjme_stringPool_string* outString);
 
 /**

@@ -35,7 +35,7 @@ sjme_errorCode sjme_stringPool_locateStream(
 
 sjme_errorCode sjme_stringPool_locateUtf(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
-	sjme_attrInNotNull sjme_lpcstr* inUtf,
+	sjme_attrInNotNull sjme_lpcstr inUtf,
 	sjme_attrOutNotNull sjme_stringPool_string* outString)
 {
 	if (inStringPool == NULL || inUtf == NULL || outString == NULL)

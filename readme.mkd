@@ -28,6 +28,8 @@ ability to play older J2ME software and games designed for flip-phones.
 
 Please support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
+Thank you to [Hit Save!](https://hitsave.org/) for sponsoring **SquirrelJME**!
+
 > Dedicated to _Emily_ (1998-2020), the developer
 > of [Mu](https://github.com/meepingsnesroms/Mu), I valued our friendship
 > greatly and all the time we would spend together nerding about technical
@@ -51,9 +53,6 @@ And...
 > and true to my heart. I push forward for you while holding myself high, I
 > know that you would be proud of where I am today.
 > -- You will not be forgotten, rest in peace.
-
-_I am currently searching for employment! Check out my_
-_[LinkedIn](https://www.linkedin.com/in/xerthesquirrel/)!_
 
 _SquirrelJME_ utilizes _Install4J_ for cross-platform installers, you can
 read more about it and check out their product page at:
