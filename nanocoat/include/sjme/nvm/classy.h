@@ -17,6 +17,7 @@
 #define SQUIRRELJME_CLASSY_H
 
 #include "sjme/nvm/nvm.h"
+#include "sjme/nvm/stringPool.h"
 #include "sjme/seekable.h"
 #include "sjme/list.h"
 #include "sjme/nvm/descriptor.h"
@@ -363,7 +364,7 @@ typedef struct sjme_class_poolEntryClass
 	sjme_class_poolType type;
 	
 	/** The descriptor this represents. */
-	sjme_lpcstr descriptor;
+	sjme_stringPool_string descriptor;
 } sjme_class_poolEntryClass;
 
 /**
@@ -401,7 +402,7 @@ typedef struct sjme_class_poolEntryMember
 	sjme_class_poolType type;
 
 	/** The class this refers to. */
-	sjme_lpcstr inClass;
+	sjme_stringPool_string inClass;
 
 	/** The name and type used. */
 	const sjme_class_poolEntryNameAndType* nameAndType;
@@ -455,10 +456,10 @@ struct sjme_class_poolEntryNameAndType
 	sjme_class_poolType type;
 	
 	/** The name. */
-	sjme_lpcstr name;
+	sjme_stringPool_string name;
 
 	/** The type. */
-	sjme_lpcstr descriptor;
+	sjme_stringPool_string descriptor;
 };
 
 /**
@@ -475,7 +476,7 @@ typedef struct sjme_class_poolEntryUtf
 	sjme_jint hash;
 
 	/** The UTF data for this entry. */
-	sjme_lpcstr utf;
+	sjme_stringPool_string utf;
 } sjme_class_poolEntryUtf;
 
 /**
@@ -534,13 +535,13 @@ struct sjme_class_infoCore
 	sjme_class_poolInfo pool;
 
 	/** The name of this class. */
-	sjme_lpcstr name;
+	sjme_stringPool_string name;
 
 	/** The superclass of this class. */
-	sjme_lpcstr superName;
+	sjme_stringPool_string superName;
 
 	/** The interfaces this class implements. */
-	const sjme_list_sjme_lpcstr* interfaceNames;
+	const sjme_list_sjme_stringPool_string* interfaceNames;
 
 	/** Fields within the method. */
 	const sjme_list_sjme_class_fieldInfo* fields;
@@ -566,7 +567,7 @@ typedef struct sjme_class_fieldConstVal
 		sjme_jvalue java;
 
 		/** Constant string. */
-		sjme_lpcstr string;
+		sjme_stringPool_string string;
 	} value;
 } sjme_class_fieldConstVal;
 
@@ -628,6 +629,7 @@ typedef struct sjme_class_stackMap
  *
  * @param inPool The pool to allocate within.
  * @param inStream The stream to parse from when reading the class.
+ * @param inStringPool The pool for strings existing in memory already.
  * @param outClass The resultant class information
  * @return Any resultant error code, if any.
  * @since 2024/01/03
@@ -635,6 +637,7 @@ typedef struct sjme_class_stackMap
 sjme_errorCode sjme_class_parse(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_class_info* outClass);
 
 sjme_errorCode sjme_class_parseAttributeCode(
@@ -662,6 +665,7 @@ sjme_errorCode sjme_class_parseAttributeStackMapNew(
  * 
  * @param inPool The input pool. 
  * @param inStream The stream to read from.
+ * @param inStringPool The string pool for reused strings.
  * @param outPool The resultant read constant pool.
  * @return Any resultant error, if any.
  * @since 2024/09/13
@@ -669,6 +673,7 @@ sjme_errorCode sjme_class_parseAttributeStackMapNew(
 sjme_errorCode sjme_class_parseConstantPool(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_class_poolInfo* outPool);
 
 sjme_errorCode sjme_class_parseField(

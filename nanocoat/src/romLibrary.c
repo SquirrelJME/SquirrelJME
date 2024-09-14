@@ -70,7 +70,7 @@ sjme_errorCode sjme_rom_libraryNew(
 	
 	/* Initialize. */
 	if (sjme_error_is(error = sjme_nvm_objectInit(
-		SJME_AS_COMMON(result),
+		SJME_AS_NVM_COMMON(result),
 		SJME_NVM_STRUCT_ROM_LIBRARY)))
 		goto fail_commonInit;
 	

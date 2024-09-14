@@ -123,6 +123,13 @@ SJME_TEST_DECLARE(testClassParse)
 	sjme_zip_entry zipEntry;
 	sjme_stream_input in;
 	sjme_class_info info;
+	sjme_stringPool stringPool;
+	
+	/* Setup string pool. */
+	stringPool = NULL;
+	if (sjme_error_is(test->error = sjme_stringPool_new(
+		test->pool, &stringPool)) || stringPool == NULL)
+		return sjme_unit_fail(test, "Could not create string pool.");
 	
 	/* Load the Zip that is full of classes. */
 	zip = NULL;
@@ -153,7 +160,8 @@ SJME_TEST_DECLARE(testClassParse)
 		/* Load the class. */
 		info = NULL;
 		if (sjme_error_is(test->error = sjme_class_parse(test->pool,
-			in, &info)) || info == NULL)
+			in, stringPool, &info)) ||
+			info == NULL)
 			return sjme_unit_fail(test, "Could not parse %s: %d",
 				testInfo->fileName, test->error);
 		
@@ -179,6 +187,11 @@ SJME_TEST_DECLARE(testClassParse)
 	if (sjme_error_is(test->error = sjme_closeable_close(
 		SJME_AS_CLOSEABLE(zip))))
 		return sjme_unit_fail(test, "Could not close Zip.");
+	
+	/* Close the string pool. */
+	if (sjme_error_is(test->error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(stringPool))))
+		return sjme_unit_fail(test, "Could not close string pool.");
 	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

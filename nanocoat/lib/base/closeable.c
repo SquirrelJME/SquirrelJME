@@ -9,42 +9,42 @@
 
 #include "sjme/closeable.h"
 
-sjme_errorCode sjme_closeable_autoEnqueue(
-	sjme_attrInNotNull sjme_alloc_weak weak,
-	sjme_attrInNullable sjme_pointer data,
-	sjme_attrInValue sjme_jboolean isBlockFree)
-{
-	sjme_closeable closeable;
-	
-	if (weak == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Recover closeable. */
-	closeable = weak->pointer;
-	if (closeable == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-		
-	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG)
-	sjme_message("Closeable auto-close %p", closeable);
-#endif
-	
-	/* Forward close. */
-	return sjme_closeable_closeNoUnRef(closeable);
-}
-
 static sjme_errorCode sjme_closeable_closeCommon(
 	sjme_attrInNotNull sjme_closeable closeable,
-	sjme_attrInValue sjme_jboolean unref)
+	sjme_attrInValue sjme_jboolean unref,
+	sjme_attrInValue sjme_jboolean forceClose)
 {
 	sjme_errorCode error;
+	sjme_jint was;
+	sjme_alloc_weak weak;
 	
 	if (closeable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If this is a reference counting closeable, then close it. */
+	if (!forceClose && closeable->refCounting)
+	{
+		/* Get weak reference here. */
+		weak = NULL;
+		if (sjme_error_is(error = sjme_alloc_weakRefGet(closeable,
+			&weak)) || weak == NULL)
+			return sjme_error_default(error);
 		
+		/* Un-reference. */
+		was = sjme_atomic_sjme_jint_get(&weak->count);
+		if (was >= 1)
+			if (sjme_error_is(error = sjme_alloc_weakUnRef(
+				(void**)&closeable)))
+				return sjme_error_default(error);
+		
+		/* Reference un-counting may have done an actual close. */
+		return SJME_ERROR_NONE;
+	}
+	
 	/* Only close once! */
-	if (sjme_atomic_sjme_jint_compareSet(&closeable->isClosed,
-		0, 1))
+	was = sjme_atomic_sjme_jint_compareSet(&closeable->isClosed,
+		0, 1);
+	if (was == 0)
 	{
 		/* Debug. */
 #if defined(SJME_CONFIG_DEBUG)
@@ -66,14 +66,41 @@ static sjme_errorCode sjme_closeable_closeCommon(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_closeable_autoEnqueue(
+	sjme_attrInNotNull sjme_alloc_weak weak,
+	sjme_attrInNullable sjme_pointer data,
+	sjme_attrInValue sjme_jboolean isBlockFree)
+{
+	sjme_closeable closeable;
+	
+	if (weak == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover closeable. */
+	closeable = weak->pointer;
+	if (closeable == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+		
+	/* Debug. */
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_message("Closeable auto-close %p", closeable);
+#endif
+	
+	/* Forward close. */
+	return sjme_closeable_closeCommon(closeable,
+		SJME_JNI_FALSE, SJME_JNI_TRUE);
+}
+
 sjme_errorCode sjme_closeable_closeNoUnRef(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
-	return sjme_closeable_closeCommon(closeable, SJME_JNI_FALSE);
+	return sjme_closeable_closeCommon(closeable,
+		SJME_JNI_FALSE, SJME_JNI_FALSE);
 }
 
 sjme_errorCode sjme_closeable_close(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
-	return sjme_closeable_closeCommon(closeable, SJME_JNI_TRUE);
+	return sjme_closeable_closeCommon(closeable,
+		SJME_JNI_TRUE, SJME_JNI_FALSE);
 }

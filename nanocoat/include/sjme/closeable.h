@@ -65,6 +65,9 @@ struct sjme_closeableBase
 	/** Has this been closed? */
 	sjme_atomic_sjme_jint isClosed;
 	
+	/** Is this a reference counting closeable? */
+	sjme_jboolean refCounting;
+	
 	/** The handler for close. */
 	sjme_closeable_closeHandlerFunc closeHandler;
 };

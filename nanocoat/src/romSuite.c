@@ -208,7 +208,7 @@ sjme_errorCode sjme_rom_suiteNew(
 	
 	/* Common initialize. */
 	if (sjme_error_is(error = sjme_nvm_objectInit(
-		SJME_AS_COMMON(result),
+		SJME_AS_NVM_COMMON(result),
 		SJME_NVM_STRUCT_ROM_SUITE)))
 		goto fail_commonInit;
 	

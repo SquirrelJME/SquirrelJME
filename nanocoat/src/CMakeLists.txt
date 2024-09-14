@@ -26,6 +26,7 @@ squirreljme_multilib_add_static_library(Core
 	romLibraryZip.c
 	romSuite.c
 	romSuiteZip.c
+	stringPool.c
 	task.c
 	tread.c
 	vmConfig.c)

@@ -114,6 +114,12 @@ typedef enum sjme_nvm_structType
 	/** NanoCoat state. */
 	SJME_NVM_STRUCT_STATE,
 	
+	/** A string pool. */
+	SJME_NVM_STRUCT_STRING_POOL,
+	
+	/** A string in the string pool. */
+	SJME_NVM_STRUCT_STRING_POOL_STRING,
+	
 	/** The number of structure types. */
 	SJME_NVM_NUM_STRUCT
 } sjme_nvm_structType;
@@ -133,7 +139,7 @@ typedef struct sjme_nvm_commonBase sjme_nvm_commonBase;
 typedef sjme_nvm_commonBase* sjme_nvm_common;
 
 /** Cast to common type. */
-#define SJME_AS_COMMON(x) ((sjme_nvm_common)(x))
+#define SJME_AS_NVM_COMMON(x) ((sjme_nvm_common)(x))
 
 /**
  * Represents the virtual machine state.

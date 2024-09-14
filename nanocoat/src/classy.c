@@ -25,6 +25,7 @@
 sjme_errorCode sjme_class_parse(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_class_info* outClass)
 {
 	sjme_errorCode error;
@@ -33,7 +34,8 @@ sjme_errorCode sjme_class_parse(
 	sjme_class_version actualVersion;
 	sjme_class_poolInfo pool;
 	
-	if (inPool == NULL || inStream == NULL || outClass == NULL)
+	if (inPool == NULL || inStream == NULL || inStringPool == NULL ||
+		outClass == NULL)
 		return SJME_ERROR_NONE;
 	
 	/* Read in magic number. */
@@ -82,7 +84,7 @@ sjme_errorCode sjme_class_parse(
 	/* Parse the constant pool. */
 	pool = NULL;
 	if (sjme_error_is(error = sjme_class_parseConstantPool(
-		inPool, inStream, &pool)) || pool == NULL)
+		inPool, inStream, inStringPool, &pool)) || pool == NULL)
 		goto fail_parsePool;
 	
 	sjme_todo("Impl?");
@@ -102,6 +104,7 @@ fail_readMagic:
 sjme_errorCode sjme_class_parseConstantPool(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_class_poolInfo* outPool)
 {
 	sjme_errorCode error;
@@ -109,8 +112,10 @@ sjme_errorCode sjme_class_parseConstantPool(
 	sjme_jint index;
 	sjme_jbyte tag;
 	sjme_list_sjme_class_poolEntry* entries;
+	sjme_class_poolEntry* entry;
 	
-	if (inPool == NULL || inStream == NULL || outPool == NULL)
+	if (inPool == NULL || inStream == NULL || outPool == NULL ||
+		inStringPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Read in pool count. */
@@ -138,6 +143,9 @@ sjme_errorCode sjme_class_parseConstantPool(
 	/* Read in all entries. */
 	for (index = 1; index < count; index++)
 	{
+		/* Which entry is being written? */
+		entry = &entries->elements[index];
+		
 		/* Read in tag. */
 		tag = -1;
 		if (sjme_error_is(error = sjme_stream_inputReadValueJB(
