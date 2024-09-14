@@ -376,8 +376,11 @@ typedef enum sjme_errorCode
 	/** Invalid class version. */
 	SJME_ERROR_INVALID_CLASS_VERSION = -111,
 	
+	/** Invalid class pool count. */
+	SJME_ERROR_INVALID_CLASS_POOL_COUNT = -112,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -112,
+	SJME_NUM_ERROR_CODES = -113,
 } sjme_errorCode;
 
 /**

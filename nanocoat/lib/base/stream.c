@@ -305,10 +305,12 @@ sjme_errorCode sjme_stream_inputReadValueJ(
 	if (stream == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (typeId < 0 || typeId >= SJME_NUM_BASIC_TYPE_IDS ||
-		typeId == SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE ||
-		typeId == SJME_JAVA_TYPE_ID_OBJECT)
-		return SJME_ERROR_INVALID_ARGUMENT;
+	if (typeId != SJME_BASIC_TYPE_ID_BYTE &&
+		typeId != SJME_BASIC_TYPE_ID_BOOLEAN)
+		if (typeId < 0 || typeId >= SJME_NUM_BASIC_TYPE_IDS ||
+			typeId == SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE ||
+			typeId == SJME_JAVA_TYPE_ID_OBJECT)
+			return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* How many bytes do we need to read? */
 	switch (typeId)
@@ -364,6 +366,27 @@ sjme_errorCode sjme_stream_inputReadValueJ(
 
 	/* Success! */
 	memmove(outValue, &temp, sizeof(temp));
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_stream_inputReadValueJB(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_jbyte* outValue)
+{
+	sjme_errorCode error;
+	sjme_jvalue value;
+	
+	if (stream == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Read in value. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_stream_inputReadValueJ(
+		stream, SJME_BASIC_TYPE_ID_BYTE, &value)))
+		return sjme_error_default(error);
+	
+	/* Give the value! */
+	*outValue = value.b;
 	return SJME_ERROR_NONE;
 }
 

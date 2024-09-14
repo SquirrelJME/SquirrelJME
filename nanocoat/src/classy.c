@@ -104,9 +104,58 @@ sjme_errorCode sjme_class_parseConstantPool(
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrOutNotNull sjme_class_poolInfo* outPool)
 {
+	sjme_errorCode error;
+	sjme_jshort count;
+	sjme_jint index;
+	sjme_jbyte tag;
+	sjme_list_sjme_class_poolEntry* entries;
+	
 	if (inPool == NULL || inStream == NULL || outPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Read in pool count. */
+	count = -1;
+	if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+		inStream, &count)) || count < 0)
+		goto fail_readCount;
+	
+	/* Invalid pool size? */
+	if (count < 0 || count >= INT16_MAX)
+	{
+		error = SJME_ERROR_INVALID_CLASS_POOL_COUNT;
+		goto fail_poolCount;
+	}
+	
+	/* Count up by one, since zero is included! */
+	count += 1;
+	
+	/* Allocate resultant entries, where they will all go. */
+	entries = NULL;
+	if (sjme_error_is(error = sjme_list_alloc(inPool,
+		count, &entries, sjme_class_poolEntry, 0)) || entries == NULL)
+		goto fail_entryList;
+	
+	/* Read in all entries. */
+	for (index = 1; index < count; index++)
+	{
+		/* Read in tag. */
+		tag = -1;
+		if (sjme_error_is(error = sjme_stream_inputReadValueJB(
+			inStream, &tag)) || tag < 0)
+			goto fail_readTag;
+		
+		sjme_todo("Impl?");
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	}
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+fail_readTag:
+fail_entryList:
+	if (entries != NULL)
+		sjme_alloc_free(entries);
+fail_poolCount:
+fail_readCount:
+	return sjme_error_default(error);
 }
