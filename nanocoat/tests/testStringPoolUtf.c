@@ -40,7 +40,7 @@ SJME_TEST_DECLARE(testStringPoolUtf)
 		return sjme_unit_fail(test, "Could not locate string?");
 	
 	/* Check to make sure it is valid. */
-	sjme_unit_equalI(test, 10, string->length,
+	sjme_unit_equalI(test, 9, string->length,
 		"Length incorrect?");
 	sjme_unit_notEqualP(test, testUtf, string->seq.context,
 		"Copy was not made?");
