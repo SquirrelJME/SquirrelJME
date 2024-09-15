@@ -11,7 +11,6 @@
 
 #include "lib/scritchui/scritchuiExtern.h"
 #include "lib/scritchui/scritchuiPencilFontSqf.h"
-#include "sjme/nvm.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"

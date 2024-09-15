@@ -33,7 +33,7 @@ SJME_TEST_DECLARE(testStringPool)
 	sjme_unit_notEqualP(test, NULL, stringPool->strings,
 		"Strings not set?");
 	sjme_unit_greaterEqualI(test, 1, stringPool->strings->length,
-		"Initial strings length zero?");
+		"Initial strings length zero or negative?");
 	
 	/* Close string pool. */
 	if (sjme_error_is(test->error = sjme_closeable_close(
