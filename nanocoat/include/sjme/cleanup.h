@@ -56,7 +56,7 @@ sjme_errorCode sjme_nvm_enqueueHandler(
  * @return Any resultant error, if any.
  * @since 2024/08/10
  */
-sjme_errorCode sjme_nvm_objectInit(
+sjme_errorCode sjme_nvm_initCommon(
 	sjme_attrInNotNull sjme_nvm_common inCommon,
 	sjme_attrInValue sjme_nvm_structType inType);
 

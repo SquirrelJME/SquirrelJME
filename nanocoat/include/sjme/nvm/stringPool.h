@@ -71,6 +71,9 @@ struct sjme_stringPool_base
 	
 	/** Strings which are in the pool. */
 	sjme_list_sjme_stringPool_string* strings;
+	
+	/** The pool this is in. */
+	sjme_alloc_pool* inPool;
 };
 
 struct sjme_stringPool_stringBase

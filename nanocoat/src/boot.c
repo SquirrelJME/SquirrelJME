@@ -166,7 +166,7 @@ sjme_errorCode sjme_nvm_boot(
 		goto fail_resultAlloc;
 	
 	/* Initialize. */
-	if (sjme_error_is(error = sjme_nvm_objectInit(
+	if (sjme_error_is(error = sjme_nvm_initCommon(
 		SJME_AS_NVM_COMMON(result), 
 		SJME_NVM_STRUCT_STATE)))
 		goto fail_resultInit;
