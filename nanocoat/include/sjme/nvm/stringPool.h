@@ -67,7 +67,7 @@ SJME_LIST_DECLARE(sjme_stringPool_string, 0);
 struct sjme_stringPool_base
 {
 	/** The virtual machine common base. */
-	sjme_nvm_common common;
+	sjme_nvm_commonBase common;
 	
 	/** Strings which are in the pool. */
 	sjme_list_sjme_stringPool_string* strings;

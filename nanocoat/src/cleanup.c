@@ -9,6 +9,55 @@
 
 #include "sjme/cleanup.h"
 #include "sjme/nvm/rom.h"
+#include "sjme/nvm/stringPool.h"
+
+static sjme_errorCode sjme_stringPool_close(
+	sjme_attrInNullable sjme_closeable closeable)
+{
+	sjme_errorCode error;
+	sjme_stringPool stringPool;
+	sjme_jint i, n;
+	sjme_list_sjme_stringPool_string* strings;
+	sjme_stringPool_string target;
+	
+	/* Recover pool. */
+	stringPool = (sjme_stringPool)closeable;
+	if (stringPool == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Loaded string cleanup. */
+	strings = stringPool->strings;
+	if (strings != NULL)
+	{
+		/* Close every contained string. */
+		for (i = 0, n = strings->length; i < n; i++)
+		{
+			/* Skip blanks. */
+			target = strings->elements[i];
+			if (target == NULL)
+				continue;
+			
+			/* Close individual string. */
+			if (sjme_error_is(error = sjme_closeable_close(
+				SJME_AS_CLOSEABLE(target))))
+				return sjme_error_default(error);
+			
+			/* Clear it. */
+			strings->elements[i] = NULL;
+		}
+		
+		/* Destroy list. */
+		if (sjme_error_is(error = sjme_alloc_free(strings)))
+			return sjme_error_default(error);
+		strings = NULL;
+	}
+	
+	/* Wipe. */
+	stringPool->inPool = NULL;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
 
 static sjme_errorCode sjme_rom_libraryClose(
 	sjme_attrInNotNull sjme_closeable closeable)
@@ -16,11 +65,10 @@ static sjme_errorCode sjme_rom_libraryClose(
 	sjme_errorCode error;
 	sjme_rom_library inLibrary;
 	
-	if (closeable == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
 	/* Recover library. */
 	inLibrary = (sjme_rom_library)closeable;
+	if (inLibrary == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Delete the prefix if there is one. */
 	if (inLibrary->prefix != NULL)
@@ -112,6 +160,10 @@ sjme_errorCode sjme_nvm_initCommon(
 		return sjme_error_default(error);
 	
 	/* Setup correct enqueue handler. */
+	if (weak->enqueue != NULL &&
+		weak->enqueue != sjme_nvm_enqueueHandler)
+		return SJME_ERROR_ILLEGAL_STATE;
+	 
 	weak->enqueue = sjme_nvm_enqueueHandler;
 	weak->enqueueData = inCommon;
 	
@@ -128,6 +180,10 @@ sjme_errorCode sjme_nvm_initCommon(
 		
 		case SJME_NVM_STRUCT_ROM_SUITE:
 			handler = sjme_rom_suiteClose;
+			break;
+		
+		case SJME_NVM_STRUCT_STRING_POOL:
+			handler = sjme_stringPool_close;
 			break;
 	}
 	

@@ -32,7 +32,7 @@ SJME_TEST_DECLARE(testStringPool)
 	/* These should be properly set. */
 	sjme_unit_notEqualP(test, NULL, stringPool->strings,
 		"Strings not set?");
-	sjme_unit_greaterEqualI(test, 1, stringPool->strings->length,
+	sjme_unit_greaterEqualI(test, stringPool->strings->length, 1,
 		"Initial strings length zero or negative?");
 	
 	/* Close string pool. */

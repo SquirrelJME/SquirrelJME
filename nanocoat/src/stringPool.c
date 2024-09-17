@@ -10,6 +10,9 @@
 #include "sjme/nvm/stringPool.h"
 #include "sjme/cleanup.h"
 
+/** The amount the size of the string pool should grow. */
+#define SJME_STRING_POOL_GROW 256
+
 sjme_errorCode sjme_stringPool_locateSeq(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInNotNull sjme_charSeq* inSeq,
@@ -52,9 +55,17 @@ sjme_errorCode sjme_stringPool_new(
 {
 	sjme_errorCode error;
 	sjme_stringPool result;
+	sjme_list_sjme_stringPool_string* strings;
 	
 	if (inPool == NULL || outStringPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Make sure we have the memory to store the buffer. */
+	strings = NULL;
+	if (sjme_error_is(error = sjme_list_alloc(
+		inPool, SJME_STRING_POOL_GROW,
+		&strings, sjme_stringPool_string, 0)) || strings == NULL)
+		goto fail_allocList;
 	
 	/* Allocate result. */
 	result = NULL;
@@ -71,13 +82,18 @@ sjme_errorCode sjme_stringPool_new(
 	
 	/* Setup fields. */
 	result->inPool = inPool;
+	result->strings = strings;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Success! */
+	*outStringPool = result;
+	return SJME_ERROR_NONE;
 	
 fail_initCommon:
 fail_allocResult:
 	if (result != NULL)
 		sjme_alloc_free(result);
+fail_allocList:
+	if (strings != NULL)
+		sjme_alloc_free(strings);
 	return sjme_error_default(error);
 }

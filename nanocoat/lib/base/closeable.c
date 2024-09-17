@@ -32,7 +32,7 @@ static sjme_errorCode sjme_closeable_closeCommon(
 		
 		/* Un-reference. */
 		was = sjme_atomic_sjme_jint_get(&weak->count);
-		if (was >= 1)
+		if (was >= 0)
 			if (sjme_error_is(error = sjme_alloc_weakUnRef(
 				(void**)&closeable)))
 				return sjme_error_default(error);
