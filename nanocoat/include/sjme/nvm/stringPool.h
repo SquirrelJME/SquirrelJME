@@ -81,7 +81,7 @@ struct sjme_stringPool_stringBase
 	/** The virtual machine common base. */
 	sjme_nvm_common common;
 	
-	/** The char sequence for this string. */
+	/** The char sequence for this string, if needed. */
 	sjme_charSeq seq;
 	
 	/** The hash code for this string. */
@@ -89,6 +89,9 @@ struct sjme_stringPool_stringBase
 	
 	/** The length of the string. */
 	sjme_jint length;
+	
+	/** The string characters, in UTF form. */
+	sjme_jbyte chars[sjme_flexibleArrayCount];
 };
 
 /**
@@ -123,7 +126,9 @@ sjme_errorCode sjme_stringPool_locateStream(
  * Locates the given string in the string pool.
  * 
  * @param inStringPool The string pool.
- * @param inUtf The string to locate in the pool. 
+ * @param inUtf The string to locate in the pool.
+ * @param inUtfLen The length of the string, if @c -1 then this will be
+ * the same as @c strlen(inUtf) . 
  * @param outString The resultant pooled string.
  * @return On any resultant error, if any.
  * @since 2024/09/14
@@ -131,6 +136,7 @@ sjme_errorCode sjme_stringPool_locateStream(
 sjme_errorCode sjme_stringPool_locateUtf(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInNotNull sjme_lpcstr inUtf,
+	sjme_attrInNegativeOnePositive sjme_jint inUtfLen,
 	sjme_attrOutNotNull sjme_stringPool_string* outString);
 
 /**

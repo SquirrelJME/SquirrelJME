@@ -29,6 +29,11 @@ SJME_TEST_DECLARE(testStringPool)
 		stringPool == NULL)
 		return sjme_unit_fail(test, "Could not create pool.");
 	
+	/* We are using this, so count it. */
+	if (sjme_error_is(test->error = sjme_alloc_weakRef(stringPool,
+		NULL)))
+		return sjme_unit_fail(test, "Could not count string pool?");
+	
 	/* These should be properly set. */
 	sjme_unit_notEqualP(test, NULL, stringPool->strings,
 		"Strings not set?");

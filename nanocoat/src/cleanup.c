@@ -189,6 +189,7 @@ sjme_errorCode sjme_nvm_initCommon(
 	
 	/* Set handler. */
 	inCommon->closeable.closeHandler = handler;
+	inCommon->closeable.refCounting = SJME_JNI_TRUE;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

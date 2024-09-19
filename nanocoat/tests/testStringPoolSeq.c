@@ -35,6 +35,11 @@ SJME_TEST_DECLARE(testStringPoolSeq)
 		stringPool == NULL)
 		return sjme_unit_fail(test, "Could not create pool.");
 	
+	/* We are using this, so count it. */
+	if (sjme_error_is(test->error = sjme_alloc_weakRef(stringPool,
+		NULL)))
+		return sjme_unit_fail(test, "Could not count string pool?");
+	
 	/* Open char sequence over the data. */
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(test->error = sjme_charSeq_newUtfStatic(
@@ -48,8 +53,13 @@ SJME_TEST_DECLARE(testStringPoolSeq)
 		&string)) || string == NULL)
 		return sjme_unit_fail(test, "Could not locate string?");
 	
+	/* We are using this, so count it. */
+	if (sjme_error_is(test->error = sjme_alloc_weakRef(string,
+		NULL)))
+		return sjme_unit_fail(test, "Could not count string?");
+	
 	/* Check to make sure it is valid. */
-	sjme_unit_equalI(test, 9, string->length,
+	sjme_unit_equalI(test, 10, string->length,
 		"Length incorrect?");
 	sjme_unit_notEqualP(test, testUtf, string->seq.context,
 		"Copy was not made?");
@@ -63,7 +73,7 @@ SJME_TEST_DECLARE(testStringPoolSeq)
 	/* Close string. */
 	if (sjme_error_is(test->error = sjme_closeable_close(
 		SJME_AS_CLOSEABLE(string))))
-		return sjme_unit_fail(test, "Could not close first string?");
+		return sjme_unit_fail(test, "Could not close string?");
 	
 	/* Close string pool. */
 	if (sjme_error_is(test->error = sjme_closeable_close(
