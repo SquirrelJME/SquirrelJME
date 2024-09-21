@@ -565,12 +565,15 @@ struct sjme_class_infoCore
 	
 	/** The constant pool of this class. */
 	sjme_class_poolInfo pool;
-
-	/** The name of this class. */
-	sjme_stringPool_string name;
+	
+	/** The class version. */
+	sjme_class_version version;
 	
 	/** Class flags. */
 	sjme_class_classFlags flags;
+
+	/** The name of this class. */
+	sjme_stringPool_string name;
 
 	/** The superclass of this class. */
 	sjme_stringPool_string superName;

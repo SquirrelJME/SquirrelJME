@@ -135,13 +135,15 @@ sjme_errorCode sjme_class_parse(
 	sjme_attrOutNotNull sjme_class_info* outClass)
 {
 	sjme_errorCode error;
-	sjme_jint magic, fullVersion;
-	sjme_jshort major, minor;
+	sjme_jint magic, fullVersion, i;
+	sjme_jshort major, minor, interfaceCount;
 	sjme_class_version actualVersion;
 	sjme_class_poolInfo pool;
 	sjme_class_info result;
 	sjme_class_poolEntry* thisName;
 	sjme_class_poolEntry* superName;
+	sjme_class_poolEntry* interfaceName;
+	sjme_list_sjme_stringPool_string* interfaceNames;
 	
 	if (inPool == NULL || inStream == NULL || inStringPool == NULL ||
 		outClass == NULL)
@@ -203,6 +205,9 @@ sjme_errorCode sjme_class_parse(
 		goto fail_badVersion;
 	}
 	
+	/* Set version. */
+	result->version = actualVersion;
+	
 	/* Parse the constant pool. */
 	pool = NULL;
 	if (sjme_error_is(error = sjme_class_parseConstantPool(
@@ -244,15 +249,56 @@ sjme_errorCode sjme_class_parse(
 	/* Reference it, if valid. */
 	if (superName != NULL)
 	{
-		result->name = thisName->classRef.descriptor;
+		result->superName = superName->classRef.descriptor;
 		if (sjme_error_is(error = sjme_alloc_weakRef(
-			result->name, NULL)))
+			result->superName, NULL)))
 			goto fail_refSuperName;
+	}
+	
+	/* How many interfaces are there? */
+	interfaceCount = -1;
+	if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+		inStream, &interfaceCount)) || interfaceCount < 0)
+		goto fail_readInterfaceCount;
+	
+	/* Allocate interfaces count. */
+	interfaceNames = NULL;
+	if (sjme_error_is(error = sjme_list_alloc(inPool,
+		interfaceCount, &interfaceNames, sjme_stringPool_string, 0)) ||
+		interfaceNames == NULL)
+		goto fail_allocInterfaceNames;
+	result->interfaceNames = interfaceNames;
+	
+	/* Read in all interfaces. */
+	for (i = 0; i < interfaceCount; i++)
+	{
+		/* Read in name. */
+		interfaceName = NULL;
+		if (sjme_error_is(error = sjme_class_readPoolRefIndex(
+			inStream, result->pool,
+			SJME_CLASS_POOL_TYPE_CLASS,
+			SJME_JNI_FALSE, &interfaceName)) ||
+			interfaceName == NULL)
+			goto fail_readThisName;
+		
+		/* Reference it. */
+		interfaceNames->elements[i] = interfaceName->classRef.descriptor;
+		if (sjme_error_is(error = sjme_alloc_weakRef(
+			interfaceNames->elements[i], NULL)))
+			goto fail_refThisName;
 	}
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 
+fail_allocInterfaceNames:
+	if (interfaceNames != NULL)
+	{
+		sjme_alloc_free(interfaceNames);
+		interfaceNames = NULL;
+		result->interfaceNames = NULL;
+	}
+fail_readInterfaceCount:
 fail_refSuperName:
 fail_readSuperName:
 fail_refThisName:
