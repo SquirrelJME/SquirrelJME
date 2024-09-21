@@ -102,6 +102,9 @@ typedef enum sjme_nvm_structType
 	/** Unknown. */
 	SJME_NVM_STRUCT_UNKNOWN,
 	
+	/** Class information. */
+	SJME_NVM_STRUCT_CLASS_INFO,
+	
 	/** Rom Library. */
 	SJME_NVM_STRUCT_ROM_LIBRARY,
 	

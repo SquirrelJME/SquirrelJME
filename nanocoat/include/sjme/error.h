@@ -379,8 +379,17 @@ typedef enum sjme_errorCode
 	/** Invalid class pool count. */
 	SJME_ERROR_INVALID_CLASS_POOL_COUNT = -112,
 	
+	/** Invalid class pool index reference. */
+	SJME_ERROR_INVALID_CLASS_POOL_INDEX = -113,
+	
+	/** Reference to class pool index is the wrong type. */
+	SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE = -114,
+	
+	/** Class flags are invalid. */
+	SJME_ERROR_INVALID_CLASS_FLAGS = -115,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -113,
+	SJME_NUM_ERROR_CODES = -116,
 } sjme_errorCode;
 
 /**

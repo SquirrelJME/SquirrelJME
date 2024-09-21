@@ -363,6 +363,9 @@ typedef struct sjme_class_poolEntryClass
 	/** The type of entry that this is. */
 	sjme_class_poolType type;
 	
+	/** The index where the descriptor is located. */
+	sjme_jshort descriptorIndex;
+	
 	/** The descriptor this represents. */
 	sjme_stringPool_string descriptor;
 } sjme_class_poolEntryClass;
@@ -400,9 +403,15 @@ typedef struct sjme_class_poolEntryMember
 {
 	/** The type of entry that this is. */
 	sjme_class_poolType type;
+	
+	/** The index where the class is located. */
+	sjme_jshort inClassIndex;
 
 	/** The class this refers to. */
 	sjme_stringPool_string inClass;
+	
+	/** The index where the name and type is located. */
+	sjme_jshort nameAndTypeIndex;
 
 	/** The name and type used. */
 	const sjme_class_poolEntryNameAndType* nameAndType;
@@ -450,13 +459,36 @@ typedef struct sjme_class_poolEntryLong
 	sjme_jlong value;
 } sjme_class_poolEntryLong;
 
+/**
+ * A @c SJME_CLASS_POOL_TYPE_STRING which represents a string constant.
+ * 
+ * @since 2024/09/20
+ */
+typedef struct sjme_class_poolEntryString
+{
+	/** The type of entry that this is. */
+	sjme_class_poolType type;
+	
+	/** The index where the value is located. */
+	sjme_jshort valueIndex;
+	
+	/** The type. */
+	sjme_stringPool_string value;
+} sjme_class_poolEntryString;
+
 struct sjme_class_poolEntryNameAndType
 {
 	/** The type of entry that this is. */
 	sjme_class_poolType type;
 	
+	/** The index where the name is located. */
+	sjme_jshort nameIndex;
+	
 	/** The name. */
 	sjme_stringPool_string name;
+	
+	/** The index where the descriptor is located. */
+	sjme_jshort descriptorIndex;
 
 	/** The type. */
 	sjme_stringPool_string descriptor;
@@ -472,9 +504,6 @@ typedef struct sjme_class_poolEntryUtf
 	/** The type of entry that this is. */
 	sjme_class_poolType type;
 	
-	/** The hash code for the entry. */
-	sjme_jint hash;
-
 	/** The UTF data for this entry. */
 	sjme_stringPool_string utf;
 } sjme_class_poolEntryUtf;
@@ -503,6 +532,9 @@ typedef union sjme_class_poolEntry
 
 	/** Long. */
 	sjme_class_poolEntryLong constLong;
+	
+	/** String constant. */
+	sjme_class_poolEntryString constString;
 
 	/** A class member. */
 	sjme_class_poolEntryMember member;
@@ -536,6 +568,9 @@ struct sjme_class_infoCore
 
 	/** The name of this class. */
 	sjme_stringPool_string name;
+	
+	/** Class flags. */
+	sjme_class_classFlags flags;
 
 	/** The superclass of this class. */
 	sjme_stringPool_string superName;

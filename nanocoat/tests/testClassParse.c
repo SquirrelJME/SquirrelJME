@@ -143,6 +143,9 @@ SJME_TEST_DECLARE(testClassParse)
 	for (testInfo = &testClassInfos[0]; testInfo->binaryName != NULL;
 		testInfo++)
 	{
+		/* Debug. */
+		sjme_message(">>> %s", testInfo->fileName);
+		
 		/* Locate entry. */
 		memset(&zipEntry, 0, sizeof(zipEntry));
 		if (sjme_error_is(test->error = sjme_zip_locateEntry(
