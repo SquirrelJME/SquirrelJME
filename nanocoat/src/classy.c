@@ -98,6 +98,7 @@ static sjme_errorCode sjme_class_readPoolRefIndex(
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_class_poolInfo inClassPool,
 	sjme_attrInPositiveNonZero sjme_class_poolType desireType,
+	sjme_attrInValue sjme_jboolean canNull,
 	sjme_attrOutNotNull sjme_class_poolEntry** outEntry)
 {
 	sjme_errorCode error;
@@ -139,6 +140,8 @@ sjme_errorCode sjme_class_parse(
 	sjme_class_version actualVersion;
 	sjme_class_poolInfo pool;
 	sjme_class_info result;
+	sjme_class_poolEntry* thisName;
+	sjme_class_poolEntry* superName;
 	
 	if (inPool == NULL || inStream == NULL || inStringPool == NULL ||
 		outClass == NULL)
@@ -216,9 +219,44 @@ sjme_errorCode sjme_class_parse(
 		inStream, &result->flags)))
 		goto fail_readFlags;
 	
+	/* Read in this name. */
+	thisName = NULL;
+	if (sjme_error_is(error = sjme_class_readPoolRefIndex(
+		inStream, result->pool,
+		SJME_CLASS_POOL_TYPE_CLASS,
+		SJME_JNI_FALSE, &thisName)) || thisName == NULL)
+		goto fail_readThisName;
+	
+	/* Reference it. */
+	result->name = thisName->classRef.descriptor;
+	if (sjme_error_is(error = sjme_alloc_weakRef(
+		result->name, NULL)))
+		goto fail_refThisName;
+	
+	/* Read in super name. */
+	superName = NULL;
+	if (sjme_error_is(error = sjme_class_readPoolRefIndex(
+		inStream, result->pool,
+		SJME_CLASS_POOL_TYPE_CLASS,
+		SJME_JNI_TRUE, &superName)))
+		goto fail_readSuperName;
+	
+	/* Reference it, if valid. */
+	if (superName != NULL)
+	{
+		result->name = thisName->classRef.descriptor;
+		if (sjme_error_is(error = sjme_alloc_weakRef(
+			result->name, NULL)))
+			goto fail_refSuperName;
+	}
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 
+fail_refSuperName:
+fail_readSuperName:
+fail_refThisName:
+fail_readThisName:
 fail_readFlags:
 fail_countPool:
 fail_parsePool:
@@ -252,6 +290,7 @@ sjme_errorCode sjme_class_parseConstantPool(
 	sjme_jbyte tag;
 	sjme_list_sjme_class_poolEntry* entries;
 	sjme_class_poolEntry* entry;
+	sjme_class_poolEntry* target;
 	sjme_stringPool_string utf;
 	sjme_class_poolInfo result;
 	
@@ -358,19 +397,44 @@ sjme_errorCode sjme_class_parseConstantPool(
 	}
 	
 	/* Second stage item linking. */
-	for (index = 0; index < count; index++)
+	for (index = 1; index < count - 1; index++)
 	{
 		/* Which entry is being initialized? */
 		entry = &entries->elements[index];
 		
-		switch (tag)
+		/* Initialize accordingly. */
+		switch (entry->type)
 		{
-			/* Nothing to reference. */
+				/* These are base elements that need no initialization. */
 			case SJME_CLASS_POOL_TYPE_UTF:
 			case SJME_CLASS_POOL_TYPE_INTEGER:
 			case SJME_CLASS_POOL_TYPE_FLOAT:
 			case SJME_CLASS_POOL_TYPE_LONG:
 			case SJME_CLASS_POOL_TYPE_DOUBLE:
+				break;
+			
+				/* Class type. */
+			case SJME_CLASS_POOL_TYPE_CLASS:
+				if (entry->classRef.descriptorIndex <= 0 ||
+					entry->classRef.descriptorIndex >= entries->length)
+				{
+					error = SJME_ERROR_INVALID_CLASS_POOL_INDEX;
+					goto fail_initItem;
+				}
+				
+				/* Need to be a UTF string. */
+				target = &entries->elements[entry->classRef.descriptorIndex];
+				if (target->type != SJME_CLASS_POOL_TYPE_UTF)
+				{
+					error = SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
+					goto fail_initItem;
+				}
+				
+				/* Refer to it and count up, since we are using it. */
+				entry->classRef.descriptor = target->utf.utf;
+				if (sjme_error_is(error = sjme_alloc_weakRef(
+					entry->classRef.descriptor, NULL)))
+					goto fail_initItem;
 				break;
 			
 			default:
@@ -385,7 +449,8 @@ sjme_errorCode sjme_class_parseConstantPool(
 	/* Success! */
 	*outPool = result;
 	return SJME_ERROR_NONE;
-	
+
+fail_initItem:
 fail_readItem:
 fail_readTag:
 fail_entryList:
