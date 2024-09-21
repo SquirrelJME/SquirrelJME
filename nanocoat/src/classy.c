@@ -136,7 +136,7 @@ sjme_errorCode sjme_class_parse(
 {
 	sjme_errorCode error;
 	sjme_jint magic, fullVersion, i;
-	sjme_jshort major, minor, interfaceCount;
+	sjme_jshort major, minor, interfaceCount, fieldCount, methodCount;
 	sjme_class_version actualVersion;
 	sjme_class_poolInfo pool;
 	sjme_class_info result;
@@ -144,6 +144,8 @@ sjme_errorCode sjme_class_parse(
 	sjme_class_poolEntry* superName;
 	sjme_class_poolEntry* interfaceName;
 	sjme_list_sjme_stringPool_string* interfaceNames;
+	sjme_list_sjme_class_fieldInfo* fields;
+	sjme_list_sjme_class_methodInfo* methods;
 	
 	if (inPool == NULL || inStream == NULL || inStringPool == NULL ||
 		outClass == NULL)
@@ -288,9 +290,77 @@ sjme_errorCode sjme_class_parse(
 			goto fail_refThisName;
 	}
 	
+	/* Read in field count. */
+	fieldCount = -1;
+	if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+		inStream, &fieldCount)) || fieldCount < 0)
+		goto fail_readFieldCount;
+	
+	/* Setup list to store fields in. */
+	fields = NULL;
+	if (sjme_error_is(error = sjme_list_alloc(inPool,
+		fieldCount, &fields, sjme_class_fieldInfo, 0)) || fields == NULL)
+		goto fail_allocFields;
+	result->fields = fields;
+	
+	/* Load in and process each field. */
+	for (i = 0; i < fieldCount; i++)
+	{
+		/* Parse each field. */
+		if (sjme_error_is(error = sjme_class_parseField(
+			inStream, result->pool,
+			&fields->elements[i])) ||
+			fields->elements[i] == NULL)
+			goto fail_parseField;
+	}
+	
+	/* Read in method count. */
+	methodCount = -1;
+	if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+		inStream, &methodCount)) || methodCount < 0)
+		goto fail_readMethodCount;
+	
+	/* Setup list to store methods in. */
+	methods = NULL;
+	if (sjme_error_is(error = sjme_list_alloc(inPool,
+		methodCount, &methods, sjme_class_methodInfo, 0)) || methods == NULL)
+		goto fail_allocMethods;
+	result->methods = methods;
+	
+	/* Load in and process each method. */
+	for (i = 0; i < methodCount; i++)
+	{
+		/* Parse each method. */
+		if (sjme_error_is(error = sjme_class_parseMethod(
+			inStream, result->pool,
+			&methods->elements[i])) ||
+			methods->elements[i] == NULL)
+			goto fail_parseMethod;
+	}
+	
+	/* Parse attributes. */
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 
+fail_parseMethod:
+fail_allocMethods:
+	if (methods != NULL)
+	{
+		sjme_alloc_free(methods);
+		methods = NULL;
+		result->methods = NULL;
+	}
+fail_readMethodCount:
+fail_parseField:
+fail_allocFields:
+	if (fields != NULL)
+	{
+		sjme_alloc_free(fields);
+		fields = NULL;
+		result->fields = NULL;
+	}
+fail_readFieldCount:
 fail_allocInterfaceNames:
 	if (interfaceNames != NULL)
 	{
@@ -509,4 +579,28 @@ fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_class_parseField(
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
+	sjme_attrOutNotNull sjme_class_fieldInfo* outField)
+{
+	if (inStream == NULL || inConstPool == NULL || outField == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_class_parseMethod(
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
+	sjme_attrInOutNotNull sjme_class_methodInfo* outMethod)
+{
+	if (inStream == NULL || inConstPool == NULL || outMethod == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }

@@ -714,23 +714,33 @@ sjme_errorCode sjme_class_parseConstantPool(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_class_poolInfo* outPool);
 
+/**
+ * Parses a single field.
+ * 
+ * @param inStream The stream to read from.
+ * @param inConstPool The class constant pool.
+ * @param outField The resultant field.
+ * @return Any resultant error, if any.
+ * @since 2024/09/21
+ */
 sjme_errorCode sjme_class_parseField(
 	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
 	sjme_attrOutNotNull sjme_class_fieldInfo* outField);
 
-sjme_errorCode sjme_class_parseFields(
-	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrInNotNull sjme_class_info inClass,
-	sjme_attrOutNotNull sjme_list_sjme_class_fieldInfo* outFields);
-
+/**
+ * Parses a single method.
+ * 
+ * @param inStream The stream to read from.
+ * @param inConstPool The class constant pool.
+ * @param outMethod The resultant method.
+ * @return Any resultant error, if any.
+ * @since 2024/09/21
+ */
 sjme_errorCode sjme_class_parseMethod(
 	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
 	sjme_attrInOutNotNull sjme_class_methodInfo* outMethod);
-
-sjme_errorCode sjme_class_parseMethods(
-	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrInNotNull sjme_class_info inClass,
-	sjme_attrOutNotNull sjme_list_sjme_class_methodInfo* outMethods);
 
 /*--------------------------------------------------------------------------*/
 
