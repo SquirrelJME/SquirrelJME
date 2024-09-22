@@ -739,6 +739,7 @@ sjme_errorCode sjme_class_parseConstantPool(
 /**
  * Parses a single field.
  * 
+ * @param inPool The allocation pool to use.
  * @param inStream The stream to read from.
  * @param inConstPool The class constant pool.
  * @param outField The resultant field.
@@ -746,6 +747,7 @@ sjme_errorCode sjme_class_parseConstantPool(
  * @since 2024/09/21
  */
 sjme_errorCode sjme_class_parseField(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
 	sjme_attrOutNotNull sjme_class_fieldInfo* outField);
@@ -753,6 +755,7 @@ sjme_errorCode sjme_class_parseField(
 /**
  * Parses a single method.
  * 
+ * @param inPool The allocation pool to use.
  * @param inStream The stream to read from.
  * @param inConstPool The class constant pool.
  * @param outMethod The resultant method.
@@ -760,6 +763,7 @@ sjme_errorCode sjme_class_parseField(
  * @since 2024/09/21
  */
 sjme_errorCode sjme_class_parseMethod(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
 	sjme_attrInOutNotNull sjme_class_methodInfo* outMethod);

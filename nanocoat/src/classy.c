@@ -23,22 +23,46 @@
 /** CLDC 8 max version. */
 #define SJME_CLASS_CLDC_1_8_MAX INT32_C(3407872)
 
-/** Public class. */
+/** Public. */
 #define SJME_CLASS_ACC_PUBLIC INT16_C(0x0001)
 
-/** Final class. */
+/** Private. */
+#define SJME_CLASS_ACC_PRIVATE INT16_C(0x0002)
+
+/** Protected. */
+#define SJME_CLASS_ACC_PROTECTED INT16_C(0x0004)
+
+/** Static member. */
+#define SJME_CLASS_ACC_STATIC INT16_C(0x0008)
+
+/** Final class or member. */
 #define SJME_CLASS_ACC_FINAL INT16_C(0x0010)
 
 /** Alternative @c invokesuper logic. */
 #define SJME_CLASS_ACC_SUPER INT16_C(0x0020)
 
+/** Synchronized method. */
+#define SJME_CLASS_ACC_SYNCHRONIZED INT16_C(0x0020)
+
+/** Bridge method. */
+#define SJME_CLASS_ACC_BRIDGE INT16_C(0x0040)
+
+/** Variable arguments. */
+#define SJME_CLASS_ACC_VARARGS INT16_C(0x0080)
+
+/** Native method. */
+#define SJME_CLASS_ACC_NATIVE INT16_C(0x0100)
+
 /** Class is an interface. */
 #define SJME_CLASS_ACC_INTERFACE INT16_C(0x0200)
 
-/** Class is abstract. */
+/** Abstract class or method. */
 #define SJME_CLASS_ACC_ABSTRACT INT16_C(0x0400)
 
-/** Class is synthetic. */
+/** Strict floating point method. */
+#define SJME_CLASS_ACC_STRICTFP INT16_C(0x0800)
+
+/** Synthetic class or member. */
 #define SJME_CLASS_ACC_SYNTHETIC INT16_C(0x1000)
 
 /** Class is an annotation. */
@@ -47,7 +71,24 @@
 /** Class is an enum. */
 #define SJME_CLASS_ACC_ENUM INT16_C(0x4000)
 
-static sjme_errorCode sjme_class_readClassFlags(
+static sjme_errorCode sjme_class_classAttr(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
+	sjme_attrInNotNull sjme_pointer context,
+	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrBuf,
+	sjme_attrInPositive sjme_jint attrLen)
+{
+	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
+		context == NULL || attrName == NULL || attrBuf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_class_classFlagsParse(
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrOutNotNull sjme_class_classFlags* outFlags)
 {
@@ -128,23 +169,6 @@ static sjme_errorCode sjme_class_readPoolRefIndex(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_class_classAttr(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
-	sjme_attrInNotNull sjme_stringPool inStringPool,
-	sjme_attrInNotNull sjme_pointer context,
-	sjme_attrInNotNull sjme_lpcstr attrName,
-	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrBuf,
-	sjme_attrInPositive sjme_jint attrLen)
-{
-	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
-		context == NULL || attrName == NULL || attrBuf == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
 static sjme_errorCode sjme_class_fieldAttr(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
@@ -177,6 +201,63 @@ static sjme_errorCode sjme_class_methodAttr(
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_class_methodFlagsParse(
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrOutNotNull sjme_class_methodFlags* outFlags)
+{
+	sjme_errorCode error;
+	sjme_jshort rawFlags;
+	
+	if (inStream == NULL || outFlags == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Read in flags. */
+	rawFlags = -1;
+	if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+		inStream, &rawFlags)) || rawFlags < 0)
+		return sjme_error_default(error);
+	
+	/* Translate to bitfield. */
+	if ((rawFlags & SJME_CLASS_ACC_PUBLIC) != 0)
+		outFlags->member.access.public = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_CLASS_ACC_PRIVATE) != 0)
+		outFlags->member.access.private = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_CLASS_ACC_PROTECTED) != 0)
+		outFlags->member.access.protected = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_CLASS_ACC_STATIC) != 0)
+		outFlags->member.isStatic = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_CLASS_ACC_FINAL) != 0)
+		outFlags->member.final = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_CLASS_ACC_SYNCHRONIZED) != 0)
+		outFlags->synchronized = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_CLASS_ACC_BRIDGE) != 0)
+		outFlags->bridge = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_CLASS_ACC_VARARGS) != 0)
+		outFlags->varargs = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_CLASS_ACC_NATIVE) != 0)
+		outFlags->native = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_CLASS_ACC_ABSTRACT) != 0)
+		outFlags->abstract = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_CLASS_ACC_STRICTFP) != 0)
+		outFlags->strictfp = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_CLASS_ACC_SYNTHETIC) != 0)
+		outFlags->member.synthetic = SJME_JNI_TRUE;
+	
+	/* Can only have a single access mode. */
+	/* Abstract cannot be final, private, static, strict, or synchronized. */
+	if (((outFlags->member.access.public +
+		outFlags->member.access.protected +
+		outFlags->member.access.private) > 1) ||
+		(outFlags->abstract && (outFlags->member.final ||
+			outFlags->native || outFlags->member.access.private ||
+			outFlags->member.isStatic || outFlags->strictfp ||
+			outFlags->synchronized)))
+		return SJME_ERROR_INVALID_METHOD_FLAGS;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_class_parse(
@@ -273,7 +354,7 @@ sjme_errorCode sjme_class_parse(
 	result->pool = pool;
 	
 	/* Read in flags. */
-	if (sjme_error_is(error = sjme_class_readClassFlags(
+	if (sjme_error_is(error = sjme_class_classFlagsParse(
 		inStream, &result->flags)))
 		goto fail_readFlags;
 	
@@ -359,7 +440,7 @@ sjme_errorCode sjme_class_parse(
 	{
 		/* Parse each field. */
 		if (sjme_error_is(error = sjme_class_parseField(
-			inStream, result->pool,
+			inPool, inStream, result->pool,
 			&fields->elements[i])) ||
 			fields->elements[i] == NULL)
 			goto fail_parseField;
@@ -383,7 +464,7 @@ sjme_errorCode sjme_class_parse(
 	{
 		/* Parse each method. */
 		if (sjme_error_is(error = sjme_class_parseMethod(
-			inStream, result->pool,
+			inPool, inStream, result->pool,
 			&methods->elements[i])) ||
 			methods->elements[i] == NULL)
 			goto fail_parseMethod;
@@ -654,11 +735,13 @@ fail_allocResult:
 }
 
 sjme_errorCode sjme_class_parseField(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
 	sjme_attrOutNotNull sjme_class_fieldInfo* outField)
 {
-	if (inStream == NULL || inConstPool == NULL || outField == NULL)
+	if (inPool == NULL || inStream == NULL || inConstPool == NULL ||
+		outField == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	sjme_todo("Impl?");
@@ -666,13 +749,43 @@ sjme_errorCode sjme_class_parseField(
 }
 
 sjme_errorCode sjme_class_parseMethod(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
 	sjme_attrInOutNotNull sjme_class_methodInfo* outMethod)
 {
-	if (inStream == NULL || inConstPool == NULL || outMethod == NULL)
+	sjme_errorCode error;
+	sjme_class_methodInfo result;
+	
+	if (inPool == NULL || inStream == NULL || inConstPool == NULL ||
+		outMethod == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+	
+	/* Ensure we can allocate the result first. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
+		sizeof(*result), NULL, NULL,
+		(sjme_pointer*)&result, NULL)) || result == NULL)
+		goto fail_allocResult;
+	
+	/* Initialize it. */
+	if (sjme_error_is(error = sjme_nvm_initCommon(
+		SJME_AS_NVM_COMMON(result),
+		SJME_NVM_STRUCT_METHOD_INFO)))
+		goto fail_initResult;
+	
+	/* Read in flags. */
+	if (sjme_error_is(error = sjme_class_methodFlagsParse(
+		inStream, &result->flags)))
+		goto fail_readFlags;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+fail_readFlags:
+fail_initResult:
+fail_allocResult:
+	if (result != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
+	return sjme_error_default(error);
 }

@@ -388,8 +388,11 @@ typedef enum sjme_errorCode
 	/** Class flags are invalid. */
 	SJME_ERROR_INVALID_CLASS_FLAGS = -115,
 	
+	/** Method flags are invalid. */
+	SJME_ERROR_INVALID_METHOD_FLAGS = -116,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -116,
+	SJME_NUM_ERROR_CODES = -117,
 } sjme_errorCode;
 
 /**
