@@ -663,6 +663,28 @@ typedef struct sjme_class_stackMap
 } sjme_class_stackMap;
 
 /**
+ * Handler function for attribute parsing.
+ * 
+ * @param inPool The allocation pool.
+ * @param inConstPool The constant pool.
+ * @param inStringPool The string pool.
+ * @param context The passed context.
+ * @param attrName The name of the attribute.
+ * @param attrBuf The attribute data.
+ * @param attrLen The data length.
+ * @return Any resultant error, if any.
+ * @since 2024/09/21
+ */
+typedef sjme_errorCode (*sjme_class_parseAttributeHandlerFunc)(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
+	sjme_attrInNotNull sjme_pointer context,
+	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrBuf,
+	sjme_attrInPositive sjme_jint attrLen);
+
+/**
  * Parses a single class and loads its class information.
  *
  * @param inPool The pool to allocate within.
@@ -678,25 +700,25 @@ sjme_errorCode sjme_class_parse(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_class_info* outClass);
 
-sjme_errorCode sjme_class_parseAttributeCode(
+/**
+ * Parses attributes.
+ * 
+ * @param inPool The allocation pool.
+ * @param inStream The stream to read from.
+ * @param inConstPool The constant pool.
+ * @param inStringPool The string pool.
+ * @param handler The handler used for attribute parsing.
+ * @param context The context to pass to the handler.
+ * @return Any resultant error, if any.
+ * @since 2024/09/21
+ */
+sjme_errorCode sjme_class_parseAttributes(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrInNotNull sjme_class_methodInfo inMethod,
-	sjme_attrOutNotNull sjme_class_codeInfo* outCode);
-
-sjme_errorCode sjme_class_parseAttributeConstVal(
-	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrInNotNull sjme_class_fieldInfo inField,
-	sjme_attrOutNotNull sjme_class_fieldConstVal* outConstVal);
-
-sjme_errorCode sjme_class_parseAttributeStackMapOld(
-	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrOutNotNull sjme_class_codeInfo inCode,
-	sjme_attrOutNotNull sjme_class_stackMap* outStackMap);
-
-sjme_errorCode sjme_class_parseAttributeStackMapNew(
-	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrOutNotNull sjme_class_codeInfo inCode,
-	sjme_attrOutNotNull sjme_class_stackMap* outStackMap);
+	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
+	sjme_attrInNotNull sjme_class_parseAttributeHandlerFunc handler,
+	sjme_attrInNotNull sjme_pointer context);
 
 /**
  * Parses the constant pool of an input class.

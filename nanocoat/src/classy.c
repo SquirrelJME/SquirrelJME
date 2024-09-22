@@ -128,6 +128,57 @@ static sjme_errorCode sjme_class_readPoolRefIndex(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_class_classAttr(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
+	sjme_attrInNotNull sjme_pointer context,
+	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrBuf,
+	sjme_attrInPositive sjme_jint attrLen)
+{
+	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
+		context == NULL || attrName == NULL || attrBuf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_class_fieldAttr(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
+	sjme_attrInNotNull sjme_pointer context,
+	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrBuf,
+	sjme_attrInPositive sjme_jint attrLen)
+{
+	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
+		context == NULL || attrName == NULL || attrBuf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_class_methodAttr(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
+	sjme_attrInNotNull sjme_pointer context,
+	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrBuf,
+	sjme_attrInPositive sjme_jint attrLen)
+{
+	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
+		context == NULL || attrName == NULL || attrBuf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_class_parse(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
@@ -339,10 +390,15 @@ sjme_errorCode sjme_class_parse(
 	}
 	
 	/* Parse attributes. */
+	if (sjme_error_is(error = sjme_class_parseAttributes(
+		inPool, inStream, result->pool, inStringPool,
+		sjme_class_classAttr, result)))
+		goto fail_parseAttributes;
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 
+fail_parseAttributes:
 fail_parseMethod:
 fail_allocMethods:
 	if (methods != NULL)
@@ -392,6 +448,22 @@ fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_class_parseAttributes(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
+	sjme_attrInNotNull sjme_class_parseAttributeHandlerFunc handler,
+	sjme_attrInNotNull sjme_pointer context)
+{
+	if (inPool == NULL || inStream == NULL || inConstPool == NULL ||
+		inStringPool == NULL || handler == NULL || context == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 sjme_errorCode sjme_class_parseConstantPool(
