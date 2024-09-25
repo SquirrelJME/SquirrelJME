@@ -616,6 +616,12 @@ struct sjme_class_fieldInfoCore
 
 	/** Field flags. */
 	sjme_class_fieldFlags flags;
+	
+	/** The name of this field. */
+	sjme_stringPool_string name;
+	
+	/** The type of this field. */
+	sjme_stringPool_string type;
 
 	/** The constant value, if any. */
 	sjme_class_fieldConstVal constVal;
@@ -628,6 +634,12 @@ struct sjme_class_methodInfoCore
 
 	/** Method flags. */
 	sjme_class_methodFlags flags;
+	
+	/** The name of this method. */
+	sjme_stringPool_string name;
+	
+	/** The type of this method. */
+	sjme_stringPool_string type;
 
 	/** The method code, if it is not native. */
 	sjme_class_codeInfo code;
@@ -670,7 +682,7 @@ typedef struct sjme_class_stackMap
  * @param inStringPool The string pool.
  * @param context The passed context.
  * @param attrName The name of the attribute.
- * @param attrBuf The attribute data.
+ * @param attrData The attribute data.
  * @param attrLen The data length.
  * @return Any resultant error, if any.
  * @since 2024/09/21
@@ -681,8 +693,22 @@ typedef sjme_errorCode (*sjme_class_parseAttributeHandlerFunc)(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
 	sjme_attrInNotNull sjme_lpcstr attrName,
-	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrBuf,
+	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen);
+
+/**
+ * Structure for attribute handlers according to their name and handler.
+ * 
+ * @since 2024/09/25
+ */
+typedef struct sjme_class_parseAttributeHandlerInfo
+{
+	/** The name to handle. */
+	sjme_lpcstr name;
+	
+	/** The handler for the attribute. */
+	sjme_class_parseAttributeHandlerFunc handler;
+} sjme_class_parseAttributeHandlerInfo;
 
 /**
  * Parses a single class and loads its class information.
@@ -707,7 +733,7 @@ sjme_errorCode sjme_class_parse(
  * @param inStream The stream to read from.
  * @param inConstPool The constant pool.
  * @param inStringPool The string pool.
- * @param handler The handler used for attribute parsing.
+ * @param handlers The handler used for attribute parsing.
  * @param context The context to pass to the handler.
  * @return Any resultant error, if any.
  * @since 2024/09/21
@@ -717,7 +743,7 @@ sjme_errorCode sjme_class_parseAttributes(
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_stringPool inStringPool,
-	sjme_attrInNotNull sjme_class_parseAttributeHandlerFunc handler,
+	sjme_attrInNotNull const sjme_class_parseAttributeHandlerInfo* handlers,
 	sjme_attrInNotNull sjme_pointer context);
 
 /**
@@ -742,6 +768,7 @@ sjme_errorCode sjme_class_parseConstantPool(
  * @param inPool The allocation pool to use.
  * @param inStream The stream to read from.
  * @param inConstPool The class constant pool.
+ * @param inStringPool The string pool used.
  * @param outField The resultant field.
  * @return Any resultant error, if any.
  * @since 2024/09/21
@@ -750,6 +777,7 @@ sjme_errorCode sjme_class_parseField(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_class_fieldInfo* outField);
 
 /**
@@ -758,6 +786,7 @@ sjme_errorCode sjme_class_parseField(
  * @param inPool The allocation pool to use.
  * @param inStream The stream to read from.
  * @param inConstPool The class constant pool.
+ * @param inStringPool The string pool used.
  * @param outMethod The resultant method.
  * @return Any resultant error, if any.
  * @since 2024/09/21
@@ -766,6 +795,7 @@ sjme_errorCode sjme_class_parseMethod(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInOutNotNull sjme_class_methodInfo* outMethod);
 
 /*--------------------------------------------------------------------------*/
