@@ -682,6 +682,7 @@ typedef struct sjme_class_stackMap
  * @param inStringPool The string pool.
  * @param context The passed context.
  * @param attrName The name of the attribute.
+ * @param attrStream The stream over the attribute data.
  * @param attrData The attribute data.
  * @param attrLen The data length.
  * @return Any resultant error, if any.
@@ -693,6 +694,7 @@ typedef sjme_errorCode (*sjme_class_parseAttributeHandlerFunc)(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
 	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNull sjme_stream_input attrStream,
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen);
 

@@ -165,11 +165,13 @@ static sjme_errorCode sjme_class_codeAttrLineNumberTable(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
 	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNull sjme_stream_input attrStream,
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen)
 {
 	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
-		context == NULL || attrName == NULL || attrData == NULL)
+		context == NULL || attrName == NULL || attrData == NULL ||
+		attrStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -182,11 +184,13 @@ static sjme_errorCode sjme_class_codeAttrStackMap(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
 	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNull sjme_stream_input attrStream,
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen)
 {
 	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
-		context == NULL || attrName == NULL || attrData == NULL)
+		context == NULL || attrName == NULL || attrData == NULL ||
+		attrStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -199,11 +203,13 @@ static sjme_errorCode sjme_class_codeAttrStackMapTable(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
 	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNull sjme_stream_input attrStream,
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen)
 {
 	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
-		context == NULL || attrName == NULL || attrData == NULL)
+		context == NULL || attrName == NULL || attrData == NULL ||
+		attrStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -227,11 +233,13 @@ static sjme_errorCode sjme_class_fieldAttrConstantValue(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
 	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNull sjme_stream_input attrStream,
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen)
 {
 	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
-		context == NULL || attrName == NULL || attrData == NULL)
+		context == NULL || attrName == NULL || attrData == NULL ||
+		attrStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -250,11 +258,13 @@ static sjme_errorCode sjme_class_methodAttrCode(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
 	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNull sjme_stream_input attrStream,
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen)
 {
 	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
-		context == NULL || attrName == NULL || attrData == NULL)
+		context == NULL || attrName == NULL || attrData == NULL ||
+		attrStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -334,10 +344,11 @@ static sjme_errorCode sjme_class_parseAttribute(
 	sjme_attrInNotNull sjme_lpcstr attrName,
 	sjme_attrInPositive sjme_jint attrLen)
 {
-	sjme_errorCode error;
+	sjme_errorCode error, errorC;
 	sjme_jubyte* attrData;
 	sjme_jint readCount;
-	sjme_class_parseAttributeHandlerInfo* at;
+	const sjme_class_parseAttributeHandlerInfo* at;
+	sjme_stream_input attrStream;
 	
 	if (inPool == NULL || inStream == NULL || inConstPool == NULL ||
 		inStringPool == NULL || handlers == NULL || context == NULL ||
@@ -363,8 +374,28 @@ static sjme_errorCode sjme_class_parseAttribute(
 	/* Find and call handler for this. */
 	for (at = handlers; at->name != NULL && at->handler != NULL; at++)
 		if (0 == strcmp(at->name, attrName))
-			return at->handler(inPool, inConstPool, inStringPool, context,
-				attrName, attrData, attrLen);
+		{
+			/* Load stream over the data. */
+			attrStream = NULL;
+			if (sjme_error_is(error = sjme_stream_inputOpenMemory(
+				inPool, &attrStream,
+				attrData, attrLen)) || attrStream == NULL)
+				return sjme_error_default(error);
+			
+			/* Process it. */
+			error = at->handler(inPool, inConstPool, inStringPool, context,
+				attrName, attrStream, attrData, attrLen);
+			
+			/* Close stream. */
+			if (sjme_error_is(errorC = sjme_closeable_close(
+				SJME_AS_CLOSEABLE(attrStream))))
+				return sjme_error_defaultOr(error, errorC);
+			
+			/* Failed? */
+			if (sjme_error_is(error))
+				return sjme_error_default(error);
+			return error;
+		}
 	
 #if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */

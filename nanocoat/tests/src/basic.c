@@ -68,7 +68,8 @@ void sjme_test_leakCheck(sjme_alloc_pool* pool)
 		if (link->space == SJME_ALLOC_POOL_SPACE_USED)
 		{
 			/* Indicate it leaked */
-			sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
+			sjme_messageR(NULL, -1, NULL,
+				SJME_JNI_TRUE,
 				"LEAK:\t%dB\t%s\t%s:%d\tl=%p\tp=%p",
 				link->allocSize, link->debugFunction,
 				sjme_debug_shortenFile(link->debugFile), link->debugLine,
@@ -157,7 +158,7 @@ int sjme_test_main(int argc, sjme_lpstr* argv, sjme_lpcstr* nextTest)
 		sjme_debug_handlers = &sjme_test_debugHandlers;
 
 	/* Setup base allocation pool. */
-	for (chunkLen = 65536; chunkLen >= 1024; chunkLen /= 2)
+	for (chunkLen = 262144; chunkLen >= 1024; chunkLen /= 2)
 	{
 		/* Try to alloca everything at once. */
 		chunk = sjme_alloca(chunkLen);
