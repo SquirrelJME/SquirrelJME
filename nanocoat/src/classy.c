@@ -781,6 +781,15 @@ sjme_errorCode sjme_class_parseConstantPool(
 		/* Which tag is this? */
 		switch (tag)
 		{
+				/* Class reference. */
+			case SJME_CLASS_POOL_TYPE_CLASS:
+				if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+					inStream,
+					&entry->classRef.descriptorIndex)))
+					goto fail_readItem;
+				break;
+				
+				/* Double value. */
 			case SJME_CLASS_POOL_TYPE_DOUBLE:
 				if (sjme_error_is(error = sjme_stream_inputReadValueJI(
 					inStream,
@@ -792,10 +801,29 @@ sjme_errorCode sjme_class_parseConstantPool(
 					goto fail_readItem;
 				break;
 			
-			case SJME_CLASS_POOL_TYPE_CLASS:
+				/* Reference to a member. */
+			case SJME_CLASS_POOL_TYPE_FIELD:
+			case SJME_CLASS_POOL_TYPE_INTERFACE_METHOD:
+			case SJME_CLASS_POOL_TYPE_METHOD:
 				if (sjme_error_is(error = sjme_stream_inputReadValueJS(
 					inStream,
-					&entry->classRef.descriptorIndex)))
+					&entry->member.inClassIndex)))
+					goto fail_readItem;
+				if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+					inStream,
+					&entry->member.nameAndTypeIndex)))
+					goto fail_readItem;
+				break;
+				
+				/* Name and type information. */
+			case SJME_CLASS_POOL_TYPE_NAME_AND_TYPE:
+				if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+					inStream,
+					&entry->nameAndType.nameIndex)))
+					goto fail_readItem;
+				if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+					inStream,
+					&entry->nameAndType.descriptorIndex)))
 					goto fail_readItem;
 				break;
 			
@@ -861,6 +889,84 @@ sjme_errorCode sjme_class_parseConstantPool(
 				entry->classRef.descriptor = target->utf.utf;
 				if (sjme_error_is(error = sjme_alloc_weakRef(
 					entry->classRef.descriptor, NULL)))
+					goto fail_initItem;
+				break;
+				
+				/* Member reference. */
+			case SJME_CLASS_POOL_TYPE_FIELD:
+			case SJME_CLASS_POOL_TYPE_INTERFACE_METHOD:
+			case SJME_CLASS_POOL_TYPE_METHOD:
+				if (entry->member.inClassIndex <= 0 ||
+					entry->member.inClassIndex >= entries->length ||
+					entry->member.nameAndTypeIndex <= 0 ||
+					entry->member.nameAndTypeIndex >= entries->length)
+				{
+					error = SJME_ERROR_INVALID_CLASS_POOL_INDEX;
+					goto fail_initItem;
+				}
+				
+				/* Needs to be a class. */
+				target = &entries->elements[entry->member.inClassIndex];
+				if (target->type != SJME_CLASS_POOL_TYPE_CLASS)
+				{
+					error = SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
+					goto fail_initItem;
+				}
+				
+				/* Set class. */
+				entry->member.inClass =
+					(const sjme_class_poolEntryClass*)target;
+				
+				/* Needs to be a name and type. */
+				target = &entries->elements[entry->member.nameAndTypeIndex];
+				if (target->type != SJME_CLASS_POOL_TYPE_NAME_AND_TYPE)
+				{
+					error = SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
+					goto fail_initItem;
+				}
+				
+				/* Set name and type. */
+				entry->member.nameAndType =
+					(const sjme_class_poolEntryNameAndType*)target;
+				break;
+			
+			case SJME_CLASS_POOL_TYPE_NAME_AND_TYPE:
+				if (entry->nameAndType.nameIndex <= 0 ||
+					entry->nameAndType.nameIndex >= entries->length ||
+					entry->nameAndType.descriptorIndex <= 0 ||
+					entry->nameAndType.descriptorIndex >= entries->length)
+				{
+					error = SJME_ERROR_INVALID_CLASS_POOL_INDEX;
+					goto fail_initItem;
+				}
+				
+				/* Needs to be UTF. */
+				target = &entries->elements[entry->nameAndType.nameIndex];
+				if (target->type != SJME_CLASS_POOL_TYPE_UTF)
+				{
+					error = SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
+					goto fail_initItem;
+				}
+				
+				/* Set name. */
+				entry->nameAndType.name = target->utf.utf;
+				if (sjme_error_is(error = sjme_alloc_weakRef(
+					entry->nameAndType.name, NULL)))
+					goto fail_initItem;
+				
+				/* Needs to be UTF. */
+				target = &entries->elements[
+					entry->nameAndType.descriptorIndex];
+				if (target->type != SJME_CLASS_POOL_TYPE_UTF)
+				{
+					error = SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
+					goto fail_initItem;
+				}
+				
+				/* Set descriptor. */
+				entry->nameAndType.descriptor = target->utf.utf;
+				if (sjme_error_is(error = sjme_alloc_weakRef(
+					entry->nameAndType.descriptor, NULL)))
 					goto fail_initItem;
 				break;
 			

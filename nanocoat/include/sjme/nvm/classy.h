@@ -408,7 +408,7 @@ typedef struct sjme_class_poolEntryMember
 	sjme_jshort inClassIndex;
 
 	/** The class this refers to. */
-	sjme_stringPool_string inClass;
+	const sjme_class_poolEntryClass* inClass;
 	
 	/** The index where the name and type is located. */
 	sjme_jshort nameAndTypeIndex;
