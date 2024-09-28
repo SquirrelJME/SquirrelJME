@@ -391,8 +391,11 @@ typedef enum sjme_errorCode
 	/** Method flags are invalid. */
 	SJME_ERROR_INVALID_METHOD_FLAGS = -116,
 	
+	/** Method has multiple code attributes. */
+	SJME_ERROR_METHOD_MULTIPLE_CODE = -117,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -117,
+	SJME_NUM_ERROR_CODES = -118,
 } sjme_errorCode;
 
 /**

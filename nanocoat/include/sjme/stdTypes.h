@@ -511,6 +511,20 @@ typedef struct sjme_range
 } sjme_range;
 
 /**
+ * A range of short values.
+ *
+ * @since 2024/01/03
+ */
+typedef struct sjme_rangeShort
+{
+	/** Start of the range. */
+	sjme_jshort start;
+
+	/** End of the range. */
+	sjme_jshort end;
+} sjme_rangeShort;
+
+/**
  * Represents a pointer and a length.
  * 
  * @since 2024/02/04

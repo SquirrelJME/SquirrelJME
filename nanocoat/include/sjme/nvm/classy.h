@@ -73,6 +73,13 @@ typedef struct sjme_class_infoCore* sjme_class_info;
 typedef struct sjme_class_poolInfoCore sjme_class_poolInfoCore;
 
 /**
+ * A @c SJME_CLASS_POOL_TYPE_CLASS which represents a class or interface.
+ *
+ * @since 2024/01/04
+ */
+typedef struct sjme_class_poolEntryClass sjme_class_poolEntryClass;
+
+/**
  * Opaque constant pool information.
  * 
  * @since 2024/09/13
@@ -137,13 +144,13 @@ SJME_LIST_DECLARE(sjme_class_fieldInfo, 0);
 typedef struct sjme_class_exceptionHandler
 {
 	/** The range of the exception where it applies. */
-	sjme_range range;
+	sjme_rangeShort range;
 
 	/** The handler PC address. */
-	sjme_jint handlerPc;
+	sjme_jshort handlerPc;
 
 	/** The type that this catches. */
-	sjme_desc_binaryName handles;
+	sjme_class_poolEntryClass* handles;
 } sjme_class_exceptionHandler;
 
 /** A list of exceptions. */
@@ -353,12 +360,7 @@ typedef enum sjme_class_poolType
 	SJME_NUM_CLASS_POOL_TYPE
 } sjme_class_poolType;
 
-/**
- * A @c SJME_CLASS_POOL_TYPE_CLASS which represents a class or interface.
- *
- * @since 2024/01/04
- */
-typedef struct sjme_class_poolEntryClass
+struct sjme_class_poolEntryClass
 {
 	/** The type of entry that this is. */
 	sjme_class_poolType type;
@@ -368,7 +370,7 @@ typedef struct sjme_class_poolEntryClass
 	
 	/** The descriptor this represents. */
 	sjme_stringPool_string descriptor;
-} sjme_class_poolEntryClass;
+};
 
 /**
  * A @c SJME_CLASS_POOL_TYPE_DOUBLE which represents a double constant.

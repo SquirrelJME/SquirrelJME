@@ -218,12 +218,14 @@ static sjme_errorCode sjme_class_codeAttrStackMapTable(
 
 static const sjme_class_parseAttributeHandlerInfo sjme_class_codeAttr[] =
 {
+#if 0
 	{"LineNumberTable",
 		sjme_class_codeAttrLineNumberTable},
 	{"StackMap",
 		sjme_class_codeAttrStackMap},
 	{"StackMapTable",
 		sjme_class_codeAttrStackMapTable},
+#endif
 	{NULL, NULL},
 };
 
@@ -262,13 +264,152 @@ static sjme_errorCode sjme_class_methodAttrCode(
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen)
 {
+	sjme_errorCode error;
+	sjme_jshort maxStack, maxLocals, numExcept;
+	sjme_jint codeLen, i, actualCodeLen;
+	sjme_class_methodInfo methodInfo;
+	sjme_class_codeInfo result;
+	sjme_jubyte* rawCode;
+	sjme_list_sjme_class_exceptionHandler* excepts;
+	sjme_class_exceptionHandler* except;
+	
+	methodInfo = context;
 	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
 		context == NULL || attrName == NULL || attrData == NULL ||
-		attrStream == NULL)
+		attrStream == NULL || methodInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Can only have one. */
+	if (methodInfo->code != NULL)
+		return SJME_ERROR_METHOD_MULTIPLE_CODE;
+	
+	/* Make sure we can allocate this. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc(inPool,
+		sizeof(*result), (sjme_pointer*)&result)) || result == NULL)
+		goto fail_allocResult;
+	
+	/* In this method! */
+	result->inMethod = methodInfo;
+	
+	/* Read in max stack and locals. */
+	maxStack = -1;
+	if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+		attrStream, &maxStack)) || maxStack < 0)
+		goto fail_readMaxStack;
+	maxLocals = -1;
+	if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+		attrStream, &maxLocals)) || maxLocals < 0)
+		goto fail_readMaxLocals;
+	
+	/* Set. */
+	result->maxStack = maxStack;
+	result->maxLocals = maxLocals;
+	
+	/* Read in code length. */
+	codeLen = -1;
+	if (sjme_error_is(error = sjme_stream_inputReadValueJI(
+		attrStream, &codeLen)) || codeLen <= 0)
+		goto fail_readCodeLen;
+	
+	/* Allocate. */
+	rawCode = sjme_alloca(codeLen);
+	if (rawCode == NULL)
+	{
+		error = SJME_ERROR_OUT_OF_MEMORY;
+		goto fail_allocRawCode;
+	}
+	memset(rawCode, 0, codeLen);
+	
+	/* Read in code. */
+	if (sjme_error_is(error = sjme_stream_inputReadFully(
+		attrStream, &actualCodeLen,
+		rawCode, codeLen)) ||
+		actualCodeLen != codeLen)
+		goto fail_readRawCode;
+	
+	/* Read in exception table count. */
+	numExcept = -1;
+	if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+		attrStream, &numExcept)) || numExcept < 0)
+		goto fail_readNumExcept;
+	
+	/* Only if there are actual exceptions. */
+	excepts = NULL;
+	if (numExcept > 0)
+	{
+		/* Allocate base table. */
+		if (sjme_error_is(error = sjme_list_alloc(inPool,
+			numExcept, &excepts, sjme_class_exceptionHandler, 0)) ||
+			excepts == NULL)
+			goto fail_allocExcepts;
+		result->exceptions = excepts;
+		
+		/* Read in each exception. */
+		for (i = 0; i < numExcept; i++)
+		{
+			/* Which is being read into? */
+			except = &excepts->elements[i];
+			
+			/* Read in values. */
+			except->range.start = -1;
+			if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+				attrStream, &except->range.start)) ||
+				except->range.start < 0)
+				goto fail_exceptShorts;
+			except->range.end = -1;
+			if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+				attrStream, &except->range.end)) ||
+				except->range.end < 0)
+				goto fail_exceptShorts;
+			except->handlerPc = -1;
+			if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+				attrStream, &except->handlerPc)) ||
+				except->handlerPc < 0)
+				goto fail_exceptShorts;
+			
+			/* Read in handler class. */
+			except->handles = NULL;
+			if (sjme_error_is(error = sjme_class_readPoolRefIndex(
+				attrStream, inConstPool,
+				SJME_CLASS_POOL_TYPE_CLASS,
+				SJME_JNI_FALSE,
+				(sjme_class_poolEntry**)&except->handles)) ||
+				except->handles == NULL)
+				goto fail_exceptHandles;
+		}
+	}
+	
+	/* Parse attributes. */
+	if (sjme_error_is(error = sjme_class_parseAttributes(
+		inPool, attrStream, inConstPool, inStringPool,
+		sjme_class_codeAttr, result)))
+		goto fail_parseAttributes;
+	
+	/* Success! */
+	methodInfo->code = result;
+	return SJME_ERROR_NONE;
+
+fail_parseAttributes:
+fail_exceptHandles:
+fail_exceptShorts:
+fail_allocExcepts:
+	if (excepts != NULL)
+	{
+		sjme_alloc_free(excepts);
+		excepts = NULL;
+		result->exceptions = NULL;
+	}
+fail_readNumExcept:
+fail_readRawCode:
+fail_allocRawCode:
+fail_readCodeLen:
+fail_readMaxLocals:
+fail_readMaxStack:
+fail_allocResult:
+	if (result != NULL)
+		sjme_alloc_free(result);
+	return sjme_error_default(error);
 }
 
 static const sjme_class_parseAttributeHandlerInfo sjme_class_methodAttr[] =
@@ -857,6 +998,14 @@ sjme_errorCode sjme_class_parseConstantPool(
 					&entry->nameAndType.descriptorIndex)))
 					goto fail_readItem;
 				break;
+				
+				/* Constant string. */
+			case SJME_CLASS_POOL_TYPE_STRING:
+				if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+					inStream,
+					&entry->constString.valueIndex)))
+					goto fail_readItem;
+				break;
 			
 				/* UTF String. */
 			case SJME_CLASS_POOL_TYPE_UTF:
@@ -908,7 +1057,7 @@ sjme_errorCode sjme_class_parseConstantPool(
 					goto fail_initItem;
 				}
 				
-				/* Need to be a UTF string. */
+				/* Needs to be a UTF string. */
 				target = &entries->elements[entry->classRef.descriptorIndex];
 				if (target->type != SJME_CLASS_POOL_TYPE_UTF)
 				{
@@ -998,6 +1147,30 @@ sjme_errorCode sjme_class_parseConstantPool(
 				entry->nameAndType.descriptor = target->utf.utf;
 				if (sjme_error_is(error = sjme_alloc_weakRef(
 					entry->nameAndType.descriptor, NULL)))
+					goto fail_initItem;
+				break;
+				
+				/* Constant string. */
+			case SJME_CLASS_POOL_TYPE_STRING:
+				if (entry->constString.valueIndex <= 0 ||
+					entry->constString.valueIndex >= entries->length)
+				{
+					error = SJME_ERROR_INVALID_CLASS_POOL_INDEX;
+					goto fail_initItem;
+				}
+				
+				/* Needs to be a UTF string. */
+				target = &entries->elements[entry->constString.valueIndex];
+				if (target->type != SJME_CLASS_POOL_TYPE_UTF)
+				{
+					error = SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
+					goto fail_initItem;
+				}
+				
+				/* Refer to it and count up, since we are using it. */
+				entry->constString.value = target->utf.utf;
+				if (sjme_error_is(error = sjme_alloc_weakRef(
+					entry->constString.value, NULL)))
 					goto fail_initItem;
 				break;
 			
