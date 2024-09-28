@@ -13,7 +13,8 @@
 #include "sjme/util.h"
 
 /** Extra nodes to put into the traverse for overly complicated trees. */
-#define SJME_INFLATE_TRAVERSE_EXTRA ((maxCount / 2) + (maxCount / 4))
+#define SJME_INFLATE_TRAVERSE_EXTRA \
+	((maxCount >> 1) + (maxCount >> 2) + (maxCount >> 4) + (maxCount >> 8))
 
 /** Shuffled code length bits. */
 static const sjme_jubyte sjme_inflate_shuffleBits[SJME_INFLATE_NUM_CODE_LEN] =

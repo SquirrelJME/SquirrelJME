@@ -581,13 +581,13 @@ struct sjme_class_infoCore
 	sjme_stringPool_string superName;
 
 	/** The interfaces this class implements. */
-	const sjme_list_sjme_stringPool_string* interfaceNames;
+	sjme_list_sjme_stringPool_string* interfaceNames;
 
 	/** Fields within the method. */
-	const sjme_list_sjme_class_fieldInfo* fields;
+	sjme_list_sjme_class_fieldInfo* fields;
 
 	/** Methods within the class. */
-	const sjme_list_sjme_class_methodInfo* methods;
+	sjme_list_sjme_class_methodInfo* methods;
 };
 
 /**

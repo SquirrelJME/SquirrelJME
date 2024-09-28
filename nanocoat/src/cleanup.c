@@ -10,50 +10,90 @@
 #include "sjme/cleanup.h"
 #include "sjme/nvm/rom.h"
 #include "sjme/nvm/stringPool.h"
+#include "sjme/nvm/classy.h"
 
-static sjme_errorCode sjme_stringPool_close(
-	sjme_attrInNullable sjme_closeable closeable)
+/** Simple close. */
+#define SJME_CLEANUP_CLOSE(x) \
+	do { if ((x) != NULL) \
+	{ \
+		if (sjme_error_is(error = sjme_closeable_close( \
+			SJME_AS_CLOSEABLE((x))))) \
+			return sjme_error_default(error); \
+		\
+		(x) = NULL; \
+	} } while(0)
+
+#define SJME_CLEANUP_LIST(y) \
+	do { if ((y) != NULL) \
+	{ \
+		for (i = 0, n = (y)->length; i < n; i++) \
+			SJME_CLEANUP_CLOSE((y)->elements[i]); \
+		\
+		if (sjme_error_is(error = sjme_alloc_free((y)))) \
+			return sjme_error_default(error); \
+		\
+		(y) = NULL; \
+	} } while(0)
+
+static sjme_errorCode sjme_class_classInfoClose(
+	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_errorCode error;
-	sjme_stringPool stringPool;
+	sjme_class_info info;
 	sjme_jint i, n;
-	sjme_list_sjme_stringPool_string* strings;
-	sjme_stringPool_string target;
 	
-	/* Recover pool. */
-	stringPool = (sjme_stringPool)closeable;
-	if (stringPool == NULL)
+	/* Recover. */
+	info = (sjme_class_info)closeable;
+	if (info == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Loaded string cleanup. */
-	strings = stringPool->strings;
-	if (strings != NULL)
-	{
-		/* Close every contained string. */
-		for (i = 0, n = strings->length; i < n; i++)
-		{
-			/* Skip blanks. */
-			target = strings->elements[i];
-			if (target == NULL)
-				continue;
-			
-			/* Close individual string. */
-			if (sjme_error_is(error = sjme_closeable_close(
-				SJME_AS_CLOSEABLE(target))))
-				return sjme_error_default(error);
-			
-			/* Clear it. */
-			strings->elements[i] = NULL;
-		}
-		
-		/* Destroy list. */
-		if (sjme_error_is(error = sjme_alloc_free(strings)))
-			return sjme_error_default(error);
-		strings = NULL;
-	}
+	SJME_CLEANUP_CLOSE(info->pool);
+	SJME_CLEANUP_CLOSE(info->name);
+	SJME_CLEANUP_CLOSE(info->superName);
+	SJME_CLEANUP_LIST(info->interfaceNames);
+	SJME_CLEANUP_LIST(info->fields);
+	SJME_CLEANUP_LIST(info->methods);
 	
-	/* Wipe. */
-	stringPool->inPool = NULL;
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_class_fieldInfoClose(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_errorCode error;
+	sjme_class_fieldInfo info;
+	sjme_jint i, n;
+	
+	/* Recover. */
+	info = (sjme_class_fieldInfo)closeable;
+	if (info == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	SJME_CLEANUP_CLOSE(info->inClass);
+	SJME_CLEANUP_CLOSE(info->name);
+	SJME_CLEANUP_CLOSE(info->type);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_class_methodInfoClose(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_errorCode error;
+	sjme_class_methodInfo info;
+	sjme_jint i, n;
+	
+	/* Recover. */
+	info = (sjme_class_methodInfo)closeable;
+	if (info == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	SJME_CLEANUP_CLOSE(info->inClass);
+	SJME_CLEANUP_CLOSE(info->name);
+	SJME_CLEANUP_CLOSE(info->type);
+	SJME_CLEANUP_CLOSE(info->code);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -111,6 +151,55 @@ static sjme_errorCode sjme_rom_suiteClose(
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+
+static sjme_errorCode sjme_stringPool_close(
+	sjme_attrInNullable sjme_closeable closeable)
+{
+	sjme_errorCode error;
+	sjme_stringPool stringPool;
+	sjme_jint i, n;
+	sjme_list_sjme_stringPool_string* strings;
+	sjme_stringPool_string target;
+	
+	/* Recover pool. */
+	stringPool = (sjme_stringPool)closeable;
+	if (stringPool == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Loaded string cleanup. */
+	strings = stringPool->strings;
+	if (strings != NULL)
+	{
+		/* Close every contained string. */
+		for (i = 0, n = strings->length; i < n; i++)
+		{
+			/* Skip blanks. */
+			target = strings->elements[i];
+			if (target == NULL)
+				continue;
+			
+			/* Close individual string. */
+			if (sjme_error_is(error = sjme_closeable_close(
+				SJME_AS_CLOSEABLE(target))))
+				return sjme_error_default(error);
+			
+			/* Clear it. */
+			strings->elements[i] = NULL;
+		}
+		
+		/* Destroy list. */
+		if (sjme_error_is(error = sjme_alloc_free(strings)))
+			return sjme_error_default(error);
+		strings = NULL;
+	}
+	
+	/* Wipe. */
+	stringPool->inPool = NULL;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 
 /* ------------------------------------------------------------------------ */
 
@@ -174,6 +263,18 @@ sjme_errorCode sjme_nvm_initCommon(
 	handler = NULL;
 	switch (inType)
 	{
+		case SJME_NVM_STRUCT_CLASS_INFO:
+			handler = sjme_class_classInfoClose;
+			break;
+		
+		case SJME_NVM_STRUCT_FIELD_INFO:
+			handler = sjme_class_fieldInfoClose;
+			break;
+		
+		case SJME_NVM_STRUCT_METHOD_INFO:
+			handler = sjme_class_methodInfoClose;
+			break;
+		
 		case SJME_NVM_STRUCT_ROM_LIBRARY:
 			handler = sjme_rom_libraryClose;
 			break;
