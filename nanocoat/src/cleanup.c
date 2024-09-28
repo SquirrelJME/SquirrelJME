@@ -200,66 +200,26 @@ static sjme_errorCode sjme_stringPool_close(
 	return SJME_ERROR_NONE;
 }
 
-
 /* ------------------------------------------------------------------------ */
 
-sjme_errorCode sjme_nvm_enqueueHandler(
-	sjme_attrInNotNull sjme_alloc_weak weak,
-	sjme_attrInNullable sjme_pointer data,
-	sjme_attrInValue sjme_jboolean isBlockFree)
-{
-	sjme_nvm_common common;
-	
-	/* Recover common. */
-	common = (sjme_nvm_common)data;
-	
-	/* Do nothing if this was already cleared. */
-	if (common == NULL)
-		return SJME_ERROR_NONE;
-	
-	/* Specific handling depends on the type. */
-	switch (common->type)
-	{
-			/* Forward to enqueue handler for closeable, since we do */
-			/* not have anything special to do. */
-		default:
-			return sjme_closeable_autoEnqueue(weak, data, isBlockFree);
-	}
-}
-
-sjme_errorCode sjme_nvm_initCommon(
-	sjme_attrInNotNull sjme_nvm_common inCommon,
-	sjme_attrInValue sjme_nvm_structType inType)
+sjme_errorCode sjme_nvm_alloc(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInValue sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_nvm_common* outCommon)
 {
 	sjme_errorCode error;
-	sjme_alloc_weak weak;
 	sjme_closeable_closeHandlerFunc handler;
+	sjme_nvm_common result;
 	
-	if (inCommon == NULL)
+	if (inPool == NULL || outCommon == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inType <= SJME_NVM_STRUCT_UNKNOWN ||
 		inType >= SJME_NVM_NUM_STRUCT)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	/* Must be a weak pointer. */
-	weak = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakRefGet(inCommon,
-		&weak)) || weak == NULL)
-		return sjme_error_default(error);
-	
-	/* Setup correct enqueue handler. */
-	if (weak->enqueue != NULL &&
-		weak->enqueue != sjme_nvm_enqueueHandler)
-		return SJME_ERROR_ILLEGAL_STATE;
-	 
-	weak->enqueue = sjme_nvm_enqueueHandler;
-	weak->enqueueData = inCommon;
-	
-	/* Set type information. */
-	inCommon->type = inType;
-	
-	/* Which handle is used? */
+	/* Which handler is used? */
 	handler = NULL;
 	switch (inType)
 	{
@@ -286,13 +246,24 @@ sjme_errorCode sjme_nvm_initCommon(
 		case SJME_NVM_STRUCT_STRING_POOL:
 			handler = sjme_stringPool_close;
 			break;
+		
+		default:
+			sjme_todo("Impl? %d", inType);
+			return sjme_error_notImplemented(0);
 	}
 	
-	/* Set handler. */
-	inCommon->closeable.closeHandler = handler;
-	inCommon->closeable.refCounting = SJME_JNI_TRUE;
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+		allocSize, handler, SJME_JNI_TRUE,
+		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
+		return sjme_error_default(error);
+	
+	/* Set fields. */
+	result->type = inType;
 	
 	/* Success! */
+	*outCommon = result;
 	return SJME_ERROR_NONE;
 }
 

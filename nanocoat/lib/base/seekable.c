@@ -54,14 +54,14 @@ sjme_errorCode sjme_seekable_open(
 	
 	/* Setup result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
-		sizeof(*result), sjme_closeable_autoEnqueue, NULL,
-		(void**)&result, NULL)) || result == NULL)
+	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+		sizeof(*result), sjme_seekable_closeHandler,
+		SJME_JNI_FALSE,
+		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
 	
 	/* Copy in details. */
 	result->inPool = inPool;
-	result->closable.closeHandler = sjme_seekable_closeHandler;
 	result->functions = inFunctions;
 	if (copyFrontEnd != NULL)
 		memmove(&result->frontEnd,

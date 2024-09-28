@@ -66,7 +66,7 @@ static sjme_errorCode sjme_closeable_closeCommon(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_closeable_autoEnqueue(
+static sjme_errorCode sjme_closeable_autoEnqueue(
 	sjme_attrInNotNull sjme_alloc_weak weak,
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInValue sjme_jboolean isBlockFree)
@@ -91,11 +91,33 @@ sjme_errorCode sjme_closeable_autoEnqueue(
 		SJME_JNI_FALSE, SJME_JNI_TRUE);
 }
 
-sjme_errorCode sjme_closeable_closeNoUnRef(
-	sjme_attrInNotNull sjme_closeable closeable)
+sjme_errorCode sjme_closeable_alloc(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInNotNull sjme_closeable_closeHandlerFunc handler,
+	sjme_attrInValue sjme_jboolean refCounting,
+	sjme_attrOutNotNull sjme_closeable* outCloseable)
 {
-	return sjme_closeable_closeCommon(closeable,
-		SJME_JNI_FALSE, SJME_JNI_FALSE);
+	sjme_errorCode error;
+	sjme_closeable result;
+	
+	if (inPool == NULL || handler == NULL || outCloseable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Attempt allocation. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
+		allocSize, sjme_closeable_autoEnqueue, NULL,
+		(sjme_pointer*)&result, NULL)) || result == NULL)
+		return sjme_error_default(error);
+	
+	/* Set fields. */
+	result->refCounting = refCounting;
+	result->closeHandler = handler;
+	
+	/* Success! */
+	*outCloseable = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_closeable_close(

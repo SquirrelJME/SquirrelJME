@@ -38,6 +38,9 @@ static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 	sjme_jint inLen, sjme_lpcstr finalEnd, sjme_jint numSlash,
 	sjme_desc_binaryName* result)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_errorCode error;
 	sjme_lpcstr at, end, base, nextAt;
 	sjme_jint c, identLen, identAt;
@@ -50,7 +53,7 @@ static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 	if (result != NULL)
 	{
 		/* Fill in basic details. */
-		result->whole.pointer = inStr;
+		result->whole->pointer = inStr;
 		result->whole.length = finalEnd - inStr;
 		result->hash = sjme_string_hashN(result->whole.pointer,
 			result->whole.length);
@@ -129,11 +132,15 @@ static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+#endif
 }
 
 static sjme_errorCode sjme_desc_interpretBinaryNameNumSlash(sjme_lpcstr inStr,
 	sjme_jint inLen, sjme_jint* outNumSlash, sjme_lpcstr* finalEnd)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_jint c, numSlash;
 	sjme_lpcstr at, end;
 	
@@ -161,11 +168,15 @@ static sjme_errorCode sjme_desc_interpretBinaryNameNumSlash(sjme_lpcstr inStr,
 	/* Success! */
 	*outNumSlash = numSlash;
 	return SJME_ERROR_NONE;
+#endif
 }
 
 static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
 	sjme_jint inLen, sjme_jint* outAllocLen)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_errorCode error;
 	sjme_jint typeCode, allocLen, subLen;
 	sjme_lpcstr next;
@@ -218,12 +229,16 @@ static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
 	/* Success! */
 	*outAllocLen = allocLen;
 	return SJME_ERROR_NONE;
+#endif
 }
 
 static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 	sjme_jint inLen, sjme_desc_fieldType* result, sjme_jboolean continueField,
 	sjme_lpcstr *fieldEnd)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_errorCode error;
 	sjme_jint typeCode, compAt, numSlash, strLen, subAt, c;
 	sjme_jboolean isArray, isObject, isFinal, arrayFragment;
@@ -442,12 +457,16 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_jint sjme_desc_compareBinaryName(
-	sjme_attrInNullable const sjme_desc_binaryName* aName,
-	sjme_attrInNullable const sjme_desc_binaryName* bName)
+	sjme_attrInNullable const sjme_desc_binaryName aName,
+	sjme_attrInNullable const sjme_desc_binaryName bName)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Compare null. */
 	if (aName == NULL || bName == NULL)
 		return sjme_compare_null(aName, bName);
@@ -456,12 +475,16 @@ sjme_jint sjme_desc_compareBinaryName(
 	return sjme_string_compareN(
 		aName->whole.pointer, aName->whole.length,
 		bName->whole.pointer, bName->whole.length);
+#endif
 }
 
 sjme_jint sjme_desc_compareBinaryNameP(
-	sjme_attrInNullable const sjme_pointerLen* aPointerLen,
-	sjme_attrInNullable const sjme_desc_binaryName* bName)
+	sjme_attrInNullable sjme_pointerLen* aPointerLen,
+	sjme_attrInNullable sjme_desc_binaryName bName)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_jboolean aNull;
 	
 	/* Compare null. */
@@ -473,12 +496,16 @@ sjme_jint sjme_desc_compareBinaryNameP(
 	return sjme_string_compareN(
 		aPointerLen->pointer, aPointerLen->length,
 		bName->whole.pointer, bName->whole.length);
+#endif
 }
 
 sjme_jint sjme_desc_compareBinaryNamePS(
-	sjme_attrInNullable const sjme_pointerLen* aPointerLen,
+	sjme_attrInNullable sjme_pointerLen* aPointerLen,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_jboolean aNull;
 	
 	/* Compare null. */
@@ -490,12 +517,16 @@ sjme_jint sjme_desc_compareBinaryNamePS(
 	return sjme_string_compareN(
 		aPointerLen->pointer, aPointerLen->length,
 		bString, strlen(bString));
+#endif
 }
 
 sjme_jint sjme_desc_compareBinaryNameS(
-	sjme_attrInNullable const sjme_desc_binaryName* aName,
+	sjme_attrInNullable sjme_desc_binaryName aName,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_jint strLen;
 	
 	/* Compare null. */
@@ -509,12 +540,16 @@ sjme_jint sjme_desc_compareBinaryNameS(
 	
 	/* Compare actual values. */
 	return strncmp(aName->whole.pointer, bString, strLen);
+#endif
 }
 
 sjme_jint sjme_desc_compareClass(
-	sjme_attrInNullable const sjme_desc_className* aClass,
-	sjme_attrInNullable const sjme_desc_className* bClass)
+	sjme_attrInNullable sjme_desc_className aClass,
+	sjme_attrInNullable sjme_desc_className bClass)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Compare null. */
 	if (aClass == NULL || bClass == NULL)
 		return sjme_compare_null(aClass, bClass);
@@ -523,12 +558,16 @@ sjme_jint sjme_desc_compareClass(
 	return sjme_string_compareN(
 		aClass->whole.pointer, aClass->whole.length,
 		bClass->whole.pointer, bClass->whole.length);
+#endif
 }
 
 sjme_jint sjme_desc_compareClassS(
-	sjme_attrInNullable const sjme_desc_className* aClass,
+	sjme_attrInNullable  sjme_desc_className aClass,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Compare null. */
 	if (aClass == NULL || bString == NULL)
 		return sjme_compare_null(aClass, bString);
@@ -537,12 +576,16 @@ sjme_jint sjme_desc_compareClassS(
 	return sjme_string_compareN(
 		aClass->whole.pointer, aClass->whole.length,
 		bString, strlen(bString));
+#endif
 }
 
 sjme_jint sjme_desc_compareField(
-	sjme_attrInNullable const sjme_desc_fieldType* aField,
-	sjme_attrInNullable const sjme_desc_fieldType* bField)
+	sjme_attrInNullable sjme_desc_fieldType aField,
+	sjme_attrInNullable sjme_desc_fieldType bField)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Compare null. */
 	if (aField == NULL || bField == NULL)
 		return sjme_compare_null(aField, bField);
@@ -551,12 +594,16 @@ sjme_jint sjme_desc_compareField(
 	return sjme_string_compareN(
 		aField->whole.pointer, aField->whole.length,
 		bField->whole.pointer, bField->whole.length);
+#endif
 }
 
 sjme_jint sjme_desc_compareFieldC(
-	sjme_attrInNullable const sjme_desc_fieldTypeComponent* aFieldComponent,
-	sjme_attrInNullable const sjme_desc_fieldType* bField)
+	sjme_attrInNullable sjme_desc_fieldTypeComponent aFieldComponent,
+	sjme_attrInNullable sjme_desc_fieldType bField)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Compare null. */
 	if (aFieldComponent == NULL || bField == NULL)
 		return sjme_compare_null(aFieldComponent, bField);
@@ -566,12 +613,16 @@ sjme_jint sjme_desc_compareFieldC(
 		aFieldComponent->fragment.pointer,
 			aFieldComponent->fragment.length,
 		bField->whole.pointer, bField->whole.length);
+#endif
 }
 
 sjme_jint sjme_desc_compareFieldS(
-	sjme_attrInNullable const sjme_desc_fieldType* aField,
+	sjme_attrInNullable sjme_desc_fieldType aField,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Compare null. */
 	if (aField == NULL || bString == NULL)
 		return sjme_compare_null(aField, bString);
@@ -580,12 +631,16 @@ sjme_jint sjme_desc_compareFieldS(
 	return sjme_string_compareN(
 		aField->whole.pointer, aField->whole.length,
 		bString, strlen(bString));
+#endif
 }
 
 sjme_jint sjme_desc_compareIdentifier(
-	sjme_attrInNullable const sjme_desc_identifier* aIdent,
-	sjme_attrInNullable const sjme_desc_identifier* bIdent)
+	sjme_attrInNullable sjme_desc_identifier aIdent,
+	sjme_attrInNullable sjme_desc_identifier bIdent)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Compare null. */
 	if (aIdent == NULL || bIdent == NULL)
 		return sjme_compare_null(aIdent, bIdent);
@@ -594,12 +649,16 @@ sjme_jint sjme_desc_compareIdentifier(
 	return sjme_string_compareN(
 		aIdent->whole.pointer, aIdent->whole.length,
 		bIdent->whole.pointer, bIdent->whole.length);
+#endif
 }
 
 sjme_jint sjme_desc_compareIdentifierS(
-	sjme_attrInNullable const sjme_desc_identifier* aIdent,
+	sjme_attrInNullable sjme_desc_identifier aIdent,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_jint strLen;
 	
 	/* Compare null. */
@@ -610,12 +669,16 @@ sjme_jint sjme_desc_compareIdentifierS(
 	return sjme_string_compareN(
 		aIdent->whole.pointer, aIdent->whole.length,
 		bString, strlen(bString));
+#endif
 }
 
 sjme_jint sjme_desc_compareMethod(
-	sjme_attrInNullable const sjme_desc_methodType* aMethod,
-	sjme_attrInNullable const sjme_desc_methodType* bMethod)
+	sjme_attrInNullable sjme_desc_methodType aMethod,
+	sjme_attrInNullable sjme_desc_methodType bMethod)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Compare null. */
 	if (aMethod == NULL || bMethod == NULL)
 		return sjme_compare_null(aMethod, bMethod);
@@ -624,12 +687,16 @@ sjme_jint sjme_desc_compareMethod(
 	return sjme_string_compareN(
 		aMethod->whole.pointer, aMethod->whole.length,
 		bMethod->whole.pointer, bMethod->whole.length);
+#endif
 }
 
 sjme_jint sjme_desc_compareMethodS(
-	sjme_attrInNullable const sjme_desc_methodType* aMethod,
+	sjme_attrInNullable sjme_desc_methodType aMethod,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Compare null. */
 	if (aMethod == NULL || bString == NULL)
 		return sjme_compare_null(aMethod, bString);
@@ -638,14 +705,18 @@ sjme_jint sjme_desc_compareMethodS(
 	return sjme_string_compareN(
 		aMethod->whole.pointer, aMethod->whole.length,
 		bString, strlen(bString));
+#endif
 }
 
 sjme_errorCode sjme_desc_interpretBinaryName(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_binaryName** outName,
+	sjme_attrOutNotNull sjme_desc_binaryName* outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_errorCode error;
 	sjme_lpcstr finalEnd;
 	sjme_desc_binaryName* result;
@@ -687,14 +758,18 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 	return sjme_alloc_copyWeak(inPool, resultLen,
 		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
 		(void**)outName, (void*)result, NULL);
+#endif
 }
 
 sjme_errorCode sjme_desc_interpretClassName(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_className** outName,
+	sjme_attrOutNotNull sjme_desc_className* outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_errorCode error;
 	sjme_jint c, numSlash, allocLen, strLen;
 	sjme_desc_className* result;
@@ -785,14 +860,18 @@ sjme_errorCode sjme_desc_interpretClassName(
 	return sjme_alloc_copyWeak(inPool, allocLen,
 		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
 		(void**)outName, (void*)result, NULL);
+#endif
 }
 
 sjme_errorCode sjme_desc_interpretFieldType(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_fieldType** outType,
+	sjme_attrOutNotNull sjme_desc_fieldType* outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_errorCode error;
 	sjme_jint strLen, typeCode, allocLen;
 	sjme_desc_fieldType* result;
@@ -835,6 +914,7 @@ sjme_errorCode sjme_desc_interpretFieldType(
 	return sjme_alloc_copyWeak(inPool, allocLen,
 		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
 		(void**)outType, (void*)result, NULL);
+#endif
 }
 
 sjme_errorCode sjme_desc_interpretIdentifier(
@@ -842,6 +922,9 @@ sjme_errorCode sjme_desc_interpretIdentifier(
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_lpcstr at, end;
 	sjme_jint c;
 	
@@ -878,14 +961,18 @@ sjme_errorCode sjme_desc_interpretIdentifier(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_errorCode sjme_desc_interpretMethodType(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_methodType** outType,
+	sjme_attrOutNotNull sjme_desc_methodType* outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_errorCode error;
 	sjme_jint c, fragmentLen, allocLen, fieldCount, fieldAt;
 	sjme_lpcstr strAt, strBase;
@@ -1046,4 +1133,5 @@ sjme_errorCode sjme_desc_interpretMethodType(
 	return sjme_alloc_copyWeak(inPool, allocLen,
 		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
 		(void**)outType, (void*)result, NULL);
+#endif
 }

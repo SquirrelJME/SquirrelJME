@@ -26,7 +26,7 @@
  */
 SJME_TEST_DECLARE(testDescBinaryName)
 {
-	sjme_desc_binaryName* result;
+	sjme_desc_binaryName result;
 	sjme_lpcstr string;
 	sjme_jint strLen, strHash;
 	
@@ -50,11 +50,11 @@ SJME_TEST_DECLARE(testDescBinaryName)
 		"Pointer incorrect?");
 	
 	/* Check that everything is valid. */
-	sjme_unit_equalI(test, result->identifiers.length, 1,
+	sjme_unit_equalI(test, result->identifiers->length, 1,
 		"Incorrect number of elements?");
 	sjme_unit_equalI(test,
 		0, sjme_desc_compareIdentifierS(
-			&result->identifiers.elements[0], "Squeak"),
+			result->identifiers->elements[0], "Squeak"),
 		"Incorrect identifier 1?");
 	
 	/* Setup package. */
@@ -77,22 +77,22 @@ SJME_TEST_DECLARE(testDescBinaryName)
 		"Pointer incorrect?");
 	
 	/* Test everything. */
-	sjme_unit_equalI(test, result->identifiers.length, 3,
+	sjme_unit_equalI(test, result->identifiers->length, 3,
 		"Incorrect number of elements?");
 		
 	sjme_unit_equalI(test,
 		0, sjme_desc_compareIdentifierS(
-			&result->identifiers.elements[0], "Squeak"),
+			result->identifiers->elements[0], "Squeak"),
 		"Incorrect identifier 1?");
 		
 	sjme_unit_equalI(test,
 		0, sjme_desc_compareIdentifierS(
-			&result->identifiers.elements[1], "In"),
+			result->identifiers->elements[1], "In"),
 		"Incorrect identifier 2?");
 		
 	sjme_unit_equalI(test,
 		0, sjme_desc_compareIdentifierS(
-			&result->identifiers.elements[2], "Box"),
+			result->identifiers->elements[2], "Box"),
 		"Incorrect identifier 3?");
 	
 	/* Check invalid binary names. */

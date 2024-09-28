@@ -160,23 +160,17 @@ sjme_errorCode sjme_nvm_boot(
 
 	/* Allocate resultant state. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(reservedPool,
-		sizeof(*result), NULL, NULL,
-		(sjme_pointer*)&result, NULL)) || result == NULL)
+	if (sjme_error_is(error = sjme_nvm_alloc(reservedPool,
+		sizeof(*result), SJME_NVM_STRUCT_STATE,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_resultAlloc;
 	
-	/* Initialize. */
-	if (sjme_error_is(error = sjme_nvm_initCommon(
-		SJME_AS_NVM_COMMON(result), 
-		SJME_NVM_STRUCT_STATE)))
-		goto fail_resultInit;
-
 	/* Make a defensive copy of the boot parameters. */
-	if (sjme_error_is(error = sjme_alloc_copyWeak(reservedPool,
-		sizeof(sjme_nvm_bootParam),
-		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
-		(sjme_pointer*)&result->bootParamCopy, param, NULL)) ||
-		result == NULL)
+	result->bootParamCopy = NULL;
+	if (sjme_error_is(error = sjme_alloc_copy(reservedPool,
+		sizeof(*result->bootParamCopy),
+		(sjme_pointer*)&result->bootParamCopy,
+		(sjme_pointer)&param)) || result->bootParamCopy == NULL)
 		goto fail_bootParamCopy;
 
 	/* Can only use one or the other to get the class path. */

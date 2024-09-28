@@ -150,6 +150,9 @@ typedef sjme_nvm_commonBase* sjme_nvm_common;
 /** Cast to common type. */
 #define SJME_AS_NVM_COMMON(x) ((sjme_nvm_common)(x))
 
+/** Cast to common pointer type. */
+#define SJME_AS_NVM_COMMONP(x) ((sjme_nvm_common*)(x))
+
 /**
  * Represents the virtual machine state.
  * 

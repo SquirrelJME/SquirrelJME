@@ -27,14 +27,11 @@ sjme_errorCode testCloseable_new(
 	
 	/* Allocate. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(
-		inPool, sizeof(*result), sjme_closeable_autoEnqueue, NULL,
-		(sjme_pointer*)&result, NULL)) || result == NULL)
+	if (sjme_error_is(error = sjme_closeable_alloc(
+		inPool, sizeof(*result),
+		handlerFunc, isRefCounted,
+		&result)) || result == NULL)
 		return sjme_error_default(error);
-	
-	/* Initialize fields. */
-	result->closeHandler = handlerFunc;
-	result->refCounting = isRefCounted;
 	
 	/* Success! */
 	*outCloseable = result;

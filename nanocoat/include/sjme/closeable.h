@@ -50,6 +50,9 @@ typedef sjme_closeableBase* sjme_closeable;
 /** Cast to a closeable. */
 #define SJME_AS_CLOSEABLE(x) ((sjme_closeable)(x))
 
+/** Cast to a closeable pointer. */
+#define SJME_AS_CLOSEABLEP(x) ((sjme_closeable*)(x))
+
 /**
  * This function is called when a closeable has been closed.
  * 
@@ -73,29 +76,23 @@ struct sjme_closeableBase
 };
 
 /**
- * This is a method that can be used for weak reference enqueue which will
- * call the close method.
+ * Allocates a new closeable.
  * 
- * @param weak The weak reference being destroyed.
- * @param data The data to pass.
- * @param isBlockFree Is this from a block free?
- * @return Any resultant error, if any.
- * @since 2024/08/12 
+ * @param inPool The pool to allocate within.
+ * @param allocSize The allocation size.
+ * @param handler The close handler to use.
+ * @param refCounting Is reference counting used? If not then this is
+ * a one shot close.
+ * @param outCloseable The resultant closeable. 
+ * @return On any resultant error, if any.
+ * @since 2024/09/28
  */
-sjme_errorCode sjme_closeable_autoEnqueue(
-	sjme_attrInNotNull sjme_alloc_weak weak,
-	sjme_attrInNullable sjme_pointer data,
-	sjme_attrInValue sjme_jboolean isBlockFree);
-
-/**
- * Closes the given closeable.
- * 
- * @param closeable The closeable to close. 
- * @return Any resultant error, if any.
- * @since 2024/08/11
- */
-sjme_errorCode sjme_closeable_closeNoUnRef(
-	sjme_attrInNotNull sjme_closeable closeable);
+sjme_errorCode sjme_closeable_alloc(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInNotNull sjme_closeable_closeHandlerFunc handler,
+	sjme_attrInValue sjme_jboolean refCounting,
+	sjme_attrOutNotNull sjme_closeable* outCloseable);
 
 /**
  * Closes the given closeable and un-references the weak reference.

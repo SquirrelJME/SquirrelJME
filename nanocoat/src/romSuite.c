@@ -201,16 +201,10 @@ sjme_errorCode sjme_rom_suiteNew(
 		
 	/* Allocate resultant suite. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(pool,
-		sizeof(*result), NULL, NULL,
-		(void**)&result, NULL)) || result == NULL)
+	if (sjme_error_is(error = sjme_nvm_alloc(pool,
+		sizeof(*result), SJME_NVM_STRUCT_ROM_SUITE,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_alloc;
-	
-	/* Common initialize. */
-	if (sjme_error_is(error = sjme_nvm_initCommon(
-		SJME_AS_NVM_COMMON(result),
-		SJME_NVM_STRUCT_ROM_SUITE)))
-		goto fail_commonInit;
 	
 	/* Setup result. */
 	result->cache.common.allocPool = pool;
@@ -229,9 +223,7 @@ sjme_errorCode sjme_rom_suiteNew(
 	*outSuite = result;
 	return SJME_ERROR_NONE;
 
-fail_refUp:
 fail_init:
-fail_commonInit:
 fail_alloc:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));

@@ -689,16 +689,10 @@ sjme_errorCode sjme_class_parse(
 	
 	/* Make sure we can actually allocate the resultant class. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
-		sizeof(*result), NULL, NULL,
-		(sjme_pointer*)&result, NULL)) || result == NULL)
+	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+		sizeof(*result), SJME_NVM_STRUCT_CLASS_INFO,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
-	
-	/* Initialize. */
-	if (sjme_error_is(error = sjme_nvm_initCommon(
-		SJME_AS_NVM_COMMON(result),
-		SJME_NVM_STRUCT_CLASS_INFO)))
-		goto fail_initResult;
 	
 	/* Read in magic number. */
 	magic = INT32_MAX;
@@ -1016,15 +1010,10 @@ sjme_errorCode sjme_class_parseConstantPool(
 	
 	/* Make sure we can actually allocate this. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
-		sizeof(*result), NULL, NULL,
-		(sjme_pointer*)&result, NULL)) || result == NULL)
+	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+		sizeof(*result), SJME_NVM_STRUCT_POOL,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
-	
-	/* Initialize it. */
-	if (sjme_error_is(error = sjme_nvm_initCommon(
-		SJME_AS_NVM_COMMON(result), SJME_NVM_STRUCT_POOL)))
-		goto fail_initCommon;
 	
 	/* Read in pool count. */
 	count = -1;
@@ -1365,16 +1354,10 @@ sjme_errorCode sjme_class_parseField(
 	
 	/* Ensure we can allocate the result first. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
-		sizeof(*result), NULL, NULL,
-		(sjme_pointer*)&result, NULL)) || result == NULL)
+	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+		sizeof(*result), SJME_NVM_STRUCT_FIELD_INFO,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
-	
-	/* Initialize it. */
-	if (sjme_error_is(error = sjme_nvm_initCommon(
-		SJME_AS_NVM_COMMON(result),
-		SJME_NVM_STRUCT_FIELD_INFO)))
-		goto fail_initResult;
 	
 	/* Read in flags. */
 	if (sjme_error_is(error = sjme_class_fieldFlagsParse(
@@ -1450,16 +1433,10 @@ sjme_errorCode sjme_class_parseMethod(
 	
 	/* Ensure we can allocate the result first. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
-		sizeof(*result), NULL, NULL,
-		(sjme_pointer*)&result, NULL)) || result == NULL)
+	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+		sizeof(*result), SJME_NVM_STRUCT_METHOD_INFO,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
-	
-	/* Initialize it. */
-	if (sjme_error_is(error = sjme_nvm_initCommon(
-		SJME_AS_NVM_COMMON(result),
-		SJME_NVM_STRUCT_METHOD_INFO)))
-		goto fail_initResult;
 	
 	/* Read in flags. */
 	if (sjme_error_is(error = sjme_class_methodFlagsParse(

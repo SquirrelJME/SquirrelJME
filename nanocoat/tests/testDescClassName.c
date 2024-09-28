@@ -24,7 +24,7 @@
  */
 SJME_TEST_DECLARE(testDescClassName)
 {
-	sjme_desc_className* result;
+	sjme_desc_className result;
 	sjme_lpcstr string;
 	sjme_jint strLen, strHash;
 	

@@ -109,15 +109,15 @@ sjme_errorCode sjme_stream_inputOpen(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
-		sizeof(*result), sjme_closeable_autoEnqueue, NULL,
-		(void**)&result, NULL)))
+	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+		sizeof(*result), sjme_stream_inputClose,
+		SJME_JNI_FALSE,
+		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
 	
 	/* Setup details. */
 	result->implState.inPool = inPool;
 	result->functions = inFunctions;
-	result->closable.closeHandler = sjme_stream_inputClose;
 	
 	/* Copy front end? */
 	if (copyFrontEnd != NULL)
@@ -451,15 +451,15 @@ sjme_errorCode sjme_stream_outputOpen(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
-		sizeof(*result), sjme_closeable_autoEnqueue, NULL,
-		(void**)&result, NULL)))
+	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+		sizeof(*result), sjme_stream_outputClose,
+		SJME_JNI_FALSE,
+		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
 	
 	/* Setup details. */
 	result->implState.inPool = inPool;
 	result->functions = inFunctions;
-	result->closable.closeHandler = sjme_stream_outputClose;
 	
 	/* Copy front end? */
 	if (copyFrontEnd != NULL)

@@ -63,16 +63,10 @@ sjme_errorCode sjme_rom_libraryNew(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(pool,
-		sizeof(*result), NULL, NULL,
-		(void**)&result, NULL)) || result == NULL)
+	if (sjme_error_is(error = sjme_nvm_alloc(pool,
+		sizeof(*result), SJME_NVM_STRUCT_ROM_LIBRARY,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_alloc;
-	
-	/* Initialize. */
-	if (sjme_error_is(error = sjme_nvm_initCommon(
-		SJME_AS_NVM_COMMON(result),
-		SJME_NVM_STRUCT_ROM_LIBRARY)))
-		goto fail_commonInit;
 	
 	/* Setup result. */
 	result->cache.common.allocPool = pool;

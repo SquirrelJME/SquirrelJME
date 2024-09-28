@@ -35,7 +35,16 @@ extern "C" {
  * 
  * @since 2024/02/04
  */
-typedef struct sjme_desc_identifier
+typedef struct sjme_desc_identifierBase sjme_desc_identifierBase;
+
+/**
+ * Represents a single interpreted identifier.
+ * 
+ * @since 2024/09/28
+ */
+typedef sjme_desc_identifierBase* sjme_desc_identifier;
+
+struct sjme_desc_identifierBase
 {
 	/** Common data. */
 	sjme_nvm_commonBase common;
@@ -45,7 +54,7 @@ typedef struct sjme_desc_identifier
 	
 	/** The pointer and length to the identifier. */
 	sjme_pointerLen whole;
-} sjme_desc_identifier;
+};
 
 /** List of identifiers. */
 SJME_LIST_DECLARE(sjme_desc_identifier, 0);
@@ -55,8 +64,20 @@ SJME_LIST_DECLARE(sjme_desc_identifier, 0);
  * 
  * @since 2024/02/04
  */
-typedef struct sjme_desc_binaryName
+typedef struct sjme_desc_binaryNameBase sjme_desc_binaryNameBase;
+
+/**
+ * Represents an interpretation of a binary name.
+ * 
+ * @since 2024/09/28
+ */
+typedef sjme_desc_binaryNameBase* sjme_desc_binaryName;
+
+struct sjme_desc_binaryNameBase
 {
+	/** Common data. */
+	sjme_nvm_commonBase common;
+	
 	/** The hash of the binary name. */
 	sjme_jint hash;
 	
@@ -64,33 +85,39 @@ typedef struct sjme_desc_binaryName
 	sjme_pointerLen whole;
 	
 	/** The identifiers that make up the binary name. */
-	sjme_list_sjme_desc_identifier identifiers;
-} sjme_desc_binaryName;
-
-/**
- * Determines the size of a binary name.
- * 
- * @param numIdents The number of used identifiers.
- * @return The resultant size.
- * @since 2024/02/21
- */
-#define SJME_SIZEOF_DESC_BINARY_NAME(numIdents) \
-	sizeof(sjme_desc_binaryName) + \
-		SJME_SIZEOF_LIST(sjme_desc_identifier, 0, (numIdents))
+	sjme_list_sjme_desc_identifier* identifiers;
+};
 
 /**
  * Represents an interpretation of a field type.
  * 
  * @since 2024/02/04
  */
-typedef struct sjme_desc_fieldType sjme_desc_fieldType;
+typedef struct sjme_desc_fieldTypeBase sjme_desc_fieldTypeBase;
+
+/**
+ * Represents an interpretation of a field type.
+ * 
+ * @since 2024/09/28
+ */
+typedef sjme_desc_fieldTypeBase* sjme_desc_fieldType;
 
 /**
  * Represents a component within the field type.
  * 
  * @since 2024/02/22
  */
-typedef struct sjme_desc_fieldTypeComponent
+typedef struct sjme_desc_fieldTypeComponentBase
+	sjme_desc_fieldTypeComponentBase;
+
+/**
+ * Represents a component within the field type.
+ * 
+ * @since 2024/02/22
+ */
+typedef sjme_desc_fieldTypeComponentBase* sjme_desc_fieldTypeComponent;
+ 
+struct sjme_desc_fieldTypeComponentBase
 {
 	/** The pointer area for this specific component. */
 	sjme_pointerLen fragment;
@@ -109,12 +136,12 @@ typedef struct sjme_desc_fieldTypeComponent
 		
 	/** Binary name of the component, if this is a binary name. */
 	sjme_pointerLen binaryName;
-} sjme_desc_fieldTypeComponent;
+};
 
 /** Field component list. */
 SJME_LIST_DECLARE(sjme_desc_fieldTypeComponent, 0);
 
-struct sjme_desc_fieldType
+struct sjme_desc_fieldTypeBase
 {
 	/** Common data. */
 	sjme_nvm_commonBase common;
@@ -129,7 +156,7 @@ struct sjme_desc_fieldType
 	sjme_jint numDims;
 	
 	/** The components of this field, always @c numDims+1 . */
-	sjme_desc_fieldTypeComponent components[sjme_flexibleArrayCount];
+	sjme_desc_fieldTypeComponent* components;
 };
 
 /** A list of interpreted field descriptors. */
@@ -144,7 +171,17 @@ SJME_LIST_DECLARE(sjme_desc_fieldType, 1);
  * 
  * @since 2024/02/04
  */
-typedef struct sjme_desc_className
+typedef struct sjme_desc_classNameBase sjme_desc_classNameBase;
+
+/**
+ * An interpreted class descriptor which is either a field if this is an
+ * array, or otherwise a binary name.
+ * 
+ * @since 2024/09/28
+ */
+typedef sjme_desc_classNameBase* sjme_desc_className;
+
+struct sjme_desc_classNameBase
 {
 	/** Common data. */
 	sjme_nvm_commonBase common;
@@ -167,14 +204,23 @@ typedef struct sjme_desc_className
 		/** Field type descriptor. */
 		sjme_desc_fieldType field; 
 	} descriptor;
-} sjme_desc_className;
+};
 
 /**
  * Interpretation of a method descriptor.
  * 
  * @since 2024/02/04
  */
-typedef struct sjme_desc_methodType
+typedef struct sjme_desc_methodTypeBase sjme_desc_methodTypeBase;
+
+/**
+ * Interpretation of a method descriptor.
+ * 
+ * @since 2024/09/28
+ */
+typedef sjme_desc_methodTypeBase* sjme_desc_methodType;
+
+struct sjme_desc_methodTypeBase
 {
 	/** Common data. */
 	sjme_nvm_commonBase common;
@@ -192,20 +238,8 @@ typedef struct sjme_desc_methodType
 	sjme_jint argCells;
 	
 	/** The field descriptors used, index zero is the return value. */
-	sjme_list_sjme_desc_fieldTypeComponent fields;
-} sjme_desc_methodType;
-
-/**
- * Size of a method type.
- * 
- * @param numFields The number of fields in the method, including the return
- * value field
- * @return The resultant allocation size.
- * @since 2024/02/23
- */
-#define SJME_SIZEOF_DESC_METHOD_TYPE(numFields) \
-	(sizeof(sjme_desc_methodType) + \
-		(((numFields) + 1) * sizeof(sjme_desc_fieldTypeComponent)))
+	sjme_list_sjme_desc_fieldTypeComponent* fields;
+};
 
 /**
  * Compares the binary name against the given binary name.
@@ -216,8 +250,8 @@ typedef struct sjme_desc_methodType
  * @since 2024/02/14
  */
 sjme_jint sjme_desc_compareBinaryName(
-	sjme_attrInNullable const sjme_desc_binaryName* aName,
-	sjme_attrInNullable const sjme_desc_binaryName* bName);
+	sjme_attrInNullable sjme_desc_binaryName aName,
+	sjme_attrInNullable sjme_desc_binaryName bName);
 
 /**
  * Compares the pointer and length against the given binary name.
@@ -228,8 +262,8 @@ sjme_jint sjme_desc_compareBinaryName(
  * @since 2024/02/23
  */
 sjme_jint sjme_desc_compareBinaryNameP(
-	sjme_attrInNullable const sjme_pointerLen* aPointerLen,
-	sjme_attrInNullable const sjme_desc_binaryName* bName);
+	sjme_attrInNullable sjme_pointerLen* aPointerLen,
+	sjme_attrInNullable sjme_desc_binaryName bName);
 
 /**
  * Compares the pointer and length against the given string.
@@ -240,7 +274,7 @@ sjme_jint sjme_desc_compareBinaryNameP(
  * @since 2024/02/23
  */
 sjme_jint sjme_desc_compareBinaryNamePS(
-	sjme_attrInNullable const sjme_pointerLen* aPointerLen,
+	sjme_attrInNullable sjme_pointerLen* aPointerLen,
 	sjme_attrInNullable sjme_lpcstr bString);
 
 /**
@@ -252,7 +286,7 @@ sjme_jint sjme_desc_compareBinaryNamePS(
  * @since 2024/02/14
  */
 sjme_jint sjme_desc_compareBinaryNameS(
-	sjme_attrInNullable const sjme_desc_binaryName* aName,
+	sjme_attrInNullable sjme_desc_binaryName aName,
 	sjme_attrInNullable sjme_lpcstr bString);
 
 /**
@@ -264,8 +298,8 @@ sjme_jint sjme_desc_compareBinaryNameS(
  * @since 2024/02/14
  */
 sjme_jint sjme_desc_compareClass(
-	sjme_attrInNullable const sjme_desc_className* aClass,
-	sjme_attrInNullable const sjme_desc_className* bClass);
+	sjme_attrInNullable sjme_desc_className aClass,
+	sjme_attrInNullable sjme_desc_className bClass);
 	
 /**
  * Compares the class against the given string.
@@ -276,7 +310,7 @@ sjme_jint sjme_desc_compareClass(
  * @since 2024/02/11
  */
 sjme_jint sjme_desc_compareClassS(
-	sjme_attrInNullable const sjme_desc_className* aClass,
+	sjme_attrInNullable sjme_desc_className aClass,
 	sjme_attrInNullable sjme_lpcstr bString);
 
 /**
@@ -288,8 +322,8 @@ sjme_jint sjme_desc_compareClassS(
  * @since 2024/02/14
  */
 sjme_jint sjme_desc_compareField(
-	sjme_attrInNullable const sjme_desc_fieldType* aField,
-	sjme_attrInNullable const sjme_desc_fieldType* bField);
+	sjme_attrInNullable sjme_desc_fieldType aField,
+	sjme_attrInNullable sjme_desc_fieldType bField);
 
 /**
  * Compares the field component against the given field.
@@ -300,8 +334,8 @@ sjme_jint sjme_desc_compareField(
  * @since 2024/02/23
  */
 sjme_jint sjme_desc_compareFieldC(
-	sjme_attrInNullable const sjme_desc_fieldTypeComponent* aFieldComponent,
-	sjme_attrInNullable const sjme_desc_fieldType* bField);
+	sjme_attrInNullable sjme_desc_fieldTypeComponent aFieldComponent,
+	sjme_attrInNullable sjme_desc_fieldType bField);
 
 /**
  * Compares the field against the given string.
@@ -312,7 +346,7 @@ sjme_jint sjme_desc_compareFieldC(
  * @since 2024/02/14
  */
 sjme_jint sjme_desc_compareFieldS(
-	sjme_attrInNullable const sjme_desc_fieldType* aField,
+	sjme_attrInNullable sjme_desc_fieldType aField,
 	sjme_attrInNullable sjme_lpcstr bString);
 
 /**
@@ -325,8 +359,8 @@ sjme_jint sjme_desc_compareFieldS(
  * @since 2024/02/14
  */
 sjme_jint sjme_desc_compareIdentifier(
-	sjme_attrInNullable const sjme_desc_identifier* aIdent,
-	sjme_attrInNullable const sjme_desc_identifier* bIdent);
+	sjme_attrInNullable sjme_desc_identifier aIdent,
+	sjme_attrInNullable sjme_desc_identifier bIdent);
 
 /**
  * Compares the identifier against the given string.
@@ -337,7 +371,7 @@ sjme_jint sjme_desc_compareIdentifier(
  * @since 2024/02/11
  */
 sjme_jint sjme_desc_compareIdentifierS(
-	sjme_attrInNullable const sjme_desc_identifier* aIdent,
+	sjme_attrInNullable sjme_desc_identifier aIdent,
 	sjme_attrInNullable sjme_lpcstr bString);
 
 /**
@@ -349,8 +383,8 @@ sjme_jint sjme_desc_compareIdentifierS(
  * @since 2024/02/14
  */
 sjme_jint sjme_desc_compareMethod(
-	sjme_attrInNullable const sjme_desc_methodType* aMethod,
-	sjme_attrInNullable const sjme_desc_methodType* bMethod);
+	sjme_attrInNullable sjme_desc_methodType aMethod,
+	sjme_attrInNullable sjme_desc_methodType bMethod);
 	
 /**
  * Compares the field against the given string.
@@ -361,7 +395,7 @@ sjme_jint sjme_desc_compareMethod(
  * @since 2024/02/14
  */
 sjme_jint sjme_desc_compareMethodS(
-	sjme_attrInNullable const sjme_desc_methodType* aMethod,
+	sjme_attrInNullable sjme_desc_methodType aMethod,
 	sjme_attrInNullable sjme_lpcstr bString);
 
 /**
@@ -376,7 +410,7 @@ sjme_jint sjme_desc_compareMethodS(
  */
 sjme_errorCode sjme_desc_interpretBinaryName(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_binaryName** outName,
+	sjme_attrOutNotNull sjme_desc_binaryName* outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
 
@@ -392,7 +426,7 @@ sjme_errorCode sjme_desc_interpretBinaryName(
  */
 sjme_errorCode sjme_desc_interpretClassName(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_className** outName,
+	sjme_attrOutNotNull sjme_desc_className* outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
 
@@ -408,7 +442,7 @@ sjme_errorCode sjme_desc_interpretClassName(
  */
 sjme_errorCode sjme_desc_interpretFieldType(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_fieldType** outType,
+	sjme_attrOutNotNull sjme_desc_fieldType* outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
 
@@ -438,7 +472,7 @@ sjme_errorCode sjme_desc_interpretIdentifier(
  */
 sjme_errorCode sjme_desc_interpretMethodType(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_methodType** outType,
+	sjme_attrOutNotNull sjme_desc_methodType* outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
 

@@ -40,14 +40,14 @@ SJME_TEST_DECLARE(testDescIdentifier)
 		sjme_unit_fail(test, "Could not interpret identifier?");
 	
 	/* Make sure it was calculated correctly. */
-	sjme_unit_equalI(test, result.hash, stringHash,
+	sjme_unit_equalI(test, result->hash, stringHash,
 		"Hash set incorrectly?");
-	sjme_unit_equalP(test, result.whole.pointer, (sjme_pointer)string,
+	sjme_unit_equalP(test, result->whole.pointer, (sjme_pointer)string,
 		"Pointer not valid?");
-	sjme_unit_equalI(test, result.whole.length, strlen(string),
+	sjme_unit_equalI(test, result->whole.length, strlen(string),
 		"Pointer length not valid?");
 	sjme_unit_equalI(test,
-		0, sjme_desc_compareIdentifierS(&result, "squirrel"),
+		0, sjme_desc_compareIdentifierS(result, "squirrel"),
 		"Identifier does not match?");
 		
 	/* All of these are not valid. */

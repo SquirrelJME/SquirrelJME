@@ -598,17 +598,16 @@ sjme_errorCode sjme_zip_openSeekable(
 	
 	/* Allocate Zip state structure. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
-		sizeof(*result),
-		sjme_closeable_autoEnqueue, NULL,
-		(void**)&result, NULL)))
+	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+		sizeof(*result), sjme_zip_close,
+		SJME_JNI_FALSE,
+		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
 	
 	/* Debug. */
 	sjme_message("Zip starts at %d", archiveStartPos);
 	
 	/* Store info. */
-	result->closeable.closeHandler = sjme_zip_close;
 	result->inPool = inPool;
 	result->centralDirPos = centralDirPos;
 	result->logicalCentralDirPos = logicalCentralDirPos;

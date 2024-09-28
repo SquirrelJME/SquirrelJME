@@ -385,8 +385,8 @@ static const testDescFieldTypeEntry testEntries[] =
 SJME_TEST_DECLARE(testDescFieldType)
 {
 	const testDescFieldTypeEntry* entry;
-	sjme_desc_fieldType* result;
-	sjme_desc_binaryName* objectResult; 
+	sjme_desc_fieldType result;
+	sjme_desc_binaryName objectResult; 
 	sjme_lpcstr string;
 	sjme_jint strLen, strHash, atEntry, i;
 	sjme_errorCode error;
@@ -428,17 +428,17 @@ SJME_TEST_DECLARE(testDescFieldType)
 		{
 			/* Debug. */
 			sjme_message("Field %s, fragment %d: %.*s",
-				string, i, result->components[i].fragment.length,
-				(char*)result->components[i].fragment.pointer);
+				string, i, result->components[i]->fragment.length,
+				(char*)result->components[i]->fragment.pointer);
 			
 			/* Basic comparison. */
-			sjme_unit_equalI(test, result->components[i].javaType,
+			sjme_unit_equalI(test, result->components[i]->javaType,
 				entry->components[i].javaType,
 				"Field %s has incorrect Java type?", string);
-			sjme_unit_equalI(test, result->components[i].cells,
+			sjme_unit_equalI(test, result->components[i]->cells,
 				entry->components[i].cells,
 				"Field %s has incorrect number of cells?", string);
-			sjme_unit_equalZ(test, result->components[i].isArray,
+			sjme_unit_equalZ(test, result->components[i]->isArray,
 				entry->components[i].isArray,
 				"Field %s has incorrect array state?", string);
 			
@@ -447,12 +447,12 @@ SJME_TEST_DECLARE(testDescFieldType)
 			{
 				/* Should be an object type. */
 				sjme_unit_equalI(test, SJME_JAVA_TYPE_ID_OBJECT,
-					result->components[i].javaType,
+					result->components[i]->javaType,
 					"Not an object?");
 				
 				/* String comparison should be valid. */
 				sjme_unit_equalI(test, 0, sjme_desc_compareBinaryNamePS(
-					&result->components[i].binaryName,
+					&result->components[i]->binaryName,
 					entry->objectString),
 					"Binary name of object is incorrect?");
 				
@@ -468,7 +468,7 @@ SJME_TEST_DECLARE(testDescFieldType)
 				
 				/* Should be the same. */
 				sjme_unit_equalI(test, 0, sjme_desc_compareBinaryNameP(
-					&result->components[i].binaryName,
+					&result->components[i]->binaryName,
 					objectResult),
 					"Field %s has non-equal object?", string);
 			}

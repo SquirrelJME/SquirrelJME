@@ -136,17 +136,12 @@ sjme_errorCode sjme_stringPool_locateUtf(
 		}
 		
 		/* Allocate new result to store in the slot. */
-		if (sjme_error_is(error = sjme_alloc_weakNew(
-			inStringPool->inPool, sizeof(*result) + inUtfLen,
-			NULL, NULL,
-			(sjme_pointer*)&result, NULL)) || result == NULL)
+		result = NULL;
+		if (sjme_error_is(error = sjme_nvm_alloc(inStringPool->inPool,
+			sizeof(*result), 
+			SJME_NVM_STRUCT_STRING_POOL_STRING,
+			SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 			goto fail_stringAlloc;
-		
-		/* Init. */
-		if (sjme_error_is(error = sjme_nvm_initCommon(
-			SJME_AS_NVM_COMMON(result),
-			SJME_NVM_STRUCT_STRING_POOL_STRING)))
-			goto fail_initCommon;
 		
 		/* Fill in information. */
 		memmove(&result->chars[0], inUtf, inUtfLen);
@@ -206,16 +201,10 @@ sjme_errorCode sjme_stringPool_new(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
-		sizeof(*result), NULL, NULL,
-		(sjme_pointer*)&result, NULL)) || result == NULL)
+	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+		sizeof(*result), SJME_NVM_STRUCT_STRING_POOL,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
-	
-	/* Initialize. */
-	if (sjme_error_is(error = sjme_nvm_initCommon(
-		SJME_AS_NVM_COMMON(result),
-		SJME_NVM_STRUCT_STRING_POOL)))
-		goto fail_initCommon;
 	
 	/* Setup fields. */
 	result->inPool = inPool;

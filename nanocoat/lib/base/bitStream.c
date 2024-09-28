@@ -188,13 +188,14 @@ sjme_errorCode sjme_bitStream_inputOpen(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
-		sizeof(*result), sjme_closeable_autoEnqueue,
-		NULL, (sjme_pointer*)&result, NULL)) || result == NULL)
+	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+		sizeof(*result), sjme_bitStream_inputOutputClose,
+		SJME_JNI_FALSE,
+		SJME_AS_CLOSEABLEP(&result))) ||
+		result == NULL)
 		goto fail_alloc;
 	
 	/* Setup result. */
-	result->base.closeable.closeHandler = sjme_bitStream_inputOutputClose;
 	result->base.forwardClose = forwardClose;
 	result->base.funcData = readFuncData;
 	result->readFunc = readFunc;
@@ -397,13 +398,13 @@ sjme_errorCode sjme_bitStream_outputOpen(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
-		sizeof(*result), sjme_closeable_autoEnqueue,
-		NULL, (sjme_pointer*)&result, NULL)) || result == NULL)
+	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+		sizeof(*result), sjme_bitStream_inputOutputClose,
+		SJME_JNI_FALSE,
+		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		goto fail_alloc;
 	
 	/* Setup result. */
-	result->base.closeable.closeHandler = sjme_bitStream_inputOutputClose;
 	result->base.forwardClose = forwardClose;
 	result->base.funcData = writeFuncData;
 	result->writeFunc = writeFunc;
