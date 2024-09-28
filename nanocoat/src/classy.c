@@ -435,6 +435,7 @@ static sjme_errorCode sjme_class_methodFlagsParse(
 		return sjme_error_default(error);
 	
 	/* Translate to bitfield. */
+	memset(outFlags, 0, sizeof(*outFlags));
 	if ((rawFlags & SJME_CLASS_ACC_PUBLIC) != 0)
 		outFlags->member.access.public = SJME_JNI_TRUE;
 	if ((rawFlags & SJME_CLASS_ACC_PRIVATE) != 0)

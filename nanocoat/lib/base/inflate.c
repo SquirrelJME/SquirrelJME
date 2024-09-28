@@ -12,6 +12,9 @@
 #include "sjme/inflate.h"
 #include "sjme/util.h"
 
+/** Extra nodes to put into the traverse for overly complicated trees. */
+#define SJME_INFLATE_TRAVERSE_EXTRA 72
+
 /** Shuffled code length bits. */
 static const sjme_jubyte sjme_inflate_shuffleBits[SJME_INFLATE_NUM_CODE_LEN] =
 {
@@ -476,7 +479,9 @@ static sjme_errorCode sjme_inflate_dynamicBuildTree(
 	/* Need to allocate the tree? */
 	if ((*outTree) == NULL)
 		if (sjme_error_is(error = sjme_traverse_new(
-			inState->inPool, outTree, maxCount + 32, sjme_jint, 0)) ||
+			inState->inPool, outTree,
+			maxCount + SJME_INFLATE_TRAVERSE_EXTRA,
+			sjme_jint, 0)) ||
 			(*outTree) == NULL)
 			return sjme_error_default(error);
 	
@@ -1340,7 +1345,7 @@ sjme_errorCode sjme_inflate_inflate(
 		}
 		
 		/* Check the ready state, stop if not yet ready */
-		if (sjme_error_is(sjme_inflate_bufferSaturation(inState,
+		if (sjme_error_is(error = sjme_inflate_bufferSaturation(inState,
 			1)))
 		{
 			if (error == SJME_ERROR_TOO_SHORT)

@@ -93,10 +93,13 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Request inflated data. */
-	count = INT32_MAX;
-	if (sjme_error_is(error = sjme_inflate_inflate(inState,
-		&count, dest, length)) || count == INT32_MAX)
-		return sjme_error_default(error);
+	do
+	{
+		count = INT32_MAX;
+		if (sjme_error_is(error = sjme_inflate_inflate(inState,
+			&count, dest, length)) || count == INT32_MAX)
+			return sjme_error_default(error);
+	} while (count == 0);
 	
 	/* Success! */
 	*readCount = count;

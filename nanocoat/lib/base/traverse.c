@@ -25,7 +25,23 @@ static sjme_errorCode sjme_traverse_next(
 	
 	/* Is the tree already full? */
 	if ((intptr_t)traverse->next > (intptr_t)traverse->end)
+	{
+		/* Find a whiteout key we can take. */
+		for (result = traverse->start;
+			(intptr_t)result < (intptr_t)traverse->end; result++)
+			if (result->leaf.key == SJME_TRAVERSE_WHITEOUT_KEY)
+			{
+				/* Wipe it. */
+				memset(result, 0, traverse->structSize);
+				
+				/* Success! */
+				*outNode = result;
+				return SJME_ERROR_NONE;
+			}
+		
+		/* Tree is truly full. */
 		return SJME_ERROR_TRAVERSE_FULL;
+	}
 	
 	/* Next node is the actual next node, make sure it is cleared. */
 	result = traverse->next;

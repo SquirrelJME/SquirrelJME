@@ -76,6 +76,9 @@ typedef union sjme_alignPointer sjme_traverse_node
 	#error Unknown pointer size for node leaf?
 #endif
 
+/** Key for whiteout nodes. */
+#define SJME_TRAVERSE_WHITEOUT_KEY (~SJME_TRAVERSE_LEAF_KEY)
+
 /**
  * Node type storage.
  * 

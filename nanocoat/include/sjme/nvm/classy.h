@@ -184,11 +184,11 @@ typedef struct sjme_class_accessFlags
 	/** Is this public? */
 	sjme_jboolean public : 1;
 
-	/** Is this private? */
-	sjme_jboolean private : 1;
-
 	/** Is this protected? */
 	sjme_jboolean protected : 1;
+	
+	/** Is this private? */
+	sjme_jboolean private : 1;
 } sjme_class_accessFlags;
 
 /**
