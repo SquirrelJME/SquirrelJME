@@ -125,12 +125,6 @@ SJME_TEST_DECLARE(testClassParse)
 	sjme_class_info info;
 	sjme_stringPool stringPool;
 	
-	/* Setup string pool. */
-	stringPool = NULL;
-	if (sjme_error_is(test->error = sjme_stringPool_new(
-		test->pool, &stringPool)) || stringPool == NULL)
-		return sjme_unit_fail(test, "Could not create string pool.");
-	
 	/* Load the Zip that is full of classes. */
 	zip = NULL;
 	if (sjme_error_is(test->error = sjme_zip_openMemory(
@@ -145,6 +139,13 @@ SJME_TEST_DECLARE(testClassParse)
 	{
 		/* Debug. */
 		sjme_message(">>> %s", testInfo->fileName);
+		
+		/* Setup string pool. */
+		stringPool = NULL;
+		if (sjme_error_is(test->error = sjme_stringPool_new(
+			test->pool, &stringPool)) ||
+			stringPool == NULL)
+			return sjme_unit_fail(test, "Could not create string pool.");
 		
 		/* Locate entry. */
 		memset(&zipEntry, 0, sizeof(zipEntry));
@@ -184,17 +185,22 @@ SJME_TEST_DECLARE(testClassParse)
 		if (sjme_error_is(test->error = sjme_closeable_close(
 			SJME_AS_CLOSEABLE(in))))
 			return sjme_unit_fail(test, "Could not close entry.");
+	
+		/* Close the string pool. */
+		if (sjme_error_is(test->error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(stringPool))))
+			return sjme_unit_fail(test, "Could not close string pool.");
+			
+#if defined(SJME_CONFIG_DEBUG)
+		/* Check for never freed memory. */
+		sjme_test_leakCheck(test->pool);
+#endif
 	}
 	
 	/* Close the Zip. */
 	if (sjme_error_is(test->error = sjme_closeable_close(
 		SJME_AS_CLOSEABLE(zip))))
 		return sjme_unit_fail(test, "Could not close Zip.");
-	
-	/* Close the string pool. */
-	if (sjme_error_is(test->error = sjme_closeable_close(
-		SJME_AS_CLOSEABLE(stringPool))))
-		return sjme_unit_fail(test, "Could not close string pool.");
 	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

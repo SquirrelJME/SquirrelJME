@@ -103,6 +103,17 @@ typedef struct sjme_availableTest
 #define SJME_TEST_DECLARE(name) \
 	sjme_attrUnused sjme_testResult name(sjme_attrUnused sjme_test* test)
 
+#if defined(SJME_CONFIG_DEBUG)
+/**
+ * Checks for leaks.
+ * 
+ * @param pool The pool to check.
+ * @return Any resultant error, if any.
+ * @since 2024/09/28 
+ */
+void sjme_test_leakCheck(sjme_alloc_pool* pool);
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
