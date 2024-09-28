@@ -35,12 +35,19 @@ static sjme_errorCode testHandler(
 SJME_TEST_DECLARE(testCloseableDoubleClose)
 {
 	sjme_closeable closing;
+	sjme_alloc_weak weak;
 	
 	/* Make closeable. */
 	if (sjme_error_is(test->error = testCloseable_new(test->pool,
 		&closing, testHandler,
 		SJME_JNI_TRUE)))
 		return sjme_unit_fail(test, "Could not make closeable?");
+		
+	/* Count up. */
+	if (sjme_error_is(test->error = sjme_alloc_weakRef(closing, NULL)))
+		return sjme_unit_fail(test, "Could not count 1?");
+	if (sjme_error_is(test->error = sjme_alloc_weakRef(closing, NULL)))
+		return sjme_unit_fail(test, "Could not count 2?");
 	
 	/* Should not be closed. */
 	sjme_unit_equalI(test, 0, closeCount,
@@ -53,6 +60,16 @@ SJME_TEST_DECLARE(testCloseableDoubleClose)
 	/* Only once. */
 	sjme_unit_equalI(test, 1, closeCount,
 		"Not closed?");
+		
+	/* Weak ref should still be valid */
+	weak = NULL;
+	if (sjme_error_is(test->error = sjme_alloc_weakRefGet(closing,
+		&weak)))
+		return sjme_unit_fail(test, "Could not get weak ref");
+	sjme_unit_notEqualP(test, NULL, weak,
+		"No weak reference returned?");
+	sjme_unit_equalI(test, 1, sjme_atomic_sjme_jint_get(&weak->count),
+		"Wrong count?");
 	
 	/* Close it, again! */
 	if (sjme_error_is(test->error = sjme_closeable_close(closing)))
@@ -61,6 +78,14 @@ SJME_TEST_DECLARE(testCloseableDoubleClose)
 	/* Still only once. */
 	sjme_unit_equalI(test, 1, closeCount,
 		"Close was called multiple times?");
+		
+	/* Should not be a weak reference, as it is now gone! */
+	weak = NULL;
+	test->error = sjme_alloc_weakRefGet(closing, &weak);
+	sjme_unit_equalI(test, SJME_ERROR_NOT_WEAK_REFERENCE, test->error,
+		"Get of weak did not fail?");
+	sjme_unit_equalP(test, NULL, weak,
+		"There was a weak pointer returned?");
 	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
