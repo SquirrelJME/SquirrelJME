@@ -161,7 +161,7 @@ static sjme_errorCode sjme_stream_outputByteArrayWrite(
 
 		/* Reallocate memory here. */
 		if (sjme_error_is(error = sjme_alloc_realloc(
-			&inImplState->buffer, desireSize)))
+			(sjme_pointer*)&inImplState->buffer, desireSize)))
 			return sjme_error_defaultOr(error,
 				SJME_ERROR_OUT_OF_MEMORY);
 

@@ -79,7 +79,7 @@ typedef struct sjme_stream_implState
 	sjme_pointer handleTwo;
 	
 	/** Internal buffer. */
-	sjme_pointer buffer;
+	sjme_jubyte* buffer;
 	
 	/** Internal offset. */
 	sjme_jint offset;
