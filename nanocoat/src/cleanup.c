@@ -12,6 +12,16 @@
 #include "sjme/nvm/stringPool.h"
 #include "sjme/nvm/classy.h"
 
+/** Simple free. */
+#define SJME_CLEANUP_FREE(w) \
+	do { if ((w) != NULL) \
+	{ \
+		if (sjme_error_is(error = sjme_alloc_free((w)))) \
+			return sjme_error_default(error); \
+		\
+		(w) = NULL; \
+	} } while(0)
+
 /** Simple close. */
 #define SJME_CLEANUP_CLOSE(x) \
 	do { if ((x) != NULL) \
@@ -23,16 +33,14 @@
 		(x) = NULL; \
 	} } while(0)
 
+/** Cleanup of list. */
 #define SJME_CLEANUP_LIST(y) \
 	do { if ((y) != NULL) \
 	{ \
 		for (i = 0, n = (y)->length; i < n; i++) \
 			SJME_CLEANUP_CLOSE((y)->elements[i]); \
 		\
-		if (sjme_error_is(error = sjme_alloc_free((y)))) \
-			return sjme_error_default(error); \
-		\
-		(y) = NULL; \
+		SJME_CLEANUP_FREE(y); \
 	} } while(0)
 
 static sjme_errorCode sjme_class_classInfoClose(
@@ -53,6 +61,52 @@ static sjme_errorCode sjme_class_classInfoClose(
 	SJME_CLEANUP_LIST(info->interfaceNames);
 	SJME_CLEANUP_LIST(info->fields);
 	SJME_CLEANUP_LIST(info->methods);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_class_constantPoolClose(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_errorCode error;
+	sjme_class_poolInfo info;
+	sjme_class_poolEntry* entry;
+	sjme_jint i, n;
+	
+	/* Recover. */
+	info = (sjme_class_poolInfo)closeable;
+	if (info == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Cleanup any pool entries. */
+	if (info->pool != NULL)
+		for (i = 0, n = info->pool->length; i < n; i++)
+		{
+			entry = &info->pool->elements[i];
+			switch (entry->type)
+			{
+				case SJME_CLASS_POOL_TYPE_UTF:
+					SJME_CLEANUP_CLOSE(entry->utf.utf);
+					break;
+					
+				case SJME_CLASS_POOL_TYPE_CLASS:
+					SJME_CLEANUP_CLOSE(entry->classRef.descriptor);
+					break;
+					
+				case SJME_CLASS_POOL_TYPE_STRING:
+					SJME_CLEANUP_CLOSE(entry->constString.value);
+					break;
+					
+				case SJME_CLASS_POOL_TYPE_NAME_AND_TYPE:
+					SJME_CLEANUP_CLOSE(entry->nameAndType.descriptor);
+					SJME_CLEANUP_CLOSE(entry->nameAndType.name);
+					break;
+			}
+		}
+	
+	/* Free list. */
+	SJME_CLEANUP_FREE(info->pool);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -234,11 +288,12 @@ static sjme_errorCode sjme_stringPool_stringClose(
 
 /* ------------------------------------------------------------------------ */
 
-sjme_errorCode sjme_nvm_alloc(
+sjme_errorCode sjme_nvm_allocR(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInValue sjme_nvm_structType inType,
-	sjme_attrOutNotNull sjme_nvm_common* outCommon)
+	sjme_attrOutNotNull sjme_nvm_common* outCommon
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
 	sjme_closeable_closeHandlerFunc handler;
@@ -271,6 +326,10 @@ sjme_errorCode sjme_nvm_alloc(
 			handler = sjme_class_methodInfoClose;
 			break;
 		
+		case SJME_NVM_STRUCT_POOL:
+			handler = sjme_class_constantPoolClose;
+			break;
+		
 		case SJME_NVM_STRUCT_ROM_LIBRARY:
 			handler = sjme_rom_libraryClose;
 			break;
@@ -294,9 +353,16 @@ sjme_errorCode sjme_nvm_alloc(
 	
 	/* Allocate result. */
 	result = NULL;
+#if defined(SJME_CONFIG_DEBUG)
+	if (sjme_error_is(error = sjme_closeable_allocR(inPool,
+		allocSize, handler, SJME_JNI_TRUE,
+		SJME_AS_CLOSEABLEP(&result), file, line, func)) ||
+		result == NULL)
+#else
 	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
 		allocSize, handler, SJME_JNI_TRUE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
+#endif
 		return sjme_error_default(error);
 	
 	/* Set fields. */

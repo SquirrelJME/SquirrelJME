@@ -36,18 +36,31 @@ extern "C"
  * 
  * @param inPool The pool to allocate within.
  * @param allocSize The allocation size.
- * @param handler The close handler to use.
- * @param refCounting Is reference counting used? If not then this is
- * a one shot close.
- * @param outCloseable The resultant closeable. 
+ * @param inType The type of structure this is.
+ * @param outCommon The resultant common structure. 
  * @return On any resultant error, if any.
  * @since 2024/09/28
  */
-sjme_errorCode sjme_nvm_alloc(
+sjme_errorCode sjme_nvm_allocR(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInValue sjme_nvm_structType inType,
-	sjme_attrOutNotNull sjme_nvm_common* outCommon);
+	sjme_attrOutNotNull sjme_nvm_common* outCommon
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Allocates virtual machine structure type.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param allocSize The allocation size.
+ * @param inType The type of structure this is.
+ * @param outCommon The resultant common structure. 
+ * @return On any resultant error, if any.
+ * @since 2024/09/29
+ */
+#define sjme_nvm_alloc(inPool, allocSize, refCounting, outCommon) \
+	(sjme_nvm_allocR((inPool), (allocSize), (refCounting), \
+	(outCommon) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /*--------------------------------------------------------------------------*/
 

@@ -91,12 +91,13 @@ static sjme_errorCode sjme_closeable_autoEnqueue(
 		SJME_JNI_FALSE, SJME_JNI_TRUE);
 }
 
-sjme_errorCode sjme_closeable_alloc(
+sjme_errorCode sjme_closeable_allocR(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInNotNull sjme_closeable_closeHandlerFunc handler,
 	sjme_attrInValue sjme_jboolean refCounting,
-	sjme_attrOutNotNull sjme_closeable* outCloseable)
+	sjme_attrOutNotNull sjme_closeable* outCloseable
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
 	sjme_closeable result;
@@ -106,9 +107,17 @@ sjme_errorCode sjme_closeable_alloc(
 	
 	/* Attempt allocation. */
 	result = NULL;
+#if defined(SJME_CONFIG_DEBUG)
+	if (sjme_error_is(error = sjme_alloc_weakNewR(inPool,
+		allocSize, sjme_closeable_autoEnqueue,
+		NULL, (sjme_pointer*)&result,
+		NULL, file, line, func)) ||
+		result == NULL)
+#else
 	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
 		allocSize, sjme_closeable_autoEnqueue, NULL,
 		(sjme_pointer*)&result, NULL)) || result == NULL)
+#endif
 		return sjme_error_default(error);
 	
 	/* Set fields. */

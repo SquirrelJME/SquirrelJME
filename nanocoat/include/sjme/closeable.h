@@ -87,12 +87,31 @@ struct sjme_closeableBase
  * @return On any resultant error, if any.
  * @since 2024/09/28
  */
-sjme_errorCode sjme_closeable_alloc(
+sjme_errorCode sjme_closeable_allocR(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInNotNull sjme_closeable_closeHandlerFunc handler,
 	sjme_attrInValue sjme_jboolean refCounting,
-	sjme_attrOutNotNull sjme_closeable* outCloseable);
+	sjme_attrOutNotNull sjme_closeable* outCloseable
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Allocates a new closeable.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param allocSize The allocation size.
+ * @param handler The close handler to use.
+ * @param refCounting Is reference counting used? If not then this is
+ * a one shot close.
+ * @param outCloseable The resultant closeable. 
+ * @return On any resultant error, if any.
+ * @since 2024/09/29
+ */
+#define sjme_closeable_alloc(inPool, allocSize, handler, refCounting, \
+	outCloseable) \
+	(sjme_closeable_allocR((inPool), (allocSize), (handler), (refCounting), \
+	(outCloseable) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**
  * Closes the given closeable and un-references the weak reference.
