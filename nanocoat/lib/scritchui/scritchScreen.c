@@ -53,7 +53,7 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	/* Allocate new screen. */
 	maybe = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		sizeof(*maybe), NULL, NULL, (void**)&maybe, NULL)) || maybe == NULL)
+		sizeof(*maybe), NULL, (void**)&maybe, NULL)) || maybe == NULL)
 		goto fail_alloc;
 		
 	/* Common initialize. */

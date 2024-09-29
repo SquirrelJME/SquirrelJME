@@ -229,8 +229,8 @@ typedef enum sjme_errorCode
 	/** An enqueue has already been set for the weak reference. */
 	SJME_ERROR_ENQUEUE_ALREADY_SET = -62,
 	
-	/** Keep the weak reference, do not free it on zero references. */
-	SJME_ERROR_ENQUEUE_KEEP_WEAK = -63,
+	/** Unused 63. */
+	SJME_ERROR_UNUSED_63 = -63,
 	
 	/** Not a weak reference. */
 	SJME_ERROR_NOT_WEAK_REFERENCE = -64,

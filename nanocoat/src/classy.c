@@ -842,6 +842,17 @@ sjme_errorCode sjme_class_parse(
 			&fields->elements[i])) ||
 			fields->elements[i] == NULL)
 			goto fail_parseField;
+		
+		/* We are referencing this. */
+		if (sjme_error_is(error = sjme_alloc_weakRef(
+			fields->elements[i], NULL)))
+			goto fail_refField;
+		
+		/* Reference ourselves. */
+		fields->elements[i]->inClass = result;
+		if (sjme_error_is(error = sjme_alloc_weakRef(
+			result, NULL)))
+			goto fail_refField;
 	}
 	
 	/* Read in method count. */
@@ -866,6 +877,17 @@ sjme_errorCode sjme_class_parse(
 			&methods->elements[i])) ||
 			methods->elements[i] == NULL)
 			goto fail_parseMethod;
+		
+		/* Reference as we are using this. */
+		if (sjme_error_is(error = sjme_alloc_weakRef(
+			methods->elements[i], NULL)))
+			goto fail_refMethod;
+		
+		/* Reference ourselves. */
+		methods->elements[i]->inClass = result;
+		if (sjme_error_is(error = sjme_alloc_weakRef(
+			result, NULL)))
+			goto fail_refMethod;
 	}
 	
 	/* Parse attributes. */
@@ -879,31 +901,15 @@ sjme_errorCode sjme_class_parse(
 	return SJME_ERROR_NONE;
 
 fail_parseAttributes:
+fail_refMethod:
 fail_parseMethod:
 fail_allocMethods:
-	if (methods != NULL)
-	{
-		sjme_alloc_free(methods);
-		methods = NULL;
-		result->methods = NULL;
-	}
 fail_readMethodCount:
+fail_refField:
 fail_parseField:
 fail_allocFields:
-	if (fields != NULL)
-	{
-		sjme_alloc_free(fields);
-		fields = NULL;
-		result->fields = NULL;
-	}
 fail_readFieldCount:
 fail_allocInterfaceNames:
-	if (interfaceNames != NULL)
-	{
-		sjme_alloc_free(interfaceNames);
-		interfaceNames = NULL;
-		result->interfaceNames = NULL;
-	}
 fail_readInterfaceCount:
 fail_refSuperName:
 fail_readSuperName:

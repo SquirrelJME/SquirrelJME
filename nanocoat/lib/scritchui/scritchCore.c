@@ -268,7 +268,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	/* Allocate state. */
 	state = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inPool, sizeof(*state),
-		NULL, NULL, (void**)&state, NULL)) || state == NULL)
+		NULL, (void**)&state, NULL)) || state == NULL)
 		goto fail_alloc;
 	
 	/* Seed state. */
@@ -464,7 +464,7 @@ sjme_errorCode sjme_scritchui_coreGeneric_commonNew(
 	/* Allocate result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		outCommonSize, NULL, NULL, (void**)&result, NULL)) || result == NULL)
+		outCommonSize, NULL, (void**)&result, NULL)) || result == NULL)
 		goto fail_alloc;
 	
 	/* Pre-initialize. */
@@ -521,7 +521,7 @@ sjme_errorCode sjme_scritchui_coreGeneric_componentNew(
 	/* Allocate result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		outComponentSize, NULL, NULL, (void**)&result, NULL)) ||
+		outComponentSize, NULL, (void**)&result, NULL)) ||
 		result == NULL)
 		goto fail_alloc;
 	

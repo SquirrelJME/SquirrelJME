@@ -28,7 +28,7 @@ static sjme_errorCode testHandler(
 }
 
 /**
- * Tests double close of closeable.
+ * Tests double close of closeable, in oneshot mode.
  *  
  * @since 2024/09/28 
  */
@@ -40,7 +40,7 @@ SJME_TEST_DECLARE(testCloseableDoubleClose)
 	/* Make closeable. */
 	if (sjme_error_is(test->error = testCloseable_new(test->pool,
 		&closing, testHandler,
-		SJME_JNI_TRUE)))
+		SJME_JNI_FALSE)))
 		return sjme_unit_fail(test, "Could not make closeable?");
 		
 	/* Count up. */

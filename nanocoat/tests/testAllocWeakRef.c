@@ -28,7 +28,7 @@ SJME_TEST_DECLARE(testAllocWeakRef)
 	p = NULL;
 	weak = NULL;
 	if (sjme_error_is(sjme_alloc_weakNew(test->pool, 512,
-		NULL, NULL, &p, &weak)))
+		NULL, &p, &weak)))
 		return sjme_unit_fail(test, "Failed to allocate weak?");
 
 	/* These should be set. */
@@ -58,8 +58,6 @@ SJME_TEST_DECLARE(testAllocWeakRef)
 	/* These should not be set. */
 	sjme_unit_equalP(test, weak->enqueue, NULL,
 		"Enqueue was set?");
-	sjme_unit_equalP(test, weak->enqueueData, NULL,
-		"Enqueue data was set?");
 	
 	/* Reference count should be zero. */
 	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 0,

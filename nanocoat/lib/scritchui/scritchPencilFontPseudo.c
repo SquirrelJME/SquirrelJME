@@ -406,7 +406,7 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	/* Allocate. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		sizeof(*result), NULL, NULL, (void**)&result, NULL)))
+		sizeof(*result), NULL, (void**)&result, NULL)))
 		goto fail_alloc;
 	
 	/* Common initialize. */
