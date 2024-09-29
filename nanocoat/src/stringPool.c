@@ -79,8 +79,10 @@ sjme_errorCode sjme_stringPool_locateUtfR(
 	sjme_errorCode error;
 	sjme_jint hash, i, n, firstFree;
 	sjme_list_sjme_stringPool_string* strings;
+	sjme_list_sjme_stringPool_string* oldStrings;
 	sjme_stringPool_string result;
 	sjme_stringPool_string possible;
+	sjme_alloc_weak weak;
 	
 	if (inStringPool == NULL || inUtf == NULL || outString == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -106,8 +108,29 @@ sjme_errorCode sjme_stringPool_locateUtfR(
 	result = NULL;
 	for (i = 0, n = strings->length; i < n; i++)
 	{
-		/* Is this a filled slot? */
+		/* There might be an element here. */
 		possible = strings->elements[i];
+		
+		/* Check to see if this no longer exists in the pool. */
+		weak = NULL;
+		if (possible != NULL)
+			if (sjme_error_is(error = sjme_alloc_weakRefGet(possible,
+				&weak)))
+			{
+				/* Not a valid error here. */
+				if (error != SJME_ERROR_NOT_WEAK_REFERENCE)
+					goto fail_corruptPossible;
+			}
+		
+		/* Is a weak reference but does not actually point to the string? */
+		/* If so then this was freed! */
+		if (weak != NULL && weak->pointer != possible)
+		{
+			strings->elements[i] = NULL;
+			possible = NULL;
+		}
+		
+		/* Is this a filled slot? */
 		if (possible == NULL)
 		{
 			/* We can put a new string here. */
@@ -134,8 +157,23 @@ sjme_errorCode sjme_stringPool_locateUtfR(
 		/* Need to make the pool bigger? */
 		if (firstFree < 0)
 		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			/* First free is always at the end. */
+			firstFree = strings->length;
+			
+			/* Reallocate the list. */
+			oldStrings = strings;
+			if (sjme_error_is(error = sjme_list_copy(inStringPool->inPool,
+				strings->length + SJME_STRING_POOL_GROW, strings,
+				&strings, sjme_stringPool_string, 0)) || strings == NULL)
+				goto fail_growList;
+			
+			/* Set new list. */
+			inStringPool->strings = strings;
+			
+			/* Clear old list. */
+			if (sjme_error_is(error = sjme_alloc_free(oldStrings)))
+				goto fail_freeOld;
+			oldStrings = NULL;
 		}
 		
 		/* Allocate new result to store in the slot. */
@@ -183,7 +221,9 @@ fail_initCommon:
 fail_stringAlloc:
 	if (result != NULL)
 		sjme_alloc_free(result);
-	
+fail_freeOld:
+fail_growList:
+fail_corruptPossible:
 fail_releaseLock:
 	/* Unlock before failing. */
 	sjme_thread_spinLockRelease(&inStringPool->common.lock,
