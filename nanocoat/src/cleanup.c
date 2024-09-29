@@ -99,6 +99,23 @@ static sjme_errorCode sjme_class_methodInfoClose(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_desc_identifierClose(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_errorCode error;
+	sjme_desc_identifier info;
+	
+	/* Recover. */
+	info = (sjme_desc_identifier)closeable;
+	if (info == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	SJME_CLEANUP_CLOSE(info->whole);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_rom_libraryClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -200,6 +217,21 @@ static sjme_errorCode sjme_stringPool_close(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_stringPool_stringClose(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_errorCode error;
+	sjme_stringPool_string info;
+	
+	/* Recover. */
+	info = (sjme_stringPool_string)closeable;
+	if (info == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 /* ------------------------------------------------------------------------ */
 
 sjme_errorCode sjme_nvm_alloc(
@@ -231,6 +263,10 @@ sjme_errorCode sjme_nvm_alloc(
 			handler = sjme_class_fieldInfoClose;
 			break;
 		
+		case SJME_NVM_STRUCT_IDENTIFIER:
+			handler = sjme_desc_identifierClose;
+			break;
+		
 		case SJME_NVM_STRUCT_METHOD_INFO:
 			handler = sjme_class_methodInfoClose;
 			break;
@@ -245,6 +281,10 @@ sjme_errorCode sjme_nvm_alloc(
 		
 		case SJME_NVM_STRUCT_STRING_POOL:
 			handler = sjme_stringPool_close;
+			break;
+		
+		case SJME_NVM_STRUCT_STRING_POOL_STRING:
+			handler = sjme_stringPool_stringClose;
 			break;
 		
 		default:

@@ -138,7 +138,7 @@ sjme_errorCode sjme_stringPool_locateUtf(
 		/* Allocate new result to store in the slot. */
 		result = NULL;
 		if (sjme_error_is(error = sjme_nvm_alloc(inStringPool->inPool,
-			sizeof(*result), 
+			sizeof(*result) + inUtfLen, 
 			SJME_NVM_STRUCT_STRING_POOL_STRING,
 			SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 			goto fail_stringAlloc;

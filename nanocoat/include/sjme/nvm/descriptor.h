@@ -18,6 +18,7 @@
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/list.h"
+#include "sjme/nvm/stringPool.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -53,7 +54,7 @@ struct sjme_desc_identifierBase
 	sjme_jint hash;
 	
 	/** The pointer and length to the identifier. */
-	sjme_pointerLen whole;
+	sjme_stringPool_string whole;
 };
 
 /** List of identifiers. */
@@ -449,6 +450,8 @@ sjme_errorCode sjme_desc_interpretFieldType(
 /**
  * Interprets the given identifier.
  * 
+ * @param inPool The pool to allocate within.
+ * @param inStringPool The string pool to use.
  * @param outIdent The interpreted result.
  * @param inStr The input string to be interpreted.
  * @param inLen The length of the input string.
@@ -456,6 +459,8 @@ sjme_errorCode sjme_desc_interpretFieldType(
  * @since 2024/02/04
  */
 sjme_errorCode sjme_desc_interpretIdentifier(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_desc_identifier* outIdent,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);

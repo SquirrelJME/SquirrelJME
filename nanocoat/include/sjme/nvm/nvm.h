@@ -108,6 +108,9 @@ typedef enum sjme_nvm_structType
 	/** Field information. */
 	SJME_NVM_STRUCT_FIELD_INFO,
 	
+	/** Identifier. */
+	SJME_NVM_STRUCT_IDENTIFIER,
+	
 	/** Method information. */
 	SJME_NVM_STRUCT_METHOD_INFO,
 	

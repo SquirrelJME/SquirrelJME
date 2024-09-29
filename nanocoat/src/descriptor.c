@@ -656,9 +656,6 @@ sjme_jint sjme_desc_compareIdentifierS(
 	sjme_attrInNullable sjme_desc_identifier aIdent,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#if 0
 	sjme_jint strLen;
 	
 	/* Compare null. */
@@ -667,9 +664,9 @@ sjme_jint sjme_desc_compareIdentifierS(
 	
 	/* Compare by string. */
 	return sjme_string_compareN(
-		aIdent->whole.pointer, aIdent->whole.length,
+		(sjme_lpcstr)aIdent->whole->chars,
+			aIdent->whole->length,
 		bString, strlen(bString));
-#endif
 }
 
 sjme_jint sjme_desc_compareMethod(
@@ -918,17 +915,19 @@ sjme_errorCode sjme_desc_interpretFieldType(
 }
 
 sjme_errorCode sjme_desc_interpretIdentifier(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_desc_identifier* outIdent,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#if 0
+	sjme_errorCode error;
 	sjme_lpcstr at, end;
 	sjme_jint c;
+	sjme_desc_identifier result;
+	sjme_stringPool_string pooled;
 	
-	if (outIdent == NULL || inStr == NULL)
+	if (inPool == NULL || outIdent == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inLen < 0)
@@ -953,15 +952,36 @@ sjme_errorCode sjme_desc_interpretIdentifier(
 	if (end == inStr)
 		return SJME_ERROR_INVALID_IDENTIFIER;
 	
+	/* Locate string in the pool. */
+	pooled = NULL;
+	if (sjme_error_is(error = sjme_stringPool_locateUtf(inStringPool,
+		inStr, inLen, &pooled)) || pooled == NULL)
+		return sjme_error_default(error);
+	
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+		sizeof(*result), SJME_NVM_STRUCT_IDENTIFIER,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
+		return sjme_error_default(error);
+	
 	/* Fill in info. */
-	memset(outIdent, 0, sizeof(*outIdent));
-	outIdent->hash = sjme_string_hashN(inStr, inLen);
-	outIdent->whole.pointer = (sjme_pointer)inStr;
-	outIdent->whole.length = end - inStr;
+	result->hash = sjme_string_hashN(inStr, inLen);
+	result->whole = pooled;
+	
+	/* Count up as we are using it. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(pooled, NULL)))
+		goto fail_countUp;
 	
 	/* Success! */
+	*outIdent = result;
 	return SJME_ERROR_NONE;
-#endif
+	
+fail_countUp:
+	if (result != NULL)
+		sjme_alloc_free(result);
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_desc_interpretMethodType(
