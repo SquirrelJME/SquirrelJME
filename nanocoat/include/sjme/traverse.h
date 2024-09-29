@@ -141,6 +141,12 @@ typedef struct sjme_traverse_base
 	/** The size of leaf values. */
 	sjme_jint leafLength;
 	
+	/** The maximum elements in the traverse. */
+	sjme_jint maxElements;
+	
+	/** The used elements in the traverse. */
+	sjme_jint usedElements;
+	
 	/** The number of bytes in storage. */
 	sjme_jint storageBytes;
 	

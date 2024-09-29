@@ -105,6 +105,9 @@ typedef enum sjme_nvm_structType
 	/** Class information. */
 	SJME_NVM_STRUCT_CLASS_INFO,
 	
+	/** Method code. */
+	SJME_NVM_STRUCT_CODE,
+	
 	/** Field information. */
 	SJME_NVM_STRUCT_FIELD_INFO,
 	

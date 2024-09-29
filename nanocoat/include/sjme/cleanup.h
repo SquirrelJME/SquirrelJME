@@ -58,8 +58,8 @@ sjme_errorCode sjme_nvm_allocR(
  * @return On any resultant error, if any.
  * @since 2024/09/29
  */
-#define sjme_nvm_alloc(inPool, allocSize, refCounting, outCommon) \
-	(sjme_nvm_allocR((inPool), (allocSize), (refCounting), \
+#define sjme_nvm_alloc(inPool, allocSize, inType, outCommon) \
+	(sjme_nvm_allocR((inPool), (allocSize), (inType), \
 	(outCommon) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /*--------------------------------------------------------------------------*/

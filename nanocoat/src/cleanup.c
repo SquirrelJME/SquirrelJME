@@ -66,6 +66,26 @@ static sjme_errorCode sjme_class_classInfoClose(
 	return SJME_ERROR_NONE;
 }
 
+
+static sjme_errorCode sjme_class_codeInfoClose(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_errorCode error;
+	sjme_class_codeInfo info;
+	sjme_jint i, n;
+	
+	/* Recover. */
+	info = (sjme_class_codeInfo)closeable;
+	if (info == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	SJME_CLEANUP_CLOSE(info->inMethod);
+	SJME_CLEANUP_FREE(info->exceptions);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_class_constantPoolClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -124,7 +144,6 @@ static sjme_errorCode sjme_class_fieldInfoClose(
 	if (info == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	SJME_CLEANUP_CLOSE(info->inClass);
 	SJME_CLEANUP_CLOSE(info->name);
 	SJME_CLEANUP_CLOSE(info->type);
 	
@@ -144,7 +163,6 @@ static sjme_errorCode sjme_class_methodInfoClose(
 	if (info == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	SJME_CLEANUP_CLOSE(info->inClass);
 	SJME_CLEANUP_CLOSE(info->name);
 	SJME_CLEANUP_CLOSE(info->type);
 	SJME_CLEANUP_CLOSE(info->code);
@@ -238,34 +256,7 @@ static sjme_errorCode sjme_stringPool_close(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Loaded string cleanup. */
-	strings = stringPool->strings;
-	if (strings != NULL)
-	{
-		/* Close every contained string. */
-		for (i = 0, n = strings->length; i < n; i++)
-		{
-			/* Skip blanks. */
-			target = strings->elements[i];
-			if (target == NULL)
-				continue;
-			
-			/* Close individual string. */
-			if (sjme_error_is(error = sjme_closeable_close(
-				SJME_AS_CLOSEABLE(target))))
-				return sjme_error_default(error);
-			
-			/* Clear it. */
-			strings->elements[i] = NULL;
-		}
-		
-		/* Destroy list. */
-		if (sjme_error_is(error = sjme_alloc_free(strings)))
-			return sjme_error_default(error);
-		strings = NULL;
-	}
-	
-	/* Wipe. */
-	stringPool->inPool = NULL;
+	SJME_CLEANUP_LIST(stringPool->strings);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -312,6 +303,10 @@ sjme_errorCode sjme_nvm_allocR(
 	{
 		case SJME_NVM_STRUCT_CLASS_INFO:
 			handler = sjme_class_classInfoClose;
+			break;
+			
+		case SJME_NVM_STRUCT_CODE:
+			handler = sjme_class_codeInfoClose;
 			break;
 		
 		case SJME_NVM_STRUCT_FIELD_INFO:

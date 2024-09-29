@@ -402,8 +402,9 @@ static sjme_errorCode sjme_class_methodAttrCode(
 	
 	/* Make sure we can allocate this. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inPool,
-		sizeof(*result), (sjme_pointer*)&result)) || result == NULL)
+	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+		sizeof(*result), SJME_NVM_STRUCT_CODE,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
 	
 	/* In this method! */
@@ -502,20 +503,18 @@ static sjme_errorCode sjme_class_methodAttrCode(
 		sjme_class_codeAttr, result)))
 		goto fail_parseAttributes;
 	
-	/* Success! */
+	/* Make sure the code is referenced. */	
 	methodInfo->code = result;
+	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
+		goto fail_refCode;
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
-
+fail_refCode:
 fail_parseAttributes:
 fail_exceptHandles:
 fail_exceptShorts:
 fail_allocExcepts:
-	if (excepts != NULL)
-	{
-		sjme_alloc_free(excepts);
-		excepts = NULL;
-		result->exceptions = NULL;
-	}
 fail_readNumExcept:
 fail_readRawCode:
 fail_allocRawCode:
@@ -524,7 +523,7 @@ fail_readMaxLocals:
 fail_readMaxStack:
 fail_allocResult:
 	if (result != NULL)
-		sjme_alloc_free(result);
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 	return sjme_error_default(error);
 }
 
@@ -847,12 +846,6 @@ sjme_errorCode sjme_class_parse(
 		if (sjme_error_is(error = sjme_alloc_weakRef(
 			fields->elements[i], NULL)))
 			goto fail_refField;
-		
-		/* Reference ourselves. */
-		fields->elements[i]->inClass = result;
-		if (sjme_error_is(error = sjme_alloc_weakRef(
-			result, NULL)))
-			goto fail_refField;
 	}
 	
 	/* Read in method count. */
@@ -881,12 +874,6 @@ sjme_errorCode sjme_class_parse(
 		/* Reference as we are using this. */
 		if (sjme_error_is(error = sjme_alloc_weakRef(
 			methods->elements[i], NULL)))
-			goto fail_refMethod;
-		
-		/* Reference ourselves. */
-		methods->elements[i]->inClass = result;
-		if (sjme_error_is(error = sjme_alloc_weakRef(
-			result, NULL)))
 			goto fail_refMethod;
 	}
 	
@@ -918,12 +905,6 @@ fail_readThisName:
 fail_readFlags:
 fail_countPool:
 fail_parsePool:
-	if (pool != NULL)
-	{
-		sjme_closeable_close(SJME_AS_CLOSEABLE(pool));
-		pool = NULL;
-		result->pool = NULL;
-	}
 fail_badVersion:
 fail_readMinor:
 fail_readMajor:
@@ -1042,6 +1023,7 @@ sjme_errorCode sjme_class_parseConstantPool(
 	if (sjme_error_is(error = sjme_list_alloc(inPool,
 		count, &entries, sjme_class_poolEntry, 0)) || entries == NULL)
 		goto fail_entryList;
+	result->pool = entries;
 	
 	/* Read in all entries. */
 	/* This is a first pass since index items can refer to later entries. */
@@ -1083,6 +1065,9 @@ sjme_errorCode sjme_class_parseConstantPool(
 					inStream,
 					(sjme_jint*)&entry->constDouble.value.lo)))
 					goto fail_readItem;
+				
+				/* Skip wide index. */
+				index++;
 				break;
 			
 				/* Reference to a member. */
@@ -1125,6 +1110,9 @@ sjme_errorCode sjme_class_parseConstantPool(
 					inStream,
 					(sjme_jint*)&entry->constLong.value.part.lo)))
 					goto fail_readItem;
+				
+				/* Skip wide index. */
+				index++;
 				break;
 				
 				/* Name and type information. */
@@ -1184,8 +1172,12 @@ sjme_errorCode sjme_class_parseConstantPool(
 			case SJME_CLASS_POOL_TYPE_UTF:
 			case SJME_CLASS_POOL_TYPE_INTEGER:
 			case SJME_CLASS_POOL_TYPE_FLOAT:
+				break;
+				
+				/* Skip wide element. */
 			case SJME_CLASS_POOL_TYPE_LONG:
 			case SJME_CLASS_POOL_TYPE_DOUBLE:
+				index++;
 				break;
 			
 				/* Class type. */
@@ -1319,9 +1311,6 @@ sjme_errorCode sjme_class_parseConstantPool(
 				return SJME_ERROR_NOT_IMPLEMENTED;
 		}
 	}
-	
-	/* Setup details. */
-	result->pool = entries;
 	
 	/* Success! */
 	*outPool = result;

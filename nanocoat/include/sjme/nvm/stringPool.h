@@ -79,7 +79,7 @@ struct sjme_stringPool_base
 struct sjme_stringPool_stringBase
 {
 	/** The virtual machine common base. */
-	sjme_nvm_common common;
+	sjme_nvm_commonBase common;
 	
 	/** The char sequence for this string, if needed. */
 	sjme_charSeq seq;

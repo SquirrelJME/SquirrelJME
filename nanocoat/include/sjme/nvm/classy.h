@@ -613,8 +613,8 @@ typedef struct sjme_class_fieldConstVal
 
 struct sjme_class_fieldInfoCore
 {
-	/** The class which contains this field. */
-	sjme_class_info inClass;
+	/** The common NanoCoat base. */
+	sjme_nvm_commonBase common;
 
 	/** Field flags. */
 	sjme_class_fieldFlags flags;
@@ -631,8 +631,8 @@ struct sjme_class_fieldInfoCore
 
 struct sjme_class_methodInfoCore
 {
-	/** The class which contains this method. */
-	sjme_class_info inClass;
+	/** The common NanoCoat base. */
+	sjme_nvm_commonBase common;
 
 	/** Method flags. */
 	sjme_class_methodFlags flags;
@@ -649,6 +649,9 @@ struct sjme_class_methodInfoCore
 
 struct sjme_class_codeInfoCore
 {
+	/** The common NanoCoat base. */
+	sjme_nvm_commonBase common;
+	
 	/** The method which contains this code. */
 	sjme_class_methodInfo inMethod;
 
@@ -659,7 +662,7 @@ struct sjme_class_codeInfoCore
 	sjme_jint maxStack;
 
 	/** Exception table. */
-	const sjme_list_sjme_class_exceptionHandler* exceptions;
+	sjme_list_sjme_class_exceptionHandler* exceptions;
 
 	/** Method byte code. */
 	sjme_list_sjme_jubyte code;

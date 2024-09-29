@@ -146,6 +146,10 @@ SJME_TEST_DECLARE(testClassParse)
 			test->pool, &stringPool)) ||
 			stringPool == NULL)
 			return sjme_unit_fail(test, "Could not create string pool.");
+			
+		/* Count up class. */
+		if (sjme_error_is(test->error = sjme_alloc_weakRef(stringPool, NULL)))
+			return sjme_unit_fail(test, "Could not count string pool?");
 		
 		/* Locate entry. */
 		memset(&zipEntry, 0, sizeof(zipEntry));
@@ -169,6 +173,10 @@ SJME_TEST_DECLARE(testClassParse)
 			return sjme_unit_fail(test, "Could not parse %s: %d",
 				testInfo->fileName, test->error);
 		
+		/* Count up class. */
+		if (sjme_error_is(test->error = sjme_alloc_weakRef(info, NULL)))
+			return sjme_unit_fail(test, "Could not count class?");
+		
 		/* Run individual test on it? */
 		if (testInfo->testRun != NULL)
 			if (sjme_error_is(test->error = testInfo->testRun(
@@ -188,7 +196,7 @@ SJME_TEST_DECLARE(testClassParse)
 	
 		/* Close the string pool. */
 		if (sjme_error_is(test->error = sjme_closeable_close(
-		SJME_AS_CLOSEABLE(stringPool))))
+			SJME_AS_CLOSEABLE(stringPool))))
 			return sjme_unit_fail(test, "Could not close string pool.");
 			
 #if defined(SJME_CONFIG_DEBUG)

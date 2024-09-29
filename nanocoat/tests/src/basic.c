@@ -70,10 +70,11 @@ void sjme_test_leakCheck(sjme_alloc_pool* pool)
 			/* Indicate it leaked */
 			sjme_messageR(NULL, -1, NULL,
 				SJME_JNI_TRUE,
-				"LEAK:\t%dB\t%s\t%s:%d\tl=%p\tp=%p",
+				"LEAK:\t%dB\t%s\t%s:%d\tl=%p\tp=%p\tcount=%d",
 				link->allocSize, link->debugFunction,
 				sjme_debug_shortenFile(link->debugFile), link->debugLine,
-				link, pool);
+				link, pool,
+				(link->weak == NULL ? -2 : link->weak->count.value));
 				
 			/* Recursively check the nested pool. */
 			if ((link->flags & SJME_ALLOC_LINK_FLAG_NESTED_POOL) != 0)
