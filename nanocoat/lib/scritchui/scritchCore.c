@@ -268,7 +268,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	/* Allocate state. */
 	state = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inPool, sizeof(*state),
-		NULL, NULL, &state, NULL)) || state == NULL)
+		NULL, (void**)&state, NULL)) || state == NULL)
 		goto fail_alloc;
 	
 	/* Seed state. */
@@ -278,11 +278,11 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	state->intern = &sjme_scritchUI_coreIntern;
 	state->impl = inImplFunc;
 	state->wmInfo = &sjme_scritchUI_coreWmInfo;
-	state->nanoTime = sjme_nal_default_nanoTime;
+	state->nanoTime = sjme_nal_default.nanoTime;
 	
 	/* Common initialize. */
 	if (sjme_error_is(error = state->intern->initCommon(state,
-		state, SJME_JNI_FALSE,
+		SJME_SUI_CAST_COMMON(state), SJME_JNI_FALSE,
 		SJME_SCRITCHUI_TYPE_ROOT_STATE)))
 		goto fail_commonInit;
 	
@@ -464,7 +464,7 @@ sjme_errorCode sjme_scritchui_coreGeneric_commonNew(
 	/* Allocate result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		outCommonSize, NULL, NULL, &result, NULL)) || result == NULL)
+		outCommonSize, NULL, (void**)&result, NULL)) || result == NULL)
 		goto fail_alloc;
 	
 	/* Pre-initialize. */
@@ -521,7 +521,8 @@ sjme_errorCode sjme_scritchui_coreGeneric_componentNew(
 	/* Allocate result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		outComponentSize, NULL, NULL, &result, NULL)) || result == NULL)
+		outComponentSize, NULL, (void**)&result, NULL)) ||
+		result == NULL)
 		goto fail_alloc;
 	
 	/* Pre-initialize. */
@@ -574,13 +575,28 @@ sjme_pointer sjme_scritchui_checkCast(sjme_scritchui_uiType inType,
 	return inPtr;
 }
 
-/**
- * Check cast of a given type against a menu kind.
- * 
- * @param inPtr The input pointer.
- * @return Always @c inPtr .
- * @since 2024/07/23
- */
+sjme_pointer sjme_scritchui_checkCast_component(sjme_pointer inPtr)
+{
+	sjme_scritchui_uiCommon common;
+	
+	if (inPtr == NULL)
+		return NULL;
+	
+	/* Check type. */
+	common = inPtr;
+	if (common->type != SJME_SCRITCHUI_TYPE_LIST &&
+		common->type != SJME_SCRITCHUI_TYPE_PANEL &&
+		common->type != SJME_SCRITCHUI_TYPE_SCROLL_PANEL &&
+		common->type != SJME_SCRITCHUI_TYPE_WINDOW)
+	{
+		sjme_debug_abort();
+		return NULL;
+	}
+	
+	/* Return passed value. */
+	return inPtr;
+}
+
 sjme_pointer sjme_scritchui_checkCast_menuKind(sjme_pointer inPtr)
 {
 	sjme_scritchui_uiCommon common;

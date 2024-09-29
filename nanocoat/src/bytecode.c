@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/bytecode.h"
+#include "sjme/nvm/bytecode.h"
 #include "sjme/debug.h"
 
 sjme_errorCode sjme_byteCode_map(

@@ -211,13 +211,13 @@ sjme_errorCode sjme_list_directInitR(
 
 sjme_errorCode sjme_list_flattenArgCV(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpcstr** outList,
+	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNull sjme_lpcstr* argV)
 {
 	sjme_errorCode error;
 	sjme_list_newData newData;
-	sjme_list_sjme_lpcstr* result;
+	sjme_list_sjme_lpstr* result;
 	sjme_jint extraFill, i, len;
 	sjme_lpcstr arg;
 	sjme_pointer destPtr;
@@ -252,15 +252,15 @@ sjme_errorCode sjme_list_flattenArgCV(
 	error = SJME_ERROR_UNKNOWN;
 	memset(&newData, 0, sizeof(newData));
 	if (sjme_error_is(error = sjme_list_newInit(&newData,
-		inPool, sizeof(sjme_lpcstr),
-		sizeof(sjme_lpcstr),
-		offsetof(sjme_list_sjme_lpcstr, elements), 4,
+		inPool, sizeof(sjme_lpstr),
+		sizeof(sjme_lpstr),
+		offsetof(sjme_list_sjme_lpstr, elements), 4,
 		SJME_BASIC_TYPE_ID_OBJECT, 1, argC,
 		extraFill)))
 		return sjme_error_default(error);
 
 	/* Map result. */
-	result = (sjme_list_sjme_lpcstr*)newData.outList;
+	result = (sjme_list_sjme_lpstr*)newData.outList;
 
 	/* The destination pointer is at the very end of the element set. */
 	destPtr = &result->elements[argC];
@@ -319,7 +319,8 @@ sjme_errorCode sjme_list_flattenArgNul(
 		argV[i] = at;
 	
 	/* Perform the flattening. */
-	return sjme_list_flattenArgCV(inPool, outList, count, argV);
+	return sjme_list_flattenArgCV(inPool,
+		(sjme_list_sjme_lpstr**)outList, count, argV);
 }
 
 sjme_errorCode sjme_list_newAR(

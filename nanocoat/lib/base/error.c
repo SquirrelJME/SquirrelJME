@@ -9,7 +9,7 @@
 
 #include <stdarg.h>
 
-#include "sjme/nvm.h"
+#include "sjme/error.h"
 
 sjme_errorCode sjme_error_also(
 	sjme_errorCode error, sjme_errorCode expression)

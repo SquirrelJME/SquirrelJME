@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.general.cmake;
 
 import cc.squirreljme.plugin.multivm.VMHelpers;
+import cc.squirreljme.plugin.multivm.VMTestTaskAction;
 import cc.squirreljme.plugin.util.ForwardInputToOutput;
 import cc.squirreljme.plugin.util.ForwardStream;
 import cc.squirreljme.plugin.util.PathUtils;
@@ -348,6 +349,10 @@ public final class CMakeUtils
 		// Working directory, if specified
 		if (__workDir != null)
 			procBuilder.directory(__workDir.toFile());
+		
+		// Use more CPUs!
+		procBuilder.environment().put("CMAKE_BUILD_PARALLEL_LEVEL",
+			Integer.toString(VMTestTaskAction.physicalProcessorCount()));
 		
 		// Log the output somewhere
 		if (__in != null)

@@ -11,7 +11,7 @@
 
 #include "mock.h"
 #include "proto.h"
-#include "sjme/nvmFunc.h"
+#include "sjme/nvm/nvmFunc.h"
 #include "test.h"
 #include "unit.h"
 
@@ -60,7 +60,7 @@ static const sjme_mock_configSet mockNvmLocalPopLong =
 sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopLong)
 {
 	sjme_mock state;
-	sjme_nvm_frame* frame;
+	sjme_nvm_frame frame;
 	sjme_jint oldNumStack;
 	sjme_nvm_frameTread* longsTread;
 	sjme_nvm_frameStack* stack;

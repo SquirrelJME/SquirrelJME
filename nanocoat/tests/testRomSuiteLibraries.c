@@ -11,7 +11,7 @@
 
 #include "mock.h"
 #include "proto.h"
-#include "sjme/romInternal.h"
+#include "sjme/nvm/romInternal.h"
 #include "test.h"
 #include "unit.h"
 
@@ -23,7 +23,7 @@ static sjme_list_sjme_rom_library testFakeSuiteList =
 };
 
 static sjme_errorCode testSuiteList(
-	sjme_attrInNotNull sjme_rom_suite targetSuite,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibraries)
 {
 	*outLibraries = &testFakeSuiteList;
@@ -91,7 +91,7 @@ SJME_TEST_DECLARE(testRomSuiteLibraries)
 	/* The cache should get our libraries. */
 	sjme_unit_equalP(test, suite->cache.libraries, &testFakeSuiteList,
 		"Library list was not cached?");
-
+		
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
 }

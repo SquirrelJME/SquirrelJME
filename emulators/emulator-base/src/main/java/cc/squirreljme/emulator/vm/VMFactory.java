@@ -212,7 +212,7 @@ public abstract class VMFactory
 		// -Dsysprop=value
 		// -classpath (class:path:...)
 		// -Xclutter:(release|debug)
-		// -Xtrace=(flag|...)
+		// -Xtrace:(flag|...)
 		// -zero
 		// -client
 		// -server

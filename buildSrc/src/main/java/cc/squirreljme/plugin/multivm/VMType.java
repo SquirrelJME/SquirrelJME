@@ -827,26 +827,26 @@ public enum VMType
 				args.add("-XbootLoaderClassPath:" +
 					VMType.__pathIndexList(libIndex,
 					__build.bootLoaderClassPath));
-			
-			// Launcher main class
-			if (__build.launcherMainClass != null)
-				args.add("-XlauncherMainClass:" + __build.launcherMainClass);
-			
-			// Launcher arguments, these are a bit special
-			if (__build.launcherArgs != null)
-			{
-				String[] launcherArgs = __build.launcherArgs;
-				for (int i = 0, n = launcherArgs.length; i < n; i++)
-					args.add(String.format("-XlauncherArgs:%d:%s", i,
-						launcherArgs[i]));
-			}
-			
-			// Launcher class path
-			if (__build.launcherClassPath != null)
-				args.add("-XlauncherClassPath:" +
-					VMType.__pathIndexList(libIndex,
-					__build.launcherClassPath));
 		}
+		
+		// Launcher main class
+		if (__build.launcherMainClass != null)
+			args.add("-XlauncherMainClass:" + __build.launcherMainClass);
+		
+		// Launcher arguments, these are a bit special
+		if (__build.launcherArgs != null)
+		{
+			String[] launcherArgs = __build.launcherArgs;
+			for (int i = 0, n = launcherArgs.length; i < n; i++)
+				args.add(String.format("-XlauncherArgs:%d:%s", i,
+					launcherArgs[i]));
+		}
+		
+		// Launcher class path
+		if (__build.launcherClassPath != null)
+			args.add("-XlauncherClassPath:" +
+				VMType.__pathIndexList(libIndex,
+				__build.launcherClassPath));
 		
 		// Put down paths to libraries to link together
 		for (Path path : __libs)

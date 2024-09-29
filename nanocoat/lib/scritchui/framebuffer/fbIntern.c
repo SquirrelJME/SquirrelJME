@@ -250,7 +250,8 @@ static sjme_errorCode sjme_scritchui_fb_intern_makeSelBuf(
 		/* Attempt allocation of new buffer. */
 		tempSelBuf = NULL;
 		if (sjme_error_is(error = sjme_alloc(inState->pool,
-			cT * sizeof(sjme_jint), &tempSelBuf)) || tempSelBuf == NULL)
+			cT * sizeof(sjme_jint), (void**)&tempSelBuf)) ||
+			tempSelBuf == NULL)
 			goto fail_allocSelBuf;
 		
 		/* Store for usage. */
@@ -315,7 +316,7 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	/* Widget state for interactions. */
 	wState = NULL;
 	if (sjme_error_is(error = sjme_alloc(inState->pool,
-		sizeof(*wState), &wState)) || wState == NULL)
+		sizeof(*wState), (void**)&wState)) || wState == NULL)
 		return sjme_error_default(error);
 	
 	/* Recover wrapped state. */
@@ -333,7 +334,8 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	
 	/* Map front ends. */
 	if (sjme_error_is(error = sjme_scritchui_fb_biMap(
-		inState, inComponent, wrappedPanel)))
+		inState, SJME_SUI_CAST_COMMON(inComponent),
+		SJME_SUI_CAST_COMMON(wrappedPanel))))
 		return sjme_error_default(error);
 	
 	/* If this is interactive, we need to handle inputs and otherwise. */
@@ -348,7 +350,8 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 		/* Set listener for events. */
 		if (sjme_error_is(error =
 			wrappedState->api->componentSetInputListener(
-			wrappedState, wrappedPanel,
+			wrappedState,
+			SJME_SUI_CAST_COMPONENT(wrappedPanel),
 			sjme_scritchui_fb_eventInput, NULL)))
 			return sjme_error_default(error);
 	}
@@ -356,7 +359,8 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	/* Set renderer for widget. */
 	if (sjme_error_is(error =
 		wrappedState->api->componentSetPaintListener(
-		wrappedState, wrappedPanel,
+		wrappedState,
+		SJME_SUI_CAST_COMPONENT(wrappedPanel),
 		paintListener, NULL)))
 		return sjme_error_default(error);
 	

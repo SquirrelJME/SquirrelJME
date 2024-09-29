@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id="squirreljme" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="cc.squirreljme" external.system.module.version="0.3.0" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" inherit-compiler-output="true">
-    <exclude-output />
-    <content url="file://$MODULE_DIR$/../..">
+  <component name="AdditionalModuleElements">
+    <content url="file://$MODULE_DIR$/../.." dumb="true">
       <excludeFolder url="file://$MODULE_DIR$/../../.circleci" />
-      <excludeFolder url="file://$MODULE_DIR$/../../.flatpak-builder" />
       <excludeFolder url="file://$MODULE_DIR$/../../.fossil-settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../.github" />
       <excludeFolder url="file://$MODULE_DIR$/../../.gradle" />
@@ -13,13 +11,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../.vscode" />
       <excludeFolder url="file://$MODULE_DIR$/../../bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../build" />
-      <excludeFolder url="file://$MODULE_DIR$/../../build-dir" />
       <excludeFolder url="file://$MODULE_DIR$/../../config" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base-native/cmake-build-debug" />
-      <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base-native/cmake-build-release" />
-      <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base-native/cmake-build-relwithdebinfo" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base/out" />
@@ -47,21 +41,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/bluetooth/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/bluetooth/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/bluetooth/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-xlet/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-xlet/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-xlet/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cldc-compact/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cldc-compact/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cldc-compact/out" />
@@ -201,9 +180,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/profile-meep/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/profile-meep/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/profile-meep/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/scritch-ui/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/scritch-ui/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/scritch-ui/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/squirrel-quarrel/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/squirrel-quarrel/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/squirrel-quarrel/out" />
@@ -234,9 +210,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-jphone/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-jphone/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-jphone/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-khronos-opengles/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-khronos-opengles/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-khronos-opengles/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-kwisf-wipi/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-kwisf-wipi/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-kwisf-wipi/out" />
@@ -264,9 +237,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-skt/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-skt/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-skt/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-sprintpcs/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-sprintpcs/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-sprintpcs/out" />
@@ -279,19 +249,12 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/zip/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/zip/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/zip/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/build" />
-      <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/cmake-build-debug" />
-      <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/cmake-build-release" />
-      <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/cmake-build-relwithdebinfo" />
       <excludeFolder url="file://$MODULE_DIR$/../../out" />
       <excludeFolder url="file://$MODULE_DIR$/../../sdk/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../sdk/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../sdk/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/out" />
@@ -305,12 +268,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-debugger/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-debugger/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-debugger/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-font/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-font/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-font/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/out" />
@@ -318,8 +275,54 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../utils-dev" />
+      <excludeFolder url="file://$MODULE_DIR$/../../.flatpak-builder" />
+      <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/build" />
+      <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/cmake-build-debug" />
+      <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/cmake-build-release" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../build-dir" />
+      <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base-native/cmake-build-debug" />
+      <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base-native/cmake-build-release" />
+      <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base-native/cmake-build-relwithdebinfo" />
+      <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/cmake-build-relwithdebinfo" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-xlet/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-xlet/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-xlet/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-font/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-font/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-font/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/scritch-ui/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/scritch-ui/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/scritch-ui/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-khronos-opengles/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-khronos-opengles/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-khronos-opengles/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/c-source-writer/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/c-source-writer/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/c-source-writer/out" />
     </content>
-    <orderEntry type="inheritedJdk" />
-    <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

@@ -32,7 +32,7 @@ SJME_TEST_DECLARE(testAllocWeakRefNonWeak)
 	
 	/* Create weak reference, fails because not weak. */
 	weak = NULL;
-	error = sjme_alloc_weakRef(p, &weak,
+	error = sjme_alloc_weakRefE(p, &weak,
 		NULL, NULL);
 	
 	/* Test conditions. */

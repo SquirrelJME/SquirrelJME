@@ -14,6 +14,8 @@ project(libEmulatorBase
     LANGUAGES C)
 
 # Support bases
+include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/pre-fixes.cmake"
+    NO_POLICY_SCOPE)
 include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/utils.cmake"
     NO_POLICY_SCOPE)
 include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/jni.cmake"
@@ -53,9 +55,9 @@ add_library(libEmulatorBase SHARED
 target_include_directories(libEmulatorBase PUBLIC
 	"headers"
 	"${nanocoatIncludePath}"
-	"${JNI_INCLUDE_DIRS}"
-	"${JAVA_INCLUDE_PATH}"
-	"${JAVA_INCLUDE_PATH2}")
+	${JNI_INCLUDE_DIRS}
+	${JAVA_INCLUDE_PATH}
+	${JAVA_INCLUDE_PATH2})
 
 # Libraries for the build
 get_filename_component(nanocoatLibPath
