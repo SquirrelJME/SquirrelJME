@@ -159,7 +159,7 @@ int sjme_test_main(int argc, sjme_lpstr* argv, sjme_lpcstr* nextTest)
 		sjme_debug_handlers = &sjme_test_debugHandlers;
 
 	/* Setup base allocation pool. */
-	for (chunkLen = 262144; chunkLen >= 1024; chunkLen /= 2)
+	for (chunkLen = 1048576; chunkLen >= 1024; chunkLen /= 2)
 	{
 		/* Try to alloca everything at once. */
 		chunk = sjme_alloca(chunkLen);
