@@ -149,10 +149,17 @@ public class Font
 		return this._midpFont.getDescent();
 	}
 	
+	/**
+	 * Returns the height of the font which is the sum of the ascent and
+	 * descent.
+	 *
+	 * @return The font height.
+	 * @since 2024/09/14
+	 */
 	@Api
 	public int getHeight()
 	{
-		throw Debugging.todo();
+		return this.getAscent() + this.getDescent();
 	}
 	
 	@Api
