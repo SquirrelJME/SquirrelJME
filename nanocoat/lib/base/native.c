@@ -11,6 +11,10 @@
 #include <string.h>
 #include <stdio.h>
 
+#if !defined(SJME_CONFIG_MISSING_ERRNO)
+	#include <errno.h>
+#endif
+
 #include "sjme/config.h"
 
 #if defined(SJME_CONFIG_HAS_LINUX) || \
@@ -318,6 +322,7 @@ const sjme_nal sjme_nal_default =
 	.stdOutF = sjme_nal_default_stdOutF,
 };
 
+#if !defined(SJME_CONFIG_MISSING_ERRNO)
 sjme_errorCode sjme_nal_errno(sjme_jint errNum)
 {
 	switch (errNum)
@@ -331,3 +336,4 @@ sjme_errorCode sjme_nal_errno(sjme_jint errNum)
 	
 	return SJME_ERROR_UNKNOWN;
 }
+#endif

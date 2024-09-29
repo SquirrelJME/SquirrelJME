@@ -126,6 +126,8 @@ typedef struct sjme_nal
 /** Default native abstraction layer. */
 extern const sjme_nal sjme_nal_default;
 
+#if !defined(SJME_CONFIG_MISSING_ERRNO)
+
 /**
  * Maps @c errno to a SquirrelJME error.
  * 
@@ -134,6 +136,19 @@ extern const sjme_nal sjme_nal_default;
  * @since 2024/08/11
  */
 sjme_errorCode sjme_nal_errno(sjme_jint errNum);
+
+#else
+
+/**
+ * Maps @c errno to a SquirrelJME error.
+ * 
+ * @param errNum The error number. 
+ * @return The resultant error.
+ * @since 2024/08/11
+ */
+#define sjme_nal_errno(ignored) ((sjme_errorCode)(SJME_ERROR_NATIVE_ERROR))
+
+#endif
 
 /*--------------------------------------------------------------------------*/
 

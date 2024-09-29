@@ -46,6 +46,14 @@ extern "C" {
 #if defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN)
 	/** Emscripten (WASM). */
 	#define SJME_CONFIG_HAS_EMSCRIPTEN
+#elif defined(GEKKO)
+	#if defined(WIIU)
+		/** Nintendo Wii U is available. */
+		#define SJME_CONFIG_HAS_NINTENDO_WIIU
+	#else
+		/** Nintendo Wii is available. */
+		#define SJME_CONFIG_HAS_NINTENDO_WII
+	#endif
 #elif defined(__3DS__) || defined(_3DS)
 	/** Nintendo 3DS is available. */
 	#define SJME_CONFIG_HAS_NINTENDO_3DS
@@ -651,6 +659,13 @@ extern "C" {
 #else
 	/** Align to pointer. */
 	#define sjme_alignPointer
+#endif
+
+#if defined(SJME_CONFIG_HAS_NINTENDO_3DS) || \
+	defined(SJME_CONFIG_HAS_NINTENDO_WIIU) || \
+    defined(SJME_CONFIG_HAS_NINTENDO_WII)
+	/* Disable errno support. */
+	#define SJME_CONFIG_MISSING_ERRNO
 #endif
 
 /*--------------------------------------------------------------------------*/
