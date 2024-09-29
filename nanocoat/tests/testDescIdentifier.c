@@ -59,7 +59,12 @@ SJME_TEST_DECLARE(testDescIdentifier)
 	sjme_unit_equalI(test,
 		0, sjme_desc_compareIdentifierS(result, "squirrel"),
 		"Identifier does not match?");
-		
+	
+	/* It must be able to be closed. */
+	if (sjme_error_is(test->error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(result))))
+		return sjme_unit_fail(test, "Could not close identifier?");
+	
 	/* All of these are not valid. */
 	memset(&result, 0, sizeof(result));
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
@@ -95,6 +100,11 @@ SJME_TEST_DECLARE(testDescIdentifier)
 		stringPool, &result, 
 			pair("")),
 		"Blank is valid?");
+	
+	/* Close string pool. */
+	if (sjme_error_is(test->error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(stringPool))))
+		return sjme_unit_fail(test, "Could not close pool?");
 	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
