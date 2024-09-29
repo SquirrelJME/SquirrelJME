@@ -10,6 +10,11 @@
 # Echo commands accordingly
 set(CMAKE_EXECUTE_PROCESS_COMMAND_ECHO STDERR)
 
+# Debugging?
+if(SQUIRRELJME_IS_DEBUG)
+	add_compile_definitions(SJME_CONFIG_DEBUG=1)
+endif()
+
 # Where are we?
 if(NOT DEFINED SQUIRRELJME_UTIL_CMAKE_WHERE)
 	set(SQUIRRELJME_UTIL_CMAKE_WHERE "${CMAKE_CURRENT_LIST_DIR}")

@@ -114,8 +114,6 @@ add_compile_definitions(
 
 # Debugging?
 if(SQUIRRELJME_IS_DEBUG)
-	add_compile_definitions(SJME_CONFIG_DEBUG=1)
-
 	if(SQUIRRELJME_ENABLE_TESTING)
 		add_compile_definitions(SJME_CONFIG_UNIT_TEST=1)
 	endif()
