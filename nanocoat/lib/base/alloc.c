@@ -451,7 +451,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	sjme_alloc_link* scanLink;
 	sjme_alloc_link* rightLink;
 	sjme_jint splitMinSize, roundSize;
-	sjme_jboolean splitBlock;
+	sjme_jboolean splitBlock, isTiny;
 	sjme_alloc_pool* nextPool;
 	volatile sjme_alloc_link* nextFree;
 	
@@ -463,6 +463,9 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		sjme_message("Alloc of single pointer in %s (%s:%d).",
 			func, file, line);
 #endif
+	
+	/* Is this a tiny block? */
+	isTiny = (size <= (sizeof(struct sjme_alloc_weakBase) * 2));
 	
 	/* Determine the size this will actually take up, which includes the */
 	/* link to be created following this. */
@@ -484,11 +487,12 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	/* Find the first free link that this fits in. */
 	scanLink = NULL;
 	splitBlock = SJME_JNI_FALSE;
-	for (scanLink = pool->freeFirstLink;
-		scanLink != NULL; scanLink = scanLink->freeNext)
+	for (scanLink = (isTiny ? pool->freeLastLink : pool->freeFirstLink);
+		scanLink != NULL;
+		scanLink = (isTiny ? scanLink->freePrev : scanLink->freeNext))
 	{
 		/* Has memory been corrupted? */
-		nextFree = scanLink->freeNext;
+		nextFree = (isTiny ? scanLink->freePrev : scanLink->freeNext);
 		if (sjme_alloc_checkCorruption(pool, scanLink) ||
 			(nextFree != NULL &&
 				sjme_alloc_checkCorruption(pool, nextFree)))
@@ -560,7 +564,12 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		}
 
 		/* Make it so this block can actually fit in here. */
-		rightLink = (sjme_alloc_link*)&scanLink->block[roundSize];
+		/* If a tiny block, align to the right. */
+		if (isTiny)
+			rightLink = (sjme_alloc_link*)&scanLink->block[
+				scanLink->blockSize - (roundSize + SJME_SIZEOF_ALLOC_LINK(0))];
+		else
+			rightLink = (sjme_alloc_link*)&scanLink->block[roundSize];
 
 		/* Initialize block to remove any old data. */
 		memset(rightLink, 0, sizeof(*rightLink));
@@ -611,6 +620,10 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 			error = SJME_ERROR_MEMORY_CORRUPTION;
 			goto fail_corrupt;
 		}
+		
+		/* If tiny, take up the right side space. */
+		if (isTiny)
+			scanLink = rightLink;
 	}
 
 	/* Setup block information. */
@@ -1270,8 +1283,13 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 	}
 	
 	/* We need to allocate the link. */
+#if defined(SJME_CONFIG_DEBUG)
+	if (sjme_error_is(error = sjme_allocR(link->pool, sizeof(*result),
+		(sjme_pointer*)&result, file, line, func)))
+#else
 	if (sjme_error_is(error = sjme_alloc(link->pool, sizeof(*result),
 		(sjme_pointer*)&result)))
+#endif
 		return sjme_error_default(error);
 	
 	/* Setup link information. */
