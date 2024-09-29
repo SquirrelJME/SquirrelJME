@@ -117,10 +117,24 @@ sjme_errorCode sjme_stringPool_locateSeq(
  * @return On any resultant error, if any.
  * @since 2024/09/14
  */
-sjme_errorCode sjme_stringPool_locateStream(
+sjme_errorCode sjme_stringPool_locateStreamR(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrOutNotNull sjme_stringPool_string* outString);
+	sjme_attrOutNotNull sjme_stringPool_string* outString
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Locates the given string in the string pool.
+ * 
+ * @param inStringPool The string pool.
+ * @param inStream The stream to read a UTF encoded string from to locate. 
+ * @param outString The resultant pooled string.
+ * @return On any resultant error, if any.
+ * @since 2024/09/29
+ */
+#define sjme_stringPool_locateStream(inStringPool, inStream, outString) \
+	(sjme_stringPool_locateStreamR((inStringPool), (inStream), (outString) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**
  * Locates the given string in the string pool.
@@ -133,11 +147,27 @@ sjme_errorCode sjme_stringPool_locateStream(
  * @return On any resultant error, if any.
  * @since 2024/09/14
  */
-sjme_errorCode sjme_stringPool_locateUtf(
+sjme_errorCode sjme_stringPool_locateUtfR(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInNotNull sjme_lpcstr inUtf,
 	sjme_attrInNegativeOnePositive sjme_jint inUtfLen,
-	sjme_attrOutNotNull sjme_stringPool_string* outString);
+	sjme_attrOutNotNull sjme_stringPool_string* outString
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Locates the given string in the string pool.
+ * 
+ * @param inStringPool The string pool.
+ * @param inUtf The string to locate in the pool.
+ * @param inUtfLen The length of the string, if @c -1 then this will be
+ * the same as @c strlen(inUtf) . 
+ * @param outString The resultant pooled string.
+ * @return On any resultant error, if any.
+ * @since 2024/09/14
+ */
+#define sjme_stringPool_locateUtf(inStringPool, inUtf, inUtfLen, outString) \
+	(sjme_stringPool_locateUtfR((inStringPool), (inUtf), (inUtfLen), \
+	(outString) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**
  * Creates a new string pool for managing constant strings.

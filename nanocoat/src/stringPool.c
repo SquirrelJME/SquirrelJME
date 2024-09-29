@@ -28,10 +28,11 @@ sjme_errorCode sjme_stringPool_locateSeq(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_stringPool_locateStream(
+sjme_errorCode sjme_stringPool_locateStreamR(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrOutNotNull sjme_stringPool_string* outString)
+	sjme_attrOutNotNull sjme_stringPool_string* outString
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
 	sjme_jshort length;
@@ -63,15 +64,17 @@ sjme_errorCode sjme_stringPool_locateStream(
 		return SJME_ERROR_END_OF_FILE;
 	
 	/* Use normal locating logic. */
-	return sjme_stringPool_locateUtf(inStringPool,
-		(sjme_lpcstr)chars, length, outString);
+	return sjme_stringPool_locateUtfR(inStringPool,
+		(sjme_lpcstr)chars, length, outString
+		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
 }
 
-sjme_errorCode sjme_stringPool_locateUtf(
+sjme_errorCode sjme_stringPool_locateUtfR(
 	sjme_attrInNotNull sjme_stringPool inStringPool,
 	sjme_attrInNotNull sjme_lpcstr inUtf,
 	sjme_attrInNegativeOnePositive sjme_jint inUtfLen,
-	sjme_attrOutNotNull sjme_stringPool_string* outString)
+	sjme_attrOutNotNull sjme_stringPool_string* outString
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
 	sjme_jint hash, i, n, firstFree;
@@ -137,10 +140,18 @@ sjme_errorCode sjme_stringPool_locateUtf(
 		
 		/* Allocate new result to store in the slot. */
 		result = NULL;
+#if defined(SJME_CONFIG_DEBUG)
+		if (sjme_error_is(error = sjme_nvm_allocR(inStringPool->inPool,
+			sizeof(*result) + inUtfLen, 
+			SJME_NVM_STRUCT_STRING_POOL_STRING,
+			SJME_AS_NVM_COMMONP(&result), file, line, func)) ||
+			result == NULL)
+#else
 		if (sjme_error_is(error = sjme_nvm_alloc(inStringPool->inPool,
 			sizeof(*result) + inUtfLen, 
 			SJME_NVM_STRUCT_STRING_POOL_STRING,
 			SJME_AS_NVM_COMMONP(&result))) || result == NULL)
+#endif
 			goto fail_stringAlloc;
 		
 		/* Fill in information. */

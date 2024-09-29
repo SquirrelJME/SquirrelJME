@@ -86,10 +86,6 @@ static sjme_errorCode sjme_class_constantPoolClose(
 			entry = &info->pool->elements[i];
 			switch (entry->type)
 			{
-				case SJME_CLASS_POOL_TYPE_UTF:
-					SJME_CLEANUP_CLOSE(entry->utf.utf);
-					break;
-					
 				case SJME_CLASS_POOL_TYPE_CLASS:
 					SJME_CLEANUP_CLOSE(entry->classRef.descriptor);
 					break;
@@ -101,6 +97,10 @@ static sjme_errorCode sjme_class_constantPoolClose(
 				case SJME_CLASS_POOL_TYPE_NAME_AND_TYPE:
 					SJME_CLEANUP_CLOSE(entry->nameAndType.descriptor);
 					SJME_CLEANUP_CLOSE(entry->nameAndType.name);
+					break;
+					
+				case SJME_CLASS_POOL_TYPE_UTF:
+					SJME_CLEANUP_CLOSE(entry->utf.utf);
 					break;
 			}
 		}
