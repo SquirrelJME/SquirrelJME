@@ -13,7 +13,10 @@
 #include "sjme/nvm/cleanup.h"
 
 /** The number of tasks to grow by. */
-#define SJME_TASK_GROW 4
+#define SJME_NVM_TASK_GROW 4
+
+/** The number of threads to grow by. */
+#define SJME_NVM_THREAD_GROW 8
 
 sjme_errorCode sjme_task_start(
 	sjme_attrInNotNull sjme_nvm inState,
@@ -22,6 +25,7 @@ sjme_errorCode sjme_task_start(
 {
 	sjme_errorCode error;
 	sjme_list_sjme_nvm_task* tasks;
+	sjme_list_sjme_nvm_thread* threads;
 	sjme_jint i, n, freeSlot;
 	sjme_nvm_task result;
 
@@ -71,7 +75,8 @@ sjme_errorCode sjme_task_start(
 		{
 			/* Allocate. */
 			if (sjme_error_is(error = sjme_list_alloc(inState->allocPool,
-				SJME_TASK_GROW, &tasks, sjme_nvm_task, 0)) || tasks == NULL)
+				SJME_NVM_TASK_GROW, &tasks, sjme_nvm_task, 0)) ||
+				tasks == NULL)
 				goto fail_allocTasks;
 			
 			/* Free slot is always at the start. */
@@ -81,7 +86,7 @@ sjme_errorCode sjme_task_start(
 		{
 			/* Copy everything over. */
 			if (sjme_error_is(error = sjme_list_copy(inState->allocPool,
-				tasks->length + SJME_TASK_GROW, tasks, &tasks,
+				tasks->length + SJME_NVM_TASK_GROW, tasks, &tasks,
 				sjme_nvm_task, 0)))
 				goto fail_allocTasks;
 			
@@ -112,19 +117,31 @@ sjme_errorCode sjme_task_start(
 	/* All new tasks are considered alive. */
 	result->status = SJME_TASK_STATUS_ALIVE;
 	
-	/* Store it here. */
+	/* Setup thread storage. */
+	if (sjme_error_is(error = sjme_list_alloc(inState->reservedPool,
+		SJME_NVM_THREAD_GROW, &threads, sjme_nvm_thread, 0)) ||
+		threads == NULL)
+		goto fail_allocThreads;
+	result->threads = threads;
+	
+	/* Task is considered valid now, so store it in. */
 	tasks->elements[freeSlot] = result;
 	
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-	
-	/* Unlock. */
+	/* Unlock state, we no longer need to keep the state locked since we */
+	/* are now in the task list and others will really only care if we */
+	/* are even alive or not. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&inState->common.lock, NULL)))
 		return sjme_error_default(error);
 	
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
+	
+	/* In-state locks. */
+fail_allocThreads:
 fail_allocResult:
 	if (result != NULL)
 	{
@@ -137,5 +154,9 @@ fail_allocTasks:
 		&inState->common.lock, NULL)))
 		return sjme_error_default(error);
 	
+	return sjme_error_default(error);
+
+	/* Post state lock, when accessing state is no longer needed. */
+fail_other:
 	return sjme_error_default(error);
 }

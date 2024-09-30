@@ -114,6 +114,9 @@ struct sjme_nvm_taskBase
 	
 	/** The current task status. */
 	sjme_task_statusType status;
+	
+	/** The threads within the current task. */
+	sjme_list_sjme_nvm_thread* threads;
 };
 
 /**

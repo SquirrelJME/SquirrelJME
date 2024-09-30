@@ -232,6 +232,9 @@ struct sjme_nvm_threadBase
 	sjme_exceptTrace* except;
 };
 
+/** List of threads. */
+SJME_LIST_DECLARE(sjme_nvm_thread, 0);
+
 typedef struct sjme_static_constValue
 {
 	/** Integer value. */
