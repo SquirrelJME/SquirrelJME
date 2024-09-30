@@ -170,7 +170,7 @@ sjme_errorCode sjme_nvm_boot(
 	if (sjme_error_is(error = sjme_alloc_copy(reservedPool,
 		sizeof(*result->bootParamCopy),
 		(sjme_pointer*)&result->bootParamCopy,
-		(sjme_pointer)&param)) || result->bootParamCopy == NULL)
+		(sjme_pointer)param)) || result->bootParamCopy == NULL)
 		goto fail_bootParamCopy;
 
 	/* Can only use one or the other to get the class path. */

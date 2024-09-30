@@ -241,6 +241,16 @@ static sjme_errorCode sjme_rom_suiteClose(
 	return sjme_error_notImplemented(0);
 }
 
+static sjme_errorCode sjme_nvm_stateClose(
+	sjme_attrInNullable sjme_closeable closeable)
+{
+	if (closeable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_stringPool_close(
 	sjme_attrInNullable sjme_closeable closeable)
 {
@@ -331,6 +341,10 @@ sjme_errorCode sjme_nvm_allocR(
 		
 		case SJME_NVM_STRUCT_ROM_SUITE:
 			handler = sjme_rom_suiteClose;
+			break;
+		
+		case SJME_NVM_STRUCT_STATE:
+			handler = sjme_nvm_stateClose;
 			break;
 		
 		case SJME_NVM_STRUCT_STRING_POOL:
