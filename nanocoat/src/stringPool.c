@@ -10,7 +10,7 @@
 #include <string.h>
 
 #include "sjme/nvm/stringPool.h"
-#include "sjme/cleanup.h"
+#include "sjme/nvm/cleanup.h"
 #include "sjme/util.h"
 
 /** The amount the size of the string pool should grow. */

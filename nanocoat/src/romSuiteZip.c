@@ -17,7 +17,7 @@
 #include "sjme/nvm/romInternal.h"
 #include "sjme/util.h"
 #include "sjme/zip.h"
-#include "sjme/cleanup.h"
+#include "sjme/nvm/cleanup.h"
 #include "sjme/listUtil.h"
 
 static sjme_errorCode sjme_rom_zipSuiteDefaultLaunch(

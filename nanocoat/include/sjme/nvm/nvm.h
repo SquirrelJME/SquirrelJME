@@ -135,6 +135,9 @@ typedef enum sjme_nvm_structType
 	/** A string in the string pool. */
 	SJME_NVM_STRUCT_STRING_POOL_STRING,
 	
+	/** A single task. */
+	SJME_NVM_STRUCT_TASK,
+	
 	/** The number of structure types. */
 	SJME_NVM_NUM_STRUCT
 } sjme_nvm_structType;
@@ -819,6 +822,9 @@ typedef struct sjme_rom_suiteBase* sjme_rom_suite;
  */
 typedef struct sjme_nvm_taskBase* sjme_nvm_task;
 
+/** List of tasks. */
+SJME_LIST_DECLARE(sjme_nvm_task, 0);
+
 struct sjme_nvm_commonBase
 {
 	/** Closeable for this NanoCoat object. */
@@ -851,8 +857,14 @@ struct sjme_nvm_stateBase
 	/** Hooks for the state. */
 	const sjme_nvm_stateHooks* hooks;
 
-	/* The suite containing all the libraries. */
+	/** The suite containing all the libraries. */
 	sjme_rom_suite suite;
+	
+	/** The tasks that are currently existing. */
+	sjme_list_sjme_nvm_task* tasks;
+	
+	/** The next identifier for tasks. */
+	sjme_jint nextTaskId;
 };
 
 /**

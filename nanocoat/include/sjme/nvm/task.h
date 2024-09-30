@@ -49,8 +49,25 @@ typedef enum sjme_task_pipeRedirectType
 	SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL = 2,
 
 	/** The number of redirect types. */
-	SJME_NUM_TASK_PIPE_REDIRECT_TYPES
+	SJME_TASK_NUM_PIPE_REDIRECT_TYPES
 } sjme_task_pipeRedirectType;
+
+/**
+ * The current task status.
+ * 
+ * @since 2024/09/30
+ */
+typedef enum sjme_task_statusType
+{
+	/** Task has exited. */
+	SJME_TASK_STATUS_EXITED = 0,
+	
+	/** Task is alive. */
+	SJME_TASK_STATUS_ALIVE = 1,
+	
+	/** The number of task statuses. */
+	SJME_TASK_NUM_STATUS_TYPES
+} sjme_task_statusType;
 
 /**
  * The configuration that stores the information needed for starting the task.
@@ -80,6 +97,24 @@ typedef struct sjme_task_startConfig
 	/** The class loader for this task. */
 	sjme_vmClass_loader classLoader;
 } sjme_task_startConfig;
+
+struct sjme_nvm_taskBase
+{
+	/** Common structure details. */
+	sjme_nvm_commonBase common;
+	
+	/** The identifier of this task. */
+	sjme_jint id;
+	
+	/** The state machine which owns this task. */
+	sjme_nvm inState;
+	
+	/** The exit code of the task. */
+	sjme_jint exitCode;
+	
+	/** The current task status. */
+	sjme_task_statusType status;
+};
 
 /**
  * Starts the task.

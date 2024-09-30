@@ -16,7 +16,7 @@
 #include "sjme/nvm/romInternal.h"
 #include "sjme/util.h"
 #include "sjme/zip.h"
-#include "sjme/cleanup.h"
+#include "sjme/nvm/cleanup.h"
 
 sjme_errorCode sjme_rom_resolveClassPathById(
 	sjme_attrInNotNull sjme_rom_suite inSuite,

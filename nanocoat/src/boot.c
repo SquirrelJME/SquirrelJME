@@ -17,7 +17,7 @@
 #include "sjme/nvm/task.h"
 #include "sjme/charSeq.h"
 #include "sjme/native.h"
-#include "sjme/cleanup.h"
+#include "sjme/nvm/cleanup.h"
 #include "sjme/path.h"
 
 #if defined(SJME_PATH_SHORT)

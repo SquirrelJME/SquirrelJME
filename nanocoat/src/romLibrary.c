@@ -16,7 +16,7 @@
 #include "sjme/nvm/romInternal.h"
 #include "sjme/util.h"
 #include "sjme/zip.h"
-#include "sjme/cleanup.h"
+#include "sjme/nvm/cleanup.h"
 
 sjme_errorCode sjme_rom_libraryHash(
 	sjme_attrInNotNull sjme_rom_library library,
