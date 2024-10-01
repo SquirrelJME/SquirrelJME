@@ -26,7 +26,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 	
 	// Country codes
-	implementation 'org.iban4j:iban4j:3.2.7-RELEASE'
+	implementation 'org.iban4j:iban4j:3.2.10-RELEASE'
 	
 	// CSV parsing, for NanoCoat generation
 	implementation 'org.apache.commons:commons-collections4:4.5.0-M2'
