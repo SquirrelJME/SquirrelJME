@@ -7,7 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <varargs.h>
+#if defined(SJME_CONFIG_HAS_NO_STDARG)
+	#if defined(SJME_CONFIG_HAS_NO_VARARGS)
+		#include <varargs.h>
+	#else
+	#endif
+#else
+	#include <stdarg.h>
+#endif
 
 #include "sjme/stdgone.h"
 
