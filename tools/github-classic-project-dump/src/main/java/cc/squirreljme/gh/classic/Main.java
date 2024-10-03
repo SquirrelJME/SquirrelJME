@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 /**
  * Main entry point.
@@ -58,6 +59,8 @@ public class Main
 		}
 		
 		// Read in everything
+		System.err.write(StreamUtils.readAll(1048576,
+			proc.getErrorStream()));
 		return StreamUtils.readAll(1048576, proc.getInputStream());
 	}
 	
@@ -137,7 +140,10 @@ public class Main
 		// Write to disk
 		if (__where.getParent() != null)
 			Files.createDirectories(__where.getParent());
-		Files.write(__where, rawJson);
+		Files.write(__where, rawJson,
+			StandardOpenOption.TRUNCATE_EXISTING,
+			StandardOpenOption.CREATE,
+			StandardOpenOption.WRITE);
 		
 		// Debug
 		System.err.printf(">> %s -> %s%n",
