@@ -631,6 +631,11 @@ extern "C" {
 	#define sjme_align64 
 #endif
 
+/* Missing standard C functions. */
+#if defined(SJME_CONFIG_HAS_NO_SNPRINTF)
+	#include "sjme/stdgone.h"
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
