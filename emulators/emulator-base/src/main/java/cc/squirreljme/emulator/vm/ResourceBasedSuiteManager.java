@@ -12,6 +12,7 @@ package cc.squirreljme.emulator.vm;
 import cc.squirreljme.vm.ResourceBasedClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -109,27 +110,13 @@ public final class ResourceBasedSuiteManager
 				return libs;
 			}
 			
-			// Will just be a normal list
+			// The suites are a UTF encoded list
 			List<String> rv = new ArrayList<>();
-			try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(in, "utf-8")))
+			try (DataInputStream dis = new DataInputStream(in))
 			{
-				for (;;)
-				{
-					String ln = br.readLine();
-					
-					// EOF
-					if (ln == null)
-						break;
-					
-					// Trim and ignore empty lines
-					ln = ln.trim();
-					if (ln.isEmpty())
-						continue;
-					
-					// Add otherwise
-					rv.add(ln);
-				}
+				int n = dis.readInt();
+				for (int i = 0; i < n; i++)
+					rv.add(dis.readUTF());
 			}
 			
 			// Cache and return

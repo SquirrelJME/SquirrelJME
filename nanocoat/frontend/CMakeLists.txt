@@ -16,6 +16,9 @@ if(NOT EMSCRIPTEN AND
 		# Native JVM library to use with OpenJDK?
 		add_subdirectory(libjvm)
 	endif()
+
+	# Standard C front-end
+	add_subdirectory(stdc)
 endif()
 
 # Emulator front end used by the Java base emulator
@@ -38,9 +41,6 @@ endif()
 if(SQUIRRELJME_ENABLE_FRONTEND_LIBRETRO)
 	add_subdirectory(libretro)
 endif()
-
-# Standard C front-end
-add_subdirectory(stdc)
 
 # GUI Command Line Launcher
 if(SQUIRRELJME_ENABLE_DYLIB)

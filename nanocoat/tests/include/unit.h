@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_UNIT_H
 #define SQUIRRELJME_UNIT_H
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
 #include "test.h"
 
@@ -109,6 +109,21 @@ sjme_testResult sjme_unit_operatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 #define sjme_unit_lessEqualI(...) \
 	sjme_unit_operatorIR(SJME_DEBUG_FILE_LINE_FUNC, \
 		SJME_UNIT_OPERATOR_LESS_EQUAL, __VA_ARGS__)
+
+/**
+ * Checks greater than or equal between the two integer values.
+ * 
+ * @param test The test data.
+ * @param a The first value.
+ * @param b The second value.
+ * @param format The message.
+ * @param ... The message parameters.
+ * @return The assertion state.
+ * @since 2024/08/15
+ */
+#define sjme_unit_greaterEqualI(...) \
+	sjme_unit_operatorIR(SJME_DEBUG_FILE_LINE_FUNC, \
+		SJME_UNIT_OPERATOR_GREATER_EQUAL, __VA_ARGS__)
 
 /**
  * Checks inequality between the two integer values.

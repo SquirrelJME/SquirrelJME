@@ -242,7 +242,7 @@ typedef enum sjme_scritchui_serialType
 
 SUD_STRUCT_DEF(choiceGetSelectedIndex,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SDU_VARP(sjme_jint*, outIndex););
+	SDU_VARP(sjme_jint, outIndex););
 	
 SUD_STRUCT_DEF(choiceItemGet,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
@@ -268,7 +268,7 @@ SUD_STRUCT_DEF(choiceItemSetEnabled,
 SUD_STRUCT_DEF(choiceItemSetImage,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SDU_VAR(sjme_jint, atIndex);
-	SDU_VARP(sjme_jint*, inRgb);
+	SDU_VARP(sjme_jint, inRgb);
 	SDU_VAR(sjme_jint, inRgbOff);
 	SDU_VAR(sjme_jint, inRgbDataLen);
 	SDU_VAR(sjme_jint, inRgbScanLen);
@@ -287,23 +287,23 @@ SUD_STRUCT_DEF(choiceItemSetString,
 	
 SUD_STRUCT_DEF(choiceLength,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SDU_VARP(sjme_jint*, outLength););
+	SDU_VARP(sjme_jint, outLength););
 
 SUD_STRUCT_DEF(componentFocusGrab,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent););
 
 SUD_STRUCT_DEF(componentFocusHas,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SDU_VARP(sjme_jboolean*, outHasFocus););
+	SDU_VARP(sjme_jboolean, outHasFocus););
 
 SUD_STRUCT_DEF(componentGetParent,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SDU_VARP(sjme_scritchui_uiComponent*, outParent););
+	SDU_VARP(sjme_scritchui_uiComponent, outParent););
 
 SUD_STRUCT_DEF(componentPosition,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SDU_VARP(sjme_jint*, outX);
-	SDU_VARP(sjme_jint*, outY););
+	SDU_VARP(sjme_jint, outX);
+	SDU_VARP(sjme_jint, outY););
 
 SUD_STRUCT_DEF(componentRepaint,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
@@ -342,8 +342,8 @@ SUD_STRUCT_DEF(componentSetVisibleListener,
 
 SUD_STRUCT_DEF(componentSize,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SDU_VARP(sjme_jint*, outWidth);
-	SDU_VARP(sjme_jint*, outHeight););
+	SDU_VARP(sjme_jint, outWidth);
+	SDU_VARP(sjme_jint, outHeight););
 
 SUD_STRUCT_DEF(containerAdd,
 	SDU_VAR(sjme_scritchui_uiComponent, inContainer);
@@ -365,27 +365,27 @@ SUD_STRUCT_DEF(containerSetBounds,
 	SDU_VAR(sjme_jint, height););
 
 SUD_STRUCT_DEF(fontBuiltin,
-	SDU_VARP(sjme_scritchui_pencilFont*, outFont););
+	SDU_VARP(sjme_scritchui_pencilFont, outFont););
 
 SUD_STRUCT_DEF(fontDerive,
 	SDU_VAR(sjme_scritchui_pencilFont, inFont);
 	SDU_VAR(sjme_scritchui_pencilFontStyle, inStyle);
 	SDU_VAR(sjme_jint, inPixelSize);
-	SDU_VARP(sjme_scritchui_pencilFont*, outDerived););
+	SDU_VARP(sjme_scritchui_pencilFont, outDerived););
 
 SUD_STRUCT_DEF(hardwareGraphics,
-	SDU_VARP(sjme_scritchui_pencil*, outPencil);
-	SDU_VARP(sjme_alloc_weak*, outWeakPencil);
+	SDU_VARP(sjme_scritchui_pencil, outPencil);
+	SDU_VARP(sjme_alloc_weak, outWeakPencil);
 	SDU_VAR(sjme_gfx_pixelFormat, pf);
 	SDU_VAR(sjme_jint, bw);
 	SDU_VAR(sjme_jint, bh);
-	SDU_VARP(const sjme_scritchui_pencilLockFunctions*, inLockFuncs);
-	SDU_VARP(const sjme_frontEnd*, inLockFrontEndCopy);
+	SDU_VARP(const sjme_scritchui_pencilLockFunctions, inLockFuncs);
+	SDU_VARP(const sjme_frontEnd, inLockFrontEndCopy);
 	SDU_VAR(sjme_jint, sx);
 	SDU_VAR(sjme_jint, sy);
 	SDU_VAR(sjme_jint, sw);
 	SDU_VAR(sjme_jint, sh);
-	SDU_VARP(const sjme_frontEnd*, pencilFrontEndCopy););
+	SDU_VARP(const sjme_frontEnd, pencilFrontEndCopy););
 
 SUD_STRUCT_DEF(labelSetString,
 	SDU_VAR(sjme_scritchui_uiCommon, inCommon);
@@ -393,36 +393,36 @@ SUD_STRUCT_DEF(labelSetString,
 
 SUD_STRUCT_DEF(lafElementColor,
 	SDU_VAR(sjme_scritchui_uiComponent, inContext);
-	SDU_VARP(sjme_jint*, outRGB);
+	SDU_VARP(sjme_jint, outRGB);
 	SDU_VAR(sjme_scritchui_lafElementColorType, elementColor););
 
 SUD_STRUCT_DEF(listNew,
-	SDU_VARP(sjme_scritchui_uiList*, outList);
+	SDU_VARP(sjme_scritchui_uiList, outList);
 	SDU_VAR(sjme_scritchui_choiceType, inChoiceType););
 
 SUD_STRUCT_DEF(menuBarNew,
-	SDU_VARP(sjme_scritchui_uiMenuBar*, outMenuBar););
+	SDU_VARP(sjme_scritchui_uiMenuBar, outMenuBar););
 
 SUD_STRUCT_DEF(menuInsert,
-	SDU_VARP(sjme_scritchui_uiMenuKind, intoMenu);
+	SDU_VAR(sjme_scritchui_uiMenuKind, intoMenu);
 	SDU_VAR(sjme_jint, atIndex);
-	SDU_VARP(sjme_scritchui_uiMenuKind, childItem););
+	SDU_VAR(sjme_scritchui_uiMenuKind, childItem););
 	
 SUD_STRUCT_DEF(menuItemNew,
-	SDU_VARP(sjme_scritchui_uiMenuItem*, outMenuItem););
+	SDU_VARP(sjme_scritchui_uiMenuItem, outMenuItem););
 
 SUD_STRUCT_DEF(menuNew,
-	SDU_VARP(sjme_scritchui_uiMenu*, outMenu););
+	SDU_VARP(sjme_scritchui_uiMenu, outMenu););
 
 SUD_STRUCT_DEF(menuRemove,
-	SDU_VARP(sjme_scritchui_uiMenuKind, fromMenu);
+	SDU_VAR(sjme_scritchui_uiMenuKind, fromMenu);
 	SDU_VAR(sjme_jint, atIndex););
 
 SUD_STRUCT_DEF(menuRemoveAll,
-	SDU_VARP(sjme_scritchui_uiMenuKind, fromMenu););
+	SDU_VAR(sjme_scritchui_uiMenuKind, fromMenu););
 
 SUD_STRUCT_DEF(objectDelete,
-	SDU_VARP(sjme_scritchui_uiCommon*, inOutObject););
+	SDU_VARP(sjme_scritchui_uiCommon, inOutObject););
 	
 SUD_STRUCT_DEF(panelEnableFocus,
 	SDU_VAR(sjme_scritchui_uiPanel, inPanel);
@@ -430,29 +430,29 @@ SUD_STRUCT_DEF(panelEnableFocus,
 	SDU_VAR(sjme_jboolean, defaultFocus););
 
 SUD_STRUCT_DEF(panelNew,
-	SDU_VARP(sjme_scritchui_uiPanel*, outPanel););
+	SDU_VARP(sjme_scritchui_uiPanel, outPanel););
 
 SUD_STRUCT_DEF(screenSetListener,
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(screen););
 
 SUD_STRUCT_DEF(screens,
-	SDU_VARP(sjme_scritchui_uiScreen*, outScreens);
-	SDU_VARP(sjme_jint*, inOutNumScreens););
+	SDU_VARP(sjme_scritchui_uiScreen, outScreens);
+	SDU_VARP(sjme_jint, inOutNumScreens););
 
 SUD_STRUCT_DEF(scrollPanelNew,
-	SDU_VARP(sjme_scritchui_uiScrollPanel*, outScrollPanel););
+	SDU_VARP(sjme_scritchui_uiScrollPanel, outScrollPanel););
 
 SUD_STRUCT_DEF(viewGetView,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SDU_VARP(sjme_scritchui_rect*, outViewRect););
+	SDU_VARP(sjme_scritchui_rect, outViewRect););
 
 SUD_STRUCT_DEF(viewSetArea,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SDU_VARP(const sjme_scritchui_dim*, inViewArea););
+	SDU_VARP(const sjme_scritchui_dim, inViewArea););
 
 SUD_STRUCT_DEF(viewSetView,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SDU_VARP(const sjme_scritchui_point*, inViewPos););
+	SDU_VARP(const sjme_scritchui_point, inViewPos););
 
 SUD_STRUCT_DEF(viewSetSizeSuggestListener,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
@@ -468,7 +468,7 @@ SUD_STRUCT_DEF(windowContentMinimumSize,
 	SDU_VAR(sjme_jint, height););
 
 SUD_STRUCT_DEF(windowNew,
-	SDU_VARP(sjme_scritchui_uiWindow*, outWindow););
+	SDU_VARP(sjme_scritchui_uiWindow, outWindow););
 
 SUD_STRUCT_DEF(windowSetCloseListener,
 	SDU_VAR(sjme_scritchui_uiWindow, inWindow);

@@ -42,7 +42,7 @@ sjme_errorCode sjme_scritchui_core_labelSetString(
 	/* Make copy of label, if there is one to be set. */
 	if (inString != NULL)
 		if (sjme_error_is(error = sjme_alloc_strdup(inState->pool,
-			&labeled->label, inString)))
+			(sjme_lpstr*)&labeled->label, inString)))
 			return sjme_error_default(error); 
 		
 	/* Ignore if not implemented as it is not too important. */

@@ -13,8 +13,9 @@
 #include "proto.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "test.h"
+#include "sjme/dylib.h"
 
 const sjme_availableTest sjme_availableTests[] =
 {
@@ -67,11 +68,13 @@ void sjme_test_leakCheck(sjme_alloc_pool* pool)
 		if (link->space == SJME_ALLOC_POOL_SPACE_USED)
 		{
 			/* Indicate it leaked */
-			sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
-				"LEAK:\t%dB\t%s\t%s:%d\tl=%p\tp=%p",
+			sjme_messageR(NULL, -1, NULL,
+				SJME_JNI_TRUE,
+				"LEAK:\t%dB\t%s\t%s:%d\tl=%p\tp=%p\tcount=%d",
 				link->allocSize, link->debugFunction,
 				sjme_debug_shortenFile(link->debugFile), link->debugLine,
-				link, pool);
+				link, pool,
+				(link->weak == NULL ? -2 : link->weak->count.value));
 				
 			/* Recursively check the nested pool. */
 			if ((link->flags & SJME_ALLOC_LINK_FLAG_NESTED_POOL) != 0)
@@ -156,7 +159,7 @@ int sjme_test_main(int argc, sjme_lpstr* argv, sjme_lpcstr* nextTest)
 		sjme_debug_handlers = &sjme_test_debugHandlers;
 
 	/* Setup base allocation pool. */
-	for (chunkLen = 65536; chunkLen >= 1024; chunkLen /= 2)
+	for (chunkLen = 1048576; chunkLen >= 1024; chunkLen /= 2)
 	{
 		/* Try to alloca everything at once. */
 		chunk = sjme_alloca(chunkLen);

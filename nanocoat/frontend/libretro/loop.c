@@ -9,14 +9,15 @@
 
 #include <string.h>
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
-#include "sjme/modelessStars.h"
+#include "sjme/nvm/modelessStars.h"
 #include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
 
 #if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_UNIT_TEST)
 	#include "sjme/test/externTest.h"
+	#include "sjme/dylib.h"
 #endif
 
 #if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_UNIT_TEST)

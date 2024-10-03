@@ -46,6 +46,14 @@ extern "C" {
 #if defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN)
 	/** Emscripten (WASM). */
 	#define SJME_CONFIG_HAS_EMSCRIPTEN
+#elif defined(GEKKO)
+	#if defined(WIIU)
+		/** Nintendo Wii U is available. */
+		#define SJME_CONFIG_HAS_NINTENDO_WIIU
+	#else
+		/** Nintendo Wii is available. */
+		#define SJME_CONFIG_HAS_NINTENDO_WII
+	#endif
 #elif defined(__3DS__) || defined(_3DS)
 	/** Nintendo 3DS is available. */
 	#define SJME_CONFIG_HAS_NINTENDO_3DS
@@ -611,6 +619,17 @@ extern "C" {
 	#define SJME_CONFIG_HAS_THREADS_FALLBACK
 #endif
 
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/** Align to 32-bit. */
+	#define sjme_align32 __declspec(align(4))
+#elif defined(SJME_CONFIG_HAS_GCC)
+	/** Align to 32-bit. */
+	#define sjme_align32 __attribute__((aligned(4)))
+#else
+	/** Align to 32-bit. */
+	#define sjme_align32 
+#endif
+
 #if defined(SJME_CONFIG_HAS_WINDOWS_16)
 	#define SJME_CALL FAR PASCAL
 #elif defined(SJME_CONFIG_HAS_WINDOWS)
@@ -629,6 +648,24 @@ extern "C" {
 #else
 	/** Align to 64-bit. */
 	#define sjme_align64 
+#endif
+
+#if SJME_CONFIG_HAS_POINTER == 64
+	/** Align to pointer. */
+	#define sjme_alignPointer sjme_align64
+#elif SJME_CONFIG_HAS_POINTER == 32
+	/** Align to pointer. */
+	#define sjme_alignPointer sjme_align32
+#else
+	/** Align to pointer. */
+	#define sjme_alignPointer
+#endif
+
+#if defined(SJME_CONFIG_HAS_NINTENDO_3DS) || \
+	defined(SJME_CONFIG_HAS_NINTENDO_WIIU) || \
+    defined(SJME_CONFIG_HAS_NINTENDO_WII)
+	/* Disable errno support. */
+	#define SJME_CONFIG_MISSING_ERRNO
 #endif
 
 /* Missing standard C functions. */

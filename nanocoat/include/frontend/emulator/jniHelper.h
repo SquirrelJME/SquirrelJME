@@ -16,7 +16,9 @@
 #ifndef SQUIRRELJME_JNIHELPER_H
 #define SQUIRRELJME_JNIHELPER_H
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
+#include "sjme/error.h"
+#include "sjme/tokenUtils.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

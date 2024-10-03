@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/modelessStars.h"
+#include "sjme/nvm/modelessStars.h"
 
 sjme_errorCode sjme_modelessStars(
 	sjme_attrInOutNotNull sjme_modelessStarState* state,

@@ -15,6 +15,8 @@
 static sjme_errorCode testEnqueue(
 	sjme_attrInNotNull sjme_alloc_weak weak,
 	sjme_attrInNullable sjme_pointer data,
+	sjme_attrInPositiveNonZero sjme_jint newCount,
+	sjme_attrInValue sjme_jboolean isWeakFree,
 	sjme_attrInValue sjme_jboolean isBlockFree)
 {
 	return SJME_ERROR_NONE;
@@ -23,6 +25,8 @@ static sjme_errorCode testEnqueue(
 static sjme_errorCode testEnqueueOther(
 	sjme_attrInNotNull sjme_alloc_weak weak,
 	sjme_attrInNullable sjme_pointer data,
+	sjme_attrInPositiveNonZero sjme_jint newCount,
+	sjme_attrInValue sjme_jboolean isWeakFree,
 	sjme_attrInValue sjme_jboolean isBlockFree)
 {
 	return SJME_ERROR_NONE;
@@ -44,36 +48,34 @@ SJME_TEST_DECLARE(testAllocWeakEnqueueSetFirst)
 	p = NULL;
 	weak = NULL;
 	if (sjme_error_is(sjme_alloc_weakNew(test->pool, 512,
-		testEnqueue, test, &p, &weak)))
+		testEnqueue, &p, &weak)))
 		return sjme_unit_fail(test, "Failed to allocate weak?");
 	
 	/* The enqueues should be set. */
 	sjme_unit_equalP(test, weak->enqueue, testEnqueue,
 		"Enqueue function not set?");
-	sjme_unit_equalP(test, weak->enqueueData, test,
-		"Enqueue data was not set?");
 	
 	/* Referencing a weak with the same enqueue should not fail. */
 	weakB = NULL;
-	error = sjme_alloc_weakRef(p, &weakB,
+	error = sjme_alloc_weakRefE(p, &weakB,
 		testEnqueue, test);
 	sjme_unit_equalI(test, error, SJME_ERROR_NONE,
 		"Set of same enqueue failed?");
 	
 	/* Changing the data should fail. */
-	error = sjme_alloc_weakRef(p, &weakB,
+	error = sjme_alloc_weakRefE(p, &weakB,
 		testEnqueue, p);
 	sjme_unit_equalI(test, error, SJME_ERROR_ENQUEUE_ALREADY_SET,
 		"Set of different data passed?");
 	
 	/* Changing the function should fail. */
-	error = sjme_alloc_weakRef(p, &weakB,
+	error = sjme_alloc_weakRefE(p, &weakB,
 		testEnqueueOther, test);
 	sjme_unit_equalI(test, error, SJME_ERROR_ENQUEUE_ALREADY_SET,
 		"Set of different data passed?");
 	
 	/* Changing both should fail. */
-	error = sjme_alloc_weakRef(p, &weakB,
+	error = sjme_alloc_weakRefE(p, &weakB,
 		testEnqueueOther, p);
 	sjme_unit_equalI(test, error, SJME_ERROR_ENQUEUE_ALREADY_SET,
 		"Set of different both passed?");

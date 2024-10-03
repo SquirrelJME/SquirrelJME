@@ -9,20 +9,32 @@
 # Declare Base library
 squirreljme_multilib_add_library(Base
 	alloc.c
-	allocSizeOf.c
 	atomic.c
+	bitStream.c
 	charSeq.c
+	circleBuffer.c
+	closeable.c
 	comparator.c
 	debug.c
 	dylib.c
 	error.c
 	fixed.c
+	frontEnd.c
+	inflate.c
 	list.c
+	listUtil.c
 	multithread.c
 	native.c
+	path.c
 	seekable.c
+	seekableMemory.c
 	stdgone.c
 	stream.c
+	streamByte.c
+	streamInflate.c
+	streamMemory.c
+	streamSeekable.c
+	traverse.c
 	tree.c
 	util.c
 	zip.c)

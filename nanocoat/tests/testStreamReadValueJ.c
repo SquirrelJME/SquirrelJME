@@ -121,7 +121,8 @@ SJME_TEST_DECLARE(testStreamReadValueJ)
 		"End of stream not reached?");
 
 	/* Close the stream. */
-	if (sjme_error_is(sjme_stream_inputClose(stream)))
+	if (sjme_error_is(sjme_closeable_close(
+		SJME_AS_CLOSEABLE(stream))))
 		return sjme_unit_fail(test, "Could not close stream?");
 
 	/* Success! */

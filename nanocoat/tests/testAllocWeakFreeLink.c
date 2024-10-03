@@ -16,6 +16,8 @@
 static sjme_errorCode testEnqueue(
 	sjme_attrInNotNull sjme_alloc_weak weak,
 	sjme_attrInNullable sjme_pointer data,
+	sjme_attrInPositiveNonZero sjme_jint newCount,
+	sjme_attrInValue sjme_jboolean isWeakFree,
 	sjme_attrInValue sjme_jboolean isBlockFree)
 {
 	sjme_test* test;
@@ -47,7 +49,7 @@ SJME_TEST_DECLARE(testAllocWeakFreeLink)
 	p = NULL;
 	weak = NULL;
 	if (sjme_error_is(sjme_alloc_weakNew(test->pool, 512,
-		testEnqueue, test, &p, &weak)))
+		testEnqueue, &p, &weak)))
 		return sjme_unit_fail(test, "Failed to allocate weak?");
 		
 	/* Get the block link. */

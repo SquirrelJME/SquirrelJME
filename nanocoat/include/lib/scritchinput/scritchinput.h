@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_SCRITCHINPUT_H
 #define SQUIRRELJME_SCRITCHINPUT_H
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

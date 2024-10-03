@@ -17,6 +17,7 @@
 #define SQUIRRELJME_MULTITHREAD_H
 
 #include "sjme/config.h"
+#include "sjme/error.h"
 
 #if defined(SJME_CONFIG_HAS_THREADS_FALLBACK)
 	/* Clear pthreads. */
@@ -45,7 +46,7 @@
 	#endif
 #endif
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
 #include "sjme/atomic.h"
 
 /* Anti-C++. */

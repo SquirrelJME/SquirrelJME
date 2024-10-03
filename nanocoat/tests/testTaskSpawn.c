@@ -11,7 +11,7 @@
 
 #include "mock.h"
 #include "proto.h"
-#include "sjme/task.h"
+#include "sjme/nvm/task.h"
 #include "test.h"
 #include "unit.h"
 

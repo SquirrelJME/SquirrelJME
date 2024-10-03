@@ -85,7 +85,7 @@ The available options are:
    * Sets the threading mode of the virtual machine.
    * `single`/`coop` -- Single threaded using cooperative multitasking.
    * `multi`/`smt` -- Multi threaded using asynchronous multitasking.
- * `-Xtrace=option[,option[,...]]` -- Trace options
+ * `-Xtrace:option[,option[,...]]` -- Trace options
    * `all` -- Enable all.
    * `allocation` -- Allocations such as `new`.
    * `classInitialize` -- Class is initialized.
