@@ -292,6 +292,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/cicd-release-bundle/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/cicd-release-bundle/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/cicd-release-bundle/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/github-classic-project-dump/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/github-classic-project-dump/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/github-classic-project-dump/out" />

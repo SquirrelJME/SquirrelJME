@@ -67,6 +67,10 @@ executors:
     machine: true
     resource_class: squirreljme/squirreljme-macos-m1
 
+  squirreljme-bundle:
+    machine: true
+    resource_class: squirreljme/bundle
+
 orbs:
   win: circleci/windows@5.0
 
@@ -292,13 +296,13 @@ commands:
           command: flatpak-builder --user --install --install-deps-from=flathub --allow-missing-runtimes --force-clean build-dir cc.squirreljme.SquirrelJME.yml
       - run:
           name: Flatpak Bundle
-          command: flatpak build-bundle $HOME/.local/share/flatpak/repo squirreljme-<<parameters.arch>>.flatpak cc.squirreljme.SquirrelJME
+          command: flatpak build-bundle $HOME/.local/share/flatpak/repo squirreljme-0.3.0-<<parameters.arch>>.flatpak cc.squirreljme.SquirrelJME
       - run:
           name: Flatpak size
           command: ls -al squirreljme-<<parameters.arch>>.flatpak
       - store_artifacts:
-          path: squirreljme-<<parameters.arch>>.flatpak
-          destination: squirreljme-<<parameters.arch>>.flatpak
+          path: squirreljme-0.3.0-<<parameters.arch>>.flatpak
+          destination: squirreljme-0.3.0-<<parameters.arch>>.flatpak
 
   # Common Build for Standalone (UNIX)
   standalone-unix-common-build:
@@ -316,16 +320,18 @@ commands:
 jobs:
   ################################## BUNDLE ##################################
   bundle:
-    executor: build-on-linux-amd64
+    executor: squirreljme-bundle
     steps:
-      - checkout
-      - linux-install-required
       - run:
-          name: Build NanoCoat squirreljme.jar
-          command: ./gradlew :romNanoCoatRelease <<pipeline.parameters.standard-gradle-options>> <<pipeline.parameters.standard-exclusion>>
-      - store_artifacts:
-          path: build/squirreljme/vm-main-nanocoat-release/squirreljme.jar
-          destination: .
+          name: Open repository
+          command: fossil open -f /home/repo/squirreljme.fossil
+      - run:
+          name: Run CI/CD Bundle Tasks
+          command: ./gradlew :tools:cicd-release-bundle:run
+      - run:
+          name: Close repository
+          command: fossil close -f
+          when: always
 
   ################################## WINDOWS #################################
   build_windows_i386_setup:
@@ -866,6 +872,9 @@ workflows:
       - bundle:
           requires:
             - build_linux_amd64_standalone
+            - build_linux_amd64_standalone_flatpak
+            - build_linux_arm64_standalone_flatpak
+            - build_windows_i386_standalone
             - build_windows_amd64_standalone
             - build_macosx_amd64_standalone
             - build_macosx_arm64_standalone

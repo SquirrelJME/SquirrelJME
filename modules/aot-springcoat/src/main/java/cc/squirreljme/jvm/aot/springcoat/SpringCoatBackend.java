@@ -113,30 +113,39 @@ public class SpringCoatBackend
 			 ArchiveOutputQueue queue = new ArchiveOutputQueue(zip))
 		{
 			// Launcher properties
-			try (OutputStream launcherRaw = queue.nextEntry(
-				"SQUIRRELJME.SQC/launcher.main");
-				DataOutputStream launcher = new DataOutputStream(launcherRaw))
-			{
-				launcher.writeUTF(__settings.launcherMainClass);
-			}
+			if (__settings.launcherMainClass != null &&
+				!__settings.launcherMainClass.isEmpty())
+				try (OutputStream launcherRaw = queue.nextEntry(
+					"SQUIRRELJME.SQC/launcher.main");
+					DataOutputStream launcher = new DataOutputStream(
+						launcherRaw))
+				{
+					launcher.writeUTF(__settings.launcherMainClass);
+				}
 			
-			try (OutputStream launcherRaw = queue.nextEntry(
-				"SQUIRRELJME.SQC/launcher.args");
-				DataOutputStream launcher = new DataOutputStream(launcherRaw))
-			{
-				launcher.writeInt(__settings.launcherArgs.size());
-				for (String arg : __settings.launcherArgs)
-					launcher.writeUTF(arg);
-			}
+			if (__settings.launcherArgs != null &&
+				!__settings.launcherArgs.isEmpty())
+				try (OutputStream launcherRaw = queue.nextEntry(
+					"SQUIRRELJME.SQC/launcher.args");
+					DataOutputStream launcher = new DataOutputStream(
+						launcherRaw))
+				{
+					launcher.writeInt(__settings.launcherArgs.size());
+					for (String arg : __settings.launcherArgs)
+						launcher.writeUTF(arg);
+				}
 			
-			try (OutputStream launcherRaw = queue.nextEntry(
-				"SQUIRRELJME.SQC/launcher.path");
-				DataOutputStream launcher = new DataOutputStream(launcherRaw))
-			{
-				launcher.writeInt(__settings.launcherClassPath.size());
-				for (Integer arg : __settings.launcherClassPath)
-					launcher.writeInt(arg);
-			}
+			if (__settings.launcherClassPath != null &&
+				!__settings.launcherClassPath.isEmpty())
+				try (OutputStream launcherRaw = queue.nextEntry(
+					"SQUIRRELJME.SQC/launcher.path");
+					DataOutputStream launcher = new DataOutputStream(
+						launcherRaw))
+				{
+					launcher.writeInt(__settings.launcherClassPath.size());
+					for (Integer arg : __settings.launcherClassPath)
+						launcher.writeInt(arg);
+				}
 			
 			// Setup queue for SQC output
 			List<String> suites = new ArrayList<>();

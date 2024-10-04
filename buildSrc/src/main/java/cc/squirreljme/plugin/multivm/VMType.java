@@ -463,7 +463,7 @@ public enum VMType
 		public boolean isSingleSourceSetRom(BangletVariant __variant)
 		{
 			// NanoCoat is this special case
-			return true;
+			return false;
 		}
 		
 		/**

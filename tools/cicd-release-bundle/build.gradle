@@ -1,0 +1,33 @@
+plugins {
+	id "java"
+	id "application"
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+description = "Performs bundling and otherwise from CI/CD."
+mainClassName = "cc.squirreljme.cicd.Main"
+
+dependencies {
+	implementation project(":modules:io")
+	
+	// Lombok for simpler getters/setters
+	implementation 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+	
+	// Jackson, for JSON APIs
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr353:2.17.2'
+	implementation 'org.glassfish:javax.json:1.1'
+}
+
+TaskProvider<Task> internals = tasks.register('internals') {
+	group = "squirreljme"
+	description = "Builds and collects all of the internal tasks."
+	
+	dependsOn(
+		":romNanoCoatDebug",
+		":romNanoCoatRelease",
+		":romTestNanoCoatDebug")
+}
+
+run.dependsOn(internals)
