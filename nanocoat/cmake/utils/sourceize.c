@@ -13,6 +13,10 @@
 
 #include "sjmeint.h"
 
+#if defined(_MSC_VER)
+	#define snprintf _snprintf
+#endif
+
 #define BUF_SIZE 4096
 #define EFFICIENT_SYM_SIZE 8
 
