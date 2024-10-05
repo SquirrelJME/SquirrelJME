@@ -28,6 +28,12 @@ TaskProvider<Task> internals = tasks.register('internals') {
 		":romNanoCoatDebug",
 		":romNanoCoatRelease",
 		":romTestNanoCoatDebug")
+	mustRunAfter(":clean",
+		"clean")
 }
 
-run.dependsOn(internals)
+run {
+	dependsOn(internals)
+	mustRunAfter(":clean",
+		"clean")
+}
