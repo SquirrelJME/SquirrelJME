@@ -321,13 +321,13 @@ jobs:
     steps:
       - run:
           name: Open repository
-          command: fossil open -f /home/repo/squirreljme.fossil
+          command: fossil open /home/repo/squirreljme.fossil --force
       - run:
           name: Run CI/CD Bundle Tasks
           command: ./gradlew :tools:cicd-release-bundle:run
       - run:
           name: Close repository
-          command: fossil close -f
+          command: fossil close --force
           when: always
 
   ################################## WINDOWS #################################
