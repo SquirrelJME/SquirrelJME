@@ -25,15 +25,39 @@ TaskProvider<Task> internals = tasks.register('internals') {
 	description = "Builds and collects all of the internal tasks."
 	
 	dependsOn(
-		":romNanoCoatDebug",
-		":romNanoCoatRelease",
-		":romTestNanoCoatDebug")
-	mustRunAfter(":clean",
-		"clean")
+		rootProject.tasks.named("romNanoCoatDebug"),
+		rootProject.tasks.named("romNanoCoatRelease"),
+		rootProject.tasks.named("romTestNanoCoatDebug"))
+	mustRunAfter(tasks.named("clean"))
 }
 
 run {
 	dependsOn(internals)
-	mustRunAfter(":clean",
-		"clean")
+	mustRunAfter(tasks.named("clean"))
+	
+	getArgumentProviders().add({ ->
+		// Pass in SquirrelJME version
+		List<String> args = new ArrayList<>()
+		args.add(squirreljmeVersion)
+		
+		// Pass all task dependencies
+		for (Object item : internals.get().dependsOn) {
+			if (item instanceof Provider) {
+				item = ((Provider)item).get()
+			}
+			
+			if (item instanceof Task) {
+				
+				Task sub = (Task)item
+				
+				for (File file : sub.outputs.files.asFileTree.files) {
+					args.add(String.format("%s=%s",
+						sub.name,
+						file.toPath().toAbsolutePath().toString()))
+				}
+			}
+		}
+		
+		return args
+	} as CommandLineArgumentProvider)
 }
