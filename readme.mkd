@@ -24,7 +24,7 @@ ability to play older J2ME software and games designed for flip-phones.
  * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2024
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
-   * Kat@CMYKat Designs & Illustrations <http://www.cmykat-designs.com/>
+   * Kat@CMYKat Designs & Illustrations <https://www.cmykatgraphics.ca/>
 
 Please support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
