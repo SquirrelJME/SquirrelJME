@@ -112,6 +112,28 @@ public class SpringCoatBackend
 		try (ZipStreamWriter zip = new ZipStreamWriter(__out);
 			 ArchiveOutputQueue queue = new ArchiveOutputQueue(zip))
 		{
+			// Fossil commit
+			if (__aotSettings.commitFossil != null &&
+				!__aotSettings.commitFossil.isEmpty())
+				try (OutputStream commitRaw = queue.nextEntry(
+					"SQUIRRELJME.SQC/commit.fossil");
+					DataOutputStream commit = new DataOutputStream(
+						commitRaw))
+				{
+					commit.writeUTF(__aotSettings.commitFossil);
+				}
+			
+			// Git commit
+			if (__aotSettings.commitGit != null &&
+				!__aotSettings.commitGit.isEmpty())
+				try (OutputStream commitRaw = queue.nextEntry(
+					"SQUIRRELJME.SQC/commit.git");
+					DataOutputStream commit = new DataOutputStream(
+						commitRaw))
+				{
+					commit.writeUTF(__aotSettings.commitGit);
+				}
+			
 			// Launcher properties
 			if (__settings.launcherMainClass != null &&
 				!__settings.launcherMainClass.isEmpty())

@@ -1052,6 +1052,16 @@ public enum VMType
 		args.add("-XsourceSet:" +
 			__task.getSourceSet());
 		
+		// Fossil hash
+		String fossilHash = VMHelpers.hashFossil(__task.getProject());
+		if (fossilHash != null)
+			args.add("-Xcommit:fossil:" + fossilHash);
+		
+		// Git hash
+		String gitHash = VMHelpers.hashGit(__task.getProject());
+		if (gitHash != null)
+			args.add("-Xcommit:git:" + gitHash);
+		
 		// Arguments before the command
 		if (__preArgs != null)
 			for (String arg : __preArgs)

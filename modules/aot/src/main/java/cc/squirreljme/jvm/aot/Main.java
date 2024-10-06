@@ -15,6 +15,7 @@ import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,6 +26,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.ServiceLoader;
+import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
@@ -105,6 +107,8 @@ public class Main
 		String clutterLevel = null;
 		String sourceSet = null;
 		String originalLibHash = null;
+		String commitFossil = null;
+		String commitGit = null;
 		
 		// Parse input arguments
 		while (!args.isEmpty())
@@ -131,6 +135,14 @@ public class Main
 			else if (arg.startsWith("-XoriginalLibHash:"))
 				originalLibHash = arg.substring("-XoriginalLibHash:".length());
 			
+			// Fossil commit
+			else if (arg.startsWith("-Xcommit:fossil:"))
+				commitFossil = arg.substring("-Xcommit:fossil:".length());
+			
+			// Git commit
+			else if (arg.startsWith("-Xcommit:git:"))
+				commitGit = arg.substring("-Xcommit:git:".length());
+			
 			// End of switches
 			else if (!arg.startsWith("-"))
 			{
@@ -152,7 +164,8 @@ public class Main
 		
 		// Store into settings
 		AOTSettings aotSettings = new AOTSettings(compiler,
-			name, mode, sourceSet, clutterLevel, originalLibHash);
+			name, mode, sourceSet, clutterLevel, originalLibHash,
+			commitFossil, commitGit);
 		
 		// Use explicit input/output
 		try (InputStream in = new StandardInputStream();
@@ -289,8 +302,29 @@ public class Main
 									 new ByteArrayInputStream(data))
 								{
 									if (isManifest)
+									{
+										MutableJavaManifest target =
+											new MutableJavaManifest(
+												new JavaManifest(rawIn));
+										
+										// Fossil version
+										if (__aotSettings.commitFossil != null)
+											target.getMainAttributes()
+												.putValue(
+												"X-SquirrelJME-Fossil",
+												__aotSettings.commitFossil);
+										
+										// Git version
+										if (__aotSettings.commitGit != null)
+											target.getMainAttributes()
+												.putValue(
+												"X-SquirrelJME-Git",
+												__aotSettings.commitGit);
+										
+										// Use this manifest
 										glob.rememberManifest(
-											new JavaManifest(rawIn));
+											target.build());
+									}
 									else
 										glob.rememberTests(
 											StreamUtils.readAllLines(rawIn,
@@ -357,7 +391,8 @@ public class Main
 			libs.add(lib);
 		}
 		
-		/* {@squirreljme.error AE08 No libraries specified to link together.} */
+		/* {@squirreljme.error AE08 No libraries specified to link
+		together.} */
 		if (libs.isEmpty())
 			throw new IllegalArgumentException("AE08");
 		
