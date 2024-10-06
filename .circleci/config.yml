@@ -320,13 +320,31 @@ jobs:
     executor: squirreljme-bundle
     steps:
       - run:
+          name: Setup working directory
+          command: rm -rf co; mkdir -p co
+      - run:
           name: Open repository
+          working_directory: co
           command: fossil open /home/repo/squirreljme.fossil --force
       - run:
+          name: Checkout trunk
+          working_directory: co
+          command: fossil checkout trunk || echo "Ignoring..."
+      - run:
+          name: Updating checkout
+          working_directory: co
+          command: fossil update || echo "Ignoring..."
+      - run:
+          name: Ensure build is clean
+          working_directory: co
+          comand: ./gradlew clean --parallel
+      - run:
           name: Run CI/CD Bundle Tasks
-          command: ./gradlew clean :tools:cicd-release-bundle:run
+          working_directory: co
+          command: ./gradlew :tools:cicd-release-bundle:run --parallel
       - run:
           name: Close repository
+          working_directory: co
           command: fossil close --force
           when: always
 
