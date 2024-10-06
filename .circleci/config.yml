@@ -337,7 +337,7 @@ jobs:
       - run:
           name: Ensure build is clean
           working_directory: co
-          comand: ./gradlew clean --parallel
+          command: ./gradlew clean --parallel
       - run:
           name: Run CI/CD Bundle Tasks
           working_directory: co
