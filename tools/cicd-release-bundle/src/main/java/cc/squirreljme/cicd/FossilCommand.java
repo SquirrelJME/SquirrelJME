@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,6 +63,49 @@ public class FossilCommand
 		
 		this.exec("uv", "add",
 			__path.toAbsolutePath().toString(), "--as", __target);
+	}
+	
+	/**
+	 * Adds a file to the un-versioned space.
+	 *
+	 * @param __rawData The raw file data to add.
+	 * @param __target The target destination.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/10/05
+	 */
+	public void add(byte[] __rawData, String __target)
+		throws IOException, NullPointerException
+	{
+		if (__rawData == null || __target == null)
+			throw new NullPointerException("NARG");
+		
+		Path temp = null;
+		try
+		{
+			// Setup temporary file
+			temp = Files.createTempFile("squirreljme", ".bin");
+			
+			// Write everything there
+			Files.write(temp, __rawData,
+				StandardOpenOption.WRITE,
+				StandardOpenOption.TRUNCATE_EXISTING,
+				StandardOpenOption.CREATE);
+			
+			// Store it
+			this.add(temp.toAbsolutePath(), __target);
+		}
+		finally
+		{
+			if (temp != null)
+				try
+				{
+					Files.delete(temp);
+				}
+				catch (IOException __ignored)
+				{	
+				}
+		}
 	}
 	
 	/**

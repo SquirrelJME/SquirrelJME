@@ -27,6 +27,10 @@ public class CircleCiJob
 	String name;
 	
 	/** The job number. */
-	@JsonProperty("number")
-	Integer number;
+	@JsonProperty("job_number")
+	Integer jobNumber;
+	
+	/** The Job ID. */
+	@JsonProperty("id")
+	String id;
 }

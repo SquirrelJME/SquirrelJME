@@ -10,8 +10,11 @@
 package cc.squirreljme.cicd.circleci;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -23,6 +26,8 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder(toBuilder = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
+@ToString(callSuper = true)
 public class CircleCiJobArtifacts
 	extends CircleCiPaginated<CircleCiArtifact>
 {
