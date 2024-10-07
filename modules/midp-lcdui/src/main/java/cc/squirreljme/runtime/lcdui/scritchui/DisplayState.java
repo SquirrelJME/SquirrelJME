@@ -112,6 +112,7 @@ public final class DisplayState
 	 * @param __displayable The current displayable to set.
 	 * @since 2024/07/27
 	 */
+	@SquirrelJMEVendorApi
 	void __setCurrent(DisplayableState __displayable)
 	{
 		synchronized (this)
