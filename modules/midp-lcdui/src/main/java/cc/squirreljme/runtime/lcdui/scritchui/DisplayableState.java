@@ -44,6 +44,7 @@ public final class DisplayableState
 	protected final ScritchInterface scritchApi;
 	
 	/** The display this is showing on. */
+	@SquirrelJMEVendorApi
 	private volatile DisplayState _current;
 	
 	/**

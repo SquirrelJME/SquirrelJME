@@ -27,6 +27,7 @@ public abstract class MenuActionNodeOnly
 		new MenuActionNode(this);
 	
 	/** Root menu tree state. */
+	@SquirrelJMEVendorApi
 	final MenuActionTree _menuRootTree;
 	
 	/**

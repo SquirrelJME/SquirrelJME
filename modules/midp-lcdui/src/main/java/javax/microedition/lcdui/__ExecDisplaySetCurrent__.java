@@ -46,6 +46,7 @@ class __ExecDisplaySetCurrent__
 	protected final ScritchInterface scritchApi;
 	
 	/** The display to call this on. */
+	@SquirrelJMEVendorApi
 	protected final Display display;
 	
 	/**

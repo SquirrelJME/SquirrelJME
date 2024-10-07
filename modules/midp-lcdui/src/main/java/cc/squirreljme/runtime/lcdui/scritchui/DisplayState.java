@@ -36,9 +36,11 @@ public final class DisplayState
 	protected final ScritchScreenBracket scritchScreen;
 	
 	/** The displayable currently showing on this. */
+	@SquirrelJMEVendorApi
 	volatile DisplayableState _current;
 	
 	/** The display to show on exit. */
+	@SquirrelJMEVendorApi
 	private volatile DisplayableState _onExit;
 	
 	/** The current displayable hold. */
