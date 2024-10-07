@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
@@ -28,16 +29,20 @@ import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNodeOnly;
  *
  * @since 2024/03/16
  */
+@SquirrelJMEVendorApi
 class __ExecDisplaySetCurrent__
 	implements Runnable
 {
 	/** The displayable to show when the displayable is removed. */
+	@SquirrelJMEVendorApi
 	protected final Displayable onExit;
 	
 	/** The displayable to show immediately. */
+	@SquirrelJMEVendorApi
 	protected final Displayable showNow;
 	
 	/** The ScritchUI interface. */
+	@SquirrelJMEVendorApi
 	protected final ScritchInterface scritchApi;
 	
 	/** The display to call this on. */
@@ -57,6 +62,7 @@ class __ExecDisplaySetCurrent__
 	 * or {@code __on} are {@code null}.
 	 * @since 2024/03/17
 	 */
+	@SquirrelJMEVendorApi
 	__ExecDisplaySetCurrent__(ScritchInterface __scritchApi, Display __display,
 		Displayable __showNow, Displayable __onExit)
 		throws NullPointerException
@@ -80,6 +86,7 @@ class __ExecDisplaySetCurrent__
 	 * @since 2024/03/17
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void run()
 	{
 		// Get the container API since we will have to clear and add it to

@@ -21,8 +21,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Menu;
 import org.jetbrains.annotations.Async;
 
 /**
@@ -35,7 +33,7 @@ public final class MenuActionTree
 {
 	/** Mapping of nodes to leafs, to keep track of natives. */
 	@SquirrelJMEVendorApi
-	private final List<Leaf> _mappings =
+	private final List<MenuActionTreeLeaf> _mappings =
 		new ArrayList<>();
 	
 	/**
@@ -46,18 +44,18 @@ public final class MenuActionTree
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/30
 	 */
-	public Leaf find(ScritchMenuKindBracket __kind)
+	public MenuActionTreeLeaf find(ScritchMenuKindBracket __kind)
 		throws NullPointerException
 	{
 		if (__kind == null)
 			throw new NullPointerException("NARG");
 		
-		List<Leaf> mappings = this._mappings;
+		List<MenuActionTreeLeaf> mappings = this._mappings;
 		synchronized (this)
 		{
 			for (int i = 0, n = mappings.size(); i < n; i++)
 			{
-				Leaf leaf = mappings.get(i);
+				MenuActionTreeLeaf leaf = mappings.get(i);
 				if (leaf._scritch == __kind)
 					return leaf;
 			}
@@ -76,26 +74,26 @@ public final class MenuActionTree
 	 * @since 2024/07/21
 	 */
 	@SquirrelJMEVendorApi
-	public final Leaf map(MenuActionNode __node)
+	public final MenuActionTreeLeaf map(MenuActionNode __node)
 		throws NullPointerException
 	{
 		if (__node == null)
 			throw new NullPointerException("NARG");
 		
-		List<Leaf> mappings = this._mappings;
+		List<MenuActionTreeLeaf> mappings = this._mappings;
 		synchronized (this)
 		{
 			// Find the mapping node
 			int n = mappings.size();
 			for (int i = 0; i < n; i++)
 			{
-				Leaf check = mappings.get(i);
+				MenuActionTreeLeaf check = mappings.get(i);
 				if (check._node == __node)
 					return check;
 			}
 			
 			// Otherwise it needs creation
-			Leaf result = new Leaf(__node);
+			MenuActionTreeLeaf result = new MenuActionTreeLeaf(__node);
 			
 			// Add to mapping set
 			mappings.add(result);
@@ -149,7 +147,7 @@ public final class MenuActionTree
 		ScritchMenuInterface menuApi = scritchApi.menu();
 		
 		// Map ourself into a node
-		Leaf into = this.map(__into);
+		MenuActionTreeLeaf into = this.map(__into);
 		ScritchMenuKindBracket scritch = into._scritch;
 		
 		// Children need to be added?
@@ -165,14 +163,14 @@ public final class MenuActionTree
 			// Map all menu nodes to leaves first, so that they have created
 			// ScritchUI objects as required... if applicable
 			int n = __add.length;
-			Leaf[] leaves = new Leaf[n];
+			MenuActionTreeLeaf[] leaves = new MenuActionTreeLeaf[n];
 			for (int i = 0; i < n; i++)
 				leaves[i] = this.map(((MenuActionNodeOnly)__add[i])._menuNode);
 			
 			// Setup leaves first
 			for (int i = 0; i < n; i++)
 			{
-				Leaf leaf = leaves[i];
+				MenuActionTreeLeaf leaf = leaves[i];
 				MenuActionNode leafNode = leaf._node;
 				
 				// Recursive update of child
@@ -197,86 +195,6 @@ public final class MenuActionTree
 			
 			labelApi.labelSetString((ScritchMenuHasLabelBracket)scritch,
 				label);
-		}
-	}
-	
-	/**
-	 * A single leaf within the tree.
-	 * 
-	 * @since 2024/07/21
-	 */
-	@SquirrelJMEVendorApi
-	public static final class Leaf
-	{
-		/** The node this maps to. */
-		@SquirrelJMEVendorApi
-		final MenuActionNode _node;
-		
-		/** The ScritchUI bracket used. */
-		@SquirrelJMEVendorApi
-		final ScritchMenuKindBracket _scritch;
-		
-		/**
-		 * Initializes the leaf from the node.
-		 *
-		 * @param __node The node to map to.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2024/07/21
-		 */
-		@SquirrelJMEVendorApi
-		Leaf(MenuActionNode __node)
-			throws NullPointerException
-		{
-			if (__node == null)
-				throw new NullPointerException("NARG");
-			
-			MenuActionApplicable owner = __node.owner();
-			ScritchInterface api = DisplayManager.instance().scritch();
-			
-			// Determine the item that should be created
-			ScritchMenuKindBracket scritch;
-			if (owner instanceof Displayable)
-				scritch = api.menu().menuBarNew();
-			else if (owner instanceof Menu)
-				scritch = api.menu().menuNew();
-			else
-				scritch = api.menu().menuItemNew();
-			
-			// Store
-			this._node = __node;
-			this._scritch = scritch;
-		}
-		
-		/**
-		 * Returns the leaf's owner.
-		 *
-		 * @return The leaf's owner.
-		 * @since 2024/07/30
-		 */
-		@SquirrelJMEVendorApi
-		public final MenuActionApplicable owner()
-		{
-			return this._node.owner();
-		}
-		
-		/**
-		 * Returns the native widget.
-		 *
-		 * @param <K> The widget type.
-		 * @param __cl The widget type.
-		 * @return The resultant widget.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2024/07/23
-		 */
-		@SquirrelJMEVendorApi
-		public <K extends ScritchMenuKindBracket> K scritchWidget(
-			Class<? extends K> __cl)
-			throws NullPointerException
-		{
-			if (__cl == null)
-				throw new NullPointerException("NARG");
-			
-			return __cl.cast(this._scritch);
 		}
 	}
 }
