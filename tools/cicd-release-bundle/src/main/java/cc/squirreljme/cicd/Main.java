@@ -163,7 +163,7 @@ public class Main
 				break;
 				
 			case "build_linux_arm64_standalone":
-				name = "squirreljme-standalone-%s-linux-arm64.jar";
+				name = "squirreljme-standalone-%s-linux-aarch64.jar";
 				break;
 				
 			case "build_linux_amd64_standalone":
@@ -171,7 +171,7 @@ public class Main
 				break;
 				
 			case "build_linux_arm64_standalone_flatpak":
-				name = "squirreljme-%s-arm64.flatpak";
+				name = "squirreljme-%s-aarch64.flatpak";
 				break;
 				
 			case "build_linux_amd64_standalone_flatpak":

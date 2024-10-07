@@ -369,7 +369,7 @@ public final class ChunkUtils
 				ChunkUtils.writeString(__chunk, bootLoaderMainClass)
 					.futureAddress());
 		
-		// The class path for the boot loader
+		// The class path for the bootloader
 		List<Integer> bootLoaderClassPath = __settings.bootLoaderClassPath;
 		if (bootLoaderClassPath != null && !bootLoaderClassPath.isEmpty())
 		{
