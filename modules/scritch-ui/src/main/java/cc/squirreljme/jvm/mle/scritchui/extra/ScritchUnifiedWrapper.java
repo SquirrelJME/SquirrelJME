@@ -69,6 +69,7 @@ public class ScritchUnifiedWrapper
 	implements ScritchUnifiedInterface
 {
 	/** The interface to wrap. */
+	@SquirrelJMEVendorApi
 	protected final ScritchInterface api;
 	
 	/**
@@ -78,6 +79,7 @@ public class ScritchUnifiedWrapper
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/08/02
 	 */
+	@SquirrelJMEVendorApi
 	public ScritchUnifiedWrapper(ScritchInterface __api)
 		throws NullPointerException
 	{
@@ -92,6 +94,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void containerAdd(ScritchContainerBracket __container,
 		ScritchComponentBracket __component)
 		throws MLECallError
@@ -104,6 +107,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public PencilFontBracket[] builtinFonts()
 	{
 		return this.api.environment().builtinFonts();
@@ -114,6 +118,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void windowCallAttention(ScritchWindowBracket __window)
 		throws MLECallError
 	{
@@ -125,6 +130,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchChoiceInterface choice()
 	{
 		return this;
@@ -135,6 +141,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchComponentInterface component()
 	{
 		return this;
@@ -145,6 +152,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchContainerInterface container()
 	{
 		return this;
@@ -155,6 +163,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int windowContentHeight(
 		ScritchWindowBracket __window)
 		throws MLECallError
@@ -167,6 +176,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void windowContentMinimumSize(ScritchWindowBracket __window,
 		int __w,
 		int __h)
@@ -180,6 +190,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int windowContentWidth(
 		ScritchWindowBracket __window)
 		throws MLECallError
@@ -192,6 +203,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void choiceDelete(ScritchChoiceBracket __choice,
 		int __atIndex)
 		throws MLECallError
@@ -215,6 +227,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int screenDpi(
 		ScritchScreenBracket __screen)
 		throws MLECallError
@@ -227,6 +240,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int lafElementColor(@Nullable ScritchComponentBracket __context,
 		int __element)
 		throws MLECallError
@@ -240,6 +254,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void panelEnableFocus(ScritchPanelBracket __panel, boolean __enabled,
 		boolean __default)
 		throws MLECallError
@@ -252,6 +267,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchEnvironmentInterface environment()
 	{
 		return this;
@@ -262,6 +278,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchEventLoopInterface eventLoop()
 	{
 		return this;
@@ -272,6 +289,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void loopExecute(Runnable __task)
 		throws MLECallError
 	{
@@ -283,6 +301,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void loopExecuteLater(Runnable __task)
 		throws MLECallError
 	{
@@ -294,6 +313,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void loopExecuteWait(Runnable __task)
 		throws MLECallError
 	{
@@ -305,6 +325,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int lafFocusBorderStyle(boolean __focused)
 	{
 		return this.api.environment().lookAndFeel()
@@ -316,6 +337,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public @Nullable PencilFontBracket lafFont(int __element)
 		throws MLECallError
 	{
@@ -327,6 +349,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public PencilFontBracket fontDerive(
 		PencilFontBracket __font, int __style,
 		int __pixelSize)
@@ -340,6 +363,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public @Nullable ScritchComponentBracket componentGetParent(
 		ScritchComponentBracket __component)
 		throws MLECallError
@@ -352,6 +376,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int choiceGetSelectedIndex(
 		ScritchChoiceBracket __choice)
 		throws MLECallError
@@ -364,6 +389,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void viewGetView(ScritchViewBracket __view,
 		int[] __outRect)
 		throws MLECallError
@@ -376,6 +402,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public PencilBracket hardwareGraphics(int __pf,
 		int __bw,
 		int __bh,
@@ -393,6 +420,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean windowHasFocus(ScritchWindowBracket __window)
 		throws MLECallError
 	{
@@ -404,6 +432,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int screenHeight(
 		ScritchScreenBracket __screen)
 		throws MLECallError
@@ -416,6 +445,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int componentGetHeight(
 		ScritchComponentBracket __component)
 		throws MLECallError
@@ -440,6 +470,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int lafImageSize(int __elem,
 		boolean __height)
 		throws MLECallError
@@ -453,6 +484,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean inLoop()
 	{
 		return this.api.eventLoop().inLoop();
@@ -463,6 +495,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int windowInputTypes(ScritchWindowBracket __window)
 		throws MLECallError
 	{
@@ -474,6 +507,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int choiceInsert(
 		ScritchChoiceBracket __choice,
 		int __atIndex)
@@ -487,6 +521,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean screenIsBuiltIn(ScritchScreenBracket __screen)
 		throws MLECallError
 	{
@@ -498,6 +533,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean lafIsDarkMode()
 	{
 		return this.api.environment().lookAndFeel().lafIsDarkMode();
@@ -508,6 +544,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isInhibitingSleep()
 	{
 		return this.api.environment().isInhibitingSleep();
@@ -518,6 +555,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isPanelOnly()
 	{
 		return this.api.environment().isPanelOnly();
@@ -528,6 +566,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean screenIsPortrait(ScritchScreenBracket __screen)
 		throws MLECallError
 	{
@@ -539,6 +578,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean windowIsVisible(ScritchWindowBracket __window)
 		throws MLECallError
 	{
@@ -550,6 +590,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchLabelInterface label()
 	{
 		return this;
@@ -560,6 +601,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int choiceLength(
 		@Nullable ScritchChoiceBracket __choice)
 		throws MLECallError
@@ -572,6 +614,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchListInterface list()
 	{
 		return this;
@@ -582,6 +625,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchListBracket listNew(int __type)
 		throws MLECallError
 	{
@@ -593,6 +637,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchLAFInterface lookAndFeel()
 	{
 		return this;
@@ -603,6 +648,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchMenuInterface menu()
 	{
 		return this;
@@ -613,6 +659,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchMenuBarBracket menuBarNew()
 		throws MLECallError
 	{
@@ -624,6 +671,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void menuInsert(ScritchMenuHasChildrenBracket __into,
 		int __at,
 		ScritchMenuHasParentBracket __item)
@@ -637,6 +685,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchMenuItemBracket menuItemNew()
 		throws MLECallError
 	{
@@ -648,6 +697,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void menuItemSetKey(ScritchMenuItemBracket __item,
 		int __key, int __modifier)
 		throws MLECallError
@@ -660,6 +710,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchMenuBracket menuNew()
 		throws MLECallError
 	{
@@ -671,6 +722,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchPanelBracket panelNew()
 		throws MLECallError
 	{
@@ -682,6 +734,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchWindowBracket windowNew()
 	{
 		return this.api.window().windowNew();
@@ -692,6 +745,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void objectDelete(ScritchBaseBracket __object)
 		throws MLECallError
 	{
@@ -703,6 +757,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchPaintableInterface paintable()
 	{
 		return this;
@@ -713,6 +768,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchPanelInterface panel()
 	{
 		return this;
@@ -723,6 +779,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void menuRemoveAll(ScritchMenuHasChildrenBracket __menuKind)
 		throws MLECallError
 	{
@@ -734,6 +791,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void containerRemoveAll(ScritchContainerBracket __container)
 		throws MLECallError
 	{
@@ -745,6 +803,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void componentRepaint(ScritchComponentBracket __component)
 		throws MLECallError
 	{
@@ -756,6 +815,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void componentRevalidate(ScritchComponentBracket __component)
 		throws MLECallError
 	{
@@ -767,6 +827,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchScreenInterface screen()
 	{
 		return this;
@@ -777,6 +838,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchScreenBracket[] screens()
 	{
 		return this.api.environment().screens();
@@ -787,6 +849,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchScrollPanelInterface scrollPanel()
 	{
 		return this;
@@ -797,6 +860,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchScrollPanelBracket scrollPanelNew()
 		throws MLECallError
 	{
@@ -808,11 +872,13 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void componentSetActivateListener(ScritchComponentBracket __component,
 		ScritchActivateListener __listener)
 		throws MLECallError
 	{
-		this.api.component().componentSetActivateListener(__component, __listener);
+		this.api.component().componentSetActivateListener(__component,
+			__listener);
 	}
 	
 	/**
@@ -820,6 +886,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void viewSetArea(ScritchViewBracket __view,
 		int __width,
 		int __height)
@@ -833,6 +900,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void containerSetBounds(ScritchContainerBracket __container,
 		ScritchComponentBracket __component, int __x, int __y,
 		int __w,
@@ -848,6 +916,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void windowSetCloseListener(ScritchWindowBracket __window,
 		@Nullable ScritchCloseListener __listener)
 		throws MLECallError
@@ -860,6 +929,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void choiceSetEnabled(ScritchChoiceBracket __choice,
 		int __atIndex,
 		boolean __enabled)
@@ -873,6 +943,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void choiceSetImage(ScritchChoiceBracket __choice,
 		int __atIndex,
 		@Nullable int[] __data,
@@ -891,6 +962,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void setInhibitSleep(boolean __inhibit)
 	{
 		this.api.environment().setInhibitSleep(__inhibit);
@@ -901,6 +973,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void panelSetInputListener(ScritchPanelBracket __panel,
 		@Nullable ScritchInputListener __listener)
 		throws MLECallError
@@ -913,6 +986,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void windowSetMenuBar(ScritchWindowBracket __window,
 		@Nullable ScritchMenuBarBracket __menuBar)
 		throws MLECallError
@@ -925,6 +999,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void windowSetMenuItemActivateListener(
 		ScritchWindowBracket __window,
 		@Nullable ScritchMenuItemActivateListener __listener)
@@ -938,6 +1013,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void componentSetPaintListener(ScritchPaintableBracket __component,
 		@Nullable ScritchPaintListener __listener)
 		throws MLECallError
@@ -950,6 +1026,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void choiceSetSelected(ScritchChoiceBracket __choice,
 		int __atIndex,
 		boolean __selected)
@@ -963,6 +1040,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void componentSetSizeListener(ScritchComponentBracket __component,
 		ScritchSizeListener __listener)
 		throws MLECallError
@@ -975,6 +1053,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void viewSetSizeSuggestListener(ScritchViewBracket __view,
 		@Nullable ScritchSizeSuggestListener __listener)
 		throws MLECallError
@@ -987,6 +1066,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void labelSetString(ScritchLabelBracket __label,
 		@Nullable String __string)
 		throws MLECallError
@@ -999,6 +1079,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void choiceSetString(ScritchChoiceBracket __choice,
 		int __atIndex,
 		@Nullable String __string)
@@ -1012,6 +1093,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void componentSetValueUpdateListener(ScritchComponentBracket __component,
 		ScritchValueUpdateListener __listener)
 		throws MLECallError
@@ -1024,6 +1106,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void viewSetView(ScritchViewBracket __view,
 		int __x,
 		int __y,
@@ -1039,6 +1122,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void viewSetViewListener(ScritchViewBracket __view,
 		@Nullable ScritchViewListener __listener)
 		throws MLECallError
@@ -1051,6 +1135,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void windowSetVisible(ScritchWindowBracket __window,
 		boolean __visible)
 		throws MLECallError
@@ -1063,6 +1148,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void componentSetVisibleListener(ScritchComponentBracket __component,
 		ScritchVisibleListener __listener)
 		throws MLECallError
@@ -1075,6 +1161,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchViewInterface view()
 	{
 		return this;
@@ -1085,6 +1172,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int screenWidth(
 		ScritchScreenBracket __screen)
 		throws MLECallError
@@ -1097,6 +1185,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int componentWidth(
 		ScritchComponentBracket __component)
 		throws MLECallError
@@ -1109,6 +1198,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchWindowInterface window()
 	{
 		return this;
@@ -1119,6 +1209,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int windowManagerType()
 	{
 		return this.api.environment().windowManagerType();

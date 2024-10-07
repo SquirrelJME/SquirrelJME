@@ -195,7 +195,8 @@ public final class MenuActionTree
 			if (label == null || label.isEmpty())
 				label = action._shortLabel.get();
 			
-			labelApi.labelSetString((ScritchMenuHasLabelBracket)scritch, label);
+			labelApi.labelSetString((ScritchMenuHasLabelBracket)scritch,
+				label);
 		}
 	}
 	
@@ -252,6 +253,7 @@ public final class MenuActionTree
 		 * @return The leaf's owner.
 		 * @since 2024/07/30
 		 */
+		@SquirrelJMEVendorApi
 		public final MenuActionApplicable owner()
 		{
 			return this._node.owner();
@@ -266,6 +268,7 @@ public final class MenuActionTree
 		 * @throws NullPointerException On null arguments.
 		 * @since 2024/07/23
 		 */
+		@SquirrelJMEVendorApi
 		public <K extends ScritchMenuKindBracket> K scritchWidget(
 			Class<? extends K> __cl)
 			throws NullPointerException

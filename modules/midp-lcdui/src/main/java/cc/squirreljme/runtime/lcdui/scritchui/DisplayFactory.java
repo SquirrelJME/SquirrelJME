@@ -33,6 +33,7 @@ public interface DisplayFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/09
 	 */
+	@SquirrelJMEVendorApi
 	DisplayState create(ScritchInterface __scritch,
 		ScritchWindowBracket __window, ScritchScreenBracket __screen)
 		throws NullPointerException;

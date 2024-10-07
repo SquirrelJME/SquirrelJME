@@ -25,18 +25,23 @@ public class DisplayFloatScale
 	extends DisplayScale
 {
 	/** The base screen. */
+	@SquirrelJMEVendorApi
 	protected final ScritchScreenBracket screen;
 	
 	/** The base window. */
+	@SquirrelJMEVendorApi
 	protected final ScritchWindowBracket window;
 	
 	/** The scritch interface to use. */
+	@SquirrelJMEVendorApi
 	protected final ScritchInterface scritch;
 	
 	/** Scaled target width. */
+	@SquirrelJMEVendorApi
 	private final int scaledW;
 	
 	/** Scaled target height. */
+	@SquirrelJMEVendorApi
 	private final int scaledH;
 	
 	/**
@@ -51,6 +56,7 @@ public class DisplayFloatScale
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/11
 	 */
+	@SquirrelJMEVendorApi
 	public DisplayFloatScale(ScritchInterface __scritch,
 		ScritchScreenBracket __screen,
 		ScritchWindowBracket __window, int __scaledW, int __scaledH)
@@ -71,6 +77,7 @@ public class DisplayFloatScale
 	 * @since 2024/05/12
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean requiresBuffer()
 	{
 		return true;
@@ -81,6 +88,7 @@ public class DisplayFloatScale
 	 * @since 2024/03/09
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int screenX(int __x)
 	{
 		throw Debugging.todo();
@@ -91,6 +99,7 @@ public class DisplayFloatScale
 	 * @since 2024/03/09
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int screenY(int __y)
 	{
 		throw Debugging.todo();
@@ -101,6 +110,7 @@ public class DisplayFloatScale
 	 * @since 2024/03/18
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int textureH()
 	{
 		return this.scaledH;
@@ -111,6 +121,7 @@ public class DisplayFloatScale
 	 * @since 2024/03/11
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int textureMaxH()
 	{
 		return this.scaledH;
@@ -121,6 +132,7 @@ public class DisplayFloatScale
 	 * @since 2024/03/11
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int textureMaxW()
 	{
 		return this.scaledW;
@@ -131,6 +143,7 @@ public class DisplayFloatScale
 	 * @since 2024/03/18
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int textureW()
 	{
 		return this.scaledW;
@@ -141,6 +154,7 @@ public class DisplayFloatScale
 	 * @since 2024/03/09
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int textureX(int __x)
 	{
 		throw Debugging.todo();
@@ -151,6 +165,7 @@ public class DisplayFloatScale
 	 * @since 2024/03/09
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int textureY(int __y)
 	{
 		throw Debugging.todo();
