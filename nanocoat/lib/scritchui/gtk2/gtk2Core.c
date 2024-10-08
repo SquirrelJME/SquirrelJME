@@ -178,6 +178,7 @@ sjme_errorCode sjme_scritchui_gtk2_apiInit(
 	/* Start main GTK thread. */
 	if (sjme_error_is(error = sjme_thread_new(
 		&inState->loopThread,
+		&inState->loopThreadId,
 		sjme_scritchui_gtk2_loopMain, inState)) ||
 		inState->loopThread == SJME_THREAD_NULL)
 		return sjme_error_default(error);

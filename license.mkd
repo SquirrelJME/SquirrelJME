@@ -11,7 +11,7 @@ commissioned under contract:
 
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
-   * Kat@CMYKat Designs & Illustrations <http://www.cmykat-designs.com/>
+   * Kat@CMYKat Designs & Illustrations <https://www.cmykatgraphics.ca/>
 
 SquirrelJME has three types of files which fall under different licenses:
 

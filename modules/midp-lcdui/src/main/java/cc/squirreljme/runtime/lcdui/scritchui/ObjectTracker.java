@@ -30,9 +30,11 @@ public abstract class ObjectTracker<T, L>
 	protected final ScritchEventLoopInterface loop;
 	
 	/** The current value. */
+	@SquirrelJMEVendorApi
 	volatile T _value;
 	
 	/** The currently attached listener. */
+	@SquirrelJMEVendorApi
 	volatile L _listener;
 	
 	/**
@@ -123,6 +125,7 @@ public abstract class ObjectTracker<T, L>
 		
 		// Inform listener of the change?
 		if (listener != null)
-			this.loop.loopExecute(new __ExecObjectTracker__<T, L>(this));
+			this.loop.loopExecute(new __ExecObjectTracker__<T, L>(
+				this));
 	}
 }

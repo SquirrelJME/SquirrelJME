@@ -5,7 +5,7 @@
  * "SquirrelJME" is trademarked by Stephanie Gawroriski 2016-2019
  * The SquirrelJME Logo was illustrated by...
    * Kat Adam-MacEwen
-   * Kat@CMYKat Designs & Illustrations <www.cmykat-designs.com>
+   * Kat@CMYKat Designs & Illustrations <https://www.cmykatgraphics.ca/>
 
 The logos are licensed under the [CC-BY-SA 4.0](../../license.mkd).
 

@@ -211,27 +211,6 @@ typedef struct sjme_exceptTrace sjme_exceptTrace;
  */
 typedef sjme_nvm_threadBase* sjme_nvm_thread;
 
-struct sjme_nvm_threadBase
-{
-	/** The VM state this thread is in. */
-	sjme_nvm inState;
-	
-	/** The wrapper in the front end. */
-	sjme_frontEnd frontEnd;
-	
-	/** The thread ID. */
-	sjme_jint threadId;
-	
-	/** The top of the stack. */
-	sjme_nvm_frame top;
-	
-	/** The number of frames. */
-	sjme_jint numFrames;
-
-	/** Current exception handler go back. */
-	sjme_exceptTrace* except;
-};
-
 /** List of threads. */
 SJME_LIST_DECLARE(sjme_nvm_thread, 0);
 

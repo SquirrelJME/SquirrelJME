@@ -18,6 +18,8 @@ include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/pre-fixes.cmake"
     NO_POLICY_SCOPE)
 include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/utils.cmake"
     NO_POLICY_SCOPE)
+include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/fixes.cmake"
+    NO_POLICY_SCOPE)
 include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/jni.cmake"
     NO_POLICY_SCOPE)
 include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/threads.cmake"

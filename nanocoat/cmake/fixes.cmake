@@ -168,3 +168,41 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 		add_compile_options("-fvisibility=hidden")
 	endif()
 endif()
+
+# Quick compilation check
+macro(squirreljme_try_compile noun target source)
+	try_compile(${target}
+		"${CMAKE_CURRENT_BINARY_DIR}"
+		SOURCES "${CMAKE_CURRENT_LIST_DIR}/${source}.c"
+		CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
+		LINK_LIBRARIES ${CMAKE_THREAD_LIBS_INIT}
+		OUTPUT_VARIABLE ${target}_OUTPUT)
+
+	message(DEBUG "${noun}: ${${target}_OUTPUT}")
+	message("${noun}: ${${target}}")
+endmacro()
+
+# snprintf() available?
+squirreljme_try_compile("snprintf()"
+	SQUIRRELJME_SNPRINTF_TRY_VALID "trySNPrintF")
+if(NOT SQUIRRELJME_SNPRINTF_TRY_VALID)
+	add_compile_definitions(
+		SJME_CONFIG_HAS_NO_SNPRINTF=1)
+endif()
+
+# stdarg.h available?
+squirreljme_try_compile("stdarg.h"
+	SQUIRRELJME_STDARG_TRY_VALID "tryStdArgH")
+if(NOT SQUIRRELJME_STDARG_TRY_VALID)
+	add_compile_definitions(
+		SJME_CONFIG_HAS_NO_STDARG=1)
+endif()
+
+# varargs.h available?
+squirreljme_try_compile("varargs.h"
+	SQUIRRELJME_VARARGS_TRY_VALID "tryVarArgsH")
+if(NOT SQUIRRELJME_VARARGS_TRY_VALID)
+	add_compile_definitions(
+		SJME_CONFIG_HAS_NO_VARARGS=1)
+endif()
+

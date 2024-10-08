@@ -53,6 +53,12 @@ sjme_jboolean sjme_thread_equal(
 	sjme_attrInNullable sjme_thread aThread,
 	sjme_attrInNullable sjme_thread bThread)
 {
+#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+#elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
+	HMODULE kernel;
+	DWORD (*getThreadIdFunc)(HANDLE);
+#endif
+	
 	if ((aThread == SJME_THREAD_NULL) != (bThread == SJME_THREAD_NULL))
 		return SJME_JNI_FALSE;
 	
@@ -62,7 +68,18 @@ sjme_jboolean sjme_thread_equal(
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	return pthread_equal(aThread, bThread);
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	return GetThreadId(aThread) == GetThreadId(bThread);
+	/* Obtain the kernel library. */
+	kernel = GetModuleHandle("kernel32.dll");
+	if (kernel == NULL)
+		return aThread == bThread;
+	
+	/* Is there GetThreadId(), which is base 2003/Vista? */
+	getThreadIdFunc = ((void*)GetProcAddress(kernel, "GetThreadId"));
+	if (getThreadIdFunc == NULL)
+		return aThread == bThread;
+	
+	/* Use that function instead! */
+	return getThreadIdFunc(aThread) == getThreadIdFunc(bThread);
 #else
 	return aThread == bThread;
 #endif
@@ -70,28 +87,38 @@ sjme_jboolean sjme_thread_equal(
 
 sjme_errorCode sjme_thread_new(
 	sjme_attrInOutNotNull sjme_thread* outThread,
+	sjme_attrInNullable sjme_intPointer* outThreadId,
 	sjme_attrInNotNull sjme_thread_mainFunc inMain,
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
+#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+#elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
+	DWORD winThreadId;
+#endif
 	sjme_thread result;
+	sjme_intPointer threadId;
 
 	if (outThread == NULL || inMain == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Clear first. */
 	result = SJME_THREAD_NULL;
+	threadId = 0;
 
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	/* Setup new thread. */
 	if (0 != pthread_create(&result, NULL,
 		inMain, anything))
 		return SJME_ERROR_CANNOT_CREATE;
+	threadId = (sjme_intPointer)result;
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/* Setup new thread. */
+	threadId = 0;
 	result = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)inMain,
-		anything, 0, NULL);
+		anything, 0, &winThreadId);
 	if (result == NULL || result == SJME_THREAD_NULL)
 		return SJME_ERROR_CANNOT_CREATE;
+	threadId = winThreadId;
 #else
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
@@ -99,6 +126,8 @@ sjme_errorCode sjme_thread_new(
 	
 	/* Success! */
 	*outThread = result;
+	if (outThreadId != NULL)
+		*outThreadId = threadId;
 	return SJME_ERROR_NONE;
 }
 

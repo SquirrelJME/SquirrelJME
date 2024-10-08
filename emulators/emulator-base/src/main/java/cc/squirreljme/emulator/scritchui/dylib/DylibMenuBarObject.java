@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuKindBracket;
 
 /**
  * Represents the menu bar.
@@ -18,7 +19,8 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
  */
 public class DylibMenuBarObject
 	extends DylibBaseObject
-	implements ScritchMenuBarBracket, DylibMenuKindObject
+	implements ScritchMenuBarBracket, DylibMenuKindObject,
+		ScritchMenuKindBracket
 {
 	/**
 	 * Initializes the menu bar object.

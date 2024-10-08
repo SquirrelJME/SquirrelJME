@@ -619,6 +619,17 @@ extern "C" {
 	#define SJME_CONFIG_HAS_THREADS_FALLBACK
 #endif
 
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/** Align to 32-bit. */
+	#define sjme_align32 __declspec(align(4))
+#elif defined(SJME_CONFIG_HAS_GCC)
+	/** Align to 32-bit. */
+	#define sjme_align32 __attribute__((aligned(4)))
+#else
+	/** Align to 32-bit. */
+	#define sjme_align32 
+#endif
+
 #if defined(SJME_CONFIG_HAS_WINDOWS_16)
 	#define SJME_CALL FAR PASCAL
 #elif defined(SJME_CONFIG_HAS_WINDOWS)
@@ -639,17 +650,6 @@ extern "C" {
 	#define sjme_align64 
 #endif
 
-#if defined(SJME_CONFIG_HAS_MSVC)
-	/** Align to 32-bit. */
-	#define sjme_align32 __declspec(align(4))
-#elif defined(SJME_CONFIG_HAS_GCC)
-	/** Align to 32-bit. */
-	#define sjme_align32 __attribute__((aligned(4)))
-#else
-	/** Align to 32-bit. */
-	#define sjme_align32 
-#endif
-
 #if SJME_CONFIG_HAS_POINTER == 64
 	/** Align to pointer. */
 	#define sjme_alignPointer sjme_align64
@@ -666,6 +666,11 @@ extern "C" {
     defined(SJME_CONFIG_HAS_NINTENDO_WII)
 	/* Disable errno support. */
 	#define SJME_CONFIG_MISSING_ERRNO
+#endif
+
+/* Missing standard C functions. */
+#if defined(SJME_CONFIG_HAS_NO_SNPRINTF)
+	#include "sjme/stdgone.h"
 #endif
 
 /*--------------------------------------------------------------------------*/

@@ -22,7 +22,7 @@ sjme_errorCode sjme_scritchui_win32_loopExecuteLater(
 	/* Send to the event thread. */
 	SetLastError(0);
 	if ((result = PostThreadMessage(
-		GetThreadId(inState->loopThread),
+		inState->loopThreadId,
 		WM_USER,
 		(WPARAM)callback, (LPARAM)anything)) == 0)
 		return inState->implIntern->getLastError(inState,

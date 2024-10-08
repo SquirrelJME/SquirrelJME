@@ -1974,6 +1974,9 @@ struct sjme_scritchui_stateBase
 	/** The event loop thread, if applicable. */
 	sjme_thread loopThread;
 	
+	/** The current loop thread ID, if applicable. */
+	sjme_intPointer loopThreadId;
+	
 	/** Loop thread initializer if one was passed. */
 	sjme_thread_mainFunc loopThreadInit;
 	

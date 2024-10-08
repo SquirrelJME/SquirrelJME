@@ -119,6 +119,27 @@ struct sjme_nvm_taskBase
 	sjme_list_sjme_nvm_thread* threads;
 };
 
+struct sjme_nvm_threadBase
+{
+	/** The VM state this thread is in. */
+	sjme_nvm inState;
+	
+	/** The wrapper in the front end. */
+	sjme_frontEnd frontEnd;
+	
+	/** The thread ID. */
+	sjme_jint threadId;
+	
+	/** The top of the stack. */
+	sjme_nvm_frame top;
+	
+	/** The number of frames. */
+	sjme_jint numFrames;
+
+	/** Current exception handler go back. */
+	sjme_exceptTrace* except;
+};
+
 /**
  * Starts the task.
  *

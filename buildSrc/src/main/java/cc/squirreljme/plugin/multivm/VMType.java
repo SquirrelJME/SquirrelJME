@@ -463,7 +463,7 @@ public enum VMType
 		public boolean isSingleSourceSetRom(BangletVariant __variant)
 		{
 			// NanoCoat is this special case
-			return true;
+			return false;
 		}
 		
 		/**
@@ -1051,6 +1051,16 @@ public enum VMType
 		// Add source set
 		args.add("-XsourceSet:" +
 			__task.getSourceSet());
+		
+		// Fossil hash
+		String fossilHash = VMHelpers.hashFossil(__task.getProject());
+		if (fossilHash != null)
+			args.add("-Xcommit:fossil:" + fossilHash);
+		
+		// Git hash
+		String gitHash = VMHelpers.hashGit(__task.getProject());
+		if (gitHash != null)
+			args.add("-Xcommit:git:" + gitHash);
 		
 		// Arguments before the command
 		if (__preArgs != null)

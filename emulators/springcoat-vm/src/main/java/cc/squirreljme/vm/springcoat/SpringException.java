@@ -96,34 +96,37 @@ public class SpringException
 		
 		Class<?> tC = __t.getClass();
 		if (tC == ArithmeticException.class)
-			return new SpringArithmeticException(__t);
+			return new SpringArithmeticException(__t.getMessage(), __t);
 		if (tC == ArrayIndexOutOfBoundsException.class)
-			return new SpringArrayIndexOutOfBoundsException(__t);
+			return new SpringArrayIndexOutOfBoundsException(__t.getMessage(),
+				__t);
 		if (tC == ArrayStoreException.class)
-			return new SpringArrayStoreException(__t);
+			return new SpringArrayStoreException(__t.getMessage(), __t);
 		if (tC == ClassCastException.class)
-			return new SpringClassCastException(__t);
+			return new SpringClassCastException(__t.getMessage(), __t);
 		if (tC == ClassNotFoundException.class)
 			return new SpringClassNotFoundException(
 				new ClassName("Unknown"), __t);
 		if (tC == IllegalAccessException.class)
-			return new SpringIllegalAccessException(__t);
+			return new SpringIllegalAccessException(__t.getMessage(), __t);
 		if (tC == IllegalMonitorStateException.class)
-			return new SpringIllegalMonitorStateException(__t);
+			return new SpringIllegalMonitorStateException(__t.getMessage(),
+				__t);
 		if (tC == MLECallError.class)
-			return new SpringMLECallError(__t);
+			return new SpringMLECallError(__t.getMessage(), __t);
 		if (tC == NegativeArraySizeException.class)
-			return new SpringNegativeArraySizeException(__t);
+			return new SpringNegativeArraySizeException(__t.getMessage(), __t);
 		if (tC == NoSuchFieldException.class)
-			return new SpringNoSuchFieldException(__t);
+			return new SpringNoSuchFieldException(__t.getMessage(), __t);
 		if (tC == NoSuchMethodException.class)
-			return new SpringNoSuchMethodException(__t);
+			return new SpringNoSuchMethodException(__t.getMessage(), __t);
 		if (tC == NullPointerException.class)
-			return new SpringNullPointerException(__t);
+			return new SpringNullPointerException(__t.getMessage(), __t);
 		
 		// Nothing to wrap to?
 		throw new SpringFatalException(
-			"Not wrappable: " + __t.getClass(), __t);
+			String.format("Not wrappable: %s (%s)", __t.getClass(),
+				__t.getMessage()), __t);
 	}
 }
 

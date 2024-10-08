@@ -17,13 +17,14 @@ import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.FileLocation;
 import cc.squirreljme.plugin.util.TestDetection;
 import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,7 +55,6 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import org.apache.tools.ant.taskdefs.Zip;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
@@ -720,6 +720,81 @@ public final class VMHelpers
 		
 		// Otherwise extract it
 		return fileName.substring(ld + 1);
+	}
+	
+	/**
+	 * Returns the current Fossil commit hash.
+	 *
+	 * @param __project The project.
+	 * @return The hash or {@code null} if not in a Fossil checkout.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/10/06
+	 */
+	public static String hashFossil(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+		
+		Path possible = __project.getRootProject()
+			.getProjectDir().toPath().resolve("manifest.uuid");
+		if (Files.exists(possible))
+			try
+			{
+				List<String> lines = Files.readAllLines(possible);
+				if (!lines.isEmpty() && lines.get(0) != null)
+					return lines.get(0).trim().toLowerCase(Locale.ROOT);
+			}
+			catch (IOException __ignored)
+			{
+			}
+		
+		// Not in a Fossil checkout
+		return null;
+	}
+	
+	/**
+	 * Returns the current Git commit hash.
+	 *
+	 * @param __project The project.
+	 * @return The hash or {@code null} if not in a Git checkout.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/10/06
+	 */
+	public static String hashGit(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+		
+		try
+		{
+			// Setup new process
+			ProcessBuilder builder = new ProcessBuilder("git",
+				"rev-parse", "HEAD");
+			
+			builder.redirectOutput(ProcessBuilder.Redirect.PIPE);
+			builder.directory(__project.getRootProject().getProjectDir());
+			
+			// Start and wait for it to complete
+			Process process = builder.start();
+			process.waitFor();
+			
+			// Read in hash
+			try (InputStream in = process.getInputStream();
+				 InputStreamReader isr = new InputStreamReader(in);
+				 BufferedReader br = new BufferedReader(isr))
+			{
+				String maybe = br.readLine();
+				if (maybe != null)
+					return maybe.trim().toLowerCase(Locale.ROOT);
+			}
+		}
+		catch (IOException|InterruptedException __ignored)
+		{
+		}
+		
+		return null;
 	}
 	
 	/**

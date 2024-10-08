@@ -30,6 +30,7 @@ dependencies
 	api project(":modules:common-vm")
 	api project(":modules:io")
 	api project(":modules:collections")
+	api project(":modules:tool-manifest-writer")
 	
 	testFixturesApi project(":modules:tac")
 }

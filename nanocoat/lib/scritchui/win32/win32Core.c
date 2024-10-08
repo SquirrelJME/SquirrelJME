@@ -234,6 +234,7 @@ sjme_errorCode sjme_scritchui_win32_apiInit(
 	/* Start main Win32 thread. */
 	if (sjme_error_is(error = sjme_thread_new(
 		&inState->loopThread,
+		&inState->loopThreadId,
 		sjme_scritchui_win32_loopMain, inState)) ||
 		inState->loopThread == SJME_THREAD_NULL)
 		return sjme_error_default(error);

@@ -127,20 +127,31 @@ sjme_errorCode sjme_task_start(
 	/* Task is considered valid now, so store it in. */
 	tasks->elements[freeSlot] = result;
 	
+	/* Lock state on the task. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&result->common.lock)))
+		goto fail_preLockBeforeRelease;
+	
 	/* Unlock state, we no longer need to keep the state locked since we */
 	/* are now in the task list and others will really only care if we */
 	/* are even alive or not. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&inState->common.lock, NULL)))
-		return sjme_error_default(error);
+		goto fail_stateLockRelease;
 	
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Release task specific lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&result->common.lock, NULL)))
+		return sjme_error_default(error);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
 	
 	/* In-state locks. */
+fail_preLockBeforeRelease:
 fail_allocThreads:
 fail_allocResult:
 	if (result != NULL)
@@ -150,13 +161,23 @@ fail_allocResult:
 	}
 fail_allocTasks:
 	/* Unlock before fail. */
-	if (sjme_error_is(sjme_thread_spinLockRelease(
-		&inState->common.lock, NULL)))
-		return sjme_error_default(error);
+	sjme_error_is(sjme_thread_spinLockRelease(
+		&inState->common.lock, NULL));
 	
 	return sjme_error_default(error);
 
 	/* Post state lock, when accessing state is no longer needed. */
+fail_stateLockRelease:
+	/* Unlock task before fail. */
+	sjme_error_is(sjme_thread_spinLockRelease(
+		&result->common.lock, NULL));
+	
 fail_other:
+	if (result != NULL)
+	{
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
+		result = NULL;
+	}
+	
 	return sjme_error_default(error);
 }
