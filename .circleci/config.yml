@@ -552,7 +552,7 @@ jobs:
       - attach_workspace:
           at: .
       - standalone-unix-common-build
-  build_macosx_arm64_standalone:
+  build_macosx_aarch64_standalone:
     executor: build-on-macos-m1
     steps:
       - checkout
@@ -616,7 +616,7 @@ jobs:
           os: "linux-arm64"
           vm: "hosted"
       - persist-gradle
-  build_linux_arm64_standalone:
+  build_linux_aarch64_standalone:
     executor: build-on-linux-arm64
     steps:
       - checkout
@@ -624,7 +624,7 @@ jobs:
       - attach_workspace:
           at: .
       - standalone-unix-common-build
-  build_linux_arm64_standalone_flatpak:
+  build_linux_aarch64_standalone_flatpak:
     executor: build-on-linux-arm64
     steps:
       - checkout
@@ -788,14 +788,14 @@ workflows:
             branches:
               only:
                 - trunk
-      - build_linux_arm64_standalone:
+      - build_linux_aarch64_standalone:
           requires:
             - build_linux_arm64
           filters:
             branches:
               only:
                 - trunk
-      - build_linux_arm64_standalone_flatpak:
+      - build_linux_aarch64_standalone_flatpak:
           requires:
             - build_linux_arm64
           filters:
@@ -859,7 +859,7 @@ workflows:
             branches:
               only:
                 - trunk
-      - build_macosx_arm64_standalone:
+      - build_macosx_aarch64_standalone:
           requires:
             - build_macosx_arm64
           filters:
@@ -891,11 +891,12 @@ workflows:
           requires:
             - build_linux_amd64_standalone
             - build_linux_amd64_standalone_flatpak
-            - build_linux_arm64_standalone_flatpak
+            - build_linux_aarch64_standalone_flatpak
             - build_windows_i386_standalone
+            - build_windows_aarch64_standalone
             - build_windows_amd64_standalone
             - build_macosx_amd64_standalone
-            - build_macosx_arm64_standalone
+            - build_macosx_aarch64_standalone
           filters:
             branches:
               only:

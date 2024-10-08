@@ -147,22 +147,26 @@ public class Main
 				break;
 				
 			case "build_windows_i386_standalone":
-				name = "squirreljme-standalone-%s-windows-x86.jar";
+				name = "squirreljme-standalone-%s-windows-i386.jar";
+				break;
+				
+			case "build_windows_aarch64_standalone":
+				name = "squirreljme-standalone-%s-windows-aarch64.jar";
 				break;
 				
 			case "build_windows_amd64_standalone":
 				name = "squirreljme-standalone-%s-windows-amd64.jar";
 				break;
 				
-			case "build_macosx_arm64_standalone":
+			case "build_macosx_aarch64_standalone":
 				name = "squirreljme-standalone-%s-macos-aarch64.jar";
 				break;
 				
 			case "build_macosx_amd64_standalone":
-				name = "squirreljme-standalone-%s-macos-x86_64.jar";
+				name = "squirreljme-standalone-%s-macos-amd64.jar";
 				break;
 				
-			case "build_linux_arm64_standalone":
+			case "build_linux_aarch64_standalone":
 				name = "squirreljme-standalone-%s-linux-aarch64.jar";
 				break;
 				
@@ -170,7 +174,7 @@ public class Main
 				name = "squirreljme-standalone-%s-linux-amd64.jar";
 				break;
 				
-			case "build_linux_arm64_standalone_flatpak":
+			case "build_linux_aarch64_standalone_flatpak":
 				name = "squirreljme-%s-aarch64.flatpak";
 				break;
 				
