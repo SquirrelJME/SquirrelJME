@@ -893,7 +893,6 @@ workflows:
             - build_linux_amd64_standalone_flatpak
             - build_linux_aarch64_standalone_flatpak
             - build_windows_i386_standalone
-            - build_windows_aarch64_standalone
             - build_windows_amd64_standalone
             - build_macosx_amd64_standalone
             - build_macosx_aarch64_standalone
