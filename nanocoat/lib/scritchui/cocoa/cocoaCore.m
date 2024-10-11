@@ -45,7 +45,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_cocoaFunctions =
 	.loopIterate = NULL,
 	.menuBarNew = sjme_scritchui_cocoa_menuBarNew,
 	.menuInsert = sjme_scritchui_cocoa_menuInsert,
-	.menuItemNew = NULL,
+	.menuItemNew = sjme_scritchui_cocoa_menuItemNew,
 	.menuNew = sjme_scritchui_cocoa_menuNew,
 	.menuRemove = sjme_scritchui_cocoa_menuRemove,
 	.panelEnableFocus = sjme_scritchui_cocoa_panelEnableFocus,
@@ -184,6 +184,7 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 		/* Start main Cocoa thread. */
 		if (sjme_error_is(error = sjme_thread_new(
 			&inState->loopThread,
+			&inState->loopThreadId,
 			sjme_scritchui_cocoa_loopMain, inState)) ||
 			inState->loopThread == SJME_THREAD_NULL)
 			return sjme_error_default(error);

@@ -15,6 +15,10 @@
 
 @end
 
+@implementation SJMEMenuItem : NSMenuItem
+
+@end
+
 sjme_errorCode sjme_scritchui_cocoa_menuBarNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar,
@@ -44,6 +48,27 @@ sjme_errorCode sjme_scritchui_cocoa_menuInsert(
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_scritchui_cocoa_menuItemNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem,
+	sjme_attrInNotNull const sjme_scritchui_impl_initParamMenuItem* init)
+{
+	SJMEMenuItem* cocoaMenuItem;
+
+	if (inState == NULL || inMenuItem == NULL || init == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Setup new menu. */
+	cocoaMenuItem = [SJMEMenuItem new];
+
+	/* Store it. */
+	inMenuItem->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEW] =
+		cocoaMenuItem;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_cocoa_menuNew(

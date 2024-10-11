@@ -68,6 +68,17 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
 @end
 
 /**
+ * Menu item which contains an action.
+ * 
+ * @since 2024/10/11
+ */
+@interface SJMEMenuItem : NSMenuItem
+{
+}
+
+@end
+
+/**
  * Panel object. This is based on @c NSView as that is a low level way to
  * create custom widgets and otherwise.
  * 
