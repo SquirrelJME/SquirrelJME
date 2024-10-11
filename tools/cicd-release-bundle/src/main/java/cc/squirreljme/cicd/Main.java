@@ -20,6 +20,7 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 /**
  * Main entry point.
@@ -28,6 +29,47 @@ import java.util.Arrays;
  */
 public class Main
 {
+	/**
+	 * Determines the base directory based on the version.
+	 * 
+	 * @param __version The input version.
+	 * @return The resultant base directory.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/10/11
+	 */
+	public static String baseDir(String __version)
+		throws NullPointerException
+	{
+		if (__version == null)
+			throw new NullPointerException("NARG");
+		
+		// Split version
+		String[] fragments = __version.split(Pattern.quote("."));
+		if (fragments == null || fragments.length != 3)
+			throw new IllegalArgumentException("Invalid version: " +
+				__version);
+		
+		// Determine version digits
+		int[] versions = new int[3];
+		for (int i = 0; i < 3; i++)
+			try
+			{
+				versions[i] = Integer.parseInt(fragments[i], 10);
+			}
+			catch (NumberFormatException __e)
+			{
+				throw new IllegalArgumentException("Invalid version: " +
+					__version, __e);
+			}
+		
+		// An even minor version is a stable version
+		if ((versions[1] % 2) == 0)
+			return String.format("stable/%s", __version);
+		
+		// Otherwise unstable
+		return "unstable";
+	}
+	
 	/**
 	 * Main entry point.
 	 *
@@ -45,6 +87,7 @@ public class Main
 		
 		// Get the SquirrelJME version
 		String version = __args[0];
+		String baseDir = Main.baseDir(version);
 		
 		// Upload files into the un-versioned space
 		// romNanoCoatRelease=/home/.../squirreljme.jar
@@ -61,7 +104,7 @@ public class Main
 				Path path = Paths.get(arg.substring(eq + 1));
 				
 				// Determine target name
-				String target = Main.uvTarget(version, name);
+				String target = Main.uvTarget(baseDir, version, name);
 				
 				// Store into un-versioned space
 				System.err.printf("Storing `%s` as `%s`...%n",
@@ -82,7 +125,7 @@ public class Main
 				String target;
 				try
 				{
-					target = Main.uvTarget(version, job.getName());
+					target = Main.uvTarget(baseDir, version, job.getName());
 					if (target == null)
 						continue;
 				}
@@ -117,6 +160,7 @@ public class Main
 	/**
 	 * Determines the un-versioned space target.
 	 *
+	 * @param __baseDir The base directory.
 	 * @param __version The version of SquirrelJME.
 	 * @param __name The task name.
 	 * @return The resultant target.
@@ -124,10 +168,11 @@ public class Main
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/10/05
 	 */
-	public static String uvTarget(String __version, String __name)
+	public static String uvTarget(String __baseDir,
+		String __version, String __name)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (__version == null || __name == null)
+		if (__baseDir == null || __version == null || __name == null)
 			throw new NullPointerException("NARG");
 		
 		// Determine actual name
@@ -188,7 +233,7 @@ public class Main
 		}
 		
 		// Construct
-		return String.format("unstable/%s",
+		return String.format("%s/%s", __baseDir,
 			String.format(name, __version));
 	}
 }
