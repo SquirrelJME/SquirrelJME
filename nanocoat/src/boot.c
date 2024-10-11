@@ -58,6 +58,8 @@ static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
 		"Ignored, this will always be \"nanocoat\"."},
 	{"-Xentry:id", 
 		"If launching a MIDlet, choose a MIDlet entry."},
+	{"-Xint",
+		"Force pure interpreter, do not JIT/AOT compilation."},
 	{"-Xjdwp:[hostname]:port",
 		"Listens or connects to a JDWP debugger."},
 	{"-Xlibraries:<class:path:...>",
@@ -66,12 +68,12 @@ static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
 		"Default interface to choose for ScritchUI."},
 	{"-Xsnapshot:<path-to-nps>",
 		"Write a VisualVM snapshot (.nps) to the given path."},
+	{"-XstartOnFirstThread",
+		"Ignored."}
 	{"-Xthread:<single|coop|multi|smt>",
 		"The threading model to use."},
 	{"-Xtrace:<flag|...>",
 		"Trace flags to permanently set on by default."},
-	{"-Xint",
-		"Force pure interpreter, do not JIT/AOT compilation."},
 	{"-D<sysprop>=<value>",
 		"Declare system property <sysprop> and set to <value>."},
 	{"-classpath <class:path:...>",
@@ -672,10 +674,10 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
-		/* -client/-server. */
-		else if (sjme_charSeq_equalsUtfR(&argSeq,
-			"-client") ||
-			sjme_charSeq_equalsUtfR(&argSeq, "-server"))
+		/* Ignored options. */
+		else if (sjme_charSeq_equalsUtfR(&argSeq, "-client") ||
+			sjme_charSeq_equalsUtfR(&argSeq, "-server") ||
+			sjme_charSeq_equalsUtfR(&argSeq, "-XstartOnFirstThread"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
