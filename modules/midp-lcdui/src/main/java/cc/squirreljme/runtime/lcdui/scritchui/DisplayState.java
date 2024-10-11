@@ -36,9 +36,11 @@ public final class DisplayState
 	protected final ScritchScreenBracket scritchScreen;
 	
 	/** The displayable currently showing on this. */
+	@SquirrelJMEVendorApi
 	volatile DisplayableState _current;
 	
 	/** The display to show on exit. */
+	@SquirrelJMEVendorApi
 	private volatile DisplayableState _onExit;
 	
 	/** The current displayable hold. */
@@ -112,6 +114,7 @@ public final class DisplayState
 	 * @param __displayable The current displayable to set.
 	 * @since 2024/07/27
 	 */
+	@SquirrelJMEVendorApi
 	void __setCurrent(DisplayableState __displayable)
 	{
 		synchronized (this)

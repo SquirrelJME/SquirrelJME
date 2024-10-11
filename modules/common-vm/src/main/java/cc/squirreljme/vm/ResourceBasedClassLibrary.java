@@ -10,6 +10,7 @@
 package cc.squirreljme.vm;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -80,20 +81,13 @@ public final class ResourceBasedClassLibrary
 		
 		// Load in the resource list
 		List<String> list = new LinkedList<>();
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(
-			this.resourceAsStream("META-INF/squirreljme/resources.list"),
-			"utf-8")))
+		try (InputStream in = this.resourceAsStream(
+			"META-INF/squirreljme/resources.list"); 
+			 DataInputStream dis = new DataInputStream(in))
 		{
-			String ln;
-			while ((ln = br.readLine()) != null)
-			{
-				// Blank lines are not resources
-				if (ln.isEmpty())
-					continue;
-				
-				// Add otherwise
-				list.add(ln);
-			}
+			int n = dis.readInt();
+			for (int i = 0; i < n; i++)
+				list.add(dis.readUTF());
 		}
 		
 		/* {@squirreljme.error AK09 Could not load resource list.} */

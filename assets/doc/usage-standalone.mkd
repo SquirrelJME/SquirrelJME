@@ -36,35 +36,6 @@ in the following format:
 
 The available options are:
 
- * `-Xemulator:(vm)`
-   * Specifies the backend emulator to use, the supported options are:
-     * `hosted` -- Uses the host JVM to run all the software.
-     * `springcoat` -- SpringCoat, interpreter written in Java.
-     * `nanocoat` -- NanoCoat, interpreter written in C.
- * `-Xsnapshot:(path-to-nps)`
-   * Profile the virtual machine and store the profile results into the
-     given VisualVM snapshot file.
- * `-Xlibraries:(class:path:...)`
-   * Specifies libraries that should be available to the virtual machine
-     and the suite management system, note that this is not the same as
-     the `-classpath` option as that is for the _current_ application.
-   * Wildcard directories may be specified in the following way, depending
-     on the operating system and possible shell expansion:
-     * `/path/to/directory/*`
-     * `/path/to/directory/**`
-     * `/path/to/directory/*.*`
-     * `wildcard=/path/to/directory`
- * `-Xentry:id`
-   * Used with `-jar`, this allows one to specify an entry point index,
-     application name, or application entry point to determine which one to
-     launch within the Jar as there may be multiple.
-   * By default, if not specified, the first is always used.
- * `-Xjdwp:[hostname]:port`
-   * Enable debugging.
-   * If `hostname` is specified then the debugger will connect to the
-     remote host that is a listening JDWP debugger.
-   * Otherwise, if only `port` is specified then the debugger will wait and
-     listen on the given port for an incoming connection.
  * `-Xclutter:(release|debug)`
    * Use the given core libraries with the given clutter level.
    * `release` includes obfuscation and no debugging and thus runs faster.
@@ -78,14 +49,49 @@ The available options are:
      you wish to debug you should use `-jar`.
    * Optionally, `fork` or `nofork` can be specified to where the
      internal debugger to launched as a separate process or not.
+ * `-XdebuggerOnly`
+   * Launches the built-in SquirrelJME Debugger. 
+ * `-Xemulator:(vm)`
+   * Specifies the backend emulator to use, the supported options are:
+     * `hosted` -- Uses the host JVM to run all the software.
+     * `springcoat` -- SpringCoat, interpreter written in Java.
+     * `nanocoat` -- NanoCoat, interpreter written in C.
+ * `-Xentry:id`
+   * Used with `-jar`, this allows one to specify an entry point index,
+     application name, or application entry point to determine which one to
+     launch within the Jar as there may be multiple.
+   * By default, if not specified, the first is always used.
+ * `-Xint`
+   * Alias for `-Xemulator:springcoat`.
+ * `-Xjdwp:[hostname]:port`
+   * Enable debugging.
+   * If `hostname` is specified then the debugger will connect to the
+     remote host that is a listening JDWP debugger.
+   * Otherwise, if only `port` is specified then the debugger will wait and
+     listen on the given port for an incoming connection.
+ * `-Xlibraries:(class:path:...)`
+   * Specifies libraries that should be available to the virtual machine
+     and the suite management system, note that this is not the same as
+     the `-classpath` option as that is for the _current_ application.
+   * Wildcard directories may be specified in the following way, depending
+     on the operating system and possible shell expansion:
+     * `/path/to/directory/*`
+     * `/path/to/directory/**`
+     * `/path/to/directory/*.*`
+     * `wildcard=/path/to/directory`
  * `-Xscritchui:(ui)`
    * Rather than the default, use a specific user interface library.
    * This may also be set by using `cc.squirreljme.scritchui`.
+ * `-Xsnapshot:(path-to-nps)`
+   * Profile the virtual machine and store the profile results into the
+     given VisualVM snapshot file.
+ * `-XstartOnFirstThread`
+   * Ignored.
  * `-Xthread:(single|coop|multi|smt)`
    * Sets the threading mode of the virtual machine.
    * `single`/`coop` -- Single threaded using cooperative multitasking.
    * `multi`/`smt` -- Multi threaded using asynchronous multitasking.
- * `-Xtrace=option[,option[,...]]` -- Trace options
+ * `-Xtrace:option[,option[,...]]` -- Trace options
    * `all` -- Enable all.
    * `allocation` -- Allocations such as `new`.
    * `classInitialize` -- Class is initialized.
@@ -107,10 +113,14 @@ The available options are:
  * `-classpath (class:path:...)`
    * Specifies the class path to use for the current application, the entries
      must be visible from the library path.
- * `-zero` -- Alias for `-Xemulator:springcoat`.
- * `-Xint` -- Alias for `-Xemulator:springcoat`.
- * `-client` -- Ignored.
- * `-server` -- Ignored.
+ * `-jar (path.jar)`
+   * Launches the given Jar file.
+ * `-client`
+   * Ignored.
+ * `-server`
+   * Ignored.
+ * `-zero`
+   * Alias for `-Xemulator:springcoat`.
 
 ## Default Configuration and Library Paths
 

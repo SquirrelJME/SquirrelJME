@@ -16,7 +16,8 @@
 #ifndef SQUIRRELJME_UTIL_H
 #define SQUIRRELJME_UTIL_H
 
-#include "sjme/nvm.h"
+#include "sjme/error.h"
+#include "sjme/stdTypes.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -350,7 +351,98 @@ sjme_errorCode sjme_swap_uint_memmove(
  */
 sjme_jint sjme_tree_find(void* tree, void* what,
 	const sjme_tree_findFunc* functions);
-	
+
+/**
+ * Returns the number of bits in the value.
+ * 
+ * @param v The value to get the number of bits in. 
+ * @return The number of bits in the value.
+ * @since 2024/08/22
+ */
+sjme_juint sjme_util_intBitCountU(
+	sjme_attrInValue sjme_juint v);
+
+/**
+ * Returns the value with the highest bit set.
+ * 
+ * @param v The value to return the highest bit of. 
+ * @return The highest bit of the value.
+ * @since 2024/08/22
+ */
+sjme_juint sjme_util_intHighestOneBit(
+	sjme_attrInValue sjme_juint v);
+
+/**
+ * Returns the number of leading zeroes in the value.
+ * 
+ * @param v The value to check. 
+ * @return The resultant number of leading zeroes.
+ * @since 2024/08/22
+ */
+sjme_juint sjme_util_intLeadingZeroesU(
+	sjme_attrInValue sjme_juint v);
+
+/**
+ * Allows for shifting left/right by 32 for certain CPUs.
+ * 
+ * @param v The value to shift.
+ * @param sh The shift amount, positive is left shift and negative is right
+ * shift.
+ * @return The resultant shifted value.
+ * @since 2024/08/29
+ */
+sjme_juint sjme_util_intOverShiftU(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInRange(-32, 32) sjme_jint sh);
+
+/**
+ * Reverses the bits in the given integer value.
+ * 
+ * @param v The input value. 
+ * @return The value with the reversed bits.
+ * @since 2024/08/18 
+ */
+sjme_jint sjme_util_intReverse(
+	sjme_attrInValue sjme_jint v);
+
+/**
+ * Reverses the bits in the given integer value.
+ * 
+ * @param v The input value. 
+ * @return The value with the reversed bits.
+ * @since 2024/08/18 
+ */
+sjme_juint sjme_util_intReverseU(
+	sjme_attrInValue sjme_juint v);
+
+/**
+ * Converts integer value to binary.
+ * 
+ * @param destBuf The destination buffer.
+ * @param destLen The destination length.
+ * @param inVal The value to convert to binary.
+ * @param bitCount The number of bits to output, if zero then this is all bits.
+ * @return Any resultant error, if any.
+ * @since 2024/08/24
+ */
+sjme_errorCode sjme_util_intToBinary(
+	sjme_attrInNotNullBuf(destLen) sjme_lpstr destBuf,
+	sjme_attrInPositiveNonZero sjme_jint destLen,
+	sjme_attrInValue sjme_juint inVal,
+	sjme_attrInPositiveNonZero sjme_juint bitCount);
+
+/**
+ * Trims ending whitespace from the end of the string.
+ * 
+ * @param buf The buffer to trim from. 
+ * @param length The length of the input buffer.
+ * @return On any resultant error, if any.
+ * @since 2024/09/06
+ */
+sjme_errorCode sjme_util_lpstrTrimEnd(
+	sjme_attrInNotNullBuf(length) sjme_lpstr buf,
+	sjme_attrInPositiveNonZero sjme_jint length);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

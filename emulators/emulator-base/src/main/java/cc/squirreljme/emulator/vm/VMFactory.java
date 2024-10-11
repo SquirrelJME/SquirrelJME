@@ -212,10 +212,11 @@ public abstract class VMFactory
 		// -Dsysprop=value
 		// -classpath (class:path:...)
 		// -Xclutter:(release|debug)
-		// -Xtrace=(flag|...)
+		// -Xtrace:(flag|...)
 		// -zero
 		// -client
 		// -server
+		// -XstartOnFirstThread
 		// -Xscritchui:(ui)
 		// Optionally `-jar`
 		// Main-class
@@ -355,7 +356,8 @@ public abstract class VMFactory
 				vmName = "springcoat";
 			
 			// Ignored
-			else if (item.equals("-client") || item.equals("-server"))
+			else if (item.equals("-client") || item.equals("-server") ||
+				item.equals("-XstartOnFirstThread"))
 			{
 				// Ignored
 			}

@@ -56,7 +56,8 @@ jlong SJME_JNI_METHOD(SJME_CLASS_FLAT_LIST, _1_1flatten)
 	result = NULL;
 	error = sjme_list_flattenArgCV(
 		SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr),
-		&result, arrayLen, utfStrings);
+		(sjme_list_sjme_lpstr**)&result,
+		arrayLen, utfStrings);
 
 	/* Cleanup any resultant strings. */
 	for (i = 0; i < arrayLen; i++)

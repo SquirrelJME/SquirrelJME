@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 import org.intellij.lang.annotations.PrintFormat;
@@ -25,9 +26,11 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2023/07/19
  */
+@SquirrelJMEVendorApi
 public final class ErrorCode
 {
 	/** The prefix for properties. */
+	@SquirrelJMEVendorApi
 	public static final String PREFIX_PROPERTY =
 		"X-SquirrelJME-PrefixCode";
 	
@@ -53,6 +56,7 @@ public final class ErrorCode
 	@SuppressWarnings({"NewMethodNamingConvention", 
 		"squirreljme_qualifiedError"})
 	@Deprecated
+	@SquirrelJMEVendorApi
 	public static String __error__(@PrintFormat String __format,
 		Object... __args)
 	{
@@ -80,6 +84,7 @@ public final class ErrorCode
 	 */
 	@SuppressWarnings({"NewMethodNamingConvention", 
 		"squirreljme_qualifiedError"})
+	@SquirrelJMEVendorApi
 	public static String __error__(@Range(from = -1, to = 1296) int __idCode)
 	{
 		return ErrorCode.__error__(__idCode, (Object[])null);
@@ -94,6 +99,7 @@ public final class ErrorCode
 	 * @since 2023/07/19
 	 */
 	@SuppressWarnings("NewMethodNamingConvention")
+	@SquirrelJMEVendorApi
 	public static String __error__(@Range(from = -1, to = 1296) int __idCode,
 		Object... __args)
 	{

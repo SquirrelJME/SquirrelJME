@@ -35,11 +35,11 @@ add_dependencies(libEmulator
 	CorePIC)
 
 # We need to find all of the includes and such
-target_include_directories(libEmulator PUBLIC
+target_include_directories(libEmulator PRIVATE
 	"${CMAKE_SOURCE_DIR}/include"
-	"${JNI_INCLUDE_DIRS}"
-	"${JAVA_INCLUDE_PATH}"
-	"${JAVA_INCLUDE_PATH2}")
+	${JNI_INCLUDE_DIRS}
+	${JAVA_INCLUDE_PATH}
+	${JAVA_INCLUDE_PATH2})
 
 # Libraries needed to be linked with for the DyLib to function
 target_link_libraries(libEmulator PUBLIC

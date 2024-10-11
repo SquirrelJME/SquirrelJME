@@ -187,3 +187,40 @@ sjme_errorCode sjme_dylib_open(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 #endif
 }
+
+sjme_errorCode sjme_dylib_self(
+	sjme_attrInOutNotNull sjme_dylib* outLib)
+{
+#if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
+	sjme_pointer handle;
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	HMODULE handle;
+#endif
+	
+	if (outLib == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+#if defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
+	return SJME_ERROR_UNSUPPORTED_OPERATION;
+#elif defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
+	/* Attempt loading the library. */
+	handle = dlopen(NULL, RTLD_NOW | RTLD_LOCAL);
+	if (handle == NULL)
+		return SJME_ERROR_COULD_NOT_LOAD_LIBRARY;
+	
+	/* Success! */
+	*outLib = handle;
+	return SJME_ERROR_NONE;
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	handle = GetModuleHandle(NULL);
+	if (handle == NULL)
+		return SJME_ERROR_COULD_NOT_LOAD_LIBRARY;
+	
+	/* Success! */
+	*outLib = handle;
+	return SJME_ERROR_NONE;
+#else
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+#endif
+}

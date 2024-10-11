@@ -16,7 +16,8 @@
 #ifndef SQUIRRELJME_COMPARATOR_H
 #define SQUIRRELJME_COMPARATOR_H
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
+#include "sjme/tokenUtils.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

@@ -499,7 +499,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 		inState,
 		widget,
 		inComponent,
-		infoCore,
+		(sjme_scritchui_listener_void*)infoCore,
 		inListener,
 		copyFrontEnd,
 		G_CALLBACK(sjme_scritchui_gtk2_eventExpose),

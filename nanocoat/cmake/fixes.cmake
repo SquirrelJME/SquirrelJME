@@ -10,6 +10,9 @@
 # clean and pristine and patches are placed here because they affect the
 # entire project.
 
+# Needed for C compiler checks
+include(CheckCCompilerFlag)
+
 # Cross-compiling the build?
 if(NOT "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}" OR
 	NOT "${CMAKE_HOST_SYSTEM_PROCESSOR}" STREQUAL "${CMAKE_SYSTEM_PROCESSOR}")
@@ -150,12 +153,56 @@ macro(squirreljme_target_shared_library_exports target)
 	endif()
 endmacro()
 
-# Turn some warnings into errors
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	add_compile_options("-Werror=implicit-function-declaration")
+	# Turn some warnings into errors
+	check_c_compiler_flag("-Werror=implicit-function-declaration"
+		SQUIRRELJME_HAS_GCC_WERROR_IMPLICIT)
+	if (SQUIRRELJME_HAS_GCC_WERROR_IMPLICIT)
+		add_compile_options("-Werror=implicit-function-declaration")
+	endif()
+
+	# Make symbols hidden by default in GCC, which may prefer them visible
+	check_c_compiler_flag("-fvisibility=hidden"
+		SQUIRRELJME_HAS_GCC_FVISIBILITY_HIDDEN)
+	if(SQUIRRELJME_HAS_GCC_FVISIBILITY_HIDDEN)
+		add_compile_options("-fvisibility=hidden")
+	endif()
 endif()
 
-# Make symbols hidden by default in GCC, which may prefer them visible
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	add_compile_options("-fvisibility=hidden")
+# Quick compilation check
+macro(squirreljme_try_compile noun target source)
+	try_compile(${target}
+		"${CMAKE_CURRENT_BINARY_DIR}"
+		SOURCES "${CMAKE_CURRENT_LIST_DIR}/${source}.c"
+		CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
+		LINK_LIBRARIES ${CMAKE_THREAD_LIBS_INIT}
+		OUTPUT_VARIABLE ${target}_OUTPUT)
+
+	message(DEBUG "${noun}: ${${target}_OUTPUT}")
+	message("${noun}: ${${target}}")
+endmacro()
+
+# snprintf() available?
+squirreljme_try_compile("snprintf()"
+	SQUIRRELJME_SNPRINTF_TRY_VALID "trySNPrintF")
+if(NOT SQUIRRELJME_SNPRINTF_TRY_VALID)
+	add_compile_definitions(
+		SJME_CONFIG_HAS_NO_SNPRINTF=1)
 endif()
+
+# stdarg.h available?
+squirreljme_try_compile("stdarg.h"
+	SQUIRRELJME_STDARG_TRY_VALID "tryStdArgH")
+if(NOT SQUIRRELJME_STDARG_TRY_VALID)
+	add_compile_definitions(
+		SJME_CONFIG_HAS_NO_STDARG=1)
+endif()
+
+# varargs.h available?
+squirreljme_try_compile("varargs.h"
+	SQUIRRELJME_VARARGS_TRY_VALID "tryVarArgsH")
+if(NOT SQUIRRELJME_VARARGS_TRY_VALID)
+	add_compile_definitions(
+		SJME_CONFIG_HAS_NO_VARARGS=1)
+endif()
+

@@ -842,18 +842,21 @@ public final class SpringThreadWorker
 				throw new SpringMachineExitException(
 					this.machine.getExitCode());
 			
-			/* {@squirreljme.error BK23 Current frame is not our blank frame.} */
+			/* {@squirreljme.error BK23 Current frame is not our blank
+			frame.} */
 			throw new SpringVirtualMachineException("BK23");
 		}
 		
 		// Wrap the exception if there is one
 		Object rv = blank.tossedException();
 		if (rv != null)
+		{
 			rv = new MethodInvokeException(String.format(
 				"Exception in %s %s:%s(%s)",
 				(__static ? "static" : "instance"), __cl, __nat,
 				Arrays.asList(__args)), (SpringObject)rv,
 				thread.getStackTrace());
+		}
 		
 		// Read return value from the blank frame
 		else if (__nat.type().hasReturnValue())

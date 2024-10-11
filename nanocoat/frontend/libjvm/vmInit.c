@@ -10,7 +10,7 @@
 #include <jni.h>
 
 #include "sjme/alloc.h"
-#include "sjme/boot.h"
+#include "sjme/nvm/boot.h"
 #include "sjme/debug.h"
 
 /** Default amount of memory. */
@@ -32,7 +32,7 @@ sjme_attrUnused jint JNICALL JNI_CreateJavaVM(
 	struct JNIInvokeInterface_* resultVm;
 	struct JNINativeInterface_* resultEnv;
 	sjme_alloc_pool* pool;
-	sjme_nvm_state* nvmState;
+	sjme_nvm nvmState;
 	JavaVMInitArgs* args;
 	jint i;
 	
@@ -68,13 +68,15 @@ sjme_attrUnused jint JNICALL JNI_CreateJavaVM(
 		
 	/* Allocate resultant function structure. */
 	resultVm = NULL;
-	if (sjme_error_is(sjme_alloc(pool, sizeof(*resultVm), &resultVm)) ||
+	if (sjme_error_is(sjme_alloc(pool, sizeof(*resultVm),
+		(void**)&resultVm)) ||
 		resultVm == NULL)
 		goto fail_allocResultVm;
 	
 	/* Allocate environment based functions. */
 	resultEnv = NULL;
-	if (sjme_error_is(sjme_alloc(pool, sizeof(*resultEnv), &resultEnv)) ||
+	if (sjme_error_is(sjme_alloc(pool, sizeof(*resultEnv),
+		(void**)&resultEnv)) ||
 		resultEnv == NULL)
 		goto fail_allocResultEnv;
 	
@@ -93,8 +95,8 @@ sjme_attrUnused jint JNICALL JNI_CreateJavaVM(
 	resultEnv->reserved2 = nvmState;
 	
 	/* Then link back to both. */
-	nvmState->frontEnd.wrapper = resultVm;
-	nvmState->frontEnd.data = resultEnv;
+	nvmState->common.frontEnd.wrapper = resultVm;
+	nvmState->common.frontEnd.data = resultEnv;
 	
 	/* Success! */
 	**outVm = resultVm;

@@ -247,6 +247,13 @@ public enum VMType
 			// Arguments for the JVM
 			List<String> jvmArgs = new ArrayList<>();
 			
+			// Needed on macOS for the GUI to properly work
+			String osName = System.getProperty("os.name");
+			if (osName != null &&
+				(osName.toLowerCase().contains("mac os") ||
+				osName.toLowerCase().contains("mac os x")))
+				jvmArgs.add("-XstartOnFirstThread");
+			
 			// Copy any agent libraries which are not JDWP based ones, for
 			// example if IntelliJ is profiling
 			for (String mxArg : ManagementFactory.getRuntimeMXBean()
@@ -463,7 +470,7 @@ public enum VMType
 		public boolean isSingleSourceSetRom(BangletVariant __variant)
 		{
 			// NanoCoat is this special case
-			return true;
+			return false;
 		}
 		
 		/**
@@ -827,26 +834,26 @@ public enum VMType
 				args.add("-XbootLoaderClassPath:" +
 					VMType.__pathIndexList(libIndex,
 					__build.bootLoaderClassPath));
-			
-			// Launcher main class
-			if (__build.launcherMainClass != null)
-				args.add("-XlauncherMainClass:" + __build.launcherMainClass);
-			
-			// Launcher arguments, these are a bit special
-			if (__build.launcherArgs != null)
-			{
-				String[] launcherArgs = __build.launcherArgs;
-				for (int i = 0, n = launcherArgs.length; i < n; i++)
-					args.add(String.format("-XlauncherArgs:%d:%s", i,
-						launcherArgs[i]));
-			}
-			
-			// Launcher class path
-			if (__build.launcherClassPath != null)
-				args.add("-XlauncherClassPath:" +
-					VMType.__pathIndexList(libIndex,
-					__build.launcherClassPath));
 		}
+		
+		// Launcher main class
+		if (__build.launcherMainClass != null)
+			args.add("-XlauncherMainClass:" + __build.launcherMainClass);
+		
+		// Launcher arguments, these are a bit special
+		if (__build.launcherArgs != null)
+		{
+			String[] launcherArgs = __build.launcherArgs;
+			for (int i = 0, n = launcherArgs.length; i < n; i++)
+				args.add(String.format("-XlauncherArgs:%d:%s", i,
+					launcherArgs[i]));
+		}
+		
+		// Launcher class path
+		if (__build.launcherClassPath != null)
+			args.add("-XlauncherClassPath:" +
+				VMType.__pathIndexList(libIndex,
+				__build.launcherClassPath));
 		
 		// Put down paths to libraries to link together
 		for (Path path : __libs)
@@ -1051,6 +1058,16 @@ public enum VMType
 		// Add source set
 		args.add("-XsourceSet:" +
 			__task.getSourceSet());
+		
+		// Fossil hash
+		String fossilHash = VMHelpers.hashFossil(__task.getProject());
+		if (fossilHash != null)
+			args.add("-Xcommit:fossil:" + fossilHash);
+		
+		// Git hash
+		String gitHash = VMHelpers.hashGit(__task.getProject());
+		if (gitHash != null)
+			args.add("-Xcommit:git:" + gitHash);
 		
 		// Arguments before the command
 		if (__preArgs != null)

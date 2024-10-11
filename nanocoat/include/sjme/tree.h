@@ -19,7 +19,8 @@
 #ifndef SQUIRRELJME_TREE_H
 #define SQUIRRELJME_TREE_H
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
+#include "sjme/tokenUtils.h"
 #include "sjme/comparator.h"
 #include "sjme/list.h"
 

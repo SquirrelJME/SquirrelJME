@@ -93,7 +93,8 @@ public abstract class MenuAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
-	public static int __getPriority(MenuAction __action)
+	@SquirrelJMEVendorApi
+	public static int getPriority(MenuAction __action)
 		throws NullPointerException
 	{
 		if (__action == null)
@@ -114,6 +115,7 @@ public abstract class MenuAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/19
 	 */
+	@SquirrelJMEVendorApi
 	protected static int approxDepth(MenuAction __action)
 		throws NullPointerException
 	{
@@ -132,6 +134,7 @@ public abstract class MenuAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/27
 	 */
+	@SquirrelJMEVendorApi
 	protected static void setLabel(MenuAction __action, boolean __long,
 		String __string)
 		throws NullPointerException

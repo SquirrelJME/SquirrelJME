@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.cldc.debug;
 
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.IOException;
 
@@ -29,6 +30,7 @@ import java.io.IOException;
  *
  * @since 2020/06/11
  */
+@SquirrelJMEVendorApi
 public final class CallTraceUtils
 {
 	/**
@@ -50,6 +52,7 @@ public final class CallTraceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMEVendorApi
 	public static boolean printStackTrace(Appendable __out, Throwable __toss,
 		int __indentLevel)
 		throws NullPointerException
@@ -76,6 +79,7 @@ public final class CallTraceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMEVendorApi
 	public static boolean printStackTrace(Appendable __out, String __message,
 		TracePointBracket[] __trace, Throwable __cause,
 		Throwable[] __suppressed, int __indentLevel)
@@ -102,6 +106,7 @@ public final class CallTraceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMEVendorApi
 	public static boolean printStackTrace(Appendable __out, String __message,
 		CallTraceElement[] __trace, Throwable __cause,
 		Throwable[] __suppressed, int __indentLevel)
@@ -255,6 +260,7 @@ public final class CallTraceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMEVendorApi
 	public static CallTraceElement resolve(TracePointBracket __point)
 		throws NullPointerException
 	{
@@ -280,6 +286,7 @@ public final class CallTraceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMEVendorApi
 	public static CallTraceElement[] resolveAll(TracePointBracket[] __trace)
 		throws NullPointerException
 	{

@@ -59,7 +59,8 @@ squirreljme_multilib_static_target_include_directories(ScritchUICore PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
 # We can only build dynamic libraries if requested to
-if(NOT SQUIRRELJME_SCRITCHUI_NO_DYLIB)
+if(NOT SQUIRRELJME_SCRITCHUI_NO_DYLIB OR
+	DEFINED SQUIRRELJME_GRADLE)
 	# Collection dependencies
 	set(SQUIRRELJME_SCRITCHUI_COLLECT_TARGETS)
 	set(SQUIRRELJME_SCRITCHUI_COLLECT_LIBS)
@@ -117,6 +118,8 @@ if(NOT SQUIRRELJME_SCRITCHUI_NO_DYLIB)
 	else()
 		message("ScritchUI: pkg-config not found...")
 	endif()
+else()
+	message("ScritchUI: Dynamic library support was not enabled...")
 endif()
 
 # Collect all ScritchUI outputs into a single archive

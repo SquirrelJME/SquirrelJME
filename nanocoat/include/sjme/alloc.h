@@ -16,8 +16,10 @@
 #ifndef SQUIRRELJME_ALLOC_H
 #define SQUIRRELJME_ALLOC_H
 
-#include "sjme/nvm.h"
+#include "sjme/frontEnd.h"
+#include "sjme/stdTypes.h"
 #include "sjme/debug.h"
+#include "sjme/error.h"
 #include "sjme/atomic.h"
 #include "sjme/multithread.h"
 
@@ -83,6 +85,9 @@ typedef struct sjme_alloc_weakBase* sjme_alloc_weak;
  * 
  * @param weak The weak reference being freed.
  * @param data The data for the free.
+ * @param newCount The new count.
+ * @param isWeakFree Was this called because the underlying weak was
+ * un-referenced?
  * @param isBlockFree Was this called because the underlying block was freed?
  * @return Any resultant error code. If this function
  * returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the weak reference reaches
@@ -92,6 +97,8 @@ typedef struct sjme_alloc_weakBase* sjme_alloc_weak;
 typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
 	sjme_attrInNotNull sjme_alloc_weak weak,
 	sjme_attrInNullable sjme_pointer data,
+	sjme_attrInPositiveNonZero sjme_jint newCount,
+	sjme_attrInValue sjme_jboolean isWeakFree,
 	sjme_attrInValue sjme_jboolean isBlockFree);
 
 /** Weak reference is valid. */
@@ -111,11 +118,11 @@ struct sjme_alloc_weakBase
 	/** The pointer this points to, @c NULL if freed. */
 	sjme_pointer pointer;
 	
-	/** The data to call for when this is removed. */
+	/** The data to call for when this is removed or the count changes. */
 	sjme_alloc_weakEnqueueFunc enqueue;
 	
-	/** The pointer for enqueue. */
-	sjme_pointer enqueueData;
+	/** Is this in an enqueue? */
+	sjme_atomic_sjme_jint inEnqueue;
 };
 
 struct sjme_alloc_link
@@ -268,6 +275,16 @@ sjme_errorCode sjme_alloc_poolInitStatic(
 	sjme_attrInPositive sjme_jint size);
 
 /**
+ * Destroys the given allocation pool.
+ * 
+ * @param inPool The pool to destroy.
+ * @return Any resultant error, if any.
+ * @since 2024/08/08
+ */
+sjme_errorCode sjme_alloc_poolDestroy(
+	sjme_attrOutNotNull sjme_alloc_pool* inPool);
+
+/**
  * Returns the total space that is available within the pool, includes both
  * free and used spaces.
  *
@@ -303,12 +320,14 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 /**
  * Allocates a weak reference within the given pool.
  * 
+ * The count starts at zero, so it is required for it to be counted up by
+ * the allocator.
+ * 
  * @param inPool The pool to allocate within.
  * @param size The number of bytes to allocate.
  * @param inEnqueue The optional function to call when this reference is
  * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
  * weak reference count is zero, then the weak reference will not be freed.
- * @param inEnqueueData Optional data to pass to @c inEnqueue .
  * @param outAddr The output address.
  * @param outWeak The resultant weak reference.
  * @return Returns an error code.
@@ -318,9 +337,8 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	sjme_attrInNotNull volatile sjme_alloc_pool* inPool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
-	sjme_attrInNullable sjme_pointer inEnqueueData,
 	sjme_attrOutNotNull sjme_pointer* outAddr,
-	sjme_attrOutNotNull sjme_alloc_weak* outWeak
+	sjme_attrOutNullable sjme_alloc_weak* outWeak
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
@@ -338,6 +356,29 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull sjme_pointer* outAddr,
 	sjme_attrInNotNull sjme_pointer inAddr
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Allocates a copy of the given data as a weak reference.
+ *
+ * @param pool The pool to allocate within.
+ * @param size The allocation size.
+ * @param inEnqueue The enqueue which is called for cleanup.
+ * @param inEnqueueData Any data for cleaning up.
+ * @param outAddr The output address.
+ * @param inAddr The input address.
+ * @param outWeak The resultant weak reference.
+ * @return Returns an error code.
+ * @since 2024/08/09
+ */
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copyWeak)(
+	sjme_attrInNotNull volatile sjme_alloc_pool* pool,
+	sjme_attrInPositiveNonZero sjme_jint size,
+	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
+	sjme_attrInNullable sjme_pointer inEnqueueData,
+	sjme_attrOutNotNull sjme_pointer* outAddr,
+	sjme_attrInNotNull sjme_pointer inAddr,
+	sjme_attrOutNullable sjme_alloc_weak* outWeak
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
@@ -384,8 +425,52 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
  */
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_lpcstr* outString,
+	sjme_attrOutNotNull sjme_lpstr* outString,
 	sjme_attrInNotNull sjme_lpcstr stringToCopy
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Deletes a weak reference by un-counting it, if the count reaches zero
+ * then this weak will be freed if that was requested.
+ * 
+ * @param inOutWeak The weak reference to delete, if the count reaches
+ * zero then the pointer will be set to @c NULL .
+ * @return Any resultant error, if any.
+ * @since 2024/07/01
+ */
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakDelete)(
+	sjme_attrInOutNotNull sjme_alloc_weak* inOutWeak
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Un-references a weak pointer.
+ * 
+ * @param addr The address to count down. 
+ * @return Any resultant error, if any.
+ * @since 2024/08/14
+ */
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakUnRef)(
+	sjme_attrInNotNull sjme_pointer addr
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Creates or returns a weak reference to the given block. If the reference
+ * already exists, then it will be incremented.
+ * 
+ * @param addr The address to reference.
+ * @param outWeak The resultant weak reference for the type.
+ * @param inEnqueue The optional function to call when this reference is
+ * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
+ * weak reference count is zero, then the weak reference will not be freed.
+ * @param inEnqueueData Optional data to pass to @c inEnqueue .
+ * @return Any resultant error, if any.
+ * @since 2024/07/01
+ */
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakRefE)(
+	sjme_attrInNotNull sjme_pointer addr,
+	sjme_attrOutNullable sjme_alloc_weak* outWeak,
+	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
+	sjme_attrInNullable sjme_pointer inEnqueueData
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 #if defined(SJME_CONFIG_DEBUG)
@@ -410,15 +495,14 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
  * @param inEnqueue The optional function to call when this reference is
  * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
  * weak reference count is zero, then the weak reference will not be freed.
- * @param inEnqueueData Optional data to pass to @c inEnqueue .
  * @param outAddr The output address.
  * @param outWeak The resultant weak reference.
  * @return Returns an error code.
  * @since 2024/07/08
  */
-#define sjme_alloc_weakNew(pool, size, inEnqueue, inEnqueueData, \
+#define sjme_alloc_weakNew(pool, size, inEnqueue, \
 		outAddr, outWeak) \
-	sjme_alloc_weakNewR((pool), (size), (inEnqueue), (inEnqueueData), \
+	sjme_alloc_weakNewR((pool), (size), (inEnqueue), \
 		(outAddr), (outWeak), SJME_DEBUG_FILE_LINE_FUNC)
 
 /**
@@ -434,6 +518,24 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
 #define sjme_alloc_copy(pool, size, outAddr, inAddr) \
 	sjme_alloc_copyR((pool), (size), (outAddr), (inAddr), \
 		SJME_DEBUG_FILE_LINE_FUNC)
+
+/**
+ * Allocates a copy of the given data as a weak reference.
+ *
+ * @param pool The pool to allocate within.
+ * @param size The allocation size.
+ * @param inEnqueue The enqueue which is called for cleanup.
+ * @param inEnqueueData Any data for cleaning up.
+ * @param outAddr The output address.
+ * @param inAddr The input address.
+ * @param outWeak The resultant weak reference.
+ * @return Returns an error code.
+ * @since 2024/08/09
+ */
+#define sjme_alloc_copyWeak(pool, size, inEnqueue, inEnqueueData, \
+	outAddr, inAddr, outWeak) \
+	sjme_alloc_copyWeakR((pool), (size), (inEnqueue), (inEnqueueData), \
+	(outAddr), (inAddr), (outWeak), SJME_DEBUG_FILE_LINE_FUNC)
 
 /**
  * Allocates a formatted string.
@@ -475,6 +577,45 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
 	sjme_alloc_strdupR((inPool), (outString), (stringToCopy), \
 	SJME_DEBUG_FILE_LINE_FUNC)
 
+/**
+ * Deletes a weak reference by un-counting it, if the count reaches zero
+ * then this weak will be freed if that was requested.
+ * 
+ * @param inOutWeak The weak reference to delete, if the count reaches
+ * zero then the pointer will be set to @c NULL .
+ * @return Any resultant error, if any.
+ * @since 2024/07/01
+ */
+#define sjme_alloc_weakDelete(inOutWeak) \
+	sjme_alloc_weakDeleteR((inOutWeak), SJME_DEBUG_FILE_LINE_FUNC)
+
+/**
+ * Un-references a weak pointer.
+ * 
+ * @param addr The address to count down. 
+ * @return Any resultant error, if any.
+ * @since 2024/08/14
+ */
+#define sjme_alloc_weakUnRef(addr) \
+	sjme_alloc_weakUnRefR((addr), SJME_DEBUG_FILE_LINE_FUNC)
+
+/**
+ * Creates or returns a weak reference to the given block. If the reference
+ * already exists, then it will be incremented.
+ * 
+ * @param addr The address to reference.
+ * @param outWeak The resultant weak reference for the type.
+ * @param inEnqueue The optional function to call when this reference is
+ * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
+ * weak reference count is zero, then the weak reference will not be freed.
+ * @param inEnqueueData Optional data to pass to @c inEnqueue .
+ * @return Any resultant error, if any.
+ * @since 2024/07/01
+ */
+#define sjme_alloc_weakRefE(addr, outWeak, inEnqueue, inEnqueueData) \
+    sjme_alloc_weakRefER((addr), (outWeak), (inEnqueue), (inEnqueueData), \
+    SJME_DEBUG_FILE_LINE_FUNC)
+
 #endif
 
 /**
@@ -500,18 +641,6 @@ sjme_errorCode sjme_alloc_getLink(
 	sjme_attrOutNotNull sjme_alloc_link** outLink);
 
 /**
- * Deletes a weak reference by un-counting it, if the count reaches zero
- * then this weak will be freed if that was requested.
- * 
- * @param inOutWeak The weak reference to delete, if the count reaches
- * zero then the pointer will be set to @c NULL .
- * @return Any resultant error, if any.
- * @since 2024/07/01
- */
-sjme_errorCode sjme_alloc_weakDelete(
-	sjme_attrInOutNotNull sjme_alloc_weak* inOutWeak);
-
-/**
  * Gets the pointer pointed to by the given weak reference, if this returns
  * the value @c NULL then @c sjme_alloc_weakDelete should be called to
  * remove any stale weak references.
@@ -532,18 +661,23 @@ sjme_errorCode sjme_alloc_weakGetPointer(
  * 
  * @param addr The address to reference.
  * @param outWeak The resultant weak reference for the type.
- * @param inEnqueue The optional function to call when this reference is
- * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
- * weak reference count is zero, then the weak reference will not be freed.
- * @param inEnqueueData Optional data to pass to @c inEnqueue .
  * @return Any resultant error, if any.
  * @since 2024/07/01
  */
-sjme_errorCode sjme_alloc_weakRef(
+#define sjme_alloc_weakRef(addr, outWeak) \
+	(sjme_alloc_weakRefE((addr), (outWeak), NULL, NULL))
+
+/**
+ * Obtains a weak reference without incrementation or creation.
+ * 
+ * @param addr The address to get the weak pointer of.
+ * @param outWeak The resultant weak pointer.
+ * @return Any resultant error, if any.
+ * @since 2024/08/10
+ */
+sjme_errorCode sjme_alloc_weakRefGet(
 	sjme_attrInNotNull sjme_pointer addr,
-	sjme_attrOutNotNull sjme_alloc_weak* outWeak,
-	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
-	sjme_attrInNullable sjme_pointer inEnqueueData);
+	sjme_attrOutNullable sjme_alloc_weak* outWeak);
 
 #if defined(SJME_CONFIG_DEBUG)
 

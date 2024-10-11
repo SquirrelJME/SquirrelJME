@@ -73,7 +73,7 @@ final class __Layout__
 		if (action == null)
 			return Integer.MAX_VALUE;
 		
-		return MenuAction.__getPriority(action);
+		return MenuAction.getPriority(action);
 	}
 	
 	/**

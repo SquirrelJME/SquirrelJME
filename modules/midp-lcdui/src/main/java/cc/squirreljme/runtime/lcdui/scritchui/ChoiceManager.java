@@ -111,6 +111,7 @@ public final class ChoiceManager
 	 * @return The first selected index, returns {@code -1} if there is none.
 	 * @since 2024/07/28
 	 */
+	@SquirrelJMEVendorApi
 	public int getSelectedIndex()
 	{
 		try
@@ -217,6 +218,7 @@ public final class ChoiceManager
 	 * list bounds.
 	 * @since 2024/07/25
 	 */
+	@SquirrelJMEVendorApi
 	public void setEnabled(int __atIndex, boolean __enabled)
 		throws IndexOutOfBoundsException
 	{
@@ -243,6 +245,7 @@ public final class ChoiceManager
 	 * list bounds.
 	 * @since 2024/07/25
 	 */
+	@SquirrelJMEVendorApi
 	public void setSelected(int __atIndex, boolean __selected)
 		throws IndexOutOfBoundsException
 	{
@@ -269,6 +272,7 @@ public final class ChoiceManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/28
 	 */
+	@SquirrelJMEVendorApi
 	public void setSelectedFlags(boolean[] __flags)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -309,6 +313,7 @@ public final class ChoiceManager
 	 * @return The number of available choices.
 	 * @since 2024/07/28
 	 */
+	@SquirrelJMEVendorApi
 	public int size()
 	{
 		try

@@ -292,6 +292,12 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/c-source-writer/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/cicd-release-bundle/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/cicd-release-bundle/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/cicd-release-bundle/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/github-classic-project-dump/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/github-classic-project-dump/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/github-classic-project-dump/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/out" />
@@ -311,12 +317,12 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-unzip/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-unzip/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-unzip/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../utils-dev" />
     </content>
     <orderEntry type="inheritedJdk" />

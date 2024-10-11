@@ -27,7 +27,7 @@ SJME_TEST_DECLARE(testAllocWeakCounting)
 	p = NULL;
 	weak = NULL;
 	if (sjme_error_is(sjme_alloc_weakNew(test->pool, 512,
-		NULL, NULL, &p, &weak)))
+		NULL, &p, &weak)))
 		return sjme_unit_fail(test, "Failed to allocate weak?");
 	
 	/* Reference count should be one. */
@@ -36,8 +36,7 @@ SJME_TEST_DECLARE(testAllocWeakCounting)
 	
 	/* Reference again. */
 	weakB = NULL;
-	if (sjme_error_is(sjme_alloc_weakRef(p, &weakB,
-		NULL, NULL)))
+	if (sjme_error_is(sjme_alloc_weakRef(p, &weakB)))
 		return sjme_unit_fail(test, "Could not re-ref weak?");
 	
 	/* Reference count should be two. */

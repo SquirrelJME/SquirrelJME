@@ -81,7 +81,8 @@ public abstract class BaseRunRoute
 					"compile",
 					(i == 1 ? "test" : "main"),
 					"debug",
-					"hash" + i);
+					"hash" + i,
+					"abcd", "abcd");
 				
 				// Setup arguments
 				Deque<String> args = new ArrayDeque<>();
@@ -160,7 +161,8 @@ public abstract class BaseRunRoute
 					"compile",
 					"main",
 					"debug",
-					"hash");
+					"hash",
+					"abcd", "abcd");
 				
 				// Setup arguments
 				Deque<String> args = new ArrayDeque<>();

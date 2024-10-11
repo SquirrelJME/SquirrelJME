@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
 
 #if defined(SJME_CONFIG_HAS_WINDOWS)
 	#define WIN32_LEAN_AND_MEAN 1
@@ -220,6 +220,82 @@ sjme_errorCode sjme_dieR(sjme_lpcstr file, int line,
 	
 	/* Never reaches, but returns false naturally. */
 	return SJME_ERROR_UNKNOWN;
+}
+
+static void sjme_message_hexDumpChar(sjme_lpstr* w, sjme_lpstr end,
+	sjme_jint c)
+{
+	if ((*w) < end)
+		*((*w)++) = c;
+}
+
+static void sjme_message_hexDumpHex(sjme_lpstr* w, sjme_lpstr end,
+	sjme_jint c)
+{
+	if (c < 10)
+		sjme_message_hexDumpChar(w, end, '0' + c);
+	else
+		sjme_message_hexDumpChar(w, end, 'A' + (c - 10));
+}
+
+void sjme_message_hexDump(
+	sjme_attrInNullable sjme_buffer inData,
+	sjme_attrInPositive sjme_jint inLen)
+{
+#define SJME_HEX_LINE 12
+	sjme_jint at, sub, i, c;
+	sjme_cchar buf[DEBUG_BUF];
+	sjme_lpstr w, end;
+	
+	if (inData == NULL || inLen <= 0)
+		return;
+	
+	/* Print all sequences. */
+	for (at = 0; at < inLen; at += SJME_HEX_LINE)
+	{
+		/* Clear buffer. */
+		memset(buf, 0, sizeof(buf));
+		w = buf;
+		end = &buf[DEBUG_BUF - 1];
+		
+		/* Print hex first. */
+		for (sub = at, i = 0; sub < inLen && i < SJME_HEX_LINE; sub++, i++)
+		{
+			/* Get byte from the input. */
+			c = ((sjme_jubyte*)inData)[sub];
+			
+			/* Write hex. */
+			sjme_message_hexDumpHex(&w, end, (c >> 4) & 0xF);
+			sjme_message_hexDumpHex(&w, end, c & 0xF);
+				
+			/* Space. */ 
+			sjme_message_hexDumpChar(&w, end, ' '); 
+		}
+		
+		/* Split to hex. */
+		sjme_message_hexDumpChar(&w, end, '|');
+		
+		/* Then characters. */
+		for (sub = at, i = 0; sub < inLen && i < SJME_HEX_LINE; sub++, i++)
+		{
+			/* Get byte from the input. */
+			c = ((sjme_jubyte*)inData)[sub];
+			
+			if (c >= ' ' && c < 0x7F)
+				sjme_message_hexDumpChar(&w, end, c);
+			else
+				sjme_message_hexDumpChar(&w, end, '.');
+		}
+		
+		/* End splice. */
+		sjme_message_hexDumpChar(&w, end, '|');
+		
+		/* Send out the buffer. */
+		sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
+			"%s", buf);
+	}
+
+#undef SJME_HEX_LINE
 }
 
 void sjme_todoR(sjme_lpcstr file, int line,

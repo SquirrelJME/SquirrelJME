@@ -1,0 +1,63 @@
+plugins {
+	id "java"
+	id "application"
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+description = "Performs bundling and otherwise from CI/CD."
+mainClassName = "cc.squirreljme.cicd.Main"
+
+dependencies {
+	implementation project(":modules:io")
+	
+	// Lombok for simpler getters/setters
+	implementation 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+	
+	// Jackson, for JSON APIs
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr353:2.17.2'
+	implementation 'org.glassfish:javax.json:1.1'
+}
+
+TaskProvider<Task> internals = tasks.register('internals') {
+	group = "squirreljme"
+	description = "Builds and collects all of the internal tasks."
+	
+	dependsOn(
+		rootProject.tasks.named("romNanoCoatDebug"),
+		rootProject.tasks.named("romNanoCoatRelease"),
+		rootProject.tasks.named("romTestNanoCoatDebug"))
+	mustRunAfter(tasks.named("clean"))
+}
+
+run {
+	dependsOn(internals)
+	mustRunAfter(tasks.named("clean"))
+	
+	getArgumentProviders().add({ ->
+		// Pass in SquirrelJME version
+		List<String> args = new ArrayList<>()
+		args.add(squirreljmeVersion)
+		
+		// Pass all task dependencies
+		for (Object item : internals.get().dependsOn) {
+			if (item instanceof Provider) {
+				item = ((Provider)item).get()
+			}
+			
+			if (item instanceof Task) {
+				
+				Task sub = (Task)item
+				
+				for (File file : sub.outputs.files.asFileTree.files) {
+					args.add(String.format("%s=%s",
+						sub.name,
+						file.toPath().toAbsolutePath().toString()))
+				}
+			}
+		}
+		
+		return args
+	} as CommandLineArgumentProvider)
+}

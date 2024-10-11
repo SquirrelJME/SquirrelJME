@@ -59,7 +59,11 @@ final class __MIDPImage__
 	@Override
 	public void dispose()
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			this._image = null;
+			this._useCount = 0;
+		}
 	}
 	
 	/**
