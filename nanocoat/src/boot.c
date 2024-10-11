@@ -56,7 +56,7 @@ static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
 		"Starts debugging with the built-in debugger."},
 	{"-Xemulator:<vm>",
 		"Ignored, this will always be \"nanocoat\"."},
-	{"-Xentry:id", 
+	{"-Xentry:id",
 		"If launching a MIDlet, choose a MIDlet entry."},
 	{"-Xint",
 		"Force pure interpreter, do not JIT/AOT compilation."},
@@ -69,7 +69,7 @@ static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
 	{"-Xsnapshot:<path-to-nps>",
 		"Write a VisualVM snapshot (.nps) to the given path."},
 	{"-XstartOnFirstThread",
-		"Ignored."}
+		"Ignored."},
 	{"-Xthread:<single|coop|multi|smt>",
 		"The threading model to use."},
 	{"-Xtrace:<flag|...>",
