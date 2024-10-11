@@ -51,6 +51,9 @@ extern "C"
 	
 /** Widget. */
 #define SJME_SUI_COCOA_H_NSVIEW 0
+	
+/** Secondary widget. */
+#define SJME_SUI_COCOA_H_NSVIEWB 1
 
 sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
@@ -108,6 +111,16 @@ sjme_errorCode sjme_scritchui_cocoa_panelEnableFocus(
 sjme_errorCode sjme_scritchui_cocoa_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
+	sjme_attrInNullable sjme_pointer ignored);
+	
+sjme_errorCode sjme_scritchui_cocoa_screens(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
+	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
+	
+sjme_errorCode sjme_scritchui_cocoa_windowNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInNullable sjme_pointer ignored);
 
 /*--------------------------------------------------------------------------*/

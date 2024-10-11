@@ -24,12 +24,26 @@ sjme_errorCode sjme_scritchui_cocoa_menuBarNew(
 	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar,
 	sjme_attrInNullable sjme_pointer ignored)
 {
+	SJMEMenu* cocoaMenu;
+	SJMEMenuItem* cocoaMenuItem;
+
 	if (inState == NULL || inMenuBar == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Menus bars are not a thing in Cocoa, there is the main application */
-	/* menu but that is a menu itself. We just let ScritchUI track the */
-	/* menus that should be here. */
+	/* Menu bars in Cocoa are just associated with the NSApp but themselves */
+	/* are just a menu and menu item. */
+	cocoaMenu = [SJMEMenu new];
+	cocoaMenuItem = [SJMEMenuItem new];
+
+	/* The first is always the menu. */
+	[cocoaMenu addItem:cocoaMenuItem];
+
+	/* Store it. */
+	inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEW] = cocoaMenu;
+	inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEWB] =
+		cocoaMenuItem;
+
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -39,15 +53,31 @@ sjme_errorCode sjme_scritchui_cocoa_menuInsert(
 	sjme_attrInPositive sjme_jint atIndex,
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem)
 {
+	SJMEMenu* cocoaMenu;
+	SJMEMenuItem* cocoaMenuItem;
+
 	if (inState == NULL || intoMenu == NULL || childItem == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Menu bars do not exist, so inserting into them does nothing. */
-	if (intoMenu->common.type == SJME_SCRITCHUI_TYPE_MENU_BAR)
-		return SJME_ERROR_NONE;
+	/* Only menus can be added into. */
+	if (intoMenu->common.type != SJME_SCRITCHUI_TYPE_MENU_BAR &&
+		intoMenu->common.type != SJME_SCRITCHUI_TYPE_MENU)
+		return SJME_ERROR_INVALID_ARGUMENT;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Recover menu to add into. */
+	cocoaMenu = intoMenu->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+	/* Recover item to add. */
+	if (childItem->common.type == SJME_SCRITCHUI_TYPE_MENU_ITEM)
+		cocoaMenuItem = intoMenu->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+	else
+		cocoaMenuItem = intoMenu->common.handle[SJME_SUI_COCOA_H_NSVIEWB];
+
+	/* Add it in. */
+	[cocoaMenu addItem:cocoaMenuItem];
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_cocoa_menuItemNew(
@@ -77,15 +107,21 @@ sjme_errorCode sjme_scritchui_cocoa_menuNew(
 	sjme_attrInNullable sjme_pointer ignored)
 {
 	SJMEMenu* cocoaMenu;
+	SJMEMenuItem* cocoaMenuItem;
 
 	if (inState == NULL || inMenu == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Setup new menu. */
+	/* Setup new menu, it needs an item as well. */
 	cocoaMenu = [SJMEMenu new];
+	cocoaMenuItem = [SJMEMenuItem new];
+
+	/* The item's sub menu is the menu. */
+	[cocoaMenuItem setSubmenu:cocoaMenu];
 
 	/* Store it. */
 	inMenu->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEW] = cocoaMenu;
+	inMenu->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEWB] = cocoaMenuItem;
 
 	/* Success! */
 	return SJME_ERROR_NONE;

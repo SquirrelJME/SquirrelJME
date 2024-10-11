@@ -106,6 +106,20 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
 
 @end
 
+/**
+ * Represents a window.
+ * 
+ * @since 2024/10/11
+ */
+@interface SJMEWindow : NSWindow
+{
+@public
+	/** The window this is attached to. */
+	sjme_scritchui_uiWindow inWindow;
+}
+
+@end
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
