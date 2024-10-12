@@ -11,6 +11,17 @@
 #include "lib/scritchui/cocoa/cocoa.h"
 #include "lib/scritchui/cocoa/cocoaIntern.h"
 
+sjme_errorCode sjme_scritchui_cocoa_componentFocusGrab(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Does nothing because you cannot forcibly grab focus. */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_cocoa_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -36,6 +47,34 @@ sjme_errorCode sjme_scritchui_cocoa_componentRepaint(
 	rect.size.height = height;
 	[cocoaView setNeedsDisplayInRect:
 		rect];
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_cocoa_componentRevalidate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	NSView* cocoaView;
+	NSRect rect;
+
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Cannot be done on windows. */
+	if (inComponent->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
+		return SJME_ERROR_NONE;
+
+	/* Recover view, as everything is a view. */
+	cocoaView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+	/* Set that it needs updating. */
+	rect.origin.x = 0;
+	rect.origin.y = 0;
+	rect.size.width = inComponent->bounds.d.width;
+	rect.size.height = inComponent->bounds.d.height;
+	[cocoaView setNeedsDisplayInRect:rect];
 
 	/* Success! */
 	return SJME_ERROR_NONE;

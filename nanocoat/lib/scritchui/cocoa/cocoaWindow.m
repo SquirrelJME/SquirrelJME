@@ -15,6 +15,19 @@
 
 @end
 
+sjme_errorCode sjme_scritchui_cocoa_windowContentMinimumSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height)
+{
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchui_cocoa_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,

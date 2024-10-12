@@ -57,6 +57,25 @@ extern "C"
 
 sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
+	
+sjme_errorCode sjme_scritchui_cocoa_containerAdd(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
+	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
+
+sjme_errorCode sjme_scritchui_cocoa_containerSetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height);
+	
+sjme_errorCode sjme_scritchui_cocoa_componentFocusGrab(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
 sjme_errorCode sjme_scritchui_cocoa_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -65,6 +84,10 @@ sjme_errorCode sjme_scritchui_cocoa_componentRepaint(
 	sjme_attrInPositive sjme_jint y,
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height);
+	
+sjme_errorCode sjme_scritchui_cocoa_componentRevalidate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
 sjme_errorCode sjme_scritchui_cocoa_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -117,6 +140,12 @@ sjme_errorCode sjme_scritchui_cocoa_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
+	
+sjme_errorCode sjme_scritchui_cocoa_windowContentMinimumSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height);
 	
 sjme_errorCode sjme_scritchui_cocoa_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
