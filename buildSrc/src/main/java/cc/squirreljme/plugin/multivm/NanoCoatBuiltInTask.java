@@ -66,13 +66,25 @@ public class NanoCoatBuiltInTask
 		// And the output is a primary single file for the ROM and its source
 		Provider<Path> romBase = NanoCoatBuiltInTask.romBasePath(this);
 		NanoCoatBuiltInTaskOutput outJar = new NanoCoatBuiltInTaskOutput(
-			__classifier, romBase, false);
+			__classifier, romBase, false, false);
 		NanoCoatBuiltInTaskOutput outSrc = new NanoCoatBuiltInTaskOutput(
-			__classifier, romBase, true);
+			__classifier, romBase, true, false);
 		this.getOutputs().files(outJar, outSrc);
 		
+		// Tests?
+		NanoCoatBuiltInTaskOutput outTest;
+		if (!__classifier.isTestSourceSet())
+			outTest = null;
+		else
+		{
+			outTest = new NanoCoatBuiltInTaskOutput(
+				__classifier, romBase, false, true);
+			this.getOutputs().files(outTest);
+		}
+		
 		// Actual running of everything
-		this.doLast(new NanoCoatBuiltInTaskAction(input, outJar, outSrc));
+		this.doLast(new NanoCoatBuiltInTaskAction(input, outJar, outSrc,
+			outTest));
 	}
 	
 	/**

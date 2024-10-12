@@ -28,6 +28,9 @@ public class NanoCoatBuiltInTaskOutput
 	/** Is this the source for this? */
 	protected final boolean isSource;
 	
+	/** Is this for tests? */
+	protected final boolean isTest;
+	
 	/** The classifier used. */
 	protected final SourceTargetClassifier classifier;
 	
@@ -37,11 +40,12 @@ public class NanoCoatBuiltInTaskOutput
 	 * @param __classifier The classifier to use.
 	 * @param __base The base path.
 	 * @param __source Is this the source for it?
+	 * @param __test Is this for tests?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/10/12
 	 */
 	public NanoCoatBuiltInTaskOutput(SourceTargetClassifier __classifier,
-		Provider<Path> __base, boolean __source)
+		Provider<Path> __base, boolean __source, boolean __test)
 		throws NullPointerException
 	{
 		if (__classifier == null || __base == null)
@@ -50,6 +54,7 @@ public class NanoCoatBuiltInTaskOutput
 		this.classifier = __classifier;
 		this.base = __base;
 		this.isSource = __source;
+		this.isTest = __test;
 	}
 	
 	/**
@@ -60,14 +65,20 @@ public class NanoCoatBuiltInTaskOutput
 	public Path call()
 		throws Exception
 	{
-		// Use Jar?
 		Path result = this.jar();
-		if (!this.isSource)
-			return result;
 		
-		// Otherwise source file for compiling in
-		return result.resolveSibling(result.getFileName().toString()
-			.replace(".jar", ".c"));
+		// Use source?
+		if (this.isSource)
+			return result.resolveSibling(result.getFileName().toString()
+				.replace(".jar", ".c"));
+		
+		// Is test?
+		else if (this.isTest)
+			return result.resolveSibling(result.getFileName().toString()
+				.replace(".jar", ".list"));
+		
+		// Just use normal Jar
+		return result;
 	}
 	
 	/**

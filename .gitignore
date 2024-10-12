@@ -145,3 +145,13 @@ out-*C
 out-*D
 out-*E
 out-*F
+
+# NanoCoat ROM
+nanocoat/rom/squirreljme.jar
+nanocoat/rom/squirreljme-test.jar
+nanocoat/rom/squirreljme-fast.jar
+nanocoat/rom/squirreljme-fast-test.jar
+nanocoat/rom/squirreljme-fast-test.list
+nanocoat/rom/squirreljme-slow.jar
+nanocoat/rom/squirreljme-slow-test.jar
+nanocoat/rom/squirreljme-slow-test.list

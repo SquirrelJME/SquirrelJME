@@ -153,3 +153,13 @@ ci-comment-*.txt
 ci-comment-*.txt.save
 in-[A-F0-9]*
 out-[A-F0-9]*
+
+# NanoCoat ROM
+nanocoat/rom/squirreljme.jar
+nanocoat/rom/squirreljme-test.jar
+nanocoat/rom/squirreljme-fast.jar
+nanocoat/rom/squirreljme-fast-test.jar
+nanocoat/rom/squirreljme-fast-test.list
+nanocoat/rom/squirreljme-slow.jar
+nanocoat/rom/squirreljme-slow-test.jar
+nanocoat/rom/squirreljme-slow-test.list
