@@ -36,6 +36,9 @@ static sjme_jboolean hookGcNvmLocalPopReference(sjme_nvm_frame frame,
 	/* Debug. */
 	sjme_message("GC of %p...", instance);
 	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Mock must be set. */
 	mock = frame->inThread->inState->common.frontEnd.data;
 	if (mock == NULL)
@@ -52,6 +55,7 @@ static sjme_jboolean hookGcNvmLocalPopReference(sjme_nvm_frame frame,
 	
 	/* Success! */
 	return SJME_JNI_TRUE;
+#endif
 }
  
 const sjme_nvm_stateHooks hooksNvmLocalPopReference =
@@ -119,6 +123,9 @@ SJME_TEST_DECLARE(testNvmLocalPopReference)
 	sjme_nvm_frameStack* stack;
 	testHookResult hookResult;
 	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Test all possible combination of objects: [a, b, NULl]. */
 	/* This is for testing that reference counting works in this case. */
 	for (firstId = 0; firstId < TEST_NUM_OBJECT_IDS; firstId++)
@@ -181,5 +188,6 @@ SJME_TEST_DECLARE(testNvmLocalPopReference)
 	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
+#endif
 }
 

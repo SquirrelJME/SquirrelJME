@@ -70,6 +70,13 @@ add_library(BasicTestLibPIC OBJECT
 	${basicTestSources}
 	${basicTestBlobs})
 
+# TAC executable
+add_executable(TACTest
+	src/tac.c
+	$<TARGET_OBJECTS:Base>
+	$<TARGET_OBJECTS:Core>
+	$<TARGET_OBJECTS:BasicTestLib>)
+
 # Initialize executable for basic tests, which contains everything
 add_executable(BasicTest
 	src/basicMain.c
@@ -77,7 +84,8 @@ add_executable(BasicTest
 	$<TARGET_OBJECTS:Core>
 	$<TARGET_OBJECTS:BasicTestLib>)
 
-# Make it static
+# Make them both static
+squirreljme_static_executable(TACTest)
 squirreljme_static_executable(BasicTest)
 
 # Make sure we have our headers included accordingly
@@ -105,8 +113,19 @@ target_include_directories(BasicTest PUBLIC
 	"${CMAKE_CURRENT_BINARY_DIR}"
 	"${CMAKE_CURRENT_BINARY_DIR}/blobs")
 
+target_include_directories(TACTest PUBLIC
+	"${CMAKE_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_BINARY_DIR}"
+	"${CMAKE_CURRENT_BINARY_DIR}/blobs")
+
 # Depend on the core
+add_dependencies(BasicTest Core)
 target_link_libraries(BasicTest PUBLIC
+	Core)
+
+add_dependencies(TACTest Core)
+target_link_libraries(TACTest PUBLIC
 	Core)
 
 # Include debugging info for tests
@@ -147,7 +166,7 @@ foreach(basicTestSource ${basicTestSources})
 		"${initialBasicTestSource}" ABSOLUTE)
 
 	# Add test for this
-	message(STATUS "Registering test ${basicTestLongName}...")
+	message(STATUS "Basic Test: ${basicTestLongName}")
 	add_test(NAME "${basicTestLongName}"
 		WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
 		COMMAND BasicTest "${basicTestName}"
@@ -176,4 +195,52 @@ foreach(basicTestSource ${basicTestSources})
 		"SJME_TEST_DECLARE(${basicTestName});\n")
 	file(APPEND "${outTestStructH}"
 		"{\"${basicTestName}\", ${basicTestName}},\n")
+endforeach()
+
+# Load in TAC tests from rom/squirreljme-(slow-)test.list
+foreach(testListFile
+	"${CMAKE_SOURCE_DIR}/rom/squirreljme-slow-test.list"
+	"${CMAKE_SOURCE_DIR}/rom/squirreljme-test.list")
+	# Not actually here?
+	if (NOT EXISTS "${testListFile}")
+		continue()
+	endif()
+
+	# Read in all lines
+	file(STRINGS "${testListFile}" testList)
+
+	# Register TAC tests
+	message(DEBUG "Looking for TAC Tests...")
+	foreach(test ${testList})
+		# Names for this test
+		set(tacTestName "${test}")
+		set(tacTestLongName "tac:${tacTestName}")
+
+		# Register it
+		message(STATUS "TAC Test: ${tacTestLongName}")
+		add_test(NAME "${tacTestLongName}"
+			WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+			COMMAND TACTest "${tacTestName}")
+
+		# Code for skipped tests
+		set_property(TEST "${tacTestLongName}"
+			PROPERTY SKIP_RETURN_CODE 2)
+		set_tests_properties("${tacTestLongName}"
+			PROPERTIES SKIP_RETURN_CODE 2)
+
+		# Test timeout (to prevent infinite loops)
+		set_property(TEST "${tacTestLongName}"
+			PROPERTY TIMEOUT 180)
+		set_tests_properties("${tacTestLongName}"
+			PROPERTIES TIMEOUT 180)
+
+		# Label, name of test, used for filtering
+		set_property(TEST "${tacTestLongName}"
+			PROPERTY LABEL "${tacTestLongName}")
+		set_tests_properties("${tacTestLongName}"
+			PROPERTIES LABEL "${tacTestLongName}")
+	endforeach()
+
+	# Stop and do not add the next set of tests
+	break()
 endforeach()

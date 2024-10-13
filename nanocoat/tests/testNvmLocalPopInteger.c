@@ -70,7 +70,10 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopInteger)
 	if (!sjme_mock_act(test, &state,
 		&mockNvmLocalPopInteger, 0))
 		sjme_die("Invalid mock");
-		
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Get initialize frame size. */
 	frame = state.threads[0].nvmThread->top;
 	
@@ -101,4 +104,5 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopInteger)
 	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
+#endif
 }
