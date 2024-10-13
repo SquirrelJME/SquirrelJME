@@ -206,6 +206,9 @@ foreach(testListFile
 		continue()
 	endif()
 
+	# Determine actual Jar name
+	string(REPLACE ".list" ".jar" testJarFile "${testListFile}")
+
 	# Read in all lines
 	file(STRINGS "${testListFile}" testList)
 
@@ -220,7 +223,8 @@ foreach(testListFile
 		message(STATUS "TAC Test: ${tacTestLongName}")
 		add_test(NAME "${tacTestLongName}"
 			WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-			COMMAND TACTest "${tacTestName}")
+			COMMAND TACTest -XbootJar "${testJarFile}"
+				"${tacTestName}")
 
 		# Code for skipped tests
 		set_property(TEST "${tacTestLongName}"
