@@ -17,11 +17,24 @@
 
 int main(int argc, sjme_lpstr* argv)
 {
+	sjme_errorCode error;
+	sjme_alloc_pool* pool;
 	sjme_nvm_bootParam bootConfig;
 	sjme_nvm state;
 	sjme_jint exitCode;
+	const sjme_nal* nal;
+	
+	/* Use test NAL. */
+	nal = &sjme_nal_test;
+	
+	/* Allocate main pool. */
+	pool = NULL;
+	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&pool,
+		16777216)) || pool == NULL)
+		goto fail_poolInit;
 	
 	sjme_todo("Impl?");
+	
 	return EXIT_FAILURE;
 #if 0
 	/* Setup boot configuration. */
@@ -45,4 +58,7 @@ int main(int argc, sjme_lpstr* argv)
 	
 	return exitCode;
 #endif
+fail_poolInit:
+	sjme_message("Failed TAC test: %d", error);
+	return EXIT_FAILURE;
 }

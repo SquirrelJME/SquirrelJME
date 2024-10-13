@@ -18,6 +18,16 @@
 
 #include "sjme/config.h"
 
+#if defined(SJME_CONFIG_HAS_NO_STDARG)
+	#if defined(SJME_CONFIG_HAS_NO_VARARGS)
+		#include <varargs.h>
+	#else
+		#error No stdarg or varargs?
+	#endif
+#else
+	#include <stdarg.h>
+#endif
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -36,6 +46,14 @@ int snprintf(
 	sjme_attrInPositive size_t bufSize,
 	sjme_attrInNotNull const char* format,
 	...);
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_VSNPRINTF)
+int vsnprintf(
+	sjme_attrInNotNull char* buf,
+	sjme_attrInPositive size_t bufSize,
+	sjme_attrInNotNull const char* format,
+	sjme_attrInValue va_list args);
 #endif
 
 /*--------------------------------------------------------------------------*/

@@ -16,8 +16,6 @@
 #ifndef SQUIRRELJME_DEBUG_H
 #define SQUIRRELJME_DEBUG_H
 
-#include <stdarg.h>
-
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
 

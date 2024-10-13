@@ -22,6 +22,7 @@
 #include "sjme/debug.h"
 #include "sjme/error.h"
 #include "sjme/test/externTest.h"
+#include "sjme/native.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -33,6 +34,9 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/** Native abstraction layer for tests. */
+extern const sjme_nal sjme_nal_test;
 
 /**
  * The result of a test.

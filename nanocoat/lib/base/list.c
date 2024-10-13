@@ -8,7 +8,6 @@
 // -------------------------------------------------------------------------*/
 
 #include <string.h>
-#include <stdarg.h>
 
 #include "sjme/list.h"
 #include "sjme/alloc.h"

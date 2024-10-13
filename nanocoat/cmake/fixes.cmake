@@ -170,7 +170,7 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 # Quick compilation check
-macro(squirreljme_try_compile noun target source)
+macro(squirreljme_try_compile noun target source cdef)
 	try_compile(${target}
 		"${CMAKE_CURRENT_BINARY_DIR}"
 		SOURCES "${CMAKE_CURRENT_LIST_DIR}/${source}.c"
@@ -180,29 +180,37 @@ macro(squirreljme_try_compile noun target source)
 
 	message(DEBUG "${noun}: ${${target}_OUTPUT}")
 	message("${noun}: ${${target}}")
+	if(NOT ${target})
+		add_compile_definitions(
+			${cdef}=1)
+	endif()
 endmacro()
 
 # snprintf() available?
 squirreljme_try_compile("snprintf()"
-	SQUIRRELJME_SNPRINTF_TRY_VALID "trySNPrintF")
-if(NOT SQUIRRELJME_SNPRINTF_TRY_VALID)
-	add_compile_definitions(
-		SJME_CONFIG_HAS_NO_SNPRINTF=1)
-endif()
+	SQUIRRELJME_SNPRINTF_TRY_VALID
+	"trySNPrintF"
+	SJME_CONFIG_HAS_NO_SNPRINTF)
+
+# vsnprintf() available?
+squirreljme_try_compile("vsnprintf() with stdarg.h"
+	SQUIRRELJME_VSNPRINTFA_TRY_VALID
+	"tryVSNPrintFA"
+	SJME_CONFIG_HAS_NO_VSNPRINTFA)
+squirreljme_try_compile("vsnprintf() with varargs.h"
+	SQUIRRELJME_VSNPRINTFV_TRY_VALID
+	"tryVSNPrintFV"
+	SJME_CONFIG_HAS_NO_VSNPRINTFV)
 
 # stdarg.h available?
 squirreljme_try_compile("stdarg.h"
-	SQUIRRELJME_STDARG_TRY_VALID "tryStdArgH")
-if(NOT SQUIRRELJME_STDARG_TRY_VALID)
-	add_compile_definitions(
-		SJME_CONFIG_HAS_NO_STDARG=1)
-endif()
+	SQUIRRELJME_STDARG_TRY_VALID
+	"tryStdArgH"
+	SJME_CONFIG_HAS_NO_STDARG)
 
 # varargs.h available?
 squirreljme_try_compile("varargs.h"
-	SQUIRRELJME_VARARGS_TRY_VALID "tryVarArgsH")
-if(NOT SQUIRRELJME_VARARGS_TRY_VALID)
-	add_compile_definitions(
-		SJME_CONFIG_HAS_NO_VARARGS=1)
-endif()
+	SQUIRRELJME_VARARGS_TRY_VALID
+	"tryVarArgsH"
+	SJME_CONFIG_HAS_NO_VARARGS)
 

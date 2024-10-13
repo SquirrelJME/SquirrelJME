@@ -73,6 +73,7 @@ add_library(BasicTestLibPIC OBJECT
 # TAC executable
 add_executable(TACTest
 	src/tac.c
+	src/tacNal.c
 	$<TARGET_OBJECTS:Base>
 	$<TARGET_OBJECTS:Core>
 	$<TARGET_OBJECTS:BasicTestLib>)

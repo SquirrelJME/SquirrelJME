@@ -7,11 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
 
-#if !defined(SJME_CONFIG_MISSING_ERRNO)
+#if !defined(SJME_CONFIG_HAS_NO_ERRNO)
 	#include <errno.h>
 #endif
 
@@ -322,7 +321,7 @@ const sjme_nal sjme_nal_default =
 	.stdOutF = sjme_nal_default_stdOutF,
 };
 
-#if !defined(SJME_CONFIG_MISSING_ERRNO)
+#if !defined(SJME_CONFIG_HAS_NO_ERRNO)
 sjme_errorCode sjme_nal_errno(sjme_jint errNum)
 {
 	switch (errNum)

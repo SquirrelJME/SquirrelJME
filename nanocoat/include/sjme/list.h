@@ -16,8 +16,6 @@
 #ifndef SQUIRRELJME_LIST_H
 #define SQUIRRELJME_LIST_H
 
-#include <stdarg.h>
-
 #include "sjme/stdTypes.h"
 #include "sjme/debug.h"
 #include "sjme/tokenUtils.h"

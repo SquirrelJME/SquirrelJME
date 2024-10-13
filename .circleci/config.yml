@@ -783,11 +783,7 @@ workflows:
                 - trunk
 
       # ARM64
-      - build_linux_arm64:
-          filters:
-            branches:
-              only:
-                - trunk
+      - build_linux_arm64
       - build_linux_arm64_standalone:
           requires:
             - build_linux_arm64
@@ -814,18 +810,10 @@ workflows:
 #                - trunk
 
       # Windows 32-bit
-      - build_windows_i386_setup:
-          filters:
-            branches:
-              only:
-                - trunk
+      - build_windows_i386_setup
       - build_windows_i386:
           requires:
             - build_windows_i386_setup
-          filters:
-            branches:
-              only:
-                - trunk
       - build_windows_i386_standalone:
           requires:
             - build_windows_i386

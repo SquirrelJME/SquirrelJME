@@ -665,12 +665,22 @@ extern "C" {
 	defined(SJME_CONFIG_HAS_NINTENDO_WIIU) || \
     defined(SJME_CONFIG_HAS_NINTENDO_WII)
 	/* Disable errno support. */
-	#define SJME_CONFIG_MISSING_ERRNO
+	#define SJME_CONFIG_HAS_NO_ERRNO 1
 #endif
 
+#if defined(SJME_CONFIG_HAS_NO_VSNPRINTFA) && \
+	defined(SJME_CONFIG_HAS_NO_VSNPRINTFV)
+	/** No vsnprintf() */
+	#define SJME_CONFIG_HAS_NO_VSNPRINTF 1
+#endif
+		
 /* Missing standard C functions. */
-#if defined(SJME_CONFIG_HAS_NO_SNPRINTF)
-	#include "sjme/stdgone.h"
+#if defined(SJME_CONFIG_HAS_NO_ERRNO) || \
+	defined(SJME_CONFIG_HAS_NO_SNPRINTF) || \
+    defined(SJME_CONFIG_HAS_NO_STDARG) || \
+    defined(SJME_CONFIG_HAS_NO_VARARGS) || \
+    defined(SJME_CONFIG_HAS_NO_VSNPRINTF)
+	#include "sjme/stdGone.h"
 #endif
 
 /*--------------------------------------------------------------------------*/
