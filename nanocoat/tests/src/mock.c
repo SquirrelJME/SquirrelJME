@@ -277,6 +277,9 @@ sjme_jboolean sjme_mock_doNvmFrame(
 	if (newFrame == NULL)
 		return sjme_die("Could not allocate frame.");
 	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Correlate the frame index to the thread. */
 	newFrame->frameIndex = thread->numFrames;
 	thread->numFrames++;
@@ -362,6 +365,7 @@ sjme_jboolean sjme_mock_doNvmFrame(
 	
 	/* Done. */
 	return SJME_JNI_TRUE;
+#endif
 }
 
 sjme_jboolean sjme_mock_doNvmObject(
@@ -403,6 +407,9 @@ sjme_jboolean sjme_mock_doNvmThread(
 	if (threadIndex >= SJME_MOCK_MAX_THREADS)
 		return sjme_die("Too make mock threads.");
 	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Allocate thread. */
 	newThread = sjme_mock_alloc(inState, sizeof(*newThread));
 	if (newThread == NULL)
@@ -415,6 +422,7 @@ sjme_jboolean sjme_mock_doNvmThread(
 	
 	/* Done. */
 	return SJME_JNI_TRUE;
+#endif
 }
 
 sjme_jboolean sjme_mock_doRomLibrary(

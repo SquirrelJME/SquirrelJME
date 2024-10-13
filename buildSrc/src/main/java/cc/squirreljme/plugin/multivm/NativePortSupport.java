@@ -25,25 +25,6 @@ public enum NativePortSupport
 	/** NanoCoat. */
 	NANOCOAT
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/09/03
-		 */
-		@Override
-		public Task cleanTask(Task __nativeTask,
-			SourceTargetClassifier __classifier)
-			throws NullPointerException
-		{
-			if (__nativeTask == null || __classifier == null)
-				throw new NullPointerException("NARG");
-			
-			Project project = __nativeTask.getProject();
-			TaskContainer tasks = project.getTasks();
-			
-			return tasks.create("clean" +
-					TaskInitialization.uppercaseFirst(__nativeTask.getName()),
-				NanoCoatBuiltInCleanTask.class, __classifier, __nativeTask);
-		}
 	},
 	
 	/* End. */

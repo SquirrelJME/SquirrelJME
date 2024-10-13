@@ -13,7 +13,7 @@
 #include "sjme/debug.h"
 #include "sjme/nvm/descriptor.h"
 #include "sjme/util.h"
-#include "sjme/cleanup.h"
+#include "sjme/nvm/cleanup.h"
 
 /**
  * Field type link, used for method type parsing.

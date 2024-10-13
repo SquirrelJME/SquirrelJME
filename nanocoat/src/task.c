@@ -10,13 +10,24 @@
 #include "sjme/nvm/task.h"
 #include "sjme/debug.h"
 #include "sjme/nvm/nvm.h"
+#include "sjme/nvm/cleanup.h"
+
+/** The number of tasks to grow by. */
+#define SJME_NVM_TASK_GROW 4
+
+/** The number of threads to grow by. */
+#define SJME_NVM_THREAD_GROW 8
 
 sjme_errorCode sjme_task_start(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull const sjme_task_startConfig* startConfig,
 	sjme_attrOutNullable sjme_nvm_task* outTask)
 {
-	sjme_jint i;
+	sjme_errorCode error;
+	sjme_list_sjme_nvm_task* tasks;
+	sjme_list_sjme_nvm_thread* threads;
+	sjme_jint i, n, freeSlot;
+	sjme_nvm_task result;
 
 	if (inState == NULL || startConfig == NULL || outTask == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -39,7 +50,134 @@ sjme_errorCode sjme_task_start(
 			sjme_message("Start SysProp[%d]: %s",
 				i, startConfig->sysProps->elements[i]);
 #endif
-
+	
+	/* Lock state for task access. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&inState->common.lock)))
+		return sjme_error_default(error);
+	
+	/* Find a free slot to claim for a new task. */
+	freeSlot = -1;
+	tasks = inState->tasks;
+	if (tasks != NULL)
+		for (i = 0, n = tasks->length; i < n; i++)
+			if (tasks->elements[0] == NULL)
+			{
+				freeSlot = -1;
+				break;
+			}
+	
+	/* Need to allocate or grow the task list? */
+	if (freeSlot < 0)
+	{
+		/* Either allocate or grow. */
+		if (tasks == NULL)
+		{
+			/* Allocate. */
+			if (sjme_error_is(error = sjme_list_alloc(inState->allocPool,
+				SJME_NVM_TASK_GROW, &tasks, sjme_nvm_task, 0)) ||
+				tasks == NULL)
+				goto fail_allocTasks;
+			
+			/* Free slot is always at the start. */
+			freeSlot = 0;
+		}
+		else
+		{
+			/* Copy everything over. */
+			if (sjme_error_is(error = sjme_list_copy(inState->allocPool,
+				tasks->length + SJME_NVM_TASK_GROW, tasks, &tasks,
+				sjme_nvm_task, 0)))
+				goto fail_allocTasks;
+			
+			/* Free slot is always at the end. */
+			freeSlot = tasks->length;
+			
+			/* Destroy old list. */
+			if (sjme_error_is(error = sjme_alloc_free(inState->tasks)))
+				goto fail_allocTasks;
+			inState->tasks = NULL;
+		}
+		
+		/* Store for later usage. */
+		inState->tasks = tasks;
+	}
+	
+	/* Allocate new task to start. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_alloc(inState->reservedPool,
+		sizeof(*result), SJME_NVM_STRUCT_TASK,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
+		goto fail_allocResult;
+	
+	/* Refer to owning state and set identifier. */
+	result->inState = inState;
+	result->id = ++(inState->nextTaskId);
+	
+	/* All new tasks are considered alive. */
+	result->status = SJME_TASK_STATUS_ALIVE;
+	
+	/* Setup thread storage. */
+	if (sjme_error_is(error = sjme_list_alloc(inState->reservedPool,
+		SJME_NVM_THREAD_GROW, &threads, sjme_nvm_thread, 0)) ||
+		threads == NULL)
+		goto fail_allocThreads;
+	result->threads = threads;
+	
+	/* Task is considered valid now, so store it in. */
+	tasks->elements[freeSlot] = result;
+	
+	/* Lock state on the task. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&result->common.lock)))
+		goto fail_preLockBeforeRelease;
+	
+	/* Unlock state, we no longer need to keep the state locked since we */
+	/* are now in the task list and others will really only care if we */
+	/* are even alive or not. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&inState->common.lock, NULL)))
+		goto fail_stateLockRelease;
+	
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Release task specific lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&result->common.lock, NULL)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+	/* In-state locks. */
+fail_preLockBeforeRelease:
+fail_allocThreads:
+fail_allocResult:
+	if (result != NULL)
+	{
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
+		result = NULL;
+	}
+fail_allocTasks:
+	/* Unlock before fail. */
+	sjme_error_is(sjme_thread_spinLockRelease(
+		&inState->common.lock, NULL));
+	
+	return sjme_error_default(error);
+
+	/* Post state lock, when accessing state is no longer needed. */
+fail_stateLockRelease:
+	/* Unlock task before fail. */
+	sjme_error_is(sjme_thread_spinLockRelease(
+		&result->common.lock, NULL));
+	
+fail_other:
+	if (result != NULL)
+	{
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
+		result = NULL;
+	}
+	
+	return sjme_error_default(error);
 }

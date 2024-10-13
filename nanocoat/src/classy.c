@@ -11,7 +11,7 @@
 
 #include "sjme/nvm/classy.h"
 #include "sjme/debug.h"
-#include "sjme/cleanup.h"
+#include "sjme/nvm/cleanup.h"
 
 /** The magic number for classes. */
 #define SJME_CLASS_MAGIC INT32_C(0xCAFEBABE)

@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/cleanup.h"
+#include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/rom.h"
 #include "sjme/nvm/stringPool.h"
 #include "sjme/nvm/classy.h"
@@ -241,6 +241,26 @@ static sjme_errorCode sjme_rom_suiteClose(
 	return sjme_error_notImplemented(0);
 }
 
+static sjme_errorCode sjme_nvm_stateClose(
+	sjme_attrInNullable sjme_closeable closeable)
+{
+	if (closeable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nvm_taskClose(
+	sjme_attrInNullable sjme_closeable closeable)
+{
+	if (closeable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_stringPool_close(
 	sjme_attrInNullable sjme_closeable closeable)
 {
@@ -333,12 +353,20 @@ sjme_errorCode sjme_nvm_allocR(
 			handler = sjme_rom_suiteClose;
 			break;
 		
+		case SJME_NVM_STRUCT_STATE:
+			handler = sjme_nvm_stateClose;
+			break;
+		
 		case SJME_NVM_STRUCT_STRING_POOL:
 			handler = sjme_stringPool_close;
 			break;
 		
 		case SJME_NVM_STRUCT_STRING_POOL_STRING:
 			handler = sjme_stringPool_stringClose;
+			break;
+		
+		case SJME_NVM_STRUCT_TASK:
+			handler = sjme_nvm_taskClose;
 			break;
 		
 		default:

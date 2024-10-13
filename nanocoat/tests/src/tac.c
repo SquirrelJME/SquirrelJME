@@ -21,14 +21,17 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_nvm state;
 	sjme_jint exitCode;
 	
+	sjme_todo("Impl?");
+	return EXIT_FAILURE;
+#if 0
 	/* Setup boot configuration. */
 	memset(&bootConfig, 0, sizeof(bootConfig));
 	bootConfig.payload = &sjme_payload_config_data;
 	
 	/* Boot the virtual machine. */
 	state = NULL;
-	if (sjme_error_is(sjme_nvm_boot(NULL, NULL, &bootConfig,
-		&state)))
+	if (sjme_error_is(sjme_nvm_boot(NULL, NULL,
+		&bootConfig, &state)))
 		return EXIT_FAILURE;
 		
 	/* Constantly ticks the virtual machine until it stops. */
@@ -41,4 +44,5 @@ int main(int argc, sjme_lpstr* argv)
 		return EXIT_FAILURE;
 	
 	return exitCode;
+#endif
 }
