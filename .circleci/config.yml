@@ -266,6 +266,10 @@ commands:
           # we do not need that... also CMake as well for native code
           name: Install Dependencies
           command: brew install openjdk@11 coreutils cmake
+      - run:
+          name: Install Dependencies (Retry)
+          command: brew install openjdk@11 coreutils cmake
+          when: on_fail
 
   # Install what is required by Flatpak
   flatpak-install-required:
@@ -308,6 +312,10 @@ commands:
           name: Construct Standalone
           command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
       - run:
+          name: Construct Standalone (Retry)
+          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
+          when: on_fail
+      - run:
           name: Remove distracting JAR, if any
           command: rm emulators/standalone/build/libs/standalone-*.jar
       - store_artifacts:
@@ -346,6 +354,11 @@ jobs:
           working_directory: /home/circleci/work/co
           command: ./gradlew :tools:cicd-release-bundle:run --parallel
       - run:
+          name: Run CI/CD Bundle Tasks (Retry)
+          working_directory: /home/circleci/work/co
+          command: ./gradlew :tools:cicd-release-bundle:run --parallel
+          when: on_fail
+      - run:
           name: Close repository
           working_directory: /home/circleci/work/co
           command: fossil close --force
@@ -382,6 +395,12 @@ jobs:
           # contention --max-workers=2
           command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
+      - run:
+          shell: cmd.exe
+          name: Gradle Build and Test (Retry)
+          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+          when: on_fail
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -417,6 +436,11 @@ jobs:
           shell: bash.exe
           name: Construct Standalone
           command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
+      - run:
+          name: Construct Standalone (Retry)
+          shell: bash.exe
+          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
+          when: on_fail
       - run:
           shell: bash.exe
           name: Remove distracting JAR, if any
@@ -455,13 +479,19 @@ jobs:
           at: .
       - windows-install-required
       - run:
-          shell: cmd.exe
           name: Gradle Build and Test
+          shell: cmd.exe
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
           command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
+      - run:
+          name: Gradle Build and Test (Retry)
+          shell: cmd.exe
+          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+          when: on_fail
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -498,9 +528,14 @@ jobs:
           at: .
       - windows-install-required
       - run:
-          shell: bash.exe
           name: Construct Standalone
+          shell: bash.exe
           command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
+      - run:
+          name: Construct Standalone (Retry)
+          shell: bash.exe
+          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
+          when: on_fail
       - run:
           shell: bash.exe
           name: Remove distracting JAR, if any
@@ -518,6 +553,11 @@ jobs:
           name: Gradle Build and Test
           command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
+      - run:
+          name: Gradle Build and Test (Retry)
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+          when: on_fail
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -535,6 +575,11 @@ jobs:
           name: Gradle Build and Test
           command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
+      - run:
+          name: Gradle Build and Test (Retry)
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+          when: on_fail
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -571,6 +616,11 @@ jobs:
           name: Gradle Build and Test
           command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
+      - run:
+          name: Gradle Build and Test (Retry)
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+          when: on_fail
       - save-test-results:
           where: "vm-test-hosted-debug"
           os: "linux-amd64"
@@ -607,6 +657,11 @@ jobs:
           name: Gradle Build and Test
           command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
+      - run:
+          name: Gradle Build and Test (Retry)
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+          when: on_fail
       - save-test-results:
           where: "vm-test-hosted-debug"
           os: "linux-arm64"
@@ -642,6 +697,11 @@ jobs:
           name: Gradle Build and Test
           command: timeout --foreground 120m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 120m
+      - run:
+          name: Gradle Build and Test (Retry)
+          command: timeout --foreground 120m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 120m
+          when: on_fail
       - save-test-results:
           where: "vm-test-hosted-debug"
           os: "linux-arm64"

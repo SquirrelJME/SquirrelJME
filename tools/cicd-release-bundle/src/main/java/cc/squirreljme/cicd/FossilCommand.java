@@ -27,6 +27,14 @@ import java.util.regex.Pattern;
  */
 public class FossilCommand
 {
+	/** Retry this many times. */
+	private static final int RETRY_COUNT =
+		40;
+	
+	/** Time to wait before a retry. */
+	private static final int RETRY_DELAY =
+		1500;
+	
 	/** The executable path. */
 	protected final Path exe;
 	
@@ -127,23 +135,40 @@ public class FossilCommand
 		args.add(this.exe.toAbsolutePath().toString());
 		args.addAll(Arrays.asList(__args));
 		
-		// Setup process
-		ProcessBuilder builder = new ProcessBuilder(args);
-		builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-		builder.redirectError(ProcessBuilder.Redirect.INHERIT);
+		// Run multiple times, in the event the database is locked...
+		List<IOException> fails = new ArrayList<>();
+		for (int i = 0; i < FossilCommand.RETRY_COUNT; i++)
+			try
+			{
+				// Setup process
+				ProcessBuilder builder = new ProcessBuilder(args);
+				builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+				builder.redirectError(ProcessBuilder.Redirect.INHERIT);
+				
+				// Start and wait for it to complete
+				Process process = builder.start();
+				
+				// Wait for completion, if successful then stop
+				int exit = process.waitFor();
+				if (exit == 0)
+					return;
+				
+				// Mark failure
+				fails.add(new IOException("Exited with " + exit));
+				
+				// Wait a bit before running it again
+				Thread.sleep(FossilCommand.RETRY_DELAY);
+			}
+			catch (InterruptedException __e)
+			{
+				throw new IOException("Interrupted", __e);
+			}
 		
-		// Start and wait for it to complete
-		Process process = builder.start();
-		try
-		{
-			int exit = process.waitFor();
-			if (exit != 0)
-				throw new IOException("Exited with " + exit);
-		}
-		catch (InterruptedException __e)
-		{
-			throw new IOException("Interrupted", __e);
-		}
+		// Completely failed
+		IOException toss = new IOException("Failed to run: " + args);
+		for (IOException fail : fails)
+			toss.addSuppressed(fail);
+		throw toss;
 	}
 	
 	/**
