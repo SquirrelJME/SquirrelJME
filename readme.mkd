@@ -182,7 +182,6 @@ Information:
    * [Mastodon (chitter.xyz)](https://chitter.xyz/@XerShadowTail)
    * [BlueSky](https://bsky.app/profile/xershadowtail.bsky.social)
    * [Twitter](https://twitter.com/XerShadowTail)
-   * [Cohost](https://cohost.org/XerShadowTail)
    * [YouTube (Personal)](
      https://www.youtube.com/channel/UCJ4QrvbDhjtd7u6EpfBQ__g)
    * E-Mail: <xer@multiphasicapps.net>
