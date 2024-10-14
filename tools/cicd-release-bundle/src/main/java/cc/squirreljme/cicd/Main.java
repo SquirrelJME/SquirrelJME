@@ -106,7 +106,7 @@ public class Main
 		}
 		String gitCommit = System.getenv("CIRCLE_SHA1");
 		byte[] mark = String.format(
-			"date: %s\nfossil:%s\ngit: %s\n",
+			"date:%s\r\nfossil:%s\r\ngit:%s\r\n",
 			dateCommit, fossilCommit,
 			gitCommit).getBytes(StandardCharsets.UTF_8);
 		
