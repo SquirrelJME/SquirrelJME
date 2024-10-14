@@ -37,6 +37,21 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
+	sjme_errorCode error;
+	sjme_scritchui_uiPanel inPanel;
+	sjme_scritchui_uiPaintable paint;
+	sjme_scritchui_listener_paint* infoCore;
+	NSRect rect;
+
+	/* Recover the panel. */
+	inPanel = self->inPanel;
+
+	/* Get listener info, ignore if there is none. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(&inPanel->paint, paint);
+	if (infoCore->callback == NULL)
+		return;
+
+	sjme_todo("Impl?");
 }
 
 @end
