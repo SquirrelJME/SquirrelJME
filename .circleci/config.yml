@@ -235,9 +235,19 @@ commands:
           shell: cmd.exe
           command: choco install cmake -y
       - run:
+          name: Install CMake (Retry)
+          shell: cmd.exe
+          command: choco install cmake -y
+          when: on_fail
+      - run:
           name: Install Mingw-w64
           shell: cmd.exe
           command: choco install mingw -y
+      - run:
+          name: Install Mingw-w64 (Retry)
+          shell: cmd.exe
+          command: choco install mingw -y
+          when: on_fail
 
   # Windows JDK Install
   windows-install-jdk:

@@ -17,9 +17,12 @@ import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
@@ -89,6 +92,24 @@ public class Main
 		String version = __args[0];
 		String baseDir = Main.baseDir(version);
 		
+		// Load in Git/Fossil commit and the current date
+		String dateCommit = new Date().toString();
+		String fossilCommit = null;
+		try
+		{
+			fossilCommit = Files.readAllLines(
+				Paths.get("manifest.uuid"),
+				StandardCharsets.UTF_8).get(0).trim();
+		}
+		catch (Throwable __ignored)
+		{
+		}
+		String gitCommit = System.getenv("CIRCLE_SHA1");
+		byte[] mark = String.format(
+			"date: %s\nfossil:%s\ngit: %s\n",
+			dateCommit, fossilCommit,
+			gitCommit).getBytes(StandardCharsets.UTF_8);
+		
 		// Upload files into the un-versioned space
 		// romNanoCoatRelease=/home/.../squirreljme.jar
 		FossilCommand fossil = FossilCommand.instance();
@@ -110,6 +131,7 @@ public class Main
 				System.err.printf("Storing `%s` as `%s`...%n",
 					path, target);
 				fossil.add(path, target);
+				fossil.add(mark, target + ".mkd");
 			}
 		
 		// Read in workflow jobs
@@ -148,6 +170,7 @@ public class Main
 						// Store into un-versioned space
 						fossil.add(StreamUtils.readAll(1048576, in),
 							target);
+						fossil.add(mark, target + ".mkd");
 					}
 					
 					// Only care about the first
