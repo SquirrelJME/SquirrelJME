@@ -59,8 +59,8 @@ static const sjme_scritchui_implFunctions sjme_scritchui_cocoaFunctions =
 	.windowContentMinimumSize = sjme_scritchui_cocoa_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_cocoa_windowNew,
 	.windowSetCloseListener = NULL,
-	.windowSetMenuBar = NULL,
-	.windowSetVisible = NULL,
+	.windowSetMenuBar = sjme_scritchui_cocoa_windowSetMenuBar,
+	.windowSetVisible = sjme_scritchui_cocoa_windowSetVisible,
 };
 
 static sjme_thread_result sjme_scritchui_cocoa_loopMain(

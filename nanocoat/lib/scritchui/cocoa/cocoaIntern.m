@@ -15,10 +15,29 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 	@"sjme_scritchui_cocoa_loopExecuteNotif";
 
 @implementation SJMELoopExecute : NSObject
+- (id)init
+{
+	return [super init];
+}
 
 @end
 
 @implementation SJMESuperObject
+
+- (id)init
+{
+	NSNotificationCenter* notifCenter;
+
+	/* Get the default notification center, to register loop observer. */
+	notifCenter = [NSNotificationCenter defaultCenter];
+	[notifCenter addObserver:self
+		selector:@selector(sjmeLoopExecute:)
+		name:sjme_scritchui_cocoa_loopExecuteNotif
+		object:nil];
+
+	/* Return self. */
+	return self;
+}
 
 - (void)sjmeLoopExecute:(NSNotification*)notif
 {
@@ -50,21 +69,6 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 	/* Emit notice if it failed. */
 	if (sjme_error_is(error))
 		sjme_message("Loop execute failed: %d", error);
-}
-
-- (id)init
-{
-	NSNotificationCenter* notifCenter;
-
-	/* Get the default notification center, to register loop observer. */
-	notifCenter = [NSNotificationCenter defaultCenter];
-	[notifCenter addObserver:self
-		selector:@selector(sjmeLoopExecute:)
-		name:sjme_scritchui_cocoa_loopExecuteNotif
-		object:nil];
-
-	/* Return self. */
-	return self;
 }
 
 + (void)postNotification:(NSNotification *)notif

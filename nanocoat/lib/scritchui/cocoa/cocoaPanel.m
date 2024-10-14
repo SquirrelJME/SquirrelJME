@@ -12,6 +12,10 @@
 #include "lib/scritchui/cocoa/cocoaIntern.h"
 
 @implementation SJMEPanel : NSView
+- (id)init
+{
+	return [super init];
+}
 
 - (BOOL)canBecomeKeyView
 {
@@ -33,11 +37,6 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-}
-
-- (id)init
-{
-	return self;
 }
 
 @end

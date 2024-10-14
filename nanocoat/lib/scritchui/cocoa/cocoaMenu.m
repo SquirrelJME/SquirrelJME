@@ -12,10 +12,18 @@
 #include "lib/scritchui/cocoa/cocoaIntern.h"
 
 @implementation SJMEMenu : NSMenu
+- (id)init
+{
+	return [super init];
+}
 
 @end
 
 @implementation SJMEMenuItem : NSMenuItem
+- (id)init
+{
+	return [super init];
+}
 
 @end
 
