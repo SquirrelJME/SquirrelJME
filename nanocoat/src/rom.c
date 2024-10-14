@@ -176,7 +176,14 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 		for (at = 0; at < length; at++)
 			if (working[at] == NULL && inHashes[at] == hash &&
 				0 == strcmp(inNames->elements[at], lib->name))
+			{
+#if defined(SJME_CONFIG_DEBUG)
+				sjme_message("Found %s for %d.",
+					inNames->elements[at], at);
+#endif
 				working[at] = lib;
+				break;
+			}
 	}
 
 	/* Scan through and fail if any are null, that is not found. */

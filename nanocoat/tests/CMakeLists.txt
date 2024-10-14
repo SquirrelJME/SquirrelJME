@@ -220,12 +220,17 @@ foreach(testListFile
 		set(tacTestName "${test}")
 		set(tacTestLongName "tac:${tacTestName}")
 
+		# Turn into list
+		string(REPLACE ":" ";" tacTestNameList "${tacTestName}")
+		list(GET tacTestNameList 0 tacTestJar)
+		list(GET tacTestNameList 1 tacTestClass)
+
 		# Register it
 		message(STATUS "TAC Test: ${tacTestLongName}")
 		add_test(NAME "${tacTestLongName}"
 			WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-			COMMAND TACTest -XbootJar "${testJarFile}"
-				"${tacTestName}")
+			COMMAND TACTest "${testJarFile}"
+				"${tacTestJar}" "${tacTestClass}")
 
 		# Code for skipped tests
 		set_property(TEST "${tacTestLongName}"
