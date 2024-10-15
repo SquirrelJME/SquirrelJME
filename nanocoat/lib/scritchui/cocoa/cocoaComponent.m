@@ -48,8 +48,8 @@ sjme_errorCode sjme_scritchui_cocoa_componentRepaint(
 	[cocoaView setNeedsDisplayInRect:
 		rect];
 
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_cocoa_componentRevalidate(
@@ -64,7 +64,7 @@ sjme_errorCode sjme_scritchui_cocoa_componentRevalidate(
 
 	/* Cannot be done on windows. */
 	if (inComponent->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
-		return SJME_ERROR_NONE;
+		return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 
 	/* Recover view, as everything is a view. */
 	cocoaView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
@@ -76,8 +76,8 @@ sjme_errorCode sjme_scritchui_cocoa_componentRevalidate(
 	rect.size.height = inComponent->bounds.d.height;
 	[cocoaView setNeedsDisplayInRect:rect];
 
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_cocoa_componentSetPaintListener(
@@ -89,5 +89,5 @@ sjme_errorCode sjme_scritchui_cocoa_componentSetPaintListener(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Nothing needs to be done here as drawRect gets called automatically. */
-	return SJME_ERROR_NONE;
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

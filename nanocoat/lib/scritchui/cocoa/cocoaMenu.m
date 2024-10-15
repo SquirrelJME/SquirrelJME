@@ -51,8 +51,8 @@ sjme_errorCode sjme_scritchui_cocoa_menuBarNew(
 	inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEWB] =
 		cocoaMenuItem;
 
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_cocoa_menuInsert(
@@ -84,8 +84,8 @@ sjme_errorCode sjme_scritchui_cocoa_menuInsert(
 	/* Add it in. */
 	[cocoaMenu addItem:cocoaMenuItem];
 
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_cocoa_menuItemNew(
@@ -105,8 +105,8 @@ sjme_errorCode sjme_scritchui_cocoa_menuItemNew(
 	inMenuItem->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEW] =
 		cocoaMenuItem;
 
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_cocoa_menuNew(
@@ -131,8 +131,8 @@ sjme_errorCode sjme_scritchui_cocoa_menuNew(
 	inMenu->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEW] = cocoaMenu;
 	inMenu->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEWB] = cocoaMenuItem;
 
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_cocoa_menuRemove(
@@ -145,7 +145,8 @@ sjme_errorCode sjme_scritchui_cocoa_menuRemove(
 
 	/* Menu bars do not exist, so remove from them does nothing. */
 	if (fromMenu->common.type == SJME_SCRITCHUI_TYPE_MENU_BAR)
-		return SJME_ERROR_NONE;
+		return inState->implIntern->checkError(inState,
+			SJME_ERROR_NONE);
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

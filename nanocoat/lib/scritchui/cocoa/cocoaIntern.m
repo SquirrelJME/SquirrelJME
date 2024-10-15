@@ -77,3 +77,13 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 }
 
 @end
+
+sjme_errorCode sjme_scritchui_cocoa_intern_checkError(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_errorCode ifOkay)
+{
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	return ifOkay;
+}

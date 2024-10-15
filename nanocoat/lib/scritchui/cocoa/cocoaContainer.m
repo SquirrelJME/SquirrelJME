@@ -43,8 +43,8 @@ sjme_errorCode sjme_scritchui_cocoa_containerAdd(
 		return sjme_error_notImplemented(inContainer->common.type);
 	}
 
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_cocoa_containerSetBounds(
@@ -61,7 +61,7 @@ sjme_errorCode sjme_scritchui_cocoa_containerSetBounds(
 	NSRect rect;
 
 	if (inState == NULL || inContainer == NULL || inComponent == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* What is being adjusted? */
 	cocoaView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
@@ -80,6 +80,6 @@ sjme_errorCode sjme_scritchui_cocoa_containerSetBounds(
 	rect.size.height = height;
 	[cocoaView setFrame:rect];
 
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

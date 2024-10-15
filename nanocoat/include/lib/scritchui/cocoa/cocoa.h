@@ -54,6 +54,10 @@ extern "C"
 	
 /** Secondary widget. */
 #define SJME_SUI_COCOA_H_NSVIEWB 1
+	
+/** Pencil functions for Cocoa. */
+extern const sjme_scritchui_pencilImplFunctions
+	sjme_scritchui_cocoa_pencilFunctions;
 
 sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);

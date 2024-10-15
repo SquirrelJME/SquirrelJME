@@ -63,6 +63,12 @@ static const sjme_scritchui_implFunctions sjme_scritchui_cocoaFunctions =
 	.windowSetVisible = sjme_scritchui_cocoa_windowSetVisible,
 };
 
+static const sjme_scritchui_implInternFunctions
+	sjme_scritchui_cocoaInternFunctions =
+{
+	.checkError = sjme_scritchui_cocoa_intern_checkError,
+};
+
 static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
@@ -173,6 +179,9 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 
 	/* Debug. */
 	sjme_message("Current NSApp: %p", currentApp);
+
+	/* Set internal functions. */
+	inState->implIntern = &sjme_scritchui_cocoaInternFunctions;
 
 	/* If there is no NSApp, then we are running our own stuff and are not */
 	/* embedded into another application. */

@@ -40,8 +40,8 @@ sjme_errorCode sjme_scritchui_cocoa_windowContentMinimumSize(
 	[cocoaWindow setContentMinSize:size];
 	[cocoaWindow setMinSize:size];
 
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_cocoa_windowNew(
@@ -61,8 +61,8 @@ sjme_errorCode sjme_scritchui_cocoa_windowNew(
 	inWindow->component.common.handle[SJME_SUI_COCOA_H_NSVIEW] = cocoaWindow;
 	cocoaWindow->inWindow = inWindow;
 
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_cocoa_windowSetMenuBar(
@@ -95,8 +95,8 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetMenuBar(
 		[cocoaWindow setMenu:nil];
 	}
 
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
@@ -116,6 +116,6 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 	[cocoaWindow center];
 	[cocoaWindow setIsVisible:(isVisible ? true : false)];
 
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

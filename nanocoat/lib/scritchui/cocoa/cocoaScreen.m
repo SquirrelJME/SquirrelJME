@@ -58,5 +58,5 @@ sjme_errorCode sjme_scritchui_cocoa_screens(
 
 	/* Return resultant count. */
 	*inOutNumScreens = numScreens;
-	return SJME_ERROR_NONE;
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

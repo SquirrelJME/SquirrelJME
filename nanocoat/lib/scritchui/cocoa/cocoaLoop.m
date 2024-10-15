@@ -49,6 +49,6 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 			userInfo:dict]
 		waitUntilDone:NO];
 
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

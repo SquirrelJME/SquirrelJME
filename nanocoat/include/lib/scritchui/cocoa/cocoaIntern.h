@@ -120,6 +120,28 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
 
 @end
 
+/**
+ * Determines if there has been an error within Cocoa.
+ * 
+ * @param inState The input state.
+ * @param ifOkay The value to return if there is no error.
+ * @return The last error as a SquirrelJME error.
+ * @since 2024/10/14
+ */
+typedef sjme_errorCode (*sjme_scritchui_cocoa_intern_checkErrorFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_errorCode ifOkay);
+
+struct sjme_scritchui_implInternFunctions
+{
+	/** Checks if there has been a Cocoa error. */
+	sjme_scritchui_cocoa_intern_checkErrorFunc checkError;
+};
+
+sjme_errorCode sjme_scritchui_cocoa_intern_checkError(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_errorCode ifOkay);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
