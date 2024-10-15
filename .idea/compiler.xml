@@ -29,7 +29,7 @@
       <module name="squirreljme.tools.unzip.test" target="17" />
       <module name="Stephanie Gawroriski.squirreljme.buildSrc.main" target="11" />
       <module name="stephanie.squirreljme.buildSrc" target="11" />
-      <module name="stephanie.squirreljme.buildSrc.main" target="11" />
+      <module name="stephanie.squirreljme.buildSrc.main" target="17" />
       <module name="stephanie.squirreljme.buildSrc.test" target="11" />
       <module name="stephanie.squirreljme.buildSrc.test~1" target="11" />
       <module name="stephanie.squirreljme.emulators.emulator-base" target="11" />
