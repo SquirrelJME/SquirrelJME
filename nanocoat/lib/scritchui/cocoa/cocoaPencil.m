@@ -19,8 +19,37 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawHoriz(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint w)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_scritchui inState;
+	NSView* nsView;
+	NSBitmapImageRep* imageRep;
+	NSPoint a, b;
+	NSBezierPath* path;
+
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover view and image representation. */
+	inState = g->common.state;
+	nsView = g->frontEnd.wrapper;
+	imageRep = g->frontEnd.data;
+	if (inState == NULL || nsView == NULL || nsView == nil ||
+		imageRep == NULL || imageRep == nil)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Setup line details, then draw. */
+	path = [NSBezierPath bezierPath];
+	a.x = x;
+	a.y = y;
+	[path moveToPoint:a];
+	b.x = x + w;
+	b.y = y;
+	[path lineToPoint:b];
+	[path setLineWidth:1.0];
+	/*[path setLineDash:1.0:1.0];*/
+	[path stroke];
+
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 static sjme_errorCode sjme_scritchui_cocoa_pencilDrawLine(
@@ -30,8 +59,37 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawLine(
 	sjme_attrInValue sjme_jint x2,
 	sjme_attrInValue sjme_jint y2)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_scritchui inState;
+	NSView* nsView;
+	NSBitmapImageRep* imageRep;
+	NSPoint a, b;
+	NSBezierPath* path;
+
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover view and image representation. */
+	inState = g->common.state;
+	nsView = g->frontEnd.wrapper;
+	imageRep = g->frontEnd.data;
+	if (inState == NULL || nsView == NULL || nsView == nil ||
+		imageRep == NULL || imageRep == nil)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Setup line details, then draw. */
+	path = [NSBezierPath bezierPath];
+	a.x = x1;
+	a.y = y1;
+	[path moveToPoint:a];
+	b.x = x2;
+	b.y = y2;
+	[path lineToPoint:b];
+	[path setLineWidth:1.0];
+	/*[path setLineDash:1.0:1.0];*/
+	[path stroke];
+
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 static sjme_errorCode sjme_scritchui_cocoa_pencilRawScanGet(
@@ -42,6 +100,21 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilRawScanGet(
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
 {
+	sjme_scritchui inState;
+	NSView* nsView;
+	NSBitmapImageRep* imageRep;
+
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover view and image representation. */
+	inState = g->common.state;
+	nsView = g->frontEnd.wrapper;
+	imageRep = g->frontEnd.data;
+	if (inState == NULL || nsView == NULL || nsView == nil ||
+		imageRep == NULL || imageRep == nil)
+		return SJME_ERROR_ILLEGAL_STATE;
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -54,16 +127,75 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilRawScanPutPure(
 	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
 	sjme_attrInPositiveNonZero sjme_jint srcNumPixels)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_scritchui inState;
+	NSView* nsView;
+	NSBitmapImageRep* imageRep;
+
+	NSPoint a, b;
+	NSBezierPath* path;
+
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover view and image representation. */
+	inState = g->common.state;
+	nsView = g->frontEnd.wrapper;
+	imageRep = g->frontEnd.data;
+	if (inState == NULL || nsView == NULL || nsView == nil ||
+		imageRep == NULL || imageRep == nil)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Setup line details, then draw. */
+	path = [NSBezierPath bezierPath];
+	a.x = x;
+	a.y = y;
+	[path moveToPoint:a];
+	b.x = x;
+	b.y = y + srcNumPixels;
+	[path lineToPoint:b];
+	[path setLineWidth:1.0];
+	/*[path setLineDash:1.0:1.0];*/
+	[path stroke];
+
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 static sjme_errorCode sjme_scritchui_cocoa_pencilSetAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_scritchui inState;
+	NSView* nsView;
+	NSBitmapImageRep* imageRep;
+	NSColor* color;
+	CGFloat rr, gg, bb, aa;
+
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover view and image representation. */
+	inState = g->common.state;
+	nsView = g->frontEnd.wrapper;
+	imageRep = g->frontEnd.data;
+	if (inState == NULL || nsView == NULL || nsView == nil ||
+		imageRep == NULL || imageRep == nil)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Generate color. */
+	aa = ((argb >> 24) & 0xFF) / 255.0;
+	rr = ((argb >> 16) & 0xFF) / 255.0;
+	gg = ((argb >> 8) & 0xFF) / 255.0;
+	bb = ((argb) & 0xFF) / 255.0;
+	color = [NSColor colorWithCalibratedRed:rr green:gg blue:bb alpha:aa];
+
+	/* Set everything to use the same color as we are uniform with it. */
+	[color set];
+	[color setStroke];
+	[color setFill];
+
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 static sjme_errorCode sjme_scritchui_cocoa_pencilSetClip(
@@ -73,8 +205,30 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetClip(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_scritchui inState;
+	NSView* nsView;
+	NSBitmapImageRep* imageRep;
+	NSRect clipRect;
+
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover view and image representation. */
+	inState = g->common.state;
+	nsView = g->frontEnd.wrapper;
+	imageRep = g->frontEnd.data;
+	if (inState == NULL || nsView == NULL || nsView == nil ||
+		imageRep == NULL || imageRep == nil)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	clipRect.origin.x = x;
+	clipRect.origin.y = y;
+	clipRect.size.width = w;
+	clipRect.size.height = h;
+	[[NSBezierPath bezierPathWithRect:clipRect] setClip];
+
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 static sjme_errorCode sjme_scritchui_cocoa_pencilSetStrokeStyle(
@@ -82,8 +236,23 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetStrokeStyle(
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
 		sjme_scritchui_pencilStrokeMode style)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_scritchui inState;
+	NSView* nsView;
+	NSBitmapImageRep* imageRep;
+
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover view and image representation. */
+	inState = g->common.state;
+	nsView = g->frontEnd.wrapper;
+	imageRep = g->frontEnd.data;
+	if (inState == NULL || nsView == NULL || nsView == nil ||
+		imageRep == NULL || imageRep == nil)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Handled by line drawing function. */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 const sjme_scritchui_pencilImplFunctions sjme_scritchui_cocoa_pencilFunctions =

@@ -35,6 +35,7 @@ sjme_errorCode sjme_scritchui_cocoa_containerAdd(
 
 		/* Use this as the view. */
 		[cocoaWindow.contentView addSubview:cocoaView];
+		[cocoaView setNeedsDisplay:true];
 	}
 
 	else

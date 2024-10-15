@@ -12,9 +12,10 @@
 #include "lib/scritchui/cocoa/cocoaIntern.h"
 
 @implementation SJMEPanel : NSView
-- (id)init
+- (BOOL)acceptsFirstResponder
 {
-	return [super init];
+	/* Set if focus is enabled. */
+	return (inPanel->enableFocus ? YES : NO);
 }
 
 - (BOOL)canBecomeKeyView
@@ -24,12 +25,6 @@
 }
 
 - (BOOL)needsPanelToBecomeKey
-{
-	/* Set if focus is enabled. */
-	return (inPanel->enableFocus ? YES : NO);
-}
-
-- (BOOL)acceptsFirstResponder
 {
 	/* Set if focus is enabled. */
 	return (inPanel->enableFocus ? YES : NO);
@@ -53,26 +48,42 @@
 	inPanel = self->inPanel;
 	inState = inPanel->component.common.state;
 
-		/* Get listener info, ignore if there is none. */
+	/* Get listener info, ignore if there is none. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(&inPanel->paint, paint);
 	if (infoCore->callback == NULL)
+	{
+		/* Debug. */
+		sjme_message("Not drawing anything...");
+
 		return;
+	}
 
 	/* Determine area to draw. */
 	w = rect.size.width;
 	h = rect.size.height;
 
-	/* Setup image representation. */
-	imageRep = [self bitmapImageRepForCachingDisplayInRect:dirtyRect];
-	if (imageRep == nil || imageRep == NULL)
-		goto fail_noImageRep;
-
-	/* No rectangle specified in the clip? */
+	/* Entire view being updated??? */
 	if (w <= 0 || h <= 0)
 	{
-		w = imageRep.pixelsWide;
-		h = imageRep.pixelsHigh;
+		w = self.frame.size.width;
+		h = self.frame.size.height;
 	}
+
+	/* Debug. */
+	sjme_message("Cocoa draw (%d, %d) [%d, %d]",
+		(int)dirtyRect.origin.x, (int)dirtyRect.origin.y, w, h);
+
+	/* Save graphics state to restore it for later. */
+	[NSGraphicsContext saveGraphicsState];
+
+	/* Setup image representation. */
+	rect.origin.x = dirtyRect.origin.x;
+	rect.origin.y = dirtyRect.origin.y;
+	rect.size.width = w;
+	rect.size.height = h;
+	imageRep = [self bitmapImageRepForCachingDisplayInRect:rect];
+	if (imageRep == nil || imageRep == NULL)
+		goto fail_noImageRep;
 
 	/* Which pixel format is used? */
 	switch (imageRep.bitsPerPixel)
@@ -98,7 +109,7 @@
 	/* Setup frontend info. */
 	memset(&frontEnd, 0, sizeof(frontEnd));
 	frontEnd.wrapper = self;
-	frontEnd.data = imageRep;
+	frontEnd.data = (sjme_frontEndData)1;/*imageRep;*/
 
 	/* A default font is required. */
 	defaultFont = NULL;
@@ -135,6 +146,12 @@
 	if (sjme_error_is(error))
 		goto fail_draw;
 
+	/* Restore the previous state. */
+	[NSGraphicsContext restoreGraphicsState];
+
+	/* Make sure main drawing is performed. */
+	[super drawRect:dirtyRect];
+
 	/* Success! */
 	return;
 
@@ -142,7 +159,22 @@ fail_noImageRep:
 fail_noBuiltInFont:
 fail_initPencil:
 fail_draw:
+	/* Restore previous state before failing. */
+	[NSGraphicsContext restoreGraphicsState];
+
+	/* Debug. */
 	sjme_message("Native draw failed: %d", error);
+}
+
+- (id)initWithFrame:(NSRect)frame
+{
+	return [super initWithFrame:frame];
+}
+
+- (BOOL)isOpaque
+{
+	/* Always transparent! */
+	return NO;
 }
 
 @end
