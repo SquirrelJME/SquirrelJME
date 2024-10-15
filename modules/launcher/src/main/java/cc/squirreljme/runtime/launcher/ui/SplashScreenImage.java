@@ -97,12 +97,17 @@ public class SplashScreenImage
 		// Copyright font
 		this._copyFont = Font.getFont("sansserif", 0, 12);
 		this._copyX = 2;
-		this._copyY = height - 2;
+		this._copyY = height - (this._copyFont.getHeight() * 6);
+		
+		// Make sure the bar is always above the copyright
+		int loadingBarY = centerY + (height / 8) + (verHeight / 2);
+		if (loadingBarY + 16 >= this._copyY)
+			loadingBarY = this._copyY - 24;
 		
 		// Loading
-		this._loadingBarY = centerY + (height / 8) + (verHeight / 2);
+		this._loadingBarY = loadingBarY;
 		this._loadingStrX = centerX;
-		this._loadingStrY = this._loadingBarY + (verHeight / 2);
+		this._loadingStrY = loadingBarY + (verHeight / 2);
 	}
 	
 	/**

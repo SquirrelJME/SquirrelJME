@@ -16,7 +16,9 @@
 #ifndef SQUIRRELJME_DYLIB_H
 #define SQUIRRELJME_DYLIB_H
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
+#include "sjme/error.h"
+#include "sjme/debug.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -104,6 +106,20 @@ sjme_errorCode sjme_dylib_name(
 sjme_errorCode sjme_dylib_open(
 	sjme_attrInNotNull sjme_lpcstr libPath,
 	sjme_attrInOutNotNull sjme_dylib* outLib);
+
+/**
+ * Returns the current executable as a dynamic library.
+ * 
+ * @param outLib The resultant library which points to ourself.
+ * @return Any resultant error, if any.
+ * @since 2024/08/17
+ */
+sjme_errorCode sjme_dylib_self(
+	sjme_attrInOutNotNull sjme_dylib* outLib);
+
+/** The debug handlers to use. */
+extern SJME_DYLIB_EXPORT
+	sjme_debug_handlerFunctions* sjme_debug_handlers;
 
 /*--------------------------------------------------------------------------*/
 

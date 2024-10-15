@@ -89,7 +89,7 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	bitmap = sjme_alloca(area);
 	if (bitmap == NULL)
 	{
-		error = SJME_ERROR_OUT_OF_MEMORY;
+		error = sjme_error_outOfMemory(NULL, area);
 		goto fail_any;
 	}
 	

@@ -126,7 +126,21 @@ public final class SplashScreen
 			// The image is not fully loaded yet, so draw the copyright
 			// at least
 			else
+			{
+				// At least set the background to a color
+				__g.setColor(SplashScreenImage.START_COLOR);
+				__g.fillRect(0, 0,
+					SplashScreenImage.WIDTH,
+					SplashScreenImage.HEIGHT >> 1);
+				
+				__g.setColor(SplashScreenImage.END_COLOR);
+				__g.fillRect(0, SplashScreenImage.HEIGHT >> 1,
+					SplashScreenImage.WIDTH,
+					SplashScreenImage.HEIGHT >> 1);
+				
+				// Draw the copyright
 				this.generator.drawCopyright(__g, true);
+			}
 			
 			// Put in the current refresh status
 			__RefreshState__ refreshState = this._refreshState;

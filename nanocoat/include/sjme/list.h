@@ -18,9 +18,12 @@
 
 #include <stdarg.h>
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
+#include "sjme/debug.h"
+#include "sjme/tokenUtils.h"
 #include "sjme/comparator.h"
 #include "sjme/alloc.h"
+#include "sjme/error.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -111,9 +114,6 @@ SJME_LIST_DECLARE(sjme_lpstr, 0);
 /** List of @c sjme_lpcstr . */
 SJME_LIST_DECLARE(sjme_lpcstr, 0);
 
-/** List of @c sjme_jobject . */
-SJME_LIST_DECLARE(sjme_jobject, 0);
-
 /** List of @c sjme_pointer . */
 SJME_LIST_DECLARE(sjme_pointer, 0);
 
@@ -125,6 +125,18 @@ SJME_LIST_DECLARE(sjme_pointerLen, 0);
 
 /** List of @c sjme_intPointer . */
 SJME_LIST_DECLARE(sjme_intPointer, 0);
+
+/** List of @c sjme_jobject . */
+SJME_LIST_DECLARE(sjme_jobject, 0);
+
+/** Void list. */
+typedef sjme_list_sjme_jint sjme_list_void;
+
+/** Cast to void list. */
+#define SJME_AS_LIST_VOID(x) ((sjme_list_void*)(x))
+
+/** Cast to void list. */
+#define SJME_AS_LISTP_VOID(x) ((sjme_list_void**)(x))
 
 /**
  * Allocates a given list generically.
@@ -163,7 +175,8 @@ sjme_errorCode sjme_list_allocR(
 		(sjme_pointer*)(outList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
-		sizeof(**(outList)) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC)
+		sizeof(**(outList)) SJME_DEBUG_ONLY_COMMA \
+		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Allocates a given list generically.
@@ -206,7 +219,8 @@ sjme_errorCode sjme_list_copyR(
 		(sjme_pointer*)(outNewList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
-		sizeof(**(outNewList)) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC)
+		sizeof(**(outNewList)) SJME_DEBUG_ONLY_COMMA \
+		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Directly initializes a list.
@@ -405,7 +419,7 @@ sjme_errorCode sjme_list_newVAR(
  */
 sjme_errorCode sjme_list_flattenArgCV(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpcstr** outList,
+	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNull sjme_lpcstr* argV);
 

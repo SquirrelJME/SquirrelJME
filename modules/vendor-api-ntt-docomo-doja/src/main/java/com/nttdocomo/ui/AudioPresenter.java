@@ -48,7 +48,8 @@ public class AudioPresenter
 	@Override
 	public void setMediaListener(MediaListener __listener)
 	{
-		throw Debugging.todo();
+		Debugging.todoNote("Impl DoJa setMediaListener().");
+		/*throw Debugging.todo();*/
 	}
 	
 	@Api
@@ -67,14 +68,14 @@ public class AudioPresenter
 	@Api
 	public static AudioPresenter getAudioPresenter()
 	{
-		Debugging.todoNote("Implement DoJa sound.");
+		Debugging.todoNote("Impl DoJa getAudioPresenter()");
 		return new NullAudioPresenter();
 	}
 	
 	@Api
 	public static AudioPresenter getAudioPresenter(int __port)
 	{
-		Debugging.todoNote("Implement DoJa sound.");
+		Debugging.todoNote("Impl DoJa getAudioPresenter(%d)", __port);
 		return new NullAudioPresenter();
 	}
 }

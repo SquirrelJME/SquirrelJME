@@ -114,6 +114,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_win32_loopMain(
 	if (state == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
 	
+	/* Windows specific bugs. */
+	state->bugs.noContentSizeWhenVisible = SJME_JNI_TRUE;
+	
 	/* By calling this, we are forcing the event queue to be created. */
 	memset(&message, 0, sizeof(message));
 	PeekMessage(&message, NULL,
@@ -231,6 +234,7 @@ sjme_errorCode sjme_scritchui_win32_apiInit(
 	/* Start main Win32 thread. */
 	if (sjme_error_is(error = sjme_thread_new(
 		&inState->loopThread,
+		&inState->loopThreadId,
 		sjme_scritchui_win32_loopMain, inState)) ||
 		inState->loopThread == SJME_THREAD_NULL)
 		return sjme_error_default(error);

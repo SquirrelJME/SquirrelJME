@@ -538,7 +538,7 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 		n = container->components->length;
 		subComponents = sjme_alloca(sizeof(*subComponents) * n);
 		if (subComponents == NULL)
-			return SJME_ERROR_OUT_OF_MEMORY;
+			return sjme_error_outOfMemory(NULL, n);
 		
 		/* Get all components. */
 		memmove(subComponents, container->components->elements,

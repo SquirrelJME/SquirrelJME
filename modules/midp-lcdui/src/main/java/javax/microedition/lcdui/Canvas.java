@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
@@ -295,7 +296,7 @@ public abstract class Canvas
 	@Api
 	protected Canvas()
 	{
-		DisplayableState state = this._state;
+		DisplayableState state = this.__state();
 		ScritchInterface scritchApi = state.scritchApi();
 		ScritchPanelInterface panelApi = scritchApi.panel();
 		ScritchPanelBracket scritchPanel = state.scritchPanel();
@@ -368,7 +369,7 @@ public abstract class Canvas
 			return buffer.getHeight();
 		
 		// Otherwise, fallback to the owning or default display
-		return ScritchLcdUiUtils.lcduiDisplaySize(this._state,
+		return ScritchLcdUiUtils.lcduiDisplaySize(this.__state(),
 			true);
 	}
 	
@@ -488,7 +489,7 @@ public abstract class Canvas
 			return buffer.getWidth();
 		
 		// Otherwise, fallback to the owning or default display
-		return ScritchLcdUiUtils.lcduiDisplaySize(this._state,
+		return ScritchLcdUiUtils.lcduiDisplaySize(this.__state(),
 			false);
 	}
 	
@@ -681,7 +682,7 @@ public abstract class Canvas
 		// We need to actually queue the repaint rather than doing the
 		// repaint in the event loop potentially because MIDP expects it
 		// to be queued.
-		this._state.scritchApi().eventLoop().loopExecuteLater(this._repainter);
+		this.__state().scritchApi().eventLoop().loopExecuteLater(this._repainter);
 	}
 	
 	/**
@@ -710,7 +711,7 @@ public abstract class Canvas
 			return;
 		
 		// Same as repaint, but just draw the entire region
-		this._state.scritchApi().eventLoop().loopExecuteLater(this._repainter);
+		this.__state().scritchApi().eventLoop().loopExecuteLater(this._repainter);
 	}
 	
 	/**
@@ -729,7 +730,7 @@ public abstract class Canvas
 	public final void serviceRepaints()
 	{
 		// If there is no current display then nothing can ever be repainted
-		DisplayState current = this._state.currentDisplay();
+		DisplayState current = this.__state().currentDisplay();
 		if (current == null)
 			return;
 		
@@ -890,6 +891,7 @@ public abstract class Canvas
 	 * @since 2024/03/18
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	void __execRevalidate(DisplayState __parent)
 	{
 		// Setup super first
@@ -927,7 +929,7 @@ public abstract class Canvas
 	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
 		// Not on screen?
-		DisplayState display = this._state.currentDisplay();
+		DisplayState display = this.__state().currentDisplay();
 		if (display == null)
 			return;
 		
@@ -961,8 +963,8 @@ public abstract class Canvas
 		if (!this._isOpaque)
 		{
 			ScritchLAFInterface lafApi =
-				this._state.scritchApi().environment().lookAndFeel();
-			ScritchPanelBracket panel = this._state.scritchPanel();
+				this.__state().scritchApi().environment().lookAndFeel();
+			ScritchPanelBracket panel = this.__state().scritchPanel();
 			
 			// Determine the color to draw
 			int bgColor = lafApi.lafElementColor(panel,

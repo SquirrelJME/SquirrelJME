@@ -115,6 +115,9 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		pencil,
 		w, h, 0);
 	
+	/* Reset state. */
+	pencil->api->setDefaults(pencil);
+	
 	/* Do not perform standard drawing, unless an error occurs. */
 	if (!sjme_error_is(error))
 		return TRUE;
@@ -496,7 +499,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 		inState,
 		widget,
 		inComponent,
-		infoCore,
+		(sjme_scritchui_listener_void*)infoCore,
 		inListener,
 		copyFrontEnd,
 		G_CALLBACK(sjme_scritchui_gtk2_eventExpose),

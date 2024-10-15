@@ -10,7 +10,7 @@
 #include <jni.h>
 
 #include "sjme/debug.h"
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "frontend/libjvm/jniMissing.h"
 
 sjme_attrUnused void* JNICALL JVM_FindLibraryEntry(

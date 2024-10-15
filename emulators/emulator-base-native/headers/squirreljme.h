@@ -10,7 +10,8 @@
 #ifndef __SQUIRRELJME_H__
 #define __SQUIRRELJME_H__
 
-#include "jni.h"
+#include <jni.h>
+
 #include "lib/scritchui/scritchui.h"
 #include "sjme/debug.h"
 #include "sjme/charSeq.h"

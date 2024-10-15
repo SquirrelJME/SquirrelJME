@@ -330,6 +330,9 @@ sjme_errorCode sjme_scritchpen_core_setClip(
 sjme_errorCode sjme_scritchpen_core_setDefaultFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g);
 	
+sjme_errorCode sjme_scritchpen_core_setDefaults(
+	sjme_attrInNotNull sjme_scritchui_pencil g);
+	
 sjme_errorCode sjme_scritchpen_core_setStrokeStyle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)

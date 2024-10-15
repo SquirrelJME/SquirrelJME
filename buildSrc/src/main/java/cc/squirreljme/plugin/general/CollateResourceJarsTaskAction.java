@@ -10,6 +10,9 @@
 package cc.squirreljme.plugin.general;
 
 import cc.squirreljme.plugin.multivm.VMHelpers;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -176,16 +179,12 @@ public class CollateResourceJarsTaskAction
 			Path rcListPath =
 				rcListBase.resolve("resources.list");
 			Files.createDirectories(rcListBase);
-			Files.write(rcListPath, jarContent,
-				StandardOpenOption.WRITE,
-				StandardOpenOption.TRUNCATE_EXISTING,
-				StandardOpenOption.CREATE);
+			CollateResourceJarsTaskAction.writeList(rcListPath, jarContent);
 		}
 		
 		// Write the suite list
-		Files.write(outBase.resolve("suites.list"), suiteList,
-			StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
-			StandardOpenOption.CREATE);
+		CollateResourceJarsTaskAction.writeList(
+			outBase.resolve("suites.list"), suiteList);
 	}
 	
 	/**
@@ -204,5 +203,37 @@ public class CollateResourceJarsTaskAction
 			diskFile = diskFile.resolve(splice);
 			
 		return diskFile;
+	}
+	
+	/**
+	 * Writes a list file.
+	 *
+	 * @param __target The target file.
+	 * @param __input The input string list.
+	 * @throws IOException On write errors.
+	 * @since 2024/09/07
+	 */
+	public static void writeList(Path __target, List<String> __input)
+		throws IOException
+	{
+		if (__target == null || __input == null)
+			throw new NullPointerException("NARG");
+		
+		// Write out strings
+		byte[] data;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 DataOutputStream dos = new DataOutputStream(baos))
+		{
+			dos.writeInt(__input.size());
+			for (int i = 0, n = __input.size(); i < n; i++)
+				dos.writeUTF(__input.get(i));
+			
+			dos.flush();
+			data = baos.toByteArray();
+		}
+		
+		Files.write(__target, data,
+			StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
+			StandardOpenOption.CREATE);
 	}
 }

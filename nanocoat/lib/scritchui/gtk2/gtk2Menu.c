@@ -82,7 +82,8 @@ sjme_errorCode sjme_scritchui_gtk2_menuInsert(
 	
 	/* Attach accelerator, but only if a normal item. */
 	if (childItem->common.type == SJME_SCRITCHUI_TYPE_MENU_ITEM)
-		inState->implIntern->accelUpdate(inState, childItem,
+		inState->implIntern->accelUpdate(inState,
+			SJME_SUI_CAST_COMMON(childItem),
 			childWidget, SJME_JNI_TRUE);
 	
 	/* Anything that can be inserted into, is just a menu shell. */
@@ -189,7 +190,8 @@ sjme_errorCode sjme_scritchui_gtk2_menuRemove(
 			
 	/* Remove accelerator from item. */
 	if (childItem->common.type == SJME_SCRITCHUI_TYPE_MENU_ITEM)
-		inState->implIntern->accelUpdate(inState, childItem,
+		inState->implIntern->accelUpdate(inState,
+			SJME_SUI_CAST_COMMON(childItem),
 			removeWidget, SJME_JNI_FALSE);
 	
 	/* Remove item, note that this does not use any index based removal */

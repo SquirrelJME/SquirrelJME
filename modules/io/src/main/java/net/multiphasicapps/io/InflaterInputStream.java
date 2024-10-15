@@ -598,7 +598,8 @@ public class InflaterInputStream
 		
 			// Window based result
 			else if (code >= 257 && code <= 285)
-				this.__decompressWindow(this.__handleLength(code), Integer.MIN_VALUE);
+				this.__decompressWindow(this.__handleLength(code),
+					Integer.MIN_VALUE);
 		
 			/* {@squirreljme.error BD1b Illegal fixed huffman code. (The
 			code.)} */
@@ -636,7 +637,8 @@ public class InflaterInputStream
 		
 		// Read all bytes
 		for (int i = 0; i < len; i++)
-			this.__write(this.__readBits(8, false), 8, false);
+			this.__write(this.__readBits(8, false),
+				8, false);
 	}
 	
 	/**

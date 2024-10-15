@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_FIXED_H
 #define SQUIRRELJME_FIXED_H
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

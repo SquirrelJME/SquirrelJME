@@ -55,7 +55,6 @@ file(APPEND "${outTestProtosH}"
 # Basic test library
 add_library(BasicTestLib OBJECT
 	src/basic.c
-	src/classBuilder.c
 	src/blobs.c
 	src/mock.c
 	src/unit.c
@@ -65,7 +64,6 @@ add_library(BasicTestLib OBJECT
 # Basic test library
 add_library(BasicTestLibPIC OBJECT
 	src/basic.c
-	src/classBuilder.c
 	src/blobs.c
 	src/mock.c
 	src/unit.c
@@ -152,7 +150,7 @@ foreach(basicTestSource ${basicTestSources})
 	message(STATUS "Registering test ${basicTestLongName}...")
 	add_test(NAME "${basicTestLongName}"
 		WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-		COMMAND "$<TARGET_FILE:BasicTest>" "${basicTestName}"
+		COMMAND BasicTest "${basicTestName}"
 			"${basicTestFullPath}")
 
 	# Code for skipped tests

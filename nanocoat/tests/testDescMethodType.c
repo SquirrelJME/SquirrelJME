@@ -14,6 +14,7 @@
 #include "sjme/util.h"
 #include "test.h"
 #include "unit.h"
+#include "sjme/nvm/descriptor.h"
 
 /**
  * What to test and the expected values for method descriptors.
@@ -237,8 +238,8 @@ static const testDescMethodTypeEntry testEntries[] =
 SJME_TEST_DECLARE(testDescMethodType)
 {
 	const testDescMethodTypeEntry* entry;
-	const sjme_desc_methodType* result;
-	const sjme_desc_fieldType* field;
+	sjme_desc_methodType result;
+	sjme_desc_fieldType field;
 	sjme_list_sjme_lpcstr* fieldStrings;
 	sjme_lpcstr string, subString;
 	sjme_jint strLen, subStrLen, strHash, atEntry, i;
@@ -284,7 +285,7 @@ SJME_TEST_DECLARE(testDescMethodType)
 				string);
 		
 		/* Count should match. */
-		sjme_unit_equalI(test, fieldStrings->length, result->fields.length,
+		sjme_unit_equalI(test, fieldStrings->length, result->fields->length,
 			"Incorrect field count for %s?", string);
 		
 		/* Match each individual field. */
@@ -304,11 +305,11 @@ SJME_TEST_DECLARE(testDescMethodType)
 			
 			/* Should be the same field. */
 			sjme_unit_equalI(test, 0, sjme_desc_compareFieldC(
-				&result->fields.elements[i], field),
+				result->fields->elements[i], field),
 				"Decoded field %s is incorrect in %s (%.*s == %s)?",
 					subString, string,
-					result->fields.elements[i].fragment.length,
-					result->fields.elements[i].fragment.pointer, field);
+					result->fields->elements[i]->fragment.length,
+					result->fields->elements[i]->fragment.pointer, field);
 		}
 	}
 	

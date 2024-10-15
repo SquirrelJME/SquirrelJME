@@ -14,6 +14,7 @@
 #include "jni.h"
 #include "cc_squirreljme_emulator_NativeBinding.h"
 #include "squirreljme.h"
+#include "sjme/dylib.h"
 
 static sjme_jboolean sjme_jni_abortHandler(void)
 {

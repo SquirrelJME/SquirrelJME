@@ -85,6 +85,7 @@ public class MediaManager
 	@SuppressWarnings("FinalStaticMethod")
 	public static final MediaSound getSound(String __uri)
 	{
-		throw Debugging.todo();
+		Debugging.todoNote("Implement getSound()...");
+		return new NullMediaSound();
 	}
 }

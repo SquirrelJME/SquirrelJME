@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/nvm/descriptor.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -23,7 +24,7 @@
  */
 SJME_TEST_DECLARE(testDescClassName)
 {
-	sjme_desc_className* result;
+	sjme_desc_className result;
 	sjme_lpcstr string;
 	sjme_jint strLen, strHash;
 	

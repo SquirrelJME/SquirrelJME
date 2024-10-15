@@ -9,11 +9,14 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * Notifier and tracker for a single string.
  *
  * @since 2024/03/08
  */
+@SquirrelJMEVendorApi
 public final class StringNotifier
 {
 	/** The string being referenced. */

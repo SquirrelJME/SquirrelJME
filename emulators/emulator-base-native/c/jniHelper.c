@@ -188,7 +188,7 @@ sjme_errorCode sjme_jni_recoverEnv(
 	
 	/* Try to get the environment for the current thread. */
 	env = NULL;
-	jniError = (*inVm)->GetEnv(inVm, &env, JNI_VERSION_1_1);
+	jniError = (*inVm)->GetEnv(inVm, (void**)&env, JNI_VERSION_1_1);
 	if (jniError != JNI_OK || env == NULL)
 		return SJME_ERROR_NO_JAVA_ENVIRONMENT;
 	

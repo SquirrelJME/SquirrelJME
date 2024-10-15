@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.debug;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.Objects;
 
 /**
@@ -17,39 +18,51 @@ import java.util.Objects;
  *
  * @since 2018/02/21
  */
+@SquirrelJMEVendorApi
 public final class CallTraceElement
 {
 	/** The class name. */
+	@SquirrelJMEVendorApi
 	protected final String className;
 	
 	/** The method name. */
+	@SquirrelJMEVendorApi
 	protected final String methodName;
 	
 	/** The method descriptor. */
+	@SquirrelJMEVendorApi
 	protected final String methodType;
 	
 	/** The execution pointer of the address. */
+	@SquirrelJMEVendorApi
 	protected final long address;
 	
 	/** The source code file. */
+	@SquirrelJMEVendorApi
 	protected final String file;
 	
 	/** The line in the file. */
+	@SquirrelJMEVendorApi
 	protected final int line;
 	
 	/** The Java byte code instruction. */
+	@SquirrelJMEVendorApi
 	protected final int byteCodeOp;
 	
 	/** The Java byte code address. */
+	@SquirrelJMEVendorApi
 	protected final int byteCodeAddr;
 	
 	/** The task ID. */
+	@SquirrelJMEVendorApi
 	protected final int taskId;
 	
 	/** The native instruction type. */
+	@SquirrelJMEVendorApi
 	protected final int nativeOp;
 	
 	/** Hash code. */
+	@SquirrelJMEVendorApi
 	private int _hash;
 	
 	/**
@@ -57,6 +70,7 @@ public final class CallTraceElement
 	 *
 	 * @since 2018/02/21
 	 */
+	@SquirrelJMEVendorApi
 	public CallTraceElement()
 	{
 		this(null, null, null, -1);
@@ -71,6 +85,7 @@ public final class CallTraceElement
 	 * @param __addr The address the method executes at.
 	 * @since 2018/02/21
 	 */
+	@SquirrelJMEVendorApi
 	public CallTraceElement(String __cl, String __mn, String __md, long __addr)
 	{
 		this(__cl, __mn, __md, __addr, null, -1);
@@ -87,6 +102,7 @@ public final class CallTraceElement
 	 * @param __line The line in the file.
 	 * @since 2018/04/02
 	 */
+	@SquirrelJMEVendorApi
 	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
 		String __file, int __line)
 	{
@@ -106,6 +122,7 @@ public final class CallTraceElement
 	 * @param __jpc The Java PC address.
 	 * @since 2019/04/26
 	 */
+	@SquirrelJMEVendorApi
 	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
 		String __file, int __line, int __jbc, int __jpc)
 	{
@@ -126,6 +143,7 @@ public final class CallTraceElement
 	 * @param __tid The task ID.
 	 * @since 2019/10/05
 	 */
+	@SquirrelJMEVendorApi
 	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
 		String __file, int __line, int __jbc, int __jpc, int __tid)
 	{
@@ -148,6 +166,7 @@ public final class CallTraceElement
 	 * @param __nOp The native operation.
 	 * @since 2021/01/24
 	 */
+	@SquirrelJMEVendorApi
 	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
 		String __file, int __line, int __jbc, int __jpc, int __tid, int __nOp)
 	{
@@ -169,6 +188,7 @@ public final class CallTraceElement
 	 * @return The element address.
 	 * @since 2018/03/15
 	 */
+	@SquirrelJMEVendorApi
 	public final long address()
 	{
 		return this.address;
@@ -180,6 +200,7 @@ public final class CallTraceElement
 	 * @return The address of the instruction in Java byte code.
 	 * @since 2019/04/26
 	 */
+	@SquirrelJMEVendorApi
 	public final int byteCodeAddress()
 	{
 		return this.byteCodeAddr;
@@ -192,6 +213,7 @@ public final class CallTraceElement
 	 * valid or specified.
 	 * @since 2019/04/26
 	 */
+	@SquirrelJMEVendorApi
 	public final int byteCodeInstruction()
 	{
 		return this.byteCodeOp & 0xFF;
@@ -203,6 +225,7 @@ public final class CallTraceElement
 	 * @return The associated class.
 	 * @since 2018/03/15
 	 */
+	@SquirrelJMEVendorApi
 	public final String className()
 	{
 		return this.className;
@@ -213,6 +236,7 @@ public final class CallTraceElement
 	 * @since 2018/02/21
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final boolean equals(Object __o)
 	{
 		if (__o == this)
@@ -243,6 +267,7 @@ public final class CallTraceElement
 	 * @return The source file.
 	 * @since 2018/04/02
 	 */
+	@SquirrelJMEVendorApi
 	public final String file()
 	{
 		return this.file;
@@ -253,6 +278,7 @@ public final class CallTraceElement
 	 * @since 2018/02/21
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int hashCode()
 	{
 		int rv = this._hash;
@@ -279,6 +305,7 @@ public final class CallTraceElement
 	 * @return The source file line.
 	 * @since 2018/04/02
 	 */
+	@SquirrelJMEVendorApi
 	public final int line()
 	{
 		return this.line;
@@ -290,6 +317,7 @@ public final class CallTraceElement
 	 * @return The method descriptor.
 	 * @since 2018/03/15
 	 */
+	@SquirrelJMEVendorApi
 	public final String methodDescriptor()
 	{
 		return this.methodType;
@@ -301,6 +329,7 @@ public final class CallTraceElement
 	 * @return The method name.
 	 * @since 2018/03/15
 	 */
+	@SquirrelJMEVendorApi
 	public final String methodName()
 	{
 		return this.methodName;
@@ -312,6 +341,7 @@ public final class CallTraceElement
 	 * @return The native operation.
 	 * @since 2021/01/24
 	 */
+	@SquirrelJMEVendorApi
 	public final int nativeOp()
 	{
 		return this.nativeOp;
@@ -324,6 +354,7 @@ public final class CallTraceElement
 	 * @return The at line string.
 	 * @since 2019/05/11
 	 */
+	@SquirrelJMEVendorApi
 	public final String toAtLineString()
 	{
 		// Get all fields to determine how to print it pretty
@@ -423,6 +454,7 @@ public final class CallTraceElement
 	 * @return The class header string.
 	 * @since 2019/05/11
 	 */
+	@SquirrelJMEVendorApi
 	public final String toClassHeaderString()
 	{
 		// Get all fields to determine how to print it pretty
@@ -452,6 +484,7 @@ public final class CallTraceElement
 	 * @since 2018/03/14
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String toString()
 	{
 		// Get all fields to determine how to print it pretty

@@ -11,7 +11,7 @@
 
 #include "mock.h"
 #include "proto.h"
-#include "sjme/romInternal.h"
+#include "sjme/nvm/romInternal.h"
 #include "test.h"
 #include "unit.h"
 
@@ -132,7 +132,7 @@ SJME_TEST_DECLARE(testRomSuiteClassPathById)
 		"Reverse second incorrect?");
 	sjme_unit_equalP(test, mockState.romLibraries[2], result->elements[0],
 		"Reverse third incorrect?");
-
+	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
 }

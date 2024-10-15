@@ -106,8 +106,8 @@ public class SpringVisProxy
 				t.printVmTrace(System.err);
 				
 				// Wrap
-				throw new MLECallError(String.format("VM Exception: %s",
-					t.exception), t);
+				throw new MLECallError(String.format("VM Exception: %s %s",
+					t.getMessage(), t.exception), t);
 			}
 			
 			// As native object

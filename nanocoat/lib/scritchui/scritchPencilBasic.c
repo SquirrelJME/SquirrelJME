@@ -290,7 +290,7 @@ sjme_errorCode sjme_scritchpen_initBuffer(
 	result = NULL;
 	resultWeak = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		sizeof(*result), NULL, NULL, &result, &resultWeak)) ||
+		sizeof(*result), NULL, (void**)&result, &resultWeak)) ||
 		result == NULL || resultWeak == NULL)
 		return sjme_error_default(error);
 	
@@ -304,7 +304,7 @@ sjme_errorCode sjme_scritchpen_initBuffer(
 	
 	/* Common initialize. */
 	if (sjme_error_is(error = inState->intern->initCommon(inState,
-		result, SJME_JNI_FALSE,
+		SJME_SUI_CAST_COMMON(result), SJME_JNI_FALSE,
 		SJME_SCRITCHUI_TYPE_ROOT_STATE)))
 		goto fail_commonInit;
 	

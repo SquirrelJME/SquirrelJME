@@ -17,6 +17,7 @@
 #define SQUIRRELJME_MULTITHREAD_H
 
 #include "sjme/config.h"
+#include "sjme/error.h"
 
 #if defined(SJME_CONFIG_HAS_THREADS_FALLBACK)
 	/* Clear pthreads. */
@@ -45,7 +46,7 @@
 	#endif
 #endif
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
 #include "sjme/atomic.h"
 
 /* Anti-C++. */
@@ -227,6 +228,7 @@ sjme_jboolean sjme_thread_equal(
  * Creates a new thread and immediately starts running it.
  * 
  * @param outThread The resultant thread.
+ * @param outThreadId The resultant thread ID, is optional.
  * @param inMain The main function for the thread.
  * @param anything Any value to pass to it.
  * @return Any error code if applicable.
@@ -234,6 +236,7 @@ sjme_jboolean sjme_thread_equal(
  */
 sjme_errorCode sjme_thread_new(
 	sjme_attrInOutNotNull sjme_thread* outThread,
+	sjme_attrInNullable sjme_intPointer* outThreadId,
 	sjme_attrInNotNull sjme_thread_mainFunc inMain,
 	sjme_attrInNullable sjme_pointer anything);
 

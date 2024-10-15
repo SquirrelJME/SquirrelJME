@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchChoiceInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchChoiceBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Choice;
 
 /**
@@ -19,6 +20,7 @@ import javax.microedition.lcdui.Choice;
  *
  * @since 2024/07/28
  */
+@SquirrelJMEVendorApi
 final class __ExecChoiceSelectedFlags__
 	implements Runnable
 {
@@ -35,6 +37,7 @@ final class __ExecChoiceSelectedFlags__
 	private final int _type;
 	
 	/** If there was an exception. */
+	@SquirrelJMEVendorApi
 	volatile Throwable _error;
 	
 	/**
@@ -47,6 +50,7 @@ final class __ExecChoiceSelectedFlags__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/28
 	 */
+	@SquirrelJMEVendorApi
 	__ExecChoiceSelectedFlags__(ScritchInterface __scritchApi,
 		ScritchChoiceBracket __choice, boolean[] __flags, int __type)
 		throws NullPointerException
@@ -65,6 +69,7 @@ final class __ExecChoiceSelectedFlags__
 	 * @since 2024/07/28
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void run()
 	{
 		ScritchChoiceInterface choiceApi = this._scritchApi.choice();

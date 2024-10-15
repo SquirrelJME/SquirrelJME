@@ -9,7 +9,7 @@
 
 #include <jni.h>
 
-#include "sjme/allocSizeOf.h"
+#include "sjme/nvm/allocSizeOf.h"
 #include "frontend/emulator/jniHelper.h"
 
 jint SJME_JNI_METHOD(SJME_CLASS_ALLOC_SIZEOF, _1_1size)

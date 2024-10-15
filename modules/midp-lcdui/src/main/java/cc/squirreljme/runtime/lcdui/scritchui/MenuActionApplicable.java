@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * Flagging interface for classes which are applicable to be used
  * with {@link MenuAction}.
@@ -17,6 +19,7 @@ package cc.squirreljme.runtime.lcdui.scritchui;
  * @see MenuActionHasParent
  * @since 2024/07/20
  */
+@SquirrelJMEVendorApi
 public interface MenuActionApplicable
 {
 }

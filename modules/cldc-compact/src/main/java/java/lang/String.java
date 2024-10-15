@@ -1197,7 +1197,7 @@ public final class String
 	 *
 	 * @param __s The index to start at.
 	 * @return The sub-string for that index.
-	 * @throws IndexOutOfBoundsException If the start is outside of the bounds.
+	 * @throws IndexOutOfBoundsException If the start is outside the bounds.
 	 * @since 2018/11/04
 	 */
 	@Api
@@ -1215,8 +1215,8 @@ public final class String
 	/**
 	 * Returns a substring of this string.
 	 *
-	 * @param __s The starting index.
-	 * @param __e The ending index.
+	 * @param __s The starting index, inclusive.
+	 * @param __e The ending index, exclusive.
 	 * @return The resulting string.
 	 * @throws IndexOutOfBoundsException If the string region is outside of
 	 * bounds.

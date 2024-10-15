@@ -703,7 +703,7 @@ public final class Font
 	@Api
 	public static Font getDefaultFont()
 	{
-		// 
+		// Use cached default
 		Font rv = Font._DEFAULT_FONT;
 		if (rv != null)
 			return rv;

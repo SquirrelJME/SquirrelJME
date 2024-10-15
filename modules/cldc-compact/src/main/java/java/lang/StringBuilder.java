@@ -901,8 +901,8 @@ public final class StringBuilder
 	 * Returns a string which is a substring of the given portion of the
 	 * string.
 	 *
-	 * @param __s The start.
-	 * @param __e The end.
+	 * @param __s The start, inclusive.
+	 * @param __e The end, exclusive.
 	 * @return The resulting sub-string.
 	 * @throws StringIndexOutOfBoundsException If the specified positions
 	 * are not within the string bounds.

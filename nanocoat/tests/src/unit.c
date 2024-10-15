@@ -398,7 +398,7 @@ sjme_testResult sjme_unit_failR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	
 	/* Test always fails. */
 	sjme_messageR(file, line, func, SJME_JNI_FALSE,
-		"ASSERT: Fail");
+		"ASSERT: Fail (%d)", test->error);
 	SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	return SJME_TEST_RESULT_FAIL;
 }

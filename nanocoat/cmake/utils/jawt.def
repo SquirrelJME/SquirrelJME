@@ -1,0 +1,3 @@
+LIBRARY jawt
+EXPORTS
+	JAWT_GetAWT	@1

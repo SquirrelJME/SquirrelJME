@@ -45,9 +45,9 @@ static const sjme_mock_configSet configRomLibraryResourceNotFoundJar =
  */
 SJME_TEST_DECLARE(testRomLibraryResourceNotFoundJar)
 {
+	sjme_errorCode error;
 	sjme_rom_library library;
 	sjme_mock mock;
-	sjme_errorCode error;
 	sjme_stream_input inputStream;
 
 	/* Initialize mocks. */
@@ -67,6 +67,11 @@ SJME_TEST_DECLARE(testRomLibraryResourceNotFoundJar)
 	/* Must be resource not found. */
 	sjme_unit_equalI(test, error, SJME_ERROR_RESOURCE_NOT_FOUND,
 		"Resource was found or other error?");
+	
+	/* Close the library. */
+	if (sjme_error_is(error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(library))))
+		return sjme_unit_fail(test, "Could not close library?: %d", error);
 
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

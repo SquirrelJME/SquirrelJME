@@ -76,7 +76,7 @@ SJME_TEST_DECLARE(testAllocReallocRandom)
 
 		/* Allocate link. */
 		link = NULL;
-		if (sjme_error_is(sjme_alloc(pool, linkLen, &link)))
+		if (sjme_error_is(sjme_alloc(pool, linkLen, (void**)&link)))
 			return sjme_unit_fail(test, "Could not allocate link %d %d.",
 				(int)i, (int)linkLen);
 

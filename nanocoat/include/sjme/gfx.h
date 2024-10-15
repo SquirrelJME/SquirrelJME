@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_GFX_H
 #define SQUIRRELJME_GFX_H
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/gfxConst.h"
 
 /* Anti-C++. */

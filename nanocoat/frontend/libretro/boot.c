@@ -9,10 +9,11 @@
 
 #include <string.h>
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
 #include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
+#include "sjme/dylib.h"
 
 static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 	sjme_lpcstr partMessage)
@@ -91,7 +92,7 @@ sjme_attrUnused RETRO_API bool retro_load_game(
 {
 	static sjme_jint trigger;
 	
-	/* If we requested no game then we do not really care do we? */
+	/* If we requested no game then we do not really care, do we? */
 	if (game == NULL)
 		return true;
 		

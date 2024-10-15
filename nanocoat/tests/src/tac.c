@@ -9,16 +9,16 @@
 
 #include <string.h>
 
-#include "sjme/boot.h"
-#include "sjme/nvm.h"
-#include "sjme/nvmFunc.h"
-#include "sjme/payload.h"
+#include "sjme/nvm/boot.h"
+#include "sjme/nvm/nvm.h"
+#include "sjme/nvm/nvmFunc.h"
+#include "sjme/nvm/payload.h"
 #include "test.h"
 
 int main(int argc, sjme_lpstr* argv)
 {
 	sjme_nvm_bootParam bootConfig;
-	sjme_nvm_state* state;
+	sjme_nvm state;
 	sjme_jint exitCode;
 	
 	/* Setup boot configuration. */
@@ -32,7 +32,7 @@ int main(int argc, sjme_lpstr* argv)
 		return EXIT_FAILURE;
 		
 	/* Constantly ticks the virtual machine until it stops. */
-	while (sjme_nvm_tick(state, -1))
+	while (sjme_nvm_tick(state, -1, NULL))
 		;
 		
 	/* Cleanup the virtual machine. */
