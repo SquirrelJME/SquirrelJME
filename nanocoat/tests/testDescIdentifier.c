@@ -26,21 +26,21 @@
 SJME_TEST_DECLARE(testDescIdentifier)
 {
 	sjme_lpcstr string;
-	sjme_desc_identifier result;
+	sjme_nvm_desc_identifier result;
 	sjme_jint stringHash;
-	sjme_stringPool stringPool;
+	sjme_nvm_stringPool stringPool;
 	
 	/* Determine the hash of the string. */
 	string = "squirrel";
 	stringHash = sjme_string_hash(string);
 
 	stringPool = NULL;
-	if (sjme_error_is(test->error = sjme_stringPool_new(
+	if (sjme_error_is(test->error = sjme_nvm_stringPool_new(
 		test->pool, &stringPool)) || stringPool == NULL)
 		return sjme_unit_fail(test, "Could not create string pool?");
 	
 	/* Valid identifier. */
-	if (sjme_error_is(test->error = sjme_desc_interpretIdentifier(
+	if (sjme_error_is(test->error = sjme_nvm_desc_interpretIdentifier(
 		test->pool, stringPool, &result,
 		string, strlen(string))))
 		return sjme_unit_fail(test, "Could not interpret identifier?");
@@ -57,7 +57,7 @@ SJME_TEST_DECLARE(testDescIdentifier)
 				result->whole->length),
 		"Incorrect string stored?");
 	sjme_unit_equalI(test,
-		0, sjme_desc_compareIdentifierS(result, "squirrel"),
+		0, sjme_nvm_desc_compareIdentifierS(result, "squirrel"),
 		"Identifier does not match?");
 	
 	/* It must be able to be closed. */
@@ -68,35 +68,35 @@ SJME_TEST_DECLARE(testDescIdentifier)
 	/* All of these are not valid. */
 	memset(&result, 0, sizeof(result));
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
-		sjme_desc_interpretIdentifier(test->pool,
+		sjme_nvm_desc_interpretIdentifier(test->pool,
 		stringPool, &result, 
 		pair("squirrel.squirrel")),
 		"Name with '.' is valid?");
 		
 	memset(&result, 0, sizeof(result));
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
-		sjme_desc_interpretIdentifier(test->pool, 
+		sjme_nvm_desc_interpretIdentifier(test->pool, 
 		stringPool, &result, 
 			pair("squirrel;squirrel")),
 		"Name with ';' is valid?");
 		
 	memset(&result, 0, sizeof(result));
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
-		sjme_desc_interpretIdentifier(test->pool, 
+		sjme_nvm_desc_interpretIdentifier(test->pool, 
 		stringPool, &result, 
 			pair("squirrel[squirrel")),
 		"Name with '[' is valid?");
 		
 	memset(&result, 0, sizeof(result));
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
-		sjme_desc_interpretIdentifier(test->pool,
+		sjme_nvm_desc_interpretIdentifier(test->pool,
 		stringPool, &result, 
 			pair("squirrel/squirrel")),
 		"Name with '/' is valid?");
 		
 	memset(&result, 0, sizeof(result));
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
-		sjme_desc_interpretIdentifier(test->pool, 
+		sjme_nvm_desc_interpretIdentifier(test->pool, 
 		stringPool, &result, 
 			pair("")),
 		"Blank is valid?");

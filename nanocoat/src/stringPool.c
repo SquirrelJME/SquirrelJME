@@ -16,10 +16,10 @@
 /** The amount the size of the string pool should grow. */
 #define SJME_STRING_POOL_GROW 256
 
-sjme_errorCode sjme_stringPool_locateSeq(
-	sjme_attrInNotNull sjme_stringPool inStringPool,
+sjme_errorCode sjme_nvm_stringPool_locateSeq(
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_charSeq* inSeq,
-	sjme_attrOutNotNull sjme_stringPool_string* outString)
+	sjme_attrOutNotNull sjme_nvm_stringPool_string* outString)
 {
 	if (inStringPool == NULL || inSeq == NULL || outString == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -28,10 +28,10 @@ sjme_errorCode sjme_stringPool_locateSeq(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_stringPool_locateStreamR(
-	sjme_attrInNotNull sjme_stringPool inStringPool,
+sjme_errorCode sjme_nvm_stringPool_locateStreamR(
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrOutNotNull sjme_stringPool_string* outString
+	sjme_attrOutNotNull sjme_nvm_stringPool_string* outString
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
@@ -64,24 +64,24 @@ sjme_errorCode sjme_stringPool_locateStreamR(
 		return SJME_ERROR_END_OF_FILE;
 	
 	/* Use normal locating logic. */
-	return sjme_stringPool_locateUtfR(inStringPool,
+	return sjme_nvm_stringPool_locateUtfR(inStringPool,
 		(sjme_lpcstr)chars, length, outString
 		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
 }
 
-sjme_errorCode sjme_stringPool_locateUtfR(
-	sjme_attrInNotNull sjme_stringPool inStringPool,
+sjme_errorCode sjme_nvm_stringPool_locateUtfR(
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_lpcstr inUtf,
 	sjme_attrInNegativeOnePositive sjme_jint inUtfLen,
-	sjme_attrOutNotNull sjme_stringPool_string* outString
+	sjme_attrOutNotNull sjme_nvm_stringPool_string* outString
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
 	sjme_jint hash, i, n, firstFree;
-	sjme_list_sjme_stringPool_string* strings;
-	sjme_list_sjme_stringPool_string* oldStrings;
-	sjme_stringPool_string result;
-	sjme_stringPool_string possible;
+	sjme_list_sjme_nvm_stringPool_string* strings;
+	sjme_list_sjme_nvm_stringPool_string* oldStrings;
+	sjme_nvm_stringPool_string result;
+	sjme_nvm_stringPool_string possible;
 	sjme_alloc_weak weak;
 	
 	if (inStringPool == NULL || inUtf == NULL || outString == NULL)
@@ -164,7 +164,7 @@ sjme_errorCode sjme_stringPool_locateUtfR(
 			oldStrings = strings;
 			if (sjme_error_is(error = sjme_list_copy(inStringPool->inPool,
 				strings->length + SJME_STRING_POOL_GROW, strings,
-				&strings, sjme_stringPool_string, 0)) || strings == NULL)
+				&strings, sjme_nvm_stringPool_string, 0)) || strings == NULL)
 				goto fail_growList;
 			
 			/* Set new list. */
@@ -232,13 +232,13 @@ fail_releaseLock:
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_stringPool_new(
+sjme_errorCode sjme_nvm_stringPool_new(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_stringPool* outStringPool)
+	sjme_attrOutNotNull sjme_nvm_stringPool* outStringPool)
 {
 	sjme_errorCode error;
-	sjme_stringPool result;
-	sjme_list_sjme_stringPool_string* strings;
+	sjme_nvm_stringPool result;
+	sjme_list_sjme_nvm_stringPool_string* strings;
 	
 	if (inPool == NULL || outStringPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -247,7 +247,7 @@ sjme_errorCode sjme_stringPool_new(
 	strings = NULL;
 	if (sjme_error_is(error = sjme_list_alloc(
 		inPool, SJME_STRING_POOL_GROW,
-		&strings, sjme_stringPool_string, 0)) || strings == NULL)
+		&strings, sjme_nvm_stringPool_string, 0)) || strings == NULL)
 		goto fail_allocList;
 	
 	/* Allocate result. */

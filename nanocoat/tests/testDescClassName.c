@@ -24,7 +24,7 @@
  */
 SJME_TEST_DECLARE(testDescClassName)
 {
-	sjme_desc_className result;
+	sjme_nvm_desc_className result;
 	sjme_lpcstr string;
 	sjme_jint strLen, strHash;
 	
@@ -35,7 +35,7 @@ SJME_TEST_DECLARE(testDescClassName)
 	
 	/* Parse. */
 	result = NULL;
-	if (!sjme_desc_interpretClassName(test->pool,
+	if (!sjme_nvm_desc_interpretClassName(test->pool,
 		&result, string, strLen) ||
 		result == NULL)
 		return sjme_unit_fail(test, "Could not interpret class name?");
@@ -45,7 +45,7 @@ SJME_TEST_DECLARE(testDescClassName)
 		"Hash incorrect?");
 	sjme_unit_isFalse(test, result->isField,
 		"Was a field?");
-	sjme_unit_equalI(test, 0, sjme_desc_compareClassS(result,
+	sjme_unit_equalI(test, 0, sjme_nvm_desc_compareClassS(result,
 		"Squeak"),
 		"Incorrect binary name?");
 	
@@ -56,7 +56,7 @@ SJME_TEST_DECLARE(testDescClassName)
 	
 	/* Parse. */
 	result = NULL;
-	if (!sjme_desc_interpretClassName(test->pool,
+	if (!sjme_nvm_desc_interpretClassName(test->pool,
 			&result, string, strLen) ||
 		result == NULL)
 		return sjme_unit_fail(test, "Could not interpret class name?");
@@ -66,13 +66,13 @@ SJME_TEST_DECLARE(testDescClassName)
 		"Hash incorrect?");
 	sjme_unit_isFalse(test, result->isField,
 		"Was a field?");
-	sjme_unit_equalI(test, 0, sjme_desc_compareClassS(result,
+	sjme_unit_equalI(test, 0, sjme_nvm_desc_compareClassS(result,
 		"Squeak/In/Box"),
 		"Incorrect binary name?");
 	
 	/* Parse. */
 	result = NULL;
-	if (!sjme_desc_interpretClassName(test->pool,
+	if (!sjme_nvm_desc_interpretClassName(test->pool,
 			&result, string, strLen) ||
 		result == NULL)
 		return sjme_unit_fail(test, "Could not interpret class name?");
@@ -84,7 +84,7 @@ SJME_TEST_DECLARE(testDescClassName)
 	
 	/* Parse. */
 	result = NULL;
-	if (!sjme_desc_interpretClassName(test->pool,
+	if (!sjme_nvm_desc_interpretClassName(test->pool,
 			&result, string, strLen) ||
 		result == NULL)
 		return sjme_unit_fail(test, "Could not interpret class name?");
@@ -94,7 +94,7 @@ SJME_TEST_DECLARE(testDescClassName)
 		"Hash incorrect?");
 	sjme_unit_isTrue(test, result->isField,
 		"Was a binary name?");
-	sjme_unit_equalI(test, 0, sjme_desc_compareClassS(result,
+	sjme_unit_equalI(test, 0, sjme_nvm_desc_compareClassS(result,
 		"[LSqueak/In/Box;"),
 		"Incorrect field name?");
 	

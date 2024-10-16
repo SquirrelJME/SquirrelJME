@@ -30,13 +30,13 @@ static const sjme_cchar testData[TEST_LEN] =
  */
 SJME_TEST_DECLARE(testStringPoolStream)
 {
-	sjme_stringPool stringPool;
-	sjme_stringPool_string string;
+	sjme_nvm_stringPool stringPool;
+	sjme_nvm_stringPool_string string;
 	sjme_stream_input stream;
 	
 	/* Create string pool. */
 	stringPool = NULL;
-	if (sjme_error_is(test->error = sjme_stringPool_new(
+	if (sjme_error_is(test->error = sjme_nvm_stringPool_new(
 		test->pool, &stringPool)) ||
 		stringPool == NULL)
 		return sjme_unit_fail(test, "Could not create pool.");
@@ -55,7 +55,7 @@ SJME_TEST_DECLARE(testStringPoolStream)
 	
 	/* Locate string. */
 	string = NULL;
-	if (sjme_error_is(test->error = sjme_stringPool_locateStream(
+	if (sjme_error_is(test->error = sjme_nvm_stringPool_locateStream(
 		stringPool, stream,
 		&string)) || string == NULL)
 		return sjme_unit_fail(test, "Could not locate string?");

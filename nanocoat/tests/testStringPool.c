@@ -20,11 +20,11 @@
  */
 SJME_TEST_DECLARE(testStringPool)
 {
-	sjme_stringPool stringPool;
+	sjme_nvm_stringPool stringPool;
 	
 	/* Create string pool. */
 	stringPool = NULL;
-	if (sjme_error_is(test->error = sjme_stringPool_new(
+	if (sjme_error_is(test->error = sjme_nvm_stringPool_new(
 		test->pool, &stringPool)) ||
 		stringPool == NULL)
 		return sjme_unit_fail(test, "Could not create pool.");

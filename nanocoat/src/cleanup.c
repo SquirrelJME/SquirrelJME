@@ -43,15 +43,15 @@
 		SJME_CLEANUP_FREE(y); \
 	} } while(0)
 
-static sjme_errorCode sjme_class_classInfoClose(
+static sjme_errorCode sjme_nvm_class_classInfoClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_errorCode error;
-	sjme_class_info info;
+	sjme_nvm_class_info info;
 	sjme_jint i, n;
 	
 	/* Recover. */
-	info = (sjme_class_info)closeable;
+	info = (sjme_nvm_class_info)closeable;
 	if (info == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -67,15 +67,15 @@ static sjme_errorCode sjme_class_classInfoClose(
 }
 
 
-static sjme_errorCode sjme_class_codeInfoClose(
+static sjme_errorCode sjme_nvm_class_codeInfoClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_errorCode error;
-	sjme_class_codeInfo info;
+	sjme_nvm_class_codeInfo info;
 	sjme_jint i, n;
 	
 	/* Recover. */
-	info = (sjme_class_codeInfo)closeable;
+	info = (sjme_nvm_class_codeInfo)closeable;
 	if (info == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -86,16 +86,16 @@ static sjme_errorCode sjme_class_codeInfoClose(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_class_constantPoolClose(
+static sjme_errorCode sjme_nvm_class_constantPoolClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_errorCode error;
-	sjme_class_poolInfo info;
-	sjme_class_poolEntry* entry;
+	sjme_nvm_class_poolInfo info;
+	sjme_nvm_class_poolEntry* entry;
 	sjme_jint i, n;
 	
 	/* Recover. */
-	info = (sjme_class_poolInfo)closeable;
+	info = (sjme_nvm_class_poolInfo)closeable;
 	if (info == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -106,20 +106,20 @@ static sjme_errorCode sjme_class_constantPoolClose(
 			entry = &info->pool->elements[i];
 			switch (entry->type)
 			{
-				case SJME_CLASS_POOL_TYPE_CLASS:
+				case SJME_NVM_CLASS_POOL_TYPE_CLASS:
 					SJME_CLEANUP_CLOSE(entry->classRef.descriptor);
 					break;
 					
-				case SJME_CLASS_POOL_TYPE_STRING:
+				case SJME_NVM_CLASS_POOL_TYPE_STRING:
 					SJME_CLEANUP_CLOSE(entry->constString.value);
 					break;
 					
-				case SJME_CLASS_POOL_TYPE_NAME_AND_TYPE:
+				case SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE:
 					SJME_CLEANUP_CLOSE(entry->nameAndType.descriptor);
 					SJME_CLEANUP_CLOSE(entry->nameAndType.name);
 					break;
 					
-				case SJME_CLASS_POOL_TYPE_UTF:
+				case SJME_NVM_CLASS_POOL_TYPE_UTF:
 					SJME_CLEANUP_CLOSE(entry->utf.utf);
 					break;
 			}
@@ -132,15 +132,15 @@ static sjme_errorCode sjme_class_constantPoolClose(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_class_fieldInfoClose(
+static sjme_errorCode sjme_nvm_class_fieldInfoClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_errorCode error;
-	sjme_class_fieldInfo info;
+	sjme_nvm_class_fieldInfo info;
 	sjme_jint i, n;
 	
 	/* Recover. */
-	info = (sjme_class_fieldInfo)closeable;
+	info = (sjme_nvm_class_fieldInfo)closeable;
 	if (info == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -151,15 +151,15 @@ static sjme_errorCode sjme_class_fieldInfoClose(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_class_methodInfoClose(
+static sjme_errorCode sjme_nvm_class_methodInfoClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_errorCode error;
-	sjme_class_methodInfo info;
+	sjme_nvm_class_methodInfo info;
 	sjme_jint i, n;
 	
 	/* Recover. */
-	info = (sjme_class_methodInfo)closeable;
+	info = (sjme_nvm_class_methodInfo)closeable;
 	if (info == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -171,14 +171,14 @@ static sjme_errorCode sjme_class_methodInfoClose(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_desc_identifierClose(
+static sjme_errorCode sjme_nvm_desc_identifierClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_errorCode error;
-	sjme_desc_identifier info;
+	sjme_nvm_desc_identifier info;
 	
 	/* Recover. */
-	info = (sjme_desc_identifier)closeable;
+	info = (sjme_nvm_desc_identifier)closeable;
 	if (info == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -261,17 +261,17 @@ static sjme_errorCode sjme_nvm_taskClose(
 	return sjme_error_notImplemented(0);
 }
 
-static sjme_errorCode sjme_stringPool_close(
+static sjme_errorCode sjme_nvm_stringPool_close(
 	sjme_attrInNullable sjme_closeable closeable)
 {
 	sjme_errorCode error;
-	sjme_stringPool stringPool;
+	sjme_nvm_stringPool stringPool;
 	sjme_jint i, n;
-	sjme_list_sjme_stringPool_string* strings;
-	sjme_stringPool_string target;
+	sjme_list_sjme_nvm_stringPool_string* strings;
+	sjme_nvm_stringPool_string target;
 	
 	/* Recover pool. */
-	stringPool = (sjme_stringPool)closeable;
+	stringPool = (sjme_nvm_stringPool)closeable;
 	if (stringPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -282,14 +282,14 @@ static sjme_errorCode sjme_stringPool_close(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_stringPool_stringClose(
+static sjme_errorCode sjme_nvm_stringPool_stringClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_errorCode error;
-	sjme_stringPool_string info;
+	sjme_nvm_stringPool_string info;
 	
 	/* Recover. */
-	info = (sjme_stringPool_string)closeable;
+	info = (sjme_nvm_stringPool_string)closeable;
 	if (info == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -322,27 +322,27 @@ sjme_errorCode sjme_nvm_allocR(
 	switch (inType)
 	{
 		case SJME_NVM_STRUCT_CLASS_INFO:
-			handler = sjme_class_classInfoClose;
+			handler = sjme_nvm_class_classInfoClose;
 			break;
 			
 		case SJME_NVM_STRUCT_CODE:
-			handler = sjme_class_codeInfoClose;
+			handler = sjme_nvm_class_codeInfoClose;
 			break;
 		
 		case SJME_NVM_STRUCT_FIELD_INFO:
-			handler = sjme_class_fieldInfoClose;
+			handler = sjme_nvm_class_fieldInfoClose;
 			break;
 		
 		case SJME_NVM_STRUCT_IDENTIFIER:
-			handler = sjme_desc_identifierClose;
+			handler = sjme_nvm_desc_identifierClose;
 			break;
 		
 		case SJME_NVM_STRUCT_METHOD_INFO:
-			handler = sjme_class_methodInfoClose;
+			handler = sjme_nvm_class_methodInfoClose;
 			break;
 		
 		case SJME_NVM_STRUCT_POOL:
-			handler = sjme_class_constantPoolClose;
+			handler = sjme_nvm_class_constantPoolClose;
 			break;
 		
 		case SJME_NVM_STRUCT_ROM_LIBRARY:
@@ -358,11 +358,11 @@ sjme_errorCode sjme_nvm_allocR(
 			break;
 		
 		case SJME_NVM_STRUCT_STRING_POOL:
-			handler = sjme_stringPool_close;
+			handler = sjme_nvm_stringPool_close;
 			break;
 		
 		case SJME_NVM_STRUCT_STRING_POOL_STRING:
-			handler = sjme_stringPool_stringClose;
+			handler = sjme_nvm_stringPool_stringClose;
 			break;
 		
 		case SJME_NVM_STRUCT_TASK:

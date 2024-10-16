@@ -20,23 +20,23 @@
  * 
  * @since 2024/02/23
  */
-typedef struct sjme_desc_fieldTypeLink sjme_desc_fieldTypeLink;
+typedef struct sjme_nvm_desc_fieldTypeLink sjme_nvm_desc_fieldTypeLink;
 
-struct sjme_desc_fieldTypeLink
+struct sjme_nvm_desc_fieldTypeLink
 {
 	/** The previous link. */
-	sjme_desc_fieldTypeLink* prev;
+	sjme_nvm_desc_fieldTypeLink* prev;
 	
 	/** The next link. */
-	sjme_desc_fieldTypeLink* next;
+	sjme_nvm_desc_fieldTypeLink* next;
 	
 	/** Field information. */
-	sjme_desc_fieldType field;
+	sjme_nvm_desc_fieldType field;
 };
 
-static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
+static sjme_errorCode sjme_nvm_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 	sjme_jint inLen, sjme_lpcstr finalEnd, sjme_jint numSlash,
-	sjme_desc_binaryName* result)
+	sjme_nvm_desc_binaryName* result)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -44,7 +44,7 @@ static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 	sjme_errorCode error;
 	sjme_lpcstr at, end, base, nextAt;
 	sjme_jint c, identLen, identAt;
-	sjme_desc_identifier* ident;
+	sjme_nvm_desc_identifier* ident;
 	
 	if (inStr == NULL || finalEnd == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -60,7 +60,7 @@ static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 			
 		/* Initialize list. */
 		sjme_list_directInit(numSlash + 1, &result->identifiers,
-			sjme_desc_identifier, 0);
+			sjme_nvm_desc_identifier, 0);
 	}
 	
 	/* Otherwise identifier is ignored. */
@@ -103,7 +103,7 @@ static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 			memset(ident, 0, sizeof(*ident));
 		
 		/* Parse individual identifier fragment. */
-		if (sjme_error_is(error = sjme_desc_interpretIdentifier(
+		if (sjme_error_is(error = sjme_nvm_desc_interpretIdentifier(
 			ident, base, identLen)))
 			return sjme_error_defaultOr(error,
 				SJME_ERROR_INVALID_BINARY_NAME);
@@ -125,7 +125,7 @@ static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 		memset(ident, 0, sizeof(*ident));
 	
 	/* Parse final one. */
-	if (sjme_error_is(error = sjme_desc_interpretIdentifier(
+	if (sjme_error_is(error = sjme_nvm_desc_interpretIdentifier(
 		ident, base, identLen)))
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_BINARY_NAME);
@@ -135,7 +135,7 @@ static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 #endif
 }
 
-static sjme_errorCode sjme_desc_interpretBinaryNameNumSlash(sjme_lpcstr inStr,
+static sjme_errorCode sjme_nvm_desc_interpretBinaryNameNumSlash(sjme_lpcstr inStr,
 	sjme_jint inLen, sjme_jint* outNumSlash, sjme_lpcstr* finalEnd)
 {
 	sjme_todo("Impl?");
@@ -171,7 +171,7 @@ static sjme_errorCode sjme_desc_interpretBinaryNameNumSlash(sjme_lpcstr inStr,
 #endif
 }
 
-static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
+static sjme_errorCode sjme_nvm_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
 	sjme_jint inLen, sjme_jint* outAllocLen)
 {
 	sjme_todo("Impl?");
@@ -191,14 +191,14 @@ static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
 		return SJME_ERROR_INVALID_FIELD_TYPE;
 	
 	/* Base size with the single base component. */
-	allocLen = sizeof(sjme_desc_fieldType) +
-		sizeof(sjme_desc_fieldTypeComponent);
+	allocLen = sizeof(sjme_nvm_desc_fieldType) +
+		sizeof(sjme_nvm_desc_fieldTypeComponent);
 	
 	/* If an array, count the number of dimensions... */
 	while (typeCode == '[')
 	{
 		/* Add component. */
-		allocLen += sizeof(sjme_desc_fieldTypeComponent);
+		allocLen += sizeof(sjme_nvm_desc_fieldTypeComponent);
 		
 		/* Read in next code. */
 		typeCode = sjme_string_decodeChar(next, &next);
@@ -215,7 +215,7 @@ static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
 	{
 		/* Determine the number of identifiers used. */
 		subLen = -1;
-		if (sjme_error_is(error = sjme_desc_interpretBinaryNameNumSlash(
+		if (sjme_error_is(error = sjme_nvm_desc_interpretBinaryNameNumSlash(
 			next, inLen - (next - inStr) - 1, &subLen,
 			NULL)) || subLen < 0)
 			return sjme_error_defaultOr(error,
@@ -223,7 +223,7 @@ static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
 		
 		/* Add in. */
 		allocLen += SJME_SIZEOF_DESC_BINARY_NAME(subLen + 1) +
-			sizeof(sjme_desc_fieldTypeComponent);
+			sizeof(sjme_nvm_desc_fieldTypeComponent);
 	} 
 	
 	/* Success! */
@@ -232,8 +232,8 @@ static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
 #endif
 }
 
-static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
-	sjme_jint inLen, sjme_desc_fieldType* result, sjme_jboolean continueField,
+static sjme_errorCode sjme_nvm_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
+	sjme_jint inLen, sjme_nvm_desc_fieldType* result, sjme_jboolean continueField,
 	sjme_lpcstr *fieldEnd)
 {
 	sjme_todo("Impl?");
@@ -242,8 +242,8 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 	sjme_errorCode error;
 	sjme_jint typeCode, compAt, numSlash, strLen, subAt, c;
 	sjme_jboolean isArray, isObject, isFinal, arrayFragment;
-	sjme_desc_fieldTypeComponent* component;
-	sjme_desc_fieldTypeComponent* parent;
+	sjme_nvm_desc_fieldTypeComponent* component;
+	sjme_nvm_desc_fieldTypeComponent* parent;
 	sjme_lpcstr strAt, strBase, finalEnd, lastAt, rootStrBase, seek;
 	
 	if (inStr == NULL || result == NULL)
@@ -395,14 +395,14 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 			/* Count the number of slashes. */
 			numSlash = -1;
 			if (sjme_error_is(error =
-				sjme_desc_interpretBinaryNameNumSlash(strAt,
+				sjme_nvm_desc_interpretBinaryNameNumSlash(strAt,
 					strLen, &numSlash, NULL)) ||
 				numSlash < 0)
 				return sjme_error_defaultOr(error,
 					SJME_ERROR_INVALID_FIELD_TYPE);
 			
 			/* Interpret binary name, result is actually ignored. */
-			if (sjme_error_is(error = sjme_desc_interpretBinaryNameFixed(
+			if (sjme_error_is(error = sjme_nvm_desc_interpretBinaryNameFixed(
 				strBase, strLen, finalEnd, numSlash,
 				NULL)))
 				return sjme_error_defaultOr(error,
@@ -460,9 +460,9 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 #endif
 }
 
-sjme_jint sjme_desc_compareBinaryName(
-	sjme_attrInNullable const sjme_desc_binaryName aName,
-	sjme_attrInNullable const sjme_desc_binaryName bName)
+sjme_jint sjme_nvm_desc_compareBinaryName(
+	sjme_attrInNullable const sjme_nvm_desc_binaryName aName,
+	sjme_attrInNullable const sjme_nvm_desc_binaryName bName)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -478,9 +478,9 @@ sjme_jint sjme_desc_compareBinaryName(
 #endif
 }
 
-sjme_jint sjme_desc_compareBinaryNameP(
+sjme_jint sjme_nvm_desc_compareBinaryNameP(
 	sjme_attrInNullable sjme_pointerLen* aPointerLen,
-	sjme_attrInNullable sjme_desc_binaryName bName)
+	sjme_attrInNullable sjme_nvm_desc_binaryName bName)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -499,7 +499,7 @@ sjme_jint sjme_desc_compareBinaryNameP(
 #endif
 }
 
-sjme_jint sjme_desc_compareBinaryNamePS(
+sjme_jint sjme_nvm_desc_compareBinaryNamePS(
 	sjme_attrInNullable sjme_pointerLen* aPointerLen,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
@@ -520,8 +520,8 @@ sjme_jint sjme_desc_compareBinaryNamePS(
 #endif
 }
 
-sjme_jint sjme_desc_compareBinaryNameS(
-	sjme_attrInNullable sjme_desc_binaryName aName,
+sjme_jint sjme_nvm_desc_compareBinaryNameS(
+	sjme_attrInNullable sjme_nvm_desc_binaryName aName,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
 	sjme_todo("Impl?");
@@ -543,9 +543,9 @@ sjme_jint sjme_desc_compareBinaryNameS(
 #endif
 }
 
-sjme_jint sjme_desc_compareClass(
-	sjme_attrInNullable sjme_desc_className aClass,
-	sjme_attrInNullable sjme_desc_className bClass)
+sjme_jint sjme_nvm_desc_compareClass(
+	sjme_attrInNullable sjme_nvm_desc_className aClass,
+	sjme_attrInNullable sjme_nvm_desc_className bClass)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -561,8 +561,8 @@ sjme_jint sjme_desc_compareClass(
 #endif
 }
 
-sjme_jint sjme_desc_compareClassS(
-	sjme_attrInNullable  sjme_desc_className aClass,
+sjme_jint sjme_nvm_desc_compareClassS(
+	sjme_attrInNullable  sjme_nvm_desc_className aClass,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
 	sjme_todo("Impl?");
@@ -579,9 +579,9 @@ sjme_jint sjme_desc_compareClassS(
 #endif
 }
 
-sjme_jint sjme_desc_compareField(
-	sjme_attrInNullable sjme_desc_fieldType aField,
-	sjme_attrInNullable sjme_desc_fieldType bField)
+sjme_jint sjme_nvm_desc_compareField(
+	sjme_attrInNullable sjme_nvm_desc_fieldType aField,
+	sjme_attrInNullable sjme_nvm_desc_fieldType bField)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -597,9 +597,9 @@ sjme_jint sjme_desc_compareField(
 #endif
 }
 
-sjme_jint sjme_desc_compareFieldC(
-	sjme_attrInNullable sjme_desc_fieldTypeComponent aFieldComponent,
-	sjme_attrInNullable sjme_desc_fieldType bField)
+sjme_jint sjme_nvm_desc_compareFieldC(
+	sjme_attrInNullable sjme_nvm_desc_fieldTypeComponent aFieldComponent,
+	sjme_attrInNullable sjme_nvm_desc_fieldType bField)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -616,8 +616,8 @@ sjme_jint sjme_desc_compareFieldC(
 #endif
 }
 
-sjme_jint sjme_desc_compareFieldS(
-	sjme_attrInNullable sjme_desc_fieldType aField,
+sjme_jint sjme_nvm_desc_compareFieldS(
+	sjme_attrInNullable sjme_nvm_desc_fieldType aField,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
 	sjme_todo("Impl?");
@@ -634,9 +634,9 @@ sjme_jint sjme_desc_compareFieldS(
 #endif
 }
 
-sjme_jint sjme_desc_compareIdentifier(
-	sjme_attrInNullable sjme_desc_identifier aIdent,
-	sjme_attrInNullable sjme_desc_identifier bIdent)
+sjme_jint sjme_nvm_desc_compareIdentifier(
+	sjme_attrInNullable sjme_nvm_desc_identifier aIdent,
+	sjme_attrInNullable sjme_nvm_desc_identifier bIdent)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -652,8 +652,8 @@ sjme_jint sjme_desc_compareIdentifier(
 #endif
 }
 
-sjme_jint sjme_desc_compareIdentifierS(
-	sjme_attrInNullable sjme_desc_identifier aIdent,
+sjme_jint sjme_nvm_desc_compareIdentifierS(
+	sjme_attrInNullable sjme_nvm_desc_identifier aIdent,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
 	sjme_jint strLen;
@@ -669,9 +669,9 @@ sjme_jint sjme_desc_compareIdentifierS(
 		bString, strlen(bString));
 }
 
-sjme_jint sjme_desc_compareMethod(
-	sjme_attrInNullable sjme_desc_methodType aMethod,
-	sjme_attrInNullable sjme_desc_methodType bMethod)
+sjme_jint sjme_nvm_desc_compareMethod(
+	sjme_attrInNullable sjme_nvm_desc_methodType aMethod,
+	sjme_attrInNullable sjme_nvm_desc_methodType bMethod)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -687,8 +687,8 @@ sjme_jint sjme_desc_compareMethod(
 #endif
 }
 
-sjme_jint sjme_desc_compareMethodS(
-	sjme_attrInNullable sjme_desc_methodType aMethod,
+sjme_jint sjme_nvm_desc_compareMethodS(
+	sjme_attrInNullable sjme_nvm_desc_methodType aMethod,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
 	sjme_todo("Impl?");
@@ -705,9 +705,9 @@ sjme_jint sjme_desc_compareMethodS(
 #endif
 }
 
-sjme_errorCode sjme_desc_interpretBinaryName(
+sjme_errorCode sjme_nvm_desc_interpretBinaryName(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_binaryName* outName,
+	sjme_attrOutNotNull sjme_nvm_desc_binaryName* outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
@@ -716,7 +716,7 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 #if 0
 	sjme_errorCode error;
 	sjme_lpcstr finalEnd;
-	sjme_desc_binaryName* result;
+	sjme_nvm_desc_binaryName* result;
 	sjme_jint resultLen, numSlash;
 	
 	if (inPool == NULL || outName == NULL || inStr == NULL)
@@ -730,7 +730,7 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 	/* Count the number of slashes. */
 	finalEnd = NULL;
 	numSlash = 0;
-	if (sjme_error_is(error = sjme_desc_interpretBinaryNameNumSlash(inStr,
+	if (sjme_error_is(error = sjme_nvm_desc_interpretBinaryNameNumSlash(inStr,
 		inLen, &numSlash, &finalEnd)))
 		return sjme_error_default(error);
 	
@@ -746,7 +746,7 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 	memset(result, 0, resultLen);
 	
 	/* Parse fixed binary name. */
-	if (sjme_error_is(error = sjme_desc_interpretBinaryNameFixed(
+	if (sjme_error_is(error = sjme_nvm_desc_interpretBinaryNameFixed(
 		inStr, inLen, finalEnd, numSlash, result)))
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_BINARY_NAME);
@@ -758,9 +758,9 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 #endif
 }
 
-sjme_errorCode sjme_desc_interpretClassName(
+sjme_errorCode sjme_nvm_desc_interpretClassName(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_className* outName,
+	sjme_attrOutNotNull sjme_nvm_desc_className* outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
@@ -769,7 +769,7 @@ sjme_errorCode sjme_desc_interpretClassName(
 #if 0
 	sjme_errorCode error;
 	sjme_jint c, numSlash, allocLen, strLen;
-	sjme_desc_className* result;
+	sjme_nvm_desc_className* result;
 	sjme_lpcstr finalEnd;
 	
 	if (inPool == NULL || outName == NULL || inStr == NULL)
@@ -789,7 +789,7 @@ sjme_errorCode sjme_desc_interpretClassName(
 	{
 		/* Determine field size. */
 		allocLen = -1;
-		if (sjme_error_is(error = sjme_desc_interpretFieldTypeAllocSize(
+		if (sjme_error_is(error = sjme_nvm_desc_interpretFieldTypeAllocSize(
 			inStr, strLen, &allocLen)) || allocLen < 0)
 			return sjme_error_defaultOr(error,
 				SJME_ERROR_INVALID_CLASS_NAME);
@@ -801,7 +801,7 @@ sjme_errorCode sjme_desc_interpretClassName(
 		/* Determine slashes for resultant size. */
 		numSlash = -1;
 		finalEnd = NULL;
-		if (sjme_error_is(error = sjme_desc_interpretBinaryNameNumSlash(
+		if (sjme_error_is(error = sjme_nvm_desc_interpretBinaryNameNumSlash(
 			inStr, strLen, &numSlash, &finalEnd)) ||
 			numSlash < 0)
 			return sjme_error_defaultOr(error,
@@ -812,7 +812,7 @@ sjme_errorCode sjme_desc_interpretClassName(
 	}
 	
 	/* Add class base. */
-	allocLen += sizeof(sjme_desc_className);
+	allocLen += sizeof(sjme_nvm_desc_className);
 	
 	/* Allocate. */
 	result = sjme_alloca(allocLen);
@@ -832,7 +832,7 @@ sjme_errorCode sjme_desc_interpretClassName(
 	if (c == '[')
 	{
 		/* Parse. */
-		if (sjme_error_is(error = sjme_desc_interpretFieldTypeFixed(
+		if (sjme_error_is(error = sjme_nvm_desc_interpretFieldTypeFixed(
 			inStr, strLen, &result->descriptor.field,
 			SJME_JNI_FALSE, NULL)))
 			return sjme_error_defaultOr(error,
@@ -846,7 +846,7 @@ sjme_errorCode sjme_desc_interpretClassName(
 	else
 	{
 		/* Parse. */
-		if (sjme_error_is(error = sjme_desc_interpretBinaryNameFixed(
+		if (sjme_error_is(error = sjme_nvm_desc_interpretBinaryNameFixed(
 			inStr, strLen, finalEnd, numSlash,
 			&result->descriptor.binary)))
 			return sjme_error_defaultOr(error,
@@ -860,9 +860,9 @@ sjme_errorCode sjme_desc_interpretClassName(
 #endif
 }
 
-sjme_errorCode sjme_desc_interpretFieldType(
+sjme_errorCode sjme_nvm_desc_interpretFieldType(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_fieldType* outType,
+	sjme_attrOutNotNull sjme_nvm_desc_fieldType* outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
@@ -871,7 +871,7 @@ sjme_errorCode sjme_desc_interpretFieldType(
 #if 0
 	sjme_errorCode error;
 	sjme_jint strLen, typeCode, allocLen;
-	sjme_desc_fieldType* result;
+	sjme_nvm_desc_fieldType* result;
 	
 	if (inPool == NULL || outType == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -888,7 +888,7 @@ sjme_errorCode sjme_desc_interpretFieldType(
 
 	/* How many bytes are needed for allocation? */
 	allocLen = -1;
-	if (sjme_error_is(error = sjme_desc_interpretFieldTypeAllocSize(inStr,
+	if (sjme_error_is(error = sjme_nvm_desc_interpretFieldTypeAllocSize(inStr,
 		inLen, &allocLen)) || allocLen <= 0)
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_FIELD_TYPE);
@@ -902,7 +902,7 @@ sjme_errorCode sjme_desc_interpretFieldType(
 	memset(result, 0, allocLen);
 	
 	/* Load field, recursively. */
-	if (sjme_error_is(error = sjme_desc_interpretFieldTypeFixed(
+	if (sjme_error_is(error = sjme_nvm_desc_interpretFieldTypeFixed(
 		inStr, inLen, result, SJME_JNI_FALSE, NULL)))
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_FIELD_TYPE);
@@ -914,18 +914,18 @@ sjme_errorCode sjme_desc_interpretFieldType(
 #endif
 }
 
-sjme_errorCode sjme_desc_interpretIdentifier(
+sjme_errorCode sjme_nvm_desc_interpretIdentifier(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrInNotNull sjme_stringPool inStringPool,
-	sjme_attrOutNotNull sjme_desc_identifier* outIdent,
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
+	sjme_attrOutNotNull sjme_nvm_desc_identifier* outIdent,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
 	sjme_errorCode error;
 	sjme_lpcstr at, end;
 	sjme_jint c;
-	sjme_desc_identifier result;
-	sjme_stringPool_string pooled;
+	sjme_nvm_desc_identifier result;
+	sjme_nvm_stringPool_string pooled;
 	
 	if (inPool == NULL || outIdent == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -954,7 +954,7 @@ sjme_errorCode sjme_desc_interpretIdentifier(
 	
 	/* Locate string in the pool. */
 	pooled = NULL;
-	if (sjme_error_is(error = sjme_stringPool_locateUtf(inStringPool,
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(inStringPool,
 		inStr, inLen, &pooled)) || pooled == NULL)
 		return sjme_error_default(error);
 	
@@ -984,9 +984,9 @@ fail_countUp:
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_desc_interpretMethodType(
+sjme_errorCode sjme_nvm_desc_interpretMethodType(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_methodType* outType,
+	sjme_attrOutNotNull sjme_nvm_desc_methodType* outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
@@ -996,14 +996,14 @@ sjme_errorCode sjme_desc_interpretMethodType(
 	sjme_errorCode error;
 	sjme_jint c, fragmentLen, allocLen, fieldCount, fieldAt;
 	sjme_lpcstr strAt, strBase;
-	sjme_desc_fieldTypeLink* firstField;
-	sjme_desc_fieldTypeLink* lastField;
-	sjme_desc_fieldTypeLink* currentField;
+	sjme_nvm_desc_fieldTypeLink* firstField;
+	sjme_nvm_desc_fieldTypeLink* lastField;
+	sjme_nvm_desc_fieldTypeLink* currentField;
 	sjme_jboolean isReturn, stopNow;
-	sjme_desc_methodType* result;
-	sjme_desc_fieldTypeComponent* target;
-	sjme_desc_fieldType* sourceField;
-	sjme_desc_fieldTypeComponent* source;
+	sjme_nvm_desc_methodType* result;
+	sjme_nvm_desc_fieldTypeComponent* target;
+	sjme_nvm_desc_fieldType* sourceField;
+	sjme_nvm_desc_fieldTypeComponent* source;
 	
 	if (inPool == NULL || outType == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1053,7 +1053,7 @@ sjme_errorCode sjme_desc_interpretMethodType(
 		
 		/* Determine the allocation size. */
 		allocLen = -1;
-		if (sjme_error_is(error = sjme_desc_interpretFieldTypeAllocSize(
+		if (sjme_error_is(error = sjme_nvm_desc_interpretFieldTypeAllocSize(
 			strBase, fragmentLen, &allocLen)) ||
 			allocLen < 0)
 			return sjme_error_defaultOr(error,
@@ -1083,7 +1083,7 @@ sjme_errorCode sjme_desc_interpretMethodType(
 		}
 		
 		/* Parse single field */
-		if (sjme_error_is(error = sjme_desc_interpretFieldTypeFixed(
+		if (sjme_error_is(error = sjme_nvm_desc_interpretFieldTypeFixed(
 			strBase, fragmentLen, &currentField->field,
 			SJME_JNI_TRUE, &strAt)))
 			return sjme_error_defaultOr(error,
@@ -1112,7 +1112,7 @@ sjme_errorCode sjme_desc_interpretMethodType(
 	
 	/* Initialize field list. */
 	if (sjme_error_is(error = sjme_list_directInit(fieldCount,
-		&result->fields, sjme_desc_fieldTypeComponent, 0)))
+		&result->fields, sjme_nvm_desc_fieldTypeComponent, 0)))
 		return sjme_error_default(error);
 	
 	/* Fill in all the various details. */
@@ -1140,7 +1140,7 @@ sjme_errorCode sjme_desc_interpretMethodType(
 		
 		/* Everything can be copied over quickly. */
 		memmove(target, source,
-			sizeof(sjme_desc_fieldTypeComponent));
+			sizeof(sjme_nvm_desc_fieldTypeComponent));
 		
 		/* Increase base cells. */
 		if (isReturn)

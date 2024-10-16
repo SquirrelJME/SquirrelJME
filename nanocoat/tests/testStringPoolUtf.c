@@ -22,12 +22,12 @@ static const sjme_lpcstr testUtf = "Squirrels!";
  */
 SJME_TEST_DECLARE(testStringPoolUtf)
 {
-	sjme_stringPool stringPool;
-	sjme_stringPool_string string, stringTwo;
+	sjme_nvm_stringPool stringPool;
+	sjme_nvm_stringPool_string string, stringTwo;
 	
 	/* Create string pool. */
 	stringPool = NULL;
-	if (sjme_error_is(test->error = sjme_stringPool_new(
+	if (sjme_error_is(test->error = sjme_nvm_stringPool_new(
 		test->pool, &stringPool)) ||
 		stringPool == NULL)
 		return sjme_unit_fail(test, "Could not create pool.");
@@ -39,7 +39,7 @@ SJME_TEST_DECLARE(testStringPoolUtf)
 	
 	/* Locate string. */
 	string = NULL;
-	if (sjme_error_is(test->error = sjme_stringPool_locateUtf(
+	if (sjme_error_is(test->error = sjme_nvm_stringPool_locateUtf(
 		stringPool, testUtf, -1,
 		&string)) || string == NULL)
 		return sjme_unit_fail(test, "Could not locate string?");
@@ -63,7 +63,7 @@ SJME_TEST_DECLARE(testStringPoolUtf)
 		
 	/* Locate string, again. */
 	stringTwo = NULL;
-	if (sjme_error_is(test->error = sjme_stringPool_locateUtf(
+	if (sjme_error_is(test->error = sjme_nvm_stringPool_locateUtf(
 		stringPool, testUtf, -1,
 		&stringTwo)) || stringTwo == NULL)
 		return sjme_unit_fail(test, "Could not locate second string?");

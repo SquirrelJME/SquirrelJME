@@ -26,7 +26,7 @@
  */
 SJME_TEST_DECLARE(testDescBinaryName)
 {
-	sjme_desc_binaryName result;
+	sjme_nvm_desc_binaryName result;
 	sjme_lpcstr string;
 	sjme_jint strLen, strHash;
 	
@@ -37,7 +37,7 @@ SJME_TEST_DECLARE(testDescBinaryName)
 	
 	/* Basic name. */
 	result = NULL;
-	if (sjme_error_is(sjme_desc_interpretBinaryName(test->pool,
+	if (sjme_error_is(sjme_nvm_desc_interpretBinaryName(test->pool,
 		&result, string, strLen) || result == NULL))
 		sjme_unit_fail(test, "Could not parse binary name?");
 	
@@ -53,7 +53,7 @@ SJME_TEST_DECLARE(testDescBinaryName)
 	sjme_unit_equalI(test, result->identifiers->length, 1,
 		"Incorrect number of elements?");
 	sjme_unit_equalI(test,
-		0, sjme_desc_compareIdentifierS(
+		0, sjme_nvm_desc_compareIdentifierS(
 			result->identifiers->elements[0], "Squeak"),
 		"Incorrect identifier 1?");
 	
@@ -64,7 +64,7 @@ SJME_TEST_DECLARE(testDescBinaryName)
 	
 	/* With package. */
 	result = NULL;
-	if (sjme_error_is(sjme_desc_interpretBinaryName(test->pool,
+	if (sjme_error_is(sjme_nvm_desc_interpretBinaryName(test->pool,
 		&result, string, strLen) || result == NULL))
 		sjme_unit_fail(test, "Could not parse packaged binary name?");
 		
@@ -81,60 +81,60 @@ SJME_TEST_DECLARE(testDescBinaryName)
 		"Incorrect number of elements?");
 		
 	sjme_unit_equalI(test,
-		0, sjme_desc_compareIdentifierS(
+		0, sjme_nvm_desc_compareIdentifierS(
 			result->identifiers->elements[0], "Squeak"),
 		"Incorrect identifier 1?");
 		
 	sjme_unit_equalI(test,
-		0, sjme_desc_compareIdentifierS(
+		0, sjme_nvm_desc_compareIdentifierS(
 			result->identifiers->elements[1], "In"),
 		"Incorrect identifier 2?");
 		
 	sjme_unit_equalI(test,
-		0, sjme_desc_compareIdentifierS(
+		0, sjme_nvm_desc_compareIdentifierS(
 			result->identifiers->elements[2], "Box"),
 		"Incorrect identifier 3?");
 	
 	/* Check invalid binary names. */
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
-		sjme_desc_interpretBinaryName(test->pool, &result,
+		sjme_nvm_desc_interpretBinaryName(test->pool, &result,
 			pair("")),
 		"Blank is a valid binary name?");
 	
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
-		sjme_desc_interpretBinaryName(test->pool, &result,
+		sjme_nvm_desc_interpretBinaryName(test->pool, &result,
 			pair("/")),
 		"Single slash is valid binary name?");
 	
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
-		sjme_desc_interpretBinaryName(test->pool, &result,
+		sjme_nvm_desc_interpretBinaryName(test->pool, &result,
 			pair("Squeak/")),
 		"Ending slash is valid binary name?");
 	
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
-		sjme_desc_interpretBinaryName(test->pool, &result,
+		sjme_nvm_desc_interpretBinaryName(test->pool, &result,
 			pair("/Squeak")),
 		"Starting slash is valid binary name?");
 	
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
-		sjme_desc_interpretBinaryName(test->pool, &result,
+		sjme_nvm_desc_interpretBinaryName(test->pool, &result,
 			pair("Cute//Squeak")),
 		"Double slash is valid binary name?");
 	
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
-		sjme_desc_interpretBinaryName(test->pool, &result,
+		sjme_nvm_desc_interpretBinaryName(test->pool, &result,
 			pair("[Z")),
 		"Array is valid binary name?");
 	
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
-		sjme_desc_interpretBinaryName(test->pool, &result,
+		sjme_nvm_desc_interpretBinaryName(test->pool, &result,
 			pair("Squeak/[Z")),
 		"Array in package is valid binary name?");
 	

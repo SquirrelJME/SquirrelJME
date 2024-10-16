@@ -35,16 +35,16 @@ extern "C"
  * 
  * @since 2024/09/08
  */
-typedef struct sjme_vmClass_loaderBase sjme_vmClass_loaderBase;
+typedef struct sjme_nvm_vmClass_loaderBase sjme_nvm_vmClass_loaderBase;
 
 /**
  * Virtual machine equivalent to Java's @c ClassLoader .
  * 
  * @since 2024/09/08
  */
-typedef sjme_vmClass_loaderBase* sjme_vmClass_loader;
+typedef sjme_nvm_vmClass_loaderBase* sjme_nvm_vmClass_loader;
 
-struct sjme_vmClass_loaderBase
+struct sjme_nvm_vmClass_loaderBase
 {
 	/** Common NanoCoat storage. */
 	sjme_nvm_commonBase common;

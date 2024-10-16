@@ -95,7 +95,7 @@ typedef struct sjme_nvm_task_startConfig
 	sjme_list_sjme_lpcstr* sysProps;
 	
 	/** The class loader for this task. */
-	sjme_vmClass_loader classLoader;
+	sjme_nvm_vmClass_loader classLoader;
 } sjme_nvm_task_startConfig;
 
 struct sjme_nvm_taskBase

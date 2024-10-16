@@ -385,8 +385,8 @@ static const testDescFieldTypeEntry testEntries[] =
 SJME_TEST_DECLARE(testDescFieldType)
 {
 	const testDescFieldTypeEntry* entry;
-	sjme_desc_fieldType result;
-	sjme_desc_binaryName objectResult; 
+	sjme_nvm_desc_fieldType result;
+	sjme_nvm_desc_binaryName objectResult; 
 	sjme_lpcstr string;
 	sjme_jint strLen, strHash, atEntry, i;
 	sjme_errorCode error;
@@ -405,7 +405,7 @@ SJME_TEST_DECLARE(testDescFieldType)
 		
 		/* Parse the field type. */
 		result = NULL;
-		if (sjme_error_is(error = sjme_desc_interpretFieldType(
+		if (sjme_error_is(error = sjme_nvm_desc_interpretFieldType(
 			test->pool, &result, string, strLen)) ||
 			result == NULL)
 			return sjme_unit_fail(test, "Could not interpret %s (%d)?",
@@ -451,14 +451,14 @@ SJME_TEST_DECLARE(testDescFieldType)
 					"Not an object?");
 				
 				/* String comparison should be valid. */
-				sjme_unit_equalI(test, 0, sjme_desc_compareBinaryNamePS(
+				sjme_unit_equalI(test, 0, sjme_nvm_desc_compareBinaryNamePS(
 					&result->components[i]->binaryName,
 					entry->objectString),
 					"Binary name of object is incorrect?");
 				
 				/* Parse it. */
 				objectResult = NULL;
-				if (sjme_error_is(sjme_desc_interpretBinaryName(
+				if (sjme_error_is(sjme_nvm_desc_interpretBinaryName(
 					test->pool,
 					&objectResult, entry->objectString,
 					strlen(entry->objectString))) ||
@@ -467,7 +467,7 @@ SJME_TEST_DECLARE(testDescFieldType)
 					"Field %s has an invalid object string?", string);
 				
 				/* Should be the same. */
-				sjme_unit_equalI(test, 0, sjme_desc_compareBinaryNameP(
+				sjme_unit_equalI(test, 0, sjme_nvm_desc_compareBinaryNameP(
 					&result->components[i]->binaryName,
 					objectResult),
 					"Field %s has non-equal object?", string);
@@ -478,49 +478,49 @@ SJME_TEST_DECLARE(testDescFieldType)
 	/* Invalid fields. */
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
-		sjme_desc_interpretFieldType(test->pool,
+		sjme_nvm_desc_interpretFieldType(test->pool,
 			&result, pair("")),
 		"Blank is valid?");
 	
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
-		sjme_desc_interpretFieldType(test->pool,
+		sjme_nvm_desc_interpretFieldType(test->pool,
 			&result, pair("X")),
 		"Unknown type specifier is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
-		sjme_desc_interpretFieldType(test->pool,
+		sjme_nvm_desc_interpretFieldType(test->pool,
 			&result, pair("ZI")),
 		"Two primitive types is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
-		sjme_desc_interpretFieldType(test->pool,
+		sjme_nvm_desc_interpretFieldType(test->pool,
 			&result, pair("[")),
 		"Blank array is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
-		sjme_desc_interpretFieldType(test->pool,
+		sjme_nvm_desc_interpretFieldType(test->pool,
 			&result, pair("[[")),
 		"Blank double array is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
-		sjme_desc_interpretFieldType(test->pool,
+		sjme_nvm_desc_interpretFieldType(test->pool,
 			&result, pair("L")),
 		"Only starting L is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
-		sjme_desc_interpretFieldType(test->pool,
+		sjme_nvm_desc_interpretFieldType(test->pool,
 			&result, pair("LOops")),
 		"Object missing ending semicolon is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
-		sjme_desc_interpretFieldType(test->pool,
+		sjme_nvm_desc_interpretFieldType(test->pool,
 			&result, pair("L;")),
 		"Empty but specified object is valid?");
 	
