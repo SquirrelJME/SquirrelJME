@@ -17,7 +17,7 @@
 
 /** The number of threads to grow by. */
 #define SJME_NVM_THREAD_GROW 8
-
+	
 sjme_errorCode sjme_nvm_task_start(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull const sjme_nvm_task_startConfig* startConfig,
@@ -28,6 +28,7 @@ sjme_errorCode sjme_nvm_task_start(
 	sjme_list_sjme_nvm_thread* threads;
 	sjme_jint i, n, freeSlot;
 	sjme_nvm_task result;
+	sjme_nvm_thread mainThread;
 
 	if (inState == NULL || startConfig == NULL || outTask == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -139,8 +140,15 @@ sjme_errorCode sjme_nvm_task_start(
 		&inState->common.lock, NULL)))
 		goto fail_stateLockRelease;
 	
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Setup main thread, all threads start in java.lang.__Start__! */
+	mainThread = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadNew(result,
+		&mainThread, "main")) || mainThread == NULL)
+		goto fail_taskNewThread;
+	
+	/* The main thread of any task is always implicitly started. */
+	if (sjme_error_is(error = sjme_nvm_task_threadStart(mainThread)))
+		goto fail_startMain;
 	
 	/* Release task specific lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -148,6 +156,7 @@ sjme_errorCode sjme_nvm_task_start(
 		return sjme_error_default(error);
 	
 	/* Success! */
+	*outTask = result;
 	return SJME_ERROR_NONE;
 	
 	/* In-state locks. */
@@ -167,6 +176,8 @@ fail_allocTasks:
 	return sjme_error_default(error);
 
 	/* Post state lock, when accessing state is no longer needed. */
+fail_startMain:
+fail_taskNewThread:
 fail_stateLockRelease:
 	/* Unlock task before fail. */
 	sjme_error_is(sjme_thread_spinLockRelease(
@@ -180,4 +191,26 @@ fail_other:
 	}
 	
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_task_threadNew(
+	sjme_attrInNotNull sjme_nvm_task inTask,
+	sjme_attrOutNotNull sjme_nvm_thread* outThread,
+	sjme_attrInNotNull sjme_lpcstr threadName)
+{
+	if (inTask == NULL || outThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_task_threadStart(
+	sjme_attrInNotNull sjme_nvm_thread inThread)
+{
+	if (inThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }

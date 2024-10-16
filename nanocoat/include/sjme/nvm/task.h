@@ -154,6 +154,30 @@ sjme_errorCode sjme_nvm_task_start(
 	sjme_attrInNotNull const sjme_nvm_task_startConfig* startConfig,
 	sjme_attrOutNullable sjme_nvm_task* outTask);
 
+/**
+ * Creates a new thread within the given task.
+ * 
+ * @param inTask The task to create the thread in.
+ * @param outThread The resultant thread.
+ * @param threadName The name of the new thread.
+ * @return On any errors, if any.
+ * @since 2024/10/15
+ */
+sjme_errorCode sjme_nvm_task_threadNew(
+	sjme_attrInNotNull sjme_nvm_task inTask,
+	sjme_attrOutNotNull sjme_nvm_thread* outThread,
+	sjme_attrInNotNull sjme_lpcstr threadName);
+
+/**
+ * Starts the specified thread.
+ * 
+ * @param inThread The thread to start. 
+ * @return Any resultant error, if any.
+ * @since 2024/10/15
+ */
+sjme_errorCode sjme_nvm_task_threadStart(
+	sjme_attrInNotNull sjme_nvm_thread inThread);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
