@@ -24,17 +24,17 @@
  * 
  * @since 2024/09/07
  */
-typedef struct sjme_rom_zipLibraryInitData
+typedef struct sjme_nvm_rom_zipLibraryInitData
 {
 	/** The Zip to access. */
 	sjme_zip zip;
 	
 	/** The prefix for entry access. */
 	sjme_lpcstr prefix;
-} sjme_rom_zipLibraryInitData;
+} sjme_nvm_rom_zipLibraryInitData;
 
-static sjme_errorCode sjme_rom_zipLibraryClose(
-	sjme_attrInNotNull sjme_rom_library inLibrary)
+static sjme_errorCode sjme_nvm_rom_zipLibraryClose(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary)
 {
 	sjme_errorCode error;
 	sjme_zip zip;
@@ -59,12 +59,12 @@ static sjme_errorCode sjme_rom_zipLibraryClose(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_rom_zipLibraryInit(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+static sjme_errorCode sjme_nvm_rom_zipLibraryInit(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrInNullable sjme_pointer data)
 {
 	sjme_errorCode error;
-	sjme_rom_zipLibraryInitData* init;
+	sjme_nvm_rom_zipLibraryInitData* init;
 	
 	init = data;
 	if (inLibrary == NULL || init == NULL)
@@ -84,8 +84,8 @@ static sjme_errorCode sjme_rom_zipLibraryInit(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_rom_zipLibraryResourceStream(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+static sjme_errorCode sjme_nvm_rom_zipLibraryResourceStream(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr resourceName)
 {
@@ -128,23 +128,23 @@ static sjme_errorCode sjme_rom_zipLibraryResourceStream(
 }
 
 /** Library functions for Zip access. */
-static const sjme_rom_libraryFunctions sjme_rom_zipLibraryFunctions =
+static const sjme_nvm_rom_libraryFunctions sjme_nvm_rom_zipLibraryFunctions =
 {
-	.close = sjme_rom_zipLibraryClose,
-	.init = sjme_rom_zipLibraryInit,
-	.resourceStream = sjme_rom_zipLibraryResourceStream,
+	.close = sjme_nvm_rom_zipLibraryClose,
+	.init = sjme_nvm_rom_zipLibraryInit,
+	.resourceStream = sjme_nvm_rom_zipLibraryResourceStream,
 };
 
-sjme_errorCode sjme_rom_libraryFromZip(
+sjme_errorCode sjme_nvm_rom_libraryFromZip(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNullable sjme_lpcstr prefix,
 	sjme_attrInNotNull sjme_zip zip)
 {
 	sjme_errorCode error;
-	sjme_rom_library result;
-	sjme_rom_zipLibraryInitData init;
+	sjme_nvm_rom_library result;
+	sjme_nvm_rom_zipLibraryInitData init;
 	
 	if (pool == NULL || outLibrary == NULL || zip == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -156,9 +156,9 @@ sjme_errorCode sjme_rom_libraryFromZip(
 	
 	/* Setup new library. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_rom_libraryNew(pool,
+	if (sjme_error_is(error = sjme_nvm_rom_libraryNew(pool,
 		&result, libName, &init,
-		&sjme_rom_zipLibraryFunctions, NULL)) ||
+		&sjme_nvm_rom_zipLibraryFunctions, NULL)) ||
 		result == NULL)
 		goto fail_libraryNew;
 	
@@ -175,9 +175,9 @@ fail_libraryNew:
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_rom_libraryFromZipMemory(
+sjme_errorCode sjme_nvm_rom_libraryFromZipMemory(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length)
@@ -199,13 +199,13 @@ sjme_errorCode sjme_rom_libraryFromZipMemory(
 		return sjme_error_default(error);
 
 	/* This is just an alias for the other function. */
-	return sjme_rom_libraryFromZipSeekable(pool, outLibrary,
+	return sjme_nvm_rom_libraryFromZipSeekable(pool, outLibrary,
 		libName, seekable);
 }
 
-sjme_errorCode sjme_rom_libraryFromZipSeekable(
+sjme_errorCode sjme_nvm_rom_libraryFromZipSeekable(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNotNull sjme_seekable seekable)
 {
@@ -222,6 +222,6 @@ sjme_errorCode sjme_rom_libraryFromZipSeekable(
 		return sjme_error_default(error);
 	
 	/* Forward Zip loading. */
-	return sjme_rom_libraryFromZip(pool, outLibrary, libName,
+	return sjme_nvm_rom_libraryFromZip(pool, outLibrary, libName,
 		NULL, zip);
 }

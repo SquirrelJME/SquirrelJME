@@ -17,7 +17,7 @@
 #include "sjme/nvm/rom.h"
 
 sjme_errorCode sjme_jni_virtualLibrary_init(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrInNullable sjme_pointer data)
 {
 	JNIEnv* env;
@@ -59,7 +59,7 @@ sjme_errorCode sjme_jni_virtualLibrary_init(
 }
 
 sjme_errorCode sjme_jni_virtualLibrary_rawData(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNullBuf(length) void* dest,
 	sjme_attrInPositive sjme_jint srcPos,
 	sjme_attrInPositive sjme_jint length)
@@ -129,7 +129,7 @@ fail_cleanupNioBuf:
 }
 
 sjme_errorCode sjme_jni_virtualLibrary_rawSize(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_jint* outSize)
 {
 	JNIEnv* env;
@@ -162,7 +162,7 @@ sjme_errorCode sjme_jni_virtualLibrary_rawSize(
 }
 
 static sjme_errorCode sjme_jni_virtualLibrary_resourceStream(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr resourceName)
 {
@@ -174,7 +174,7 @@ static sjme_errorCode sjme_jni_virtualLibrary_resourceStream(
 }
 
 /** Functions for JNI accessed libraries. */
-static const sjme_rom_libraryFunctions sjme_jni_virtualLibrary_functions =
+static const sjme_nvm_rom_libraryFunctions sjme_jni_virtualLibrary_functions =
 {
 	.init = sjme_jni_virtualLibrary_init,
 	.path = NULL,
@@ -186,16 +186,16 @@ static const sjme_rom_libraryFunctions sjme_jni_virtualLibrary_functions =
 jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_LIBRARY, _1_1init)
 	(JNIEnv* env, jclass classy, jobject self, jlong suitePtr, jstring libName)
 {
-	sjme_rom_suite suite;
+	sjme_nvm_rom_suite suite;
 	sjme_alloc_pool* pool;
-	sjme_rom_library result;
+	sjme_nvm_rom_library result;
 	sjme_errorCode error;
 	sjme_frontEnd frontEnd;
 	sjme_lpcstr libNameChars;
 	jboolean libNameCopy;
 
 	/* Get the original owning suite among other details. */
-	suite = SJME_JLONG_TO_POINTER(sjme_rom_suite, suitePtr);
+	suite = SJME_JLONG_TO_POINTER(sjme_nvm_rom_suite, suitePtr);
 	pool = suite->cache.common.allocPool;
 
 	/* Seed front end data. */
@@ -210,7 +210,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_LIBRARY, _1_1init)
 
 	/* Setup resultant library. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_rom_libraryNew(pool,
+	if (sjme_error_is(error = sjme_nvm_rom_libraryNew(pool,
 		&result, libNameChars, NULL,
 		&sjme_jni_virtualLibrary_functions, 
 		&frontEnd)) || result == NULL)

@@ -25,7 +25,7 @@ sjme_errorCode sjme_alloc_sizeOf(
 	switch (id)
 	{
 		case SJME_ALLOC_SIZEOF_ROM_SUITE_FUNCTIONS:
-			*outSize = sizeof(sjme_rom_suiteFunctions);
+			*outSize = sizeof(sjme_nvm_rom_suiteFunctions);
 			break;
 
 		case SJME_ALLOC_SIZEOF_RESERVED_POOL:

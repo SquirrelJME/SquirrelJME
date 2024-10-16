@@ -18,8 +18,8 @@
 #include "sjme/zip.h"
 #include "sjme/nvm/cleanup.h"
 
-sjme_errorCode sjme_rom_libraryHash(
-	sjme_attrInNotNull sjme_rom_library library,
+sjme_errorCode sjme_nvm_rom_libraryHash(
+	sjme_attrInNotNull sjme_nvm_rom_library library,
 	sjme_attrOutNotNull sjme_jint* outHash)
 {
 	if (library == NULL || outHash == NULL)
@@ -41,16 +41,16 @@ sjme_errorCode sjme_rom_libraryHash(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_rom_libraryNew(
+sjme_errorCode sjme_nvm_rom_libraryNew(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNullable sjme_pointer data,
-	sjme_attrInNotNull const sjme_rom_libraryFunctions* inFunctions,
+	sjme_attrInNotNull const sjme_nvm_rom_libraryFunctions* inFunctions,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
 {
 	sjme_errorCode error;
-	sjme_rom_library result;
+	sjme_nvm_rom_library result;
 
 	if (pool == NULL || outLibrary == NULL || inFunctions == NULL ||
 		libName == NULL)
@@ -102,19 +102,19 @@ fail_alloc:
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_rom_libraryRawRead(
-	sjme_attrInNotNull sjme_rom_library library,
+sjme_errorCode sjme_nvm_rom_libraryRawRead(
+	sjme_attrInNotNull sjme_nvm_rom_library library,
 	sjme_attrOutNotNullBuf(length) sjme_pointer destPtr,
 	sjme_attrInPositive sjme_jint srcPos,
 	sjme_attrInPositive sjme_jint length)
 {
 	/* This is just an alias for the other. */
-	return sjme_rom_libraryRawReadIter(
+	return sjme_nvm_rom_libraryRawReadIter(
 		library, destPtr, 0, srcPos, 0, length);
 }
 
-sjme_errorCode sjme_rom_libraryRawReadIter(
-	sjme_attrInNotNull sjme_rom_library library,
+sjme_errorCode sjme_nvm_rom_libraryRawReadIter(
+	sjme_attrInNotNull sjme_nvm_rom_library library,
 	sjme_attrOutNotNullBuf(length) sjme_pointer destPtr,
 	sjme_attrInPositive sjme_jint destOffset,
 	sjme_attrInPositive sjme_jint srcPos,
@@ -145,7 +145,7 @@ sjme_errorCode sjme_rom_libraryRawReadIter(
 
 	/* Get the raw size of the target library. */
 	libSize = -2;
-	if (sjme_error_is(error = sjme_rom_libraryRawSize(library,
+	if (sjme_error_is(error = sjme_nvm_rom_libraryRawSize(library,
 		&libSize)) || libSize < 0)
 	{
 		if (libSize == -1)
@@ -170,8 +170,8 @@ sjme_errorCode sjme_rom_libraryRawReadIter(
 		srcPos + srcOffset, length);
 }
 
-sjme_errorCode sjme_rom_libraryRawSize(
-	sjme_attrInNotNull sjme_rom_library library,
+sjme_errorCode sjme_nvm_rom_libraryRawSize(
+	sjme_attrInNotNull sjme_nvm_rom_library library,
 	sjme_attrOutNotNull sjme_jint* outSize)
 {
 	sjme_jint result;
@@ -219,12 +219,12 @@ fail_unsupported:
 	return SJME_ERROR_UNSUPPORTED_OPERATION;
 }
 
-sjme_errorCode sjme_rom_libraryResourceAsStream(
-	sjme_attrInNotNull sjme_rom_library library,
+sjme_errorCode sjme_nvm_rom_libraryResourceAsStream(
+	sjme_attrInNotNull sjme_nvm_rom_library library,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr rcName)
 {
-	sjme_rom_libraryResourceStreamFunc resourceFunc;
+	sjme_nvm_rom_libraryResourceStreamFunc resourceFunc;
 	sjme_stream_input result;
 	sjme_errorCode error;
 

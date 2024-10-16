@@ -41,7 +41,7 @@ static sjme_jboolean configRomSuiteClassPathByName(
 
 		case SJME_MOCK_DO_TYPE_ROM_SUITE:
 			if (sjme_error_is(sjme_list_newV(
-				inState->allocPool, sjme_rom_library, 0, 3,
+				inState->allocPool, sjme_nvm_rom_library, 0, 3,
 				&romSuite->cacheLibraries,
 				inState->romLibraries[0],
 				inState->romLibraries[1],
@@ -77,10 +77,10 @@ static const sjme_mock_configSet mockRomSuiteClassPathByName =
 SJME_TEST_DECLARE(testRomSuiteClassPathByName)
 {
 	sjme_mock mockState;
-	sjme_rom_suite suite;
+	sjme_nvm_rom_suite suite;
 	sjme_list_sjme_lpcstr* forwardNames;
 	sjme_list_sjme_lpcstr* backwardNames;
-	sjme_list_sjme_rom_library* result;
+	sjme_list_sjme_nvm_rom_library* result;
 
 	/* Initialize mocks. */
 	memset(&mockState, 0, sizeof(mockState));
@@ -103,7 +103,7 @@ SJME_TEST_DECLARE(testRomSuiteClassPathByName)
 
 	/* Resolve forward names first. */
 	result = NULL;
-	if (sjme_error_is(sjme_rom_resolveClassPathByName(suite,
+	if (sjme_error_is(sjme_nvm_rom_resolveClassPathByName(suite,
 		forwardNames, &result)) || result == NULL)
 		return sjme_unit_fail(test, "Could not resolve names?");
 
@@ -119,7 +119,7 @@ SJME_TEST_DECLARE(testRomSuiteClassPathByName)
 
 	/* Resolve backwards names last. */
 	result = NULL;
-	if (sjme_error_is(sjme_rom_resolveClassPathByName(suite,
+	if (sjme_error_is(sjme_nvm_rom_resolveClassPathByName(suite,
 			backwardNames, &result)) || result == NULL)
 		return sjme_unit_fail(test, "Could not resolve reverse names?");
 

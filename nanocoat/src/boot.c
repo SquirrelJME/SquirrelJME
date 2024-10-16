@@ -142,11 +142,11 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_exceptTrace* trace;
 	sjme_jint i, n;
 	sjme_nvm result;
-	sjme_rom_suite mergeSuites[FIXED_SUITE_COUNT];
+	sjme_nvm_rom_suite mergeSuites[FIXED_SUITE_COUNT];
 	sjme_jint numMergeSuites;
-	sjme_task_startConfig initTaskConfig;
+	sjme_nvm_task_startConfig initTaskConfig;
 	sjme_nvm_task initTask;
-	sjme_list_sjme_rom_library* classPath;
+	sjme_list_sjme_nvm_rom_library* classPath;
 	
 	if (param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -190,7 +190,7 @@ sjme_errorCode sjme_nvm_boot(
 	if (result->bootParamCopy->payload != NULL)
 	{
 		/* Scan accordingly. */
-		if (sjme_error_is(error = sjme_rom_suiteFromPayload(reservedPool,
+		if (sjme_error_is(error = sjme_nvm_rom_suiteFromPayload(reservedPool,
 			&mergeSuites[numMergeSuites],
 			result->bootParamCopy->payload)))
 			goto fail_payloadRom;
@@ -204,13 +204,13 @@ sjme_errorCode sjme_nvm_boot(
 	if (result->bootParamCopy->bootSuite != NULL)
 		if (numMergeSuites < FIXED_SUITE_COUNT)
 			mergeSuites[numMergeSuites++] =
-				(sjme_rom_suite)result->bootParamCopy->bootSuite;
+				(sjme_nvm_rom_suite)result->bootParamCopy->bootSuite;
 	
 	/* Is there a library suite to use? */
 	if (result->bootParamCopy->librarySuite != NULL)
 		if (numMergeSuites < FIXED_SUITE_COUNT)
 			mergeSuites[numMergeSuites++] =
-				(sjme_rom_suite)result->bootParamCopy->librarySuite;
+				(sjme_nvm_rom_suite)result->bootParamCopy->librarySuite;
 
 	/* No suites at all? Running with absolutely nothing??? */
 	if (numMergeSuites <= 0)
@@ -229,7 +229,7 @@ sjme_errorCode sjme_nvm_boot(
 	else
 	{
 		/* Merge all the suites together into one. */
-		if (sjme_error_is(error = sjme_rom_suiteFromMerge(reservedPool,
+		if (sjme_error_is(error = sjme_nvm_rom_suiteFromMerge(reservedPool,
 			&result->suite, mergeSuites,
 			numMergeSuites)) || result->suite == NULL)
 			goto fail_suiteMerge;
@@ -239,11 +239,11 @@ sjme_errorCode sjme_nvm_boot(
 	classPath = NULL;
 	error = SJME_ERROR_NO_SUITES;
 	if (result->bootParamCopy->mainClassPathById != NULL)
-		error = sjme_rom_resolveClassPathById(result->suite,
+		error = sjme_nvm_rom_resolveClassPathById(result->suite,
 			result->bootParamCopy->mainClassPathById,
 			&classPath);
 	else if (result->bootParamCopy->mainClassPathByName != NULL)
-		error = sjme_rom_resolveClassPathByName(result->suite,
+		error = sjme_nvm_rom_resolveClassPathByName(result->suite,
 			result->bootParamCopy->mainClassPathByName,
 			&classPath);
 
@@ -260,8 +260,8 @@ sjme_errorCode sjme_nvm_boot(
 	}
 
 	/* Setup task details. */
-	initTaskConfig.stdOut = SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
-	initTaskConfig.stdErr = SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
+	initTaskConfig.stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
+	initTaskConfig.stdErr = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
 	initTaskConfig.classPath = classPath;
 	initTaskConfig.mainClass = result->bootParamCopy->mainClass;
 	initTaskConfig.mainArgs = result->bootParamCopy->mainArgs;
@@ -269,7 +269,7 @@ sjme_errorCode sjme_nvm_boot(
 
 	/* Spawn initial task which uses the main arguments. */
 	initTask = NULL;
-	if (sjme_error_is(error = sjme_task_start(result,
+	if (sjme_error_is(error = sjme_nvm_task_start(result,
 		&initTaskConfig, &initTask)) || initTask == NULL)
 		goto fail_initTask;
 	
@@ -302,12 +302,12 @@ fail_reservedPoolAlloc:
 sjme_errorCode sjme_nvm_defaultBootSuite(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull const sjme_nal* nal,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite)
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite)
 {
 	sjme_errorCode error;
 	sjme_cchar dataPath[SJME_MAX_PATH];
 	sjme_seekable rom;
-	sjme_rom_suite result;
+	sjme_nvm_rom_suite result;
 	
 	if (inPool == NULL || nal == NULL || outSuite == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -339,7 +339,7 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 	
 	/* Load suite from the ZIP. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_rom_suiteFromZipSeekable(inPool,
+	if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipSeekable(inPool,
 		&result, rom)) || result == NULL)
 	{
 		/* Make sure to close the file. */

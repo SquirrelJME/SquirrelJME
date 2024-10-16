@@ -18,22 +18,22 @@
 #include "sjme/zip.h"
 #include "sjme/nvm/cleanup.h"
 
-sjme_errorCode sjme_rom_resolveClassPathById(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
+sjme_errorCode sjme_nvm_rom_resolveClassPathById(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrInNotNull const sjme_list_sjme_jint* inIds,
-	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
+	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs)
 {
-	sjme_list_sjme_rom_library* suiteLibs;
+	sjme_list_sjme_nvm_rom_library* suiteLibs;
 	sjme_errorCode error;
 	sjme_jint length, i, numLibs, at, libId;
-	sjme_rom_library* working;
-	sjme_rom_library checkLibrary;
+	sjme_nvm_rom_library* working;
+	sjme_nvm_rom_library checkLibrary;
 
 	if (inSuite == NULL || inIds == NULL || outLibs == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Debug. */
-	sjme_message("sjme_rom_resolveClassPathById(%p, %p, %p)",
+	sjme_message("sjme_nvm_rom_resolveClassPathById(%p, %p, %p)",
 		inSuite, inIds, outLibs);
 
 	/* How many are we looking for? */
@@ -57,7 +57,7 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 
 	/* Obtain the list of libraries within the suite. */
 	suiteLibs = NULL;
-	if (sjme_error_is(error = sjme_rom_suiteLibraries(inSuite,
+	if (sjme_error_is(error = sjme_nvm_rom_suiteLibraries(inSuite,
 		&suiteLibs)) || suiteLibs == NULL)
 		return sjme_error_default(error);
 
@@ -114,19 +114,19 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 
 	/* Return the libraries which gets placed into a list as a copy. */
 	return sjme_list_newA(inSuite->cache.common.allocPool,
-		sjme_rom_library, 0, length, outLibs, working);
+		sjme_nvm_rom_library, 0, length, outLibs, working);
 }
 
-sjme_errorCode sjme_rom_resolveClassPathByName(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
+sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrInNotNull const sjme_list_sjme_lpcstr* inNames,
-	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
+	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs)
 {
-	sjme_list_sjme_rom_library* suiteLibs;
+	sjme_list_sjme_nvm_rom_library* suiteLibs;
 	sjme_errorCode error;
 	sjme_jint length, i, at, hash, numSuiteLibs;
-	sjme_rom_library* working;
-	sjme_rom_library lib;
+	sjme_nvm_rom_library* working;
+	sjme_nvm_rom_library lib;
 	sjme_jint* inHashes;
 
 	if (inSuite == NULL || inNames == NULL || outLibs == NULL)
@@ -158,7 +158,7 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 
 	/* Obtain the list of libraries within the suite. */
 	suiteLibs = NULL;
-	if (sjme_error_is(error = sjme_rom_suiteLibraries(inSuite,
+	if (sjme_error_is(error = sjme_nvm_rom_suiteLibraries(inSuite,
 		&suiteLibs) || suiteLibs == NULL))
 		return sjme_error_default(error);
 
@@ -168,7 +168,7 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 	{
 		/* Get hash of this library. */
 		lib = suiteLibs->elements[i];
-		if (sjme_error_is(error = sjme_rom_libraryHash(lib,
+		if (sjme_error_is(error = sjme_nvm_rom_libraryHash(lib,
 			&hash)))
 			return sjme_error_default(error);
 
@@ -193,5 +193,5 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 
 	/* Return the libraries which gets placed into a list as a copy. */
 	return sjme_list_newA(inSuite->cache.common.allocPool,
-		sjme_rom_library, 0, length, outLibs, working);
+		sjme_nvm_rom_library, 0, length, outLibs, working);
 }

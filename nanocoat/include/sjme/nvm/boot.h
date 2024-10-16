@@ -67,10 +67,10 @@ struct sjme_nvm_bootParam
 	const sjme_payload_config* payload;
 	
 	/** The boot suite to use. */
-	sjme_rom_suite bootSuite;
+	sjme_nvm_rom_suite bootSuite;
 
 	/** The suite to use for the library set. */
-	sjme_rom_suite librarySuite;
+	sjme_nvm_rom_suite librarySuite;
 
 	/** The class path for main by library IDs. */
 	const sjme_list_sjme_jint* mainClassPathById;
@@ -135,7 +135,7 @@ sjme_errorCode sjme_nvm_boot(
 sjme_errorCode sjme_nvm_defaultBootSuite(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull const sjme_nal* nal,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite);
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite);
 
 /**
  * Obtains the default directory for the given type.

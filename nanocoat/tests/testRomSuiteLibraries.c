@@ -16,15 +16,15 @@
 #include "unit.h"
 
 /** Just easily returned accordingly. */
-static sjme_list_sjme_rom_library testFakeSuiteList =
+static sjme_list_sjme_nvm_rom_library testFakeSuiteList =
 {
 	.length = 0,
-	.elementSize = sizeof(sjme_rom_library)
+	.elementSize = sizeof(sjme_nvm_rom_library)
 };
 
 static sjme_errorCode testSuiteList(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibraries)
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibraries)
 {
 	*outLibraries = &testFakeSuiteList;
 	return SJME_ERROR_NONE;
@@ -65,8 +65,8 @@ static const sjme_mock_configSet mockRomSuiteLibraries =
 SJME_TEST_DECLARE(testRomSuiteLibraries)
 {
 	sjme_mock mockState;
-	sjme_rom_suite suite;
-	sjme_list_sjme_rom_library* libraries;
+	sjme_nvm_rom_suite suite;
+	sjme_list_sjme_nvm_rom_library* libraries;
 	sjme_errorCode error;
 
 	/* Initialize mocks. */
@@ -80,7 +80,7 @@ SJME_TEST_DECLARE(testRomSuiteLibraries)
 
 	/* Call the libraries list. */
 	libraries = NULL;
-	if (sjme_error_is(error = sjme_rom_suiteLibraries(suite,
+	if (sjme_error_is(error = sjme_nvm_rom_suiteLibraries(suite,
 		&libraries)) || libraries == NULL)
 		return sjme_unit_fail(test, "Could not get libraries list: %d", error);
 

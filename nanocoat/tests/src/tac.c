@@ -23,7 +23,7 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_nvm state;
 	sjme_jint exitCode, i;
 	sjme_seekable bootSeek;
-	sjme_rom_suite bootSuite;
+	sjme_nvm_rom_suite bootSuite;
 	sjme_list_sjme_lpstr* classpath;
 	sjme_list_sjme_lpstr* mainArgs;
 	sjme_nvm inState;
@@ -58,7 +58,7 @@ int main(int argc, sjme_lpstr* argv)
 	
 	/* Load boot suite. */
 	bootSuite = NULL;
-	if (sjme_error_is(error = sjme_rom_suiteFromZipSeekable(
+	if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipSeekable(
 		pool, &bootSuite, bootSeek)) ||
 		bootSuite == NULL)
 		goto fail_loadBootJar;

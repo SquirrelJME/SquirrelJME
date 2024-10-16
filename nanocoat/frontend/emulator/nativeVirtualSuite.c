@@ -17,7 +17,7 @@
 #include "sjme/nvm/rom.h"
 
 static sjme_errorCode sjme_jni_virtualSuite_init(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrInNullable sjme_pointer data)
 {
 	if (inSuite == NULL)
@@ -28,8 +28,8 @@ static sjme_errorCode sjme_jni_virtualSuite_init(
 }
 
 sjme_errorCode sjme_jni_virtualSuite_libraryId(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_jint* outId)
 {
 	sjme_todo("Implement this?");
@@ -37,14 +37,14 @@ sjme_errorCode sjme_jni_virtualSuite_libraryId(
 }
 
 static sjme_errorCode sjme_jni_virtualSuite_list(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibraries)
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibraries)
 {
 	JNIEnv* env;
 	jobject virtualSuite;
 	jmethodID javaListMethod;
 	jclass classy;
-	sjme_list_sjme_rom_library* result;
+	sjme_list_sjme_nvm_rom_library* result;
 
 	if (inSuite == NULL || outLibraries == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -56,7 +56,7 @@ static sjme_errorCode sjme_jni_virtualSuite_list(
 
 	/* Execute method accordingly. */
 	javaListMethod = (*env)->GetMethodID(env, classy, "__list", "()J");
-	result = SJME_JLONG_TO_POINTER(sjme_list_sjme_rom_library*,
+	result = SJME_JLONG_TO_POINTER(sjme_list_sjme_nvm_rom_library*,
 		(*env)->CallLongMethod(env, virtualSuite, javaListMethod));
 	if (sjme_jni_checkVMException(env))
 		return SJME_ERROR_JNI_EXCEPTION;
@@ -73,7 +73,7 @@ static sjme_errorCode sjme_jni_virtualSuite_loadLibrary()
 }
 
 /** Functions for JNI accessed suites. */
-static const sjme_rom_suiteFunctions sjme_jni_virtualSuite_functions =
+static const sjme_nvm_rom_suiteFunctions sjme_jni_virtualSuite_functions =
 {
 	.init = sjme_jni_virtualSuite_init,
 	.libraryId = NULL,
@@ -86,7 +86,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_SUITE, _1_1init)
 {
 	sjme_frontEnd frontEnd;
 	sjme_errorCode error;
-	sjme_rom_suite result;
+	sjme_nvm_rom_suite result;
 
 	if (poolPtr == 0 || self == NULL)
 	{
@@ -101,7 +101,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_SUITE, _1_1init)
 		(*env)->NewGlobalRef(env, self));
 
 	/* Initialize new suite. */
-	if (sjme_error_is(error = sjme_rom_suiteNew(
+	if (sjme_error_is(error = sjme_nvm_rom_suiteNew(
 		SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr),
 		&result, NULL,
 		&sjme_jni_virtualSuite_functions,

@@ -18,9 +18,9 @@
 /** The number of threads to grow by. */
 #define SJME_NVM_THREAD_GROW 8
 
-sjme_errorCode sjme_task_start(
+sjme_errorCode sjme_nvm_task_start(
 	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull const sjme_task_startConfig* startConfig,
+	sjme_attrInNotNull const sjme_nvm_task_startConfig* startConfig,
 	sjme_attrOutNullable sjme_nvm_task* outTask)
 {
 	sjme_errorCode error;
@@ -115,7 +115,7 @@ sjme_errorCode sjme_task_start(
 	result->id = ++(inState->nextTaskId);
 	
 	/* All new tasks are considered alive. */
-	result->status = SJME_TASK_STATUS_ALIVE;
+	result->status = SJME_NVM_TASK_STATUS_ALIVE;
 	
 	/* Setup thread storage. */
 	if (sjme_error_is(error = sjme_list_alloc(inState->reservedPool,

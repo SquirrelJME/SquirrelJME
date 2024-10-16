@@ -18,9 +18,9 @@
 #include "sjme/zip.h"
 #include "sjme/nvm/cleanup.h"
 
-sjme_errorCode sjme_rom_suiteDefaultLaunch(
+sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrInNotNull sjme_rom_suite inSuite,
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
 	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
@@ -54,10 +54,10 @@ sjme_errorCode sjme_rom_suiteDefaultLaunch(
 	return error;
 }
 
-sjme_errorCode sjme_rom_suiteFromMerge(
+sjme_errorCode sjme_nvm_rom_suiteFromMerge(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull sjme_rom_suite* inSuites,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
+	sjme_attrInNotNull sjme_nvm_rom_suite* inSuites,
 	sjme_attrInPositive sjme_jint numInSuites)
 {
 	if (pool == NULL || outSuite == NULL || inSuites == NULL)
@@ -70,9 +70,9 @@ sjme_errorCode sjme_rom_suiteFromMerge(
 	return SJME_ERROR_UNKNOWN;
 }
 
-sjme_errorCode sjme_rom_suiteFromPayload(
+sjme_errorCode sjme_nvm_rom_suiteFromPayload(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNotNull const sjme_payload_config* payloadConfig)
 {
 	sjme_jint i, numActive, numLibraries;
@@ -105,13 +105,13 @@ sjme_errorCode sjme_rom_suiteFromPayload(
 	return SJME_ERROR_UNKNOWN;
 }
 
-sjme_errorCode sjme_rom_suiteLibraries(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
+sjme_errorCode sjme_nvm_rom_suiteLibraries(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs)
 {
-	sjme_rom_suiteCache* cache;
-	sjme_rom_suiteListLibrariesFunc listFunc;
-	sjme_list_sjme_rom_library* result;
+	sjme_nvm_rom_suiteCache* cache;
+	sjme_nvm_rom_suiteListLibrariesFunc listFunc;
+	sjme_list_sjme_nvm_rom_library* result;
 	sjme_errorCode error;
 	sjme_jint i, n;
 
@@ -179,14 +179,14 @@ fail_list:
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_rom_suiteNew(
+sjme_errorCode sjme_nvm_rom_suiteNew(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNullable sjme_pointer data,
-	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,
+	sjme_attrInNotNull const sjme_nvm_rom_suiteFunctions* inFunctions,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
 {
-	sjme_rom_suite result;
+	sjme_nvm_rom_suite result;
 	sjme_errorCode error;
 
 	if (pool == NULL || outSuite == NULL || inFunctions == NULL)

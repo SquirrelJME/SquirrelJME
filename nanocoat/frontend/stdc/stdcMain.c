@@ -72,7 +72,7 @@ int main(int argc, sjme_lpcstr* argv)
 		bootParam.mainClassPathByName == NULL)
 	{
 		/* Try to find default launcher. */
-		if (sjme_error_is(error = sjme_rom_suiteDefaultLaunch(pool,
+		if (sjme_error_is(error = sjme_nvm_rom_suiteDefaultLaunch(pool,
 			bootParam.bootSuite,
 			(sjme_lpstr*)&bootParam.mainClass,
 			(sjme_list_sjme_lpstr**)&bootParam.mainArgs,

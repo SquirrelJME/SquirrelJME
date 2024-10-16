@@ -114,13 +114,13 @@ typedef struct sjme_mock
 	sjme_jint numRomSuites;
 
 	/** ROM Suites. */
-	sjme_rom_suite romSuites[SJME_MOCK_MAX_ROM_SUITES];
+	sjme_nvm_rom_suite romSuites[SJME_MOCK_MAX_ROM_SUITES];
 
 	/** The number of created ROM libraries. */
 	sjme_jint numRomLibraries;
 
 	/** ROM libraries. */
-	sjme_rom_library romLibraries[SJME_MOCK_MAX_ROM_LIBRARIES];
+	sjme_nvm_rom_library romLibraries[SJME_MOCK_MAX_ROM_LIBRARIES];
 	
 	/** Special data, if needed. */
 	sjme_pointer special;
@@ -183,7 +183,7 @@ typedef struct sjme_mock_configDataNvmState
 typedef struct sjme_mock_configDataRomLibrary
 {
 	/** Functions to utilize for the library. */
-	sjme_rom_libraryFunctions functions;
+	sjme_nvm_rom_libraryFunctions functions;
 
 	/** The ID of the library. */
 	sjme_jint id;
@@ -217,10 +217,10 @@ typedef struct sjme_mock_configDataRomMockLibrary
 typedef struct sjme_mock_configDataRomSuite
 {
 	/** Functions to utilize for the suite. */
-	sjme_rom_suiteFunctions functions;
+	sjme_nvm_rom_suiteFunctions functions;
 
 	/** Pre-made library cache set. */
-	sjme_list_sjme_rom_library* cacheLibraries;
+	sjme_list_sjme_nvm_rom_library* cacheLibraries;
 } sjme_mock_configDataRomSuite;
 
 /**

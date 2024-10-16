@@ -37,53 +37,53 @@ extern "C" {
  *
  * @since 2023/12/17
  */
-typedef enum sjme_task_pipeRedirectType
+typedef enum sjme_nvm_task_pipeRedirectType
 {
 	/** Discard everything. */
-	SJME_TASK_PIPE_REDIRECT_TYPE_DISCARD = 0,
+	SJME_NVM_TASK_PIPE_REDIRECT_TYPE_DISCARD = 0,
 
 	/** Store everything into a buffer. */
-	SJME_TASK_PIPE_REDIRECT_TYPE_BUFFER = 1,
+	SJME_NVM_TASK_PIPE_REDIRECT_TYPE_BUFFER = 1,
 
 	/** Send everything to the terminal. */
-	SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL = 2,
+	SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL = 2,
 
 	/** The number of redirect types. */
-	SJME_TASK_NUM_PIPE_REDIRECT_TYPES
-} sjme_task_pipeRedirectType;
+	SJME_NVM_TASK_NUM_PIPE_REDIRECT_TYPES
+} sjme_nvm_task_pipeRedirectType;
 
 /**
  * The current task status.
  * 
  * @since 2024/09/30
  */
-typedef enum sjme_task_statusType
+typedef enum sjme_nvm_task_statusType
 {
 	/** Task has exited. */
-	SJME_TASK_STATUS_EXITED = 0,
+	SJME_NVM_TASK_STATUS_EXITED = 0,
 	
 	/** Task is alive. */
-	SJME_TASK_STATUS_ALIVE = 1,
+	SJME_NVM_TASK_STATUS_ALIVE = 1,
 	
 	/** The number of task statuses. */
-	SJME_TASK_NUM_STATUS_TYPES
-} sjme_task_statusType;
+	SJME_NVM_TASK_NUM_STATUS_TYPES
+} sjme_nvm_task_statusType;
 
 /**
  * The configuration that stores the information needed for starting the task.
  *
  * @since 2023/12/17
  */
-typedef struct sjme_task_startConfig
+typedef struct sjme_nvm_task_startConfig
 {
 	/** Redirection for standard output. */
-	sjme_task_pipeRedirectType stdOut;
+	sjme_nvm_task_pipeRedirectType stdOut;
 
 	/** Redirection for standard error. */
-	sjme_task_pipeRedirectType stdErr;
+	sjme_nvm_task_pipeRedirectType stdErr;
 
 	/** The class path to use. */
-	sjme_list_sjme_rom_library* classPath;
+	sjme_list_sjme_nvm_rom_library* classPath;
 
 	/** Main class to start in. */
 	sjme_lpcstr mainClass;
@@ -96,7 +96,7 @@ typedef struct sjme_task_startConfig
 	
 	/** The class loader for this task. */
 	sjme_vmClass_loader classLoader;
-} sjme_task_startConfig;
+} sjme_nvm_task_startConfig;
 
 struct sjme_nvm_taskBase
 {
@@ -113,7 +113,7 @@ struct sjme_nvm_taskBase
 	sjme_jint exitCode;
 	
 	/** The current task status. */
-	sjme_task_statusType status;
+	sjme_nvm_task_statusType status;
 	
 	/** The threads within the current task. */
 	sjme_list_sjme_nvm_thread* threads;
@@ -149,9 +149,9 @@ struct sjme_nvm_threadBase
  * @return Any error state.
  * @since 2023/12/17
  */
-sjme_errorCode sjme_task_start(
+sjme_errorCode sjme_nvm_task_start(
 	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull const sjme_task_startConfig* startConfig,
+	sjme_attrInNotNull const sjme_nvm_task_startConfig* startConfig,
 	sjme_attrOutNullable sjme_nvm_task* outTask);
 
 /*--------------------------------------------------------------------------*/

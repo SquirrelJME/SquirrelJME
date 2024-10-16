@@ -67,7 +67,7 @@ static const sjme_mock_configSet configRomLibraryRawData =
 SJME_TEST_DECLARE(testRomLibraryRawData)
 {
 	sjme_errorCode error;
-	sjme_rom_library library;
+	sjme_nvm_rom_library library;
 	sjme_mock mock;
 	sjme_jint size;
 	sjme_jubyte* raw;
@@ -83,7 +83,7 @@ SJME_TEST_DECLARE(testRomLibraryRawData)
 
 	/* Get the size of the file. */
 	size = -1;
-	if (sjme_error_is(sjme_rom_libraryRawSize(library, &size) ||
+	if (sjme_error_is(sjme_nvm_rom_libraryRawSize(library, &size) ||
 		size < 0))
 		return sjme_unit_fail(test, "Could not read library size.");
 
@@ -100,7 +100,7 @@ SJME_TEST_DECLARE(testRomLibraryRawData)
 		"File size is not as the expected size?");
 
 	/* Read in the raw data. */
-	if (sjme_error_is(sjme_rom_libraryRawRead(library,
+	if (sjme_error_is(sjme_nvm_rom_libraryRawRead(library,
 		raw, 0, size)))
 		return sjme_unit_fail(test, "Could not read data.");
 

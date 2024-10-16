@@ -41,7 +41,7 @@ static sjme_jboolean configRomSuiteClassPathById(
 
 		case SJME_MOCK_DO_TYPE_ROM_SUITE:
 			if (sjme_error_is(sjme_list_newV(
-				inState->allocPool, sjme_rom_library, 0, 3,
+				inState->allocPool, sjme_nvm_rom_library, 0, 3,
 				&romSuite->cacheLibraries,
 				inState->romLibraries[0],
 				inState->romLibraries[1],
@@ -77,10 +77,10 @@ static const sjme_mock_configSet mockRomSuiteClassPathById =
 SJME_TEST_DECLARE(testRomSuiteClassPathById)
 {
 	sjme_mock mockState;
-	sjme_rom_suite suite;
+	sjme_nvm_rom_suite suite;
 	sjme_list_sjme_jint* forwardIds;
 	sjme_list_sjme_jint* backwardIds;
-	sjme_list_sjme_rom_library* result;
+	sjme_list_sjme_nvm_rom_library* result;
 	
 	/* Initialize mocks. */
 	memset(&mockState, 0, sizeof(mockState));
@@ -103,7 +103,7 @@ SJME_TEST_DECLARE(testRomSuiteClassPathById)
 
 	/* Resolve forward names first. */
 	result = NULL;
-	if (sjme_error_is(sjme_rom_resolveClassPathById(suite,
+	if (sjme_error_is(sjme_nvm_rom_resolveClassPathById(suite,
 		forwardIds, &result)) || result == NULL)
 		return sjme_unit_fail(test, "Could not resolve ids?");
 
@@ -119,7 +119,7 @@ SJME_TEST_DECLARE(testRomSuiteClassPathById)
 
 	/* Resolve backwards names last. */
 	result = NULL;
-	if (sjme_error_is(sjme_rom_resolveClassPathById(suite,
+	if (sjme_error_is(sjme_nvm_rom_resolveClassPathById(suite,
 		backwardIds, &result)) || result == NULL)
 		return sjme_unit_fail(test, "Could not resolve reverse ids?");
 

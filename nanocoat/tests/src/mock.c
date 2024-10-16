@@ -57,7 +57,7 @@ struct
 };
 
 static sjme_errorCode sjme_mock_defaultRomLibraryRawData(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint srcPos,
 	sjme_attrInPositive sjme_jint length)
@@ -87,7 +87,7 @@ static sjme_errorCode sjme_mock_defaultRomLibraryRawData(
 }
 
 static sjme_errorCode sjme_mock_defaultRomLibraryRawSize(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_jint* outSize)
 {
 	sjme_mock_configDataRomLibrary* mock;
@@ -104,7 +104,7 @@ static sjme_errorCode sjme_mock_defaultRomLibraryRawSize(
 }
 
 static sjme_errorCode sjme_mock_defaultRomMockLibraryResourceStream(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr resourceName)
 {
@@ -430,9 +430,9 @@ sjme_jboolean sjme_mock_doRomLibrary(
 	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
 	sjme_jint libraryIndex;
-	sjme_rom_libraryBase* library;
+	sjme_nvm_rom_libraryBase* library;
 	sjme_mock_configDataRomLibrary* data;
-	sjme_rom_libraryFunctions* functions;
+	sjme_nvm_rom_libraryFunctions* functions;
 
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
@@ -508,7 +508,7 @@ sjme_jboolean sjme_mock_doRomMockLibrary(
 	sjme_jint libraryIndex;
 	sjme_mock_configDataRomLibrary* data;
 	sjme_jboolean isJar;
-	sjme_rom_library result;
+	sjme_nvm_rom_library result;
 
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
@@ -526,7 +526,7 @@ sjme_jboolean sjme_mock_doRomMockLibrary(
 
 		/* Open it. */
 		result = NULL;
-		if (sjme_error_is(error = sjme_rom_libraryFromZipMemory(
+		if (sjme_error_is(error = sjme_nvm_rom_libraryFromZipMemory(
 			inState->allocPool, &result, "mock.jar",
 			mock_jar__bin, mock_jar__len)) || result == NULL)
 			return sjme_die("Could not open library: %d", error);
@@ -561,8 +561,8 @@ sjme_jboolean sjme_mock_doRomSuite(
 	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
 	sjme_jint suiteIndex;
-	sjme_rom_suite suite;
-	sjme_rom_suiteFunctions* writeFunctions;
+	sjme_nvm_rom_suite suite;
+	sjme_nvm_rom_suiteFunctions* writeFunctions;
 	sjme_mock_configDataRomSuite* suiteData;
 
 	if (inState == NULL || inData == NULL)
@@ -595,7 +595,7 @@ sjme_jboolean sjme_mock_doRomSuite(
 		return sjme_die("Could not copy functions.");
 
 	/* Set front end to the test state. */
-	writeFunctions = (sjme_rom_suiteFunctions*)suite->functions;
+	writeFunctions = (sjme_nvm_rom_suiteFunctions*)suite->functions;
 
 	/* If there is no cache init, just initialize it to something... */
 	if (writeFunctions->init == NULL)

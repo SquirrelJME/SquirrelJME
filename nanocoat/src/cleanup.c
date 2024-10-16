@@ -188,14 +188,14 @@ static sjme_errorCode sjme_desc_identifierClose(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_rom_libraryClose(
+static sjme_errorCode sjme_nvm_rom_libraryClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_errorCode error;
-	sjme_rom_library inLibrary;
+	sjme_nvm_rom_library inLibrary;
 	
 	/* Recover library. */
-	inLibrary = (sjme_rom_library)closeable;
+	inLibrary = (sjme_nvm_rom_library)closeable;
 	if (inLibrary == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -231,7 +231,7 @@ static sjme_errorCode sjme_rom_libraryClose(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_rom_suiteClose(
+static sjme_errorCode sjme_nvm_rom_suiteClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	if (closeable == NULL)
@@ -346,11 +346,11 @@ sjme_errorCode sjme_nvm_allocR(
 			break;
 		
 		case SJME_NVM_STRUCT_ROM_LIBRARY:
-			handler = sjme_rom_libraryClose;
+			handler = sjme_nvm_rom_libraryClose;
 			break;
 		
 		case SJME_NVM_STRUCT_ROM_SUITE:
-			handler = sjme_rom_suiteClose;
+			handler = sjme_nvm_rom_suiteClose;
 			break;
 		
 		case SJME_NVM_STRUCT_STATE:

@@ -33,7 +33,7 @@ static const sjme_mock_configSet configRomLibraryResourceNotFound =
 SJME_TEST_DECLARE(testRomLibraryResourceNotFound)
 {
 	sjme_errorCode error;
-	sjme_rom_library library;
+	sjme_nvm_rom_library library;
 	sjme_mock mock;
 	sjme_stream_input inputStream;
 
@@ -48,7 +48,7 @@ SJME_TEST_DECLARE(testRomLibraryResourceNotFound)
 
 	/* Try to find a resource that does not exist. */
 	inputStream = NULL;
-	error = sjme_rom_libraryResourceAsStream(library,
+	error = sjme_nvm_rom_libraryResourceAsStream(library,
 		&inputStream, "nope");
 
 	/* Must be resource not found. */
