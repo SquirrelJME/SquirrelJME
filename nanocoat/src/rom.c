@@ -181,15 +181,23 @@ sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
 				sjme_message("Found %s for %d.",
 					inNames->elements[at], at);
 #endif
+				
+				/* Set and continue to allow for duplicates. */
 				working[at] = lib;
-				break;
 			}
 	}
 
 	/* Scan through and fail if any are null, that is not found. */
 	for (at = 0; at < length; at++)
 		if (working[at] == NULL)
+		{
+#if defined(SJME_CONFIG_DEBUG)
+			sjme_message("Nothing found for %s at %d.",
+				inNames->elements[at], at);
+#endif
+			
 			return SJME_ERROR_LIBRARY_NOT_FOUND;
+		}
 
 	/* Return the libraries which gets placed into a list as a copy. */
 	return sjme_list_newA(inSuite->cache.common.allocPool,

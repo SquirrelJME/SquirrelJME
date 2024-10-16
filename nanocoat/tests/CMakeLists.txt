@@ -216,21 +216,21 @@ foreach(testListFile
 	# Register TAC tests
 	message(DEBUG "Looking for TAC Tests...")
 	foreach(test ${testList})
-		# Names for this test
-		set(tacTestName "${test}")
-		set(tacTestLongName "tac:${tacTestName}")
-
 		# Turn into list
-		string(REPLACE ":" ";" tacTestNameList "${tacTestName}")
+		string(REPLACE "|" ";" tacTestNameList "${test}")
 		list(GET tacTestNameList 0 tacTestJar)
-		list(GET tacTestNameList 1 tacTestClass)
+		list(GET tacTestNameList 1 tacTestClassPath)
+		list(GET tacTestNameList 2 tacTestClass)
+
+		set(tacTestName "${test}")
+		set(tacTestLongName "tac:${tacTestJar}:${tacTestClass}")
 
 		# Register it
 		message(STATUS "TAC Test: ${tacTestLongName}")
 		add_test(NAME "${tacTestLongName}"
 			WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
 			COMMAND TACTest "${testJarFile}"
-				"${tacTestJar}" "${tacTestClass}")
+				"${tacTestJar}" "${tacTestClassPath}" "${tacTestClass}")
 
 		# Code for skipped tests
 		set_property(TEST "${tacTestLongName}"

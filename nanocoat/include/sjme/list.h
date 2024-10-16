@@ -432,7 +432,7 @@ sjme_errorCode sjme_list_flattenArgCV(
  */
 sjme_errorCode sjme_list_flattenArgNul(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpcstr** outList,
+	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInNotNull sjme_lpcstr inNulString);
 
 /**

@@ -240,7 +240,7 @@ SJME_TEST_DECLARE(testDescMethodType)
 	const testDescMethodTypeEntry* entry;
 	sjme_nvm_desc_methodType result;
 	sjme_nvm_desc_fieldType field;
-	sjme_list_sjme_lpcstr* fieldStrings;
+	sjme_list_sjme_lpstr* fieldStrings;
 	sjme_lpcstr string, subString;
 	sjme_jint strLen, subStrLen, strHash, atEntry, i;
 	
@@ -279,7 +279,8 @@ SJME_TEST_DECLARE(testDescMethodType)
 		/* Parse recorded fields. */
 		fieldStrings = NULL;
 		if (sjme_error_is(sjme_list_flattenArgNul(test->pool,
-			&fieldStrings, entry->fields) ||
+			(sjme_list_sjme_lpstr**)&fieldStrings,
+			entry->fields) ||
 			fieldStrings == NULL))
 			return sjme_unit_fail(test, "Could not parse fields of %s?",
 				string);

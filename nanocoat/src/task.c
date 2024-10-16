@@ -198,7 +198,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	sjme_attrOutNotNull sjme_nvm_thread* outThread,
 	sjme_attrInNotNull sjme_lpcstr threadName)
 {
-	if (inTask == NULL || outThread == NULL)
+	if (inTask == NULL || outThread == NULL || threadName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");

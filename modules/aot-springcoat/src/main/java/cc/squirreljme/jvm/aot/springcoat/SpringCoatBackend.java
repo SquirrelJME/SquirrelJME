@@ -186,6 +186,9 @@ public class SpringCoatBackend
 				if (!SuiteUtils.isJar(libName))
 					libName = libName + ".jar";
 				
+				// Must be lowercase!
+				libName = libName.toLowerCase();
+				
 				// Store suite
 				suites.add(libName);
 				

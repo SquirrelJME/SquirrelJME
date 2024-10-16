@@ -21,7 +21,7 @@
  */
 SJME_TEST_DECLARE(testListFlattenArgsNul)
 {
-	sjme_list_sjme_lpcstr* result;
+	sjme_list_sjme_lpstr* result;
 	
 	/* Zero sequence. */
 	result = NULL;

@@ -21,7 +21,7 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_alloc_pool* pool;
 	sjme_nvm_bootParam bootParam;
 	sjme_nvm state;
-	sjme_jint exitCode, i;
+	sjme_jint exitCode, i, n;
 	sjme_seekable bootSeek;
 	sjme_nvm_rom_suite bootSuite;
 	sjme_list_sjme_lpstr* classpath;
@@ -29,9 +29,10 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_nvm inState;
 	sjme_jboolean terminated;
 	const sjme_nal* nal;
+	sjme_lpstr classpathSplice;
 	
 	/* Incorrect number of arguments? */
-	if (argc < 4)
+	if (argc < 5)
 	{
 		sjme_message("Not enough arguments to TAC executable.");
 		return EXIT_FAILURE;
@@ -63,16 +64,36 @@ int main(int argc, sjme_lpstr* argv)
 		bootSuite == NULL)
 		goto fail_loadBootJar;
 	
+	/* Splice up the classpath. */
+	n = strlen(argv[3]);
+	classpathSplice = NULL;
+	if (sjme_error_is(error = sjme_alloc(pool, n + 1,
+		(sjme_pointer*)&classpathSplice)) || classpathSplice == NULL)
+		goto fail_splicePath;
+	
+	/* Turn colons into NULs for splitting. */
+	for (i = 0; i < n; i++)
+		if (argv[3][i] == ':')
+			classpathSplice[i] = '\0';
+		else
+			classpathSplice[i] = argv[3][i];
+	classpathSplice[n] = '\0';
+	
 	/* Setup classpath to use. */
 	classpath = NULL;
-	if (sjme_error_is(error = sjme_list_newV(pool, sjme_lpstr,
-		0, 1, &classpath, argv[2])) || classpath == NULL)
+	if (sjme_error_is(error = sjme_list_flattenArgNul(pool,
+		&classpath, classpathSplice)) ||
+		classpath == NULL)
 		goto fail_initClasspath;
+	
+	/* Debug. */
+	for (i = 0; i < classpath->length; i++)
+		sjme_message("classpath[%d]: %s", i, classpath->elements[i]);
 		
 	/* Setup main arguments to use. */
 	mainArgs = NULL;
 	if (sjme_error_is(error = sjme_list_newV(pool, sjme_lpstr,
-		0, 1, &mainArgs, argv[3])) || mainArgs == NULL)
+		0, 1, &mainArgs, argv[4])) || mainArgs == NULL)
 		goto fail_initMainArgs;
 	
 	/* Setup boot parameters. */
@@ -122,6 +143,7 @@ fail_loop:
 fail_boot:
 fail_initMainArgs:
 fail_initClasspath:
+fail_splicePath:
 fail_loadBootJar:
 fail_openBootJar:
 fail_poolInit:

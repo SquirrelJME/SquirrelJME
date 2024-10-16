@@ -229,7 +229,8 @@ sjme_errorCode sjme_nvm_boot(
 	else
 	{
 		/* Merge all the suites together into one. */
-		if (sjme_error_is(error = sjme_nvm_rom_suiteFromMerge(reservedPool,
+		if (sjme_error_is(error = sjme_nvm_rom_suiteFromMerge(
+			reservedPool,
 			&result->suite, mergeSuites,
 			numMergeSuites)) || result->suite == NULL)
 			goto fail_suiteMerge;

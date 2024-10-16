@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -20,8 +21,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
@@ -95,74 +105,47 @@ public class NanoCoatBuiltInTaskAction
 			NanoCoatBuiltInTaskOutput outTest = this.outTest;
 			if (outTest != null)
 			{
-				// Build list first
+				// Load in manifest and test lists
+				Map<String, Manifest> manifests = new TreeMap<>();
+				Map<String, byte[]> tests = new TreeMap<>();
+				try (ZipFile zip = new ZipFile(this.input.call().toFile()))
+				{
+					// Find all tests and manifests
+					for (ZipEntry entry : Collections.list(zip.entries()))
+					{
+						// Determine Jar name
+						String name = entry.getName();
+						String[] names = name.split(Pattern.quote("/"));
+						if (names.length < 2)
+							continue;
+						String jarName = names[1];
+						
+						// Tests?
+						if (name.endsWith("/META-INF/services/" +
+							"net.multiphasicapps.tac.TestInterface"))
+							try (InputStream in = zip.getInputStream(entry))
+							{
+								tests.put(jarName, VMHelpers.readAll(in));
+							}
+						
+						// Manifest?
+						else if (name.endsWith("/META-INF/MANIFEST.MF"))
+							try (InputStream in = zip.getInputStream(entry))
+							{
+								manifests.put(jarName, new Manifest(in));
+							}
+					}
+				}
+				
+				// Process
 				try (OutputStream outRaw = Files.newOutputStream(sourceTemp,
 					StandardOpenOption.WRITE,
 					StandardOpenOption.TRUNCATE_EXISTING,
 					StandardOpenOption.CREATE); 
 					PrintStream out = new PrintStream(outRaw,
-						true, "utf-8");
-					ZipInputStream zip = new ZipInputStream(
-						Files.newInputStream(this.input.call(),
-							StandardOpenOption.READ)))
+						true, "utf-8"))
 				{
-					// Grab and copy all the tests
-					byte[] buf = new byte[1048576];
-					for (;;)
-					{
-						// Nothing left?
-						ZipEntry entry = zip.getNextEntry();
-						if (entry == null)
-							break;
-						
-						// Not a test list?
-						String name = entry.getName();
-						if (!name.endsWith("/META-INF/services/" +
-							"net.multiphasicapps.tac.TestInterface"))
-							continue;
-						
-						// Determine Jar name
-						String jarName = name.split(Pattern.quote("/"))[1];
-						
-						// Read in list data
-						byte[] listData;
-						try (ByteArrayOutputStream baos = 
-							new ByteArrayOutputStream())
-						{
-							for (;;)
-							{
-								int rc = zip.read(buf);
-								if (rc < 0)
-									break;
-								
-								baos.write(buf, 0, rc);
-							}
-							
-							// Take it all
-							listData = baos.toByteArray();
-						}
-						
-						// Translate and map tests
-						try (BufferedReader br = new BufferedReader(
-							new InputStreamReader(
-							new ByteArrayInputStream(listData),
-								"utf-8")))
-						{
-							for (;;)
-							{
-								// EOF?
-								String ln = br.readLine();
-								if (ln == null || ln.trim().isEmpty())
-									break;
-								
-								// Write out test list
-								out.print(jarName);
-								out.print(':');
-								out.print(ln);
-								out.print('\n');
-							}
-						}
-					}
+					this.__tests(out, manifests, tests);
 				}
 				
 				// Move it over
@@ -188,6 +171,74 @@ public class NanoCoatBuiltInTaskAction
 				catch (IOException ignored)
 				{
 				}
+		}
+	}
+	
+	/**
+	 * Processes Jar tests.
+	 *
+	 * @param __out The output list.
+	 * @param __manifests The manifests for input
+	 * @param __tests The tests for input.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/10/16
+	 */
+	private void __tests(PrintStream __out, Map<String, Manifest> __manifests,
+		Map<String, byte[]> __tests)
+		throws IOException, NullPointerException
+	{
+		if (__out == null || __manifests == null || __tests == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through all Jars with tests
+		for (String jarName : __tests.keySet())
+		{
+			// Get respective data for each
+			Manifest manifest = __manifests.get(jarName);
+			byte[] rawTests = __tests.get(jarName);
+			if (manifest == null || rawTests == null)
+				continue;
+			
+			// Get full classpath
+			String fullPath = manifest.getMainAttributes()
+				.getValue("X-SquirrelJME-Tests-ClassPath");
+			
+			// Process all test lines
+			Set<String> testNames = new TreeSet<>();  
+			try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(rawTests),
+				"utf-8")))
+			{
+				for (;;)
+				{
+					// EOF?
+					String ln = br.readLine();
+					if (ln == null)
+						break;
+					
+					// Skip blank lines
+					if (ln.trim().isEmpty())
+						continue;
+					
+					// Register test
+					testNames.add(ln);
+				}
+			}
+			
+			// Write all tests
+			for (String testName : testNames)
+			{
+				__out.print(jarName);
+				__out.print('|');
+				__out.print(fullPath);
+				__out.print('|');
+				__out.print(testName);
+				__out.print('\n');
+			}
+			
+			// Flush anything written
+			__out.flush();
 		}
 	}
 }
