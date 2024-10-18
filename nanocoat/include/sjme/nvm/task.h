@@ -70,6 +70,26 @@ typedef enum sjme_nvm_task_statusType
 } sjme_nvm_task_statusType;
 
 /**
+ * The type of thread status this is.
+ * 
+ * @since 2024/10/18
+ */
+typedef enum sjme_nvm_thread_statusType
+{
+	/** Running. */
+	SJME_NVM_THREAD_STATUS_RUNNING = 0,
+	
+	/** Sleeping. */
+	SJME_NVM_THREAD_STATUS_SLEEPING = 1,
+	
+	/** Waiting on a monitor. */
+	SJME_NVM_THREAD_STATUS_MONITOR_WAIT = 2,
+	
+	/** The number of thread statuses. */
+	SJME_NVM_THREAD_NUM_STATUS_TYPES
+} sjme_nvm_thread_statusType;
+
+/**
  * The configuration that stores the information needed for starting the task.
  *
  * @since 2023/12/17
@@ -123,6 +143,9 @@ struct sjme_nvm_threadBase
 {
 	/** The VM state this thread is in. */
 	sjme_nvm inState;
+	
+	/** The current thread status. */
+	sjme_nvm_thread_statusType status;
 	
 	/** The wrapper in the front end. */
 	sjme_frontEnd frontEnd;

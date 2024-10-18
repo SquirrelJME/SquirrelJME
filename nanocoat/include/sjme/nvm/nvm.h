@@ -138,6 +138,9 @@ typedef enum sjme_nvm_structType
 	/** A single task. */
 	SJME_NVM_STRUCT_TASK,
 	
+	/** A single thread. */
+	SJME_NVM_STRUCT_THREAD,
+	
 	/** The number of structure types. */
 	SJME_NVM_NUM_STRUCT
 } sjme_nvm_structType;
@@ -846,7 +849,10 @@ struct sjme_nvm_stateBase
 	sjme_list_sjme_nvm_task* tasks;
 	
 	/** The next identifier for tasks. */
-	sjme_jint nextTaskId;
+	sjme_atomic_sjme_jint nextTaskId;
+	
+	/* The next identifier for tasks. */
+	sjme_atomic_sjme_jint nextThreadId;
 };
 
 /**
