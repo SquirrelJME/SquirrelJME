@@ -194,6 +194,55 @@ fail_other:
 	return sjme_error_default(error);
 }
 
+sjme_errorCode sjme_nvm_task_threadEnter(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
+	sjme_attrInNotNull sjme_jmethodID inMethod,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalue* argV)
+{
+	if (inThread == NULL || outFrame == NULL || inMethod == NULL ||
+		(argC != 0 && argV == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_task_threadEnterA(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
+	sjme_attrInNotNull sjme_lpcstr inClass,
+	sjme_attrInNotNull sjme_lpcstr inName,
+	sjme_attrInNotNull sjme_lpcstr inType,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalue* argV)
+{
+	if (inThread == NULL || outFrame == NULL || inClass == NULL ||
+		inName == NULL || inType == NULL || (argC != 0 && argV == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_task_threadEnterC(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_lpcstr inName,
+	sjme_attrInNotNull sjme_lpcstr inType,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalue* argV)
+{
+	if (inThread == NULL || outFrame == NULL || inClass == NULL ||
+		inName == NULL || inType == NULL || (argC != 0 && argV == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_task_threadNew(
 	sjme_attrInNotNull sjme_nvm_task inTask,
 	sjme_attrOutNotNull sjme_nvm_thread* outThread,
@@ -201,6 +250,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 {
 	sjme_errorCode error;
 	sjme_nvm_thread result;
+	sjme_nvm_frame firstFrame;
 	sjme_alloc_pool* pool;
 	sjme_nvm inState;
 	sjme_jint freeSlot, i, n;
@@ -246,8 +296,12 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	result->status = SJME_NVM_THREAD_STATUS_SLEEPING;
 	
 	/* All threads have an initial frame within java.lang.__Start__. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	firstFrame = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadEnterA(
+		result, &firstFrame,
+		"java/lang/__Start__", "__main", "()V",
+		0, NULL)))
+		goto fail_enterFrame;
 	
 	/* Store thread for future referencing. */
 	inTask->threads->elements[freeSlot] = result;
@@ -261,10 +315,13 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	*outThread = result;
 	return SJME_ERROR_NONE;
 	
+fail_enterFrame:
+	if (firstFrame != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(firstFrame));
+	
 	/* Unlock before fail. */
 	sjme_error_is(sjme_thread_spinLockRelease(
 		&inTask->common.lock, NULL));
-	
 fail_lock:
 fail_allocResult:
 	if (result != NULL)

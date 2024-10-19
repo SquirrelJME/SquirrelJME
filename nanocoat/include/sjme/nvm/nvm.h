@@ -93,6 +93,20 @@ typedef struct sjme_any
 } sjme_any;
 
 /**
+ * Represents an identifier of a method.
+ * 
+ * @since 2024/10/19
+ */
+typedef struct sjme_jmethodIDBase* sjme_jmethodID;
+
+/**
+ * Represents an identifier of a field.
+ * 
+ * @since 2024/10/19
+ */
+typedef struct sjme_jfieldIDBase* sjme_jfieldID;
+
+/**
  * The type of structure a type is.
  * 
  * @since 2024/08/09
@@ -110,6 +124,9 @@ typedef enum sjme_nvm_structType
 	
 	/** Field information. */
 	SJME_NVM_STRUCT_FIELD_INFO,
+	
+	/** Thread frame. */
+	SJME_NVM_STRUCT_FRAME,
 	
 	/** Identifier. */
 	SJME_NVM_STRUCT_IDENTIFIER,

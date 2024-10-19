@@ -295,6 +295,68 @@ sjme_errorCode sjme_nvm_task_start(
 	sjme_attrOutNullable sjme_nvm_task* outTask);
 
 /**
+ * Enters a frame within the thread.
+ * 
+ * @param inThread The thread to enter within.
+ * @param outFrame The resultant frame.
+ * @param inMethod The method being called.
+ * @param argC The argument count.
+ * @param argV Argument values to the call.
+ * @return Any resultant error, if any.
+ * @since 2024/10/19
+ */
+sjme_errorCode sjme_nvm_task_threadEnter(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
+	sjme_attrInNotNull sjme_jmethodID inMethod,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalue* argV);
+
+/**
+ * Enters a frame within the thread.
+ * 
+ * @param inThread The thread to enter within.
+ * @param outFrame The resultant frame.
+ * @param inClass The class to execute within.
+ * @param inName The name of the method.
+ * @param inType The type of the method.
+ * @param argC The argument count.
+ * @param argV Argument values to the call.
+ * @return Any resultant error, if any.
+ * @since 2024/10/19
+ */
+sjme_errorCode sjme_nvm_task_threadEnterA(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
+	sjme_attrInNotNull sjme_lpcstr inClass,
+	sjme_attrInNotNull sjme_lpcstr inName,
+	sjme_attrInNotNull sjme_lpcstr inType,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalue* argV);
+
+/**
+ * Enters a frame within the thread.
+ * 
+ * @param inThread The thread to enter within.
+ * @param outFrame The resultant frame.
+ * @param inClass The class to execute within.
+ * @param inName The name of the method.
+ * @param inType The type of the method.
+ * @param argC The argument count.
+ * @param argV Argument values to the call.
+ * @return Any resultant error, if any.
+ * @since 2024/10/19
+ */
+sjme_errorCode sjme_nvm_task_threadEnterC(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_lpcstr inName,
+	sjme_attrInNotNull sjme_lpcstr inType,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalue* argV);
+
+/**
  * Creates a new thread within the given task.
  * 
  * @param inTask The task to create the thread in.
