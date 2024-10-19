@@ -59,6 +59,9 @@ static const sjme_mock_configSet mockNvmLocalPopInteger =
 
 sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopInteger)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_mock state;
 	sjme_nvm_frame frame;
 	sjme_jint oldNumStack;
@@ -71,9 +74,6 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopInteger)
 		&mockNvmLocalPopInteger, 0))
 		sjme_die("Invalid mock");
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#if 0
 	/* Get initialize frame size. */
 	frame = state.threads[0].nvmThread->top;
 	

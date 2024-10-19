@@ -11,6 +11,7 @@
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/tread.h"
+#include "sjme/nvm/task.h"
 
 #define SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(cType, javaType, jType) \
 	sjme_errorCode SJME_TOKEN_PASTE_PP( \

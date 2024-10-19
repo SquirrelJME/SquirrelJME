@@ -139,7 +139,6 @@ sjme_errorCode sjme_nvm_boot(
 {
 #define FIXED_SUITE_COUNT 16
 	sjme_errorCode error;
-	sjme_exceptTrace* trace;
 	sjme_jint i, n;
 	sjme_nvm result;
 	sjme_nvm_rom_suite mergeSuites[FIXED_SUITE_COUNT];

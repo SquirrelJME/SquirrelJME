@@ -90,6 +90,164 @@ typedef enum sjme_nvm_thread_statusType
 } sjme_nvm_thread_statusType;
 
 /**
+ * Represents the frame of a stack tread.
+ * 
+ * @since 2023/11/15
+ */
+typedef struct sjme_nvm_frameTread
+{
+	/** The number of items in this tread. */
+	sjme_jint count;
+	
+	/** The base index for the stack index. */
+	sjme_jint stackBaseIndex;
+	
+	/** The maximum size this tread can be. */
+	sjme_jint max;
+	
+	/** Values within the tread. */
+	union
+	{
+		/** Integer values. */
+		sjme_jint jints[sjme_flexibleArrayCountUnion];
+		
+		/** Long values. */
+		sjme_jlong jlongs[sjme_flexibleArrayCountUnion];
+		
+		/** Float values. */
+		sjme_jfloat jfloats[sjme_flexibleArrayCountUnion];
+		
+		/** Double values. */
+		sjme_jdouble jdoubles[sjme_flexibleArrayCountUnion];
+		
+		/** Object references. */
+		sjme_jobject jobjects[sjme_flexibleArrayCountUnion];
+	} values;
+} sjme_nvm_frameTread;
+
+/**
+ * Calculates the size of a frame tread for a given type.
+ * 
+ * @param type The type to get the size for.
+ * @param count The number if items to store.
+ * @return The size in bytes for the tread.
+ * @since 2023/11/15
+ */
+#define SJME_SIZEOF_FRAME_TREAD(type, count, baseType) \
+	(sizeof(sjme_nvm_frameTread) + \
+	/* Need to handle cases where values could be aligned up... */ \
+	(offsetof(sjme_nvm_frameTread, values.SJME_TOKEN_PASTE(baseType,s)[0]) - \
+		offsetof(sjme_nvm_frameTread, values)) + \
+	(sizeof(type) * (size_t)(count)))
+
+/**
+ * Calculates the size of a frame tread for a given type via variable.
+ * 
+ * @param typeId The type to get the size for.
+ * @param count The number if items to store.
+ * @return The size in bytes for the tread.
+ * @since 2023/11/15
+ */
+static sjme_inline sjme_attrArtificial size_t SJME_SIZEOF_FRAME_TREAD_VAR(
+	sjme_javaTypeId typeId, sjme_jint count)
+{
+	switch (typeId)
+	{
+		case SJME_JAVA_TYPE_ID_INTEGER:
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jint, count, jint);
+		
+		case SJME_JAVA_TYPE_ID_LONG:
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jlong, count, jlong);
+			
+		case SJME_JAVA_TYPE_ID_FLOAT:
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jfloat, count, jfloat);
+			
+		case SJME_JAVA_TYPE_ID_DOUBLE:
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jdouble, count, jdouble);
+			
+		case SJME_JAVA_TYPE_ID_OBJECT:
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jobject, count, jobject);
+	}
+	
+	/* Invalid. */
+	return 0;
+}
+
+/**
+ * Represents information on a frame's stack storage.
+ * 
+ * @since 2023/11/16
+ */
+typedef struct sjme_nvm_frameStack
+{
+	/** The number of items in the stack. */
+	sjme_jint count;
+	
+	/** The current limit of this structure. */
+	sjme_jint limit;
+	
+	/** The stack order. */
+	sjme_javaTypeId order[sjme_flexibleArrayCount];
+} sjme_nvm_frameStack;
+
+typedef struct sjme_nvm_frameLocalMap
+{
+	/** The maximum number of locals. */
+	sjme_jint max;
+	
+	/** Mapping of a specific variable to a given type index. */
+	union
+	{
+		sjme_jbyte to[SJME_NUM_JAVA_TYPE_IDS];
+	} maps[sjme_flexibleArrayCount];
+} sjme_nvm_frameLocalMap;
+
+struct sjme_nvm_frameBase
+{
+	/** The thread this frame is in. */
+	sjme_nvm_thread inThread;
+	
+	/** The wrapper in the front end. */
+	sjme_frontEnd frontEnd;
+	
+	/** The parent frame. */
+	sjme_nvm_frame parent;
+	
+	/** The frame index in the thread. */
+	sjme_jint frameIndex;
+	
+	/** The current program counter. */
+	sjme_pcAddr pc;
+	
+	/** Object which is waiting to be thrown for exception handling. */
+	sjme_jobject waitingThrown;
+	
+	/** Frame linkage. */
+	sjme_dynamic_linkage* linkage;
+	
+	/** Temporary stack. */
+	sjme_any* tempStack;
+	
+	/** Reference to this. */
+	sjme_jobject thisRef;
+	
+	/** Class reference. */
+	sjme_jclass classObjectRef;
+	
+	/** The current stack information. */
+	sjme_nvm_frameStack* stack;
+	
+	/** Treads for the stack and locals. */
+	sjme_nvm_frameTread* treads[SJME_NUM_BASIC_TYPE_IDS];
+	
+	/** Mapping of local variables to the tread indexes per type. */
+	const sjme_nvm_frameLocalMap* localMap;
+};
+
+/** List of stack frames. */
+SJME_LIST_DECLARE(sjme_nvm_frame, 0);
+
+/**
  * The configuration that stores the information needed for starting the task.
  *
  * @since 2023/12/17
@@ -158,9 +316,9 @@ struct sjme_nvm_threadBase
 	
 	/** The number of frames. */
 	sjme_jint numFrames;
-
-	/** Current exception handler go back. */
-	sjme_exceptTrace* except;
+	
+	/** Current stack frames. */
+	sjme_list_sjme_nvm_frame* frames;
 };
 
 /**

@@ -115,6 +115,9 @@ static const sjme_mock_configSet mockNvmLocalPopReference =
 
 SJME_TEST_DECLARE(testNvmLocalPopReference)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_jbyte firstId, secondId;
 	sjme_mock state;
 	sjme_nvm_frame frame;
@@ -123,9 +126,6 @@ SJME_TEST_DECLARE(testNvmLocalPopReference)
 	sjme_nvm_frameStack* stack;
 	testHookResult hookResult;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#if 0
 	/* Test all possible combination of objects: [a, b, NULl]. */
 	/* This is for testing that reference counting works in this case. */
 	for (firstId = 0; firstId < TEST_NUM_OBJECT_IDS; firstId++)

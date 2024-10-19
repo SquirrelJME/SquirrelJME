@@ -250,6 +250,9 @@ sjme_jboolean sjme_mock_doNvmFrame(
 	sjme_attrInNotNull sjme_mock* inState,
 	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_jint threadIndex, treadMax, tallyLocals, stackBase, desireMaxLocals;
 	sjme_jint tallyStack, desireMaxStack, localIndex;
 	sjme_nvm_thread thread;
@@ -277,9 +280,6 @@ sjme_jboolean sjme_mock_doNvmFrame(
 	if (newFrame == NULL)
 		return sjme_die("Could not allocate frame.");
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#if 0
 	/* Correlate the frame index to the thread. */
 	newFrame->frameIndex = thread->numFrames;
 	thread->numFrames++;
