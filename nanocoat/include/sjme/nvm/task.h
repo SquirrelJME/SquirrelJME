@@ -211,7 +211,7 @@ SJME_LIST_DECLARE(sjme_nvm_frame, 0);
  *
  * @since 2023/12/17
  */
-typedef struct sjme_nvm_task_startConfig
+typedef struct sjme_nvm_task_taskNewConfig
 {
 	/** Redirection for standard output. */
 	sjme_nvm_task_pipeRedirectType stdOut;
@@ -233,7 +233,7 @@ typedef struct sjme_nvm_task_startConfig
 	
 	/** The class loader for this task. */
 	sjme_nvm_vmClass_loader classLoader;
-} sjme_nvm_task_startConfig;
+} sjme_nvm_task_taskNewConfig;
 
 struct sjme_nvm_taskBase
 {
@@ -254,6 +254,9 @@ struct sjme_nvm_taskBase
 	
 	/** The threads within the current task. */
 	sjme_list_sjme_nvm_thread* threads;
+	
+	/** The class loader for this specific task. */
+	sjme_nvm_vmClass_loader classLoader;
 };
 
 struct sjme_nvm_threadBase
@@ -289,9 +292,9 @@ struct sjme_nvm_threadBase
  * @return Any error state.
  * @since 2023/12/17
  */
-sjme_errorCode sjme_nvm_task_start(
+sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull const sjme_nvm_task_startConfig* startConfig,
+	sjme_attrInNotNull const sjme_nvm_task_taskNewConfig* startConfig,
 	sjme_attrOutNullable sjme_nvm_task* outTask);
 
 /**

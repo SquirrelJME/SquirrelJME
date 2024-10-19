@@ -111,8 +111,10 @@ typedef enum sjme_basicTypeId
  */
 typedef enum sjme_jboolean
 {
+	/** False. */
 	SJME_JNI_FALSE = 0,
-
+	
+	/** True. */
 	SJME_JNI_TRUE = 1
 } sjme_jboolean;
 

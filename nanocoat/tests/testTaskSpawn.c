@@ -29,7 +29,7 @@ const sjme_mock_configSet configTaskSpawn =
 };
 
 /**
- * Tests spawning of tasks with @c sjme_nvm_task_start .
+ * Tests spawning of tasks with @c sjme_nvm_task_taskNew .
  * 
  * @since 2023/11/29
  */
@@ -37,7 +37,7 @@ SJME_TEST_DECLARE(testTaskSpawn)
 {
 	sjme_mock mock;
 	sjme_nvm_task task;
-	sjme_nvm_task_startConfig startConfig;
+	sjme_nvm_task_taskNewConfig startConfig;
 
 	/* Setup mocks. */
 	memset(&mock, 0, sizeof(mock));
@@ -51,7 +51,7 @@ SJME_TEST_DECLARE(testTaskSpawn)
 
 	/* Start task. */
 	task = NULL;
-	if (sjme_error_is(sjme_nvm_task_start(mock.nvmState,
+	if (sjme_error_is(sjme_nvm_task_taskNew(mock.nvmState,
 		&startConfig, &task)) || task == NULL)
 		return sjme_unit_fail(test, "Could not start task.");
 

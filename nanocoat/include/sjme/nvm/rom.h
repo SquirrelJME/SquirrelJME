@@ -22,6 +22,7 @@
 #include "sjme/stream.h"
 #include "sjme/seekable.h"
 #include "sjme/zip.h"
+#include "sjme/nvm/classy.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -134,6 +135,9 @@ struct sjme_nvm_rom_libraryBase
 
 	/** Hash of the library name. */
 	sjme_jint nameHash;
+	
+	/** Class information that has already been loaded for this library. */
+	sjme_list_sjme_nvm_class_info* classInfos;
 
 	/** Internal cache, used by internal library functions. */
 	sjme_nvm_rom_libraryCache cache;

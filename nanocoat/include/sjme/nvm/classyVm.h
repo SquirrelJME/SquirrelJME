@@ -17,6 +17,7 @@
 #define SQUIRRELJME_CLASSYVM_H
 
 #include "sjme/nvm/classy.h"
+#include "sjme/nvm/rom.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -49,6 +50,92 @@ struct sjme_nvm_vmClass_loaderBase
 	/** Common NanoCoat storage. */
 	sjme_nvm_commonBase common;
 };
+
+/**
+ * Loads the specified class by the given name.
+ * 
+ * @param inLoader The loader to use. 
+ * @param outClass The resultant class.
+ * @param contextThread The thread where any constructors can be called if
+ * needed.
+ * @param className The class to load. 
+ * @return Any resultant error, if any.
+ * @since 2024/10/19
+ */
+sjme_errorCode sjme_nvm_vmClass_loaderLoad(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_lpcstr className);
+
+/**
+ * Generates an array class type of the specified component type.
+ * 
+ * @param inLoader The loader to use. 
+ * @param outClass The resultant class.
+ * @param contextThread The thread where any constructors can be called if
+ * needed.
+ * @param componentType The component type of the array.
+ * @param dims The number of dimensions of an array for the component type. 
+ * @return Any resultant error, if any.
+ * @since 2024/10/19
+ */
+sjme_errorCode sjme_nvm_vmClass_loaderLoadArray(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jclass componentType,
+	sjme_attrInPositiveNonZero sjme_jint dims);
+
+/**
+ * Generates an array class type of the specified component type.
+ * 
+ * @param inLoader The loader to use. 
+ * @param outClass The resultant class.
+ * @param contextThread The thread where any constructors can be called if
+ * needed.
+ * @param componentType The component type of the array.
+ * @param dims The number of dimensions of an array for the component type. 
+ * @return Any resultant error, if any.
+ * @since 2024/10/19
+ */
+sjme_errorCode sjme_nvm_vmClass_loaderLoadArrayA(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_lpcstr componentType,
+	sjme_attrInPositiveNonZero sjme_jint dims);
+	
+/**
+ * Generates a primitive class type.
+ * 
+ * @param inLoader The loader to use. 
+ * @param outClass The resultant class.
+ * @param contextThread The thread where any constructors can be called if
+ * needed.
+ * @param basicType The type of primitive type to create for.
+ * @return Any resultant error, if any.
+ * @since 2024/10/19
+ */
+sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS) sjme_basicTypeId basicType);
+
+/**
+ * Initializes a new class loader.
+ * 
+ * @param inState The input state.
+ * @param outLoader The resultant class loader. 
+ * @param classPath The classpath to use for the loader.
+ * @return Any resultant error, if any.
+ * @since 2024/10/19
+ */
+sjme_errorCode sjme_nvm_vmClass_loaderNew(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrOutNotNull sjme_nvm_vmClass_loader* outLoader,
+	sjme_attrInNotNull sjme_list_sjme_nvm_rom_library* classPath);
 
 /*--------------------------------------------------------------------------*/
 

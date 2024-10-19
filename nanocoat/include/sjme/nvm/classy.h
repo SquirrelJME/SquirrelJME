@@ -66,6 +66,13 @@ typedef struct sjme_nvm_class_infoCore sjme_nvm_class_infoCore;
 typedef struct sjme_nvm_class_infoCore* sjme_nvm_class_info;
 
 /**
+ * List of class information.
+ * 
+ * @since 2024/10/19
+ */
+SJME_LIST_DECLARE(sjme_nvm_class_info, 0);
+
+/**
  * Opaque constant pool information.
  * 
  * @since 2024/09/13
@@ -695,7 +702,7 @@ typedef struct sjme_nvm_class_stackMap
  * @return Any resultant error, if any.
  * @since 2024/09/21
  */
-typedef sjme_errorCode (*sjme_nvm_class_parseAttributeHandlerFunc)(
+typedef sjme_errorCode (*sjme_nvm_class_parseAttributeFunc)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
@@ -710,14 +717,14 @@ typedef sjme_errorCode (*sjme_nvm_class_parseAttributeHandlerFunc)(
  * 
  * @since 2024/09/25
  */
-typedef struct sjme_nvm_class_parseAttributeHandlerInfo
+typedef struct sjme_nvm_class_parseAttributeHandler
 {
 	/** The name to handle. */
 	sjme_lpcstr name;
 	
 	/** The handler for the attribute. */
-	sjme_nvm_class_parseAttributeHandlerFunc handler;
-} sjme_nvm_class_parseAttributeHandlerInfo;
+	sjme_nvm_class_parseAttributeFunc handler;
+} sjme_nvm_class_parseAttributeHandler;
 
 /**
  * Parses a single class and loads its class information.
@@ -752,7 +759,7 @@ sjme_errorCode sjme_nvm_class_parseAttributes(
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
-	sjme_attrInNotNull const sjme_nvm_class_parseAttributeHandlerInfo* handlers,
+	sjme_attrInNotNull const sjme_nvm_class_parseAttributeHandler* handlers,
 	sjme_attrInNotNull sjme_pointer context);
 
 /**

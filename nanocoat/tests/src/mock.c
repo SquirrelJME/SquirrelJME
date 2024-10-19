@@ -9,6 +9,8 @@
 
 #include <string.h>
 
+#include "sjme/nvm/instance.h"
+
 #include "mock.h"
 #include "mock.jar.h"
 #include "hello.txt.h"
@@ -384,9 +386,11 @@ sjme_jboolean sjme_mock_doNvmObject(
 	/* Allocate new object. */
 	newObject = sjme_mock_alloc(inState, sizeof(*newObject));
 	inState->objects[inState->numObjects++] = newObject;
-	
+
+#if 0
 	/* Initialize object details. */
 	newObject->refCount = 1;
+#endif
 	
 	/* Success. */
 	return SJME_JNI_TRUE;

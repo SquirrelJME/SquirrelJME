@@ -143,7 +143,7 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_nvm result;
 	sjme_nvm_rom_suite mergeSuites[FIXED_SUITE_COUNT];
 	sjme_jint numMergeSuites;
-	sjme_nvm_task_startConfig initTaskConfig;
+	sjme_nvm_task_taskNewConfig initTaskConfig;
 	sjme_nvm_task initTask;
 	sjme_list_sjme_nvm_rom_library* classPath;
 	
@@ -189,7 +189,8 @@ sjme_errorCode sjme_nvm_boot(
 	if (result->bootParamCopy->payload != NULL)
 	{
 		/* Scan accordingly. */
-		if (sjme_error_is(error = sjme_nvm_rom_suiteFromPayload(reservedPool,
+		if (sjme_error_is(error = sjme_nvm_rom_suiteFromPayload(
+			reservedPool,
 			&mergeSuites[numMergeSuites],
 			result->bootParamCopy->payload)))
 			goto fail_payloadRom;
@@ -269,7 +270,7 @@ sjme_errorCode sjme_nvm_boot(
 
 	/* Spawn initial task which uses the main arguments. */
 	initTask = NULL;
-	if (sjme_error_is(error = sjme_nvm_task_start(result,
+	if (sjme_error_is(error = sjme_nvm_task_taskNew(result,
 		&initTaskConfig, &initTask)) || initTask == NULL)
 		goto fail_initTask;
 	

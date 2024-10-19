@@ -122,7 +122,7 @@ static sjme_errorCode sjme_nvm_class_readPoolRefIndex(
 	return SJME_ERROR_NONE;
 }
 
-static const sjme_nvm_class_parseAttributeHandlerInfo sjme_nvm_class_classAttr[] =
+static const sjme_nvm_class_parseAttributeHandler sjme_nvm_class_classAttr[] =
 {
 	{NULL, NULL},
 };
@@ -231,7 +231,7 @@ static sjme_errorCode sjme_nvm_class_codeAttrStackMapTable(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-static const sjme_nvm_class_parseAttributeHandlerInfo sjme_nvm_class_codeAttr[] =
+static const sjme_nvm_class_parseAttributeHandler sjme_nvm_class_codeAttr[] =
 {
 #if 0
 	{"LineNumberTable",
@@ -316,7 +316,7 @@ static sjme_errorCode sjme_nvm_class_fieldAttrConstantValue(
 	return SJME_ERROR_NONE;
 }
 
-static const sjme_nvm_class_parseAttributeHandlerInfo sjme_nvm_class_fieldAttr[] =
+static const sjme_nvm_class_parseAttributeHandler sjme_nvm_class_fieldAttr[] =
 {
 	{"ConstantValue", sjme_nvm_class_fieldAttrConstantValue},
 	{NULL, NULL},
@@ -527,7 +527,7 @@ fail_allocResult:
 	return sjme_error_default(error);
 }
 
-static const sjme_nvm_class_parseAttributeHandlerInfo sjme_nvm_class_methodAttr[] =
+static const sjme_nvm_class_parseAttributeHandler sjme_nvm_class_methodAttr[] =
 {
 	{"Code", sjme_nvm_class_methodAttrCode},
 	{NULL, NULL},
@@ -596,7 +596,7 @@ static sjme_errorCode sjme_nvm_class_parseAttribute(
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
-	sjme_attrInNotNull const sjme_nvm_class_parseAttributeHandlerInfo* handlers,
+	sjme_attrInNotNull const sjme_nvm_class_parseAttributeHandler* handlers,
 	sjme_attrInNotNull sjme_pointer context,
 	sjme_attrInNotNull sjme_lpcstr attrName,
 	sjme_attrInPositive sjme_jint attrLen)
@@ -604,7 +604,7 @@ static sjme_errorCode sjme_nvm_class_parseAttribute(
 	sjme_errorCode error, errorC;
 	sjme_jubyte* attrData;
 	sjme_jint readCount;
-	const sjme_nvm_class_parseAttributeHandlerInfo* at;
+	const sjme_nvm_class_parseAttributeHandler* at;
 	sjme_stream_input attrStream;
 	
 	if (inPool == NULL || inStream == NULL || inConstPool == NULL ||
@@ -922,7 +922,7 @@ sjme_errorCode sjme_nvm_class_parseAttributes(
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
-	sjme_attrInNotNull const sjme_nvm_class_parseAttributeHandlerInfo* handlers,
+	sjme_attrInNotNull const sjme_nvm_class_parseAttributeHandler* handlers,
 	sjme_attrInNotNull sjme_pointer context)
 {
 	sjme_errorCode error;

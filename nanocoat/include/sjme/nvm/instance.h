@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_INSTANCE_H
 #define SQUIRRELJME_INSTANCE_H
 
+#include "sjme/nvm/nvm.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -27,6 +29,18 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+struct sjme_jobjectBase
+{
+	/** Common base for all objects. */
+	sjme_nvm_commonBase common;
+};
+
+struct sjme_jclassBase
+{
+	/** All classes are objects. */
+	sjme_jobjectBase object;
+};
 
 /*--------------------------------------------------------------------------*/
 

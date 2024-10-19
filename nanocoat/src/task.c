@@ -18,9 +18,9 @@
 /** The number of threads to grow by. */
 #define SJME_NVM_THREAD_GROW 8
 	
-sjme_errorCode sjme_nvm_task_start(
+sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull const sjme_nvm_task_startConfig* startConfig,
+	sjme_attrInNotNull const sjme_nvm_task_taskNewConfig* startConfig,
 	sjme_attrOutNullable sjme_nvm_task* outTask)
 {
 	sjme_errorCode error;
@@ -29,6 +29,7 @@ sjme_errorCode sjme_nvm_task_start(
 	sjme_jint i, n, freeSlot;
 	sjme_nvm_task result;
 	sjme_nvm_thread mainThread;
+	sjme_nvm_vmClass_loader classLoader;
 
 	if (inState == NULL || startConfig == NULL || outTask == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -111,6 +112,13 @@ sjme_errorCode sjme_nvm_task_start(
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
 	
+	/* Initialize a new class loader for the current classpath. */
+	classLoader = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderNew(
+		inState, &classLoader,
+		startConfig->classPath)) || classLoader == NULL)
+		goto fail_initClassLoader;
+	
 	/* Refer to owning state and set identifier. */
 	result->inState = inState;
 	result->id = 1 + sjme_atomic_sjme_jint_getAdd(
@@ -163,6 +171,7 @@ sjme_errorCode sjme_nvm_task_start(
 	/* In-state locks. */
 fail_preLockBeforeRelease:
 fail_allocThreads:
+fail_initClassLoader:
 fail_allocResult:
 	if (result != NULL)
 	{

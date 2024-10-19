@@ -51,18 +51,19 @@ typedef sjme_jint sjme_pcAddr;
  */
 typedef sjme_jint sjme_staticLinkageType;
 
-struct sjme_jobjectBase
-{
-	/** The reference count of this object, zero it becomes GCed. */
-	sjme_jint refCount;
-};
+/**
+ * Class type.
+ * 
+ * @since 2024/10/19
+ */
+typedef struct sjme_jclassBase sjme_jclassBase;
 
 /**
  * Class type.
  * 
  * @since 2023/07/25
  */
-typedef sjme_jobject sjme_jclass;
+typedef sjme_jclassBase* sjme_jclass;
 
 /**
  * Throwable type.
