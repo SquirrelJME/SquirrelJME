@@ -49,6 +49,9 @@ struct sjme_nvm_vmClass_loaderBase
 {
 	/** Common NanoCoat storage. */
 	sjme_nvm_commonBase common;
+	
+	/** The class path to use. */
+	sjme_list_sjme_nvm_rom_library* classPath;
 };
 
 /**

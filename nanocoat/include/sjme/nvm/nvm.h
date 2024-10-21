@@ -120,6 +120,9 @@ typedef enum sjme_nvm_structType
 	/** Class information. */
 	SJME_NVM_STRUCT_CLASS_INFO,
 	
+	/** Class loader. */
+	SJME_NVM_STRUCT_VM_CLASS_LOADER,
+	
 	/** Method code. */
 	SJME_NVM_STRUCT_CODE,
 	
