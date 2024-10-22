@@ -203,6 +203,23 @@ typedef struct sjme_thread_spinLock
 } sjme_thread_spinLock;
 
 /**
+ * Read/write lock.
+ * 
+ * @since 2024/10/22
+ */
+typedef struct sjme_thread_rwLock
+{
+	/** Pointer to the lock responsible for reading. */
+	sjme_thread_spinLock* read;
+	
+	/** The number of times writes are locked. */
+	sjme_atomic_sjme_jint writeCount;
+	
+	/** The write specific lock. */
+	sjme_thread_spinLock write;
+} sjme_thread_rwLock;
+
+/**
  * Returns the current thread.
  * 
  * @param outThread The resultant thread.
@@ -239,6 +256,50 @@ sjme_errorCode sjme_thread_new(
 	sjme_attrInNullable sjme_intPointer* outThreadId,
 	sjme_attrInNotNull sjme_thread_mainFunc inMain,
 	sjme_attrInNullable sjme_pointer anything);
+
+/**
+ * Grabs the read lock.
+ * 
+ * @param inLock The lock to use. 
+ * @return Any resultant error, if any.
+ * @since 2024/10/22
+ */
+sjme_errorCode sjme_thread_rwLockGrabRead(
+	sjme_attrInNotNull sjme_thread_rwLock* inLock);
+
+/**
+ * Grabs the write lock.
+ * 
+ * @param inLock The lock to use. 
+ * @return Any resultant error, if any.
+ * @since 2024/10/22
+ */
+sjme_errorCode sjme_thread_rwLockGrabWrite(
+	sjme_attrInNotNull sjme_thread_rwLock* inLock);
+
+/**
+ * Releases the read lock.
+ * 
+ * @param inLock The lock to release.
+ * @param outCount Optional count of the locks remaining.
+ * @return Any resultant error, if any.
+ * @since 2024/10/22
+ */
+sjme_errorCode sjme_thread_rwLockReleaseRead(
+	sjme_attrInNotNull sjme_thread_rwLock* inLock,
+	sjme_attrOutNullable sjme_jint* outCount);
+
+/**
+ * Releases the write lock.
+ * 
+ * @param inLock The lock to release.
+ * @param outCount Optional count of the locks remaining.
+ * @return Any resultant error, if any.
+ * @since 2024/10/22
+ */
+sjme_errorCode sjme_thread_rwLockReleaseWrite(
+	sjme_attrInNotNull sjme_thread_rwLock* inLock,
+	sjme_attrOutNullable sjme_jint* outCount);
 
 /**
  * Grabs a spin lock.

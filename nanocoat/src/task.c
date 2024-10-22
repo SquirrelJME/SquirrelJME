@@ -121,6 +121,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	
 	/* Refer to owning state and set identifier. */
 	result->inState = inState;
+	result->classLoader = classLoader;
 	result->id = 1 + sjme_atomic_sjme_jint_getAdd(
 		&inState->nextTaskId, 1);
 	
@@ -227,12 +228,29 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalue* argV)
 {
+	sjme_errorCode error;
+	sjme_nvm_task inTask;
+	sjme_jclass foundClass;
+	
 	if (inThread == NULL || outFrame == NULL || inClass == NULL ||
 		inName == NULL || inType == NULL || (argC != 0 && argV == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* There must be a task. */
+	inTask = inThread->inTask;
+	if (inTask == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Need to find the class first. */
+	foundClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		inTask->classLoader, &foundClass,
+		inThread, inClass)))
+		return sjme_error_default(error);
+	
+	/* Forward to other call. */
+	return sjme_nvm_task_threadEnterC(
+		inThread, outFrame, foundClass, inName, inType, argC, argV);
 }
 
 sjme_errorCode sjme_nvm_task_threadEnterC(
@@ -298,6 +316,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	
 	/* Fill out basic details. */
 	result->inState = inState;
+	result->inTask = inTask;
 	result->threadId = 1 + sjme_atomic_sjme_jint_getAdd(
 		&inState->nextThreadId, 1);
 	

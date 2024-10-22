@@ -264,6 +264,9 @@ struct sjme_nvm_threadBase
 	/** The VM state this thread is in. */
 	sjme_nvm inState;
 	
+	/** The owning task. */
+	sjme_nvm_task inTask;
+	
 	/** The current thread status. */
 	sjme_nvm_thread_statusType status;
 	

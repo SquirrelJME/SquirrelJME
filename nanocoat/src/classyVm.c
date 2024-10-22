@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <stdio.h>
 #include <string.h>
 
 #include "sjme/nvm/classyVm.h"
@@ -18,12 +19,21 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_lpcstr className)
 {
+#define BUFSIZE 128
+	sjme_cchar buf[BUFSIZE];
+	
 	if (inLoader == NULL || outClass == NULL || contextThread == NULL ||
 		className == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Determine actual name to use. */
+	memset(buf, 0, sizeof(buf));
+	snprintf(buf, BUFSIZE - 1, "L%s;", className);
+	
+	/* Forward call. */
+	return sjme_nvm_vmClass_loaderLoadB(inLoader, outClass,
+		contextThread, buf);
+#undef BUFSIZE
 }
 
 sjme_errorCode sjme_nvm_vmClass_loaderLoadArray(
@@ -62,12 +72,36 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadArrayA(
 	return sjme_error_notImplemented(0);
 }
 
+sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_lpcstr binaryName)
+{
+	sjme_errorCode error;
+	
+	if (inLoader == NULL || outClass == NULL || contextThread == NULL ||
+		binaryName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Grab the read lock to determine if we can skip loading. */
+	if (sjme_error_is(error = sjme_thread_rwLockGrabRead(
+		&inLoader->rwLock)))
+		return sjme_error_default(error);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS) sjme_basicTypeId basicType)
 {
+#define BUFSIZE 3
+	sjme_cchar buf[BUFSIZE];
+	
 	if (inLoader == NULL || outClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -77,8 +111,54 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(
 		basicType == SJME_JAVA_TYPE_ID_OBJECT)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Which type? */
+	memset(buf, 0, sizeof(buf));
+	switch (basicType)
+	{
+		case SJME_BASIC_TYPE_ID_INTEGER:
+			buf[0] = 'I';
+			break;
+		
+		case SJME_BASIC_TYPE_ID_LONG:
+			buf[0] = 'J';
+			break;
+		
+		case SJME_BASIC_TYPE_ID_FLOAT:
+			buf[0] = 'F';
+			break;
+		
+		case SJME_BASIC_TYPE_ID_DOUBLE:
+			buf[0] = 'D';
+			break;
+		
+		case SJME_BASIC_TYPE_ID_VOID:
+			buf[0] = 'V';
+			break;
+		
+		case SJME_BASIC_TYPE_ID_SHORT:
+			buf[0] = 'S';
+			break;
+		
+		case SJME_BASIC_TYPE_ID_CHARACTER:
+			buf[0] = 'C';
+			break;
+		
+		case SJME_BASIC_TYPE_ID_BOOLEAN:
+			buf[0] = 'Z';
+			break;
+		
+		case SJME_BASIC_TYPE_ID_BYTE:
+			buf[0] = 'B';
+			break;
+		
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
+	/* Forward call. */
+	return sjme_nvm_vmClass_loaderLoadB(inLoader, outClass,
+		contextThread, buf);
+#undef BUFSIZE
 }
 
 sjme_errorCode sjme_nvm_vmClass_loaderNew(
@@ -134,6 +214,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 		goto fail_alloc; 
 	
 	/* Setup fields. */
+	result->rwLock.read = &result->common.lock;
 	result->classPath = dup;
 	
 	/* Success! */

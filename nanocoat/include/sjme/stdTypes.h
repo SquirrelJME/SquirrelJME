@@ -101,7 +101,7 @@ typedef enum sjme_basicTypeId
 	SJME_BASIC_TYPE_ID_BYTE = 11,
 
 	/** Number of basic type IDs. */
-	SJME_NUM_BASIC_TYPE_IDS = 11
+	SJME_NUM_BASIC_TYPE_IDS = 12
 } sjme_basicTypeId;
 
 /**

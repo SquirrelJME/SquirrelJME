@@ -32,6 +32,13 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * A list of classes.
+ * 
+ * @since 2024/10/22
+ */
+SJME_LIST_DECLARE(sjme_jclass, 0);
+
+/**
  * Base structure for the class loader.
  * 
  * @since 2024/09/08
@@ -50,8 +57,14 @@ struct sjme_nvm_vmClass_loaderBase
 	/** Common NanoCoat storage. */
 	sjme_nvm_commonBase common;
 	
+	/** Read/write lock. */
+	sjme_thread_rwLock rwLock;
+	
 	/** The class path to use. */
 	sjme_list_sjme_nvm_rom_library* classPath;
+	
+	/** Classes which have been loaded. */
+	sjme_list_sjme_jclass classes;
 };
 
 /**
@@ -108,7 +121,24 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadArrayA(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_lpcstr componentType,
 	sjme_attrInPositiveNonZero sjme_jint dims);
-	
+
+/**
+ * Loads the specified class by the given binary name.
+ * 
+ * @param inLoader The loader to use. 
+ * @param outClass The resultant class.
+ * @param contextThread The thread where any constructors can be called if
+ * needed.
+ * @param binaryName The binary name to load. 
+ * @return Any resultant error, if any.
+ * @since 2024/10/22
+ */
+sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_lpcstr binaryName);
+
 /**
  * Generates a primitive class type.
  * 

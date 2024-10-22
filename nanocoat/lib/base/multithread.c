@@ -131,6 +131,153 @@ sjme_errorCode sjme_thread_new(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_thread_rwLockGrabRead(
+	sjme_attrInNotNull sjme_thread_rwLock* inLock)
+{
+	sjme_errorCode error;
+	sjme_thread_spinLock* readLock;
+	sjme_jint writeCount;
+	
+	if (inLock == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* The read lock is required. */
+	readLock = inLock->read;
+	if (readLock == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Attempt locking constantly. */
+	for (;;)
+	{
+		/* Grab the read lock. */
+		if (sjme_error_is(error = sjme_thread_spinLockGrab(readLock)))
+			return sjme_error_default(error);
+		
+		/* The write count determines if we cannot get this lock. */
+		sjme_thread_barrier();
+		writeCount = sjme_atomic_sjme_jint_get(&inLock->writeCount);
+		sjme_thread_barrier();
+			
+		/* Release the read lock. */
+		if (sjme_error_is(error = sjme_thread_spinLockRelease(readLock,
+			NULL)))
+			return sjme_error_default(error);
+		
+		/* The write lock has been grabbed. */
+		if (writeCount != 0)
+		{
+			/* Let other threads run. */
+			sjme_thread_barrier();
+			sjme_thread_yield();
+			sjme_thread_barrier();
+			
+			/* Try again... */
+			continue;
+		}
+		
+		/* Otherwise stop. */
+		break;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_thread_rwLockGrabWrite(
+	sjme_attrInNotNull sjme_thread_rwLock* inLock)
+{
+	sjme_errorCode error;
+	sjme_thread_spinLock* readLock;
+	sjme_jint writeCount;
+	
+	if (inLock == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* The read lock is required. */
+	readLock = inLock->read;
+	if (readLock == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+		
+	/* Grab the read lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(readLock)))
+		return sjme_error_default(error);
+		
+	/* Bump up the write lock count. */
+	writeCount = sjme_atomic_sjme_jint_getAdd(&inLock->writeCount,
+		1);
+		
+	/* Grab the write lock next. */
+	if (writeCount <= 0)
+	{
+		if (sjme_error_is(error = sjme_thread_spinLockGrab(
+			&inLock->write)))
+			return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_thread_rwLockReleaseRead(
+	sjme_attrInNotNull sjme_thread_rwLock* inLock,
+	sjme_attrOutNullable sjme_jint* outCount)
+{
+	sjme_errorCode error;
+	sjme_thread_spinLock* readLock;
+	
+	if (inLock == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* The read lock is required. */
+	readLock = inLock->read;
+	if (readLock == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* This is a no-op because we only access the read lock by locking and */
+	/* checking the write lock. */
+	if (outCount != NULL)
+		*outCount = 0;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_thread_rwLockReleaseWrite(
+	sjme_attrInNotNull sjme_thread_rwLock* inLock,
+	sjme_attrOutNullable sjme_jint* outCount)
+{
+	sjme_errorCode error;
+	sjme_thread_spinLock* readLock;
+	sjme_jint writeCount, actualWrite;
+	
+	if (inLock == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* The read lock is required. */
+	readLock = inLock->read;
+	if (readLock == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+		
+	/* Release the write lock. */
+	actualWrite = writeCount;
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&inLock->write, &actualWrite)))
+		return sjme_error_default(error);
+	
+	/* Lower the write count. */
+	writeCount = sjme_atomic_sjme_jint_getAdd(&inLock->writeCount,
+		-1);
+	
+	/* Is the write lock completely clear now? If so release the read lock. */
+	if (writeCount <= 1)
+		if (sjme_error_is(error = sjme_thread_spinLockRelease(
+			readLock, NULL)))
+			return sjme_error_default(error);
+	
+	/* Success! */
+	if (outCount != NULL)
+		*outCount = actualWrite;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
 {
 	sjme_errorCode error;
