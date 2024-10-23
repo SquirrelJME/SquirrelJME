@@ -64,7 +64,7 @@ struct sjme_nvm_vmClass_loaderBase
 	sjme_list_sjme_nvm_rom_library* classPath;
 	
 	/** Classes which have been loaded. */
-	sjme_list_sjme_jclass classes;
+	sjme_list_sjme_jclass* classes;
 };
 
 /**

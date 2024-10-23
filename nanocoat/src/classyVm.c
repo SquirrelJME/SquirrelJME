@@ -13,6 +13,9 @@
 #include "sjme/nvm/classyVm.h"
 #include "sjme/nvm/cleanup.h"
 
+/** The amount the class list grows by. */
+#define SJME_VM_CLASS_GROW_LEN 32
+
 sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,
@@ -79,6 +82,8 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 	sjme_attrInNotNull sjme_lpcstr binaryName)
 {
 	sjme_errorCode error;
+	sjme_jint i, n;
+	sjme_list_sjme_jclass* classes;
 	
 	if (inLoader == NULL || outClass == NULL || contextThread == NULL ||
 		binaryName == NULL)
@@ -88,6 +93,9 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 	if (sjme_error_is(error = sjme_thread_rwLockGrabRead(
 		&inLoader->rwLock)))
 		return sjme_error_default(error);
+	
+	classes = inLoader->classes;
+	
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -169,6 +177,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	sjme_errorCode error;
 	sjme_nvm_vmClass_loader result;
 	sjme_list_sjme_nvm_rom_library* dup;
+	sjme_list_sjme_jclass* classes;
 	sjme_nvm_rom_library lib;
 	sjme_jint i, n, cldcCompact;
 	
@@ -206,6 +215,12 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 		dup->elements[cldcCompact] = lib;
 	}
 	
+	/* Classes cache. */
+	classes = NULL;
+	if (sjme_error_is(error = sjme_list_alloc(inState->reservedPool,
+		SJME_VM_CLASS_GROW_LEN, &classes, sjme_jclass, 0)) || classes == NULL)
+		goto fail_classesList;
+	
 	/* Allocate result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(inState->reservedPool,
@@ -216,6 +231,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	/* Setup fields. */
 	result->rwLock.read = &result->common.lock;
 	result->classPath = dup;
+	result->classes = classes;
 	
 	/* Success! */
 	*outLoader = result;
@@ -224,6 +240,9 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 fail_alloc:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
+fail_classesList:
+	if (classes != NULL)
+		sjme_alloc_free(classes);
 fail_noCldcCompact:
 fail_nullJar:
 fail_dupList:
