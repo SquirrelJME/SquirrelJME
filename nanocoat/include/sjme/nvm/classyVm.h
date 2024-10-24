@@ -57,6 +57,9 @@ struct sjme_nvm_vmClass_loaderBase
 	/** Common NanoCoat storage. */
 	sjme_nvm_commonBase common;
 	
+	/** The state this loader is within. */
+	sjme_nvm inState;
+	
 	/** Read/write lock. */
 	sjme_thread_rwLock rwLock;
 	
@@ -66,6 +69,30 @@ struct sjme_nvm_vmClass_loaderBase
 	/** Classes which have been loaded. */
 	sjme_list_sjme_jclass* classes;
 };
+
+/**
+ * Checks and initializes the class if needed.
+ * 
+ * @param inClass The class to be initialized.
+ * @param contextThread The thread this is working under.
+ * @return Any resultant error, if any.
+ * @since 2024/10/24
+ */
+sjme_errorCode sjme_nvm_vmClass_checkInit(
+	sjme_attrOutNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread);
+
+/**
+ * Checks and loads the class if needed.
+ * 
+ * @param inClass The class to be loaded.
+ * @param contextThread The thread this is working under.
+ * @return Any resultant error, if any.
+ * @since 2024/10/24
+ */
+sjme_errorCode sjme_nvm_vmClass_checkLoad(
+	sjme_attrOutNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread);
 
 /**
  * Loads the specified class by the given name.

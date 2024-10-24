@@ -120,6 +120,9 @@ typedef enum sjme_nvm_structType
 	/** Class information. */
 	SJME_NVM_STRUCT_CLASS_INFO,
 	
+	/** A single class instance. */
+	SJME_NVM_STRUCT_CLASS_INSTANCE,
+	
 	/** Class loader. */
 	SJME_NVM_STRUCT_VM_CLASS_LOADER,
 	

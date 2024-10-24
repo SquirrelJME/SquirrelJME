@@ -307,6 +307,16 @@ static sjme_errorCode sjme_nvm_threadClose(
 	return sjme_error_notImplemented(0);
 }
 
+static sjme_errorCode sjme_nvm_vmClass_close(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	if (closeable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_nvm_vmClass_loaderClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -343,6 +353,10 @@ sjme_errorCode sjme_nvm_allocR(
 	{
 		case SJME_NVM_STRUCT_CLASS_INFO:
 			handler = sjme_nvm_class_classInfoClose;
+			break;
+		
+		case SJME_NVM_STRUCT_CLASS_INSTANCE:
+			handler = sjme_nvm_vmClass_close;
 			break;
 			
 		case SJME_NVM_STRUCT_CODE:

@@ -46,6 +46,12 @@ struct sjme_jclassBase
 	
 	/** The has of the binary name. */
 	sjme_jint binaryHash;
+	
+	/** Has the backing class data been loaded? */
+	sjme_atomic_sjme_jint isLoaded;
+	
+	/** Is this class initialized? */
+	sjme_atomic_sjme_jint isInitialized;
 };
 
 /*--------------------------------------------------------------------------*/

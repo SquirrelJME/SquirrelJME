@@ -18,17 +18,114 @@
 /** The amount the class list grows by. */
 #define SJME_VM_CLASS_GROW_LEN 32
 
-static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSub(
+/** Initialize/load not happening. */
+#define SJME_VM_CLASS_INIT_LOAD_NEVER 0
+
+/** Initialize/load is currently happening. */
+#define SJME_VM_CLASS_INIT_LOAD_CURRENT 1
+
+/** Initialize/load is now done. */
+#define SJME_VM_CLASS_INIT_LOAD_DONE 2
+
+static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,
 	sjme_attrOutNotNull sjme_jclass* outSlot,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_lpcstr binaryName)
 {
+	sjme_errorCode error;
+	sjme_jclass result;
+	sjme_lpstr dupName;
+	
 	if (inLoader == NULL || outClass == NULL || outSlot == NULL ||
 		contextThread == NULL || binaryName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Duplicate binary name. */
+	dupName = NULL;
+	if (sjme_error_is(error = sjme_alloc_strdup(
+		inLoader->inState->reservedPool, &dupName,
+		binaryName)) || dupName == NULL)
+		goto fail_dupName;
+	
+	/* Allocate resultant class. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_alloc(
+		inLoader->inState->reservedPool,
+		sizeof(*result), SJME_NVM_STRUCT_CLASS_INSTANCE,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
+		goto fail_allocResult;
+	
+	/* Is now being used, so count up. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
+		goto fail_countUp;
+	
+	/* Store into the output slot immediately for recursive loading. */
+	result->binaryName = dupName;
+	result->binaryHash = sjme_string_hash(dupName);
+	sjme_atomic_sjme_jint_set(&result->isLoaded, 0);
+	sjme_atomic_sjme_jint_set(&result->isInitialized, 0);
+	*outSlot = result;
+	
+	/* Success! */
+	*outClass = result;
+	return SJME_ERROR_NONE;
+	
+fail_countUp:
+fail_allocResult:
+	if (result != NULL)
+		sjme_alloc_free(result);
 		
+fail_dupName:
+	if (dupName)
+		sjme_alloc_free(dupName);
+	
+	/* Make sure the slot is not valid. */
+	*outSlot = NULL;
+	
+	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_vmClass_checkInit(
+	sjme_attrOutNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread)
+{
+	sjme_errorCode error;
+	
+	if (inClass == NULL || contextThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Needs loading first? */
+	if (sjme_atomic_sjme_jint_get(
+		&inClass->isLoaded) == SJME_VM_CLASS_INIT_LOAD_NEVER)
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkLoad(inClass,
+			contextThread)))
+			return sjme_error_default(error);
+			
+	/* Does not need to be initialized? */
+	if (sjme_atomic_sjme_jint_get(
+		&inClass->isInitialized) != SJME_VM_CLASS_INIT_LOAD_NEVER)
+		return SJME_ERROR_NONE;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_vmClass_checkLoad(
+	sjme_attrOutNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread)
+{
+	sjme_errorCode error;
+	
+	if (inClass == NULL || contextThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Does not need to be loaded? */
+	if (sjme_atomic_sjme_jint_get(
+		&inClass->isLoaded) != SJME_VM_CLASS_INIT_LOAD_NEVER)
+		return SJME_ERROR_NONE;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -177,7 +274,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 	
 	/* Forward load of class. */
 	maybe = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadBSub(
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadBSubAlloc(
 		inLoader, &maybe, &classes->elements[freeSlot],
 		contextThread, binaryName)))
 		goto fail_loadClass;
@@ -192,6 +289,13 @@ skip_foundClass:
 	if (sjme_error_is(error = sjme_thread_rwLockReleaseRead(
 		&inLoader->rwLock, NULL)))
 		goto fail_releaseRead;
+		
+	/* From this point implicitly initialize as it is being requested. */
+	if (sjme_atomic_sjme_jint_get(
+		&maybe->isLoaded) == SJME_VM_CLASS_INIT_LOAD_NEVER)
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
+			maybe, contextThread)))
+			return sjme_error_default(error);
 	
 	/* Success! */
 	*outClass = maybe;
@@ -339,6 +443,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	
 	/* Setup fields. */
 	result->rwLock.read = &result->common.lock;
+	result->inState = inState;
 	result->classPath = dup;
 	result->classes = classes;
 	
