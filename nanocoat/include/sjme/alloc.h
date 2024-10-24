@@ -196,6 +196,9 @@ struct sjme_alloc_link
  */
 struct sjme_alloc_pool
 {
+	/** Magic number for the pool. */
+	sjme_jint magic;
+	
 	/** The front end wrapped type. */
 	sjme_frontEnd frontEnd;
 

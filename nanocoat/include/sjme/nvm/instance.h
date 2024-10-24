@@ -40,6 +40,12 @@ struct sjme_jclassBase
 {
 	/** All classes are objects. */
 	sjme_jobjectBase object;
+	
+	/** The binary name of this class. */
+	sjme_lpcstr binaryName;
+	
+	/** The has of the binary name. */
+	sjme_jint binaryHash;
 };
 
 /*--------------------------------------------------------------------------*/

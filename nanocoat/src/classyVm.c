@@ -12,9 +12,26 @@
 
 #include "sjme/nvm/classyVm.h"
 #include "sjme/nvm/cleanup.h"
+#include "sjme/nvm/instance.h"
+#include "sjme/util.h"
 
 /** The amount the class list grows by. */
 #define SJME_VM_CLASS_GROW_LEN 32
+
+static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSub(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrOutNotNull sjme_jclass* outSlot,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_lpcstr binaryName)
+{
+	if (inLoader == NULL || outClass == NULL || outSlot == NULL ||
+		contextThread == NULL || binaryName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
 
 sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
@@ -82,23 +99,115 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 	sjme_attrInNotNull sjme_lpcstr binaryName)
 {
 	sjme_errorCode error;
-	sjme_jint i, n;
+	sjme_jint i, n, hash, freeSlot;
 	sjme_list_sjme_jclass* classes;
+	sjme_jclass maybe;
+	sjme_alloc_weak weak;
 	
 	if (inLoader == NULL || outClass == NULL || contextThread == NULL ||
 		binaryName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Determine has of the binary name for quicker checking. */
+	hash = sjme_string_hash(binaryName);
 	
 	/* Grab the read lock to determine if we can skip loading. */
 	if (sjme_error_is(error = sjme_thread_rwLockGrabRead(
 		&inLoader->rwLock)))
 		return sjme_error_default(error);
 	
+	/* Check to see if the class has already been loaded. */
+	/* Also record the first free slot. */
+	freeSlot = -1;
 	classes = inLoader->classes;
+	for (i = 0, n = classes->length; i < n; i++)
+	{
+		/* Skip nulls. */
+		maybe = classes->elements[i];
+		if (maybe == NULL)
+		{
+			/* Capable free slot. */
+			if (freeSlot < 0)
+				freeSlot = i;
+			continue;
+		}
+		
+		/* Check to see if this class is still valid. */
+		weak = NULL;
+		if (sjme_error_is(error = sjme_alloc_weakRefGet(maybe,
+			&weak)) || weak == NULL)
+		{
+			/* If not a weak reference, it is considered as no longer valid */
+			/* but this is not an actual error case. */
+			if (error == SJME_ERROR_NOT_WEAK_REFERENCE)
+			{
+				error = SJME_ERROR_NONE;
+				classes->elements[i] = NULL;
+				
+				/* Capable free slot. */
+				if (freeSlot < 0)
+					freeSlot = i;
+				continue;
+			}
+			
+			/* Not good! Corruption or otherwise? */
+			goto fail_badWeakClass;
+		}
+		
+		/* Could it be this one? */
+		if (hash == maybe->binaryHash &&
+			strcmp(maybe->binaryName, binaryName) == 0)
+			goto skip_foundClass;
+		
+		/* Make sure this is cleared. */
+		maybe = NULL;
+	}
 	
+	/* Grab the write lock on top of this. */
+	if (sjme_error_is(error = sjme_thread_rwLockGrabWrite(
+		&inLoader->rwLock)))
+		goto fail_lockWrite;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Need to grow the class list? */
+	if (freeSlot < 0)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+	
+	/* Forward load of class. */
+	maybe = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadBSub(
+		inLoader, &maybe, &classes->elements[freeSlot],
+		contextThread, binaryName)))
+		goto fail_loadClass;
+	
+	/* Release the write lock. */
+	if (sjme_error_is(error = sjme_thread_rwLockReleaseWrite(
+		&inLoader->rwLock, NULL)))
+		return sjme_error_default(error);
+	
+skip_foundClass:
+	/* Release the read lock. */
+	if (sjme_error_is(error = sjme_thread_rwLockReleaseRead(
+		&inLoader->rwLock, NULL)))
+		goto fail_releaseRead;
+	
+	/* Success! */
+	*outClass = maybe;
+	return SJME_ERROR_NONE;
+	
+fail_loadClass:
+fail_releaseRead:
+	/* Release the write lock before failing. */
+	sjme_thread_rwLockReleaseWrite(&inLoader->rwLock, NULL);
+	
+fail_lockWrite:
+fail_badWeakClass:
+	/* Release the read lock before failing. */
+	sjme_thread_rwLockReleaseRead(&inLoader->rwLock, NULL);
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(

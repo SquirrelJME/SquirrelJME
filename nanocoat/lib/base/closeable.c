@@ -20,7 +20,7 @@ static sjme_errorCode sjme_closeable_autoEnqueue(
 	sjme_closeable closeable;
 	
 	closeable = data;
-	if (weak == NULL || closeable == NULL)
+	if (closeable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Do not close if we are counting and our count is positive still. */
@@ -91,8 +91,26 @@ sjme_errorCode sjme_closeable_allocR(
 sjme_errorCode sjme_closeable_close(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
+	sjme_errorCode error;
+	sjme_alloc_weak weak;
+	
 	if (closeable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Is this a valid weak pointer type closeable? */
+	weak = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakRefGet(closeable,
+		&weak)) || weak == NULL)
+	{
+		/* Close non-weak based closeable. */
+		if (error == SJME_ERROR_NOT_WEAK_REFERENCE)
+			return sjme_closeable_autoEnqueue(NULL, closeable,
+				0, SJME_JNI_FALSE,
+				SJME_JNI_FALSE);
+		
+		/* Fail otherwise. */
+		return sjme_error_default(error);
+	}
 	
 	/* Closing counts as an unref. */
 	return sjme_alloc_weakUnRef((sjme_pointer)closeable);
