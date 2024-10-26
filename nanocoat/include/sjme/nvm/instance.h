@@ -35,6 +35,12 @@ struct sjme_jobjectBase
 {
 	/** Common base for all objects. */
 	sjme_nvm_commonBase common;
+	
+	/** The identity hashcode. */
+	sjme_jint identityHash;
+	
+	/** The current class that this is. */
+	sjme_jclass isClass;
 };
 
 struct sjme_jclassBase
@@ -58,7 +64,7 @@ struct sjme_jclassBase
 	sjme_nvm_class_info info;
 	
 	/** The super class of this class. */
-	sjme_jclass superClass;
+	sjme_atomic_sjme_jclass superClass;
 	
 	/** Interface classes for this class. */
 	sjme_list_sjme_jclass interfaceClasses;

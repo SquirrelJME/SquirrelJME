@@ -135,6 +135,9 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_attrInNotNull sjme_nvm_thread contextThread)
 {
 	sjme_errorCode error;
+	sjme_nvm_class_info info;
+	sjme_nvm_vmClass_loader loader;
+	sjme_jclass other;
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -145,14 +148,72 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkLoad(inClass,
 			contextThread)))
 			return sjme_error_default(error);
-			
-	/* Does not need to be initialized? */
-	if (sjme_atomic_sjme_jint_get(
-		&inClass->isInitialized) != SJME_VM_CLASS_INIT_LOAD_NEVER)
-		return SJME_ERROR_NONE;
+	
+	/* Set to be currently initializing. */
+	if (!sjme_atomic_sjme_jint_compareSet(&inClass->isInitialized,
+		SJME_VM_CLASS_INIT_LOAD_NEVER,
+		SJME_VM_CLASS_INIT_LOAD_CURRENT))
+	{
+		/* Does not need to be initialized? */
+		if (sjme_atomic_sjme_jint_get(
+			&inClass->isInitialized) != SJME_VM_CLASS_INIT_LOAD_NEVER)
+			return SJME_ERROR_NONE;
+		
+		/* Called twice? Should not normally happen. */
+		goto skip_doubleCalled;
+	}
+	
+	/* The class info should now be valid. */
+	info = inClass->info;
+	loader = contextThread->inTask->classLoader;
+	if (info == NULL || loader == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* The super class, if any needs to be initialized. */
+	if (info->superName != NULL)
+	{
+		/* Load in super class. */
+		other = NULL;
+		if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+			loader, &other, contextThread,
+			(sjme_lpcstr)&info->superName->chars[0])) ||
+			other == NULL)
+			goto fail_loadSuper;
+		
+		/* Set superclass. */
+		sjme_atomic_sjme_jclass_set(&inClass->superClass,
+			other);
+	}
+	
+	/* Lock on this. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&inClass->object.common.lock)))
+		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+	
+	/* Set as initialized now. */
+	if (!sjme_atomic_sjme_jint_compareSet(&inClass->isInitialized,
+		SJME_VM_CLASS_INIT_LOAD_CURRENT,
+		SJME_VM_CLASS_INIT_LOAD_DONE))
+		goto fail_markDone;
+	
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&inClass->object.common.lock, NULL)))
+		return sjme_error_default(error);
+
+	/* Success! */
+skip_doubleCalled:
+	return SJME_ERROR_NONE;
+	
+fail_markDone:
+	sjme_thread_spinLockRelease(
+		&inClass->object.common.lock, NULL);
+	
+fail_loadSuper:
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_nvm_vmClass_checkLoad(

@@ -189,6 +189,9 @@ SJME_ATOMIC_DECLARE(sjme_intPointer , 0);
 /** Atomic @c sjme_jobject. */
 SJME_ATOMIC_DECLARE(sjme_jobject, 0);
 
+/** Atomic @c sjme_jclass. */
+SJME_ATOMIC_DECLARE(sjme_jclass, 0);
+
 #if defined(SJME_CONFIG_HAS_ATOMIC_OLD)
 
 /**

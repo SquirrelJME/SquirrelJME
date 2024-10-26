@@ -180,13 +180,13 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 		result = NULL;
 #if defined(SJME_CONFIG_DEBUG)
 		if (sjme_error_is(error = sjme_nvm_allocR(inStringPool->inPool,
-			sizeof(*result) + inUtfLen, 
+			sizeof(*result) + inUtfLen + 1, 
 			SJME_NVM_STRUCT_STRING_POOL_STRING,
 			SJME_AS_NVM_COMMONP(&result), file, line, func)) ||
 			result == NULL)
 #else
 		if (sjme_error_is(error = sjme_nvm_alloc(inStringPool->inPool,
-			sizeof(*result) + inUtfLen, 
+			sizeof(*result) + inUtfLen + 1,
 			SJME_NVM_STRUCT_STRING_POOL_STRING,
 			SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 #endif

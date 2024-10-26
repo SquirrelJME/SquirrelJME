@@ -581,6 +581,29 @@ typedef sjme_jobjectBase* sjme_jobject;
 #define SJME_TYPEOF_IS_POINTER_sjme_jobject 1
 
 /**
+ * Class type.
+ * 
+ * @since 2024/10/19
+ */
+typedef struct sjme_jclassBase sjme_jclassBase;
+
+/**
+ * Class type.
+ * 
+ * @since 2023/07/25
+ */
+typedef sjme_jclassBase* sjme_jclass;
+
+/** Basic @c sjme_jclass type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jclass SJME_TYPEOF_BASIC_sjme_jobject
+
+/** Java @c sjme_jclass type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jclass SJME_TYPEOF_JAVA_sjme_jobject
+
+/** Is a pointer for @c sjme_jclass ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jclass SJME_TYPEOF_IS_POINTER_sjme_jobject
+
+/**
  * Generic value union.
  *
  * @since 2024/01/05

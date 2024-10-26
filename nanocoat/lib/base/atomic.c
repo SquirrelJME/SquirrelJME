@@ -214,6 +214,8 @@ SJME_ATOMIC_FUNCTION(sjme_lpcstr, 0) /* NOLINT(*-non-const-parameter) */
 
 SJME_ATOMIC_FUNCTION(sjme_jobject, 0)
 
+SJME_ATOMIC_FUNCTION(sjme_jclass, 0)
+
 SJME_ATOMIC_FUNCTION(sjme_pointer, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_intPointer, 0)
