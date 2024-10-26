@@ -654,7 +654,7 @@ static sjme_errorCode sjme_nvm_class_parseAttribute(
 			return error;
 		}
 	
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("No handler for attribute %s.", attrName);
 #endif
