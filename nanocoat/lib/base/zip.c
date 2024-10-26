@@ -317,7 +317,7 @@ sjme_errorCode sjme_zip_entryRead(
 	actualDataPos = localHeaderPos + SJME_ZIP_LOCAL_LENGTH +
 		lens[0] + lens[1];
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("Lens: %d %d", lens[0], lens[1]);
 	sjme_message("Entry data at %d", actualDataPos);

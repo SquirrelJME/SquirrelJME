@@ -30,7 +30,7 @@ static sjme_errorCode sjme_closeable_autoEnqueue(
 		return SJME_ERROR_NONE;
 	
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("Closeable auto-close %p", closeable);
 #endif
 	

@@ -245,7 +245,7 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
 	foundClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
 		inTask->classLoader, &foundClass,
-		inThread, inClass)))
+		inThread, inClass, SJME_JNI_TRUE)))
 		return sjme_error_default(error);
 	
 	/* Forward to other call. */

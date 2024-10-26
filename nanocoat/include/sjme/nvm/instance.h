@@ -67,7 +67,7 @@ struct sjme_jclassBase
 	sjme_atomic_sjme_jclass superClass;
 	
 	/** Interface classes for this class. */
-	sjme_list_sjme_jclass interfaceClasses;
+	sjme_list_sjme_jclass* interfaceClasses;
 };
 
 /*--------------------------------------------------------------------------*/

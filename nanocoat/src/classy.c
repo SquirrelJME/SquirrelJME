@@ -1037,9 +1037,11 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 		if (sjme_error_is(error = sjme_stream_inputReadValueJB(
 			inStream, &tag)) || tag < 0)
 			goto fail_readTag;
-		
+
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("TAG: %d", tag);
+#endif
 		
 		/* Set tag. */
 		entry->type = tag;
@@ -1141,10 +1143,12 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				if (sjme_error_is(error = sjme_nvm_stringPool_locateStream(
 					inStringPool, inStream, &utf)) || utf == NULL)
 					goto fail_readItem;
-				
+
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 				/* Debug. */
 				sjme_message("Read UTF: %s",
 					utf->chars);
+#endif
 				
 				/* Store and count up entry as we are using it now. */
 				entry->utf.utf = utf;

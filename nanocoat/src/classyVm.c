@@ -137,10 +137,16 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_errorCode error;
 	sjme_nvm_class_info info;
 	sjme_nvm_vmClass_loader loader;
-	sjme_jclass other;
+	sjme_jint i, n;
+	sjme_jclass superClass, interface;
+	sjme_list_sjme_jclass* interfaces;
+	sjme_alloc_pool* inPool;
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Need these in order to work at all. */
+	inPool = contextThread->inState->reservedPool;
 	
 	/* Needs loading first? */
 	if (sjme_atomic_sjme_jint_get(
@@ -163,27 +169,77 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		goto skip_doubleCalled;
 	}
 	
+	/* Debug. */
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_message("Initializing class: %s", inClass->binaryName);
+#endif
+	
 	/* The class info should now be valid. */
 	info = inClass->info;
 	loader = contextThread->inTask->classLoader;
 	if (info == NULL || loader == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* The super class, if any needs to be initialized. */
+	/* The super class needs to be found first. */
+	superClass = NULL;
 	if (info->superName != NULL)
 	{
-		/* Load in super class. */
-		other = NULL;
+		/* Find super class. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-			loader, &other, contextThread,
-			(sjme_lpcstr)&info->superName->chars[0])) ||
-			other == NULL)
-			goto fail_loadSuper;
+			loader, &superClass, contextThread,
+			(sjme_lpcstr)&info->superName->chars[0],
+			SJME_JNI_FALSE)) ||
+			superClass == NULL)
+			goto fail_findSuper;
 		
 		/* Set superclass. */
 		sjme_atomic_sjme_jclass_set(&inClass->superClass,
-			other);
+			superClass);
 	}
+	
+	/* If there are interfaces, they need to be found as well. */
+	interfaces = NULL;
+	if (info->interfaceNames != NULL && info->interfaceNames->length > 0)
+	{
+		/* List needs to be setup first. */
+		n = info->interfaceNames->length;
+		if (sjme_error_is(error = sjme_list_alloc(inPool, n,
+			&interfaces, sjme_jclass, 0)) || interfaces == NULL)
+			goto fail_allocInterfaces;
+		
+		/* Store it. */
+		inClass->interfaceClasses = interfaces;
+		
+		/* Find all associated interfaces. */
+		for (i = 0; i < n; i++)
+		{
+			/* Find interface class. */
+			interface = NULL;
+			if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+				loader, &interface, contextThread,
+				(sjme_lpcstr)
+					&info->interfaceNames->elements[i]->chars[0],
+				SJME_JNI_FALSE)) ||
+				interface == NULL)
+				goto fail_findInterface;
+			
+			/* Set superclass. */
+			interfaces->elements[i] = interface;
+		}
+	}
+	
+	/* Initialize super class now. */
+	if (superClass != NULL)
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
+			superClass, contextThread)))
+			goto fail_initSuper;
+	
+	/* Then any interfaces. */
+	if (interfaces != NULL)
+		for (i = 0, n = interfaces->length; i < n; i++)
+			if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
+				interfaces->elements[i], contextThread)))
+				goto fail_initInterface;
 	
 	/* Lock on this. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
@@ -212,7 +268,11 @@ fail_markDone:
 	sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL);
 	
-fail_loadSuper:
+fail_initInterface:
+fail_initSuper:
+fail_findInterface:
+fail_allocInterfaces:
+fail_findSuper:
 	return sjme_error_default(error);
 }
 
@@ -318,7 +378,8 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInNotNull sjme_lpcstr className)
+	sjme_attrInNotNull sjme_lpcstr className,
+	sjme_attrInValue sjme_jboolean doInit)
 {
 	sjme_cchar buf[SJME_VM_CLASS_NAME_LIMIT];
 	
@@ -333,7 +394,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 	
 	/* Forward call. */
 	return sjme_nvm_vmClass_loaderLoadB(inLoader, outClass,
-		contextThread, buf);
+		contextThread, buf, doInit);
 }
 
 sjme_errorCode sjme_nvm_vmClass_loaderLoadArray(
@@ -376,7 +437,8 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInNotNull sjme_lpcstr binaryName)
+	sjme_attrInNotNull sjme_lpcstr binaryName,
+	sjme_attrInValue sjme_jboolean doInit)
 {
 	sjme_errorCode error;
 	sjme_jint hash, freeSlot;
@@ -409,6 +471,11 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 	/* Found something? */
 	if (maybe != NULL)
 		goto skip_foundClass;
+	
+	/* Debug. */
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_message("Need to find class: %s", binaryName);
+#endif
 	
 	/* Grab the write lock on top of this. */
 	if (sjme_error_is(error = sjme_thread_rwLockGrabWrite(
@@ -447,7 +514,7 @@ skip_foundClass:
 		goto fail_releaseRead;
 		
 	/* From this point implicitly initialize as it is being requested. */
-	if (sjme_atomic_sjme_jint_get(
+	if (doInit && sjme_atomic_sjme_jint_get(
 		&maybe->isLoaded) == SJME_VM_CLASS_INIT_LOAD_NEVER)
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
 			maybe, contextThread)))
@@ -535,7 +602,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(
 	
 	/* Forward call. */
 	return sjme_nvm_vmClass_loaderLoadB(inLoader, outClass,
-		contextThread, buf);
+		contextThread, buf, SJME_JNI_TRUE);
 #undef BUFSIZE
 }
 

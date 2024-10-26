@@ -101,7 +101,8 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
  * @param outClass The resultant class.
  * @param contextThread The thread where any constructors can be called if
  * needed.
- * @param className The class to load. 
+ * @param className The class to load.
+ * @param doInit Initialize this class?
  * @return Any resultant error, if any.
  * @since 2024/10/19
  */
@@ -109,7 +110,8 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInNotNull sjme_lpcstr className);
+	sjme_attrInNotNull sjme_lpcstr className,
+	sjme_attrInValue sjme_jboolean doInit);
 
 /**
  * Generates an array class type of the specified component type.
@@ -157,6 +159,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadArrayA(
  * @param contextThread The thread where any constructors can be called if
  * needed.
  * @param binaryName The binary name to load. 
+ * @param doInit Initialize this class?
  * @return Any resultant error, if any.
  * @since 2024/10/22
  */
@@ -164,7 +167,8 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInNotNull sjme_lpcstr binaryName);
+	sjme_attrInNotNull sjme_lpcstr binaryName,
+	sjme_attrInValue sjme_jboolean doInit);
 
 /**
  * Generates a primitive class type.
