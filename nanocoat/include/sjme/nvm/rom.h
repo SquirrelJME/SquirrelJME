@@ -328,6 +328,20 @@ struct sjme_nvm_rom_suiteBase
 };
 
 /**
+ * Attempts to load a class from the given library, caching it accordingly.
+ * 
+ * @param inLibrary The input library.
+ * @param outClassInfo The resultant parsed classed.
+ * @param fileName The name of the file.
+ * @return Any resultant error, if any.
+ * @since 2024/10/25 
+ */
+sjme_errorCode sjme_nvm_rom_libraryCacheClass(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_nvm_class_info* outClassInfo,
+	sjme_attrInNotNull sjme_lpcstr fileName);
+
+/**
  * Initializes a library from a Zip that is already loaded.
  *
  * @param pool The pool to use for allocations.

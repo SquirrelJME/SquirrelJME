@@ -135,6 +135,18 @@ static const sjme_nvm_rom_libraryFunctions sjme_nvm_rom_zipLibraryFunctions =
 	.resourceStream = sjme_nvm_rom_zipLibraryResourceStream,
 };
 
+sjme_errorCode sjme_nvm_rom_libraryCacheClass(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_nvm_class_info* outClassInfo,
+	sjme_attrInNotNull sjme_lpcstr fileName)
+{
+	if (inLibrary == NULL || outClassInfo == NULL || fileName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_rom_libraryFromZip(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,

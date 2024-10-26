@@ -17,6 +17,7 @@
 #define SQUIRRELJME_INSTANCE_H
 
 #include "sjme/nvm/nvm.h"
+#include "sjme/nvm/classyVm.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -52,6 +53,15 @@ struct sjme_jclassBase
 	
 	/** Is this class initialized? */
 	sjme_atomic_sjme_jint isInitialized;
+	
+	/** The parsed class file information. */
+	sjme_nvm_class_info info;
+	
+	/** The super class of this class. */
+	sjme_jclass superClass;
+	
+	/** Interface classes for this class. */
+	sjme_list_sjme_jclass interfaceClasses;
 };
 
 /*--------------------------------------------------------------------------*/
