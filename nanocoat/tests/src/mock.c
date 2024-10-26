@@ -73,7 +73,7 @@ static sjme_errorCode sjme_mock_defaultRomLibraryRawData(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	/* Recover mock. */
-	mock = inLibrary->cache.common.frontEnd.data;
+	mock = inLibrary->common.frontEnd.data;
 
 	/* Double check size. */
 	if (srcPos + length < 0 || srcPos + length > mock->length)
@@ -98,7 +98,7 @@ static sjme_errorCode sjme_mock_defaultRomLibraryRawSize(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Recover mock. */
-	mock = inLibrary->cache.common.frontEnd.data;
+	mock = inLibrary->common.frontEnd.data;
 
 	/* Is a simple set operation. */
 	*outSize = mock->length;
@@ -118,7 +118,7 @@ static sjme_errorCode sjme_mock_defaultRomMockLibraryResourceStream(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Which pool to allocate within? */
-	pool = inLibrary->cache.common.allocPool;
+	pool = inLibrary->allocPool;
 
 	/* Debug. */
 	sjme_message("Looking for resource %s...", resourceName);
@@ -454,19 +454,19 @@ sjme_jboolean sjme_mock_doRomLibrary(
 		return sjme_die("Could not allocate library.");
 
 	/* Make a copy of the input data to be used as front end specific data. */
-	library->cache.common.frontEnd.data = NULL;
+	library->common.frontEnd.data = NULL;
 	if (sjme_error_is(sjme_alloc_copy(inState->allocPool,
 		sizeof(inData->current.data.romLibrary),
-		&library->cache.common.frontEnd.data,
+		&library->common.frontEnd.data,
 		&inData->current.data.romLibrary)) ||
-		library->cache.common.frontEnd.data == NULL)
+		library->common.frontEnd.data == NULL)
 		return sjme_die("Could not copy data.");
 
 	/* Make sure the pool is set, otherwise other functions will not work. */
-	library->cache.common.allocPool = inState->allocPool;
+	library->allocPool = inState->allocPool;
 
 	/* Use the copied data instead. */
-	data = library->cache.common.frontEnd.data;
+	data = library->common.frontEnd.data;
 
 	/* Setup baseline mock functions, if none are set for some. */
 	library->functions = &data->functions;
@@ -587,7 +587,7 @@ sjme_jboolean sjme_mock_doRomSuite(
 	suiteData = &inData->current.data.romSuite;
 
 	/* Seed front end data. */
-	suite->cache.common.frontEnd.data = inState;
+	suite->common.frontEnd.data = inState;
 
 	/* Copy suite functions. */
 	suite->functions = NULL;
@@ -600,13 +600,9 @@ sjme_jboolean sjme_mock_doRomSuite(
 
 	/* Set front end to the test state. */
 	writeFunctions = (sjme_nvm_rom_suiteFunctions*)suite->functions;
-
-	/* If there is no cache init, just initialize it to something... */
-	if (writeFunctions->init == NULL)
-		memset(&suite->cache, 0, sizeof(suite->cache));
-
-	/* Otherwise call the initializer. */
-	else
+	
+	/* initialize if available. */
+	if (writeFunctions->init != NULL)
 	{
 		if (sjme_error_is(writeFunctions->init(
 			suite, NULL)))
@@ -614,12 +610,12 @@ sjme_jboolean sjme_mock_doRomSuite(
 	}
 
 	/* Set the allocation pool to use if not set. */
-	if (suite->cache.common.allocPool == NULL)
-		suite->cache.common.allocPool = inState->allocPool;
+	if (suite->allocPool == NULL)
+		suite->allocPool = inState->allocPool;
 
 	/* Is there a pre-cache used for libraries? */
 	if (suiteData->cacheLibraries != NULL)
-		suite->cache.libraries = suiteData->cacheLibraries;
+		suite->libraries = suiteData->cacheLibraries;
 
 	/* Place finalized suite down. */
 	inState->romSuites[inState->numRomSuites] = suite;

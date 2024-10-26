@@ -76,25 +76,25 @@ static sjme_errorCode sjme_nvm_rom_zipLibraryInit(
 	/* Setup prefix, if there is one. */
 	if (init->prefix != NULL)
 		 if (sjme_error_is(error = sjme_alloc_strdup(
-		 	inLibrary->cache.common.allocPool,
-		 	(sjme_lpstr*)&inLibrary->prefix, init->prefix)))
+		 	inLibrary->allocPool,
+		 	(sjme_lpstr*)&inLibrary->prefix,
+		 	init->prefix)))
 		 	return sjme_error_default(error);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_nvm_rom_zipLibraryResourceStream(
+static sjme_errorCode sjme_nvm_rom_zipLibraryResource(
 	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
-	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrOutNotNull sjme_zip_entry* outEntry,
 	sjme_attrInNotNull sjme_lpcstr resourceName)
 {
 	sjme_errorCode error;
 	sjme_zip zip;
-	sjme_zip_entry entry;
 	sjme_cchar actualName[SJME_MAX_PATH];
 	
-	if (inLibrary == NULL || outStream == NULL || resourceName == NULL)
+	if (inLibrary == NULL || outEntry == NULL || resourceName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover zip. */
@@ -112,9 +112,8 @@ static sjme_errorCode sjme_nvm_rom_zipLibraryResourceStream(
 			inLibrary->prefix, resourceName);
 	
 	/* Locate the entry. */
-	memset(&entry, 0, sizeof(entry));
 	if (sjme_error_is(error = sjme_zip_locateEntry(zip,
-		&entry, actualName)))
+		outEntry, actualName)))
 	{
 		/* File not found maps to resource not found. */
 		if (error == SJME_ERROR_FILE_NOT_FOUND)
@@ -122,6 +121,60 @@ static sjme_errorCode sjme_nvm_rom_zipLibraryResourceStream(
 		
 		return sjme_error_default(error);
 	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_rom_zipLibraryResourceExists(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_jboolean* outExists,
+	sjme_attrInNotNull sjme_lpcstr resourceName)
+{
+	sjme_errorCode error;
+	sjme_zip_entry entry;
+	
+	if (inLibrary == NULL || outExists == NULL || resourceName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Obtain resource info. */
+	memset(&entry, 0, sizeof(entry));
+	if (sjme_error_is(error = sjme_nvm_rom_zipLibraryResource(inLibrary,
+		&entry, resourceName)))
+	{
+		/* Not found? */
+		if (error == SJME_ERROR_FILE_NOT_FOUND ||
+			error == SJME_ERROR_RESOURCE_NOT_FOUND)
+		{
+			*outExists = SJME_JNI_FALSE;
+			return SJME_ERROR_NONE;
+		}
+		
+		/* Fails otherwise. */
+		return sjme_error_default(error);
+	}
+	
+	/* It does exist! */
+	*outExists = SJME_JNI_TRUE;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_rom_zipLibraryResourceStream(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull sjme_lpcstr resourceName)
+{
+	sjme_errorCode error;
+	sjme_zip_entry entry;
+	
+	if (inLibrary == NULL || outStream == NULL || resourceName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Obtain resource info. */
+	memset(&entry, 0, sizeof(entry));
+	if (sjme_error_is(error = sjme_nvm_rom_zipLibraryResource(inLibrary,
+		&entry, resourceName)))
+		return sjme_error_default(error);
 	
 	/* Open input stream over resource. */
 	return sjme_zip_entryRead(&entry, outStream);
@@ -132,20 +185,12 @@ static const sjme_nvm_rom_libraryFunctions sjme_nvm_rom_zipLibraryFunctions =
 {
 	.close = sjme_nvm_rom_zipLibraryClose,
 	.init = sjme_nvm_rom_zipLibraryInit,
+	.path = NULL,
+	.rawData = NULL,
+	.rawSize = NULL,
+	.resourceExists = sjme_nvm_rom_zipLibraryResourceExists,
 	.resourceStream = sjme_nvm_rom_zipLibraryResourceStream,
 };
-
-sjme_errorCode sjme_nvm_rom_libraryCacheClass(
-	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
-	sjme_attrOutNotNull sjme_nvm_class_info* outClassInfo,
-	sjme_attrInNotNull sjme_lpcstr fileName)
-{
-	if (inLibrary == NULL || outClassInfo == NULL || fileName == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
 
 sjme_errorCode sjme_nvm_rom_libraryFromZip(
 	sjme_attrInNotNull sjme_alloc_pool* pool,

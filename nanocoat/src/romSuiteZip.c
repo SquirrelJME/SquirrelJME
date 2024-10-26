@@ -166,8 +166,8 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteLibraryId(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* This needs to be known. */
-	libs = inSuite->cache.libraries;
-	if (inSuite->cache.libraries == NULL)
+	libs = inSuite->libraries;
+	if (inSuite->libraries == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Find the right one, its ID is just its index. */
@@ -201,7 +201,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteListLibraries(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover Zip. */
-	inPool = inSuite->cache.common.allocPool;
+	inPool = inSuite->allocPool;
 	zip = inSuite->handle;
 	
 	/* Initialize. */

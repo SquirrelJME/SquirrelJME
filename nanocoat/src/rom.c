@@ -113,7 +113,7 @@ sjme_errorCode sjme_nvm_rom_resolveClassPathById(
 			return SJME_ERROR_LIBRARY_NOT_FOUND;
 
 	/* Return the libraries which gets placed into a list as a copy. */
-	return sjme_list_newA(inSuite->cache.common.allocPool,
+	return sjme_list_newA(inSuite->allocPool,
 		sjme_nvm_rom_library, 0, length, outLibs, working);
 }
 
@@ -200,6 +200,6 @@ sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
 		}
 
 	/* Return the libraries which gets placed into a list as a copy. */
-	return sjme_list_newA(inSuite->cache.common.allocPool,
+	return sjme_list_newA(inSuite->allocPool,
 		sjme_nvm_rom_library, 0, length, outLibs, working);
 }

@@ -18,6 +18,45 @@
 #include "sjme/zip.h"
 #include "sjme/nvm/cleanup.h"
 
+sjme_errorCode sjme_nvm_rom_libraryCacheClass(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_nvm_class_info* outClassInfo,
+	sjme_attrInNotNull sjme_lpcstr fileName)
+{
+	sjme_errorCode error;
+	sjme_jboolean exists;
+	sjme_jint i, n, freeSlot;
+	
+	if (inLibrary == NULL || outClassInfo == NULL || fileName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Query for existence first. */
+	exists = SJME_JNI_FALSE;
+	if (sjme_error_is(error = sjme_nvm_rom_libraryResourceExists(
+		inLibrary, &exists, fileName)))
+		return sjme_error_default(error);
+	
+	/* Not in here, so we can just never bother. */
+	if (!exists)
+		return SJME_ERROR_RESOURCE_NOT_FOUND;
+	
+	/* Lock the library to see if we already cached this. */
+	if (sjme_error_is(error = sjme_thread_rwLockGrabRead(
+		&inLibrary->rwLock)))
+		return sjme_error_default(error);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Release read lock. */
+	if (sjme_error_is(error = sjme_thread_rwLockReleaseRead(
+		&inLibrary->rwLock, NULL)))
+		return sjme_error_default(error);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_rom_libraryHash(
 	sjme_attrInNotNull sjme_nvm_rom_library library,
 	sjme_attrOutNotNull sjme_jint* outHash)
@@ -69,8 +108,9 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 		goto fail_alloc;
 	
 	/* Setup result. */
-	result->cache.common.allocPool = pool;
+	result->allocPool = pool;
 	result->functions = inFunctions;
+	result->rwLock.read = &result->common.lock;
 	
 	/* Copy front end? */
 	if (copyFrontEnd != NULL)
@@ -129,8 +169,8 @@ sjme_errorCode sjme_nvm_rom_libraryRawReadIter(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Do we already know this will not work? */
-	if (library->cache.checkedRawAccess &&
-		!library->cache.validRawAccess)
+	if (library->checkedRawAccess &&
+		!library->validRawAccess)
 		return SJME_ERROR_UNSUPPORTED_OPERATION;
 
 	/* Check all the bounds variants possible, for overflow as well. */
@@ -181,13 +221,13 @@ sjme_errorCode sjme_nvm_rom_libraryRawSize(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Do we already know this will not work? */
-	if (library->cache.checkedRawAccess &&
-		!library->cache.validRawAccess)
+	if (library->checkedRawAccess &&
+		!library->validRawAccess)
 		return SJME_ERROR_UNSUPPORTED_OPERATION;
 
 	/* Size was already determined? */
-	if (library->cache.size > 0)
-		return library->cache.size;
+	if (library->rawSize > 0)
+		return library->rawSize;
 
 	/* Native handler must be valid! */
 	if (library->functions->rawSize == NULL)
@@ -209,10 +249,10 @@ sjme_errorCode sjme_nvm_rom_libraryRawSize(
 
 fail_unsupported:
 	/* Cache whether this is supported, so we need not bother? */
-	if (!library->cache.checkedRawAccess)
+	if (!library->checkedRawAccess)
 	{
-		library->cache.checkedRawAccess = SJME_JNI_TRUE;
-		library->cache.validRawAccess = SJME_JNI_FALSE;
+		library->checkedRawAccess = SJME_JNI_TRUE;
+		library->validRawAccess = SJME_JNI_FALSE;
 	}
 
 	/* Not supported! */
@@ -268,4 +308,24 @@ fail_locateResource:
 	sjme_thread_spinLockRelease(&library->common.lock, NULL);
 	
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_rom_libraryResourceExists(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_jboolean* outExists,
+	sjme_attrInNotNull sjme_lpcstr rcName)
+{
+	sjme_errorCode error;
+	
+	if (inLibrary == NULL || outExists == NULL || rcName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Is there a function to quickly check if it exists? */
+	if (inLibrary->functions->resourceExists != NULL)
+		return inLibrary->functions->resourceExists(inLibrary,
+			outExists, rcName);
+	
+	/* Otherwise we need to open the actual stream to it. */
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }

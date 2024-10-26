@@ -195,7 +195,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 			tryLib, &info, fileName)) || info == NULL)
 		{
 			/* Not in this library, stop. */
-			if (error == SJME_ERROR_NONE || error == SJME_ERROR_FILE_NOT_FOUND)
+			if (error == SJME_ERROR_RESOURCE_NOT_FOUND)
 				continue;
 			
 			/* Fail. */

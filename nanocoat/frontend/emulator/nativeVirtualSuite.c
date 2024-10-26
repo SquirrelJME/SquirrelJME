@@ -50,8 +50,8 @@ static sjme_errorCode sjme_jni_virtualSuite_list(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Get instance that we need to call into. */
-	env = inSuite->cache.common.frontEnd.data;
-	virtualSuite = inSuite->cache.common.frontEnd.wrapper;
+	env = inSuite->common.frontEnd.data;
+	virtualSuite = inSuite->common.frontEnd.wrapper;
 	classy = (*env)->GetObjectClass(env, virtualSuite);
 
 	/* Execute method accordingly. */

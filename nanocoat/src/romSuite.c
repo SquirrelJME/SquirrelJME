@@ -109,7 +109,6 @@ sjme_errorCode sjme_nvm_rom_suiteLibraries(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs)
 {
-	sjme_nvm_rom_suiteCache* cache;
 	sjme_nvm_rom_suiteListLibrariesFunc listFunc;
 	sjme_list_sjme_nvm_rom_library* result;
 	sjme_errorCode error;
@@ -119,17 +118,16 @@ sjme_errorCode sjme_nvm_rom_suiteLibraries(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Must be a valid cache. */
-	cache = &inSuite->cache;
-	if (cache->common.allocPool == NULL)
+	if (inSuite->allocPool == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Has this been processed already? */
-	if (cache->libraries != NULL)
+	if (inSuite->libraries != NULL)
 	{
 		/* Debug. */
-		sjme_message("Using existing cache: %p", cache->libraries);
+		sjme_message("Using existing cache: %p", inSuite->libraries);
 
-		*outLibs = cache->libraries;
+		*outLibs = inSuite->libraries;
 		return SJME_ERROR_NONE;
 	}
 
@@ -150,7 +148,7 @@ sjme_errorCode sjme_nvm_rom_suiteLibraries(
 		goto fail_list;
 
 	/* Store it within the cache. */
-	cache->libraries = result;
+	inSuite->libraries = result;
 	
 	/* All of these must be valid libraries. */
 	for (i = 0, n = result->length; i < n; i++)
@@ -207,7 +205,7 @@ sjme_errorCode sjme_nvm_rom_suiteNew(
 		goto fail_alloc;
 	
 	/* Setup result. */
-	result->cache.common.allocPool = pool;
+	result->allocPool = pool;
 	result->functions = inFunctions;
 	
 	/* Copy front end data? */

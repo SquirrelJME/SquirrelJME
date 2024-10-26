@@ -52,54 +52,6 @@ SJME_LIST_DECLARE(sjme_nvm_rom_library, 0);
 #define SJME_TYPEOF_BASIC_sjme_nvm_rom_library SJME_BASIC_TYPE_ID_OBJECT
 
 /**
- * Common cache between suites and libraries.
- *
- * @since 2023/12/20
- */
-typedef struct sjme_nvm_rom_cache
-{
-	/** The allocation pool to use. */
-	sjme_alloc_pool* allocPool;
-
-	/** Wrapped object, if applicable. */
-	sjme_frontEnd frontEnd;
-} sjme_nvm_rom_cache;
-
-/**
- * Internal cache for ROM libraries.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_nvm_rom_libraryCache
-{
-	/** Common cache data. */
-	sjme_nvm_rom_cache common;
-
-	/** Cached size of the library. */
-	sjme_jint size;
-
-	/** Is raw access checked? */
-	sjme_jboolean checkedRawAccess : 1;
-
-	/** Is raw access valid. */
-	sjme_jboolean validRawAccess : 1;
-} sjme_nvm_rom_libraryCache;
-
-/**
- * Internal cache for ROM suites.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_nvm_rom_suiteCache
-{
-	/** Common cache data. */
-	sjme_nvm_rom_cache common;
-
-	/** Libraries that exist within the suite. */
-	sjme_list_sjme_nvm_rom_library* libraries;
-} sjme_nvm_rom_suiteCache;
-
-/**
  * Functions used to access a single library.
  *
  * @since 2023/12/12
@@ -121,6 +73,9 @@ struct sjme_nvm_rom_libraryBase
 	/** Functions used to access library information. */
 	const sjme_nvm_rom_libraryFunctions* functions;
 	
+	/** The allocation pool to use. */
+	sjme_alloc_pool* allocPool;
+	
 	/** The handle, may be to a seekable. */
 	sjme_pointer handle;
 	
@@ -135,12 +90,21 @@ struct sjme_nvm_rom_libraryBase
 
 	/** Hash of the library name. */
 	sjme_jint nameHash;
+
+	/** Cached raw size of the library. */
+	sjme_jint rawSize;
+
+	/** Is raw access checked? */
+	sjme_jboolean checkedRawAccess : 1;
+
+	/** Is raw access valid. */
+	sjme_jboolean validRawAccess : 1;
+	
+	/** Generally a lock on cached class information. */
+	sjme_thread_rwLock rwLock;
 	
 	/** Class information that has already been loaded for this library. */
 	sjme_list_sjme_nvm_class_info* classInfos;
-
-	/** Internal cache, used by internal library functions. */
-	sjme_nvm_rom_libraryCache cache;
 };
 
 /**
@@ -197,6 +161,20 @@ typedef sjme_errorCode (*sjme_nvm_rom_libraryRawData)(
 typedef sjme_errorCode (*sjme_nvm_rom_libraryRawSizeFunc)(
 	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_jint* outSize);
+
+/**
+ * Does the given resource exist?
+ * 
+ * @param inLibrary The library to read the resource from.
+ * @param outExists The output of whether the resource exists.
+ * @param resourceName The name of the resource.
+ * @return Any resultant error code.
+ * @since 2024/10/26
+ */
+typedef sjme_errorCode (*sjme_nvm_rom_libraryResourceExistsFunc)(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_jboolean* outExists,
+	sjme_attrInNotNull sjme_lpcstr resourceName);
 
 /**
  * Opens the given resource as a stream.
@@ -289,6 +267,9 @@ struct sjme_nvm_rom_libraryFunctions
 
 	/** The size of this library. */
 	sjme_nvm_rom_libraryRawSizeFunc rawSize;
+	
+	/** Does the given resource exist? */
+	sjme_nvm_rom_libraryResourceExistsFunc resourceExists;
 
 	/** Access a resource as a stream. */
 	sjme_nvm_rom_libraryResourceStreamFunc resourceStream;
@@ -299,7 +280,7 @@ struct sjme_nvm_rom_suiteFunctions
 	/** Optional default launch parameters. */
 	sjme_nvm_rom_suiteDefaultLaunchFunc defaultLaunch;
 	
-	/** Initialize suite cache. */
+	/** Initialize suite. */
 	sjme_nvm_rom_suiteInitFunc init;
 
 	/** Returns the ID of the given library. */
@@ -320,11 +301,14 @@ struct sjme_nvm_rom_suiteBase
 	/** Functions. */
 	const sjme_nvm_rom_suiteFunctions* functions;
 	
+	/** The allocation pool to use. */
+	sjme_alloc_pool* allocPool;
+	
 	/** The handle, may be to a seekable. */
 	sjme_pointer handle;
-
-	/** Internal cache, used by suite implementations. */
-	sjme_nvm_rom_suiteCache cache;
+	
+	/** Libraries that exist within the suite. */
+	sjme_list_sjme_nvm_rom_library* libraries;
 };
 
 /**
@@ -488,6 +472,20 @@ sjme_errorCode sjme_nvm_rom_libraryRawSize(
 sjme_errorCode sjme_nvm_rom_libraryResourceAsStream(
 	sjme_attrInNotNull sjme_nvm_rom_library library,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull sjme_lpcstr rcName);
+
+/**
+ * Checks if the given resource exists.
+ * 
+ * @param inLibrary The input library. 
+ * @param outExists If this exists or not.
+ * @param rcName The resource name.
+ * @return Any resultant error, if any.
+ * @since 2024/10/26
+ */
+sjme_errorCode sjme_nvm_rom_libraryResourceExists(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_jboolean* outExists,
 	sjme_attrInNotNull sjme_lpcstr rcName);
 
 /**
