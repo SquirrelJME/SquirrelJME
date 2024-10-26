@@ -284,8 +284,10 @@ sjme_errorCode sjme_zip_entryRead(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Debug. */
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("Open Zip entry: %s",
 		inEntry->name);
+#endif
 	
 	/* Lock the Zip. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(&inZip->lock)))
