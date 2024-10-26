@@ -17,6 +17,24 @@
 #include "sjme/util.h"
 #include "sjme/zip.h"
 #include "sjme/nvm/cleanup.h"
+#include "sjme/listUtil.h"
+
+/** How much the class info list should grow by. */
+#define SJME_NVM_ROM_CLASS_INFO_GROW 16
+
+static sjme_errorCode sjme_nvm_rom_libraryCacheClassCheck(
+	sjme_attrInNotNull sjme_list_sjme_pointer* inList,
+	sjme_attrInPositive sjme_jint checkIndex,
+	sjme_attrInNotNull sjme_pointer checkP,
+	sjme_attrInValue sjme_jint againstI,
+	sjme_attrInValue sjme_pointer againstP)
+{
+	if (inList == NULL || checkP == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
 
 sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
@@ -25,7 +43,9 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 {
 	sjme_errorCode error;
 	sjme_jboolean exists;
-	sjme_jint i, n, freeSlot;
+	sjme_jint freeSlot;
+	sjme_nvm_class_info maybe;
+	sjme_list_sjme_nvm_class_info* classInfos;
 	
 	if (inLibrary == NULL || outClassInfo == NULL || fileName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -45,16 +65,62 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 		&inLibrary->rwLock)))
 		return sjme_error_default(error);
 	
+	/* Find matching info item. */
+	freeSlot = -1;
+	maybe = NULL;
+	classInfos = inLibrary->classInfos;
+	if (sjme_error_is(error = sjme_listUtil_findItemWeak(
+		SJME_AS_LIST_POINTER(classInfos),
+		&freeSlot, (sjme_pointer*)&maybe,
+		sjme_nvm_rom_libraryCacheClassCheck,
+		sjme_string_hash(fileName),
+		(sjme_pointer)fileName)))
+		goto fail_findItem;
+	
+	/* Found something? */
+	if (maybe != NULL)
+		goto skip_foundInfo;
+	
+	/* Grab the write lock. */
+	if (sjme_error_is(error = sjme_thread_rwLockGrabWrite(
+		&inLibrary->rwLock)))
+		goto fail_releaseGrab;
+	
+	/* The free slot might have been taken by something else if we got */
+	/* unlucky in the lock cycle. */
+	if (sjme_error_is(error = sjme_listUtil_findFree(
+		SJME_AS_LIST_POINTER(classInfos), &freeSlot)))
+		goto fail_findFree;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 	
+	/* Release the write lock. */
+	if (sjme_error_is(error = sjme_thread_rwLockReleaseWrite(
+		&inLibrary->rwLock, NULL)))
+		goto fail_releaseWrite;
+	
 	/* Release read lock. */
+skip_foundInfo:
 	if (sjme_error_is(error = sjme_thread_rwLockReleaseRead(
 		&inLibrary->rwLock, NULL)))
 		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Success! */
+	*outClassInfo = maybe;
+	return SJME_ERROR_NONE;
+	
+fail_findFree:
+	/* Release write lock before failing. */
+	sjme_thread_rwLockReleaseWrite(&inLibrary->rwLock, NULL);
+	
+fail_findItem:
+fail_releaseGrab:
+fail_releaseWrite:
+	/* Release read lock before failing. */
+	sjme_thread_rwLockReleaseRead(&inLibrary->rwLock, NULL);
+
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_nvm_rom_libraryHash(
@@ -90,6 +156,7 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 {
 	sjme_errorCode error;
 	sjme_nvm_rom_library result;
+	sjme_list_sjme_nvm_class_info* classInfos;
 
 	if (pool == NULL || outLibrary == NULL || inFunctions == NULL ||
 		libName == NULL)
@@ -99,6 +166,12 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 	if (inFunctions->init == NULL ||
 		inFunctions->close == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Allocate class information list. */
+	if (sjme_error_is(error = sjme_list_alloc(pool,
+		SJME_NVM_ROM_CLASS_INFO_GROW,
+		&classInfos, sjme_nvm_class_info, 0)) || classInfos == NULL)
+		goto fail_allocInfos;
 	
 	/* Allocate result. */
 	result = NULL;
@@ -111,6 +184,7 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 	result->allocPool = pool;
 	result->functions = inFunctions;
 	result->rwLock.read = &result->common.lock;
+	result->classInfos = classInfos;
 	
 	/* Copy front end? */
 	if (copyFrontEnd != NULL)
@@ -138,6 +212,9 @@ fail_commonInit:
 fail_alloc:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
+fail_allocInfos:
+	if (classInfos != NULL)
+		sjme_alloc_free(classInfos);
 	
 	return sjme_error_default(error);
 }

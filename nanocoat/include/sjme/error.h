@@ -397,8 +397,11 @@ typedef enum sjme_errorCode
 	/** Invalid field flags. */
 	SJME_ERROR_INVALID_FIELD_FLAGS = -118,
 	
+	/** Not matched. */
+	SJME_ERROR_NOT_MATCHED = -119,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -119,
+	SJME_NUM_ERROR_CODES = -120,
 } sjme_errorCode;
 
 /**
