@@ -46,6 +46,7 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 	sjme_jint freeSlot;
 	sjme_nvm_class_info maybe;
 	sjme_list_sjme_nvm_class_info* classInfos;
+	sjme_stream_input stream;
 	
 	if (inLibrary == NULL || outClassInfo == NULL || fileName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -92,8 +93,31 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 		SJME_AS_LIST_POINTER(classInfos), &freeSlot)))
 		goto fail_findFree;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Open as stream. */
+	stream = NULL;
+	if (sjme_error_is(error = sjme_nvm_rom_libraryResourceAsStream(
+		inLibrary, &stream, fileName)))
+		goto fail_openRc;
+	
+	/* Parse class information. */
+	if (sjme_error_is(error = sjme_nvm_class_parse(
+		inLibrary->allocPool,
+		stream, inLibrary->stringPool,
+		&maybe)))
+		goto fail_parseClass;
+	
+	/* Can close the stream now. */
+	if (sjme_error_is(error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(stream))))
+		goto fail_closeRc;
+	stream = NULL;
+	
+	/* Reference for keeping. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(maybe, NULL)))
+		goto fail_countUp;
+	
+	/* Store info in for later caching. */
+	classInfos->elements[freeSlot] = maybe;
 	
 	/* Release the write lock. */
 	if (sjme_error_is(error = sjme_thread_rwLockReleaseWrite(
@@ -110,6 +134,15 @@ skip_foundInfo:
 	*outClassInfo = maybe;
 	return SJME_ERROR_NONE;
 	
+fail_countUp:
+fail_closeRc:
+fail_parseClass:
+fail_openRc:
+	if (stream != NULL)
+	{
+		sjme_closeable_close(SJME_AS_CLOSEABLE(stream));
+		stream = NULL;
+	}
 fail_findFree:
 	/* Release write lock before failing. */
 	sjme_thread_rwLockReleaseWrite(&inLibrary->rwLock, NULL);
@@ -157,6 +190,7 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 	sjme_errorCode error;
 	sjme_nvm_rom_library result;
 	sjme_list_sjme_nvm_class_info* classInfos;
+	sjme_nvm_stringPool stringPool;
 
 	if (pool == NULL || outLibrary == NULL || inFunctions == NULL ||
 		libName == NULL)
@@ -168,10 +202,17 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Allocate class information list. */
+	classInfos = NULL;
 	if (sjme_error_is(error = sjme_list_alloc(pool,
 		SJME_NVM_ROM_CLASS_INFO_GROW,
 		&classInfos, sjme_nvm_class_info, 0)) || classInfos == NULL)
 		goto fail_allocInfos;
+	
+	/* Allocate string pool. */
+	stringPool = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_new(pool,
+		&stringPool)) || stringPool == NULL)
+		goto fail_allocStringPool;
 	
 	/* Allocate result. */
 	result = NULL;
@@ -185,6 +226,7 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 	result->functions = inFunctions;
 	result->rwLock.read = &result->common.lock;
 	result->classInfos = classInfos;
+	result->stringPool = stringPool;
 	
 	/* Copy front end? */
 	if (copyFrontEnd != NULL)
@@ -212,6 +254,9 @@ fail_commonInit:
 fail_alloc:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
+fail_allocStringPool:
+	if (stringPool != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(stringPool));
 fail_allocInfos:
 	if (classInfos != NULL)
 		sjme_alloc_free(classInfos);

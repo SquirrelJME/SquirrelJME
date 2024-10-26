@@ -105,6 +105,9 @@ struct sjme_nvm_rom_libraryBase
 	
 	/** Class information that has already been loaded for this library. */
 	sjme_list_sjme_nvm_class_info* classInfos;
+	
+	/** The string pool for this specific library. */
+	sjme_nvm_stringPool stringPool;
 };
 
 /**

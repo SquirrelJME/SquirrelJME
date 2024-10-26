@@ -228,9 +228,14 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 		/* Stop. */
 		break;
 	}
-
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	
+	/* Set class info. */
+	inClass->info = info;
+	
+	/* Set as done! */
+	sjme_atomic_sjme_jint_compareSet(&inClass->isLoaded,
+		SJME_VM_CLASS_INIT_LOAD_CURRENT,
+		SJME_VM_CLASS_INIT_LOAD_DONE);
 	
 	/* Unlock. */
 skip_doubleCalled:
