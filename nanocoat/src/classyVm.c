@@ -104,11 +104,13 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
 		binaryName[0] == 'V')))
 		autoLoad = SJME_VM_CLASS_INIT_LOAD_DONE;
 	
-	/* Store into the output slot immediately for recursive loading. */
+	/* Initialize base fields. */
 	result->binaryName = dupName;
 	result->binaryHash = sjme_string_hash(dupName);
 	sjme_atomic_sjme_jint_set(&result->isLoaded, 0);
 	sjme_atomic_sjme_jint_set(&result->isInitialized, autoLoad);
+	
+	/* Store into the output slot immediately for recursive loading. */
 	*outSlot = result;
 	
 	/* Success! */
@@ -138,7 +140,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_nvm_class_info info;
 	sjme_nvm_vmClass_loader loader;
 	sjme_jint i, n;
-	sjme_jclass superClass, interface;
+	sjme_jclass superClass, interface, classType;
 	sjme_list_sjme_jclass* interfaces;
 	sjme_alloc_pool* inPool;
 	
@@ -179,6 +181,17 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	loader = contextThread->inTask->classLoader;
 	if (info == NULL || loader == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* This is always set to the @c Class type. */
+	classType = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadB(
+		loader, &classType, contextThread,
+		"Ljava/lang/Class;", SJME_JNI_FALSE)) ||
+		classType == NULL)
+		goto fail_findClassType;
+	
+	/* Set the instance type, as all classes are this type. */
+	inClass->object.isClass = classType;
 	
 	/* The super class needs to be found first. */
 	superClass = NULL;
@@ -246,6 +259,28 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		&inClass->object.common.lock)))
 		return sjme_error_default(error);
 	
+	/* Setup static and instance field storage. */
+	for (;;)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+	
+	/* Bind methods. */
+	for (;;)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+	
+	/* Initialize statics fields with constant values. */
+	for (;;)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+	
+	/* Call static constructor, if one exists. */
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 	
@@ -273,6 +308,7 @@ fail_initSuper:
 fail_findInterface:
 fail_allocInterfaces:
 fail_findSuper:
+fail_findClassType:
 	return sjme_error_default(error);
 }
 
@@ -499,7 +535,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 	maybe = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadBSubAlloc(
 		inLoader, &maybe, &classes->elements[freeSlot],
-		contextThread, binaryName)))
+		contextThread, binaryName)) || maybe == NULL)
 		goto fail_loadClass;
 	
 	/* Release the write lock. */

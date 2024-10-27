@@ -574,6 +574,12 @@ struct sjme_nvm_class_infoCore
 	/** The common NanoCoat base. */
 	sjme_nvm_commonBase common;
 	
+	/** The file name of this class. */
+	sjme_lpcstr fileName;
+	
+	/** The hash of the file name. */
+	sjme_jint fileNameHash;
+	
 	/** The constant pool of this class. */
 	sjme_nvm_class_poolInfo pool;
 	

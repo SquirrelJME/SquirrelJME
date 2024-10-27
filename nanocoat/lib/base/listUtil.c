@@ -172,13 +172,12 @@ sjme_errorCode sjme_listUtil_findItemWeak(
 		compareFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Check to see if the class has already been loaded. */
-	/* Also record the first free slot. */
+	/* Search through the list of weakly referenced items. */
 	freeSlot = -1;
 	for (i = 0, n = inList->length; i < n; i++)
 	{
 		/* Skip nulls. */
-		maybe = &inList->elements[0];
+		maybe = inList->elements[i];
 		if (maybe == NULL)
 		{
 			/* Capable free slot. */
@@ -187,7 +186,7 @@ sjme_errorCode sjme_listUtil_findItemWeak(
 			continue;
 		}
 		
-		/* Check to see if this class is still valid. */
+		/* Check to see if this is still valid. */
 		weak = NULL;
 		if (sjme_error_is(error = sjme_alloc_weakRefGet(maybe,
 			&weak)) || weak == NULL)

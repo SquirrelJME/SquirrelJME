@@ -262,6 +262,11 @@ static sjme_errorCode sjme_alloc_getLinkOptional(
 	if (checkCorruption)
 		sjme_alloc_checkCorruption(link->pool, link);
 	
+	/* Cannot be a link? */
+	if (link->guardFront != SJME_ALLOC_GUARD_FRONT ||
+		link->guardBack != SJME_ALLOC_GUARD_BACK)
+		return SJME_ERROR_NOT_ALLOC_LINK;
+	
 	/* Success! */
 	*outLink = link;
 	return SJME_ERROR_NONE;
@@ -1466,7 +1471,14 @@ sjme_errorCode sjme_alloc_weakRefGet(
 	link = NULL;
 	if (sjme_error_is(error = sjme_alloc_getLinkOptional(addr,
 		&link, SJME_JNI_FALSE)) || link == NULL)
+	{
+		/* If the link is not valid, it cannot be a weak reference. */
+		if (error == SJME_ERROR_NOT_ALLOC_LINK)
+			return SJME_ERROR_NOT_WEAK_REFERENCE;
+		
+		/* Otherwise, fail... */
 		return sjme_error_default(error);
+	}
 		
 	/* This should never be null. */
 	pool = link->pool;

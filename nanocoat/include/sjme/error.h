@@ -400,8 +400,11 @@ typedef enum sjme_errorCode
 	/** Not matched. */
 	SJME_ERROR_NOT_MATCHED = -119,
 	
+	/** Not a valid allocation link. */
+	SJME_ERROR_NOT_ALLOC_LINK = -120,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -120,
+	SJME_NUM_ERROR_CODES = -121,
 } sjme_errorCode;
 
 /**

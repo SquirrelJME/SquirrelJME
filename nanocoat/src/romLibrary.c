@@ -29,11 +29,17 @@ static sjme_errorCode sjme_nvm_rom_libraryCacheClassCheck(
 	sjme_attrInValue sjme_jint againstI,
 	sjme_attrInValue sjme_pointer againstP)
 {
-	if (inList == NULL || checkP == NULL)
+	sjme_nvm_class_info info;
+	
+	info = checkP;
+	if (inList == NULL || info == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	if (againstI == info->fileNameHash &&
+		strcmp(againstP, info->fileName) == 0)
+		return SJME_ERROR_NONE;
+	
+	return SJME_ERROR_NOT_MATCHED;
 }
 
 sjme_errorCode sjme_nvm_rom_libraryCacheClass(
@@ -47,6 +53,7 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 	sjme_nvm_class_info maybe;
 	sjme_list_sjme_nvm_class_info* classInfos;
 	sjme_stream_input stream;
+	sjme_lpstr dupFileName;
 	
 	if (inLibrary == NULL || outClassInfo == NULL || fileName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -112,9 +119,20 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 		goto fail_closeRc;
 	stream = NULL;
 	
+	/* Duplicate file name. */
+	dupFileName = NULL;
+	if (sjme_error_is(error = sjme_alloc_strdup(inLibrary->allocPool,
+		&dupFileName, fileName)) ||
+		dupFileName == NULL)
+		goto fail_dupName;
+	
 	/* Reference for keeping. */
 	if (sjme_error_is(error = sjme_alloc_weakRef(maybe, NULL)))
 		goto fail_countUp;
+	
+	/* File name is needed for caching. */
+	maybe->fileName = dupFileName;
+	maybe->fileNameHash = sjme_string_hash(dupFileName);
 	
 	/* Store info in for later caching. */
 	classInfos->elements[freeSlot] = maybe;
@@ -135,6 +153,12 @@ skip_foundInfo:
 	return SJME_ERROR_NONE;
 	
 fail_countUp:
+fail_dupName:
+	if (dupFileName != NULL)
+	{
+		sjme_alloc_free(dupFileName);
+		dupFileName = NULL;
+	}
 fail_closeRc:
 fail_parseClass:
 fail_openRc:
