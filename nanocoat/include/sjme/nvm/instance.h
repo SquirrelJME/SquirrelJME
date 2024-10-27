@@ -43,6 +43,48 @@ struct sjme_jobjectBase
 	sjme_jclass isClass;
 };
 
+/**
+ * Stores multiple field values for a given type.
+ * 
+ * @since 2024/10/27
+ */
+typedef struct sjme_nvm_fieldValues
+{
+	/** The number of items in this tread. */
+	sjme_jint count;
+	
+	/** Values within the tread. */
+	union
+	{
+		/** Boolean values. */
+		sjme_jboolean jbooleans[sjme_flexibleArrayCountUnion];
+		
+		/** Byte values. */
+		sjme_jbyte jbytes[sjme_flexibleArrayCountUnion];
+		
+		/** Short values. */
+		sjme_jshort jshorts[sjme_flexibleArrayCountUnion];
+		
+		/** Character values. */
+		sjme_jchar jchars[sjme_flexibleArrayCountUnion];
+		
+		/** Integer values. */
+		sjme_jint jints[sjme_flexibleArrayCountUnion];
+		
+		/** Long values. */
+		sjme_jlong jlongs[sjme_flexibleArrayCountUnion];
+		
+		/** Float values. */
+		sjme_jfloat jfloats[sjme_flexibleArrayCountUnion];
+		
+		/** Double values. */
+		sjme_jdouble jdoubles[sjme_flexibleArrayCountUnion];
+		
+		/** Object reference values. */
+		sjme_jobject jobjects[sjme_flexibleArrayCountUnion];
+	} values;
+} sjme_nvm_fieldValues;
+
 struct sjme_jclassBase
 {
 	/** All classes are objects. */
@@ -68,6 +110,9 @@ struct sjme_jclassBase
 	
 	/** Interface classes for this class. */
 	sjme_list_sjme_jclass* interfaceClasses;
+	
+	/** Field value storage. */
+	sjme_nvm_fieldValues* staticFields[SJME_NUM_BASIC_TYPE_IDS];
 };
 
 /*--------------------------------------------------------------------------*/

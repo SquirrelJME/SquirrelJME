@@ -642,6 +642,15 @@ struct sjme_nvm_class_fieldInfoCore
 
 	/** The constant value, if any. */
 	sjme_nvm_class_fieldConstVal constVal;
+	
+	/** The Java type of this field. */
+	sjme_javaTypeId javaType;
+	
+	/** The basic type of this field. */
+	sjme_basicTypeId basicType;
+	
+	/** The index of this field within its basic type. */
+	sjme_jint typedIndex;
 };
 
 struct sjme_nvm_class_methodInfoCore
