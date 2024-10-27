@@ -88,6 +88,10 @@ final class __ReControlTask__
 			// Recover our display?
 			if (recover)
 			{
+				// Currently showing the to-do dialog, so do not replace it
+				if (display.getCurrent() instanceof ToDoDialog)
+					return;
+				
 				// Note it
 				Debugging.debugNote("Recovering launcher...");
 				

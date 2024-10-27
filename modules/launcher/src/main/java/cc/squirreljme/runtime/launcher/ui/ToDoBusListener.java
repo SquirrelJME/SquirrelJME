@@ -71,7 +71,7 @@ public class ToDoBusListener
 			// Not valid?
 			if (rxLen < 0)
 			{
-				Debugging.debugNote("Too large a TODO! (%d > %d)",
+				Debugging.debugNote("Too large of a TODO! (%d > %d)",
 					rxLen, dataLen);
 				
 				continue;

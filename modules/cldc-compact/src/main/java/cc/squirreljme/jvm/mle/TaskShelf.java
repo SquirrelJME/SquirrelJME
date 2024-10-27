@@ -60,7 +60,7 @@ public final class TaskShelf
 	 * @param __from The task that this message is from.
 	 * @param __busId The channel to read from.
 	 * @param __blocking Block until the next message occurs?
-	 * @param __data The data to send.
+	 * @param __data The data to receive.
 	 * @param __off The offset into the data.
 	 * @param __len The length of the data.
 	 * @return The number of bytes for the message, if this value is negative

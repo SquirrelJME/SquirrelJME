@@ -50,6 +50,7 @@ public class ToDoDialog
 		this.setTitle(String.format("%s.%s %s",
 			__inClass, __inMethod, __inMethodType));
 		this.repaint();
+		this.setPaintMode(false);
 	}
 	
 	/**
