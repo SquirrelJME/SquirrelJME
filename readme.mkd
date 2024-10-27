@@ -107,6 +107,7 @@ Information:
    * _Assets_: Creative Commons CC-BY-SA 4.0
    * _Fonts_ : SIL Open Font License Version 1.1
    * [Third Party Licenses](third-party.mkd)
+ * [RSS Feed](feed.rss)
  * [Contributing to SquirrelJME](contributing.mkd)
    * [Credits of Contributions](credits.mkd)
    * [Test Writing](test-writing.mkd)

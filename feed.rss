@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+<channel>
+	<title>SquirrelJME</title>
+	<description>SquirrelJME is a Java ME 8 Virtual Machine.</description>
+	<link>https://squirreljme.cc/</link>
+	<language>en-us</language>
+	<copyright>Copyright (C) 2013-2024 Stephanie Gawroriski</copyright>
+	<managingEditor>xer@multiphasicapps.net (Stephanie Gawroriski)</managingEditor>
+	<webMaster>xer@multiphasicapps.net (Stephanie Gawroriski)</webMaster>
+	<pubDate>Sun, 27 Oct 2024 18:20 EDT</pubDate>
+	<ttl>1800</ttl>
+	<atom:link href="https://squirreljme.cc/doc/trunk/feed.rss"
+		rel="self" type="application/rss+xml" />
+
+	<!-- Update this accordingly! -->
+	<lastBuildDate>Sun, 27 Oct 2024 18:20 EDT</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">da32b8ae-b50a-4b6a-8965-acd3bdbb712e</guid>
+		<pubDate>Sun, 27 Oct 2024 18:20 EDT</pubDate>
+
+		<title>Hello From The SquirrelJME RSS Feed!</title>
+		<description>This is a test!</description>
+	</item>
+</channel>
+</rss>
