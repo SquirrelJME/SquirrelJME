@@ -10,8 +10,12 @@
 	<webMaster>xer@multiphasicapps.net (Stephanie Gawroriski)</webMaster>
 	<pubDate>Sun, 27 Oct 2024 18:20 EDT</pubDate>
 	<ttl>1800</ttl>
-	<atom:link href="https://squirreljme.cc/doc/trunk/feed.rss"
-		rel="self" type="application/rss+xml" />
+
+	<!-- If the domain ever changes the default. -->
+	<!--<atom:link href="https://squirreljme.cc/doc/trunk/feed.rss"
+		rel="self" />-->
+	<atom:link href="https://multiphasicapps.net/doc/trunk/feed.rss"
+		rel="self" />
 
 	<!-- Update this accordingly! -->
 	<lastBuildDate>Sun, 27 Oct 2024 18:20 EDT</lastBuildDate>
