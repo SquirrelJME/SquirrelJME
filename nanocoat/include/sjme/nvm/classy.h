@@ -52,6 +52,23 @@ typedef enum sjme_nvm_class_version
 } sjme_nvm_class_version;
 
 /**
+ * The number of field index sets possible.
+ * 
+ * @since 2024/10/28
+ */
+typedef enum sjme_nvm_class_fieldIndex
+{
+	/** Static fields. */
+	SJME_NVM_CLASS_FIELD_STATIC = 0,
+	
+	/** Instance fields. */
+	SJME_NVM_CLASS_FIELD_INSTANCE = 1,
+	
+	/** The number of field indexes. */
+	SJME_NVM_CLASS_NUM_FIELD_INDEX = 2,
+} sjme_nvm_class_fieldIndex;
+
+/**
  * Core class information structure.
  *
  * @since 2024/01/01
@@ -600,6 +617,10 @@ struct sjme_nvm_class_infoCore
 
 	/** Fields within the method. */
 	sjme_list_sjme_nvm_class_fieldInfo* fields;
+	
+	/** The field count per type. */
+	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_FIELD_INDEX]
+		[SJME_NUM_JAVA_TYPE_IDS];
 
 	/** Methods within the class. */
 	sjme_list_sjme_nvm_class_methodInfo* methods;
@@ -740,6 +761,24 @@ typedef struct sjme_nvm_class_parseAttributeHandler
 	/** The handler for the attribute. */
 	sjme_nvm_class_parseAttributeFunc handler;
 } sjme_nvm_class_parseAttributeHandler;
+
+/**
+ * Determines the @c sjme_javaTypeId or @c sjme_basicTypeId type for the
+ * given descriptor.
+ * 
+ * @param outType The resultant type. 
+ * @param javaType If @c SJME_JNI_TRUE then this will calculate the Java
+ * type.
+ * @param desc The input descriptor. 
+ * @param descLen The length of the descriptor.
+ * @return Any resultant error, if any.
+ * @since 2024/10/28
+ */
+sjme_errorCode sjme_nvm_class_descriptorToType(
+	sjme_attrOutNotNull sjme_javaTypeId* outType,
+	sjme_attrInValue sjme_jboolean javaType,
+	sjme_attrInNotNullBuf(descLen) sjme_lpcstr desc,
+	sjme_attrInPositiveNonZero sjme_jint descLen);
 
 /**
  * Parses a single class and loads its class information.

@@ -663,6 +663,54 @@ static sjme_errorCode sjme_nvm_class_parseAttribute(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_nvm_class_descriptorToType(
+	sjme_attrOutNotNull sjme_javaTypeId* outType,
+	sjme_attrInValue sjme_jboolean javaType,
+	sjme_attrInNotNullBuf(descLen) sjme_lpcstr desc,
+	sjme_attrInPositiveNonZero sjme_jint descLen)
+{
+	sjme_javaTypeId result;
+	
+	if (outType == NULL || desc == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (descLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (strncmp("Z", desc, descLen) == 0)
+		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
+			SJME_BASIC_TYPE_ID_BOOLEAN);
+	else if (strncmp("B", desc, descLen) == 0)
+		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
+			SJME_BASIC_TYPE_ID_BYTE);
+	else if (strncmp("S", desc, descLen) == 0)
+		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
+			SJME_BASIC_TYPE_ID_SHORT);
+	else if (strncmp("C", desc, descLen) == 0)
+		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
+			SJME_BASIC_TYPE_ID_CHARACTER);
+	else if (strncmp("I", desc, descLen) == 0)
+		result = SJME_JAVA_TYPE_ID_INTEGER;
+	else if (strncmp("J", desc, descLen) == 0)
+		result = SJME_JAVA_TYPE_ID_LONG;
+	else if (strncmp("F", desc, descLen) == 0)
+		result = SJME_JAVA_TYPE_ID_FLOAT;
+	else if (strncmp("D", desc, descLen) == 0)
+		result = SJME_JAVA_TYPE_ID_DOUBLE;
+	else if (desc[0] == '[')
+		result = SJME_JAVA_TYPE_ID_OBJECT;
+	else if (desc[0] == 'L' && desc[descLen - 1] == ';')
+		result = SJME_JAVA_TYPE_ID_OBJECT;
+	
+	/* Not valid. */
+	else
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Success! */
+	*outType = result;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_class_parse(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
@@ -681,6 +729,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_list_sjme_nvm_stringPool_string* interfaceNames;
 	sjme_list_sjme_nvm_class_fieldInfo* fields;
 	sjme_list_sjme_nvm_class_methodInfo* methods;
+	sjme_nvm_class_fieldInfo field;
 	
 	if (inPool == NULL || inStream == NULL || inStringPool == NULL ||
 		outClass == NULL)
@@ -848,6 +897,20 @@ sjme_errorCode sjme_nvm_class_parse(
 			goto fail_refField;
 	}
 	
+	/* Determine the indexes of all fields. */
+	for (i = 0; i < fieldCount; i++)
+	{
+		/* Determine the type index for its slot. */
+		field = fields->elements[i];
+		field->typedIndex = result->fieldCount[(field->flags.member.isStatic ? 
+			SJME_NVM_CLASS_FIELD_STATIC : SJME_NVM_CLASS_FIELD_INSTANCE)]
+			[field->javaType]++;
+		
+		/* Overflowed? */
+		if (field->typedIndex < 0)
+			goto fail_overflowFieldIndex;
+	}
+	
 	/* Read in method count. */
 	methodCount = -1;
 	if (sjme_error_is(error = sjme_stream_inputReadValueJS(
@@ -892,6 +955,7 @@ fail_refMethod:
 fail_parseMethod:
 fail_allocMethods:
 fail_readMethodCount:
+fail_overflowFieldIndex:
 fail_refField:
 fail_parseField:
 fail_allocFields:
@@ -1382,11 +1446,11 @@ sjme_errorCode sjme_nvm_class_parseField(
 	if (sjme_error_is(error = sjme_nvm_class_readPoolRefIndex(
 		inStream, inConstPool,
 		SJME_NVM_CLASS_POOL_TYPE_UTF,
-		SJME_JNI_FALSE, &type)) || name == NULL)
+		SJME_JNI_FALSE, &type)) || type == NULL)
 		goto fail_readType;
 	
 	/* Reference it. */
-	result->type = name->utf.utf;
+	result->type = type->utf.utf;
 	if (sjme_error_is(error = sjme_alloc_weakRef(
 		result->type, NULL)))
 		goto fail_refType;
@@ -1397,10 +1461,23 @@ sjme_errorCode sjme_nvm_class_parseField(
 		sjme_nvm_class_fieldAttr, result)))
 		goto fail_parseAttributes;
 	
+	/* Determine type. */
+	if (sjme_error_is(error = sjme_nvm_class_descriptorToType(
+		&result->javaType, SJME_JNI_TRUE,
+		(sjme_lpcstr)&result->type->chars[0],
+		strlen((sjme_lpcstr)&result->type->chars[0]))))
+		goto fail_determineType;
+	if (sjme_error_is(error = sjme_nvm_class_descriptorToType(
+		&result->basicType, SJME_JNI_FALSE,
+		(sjme_lpcstr)&result->type->chars[0],
+		strlen((sjme_lpcstr)&result->type->chars[0]))))
+		goto fail_determineType;
+	
 	/* Success! */
 	*outField = result;
 	return SJME_ERROR_NONE;
 	
+fail_determineType:
 fail_parseAttributes:
 fail_refType:
 fail_readType:
