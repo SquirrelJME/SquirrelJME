@@ -137,7 +137,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_attrInNotNull sjme_nvm_thread contextThread)
 {
 	sjme_errorCode error;
-	sjme_nvm_class_info info;
+	sjme_nvm_class_info info, superInfo;
 	sjme_nvm_vmClass_loader loader;
 	sjme_jint i, n;
 	sjme_jclass superClass, interface, classType;
@@ -259,7 +259,31 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		&inClass->object.common.lock)))
 		return sjme_error_default(error);
 	
-	/* Setup static and instance field storage. */
+	/* Determine instance field index offsets. */
+	if (superClass != NULL)
+	{
+		/* Superclass info is required. */
+		superInfo = superClass->info;
+		if (superInfo == NULL)
+			goto fail_superInfo;
+		
+		/* The offsets vary per type, but it should be minimal and save */
+		/* space if nothing ends up being used. */
+		for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
+		{
+			/* The instance field offsets are the super class offsets plus */
+			/* the super class instance field types. */
+			inClass->instanceFieldOffset[i] =
+				superClass->instanceFieldOffset[i] +
+				superInfo->fieldCount[SJME_NVM_CLASS_FIELD_INSTANCE][i];
+				
+			/* Overflowed? */
+			if (inClass->instanceFieldOffset[i] < 0)
+				goto fail_indexOverflow;
+		}
+	}
+	
+	/* Setup static field storage. */
 	for (;;)
 	{
 		sjme_todo("Impl?");
@@ -300,6 +324,8 @@ skip_doubleCalled:
 	return SJME_ERROR_NONE;
 	
 fail_markDone:
+fail_indexOverflow:
+fail_superInfo:
 	sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL);
 	

@@ -113,6 +113,9 @@ struct sjme_jclassBase
 	
 	/** Field value storage. */
 	sjme_nvm_fieldValues* staticFields[SJME_NUM_BASIC_TYPE_IDS];
+	
+	/** Offset for instance fields. */
+	sjme_jshort instanceFieldOffset[SJME_NUM_JAVA_TYPE_IDS];
 };
 
 /*--------------------------------------------------------------------------*/
