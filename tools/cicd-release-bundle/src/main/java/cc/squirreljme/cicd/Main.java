@@ -132,8 +132,9 @@ public class Main
 						String.format("squirreljme-%s-src", version));
 					
 					// Determine filename
-					String target = String.format("squirreljme-%s-src.%s",
+					String name = String.format("squirreljme-%s-src.%s",
 						version, (fileType.equals("tar") ? "tgz" : fileType));
+					String target = Main.uvTarget(baseDir, version, name);
 					
 					// Upload source
 					fossil.add(tempFile, target);
@@ -283,8 +284,8 @@ public class Main
 				break;
 			
 			default:
-				throw new IllegalArgumentException(
-					"Unknown target: " + __name);
+				name = __name;
+				break;
 		}
 		
 		// Construct
