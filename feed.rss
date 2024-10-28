@@ -18,7 +18,16 @@
 		rel="self" />
 
 	<!-- Update this accordingly! -->
-	<lastBuildDate>Sun, 27 Oct 2024 18:20 EDT</lastBuildDate>
+	<lastBuildDate>Sun, 27 Oct 2024 20:20 EDT</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">8d221db0-3720-490e-bff6-bff75134dc2c</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241027_2020.mkd</link>
+		<pubDate>Sun, 27 Oct 2024 20:20 EDT</pubDate>
+
+		<title>Hello From The SquirrelJME RSS Feed, Again!</title>
+		<description>This is another test!</description>
+	</item>
 
 	<item>
 		<guid isPermaLink="false">da32b8ae-b50a-4b6a-8965-acd3bdbb712e</guid>
