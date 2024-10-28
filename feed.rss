@@ -18,7 +18,19 @@
 		rel="self" />
 
 	<!-- Update this accordingly! -->
-	<lastBuildDate>Sun, 27 Oct 2024 20:20 EDT</lastBuildDate>
+	<lastBuildDate>Sun, 28 Oct 2024 12:00 EDT</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">6c70e869-c158-4aed-a5f3-94f9f565749e</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241028_1200.mkd</link>
+		<pubDate>Sun, 28 Oct 2024 12:00 EDT</pubDate>
+
+		<title>State of SquirrelJME, October 2024</title>
+		<description>Too much to write in a short description,
+			but a large number of changes!</description>
+	</item>
+
+	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">8d221db0-3720-490e-bff6-bff75134dc2c</guid>
