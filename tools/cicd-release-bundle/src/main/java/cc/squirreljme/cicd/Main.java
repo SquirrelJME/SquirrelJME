@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -70,7 +71,7 @@ public class Main
 			return String.format("stable/%s", __version);
 		
 		// Otherwise unstable
-		return "unstable";
+		return String.format("unstable/%s", __version);
 	}
 	
 	/**
@@ -114,6 +115,36 @@ public class Main
 		// romNanoCoatRelease=/home/.../squirreljme.jar
 		FossilCommand fossil = FossilCommand.instance();
 		if (fossil != null)
+		{
+			// .tgz and .zip files, for distros generally
+			Path tempFile = Files.createTempFile("archive", ".tmp");
+			for (String fileType : Arrays.asList("tar", "zip"))
+				try
+				{
+					// Delete the file to overwrite it
+					Files.deleteIfExists(tempFile);
+					
+					// Obtain source archive
+					fossil.exec(fileType, "--name",
+						String.format("squirreljme-%s-src", version),
+						"-l", Objects.toString(fossilCommit,
+							"trunk"),
+						tempFile.toAbsolutePath().toString());
+					
+					// Determine filename
+					String target = String.format("squirreljme-%s-src.%s",
+						version, (fileType.equals("tar") ? "tgz" : fileType));
+					
+					// Upload source
+					fossil.add(tempFile, target);
+					fossil.add(mark, target + ".mkd");
+				}
+				finally
+				{
+					Files.deleteIfExists(tempFile);
+				}
+			
+			// Artifacts from the build
 			for (String arg : Arrays.asList(__args).subList(1, __args.length))
 			{
 				int eq = arg.indexOf('=');
@@ -133,6 +164,7 @@ public class Main
 				fossil.add(path, target);
 				fossil.add(mark, target + ".mkd");
 			}
+		}
 		
 		// Read in workflow jobs
 		String workflowId = System.getenv("CIRCLE_WORKFLOW_ID");
