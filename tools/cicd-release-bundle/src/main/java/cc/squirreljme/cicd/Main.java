@@ -125,11 +125,11 @@ public class Main
 					Files.deleteIfExists(tempFile);
 					
 					// Obtain source archive
-					fossil.exec(fileType, "--name",
-						String.format("squirreljme-%s-src", version),
-						"-l", Objects.toString(fossilCommit,
-							"trunk"),
-						tempFile.toAbsolutePath().toString());
+					fossil.exec(fileType,
+						Objects.toString(fossilCommit, "trunk"),
+						tempFile.toAbsolutePath().toString(),
+						"--name",
+						String.format("squirreljme-%s-src", version));
 					
 					// Determine filename
 					String target = String.format("squirreljme-%s-src.%s",
