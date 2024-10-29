@@ -50,24 +50,15 @@ struct sjme_jobjectBase
  */
 typedef struct sjme_nvm_fieldValues
 {
+	/** The type of value this stores. */
+	sjme_javaTypeId type;
+	
 	/** The number of items in this tread. */
 	sjme_jint count;
 	
 	/** Values within the tread. */
 	union
 	{
-		/** Boolean values. */
-		sjme_jboolean jbooleans[sjme_flexibleArrayCountUnion];
-		
-		/** Byte values. */
-		sjme_jbyte jbytes[sjme_flexibleArrayCountUnion];
-		
-		/** Short values. */
-		sjme_jshort jshorts[sjme_flexibleArrayCountUnion];
-		
-		/** Character values. */
-		sjme_jchar jchars[sjme_flexibleArrayCountUnion];
-		
 		/** Integer values. */
 		sjme_jint jints[sjme_flexibleArrayCountUnion];
 		
@@ -112,11 +103,39 @@ struct sjme_jclassBase
 	sjme_list_sjme_jclass* interfaceClasses;
 	
 	/** Field value storage. */
-	sjme_nvm_fieldValues* staticFields[SJME_NUM_BASIC_TYPE_IDS];
+	sjme_nvm_fieldValues* staticFields[SJME_NUM_JAVA_TYPE_IDS];
 	
 	/** Offset for instance fields. */
 	sjme_jshort instanceFieldOffset[SJME_NUM_JAVA_TYPE_IDS];
 };
+
+/**
+ * Sets the field value.
+ * 
+ * @param javaType The Java type to use. 
+ * @param into The field values to write into.
+ * @param atIndex The index to set.
+ * @param value The value to store.
+ * @return Any resultant error, if any.
+ * @since 2024/10/29
+ */
+sjme_errorCode sjme_nvm_fieldValueSet(
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
+	sjme_attrInNotNull sjme_nvm_fieldValues* into,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_jvalue* value);
+
+/**
+ * Returns the size for @c sjme_nvm_fieldValues for the given number of
+ * values.
+ * 
+ * @param javaType The Java type to use.
+ * @param n The number of values.
+ * @return The size of the structure.
+ */
+sjme_jint sjme_nvm_fieldValueSize(
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
+	sjme_attrInPositiveNonZero sjme_jint n);
 
 /*--------------------------------------------------------------------------*/
 

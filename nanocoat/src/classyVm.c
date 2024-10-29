@@ -139,10 +139,11 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_errorCode error;
 	sjme_nvm_class_info info, superInfo;
 	sjme_nvm_vmClass_loader loader;
-	sjme_jint i, n;
+	sjme_jint i, j, n;
 	sjme_jclass superClass, interface, classType;
 	sjme_list_sjme_jclass* interfaces;
 	sjme_alloc_pool* inPool;
+	sjme_nvm_fieldValues* fieldValues;
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -284,10 +285,30 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	}
 	
 	/* Setup static field storage. */
-	for (;;)
+	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
 	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* No static fields for this kind, ignore. */
+		n = info->fieldCount[SJME_NVM_CLASS_FIELD_STATIC][i];
+		if (n == 0)
+			continue;
+		
+		/* Allocate field values. */
+		fieldValues = NULL;
+		if (sjme_error_is(error = sjme_alloc(inPool,
+			sjme_nvm_fieldValueSize(i, n),
+			(sjme_pointer)&fieldValues)) || fieldValues == NULL)
+			goto fail_allocFieldValues;
+		
+		/* Store type and count for this tread. */
+		fieldValues->type = i;
+		fieldValues->count = n;
+		
+		/* Setup values per each static field. */
+		for (j = 0; j < n; j++)
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
 	}
 	
 	/* Bind methods. */
@@ -324,6 +345,7 @@ skip_doubleCalled:
 	return SJME_ERROR_NONE;
 	
 fail_markDone:
+fail_allocFieldValues:
 fail_indexOverflow:
 fail_superInfo:
 	sjme_thread_spinLockRelease(
