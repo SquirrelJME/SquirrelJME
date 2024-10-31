@@ -162,7 +162,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		&inClass->isLoaded) == SJME_VM_CLASS_INIT_LOAD_NEVER)
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkLoad(inClass,
 			contextThread)))
-			return sjme_error_default(error);
+			goto fail_checkLoad;
 	
 	/* Set to be currently initializing. */
 	if (!sjme_atomic_sjme_jint_compareSet(&inClass->isInitialized,
@@ -187,7 +187,10 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	info = inClass->info;
 	loader = contextThread->inTask->classLoader;
 	if (info == NULL || loader == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
+	{
+		error = SJME_ERROR_ILLEGAL_STATE;
+		goto fail_badState;
+	}
 	
 	/* This is always set to the @c Class type. */
 	classType = NULL;
@@ -344,7 +347,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	/* Release lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL)))
-		return sjme_error_default(error);
+		goto fail_releaseLock;
 
 	/* Success! */
 skip_doubleCalled:
@@ -357,12 +360,15 @@ fail_superInfo:
 	sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL);
 	
+fail_badState:
 fail_initInterface:
 fail_initSuper:
 fail_findInterface:
 fail_allocInterfaces:
 fail_findSuper:
 fail_findClassType:
+fail_releaseLock:
+fail_checkLoad:
 	/* Cache load error. */
 	sjme_atomic_sjme_jint_compareSet(&inClass->error,
 		SJME_ERROR_NONE, sjme_error_default(error));
@@ -396,17 +402,26 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	
 	/* Cannot be loaded using this? */
 	if (inClass->binaryName[0] != 'L')
-		return SJME_ERROR_INVALID_ARGUMENT;
+	{
+		error = SJME_ERROR_INVALID_ARGUMENT;
+		goto fail_badName;
+	}
 		
 	/* Recover the class loader. */
 	classLoader = contextThread->inTask->classLoader;
 	if (classLoader == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
+	{
+		error = SJME_ERROR_ILLEGAL_STATE;
+		goto fail_badState;
+	}
 	
 	/* And the class path. */	
 	classPath = classLoader->classPath;
 	if (classPath == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
+	{
+		error = SJME_ERROR_ILLEGAL_STATE;
+		goto fail_badState;
+	}
 	
 	/* Determine the file name of the class. */
 	memset(fileName, 0, sizeof(fileName));
@@ -448,6 +463,13 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 		break;
 	}
 	
+	/* No class exists. */
+	if (info == NULL)
+	{
+		error = SJME_ERROR_NO_CLASS;
+		goto fail_noClassFound;
+	}
+	
 	/* Set class info. */
 	inClass->info = info;
 	
@@ -460,15 +482,19 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 skip_doubleCalled:
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL)))
-		return sjme_error_default(error);
+		goto fail_releaseLock;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
 	
+fail_noClassFound:
 fail_badTryLib:
 	sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL);
 	
+fail_releaseLock:
+fail_badState:
+fail_badName:
 	/* Cache load error. */
 	sjme_atomic_sjme_jint_compareSet(&inClass->error,
 		SJME_ERROR_NONE, sjme_error_default(error));
