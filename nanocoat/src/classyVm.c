@@ -269,7 +269,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		&inClass->object.common.lock)))
 		return sjme_error_default(error);
 	
-	/* Determine instance field index offsets. */
+	/* Determine instance field and method index offsets. */
 	if (superClass != NULL)
 	{
 		/* Superclass info is required. */
@@ -285,11 +285,26 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			/* the super class instance field types. */
 			inClass->instanceFieldOffset[i] =
 				superClass->instanceFieldOffset[i] +
-				superInfo->fieldCount[SJME_NVM_CLASS_FIELD_INSTANCE][i];
+				superInfo->fieldCount[SJME_NVM_CLASS_MEMBER_INSTANCE][i];
 				
 			/* Overflowed? */
 			if (inClass->instanceFieldOffset[i] < 0)
+			{
+				error = SJME_ERROR_TREE_TOO_DEEP;
 				goto fail_indexOverflow;
+			}
+		}
+		
+		/* Method indexes are simpler, they are just additive. */
+		inClass->instanceMethodOffset =
+			superClass->instanceMethodOffset +
+			superInfo->methodCount[SJME_NVM_CLASS_MEMBER_INSTANCE];
+		
+		/* Overflowed? */
+		if (inClass->instanceMethodOffset < 0)
+		{
+			error = SJME_ERROR_TREE_TOO_DEEP;
+			goto fail_indexOverflow;
 		}
 	}
 	
@@ -297,7 +312,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
 	{
 		/* No static fields for this kind, ignore. */
-		n = info->fieldCount[SJME_NVM_CLASS_FIELD_STATIC][i];
+		n = info->fieldCount[SJME_NVM_CLASS_MEMBER_STATIC][i];
 		if (n == 0)
 			continue;
 		

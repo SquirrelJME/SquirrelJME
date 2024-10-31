@@ -110,6 +110,9 @@ struct sjme_jclassBase
 	
 	/** Offset for instance fields. */
 	sjme_jshort instanceFieldOffset[SJME_NUM_JAVA_TYPE_IDS];
+	
+	/** Offset for instance methods. */
+	sjme_jshort instanceMethodOffset;
 };
 
 /**

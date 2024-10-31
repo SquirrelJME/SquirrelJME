@@ -52,21 +52,21 @@ typedef enum sjme_nvm_class_version
 } sjme_nvm_class_version;
 
 /**
- * The number of field index sets possible.
+ * The number of member index sets possible.
  * 
  * @since 2024/10/28
  */
-typedef enum sjme_nvm_class_fieldIndex
+typedef enum sjme_nvm_class_memberIndex
 {
-	/** Static fields. */
-	SJME_NVM_CLASS_FIELD_STATIC = 0,
+	/** Static members. */
+	SJME_NVM_CLASS_MEMBER_STATIC = 0,
 	
-	/** Instance fields. */
-	SJME_NVM_CLASS_FIELD_INSTANCE = 1,
+	/** Instance members. */
+	SJME_NVM_CLASS_MEMBER_INSTANCE = 1,
 	
-	/** The number of field indexes. */
-	SJME_NVM_CLASS_NUM_FIELD_INDEX = 2,
-} sjme_nvm_class_fieldIndex;
+	/** The number of member indexes. */
+	SJME_NVM_CLASS_NUM_MEMBER_INDEX = 2,
+} sjme_nvm_class_memberIndex;
 
 /**
  * Core class information structure.
@@ -619,8 +619,11 @@ struct sjme_nvm_class_infoCore
 	sjme_list_sjme_nvm_class_fieldInfo* fields;
 	
 	/** The field count per type. */
-	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_FIELD_INDEX]
+	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_MEMBER_INDEX]
 		[SJME_NUM_JAVA_TYPE_IDS];
+	
+	/** The method count per type. */
+	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_MEMBER_INDEX];
 
 	/** Methods within the class. */
 	sjme_list_sjme_nvm_class_methodInfo* methods;
@@ -690,6 +693,9 @@ struct sjme_nvm_class_methodInfoCore
 
 	/** The method code, if it is not native. */
 	sjme_nvm_class_codeInfo code;
+	
+	/** The index of this method in the class. */
+	sjme_jshort typedIndex;
 };
 
 struct sjme_nvm_class_codeInfoCore

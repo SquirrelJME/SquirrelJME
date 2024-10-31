@@ -730,6 +730,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_list_sjme_nvm_class_fieldInfo* fields;
 	sjme_list_sjme_nvm_class_methodInfo* methods;
 	sjme_nvm_class_fieldInfo field;
+	sjme_nvm_class_methodInfo method;
 	
 	if (inPool == NULL || inStream == NULL || inStringPool == NULL ||
 		outClass == NULL)
@@ -903,7 +904,7 @@ sjme_errorCode sjme_nvm_class_parse(
 		/* Determine the type index for its slot. */
 		field = fields->elements[i];
 		field->typedIndex = result->fieldCount[(field->flags.member.isStatic ? 
-			SJME_NVM_CLASS_FIELD_STATIC : SJME_NVM_CLASS_FIELD_INSTANCE)]
+			SJME_NVM_CLASS_MEMBER_STATIC : SJME_NVM_CLASS_MEMBER_INSTANCE)]
 			[field->javaType]++;
 		
 		/* Overflowed? */
@@ -920,7 +921,8 @@ sjme_errorCode sjme_nvm_class_parse(
 	/* Setup list to store methods in. */
 	methods = NULL;
 	if (sjme_error_is(error = sjme_list_alloc(inPool,
-		methodCount, &methods, sjme_nvm_class_methodInfo, 0)) || methods == NULL)
+		methodCount, &methods, sjme_nvm_class_methodInfo, 0)) ||
+		methods == NULL)
 		goto fail_allocMethods;
 	result->methods = methods;
 	
@@ -940,6 +942,20 @@ sjme_errorCode sjme_nvm_class_parse(
 			goto fail_refMethod;
 	}
 	
+	/* Determine the indexes of all methods. */
+	for (i = 0; i < methodCount; i++)
+	{
+		/* Determine the type index for its slot. */
+		method = methods->elements[i];
+		method->typedIndex = result->methodCount[
+			(method->flags.member.isStatic ? 
+			SJME_NVM_CLASS_MEMBER_STATIC : SJME_NVM_CLASS_MEMBER_INSTANCE)]++;
+		
+		/* Overflowed? */
+		if (method->typedIndex < 0)
+			goto fail_overflowMethodIndex;
+	}
+	
 	/* Parse attributes. */
 	if (sjme_error_is(error = sjme_nvm_class_parseAttributes(
 		inPool, inStream, result->pool, inStringPool,
@@ -951,6 +967,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	return SJME_ERROR_NONE;
 
 fail_parseAttributes:
+fail_overflowMethodIndex:
 fail_refMethod:
 fail_parseMethod:
 fail_allocMethods:
