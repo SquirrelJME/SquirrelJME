@@ -498,7 +498,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadArray(
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
-	
+
 sjme_errorCode sjme_nvm_vmClass_loaderLoadArrayA(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,

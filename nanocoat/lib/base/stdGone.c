@@ -9,6 +9,30 @@
 
 #include "sjme/stdGone.h"
 
+#if defined(SJME_CONFIG_HAS_NO_ABORT)
+void abort()
+{
+#if defined(SJME_CONFIG_HAS_NO_EXIT)
+	for (;;)
+		;
+#else
+	exit(7);
+#endif
+}
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_EXIT)
+void exit(int exitCode)
+{
+#if defined(SJME_CONFIG_HAS_NO_ABORT)
+	for (;;)
+		;
+#else
+	abort();
+#endif
+}
+#endif
+
 #if defined(SJME_CONFIG_HAS_NO_SNPRINTF)
 int snprintf(
 	sjme_attrInNotNull char* buf,
@@ -24,15 +48,10 @@ int snprintf(
 	
 	va_start(args, format);
 
-	/* Perform the printing. */
-#if defined(MSC_VER)
-	result = _vsnprintf(buf, bufSize, format, args);
-	buf[bufSize - 1] = 0;
-#else
-	#error No snprintf implementation?
-#endif
+	/* Perform the printing, note this is always available. */
+	vsnprintf(buf, bufSize, format, args);
 	
-	va_end(args, format);
+	va_end(args);
 	
 	return result;
 }

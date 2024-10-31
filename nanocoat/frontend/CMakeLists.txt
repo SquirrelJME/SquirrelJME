@@ -22,7 +22,9 @@ if(NOT EMSCRIPTEN AND
 endif()
 
 # Emulator front end used by the Java base emulator
-if(NOT SQUIRRELJME_GRADLE STREQUAL "")
+if(NOT SQUIRRELJME_GRADLE STREQUAL "" AND
+	SQUIRRELJME_ENABLE_FPIC AND
+	SQUIRRELJME_ENABLE_DYLIB)
 	add_subdirectory(emulator)
 endif()
 

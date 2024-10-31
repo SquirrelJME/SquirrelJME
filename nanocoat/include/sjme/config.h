@@ -57,6 +57,9 @@ extern "C" {
 #elif defined(__3DS__) || defined(_3DS)
 	/** Nintendo 3DS is available. */
 	#define SJME_CONFIG_HAS_NINTENDO_3DS
+#elif defined(SDCC) || defined(__SDCC)
+	/** SDCC is available. */
+	#define SJME_CONFIG_HAS_SDCC
 #elif defined(__linux__) || defined(linux) || defined(__linux)
 	/** Linux is available. */
 	#define SJME_CONFIG_HAS_LINUX
@@ -663,9 +666,25 @@ extern "C" {
 
 #if defined(SJME_CONFIG_HAS_NINTENDO_3DS) || \
 	defined(SJME_CONFIG_HAS_NINTENDO_WIIU) || \
-    defined(SJME_CONFIG_HAS_NINTENDO_WII)
+    defined(SJME_CONFIG_HAS_NINTENDO_WII) || \
+    defined(SJME_CONFIG_HAS_SDCC)
 	/* Disable errno support. */
 	#define SJME_CONFIG_HAS_NO_ERRNO 1
+#endif
+
+#if defined(SJME_CONFIG_HAS_SDCC)
+	/** Has no standard C I/O support. */
+	#define SJME_CONFIG_HAS_NO_STDIO 1
+#endif
+
+#if defined(SJME_CONFIG_HAS_SDCC)
+	/** Has no abort() call. */
+	#define SJME_CONFIG_HAS_NO_ABORT 1
+#endif
+
+#if defined(SJME_CONFIG_HAS_SDCC)
+	/** Has no exit() call. */
+	#define SJME_CONFIG_HAS_NO_EXIT 1
 #endif
 
 #if defined(SJME_CONFIG_HAS_NO_VSNPRINTFA) && \

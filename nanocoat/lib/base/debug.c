@@ -127,6 +127,7 @@ sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 void sjme_genericMessage(sjme_lpcstr file, int line,
 	sjme_lpcstr func, sjme_lpcstr prefix, sjme_lpcstr format, va_list args)
 {
+#if !defined(SJME_CONFIG_HAS_NO_STDIO)
 	va_list copy;
 	char buf[DEBUG_BUF];
 	char fullBuf[DEBUG_BUF];
@@ -172,6 +173,7 @@ void sjme_genericMessage(sjme_lpcstr file, int line,
 	
 	/* Make sure it gets written. */
 	fflush(stderr);
+#endif
 }
 
 void sjme_messageR(sjme_lpcstr file, int line,

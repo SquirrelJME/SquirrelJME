@@ -34,7 +34,7 @@
 
 #include "sjme/native.h"
 
-
+#if !defined(SJME_CONFIG_HAS_NO_STDIO)
 static sjme_errorCode sjme_nal_default_cFileClose(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState)
@@ -152,19 +152,23 @@ static const sjme_seekable_functions sjme_nal_default_cFileFunctions =
 	.read = sjme_nal_default_cFileRead,
 	.size = sjme_nal_default_cFileSize,
 };
+#endif
 
 static sjme_errorCode sjme_nal_default_fileOpen(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrOutNotNull sjme_seekable* outSeekable)
 {
+#if !defined(SJME_CONFIG_HAS_NO_STDIO)
 	sjme_errorCode error;
 	FILE* cFile;
 	sjme_seekable result;
+#endif
 	
 	if (inPool == NULL || inPath == NULL || outSeekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+#if !defined(SJME_CONFIG_HAS_NO_STDIO)
 	/* Open file. */
 	cFile = fopen(inPath, "rb");
 	if (cFile == NULL)
@@ -186,6 +190,9 @@ static sjme_errorCode sjme_nal_default_fileOpen(
 	/* Success! */
 	*outSeekable = result;
 	return SJME_ERROR_NONE;
+#else
+	return SJME_ERROR_NOT_IMPLEMENTED;
+#endif
 }
 
 static sjme_errorCode sjme_nal_default_getEnv(
@@ -267,6 +274,7 @@ static sjme_errorCode sjme_nal_default_stdErrF(
 	sjme_attrInNotNull sjme_lpcstr format,
 	...)
 {
+#if !defined(SJME_CONFIG_HAS_NO_STDIO)
 	va_list list;
 	sjme_errorCode error;
 	
@@ -285,12 +293,16 @@ static sjme_errorCode sjme_nal_default_stdErrF(
 	
 	/* Success? */
 	return error;
+#else
+	return SJME_ERROR_NONE;
+#endif
 }
 
 static sjme_errorCode sjme_nal_default_stdOutF(
 	sjme_attrInNotNull sjme_lpcstr format,
 	...)
 {
+#if !defined(SJME_CONFIG_HAS_NO_STDIO)
 	va_list list;
 	sjme_errorCode error;
 	
@@ -309,6 +321,9 @@ static sjme_errorCode sjme_nal_default_stdOutF(
 	
 	/* Success? */
 	return error;
+#else
+	return SJME_ERROR_NONE;
+#endif
 }
 
 const sjme_nal sjme_nal_default =

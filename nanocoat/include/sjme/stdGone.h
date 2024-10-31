@@ -40,6 +40,14 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+#if defined(SJME_CONFIG_HAS_NO_ABORT)
+void abort();
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_EXIT)
+void exit(int exitCode);
+#endif
+
 #if defined(SJME_CONFIG_HAS_NO_SNPRINTF)
 int snprintf(
 	sjme_attrInNotNull char* buf,

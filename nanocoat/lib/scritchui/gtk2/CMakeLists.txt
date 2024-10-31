@@ -12,9 +12,9 @@ pkg_check_modules(GTK2 REQUIRED gtk+-2.0)
 
 # Declare base library
 add_library(ScritchUIGTK2 SHARED
-	$<TARGET_OBJECTS:BasePIC>
-	$<TARGET_OBJECTS:ScritchUICorePIC>
-	$<TARGET_OBJECTS:ScritchUIFBPIC>
+	$<TARGET_OBJECTS:${SQUIRRELJME_BASE_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_CORE_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_FB_LIB}>
 	gtk2Component.c
 	gtk2Container.c
 	gtk2Core.c
