@@ -87,6 +87,9 @@ struct sjme_jclassBase
 	/** The has of the binary name. */
 	sjme_jint binaryHash;
 	
+	/** Error emitted when loading/initializing. */
+	sjme_atomic_sjme_jint error; 
+	
 	/** Has the backing class data been loaded? */
 	sjme_atomic_sjme_jint isLoaded;
 	

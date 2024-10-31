@@ -107,6 +107,7 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
 	/* Initialize base fields. */
 	result->binaryName = dupName;
 	result->binaryHash = sjme_string_hash(dupName);
+	sjme_atomic_sjme_jint_set(&result->error, SJME_ERROR_NONE);
 	sjme_atomic_sjme_jint_set(&result->isLoaded, 0);
 	sjme_atomic_sjme_jint_set(&result->isInitialized, autoLoad);
 	
@@ -147,6 +148,11 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Error state occurred? */
+	error = sjme_atomic_sjme_jint_get(&inClass->error);
+	if (sjme_error_is(error))
+		return sjme_error_default(error);
 	
 	/* Need these in order to work at all. */
 	inPool = contextThread->inState->reservedPool;
@@ -311,7 +317,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		}
 	}
 	
-	/* Bind methods. */
+	/* Bind instance, and static, methods. */
 	for (;;)
 	{
 		sjme_todo("Impl?");
@@ -357,6 +363,9 @@ fail_findInterface:
 fail_allocInterfaces:
 fail_findSuper:
 fail_findClassType:
+	/* Cache load error. */
+	sjme_atomic_sjme_jint_compareSet(&inClass->error,
+		SJME_ERROR_NONE, sjme_error_default(error));
 	return sjme_error_default(error);
 }
 
@@ -374,7 +383,12 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+	
+	/* Error state occurred? */
+	error = sjme_atomic_sjme_jint_get(&inClass->error);
+	if (sjme_error_is(error))
+		return sjme_error_default(error);
+	
 	/* Does not need to be loaded? */
 	if (sjme_atomic_sjme_jint_get(
 		&inClass->isLoaded) != SJME_VM_CLASS_INIT_LOAD_NEVER)
@@ -455,6 +469,9 @@ fail_badTryLib:
 	sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL);
 	
+	/* Cache load error. */
+	sjme_atomic_sjme_jint_compareSet(&inClass->error,
+		SJME_ERROR_NONE, sjme_error_default(error));
 	return sjme_error_default(error);
 }
 
