@@ -403,8 +403,11 @@ typedef enum sjme_errorCode
 	/** Not a valid allocation link. */
 	SJME_ERROR_NOT_ALLOC_LINK = -120,
 	
+	/** Too many class members. */
+	SJME_ERROR_CLASS_TOO_MANY_MEMBERS = -121,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -121,
+	SJME_NUM_ERROR_CODES = -122,
 } sjme_errorCode;
 
 /**

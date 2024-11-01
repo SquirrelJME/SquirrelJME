@@ -909,7 +909,10 @@ sjme_errorCode sjme_nvm_class_parse(
 		
 		/* Overflowed? */
 		if (field->typedIndex < 0)
+		{
+			error = SJME_ERROR_CLASS_TOO_MANY_MEMBERS;
 			goto fail_overflowFieldIndex;
+		}
 	}
 	
 	/* Read in method count. */
@@ -953,7 +956,10 @@ sjme_errorCode sjme_nvm_class_parse(
 		
 		/* Overflowed? */
 		if (method->typedIndex < 0)
+		{
+			error = SJME_ERROR_CLASS_TOO_MANY_MEMBERS;
 			goto fail_overflowMethodIndex;
+		}
 	}
 	
 	/* Parse attributes. */

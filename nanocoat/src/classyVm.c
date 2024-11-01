@@ -290,7 +290,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			/* Overflowed? */
 			if (inClass->instanceFieldOffset[i] < 0)
 			{
-				error = SJME_ERROR_TREE_TOO_DEEP;
+				error = SJME_ERROR_CLASS_TOO_MANY_MEMBERS;
 				goto fail_indexOverflow;
 			}
 		}
@@ -303,7 +303,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		/* Overflowed? */
 		if (inClass->instanceMethodOffset < 0)
 		{
-			error = SJME_ERROR_TREE_TOO_DEEP;
+			error = SJME_ERROR_CLASS_TOO_MANY_MEMBERS;
 			goto fail_indexOverflow;
 		}
 	}
