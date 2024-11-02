@@ -113,6 +113,10 @@ struct sjme_jclassBase
 	
 	/** Offset for instance methods. */
 	sjme_jshort instanceMethodOffset;
+	
+	/** Method bindings for this class. */
+	sjme_list_sjme_nvm_methodBind* methodBinds[
+		SJME_NVM_CLASS_NUM_MEMBER_INDEX];
 };
 
 /**

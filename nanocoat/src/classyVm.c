@@ -7,11 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/listUtil.h"
 #include <stdio.h>
 #include <string.h>
 
 #include "sjme/nvm/classyVm.h"
+#include "sjme/listUtil.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/instance.h"
 #include "sjme/nvm/task.h"
@@ -31,6 +31,109 @@
 
 /** Initialize/load is now done. */
 #define SJME_VM_CLASS_INIT_LOAD_DONE 2
+
+static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInValue sjme_nvm_class_memberIndex instanceType,
+	sjme_attrOutNotNull sjme_list_sjme_nvm_methodBind** outList)
+{
+	if (inPool == NULL || inClass == NULL || outList == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_MEMBER_INDEX)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInValue sjme_basicTypeId typeId)
+{
+	sjme_errorCode error;
+	sjme_nvm_fieldValues* fieldValues;
+	sjme_nvm_class_info info;
+	sjme_jint i, n;
+	
+	if (inPool == NULL || inClass == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* No static fields for this kind, ignore. */
+	info = inClass->info;
+	n = info->fieldCount[SJME_NVM_CLASS_MEMBER_STATIC][typeId];
+	if (n == 0)
+		return SJME_ERROR_NONE;
+	
+	/* Allocate field values. */
+	fieldValues = NULL;
+	if (sjme_error_is(error = sjme_alloc(inPool,
+		sjme_nvm_fieldValueSize(typeId, n),
+		(sjme_pointer)&fieldValues)) || fieldValues == NULL)
+		return sjme_error_default(error);
+	
+	/* Store type and count for this tread. */
+	fieldValues->type = typeId;
+	fieldValues->count = n;
+	
+	/* Setup values per each static field. */
+	for (i = 0; i < n; i++)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_jclass inSuperClass)
+{
+	sjme_nvm_class_info superInfo;
+	sjme_jint i;
+	
+	if (inClass == NULL || inSuperClass == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Superclass info is required. */
+	superInfo = inSuperClass->info;
+	if (superInfo == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* The offsets vary per type, but it should be minimal and save */
+	/* space if nothing ends up being used. */
+	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
+	{
+		/* The instance field offsets are the super class offsets plus */
+		/* the super class instance field types. */
+		inClass->instanceFieldOffset[i] =
+			inSuperClass->instanceFieldOffset[i] +
+			superInfo->fieldCount[SJME_NVM_CLASS_MEMBER_INSTANCE][i];
+			
+		/* Overflowed? */
+		if (inClass->instanceFieldOffset[i] < 0)
+			return SJME_ERROR_CLASS_TOO_MANY_MEMBERS;
+	}
+	
+	/* Method indexes are simpler, they are just additive. */
+	inClass->instanceMethodOffset =
+		inSuperClass->instanceMethodOffset +
+		superInfo->methodCount[SJME_NVM_CLASS_MEMBER_INSTANCE];
+	
+	/* Overflowed? */
+	if (inClass->instanceMethodOffset < 0)
+		return SJME_ERROR_CLASS_TOO_MANY_MEMBERS;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
 
 static sjme_errorCode sjme_nvm_vmClass_loaderLoadCheck(
 	sjme_attrInNotNull sjme_list_sjme_pointer* inList,
@@ -138,13 +241,12 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_attrInNotNull sjme_nvm_thread contextThread)
 {
 	sjme_errorCode error;
-	sjme_nvm_class_info info, superInfo;
+	sjme_nvm_class_info info;
 	sjme_nvm_vmClass_loader loader;
-	sjme_jint i, j, n;
+	sjme_jint i, n;
 	sjme_jclass superClass, interface, classType;
 	sjme_list_sjme_jclass* interfaces;
 	sjme_alloc_pool* inPool;
-	sjme_nvm_fieldValues* fieldValues;
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -271,76 +373,25 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	
 	/* Determine instance field and method index offsets. */
 	if (superClass != NULL)
-	{
-		/* Superclass info is required. */
-		superInfo = superClass->info;
-		if (superInfo == NULL)
-			goto fail_superInfo;
-		
-		/* The offsets vary per type, but it should be minimal and save */
-		/* space if nothing ends up being used. */
-		for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
-		{
-			/* The instance field offsets are the super class offsets plus */
-			/* the super class instance field types. */
-			inClass->instanceFieldOffset[i] =
-				superClass->instanceFieldOffset[i] +
-				superInfo->fieldCount[SJME_NVM_CLASS_MEMBER_INSTANCE][i];
-				
-			/* Overflowed? */
-			if (inClass->instanceFieldOffset[i] < 0)
-			{
-				error = SJME_ERROR_CLASS_TOO_MANY_MEMBERS;
-				goto fail_indexOverflow;
-			}
-		}
-		
-		/* Method indexes are simpler, they are just additive. */
-		inClass->instanceMethodOffset =
-			superClass->instanceMethodOffset +
-			superInfo->methodCount[SJME_NVM_CLASS_MEMBER_INSTANCE];
-		
-		/* Overflowed? */
-		if (inClass->instanceMethodOffset < 0)
-		{
-			error = SJME_ERROR_CLASS_TOO_MANY_MEMBERS;
-			goto fail_indexOverflow;
-		}
-	}
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitSuper(
+			inClass, superClass)))
+			goto fail_super;
 	
 	/* Setup static field storage. */
 	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
-	{
-		/* No static fields for this kind, ignore. */
-		n = info->fieldCount[SJME_NVM_CLASS_MEMBER_STATIC][i];
-		if (n == 0)
-			continue;
-		
-		/* Allocate field values. */
-		fieldValues = NULL;
-		if (sjme_error_is(error = sjme_alloc(inPool,
-			sjme_nvm_fieldValueSize(i, n),
-			(sjme_pointer)&fieldValues)) || fieldValues == NULL)
-			goto fail_allocFieldValues;
-		
-		/* Store type and count for this tread. */
-		fieldValues->type = i;
-		fieldValues->count = n;
-		
-		/* Setup values per each static field. */
-		for (j = 0; j < n; j++)
-		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
-	}
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitStaticFields(
+			inPool, inClass,
+			(sjme_basicTypeId)i)))
+			goto fail_initFieldValues;
 	
 	/* Bind instance, and static, methods. */
-	for (;;)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
+	for (i = 0; i < SJME_NVM_CLASS_NUM_MEMBER_INDEX; i++)
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBinds(
+			inPool, inClass,
+			(sjme_nvm_class_memberIndex)i,
+			&inClass->methodBinds[i])) ||
+			inClass->methodBinds[i] == NULL)
+			goto fail_bindMethods;
 	
 	/* Initialize statics fields with constant values. */
 	for (;;)
@@ -369,9 +420,9 @@ skip_doubleCalled:
 	return SJME_ERROR_NONE;
 	
 fail_markDone:
-fail_allocFieldValues:
-fail_indexOverflow:
-fail_superInfo:
+fail_bindMethods:
+fail_initFieldValues:
+fail_super:
 	sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL);
 	

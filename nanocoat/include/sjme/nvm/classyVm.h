@@ -52,6 +52,27 @@ typedef struct sjme_nvm_vmClass_loaderBase sjme_nvm_vmClass_loaderBase;
  */
 typedef sjme_nvm_vmClass_loaderBase* sjme_nvm_vmClass_loader;
 
+/**
+ * Method binding information.
+ * 
+ * @since 2024/11/01
+ */
+typedef struct sjme_nvm_methodBindBase sjme_nvm_methodBindBase;
+
+/**
+ * Method binding information.
+ * 
+ * @since 2024/11/01
+ */
+typedef sjme_nvm_methodBindBase* sjme_nvm_methodBind;
+
+struct sjme_nvm_methodBindBase
+{
+};
+
+/** List of method binds. */
+SJME_LIST_DECLARE(sjme_nvm_methodBind, 0);
+
 struct sjme_nvm_vmClass_loaderBase
 {
 	/** Common NanoCoat storage. */

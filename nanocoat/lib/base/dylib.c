@@ -109,11 +109,14 @@ sjme_errorCode sjme_dylib_name(
 	sjme_attrOutNotNullBuf(outLen) sjme_lpstr outName,
 	sjme_attrInPositive sjme_jint outLen)
 {
+#if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
 	sjme_intPointer outNameBase;
+#endif
 	
 	if (inLibName == NULL || outName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+#if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
 	outNameBase = (sjme_intPointer)outName;
 	if (outLen < 0 || (outNameBase + outLen) < outNameBase)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
@@ -142,6 +145,9 @@ sjme_errorCode sjme_dylib_name(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+#else
+	return SJME_ERROR_NOT_IMPLEMENTED;
+#endif
 }
 
 sjme_errorCode sjme_dylib_open(
