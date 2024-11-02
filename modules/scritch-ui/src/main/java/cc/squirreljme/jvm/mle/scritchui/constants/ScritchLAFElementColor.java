@@ -64,8 +64,18 @@ public interface ScritchLAFElementColor
 	byte PANEL_FOREGROUND =
 		8;
 	
+	/** Top accent color */
+	@SquirrelJMEVendorApi
+	byte ACCENT_TOP =
+		9;
+	
+	/** Bottom accent color. */
+	@SquirrelJMEVendorApi
+	byte ACCENT_BOTTOM =
+		10;
+	
 	/** The number of available colors. */
 	@SquirrelJMEVendorApi
 	byte NUM_LAF_ELEMENT_COLOR =
-		9;
+		11;
 }

@@ -259,8 +259,14 @@ typedef enum sjme_scritchui_lafElementColorType
 	/** Panel foreground color. */
 	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_PANEL_FOREGROUND = 8,
 	
+	/** Top accent color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_ACCENT_TOP = 9,
+	
+	/** Bottom accent color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_ACCENT_BOTTOM = 10,
+	
 	/** The number of element colors. */
-	SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR = 9,
+	SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR = 11,
 } sjme_scritchui_lafElementColorType;
 
 /**
