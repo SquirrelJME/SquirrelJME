@@ -222,6 +222,26 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	sjme_attrOutNotNull sjme_nvm_vmClass_loader* outLoader,
 	sjme_attrInNotNull sjme_list_sjme_nvm_rom_library* classPath);
 
+/**
+ * Locates the source method in the given class chain for the given static
+ * or instance method ID, which would be the source target method for the given
+ * method slot. This does not take into consideration overridden methods
+ * or otherwise.
+ * 
+ * @param inClass The class tree to look within. 
+ * @param memberIndex The type of member this is.
+ * @param methodId The method identifier.
+ * @param outInfo The output info.
+ * @return Any resultant error.
+ * @since 2024/11/03
+ */
+sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_MEMBER_INDEX)
+		sjme_nvm_class_memberIndex memberIndex,
+	sjme_attrInPositive sjme_jint methodId,
+	sjme_attrOutNotNull sjme_nvm_class_methodInfo* outInfo);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

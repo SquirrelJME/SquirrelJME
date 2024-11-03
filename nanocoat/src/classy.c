@@ -1561,11 +1561,11 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 	if (sjme_error_is(error = sjme_nvm_class_readPoolRefIndex(
 		inStream, inConstPool,
 		SJME_NVM_CLASS_POOL_TYPE_UTF,
-		SJME_JNI_FALSE, &type)) || name == NULL)
+		SJME_JNI_FALSE, &type)) || type == NULL)
 		goto fail_readType;
 	
 	/* Reference it. */
-	result->type = name->utf.utf;
+	result->type = type->utf.utf;
 	if (sjme_error_is(error = sjme_alloc_weakRef(
 		result->type, NULL)))
 		goto fail_refType;

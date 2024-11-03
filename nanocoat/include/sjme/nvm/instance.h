@@ -108,11 +108,19 @@ struct sjme_jclassBase
 	/** Field value storage. */
 	sjme_nvm_fieldValues* staticFields[SJME_NUM_JAVA_TYPE_IDS];
 	
-	/** Offset for instance fields. */
-	sjme_jshort instanceFieldOffset[SJME_NUM_JAVA_TYPE_IDS];
+	/** Base index for fields. */
+	sjme_jshort fieldBase[SJME_NVM_CLASS_NUM_MEMBER_INDEX]
+		[SJME_NUM_JAVA_TYPE_IDS];
 	
-	/** Offset for instance methods. */
-	sjme_jshort instanceMethodOffset;
+	/** Count for a given field. */
+	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_MEMBER_INDEX]
+		[SJME_NUM_JAVA_TYPE_IDS];
+	
+	/** Base index for methods. */
+	sjme_jshort methodBase[SJME_NVM_CLASS_NUM_MEMBER_INDEX];
+	
+	/** The number of methods. */
+	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_MEMBER_INDEX];
 	
 	/** Method bindings for this class. */
 	sjme_list_sjme_nvm_methodBind* methodBinds[

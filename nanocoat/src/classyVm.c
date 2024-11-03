@@ -38,11 +38,48 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	sjme_attrInValue sjme_nvm_class_memberIndex instanceType,
 	sjme_attrOutNotNull sjme_list_sjme_nvm_methodBind** outList)
 {
+	sjme_errorCode error;
+	sjme_jclass superClass;
+	sjme_nvm_class_memberIndex index;
+	sjme_nvm_class_methodInfo methodInfo;
+	sjme_jint i, n;
+	
 	if (inPool == NULL || inClass == NULL || outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_MEMBER_INDEX)
 		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* The super class can be used as a basis for linkage. */
+	superClass = sjme_atomic_sjme_jclass_get(&inClass->superClass);
+	
+	/* Debug. */
+	sjme_message("Binding %d/%d methods...",
+		inClass->methodCount[0], inClass->methodCount[1]);
+	
+	/* Go through each possible method for a class. */
+	for (index = 0; index < SJME_NVM_CLASS_NUM_MEMBER_INDEX; index++)
+	{
+		/* Bind individual methods. */
+		for (i = 0, n = inClass->methodCount[index]; i < n; i++)
+		{
+			/* Which method is being bound? */
+			methodInfo = NULL;
+			if (sjme_error_is(error = sjme_nvm_vmClass_methodSourceByIndex(
+				inClass, index,
+				i, &methodInfo)) ||
+				methodInfo == NULL)
+				return SJME_ERROR_NO_METHOD;
+			
+			/* Debug. */
+			sjme_message("Binding %s:%s%s...",
+				inClass->binaryName, &methodInfo->name->chars[0],
+				&methodInfo->type->chars[0]);
+			
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+	}
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -97,6 +134,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 	sjme_attrInNotNull sjme_jclass inSuperClass)
 {
 	sjme_nvm_class_info superInfo;
+	sjme_nvm_class_memberIndex index;
 	sjme_jint i;
 	
 	if (inClass == NULL || inSuperClass == NULL)
@@ -107,29 +145,37 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 	if (superInfo == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* The offsets vary per type, but it should be minimal and save */
-	/* space if nothing ends up being used. */
-	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
+	/* For both static and instance fields. */
+	for (index = 0; index < SJME_NVM_CLASS_NUM_MEMBER_INDEX; index++)
 	{
-		/* The instance field offsets are the super class offsets plus */
-		/* the super class instance field types. */
-		inClass->instanceFieldOffset[i] =
-			inSuperClass->instanceFieldOffset[i] +
-			superInfo->fieldCount[SJME_NVM_CLASS_MEMBER_INSTANCE][i];
+		/* The field bases vary per type, however this is derived from */
+		/* the parent class for storage sizes. */
+		for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
+		{
+			/* This is just a copy of the field count. */
+			inClass->fieldBase[index][i] = inSuperClass->fieldCount[index][i];
 			
+			/* However, we add the info to get our current field count. */
+			inClass->fieldCount[index][i] = inClass->fieldBase[index][i] +
+				inClass->info->fieldCount[index][i];
+			
+			/* Overflowed? */
+			if (inClass->fieldBase[index][i] < 0 ||
+				inClass->fieldCount[index][i] < 0)
+				return SJME_ERROR_CLASS_TOO_MANY_MEMBERS;
+		}
+		
+		/* Methods are simpler as they are based on static/instance and not */
+		/* from any of their type information. */
+		inClass->methodBase[index] = inSuperClass->methodCount[index];
+		inClass->methodCount[index] = inClass->methodBase[index] +
+			inClass->info->methodCount[index];
+		
 		/* Overflowed? */
-		if (inClass->instanceFieldOffset[i] < 0)
+		if (inClass->methodBase[index] < 0 ||
+			inClass->methodCount[index] < 0)
 			return SJME_ERROR_CLASS_TOO_MANY_MEMBERS;
 	}
-	
-	/* Method indexes are simpler, they are just additive. */
-	inClass->instanceMethodOffset =
-		inSuperClass->instanceMethodOffset +
-		superInfo->methodCount[SJME_NVM_CLASS_MEMBER_INSTANCE];
-	
-	/* Overflowed? */
-	if (inClass->instanceMethodOffset < 0)
-		return SJME_ERROR_CLASS_TOO_MANY_MEMBERS;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -376,6 +422,12 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitSuper(
 			inClass, superClass)))
 			goto fail_super;
+	
+	/* The number of methods in this class for each type. */
+	for (i = 0; i < SJME_NVM_CLASS_NUM_MEMBER_INDEX; i++)
+		inClass->methodCount[i] = info->methodCount[i] +
+			(superClass != NULL && i != SJME_NVM_CLASS_MEMBER_STATIC ?
+				superClass->methodCount[i] : 0);
 	
 	/* Setup static field storage. */
 	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
@@ -881,4 +933,64 @@ fail_dupList:
 		sjme_alloc_free(dup);
 	
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_MEMBER_INDEX)
+		sjme_nvm_class_memberIndex memberIndex,
+	sjme_attrInPositive sjme_jint methodId,
+	sjme_attrOutNotNull sjme_nvm_class_methodInfo* outInfo)
+{
+	sjme_errorCode error;
+	sjme_list_sjme_nvm_class_methodInfo* methods;
+	sjme_jint i, n;
+	sjme_jclass atClass;
+	sjme_jboolean wantStatic;
+	sjme_nvm_class_methodInfo method;
+	
+	if (inClass == NULL || outInfo == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (memberIndex < 0 || memberIndex >= SJME_NVM_CLASS_NUM_MEMBER_INDEX)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (methodId < 0 || methodId >= inClass->methodCount[memberIndex])
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Do we want static? */
+	wantStatic = (memberIndex == SJME_NVM_CLASS_MEMBER_STATIC);
+	
+	/* Start at the current class for the search. */
+	atClass = inClass;
+	for (; atClass != NULL;)
+	{
+		/* If we are below the class index, drop to the super class. */
+		if (methodId < atClass->methodBase[memberIndex])
+		{
+			atClass = sjme_atomic_sjme_jclass_get(&atClass->superClass);
+			continue;
+		}
+
+		/* Find the associated method. */
+		methods = atClass->info->methods;
+		for (i = 0, n = methods->length; i < n; i++)
+		{
+			/* Get the method here. */
+			method = methods->elements[i];
+			if (method == NULL)
+				return SJME_ERROR_ILLEGAL_STATE;
+			
+			/* If the static flag and the index matches, this is the one! */
+			if (method->flags.member.isStatic == wantStatic &&
+				method->typedIndex == methodId)
+			{
+				*outInfo = method;
+				return SJME_ERROR_NONE;
+			}
+		}
+	}
+	
+	/* If this point is reached, something is wrong. */
+	return SJME_ERROR_ILLEGAL_STATE;
 }
