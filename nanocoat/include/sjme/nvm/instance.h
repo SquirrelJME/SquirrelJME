@@ -109,22 +109,22 @@ struct sjme_jclassBase
 	sjme_nvm_fieldValues* staticFields[SJME_NUM_JAVA_TYPE_IDS];
 	
 	/** Base index for fields. */
-	sjme_jshort fieldBase[SJME_NVM_CLASS_NUM_MEMBER_INDEX]
+	sjme_jshort fieldBase[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
 		[SJME_NUM_JAVA_TYPE_IDS];
 	
 	/** Count for a given field. */
-	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_MEMBER_INDEX]
+	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
 		[SJME_NUM_JAVA_TYPE_IDS];
 	
 	/** Base index for methods. */
-	sjme_jshort methodBase[SJME_NVM_CLASS_NUM_MEMBER_INDEX];
+	sjme_jshort methodBase[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
 	
 	/** The number of methods. */
-	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_MEMBER_INDEX];
+	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
 	
 	/** Method bindings for this class. */
 	sjme_list_sjme_nvm_methodBind* methodBinds[
-		SJME_NVM_CLASS_NUM_MEMBER_INDEX];
+		SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
 };
 
 /**

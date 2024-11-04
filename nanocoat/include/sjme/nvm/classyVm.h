@@ -68,6 +68,8 @@ typedef sjme_nvm_methodBindBase* sjme_nvm_methodBind;
 
 struct sjme_nvm_methodBindBase
 {
+	/** The info this is bound to. */
+	sjme_nvm_class_methodInfo info;
 };
 
 /** List of method binds. */
@@ -229,7 +231,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
  * or otherwise.
  * 
  * @param inClass The class tree to look within. 
- * @param memberIndex The type of member this is.
+ * @param instanceType The type of instance this is.
  * @param methodId The method identifier.
  * @param outInfo The output info.
  * @return Any resultant error.
@@ -237,8 +239,8 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
  */
 sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	sjme_attrInNotNull sjme_jclass inClass,
-	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_MEMBER_INDEX)
-		sjme_nvm_class_memberIndex memberIndex,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInPositive sjme_jint methodId,
 	sjme_attrOutNotNull sjme_nvm_class_methodInfo* outInfo);
 

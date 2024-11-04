@@ -56,7 +56,7 @@ typedef enum sjme_nvm_class_version
  * 
  * @since 2024/10/28
  */
-typedef enum sjme_nvm_class_memberIndex
+typedef enum sjme_nvm_class_instanceType
 {
 	/** Static members. */
 	SJME_NVM_CLASS_MEMBER_STATIC = 0,
@@ -65,8 +65,8 @@ typedef enum sjme_nvm_class_memberIndex
 	SJME_NVM_CLASS_MEMBER_INSTANCE = 1,
 	
 	/** The number of member indexes. */
-	SJME_NVM_CLASS_NUM_MEMBER_INDEX = 2,
-} sjme_nvm_class_memberIndex;
+	SJME_NVM_CLASS_NUM_INSTANCE_TYPE = 2,
+} sjme_nvm_class_instanceType;
 
 /**
  * Core class information structure.
@@ -619,11 +619,11 @@ struct sjme_nvm_class_infoCore
 	sjme_list_sjme_nvm_class_fieldInfo* fields;
 	
 	/** The field count per type. */
-	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_MEMBER_INDEX]
+	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
 		[SJME_NUM_JAVA_TYPE_IDS];
 	
 	/** The method count per type. */
-	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_MEMBER_INDEX];
+	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
 
 	/** Methods within the class. */
 	sjme_list_sjme_nvm_class_methodInfo* methods;
@@ -696,6 +696,9 @@ struct sjme_nvm_class_methodInfoCore
 	
 	/** The index of this method in the class. */
 	sjme_jshort typedIndex;
+	
+	/** The class this is in. */
+	sjme_nvm_class_info inClass;
 };
 
 struct sjme_nvm_class_codeInfoCore

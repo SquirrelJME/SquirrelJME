@@ -943,6 +943,9 @@ sjme_errorCode sjme_nvm_class_parse(
 		if (sjme_error_is(error = sjme_alloc_weakRef(
 			methods->elements[i], NULL)))
 			goto fail_refMethod;
+		
+		/* Link back. */
+		methods->elements[i]->inClass = result;
 	}
 	
 	/* Determine the indexes of all methods. */

@@ -32,57 +32,112 @@
 /** Initialize/load is now done. */
 #define SJME_VM_CLASS_INIT_LOAD_DONE 2
 
+static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_jclass thisClass,
+	sjme_attrInNotNull sjme_jclass superClass,
+	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
+	sjme_attrInPositive sjme_jint index,
+	sjme_attrInNotNull sjme_nvm_class_methodInfo thisInfo,
+	sjme_attrOutNotNull sjme_nvm_methodBind* outBind)
+{
+	if (inPool == NULL || thisClass == NULL || thisInfo == NULL ||
+		outBind == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (superClass != sjme_atomic_sjme_jclass_get(&thisClass->superClass))
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (index < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_jclass inClass,
-	sjme_attrInValue sjme_nvm_class_memberIndex instanceType,
+	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
 	sjme_attrOutNotNull sjme_list_sjme_nvm_methodBind** outList)
 {
 	sjme_errorCode error;
 	sjme_jclass superClass;
-	sjme_nvm_class_memberIndex index;
 	sjme_nvm_class_methodInfo methodInfo;
 	sjme_jint i, n;
+	sjme_list_sjme_nvm_methodBind* result;
+	sjme_nvm_methodBind bind;
 	
 	if (inPool == NULL || inClass == NULL || outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_MEMBER_INDEX)
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* The super class can be used as a basis for linkage. */
 	superClass = sjme_atomic_sjme_jclass_get(&inClass->superClass);
 	
+	/* Allocate result. */
+	result = NULL;
+	n = inClass->methodCount[instanceType];
+	if (sjme_error_is(error = sjme_list_alloc(inPool,
+		n, &result, sjme_nvm_methodBind, 0)) || result == NULL)
+		goto fail_allocResult;
+	
 	/* Debug. */
 	sjme_message("Binding %d/%d methods...",
 		inClass->methodCount[0], inClass->methodCount[1]);
 	
-	/* Go through each possible method for a class. */
-	for (index = 0; index < SJME_NVM_CLASS_NUM_MEMBER_INDEX; index++)
+	/* Bind individual methods. */
+	for (i = 0; i < n; i++)
 	{
-		/* Bind individual methods. */
-		for (i = 0, n = inClass->methodCount[index]; i < n; i++)
-		{
-			/* Which method is being bound? */
-			methodInfo = NULL;
-			if (sjme_error_is(error = sjme_nvm_vmClass_methodSourceByIndex(
-				inClass, index,
-				i, &methodInfo)) ||
-				methodInfo == NULL)
-				return SJME_ERROR_NO_METHOD;
+		/* Which method is being bound? */
+		methodInfo = NULL;
+		if (sjme_error_is(error = sjme_nvm_vmClass_methodSourceByIndex(
+			inClass, instanceType,
+			i, &methodInfo)) ||
+			methodInfo == NULL)
+			goto fail_noIndex;
+		
+		/* Debug. */
+		sjme_message("Binding %s %s%s...",
+			inClass->binaryName, &methodInfo->name->chars[0],
+			&methodInfo->type->chars[0]);
+		
+		/* Perform the binding. */
+		bind = NULL;
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBind(
+			inPool, inClass, superClass,
+			instanceType, i, methodInfo,
+			&bind)) || bind == NULL)
+			goto fail_initBind;
+		
+		/* Store bind. */
+		result->elements[i] = bind;
 			
-			/* Debug. */
-			sjme_message("Binding %s:%s%s...",
-				inClass->binaryName, &methodInfo->name->chars[0],
-				&methodInfo->type->chars[0]);
-			
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
+		/* Debug. */
+		sjme_message("Bound %s %s%s -> %s %s%s",
+			inClass->binaryName,
+			&methodInfo->name->chars[0],
+			&methodInfo->type->chars[0],
+			&bind->info->inClass->name->chars[0],
+			&bind->info->name->chars[0],
+			&bind->info->type->chars[0]);
 	}
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Success! */
+	*outList = result;
+	return SJME_ERROR_NONE;
+	
+fail_initBind:
+fail_noIndex:
+fail_allocResult:
+	if (result != NULL)
+		sjme_alloc_free(result);
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
@@ -134,7 +189,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 	sjme_attrInNotNull sjme_jclass inSuperClass)
 {
 	sjme_nvm_class_info superInfo;
-	sjme_nvm_class_memberIndex index;
+	sjme_nvm_class_instanceType index;
 	sjme_jint i;
 	
 	if (inClass == NULL || inSuperClass == NULL)
@@ -146,7 +201,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* For both static and instance fields. */
-	for (index = 0; index < SJME_NVM_CLASS_NUM_MEMBER_INDEX; index++)
+	for (index = 0; index < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; index++)
 	{
 		/* The field bases vary per type, however this is derived from */
 		/* the parent class for storage sizes. */
@@ -424,7 +479,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			goto fail_super;
 	
 	/* The number of methods in this class for each type. */
-	for (i = 0; i < SJME_NVM_CLASS_NUM_MEMBER_INDEX; i++)
+	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
 		inClass->methodCount[i] = info->methodCount[i] +
 			(superClass != NULL && i != SJME_NVM_CLASS_MEMBER_STATIC ?
 				superClass->methodCount[i] : 0);
@@ -437,10 +492,10 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			goto fail_initFieldValues;
 	
 	/* Bind instance, and static, methods. */
-	for (i = 0; i < SJME_NVM_CLASS_NUM_MEMBER_INDEX; i++)
+	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBinds(
 			inPool, inClass,
-			(sjme_nvm_class_memberIndex)i,
+			(sjme_nvm_class_instanceType)i,
 			&inClass->methodBinds[i])) ||
 			inClass->methodBinds[i] == NULL)
 			goto fail_bindMethods;
@@ -937,8 +992,8 @@ fail_dupList:
 
 sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	sjme_attrInNotNull sjme_jclass inClass,
-	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_MEMBER_INDEX)
-		sjme_nvm_class_memberIndex memberIndex,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInPositive sjme_jint methodId,
 	sjme_attrOutNotNull sjme_nvm_class_methodInfo* outInfo)
 {
@@ -952,21 +1007,21 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	if (inClass == NULL || outInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (memberIndex < 0 || memberIndex >= SJME_NVM_CLASS_NUM_MEMBER_INDEX)
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	if (methodId < 0 || methodId >= inClass->methodCount[memberIndex])
+	if (methodId < 0 || methodId >= inClass->methodCount[instanceType])
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Do we want static? */
-	wantStatic = (memberIndex == SJME_NVM_CLASS_MEMBER_STATIC);
+	wantStatic = (instanceType == SJME_NVM_CLASS_MEMBER_STATIC);
 	
 	/* Start at the current class for the search. */
 	atClass = inClass;
 	for (; atClass != NULL;)
 	{
 		/* If we are below the class index, drop to the super class. */
-		if (methodId < atClass->methodBase[memberIndex])
+		if (methodId < atClass->methodBase[instanceType])
 		{
 			atClass = sjme_atomic_sjme_jclass_get(&atClass->superClass);
 			continue;
