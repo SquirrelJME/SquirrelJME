@@ -66,10 +66,26 @@ typedef struct sjme_nvm_methodBindBase sjme_nvm_methodBindBase;
  */
 typedef sjme_nvm_methodBindBase* sjme_nvm_methodBind;
 
+/**
+ * The basic type of call for a method.
+ * 
+ * @since 2024/11/07
+ */
+typedef enum sjme_nvm_methodCallType
+{
+	/** Non-virtual, special, call. */
+	SJME_NVM_CALL_NON_VIRTUAL,
+	
+	/** Virtual call. */
+	SJME_NVM_CALL_VIRTUAL,
+	
+	SJME_NVM_NUM_METHOD_CALL_TYPE,
+} sjme_nvm_methodCallType;
+
 struct sjme_nvm_methodBindBase
 {
-	/** The info this is bound to. */
-	sjme_nvm_class_methodInfo info;
+	/** The info this is bound to, for virtual and non-virtual calls. */
+	sjme_nvm_class_methodInfo info[SJME_NVM_NUM_METHOD_CALL_TYPE];
 };
 
 /** List of method binds. */

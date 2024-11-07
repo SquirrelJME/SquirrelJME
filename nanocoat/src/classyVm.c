@@ -65,13 +65,16 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		goto fail_allocResult;
 	
 	/* Constructors always bind to self. */
+	/* Along with any private methods. */
 	if (sjme_charSeq_equalsUtfR(&thisInfo->name->seq,
-		"<init>") ||
+			"<init>") ||
 		sjme_charSeq_equalsUtfR(&thisInfo->name->seq,
-		"<clinit>"))
+			"<clinit>") ||
+		thisInfo->flags.member.access.private)
 	{
 		/* Just to self always. */
-		result->info = thisInfo;
+		result->info[SJME_NVM_CALL_NON_VIRTUAL] = thisInfo;
+		result->info[SJME_NVM_CALL_VIRTUAL] = thisInfo;
 		
 		/* This is now successful. */
 		goto skip_success;
