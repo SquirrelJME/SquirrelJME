@@ -196,7 +196,11 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 		memmove(&result->chars[0], inUtf, inUtfLen);
 		result->hashCode = hash;
 		result->length = inUtfLen;
-		result->seq.context = &result->chars[0];
+		
+		/* Setup string sequence. */
+		if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
+			&result->seq, (sjme_lpcstr)&result->chars[0])))
+			goto fail_initSeq;
 		
 		/* Count up as the pool itself references it. */
 		if (sjme_error_is(error = sjme_alloc_weakRef(
@@ -217,6 +221,7 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 	return SJME_ERROR_NONE;
 
 fail_countUp:
+fail_initSeq:
 fail_initCommon:
 fail_stringAlloc:
 	if (result != NULL)

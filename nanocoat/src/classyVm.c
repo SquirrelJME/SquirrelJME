@@ -41,6 +41,9 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	sjme_attrInNotNull sjme_nvm_class_methodInfo thisInfo,
 	sjme_attrOutNotNull sjme_nvm_methodBind* outBind)
 {
+	sjme_errorCode error;
+	sjme_nvm_methodBind result;
+
 	if (inPool == NULL || thisClass == NULL || thisInfo == NULL ||
 		outBind == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -54,8 +57,39 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	if (index < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+		sizeof(result), SJME_NVM_STRUCT_METHOD_BIND,
+		SJME_AS_NVM_COMMONP(&result))))
+		goto fail_allocResult;
+	
+	/* Constructors always bind to self. */
+	if (sjme_charSeq_equalsUtfR(&thisInfo->name->seq,
+		"<init>") ||
+		sjme_charSeq_equalsUtfR(&thisInfo->name->seq,
+		"<clinit>"))
+	{
+		/* Just to self always. */
+		result->info = thisInfo;
+		
+		/* This is now successful. */
+		goto skip_success;
+	}
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+	
+	/* Success! */
+skip_success:
+	*outBind = result;
+	return SJME_ERROR_NONE;
+	
+fail_allocResult:
+	if (result != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(

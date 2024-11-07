@@ -124,6 +124,9 @@ typedef enum sjme_nvm_structType
 	/** Identifier. */
 	SJME_NVM_STRUCT_IDENTIFIER,
 	
+	/** Method binding. */
+	SJME_NVM_STRUCT_METHOD_BIND,
+	
 	/** Method information. */
 	SJME_NVM_STRUCT_METHOD_INFO,
 	

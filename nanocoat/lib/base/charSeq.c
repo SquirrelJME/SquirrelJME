@@ -202,7 +202,7 @@ sjme_errorCode sjme_charSeq_length(
 	if (inSeq == NULL || outLen == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inSeq->impl->length == NULL)
+	if (inSeq->impl == NULL || inSeq->impl->length == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Forward. */
