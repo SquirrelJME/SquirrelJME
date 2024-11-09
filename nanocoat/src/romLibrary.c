@@ -204,7 +204,7 @@ sjme_errorCode sjme_nvm_rom_libraryHash(
 }
 
 sjme_errorCode sjme_nvm_rom_libraryNew(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNullable sjme_pointer data,
@@ -216,7 +216,7 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 	sjme_list_sjme_nvm_class_info* classInfos;
 	sjme_nvm_stringPool stringPool;
 
-	if (pool == NULL || outLibrary == NULL || inFunctions == NULL ||
+	if (allocPool == NULL || outLibrary == NULL || inFunctions == NULL ||
 		libName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -227,26 +227,27 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 	
 	/* Allocate class information list. */
 	classInfos = NULL;
-	if (sjme_error_is(error = sjme_list_alloc(pool,
+	if (sjme_error_is(error = sjme_list_alloc(allocPool,
 		SJME_NVM_ROM_CLASS_INFO_GROW,
 		&classInfos, sjme_nvm_class_info, 0)) || classInfos == NULL)
 		goto fail_allocInfos;
 	
 	/* Allocate string pool. */
 	stringPool = NULL;
-	if (sjme_error_is(error = sjme_nvm_stringPool_new(pool,
+	if (sjme_error_is(error = sjme_nvm_stringPool_new(allocPool,
 		&stringPool)) || stringPool == NULL)
 		goto fail_allocStringPool;
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(pool,
+	if (sjme_error_is(error = sjme_nvm_alloc(
+		(sjme_nvm)allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_ROM_LIBRARY,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_alloc;
 	
 	/* Setup result. */
-	result->allocPool = pool;
+	result->allocPool = allocPool;
 	result->functions = inFunctions;
 	result->rwLock.read = &result->common.lock;
 	result->classInfos = classInfos;
@@ -263,7 +264,7 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 	
 	/* Set library name. */
 	result->name = NULL;
-	if (sjme_error_is(error = sjme_alloc_strdup(pool,
+	if (sjme_error_is(error = sjme_alloc_strdup(allocPool,
 		(sjme_lpstr*)&result->name, libName)))
 		goto fail_strdup;
 	

@@ -33,7 +33,7 @@
 #define SJME_VM_CLASS_INIT_LOAD_DONE 2
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_jclass thisClass,
 	sjme_attrInNotNull sjme_jclass superClass,
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
@@ -44,7 +44,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	sjme_errorCode error;
 	sjme_nvm_methodBind result;
 
-	if (allocPool == NULL || thisClass == NULL || thisInfo == NULL ||
+	if (inState == NULL || thisClass == NULL || thisInfo == NULL ||
 		outBind == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -59,7 +59,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(inState,
 		sizeof(result), SJME_NVM_STRUCT_METHOD_BIND,
 		SJME_AS_NVM_COMMONP(&result))))
 		goto fail_allocResult;
@@ -98,7 +98,7 @@ fail_allocResult:
 }
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
 	sjme_attrOutNotNull sjme_list_sjme_nvm_methodBind** outList)
@@ -110,7 +110,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	sjme_list_sjme_nvm_methodBind* result;
 	sjme_nvm_methodBind bind;
 	
-	if (allocPool == NULL || inClass == NULL || outList == NULL)
+	if (inLoader == NULL || inClass == NULL || outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
@@ -122,7 +122,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	/* Allocate result. */
 	result = NULL;
 	n = inClass->methodCount[instanceType];
-	if (sjme_error_is(error = sjme_list_alloc(allocPool,
+	if (sjme_error_is(error = sjme_list_alloc(inLoader->inState->allocPool,
 		n, &result, sjme_nvm_methodBind, 0)) || result == NULL)
 		goto fail_allocResult;
 	
@@ -149,7 +149,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 		/* Perform the binding. */
 		bind = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBind(
-			allocPool, inClass, superClass,
+			inLoader->inState, inClass, superClass,
 			instanceType, i, methodInfo,
 			&bind)) || bind == NULL)
 			goto fail_initBind;
@@ -333,14 +333,14 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
 	
 	/* Allocate resultant class. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(inLoader->inState,
 		sizeof(*result), SJME_NVM_STRUCT_CLASS_INSTANCE,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
 	
 	/* Allocate class instance of check storage. */
 	isClasses = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(inLoader->inState,
 		sizeof(*isClasses), SJME_NVM_STRUCT_IS_CLASSES,
 		SJME_AS_NVM_COMMONP(&isClasses))) || isClasses == NULL)
 		goto fail_allocIsClasses;
@@ -552,7 +552,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	/* Bind instance, and static, methods. */
 	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBinds(
-			allocPool, inClass,
+			loader, inClass,
 			(sjme_nvm_class_instanceType)i,
 			&inClass->methodBinds[i])) ||
 			inClass->methodBinds[i] == NULL)
@@ -856,7 +856,8 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 	/* Forward load of class. */
 	maybe = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadBSubAlloc(
-		inLoader, &maybe, &classes->elements[freeSlot],
+		inLoader, &maybe,
+		&classes->elements[freeSlot],
 		contextThread, binaryName)) || maybe == NULL)
 		goto fail_loadClass;
 	
@@ -1018,7 +1019,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inState->allocPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(inState,
 		sizeof(*result), SJME_NVM_STRUCT_VM_CLASS_LOADER,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_alloc; 

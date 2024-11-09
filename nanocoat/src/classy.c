@@ -402,7 +402,8 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	
 	/* Make sure we can allocate this. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(
+		(sjme_nvm)allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_CODE,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
@@ -738,7 +739,8 @@ sjme_errorCode sjme_nvm_class_parse(
 	
 	/* Make sure we can actually allocate the resultant class. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(
+		(sjme_nvm)allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_CLASS_INFO,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
@@ -1087,7 +1089,8 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 	
 	/* Make sure we can actually allocate this. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(
+		(sjme_nvm)allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_POOL,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
@@ -1443,7 +1446,8 @@ sjme_errorCode sjme_nvm_class_parseField(
 	
 	/* Ensure we can allocate the result first. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(
+		(sjme_nvm)allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_FIELD_INFO,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
@@ -1535,7 +1539,8 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 	
 	/* Ensure we can allocate the result first. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(
+		(sjme_nvm)allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_METHOD_INFO,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;

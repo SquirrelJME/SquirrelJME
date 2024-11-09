@@ -179,13 +179,15 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 		/* Allocate new result to store in the slot. */
 		result = NULL;
 #if defined(SJME_CONFIG_DEBUG)
-		if (sjme_error_is(error = sjme_nvm_allocR(inStringPool->allocPool,
+		if (sjme_error_is(error = sjme_nvm_allocR(
+			(sjme_nvm)inStringPool->allocPool,
 			sizeof(*result) + inUtfLen + 1, 
 			SJME_NVM_STRUCT_STRING_POOL_STRING,
 			SJME_AS_NVM_COMMONP(&result), file, line, func)) ||
 			result == NULL)
 #else
-		if (sjme_error_is(error = sjme_nvm_alloc(inStringPool->allocPool,
+		if (sjme_error_is(error = sjme_nvm_alloc(
+			(sjme_nvm)inStringPool->allocPool,
 			sizeof(*result) + inUtfLen + 1,
 			SJME_NVM_STRUCT_STRING_POOL_STRING,
 			SJME_AS_NVM_COMMONP(&result))) || result == NULL)
@@ -257,7 +259,8 @@ sjme_errorCode sjme_nvm_stringPool_new(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(
+		(sjme_nvm)allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_STRING_POOL,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;

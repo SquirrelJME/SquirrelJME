@@ -178,7 +178,7 @@ fail_list:
 }
 
 sjme_errorCode sjme_nvm_rom_suiteNew(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNotNull const sjme_nvm_rom_suiteFunctions* inFunctions,
@@ -187,7 +187,7 @@ sjme_errorCode sjme_nvm_rom_suiteNew(
 	sjme_nvm_rom_suite result;
 	sjme_errorCode error;
 
-	if (pool == NULL || outSuite == NULL || inFunctions == NULL)
+	if (allocPool == NULL || outSuite == NULL || inFunctions == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* These functions are required. */
@@ -199,13 +199,13 @@ sjme_errorCode sjme_nvm_rom_suiteNew(
 		
 	/* Allocate resultant suite. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(pool,
+	if (sjme_error_is(error = sjme_nvm_alloc((sjme_nvm)allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_ROM_SUITE,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_alloc;
 	
 	/* Setup result. */
-	result->allocPool = pool;
+	result->allocPool = allocPool;
 	result->functions = inFunctions;
 	
 	/* Copy front end data? */

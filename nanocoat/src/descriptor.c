@@ -960,10 +960,17 @@ sjme_errorCode sjme_nvm_desc_interpretIdentifier(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
+	if (SJME_JNI_FALSE || SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+#if 0
+	if (sjme_error_is(error = sjme_nvm_alloc(inState,
 		sizeof(*result), SJME_NVM_STRUCT_IDENTIFIER,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		return sjme_error_default(error);
+#endif
 	
 	/* Fill in info. */
 	result->hash = sjme_string_hashN(inStr, inLen);

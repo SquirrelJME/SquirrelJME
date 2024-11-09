@@ -396,7 +396,7 @@ sjme_errorCode sjme_nvm_rom_libraryHash(
 /**
  * Makes a virtual library from the given functions.
  *
- * @param pool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outLibrary The output library.
  * @param libName The library name.
  * @param data Any data to forward to the initializer.
@@ -406,7 +406,7 @@ sjme_errorCode sjme_nvm_rom_libraryHash(
  * @since 2023/12/29
  */
 sjme_errorCode sjme_nvm_rom_libraryNew(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNullable sjme_pointer data,

@@ -115,7 +115,7 @@ sjme_errorCode sjme_nvm_boot(
 	
 	/* Allocate resultant state. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
+	if (sjme_error_is(error = sjme_nvm_alloc((sjme_nvm)allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_STATE,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_resultAlloc;

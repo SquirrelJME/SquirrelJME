@@ -350,7 +350,7 @@ static sjme_errorCode sjme_nvm_vmClass_methodBindClose(
 /* ------------------------------------------------------------------------ */
 
 sjme_errorCode sjme_nvm_allocR(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInValue sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_nvm_common* outCommon
@@ -359,13 +359,29 @@ sjme_errorCode sjme_nvm_allocR(
 	sjme_errorCode error;
 	sjme_closeable_closeHandlerFunc handler;
 	sjme_nvm_common result;
+	sjme_alloc_pool* allocPool;
 	
-	if (allocPool == NULL || outCommon == NULL)
+	if (inState == NULL || outCommon == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inType <= SJME_NVM_STRUCT_UNKNOWN ||
 		inType >= SJME_NVM_NUM_STRUCT)
 		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Recover pool, some types can use an aliased pool. */
+	if (inType != SJME_NVM_STRUCT_CLASS_INFO &&
+		inType != SJME_NVM_STRUCT_CODE &&
+		inType != SJME_NVM_STRUCT_FIELD_INFO &&
+		inType != SJME_NVM_STRUCT_METHOD_INFO &&
+		inType != SJME_NVM_STRUCT_POOL &&
+		inType != SJME_NVM_STRUCT_ROM_LIBRARY &&
+		inType != SJME_NVM_STRUCT_ROM_SUITE &&
+		inType != SJME_NVM_STRUCT_STATE &&
+		inType != SJME_NVM_STRUCT_STRING_POOL &&
+		inType != SJME_NVM_STRUCT_STRING_POOL_STRING)
+		allocPool = inState->allocPool;
+	else
+		allocPool = (sjme_alloc_pool*)inState;
 	
 	/* Which handler is used? */
 	handler = NULL;
