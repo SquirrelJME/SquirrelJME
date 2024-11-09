@@ -155,7 +155,7 @@ static const sjme_seekable_functions sjme_nal_default_cFileFunctions =
 #endif
 
 static sjme_errorCode sjme_nal_default_fileOpen(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrOutNotNull sjme_seekable* outSeekable)
 {
@@ -165,7 +165,7 @@ static sjme_errorCode sjme_nal_default_fileOpen(
 	sjme_seekable result;
 #endif
 	
-	if (inPool == NULL || inPath == NULL || outSeekable == NULL)
+	if (allocPool == NULL || inPath == NULL || outSeekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 #if !defined(SJME_CONFIG_HAS_NO_STDIO)
@@ -176,7 +176,7 @@ static sjme_errorCode sjme_nal_default_fileOpen(
 	
 	/* Setup stream. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_seekable_open(inPool,
+	if (sjme_error_is(error = sjme_seekable_open(allocPool,
 		&result, &sjme_nal_default_cFileFunctions,
 		cFile, NULL)) || result == NULL)
 	{

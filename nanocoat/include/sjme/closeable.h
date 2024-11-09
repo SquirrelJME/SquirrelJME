@@ -78,7 +78,7 @@ struct sjme_closeableBase
 /**
  * Allocates a new closeable.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param allocSize The allocation size.
  * @param handler The close handler to use.
  * @param refCounting Is reference counting used? If not then this is
@@ -88,7 +88,7 @@ struct sjme_closeableBase
  * @since 2024/09/28
  */
 sjme_errorCode sjme_closeable_allocR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInNotNull sjme_closeable_closeHandlerFunc handler,
 	sjme_attrInValue sjme_jboolean refCounting,
@@ -98,7 +98,7 @@ sjme_errorCode sjme_closeable_allocR(
 /**
  * Allocates a new closeable.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param allocSize The allocation size.
  * @param handler The close handler to use.
  * @param refCounting Is reference counting used? If not then this is
@@ -107,9 +107,9 @@ sjme_errorCode sjme_closeable_allocR(
  * @return On any resultant error, if any.
  * @since 2024/09/29
  */
-#define sjme_closeable_alloc(inPool, allocSize, handler, refCounting, \
+#define sjme_closeable_alloc(allocPool, allocSize, handler, refCounting, \
 	outCloseable) \
-	(sjme_closeable_allocR((inPool), (allocSize), (handler), (refCounting), \
+	(sjme_closeable_allocR((allocPool), (allocSize), (handler), (refCounting), \
 	(outCloseable) \
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 

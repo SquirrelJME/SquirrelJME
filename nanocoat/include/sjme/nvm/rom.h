@@ -196,7 +196,7 @@ typedef sjme_errorCode (*sjme_nvm_rom_libraryResourceStreamFunc)(
 /**
  * Obtains the default launch parameters from the given suite.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param inSuite The suite to get the launch parameters from.
  * @param outMainClass The main class to launch.
  * @param outMainArgs The arguments to pass to the main class.
@@ -206,7 +206,7 @@ typedef sjme_errorCode (*sjme_nvm_rom_libraryResourceStreamFunc)(
  * @since 2024/08/16
  */
 typedef sjme_errorCode (*sjme_nvm_rom_suiteDefaultLaunchFunc)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
@@ -522,7 +522,7 @@ sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
 /**
  * Obtains the default launch parameters from the given suite.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param inSuite The suite to get the launch parameters from.
  * @param outMainClass The main class to launch.
  * @param outMainArgs The arguments to pass to the main class.
@@ -532,7 +532,7 @@ sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
  * @since 2024/08/16
  */
 sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,

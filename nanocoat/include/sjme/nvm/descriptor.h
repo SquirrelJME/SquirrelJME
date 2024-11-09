@@ -402,7 +402,7 @@ sjme_jint sjme_nvm_desc_compareMethodS(
 /**
  * Interprets the given binary name.
  * 
- * @param inPool The allocation pool to use. 
+ * @param allocPool The allocation pool to use. 
  * @param outName The interpreted result.
  * @param inStr The input string to be interpreted.
  * @param inLen The length of the input string.
@@ -410,7 +410,7 @@ sjme_jint sjme_nvm_desc_compareMethodS(
  * @since 2024/02/04
  */
 sjme_errorCode sjme_nvm_desc_interpretBinaryName(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_nvm_desc_binaryName* outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
@@ -418,7 +418,7 @@ sjme_errorCode sjme_nvm_desc_interpretBinaryName(
 /**
  * Interprets the given class name.
  * 
- * @param inPool The allocation pool to use. 
+ * @param allocPool The allocation pool to use. 
  * @param outName The interpreted result.
  * @param inStr The input string to be interpreted.
  * @param inLen The length of the input string.
@@ -426,7 +426,7 @@ sjme_errorCode sjme_nvm_desc_interpretBinaryName(
  * @since 2024/02/04
  */
 sjme_errorCode sjme_nvm_desc_interpretClassName(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_nvm_desc_className* outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
@@ -434,7 +434,7 @@ sjme_errorCode sjme_nvm_desc_interpretClassName(
 /**
  * Interprets the given field type.
  * 
- * @param inPool The allocation pool to use. 
+ * @param allocPool The allocation pool to use. 
  * @param outType The interpreted result.
  * @param inStr The input string to be interpreted.
  * @param inLen The length of the input string.
@@ -442,7 +442,7 @@ sjme_errorCode sjme_nvm_desc_interpretClassName(
  * @since 2024/02/04
  */
 sjme_errorCode sjme_nvm_desc_interpretFieldType(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_nvm_desc_fieldType* outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
@@ -450,7 +450,7 @@ sjme_errorCode sjme_nvm_desc_interpretFieldType(
 /**
  * Interprets the given identifier.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param inStringPool The string pool to use.
  * @param outIdent The interpreted result.
  * @param inStr The input string to be interpreted.
@@ -459,7 +459,7 @@ sjme_errorCode sjme_nvm_desc_interpretFieldType(
  * @since 2024/02/04
  */
 sjme_errorCode sjme_nvm_desc_interpretIdentifier(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_desc_identifier* outIdent,
 	sjme_attrInNotNull sjme_lpcstr inStr,
@@ -468,7 +468,7 @@ sjme_errorCode sjme_nvm_desc_interpretIdentifier(
 /**
  * Interprets the given method type.
  * 
- * @param inPool The allocation pool to use. 
+ * @param allocPool The allocation pool to use. 
  * @param outType The interpreted result.
  * @param inStr The input string to be interpreted.
  * @param inLen The length of the input string.
@@ -476,7 +476,7 @@ sjme_errorCode sjme_nvm_desc_interpretIdentifier(
  * @since 2024/02/04
  */
 sjme_errorCode sjme_nvm_desc_interpretMethodType(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_nvm_desc_methodType* outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);

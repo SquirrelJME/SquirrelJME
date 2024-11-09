@@ -33,7 +33,7 @@ static sjme_errorCode sjme_seekable_closeHandler(
 }
 
 sjme_errorCode sjme_seekable_open(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull const sjme_seekable_functions* inFunctions,
 	sjme_attrInNullable sjme_pointer data,
@@ -42,7 +42,7 @@ sjme_errorCode sjme_seekable_open(
 	sjme_errorCode error;
 	sjme_seekable result;
 	
-	if (inPool == NULL || outSeekable == NULL || inFunctions == NULL)
+	if (allocPool == NULL || outSeekable == NULL || inFunctions == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* These are required. */
@@ -54,14 +54,14 @@ sjme_errorCode sjme_seekable_open(
 	
 	/* Setup result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		sizeof(*result), sjme_seekable_closeHandler,
 		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
 	
 	/* Copy in details. */
-	result->inPool = inPool;
+	result->allocPool = allocPool;
 	result->functions = inFunctions;
 	if (copyFrontEnd != NULL)
 		memmove(&result->frontEnd,
@@ -83,13 +83,13 @@ sjme_errorCode sjme_seekable_open(
 }
 
 sjme_errorCode sjme_seekable_openSeekable(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInPositive sjme_jint base,
 	sjme_attrInPositive sjme_jint length)
 {
-	if (inPool == NULL || inSeekable == NULL || outSeekable == NULL)
+	if (allocPool == NULL || inSeekable == NULL || outSeekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (base < 0 || length < 0 || (base + length) < 0)

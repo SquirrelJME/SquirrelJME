@@ -29,11 +29,11 @@ sjme_errorCode sjme_nal_test_currentTimeMillis(
 }
 
 sjme_errorCode sjme_nal_test_fileOpen(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrOutNotNull sjme_seekable* outSeekable)
 {
-	if (inPool == NULL || inPath == NULL || outSeekable == NULL)
+	if (allocPool == NULL || inPath == NULL || outSeekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Filesystem not supported. */

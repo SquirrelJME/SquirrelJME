@@ -145,7 +145,7 @@ typedef sjme_list_sjme_jint sjme_list_void;
 /**
  * Allocates a given list generically.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param inLength The length of the list.
  * @param outList The output list.
  * @param elementSize The size of the list elements.
@@ -155,7 +155,7 @@ typedef sjme_list_sjme_jint sjme_list_void;
  * @since 2023/12/17
  */
 sjme_errorCode sjme_list_allocR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositive sjme_jint inLength,
 	sjme_attrOutNotNull sjme_pointer* outList,
 	sjme_attrInPositive sjme_jint elementSize,
@@ -166,7 +166,7 @@ sjme_errorCode sjme_list_allocR(
 /**
  * Allocates the given list without setting any of the values.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param inLength The list length.
  * @param outList The resultant list.
  * @param type The list type.
@@ -174,8 +174,8 @@ sjme_errorCode sjme_list_allocR(
  * @return Any error state.
  * @since 2023/12/17
  */
-#define sjme_list_alloc(inPool, inLength, outList, type, numPointerStars) \
-	sjme_list_allocR((inPool), (inLength), \
+#define sjme_list_alloc(allocPool, inLength, outList, type, numPointerStars) \
+	sjme_list_allocR((allocPool), (inLength), \
 		(sjme_pointer*)(outList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
@@ -185,7 +185,7 @@ sjme_errorCode sjme_list_allocR(
 /**
  * Allocates a given list generically.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param inNewLength The new list length.
  * @param inOldList The list to copy from.
  * @param outNewList The resultant list.
@@ -196,7 +196,7 @@ sjme_errorCode sjme_list_allocR(
  * @since 2024/04/15
  */
 sjme_errorCode sjme_list_copyR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositive sjme_jint inNewLength,
 	sjme_attrInNotNull sjme_pointer inOldList,
 	sjme_attrOutNotNull sjme_pointer* outNewList,
@@ -208,7 +208,7 @@ sjme_errorCode sjme_list_copyR(
 /**
  * Allocates a new list that is a copy of the old list.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param inNewLength The new list length.
  * @param inOldList The list to copy from.
  * @param outNewList The resultant list.
@@ -217,9 +217,9 @@ sjme_errorCode sjme_list_copyR(
  * @return Any error state.
  * @since 2024/04/15
  */
-#define sjme_list_copy(inPool, inNewLength, inOldList, outNewList, type, \
+#define sjme_list_copy(allocPool, inNewLength, inOldList, outNewList, type, \
 	numPointerStars) \
-    sjme_list_copyR((inPool), (inNewLength), (inOldList), \
+    sjme_list_copyR((allocPool), (inNewLength), (inOldList), \
 		(sjme_pointer*)(outNewList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
@@ -264,7 +264,7 @@ sjme_errorCode sjme_list_directInitR(
 /**
  * Create a new list with the given set of arguments.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param elementSize The element size.
  * @param rootElementSize The root element size.
  * @param elementOffset The element offset.
@@ -278,7 +278,7 @@ sjme_errorCode sjme_list_directInitR(
  * @since 2023/12/17
  */
 sjme_errorCode sjme_list_newAR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint rootElementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
@@ -292,7 +292,7 @@ sjme_errorCode sjme_list_newAR(
 /**
  * Create a new list with the given set of arguments.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param type The element type.
  * @param numPointerStars The number of pointer stars.
  * @param length The length of the list.
@@ -301,9 +301,9 @@ sjme_errorCode sjme_list_newAR(
  * @return Any resultant error code.
  * @since 2023/12/17
  */
-#define sjme_list_newA(inPool, type, numPointerStars, \
+#define sjme_list_newA(allocPool, type, numPointerStars, \
 	inLength, outList, inElements) \
-	sjme_list_newAR((inPool), \
+	sjme_list_newAR((allocPool), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		sizeof(type), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
@@ -313,7 +313,7 @@ sjme_errorCode sjme_list_newAR(
 /**
  * Create a new list with the given set of arguments.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param elementSize The element size.
  * @param rootElementSize The root element size.
  * @param elementOffset The element offset.
@@ -327,7 +327,7 @@ sjme_errorCode sjme_list_newAR(
  * @since 2023/12/17
  */
 sjme_errorCode sjme_list_newVR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint rootElementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
@@ -341,7 +341,7 @@ sjme_errorCode sjme_list_newVR(
 /**
  * Create a new list with the given set of arguments.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param type The element type.
  * @param numPointerStars The number of pointer stars.
  * @param length The length of the list.
@@ -350,9 +350,9 @@ sjme_errorCode sjme_list_newVR(
  * @return Any resultant error code.
  * @since 2023/12/17
  */
-#define sjme_list_newV(inPool, type, numPointerStars, \
+#define sjme_list_newV(allocPool, type, numPointerStars, \
 	inLength, outList, ...) \
-	sjme_list_newVR((inPool), \
+	sjme_list_newVR((allocPool), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		sizeof(type), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
@@ -362,7 +362,7 @@ sjme_errorCode sjme_list_newVR(
 /**
  * Create a new list with the given set of arguments.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param elementSize The element size.
  * @param rootElementSize The root element size.
  * @param elementOffset The element offset.
@@ -376,7 +376,7 @@ sjme_errorCode sjme_list_newVR(
  * @since 2023/12/17
  */
 sjme_errorCode sjme_list_newVAR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint rootElementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
@@ -390,7 +390,7 @@ sjme_errorCode sjme_list_newVAR(
 /**
  * Create a new list with the given set of arguments.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param type The element type.
  * @param numPointerStars The number of pointer stars.
  * @param length The length of the list.
@@ -399,9 +399,9 @@ sjme_errorCode sjme_list_newVAR(
  * @return Any resultant error code.
  * @since 2023/12/17
  */
-#define sjme_list_newVA(inPool, type, numPointerStars, \
+#define sjme_list_newVA(allocPool, type, numPointerStars, \
 	inLength, outList, elements) \
-	sjme_list_newVAR((inPool), \
+	sjme_list_newVAR((allocPool), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)),  \
 		sizeof(type), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
@@ -414,7 +414,7 @@ sjme_errorCode sjme_list_newVAR(
  * this is to have to not have to handle going through the list to free
  * all the containing pointers accordingly.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outList The output list.
  * @param argC The argument count.
  * @param argV The arguments.
@@ -422,7 +422,7 @@ sjme_errorCode sjme_list_newVAR(
  * @since 2023/12/17
  */
 sjme_errorCode sjme_list_flattenArgCV(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNull sjme_lpcstr* argV);
@@ -430,14 +430,14 @@ sjme_errorCode sjme_list_flattenArgCV(
 /**
  * Flattens a string which is split by NUL (@c aNULbNULcNULNUL ) into a list.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outList The resultant list.
  * @param inNulString The input string.
  * @return Any resultant error.
  * @since 2024/02/19
  */
 sjme_errorCode sjme_list_flattenArgNul(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInNotNull sjme_lpcstr inNulString);
 

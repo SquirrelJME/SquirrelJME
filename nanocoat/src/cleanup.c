@@ -350,7 +350,7 @@ static sjme_errorCode sjme_nvm_vmClass_methodBindClose(
 /* ------------------------------------------------------------------------ */
 
 sjme_errorCode sjme_nvm_allocR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInValue sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_nvm_common* outCommon
@@ -360,7 +360,7 @@ sjme_errorCode sjme_nvm_allocR(
 	sjme_closeable_closeHandlerFunc handler;
 	sjme_nvm_common result;
 	
-	if (inPool == NULL || outCommon == NULL)
+	if (allocPool == NULL || outCommon == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inType <= SJME_NVM_STRUCT_UNKNOWN ||
@@ -447,12 +447,12 @@ sjme_errorCode sjme_nvm_allocR(
 	/* Allocate result. */
 	result = NULL;
 #if defined(SJME_CONFIG_DEBUG)
-	if (sjme_error_is(error = sjme_closeable_allocR(inPool,
+	if (sjme_error_is(error = sjme_closeable_allocR(allocPool,
 		allocSize, handler, SJME_JNI_TRUE,
 		SJME_AS_CLOSEABLEP(&result), file, line, func)) ||
 		result == NULL)
 #else
-	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		allocSize, handler, SJME_JNI_TRUE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 #endif

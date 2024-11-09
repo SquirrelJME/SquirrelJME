@@ -54,28 +54,28 @@ typedef sjme_errorCode (*sjme_listUtil_findItemCompareFunc)(
 /**
  * Parses an input stream which has integers stored in list form.
  * 
- * @param inPool The pool to allocate within. 
+ * @param allocPool The pool to allocate within. 
  * @param outList The resultant output list.
  * @param inputStream The stream to read data from.
  * @return Any resultant error, if any.
  * @since 2024/09/29
  */
 sjme_errorCode sjme_listUtil_binListInt(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_jint** outList,
 	sjme_attrInNotNull sjme_stream_input inputStream);
 
 /**
  * Parses an input stream which has modified UTF stored in list form.
  * 
- * @param inPool The pool to allocate within. 
+ * @param allocPool The pool to allocate within. 
  * @param outList The resultant output list.
  * @param inputStream The stream to read data from.
  * @return Any resultant error, if any.
  * @since 2024/09/29
  */
 sjme_errorCode sjme_listUtil_binListUtf(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInNotNull sjme_stream_input inputStream);
 

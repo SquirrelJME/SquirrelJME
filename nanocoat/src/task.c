@@ -107,7 +107,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	
 	/* Allocate new task to start. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inState->reservedPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(inState->allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_TASK,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
@@ -129,7 +129,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	result->status = SJME_NVM_TASK_STATUS_ALIVE;
 	
 	/* Setup thread storage. */
-	if (sjme_error_is(error = sjme_list_alloc(inState->reservedPool,
+	if (sjme_error_is(error = sjme_list_alloc(inState->allocPool,
 		SJME_NVM_THREAD_GROW, &threads, sjme_nvm_thread, 0)) ||
 		threads == NULL)
 		goto fail_allocThreads;
@@ -288,7 +288,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	/* Allocate thread structure. */
 	result = NULL;
 	inState = inTask->inState;
-	pool = inState->reservedPool;
+	pool = inState->allocPool;
 	if (sjme_error_is(error = sjme_nvm_alloc(pool, sizeof(*result),
 		SJME_NVM_STRUCT_THREAD, SJME_AS_NVM_COMMONP(&result))))
 		goto fail_allocResult;

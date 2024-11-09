@@ -174,7 +174,7 @@ sjme_errorCode sjme_bitStream_inputAlign(
 }
 
 sjme_errorCode sjme_bitStream_inputOpen(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_bitStream_input* resultStream,
 	sjme_attrInNotNull sjme_bitStream_inputReadByteFunc readFunc,
 	sjme_attrInNullable sjme_pointer readFuncData,
@@ -183,12 +183,12 @@ sjme_errorCode sjme_bitStream_inputOpen(
 	sjme_errorCode error;
 	sjme_bitStream_input result;
 	
-	if (inPool == NULL || resultStream == NULL || readFunc == NULL)
+	if (allocPool == NULL || resultStream == NULL || readFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		sizeof(*result), sjme_bitStream_inputOutputClose,
 		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) ||
@@ -212,7 +212,7 @@ fail_alloc:
 }
 
 sjme_errorCode sjme_bitStream_inputOpenMemory(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_bitStream_input* resultStream,
 	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length)
@@ -221,7 +221,7 @@ sjme_errorCode sjme_bitStream_inputOpenMemory(
 	sjme_stream_input memory;
 	sjme_bitStream_input result;
 	
-	if (inPool == NULL || resultStream == NULL || base == NULL)
+	if (allocPool == NULL || resultStream == NULL || base == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (length <= 0)
@@ -229,13 +229,13 @@ sjme_errorCode sjme_bitStream_inputOpenMemory(
 	
 	/* Open memory stream first. */
 	memory = NULL;
-	if (sjme_error_is(error = sjme_stream_inputOpenMemory(inPool,
+	if (sjme_error_is(error = sjme_stream_inputOpenMemory(allocPool,
 		&memory, base, length)) || memory == NULL)
 		goto fail_openMemory;
 	
 	/* Then try the resultant bit stream. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_bitStream_inputOpenStream(inPool,
+	if (sjme_error_is(error = sjme_bitStream_inputOpenStream(allocPool,
 		&result,
 		memory, SJME_JNI_TRUE)) || result == NULL)
 		goto fail_openStream;
@@ -253,16 +253,16 @@ fail_openMemory:
 }
 
 sjme_errorCode sjme_bitStream_inputOpenStream(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_bitStream_input* resultStream,
 	sjme_attrInNotNull sjme_stream_input inputStream,
 	sjme_attrInValue sjme_jboolean forwardClose)
 {
-	if (inPool == NULL || resultStream == NULL || inputStream == NULL)
+	if (allocPool == NULL || resultStream == NULL || inputStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Forward to general open. */
-	return sjme_bitStream_inputOpen(inPool,
+	return sjme_bitStream_inputOpen(allocPool,
 		resultStream, sjme_bitStream_inputReadStream,
 		inputStream,
 		(forwardClose ? SJME_AS_CLOSEABLE(inputStream) : NULL));
@@ -384,7 +384,7 @@ sjme_errorCode sjme_bitStream_inputRead(
 }
 
 sjme_errorCode sjme_bitStream_outputOpen(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_bitStream_output* resultStream,
 	sjme_attrInNotNull sjme_bitStream_outputWriteByteFunc writeFunc,
 	sjme_attrInNullable sjme_pointer writeFuncData,
@@ -393,12 +393,12 @@ sjme_errorCode sjme_bitStream_outputOpen(
 	sjme_errorCode error;
 	sjme_bitStream_output result;
 	
-	if (inPool == NULL || resultStream == NULL || writeFunc == NULL)
+	if (allocPool == NULL || resultStream == NULL || writeFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		sizeof(*result), sjme_bitStream_inputOutputClose,
 		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
@@ -421,16 +421,16 @@ fail_alloc:
 }
 
 sjme_errorCode sjme_bitStream_outputOpenStream(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_bitStream_output* resultStream,
 	sjme_attrInNotNull sjme_stream_output outputStream,
 	sjme_attrInValue sjme_jboolean forwardClose)
 {
-	if (inPool == NULL || resultStream == NULL || outputStream == NULL)
+	if (allocPool == NULL || resultStream == NULL || outputStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Forward to general open. */
-	return sjme_bitStream_outputOpen(inPool,
+	return sjme_bitStream_outputOpen(allocPool,
 		resultStream, sjme_bitStream_outputWriteStream,
 		outputStream,
 		(forwardClose ? SJME_AS_CLOSEABLE(outputStream) : NULL));

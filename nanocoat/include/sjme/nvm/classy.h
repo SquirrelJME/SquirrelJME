@@ -736,7 +736,7 @@ typedef struct sjme_nvm_class_stackMap
 /**
  * Handler function for attribute parsing.
  * 
- * @param inPool The allocation pool.
+ * @param allocPool The allocation pool.
  * @param inConstPool The constant pool.
  * @param inStringPool The string pool.
  * @param context The passed context.
@@ -748,7 +748,7 @@ typedef struct sjme_nvm_class_stackMap
  * @since 2024/09/21
  */
 typedef sjme_errorCode (*sjme_nvm_class_parseAttributeFunc)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
@@ -792,7 +792,7 @@ sjme_errorCode sjme_nvm_class_descriptorToType(
 /**
  * Parses a single class and loads its class information.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param inStream The stream to parse from when reading the class.
  * @param inStringPool The pool for strings existing in memory already.
  * @param outClass The resultant class information
@@ -800,7 +800,7 @@ sjme_errorCode sjme_nvm_class_descriptorToType(
  * @since 2024/01/03
  */
 sjme_errorCode sjme_nvm_class_parse(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_class_info* outClass);
@@ -808,7 +808,7 @@ sjme_errorCode sjme_nvm_class_parse(
 /**
  * Parses attributes.
  * 
- * @param inPool The allocation pool.
+ * @param allocPool The allocation pool.
  * @param inStream The stream to read from.
  * @param inConstPool The constant pool.
  * @param inStringPool The string pool.
@@ -818,7 +818,7 @@ sjme_errorCode sjme_nvm_class_parse(
  * @since 2024/09/21
  */
 sjme_errorCode sjme_nvm_class_parseAttributes(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
@@ -828,7 +828,7 @@ sjme_errorCode sjme_nvm_class_parseAttributes(
 /**
  * Parses the constant pool of an input class.
  * 
- * @param inPool The input pool. 
+ * @param allocPool The input pool. 
  * @param inStream The stream to read from.
  * @param inStringPool The string pool for reused strings.
  * @param outPool The resultant read constant pool.
@@ -836,7 +836,7 @@ sjme_errorCode sjme_nvm_class_parseAttributes(
  * @since 2024/09/13
  */
 sjme_errorCode sjme_nvm_class_parseConstantPool(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_class_poolInfo* outPool);
@@ -844,7 +844,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 /**
  * Parses a single field.
  * 
- * @param inPool The allocation pool to use.
+ * @param allocPool The allocation pool to use.
  * @param inStream The stream to read from.
  * @param inConstPool The class constant pool.
  * @param inStringPool The string pool used.
@@ -853,7 +853,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
  * @since 2024/09/21
  */
 sjme_errorCode sjme_nvm_class_parseField(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
@@ -862,7 +862,7 @@ sjme_errorCode sjme_nvm_class_parseField(
 /**
  * Parses a single method.
  * 
- * @param inPool The allocation pool to use.
+ * @param allocPool The allocation pool to use.
  * @param inStream The stream to read from.
  * @param inConstPool The class constant pool.
  * @param inStringPool The string pool used.
@@ -871,7 +871,7 @@ sjme_errorCode sjme_nvm_class_parseField(
  * @since 2024/09/21
  */
 sjme_errorCode sjme_nvm_class_parseMethod(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,

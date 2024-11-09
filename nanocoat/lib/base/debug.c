@@ -108,17 +108,17 @@ sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 }
 
 sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInNullable sjme_alloc_pool* inPool,
+	sjme_attrInNullable sjme_alloc_pool* allocPool,
 	sjme_attrInValue sjme_intPointer context)
 {
 #if defined(SJME_CONFIG_DEBUG)
 	/* Dump entire pool contents. */
-	if (inPool != NULL)
-		sjme_alloc_poolDump(inPool);
+	if (allocPool != NULL)
+		sjme_alloc_poolDump(allocPool);
 
 	/* It could be huge... */
 	sjme_todoR(file, line, func, "OUT OF MEMORY %p: %d %p!",
-		inPool, (int)context, (void*)context);
+		allocPool, (int)context, (void*)context);
 #endif
 
 	return SJME_ERROR_OUT_OF_MEMORY;

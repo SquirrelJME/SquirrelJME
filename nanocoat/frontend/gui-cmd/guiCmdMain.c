@@ -109,13 +109,13 @@ int main(int argc, char** argv)
 	sjme_errorCode error;
 	sjme_scritchui_dylibApiFunc apiFunc;
 	sjme_scritchui uiState;
-	sjme_alloc_pool* inPool;
+	sjme_alloc_pool* allocPool;
 	sjme_scritchui_uiWindow mainWindow;
 
 	/* Set up a basic pool. */
-	inPool = NULL;
-	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&inPool,
-		16 * 1048576)) || inPool == NULL)
+	allocPool = NULL;
+	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&allocPool,
+		16 * 1048576)) || allocPool == NULL)
 	{
 		sjme_message("Could not allocate memory pool: %d",
 			error);
@@ -134,7 +134,7 @@ int main(int argc, char** argv)
 
 	/* Initialize ScritchUI. */
 	uiState = NULL;
-	if (sjme_error_is(error = apiFunc(inPool,
+	if (sjme_error_is(error = apiFunc(allocPool,
 		NULL, NULL, &uiState)) ||
 		uiState == NULL)
 	{

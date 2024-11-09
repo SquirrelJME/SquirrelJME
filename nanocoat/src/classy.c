@@ -175,7 +175,7 @@ static sjme_errorCode sjme_nvm_class_classFlagsParse(
 }
 
 static sjme_errorCode sjme_nvm_class_codeAttrLineNumberTable(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
@@ -184,7 +184,7 @@ static sjme_errorCode sjme_nvm_class_codeAttrLineNumberTable(
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen)
 {
-	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
+	if (allocPool == NULL || inConstPool == NULL || inStringPool == NULL ||
 		context == NULL || attrName == NULL || attrData == NULL ||
 		attrStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -194,7 +194,7 @@ static sjme_errorCode sjme_nvm_class_codeAttrLineNumberTable(
 }
 
 static sjme_errorCode sjme_nvm_class_codeAttrStackMap(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
@@ -203,7 +203,7 @@ static sjme_errorCode sjme_nvm_class_codeAttrStackMap(
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen)
 {
-	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
+	if (allocPool == NULL || inConstPool == NULL || inStringPool == NULL ||
 		context == NULL || attrName == NULL || attrData == NULL ||
 		attrStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -213,7 +213,7 @@ static sjme_errorCode sjme_nvm_class_codeAttrStackMap(
 }
 
 static sjme_errorCode sjme_nvm_class_codeAttrStackMapTable(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
@@ -222,7 +222,7 @@ static sjme_errorCode sjme_nvm_class_codeAttrStackMapTable(
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen)
 {
-	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
+	if (allocPool == NULL || inConstPool == NULL || inStringPool == NULL ||
 		context == NULL || attrName == NULL || attrData == NULL ||
 		attrStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -245,7 +245,7 @@ static const sjme_nvm_class_parseAttributeHandler sjme_nvm_class_codeAttr[] =
 };
 
 static sjme_errorCode sjme_nvm_class_fieldAttrConstantValue(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
@@ -260,7 +260,7 @@ static sjme_errorCode sjme_nvm_class_fieldAttrConstantValue(
 	sjme_nvm_class_poolEntry* item;
 	
 	fieldInfo = context;
-	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
+	if (allocPool == NULL || inConstPool == NULL || inStringPool == NULL ||
 		context == NULL || attrName == NULL || attrData == NULL ||
 		attrStream == NULL || fieldInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -372,7 +372,7 @@ static sjme_errorCode sjme_nvm_class_fieldFlagsParse(
 }
 
 static sjme_errorCode sjme_nvm_class_methodAttrCode(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
@@ -391,7 +391,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	sjme_nvm_class_exceptionHandler* except;
 	
 	methodInfo = context;
-	if (inPool == NULL || inConstPool == NULL || inStringPool == NULL ||
+	if (allocPool == NULL || inConstPool == NULL || inStringPool == NULL ||
 		context == NULL || attrName == NULL || attrData == NULL ||
 		attrStream == NULL || methodInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -402,7 +402,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	
 	/* Make sure we can allocate this. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_CODE,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
@@ -457,7 +457,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	if (numExcept > 0)
 	{
 		/* Allocate base table. */
-		if (sjme_error_is(error = sjme_list_alloc(inPool,
+		if (sjme_error_is(error = sjme_list_alloc(allocPool,
 			numExcept, &excepts, sjme_nvm_class_exceptionHandler, 0)) ||
 			excepts == NULL)
 			goto fail_allocExcepts;
@@ -499,7 +499,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	
 	/* Parse attributes. */
 	if (sjme_error_is(error = sjme_nvm_class_parseAttributes(
-		inPool, attrStream, inConstPool, inStringPool,
+		allocPool, attrStream, inConstPool, inStringPool,
 		sjme_nvm_class_codeAttr, result)))
 		goto fail_parseAttributes;
 	
@@ -592,7 +592,7 @@ static sjme_errorCode sjme_nvm_class_methodFlagsParse(
 }
 
 static sjme_errorCode sjme_nvm_class_parseAttribute(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
@@ -607,7 +607,7 @@ static sjme_errorCode sjme_nvm_class_parseAttribute(
 	const sjme_nvm_class_parseAttributeHandler* at;
 	sjme_stream_input attrStream;
 	
-	if (inPool == NULL || inStream == NULL || inConstPool == NULL ||
+	if (allocPool == NULL || inStream == NULL || inConstPool == NULL ||
 		inStringPool == NULL || handlers == NULL || context == NULL ||
 		attrName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -635,12 +635,12 @@ static sjme_errorCode sjme_nvm_class_parseAttribute(
 			/* Load stream over the data. */
 			attrStream = NULL;
 			if (sjme_error_is(error = sjme_stream_inputOpenMemory(
-				inPool, &attrStream,
+				allocPool, &attrStream,
 				attrData, attrLen)) || attrStream == NULL)
 				return sjme_error_default(error);
 			
 			/* Process it. */
-			error = at->handler(inPool, inConstPool, inStringPool, context,
+			error = at->handler(allocPool, inConstPool, inStringPool, context,
 				attrName, attrStream, attrData, attrLen);
 			
 			/* Close stream. */
@@ -712,7 +712,7 @@ sjme_errorCode sjme_nvm_class_descriptorToType(
 }
 
 sjme_errorCode sjme_nvm_class_parse(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_class_info* outClass)
@@ -732,13 +732,13 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_nvm_class_fieldInfo field;
 	sjme_nvm_class_methodInfo method;
 	
-	if (inPool == NULL || inStream == NULL || inStringPool == NULL ||
+	if (allocPool == NULL || inStream == NULL || inStringPool == NULL ||
 		outClass == NULL)
 		return SJME_ERROR_NONE;
 	
 	/* Make sure we can actually allocate the resultant class. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_CLASS_INFO,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
@@ -792,7 +792,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	/* Parse the constant pool. */
 	pool = NULL;
 	if (sjme_error_is(error = sjme_nvm_class_parseConstantPool(
-		inPool, inStream, inStringPool, &pool)) || pool == NULL)
+		allocPool, inStream, inStringPool, &pool)) || pool == NULL)
 		goto fail_parsePool;
 	
 	/* We are using this, so count it up. */
@@ -844,7 +844,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	
 	/* Allocate interfaces count. */
 	interfaceNames = NULL;
-	if (sjme_error_is(error = sjme_list_alloc(inPool,
+	if (sjme_error_is(error = sjme_list_alloc(allocPool,
 		interfaceCount, &interfaceNames, sjme_nvm_stringPool_string, 0)) ||
 		interfaceNames == NULL)
 		goto fail_allocInterfaceNames;
@@ -877,7 +877,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	
 	/* Setup list to store fields in. */
 	fields = NULL;
-	if (sjme_error_is(error = sjme_list_alloc(inPool,
+	if (sjme_error_is(error = sjme_list_alloc(allocPool,
 		fieldCount, &fields, sjme_nvm_class_fieldInfo, 0)) || fields == NULL)
 		goto fail_allocFields;
 	result->fields = fields;
@@ -887,7 +887,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	{
 		/* Parse each field. */
 		if (sjme_error_is(error = sjme_nvm_class_parseField(
-			inPool, inStream, result->pool, inStringPool,
+			allocPool, inStream, result->pool, inStringPool,
 			&fields->elements[i])) ||
 			fields->elements[i] == NULL)
 			goto fail_parseField;
@@ -923,7 +923,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	
 	/* Setup list to store methods in. */
 	methods = NULL;
-	if (sjme_error_is(error = sjme_list_alloc(inPool,
+	if (sjme_error_is(error = sjme_list_alloc(allocPool,
 		methodCount, &methods, sjme_nvm_class_methodInfo, 0)) ||
 		methods == NULL)
 		goto fail_allocMethods;
@@ -934,7 +934,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	{
 		/* Parse each method. */
 		if (sjme_error_is(error = sjme_nvm_class_parseMethod(
-			inPool, inStream, result->pool, inStringPool,
+			allocPool, inStream, result->pool, inStringPool,
 			&methods->elements[i])) ||
 			methods->elements[i] == NULL)
 			goto fail_parseMethod;
@@ -967,7 +967,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	
 	/* Parse attributes. */
 	if (sjme_error_is(error = sjme_nvm_class_parseAttributes(
-		inPool, inStream, result->pool, inStringPool,
+		allocPool, inStream, result->pool, inStringPool,
 		sjme_nvm_class_classAttr, result)))
 		goto fail_parseAttributes;
 	
@@ -1008,7 +1008,7 @@ fail_allocResult:
 }
 
 sjme_errorCode sjme_nvm_class_parseAttributes(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
@@ -1020,7 +1020,7 @@ sjme_errorCode sjme_nvm_class_parseAttributes(
 	sjme_jint i, len;
 	sjme_nvm_class_poolEntry* name;
 	
-	if (inPool == NULL || inStream == NULL || inConstPool == NULL ||
+	if (allocPool == NULL || inStream == NULL || inConstPool == NULL ||
 		inStringPool == NULL || handlers == NULL || context == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -1049,7 +1049,7 @@ sjme_errorCode sjme_nvm_class_parseAttributes(
 		
 		/* Stage it for stack allocations. */
 		if (sjme_error_is(error = sjme_nvm_class_parseAttribute(
-			inPool, inStream, inConstPool, inStringPool, handlers,
+			allocPool, inStream, inConstPool, inStringPool, handlers,
 			context, (sjme_lpcstr)&name->utf.utf->chars[0],
 			len)))
 			goto fail_parseSingle;
@@ -1066,7 +1066,7 @@ fail_readCount:
 }
 
 sjme_errorCode sjme_nvm_class_parseConstantPool(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_class_poolInfo* outPool)
@@ -1081,13 +1081,13 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 	sjme_nvm_stringPool_string utf;
 	sjme_nvm_class_poolInfo result;
 	
-	if (inPool == NULL || inStream == NULL || outPool == NULL ||
+	if (allocPool == NULL || inStream == NULL || outPool == NULL ||
 		inStringPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Make sure we can actually allocate this. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_POOL,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
@@ -1110,7 +1110,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 	
 	/* Allocate resultant entries, where they will all go. */
 	entries = NULL;
-	if (sjme_error_is(error = sjme_list_alloc(inPool,
+	if (sjme_error_is(error = sjme_list_alloc(allocPool,
 		count, &entries, sjme_nvm_class_poolEntry, 0)) || entries == NULL)
 		goto fail_entryList;
 	result->pool = entries;
@@ -1426,7 +1426,7 @@ fail_allocResult:
 }
 
 sjme_errorCode sjme_nvm_class_parseField(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
@@ -1437,13 +1437,13 @@ sjme_errorCode sjme_nvm_class_parseField(
 	sjme_nvm_class_poolEntry* name;
 	sjme_nvm_class_poolEntry* type;
 	
-	if (inPool == NULL || inStream == NULL || inConstPool == NULL ||
+	if (allocPool == NULL || inStream == NULL || inConstPool == NULL ||
 		outField == NULL || inStringPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Ensure we can allocate the result first. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_FIELD_INFO,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
@@ -1483,7 +1483,7 @@ sjme_errorCode sjme_nvm_class_parseField(
 		
 	/* Parse attributes. */
 	if (sjme_error_is(error = sjme_nvm_class_parseAttributes(
-		inPool, inStream, inConstPool, inStringPool,
+		allocPool, inStream, inConstPool, inStringPool,
 		sjme_nvm_class_fieldAttr, result)))
 		goto fail_parseAttributes;
 	
@@ -1518,7 +1518,7 @@ fail_allocResult:
 }
 
 sjme_errorCode sjme_nvm_class_parseMethod(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
@@ -1529,13 +1529,13 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 	sjme_nvm_class_poolEntry* name;
 	sjme_nvm_class_poolEntry* type;
 	
-	if (inPool == NULL || inStream == NULL || inConstPool == NULL ||
+	if (allocPool == NULL || inStream == NULL || inConstPool == NULL ||
 		outMethod == NULL || inStringPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Ensure we can allocate the result first. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_METHOD_INFO,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
@@ -1575,7 +1575,7 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 		
 	/* Parse attributes. */
 	if (sjme_error_is(error = sjme_nvm_class_parseAttributes(
-		inPool, inStream, inConstPool, inStringPool,
+		allocPool, inStream, inConstPool, inStringPool,
 		sjme_nvm_class_methodAttr, result)))
 		goto fail_parseAttributes;
 	

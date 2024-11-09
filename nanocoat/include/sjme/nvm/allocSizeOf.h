@@ -37,10 +37,7 @@ typedef enum sjme_alloc_sizeOfId
 
 	/** @c sjme_nvm_rom_suiteFunctions . */
 	SJME_ALLOC_SIZEOF_ROM_SUITE_FUNCTIONS = 1,
-
-	/** Reserved pool size. */
-	SJME_ALLOC_SIZEOF_RESERVED_POOL = 2,
-
+	
 	/** Virtual machine boot configuration. */
 	SJME_ALLOC_SIZEOF_NVM_BOOT_PARAM = 3,
 

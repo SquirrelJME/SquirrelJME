@@ -407,9 +407,9 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitStatic(
 }
 
 sjme_errorCode sjme_alloc_poolDestroy(
-	sjme_attrOutNotNull sjme_alloc_pool* inPool)
+	sjme_attrOutNotNull sjme_alloc_pool* allocPool)
 {
-	if (inPool == NULL)
+	if (allocPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	return sjme_error_notImplemented(0);
@@ -762,7 +762,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copyWeak)(
 }
 
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_lpstr* outString,
 	SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL SJME_DEBUG_ONLY_COMMA
 	sjme_attrInNotNull sjme_attrFormatArg const char* format,
@@ -773,7 +773,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
 	va_list arg;
 	int len;
 
-	if (inPool == NULL || outString == NULL || format == NULL)
+	if (allocPool == NULL || outString == NULL || format == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Start variable arguments. */
@@ -793,7 +793,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
 	len = strlen(buf);
 
 	/* Copy it. */
-	return SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(inPool, len + 1,
+	return SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(allocPool, len + 1,
 		(sjme_pointer*)outString, buf
 		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
 #undef BUF_SIZE
@@ -1092,14 +1092,14 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 }
 
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_lpstr* outString,
 	sjme_attrInNotNull sjme_lpcstr stringToCopy
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_jint charLen;
 	
-	if (inPool == NULL || outString == NULL || stringToCopy == NULL)
+	if (allocPool == NULL || outString == NULL || stringToCopy == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Use standard string length, include NUL. */
@@ -1107,11 +1107,11 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
 	
 	/* Then just forward to copy. */
 #if defined(SJME_CONFIG_DEBUG)
-	return sjme_alloc_copyR(inPool, charLen,
+	return sjme_alloc_copyR(allocPool, charLen,
 		(sjme_pointer*)outString, (sjme_pointer)stringToCopy,
 		file, line, func);
 #else
-	return sjme_alloc_copy(inPool, charLen,
+	return sjme_alloc_copy(allocPool, charLen,
 		(sjme_pointer*)outString, (sjme_pointer)stringToCopy);
 #endif
 }
@@ -1334,7 +1334,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 }
 
 sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
-	sjme_attrInNotNull volatile sjme_alloc_pool* inPool,
+	sjme_attrInNotNull volatile sjme_alloc_pool* allocPool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrOutNotNull sjme_pointer* outAddr,
@@ -1345,12 +1345,12 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	sjme_alloc_weak resultWeak;
 	sjme_errorCode error;
 	
-	if (inPool == NULL || outAddr == NULL)
+	if (allocPool == NULL || outAddr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Take ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&inPool->spinLock)))
+		&allocPool->spinLock)))
 		return sjme_error_default(error);
 	
 	/* Emit barrier. */
@@ -1359,11 +1359,11 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	/* Attempt block allocation first. */
 	resultPtr = NULL;
 #if defined(SJME_CONFIG_DEBUG)
-	if (sjme_error_is(error = sjme_allocR(inPool, size,
+	if (sjme_error_is(error = sjme_allocR(allocPool, size,
 		(sjme_pointer*)&resultPtr, file, line, func)) ||
 		resultPtr == NULL)
 #else
-	if (sjme_error_is(error = sjme_alloc(inPool, size,
+	if (sjme_error_is(error = sjme_alloc(allocPool, size,
 		(sjme_pointer*)&resultPtr)) ||
 		resultPtr == NULL)
 #endif
@@ -1382,7 +1382,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	
 	/* Release ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&inPool->spinLock, NULL)))
+		&allocPool->spinLock, NULL)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -1398,7 +1398,7 @@ fail_allocBlock:
 	
 	/* Release ownership of lock. */
 	if (sjme_error_is(sjme_thread_spinLockRelease(
-		&inPool->spinLock, NULL)))
+		&allocPool->spinLock, NULL)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
@@ -1550,15 +1550,15 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakUnRef)(
 #if defined(SJME_CONFIG_DEBUG)
 
 sjme_errorCode sjme_alloc_poolDump(
-	sjme_attrInNotNull sjme_alloc_pool* inPool)
+	sjme_attrInNotNull sjme_alloc_pool* allocPool)
 {
 	sjme_alloc_link* rover;
 
-	if (inPool == NULL)
+	if (allocPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Dump information on every link. */
-	for (rover = inPool->frontLink; rover != NULL; rover = rover->next)
+	for (rover = allocPool->frontLink; rover != NULL; rover = rover->next)
 	{
 		sjme_messageR(NULL, -1, NULL,
 			SJME_JNI_TRUE,

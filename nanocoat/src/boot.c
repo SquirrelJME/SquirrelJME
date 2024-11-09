@@ -96,50 +96,13 @@ static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
 	{NULL, NULL}
 };
 
-sjme_errorCode sjme_nvm_allocReservedPool(
-	sjme_attrInNotNull sjme_alloc_pool* mainPool,
-	sjme_attrOutNotNull sjme_alloc_pool** outReservedPool)
-{
-	sjme_errorCode error;
-	sjme_pointer reservedBase;
-	sjme_alloc_pool* reservedPool;
-	sjme_jint reservedSize;
-
-	if (mainPool == NULL || outReservedPool == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Determine how big the reserved pool should be... */
-	reservedBase = NULL;
-	reservedSize = -1;
-	if (sjme_error_is(error = sjme_alloc_sizeOf(
-		SJME_ALLOC_SIZEOF_RESERVED_POOL, 0, &reservedSize)))
-		return sjme_error_default(error);
-	if (sjme_error_is(error = sjme_alloc(mainPool,
-		reservedSize, (sjme_pointer*)&reservedBase) ||
-		reservedBase == NULL))
-		return sjme_error_default(error);
-
-	/* Initialize a reserved pool where all of our own data structures go. */
-	reservedPool = NULL;
-	if (sjme_error_is(error = sjme_alloc_poolInitStatic(
-		&reservedPool, reservedBase, reservedSize)) ||
-		reservedPool == NULL)
-		return sjme_error_default(error);
-
-	/* Use the resultant pool. */
-	*outReservedPool = reservedPool;
-	return SJME_ERROR_NONE;
-}
-
 sjme_errorCode sjme_nvm_boot(
-	sjme_attrInNotNull sjme_alloc_pool* mainPool,
-	sjme_attrInNotNull sjme_alloc_pool* reservedPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
 	sjme_attrOutNotNull sjme_nvm* outState)
 {
 #define FIXED_SUITE_COUNT 16
 	sjme_errorCode error;
-	sjme_jint i, n;
 	sjme_nvm result;
 	sjme_nvm_rom_suite mergeSuites[FIXED_SUITE_COUNT];
 	sjme_jint numMergeSuites;
@@ -147,26 +110,19 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_nvm_task initTask;
 	sjme_list_sjme_nvm_rom_library* classPath;
 	
-	if (param == NULL || outState == NULL)
+	if (allocPool == NULL || param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Set up a reserved pool where all the data structures for the VM go... */
-	/* But only if one does not exist. */
-	if (reservedPool == NULL)
-		if (sjme_error_is(error = sjme_nvm_allocReservedPool(mainPool,
-			&reservedPool)) || reservedPool == NULL)
-			goto fail_reservedPoolAlloc;
-
+	
 	/* Allocate resultant state. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(reservedPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_STATE,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_resultAlloc;
 	
 	/* Make a defensive copy of the boot parameters. */
 	result->bootParamCopy = NULL;
-	if (sjme_error_is(error = sjme_alloc_copy(reservedPool,
+	if (sjme_error_is(error = sjme_alloc_copy(allocPool,
 		sizeof(*result->bootParamCopy),
 		(sjme_pointer*)&result->bootParamCopy,
 		(sjme_pointer)param)) || result->bootParamCopy == NULL)
@@ -178,8 +134,7 @@ sjme_errorCode sjme_nvm_boot(
 		goto fail_bothIdAndName;
 
 	/* Set parameters accordingly. */
-	result->allocPool = mainPool;
-	result->reservedPool = reservedPool;
+	result->allocPool = allocPool;
 
 	/* Initialize base for suite merging. */
 	memset(mergeSuites, 0, sizeof(mergeSuites));
@@ -190,7 +145,7 @@ sjme_errorCode sjme_nvm_boot(
 	{
 		/* Scan accordingly. */
 		if (sjme_error_is(error = sjme_nvm_rom_suiteFromPayload(
-			reservedPool,
+			allocPool,
 			&mergeSuites[numMergeSuites],
 			result->bootParamCopy->payload)))
 			goto fail_payloadRom;
@@ -230,7 +185,7 @@ sjme_errorCode sjme_nvm_boot(
 	{
 		/* Merge all the suites together into one. */
 		if (sjme_error_is(error = sjme_nvm_rom_suiteFromMerge(
-			reservedPool,
+			allocPool,
 			&result->suite, mergeSuites,
 			numMergeSuites)) || result->suite == NULL)
 			goto fail_suiteMerge;
@@ -301,7 +256,7 @@ fail_reservedPoolAlloc:
 }
 
 sjme_errorCode sjme_nvm_defaultBootSuite(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite)
 {
@@ -310,7 +265,7 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 	sjme_seekable rom;
 	sjme_nvm_rom_suite result;
 	
-	if (inPool == NULL || nal == NULL || outSuite == NULL)
+	if (allocPool == NULL || nal == NULL || outSuite == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* We cannot load if filesystem access is not supported. */
@@ -334,13 +289,13 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 	
 	/* Open main ROM file. */
 	rom = NULL;
-	if (sjme_error_is(error = nal->fileOpen(inPool, dataPath,
+	if (sjme_error_is(error = nal->fileOpen(allocPool, dataPath,
 		&rom)) || rom == NULL)
 		return sjme_error_default(error);
 	
 	/* Load suite from the ZIP. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipSeekable(inPool,
+	if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipSeekable(allocPool,
 		&result, rom)) || result == NULL)
 	{
 		/* Make sure to close the file. */
@@ -490,7 +445,7 @@ sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
 }
 
 sjme_errorCode sjme_nvm_parseCommandLine(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrInOutNotNull sjme_nvm_bootParam* outParam,
 	sjme_attrInPositiveNonZero sjme_jint argc,
@@ -503,7 +458,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	const sjme_nvm_helpParam* help;
 	sjme_nal_stdFFunc helpOut;
 	
-	if (inPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
+	if (allocPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (argc <= 0)

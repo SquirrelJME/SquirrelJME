@@ -162,7 +162,7 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 			
 			/* Reallocate the list. */
 			oldStrings = strings;
-			if (sjme_error_is(error = sjme_list_copy(inStringPool->inPool,
+			if (sjme_error_is(error = sjme_list_copy(inStringPool->allocPool,
 				strings->length + SJME_STRING_POOL_GROW, strings,
 				&strings, sjme_nvm_stringPool_string, 0)) || strings == NULL)
 				goto fail_growList;
@@ -179,13 +179,13 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 		/* Allocate new result to store in the slot. */
 		result = NULL;
 #if defined(SJME_CONFIG_DEBUG)
-		if (sjme_error_is(error = sjme_nvm_allocR(inStringPool->inPool,
+		if (sjme_error_is(error = sjme_nvm_allocR(inStringPool->allocPool,
 			sizeof(*result) + inUtfLen + 1, 
 			SJME_NVM_STRUCT_STRING_POOL_STRING,
 			SJME_AS_NVM_COMMONP(&result), file, line, func)) ||
 			result == NULL)
 #else
-		if (sjme_error_is(error = sjme_nvm_alloc(inStringPool->inPool,
+		if (sjme_error_is(error = sjme_nvm_alloc(inStringPool->allocPool,
 			sizeof(*result) + inUtfLen + 1,
 			SJME_NVM_STRUCT_STRING_POOL_STRING,
 			SJME_AS_NVM_COMMONP(&result))) || result == NULL)
@@ -238,32 +238,32 @@ fail_releaseLock:
 }
 
 sjme_errorCode sjme_nvm_stringPool_new(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_nvm_stringPool* outStringPool)
 {
 	sjme_errorCode error;
 	sjme_nvm_stringPool result;
 	sjme_list_sjme_nvm_stringPool_string* strings;
 	
-	if (inPool == NULL || outStringPool == NULL)
+	if (allocPool == NULL || outStringPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Make sure we have the memory to store the buffer. */
 	strings = NULL;
 	if (sjme_error_is(error = sjme_list_alloc(
-		inPool, SJME_STRING_POOL_GROW,
+		allocPool, SJME_STRING_POOL_GROW,
 		&strings, sjme_nvm_stringPool_string, 0)) || strings == NULL)
 		goto fail_allocList;
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_STRING_POOL,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
 	
 	/* Setup fields. */
-	result->inPool = inPool;
+	result->allocPool = allocPool;
 	result->strings = strings;
 	
 	/* Success! */

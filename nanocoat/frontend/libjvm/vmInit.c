@@ -83,7 +83,7 @@ sjme_attrUnused jint JNICALL JNI_CreateJavaVM(
 	/* Boot the virtual machine. */
 	nvmState = NULL;
 	if (sjme_error_is(sjme_nvm_boot(pool,
-		NULL, NULL, &nvmState)) || nvmState == NULL)
+		NULL, &nvmState)) || nvmState == NULL)
 		goto fail_nvmBoot;
 	
 	/* Store the environment and VM state into both structures the same. */

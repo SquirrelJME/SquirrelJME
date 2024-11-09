@@ -64,7 +64,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_palmosFunctions =
 /**
  * Returns the PalmOS ScritchUI interface.
  * 
- * @param inPool The allocation pool used.
+ * @param allocPool The allocation pool used.
  * @param loopExecute The loop execution to run after init.
  * @param initFrontEnd Optional initial frontend data.
  * @param outState The newly created state.
@@ -72,7 +72,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_palmosFunctions =
  * @since 2024/07/16 
  */
 sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(palmos)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
 	sjme_attrInOutNotNull sjme_scritchui* outState)
@@ -85,7 +85,7 @@ sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(palmos)(
 	
 	/* Forward to core call. */
 	state = NULL;
-	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
+	if (sjme_error_is(error = sjme_scritchui_core_apiInit(allocPool,
 		&state,
 		&sjme_scritchui_palmosFunctions, loopExecute,
 		initFrontEnd)) || state == NULL)

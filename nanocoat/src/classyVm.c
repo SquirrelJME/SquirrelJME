@@ -33,7 +33,7 @@
 #define SJME_VM_CLASS_INIT_LOAD_DONE 2
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_jclass thisClass,
 	sjme_attrInNotNull sjme_jclass superClass,
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
@@ -44,7 +44,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	sjme_errorCode error;
 	sjme_nvm_methodBind result;
 
-	if (inPool == NULL || thisClass == NULL || thisInfo == NULL ||
+	if (allocPool == NULL || thisClass == NULL || thisInfo == NULL ||
 		outBind == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -59,7 +59,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
 		sizeof(result), SJME_NVM_STRUCT_METHOD_BIND,
 		SJME_AS_NVM_COMMONP(&result))))
 		goto fail_allocResult;
@@ -98,7 +98,7 @@ fail_allocResult:
 }
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
 	sjme_attrOutNotNull sjme_list_sjme_nvm_methodBind** outList)
@@ -110,7 +110,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	sjme_list_sjme_nvm_methodBind* result;
 	sjme_nvm_methodBind bind;
 	
-	if (inPool == NULL || inClass == NULL || outList == NULL)
+	if (allocPool == NULL || inClass == NULL || outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
@@ -122,7 +122,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	/* Allocate result. */
 	result = NULL;
 	n = inClass->methodCount[instanceType];
-	if (sjme_error_is(error = sjme_list_alloc(inPool,
+	if (sjme_error_is(error = sjme_list_alloc(allocPool,
 		n, &result, sjme_nvm_methodBind, 0)) || result == NULL)
 		goto fail_allocResult;
 	
@@ -149,7 +149,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 		/* Perform the binding. */
 		bind = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBind(
-			inPool, inClass, superClass,
+			allocPool, inClass, superClass,
 			instanceType, i, methodInfo,
 			&bind)) || bind == NULL)
 			goto fail_initBind;
@@ -183,7 +183,7 @@ fail_allocResult:
 }
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInValue sjme_basicTypeId typeId)
 {
@@ -192,7 +192,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
 	sjme_nvm_class_info info;
 	sjme_jint i, n;
 	
-	if (inPool == NULL || inClass == NULL)
+	if (allocPool == NULL || inClass == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
@@ -206,7 +206,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
 	
 	/* Allocate field values. */
 	fieldValues = NULL;
-	if (sjme_error_is(error = sjme_alloc(inPool,
+	if (sjme_error_is(error = sjme_alloc(allocPool,
 		sjme_nvm_fieldValueSize(typeId, n),
 		(sjme_pointer)&fieldValues)) || fieldValues == NULL)
 		return sjme_error_default(error);
@@ -311,7 +311,7 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
 	sjme_jclass result;
 	sjme_lpstr dupName;
 	sjme_jint autoLoad;
-	sjme_alloc_pool* inPool;
+	sjme_alloc_pool* allocPool;
 	sjme_nvm_isClasses isClasses;
 	
 	if (inLoader == NULL || outClass == NULL || outSlot == NULL ||
@@ -323,24 +323,24 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* We allocate within this pool. */
-	inPool = inLoader->inState->reservedPool;
+	allocPool = inLoader->inState->allocPool;
 
 	/* Duplicate binary name. */
 	dupName = NULL;
-	if (sjme_error_is(error = sjme_alloc_strdup(inPool, &dupName,
+	if (sjme_error_is(error = sjme_alloc_strdup(allocPool, &dupName,
 		binaryName)) || dupName == NULL)
 		goto fail_dupName;
 	
 	/* Allocate resultant class. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_CLASS_INSTANCE,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
 	
 	/* Allocate class instance of check storage. */
 	isClasses = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
 		sizeof(*isClasses), SJME_NVM_STRUCT_IS_CLASSES,
 		SJME_AS_NVM_COMMONP(&isClasses))) || isClasses == NULL)
 		goto fail_allocIsClasses;
@@ -405,7 +405,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_jint i, n;
 	sjme_jclass superClass, interface, classType;
 	sjme_list_sjme_jclass* interfaces;
-	sjme_alloc_pool* inPool;
+	sjme_alloc_pool* allocPool;
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -416,7 +416,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		return sjme_error_default(error);
 	
 	/* Need these in order to work at all. */
-	inPool = contextThread->inState->reservedPool;
+	allocPool = contextThread->inState->allocPool;
 	
 	/* Needs loading first? */
 	if (sjme_atomic_sjme_jint_get(
@@ -487,7 +487,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	{
 		/* List needs to be setup first. */
 		n = info->interfaceNames->length;
-		if (sjme_error_is(error = sjme_list_alloc(inPool, n,
+		if (sjme_error_is(error = sjme_list_alloc(allocPool, n,
 			&interfaces, sjme_jclass, 0)) || interfaces == NULL)
 			goto fail_allocInterfaces;
 		
@@ -545,14 +545,14 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	/* Setup static field storage. */
 	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitStaticFields(
-			inPool, inClass,
+			allocPool, inClass,
 			(sjme_basicTypeId)i)))
 			goto fail_initFieldValues;
 	
 	/* Bind instance, and static, methods. */
 	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBinds(
-			inPool, inClass,
+			allocPool, inClass,
 			(sjme_nvm_class_instanceType)i,
 			&inClass->methodBinds[i])) ||
 			inClass->methodBinds[i] == NULL)
@@ -981,7 +981,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	
 	/* Duplicate list. */
 	dup = NULL;
-	if (sjme_error_is(error = sjme_list_copy(inState->reservedPool,
+	if (sjme_error_is(error = sjme_list_copy(inState->allocPool,
 		classPath->length, classPath, &dup, sjme_nvm_rom_library, 0)))
 		goto fail_dupList;
 	
@@ -1012,13 +1012,13 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	
 	/* Classes cache. */
 	classes = NULL;
-	if (sjme_error_is(error = sjme_list_alloc(inState->reservedPool,
+	if (sjme_error_is(error = sjme_list_alloc(inState->allocPool,
 		SJME_VM_CLASS_GROW_LEN, &classes, sjme_jclass, 0)) || classes == NULL)
 		goto fail_classesList;
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inState->reservedPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(inState->allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_VM_CLASS_LOADER,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_alloc; 

@@ -662,11 +662,8 @@ struct sjme_nvm_stateBase
 	/** Common data. */
 	sjme_nvm_commonBase common;
 	
-	/** The memory pool to use for allocations. */
+	/** The memory pool to use for all allocations. */
 	sjme_alloc_pool* allocPool;
-
-	/** The reserved memory pool. */
-	sjme_alloc_pool* reservedPool;
 
 	/** The copy of the input boot parameters. */
 	const sjme_nvm_bootParam* bootParamCopy;

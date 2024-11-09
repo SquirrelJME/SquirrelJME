@@ -107,7 +107,7 @@ typedef enum sjme_seekable_unlockAction
 typedef struct sjme_seekable_implState
 {
 	/** The pool this is in. */
-	sjme_alloc_pool* inPool;
+	sjme_alloc_pool* allocPool;
 	
 	/** Internal handle. */
 	sjme_pointer handle;
@@ -218,13 +218,13 @@ struct sjme_seekableBase
 	sjme_thread_spinLock lock;
 	
 	/** The pool this is in. */
-	sjme_alloc_pool* inPool;
+	sjme_alloc_pool* allocPool;
 };
 
 /**
  * Opens a generic stream.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outSeekable The resultant seekable.
  * @param inFunctions The seekable functions.
  * @param data Any data to pass to the initialize function.
@@ -233,7 +233,7 @@ struct sjme_seekableBase
  * @since 2024/08/11
  */
 sjme_errorCode sjme_seekable_open(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull const sjme_seekable_functions* inFunctions,
 	sjme_attrInNullable sjme_pointer data,
@@ -242,7 +242,7 @@ sjme_errorCode sjme_seekable_open(
 /**
  * Initializes a seekable from the given memory range.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outSeekable The resultant seekable.
  * @param base The base memory address.
  * @param length The length of memory block.
@@ -250,7 +250,7 @@ sjme_errorCode sjme_seekable_open(
  * @since 2024/01/01
  */
 sjme_errorCode sjme_seekable_openMemory(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length);
@@ -258,7 +258,7 @@ sjme_errorCode sjme_seekable_openMemory(
 /**
  * Wraps a seekable and provides a sub-seekable within this.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param inSeekable The input seekable, to get the sub-seekable of.
  * @param outSeekable The output seekable.
  * @param base The base address to get.
@@ -267,7 +267,7 @@ sjme_errorCode sjme_seekable_openMemory(
  * @since 2024/01/01
  */
 sjme_errorCode sjme_seekable_openSeekable(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInPositive sjme_jint base,

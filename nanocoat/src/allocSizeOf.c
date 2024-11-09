@@ -28,10 +28,6 @@ sjme_errorCode sjme_alloc_sizeOf(
 			*outSize = sizeof(sjme_nvm_rom_suiteFunctions);
 			break;
 
-		case SJME_ALLOC_SIZEOF_RESERVED_POOL:
-			*outSize = 64 * 1024;
-			break;
-
 		case SJME_ALLOC_SIZEOF_NVM_BOOT_PARAM:
 			*outSize = sizeof(sjme_nvm_bootParam);
 			break;

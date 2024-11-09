@@ -12,7 +12,7 @@
 #include "sjme/listUtil.h"
 
 sjme_errorCode sjme_listUtil_binListInt(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_jint** outList,
 	sjme_attrInNotNull sjme_stream_input inputStream)
 {
@@ -20,7 +20,7 @@ sjme_errorCode sjme_listUtil_binListInt(
 	sjme_jint length, i;
 	sjme_list_sjme_jint* result;
 	
-	if (inPool == NULL || outList == NULL || inputStream == NULL)
+	if (allocPool == NULL || outList == NULL || inputStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Read in length. */
@@ -36,7 +36,7 @@ sjme_errorCode sjme_listUtil_binListInt(
 	
 	/* Setup target list. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_list_alloc(inPool,
+	if (sjme_error_is(error = sjme_list_alloc(allocPool,
 		length, &result, sjme_jint, 0)) || result == NULL)
 		goto fail_allocList;
 	
@@ -59,7 +59,7 @@ fail_allocList:
 }
 
 sjme_errorCode sjme_listUtil_binListUtf(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInNotNull sjme_stream_input inputStream)
 {
@@ -68,7 +68,7 @@ sjme_errorCode sjme_listUtil_binListUtf(
 	sjme_jchar utfLen;
 	sjme_lpstr* values;
 	
-	if (inPool == NULL || outList == NULL || inputStream == NULL)
+	if (allocPool == NULL || outList == NULL || inputStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Read in length. */
@@ -116,7 +116,7 @@ sjme_errorCode sjme_listUtil_binListUtf(
 	}
 	
 	/* Setup list. */
-	return sjme_list_flattenArgCV(inPool, outList,
+	return sjme_list_flattenArgCV(allocPool, outList,
 		length, (sjme_lpcstr*)values);
 }
 

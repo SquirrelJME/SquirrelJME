@@ -34,7 +34,7 @@ extern "C"
 /**
  * Allocates virtual machine structure type.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param allocSize The allocation size.
  * @param inType The type of structure this is.
  * @param outCommon The resultant common structure. 
@@ -42,7 +42,7 @@ extern "C"
  * @since 2024/09/28
  */
 sjme_errorCode sjme_nvm_allocR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInValue sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_nvm_common* outCommon
@@ -51,15 +51,15 @@ sjme_errorCode sjme_nvm_allocR(
 /**
  * Allocates virtual machine structure type.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param allocSize The allocation size.
  * @param inType The type of structure this is.
  * @param outCommon The resultant common structure. 
  * @return On any resultant error, if any.
  * @since 2024/09/29
  */
-#define sjme_nvm_alloc(inPool, allocSize, inType, outCommon) \
-	(sjme_nvm_allocR((inPool), (allocSize), (inType), \
+#define sjme_nvm_alloc(allocPool, allocSize, inType, outCommon) \
+	(sjme_nvm_allocR((allocPool), (allocSize), (inType), \
 	(outCommon) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /*--------------------------------------------------------------------------*/

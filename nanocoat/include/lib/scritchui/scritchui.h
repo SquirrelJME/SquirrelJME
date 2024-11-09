@@ -773,7 +773,7 @@ typedef sjme_errorCode (*sjme_scritchui_apiFlagsFunc)(
 /**
  * Initializes the native UI interface needed by ScritchUI.
  * 
- * @param inPool The allocation pool to use.
+ * @param allocPool The allocation pool to use.
  * @param outState The resultant state.
  * @param inImplFunc The implementation functions to use.
  * @param loopExecute Optional callback for loop execution, may be @c NULL ,
@@ -783,7 +783,7 @@ typedef sjme_errorCode (*sjme_scritchui_apiFlagsFunc)(
  * @since 2024/03/27
  */
 typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
@@ -2020,7 +2020,7 @@ struct sjme_scritchui_stateBase
 /**
  * Initializes the API through the dynamic library.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param loopExecute Optional callback for loop execution, may be @c NULL ,
  * the passed argument is always the state.
  * @param initFrontEnd Optional initial front end data.
@@ -2029,7 +2029,7 @@ struct sjme_scritchui_stateBase
  * @since 2024/03/29
  */
 typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
 	sjme_attrInOutNotNull sjme_scritchui* outState);

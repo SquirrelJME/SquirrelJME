@@ -49,7 +49,7 @@ static sjme_errorCode sjme_closeable_autoEnqueue(
 }
 
 sjme_errorCode sjme_closeable_allocR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInNotNull sjme_closeable_closeHandlerFunc handler,
 	sjme_attrInValue sjme_jboolean refCounting,
@@ -60,20 +60,20 @@ sjme_errorCode sjme_closeable_allocR(
 	sjme_closeable result;
 	sjme_alloc_weak weak;
 	
-	if (inPool == NULL || handler == NULL || outCloseable == NULL)
+	if (allocPool == NULL || handler == NULL || outCloseable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Attempt allocation. */
 	result = NULL;
 	weak = NULL;
 #if defined(SJME_CONFIG_DEBUG)
-	if (sjme_error_is(error = sjme_alloc_weakNewR(inPool,
+	if (sjme_error_is(error = sjme_alloc_weakNewR(allocPool,
 		allocSize, sjme_closeable_autoEnqueue,
 		(sjme_pointer*)&result,
 		&weak, file, line, func)) ||
 		result == NULL)
 #else
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
+	if (sjme_error_is(error = sjme_alloc_weakNew(allocPool,
 		allocSize, sjme_closeable_autoEnqueue,
 		(sjme_pointer*)&result, &weak)) || result == NULL)
 #endif

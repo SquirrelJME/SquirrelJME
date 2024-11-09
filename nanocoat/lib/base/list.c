@@ -30,7 +30,7 @@ typedef struct sjme_list_newData
 
 static sjme_errorCode sjme_list_newInit(
 	sjme_attrOutNotNull sjme_list_newData* newData,
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint rootElementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
@@ -43,7 +43,7 @@ static sjme_errorCode sjme_list_newInit(
 	sjme_errorCode error;
 	sjme_list_sjme_jint* fakeList;
 
-	if (inPool == NULL || newData == NULL)
+	if (allocPool == NULL || newData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (elementSize <= 0 || elementOffset <= 0 || pointerCheck <= 0 ||
@@ -67,7 +67,7 @@ static sjme_errorCode sjme_list_newInit(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Allocate list. */
-	if (sjme_error_is(error = sjme_alloc(inPool, newData->allocSize,
+	if (sjme_error_is(error = sjme_alloc(allocPool, newData->allocSize,
 		&newData->outList)) || newData->outList == NULL)
 		return sjme_error_default(error);
 
@@ -82,7 +82,7 @@ static sjme_errorCode sjme_list_newInit(
 }
 
 sjme_errorCode sjme_list_allocR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositive sjme_jint inLength,
 	sjme_attrOutNotNull sjme_pointer* outList,
 	sjme_attrInPositive sjme_jint elementSize,
@@ -94,7 +94,7 @@ sjme_errorCode sjme_list_allocR(
 	sjme_pointer result;
 	sjme_jint size;
 	
-	if (inPool == NULL || outList == NULL)
+	if (allocPool == NULL || outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inLength < 0 || elementSize <= 0 || elementOffset <= 0 ||
@@ -109,11 +109,11 @@ sjme_errorCode sjme_list_allocR(
 	/* Forward allocation. */
 	result = NULL;
 #if defined(SJME_CONFIG_DEBUG)
-	if (sjme_error_is(error = sjme_allocR(inPool, size,
+	if (sjme_error_is(error = sjme_allocR(allocPool, size,
 		&result SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)) ||
 		result == NULL)
 #else
-	if (sjme_error_is(error = sjme_alloc(inPool, size, &result)) ||
+	if (sjme_error_is(error = sjme_alloc(allocPool, size, &result)) ||
 		result == NULL)
 #endif
 		return sjme_error_default(error);
@@ -128,7 +128,7 @@ sjme_errorCode sjme_list_allocR(
 }
 
 sjme_errorCode sjme_list_copyR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositive sjme_jint inNewLength,
 	sjme_attrInNotNull sjme_pointer inOldList,
 	sjme_attrOutNotNull sjme_pointer* outNewList,
@@ -142,7 +142,7 @@ sjme_errorCode sjme_list_copyR(
 	sjme_list_sjme_jint* fakeOld;
 	sjme_list_sjme_jint* fakeNew;
 	
-	if (inPool == NULL || inOldList == NULL || outNewList == NULL)
+	if (allocPool == NULL || inOldList == NULL || outNewList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inNewLength < 0)
@@ -157,7 +157,7 @@ sjme_errorCode sjme_list_copyR(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Allocate new list first. */
-	if (sjme_error_is(error = sjme_list_allocR(inPool,
+	if (sjme_error_is(error = sjme_list_allocR(allocPool,
 		inNewLength, (sjme_pointer*)&fakeNew, elementSize,
 		elementOffset, pointerCheck
 		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)))
@@ -209,7 +209,7 @@ sjme_errorCode sjme_list_directInitR(
 }
 
 sjme_errorCode sjme_list_flattenArgCV(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNull sjme_lpcstr* argV)
@@ -221,7 +221,7 @@ sjme_errorCode sjme_list_flattenArgCV(
 	sjme_lpcstr arg;
 	sjme_pointer destPtr;
 
-	if (inPool == NULL || outList == NULL || argV == NULL)
+	if (allocPool == NULL || outList == NULL || argV == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (argC < 0)
@@ -251,7 +251,7 @@ sjme_errorCode sjme_list_flattenArgCV(
 	error = SJME_ERROR_UNKNOWN;
 	memset(&newData, 0, sizeof(newData));
 	if (sjme_error_is(error = sjme_list_newInit(&newData,
-		inPool, sizeof(sjme_lpstr),
+		allocPool, sizeof(sjme_lpstr),
 		sizeof(sjme_lpstr),
 		offsetof(sjme_list_sjme_lpstr, elements), 4,
 		SJME_BASIC_TYPE_ID_OBJECT, 1, argC,
@@ -289,7 +289,7 @@ sjme_errorCode sjme_list_flattenArgCV(
 }
 
 sjme_errorCode sjme_list_flattenArgNul(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInNotNull sjme_lpcstr inNulString)
 {
@@ -297,7 +297,7 @@ sjme_errorCode sjme_list_flattenArgNul(
 	sjme_lpcstr at;
 	sjme_lpcstr* argV;
 	
-	if (inPool == NULL || outList == NULL || inNulString == NULL)
+	if (allocPool == NULL || outList == NULL || inNulString == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Determine the number of strings within. */
@@ -308,7 +308,7 @@ sjme_errorCode sjme_list_flattenArgNul(
 	/* Allocate. */	
 	argV = sjme_alloca(count * sizeof(*argV));
 	if (argV == NULL)
-		return sjme_error_outOfMemory(inPool, 0);
+		return sjme_error_outOfMemory(allocPool, 0);
 	
 	/* Allocate temporary argument set. */
 	memset(argV, 0, count * sizeof(*argV));
@@ -318,12 +318,12 @@ sjme_errorCode sjme_list_flattenArgNul(
 		argV[i] = at;
 	
 	/* Perform the flattening. */
-	return sjme_list_flattenArgCV(inPool,
+	return sjme_list_flattenArgCV(allocPool,
 		(sjme_list_sjme_lpstr**)outList, count, argV);
 }
 
 sjme_errorCode sjme_list_newAR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint rootElementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
@@ -344,7 +344,7 @@ sjme_errorCode sjme_list_newAR(
 	error = SJME_ERROR_UNKNOWN;
 	memset(&newData, 0, sizeof(newData));
 	if (sjme_error_is(error = sjme_list_newInit(&newData,
-		inPool, elementSize, rootElementSize, elementOffset, pointerCheck,
+		allocPool, elementSize, rootElementSize, elementOffset, pointerCheck,
 		basicTypeId, numPointerStars, length, 0)))
 		return sjme_error_default(error);
 
@@ -359,7 +359,7 @@ sjme_errorCode sjme_list_newAR(
 }
 
 sjme_errorCode sjme_list_newVR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint rootElementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
@@ -375,7 +375,7 @@ sjme_errorCode sjme_list_newVR(
 
 	va_start(list, outList);
 
-	result = sjme_list_newVAR(inPool, elementSize, rootElementSize,
+	result = sjme_list_newVAR(allocPool, elementSize, rootElementSize,
 		elementOffset, pointerCheck, basicTypeId, numPointerStars,
 		length, outList, list);
 
@@ -385,7 +385,7 @@ sjme_errorCode sjme_list_newVR(
 }
 
 sjme_errorCode sjme_list_newVAR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint rootElementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
@@ -410,7 +410,7 @@ sjme_errorCode sjme_list_newVAR(
 	error = SJME_ERROR_UNKNOWN;
 	memset(&newData, 0, sizeof(newData));
 	if (sjme_error_is(error = sjme_list_newInit(&newData,
-		inPool, elementSize, rootElementSize, elementOffset, pointerCheck,
+		allocPool, elementSize, rootElementSize, elementOffset, pointerCheck,
 		basicTypeId, numPointerStars, length, 0)))
 		return sjme_error_default(error);
 

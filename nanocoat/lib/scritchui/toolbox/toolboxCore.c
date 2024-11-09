@@ -64,7 +64,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_toolboxFunctions =
 /**
  * Returns the Toolbox ScritchUI interface.
  * 
- * @param inPool The allocation pool used.
+ * @param allocPool The allocation pool used.
  * @param loopExecute The loop execution to run after init.
  * @param initFrontEnd Optional initial frontend data.
  * @param outState The newly created state.
@@ -72,7 +72,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_toolboxFunctions =
  * @since 2024/07/16 
  */
 sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(toolbox)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
 	sjme_attrInOutNotNull sjme_scritchui* outState)
@@ -85,7 +85,7 @@ sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(toolbox)(
 	
 	/* Forward to core call. */
 	state = NULL;
-	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
+	if (sjme_error_is(error = sjme_scritchui_core_apiInit(allocPool,
 		&state,
 		&sjme_scritchui_toolboxFunctions, loopExecute,
 		initFrontEnd, NULL)) || state == NULL)

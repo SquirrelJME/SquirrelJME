@@ -706,7 +706,7 @@ sjme_jint sjme_nvm_desc_compareMethodS(
 }
 
 sjme_errorCode sjme_nvm_desc_interpretBinaryName(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_nvm_desc_binaryName* outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
@@ -719,7 +719,7 @@ sjme_errorCode sjme_nvm_desc_interpretBinaryName(
 	sjme_nvm_desc_binaryName* result;
 	sjme_jint resultLen, numSlash;
 	
-	if (inPool == NULL || outName == NULL || inStr == NULL)
+	if (allocPool == NULL || outName == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inLen < 0)
@@ -740,7 +740,7 @@ sjme_errorCode sjme_nvm_desc_interpretBinaryName(
 	
 	/* Check that it is valid. */
 	if (result == NULL)
-		return sjme_error_outOfMemory(inPool, resultLen);
+		return sjme_error_outOfMemory(allocPool, resultLen);
 		
 	/* Initialize. */
 	memset(result, 0, resultLen);
@@ -752,14 +752,14 @@ sjme_errorCode sjme_nvm_desc_interpretBinaryName(
 			SJME_ERROR_INVALID_BINARY_NAME);
 	
 	/* Return a copy. */
-	return sjme_alloc_copyWeak(inPool, resultLen,
+	return sjme_alloc_copyWeak(allocPool, resultLen,
 		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
 		(void**)outName, (void*)result, NULL);
 #endif
 }
 
 sjme_errorCode sjme_nvm_desc_interpretClassName(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_nvm_desc_className* outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
@@ -772,7 +772,7 @@ sjme_errorCode sjme_nvm_desc_interpretClassName(
 	sjme_nvm_desc_className* result;
 	sjme_lpcstr finalEnd;
 	
-	if (inPool == NULL || outName == NULL || inStr == NULL)
+	if (allocPool == NULL || outName == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inLen < 0)
@@ -817,7 +817,7 @@ sjme_errorCode sjme_nvm_desc_interpretClassName(
 	/* Allocate. */
 	result = sjme_alloca(allocLen);
 	if (result == NULL)
-		return sjme_error_outOfMemory(inPool, allocLen);
+		return sjme_error_outOfMemory(allocPool, allocLen);
 	
 	/* Initialize. */
 	memset(result, 0, allocLen);
@@ -854,14 +854,14 @@ sjme_errorCode sjme_nvm_desc_interpretClassName(
 	}
 	
 	/* Return a copy. */
-	return sjme_alloc_copyWeak(inPool, allocLen,
+	return sjme_alloc_copyWeak(allocPool, allocLen,
 		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
 		(void**)outName, (void*)result, NULL);
 #endif
 }
 
 sjme_errorCode sjme_nvm_desc_interpretFieldType(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_nvm_desc_fieldType* outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
@@ -873,7 +873,7 @@ sjme_errorCode sjme_nvm_desc_interpretFieldType(
 	sjme_jint strLen, typeCode, allocLen;
 	sjme_nvm_desc_fieldType* result;
 	
-	if (inPool == NULL || outType == NULL || inStr == NULL)
+	if (allocPool == NULL || outType == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inLen < 0)
@@ -896,7 +896,7 @@ sjme_errorCode sjme_nvm_desc_interpretFieldType(
 	/* Allocate result. */
 	result = sjme_alloca(allocLen);
 	if (result == NULL)
-		return sjme_error_outOfMemory(inPool, allocLen);
+		return sjme_error_outOfMemory(allocPool, allocLen);
 	
 	/* Initialize. */
 	memset(result, 0, allocLen);
@@ -908,14 +908,14 @@ sjme_errorCode sjme_nvm_desc_interpretFieldType(
 			SJME_ERROR_INVALID_FIELD_TYPE);
 	
 	/* Return copy of it. */
-	return sjme_alloc_copyWeak(inPool, allocLen,
+	return sjme_alloc_copyWeak(allocPool, allocLen,
 		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
 		(void**)outType, (void*)result, NULL);
 #endif
 }
 
 sjme_errorCode sjme_nvm_desc_interpretIdentifier(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_desc_identifier* outIdent,
 	sjme_attrInNotNull sjme_lpcstr inStr,
@@ -927,7 +927,7 @@ sjme_errorCode sjme_nvm_desc_interpretIdentifier(
 	sjme_nvm_desc_identifier result;
 	sjme_nvm_stringPool_string pooled;
 	
-	if (inPool == NULL || outIdent == NULL || inStr == NULL)
+	if (allocPool == NULL || outIdent == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inLen < 0)
@@ -960,7 +960,7 @@ sjme_errorCode sjme_nvm_desc_interpretIdentifier(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_IDENTIFIER,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		return sjme_error_default(error);
@@ -985,7 +985,7 @@ fail_countUp:
 }
 
 sjme_errorCode sjme_nvm_desc_interpretMethodType(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_nvm_desc_methodType* outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
@@ -1005,7 +1005,7 @@ sjme_errorCode sjme_nvm_desc_interpretMethodType(
 	sjme_nvm_desc_fieldType* sourceField;
 	sjme_nvm_desc_fieldTypeComponent* source;
 	
-	if (inPool == NULL || outType == NULL || inStr == NULL)
+	if (allocPool == NULL || outType == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inLen < 0)
@@ -1062,7 +1062,7 @@ sjme_errorCode sjme_nvm_desc_interpretMethodType(
 		/* Allocate. */
 		currentField = sjme_alloca(sizeof(*currentField) + allocLen);
 		if (currentField == NULL)
-			return sjme_error_outOfMemory(inPool, allocLen);
+			return sjme_error_outOfMemory(allocPool, allocLen);
 		
 		/* Initialize. */
 		memset(currentField, 0, allocLen);
@@ -1105,7 +1105,7 @@ sjme_errorCode sjme_nvm_desc_interpretMethodType(
 	allocLen = SJME_SIZEOF_DESC_METHOD_TYPE(fieldCount);
 	result = sjme_alloca(allocLen);
 	if (result == NULL)
-		return sjme_error_outOfMemory(inPool, allocLen);
+		return sjme_error_outOfMemory(allocPool, allocLen);
 	
 	/* Initialize. */
 	memset(result, 0, allocLen);
@@ -1150,7 +1150,7 @@ sjme_errorCode sjme_nvm_desc_interpretMethodType(
 	}
 	
 	/* Success! */
-	return sjme_alloc_copyWeak(inPool, allocLen,
+	return sjme_alloc_copyWeak(allocPool, allocLen,
 		sjme_nvm_enqueueHandler, SJME_NVM_ENQUEUE_IDENTITY,
 		(void**)outType, (void*)result, NULL);
 #endif

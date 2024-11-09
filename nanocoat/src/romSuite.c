@@ -19,7 +19,7 @@
 #include "sjme/nvm/cleanup.h"
 
 sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
@@ -28,7 +28,7 @@ sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
 {
 	sjme_errorCode error;
 	
-	if (inPool == NULL || inSuite == NULL || outMainClass == NULL ||
+	if (allocPool == NULL || inSuite == NULL || outMainClass == NULL ||
 		outMainArgs == NULL || outById == NULL || outByName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -42,7 +42,7 @@ sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
 		return sjme_error_default(error);
 	
 	/* Forward call. */
-	error = inSuite->functions->defaultLaunch(inPool,
+	error = inSuite->functions->defaultLaunch(allocPool,
 		inSuite, outMainClass, outMainArgs, outById, outByName);
 		
 	/* Unlock suite. */
