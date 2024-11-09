@@ -104,6 +104,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 			&found)) || found == NULL)
 			goto fail_badFind;
 		
+		/* Private methods just go poof. */
+		if (found->flags.member.access.private)
+			continue;
+		
 		/* If not the same method or type, skip. */
 		if (!sjme_charSeq_equalsCharSeqR(
 				&found->name->seq, &thisInfo->name->seq) ||

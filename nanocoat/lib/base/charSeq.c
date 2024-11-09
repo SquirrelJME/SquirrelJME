@@ -112,6 +112,13 @@ sjme_errorCode sjme_charSeq_equalsCharSeq(
 	if (inSeq == NULL || outResult == NULL || equalsSeq == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Same sequence? */
+	if (inSeq == equalsSeq)
+	{
+		*outResult = SJME_JNI_TRUE;
+		return SJME_ERROR_NONE;
+	}
+	
 	/* Get length of both first. */
 	aLen = -1;
 	bLen = -1;
