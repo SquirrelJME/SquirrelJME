@@ -107,6 +107,15 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		/* Private methods just go poof. */
 		if (found->flags.member.access.private)
 			continue;
+			
+		/* Package private methods in different packages go poof. */
+		if (!found->flags.member.access.private &&
+			!found->flags.member.access.protected &&
+			!found->flags.member.access.public)
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
 		
 		/* If not the same method or type, skip. */
 		if (!sjme_charSeq_equalsCharSeqR(
