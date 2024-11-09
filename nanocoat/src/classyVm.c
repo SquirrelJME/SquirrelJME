@@ -66,11 +66,13 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	
 	/* Constructors always bind to self. */
 	/* Along with any private methods. */
+	/* Static as well. */
 	if (sjme_charSeq_equalsUtfR(&thisInfo->name->seq,
 			"<init>") ||
 		sjme_charSeq_equalsUtfR(&thisInfo->name->seq,
 			"<clinit>") ||
-		thisInfo->flags.member.access.private)
+		thisInfo->flags.member.access.private ||
+		thisInfo->flags.member.isStatic)
 	{
 		/* Just to self always. */
 		result->info[SJME_NVM_CALL_NON_VIRTUAL] = thisInfo;
@@ -156,13 +158,16 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 		result->elements[i] = bind;
 			
 		/* Debug. */
-		sjme_message("Bound %s %s%s -> %s %s%s",
+		sjme_message("Bound %s %s%s -> %s %s%s / %s %s%s",
 			inClass->binaryName,
 			&methodInfo->name->chars[0],
 			&methodInfo->type->chars[0],
-			&bind->info->inClass->name->chars[0],
-			&bind->info->name->chars[0],
-			&bind->info->type->chars[0]);
+			&bind->info[0]->inClass->name->chars[0],
+			&bind->info[0]->name->chars[0],
+			&bind->info[0]->type->chars[0],
+			&bind->info[1]->inClass->name->chars[0],
+			&bind->info[1]->name->chars[0],
+			&bind->info[1]->type->chars[0]);
 	}
 	
 	/* Success! */
@@ -306,6 +311,8 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
 	sjme_jclass result;
 	sjme_lpstr dupName;
 	sjme_jint autoLoad;
+	sjme_alloc_pool* inPool;
+	sjme_nvm_isClasses isClasses;
 	
 	if (inLoader == NULL || outClass == NULL || outSlot == NULL ||
 		contextThread == NULL || binaryName == NULL)
@@ -314,21 +321,32 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
 	/* Cannot be blank. */
 	if (strlen(binaryName) <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
-	
+
+	/* We allocate within this pool. */
+	inPool = inLoader->inState->reservedPool;
+
 	/* Duplicate binary name. */
 	dupName = NULL;
-	if (sjme_error_is(error = sjme_alloc_strdup(
-		inLoader->inState->reservedPool, &dupName,
+	if (sjme_error_is(error = sjme_alloc_strdup(inPool, &dupName,
 		binaryName)) || dupName == NULL)
 		goto fail_dupName;
 	
 	/* Allocate resultant class. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(
-		inLoader->inState->reservedPool,
+	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
 		sizeof(*result), SJME_NVM_STRUCT_CLASS_INSTANCE,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
+	
+	/* Allocate class instance of check storage. */
+	isClasses = NULL;
+	if (sjme_error_is(error = sjme_nvm_alloc(inPool,
+		sizeof(*isClasses), SJME_NVM_STRUCT_IS_CLASSES,
+		SJME_AS_NVM_COMMONP(&isClasses))) || isClasses == NULL)
+		goto fail_allocIsClasses;
+	
+	/* Initialize structure. */
+	isClasses->rwLock.read = &isClasses->common.lock;
 	
 	/* Is now being used, so count up. */
 	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
@@ -360,6 +378,9 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
 	return SJME_ERROR_NONE;
 	
 fail_countUp:
+fail_allocIsClasses:
+	if (result != NULL)
+		sjme_alloc_free(isClasses);
 fail_allocResult:
 	if (result != NULL)
 		sjme_alloc_free(result);

@@ -109,9 +109,6 @@ typedef enum sjme_nvm_structType
 	/** A single class instance. */
 	SJME_NVM_STRUCT_CLASS_INSTANCE,
 	
-	/** Class loader. */
-	SJME_NVM_STRUCT_VM_CLASS_LOADER,
-	
 	/** Method code. */
 	SJME_NVM_STRUCT_CODE,
 	
@@ -123,6 +120,9 @@ typedef enum sjme_nvm_structType
 	
 	/** Identifier. */
 	SJME_NVM_STRUCT_IDENTIFIER,
+	
+	/** The classes a class is. */
+	SJME_NVM_STRUCT_IS_CLASSES,
 	
 	/** Method binding. */
 	SJME_NVM_STRUCT_METHOD_BIND,
@@ -153,6 +153,9 @@ typedef enum sjme_nvm_structType
 	
 	/** A single thread. */
 	SJME_NVM_STRUCT_THREAD,
+	
+	/** Class loader. */
+	SJME_NVM_STRUCT_VM_CLASS_LOADER,
 	
 	/** The number of structure types. */
 	SJME_NVM_NUM_STRUCT

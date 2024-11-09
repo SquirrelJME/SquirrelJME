@@ -76,6 +76,32 @@ typedef struct sjme_nvm_fieldValues
 	} values;
 } sjme_nvm_fieldValues;
 
+/**
+ * Stores the classes that this class @c implements or @c extends .
+ * 
+ * @since 2024/11/09
+ */
+typedef struct sjme_nvm_isClassesBase sjme_nvm_isClassesBase;
+
+/**
+ * Stores the classes that this class @c implements or @c extends .
+ * 
+ * @since 2024/11/09
+ */
+typedef sjme_nvm_isClassesBase* sjme_nvm_isClasses;
+
+struct sjme_nvm_isClassesBase
+{
+	/** Common base for all objects. */
+	sjme_nvm_commonBase common;
+	
+	/** Read/write lock for this. */
+	sjme_thread_rwLock rwLock;
+	
+	/** The classes that this class @c implements / @c extends . */
+	sjme_list_sjme_jclass* classes;
+};
+
 struct sjme_jclassBase
 {
 	/** All classes are objects. */
@@ -125,6 +151,9 @@ struct sjme_jclassBase
 	/** Method bindings for this class. */
 	sjme_list_sjme_nvm_methodBind* methodBinds[
 		SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
+	
+	/** The classes this implements or extends. */
+	sjme_nvm_isClasses* isClasses;
 };
 
 /**
