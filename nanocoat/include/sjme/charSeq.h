@@ -155,6 +155,20 @@ sjme_errorCode sjme_charSeq_equalsCharSeq(
 	sjme_attrInNotNull const sjme_charSeq* equalsSeq);
 
 /**
+ * Checks if the given character sequence equals the given character sequence,
+ * this returns the result rather than storing it in an output.
+ * 
+ * @param inSeq The sequence to check.
+ * @param equalsSeq The char sequence to check for equality against.
+ * @return Returns whether it matches, note that if there is an error
+ * then @c SJME_JNI_FALSE will be returned and the error will be hidden.
+ * @since 2024/11/09
+ */
+sjme_jboolean sjme_charSeq_equalsCharSeqR(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq* equalsSeq);
+
+/**
  * Checks if the given character sequence equals the given UTF string.
  * 
  * @param inSeq The sequence to check.

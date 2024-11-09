@@ -406,6 +406,9 @@ typedef enum sjme_errorCode
 	/** Too many class members. */
 	SJME_ERROR_CLASS_TOO_MANY_MEMBERS = -121,
 	
+	/** Incompatible class change. */
+	SJME_ERROR_CLASS_CHANGED = -122,
+	
 	/** The number of error codes. */
 	SJME_NUM_ERROR_CODES = -122,
 } sjme_errorCode;

@@ -155,6 +155,25 @@ sjme_errorCode sjme_charSeq_equalsCharSeq(
 	return SJME_ERROR_NONE;
 }
 
+sjme_jboolean sjme_charSeq_equalsCharSeqR(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq* equalsSeq)
+{
+	sjme_jboolean result;
+	
+	if (inSeq == NULL || equalsSeq == NULL)
+		return SJME_JNI_FALSE;
+	
+	/* Perform the check. */
+	result = SJME_JNI_FALSE;
+	if (sjme_error_is(sjme_charSeq_equalsCharSeq(inSeq, &result,
+		equalsSeq)))
+		return SJME_JNI_FALSE;
+	
+	/* Return whatever result was given. */
+	return result;
+}
+
 sjme_errorCode sjme_charSeq_equalsUtf(
 	sjme_attrInNotNull const sjme_charSeq* inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,

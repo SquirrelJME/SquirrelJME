@@ -79,6 +79,10 @@ typedef enum sjme_nvm_methodCallType
 	/** Virtual call. */
 	SJME_NVM_CALL_VIRTUAL,
 	
+	/** Virtual super call. */
+	SJME_NVM_CALL_SUPER,
+	
+	/** The number of call types. */
 	SJME_NVM_NUM_METHOD_CALL_TYPE,
 } sjme_nvm_methodCallType;
 

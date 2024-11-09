@@ -43,6 +43,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 {
 	sjme_errorCode error;
 	sjme_nvm_methodBind result;
+	sjme_nvm_class_methodInfo found;
+	sjme_nvm_class_methodInfo lastScan, thisScan;
+	sjme_jint i, n;
+	sjme_jboolean wantStatic;
 
 	if (inState == NULL || thisClass == NULL || thisInfo == NULL ||
 		outBind == NULL)
@@ -77,23 +81,70 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		/* Just to self always. */
 		result->info[SJME_NVM_CALL_NON_VIRTUAL] = thisInfo;
 		result->info[SJME_NVM_CALL_VIRTUAL] = thisInfo;
+		result->info[SJME_NVM_CALL_SUPER] = NULL;
 		
 		/* This is now successful. */
 		goto skip_success;
 	}
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Is static desired? */
+	wantStatic = (instanceType == SJME_NVM_CLASS_MEMBER_STATIC);
+
+	/* Go through the entire class chain to find a non-private signature. */
+	/* This also determines the super-method call for the given spot. */
+	/* Start off with nothing set at all. */
+	lastScan = NULL;
+	thisScan = 0;
+	for (i = 0, n = thisClass->methodCount[instanceType]; i < n; i++)
+	{
+		/* Lookup this index. */
+		found = NULL;
+		if (sjme_error_is(error = sjme_nvm_vmClass_methodSourceByIndex(
+			thisClass, instanceType, i,
+			&found)) || found == NULL)
+			goto fail_badFind;
+		
+		/* If not the same method or type, skip. */
+		if (!sjme_charSeq_equalsCharSeqR(
+				&found->name->seq, &thisInfo->name->seq) ||
+			!sjme_charSeq_equalsCharSeqR(
+				&found->type->seq, &thisInfo->type->seq))
+			continue;
+		
+		/* Ignore static difference. */
+		if (thisInfo->flags.member.isStatic != wantStatic)
+			continue;
+		
+		/* If the current scan is final, then oops! */
+		if (thisScan != NULL && thisScan->flags.member.final)
+			goto fail_changed;
+		
+		/* Shift up and set. */
+		lastScan = thisScan;
+		thisScan = found;
+	}
+	
+	/* Non-virtual is always to self. */
+	/* Otherwise virtual and super-virtual is the last scan. */
+	result->info[SJME_NVM_CALL_NON_VIRTUAL] = thisInfo;
+	result->info[SJME_NVM_CALL_VIRTUAL] = thisScan;
+	result->info[SJME_NVM_CALL_SUPER] = lastScan;
 	
 	/* Success! */
 skip_success:
 	*outBind = result;
 	return SJME_ERROR_NONE;
 	
+	/* Class changed in an incompatible way? */
+fail_changed:
+	error = SJME_ERROR_CLASS_CHANGED;
+	
+fail_noMethod:
+fail_badFind:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
-	
+
 	return sjme_error_default(error);
 }
 
@@ -140,11 +191,13 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 			i, &methodInfo)) ||
 			methodInfo == NULL)
 			goto fail_noIndex;
-		
+
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("Binding %s %s%s...",
 			inClass->binaryName, &methodInfo->name->chars[0],
 			&methodInfo->type->chars[0]);
+#endif
 		
 		/* Perform the binding. */
 		bind = NULL;
@@ -158,13 +211,11 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 		result->elements[i] = bind;
 			
 		/* Debug. */
-		sjme_message("Bound %s %s%s -> %s %s%s / %s %s%s",
+		sjme_message("Bound `%s` %s %s%s -> %s %s%s",
 			inClass->binaryName,
+			&methodInfo->inClass->name->chars[0],
 			&methodInfo->name->chars[0],
 			&methodInfo->type->chars[0],
-			&bind->info[0]->inClass->name->chars[0],
-			&bind->info[0]->name->chars[0],
-			&bind->info[0]->type->chars[0],
 			&bind->info[1]->inClass->name->chars[0],
 			&bind->info[1]->name->chars[0],
 			&bind->info[1]->type->chars[0]);
@@ -214,13 +265,6 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
 	/* Store type and count for this tread. */
 	fieldValues->type = typeId;
 	fieldValues->count = n;
-	
-	/* Setup values per each static field. */
-	for (i = 0; i < n; i++)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -557,7 +601,8 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			&inClass->methodBinds[i])) ||
 			inClass->methodBinds[i] == NULL)
 			goto fail_bindMethods;
-	
+
+#if 0
 	/* Initialize statics fields with constant values. */
 	for (;;)
 	{
@@ -568,6 +613,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	/* Call static constructor, if one exists. */
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#endif
 	
 	/* Set as initialized now. */
 	if (!sjme_atomic_sjme_jint_compareSet(&inClass->isInitialized,
@@ -579,6 +625,12 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL)))
 		goto fail_releaseLock;
+	
+	/* If this is Object, then implicitly initialize Class as well. */
+	if (strcmp(inClass->binaryName, "Ljava/lang/Object;") == 0)
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
+			classType, contextThread)))
+			goto fail_initClassType;
 
 	/* Success! */
 skip_doubleCalled:
@@ -591,6 +643,7 @@ fail_super:
 	sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL);
 	
+fail_initClassType:
 fail_badState:
 fail_initInterface:
 fail_initSuper:
@@ -1058,7 +1111,7 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 {
 	sjme_errorCode error;
 	sjme_list_sjme_nvm_class_methodInfo* methods;
-	sjme_jint i, n;
+	sjme_jint i, n, base;
 	sjme_jclass atClass;
 	sjme_jboolean wantStatic;
 	sjme_nvm_class_methodInfo method;
@@ -1077,34 +1130,36 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	
 	/* Start at the current class for the search. */
 	atClass = inClass;
-	for (; atClass != NULL;)
+	
+	/* If we are below the class index, drop to the super class. */
+	while (methodId < atClass->methodBase[instanceType])
 	{
-		/* If we are below the class index, drop to the super class. */
-		if (methodId < atClass->methodBase[instanceType])
-		{
-			atClass = sjme_atomic_sjme_jclass_get(&atClass->superClass);
-			continue;
-		}
+		atClass = sjme_atomic_sjme_jclass_get(&atClass->superClass);
+		
+		/* This should not occur. */
+		if (atClass == NULL)
+			return SJME_ERROR_ILLEGAL_STATE;
+	}
 
-		/* Find the associated method. */
-		methods = atClass->info->methods;
-		for (i = 0, n = methods->length; i < n; i++)
+	/* Find the associated method. */
+	base = atClass->methodBase[instanceType];
+	methods = atClass->info->methods;
+	for (i = 0, n = methods->length; i < n; i++)
+	{
+		/* Get the method here. */
+		method = methods->elements[i];
+		if (method == NULL)
+			return SJME_ERROR_ILLEGAL_STATE;
+		
+		/* If the static flag and the index matches, this is the one! */
+		if (method->flags.member.isStatic == wantStatic &&
+			method->typedIndex == (methodId - base))
 		{
-			/* Get the method here. */
-			method = methods->elements[i];
-			if (method == NULL)
-				return SJME_ERROR_ILLEGAL_STATE;
-			
-			/* If the static flag and the index matches, this is the one! */
-			if (method->flags.member.isStatic == wantStatic &&
-				method->typedIndex == methodId)
-			{
-				*outInfo = method;
-				return SJME_ERROR_NONE;
-			}
+			*outInfo = method;
+			return SJME_ERROR_NONE;
 		}
 	}
 	
-	/* If this point is reached, something is wrong. */
+	/* If this point is reached, the index is not valid. */
 	return SJME_ERROR_ILLEGAL_STATE;
 }
