@@ -165,7 +165,8 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
  * @return On any resultant error, if any.
  * @since 2024/09/14
  */
-#define sjme_nvm_stringPool_locateUtf(inStringPool, inUtf, inUtfLen, outString) \
+#define sjme_nvm_stringPool_locateUtf(inStringPool, inUtf, inUtfLen, \
+	outString) \
 	(sjme_nvm_stringPool_locateUtfR((inStringPool), (inUtf), (inUtfLen), \
 	(outString) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 

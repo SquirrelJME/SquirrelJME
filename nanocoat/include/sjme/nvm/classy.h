@@ -605,6 +605,9 @@ struct sjme_nvm_class_infoCore
 	
 	/** Class flags. */
 	sjme_nvm_class_classFlags flags;
+	
+	/** The package this class is in. */
+	sjme_nvm_stringPool_string inPackage;
 
 	/** The name of this class. */
 	sjme_nvm_stringPool_string name;

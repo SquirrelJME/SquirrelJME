@@ -719,7 +719,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_attrOutNotNull sjme_nvm_class_info* outClass)
 {
 	sjme_errorCode error;
-	sjme_jint magic, fullVersion, i;
+	sjme_jint magic, fullVersion, i, lastSlash;
 	sjme_jshort major, minor, interfaceCount, fieldCount, methodCount;
 	sjme_nvm_class_version actualVersion;
 	sjme_nvm_class_poolInfo pool;
@@ -820,6 +820,27 @@ sjme_errorCode sjme_nvm_class_parse(
 	if (sjme_error_is(error = sjme_alloc_weakRef(
 		result->name, NULL)))
 		goto fail_refThisName;
+		
+	/* Locate the last slash character in the binary name. */
+	lastSlash = result->name->length - 1;
+	while (lastSlash > 0)
+		if (result->name->chars[lastSlash] == '/')
+			break;
+		else
+			lastSlash--;
+	
+	/* Locate string for package name. */
+	result->inPackage = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
+		inStringPool, (sjme_lpcstr)&result->name->chars[0], lastSlash,
+		&result->inPackage)) ||
+		result->inPackage == NULL)
+		goto fail_inPackage;
+	
+	/* Reference it. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(
+		result->inPackage, NULL)))
+		goto fail_refPackage;
 	
 	/* Read in super name. */
 	superName = NULL;
@@ -992,6 +1013,8 @@ fail_allocInterfaceNames:
 fail_readInterfaceCount:
 fail_refSuperName:
 fail_readSuperName:
+fail_refPackage:
+fail_inPackage:
 fail_refThisName:
 fail_readThisName:
 fail_readFlags:

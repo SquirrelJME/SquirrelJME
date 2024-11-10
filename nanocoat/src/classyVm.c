@@ -113,8 +113,11 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 			!found->flags.member.access.protected &&
 			!found->flags.member.access.public)
 		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			/* Not in same package, skip. */
+			if (!sjme_charSeq_equalsCharSeqR(
+					&found->inClass->inPackage->seq,
+					&thisInfo->inClass->inPackage->seq))
+				continue;
 		}
 		
 		/* If not the same method or type, skip. */
