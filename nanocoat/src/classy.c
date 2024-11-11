@@ -1526,6 +1526,9 @@ sjme_errorCode sjme_nvm_class_parseField(
 		strlen((sjme_lpcstr)&result->type->chars[0]))))
 		goto fail_determineType;
 	
+	/* Initialize constant value to an invalid type. */
+	result->constVal.type = SJME_NUM_JAVA_TYPE_IDS;
+	
 	/* Success! */
 	*outField = result;
 	return SJME_ERROR_NONE;

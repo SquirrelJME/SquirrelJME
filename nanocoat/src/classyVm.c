@@ -252,12 +252,13 @@ fail_allocResult:
 static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
 	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_jclass inClass,
-	sjme_attrInValue sjme_basicTypeId typeId)
+	sjme_attrInValue sjme_javaTypeId typeId)
 {
 	sjme_errorCode error;
 	sjme_nvm_fieldValues* fieldValues;
 	sjme_nvm_class_info info;
 	sjme_jint i, n;
+	sjme_nvm_class_fieldInfo fieldInfo;
 	
 	if (allocPool == NULL || inClass == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -281,6 +282,37 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
 	/* Store type and count for this tread. */
 	fieldValues->type = typeId;
 	fieldValues->count = n;
+	
+	/* Setup individual static fields with non-object constants. */
+	if (typeId != SJME_JAVA_TYPE_ID_OBJECT)
+		for (i = 0; i < n; i++)
+		{
+			/* Locate field information. */
+			fieldInfo = NULL;
+			if (sjme_error_is(error = sjme_nvm_vmClass_fieldSourceByIndex(
+				inClass, SJME_NVM_CLASS_MEMBER_STATIC,
+				typeId, i,
+				&fieldInfo)) || fieldInfo == NULL)
+				return sjme_error_defaultOr(error,
+					SJME_ERROR_CLASS_CHANGED);
+			
+			/* Is there a static value to copy? */
+			if (fieldInfo->constVal.type == typeId)
+			{
+				if (typeId == SJME_JAVA_TYPE_ID_LONG)
+					fieldValues->values.jlongs[i] =
+						fieldInfo->constVal.value.java.j;
+				else if (typeId == SJME_JAVA_TYPE_ID_FLOAT)
+					fieldValues->values.jfloats[i] =
+						fieldInfo->constVal.value.java.f;
+				else if (typeId == SJME_JAVA_TYPE_ID_DOUBLE)
+					fieldValues->values.jdoubles[i] =
+						fieldInfo->constVal.value.java.d;
+				else
+					fieldValues->values.jints[i] =
+						fieldInfo->constVal.value.java.i;
+			}
+		}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -606,7 +638,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitStaticFields(
 			allocPool, inClass,
-			(sjme_basicTypeId)i)))
+			(sjme_javaTypeId)i)))
 			goto fail_initFieldValues;
 	
 	/* Bind instance, and static, methods. */
@@ -799,6 +831,71 @@ fail_badName:
 	sjme_atomic_sjme_jint_compareSet(&inClass->error,
 		SJME_ERROR_NONE, sjme_error_default(error));
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS)
+		sjme_javaTypeId javaType,
+	sjme_attrInPositive sjme_jint fieldId,
+	sjme_attrOutNotNull sjme_nvm_class_fieldInfo* outInfo)
+{
+	sjme_list_sjme_nvm_class_fieldInfo* fields;
+	sjme_jint i, n, base;
+	sjme_jclass atClass;
+	sjme_jboolean wantStatic;
+	sjme_nvm_class_fieldInfo field;
+	
+	if (inClass == NULL || outInfo == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE ||
+		javaType < 0 || javaType >= SJME_NUM_JAVA_TYPE_IDS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (fieldId < 0 || fieldId >= inClass->fieldCount[instanceType][javaType])
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		
+	/* Do we want static? */
+	wantStatic = (instanceType == SJME_NVM_CLASS_MEMBER_STATIC);
+	
+	/* Start at the current class for the search. */
+	atClass = inClass;
+	
+	/* If we are below the class index, drop to the super class. */
+	while (fieldId < atClass->fieldBase[instanceType][javaType])
+	{
+		atClass = sjme_atomic_sjme_jclass_get(&atClass->superClass);
+		
+		/* This should not occur. */
+		if (atClass == NULL)
+			return SJME_ERROR_ILLEGAL_STATE;
+	}
+
+	/* Find the associated method. */
+	base = atClass->fieldBase[instanceType][javaType];
+	fields = atClass->info->fields;
+	for (i = 0, n = fields->length; i < n; i++)
+	{
+		/* Get the method here. */
+		field = fields->elements[i];
+		if (field == NULL)
+			return SJME_ERROR_ILLEGAL_STATE;
+		
+		/* If the static flag, index, and type matches, this is the one! */
+		if (field->flags.member.isStatic == wantStatic &&
+			field->typedIndex == (fieldId - base) &&
+			field->javaType == javaType)
+		{
+			*outInfo = field;
+			return SJME_ERROR_NONE;
+		}
+	}
+	
+	/* If this point is reached, the index is not valid. */
+	return SJME_ERROR_ILLEGAL_STATE;
 }
 
 sjme_errorCode sjme_nvm_vmClass_loaderLoad(
@@ -1125,7 +1222,6 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	sjme_attrInPositive sjme_jint methodId,
 	sjme_attrOutNotNull sjme_nvm_class_methodInfo* outInfo)
 {
-	sjme_errorCode error;
 	sjme_list_sjme_nvm_class_methodInfo* methods;
 	sjme_jint i, n, base;
 	sjme_jclass atClass;

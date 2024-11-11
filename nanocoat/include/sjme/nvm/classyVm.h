@@ -138,6 +138,28 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	sjme_attrInNotNull sjme_nvm_thread contextThread);
 
 /**
+ * Locates the source field in the given class chain for the given static
+ * or instance field ID, which would be the source target field for the given
+ * field slot.
+ * 
+ * @param inClass The class tree to look within. 
+ * @param instanceType The type of instance this is.
+ * @param fieldId The field identifier.
+ * @param javaType The Java type used.
+ * @param outInfo The output info.
+ * @return Any resultant error.
+ * @since 2024/11/03
+ */
+sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS)
+		sjme_javaTypeId javaType,
+	sjme_attrInPositive sjme_jint fieldId,
+	sjme_attrOutNotNull sjme_nvm_class_fieldInfo* outInfo);
+
+/**
  * Loads the specified class by the given name.
  * 
  * @param inLoader The loader to use. 
