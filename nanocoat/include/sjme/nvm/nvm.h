@@ -84,7 +84,14 @@ typedef struct sjme_any
  * 
  * @since 2024/10/19
  */
-typedef struct sjme_jmethodIDBase* sjme_jmethodID;
+typedef struct sjme_jmethodIDBase sjme_jmethodIDBase;
+
+/**
+ * Represents an identifier of a method.
+ * 
+ * @since 2024/10/19
+ */
+typedef sjme_jmethodIDBase* sjme_jmethodID;
 
 /**
  * Represents an identifier of a field.

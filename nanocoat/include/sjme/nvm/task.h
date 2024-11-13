@@ -324,6 +324,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
  * @param inThread The thread to enter within.
  * @param outFrame The resultant frame.
  * @param inClass The class to execute within.
+ * @param instanceType The instance type of the method.
  * @param inName The name of the method.
  * @param inType The type of the method.
  * @param argC The argument count.
@@ -335,6 +336,8 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
 	sjme_attrInNotNull sjme_lpcstr inClass,
+	sjme_attrInRange(0, SJME_ERROR_INVALID_ARGUMENT)
+		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNotNull sjme_lpcstr inType,
 	sjme_attrInPositive sjme_jint argC,
@@ -346,6 +349,7 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
  * @param inThread The thread to enter within.
  * @param outFrame The resultant frame.
  * @param inClass The class to execute within.
+ * @param instanceType The instance type of the method.
  * @param inName The name of the method.
  * @param inType The type of the method.
  * @param argC The argument count.
@@ -357,6 +361,8 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
 	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInRange(0, SJME_ERROR_INVALID_ARGUMENT)
+		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNotNull sjme_lpcstr inType,
 	sjme_attrInPositive sjme_jint argC,

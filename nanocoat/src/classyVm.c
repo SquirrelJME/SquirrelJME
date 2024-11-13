@@ -39,10 +39,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
 	sjme_attrInPositive sjme_jint index,
 	sjme_attrInNotNull sjme_nvm_class_methodInfo thisInfo,
-	sjme_attrOutNotNull sjme_methodID* outBind)
+	sjme_attrOutNotNull sjme_jmethodID* outBind)
 {
 	sjme_errorCode error;
-	sjme_methodID result;
+	sjme_jmethodID result;
 	sjme_nvm_class_methodInfo found;
 	sjme_nvm_class_methodInfo lastScan, thisScan;
 	sjme_jint i, n;
@@ -67,6 +67,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		sizeof(result), SJME_NVM_STRUCT_METHOD_ID,
 		SJME_AS_NVM_COMMONP(&result))))
 		goto fail_allocResult;
+	
+	/* The names always get set. */
+	result->name = thisInfo->name;
+	result->type = thisInfo->type;
 	
 	/* Constructors always bind to self. */
 	/* Along with any private methods. */
@@ -168,14 +172,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
-	sjme_attrOutNotNull sjme_list_sjme_methodID** outList)
+	sjme_attrOutNotNull sjme_list_sjme_jmethodID** outList)
 {
 	sjme_errorCode error;
 	sjme_jclass superClass;
 	sjme_nvm_class_methodInfo methodInfo;
 	sjme_jint i, n;
-	sjme_list_sjme_methodID* result;
-	sjme_methodID bind;
+	sjme_list_sjme_jmethodID* result;
+	sjme_jmethodID bind;
 	
 	if (inLoader == NULL || inClass == NULL || outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -190,7 +194,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	result = NULL;
 	n = inClass->methodCount[instanceType];
 	if (sjme_error_is(error = sjme_list_alloc(inLoader->inState->allocPool,
-		n, &result, sjme_methodID, 0)) || result == NULL)
+		n, &result, sjme_jmethodID, 0)) || result == NULL)
 		goto fail_allocResult;
 	
 	/* Debug. */
@@ -1213,6 +1217,56 @@ fail_dupList:
 		sjme_alloc_free(dup);
 	
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInPositive sjme_lpcstr inName,
+	sjme_attrInPositive sjme_lpcstr inType,
+	sjme_attrOutNotNull sjme_jmethodID* outID)
+{
+	sjme_errorCode error;
+	sjme_jint i, n;
+	sjme_list_sjme_jmethodID* methods;
+	sjme_jmethodID method;
+	
+	if (inClass == NULL || contextThread == NULL || inName == NULL ||
+		inType == NULL || outID == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+		
+	/* Needs to be initialized first. */
+	if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
+		inClass, contextThread)))
+		return sjme_error_default(error);
+		
+	/* Look through all methods. */
+	methods = inClass->methodBinds[instanceType];
+	for (i = 0, n = methods->length; i < n; i++)
+	{
+		/* There must be a valid method here. */
+		method = methods->elements[i];
+		if (method == NULL)
+			return SJME_ERROR_ILLEGAL_STATE;
+		
+		/* Is this the method. */
+		if (sjme_charSeq_equalsUtfR(&method->name->seq,
+				inName) &&
+			sjme_charSeq_equalsUtfR(&method->type->seq,
+				inType))
+		{
+			*outID = method;
+			return SJME_ERROR_NONE;
+		}
+	}
+
+	/* Not found. */
+	return SJME_ERROR_NO_METHOD;
 }
 
 sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(

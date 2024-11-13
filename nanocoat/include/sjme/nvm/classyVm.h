@@ -18,6 +18,7 @@
 
 #include "sjme/nvm/classy.h"
 #include "sjme/nvm/rom.h"
+#include "sjme/nvm/nvm.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -53,20 +54,6 @@ typedef struct sjme_nvm_vmClass_loaderBase sjme_nvm_vmClass_loaderBase;
 typedef sjme_nvm_vmClass_loaderBase* sjme_nvm_vmClass_loader;
 
 /**
- * Method binding information.
- * 
- * @since 2024/11/01
- */
-typedef struct sjme_methodIDBase sjme_methodIDBase;
-
-/**
- * Method binding information.
- * 
- * @since 2024/11/01
- */
-typedef sjme_methodIDBase* sjme_methodID;
-
-/**
  * The basic type of call for a method.
  * 
  * @since 2024/11/07
@@ -86,14 +73,20 @@ typedef enum sjme_nvm_methodCallType
 	SJME_NVM_NUM_METHOD_CALL_TYPE,
 } sjme_nvm_methodCallType;
 
-struct sjme_methodIDBase
+struct sjme_jmethodIDBase
 {
+	/** The name of this method. */
+	sjme_nvm_stringPool_string name;
+	
+	/** The type of this method. */
+	sjme_nvm_stringPool_string type;
+	
 	/** The info this is bound to, for virtual and non-virtual calls. */
 	sjme_nvm_class_methodInfo info[SJME_NVM_NUM_METHOD_CALL_TYPE];
 };
 
 /** List of method binds. */
-SJME_LIST_DECLARE(sjme_methodID, 0);
+SJME_LIST_DECLARE(sjme_jmethodID, 0);
 
 struct sjme_nvm_vmClass_loaderBase
 {
@@ -265,6 +258,27 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrOutNotNull sjme_nvm_vmClass_loader* outLoader,
 	sjme_attrInNotNull sjme_list_sjme_nvm_rom_library* classPath);
+
+/**
+ * Locates a method by the given name and type.
+ * 
+ * @param inClass The class to look within.
+ * @param contextThread The thread this request is under.
+ * @param instanceType The instance type of the method.
+ * @param inName The name of the method to find.
+ * @param inType The type of the method to find.
+ * @param outID The resultant method ID.
+ * @return Any resultant error, if any.
+ * @since 2024/11/13 
+ */
+sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInPositive sjme_lpcstr inName,
+	sjme_attrInPositive sjme_lpcstr inType,
+	sjme_attrOutNotNull sjme_jmethodID* outID);
 
 /**
  * Locates the source method in the given class chain for the given static

@@ -223,6 +223,8 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
 	sjme_attrInNotNull sjme_lpcstr inClass,
+	sjme_attrInRange(0, SJME_ERROR_INVALID_ARGUMENT)
+		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNotNull sjme_lpcstr inType,
 	sjme_attrInPositive sjme_jint argC,
@@ -235,6 +237,9 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
 	if (inThread == NULL || outFrame == NULL || inClass == NULL ||
 		inName == NULL || inType == NULL || (argC != 0 && argV == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* There must be a task. */
 	inTask = inThread->inTask;
@@ -250,24 +255,41 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
 	
 	/* Forward to other call. */
 	return sjme_nvm_task_threadEnterC(
-		inThread, outFrame, foundClass, inName, inType, argC, argV);
+		inThread, outFrame, foundClass, instanceType,
+		inName, inType, argC, argV);
 }
 
 sjme_errorCode sjme_nvm_task_threadEnterC(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
 	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInRange(0, SJME_ERROR_INVALID_ARGUMENT)
+		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNotNull sjme_lpcstr inType,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalue* argV)
 {
+	sjme_errorCode error;
+	sjme_jmethodID id;
+	
 	if (inThread == NULL || outFrame == NULL || inClass == NULL ||
 		inName == NULL || inType == NULL || (argC != 0 && argV == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Locate method to execute. */
+	id = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+		inClass, inThread, instanceType, inName,
+		inType, &id)) || id == NULL)
+		return sjme_error_default(error);
+	
+	/* Forward to implementation. */
+	return sjme_nvm_task_threadEnter(inThread, outFrame,
+		id, argC, argV);
 }
 
 sjme_errorCode sjme_nvm_task_threadNew(
@@ -325,7 +347,9 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	firstFrame = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadEnterA(
 		result, &firstFrame,
-		"java/lang/__Start__", "__main", "()V",
+		"java/lang/__Start__",
+		SJME_NVM_CLASS_MEMBER_STATIC,
+		"__main", "()V",
 		0, NULL)))
 		goto fail_enterFrame;
 	
