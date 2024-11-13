@@ -125,7 +125,7 @@ typedef enum sjme_nvm_structType
 	SJME_NVM_STRUCT_IS_CLASSES,
 	
 	/** Method binding. */
-	SJME_NVM_STRUCT_METHOD_BIND,
+	SJME_NVM_STRUCT_METHOD_ID,
 	
 	/** Method information. */
 	SJME_NVM_STRUCT_METHOD_INFO,

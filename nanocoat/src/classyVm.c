@@ -39,10 +39,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
 	sjme_attrInPositive sjme_jint index,
 	sjme_attrInNotNull sjme_nvm_class_methodInfo thisInfo,
-	sjme_attrOutNotNull sjme_nvm_methodBind* outBind)
+	sjme_attrOutNotNull sjme_methodID* outBind)
 {
 	sjme_errorCode error;
-	sjme_nvm_methodBind result;
+	sjme_methodID result;
 	sjme_nvm_class_methodInfo found;
 	sjme_nvm_class_methodInfo lastScan, thisScan;
 	sjme_jint i, n;
@@ -64,7 +64,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	/* Allocate result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(inState,
-		sizeof(result), SJME_NVM_STRUCT_METHOD_BIND,
+		sizeof(result), SJME_NVM_STRUCT_METHOD_ID,
 		SJME_AS_NVM_COMMONP(&result))))
 		goto fail_allocResult;
 	
@@ -168,14 +168,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
-	sjme_attrOutNotNull sjme_list_sjme_nvm_methodBind** outList)
+	sjme_attrOutNotNull sjme_list_sjme_methodID** outList)
 {
 	sjme_errorCode error;
 	sjme_jclass superClass;
 	sjme_nvm_class_methodInfo methodInfo;
 	sjme_jint i, n;
-	sjme_list_sjme_nvm_methodBind* result;
-	sjme_nvm_methodBind bind;
+	sjme_list_sjme_methodID* result;
+	sjme_methodID bind;
 	
 	if (inLoader == NULL || inClass == NULL || outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -190,7 +190,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	result = NULL;
 	n = inClass->methodCount[instanceType];
 	if (sjme_error_is(error = sjme_list_alloc(inLoader->inState->allocPool,
-		n, &result, sjme_nvm_methodBind, 0)) || result == NULL)
+		n, &result, sjme_methodID, 0)) || result == NULL)
 		goto fail_allocResult;
 	
 	/* Debug. */

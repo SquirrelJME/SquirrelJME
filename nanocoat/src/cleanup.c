@@ -411,7 +411,7 @@ sjme_errorCode sjme_nvm_allocR(
 			handler = sjme_nvm_vmClass_isClassesClose;
 			break;
 		
-		case SJME_NVM_STRUCT_METHOD_BIND:
+		case SJME_NVM_STRUCT_METHOD_ID:
 			handler = sjme_nvm_vmClass_methodBindClose;
 			break;
 		

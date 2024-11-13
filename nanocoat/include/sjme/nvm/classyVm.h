@@ -57,14 +57,14 @@ typedef sjme_nvm_vmClass_loaderBase* sjme_nvm_vmClass_loader;
  * 
  * @since 2024/11/01
  */
-typedef struct sjme_nvm_methodBindBase sjme_nvm_methodBindBase;
+typedef struct sjme_methodIDBase sjme_methodIDBase;
 
 /**
  * Method binding information.
  * 
  * @since 2024/11/01
  */
-typedef sjme_nvm_methodBindBase* sjme_nvm_methodBind;
+typedef sjme_methodIDBase* sjme_methodID;
 
 /**
  * The basic type of call for a method.
@@ -86,14 +86,14 @@ typedef enum sjme_nvm_methodCallType
 	SJME_NVM_NUM_METHOD_CALL_TYPE,
 } sjme_nvm_methodCallType;
 
-struct sjme_nvm_methodBindBase
+struct sjme_methodIDBase
 {
 	/** The info this is bound to, for virtual and non-virtual calls. */
 	sjme_nvm_class_methodInfo info[SJME_NVM_NUM_METHOD_CALL_TYPE];
 };
 
 /** List of method binds. */
-SJME_LIST_DECLARE(sjme_nvm_methodBind, 0);
+SJME_LIST_DECLARE(sjme_methodID, 0);
 
 struct sjme_nvm_vmClass_loaderBase
 {
