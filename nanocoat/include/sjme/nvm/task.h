@@ -301,11 +301,12 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_attrOutNullable sjme_nvm_task* outTask);
 
 /**
- * Enters a frame within the thread.
+ * Enters a frame for the given exact method within the thread.
  * 
  * @param inThread The thread to enter within.
  * @param outFrame The resultant frame.
  * @param inMethod The method being called.
+ * @param callType The type of call to perform.
  * @param argC The argument count.
  * @param argV Argument values to the call.
  * @return Any resultant error, if any.
@@ -315,6 +316,8 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
 	sjme_attrInNotNull sjme_jmethodID inMethod,
+	sjme_attrInRange(0, SJME_NVM_NUM_METHOD_CALL_TYPE)
+		sjme_nvm_methodCallType callType,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalue* argV);
 

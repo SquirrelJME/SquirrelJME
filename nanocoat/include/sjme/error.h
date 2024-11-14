@@ -409,8 +409,11 @@ typedef enum sjme_errorCode
 	/** Incompatible class change. */
 	SJME_ERROR_CLASS_CHANGED = -122,
 	
+	/** Method is not bound. */
+	SJME_ERROR_UNBOUND_METHOD = -123,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -122,
+	SJME_NUM_ERROR_CODES = -124,
 } sjme_errorCode;
 
 /**

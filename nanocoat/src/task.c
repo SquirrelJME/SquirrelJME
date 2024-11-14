@@ -208,13 +208,55 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
 	sjme_attrInNotNull sjme_jmethodID inMethod,
+	sjme_attrInRange(0, SJME_NVM_NUM_METHOD_CALL_TYPE)
+		sjme_nvm_methodCallType callType,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalue* argV)
 {
+	sjme_errorCode error;
+	sjme_nvm_class_methodInfo targetInfo;
+	
 	if (inThread == NULL || outFrame == NULL || inMethod == NULL ||
 		(argC != 0 && argV == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	if (callType < 0 || callType >= SJME_NVM_NUM_METHOD_CALL_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Recover target info. */
+	targetInfo = inMethod->info[callType];
+	if (targetInfo == NULL)
+		return SJME_ERROR_UNBOUND_METHOD;
+	
+	/* Argument count mismatch? */
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Grab a frame from the thread's frame pool. */
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Setup initial locals. */
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Initialize PC addr into bytecode. */
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Should there be a `synchronized` hook? */
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Set frame as active. */
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+
+	/* Success! */
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+
+fail_:
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -289,7 +331,7 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 	
 	/* Forward to implementation. */
 	return sjme_nvm_task_threadEnter(inThread, outFrame,
-		id, argC, argV);
+		id, SJME_NVM_CALL_NON_VIRTUAL, argC, argV);
 }
 
 sjme_errorCode sjme_nvm_task_threadNew(
