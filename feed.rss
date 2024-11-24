@@ -18,7 +18,19 @@
 		rel="self" />
 
 	<!-- Update this accordingly! -->
-	<lastBuildDate>Sun, 28 Oct 2024 12:00 EDT</lastBuildDate>
+	<lastBuildDate>Sun, 24 Nov 2024 15:00 EST</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">8b04125a-678d-4943-9089-181d2414930a</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241124_1500.mkd</link>
+		<pubDate>Sun, 24 Nov 2024 15:00 EST</pubDate>
+
+		<title>An Anti-Burnout Break is Needed</title>
+		<description>The year has been exciting and so much has been done,
+			but I also recognize that I need a much-needed break.</description>
+	</item>
+
+	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">6c70e869-c158-4aed-a5f3-94f9f565749e</guid>
@@ -29,8 +41,6 @@
 		<description>Too much to write in a short description,
 			but a large number of changes!</description>
 	</item>
-
-	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">8d221db0-3720-490e-bff6-bff75134dc2c</guid>
