@@ -122,6 +122,9 @@ static sjme_errorCode sjme_nvm_class_constantPoolClose(
 				case SJME_NVM_CLASS_POOL_TYPE_UTF:
 					SJME_CLEANUP_CLOSE(entry->utf.utf);
 					break;
+
+				default:
+					return sjme_error_notImplemented(0);
 			}
 		}
 	

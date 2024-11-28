@@ -346,8 +346,9 @@ sjme_errorCode sjme_nal_errno(sjme_jint errNum)
 		
 		case ENOENT:
 			return SJME_ERROR_FILE_NOT_FOUND;
+
+		default:
+			return SJME_ERROR_UNKNOWN;
 	}
-	
-	return SJME_ERROR_UNKNOWN;
 }
 #endif

@@ -25,7 +25,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="Projects.squirreljme.buildSrc.main" target="11" />
-      <module name="squirreljme.sdk.test" target="17" />
       <module name="squirreljme.tools.unzip.test" target="17" />
       <module name="Stephanie Gawroriski.squirreljme.buildSrc.main" target="11" />
       <module name="stephanie.squirreljme.buildSrc" target="11" />

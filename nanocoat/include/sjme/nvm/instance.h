@@ -44,6 +44,29 @@ struct sjme_jobjectBase
 };
 
 /**
+ * Raw field values.
+ *
+ * @since 2024/11/27
+ */
+typedef union sjme_nvm_rawFieldValues
+{
+	/** Integer values. */
+	sjme_jint jints[sjme_flexibleArrayCountUnion];
+		
+	/** Long values. */
+	sjme_jlong jlongs[sjme_flexibleArrayCountUnion];
+		
+	/** Float values. */
+	sjme_jfloat jfloats[sjme_flexibleArrayCountUnion];
+		
+	/** Double values. */
+	sjme_jdouble jdoubles[sjme_flexibleArrayCountUnion];
+		
+	/** Object reference values. */
+	sjme_jobject jobjects[sjme_flexibleArrayCountUnion];
+} sjme_nvm_rawFieldValues;
+
+/**
  * Stores multiple field values for a given type.
  * 
  * @since 2024/10/27
@@ -57,23 +80,7 @@ typedef struct sjme_nvm_fieldValues
 	sjme_jint count;
 	
 	/** Values within the tread. */
-	union
-	{
-		/** Integer values. */
-		sjme_jint jints[sjme_flexibleArrayCountUnion];
-		
-		/** Long values. */
-		sjme_jlong jlongs[sjme_flexibleArrayCountUnion];
-		
-		/** Float values. */
-		sjme_jfloat jfloats[sjme_flexibleArrayCountUnion];
-		
-		/** Double values. */
-		sjme_jdouble jdoubles[sjme_flexibleArrayCountUnion];
-		
-		/** Object reference values. */
-		sjme_jobject jobjects[sjme_flexibleArrayCountUnion];
-	} values;
+	sjme_nvm_rawFieldValues values;
 } sjme_nvm_fieldValues;
 
 /**

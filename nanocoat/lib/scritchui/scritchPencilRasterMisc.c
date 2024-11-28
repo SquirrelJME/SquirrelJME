@@ -290,6 +290,9 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 				(((gg >> 3) & 0x1F) << 5) |
 				((rr >> 3) & 0x1F);
 			break;
+		
+		default:
+			return sjme_error_notImplemented(0);
 	}
 	
 	/* Map back to normalize. */
@@ -400,6 +403,9 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 0b110; break;
 		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 0b111; break;
 		/* These bits represent the stuff to do! == 0b9VH; */
+
+		default:
+			return sjme_error_notImplemented(0);
 	}
 	
 	/* Start with this. */

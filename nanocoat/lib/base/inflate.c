@@ -1386,6 +1386,9 @@ sjme_errorCode sjme_inflate_inflate(
 			case SJME_INFLATE_STEP_INFLATE_FROM_TREE:
 				error = sjme_inflate_stepInflateFromTree(inState);
 				break;
+
+			default:
+				return sjme_error_notImplemented(0);
 		}
 		
 		/* Did inflation fail? */

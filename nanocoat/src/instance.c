@@ -17,13 +17,13 @@ sjme_errorCode sjme_nvm_fieldValueSet(
 {
 	if (into == NULL || value == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
 	if (into->type != javaType)
 		return SJME_ERROR_INVALID_ARGUMENT;
-	
+
 	if (atIndex < 0 || atIndex >= into->count)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-	
+
 	if (javaType == SJME_JAVA_TYPE_ID_INTEGER)
 		into->values.jints[atIndex] = value->i;
 	else if (javaType == SJME_JAVA_TYPE_ID_LONG)
@@ -34,7 +34,7 @@ sjme_errorCode sjme_nvm_fieldValueSet(
 		into->values.jdoubles[atIndex] = value->d;
 	else
 		into->values.jobjects[atIndex] = value->l;
-	
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -44,11 +44,11 @@ sjme_jint sjme_nvm_fieldValueSize(
 	sjme_attrInPositiveNonZero sjme_jint n)
 {
 	sjme_jint baseSize;
-	
+
 	if (javaType < 0 || javaType >= SJME_NUM_JAVA_TYPE_IDS ||
 		n <= 0)
 		return -1;
-	
+
 	if (javaType == SJME_JAVA_TYPE_ID_OBJECT)
 		baseSize = (SJME_CONFIG_HAS_POINTER >> 3);
 	else if (javaType == SJME_JAVA_TYPE_ID_INTEGER ||
@@ -59,6 +59,7 @@ sjme_jint sjme_nvm_fieldValueSize(
 	
 	/* Base size is the offset of where values start */
 	return (baseSize * n) +
-		offsetof(sjme_nvm_fieldValues, values.jobjects[0]);
+		offsetof(sjme_nvm_fieldValues, values) +
+		offsetof(sjme_nvm_rawFieldValues, jobjects);
 }
 
