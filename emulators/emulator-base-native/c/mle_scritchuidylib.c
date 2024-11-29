@@ -386,7 +386,9 @@ static sjme_errorCode mle_scritchUiListenerInput(
 	if (inState == NULL || inComponent == NULL || inEvent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("Input Event");
+#endif
 	
 	/* Relocate env. */
 	mle_scritchUiRecoverEnv(inState, &env);

@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.nttdocomo.ui.AudioPresenter;
 import com.nttdocomo.ui.MediaSound;
@@ -22,6 +23,20 @@ import com.nttdocomo.ui.MediaSound;
 public class NullAudioPresenter
 	extends AudioPresenter
 {
+	/** The time of last play. */
+	@SquirrelJMEVendorApi
+	volatile long _startTime =
+		Long.MIN_VALUE;
+	
+	@Override
+	public int getCurrentTime()
+	{
+		long result = this._startTime;
+		if (result == Long.MIN_VALUE)
+			return 0;
+		return (int)((System.nanoTime() - result) / 1_000_000L);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/01/14
@@ -29,7 +44,8 @@ public class NullAudioPresenter
 	@Override
 	public void play()
 	{
-		// Does nothing
+		// Does nothing except set the start time
+		this._startTime = System.nanoTime();
 	}
 	
 	/**
@@ -59,6 +75,7 @@ public class NullAudioPresenter
 	@Override
 	public void stop()
 	{
-		// Does nothing
+		// Does nothing except clear the time
+		this._startTime = Long.MIN_VALUE;
 	}
 }

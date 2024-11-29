@@ -60,6 +60,7 @@ AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes
 AttributeMacros:
   - sjme_inline
+  - sjme_noOptimize
   - sjme_attrArtificial
   - sjme_attrCallback
   - sjme_attrCheckReturn
@@ -87,7 +88,7 @@ AttributeMacros:
   - sjme_attrUnusedEnum
   - SJME_DYLIB_EXPORT
   - SJME_DYLIB_IMPORT
-  - SJME_THREAD_CONVENTION
+  - sjme_attrThreadCall
   - JNIEXPORT
   - JNIIMPORT
   - JNICALL
@@ -256,6 +257,7 @@ StatementMacros:
   - SJME_SCRITCHUI_DISPATCH_CASE
   - SJME_SCRITCHUI_DISPATCH_SWITCH_BEGIN
   - SJME_SCRITCHUI_DISPATCH_SWITCH_END
+  - SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER
   - SJME_SCRITCHUI_SERIAL_CHUNK
   - SJME_SCRITCHUI_SERIAL_PASS
   - SJME_SCRITCHUI_INVOKE_WAIT

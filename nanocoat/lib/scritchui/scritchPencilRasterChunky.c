@@ -155,7 +155,7 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	if (wDest <= 0 || hDest <= 0)
 		return SJME_ERROR_NONE;
 	
-	/* Transform. */
+	/* Translate base coordinates. */
 	sjme_scritchpen_coreUtil_applyTranslate(g, &xDest, &yDest);
 	
 	/* We are now doing the transforming and drawing ourselves. */
@@ -221,8 +221,8 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	/* Figure out the position of our base pointer. */
 	/* Matrix multiplication? Squeak? */
 	wxBase = sjme_fixed_mul(sjme_fixed_hi(xSrc), m.x.wx) +
-		sjme_fixed_mul(sjme_fixed_hi(ySrc), m.x.zy);
-	zyMajor = sjme_fixed_mul(sjme_fixed_hi(xSrc), m.y.wx) +
+		sjme_fixed_mul(sjme_fixed_hi(ySrc), m.y.wx);
+	zyMajor = sjme_fixed_mul(sjme_fixed_hi(xSrc), m.x.zy) +
 		sjme_fixed_mul(sjme_fixed_hi(ySrc), m.y.zy);
 	
 	/* Scan copy, rotate, and stretch by destination scans. */
@@ -236,8 +236,8 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 		for (dx = 0; dx < m.tw; dx++, wx += m.x.wx, zy += m.x.zy)
 		{
 			/* Get pixel from source buffer. */
-			iwx = sjme_fixed_int(sjme_fixed_round(wx)) % wSrc;
-			izy = sjme_fixed_int(sjme_fixed_round(zy)) % hSrc;
+			iwx = sjme_fixed_int(sjme_fixed_round(wx)) % origImgWidth;
+			izy = sjme_fixed_int(sjme_fixed_round(zy)) % origImgHeight;
 			
 			/* Keep in bounds. */
 			if (iwx < 0)

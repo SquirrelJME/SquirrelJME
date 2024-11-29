@@ -14,6 +14,7 @@ import com.nttdocomo.io.ConnectionException;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.io.Connector;
+import org.intellij.lang.annotations.Language;
 
 /**
  * This wraps a MIDP {@link javax.microedition.lcdui.Image} so it can be
@@ -27,6 +28,7 @@ final class __MIDPImage__
 	implements MediaImage
 {
 	/** The URI of the image. */
+	@Language("http-url-reference")
 	final String _uri;
 	
 	/** The actual loaded image. */
@@ -42,7 +44,7 @@ final class __MIDPImage__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/01
 	 */
-	__MIDPImage__(String __uri)
+	__MIDPImage__(@Language("http-url-reference") String __uri)
 		throws NullPointerException
 	{
 		if (__uri == null)

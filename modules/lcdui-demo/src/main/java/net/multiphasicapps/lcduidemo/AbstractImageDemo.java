@@ -191,6 +191,20 @@ public abstract class AbstractImageDemo
 				0, 0, basey, 0,
 				w * 4, h / 2);
 			basey += h / 2;
+			
+			// Back to top
+			int basex = (w * 4) + (w / 2);
+			basey = 0;
+			
+			// Half of a lex, width
+			__g.drawRegion(image, w / 2, 0, w / 2, h,
+				0, basex, basey, 0);
+			basey += h;
+			
+			// Half of a lex, Height
+			__g.drawRegion(image, 0, h / 2, w, h / 2,
+				0, basex, basey, 0);
+			basey += h;
 		}
 	}
 }

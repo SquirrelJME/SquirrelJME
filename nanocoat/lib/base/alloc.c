@@ -1304,7 +1304,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 	link->weak = result;
 	
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_messageR(file, line, func, SJME_JNI_FALSE,
 		"Weak ref new %p (%p).",
 		result->pointer, result);
