@@ -315,7 +315,7 @@ public class Graphics
 	@Api
 	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
-		throw Debugging.todo();
+		this._graphics.drawLine(__x1, __y1, __x2, __y2);
 	}
 	
 	@Api

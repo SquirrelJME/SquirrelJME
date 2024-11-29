@@ -10,7 +10,9 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * Represents a font.
@@ -21,6 +23,11 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 @Api
 public class Font
 {
+	/** No selection was made, use a default. */
+	@SquirrelJMEVendorApi
+	private static final int _NONE =
+		0x7000_0000;
+	
 	@Api
 	public static final int FACE_MONOSPACE =
 		0x7200_0000;
@@ -35,7 +42,7 @@ public class Font
 	
 	@Api
 	public static final int SIZE_LARGE =
-		0x70000300;
+		0x7000_0300;
 	
 	@Api
 	public static final int SIZE_MEDIUM =
@@ -250,11 +257,13 @@ public class Font
 				break;
 				
 			case Font.FACE_SYSTEM:
+			case Font._NONE:
 				midpFace = javax.microedition.lcdui.Font.FACE_SYSTEM;
 				break;
 			
 			default:
-				throw new IllegalArgumentException("AH0s");
+				throw new IllegalArgumentException(
+					__error__("AH0s", 0, __type));
 		}
 		
 		// Determine the size of the font
@@ -266,6 +275,7 @@ public class Font
 				break;
 				
 			case Font.SIZE_MEDIUM:
+			case Font._NONE:
 				midpSize = javax.microedition.lcdui.Font.SIZE_MEDIUM;
 				break;
 				
@@ -275,7 +285,8 @@ public class Font
 				break;
 			
 			default:
-				throw new IllegalArgumentException("AH0s");
+				throw new IllegalArgumentException(
+					__error__("AH0s", 1, __type));
 		}
 		
 		// Determine the style of the font
@@ -283,6 +294,7 @@ public class Font
 		switch (__type & Font._STYLE_MASK)
 		{
 			case Font.STYLE_PLAIN:
+			case Font._NONE:
 				midpStyle = javax.microedition.lcdui.Font.STYLE_PLAIN;
 				break;
 				
@@ -300,7 +312,8 @@ public class Font
 				break;
 			
 			default:
-				throw new IllegalArgumentException("AH0s");
+				throw new IllegalArgumentException(
+					__error__("AH0s", 2, __type));
 		}
 		
 		// Setup font wrapper
