@@ -254,7 +254,8 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
-	sjme_attrInNullable sjme_scritchui wrappedState)
+	sjme_attrInNullable sjme_scritchui wrappedState,
+	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
@@ -279,6 +280,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	state->impl = inImplFunc;
 	state->wmInfo = &sjme_scritchUI_coreWmInfo;
 	state->nanoTime = sjme_nal_default.nanoTime;
+	state->externals = externals;
 	
 	/* Common initialize. */
 	if (sjme_error_is(error = state->intern->initCommon(state,
@@ -364,6 +366,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
+	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
 {
 	sjme_errorCode error;
@@ -386,7 +389,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	if (!needFbWrapper)
 	{
 		return sjme_scritchui_core_apiInitActual(inPool, outState,
-			inImplFunc, loopExecute, initFrontEnd, NULL);
+			inImplFunc, loopExecute, initFrontEnd, NULL, externals);
 	}
 	
 	/* Initialize API we are going to wrap. */
@@ -394,7 +397,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	if (sjme_error_is(error = sjme_scritchui_core_apiInitActual(inPool,
 		&wrappedState,
 		inImplFunc, NULL,
-		NULL, NULL)) ||
+		NULL, NULL, externals)) ||
 		wrappedState == NULL)
 		return sjme_error_default(error);
 	
@@ -415,7 +418,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	if (sjme_error_is(error = sjme_scritchui_core_apiInitActual(inPool,
 		&state,
 		&sjme_scritchui_fbFunctions,
-		loopExecute, initFrontEnd, wrappedState)) ||
+		loopExecute, initFrontEnd, wrappedState, externals)) ||
 		state == NULL)
 		return sjme_error_default(error);
 	

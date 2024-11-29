@@ -134,8 +134,8 @@ int main(int argc, char** argv)
 
 	/* Initialize ScritchUI. */
 	uiState = NULL;
-	if (sjme_error_is(error = apiFunc(inPool,
-		NULL, NULL, &uiState)) ||
+	if (sjme_error_is(error = apiFunc(inPool, &uiState,
+		NULL, NULL, NULL)) ||
 		uiState == NULL)
 	{
 		sjme_message("Could not initialize ScritchUI: %d",

@@ -26,6 +26,7 @@
 #include "lib/scritchinput/scritchinput.h"
 #include "sjme/alloc.h"
 #include "sjme/dylib.h"
+#include "sjme/stream.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -1951,6 +1952,20 @@ typedef struct sjme_scritchui_bugs
 	sjme_jboolean noContentSizeWhenVisible;
 } sjme_scritchui_bugs;
 
+typedef sjme_errorCode (*sjme_scritchui_externalAssetFunc)();
+
+/**
+ * Optional external functions for ScritchUI to use dependent on the front
+ * end that is using it, this is usually to provide cross-feedback.
+ *
+ * @since 2024/11/29
+ */
+typedef struct sjme_scritchui_externalFunctions
+{
+	/** Loads an external asset. */
+	sjme_scritchui_externalAssetFunc externalAsset;
+} sjme_scritchui_externalFunctions;
+
 struct sjme_scritchui_stateBase
 {
 	/** Common data. */
@@ -1973,6 +1988,9 @@ struct sjme_scritchui_stateBase
 	
 	/** Internal implementation functions, which are opaque. */
 	const sjme_scritchui_implInternFunctions* implIntern;
+
+	/** Optional externals for helper front-end interface functions. */
+	const sjme_scritchui_externalFunctions* externals;
 	
 	/** The allocation pool to use for allocations. */
 	sjme_alloc_pool* pool;
@@ -2026,19 +2044,22 @@ struct sjme_scritchui_stateBase
 /**
  * Initializes the API through the dynamic library.
  * 
+ * @param outState The resultant newly created ScritchUI state.
  * @param inPool The pool to allocate within.
  * @param loopExecute Optional callback for loop execution, may be @c NULL ,
  * the passed argument is always the state.
+ * @param externals Optional externals that ScritchUI may use to interact
+ * with a front-end.
  * @param initFrontEnd Optional initial front end data.
- * @param outState The resultant newly created ScritchUI state.
  * @return Any error code that may occur.
  * @since 2024/03/29
  */
 typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
-	sjme_attrInOutNotNull sjme_scritchui* outState);
+	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
 
 /** The base name for the ScritchUI dynamic library. */
 #define SJME_SCRITCHUI_DYLIB_NAME_BASE \

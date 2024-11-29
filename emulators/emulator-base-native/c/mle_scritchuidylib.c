@@ -1816,9 +1816,9 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 
 	/* Initialize ScritchUI. */
 	state = NULL;
-	if (sjme_error_is(error = apiInitFunc(pool,
-		mle_bindEventThread, &frontEnd,
-		&state)) || state == NULL)
+	if (sjme_error_is(error = apiInitFunc(pool, &state,
+		mle_bindEventThread, NULL,
+		&frontEnd)) || state == NULL)
 		goto fail_apiInit;
 	
 	/* Call it to get from it. */

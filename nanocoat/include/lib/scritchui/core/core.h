@@ -35,6 +35,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
+	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
 
 sjme_errorCode sjme_scritchui_core_choiceGetSelectedIndex(
