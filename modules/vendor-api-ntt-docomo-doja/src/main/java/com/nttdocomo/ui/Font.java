@@ -137,10 +137,22 @@ public class Font
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the width of the string.
+	 *
+	 * @param __s The string to get the width of.
+	 * @return The string width.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/11/28
+	 */
 	@Api
 	public int getBBoxWidth(String __s)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return this._midpFont.stringWidth(__s);
 	}
 	
 	/**
