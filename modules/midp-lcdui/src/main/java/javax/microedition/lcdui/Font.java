@@ -823,6 +823,10 @@ public final class Font
 		
 		Font first = null;
 		Font closest = null;
+		Font any = null;
+		
+		// Derive the face of the font
+		int face = Font.__commonFace(__name);
 		
 		// Find the closest font then derive it
 		for (Font f : Font.getAvailableFonts())
@@ -840,9 +844,13 @@ public final class Font
 					closest = f;
 			}
 			
-			// Fallback font
-			else if (first == null)
+			// Fallback font, assuming the face is the same
+			else if (first == null && f.getFace() == face)
 				first = f;
+			
+			// Any font
+			else if (any == null)
+				any = f;
 		}
 		
 		// Derive the closest font
@@ -852,6 +860,10 @@ public final class Font
 		// Or the first font?
 		if (first != null)
 			return first.deriveFont(__style, __pxs);
+		
+		// Or the worst case, any available font
+		if (any != null)
+			return any.deriveFont(__style, __pxs);
 		
 		/* {@squirreljme.error EB20 Could not locate a font by the given
 		name. (The font name; The style; The pixel size)} */
@@ -907,6 +919,36 @@ public final class Font
 		/* {@squirreljme.error EB22 No font with the given name exists.
 		(The font name)} */
 		throw new IllegalArgumentException("EB2g " + __name);
+	}
+	
+	/**
+	 * Returns the common face for the given logical font name.
+	 *
+	 * @param __name The name of the font to locate.
+	 * @return The face of the logical font, will return {@code -1} if there
+	 * is no corresponding face.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/11/30
+	 */
+	private static int __commonFace(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Proportional
+		if (__name.equalsIgnoreCase("Serif") ||
+			__name.equalsIgnoreCase("SansSerif") ||
+			__name.equalsIgnoreCase("Dialog") ||
+			__name.equalsIgnoreCase("DialogInput"))
+			return Font.FACE_PROPORTIONAL;
+		
+		// Monospaced
+		else if (__name.equalsIgnoreCase("Monospaced"))
+			return Font.FACE_MONOSPACE;
+		
+		// Unknown, do not consider it in a match
+		return -1;
 	}
 }
 

@@ -1952,7 +1952,19 @@ typedef struct sjme_scritchui_bugs
 	sjme_jboolean noContentSizeWhenVisible;
 } sjme_scritchui_bugs;
 
-typedef sjme_errorCode (*sjme_scritchui_externalAssetFunc)();
+/**
+ * Obtains an asset that is externally provided.
+ *
+ * @param inState The input state.
+ * @param outStream The resultant stream of the asset data.
+ * @param inAsset The name of the asset to load.
+ * @return Any resultant error, if any.
+ * @since 2024/11/29 
+ */
+typedef sjme_errorCode (*sjme_scritchui_externalAssetFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull sjme_lpcstr inAsset);
 
 /**
  * Optional external functions for ScritchUI to use dependent on the front
