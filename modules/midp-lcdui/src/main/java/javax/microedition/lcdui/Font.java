@@ -725,7 +725,8 @@ public final class Font
 	public static Font getFont(int __spec)
 		throws IllegalArgumentException
 	{
-		/* {@squirreljme.error EB1x Invalid font specifiers. (The specifiers)} */
+		/* {@squirreljme.error EB1x Invalid font specifiers.
+		(The specifiers)} */
 		if (__spec != Font.FONT_INPUT_TEXT &&
 			__spec != Font.FONT_STATIC_TEXT &&
 			__spec != Font.FONT_IDLE_TEXT &&
@@ -940,11 +941,17 @@ public final class Font
 		if (__name.equalsIgnoreCase("Serif") ||
 			__name.equalsIgnoreCase("SansSerif") ||
 			__name.equalsIgnoreCase("Dialog") ||
-			__name.equalsIgnoreCase("DialogInput"))
+			__name.equalsIgnoreCase("DialogInput") ||
+			__name.equalsIgnoreCase("Helvetica") ||
+			__name.equalsIgnoreCase("Arial") ||
+			__name.equalsIgnoreCase("Times New Roman"))
 			return Font.FACE_PROPORTIONAL;
 		
 		// Monospaced
-		else if (__name.equalsIgnoreCase("Monospaced"))
+		else if (__name.equalsIgnoreCase("Monospace") ||
+			__name.equalsIgnoreCase("Monospaced") ||
+			__name.equalsIgnoreCase("Courier") ||
+			__name.equalsIgnoreCase("Courier New"))
 			return Font.FACE_MONOSPACE;
 		
 		// Unknown, do not consider it in a match
