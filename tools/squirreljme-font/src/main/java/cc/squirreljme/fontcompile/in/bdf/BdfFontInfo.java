@@ -142,6 +142,26 @@ public class BdfFontInfo
 					case "WEIGHT_NAME":
 					case "X_HEIGHT":
 					case "Y_HEIGHT":
+					case "COMMENT":
+					case "CHARSET_COLLECTIONS":
+					case "FONT_NAME":
+					case "FACE_NAME":
+					case "RAW_ASCENT":
+					case "RAW_DESCENT":
+					case "RELATIVE_WEIGHT":
+					case "RELATIVE_SETWIDTH":
+					case "SUPERSCRIPT_X":
+					case "SUPERSCRIPT_Y":
+					case "SUPERSCRIPT_SIZE":
+					case "SUBSCRIPT_X":
+					case "SUBSCRIPT_Y":
+					case "SUBSCRIPT_SIZE":
+					case "FIGURE_WIDTH":
+					case "FIGURE_HEIGHT":
+					case "AVG_LOWERCASE_WIDTH":
+					case "AVG_LOWERCASE_HEIGHT":
+					case "AVG_UPPERCASE_WIDTH":
+					case "AVG_UPPERCASE_HEIGHT":
 						continue;
 						
 						// The name of the font

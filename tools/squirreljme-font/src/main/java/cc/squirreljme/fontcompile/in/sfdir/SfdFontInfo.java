@@ -157,6 +157,9 @@ public class SfdFontInfo
 					case "BeginPrivate":
 					case "EndPrivate":
 					case "EndSplineFont":
+					case "NeedsXUIDChange":
+					case "UseXUID":
+					case "TeXData":
 						break;
 						
 						// The name of the font
@@ -183,6 +186,7 @@ public class SfdFontInfo
 				StandardOpenOption.READ);
 			LineTokenizer tokenizer = new LineTokenizer(in))
 		{
+			boolean inBdfProp = false;
 			for (;;)
 			{
 				String[] tokens = tokenizer.next();
@@ -199,8 +203,28 @@ public class SfdFontInfo
 				// Which property?
 				switch (tokens[0])
 				{
+						// Ignore BDF properties
+					case "BDFStartProperties":
+						if (inBdfProp)
+							throw new InvalidFontException(String.format(
+								"Duplicate BDF start property: %s",
+								Arrays.asList(tokens)));
+							
+						inBdfProp = true;
+						break;
+						
+					case "BDFEndProperties":
+						if (!inBdfProp)
+							throw new InvalidFontException(String.format(
+								"Duplicate BDF end property: %s",
+								Arrays.asList(tokens)));
+						
+						inBdfProp = false;
+						break;
+						
 						// Ignore
 					case "EndBitmapFont":
+					case "Resolution":
 						break;
 					
 						// Font properties
@@ -218,6 +242,10 @@ public class SfdFontInfo
 						break;
 					
 					default:
+						// Ignore any properties here
+						if (inBdfProp)
+							continue;
+						
 						throw new InvalidFontException(String.format(
 							"Unknown strike property: %s",
 							Arrays.asList(tokens)));
