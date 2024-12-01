@@ -53,7 +53,7 @@ public class Main
 		if (__args == null || __args.length != 2 ||
 			__args[0] == null || __args[1] == null)
 			throw new IllegalArgumentException(
-				"Usage: [in.bdf|in.strike] [out.sqf|-|out.c|-.c]");
+				"Usage: [in.bdf|in.strike] [out.zip|-|out.c|-.c]");
 		
 		// Writing to stdout?
 		boolean stdout = "-".equals(__args[1]) ||
@@ -79,7 +79,7 @@ public class Main
 		{
 			// Only create temporary file if not writing to stdout
 			if (!stdout)
-				temp = Files.createTempFile("font", ".sqf");
+				temp = Files.createTempFile("font", ".zip");
 			
 			// Setup output for compilation
 			try (OutputStream out = (stdout ? System.out :

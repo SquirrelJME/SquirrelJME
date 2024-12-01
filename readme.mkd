@@ -159,7 +159,7 @@ Information:
 
  * [My Portfolio](https://shadowtail.dev/)
  * [My Public PGP Key](public-key.gpg.mkd)
- * [SquirrelJME BlueSky](https://bsky.app/profile/squirreljme.bsky.social)
+ * [SquirrelJME BlueSky](https://bsky.app/profile/squirreljme.cc)
  * [SquirrelJME Twitter](https://twitter.com/SquirrelJME)
  * [SquirrelJME Mastodon](https://mastodon.online/@SquirrelJME)
  * Locations where you can get support:
@@ -170,7 +170,7 @@ Information:
      * [##squirreljme](ircs://irc.libera.chat:6697/#squirreljme) -- Off-Topic
    * [Reddit](https://reddit.com/r/SquirrelJME)
  * Front facing social media:
-   * [BlueSky](https://bsky.app/profile/squirreljme.bsky.social)
+   * [BlueSky](https://bsky.app/profile/squirreljme.cc)
    * [Mastodon (mastodon.online)](https://mastodon.online/@SquirrelJME)
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA/)
    * [Twitter](https://twitter.com/SquirrelJME)
