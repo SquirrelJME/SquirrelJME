@@ -198,6 +198,12 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
+	
+sjme_errorCode sjme_scritchui_core_fontList(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_jint* outValid,
+	sjme_attrOutNullable sjme_jint* outMaxFonts);
 
 sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	sjme_attrInNotNull sjme_scritchui inState,

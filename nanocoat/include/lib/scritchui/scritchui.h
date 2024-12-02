@@ -562,6 +562,9 @@ typedef struct sjme_scritchui_pencilBase* sjme_scritchui_pencil;
  */
 typedef struct sjme_scritchui_pencilFontBase* sjme_scritchui_pencilFont;
 
+/** A list of pencil fonts. */
+SJME_LIST_DECLARE(sjme_scritchui_pencilFont, 0);
+
 /**
  * A single link within a loaded/known font chain.
  * 
@@ -1246,6 +1249,22 @@ typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
 
 /**
+ * Obtains the fonts which are available in the system, if any.
+ *
+ * @param inState The input state.
+ * @param outFonts The list which gets filled with all the fonts.
+ * @param outValid The number of valid fonts.
+ * @param outMaxFonts The maximum number of fonts available, this is optional.
+ * @return Any resultant error, if any.
+ * @since 2024/12/01
+ */
+typedef sjme_errorCode (*sjme_scritchui_fontListFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_jint* outValid,
+	sjme_attrOutNullable sjme_jint* outMaxFonts);
+
+/**
  * Creates a hardware reference bracket to the native hardware graphics.
  * 
  * @param inState The UI state.
@@ -1793,6 +1812,9 @@ struct sjme_scritchui_apiFunctions
 	/** Derive a similar font. */
 	SJME_SCRITCHUI_QUICK_API(fontDerive);
 	
+	/** Return the set of available fonts. */
+	SJME_SCRITCHUI_QUICK_API(fontList);
+	
 	/** Hardware graphics support on arbitrary buffers. */
 	SJME_SCRITCHUI_QUICK_API(hardwareGraphics);
 	
@@ -2026,10 +2048,7 @@ struct sjme_scritchui_stateBase
 	sjme_scritchui_windowManagerType wmType;
 	
 	/** The internal built-in font. */
-	sjme_scritchui_pencilFont builtinFont; 
-	
-	/** The fonts which are loaded and known to the state. */
-	sjme_scritchui_pencilFontLink* fontChain;
+	sjme_scritchui_pencilFont builtinFont;
 	
 	/** Function to obtain the current nanotime, for input events. */
 	sjme_nal_nanoTimeFunc nanoTime;
@@ -2048,6 +2067,9 @@ struct sjme_scritchui_stateBase
 	
 	/** Windowing system specific bugs. */
 	sjme_scritchui_bugs bugs;
+
+	/** Font cache. */
+	sjme_list_sjme_scritchui_pencilFont* fontCache;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */

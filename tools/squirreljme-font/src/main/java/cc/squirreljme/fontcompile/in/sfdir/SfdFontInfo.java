@@ -228,7 +228,7 @@ public class SfdFontInfo
 						break;
 					
 						// Font properties
-						// The bitmap font line contains the following numbers: 
+						// The bitmap font line contains the following numbers:
 						// 1 the pixelsize of the font,
 						// 2 the number of potential characters in the font,
 						// 3 the ascent and
