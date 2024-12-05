@@ -133,16 +133,12 @@ public enum ApplicationParser
 				return;
 			}
 			
-			// Try to locate the scratchpad seed archive
-			JarPackageBracket binarySto = __state.findIModeScratchPad(
-				jarName);
-			
-			// Store where the scratchpad seed should be found
+			// Additional i-mode specific properties?
 			Map<String, String> extraSysProps = new LinkedHashMap<>();
-			if (binarySto != null)
-				extraSysProps.put(
-					IModeProperty.SEED_SCRATCHPAD_PREFIX + ".0",
-					__state.libraryPath(binarySto));
+			
+			// Try to locate the scratchpad seed archive
+			ApplicationParser.__doJaScratchPads(__state, jarName,
+				extraSysProps);
 			
 			// Load the ADF/JAM descriptor that describes this application
 			Map<String, String> adfProps = new LinkedHashMap<>();
@@ -236,15 +232,9 @@ public enum ApplicationParser
 			// Additional i-mode specific properties?
 			Map<String, String> extraSysProps = new LinkedHashMap<>();
 			
-			// Try to locate the scratchpad seed archive
-			JarPackageBracket binarySto = __state.findIModeScratchPad(
-				jarName);
-			
-			// Store where the scratchpad seed should be found
-			if (binarySto != null)
-				extraSysProps.put(
-					IModeProperty.SEED_SCRATCHPAD_PREFIX + ".0",
-					__state.libraryPath(binarySto));
+			// Search for any scratchpads
+			ApplicationParser.__doJaScratchPads(__state, jarName,
+				extraSysProps);
 			
 			// Load application
 			try
@@ -281,4 +271,34 @@ public enum ApplicationParser
 	 */
 	protected abstract void parse(ApplicationParserState __state)
 		throws NullPointerException;
+	
+	/**
+	 * Locates any scratchpads for DoJa applications.
+	 *
+	 * @param __state The application state.
+	 * @param __name The name of the Jar.
+	 * @param __sysProps The resultant system properties.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/12/05
+	 */
+	static void __doJaScratchPads(ApplicationParserState __state,
+		String __name, Map<String, String> __sysProps)
+		throws NullPointerException
+	{
+		if (__state == null || __name == null || __sysProps == null)
+			throw new NullPointerException("NARG");
+		
+		// Locate the first 10 scratchpads
+		for (int i = 0; i < 10; i++)
+		{
+			// Try to locate the scratchpad seed archive
+			JarPackageBracket sp = __state.findIModeScratchPad(__name, i);
+			
+			// Store where the scratchpad seed should be found
+			if (sp != null)
+				__sysProps.put(String.format("%s.%d",
+					IModeProperty.SEED_SCRATCHPAD_PREFIX, i),
+					__state.libraryPath(sp));
+		}
+	}
 }

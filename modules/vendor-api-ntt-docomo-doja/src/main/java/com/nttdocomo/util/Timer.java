@@ -13,6 +13,7 @@ import com.nttdocomo.ui.Canvas;
 import com.nttdocomo.ui.ShortTimer;
 import com.nttdocomo.ui.UIException;
 import java.lang.ref.WeakReference;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * A timer which sends timer events to a given listener.
@@ -20,7 +21,8 @@ import java.lang.ref.WeakReference;
  * Unlike {@link ShortTimer} which uses {@link Canvas#processEvent(int, int)},
  * this one sends events to a {@link TimerListener}.
  * 
- * This is effectively a duplicate of Java's standard {@link java.util.Timer}.
+ * This is effectively a duplicate of Java's standard {@link java.util.Timer}
+ * except that it can be reused.
  * 
  * @see java.util.Timer
  * @since 2022/10/10
@@ -28,9 +30,6 @@ import java.lang.ref.WeakReference;
 public final class Timer
 	implements TimeKeeper
 {
-	/** The base Java timer. */
-	private static volatile java.util.Timer _JAVA_TIMER;
-	
 	/** The minimum supported time interval. */
 	static final byte _MIN_TIME_INTERVAL =
 		1;
@@ -39,13 +38,10 @@ public final class Timer
 	static final byte _TIMER_RESOLUTION =
 		1;
 	
-	/** The timer task. */
-	private final __DoJaTimerTask__ _timerTask;
+	/** The expiration store to use. */
+	final __ExpireStore__ _expire;
 	
-	/** The current timer listener. */
-	volatile TimerListener _listener;
-	
-	/** The current interval. */
+	/** The current interval, in milliseconds. */
 	private volatile int _interval =
 		Timer._MIN_TIME_INTERVAL;
 	
@@ -55,6 +51,9 @@ public final class Timer
 	/** Has this been disposed? */
 	private volatile boolean _isDisposed;
 	
+	/** The currently active timer. */
+	private volatile java.util.Timer _timer;
+	
 	/**
 	 * Initializes the timer.
 	 * 
@@ -62,8 +61,7 @@ public final class Timer
 	 */
 	public Timer()
 	{
-		// Setup task to refer to this
-		this._timerTask = new __DoJaTimerTask__(
+		this._expire = new __ExpireStore__(
 			new WeakReference<>(this));
 	}
 	
@@ -114,11 +112,8 @@ public final class Timer
 	 */
 	public void setListener(TimerListener __listener)
 	{
-		synchronized (this)
-		{
-			// Set for later starts
-			this._listener = __listener;
-		}
+		// Set for any later occurring expirations
+		this._expire.__set(__listener);
 	}
 	
 	/**
@@ -133,8 +128,8 @@ public final class Timer
 	{
 		synchronized (this)
 		{
-			// Check timer state
-			this._timerTask.__checkStarted();
+			// Check if timer started already
+			this.__checkStart();
 			
 			// Set the new interval
 			this._repeats = __repeat;
@@ -158,8 +153,8 @@ public final class Timer
 		
 		synchronized (this)
 		{
-			// Check timer state
-			this._timerTask.__checkStarted();
+			// Check if timer started already
+			this.__checkStart();
 			
 			// Set the new interval
 			this._interval = Math.max(__interval, Timer._MIN_TIME_INTERVAL);
@@ -178,16 +173,29 @@ public final class Timer
 	{
 		synchronized (this)
 		{
-			// {@squirreljme.error AH0v Cannot start a timer which has been
-			// disposed.}
+			// Check if timer started already
+			this.__checkStart();
+			
+			/* {@squirreljme.error AH0v Cannot start a timer which has been
+			disposed.} */
 			if (this._isDisposed)
-				throw new UIException(UIException.ILLEGAL_STATE, "AH0v");
+				throw new UIException(UIException.ILLEGAL_STATE,
+					__error__("AH0v"));
 			
-			// Check timer state
-			this._timerTask.__checkStarted();
+			// Setup new timer
+			java.util.Timer result = new java.util.Timer();
 			
-			// Start the core timer
-			this._timerTask.__start(Timer.__javaTimer(), this._interval);
+			// Start scheduling it
+			__ExpireListener__ expired =
+				new __ExpireListener__(this._expire);
+			long interval = this._interval;
+			if (this._repeats)
+				result.schedule(expired, interval, interval);
+			else
+				result.schedule(expired, interval);
+			
+			// Store timer for later
+			this._timer = result;
 		}
 	}
 	
@@ -200,36 +208,31 @@ public final class Timer
 	{
 		synchronized (this)
 		{
-			// Cancel the timer
-			this._timerTask.cancel();
+			// Do nothing if there is no timer
+			java.util.Timer timer = this._timer;
+			if (timer == null)
+				return;
+			
+			// Stop and clear the timer
+			timer.cancel();
+			this._timer = null;
 		}
 	}
 	
 	/**
-	 * Returns the single instance of a Java timer.
-	 * 
-	 * @return The single instance timer.
-	 * @since 2022/10/10
+	 * Has this timer been started already?
+	 *
+	 * @since 2024/12/05
 	 */
-	private static java.util.Timer __javaTimer()
+	private void __checkStart()
 	{
-		// Was this already made?
-		java.util.Timer result = Timer._JAVA_TIMER;
-		if (result != null)
-			return result;
-		
-		synchronized (Timer.class)
+		synchronized (this)
 		{
-			// Double check
-			result = Timer._JAVA_TIMER;
-			if (result != null)
-				return result;
-			
-			// Setup timer for later
-			result = new java.util.Timer("SquirrelJMEDoJaTimer");
-			Timer._JAVA_TIMER = result;
-			
-			return result;
+			/* {@squirreljme.error AH5d Timer already started.} */
+			java.util.Timer timer = this._timer;
+			if (timer != null)
+				throw new UIException(UIException.ILLEGAL_STATE,
+					__error__("AH5d"));
 		}
 	}
 }
