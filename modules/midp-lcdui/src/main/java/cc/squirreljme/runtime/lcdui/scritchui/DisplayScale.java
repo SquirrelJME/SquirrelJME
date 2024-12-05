@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import javax.microedition.midlet.MIDlet;
 
@@ -132,6 +133,29 @@ public abstract class DisplayScale
 				return new DisplayFixedFlatScale(
 					DisplayScale.__parse(mexa, ',', false),
 					DisplayScale.__parse(mexa, ',', true));
+		}
+		
+		// DoJa with a defined screen size
+		String doJaSize = System.getProperty(
+			"cc.squirreljme.imode.adf.DrawArea");
+		Debugging.debugNote("Scale: %s", doJaSize);
+		if (doJaSize != null)
+		{
+			// Parse it
+			int x = doJaSize.indexOf('x');
+			if (x >= 1)
+				try
+				{
+					int width = Math.max(96, Integer.parseInt(
+						doJaSize.substring(0, x), 10));
+					int height = Math.max(72, Integer.parseInt(
+						doJaSize.substring(x + 1), 10));
+					
+					return new DisplayFixedFlatScale(width, height);
+				}
+				catch (NumberFormatException ignored)
+				{
+				}
 		}
 		
 		// Use default otherwise

@@ -278,22 +278,31 @@ public class Font
 					__error__("AH0s", 0, __type));
 		}
 		
-		// Determine the size of the font
+		// Determine the size of the font, note that DoJa has a different set
+		// of font sizes compared to MIDP
 		int midpSize;
+		int pixelSize;
 		switch (__type & Font._SIZE_MASK)
 		{
 			case Font.SIZE_LARGE:
 				midpSize = javax.microedition.lcdui.Font.SIZE_LARGE;
+				pixelSize = 30;
 				break;
 				
 			case Font.SIZE_MEDIUM:
 			case Font._NONE:
-				midpSize = javax.microedition.lcdui.Font.SIZE_MEDIUM;
+				midpSize = javax.microedition.lcdui.Font.SIZE_LARGE;
+				pixelSize = 24;
 				break;
 				
 			case Font.SIZE_SMALL:
+				midpSize = javax.microedition.lcdui.Font.SIZE_LARGE;
+				pixelSize = 16;
+				break;
+				
 			case Font.SIZE_TINY:
-				midpSize = javax.microedition.lcdui.Font.SIZE_SMALL;
+				midpSize = javax.microedition.lcdui.Font.SIZE_MEDIUM;
+				pixelSize = 12;
 				break;
 			
 			default:
@@ -330,7 +339,7 @@ public class Font
 		
 		// Setup font wrapper
 		return new Font(javax.microedition.lcdui.Font.getFont(midpFace,
-			midpStyle, midpSize));
+			midpStyle, midpSize).deriveFont(midpStyle, pixelSize));
 	}
 	
 	/**

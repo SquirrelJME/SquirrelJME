@@ -35,6 +35,7 @@ set(SJME_ScritchUICore_SOURCES
 	scritchPencilBasic.c
 	scritchPencilBitLine.c
 	scritchPencilFont.c
+	scritchPencilFontMulti.c
 	scritchPencilFontPseudo.c
 	scritchPencilFontSqf.c
 	scritchPencilRasterChunky.c
