@@ -44,6 +44,10 @@ public final class Debugging
 	public static boolean ENABLED =
 		Boolean.valueOf(true).booleanValue();
 	
+	/** Verbose debugging messages. */
+	public static boolean VERBOSE =
+		Boolean.getBoolean("cc.squirreljme.verbose");
+	
 	/** Only bytes up to this value are permitted in the output. */
 	private static final int _BYTE_LIMIT =
 		0x7E;

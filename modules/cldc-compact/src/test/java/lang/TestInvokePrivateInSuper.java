@@ -34,6 +34,7 @@ public class TestInvokePrivateInSuper
 	 *
 	 * @since 2018/10/10
 	 */
+	@SuppressWarnings("unused")
 	public void doPrivate()
 	{
 		this.secondary("instanceprivatewascalled", false);

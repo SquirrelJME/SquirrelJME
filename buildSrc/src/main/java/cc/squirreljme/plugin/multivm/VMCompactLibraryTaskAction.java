@@ -172,10 +172,12 @@ public class VMCompactLibraryTaskAction
 					"<init>", "(", "...", ")", ";",
 				"}",
 			
-			// Assume the debug flag is always false
+			// Assume the debug flags are always false
 			"-assumevalues",
 				"class", "cc.squirreljme.runtime.cldc.debug.Debugging", "{",
 					"public", "static", "boolean", "ENABLED",
+						"=", "false", ";",
+					"public", "static", "boolean", "VERBOSE",
 						"=", "false", ";",
 				"}",
 			

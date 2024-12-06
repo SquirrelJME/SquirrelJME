@@ -61,7 +61,7 @@ public final class ApplicationParserState
 	 * @param __accurateJarIndex The accurate index of this specific Jar.
 	 * @param __jar The Jar being parsed.
 	 * @param __shelf The shelf to use.
-	 * @throws NullPointerException
+	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/06
 	 */
 	public ApplicationParserState(SuiteScanListener __listener, int __numJars,

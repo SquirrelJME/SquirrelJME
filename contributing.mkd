@@ -94,7 +94,7 @@ https://github.com/SquirrelJME/SquirrelJME/issues).
     is originally written by your own thoughts, not from an AI or copy/paste
     from existing documentation including through translation. Fully explain
     everything, including things which may be missing in the original 
-    documentation
+    documentation.
     * Copying documentation verbatim is plagiarism and without writing it
       can you really say you truly understand what the code does?
  5. Comment code in recipe-like sections, every method is like a recipe that
