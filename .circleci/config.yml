@@ -557,6 +557,9 @@ jobs:
   ################################# MAC OS X #################################
   build_macosx_amd64:
     executor: build-on-macos
+    environment:
+      # macOS's default heap size is too low
+      JAVA_OPTS: -Xmx4g
     steps:
       - checkout
       - run:
@@ -577,7 +580,18 @@ jobs:
           where: "vm-test-hosted-release"
           os: "macosx"
           vm: "hosted"
-  build_macosx_arm64:
+  build_macosx_amd64_standalone:
+    executor: build-on-macos
+    environment:
+      # macOS's default heap size is too low
+      JAVA_OPTS: -Xmx4g
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - standalone-unix-common-build
+
+  build_macosx_aarch64:
     executor: build-on-macos-m1
     steps:
       - checkout
@@ -599,14 +613,6 @@ jobs:
           where: "vm-test-hosted-release"
           os: "macosx-m1"
           vm: "hosted"
-
-  build_macosx_amd64_standalone:
-    executor: build-on-macos
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - standalone-unix-common-build
   build_macosx_aarch64_standalone:
     executor: build-on-macos-m1
     steps:
@@ -921,7 +927,7 @@ workflows:
       # only perform builds and tests for trunk to lower costs.
       # Currently, I have an overabundance of credits...
       - build_macosx_amd64
-      - build_macosx_arm64
+      - build_macosx_aarch64
       - build_macosx_amd64_standalone:
           requires:
             - build_macosx_amd64
@@ -931,7 +937,7 @@ workflows:
                 - trunk
       - build_macosx_aarch64_standalone:
           requires:
-            - build_macosx_arm64
+            - build_macosx_aarch64
           filters:
             branches:
               only:
