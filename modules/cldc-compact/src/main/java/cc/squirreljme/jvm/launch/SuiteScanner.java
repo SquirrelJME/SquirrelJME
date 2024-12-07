@@ -232,7 +232,8 @@ public final class SuiteScanner
 			{
 				// Do indicate them as skipped, otherwise the progress bar
 				// will never fill up all the way
-				__listener.skipped(accurateJarIndex, __numJars);
+				if (__listener != null)
+					__listener.skipped(accurateJarIndex, __numJars);
 				
 				// Skip
 				continue;
@@ -252,7 +253,7 @@ public final class SuiteScanner
 				foundAny |= parser.parse(state);
 			
 			// Nothing was found, so indicate it as skipped
-			if (!foundAny)
+			if (!foundAny && __listener != null)
 				__listener.skipped(accurateJarIndex, __numJars);
 		}
 	}
