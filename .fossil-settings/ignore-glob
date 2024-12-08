@@ -142,6 +142,7 @@ nanocoat/rom/testFixtures_release
 nanocoat/rom/test_release
 nanocoat/rom/shared
 nanocoat/rom/specific
+nanocoat/rom/squirreljme-slow-test.list
 nanocoat/cmake-build-*
 emulators/emulator-base/cmake-build-*
 *.jar

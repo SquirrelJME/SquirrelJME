@@ -95,11 +95,21 @@ public final class SuiteUtils
 		// Standard Jar
 		return __name.endsWith(".jad") || __name.endsWith(".JAD") ||
 			
-			// i-mode
+			// i-mode/DoJa/Star
 			__name.endsWith(".jam") || __name.endsWith(".JAM") ||
 			__name.endsWith(".adf") || __name.endsWith(".ADF") ||
 			__name.endsWith(".sec") || __name.endsWith(".SEC") ||
 			__name.endsWith(".sto") || __name.endsWith(".STO") ||
-			__name.endsWith(".sp") || __name.endsWith(".SP");
+			__name.endsWith(".sp") || __name.endsWith(".SP") ||
+			__name.endsWith(".sp0") || __name.endsWith(".SP0") ||
+			__name.endsWith(".sp1") || __name.endsWith(".SP1") ||
+			__name.endsWith(".sp2") || __name.endsWith(".SP2") ||
+			__name.endsWith(".sp3") || __name.endsWith(".SP3") ||
+			__name.endsWith(".sp4") || __name.endsWith(".SP4") ||
+			__name.endsWith(".sp5") || __name.endsWith(".SP5") ||
+			__name.endsWith(".sp6") || __name.endsWith(".SP6") ||
+			__name.endsWith(".sp7") || __name.endsWith(".SP7") ||
+			__name.endsWith(".sp8") || __name.endsWith(".SP8") ||
+			__name.endsWith(".sp9") || __name.endsWith(".SP9");
 	}
 }

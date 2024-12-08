@@ -128,12 +128,12 @@ public final class SplashScreen
 			else
 			{
 				// At least set the background to a color
-				__g.setColor(SplashScreenImage.START_COLOR);
+				__g.setColor(this.generator.startColor);
 				__g.fillRect(0, 0,
 					SplashScreenImage.WIDTH,
 					SplashScreenImage.HEIGHT >> 1);
 				
-				__g.setColor(SplashScreenImage.END_COLOR);
+				__g.setColor(this.generator.endColor);
 				__g.fillRect(0, SplashScreenImage.HEIGHT >> 1,
 					SplashScreenImage.WIDTH,
 					SplashScreenImage.HEIGHT >> 1);

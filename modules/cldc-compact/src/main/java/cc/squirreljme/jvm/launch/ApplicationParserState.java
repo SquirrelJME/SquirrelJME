@@ -61,7 +61,7 @@ public final class ApplicationParserState
 	 * @param __accurateJarIndex The accurate index of this specific Jar.
 	 * @param __jar The Jar being parsed.
 	 * @param __shelf The shelf to use.
-	 * @throws NullPointerException
+	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/06
 	 */
 	public ApplicationParserState(SuiteScanListener __listener, int __numJars,
@@ -159,7 +159,30 @@ public final class ApplicationParserState
 		if (__jarName == null)
 			throw new NullPointerException("NARG");
 		
-		return this.findFirstSibling(__jarName, ".sto", ".sp");
+		return this.findFirstSibling(__jarName, ".sto", ".sp", ".sp0");
+	}
+	
+	/**
+	 * Attempts to locate the scratch pad binary.
+	 *
+	 * @param __jarName The Jar name.
+	 * @param __pad The scratchpad ID.
+	 * @return The found scratch pad binary, if found.
+	 * @throws IllegalArgumentException If the pad index is not valid.
+	 * @since 2023/07/21
+	 */
+	public JarPackageBracket findIModeScratchPad(String __jarName, int __pad)
+		throws NullPointerException
+	{
+		if (__jarName == null)
+			throw new NullPointerException("NARG");
+		if (__pad < 0)
+			throw new IllegalArgumentException("ILLA");
+		
+		// The first scratchpad is always the same
+		if (__pad == 0)
+			return this.findIModeScratchPad(__jarName);
+		return this.findFirstSibling(__jarName, ".sp" + __pad);
 	}
 	
 	/**

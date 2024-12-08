@@ -129,11 +129,19 @@ following paths are considered for automatic configuration and classpath
 inclusion.
 
  * Windows:
-   * Cache: `%LOCALAPPDATA%/squirreljme/cache`
+   * Cache (Local):
+     * Vista/7/8/10/11: `%LOCALAPPDATA%/squirreljme/cache`
+     * 95/98/ME/2000/XP: `%APPDATA%/squirreljme/cache`
      * Or otherwise `%PROGRAMDATA%/squirreljme/cache`
-   * Configuration: `%APPDATA%/squirreljme/config`
+   * Configuration (Roaming):
+     * 95/98/ME/XP/Vista/7/8/10/11: `%APPDATA%/squirreljme/config`
      * Or otherwise `%PROGRAMDATA%/squirreljme/config`
-   * Data: `%APPDATA%/squirreljme/data`
+   * Data (Roaming):
+     * 95/98/ME/XP/Vista/7/8/10/11: `%APPDATA%/squirreljme/data`
+     * Or otherwise `%PROGRAMDATA%/squirreljme/data`
+   * State (Local):
+     * Vista/7/8/10/11: `%LOCALAPPDATA%/squirreljme/data`
+     * 95/98/ME/2000/XP: `%APPDATA%/squirreljme/data`
      * Or otherwise `%PROGRAMDATA%/squirreljme/data`
  * Linux, macOS, BSD, and other UNIX/UNIX-like systems:
   * Cache: `$XDG_CACHE_HOME/squirreljme`
@@ -142,6 +150,8 @@ inclusion.
     * Or otherwise `$HOME/.config/squirreljme`
   * Data: `$XDG_DATA_HOME/squirreljme`
     * Or otherwise `$HOME/.local/share/squirreljme`
+  * State: `$XDG_STATE_HOME/squirreljme`
+    * Or otherwise `$HOME/.local/state/squirreljme`
 
 To override the defaults, you may instead use the following, if any start
 with `~` that is replaced with `$HOME` or `%USERPROFILE%`:

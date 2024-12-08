@@ -127,6 +127,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c fontDerive . */
 	SJME_SCRITCHUI_SERIAL_TYPE_FONT_DERIVE,
 	
+	/** @c fontList . */
+	SJME_SCRITCHUI_SERIAL_TYPE_FONT_LIST,
+	
 	/** @c hardwareGraphics . */
 	SJME_SCRITCHUI_SERIAL_TYPE_HARDWARE_GRAPHICS,
 	
@@ -373,6 +376,11 @@ SUD_STRUCT_DEF(fontDerive,
 	SDU_VAR(sjme_jint, inPixelSize);
 	SDU_VARP(sjme_scritchui_pencilFont, outDerived););
 
+SUD_STRUCT_DEF(fontList,
+	SDU_VARP(sjme_list_sjme_scritchui_pencilFont, outFonts);
+	SDU_VARP(sjme_jint, outValid);
+	SDU_VARP(sjme_jint, outMaxFonts););
+
 SUD_STRUCT_DEF(hardwareGraphics,
 	SDU_VARP(sjme_scritchui_pencil, outPencil);
 	SDU_VARP(sjme_alloc_weak, outWeakPencil);
@@ -504,6 +512,8 @@ SUD_STRUCT_DEF(windowSetVisible,
  */
 typedef union sjme_scritchui_serialDataUnion
 {
+/* clang-format off */
+/* ------------------------------------------------------------------------ */
 	SJME_SCRITCHUI_SDU_DEF(choiceGetSelectedIndex);
 	SJME_SCRITCHUI_SDU_DEF(choiceItemGet);
 	SJME_SCRITCHUI_SDU_DEF(choiceItemInsert);
@@ -533,6 +543,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(containerSetBounds);
 	SJME_SCRITCHUI_SDU_DEF(fontBuiltin);
 	SJME_SCRITCHUI_SDU_DEF(fontDerive);
+	SJME_SCRITCHUI_SDU_DEF(fontList);
 	SJME_SCRITCHUI_SDU_DEF(hardwareGraphics);
 	SJME_SCRITCHUI_SDU_DEF(labelSetString);
 	SJME_SCRITCHUI_SDU_DEF(lafElementColor);
@@ -560,6 +571,8 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(windowSetMenuBar);
 	SJME_SCRITCHUI_SDU_DEF(windowSetMenuItemActivateListener);
 	SJME_SCRITCHUI_SDU_DEF(windowSetVisible);
+/* ------------------------------------------------------------------------ */
+/* clang-format on */
 } sjme_scritchui_serialDataUnion;
 
 /* No longer needed. */
@@ -745,6 +758,12 @@ sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
+	
+sjme_errorCode sjme_scritchui_coreSerial_fontList(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_jint* outValid,
+	sjme_attrOutNullable sjme_jint* outMaxFonts);
 	
 sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	sjme_attrInNotNull sjme_scritchui inState,

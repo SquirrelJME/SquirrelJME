@@ -386,7 +386,9 @@ static sjme_errorCode mle_scritchUiListenerInput(
 	if (inState == NULL || inComponent == NULL || inEvent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("Input Event");
+#endif
 	
 	/* Relocate env. */
 	mle_scritchUiRecoverEnv(inState, &env);
@@ -1814,9 +1816,9 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 
 	/* Initialize ScritchUI. */
 	state = NULL;
-	if (sjme_error_is(error = apiInitFunc(pool,
-		mle_bindEventThread, &frontEnd,
-		&state)) || state == NULL)
+	if (sjme_error_is(error = apiInitFunc(pool, &state,
+		mle_bindEventThread, NULL,
+		&frontEnd)) || state == NULL)
 		goto fail_apiInit;
 	
 	/* Call it to get from it. */

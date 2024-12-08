@@ -37,7 +37,7 @@ public enum ApplicationParser
 		 * @since 2024/01/06
 		 */
 		@Override
-		protected void parse(ApplicationParserState __state)
+		protected boolean parse(ApplicationParserState __state)
 			throws NullPointerException
 		{
 			if (__state == null)
@@ -53,11 +53,12 @@ public enum ApplicationParser
 				// If no manifest exists, might not be a JAR
 				if (rc == null)
 				{
-					Debugging.debugNote(
-						"No META-INF/MANIFEST.MF in %s...",
-						__state.libraryPath());
+					if (Debugging.VERBOSE)
+						Debugging.debugNote(
+							"No META-INF/MANIFEST.MF in %s...",
+							__state.libraryPath());
 					
-					return;
+					return false;
 				}
 				
 				man = new JavaManifest(rc);
@@ -67,8 +68,9 @@ public enum ApplicationParser
 			// Prevent bad JARs and files from messing things up
 			catch (IOException | InvalidSuiteException | MLECallError e)
 			{
-				e.printStackTrace();
-				return;
+				if (Debugging.VERBOSE)
+					e.printStackTrace();
+				return false;
 			}
 			
 			switch (info.type())
@@ -77,7 +79,7 @@ public enum ApplicationParser
 				case LIBLET:
 				case SQUIRRELJME_API:
 					__state.register(info);
-					return;
+					return false;
 				
 				// Handle application
 				case MIDLET:
@@ -95,7 +97,7 @@ public enum ApplicationParser
 						// Indicate that it was scanned
 						__state.scanned(app);
 					}
-					return;
+					return true;
 				
 				// Unknown?
 				default:
@@ -112,7 +114,7 @@ public enum ApplicationParser
 		 * @since 2024/01/06
 		 */
 		@Override
-		protected void parse(ApplicationParserState __state)
+		protected boolean parse(ApplicationParserState __state)
 			throws NullPointerException
 		{
 			if (__state == null)
@@ -128,21 +130,18 @@ public enum ApplicationParser
 			// If there is no JAM file, this cannot be an i-mode application
 			if (jam == null)
 			{
-				Debugging.debugNote("No JAM found for %s.",
-					jarName);
-				return;
+				if (Debugging.VERBOSE)
+					Debugging.debugNote("No JAM found for %s.",
+						jarName);
+				return false;
 			}
 			
-			// Try to locate the scratchpad seed archive
-			JarPackageBracket binarySto = __state.findIModeScratchPad(
-				jarName);
-			
-			// Store where the scratchpad seed should be found
+			// Additional i-mode specific properties?
 			Map<String, String> extraSysProps = new LinkedHashMap<>();
-			if (binarySto != null)
-				extraSysProps.put(
-					IModeProperty.SEED_SCRATCHPAD_PREFIX + ".0",
-					__state.libraryPath(binarySto));
+			
+			// Try to locate the scratchpad seed archive
+			ApplicationParser.__doJaScratchPads(__state, jarName,
+				extraSysProps);
 			
 			// Load the ADF/JAM descriptor that describes this application
 			Map<String, String> adfProps = new LinkedHashMap<>();
@@ -151,15 +150,16 @@ public enum ApplicationParser
 			{
 				// Missing? Cannot be an i-mode application
 				if (jamIn == null)
-					return;
+					return false;
 				
 				// Parse by text
 				__AdfUtils__.__parseAdfText(adfProps, jamIn);
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
-				return;
+				if (Debugging.VERBOSE)
+					e.printStackTrace();
+				return false;
 			}
 			
 			// Load application
@@ -174,11 +174,18 @@ public enum ApplicationParser
 				
 				// Indicate that it was scanned
 				__state.scanned(app);
+				
+				// Success!
+				return true;
 			}
 			catch (InvalidSuiteException e)
 			{
-				e.printStackTrace();
+				if (Debugging.VERBOSE)
+					e.printStackTrace();
 			}
+			
+			// Failed?
+			return false;
 		}
 	},
 	
@@ -190,7 +197,7 @@ public enum ApplicationParser
 		 * @since 2024/01/06
 		 */
 		@Override
-		protected void parse(ApplicationParserState __state)
+		protected boolean parse(ApplicationParserState __state)
 			throws NullPointerException
 		{
 			if (__state == null)
@@ -206,9 +213,10 @@ public enum ApplicationParser
 			// If there is no ADF file, this cannot be an i-mode application
 			if (binaryAdf == null)
 			{
-				Debugging.debugNote("No Binary ADF found for %s.",
-					jarName);
-				return;
+				if (Debugging.VERBOSE)
+					Debugging.debugNote("No Binary ADF found for %s.",
+						jarName);
+				return false;
 			}
 			
 			// Decode the Binary ADF information
@@ -218,33 +226,28 @@ public enum ApplicationParser
 			{
 				// Missing? Cannot be an i-mode application
 				if (binaryAdfIn == null)
-					return;
+					return false;
 				
 				// Parse using binary format
 				__AdfUtils__.__parseAdfBinary(adfProps, binaryAdfIn);
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
-				return;
+				if (Debugging.VERBOSE)
+					e.printStackTrace();
+				return false;
 			}
 			
 			// If no class is specified then we cannot launch this
 			if (!adfProps.containsKey(IModeProperty._APP_CLASS))
-				return;
+				return false;
 			
 			// Additional i-mode specific properties?
 			Map<String, String> extraSysProps = new LinkedHashMap<>();
 			
-			// Try to locate the scratchpad seed archive
-			JarPackageBracket binarySto = __state.findIModeScratchPad(
-				jarName);
-			
-			// Store where the scratchpad seed should be found
-			if (binarySto != null)
-				extraSysProps.put(
-					IModeProperty.SEED_SCRATCHPAD_PREFIX + ".0",
-					__state.libraryPath(binarySto));
+			// Search for any scratchpads
+			ApplicationParser.__doJaScratchPads(__state, jarName,
+				extraSysProps);
 			
 			// Load application
 			try
@@ -257,11 +260,18 @@ public enum ApplicationParser
 				
 				// Indicate that it was scanned
 				__state.scanned(app);
+				
+				// Success!
+				return true;
 			}
 			catch (InvalidSuiteException e)
 			{
-				e.printStackTrace();
+				if (Debugging.VERBOSE)
+					e.printStackTrace();
 			}
+			
+			// Failed?
+			return false;
 		}
 	},
 	
@@ -276,9 +286,40 @@ public enum ApplicationParser
 	 * Parses the specified state.
 	 *
 	 * @param __state The state to parse.
+	 * @return Whether an application was found.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/06
 	 */
-	protected abstract void parse(ApplicationParserState __state)
+	protected abstract boolean parse(ApplicationParserState __state)
 		throws NullPointerException;
+	
+	/**
+	 * Locates any scratchpads for DoJa applications.
+	 *
+	 * @param __state The application state.
+	 * @param __name The name of the Jar.
+	 * @param __sysProps The resultant system properties.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/12/05
+	 */
+	static void __doJaScratchPads(ApplicationParserState __state,
+		String __name, Map<String, String> __sysProps)
+		throws NullPointerException
+	{
+		if (__state == null || __name == null || __sysProps == null)
+			throw new NullPointerException("NARG");
+		
+		// Locate the first 10 scratchpads
+		for (int i = 0; i < 10; i++)
+		{
+			// Try to locate the scratchpad seed archive
+			JarPackageBracket sp = __state.findIModeScratchPad(__name, i);
+			
+			// Store where the scratchpad seed should be found
+			if (sp != null)
+				__sysProps.put(String.format("%s.%d",
+					IModeProperty.SEED_SCRATCHPAD_PREFIX, i),
+					__state.libraryPath(sp));
+		}
+	}
 }

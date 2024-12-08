@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+<channel>
+	<title>SquirrelJME</title>
+	<description>SquirrelJME is a Java ME 8 Virtual Machine.</description>
+	<link>https://squirreljme.cc/</link>
+	<language>en-us</language>
+	<copyright>Copyright (C) 2013-2024 Stephanie Gawroriski</copyright>
+	<managingEditor>xer@multiphasicapps.net (Stephanie Gawroriski)</managingEditor>
+	<webMaster>xer@multiphasicapps.net (Stephanie Gawroriski)</webMaster>
+	<pubDate>Sun, 27 Oct 2024 18:20 EDT</pubDate>
+	<ttl>1800</ttl>
+
+	<!-- If the domain ever changes the default. -->
+	<!--<atom:link href="https://squirreljme.cc/doc/trunk/feed.rss"
+		rel="self" />-->
+	<atom:link href="https://multiphasicapps.net/doc/trunk/feed.rss"
+		rel="self" />
+
+	<!-- Update this accordingly! -->
+	<lastBuildDate>Sun, 24 Nov 2024 15:00 EST</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">8b04125a-678d-4943-9089-181d2414930a</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241124_1500.mkd</link>
+		<pubDate>Sun, 24 Nov 2024 15:00 EST</pubDate>
+
+		<title>An Anti-Burnout Break is Needed</title>
+		<description>The year has been exciting and so much has been done,
+			but I also recognize that I need a much-needed break.</description>
+	</item>
+
+	<!-- Not current -->
+
+	<item>
+		<guid isPermaLink="false">6c70e869-c158-4aed-a5f3-94f9f565749e</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241028_1200.mkd</link>
+		<pubDate>Sun, 28 Oct 2024 12:00 EDT</pubDate>
+
+		<title>State of SquirrelJME, October 2024</title>
+		<description>Too much to write in a short description,
+			but a large number of changes!</description>
+	</item>
+
+	<item>
+		<guid isPermaLink="false">8d221db0-3720-490e-bff6-bff75134dc2c</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241027_2020.mkd</link>
+		<pubDate>Sun, 27 Oct 2024 20:20 EDT</pubDate>
+
+		<title>Hello From The SquirrelJME RSS Feed, Again!</title>
+		<description>This is another test!</description>
+	</item>
+
+	<item>
+		<guid isPermaLink="false">da32b8ae-b50a-4b6a-8965-acd3bdbb712e</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241027_1820.mkd</link>
+		<pubDate>Sun, 27 Oct 2024 18:20 EDT</pubDate>
+
+		<title>Hello From The SquirrelJME RSS Feed!</title>
+		<description>This is a test!</description>
+	</item>
+</channel>
+</rss>

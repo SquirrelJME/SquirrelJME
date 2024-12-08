@@ -95,11 +95,17 @@ public class WindowsPathProvider
 		
 		// Where do we shove our data?
 		String appDataEnv;
-		if (__roaming || osName.contains("95") ||
-			osName.contains("98") || osName.contains("me"))
+		if (__roaming)
 			appDataEnv = RuntimeShelf.systemEnv("APPDATA");
 		else
+		{
+			// If available
 			appDataEnv = RuntimeShelf.systemEnv("LOCALAPPDATA");
+			
+			// Otherwise
+			if (appDataEnv == null)
+				appDataEnv = RuntimeShelf.systemEnv("APPDATA");
+		}
 		
 		// Resolve it
 		if (appDataEnv != null)

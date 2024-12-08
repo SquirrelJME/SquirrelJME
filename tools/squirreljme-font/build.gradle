@@ -84,7 +84,7 @@ class CompileFontTask extends DefaultTask {
 		
 		// Where does this go?
 		java.nio.file.Path compiledPath = this.project.buildDir.toPath()
-			.resolve("fonts").resolve(__outName + (__cSource ? ".c" : ".sqf"))
+			.resolve("fonts").resolve(__outName + (__cSource ? ".c" : ".zip"))
 		this.compiledPath = compiledPath
 		
 		// Make the shadow Jar input for the task just to make sure that

@@ -725,7 +725,8 @@ public final class Font
 	public static Font getFont(int __spec)
 		throws IllegalArgumentException
 	{
-		/* {@squirreljme.error EB1x Invalid font specifiers. (The specifiers)} */
+		/* {@squirreljme.error EB1x Invalid font specifiers.
+		(The specifiers)} */
 		if (__spec != Font.FONT_INPUT_TEXT &&
 			__spec != Font.FONT_STATIC_TEXT &&
 			__spec != Font.FONT_IDLE_TEXT &&
@@ -821,37 +822,63 @@ public final class Font
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		Font first = null;
-		Font closest = null;
+		Font faceOnly = null;
+		Font faceSize = null;
+		Font name = null;
+		Font any = null;
+		
+		// Derive the face of the font
+		int face = Font.__commonFace(__name);
 		
 		// Find the closest font then derive it
 		for (Font f : Font.getAvailableFonts())
 		{
 			// Same name?
-			if (__name.equals(f.getFontName()))
+			if (Font.__compatibleName(__name, f.getFontName()))
 			{
+				// Exactly the desired size?
+				if (f.getPixelSize() == __pxs)
+					return f;
+				
 				// First font of this name?
-				if (closest == null)
-					closest = f;
+				if (name == null)
+					name = f;
 				
 				// Closest in terms of size?
 				else if (Math.abs(f.getPixelSize() - __pxs) <
-					Math.abs(closest.getPixelSize() - __pxs))
-					closest = f;
+					Math.abs(name.getPixelSize() - __pxs))
+					name = f;
 			}
 			
-			// Fallback font
-			else if (first == null)
-				first = f;
+			// Same face and same size
+			else if (faceSize == null && f.getFace() == face &&
+				f.getPixelSize() == __pxs)
+				faceSize = f;
+			
+			// Fallback font, assuming the face is the same
+			else if (faceOnly == null && f.getFace() == face)
+				faceOnly = f;
+			
+			// Any font
+			else if (any == null)
+				any = f;
 		}
 		
 		// Derive the closest font
-		if (closest != null)
-			return closest.deriveFont(__style, __pxs);
+		if (name != null)
+			return name.deriveFont(__style, __pxs);
 		
-		// Or the first font?
-		if (first != null)
-			return first.deriveFont(__style, __pxs);
+		// First face match with the same size?
+		else if (faceSize != null)
+			return faceSize.deriveFont(__style, __pxs);
+		
+		// Or the first face font?
+		else if (faceOnly != null)
+			return faceOnly.deriveFont(__style, __pxs);
+		
+		// Or the worst case, any available font
+		else if (any != null)
+			return any.deriveFont(__style, __pxs);
 		
 		/* {@squirreljme.error EB20 Could not locate a font by the given
 		name. (The font name; The style; The pixel size)} */
@@ -907,6 +934,109 @@ public final class Font
 		/* {@squirreljme.error EB22 No font with the given name exists.
 		(The font name)} */
 		throw new IllegalArgumentException("EB2g " + __name);
+	}
+	
+	/**
+	 * Returns the common face for the given logical font name.
+	 *
+	 * @param __name The name of the font to locate.
+	 * @return The face of the logical font, will return {@code -1} if there
+	 * is no corresponding face.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/11/30
+	 */
+	private static int __commonFace(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Proportional
+		if (__name.equalsIgnoreCase("Serif") ||
+			__name.equalsIgnoreCase("SansSerif") ||
+			__name.equalsIgnoreCase("Dialog") ||
+			__name.equalsIgnoreCase("DialogInput") ||
+			__name.equalsIgnoreCase("Helvetica") ||
+			__name.equalsIgnoreCase("Arial") ||
+			__name.equalsIgnoreCase("Times New Roman"))
+			return Font.FACE_PROPORTIONAL;
+		
+		// Monospaced
+		else if (__name.equalsIgnoreCase("Monospace") ||
+			__name.equalsIgnoreCase("Monospaced") ||
+			__name.equalsIgnoreCase("Courier") ||
+			__name.equalsIgnoreCase("Courier New"))
+			return Font.FACE_MONOSPACE;
+		
+		// Unknown, do not consider it in a match
+		return -1;
+	}
+	
+	/**
+	 * Is the name of this font compatible?
+	 *
+	 * @param __want The name that is desired.
+	 * @param __font The name of the font.
+	 * @return If this is a compatible name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/12/01
+	 */
+	private static boolean __compatibleName(String __want, String __font)
+		throws NullPointerException
+	{
+		if (__want == null || __font == null)
+			throw new NullPointerException("NARG");
+		
+		// Same exact name
+		if (__want.equalsIgnoreCase(__font))
+			return true;
+		
+		// We can have a copy/paste of names, which is a giant mess, or we
+		// can just boil the names down to integers and compare them. Do note
+		// that the initial values should not be the same in the event there
+		// is no name match!
+		int wantIs = -1;
+		int fontIs = -2;
+		for (int i = 0; i < 2; i++)
+		{
+			// Determine the class of the font
+			int is = -(i + 1);
+			String with = (i == 0 ? __want : __font);
+			switch (with.toLowerCase())
+			{
+				case "serif":
+				case "times new roman":
+					is = 1;
+					break;
+					
+				case "monospace":
+				case "monospaced":
+				case "courier":
+				case "courier new":
+					is = 2;
+					break;
+					
+				case "sansserif":
+				case "dialog":
+				case "dialoginput":
+				case "helvetica":
+				case "arial":
+					is = 3;
+					break;
+			}
+			
+			// Remember the class for later comparison
+			if (is > 0)
+			{
+				if (i == 0)
+					wantIs = is;
+				else
+					fontIs = is;
+			}
+		}
+		
+		// Same class of font?
+		return wantIs == fontIs;
 	}
 }
 

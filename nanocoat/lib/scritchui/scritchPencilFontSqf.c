@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiExtern.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiPencilFontSqf.h"
