@@ -40,6 +40,7 @@
       <option name="GENERATE_FINAL_LOCALS" value="true" />
       <option name="REPLACE_NULL_CHECK" value="false" />
       <option name="REPLACE_SUM" value="false" />
+      <option name="BLANK_LINES_AROUND_FIELD_WITH_ANNOTATIONS" value="1" />
       <option name="CLASS_NAMES_IN_JAVADOC" value="3" />
       <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99" />
       <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99" />
@@ -78,9 +79,6 @@
       <option name="USE_MODERN_CASTS" value="false" />
       <option name="TAG_PREFIX_OF_LINE_COMMENT" value="AT" />
     </Objective-C>
-    <Objective-C-extensions>
-      <option name="TAG_PREFIX_OF_LINE_COMMENT" value="AT" />
-    </Objective-C-extensions>
     <Objective-C-extensions>
       <option name="TAG_PREFIX_OF_LINE_COMMENT" value="AT" />
     </Objective-C-extensions>
@@ -167,6 +165,9 @@
       <option name="/Default/CodeStyle/CodeFormatting/CppFormatting/INDENT_STATEMENT_PARS/@EntryValue" value="OUTSIDE" type="string" />
       <option name="/Default/CodeStyle/CodeFormatting/CppFormatting/INDENT_INVOCATION_PARS/@EntryValue" value="OUTSIDE" type="string" />
     </RiderCodeStyleSettings>
+    <ScalaCodeStyleSettings>
+      <option name="MULTILINE_STRING_CLOSING_QUOTES_ON_NEW_LINE" value="true" />
+    </ScalaCodeStyleSettings>
     <files>
       <extensions>
         <pair source="cxx" header="hxx" fileNamingConvention="CAMEL_CASE" />
