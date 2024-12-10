@@ -39,7 +39,7 @@
 	sjme_scritchui_uiPanel inPanel;
 	sjme_scritchui_listener_paint* infoCore;
 	sjme_scritchui_pencil pencil;
-	sjme_jint w, h;
+	sjme_jint x, y, w, h;
 	sjme_frontEnd frontEnd;
 	sjme_scritchui_pencilFont defaultFont;
 	sjme_gfx_pixelFormat pixelFormat;
@@ -58,27 +58,21 @@
 		return;
 	}
 
-	/* Determine area to draw. */
-	w = rect.size.width;
-	h = rect.size.height;
-
-	/* Entire view being updated??? */
-	if (w <= 0 || h <= 0)
-	{
-		w = self.frame.size.width;
-		h = self.frame.size.height;
-	}
+	/* Determine actual origin coordinates and view size. */
+	x = (int)dirtyRect.origin.x;
+	y = (int)dirtyRect.origin.y - (int)self.frame.origin.y;
+	w = self.frame.size.width/*dirtyRect.size.width*/;
+	h = self.frame.size.height/*dirtyRect.size.height*/;
 
 	/* Debug. */
-	sjme_message("Cocoa draw (%d, %d) [%d, %d]",
-		(int)dirtyRect.origin.x, (int)dirtyRect.origin.y, w, h);
+	sjme_message("Cocoa draw (%d, %d) [%d, %d]", x, y, w, h);
 
 	/* Save graphics state to restore it for later. */
 	[NSGraphicsContext saveGraphicsState];
 
 	/* Setup image representation. */
-	rect.origin.x = dirtyRect.origin.x;
-	rect.origin.y = dirtyRect.origin.y;
+	rect.origin.x = x;
+	rect.origin.y = y;
 	rect.size.width = w;
 	rect.size.height = h;
 	imageRep = [self bitmapImageRepForCachingDisplayInRect:rect];
@@ -113,14 +107,15 @@
 
 	/* A default font is required. */
 	defaultFont = NULL;
-	if (sjme_error_is(inState->intern->fontBuiltin(inState,
+	if (sjme_error_is(error = inState->intern->fontBuiltin(inState,
 		&defaultFont)) || defaultFont == NULL)
 		goto fail_noBuiltInFont;
 
 	/* Setup pencil for drawing. */
 	pencil = &inPanel->paint.pencil;
 	memset(pencil, 0, sizeof(*pencil));
-	if (sjme_error_is(error = sjme_scritchpen_initStatic(pencil,
+	if (sjme_error_is(error = sjme_scritchpen_initStatic(
+		pencil,
 		inState,
 		&sjme_scritchui_cocoa_pencilFunctions,
 		NULL, NULL,
@@ -169,6 +164,12 @@ fail_draw:
 - (id)initWithFrame:(NSRect)frame
 {
 	return [super initWithFrame:frame];
+}
+
+- (BOOL)isFlipped
+{
+	/* Flipped backed origin be the top-left, which is far easier. */
+	return YES;
 }
 
 - (BOOL)isOpaque
