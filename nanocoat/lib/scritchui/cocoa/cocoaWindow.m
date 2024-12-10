@@ -17,6 +17,33 @@
 	return [super init];
 }
 
+- (BOOL)windowShouldClose:(id)sender
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiWindow window;
+	sjme_scritchui_listener_close* infoCore;
+
+	/* Recover window. */
+	window = self->inWindow;
+
+	/* Get listener info, if no callback never close. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(window, close);
+	if (infoCore->callback == NULL)
+		return NO;
+
+	/* Invoke callback. */
+	if (sjme_error_is(error = infoCore->callback(
+		window->component.common.state, window)))
+	{
+		/* Only if cancelled. */
+		if (error == SJME_ERROR_CANCEL_WINDOW_CLOSE)
+			return NO;
+	}
+
+	/* Always close at this point. */
+	return YES;
+}
+
 @end
 
 sjme_errorCode sjme_scritchui_cocoa_windowContentMinimumSize(
