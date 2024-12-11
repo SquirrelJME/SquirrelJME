@@ -32,8 +32,8 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
+	NSRect dirtyBase, frameBase, imageRect;
 	NSBitmapImageRep* imageRep;
-	NSRect rect;
 	sjme_errorCode error;
 	sjme_scritchui inState;
 	sjme_scritchui_uiPanel inPanel;
@@ -58,24 +58,26 @@
 		return;
 	}
 
+	/* The dirty rect is in PDF space, it needs to be converted. */
+	dirtyBase = [self convertRectToBase:dirtyRect];
+	frameBase = self.frame;
+
 	/* Determine actual origin coordinates and view size. */
-	x = (int)dirtyRect.origin.x;
-	y = (int)dirtyRect.origin.y - (int)self.frame.origin.y;
-	w = self.frame.size.width/*dirtyRect.size.width*/;
-	h = self.frame.size.height/*dirtyRect.size.height*/;
+	x = dirtyBase.origin.x;
+	y = dirtyBase.origin.y;
+	w = dirtyBase.size.width;
+	h = dirtyBase.size.height;
 
 	/* Debug. */
-	sjme_message("Cocoa draw (%d, %d) [%d, %d]", x, y, w, h);
+	sjme_message("Cocoa draw (%d, %d) [%d, %d] (frame [%d, %d]",
+		x, y, w, h,
+		(int)frameBase.size.width, (int)frameBase.size.height);
 
 	/* Save graphics state to restore it for later. */
 	[NSGraphicsContext saveGraphicsState];
 
 	/* Setup image representation. */
-	rect.origin.x = x;
-	rect.origin.y = y;
-	rect.size.width = w;
-	rect.size.height = h;
-	imageRep = [self bitmapImageRepForCachingDisplayInRect:rect];
+	imageRep = [self bitmapImageRepForCachingDisplayInRect:dirtyBase];
 	if (imageRep == nil || imageRep == NULL)
 		goto fail_noImageRep;
 
@@ -125,7 +127,8 @@
 		goto fail_initPencil;
 
 	/* The clipping area is set to the region that needs redrawing. */
-	pencil->api->setClip(pencil, rect.origin.x, rect.origin.y,
+	pencil->api->setClip(pencil,
+		dirtyBase.origin.x, dirtyBase.origin.y,
 		w, h);
 
 	/* Forward to callback. */

@@ -807,7 +807,7 @@ sjme_errorCode sjme_scritchui_core_componentSize(
 	
 	/* Not supported? */
 	if (inState->impl->componentSize == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
+		return sjme_error_notImplemented(0);
 	
 	/* Forward. */
 	return inState->impl->componentSize(inState, inComponent,

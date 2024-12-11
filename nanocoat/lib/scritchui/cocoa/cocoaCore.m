@@ -31,7 +31,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_cocoaFunctions =
 		sjme_scritchui_cocoa_componentSetPaintListener,
 	.componentSetSizeListener = NULL,
 	.componentSetVisibleListener = NULL,
-	.componentSize = NULL,
+	.componentSize = sjme_scritchui_cocoa_componentSize,
 	.containerAdd = sjme_scritchui_cocoa_containerAdd,
 	.containerRemove = NULL,
 	.containerSetBounds = sjme_scritchui_cocoa_containerSetBounds,
