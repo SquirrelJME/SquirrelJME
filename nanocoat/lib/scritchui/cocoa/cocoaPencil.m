@@ -227,8 +227,8 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetStrokeStyle(
 
 	/* Only thin lines with no cap or joiners. */
 	[context DPSsetlinewidth:1.0];
-	[context DPSsetlinecap:1];
-	[context DPSsetlinejoin:1];
+	[context DPSsetlinecap:NSSquareLineCapStyle];
+	[context DPSsetlinejoin:NSMiterLineJoinStyle];
 
 	/* Set the new style. */
 #if 0
