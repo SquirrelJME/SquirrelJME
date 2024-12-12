@@ -32,8 +32,7 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-	NSRect dirtyBase, frameBase, imageRect;
-	NSBitmapImageRep* imageRep;
+	NSRect dirtyBase, frameBase;
 	sjme_errorCode error;
 	sjme_scritchui inState;
 	sjme_scritchui_uiPanel inPanel;
@@ -42,7 +41,7 @@
 	sjme_jint x, y, w, h;
 	sjme_frontEnd frontEnd;
 	sjme_scritchui_pencilFont defaultFont;
-	sjme_gfx_pixelFormat pixelFormat;
+	NSGraphicsContext* context;
 
 	/* Recover the panel. */
 	inPanel = self->inPanel;
@@ -73,39 +72,16 @@
 		x, y, w, h,
 		(int)frameBase.size.width, (int)frameBase.size.height);
 
-	/* Save graphics state to restore it for later. */
-	[NSGraphicsContext saveGraphicsState];
+	/* Recover graphics context. */
+	context = [NSGraphicsContext currentContext];
 
-	/* Setup image representation. */
-	imageRep = [self bitmapImageRepForCachingDisplayInRect:dirtyBase];
-	if (imageRep == nil || imageRep == NULL)
-		goto fail_noImageRep;
-
-	/* Which pixel format is used? */
-	switch (imageRep.bitsPerPixel)
-	{
-		case 32:
-			pixelFormat = SJME_GFX_PIXEL_FORMAT_INT_RGB888;
-			break;
-
-		case 24:
-			pixelFormat = SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888;
-			break;
-
-		case 16:
-			pixelFormat = SJME_GFX_PIXEL_FORMAT_SHORT_RGB565;
-			break;
-
-		case 8:
-		default:
-			pixelFormat = SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256;
-			break;
-	}
+	/* Save current state to restore for the super call. */
+	[context saveGraphicsState];
 
 	/* Setup frontend info. */
 	memset(&frontEnd, 0, sizeof(frontEnd));
 	frontEnd.wrapper = self;
-	frontEnd.data = (sjme_frontEndData)1;/*imageRep;*/
+	frontEnd.data = (sjme_frontEndData)context;
 
 	/* A default font is required. */
 	defaultFont = NULL;
@@ -121,10 +97,14 @@
 		inState,
 		&sjme_scritchui_cocoa_pencilFunctions,
 		NULL, NULL,
-		pixelFormat,
+		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
 		0, 0, w, h, w,
 		defaultFont, &frontEnd)))
 		goto fail_initPencil;
+
+	/* Initialize matrix and scale to the window output. */
+	/*[context DPSinitmatrix];*/
+	[context DPSscale:w:h];
 
 	/* The clipping area is set to the region that needs redrawing. */
 	pencil->api->setClip(pencil,
@@ -140,28 +120,25 @@
 	/* Reset state. */
 	pencil->api->setDefaults(pencil);
 
-	/* Failed? */
-	if (sjme_error_is(error))
-		goto fail_draw;
+	/* Flush graphics. */
+	[context flushGraphics];
 
-	/* Restore the previous state. */
-	[NSGraphicsContext restoreGraphicsState];
+	/* Restore state. */
+	[context restoreGraphicsState];
 
 	/* Make sure main drawing is performed. */
 	[super drawRect:dirtyRect];
 
-	/* Success! */
-	return;
+	/* Flush graphics. */
+	[context flushGraphics];
 
+	/* Failed? */
 fail_noImageRep:
 fail_noBuiltInFont:
 fail_initPencil:
 fail_draw:
-	/* Restore previous state before failing. */
-	[NSGraphicsContext restoreGraphicsState];
-
-	/* Debug. */
-	sjme_message("Native draw failed: %d", error);
+	if (sjme_error_is(error))
+		sjme_message("Native draw failed: %d", error);
 }
 
 - (id)initWithFrame:(NSRect)frame

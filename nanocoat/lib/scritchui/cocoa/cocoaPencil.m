@@ -21,32 +21,23 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawHoriz(
 {
 	sjme_scritchui inState;
 	NSView* nsView;
-	NSBitmapImageRep* imageRep;
-	NSPoint a, b;
-	NSBezierPath* path;
+	NSGraphicsContext* context;
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Recover view and image representation. */
+	/* Recover view and context. */
 	inState = g->common.state;
 	nsView = g->frontEnd.wrapper;
-	imageRep = g->frontEnd.data;
-	if (inState == NULL || nsView == NULL || nsView == nil ||
-		imageRep == NULL || imageRep == nil)
+	context = g->frontEnd.data;
+
+	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
-	/* Setup line details, then draw. */
-	path = [NSBezierPath bezierPath];
-	a.x = x;
-	a.y = y;
-	[path moveToPoint:a];
-	b.x = x + w;
-	b.y = y;
-	[path lineToPoint:b];
-	[path setLineWidth:1.0];
-	/*[path setLineDash:1.0:1.0];*/
-	[path stroke];
+	/* Draw line. */
+	[context DPSmoveto:x:y];
+	[context DPSlineto:x + w:y];
+	[context DPSstroke];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -61,32 +52,23 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawLine(
 {
 	sjme_scritchui inState;
 	NSView* nsView;
-	NSBitmapImageRep* imageRep;
-	NSPoint a, b;
-	NSBezierPath* path;
+	NSGraphicsContext* context;
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Recover view and image representation. */
+	/* Recover view and context. */
 	inState = g->common.state;
 	nsView = g->frontEnd.wrapper;
-	imageRep = g->frontEnd.data;
-	if (inState == NULL || nsView == NULL || nsView == nil ||
-		imageRep == NULL || imageRep == nil)
+	context = g->frontEnd.data;
+
+	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
-	/* Setup line details, then draw. */
-	path = [NSBezierPath bezierPath];
-	a.x = x1;
-	a.y = y1;
-	[path moveToPoint:a];
-	b.x = x2;
-	b.y = y2;
-	[path lineToPoint:b];
-	[path setLineWidth:1.0];
-	/*[path setLineDash:1.0:1.0];*/
-	[path stroke];
+	/* Draw line. */
+	[context DPSmoveto:x1:y1];
+	[context DPSlineto:x2:y2];
+	[context DPSstroke];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -167,32 +149,27 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetAlphaColor(
 {
 	sjme_scritchui inState;
 	NSView* nsView;
-	NSBitmapImageRep* imageRep;
-	NSColor* color;
+	NSGraphicsContext* context;
 	CGFloat rr, gg, bb, aa;
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Recover view and image representation. */
+	/* Recover view and context. */
 	inState = g->common.state;
 	nsView = g->frontEnd.wrapper;
-	imageRep = g->frontEnd.data;
-	if (inState == NULL || nsView == NULL || nsView == nil ||
-		imageRep == NULL || imageRep == nil)
+	context = g->frontEnd.data;
+
+	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
-	/* Generate color. */
+	/* Convert and set color. */
 	aa = ((argb >> 24) & 0xFF) / 255.0;
 	rr = ((argb >> 16) & 0xFF) / 255.0;
 	gg = ((argb >> 8) & 0xFF) / 255.0;
 	bb = ((argb) & 0xFF) / 255.0;
-	color = [NSColor colorWithCalibratedRed:rr green:gg blue:bb alpha:aa];
-
-	/* Set everything to use the same color as we are uniform with it. */
-	[color set];
-	[color setStroke];
-	[color setFill];
+	[context DPSsetalpha:aa];
+	[context DPSsetrgbcolor:rr:gg:bb];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -207,25 +184,22 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetClip(
 {
 	sjme_scritchui inState;
 	NSView* nsView;
-	NSBitmapImageRep* imageRep;
-	NSRect clipRect;
+	NSGraphicsContext* context;
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Recover view and image representation. */
+	/* Recover view and context. */
 	inState = g->common.state;
 	nsView = g->frontEnd.wrapper;
-	imageRep = g->frontEnd.data;
-	if (inState == NULL || nsView == NULL || nsView == nil ||
-		imageRep == NULL || imageRep == nil)
+	context = g->frontEnd.data;
+
+	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
-	clipRect.origin.x = x;
-	clipRect.origin.y = y;
-	clipRect.size.width = w;
-	clipRect.size.height = h;
-	[[NSBezierPath bezierPathWithRect:clipRect] setClip];
+	/* Set new clip. */
+	[context DPSinitclip];
+	[context DPSrectclip:x:y:w:h];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -238,18 +212,31 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetStrokeStyle(
 {
 	sjme_scritchui inState;
 	NSView* nsView;
-	NSBitmapImageRep* imageRep;
+	NSGraphicsContext* context;
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Recover view and image representation. */
+	/* Recover view and context. */
 	inState = g->common.state;
 	nsView = g->frontEnd.wrapper;
-	imageRep = g->frontEnd.data;
-	if (inState == NULL || nsView == NULL || nsView == nil ||
-		imageRep == NULL || imageRep == nil)
+	context = g->frontEnd.data;
+
+	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Only thin lines with no cap or joiners. */
+	[context DPSsetlinewidth:1.0];
+	[context DPSsetlinecap:1];
+	[context DPSsetlinejoin:1];
+
+	/* Set the new style. */
+#if 0
+	if (style == SJME_SCRITCHUI_PENCIL_STROKE_DOTTED)
+		[context];
+	else
+		[context];
+#endif
 
 	/* Handled by line drawing function. */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
