@@ -143,6 +143,10 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 	[cocoaWindow center];
 	[cocoaWindow setIsVisible:(isVisible ? true : false)];
 
+	/* If now visible, bring to the front. */
+	if (isVisible)
+		[cocoaWindow makeKeyAndOrderFront:cocoaWindow];
+
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
