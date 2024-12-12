@@ -33,6 +33,7 @@
 - (void)drawRect:(NSRect)dirtyRect
 {
 	NSRect dirtyBase, frameBase;
+	NSSize scale;
 	sjme_errorCode error;
 	sjme_scritchui inState;
 	sjme_scritchui_uiPanel inPanel;
@@ -102,9 +103,15 @@
 		defaultFont, &frontEnd)))
 		goto fail_initPencil;
 
-	/* Initialize matrix and scale to the window output. */
-	/*[context DPSinitmatrix];*/
-	[context DPSscale:w:h];
+	/* Disable antialiasing, it looks horrible. */
+	[context setShouldAntialias:NO];
+
+	/* However big a single pixel is, we need to scale everything to that */
+	/* so that it is neither way to big nor way too small. */
+	scale.width = 1;
+	scale.height = 1;
+	scale = [self convertSizeFromBase:scale];
+	[context DPSscale:scale.width:scale.height];
 
 	/* The clipping area is set to the region that needs redrawing. */
 	pencil->api->setClip(pencil,
