@@ -14,7 +14,20 @@
 @implementation SJMEWindow : NSWindow
 - (id)init
 {
-	return [super init];
+	NSRect rect;
+
+	/* We do not care how big the window initially is. */
+	rect.origin.x = 0;
+	rect.origin.y = 0;
+	rect.size.width = 1;
+	rect.size.height = 1;
+
+	/* Setup new window. */
+	return [super initWithContentRect:rect
+		styleMask:NSTitledWindowMask|NSMiniaturizableWindowMask|
+			NSClosableWindowMask|NSResizableWindowMask
+		backing:NSBackingStoreBuffered
+		defer:NO];
 }
 
 - (BOOL)windowShouldClose:(id)sender
