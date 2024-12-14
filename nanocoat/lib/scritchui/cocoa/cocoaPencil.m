@@ -13,6 +13,69 @@
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
 
+static sjme_errorCode sjme_scritchui_cocoa_pencilInitLine(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull NSBezierPath* path)
+{
+	if (g == NULL || path == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	CGFloat dots[2];
+
+	/* Set default properties for the line. */
+	[path setLineWidth:1.0];
+	[path setLineCapStyle:NSSquareLineCapStyle];
+	[path setLineJoinStyle:NSMiterLineJoinStyle];
+
+	/* There is no global setting of dotted lines, so each line needs */
+	/* to manually get this style specified. */
+	if (g->state.stroke == SJME_SCRITCHUI_PENCIL_STROKE_DOTTED)
+	{
+		/* Setup dot pattern. */
+		dots[0] = 1.0;
+		dots[1] = 1.0;
+
+		/* Set stroke. */
+		[path setLineDash:dots count:2 phase:0.0];
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_cocoa_pencilStep(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull NSGraphicsContext* context,
+	sjme_attrInValue sjme_jboolean in)
+{
+	sjme_scritchui_rect* clip;
+
+	if (g == NULL || context == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* If going in, store state and set the clip. */
+	if (in)
+	{
+		/* Saves the state so we can remove the clipping. */
+		[context saveGraphicsState];
+
+		/* Set new clip. */
+		clip = &g->state.clip;
+		NSRectClip(NSMakeRect(clip->s.x, clip->s.y,
+			clip->d.width, clip->d.height));
+	}
+
+	/* Otherwise, restore the old state. */
+	else
+	{
+		/* This removes the old clipping. */
+		[context restoreGraphicsState];
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_cocoa_pencilDrawHoriz(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -22,6 +85,7 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawHoriz(
 	sjme_scritchui inState;
 	NSView* nsView;
 	NSGraphicsContext* context;
+	NSBezierPath* path;
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -34,10 +98,14 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawHoriz(
 	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
+	/* Initialize path. */
+	path = [NSBezierPath bezierPath];
+	sjme_scritchui_cocoa_pencilInitLine(g, path);
+
 	/* Draw line. */
-	[context DPSmoveto:x:y];
-	[context DPSlineto:x + w:y];
-	[context DPSstroke];
+	[path moveToPoint:NSMakePoint(x, y)];
+	[path lineToPoint:NSMakePoint(x + w, y)];
+	[path stroke];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -53,6 +121,7 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawLine(
 	sjme_scritchui inState;
 	NSView* nsView;
 	NSGraphicsContext* context;
+	NSBezierPath* path;
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -65,10 +134,14 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawLine(
 	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
+	/* Initialize path. */
+	path = [NSBezierPath bezierPath];
+	sjme_scritchui_cocoa_pencilInitLine(g, path);
+
 	/* Draw line. */
-	[context DPSmoveto:x1:y1];
-	[context DPSlineto:x2:y2];
-	[context DPSstroke];
+	[path moveToPoint:NSMakePoint(x1, y1)];
+	[path lineToPoint:NSMakePoint(x2, y2)];
+	[path stroke];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -150,7 +223,6 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetAlphaColor(
 	sjme_scritchui inState;
 	NSView* nsView;
 	NSGraphicsContext* context;
-	CGFloat rr, gg, bb, aa;
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -163,13 +235,11 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetAlphaColor(
 	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
-	/* Convert and set color. */
-	aa = ((argb >> 24) & 0xFF) / 255.0;
-	rr = ((argb >> 16) & 0xFF) / 255.0;
-	gg = ((argb >> 8) & 0xFF) / 255.0;
-	bb = ((argb) & 0xFF) / 255.0;
-	[context DPSsetalpha:aa];
-	[context DPSsetrgbcolor:rr:gg:bb];
+	/* Extract color components and set. */
+	[[NSColor colorWithDeviceRed:(((argb >> 16) & 0xFF) / 255.0)
+		green:(((argb >> 8) & 0xFF) / 255.0)
+		blue:(((argb) & 0xFF) / 255.0)
+		alpha:(((argb) & 0xFF) / 255.0)] set];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -197,11 +267,7 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetClip(
 	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
-	/* Set new clip. */
-	[context DPSinitclip];
-	[context DPSrectclip:x:y:w:h];
-
-	/* Success? */
+	/* Does nothing, the clipping is set for each actual drawing operation. */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
@@ -225,20 +291,7 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetStrokeStyle(
 	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
-	/* Only thin lines with no cap or joiners. */
-	[context DPSsetlinewidth:1.0];
-	[context DPSsetlinecap:NSSquareLineCapStyle];
-	[context DPSsetlinejoin:NSMiterLineJoinStyle];
-
-	/* Set the new style. */
-#if 0
-	if (style == SJME_SCRITCHUI_PENCIL_STROKE_DOTTED)
-		[context];
-	else
-		[context];
-#endif
-
-	/* Handled by line drawing function. */
+	/* Cocoa has a default style but anything can change it, so do nothing. */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
