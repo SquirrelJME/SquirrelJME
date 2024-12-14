@@ -24,7 +24,7 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilInitLine(
 
 	/* Set default properties for the line. */
 	[path setLineWidth:1.0];
-	[path setLineCapStyle:NSSquareLineCapStyle];
+	[path setLineCapStyle:NSButtLineCapStyle];
 	[path setLineJoinStyle:NSMiterLineJoinStyle];
 
 	/* There is no global setting of dotted lines, so each line needs */
@@ -239,7 +239,7 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetAlphaColor(
 	[[NSColor colorWithDeviceRed:(((argb >> 16) & 0xFF) / 255.0)
 		green:(((argb >> 8) & 0xFF) / 255.0)
 		blue:(((argb) & 0xFF) / 255.0)
-		alpha:(((argb) & 0xFF) / 255.0)] set];
+		alpha:(((argb >> 24) & 0xFF) / 255.0)] set];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
