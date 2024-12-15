@@ -69,6 +69,65 @@ static const sjme_scritchui_implInternFunctions
 	.checkError = sjme_scritchui_cocoa_intern_checkError,
 };
 
+@implementation SJMEAppHook : NSObject
+{
+}
+@end
+
+static sjme_thread_result sjme_scritchui_cocoa_loopHook(
+	sjme_attrInNullable sjme_thread_parameter anything)
+{
+	sjme_scritchui inState;
+	NSApplication* currentApp;
+	NSThread* currentThread;
+	NSRunLoop* currentLoop;
+	SJMESuperObject* super;
+
+	/* Recover state. */
+	inState = (sjme_scritchui)anything;
+	if (inState == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+
+	/* Debug. */
+	sjme_message("Hooking into NSMain...");
+
+	/* Refer to this thread. */
+	sjme_thread_current(&inState->loopThread);
+
+	/* Setup new application and store its handle for later. */
+	currentApp = [NSApplication sharedApplication];
+	inState->common.handle[SJME_SUI_COCOA_H_NSAPP] = currentApp;
+
+	/* Get our current thread as well, as a NSThread. */
+	currentThread = [NSThread currentThread];
+	inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD] = currentThread;
+
+	/* Debug. */
+	sjme_message("Main NSThread is %p", currentThread);
+
+	/* Get the current run loop. */
+	currentLoop = [NSRunLoop currentRunLoop];
+	inState->common.handle[SJME_SUI_COCOA_H_NSRUNLOOP] = currentLoop;
+
+	/* Setup super object. */
+	super = [SJMESuperObject new];
+	inState->common.handle[SJME_SUI_COCOA_H_SUPER] = super;
+
+	/* Debug. */
+	sjme_message("Hooked NSApplication %p!", currentApp);
+
+	/* Need to call thread specific initializer? */
+	/* Usually this is for binding a thread to a JavaVM. */
+	if (inState->loopThreadInit != NULL)
+		inState->loopThreadInit(inState);
+
+	/* Set as ready, since we technically already have the event loop. */
+	sjme_atomic_sjme_jint_set(&inState->loopThreadReady, 1);
+
+	/* Success! */
+	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+}
+
 static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
@@ -171,6 +230,10 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	sjme_errorCode error;
 	NSApplication* currentApp;
 	NSThread* mainThread;
+	NSThread* currentThread;
+	SJMEAppHook* hook;
+	SJMELoopExecute* loopExecuteInfo;
+	NSDictionary* dict;
 
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -203,23 +266,49 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	/* Otherwise, we post to this one. */
 	else
 	{
+		/* Debug. */
+		sjme_message("Attempting NSMain hook...");
+
 		/* Store for later usage. */
 		inState->common.handle[SJME_SUI_COCOA_H_NSAPP] = currentApp;
 
 		/* We know the main thread. */
 		mainThread = [NSThread mainThread];
-		inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD];
+		currentThread = [NSThread currentThread];
+		inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD] = mainThread;
 
-		/* But we need to actually get the pthread_t of the main thread */
-		/* and then set loop ready from there... */
-		sjme_todo("Inject into already existing NSApplication?");
+		/* Debug. */
+		sjme_message("Threads are %p ?= %p", mainThread, currentThread);
 
-#if 0
-		/* Because we are using an existing application, we are ready */
-		/* immediately, we just need to get the right thread! */
-		inState->loopThread = [NSThread mainThread];
-		sjme_atomic_sjme_jint_set(&inState->loopThreadReady, 1);
-#endif
+		/* If we are the main thread, we can easily hook in. */
+		if (mainThread == currentThread)
+		{
+			sjme_scritchui_cocoa_loopHook(inState);
+		}
+
+		/* Need to do more complicated things. */
+		else
+		{
+			/* Setup hook. */
+			hook = [SJMEAppHook new];
+
+			/* Setup information for the loop call. */
+			loopExecuteInfo = [SJMELoopExecute new];
+			loopExecuteInfo->inState = inState;
+			loopExecuteInfo->callback = sjme_scritchui_cocoa_loopHook;
+			loopExecuteInfo->anything = inState;
+			dict = [NSDictionary dictionaryWithObject:loopExecuteInfo
+				forKey:@"loopExecuteInfo"];
+
+			/* Post notification. */
+			[[currentApp class] performSelector:@selector(postNotification:)
+				onThread:mainThread
+				withObject:[NSNotification
+					notificationWithName:sjme_scritchui_cocoa_loopExecuteNotif
+					object:hook
+					userInfo:dict]
+				waitUntilDone:NO];
+		}
 	}
 
 	/* Success! */
