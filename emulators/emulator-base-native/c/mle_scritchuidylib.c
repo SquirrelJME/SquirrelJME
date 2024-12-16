@@ -1882,7 +1882,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	if (sjme_error_is(error = apiInitFunc(pool, &state,
 		mle_bindEventThread,
 #if defined(SJME_CONFIG_HAS_MACOS)
-		mleMacOSExternalFuncs
+		&mleMacOSExternalFuncs
 #else
 		NULL,
 #endif
