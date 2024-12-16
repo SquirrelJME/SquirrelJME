@@ -23,6 +23,7 @@ jint JNICALL mleJarInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMathInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMidiInit(JNIEnv* env, jclass classy);
 jint JNICALL mleNativeArchiveInit(JNIEnv* env, jclass classy);
+jint JNICALL mleNativeScritchCallbackInit(JNIEnv* env, jclass classy);
 jint JNICALL mleNativeScritchDylibInit(JNIEnv* env, jclass classy);
 jint JNICALL mleNativeScritchInterfaceInit(JNIEnv* env, jclass classy);
 jint JNICALL mleObjectInit(JNIEnv* env, jclass classy);
@@ -40,7 +41,7 @@ jint JNICALL mleThreadInit(JNIEnv* env, jclass classy);
 typedef struct forwardMethod
 {
 	jclass xclass;
-	jmethodID xmeth;	
+	jmethodID xmeth;
 } forwardMethod;
 
 // Find forwarded method
@@ -71,13 +72,13 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 			(*env)->FindClass(env, FORWARD_CLASS), \
 			forwardFuncs, sizeof(forwardFuncs) / sizeof(JNINativeMethod)); \
 	}
-	
+
 #define FORWARD_stringy(x) #x
 
 #define FORWARD_paste(x, y) x ## y
 
 #define FORWARD_from(x) x
-	
+
 #define FORWARD_list(className, methodName) \
 	{FORWARD_stringy(methodName), \
 	FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName)), \
@@ -190,7 +191,7 @@ extern sjme_debug_handlerFunctions sjme_jni_debugHandlers;
 
 /**
  * Common check and forward call.
- * 
+ *
  * @param failRet The failing return value.
  * @param funcMember The function member to check and to call.
  * @param args Arguments to the function.
@@ -222,7 +223,7 @@ sjme_jboolean sjme_jni_checkVMException(JNIEnv* env);
 
 /**
  * Directly map integer array.
- * 
+ *
  * @param env The Java environment.
  * @param buf The input array to map.
  * @param off The offset into the array.
@@ -264,31 +265,31 @@ void sjme_jni_throwVMException(JNIEnv* env, sjme_errorCode code);
 
 /**
  * Recovers a pointer from a @c DylibBaseObject .
- * 
- * @param env The current Java environment. 
+ *
+ * @param env The current Java environment.
  * @param className The class this must be.
- * @param instance The @c DylibBaseObject instance. 
+ * @param instance The @c DylibBaseObject instance.
  * @return The resultant pointer.
  * @since 2024/06/12
  */
 void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
 	jobject instance);
-	
+
 /**
  * Recovers a pointer from a @c DylibPencilObject .
- * 
- * @param env The current Java environment. 
- * @param g The @c DylibPencilObject instance. 
+ *
+ * @param env The current Java environment.
+ * @param g The @c DylibPencilObject instance.
  * @return The resultant pointer.
  * @since 2024/06/25
  */
-sjme_scritchui_pencil sjme_jni_recoverPencil(JNIEnv* env, jobject g);	
+sjme_scritchui_pencil sjme_jni_recoverPencil(JNIEnv* env, jobject g);
 
 /**
  * Recovers a pointer from a @c DylibPencilFontObject .
- * 
- * @param env The current Java environment. 
- * @param fontInstance The @c DylibPencilFontObject instance. 
+ *
+ * @param env The current Java environment.
+ * @param fontInstance The @c DylibPencilFontObject instance.
  * @return The resultant pointer.
  * @since 2024/06/25
  */
@@ -297,8 +298,8 @@ sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
 
 /**
  * Fills in the front end information.
- * 
- * @param env The environment used. 
+ *
+ * @param env The environment used.
  * @param into What is being written to.
  * @param ref The object reference, if any.
  * @return Any resultant error, if any.
@@ -309,8 +310,8 @@ sjme_errorCode sjme_jni_fillFrontEnd(JNIEnv* env, sjme_frontEnd* into,
 
 /**
  * Recovers the Java environment pointer.
- * 
- * @param outEnv The resultant environment. 
+ *
+ * @param outEnv The resultant environment.
  * @param inVm The input virtual machine.
  * @return Any resultant error, if any.
  * @since 2024/06/27
@@ -321,8 +322,8 @@ sjme_errorCode sjme_jni_recoverEnv(
 
 /**
  * Recovers the Java environment pointer.
- * 
- * @param outEnv The resultant environment. 
+ *
+ * @param outEnv The resultant environment.
  * @param inFrontEnd The input front end.
  * @return Any resultant error, if any.
  * @since 2024/06/27
@@ -333,7 +334,7 @@ sjme_errorCode sjme_jni_recoverEnvFrontEnd(
 
 /**
  * Initializes a character sequence from a Java String.
- * 
+ *
  * @param env The Java environment.
  * @param inOutSeq The input/output character sequence.
  * @param inString The input string to wrap.
@@ -347,8 +348,8 @@ sjme_errorCode sjme_jni_jstringCharSeqStatic(
 
 /**
  * Maps input @c sjme_jlong to @c jlong .
- * 
- * @param value The input value. 
+ *
+ * @param value The input value.
  * @return The resultant value.
  * @since 2024/06/30
  */
@@ -356,7 +357,7 @@ jlong sjme_jni_jlong(sjme_jlong value);
 
 /**
  * Pushes a weak link bound to an object.
- * 
+ *
  * @param env The Java environment.
  * @param javaObject The object to bind.
  * @param nativeWeak The native weak to bind from.
@@ -370,8 +371,8 @@ sjme_errorCode sjme_jni_pushWeakLink(
 
 /**
  * Returns the Java type of the given array.
- * 
- * @param env The Java environment. 
+ *
+ * @param env The Java environment.
  * @param array The array to get the type of.
  * @param outJavaType The resultant type.
  * @return Any resultant error.
@@ -384,8 +385,8 @@ sjme_errorCode sjme_jni_arrayType(
 
 /**
  * Gets the elements of an array.
- * 
- * @param env The environment. 
+ *
+ * @param env The environment.
  * @param array The array object.
  * @param rawBuf The raw output buffer.
  * @param isCopy Is the array a copy?
@@ -402,8 +403,8 @@ sjme_errorCode sjme_jni_arrayGetElements(
 
 /**
  * Gets the elements of an array.
- * 
- * @param env The environment. 
+ *
+ * @param env The environment.
  * @param array The array object.
  * @param rawBuf The raw output buffer.
  * @return Any resultant error.

@@ -21,29 +21,29 @@ static sjme_jboolean sjme_jni_abortHandler(void)
 	jsize resultLen;
 	JavaVM* vm;
 	JNIEnv* env;
-	
+
 	/* Debug. */
 	sjme_message("JNI Aborting...");
-	
+
 	/* Recover JVM. */
 	resultLen = 0;
 	vm = NULL;
 	if (JNI_OK != JNI_GetCreatedJavaVMs(&vm, 1, &resultLen) ||
 		resultLen == 0)
 		return SJME_JNI_FALSE;
-	
+
 	/* Recover env, attach if not attached. */
 	if (JNI_OK != (*vm)->GetEnv(vm, (void**)&env, JNI_VERSION_1_1))
 		return SJME_JNI_FALSE;
-	
+
 	/* Print stack trace, would use FatalError, however that prints to */
 	/* stdout for some reason. */
 	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
 	(*env)->ExceptionDescribe(env);
-	
+
 	/* Call abort! */
 	abort();
-	
+
 	/* Continue aborting. */
 	return SJME_JNI_FALSE;
 }
@@ -53,7 +53,7 @@ static sjme_jboolean sjme_jni_messageHandler(sjme_lpcstr fullMessage,
 {
 	fprintf(stderr, "%s\n", fullMessage);
 	fflush(stderr);
-	
+
 	return SJME_JNI_TRUE;
 }
 
@@ -78,10 +78,10 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 	(JNIEnv* env, jclass classy)
 {
 	jint rv = 0;
-	
+
 	/* It is happening! */
 	fprintf(stderr, "JNI Sub-Level: Binding Methods...\n");
-	
+
 	/* Use these debug handlers. */
 	sjme_debug_handlers = &sjme_jni_debugHandlers;
 
@@ -100,12 +100,13 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 	rv |= mleTerminalInit(env, classy);
 	rv |= mleTypeInit(env, classy);
 	rv |= mleThreadInit(env, classy);
-	
+
 	/* ScritchUI. */
 	rv |= mleDylibBaseObjectInit(env, classy);
+	rv |= mleNativeScritchCallbackInit(env, classy);
 	rv |= mleNativeScritchDylibInit(env, classy);
 	rv |= mleNativeScritchInterfaceInit(env, classy);
-	
+
 	/* It happened! */
 	fprintf(stderr, "JNI Sub-Level: Methods are now bound!\n");
 

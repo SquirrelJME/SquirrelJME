@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+#include "squirreljme.h"
 #include "lib/scritchui/scritchuiExtern.h"
 #include "lib/scritchui/scritchuiPencilFontSqf.h"
 #include "lib/scritchui/scritchui.h"
@@ -16,7 +17,6 @@
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
 #include "sjme/dylib.h"
-#include "squirreljme.h"
 
 /** The class being implemented. */
 #define IMPL_CLASS "cc/squirreljme/emulator/scritchui/dylib/" \
@@ -184,7 +184,7 @@ typedef struct mle_loopExecuteData
 {
 	/** The Java VM used. */
 	JavaVM* vm;
-	
+
 	/** The @c Runnable to call. */
 	jobject runnable;
 } mle_loopExecuteData;
@@ -194,10 +194,10 @@ typedef struct mle_callbackData
 {
 	/** The Java object used. */
 	jobject onWhat;
-	
+
 	/** The Java callback. */
 	jobject javaCallback;
-	
+
 	/** The java callback method ID. */
 	jmethodID javaCallbackId;
 } mle_callbackData;
@@ -206,7 +206,7 @@ static void mle_scritchUiStoreCallback(JNIEnv* env, sjme_frontEnd* outFrontEnd,
 	jobject javaListener)
 {
 	sjme_errorCode error;
-	
+
 	if (sjme_error_is(error = sjme_jni_fillFrontEnd(env,
 		outFrontEnd, javaListener)))
 		sjme_jni_throwMLECallError(env, error);
@@ -220,18 +220,18 @@ static void mle_scritchUiRecoverCallback(JNIEnv* env,
 	mle_callbackData* callbackData)
 {
 	jclass listenerClass;
-	
+
 	/* Get the object that represents the component. */
 	callbackData->onWhat = (jobject)inComponent->common.frontEnd.wrapper;
-	
+
 	/* Recover the callback we want to call. */
 	callbackData->javaCallback = frontEndP->wrapper;
-	
+
 	/* Get class of the listener. */
 	listenerClass = (*env)->GetObjectClass(env, callbackData->javaCallback);
 	if (listenerClass == NULL)
 		sjme_die("Listener has no class?");
-	
+
 	/* Get method to call. */
 	callbackData->javaCallbackId = (*env)->GetMethodID(env, listenerClass,
 		methodName, methodType);
@@ -246,21 +246,21 @@ static void mle_scritchUiRecoverEnv(
 	JavaVM* vm;
 	JNIEnv* env;
 	jint error;
-	
+
 	/* Restore VM. */
 	vm = (JavaVM*)inState->common.frontEnd.data;
-		
+
 	/* Relocate env. */
 	env = NULL;
 	error = (*vm)->GetEnv(vm, (void**)&env, JNI_VERSION_1_1);
 	if (env == NULL)
 		sjme_die("Could not relocate env: %d??", error);
-	
+
 	/* Success! */
 	*outEnv = env;
 }
 
-static void mle_simpleListenerSet(JNIEnv* env, 
+static void mle_simpleListenerSet(JNIEnv* env,
 	sjme_scritchui state,
 	sjme_scritchui_uiComponent component,
 	jobject javaListener,
@@ -269,19 +269,19 @@ static void mle_simpleListenerSet(JNIEnv* env,
 {
 	sjme_errorCode error;
 	sjme_frontEnd newFrontEnd;
-	
+
 	if (state == NULL || component == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	if (setListenerFunc == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return;
 	}
-	
+
 	/* Setup new front-end to refer to this component. */
 	mle_scritchUiStoreCallback(env, &newFrontEnd, javaListener);
 
@@ -304,31 +304,31 @@ static sjme_errorCode mle_scritchUiListenerClose(
 	sjme_scritchui_listener_close* infoUser;
 	mle_callbackData callbackData;
 	jboolean skippy;
-	
+
 	/* Relocate env. */
 	mle_scritchUiRecoverEnv(inState, &env);
-	
+
 	/* Get listener from window. */
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inWindow, close);
-	
+
 	/* Recover callback information. */
 	mle_scritchUiRecoverCallback(env, &inWindow->component,
 		&infoUser->frontEnd,
 		"closed",
 		DESC_ScritchCloseListener_closed,
 		&callbackData);
-	
+
 	/* Forward call. */
 	skippy = (*env)->CallBooleanMethod(env,
 		callbackData.javaCallback, callbackData.javaCallbackId,
-		
+
 		/* Component. */
 		callbackData.onWhat);
-		
+
 	/* Failed? */
 	if (sjme_jni_checkVMException(env))
 		return SJME_ERROR_UNKNOWN;
-	
+
 	/* Success! */
 	if (skippy)
 		return SJME_ERROR_CANCEL_WINDOW_CLOSE;
@@ -342,33 +342,33 @@ static sjme_errorCode mle_scritchUiListenerActivate(
 	JNIEnv* env;
 	sjme_scritchui_listener_activate* infoUser;
 	mle_callbackData callbackData;
-	
+
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
 	/* Relocate env. */
 	mle_scritchUiRecoverEnv(inState, &env);
-	
+
 	/* Get listener from window. */
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inComponent, activate);
-	
+
 	/* Recover callback information. */
 	mle_scritchUiRecoverCallback(env, inComponent,
 		&infoUser->frontEnd,
 		"activate",
 		DESC_ScritchActivateListener_activate,
 		&callbackData);
-	
+
 	/* Forward call. */
 	(*env)->CallVoidMethod(env,
 		callbackData.javaCallback, callbackData.javaCallbackId,
-		
+
 		callbackData.onWhat);
-		
+
 	/* Failed? */
 	if (sjme_jni_checkVMException(env))
 		return SJME_ERROR_UNKNOWN;
-	
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -382,32 +382,32 @@ static sjme_errorCode mle_scritchUiListenerInput(
 	sjme_scritchui_listener_input* infoUser;
 	mle_callbackData callbackData;
 	const sjme_scritchinput_eventDataUnknown* unknown;
-	
+
 	if (inState == NULL || inComponent == NULL || inEvent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("Input Event");
 #endif
-	
+
 	/* Relocate env. */
 	mle_scritchUiRecoverEnv(inState, &env);
-	
+
 	/* Get listener from window. */
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inComponent, input);
-	
+
 	/* Recover callback information. */
 	mle_scritchUiRecoverCallback(env, inComponent,
 		&infoUser->frontEnd,
 		"inputEvent",
 		DESC_ScritchInputListener_inputEvent,
 		&callbackData);
-	
+
 	/* Forward call. */
 	unknown = &inEvent->data.unknown;
 	(*env)->CallVoidMethod(env,
 		callbackData.javaCallback, callbackData.javaCallbackId,
-		
+
 		callbackData.onWhat,
 		inEvent->type,
 		sjme_jni_jlong(inEvent->time),
@@ -423,11 +423,11 @@ static sjme_errorCode mle_scritchUiListenerInput(
 		unknown->j,
 		unknown->k,
 		unknown->l);
-		
+
 	/* Failed? */
 	if (sjme_jni_checkVMException(env))
 		return SJME_ERROR_UNKNOWN;
-	
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -441,31 +441,31 @@ static sjme_errorCode mle_scritchUiListenerMenuItemActivate(
 	sjme_scritchui_listener_menuItemActivate* infoUser;
 	mle_callbackData callbackData;
 	jboolean skippy;
-	
+
 	/* Relocate env. */
 	mle_scritchUiRecoverEnv(inState, &env);
-	
+
 	/* Get listener from window. */
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inWindow, menuItemActivate);
-	
+
 	/* Recover callback information. */
 	mle_scritchUiRecoverCallback(env, &inWindow->component,
 		&infoUser->frontEnd,
 		"menuItemActivate",
 		DESC_ScritchMenuItemActivateListener_menuItemActivate,
 		&callbackData);
-	
+
 	/* Forward call. */
 	skippy = (*env)->CallBooleanMethod(env,
 		callbackData.javaCallback, callbackData.javaCallbackId,
-		
+
 		(jobject)inWindow->component.common.frontEnd.wrapper,
 		(jobject)activatedItem->common.frontEnd.wrapper);
-		
+
 	/* Failed? */
 	if (sjme_jni_checkVMException(env))
 		return SJME_ERROR_UNKNOWN;
-	
+
 	/* Success! */
 	if (skippy)
 		return SJME_ERROR_CANCEL_WINDOW_CLOSE;
@@ -487,67 +487,67 @@ static sjme_errorCode mle_scritchUiListenerPaint(
 	jmethodID pencilNew;
 	jobject pencilObject;
 	mle_callbackData callbackData;
-	
+
 	if (inState == NULL || inComponent == NULL || g == NULL)
 		sjme_die("Null arguments to paint");
-	
+
 	/* Relocate env. */
 	mle_scritchUiRecoverEnv(inState, &env);
-		
+
 	/* Get paint information. */
 	paint = NULL;
 	if (sjme_error_is(inState->intern->getPaintable(inState,
 		inComponent, &paint)) || paint == NULL)
 		sjme_die("Not paintable?");
-	
+
 	/* Get listener from paint. */
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(paint, paint);
-	
+
 	/* Recover callback information. */
 	mle_scritchUiRecoverCallback(env, inComponent,
 		&infoUser->frontEnd,
 		"paint",
 		DESC_ScritchPaintListener_paint,
 		&callbackData);
-	
+
 	/* Setup pencil object. */
 	pencilClass = (*env)->FindClass(env,
 		DESC_DYLIB_PENCIL_UI);
 	if (pencilClass == NULL)
 		sjme_die("No DylibPencilUiObject?");
-	
+
 	pencilNew = (*env)->GetMethodID(env, pencilClass, "<init>", "(J)V");
 	if (pencilNew == NULL)
 		sjme_die("No default constructor for DylibPencilUiObject?");
-	
+
 	pencilObject = (*env)->NewObject(env, pencilClass, pencilNew,
 		(jlong)g);
 	if (pencilObject == NULL)
 		sjme_die("Could not allocate DylibPencilObject.");
-	
+
 	/* Forward call. */
 	(*env)->CallVoidMethod(env,
 		callbackData.javaCallback, callbackData.javaCallbackId,
-		
+
 		/* Component. */
 		callbackData.onWhat,
-		
+
 		/* Pencil state and drawer. */
 		pencilObject,
-		
+
 		/* Surface. */
 		sw, sh,
-		
+
 		/* Special. */
 		special);
 
 	/* We no longer need the graphics reference. */
 	(*env)->DeleteLocalRef(env, pencilObject);
-	
+
 	/* Failed? */
 	if (sjme_jni_checkVMException(env))
 		return SJME_ERROR_UNKNOWN;
-	
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -564,48 +564,48 @@ static sjme_errorCode mle_scritchUiListenerSizeSuggest(
 	mle_callbackData callbackData;
 	sjme_scritchui_uiView view;
 	jobject subObject;
-	
+
 	if (inState == NULL || inView == NULL || subDim == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+
 	/* Obtain view. */
 	view = NULL;
 	if (sjme_error_is(error = inState->intern->getView(inState,
 		inView, &view)) || view == NULL)
 		return sjme_error_default(error);
-	
+
 	/* Relocate env. */
 	mle_scritchUiRecoverEnv(inState, &env);
-	
+
 	/* Get listener from window. */
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(view, sizeSuggest);
-	
+
 	/* Recover callback information. */
 	mle_scritchUiRecoverCallback(env, inView,
 		&infoUser->frontEnd,
 		"sizeSuggest",
 		DESC_ScritchSizeSuggestListener_sizeSuggest,
 		&callbackData);
-	
+
 	/* Do we have a subcomponent? */
 	subObject = NULL;
 	if (subComponent != NULL)
 		subObject = (jobject)subComponent->common.frontEnd.wrapper;
-	
+
 	/* Forward call. */
 	(*env)->CallVoidMethod(env,
 		callbackData.javaCallback, callbackData.javaCallbackId,
-		
+
 		(jobject)inView->common.frontEnd.wrapper,
 		(subComponent == NULL ? NULL :
 			(jobject)subComponent->common.frontEnd.wrapper),
 		subDim->width,
 		subDim->height);
-		
+
 	/* Failed? */
 	if (sjme_jni_checkVMException(env))
 		return SJME_ERROR_UNKNOWN;
-	
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -628,34 +628,34 @@ static sjme_errorCode mle_scritchUiListenerVisible(
 	JNIEnv* env;
 	sjme_scritchui_listener_visible* infoUser;
 	mle_callbackData callbackData;
-	
+
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
 	/* Relocate env. */
 	mle_scritchUiRecoverEnv(inState, &env);
-	
+
 	/* Get listener from window. */
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inComponent, visible);
-	
+
 	/* Recover callback information. */
 	mle_scritchUiRecoverCallback(env, inComponent,
 		&infoUser->frontEnd,
 		"visibilityChanged",
 		DESC_ScritchVisibleListener_visibilityChanged,
 		&callbackData);
-	
+
 	/* Forward call. */
 	(*env)->CallVoidMethod(env,
 		callbackData.javaCallback, callbackData.javaCallbackId,
-		
+
 		callbackData.onWhat,
 		fromVisible, toVisible);
-		
+
 	/* Failed? */
 	if (sjme_jni_checkVMException(env))
 		return SJME_ERROR_UNKNOWN;
-	
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -671,26 +671,26 @@ static sjme_thread_result sjme_attrThreadCall mle_loopExecuteMain(
 	jclass classy;
 	jmethodID runId;
 	jboolean tossed;
-	
+
 	/* Recover data. */
 	data = (mle_loopExecuteData*)anything;
 	if (data == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
-	
+
 	/* Copy data locally. */
 	vm = data->vm;
 	runnable = data->runnable;
-	
+
 	/* Free it. */
 	free(data);
 	data = NULL;
-	
+
 	/* Relocate env. */
 	env = NULL;
 	error = (*vm)->GetEnv(vm, (void**)&env, JNI_VERSION_1_1);
 	if (env == NULL)
 		sjme_die("Could not relocate env: %d??", error);
-	
+
 	/* Locate Runnable Class. */
 	classy = (*env)->FindClass(env, "java/lang/Runnable");
 	if (classy == NULL)
@@ -703,14 +703,14 @@ static sjme_thread_result sjme_attrThreadCall mle_loopExecuteMain(
 
 	/* Call it. */
 	(*env)->CallVoidMethod(env, runnable, runId);
-	
+
 	/* Check for any exception. */
 	tossed = (*env)->ExceptionCheck(env);
 	if (tossed)
 	{
 		/* Notice. */
 		sjme_message("Exception thrown from Java loopExecute().");
-		
+
 		/* Describe it. */
 		(*env)->ExceptionDescribe(env);
 	}
@@ -733,34 +733,34 @@ static sjme_thread_result sjme_attrThreadCall mle_bindEventThread(
 	JNIEnv* checkEnv;
 	JavaVMAttachArgs attachArgs;
 	jint error;
-	
+
 	/* Debug. */
 	sjme_message("mle_bindEventThread called... %p",
 		anything);
-	
+
 	/* Restore state. */
 	state = (sjme_scritchui)anything;
 	if (state == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
-	
+
 	/* Restore VM. */
 	vm = (JavaVM*)state->common.frontEnd.data;
-	
+
 	/* If this thread is already attached, only attach once. */
 	checkEnv = NULL;
 	error = (*vm)->GetEnv(vm, (void**)&checkEnv, JNI_VERSION_1_1);
 	if (error == JNI_OK)
 	{
 		sjme_message("ScritchUI already attached.");
-		
+
 		return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 	}
-	
+
 	/* Setup arguments. */
 	memset(&attachArgs, 0, sizeof(attachArgs));
 	attachArgs.version = JNI_VERSION_1_1;
 	attachArgs.name = "ScritchUIEventLoop";
-	
+
 	/* Debug. */
 	sjme_message("Attaching ScritchUI thread to current VM...");
 
@@ -769,7 +769,7 @@ static sjme_thread_result sjme_attrThreadCall mle_bindEventThread(
 	error = (*vm)->AttachCurrentThreadAsDaemon(vm, (void**)&env, &attachArgs);
 	if (env == NULL)
 		sjme_die("Could not attach thread: %d??", error);
-	
+
 	/* Success! */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
@@ -784,13 +784,13 @@ static sjme_errorCode mlePencilLock(
 	jboolean isCopy;
 	sjme_pointer bufElem;
 	sjme_jint typeSize;
-	
+
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+
 	/* We need to operate on this state. */
 	state = &g->lockState;
-	
+
 	/* Recover environment. */
 	env = NULL;
 	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(&env,
@@ -799,7 +799,7 @@ static sjme_errorCode mlePencilLock(
 
 	/* Get buffer to access. */
 	buf = state->source.wrapper;
-	
+
 	/* Obtain buffer. */
 	bufElem = NULL;
 	isCopy = JNI_FALSE;
@@ -808,12 +808,12 @@ static sjme_errorCode mlePencilLock(
 		buf, &bufElem, &isCopy, &typeSize)) ||
 		bufElem == NULL || typeSize < 0)
 		return sjme_error_default(error);
-	
+
 	/* Store state. */
 	state->base = bufElem;
 	state->baseLimitBytes = (*env)->GetArrayLength(env, buf) * typeSize;
 	state->isCopy = isCopy;
-	
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -825,13 +825,13 @@ static sjme_errorCode mlePencilLockRelease(
 	JNIEnv* env;
 	sjme_scritchui_pencilLockState* state;
 	jarray buf;
-	
+
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+
 	/* We need to operate on this state. */
 	state = &g->lockState;
-	
+
 	/* Recover environment. */
 	env = NULL;
 	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(&env,
@@ -840,17 +840,17 @@ static sjme_errorCode mlePencilLockRelease(
 
 	/* Get buffer to access. */
 	buf = state->source.wrapper;
-	
+
 	/* Release buffer. */
 	if (sjme_error_is(error = sjme_jni_arrayReleaseElements(env,
 		buf, state->base)))
 		return sjme_error_default(error);
-	
+
 	/* Buffer no longer valid. */
 	state->base = NULL;
 	state->baseLimitBytes = 0;
 	state->isCopy = SJME_JNI_FALSE;
-	
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -859,6 +859,69 @@ static const sjme_scritchui_pencilLockFunctions mlePencilLockFuncs =
 {
 	.lock = mlePencilLock,
 	.lockRelease = mlePencilLockRelease,
+};
+
+static sjme_errorCode mleAwtCall(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_thread_mainFunc callback,
+	sjme_attrInNullable sjme_thread_parameter anything)
+{
+	sjme_errorCode error;
+	JNIEnv* env;
+	jclass queueClass;
+	jmethodID invokeMethod;
+	jclass nativeClass;
+	jmethodID nativeNew;
+	jobject nativeWrapper;
+
+	if (inState == NULL || callback == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* We need the JVM state for this to work. */
+	env = NULL;
+	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(
+		&env, &inState->common.frontEnd)) || env == NULL)
+		return sjme_error_defaultOr(error, SJME_ERROR_ILLEGAL_STATE);
+
+	/* Get the AWT event queue handler. */
+	queueClass = (*env)->FindClass(env, "java/awt/EventQueue");
+	if (queueClass == NULL)
+		return SJME_ERROR_JNI_EXCEPTION;
+
+	/* Get the invocation method. */
+	invokeMethod = (*env)->GetStaticMethodID(env, queueClass,
+		"invokeLater", "(Ljava/lang/Runnable;)V");
+	if (invokeMethod == NULL)
+		return SJME_ERROR_JNI_EXCEPTION;
+
+	/* Get native callback. */
+	nativeClass = (*env)->FindClass(env,
+		"cc/squirreljme/emulator/scritchui/dylib/__NativeCallback__");
+	if (nativeClass == NULL)
+		return SJME_ERROR_JNI_EXCEPTION;
+
+	/* And find its constructor. */
+	nativeNew = (*env)->GetMethodID(env, nativeClass, "<init>",
+		"(JJJ)V");
+	if (nativeNew == NULL)
+		return SJME_ERROR_JNI_EXCEPTION;
+
+	/* Wrap callback. */
+	nativeWrapper = (*env)->NewObject(env, nativeClass, nativeNew,
+		(jlong)inState, (jlong)callback, (jlong)anything);
+	if (nativeWrapper == NULL)
+		return SJME_ERROR_JNI_EXCEPTION;
+
+	/* Enqueue for later. */
+	(*env)->CallStaticVoidMethod(env, queueClass, invokeMethod, nativeWrapper);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static const sjme_scritchui_externalFunctions mleMacOSExternalFuncs =
+{
+	.externalLoopExecuteLater = mleAwtCall,
 };
 
 JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -872,16 +935,16 @@ JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	jobject instance;
 	jclass instanceClass;
 	jmethodID instanceNew;
-	
+
 	if (stateP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return 0;
 	}
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	
+
 	/* Find wrapper class. */
 	instanceClass = (*env)->FindClass(env, DESC_DYLIB_PENCILFONT);
 	if (instanceClass == NULL)
@@ -890,7 +953,7 @@ JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, SJME_ERROR_UNKNOWN);
 		return NULL;
 	}
-	
+
 	/* Locate font. */
 	font = NULL;
 	if (sjme_error_is(error = state->api->fontBuiltin(state,
@@ -913,7 +976,7 @@ JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 			sjme_jni_throwMLECallError(env, SJME_ERROR_UNKNOWN);
 			return NULL;
 		}
-		
+
 		/* Setup instance. */
 		instance = (*env)->NewObject(env, instanceClass, instanceNew,
 			font);
@@ -923,7 +986,7 @@ JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 			return NULL;
 		}
 	}
-	
+
 	/* Wrap array. */
 	return (*env)->NewObjectArray(env, 1, instanceClass, instance);
 }
@@ -936,24 +999,24 @@ JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent choice;
 	sjme_jint result;
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	choice = (sjme_scritchui_uiComponent)choiceP;
-	
+
 	/* Check. */
 	if (state == NULL || choice == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return -1;
 	}
-	
+
 	/* Forward. */
 	result = -1;
 	if (sjme_error_is(error = state->api->choiceGetSelectedIndex(
 		state, choice, &result)))
 		sjme_jni_throwMLECallError(env, error);
-	
+
 	return result;
 }
 
@@ -965,24 +1028,24 @@ JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent choice;
 	sjme_jint result;
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	choice = (sjme_scritchui_uiComponent)choiceP;
-	
+
 	/* Check. */
 	if (state == NULL || choice == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return -1;
 	}
-	
+
 	/* Forward. */
 	result = atIndex;
 	if (sjme_error_is(error = state->api->choiceItemInsert(
 		state, choice, &result)))
 		sjme_jni_throwMLECallError(env, error);
-	
+
 	return result;
 }
 
@@ -993,18 +1056,18 @@ JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent choice;
 	sjme_jint result;
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	choice = (sjme_scritchui_uiComponent)choiceP;
-	
+
 	/* Check. */
 	if (state == NULL || choice == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return -1;
 	}
-	
+
 	/* Forward. */
 	result = -1;
 	if (sjme_error_is(error = state->api->choiceLength(
@@ -1021,18 +1084,18 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent choice;
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	choice = (sjme_scritchui_uiComponent)choiceP;
-	
+
 	/* Check. */
 	if (state == NULL || choice == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	/* Forward. */
 	if (sjme_error_is(error = state->api->choiceItemRemove(
 		state, choice, atIndex)))
@@ -1046,18 +1109,18 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent choice;
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	choice = (sjme_scritchui_uiComponent)choiceP;
-	
+
 	/* Check. */
 	if (state == NULL || choice == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	/* Forward. */
 	if (sjme_error_is(error = state->api->choiceItemRemoveAll(
 		state, choice)))
@@ -1071,18 +1134,18 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent choice;
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	choice = (sjme_scritchui_uiComponent)choiceP;
-	
+
 	/* Check. */
 	if (state == NULL || choice == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	/* Forward. */
 	if (sjme_error_is(error = state->api->choiceItemSetEnabled(
 		state, choice, atIndex, enabled)))
@@ -1100,18 +1163,18 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_pointer dataBuf;
 	jboolean isCopy;
 	sjme_jint dataLen;
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	choice = (sjme_scritchui_uiComponent)choiceP;
-	
+
 	/* Check. */
 	if (state == NULL || choice == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	/* Get array data. */
 	dataBuf = NULL;
 	isCopy = JNI_FALSE;
@@ -1122,14 +1185,14 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_arrayGetElements(env, data, &dataBuf, &isCopy,
 			NULL);
 	}
-	
+
 	/* Forward. */
 	if (sjme_error_is(error = state->api->choiceItemSetImage(
 		state, choice, atIndex,
 		dataBuf, 0, dataLen,
 		scanLen, width, height)))
 		sjme_jni_throwMLECallError(env, error);
-	
+
 	if (dataBuf != NULL)
 		sjme_jni_arrayReleaseElements(env, data, dataBuf);
 }
@@ -1141,18 +1204,18 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent choice;
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	choice = (sjme_scritchui_uiComponent)choiceP;
-	
+
 	/* Check. */
 	if (state == NULL || choice == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	/* Forward. */
 	if (sjme_error_is(error = state->api->choiceItemSetSelected(
 		state, choice, atIndex, selected)))
@@ -1168,29 +1231,29 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui_uiComponent choice;
 	sjme_lpcstr chars;
 	jboolean isCopy;
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	choice = (sjme_scritchui_uiComponent)choiceP;
-	
+
 	/* Check. */
 	if (state == NULL || choice == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	/* Obtain characters. */
 	chars = NULL;
 	isCopy = JNI_FALSE;
 	if (string != NULL)
 		chars = (*env)->GetStringUTFChars(env, string, &isCopy);
-	
+
 	/* Forward. */
 	if (sjme_error_is(error = state->api->choiceItemSetString(
 		state, choice, atIndex, chars)))
 		sjme_jni_throwMLECallError(env, error);
-	
+
 	/* Cleanup. */
 	if (chars != NULL)
 		(*env)->ReleaseStringUTFChars(env, string, chars);
@@ -1213,23 +1276,23 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent component;
 	sjme_jint result;
-	
+
 	if (stateP == 0 || componentP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return 0;
 	}
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	component = (sjme_scritchui_uiComponent)componentP;
-	
+
 	if (state->api->componentSize == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return 0;
 	}
-	
+
 	/* Forward. */
 	result = 0;
 	if (sjme_error_is(error = state->api->componentSize(state,
@@ -1238,7 +1301,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, error);
 		return 0;
 	}
-	
+
 	return result;
 }
 
@@ -1249,7 +1312,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent component;
-	
+
 	if (stateP == 0 || componentP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -1259,7 +1322,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	component = (sjme_scritchui_uiComponent)componentP;
-	
+
 	/* Forward call. */
 	error = SJME_ERROR_NOT_IMPLEMENTED;
 	if (state->api->componentRepaint == NULL ||
@@ -1275,7 +1338,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent component;
-	
+
 	if (stateP == 0 || componentP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -1285,7 +1348,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	component = (sjme_scritchui_uiComponent)componentP;
-	
+
 	/* Forward call. */
 	error = SJME_ERROR_NOT_IMPLEMENTED;
 	if (state->api->componentRevalidate == NULL ||
@@ -1309,7 +1372,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	mle_simpleListenerSet(env, state, component, javaListener,
 		(sjme_scritchui_voidSetVoidListenerFunc)
 			state->api->componentSetActivateListener,
@@ -1332,7 +1395,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	mle_simpleListenerSet(env, state, component, javaListener,
 		(sjme_scritchui_voidSetVoidListenerFunc)
 			state->api->componentSetInputListener,
@@ -1355,7 +1418,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	mle_simpleListenerSet(env, state, component, javaListener,
 		(sjme_scritchui_voidSetVoidListenerFunc)
 			state->api->componentSetPaintListener,
@@ -1378,7 +1441,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	mle_simpleListenerSet(env, state, component, javaListener,
 		(sjme_scritchui_voidSetVoidListenerFunc)
 			state->api->componentSetVisibleListener,
@@ -1394,23 +1457,23 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent component;
 	sjme_jint result;
-	
+
 	if (stateP == 0 || componentP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return 0;
 	}
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	component = (sjme_scritchui_uiComponent)componentP;
-	
+
 	if (state->api->componentSize == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return 0;
 	}
-	
+
 	/* Forward. */
 	result = 0;
 	if (sjme_error_is(error = state->api->componentSize(state,
@@ -1419,7 +1482,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, error);
 		return 0;
 	}
-	
+
 	return result;
 }
 
@@ -1431,25 +1494,25 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent container;
 	sjme_scritchui_uiComponent component;
-	
+
 	if (stateP == 0 || containerP == 0 || componentP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	container = (sjme_scritchui_uiComponent)containerP;
 	component = (sjme_scritchui_uiComponent)componentP;
-	
+
 	/* Not implemented? */
 	if (state->api->containerAdd == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return;
 	}
-	
+
 	/* Forward call. */
 	if (sjme_error_is(error = state->api->containerAdd(state,
 		container, component)))
@@ -1466,24 +1529,24 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent container;
-	
+
 	if (stateP == 0 || containerP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	container = (sjme_scritchui_uiComponent)containerP;
-	
+
 	/* Not implemented? */
 	if (state->api->containerRemoveAll == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return;
 	}
-	
+
 	/* Forward call. */
 	if (sjme_error_is(error = state->api->containerRemoveAll(state,
 		container)))
@@ -1501,25 +1564,25 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent container;
 	sjme_scritchui_uiComponent component;
-	
+
 	if (stateP == 0 || containerP == 0 || componentP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	container = (sjme_scritchui_uiComponent)containerP;
 	component = (sjme_scritchui_uiComponent)componentP;
-	
+
 	/* Not implemented? */
 	if (state->api->containerSetBounds == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return;
 	}
-	
+
 	/* Forward call. */
 	if (sjme_error_is(error = state->api->containerSetBounds(
 		state, container, component,
@@ -1534,16 +1597,16 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__envIsPanelOnly)(JNIEnv* env, jclass classy, jlong stateP)
 {
 	sjme_scritchui state;
-	
+
 	if (stateP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return 0;
 	}
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	
+
 	/* Depends on whatever is in the state. */
 	return state->isPanelOnly;
 }
@@ -1556,17 +1619,17 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui_pencilFont font;
 	sjme_scritchui_pencilFont derived;
 	sjme_errorCode error;
-	
+
 	if (stateP == 0 || fontP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return 0;
 	}
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	font = (sjme_scritchui_pencilFont)fontP;
-	
+
 	/* Forward. */
 	derived = NULL;
 	if (sjme_error_is(error = state->api->fontDerive(state,
@@ -1577,7 +1640,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, error);
 		return 0;
 	}
-	
+
 	return (jlong)derived;
 }
 
@@ -1594,20 +1657,20 @@ JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	jclass pencilClass;
 	jmethodID pencilNewId;
 	jobject pencilObject;
-	
+
 	if (stateP == 0 || buf == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return NULL;
 	}
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	
+
 	/* Fill in source. */
 	memset(&frontSource, 0, sizeof(frontSource));
 	sjme_jni_fillFrontEnd(env, &frontSource, buf);
-	
+
 	/* Setup pencil. */
 	result = NULL;
 	resultWeak = NULL;
@@ -1618,42 +1681,42 @@ JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sx, sy, sw, sh, NULL)) ||
 		result == NULL || resultWeak == NULL)
 		goto fail;
-	
+
 	/* Find pencil class. */
 	pencilClass = (*env)->FindClass(env, DESC_DYLIB_PENCIL_BASIC);
 	if (pencilClass == NULL)
 		goto fail;
-	
+
 	/* Find constructor. */
 	pencilNewId = (*env)->GetMethodID(env, pencilClass,
 		"<init>", "(JJ)V");
 	if (pencilNewId == NULL)
 		goto fail;
-	
+
 	/* Construct. */
 	pencilObject = (*env)->NewObject(env, pencilClass, pencilNewId,
 		(jlong)result, (jlong)resultWeak);
 	if (pencilObject == NULL)
 		goto fail;
-	
+
 	/* Set front end. */
 	sjme_jni_fillFrontEnd(env, &result->frontEnd, pencilObject);
-	
+
 	/* Setup weak object binding. */
 	if (sjme_error_is(error = sjme_jni_pushWeakLink(env,
 		pencilObject, resultWeak)))
 		goto fail;
-	
+
 	/* Success! */
 	return pencilObject;
-	
+
 fail:
 	if (result != NULL)
 		sjme_todo("Impl?");
-		
+
 	sjme_jni_throwMLECallError(env, error);
 	return NULL;
-	
+
 }
 
 JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1664,7 +1727,7 @@ JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent context;
 	sjme_jint rgb;
-	
+
 	/* Recover state. */
 	state = (sjme_scritchui)stateP;
 	if (state == NULL)
@@ -1672,10 +1735,10 @@ JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return 0;
 	}
-	
+
 	/* Context is optional. */
 	context = (sjme_scritchui_uiComponent)contextP;
-	
+
 	/* Read in color. */
 	rgb = 0;
 	if (sjme_error_is(error = state->api->lafElementColor(state,
@@ -1693,7 +1756,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui_uiComponent component;
 	sjme_lpcstr chars;
 	jboolean isCopy;
-	
+
 	if (stateP == 0 || componentP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -1703,14 +1766,14 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	component = (sjme_scritchui_uiComponent)componentP;
-	
+
 	/* Not implemented? */
 	if (state->api->labelSetString == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return;
 	}
-	
+
 	/* Obtain characters. */
 	isCopy = JNI_FALSE;
 	if (string != NULL)
@@ -1720,12 +1783,12 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 	/* Forward call. */
 	error = state->api->labelSetString(
-		state, (sjme_scritchui_uiCommon)component, chars);	
-	
+		state, (sjme_scritchui_uiCommon)component, chars);
+
 	/* Cleanup. */
 	if (string != NULL)
 		(*env)->ReleaseStringUTFChars(env, string, chars);
-	
+
 	/* Fail? */
 	if (sjme_error_is(error))
 		sjme_jni_throwMLECallError(env, error);
@@ -1747,67 +1810,67 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	sjme_scritchui state;
 	sjme_frontEnd frontEnd;
 	sjme_debug_handlerFunctions** dylibDebugHandlers;
-	
+
 	/* Use these debug handlers. */
 	sjme_debug_handlers = &sjme_jni_debugHandlers;
-	
+
 	/* Debug. */
 	sjme_message("Initializing pool...");
-	
+
 	/* We need a pool for allocations. */
 	pool = NULL;
 	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&pool,
 		4 * 1048576)) || pool == NULL)
 		goto fail_poolInit;
-	
+
 	/* Resolve path. */
 	libPathCharsCopy = JNI_FALSE;
 	libPathChars = (*env)->GetStringUTFChars(env, libPath, &libPathCharsCopy);
-	
+
 	/* Resolve name. */
 	nameCharsCopy = JNI_FALSE;
 	nameChars = (*env)->GetStringUTFChars(env, name, &nameCharsCopy);
-	
+
 	memset(buf, 0, sizeof(buf));
 	snprintf(buf, BUF_SIZE - 2,
 		"sjme_scritchui_dylibApi%s", nameChars);
 	buf[BUF_SIZE - 1] = 0;
-	
+
 	/* Release name. */
 	(*env)->ReleaseStringUTFChars(env, name, nameChars);
-	
+
 	/* Debug. */
 	sjme_message("Attempting load of '%s'...", libPathChars);
-	
+
 	/* Load native library. */
 	lib = NULL;
 	if (sjme_error_is(error = sjme_dylib_open(libPathChars,
 		&lib)) || lib == NULL)
 		goto fail_dyLibOpen;
-	
+
 	/* Copy debug handlers since it may be in a different symbol domain. */
 	dylibDebugHandlers = NULL;
 	if (!sjme_error_is(sjme_dylib_lookup(lib,
 		"sjme_debug_handlers",
 		(void**)&dylibDebugHandlers)))
 		*dylibDebugHandlers = &sjme_jni_debugHandlers;
-	
+
 	/* Debug. */
 	sjme_message("Attempting lookup of '%s'...", buf);
-	
+
 	/* Find function that returns the ScritchUI API interface. */
 	apiInitFunc = NULL;
 	if (sjme_error_is(error = sjme_dylib_lookup(lib, buf,
 		(sjme_pointer*)&apiInitFunc)) || apiInitFunc == NULL)
 		goto fail_dyLibLookup;
-	
+
 	/* Release path. */
 	(*env)->ReleaseStringUTFChars(env, libPath, libPathChars);
 	libPathChars = NULL;
-	
+
 	/* Debug. */
 	sjme_message("Initializing ScritchUI Interface...");
-	
+
 	/* Setup front end. */
 	memset(&frontEnd, 0, sizeof(frontEnd));
 	if (sjme_error_is(error = sjme_jni_fillFrontEnd(env,
@@ -1817,10 +1880,15 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	/* Initialize ScritchUI. */
 	state = NULL;
 	if (sjme_error_is(error = apiInitFunc(pool, &state,
-		mle_bindEventThread, NULL,
+		mle_bindEventThread,
+#if SJME_CONFIG_HAS_MACOS
+		mleMacOSExternalFuncs
+#else
+		NULL,
+#endif
 		&frontEnd)) || state == NULL)
 		goto fail_apiInit;
-	
+
 	/* Call it to get from it. */
 	return (jlong)state;
 #undef BUF_SIZE
@@ -1839,7 +1907,7 @@ fail_poolInit:
 	/* Delete pool. */
 	if (pool != NULL)
 		free(pool);
-	
+
 	/* Fail. */
 	sjme_jni_throwMLECallError(env, sjme_error_default(error));
 	return 0;
@@ -1851,7 +1919,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __listNew)
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiList list;
-	
+
 	if (stateP == 0)
 	{
 		error = SJME_ERROR_NULL_ARGUMENTS;
@@ -1860,7 +1928,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __listNew)
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	
+
 	if (state->api->listNew == NULL)
 	{
 		error = SJME_ERROR_NOT_IMPLEMENTED;
@@ -1872,13 +1940,13 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __listNew)
 	if (sjme_error_is(error = state->api->listNew(state,
 		&list, type)) || list == NULL)
 		goto fail_newList;
-	
+
 	/* Return the state pointer. */
 	return (jlong)list;
 
 fail_newList:
 fail_nullArgs:
-	
+
 	/* Fail. */
 	sjme_jni_throwMLECallError(env, sjme_error_default(error));
 	return 0L;
@@ -1890,7 +1958,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecute)
 	sjme_errorCode error;
 	sjme_scritchui state;
 	mle_loopExecuteData* data;
-	
+
 	if (stateP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -1899,7 +1967,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecute)
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	
+
 	/* Allocate data for call. */
 	data = malloc(sizeof(*data));
 	if (data == NULL)
@@ -1907,12 +1975,12 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecute)
 		sjme_jni_throwMLECallError(env, SJME_ERROR_OUT_OF_MEMORY);
 		return;
 	}
-	
+
 	/* Fill in data. */
 	data->vm = NULL;
 	(*env)->GetJavaVM(env, &data->vm);
 	data->runnable = (*env)->NewGlobalRef(env, runnable);
-	
+
 	/* Perform call. */
 	if (sjme_error_is(error = state->api->loopExecute(state,
 		mle_loopExecuteMain, data)))
@@ -1929,7 +1997,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_errorCode error;
 	sjme_scritchui state;
 	mle_loopExecuteData* data;
-	
+
 	if (stateP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -1938,7 +2006,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	
+
 	/* Allocate data for call. */
 	data = malloc(sizeof(*data));
 	if (data == NULL)
@@ -1946,12 +2014,12 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, SJME_ERROR_OUT_OF_MEMORY);
 		return;
 	}
-	
+
 	/* Fill in data. */
 	data->vm = NULL;
 	(*env)->GetJavaVM(env, &data->vm);
 	data->runnable = (*env)->NewGlobalRef(env, runnable);
-	
+
 	/* Perform call. */
 	if (sjme_error_is(error = state->api->loopExecuteLater(
 		state, mle_loopExecuteMain, data)))
@@ -1967,7 +2035,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecuteWait)
 	sjme_errorCode error;
 	sjme_scritchui state;
 	mle_loopExecuteData* data;
-	
+
 	if (stateP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -1976,7 +2044,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecuteWait)
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	
+
 	/* Allocate data for call. */
 	data = malloc(sizeof(*data));
 	if (data == NULL)
@@ -1984,12 +2052,12 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecuteWait)
 		sjme_jni_throwMLECallError(env, SJME_ERROR_OUT_OF_MEMORY);
 		return;
 	}
-	
+
 	/* Fill in data. */
 	data->vm = NULL;
 	(*env)->GetJavaVM(env, &data->vm);
 	data->runnable = (*env)->NewGlobalRef(env, runnable);
-	
+
 	/* Perform call. */
 	if (sjme_error_is(error = state->api->loopExecuteWait(state,
 		mle_loopExecuteMain, data)))
@@ -2005,7 +2073,7 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_jboolean inThread;
-	
+
 	if (stateP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -2025,7 +2093,7 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, error);
 		return JNI_FALSE;
 	}
-	
+
 	/* Is this in thread? */
 	return inThread;
 }
@@ -2036,7 +2104,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuBarNew)
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiMenuBar menuBar;
-	
+
 	if (stateP == 0)
 	{
 		error = SJME_ERROR_NULL_ARGUMENTS;
@@ -2045,7 +2113,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuBarNew)
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	
+
 	/* Not implemented? */
 	if (state->api->menuBarNew == NULL)
 	{
@@ -2058,7 +2126,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuBarNew)
 	if (sjme_error_is(error = state->api->menuBarNew(state,
 			&menuBar)) || menuBar == NULL)
 		goto fail_new;
-	
+
 	/* Return the state pointer. */
 	return (jlong)menuBar;
 
@@ -2077,7 +2145,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuInsert)
 	sjme_scritchui state;
 	sjme_scritchui_uiMenuKind into;
 	sjme_scritchui_uiMenuKind item;
-	
+
 	if (stateP == 0 || intoP == 0 || itemP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -2088,14 +2156,14 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuInsert)
 	state = (sjme_scritchui)stateP;
 	into = (sjme_scritchui_uiMenuKind)intoP;
 	item = (sjme_scritchui_uiMenuKind)itemP;
-	
+
 	/* Not implemented? */
 	if (state->api->menuInsert == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return;
 	}
-	
+
 	/* Forward call. */
 	if (sjme_error_is(error = state->api->menuInsert(state,
 		into, at, item)))
@@ -2108,7 +2176,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuItemNew)
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiMenuItem menuItem;
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	if (stateP == 0)
@@ -2116,7 +2184,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuItemNew)
 		error = SJME_ERROR_NULL_ARGUMENTS;
 		goto fail_nullArgs;
 	}
-	
+
 	/* Not implemented? */
 	if (state->api->menuItemNew == NULL)
 	{
@@ -2129,7 +2197,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuItemNew)
 	if (sjme_error_is(error = state->api->menuItemNew(state,
 			&menuItem)) || menuItem == NULL)
 		goto fail_new;
-	
+
 	/* Return the state pointer. */
 	return (jlong)menuItem;
 
@@ -2146,7 +2214,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuNew)
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiMenu menu;
-	
+
 	if (stateP == 0)
 	{
 		error = SJME_ERROR_NULL_ARGUMENTS;
@@ -2155,7 +2223,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuNew)
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	
+
 	/* Not implemented? */
 	if (state->api->menuNew == NULL)
 	{
@@ -2168,7 +2236,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuNew)
 	if (sjme_error_is(error = state->api->menuNew(state,
 			&menu)) || menu == NULL)
 		goto fail_new;
-	
+
 	/* Return the state pointer. */
 	return (jlong)menu;
 
@@ -2185,7 +2253,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuRemoveAll)
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiMenuKind fromMenu;
-	
+
 	if (stateP == 0 || fromMenuP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -2195,14 +2263,14 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuRemoveAll)
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	fromMenu = (sjme_scritchui_uiMenuKind)fromMenuP;
-	
+
 	/* Not implemented? */
 	if (state->api->menuRemoveAll == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return;
 	}
-	
+
 	/* Forward call. */
 	if (sjme_error_is(error = state->api->menuRemoveAll(state,
 		fromMenu)))
@@ -2215,17 +2283,17 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __objectDelete)
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiCommon object;
-	
+
 	if (stateP == 0 || objectP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	object = (sjme_scritchui_uiCommon)objectP;
-	
+
 	/* Call delete handler. */
 	if (sjme_error_is(error = state->api->objectDelete(state,
 		&object)) || object != NULL)
@@ -2239,17 +2307,17 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiPanel panel;
-	
+
 	if (stateP == 0 || panelP == 0)
 	{
 		error = SJME_ERROR_NULL_ARGUMENTS;
 		goto fail_nullArgs;
 	}
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	panel = (sjme_scritchui_uiPanel)panelP;
-	
+
 	/* Forward call. */
 	error = SJME_ERROR_NOT_IMPLEMENTED;
 	if (state->api->panelEnableFocus == NULL ||
@@ -2260,7 +2328,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 	/* Success! */
 	return;
-	
+
 fail_panelFocus:
 fail_nullArgs:
 	sjme_jni_throwMLECallError(env, sjme_error_default(error));
@@ -2272,7 +2340,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiPanel panel;
-	
+
 	/* Restore state. */
 	state = (sjme_scritchui)stateP;
 	if (stateP == 0)
@@ -2280,7 +2348,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
 		error = SJME_ERROR_NULL_ARGUMENTS;
 		goto fail_nullArgs;
 	}
-	
+
 	/* Not implemented? */
 	if (state->api->panelNew == NULL)
 	{
@@ -2293,7 +2361,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
 	if (sjme_error_is(error = state->api->panelNew(state,
 			&panel)) || panel == NULL)
 		goto fail_newPanel;
-	
+
 	/* Return the state pointer. */
 	return (jlong)panel;
 
@@ -2309,7 +2377,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screenId)
 {
 	sjme_scritchui state;
 	sjme_scritchui_uiScreen screen;
-	
+
 	if (stateP == 0 || screenP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -2319,7 +2387,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screenId)
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	screen = (sjme_scritchui_uiScreen)screenP;
-	
+
 	/* Return the screen Id. */
 	return screen->id;
 }
@@ -2332,7 +2400,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 	sjme_jint numScreenPs, maxScreenPs, i;
 	sjme_scritchui_uiScreen* screens;
 	jlong tempJ;
-	
+
 	if (stateP == 0 || screenPs == NULL)
 	{
 		error = SJME_ERROR_NULL_ARGUMENTS;
@@ -2341,11 +2409,11 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	
+
 	/* How many screens are being used? */
 	maxScreenPs = (*env)->GetArrayLength(env, screenPs);
 	numScreenPs = maxScreenPs;
-	
+
 	/* Allocate where screens will go before mapping. */
 	screens = sjme_alloca(sizeof(*screens) * numScreenPs);
 	if (screens == NULL)
@@ -2353,13 +2421,13 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 		error = SJME_ERROR_OUT_OF_MEMORY;
 		goto fail_alloca;
 	}
-	
+
 	/* Clear. */
 	memset(screens, 0, sizeof(*screens) * numScreenPs);
-	
+
 	/* Debug. */
 	sjme_message("Before Screen Call");
-	
+
 	/* Request screen information. */
 	error = SJME_ERROR_NOT_IMPLEMENTED;
 	if (state->api->screens == NULL ||
@@ -2372,18 +2440,18 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 
 	/* Debug. */
 	sjme_message("After Screen Call");
-	
+
 	/* Smaller amount? */
 	if (numScreenPs > maxScreenPs)
-		numScreenPs = maxScreenPs; 
-	
+		numScreenPs = maxScreenPs;
+
 	/* Copy pointers over. */
 	for (i = 0; i < numScreenPs; i++)
 	{
 		tempJ = (jlong)screens[i];
 		(*env)->SetLongArrayRegion(env, screenPs, i, 1, &tempJ);
 	}
-	
+
 	/* Return actual screen count. */
 	return numScreenPs;
 
@@ -2400,7 +2468,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __scrollPanelNew)
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiScrollPanel panel;
-	
+
 	/* Restore state. */
 	state = (sjme_scritchui)stateP;
 	if (stateP == 0)
@@ -2408,7 +2476,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __scrollPanelNew)
 		error = SJME_ERROR_NULL_ARGUMENTS;
 		goto fail_nullArgs;
 	}
-	
+
 	/* Not implemented? */
 	if (state->api->scrollPanelNew == NULL)
 	{
@@ -2421,7 +2489,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __scrollPanelNew)
 	if (sjme_error_is(error = state->api->scrollPanelNew(state,
 			&panel)) || panel == NULL)
 		goto fail_newPanel;
-	
+
 	/* Return the state pointer. */
 	return (jlong)panel;
 
@@ -2440,7 +2508,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent component;
 	sjme_scritchui_dim dim;
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	component = (sjme_scritchui_uiComponent)componentP;
@@ -2449,14 +2517,14 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	/* Not implemented? */
 	if (state->api->viewSetArea == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return;
 	}
-	
+
 	/* Forward. */
 	memset(&dim, 0, sizeof(dim));
 	dim.width = width;
@@ -2472,7 +2540,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 {
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent component;
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	component = (sjme_scritchui_uiComponent)componentP;
@@ -2481,7 +2549,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	mle_simpleListenerSet(env, state, component, javaListener,
 		(sjme_scritchui_voidSetVoidListenerFunc)
 			state->api->viewSetSizeSuggestListener,
@@ -2495,7 +2563,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 {
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent component;
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	component = (sjme_scritchui_uiComponent)componentP;
@@ -2504,7 +2572,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	mle_simpleListenerSet(env, state, component, javaListener,
 		(sjme_scritchui_voidSetVoidListenerFunc)
 			state->api->viewSetViewListener,
@@ -2517,7 +2585,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __weakDelete)
 {
 	sjme_errorCode error;
 	sjme_alloc_weak weak;
-	
+
 	if (weakP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -2537,17 +2605,17 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiWindow window;
-	
+
 	if (stateP == 0 || windowP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	window = (sjme_scritchui_uiWindow)windowP;
-	
+
 	/* Forward call. */
 	if (sjme_error_is(error = state->api->windowContentMinimumSize(
 		state, window, width, height)))
@@ -2558,7 +2626,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__windowManagerType)(JNIEnv* env, jclass classy, jlong stateP)
 {
 	sjme_scritchui state;
-	
+
 	if (stateP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -2567,7 +2635,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	
+
 	/* We can directly access this. */
 	return state->wmType;
 }
@@ -2587,7 +2655,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	
+
 	/* Forward call. */
 	window = NULL;
 	if (sjme_error_is(error = state->api->windowNew(state,
@@ -2596,7 +2664,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, error);
 		return 0;
 	}
-	
+
 	/* Success! */
 	return (jlong)window;
 }
@@ -2616,7 +2684,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	mle_simpleListenerSet(env, state, component, javaListener,
 		(sjme_scritchui_voidSetVoidListenerFunc)
 			state->api->windowSetCloseListener,
@@ -2632,7 +2700,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui state;
 	sjme_scritchui_uiWindow window;
 	sjme_scritchui_uiMenuBar menuBar;
-	
+
 	if (stateP == 0 || windowP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -2643,14 +2711,14 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	state = (sjme_scritchui)stateP;
 	window = (sjme_scritchui_uiWindow)windowP;
 	menuBar = (sjme_scritchui_uiMenuBar)menuBarP;
-	
+
 	/* Not implemented? */
 	if (state->api->windowSetMenuBar == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return;
 	}
-	
+
 	/* Forward call. */
 	if (sjme_error_is(error = state->api->windowSetMenuBar(
 		state, window, menuBar)))
@@ -2672,7 +2740,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
-	
+
 	mle_simpleListenerSet(env, state,
 		(sjme_scritchui_uiComponent)window, javaListener,
 		(sjme_scritchui_voidSetVoidListenerFunc)
@@ -2689,7 +2757,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiWindow window;
-	
+
 	if (stateP == 0 || windowP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -2699,14 +2767,14 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	window = (sjme_scritchui_uiWindow)windowP;
-	
+
 	/* Not implemented? */
 	if (state->api->windowSetVisible == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return;
 	}
-	
+
 	/* Forward call. */
 	if (sjme_error_is(error = state->api->windowSetVisible(
 		state, window, visible)))

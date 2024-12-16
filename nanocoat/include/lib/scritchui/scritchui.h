@@ -1987,7 +1987,7 @@ typedef sjme_errorCode (*sjme_scritchui_externalAssetFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr inAsset);
-
+	
 /**
  * Optional external functions for ScritchUI to use dependent on the front
  * end that is using it, this is usually to provide cross-feedback.
@@ -1998,6 +1998,15 @@ typedef struct sjme_scritchui_externalFunctions
 {
 	/** Loads an external asset. */
 	sjme_scritchui_externalAssetFunc externalAsset;
+	
+	/** Execute callback within the event loop or schedule later. */
+	sjme_scritchui_loopExecuteFunc externalLoopExecute;
+	
+	/** Execute call later in the loop. */
+	sjme_scritchui_loopExecuteFunc externalLoopExecuteLater;
+	
+	/** Execute callback within the event loop and wait until termination. */
+	sjme_scritchui_loopExecuteFunc externalLoopExecuteWait;
 } sjme_scritchui_externalFunctions;
 
 struct sjme_scritchui_stateBase
