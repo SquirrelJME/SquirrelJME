@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <Foundation/NSDebug.h>
+
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/cocoa/cocoa.h"
 #include "lib/scritchui/cocoa/cocoaIntern.h"
@@ -246,6 +248,11 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 
 	/* Set internal functions. */
 	inState->implIntern = &sjme_scritchui_cocoaInternFunctions;
+
+	/* Enable debugging on debug builds. */
+#if 1 || defined(SJME_CONFIG_DEBUG)
+	NSDebugEnabled = YES;
+#endif
 
 	/* If there is no NSApp, then we are running our own stuff and are not */
 	/* embedded into another application. */

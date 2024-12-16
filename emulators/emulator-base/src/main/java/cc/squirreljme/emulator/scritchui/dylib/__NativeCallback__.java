@@ -47,9 +47,6 @@ final class __NativeCallback__
 		this.stateP = __stateP;
 		this.funcP = __funcP;
 		this.anythingP = __anythingP;
-		
-		Debugging.debugNote("Register callback(%x, %x, %x)",
-			this.stateP, this.funcP, this.anythingP);
 	}
 	
 	/**
@@ -59,9 +56,6 @@ final class __NativeCallback__
 	@Override
 	public void run()
 	{
-		Debugging.debugNote("Native callback(%x, %x, %x)",
-			this.stateP, this.funcP, this.anythingP);
-		
 		int error = __NativeCallback__.__invoke(this.anythingP, this.funcP,
 			this.stateP);
 		
