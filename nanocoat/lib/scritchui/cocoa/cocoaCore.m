@@ -216,7 +216,7 @@ sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(cocoa)(
 	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
 		&state,
 		&sjme_scritchui_cocoaFunctions, loopExecute,
-		NULL, initFrontEnd)) || state == NULL)
+		externals, initFrontEnd)) || state == NULL)
 		return sjme_error_default(error);
 
 	/* Success! */
@@ -280,35 +280,10 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 		/* Debug. */
 		sjme_message("Threads are %p ?= %p", mainThread, currentThread);
 
-		/* If we are the main thread, we can easily hook in. */
-		if (mainThread == currentThread)
-		{
-			sjme_scritchui_cocoa_loopHook(inState);
-		}
-
-		/* Need to do more complicated things. */
-		else
-		{
-			/* Setup hook. */
-			hook = [SJMEAppHook new];
-
-			/* Setup information for the loop call. */
-			loopExecuteInfo = [SJMELoopExecute new];
-			loopExecuteInfo->inState = inState;
-			loopExecuteInfo->callback = sjme_scritchui_cocoa_loopHook;
-			loopExecuteInfo->anything = inState;
-			dict = [NSDictionary dictionaryWithObject:loopExecuteInfo
-				forKey:@"loopExecuteInfo"];
-
-			/* Post notification. */
-			[[currentApp class] performSelector:@selector(postNotification:)
-				onThread:mainThread
-				withObject:[NSNotification
-					notificationWithName:sjme_scritchui_cocoa_loopExecuteNotif
-					object:hook
-					userInfo:dict]
-				waitUntilDone:NO];
-		}
+		/* Attempt hooking? */
+		if (sjme_error_is(error = inState->api->loopExecuteLater(inState,
+			sjme_scritchui_cocoa_loopHook, inState)))
+			return sjme_error_default(error);
 	}
 
 	/* Success! */

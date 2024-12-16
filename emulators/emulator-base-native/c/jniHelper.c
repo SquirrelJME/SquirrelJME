@@ -197,6 +197,26 @@ sjme_errorCode sjme_jni_recoverEnv(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_jni_recoverEnvThis(
+	sjme_attrInOutNotNull JNIEnv** outEnv)
+{
+	JavaVM* jvms[1];
+	jsize count;
+
+	/* Get VMs first. */
+	count = 1;
+	if (JNI_OK != JNI_GetCreatedJavaVMs(&jvms[0], 1, &count))
+		return SJME_ERROR_JNI_EXCEPTION;
+
+	/* Get env for this thread. */
+	if (JNI_OK != (*(jvms[0]))->GetEnv(jvms[0],
+		(void**)outEnv, JNI_VERSION_1_1))
+		return SJME_ERROR_JNI_EXCEPTION;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_jni_recoverEnvFrontEnd(
 	sjme_attrInOutNotNull JNIEnv** outEnv,
 	sjme_attrInNotNull const sjme_frontEnd* inFrontEnd)

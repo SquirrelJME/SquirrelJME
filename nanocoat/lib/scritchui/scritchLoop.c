@@ -104,10 +104,14 @@ sjme_errorCode sjme_scritchui_core_loopExecuteLater(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* If an external is specified, use that instead. */
+	sjme_message("Divert loopExecuteLater()? %p", inState->externals);
 	if (inState->externals != NULL &&
 		inState->externals->externalLoopExecuteLater != NULL)
+	{
+		sjme_message("Divert loopExecuteLater()");
 		return inState->externals->externalLoopExecuteLater(inState,
 			callback, anything);
+	}
 	
 	/* Not implemented? */
 	if (inState->impl->loopExecuteLater == NULL)

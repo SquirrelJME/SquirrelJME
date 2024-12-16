@@ -878,41 +878,48 @@ static sjme_errorCode mleAwtCall(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* We need the JVM state for this to work. */
+	sjme_message("AWT 0");
 	env = NULL;
-	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(
-		&env, &inState->common.frontEnd)) || env == NULL)
+	if (sjme_error_is(error = sjme_jni_recoverEnvThis(
+		&env)) || env == NULL)
 		return sjme_error_defaultOr(error, SJME_ERROR_ILLEGAL_STATE);
 
 	/* Get the AWT event queue handler. */
+	sjme_message("AWT A");
 	queueClass = (*env)->FindClass(env, "java/awt/EventQueue");
 	if (queueClass == NULL)
 		return SJME_ERROR_JNI_EXCEPTION;
 
 	/* Get the invocation method. */
+	sjme_message("AWT B");
 	invokeMethod = (*env)->GetStaticMethodID(env, queueClass,
 		"invokeLater", "(Ljava/lang/Runnable;)V");
 	if (invokeMethod == NULL)
 		return SJME_ERROR_JNI_EXCEPTION;
 
 	/* Get native callback. */
+	sjme_message("AWT C");
 	nativeClass = (*env)->FindClass(env,
 		"cc/squirreljme/emulator/scritchui/dylib/__NativeCallback__");
 	if (nativeClass == NULL)
 		return SJME_ERROR_JNI_EXCEPTION;
 
 	/* And find its constructor. */
+	sjme_message("AWT D");
 	nativeNew = (*env)->GetMethodID(env, nativeClass, "<init>",
 		"(JJJ)V");
 	if (nativeNew == NULL)
 		return SJME_ERROR_JNI_EXCEPTION;
 
 	/* Wrap callback. */
+	sjme_message("AWT E");
 	nativeWrapper = (*env)->NewObject(env, nativeClass, nativeNew,
 		(jlong)inState, (jlong)callback, (jlong)anything);
 	if (nativeWrapper == NULL)
 		return SJME_ERROR_JNI_EXCEPTION;
 
 	/* Enqueue for later. */
+	sjme_message("AWT F");
 	(*env)->CallStaticVoidMethod(env, queueClass, invokeMethod, nativeWrapper);
 
 	/* Success! */

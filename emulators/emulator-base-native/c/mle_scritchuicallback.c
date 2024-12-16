@@ -35,6 +35,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchCallback, __invoke)
 	}
 
 	/* Invoke it. */
+	sjme_message("Native callback pre-invoke...");
 	return (jint)callback(anything);
 }
 

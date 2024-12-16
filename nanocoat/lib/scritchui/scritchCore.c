@@ -283,6 +283,11 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	state->wmInfo = &sjme_scritchUI_coreWmInfo;
 	state->nanoTime = sjme_nal_default.nanoTime;
 	state->externals = externals;
+
+	/* Use provided front end if a core interface. */
+	if (initFrontEnd != NULL)
+		memmove(&state->common.frontEnd, initFrontEnd,
+			sizeof(*initFrontEnd));
 	
 	/* Common initialize. */
 	if (sjme_error_is(error = state->intern->initCommon(state,
@@ -299,11 +304,6 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	else
 		state->loopThread = SJME_THREAD_NULL;
 	state->loopThreadInit = loopExecute;
-	
-	/* Use provided front end if a core interface. */
-	if (initFrontEnd != NULL)
-		memmove(&state->common.frontEnd, initFrontEnd,
-			sizeof(*initFrontEnd));
 	
 	/* Set wrapped state. */
 	if (wrappedState != NULL)
