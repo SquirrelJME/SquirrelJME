@@ -23,11 +23,11 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchCallback, __invoke)
 {
 	sjme_scritchui state;
 	sjme_thread_mainFunc callback;
-	sjme_pointer anything;
+	sjme_thread_parameter anything;
 
 	state = (sjme_scritchui)stateP;
-	callback = (sjme_pointer)callbackP;
-	anything = (sjme_pointer)anythingP;
+	callback = (sjme_thread_mainFunc)callbackP;
+	anything = (sjme_thread_parameter)anythingP;
 	if (state == 0 || callback == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -35,7 +35,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchCallback, __invoke)
 	}
 
 	/* Invoke it. */
-	return (jint)callback(anything);
+	return SJME_THREAD_RESULT_AS_ERROR(callback(anything));
 }
 
 static const JNINativeMethod mleNativeScritchCallbackMethods[] =

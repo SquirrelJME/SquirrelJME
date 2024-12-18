@@ -908,7 +908,9 @@ static sjme_errorCode mleAwtCall(
 
 	/* Wrap callback. */
 	nativeWrapper = (*env)->NewObject(env, nativeClass, nativeNew,
-		(jlong)inState, (jlong)callback, (jlong)anything);
+		(jlong)((sjme_intPointer)inState),
+		(jlong)((sjme_intPointer)callback),
+		(jlong)((sjme_intPointer)anything));
 	if (nativeWrapper == NULL)
 		return SJME_ERROR_JNI_EXCEPTION;
 

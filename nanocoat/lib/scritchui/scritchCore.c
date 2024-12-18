@@ -250,6 +250,20 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
+static sjme_thread_result sjme_scritchui_core_grabExternalThreadId(
+	sjme_attrInNullable sjme_thread_parameter anything)
+{
+	sjme_scritchui state;
+
+	state = anything;
+	if (state == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+
+	/* Fill in thread as it is missing. */
+	return SJME_THREAD_RESULT(sjme_thread_current(
+		&state->loopThread));
+}
+
 static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
@@ -304,7 +318,16 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	else
 		state->loopThread = SJME_THREAD_NULL;
 	state->loopThreadInit = loopExecute;
-	
+
+	/* If no loop thread was defined, and we have an overridden loop execute */
+	/* then we need to grab the actual thread ID. */
+	while (state->loopThread == SJME_THREAD_NULL && externals != NULL &&
+		externals->externalLoopExecuteLater != NULL)
+		if (sjme_error_is(error = externals->externalLoopExecuteLater(
+			state, sjme_scritchui_core_grabExternalThreadId,
+			state)))
+			goto fail_grabExternalThreadId;
+
 	/* Set wrapped state. */
 	if (wrappedState != NULL)
 		state->wrappedState = wrappedState;
@@ -329,10 +352,10 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 		sjme_thread_yield();
 		sjme_thread_barrier();
 	}
-	
+
 	/* Debug. */
-	sjme_message("Waiting for thread ready (%p)...",
-		state);
+	sjme_message("Waiting for thread ready (s=%p t=%p)...",
+		state, state->loopThread);
 	
 	/* Wait for the ready signal, but only if required. */
 	if (state->loopThread == SJME_THREAD_NULL)
@@ -346,11 +369,16 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 			sjme_thread_barrier();
 		}
 	}
+
+	/* Debug. */
+	sjme_message("UI thread marked ready (s=%p t=%p)!",
+		state, state->loopThread);
 	
 	/* Return resultant state. */
 	*outState = state;
 	return SJME_ERROR_NONE;
 
+fail_grabExternalThreadId:
 fail_apiInit:
 fail_commonInit:
 fail_alloc:

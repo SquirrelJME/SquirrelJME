@@ -83,13 +83,9 @@ sjme_errorCode sjme_scritchui_core_loopExecute(
 	/* Are we in the execution loop? Then call directly */
 	if (inThread)
 		return SJME_THREAD_RESULT_AS_ERROR(callback(anything));
-	
-	/* Not implemented? */
-	if (inState->impl->loopExecuteLater == NULL)
-		return sjme_error_notImplemented(0);
 
-	/* We are not, so it must be scheduled. */
-	return inState->impl->loopExecuteLater(inState, callback, anything);
+	/* Use standard execution. */
+	return inState->api->loopExecuteLater(inState, callback, anything);
 }
 
 sjme_errorCode sjme_scritchui_core_loopExecuteLater(
@@ -200,6 +196,7 @@ sjme_errorCode sjme_scritchui_core_loopIsInThread(
 			SJME_ERROR_INVALID_THREAD_STATE);
 	
 	/* Are we in the loop? */
+	sjme_message("inThread(%p ?= %p)", self, inState->loopThread);
 	*outInThread = sjme_thread_equal(self,
 		inState->loopThread);
 	return SJME_ERROR_NONE;

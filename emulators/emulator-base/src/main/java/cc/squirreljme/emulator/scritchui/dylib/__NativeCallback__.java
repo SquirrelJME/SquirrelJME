@@ -56,8 +56,8 @@ final class __NativeCallback__
 	@Override
 	public void run()
 	{
-		int error = __NativeCallback__.__invoke(this.anythingP, this.funcP,
-			this.stateP);
+		int error = __NativeCallback__.__invoke(this.stateP, this.funcP,
+			this.anythingP);
 		
 		/* Did it fail? */
 		if (error != 1)
