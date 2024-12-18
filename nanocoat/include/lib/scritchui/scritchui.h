@@ -1972,6 +1972,9 @@ typedef struct sjme_scritchui_bugs
 {
 	/** Do not set content size when the window is made visible. */
 	sjme_jboolean noContentSizeWhenVisible;
+
+	/** Early super object setup. */
+	sjme_jboolean earlySuper;
 } sjme_scritchui_bugs;
 
 /**

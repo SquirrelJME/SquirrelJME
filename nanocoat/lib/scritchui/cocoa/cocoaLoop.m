@@ -41,6 +41,7 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 		forKey:@"loopExecuteInfo"];
 
 	/* Post notification. */
+	sjme_message("Posted notif %p(%p)", callback, anything);
 	[[super class] performSelector:@selector(postNotification:)
 		onThread:mainThread
 		withObject:[NSNotification

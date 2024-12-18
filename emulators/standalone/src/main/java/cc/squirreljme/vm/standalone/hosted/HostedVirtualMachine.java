@@ -251,7 +251,8 @@ public class HostedVirtualMachine
 			String osName = System.getProperty("os.name");
 			if (osName != null &&
 				(osName.toLowerCase().contains("mac os") ||
-				osName.toLowerCase().contains("mac os x")))
+				osName.toLowerCase().contains("mac os x")) ||
+				osName.toLowerCase().contains("darwin"))
 				args.add("-XstartOnFirstThread");
 			
 			// If we are connecting to a debugger, we need to set up a proxy

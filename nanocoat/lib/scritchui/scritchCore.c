@@ -275,6 +275,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
+	sjme_thread currentThread;
 	
 	if (inPool == NULL || inImplFunc == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -356,9 +357,17 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	/* Debug. */
 	sjme_message("Waiting for thread ready (s=%p t=%p)...",
 		state, state->loopThread);
-	
+
+	/* Get current thread to potentially detect a case where the main thread */
+	/* is the event thread, in which case if we loop we will deadlock */
+	/* ourselves. */
+	currentThread = NULL;
+	sjme_thread_current(&currentThread);
+
 	/* Wait for the ready signal, but only if required. */
-	if (state->loopThread == SJME_THREAD_NULL)
+	if (state->loopThread == SJME_THREAD_NULL ||
+		(currentThread != SJME_THREAD_NULL &&
+			state->loopThread == currentThread))
 		sjme_atomic_sjme_jint_set(&state->loopThreadReady, 1);
 	else
 	{

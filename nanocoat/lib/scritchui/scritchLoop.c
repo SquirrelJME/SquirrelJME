@@ -196,7 +196,6 @@ sjme_errorCode sjme_scritchui_core_loopIsInThread(
 			SJME_ERROR_INVALID_THREAD_STATE);
 	
 	/* Are we in the loop? */
-	sjme_message("inThread(%p ?= %p)", self, inState->loopThread);
 	*outInThread = sjme_thread_equal(self,
 		inState->loopThread);
 	return SJME_ERROR_NONE;

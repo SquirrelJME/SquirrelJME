@@ -71,65 +71,6 @@ static const sjme_scritchui_implInternFunctions
 	.checkError = sjme_scritchui_cocoa_intern_checkError,
 };
 
-@implementation SJMEAppHook : NSObject
-{
-}
-@end
-
-static sjme_thread_result sjme_scritchui_cocoa_loopHook(
-	sjme_attrInNullable sjme_thread_parameter anything)
-{
-	sjme_scritchui inState;
-	NSApplication* currentApp;
-	NSThread* currentThread;
-	NSRunLoop* currentLoop;
-	SJMESuperObject* super;
-
-	/* Recover state. */
-	inState = (sjme_scritchui)anything;
-	if (inState == NULL)
-		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
-
-	/* Debug. */
-	sjme_message("Hooking into NSMain...");
-
-	/* Refer to this thread. */
-	sjme_thread_current(&inState->loopThread);
-
-	/* Setup new application and store its handle for later. */
-	currentApp = [NSApplication sharedApplication];
-	inState->common.handle[SJME_SUI_COCOA_H_NSAPP] = currentApp;
-
-	/* Get our current thread as well, as a NSThread. */
-	currentThread = [NSThread currentThread];
-	inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD] = currentThread;
-
-	/* Debug. */
-	sjme_message("Main NSThread is %p", currentThread);
-
-	/* Get the current run loop. */
-	currentLoop = [NSRunLoop currentRunLoop];
-	inState->common.handle[SJME_SUI_COCOA_H_NSRUNLOOP] = currentLoop;
-
-	/* Setup super object. */
-	super = [SJMESuperObject new];
-	inState->common.handle[SJME_SUI_COCOA_H_SUPER] = super;
-
-	/* Debug. */
-	sjme_message("Hooked NSApplication %p!", currentApp);
-
-	/* Need to call thread specific initializer? */
-	/* Usually this is for binding a thread to a JavaVM. */
-	if (inState->loopThreadInit != NULL)
-		inState->loopThreadInit(inState);
-
-	/* Set as ready, since we technically already have the event loop. */
-	sjme_atomic_sjme_jint_set(&inState->loopThreadReady, 1);
-
-	/* Success! */
-	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
-}
-
 static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
@@ -233,9 +174,8 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	NSApplication* currentApp;
 	NSThread* mainThread;
 	NSThread* currentThread;
-	SJMEAppHook* hook;
-	SJMELoopExecute* loopExecuteInfo;
-	NSDictionary* dict;
+	NSRunLoop* currentLoop;
+	SJMESuperObject* super;
 
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -244,6 +184,7 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	currentApp = NSApp;
 
 	/* Debug. */
+	NSLog(@"%@", NSThread.callStackSymbols);
 	sjme_message("Current NSApp: %p", currentApp);
 
 	/* Set internal functions. */
@@ -275,7 +216,15 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	else
 	{
 		/* Debug. */
-		sjme_message("Attempting NSMain hook...");
+		sjme_message("Attempting NSMain integration...");
+
+		/* Refer to this thread. */
+		sjme_thread_current(&inState->loopThread);
+
+		/* Setup super object as early as possible for notifications. */
+		inState->bugs.earlySuper = SJME_JNI_TRUE;
+		super = [SJMESuperObject new];
+		inState->common.handle[SJME_SUI_COCOA_H_SUPER] = super;
 
 		/* Store for later usage. */
 		inState->common.handle[SJME_SUI_COCOA_H_NSAPP] = currentApp;
@@ -285,13 +234,20 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 		currentThread = [NSThread currentThread];
 		inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD] = mainThread;
 
+		/* Get the current run loop. */
+		currentLoop = [NSRunLoop currentRunLoop];
+		inState->common.handle[SJME_SUI_COCOA_H_NSRUNLOOP] = currentLoop;
+
 		/* Debug. */
 		sjme_message("Threads are %p ?= %p", mainThread, currentThread);
 
-		/* Attempt hooking? */
-		if (sjme_error_is(error = inState->api->loopExecuteLater(inState,
-			sjme_scritchui_cocoa_loopHook, inState)))
-			return sjme_error_default(error);
+		/* Need to call thread specific initializer? */
+		/* Usually this is for binding a thread to a JavaVM. */
+		if (inState->loopThreadInit != NULL)
+			inState->loopThreadInit(inState);
+
+		/* Set as ready, since we technically already have the event loop. */
+		sjme_atomic_sjme_jint_set(&inState->loopThreadReady, 1);
 	}
 
 	/* Success! */
