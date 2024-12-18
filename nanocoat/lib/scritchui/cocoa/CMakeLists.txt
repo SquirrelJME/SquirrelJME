@@ -65,9 +65,14 @@ squirreljme_target_binary_name(ScritchUICocoa
 
 # Apple and GNUStep specific link options
 if(SQUIRRELJME_IS_APPLE_DESKTOP)
+	# Normal XCode framework lookup is used here
 	target_link_libraries(ScritchUICocoa
 		"-framework Foundation"
 		"-framework Cocoa")
+
+	# We are using Apple variant of Cocoa
+	target_compile_definitions(ScritchUICocoa
+		PUBLIC SJME_CONFIG_HAS_COCOA_APPLE=1)
 elseif(SQUIRRELJME_IS_GNUSTEP_DESKTOP)
 	# gnustep-config can accept multiple switches however it ignores other
 	# specified ones, so this has to be done multiple times!
@@ -78,6 +83,10 @@ elseif(SQUIRRELJME_IS_GNUSTEP_DESKTOP)
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 	separate_arguments(SQUIRRELJME_GNUSTEP_LIBS_OBJC UNIX_COMMAND
 		${SQUIRRELJME_GNUSTEP_LIBS_OBJC})
+
+	# We are using GNUstep variant of Cocoa
+	target_compile_definitions(ScritchUICocoa
+		PUBLIC SJME_CONFIG_HAS_COCOA_GNUSTEP=1)
 
 	# Base Libraries
 	execute_process(
