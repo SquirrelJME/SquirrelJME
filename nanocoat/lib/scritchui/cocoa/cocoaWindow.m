@@ -129,9 +129,7 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetMenuBar(
 		cocoaMenu = inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEW];
 
 		/* Set it. */
-		sjme_message("barA");
 		[cocoaWindow setMenu:cocoaMenu];
-		sjme_message("barB");
 	}
 
 	/* Success? */
@@ -150,6 +148,9 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 
 	/* Recover window. */
 	cocoaWindow = inWindow->component.common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+	/* Debug. */
+	sjme_message("NSWindow visible?");
 
 	/* Change state accordingly. */
 	[cocoaWindow center];

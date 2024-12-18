@@ -82,8 +82,28 @@ sjme_errorCode sjme_scritchui_cocoa_intern_checkError(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_errorCode ifOkay)
 {
+	NSApplication* currentApp;
+	NSEvent* event;
+
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover the current application. */
+	currentApp = inState->common.handle[SJME_SUI_COCOA_H_NSAPP];
+
+	/* Request that all windows be updated and force event dequeues. */
+	/* But only do this went the loop thread is ready. */
+	if (currentApp != NULL &&
+		sjme_atomic_sjme_jint_get(&inState->loopThreadReady) != 0)
+	{
+		/* Get the next event. */
+		event = [currentApp nextEventMatchingMask:NSAnyEventMask
+			untilDate:[NSDate distantPast]
+			inMode:NSRunLoopCommonModes
+			dequeue:YES];
+		[currentApp sendEvent:event];
+		[currentApp updateWindows];
+	}
 
 	return ifOkay;
 }

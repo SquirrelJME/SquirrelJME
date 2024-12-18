@@ -19,7 +19,7 @@ sjme_errorCode sjme_scritchui_cocoa_componentFocusGrab(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Does nothing because you cannot forcibly grab focus. */
-	return SJME_ERROR_NONE;
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_cocoa_componentRepaint(

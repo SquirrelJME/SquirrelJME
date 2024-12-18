@@ -215,6 +215,9 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	/* Otherwise, we post to this one. */
 	else
 	{
+		/* Indicate that we finished launching, so everything pops up. */
+		[currentApp finishLaunching];
+
 		/* Debug. */
 		sjme_message("Attempting NSMain integration...");
 
