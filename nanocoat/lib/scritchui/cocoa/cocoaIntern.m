@@ -93,7 +93,7 @@ sjme_errorCode sjme_scritchui_cocoa_intern_checkError(
 
 	/* Request that all windows be updated and force event dequeues. */
 	/* But only do this went the loop thread is ready. */
-	if (currentApp != NULL &&
+	if (inState->bugs.manualEventPoll && currentApp != NULL &&
 		sjme_atomic_sjme_jint_get(&inState->loopThreadReady) != 0)
 	{
 		/* Get the next event. */

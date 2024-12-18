@@ -224,8 +224,10 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 		/* Refer to this thread. */
 		sjme_thread_current(&inState->loopThread);
 
+		/* In this mode we need to manually poll events. */
+		inState->bugs.manualEventPoll = SJME_JNI_TRUE;
+
 		/* Setup super object as early as possible for notifications. */
-		inState->bugs.earlySuper = SJME_JNI_TRUE;
 		super = [SJMESuperObject new];
 		inState->common.handle[SJME_SUI_COCOA_H_SUPER] = super;
 

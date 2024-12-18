@@ -1970,11 +1970,11 @@ typedef struct sjme_scritchui_wmInfo
  */
 typedef struct sjme_scritchui_bugs
 {
+	/** Manual event polling. */
+	sjme_jboolean manualEventPoll;
+	
 	/** Do not set content size when the window is made visible. */
 	sjme_jboolean noContentSizeWhenVisible;
-
-	/** Early super object setup. */
-	sjme_jboolean earlySuper;
 } sjme_scritchui_bugs;
 
 /**
