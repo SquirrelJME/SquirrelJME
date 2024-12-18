@@ -119,20 +119,19 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetMenuBar(
 	/* Recover window. */
 	cocoaWindow = inWindow->component.common.handle[SJME_SUI_COCOA_H_NSVIEW];
 
-	/* Setting a menu? */
+	/* Remove old menu. */
+	[cocoaWindow setMenu:nil];
+
+	/* Setting a new menu? */
 	if (inMenuBar != NULL)
 	{
 		/* Recover bar. */
 		cocoaMenu = inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEW];
 
 		/* Set it. */
+		sjme_message("barA");
 		[cocoaWindow setMenu:cocoaMenu];
-	}
-
-	/* Clear it otherwise. */
-	else
-	{
-		[cocoaWindow setMenu:nil];
+		sjme_message("barB");
 	}
 
 	/* Success? */

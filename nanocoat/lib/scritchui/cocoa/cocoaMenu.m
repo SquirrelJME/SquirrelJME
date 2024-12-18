@@ -39,17 +39,11 @@ sjme_errorCode sjme_scritchui_cocoa_menuBarNew(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Menu bars in Cocoa are just associated with the NSApp but themselves */
-	/* are just a menu and menu item. */
+	/* are just plain menus. */
 	cocoaMenu = [SJMEMenu new];
-	cocoaMenuItem = [SJMEMenuItem new];
-
-	/* The first is always the menu. */
-	[cocoaMenu addItem:cocoaMenuItem];
 
 	/* Store it. */
 	inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEW] = cocoaMenu;
-	inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEWB] =
-		cocoaMenuItem;
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -62,7 +56,7 @@ sjme_errorCode sjme_scritchui_cocoa_menuInsert(
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem)
 {
 	SJMEMenu* cocoaMenu;
-	SJMEMenuItem* cocoaMenuItem;
+	SJMEMenuItem* toAdd;
 
 	if (inState == NULL || intoMenu == NULL || childItem == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -72,17 +66,14 @@ sjme_errorCode sjme_scritchui_cocoa_menuInsert(
 		intoMenu->common.type != SJME_SCRITCHUI_TYPE_MENU)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	/* Recover menu to add into. */
+	/* Get menu to add into. */
 	cocoaMenu = intoMenu->common.handle[SJME_SUI_COCOA_H_NSVIEW];
 
-	/* Recover item to add. */
-	if (childItem->common.type == SJME_SCRITCHUI_TYPE_MENU_ITEM)
-		cocoaMenuItem = intoMenu->common.handle[SJME_SUI_COCOA_H_NSVIEW];
-	else
-		cocoaMenuItem = intoMenu->common.handle[SJME_SUI_COCOA_H_NSVIEWB];
-
-	/* Add it in. */
-	[cocoaMenu addItem:cocoaMenuItem];
+	/* Add it in, it is easier to just clear the parent before adding. */
+	toAdd = childItem->common.handle[SJME_SUI_COCOA_H_NSVIEWB];
+	[toAdd setMenu:nil];
+	[cocoaMenu insertItem:toAdd
+		atIndex:atIndex];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -102,7 +93,7 @@ sjme_errorCode sjme_scritchui_cocoa_menuItemNew(
 	cocoaMenuItem = [SJMEMenuItem new];
 
 	/* Store it. */
-	inMenuItem->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEW] =
+	inMenuItem->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEWB] =
 		cocoaMenuItem;
 
 	/* Success? */
