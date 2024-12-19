@@ -96,6 +96,10 @@ sjme_errorCode sjme_scritchui_cocoa_intern_checkError(
 	if (inState->bugs.manualEventPoll && currentApp != NULL &&
 		sjme_atomic_sjme_jint_get(&inState->loopThreadReady) != 0)
 	{
+		/* Just say that windows needs updating, because let us be real */
+		/* here, when does Windows not need updating? */
+		//[currentApp setWindowsNeedUpdate:YES];
+
 		/* Get the next event. */
 		event = [currentApp nextEventMatchingMask:NSAnyEventMask
 			untilDate:[NSDate distantPast]

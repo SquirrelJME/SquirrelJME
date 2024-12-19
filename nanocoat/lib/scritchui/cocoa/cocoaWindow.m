@@ -150,7 +150,7 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 	cocoaWindow = inWindow->component.common.handle[SJME_SUI_COCOA_H_NSVIEW];
 
 	/* Debug. */
-	sjme_message("NSWindow visible?");
+	sjme_message("NSWindow visible? %d", isVisible);
 
 	/* Change state accordingly. */
 	[cocoaWindow center];
