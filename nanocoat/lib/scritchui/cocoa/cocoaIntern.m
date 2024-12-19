@@ -27,6 +27,10 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 - (id)init
 {
 	NSNotificationCenter* notifCenter;
+	NSApplication* currentApp;
+
+	/* Declare ourselves accordingly. */
+	[[NSProcessInfo processInfo] setProcessName:@"SquirrelJME"];
 
 	/* Get the default notification center, to register loop observer. */
 	notifCenter = [NSNotificationCenter defaultCenter];
@@ -93,12 +97,11 @@ sjme_errorCode sjme_scritchui_cocoa_intern_checkError(
 
 	/* Request that all windows be updated and force event dequeues. */
 	/* But only do this went the loop thread is ready. */
-	if (inState->bugs.manualEventPoll && currentApp != NULL &&
-		sjme_atomic_sjme_jint_get(&inState->loopThreadReady) != 0)
+	if (inState->bugs.manualEventPoll)
 	{
 		/* Just say that windows needs updating, because let us be real */
 		/* here, when does Windows not need updating? */
-		//[currentApp setWindowsNeedUpdate:YES];
+		[currentApp setWindowsNeedUpdate:YES];
 
 		/* Get the next event. */
 		event = [currentApp nextEventMatchingMask:NSAnyEventMask
