@@ -77,8 +77,8 @@ sjme_errorCode sjme_scritchui_cocoa_loopIterate(
 	{
 		/* Pop next event. */
 		event = [currentApp nextEventMatchingMask:NSAnyEventMask
-			untilDate:[NSDate distantPast]
-			inMode:NSRunLoopCommonModes
+			untilDate:[NSDate now]
+			inMode:NSDefaultRunLoopMode
 			dequeue:YES];
 
 		/* Process event? */

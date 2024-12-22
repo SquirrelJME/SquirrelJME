@@ -131,6 +131,8 @@ sjme_errorCode sjme_scritchui_cocoa_menuRemove(
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu,
 	sjme_attrInPositive sjme_jint atIndex)
 {
+	SJMEMenu* cocoaMenu;
+
 	if (inState == NULL || fromMenu == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -139,6 +141,12 @@ sjme_errorCode sjme_scritchui_cocoa_menuRemove(
 		return inState->implIntern->checkError(inState,
 			SJME_ERROR_NONE);
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Recover menu to remove from. */
+	cocoaMenu = fromMenu->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+	/* Remove it. */
+	[cocoaMenu removeItemAtIndex:atIndex];
+
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

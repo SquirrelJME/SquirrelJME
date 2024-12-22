@@ -91,12 +91,14 @@ sjme_errorCode sjme_scritchui_cocoa_intern_checkError(
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+#if 0
 	/* This is called at the end of every Cocoa native handler, however */
 	/* to improve responsiveness run the event loop. */
 	if (inState->bugs.manualEventPoll)
 		if (sjme_error_is(error = inState->apiInThread->loopIterate(
 			inState, SJME_JNI_FALSE, NULL)))
 			return sjme_error_default(error);
+#endif
 
 	return ifOkay;
 }
