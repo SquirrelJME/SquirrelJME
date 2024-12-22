@@ -53,3 +53,45 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
+
+sjme_errorCode sjme_scritchui_cocoa_loopIterate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_jboolean blocking,
+	sjme_attrOutNullable sjme_jboolean* outHasTerminated)
+{
+	NSApplication* currentApp;
+	NSEvent* event;
+
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover the current application. */
+	currentApp = inState->common.handle[SJME_SUI_COCOA_H_NSAPP];
+
+	/* Just say that windows needs updating, because let us be real */
+	/* here, when does Windows not need updating? */
+	[currentApp setWindowsNeedUpdate:YES];
+
+	/* Get the next event. */
+	for (;;)
+	{
+		/* Pop next event. */
+		event = [currentApp nextEventMatchingMask:NSAnyEventMask
+			untilDate:[NSDate distantPast]
+			inMode:NSRunLoopCommonModes
+			dequeue:YES];
+
+		/* Process event? */
+		NSLog(@"Event %@", event);
+		if (event != NULL)
+			[currentApp sendEvent:event];
+		else
+			break;
+	}
+
+	/* Request that all windows be updated. */
+	[currentApp updateWindows];
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}

@@ -32,7 +32,12 @@ public final class ApplicationHandler
 	private static volatile ApplicationInterface<?> _CURRENT_INTERFACE;
 	
 	/** The current application instance. */
+	@SquirrelJMEVendorApi
 	private static volatile Object _CURRENT_INSTANCE;
+	
+	/** The current idle task. */
+	@SquirrelJMEVendorApi
+	private static volatile Runnable _idleTask;
 	
 	/** The current vendor. */
 	private static String _CURRENT_VENDOR;
@@ -40,9 +45,13 @@ public final class ApplicationHandler
 	/** The current name. */
 	private static String _CURRENT_NAME;
 	
-	/** One second in milliseconds. */
+	/** The time to wait after termination. */
 	private static final int _TERM_WAIT_TIME =
 		30_000;
+	
+	/** The time to wait between idle ticks. */
+	private static final int _IDLE_TICK =
+		16;
 	
 	/** Maximum settle time after starting. */
 	private static final long _SETTLE_NS =
@@ -197,19 +206,11 @@ public final class ApplicationHandler
 			{
 				throwable = cause;
 				
-				// Show a noisy banner to make this visible
-				System.err.println("****************************************");
-				System.err.println("APPLICATION THREW EXCEPTION:");
-				
-				// Make sure the output is printed
-				throwable.printStackTrace(System.err);
-				
-				// End of banner
-				System.err.println("****************************************");
+				// Show trace
+				ApplicationHandler.__emit(throwable);
 			}
 			
-			// After termination of the MIDlet wait for threads to settle
-			// before checking them
+			// Give the application time to settle after starting
 			long lastTime;
 			while ((lastTime = System.nanoTime()) < settledNs)
 				try
@@ -219,6 +220,16 @@ public final class ApplicationHandler
 				catch (Throwable ignored)
 				{
 				}
+				
+			// Debug
+			Debugging.debugNote("Application settled.");
+			
+			// Grab idle task
+			Runnable idleTask;
+			synchronized (ApplicationHandler.class)
+			{
+				idleTask = ApplicationHandler._idleTask;
+			}
 			
 			// Although we did start the application, the startApp only
 			// ever does initialization and sets some events and otherwise...
@@ -227,6 +238,20 @@ public final class ApplicationHandler
 			// a daemon graphics thread which we want to count as well.
 			for (int currentCount = -1;;)
 			{
+				// Run idle task
+				if (idleTask != null)
+					try
+					{
+						idleTask.run();
+					}
+					catch (Throwable cause)
+					{
+						throwable = cause;
+						
+						// Show trace
+						ApplicationHandler.__emit(cause);
+					}
+				
 				// Get the current thread count with daemon threads
 				currentCount = ThreadShelf.aliveThreadCount(
 					false, true);
@@ -243,7 +268,11 @@ public final class ApplicationHandler
 				
 				// Wait for there to be an update to the thread state before
 				// checking again
-				ThreadShelf.waitForUpdate(ApplicationHandler._TERM_WAIT_TIME);
+				if (idleTask != null)
+					ThreadShelf.waitForUpdate(ApplicationHandler._IDLE_TICK);
+				else
+					ThreadShelf.waitForUpdate(
+						ApplicationHandler._TERM_WAIT_TIME);
 			}
 			
 			// If an exception was thrown then fail here
@@ -256,6 +285,26 @@ public final class ApplicationHandler
 			
 			// Destroy the instance
 			__ai.<T>destroy(instance, throwable);
+		}
+	}
+	
+	/**
+	 * Sets the idle task to run in the termination wait loop.
+	 *
+	 * @param __run The task to run while waiting.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/12/22
+	 */
+	@SquirrelJMEVendorApi
+	public static void setIdleTask(Runnable __run)
+		throws NullPointerException
+	{
+		if (__run == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (ApplicationHandler.class)
+		{
+			ApplicationHandler._idleTask = __run;
 		}
 	}
 	
@@ -279,5 +328,24 @@ public final class ApplicationHandler
 			ApplicationHandler._CURRENT_NAME = __name;
 			ApplicationHandler._CURRENT_VENDOR = __vend;
 		}
+	}
+	
+	/**
+	 * Emits throwable message.
+	 *
+	 * @param __throwable The throwable to emit a message for.
+	 * @since 2024/12/22
+	 */
+	private static void __emit(Throwable __throwable)
+	{
+		// Show a noisy banner to make this visible
+		System.err.println("****************************************");
+		System.err.println("APPLICATION THREW EXCEPTION:");
+		
+		// Make sure the output is printed
+		__throwable.printStackTrace(System.err);
+		
+		// End of banner
+		System.err.println("****************************************");
 	}
 }

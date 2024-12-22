@@ -125,6 +125,8 @@
 #define FORWARD_DESC___loopExecuteWait FORWARD_DESC___loopExecute
 #define FORWARD_DESC___loopIsInThread "(" \
 	DESC_LONG ")" DESC_BOOLEAN
+#define FORWARD_DESC___loopIterate "(" \
+	DESC_LONG ")" DESC_BOOLEAN
 
 #define FORWARD_DESC___menuBarNew "(" \
 	DESC_LONG ")" DESC_LONG
@@ -2100,6 +2102,35 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	return inThread;
 }
 
+JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__loopIterate)(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_jboolean terminated;
+
+	state = (sjme_scritchui)stateP;
+	if (state == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return JNI_FALSE;
+	}
+
+	/* Query API. */
+	error = SJME_ERROR_NOT_IMPLEMENTED;
+	terminated = SJME_JNI_FALSE;
+	if (state->api->loopIterate == NULL ||
+		sjme_error_is(error = state->api->loopIterate(state,
+			SJME_JNI_FALSE, &terminated)))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return JNI_FALSE;
+	}
+
+	/* Did this terminate? */
+	return terminated;
+}
+
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuBarNew)
 	(JNIEnv* env, jclass classy, jlong stateP)
 {
@@ -2818,6 +2849,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __loopExecuteLater),
 	FORWARD_list(NativeScritchDylib, __loopExecuteWait),
 	FORWARD_list(NativeScritchDylib, __loopIsInThread),
+	FORWARD_list(NativeScritchDylib, __loopIterate),
 	FORWARD_list(NativeScritchDylib, __menuBarNew),
 	FORWARD_list(NativeScritchDylib, __menuInsert),
 	FORWARD_list(NativeScritchDylib, __menuItemNew),

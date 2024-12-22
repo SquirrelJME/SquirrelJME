@@ -44,7 +44,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_cocoaFunctions =
 	.loopExecute = NULL,
 	.loopExecuteLater = sjme_scritchui_cocoa_loopExecuteLater,
 	.loopExecuteWait = NULL,
-	.loopIterate = NULL,
+	.loopIterate = sjme_scritchui_cocoa_loopIterate,
 	.menuBarNew = sjme_scritchui_cocoa_menuBarNew,
 	.menuInsert = sjme_scritchui_cocoa_menuInsert,
 	.menuItemNew = sjme_scritchui_cocoa_menuItemNew,
@@ -215,6 +215,9 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	/* Otherwise, we post to this one. */
 	else
 	{
+		/* In this mode we need to manually poll events. */
+		inState->bugs.manualEventPoll = SJME_JNI_TRUE;
+
 		/* We want SquirrelJME to be activated because this is a UI! */
 		/* Whatever we are running on, just drop it and set this. */
 		[currentApp setActivationPolicy:NSApplicationActivationPolicyRegular];
@@ -227,9 +230,6 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 
 		/* Refer to this thread. */
 		sjme_thread_current(&inState->loopThread);
-
-		/* In this mode we need to manually poll events. */
-		inState->bugs.manualEventPoll = SJME_JNI_TRUE;
 
 		/* Setup super object as early as possible for notifications. */
 		super = [SJMESuperObject new];

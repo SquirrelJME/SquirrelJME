@@ -207,12 +207,16 @@ sjme_errorCode sjme_scritchui_core_loopIterate(
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated)
 {
 	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Does nothing if not manually polled, but not wrapped. */
+	if (inState->wrappedState == NULL && !inState->bugs.manualEventPoll)
 		return SJME_ERROR_NONE;
-	
-	/* Iteration is not possible if there is a thread running. */
-	if (inState->loopThread != SJME_THREAD_NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Missing implementation of iterate? */
+	if (inState->impl->loopIterate == NULL)
+		return sjme_error_notImplemented(0);
+
+	/* Forward call. */
+	return inState->impl->loopIterate(inState, blocking, outHasTerminated);
 }

@@ -24,6 +24,29 @@ public class DylibEventLoopInterface
 	implements ScritchEventLoopInterface
 {
 	/**
+	 * {@inheritDoc}
+	 * @since 2024/04/02
+	 */
+	@Override
+	public boolean inLoop()
+	{
+		return NativeScritchDylib.__loopIsInThread(this.dyLib._stateP);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return
+	 * @since 2024/12/22
+	 */
+	@Override
+	public boolean iterate()
+		throws MLECallError
+	{
+		return NativeScritchDylib.__loopIterate(this.dyLib._stateP);
+	}
+	
+	/**
 	 * Initializes the interface.
 	 *
 	 * @param __selfApi Reference to our own API.
@@ -90,15 +113,5 @@ public class DylibEventLoopInterface
 			__task.run();
 		else
 			NativeScritchDylib.__loopExecuteWait(this.dyLib._stateP, __task);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/04/02
-	 */
-	@Override
-	public boolean inLoop()
-	{
-		return NativeScritchDylib.__loopIsInThread(this.dyLib._stateP);
 	}
 }
