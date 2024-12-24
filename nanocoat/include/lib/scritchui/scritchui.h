@@ -102,6 +102,10 @@ typedef enum sjme_scritchui_uiType
 #define SJME_SUI_CAST_COMPONENT(v) \
 	((sjme_scritchui_uiComponent)sjme_scritchui_checkCast_component((v)))
 
+/** Check cast to container kind. */
+#define SJME_SUI_CAST_CONTAINER(v) \
+	((sjme_scritchui_uiComponent)sjme_scritchui_checkCast_container((v)))
+
 /** Check cast to panel. */
 #define SJME_SUI_CAST_PANEL(v) \
 	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_PANEL, \
@@ -2144,6 +2148,15 @@ sjme_pointer sjme_scritchui_checkCast(sjme_scritchui_uiType inType,
  * @since 2024/07/23
  */
 sjme_pointer sjme_scritchui_checkCast_component(sjme_pointer inPtr);
+
+/**
+ * Check cast of a given type against a container.
+ *
+ * @param inPtr The input pointer.
+ * @return Always @c inPtr .
+ * @since 2024/12/23
+ */
+sjme_pointer sjme_scritchui_checkCast_container(sjme_pointer inPtr);
 
 /**
  * Check cast of a given type against a menu kind.

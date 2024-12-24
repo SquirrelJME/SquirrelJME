@@ -309,6 +309,129 @@ sjme_errorCode sjme_scritchui_core_containerSetBounds(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_core_intern_containerMaxSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNotNull sjme_scritchui_dim* outSize)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiContainer container;
+	sjme_scritchui_uiContainer subContainer;
+	sjme_scritchui_dim result, containerSize, viewSize;
+	sjme_scritchui_uiView subView;
+	sjme_scritchui_uiComponent item;
+	sjme_jint i, n, sw, sh;
+	
+	if (inState == NULL || inContainer == NULL || outSize == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover container. */
+	container = NULL;
+	if (sjme_error_is(error = sjme_scritchui_core_intern_getContainer(
+		inState, inContainer,
+		&container)) || container == NULL)
+		return sjme_error_default(error);
+
+	/* Nothing in this? Ignore. */
+	if (container->components == NULL || container->components->length == 0)
+	{
+		memset(outSize, 0, sizeof(*outSize));
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Calculate maximum dimensional size. */
+	memset(&result, 0, sizeof(result));
+	for (i = 0, n = container->components->length; i < n; i++)
+	{
+		/* Ignore missing components. */
+		item = container->components->elements[i];
+		if (item == NULL)
+			continue;
+
+		/* Clear base. */
+		sw = 0;
+		sh = 0;
+		
+		/* Is this a viewport? */
+		subView = NULL;
+		memset(&viewSize, 0, sizeof(viewSize));
+		if ((error = inState->intern->getView(
+			inState, item, &subView)))
+		{
+			/* This is a view! */
+			if (error == SJME_ERROR_NONE)
+			{
+				viewSize.width = subView->view.d.width;
+				viewSize.height = subView->view.d.height;
+			}
+
+			/* Something else? */
+			else if (error != SJME_ERROR_INVALID_ARGUMENT)
+				return sjme_error_default(error);
+		}
+
+		/* Is this another container? */
+		subContainer = NULL;
+		memset(&containerSize, 0, sizeof(containerSize));
+		if ((error = inState->intern->getContainer(
+			inState, item, &subContainer)))
+		{
+			/* This is a container. */
+			if (error == SJME_ERROR_NONE)
+			{
+				/* Recursively get size. */
+				if (sjme_error_is(error =
+					inState->intern->containerMaxSize(
+						inState, item, &containerSize)))
+					return sjme_error_default(error);
+			}
+
+			/* Something else? */
+			else if (error != SJME_ERROR_INVALID_ARGUMENT)
+				return sjme_error_default(error);
+		}
+
+		/* Prefer the size of a viewport. */
+		if (viewSize.width > 0 && viewSize.height > 0)
+		{
+			sw += viewSize.width;
+			sh += viewSize.height;
+		}
+
+		/* Prefer the max size of the container if it is also one. */
+		else if (containerSize.width > 0 && containerSize.height > 0)
+		{
+			/* Add in base size. */
+			sw += containerSize.width;
+			sh += containerSize.height;
+		}
+
+		/* Bounds are only valid if they have been set. */
+		else if (item->bounds.d.width > 0 && item->bounds.d.height > 0)
+		{
+			/* Add in base size. */
+			sw += item->bounds.d.width;
+			sh += item->bounds.d.height;
+		}
+
+		/* Offset by whatever coordinates the bounds of this has? */
+		if (item->bounds.s.x > 0)
+			sw += item->bounds.s.x;
+		if (item->bounds.s.y > 0)
+			sh += item->bounds.s.y;
+
+		/* Greater than the size currently set? */
+		if (sw > result.width)
+			result.width = sw;
+		if (sh > result.height)
+			result.height = sh;
+	}
+	
+	/* Success! */
+	memmove(outSize, &result, sizeof(*outSize));
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_core_intern_getContainer(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

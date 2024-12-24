@@ -142,6 +142,8 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 	sjme_attrInValue sjme_jboolean isVisible)
 {
 	SJMEWindow* cocoaWindow;
+	sjme_errorCode error;
+	sjme_scritchui_dim size;
 
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -149,8 +151,21 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 	/* Recover window. */
 	cocoaWindow = inWindow->component.common.handle[SJME_SUI_COCOA_H_NSVIEW];
 
-	/* Debug. */
-	sjme_message("NSWindow visible? %d", isVisible);
+	/* Since we initially did not care how big the window is, before we */
+	/* show it, we need to set an actual better size. */
+	memset(&size, 0, sizeof(size));
+	if (sjme_error_is(error = inState->intern->containerMaxSize(
+		inState, SJME_SUI_CAST_CONTAINER(inWindow), &size)))
+		return inState->implIntern->checkError(inState, error);
+
+	/* Set resultant size. */
+	if (size.width > 0 && size.height > 0)
+	{
+		[cocoaWindow
+			setContentMinSize:NSMakeSize(size.width, size.height)];
+		[cocoaWindow
+			setMinSize:NSMakeSize(size.width, size.height)];
+	}
 
 	/* Change state accordingly. */
 	[cocoaWindow center];

@@ -90,6 +90,9 @@ sjme_errorCode sjme_scritchui_cocoa_loopIterate(
 	/* Recover the current application. */
 	currentApp = inState->common.handle[SJME_SUI_COCOA_H_NSAPP];
 
+	/* Set as finish launching. */
+	[currentApp finishLaunching];
+
 	/* Just say that windows needs updating, because let us be real */
 	/* here, when does Windows not need updating? */
 	[currentApp setWindowsNeedUpdate:YES];

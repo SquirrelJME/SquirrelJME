@@ -182,6 +182,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 {
 	.bindFocus = sjme_scritchui_core_intern_bindFocus,
+	.containerMaxSize = sjme_scritchui_core_intern_containerMaxSize,
 	.fontBuiltin = sjme_scritchui_core_intern_fontBuiltin,
 	.getChoice = sjme_scritchui_core_intern_getChoice,
 	.getContainer = sjme_scritchui_core_intern_getContainer,
@@ -218,7 +219,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 	
 	/* Debug. */
 	sjme_message("Waiting for top state to become mapped...");
-	
+
 	/* Recover wrapped state. */
 	topState = NULL;
 	while (topState == NULL)
@@ -626,15 +627,34 @@ sjme_pointer sjme_scritchui_checkCast_component(sjme_pointer inPtr)
 	
 	/* Check type. */
 	common = inPtr;
-	if (common->type != SJME_SCRITCHUI_TYPE_LIST &&
-		common->type != SJME_SCRITCHUI_TYPE_PANEL &&
+	if (common->type < SJME_SCRITCHUI_TYPE_FONT ||
+		common->type >= SJME_NUM_SCRITCHUI_UI_TYPES)
+	{
+		sjme_debug_abort();
+		return NULL;
+	}
+	
+	/* Return passed value. */
+	return inPtr;
+}
+
+sjme_pointer sjme_scritchui_checkCast_container(sjme_pointer inPtr)
+{
+	sjme_scritchui_uiCommon common;
+
+	if (inPtr == NULL)
+		return NULL;
+
+	/* Check type. */
+	common = inPtr;
+	if (common->type != SJME_SCRITCHUI_TYPE_PANEL &&
 		common->type != SJME_SCRITCHUI_TYPE_SCROLL_PANEL &&
 		common->type != SJME_SCRITCHUI_TYPE_WINDOW)
 	{
 		sjme_debug_abort();
 		return NULL;
 	}
-	
+
 	/* Return passed value. */
 	return inPtr;
 }

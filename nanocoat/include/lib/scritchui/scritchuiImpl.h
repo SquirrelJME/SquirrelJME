@@ -400,6 +400,20 @@ typedef sjme_errorCode (*sjme_scritchui_intern_bindFocusFunc)(
 	sjme_attrInValue sjme_jboolean isGrabbing);
 
 /**
+ * Returns the maximum size of the container's components.
+ *
+ * @param inState The input state.
+ * @param inContainer The container to get the component sizes of.
+ * @param outSize The resultant size of the components.
+ * @return Any resultant error.
+ * @since 2024/12/23
+ */
+typedef sjme_errorCode (*sjme_scritchui_containerMaxSizeFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNotNull sjme_scritchui_dim* outSize);
+
+/**
  * Returns the choice for the given component.
  * 
  * @param inState The input state.
@@ -655,6 +669,9 @@ struct sjme_scritchui_internFunctions
 {
 	/** Binds focus to a window. */
 	sjme_scritchui_intern_bindFocusFunc bindFocus;
+
+	/** Gets the max size of a container. */
+	sjme_scritchui_containerMaxSizeFunc containerMaxSize;
 	
 	/** Returns the built-in font, this can handle layers. */
 	sjme_scritchui_fontBuiltinFunc fontBuiltin;

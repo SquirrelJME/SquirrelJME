@@ -384,6 +384,11 @@ sjme_errorCode sjme_scritchui_core_intern_getChoice(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInOutNotNull sjme_scritchui_uiChoice* outChoice);
 
+sjme_errorCode sjme_scritchui_core_intern_containerMaxSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNotNull sjme_scritchui_dim* outSize);
+
 sjme_errorCode sjme_scritchui_core_intern_getContainer(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
