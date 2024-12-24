@@ -391,27 +391,33 @@ sjme_errorCode sjme_scritchui_core_intern_containerMaxSize(
 				return sjme_error_default(error);
 		}
 
-		/* Prefer the size of a viewport. */
+		/* View size is valid? */
 		if (viewSize.width > 0 && viewSize.height > 0)
 		{
-			sw += viewSize.width;
-			sh += viewSize.height;
+			if (viewSize.width > sw)
+				sw = viewSize.width;
+			if (viewSize.height > sh)
+				sh = viewSize.height;
 		}
 
-		/* Prefer the max size of the container if it is also one. */
+		/* Container size is valid? */
 		else if (containerSize.width > 0 && containerSize.height > 0)
 		{
 			/* Add in base size. */
-			sw += containerSize.width;
-			sh += containerSize.height;
+			if (containerSize.width > sw)
+				sw = containerSize.width;
+			if (containerSize.height > sh)
+				sh = containerSize.height;
 		}
 
-		/* Bounds are only valid if they have been set. */
-		else if (item->bounds.d.width > 0 && item->bounds.d.height > 0)
+		/* Item bounds MAY override the view size or the container size! */
+		if (item->bounds.d.width > 0 && item->bounds.d.height > 0)
 		{
 			/* Add in base size. */
-			sw += item->bounds.d.width;
-			sh += item->bounds.d.height;
+			if (item->bounds.d.width > sw)
+				sw = item->bounds.d.width;
+			if (item->bounds.d.height > sh)
+				sh = item->bounds.d.height;
 		}
 
 		/* Offset by whatever coordinates the bounds of this has? */
