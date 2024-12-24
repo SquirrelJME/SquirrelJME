@@ -144,6 +144,7 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 	SJMEWindow* cocoaWindow;
 	sjme_errorCode error;
 	sjme_scritchui_dim size;
+	NSRect scale;
 
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -161,10 +162,18 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 	/* Set resultant size. */
 	if (size.width > 0 && size.height > 0)
 	{
+		/* Frame sizes are in PDF space, so they need to be translated. */
+		scale.origin.x = 0;
+		scale.origin.y = 0;
+		scale.size.width = size.width;
+		scale.size.height = size.height;
+		scale = [cocoaWindow.contentView convertRectFromBase:scale];
+
+		/* Set size. */
 		[cocoaWindow
-			setContentMinSize:NSMakeSize(size.width, size.height)];
-		[cocoaWindow
-			setMinSize:NSMakeSize(size.width, size.height)];
+			setFrame:scale
+			display:NO
+			animate:NO];
 	}
 
 	/* Change state accordingly. */
