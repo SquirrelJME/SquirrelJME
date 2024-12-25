@@ -162,14 +162,18 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 	/* Set resultant size. */
 	if (size.width > 0 && size.height > 0)
 	{
-		/* Frame sizes are in PDF space, so they need to be translated. */
+		/* Project correct frame size. */
+		if (sjme_error_is(error = inState->apiInThread->lafDpiProject(
+			inState, SJME_SUI_CAST_COMPONENT(inWindow),
+			SJME_JNI_FALSE,
+			NULL, NULL, &size.width, &size.height)))
+			return sjme_error_default(error);
+
+		/* Use this scale. */
 		scale.origin.x = 0;
 		scale.origin.y = 0;
 		scale.size.width = size.width;
 		scale.size.height = size.height;
-		scale = [cocoaWindow.contentView convertRectFromBase:scale];
-
-		/* Set size. */
 		[cocoaWindow
 			setFrame:scale
 			display:NO

@@ -61,7 +61,22 @@
 
 	/* The dirty rect is in PDF space, it needs to be converted. */
 	/* The super frame needs to be used as well. */
-	dirtyBase = [self convertRectToBase:dirtyRect];
+	x = dirtyRect.origin.x;
+	y = dirtyRect.origin.y;
+	w = dirtyRect.size.width;
+	h = dirtyRect.size.height;
+	if (sjme_error_is(error = inState->apiInThread->lafDpiProject(
+		inState, SJME_SUI_CAST_COMPONENT(inPanel),
+		SJME_JNI_TRUE, &x, &y, &w, &h)))
+		goto fail_project;
+
+	/* Fill in base coordinates. */
+	dirtyBase.origin.x = x;
+	dirtyBase.origin.y = y;
+	dirtyBase.size.width = w;
+	dirtyBase.size.height = h;
+
+	/* Project others???? */
 	frameBase = self.frame;
 	superBase = self.superview.frame;
 
@@ -159,6 +174,7 @@ fail_noImageRep:
 fail_noBuiltInFont:
 fail_initPencil:
 fail_draw:
+fail_project:
 	if (sjme_error_is(error))
 		sjme_message("Native draw failed: %d", error);
 }

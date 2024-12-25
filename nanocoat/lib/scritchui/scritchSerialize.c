@@ -356,7 +356,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->lafDpiProject.inContext,
 		as->lafDpiProject.toBase,
 		as->lafDpiProject.inOutX,
-		as->lafDpiProject.inOutY));
+		as->lafDpiProject.inOutY,
+		as->lafDpiProject.inOutW,
+		as->lafDpiProject.inOutH));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(lafElementColor,
 		SJME_SCRITCHUI_SERIAL_TYPE_LAF_ELEMENT_COLOR,
@@ -1045,16 +1047,20 @@ sjme_errorCode sjme_scritchui_coreSerial_lafDpiProject(
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
 	sjme_attrInValue sjme_jboolean toBase,
 	sjme_attrInNullable sjme_jint* inOutX,
-	sjme_attrInNullable sjme_jint* inOutY)
+	sjme_attrInNullable sjme_jint* inOutY,
+	sjme_attrInNullable sjme_jint* inOutW,
+	sjme_attrInNullable sjme_jint* inOutH)
 {
 	SJME_SCRITCHUI_SERIAL_CHUNK(lafDpiProject,
 		SJME_SCRITCHUI_SERIAL_TYPE_LAF_DPI_PROJECT,
-		(inState, inContext, toBase, inOutX, inOutY));
+		(inState, inContext, toBase, inOutX, inOutY, inOutW, inOutH));
 		
 	SJME_SCRITCHUI_SERIAL_PASS(inContext);
 	SJME_SCRITCHUI_SERIAL_PASS(toBase);
 	SJME_SCRITCHUI_SERIAL_PASS(inOutX);
 	SJME_SCRITCHUI_SERIAL_PASS(inOutY);
+	SJME_SCRITCHUI_SERIAL_PASS(inOutW);
+	SJME_SCRITCHUI_SERIAL_PASS(inOutH);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

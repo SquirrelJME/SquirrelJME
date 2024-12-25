@@ -68,7 +68,6 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.labelSetString = sjme_scritchui_coreSerial_labelSetString,
 	.listNew = sjme_scritchui_coreSerial_listNew,
 	.lafDpiProject = sjme_scritchui_coreSerial_lafDpiProject,
-	.lafDpiProject = NULL,
 	.lafElementColor = sjme_scritchui_coreSerial_lafElementColor,
 
 	/* Loops are unchanged. */

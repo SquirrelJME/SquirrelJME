@@ -59,9 +59,12 @@ sjme_errorCode sjme_scritchui_core_lafDpiProject(
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
 	sjme_attrInValue sjme_jboolean toBase,
 	sjme_attrInNullable sjme_jint* inOutX,
-	sjme_attrInNullable sjme_jint* inOutY)
+	sjme_attrInNullable sjme_jint* inOutY,
+	sjme_attrInNullable sjme_jint* inOutW,
+	sjme_attrInNullable sjme_jint* inOutH)
 {
-	if (inState == NULL || (inOutX == NULL && inOutY == NULL))
+	if (inState == NULL || (inOutX == NULL && inOutY == NULL &&
+		inOutW == NULL && inOutH == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* If not implemented, then do nothing which is a 1:1 scale. */
@@ -70,7 +73,7 @@ sjme_errorCode sjme_scritchui_core_lafDpiProject(
 	
 	/* Forward to native implementation. */
 	return inState->impl->lafDpiProject(inState, inContext, toBase,
-		inOutX, inOutY);
+		inOutX, inOutY, inOutW, inOutH);
 }
 
 sjme_errorCode sjme_scritchui_core_lafElementColor(

@@ -406,7 +406,9 @@ SUD_STRUCT_DEF(lafDpiProject,
 	SDU_VAR(sjme_scritchui_uiComponent, inContext);
 	SDU_VAR(sjme_jboolean, toBase);
 	SDU_VARP(sjme_jint, inOutX);
-	SDU_VARP(sjme_jint, inOutY););
+	SDU_VARP(sjme_jint, inOutY);
+	SDU_VARP(sjme_jint, inOutW);
+	SDU_VARP(sjme_jint, inOutH););
 
 SUD_STRUCT_DEF(lafElementColor,
 	SDU_VAR(sjme_scritchui_uiComponent, inContext);
@@ -800,7 +802,9 @@ sjme_errorCode sjme_scritchui_coreSerial_lafDpiProject(
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
 	sjme_attrInValue sjme_jboolean toBase,
 	sjme_attrInNullable sjme_jint* inOutX,
-	sjme_attrInNullable sjme_jint* inOutY);
+	sjme_attrInNullable sjme_jint* inOutY,
+	sjme_attrInNullable sjme_jint* inOutW,
+	sjme_attrInNullable sjme_jint* inOutH);
 
 sjme_errorCode sjme_scritchui_coreSerial_lafElementColor(
 	sjme_attrInNotNull sjme_scritchui inState,

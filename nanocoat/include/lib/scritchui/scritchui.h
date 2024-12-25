@@ -1375,6 +1375,8 @@ typedef sjme_errorCode (*sjme_scritchui_labelSetStringFunc)(
  * @param toBase Reverse projection from scaled DPI space to base coordinates.
  * @param inOutX Input/output X coordinates.
  * @param inOutY Input/output Y coordinates.
+ * @param inOutW Input/output width.
+ * @param inOutH Input/output height.
  * @return Any resultant error.
  * @since 2024/12/25
  */
@@ -1383,7 +1385,9 @@ typedef sjme_errorCode (*sjme_scritchui_lafDpiProjectFunc)(
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
 	sjme_attrInValue sjme_jboolean toBase,
 	sjme_attrInNullable sjme_jint* inOutX,
-	sjme_attrInNullable sjme_jint* inOutY);
+	sjme_attrInNullable sjme_jint* inOutY,
+	sjme_attrInNullable sjme_jint* inOutW,
+	sjme_attrInNullable sjme_jint* inOutH);
 
 /**
  * Returns the color for the given element based on the current look and feel.

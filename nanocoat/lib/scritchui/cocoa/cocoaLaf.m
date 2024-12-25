@@ -16,12 +16,15 @@ sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
 	sjme_attrInValue sjme_jboolean toBase,
 	sjme_attrInNullable sjme_jint* inOutX,
-	sjme_attrInNullable sjme_jint* inOutY)
+	sjme_attrInNullable sjme_jint* inOutY,
+	sjme_attrInNullable sjme_jint* inOutW,
+	sjme_attrInNullable sjme_jint* inOutH)
 {
 	NSView* view;
-	NSPoint point;
+	NSRect rect;
 
-	if (inState == NULL || (inOutX == NULL && inOutY == NULL))
+	if (inState == NULL || (inOutX == NULL && inOutY == NULL &&
+		inOutW == NULL && inOutH == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 #if (SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_5) && \
@@ -32,26 +35,43 @@ sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
 		return SJME_ERROR_NONE;
 
 	/* Recover view, if there is none then ignore. */
-	view = inContext->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+	if (inContext->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
+		view = ((NSWindow*)inContext->common
+			.handle[SJME_SUI_COCOA_H_NSVIEW]).contentView;
+	else
+		view = inContext->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+	/* There is no such view? */
 	if (view == NULL)
 		return SJME_ERROR_NONE;
 
 	/* Perform point conversion. */
+	memset(&rect, 0, sizeof(rect));
 	if (inOutX != NULL)
-		point.x = *inOutX;
+		rect.origin.x = *inOutX;
 	if (inOutY != NULL)
-		point.y = *inOutY;
+		rect.origin.y = *inOutY;
+	if (inOutW != NULL)
+		rect.size.width = *inOutW;
+	if (inOutH != NULL)
+		rect.size.height = *inOutH;
 
 	if (toBase)
-		point = [view convertPointToBase:point];
+		rect = [view convertRectToBase:rect];
 	else
-		point = [view convertPointFromBase:point];
+		rect = [view convertRectFromBase:rect];
 
 	/* Return the result of the translation. */
 	if (inOutX != NULL)
-		*inOutX = point.x;
+		*inOutX = rect.origin.x;
 	if (inOutY != NULL)
-		*inOutY = point.y;
+		*inOutY = rect.origin.y;
+	if (inOutW != NULL)
+		*inOutW = rect.size.width;
+	if (inOutH != NULL)
+		*inOutH = rect.size.height;
+
+	/* Success! */
 	return SJME_ERROR_NONE;
 
 #elif SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_7)

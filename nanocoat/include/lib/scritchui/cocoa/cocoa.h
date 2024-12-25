@@ -159,7 +159,9 @@ sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
 	sjme_attrInValue sjme_jboolean toBase,
 	sjme_attrInNullable sjme_jint* inOutX,
-	sjme_attrInNullable sjme_jint* inOutY);
+	sjme_attrInNullable sjme_jint* inOutY,
+	sjme_attrInNullable sjme_jint* inOutW,
+	sjme_attrInNullable sjme_jint* inOutH);
 
 sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 	sjme_attrInNotNull sjme_scritchui inState,
