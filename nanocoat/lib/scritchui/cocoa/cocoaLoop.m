@@ -101,7 +101,8 @@ sjme_errorCode sjme_scritchui_cocoa_loopIterate(
 	for (;;)
 	{
 		/* Pop next event. */
-#if !defined(SJME_CONFIG_HAS_COCOA_GNUSTEP) && OS_API_VERSION(10,15)
+#if defined(MAC_OS_X_VERSION_10_15) && \
+	SJME_CONFIG_COCOA_VERSION_CHECK(MAC_OS_X_VERSION_10_15)
 		event = [currentApp nextEventMatchingMask:NSAnyEventMask
 			untilDate:[NSDate now]
 			inMode:NSDefaultRunLoopMode

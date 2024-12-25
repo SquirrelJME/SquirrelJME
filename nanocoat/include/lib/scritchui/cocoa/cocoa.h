@@ -37,6 +37,29 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+#if defined(MAC_OS_X_VERSION_MIN_REQUIRED)
+	/** The current Cocoa version. */
+	#define SJME_CONFIG_COCOA_VERSION MAC_OS_X_VERSION_MIN_REQUIRED
+	
+	/** Cocoa version check. */
+	#define SJME_CONFIG_COCOA_VERSION_CHECK(against) \
+		(SJME_CONFIG_COCOA_VERSION >= against)
+#elif defined(SJME_CONFIG_HAS_COCOA_GNUSTEP)
+	#if defined(GS_OPENSTEP_V)
+		/** The current Cocoa version. */
+		#define SJME_CONFIG_COCOA_VERSION GS_OPENSTEP_V
+	#else
+		/** The current Cocoa version. */
+		#define SJME_CONFIG_COCOA_VERSION GS_API_OPENSTEP
+	#endif
+	
+	/** Cocoa version check. */
+	#define SJME_CONFIG_COCOA_VERSION_CHECK(against) \
+		(SJME_CONFIG_COCOA_VERSION >= GS_OSX_ADJUST(against))
+#else
+	#error Unknown Cocoa version.
+#endif
+	
 /** Application handle in the ScritchUI state. */
 #define SJME_SUI_COCOA_H_NSAPP 0
 
