@@ -27,9 +27,12 @@ sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
 		inOutW == NULL && inOutH == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-#if (SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_5) && \
-	SJME_CONFIG_COCOA_VERSION_BEFORE(MAC_OS_X_VERSION_10_7)) || \
-	SJME_CONFIG_GNUSTEP_VERSION_LEAST(SJME_GNUSTEP_GUI_0_20_0)
+#if SJME_CONFIG_COCOA_VERSION_BEFORE(MAC_OS_X_VERSION_10_5) && \
+	SJME_CONFIG_GNUSTEP_VERSION_BEFORE(SJME_GNUSTEP_GUI_0_20_0)
+	/* This does not exist before 10.5, so do nothing. */
+	return SJME_ERROR_NONE;
+
+#else
 	/* Without a context, we cannot perform any translation. */
 	if (inContext == NULL)
 		return SJME_ERROR_NONE;
@@ -56,10 +59,19 @@ sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
 	if (inOutH != NULL)
 		rect.size.height = *inOutH;
 
+#if (SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_5) && \
+	SJME_CONFIG_COCOA_VERSION_BEFORE(MAC_OS_X_VERSION_10_7)) || \
+	SJME_CONFIG_GNUSTEP_VERSION_LEAST(SJME_GNUSTEP_GUI_0_20_0)
 	if (toBase)
 		rect = [view convertRectToBase:rect];
 	else
 		rect = [view convertRectFromBase:rect];
+#else
+	if (toBase)
+		rect = [view convertRectToBacking:rect];
+	else
+		rect = [view convertRectFromBacking:rect];
+#endif
 
 	/* Return the result of the translation. */
 	if (inOutX != NULL)
@@ -72,14 +84,6 @@ sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
 		*inOutH = rect.size.height;
 
 	/* Success! */
-	return SJME_ERROR_NONE;
-
-#elif SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_7)
-	sjme_todo();
-	return sjme_error_notImplemented(0);
-
-#else
-	/* This does not exist before 10.5, so do nothing. */
 	return SJME_ERROR_NONE;
 #endif
 }
