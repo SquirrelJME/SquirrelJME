@@ -56,7 +56,7 @@ extern "C"
 		(SJME_CONFIG_COCOA_VERSION >= against)
 	
 	/** GNUStep GUI version check. */
-	#define SJME_CONFIG_GNUSTEP_VERSION_LEAST(major, minor, release) 0
+	#define SJME_CONFIG_GNUSTEP_VERSION_LEAST(against) 0
 	
 #elif defined(SJME_CONFIG_HAS_COCOA_GNUSTEP)
 	/** Cocoa version check. */
