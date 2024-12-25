@@ -444,6 +444,9 @@ struct sjme_scritchui_uiViewBase
 	
 	/** The current page size. */
 	sjme_scritchui_dim pageSize;
+	
+	/** The last suggested viewing size. */
+	sjme_scritchui_dim lastSuggest;
 };
 
 struct sjme_scritchui_uiScrollPanelBase

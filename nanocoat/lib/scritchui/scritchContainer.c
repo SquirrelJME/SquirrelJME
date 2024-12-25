@@ -317,7 +317,7 @@ sjme_errorCode sjme_scritchui_core_intern_containerMaxSize(
 	sjme_errorCode error;
 	sjme_scritchui_uiContainer container;
 	sjme_scritchui_uiContainer subContainer;
-	sjme_scritchui_dim result, containerSize, viewSize;
+	sjme_scritchui_dim result, containerSize, viewSize, viewSuggest;
 	sjme_scritchui_uiView subView;
 	sjme_scritchui_uiComponent item;
 	sjme_jint i, n, sw, sh;
@@ -355,14 +355,20 @@ sjme_errorCode sjme_scritchui_core_intern_containerMaxSize(
 		/* Is this a viewport? */
 		subView = NULL;
 		memset(&viewSize, 0, sizeof(viewSize));
+		memset(&viewSuggest, 0, sizeof(viewSuggest));
 		if ((error = inState->intern->getView(
 			inState, item, &subView)))
 		{
 			/* This is a view! */
 			if (error == SJME_ERROR_NONE)
 			{
+				/* Get the current size. */
 				viewSize.width = subView->view.d.width;
 				viewSize.height = subView->view.d.height;
+				
+				/* And also the suggested size. */
+				viewSuggest.width = subView->lastSuggest.width;
+				viewSuggest.height = subView->lastSuggest.height;
 			}
 
 			/* Something else? */
@@ -390,14 +396,28 @@ sjme_errorCode sjme_scritchui_core_intern_containerMaxSize(
 			else if (error != SJME_ERROR_INVALID_ARGUMENT)
 				return sjme_error_default(error);
 		}
-
-		/* View size is valid? */
-		if (viewSize.width > 0 && viewSize.height > 0)
+		
+		/* This is a view and either size is valid. */
+		if ((viewSuggest.width > 0 && viewSuggest.height > 0) ||
+			(viewSize.width > 0 && viewSize.height > 0))
 		{
-			if (viewSize.width > sw)
-				sw = viewSize.width;
-			if (viewSize.height > sh)
-				sh = viewSize.height;
+			/* Suggested view size is valid? */
+			if (viewSuggest.width > 0 && viewSuggest.height > 0)
+			{
+				if (viewSuggest.width > sw)
+					sw = viewSuggest.width;
+				if (viewSuggest.height > sh)
+					sh = viewSuggest.height;
+			}
+	
+			/* Standard view size is valid? */
+			else
+			{
+				if (viewSize.width > sw)
+					sw = viewSize.width;
+				if (viewSize.height > sh)
+					sh = viewSize.height;
+			}	
 		}
 
 		/* Container size is valid? */
