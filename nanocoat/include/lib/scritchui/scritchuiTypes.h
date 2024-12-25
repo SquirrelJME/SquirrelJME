@@ -61,12 +61,7 @@ typedef struct sjme_scritchui_pencilLockState
 	sjme_jboolean isCopy;
 } sjme_scritchui_pencilLockState;
 
-/**
- * Base pencil drawing structure.
- * 
- * @since 2024/05/04
- */
-typedef struct sjme_scritchui_pencilBase
+struct sjme_scritchui_pencilBase
 {
 	/** Common data. */
 	sjme_scritchui_uiCommonBase common;
@@ -134,7 +129,7 @@ typedef struct sjme_scritchui_pencilBase
 		/** The number of colors used. */
 		sjme_jint numColors;
 	} palette;
-} sjme_scritchui_pencilBase;
+};
 
 /** The string length of a component ID. */
 #define SJME_SCRITCHUI_UI_COMPONENT_ID_STRLEN 32
@@ -159,7 +154,7 @@ typedef struct sjme_scritchui_uiMouseState
 	sjme_jint mouseY;
 } sjme_scritchui_uiMouseState;
 
-typedef struct sjme_scritchui_uiComponentBase
+struct sjme_scritchui_uiComponentBase
 {
 	/** Common data. */
 	sjme_scritchui_uiCommonBase common;
@@ -188,7 +183,7 @@ typedef struct sjme_scritchui_uiComponentBase
 		/** Current and next logical mouse state. */
 		sjme_scritchui_uiMouseState mouse[2];
 	} state;
-} sjme_scritchui_uiComponentBase;
+};
 
 /** List of component. */
 SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);
@@ -197,12 +192,7 @@ SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);
 #define SJME_TYPEOF_BASIC_sjme_scritchui_uiComponent \
 	SJME_TYPEOF_BASIC_sjme_pointer
 
-/**
- * Contains the information of a single item within a choice.
- * 
- * @since 2024/07/16
- */
-typedef struct sjme_scritchui_uiChoiceItemBase
+struct sjme_scritchui_uiChoiceItemBase
 {
 	/** Is this selected? */
 	sjme_jboolean isSelected;
@@ -224,17 +214,12 @@ typedef struct sjme_scritchui_uiChoiceItemBase
 	
 	/** The number of pixels in the image. */
 	sjme_jint imageRgbNumPixels;
-} sjme_scritchui_uiChoiceItemBase;
+};
 
 /** A list of choice items. */
 SJME_LIST_DECLARE(sjme_scritchui_uiChoiceItem, 0);
 
-/**
- * Contains all of the information on choice items.
- * 
- * @since 2024/07/16
- */
-typedef struct sjme_scritchui_uiChoiceBase
+struct sjme_scritchui_uiChoiceBase
 {
 	/** The type of choice this is. */
 	sjme_scritchui_choiceType type;
@@ -244,43 +229,28 @@ typedef struct sjme_scritchui_uiChoiceBase
 	
 	/** The items on this list. */
 	sjme_list_sjme_scritchui_uiChoiceItem* items;
-} sjme_scritchui_uiChoiceBase;
+};
 
-/**
- * Base data for containers which may contain components.
- * 
- * @since 2024/04/20
- */
-typedef struct sjme_scritchui_uiContainerBase
+struct sjme_scritchui_uiContainerBase
 {
 	/** Components within the container. */
 	sjme_list_sjme_scritchui_uiComponent* components;
-} sjme_scritchui_uiContainerBase;
+};
 
-/**
- * Base data for anything which may have a label.
- * 
- * @since 2024/07/22
- */
-typedef struct sjme_scritchui_uiLabeledBase
+struct sjme_scritchui_uiLabeledBase
 {
 	/** The current label, which is always a copy. */
 	sjme_lpcstr label;
-} sjme_scritchui_uiLabeledBase;
+};
 
-/**
- * Base data for lists.
- * 
- * @since 2024/07/16
- */
-typedef struct sjme_scritchui_uiListBase
+struct sjme_scritchui_uiListBase
 {
 	/** Common data. */
 	sjme_scritchui_uiComponentBase component;
 	
 	/** Choice information. */
 	sjme_scritchui_uiChoiceBase choice;
-} sjme_scritchui_uiListBase;
+};
 
 /** Menu item list. */
 SJME_LIST_DECLARE(sjme_scritchui_uiMenuKind, 0);
@@ -309,12 +279,7 @@ struct sjme_scritchui_uiMenuHasParentBase
 	sjme_scritchui_uiMenuKind parent;
 };
 
-/**
- * Base data for menus.
- * 
- * @since 2024/07/21
- */
-typedef struct sjme_scritchui_uiMenuBase
+struct sjme_scritchui_uiMenuBase
 {
 	/** The menu kind information. */
 	sjme_scritchui_uiMenuKindBase menuKind;
@@ -327,14 +292,9 @@ typedef struct sjme_scritchui_uiMenuBase
 	
 	/** Menu parent. */
 	sjme_scritchui_uiMenuHasParentBase parent;
-} sjme_scritchui_uiMenuBase;
+};
 
-/**
- * Base data for menu bars.
- * 
- * @since 2024/07/21
- */
-typedef struct sjme_scritchui_uiMenuBarBase
+struct sjme_scritchui_uiMenuBarBase
 {
 	/** The menu kind information. */
 	sjme_scritchui_uiMenuKindBase menuKind;
@@ -344,14 +304,9 @@ typedef struct sjme_scritchui_uiMenuBarBase
 	
 	/** The window this is within. */
 	sjme_scritchui_uiWindow window;
-} sjme_scritchui_uiMenuBarBase;
+};
 
-/**
- * Base data for menu items.
- * 
- * @since 2024/07/21
- */
-typedef struct sjme_scritchui_uiMenuItemBase
+struct sjme_scritchui_uiMenuItemBase
 {
 	/** The menu kind information. */
 	sjme_scritchui_uiMenuKindBase menuKind;
@@ -373,14 +328,9 @@ typedef struct sjme_scritchui_uiMenuItemBase
 	
 	/** Some windowing systems need some ID to be specified. */
 	sjme_jint opaqueId;
-} sjme_scritchui_uiMenuItemBase;
+};
 
-/**
- * Base data for paintable components.
- * 
- * @since 2024/04/06
- */
-typedef struct sjme_scritchui_uiPaintableBase
+struct sjme_scritchui_uiPaintableBase
 {
 	/** Listeners. */
 	sjme_scritchui_uiPaintableListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
@@ -399,9 +349,9 @@ typedef struct sjme_scritchui_uiPaintableBase
 	
 	/** Pencil drawing information. */
 	sjme_scritchui_pencilBase pencil;
-} sjme_scritchui_uiPaintableBase;
+};
 
-typedef struct sjme_scritchui_uiPanelBase
+struct sjme_scritchui_uiPanelBase
 {
 	/** Common data. */
 	sjme_scritchui_uiComponentBase component;
@@ -417,9 +367,9 @@ typedef struct sjme_scritchui_uiPanelBase
 	
 	/** Is default focus enabled? */
 	sjme_jboolean defaultFocus;
-} sjme_scritchui_uiPanelBase;
+};
 
-typedef struct sjme_scritchui_uiScreenBase
+struct sjme_scritchui_uiScreenBase
 {
 	/** Common data. */
 	sjme_scritchui_uiCommonBase common;
@@ -429,7 +379,7 @@ typedef struct sjme_scritchui_uiScreenBase
 	
 	/** Generic display handle such as for X11. */
 	sjme_scritchui_handle displayHandle;
-} sjme_scritchui_uiScreenBase;
+};
 
 struct sjme_scritchui_uiViewBase
 {
@@ -461,7 +411,7 @@ struct sjme_scritchui_uiScrollPanelBase
 	sjme_scritchui_uiViewBase view;
 };
 
-typedef struct sjme_scritchui_uiWindowBase
+struct sjme_scritchui_uiWindowBase
 {
 	/** Common data. */
 	sjme_scritchui_uiComponentBase component;
@@ -486,7 +436,7 @@ typedef struct sjme_scritchui_uiWindowBase
 	
 	/** The component that has the focus. */
 	sjme_scritchui_uiComponent focusedComponent;
-} sjme_scritchui_uiWindowBase;
+};
 
 struct sjme_scritchui_pencilFontBase
 {

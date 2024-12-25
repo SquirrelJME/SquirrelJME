@@ -375,6 +375,13 @@ typedef sjme_scritchui_uiCommonBase* sjme_scritchui_uiCommon;
 /**
  * Represents a choice of options such as those in a list.
  * 
+ * @since 2024/12/25
+ */
+typedef struct sjme_scritchui_uiChoiceBase sjme_scritchui_uiChoiceBase;
+
+/**
+ * Represents a choice of options such as those in a list.
+ * 
  * @since 2024/04/20
  */
 typedef struct sjme_scritchui_uiChoiceBase* sjme_scritchui_uiChoice;
@@ -394,11 +401,25 @@ typedef struct sjme_scritchui_uiChoiceItemBase sjme_scritchui_uiChoiceItemBase;
 typedef struct sjme_scritchui_uiChoiceItemBase* sjme_scritchui_uiChoiceItem;
 
 /**
+ * Base component structure within ScritchUI.
+ * 
+ * @since 2024/03/27
+ */
+typedef struct sjme_scritchui_uiComponentBase sjme_scritchui_uiComponentBase;
+
+/**
  * Component within ScritchUI.
  * 
  * @since 2024/03/27
  */
 typedef struct sjme_scritchui_uiComponentBase* sjme_scritchui_uiComponent;
+
+/**
+ * Represents a container which can contain other components.
+ * 
+ * @since 2024/12/25
+ */
+typedef struct sjme_scritchui_uiContainerBase sjme_scritchui_uiContainerBase;
 
 /**
  * Represents a container which can contain other components.
@@ -420,6 +441,13 @@ typedef struct sjme_scritchui_uiLabeledBase sjme_scritchui_uiLabeledBase;
  * @since 2024/07/22
  */
 typedef sjme_scritchui_uiLabeledBase* sjme_scritchui_uiLabeled;
+
+/**
+ * Base paintable for ScritchUI.
+ * 
+ * @since 2024/12/25
+ */
+typedef struct sjme_scritchui_uiPaintableBase sjme_scritchui_uiPaintableBase;
 
 /**
  * Base paintable for ScritchUI.
@@ -517,6 +545,13 @@ typedef struct sjme_scritchui_uiMenuItemBase* sjme_scritchui_uiMenuItem;
 /**
  * A single monitor screen on the display for ScritchUI.
  * 
+ * @since 2024/12/25
+ */
+typedef struct sjme_scritchui_uiScreenBase sjme_scritchui_uiScreenBase;
+
+/**
+ * A single monitor screen on the display for ScritchUI.
+ * 
  * @since 2024/04/06
  */
 typedef struct sjme_scritchui_uiScreenBase* sjme_scritchui_uiScreen;
@@ -548,9 +583,23 @@ typedef sjme_scritchui_uiViewBase* sjme_scritchui_uiView;
 /**
  * A window within ScritchUI.
  * 
+ * @since 2024/12/25
+ */
+typedef struct sjme_scritchui_uiWindowBase sjme_scritchui_uiWindowBase;
+
+/**
+ * A window within ScritchUI.
+ * 
  * @since 2024/03/27
  */
 typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
+
+/**
+ * ScritchUI Pencil state.
+ * 
+ * @since 2024/12/25
+ */
+typedef struct sjme_scritchui_pencilBase sjme_scritchui_pencilBase;
 
 /**
  * ScritchUI Pencil state.
