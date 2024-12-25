@@ -191,9 +191,9 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	/* Set internal functions. */
 	inState->implIntern = &sjme_scritchui_cocoaInternFunctions;
 
-	/* Enable debugging on debug builds, but only on actual macOS */
-	/* as GNUstep does not have this at all. */
-#if defined(SJME_CONFIG_DEBUG) && SJME_CONFIG_COCOA_VERSION_LEAST(0)
+	/* Be as verbose as possible on debug builds */
+#if defined(SJME_CONFIG_DEBUG) && \
+	SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_0)
 	NSDebugEnabled = YES;
 #endif
 
