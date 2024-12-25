@@ -25,8 +25,7 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilInitLine(
 	/* Set default properties for the line. */
 	[path setLineWidth:1.0];
 
-#if defined(MAC_OS_VERSION_11_0) && \
-	SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_VERSION_11_0)
+#if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_VERSION_11_0)
 	[path setLineCapStyle:NSLineCapStyleButt];
 	[path setLineJoinStyle:NSLineJoinStyleMiter];
 #else

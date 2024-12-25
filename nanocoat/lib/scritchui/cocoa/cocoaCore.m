@@ -39,6 +39,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_cocoaFunctions =
 	.containerSetBounds = sjme_scritchui_cocoa_containerSetBounds,
 	.hardwareGraphics = NULL,
 	.labelSetString = NULL,
+	.lafDpiProject = sjme_scritchui_cocoa_lafDpiProject,
 	.lafElementColor = NULL,
 	.listNew = NULL,
 	.loopExecute = NULL,
@@ -192,7 +193,7 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 
 	/* Enable debugging on debug builds, but only on actual macOS */
 	/* as GNUstep does not have this at all. */
-#if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_HAS_COCOA_APPLE)
+#if defined(SJME_CONFIG_DEBUG) && SJME_CONFIG_COCOA_VERSION_LEAST(0)
 	NSDebugEnabled = YES;
 #endif
 

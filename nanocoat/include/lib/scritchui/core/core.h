@@ -224,7 +224,14 @@ sjme_errorCode sjme_scritchui_core_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInNullable sjme_lpcstr inString);
-	
+
+sjme_errorCode sjme_scritchui_core_lafDpiProject(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrInValue sjme_jboolean toBase,
+	sjme_attrInNullable sjme_jint* inOutX,
+	sjme_attrInNullable sjme_jint* inOutY);
+
 sjme_errorCode sjme_scritchui_core_lafElementColor(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,

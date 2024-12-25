@@ -1366,6 +1366,26 @@ typedef sjme_errorCode (*sjme_scritchui_labelSetStringFunc)(
 	sjme_attrInNullable sjme_lpcstr inString);
 
 /**
+ * Projects or reverses a projection of a coordinate within the base
+ * unscaled coordinate system to the host DPI.
+ * 
+ * @param inState The input state.
+ * @param inContext The context of the component the projection is for, may
+ * be @c NULL .
+ * @param toBase Reverse projection from scaled DPI space to base coordinates.
+ * @param inOutX Input/output X coordinates.
+ * @param inOutY Input/output Y coordinates.
+ * @return Any resultant error.
+ * @since 2024/12/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_lafDpiProjectFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrInValue sjme_jboolean toBase,
+	sjme_attrInNullable sjme_jint* inOutX,
+	sjme_attrInNullable sjme_jint* inOutY);
+
+/**
  * Returns the color for the given element based on the current look and feel.
  * 
  * @param inState The current state.
@@ -1873,6 +1893,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the close listener for a window. */
 	SJME_SCRITCHUI_QUICK_API(labelSetString);
+
+	/** Projects or reverses a projection of a scaled coordinate. */
+	SJME_SCRITCHUI_QUICK_API(lafDpiProject);
 	
 	/** Returns the element color for the look and feel. */
 	SJME_SCRITCHUI_QUICK_API(lafElementColor);

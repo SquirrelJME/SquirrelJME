@@ -306,6 +306,9 @@ struct sjme_scritchui_implFunctions
 	
 	/** Sets the close listener for a window. */
 	SJME_SCRITCHUI_QUICK_SAME(labelSetString);
+
+	/** Projects or reverses a projection of a scaled coordinate. */
+	SJME_SCRITCHUI_QUICK_SAME(lafDpiProject);
 	
 	/** Returns the element color for the look and feel. */
 	SJME_SCRITCHUI_QUICK_SAME(lafElementColor);

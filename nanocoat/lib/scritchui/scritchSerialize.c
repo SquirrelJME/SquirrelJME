@@ -350,6 +350,14 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->labelSetString.inCommon,
 		as->labelSetString.inString));
 		
+	SJME_SCRITCHUI_DISPATCH_CASE(lafDpiProject,
+		SJME_SCRITCHUI_SERIAL_TYPE_LAF_DPI_PROJECT,
+		(state,
+		as->lafDpiProject.inContext,
+		as->lafDpiProject.toBase,
+		as->lafDpiProject.inOutX,
+		as->lafDpiProject.inOutY));
+		
 	SJME_SCRITCHUI_DISPATCH_CASE(lafElementColor,
 		SJME_SCRITCHUI_SERIAL_TYPE_LAF_ELEMENT_COLOR,
 		(state,
@@ -1027,6 +1035,26 @@ sjme_errorCode sjme_scritchui_coreSerial_labelSetString(
 		
 	SJME_SCRITCHUI_SERIAL_PASS(inCommon);
 	SJME_SCRITCHUI_SERIAL_PASS(inString);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_lafDpiProject(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrInValue sjme_jboolean toBase,
+	sjme_attrInNullable sjme_jint* inOutX,
+	sjme_attrInNullable sjme_jint* inOutY)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(lafDpiProject,
+		SJME_SCRITCHUI_SERIAL_TYPE_LAF_DPI_PROJECT,
+		(inState, inContext, toBase, inOutX, inOutY));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inContext);
+	SJME_SCRITCHUI_SERIAL_PASS(toBase);
+	SJME_SCRITCHUI_SERIAL_PASS(inOutX);
+	SJME_SCRITCHUI_SERIAL_PASS(inOutY);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

@@ -40,6 +40,7 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	.containerSetBounds = sjme_scritchui_fb_containerSetBounds,
 	.hardwareGraphics = NULL,
 	.labelSetString = sjme_scritchui_fb_labelSetString,
+	.lafDpiProject = NULL,
 	.lafElementColor = sjme_scritchui_fb_lafElementColor,
 	.listNew = sjme_scritchui_fb_listNew,
 	.loopExecute = sjme_scritchui_fb_loopExecute,

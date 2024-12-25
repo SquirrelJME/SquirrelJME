@@ -37,6 +37,16 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+#if !defined(MAC_OS_X_VERSION_10_15)
+	/** Version define for macOS 10.15. */
+	#define MAC_OS_X_VERSION_10_15 101500
+#endif
+
+#if !defined(MAC_OS_VERSION_11_0)
+	/** Version define for macOS 11.0. */
+	#define MAC_OS_VERSION_11_0 110000
+#endif
+	
 #if defined(MAC_OS_X_VERSION_MIN_REQUIRED)
 	/** The current Cocoa version. */
 	#define SJME_CONFIG_COCOA_VERSION MAC_OS_X_VERSION_MIN_REQUIRED
@@ -44,18 +54,27 @@ extern "C"
 	/** Cocoa version check. */
 	#define SJME_CONFIG_COCOA_VERSION_LEAST(against) \
 		(SJME_CONFIG_COCOA_VERSION >= against)
-#elif defined(SJME_CONFIG_HAS_COCOA_GNUSTEP)
-	#if defined(GS_OPENSTEP_V)
-		/** The current Cocoa version. */
-		#define SJME_CONFIG_COCOA_VERSION GS_OPENSTEP_V
-	#else
-		/** The current Cocoa version. */
-		#define SJME_CONFIG_COCOA_VERSION GS_API_OPENSTEP
-	#endif
 	
+	/** GNUStep GUI version check. */
+	#define SJME_CONFIG_GNUSTEP_VERSION_LEAST(major, minor, release) 0
+	
+#elif defined(SJME_CONFIG_HAS_COCOA_GNUSTEP)
 	/** Cocoa version check. */
-	#define SJME_CONFIG_COCOA_VERSION_LEAST(against) \
-		(SJME_CONFIG_COCOA_VERSION >= GS_OSX_ADJUST(against))
+	#define SJME_CONFIG_COCOA_VERSION_LEAST(against) 0
+	
+	/** Build GNUStep Version ID. */
+	#define SJME_CONFIG_GNUSTEP_VERSION_BUILD(major, minor, release) \
+		((major * 10000) + (minor * 100) + release)
+	
+	/** GNUStep GUI version check, all three. */
+	#define SJME_CONFIG_GNUSTEP_VERSION_LEAST(against) \
+        (SJME_CONFIG_GNUSTEP_VERSION_BUILD(GNUSTEP_GUI_MAJOR_VERSION, \
+        GNUSTEP_GUI_MINOR_VERSION, \
+        GNUSTEP_GUI_SUBMINOR_VERSION) > against)
+	
+	/** GNUstep GUI version 0.20.0. */
+	#define SJME_GNUSTEP_GUI_0_20_0 \
+		SJME_CONFIG_GNUSTEP_VERSION_BUILD(0, 20, 0)
 #else
 	#error Unknown Cocoa version.
 #endif
@@ -63,6 +82,10 @@ extern "C"
 /** Cocoa version check before a given version. */
 #define SJME_CONFIG_COCOA_VERSION_BEFORE(against) \
 	(!SJME_CONFIG_COCOA_VERSION_LEAST(against))
+	
+/** GNUstep GUI version check before a given version. */
+#define SJME_CONFIG_GNUSTEP_VERSION_BEFORE(against) \
+	(!SJME_CONFIG_GNUSTEP_VERSION_LEAST(against))
 	
 /** Application handle in the ScritchUI state. */
 #define SJME_SUI_COCOA_H_NSAPP 0
@@ -130,6 +153,13 @@ sjme_errorCode sjme_scritchui_cocoa_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(paint));
+
+sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrInValue sjme_jboolean toBase,
+	sjme_attrInNullable sjme_jint* inOutX,
+	sjme_attrInNullable sjme_jint* inOutY);
 
 sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 	sjme_attrInNotNull sjme_scritchui inState,

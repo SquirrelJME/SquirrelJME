@@ -35,6 +35,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_motifFunctions =
 	.containerSetBounds = NULL,
 	.hardwareGraphics = NULL,
 	.labelSetString = NULL,
+	.lafDpiProject = NULL,
 	.lafElementColor = NULL,
 	.listNew = NULL,
 	.loopExecute = NULL,

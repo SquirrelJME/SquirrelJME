@@ -67,6 +67,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.hardwareGraphics = sjme_scritchui_coreSerial_hardwareGraphics,
 	.labelSetString = sjme_scritchui_coreSerial_labelSetString,
 	.listNew = sjme_scritchui_coreSerial_listNew,
+	.lafDpiProject = sjme_scritchui_coreSerial_lafDpiProject,
+	.lafDpiProject = NULL,
 	.lafElementColor = sjme_scritchui_coreSerial_lafElementColor,
 
 	/* Loops are unchanged. */
@@ -144,6 +146,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.fontList = sjme_scritchui_core_fontList,
 	.hardwareGraphics = sjme_scritchpen_core_hardwareGraphics,
 	.labelSetString = sjme_scritchui_core_labelSetString,
+	.lafDpiProject = sjme_scritchui_core_lafDpiProject,
 	.lafElementColor = sjme_scritchui_core_lafElementColor,
 	.listNew = sjme_scritchui_core_listNew,
 	.loopExecute = sjme_scritchui_core_loopExecute,
