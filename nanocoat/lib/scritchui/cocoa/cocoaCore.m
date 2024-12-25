@@ -220,7 +220,7 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 
 		/* We want SquirrelJME to be activated because this is a UI! */
 		/* Whatever we are running on, just drop it and set this. */
-#if SJME_CONFIG_COCOA_VERSION_CHECK(MAC_OS_X_VERSION_10_6)
+#if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_6)
 		[currentApp setActivationPolicy:NSApplicationActivationPolicyRegular];
 #endif
 

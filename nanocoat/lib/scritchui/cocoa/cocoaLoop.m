@@ -101,18 +101,22 @@ sjme_errorCode sjme_scritchui_cocoa_loopIterate(
 	for (;;)
 	{
 		/* Pop next event. */
+		event = [currentApp
 #if defined(MAC_OS_X_VERSION_10_15) && \
-	SJME_CONFIG_COCOA_VERSION_CHECK(MAC_OS_X_VERSION_10_15)
-		event = [currentApp nextEventMatchingMask:NSAnyEventMask
-			untilDate:[NSDate now]
-			inMode:NSDefaultRunLoopMode
-			dequeue:YES];
+	SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_15)
+			nextEventMatchingMask:NSUIntegerMax
 #else
-		event = [currentApp nextEventMatchingMask:NSAnyEventMask
+			nextEventMatchingMask:NSAnyEventMask
+#endif
+
+#if defined(MAC_OS_X_VERSION_10_12) && \
+	SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_12)
+			untilDate:[NSDate now]
+#else
 			untilDate:[NSDate dateWithTimeIntervalSinceNow:0]
+#endif
 			inMode:NSDefaultRunLoopMode
 			dequeue:YES];
-#endif
 
 		/* Process event? */
 		NSLog(@"Event %@", event);
