@@ -923,7 +923,7 @@ static sjme_errorCode mleAwtCall(
 	return SJME_ERROR_NONE;
 }
 
-static const sjme_scritchui_externalFunctions mleMacOSExternalFuncs =
+static const sjme_scritchui_externalFunctions mleAwtLoopFuncs =
 {
 	.externalLoopExecuteLater = mleAwtCall,
 };
@@ -1886,7 +1886,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	if (sjme_error_is(error = apiInitFunc(pool, &state,
 		mle_bindEventThread,
 #if 0 && defined(SJME_CONFIG_HAS_MACOS)
-		&mleMacOSExternalFuncs,
+		&mleAwtLoopFuncs,
 #else
 		NULL,
 #endif
