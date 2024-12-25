@@ -132,7 +132,7 @@ static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 	sjme_message("Before Cocoa main loop...");
 
 	/* Run main application. */
-	NSApplicationMain(argc, argv);
+	NSApplicationMain(argc, (const char**)argv);
 
 	/* Debug. */
 	sjme_message("After Cocoa main loop?");
@@ -220,7 +220,9 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 
 		/* We want SquirrelJME to be activated because this is a UI! */
 		/* Whatever we are running on, just drop it and set this. */
+#if !defined(SJME_CONFIG_HAS_COCOA_GNUSTEP) && OS_API_VERSION(10,6)
 		[currentApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+#endif
 
 		/* Indicate that we finished launching, so everything pops up. */
 		[currentApp finishLaunching];
