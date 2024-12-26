@@ -56,6 +56,36 @@
 				SJME_ATOMIC_GCC_MEMORY_ORDER); \
 		}
 
+#elif defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY)
+	
+	#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
+		{ \
+			SJME_TOKEN_TYPE(type, numPointerStars) was; \
+			 \
+			was = __sync_val_compare_and_swap( \
+				SJME_TYPEOF_IF_POINTER(type, numPointerStars, \
+					(volatile sjme_pointer*))&atomic->value, \
+				expected, set); \
+			if (was == expected) \
+				return SJME_JNI_TRUE; \
+			return SJME_JNI_FALSE; \
+		}
+
+	#define SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars) \
+		{ \
+			return __sync_fetch_and_add(&atomic->value, \
+				add); \
+		}
+
+	#define SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_SET(type, numPointerStars) \
+		{ \
+			return __sync_lock_test_and_set(&atomic->value, \
+				(SJME_TOKEN_TYPE(type, numPointerStars))value); \
+		}
+
 #elif defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
 
 	/** The value type. */
