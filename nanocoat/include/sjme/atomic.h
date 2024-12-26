@@ -145,6 +145,7 @@ extern "C" {
 
 #elif defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
 	defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
+	defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY) || \
 	defined(SJME_CONFIG_HAS_ATOMIC_OLD)
 
 /**
