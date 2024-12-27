@@ -39,8 +39,9 @@
 		SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars) \
 		{ \
 			/* Returns the new value, so it must be reversed! */\
-			return OSAtomicAdd32Barrier((sjme_jint)add, \
-				(sjme_jint*)&atomic->value) - add; \
+			return (SJME_TOKEN_TYPE(type, numPointerStars))\
+				(OSAtomicAdd32Barrier((sjme_jint)add, \
+				(sjme_jint*)&atomic->value) - (sjme_jint)add); \
 		}
 
 	#define SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \
@@ -52,11 +53,11 @@
 			OSMemoryBarrier(); \
 			temp = OSAtomicXor32((sjme_jint)value, \
 				(sjme_jint*)&atomic->value); \
-			OSAtomicXor32Barrier(((sjme_jint)temp) ^ ((sjme_jint)value)), \
+			OSAtomicXor32Barrier((((sjme_jint)temp) ^ ((sjme_jint)value)), \
 				(sjme_jint*)&atomic->value); \
 			OSMemoryBarrier(); \
-			return (SJME_TOKEN_TYPE(type, numPointerStars)\
-				((sjme_jint)temp) ^ ((sjme_jint)value)); \
+			return (SJME_TOKEN_TYPE(type, numPointerStars))\
+				(((sjme_jint)temp) ^ ((sjme_jint)value)); \
 		}
 
 #elif defined(SJME_CONFIG_HAS_ATOMIC_GCC)
@@ -283,18 +284,18 @@
 	SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \
 	SJME_ATOMIC_FUNCTION_GET(type, numPointerStars)
 
-SJME_ATOMIC_FUNCTION(sjme_jint, 0)
+SJME_ATOMIC_FUNCTION(sjme_jint, 0);
 
-SJME_ATOMIC_FUNCTION(sjme_juint, 0)
+SJME_ATOMIC_FUNCTION(sjme_juint, 0);
 
-SJME_ATOMIC_FUNCTION(sjme_lpstr, 0) /* NOLINT(*-non-const-parameter) */
+SJME_ATOMIC_FUNCTION(sjme_lpstr, 0); /* NOLINT(*-non-const-parameter) */
 
-SJME_ATOMIC_FUNCTION(sjme_lpcstr, 0) /* NOLINT(*-non-const-parameter) */
+SJME_ATOMIC_FUNCTION(sjme_lpcstr, 0); /* NOLINT(*-non-const-parameter) */
 
-SJME_ATOMIC_FUNCTION(sjme_jobject, 0)
+SJME_ATOMIC_FUNCTION(sjme_jobject, 0);
 
-SJME_ATOMIC_FUNCTION(sjme_pointer, 0)
+SJME_ATOMIC_FUNCTION(sjme_pointer, 0);
 
-SJME_ATOMIC_FUNCTION(sjme_intPointer, 0)
+SJME_ATOMIC_FUNCTION(sjme_intPointer, 0);
 
-SJME_ATOMIC_FUNCTION(sjme_thread, 0)
+SJME_ATOMIC_FUNCTION(sjme_thread, 0);
