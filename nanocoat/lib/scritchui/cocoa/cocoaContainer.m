@@ -102,7 +102,7 @@ sjme_errorCode sjme_scritchui_cocoa_componentSize(
 	cocoaView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
 
 	/* Are the frame coordinates in device or PDF space? */
-	base = cocoaView.frame;
+	base = [cocoaView frame];
 	if (outWidth != NULL)
 		*outWidth = (sjme_jint)base.size.width;
 	if (outHeight != NULL)

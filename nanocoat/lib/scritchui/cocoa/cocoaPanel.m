@@ -77,8 +77,8 @@
 	dirtyBase.size.height = h;
 
 	/* Project others???? */
-	frameBase = self.frame;
-	superBase = self.superview.frame;
+	frameBase = [self frame];
+	superBase = [[self superview] frame];
 
 	/* Determine actual origin coordinates and view size. */
 	x = dirtyBase.origin.x;
