@@ -39,8 +39,8 @@ sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
 
 	/* Recover view, if there is none then ignore. */
 	if (inContext->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
-		view = ((NSWindow*)inContext->common
-			.handle[SJME_SUI_COCOA_H_NSVIEW]).contentView;
+		view = [((NSWindow*)inContext->common
+			.handle[SJME_SUI_COCOA_H_NSVIEW]) contentView];
 	else
 		view = inContext->common.handle[SJME_SUI_COCOA_H_NSVIEW];
 

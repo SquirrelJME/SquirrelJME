@@ -34,7 +34,7 @@ sjme_errorCode sjme_scritchui_cocoa_containerAdd(
 		cocoaWindow = inContainer->common.handle[SJME_SUI_COCOA_H_NSVIEW];
 
 		/* Use this as the view. */
-		[cocoaWindow.contentView addSubview:cocoaView];
+		[[cocoaWindow contentView] addSubview:cocoaView];
 		[cocoaView setNeedsDisplay:true];
 	}
 
