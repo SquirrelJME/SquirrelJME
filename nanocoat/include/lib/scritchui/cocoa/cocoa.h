@@ -48,12 +48,12 @@ extern "C"
 #endif
 	
 #if defined(SJME_CONFIG_HAS_COCOA_APPLE)
-	#if defined(MAC_OS_X_VERSION_MIN_REQUIRED)
+	#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_MAX_ALLOWED
 		/** The current Cocoa version. */
 		#define SJME_CONFIG_COCOA_VERSION MAC_OS_X_VERSION_MIN_REQUIRED
-	#elif defined(MAC_OS_X_VERSION_MAX_REQUIRED)
+	#elif MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_MIN_REQUIRED
 		/** The current Cocoa version. */
-		#define SJME_CONFIG_COCOA_VERSION MAC_OS_X_VERSION_MAX_REQUIRED
+		#define SJME_CONFIG_COCOA_VERSION MAC_OS_X_VERSION_MAX_ALLOWED
 	#else
 		#if defined(SJME_CONFIG_HAS_ARCH_POWERPC)
 			/** The current Cocoa version. */
@@ -65,6 +65,10 @@ extern "C"
 			/** The current Cocoa version. */
 			#define SJME_CONFIG_COCOA_VERSION MAC_OS_VERSION_11_0
 		#endif
+	#endif
+	
+	#if !defined(SJME_CONFIG_COCOA_VERSION) || SJME_CONFIG_COCOA_VERSION == 0
+		#error No Cocoa version defined
 	#endif
 	
 	/** Cocoa version check. */
