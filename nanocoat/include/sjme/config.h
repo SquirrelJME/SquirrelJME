@@ -9,6 +9,9 @@
 
 /**
  * Basic configuration header.
+ *
+ * The majority of this header is to simplify the system specific macros
+ * and definitions and unify them so they are far easier to use.
  * 
  * @since 2023/07/27
  */
@@ -274,8 +277,39 @@ extern "C" {
 	#define sjme_flexibleArrayCount
 #endif
 
-/* Visual C++. */
+/** Visual Studio 6 */
+#define SJME_VERSION_MSVC_6 1200
+
+/** Visual Studio 2005 */
+#define SJME_VERSION_MSVC_2005 1400
+	
 #if defined(_MSC_VER)
+	/** Microsoft Visual C++ Compiler. */
+	#define SJME_CONFIG_HAS_MSVC
+	
+	/** Is the MSVC version the specified version? */
+	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) \
+		(_MSC_VER >= against)
+#else
+	/** Is the MSVC version the specified version? */
+	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) 0
+#endif
+
+#if defined(__GNUC__)
+	/** GNU C Compiler. */
+	#define SJME_CONFIG_HAS_GCC
+	
+	/** Is the GCC version the specified version? */
+	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
+		(__GNUC__ > major ? 1 : \
+		(defined(__GNUC_MINOR__) ? __GNUC_MINOR__ >= minor : 1))
+#else
+	/** Is the GCC version the specified version? */
+	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
+#endif
+	
+/* Visual C++. */
+#if defined(SJME_CONFIG_HAS_MSVC)
 	#include <sal.h>
 
 	/** Return value must be checked. */
@@ -332,7 +366,7 @@ extern "C" {
 
 	/** Allocate on the stack. */
 	#define sjme_alloca(size) _alloca((size))
-#elif defined(__clang__) || defined(__GNUC__)
+#elif defined(__clang__) || defined(SJME_CONFIG_HAS_GCC)
 	/* Clang has special analyzer stuff, but also same as GCC otherwise. */
 	#if defined(__clang__)
 		#if __has_feature(attribute_analyzer_noreturn)
@@ -351,8 +385,7 @@ extern "C" {
 		#endif
 	#endif
 
-	#if __GNUC__ > 4 || \
-		(__GNUC__ == 4 && defined(__GNUC_MINOR__) && __GNUC_MINOR__ >= 4)
+	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
 		/** Artificial function. */
 		#define sjme_attrArtificial __attribute__((artificial))
 	#endif
@@ -556,16 +589,6 @@ extern "C" {
 	#define sjme_noOptimize
 #endif
 
-#if defined(__GNUC__)
-	/** GNU C Compiler. */
-	#define SJME_CONFIG_HAS_GCC
-#endif
-
-#if defined(_MSC_VER)
-	/** Microsoft Visual C++ Compiler. */
-	#define SJME_CONFIG_HAS_MSVC
-#endif
-
 #if defined(SJME_CONFIG_HAS_MACOS) && (defined(SJME_CONFIG_HAS_ARCH_IA32) || \
 	defined(SJME_CONFIG_HAS_ARCH_POWERPC))
 	/** Supports macOS Darwin kernel Atomic Access */
@@ -579,8 +602,7 @@ extern "C" {
 	#define SJME_CONFIG_HAS_ATOMIC_C11
 #elif defined(SJME_CONFIG_HAS_GCC)
 	/* GCC 4.7 introduces the __atomic family. */
-	#if __GNUC__ >= 4 || \
-		(__GNUC__ == 4 && defined(__GNUC_MINOR__) && __GNUC_MINOR__ >= 7)
+	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 7)
 		/** GCC Atomics. */
 		#define SJME_CONFIG_HAS_ATOMIC_GCC
 	#else
