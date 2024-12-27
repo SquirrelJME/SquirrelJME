@@ -47,9 +47,25 @@ extern "C"
 	#define MAC_OS_VERSION_11_0 110000
 #endif
 	
-#if defined(MAC_OS_X_VERSION_MIN_REQUIRED)
-	/** The current Cocoa version. */
-	#define SJME_CONFIG_COCOA_VERSION MAC_OS_X_VERSION_MIN_REQUIRED
+#if defined(SJME_CONFIG_HAS_COCOA_APPLE)
+	#if defined(MAC_OS_X_VERSION_MIN_REQUIRED)
+		/** The current Cocoa version. */
+		#define SJME_CONFIG_COCOA_VERSION MAC_OS_X_VERSION_MIN_REQUIRED
+	#elif defined(MAC_OS_X_VERSION_MAX_REQUIRED)
+		/** The current Cocoa version. */
+		#define SJME_CONFIG_COCOA_VERSION MAC_OS_X_VERSION_MAX_REQUIRED
+	#else
+		#if defined(SJME_CONFIG_HAS_ARCH_POWERPC)
+			/** The current Cocoa version. */
+			#define SJME_CONFIG_COCOA_VERSION MAC_OS_X_VERSION_10_4
+		#elif defined(SJME_CONFIG_HAS_ARCH_IA32)
+			/** The current Cocoa version. */
+			#define SJME_CONFIG_COCOA_VERSION MAC_OS_X_VERSION_10_5
+		#else
+			/** The current Cocoa version. */
+			#define SJME_CONFIG_COCOA_VERSION MAC_OS_VERSION_11_0
+		#endif
+	#endif
 	
 	/** Cocoa version check. */
 	#define SJME_CONFIG_COCOA_VERSION_LEAST(against) \
@@ -70,7 +86,7 @@ extern "C"
 	#define SJME_CONFIG_GNUSTEP_VERSION_LEAST(against) \
         (SJME_CONFIG_GNUSTEP_VERSION_BUILD(GNUSTEP_GUI_MAJOR_VERSION, \
         GNUSTEP_GUI_MINOR_VERSION, \
-        GNUSTEP_GUI_SUBMINOR_VERSION) > against)
+        GNUSTEP_GUI_SUBMINOR_VERSION) >= against)
 	
 	/** GNUstep GUI version 0.20.0. */
 	#define SJME_GNUSTEP_GUI_0_20_0 \
