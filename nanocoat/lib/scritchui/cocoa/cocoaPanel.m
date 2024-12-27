@@ -135,9 +135,9 @@
 			yBy:-superBase.size.height];
 	else
 	{
-		[matrix translateXBy:0.0 yBy:(CGFloat)(-h)];
+		[matrix translateXBy:0.0 yBy:(-h)];
 		[matrix translateXBy:0.0
-			yBy:(CGFloat)(frameBase.size.height - superBase.size.height)];
+			yBy:(frameBase.size.height - superBase.size.height)];
 	}
 
 	/* Use the new matrix. */

@@ -17,10 +17,18 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilInitLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull NSBezierPath* path)
 {
+#if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_VERSION_10_8) || \
+    SJME_CONFIG_GNUSTEP_BASE_VERSION_LEAST(1, 19, 1)
+	CGFloat dots[2];
+#elif SJME_CONFIG_HAS_POINTER == 64
+	double dots[2];
+#else
+	float dots[2];
+#endif
+
 	if (g == NULL || path == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	CGFloat dots[2];
 
 	/* Set default properties for the line. */
 	[path setLineWidth:1.0];

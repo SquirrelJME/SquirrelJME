@@ -28,7 +28,7 @@ sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 #if SJME_CONFIG_COCOA_VERSION_BEFORE(MAC_OS_X_VERSION_10_5) && \
-	SJME_CONFIG_GNUSTEP_VERSION_BEFORE(0, 20, 0)
+	SJME_CONFIG_GNUSTEP_GUI_VERSION_BEFORE(0, 20, 0)
 	/* This does not exist before 10.5, so do nothing. */
 	return SJME_ERROR_NONE;
 
@@ -61,7 +61,7 @@ sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
 
 #if (SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_5) && \
 	SJME_CONFIG_COCOA_VERSION_BEFORE(MAC_OS_X_VERSION_10_7)) || \
-	SJME_CONFIG_GNUSTEP_VERSION_LEAST(0, 20, 0)
+	SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 20, 0)
 	if (toBase)
 		rect = [view convertRectToBase:rect];
 	else
