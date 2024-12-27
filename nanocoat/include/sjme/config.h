@@ -283,7 +283,21 @@ extern "C" {
 /** Visual Studio 2005 */
 #define SJME_VERSION_MSVC_2005 1400
 	
-#if defined(_MSC_VER)
+#if defined(__clang__)
+	/** CLang LLVM Compiler. */
+	#define SJME_CONFIG_HAS_CLANG
+	
+	/** Is the CLang version the specified version? */
+	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) \
+		(__clang_major__ > major ? 1 : \
+		(__clang_major__ < major ? 0 : \
+		(__clang_minor__ >= minor)))
+#else
+	/** Is the CLang version the specified version? */
+	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) 0
+#endif
+	
+#if defined(_MSC_VER) && !defined(SJME_CONFIG_HAS_CLANG)
 	/** Microsoft Visual C++ Compiler. */
 	#define SJME_CONFIG_HAS_MSVC
 	
@@ -295,7 +309,7 @@ extern "C" {
 	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) 0
 #endif
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) && !defined(SJME_CONFIG_HAS_CLANG)
 	/** GNU C Compiler. */
 	#define SJME_CONFIG_HAS_GCC
 	
@@ -366,9 +380,9 @@ extern "C" {
 
 	/** Allocate on the stack. */
 	#define sjme_alloca(size) _alloca((size))
-#elif defined(__clang__) || defined(SJME_CONFIG_HAS_GCC)
+#elif defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
 	/* Clang has special analyzer stuff, but also same as GCC otherwise. */
-	#if defined(__clang__)
+	#if defined(SJME_CONFIG_HAS_CLANG)
 		#if __has_feature(attribute_analyzer_noreturn)
 			/** Method does not return. */
 			#define sjme_attrReturnNever __attribute__((analyzer_noreturn))
@@ -602,6 +616,9 @@ extern "C" {
 	!defined(__STDC_NO_ATOMICS__)
 	/** Supports C11 atomics. */
 	#define SJME_CONFIG_HAS_ATOMIC_C11
+#elif defined(SJME_CONFIG_HAS_CLANG)
+	/** CLang is based off GCC's newer __atomic family. */
+	#define SJME_CONFIG_HAS_ATOMIC_GCC
 #elif defined(SJME_CONFIG_HAS_GCC)
 	/* GCC 4.7 introduces the __atomic family. */
 	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 7)
@@ -662,7 +679,7 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/** Align to 32-bit. */
 	#define sjme_align32 __declspec(align(4))
-#elif defined(SJME_CONFIG_HAS_GCC)
+#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Align to 32-bit. */
 	#define sjme_align32 __attribute__((aligned(4)))
 #else
@@ -682,7 +699,7 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/** Align to 64-bit. */
 	#define sjme_align64 __declspec(align(8))
-#elif defined(SJME_CONFIG_HAS_GCC)
+#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Align to 64-bit. */
 	#define sjme_align64 __attribute__((aligned(8)))
 #else
