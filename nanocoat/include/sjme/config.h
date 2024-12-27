@@ -351,7 +351,7 @@ extern "C" {
 		#endif
 	#endif
 
-	#if __GNUC__ >= 4 || \
+	#if __GNUC__ > 4 || \
 		(__GNUC__ == 4 && defined(__GNUC_MINOR__) && __GNUC_MINOR__ >= 4)
 		/** Artificial function. */
 		#define sjme_attrArtificial __attribute__((artificial))
