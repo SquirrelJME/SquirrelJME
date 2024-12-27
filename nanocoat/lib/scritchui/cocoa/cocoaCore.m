@@ -183,10 +183,6 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	/* Get the current application. */
 	currentApp = NSApp;
 
-	/* Debug. */
-	NSLog(@"%@", NSThread.callStackSymbols);
-	sjme_message("Current NSApp: %p", currentApp);
-
 	/* Set internal functions. */
 	inState->implIntern = &sjme_scritchui_cocoaInternFunctions;
 
