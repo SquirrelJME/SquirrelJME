@@ -395,9 +395,11 @@ extern "C" {
 	
 	/** Deprecated. */
 	#define sjme_attrDeprecated __attribute__((deprecated))
-	
-	/** Disable optimization. */
-	#define sjme_noOptimize __attribute__((optimize("O0")))
+
+	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
+		/** Disable optimization. */
+		#define sjme_noOptimize __attribute__((optimize("O0")))
+	#endif
 	
 	/**
 	 * Formatted string.
