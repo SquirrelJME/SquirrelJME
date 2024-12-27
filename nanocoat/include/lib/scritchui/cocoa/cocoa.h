@@ -73,7 +73,8 @@ extern "C"
 	
 	/** Cocoa version check. */
 	#define SJME_CONFIG_COCOA_VERSION_LEAST(against) \
-		(SJME_CONFIG_COCOA_VERSION >= against)
+		(against != 0 && \
+		SJME_CONFIG_COCOA_VERSION >= against)
 	
 	/** GNUStep GUI version check. */
 	#define SJME_CONFIG_GNUSTEP_VERSION_LEAST(against) 0
@@ -88,7 +89,8 @@ extern "C"
 	
 	/** GNUStep GUI version check, all three. */
 	#define SJME_CONFIG_GNUSTEP_VERSION_LEAST(against) \
-        (SJME_CONFIG_GNUSTEP_VERSION_BUILD(GNUSTEP_GUI_MAJOR_VERSION, \
+        (against != 0 && \
+        SJME_CONFIG_GNUSTEP_VERSION_BUILD(GNUSTEP_GUI_MAJOR_VERSION, \
         GNUSTEP_GUI_MINOR_VERSION, \
         GNUSTEP_GUI_SUBMINOR_VERSION) >= against)
 	
