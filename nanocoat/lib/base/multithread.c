@@ -154,9 +154,9 @@ sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
 		while (SJME_JNI_FALSE == sjme_atomic_sjme_thread_compareSet(
 			&inLock->poke, SJME_THREAD_NULL, current))
 		{
-			sjme_thread_barrier();
+			sjme_atomic_barrier();
 			sjme_thread_yield();
-			sjme_thread_barrier();
+			sjme_atomic_barrier();
 		}
 		
 		/* We own the lock already, or we just owned it, so count up. */
@@ -176,9 +176,9 @@ sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
 	}
 		
 	/* Do this just for good measure for the wierd CPUs. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	sjme_thread_yield();
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -207,9 +207,9 @@ sjme_errorCode sjme_thread_spinLockRelease(
 	while (SJME_JNI_FALSE == sjme_atomic_sjme_thread_compareSet(
 		&inLock->poke, SJME_THREAD_NULL, current))
 	{
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		sjme_thread_yield();
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 	}
 	
 	/* We own the lock hopefully, so count down. */
@@ -232,9 +232,9 @@ sjme_errorCode sjme_thread_spinLockRelease(
 		current, SJME_THREAD_NULL);
 		
 	/* Do this just for good measure for the wierd CPUs. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	sjme_thread_yield();
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Do we not own the lock? */
 	if (!owned)

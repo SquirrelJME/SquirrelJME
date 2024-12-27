@@ -224,9 +224,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 	while (topState == NULL)
 	{
 		/* Barrier for other thread to run. */
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		sjme_thread_yield();
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		
 		/* Read it in. */
 		topState = sjme_atomic_sjme_pointer_get(
@@ -325,9 +325,9 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 			state);
 		
 		/* Barrier here for wrapped init. */
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		sjme_thread_yield();
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 	}
 	
 	/* Debug. */
@@ -341,9 +341,9 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	{
 		while (0 == sjme_atomic_sjme_jint_get(&state->loopThreadReady))
 		{
-			sjme_thread_barrier();
+			sjme_atomic_barrier();
 			sjme_thread_yield();
-			sjme_thread_barrier();
+			sjme_atomic_barrier();
 		}
 	}
 	

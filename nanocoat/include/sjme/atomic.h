@@ -35,6 +35,21 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+#if defined(SJME_CONFIG_HAS_ATOMIC_DARWIN)
+	/** Emits a memory barrier. */
+	#define sjme_atomic_barrier() OSMemoryBarrier()
+#elif defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
+	defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY)
+	/** Emits a memory barrier. */
+	#define sjme_atomic_barrier() __sync_synchronize()
+#elif defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
+	/** Emits a memory barrier. */
+	#define sjme_atomic_barrier() MemoryBarrier()
+#else
+	/** Emits a memory barrier. */
+	#define sjme_atomic_barrier() do {} while(0)
+#endif
+
 /**
  * Determines the name of an atomic type.
  *
@@ -143,7 +158,8 @@ extern "C" {
 	} SJME_ATOMIC_NAME(type, numPointerStars); \
 	SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars)
 
-#elif defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
+#elif defined(SJME_CONFIG_HAS_ATOMIC_DARWIN) || \
+	defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
 	defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
 	defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY) || \
 	defined(SJME_CONFIG_HAS_ATOMIC_OLD)
