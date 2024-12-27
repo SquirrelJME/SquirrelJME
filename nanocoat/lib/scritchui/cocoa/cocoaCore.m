@@ -173,7 +173,6 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 {
 	sjme_errorCode error;
 	NSApplication* currentApp;
-	NSThread* mainThread;
 	NSThread* currentThread;
 	NSRunLoop* currentLoop;
 	SJMESuperObject* super;
@@ -242,16 +241,12 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 		inState->common.handle[SJME_SUI_COCOA_H_NSAPP] = currentApp;
 
 		/* We know the main thread. */
-		mainThread = [NSThread mainThread];
 		currentThread = [NSThread currentThread];
-		inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD] = mainThread;
+		inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD] = currentThread;
 
 		/* Get the current run loop. */
 		currentLoop = [NSRunLoop currentRunLoop];
 		inState->common.handle[SJME_SUI_COCOA_H_NSRUNLOOP] = currentLoop;
-
-		/* Debug. */
-		sjme_message("Threads are %p ?= %p", mainThread, currentThread);
 
 		/* Need to call thread specific initializer? */
 		/* Usually this is for binding a thread to a JavaVM. */

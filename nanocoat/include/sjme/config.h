@@ -301,8 +301,8 @@ extern "C" {
 	
 	/** Is the GCC version the specified version? */
 	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
-		(__GNUC__ > major ? 1 : \
-		(defined(__GNUC_MINOR__) ? __GNUC_MINOR__ >= minor : 1))
+		(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
+		(defined(__GNUC_MINOR__) ? __GNUC_MINOR__ >= minor : 1)))
 #else
 	/** Is the GCC version the specified version? */
 	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
@@ -395,9 +395,11 @@ extern "C" {
 	
 	/** Deprecated. */
 	#define sjme_attrDeprecated __attribute__((deprecated))
-	
-	/** Disable optimization. */
-	#define sjme_noOptimize __attribute__((optimize("O0")))
+
+	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
+		/** Disable optimization. */
+		#define sjme_noOptimize __attribute__((optimize("O0")))
+	#endif
 	
 	/**
 	 * Formatted string.
