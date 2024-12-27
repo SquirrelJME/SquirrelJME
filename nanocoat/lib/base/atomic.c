@@ -30,7 +30,7 @@
 			if (OSAtomicCompareAndSwap32Barrier( \
 				(sjme_jint)expected, \
 				(sjme_jint)set, \
-				(volatile sjme_jint*)&atomic->value)) \
+				(sjme_jint*)&atomic->value)) \
 				return SJME_JNI_TRUE; \
 			return SJME_JNI_FALSE; \
 		}
@@ -40,7 +40,7 @@
 		{ \
 			/* Returns the new value, so it must be reversed! */\
 			return OSAtomicAdd32Barrier((sjme_jint)add, \
-				(volatile sjme_jint*)&atomic->value) - add; \
+				(sjme_jint*)&atomic->value) - add; \
 		}
 
 	#define SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \
@@ -51,12 +51,12 @@
 			sjme_jint temp; \
 			OSMemoryBarrier(); \
 			temp = OSAtomicXor32((sjme_jint)value, \
-				(volatile sjme_jint*)&atomic->value); \
-			OSAtomicXor32Barrier((sjme_jint)(temp ^ value), \
-				(volatile sjme_jint*)&atomic->value); \
+				(sjme_jint*)&atomic->value); \
+			OSAtomicXor32Barrier(((sjme_jint)temp) ^ ((sjme_jint)value)), \
+				(sjme_jint*)&atomic->value); \
 			OSMemoryBarrier(); \
 			return (SJME_TOKEN_TYPE(type, numPointerStars)\
-				(temp ^ value); \
+				((sjme_jint)temp) ^ ((sjme_jint)value)); \
 		}
 
 #elif defined(SJME_CONFIG_HAS_ATOMIC_GCC)
