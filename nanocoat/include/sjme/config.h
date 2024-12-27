@@ -563,7 +563,11 @@ extern "C" {
 	#define SJME_CONFIG_HAS_MSVC
 #endif
 
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_MACOS) && (defined(SJME_CONFIG_HAS_ARCH_IA32) || \
+	defined(SJME_CONFIG_HAS_ARCH_POWERPC))
+	/** Supports macOS Darwin kernel Atomic Access */
+	#define SJME_CONFIG_HAS_ATOMIC_DARWIN
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
 	/** Supports Windows Atomic Access. */
 	#define SJME_CONFIG_HAS_ATOMIC_WIN32
 #elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L && \
@@ -572,7 +576,8 @@ extern "C" {
 	#define SJME_CONFIG_HAS_ATOMIC_C11
 #elif defined(SJME_CONFIG_HAS_GCC)
 	/* GCC 4.7 introduces the __atomic family. */
-	#if __GNUC__ >= 4 && defined(__GNUC_MINOR__) && __GNUC_MINOR__ >= 7
+	#if __GNUC__ >= 4 || \
+		(__GNUC__ == 4 && defined(__GNUC_MINOR__) && __GNUC_MINOR__ >= 7)
 		/** GCC Atomics. */
 		#define SJME_CONFIG_HAS_ATOMIC_GCC
 	#else
@@ -583,6 +588,7 @@ extern "C" {
 
 #if !defined(SJME_CONFIG_HAS_ATOMIC)
 	#if defined(SJME_CONFIG_HAS_ATOMIC_C11) || \
+		defined(SJME_CONFIG_HAS_ATOMIC_DARWIN) || \
 		defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
 		defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY) || \
 		defined(SJME_CONFIG_HAS_ATOMIC_WIN32)

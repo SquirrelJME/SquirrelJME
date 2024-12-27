@@ -44,9 +44,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_waitAdapter(
 	waitData->result = SJME_THREAD_RESULT_AS_ERROR(result);
 	
 	/* Signal that wait is complete. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	sjme_atomic_sjme_jint_set(&waitData->signal, 1);
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Use result from callback. */
 	return result;
@@ -163,7 +163,7 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 	{
 		/* Yield to let other threads run. */
 		sjme_thread_yield();
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		
 		/* Done? */
 		if (0 != sjme_atomic_sjme_jint_get(&waitData.signal))

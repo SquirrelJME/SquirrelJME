@@ -57,7 +57,7 @@
 
 /** Invoke serial call and wait for result. */
 #define SJME_SCRITCHUI_INVOKE_WAIT \
-	do { sjme_thread_barrier(); \
+	do { sjme_atomic_barrier(); \
 		if (sjme_error_is(error = inState->api->loopExecuteWait(inState, \
 		sjme_scritchui_serialDispatch, &data))) \
 		return sjme_error_default(error); \
@@ -129,7 +129,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		
 	/* Emit barrier so we can access this. */
 	data = (sjme_scritchui_serialData*)anything;
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Restore info. */
 	state = data->state;
