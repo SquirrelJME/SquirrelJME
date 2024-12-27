@@ -407,17 +407,17 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 	result.y.zy = scaleY;
 	
 	/* Mirror horizontally? */
-	if ((xform & 0b001) != 0)
+	if ((xform & 1) != 0)
 		result.x.wx = -result.x.wx;
 		
 	/* Mirror vertically? */
-	if ((xform & 0b010) != 0)
+	if ((xform & 2) != 0)
 		result.y.zy = -result.y.zy;
 		
 	/* Rotate 90 degrees clockwise */
 	/* Thanks to jercos for helping out with the matrix math! */
 	/* The math here has been simplified to remove constants and otherwise. */
-	if ((xform & 0b100) != 0)
+	if ((xform & 4) != 0)
 	{
 		temp = result.x.wx;
 		result.x.wx = result.x.zy;
