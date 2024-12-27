@@ -77,26 +77,22 @@ extern "C"
 		SJME_CONFIG_COCOA_VERSION >= against)
 	
 	/** GNUStep GUI version check. */
-	#define SJME_CONFIG_GNUSTEP_VERSION_LEAST(against) 0
+	#define SJME_CONFIG_GNUSTEP_VERSION_LEAST(major, minor, release) 0
 	
 #elif defined(SJME_CONFIG_HAS_COCOA_GNUSTEP)
 	/** Cocoa version check. */
 	#define SJME_CONFIG_COCOA_VERSION_LEAST(against) 0
 	
-	/** Build GNUStep Version ID. */
-	#define SJME_CONFIG_GNUSTEP_VERSION_BUILD(major, minor, release) \
-		((major * 10000) + (minor * 100) + release)
-	
-	/** GNUStep GUI version check, all three. */
-	#define SJME_CONFIG_GNUSTEP_VERSION_LEAST(against) \
-        (against != 0 && \
-        SJME_CONFIG_GNUSTEP_VERSION_BUILD(GNUSTEP_GUI_MAJOR_VERSION, \
-        GNUSTEP_GUI_MINOR_VERSION, \
-        GNUSTEP_GUI_SUBMINOR_VERSION) >= against)
-	
-	/** GNUstep GUI version 0.20.0. */
-	#define SJME_GNUSTEP_GUI_0_20_0 \
-		SJME_CONFIG_GNUSTEP_VERSION_BUILD(0, 20, 0)
+	/** GNUStep GUI version check. */
+	#define SJME_CONFIG_GNUSTEP_VERSION_LEAST(major, minor, release) \
+        (GNUSTEP_GUI_MAJOR_VERSION > major ? 1 : \
+		(GNUSTEP_GUI_MAJOR_VERSION > major ? 0 : \
+		 \
+		(GNUSTEP_GUI_MINOR_VERSION > minor ? 1 : \
+		(GNUSTEP_GUI_MINOR_VERSION < minor ? 0 : \
+		 \
+		(GNUSTEP_GUI_SUBMINOR_VERSION >= release)))))
+
 #else
 	#error Unknown Cocoa version.
 #endif
@@ -106,8 +102,8 @@ extern "C"
 	(!SJME_CONFIG_COCOA_VERSION_LEAST(against))
 	
 /** GNUstep GUI version check before a given version. */
-#define SJME_CONFIG_GNUSTEP_VERSION_BEFORE(against) \
-	(!SJME_CONFIG_GNUSTEP_VERSION_LEAST(against))
+#define SJME_CONFIG_GNUSTEP_VERSION_BEFORE(major, minor, release) \
+	(!SJME_CONFIG_GNUSTEP_VERSION_LEAST(major, minor, release))
 	
 /** Application handle in the ScritchUI state. */
 #define SJME_SUI_COCOA_H_NSAPP 0
