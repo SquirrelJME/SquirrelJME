@@ -391,14 +391,14 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 	switch (inTrans)
 	{
 		/* These bits represent the stuff to do! == 0b9VH; */
-		case SJME_SCRITCHUI_TRANS_NONE:				xform = 0b000; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR:			xform = 0b001; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:	xform = 0b010; break;
-		case SJME_SCRITCHUI_TRANS_ROT180:			xform = 0b011; break;
-		case SJME_SCRITCHUI_TRANS_ROT90:			xform = 0b100; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:		xform = 0b101; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 0b110; break;
-		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 0b111; break;
+		case SJME_SCRITCHUI_TRANS_NONE:				xform = 0; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR:			xform = 1; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:	xform = 2; break;
+		case SJME_SCRITCHUI_TRANS_ROT180:			xform = 3; break;
+		case SJME_SCRITCHUI_TRANS_ROT90:			xform = 4; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:		xform = 5; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 6; break;
+		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 7; break;
 		/* These bits represent the stuff to do! == 0b9VH; */
 	}
 	
