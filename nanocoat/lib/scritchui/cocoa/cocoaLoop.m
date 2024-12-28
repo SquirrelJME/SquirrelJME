@@ -59,18 +59,33 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 	if (!inThread || inState->wrappedState == NULL ||
 		!sjme_atomic_sjme_jint_get(&inState->loopThreadReady))
 	{
+#if (SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_2) && \
+	SJME_CONFIG_COCOA_VERSION_BEFORE(MAC_OS_X_VERSION_10_5)) || \
+    (SJME_CONFIG_GNUSTEP_BASE_VERSION_LEAST(1, 5, 1) && \
+	SJME_CONFIG_GNUSTEP_BASE_VERSION_BEFORE(1, 15, 4))
+		/* Post notification. */
+		[[super class] performSelectorOnMainThread:@selector(postNotification:)
+			withObject:notif
+			waitUntilDone:NO];
+
+		/* Success? */
+		return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+
+#elif SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_5) || \
+    SJME_CONFIG_GNUSTEP_BASE_VERSION_LEAST(1, 15, 4)
 		/* Post notification. */
 		[[super class] performSelector:@selector(postNotification:)
 			onThread:mainThread
 			withObject:notif
 			waitUntilDone:NO];
+
+		/* Success? */
+		return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+#endif
 	}
 
-	/* Otherwise, we can post a notification now directly. */
-	else
-	{
-		[[NSNotificationCenter defaultCenter] postNotification:notif];
-	}
+	/* Otherwise, we can post the notification directly. */
+	[[NSNotificationCenter defaultCenter] postNotification:notif];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
