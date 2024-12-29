@@ -5,7 +5,7 @@
 	<description>SquirrelJME is a Java ME 8 Virtual Machine.</description>
 	<link>https://squirreljme.cc/</link>
 	<language>en-us</language>
-	<copyright>Copyright (C) 2013-2024 Stephanie Gawroriski</copyright>
+	<copyright>Copyright (C) 2013-2025 Stephanie Gawroriski</copyright>
 	<managingEditor>xer@multiphasicapps.net (Stephanie Gawroriski)</managingEditor>
 	<webMaster>xer@multiphasicapps.net (Stephanie Gawroriski)</webMaster>
 	<pubDate>Sun, 27 Oct 2024 18:20 EDT</pubDate>
@@ -18,8 +18,21 @@
 		rel="self" />
 
 	<!-- Update this accordingly! -->
-	<lastBuildDate>Sun, 24 Nov 2024 15:00 EST</lastBuildDate>
+	<lastBuildDate>Sun, 29 Dec 2024 18:00 EST</lastBuildDate>
 
+	<item>
+		<guid isPermaLink="false">0c2d113f-10d8-4835-ba27-bc1156927d27</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241124_1500.mkd</link>
+		<pubDate>Sun, 29 Dec 2024 18:00 EST</pubDate>
+
+		<title>Quite a year!</title>
+		<description>This year has been quite the year! In the current month
+			of December I have mostly been making minor bug fixes and other
+			small improvements around many miscellaneous areas, along with
+			working on the macOS Cocoa UI.</description>
+	</item>
+
+	<!-- Not current -->
 	<item>
 		<guid isPermaLink="false">8b04125a-678d-4943-9089-181d2414930a</guid>
 		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241124_1500.mkd</link>
@@ -29,8 +42,6 @@
 		<description>The year has been exciting and so much has been done,
 			but I also recognize that I need a much-needed break.</description>
 	</item>
-
-	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">6c70e869-c158-4aed-a5f3-94f9f565749e</guid>
