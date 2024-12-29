@@ -17,9 +17,14 @@ import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * Main entry point.
@@ -28,6 +33,47 @@ import java.util.Arrays;
  */
 public class Main
 {
+	/**
+	 * Determines the base directory based on the version.
+	 * 
+	 * @param __version The input version.
+	 * @return The resultant base directory.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/10/11
+	 */
+	public static String baseDir(String __version)
+		throws NullPointerException
+	{
+		if (__version == null)
+			throw new NullPointerException("NARG");
+		
+		// Split version
+		String[] fragments = __version.split(Pattern.quote("."));
+		if (fragments == null || fragments.length != 3)
+			throw new IllegalArgumentException("Invalid version: " +
+				__version);
+		
+		// Determine version digits
+		int[] versions = new int[3];
+		for (int i = 0; i < 3; i++)
+			try
+			{
+				versions[i] = Integer.parseInt(fragments[i], 10);
+			}
+			catch (NumberFormatException __e)
+			{
+				throw new IllegalArgumentException("Invalid version: " +
+					__version, __e);
+			}
+		
+		// An even minor version is a stable version
+		if ((versions[1] % 2) == 0)
+			return String.format("stable/%s", __version);
+		
+		// Otherwise unstable
+		return String.format("unstable/%s", __version);
+	}
+	
 	/**
 	 * Main entry point.
 	 *
@@ -45,11 +91,61 @@ public class Main
 		
 		// Get the SquirrelJME version
 		String version = __args[0];
+		String baseDir = Main.baseDir(version);
+		
+		// Load in Git/Fossil commit and the current date
+		String dateCommit = new Date().toString();
+		String fossilCommit = null;
+		try
+		{
+			fossilCommit = Files.readAllLines(
+				Paths.get("manifest.uuid"),
+				StandardCharsets.UTF_8).get(0).trim();
+		}
+		catch (Throwable __ignored)
+		{
+		}
+		String gitCommit = System.getenv("CIRCLE_SHA1");
+		byte[] mark = String.format(
+			"date:%s\r\nfossil:%s\r\ngit:%s\r\n",
+			dateCommit, fossilCommit,
+			gitCommit).getBytes(StandardCharsets.UTF_8);
 		
 		// Upload files into the un-versioned space
 		// romNanoCoatRelease=/home/.../squirreljme.jar
 		FossilCommand fossil = FossilCommand.instance();
 		if (fossil != null)
+		{
+			// .tgz and .zip files, for distros generally
+			Path tempFile = Files.createTempFile("archive", ".tmp");
+			for (String fileType : Arrays.asList("tar", "zip"))
+				try
+				{
+					// Delete the file to overwrite it
+					Files.deleteIfExists(tempFile);
+					
+					// Obtain source archive
+					fossil.exec(fileType,
+						Objects.toString(fossilCommit, "trunk"),
+						tempFile.toAbsolutePath().toString(),
+						"--name",
+						String.format("squirreljme-%s-src", version));
+					
+					// Determine filename
+					String name = String.format("squirreljme-%s-src.%s",
+						version, (fileType.equals("tar") ? "tgz" : fileType));
+					String target = Main.uvTarget(baseDir, version, name);
+					
+					// Upload source
+					fossil.add(tempFile, target);
+					fossil.add(mark, target + ".mkd");
+				}
+				finally
+				{
+					Files.deleteIfExists(tempFile);
+				}
+			
+			// Artifacts from the build
 			for (String arg : Arrays.asList(__args).subList(1, __args.length))
 			{
 				int eq = arg.indexOf('=');
@@ -61,13 +157,15 @@ public class Main
 				Path path = Paths.get(arg.substring(eq + 1));
 				
 				// Determine target name
-				String target = Main.uvTarget(version, name);
+				String target = Main.uvTarget(baseDir, version, name);
 				
 				// Store into un-versioned space
 				System.err.printf("Storing `%s` as `%s`...%n",
 					path, target);
 				fossil.add(path, target);
+				fossil.add(mark, target + ".mkd");
 			}
+		}
 		
 		// Read in workflow jobs
 		String workflowId = System.getenv("CIRCLE_WORKFLOW_ID");
@@ -82,7 +180,7 @@ public class Main
 				String target;
 				try
 				{
-					target = Main.uvTarget(version, job.getName());
+					target = Main.uvTarget(baseDir, version, job.getName());
 					if (target == null)
 						continue;
 				}
@@ -105,6 +203,7 @@ public class Main
 						// Store into un-versioned space
 						fossil.add(StreamUtils.readAll(1048576, in),
 							target);
+						fossil.add(mark, target + ".mkd");
 					}
 					
 					// Only care about the first
@@ -117,6 +216,7 @@ public class Main
 	/**
 	 * Determines the un-versioned space target.
 	 *
+	 * @param __baseDir The base directory.
 	 * @param __version The version of SquirrelJME.
 	 * @param __name The task name.
 	 * @return The resultant target.
@@ -124,10 +224,11 @@ public class Main
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/10/05
 	 */
-	public static String uvTarget(String __version, String __name)
+	public static String uvTarget(String __baseDir,
+		String __version, String __name)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (__version == null || __name == null)
+		if (__baseDir == null || __version == null || __name == null)
 			throw new NullPointerException("NARG");
 		
 		// Determine actual name
@@ -147,22 +248,26 @@ public class Main
 				break;
 				
 			case "build_windows_i386_standalone":
-				name = "squirreljme-standalone-%s-windows-x86.jar";
+				name = "squirreljme-standalone-%s-windows-i386.jar";
+				break;
+				
+			case "build_windows_aarch64_standalone":
+				name = "squirreljme-standalone-%s-windows-aarch64.jar";
 				break;
 				
 			case "build_windows_amd64_standalone":
 				name = "squirreljme-standalone-%s-windows-amd64.jar";
 				break;
 				
-			case "build_macosx_arm64_standalone":
+			case "build_macosx_aarch64_standalone":
 				name = "squirreljme-standalone-%s-macos-aarch64.jar";
 				break;
 				
 			case "build_macosx_amd64_standalone":
-				name = "squirreljme-standalone-%s-macos-x86_64.jar";
+				name = "squirreljme-standalone-%s-macos-amd64.jar";
 				break;
 				
-			case "build_linux_arm64_standalone":
+			case "build_linux_aarch64_standalone":
 				name = "squirreljme-standalone-%s-linux-aarch64.jar";
 				break;
 				
@@ -170,7 +275,7 @@ public class Main
 				name = "squirreljme-standalone-%s-linux-amd64.jar";
 				break;
 				
-			case "build_linux_arm64_standalone_flatpak":
+			case "build_linux_aarch64_standalone_flatpak":
 				name = "squirreljme-%s-aarch64.flatpak";
 				break;
 				
@@ -179,12 +284,12 @@ public class Main
 				break;
 			
 			default:
-				throw new IllegalArgumentException(
-					"Unknown target: " + __name);
+				name = __name;
+				break;
 		}
 		
 		// Construct
-		return String.format("unstable/%s",
+		return String.format("%s/%s", __baseDir,
 			String.format(name, __version));
 	}
 }

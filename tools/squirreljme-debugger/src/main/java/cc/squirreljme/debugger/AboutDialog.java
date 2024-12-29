@@ -136,7 +136,7 @@ public class AboutDialog
 		
 		// Myself
 		JLabel self = new JLabel(
-			"Copyright (C) 2013-2024 Stephanie Gawroriski");
+			"Copyright (C) 2013-2025 Stephanie Gawroriski");
 		self.setHorizontalAlignment(SwingConstants.CENTER);
 		self.setFont(self.getFont().deriveFont(Font.PLAIN));
 		sequence.add(self);

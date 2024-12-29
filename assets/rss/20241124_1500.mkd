@@ -1,0 +1,11 @@
+# An Anti-Burnout Break is Needed
+
+The year itself has been pretty exciting and so much work as gone into
+SquirrelJME, along with some big major chunks such as the graphics system
+rewrite ScritchUI. However, as the year comes to a close and I have been
+slowly going through November things have rather come to a crawl and not
+much progress has happened. So, this is a signal that I need a vacation and
+a break to recover from burn out and otherwise, so this will be December and
+the beginning of January. As with many projects where a single person is
+working on it, it is done when it is done! I am though very excited for
+what 2025 will bring for SquirrelJME, such as a functional RetroArch core!

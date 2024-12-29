@@ -31,33 +31,46 @@ TaskProvider<Task> internals = tasks.register('internals') {
 	mustRunAfter(tasks.named("clean"))
 }
 
+CommandLineArgumentProvider argProvider = ({ ->
+	// Pass in SquirrelJME version
+	List<String> args = new ArrayList<>()
+	args.add(squirreljmeVersion)
+	
+	// Pass all task dependencies
+	for (Object item : internals.get().dependsOn) {
+		if (item instanceof Provider) {
+			item = ((Provider)item).get()
+		}
+		
+		if (item instanceof Task) {
+			
+			Task sub = (Task)item
+			
+			for (File file : sub.outputs.files.asFileTree.files) {
+				args.add(String.format("%s=%s",
+					sub.name,
+					file.toPath().toAbsolutePath().toString()))
+			}
+		}
+	}
+	
+	return args
+} as CommandLineArgumentProvider)
+
+runShadow {
+	dependsOn(internals)
+	mustRunAfter(tasks.named("clean"))
+	
+	workingDir(rootProject.projectDir)
+	
+	getArgumentProviders().add(argProvider)
+}
+
 run {
 	dependsOn(internals)
 	mustRunAfter(tasks.named("clean"))
 	
-	getArgumentProviders().add({ ->
-		// Pass in SquirrelJME version
-		List<String> args = new ArrayList<>()
-		args.add(squirreljmeVersion)
-		
-		// Pass all task dependencies
-		for (Object item : internals.get().dependsOn) {
-			if (item instanceof Provider) {
-				item = ((Provider)item).get()
-			}
-			
-			if (item instanceof Task) {
-				
-				Task sub = (Task)item
-				
-				for (File file : sub.outputs.files.asFileTree.files) {
-					args.add(String.format("%s=%s",
-						sub.name,
-						file.toPath().toAbsolutePath().toString()))
-				}
-			}
-		}
-		
-		return args
-	} as CommandLineArgumentProvider)
+	workingDir(rootProject.projectDir)
+	
+	getArgumentProviders().add(argProvider)
 }

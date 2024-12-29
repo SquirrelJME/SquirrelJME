@@ -28,4 +28,14 @@ public interface SuiteScanListener
 	 * @since 2020/12/29
 	 */
 	void scanned(Application __app, int __dx, int __total);
+	
+	/**
+	 * This is called when a Jar index has been skipped, there is no
+	 * application there.
+	 *
+	 * @param __dx The index of the Jar.
+	 * @param __total The total number of JARs scanned.
+	 * @since 2024/12/06
+	 */
+	void skipped(int __dx, int __total);
 }

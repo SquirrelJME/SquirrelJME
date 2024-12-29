@@ -266,56 +266,17 @@ public class Graphics
 	{
 		if (__i == null)
 			throw new NullPointerException("NARG");
-		if (__w < 0 || __h < 0)
-			throw new IllegalArgumentException("ILLA");
 		
-		// Which image is being drawn?
-		javax.microedition.lcdui.Image target;
-		target = Graphics.__recoverImage(__i);
-		
-		// Which flip mode
-		int trans = this.__mapFlip();
-		
-		// DoJa is more lenient when drawing out of range graphics, it just
-		// gets clipped into range
-		if (__sx < 0)
-		{
-			__w -= __sx;
-			__sx = 0;
-		}
-		
-		if (__sy < 0)
-		{
-			__h -= __sy;
-			__sy = 0;
-		}
-		
-		int ex = __sx + __w;
-		int ey = __sy + __h;
-		if (ex > target.getWidth())
-			ex = target.getWidth();
-		if (ey > target.getHeight())
-			ey = target.getHeight();
-		
-		// Get corrected size
-		__w = ex - __sx;
-		__h = ey - __sy;
-		
-		// Not drawing anything after correcting?
-		if (__w <= 0 || __h <= 0)
-			return;
-		
-		// Draw it
-		this._graphics.drawRegion(target, __sx, __sy,
-			__w, __h, trans, __dx, __dy,
-			javax.microedition.lcdui.Graphics.TOP |
-			javax.microedition.lcdui.Graphics.LEFT);
+		// Forward to other call, as it simplifies the shared logic
+		this.drawScaledImage(__i,
+			__dx, __dy, __w, __h,
+			__sx, __sy, __w, __h);
 	}
 	
 	@Api
 	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
-		throw Debugging.todo();
+		this._graphics.drawLine(__x1, __y1, __x2, __y2);
 	}
 	
 	@Api
@@ -350,7 +311,50 @@ public class Graphics
 		if (__dw < 0 || __dh < 0 || __sw < 0 || __sh < 0)
 			throw new IllegalArgumentException("ILLA");
 		
-		throw Debugging.todo();
+		// Which image is being drawn?
+		javax.microedition.lcdui.Image target;
+		target = Graphics.__recoverImage(__i);
+		
+		// Which flip mode
+		int trans = this.__mapFlip();
+		
+		// DoJa is more lenient when drawing out of range graphics, it just
+		// gets clipped into range
+		if (__sx < 0)
+		{
+			// Note sx is negative, so we subtract width
+			__sw += __sx;
+			__sx = 0;
+		}
+		
+		if (__sy < 0)
+		{
+			// Note sy is negative, so we subtract height
+			__sh += __sy;
+			__sy = 0;
+		}
+		
+		int ex = __sx + __sw;
+		int ey = __sy + __sh;
+		if (ex > target.getWidth())
+			ex = target.getWidth();
+		if (ey > target.getHeight())
+			ey = target.getHeight();
+		
+		// Get corrected size
+		__sw = ex - __sx;
+		__sh = ey - __sy;
+		
+		// Not drawing anything after correcting?
+		if (__sw <= 0 || __sh <= 0)
+			return;
+		
+		// Draw it
+		this._graphics.drawRegion(target, __sx, __sy,
+			__sw, __sh, trans, __dx, __dy,
+			javax.microedition.lcdui.Graphics.TOP |
+			javax.microedition.lcdui.Graphics.LEFT,
+			__dw, __dh);
 	}
 	
 	@Api

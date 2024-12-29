@@ -65,7 +65,7 @@ public final class ErrorCode
 		if (__format.length() >= 4)
 		{
 			char a = __format.charAt(2);
-			char b = __format.charAt(2);
+			char b = __format.charAt(3);
 			
 			subId = (Character.digit(a, Character.MAX_RADIX) *
 				Character.MAX_RADIX) + Character.digit(b, Character.MAX_RADIX);

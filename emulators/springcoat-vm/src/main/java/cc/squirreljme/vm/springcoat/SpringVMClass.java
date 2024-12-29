@@ -683,6 +683,10 @@ public final class SpringVMClass
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
+		// The current class is never a super-class
+		if (this == __cl)
+			return false;
+		
 		for (SpringClass r = this.superclass; r != null; r = r.superClass())
 			if (r == __cl)
 				return true;

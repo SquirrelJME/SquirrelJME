@@ -34,7 +34,7 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_WINDOWS)
 	/** Symbol is exported through a library. */
 	#define SJME_DYLIB_EXPORT __declspec(dllexport)
-#elif defined(SJME_CONFIG_HAS_GCC)
+#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Symbol is exported through a library. */
 	#define SJME_DYLIB_EXPORT __attribute__((visibility("default")))
 #else
@@ -42,7 +42,7 @@ extern "C" {
 	#define SJME_DYLIB_EXPORT
 #endif
 
-#if defined(SJME_CONFIG_HAS_GCC)
+#if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Symbol is hidden in a library. */
 	#define SJME_DYLIB_HIDDEN __attribute__((visibility("hidden")))
 #else

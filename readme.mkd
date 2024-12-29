@@ -20,8 +20,8 @@ host virtual machine.
 Additionally, there is a port of SquirrelJME to RetroArch which enables the
 ability to play older J2ME software and games designed for flip-phones.
 
- * Copyright (C) 2013-2024 Stephanie Gawroriski <xer@multiphasicapps.net>
- * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2024
+ * Copyright (C) 2013-2025 Stephanie Gawroriski <xer@multiphasicapps.net>
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2025
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
    * Kat@CMYKat Designs & Illustrations <https://www.cmykatgraphics.ca/>
@@ -107,6 +107,7 @@ Information:
    * _Assets_: Creative Commons CC-BY-SA 4.0
    * _Fonts_ : SIL Open Font License Version 1.1
    * [Third Party Licenses](third-party.mkd)
+ * [RSS Feed](feed.rss)
  * [Contributing to SquirrelJME](contributing.mkd)
    * [Credits of Contributions](credits.mkd)
    * [Test Writing](test-writing.mkd)
@@ -158,7 +159,7 @@ Information:
 
  * [My Portfolio](https://shadowtail.dev/)
  * [My Public PGP Key](public-key.gpg.mkd)
- * [SquirrelJME BlueSky](https://bsky.app/profile/squirreljme.bsky.social)
+ * [SquirrelJME BlueSky](https://bsky.app/profile/squirreljme.cc)
  * [SquirrelJME Twitter](https://twitter.com/SquirrelJME)
  * [SquirrelJME Mastodon](https://mastodon.online/@SquirrelJME)
  * Locations where you can get support:
@@ -169,7 +170,7 @@ Information:
      * [##squirreljme](ircs://irc.libera.chat:6697/#squirreljme) -- Off-Topic
    * [Reddit](https://reddit.com/r/SquirrelJME)
  * Front facing social media:
-   * [BlueSky](https://bsky.app/profile/squirreljme.bsky.social)
+   * [BlueSky](https://bsky.app/profile/squirreljme.cc)
    * [Mastodon (mastodon.online)](https://mastodon.online/@SquirrelJME)
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA/)
    * [Twitter](https://twitter.com/SquirrelJME)
@@ -182,7 +183,6 @@ Information:
    * [Mastodon (chitter.xyz)](https://chitter.xyz/@XerShadowTail)
    * [BlueSky](https://bsky.app/profile/xershadowtail.bsky.social)
    * [Twitter](https://twitter.com/XerShadowTail)
-   * [Cohost](https://cohost.org/XerShadowTail)
    * [YouTube (Personal)](
      https://www.youtube.com/channel/UCJ4QrvbDhjtd7u6EpfBQ__g)
    * E-Mail: <xer@multiphasicapps.net>

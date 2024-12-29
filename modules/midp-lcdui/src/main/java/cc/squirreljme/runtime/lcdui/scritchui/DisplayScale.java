@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import javax.microedition.midlet.MIDlet;
 
@@ -122,20 +123,112 @@ public abstract class DisplayScale
 		ScritchScreenBracket __screen, ScritchWindowBracket __window)
 		throws NullPointerException
 	{
+		DisplayScale rv;
+		
 		// Try to figure out what a MIDlet desires as far as size is concerned
 		MIDlet midlet = ActiveMidlet.optional();
 		if (midlet != null)
 		{
+			// SquirrelJME Specific
+			rv = DisplayScale.__midlet(midlet,
+				"X-SquirrelJME-Resolution", false, 'x');
+			if (rv != null)
+				return rv;
+			
 			// MEXA API
-			String mexa = midlet.getAppProperty("MIDxlet-ScreenSize");
-			if (mexa != null)
-				return new DisplayFixedFlatScale(
-					DisplayScale.__parse(mexa, ',', false),
-					DisplayScale.__parse(mexa, ',', true));
+			rv = DisplayScale.__midlet(midlet,
+				"MIDxlet-ScreenSize", false, ',');
+			if (rv != null)
+				return rv;
+			
+			// Vodafone API
+			rv = DisplayScale.__midlet(midlet,
+				"MIDxlet-Application-Resolution", false,
+				',');
+			if (rv != null)
+				return rv;
+			
+			// Mode Vodafone?
+			rv = DisplayScale.__midlet(midlet,
+				"MIDxlet-Application-Range", true,
+				',');
+			if (rv != null)
+				return rv;
+			
+			// Nokia
+			rv = DisplayScale.__midlet(midlet,
+				"Nokia-MIDlet-Original-Display-Size", false,
+				',');
+			if (rv != null)
+				return rv;
+			
+			// Nokia (alternative)
+			rv = DisplayScale.__midlet(midlet,
+				"Nokia-MIDlet-Target-Display-Size", false,
+				',');
+			if (rv != null)
+				return rv;
+			
+			// SEMC?
+			rv = DisplayScale.__midlet(midlet,
+				"SEMC-Screen-Size", false,
+				',');
+			if (rv != null)
+				return rv;
+		}
+		
+		// DoJa with a defined screen size
+		String doJaSize = System.getProperty(
+			"cc.squirreljme.imode.adf.DrawArea");
+		Debugging.debugNote("Scale: %s", doJaSize);
+		if (doJaSize != null)
+		{
+			// Parse it
+			int x = doJaSize.indexOf('x');
+			if (x >= 1)
+				try
+				{
+					int width = Math.max(96, Integer.parseInt(
+						doJaSize.substring(0, x), 10));
+					int height = Math.max(72, Integer.parseInt(
+						doJaSize.substring(x + 1), 10));
+					
+					return new DisplayFixedFlatScale(width, height);
+				}
+				catch (NumberFormatException ignored)
+				{
+				}
 		}
 		
 		// Use default otherwise
 		return new DisplayFixedFlatScale(240, 320);
+	}
+	
+	/**
+	 * Parses a key from a MIDlet manifest for screen sizes.
+	 *
+	 * @param __midlet The MIDlet to parse from.
+	 * @param __key The key to check.
+	 * @param __swap If {@code true} then height is first.
+	 * @param __delim The delimiter.
+	 * @return The display scale or {@code null} if there is none.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/12/07
+	 */
+	private static DisplayScale __midlet(MIDlet __midlet, String __key,
+		boolean __swap, char __delim)
+		throws NullPointerException
+	{
+		if (__midlet == null)
+			throw new NullPointerException("NARG");
+		
+		String value = __midlet.getAppProperty(__key);
+		if (value == null)
+			return null;
+		
+		return new DisplayFixedFlatScale(
+			DisplayScale.__parse(value, __delim, __swap),
+			DisplayScale.__parse(value, __delim, !__swap));
 	}
 	
 	/**

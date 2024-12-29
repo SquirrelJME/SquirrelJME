@@ -154,9 +154,9 @@ sjme_errorCode sjme_thread_rwLockGrabRead(
 			return sjme_error_default(error);
 		
 		/* The write count determines if we cannot get this lock. */
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		writeCount = sjme_atomic_sjme_jint_get(&inLock->writeCount);
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 			
 		/* Release the read lock. */
 		if (sjme_error_is(error = sjme_thread_spinLockRelease(readLock,
@@ -167,9 +167,9 @@ sjme_errorCode sjme_thread_rwLockGrabRead(
 		if (writeCount != 0)
 		{
 			/* Let other threads run. */
-			sjme_thread_barrier();
+			sjme_atomic_barrier();
 			sjme_thread_yield();
-			sjme_thread_barrier();
+			sjme_atomic_barrier();
 			
 			/* Try again... */
 			continue;
@@ -301,9 +301,9 @@ sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
 		while (SJME_JNI_FALSE == sjme_atomic_sjme_thread_compareSet(
 			&inLock->poke, SJME_THREAD_NULL, current))
 		{
-			sjme_thread_barrier();
+			sjme_atomic_barrier();
 			sjme_thread_yield();
-			sjme_thread_barrier();
+			sjme_atomic_barrier();
 		}
 		
 		/* We own the lock already, or we just owned it, so count up. */
@@ -323,9 +323,9 @@ sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
 	}
 		
 	/* Do this just for good measure for the wierd CPUs. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	sjme_thread_yield();
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -354,9 +354,9 @@ sjme_errorCode sjme_thread_spinLockRelease(
 	while (SJME_JNI_FALSE == sjme_atomic_sjme_thread_compareSet(
 		&inLock->poke, SJME_THREAD_NULL, current))
 	{
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		sjme_thread_yield();
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 	}
 	
 	/* We own the lock hopefully, so count down. */
@@ -379,9 +379,9 @@ sjme_errorCode sjme_thread_spinLockRelease(
 		current, SJME_THREAD_NULL);
 		
 	/* Do this just for good measure for the wierd CPUs. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	sjme_thread_yield();
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Do we not own the lock? */
 	if (!owned)

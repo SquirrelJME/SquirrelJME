@@ -17,20 +17,23 @@ import cc.squirreljme.runtime.nttdocomo.ui.NullMediaSound;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import org.intellij.lang.annotations.Language;
 
 @Api
 public class MediaManager
 {
 	@SuppressWarnings("FinalStaticMethod")
 	@Api
-	public static final MediaData getData(String __uri)
+	public static final MediaData getData(
+		@Language("http-url-reference") String __uri)
 	{
 		throw Debugging.todo();
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")
 	@Api
-	public static final MediaImage getImage(String __uri)
+	public static final MediaImage getImage(
+		@Language("http-url-reference") String __uri)
 		throws NullPointerException
 	{
 		if (__uri == null)
@@ -83,7 +86,8 @@ public class MediaManager
 	
 	@Api
 	@SuppressWarnings("FinalStaticMethod")
-	public static final MediaSound getSound(String __uri)
+	public static final MediaSound getSound(
+		@Language("http-url-reference") String __uri)
 	{
 		Debugging.todoNote("Implement getSound()...");
 		return new NullMediaSound();

@@ -348,12 +348,9 @@ public final class ScratchPadStore
 					if (padSize > seedLen || padSize < 0)
 						padSize = Integer.reverseBytes(padSize);
 					
-					// Keep it mapped in size
-					int limit = Math.max(0, dataLen - at);
-					if (padSize < 0)
+					// If negative one, not a valid entry
+					if (padSize == -1)
 						padSize = 0;
-					else if (padSize > limit)
-						padSize = limit;
 					
 					// Set current size
 					size[i] = padSize;
@@ -361,6 +358,11 @@ public final class ScratchPadStore
 					// Move position up
 					at += padSize;
 				}
+					
+				// Debug
+				for (int i = 0; i < ScratchPadStore._STO_ENTRIES; i++)
+					Debugging.debugNote("SPSeed[%d]: at=0x%x len=%d",
+						i, position[i], size[i]);
 			}
 			catch (IOException __e)
 			{
@@ -370,24 +372,29 @@ public final class ScratchPadStore
 				return;
 			}
 			
-			// Debug
-			seedLen = size[__pad];
-			Debugging.debugNote("Reading seed %s with dl=%d and sl=%d.",
-				libName, dataLen, seedLen);
+			// Get input size and position
+			int padAt = position[__pad];
+			int padLen = size[__pad];
 			
-			// The limit is the smaller of the two
-			int limit = Math.min(dataLen, seedLen);
+			// Make sure the read is always within bounds
+			int readAt = Math.max(0, Math.min(seedLen, padAt));
+			int readLen = Math.min(padLen, Math.max(0, seedLen - readAt));
+			
+			// Debug
+			Debugging.debugNote(
+				"Multi-seed %s with at=0x%x ln=%d.",
+				libName, readAt, readLen);
 			
 			// Read the seed directly into the buffer
-			JarPackageShelf.rawData(lib, position[__pad],
-				__data, 0, limit);
+			JarPackageShelf.rawData(lib, readAt,
+				__data, 0, readLen);
 		}
 		
 		// Flat seed
 		else
 		{
 			// Debug
-			Debugging.debugNote("Reading seed %s with dl=%d and sl=%d.",
+			Debugging.debugNote("Flat-seed %s with dl=%d and sl=%d.",
 				libName, dataLen, seedLen);
 			
 			// The limit is the smaller of the two

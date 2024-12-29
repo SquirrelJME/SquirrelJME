@@ -164,6 +164,10 @@ public final class GlyphId
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
+		// The undefined character
+		if (__in.equals(".notdef"))
+			return GlyphId.of(0xFFFD);
+		
 		// Unicode formats?
 		if (__in.startsWith("U+"))
 			return GlyphId.of(Integer.parseInt(

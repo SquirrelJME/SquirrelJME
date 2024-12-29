@@ -24,6 +24,7 @@
 
 #include "sjme/debug.h"
 #include "sjme/alloc.h"
+#include "sjme/dylib.h"
 
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512

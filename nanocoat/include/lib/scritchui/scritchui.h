@@ -26,6 +26,7 @@
 #include "lib/scritchinput/scritchinput.h"
 #include "sjme/alloc.h"
 #include "sjme/dylib.h"
+#include "sjme/stream.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -259,8 +260,14 @@ typedef enum sjme_scritchui_lafElementColorType
 	/** Panel foreground color. */
 	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_PANEL_FOREGROUND = 8,
 	
+	/** Top accent color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_ACCENT_TOP = 9,
+	
+	/** Bottom accent color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_ACCENT_BOTTOM = 10,
+	
 	/** The number of element colors. */
-	SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR = 9,
+	SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR = 11,
 } sjme_scritchui_lafElementColorType;
 
 /**
@@ -555,6 +562,9 @@ typedef struct sjme_scritchui_pencilBase* sjme_scritchui_pencil;
  */
 typedef struct sjme_scritchui_pencilFontBase* sjme_scritchui_pencilFont;
 
+/** A list of pencil fonts. */
+SJME_LIST_DECLARE(sjme_scritchui_pencilFont, 0);
+
 /**
  * A single link within a loaded/known font chain.
  * 
@@ -773,7 +783,7 @@ typedef sjme_errorCode (*sjme_scritchui_apiFlagsFunc)(
 /**
  * Initializes the native UI interface needed by ScritchUI.
  * 
- * @param allocPool The allocation pool to use.
+ * @param inPool The allocation pool to use.
  * @param outState The resultant state.
  * @param inImplFunc The implementation functions to use.
  * @param loopExecute Optional callback for loop execution, may be @c NULL ,
@@ -783,7 +793,7 @@ typedef sjme_errorCode (*sjme_scritchui_apiFlagsFunc)(
  * @since 2024/03/27
  */
 typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
@@ -1237,6 +1247,22 @@ typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
+
+/**
+ * Obtains the fonts which are available in the system, if any.
+ *
+ * @param inState The input state.
+ * @param outFonts The list which gets filled with all the fonts.
+ * @param outValid The number of valid fonts.
+ * @param outMaxFonts The maximum number of fonts available, this is optional.
+ * @return Any resultant error, if any.
+ * @since 2024/12/01
+ */
+typedef sjme_errorCode (*sjme_scritchui_fontListFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_jint* outValid,
+	sjme_attrOutNullable sjme_jint* outMaxFonts);
 
 /**
  * Creates a hardware reference bracket to the native hardware graphics.
@@ -1786,6 +1812,9 @@ struct sjme_scritchui_apiFunctions
 	/** Derive a similar font. */
 	SJME_SCRITCHUI_QUICK_API(fontDerive);
 	
+	/** Return the set of available fonts. */
+	SJME_SCRITCHUI_QUICK_API(fontList);
+	
 	/** Hardware graphics support on arbitrary buffers. */
 	SJME_SCRITCHUI_QUICK_API(hardwareGraphics);
 	
@@ -1945,6 +1974,41 @@ typedef struct sjme_scritchui_bugs
 	sjme_jboolean noContentSizeWhenVisible;
 } sjme_scritchui_bugs;
 
+/**
+ * Obtains an asset that is externally provided.
+ *
+ * @param inState The input state.
+ * @param outStream The resultant stream of the asset data.
+ * @param inAsset The name of the asset to load.
+ * @return Any resultant error, if any.
+ * @since 2024/11/29 
+ */
+typedef sjme_errorCode (*sjme_scritchui_externalAssetFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull sjme_lpcstr inAsset);
+	
+/**
+ * Optional external functions for ScritchUI to use dependent on the front
+ * end that is using it, this is usually to provide cross-feedback.
+ *
+ * @since 2024/11/29
+ */
+typedef struct sjme_scritchui_externalFunctions
+{
+	/** Loads an external asset. */
+	sjme_scritchui_externalAssetFunc externalAsset;
+	
+	/** Execute callback within the event loop or schedule later. */
+	sjme_scritchui_loopExecuteFunc externalLoopExecute;
+	
+	/** Execute call later in the loop. */
+	sjme_scritchui_loopExecuteFunc externalLoopExecuteLater;
+	
+	/** Execute callback within the event loop and wait until termination. */
+	sjme_scritchui_loopExecuteFunc externalLoopExecuteWait;
+} sjme_scritchui_externalFunctions;
+
 struct sjme_scritchui_stateBase
 {
 	/** Common data. */
@@ -1967,6 +2031,9 @@ struct sjme_scritchui_stateBase
 	
 	/** Internal implementation functions, which are opaque. */
 	const sjme_scritchui_implInternFunctions* implIntern;
+
+	/** Optional externals for helper front-end interface functions. */
+	const sjme_scritchui_externalFunctions* externals;
 	
 	/** The allocation pool to use for allocations. */
 	sjme_alloc_pool* pool;
@@ -1990,10 +2057,7 @@ struct sjme_scritchui_stateBase
 	sjme_scritchui_windowManagerType wmType;
 	
 	/** The internal built-in font. */
-	sjme_scritchui_pencilFont builtinFont; 
-	
-	/** The fonts which are loaded and known to the state. */
-	sjme_scritchui_pencilFontLink* fontChain;
+	sjme_scritchui_pencilFont builtinFont;
 	
 	/** Function to obtain the current nanotime, for input events. */
 	sjme_nal_nanoTimeFunc nanoTime;
@@ -2012,6 +2076,9 @@ struct sjme_scritchui_stateBase
 	
 	/** Windowing system specific bugs. */
 	sjme_scritchui_bugs bugs;
+
+	/** Font cache. */
+	sjme_list_sjme_scritchui_pencilFont* fontCache;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */
@@ -2020,19 +2087,22 @@ struct sjme_scritchui_stateBase
 /**
  * Initializes the API through the dynamic library.
  * 
- * @param allocPool The pool to allocate within.
+ * @param outState The resultant newly created ScritchUI state.
+ * @param inPool The pool to allocate within.
  * @param loopExecute Optional callback for loop execution, may be @c NULL ,
  * the passed argument is always the state.
+ * @param externals Optional externals that ScritchUI may use to interact
+ * with a front-end.
  * @param initFrontEnd Optional initial front end data.
- * @param outState The resultant newly created ScritchUI state.
  * @return Any error code that may occur.
  * @since 2024/03/29
  */
 typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
-	sjme_attrInOutNotNull sjme_scritchui* outState);
+	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
 
 /** The base name for the ScritchUI dynamic library. */
 #define SJME_SCRITCHUI_DYLIB_NAME_BASE \

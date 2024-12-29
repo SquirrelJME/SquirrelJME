@@ -463,8 +463,13 @@ public class SqfFontStruct
 		}
 		
 		// Truncate the length down
-		while (sb.length() > 8)
-			sb.deleteCharAt(4);
+		while (sb.length() > 16)
+		{
+			if ((sb.length() % 2) == 0)
+				sb.deleteCharAt(6);
+			else
+				sb.deleteCharAt(sb.length() - 6);
+		}
 			
 		return sb.toString();
 	}

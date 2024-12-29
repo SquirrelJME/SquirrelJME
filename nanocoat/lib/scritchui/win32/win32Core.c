@@ -171,21 +171,12 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_win32_loopMain(
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
-/**
- * Returns the Win32 ScritchUI interface.
- * 
- * @param allocPool The allocation pool used.
- * @param loopExecute The loop execution to run after init.
- * @param initFrontEnd Optional initial frontend data.
- * @param outState The newly created state.
- * @return The library interface.
- * @since 2024/07/16 
- */
 sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(win32)(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
-	sjme_attrInOutNotNull sjme_scritchui* outState)
+	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
@@ -195,9 +186,9 @@ sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(win32)(
 	
 	/* Forward to core call. */
 	state = NULL;
-	if (sjme_error_is(error = sjme_scritchui_core_apiInit(allocPool,
+	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
 		&state,
-		&sjme_scritchui_win32Functions, loopExecute,
+		&sjme_scritchui_win32Functions, loopExecute, externals,
 		initFrontEnd)) || state == NULL)
 		return sjme_error_default(error);
 	

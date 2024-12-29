@@ -20,17 +20,27 @@ static void sjme_scritchui_core_lafFallbackColor(
 
 	switch (type)
 	{
+			/* Trans rights! */
+		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_ACCENT_TOP:
+			*outColor = INT32_C(0xFF5BCEFA);
+			break;
+		
+			/* Trans rights!! */
+		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_ACCENT_BOTTOM:
+			*outColor = INT32_C(0xFFF5A9B8);
+			break;
+			
 			/* White. */
 		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_BACKGROUND:
 		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_PANEL_BACKGROUND:
-			*outColor = 0xFFFFFFFF;
+			*outColor = INT32_C(0xFFFFFFFF);
 			break;
 
 			/* Gray. */
 		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_BORDER:
 		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_FOCUS_BORDER:
 		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_BACKGROUND:
-			*outColor = 0xFF7F7F7F;
+			*outColor = INT32_C(0xFF7F7F7F);
 			break;
 
 			/* Black. */
@@ -39,7 +49,7 @@ static void sjme_scritchui_core_lafFallbackColor(
 		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_FOREGROUND:
 		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_PANEL_FOREGROUND:
 		default:
-			*outColor = 0xFF000000;
+			*outColor = INT32_C(0xFF000000);
 			break;
 	}
 }

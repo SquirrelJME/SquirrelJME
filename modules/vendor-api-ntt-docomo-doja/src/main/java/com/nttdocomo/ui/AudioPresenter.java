@@ -18,6 +18,12 @@ public class AudioPresenter
 	implements MediaPresenter
 {
 	@Api
+	public int getCurrentTime()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
 	@Override
 	public MediaResource getMediaResource()
 	{

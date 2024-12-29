@@ -247,6 +247,13 @@ public enum VMType
 			// Arguments for the JVM
 			List<String> jvmArgs = new ArrayList<>();
 			
+			// Needed on macOS for the GUI to properly work
+			String osName = System.getProperty("os.name");
+			if (osName != null &&
+				(osName.toLowerCase().contains("mac os") ||
+				osName.toLowerCase().contains("mac os x")))
+				jvmArgs.add("-XstartOnFirstThread");
+			
 			// Copy any agent libraries which are not JDWP based ones, for
 			// example if IntelliJ is profiling
 			for (String mxArg : ManagementFactory.getRuntimeMXBean()

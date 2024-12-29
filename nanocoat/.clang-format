@@ -2,7 +2,7 @@
 Language: Cpp
 BasedOnStyle: LLVM
 AccessModifierOffset: -4
-AlignAfterOpenBracket: AlwaysBreak
+AlignAfterOpenBracket: DontAlign
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignEscapedNewlines: DontAlign
@@ -16,7 +16,7 @@ AllowShortIfStatementsOnASingleLine: false
 AllowShortLambdasOnASingleLine: None
 AlwaysBreakAfterDefinitionReturnType: false
 AlwaysBreakTemplateDeclarations: No
-AttributeMacros: 
+AttributeMacros:
   - sjme_inline
   - sjme_noOptimize
   - sjme_attrArtificial
@@ -50,7 +50,8 @@ AttributeMacros:
   - JNIEXPORT
   - JNIIMPORT
   - JNICALL
-BraceWrapping: 
+BinPackParameters: false
+BraceWrapping:
   AfterCaseLabel: true
   AfterClass: true
   AfterControlStatement: true
@@ -59,7 +60,7 @@ BraceWrapping:
   AfterNamespace: true
   AfterStruct: true
   AfterUnion: true
-  AfterExternBlock: false
+  AfterExternBlock: true
   BeforeCatch: true
   BeforeElse: true
   BeforeLambdaBody: true
@@ -76,11 +77,11 @@ BreakInheritanceList: AfterComma
 ColumnLimit: 79
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 FixNamespaceComments: false
-ForEachMacros: 
+ForEachMacros:
   - SJME_FOREACH_TODO
-IfMacros: 
+IfMacros:
   - SJME_IF_TODO
-IncludeCategories: 
+IncludeCategories:
   - Regex: '^<.*'
     Priority: 1
   - Regex: '^".*'
@@ -88,6 +89,7 @@ IncludeCategories:
   - Regex: '.*'
     Priority: 3
 IncludeIsMainRegex: '([-_](test|unittest))?$'
+IndentCaseBlocks: true
 IndentCaseLabels: true
 IndentGotoLabels: false
 IndentWidth: 4
@@ -95,15 +97,13 @@ InsertNewlineAtEOF: true
 LineEnding: LF
 MacroBlockBegin: ''
 MacroBlockEnd: ''
-NamespaceIndentation: All
 PenaltyBreakComment: 1000000
 PenaltyReturnTypeOnItsOwnLine: 10
 PointerAlignment: Left
 ReferenceAlignment: Left
 ReflowComments: false
 SortIncludes: Never
-SpaceAfterTemplateKeyword: false
-SpaceBeforeParensOptions: 
+SpaceBeforeParensOptions:
   AfterControlStatements: true
   AfterForeachMacros: true
   AfterFunctionDeclarationName: false
@@ -118,16 +118,16 @@ SpacesInAngles: false
 SpacesInConditionalStatement: false
 SpacesInContainerLiterals: false
 SpacesInCStyleCastParentheses: false
-SpacesInParensOptions: 
+SpacesInParensOptions:
   InConditionalStatements: false
   InCStyleCasts: false
   InEmptyParentheses: false
   Other: false
 SpacesInParentheses: false
 Standard: c++11
-StatementAttributeLikeMacros: 
+StatementAttributeLikeMacros:
   - SJME_DEPRECATED
-StatementMacros: 
+StatementMacros:
   - SJME_REFPTR_CODE_BEGIN
   - SJME_REFPTR_CODE_END
   - SJME_REFPTR_VAR
@@ -140,11 +140,12 @@ StatementMacros:
   - SJME_SCRITCHUI_SERIAL_PASS
   - SJME_SCRITCHUI_INVOKE_WAIT
   - RECOVER_FONT
+  - SJME_ATOMIC_FUNCTION
 TabWidth: 4
-TypenameMacros: 
+TypenameMacros:
   - SJME_LIST_NAME
 UseTab: Always
-WhitespaceSensitiveMacros: 
+WhitespaceSensitiveMacros:
   - SJME_TOKEN_STRING
   - SJME_TOKEN_STRING_PP
   - SUD_STRUCT_DEF

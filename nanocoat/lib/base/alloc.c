@@ -496,7 +496,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		return sjme_error_default(error);
 	
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Find the first free link that this fits in. */
 	scanLink = NULL;
@@ -681,7 +681,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	}
 	
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Release ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -876,7 +876,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_free(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 
 	/* Get the link. */
 	link = NULL;
@@ -962,7 +962,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_free(
 	
 any_cancelFree:
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Release ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -1009,7 +1009,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 
 	/* Alias for free. */
 	source = *inOutAddr;
@@ -1047,7 +1047,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 		link->allocSize = newSize;
 		
 		/* Emit barrier. */
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 
 		/* Success! */
 		return SJME_ERROR_NONE;
@@ -1083,7 +1083,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 			return sjme_error_default(error);
 		
 		/* Emit barrier. */
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 
 		/* Success! */
 		*inOutAddr = result;
@@ -1137,7 +1137,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakDelete)(
 		return SJME_ERROR_NONE;
 	
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Get the current count, and the next count. */
 	count = sjme_atomic_sjme_jint_get(&weak->count);
@@ -1206,7 +1206,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakDelete)(
 	
 	/* Emit barrier. */
 any_cancelFree:
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -1224,7 +1224,7 @@ sjme_errorCode sjme_alloc_weakGetPointer(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	if (inWeak->link == NULL || inWeak->pointer == NULL)
 		*outPointer = NULL;
@@ -1232,7 +1232,7 @@ sjme_errorCode sjme_alloc_weakGetPointer(
 		*outPointer = inWeak->pointer;
 	
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -1253,7 +1253,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 		
 	/* Recover the link. */
 	link = NULL;
@@ -1281,7 +1281,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 		was = sjme_atomic_sjme_jint_getAdd(&result->count, 1);
 		
 		/* Emit barrier. */
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		
 		/* Debug. */
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
@@ -1325,7 +1325,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 #endif
 	
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Success! */
 	if (outWeak != NULL)
@@ -1354,7 +1354,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 		return sjme_error_default(error);
 	
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Attempt block allocation first. */
 	resultPtr = NULL;
@@ -1378,7 +1378,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 		goto fail_allocWeak;
 	
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Release ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -1420,7 +1420,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakRefE)(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 		
 	/* Recover the link. */
 	link = NULL;
@@ -1465,7 +1465,7 @@ sjme_errorCode sjme_alloc_weakRefGet(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Emit barrier. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 		
 	/* Recover the link. */
 	link = NULL;

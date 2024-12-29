@@ -16,6 +16,45 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
+static sjme_errorCode sjme_scritchui_fromCache(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_jint* outValid,
+	sjme_attrOutNullable sjme_jint* outMaxFonts)
+{
+	sjme_errorCode error;
+	sjme_jint limit, i, n;
+	sjme_list_sjme_scritchui_pencilFont* fontCache;
+	
+	if (inState == NULL || outFonts == NULL || outValid == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Font list already cached? */
+	fontCache = inState->fontCache;
+	if (fontCache == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Determine how many fonts can actually be stored. */
+	n = outFonts->length;
+	limit = (n < fontCache->length ? n : fontCache->length);
+
+	/* Copy over from the cache. */
+	for (i = 0; i < limit; i++)
+		outFonts->elements[i] = fontCache->elements[i];
+	for (; i < n; i++)
+		outFonts->elements[i] = NULL;
+
+	/* Set resultant count. */
+	*outValid = limit;
+	
+	/* Report the max number of fonts, if requested. */
+	if (outMaxFonts != NULL)
+		*outMaxFonts = fontCache->length;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_validateChar(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrInOutNotNull sjme_jint* inOutCodepoint)
@@ -652,6 +691,39 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	/* Create pseudo font. */
 	return sjme_scritchui_core_fontPseudo(inState, inFont, inStyle,
 		inPixelSize, outDerived);
+}
+
+sjme_errorCode sjme_scritchui_core_fontList(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_jint* outValid,
+	sjme_attrOutNullable sjme_jint* outMaxFonts)
+{
+	sjme_errorCode error;
+	sjme_jint limit, i, n;
+	sjme_list_sjme_scritchui_pencilFont* fontCache;
+	
+	if (inState == NULL || outFonts == NULL || outValid == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* If wrapped, use that instead since we want to use whatever core */
+	/* system fonts we are using, if there is such a capability. */
+	if (inState->wrappedState != NULL)
+		return inState->wrappedState->api->fontList(inState,
+			outFonts, outValid, outMaxFonts);
+
+	/* Font list already cached? */
+	fontCache = inState->fontCache;
+	if (fontCache != NULL)
+		return sjme_scritchui_fromCache(inState, outFonts, outValid,
+			outMaxFonts);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+
+	/* Font cache was set, so load that in. */
+	return sjme_scritchui_fromCache(inState, outFonts, outValid,
+		outMaxFonts);
 }
 
 sjme_jint sjme_scritchui_pencilFontScanLen(

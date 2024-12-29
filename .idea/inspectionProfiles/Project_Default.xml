@@ -105,7 +105,6 @@
     <inspection_tool class="CloneReturnsClassType" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CodeBlock2Expr" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ComparatorCombinators" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="ComparisonOfShortAndChar" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ConfusingMainMethod" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="ConnectionResource" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ConstPropertyName" enabled="true" level="WEAK WARNING" enabled_by_default="true">
@@ -125,7 +124,6 @@
     <inspection_tool class="CyclomaticComplexity" enabled="true" level="SERVER PROBLEM" enabled_by_default="true" editorAttributes="WARNING_ATTRIBUTES">
       <option name="m_limit" value="15" />
     </inspection_tool>
-    <inspection_tool class="DefaultNotLastCaseInSwitch" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="Deprecation" enabled="true" level="WARNING" enabled_by_default="true" editorAttributes="MARKED_FOR_REMOVAL_ATTRIBUTES" />
     <inspection_tool class="DollarSignInName" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="EditorConfigEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -435,6 +433,7 @@
     <inspection_tool class="MultipleTopLevelClassesInFile" enabled="true" level="WARNING" enabled_by_default="false" editorAttributes="WARNING_ATTRIBUTES">
       <scope name="Production" level="ERROR" enabled="true" editorAttributes="ERRORS_ATTRIBUTES" />
     </inspection_tool>
+    <inspection_tool class="MultipleVariablesInDeclaration" enabled="true" level="WARNING" enabled_by_default="true" editorAttributes="WARNING_ATTRIBUTES" />
     <inspection_tool class="MultiplyOrDivideByPowerOfTwo" enabled="true" level="TYPO" enabled_by_default="true">
       <option name="checkDivision" value="true" />
     </inspection_tool>

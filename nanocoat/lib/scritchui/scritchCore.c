@@ -63,6 +63,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.containerSetBounds = sjme_scritchui_coreSerial_containerSetBounds,
 	.fontBuiltin = sjme_scritchui_coreSerial_fontBuiltin,
 	.fontDerive = sjme_scritchui_coreSerial_fontDerive,
+	.fontList = sjme_scritchui_coreSerial_fontList,
 	.hardwareGraphics = sjme_scritchui_coreSerial_hardwareGraphics,
 	.labelSetString = sjme_scritchui_coreSerial_labelSetString,
 	.listNew = sjme_scritchui_coreSerial_listNew,
@@ -140,6 +141,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.containerSetBounds = sjme_scritchui_core_containerSetBounds,
 	.fontBuiltin = sjme_scritchui_core_fontBuiltin,
 	.fontDerive = sjme_scritchui_core_fontDerive,
+	.fontList = sjme_scritchui_core_fontList,
 	.hardwareGraphics = sjme_scritchpen_core_hardwareGraphics,
 	.labelSetString = sjme_scritchui_core_labelSetString,
 	.lafElementColor = sjme_scritchui_core_lafElementColor,
@@ -222,9 +224,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 	while (topState == NULL)
 	{
 		/* Barrier for other thread to run. */
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		sjme_thread_yield();
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		
 		/* Read it in. */
 		topState = sjme_atomic_sjme_pointer_get(
@@ -254,7 +256,8 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
-	sjme_attrInNullable sjme_scritchui wrappedState)
+	sjme_attrInNullable sjme_scritchui wrappedState,
+	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
@@ -279,6 +282,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	state->impl = inImplFunc;
 	state->wmInfo = &sjme_scritchUI_coreWmInfo;
 	state->nanoTime = sjme_nal_default.nanoTime;
+	state->externals = externals;
 	
 	/* Common initialize. */
 	if (sjme_error_is(error = state->intern->initCommon(state,
@@ -321,9 +325,9 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 			state);
 		
 		/* Barrier here for wrapped init. */
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		sjme_thread_yield();
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 	}
 	
 	/* Debug. */
@@ -337,9 +341,9 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	{
 		while (0 == sjme_atomic_sjme_jint_get(&state->loopThreadReady))
 		{
-			sjme_thread_barrier();
+			sjme_atomic_barrier();
 			sjme_thread_yield();
-			sjme_thread_barrier();
+			sjme_atomic_barrier();
 		}
 	}
 	
@@ -364,6 +368,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
+	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
 {
 	sjme_errorCode error;
@@ -386,7 +391,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	if (!needFbWrapper)
 	{
 		return sjme_scritchui_core_apiInitActual(allocPool, outState,
-			inImplFunc, loopExecute, initFrontEnd, NULL);
+			inImplFunc, loopExecute, initFrontEnd, NULL, externals);
 	}
 	
 	/* Initialize API we are going to wrap. */
@@ -394,7 +399,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	if (sjme_error_is(error = sjme_scritchui_core_apiInitActual(allocPool,
 		&wrappedState,
 		inImplFunc, NULL,
-		NULL, NULL)) ||
+		NULL, NULL, externals)) ||
 		wrappedState == NULL)
 		return sjme_error_default(error);
 	
@@ -415,7 +420,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	if (sjme_error_is(error = sjme_scritchui_core_apiInitActual(allocPool,
 		&state,
 		&sjme_scritchui_fbFunctions,
-		loopExecute, initFrontEnd, wrappedState)) ||
+		loopExecute, initFrontEnd, wrappedState, externals)) ||
 		state == NULL)
 		return sjme_error_default(error);
 	

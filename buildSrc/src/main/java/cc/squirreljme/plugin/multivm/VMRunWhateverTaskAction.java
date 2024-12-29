@@ -37,6 +37,11 @@ import org.gradle.api.Task;
 public class VMRunWhateverTaskAction
 	implements Action<Task>
 {
+	/** Scratchpad extensions. */
+	private static final String[] _SCRATCHPAD_EXTS =
+		new String[]{".sto", ".sp", ".sp0", ".sp1", ".sp2", ".sp3",
+			".sp4", ".sp5", ".sp6", ".sp7", ".sp8", ".sp9"};
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/07/28
@@ -121,11 +126,14 @@ public class VMRunWhateverTaskAction
 					.findProject(":modules:vendor-api-ntt-docomo-doja"),
 				runTask.classifier, true)));
 			
-			// If there is a scratchpad, we need it as well
-			String maybeSpRaw = baseName + ".sp";
-			Path maybeSp = Paths.get(maybeSpRaw);
-			if (Files.exists(maybeSp))
-				classPath.add(maybeSp);
+			// If there are any scratchpads, we need those in the classpath
+			for (String ext : VMRunWhateverTaskAction._SCRATCHPAD_EXTS)
+			{
+				String maybeSpRaw = baseName + ext;
+				Path maybeSp = Paths.get(maybeSpRaw);
+				if (Files.exists(maybeSp))
+					classPath.add(maybeSp);
+			}
 			
 			// Use MIDlet wrapped as VMRunTaskDetached does not support
 			// DoJa/Star applications
