@@ -44,8 +44,7 @@ sjme_errorCode sjme_scritchui_gtk2_labelSetString(
 		
 			/* This is simple enough, nothing fancy. */
 		case SJME_SCRITCHUI_TYPE_WINDOW:
-			gtk_window_set_title(GTK_WINDOW(gtkWidget),
-				(inString != NULL ? inString : "SquirrelJME"));
+			gtk_window_set_title(GTK_WINDOW(gtkWidget), inString);
 			break;
 		
 		default:

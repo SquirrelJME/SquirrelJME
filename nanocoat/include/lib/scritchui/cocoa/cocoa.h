@@ -137,8 +137,14 @@ extern "C"
 /** Widget. */
 #define SJME_SUI_COCOA_H_NSVIEW 0
 	
+/** Menu. */
+#define SJME_SUI_COCOA_H_NSMENU SJME_SUI_COCOA_H_NSVIEW
+	
 /** Secondary widget. */
 #define SJME_SUI_COCOA_H_NSVIEWB 1
+	
+/** Menu Item. */
+#define SJME_SUI_COCOA_H_NSMENUITEM SJME_SUI_COCOA_H_NSVIEWB
 	
 /** Pencil functions for Cocoa. */
 extern const sjme_scritchui_pencilImplFunctions
@@ -189,6 +195,11 @@ sjme_errorCode sjme_scritchui_cocoa_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(paint));
 
+sjme_errorCode sjme_scritchui_cocoa_labelSetString(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
+	sjme_attrInNullable sjme_lpcstr inString);
+	
 sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,

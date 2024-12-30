@@ -43,7 +43,7 @@ sjme_errorCode sjme_scritchui_cocoa_menuBarNew(
 	cocoaMenu = [SJMEMenu new];
 
 	/* Store it. */
-	inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEW] = cocoaMenu;
+	inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENU] = cocoaMenu;
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -67,10 +67,10 @@ sjme_errorCode sjme_scritchui_cocoa_menuInsert(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Get menu to add into. */
-	cocoaMenu = intoMenu->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+	cocoaMenu = intoMenu->common.handle[SJME_SUI_COCOA_H_NSMENU];
 
 	/* Add it in, it is easier to just clear the parent before adding. */
-	toAdd = childItem->common.handle[SJME_SUI_COCOA_H_NSVIEWB];
+	toAdd = childItem->common.handle[SJME_SUI_COCOA_H_NSMENUITEM];
 	[toAdd setMenu:nil];
 	[cocoaMenu insertItem:toAdd
 		atIndex:atIndex];
@@ -93,7 +93,7 @@ sjme_errorCode sjme_scritchui_cocoa_menuItemNew(
 	cocoaMenuItem = [SJMEMenuItem new];
 
 	/* Store it. */
-	inMenuItem->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEWB] =
+	inMenuItem->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENUITEM] =
 		cocoaMenuItem;
 
 	/* Success? */
@@ -119,8 +119,9 @@ sjme_errorCode sjme_scritchui_cocoa_menuNew(
 	[cocoaMenuItem setSubmenu:cocoaMenu];
 
 	/* Store it. */
-	inMenu->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEW] = cocoaMenu;
-	inMenu->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEWB] = cocoaMenuItem;
+	inMenu->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENU] = cocoaMenu;
+	inMenu->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENUITEM] =
+		cocoaMenuItem;
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -142,7 +143,7 @@ sjme_errorCode sjme_scritchui_cocoa_menuRemove(
 			SJME_ERROR_NONE);
 
 	/* Recover menu to remove from. */
-	cocoaMenu = fromMenu->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+	cocoaMenu = fromMenu->common.handle[SJME_SUI_COCOA_H_NSMENU];
 
 	/* Remove it. */
 	[cocoaMenu removeItemAtIndex:atIndex];
