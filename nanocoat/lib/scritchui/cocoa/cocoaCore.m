@@ -7,11 +7,17 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <Foundation/NSDebug.h>
-
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/cocoa/cocoa.h"
 #include "lib/scritchui/cocoa/cocoaIntern.h"
+
+#if defined(SJME_CONFIG_DEBUG)
+	#if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_0)
+		#include <Foundation/NSDebug.h>
+	#elif SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
+		#include <GNUstepBase/NSProcessInfo+GNUstepBase.h>
+	#endif
+#endif
 
 #if defined(SJME_CONFIG_HAS_MACOS)
 extern OSErr CPSGetCurrentProcess(ProcessSerialNumber* psn);
@@ -206,9 +212,12 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	inState->implIntern = &sjme_scritchui_cocoaInternFunctions;
 
 	/* Be as verbose as possible on debug builds */
-#if defined(SJME_CONFIG_DEBUG) && \
-	SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_0)
+#if defined(SJME_CONFIG_DEBUG)
+#if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_0)
 	NSDebugEnabled = YES;
+#elif SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
+	[[NSProcessInfo processInfo] setDebugLoggingEnabled:YES];
+#endif
 #endif
 
 	/* If there is no NSApp, then we are running our own stuff and are not */

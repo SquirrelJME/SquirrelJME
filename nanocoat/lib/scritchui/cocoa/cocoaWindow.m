@@ -109,6 +109,7 @@ sjme_errorCode sjme_scritchui_cocoa_windowNew(
 			length:lex_tiff__len
 			freeWhenDone:NO]]];
 
+
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
