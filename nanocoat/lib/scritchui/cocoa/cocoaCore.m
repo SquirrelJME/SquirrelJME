@@ -196,12 +196,14 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 		CPSSetProcessName(&psn, "SquirrelJME");
 #endif
 
+	/* Declare ourselves accordingly. */
+	[[NSProcessInfo processInfo] setProcessName:@"SquirrelJME"];
+
 	/* Get the current application. */
 	currentApp = NSApp;
 
 	/* Set internal functions. */
 	inState->implIntern = &sjme_scritchui_cocoaInternFunctions;
-
 
 	/* Be as verbose as possible on debug builds */
 #if defined(SJME_CONFIG_DEBUG) && \

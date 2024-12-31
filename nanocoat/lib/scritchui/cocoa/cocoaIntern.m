@@ -41,9 +41,6 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 	/* The user is permitted to use the menu bar. */
 	[NSMenu setMenuBarVisible:YES];
 
-	/* Declare ourselves accordingly. */
-	[[NSProcessInfo processInfo] setProcessName:@"SquirrelJME"];
-
 	/* Get the default notification center, to register loop observer. */
 	notifCenter = [NSNotificationCenter defaultCenter];
 	[notifCenter addObserver:self
