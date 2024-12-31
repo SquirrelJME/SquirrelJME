@@ -51,6 +51,11 @@ sjme_errorCode sjme_scritchui_cocoa_menuBarNew(
 	/* Store it. */
 	inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENU] = cocoaMenu;
 
+#if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_2)
+	/* Set it as visible in the menu bar. */
+	[cocoaMenu setMenuBarVisible:YES];
+#endif
+
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
