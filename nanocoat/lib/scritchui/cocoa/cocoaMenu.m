@@ -137,11 +137,6 @@ sjme_errorCode sjme_scritchui_cocoa_menuRemove(
 	if (inState == NULL || fromMenu == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Menu bars do not exist, so remove from them does nothing. */
-	if (fromMenu->common.type == SJME_SCRITCHUI_TYPE_MENU_BAR)
-		return inState->implIntern->checkError(inState,
-			SJME_ERROR_NONE);
-
 	/* Recover menu to remove from. */
 	cocoaMenu = fromMenu->common.handle[SJME_SUI_COCOA_H_NSMENU];
 
