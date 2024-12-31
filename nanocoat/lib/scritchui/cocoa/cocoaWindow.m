@@ -112,21 +112,32 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetMenuBar(
 {
 	SJMEWindow* cocoaWindow;
 	SJMEMenu* cocoaMenu;
+	NSApplication* cocoaApp;
 
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Recover window. */
+	/* Recover window and bar, if any. */
 	cocoaWindow = inWindow->component.common.handle[SJME_SUI_COCOA_H_NSVIEW];
+	cocoaMenu = (inMenuBar == NULL ? NULL :
+		inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENU]);
 
 	/* Remove old menu. */
 	[cocoaWindow setMenu:nil];
+
+	/* Set this as the global application menu, if visible. */
+	cocoaApp = inState->common.handle[SJME_SUI_COCOA_H_NSAPP];
+	if (cocoaMenu != NULL && (inWindow->component.state.isVisible ||
+		inWindow->component.state.isUserVisible))
+		[cocoaApp setMainMenu:cocoaMenu];
+	else
+		[cocoaApp setMainMenu:nil];
 
 	/* Setting a new menu? */
 	if (inMenuBar != NULL)
 	{
 		/* Recover bar. */
-		cocoaMenu = inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSVIEW];
+		cocoaMenu = inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENU];
 
 		/* Set it. */
 		[cocoaWindow setMenu:cocoaMenu];
@@ -184,9 +195,19 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 	[cocoaWindow center];
 	[cocoaWindow setIsVisible:(isVisible ? true : false)];
 
-	/* If now visible, bring to the front. */
+	/* If now visible, bring to the front and also set menu. */
 	if (isVisible)
+	{
+		/* Bring this to the front. */
 		[cocoaWindow makeKeyAndOrderFront:cocoaWindow];
+
+		/* Update menu, same logic as setting the menu bar. */
+		if (inWindow->menuBar != NULL)
+			if (sjme_error_is(error = sjme_scritchui_cocoa_windowSetMenuBar(
+				inState, inWindow, inWindow->menuBar)))
+				return inState->implIntern->checkError(inState,
+					sjme_error_default(error));
+	}
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
