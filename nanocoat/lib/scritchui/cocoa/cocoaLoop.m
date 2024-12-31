@@ -42,7 +42,7 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 
 	/* Setup dictionary parameters. */
 	loopExecuteInfo = [SJMELoopExecute new];
-	loopExecuteInfo->inState = inState;
+	loopExecuteInfo->scritchState = inState;
 	loopExecuteInfo->callback = callback;
 	loopExecuteInfo->anything = anything;
 	dict = [NSDictionary dictionaryWithObject:loopExecuteInfo

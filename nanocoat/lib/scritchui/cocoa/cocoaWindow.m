@@ -38,7 +38,7 @@
 	sjme_scritchui_listener_close* infoCore;
 
 	/* Recover window. */
-	window = self->inWindow;
+	window = self->scritchWindow;
 
 	/* Get listener info, if no callback never close. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(window, close);
@@ -56,6 +56,44 @@
 
 	/* Always close at this point. */
 	return YES;
+}
+
+#if 0
+- (BOOL)performKeyEquivalent:(NSEvent*)event
+{
+	sjme_todo("Impl?");
+}
+#endif
+
+- (BOOL)sjmeExecMenuItem:(id)what sjme_attrUsed
+{
+	SJMEMenuItem* cocoaMenuItem;
+	sjme_scritchui inState;
+	sjme_scritchui_uiWindow inWindow;
+	sjme_scritchui_uiMenuItem menuItem;
+
+	/* Recover item. */
+	cocoaMenuItem = (SJMEMenuItem*)what;
+	if (cocoaMenuItem == NULL)
+		return NO;
+
+	/* Recover state and window. */
+	inWindow = self->scritchWindow;
+	inState = inWindow->component.common.state;
+
+	/* Only items can be activated. */
+	if (cocoaMenuItem->scritchMenuKind->common.type ==
+		SJME_SCRITCHUI_TYPE_MENU_ITEM)
+	{
+		if (sjme_error_is(inState->intern->menuItemActivate(
+			inState, cocoaMenuItem->scritchMenuKind,
+			cocoaMenuItem->scritchMenuKind)))
+			return NO;
+		return YES;
+	}
+
+	/* Not handled. */
+	return NO;
 }
 
 @end
@@ -100,7 +138,7 @@ sjme_errorCode sjme_scritchui_cocoa_windowNew(
 
 	/* Store it. */
 	inWindow->component.common.handle[SJME_SUI_COCOA_H_NSVIEW] = cocoaWindow;
-	cocoaWindow->inWindow = inWindow;
+	cocoaWindow->scritchWindow = inWindow;
 
 	/* Set icon for the window. */
 	[cocoaWindow setMiniwindowImage:
@@ -108,7 +146,6 @@ sjme_errorCode sjme_scritchui_cocoa_windowNew(
 			dataWithBytesNoCopy:(void*)lex_tiff__bin
 			length:lex_tiff__len
 			freeWhenDone:NO]]];
-
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

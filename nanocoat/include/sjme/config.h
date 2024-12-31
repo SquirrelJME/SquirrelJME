@@ -730,6 +730,9 @@ extern "C" {
 	#include "sjme/stdgone.h"
 #endif
 
+/** Item is used. */
+#define sjme_attrUsed sjme_attrUnused
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

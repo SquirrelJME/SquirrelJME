@@ -46,7 +46,7 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
 {
 @public
 	/** The state this is for. */
-	sjme_scritchui inState;
+	sjme_scritchui scritchState;
 	
 	/** The callback to execute. */
 	sjme_thread_mainFunc callback;
@@ -63,6 +63,9 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
  */
 @interface SJMEMenu : NSMenu
 {
+@public
+	/** The menu kind this is attached to. */
+	sjme_scritchui_uiMenuKind scritchMenuKind;
 }
 
 @end
@@ -74,6 +77,9 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
  */
 @interface SJMEMenuItem : NSMenuItem
 {
+@public
+	/** The menu kind this is attached to. */
+	sjme_scritchui_uiMenuKind scritchMenuKind;
 }
 
 @end
@@ -88,7 +94,7 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
 {
 @public
 	/** The panel this is attached to. */
-	sjme_scritchui_uiPanel inPanel;
+	sjme_scritchui_uiPanel scritchPanel;
 }
 
 @end
@@ -115,7 +121,7 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
 {
 @public
 	/** The window this is attached to. */
-	sjme_scritchui_uiWindow inWindow;
+	sjme_scritchui_uiWindow scritchWindow;
 }
 
 @end

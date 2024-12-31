@@ -47,6 +47,7 @@ sjme_errorCode sjme_scritchui_cocoa_menuBarNew(
 	/* Menu bars in Cocoa are just associated with the NSApp but themselves */
 	/* are just plain menus. */
 	cocoaMenu = [SJMEMenu new];
+	cocoaMenu->scritchMenuKind = SJME_SUI_CAST_MENU_KIND(inMenuBar);
 
 	/* Set a basic title. */
 	[cocoaMenu setTitle:@"SquirrelJME"];
@@ -102,6 +103,7 @@ sjme_errorCode sjme_scritchui_cocoa_menuItemNew(
 	cocoaMenuItem = [SJMEMenuItem new];
 
 	/* Store it. */
+	cocoaMenuItem->scritchMenuKind = SJME_SUI_CAST_MENU_KIND(inMenuItem);
 	inMenuItem->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENUITEM] =
 		cocoaMenuItem;
 
@@ -111,6 +113,9 @@ sjme_errorCode sjme_scritchui_cocoa_menuItemNew(
 #if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_5)
 	[cocoaMenuItem setHidden:NO];
 #endif
+
+	/* Set action for activation. */
+	[cocoaMenuItem setAction:@selector(sjmeExecMenuItem:)];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -130,6 +135,8 @@ sjme_errorCode sjme_scritchui_cocoa_menuNew(
 	/* Setup new menu, it needs an item as well. */
 	cocoaMenu = [SJMEMenu new];
 	cocoaMenuItem = [SJMEMenuItem new];
+	cocoaMenu->scritchMenuKind = SJME_SUI_CAST_MENU_KIND(inMenu);
+	cocoaMenuItem->scritchMenuKind = SJME_SUI_CAST_MENU_KIND(inMenu);
 
 	/* The item's sub menu is the menu. */
 	[cocoaMenuItem setSubmenu:cocoaMenu];

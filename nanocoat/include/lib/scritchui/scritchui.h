@@ -88,7 +88,7 @@ typedef enum sjme_scritchui_uiType
 
 /** Generic cast check. */
 #define SJME_SUI_CAST(uiType, type, v) \
-	((type)sjme_scritchui_checkCast((type), (v)))
+	((type)sjme_scritchui_checkCast((uiType), (v)))
 
 /** Common type. */
 #define SJME_SUI_CAST_COMMON(v) \
@@ -123,7 +123,7 @@ typedef enum sjme_scritchui_uiType
 
 /** Check cast to menu item. */
 #define SJME_SUI_CAST_MENU_ITEM(v) \
-	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_MENU_Item, \
+	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_MENU_ITEM, \
 	sjme_scritchui_uiMenuItem, (v))
 
 /**

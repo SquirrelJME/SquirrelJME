@@ -15,19 +15,19 @@
 - (BOOL)acceptsFirstResponder
 {
 	/* Set if focus is enabled. */
-	return (inPanel->enableFocus ? YES : NO);
+	return (scritchPanel->enableFocus ? YES : NO);
 }
 
 - (BOOL)canBecomeKeyView
 {
 	/* Set if focus is enabled. */
-	return (inPanel->enableFocus ? YES : NO);
+	return (scritchPanel->enableFocus ? YES : NO);
 }
 
 - (BOOL)needsPanelToBecomeKey
 {
 	/* Set if focus is enabled. */
-	return (inPanel->enableFocus ? YES : NO);
+	return (scritchPanel->enableFocus ? YES : NO);
 }
 
 - (void)drawRect:(NSRect)dirtyRect
@@ -46,7 +46,7 @@
 	NSAffineTransform* matrix;
 
 	/* Recover the panel. */
-	inPanel = self->inPanel;
+	inPanel = self->scritchPanel;
 	inState = inPanel->component.common.state;
 
 	/* Get listener info, ignore if there is none. */
@@ -232,7 +232,7 @@ sjme_errorCode sjme_scritchui_cocoa_panelNew(
 
 	/* Store it. */
 	inPanel->component.common.handle[SJME_SUI_COCOA_H_NSVIEW] = cocoaPanel;
-	cocoaPanel->inPanel = inPanel;
+	cocoaPanel->scritchPanel = inPanel;
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
