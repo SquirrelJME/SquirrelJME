@@ -142,7 +142,15 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetMenuBar(
 	if (cocoaMenu != NULL && (inWindow->component.state.isVisible ||
 		inWindow->component.state.isUserVisible ||
 		inWindow->component.state.settingVisible))
+	{
+		/* Global menu on macOs. */
 		[cocoaApp setMainMenu:cocoaMenu];
+
+		/* Set this to be the main menu for the application. */
+#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 12, 0)
+		[cocoaMenu setMain:YES];
+#endif
+	}
 	else
 		[cocoaApp setMainMenu:nil];
 
