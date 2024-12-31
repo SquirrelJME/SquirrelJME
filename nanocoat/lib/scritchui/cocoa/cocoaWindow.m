@@ -122,26 +122,29 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetMenuBar(
 	cocoaMenu = (inMenuBar == NULL ? NULL :
 		inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENU]);
 
-	/* Remove old menu. */
-	[cocoaWindow setMenu:nil];
-
-	/* Set this as the global application menu, if visible. */
-	cocoaApp = inState->common.handle[SJME_SUI_COCOA_H_NSAPP];
-	if (cocoaMenu != NULL && (inWindow->component.state.isVisible ||
-		inWindow->component.state.isUserVisible))
-		[cocoaApp setMainMenu:cocoaMenu];
-	else
-		[cocoaApp setMainMenu:nil];
-
 	/* Setting a new menu? */
 	if (inMenuBar != NULL)
 	{
 		/* Recover bar. */
 		cocoaMenu = inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENU];
 
-		/* Set it. */
+		/* This really only has an effect on older versions of macOS and */
+		/* GNUstep. */
 		[cocoaWindow setMenu:cocoaMenu];
 	}
+
+	/* Remove old menu. */
+	else
+		[cocoaWindow setMenu:nil];
+
+	/* Set this as the global application menu, if visible. */
+	cocoaApp = inState->common.handle[SJME_SUI_COCOA_H_NSAPP];
+	if (cocoaMenu != NULL && (inWindow->component.state.isVisible ||
+		inWindow->component.state.isUserVisible ||
+		inWindow->component.state.settingVisible))
+		[cocoaApp setMainMenu:cocoaMenu];
+	else
+		[cocoaApp setMainMenu:nil];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -202,11 +205,10 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 		[cocoaWindow makeKeyAndOrderFront:cocoaWindow];
 
 		/* Update menu, same logic as setting the menu bar. */
-		if (inWindow->menuBar != NULL)
-			if (sjme_error_is(error = sjme_scritchui_cocoa_windowSetMenuBar(
-				inState, inWindow, inWindow->menuBar)))
-				return inState->implIntern->checkError(inState,
-					sjme_error_default(error));
+		if (sjme_error_is(error = sjme_scritchui_cocoa_windowSetMenuBar(
+			inState, inWindow, inWindow->menuBar)))
+			return inState->implIntern->checkError(inState,
+				sjme_error_default(error));
 	}
 
 	/* Success? */

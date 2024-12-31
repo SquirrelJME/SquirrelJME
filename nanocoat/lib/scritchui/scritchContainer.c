@@ -88,6 +88,9 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 	
 	/* Set free slot in component. */
 	list->elements[freeSlot] = addComponent;
+
+	/* Adding to a container sets as visible. */
+	addComponent->state.settingVisible = SJME_JNI_TRUE;
 	
 	/* Forward call. */	
 	if (sjme_error_is(error = inState->impl->containerAdd(inState,
@@ -177,6 +180,9 @@ sjme_errorCode sjme_scritchui_core_containerRemove(
 		/* Ignore ones that are not this one. */
 		if (list->elements[i] != removeComponent)
 			continue;
+
+		/* Removing from a container makes it not visible. */
+		removeComponent->state.settingVisible = SJME_JNI_FALSE;
 		
 		/* Forward call. */
 		if (sjme_error_is(error = inState->impl->containerRemove(

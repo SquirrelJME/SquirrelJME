@@ -220,6 +220,9 @@ sjme_errorCode sjme_scritchui_core_windowSetVisible(
 	/* Not implemented? */
 	if (inState->impl->windowSetVisible == NULL)
 		return sjme_error_notImplemented(0);
+
+	/* Being set as visible? */
+	inWindow->component.state.settingVisible = isVisible;
 	
 	/* Forward call. */
 	if (sjme_error_is(error = inState->impl->windowSetVisible(inState,

@@ -13,6 +13,12 @@
 #include "lib/scritchui/cocoa/cocoa.h"
 #include "lib/scritchui/cocoa/cocoaIntern.h"
 
+#if defined(SJME_CONFIG_HAS_MACOS)
+extern OSErr CPSGetCurrentProcess(ProcessSerialNumber* psn);
+
+extern OSErr CPSSetProcessName(ProcessSerialNumber* psn, char* name);
+#endif
+
 static const sjme_scritchui_implFunctions sjme_scritchui_cocoaFunctions =
 {
 	.apiInit = sjme_scritchui_cocoa_apiInit,
@@ -176,15 +182,26 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	NSThread* currentThread;
 	NSRunLoop* currentLoop;
 	SJMESuperObject* super;
+#if defined(SJME_CONFIG_HAS_MACOS)
+	ProcessSerialNumber psn;
+#endif
 
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Reset main application name. */
+#if defined(SJME_CONFIG_HAS_MACOS)
+	memset(&psn, 0, sizeof(psn));
+	if (CPSGetCurrentProcess(&psn) == noErr)
+		CPSSetProcessName(&psn, "SquirrelJME");
+#endif
 
 	/* Get the current application. */
 	currentApp = NSApp;
 
 	/* Set internal functions. */
 	inState->implIntern = &sjme_scritchui_cocoaInternFunctions;
+
 
 	/* Be as verbose as possible on debug builds */
 #if defined(SJME_CONFIG_DEBUG) && \
@@ -213,12 +230,6 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	{
 		/* In this mode we need to manually poll events. */
 		inState->bugs.manualEventPoll = SJME_JNI_TRUE;
-
-		/* We want SquirrelJME to be activated because this is a UI! */
-		/* Whatever we are running on, just drop it and set this. */
-#if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_6)
-		[currentApp setActivationPolicy:NSApplicationActivationPolicyRegular];
-#endif
 
 		/* Indicate that we finished launching, so everything pops up. */
 		[currentApp finishLaunching];

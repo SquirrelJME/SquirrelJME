@@ -17,18 +17,18 @@
 	return [super init];
 }
 
+- (BOOL)autoenablesItems
+{
+	/* All items are manually controlled. */
+	return NO;
+}
+
 @end
 
 @implementation SJMEMenuItem : NSMenuItem
 - (id)init
 {
 	return [super init];
-}
-
-- (BOOL)autoenablesItems
-{
-	/* All items are manually controlled. */
-	return NO;
 }
 
 @end
@@ -48,13 +48,11 @@ sjme_errorCode sjme_scritchui_cocoa_menuBarNew(
 	/* are just plain menus. */
 	cocoaMenu = [SJMEMenu new];
 
+	/* Set a basic title. */
+	[cocoaMenu setTitle:@"SquirrelJME"];
+
 	/* Store it. */
 	inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENU] = cocoaMenu;
-
-#if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_2)
-	/* Set it as visible in the menu bar. */
-	[cocoaMenu setMenuBarVisible:YES];
-#endif
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -82,9 +80,9 @@ sjme_errorCode sjme_scritchui_cocoa_menuInsert(
 
 	/* Add it in, it is easier to just clear the parent before adding. */
 	toAdd = childItem->common.handle[SJME_SUI_COCOA_H_NSMENUITEM];
-	[toAdd setMenu:nil];
 	[cocoaMenu insertItem:toAdd
 		atIndex:atIndex];
+	[cocoaMenu update];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -109,6 +107,10 @@ sjme_errorCode sjme_scritchui_cocoa_menuItemNew(
 
 	/* Enable by default. */
 	[cocoaMenuItem setEnabled:YES];
+
+#if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_5)
+	[cocoaMenuItem setHidden:NO];
+#endif
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -135,6 +137,10 @@ sjme_errorCode sjme_scritchui_cocoa_menuNew(
 	/* Enable by default. */
 	[cocoaMenuItem setEnabled:YES];
 
+#if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_5)
+	[cocoaMenuItem setHidden:NO];
+#endif
+
 	/* Store it. */
 	inMenu->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENU] = cocoaMenu;
 	inMenu->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENUITEM] =
@@ -159,6 +165,7 @@ sjme_errorCode sjme_scritchui_cocoa_menuRemove(
 
 	/* Remove it. */
 	[cocoaMenu removeItemAtIndex:atIndex];
+	[cocoaMenu update];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

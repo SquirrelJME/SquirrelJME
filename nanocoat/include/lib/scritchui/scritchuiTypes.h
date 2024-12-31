@@ -179,6 +179,9 @@ struct sjme_scritchui_uiComponentBase
 		
 		/** Is this visible to the user? */
 		sjme_jboolean isUserVisible;
+
+		/** Is this being set to visible? */
+		sjme_jboolean settingVisible;
 		
 		/** Current and next logical mouse state. */
 		sjme_scritchui_uiMouseState mouse[2];
