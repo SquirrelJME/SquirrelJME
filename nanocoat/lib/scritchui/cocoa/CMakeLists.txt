@@ -6,6 +6,14 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
+# Decode all of the blobs to binary
+squirreljme_decode_dir("${CMAKE_CURRENT_SOURCE_DIR}/blobs"
+	"${CMAKE_CURRENT_BINARY_DIR}/blobs/binary")
+
+# Then encode them all to source files
+squirreljme_sourceize_dir("${CMAKE_CURRENT_BINARY_DIR}/blobs/binary"
+	"${CMAKE_CURRENT_BINARY_DIR}/blobs")
+
 # Declare base library
 add_library(ScritchUICocoa SHARED
 	$<TARGET_OBJECTS:BasePIC>
@@ -24,7 +32,8 @@ add_library(ScritchUICocoa SHARED
 	cocoaScreen.m
 	cocoaScrollPanel.m
 	cocoaView.m
-	cocoaWindow.m)
+	cocoaWindow.m
+	"${CMAKE_CURRENT_BINARY_DIR}/blobs/lex.tiff.c")
 
 # Always make it PIC
 if(SQUIRRELJME_ENABLE_FPIC)
@@ -34,7 +43,8 @@ endif()
 
 # Include main headers
 target_include_directories(ScritchUICocoa PUBLIC
-	"${CMAKE_SOURCE_DIR}/include")
+	"${CMAKE_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_BINARY_DIR}/")
 
 # Flags needed for GNUStep
 if(SQUIRRELJME_IS_GNUSTEP_DESKTOP)

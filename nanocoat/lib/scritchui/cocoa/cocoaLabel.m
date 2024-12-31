@@ -45,6 +45,8 @@ sjme_errorCode sjme_scritchui_cocoa_labelSetString(
 
 			[cocoaWindow setTitle:
 				[NSString stringWithUTF8String:inString]];
+			[cocoaWindow setMiniwindowTitle:
+				[NSString stringWithUTF8String:inString]];
 			break;
 
 		default:

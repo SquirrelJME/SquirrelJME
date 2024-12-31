@@ -10,6 +10,7 @@
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/cocoa/cocoa.h"
 #include "lib/scritchui/cocoa/cocoaIntern.h"
+#include "blobs/lex.tiff.h"
 
 @implementation SJMEWindow : NSWindow
 - (id)init
@@ -100,6 +101,13 @@ sjme_errorCode sjme_scritchui_cocoa_windowNew(
 	/* Store it. */
 	inWindow->component.common.handle[SJME_SUI_COCOA_H_NSVIEW] = cocoaWindow;
 	cocoaWindow->inWindow = inWindow;
+
+	/* Set icon for the window. */
+	[cocoaWindow setMiniwindowImage:
+		[[NSImage new] initWithData:[NSData
+			dataWithBytesNoCopy:(void*)lex_tiff__bin
+			length:lex_tiff__len
+			freeWhenDone:NO]]];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
