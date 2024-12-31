@@ -25,6 +25,12 @@
 	return [super init];
 }
 
+- (BOOL)autoenablesItems
+{
+	/* All items are manually controlled. */
+	return NO;
+}
+
 @end
 
 sjme_errorCode sjme_scritchui_cocoa_menuBarNew(
@@ -96,6 +102,9 @@ sjme_errorCode sjme_scritchui_cocoa_menuItemNew(
 	inMenuItem->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENUITEM] =
 		cocoaMenuItem;
 
+	/* Enable by default. */
+	[cocoaMenuItem setEnabled:YES];
+
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
@@ -117,6 +126,9 @@ sjme_errorCode sjme_scritchui_cocoa_menuNew(
 
 	/* The item's sub menu is the menu. */
 	[cocoaMenuItem setSubmenu:cocoaMenu];
+
+	/* Enable by default. */
+	[cocoaMenuItem setEnabled:YES];
 
 	/* Store it. */
 	inMenu->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENU] = cocoaMenu;
