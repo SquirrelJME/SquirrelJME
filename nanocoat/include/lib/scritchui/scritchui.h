@@ -2092,6 +2092,64 @@ typedef struct sjme_scritchui_externalFunctions
 	sjme_scritchui_loopExecuteFunc externalLoopExecuteWait;
 } sjme_scritchui_externalFunctions;
 
+/**
+ * Stores information for a single loop queue item.
+ * 
+ * @since 2024/12/31
+ */
+typedef struct sjme_scritchui_loopQueueItem sjme_scritchui_loopQueueItem;
+
+struct sjme_scritchui_loopQueueItem
+{
+	/** The function to execute. */
+	sjme_thread_mainFunc function;
+	
+	/** The "anything" value. */
+	sjme_thread_parameter anything;
+	
+	/** The next item in the queue. */
+	sjme_scritchui_loopQueueItem* next;
+};
+
+/**
+ * A chunk of loop queue slots.
+ * 
+ * @since 2024/12/31
+ */
+typedef struct sjme_scritchui_loopQueueChunk sjme_scritchui_loopQueueChunk;
+
+/** The size of the loop queue per chunk. */
+#define SJME_SCRITCHUI_LOOP_SIZE 32
+
+struct sjme_scritchui_loopQueueChunk
+{
+	/** The items in the loop queue. */
+	sjme_scritchui_loopQueueItem items[SJME_SCRITCHUI_LOOP_SIZE];
+	
+	/** The next chunk, if this is full. */
+	sjme_scritchui_loopQueueChunk* nextChunk;
+};
+
+/**
+ * The loop queue which contains multiple loop items.
+ * 
+ * @since 2024/12/31
+ */
+typedef struct sjme_scritchui_loopQueue
+{
+	/** The lock for the queue items. */
+	sjme_thread_spinLock lock;
+	
+	/** The first chunk. */
+	sjme_scritchui_loopQueueChunk* firstChunk;
+	
+	/** The next item in the queue. */
+	sjme_scritchui_loopQueueItem* next;
+	
+	/** The last item in the queue. */
+	sjme_scritchui_loopQueueItem* last;
+} sjme_scritchui_loopQueue;
+
 struct sjme_scritchui_stateBase
 {
 	/** Common data. */
@@ -2162,6 +2220,9 @@ struct sjme_scritchui_stateBase
 
 	/** Font cache. */
 	sjme_list_sjme_scritchui_pencilFont* fontCache;
+
+	/** The loop queue for manual event loops. */
+	sjme_scritchui_loopQueue loopQueue;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */
