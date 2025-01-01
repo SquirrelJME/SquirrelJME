@@ -37,7 +37,7 @@
 	sjme_scritchui_uiPanel inPanel;
 	sjme_scritchui_listener_paint* infoCore;
 	sjme_scritchui_pencil pencil;
-	sjme_jint x, y, w, h;
+	sjme_jint x, y, w, h, vw, vh;
 	sjme_frontEnd frontEnd;
 	sjme_scritchui_pencilFont defaultFont;
 	NSGraphicsContext* context;
@@ -54,8 +54,8 @@
 
 	/* The dirty rect is in PDF space, it needs to be converted. */
 	/* The super frame needs to be used as well. */
-	x = 0;//dirtyRect.origin.x;
-	y = 0;//dirtyRect.origin.y;
+	x = dirtyRect.origin.x;
+	y = dirtyRect.origin.y;
 	w = dirtyRect.size.width;
 	h = dirtyRect.size.height;
 	if (sjme_error_is(error = inState->apiInThread->lafDpiProject(
@@ -104,12 +104,17 @@
 	/* Disable antialiasing, it looks horrible. */
 	[context setShouldAntialias:NO];
 
-	/* We need to ensure the content is at the top-left. If the window is */
-	/* too small then we need to calculate it differently. */
-	/* Also remember PDF space is inverted. */
+	/* Scale everything up so it fits better. */
 	matrix = [[NSAffineTransform alloc] init];
-	[matrix scaleXBy:2.0 yBy:2.0];
-	#if 0
+	vw = 512;
+	vh = 512;
+	if (sjme_error_is(error = inState->apiInThread->lafDpiProject(
+		inState, SJME_SUI_CAST_COMPONENT(inPanel),
+		SJME_JNI_TRUE,
+		&vw, &vh, NULL, NULL)))
+		goto fail_project;
+	[matrix scaleXBy:(512.0 / vw) yBy:(512.0 / vh)];
+#if 0
 	if (superBase.size.height < frameBase.size.height)
 		[matrix translateXBy:0.0
 			yBy:-superBase.size.height];
@@ -119,7 +124,7 @@
 		[matrix translateXBy:0.0
 			yBy:(frameBase.size.height - superBase.size.height)];
 	}
-	#endif
+#endif
 
 	/* Use the new matrix. */
 	[matrix set];
@@ -167,7 +172,8 @@ fail_project:
 - (BOOL)isFlipped
 {
 	/* Flipped backed origin be the top-left, which is far easier. */
-	return YES;
+	/* However, it does not actually work on GNUstep so do not bother. */
+	return NO;
 }
 
 - (BOOL)isOpaque

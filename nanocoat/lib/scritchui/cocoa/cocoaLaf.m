@@ -21,15 +21,22 @@ sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
 	sjme_attrInNullable sjme_jint* inOutH)
 {
 	NSView* view;
+	NSWindow* window;
 	NSRect rect;
+
+#if (SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_4) && \
+	SJME_CONFIG_COCOA_VERSION_BEFORE(MAC_OS_X_VERSION_10_8)) || \
+	SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 13, 0)
+	double scale;
+#endif
 
 	if (inState == NULL || (inOutX == NULL && inOutY == NULL &&
 		inOutW == NULL && inOutH == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-#if SJME_CONFIG_COCOA_VERSION_BEFORE(MAC_OS_X_VERSION_10_5) && \
-	SJME_CONFIG_GNUSTEP_GUI_VERSION_BEFORE(0, 20, 0)
-	/* This does not exist before 10.5, so do nothing. */
+#if SJME_CONFIG_COCOA_VERSION_BEFORE(MAC_OS_X_VERSION_10_4) && \
+	SJME_CONFIG_GNUSTEP_GUI_VERSION_BEFORE(0, 13, 0)
+	/* This does not exist before 10.4 or GNUstep 0.13, so do nothing. */
 	return SJME_ERROR_NONE;
 
 #else
@@ -39,10 +46,15 @@ sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
 
 	/* Recover view, if there is none then ignore. */
 	if (inContext->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
-		view = [((NSWindow*)inContext->common
-			.handle[SJME_SUI_COCOA_H_NSVIEW]) contentView];
+	{
+		window = (NSWindow*)inContext->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+		view = [window contentView];
+	}
 	else
+	{
 		view = inContext->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+		window = [view window];
+	}
 
 	/* There is no such view? */
 	if (view == NULL)
@@ -59,13 +71,46 @@ sjme_errorCode sjme_scritchui_cocoa_lafDpiProject(
 	if (inOutH != NULL)
 		rect.size.height = *inOutH;
 
-#if (SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_5) && \
-	SJME_CONFIG_COCOA_VERSION_BEFORE(MAC_OS_X_VERSION_10_7)) || \
+	/* Load in the scale factor for the window, if any. */
+#if (SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_4) && \
+	SJME_CONFIG_COCOA_VERSION_BEFORE(MAC_OS_X_VERSION_10_8)) || \
+	SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 13, 0)
+	scale = 0.0;
+	if (window != NULL)
+		scale = [window userSpaceScaleFactor];
+#endif
+
+#if (SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_4) && \
+	SJME_CONFIG_COCOA_VERSION_BEFORE(MAC_OS_X_VERSION_10_5)) || \
+	(SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 13, 0) && \
+	SJME_CONFIG_GNUSTEP_GUI_VERSION_BEFORE(0, 20, 0))
+	if (window == NULL || scale != 1.0)
+	{
+		if (toBase)
+		{
+			rect.origin.x *= scale;
+			rect.origin.y *= scale;
+			rect.size.width *= scale;
+			rect.size.height *= scale;
+		}
+		else
+		{
+			rect.origin.x /= scale;
+			rect.origin.y /= scale;
+			rect.size.width /= scale;
+			rect.size.height /= scale;
+		}
+	}
+#elif (SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_5) && \
+	SJME_CONFIG_COCOA_VERSION_BEFORE(MAC_OS_X_VERSION_10_8)) || \
 	SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 20, 0)
-	if (toBase)
-		rect = [view convertRectToBase:rect];
-	else
-		rect = [view convertRectFromBase:rect];
+	if (window == NULL || scale != 1.0)
+	{
+		if (toBase)
+			rect = [view convertRectToBase:rect];
+		else
+			rect = [view convertRectFromBase:rect];
+	}
 #else
 	if (toBase)
 		rect = [view convertRectToBacking:rect];
