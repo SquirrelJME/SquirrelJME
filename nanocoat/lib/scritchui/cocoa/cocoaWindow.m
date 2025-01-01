@@ -66,11 +66,7 @@
 {
 	sjme_scritchui inState;
 	sjme_scritchui_uiWindow inWindow;
-	sjme_list_sjme_scritchui_uiComponent* components;
-	sjme_scritchui_uiComponent component;
 	SJMEWindow* cocoaWindow;
-	NSView* cocoaView;
-	sjme_jint i, n, height, x, z;
 
 	/* Recover. */
 	inWindow = self->scritchWindow;
@@ -81,37 +77,13 @@
 	if (![cocoaWindow isVisible])
 		return;
 
-	/* Get components for this window, ignore if there are none. */
-	components = inWindow->container.components;
-	if (components == NULL || components->length <= 0)
+	/* Perform recursive container update. */
+	if (sjme_error_is(inState->implIntern->containerFraming(
+		inState, SJME_SUI_CAST_COMPONENT(inWindow))))
 		return;
 
-	/* How big is this frame? */
-	height = cocoaWindow.frame.size.height;
-
-	/* Set the position of each component, assuming they are valid. */
-	for (i = 0, n = components->length; i < n; i++)
-	{
-		/* Skip missing components. */
-		component = components->elements[i];
-		if (component == NULL)
-			continue;
-
-		/* Get the view of this component, ignore if missing. */
-		cocoaView = component->common.handle[SJME_SUI_COCOA_H_NSVIEW];
-		if (cocoaView == NULL || [cocoaView isHiddenOrHasHiddenAncestor])
-			continue;
-
-		/* Set the origin position for the component. */
-		x = component->bounds.s.x;
-		z = (height - component->bounds.d.height) + component->bounds.s.y;
-		[cocoaView setFrameOrigin:NSMakePoint(x, z)];
-		[cocoaView setNeedsDisplay:YES];
-	}
-
-	/* We need to update, if we did anything. */
-	if (n > 0)
-		[self update];
+	/* We need to update. */
+	[self update];
 }
 
 - (BOOL)windowShouldClose:(id)sender

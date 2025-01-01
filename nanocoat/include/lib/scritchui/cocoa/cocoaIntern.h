@@ -138,15 +138,35 @@ typedef sjme_errorCode (*sjme_scritchui_cocoa_intern_checkErrorFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_errorCode ifOkay);
 
+/**
+ * Updates the framing for a container so that it uses a top-left origin
+ * point rather than bottom-left.
+ * 
+ * @param inState The ScritchUI state.
+ * @param inComponent The container to frame.
+ * @return Any resultant error.
+ * @since 2025/01/01
+ */
+typedef sjme_errorCode (*sjme_scritchui_cocoa_intern_containerFramingFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
 struct sjme_scritchui_implInternFunctions
 {
 	/** Checks if there has been a Cocoa error. */
 	sjme_scritchui_cocoa_intern_checkErrorFunc checkError;
+
+	/** Performs container framing. */
+	sjme_scritchui_cocoa_intern_containerFramingFunc containerFraming;
 };
 
 sjme_errorCode sjme_scritchui_cocoa_intern_checkError(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_errorCode ifOkay);
+
+sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
 /*--------------------------------------------------------------------------*/
 

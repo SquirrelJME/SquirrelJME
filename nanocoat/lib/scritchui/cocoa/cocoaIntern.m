@@ -129,3 +129,69 @@ sjme_errorCode sjme_scritchui_cocoa_intern_checkError(
 
 	return ifOkay;
 }
+
+sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiContainer container, subContainer;
+	sjme_list_sjme_scritchui_uiComponent* components;
+	sjme_scritchui_uiComponent subComponent;
+	NSView* topView;
+	NSView* subView;
+	sjme_jint i, n, height, x, z;
+
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get container. */
+	container = NULL;
+	if (sjme_error_is(error = inState->intern->getContainer(
+		inState, inComponent, &container)) || container == NULL)
+		return sjme_error_default(error);
+
+	/* Get components for this container, ignore if there are none. */
+	components = container->components;
+	if (components == NULL || components->length <= 0)
+		return SJME_ERROR_NONE;
+
+	/* If this is a view, get the frame height for this. */
+	topView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+	height = 0;
+	if (topView != NULL)
+		height = [topView frame].size.height;
+
+	/* Set the position of each component, assuming they are valid. */
+	for (i = 0, n = components->length; i < n; i++)
+	{
+		/* Skip missing components. */
+		subComponent = components->elements[i];
+		if (subComponent == NULL)
+			continue;
+
+		/* Get the view of this component, ignore if missing or hidden. */
+		subView = subComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+		if (subView == NULL || [subView isHiddenOrHasHiddenAncestor])
+			continue;
+
+		/* Set the origin position for the component. */
+		x = subComponent->bounds.s.x;
+		z = (height - subComponent->bounds.d.height) +
+			subComponent->bounds.s.y;
+		[subView setFrameOrigin:NSMakePoint(x, z)];
+		[subView setNeedsDisplay:YES];
+
+		/* If this is a sub-container, then recursively frame it as well. */
+		subContainer = NULL;
+		if (!sjme_error_is(error = inState->intern->getContainer(
+			inState, inComponent, &subContainer)) &&
+			subContainer != NULL)
+			if (sjme_error_is(error = inState->implIntern->containerFraming(
+				inState, subComponent)))
+				return sjme_error_default(error);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
