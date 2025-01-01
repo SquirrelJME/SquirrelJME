@@ -63,14 +63,6 @@
 		SJME_JNI_TRUE, &x, &y, &w, &h)))
 		goto fail_project;
 
-	/* Debug. */
-	sjme_message("Cocoa draw (%d, %d) [%d, %d] (f[%d, %d]/b[%d, %d])",
-		x, y, w, h,
-		(int)self.frame.size.width,
-		(int)self.frame.size.height,
-		(int)self.superview.frame.size.width,
-		(int)self.superview.frame.size.height);
-
 	/* Recover graphics context. */
 	context = [NSGraphicsContext currentContext];
 
@@ -104,8 +96,10 @@
 	/* Disable antialiasing, it looks horrible. */
 	[context setShouldAntialias:NO];
 
-	/* Scale everything up so it fits better. */
+	/* Initialize blank matrix. */
 	matrix = [[NSAffineTransform alloc] init];
+
+	/* Scale everything up so it fits better. */
 	vw = 512;
 	vh = 512;
 	if (sjme_error_is(error = inState->apiInThread->lafDpiProject(
@@ -114,17 +108,18 @@
 		&vw, &vh, NULL, NULL)))
 		goto fail_project;
 	[matrix scaleXBy:(512.0 / vw) yBy:(512.0 / vh)];
-#if 0
-	if (superBase.size.height < frameBase.size.height)
-		[matrix translateXBy:0.0
-			yBy:-superBase.size.height];
-	else
-	{
-		[matrix translateXBy:0.0 yBy:(-h)];
-		[matrix translateXBy:0.0
-			yBy:(frameBase.size.height - superBase.size.height)];
-	}
-#endif
+
+	/* Then flip the coordinates so they draw top down. */
+	[matrix scaleXBy:1.0 yBy:-1.0];
+
+	/* Since we did flip the coordinates, we need to shift the image */
+	[matrix translateXBy:0.0
+		yBy:-inPanel->component.bounds.d.height];
+
+	/* Remove any difference from the frame's origin. */
+	/* This makes it so when the origin changes, it does not clip the sides. */
+	[matrix translateXBy:-self.frame.origin.x
+		yBy:-self.frame.origin.y];
 
 	/* Use the new matrix. */
 	[matrix set];

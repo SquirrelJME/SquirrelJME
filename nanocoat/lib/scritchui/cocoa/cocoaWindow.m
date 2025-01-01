@@ -31,6 +31,89 @@
 		defer:NO];
 }
 
+- (BOOL)sjmeExecMenuItem:(id)what sjme_attrUsed
+{
+	SJMEMenuItem* cocoaMenuItem;
+	sjme_scritchui inState;
+	sjme_scritchui_uiWindow inWindow;
+	sjme_scritchui_uiMenuItem menuItem;
+
+	/* Recover item. */
+	cocoaMenuItem = (SJMEMenuItem*)what;
+	if (cocoaMenuItem == NULL)
+		return NO;
+
+	/* Recover state and window. */
+	inWindow = self->scritchWindow;
+	inState = inWindow->component.common.state;
+
+	/* Only items can be activated. */
+	if (cocoaMenuItem->scritchMenuKind->common.type ==
+		SJME_SCRITCHUI_TYPE_MENU_ITEM)
+	{
+		if (sjme_error_is(inState->intern->menuItemActivate(
+			inState, cocoaMenuItem->scritchMenuKind,
+			cocoaMenuItem->scritchMenuKind)))
+			return NO;
+		return YES;
+	}
+
+	/* Not handled. */
+	return NO;
+}
+
+- (void)windowDidResize:(NSNotification*)notif
+{
+	sjme_scritchui inState;
+	sjme_scritchui_uiWindow inWindow;
+	sjme_list_sjme_scritchui_uiComponent* components;
+	sjme_scritchui_uiComponent component;
+	SJMEWindow* cocoaWindow;
+	NSView* cocoaView;
+	sjme_jint i, n, height, x, z;
+
+	/* Recover. */
+	inWindow = self->scritchWindow;
+	inState = inWindow->component.common.state;
+
+	/* Do nothing if not yet visible. */
+	cocoaWindow = inWindow->component.common.handle[SJME_SUI_COCOA_H_NSVIEW];
+	if (![cocoaWindow isVisible])
+		return;
+
+	/* Get components for this window, ignore if there are none. */
+	components = inWindow->container.components;
+	if (components == NULL || components->length <= 0)
+		return;
+
+	/* How big is this frame? */
+	height = cocoaWindow.frame.size.height;
+
+	/* Set the position of each component, assuming they are valid. */
+	for (i = 0, n = components->length; i < n; i++)
+	{
+		/* Skip missing components. */
+		component = components->elements[i];
+		if (component == NULL)
+			continue;
+
+		/* Get the view of this component, ignore if missing. */
+		cocoaView = component->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+		if (cocoaView == NULL || [cocoaView isHiddenOrHasHiddenAncestor])
+			continue;
+
+		/* Set the origin position for the component. */
+		x = component->bounds.s.x;
+		z = (height - component->bounds.d.height) + component->bounds.s.y;
+		[cocoaView setFrameOrigin:NSMakePoint(x, z)];
+		[cocoaView setNeedsDisplay:YES];
+	}
+
+	/* We need to update, if we did anything. */
+	if (n > 0)
+		[self update];
+}
+
 - (BOOL)windowShouldClose:(id)sender
 {
 	sjme_errorCode error;
@@ -64,37 +147,6 @@
 	sjme_todo("Impl?");
 }
 #endif
-
-- (BOOL)sjmeExecMenuItem:(id)what sjme_attrUsed
-{
-	SJMEMenuItem* cocoaMenuItem;
-	sjme_scritchui inState;
-	sjme_scritchui_uiWindow inWindow;
-	sjme_scritchui_uiMenuItem menuItem;
-
-	/* Recover item. */
-	cocoaMenuItem = (SJMEMenuItem*)what;
-	if (cocoaMenuItem == NULL)
-		return NO;
-
-	/* Recover state and window. */
-	inWindow = self->scritchWindow;
-	inState = inWindow->component.common.state;
-
-	/* Only items can be activated. */
-	if (cocoaMenuItem->scritchMenuKind->common.type ==
-		SJME_SCRITCHUI_TYPE_MENU_ITEM)
-	{
-		if (sjme_error_is(inState->intern->menuItemActivate(
-			inState, cocoaMenuItem->scritchMenuKind,
-			cocoaMenuItem->scritchMenuKind)))
-			return NO;
-		return YES;
-	}
-
-	/* Not handled. */
-	return NO;
-}
 
 @end
 

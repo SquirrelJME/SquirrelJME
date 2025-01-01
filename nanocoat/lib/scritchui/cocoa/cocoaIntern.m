@@ -56,6 +56,12 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 		name:sjme_scritchui_cocoa_loopExecuteNotif
 		object:nil];
 
+	/* Listen to the needed notifications. */
+	[notifCenter addObserver:self
+		selector:@selector(windowDidResize:)
+		name:NSWindowDidResizeNotification
+		object:nil];
+
 	/* Return self. */
 	return self;
 }
@@ -92,9 +98,22 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 		sjme_message("Loop execute failed: %d", error);
 }
 
-+ (void)postNotification:(NSNotification *)notif
++ (void)postNotification:(NSNotification*)notif
 {
     [[NSNotificationCenter defaultCenter] postNotification:notif];
+}
+
+- (void)windowDidResize:(NSNotification*)notif
+{
+	NSWindow* baseWindow;
+
+	/* Determine if this is a window type we care about. */
+	baseWindow = notif.object;
+	if ([baseWindow class] != [SJMEWindow class])
+		return;
+
+	/* Forward to our own handler. */
+	[((SJMEWindow*)baseWindow)windowDidResize:notif];
 }
 
 @end
