@@ -140,7 +140,7 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 	sjme_scritchui_uiComponent subComponent;
 	NSView* topView;
 	NSView* subView;
-	sjme_jint i, n, height, x, z;
+	sjme_jint i, n, height, x, z, extraTop;
 
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -162,6 +162,13 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 	if (topView != NULL)
 		height = [topView frame].size.height;
 
+	/* On GNUstep, there is the menu that needs to be bumped past. */
+	extraTop = 0;
+#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
+	if ([topView class] == [SJMEWindow class])
+		extraTop = [[((NSWindow*)topView) menu] menuBarHeight];
+#endif
+
 	/* Set the position of each component, assuming they are valid. */
 	for (i = 0, n = components->length; i < n; i++)
 	{
@@ -177,8 +184,12 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 
 		/* Set the origin position for the component. */
 		x = subComponent->bounds.s.x;
-		z = (height - subComponent->bounds.d.height) +
-			subComponent->bounds.s.y;
+#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
+		z = 0;
+		if (subComponent->bounds.d.height < height)
+#endif
+			z = (height - subComponent->bounds.d.height) +
+				subComponent->bounds.s.y + (-extraTop);
 		[subView setFrameOrigin:NSMakePoint(x, z)];
 		[subView setNeedsDisplay:YES];
 
