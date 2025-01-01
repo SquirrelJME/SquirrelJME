@@ -29,7 +29,7 @@ dependencies {
 	implementation 'org.iban4j:iban4j:3.2.7-RELEASE'
 	
 	// CSV parsing, for NanoCoat generation
-	implementation 'org.apache.commons:commons-collections4:4.5.0-M2'
+	implementation 'org.apache.commons:commons-collections4:4.5.0-M3'
 	implementation 'com.opencsv:opencsv:5.9'
 	
 	// Shadow Jar, for single Jars
