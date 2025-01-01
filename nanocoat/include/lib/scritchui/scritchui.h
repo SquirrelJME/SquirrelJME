@@ -2222,7 +2222,7 @@ struct sjme_scritchui_stateBase
 	sjme_list_sjme_scritchui_pencilFont* fontCache;
 
 	/** The loop queue for manual event loops. */
-	sjme_scritchui_loopQueue loopQueue;
+	sjme_alignPointer sjme_scritchui_loopQueue loopQueue;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */

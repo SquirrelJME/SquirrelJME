@@ -187,13 +187,13 @@ typedef sjme_thread_result (sjme_attrThreadCall *sjme_thread_mainFunc)(
 typedef struct sjme_thread_spinLock
 {
 	/** The thread that is currently poking this lock. */
-	sjme_atomic_sjme_thread poke;
+	sjme_alignPointer sjme_atomic_sjme_thread poke;
 	
 	/** The thread that owns this lock. */
-	sjme_atomic_sjme_thread owner;
+	sjme_alignPointer sjme_atomic_sjme_thread owner;
 	
 	/** Lock count. */
-	sjme_atomic_sjme_jint count;
+	sjme_alignPointer sjme_atomic_sjme_jint count;
 } sjme_thread_spinLock;
 
 /**

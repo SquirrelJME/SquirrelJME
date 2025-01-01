@@ -113,9 +113,9 @@ sjme_errorCode sjme_scritchui_core_loopExecuteLater(
 	/* Not implemented? */
 	if (inState->impl->loopExecuteLater == NULL)
 		return sjme_error_notImplemented(0);
-	
+
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/* If there is manual event polling, push callbacks into a queue. */
-	/* However, we never want to put later executions on the queue. */
 	if (inState->wrappedState == NULL && inState->bugs.manualEventPoll)
 	{
 		/* Lock the loop queue. */
@@ -132,7 +132,7 @@ sjme_errorCode sjme_scritchui_core_loopExecuteLater(
 			if (currentChunk != NULL)
 			{
 				/* Find an item to place in. */
-				for (i = 0, i = SJME_SCRITCHUI_LOOP_SIZE; i < n; i++)
+				for (i = 0, n = SJME_SCRITCHUI_LOOP_SIZE; i < n; i++)
 				{
 					/* Check this item. */
 					checkItem = &currentChunk->items[i];
@@ -196,6 +196,8 @@ skip_success:
 			return sjme_error_default(error);
 		
 		/* Since we did this, we do not continue to the native code. */
+		sjme_message("<< Exec in: %p(%p)",
+			callback, anything);
 		return SJME_ERROR_NONE;
 		
 fail_alloc:
@@ -204,6 +206,7 @@ fail_alloc:
 		
 		return sjme_error_default(error);
 	}
+#endif
 	
 	/* Call execution directly. */
 	return inState->impl->loopExecuteLater(inState, callback, anything);
@@ -301,50 +304,81 @@ sjme_errorCode sjme_scritchui_core_loopIterate(
 	sjme_errorCode error;
 	sjme_scritchui_loopQueue* loopQueue;
 	sjme_scritchui_loopQueueItem* loopItem;
+	sjme_scritchui_loopQueueItem execItem;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Does nothing if not manually polled, but not wrapped. */
-	if (inState->wrappedState == NULL && !inState->bugs.manualEventPoll)
+
+	/* Only forward if not wrapped nor manually polled. */
+	if (inState->wrappedState != NULL && !inState->bugs.manualEventPoll)
 		return SJME_ERROR_NONE;
 
 	/* Missing implementation of iterate? */
 	if (inState->impl->loopIterate == NULL)
 		return sjme_error_notImplemented(0);
-	
-	/* Lock the loop queue. */
-	loopQueue = &inState->loopQueue;
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&loopQueue->lock)))
+
+	/* Perform normal loop calls first. */
+	if (sjme_error_is(error = inState->impl->loopIterate(inState, blocking,
+		outHasTerminated)))
 		return sjme_error_default(error);
 
-	/* Are there any loop queue items to run? */
-	while (loopQueue->next != NULL)
+	/* If wrapped, do nothing more. */
+	if (inState->wrappedState != NULL)
+		return error;
+
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
+	/* Run all loop items. */
+	for (;;)
 	{
-		/* Grab and flow next item. */
-		loopItem = loopQueue->next;
-		loopQueue->next = loopItem->next;
-		loopItem->next = NULL;
-		
-		/* Was this the last item? If it was, then clear it. */
-		if (loopItem == loopQueue->last)
-			loopQueue->last = NULL;
-		
-		/* Execute it. */
-		if (sjme_error_is(error = SJME_THREAD_RESULT_AS_ERROR(
-			loopItem->function(loopItem->anything))))
-			sjme_message("exec(...): %d", error);
-		
-		/* Clear the loop item. */
-		memset(loopItem, 0, sizeof(*loopItem));
-	}
-	
-	/* Release the lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&loopQueue->lock, NULL)))
-		return sjme_error_default(error);
+		/* Lock the loop queue. */
+		loopQueue = &inState->loopQueue;
+		if (sjme_error_is(error = sjme_thread_spinLockGrab(
+			&loopQueue->lock)))
+			return sjme_error_default(error);
 
-	/* Forward call and perform normal iteration. */
-	return inState->impl->loopIterate(inState, blocking, outHasTerminated);
+		/* Are there any loop queue items to run? */
+		memset(&execItem, 0, sizeof(execItem));
+		while (loopQueue->next != NULL)
+		{
+			/* Grab and flow next item. */
+			loopItem = loopQueue->next;
+			loopQueue->next = loopItem->next;
+			loopItem->next = NULL;
+
+			/* Was this the last item? If it was, then clear it. */
+			if (loopItem == loopQueue->last)
+			{
+				loopQueue->last = NULL;
+				break;
+			}
+
+			/* Copy it out. */
+			memmove(&execItem, loopItem, sizeof(execItem));
+
+			/* Clear the loop item. */
+			memset(loopItem, 0, sizeof(*loopItem));
+
+			/* We are executing this. */
+			break;
+		}
+
+		/* Release the lock. */
+		if (sjme_error_is(error = sjme_thread_spinLockRelease(
+			&loopQueue->lock, NULL)))
+			return sjme_error_default(error);
+
+		/* Execute it. */
+		if (execItem.function != NULL)
+		{
+			sjme_message(">> Exec out: %p(%p)",
+				execItem.function, execItem.anything);
+			if (sjme_error_is(error = SJME_THREAD_RESULT_AS_ERROR(
+				loopItem->function(loopItem->anything))))
+				return sjme_error_default(error);
+		}
+	}
+#endif
+
+	/* Success? */
+	return error;
 }
