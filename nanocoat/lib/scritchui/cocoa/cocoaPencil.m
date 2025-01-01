@@ -29,7 +29,6 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilInitLine(
 	if (g == NULL || path == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-
 	/* Set default properties for the line. */
 	[path setLineWidth:1.0];
 
@@ -112,6 +111,9 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawHoriz(
 	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
+	/* In. */
+	sjme_scritchui_cocoa_pencilStep(g, context, SJME_JNI_TRUE);
+
 	/* Initialize path. */
 	path = [NSBezierPath bezierPath];
 	sjme_scritchui_cocoa_pencilInitLine(g, path);
@@ -120,6 +122,9 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawHoriz(
 	[path moveToPoint:NSMakePoint(x, y)];
 	[path lineToPoint:NSMakePoint(x + w, y)];
 	[path stroke];
+
+	/* Out. */
+	sjme_scritchui_cocoa_pencilStep(g, context, SJME_JNI_FALSE);
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -148,6 +153,9 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawLine(
 	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
+	/* In. */
+	sjme_scritchui_cocoa_pencilStep(g, context, SJME_JNI_TRUE);
+
 	/* Initialize path. */
 	path = [NSBezierPath bezierPath];
 	sjme_scritchui_cocoa_pencilInitLine(g, path);
@@ -156,6 +164,9 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawLine(
 	[path moveToPoint:NSMakePoint(x1, y1)];
 	[path lineToPoint:NSMakePoint(x2, y2)];
 	[path stroke];
+
+	/* Out. */
+	sjme_scritchui_cocoa_pencilStep(g, context, SJME_JNI_FALSE);
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

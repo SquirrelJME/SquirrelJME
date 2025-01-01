@@ -32,8 +32,6 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-	NSRect dirtyBase, frameBase, superBase;
-	NSSize scale;
 	sjme_errorCode error;
 	sjme_scritchui inState;
 	sjme_scritchui_uiPanel inPanel;
@@ -52,17 +50,12 @@
 	/* Get listener info, ignore if there is none. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(&inPanel->paint, paint);
 	if (infoCore->callback == NULL)
-	{
-		/* Debug. */
-		sjme_message("Not drawing anything...");
-
-		return;
-	}
+		goto skip_nothing;
 
 	/* The dirty rect is in PDF space, it needs to be converted. */
 	/* The super frame needs to be used as well. */
-	x = dirtyRect.origin.x;
-	y = dirtyRect.origin.y;
+	x = 0;//dirtyRect.origin.x;
+	y = 0;//dirtyRect.origin.y;
 	w = dirtyRect.size.width;
 	h = dirtyRect.size.height;
 	if (sjme_error_is(error = inState->apiInThread->lafDpiProject(
@@ -70,27 +63,13 @@
 		SJME_JNI_TRUE, &x, &y, &w, &h)))
 		goto fail_project;
 
-	/* Fill in base coordinates. */
-	dirtyBase.origin.x = x;
-	dirtyBase.origin.y = y;
-	dirtyBase.size.width = w;
-	dirtyBase.size.height = h;
-
-	/* Project others???? */
-	frameBase = [self frame];
-	superBase = [[self superview] frame];
-
-	/* Determine actual origin coordinates and view size. */
-	x = dirtyBase.origin.x;
-	y = dirtyBase.origin.y;
-	w = dirtyBase.size.width;
-	h = dirtyBase.size.height;
-
 	/* Debug. */
 	sjme_message("Cocoa draw (%d, %d) [%d, %d] (f[%d, %d]/b[%d, %d])",
 		x, y, w, h,
-		(int)frameBase.size.width, (int)frameBase.size.height,
-		(int)superBase.size.width, (int)superBase.size.height);
+		(int)self.frame.size.width,
+		(int)self.frame.size.height,
+		(int)self.superview.frame.size.width,
+		(int)self.superview.frame.size.height);
 
 	/* Recover graphics context. */
 	context = [NSGraphicsContext currentContext];
@@ -129,7 +108,8 @@
 	/* too small then we need to calculate it differently. */
 	/* Also remember PDF space is inverted. */
 	matrix = [[NSAffineTransform alloc] init];
-	[matrix scaleXBy:1.0 yBy:-1.0];
+	[matrix scaleXBy:2.0 yBy:2.0];
+	#if 0
 	if (superBase.size.height < frameBase.size.height)
 		[matrix translateXBy:0.0
 			yBy:-superBase.size.height];
@@ -139,14 +119,13 @@
 		[matrix translateXBy:0.0
 			yBy:(frameBase.size.height - superBase.size.height)];
 	}
+	#endif
 
 	/* Use the new matrix. */
 	[matrix set];
 
 	/* The clipping area is set to the region that needs redrawing. */
-	pencil->api->setClip(pencil,
-		dirtyBase.origin.x, dirtyBase.origin.y,
-		w, h);
+	pencil->api->setClip(pencil, x, y, w, h);
 
 	/* Forward to callback. */
 	error = infoCore->callback(inState,
@@ -164,6 +143,7 @@
 	[context restoreGraphicsState];
 
 	/* Make sure main drawing is performed. */
+skip_nothing:
 	[super drawRect:dirtyRect];
 
 	/* Flush graphics. */
