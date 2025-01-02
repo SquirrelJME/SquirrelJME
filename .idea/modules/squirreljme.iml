@@ -324,9 +324,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../utils-dev" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/out" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

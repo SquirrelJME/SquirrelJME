@@ -83,6 +83,7 @@ static const sjme_scritchui_implInternFunctions
 {
 	.checkError = sjme_scritchui_cocoa_intern_checkError,
 	.containerFraming = sjme_scritchui_cocoa_intern_containerFraming,
+	.windowExtents = sjme_scritchui_cocoa_intern_windowExtents,
 };
 
 static sjme_thread_result sjme_scritchui_cocoa_loopMain(

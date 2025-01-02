@@ -126,6 +126,11 @@ typedef enum sjme_scritchui_uiType
 	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_MENU_ITEM, \
 	sjme_scritchui_uiMenuItem, (v))
 
+/** Check cast to window. */
+#define SJME_SUI_CAST_WINDOW(v) \
+	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_WINDOW, \
+	sjme_scritchui_uiWindow, (v))
+
 /**
  * An opaque native handle.
  * 

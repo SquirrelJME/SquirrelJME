@@ -12,6 +12,10 @@
 #include "lib/scritchui/cocoa/cocoaIntern.h"
 #include "blobs/lex.tiff.h"
 
+#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
+	#include <GNUstepGUI/GSDisplayServer.h>
+#endif
+
 NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 	@"sjme_scritchui_cocoa_loopExecuteNotif";
 
@@ -140,7 +144,7 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 	sjme_scritchui_uiComponent subComponent;
 	NSView* topView;
 	NSView* subView;
-	sjme_jint i, n, height, x, z, extraTop;
+	sjme_jint i, n, height, x, z, extraX, extraY;
 
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -162,12 +166,14 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 	if (topView != NULL)
 		height = [topView frame].size.height;
 
-	/* On GNUstep, there is the menu that needs to be bumped past. */
-	extraTop = 0;
-#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
-	if ([topView class] == [SJMEWindow class])
-		extraTop = [[((NSWindow*)topView) menu] menuBarHeight];
-#endif
+	/* On GNUstep there are extra frame insets that are offset from the X11. */
+	extraX = 0;
+	extraY = 0;
+	if (inComponent->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
+		if (sjme_error_default(error = inState->implIntern->windowExtents(
+			inState, SJME_SUI_CAST_WINDOW(inComponent),
+			&extraX, &extraY)))
+			return sjme_error_default(error);
 
 	/* Set the position of each component, assuming they are valid. */
 	for (i = 0, n = components->length; i < n; i++)
@@ -183,13 +189,15 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 			continue;
 
 		/* Set the origin position for the component. */
-		x = subComponent->bounds.s.x;
+		x = subComponent->bounds.s.x + extraX;
 #if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
 		z = 0;
-		if (subComponent->bounds.d.height < height)
+		if (subComponent->bounds.d.height >= height)
+			z = 0;
+		else
 #endif
 			z = (height - subComponent->bounds.d.height) +
-				subComponent->bounds.s.y + (-extraTop);
+				subComponent->bounds.s.y + (-extraY);
 		[subView setFrameOrigin:NSMakePoint(x, z)];
 		[subView setNeedsDisplay:YES];
 
@@ -205,4 +213,63 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_cocoa_intern_windowExtents(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_jint* outX,
+	sjme_attrInNotNull sjme_jint* outY)
+{
+#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
+	NSView* cocoaView;
+	sjme_jint extraX, extraY;
+	GSDisplayServer* server;
+	float sl, sr, st, sb;
+#endif
+
+	if (inState == NULL || inWindow == NULL || outX == NULL || outY == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
+	/* Recover view. */
+	cocoaView = inWindow->component.common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+	/* Recover extents. */
+	extraX = 0;
+	extraY = 0;
+	if ([cocoaView class] == [SJMEWindow class])
+	{
+		/* Get the window server for this window, if available. */
+		server = GSServerForWindow((NSWindow*)cocoaView);
+		if (server != NULL && [server handlesWindowDecorations])
+		{
+			/* Grab style offsets. */
+			/* There is no documentation on what the last style parameter */
+			/* actually means, however 1 appears to work. */
+			sl = 0;
+			sr = 0;
+			st = 0;
+			sb = 0;
+			[server styleoffsets:&sl:&sr:&st:&sb:1];
+
+			/* Offset accordingly. */
+			extraX = sl;
+			extraY = st + sb;
+		}
+
+		/* Add extra height needed for the menu. */
+		extraY += [[cocoaView menu] menuBarHeight];
+	}
+
+	/* Return whatever result. */
+	*outX = extraX;
+	*outY = extraY;
+	return SJME_ERROR_NONE;
+#else
+	/* Not needed anywhere else. */
+	*outX = 0;
+	*outY = 0;
+	return SJME_ERROR_NONE;
+#endif
 }

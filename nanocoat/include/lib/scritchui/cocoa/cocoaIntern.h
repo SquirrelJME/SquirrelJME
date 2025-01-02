@@ -151,6 +151,18 @@ typedef sjme_errorCode (*sjme_scritchui_cocoa_intern_containerFramingFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
+/**
+ * 
+ * 
+ * @return Any resultant error.
+ * @since 2025/01/01
+ */
+typedef sjme_errorCode (*sjme_scritchui_cocoa_intern_windowExtentsFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_jint* outX,
+	sjme_attrInNotNull sjme_jint* outY);
+
 struct sjme_scritchui_implInternFunctions
 {
 	/** Checks if there has been a Cocoa error. */
@@ -158,6 +170,9 @@ struct sjme_scritchui_implInternFunctions
 
 	/** Performs container framing. */
 	sjme_scritchui_cocoa_intern_containerFramingFunc containerFraming;
+	
+	/** Obtains window extents. */
+	sjme_scritchui_cocoa_intern_windowExtentsFunc windowExtents;
 };
 
 sjme_errorCode sjme_scritchui_cocoa_intern_checkError(
@@ -167,6 +182,12 @@ sjme_errorCode sjme_scritchui_cocoa_intern_checkError(
 sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
+sjme_errorCode sjme_scritchui_cocoa_intern_windowExtents(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_jint* outX,
+	sjme_attrInNotNull sjme_jint* outY);
 
 /*--------------------------------------------------------------------------*/
 
