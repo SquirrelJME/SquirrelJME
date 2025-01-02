@@ -83,6 +83,7 @@ static const sjme_scritchui_implInternFunctions
 {
 	.checkError = sjme_scritchui_cocoa_intern_checkError,
 	.containerFraming = sjme_scritchui_cocoa_intern_containerFraming,
+	.eventMouse = sjme_scritchui_cocoa_intern_eventMouse,
 	.windowExtents = sjme_scritchui_cocoa_intern_windowExtents,
 };
 
@@ -221,6 +222,9 @@ sjme_errorCode sjme_scritchui_cocoa_apiInit(
 	[[NSProcessInfo processInfo] setDebugLoggingEnabled:YES];
 #endif
 #endif
+
+	/* These specific bugs affects Cocoa. */
+	inState->bugs.windowVisibilityUnknown = SJME_JNI_TRUE;
 
 	/* If there is no NSApp, then we are running our own stuff and are not */
 	/* embedded into another application. */

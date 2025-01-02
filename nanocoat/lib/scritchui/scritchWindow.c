@@ -229,6 +229,13 @@ sjme_errorCode sjme_scritchui_core_windowSetVisible(
 		inWindow, isVisible)))
 		return sjme_error_default(error);
 	
+	/* The native window system has no means of determining window */
+	/* visibility, so we have to handle it manually if we show it. */
+	if (inState->bugs.windowVisibilityUnknown)
+		if (sjme_error_is(error = inState->intern->updateVisibleWindow(
+			inState, inWindow, isVisible)))
+			return sjme_error_default(error);
+	
 	/* If we have a minimum size set, making this window visible should */
 	/* be able to tell us the overhead of the window, so reset minimum */
 	/* size here to handle that. */

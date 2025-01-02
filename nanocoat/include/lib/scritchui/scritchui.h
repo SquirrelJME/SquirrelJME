@@ -2060,6 +2060,9 @@ typedef struct sjme_scritchui_bugs
 	
 	/** Do not set content size when the window is made visible. */
 	sjme_jboolean noContentSizeWhenVisible;
+	
+	/** It is unknown when a window is visible or not. */
+	sjme_jboolean windowVisibilityUnknown;
 } sjme_scritchui_bugs;
 
 /**

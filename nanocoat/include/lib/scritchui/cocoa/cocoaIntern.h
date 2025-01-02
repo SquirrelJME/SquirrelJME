@@ -152,8 +152,30 @@ typedef sjme_errorCode (*sjme_scritchui_cocoa_intern_containerFramingFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
 /**
+ * Normalizes and handles mouse events from Cocoa in a unified way.
  * 
+ * @param inState The ScritchUI state.
+ * @param inComponent The component the event occurred in.
+ * @param inEvent The event that was generated.
+ * @param typeMask The type mask for the event.
+ * @param buttonId The button for the event.
+ * @return Any resultant error.
+ * @since 2025/01/02
+ */
+typedef sjme_errorCode (*sjme_scritchui_cocoa_intern_eventMouseFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull NSEvent* inEvent,
+	sjme_attrInValue sjme_jint typeMask,
+	sjme_attrInValue sjme_jint buttonId);
+
+/**
+ * Returns the extents of the window, used for offsetting when framing.
  * 
+ * @param inState The ScritchUI state.
+ * @param inWindow The window to get the extents of.
+ * @param outX The X extents.
+ * @param outY The Y extents.
  * @return Any resultant error.
  * @since 2025/01/01
  */
@@ -171,6 +193,9 @@ struct sjme_scritchui_implInternFunctions
 	/** Performs container framing. */
 	sjme_scritchui_cocoa_intern_containerFramingFunc containerFraming;
 	
+	/** Mouse event handling. */
+	sjme_scritchui_cocoa_intern_eventMouseFunc eventMouse;
+	
 	/** Obtains window extents. */
 	sjme_scritchui_cocoa_intern_windowExtentsFunc windowExtents;
 };
@@ -182,6 +207,13 @@ sjme_errorCode sjme_scritchui_cocoa_intern_checkError(
 sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
+sjme_errorCode sjme_scritchui_cocoa_intern_eventMouse(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull NSEvent* inEvent,
+	sjme_attrInValue sjme_jint typeMask,
+	sjme_attrInValue sjme_jint buttonId);
 
 sjme_errorCode sjme_scritchui_cocoa_intern_windowExtents(
 	sjme_attrInNotNull sjme_scritchui inState,

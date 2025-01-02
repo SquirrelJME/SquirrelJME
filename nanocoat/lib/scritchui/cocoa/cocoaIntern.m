@@ -215,6 +215,43 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_cocoa_intern_eventMouse(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull NSEvent* inEvent,
+	sjme_attrInValue sjme_jint typeMask,
+	sjme_attrInValue sjme_jint buttonId)
+{
+	sjme_scritchui_listener_input* infoCore;
+	sjme_scritchinput_event fill;
+	NSPoint cursorPos;
+
+	if (inState == NULL || inComponent == NULL || inEvent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get listener info. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, input);
+
+	/* No actual input listener? */
+	if (infoCore->callback == NULL)
+		return SJME_ERROR_NONE;
+
+	/* Get the global cursor position. */
+	cursorPos = [NSEvent mouseLocation];
+
+	/* Fill in event details. */
+	memset(&fill, 0, sizeof(fill));
+	fill.type = typeMask;
+	fill.time.full = [inEvent timestamp];
+	fill.data.mouseButton.x = cursorPos.x;
+	fill.data.mouseButton.y = cursorPos.y;
+	if (buttonId >= 0)
+		fill.data.mouseButton.button = buttonId;
+
+	/* Forward handler. */
+	return infoCore->callback(inState, inComponent, &fill);
+}
+
 sjme_errorCode sjme_scritchui_cocoa_intern_windowExtents(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,

@@ -180,6 +180,88 @@ fail_project:
 	return NO;
 }
 
+/** Generic Cocoa mouse handling. */
+#define SJME_SCRITCHUI_COCOA_MOUSE(typeFlags, button) \
+	sjme_scritchui inState; \
+	sjme_scritchui_uiPanel inPanel; \
+	 \
+	/* Recover the panel. */ \
+	inPanel = self->scritchPanel; \
+	inState = inPanel->component.common.state; \
+	 \
+	/* Call unified handler. */ \
+	inState->implIntern->eventMouse(inState, \
+		SJME_SUI_CAST_COMPONENT(inPanel), \
+		event, (typeFlags), (button) + 1)
+
+- (void)mouseDown:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_MOUSE(SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED, 0);
+}
+
+- (void)mouseDragged:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_MOUSE(SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED |
+		SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION, 0);
+}
+
+- (void)mouseEntered:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_MOUSE(SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION, -1);
+}
+
+- (void)mouseExited:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_MOUSE(SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION, -1);
+}
+
+- (void)mouseMoved:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_MOUSE(SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION, -1);
+}
+
+- (void)mouseUp:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_MOUSE(SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED,
+		0);
+}
+
+- (void)otherMouseDown:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_MOUSE(SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED,
+		2 + [event buttonNumber]);
+}
+
+- (void)otherMouseDragged:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_MOUSE(SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED |
+		SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION,
+		2 + [event buttonNumber]);
+}
+
+- (void)otherMouseUp:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_MOUSE(SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED,
+		2 + [event buttonNumber]);
+}
+
+- (void)rightMouseDown:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_MOUSE(SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED, 1);
+}
+
+- (void)rightMouseDragged:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_MOUSE(SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED |
+		SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION, 1);
+}
+
+- (void)rightMouseUp:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_MOUSE(SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED,
+		1);
+}
+
 @end
 
 sjme_errorCode sjme_scritchui_cocoa_panelEnableFocus(

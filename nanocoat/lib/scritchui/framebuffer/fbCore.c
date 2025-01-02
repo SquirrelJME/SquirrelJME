@@ -85,9 +85,10 @@ sjme_errorCode sjme_scritchui_fb_apiInit(
 	/* Debug. */
 	sjme_message("Framebuffer wrapper initialized!");
 	
-	/* Copy any native bugs. */
+	/* Copy any native bugs, and clear ones that make no sense for this. */
 	memmove(&inState->bugs, &inState->wrappedState->bugs,
 		sizeof(inState->bugs));
+	inState->bugs.windowVisibilityUnknown = SJME_JNI_FALSE;
 	
 	/* Set internal implementation functions. */
 	inState->implIntern = &sjme_scritchui_fbInter;
