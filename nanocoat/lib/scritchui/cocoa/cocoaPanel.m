@@ -117,12 +117,9 @@
 		yBy:-inPanel->component.bounds.d.height];
 
 	/* Remove any difference from the frame's origin. */
-	/* This makes it so when the origin changes, it does not clip the sides. */
-	/* This does not need to be done on macOS, however GNUstep is bugged. */
-#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
+	/* All drawing is essentially absolute from the base of the frame. */
 	[matrix translateXBy:self.frame.origin.x
 		yBy:-self.frame.origin.y];
-#endif
 
 	/* Use the new matrix. */
 	[matrix set];

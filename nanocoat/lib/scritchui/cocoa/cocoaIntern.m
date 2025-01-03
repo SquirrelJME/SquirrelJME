@@ -166,7 +166,7 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 	if (topView != NULL)
 		height = [topView frame].size.height;
 
-	/* On GNUstep there are extra frame insets that are offset from the X11. */
+	/* There may be extra spacing for windows or otherwise. */
 	extraX = 0;
 	extraY = 0;
 	if (inComponent->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
@@ -258,20 +258,24 @@ sjme_errorCode sjme_scritchui_cocoa_intern_windowExtents(
 	sjme_attrInNotNull sjme_jint* outX,
 	sjme_attrInNotNull sjme_jint* outY)
 {
-#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
 	NSView* cocoaView;
+#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
 	sjme_jint extraX, extraY;
 	GSDisplayServer* server;
 	float sl, sr, st, sb;
+#elif SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_0)
+	NSWindow* cocoaWindow;
+	NSRect frameRect;
+	NSRect contentRect;
 #endif
 
 	if (inState == NULL || inWindow == NULL || outX == NULL || outY == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
 	/* Recover view. */
 	cocoaView = inWindow->component.common.handle[SJME_SUI_COCOA_H_NSVIEW];
 
+#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
 	/* Recover extents. */
 	extraX = 0;
 	extraY = 0;
@@ -303,10 +307,37 @@ sjme_errorCode sjme_scritchui_cocoa_intern_windowExtents(
 	*outX = extraX;
 	*outY = extraY;
 	return SJME_ERROR_NONE;
+#elif SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_0)
+	/* If this is a window, then determine the content offsets. */
+	if ([cocoaView class] == [SJMEWindow class])
+	{
+		cocoaWindow = ((NSWindow*)cocoaView);
+
+		/* Map to the content rect, then determine the offsets. */
+		frameRect = cocoaWindow.frame;
+		contentRect = [cocoaWindow contentRectForFrameRect:frameRect];
+		*outX = abs((sjme_jint)(frameRect.origin.x - contentRect.origin.x)) +
+			abs((sjme_jint)(frameRect.size.width - contentRect.size.width));
+		*outY = abs((sjme_jint)(frameRect.origin.y - contentRect.origin.y)) +
+			abs((sjme_jint)(frameRect.size.height - contentRect.size.height));
+
+		sjme_message("Extent: (%d, %d)", *outX, *outY);
+	}
+
+	/* Not a window, so it does not get mapped. */
+	else
+	{
+		*outX = 0;
+		*outY = 0;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 #else
 	/* Not needed anywhere else. */
 	*outX = 0;
 	*outY = 0;
+
 	return SJME_ERROR_NONE;
 #endif
 }

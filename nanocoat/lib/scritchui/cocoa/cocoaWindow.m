@@ -143,6 +143,9 @@ sjme_errorCode sjme_scritchui_cocoa_windowContentMinimumSize(
 	[cocoaWindow setContentMinSize:size];
 	[cocoaWindow setMinSize:size];
 
+	/* This changed, so it needs to be updated. */
+	[cocoaWindow update];
+
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
