@@ -218,6 +218,8 @@ sjme_errorCode sjme_scritchui_cocoa_intern_eventMouse(
 	sjme_scritchui_listener_input* infoCore;
 	sjme_scritchinput_event fill;
 	NSPoint cursorPos;
+	NSView* cocoaView;
+	NSWindow* cocoaWindow;
 
 	if (inState == NULL || inComponent == NULL || inEvent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -225,12 +227,22 @@ sjme_errorCode sjme_scritchui_cocoa_intern_eventMouse(
 	/* Get listener info. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, input);
 
-	/* No actual input listener? */
-	if (infoCore->callback == NULL)
+	/* Recover view. */
+	cocoaView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+	cocoaWindow = [cocoaView window];
+
+	/* No actual input listener? Or missing a window? */
+	if (infoCore->callback == NULL || cocoaWindow == NULL)
 		return SJME_ERROR_NONE;
 
-	/* Get the global cursor position. */
-	cursorPos = [NSEvent mouseLocation];
+	/* Get the global cursor position and offset/flip it accordingly. */
+	cursorPos = [cocoaWindow convertScreenToBase:[NSEvent mouseLocation]];
+	cursorPos.y *= -1.0;
+	cursorPos.y += cocoaView.frame.size.height;
+
+	/* Then add the frame offsets. */
+	cursorPos.x -= cocoaView.frame.origin.x;
+	cursorPos.y += cocoaView.frame.origin.y;
 
 	/* Fill in event details. */
 	memset(&fill, 0, sizeof(fill));

@@ -47,6 +47,9 @@
 	inPanel = self->scritchPanel;
 	inState = inPanel->component.common.state;
 
+	/* Recover graphics context. */
+	context = [NSGraphicsContext currentContext];
+
 	/* Get listener info, ignore if there is none. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(&inPanel->paint, paint);
 	if (infoCore->callback == NULL)
@@ -62,9 +65,6 @@
 		inState, SJME_SUI_CAST_COMPONENT(inPanel),
 		SJME_JNI_TRUE, &x, &y, &w, &h)))
 		goto fail_project;
-
-	/* Recover graphics context. */
-	context = [NSGraphicsContext currentContext];
 
 	/* Save current state to restore for the super call. */
 	[context saveGraphicsState];
@@ -98,6 +98,16 @@
 
 	/* Initialize blank matrix. */
 	matrix = [[NSAffineTransform alloc] init];
+
+	/* It appears that GNUstep when rendering is relative to the window */
+	/* irrespective as to where the actual panel is. This means that even */
+	/* if this panel happens to be framed, the frame origin will still be */
+	/* based on the window coordinates, which technically is accurate except */
+	/* that it does not match the behavior of macOS. */
+#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
+	[matrix translateXBy:self.frame.origin.x
+		yBy:self.frame.origin.y];
+#endif
 
 	/* Scale everything up so it fits and can be seen. */
 	vw = 512;
