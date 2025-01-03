@@ -20,8 +20,8 @@
 	/* We do not care how big the window initially is. */
 	rect.origin.x = 0;
 	rect.origin.y = 0;
-	rect.size.width = 1;
-	rect.size.height = 1;
+	rect.size.width = 32;
+	rect.size.height = 32;
 
 	/* Setup new window. */
 	return [super initWithContentRect:rect
@@ -113,13 +113,6 @@
 	return YES;
 }
 
-#if 0
-- (BOOL)performKeyEquivalent:(NSEvent*)event
-{
-	sjme_todo("Impl?");
-}
-#endif
-
 @end
 
 sjme_errorCode sjme_scritchui_cocoa_windowContentMinimumSize(
@@ -142,6 +135,11 @@ sjme_errorCode sjme_scritchui_cocoa_windowContentMinimumSize(
 	size.height = height;
 	[cocoaWindow setContentMinSize:size];
 	[cocoaWindow setMinSize:size];
+
+	/* Make it actually have a size, otherwise it is very tiny. */
+	if (inWindow->component.state.isVisible ||
+		inWindow->component.state.isUserVisible)
+		[cocoaWindow setContentSize:size];
 
 	/* This changed, so it needs to be updated. */
 	[cocoaWindow update];
@@ -288,6 +286,12 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 		/* Update menu, same logic as setting the menu bar. */
 		if (sjme_error_is(error = sjme_scritchui_cocoa_windowSetMenuBar(
 			inState, inWindow, inWindow->menuBar)))
+			return inState->implIntern->checkError(inState,
+				sjme_error_default(error));
+
+		/* Frame the window. */
+		if (sjme_error_is(error = inState->implIntern->containerFraming(
+			inState, SJME_SUI_CAST_CONTAINER(inWindow))))
 			return inState->implIntern->checkError(inState,
 				sjme_error_default(error));
 	}

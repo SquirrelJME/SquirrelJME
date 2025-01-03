@@ -99,7 +99,7 @@
 	/* Initialize blank matrix. */
 	matrix = [[NSAffineTransform alloc] init];
 
-	/* Scale everything up so it fits better. */
+	/* Scale everything up so it fits and can be seen. */
 	vw = 512;
 	vh = 512;
 	if (sjme_error_is(error = inState->apiInThread->lafDpiProject(
@@ -110,16 +110,10 @@
 	[matrix scaleXBy:(512.0 / vw) yBy:(512.0 / vh)];
 
 	/* Then flip the coordinates so they draw top down. */
+	/* The panel should still be in the same position due to framing. */
 	[matrix scaleXBy:1.0 yBy:-1.0];
-
-	/* Since we did flip the coordinates, we need to shift the image */
 	[matrix translateXBy:0.0
 		yBy:-inPanel->component.bounds.d.height];
-
-	/* Remove any difference from the frame's origin. */
-	/* All drawing is essentially absolute from the base of the frame. */
-	[matrix translateXBy:self.frame.origin.x
-		yBy:-self.frame.origin.y];
 
 	/* Use the new matrix. */
 	[matrix set];
@@ -168,6 +162,7 @@ fail_project:
 {
 	/* Flipped backed origin be the top-left, which is far easier. */
 	/* However, it does not actually work on GNUstep so do not bother. */
+	/* Also, framing completely breaks if used as windows cannot be flipped. */
 	return NO;
 }
 

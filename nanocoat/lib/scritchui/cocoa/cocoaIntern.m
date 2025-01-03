@@ -160,12 +160,6 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 	if (components == NULL || components->length <= 0)
 		return SJME_ERROR_NONE;
 
-	/* If this is a view, get the frame height for this. */
-	topView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
-	height = 0;
-	if (topView != NULL)
-		height = [topView frame].size.height;
-
 	/* There may be extra spacing for windows or otherwise. */
 	extraX = 0;
 	extraY = 0;
@@ -174,6 +168,12 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 			inState, SJME_SUI_CAST_WINDOW(inComponent),
 			&extraX, &extraY)))
 			return sjme_error_default(error);
+
+	/* If this is a view, get the frame height for this. */
+	topView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+	height = 0;
+	if (topView != NULL)
+		height = [topView frame].size.height;
 
 	/* Set the position of each component, assuming they are valid. */
 	for (i = 0, n = components->length; i < n; i++)
@@ -190,14 +190,7 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 
 		/* Set the origin position for the component. */
 		x = subComponent->bounds.s.x + extraX;
-#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
-		z = 0;
-		if (subComponent->bounds.d.height >= height)
-			z = 0;
-		else
-#endif
-			z = (height - subComponent->bounds.d.height) +
-				subComponent->bounds.s.y + (-extraY);
+		z = abs(height - (int)subView.frame.size.height) - extraY;
 		[subView setFrameOrigin:NSMakePoint(x, z)];
 		[subView setNeedsDisplay:YES];
 
@@ -320,8 +313,6 @@ sjme_errorCode sjme_scritchui_cocoa_intern_windowExtents(
 			abs((sjme_jint)(frameRect.size.width - contentRect.size.width));
 		*outY = abs((sjme_jint)(frameRect.origin.y - contentRect.origin.y)) +
 			abs((sjme_jint)(frameRect.size.height - contentRect.size.height));
-
-		sjme_message("Extent: (%d, %d)", *outX, *outY);
 	}
 
 	/* Not a window, so it does not get mapped. */
