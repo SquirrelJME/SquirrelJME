@@ -1,0 +1,12 @@
+# Quite a year!
+
+This year has been quite the year! In the current month of December I have
+mostly been making minor bug fixes and other small improvements around
+many miscellaneous areas, along with working on the macOS Cocoa UI. One of
+the big minor fixes was that all the graphical glitches for DoJa have been
+fixed so they look much better now and are far more playable as well.
+
+My break from NanoCoat does continue, but my mind has definitely been clearing
+from it.
+
+Happy New Year and Happy Hanukkah!

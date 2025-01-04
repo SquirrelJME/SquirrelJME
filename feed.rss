@@ -18,18 +18,18 @@
 		rel="self" />
 
 	<!-- Update this accordingly! -->
-	<lastBuildDate>Sun, 29 Dec 2024 18:00 EST</lastBuildDate>
+	<lastBuildDate>Sun, 29 Dec 2024 18:02 EST</lastBuildDate>
 
 	<item>
-		<guid isPermaLink="false">0c2d113f-10d8-4835-ba27-bc1156927d27</guid>
-		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241124_1500.mkd</link>
-		<pubDate>Sun, 29 Dec 2024 18:00 EST</pubDate>
+		<guid isPermaLink="false">0c2d113f-10d8-4835-ba27-bc1156927d2f</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241229_1802.mkd</link>
+		<pubDate>Sun, 29 Dec 2024 18:02 EST</pubDate>
 
 		<title>Quite a year!</title>
 		<description>This year has been quite the year! In the current month
-			of December I have mostly been making minor bug fixes and other
-			small improvements around many miscellaneous areas, along with
-			working on the macOS Cocoa UI.</description>
+of December I have mostly been making minor bug fixes and other
+small improvements around many miscellaneous areas, along with
+working on the macOS Cocoa UI.</description>
 	</item>
 
 	<!-- Not current -->
@@ -40,7 +40,7 @@
 
 		<title>An Anti-Burnout Break is Needed</title>
 		<description>The year has been exciting and so much has been done,
-			but I also recognize that I need a much-needed break.</description>
+but I also recognize that I need a much-needed break.</description>
 	</item>
 
 	<item>
@@ -50,7 +50,7 @@
 
 		<title>State of SquirrelJME, October 2024</title>
 		<description>Too much to write in a short description,
-			but a large number of changes!</description>
+but a large number of changes!</description>
 	</item>
 
 	<item>
