@@ -199,9 +199,7 @@ struct sjme_nvm_frameBase
 };
 
 /** List of stack frames. */
-SJME_LIST_DECLARE(sjme_nvm_frame, 1);
-
-/** List of stack frame sets. */
+SJME_LIST_DECLARE(sjme_nvm_frame, 0);
 
 /**
  * The configuration that stores the information needed for starting the task.
@@ -277,7 +275,7 @@ struct sjme_nvm_threadBase
 	sjme_jint numFrames;
 	
 	/** The stack frames. */
-	sjme_list_sjme_nvm_frameP* frames;
+	sjme_list_sjme_nvm_frame* frames;
 	
 	/** Throwable which has been tossed in the thread. */
 	sjme_jobject tossed;
@@ -379,7 +377,7 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
  */
 sjme_errorCode sjme_nvm_task_threadFrameNext(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrOutNotNull sjme_nvm_frame** outFrame);
+	sjme_attrOutNotNull sjme_nvm_frame* outFrame);
 	
 /**
  * Creates a new thread within the given task.

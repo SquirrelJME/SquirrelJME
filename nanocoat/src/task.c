@@ -218,7 +218,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_errorCode error;
 	sjme_nvm_class_methodInfo targetInfo;
 	sjme_jint i, n;
-	sjme_nvm_frame* result;
+	sjme_nvm_frame result;
 	
 	if (inThread == NULL || outFrame == NULL || inMethod == NULL ||
 		(argC != 0 && argV == NULL))
@@ -260,12 +260,11 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	return sjme_error_notImplemented(0);
 	
 	/* Set frame as active. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	inThread->numFrames++;
 
 	/* Success! */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	*outFrame = result;
+	return SJME_ERROR_NONE;
 
 fail_:
 	sjme_todo("Impl?");
@@ -347,13 +346,13 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 
 sjme_errorCode sjme_nvm_task_threadFrameNext(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrOutNotNull sjme_nvm_frame** outFrame)
+	sjme_attrOutNotNull sjme_nvm_frame* outFrame)
 {
 #define SJME_NVM_FRAME_GROW_SIZE 8
 	sjme_errorCode error;
-	sjme_nvm_frame* result;
-	sjme_list_sjme_nvm_frameP* oldList;
-	sjme_list_sjme_nvm_frameP* newList;
+	sjme_nvm_frame result;
+	sjme_list_sjme_nvm_frame* oldList;
+	sjme_list_sjme_nvm_frame* newList;
 	sjme_jint n;
 	
 	if (inThread == NULL || outFrame == NULL)
@@ -365,7 +364,7 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 		if (sjme_error_default(error = sjme_list_replace(
 			inThread->inTask->inState->allocPool,
 			inThread->numFrames + SJME_NVM_FRAME_GROW_SIZE,
-			&inThread->frames, sjme_nvm_frame, 1)))
+			&inThread->frames, sjme_nvm_frame, 0)))
 			return sjme_error_default(error);
 	
 	/* "Pop" and init/clear frame. */
