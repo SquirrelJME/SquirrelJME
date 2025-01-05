@@ -36,8 +36,6 @@ extern "C" {
  */
 typedef struct sjme_nvm_frameTreadAccessor sjme_nvm_frameTreadAccessor;
 
-typedef struct sjme_nvm_frameTread sjme_nvm_frameTread;
-
 /**
  * Returns the address of a given index on the tread.
  * 

@@ -446,6 +446,42 @@ sjme_errorCode sjme_list_newVAR(
 #undef SJME_BLA
 }
 
+sjme_errorCode sjme_list_replaceR(
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInPositive sjme_jint inNewLength,
+	sjme_attrInOutNotNull sjme_pointer* inOutList,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
+{
+	sjme_errorCode error;
+	sjme_pointer newList, oldList;
+	
+	if (allocPool == NULL || inOutList == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Allocate new list? */
+	oldList = *inOutList;
+	if (oldList == NULL)
+		return sjme_list_allocR(allocPool, inNewLength, inOutList,
+			elementSize, elementOffset, pointerCheck
+			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL);
+
+	/* Allocate new list as a copy. */
+	newList = NULL;
+	if (sjme_error_is(error = sjme_list_copyR(allocPool, inNewLength,
+		oldList, &newList, elementSize,
+		elementOffset, pointerCheck
+		SJME_DEBUG_ONLY_COMMA
+		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)) || newList == NULL)
+		return sjme_error_default(error);
+
+	/* Set new list and free old one. */
+	*inOutList = newList;
+	return sjme_alloc_free(oldList);
+}
+
 sjme_errorCode sjme_list_search(
 	sjme_attrInNotNull sjme_pointer inList,
 	sjme_attrInNotNull sjme_comparator comparator,

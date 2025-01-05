@@ -80,7 +80,7 @@ typedef struct sjme_nvm_class_infoCore sjme_nvm_class_infoCore;
  *
  * @since 2024/01/01
  */
-typedef struct sjme_nvm_class_infoCore* sjme_nvm_class_info;
+typedef struct sjme_nvm_class_infoBase* sjme_nvm_class_info;
 
 /**
  * List of class information.
@@ -108,21 +108,28 @@ typedef struct sjme_nvm_class_poolEntryClass sjme_nvm_class_poolEntryClass;
  * 
  * @since 2024/09/13
  */
-typedef sjme_nvm_class_poolInfoCore* sjme_nvm_class_poolInfo;
+typedef struct sjme_nvm_class_poolInfoBase sjme_nvm_class_poolInfoBase;
+
+/**
+ * Opaque constant pool information.
+ * 
+ * @since 2024/09/13
+ */
+typedef sjme_nvm_class_poolInfoBase* sjme_nvm_class_poolInfo;
 
 /**
  * Core method information structure.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_nvm_class_methodInfoCore sjme_nvm_class_methodInfoCore;
+typedef struct sjme_nvm_class_methodInfoBase sjme_nvm_class_methodInfoBase;
 
 /**
  * Opaque method information structure.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_nvm_class_methodInfoCore* sjme_nvm_class_methodInfo;
+typedef sjme_nvm_class_methodInfoBase* sjme_nvm_class_methodInfo;
 
 /**
  * Method list.
@@ -136,18 +143,18 @@ SJME_LIST_DECLARE(sjme_nvm_class_methodInfo, 0);
 	SJME_BASIC_TYPE_ID_OBJECT
 
 /**
- * Core field information structure.
+ * Base field information structure.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_nvm_class_fieldInfoCore sjme_nvm_class_fieldInfoCore;
+typedef struct sjme_nvm_class_fieldInfoBase sjme_nvm_class_fieldInfoBase;
 
 /**
  * Opaque field information structure.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_nvm_class_fieldInfoCore* sjme_nvm_class_fieldInfo;
+typedef struct sjme_nvm_class_fieldInfoBase* sjme_nvm_class_fieldInfo;
 
 /**
  * Field list.
@@ -189,14 +196,21 @@ SJME_LIST_DECLARE(sjme_nvm_class_exceptionHandler, 0);
  *
  * @since 2024/01/03
  */
-typedef struct sjme_nvm_class_codeInfoCore sjme_nvm_class_codeInfoCore;
+typedef struct sjme_nvm_class_codeInfoBase sjme_nvm_class_codeInfoBase;
 
 /**
  * Opaque method code structure.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_nvm_class_codeInfoCore* sjme_nvm_class_codeInfo;
+typedef sjme_nvm_class_codeInfoBase sjme_nvm_class_codeInfoBase;
+
+/**
+ * Opaque method code structure.
+ *
+ * @since 2024/01/03
+ */
+typedef sjme_nvm_class_codeInfoBase* sjme_nvm_class_codeInfo;
 
 /**
  * Access flags.
@@ -577,7 +591,7 @@ typedef union sjme_nvm_class_poolEntry
 /** A list of constant pool entries. */
 SJME_LIST_DECLARE(sjme_nvm_class_poolEntry, 0);
 
-struct sjme_nvm_class_poolInfoCore
+struct sjme_nvm_class_poolInfoBase
 {
 	/** The common NanoCoat base. */
 	sjme_nvm_commonBase common;
@@ -586,7 +600,7 @@ struct sjme_nvm_class_poolInfoCore
 	sjme_list_sjme_nvm_class_poolEntry* pool;
 };
 
-struct sjme_nvm_class_infoCore
+struct sjme_nvm_class_infoBase
 {
 	/** The common NanoCoat base. */
 	sjme_nvm_commonBase common;
@@ -653,7 +667,7 @@ typedef struct sjme_nvm_class_fieldConstVal
 	} value;
 } sjme_nvm_class_fieldConstVal;
 
-struct sjme_nvm_class_fieldInfoCore
+struct sjme_nvm_class_fieldInfoBase
 {
 	/** The common NanoCoat base. */
 	sjme_nvm_commonBase common;
@@ -680,7 +694,7 @@ struct sjme_nvm_class_fieldInfoCore
 	sjme_jint typedIndex;
 };
 
-struct sjme_nvm_class_methodInfoCore
+struct sjme_nvm_class_methodInfoBase
 {
 	/** The common NanoCoat base. */
 	sjme_nvm_commonBase common;
@@ -694,6 +708,12 @@ struct sjme_nvm_class_methodInfoCore
 	/** The type of this method. */
 	sjme_nvm_stringPool_string type;
 
+	/** The argument count for the type. */
+	sjme_jint argC;
+
+	/** Argument types. */
+	sjme_javaTypeId* argT;
+
 	/** The method code, if it is not native. */
 	sjme_nvm_class_codeInfo code;
 	
@@ -704,7 +724,7 @@ struct sjme_nvm_class_methodInfoCore
 	sjme_nvm_class_info inClass;
 };
 
-struct sjme_nvm_class_codeInfoCore
+struct sjme_nvm_class_codeInfoBase
 {
 	/** The common NanoCoat base. */
 	sjme_nvm_commonBase common;

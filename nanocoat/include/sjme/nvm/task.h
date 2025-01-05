@@ -89,12 +89,7 @@ typedef enum sjme_nvm_thread_statusType
 	SJME_NVM_THREAD_NUM_STATUS_TYPES
 } sjme_nvm_thread_statusType;
 
-/**
- * Represents the frame of a stack tread.
- * 
- * @since 2023/11/15
- */
-typedef struct sjme_nvm_frameTread
+struct sjme_nvm_frameTread
 {
 	/** The number of items in this tread. */
 	sjme_jint count;
@@ -123,7 +118,7 @@ typedef struct sjme_nvm_frameTread
 		/** Object references. */
 		sjme_jobject jobjects[sjme_flexibleArrayCountUnion];
 	} values;
-} sjme_nvm_frameTread;
+};
 
 /**
  * Calculates the size of a frame tread for a given type.
@@ -204,7 +199,9 @@ struct sjme_nvm_frameBase
 };
 
 /** List of stack frames. */
-SJME_LIST_DECLARE(sjme_nvm_frame, 0);
+SJME_LIST_DECLARE(sjme_nvm_frame, 1);
+
+/** List of stack frame sets. */
 
 /**
  * The configuration that stores the information needed for starting the task.
@@ -276,11 +273,11 @@ struct sjme_nvm_threadBase
 	/** The thread ID. */
 	sjme_jint threadId;
 	
-	/** The number of frames. */
+	/** The number of valid frames. */
 	sjme_jint numFrames;
 	
-	/** Current stack frames. */
-	sjme_list_sjme_nvm_frame* frames;
+	/** The stack frames. */
+	sjme_list_sjme_nvm_frameP* frames;
 	
 	/** Throwable which has been tossed in the thread. */
 	sjme_jobject tossed;
@@ -319,7 +316,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_attrInRange(0, SJME_NVM_NUM_METHOD_CALL_TYPE)
 		sjme_nvm_methodCallType callType,
 	sjme_attrInPositive sjme_jint argC,
-	sjme_attrInNullable sjme_jvalue* argV);
+	sjme_attrInNullable sjme_jvalueTyped* argV);
 
 /**
  * Enters a frame within the thread.
@@ -344,7 +341,7 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNotNull sjme_lpcstr inType,
 	sjme_attrInPositive sjme_jint argC,
-	sjme_attrInNullable sjme_jvalue* argV);
+	sjme_attrInNullable sjme_jvalueTyped* argV);
 
 /**
  * Enters a frame within the thread.
@@ -369,8 +366,21 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNotNull sjme_lpcstr inType,
 	sjme_attrInPositive sjme_jint argC,
-	sjme_attrInNullable sjme_jvalue* argV);
-
+	sjme_attrInNullable sjme_jvalueTyped* argV);
+	
+/**
+ * Returns the next empty frame at the top of the stack, this does not
+ * increment the frame count.
+ * 
+ * @param inThread The thread to get the next frame for.
+ * @param outFrame The resultant frame.
+ * @return Any resultant error.
+ * @since 2025/01/04
+ */
+sjme_errorCode sjme_nvm_task_threadFrameNext(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_nvm_frame** outFrame);
+	
 /**
  * Creates a new thread within the given task.
  * 

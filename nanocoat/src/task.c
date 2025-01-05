@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "sjme/nvm/task.h"
 #include "sjme/debug.h"
 #include "sjme/nvm/nvm.h"
@@ -211,10 +213,12 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_attrInRange(0, SJME_NVM_NUM_METHOD_CALL_TYPE)
 		sjme_nvm_methodCallType callType,
 	sjme_attrInPositive sjme_jint argC,
-	sjme_attrInNullable sjme_jvalue* argV)
+	sjme_attrInNullable sjme_jvalueTyped* argV)
 {
 	sjme_errorCode error;
 	sjme_nvm_class_methodInfo targetInfo;
+	sjme_jint i, n;
+	sjme_nvm_frame* result;
 	
 	if (inThread == NULL || outFrame == NULL || inMethod == NULL ||
 		(argC != 0 && argV == NULL))
@@ -229,12 +233,19 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		return SJME_ERROR_UNBOUND_METHOD;
 	
 	/* Argument count mismatch? */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	if (argC != targetInfo->argC)
+		return SJME_ERROR_ARGUMENT_COUNT_MISMATCH;
+
+	/* Argument type mismatch? */
+	for (i = 0, n = argC; i < n; i++)
+		if (argV[i].type != targetInfo->argT[i])
+			return SJME_ERROR_ARGUMENT_TYPE_MISMATCH;
 	
 	/* Grab a frame from the thread's frame pool. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadFrameNext(
+		inThread, &result)) || result == NULL)
+		return sjme_error_default(error);
 	
 	/* Setup initial locals. */
 	sjme_todo("Impl?");
@@ -270,7 +281,7 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNotNull sjme_lpcstr inType,
 	sjme_attrInPositive sjme_jint argC,
-	sjme_attrInNullable sjme_jvalue* argV)
+	sjme_attrInNullable sjme_jvalueTyped* argV)
 {
 	sjme_errorCode error;
 	sjme_nvm_task inTask;
@@ -310,7 +321,7 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNotNull sjme_lpcstr inType,
 	sjme_attrInPositive sjme_jint argC,
-	sjme_attrInNullable sjme_jvalue* argV)
+	sjme_attrInNullable sjme_jvalueTyped* argV)
 {
 	sjme_errorCode error;
 	sjme_jmethodID id;
@@ -332,6 +343,51 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 	/* Forward to implementation. */
 	return sjme_nvm_task_threadEnter(inThread, outFrame,
 		id, SJME_NVM_CALL_NON_VIRTUAL, argC, argV);
+}
+
+sjme_errorCode sjme_nvm_task_threadFrameNext(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_nvm_frame** outFrame)
+{
+#define SJME_NVM_FRAME_GROW_SIZE 8
+	sjme_errorCode error;
+	sjme_nvm_frame* result;
+	sjme_list_sjme_nvm_frameP* oldList;
+	sjme_list_sjme_nvm_frameP* newList;
+	sjme_jint n;
+	
+	if (inThread == NULL || outFrame == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Need to allocate more frames? */
+	if (inThread->frames == NULL ||
+		inThread->numFrames >= inThread->frames->length)
+		if (sjme_error_default(error = sjme_list_replace(
+			inThread->inTask->inState->allocPool,
+			inThread->numFrames + SJME_NVM_FRAME_GROW_SIZE,
+			&inThread->frames, sjme_nvm_frame, 1)))
+			return sjme_error_default(error);
+	
+	/* "Pop" and init/clear frame. */
+	result = inThread->frames->elements[inThread->numFrames];
+	if (result != NULL)
+		memset(result, 0, sizeof(*result));
+	else
+	{
+		/* Allocate new thread result. */
+		if (sjme_error_is(error = sjme_nvm_alloc(inThread->inState,
+			sizeof(*result), SJME_NVM_STRUCT_FRAME,
+			SJME_AS_NVM_COMMONP(&result))))
+			return sjme_error_default(error);
+
+		/* Store in this slot, forever. */
+		inThread->frames->elements[inThread->numFrames] = result;
+	}
+
+	/* Success! */
+	*outFrame = result;
+	return SJME_ERROR_NONE;
+#undef SJME_NVM_FRAME_GROW_SIZE
 }
 
 sjme_errorCode sjme_nvm_task_threadNew(

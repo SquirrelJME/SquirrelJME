@@ -411,9 +411,15 @@ typedef enum sjme_errorCode
 	
 	/** Method is not bound. */
 	SJME_ERROR_UNBOUND_METHOD = -123,
+
+	/** Argument count mismatch. */
+	SJME_ERROR_ARGUMENT_COUNT_MISMATCH = -124,
+
+	/** Argument type mismatch. */
+	SJME_ERROR_ARGUMENT_TYPE_MISMATCH = -125,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -124,
+	SJME_NUM_ERROR_CODES = -126,
 } sjme_errorCode;
 
 /**

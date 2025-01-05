@@ -639,6 +639,20 @@ typedef union sjme_jvalue
 } sjme_jvalue;
 
 /**
+ * Typed @c sjme_value .
+ *
+ * @since 2025/01/04
+ */
+typedef struct sjme_jvalueTyped
+{
+	/** The type of this value. */
+	sjme_javaTypeId type;
+
+	/** The value of this. */
+	sjme_jvalue value;
+} sjme_jvalueTyped;
+
+/**
  * Structure which stores the pooled memory allocator.
  *
  * @since 2023/11/18

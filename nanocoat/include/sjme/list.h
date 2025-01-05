@@ -442,6 +442,49 @@ sjme_errorCode sjme_list_flattenArgNul(
 	sjme_attrInNotNull sjme_lpcstr inNulString);
 
 /**
+ * Either allocates a new list if the input list is @c NULL , or copies the
+ * given list and frees the old list.
+ *
+ * @param allocPool The pool to allocate within.
+ * @param inNewLength The new list length.
+ * @param inOutList The input and output list.
+ * @param elementSize The size of the list elements.
+ * @param elementOffset The offset of elements in the list.
+ * @param pointerCheck A check to see if it is a valid pointer.
+ * @return Any resultant error code, if any.
+ * @since 2025/01/04
+ */
+sjme_errorCode sjme_list_replaceR(
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInPositive sjme_jint inNewLength,
+	sjme_attrInOutNotNull sjme_pointer* inOutList,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+	
+/**
+ * Either allocates a new list if the input list is @c NULL , or copies the
+ * given list and frees the old list.
+ *
+ * @param allocPool The pool to allocate within.
+ * @param inNewLength The new list length.
+ * @param inOutList The input and output list.
+ * @param type The list type.
+ * @param numPointerStars The number of pointer stars.
+ * @return Any error state.
+ * @since 2025/01/05
+ */
+#define sjme_list_replace(allocPool, inNewLength, inOutList, \
+	type, numPointerStars) \
+    sjme_list_replaceR((allocPool), (inNewLength), \
+		(sjme_pointer*)(inOutList), \
+		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
+		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		sizeof(**(inOutList)) SJME_DEBUG_ONLY_COMMA \
+		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
+
+/**
  * Searches the given list for the given element.
  *
  * @param inList The list to look within.
