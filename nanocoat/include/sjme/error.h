@@ -417,9 +417,12 @@ typedef enum sjme_errorCode
 
 	/** Argument type mismatch. */
 	SJME_ERROR_ARGUMENT_TYPE_MISMATCH = -125,
+
+	/** Tread index is not valid. */
+	SJME_ERROR_TREAD_INDEX_INVALID = -126,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -126,
+	SJME_NUM_ERROR_CODES = -127,
 } sjme_errorCode;
 
 /**

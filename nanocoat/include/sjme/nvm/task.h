@@ -190,12 +190,25 @@ struct sjme_nvm_frameBase
 	
 	/** This class this is currently in. */
 	sjme_jclass inClass;
+
+	/** The code this is executing within. */
+	sjme_nvm_class_codeInfo inCode;
 	
-	/** Treads for the stack and locals. */
+	/** Treads for stack and local storage. */
 	sjme_nvm_frameTread* treads[SJME_NUM_JAVA_TYPE_IDS];
 	
 	/** Mapping of local variables to the tread indexes per type. */
 	sjme_nvm_frameLocalMap* localMap;
+
+	/** Thread state flags. */
+	sjme_packed struct
+	{
+		/** Enter synchronization was performed. */
+		sjme_jboolean synchronizedEnter : 1;
+
+		/** Exit synchronization was performed. */
+		sjme_jboolean synchronizedExit : 1;
+	} flags;
 };
 
 /** List of stack frames. */
@@ -280,7 +293,37 @@ struct sjme_nvm_threadBase
 	/** Throwable which has been tossed in the thread. */
 	sjme_jobject tossed;
 };
+	
+/**
+ * Sets the value of a local variable within a frame using the local variable
+ * index, which is the same as the Java index.
+ * 
+ * @param inFrame The frame to set the value in.
+ * @param localIndex The local index to set.
+ * @param inValue The value to set.
+ * @return Any resultant error, if any.
+ * @since 2025/01/04
+ */
+sjme_errorCode sjme_nvm_task_frameLocalSetL(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInPositive sjme_jint localIndex,
+	sjme_attrInNotNull const sjme_jvalueTyped* inValue);
 
+/**
+ * Sets the value of a variable within a frame using the typed index
+ * which is placed within its own frame set.
+ * 
+ * @param inFrame The frame to set the value in.
+ * @param typeIndex The type index to set.
+ * @param inValue The value to set.
+ * @return Any resultant error, if any.
+ * @since 2025/01/04
+ */
+sjme_errorCode sjme_nvm_task_frameTreadSetT(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInPositive sjme_jint typeIndex,
+	sjme_attrInNotNull const sjme_jvalueTyped* inValue);
+	
 /**
  * Starts the task.
  *

@@ -19,7 +19,50 @@
 
 /** The number of threads to grow by. */
 #define SJME_NVM_THREAD_GROW 8
+
+sjme_errorCode sjme_nvm_task_frameLocalSetL(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInPositive sjme_jint localIndex,
+	sjme_attrInNotNull const sjme_jvalueTyped* inValue)
+{
+	sjme_jboolean isWide;
 	
+	if (inFrame == NULL || inValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inValue->type < 0 || inValue->type >= SJME_NUM_JAVA_TYPE_IDS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Check for complete out of bounds. */
+	isWide = (inValue->type == SJME_JAVA_TYPE_ID_LONG ||
+		inValue->type == SJME_JAVA_TYPE_ID_DOUBLE);
+	if (localIndex < 0 ||
+		((localIndex + (isWide ? 1 : 0)) >= inFrame->inCode->maxLocals))
+		return SJME_ERROR_LOCAL_INDEX_INVALID;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_task_frameTreadSetT(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInPositive sjme_jint typeIndex,
+	sjme_attrInNotNull const sjme_jvalueTyped* inValue)
+{
+	if (inFrame == NULL || inValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inValue->type < 0 || inValue->type >= SJME_NUM_JAVA_TYPE_IDS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (typeIndex < 0 || inFrame->treads[inValue->type] == NULL ||
+		typeIndex >= inFrame->treads[inValue->type]->max)
+		return SJME_ERROR_TREAD_INDEX_INVALID;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull const sjme_nvm_task_taskNewConfig* startConfig,
@@ -217,7 +260,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 {
 	sjme_errorCode error;
 	sjme_nvm_class_methodInfo targetInfo;
-	sjme_jint i, n;
+	sjme_jint i, n, dx;
 	sjme_nvm_frame result;
 	
 	if (inThread == NULL || outFrame == NULL || inMethod == NULL ||
@@ -246,18 +289,14 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	if (sjme_error_is(error = sjme_nvm_task_threadFrameNext(
 		inThread, &result)) || result == NULL)
 		return sjme_error_default(error);
-	
-	/* Setup initial locals. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-	
-	/* Initialize PC addr into bytecode. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-	
-	/* Should there be a `synchronized` hook? */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Setup initial locals, which are copied in from arguments. */
+	for (i = 0, dx = 0, n = argC; i < n;
+		i++, (dx += (argV[i].type == SJME_JAVA_TYPE_ID_LONG ||
+			argV[i].type == SJME_JAVA_TYPE_ID_DOUBLE)) ? 2 : 1)
+		if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
+			result, dx, &argV[i])))
+			return sjme_error_default(error);
 	
 	/* Set frame as active. */
 	inThread->numFrames++;
@@ -265,10 +304,6 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	/* Success! */
 	*outFrame = result;
 	return SJME_ERROR_NONE;
-
-fail_:
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_task_threadEnterA(

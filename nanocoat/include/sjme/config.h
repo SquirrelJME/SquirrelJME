@@ -721,6 +721,14 @@ extern "C" {
 	#define sjme_alignPointer
 #endif
 
+#if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	/** Packed structure. */
+	#define sjme_packed __attribute__((packed))
+#else
+	/** Packed structure. */
+	#define sjme_packed
+#endif
+	
 #if defined(SJME_CONFIG_HAS_NINTENDO_3DS) || \
 	defined(SJME_CONFIG_HAS_NINTENDO_WIIU) || \
     defined(SJME_CONFIG_HAS_NINTENDO_WII) || \
