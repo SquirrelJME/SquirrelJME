@@ -70,6 +70,29 @@ typedef enum sjme_nvm_task_statusType
 } sjme_nvm_task_statusType;
 
 /**
+ * Represents the starting state of a thread.
+ *
+ * @since 2025/01/04
+ */
+typedef enum sjme_nvm_thread_startType
+{
+	/** Thread was never started. */
+	SJME_NVM_THREAD_START_NEVER = 0,
+
+	/** Standard thread start. */
+	SJME_NVM_THREAD_START_STANDARD = 1,
+
+	/** Thread finished execution. */
+	SJME_NVM_THREAD_START_FINISHED = 2,
+
+	/** Callback thread which can reach zero frames and not be finished. */
+	SJME_NVM_THREAD_START_CALLBACK = 3,
+
+	/** The number of thread start types. */
+	SJME_NVM_NUM_THREAD_START_TYPES = 4,
+} sjme_nvm_thread_startType;
+	
+/**
  * The type of thread status this is.
  * 
  * @since 2024/10/18
@@ -269,11 +292,17 @@ struct sjme_nvm_taskBase
 
 struct sjme_nvm_threadBase
 {
+	/** Common virtual machine structure. */
+	sjme_nvm_commonBase common;
+	
 	/** The VM state this thread is in. */
-	sjme_nvm inState;
+	sjme_nvm state;
 	
 	/** The owning task. */
 	sjme_nvm_task inTask;
+
+	/** The start type of the thread. */
+	sjme_nvm_thread_startType start;
 	
 	/** The current thread status. */
 	sjme_nvm_thread_statusType status;

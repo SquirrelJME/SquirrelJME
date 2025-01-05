@@ -392,7 +392,7 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 	
 	if (inThread == NULL || outFrame == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
+	
 	/* Need to allocate more frames? */
 	if (inThread->frames == NULL ||
 		inThread->numFrames >= inThread->frames->length)
@@ -409,7 +409,7 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 	else
 	{
 		/* Allocate new thread result. */
-		if (sjme_error_is(error = sjme_nvm_alloc(inThread->inState,
+		if (sjme_error_is(error = sjme_nvm_alloc(inThread->state,
 			sizeof(*result), SJME_NVM_STRUCT_FRAME,
 			SJME_AS_NVM_COMMONP(&result))))
 			return sjme_error_default(error);
@@ -467,7 +467,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	}
 	
 	/* Fill out basic details. */
-	result->inState = inState;
+	result->state = inState;
 	result->inTask = inTask;
 	result->threadId = 1 + sjme_atomic_sjme_jint_getAdd(
 		&inState->nextThreadId, 1);
@@ -516,7 +516,19 @@ sjme_errorCode sjme_nvm_task_threadStart(
 {
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Threads can only be started once! */
+	if (inThread->start != SJME_NVM_THREAD_START_NEVER)
+		return SJME_ERROR_INVALID_THREAD_STATE;
+
+	/* There must be frames. */
+	if (inThread->numFrames <= 0)
+		return SJME_ERROR_INVALID_THREAD_STATE;
+
+	/* Set thread as started and in the run state. */
+	inThread->start = SJME_NVM_THREAD_START_STANDARD;
+	inThread->status = SJME_NVM_THREAD_STATUS_RUNNING;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }

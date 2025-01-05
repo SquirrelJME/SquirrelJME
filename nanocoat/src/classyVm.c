@@ -513,7 +513,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		return sjme_error_default(error);
 	
 	/* Need these in order to work at all. */
-	allocPool = contextThread->inState->allocPool;
+	allocPool = contextThread->state->allocPool;
 	
 	/* Needs loading first? */
 	if (sjme_atomic_sjme_jint_get(
