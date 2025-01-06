@@ -689,21 +689,31 @@ typedef enum sjme_nvm_threadScheduleMode
 } sjme_nvm_threadScheduleMode;
 
 /**
- * 
+ * Sub-schedule for thread scheduling.
+ *
+ * @since 2025/01/06
+ */
+typedef struct sjme_nvm_threadSubSchedule
+{
+	/** The lock for scheduling. */
+	sjme_thread_spinLock lock;
+
+	/** The number of scheduled threads. */
+	sjme_jint count;
+		
+	/** The list of threads in order. */
+	sjme_list_sjme_nvm_thread* order;
+} sjme_nvm_threadSubSchedule;
+	
+/**
+ * Thread scheduling system per mode.
  * 
  * @since 2025/01/05
  */
 typedef struct sjme_nvm_threadSchedule
 {
 	/** The schedules for each mode. */
-	struct
-	{
-		/** The lock for scheduling. */
-		sjme_thread_spinLock lock;
-		
-		/** The list of threads in order. */
-		sjme_list_sjme_nvm_thread* order;
-	} mode[SJME_NVM_THREAD_NUM_SCHEDULE_MODE];
+	sjme_nvm_threadSubSchedule mode[SJME_NVM_THREAD_NUM_SCHEDULE_MODE];
 } sjme_nvm_threadSchedule;
 
 struct sjme_nvm_stateBase

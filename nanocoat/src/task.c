@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "sjme/nvm/task.h"
+#include "sjme/nvm/loop.h"
 #include "sjme/debug.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/cleanup.h"
@@ -468,6 +469,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	
 	/* Fill out basic details. */
 	result->state = inState;
+	result->schedule = SJME_NVM_THREAD_NUM_SCHEDULE_MODE;
 	result->inTask = inTask;
 	result->threadId = 1 + sjme_atomic_sjme_jint_getAdd(
 		&inState->nextThreadId, 1);
@@ -514,6 +516,8 @@ fail_allocResult:
 sjme_errorCode sjme_nvm_task_threadStart(
 	sjme_attrInNotNull sjme_nvm_thread inThread)
 {
+	sjme_errorCode error;
+	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -528,6 +532,11 @@ sjme_errorCode sjme_nvm_task_threadStart(
 	/* Set thread as started and in the run state. */
 	inThread->start = SJME_NVM_THREAD_START_STANDARD;
 	inThread->status = SJME_NVM_THREAD_STATUS_RUNNING;
+
+	/* Schedule the thread for execution. */
+	if (sjme_error_is(error = sjme_nvm_loop_schedule(inThread->state,
+		inThread)))
+		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;

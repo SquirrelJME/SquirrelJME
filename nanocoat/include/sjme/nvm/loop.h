@@ -31,6 +31,18 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Schedules the given thread for execution.
+ * 
+ * @param inState The virtual machine state.
+ * @param inThread The thread to schedule.
+ * @return Any resultant error.
+ * @since 2025/01/06
+ */
+sjme_errorCode sjme_nvm_loop_schedule(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread);
+	
+/**
  * Ticks the virtual machine.
  *
  * @param inState The virtual machine to tick.

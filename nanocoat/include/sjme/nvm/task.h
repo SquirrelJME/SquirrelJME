@@ -321,6 +321,9 @@ struct sjme_nvm_threadBase
 	
 	/** Throwable which has been tossed in the thread. */
 	sjme_jobject tossed;
+
+	/** What is the current schedule state of this thread? */
+	sjme_nvm_threadScheduleMode schedule;
 };
 	
 /**
