@@ -474,7 +474,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
  */
 sjme_errorCode sjme_nvm_task_threadStart(
 	sjme_attrInNotNull sjme_nvm_thread inThread);
-
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

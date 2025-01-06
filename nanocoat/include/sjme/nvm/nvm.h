@@ -671,6 +671,41 @@ struct sjme_nvm_commonBase
 	sjme_thread_spinLock lock;
 };
 
+/**
+ * The schedule mode for threads.
+ *
+ * @since 2025/01/05
+ */
+typedef enum sjme_nvm_threadScheduleMode
+{
+	/** Thread is scheduled. */
+	SJME_NVM_THREAD_SCHEDULED = 0,
+
+	/** Thread is unscheduled. */
+	SJME_NVM_THREAD_UNSCHEDULED = 1,
+
+	/** The number of scheduled modes. */
+	SJME_NVM_THREAD_NUM_SCHEDULE_MODE = 2,
+} sjme_nvm_threadScheduleMode;
+
+/**
+ * 
+ * 
+ * @since 2025/01/05
+ */
+typedef struct sjme_nvm_threadSchedule
+{
+	/** The schedules for each mode. */
+	struct
+	{
+		/** The lock for scheduling. */
+		sjme_thread_spinLock lock;
+		
+		/** The list of threads in order. */
+		sjme_list_sjme_nvm_thread* order;
+	} mode[SJME_NVM_THREAD_NUM_SCHEDULE_MODE];
+} sjme_nvm_threadSchedule;
+
 struct sjme_nvm_stateBase
 {
 	/** Common data. */
@@ -694,8 +729,11 @@ struct sjme_nvm_stateBase
 	/** The next identifier for tasks. */
 	sjme_atomic_sjme_jint nextTaskId;
 	
-	/* The next identifier for tasks. */
+	/** The next identifier for tasks. */
 	sjme_atomic_sjme_jint nextThreadId;
+
+	/** The thread schedule. */
+	sjme_nvm_threadSchedule schedule;
 };
 
 /**

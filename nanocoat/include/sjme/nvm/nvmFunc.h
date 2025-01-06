@@ -281,21 +281,6 @@ sjme_errorCode sjme_nvm_topFrame(
 	sjme_attrOutNotNull sjme_nvm_frame outFrame)
 	sjme_attrCheckReturn;
 
-/**
- * Ticks the virtual machine.
- *
- * @param inState The state to tick, @c -1 means to tick forever.
- * @param maxTics The number of ticks to execute before returning.
- * @param isTerminated Optional output to check if the VM terminated.
- * @return Any resultant error, if any.
- * @since 2023/07/27
- */
-sjme_errorCode sjme_nvm_tick(
-	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInValue sjme_attrInPositive sjme_jint maxTics,
-	sjme_attrOutNullable sjme_jboolean* isTerminated)
-	sjme_attrCheckReturn;
-
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

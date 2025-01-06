@@ -13,6 +13,7 @@
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/nvmFunc.h"
 #include "sjme/nvm/payload.h"
+#include "sjme/nvm/loop.h"
 #include "test.h"
 
 int main(int argc, sjme_lpstr* argv)
@@ -117,8 +118,8 @@ int main(int argc, sjme_lpstr* argv)
 		sjme_thread_yield();
 		
 		/* Tick the virtual machine. */
-		if (sjme_error_is(error = sjme_nvm_tick(inState, -1,
-			&terminated)))
+		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, -1,
+			NULL, &terminated)))
 		{
 			/* Fail unless this was interrupted. */
 			if (error == SJME_ERROR_INTERRUPTED)

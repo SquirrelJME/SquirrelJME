@@ -15,6 +15,7 @@
 #include "sjme/nvm/boot.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/nvmFunc.h"
+#include "sjme/nvm/loop.h"
 
 /**
  * Main program entry point.
@@ -102,8 +103,8 @@ int main(int argc, sjme_lpcstr* argv)
 		sjme_thread_yield();
 		
 		/* Tick the virtual machine. */
-		if (sjme_error_is(error = sjme_nvm_tick(inState, -1,
-			&terminated)))
+		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, -1,
+			NULL, &terminated)))
 		{
 			/* Fail unless this was interrupted. */
 			if (error == SJME_ERROR_INTERRUPTED)

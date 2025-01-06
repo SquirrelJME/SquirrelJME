@@ -6,8 +6,8 @@
  * @since ${YEAR}/${MONTH}/${DAY}
  */
 
-#[[#ifndef]]# ${INCLUDE_GUARD}
-#[[#define]]# ${INCLUDE_GUARD}
+#[[#ifndef]]# SQUIRRELJME_${INCLUDE_GUARD}
+#[[#define]]# SQUIRRELJME_${INCLUDE_GUARD}
 
 /* Anti-C++. */
 #[[#ifdef]]# __cplusplus
@@ -32,4 +32,4 @@ extern "C"
 #[[#endif]]# /* #[[#ifdef]]# SJME_CXX_${INCLUDE_GUARD} */
 #[[#endif]]# /* #[[#ifdef]]# __cplusplus */
 
-#[[#endif]]# /* ${INCLUDE_GUARD} */
+#[[#endif]]# /* SQUIRRELJME_${INCLUDE_GUARD} */
