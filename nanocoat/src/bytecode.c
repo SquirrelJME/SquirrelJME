@@ -10,10 +10,26 @@
 #include "sjme/nvm/bytecode.h"
 #include "sjme/debug.h"
 
-sjme_errorCode sjme_byteCode_map(
-	sjme_attrInValue sjme_byteCode_instruction inInstruction,
-	sjme_attrOutNotNull const sjme_byteCode_functionMap** outMapping)
+sjme_errorCode sjme_nvm_byteCode_illegalInstruction(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, 256) sjme_byteCode id,
+	sjme_attrInNotNull sjme_byteCode* relRawCode)
 {
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	if (inFrame == NULL || relRawCode == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Illegal? %d", relRawCode[0]);
+	return sjme_error_notImplemented(relRawCode[0]);
+}
+
+sjme_errorCode sjme_nvm_byteCode_notImplemented(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, 256) sjme_byteCode id,
+	sjme_attrInNotNull sjme_byteCode* relRawCode)
+{
+	if (inFrame == NULL || relRawCode == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl? %d", relRawCode[0]);
+	return sjme_error_notImplemented(relRawCode[0]);
 }

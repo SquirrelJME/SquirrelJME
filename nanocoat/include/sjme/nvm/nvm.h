@@ -58,6 +58,9 @@ typedef sjme_jint sjme_staticLinkageType;
  */
 typedef sjme_jobject sjme_jthrowable;
 
+/** Single byte code storage type. */
+typedef sjme_jubyte sjme_byteCode;
+
 typedef union sjme_anyData
 {
 	/** Integer. */

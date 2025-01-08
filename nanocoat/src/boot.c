@@ -98,6 +98,72 @@ static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
 	{NULL, NULL}
 };
 
+/** SquirrelJME ROM names. */
+static sjme_lpcstr sjme_nvm_romNames[] =
+{
+	"squirreljme-"SQUIRRELJME_VERSION"-fast.jar",
+	"squirreljme-"SQUIRRELJME_VERSION".jar",
+	"squirreljme-"SQUIRRELJME_VERSION"-slow.jar",
+	"squirreljme-"SQUIRRELJME_VERSION"-slow-test.jar",
+	"squirreljme-fast.jar",
+	"squirreljme.jar",
+	"squirreljme-slow.jar",
+	"squirreljme-slow-test.jar",
+	NULL
+};
+
+static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
+	sjme_attrInNotNull sjme_lpcstr basePath,
+	sjme_attrInNotNull sjme_lpcstr romName)
+{
+	sjme_errorCode error;
+	sjme_cchar dataPath[SJME_MAX_PATH];
+	sjme_seekable rom;
+	sjme_nvm_rom_suite result;
+
+	if (allocPool == NULL || nal == NULL || outSuite == NULL ||
+		basePath == NULL || romName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Base path here. */
+	memset(&dataPath, 0, sizeof(dataPath));
+	if (sjme_error_is(error = sjme_path_resolveAppend(
+		dataPath, SJME_MAX_PATH - 1,
+		basePath, INT32_MAX)))
+		return sjme_error_default(error);
+	
+	/* Use ROM from here. */
+	if (sjme_error_is(error = sjme_path_resolveAppend(
+		dataPath, SJME_MAX_PATH - 1,
+		romName, INT32_MAX)))
+		return sjme_error_default(error);
+	
+	/* Open main ROM file. */
+	rom = NULL;
+	if (sjme_error_is(error = nal->fileOpen(allocPool, dataPath,
+		&rom)) || rom == NULL)
+		return sjme_error_default(error);
+	
+	/* Load suite from the ZIP. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipSeekable(allocPool,
+		&result, rom)) || result == NULL)
+	{
+		/* Make sure to close the file. */
+		sjme_closeable_close(SJME_AS_CLOSEABLE(rom));
+		
+		/* Fail. */
+		return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	*outSuite = result;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
@@ -264,7 +330,7 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 {
 	sjme_errorCode error;
 	sjme_cchar dataPath[SJME_MAX_PATH];
-	sjme_seekable rom;
+	sjme_jint i;
 	sjme_nvm_rom_suite result;
 	
 	if (allocPool == NULL || nal == NULL || outSuite == NULL)
@@ -274,42 +340,29 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 	if (nal->fileOpen == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
-	/* Initialize. */
-	memset(&dataPath, 0, sizeof(dataPath));
-	
 	/* Get default data directory. */
+	memset(&dataPath, 0, sizeof(dataPath));
 	if (sjme_error_is(error = sjme_nvm_defaultDir(
 		SJME_NVM_DEFAULT_DIRECTORY_DATA, nal,
 		dataPath, SJME_MAX_PATH - 1)))
 		return sjme_error_default(error);
-	
-	/* Use ROM from here. */
-	if (sjme_error_is(error = sjme_path_resolveAppend(
-		dataPath, SJME_MAX_PATH - 1,
-		SJME_JAR_NAME, INT32_MAX)))
-		return sjme_error_default(error);
-	
-	/* Open main ROM file. */
-	rom = NULL;
-	if (sjme_error_is(error = nal->fileOpen(allocPool, dataPath,
-		&rom)) || rom == NULL)
-		return sjme_error_default(error);
-	
-	/* Load suite from the ZIP. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipSeekable(allocPool,
-		&result, rom)) || result == NULL)
+
+	/* There are multiple possible ROM names. */
+	for (i = 0; sjme_nvm_romNames[i]; i++)
 	{
-		/* Make sure to close the file. */
-		sjme_closeable_close(SJME_AS_CLOSEABLE(rom));
-		
-		/* Fail. */
-		return sjme_error_default(error);
+		/* Attempt ROM lookup. */
+		if (sjme_error_is(error = sjme_nvm_defaultBootSuiteAttempt(
+			allocPool, nal, &result, dataPath,
+			sjme_nvm_romNames[i])))
+			continue;
+
+		/* Success! */
+		*outSuite = result;
+		return SJME_ERROR_NONE;
 	}
-	
-	/* Success! */
-	*outSuite = result;
-	return SJME_ERROR_NONE;
+
+	/* Failed. */
+	return sjme_error_defaultOr(error, SJME_ERROR_NO_SUITES);
 }
 
 sjme_errorCode sjme_nvm_defaultDir(

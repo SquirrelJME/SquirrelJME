@@ -298,6 +298,12 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
 			result, dx, &argV[i])))
 			return sjme_error_default(error);
+
+	/* Set frame details. */
+#if 0
+	result->inClass = targetInfo->inClass;
+#endif
+	result->inCode = targetInfo->code;
 	
 	/* Set frame as active. */
 	inThread->numFrames++;
@@ -387,9 +393,6 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 #define SJME_NVM_FRAME_GROW_SIZE 8
 	sjme_errorCode error;
 	sjme_nvm_frame result;
-	sjme_list_sjme_nvm_frame* oldList;
-	sjme_list_sjme_nvm_frame* newList;
-	sjme_jint n;
 	
 	if (inThread == NULL || outFrame == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -409,10 +412,10 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 		memset(result, 0, sizeof(*result));
 	else
 	{
-		/* Allocate new thread result. */
+		/* Allocate new blank frame. */
 		if (sjme_error_is(error = sjme_nvm_alloc(inThread->state,
 			sizeof(*result), SJME_NVM_STRUCT_FRAME,
-			SJME_AS_NVM_COMMONP(&result))))
+			SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 			return sjme_error_default(error);
 
 		/* Store in this slot, forever. */

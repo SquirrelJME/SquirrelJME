@@ -31,6 +31,51 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+	
+/** Visual Studio 6 */
+#define SJME_VERSION_MSVC_6 1200
+
+/** Visual Studio 2005 */
+#define SJME_VERSION_MSVC_2005 1400
+	
+#if defined(__clang__)
+	/** CLang LLVM Compiler. */
+	#define SJME_CONFIG_HAS_CLANG
+	
+	/** Is the CLang version the specified version? */
+	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) \
+		(__clang_major__ > major ? 1 : \
+		(__clang_major__ < major ? 0 : \
+		(__clang_minor__ >= minor)))
+#else
+	/** Is the CLang version the specified version? */
+	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) 0
+#endif
+	
+#if defined(_MSC_VER) && !defined(SJME_CONFIG_HAS_CLANG)
+	/** Microsoft Visual C++ Compiler. */
+	#define SJME_CONFIG_HAS_MSVC
+	
+	/** Is the MSVC version the specified version? */
+	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) \
+		(_MSC_VER >= against)
+#else
+	/** Is the MSVC version the specified version? */
+	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) 0
+#endif
+
+#if defined(__GNUC__) && !defined(SJME_CONFIG_HAS_CLANG)
+	/** GNU C Compiler. */
+	#define SJME_CONFIG_HAS_GCC
+	
+	/** Is the GCC version the specified version? */
+	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
+		(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
+		(defined(__GNUC_MINOR__) ? __GNUC_MINOR__ >= minor : 1)))
+#else
+	/** Is the GCC version the specified version? */
+	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
+#endif
 
 #if !defined(SJME_CONFIG_RELEASE) && !defined(SJME_CONFIG_DEBUG)
 	#if (defined(DEBUG) || defined(_DEBUG)) || \
@@ -280,51 +325,6 @@ extern "C" {
 	#define sjme_flexibleArrayCount
 #endif
 
-/** Visual Studio 6 */
-#define SJME_VERSION_MSVC_6 1200
-
-/** Visual Studio 2005 */
-#define SJME_VERSION_MSVC_2005 1400
-	
-#if defined(__clang__)
-	/** CLang LLVM Compiler. */
-	#define SJME_CONFIG_HAS_CLANG
-	
-	/** Is the CLang version the specified version? */
-	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) \
-		(__clang_major__ > major ? 1 : \
-		(__clang_major__ < major ? 0 : \
-		(__clang_minor__ >= minor)))
-#else
-	/** Is the CLang version the specified version? */
-	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) 0
-#endif
-	
-#if defined(_MSC_VER) && !defined(SJME_CONFIG_HAS_CLANG)
-	/** Microsoft Visual C++ Compiler. */
-	#define SJME_CONFIG_HAS_MSVC
-	
-	/** Is the MSVC version the specified version? */
-	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) \
-		(_MSC_VER >= against)
-#else
-	/** Is the MSVC version the specified version? */
-	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) 0
-#endif
-
-#if defined(__GNUC__) && !defined(SJME_CONFIG_HAS_CLANG)
-	/** GNU C Compiler. */
-	#define SJME_CONFIG_HAS_GCC
-	
-	/** Is the GCC version the specified version? */
-	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
-		(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
-		(defined(__GNUC_MINOR__) ? __GNUC_MINOR__ >= minor : 1)))
-#else
-	/** Is the GCC version the specified version? */
-	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
-#endif
-	
 /* Visual C++. */
 #if defined(SJME_CONFIG_HAS_MSVC)
 	#include <sal.h>
@@ -766,6 +766,9 @@ extern "C" {
     defined(SJME_CONFIG_HAS_NO_VSNPRINTF)
 	#include "sjme/stdGone.h"
 #endif
+
+/** Disable all linting of any kind. */
+#define sjme_noLint(what) (what) /* NOLINT */ /* ReSharper disable once all */
 
 /*--------------------------------------------------------------------------*/
 

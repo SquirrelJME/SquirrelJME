@@ -742,7 +742,7 @@ struct sjme_nvm_class_codeInfoBase
 	sjme_list_sjme_nvm_class_exceptionHandler* exceptions;
 
 	/** Method byte code. */
-	sjme_list_sjme_jubyte code;
+	sjme_byteCode* rawCode;
 };
 
 /**

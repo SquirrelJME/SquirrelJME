@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <sjme/nvm/bytecode.h>
 #include <sjme/nvm/task.h>
 
 #include "sjme/nvm/nvm.h"
@@ -161,6 +162,14 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_attrOutNullable sjme_jint* ticRemainder,
 	sjme_attrOutNullable sjme_jboolean* isTerminated)
 {
+	sjme_errorCode error;
+	sjme_jint frameIndex, remaining;
+	sjme_nvm_frame currentFrame;
+	sjme_nvm_class_codeInfo currentCode;
+	sjme_byteCode* rawCode;
+	sjme_byteCode* ev;
+	sjme_byteCode iv;
+	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -168,7 +177,45 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	sjme_message("Exec %p", inThread);
+
+	/* Initialized to make the linter not noisy. */
+	currentFrame = NULL;
+	rawCode = NULL;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Continuous code execution. */
+	frameIndex = -2;
+	remaining = maxTics;
+	while sjme_noLint(remaining == -1 || remaining > 0)
+	{
+		/* Thread has entered a sleeping state? */
+		if (inThread->status != SJME_NVM_THREAD_STATUS_RUNNING)
+			break;
+		
+		/* Tick down. */
+		if (remaining > 0)
+			remaining--;
+		
+		/* Get current top-most frame, if it changed. */
+		if (frameIndex != (inThread->numFrames - 1))
+		{
+			frameIndex = (inThread->numFrames - 1);
+			currentFrame = inThread->frames->elements[frameIndex];
+			currentCode = currentFrame->inCode;
+			rawCode = currentCode->rawCode;
+		}
+
+		/* Read instruction vector. */
+		ev = &rawCode[currentFrame->pc];
+		iv = *ev;
+
+		/* Execute narrow handler. */
+		if (sjme_error_is(error =
+			sjme_nvm_byteCode_slowNarrowFunctions[iv](currentFrame, iv, ev)))
+			return sjme_error_default(error);
+	}
+	
+	/* Give remaining, if requested. */
+	if (ticRemainder != NULL)
+		*ticRemainder = remaining;
+	return SJME_ERROR_NONE;
 }

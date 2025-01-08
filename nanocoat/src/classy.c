@@ -503,6 +503,12 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 		allocPool, attrStream, inConstPool, inStringPool,
 		sjme_nvm_class_codeAttr, result)))
 		goto fail_parseAttributes;
+
+	/* Allocate code. */
+	if (sjme_error_is(error = sjme_alloc_copy(
+		allocPool, codeLen, (sjme_pointer*)&result->rawCode, rawCode)) ||
+		result->rawCode == NULL)
+		goto fail_allocCode;
 	
 	/* Make sure the code is referenced. */	
 	methodInfo->code = result;
@@ -512,6 +518,12 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	/* Success! */
 	return SJME_ERROR_NONE;
 fail_refCode:
+fail_allocCode:
+	if (result->rawCode != NULL)
+	{
+		sjme_alloc_free(result->rawCode);
+		result->rawCode = NULL;
+	}
 fail_parseAttributes:
 fail_exceptHandles:
 fail_exceptShorts:
