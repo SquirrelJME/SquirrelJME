@@ -19,7 +19,7 @@
 	#undef WIN32_LEAN_AND_MEAN
 #endif
 
-/* clang-format off */
+/* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_DARWIN)
@@ -268,7 +268,7 @@
 	}
 
 /* ------------------------------------------------------------------------ */
-/* clang-format on */
+/* clang-format on */ /* @formatter:on */
 
 /**
  * Common atomic function sets.

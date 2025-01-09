@@ -61,8 +61,7 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
-
-/* clang-format off */
+/* clang-format off */ /* @formatter:off */
 
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	/** A single thread. */
@@ -164,8 +163,8 @@ extern "C" {
 	#define sjme_attrThreadCall
 #endif
 
-/* clang-format on */
-/*--*/
+/* clang-format on */ /* @formatter:on */
+/*--------------------------------------------------------------------------*/
 
 SJME_ATOMIC_DECLARE(sjme_thread, 0);
 

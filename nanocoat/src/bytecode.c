@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <sjme/nvm/task.h>
+
 #include "sjme/nvm/bytecode.h"
 #include "sjme/debug.h"
 
@@ -17,9 +19,12 @@ sjme_errorCode sjme_nvm_byteCode_illegalInstruction(
 {
 	if (inFrame == NULL || relRawCode == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Illegal? %d", relRawCode[0]);
-	return sjme_error_notImplemented(relRawCode[0]);
+
+	sjme_message("ILLEGAL INSTRUCTION %d at 0x%x",
+		id, relRawCode - inFrame->inCode->rawCode);
+	sjme_message_hexDump(inFrame->inCode->rawCode,
+		inFrame->inCode->rawCodeLen);
+	return SJME_ERROR_INVALID_INSTRUCTION;
 }
 
 sjme_errorCode sjme_nvm_byteCode_notImplemented(

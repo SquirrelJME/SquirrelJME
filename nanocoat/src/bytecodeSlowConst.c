@@ -8,3 +8,10 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/nvm/bytecode.h"
+#include "sjme/nvm/bytecodeSlow.h"
+
+SJME_NVM_BYTECODE_SLOW(Ldc)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}

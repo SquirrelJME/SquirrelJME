@@ -15,7 +15,7 @@
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
 
-/* clang-format off */
+/* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 
 /** Serial variables. */
@@ -110,7 +110,7 @@
 		as->what.copyFrontEnd))
 
 /* ------------------------------------------------------------------------ */
-/* clang-format on */
+/* clang-format on */ /* @formatter:on */
 
 static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	sjme_attrInNullable sjme_thread_parameter anything)
@@ -135,7 +135,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	state = data->state;
 	as = &data->data;
 	
-/* clang-format off */
+/* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 	
 	/* Begin cases. */
@@ -504,7 +504,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_SWITCH_END
 	
 /* ------------------------------------------------------------------------ */
-/* clang-format on */
+/* clang-format on */ /* @formatter:on */
 	
 	/* Map result. */
 	return SJME_THREAD_RESULT(data->error);

@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/nvm/bytecode.h"
+#include "sjme/nvm/bytecodeSlow.h"
 
 const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
 	[SJME_NVM_NUM_JAVA_BYTECODES] =
@@ -30,7 +31,7 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
 	/* .15 */ sjme_nvm_byteCode_notImplemented,
 	/* .16 */ sjme_nvm_byteCode_notImplemented,
 	/* .17 */ sjme_nvm_byteCode_notImplemented,
-	/* .18 */ sjme_nvm_byteCode_notImplemented,
+	/* .18 */ SJME_NVM_BYTECODE_SLOW_NAME(Ldc),
 	/* .19 */ sjme_nvm_byteCode_notImplemented,
 	/* .20 */ sjme_nvm_byteCode_notImplemented,
 	/* .21 */ sjme_nvm_byteCode_notImplemented,
@@ -291,7 +292,7 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowWideFunctions
 	/* .15 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .16 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .17 */ sjme_nvm_byteCode_illegalInstruction,
-	/* .18 */ sjme_nvm_byteCode_illegalInstruction,
+	/* .18 */ sjme_nvm_byteCode_slowLdc,
 	/* .19 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .20 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .21 */ sjme_nvm_byteCode_notImplemented,

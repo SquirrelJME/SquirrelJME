@@ -741,6 +741,9 @@ struct sjme_nvm_class_codeInfoBase
 	/** Exception table. */
 	sjme_list_sjme_nvm_class_exceptionHandler* exceptions;
 
+	/** The raw code length. */
+	sjme_jint rawCodeLen;
+
 	/** Method byte code. */
 	sjme_byteCode* rawCode;
 };
