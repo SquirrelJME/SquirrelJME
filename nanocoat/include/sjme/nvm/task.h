@@ -365,6 +365,18 @@ sjme_errorCode sjme_nvm_task_framePool(
 	sjme_attrInRange(0, SJME_NUM_CLASS_POOL_TYPE)
 		sjme_nvm_class_poolType inTypeB,
 	...);
+
+/**
+ * Pushes the given string pool string to the stack.
+ * 
+ * @param inFrame The frame to push into the stack for. 
+ * @param inString The string value being pushed.
+ * @return Any resultant error, if any.
+ * @since 2025/01/11
+ */
+sjme_errorCode sjme_nvm_task_frameStackPushStringP(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_stringPool_string inString);
 	
 /**
  * Sets the value of a variable within a frame using the typed index

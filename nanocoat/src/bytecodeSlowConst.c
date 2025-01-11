@@ -12,6 +12,31 @@
 #include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/bytecodeSlow.h"
 
+static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, 256) sjme_byteCode id,
+	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull sjme_nvm_class_poolEntry* entry)
+{
+	if (inFrame == NULL || entry == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* What happens, depends on the type. */
+	switch (entry->type)
+	{
+		case SJME_NVM_CLASS_POOL_TYPE_STRING:
+			return sjme_nvm_task_frameStackPushStringP(
+				inFrame, entry->utf.utf);
+		
+		default:
+			sjme_todo("Impl? %d", entry->type);
+			return sjme_error_notImplemented(entry->type);
+	}
+
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(Ldc)
 {
 	sjme_jint poolIndex;
@@ -28,9 +53,7 @@ SJME_NVM_BYTECODE_SLOW(Ldc)
 		SJME_NVM_CLASS_POOL_TYPE_CLASS,
 		0)))
 		return sjme_error_default(error);
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
 
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	/* Forward to common handler. */
+	return sjme_nvm_byteCode_slowLdcAny(inFrame, id, relRawCode, entry);
 }

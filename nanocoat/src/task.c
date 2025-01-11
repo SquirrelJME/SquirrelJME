@@ -109,6 +109,17 @@ fail_notMatched:
 	return SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
 }
 
+sjme_errorCode sjme_nvm_task_frameStackPushStringP(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_stringPool_string inString)
+{
+	if (inFrame == NULL || inString == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInPositive sjme_jint typeIndex,
