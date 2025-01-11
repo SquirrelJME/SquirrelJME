@@ -67,6 +67,90 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 	return SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
 }
 
+SJME_NVM_BYTECODE_SLOW(AConstNull)
+{
+	sjme_jvalueTyped value;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Setup value to push. */
+	memset(&value, 0, sizeof(value));
+	value.type = SJME_JAVA_TYPE_ID_OBJECT;
+	value.value.l = NULL;
+
+	/* Push to stack. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+		inFrame, &value)))
+		return sjme_error_default(error);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(BIPush)
+{
+	sjme_jvalueTyped value;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Setup value to push. */
+	memset(&value, 0, sizeof(value));
+	value.type = SJME_JAVA_TYPE_ID_INTEGER;
+	value.value.i = (sjme_jbyte)relRawCode[1];
+
+	/* Push to stack. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+		inFrame, &value)))
+		return sjme_error_default(error);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(DConstZ)
+{
+	sjme_jvalueTyped value;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Setup value to push. */
+	memset(&value, 0, sizeof(value));
+	value.type = SJME_JAVA_TYPE_ID_DOUBLE;
+	if (id == 14)
+		value.value.d.hi = 0;
+	else
+		value.value.d.hi = UINT32_C(0x3FF00000);
+
+	/* Push to stack. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+		inFrame, &value)))
+		return sjme_error_default(error);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(FConstZ)
+{
+	sjme_jvalueTyped value;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Setup value to push. */
+	memset(&value, 0, sizeof(value));
+	value.type = SJME_JAVA_TYPE_ID_FLOAT;
+	if (id == 11)
+		value.value.f.value = 0;
+	else if (id == 12)
+		value.value.f.value = INT32_C(1065353216);
+	else
+		value.value.f.value = INT32_C(1073741824);
+
+	/* Push to stack. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+		inFrame, &value)))
+		return sjme_error_default(error);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(IConstM)
 {
 	sjme_jvalueTyped value;
@@ -76,6 +160,25 @@ SJME_NVM_BYTECODE_SLOW(IConstM)
 	memset(&value, 0, sizeof(value));
 	value.type = SJME_JAVA_TYPE_ID_INTEGER;
 	value.value.i = (-1) + (id - 2);
+
+	/* Push to stack. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+		inFrame, &value)))
+		return sjme_error_default(error);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(LConstZ)
+{
+	sjme_jvalueTyped value;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Setup value to push. */
+	memset(&value, 0, sizeof(value));
+	value.type = SJME_JAVA_TYPE_ID_LONG;
+	value.value.j.part.lo = id - 9;
 
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
