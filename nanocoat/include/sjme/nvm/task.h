@@ -207,6 +207,9 @@ struct sjme_nvm_frameBase
 {
 	/** Common virtual machine structure. */
 	sjme_nvm_commonBase common;
+
+	/** The thread this frame is in. */
+	sjme_nvm_thread inThread;
 	
 	/** The current program counter. */
 	sjme_pcAddr pc;
@@ -367,6 +370,30 @@ sjme_errorCode sjme_nvm_task_framePool(
 	...);
 
 /**
+ * Pushes the given value to the stack.
+ * 
+ * @param inFrame The frame to push to.
+ * @param inValue The value being pushed.
+ * @return Any resultant error, if any.
+ * @since 2025/01/11
+ */
+sjme_errorCode sjme_nvm_task_frameStackPush(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_jvalueTyped* inValue);
+	
+/**
+ * Pushes the given class, named by the pool string, to the stack.
+ * 
+ * @param inFrame The frame to push to.
+ * @param inClassName The name of the class to push.
+ * @return Any resultant error, if any.
+ * @since 2025/01/11
+ */
+sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_stringPool_string inClassName);
+	
+/**
  * Pushes the given string pool string to the stack.
  * 
  * @param inFrame The frame to push into the stack for. 
@@ -491,6 +518,21 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame);
 	
+/**
+ * Loads the given string pool string as an object.
+ * 
+ * @param inThread The context thread to load in as it may be required to
+ * initialize classes.
+ * @param inString The pooled string to load.
+ * @param outValue The resultant object.
+ * @return Any resultant error.
+ * @since 2025/01/11
+ */
+sjme_errorCode sjme_nvm_task_threadLoadStringP(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInNotNull sjme_nvm_stringPool_string inString,
+	sjme_attrOutNotNull sjme_jobject* outValue);
+
 /**
  * Creates a new thread within the given task.
  * 

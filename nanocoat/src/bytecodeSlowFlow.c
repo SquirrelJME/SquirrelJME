@@ -8,3 +8,13 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/nvm/bytecode.h"
+#include "sjme/nvm/bytecodeSlow.h"
+
+SJME_NVM_BYTECODE_SLOW(NoOp)
+{
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Does nothing! */
+	
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}

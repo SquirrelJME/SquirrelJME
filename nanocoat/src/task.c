@@ -109,15 +109,48 @@ fail_notMatched:
 	return SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
 }
 
-sjme_errorCode sjme_nvm_task_frameStackPushStringP(
+sjme_errorCode sjme_nvm_task_frameStackPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_nvm_stringPool_string inString)
+	sjme_attrInNotNull sjme_jvalueTyped* inValue)
 {
-	if (inFrame == NULL || inString == NULL)
+	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_stringPool_string inClassName)
+{
+	if (inFrame == NULL || inClassName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_task_frameStackPushStringP(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_stringPool_string inString)
+{
+	sjme_errorCode error;
+	sjme_jvalueTyped value;
+	
+	if (inFrame == NULL || inString == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Load in string. */
+	memset(&value, 0, sizeof(value));
+	value.type = SJME_JAVA_TYPE_ID_OBJECT;
+	if (sjme_error_is(error = sjme_nvm_task_threadLoadStringP(
+		inFrame->inThread, inString, &value.value.l)) ||
+		value.value.l == NULL)
+		return sjme_error_default(error);
+
+	/* Push value. */
+	return sjme_nvm_task_frameStackPush(inFrame, &value);
 }
 
 sjme_errorCode sjme_nvm_task_frameTreadSetT(
@@ -378,6 +411,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 #if 0
 	result->inClass = targetInfo->inClass;
 #endif
+	result->inThread = inThread;
 	result->inCode = targetInfo->code;
 	result->pool = targetInfo->code->inMethod->inClass->pool;
 	
@@ -502,6 +536,18 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 	*outFrame = result;
 	return SJME_ERROR_NONE;
 #undef SJME_NVM_FRAME_GROW_SIZE
+}
+
+sjme_errorCode sjme_nvm_task_threadLoadStringP(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInNotNull sjme_nvm_stringPool_string inString,
+	sjme_attrOutNotNull sjme_jobject* outValue)
+{
+	if (inThread == NULL || inString == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_task_threadNew(

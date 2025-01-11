@@ -69,9 +69,11 @@ extern "C"
 /* Compare */
 
 /* Constant */
+SJME_NVM_BYTECODE_SLOW(IConstM);
 SJME_NVM_BYTECODE_SLOW(Ldc);
 
 /* Flow */
+SJME_NVM_BYTECODE_SLOW(NoOp);
 
 /* Local */
 

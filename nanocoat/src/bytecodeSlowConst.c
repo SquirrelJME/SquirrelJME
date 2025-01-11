@@ -7,8 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <sjme/nvm/task.h>
+#include <string.h>
 
+#include "sjme/nvm/task.h"
 #include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/bytecodeSlow.h"
 
@@ -18,21 +19,69 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 	sjme_attrInNotNull sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_class_poolEntry* entry)
 {
+	sjme_jvalueTyped value;
+	
 	if (inFrame == NULL || entry == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* What happens, depends on the type. */
+	memset(&value, 0, sizeof(value));
 	switch (entry->type)
 	{
+		case SJME_NVM_CLASS_POOL_TYPE_INTEGER:
+			value.type = SJME_JAVA_TYPE_ID_INTEGER;
+			value.value.i = entry->constInteger.value;
+			return sjme_nvm_task_frameStackPush(
+				inFrame, &value);
+		
+		case SJME_NVM_CLASS_POOL_TYPE_LONG:
+			value.type = SJME_JAVA_TYPE_ID_LONG;
+			value.value.j = entry->constLong.value;
+			return sjme_nvm_task_frameStackPush(
+				inFrame, &value);
+		
+		case SJME_NVM_CLASS_POOL_TYPE_FLOAT:
+			value.type = SJME_JAVA_TYPE_ID_FLOAT;
+			value.value.f = entry->constFloat.value;
+			return sjme_nvm_task_frameStackPush(
+				inFrame, &value);
+		
+		case SJME_NVM_CLASS_POOL_TYPE_DOUBLE:
+			value.type = SJME_JAVA_TYPE_ID_DOUBLE;
+			value.value.d = entry->constDouble.value;
+			return sjme_nvm_task_frameStackPush(
+				inFrame, &value);
+
+		case SJME_NVM_CLASS_POOL_TYPE_CLASS:
+			return sjme_nvm_task_frameStackPushClassPD(
+				inFrame, entry->classRef.descriptor);
+		
 		case SJME_NVM_CLASS_POOL_TYPE_STRING:
 			return sjme_nvm_task_frameStackPushStringP(
 				inFrame, entry->utf.utf);
-		
-		default:
-			sjme_todo("Impl? %d", entry->type);
-			return sjme_error_notImplemented(entry->type);
-	}
 
+		default:
+	}
+	
+	/* Invalid type. */
+	return SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
+}
+
+SJME_NVM_BYTECODE_SLOW(IConstM)
+{
+	sjme_jvalueTyped value;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Setup value to push. */
+	memset(&value, 0, sizeof(value));
+	value.type = SJME_JAVA_TYPE_ID_INTEGER;
+	value.value.i = (-1) + (id - 2);
+
+	/* Push to stack. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+		inFrame, &value)))
+		return sjme_error_default(error);
+	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
@@ -55,5 +104,10 @@ SJME_NVM_BYTECODE_SLOW(Ldc)
 		return sjme_error_default(error);
 
 	/* Forward to common handler. */
-	return sjme_nvm_byteCode_slowLdcAny(inFrame, id, relRawCode, entry);
+	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame,
+		id, relRawCode, entry)))
+		return sjme_error_default(error);
+
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
