@@ -12,6 +12,7 @@
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/bytecodeSlow.h"
+#include "sjme/util.h"
 
 static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
@@ -72,6 +73,9 @@ SJME_NVM_BYTECODE_SLOW(AConstNull)
 	sjme_jvalueTyped value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
+	/* PC adjustment. */
+	pcNew->adjust = 1;
+
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
 	value.type = SJME_JAVA_TYPE_ID_OBJECT;
@@ -91,6 +95,9 @@ SJME_NVM_BYTECODE_SLOW(BIPush)
 	sjme_jvalueTyped value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
+	/* PC adjustment. */
+	pcNew->adjust = 3;
+
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
 	value.type = SJME_JAVA_TYPE_ID_INTEGER;
@@ -109,6 +116,9 @@ SJME_NVM_BYTECODE_SLOW(DConstZ)
 {
 	sjme_jvalueTyped value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* PC adjustment. */
+	pcNew->adjust = 1;
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
@@ -131,6 +141,9 @@ SJME_NVM_BYTECODE_SLOW(FConstZ)
 {
 	sjme_jvalueTyped value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* PC adjustment. */
+	pcNew->adjust = 1;
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
@@ -156,6 +169,9 @@ SJME_NVM_BYTECODE_SLOW(IConstM)
 	sjme_jvalueTyped value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
+	/* PC adjustment. */
+	pcNew->adjust = 1;
+
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
 	value.type = SJME_JAVA_TYPE_ID_INTEGER;
@@ -174,6 +190,9 @@ SJME_NVM_BYTECODE_SLOW(LConstZ)
 {
 	sjme_jvalueTyped value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* PC adjustment. */
+	pcNew->adjust = 1;
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
@@ -195,6 +214,9 @@ SJME_NVM_BYTECODE_SLOW(Ldc)
 	sjme_nvm_class_poolEntry* entry;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
+	/* PC adjustment. */
+	pcNew->adjust = 2;
+
 	/* Read in pool value. */
 	poolIndex = relRawCode[1];
 	if (sjme_error_is(error = sjme_nvm_task_framePool(
@@ -211,6 +233,84 @@ SJME_NVM_BYTECODE_SLOW(Ldc)
 		id, relRawCode, entry)))
 		return sjme_error_default(error);
 
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(LdcW)
+{
+	sjme_jint poolIndex;
+	sjme_nvm_class_poolEntry* entry;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* PC adjustment. */
+	pcNew->adjust = 3;
+
+	/* Read in pool value. */
+	poolIndex = *sjme_util_memUnaligned16(&relRawCode[1]);
+	if (sjme_error_is(error = sjme_nvm_task_framePool(
+		inFrame, poolIndex, &entry,
+		SJME_NVM_CLASS_POOL_TYPE_INTEGER,
+		SJME_NVM_CLASS_POOL_TYPE_FLOAT,
+		SJME_NVM_CLASS_POOL_TYPE_STRING,
+		SJME_NVM_CLASS_POOL_TYPE_CLASS,
+		0)))
+		return sjme_error_default(error);
+
+	/* Forward to common handler. */
+	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame,
+		id, relRawCode, entry)))
+		return sjme_error_default(error);
+
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(LdcWTwo)
+{
+	sjme_jint poolIndex;
+	sjme_nvm_class_poolEntry* entry;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* PC adjustment. */
+	pcNew->adjust = 3;
+
+	/* Read in pool value. */
+	poolIndex = *sjme_util_memUnaligned16(&relRawCode[1]);
+	if (sjme_error_is(error = sjme_nvm_task_framePool(
+		inFrame, poolIndex, &entry,
+		SJME_NVM_CLASS_POOL_TYPE_LONG,
+		SJME_NVM_CLASS_POOL_TYPE_DOUBLE,
+		0)))
+		return sjme_error_default(error);
+
+	/* Forward to common handler. */
+	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame,
+		id, relRawCode, entry)))
+		return sjme_error_default(error);
+
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(SIPush)
+{
+	sjme_jvalueTyped value;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* PC adjustment. */
+	pcNew->adjust = 3;
+
+	/* Setup value to push. */
+	memset(&value, 0, sizeof(value));
+	value.type = SJME_JAVA_TYPE_ID_INTEGER;
+	value.value.i = *sjme_util_memUnaligned16(&relRawCode[1]);
+
+	/* Push to stack. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+		inFrame, &value)))
+		return sjme_error_default(error);
+	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }

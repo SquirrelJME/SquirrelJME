@@ -28,6 +28,10 @@
 	#include <stdarg.h>
 #endif
 
+#if !defined(SJME_CONFIG_HAS_NO_C11_THREADS)
+	#include <threads.h>
+#endif
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED

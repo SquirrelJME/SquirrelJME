@@ -15,9 +15,10 @@
 sjme_errorCode sjme_nvm_byteCode_illegalInstruction(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* relRawCode)
+	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew)
 {
-	if (inFrame == NULL || relRawCode == NULL)
+	if (inFrame == NULL || relRawCode == NULL || pcNew == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	sjme_message("ILLEGAL INSTRUCTION %d at 0x%x",
@@ -30,9 +31,10 @@ sjme_errorCode sjme_nvm_byteCode_illegalInstruction(
 sjme_errorCode sjme_nvm_byteCode_notImplemented(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* relRawCode)
+	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew)
 {
-	if (inFrame == NULL || relRawCode == NULL)
+	if (inFrame == NULL || relRawCode == NULL || pcNew == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl? %d", relRawCode[0]);

@@ -7,9 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <sjme/nvm/bytecode.h>
-#include <sjme/nvm/task.h>
+#include <string.h>
 
+#include "sjme/nvm/bytecode.h"
+#include "sjme/nvm/task.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/loop.h"
 #include "sjme/debug.h"
@@ -169,6 +170,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_byteCode* rawCode;
 	sjme_byteCode* ev;
 	sjme_byteCode iv;
+	sjme_nvm_byteCode_pcNew pcNew;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -185,6 +187,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	/* Continuous code execution. */
 	frameIndex = -2;
 	remaining = maxTics;
+	memset(&pcNew, 0, sizeof(pcNew));
 	while sjme_noLint(remaining == -1 || remaining > 0)
 	{
 		/* Thread has entered a sleeping state? */
@@ -209,9 +212,18 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		iv = *ev;
 
 		/* Execute narrow handler. */
+		pcNew.type = 0;
+		pcNew.adjust = 0;
 		if (sjme_error_is(error =
-			sjme_nvm_byteCode_slowNarrowFunctions[iv](currentFrame, iv, ev)))
+			sjme_nvm_byteCode_slowNarrowFunctions[iv](currentFrame,
+				iv, ev, &pcNew)))
 			return sjme_error_default(error);
+
+		/* Set new PC address, in non-exception cases. */
+		if (pcNew.type == SJME_NVM_BYTECODE_PC_RELATIVE)
+			currentFrame->pc += pcNew.adjust;
+		else
+			currentFrame->pc = pcNew.adjust;
 	}
 	
 	/* Give remaining, if requested. */

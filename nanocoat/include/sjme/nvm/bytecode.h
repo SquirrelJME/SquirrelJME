@@ -712,18 +712,51 @@ typedef enum sjme_nvm_byteCode_instruction
 } sjme_nvm_byteCode_instruction;
 
 /**
+ * Specifies the type of PC address change occurs.
+ *
+ * @since 2025/01/11
+ */
+typedef enum sjme_nvm_byteCode_pcNewType
+{
+	/** Relative address. */
+	SJME_NVM_BYTECODE_PC_RELATIVE = 0,
+
+	/** Absolute address. */
+	SJME_NVM_BYTECODE_PC_ABSOLUTE = 1,
+
+	/** The number of types. */
+	SJME_NVM_BYTECODE_NUM_PC_NEW_TYPE = 2,
+} sjme_nvm_byteCode_pcNewType;
+
+/**
+ * Specifies how the PC address should be adjusted.
+ *
+ * @since 2025/01/11
+ */
+typedef struct sjme_nvm_byteCode_pcNew
+{
+	/** The type of adjustment to make. */
+	sjme_nvm_byteCode_pcNewType type;
+	
+	/** The PC adjustment. */
+	sjme_jint adjust;
+} sjme_nvm_byteCode_pcNew;
+
+/**
  * Function type for byte code execution.
  * 
  * @param inFrame The frame to execute under.
  * @param id The instruction ID.
  * @param relRawCode The relative raw code at the PC address.
+ * @param pcNew New PC address.
  * @return Any resultant error.
  * @since 2023/11/18
  */
 typedef sjme_errorCode (*sjme_nvm_byteCode_func)(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* relRawCode);
+	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew);
 
 /** Narrow slow bytecode handlers. */
 extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
@@ -739,13 +772,15 @@ extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowWideFunctions
  * @param inFrame The thread frame.
  * @param id The instruction ID.
  * @param relRawCode The relative raw code at the PC address.
+ * @param pcNew New PC address.
  * @return Any resultant error.
  * @since 2025/01/08
  */
 sjme_errorCode sjme_nvm_byteCode_illegalInstruction(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* relRawCode);
+	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew);
 
 /**
  * Represents an instruction that is not implemented.
@@ -753,13 +788,15 @@ sjme_errorCode sjme_nvm_byteCode_illegalInstruction(
  * @param inFrame The thread frame.
  * @param id The instruction ID.
  * @param relRawCode The relative raw code at the PC address.
+ * @param pcNew New PC address.
  * @return Any resultant error.
  * @since 2025/01/08
  */
 sjme_errorCode sjme_nvm_byteCode_notImplemented(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* relRawCode);
+	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew);
 	
 /*--------------------------------------------------------------------------*/
 

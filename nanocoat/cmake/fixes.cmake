@@ -214,3 +214,9 @@ squirreljme_try_compile("varargs.h"
 	"tryVarArgsH"
 	SJME_CONFIG_HAS_NO_VARARGS)
 
+# threads.h available?
+squirreljme_try_compile("threads.h"
+	SQUIRRELJME_C11_THREADS_TRY_VALID
+	"tryThreadsH"
+	SJME_CONFIG_HAS_NO_C11_THREADS)
+

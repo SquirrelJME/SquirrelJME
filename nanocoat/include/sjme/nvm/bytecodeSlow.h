@@ -49,7 +49,8 @@ extern "C"
 	sjme_errorCode SJME_NVM_BYTECODE_SLOW_NAME(which) ( \
 		sjme_attrInNotNull sjme_nvm_frame inFrame, \
 		sjme_attrInRange(0, 256) sjme_byteCode id, \
-		sjme_attrInNotNull sjme_byteCode* relRawCode)
+		sjme_attrInNotNull sjme_byteCode* relRawCode, \
+		sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew)
 
 /* clang-format off */ /* @formatter:off */
 /*--------------------------------------------------------------------------*/
@@ -57,7 +58,7 @@ extern "C"
 /** Common entry for slow byte code. */
 #define SJME_NVM_BYTECODE_SLOW_ENTRY \
 	sjme_errorCode error; \
-	if (inFrame == NULL || relRawCode == NULL) \
+	if (inFrame == NULL || relRawCode == NULL || pcNew == NULL) \
 		return SJME_ERROR_NULL_ARGUMENTS
 
 /** Common exit for slow byte code. */
@@ -76,6 +77,9 @@ SJME_NVM_BYTECODE_SLOW(FConstZ);
 SJME_NVM_BYTECODE_SLOW(IConstM);
 SJME_NVM_BYTECODE_SLOW(LConstZ);
 SJME_NVM_BYTECODE_SLOW(Ldc);
+SJME_NVM_BYTECODE_SLOW(LdcW);
+SJME_NVM_BYTECODE_SLOW(LdcWTwo);
+SJME_NVM_BYTECODE_SLOW(SIPush);
 
 /* Flow */
 SJME_NVM_BYTECODE_SLOW(NoOp);

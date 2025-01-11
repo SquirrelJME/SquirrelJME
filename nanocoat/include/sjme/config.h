@@ -170,6 +170,16 @@ extern "C" {
 	#endif
 #endif
 
+#if defined(_ILP32) || defined(__ILP32__)
+	/** Has known long-pointer 32-bit model. */
+	#define SJME_CONFIG_HAS_ILP32
+	
+#elif defined(_LP64) || defined(__LP64__)
+	/** Has known long-pointer 64-bit model. */
+	#define SJME_CONFIG_HAS_LP64
+	
+#endif
+	
 #if defined(__amd64__) || defined(__amd64__) || defined(__x86_64__) || \
 	defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64)
 	/** Has AMD64. */
@@ -197,6 +207,20 @@ extern "C" {
 	
 	/** Has PowerPC 32-bit. */
 	#define SJME_CONFIG_HAS_ARCH_POWERPC_32
+#elif defined(__mips__) || defined(__mips) || defined(__MIPS__)
+	#if defined(SJME_CONFIG_HAS_LP64)
+		/** Has MIPS. */
+		#define SJME_CONFIG_HAS_ARCH_MIPS 64
+		
+		/** Has MIPS 64-bit. */
+		#define SJME_CONFIG_HAS_ARCH_MIPS_64
+	#else
+		/** Has MIPS. */
+		#define SJME_CONFIG_HAS_ARCH_MIPS 32
+		
+		/** Has MIPS 32-bit. */
+		#define SJME_CONFIG_HAS_ARCH_MIPS_32
+	#endif
 #elif defined(_M_I86) || defined(_M_IX86) || defined(__X86__) || \
 	defined(_X86_) || defined(__I86__) || defined(__i386) || \
 	defined(__i386__) || defined(__i486__) || defined(__i586__) || \
@@ -207,11 +231,11 @@ extern "C" {
 
 /* Attempt detection of pointer sizes based on architecture? */
 #if (defined(__SIZEOF_POINTER__) && __SIZEOF_POINTER__ == 4) || \
-	defined(_ILP32) || defined(__ILP32__)
+	defined(SJME_CONFIG_HAS_ILP32)
 	/** Pointer size. */
 	#define SJME_CONFIG_HAS_POINTER 32
 #elif (defined(__SIZEOF_POINTER__) && __SIZEOF_POINTER__ == 8) || \
-	defined(_LP64) || defined(_LP64)
+	defined(SJME_CONFIG_HAS_LP64)
 	/** Pointer size. */
 	#define SJME_CONFIG_HAS_POINTER 64
 #else
@@ -770,6 +794,26 @@ extern "C" {
 /** Disable all linting of any kind. */
 #define sjme_noLint(what) (what) /* NOLINT */ /* ReSharper disable once all */
 
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/** Thread local storage. */
+	#define sjme_attrThreadLocal(type, name) \
+		static sjme_align32 type __declspec(thread) name;
+#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	/** Thread local storage. */
+	#define sjme_attrThreadLocal(type, name) \
+		static sjme_align32 __thread type name
+#else
+	/** Thread local storage. */
+	#define sjme_attrThreadLocal(type, name) \
+		static sjme_align32 type name
+#endif
+
+#if defined(SJME_CONFIG_HAS_ARCH_MIPS) || \
+	defined(SJME_CONFIG_HAS_ARCH_POWERPC)
+	/** Has no support for unaligned 16-bit access. */
+	#define SJME_CONFIG_HAS_NO_UNALIGNED16
+#endif
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
