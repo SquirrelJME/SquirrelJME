@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+#include "sjme/stdGone.h"
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/loop.h"
 #include "sjme/debug.h"
@@ -43,6 +44,69 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_task_framePool(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInPositiveNonZero sjme_jint poolIndex,
+	sjme_attrOutNotNull sjme_nvm_class_poolEntry** outEntry,
+	sjme_attrInRange(0, SJME_NUM_CLASS_POOL_TYPE)
+		sjme_nvm_class_poolType inType,
+	sjme_attrInRange(0, SJME_NUM_CLASS_POOL_TYPE)
+		sjme_nvm_class_poolType inTypeB,
+	...)
+{
+	sjme_list_sjme_nvm_class_poolEntry* pool;
+	sjme_nvm_class_poolEntry* result;
+	sjme_jint argType;
+	va_list arg;
+	
+	if (inFrame == NULL || outEntry == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Is the index valid? */
+	pool = inFrame->pool->pool;
+	if (poolIndex <= 0 || poolIndex >= pool->length)
+		return SJME_ERROR_INVALID_CLASS_POOL_INDEX;
+
+	/* Get entry here, check for base validity. */
+	result = &pool->elements[poolIndex];
+	if (result->type == inType)
+		goto skip_success;
+
+	/* Check second validity, if not zero. */
+	if (inTypeB == 0)
+		goto fail_notMatched;
+	else if (result->type == inTypeB)
+		goto skip_success;
+
+	/* Check continual multi-type checks, until zero */
+	for (va_start(arg, inTypeB);;)
+	{
+		/* Read in. */
+		argType = va_arg(arg, int);
+
+		/* Not matched? */
+		if (argType == 0)
+		{
+			va_end(arg);
+			goto fail_notMatched;
+		}
+
+		/* Matched? */
+		if (result->type == argType)
+		{
+			va_end(arg);
+			break;
+		}
+	}
+	
+skip_success:
+	*outEntry = result;
+	return SJME_ERROR_NONE;
+
+fail_notMatched:
+	return SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
 }
 
 sjme_errorCode sjme_nvm_task_frameTreadSetT(
@@ -304,6 +368,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	result->inClass = targetInfo->inClass;
 #endif
 	result->inCode = targetInfo->code;
+	result->pool = targetInfo->code->inMethod->inClass->pool;
 	
 	/* Set frame as active. */
 	inThread->numFrames++;

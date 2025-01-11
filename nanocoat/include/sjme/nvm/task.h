@@ -213,6 +213,9 @@ struct sjme_nvm_frameBase
 	
 	/** This class this is currently in. */
 	sjme_jclass inClass;
+	
+	/** The constant pool of this class. */
+	sjme_nvm_class_poolInfo pool;
 
 	/** The code this is executing within. */
 	sjme_nvm_class_codeInfo inCode;
@@ -341,6 +344,28 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	sjme_attrInPositive sjme_jint localIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue);
 
+/**
+ * Obtains the given frame pool.
+ * 
+ * @param inFrame The frame to get a pool entry from.
+ * @param poolIndex The pool index to read.
+ * @param outEntry The resultant entry.
+ * @param inType The first type to obtain, @c 0 is the end.
+ * @param inTypeB The second type to obtain, @c 0 is the end.
+ * @param ... The subsequent types to obtain, @c 0 is the end.
+ * @return Any resultant error, if any.
+ * @since 2025/01/10
+ */
+sjme_errorCode sjme_nvm_task_framePool(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInPositiveNonZero sjme_jint poolIndex,
+	sjme_attrOutNotNull sjme_nvm_class_poolEntry** outEntry,
+	sjme_attrInRange(0, SJME_NUM_CLASS_POOL_TYPE)
+		sjme_nvm_class_poolType inType,
+	sjme_attrInRange(0, SJME_NUM_CLASS_POOL_TYPE)
+		sjme_nvm_class_poolType inTypeB,
+	...);
+	
 /**
  * Sets the value of a variable within a frame using the typed index
  * which is placed within its own frame set.

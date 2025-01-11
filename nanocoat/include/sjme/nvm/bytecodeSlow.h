@@ -54,7 +54,32 @@ extern "C"
 /* clang-format off */ /* @formatter:off */
 /*--------------------------------------------------------------------------*/
 
+/** Common entry for slow byte code. */
+#define SJME_NVM_BYTECODE_SLOW_ENTRY \
+	sjme_errorCode error; \
+	if (inFrame == NULL || relRawCode == NULL) \
+		return SJME_ERROR_NULL_ARGUMENTS
+
+/** Common exit for slow byte code. */
+#define SJME_NVM_BYTECODE_SLOW_EXIT \
+	return SJME_ERROR_NONE;
+	
+/* Array */
+	
+/* Compare */
+
+/* Constant */
 SJME_NVM_BYTECODE_SLOW(Ldc);
+
+/* Flow */
+
+/* Local */
+
+/* Math */
+
+/* Reference */
+
+/* Stack */
 
 /*--------------------------------------------------------------------------*/
 /* clang-format on */ /* @formatter:on */
