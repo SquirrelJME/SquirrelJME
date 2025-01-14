@@ -656,6 +656,54 @@ typedef struct sjme_nvm_rom_suiteBase* sjme_nvm_rom_suite;
  */
 typedef struct sjme_nvm_taskBase* sjme_nvm_task;
 
+/**
+ * Storage for interned strings within a task.
+ *
+ * @since 2025/01/13
+ */
+typedef struct sjme_nvm_taskInternsBase sjme_nvm_taskInternsBase;
+
+/**
+ * Storage for interned strings within a task.
+ *
+ * @since 2025/01/13
+ */
+typedef sjme_nvm_taskInternsBase* sjme_nvm_taskInterns;
+
+/**
+ * Storage for a single intern string.
+ *
+ * @since 2025/01/13
+ */
+typedef struct sjme_nvm_taskInternBase sjme_nvm_taskInternBase;
+	
+/**
+ * Storage for a single intern string.
+ *
+ * @since 2025/01/13
+ */
+typedef sjme_nvm_taskInternBase* sjme_nvm_taskIntern;
+
+/** List of interned strings. */
+SJME_LIST_DECLARE(sjme_nvm_taskIntern, 0);
+
+/**
+ * The type of intern used for the string.
+ *
+ * @since 2025/01/13
+ */
+typedef enum sjme_nvm_taskInternType
+{
+	/** A basic @c lpcstr . */
+	SJME_NVM_TASK_INTERN_LPCSTR = 0,
+
+	/** A pooled string. */
+	SJME_NVM_TASK_INTERN_POOLED = 1,
+
+	/** The number of interned types. */
+	SJME_NVM_TASK_NUM_INTERN_TYPES = 2,
+} sjme_nvm_taskInternType;
+	
 /** List of tasks. */
 SJME_LIST_DECLARE(sjme_nvm_task, 0);
 
