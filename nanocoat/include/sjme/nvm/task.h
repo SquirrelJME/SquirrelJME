@@ -307,6 +307,9 @@ struct sjme_nvm_taskInternBase
 	/** The type of intern this refers to. */
 	sjme_nvm_taskInternType type;
 
+	/** The hash of the string. */
+	sjme_jint hash;
+
 	/** The string object within the VM. */
 	sjme_jobject object;
 
