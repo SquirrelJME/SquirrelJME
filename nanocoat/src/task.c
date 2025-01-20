@@ -545,7 +545,7 @@ sjme_errorCode sjme_nvm_task_threadLoadStringP(
 {
 	if (inThread == NULL || inString == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }

@@ -85,7 +85,7 @@ struct sjme_nvm_stringPool_stringBase
 	sjme_charSeq seq;
 	
 	/** The hash code for this string. */
-	sjme_jint hashCode;
+	sjme_jint hash;
 	
 	/** The length of the string. */
 	sjme_jint length;

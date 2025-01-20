@@ -61,6 +61,20 @@ sjme_errorCode sjme_nvm_allocR(
 	(sjme_nvm_allocR((inState), (allocSize), (inType), \
 	(outCommon) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
+/**
+ * Is this a NVM object type?
+ * 
+ * @param inWhat What to check.
+ * @param inType Is this the given type of object?
+ * @param outResult The result of if this is such type.
+ * @return Any resultant error.
+ * @since 2025/01/20
+ */
+sjme_errorCode sjme_nvm_isA(
+	sjme_attrInNullable sjme_pointer inWhat,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jboolean* outResult);
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

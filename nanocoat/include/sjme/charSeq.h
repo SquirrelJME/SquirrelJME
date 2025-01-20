@@ -217,12 +217,14 @@ sjme_errorCode sjme_charSeq_newStatic(
  * 
  * @param inOutSeq The resultant sequence.
  * @param inString The string to wrap.
+ * @param inOptFrontEnd The front end data to copy.
  * @return Any resultant error, if any.
  * @since 2024/07/26
  */
 sjme_errorCode sjme_charSeq_newUtfStatic(
 	sjme_attrInNotNull sjme_charSeq* inOutSeq,
-	sjme_attrInNotNull sjme_lpcstr inString);
+	sjme_attrInNotNull sjme_lpcstr inString,
+	sjme_attrInNullable sjme_frontEnd* inOptFrontEnd);
 
 /**
  * Checks if the given character sequence starts with the given character

@@ -294,43 +294,6 @@ struct sjme_nvm_taskBase
 	
 	/** The class loader for this specific task. */
 	sjme_nvm_vmClass_loader classLoader;
-
-	/** Interned strings. */
-	sjme_nvm_taskInterns interns;
-};
-
-struct sjme_nvm_taskInternBase
-{
-	/** Common virtual machine structure. */
-	sjme_nvm_commonBase common;
-
-	/** The type of intern this refers to. */
-	sjme_nvm_taskInternType type;
-
-	/** The hash of the string. */
-	sjme_jint hash;
-
-	/** The string object within the VM. */
-	sjme_jobject object;
-
-	/** The data for the intern. */
-	union
-	{
-		/** A basic @c lpcstr . */
-		sjme_lpcstr lpcstr;
-
-		/** A pooled string. */
-		sjme_nvm_stringPool_string pooled;
-	} data;
-};
-
-struct sjme_nvm_taskInternsBase
-{
-	/** Common virtual machine structure. */
-	sjme_nvm_commonBase common;
-
-	/** Strings which have been interned. */
-	sjme_list_sjme_nvm_taskIntern* interns;
 };
 
 struct sjme_nvm_threadBase

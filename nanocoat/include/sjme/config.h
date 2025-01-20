@@ -813,6 +813,14 @@ extern "C" {
 	/** Has no support for unaligned 16-bit access. */
 	#define SJME_CONFIG_HAS_NO_UNALIGNED16
 #endif
+
+#if defined(SJME_CONFIG_HAS_ARCH_IA16)
+	/** Full address range pointer. */
+	#define sjme_attrHugeP huge
+#else
+	/** Full address range pointer. */
+	#define sjme_attrHugeP
+#endif
 	
 /*--------------------------------------------------------------------------*/
 

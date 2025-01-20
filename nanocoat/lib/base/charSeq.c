@@ -195,7 +195,7 @@ sjme_errorCode sjme_charSeq_equalsUtf(
 	/* Setup sequence. */
 	memset(&equalsSeq, 0, sizeof(equalsSeq));
 	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-		&equalsSeq, equalsUtf)))
+		&equalsSeq, equalsUtf, NULL)))
 		return sjme_error_default(error);
 	
 	/* Forward. */
@@ -262,14 +262,15 @@ sjme_errorCode sjme_charSeq_newStatic(
 
 sjme_errorCode sjme_charSeq_newUtfStatic(
 	sjme_attrInNotNull sjme_charSeq* inOutSeq,
-	sjme_attrInNotNull sjme_lpcstr inString)
+	sjme_attrInNotNull sjme_lpcstr inString,
+	sjme_attrInNullable sjme_frontEnd* inOptFrontEnd)
 {
 	if (inOutSeq == NULL || inString == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	return sjme_charSeq_newStatic(inOutSeq,
 		&sjme_charSeq_basicUtfFunctions,
-		inString, NULL);
+		inString, inOptFrontEnd);
 }
 
 sjme_errorCode sjme_charSeq_startsWithCharSeq(
@@ -309,7 +310,7 @@ sjme_errorCode sjme_charSeq_startsWithUtf(
 	/* Setup sequence. */
 	memset(&startsWithSeq, 0, sizeof(startsWithSeq));
 	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-		&startsWithSeq, startsWithUtf)))
+		&startsWithSeq, startsWithUtf, NULL)))
 		return sjme_error_default(error);
 	
 	/* Forward. */

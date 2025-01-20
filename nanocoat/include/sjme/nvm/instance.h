@@ -163,6 +163,18 @@ struct sjme_jclassBase
 	sjme_nvm_isClasses* isClasses;
 };
 
+struct sjme_jstringBase
+{
+	/** All strings are objects. */
+	sjme_jobjectBase object;
+
+	/** The hash of this string. */
+	sjme_jint hashCode;
+
+	/** The sequence of characters which make up the string. */
+	sjme_charSeq seq;
+};
+
 /**
  * Sets the field value.
  * 

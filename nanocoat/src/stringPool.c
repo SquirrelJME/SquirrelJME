@@ -83,6 +83,7 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 	sjme_nvm_stringPool_string result;
 	sjme_nvm_stringPool_string possible;
 	sjme_alloc_weak weak;
+	sjme_frontEnd frontEnd;
 	
 	if (inStringPool == NULL || inUtf == NULL || outString == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -140,7 +141,7 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 		}
 		
 		/* If hash or length differ, not a possible match */
-		if (possible->hashCode != hash || possible->length != inUtfLen)
+		if (possible->hash != hash || possible->length != inUtfLen)
 			continue;
 		
 		/* Must be exactly the same! */
@@ -196,12 +197,16 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 		
 		/* Fill in information. */
 		memmove(&result->chars[0], inUtf, inUtfLen);
-		result->hashCode = hash;
+		result->hash = hash;
 		result->length = inUtfLen;
+
+		/* Setup back reference to this sequence. */
+		memset(&frontEnd, 0, sizeof(frontEnd));
+		frontEnd.wrapper = result;
 		
 		/* Setup string sequence. */
 		if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-			&result->seq, (sjme_lpcstr)&result->chars[0])))
+			&result->seq, (sjme_lpcstr)&result->chars[0], &frontEnd)))
 			goto fail_initSeq;
 		
 		/* Count up as the pool itself references it. */

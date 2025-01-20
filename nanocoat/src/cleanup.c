@@ -362,6 +362,9 @@ static sjme_errorCode sjme_nvm_vmClass_methodBindClose(
 
 /* ------------------------------------------------------------------------ */
 
+/** The magic number for NVM objects. */
+#define SJME_NVM_OBJECT_MAGIC UINT32_C(0x4E764D3F0A)
+
 sjme_errorCode sjme_nvm_allocR(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
@@ -493,9 +496,49 @@ sjme_errorCode sjme_nvm_allocR(
 	
 	/* Set fields. */
 	result->type = inType;
+	result->magic = SJME_NVM_OBJECT_MAGIC;
 	
 	/* Success! */
 	*outCommon = result;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_isA(
+	sjme_attrInNullable sjme_pointer inWhat,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jboolean* outResult)
+{
+	sjme_errorCode error;
+	sjme_alloc_weak weak;
+	sjme_nvm_common common;
+	
+	if (outResult == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inType <= SJME_NVM_STRUCT_UNKNOWN || inType >= SJME_NVM_NUM_STRUCT)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Null input is always nothing. */
+	if (inWhat == NULL)
+	{
+		*outResult = SJME_JNI_FALSE;
+		return SJME_ERROR_NONE;
+	}
+
+	/* All NVM objects are weakly referenced. */
+	weak = NULL;
+	if (sjme_error_is(sjme_alloc_weakRefGet(inWhat, &weak)) || weak == NULL)
+	{
+		*outResult = SJME_JNI_FALSE;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Must be the type and the magic must be valid! */
+	common = inWhat;
+	if (common->type == inType && common->magic == SJME_NVM_OBJECT_MAGIC)
+		*outResult = SJME_JNI_TRUE;
+	else
+		*outResult = SJME_JNI_FALSE;
 	return SJME_ERROR_NONE;
 }
 

@@ -526,7 +526,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		/* Setup sequence to wrap argument for parsing. */
 		memset(&argSeq, 0, sizeof(argSeq));
 		if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-			&argSeq, argv[argAt])))
+			&argSeq, argv[argAt], NULL)))
 			return sjme_error_default(error);
 		
 		/* -version */
