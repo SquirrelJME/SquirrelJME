@@ -41,7 +41,7 @@ public final class StringShelf
 	 * @since 2025/01/20
 	 */
 	@SquirrelJMEVendorApi
-	public static native int stringCharAt(@NotNull String __string,
+	public static native char stringCharAt(@NotNull String __string,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __index)
 		throws MLECallError;
 	
@@ -55,6 +55,18 @@ public final class StringShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native int stringHash(@NotNull String __string)
+		throws MLECallError;
+	
+	/**
+	 * Returns whether the string is an intern string. 
+	 *
+	 * @param __string If this string is an intern string.
+	 * @return If this is an intern string.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/01/21
+	 */
+	@SquirrelJMEVendorApi
+	public static native boolean stringIsIntern(@NotNull String __string)
 		throws MLECallError;
 	
 	/**
