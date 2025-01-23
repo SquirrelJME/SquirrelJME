@@ -33,7 +33,7 @@ public class BufferedWriter
 {
 	/**
 	 * This buffer size is kept small by default since having a large buffer
-	 * for a memory contrained system is not really that important and will
+	 * for a memory contained system is not really that important and will
 	 * pretty much only be used by console output. So as such to prevent
 	 * wasting memory with streams that will not likely be used for most
 	 * programs (MIDlets) or they will be outputting characters anyway.

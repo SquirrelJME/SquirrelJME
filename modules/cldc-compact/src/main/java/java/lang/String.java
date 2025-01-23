@@ -375,13 +375,21 @@ public final class String
 			throw new NullPointerException("NARG");
 		
 		// Do not let the compiler do syntactic sugar on this
-		//noinspection StringBufferReplaceableByString
-		StringBuilder sb = new StringBuilder(
-			this.length() + __s.length());
-		sb.append(this);
-		sb.append(__s);
+		int aLen = StringShelf.stringLength(this);
+		int bLen = StringShelf.stringLength(__s);
+		int tLen = aLen + bLen;
 		
-		return sb.toString();
+		// Setup resultant array
+		char[] result = new char[tLen];
+		
+		// Fill in
+		StringShelf.stringToChar(this, 0,
+			result, 0, aLen);
+		StringShelf.stringToChar(__s, 0,
+			result, aLen, bLen);
+		
+		// Setup string
+		return StringShelf.stringValueOf(false, result, 0, tLen);
 	}
 	
 	/**
@@ -487,19 +495,8 @@ public final class String
 		if (!(__o instanceof String))
 			return false;
 		
-		// Cast
-		String o = (String)__o;
-		
-		// Quickly determine if the string is likely the same via the hashcode
-		// This at best removes all loops and just results in a simple integer
-		// comparison being used
-		int an = this.hashCode();
-		int bn = o.hashCode();
-		if (an != bn)
-			return false;
-		
-		// Use common utility method
-		return CharSequenceUtils.equals(this, o);
+		// Use native equals call
+		return StringShelf.stringEquals(this, (String)__o);
 	}
 	
 	/**
@@ -982,12 +979,13 @@ public final class String
 		
 		// Derive sub-sequence
 		int nl = __e - __s;
-		char[] rv = new char[nl];
-		for (int o = 0; o < nl; o++, __s++)
-			rv[o] = StringShelf.stringCharAt(this, __s);
+		char[] result = new char[nl];
+		
+		// Fill in
+		StringShelf.stringToChar(this, __s, result, 0, nl);
 		
 		// Build
-		return StringShelf.stringValueOf(false, rv, 0, nl);
+		return StringShelf.stringValueOf(false, result, 0, nl);
 	}
 	
 	/**
@@ -1005,8 +1003,7 @@ public final class String
 		char[] result = new char[n];
 		
 		// Fill in
-		for (int i = 0; i < n; i++)
-			result[i] = StringShelf.stringCharAt(this, i);
+		StringShelf.stringToChar(this, 0, result, 0, n);
 		
 		// Use the result
 		return result;
@@ -1342,6 +1339,7 @@ public final class String
 	@Api
 	public static String valueOf(char __a)
 	{
+		// This allows the cache to be used
 		return Character.valueOf(__a).toString();
 	}
 	

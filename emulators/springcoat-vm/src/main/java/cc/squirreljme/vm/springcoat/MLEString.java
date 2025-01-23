@@ -47,6 +47,25 @@ public enum MLEString
 		}
 	},
 	
+	/** {@link StringShelf#equals(Object)}. */
+	EQUALS("stringEquals:(Ljava/lang/String;Ljava/lang/String;)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/01/23
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringStringObject a = MLEObjects.notNull(
+				SpringStringObject.class, __args[0]);
+			SpringStringObject b = MLEObjects.notNull(
+				SpringStringObject.class, __args[1]);
+			
+			return (a.toString().equals(b.toString()) ? 1 : 0);
+		}
+	},
+	
 	/** {@link StringShelf#hashCode()}. */
 	HASH("stringHash:(Ljava/lang/String;)I")
 	{
@@ -181,6 +200,38 @@ public enum MLEString
 				SpringStringObject.class, __args[0]);
 			
 			return object.toString().length();
+		}
+	},
+	
+	/** {@link StringShelf#stringToChar(String, int, char[], int, int)}. */
+	TO_CHAR("stringToChar:(Ljava/lang/String;I[CII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/01/23
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringStringObject source = MLEObjects.notNull(
+				SpringStringObject.class, __args[0]);
+			int sourceOff = (Integer)__args[1];
+			SpringArrayObjectChar dest = MLEObjects.notNull(
+				SpringArrayObjectChar.class, __args[2]);
+			int destOff = (Integer)__args[3];
+			int len = (Integer)__args[4];
+			
+			try
+			{
+				source.toString().getChars(sourceOff, sourceOff + len,
+					dest.array(), destOff);
+			}
+			catch (IndexOutOfBoundsException __e)
+			{
+				throw new SpringMLECallError("Out of bounds.", __e);
+			}
+			
+			return null;
 		}
 	},
 	

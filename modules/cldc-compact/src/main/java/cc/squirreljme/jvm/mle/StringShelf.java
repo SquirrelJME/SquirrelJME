@@ -46,6 +46,20 @@ public final class StringShelf
 		throws MLECallError;
 	
 	/**
+	 * Checks if two strings are equal.
+	 *
+	 * @param __a The first string.
+	 * @param __b The second string.
+	 * @return If they are equal or not.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/01/23
+	 */
+	@SquirrelJMEVendorApi
+	public static native boolean stringEquals(@NotNull String __a,
+		@NotNull String __b)
+		throws MLECallError;
+	
+	/**
 	 * Returns the hash code of the given string.
 	 *
 	 * @param __string The string to get the hash of.
@@ -122,6 +136,26 @@ public final class StringShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native int stringLength(@NotNull String __string)
+		throws MLECallError;
+	
+	/**
+	 * Copies characters from the string to the given character array.
+	 *
+	 * @param __source The source string.
+	 * @param __sourceOff The offset into the source string.
+	 * @param __dest The destination character array.
+	 * @param __destOff The destination offset.
+	 * @param __len The number of characters to copy.
+	 * @throws MLECallError On null arguments; or the index, offset, and/or
+	 * length are outside the bounds of the string and/or array.
+	 * @since 2025/01/23
+	 */
+	@SquirrelJMEVendorApi
+	public static native void stringToChar(@NotNull String __source,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sourceOff,
+		@NotNull char[] __dest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
 		throws MLECallError;
 	
 	/**
