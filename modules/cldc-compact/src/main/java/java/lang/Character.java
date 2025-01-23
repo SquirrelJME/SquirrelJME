@@ -96,8 +96,8 @@ public final class Character
 	public int compareTo(Character __o)
 		throws NullPointerException
 	{
-		char a = this._value,
-			b = __o._value;
+		char a = this._value;
+		char b = ((Character)__o)._value;
 		
 		return a - b;
 	}
@@ -143,7 +143,7 @@ public final class Character
 		// just to store a single character or creating some kind of array.
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>(
-				(rv = new String(new char[]{this._value}, (short)0)));
+				(rv = String.valueOf(this._value)));
 		
 		return rv;
 	}
@@ -333,9 +333,10 @@ public final class Character
 	 * @since 2018/10/13
 	 */
 	@Api
+	@SuppressWarnings("StringOperationCanBeSimplified")
 	public static String toString(char __c)
 	{
-		return new String(new char[]{__c}, (short)0);
+		return new String(new char[]{__c});
 	}
 	
 	/**

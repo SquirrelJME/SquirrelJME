@@ -45,6 +45,9 @@ public final class String
 	private static final char _MIN_TRIM_CHAR =
 		' ';
 	
+	/** The known intern state. */
+	boolean _knownIntern;
+	
 	/**
 	 * Initializes a new empty string.
 	 *
@@ -677,9 +680,18 @@ public final class String
 	@Api
 	public String intern()
 	{
-		// Check if already interned, if not then make an intern
-		if (StringShelf.stringIsIntern(this))
+		// We already know this is an intern string?
+		if (this._knownIntern)
 			return this;
+		
+		// Set intern state if this is as such
+		if (StringShelf.stringIsIntern(this))
+		{
+			this._knownIntern = true;
+			return this;
+		}
+		
+		// Not intern, so make an intern string
 		return StringShelf.stringValueOf(true, this);
 	}
 	
@@ -1267,17 +1279,20 @@ public final class String
 	/**
 	 * Returns a string representation of the given character array.
 	 *
-	 * @param __a The array.
+	 * @param __c The array.
 	 * @return The resulting string.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/25
 	 */
 	@Api
-	public static String valueOf(char[] __a)
+	public static String valueOf(char[] __c)
 		throws NullPointerException
 	{
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
 		return StringShelf.stringValueOf(false,
-			__a, 0, (__a != null ? __a.length : 0));
+			__c, 0, (__c != null ? __c.length : 0));
 	}
 	
 	/**
@@ -1296,6 +1311,11 @@ public final class String
 	public static String valueOf(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __c.length || (__o + __l) < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
 		return StringShelf.stringValueOf(false, __c, __o, __l);
 	}
 	

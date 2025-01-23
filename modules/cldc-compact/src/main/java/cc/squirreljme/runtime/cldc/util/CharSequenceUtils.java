@@ -487,7 +487,7 @@ __outer:
 		// Find false match
 		for (int atWhat = __startIndex, atStart = 0; atStart < lenStart;
 			 atWhat++, atStart++)
-			if (__what.charAt(atWhat) != __what.charAt(atStart))
+			if (__what.charAt(atWhat) != __startsWith.charAt(atStart))
 				return false;
 		
 		// False not found, so it matches

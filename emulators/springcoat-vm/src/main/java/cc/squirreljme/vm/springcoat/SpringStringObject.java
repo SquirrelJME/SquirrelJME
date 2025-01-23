@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
+import java.util.Objects;
 
 /**
  * Represents a wrapped string.
@@ -20,7 +21,7 @@ public class SpringStringObject
 	extends SpringSimpleObject
 {
 	/** The string used. */
-	volatile String _string;
+	private volatile String _string;
 	
 	/**
 	 * Initializes the string.
@@ -47,6 +48,49 @@ public class SpringStringObject
 	}
 	
 	/**
+	 * Optionally sets the string value.
+	 *
+	 * @param __value The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/01/23
+	 */
+	public void optional(String __value)
+		throws NullPointerException
+	{
+		if (__value == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			if (this._string == null)
+				this._string = __value;
+		}
+	}
+	
+	/**
+	 * Sets the string, fails if already set.
+	 *
+	 * @param __value The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringMLECallError If a string was already set.
+	 * @since 2025/01/23
+	 */
+	public void set(String __value)
+		throws NullPointerException, SpringMLECallError
+	{
+		if (__value == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			if (this._string != null)
+				throw new SpringMLECallError("String already set.");
+			
+			this._string = __value;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2025/01/22
 	 */
@@ -55,7 +99,8 @@ public class SpringStringObject
 	{
 		synchronized (this)
 		{
-			return this._string;
+			String result = this._string;
+			return (result == null ? "" : result);
 		}
 	}
 }
