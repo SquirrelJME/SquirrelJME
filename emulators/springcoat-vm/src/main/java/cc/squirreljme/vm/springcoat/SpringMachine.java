@@ -113,7 +113,7 @@ public final class SpringMachine
 		new ArrayList<>();
 	
 	/** Global strings representing singular constants. */
-	private final Map<ConstantValueString, SpringObject> _strings =
+	private final Map<String, SpringStringObject> _strings =
 		new HashMap<>();
 	
 	/** Class objects which represent a given class. */
@@ -928,7 +928,7 @@ public final class SpringMachine
 	 * @return The global string map.
 	 * @since 2018/09/16
 	 */
-	final Map<ConstantValueString, SpringObject> __stringMap()
+	final Map<String, SpringStringObject> __stringMap()
 	{
 		return this._strings;
 	}

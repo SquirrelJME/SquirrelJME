@@ -9,6 +9,7 @@
 
 package java.io;
 
+import cc.squirreljme.jvm.mle.StringShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import java.lang.ref.WeakReference;
@@ -203,10 +204,20 @@ public abstract class Writer
 			(__off + __len) > __str.length())
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// Read in characters
+		// Able to use faster copy?
 		char[] buf = new char[__len];
-		for (int i = 0; i < __len; i++)
-			buf[i] = __str.charAt(__off + i);
+		if (__str instanceof String)
+		{
+			StringShelf.stringToChar((String)__str, __off,
+				buf, 0, __len);
+		}
+		
+		// Slower copy
+		else
+		{
+			for (int i = 0; i < __len; i++)
+				buf[i] = __str.charAt(__off + i);
+		}
 		
 		// Forward all of it
 		this.write(buf, 0, buf.length);

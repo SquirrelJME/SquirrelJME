@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.StringShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -35,50 +36,17 @@ import org.intellij.lang.annotations.PrintFormat;
  * @since 2018/09/16
  */
 @Api
-@SuppressWarnings("StringOperationCanBeSimplified")
+@SuppressWarnings({"StringOperationCanBeSimplified",
+	"JavaExistingMethodCanBeUsed", "ClassWithTooManyConstructors"})
 public final class String
 	implements Comparable<String>, CharSequence
 {
-	/** The size of the major intern table. */
-	private static final int _MAJOR_TABLE_SIZE =
-		64;
-	
-	/** The mask of the major intern table. */
-	private static final int _MAJOR_TABLE_MASK =
-		63;
-	
 	/** The minimum trim character. */
 	private static final char _MIN_TRIM_CHAR =
 		' ';
 	
-	/** Is this string already lowercased? */
-	private static final byte _QUICK_ISLOWER =
-		0b0000_0001;
-	
-	/** Is this string already uppercased? */
-	private static final byte _QUICK_ISUPPER =
-		0b0000_0010;
-	
-	/** String is already interned? */
-	static final byte _QUICK_INTERN =
-		0b0000_0100;
-	
-	/** String is already trimmed? */
-	static final byte _QUICK_ALREADY_TRIMMED =
-		0b0000_1000;
-	
-	/** Basic intern hash table. */
-	private static final __InternMini__[] _INTERNS =
-		new __InternMini__[String._MAJOR_TABLE_SIZE];
-	
-	/** String character data. */
-	private final char[] _chars;
-	
-	/** Quick determination flags for speedy operations. */
-	volatile short _quickFlags;
-	
-	/** The hash code for this string, is cached. */
-	private int _hashcode;
+	/** The known intern state. */
+	boolean _knownIntern;
 	
 	/**
 	 * Initializes a new empty string.
@@ -88,9 +56,8 @@ public final class String
 	@Api
 	public String()
 	{
-		this._chars = new char[0];
-		this._quickFlags = String._QUICK_ISLOWER | String._QUICK_ISUPPER;
-		this._hashcode = 0;
+		// Set internal string
+		StringShelf.stringInit(this);
 	}
 	
 	/**
@@ -107,10 +74,8 @@ public final class String
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Just copies all the fields since they were pre-calculated already
-		this._chars = __s._chars;
-		this._quickFlags = ((short)(__s._quickFlags & (~String._QUICK_INTERN)));
-		this._hashcode = __s._hashcode;
+		// Set internal string
+		StringShelf.stringInit(this, __s);
 	}
 	
 	/**
@@ -149,13 +114,8 @@ public final class String
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __c.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// Copy characters
-		char[] copy = new char[__l];
-		System.arraycopy(__c, __o,
-			copy, 0, __l);
-		
-		// Just use the copied buffer
-		this._chars = copy;
+		// Set internal string
+		StringShelf.stringInit(this, __c, __o, __l);
 	}
 	
 	/**
@@ -277,18 +237,18 @@ public final class String
 		if (__o < 0 || __l < 0 || (__o + __l) > bn)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// Setup a temporary character array with average sequence length to
+		// Set up a temporary character array with average sequence length to
 		// hopefully have enough room to store the decoded characters
-		int cap = (int)(__l * __dec.averageSequenceLength()),
-			at = 0;
+		int cap = (int)(__l * __dec.averageSequenceLength());
+		int at = 0;
 		char[] out = new char[cap];
 		
 		// Start decoding input sequences
 		for (int i = __o, e = i + __l; i < e;)
 		{
 			// Decode sequence (the decoded char is in the low 16-bits)
-			int left = e - i,
-				rc = __dec.decode(__b, i, left);
+			int left = e - i;
+			int rc = __dec.decode(__b, i, left);
 			
 			// If there is not enough room to decode a sequence then store the
 			// replacement character
@@ -315,29 +275,8 @@ public final class String
 			out[at++] = ch;
 		}
 		
-		// Just allocate an exact buffer since the estimate could have been off
-		if (at != cap)
-			out = Arrays.copyOf(out, at);
-		this._chars = out;
-	}
-	
-	/**
-	 * Initializes the string using the given character data.
-	 *
-	 * @param __c Character data.
-	 * @param __qf The quick flags to use.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/24
-	 */
-	@Api
-	String(char[] __c, short __qf)
-		throws NullPointerException
-	{
-		if (__c == null)
-			throw new NullPointerException("NARG");
-		
-		this._chars = __c;
-		this._quickFlags = __qf;
+		// Setup native string
+		StringShelf.stringInit(this, out, 0, at);
 	}
 	
 	/**
@@ -348,17 +287,10 @@ public final class String
 	public char charAt(int __i)
 		throws IndexOutOfBoundsException
 	{
-		// Rather than bounds checking, directly try to access the array
-		try
-		{
-			return this._chars[__i];
-		}
-		
-		// We must ensure that the correct exception is thrown here
-		catch (ArrayIndexOutOfBoundsException e)
-		{
+		if (__i < 0 || __i >= StringShelf.stringLength(this))
 			throw new StringIndexOutOfBoundsException(__i);
-		}
+		
+		return StringShelf.stringCharAt(this, __i);
 	}
 	
 	/**
@@ -393,31 +325,8 @@ public final class String
 		if (this == __o)
 			return 0;
 		
-		// Characters of both
-		char[] ac = this._chars,
-			bc = __o._chars;
-		
-		// Get both string lengths
-		int an = ac.length;
-		int bn = bc.length;
-		
-		// Max comparison length
-		int max = Math.min(an, bn);
-		
-		// Compare both strings
-		for (int i = 0; i < max; i++)
-		{
-			// Get character difference
-			int diff = ((int)ac[i]) - ((int)bc[i]);
-			
-			// If there is a difference, then return it
-			if (diff != 0)
-				return diff;
-		}
-		
-		// Remaining comparison is the length parameter, shorter strings are
-		// first
-		return an - bn;
+		// Use standard utility method comparison
+		return CharSequenceUtils.compare(this, __o);
 	}
 	
 	/**
@@ -441,35 +350,8 @@ public final class String
 		if (this == __o)
 			return 0;
 		
-		// Characters of both
-		char[] ac = this._chars,
-			bc = __o._chars;
-		
-		// Get both string lengths
-		int an = ac.length;
-		int bn = bc.length;
-		
-		// Max comparison length
-		int max = Math.min(an, bn);
-		
-		// Compare both strings
-		for (int i = 0; i < max; i++)
-		{
-			// Get both characters and normalize case
-			char ca = Character.toLowerCase(Character.toUpperCase(ac[i])),
-				cb = Character.toLowerCase(Character.toUpperCase(bc[i]));
-			
-			// Get character difference
-			int diff = ca - cb;
-			
-			// If there is a difference, then return it
-			if (diff != 0)
-				return diff;
-		}
-		
-		// Remaining comparison is the length parameter, shorter strings are
-		// first
-		return an - bn;
+		// Use standard utility method comparison
+		return CharSequenceUtils.compareIgnoreCase(this, __o);
 	}
 	
 	/**
@@ -491,36 +373,23 @@ public final class String
 		// Check
 		if (__s == null)
 			throw new NullPointerException("NARG");
-			
-		// Get both character sources
-		char[] ac = this._chars,
-			bc = __s._chars;
 		
-		// Lengths
-		int an = ac.length,
-			bn = bc.length;
+		// Do not let the compiler do syntactic sugar on this
+		int aLen = StringShelf.stringLength(this);
+		int bLen = StringShelf.stringLength(__s);
+		int tLen = aLen + bLen;
 		
-		// One of the strings has no length, which means it will be a no-op
-		if (an == 0)
-			return __s;
-		else if (bn == 0)
-			return this;
+		// Setup resultant array
+		char[] result = new char[tLen];
 		
-		// Setup result
-		int nl = an + bn;
-		char[] rv = new char[nl];
+		// Fill in
+		StringShelf.stringToChar(this, 0,
+			result, 0, aLen);
+		StringShelf.stringToChar(__s, 0,
+			result, aLen, bLen);
 		
-		// Copy first part
-		int o = 0;
-		for (int i = 0; i < an; i++)
-			rv[o++] = ac[i];
-		
-		// Copy second
-		for (int i = 0; i < bn; i++)
-			rv[o++] = bc[i];
-		
-		// Build string
-		return new String(rv, (short)0);
+		// Setup string
+		return StringShelf.stringValueOf(false, result, 0, tLen);
 	}
 	
 	/**
@@ -607,31 +476,8 @@ public final class String
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Character data
-		char[] ac = this._chars,
-			bc = __s._chars;
-		
-		// Lengths
-		int na = ac.length,
-			nb = bc.length;
-		
-		// If the other string is empty, it is always a match
-		if (nb == 0)
-			return true;
-		
-		// If our string is smaller than the other string then it will not
-		// fit and as such, will not match
-		if (na < nb)
-			return false;
-		
-		// Check all characters at the end of the string, we fail if there is
-		// a mismatch
-		for (int ia = na - nb, ib = 0; ia < na; ia++, ib++)
-			if (ac[ia] != bc[ib])
-				return false;
-		
-		// Is a match since nothing failed!
-		return true;
+		// Use common utility for this
+		return CharSequenceUtils.endsWith(this, __s);
 	}
 	
 	/**
@@ -649,33 +495,8 @@ public final class String
 		if (!(__o instanceof String))
 			return false;
 		
-		// Cast
-		String o = (String)__o;
-		
-		// Quickly determine if the string is likely the same via the hashcode
-		// This at best removes all loops and just results in a simple integer
-		// comparison being used
-		int an = this.hashCode(),
-			bn = o.hashCode();
-		if (an != bn)
-			return false;
-		
-		// Character data
-		char[] ac = this._chars,
-			bc = o._chars;
-		
-		// If the length differs, they are not equal
-		int n = ac.length;
-		if (n != bc.length)
-			return false;
-		
-		// Compare individual characters
-		for (int i = 0; i < n; i++)
-			if (ac[i] != bc[i])
-				return false;
-		
-		// Would be a match!
-		return true;
+		// Use native equals call
+		return StringShelf.stringEquals(this, (String)__o);
 	}
 	
 	/**
@@ -698,28 +519,8 @@ public final class String
 		if (__o == null)
 			return false;
 		
-		// Character data
-		char[] ac = this._chars,
-			bc = __o._chars;
-		
-		// Two strings of inequal length will never be the same
-		int n = ac.length;
-		if (n != bc.length)
-			return false;
-		
-		// Check characters
-		for (int i = 0; i < n; i++)
-		{
-			char a = Character.toLowerCase(Character.toUpperCase(ac[i])),
-				b = Character.toLowerCase(Character.toUpperCase(bc[i]));
-			
-			// Is a different character?
-			if (a != b)
-				return false;
-		}
-		
-		// The same
-		return true;
+		// Use common utility method
+		return CharSequenceUtils.compareIgnoreCase(this, __o) == 0;
 	}
 	
 	/**
@@ -780,20 +581,16 @@ public final class String
 	@Override
 	public int hashCode()
 	{
-		// If the hashcode was already determined before then use that
-		// cache
-		int rv = this._hashcode;
+		// Get native hashcode
+		int rv = StringShelf.stringHash(this);
 		if (rv != 0)
 			return rv;
 		
 		// Calculate the hashCode(), the JavaDoc gives the following formula:
 		// == s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1] .... yikes!
-		char[] ch = this._chars;
-		for (int i = 0, n = ch.length; i < n; i++)
-			rv = ((rv << 5) - rv) + ch[i];
+		for (int i = 0, n = StringShelf.stringLength(this); i < n; i++)
+			rv = ((rv << 5) - rv) + StringShelf.stringCharAt(this, i);
 		
-		// Cache hashcode for later
-		this._hashcode = rv;
 		return rv;
 	}
 	
@@ -824,19 +621,7 @@ public final class String
 	@Api
 	public int indexOf(int __c, int __i)
 	{
-		char[] ch = this._chars;
-		
-		// Cap index
-		int n = ch.length;
-		if (__i < 0)
-			__i = 0;
-		
-		for (int i = __i; i < n; i++)
-			if (__c == ch[i])
-				return i;
-		
-		// Not found
-		return -1;
+		return CharSequenceUtils.indexOf(this, __c, __i);
 	}
 	
 	/**
@@ -892,29 +677,19 @@ public final class String
 	@Api
 	public String intern()
 	{
-		// If this string is already the interned target then use this one
-		// instead of searching through the map
-		if ((this._quickFlags & String._QUICK_INTERN) != 0)
+		// We already know this is an intern string?
+		if (this._knownIntern)
 			return this;
 		
-		// We need to calculate our current hash code so we can determine
-		// the index in the hash table we are to use.
-		int hashCode = this.hashCode();
-		int tableKey = hashCode & String._MAJOR_TABLE_MASK;
-		
-		// Look for the intern table we are in, so we can lock on that one
-		// specifically
-		__InternMini__[] interns = String._INTERNS;
-		__InternMini__ intern;
-		synchronized (__InternMini__.class)
+		// Set intern state if this is as such
+		if (StringShelf.stringIsIntern(this))
 		{
-			intern = interns[tableKey];
-			if (intern == null)
-				 interns[tableKey] = (intern = new __InternMini__());
+			this._knownIntern = true;
+			return this;
 		}
 		
-		// Perform intern logic in the table handler
-		return intern.__intern(hashCode, this);
+		// Not intern, so make an intern string
+		return StringShelf.stringValueOf(true, this);
 	}
 	
 	/**
@@ -926,14 +701,14 @@ public final class String
 	@Api
 	public boolean isEmpty()
 	{
-		return this._chars.length == 0;
+		return StringShelf.stringLength(this) == 0;
 	}
 	
 	/**
-	 * Returns the last occurance of the given character.
+	 * Returns the last occurrence of the given character.
 	 *
 	 * @param __c The character to find.
-	 * @return The last occurance of the character or {@code -1} if it was
+	 * @return The last occurrence of the character or {@code -1} if it was
 	 * not found.
 	 * @since 2018/09/29
 	 */
@@ -958,29 +733,14 @@ public final class String
 	@Api
 	public int lastIndexOf(int __c, int __dx)
 	{
-		// Never going to find anything at all
-		if (__dx < 0)
-			return -1;
-		
-		// Cap index
-		char[] ch = this._chars;
-		int n = ch.length;
-		if (__dx >= n)
-			__dx = n - 1;
-		
-		for (; __dx >= 0; __dx--)
-			if (__c == ch[__dx])
-				return __dx;
-		
-		// Not found
-		return -1;
+		return CharSequenceUtils.lastIndexOf(this, __c, __dx);
 	}
 	
 	/**
 	 * Returns the last occurrence of the given string.
 	 *
 	 * @param __s The string to find.
-	 * @return The last occurance of the string or {@code -1} if it was
+	 * @return The last occurrence of the string or {@code -1} if it was
 	 * not found.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/25
@@ -1011,7 +771,7 @@ public final class String
 	@Override
 	public int length()
 	{
-		return this._chars.length;
+		return StringShelf.stringLength(this);
 	}
 	
 	/**
@@ -1034,7 +794,7 @@ public final class String
 	/**
 	 * Compares the given string regions to see if they match.
 	 *
-	 * @param __igncase Is case to be ignored?
+	 * @param __ignCase Is case to be ignored?
 	 * @param __toff The offset for this string.
 	 * @param __b The other string to compare against.
 	 * @param __boff The offset of the target string.
@@ -1045,7 +805,7 @@ public final class String
 	 * @since 2020/01/18
 	 */
 	@Api
-	public boolean regionMatches(boolean __igncase, int __toff, String __b,
+	public boolean regionMatches(boolean __ignCase, int __toff, String __b,
 		int __boff, int __len)
 	{
 		if (__b == null)
@@ -1062,11 +822,11 @@ public final class String
 			return true;
 		
 		// Disregarding case
-		if (__igncase)
+		if (__ignCase)
 			for (int i = 0; i < __len; i++, __toff++, __boff++)
 			{
-				char a = this.charAt(__toff),
-					b = __b.charAt(__boff);
+				char a = this.charAt(__toff);
+				char b = __b.charAt(__boff);
 				
 				if (Character.toLowerCase(a) != Character.toLowerCase(b) &&
 					Character.toUpperCase(a) != Character.toUpperCase(b))
@@ -1097,26 +857,28 @@ public final class String
 	{
 		// If a character is going to be replaced with itself then no
 		// replacement has to actually be performed. Or if the original
-		// character is not even in the string.
+		// character is not even in the string. Then do not bother.
 		if (__a == __b || this.indexOf(__a) < 0)
 			return this;
 		
-		// Get source sequence
-		char[] ch = this._chars;
-		int n = ch.length;
+		// Setup result
+		int n = StringShelf.stringLength(this);
+		char[] result = new char[n];
 		
 		// Copy data into an array with translated characters
-		char[] rv = new char[n];
 		for (int i = 0; i < n; i++)
 		{
-			char c = ch[i];
+			char c = StringShelf.stringCharAt(this, i);
+			
+			// Replacing?
 			if (c == __a)
 				c = __b;
-			rv[i] = c;
+			
+			result[i] = c;
 		}
 		
-		// Build new string
-		return new String(rv, (short)0);
+		// Setup new string
+		return StringShelf.stringValueOf(false, result, 0, n);
 	}
 	
 	/**
@@ -1136,34 +898,8 @@ public final class String
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		/* {@squirreljme.error ZZ1l Starting index in string is out of
-		bounds. (The starting index)} */
-		if (__sdx < 0)
-			throw new IndexOutOfBoundsException(
-				String.format("ZZ1l %d", __sdx));
-		
-		// Need to work on both sequences
-		char[] ca = this._chars,
-			cb = __s._chars;
-		
-		// If the second string is empty then it will always match
-		int na = ca.length,
-			nb = cb.length;
-		if (nb == 0)
-			return true;
-		
-		// The second string cannot even fit from this index so do not bother
-		// checking anything
-		if (__sdx + nb > na)
-			return false;
-		
-		// Find false match
-		for (int ia = __sdx, ib = 0; ib < nb; ia++, ib++)
-			if (ca[ia] != cb[ib])
-				return false;
-		
-		// False not found, so it matches
-		return true;
+		// Use common utility
+		return CharSequenceUtils.startsWith(this, __s, __sdx);
 	}
 	
 	/**
@@ -1227,8 +963,7 @@ public final class String
 		throws IndexOutOfBoundsException
 	{
 		// The entire string region requires no new string
-		char[] ch = this._chars;
-		int n = ch.length;
+		int n = StringShelf.stringLength(this);
 		if (__s == 0 && __e == n)
 			return this;
 		
@@ -1244,12 +979,13 @@ public final class String
 		
 		// Derive sub-sequence
 		int nl = __e - __s;
-		char[] rv = new char[nl];
-		for (int o = 0; o < nl; o++, __s++)
-			rv[o] = ch[__s];
+		char[] result = new char[nl];
+		
+		// Fill in
+		StringShelf.stringToChar(this, __s, result, 0, nl);
 		
 		// Build
-		return new String(rv, (short)0);
+		return StringShelf.stringValueOf(false, result, 0, nl);
 	}
 	
 	/**
@@ -1262,8 +998,15 @@ public final class String
 	@Api
 	public char[] toCharArray()
 	{
-		// Direct copy of the character array
-		return this._chars.clone();
+		// Setup resultant array
+		int n = StringShelf.stringLength(this);
+		char[] result = new char[n];
+		
+		// Fill in
+		StringShelf.stringToChar(this, 0, result, 0, n);
+		
+		// Use the result
+		return result;
 	}
 	
 	/**
@@ -1277,42 +1020,28 @@ public final class String
 	@Api
 	public String toLowerCase()
 	{
-		// If this string is lowercased already do not mess with it
-		if ((this._quickFlags & String._QUICK_ISLOWER) != 0)
-			return this;
-		
-		// Needed for case conversion
-		char[] ch = this._chars;
-		Locale locale = DefaultLocale.defaultLocale();
-		
-		// Setup new character array for the conversion
-		int n = ch.length;
-		char[] rv = new char[n];
-		
-		// Copy and convert characters
+		// Check if the string will change first
+		int n = StringShelf.stringLength(this);
 		boolean changed = false;
+		Locale locale = DefaultLocale.defaultLocale();
 		for (int i = 0; i < n; i++)
 		{
-			char a = ch[i],
-				b = locale.toLowerCase(a);
-			
-			// Detect if the string actually changed
-			if (!changed && a != b)
-				changed = true;
-			
-			rv[i] = b;
+			char c = StringShelf.stringCharAt(this, i);
+			changed |= (c != locale.toLowerCase(c));
 		}
 		
-		// String was unchanged, so forget about the array we just handled and
-		// set that the string is lowercase
+		// Ignore if unchanged
 		if (!changed)
-		{
-			this._quickFlags |= String._QUICK_ISLOWER;
 			return this;
-		}
 		
-		// New string will be lowercase, so ignore this operation
-		return new String(rv, String._QUICK_ISLOWER);
+		// Map characters
+		char[] result = new char[n];
+		for (int i = 0; i < n; i++)
+			result[i] = locale.toLowerCase(
+				StringShelf.stringCharAt(this, i));
+		
+		// Setup new string
+		return StringShelf.stringValueOf(false, result, 0, n);
 	}
 	
 	/**
@@ -1338,51 +1067,37 @@ public final class String
 	@Api
 	public String toUpperCase()
 	{
-		// If this string is uppercased already do not mess with it
-		if ((this._quickFlags & String._QUICK_ISUPPER) != 0)
-			return this;
-		
-		// Needed for case conversion
-		char[] ch = this._chars;
+		// Check if the string will change first
+		int n = StringShelf.stringLength(this);
 		Locale locale = DefaultLocale.defaultLocale();
-		
-		// Setup new character array for the conversion
-		int n = ch.length;
-		char[] rv = new char[n];
-		
-		// Copy and convert characters
 		boolean changed = false;
 		for (int i = 0; i < n; i++)
 		{
-			char a = ch[i],
-				b = locale.toUpperCase(a);
-			
-			// Detect if the string actually changed
-			if (!changed && a != b)
-				changed = true;
-			
-			rv[i] = b;
+			char c = StringShelf.stringCharAt(this, i);
+			changed |= (c != locale.toUpperCase(c));
 		}
 		
-		// String was unchanged, so forget about the array we just handled and
-		// set that the string is lowercase
+		// Ignore if unchanged
 		if (!changed)
-		{
-			this._quickFlags |= String._QUICK_ISUPPER;
 			return this;
-		}
 		
-		// New string will be uppercase, so ignore this operation
-		return new String(rv, String._QUICK_ISUPPER);
+		// Map characters
+		char[] result = new char[n];
+		for (int i = 0; i < n; i++)
+			result[i] = locale.toUpperCase(
+				StringShelf.stringCharAt(this, i));
+		
+		// Setup new string
+		return StringShelf.stringValueOf(false, result, 0, n);
 	}
 	
 	/**
-	 * This trims all of the low ASCII whitespace and control characters at
+	 * This trims all the low ASCII whitespace and control characters at
 	 * the start and the end of this string and returns a new string with
 	 * the trimmed whitespace.
 	 *
 	 * This does not handle any other potential characters which may act as
-	 * whitespace in the high unicode range and only handles the first 32
+	 * whitespace in the high Unicode range and only handles the first 32
 	 * ASCII characters.
 	 *
 	 * @return A string with the whitespace trimmed, if the string does not
@@ -1393,35 +1108,28 @@ public final class String
 	@SuppressWarnings("StatementWithEmptyBody")
 	public String trim()
 	{
-		// This string is already considered trim
-		if ((this._quickFlags & String._QUICK_ALREADY_TRIMMED) != 0)
-			return this;
-		
 		// Empty strings do not need trimming
-		char[] ch = this._chars;
-		int n = ch.length;
-		if (n <= 0)
-		{
-			this._quickFlags |= String._QUICK_ALREADY_TRIMMED;
+		int n = StringShelf.stringLength(this);
+		if (n == 0)
 			return this;
-		}
 		
 		// Find starting trim position
 		int s;
-		for (s = 0; s < n && ch[s] <= String._MIN_TRIM_CHAR; s++)
+		for (s = 0; s < n &&
+			StringShelf.stringCharAt(this, s) <= String._MIN_TRIM_CHAR;
+			s++)
 			;
 		
 		// Find ending trim position
 		int e;
-		for (e = n; e > s && ch[e - 1] <= String._MIN_TRIM_CHAR; e--)
+		for (e = n; e > s &&
+			StringShelf.stringCharAt(this, e - 1) <=
+				String._MIN_TRIM_CHAR; e--)
 			;
 		
-		// Already considered trim?
+		// Already considered trimmed?
 		if (s == 0 && e == n)
-		{
-			this._quickFlags |= String._QUICK_ALREADY_TRIMMED;
 			return this;
-		}
 		
 		// Return trimmed variant of it
 		return this.substring(s, e);
@@ -1442,20 +1150,7 @@ public final class String
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// If the two have different lengths they will never be equal
-		char[] ca = this._chars;
-		int al = ca.length,
-			bl = __s.length();
-		if (al != bl)
-			return false;
-		
-		// Check each character
-		for (int i = 0; i < al; i++)
-			if (ca[i] != __s.charAt(i))
-				return false;
-		
-		// If reached, they are equal
-		return true;
+		return CharSequenceUtils.equals(this, __s);
 	}
 	
 	/**
@@ -1477,8 +1172,7 @@ public final class String
 		byte[] seq = new byte[(msl = __e.maximumSequenceLength())];
 		
 		// We operate directly on the sequence
-		char[] ch = this._chars;
-		int n = ch.length;
+		int n = StringShelf.stringLength(this);
 		
 		// Write here
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
@@ -1487,7 +1181,8 @@ public final class String
 			// Encode every character!
 			for (int i = 0; i < n; i++)
 			{
-				int sz = __e.encode(ch[i], seq, 0, msl);
+				int sz = __e.encode(StringShelf.stringCharAt(this, i),
+					seq, 0, msl);
 				
 				// Should not occur
 				if (sz < 0)
@@ -1581,16 +1276,20 @@ public final class String
 	/**
 	 * Returns a string representation of the given character array.
 	 *
-	 * @param __a The array.
+	 * @param __c The array.
 	 * @return The resulting string.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/25
 	 */
 	@Api
-	public static String valueOf(char[] __a)
+	public static String valueOf(char[] __c)
 		throws NullPointerException
 	{
-		return String.valueOf(__a, 0, (__a != null ? __a.length : 0));
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		return StringShelf.stringValueOf(false,
+			__c, 0, (__c != null ? __c.length : 0));
 	}
 	
 	/**
@@ -1609,7 +1308,12 @@ public final class String
 	public static String valueOf(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		return new String(__c, __o, __l);
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __c.length || (__o + __l) < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		return StringShelf.stringValueOf(false, __c, __o, __l);
 	}
 	
 	/**
@@ -1635,6 +1339,7 @@ public final class String
 	@Api
 	public static String valueOf(char __a)
 	{
+		// This allows the cache to be used
 		return Character.valueOf(__a).toString();
 	}
 	

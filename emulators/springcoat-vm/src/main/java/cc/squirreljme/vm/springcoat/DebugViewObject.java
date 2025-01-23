@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jdwp.host.JDWPHostState;
 import cc.squirreljme.jdwp.host.JDWPHostValue;
 import cc.squirreljme.jdwp.host.views.JDWPViewObject;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -83,6 +84,16 @@ public class DebugViewObject
 		__out.set(DebugViewObject.__normalizeNull(
 			((SpringArrayObject)__which).get(Object.class, __index)));
 		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/01/21
+	 */
+	@Override
+	public String readString(Object __which)
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
