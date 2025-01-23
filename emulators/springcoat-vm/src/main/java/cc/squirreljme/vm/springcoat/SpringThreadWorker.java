@@ -219,7 +219,9 @@ public final class SpringThreadWorker
 			this.verboseEmit("Allocate object: %s", __cl);
 		
 		// The called constructor will allocate the space needed to store
-		// this object
+		// this object, strings always are allocated in a special way however
+		if ("java/lang/String".equals(__cl.name().toString()))
+			return new SpringStringObject(__cl, null);
 		return new SpringSimpleObject(__cl);
 	}
 	
@@ -405,21 +407,16 @@ public final class SpringThreadWorker
 		{
 			String s = (String)__in;
 			
-			// Locate the string class
-			SpringClass strclass = this.loadClass(
-				new ClassName("java/lang/String"));
-				
-			// Setup an array of characters to represent the string data,
-			// this is the simplest thing to do right now
-			SpringObject array = (SpringObject)this.asVMObject(
-				s.toString().toCharArray());
+			// Setup string object
+			SpringStringObject rv = new SpringStringObject(this.loadClass(
+				new ClassName("java/lang/String")), s);
 			
-			// Setup string which uses this sequence
-			SpringObject rv = this.newInstance(
-				new ClassName("java/lang/String"),
-				new MethodDescriptor("([CS)V"),
-				array, 0);
+			// Call constructor for it
+			this.invokeMethod(false, rv.type().name(),
+				MethodNameAndType.ofArguments("<init>", null),
+				rv);
 			
+			// Use it
 			return rv;
 		}
 		
@@ -444,21 +441,18 @@ public final class SpringThreadWorker
 				if (rv != null)
 					return rv;
 				
-				// Setup an array of characters to represent the string data,
-				// this is the simplest thing to do right now
-				SpringObject array = (SpringObject)this.asVMObject(
-					cvs.toString().toCharArray());
-				
-				// Setup string which uses this sequence, but it also needs
-				// to be interned!
-				ClassName strclass = new ClassName("java/lang/String");
-				rv = (SpringObject)this.invokeMethod(false, strclass,
-					new MethodNameAndType("intern", "()Ljava/lang/String;"),
-					this.newInstance(strclass, new MethodDescriptor("([CS)V"),
-						array, 0));
+				// Setup string object
+				rv = new SpringStringObject(this.loadClass(
+					new ClassName("java/lang/String")),
+					(String)cvs.boxedValue());
 				
 				// Cache
 				stringmap.put(cvs, rv);
+				
+				// Call constructor for it
+				this.invokeMethod(false, rv.type().name(),
+					MethodNameAndType.ofArguments("<init>", null),
+					rv);
 				
 				// Use it
 				return rv;

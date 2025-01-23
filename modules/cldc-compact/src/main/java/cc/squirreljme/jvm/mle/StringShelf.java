@@ -58,6 +58,49 @@ public final class StringShelf
 		throws MLECallError;
 	
 	/**
+	 * Initializes the internal string representation, if not already
+	 * pre-initialized then it will be initialized to a blank string.
+	 *
+	 * @param __this The string to initialize.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/01/22
+	 */
+	@SquirrelJMEVendorApi
+	public static native void stringInit(@NotNull String __this)
+		throws MLECallError;
+	
+	/**
+	 * Initializes the internal string representation.
+	 *
+	 * @param __this The string to initialize.
+	 * @param __string The value to use.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/01/22
+	 */
+	@SquirrelJMEVendorApi
+	public static native void stringInit(@NotNull String __this,
+		@NotNull String __string)
+		throws MLECallError;
+	
+	/**
+	 * Initializes the internal string representation.
+	 *
+	 * @param __this The string to initialize.
+	 * @param __c The character values.
+	 * @param __o The offset into the array.
+	 * @param __l The length of the string.
+	 * @throws MLECallError On null arguments; or the offset and/or length
+	 * exceed the array bounds.
+	 * @since 2025/01/22
+	 */
+	@SquirrelJMEVendorApi
+	public static native void stringInit(@NotNull String __this,
+		@NotNull char[] __c,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l)
+		throws MLECallError;
+	
+	/**
 	 * Returns whether the string is an intern string. 
 	 *
 	 * @param __string If this string is an intern string.

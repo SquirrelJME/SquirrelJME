@@ -21,6 +21,7 @@ import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.ReferenceShelf;
 import cc.squirreljme.jvm.mle.ReflectionShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.StringShelf;
 import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
@@ -93,6 +94,10 @@ public enum MLEDispatcher
 	/** {@link NativeScritchInterface}. */
 	SCRITCH_UI("cc/squirreljme/jvm/mle/scritchui/NativeScritchInterface",
 		MLEScritchUI.values()),
+	
+	/** {@link StringShelf}. */
+	STRING("cc/squirreljme/jvm/mle/StringShelf",
+		MLEString.values()),
 	
 	/** {@link TaskShelf}. */
 	TASK("cc/squirreljme/jvm/mle/TaskShelf",

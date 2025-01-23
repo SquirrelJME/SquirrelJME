@@ -22,8 +22,6 @@ import cc.squirreljme.runtime.cldc.util.CharSequenceUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Formatter;
 import org.intellij.lang.annotations.PrintFormat;
@@ -47,13 +45,6 @@ public final class String
 	private static final char _MIN_TRIM_CHAR =
 		' ';
 	
-	/** String is already trimmed? */
-	static final byte _QUICK_ALREADY_TRIMMED =
-		0b0000_1000;
-	
-	/** The actual base string object. */
-	final String _string;
-	
 	/**
 	 * Initializes a new empty string.
 	 *
@@ -62,7 +53,8 @@ public final class String
 	@Api
 	public String()
 	{
-		this._string = StringShelf.stringValueOf(false, "");
+		// Set internal string
+		StringShelf.stringInit(this);
 	}
 	
 	/**
@@ -79,8 +71,8 @@ public final class String
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Just copies all the fields since they were pre-calculated already
-		this._string = StringShelf.stringValueOf(false, __s);
+		// Set internal string
+		StringShelf.stringInit(this, __s);
 	}
 	
 	/**
@@ -119,8 +111,8 @@ public final class String
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __c.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// Setup string with the given characters
-		this._string = StringShelf.stringValueOf(false, __c, __o, __l);
+		// Set internal string
+		StringShelf.stringInit(this, __c, __o, __l);
 	}
 	
 	/**
@@ -242,10 +234,10 @@ public final class String
 		if (__o < 0 || __l < 0 || (__o + __l) > bn)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// Setup a temporary character array with average sequence length to
+		// Set up a temporary character array with average sequence length to
 		// hopefully have enough room to store the decoded characters
-		int cap = (int)(__l * __dec.averageSequenceLength()),
-			at = 0;
+		int cap = (int)(__l * __dec.averageSequenceLength());
+		int at = 0;
 		char[] out = new char[cap];
 		
 		// Start decoding input sequences
@@ -281,7 +273,7 @@ public final class String
 		}
 		
 		// Setup native string
-		this._string = StringShelf.stringValueOf(false, out, 0, at);
+		StringShelf.stringInit(this, out, 0, at);
 	}
 	
 	/**
