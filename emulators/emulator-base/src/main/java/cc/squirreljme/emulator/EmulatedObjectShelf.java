@@ -380,4 +380,34 @@ public class EmulatedObjectShelf
 		for (int i = 0; i < __l; i++)
 			__b[__o + i] = __v;
 	}
+	
+	/**
+	 * Copies and converts an integer array to a byte array.
+	 *
+	 * @param __source The source integer array.
+	 * @param __sourceOff The source offset.
+	 * @param __dest The destination byte array.
+	 * @param __destOff The destination offset.
+	 * @param __len The number of values to copy and convert,
+	 * @throws MLECallError On null arguments; or if the offset and/or lengths
+	 * are negative or exceed the array bounds.
+	 * @since 2025/01/24
+	 */
+	@SquirrelJMEVendorApi
+	public static void arrayIntsToBytes(
+		int[] __source, int __sourceOff,
+		byte[] __dest, int __destOff, int __len)
+		throws MLECallError
+	{
+		if (__source == null || __dest == null)
+			throw new MLECallError("Null arguments.");
+		if (__sourceOff < 0 || __destOff < 0 ||
+			(__sourceOff + __len) < 0 || (__destOff + __len) < 0 ||
+			(__sourceOff + __len) > __source.length ||
+			(__destOff + __len) > __dest.length)
+			throw new MLECallError("Index out of bounds.");
+		
+		for (int i = 0; i < __len; i++)
+			__dest[__destOff++] = (byte)__source[__sourceOff++];
+	}
 }

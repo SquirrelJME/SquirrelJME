@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.nttdocomo.ui;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -49,8 +50,8 @@ public class DoJa8BitImageLoader
 	{
 		// Map values down from int to 8-bit
 		byte[] actual = new byte[__len];
-		for (int i = 0, at = __off; i < __len; i++, at++)
-			actual[i] = (byte)__buf[at];
+		ObjectShelf.arrayIntsToBytes(__buf, __off,
+			actual, 0, __len);
 		
 		// Set raw indexed pixels
 		this._pixels = actual;
