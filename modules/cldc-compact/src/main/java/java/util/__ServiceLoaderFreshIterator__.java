@@ -66,7 +66,7 @@ final class __ServiceLoaderFreshIterator__<S>
 		this._search = __s;
 		this._cache = __c;
 		
-		// All of the suites to look within
+		// All the suites to look within
 		this._jarsLeft.addAll(
 			Arrays.<JarPackageBracket>asList(JarPackageShelf.classPath()));
 	}
