@@ -40,6 +40,11 @@
 	DESC_ARRAY(DESC_DOUBLE) DESC_INT DESC_ARRAY(DESC_DOUBLE) \
 	DESC_INT DESC_INT ")" DESC_VOID
 
+#define FORWARD_DESC_arrayIntsToBytes "(" \
+    DESC_ARRAY(DESC_INT) DESC_INT \
+    DESC_ARRAY(DESC_BYTE) DESC_INT DESC_INT \
+	")" DESC_VOID
+
 #define ARRAY_FILL(javaType, desc) \
 	JNIEXPORT void JNICALL Impl_mle_ObjectShelf_arrayFill_##javaType( \
 		JNIEnv* env, jclass classy, \
@@ -136,12 +141,19 @@ FORWARD_IMPL_VOID(ObjectShelf, arrayCopyD,
 		jint destOff,
 		jint len),
 	FORWARD_IMPL_pass(src, srcOff, dest, destOff, len))
+FORWARD_IMPL_VOID(ObjectShelf, arrayIntsToBytes,
+	FORWARD_IMPL_args(jobject src,
+		jint srcOff,
+		jobject dest,
+		jint destOff,
+		jint len),
+	FORWARD_IMPL_pass(src, srcOff, dest, destOff, len))
 
 static const JNINativeMethod mleObjectMethods[] =
 {
 	{"arrayLength", "(Ljava/lang/Object;)I",
 		(void*)Impl_mle_ObjectShelf_arrayLength},
-	
+
 	{"arrayCopy", FORWARD_DESC_arrayCopyZ,
 		Impl_mle_ObjectShelf_arrayCopyZ},
 	{"arrayCopy", FORWARD_DESC_arrayCopyB,
@@ -158,7 +170,7 @@ static const JNINativeMethod mleObjectMethods[] =
 		Impl_mle_ObjectShelf_arrayCopyF},
 	{"arrayCopy", FORWARD_DESC_arrayCopyD,
 		Impl_mle_ObjectShelf_arrayCopyD},
-	
+
 	{"arrayFill", "([ZIIZ)V",
 		(void*)Impl_mle_ObjectShelf_arrayFill_jboolean},
 	{"arrayFill", "([BIIB)V",
@@ -175,6 +187,9 @@ static const JNINativeMethod mleObjectMethods[] =
 		(void*)Impl_mle_ObjectShelf_arrayFill_jfloat},
 	{"arrayFill", "([DIID)V",
 		(void*)Impl_mle_ObjectShelf_arrayFill_jdouble},
+
+	{"arrayIntsToBytes", FORWARD_DESC_arrayIntsToBytes,
+		(void*)Impl_mle_ObjectShelf_arrayIntsToBytes},
 };
 
 jint JNICALL mleObjectInit(JNIEnv* env, jclass classy)
