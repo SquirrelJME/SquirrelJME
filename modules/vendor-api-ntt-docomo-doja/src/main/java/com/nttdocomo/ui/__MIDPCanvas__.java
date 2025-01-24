@@ -58,9 +58,8 @@ final class __MIDPCanvas__
 		if (rv == null)
 			return;
 		
-		Debugging.debugNote("DoJa Key %d -> %d",
-			__code, Display.__mapKey(__code));
-		rv.processEvent(Display.KEY_PRESSED_EVENT, Display.__mapKey(__code));
+		// Forward to handler
+		rv.__key(true, Display.__mapKey(__code));
 	}
 	
 	/**
@@ -76,7 +75,8 @@ final class __MIDPCanvas__
 		if (rv == null)
 			return;
 		
-		rv.processEvent(Display.KEY_RELEASED_EVENT, Display.__mapKey(__code));
+		// Forward to handler
+		rv.__key(false, Display.__mapKey(__code));
 	}
 	
 	/**

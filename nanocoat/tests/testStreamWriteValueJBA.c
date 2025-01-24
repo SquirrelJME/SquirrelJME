@@ -50,7 +50,8 @@ static const sjme_jubyte testData[DATA_LEN] =
 
 static sjme_errorCode finishStreamWriteValueJBA(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrInNotNull sjme_stream_resultByteArray* result)
+	sjme_attrInNotNull sjme_stream_resultByteArray* result,
+	sjme_attrInNullable sjme_pointer data)
 {
 	sjme_jint i;
 	sjme_test* test;
@@ -140,7 +141,8 @@ SJME_TEST_DECLARE(testStreamWriteValueJBA)
 	STREAM_SEQ2(DOUBLE, d.hi, d.lo, 0x87654321, 0x87654321);
 
 	/* Close stream. */
-	if (sjme_error_is(sjme_stream_outputClose(stream, NULL)))
+	if (sjme_error_is(sjme_closeable_close(
+		SJME_AS_CLOSEABLE(stream))))
 		return sjme_unit_fail(test, "Could not close output stream.");
 
 	/* Success! */

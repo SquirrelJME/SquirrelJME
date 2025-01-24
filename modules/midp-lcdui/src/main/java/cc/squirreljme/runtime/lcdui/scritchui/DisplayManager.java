@@ -43,10 +43,12 @@ public final class DisplayManager
 	private static volatile DisplayManager _INSTANCE;
 	
 	/** The ScritchUI interface used. */
+	@SquirrelJMEVendorApi
 	protected final ScritchInterface scritch;
 	
 	/** The mapping of displays. */
-	protected final Map<Integer, DisplayState> _displays =
+	@SquirrelJMEVendorApi
+	private final Map<Integer, DisplayState> _displays =
 		new LinkedHashMap<>();
 	
 	/**
@@ -89,6 +91,7 @@ public final class DisplayManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/09
 	 */
+	@SquirrelJMEVendorApi
 	public void displayListenerRemove(DisplayListener __dl)
 		throws NullPointerException
 	{
@@ -152,6 +155,7 @@ public final class DisplayManager
 	 * @return The ScritchUI interface.
 	 * @since 2024/03/09
 	 */
+	@SquirrelJMEVendorApi
 	public ScritchInterface scritch()
 	{
 		return this.scritch;

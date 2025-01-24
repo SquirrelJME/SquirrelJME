@@ -17,6 +17,7 @@
 #define SQUIRRELJME_MULTITHREAD_H
 
 #include "sjme/config.h"
+#include "sjme/error.h"
 
 #if defined(SJME_CONFIG_HAS_THREADS_FALLBACK)
 	/* Clear pthreads. */
@@ -30,22 +31,24 @@
 	#endif
 #endif
 
-#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
-	#include <pthread.h>
-	#include <errno.h>
-#elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
+#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	#define WIN32_LEAN_AND_MEAN 1
 
 	#include <windows.h>
 
 	#undef WIN32_LEAN_AND_MEAN
+#endif
+
+#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+	#include <pthread.h>
+	#include <errno.h>
 #else
 	#if !defined(SJME_CONFIG_HAS_THREADS_ATOMIC)
 		#define SJME_CONFIG_HAS_THREADS_ATOMIC
 	#endif
 #endif
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
 #include "sjme/atomic.h"
 
 /* Anti-C++. */
@@ -68,13 +71,13 @@ extern "C" {
 	/* On these systems pthread_t is a pointer. */
 	#if defined(SJME_CONFIG_HAS_MACOS) || \
 		defined(SJME_CONFIG_HAS_EMSCRIPTEN)
-		/** The type of a thread. */
+		/** The thread type. */
 		#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
 	
 		/** Is a thread a pointer? */
 		#define SJME_TYPEOF_IS_POINTER_sjme_thread 1
 	#else
-		/** The type of a thread. */
+		/** The thread type. */
 		#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_intPointer
 	
 		/** Is a thread a pointer? */
@@ -99,14 +102,11 @@ extern "C" {
 	
 	/** Calling convention to use for thread entry points. */
 	#define sjme_attrThreadCall
-
-	/** Thread memory barrier. */
-	#define sjme_thread_barrier() __sync_synchronize()
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/** A single thread. */
 	typedef HANDLE sjme_thread;
 
-	/** The type of a thread. */
+	/** The thread type. */
 	#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
 
 	/** Is a thread a pointer? */
@@ -129,9 +129,6 @@ extern "C" {
 	
 	/** Calling convention to use for thread entry points. */
 	#define sjme_attrThreadCall WINAPI
-
-	/** Thread memory barrier. */
-	#define sjme_thread_barrier() MemoryBarrier()
 #else
 	/** Threads not supported. */
 	typedef struct sjme_thread_unsupported
@@ -142,7 +139,7 @@ extern "C" {
 	/** A single thread. */
 	typedef sjme_thread_unsupported* sjme_thread;
 
-	/** The type of a thread. */
+	/** The thread type. */
 	#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
 
 	/** Is a thread a pointer? */
@@ -165,12 +162,10 @@ extern "C" {
 	
 	/** Calling convention to use for thread entry points. */
 	#define sjme_attrThreadCall
-
-	/** Thread memory barrier. */
-	#define sjme_thread_barrier() do {} while(0)
 #endif
 
 /* clang-format on */
+/*--*/
 
 SJME_ATOMIC_DECLARE(sjme_thread, 0);
 
@@ -227,6 +222,7 @@ sjme_jboolean sjme_thread_equal(
  * Creates a new thread and immediately starts running it.
  * 
  * @param outThread The resultant thread.
+ * @param outThreadId The resultant thread ID, is optional.
  * @param inMain The main function for the thread.
  * @param anything Any value to pass to it.
  * @return Any error code if applicable.
@@ -234,6 +230,7 @@ sjme_jboolean sjme_thread_equal(
  */
 sjme_errorCode sjme_thread_new(
 	sjme_attrInOutNotNull sjme_thread* outThread,
+	sjme_attrInNullable sjme_intPointer* outThreadId,
 	sjme_attrInNotNull sjme_thread_mainFunc inMain,
 	sjme_attrInNullable sjme_pointer anything);
 

@@ -179,27 +179,44 @@ public final class StreamUtils
 	 * Reads every byte within the input stream.
 	 * 
 	 * @param __in The stream to read from.
-	 * @return A byte array containing all of the stream bytes.
+	 * @return A byte array containing all the stream bytes.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2021/12/05
+	 * @since 2024/10/03
 	 */
 	public static byte[] readAll(InputStream __in)
 		throws IOException, NullPointerException
 	{
+		return StreamUtils.readAll(StreamUtils.bufferSize(__in), __in);
+	}
+	
+	/**
+	 * Reads every byte within the input stream.
+	 * 
+	 * @param __size The size of the buffer to allocate.
+	 * @param __in The stream to read from.
+	 * @return A byte array containing all the stream bytes.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/12/05
+	 */
+	public static byte[] readAll(int __size, InputStream __in)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
 		if (__in == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
+		if (__size <= 0)
+			throw new IllegalArgumentException("ZERO");
 		
 		// Setup buffers for temporary copy
-		int bufLen = StreamUtils.bufferSize(__in);
-		byte[] buf = new byte[bufLen];
+		byte[] buf = new byte[__size];
 		
 		// Write into our target buffer
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(bufLen))
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(__size))
 		{
 			for (;;)
 			{
-				int rc = __in.read(buf, 0, bufLen);
+				int rc = __in.read(buf, 0, __size);
 				
 				// EOF?
 				if (rc < 0)

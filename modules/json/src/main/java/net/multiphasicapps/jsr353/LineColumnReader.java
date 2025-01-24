@@ -27,7 +27,7 @@ public class LineColumnReader
 		Integer.MIN_VALUE;
 	
 	/** Internal default tab size. */
-	private static final int INTERNDEFTS =
+	private static final int _DEFAULT_TAB_SIZE =
 		8;
 	
 	/** The current line. */
@@ -366,16 +366,17 @@ public class LineColumnReader
 					
 					// If no property use default
 					if (swts == null)
-						throw new NumberFormatException();
+						this.tabsize = LineColumnReader._DEFAULT_TAB_SIZE;
 				
 					// As number
-					this.tabsize = Integer.valueOf(swts);
+					else
+						this.tabsize = Integer.parseInt(swts, 10);
 				}
 			
 				// Not allowed; Not a number, or way out of range.
 				catch (SecurityException|NumberFormatException e)
 				{
-					this.tabsize = LineColumnReader.INTERNDEFTS;
+					this.tabsize = LineColumnReader._DEFAULT_TAB_SIZE;
 				}
 			}
 		}

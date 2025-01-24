@@ -57,7 +57,8 @@ sjme_errorCode sjme_scritchui_fb_panelNew(
 	
 	/* Map front ends. */
 	if (sjme_error_is(error = sjme_scritchui_fb_biMap(
-		inState, inPanel, wrappedPanel)))
+		inState, SJME_SUI_CAST_COMMON(inPanel),
+		SJME_SUI_CAST_COMMON(wrappedPanel))))
 		return sjme_error_default(error);
 	
 	/* Success! */

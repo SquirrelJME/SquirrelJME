@@ -7,4 +7,4 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/vmConfig.h"
+#include "sjme/nvm/vmConfig.h"

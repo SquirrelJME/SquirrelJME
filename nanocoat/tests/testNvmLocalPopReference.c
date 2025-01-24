@@ -12,7 +12,7 @@
 #include "mock.h"
 #include "proto.h"
 #include "sjme/debug.h"
-#include "sjme/nvmFunc.h"
+#include "sjme/nvm/nvmFunc.h"
 #include "test.h"
 #include "unit.h"
 
@@ -27,7 +27,7 @@ typedef struct testHookResult
 	sjme_jobject gc[SJME_MOCK_MAX_OBJECTS];
 } testHookResult;
 
-static sjme_jboolean hookGcNvmLocalPopReference(sjme_nvm_frame* frame,
+static sjme_jboolean hookGcNvmLocalPopReference(sjme_nvm_frame frame,
 	sjme_jobject instance)
 {
 	sjme_mock* mock;
@@ -37,7 +37,7 @@ static sjme_jboolean hookGcNvmLocalPopReference(sjme_nvm_frame* frame,
 	sjme_message("GC of %p...", instance);
 	
 	/* Mock must be set. */
-	mock = frame->inThread->inState->frontEnd.data;
+	mock = frame->inThread->inState->common.frontEnd.data;
 	if (mock == NULL)
 		return SJME_JNI_FALSE;
 	
@@ -113,7 +113,7 @@ SJME_TEST_DECLARE(testNvmLocalPopReference)
 {
 	sjme_jbyte firstId, secondId;
 	sjme_mock state;
-	sjme_nvm_frame* frame;
+	sjme_nvm_frame frame;
 	sjme_jint oldNumStack;
 	sjme_nvm_frameTread* objectsTread;
 	sjme_nvm_frameStack* stack;

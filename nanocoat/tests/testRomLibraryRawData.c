@@ -19,9 +19,9 @@
 
 static const sjme_jubyte expectedRawBin[EXPECTED_SIZE] =
 {
-	83, 113, 117, 105, 114, 114, 101, 108, 115,
-	32, 97, 114, 101, 32, 115, 111, 32,
-	99, 117, 116, 101, 10, 116
+	83,113,117,105,114,114,101,108,
+	115,32,97,114,101,32,115,
+	111,32,99,117,116,101,33,10
 };
 
 static sjme_jboolean funcRomLibraryRawData(
@@ -66,6 +66,7 @@ static const sjme_mock_configSet configRomLibraryRawData =
  */
 SJME_TEST_DECLARE(testRomLibraryRawData)
 {
+	sjme_errorCode error;
 	sjme_rom_library library;
 	sjme_mock mock;
 	sjme_jint size;
@@ -107,7 +108,7 @@ SJME_TEST_DECLARE(testRomLibraryRawData)
 	sjme_unit_equalI(test,
 		0, memcmp(expectedRawBin, raw, EXPECTED_SIZE),
 		"Data is wrong?");
-
+	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
 }

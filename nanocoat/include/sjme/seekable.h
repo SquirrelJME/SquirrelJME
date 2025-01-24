@@ -16,8 +16,9 @@
 #ifndef SQUIRRELJME_SEEKABLE_H
 #define SQUIRRELJME_SEEKABLE_H
 
-#include "sjme/nvm.h"
-#include "sjme/stream.h"
+#include "sjme/stdTypes.h"
+#include "sjme/alloc.h"
+#include "sjme/closeable.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -35,30 +36,30 @@ extern "C" {
  *
  * @since 2024/01/01
  */
-typedef struct sjme_seekableCore sjme_seekableCore;
+typedef struct sjme_seekableBase sjme_seekableBase;
 
 /**
  * Opaque seekable data.
  *
  * @since 2024/01/01
  */
-typedef struct sjme_seekableCore* sjme_seekable;
+typedef sjme_seekableBase* sjme_seekable;
 
 /**
  * Seekable lock core structure.
  *
  * @since 2024/01/01
  */
-typedef struct sjme_seekable_lockCore sjme_seekable_lockCore;
+typedef struct sjme_seekable_lockBase sjme_seekable_lockBase;
 
 /**
  * Opaque locked seekable structure.
  *
  * @since 2024/01/01
  */
-typedef struct sjme_seekable_lockCore* sjme_seekable_lock;
+typedef struct sjme_seekable_lockBase* sjme_seekable_lock;
 
-struct sjme_seekable_lockCore
+struct sjme_seekable_lockBase
 {
 	/** The owning seekable. */
 	sjme_seekable seekable;
@@ -99,22 +100,144 @@ typedef enum sjme_seekable_unlockAction
 } sjme_seekable_unlockAction;
 
 /**
- * Provides an input stream to read data from a seekable, note that
- * unlike @c sjme_seekable_regionLockAsInputStream there is no locking
- * involved and as such there may be a performance penalty or otherwise.
- *
- * @param seekable The seekable to access.
- * @param outStream The resultant stream.
- * @param base The base address within the seekable.
- * @param length The number of bytes to stream.
- * @return Any resultant error, if any.
- * @since 2024/01/01
+ * Implementation state within seekables.
+ * 
+ * @since 2024/08/11
  */
-sjme_errorCode sjme_seekable_asInputStream(
-	sjme_attrInNotNull sjme_seekable seekable,
-	sjme_attrOutNotNull sjme_stream_input* outStream,
+typedef struct sjme_seekable_implState
+{
+	/** The pool this is in. */
+	sjme_alloc_pool* inPool;
+	
+	/** Internal handle. */
+	sjme_pointer handle;
+	
+	/** Internal index. */
+	sjme_jint index;
+	
+	/** Internal length. */
+	sjme_jint length;
+	
+	/** Forward close? */
+	sjme_jboolean forwardClose;
+} sjme_seekable_implState;
+
+/**
+ * Closes the seekable stream.
+ * 
+ * @param inSeekable The current seekable.
+ * @param inImplState The implementation state.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+typedef sjme_errorCode (*sjme_seekable_closeFunc)(
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState);
+
+/**
+ * Initializes the new seekable.
+ * 
+ * @param inSeekable The current seekable.
+ * @param inImplState The implementation state.
+ * @param data Any passed in data through initialize.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+typedef sjme_errorCode (*sjme_seekable_initFunc)(
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState,
+	sjme_attrInNullable sjme_pointer data);
+
+/**
+ * Reads from the given seekable.
+ * 
+ * @param inSeekable The current seekable.
+ * @param inImplState The implementation state.
+ * @param outBuf The buffer to write to.
+ * @param base The base address to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+typedef sjme_errorCode (*sjme_seekable_readFunc)(
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState,
+	sjme_attrOutNotNullBuf(length) sjme_buffer outBuf,
 	sjme_attrInPositive sjme_jint base,
-	sjme_attrInPositive sjme_jint length);
+	sjme_attrInPositiveNonZero sjme_jint length);
+
+/**
+ * Returns the size of the seekable.
+ * 
+ * @param inSeekable The current seekable.
+ * @param inImplState The implementation state.
+ * @param outSize The resultant size of the seekable.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+typedef sjme_errorCode (*sjme_seekable_sizeFunc)(
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState,
+	sjme_attrOutNotNull sjme_jint* outSize);
+
+/**
+ * Functions for seekable implementations.
+ * 
+ * @since 2024/08/11
+ */
+typedef struct sjme_seekable_functions
+{
+	/** Closes the stream. */
+	sjme_seekable_closeFunc close;
+	
+	/** Initializes the stream. */
+	sjme_seekable_initFunc init;
+	
+	/** Read from the given stream. */
+	sjme_seekable_readFunc read;
+	
+	/** Return the size of the stream. */
+	sjme_seekable_sizeFunc size;
+} sjme_seekable_functions;
+
+struct sjme_seekableBase
+{
+	/** Closeable. */
+	sjme_closeableBase closable;
+	
+	/** Implementation state. */
+	sjme_seekable_implState implState;
+	
+	/** Front end data. */
+	sjme_frontEnd frontEnd;
+	
+	/** Functions for stream access. */
+	const sjme_seekable_functions* functions;
+	
+	/** Spinlock for stream access. */
+	sjme_thread_spinLock lock;
+	
+	/** The pool this is in. */
+	sjme_alloc_pool* inPool;
+};
+
+/**
+ * Opens a generic stream.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param outSeekable The resultant seekable.
+ * @param inFunctions The seekable functions.
+ * @param data Any data to pass to the initialize function.
+ * @param copyFrontEnd Front-end data as needed.
+ * @return Any resultant error, if any,
+ * @since 2024/08/11
+ */
+sjme_errorCode sjme_seekable_open(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_seekable* outSeekable,
+	sjme_attrInNotNull const sjme_seekable_functions* inFunctions,
+	sjme_attrInNullable sjme_pointer data,
+	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
 /**
  * Initializes a seekable from the given memory range.
@@ -126,7 +249,7 @@ sjme_errorCode sjme_seekable_asInputStream(
  * @return Any resultant error, if any.
  * @since 2024/01/01
  */
-sjme_errorCode sjme_seekable_fromMemory(
+sjme_errorCode sjme_seekable_openMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull sjme_pointer base,
@@ -135,6 +258,7 @@ sjme_errorCode sjme_seekable_fromMemory(
 /**
  * Wraps a seekable and provides a sub-seekable within this.
  *
+ * @param inPool The pool to allocate within.
  * @param inSeekable The input seekable, to get the sub-seekable of.
  * @param outSeekable The output seekable.
  * @param base The base address to get.
@@ -142,11 +266,120 @@ sjme_errorCode sjme_seekable_fromMemory(
  * @return Any resultant error, if any.
  * @since 2024/01/01
  */
-sjme_errorCode sjme_seekable_fromSeekable(
+sjme_errorCode sjme_seekable_openSeekable(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInPositive sjme_jint base,
 	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Reads from the given seekable.
+ * 
+ * @param seekable The seekable to read from. 
+ * @param outBuf The output buffer.
+ * @param seekBase The base of the seekable to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+sjme_errorCode sjme_seekable_read(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_buffer outBuf,
+	sjme_attrInPositive sjme_jint seekBase,
+	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Reads from the given seekable in reverse byte order for every @c wordSize
+ * that is read from the input. 
+ * 
+ * @param seekable The seekable to read from.
+ * @param wordSize The word size for the read, every number of this many
+ * bytes will be reversed.
+ * @param outBuf The output buffer.
+ * @param seekBase The base of the seekable to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/13
+ */
+sjme_errorCode sjme_seekable_readReverse(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrInRange(2, 8) sjme_jint wordSize,
+	sjme_attrOutNotNull sjme_buffer outBuf,
+	sjme_attrInPositive sjme_jint seekBase,
+	sjme_attrInPositive sjme_jint length);
+
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+
+/**
+ * Reads big endian data from the given seekable.
+ * 
+ * @param seekable The seekable to read from.
+ * @param wordSize The word size for the read, every number of bytes will
+ * be possibly reversed if required.
+ * @param outBuf The output buffer.
+ * @param seekBase The base of the seekable to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/13
+ */
+#define sjme_seekable_readBig(seekable, wordSize, outBuf, seekBase, \
+	length) \
+	(sjme_seekable_readReverse((seekable), (wordSize), (outBuf), (seekBase), \
+	(length)))	
+
+/**
+ * Reads little endian data from the given seekable.
+ * 
+ * @param seekable The seekable to read from.
+ * @param wordSize The word size for the read, every number of bytes will
+ * be possibly reversed if required.
+ * @param outBuf The output buffer.
+ * @param seekBase The base of the seekable to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/13
+ */
+#define sjme_seekable_readLittle(seekable, wordSize, outBuf, seekBase, \
+	length) \
+	(sjme_seekable_read((seekable), (outBuf), (seekBase), (length)))
+
+#else
+
+/**
+ * Reads big endian data from the given seekable.
+ * 
+ * @param seekable The seekable to read from.
+ * @param wordSize The word size for the read, every number of bytes will
+ * be possibly reversed if required.
+ * @param outBuf The output buffer.
+ * @param seekBase The base of the seekable to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/13
+ */
+#define sjme_seekable_readBig(seekable, wordSize, outBuf, seekBase, \
+	length) \
+	(sjme_seekable_read((seekable), (outBuf), (seekBase), (length)))
+
+/**
+ * Reads little endian data from the given seekable.
+ * 
+ * @param seekable The seekable to read from.
+ * @param wordSize The word size for the read, every number of bytes will
+ * be possibly reversed if required.
+ * @param outBuf The output buffer.
+ * @param seekBase The base of the seekable to read from.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/08/13
+ */
+#define sjme_seekable_readLittle(seekable, wordSize, outBuf, seekBase, \
+	length) \
+	(sjme_seekable_readReverse((seekable), (wordSize), (outBuf), (seekBase), \
+	(length)))
+
+#endif
 
 /**
  * Locks a region of a seekable so that the data stored there can be accessed
@@ -172,23 +405,6 @@ sjme_errorCode sjme_seekable_regionLock(
 	sjme_attrInPositive sjme_jint length);
 
 /**
- * Similar to @c sjme_seekable_regionLock except that instead of returning a
- * lock it returns a stream.
- *
- * @param seekable The seekable to lock within.
- * @param outStream The resultant stream.
- * @param base The base address within the seekable to lock.
- * @param length The number of bytes to lock.
- * @return Any resultant error, if any.
- * @since 2024/01/01
- */
-sjme_errorCode sjme_seekable_regionLockAsInputStream(
-	sjme_attrInNotNull sjme_seekable seekable,
-	sjme_attrOutNotNull sjme_stream_input* outStream,
-	sjme_attrInPositive sjme_jint base,
-	sjme_attrInPositive sjme_jint length);
-
-/**
  * Unlocks a locked seekable region, the resultant action may or may not
  * have an effect depending on the implementation.
  *
@@ -202,6 +418,18 @@ sjme_errorCode sjme_seekable_regionUnlock(
 	sjme_attrInNotNull sjme_seekable_lock inLock,
 	sjme_attrInRange(0, SJME_NUM_SEEKABLE_UNLOCK_ACTION)
 		sjme_seekable_unlockAction action);
+
+/**
+ * Returns the size of the given seekable.
+ * 
+ * @param seekable The seekable to get the size of. 
+ * @param outSize The size of the seekable.
+ * @return Any resultant error, if any.
+ * @since 2024/08/11
+ */
+sjme_errorCode sjme_seekable_size(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_jint* outSize);
 
 /*--------------------------------------------------------------------------*/
 

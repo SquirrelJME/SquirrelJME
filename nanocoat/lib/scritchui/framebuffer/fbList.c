@@ -67,7 +67,7 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	/* Allocate display list. */
 	dlFull = sjme_alloca(sizeof(*dlFull) * dlCount);
 	if (dlFull == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, dlCount);
 	memset(dlFull, 0, sizeof(*dlFull) * dlCount);
 	
 	/* Get component actual size. */
@@ -377,7 +377,8 @@ sjme_errorCode sjme_scritchui_fb_listNew(
 	/* Lightweight initialization. */
 	wState = NULL;
 	if (sjme_error_is(error = inState->implIntern->lightweightInit(
-		inState, inList, &wState,
+		inState, SJME_SUI_CAST_COMPONENT(inList),
+		&wState,
 		SJME_JNI_TRUE,
 		sjme_scritchui_fb_list_draw)) || wState == NULL)
 		return sjme_error_default(error);

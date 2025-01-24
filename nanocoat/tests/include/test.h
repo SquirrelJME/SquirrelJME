@@ -18,8 +18,9 @@
 
 #include <setjmp.h>
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
+#include "sjme/error.h"
 #include "sjme/test/externTest.h"
 
 /* Anti-C++. */
@@ -65,6 +66,9 @@ typedef struct sjme_test
 
 	/** Any extra global value that is needed. */
 	sjme_pointer global;
+	
+	/** Error code. */
+	sjme_errorCode error;
 } sjme_test;
 
 /**
@@ -98,6 +102,17 @@ typedef struct sjme_availableTest
  */
 #define SJME_TEST_DECLARE(name) \
 	sjme_attrUnused sjme_testResult name(sjme_attrUnused sjme_test* test)
+
+#if defined(SJME_CONFIG_DEBUG)
+/**
+ * Checks for leaks.
+ * 
+ * @param pool The pool to check.
+ * @return Any resultant error, if any.
+ * @since 2024/09/28 
+ */
+void sjme_test_leakCheck(sjme_alloc_pool* pool);
+#endif
 
 /*--------------------------------------------------------------------------*/
 

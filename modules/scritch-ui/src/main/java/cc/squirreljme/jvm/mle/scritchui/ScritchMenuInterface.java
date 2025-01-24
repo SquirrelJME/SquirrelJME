@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/07/20
  */
+@SquirrelJMEVendorApi
 public interface ScritchMenuInterface
 	extends ScritchApiInterface
 {

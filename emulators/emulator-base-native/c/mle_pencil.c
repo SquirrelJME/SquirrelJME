@@ -248,6 +248,11 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawXRGB32Region)
 			SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED);
 		return;
 	}
+
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+	if (xSrc != 0 || ySrc != 0)
+		sjme_message("s(%d, %d)", xSrc, ySrc);
+#endif
 	
 	/* Forward. */
 	if (sjme_error_is(error = p->api->drawXRGB32Region(p,

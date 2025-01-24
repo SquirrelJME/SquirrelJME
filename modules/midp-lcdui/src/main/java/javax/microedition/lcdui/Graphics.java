@@ -319,8 +319,8 @@ public abstract class Graphics
 	 * @param __wsrc The width of the source region.
 	 * @param __hsrc The height of the source region.
 	 * @param __trans Sprite translation and/or rotation, see {@link Sprite}.
-	 * @param __xdest The destination X position, is translated..
-	 * @param __ydest The destination Y position, is translated..
+	 * @param __xdest The destination X position, is translated.
+	 * @param __ydest The destination Y position, is translated.
 	 * @param __anch The anchor point.
 	 * @throws IllegalArgumentException If the source is the destination
 	 * image; the source region exceeds the image bounds; the sprite

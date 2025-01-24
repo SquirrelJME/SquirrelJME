@@ -16,8 +16,9 @@
 #ifndef SQUIRRELJME_ZIP_H
 #define SQUIRRELJME_ZIP_H
 
-#include "sjme/nvm.h"
 #include "sjme/stream.h"
+#include "sjme/seekable.h"
+#include "sjme/path.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -35,46 +36,92 @@ extern "C" {
  *
  * @since 2023/12/31
  */
-typedef struct sjme_zipCore* sjme_zip;
-
-/**
- * Opaque Zip entry structure.
- *
- * @since 2023/12/31
- */
-typedef struct sjme_zip_entryCore* sjme_zip_entry;
+typedef struct sjme_zipBase* sjme_zip;
 
 /**
  * Zip access information.
  *
  * @since 2023/12/31
  */
-typedef struct sjme_zipCore
+typedef struct sjme_zipBase
 {
-	/** Todo. */
-	sjme_jint todo;
-} sjme_zipCore;
+	/** The closeable for this Zip. */
+	sjme_closeableBase closeable;
+	
+	/** The pool this was allocated within. */
+	sjme_alloc_pool* inPool;
+	
+	/** The central directory position. */
+	sjme_jint centralDirPos;
+	
+	/** The logical start position of the central directory. */
+	sjme_jint logicalCentralDirPos;
+	
+	/** The end central directory record position. */
+	sjme_jint endCentralDirPos;
+	
+	/** The start position of the Zip in the seekable. */
+	sjme_jint archiveStartPos;
+	
+	/** The seekable where the Zip is. */
+	sjme_seekable seekable;
+	
+	/** The lock for accessing the Zip. */
+	sjme_thread_spinLock lock;
+} sjme_zipBase;
 
 /**
  * Zip entry.
  *
  * @since 2023/12/31
  */
-typedef struct sjme_zip_entryCore
+typedef struct sjme_zip_entry
 {
-	/** Todo. */
-	sjme_jint todo;
-} sjme_zip_entryCore;
-
-/**
- * Closes the specified Zip.
- *
- * @param inZip The Zip to close.
- * @return On any resultant error, if any.
- * @since 2023/12/31
- */
-sjme_errorCode sjme_zip_close(
-	sjme_attrInNotNull sjme_zip inZip);
+	/** The Zip this is in. */
+	sjme_zip zip;
+	
+	/** The version this was made by. */
+	sjme_jchar versionMadeBy;
+	
+	/** The version needed to extract. */
+	sjme_jchar versionNeeded;
+	
+	/** General purpose bits. */
+	sjme_jchar generalBits;
+	
+	/** Compression method. */
+	sjme_jchar method;
+	
+	/** Last modification time. */
+	sjme_jchar lastModTime;
+	
+	/** Last modification date. */
+	sjme_jchar lastModDate;
+	
+	/** Uncompressed CRC. */
+	sjme_jint uncompressedCrc;
+	
+	/** Compressed size. */
+	sjme_jint compressedSize;
+	
+	/** Uncompressed size. */
+	sjme_jint uncompressedSize;
+	
+	/** Disk number. */
+	sjme_jchar diskNum;
+	
+	/** Internal attributes. */
+	sjme_jchar internalAttrib;
+	
+	/** External attributes. */
+	sjme_jint externalAttrib;
+	
+	/** Relative offset to the local file header. */
+	sjme_jint offset;
+	
+	/** The file name. */
+	sjme_cchar name[SJME_MAX_FILE_NAME];
+} sjme_zip_entry;
 
 /**
  * Opens a stream to read the given Zip entry.
@@ -85,7 +132,7 @@ sjme_errorCode sjme_zip_close(
  * @since 2023/12/31
  */
 sjme_errorCode sjme_zip_entryRead(
-	sjme_attrInNotNull sjme_zip_entry inEntry,
+	sjme_attrInNotNull const sjme_zip_entry* inEntry,
 	sjme_attrOutNotNull sjme_stream_input* outStream);
 
 /**
@@ -112,11 +159,25 @@ sjme_errorCode sjme_zip_locateEntry(
  * @return Any resultant error code, if any.
  * @since 2023/12/31
  */
-sjme_errorCode sjme_zip_open(
+sjme_errorCode sjme_zip_openMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_zip* outZip,
 	sjme_attrInNotNull void* rawData,
 	sjme_attrInPositive sjme_jint rawSize);
+
+/**
+ * Opens a Zip from the given seekable.
+ * 
+ * @param inPool The pool to allocate from.
+ * @param outZip The resultant opened Zip.
+ * @param inSeekable The seekable to use for accessing data.
+ * @return Any resultant error, if any.
+ * @since 2024/08/12
+ */
+sjme_errorCode sjme_zip_openSeekable(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_zip* outZip,
+	sjme_attrInNotNull sjme_seekable inSeekable); 
 
 /*--------------------------------------------------------------------------*/
 

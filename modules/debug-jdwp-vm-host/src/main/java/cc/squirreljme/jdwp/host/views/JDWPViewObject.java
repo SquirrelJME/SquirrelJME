@@ -49,6 +49,15 @@ public interface JDWPViewObject
 	boolean readArray(Object __which, int __index, JDWPHostValue __out);
 	
 	/**
+	 * Reads the string value for the given object.
+	 *
+	 * @param __which Which object to get the value from.
+	 * @return The resultant string or {@code null} if this is not a string.
+	 * @since 2025/01/21
+	 */
+	String readString(Object __which);
+	
+	/**
 	 * Reads the value of an instance field within the object.
 	 *
 	 * @param __which What is being read from?

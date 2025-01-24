@@ -7,11 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
 #include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
-#include "sjme/modelessStars.h"
+#include "sjme/nvm/modelessStars.h"
 
 sjme_attrUnused RETRO_API void retro_get_system_av_info(
 	struct retro_system_av_info* info)

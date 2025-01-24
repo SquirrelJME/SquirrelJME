@@ -7,4 +7,4 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/jdwp.h"
+#include "sjme/nvm/jdwp.h"

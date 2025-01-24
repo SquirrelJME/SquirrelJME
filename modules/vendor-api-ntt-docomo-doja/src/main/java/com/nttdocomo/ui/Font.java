@@ -10,7 +10,9 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * Represents a font.
@@ -21,6 +23,11 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 @Api
 public class Font
 {
+	/** No selection was made, use a default. */
+	@SquirrelJMEVendorApi
+	private static final int _NONE =
+		0x7000_0000;
+	
 	@Api
 	public static final int FACE_MONOSPACE =
 		0x7200_0000;
@@ -35,7 +42,7 @@ public class Font
 	
 	@Api
 	public static final int SIZE_LARGE =
-		0x70000300;
+		0x7000_0300;
 	
 	@Api
 	public static final int SIZE_MEDIUM =
@@ -130,10 +137,22 @@ public class Font
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the width of the string.
+	 *
+	 * @param __s The string to get the width of.
+	 * @return The string width.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/11/28
+	 */
 	@Api
 	public int getBBoxWidth(String __s)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return this._midpFont.stringWidth(__s);
 	}
 	
 	/**
@@ -149,10 +168,17 @@ public class Font
 		return this._midpFont.getDescent();
 	}
 	
+	/**
+	 * Returns the height of the font which is the sum of the ascent and
+	 * descent.
+	 *
+	 * @return The font height.
+	 * @since 2024/09/14
+	 */
 	@Api
 	public int getHeight()
 	{
-		throw Debugging.todo();
+		return this.getAscent() + this.getDescent();
 	}
 	
 	@Api
@@ -243,32 +269,45 @@ public class Font
 				break;
 				
 			case Font.FACE_SYSTEM:
+			case Font._NONE:
 				midpFace = javax.microedition.lcdui.Font.FACE_SYSTEM;
 				break;
 			
 			default:
-				throw new IllegalArgumentException("AH0s");
+				throw new IllegalArgumentException(
+					__error__("AH0s", 0, __type));
 		}
 		
-		// Determine the size of the font
+		// Determine the size of the font, note that DoJa has a different set
+		// of font sizes compared to MIDP
 		int midpSize;
+		int pixelSize;
 		switch (__type & Font._SIZE_MASK)
 		{
 			case Font.SIZE_LARGE:
 				midpSize = javax.microedition.lcdui.Font.SIZE_LARGE;
+				pixelSize = 30;
 				break;
 				
 			case Font.SIZE_MEDIUM:
-				midpSize = javax.microedition.lcdui.Font.SIZE_MEDIUM;
+			case Font._NONE:
+				midpSize = javax.microedition.lcdui.Font.SIZE_LARGE;
+				pixelSize = 24;
 				break;
 				
 			case Font.SIZE_SMALL:
+				midpSize = javax.microedition.lcdui.Font.SIZE_LARGE;
+				pixelSize = 16;
+				break;
+				
 			case Font.SIZE_TINY:
-				midpSize = javax.microedition.lcdui.Font.SIZE_SMALL;
+				midpSize = javax.microedition.lcdui.Font.SIZE_MEDIUM;
+				pixelSize = 12;
 				break;
 			
 			default:
-				throw new IllegalArgumentException("AH0s");
+				throw new IllegalArgumentException(
+					__error__("AH0s", 1, __type));
 		}
 		
 		// Determine the style of the font
@@ -276,6 +315,7 @@ public class Font
 		switch (__type & Font._STYLE_MASK)
 		{
 			case Font.STYLE_PLAIN:
+			case Font._NONE:
 				midpStyle = javax.microedition.lcdui.Font.STYLE_PLAIN;
 				break;
 				
@@ -293,12 +333,13 @@ public class Font
 				break;
 			
 			default:
-				throw new IllegalArgumentException("AH0s");
+				throw new IllegalArgumentException(
+					__error__("AH0s", 2, __type));
 		}
 		
 		// Setup font wrapper
 		return new Font(javax.microedition.lcdui.Font.getFont(midpFace,
-			midpStyle, midpSize));
+			midpStyle, midpSize).deriveFont(midpStyle, pixelSize));
 	}
 	
 	/**

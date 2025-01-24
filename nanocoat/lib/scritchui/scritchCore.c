@@ -63,6 +63,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.containerSetBounds = sjme_scritchui_coreSerial_containerSetBounds,
 	.fontBuiltin = sjme_scritchui_coreSerial_fontBuiltin,
 	.fontDerive = sjme_scritchui_coreSerial_fontDerive,
+	.fontList = sjme_scritchui_coreSerial_fontList,
 	.hardwareGraphics = sjme_scritchui_coreSerial_hardwareGraphics,
 	.labelSetString = sjme_scritchui_coreSerial_labelSetString,
 	.listNew = sjme_scritchui_coreSerial_listNew,
@@ -140,6 +141,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.containerSetBounds = sjme_scritchui_core_containerSetBounds,
 	.fontBuiltin = sjme_scritchui_core_fontBuiltin,
 	.fontDerive = sjme_scritchui_core_fontDerive,
+	.fontList = sjme_scritchui_core_fontList,
 	.hardwareGraphics = sjme_scritchpen_core_hardwareGraphics,
 	.labelSetString = sjme_scritchui_core_labelSetString,
 	.lafElementColor = sjme_scritchui_core_lafElementColor,
@@ -222,9 +224,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 	while (topState == NULL)
 	{
 		/* Barrier for other thread to run. */
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		sjme_thread_yield();
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		
 		/* Read it in. */
 		topState = sjme_atomic_sjme_pointer_get(
@@ -254,7 +256,8 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
-	sjme_attrInNullable sjme_scritchui wrappedState)
+	sjme_attrInNullable sjme_scritchui wrappedState,
+	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
@@ -268,7 +271,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	/* Allocate state. */
 	state = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inPool, sizeof(*state),
-		NULL, NULL, &state, NULL)) || state == NULL)
+		NULL, (void**)&state, NULL)) || state == NULL)
 		goto fail_alloc;
 	
 	/* Seed state. */
@@ -278,11 +281,12 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	state->intern = &sjme_scritchUI_coreIntern;
 	state->impl = inImplFunc;
 	state->wmInfo = &sjme_scritchUI_coreWmInfo;
-	state->nanoTime = sjme_nal_default_nanoTime;
+	state->nanoTime = sjme_nal_default.nanoTime;
+	state->externals = externals;
 	
 	/* Common initialize. */
 	if (sjme_error_is(error = state->intern->initCommon(state,
-		state, SJME_JNI_FALSE,
+		SJME_SUI_CAST_COMMON(state), SJME_JNI_FALSE,
 		SJME_SCRITCHUI_TYPE_ROOT_STATE)))
 		goto fail_commonInit;
 	
@@ -301,6 +305,10 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 		memmove(&state->common.frontEnd, initFrontEnd,
 			sizeof(*initFrontEnd));
 	
+	/* Set wrapped state. */
+	if (wrappedState != NULL)
+		state->wrappedState = wrappedState;
+	
 	/* Perform API specific initialization. */
 	if (sjme_error_is(error = state->impl->apiInit(state)))
 		goto fail_apiInit;
@@ -313,14 +321,13 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 			state, wrappedState);
 		
 		/* Link together. */
-		state->wrappedState = wrappedState;
 		sjme_atomic_sjme_pointer_set(&wrappedState->topState,
 			state);
 		
 		/* Barrier here for wrapped init. */
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		sjme_thread_yield();
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 	}
 	
 	/* Debug. */
@@ -334,9 +341,9 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	{
 		while (0 == sjme_atomic_sjme_jint_get(&state->loopThreadReady))
 		{
-			sjme_thread_barrier();
+			sjme_atomic_barrier();
 			sjme_thread_yield();
-			sjme_thread_barrier();
+			sjme_atomic_barrier();
 		}
 	}
 	
@@ -361,6 +368,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
+	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
 {
 	sjme_errorCode error;
@@ -383,7 +391,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	if (!needFbWrapper)
 	{
 		return sjme_scritchui_core_apiInitActual(inPool, outState,
-			inImplFunc, loopExecute, initFrontEnd, NULL);
+			inImplFunc, loopExecute, initFrontEnd, NULL, externals);
 	}
 	
 	/* Initialize API we are going to wrap. */
@@ -391,7 +399,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	if (sjme_error_is(error = sjme_scritchui_core_apiInitActual(inPool,
 		&wrappedState,
 		inImplFunc, NULL,
-		NULL, NULL)) ||
+		NULL, NULL, externals)) ||
 		wrappedState == NULL)
 		return sjme_error_default(error);
 	
@@ -412,7 +420,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	if (sjme_error_is(error = sjme_scritchui_core_apiInitActual(inPool,
 		&state,
 		&sjme_scritchui_fbFunctions,
-		loopExecute, initFrontEnd, wrappedState)) ||
+		loopExecute, initFrontEnd, wrappedState, externals)) ||
 		state == NULL)
 		return sjme_error_default(error);
 	
@@ -461,7 +469,7 @@ sjme_errorCode sjme_scritchui_coreGeneric_commonNew(
 	/* Allocate result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		outCommonSize, NULL, NULL, &result, NULL)) || result == NULL)
+		outCommonSize, NULL, (void**)&result, NULL)) || result == NULL)
 		goto fail_alloc;
 	
 	/* Pre-initialize. */
@@ -518,7 +526,8 @@ sjme_errorCode sjme_scritchui_coreGeneric_componentNew(
 	/* Allocate result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		outComponentSize, NULL, NULL, &result, NULL)) || result == NULL)
+		outComponentSize, NULL, (void**)&result, NULL)) ||
+		result == NULL)
 		goto fail_alloc;
 	
 	/* Pre-initialize. */
@@ -571,13 +580,28 @@ sjme_pointer sjme_scritchui_checkCast(sjme_scritchui_uiType inType,
 	return inPtr;
 }
 
-/**
- * Check cast of a given type against a menu kind.
- * 
- * @param inPtr The input pointer.
- * @return Always @c inPtr .
- * @since 2024/07/23
- */
+sjme_pointer sjme_scritchui_checkCast_component(sjme_pointer inPtr)
+{
+	sjme_scritchui_uiCommon common;
+	
+	if (inPtr == NULL)
+		return NULL;
+	
+	/* Check type. */
+	common = inPtr;
+	if (common->type != SJME_SCRITCHUI_TYPE_LIST &&
+		common->type != SJME_SCRITCHUI_TYPE_PANEL &&
+		common->type != SJME_SCRITCHUI_TYPE_SCROLL_PANEL &&
+		common->type != SJME_SCRITCHUI_TYPE_WINDOW)
+	{
+		sjme_debug_abort();
+		return NULL;
+	}
+	
+	/* Return passed value. */
+	return inPtr;
+}
+
 sjme_pointer sjme_scritchui_checkCast_menuKind(sjme_pointer inPtr)
 {
 	sjme_scritchui_uiCommon common;

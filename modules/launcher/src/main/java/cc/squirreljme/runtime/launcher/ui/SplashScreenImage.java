@@ -10,8 +10,13 @@
 package cc.squirreljme.runtime.launcher.ui;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.Font;
@@ -28,23 +33,15 @@ public class SplashScreenImage
 	/** The copyright string. */
 	public static final String COPYRIGHT =
 		"https://squirreljme.cc/\n" +
-		"(C) 2013-2024 Stephanie Gawroriski\n" +
-		"TM  2016-2024 Stephanie Gawroriski\n" +
+		"(C) 2013-2025 Stephanie Gawroriski\n" +
+		"TM  2016-2025 Stephanie Gawroriski\n" +
 		"License: Mozilla Public License 2.0!\n" +
 		"Donate to me on Patreon:\n" +
 		"*** https://www.patreon.com/SquirrelJME! ***";
 	
-	/** The ending splash color. */
-	public static final int END_COLOR =
-		0xF5A9B8;
-	
 	/** The splash image height. */
 	public static final int HEIGHT =
 		320;
-	
-	/** The starting splash color. */
-	public static final int START_COLOR =
-		0x5BCEFA;
 	
 	/** The splash image width. */
 	public static final int WIDTH =
@@ -52,6 +49,12 @@ public class SplashScreenImage
 	
 	/** The font used for drawing. */
 	private final Font _verFont;
+	
+	/** The ending splash color. */
+	public final int endColor;
+	
+	/** The starting splash color. */
+	public final int startColor;
 	
 	/** The height for text. */
 	final int _verHeight;
@@ -81,6 +84,14 @@ public class SplashScreenImage
 	 */
 	public SplashScreenImage()
 	{
+		// Get base accent colors
+		ScritchLAFInterface laf =
+			DisplayManager.instance().scritch().environment().lookAndFeel();
+		this.startColor = 0xFF000000 | laf.lafElementColor(
+			null, ScritchLAFElementColor.ACCENT_TOP);
+		this.endColor = 0xFF000000 | laf.lafElementColor(
+			null, ScritchLAFElementColor.ACCENT_BOTTOM);
+		
 		// Height of the screen
 		int width = SplashScreenImage.WIDTH;
 		int height = SplashScreenImage.HEIGHT;
@@ -97,12 +108,17 @@ public class SplashScreenImage
 		// Copyright font
 		this._copyFont = Font.getFont("sansserif", 0, 12);
 		this._copyX = 2;
-		this._copyY = height - 2;
+		this._copyY = height - (this._copyFont.getHeight() * 6);
+		
+		// Make sure the bar is always above the copyright
+		int loadingBarY = centerY + (height / 8) + (verHeight / 2);
+		if (loadingBarY + 16 >= this._copyY)
+			loadingBarY = this._copyY - 24;
 		
 		// Loading
-		this._loadingBarY = centerY + (height / 8) + (verHeight / 2);
+		this._loadingBarY = loadingBarY;
 		this._loadingStrX = centerX;
-		this._loadingStrY = this._loadingBarY + (verHeight / 2);
+		this._loadingStrY = loadingBarY + (verHeight / 2);
 	}
 	
 	/**
@@ -137,7 +153,7 @@ public class SplashScreenImage
 			
 			// Draw gradient
 			SplashScreenImage.drawGradient(g,
-				SplashScreenImage.START_COLOR, SplashScreenImage.END_COLOR,
+				this.startColor, this.endColor,
 				SplashScreenImage.WIDTH, SplashScreenImage.HEIGHT);
 			
 			// Draw into the pixel buffer

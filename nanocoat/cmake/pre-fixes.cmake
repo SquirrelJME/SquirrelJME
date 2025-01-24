@@ -11,8 +11,10 @@
 if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR
 	CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
 	set(SQUIRRELJME_IS_DEBUG ON)
+	set(SQUIRRELJME_IS_RELEASE OFF)
 else()
 	set(SQUIRRELJME_IS_DEBUG OFF)
+	set(SQUIRRELJME_IS_RELEASE ON)
 endif()
 
 # For MSVC statically link against the runtime

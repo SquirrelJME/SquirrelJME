@@ -97,10 +97,16 @@ public abstract class Frame
 		return this.__displayable().getWidth();
 	}
 	
+	/**
+	 * Sets the background color.
+	 *
+	 * @param __c The background color to set.
+	 * @since 2024/11/02
+	 */
 	@Api
 	public void setBackground(int __c)
 	{
-		throw Debugging.todo();
+		this._bgColor._bgColor = __c;
 	}
 	
 	/**

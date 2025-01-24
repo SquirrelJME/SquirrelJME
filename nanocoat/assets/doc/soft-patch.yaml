@@ -1,0 +1,10 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://squirreljme.cc/doc/trunk/nanocoat/assets/doc/soft-patch.yaml
+title: SquirrelJME Soft-Patch YAML Schema
+description: |
+ Allows for software side patching of Java applications running on the
+ SquirrelJME virtual machine so that modifications to the original pristine
+ Jar are not required. This allows you to change the behavior of methods,
+ add new fields, add new methods, and otherwise accordingly. This may be used
+ to fix bugs, add back in missing functionality, or otherwise.
+type: object

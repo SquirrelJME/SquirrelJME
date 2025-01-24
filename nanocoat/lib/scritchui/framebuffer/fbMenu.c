@@ -34,7 +34,8 @@ sjme_errorCode sjme_scritchui_fb_menuBarNew(
 	
 	/* Map front ends. */
 	if (sjme_error_is(error = sjme_scritchui_fb_biMap(
-		inState, inMenuBar, wrapped)))
+		inState, SJME_SUI_CAST_COMMON(inMenuBar),
+		SJME_SUI_CAST_COMMON(wrapped))))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -89,7 +90,8 @@ sjme_errorCode sjme_scritchui_fb_menuItemNew(
 	
 	/* Map front ends. */
 	if (sjme_error_is(error = sjme_scritchui_fb_biMap(
-		inState, inMenuItem, wrapped)))
+		inState, SJME_SUI_CAST_COMMON(inMenuItem),
+		SJME_SUI_CAST_COMMON(wrapped))))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -119,7 +121,8 @@ sjme_errorCode sjme_scritchui_fb_menuNew(
 	
 	/* Map front ends. */
 	if (sjme_error_is(error = sjme_scritchui_fb_biMap(
-		inState, inMenu, wrapped)))
+		inState, SJME_SUI_CAST_COMMON(inMenu),
+		SJME_SUI_CAST_COMMON(wrapped))))
 		return sjme_error_default(error);
 	
 	/* Success! */

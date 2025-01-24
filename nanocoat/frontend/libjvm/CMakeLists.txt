@@ -30,9 +30,9 @@ add_dependencies(libJvm
 # We need to find all of the includes and such
 target_include_directories(libJvm PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
-	"${JNI_INCLUDE_DIRS}"
-	"${JAVA_INCLUDE_PATH}"
-	"${JAVA_INCLUDE_PATH2}")
+	${JNI_INCLUDE_DIRS}
+	${JAVA_INCLUDE_PATH}
+	${JAVA_INCLUDE_PATH2})
 
 # Libraries needed to be linked with for the DyLib to function
 target_link_libraries(libJvm PUBLIC
@@ -42,4 +42,7 @@ target_link_libraries(libJvm PUBLIC
 # Use a conforming name for the library
 squirreljme_target_binary_name(libJvm
 	"jvm")
+
+# Exports for Windows, etc.
+squirreljme_target_shared_library_exports(libJvm)
 

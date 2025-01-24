@@ -225,7 +225,7 @@ const sjme_jbyte sqf_font_sanserif_12_0_charBmp[] =
 };
 const struct sjme_scritchui_sqf sqf_font_sanserif_12_0 = 
 {
-	.name = "sanserif", 
+	.name = "fallback", 
 	.family = 2, 
 	.pixelHeight = 12, 
 	.ascent = 9, 
@@ -351,7 +351,7 @@ const sjme_jbyte sqf_font_sanserif_12_1_charBmp[] =
 };
 const struct sjme_scritchui_sqf sqf_font_sanserif_12_1 = 
 {
-	.name = "sanserif", 
+	.name = "fallback", 
 	.family = 2, 
 	.pixelHeight = 12, 
 	.ascent = 9, 
@@ -473,7 +473,7 @@ const sjme_jbyte sqf_font_sanserif_12_20_charBmp[] =
 };
 const struct sjme_scritchui_sqf sqf_font_sanserif_12_20 = 
 {
-	.name = "sanserif", 
+	.name = "fallback", 
 	.family = 2, 
 	.pixelHeight = 12, 
 	.ascent = 9, 
@@ -501,7 +501,7 @@ const struct sjme_scritchui_sqf* sqf_font_sanserif_12_sqfs[] =
 };
 const struct sjme_scritchui_sqfCodepage sqf_font_sanserif_12 = 
 {
-	.name = "sanserif", 
+	.name = "fallback", 
 	.numCodepages = 3, 
 	.codepages = sqf_font_sanserif_12_sqfs
 };

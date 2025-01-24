@@ -57,7 +57,7 @@
 
 /** Invoke serial call and wait for result. */
 #define SJME_SCRITCHUI_INVOKE_WAIT \
-	do { sjme_thread_barrier(); \
+	do { sjme_atomic_barrier(); \
 		if (sjme_error_is(error = inState->api->loopExecuteWait(inState, \
 		sjme_scritchui_serialDispatch, &data))) \
 		return sjme_error_default(error); \
@@ -129,11 +129,14 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		
 	/* Emit barrier so we can access this. */
 	data = (sjme_scritchui_serialData*)anything;
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Restore info. */
 	state = data->state;
 	as = &data->data;
+	
+/* clang-format off */
+/* ------------------------------------------------------------------------ */
 	
 	/* Begin cases. */
 	SJME_SCRITCHUI_DISPATCH_SWITCH_BEGIN
@@ -317,6 +320,13 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->fontDerive.inStyle,
 		as->fontDerive.inPixelSize,
 		as->fontDerive.outDerived));
+	
+	SJME_SCRITCHUI_DISPATCH_CASE(fontList,
+		SJME_SCRITCHUI_SERIAL_TYPE_FONT_LIST,
+		(state,
+		as->fontList.outFonts,
+		as->fontList.outValid,
+		as->fontList.outMaxFonts));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(hardwareGraphics,
 		SJME_SCRITCHUI_SERIAL_TYPE_HARDWARE_GRAPHICS,
@@ -492,6 +502,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	
 	/* End. */
 	SJME_SCRITCHUI_DISPATCH_SWITCH_END
+	
+/* ------------------------------------------------------------------------ */
+/* clang-format on */
 	
 	/* Map result. */
 	return SJME_THREAD_RESULT(data->error);
@@ -942,6 +955,24 @@ sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 	SJME_SCRITCHUI_SERIAL_PASS(inStyle);
 	SJME_SCRITCHUI_SERIAL_PASS(inPixelSize);
 	SJME_SCRITCHUI_SERIAL_PASS(outDerived);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontList(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_jint* outValid,
+	sjme_attrOutNullable sjme_jint* outMaxFonts)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(fontList,
+		SJME_SCRITCHUI_SERIAL_TYPE_FONT_LIST,
+		(inState, outFonts, outValid, outMaxFonts));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(outFonts);
+	SJME_SCRITCHUI_SERIAL_PASS(outValid);
+	SJME_SCRITCHUI_SERIAL_PASS(outMaxFonts);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

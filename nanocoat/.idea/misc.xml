@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="CMakePythonSetting">
+    <option name="pythonIntegrationState" value="YES" />
+  </component>
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
     <sourceRoots>
@@ -20,6 +23,7 @@
       <file path="$PROJECT_DIR$/.idea" />
       <file path="$PROJECT_DIR$/build" />
       <file path="$PROJECT_DIR$/cc/cmake-build-debug" />
+      <file path="$PROJECT_DIR$/cmake-build-debug-mingw-w64" />
     </excludeRoots>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />

@@ -229,7 +229,15 @@ public final class SuiteScanner
 			// Ignore non-JARs
 			String libPath = this.shelf.libraryPath(jar);
 			if (!SuiteUtils.isJar(libPath))
+			{
+				// Do indicate them as skipped, otherwise the progress bar
+				// will never fill up all the way
+				if (__listener != null)
+					__listener.skipped(accurateJarIndex, __numJars);
+				
+				// Skip
 				continue;
+			}
 			
 			// Debug
 			Debugging.debugNote("Checking %s...", libPath);
@@ -240,8 +248,13 @@ public final class SuiteScanner
 				accurateJarIndex, jar, this.shelf);
 			
 			// Scan for all the application types accordingly
+			boolean foundAny = false;
 			for (ApplicationParser parser : ApplicationParser.values())
-				parser.parse(state);
+				foundAny |= parser.parse(state);
+			
+			// Nothing was found, so indicate it as skipped
+			if (!foundAny && __listener != null)
+				__listener.skipped(accurateJarIndex, __numJars);
 		}
 	}
 }

@@ -21,7 +21,8 @@
 #endif
 
 #include "sjme/config.h"
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
+#include "sjme/tokenUtils.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -33,6 +34,21 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+#if defined(SJME_CONFIG_HAS_ATOMIC_DARWIN)
+	/** Emits a memory barrier. */
+	#define sjme_atomic_barrier() OSMemoryBarrier()
+#elif defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
+	defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY)
+	/** Emits a memory barrier. */
+	#define sjme_atomic_barrier() __sync_synchronize()
+#elif defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
+	/** Emits a memory barrier. */
+	#define sjme_atomic_barrier() MemoryBarrier()
+#else
+	/** Emits a memory barrier. */
+	#define sjme_atomic_barrier() do {} while(0)
+#endif
 
 /**
  * Determines the name of an atomic type.
@@ -135,15 +151,17 @@ extern "C" {
  * @since 2024/01/08
  */
 #define SJME_ATOMIC_DECLARE(type, numPointerStars) \
-	typedef sjme_align64 struct SJME_ATOMIC_NAME(type, numPointerStars) \
+	typedef struct sjme_align64 SJME_ATOMIC_NAME(type, numPointerStars) \
 	{ \
 		/** The atomic type. */ \
 		SJME_TOKEN_TYPE(type, numPointerStars) _Atomic value; \
 	} SJME_ATOMIC_NAME(type, numPointerStars); \
 	SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars)
 
-#elif defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
+#elif defined(SJME_CONFIG_HAS_ATOMIC_DARWIN) || \
+	defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
 	defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
+	defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY) || \
 	defined(SJME_CONFIG_HAS_ATOMIC_OLD)
 
 /**
@@ -154,7 +172,7 @@ extern "C" {
  * @since 2024/01/08
  */
 #define SJME_ATOMIC_DECLARE(type, numPointerStars) \
-	typedef sjme_align64 struct SJME_ATOMIC_NAME(type, numPointerStars) \
+	typedef struct sjme_align64 SJME_ATOMIC_NAME(type, numPointerStars) \
 	{ \
 		/** The atomic value. */ \
 		SJME_TOKEN_TYPE(type, numPointerStars) volatile value; \
@@ -179,14 +197,14 @@ SJME_ATOMIC_DECLARE(sjme_lpstr, 0);
 /** Atomic @c sjme_lpcstr. */
 SJME_ATOMIC_DECLARE(sjme_lpcstr, 0);
 
-/** Atomic @c sjme_jobject. */
-SJME_ATOMIC_DECLARE(sjme_jobject, 0);
-
 /** Atomic @c sjme_pointer. */
 SJME_ATOMIC_DECLARE(sjme_pointer, 0);
 
 /** Atomic pointer declaration. */
 SJME_ATOMIC_DECLARE(sjme_intPointer , 0);
+
+/** Atomic @c sjme_jobject. */
+SJME_ATOMIC_DECLARE(sjme_jobject, 0);
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_OLD)
 

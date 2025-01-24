@@ -1,63 +1,21 @@
-# ---------------------------------------------------------------------------
-# SquirrelJME
-#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-# ---------------------------------------------------------------------------
-# SquirrelJME is under the Mozilla Public License Version 2.0.
-# See license.mkd for licensing and copyright information.
-# ---------------------------------------------------------------------------
 ---
+Language: Cpp
 BasedOnStyle: LLVM
 AccessModifierOffset: -4
-AlignAfterOpenBracket: AlwaysBreak
-AlignArrayOfStructures: None
-AlignConsecutiveAssignments:
-  Enabled: false
-  AcrossEmptyLines: false
-  AcrossComments: false
-  AlignCompound: false
-  PadOperators: false
-AlignConsecutiveBitFields:
-  Enabled: false
-  AcrossEmptyLines: false
-  AcrossComments: false
-  AlignCompound: false
-  PadOperators: false
-AlignConsecutiveDeclarations:
-  Enabled: false
-  AcrossEmptyLines: false
-  AcrossComments: false
-  AlignCompound: false
-  PadOperators: false
-AlignConsecutiveMacros:
-  Enabled: false
-  AcrossEmptyLines: false
-  AcrossComments: false
-  AlignCompound: false
-  PadOperators: false
-AlignConsecutiveShortCaseStatements:
-  Enabled: false
-  AcrossEmptyLines: false
-  AcrossComments: false
-  AlignCaseColons: false
+AlignAfterOpenBracket: DontAlign
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
 AlignEscapedNewlines: DontAlign
-AlignOperands: DontAlign
-AlignTrailingComments:
-  Kind: Never
-  OverEmptyLines: 0
-AllowAllArgumentsOnNextLine: true
-AllowAllParametersOfDeclarationOnNextLine: true
-AllowBreakBeforeNoexceptSpecifier: Never
-AllowShortBlocksOnASingleLine: Never
-AllowShortCaseLabelsOnASingleLine: false
+AlignOperands: false
+AlignTrailingComments: false
+AllowAllConstructorInitializersOnNextLine: false
+AllowShortBlocksOnASingleLine: false
 AllowShortEnumsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
-AllowShortIfStatementsOnASingleLine: Never
+AllowShortIfStatementsOnASingleLine: false
 AllowShortLambdasOnASingleLine: None
-AllowShortLoopsOnASingleLine: false
-AlwaysBreakAfterDefinitionReturnType: None
-AlwaysBreakAfterReturnType: None
-AlwaysBreakBeforeMultilineStrings: false
-AlwaysBreakTemplateDeclarations: Yes
+AlwaysBreakAfterDefinitionReturnType: false
+AlwaysBreakTemplateDeclarations: No
 AttributeMacros:
   - sjme_inline
   - sjme_noOptimize
@@ -92,134 +50,59 @@ AttributeMacros:
   - JNIEXPORT
   - JNIIMPORT
   - JNICALL
-BinPackArguments: false
 BinPackParameters: false
-BitFieldColonSpacing: Both
 BraceWrapping:
   AfterCaseLabel: true
   AfterClass: true
-  AfterControlStatement: Always
+  AfterControlStatement: true
   AfterEnum: true
   AfterFunction: true
   AfterNamespace: true
-  AfterObjCDeclaration: false
   AfterStruct: true
   AfterUnion: true
   AfterExternBlock: true
-  BeforeCatch: false
+  BeforeCatch: true
   BeforeElse: true
-  BeforeLambdaBody: false
+  BeforeLambdaBody: true
   BeforeWhile: false
-  IndentBraces: false
   SplitEmptyFunction: true
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
 BreakAfterAttributes: Leave
-BreakAfterJavaFieldAnnotations: false
-BreakArrays: true
-BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Custom
-BreakBeforeConceptDeclarations: Always
-BreakBeforeInlineASMColon: OnlyMultiline
 BreakBeforeTernaryOperators: false
 BreakConstructorInitializers: AfterColon
+BreakConstructorInitializersBeforeComma: false
 BreakInheritanceList: AfterComma
-BreakStringLiterals: true
 ColumnLimit: 79
-CompactNamespaces: false
-ConstructorInitializerIndentWidth: 4
-ContinuationIndentWidth: 4
-Cpp11BracedListStyle: true
-DerivePointerAlignment: false
-DisableFormat: false
-EmptyLineAfterAccessModifier: Never
-EmptyLineBeforeAccessModifier: LogicalBlock
-ExperimentalAutoDetectBinPacking: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
 FixNamespaceComments: false
 ForEachMacros:
   - SJME_FOREACH_TODO
 IfMacros:
   - SJME_IF_TODO
-IncludeBlocks: Preserve
 IncludeCategories:
-  - Regex: .*
+  - Regex: '^<.*'
     Priority: 1
-    SortPriority: 0
-    CaseSensitive: false
-IncludeIsMainRegex: (Test)?$
-IncludeIsMainSourceRegex: ""
-IndentAccessModifiers: false
-IndentCaseBlocks: false
+  - Regex: '^".*'
+    Priority: 2
+  - Regex: '.*'
+    Priority: 3
+IncludeIsMainRegex: '([-_](test|unittest))?$'
+IndentCaseBlocks: true
 IndentCaseLabels: true
-IndentExternBlock: AfterExternBlock
 IndentGotoLabels: false
-IndentPPDirectives: BeforeHash
-IndentRequiresClause: true
 IndentWidth: 4
-IndentWrappedFunctionNames: true
-InsertBraces: false
-InsertNewlineAtEOF: false
-InsertTrailingCommas: None
-IntegerLiteralSeparator:
-  Binary: 0
-  BinaryMinDigits: 0
-  Decimal: 0
-  DecimalMinDigits: 0
-  Hex: 0
-  HexMinDigits: 0
-JavaScriptQuotes: Leave
-JavaScriptWrapImports: true
-KeepEmptyLinesAtEOF: false
-KeepEmptyLinesAtTheStartOfBlocks: true
-LambdaBodyIndentation: Signature
-Language: Cpp
+InsertNewlineAtEOF: true
 LineEnding: LF
-MacroBlockBegin: ""
-MacroBlockEnd: ""
-MaxEmptyLinesToKeep: 1
-NamespaceIndentation: All
-ObjCBinPackProtocolList: Auto
-ObjCBlockIndentWidth: 2
-ObjCBreakBeforeNestedBlockParam: true
-ObjCSpaceAfterProperty: false
-ObjCSpaceBeforeProtocolList: true
-PPIndentWidth: -1
-PackConstructorInitializers: BinPack
-PenaltyBreakAssignment: 2
-PenaltyBreakBeforeFirstCallParameter: 19
+MacroBlockBegin: ''
+MacroBlockEnd: ''
 PenaltyBreakComment: 1000000
-PenaltyBreakFirstLessLess: 120
-PenaltyBreakOpenParenthesis: 0
-PenaltyBreakString: 1000
-PenaltyBreakTemplateDeclaration: 10
-PenaltyExcessCharacter: 1000000
-PenaltyIndentedWhitespace: 0
 PenaltyReturnTypeOnItsOwnLine: 10
 PointerAlignment: Left
-QualifierAlignment: Leave
 ReferenceAlignment: Left
 ReflowComments: false
-RemoveBracesLLVM: false
-RemoveParentheses: Leave
-RemoveSemicolon: false
-RequiresClausePosition: OwnLine
-RequiresExpressionIndentation: OuterScope
-SeparateDefinitionBlocks: Leave
-ShortNamespaceLines: 1
 SortIncludes: Never
-SortJavaStaticImport: Before
-SortUsingDeclarations: LexicographicNumeric
-SpaceAfterCStyleCast: false
-SpaceAfterLogicalNot: false
-SpaceAfterTemplateKeyword: false
-SpaceAroundPointerQualifiers: Default
-SpaceBeforeAssignmentOperators: true
-SpaceBeforeCaseColon: false
-SpaceBeforeCpp11BracedList: false
-SpaceBeforeCtorInitializerColon: true
-SpaceBeforeInheritanceColon: true
-SpaceBeforeJsonColon: false
-SpaceBeforeParens: Custom
 SpaceBeforeParensOptions:
   AfterControlStatements: true
   AfterForeachMacros: true
@@ -230,22 +113,17 @@ SpaceBeforeParensOptions:
   AfterRequiresInClause: false
   AfterRequiresInExpression: false
   BeforeNonEmptyParentheses: false
-SpaceBeforeRangeBasedForLoopColon: true
-SpaceBeforeSquareBrackets: false
-SpaceInEmptyBlock: false
-SpacesBeforeTrailingComments: 0
+SpaceInEmptyParentheses: false
 SpacesInAngles: false
+SpacesInConditionalStatement: false
 SpacesInContainerLiterals: false
-SpacesInLineCommentPrefix:
-  Minimum: 1
-  Maximum: -1
-SpacesInParens: Never
+SpacesInCStyleCastParentheses: false
 SpacesInParensOptions:
   InConditionalStatements: false
   InCStyleCasts: false
   InEmptyParentheses: false
   Other: false
-SpacesInSquareBrackets: false
+SpacesInParentheses: false
 Standard: c++11
 StatementAttributeLikeMacros:
   - SJME_DEPRECATED
@@ -262,9 +140,11 @@ StatementMacros:
   - SJME_SCRITCHUI_SERIAL_PASS
   - SJME_SCRITCHUI_INVOKE_WAIT
   - RECOVER_FONT
+  - SJME_ATOMIC_FUNCTION
 TabWidth: 4
+TypenameMacros:
+  - SJME_LIST_NAME
 UseTab: Always
-VerilogBreakBetweenInstancePorts: true
 WhitespaceSensitiveMacros:
   - SJME_TOKEN_STRING
   - SJME_TOKEN_STRING_PP
@@ -274,9 +154,4 @@ WhitespaceSensitiveMacros:
   - SJME_SCRITCHUI_SERIAL_CHUNK
   - sjme_error_is
   - CHECK_AND_FORWARD
-AllowAllConstructorInitializersOnNextLine: false
-SpaceInEmptyParentheses: false
-SpacesInCStyleCastParentheses: false
-SpacesInParentheses: false
-TypenameMacros:
-  - SJME_LIST_NAME
+...

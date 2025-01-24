@@ -36,7 +36,8 @@ SJME_TEST_DECLARE(testListFlattenArgs)
 	/* Test array load of list. */
 	list = NULL;
 	if (sjme_error_is(sjme_list_flattenArgCV(test->pool,
-		&list, testArgC, testArgV)) || list == NULL)
+		(sjme_list_sjme_lpstr**)&list,
+		testArgC, testArgV)) || list == NULL)
 		sjme_unit_fail(test, "Could not build flattened list?");
 
 	/* Test resultant list values. */

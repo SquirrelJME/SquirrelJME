@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchViewBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
@@ -68,7 +69,7 @@ public abstract class Screen
 	final int __getHeight()
 	{
 		// Get direct widget size
-		DisplayableState state = this._state;
+		DisplayableState state = this.__state();
 		if (state.currentDisplay() != null)
 			state.scritchApi().component()
 				.componentGetHeight(this.__scritchComponent());
@@ -87,7 +88,7 @@ public abstract class Screen
 	final int __getWidth()
 	{
 		// Get direct widget size
-		DisplayableState state = this._state;
+		DisplayableState state = this.__state();
 		if (state.currentDisplay() != null)
 			state.scritchApi().component()
 				.componentWidth(this.__scritchComponent());
@@ -103,6 +104,7 @@ public abstract class Screen
 	 */
 	@Override
 	@MustBeInvokedByOverriders
+	@SquirrelJMEVendorApi
 	void __execRevalidate(DisplayState __parent)
 	{
 		// Setup super first
@@ -120,7 +122,7 @@ public abstract class Screen
 		// Make sure the displayable has the correct texture size and that
 		// either the view or the actual component if there is no view also
 		// has the given size
-		DisplayableState state = this._state;
+		DisplayableState state = this.__state();
 		ScritchInterface scritchApi = state.scritchApi();
 		scritchApi.container().containerSetBounds(
 			state.scritchPanel(),

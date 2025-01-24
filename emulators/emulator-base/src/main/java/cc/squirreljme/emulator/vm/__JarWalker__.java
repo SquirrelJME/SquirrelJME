@@ -54,7 +54,8 @@ public final class __JarWalker__
 	public FileVisitResult visitFile(Path __path, BasicFileAttributes __attrib)
 		throws IOException
 	{
-		Debugging.debugNote("Wildcard checking: %s", __path);
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("Wildcard checking: %s", __path);
 		
 		// If this is a Jar or resource, we will grab it
 		String fn = __path.getFileName().toString();

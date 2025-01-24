@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.StringShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
@@ -55,6 +56,13 @@ public final class Character
 	public static final Class<Character> TYPE =
 		TypeShelf.<Character>typeToClass(TypeShelf.typeOfCharacter());
 	
+	/** Maximum cache count. */
+	private static final char _MAX_CACHE =
+		128;
+	
+	/** Cache of common characters. */
+	private static volatile Character[] _CACHE;
+	
 	/** The character value. */
 	private final char _value;
 	
@@ -96,8 +104,8 @@ public final class Character
 	public int compareTo(Character __o)
 		throws NullPointerException
 	{
-		char a = this._value,
-			b = __o._value;
+		char a = this._value;
+		char b = ((Character)__o)._value;
 		
 		return a - b;
 	}
@@ -141,9 +149,16 @@ public final class Character
 		// We can represent a string for our single character as this
 		// special sequence instead of just creating a new temporary string
 		// just to store a single character or creating some kind of array.
+		// Use an intern string if the character is cacheable, so that it
+		// will always just technically exist
 		if (ref == null || null == (rv = ref.get()))
+		{
+			char c = this._value;
 			this._string = new WeakReference<>(
-				(rv = new String(new char[]{this._value}, (short)0)));
+				(rv = StringShelf.stringValueOf(
+					c < Character._MAX_CACHE,
+					new char[]{c}, 0, 1)));
+		}
 		
 		return rv;
 	}
@@ -333,9 +348,11 @@ public final class Character
 	 * @since 2018/10/13
 	 */
 	@Api
+	@SuppressWarnings("StringOperationCanBeSimplified")
 	public static String toString(char __c)
 	{
-		return new String(new char[]{__c}, (short)0);
+		// This allows the cache to be used
+		return Character.valueOf(__c).toString();
 	}
 	
 	/**
@@ -363,9 +380,42 @@ public final class Character
 	 */
 	@Api
 	@ImplementationNote("This is not cached.")
-	@SuppressWarnings("UnnecessaryBoxing")
+	@SuppressWarnings({"UnnecessaryBoxing",
+		"CheckForOutOfMemoryOnLargeArrayAllocation"})
 	public static Character valueOf(char __v)
 	{
+		// For ASCII characters, use a cache because there generally will
+		// be lots of these characters existing and this will reduce
+		// overall memory usage... hopefully 
+		if (__v < Character._MAX_CACHE)
+		{
+			// Get cache, initialize if required
+			Character[] cache = Character._CACHE;
+			if (cache == null)
+				synchronized (Character.class)
+				{
+					cache = Character._CACHE;
+					if (cache == null)
+					{
+						cache = new Character[Character._MAX_CACHE];
+						Character._CACHE = cache;
+					}
+				}
+			
+			// Is this in the cache?
+			Character result = cache[__v];
+			if (result != null)
+				return result;
+			
+			// Setup new character
+			result = new Character(__v);
+			
+			// Cache and use it
+			cache[__v] = result;
+			return result;
+		}
+		
+		// Do not use cache, otherwise
 		return new Character(__v);
 	}
 }

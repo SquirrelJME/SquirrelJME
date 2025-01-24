@@ -9,7 +9,9 @@
 
 #include "sjme/atomic.h"
 
-#if defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
+#if defined(SJME_CONFIG_HAS_ATOMIC_DARWIN)
+	#include <libkern/OSAtomic.h>
+#elif defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
 	#define WIN32_LEAN_AND_MEAN 1
 	
 	#include <windows.h>
@@ -17,7 +19,48 @@
 	#undef WIN32_LEAN_AND_MEAN
 #endif
 
-#if defined(SJME_CONFIG_HAS_ATOMIC_GCC)
+/* clang-format off */
+/* ------------------------------------------------------------------------ */
+
+#if defined(SJME_CONFIG_HAS_ATOMIC_DARWIN)
+
+	#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
+		{ \
+			if (OSAtomicCompareAndSwap32Barrier( \
+				(sjme_jint)expected, \
+				(sjme_jint)set, \
+				(sjme_jint*)&atomic->value)) \
+				return SJME_JNI_TRUE; \
+			return SJME_JNI_FALSE; \
+		}
+
+	#define SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars) \
+		{ \
+			/* Returns the new value, so it must be reversed! */\
+			return (SJME_TOKEN_TYPE(type, numPointerStars))\
+				(OSAtomicAdd32Barrier((sjme_jint)add, \
+				(sjme_jint*)&atomic->value) - (sjme_jint)add); \
+		}
+
+	#define SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_SET(type, numPointerStars) \
+		{ \
+			/* There is no simple set, so sadly this is two */ \
+			/* atomic operations. */ \
+			sjme_jint temp; \
+			OSMemoryBarrier(); \
+			temp = OSAtomicXor32((sjme_jint)value, \
+				(sjme_jint*)&atomic->value); \
+			OSAtomicXor32Barrier((((sjme_jint)temp) ^ ((sjme_jint)value)), \
+				(sjme_jint*)&atomic->value); \
+			OSMemoryBarrier(); \
+			return (SJME_TOKEN_TYPE(type, numPointerStars))\
+				(((sjme_jint)temp) ^ ((sjme_jint)value)); \
+		}
+
+#elif defined(SJME_CONFIG_HAS_ATOMIC_GCC)
 
 	/** Memory order used for GCC. */
 	#define SJME_ATOMIC_GCC_MEMORY_ORDER __ATOMIC_SEQ_CST
@@ -54,6 +97,40 @@
 			return __atomic_exchange_n(&atomic->value, \
 				(SJME_TOKEN_TYPE(type, numPointerStars))value, \
 				SJME_ATOMIC_GCC_MEMORY_ORDER); \
+		}
+
+#elif defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY)
+	
+	#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
+		{ \
+			SJME_TOKEN_TYPE(type, numPointerStars) was; \
+			 \
+			was = __sync_val_compare_and_swap( \
+				SJME_TYPEOF_IF_POINTER(type, numPointerStars, \
+					(volatile sjme_pointer*))&atomic->value, \
+				expected, set); \
+			if (was == expected) \
+				return SJME_JNI_TRUE; \
+			return SJME_JNI_FALSE; \
+		}
+
+	#define SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars) \
+		{ \
+			return __sync_fetch_and_add( \
+				SJME_TYPEOF_IF_POINTER(type, numPointerStars, \
+					(volatile sjme_pointer*))&atomic->value, \
+				add); \
+		}
+
+	#define SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_SET(type, numPointerStars) \
+		{ \
+			return __sync_lock_test_and_set( \
+				SJME_TYPEOF_IF_POINTER(type, numPointerStars, \
+					(volatile sjme_pointer*))&atomic->value, \
+				(SJME_TOKEN_TYPE(type, numPointerStars))value); \
 		}
 
 #elif defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
@@ -190,6 +267,9 @@
 			(atomic, 0); \
 	}
 
+/* ------------------------------------------------------------------------ */
+/* clang-format on */
+
 /**
  * Common atomic function sets.
  *
@@ -204,18 +284,18 @@
 	SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \
 	SJME_ATOMIC_FUNCTION_GET(type, numPointerStars)
 
-SJME_ATOMIC_FUNCTION(sjme_jint, 0)
+SJME_ATOMIC_FUNCTION(sjme_jint, 0);
 
-SJME_ATOMIC_FUNCTION(sjme_juint, 0)
+SJME_ATOMIC_FUNCTION(sjme_juint, 0);
 
-SJME_ATOMIC_FUNCTION(sjme_lpstr, 0) /* NOLINT(*-non-const-parameter) */
+SJME_ATOMIC_FUNCTION(sjme_lpstr, 0); /* NOLINT(*-non-const-parameter) */
 
-SJME_ATOMIC_FUNCTION(sjme_lpcstr, 0) /* NOLINT(*-non-const-parameter) */
+SJME_ATOMIC_FUNCTION(sjme_lpcstr, 0); /* NOLINT(*-non-const-parameter) */
 
-SJME_ATOMIC_FUNCTION(sjme_jobject, 0)
+SJME_ATOMIC_FUNCTION(sjme_jobject, 0);
 
-SJME_ATOMIC_FUNCTION(sjme_pointer, 0)
+SJME_ATOMIC_FUNCTION(sjme_pointer, 0);
 
-SJME_ATOMIC_FUNCTION(sjme_intPointer, 0)
+SJME_ATOMIC_FUNCTION(sjme_intPointer, 0);
 
-SJME_ATOMIC_FUNCTION(sjme_thread, 0)
+SJME_ATOMIC_FUNCTION(sjme_thread, 0);

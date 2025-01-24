@@ -35,7 +35,8 @@ sjme_errorCode sjme_scritchui_fb_scrollPanelNew(
 	
 	/* Map front ends. */
 	if (sjme_error_is(error = sjme_scritchui_fb_biMap(
-		inState, inScrollPanel, wrappedPanel)))
+		inState, SJME_SUI_CAST_COMMON(inScrollPanel),
+		SJME_SUI_CAST_COMMON(wrappedPanel))))
 		return sjme_error_default(error);
 	
 	/* Success! */

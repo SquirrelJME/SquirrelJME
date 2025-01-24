@@ -48,6 +48,7 @@ public final class ScritchLcdUiUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/18
 	 */
+	@SquirrelJMEVendorApi
 	public static int lcduiDisplaySize(DisplayableState __state,
 		boolean __height)
 		throws NullPointerException

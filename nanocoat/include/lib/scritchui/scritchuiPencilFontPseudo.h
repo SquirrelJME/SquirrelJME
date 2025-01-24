@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_SCRITCHUIPENCILFONTPSEUDO_H
 #define SQUIRRELJME_SCRITCHUIPENCILFONTPSEUDO_H
 
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
 #include "sjme/alloc.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 

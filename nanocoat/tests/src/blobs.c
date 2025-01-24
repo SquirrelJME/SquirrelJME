@@ -7,4 +7,4 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"

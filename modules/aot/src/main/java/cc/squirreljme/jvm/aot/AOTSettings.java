@@ -34,6 +34,12 @@ public final class AOTSettings
 	/** The original library hash. */
 	public final String originalLibHash;
 	
+	/** The Fossil commit. */
+	public final String commitFossil;
+	
+	/** The Git commit. */
+	public final String commitGit;
+	
 	/**
 	 * Initializes the settings.
 	 *
@@ -43,10 +49,13 @@ public final class AOTSettings
 	 * @param __sourceSet The source set to use.
 	 * @param __clutterLevel The current clutter level.
 	 * @param __originalLibHash The original library hash.
+	 * @param __commitFossil The Fossil commit.
+	 * @param __commitGit The git commit.
 	 * @since 2023/07/25
 	 */
 	public AOTSettings(String __compiler, String __name, String __mode,
-		String __sourceSet, String __clutterLevel, String __originalLibHash)
+		String __sourceSet, String __clutterLevel, String __originalLibHash,
+		String __commitFossil, String __commitGit)
 	{
 		this.compiler = __compiler;
 		this.name = __name;
@@ -54,5 +63,7 @@ public final class AOTSettings
 		this.sourceSet = __sourceSet;
 		this.clutterLevel = __clutterLevel;
 		this.originalLibHash = __originalLibHash;
+		this.commitFossil = __commitFossil;
+		this.commitGit = __commitGit;
 	}
 }

@@ -415,7 +415,11 @@ sjme_errorCode sjme_scritchui_gtk2_intern_widgetInit(
 {
 	if (inWidget == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+	
+	/* Count the widget up so GTK does not destroy it, we keep track of it */
+	/* outside the widget system. */
+	g_object_ref(inWidget);
+	
 	/* Setup visibility events. */
 	gtk_widget_add_events(inWidget,
 		GDK_VISIBILITY_NOTIFY_MASK |

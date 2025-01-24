@@ -16,9 +16,14 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeExce
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassFlag;
 import net.multiphasicapps.classfile.ClassFlags;
@@ -241,24 +246,37 @@ public class SpringVisClass
 			if (result != null)
 				return result.clone();
 			
+			// Queue in classes to recursively get interfaces from
+			Deque<Class<?>> realQueue = new ArrayDeque<>();
+			realQueue.addLast(real);
+			
 			// Determine which VM oriented interfaces are available
-			List<SpringClass> build = new ArrayList<>();
-			for (Class<?> realInterface : real.getInterfaces())
-				try
+			Set<SpringClass> build = new LinkedHashSet<>();
+			while (!realQueue.isEmpty())
+			{
+				Class<?> at = realQueue.removeFirst();
+				for (Class<?> atInterface : at.getInterfaces())
 				{
-					build.add(machine.classLoader()
-						.loadClass(ClassName.fromRuntimeName(
-							realInterface.getName())));
+					// Add interface because we need to go into it
+					realQueue.addLast(atInterface);
+					
+					// Set as an implemented class
+					try
+					{
+						build.add(machine.classLoader()
+							.loadClass(ClassName.fromRuntimeName(
+								atInterface.getName())));
+					}
+					catch (SpringClassNotFoundException __ignore)
+					{
+						// If the class is not found, do nothing
+					}
 				}
-				catch (SpringClassNotFoundException __ignore)
-				{
-					// If the class is not found, do nothing
-				}
+			}
 			
 			// Debug
-			/*
-			Debugging.debugNote("VIS.interfaceClasses() = %s",
-				build);*/
+			/*Debugging.debugNote("VIS.interfaceClasses(%s) = %s",
+				real, build);*/
 			
 			// Cache and use it
 			result = build.toArray(new SpringClass[build.size()]);

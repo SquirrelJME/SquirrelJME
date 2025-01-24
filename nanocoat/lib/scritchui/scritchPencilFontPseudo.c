@@ -302,7 +302,7 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	area = sizeof(*src) * (scanLen * ch);
 	src = sjme_alloca(area);
 	if (src == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, area);
 	
 	/* Initialize. */
 	memset(src, 0, area);
@@ -406,12 +406,12 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	/* Allocate. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		sizeof(*result), NULL, NULL, &result, NULL)))
+		sizeof(*result), NULL, (void**)&result, NULL)))
 		goto fail_alloc;
 	
 	/* Common initialize. */
 	if (sjme_error_is(error = inState->intern->initCommon(inState,
-		result, SJME_JNI_FALSE,
+		SJME_SUI_CAST_COMMON(result), SJME_JNI_FALSE,
 		SJME_SCRITCHUI_TYPE_ROOT_STATE)))
 		goto fail_commonInit;
 	

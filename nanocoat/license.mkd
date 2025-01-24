@@ -2,7 +2,7 @@
 
 SquirrelJME is copyright:
 
- * Copyright (C) 2013-2024 Stephanie Gawroriski <xer@multiphasicapps.net>
+ * Copyright (C) 2013-2025 Stephanie Gawroriski <xer@multiphasicapps.net>
    <http://multiphasicapps.net/>
  * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2023
 
@@ -11,7 +11,7 @@ commissioned under contract:
 
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
-   * Kat@CMYKat Designs & Illustrations <http://www.cmykat-designs.com/>
+   * Kat@CMYKat Designs & Illustrations <https://www.cmykatgraphics.ca/>
 
 SquirrelJME has three types of files which fall under different licenses:
 

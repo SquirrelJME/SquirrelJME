@@ -9,7 +9,7 @@
 
 #include <jni.h>
 
-#include "sjme/nvm.h"
+#include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
 #include "frontend/emulator/jniHelper.h"
 

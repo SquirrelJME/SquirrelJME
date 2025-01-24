@@ -307,7 +307,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColor(
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Otherwise, use our own colormapping code. */
+	/* Otherwise, use our own color mapping code. */
 	if (fromRaw)
 		return sjme_scritchpen_corePrim_mapColorFromRaw(g,
 			inRgbOrRaw, outColor);
@@ -391,14 +391,14 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 	switch (inTrans)
 	{
 		/* These bits represent the stuff to do! == 0b9VH; */
-		case SJME_SCRITCHUI_TRANS_NONE:				xform = 0b000; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR:			xform = 0b001; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:	xform = 0b010; break;
-		case SJME_SCRITCHUI_TRANS_ROT180:			xform = 0b011; break;
-		case SJME_SCRITCHUI_TRANS_ROT90:			xform = 0b100; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:		xform = 0b101; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 0b110; break;
-		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 0b111; break;
+		case SJME_SCRITCHUI_TRANS_NONE:				xform = 0; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR:			xform = 1; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:	xform = 2; break;
+		case SJME_SCRITCHUI_TRANS_ROT180:			xform = 3; break;
+		case SJME_SCRITCHUI_TRANS_ROT90:			xform = 4; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:		xform = 5; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 6; break;
+		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 7; break;
 		/* These bits represent the stuff to do! == 0b9VH; */
 	}
 	
@@ -407,17 +407,17 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 	result.y.zy = scaleY;
 	
 	/* Mirror horizontally? */
-	if ((xform & 0b001) != 0)
+	if ((xform & 1) != 0)
 		result.x.wx = -result.x.wx;
 		
 	/* Mirror vertically? */
-	if ((xform & 0b010) != 0)
+	if ((xform & 2) != 0)
 		result.y.zy = -result.y.zy;
 		
 	/* Rotate 90 degrees clockwise */
 	/* Thanks to jercos for helping out with the matrix math! */
 	/* The math here has been simplified to remove constants and otherwise. */
-	if ((xform & 0b100) != 0)
+	if ((xform & 4) != 0)
 	{
 		temp = result.x.wx;
 		result.x.wx = result.x.zy;

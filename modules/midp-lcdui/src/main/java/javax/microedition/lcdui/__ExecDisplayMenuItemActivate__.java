@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionApplicable;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNodeOnly;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionTree;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionTreeLeaf;
 
 /**
  * Handles activation of menu items.
@@ -69,7 +70,7 @@ class __ExecDisplayMenuItemActivate__
 		
 		// Find the leaf that belongs to this item
 		MenuActionTree tree = MenuActionNodeOnly.rootTree(current);
-		MenuActionTree.Leaf leaf = tree.find(__menuItem);
+		MenuActionTreeLeaf leaf = tree.find(__menuItem);
 		
 		// Not found? Just ignore then
 		if (leaf == null)

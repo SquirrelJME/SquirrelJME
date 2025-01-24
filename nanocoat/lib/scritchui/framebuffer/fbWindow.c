@@ -110,7 +110,8 @@ sjme_errorCode sjme_scritchui_fb_windowNew(
 	
 	/* Map front ends. */
 	if (sjme_error_is(error = sjme_scritchui_fb_biMap(
-		inState, inWindow, wrappedWindow)))
+		inState, SJME_SUI_CAST_COMMON(inWindow),
+		SJME_SUI_CAST_COMMON(wrappedWindow))))
 		return sjme_error_default(error);
 	
 	/* We need to wrap menu activation for this window. */
@@ -146,7 +147,7 @@ sjme_errorCode sjme_scritchui_fb_windowSetCloseListener(
 	/* Set listener information. */
 	memset(&wrappedFrontEnd, 0, sizeof(wrappedFrontEnd));
 	if (sjme_error_is(error = sjme_scritchui_fb_biSetListener(
-		inState, inWindow,
+		inState, SJME_SUI_CAST_COMPONENT(inWindow),
 		(sjme_scritchui_listener_void*)
 			&SJME_SCRITCHUI_LISTENER_CORE(inWindow, close),
 		(sjme_scritchui_voidListenerFunc)inListener,

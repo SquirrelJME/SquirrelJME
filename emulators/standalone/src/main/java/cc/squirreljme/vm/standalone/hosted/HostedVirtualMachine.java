@@ -247,6 +247,13 @@ public class HostedVirtualMachine
 			args.add(Objects.toString(RuntimeShelf.vmDescription(
 				VMDescriptionType.EXECUTABLE_PATH), "java"));
 			
+			// Needed on macOS for the GUI to properly work
+			String osName = System.getProperty("os.name");
+			if (osName != null &&
+				(osName.toLowerCase().contains("mac os") ||
+				osName.toLowerCase().contains("mac os x")))
+				args.add("-XstartOnFirstThread");
+			
 			// If we are connecting to a debugger, we need to set up a proxy
 			// between the new JVM and this current one through TCP
 			JDWPHostFactory jdwpFactory = this.jdwpFactory;

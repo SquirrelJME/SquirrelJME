@@ -101,11 +101,7 @@ public final class StringBuffer
 	@Api
 	public StringBuffer append(String __a)
 	{
-		synchronized (this)
-		{
-			this._builder.append(__a);
-			return this;
-		}
+		return this.append((CharSequence)__a);
 	}
 	
 	/**
@@ -118,11 +114,7 @@ public final class StringBuffer
 	@Api
 	public StringBuffer append(StringBuffer __a)
 	{
-		synchronized (this)
-		{
-			this._builder.append(__a);
-			return this;
-		}
+		return this.append((CharSequence)__a);
 	}
 	
 	/**
@@ -136,11 +128,11 @@ public final class StringBuffer
 	@Override
 	public StringBuffer append(CharSequence __a)
 	{
-		synchronized (this)
-		{
-			this._builder.append(__a);
-			return this;
-		}
+		// Use null instead?
+		if (__a == null)
+			__a = "null";
+		
+		return this.append(__a, 0, __a.length());
 	}
 	
 	/**
@@ -158,7 +150,14 @@ public final class StringBuffer
 	{
 		synchronized (this)
 		{
-			this._builder.append(__a, __b, __c);
+			// We are copying from another slow buffer
+			if (__a instanceof StringBuffer)
+				this._builder.append(((StringBuffer)__a)._builder);
+			
+			// Normal logic
+			else
+				this._builder.append(__a, __b, __c);
+			
 			return this;
 		}
 	}
@@ -482,11 +481,7 @@ public final class StringBuffer
 	@Api
 	public StringBuffer insert(int __a, String __b)
 	{
-		synchronized (this)
-		{
-			this._builder.insert(__a, __b);
-			return this;
-		}
+		return this.insert(__a, (CharSequence)__b);
 	}
 	
 	/**
@@ -518,11 +513,11 @@ public final class StringBuffer
 	@Api
 	public StringBuffer insert(int __a, CharSequence __b)
 	{
-		synchronized (this)
-		{
-			this._builder.insert(__a, __b);
-			return this;
-		}
+		// Use null instead
+		if (__b == null)
+			__b = "null";
+		
+		return this.insert(__a, __b, 0, __b.length());
 	}
 	
 	/**
@@ -541,7 +536,15 @@ public final class StringBuffer
 	{
 		synchronized (this)
 		{
-			this._builder.insert(__a, __b, __c, __d);
+			// We are copying from another slow buffer
+			if (__b instanceof StringBuffer)
+				this._builder.insert(__a, ((StringBuffer)__b)._builder,
+					__c, __d);
+			
+			// Use normal insert
+			else
+				this._builder.insert(__a, __b, __c, __d);
+			
 			return this;
 		}
 	}

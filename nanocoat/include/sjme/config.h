@@ -9,6 +9,9 @@
 
 /**
  * Basic configuration header.
+ *
+ * The majority of this header is to simplify the system specific macros
+ * and definitions and unify them so they are far easier to use.
  * 
  * @since 2023/07/27
  */
@@ -46,6 +49,14 @@ extern "C" {
 #if defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN)
 	/** Emscripten (WASM). */
 	#define SJME_CONFIG_HAS_EMSCRIPTEN
+#elif defined(GEKKO)
+	#if defined(WIIU)
+		/** Nintendo Wii U is available. */
+		#define SJME_CONFIG_HAS_NINTENDO_WIIU
+	#else
+		/** Nintendo Wii is available. */
+		#define SJME_CONFIG_HAS_NINTENDO_WII
+	#endif
 #elif defined(__3DS__) || defined(_3DS)
 	/** Nintendo 3DS is available. */
 	#define SJME_CONFIG_HAS_NINTENDO_3DS
@@ -266,8 +277,53 @@ extern "C" {
 	#define sjme_flexibleArrayCount
 #endif
 
+/** Visual Studio 6 */
+#define SJME_VERSION_MSVC_6 1200
+
+/** Visual Studio 2005 */
+#define SJME_VERSION_MSVC_2005 1400
+	
+#if defined(__clang__)
+	/** CLang LLVM Compiler. */
+	#define SJME_CONFIG_HAS_CLANG
+	
+	/** Is the CLang version the specified version? */
+	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) \
+		(__clang_major__ > major ? 1 : \
+		(__clang_major__ < major ? 0 : \
+		(__clang_minor__ >= minor)))
+#else
+	/** Is the CLang version the specified version? */
+	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) 0
+#endif
+	
+#if defined(_MSC_VER) && !defined(SJME_CONFIG_HAS_CLANG)
+	/** Microsoft Visual C++ Compiler. */
+	#define SJME_CONFIG_HAS_MSVC
+	
+	/** Is the MSVC version the specified version? */
+	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) \
+		(_MSC_VER >= against)
+#else
+	/** Is the MSVC version the specified version? */
+	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) 0
+#endif
+
+#if defined(__GNUC__) && !defined(SJME_CONFIG_HAS_CLANG)
+	/** GNU C Compiler. */
+	#define SJME_CONFIG_HAS_GCC
+	
+	/** Is the GCC version the specified version? */
+	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
+		(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
+		(defined(__GNUC_MINOR__) ? __GNUC_MINOR__ >= minor : 1)))
+#else
+	/** Is the GCC version the specified version? */
+	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
+#endif
+	
 /* Visual C++. */
-#if defined(_MSC_VER)
+#if defined(SJME_CONFIG_HAS_MSVC)
 	#include <sal.h>
 
 	/** Return value must be checked. */
@@ -324,9 +380,9 @@ extern "C" {
 
 	/** Allocate on the stack. */
 	#define sjme_alloca(size) _alloca((size))
-#elif defined(__clang__) || defined(__GNUC__)
+#elif defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
 	/* Clang has special analyzer stuff, but also same as GCC otherwise. */
-	#if defined(__clang__)
+	#if defined(SJME_CONFIG_HAS_CLANG)
 		#if __has_feature(attribute_analyzer_noreturn)
 			/** Method does not return. */
 			#define sjme_attrReturnNever __attribute__((analyzer_noreturn))
@@ -343,17 +399,21 @@ extern "C" {
 		#endif
 	#endif
 
-	/** Artificial function. */
-	#define sjme_attrArtificial __attribute__((artificial))
+	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
+		/** Artificial function. */
+		#define sjme_attrArtificial __attribute__((artificial))
+	#endif
 	
 	/** Check return value. */
 	#define sjme_attrCheckReturn __attribute__((warn_unused_result))
 	
 	/** Deprecated. */
 	#define sjme_attrDeprecated __attribute__((deprecated))
-	
-	/** Disable optimization. */
-	#define sjme_noOptimize __attribute__((optimize("O0")))
+
+	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
+		/** Disable optimization. */
+		#define sjme_noOptimize __attribute__((optimize("O0")))
+	#endif
 	
 	/**
 	 * Formatted string.
@@ -545,32 +605,37 @@ extern "C" {
 	#define sjme_noOptimize
 #endif
 
-#if defined(__GNUC__)
-	/** GNU C Compiler. */
-	#define SJME_CONFIG_HAS_GCC
-#endif
-
-#if defined(_MSC_VER)
-	/** Microsoft Visual C++ Compiler. */
-	#define SJME_CONFIG_HAS_MSVC
-#endif
-
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_MACOS) && (defined(SJME_CONFIG_HAS_ARCH_IA32) || \
+	defined(SJME_CONFIG_HAS_ARCH_POWERPC))
+	/** Supports macOS Darwin kernel Atomic Access */
+	#define SJME_CONFIG_HAS_ATOMIC_DARWIN
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
 	/** Supports Windows Atomic Access. */
 	#define SJME_CONFIG_HAS_ATOMIC_WIN32
 #elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L && \
 	!defined(__STDC_NO_ATOMICS__)
 	/** Supports C11 atomics. */
 	#define SJME_CONFIG_HAS_ATOMIC_C11
-#elif defined(SJME_CONFIG_HAS_GCC)
-	/** GCC Atomics. */
+#elif defined(SJME_CONFIG_HAS_CLANG)
+	/** CLang is based off GCC's newer __atomic family. */
 	#define SJME_CONFIG_HAS_ATOMIC_GCC
+#elif defined(SJME_CONFIG_HAS_GCC)
+	/* GCC 4.7 introduces the __atomic family. */
+	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 7)
+		/** GCC Atomics. */
+		#define SJME_CONFIG_HAS_ATOMIC_GCC
+	#else
+		/** GCC Legacy Atomics. */
+		#define SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY
+	#endif
 #endif
 
 #if !defined(SJME_CONFIG_HAS_ATOMIC)
-	#if defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
-		defined(SJME_CONFIG_HAS_ATOMIC_C11) || \
-		defined(SJME_CONFIG_HAS_ATOMIC_GCC)
+	#if defined(SJME_CONFIG_HAS_ATOMIC_C11) || \
+		defined(SJME_CONFIG_HAS_ATOMIC_DARWIN) || \
+		defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
+		defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY) || \
+		defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
 		/** Atomics are supported. */
 		#define SJME_CONFIG_HAS_ATOMIC
 	#else
@@ -611,6 +676,17 @@ extern "C" {
 	#define SJME_CONFIG_HAS_THREADS_FALLBACK
 #endif
 
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/** Align to 32-bit. */
+	#define sjme_align32 __declspec(align(4))
+#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	/** Align to 32-bit. */
+	#define sjme_align32 __attribute__((aligned(4)))
+#else
+	/** Align to 32-bit. */
+	#define sjme_align32 
+#endif
+
 #if defined(SJME_CONFIG_HAS_WINDOWS_16)
 	#define SJME_CALL FAR PASCAL
 #elif defined(SJME_CONFIG_HAS_WINDOWS)
@@ -623,12 +699,35 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/** Align to 64-bit. */
 	#define sjme_align64 __declspec(align(8))
-#elif defined(SJME_CONFIG_HAS_GCC)
+#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Align to 64-bit. */
 	#define sjme_align64 __attribute__((aligned(8)))
 #else
 	/** Align to 64-bit. */
 	#define sjme_align64 
+#endif
+
+#if SJME_CONFIG_HAS_POINTER == 64
+	/** Align to pointer. */
+	#define sjme_alignPointer sjme_align64
+#elif SJME_CONFIG_HAS_POINTER == 32
+	/** Align to pointer. */
+	#define sjme_alignPointer sjme_align32
+#else
+	/** Align to pointer. */
+	#define sjme_alignPointer
+#endif
+
+#if defined(SJME_CONFIG_HAS_NINTENDO_3DS) || \
+	defined(SJME_CONFIG_HAS_NINTENDO_WIIU) || \
+    defined(SJME_CONFIG_HAS_NINTENDO_WII)
+	/* Disable errno support. */
+	#define SJME_CONFIG_MISSING_ERRNO
+#endif
+
+/* Missing standard C functions. */
+#if defined(SJME_CONFIG_HAS_NO_SNPRINTF)
+	#include "sjme/stdgone.h"
 #endif
 
 /*--------------------------------------------------------------------------*/

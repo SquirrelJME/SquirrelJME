@@ -21,7 +21,9 @@ import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.Profile;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -221,7 +223,8 @@ public class IModeApplication
 		// Application entry point and arguments as its main
 		args.add(entry.entryPoint());
 		if (appArgs != null)
-			args.add(appArgs);
+			args.addAll(Arrays.asList(
+				StringUtils.fieldSplitAndTrim(' ', appArgs)));
 		
 		// Give it
 		return args.toArray(new String[args.size()]);

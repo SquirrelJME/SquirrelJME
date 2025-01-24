@@ -1,0 +1,5 @@
+LIBRARY jvm
+EXPORTS
+	JNI_GetDefaultJavaVMInitArgs	@1
+	JNI_CreateJavaVM	@2
+	JNI_GetCreatedJavaVMs	@3

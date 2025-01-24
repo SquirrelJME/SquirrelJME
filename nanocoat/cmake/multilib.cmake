@@ -184,3 +184,56 @@ macro(squirreljme_multilib_target_binary_output libBase where)
 			${where})
 	endif()
 endmacro()
+
+# Add dependency on library, static only
+macro(squirreljme_multilib_static_add_dependency libBase dependOn)
+	# Static library
+	add_dependencies(${libBase}
+		${dependOn})
+
+	# PIC?
+	if(SQUIRRELJME_ENABLE_FPIC)
+		add_dependencies(${libBase}PIC
+			${dependOn})
+	endif()
+endmacro()
+
+# Add dependency on library
+macro(squirreljme_multilib_add_dependency libBase dependOn)
+	# Static
+	squirreljme_multilib_static_add_dependency(${libBase} ${dependOn})
+
+	# Only link for the dynamic library
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		add_dependencies(${libBase}DyLib
+			${dependOn})
+	endif()
+endmacro()
+
+# Add dependency on multi-lib binaries, static only
+macro(squirreljme_multilib_static_add_multilib_dependency libBase dependOn)
+	# Base non-PIC object
+	add_dependencies(${libBase}
+		${dependOn})
+
+	# PIC?
+	if(SQUIRRELJME_ENABLE_FPIC)
+		add_dependencies(${libBase}PIC
+			${dependOn}PIC)
+	endif()
+
+	# Static Library
+	add_dependencies(${libBase}Static
+		${dependOn}Static)
+endmacro()
+
+# Add dependency on multi-lib binaries
+macro(squirreljme_multilib_add_multilib_dependency libBase dependOn)
+	# Static
+	squirreljme_multilib_static_add_multilib_dependency(${libBase} ${dependOn})
+
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		add_dependencies(${libBase}DyLib
+			${dependOn}DyLib)
+	endif()
+endmacro()

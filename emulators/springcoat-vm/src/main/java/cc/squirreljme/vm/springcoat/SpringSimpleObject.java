@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2018/09/08
  */
-public final class SpringSimpleObject
+public class SpringSimpleObject
 	implements SpringObject
 {
 	/** The type of object this is. */
@@ -137,7 +137,7 @@ public final class SpringSimpleObject
 	 * @since 2020/05/31
 	 */
 	@Override
-	public RefLinkHolder refLink()
+	public final RefLinkHolder refLink()
 	{
 		return this.refLink;
 	}
@@ -147,14 +147,15 @@ public final class SpringSimpleObject
 	 * @since 2018/09/15
 	 */
 	@Override
-	public final String toString()
+	public String toString()
 	{
 		Reference<String> ref = this._string;
 		String rv;
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"%s@%08x", this.type.name(), System.identityHashCode(this))));
+				"%s@%08x", this.type.name(),
+				System.identityHashCode(this))));
 		
 		return rv;
 	}

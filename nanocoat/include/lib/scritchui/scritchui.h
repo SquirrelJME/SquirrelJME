@@ -18,12 +18,15 @@
 
 #include "sjme/config.h"
 #include "sjme/multithread.h"
+#include "sjme/tokenUtils.h"
 #include "sjme/gfxConst.h"
-#include "sjme/nvm.h"
+#include "sjme/stdTypes.h"
 #include "sjme/list.h"
 #include "sjme/native.h"
 #include "lib/scritchinput/scritchinput.h"
 #include "sjme/alloc.h"
+#include "sjme/dylib.h"
+#include "sjme/stream.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -87,9 +90,22 @@ typedef enum sjme_scritchui_uiType
 #define SJME_SUI_CAST(uiType, type, v) \
 	((type)sjme_scritchui_checkCast((type), (v)))
 
+/** Common type. */
+#define SJME_SUI_CAST_COMMON(v) \
+	((sjme_scritchui_uiCommon)(v))
+
 /** Check cast to menu kind. */
 #define SJME_SUI_CAST_MENU_KIND(v) \
 	((sjme_scritchui_uiMenuKind)sjme_scritchui_checkCast_menuKind((v)))
+
+/** Check cast to component kind. */
+#define SJME_SUI_CAST_COMPONENT(v) \
+	((sjme_scritchui_uiComponent)sjme_scritchui_checkCast_component((v)))
+
+/** Check cast to panel. */
+#define SJME_SUI_CAST_PANEL(v) \
+	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_PANEL, \
+	sjme_scritchui_uiPanel, (v))
 
 /** Check cast to menu. */
 #define SJME_SUI_CAST_MENU(v) \
@@ -244,8 +260,14 @@ typedef enum sjme_scritchui_lafElementColorType
 	/** Panel foreground color. */
 	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_PANEL_FOREGROUND = 8,
 	
+	/** Top accent color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_ACCENT_TOP = 9,
+	
+	/** Bottom accent color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_ACCENT_BOTTOM = 10,
+	
 	/** The number of element colors. */
-	SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR = 9,
+	SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR = 11,
 } sjme_scritchui_lafElementColorType;
 
 /**
@@ -539,6 +561,9 @@ typedef struct sjme_scritchui_pencilBase* sjme_scritchui_pencil;
  * @since 2024/05/12
  */
 typedef struct sjme_scritchui_pencilFontBase* sjme_scritchui_pencilFont;
+
+/** A list of pencil fonts. */
+SJME_LIST_DECLARE(sjme_scritchui_pencilFont, 0);
 
 /**
  * A single link within a loaded/known font chain.
@@ -1224,6 +1249,22 @@ typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
 
 /**
+ * Obtains the fonts which are available in the system, if any.
+ *
+ * @param inState The input state.
+ * @param outFonts The list which gets filled with all the fonts.
+ * @param outValid The number of valid fonts.
+ * @param outMaxFonts The maximum number of fonts available, this is optional.
+ * @return Any resultant error, if any.
+ * @since 2024/12/01
+ */
+typedef sjme_errorCode (*sjme_scritchui_fontListFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_jint* outValid,
+	sjme_attrOutNullable sjme_jint* outMaxFonts);
+
+/**
  * Creates a hardware reference bracket to the native hardware graphics.
  * 
  * @param inState The UI state.
@@ -1771,6 +1812,9 @@ struct sjme_scritchui_apiFunctions
 	/** Derive a similar font. */
 	SJME_SCRITCHUI_QUICK_API(fontDerive);
 	
+	/** Return the set of available fonts. */
+	SJME_SCRITCHUI_QUICK_API(fontList);
+	
 	/** Hardware graphics support on arbitrary buffers. */
 	SJME_SCRITCHUI_QUICK_API(hardwareGraphics);
 	
@@ -1919,6 +1963,52 @@ typedef struct sjme_scritchui_wmInfo
 	sjme_lpcstr xwsClass;
 } sjme_scritchui_wmInfo;
 
+/**
+ * Windowing system specific bugs.
+ * 
+ * @since 2024/08/15
+ */
+typedef struct sjme_scritchui_bugs
+{
+	/** Do not set content size when the window is made visible. */
+	sjme_jboolean noContentSizeWhenVisible;
+} sjme_scritchui_bugs;
+
+/**
+ * Obtains an asset that is externally provided.
+ *
+ * @param inState The input state.
+ * @param outStream The resultant stream of the asset data.
+ * @param inAsset The name of the asset to load.
+ * @return Any resultant error, if any.
+ * @since 2024/11/29 
+ */
+typedef sjme_errorCode (*sjme_scritchui_externalAssetFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull sjme_lpcstr inAsset);
+	
+/**
+ * Optional external functions for ScritchUI to use dependent on the front
+ * end that is using it, this is usually to provide cross-feedback.
+ *
+ * @since 2024/11/29
+ */
+typedef struct sjme_scritchui_externalFunctions
+{
+	/** Loads an external asset. */
+	sjme_scritchui_externalAssetFunc externalAsset;
+	
+	/** Execute callback within the event loop or schedule later. */
+	sjme_scritchui_loopExecuteFunc externalLoopExecute;
+	
+	/** Execute call later in the loop. */
+	sjme_scritchui_loopExecuteFunc externalLoopExecuteLater;
+	
+	/** Execute callback within the event loop and wait until termination. */
+	sjme_scritchui_loopExecuteFunc externalLoopExecuteWait;
+} sjme_scritchui_externalFunctions;
+
 struct sjme_scritchui_stateBase
 {
 	/** Common data. */
@@ -1941,12 +2031,18 @@ struct sjme_scritchui_stateBase
 	
 	/** Internal implementation functions, which are opaque. */
 	const sjme_scritchui_implInternFunctions* implIntern;
+
+	/** Optional externals for helper front-end interface functions. */
+	const sjme_scritchui_externalFunctions* externals;
 	
 	/** The allocation pool to use for allocations. */
 	sjme_alloc_pool* pool;
 	
 	/** The event loop thread, if applicable. */
 	sjme_thread loopThread;
+	
+	/** The current loop thread ID, if applicable. */
+	sjme_intPointer loopThreadId;
 	
 	/** Loop thread initializer if one was passed. */
 	sjme_thread_mainFunc loopThreadInit;
@@ -1961,10 +2057,7 @@ struct sjme_scritchui_stateBase
 	sjme_scritchui_windowManagerType wmType;
 	
 	/** The internal built-in font. */
-	sjme_scritchui_pencilFont builtinFont; 
-	
-	/** The fonts which are loaded and known to the state. */
-	sjme_scritchui_pencilFontLink* fontChain;
+	sjme_scritchui_pencilFont builtinFont;
 	
 	/** Function to obtain the current nanotime, for input events. */
 	sjme_nal_nanoTimeFunc nanoTime;
@@ -1980,6 +2073,12 @@ struct sjme_scritchui_stateBase
 	
 	/** The next ID for opaque menu items. */
 	sjme_jint nextMenuItemId;
+	
+	/** Windowing system specific bugs. */
+	sjme_scritchui_bugs bugs;
+
+	/** Font cache. */
+	sjme_list_sjme_scritchui_pencilFont* fontCache;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */
@@ -1988,23 +2087,30 @@ struct sjme_scritchui_stateBase
 /**
  * Initializes the API through the dynamic library.
  * 
+ * @param outState The resultant newly created ScritchUI state.
  * @param inPool The pool to allocate within.
  * @param loopExecute Optional callback for loop execution, may be @c NULL ,
  * the passed argument is always the state.
+ * @param externals Optional externals that ScritchUI may use to interact
+ * with a front-end.
  * @param initFrontEnd Optional initial front end data.
- * @param outState The resultant newly created ScritchUI state.
  * @return Any error code that may occur.
  * @since 2024/03/29
  */
 typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
-	sjme_attrInOutNotNull sjme_scritchui* outState);
+	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
+
+/** The base name for the ScritchUI dynamic library. */
+#define SJME_SCRITCHUI_DYLIB_NAME_BASE \
+	"squirreljme-scritchui-"
 
 /** The name of the dynamic library for ScritchUI. */
 #define SJME_SCRITCHUI_DYLIB_NAME(x) \
-	"squirreljme-scritchui-" SJME_TOKEN_STRING_PP(x)
+	SJME_SCRITCHUI_DYLIB_NAME_BASE SJME_TOKEN_STRING_PP(x)
 
 /** The path name for the dynamic library for ScritchUI. */
 #define SJME_SCRITCHUI_DYLIB_PATHNAME(x) \
@@ -2026,6 +2132,15 @@ typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
  */
 sjme_pointer sjme_scritchui_checkCast(sjme_scritchui_uiType inType,
 	sjme_pointer inPtr);
+
+/**
+ * Check cast of a given type against a component.
+ * 
+ * @param inPtr The input pointer.
+ * @return Always @c inPtr .
+ * @since 2024/07/23
+ */
+sjme_pointer sjme_scritchui_checkCast_component(sjme_pointer inPtr);
 
 /**
  * Check cast of a given type against a menu kind.

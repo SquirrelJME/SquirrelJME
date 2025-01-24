@@ -23,13 +23,17 @@
 
 static sjme_errorCode finishStreamWriteBlockBA(
 	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrInNotNull sjme_stream_resultByteArray* result)
+	sjme_attrInNotNull sjme_stream_resultByteArray* result,
+	sjme_attrInNullable sjme_pointer data)
 {
 	sjme_jint i;
 	sjme_test* test;
 
 	/* Recover test. */
 	test = (sjme_test*)result->whatever;
+
+	sjme_unit_equalP(test, data, test,
+		"Test data was not passed?");
 
 	/* Each chunk should match! */
 	for (i = 0; i < NUM_CHUNKS; i++)
@@ -74,7 +78,8 @@ SJME_TEST_DECLARE(testStreamWriteBlockBA)
 			return sjme_unit_fail(test, "Could not write chunk %d?", i);
 
 	/* Close stream. */
-	if (sjme_error_is(sjme_stream_outputClose(stream, NULL)))
+	if (sjme_error_is(sjme_closeable_close(
+		SJME_AS_CLOSEABLE(stream))))
 		return sjme_unit_fail(test, "Could not close output stream.");
 
 	/* Success! */

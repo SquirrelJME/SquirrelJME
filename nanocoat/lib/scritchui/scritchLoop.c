@@ -44,9 +44,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_waitAdapter(
 	waitData->result = SJME_THREAD_RESULT_AS_ERROR(result);
 	
 	/* Signal that wait is complete. */
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	sjme_atomic_sjme_jint_set(&waitData->signal, 1);
-	sjme_thread_barrier();
+	sjme_atomic_barrier();
 	
 	/* Use result from callback. */
 	return result;
@@ -62,6 +62,12 @@ sjme_errorCode sjme_scritchui_core_loopExecute(
 	
 	if (inState == NULL || callback == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If an external is specified, use that instead. */
+	if (inState->externals != NULL &&
+		inState->externals->externalLoopExecute != NULL)
+		return inState->externals->externalLoopExecute(inState,
+			callback, anything);
 	
 	/* If there is a native implementation of this, use it as it probably */
 	/* knows more about how things should be executed directly or scheduled. */
@@ -97,6 +103,12 @@ sjme_errorCode sjme_scritchui_core_loopExecuteLater(
 	if (inState == NULL || callback == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* If an external is specified, use that instead. */
+	if (inState->externals != NULL &&
+		inState->externals->externalLoopExecuteLater != NULL)
+		return inState->externals->externalLoopExecuteLater(inState,
+			callback, anything);
+	
 	/* Not implemented? */
 	if (inState->impl->loopExecuteLater == NULL)
 		return sjme_error_notImplemented(0);
@@ -116,6 +128,12 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 	
 	if (inState == NULL || callback == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If an external is specified, use that instead. */
+	if (inState->externals != NULL &&
+		inState->externals->externalLoopExecuteWait != NULL)
+		return inState->externals->externalLoopExecuteWait(inState,
+			callback, anything);
 	
 	/* If executed wait is directly available we do not need a shim as */
 	/* the implementation probably knows more than we do. */
@@ -149,7 +167,7 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 	{
 		/* Yield to let other threads run. */
 		sjme_thread_yield();
-		sjme_thread_barrier();
+		sjme_atomic_barrier();
 		
 		/* Done? */
 		if (0 != sjme_atomic_sjme_jint_get(&waitData.signal))
