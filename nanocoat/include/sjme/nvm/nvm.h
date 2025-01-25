@@ -766,6 +766,9 @@ struct sjme_nvm_stateBase
  */
 #define SJME_NANOCOAT_END_CALL ((sjme_pcAddr)-2)
 
+/** Casts pointer to a pointer to a @c sjme_jstring . */
+#define SJME_AS_NVM_JSTRINGP(p) ((sjme_jstring*)(p))
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

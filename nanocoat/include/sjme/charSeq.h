@@ -246,7 +246,7 @@ sjme_errorCode sjme_charSeq_startsWithCharSeq(
  * 
  * @param inSeq The sequence to check.
  * @param outResult The result of the check.
- * @param startsWithSeq The UTF sequence to check the start for.
+ * @param startsWithUtf The UTF sequence to check the start for.
  * @return Any resultant error, if any.
  * @since 2024/08/08 
  */

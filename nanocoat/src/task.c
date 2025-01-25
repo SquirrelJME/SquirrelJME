@@ -144,8 +144,9 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 	/* Load in string. */
 	memset(&value, 0, sizeof(value));
 	value.type = SJME_JAVA_TYPE_ID_OBJECT;
-	if (sjme_error_is(error = sjme_nvm_task_threadLoadStringP(
-		inFrame->inThread, inString, &value.value.l)) ||
+	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
+		inFrame->inThread,
+		SJME_AS_NVM_JSTRINGP(&value.value.l), inString)) ||
 		value.value.l == NULL)
 		return sjme_error_default(error);
 
@@ -538,18 +539,6 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 #undef SJME_NVM_FRAME_GROW_SIZE
 }
 
-sjme_errorCode sjme_nvm_task_threadLoadStringP(
-	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrInNotNull sjme_nvm_stringPool_string inString,
-	sjme_attrOutNotNull sjme_jobject* outValue)
-{
-	if (inThread == NULL || inString == NULL || outValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
 sjme_errorCode sjme_nvm_task_threadNew(
 	sjme_attrInNotNull sjme_nvm_task inTask,
 	sjme_attrOutNotNull sjme_nvm_thread* outThread,
@@ -665,4 +654,30 @@ sjme_errorCode sjme_nvm_task_threadStart(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_jstring* outString,
+	sjme_attrInValue sjme_jboolean isIntern,
+	sjme_attrInNotNull sjme_charSeq* inSeq)
+{
+	if (inThread == NULL || outString == NULL || inSeq == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_task_threadStringValueOfP(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_jstring* outString,
+	sjme_attrInNotNull sjme_nvm_stringPool_string inPool)
+{
+	if (inThread == NULL || outString == NULL || inPool == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Forward implementation. */
+	return sjme_nvm_task_threadStringValueOfUtf(inThread,
+		outString, SJME_JNI_TRUE, &inPool->seq);
 }

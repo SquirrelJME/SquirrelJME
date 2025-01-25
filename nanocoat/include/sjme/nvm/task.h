@@ -517,21 +517,6 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 sjme_errorCode sjme_nvm_task_threadFrameNext(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame);
-	
-/**
- * Loads the given string pool string as an object.
- * 
- * @param inThread The context thread to load in as it may be required to
- * initialize classes.
- * @param inString The pooled string to load.
- * @param outValue The resultant object.
- * @return Any resultant error.
- * @since 2025/01/11
- */
-sjme_errorCode sjme_nvm_task_threadLoadStringP(
-	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrInNotNull sjme_nvm_stringPool_string inString,
-	sjme_attrOutNotNull sjme_jobject* outValue);
 
 /**
  * Creates a new thread within the given task.
@@ -556,6 +541,38 @@ sjme_errorCode sjme_nvm_task_threadNew(
  */
 sjme_errorCode sjme_nvm_task_threadStart(
 	sjme_attrInNotNull sjme_nvm_thread inThread);
+
+/**
+ * Loads the given character sequence as a string object.
+ * 
+ * @param inThread The context thread to load as the string requires
+ * initialization.
+ * @param outString The resultant string object.
+ * @param isIntern Should this be interned?
+ * @param inSeq The input sequence.
+ * @return Any resultant error, if any.
+ * @since 2025/01/25
+ */
+sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_jstring* outString,
+	sjme_attrInValue sjme_jboolean isIntern,
+	sjme_attrInNotNull sjme_charSeq* inSeq);
+	
+/**
+ * Loads the given string pool string as a string object.
+ * 
+ * @param inThread The context thread to load as the string requires
+ * initialization.
+ * @param outString The resultant string object.
+ * @param inPool The pooled string to load.
+ * @return Any resultant error.
+ * @since 2025/01/11
+ */
+sjme_errorCode sjme_nvm_task_threadStringValueOfP(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_jstring* outString,
+	sjme_attrInNotNull sjme_nvm_stringPool_string inPool);
 	
 /*--------------------------------------------------------------------------*/
 
