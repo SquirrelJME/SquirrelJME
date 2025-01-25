@@ -352,6 +352,30 @@ public enum MLEObject
 		}
 	},
 	
+	/** {@link ObjectShelf#arrayIntsToBytes(int[], int, byte[], int, int)}. */
+	ARRAY_INTS_TO_BYTES("arrayIntsToBytes:([II[BII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/01/24
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringArrayObjectInteger source = MLEObjects.notNull(
+				SpringArrayObjectInteger.class, __args[0]);
+			int sourceOff = (Integer)__args[1];
+			SpringArrayObjectByte dest = MLEObjects.notNull(
+				SpringArrayObjectByte.class, __args[2]);
+			int destOff = (Integer)__args[3];
+			int len = (Integer)__args[4];
+			
+			ObjectShelf.arrayIntsToBytes(source.array(), sourceOff,
+				dest.array(), destOff, len);
+			return null;
+		}
+	},
+	
 	/** {@link ObjectShelf#arrayLength(Object)}. */
 	ARRAY_LENGTH("arrayLength:(Ljava/lang/Object;)I")
 	{

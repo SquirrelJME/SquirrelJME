@@ -382,6 +382,27 @@ public final class ObjectShelf
 	public static native int arrayLength(@NotNull Object __object);
 	
 	/**
+	 * Copies and converts an integer array to a byte array.
+	 *
+	 * @param __source The source integer array.
+	 * @param __sourceOff The source offset.
+	 * @param __dest The destination byte array.
+	 * @param __destOff The destination offset.
+	 * @param __len The number of values to copy and convert,
+	 * @throws MLECallError On null arguments; or if the offset and/or lengths
+	 * are negative or exceed the array bounds.
+	 * @since 2025/01/24
+	 */
+	@SquirrelJMEVendorApi
+	public static native void arrayIntsToBytes(
+		@NotNull int[] __source,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sourceOff,
+		@NotNull byte[] __dest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
+		throws MLECallError;
+	
+	/**
 	 * Allocates a new array.
 	 *
 	 * @param <T> The resultant type of the array.
