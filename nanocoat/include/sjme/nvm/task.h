@@ -112,6 +112,20 @@ typedef enum sjme_nvm_thread_statusType
 	SJME_NVM_THREAD_NUM_STATUS_TYPES
 } sjme_nvm_thread_statusType;
 
+/**
+ * Interned task strings.
+ *
+ * @since 2025/01/25
+ */
+typedef struct sjme_nvm_taskStringsBase sjme_nvm_taskStringsBase;
+
+/**
+ * Interned task strings.
+ *
+ * @since 2025/01/25
+ */
+typedef sjme_nvm_taskStringsBase* sjme_nvm_taskStrings;
+
 struct sjme_nvm_frameTread
 {
 	/** The number of items in this tread. */
@@ -272,6 +286,15 @@ typedef struct sjme_nvm_task_taskNewConfig
 	sjme_nvm_vmClass_loader classLoader;
 } sjme_nvm_task_taskNewConfig;
 
+struct sjme_nvm_taskStringsBase
+{
+	/** Common structure details. */
+	sjme_nvm_commonBase common;
+
+	/** The interned strings. */
+	sjme_list_sjme_jstring* interns;
+};
+	
 struct sjme_nvm_taskBase
 {
 	/** Common structure details. */
@@ -294,6 +317,9 @@ struct sjme_nvm_taskBase
 	
 	/** The class loader for this specific task. */
 	sjme_nvm_vmClass_loader classLoader;
+
+	/** Internal strings for the task. */
+	sjme_nvm_taskStrings strings;
 };
 
 struct sjme_nvm_threadBase
@@ -553,7 +579,7 @@ sjme_errorCode sjme_nvm_task_threadStart(
  * @return Any resultant error, if any.
  * @since 2025/01/25
  */
-sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
+sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jstring* outString,
 	sjme_attrInValue sjme_jboolean isIntern,

@@ -196,6 +196,18 @@ sjme_jboolean sjme_charSeq_equalsUtfR(
 	sjme_attrInNotNull sjme_lpcstr equalsUtf);
 
 /**
+ * Hashes the given string in accordance to Java's @c String.hashCode() .
+ * 
+ * @param inSeq The sequence to hash.
+ * @param outHash The resultant hash code.
+ * @return Any resultant error, if any.
+ * @since 2025/01/25
+ */
+sjme_errorCode sjme_charSeq_hash(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrOutNotNull sjme_jint* outHash);
+
+/**
  * Initializes the given static character sequence.
  * 
  * @param inOutSeq The input/output sequence.

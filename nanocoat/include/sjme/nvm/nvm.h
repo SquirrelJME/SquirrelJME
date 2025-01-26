@@ -151,6 +151,9 @@ typedef enum sjme_nvm_structType
 	
 	/** NanoCoat state. */
 	SJME_NVM_STRUCT_STATE,
+
+	/** A string instance. */
+	SJME_NVM_STRUCT_STRING_INSTANCE,
 	
 	/** A string pool. */
 	SJME_NVM_STRUCT_STRING_POOL,
@@ -160,6 +163,9 @@ typedef enum sjme_nvm_structType
 	
 	/** A single task. */
 	SJME_NVM_STRUCT_TASK,
+
+	/** Task intern strings. */
+	SJME_NVM_STRUCT_TASK_STRINGS,
 	
 	/** A single thread. */
 	SJME_NVM_STRUCT_THREAD,

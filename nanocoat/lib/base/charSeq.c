@@ -221,6 +221,41 @@ sjme_jboolean sjme_charSeq_equalsUtfR(
 	return result;
 }
 
+sjme_errorCode sjme_charSeq_hash(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrOutNotNull sjme_jint* outHash)
+{
+	sjme_errorCode error;
+	sjme_jint result, i, n;
+	sjme_jchar c;
+	
+	if (inSeq == NULL || outHash == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* How long is the string? */
+	n = -1;
+	if (sjme_error_is(error = sjme_charSeq_length(inSeq, &n)) || n < 0)
+		return sjme_error_default(error);
+
+	/* Calculate for the string. */
+	result = 0;
+	for (i = 0; i < n; i++)
+	{
+		/* Get next character. */
+		c = 0;
+		if (sjme_error_is(error = sjme_charSeq_charAt(inSeq, i, &c)))
+			return sjme_error_default(error);
+			
+		/* Calculate the hashCode(), the JavaDoc gives the following formula: */
+		/* == s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1] .... yikes! */
+		result = ((result << 5) - result) + (sjme_jint)c;
+	}
+
+	/* Success! */
+	*outHash = result;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_charSeq_length(
 	sjme_attrInNotNull const sjme_charSeq* inSeq,
 	sjme_attrOutNotNull sjme_jint* outLen)

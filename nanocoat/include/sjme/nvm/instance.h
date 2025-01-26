@@ -171,6 +171,9 @@ struct sjme_jstringBase
 	/** The hash of this string. */
 	sjme_jint hashCode;
 
+	/** The length of this string. */
+	sjme_jint length;
+
 	/** The sequence of characters which make up the string. */
 	sjme_charSeq seq;
 };

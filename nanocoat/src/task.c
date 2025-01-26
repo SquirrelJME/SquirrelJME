@@ -9,6 +9,9 @@
 
 #include <string.h>
 
+#include <sjme/util.h>
+#include <sjme/nvm/instance.h>
+
 #include "sjme/stdGone.h"
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/loop.h"
@@ -185,6 +188,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_nvm_task result;
 	sjme_nvm_thread mainThread;
 	sjme_nvm_vmClass_loader classLoader;
+	sjme_nvm_taskStrings strings;
 
 	if (inState == NULL || startConfig == NULL || outTask == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -266,6 +270,13 @@ sjme_errorCode sjme_nvm_task_taskNew(
 		sizeof(*result), SJME_NVM_STRUCT_TASK,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
+
+	/* Allocate strings. */
+	strings = NULL;
+	if (sjme_error_is(error = sjme_nvm_alloc(inState,
+		sizeof(*result), SJME_NVM_STRUCT_TASK_STRINGS,
+		SJME_AS_NVM_COMMONP(&strings))) || strings == NULL)
+		goto fail_allocStrings;
 	
 	/* Initialize a new class loader for the current classpath. */
 	classLoader = NULL;
@@ -279,6 +290,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	result->classLoader = classLoader;
 	result->id = 1 + sjme_atomic_sjme_jint_getAdd(
 		&inState->nextTaskId, 1);
+	result->strings = strings;
 	
 	/* All new tasks are considered alive. */
 	result->status = SJME_NVM_TASK_STATUS_ALIVE;
@@ -328,6 +340,12 @@ sjme_errorCode sjme_nvm_task_taskNew(
 fail_preLockBeforeRelease:
 fail_allocThreads:
 fail_initClassLoader:
+fail_allocStrings:
+	if (strings != NULL)
+	{
+		sjme_closeable_close(SJME_AS_CLOSEABLE(strings));
+		strings = NULL;
+	}
 fail_allocResult:
 	if (result != NULL)
 	{
@@ -656,15 +674,87 @@ sjme_errorCode sjme_nvm_task_threadStart(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
+sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jstring* outString,
 	sjme_attrInValue sjme_jboolean isIntern,
 	sjme_attrInNotNull sjme_charSeq* inSeq)
 {
+	sjme_errorCode error;
+	sjme_nvm_taskStrings strings;
+	sjme_list_sjme_jstring* interns;
+	sjme_jstring result;
+	sjme_jint hash, length, i, n;
+	
 	if (inThread == NULL || outString == NULL || inSeq == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Calculate the hash/length of the string. */
+	hash = 0;
+	if (sjme_error_is(error = sjme_charSeq_hash(inSeq, &hash)))
+		return sjme_error_default(error);
+
+	length = 0;
+	if (sjme_error_is(error = sjme_charSeq_length(inSeq, &length)))
+		return sjme_error_default(error);
+
+	/* If interned, we need to lock on all the strings. */
+	strings = inThread->inTask->strings;
+	if (isIntern)
+	{
+		/* Lock on the interned strings. */
+		if (sjme_error_is(error = sjme_thread_spinLockGrab(
+			&strings->common.lock)))
+			return sjme_error_default(error);
+
+		/* See if there are any potential string matches. */
+		interns = strings->interns;
+		if (interns != NULL)
+			for (i = 0, n = interns->length; i < n; i++)
+			{
+				/* Ignore blank strings. */
+				result = interns->elements[i];
+				if (result == NULL)
+					continue;
+
+				/* Different hash/length? Ignore. */
+				if (hash != result->hashCode || length != result->length)
+					continue;
+				
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+			}
+		
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Setup string object. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_alloc(inThread->state,
+		sizeof(*result), SJME_NVM_STRUCT_STRING_INSTANCE,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
+		goto fail_allocStringInstance;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+
+	/* Final intern setup. */
+	if (isIntern)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+		
+		/* Release. */
+		if (sjme_error_is(error = sjme_thread_spinLockRelease(
+			&strings->common.lock, NULL)))
+			return sjme_error_default(error);
+	}
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+
+fail_allocStringInstance:
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -678,6 +768,6 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfP(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Forward implementation. */
-	return sjme_nvm_task_threadStringValueOfUtf(inThread,
+	return sjme_nvm_task_threadStringValueOfCS(inThread,
 		outString, SJME_JNI_TRUE, &inPool->seq);
 }

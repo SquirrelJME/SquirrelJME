@@ -300,6 +300,16 @@ static sjme_errorCode sjme_nvm_taskClose(
 	return sjme_error_notImplemented(0);
 }
 
+static sjme_errorCode sjme_nvm_taskStringsClose(
+	sjme_attrInNullable sjme_closeable closeable)
+{
+	if (closeable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_nvm_threadClose(
 	sjme_attrInNullable sjme_closeable closeable)
 {
@@ -465,6 +475,10 @@ sjme_errorCode sjme_nvm_allocR(
 		
 		case SJME_NVM_STRUCT_TASK:
 			handler = sjme_nvm_taskClose;
+			break;
+
+		case SJME_NVM_STRUCT_TASK_STRINGS:
+			handler = sjme_nvm_taskStringsClose;
 			break;
 		
 		case SJME_NVM_STRUCT_THREAD:
