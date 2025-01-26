@@ -175,7 +175,7 @@ struct sjme_jstringBase
 	sjme_jint length;
 
 	/** The sequence of characters which make up the string. */
-	sjme_charSeq seq;
+	sjme_charSeq* seq;
 };
 
 /**

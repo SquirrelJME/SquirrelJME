@@ -680,9 +680,11 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	sjme_attrInValue sjme_jboolean isIntern,
 	sjme_attrInNotNull sjme_charSeq* inSeq)
 {
+#define SJME_INTERN_GROW 32
 	sjme_errorCode error;
 	sjme_nvm_taskStrings strings;
 	sjme_list_sjme_jstring* interns;
+	sjme_jstring* blankIntern;
 	sjme_jstring result;
 	sjme_jint hash, length, i, n;
 	
@@ -700,6 +702,8 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 
 	/* If interned, we need to lock on all the strings. */
 	strings = inThread->inTask->strings;
+	interns = strings->interns;
+	blankIntern = NULL;
 	if (isIntern)
 	{
 		/* Lock on the interned strings. */
@@ -708,14 +712,17 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 			return sjme_error_default(error);
 
 		/* See if there are any potential string matches. */
-		interns = strings->interns;
 		if (interns != NULL)
 			for (i = 0, n = interns->length; i < n; i++)
 			{
 				/* Ignore blank strings. */
 				result = interns->elements[i];
 				if (result == NULL)
+				{
+					if (blankIntern == NULL)
+						blankIntern = &interns->elements[i];
 					continue;
+				}
 
 				/* Different hash/length? Ignore. */
 				if (hash != result->hashCode || length != result->length)
@@ -724,9 +731,6 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 				sjme_todo("Impl?");
 				return sjme_error_notImplemented(0);
 			}
-		
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
 	}
 
 	/* Setup string object. */
@@ -735,28 +739,70 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 		sizeof(*result), SJME_NVM_STRUCT_STRING_INSTANCE,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocStringInstance;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
 
-	/* Final intern setup. */
-	if (isIntern)
+	/* Set string properties. */
+	result->hashCode = hash;
+	result->length = length;
+
+	/* Reference string pool directly. */
+	if (sjme_nvm_isAR(inSeq->frontEnd.wrapper,
+		SJME_NVM_STRUCT_STRING_POOL_STRING))
+	{
+		/* Count up. */
+		if (sjme_error_is(error = sjme_alloc_weakRef(inSeq->frontEnd.wrapper,
+			NULL)))
+			goto fail_countPoolString;
+
+		/* Reference. */
+		result->seq = inSeq;
+	}
+
+	/* Otherwise... */
+	else
 	{
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
+	}
+	
+	/* Final intern setup. */
+	if (isIntern)
+	{
+		/* Need to grow the intern list? */
+		if (blankIntern == NULL)
+		{
+			/* Reallocate list. */
+			n = (interns == NULL ? 0 : interns->length);
+			if (sjme_error_is(error = sjme_list_replace(
+				inThread->state->allocPool,
+				n + SJME_INTERN_GROW,
+				&strings->interns,
+				sjme_jstring, 0)) || strings->interns == NULL)
+				goto fail_replaceList;
+
+			/* Place at end. */
+			interns = strings->interns;
+			blankIntern = &interns->elements[n];
+		}
+		
+		/* Set slot here. */
+		*blankIntern = result;
 		
 		/* Release. */
 		if (sjme_error_is(error = sjme_thread_spinLockRelease(
 			&strings->common.lock, NULL)))
 			return sjme_error_default(error);
 	}
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
 
+	/* Success! */
+	*outString = result;
+	return SJME_ERROR_NONE;
+
+fail_replaceList:
+fail_countPoolString:
 fail_allocStringInstance:
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#undef SJME_INTERN_GROW
 }
 
 sjme_errorCode sjme_nvm_task_threadStringValueOfP(

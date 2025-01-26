@@ -330,7 +330,7 @@ static sjme_errorCode sjme_nvm_threadFrameClose(
 	return sjme_error_notImplemented(0);
 }
 
-static sjme_errorCode sjme_nvm_vmClass_close(
+static sjme_errorCode sjme_nvm_instanceClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	if (closeable == NULL)
@@ -373,7 +373,7 @@ static sjme_errorCode sjme_nvm_vmClass_methodBindClose(
 /* ------------------------------------------------------------------------ */
 
 /** The magic number for NVM objects. */
-#define SJME_NVM_OBJECT_MAGIC UINT32_C(0x4E764D3F0A)
+#define SJME_NVM_OBJECT_MAGIC UINT32_C(0x4E764D3F)
 
 sjme_errorCode sjme_nvm_allocR(
 	sjme_attrInNotNull sjme_nvm inState,
@@ -418,7 +418,9 @@ sjme_errorCode sjme_nvm_allocR(
 			break;
 		
 		case SJME_NVM_STRUCT_CLASS_INSTANCE:
-			handler = sjme_nvm_vmClass_close;
+		case SJME_NVM_STRUCT_OBJECT_INSTANCE:
+		case SJME_NVM_STRUCT_STRING_INSTANCE:
+			handler = sjme_nvm_instanceClose;
 			break;
 			
 		case SJME_NVM_STRUCT_CODE:
@@ -554,5 +556,20 @@ sjme_errorCode sjme_nvm_isA(
 	else
 		*outResult = SJME_JNI_FALSE;
 	return SJME_ERROR_NONE;
+}
+
+sjme_jboolean sjme_nvm_isAR(
+	sjme_attrInNullable sjme_pointer inWhat,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType)
+{
+	sjme_jboolean result;
+	
+	/* Forward call. */
+	result = SJME_JNI_FALSE;
+	if (sjme_error_is(sjme_nvm_isA(inWhat, inType, &result)))
+		return SJME_JNI_FALSE;
+
+	/* Was this the type? */
+	return result;
 }
 

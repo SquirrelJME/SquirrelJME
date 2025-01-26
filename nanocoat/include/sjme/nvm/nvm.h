@@ -140,6 +140,9 @@ typedef enum sjme_nvm_structType
 	/** Method information. */
 	SJME_NVM_STRUCT_METHOD_INFO,
 	
+	/** Object Instance. */
+	SJME_NVM_STRUCT_OBJECT_INSTANCE,
+	
 	/** Rom Library. */
 	SJME_NVM_STRUCT_ROM_LIBRARY,
 	

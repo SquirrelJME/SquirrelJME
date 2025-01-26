@@ -74,6 +74,18 @@ sjme_errorCode sjme_nvm_isA(
 	sjme_attrInNullable sjme_pointer inWhat,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_jboolean* outResult);
+
+/**
+ * Is this a NVM object type?
+ * 
+ * @param inWhat What to check.
+ * @param inType Is this the given type of object?
+ * @return The result of if this is such type.
+ * @since 2025/01/26
+ */
+sjme_jboolean sjme_nvm_isAR(
+	sjme_attrInNullable sjme_pointer inWhat,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType);
 	
 /*--------------------------------------------------------------------------*/
 
