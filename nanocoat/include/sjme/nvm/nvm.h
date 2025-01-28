@@ -229,13 +229,6 @@ typedef struct sjme_nvm_frameBase sjme_nvm_frameBase;
 typedef sjme_nvm_frameBase* sjme_nvm_frame;
 
 /**
- * A tread within a frame.
- *
- * @since 2025/01/04 
- */
-typedef struct sjme_nvm_frameTread sjme_nvm_frameTread;
-
-/**
  * Base structure for virtual machine threads.
  * 
  * @since 2024/08/08

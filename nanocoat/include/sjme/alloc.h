@@ -403,6 +403,24 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
 		sjme_attrFormatOuter(2, 3));
 
 /**
+ * Grows the given allocation.
+ * 
+ * @param allocPool The allocation pool to allocate under.
+ * @param inOutAddr The input/output address.
+ * @param memberSize The size of individual members.
+ * @param currentCountP The pointer to the current count.
+ * @param newCount The new count to allocate.
+ * @return Any resultant errors, if any.
+ * @since 2025/01/28
+ */
+sjme_errorCode sjme_alloc_grow(
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_pointer* inOutAddr,
+	sjme_attrInPositiveNonZero sjme_jint memberSize,
+	sjme_attrInNotNull sjme_jint* currentCountP,
+	sjme_attrInPositiveNonZero sjme_jint newCount);
+	
+/**
  * Reallocates memory, either growing it or shrinking... the pointer will be
  * adjusted accordingly.
  * 

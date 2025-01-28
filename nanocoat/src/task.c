@@ -9,9 +9,8 @@
 
 #include <string.h>
 
-#include <sjme/util.h>
-#include <sjme/nvm/instance.h>
-
+#include "sjme/util.h"
+#include "sjme/nvm/instance.h"
 #include "sjme/stdGone.h"
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/loop.h"
@@ -24,6 +23,68 @@
 
 /** The number of threads to grow by. */
 #define SJME_NVM_THREAD_GROW 8
+
+/** Type size multiplier. */
+static const sjme_jint sjme_nvm_typeMul[5] =
+{
+	sizeof(sjme_jint),
+	sizeof(sjme_jlong),
+	sizeof(sjme_jfloat),
+	sizeof(sjme_jdouble),
+	sizeof(sjme_jobject),
+};
+
+static sjme_errorCode sjme_nvm_task_stackReframe(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_class_methodInfo targetInfo)
+{
+#define SJME_NVM_INIT_STACK_ORDER 256
+	
+	sjme_errorCode error;
+	sjme_frame_threadStack* threadStack;
+	sjme_jint i, n, stackOrderLen, needLen;
+	
+	/* Which stack order length is needed now? Keep a minimum at all times. */
+	stackOrderLen = inThread->stackTop + targetInfo->code->maxLocals +
+		targetInfo->code->maxStack;
+	inThread->stackNextTop = stackOrderLen;
+	if (stackOrderLen < SJME_NVM_INIT_STACK_ORDER)
+		stackOrderLen = SJME_NVM_INIT_STACK_ORDER;
+
+	/* Need to grow stack ordering information? */
+	if (sjme_error_is(error = sjme_alloc_grow(inThread->state->allocPool,
+		(sjme_pointer*)&inThread->stackOrder,
+		sizeof(*inThread->stackOrder),
+		&inThread->stackTotal,
+		stackOrderLen)))
+		return sjme_error_default(error);
+	
+	/* Need to grow type storage info? */
+	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
+	{
+		/* Get the storage here. */
+		threadStack = &inThread->stack[i];
+
+		/* How much storage is needed for this? */
+		needLen = threadStack->top + targetInfo->code->maxLocals +
+			targetInfo->code->maxStack;
+		threadStack->nextTop = needLen;
+
+		/* Need to grow stack storage? */
+		if (sjme_error_is(error = sjme_alloc_grow(inThread->state->allocPool,
+			(sjme_pointer*)&threadStack->storage.storage,
+			sjme_nvm_typeMul[i],
+			&inThread->stackTotal,
+			needLen)))
+			return sjme_error_default(error);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+#undef SJME_NVM_INIT_STACK_ORDER
+}
 
 sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
@@ -116,11 +177,25 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_jvalueTyped* inValue)
 {
+	sjme_frame_frameStack* stack;
+	sjme_jint at;
+	
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Obtain the stack pivot. */
+	stack = &inFrame->stack[inValue->type];
+
+	/* Where is this being written? */
+	at = stack->front + (stack->top++);
+
+	/* Set next in the stack order. */
+	(*inFrame->stackOrder)[inFrame->stackFront +
+		(inFrame->stackUse++)] = inValue->type;
+
+	/* Forward call. */
+	return sjme_nvm_task_frameTreadSetT(inFrame,
+		at, inValue);
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
@@ -162,18 +237,47 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue)
 {
+	sjme_frame_frameStack* stack;
+	
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inValue->type < 0 || inValue->type >= SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	if (typeIndex < 0 || inFrame->treads[inValue->type] == NULL ||
-		typeIndex >= inFrame->treads[inValue->type]->max)
-		return SJME_ERROR_TREAD_INDEX_INVALID;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Obtain the stack pivot. */
+	stack = &inFrame->stack[inValue->type];
+
+	/* Operating depends on the type. */
+	switch (inValue->type)
+	{
+		case SJME_JAVA_TYPE_ID_INTEGER:
+			(*stack->base.jints)[typeIndex] = inValue->value.i;
+			break;
+			
+		case SJME_JAVA_TYPE_ID_LONG:
+			(*stack->base.jlongs)[typeIndex] = inValue->value.j;
+			break;
+			
+		case SJME_JAVA_TYPE_ID_FLOAT:
+			(*stack->base.jfloats)[typeIndex] = inValue->value.f;
+			break;
+			
+		case SJME_JAVA_TYPE_ID_DOUBLE:
+			(*stack->base.jdoubles)[typeIndex] = inValue->value.d;
+			break;
+			
+		case SJME_JAVA_TYPE_ID_OBJECT:
+			sjme_message("TODO: Count object set.");
+			(*stack->base.jobjects)[typeIndex] = inValue->value.l;
+			break;
+			
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_task_taskNew(
@@ -426,6 +530,11 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 			result, dx, &argV[i])))
 			return sjme_error_default(error);
 
+	/* Perform stack and thread re-framing. */
+	if (sjme_error_is(error = sjme_nvm_task_stackReframe(
+		inThread->state, inThread, result, targetInfo)))
+		return sjme_error_default(error);
+	
 	/* Set frame details. */
 #if 0
 	result->inClass = targetInfo->inClass;
@@ -433,6 +542,21 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	result->inThread = inThread;
 	result->inCode = targetInfo->code;
 	result->pool = targetInfo->code->inMethod->inClass->pool;
+	result->stackOrder = &inThread->stackOrder;
+
+	/* Set type specific stack frame treads. */
+	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
+	{
+		result->stack[i].base.base = /*&*/SJME_POINTER_OFFSET(
+			inThread->stack[i].storage.storage,
+			sjme_nvm_typeMul[i] * inThread->stack[i].top);
+
+		/* Shift thread stack for individual types. */
+		inThread->stack[i].top = inThread->stack[i].nextTop;
+	}
+
+	/* Shift thread stack. */
+	inThread->stackTop = inThread->stackNextTop;
 	
 	/* Set frame as active. */
 	inThread->numFrames++;

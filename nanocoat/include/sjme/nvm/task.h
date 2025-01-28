@@ -125,97 +125,85 @@ typedef struct sjme_nvm_taskStringsBase sjme_nvm_taskStringsBase;
  * @since 2025/01/25
  */
 typedef sjme_nvm_taskStringsBase* sjme_nvm_taskStrings;
+	
+/**
+ * Stores the main thread stack frames.
+ *
+ * @since 2025/01/27
+ */
+typedef struct sjme_frame_threadStack sjme_frame_threadStack;
+	
+/**
+ * Contains information on the stack framing information.
+ *
+ * @since 2025/01/27
+ */
+typedef struct sjme_frame_frameStack sjme_frame_frameStack;
 
-struct sjme_nvm_frameTread
+struct sjme_frame_threadStack
 {
-	/** The number of items in this tread. */
+	/** The top for this specific type. */
+	sjme_jint top;
+
+	/** The next top value. */
+	sjme_jint nextTop;
+
+	/** The number of items in storage. */
 	sjme_jint count;
 	
-	/** The base index for the stack index. */
-	sjme_jint stackBaseIndex;
-	
-	/** The maximum size this tread can be. */
-	sjme_jint max;
-	
-	/** Values within the tread. */
-	union
+	/** Storage for the given types in this thread. */
+	sjme_alignPointer union
 	{
+		/** Pointer storage. */
+		sjme_pointer storage;
+		
 		/** Integer values. */
-		sjme_jint jints[sjme_flexibleArrayCountUnion];
-		
+		sjme_jint* jints;
+
 		/** Long values. */
-		sjme_jlong jlongs[sjme_flexibleArrayCountUnion];
-		
+		sjme_jlong* jlongs;
+
 		/** Float values. */
-		sjme_jfloat jfloats[sjme_flexibleArrayCountUnion];
-		
+		sjme_jfloat* jfloats;
+
 		/** Double values. */
-		sjme_jdouble jdoubles[sjme_flexibleArrayCountUnion];
-		
-		/** Object references. */
-		sjme_jobject jobjects[sjme_flexibleArrayCountUnion];
-	} values;
+		sjme_jdouble* jdoubles;
+
+		/** Object values. */
+		sjme_jobject* jobjects;
+	} storage;
 };
-
-/**
- * Calculates the size of a frame tread for a given type.
- * 
- * @param type The type to get the size for.
- * @param count The number if items to store.
- * @return The size in bytes for the tread.
- * @since 2023/11/15
- */
-#define SJME_SIZEOF_FRAME_TREAD(type, count, baseType) \
-	(sizeof(sjme_nvm_frameTread) + \
-	/* Need to handle cases where values could be aligned up... */ \
-	(offsetof(sjme_nvm_frameTread, values.SJME_TOKEN_PASTE(baseType,s)[0]) - \
-		offsetof(sjme_nvm_frameTread, values)) + \
-	(sizeof(type) * (size_t)(count)))
-
-/**
- * Calculates the size of a frame tread for a given type via variable.
- * 
- * @param typeId The type to get the size for.
- * @param count The number if items to store.
- * @return The size in bytes for the tread.
- * @since 2023/11/15
- */
-static sjme_inline sjme_attrArtificial size_t SJME_SIZEOF_FRAME_TREAD_VAR(
-	sjme_javaTypeId typeId, sjme_jint count)
+	
+struct sjme_frame_frameStack
 {
-	switch (typeId)
+	/** The top for this specific type. */
+	sjme_jint top;
+
+	/** The front of the stack, anything before are local variables. */
+	sjme_jint front;
+	
+	/** Pointer bases for the type on the frame. */
+	sjme_alignPointer union
 	{
-		case SJME_JAVA_TYPE_ID_INTEGER:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jint, count, jint);
+		/** Pointer base. */
+		sjme_pointer base;
 		
-		case SJME_JAVA_TYPE_ID_LONG:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jlong, count, jlong);
-			
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jfloat, count, jfloat);
-			
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jdouble, count, jdouble);
-			
-		case SJME_JAVA_TYPE_ID_OBJECT:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jobject, count, jobject);
-	}
-	
-	/* Invalid. */
-	return 0;
-}
+		/** Integer values. */
+		sjme_jint** jints;
 
-typedef struct sjme_nvm_frameLocalMap
-{
-	/** The maximum number of locals. */
-	sjme_jint max;
-	
-	/** Mapping of a specific variable to a given type index. */
-	union
-	{
-		sjme_jbyte to[SJME_NUM_JAVA_TYPE_IDS];
-	} maps[sjme_flexibleArrayCount];
-} sjme_nvm_frameLocalMap;
+		/** Long values. */
+		sjme_jlong** jlongs;
+
+		/** Float values. */
+		sjme_jfloat** jfloats;
+
+		/** Double values. */
+		sjme_jdouble** jdoubles;
+
+		/** Object values. */
+		sjme_jobject** jobjects;
+	} base;
+};
 
 struct sjme_nvm_frameBase
 {
@@ -236,12 +224,18 @@ struct sjme_nvm_frameBase
 
 	/** The code this is executing within. */
 	sjme_nvm_class_codeInfo inCode;
-	
-	/** Treads for stack and local storage. */
-	sjme_nvm_frameTread* treads[SJME_NUM_JAVA_TYPE_IDS];
-	
-	/** Mapping of local variables to the tread indexes per type. */
-	sjme_nvm_frameLocalMap* localMap;
+
+	/** Stack framing information. */
+	sjme_frame_frameStack stack[SJME_NUM_JAVA_TYPE_IDS];
+
+	/** The order of the stack. */
+	sjme_javaTypeId** stackOrder;
+
+	/** The front of the stack, anything before this are local variables. */
+	sjme_jint stackFront;
+
+	/** The number of items on the stack. */
+	sjme_jint stackUse;
 
 	/** Thread state flags. */
 	sjme_packed struct
@@ -350,6 +344,21 @@ struct sjme_nvm_threadBase
 	
 	/** The stack frames. */
 	sjme_list_sjme_nvm_frame* frames;
+
+	/** Stack framing information. */
+	sjme_frame_threadStack stack[SJME_NUM_JAVA_TYPE_IDS];
+
+	/** Stack ordering information. */
+	sjme_javaTypeId* stackOrder;
+
+	/** The number of items used the stack. */
+	sjme_jint stackTop;
+
+	/** The next top value. */
+	sjme_jint stackNextTop;
+
+	/** The number of items available on the stack. */
+	sjme_jint stackTotal;
 	
 	/** Throwable which has been tossed in the thread. */
 	sjme_jobject tossed;

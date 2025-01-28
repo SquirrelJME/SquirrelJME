@@ -799,6 +799,38 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
 #undef BUF_SIZE
 }
 
+sjme_errorCode sjme_alloc_grow(
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_pointer* inOutAddr,
+	sjme_attrInPositiveNonZero sjme_jint memberSize,
+	sjme_attrInNotNull sjme_jint* currentCountP,
+	sjme_attrInPositiveNonZero sjme_jint newCount)
+{
+	sjme_errorCode error;
+	sjme_pointer currentP;
+	
+	if (allocPool == NULL || inOutAddr == NULL || currentCountP == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (memberSize <= 0 || newCount < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Need to allocate? */
+	currentP = *inOutAddr;
+	if (currentP == NULL && newCount > 0)
+	{
+		if (sjme_error_is(error = sjme_alloc(allocPool,
+			memberSize * newCount, inOutAddr)))
+			return sjme_error_default(error);
+
+		*currentCountP = newCount;
+		return SJME_ERROR_NONE;
+	}
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_alloc_mergeFree(sjme_alloc_link* link)
 {
 	sjme_alloc_pool* pool;

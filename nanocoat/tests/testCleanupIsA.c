@@ -7,12 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <sjme/nvm/cleanup.h>
-
 #include "test.h"
 #include "proto.h"
 #include "mock.h"
 #include "unit.h"
+#include "sjme/nvm/cleanup.h"
 
 /**
  * Tests if object "Is A" something.

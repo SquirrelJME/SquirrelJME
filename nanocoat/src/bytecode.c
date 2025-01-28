@@ -7,8 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <sjme/nvm/task.h>
-
+#include "sjme/nvm/task.h"
 #include "sjme/nvm/bytecode.h"
 #include "sjme/debug.h"
 
