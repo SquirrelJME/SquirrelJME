@@ -1,0 +1,3 @@
+# Glossary of Terms
+
+ * _NVM_ -- NanoCoat Virtual Machine.
