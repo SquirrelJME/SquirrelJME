@@ -724,6 +724,27 @@ struct sjme_nvm_class_methodInfoBase
 	sjme_nvm_class_info inClass;
 };
 
+/**
+ * Stores the maximum count for a variable of a given type.
+ *
+ * @since 2025/01/30
+ */
+typedef struct sjme_nvm_class_codePerType
+{
+	/** The maximum number of local variables. */
+	sjme_jshort locals;
+
+	/** The maximum number of stack variables. */
+	sjme_jshort stack;
+} sjme_nvm_class_codePerType;
+
+/** The ID for all types. */
+#define SJME_JAVA_TYPE_ID_ALL SJME_NUM_JAVA_TYPE_IDS
+
+/** The number of per types. */
+#define SJME_NUM_CODE_TYPE_IDS \
+	(SJME_JAVA_TYPE_ID_ALL + 1)
+
 struct sjme_nvm_class_codeInfoBase
 {
 	/** The common NanoCoat base. */
@@ -731,12 +752,9 @@ struct sjme_nvm_class_codeInfoBase
 	
 	/** The method which contains this code. */
 	sjme_nvm_class_methodInfo inMethod;
-
-	/** Maximum number of locals. */
-	sjme_jint maxLocals;
-
-	/** Maximum number of stack entries. */
-	sjme_jint maxStack;
+	
+	/** Maximum per specific type. */
+	sjme_nvm_class_codePerType perType[SJME_NUM_CODE_TYPE_IDS];
 
 	/** Exception table. */
 	sjme_list_sjme_nvm_class_exceptionHandler* exceptions;

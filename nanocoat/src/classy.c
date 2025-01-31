@@ -422,8 +422,8 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 		goto fail_readMaxLocals;
 	
 	/* Set. */
-	result->maxStack = maxStack;
-	result->maxLocals = maxLocals;
+	result->perType[SJME_JAVA_TYPE_ID_ALL].stack = maxStack;
+	result->perType[SJME_JAVA_TYPE_ID_ALL].locals = maxLocals;
 	
 	/* Read in code length. */
 	codeLen = -1;

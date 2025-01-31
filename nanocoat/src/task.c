@@ -47,8 +47,9 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	sjme_jint i, n, stackOrderLen, needLen;
 	
 	/* Which stack order length is needed now? Keep a minimum at all times. */
-	stackOrderLen = inThread->stackTop + targetInfo->code->maxLocals +
-		targetInfo->code->maxStack;
+	stackOrderLen = inThread->stackTop +
+		targetInfo->code->perType[SJME_JAVA_TYPE_ID_ALL].locals +
+		targetInfo->code->perType[SJME_JAVA_TYPE_ID_ALL].stack;
 	inThread->stackNextTop = stackOrderLen;
 	if (stackOrderLen < SJME_NVM_INIT_STACK_ORDER)
 		stackOrderLen = SJME_NVM_INIT_STACK_ORDER;
@@ -68,8 +69,9 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 		threadStack = &inThread->stack[i];
 
 		/* How much storage is needed for this? */
-		needLen = threadStack->top + targetInfo->code->maxLocals +
-			targetInfo->code->maxStack;
+		needLen = threadStack->top +
+			targetInfo->code->perType[SJME_JAVA_TYPE_ID_ALL].locals +
+			targetInfo->code->perType[SJME_JAVA_TYPE_ID_ALL].stack;
 		threadStack->nextTop = needLen;
 
 		/* Need to grow stack storage? */
@@ -103,7 +105,8 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	isWide = (inValue->type == SJME_JAVA_TYPE_ID_LONG ||
 		inValue->type == SJME_JAVA_TYPE_ID_DOUBLE);
 	if (localIndex < 0 ||
-		((localIndex + (isWide ? 1 : 0)) >= inFrame->inCode->maxLocals))
+		((localIndex + (isWide ? 1 : 0)) >=
+			inFrame->inCode->perType[SJME_JAVA_TYPE_ID_ALL].locals))
 		return SJME_ERROR_LOCAL_INDEX_INVALID;
 	
 	sjme_todo("Impl?");
