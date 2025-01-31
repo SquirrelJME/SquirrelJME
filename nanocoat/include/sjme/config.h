@@ -703,6 +703,15 @@ extern "C" {
 	#define SJME_CONFIG_HAS_THREADS_FALLBACK
 #endif
 
+#if defined(SJME_CONFIG_HAS_WINDOWS_16)
+	#define SJME_CALL FAR PASCAL
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	#define SJME_CALL __stdcall 
+#else
+	/** SquirrelJME calling convention. */
+	#define SJME_CALL
+#endif
+
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/** Align to 32-bit. */
 	#define sjme_align32 __declspec(align(4))
@@ -712,15 +721,6 @@ extern "C" {
 #else
 	/** Align to 32-bit. */
 	#define sjme_align32 
-#endif
-
-#if defined(SJME_CONFIG_HAS_WINDOWS_16)
-	#define SJME_CALL FAR PASCAL
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
-	#define SJME_CALL __stdcall 
-#else
-	/** SquirrelJME calling convention. */
-	#define SJME_CALL
 #endif
 
 #if defined(SJME_CONFIG_HAS_MSVC)
