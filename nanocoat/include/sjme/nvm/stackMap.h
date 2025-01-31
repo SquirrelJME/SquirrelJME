@@ -8,7 +8,8 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Functions and support for parsing @c StackMap and @c StackMapTable within.
+ * Functions and support for parsing @c StackMap and @c StackMapTable within,
+ * which is the core basis of the verifier.
  * 
  * @since 2025/01/28
  */
@@ -28,6 +29,8 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
