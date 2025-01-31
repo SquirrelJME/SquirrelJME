@@ -188,7 +188,7 @@ static const sjme_stream_outputFunctions sjme_stream_outputMemoryFunctions =
 };
 
 sjme_errorCode sjme_stream_inputOpenMemory(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length)
@@ -216,7 +216,7 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 }
 
 sjme_errorCode sjme_stream_outputOpenMemory(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length)

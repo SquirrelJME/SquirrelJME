@@ -18,11 +18,11 @@ SJME_TEST_DECLARE(testAlloc)
 {
 	sjme_pointer chunk;
 	sjme_jint chunkLen;
-	sjme_alloc_pool* pool;
+	sjme_alloc_pool pool;
 	sjme_pointer block;
-	sjme_alloc_link* link;
-	sjme_alloc_link* freeFirstFixed;
-	sjme_alloc_link* freeLastFixed;
+	sjme_alloc_link link;
+	sjme_alloc_link freeFirstFixed;
+	sjme_alloc_link freeLastFixed;
 	
 	/* Allocate data on the stack so it gets cleared. */
 	chunkLen = 32768;

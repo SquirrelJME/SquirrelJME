@@ -102,7 +102,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_SUITE, _1_1init)
 
 	/* Initialize new suite. */
 	if (sjme_error_is(error = sjme_rom_suiteNew(
-		SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr),
+		SJME_JLONG_TO_POINTER(sjme_alloc_pool, poolPtr),
 		&result, NULL,
 		&sjme_jni_virtualSuite_functions,
 		&frontEnd)) ||

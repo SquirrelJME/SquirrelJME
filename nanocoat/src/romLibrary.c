@@ -42,7 +42,7 @@ sjme_errorCode sjme_rom_libraryHash(
 }
 
 sjme_errorCode sjme_rom_libraryNew(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNullable sjme_pointer data,

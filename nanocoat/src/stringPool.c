@@ -233,7 +233,7 @@ fail_releaseLock:
 }
 
 sjme_errorCode sjme_stringPool_new(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrOutNotNull sjme_stringPool* outStringPool)
 {
 	sjme_errorCode error;

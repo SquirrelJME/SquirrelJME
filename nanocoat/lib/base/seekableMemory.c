@@ -103,7 +103,7 @@ static const sjme_seekable_functions sjme_seekable_memoryFunctions =
 };
 
 sjme_errorCode sjme_seekable_openMemory(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length)

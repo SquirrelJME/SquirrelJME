@@ -472,7 +472,7 @@ sjme_errorCode sjme_circleBuffer_get(
 }
 
 sjme_errorCode sjme_circleBuffer_new(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_circleBuffer** outBuffer,
 	sjme_attrInValue sjme_circleBuffer_mode inMode,
 	sjme_attrInPositiveNonZero sjme_jint length)

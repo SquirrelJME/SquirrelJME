@@ -848,7 +848,7 @@ sjme_errorCode sjme_scritchui_core_intern_initCommon(
 		sjme_scritchui_uiType uiType)
 {
 	sjme_errorCode error;
-	sjme_alloc_link* link;
+	sjme_alloc_link link;
 	
 	if (inState == NULL || inCommon == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

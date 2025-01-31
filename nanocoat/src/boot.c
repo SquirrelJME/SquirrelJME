@@ -99,12 +99,12 @@ static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
 };
 
 sjme_errorCode sjme_nvm_allocReservedPool(
-	sjme_attrInNotNull sjme_alloc_pool* mainPool,
-	sjme_attrOutNotNull sjme_alloc_pool** outReservedPool)
+	sjme_attrInNotNull sjme_alloc_pool mainPool,
+	sjme_attrOutNotNull sjme_alloc_pool* outReservedPool)
 {
 	sjme_errorCode error;
 	sjme_pointer reservedBase;
-	sjme_alloc_pool* reservedPool;
+	sjme_alloc_pool reservedPool;
 	sjme_jint reservedSize;
 
 	if (mainPool == NULL || outReservedPool == NULL)
@@ -134,8 +134,8 @@ sjme_errorCode sjme_nvm_allocReservedPool(
 }
 
 sjme_errorCode sjme_nvm_boot(
-	sjme_attrInNotNull sjme_alloc_pool* mainPool,
-	sjme_attrInNotNull sjme_alloc_pool* reservedPool,
+	sjme_attrInNotNull sjme_alloc_pool mainPool,
+	sjme_attrInNotNull sjme_alloc_pool reservedPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
 	sjme_attrOutNotNull sjme_nvm* outState)
 {
@@ -302,7 +302,7 @@ fail_reservedPoolAlloc:
 }
 
 sjme_errorCode sjme_nvm_defaultBootSuite(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite)
 {
@@ -491,7 +491,7 @@ sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
 }
 
 sjme_errorCode sjme_nvm_parseCommandLine(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrInOutNotNull sjme_nvm_bootParam* outParam,
 	sjme_attrInPositiveNonZero sjme_jint argc,

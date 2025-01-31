@@ -187,7 +187,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_LIBRARY, _1_1init)
 	(JNIEnv* env, jclass classy, jobject self, jlong suitePtr, jstring libName)
 {
 	sjme_rom_suite suite;
-	sjme_alloc_pool* pool;
+	sjme_alloc_pool pool;
 	sjme_rom_library result;
 	sjme_errorCode error;
 	sjme_frontEnd frontEnd;

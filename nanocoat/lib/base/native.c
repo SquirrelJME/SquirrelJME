@@ -155,7 +155,7 @@ static const sjme_seekable_functions sjme_nal_default_cFileFunctions =
 #endif
 
 static sjme_errorCode sjme_nal_default_fileOpen(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrOutNotNull sjme_seekable* outSeekable)
 {

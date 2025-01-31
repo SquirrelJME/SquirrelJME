@@ -91,7 +91,7 @@ sjme_errorCode sjme_stream_inputAvailable(
 }
 
 sjme_errorCode sjme_stream_inputOpen(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull const sjme_stream_inputFunctions* inFunctions,
 	sjme_attrInNullable sjme_pointer data,
@@ -433,7 +433,7 @@ sjme_errorCode sjme_stream_inputReadValueJS(
 }
 
 sjme_errorCode sjme_stream_outputOpen(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInNotNull const sjme_stream_outputFunctions* inFunctions,
 	sjme_attrInNullable sjme_pointer data,

@@ -108,7 +108,7 @@ static sjme_errorCode sjme_mock_defaultRomMockLibraryResourceStream(
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr resourceName)
 {
-	sjme_alloc_pool* pool;
+	sjme_alloc_pool pool;
 	sjme_cpointer data;
 	sjme_jint len;
 

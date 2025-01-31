@@ -244,7 +244,7 @@ sjme_errorCode sjme_zip_entryRead(
 	sjme_errorCode error;
 	sjme_jint nameLen, localHeaderPos, magic, actualDataPos, rawSize;
 	sjme_stream_input lowStream, hiStream, useStream;
-	sjme_alloc_pool* allocPool;
+	sjme_alloc_pool allocPool;
 	sjme_zip inZip;
 	sjme_jchar lens[2];
 	
@@ -535,7 +535,7 @@ fail_notFound:
 }
 
 sjme_errorCode sjme_zip_openMemory(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_zip* outZip,
 	sjme_attrInNotNull sjme_pointer rawData,
 	sjme_attrInPositive sjme_jint rawSize)
@@ -571,7 +571,7 @@ sjme_errorCode sjme_zip_openMemory(
 }
 
 sjme_errorCode sjme_zip_openSeekable(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_zip* outZip,
 	sjme_attrInNotNull sjme_seekable inSeekable)
 {

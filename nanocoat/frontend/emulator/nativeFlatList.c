@@ -55,7 +55,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_FLAT_LIST, _1_1flatten)
 	/* Perform native call, handle error later. */
 	result = NULL;
 	error = sjme_list_flattenArgCV(
-		SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr),
+		SJME_JLONG_TO_POINTER(sjme_alloc_pool, poolPtr),
 		(sjme_list_sjme_lpstr**)&result,
 		arrayLen, utfStrings);
 
@@ -101,7 +101,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_FLAT_LIST, _1_1fromArrayI)
 	/* Setup new array. */
 	result = NULL;
 	error = sjme_list_newA(
-		SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr),
+		SJME_JLONG_TO_POINTER(sjme_alloc_pool, poolPtr),
 		sjme_jint, 0, arrayLen, &result, primitiveInts);
 
 	/* Make sure they are freed. */
@@ -152,7 +152,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_FLAT_LIST, _1_1fromArrayP)
 	/* Setup new array. */
 	result = NULL;
 	error = sjme_list_newA(
-		SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr),
+		SJME_JLONG_TO_POINTER(sjme_alloc_pool, poolPtr),
 		sjme_pointer, 0, arrayLen, &result, primPtrs);
 
 	/* Failed? */

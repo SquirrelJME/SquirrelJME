@@ -59,9 +59,9 @@ static sjme_debug_handlerFunctions sjme_test_debugHandlers =
 };
 
 #if defined(SJME_CONFIG_DEBUG)
-void sjme_test_leakCheck(sjme_alloc_pool* pool)
+void sjme_test_leakCheck(sjme_alloc_pool pool)
 {
-	sjme_alloc_link* link;
+	sjme_alloc_link link;
 	
 	/* Go through every link. */
 	for (link = pool->frontLink; link != NULL; link = link->next)
@@ -78,7 +78,7 @@ void sjme_test_leakCheck(sjme_alloc_pool* pool)
 				
 			/* Recursively check the nested pool. */
 			if ((link->flags & SJME_ALLOC_LINK_FLAG_NESTED_POOL) != 0)
-				sjme_test_leakCheck((sjme_alloc_pool*)&link->block[0]);
+				sjme_test_leakCheck((sjme_alloc_pool)&link->block[0]);
 		}
 }
 #endif

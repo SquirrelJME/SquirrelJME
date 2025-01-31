@@ -100,8 +100,8 @@ struct sjme_nvm_bootParam
  * @since 2023/12/14
  */
 sjme_errorCode sjme_nvm_allocReservedPool(
-	sjme_attrInNotNull sjme_alloc_pool* mainPool,
-	sjme_attrOutNotNull sjme_alloc_pool** outReservedPool);
+	sjme_attrInNotNull sjme_alloc_pool mainPool,
+	sjme_attrOutNotNull sjme_alloc_pool* outReservedPool);
 
 /**
  * Boots the virtual machine.
@@ -117,8 +117,8 @@ sjme_errorCode sjme_nvm_allocReservedPool(
  * @since 2023/07/27
  */
 sjme_errorCode sjme_nvm_boot(
-	sjme_attrInNotNull sjme_alloc_pool* mainPool,
-	sjme_attrInNotNull sjme_alloc_pool* reservedPool,
+	sjme_attrInNotNull sjme_alloc_pool mainPool,
+	sjme_attrInNotNull sjme_alloc_pool reservedPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
 	sjme_attrOutNotNull sjme_nvm* outState)
 	sjme_attrCheckReturn;
@@ -133,7 +133,7 @@ sjme_errorCode sjme_nvm_boot(
  * @since 2024/08/09
  */
 sjme_errorCode sjme_nvm_defaultBootSuite(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite);
 
@@ -180,7 +180,7 @@ sjme_errorCode sjme_nvm_destroy(
  * @since 2024/08/08
  */
 sjme_errorCode sjme_nvm_parseCommandLine(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrInOutNotNull sjme_nvm_bootParam* outParam,
 	sjme_attrInPositiveNonZero sjme_jint argc,

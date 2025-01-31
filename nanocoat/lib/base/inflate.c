@@ -1415,7 +1415,7 @@ sjme_errorCode sjme_inflate_inflate(
 }
 
 sjme_errorCode sjme_inflate_new(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_inflate** outState,
 	sjme_attrInNotNull sjme_stream_input source)
 {

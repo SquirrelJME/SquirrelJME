@@ -136,7 +136,7 @@ static const sjme_rom_libraryFunctions sjme_rom_zipLibraryFunctions =
 };
 
 sjme_errorCode sjme_rom_libraryFromZip(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNullable sjme_lpcstr prefix,
@@ -176,7 +176,7 @@ fail_libraryNew:
 }
 
 sjme_errorCode sjme_rom_libraryFromZipMemory(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNotNull sjme_cpointer base,
@@ -204,7 +204,7 @@ sjme_errorCode sjme_rom_libraryFromZipMemory(
 }
 
 sjme_errorCode sjme_rom_libraryFromZipSeekable(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNotNull sjme_seekable seekable)

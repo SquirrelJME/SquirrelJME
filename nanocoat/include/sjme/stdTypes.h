@@ -670,7 +670,14 @@ typedef struct sjme_jvalueTyped
  *
  * @since 2023/11/18
  */
-typedef struct sjme_alloc_pool sjme_alloc_pool;
+typedef struct sjme_alloc_poolBase sjme_alloc_poolBase;
+
+/**
+ * Structure which stores the pooled memory allocator.
+ *
+ * @since 2023/11/18
+ */
+typedef volatile sjme_alloc_poolBase* sjme_alloc_pool;
 
 /*--------------------------------------------------------------------------*/
 

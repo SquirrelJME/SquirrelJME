@@ -58,7 +58,7 @@ SJME_LIST_DECLARE(sjme_rom_library, 0);
 typedef struct sjme_rom_cache
 {
 	/** The allocation pool to use. */
-	sjme_alloc_pool* allocPool;
+	sjme_alloc_pool allocPool;
 
 	/** Wrapped object, if applicable. */
 	sjme_frontEnd frontEnd;
@@ -221,7 +221,7 @@ typedef sjme_errorCode (*sjme_rom_libraryResourceStreamFunc)(
  * @since 2024/08/16
  */
 typedef sjme_errorCode (*sjme_rom_suiteDefaultLaunchFunc)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
@@ -335,7 +335,7 @@ struct sjme_rom_suiteBase
  * @since 2024/08/16
  */
 sjme_errorCode sjme_rom_libraryFromZip(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNullable sjme_lpcstr prefix,
@@ -353,7 +353,7 @@ sjme_errorCode sjme_rom_libraryFromZip(
  * @since 2024/01/01
  */
 sjme_errorCode sjme_rom_libraryFromZipMemory(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNotNull sjme_cpointer base,
@@ -371,7 +371,7 @@ sjme_errorCode sjme_rom_libraryFromZipMemory(
  * @since 2024/01/01
  */
 sjme_errorCode sjme_rom_libraryFromZipSeekable(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNotNull sjme_seekable seekable);
@@ -401,7 +401,7 @@ sjme_errorCode sjme_rom_libraryHash(
  * @since 2023/12/29
  */
 sjme_errorCode sjme_rom_libraryNew(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNullable sjme_pointer data,
@@ -513,7 +513,7 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
  * @since 2024/08/16
  */
 sjme_errorCode sjme_rom_suiteDefaultLaunch(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
@@ -530,7 +530,7 @@ sjme_errorCode sjme_rom_suiteDefaultLaunch(
  * @return
  */
 sjme_errorCode sjme_rom_suiteFromMerge(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
 	sjme_attrInNotNull sjme_rom_suite* inSuites,
 	sjme_attrInPositive sjme_jint numInSuites);
@@ -546,7 +546,7 @@ sjme_errorCode sjme_rom_suiteFromMerge(
  * @since 2023/12/15
  */
 sjme_errorCode sjme_rom_suiteFromPayload(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
 	sjme_attrInNotNull const sjme_payload_config* payloadConfig);
 
@@ -560,7 +560,7 @@ sjme_errorCode sjme_rom_suiteFromPayload(
  * @since 2024/08/11
  */
 sjme_errorCode sjme_rom_suiteFromZipSeekable(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
 	sjme_attrInNotNull sjme_seekable seekable);
 
@@ -588,7 +588,7 @@ sjme_errorCode sjme_rom_suiteLibraries(
  * @since 2023/12/15
  */
 sjme_errorCode sjme_rom_suiteNew(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,

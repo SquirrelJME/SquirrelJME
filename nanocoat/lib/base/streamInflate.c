@@ -115,7 +115,7 @@ static const sjme_stream_inputFunctions sjme_stream_inputInflateFunctions =
 };
 
 sjme_errorCode sjme_stream_inputOpenInflate(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_stream_input inCompressed)
 {

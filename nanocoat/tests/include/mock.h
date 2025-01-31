@@ -89,7 +89,7 @@ typedef enum sjme_mock_doType
 typedef struct sjme_mock
 {
 	/** Allocated memory pool. */
-	sjme_alloc_pool* allocPool;
+	sjme_alloc_pool allocPool;
 
 	/** The virtual machine state. */
 	sjme_nvm nvmState;

@@ -156,7 +156,7 @@ typedef sjme_errorCode (*sjme_inflate_readDistFunc)(
 struct sjme_inflate
 {
 	/** The pool this allocates within. */
-	sjme_alloc_pool* allocPool;
+	sjme_alloc_pool allocPool;
 	
 	/** The inflation data source. */
 	sjme_stream_input source;
@@ -253,7 +253,7 @@ sjme_errorCode sjme_inflate_inflate(
  * @since 2024/08/30
  */
 sjme_errorCode sjme_inflate_new(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_inflate** outState,
 	sjme_attrInNotNull sjme_stream_input source);
 

@@ -49,7 +49,7 @@ typedef struct sjme_zipBase
 	sjme_closeableBase closeable;
 	
 	/** The pool this was allocated within. */
-	sjme_alloc_pool* allocPool;
+	sjme_alloc_pool allocPool;
 	
 	/** The central directory position. */
 	sjme_jint centralDirPos;
@@ -160,7 +160,7 @@ sjme_errorCode sjme_zip_locateEntry(
  * @since 2023/12/31
  */
 sjme_errorCode sjme_zip_openMemory(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_zip* outZip,
 	sjme_attrInNotNull void* rawData,
 	sjme_attrInPositive sjme_jint rawSize);
@@ -175,7 +175,7 @@ sjme_errorCode sjme_zip_openMemory(
  * @since 2024/08/12
  */
 sjme_errorCode sjme_zip_openSeekable(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_zip* outZip,
 	sjme_attrInNotNull sjme_seekable inSeekable); 
 

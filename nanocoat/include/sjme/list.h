@@ -158,7 +158,7 @@ typedef sjme_list_sjme_jint sjme_list_void;
  * @since 2023/12/17
  */
 sjme_errorCode sjme_list_allocR(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInPositive sjme_jint inLength,
 	sjme_attrOutNotNull sjme_pointer* outList,
 	sjme_attrInPositive sjme_jint elementSize,
@@ -199,7 +199,7 @@ sjme_errorCode sjme_list_allocR(
  * @since 2024/04/15
  */
 sjme_errorCode sjme_list_copyR(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInPositive sjme_jint inNewLength,
 	sjme_attrInNotNull sjme_pointer inOldList,
 	sjme_attrOutNotNull sjme_pointer* outNewList,
@@ -281,7 +281,7 @@ sjme_errorCode sjme_list_directInitR(
  * @since 2023/12/17
  */
 sjme_errorCode sjme_list_newAR(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint rootElementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
@@ -330,7 +330,7 @@ sjme_errorCode sjme_list_newAR(
  * @since 2023/12/17
  */
 sjme_errorCode sjme_list_newVR(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint rootElementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
@@ -379,7 +379,7 @@ sjme_errorCode sjme_list_newVR(
  * @since 2023/12/17
  */
 sjme_errorCode sjme_list_newVAR(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint rootElementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
@@ -425,7 +425,7 @@ sjme_errorCode sjme_list_newVAR(
  * @since 2023/12/17
  */
 sjme_errorCode sjme_list_flattenArgCV(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNull sjme_lpcstr* argV);
@@ -440,7 +440,7 @@ sjme_errorCode sjme_list_flattenArgCV(
  * @since 2024/02/19
  */
 sjme_errorCode sjme_list_flattenArgNul(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInNotNull sjme_lpcstr inNulString);
 
@@ -458,7 +458,7 @@ sjme_errorCode sjme_list_flattenArgNul(
  * @since 2025/01/04
  */
 sjme_errorCode sjme_list_replaceR(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInPositive sjme_jint inNewLength,
 	sjme_attrInOutNotNull sjme_pointer* inOutList,
 	sjme_attrInPositive sjme_jint elementSize,

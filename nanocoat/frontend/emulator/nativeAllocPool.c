@@ -17,7 +17,7 @@
 jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1alloc)
 	(JNIEnv* env, jclass classy, jlong poolPtr, jint size)
 {
-	sjme_alloc_pool* pool;
+	sjme_alloc_pool pool;
 	sjme_errorCode error;
 	void* result;
 
@@ -28,7 +28,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1alloc)
 	}
 
 	/* Get the pool to allocate in. */
-	pool = SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr);
+	pool = SJME_JLONG_TO_POINTER(sjme_alloc_pool, poolPtr);
 
 	/* Attempt allocation. */
 	result = NULL;
@@ -48,7 +48,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1getLink)
 	(JNIEnv* env, jclass classy, jlong blockPtr)
 {
 	sjme_errorCode error;
-	sjme_alloc_link* result;
+	sjme_alloc_link result;
 
 	if (blockPtr == 0)
 	{
@@ -73,7 +73,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1getLink)
 jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1poolMalloc)
 	(JNIEnv* env, jclass classy, jint size, jobject this)
 {
-	sjme_alloc_pool* result;
+	sjme_alloc_pool result;
 	sjme_errorCode error;
 
 	/* Attempt pool allocation. */
@@ -96,7 +96,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1poolMalloc)
 jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1poolStatic)
 	(JNIEnv* env, jclass classy, jlong addrPtr, jint size, jobject this)
 {
-	sjme_alloc_pool* result;
+	sjme_alloc_pool result;
 	sjme_errorCode error;
 
 	/* Attempt pool initialize. */
@@ -119,14 +119,14 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1poolStatic)
 jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1strDup)
 	(JNIEnv* env, jclass classy, jlong poolPtr, jstring javaString)
 {
-	sjme_alloc_pool* pool;
+	sjme_alloc_pool pool;
 	sjme_errorCode error;
 	sjme_lpstr result;
 	jboolean wasCopied;
 	const char* utfChars;
 
 	/* Get the pool back. */
-	pool = SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr);
+	pool = SJME_JLONG_TO_POINTER(sjme_alloc_pool, poolPtr);
 
 	/* Get the UTF characters for the given string. */
 	wasCopied = JNI_FALSE;

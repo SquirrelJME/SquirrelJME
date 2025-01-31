@@ -88,7 +88,7 @@ struct sjme_closeableBase
  * @since 2024/09/28
  */
 sjme_errorCode sjme_closeable_allocR(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInNotNull sjme_closeable_closeHandlerFunc handler,
 	sjme_attrInValue sjme_jboolean refCounting,

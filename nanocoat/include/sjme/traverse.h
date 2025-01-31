@@ -301,7 +301,7 @@ sjme_errorCode sjme_traverse_iterateNextR(
  * @since 2024/09/01
  */
 sjme_errorCode sjme_traverse_newR(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_traverse* outTraverse,
 	sjme_attrInPositiveNonZero sjme_jint leafLength,
 	sjme_attrInPositiveNonZero sjme_jint maxElements);

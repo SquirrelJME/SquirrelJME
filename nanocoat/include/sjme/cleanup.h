@@ -42,7 +42,7 @@ extern "C"
  * @since 2024/09/28
  */
 sjme_errorCode sjme_nvm_allocR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInValue sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_nvm_common* outCommon
