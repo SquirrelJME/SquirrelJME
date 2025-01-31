@@ -162,7 +162,7 @@ sjme_errorCode sjme_stream_inputOpenSeekable(
 	init.forwardClose = forwardClose;
 	
 	/* Open base stream. */
-	return sjme_stream_inputOpen(seekable->inPool,
+	return sjme_stream_inputOpen(seekable->allocPool,
 		outStream, &sjme_stream_inputSeekableFunctions,
 		&init, NULL);
 }

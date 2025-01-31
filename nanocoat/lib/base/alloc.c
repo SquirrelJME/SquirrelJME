@@ -35,6 +35,9 @@
 /** The back guard value. */
 #define SJME_ALLOC_GUARD_BACK INT32_C(0x6C65783F)
 
+/** Magic number for the pool. */
+#define SJME_ALLOC_POOL_MAGIC INT32_C(0x4C6F6C21)
+
 #if defined(SJME_CONFIG_DEBUG)
 /**
  * Prints information on a given link and returns.
@@ -134,6 +137,11 @@ static sjme_jboolean sjme_noOptimize sjme_alloc_checkCorruption(
 
 	if (pool == NULL)
 		return SJME_JNI_TRUE;
+	
+	/* Pool magic number invalid? */
+	if (pool->magic != SJME_ALLOC_POOL_MAGIC)
+		return sjme_alloc_corruptFail(pool, atLink,
+			"Wrong pool magic.");
 
 	/* If no link is specified, ignore. */
 	if (atLink == NULL)
@@ -254,6 +262,11 @@ static sjme_errorCode sjme_alloc_getLinkOptional(
 	if (checkCorruption)
 		sjme_alloc_checkCorruption(link->pool, link);
 	
+	/* Cannot be a link? */
+	if (link->guardFront != SJME_ALLOC_GUARD_FRONT ||
+		link->guardBack != SJME_ALLOC_GUARD_BACK)
+		return SJME_ERROR_NOT_ALLOC_LINK;
+	
 	/* Success! */
 	*outLink = link;
 	return SJME_ERROR_NONE;
@@ -303,6 +316,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitStatic(
 	
 	/* Setup initial pool structure. */
 	pool = baseAddr;
+	pool->magic = SJME_ALLOC_POOL_MAGIC;
 	pool->size = (size & (~7)) - SJME_SIZEOF_ALLOC_POOL(0);
 	
 	/* Setup front link. */
@@ -393,9 +407,9 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitStatic(
 }
 
 sjme_errorCode sjme_alloc_poolDestroy(
-	sjme_attrOutNotNull sjme_alloc_pool* inPool)
+	sjme_attrOutNotNull sjme_alloc_pool* allocPool)
 {
-	if (inPool == NULL)
+	if (allocPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	return sjme_error_notImplemented(0);
@@ -458,7 +472,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	if (pool == NULL || size <= 0 || outAddr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	if ((size * 8) == SJME_CONFIG_HAS_POINTER)
 		sjme_message("Alloc of single pointer in %s (%s:%d).",
 			func, file, line);
@@ -748,7 +762,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copyWeak)(
 }
 
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_lpstr* outString,
 	SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL SJME_DEBUG_ONLY_COMMA
 	sjme_attrInNotNull sjme_attrFormatArg const char* format,
@@ -759,7 +773,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
 	va_list arg;
 	int len;
 
-	if (inPool == NULL || outString == NULL || format == NULL)
+	if (allocPool == NULL || outString == NULL || format == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Start variable arguments. */
@@ -779,10 +793,42 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
 	len = strlen(buf);
 
 	/* Copy it. */
-	return SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(inPool, len + 1,
+	return SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(allocPool, len + 1,
 		(sjme_pointer*)outString, buf
 		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
 #undef BUF_SIZE
+}
+
+sjme_errorCode sjme_alloc_grow(
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_pointer* inOutAddr,
+	sjme_attrInPositiveNonZero sjme_jint memberSize,
+	sjme_attrInNotNull sjme_jint* currentCountP,
+	sjme_attrInPositiveNonZero sjme_jint newCount)
+{
+	sjme_errorCode error;
+	sjme_pointer currentP;
+	
+	if (allocPool == NULL || inOutAddr == NULL || currentCountP == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (memberSize <= 0 || newCount < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Need to allocate? */
+	currentP = *inOutAddr;
+	if (currentP == NULL && newCount > 0)
+	{
+		if (sjme_error_is(error = sjme_alloc(allocPool,
+			memberSize * newCount, inOutAddr)))
+			return sjme_error_default(error);
+
+		*currentCountP = newCount;
+		return SJME_ERROR_NONE;
+	}
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 static sjme_errorCode sjme_alloc_mergeFree(sjme_alloc_link* link)
@@ -1078,14 +1124,14 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 }
 
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_lpstr* outString,
 	sjme_attrInNotNull sjme_lpcstr stringToCopy
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_jint charLen;
 	
-	if (inPool == NULL || outString == NULL || stringToCopy == NULL)
+	if (allocPool == NULL || outString == NULL || stringToCopy == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Use standard string length, include NUL. */
@@ -1093,11 +1139,11 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
 	
 	/* Then just forward to copy. */
 #if defined(SJME_CONFIG_DEBUG)
-	return sjme_alloc_copyR(inPool, charLen,
+	return sjme_alloc_copyR(allocPool, charLen,
 		(sjme_pointer*)outString, (sjme_pointer)stringToCopy,
 		file, line, func);
 #else
-	return sjme_alloc_copy(inPool, charLen,
+	return sjme_alloc_copy(allocPool, charLen,
 		(sjme_pointer*)outString, (sjme_pointer)stringToCopy);
 #endif
 }
@@ -1130,7 +1176,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakDelete)(
 	newCount = (count > 1 ? count - 1 : 0);
 		
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_messageR(file, line, func, SJME_JNI_FALSE,
 		"Weak ref %p (%p) count down to %d.",
 		weak->pointer, weak, newCount);
@@ -1270,7 +1316,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 		sjme_atomic_barrier();
 		
 		/* Debug. */
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		sjme_messageR(file, line, func, SJME_JNI_FALSE,
 			"Weak ref %p (%p) count up to %d.",
 			result->pointer, result, was + 1);
@@ -1320,7 +1366,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 }
 
 sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
-	sjme_attrInNotNull volatile sjme_alloc_pool* inPool,
+	sjme_attrInNotNull volatile sjme_alloc_pool* allocPool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrOutNotNull sjme_pointer* outAddr,
@@ -1331,12 +1377,12 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	sjme_alloc_weak resultWeak;
 	sjme_errorCode error;
 	
-	if (inPool == NULL || outAddr == NULL)
+	if (allocPool == NULL || outAddr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Take ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&inPool->spinLock)))
+		&allocPool->spinLock)))
 		return sjme_error_default(error);
 	
 	/* Emit barrier. */
@@ -1345,11 +1391,11 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	/* Attempt block allocation first. */
 	resultPtr = NULL;
 #if defined(SJME_CONFIG_DEBUG)
-	if (sjme_error_is(error = sjme_allocR(inPool, size,
+	if (sjme_error_is(error = sjme_allocR(allocPool, size,
 		(sjme_pointer*)&resultPtr, file, line, func)) ||
 		resultPtr == NULL)
 #else
-	if (sjme_error_is(error = sjme_alloc(inPool, size,
+	if (sjme_error_is(error = sjme_alloc(allocPool, size,
 		(sjme_pointer*)&resultPtr)) ||
 		resultPtr == NULL)
 #endif
@@ -1368,7 +1414,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	
 	/* Release ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&inPool->spinLock, NULL)))
+		&allocPool->spinLock, NULL)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -1384,7 +1430,7 @@ fail_allocBlock:
 	
 	/* Release ownership of lock. */
 	if (sjme_error_is(sjme_thread_spinLockRelease(
-		&inPool->spinLock, NULL)))
+		&allocPool->spinLock, NULL)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
@@ -1445,6 +1491,7 @@ sjme_errorCode sjme_alloc_weakRefGet(
 	sjme_errorCode error;
 	sjme_alloc_link* link;
 	sjme_alloc_weak weak;
+	sjme_intPointer weakAddr;
 	
 	if (addr == NULL || outWeak == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1454,19 +1501,37 @@ sjme_errorCode sjme_alloc_weakRefGet(
 		
 	/* Recover the link. */
 	link = NULL;
-	if (sjme_error_is(error = sjme_alloc_getLink(addr,
-		&link)) || link == NULL)
+	if (sjme_error_is(error = sjme_alloc_getLinkOptional(addr,
+		&link, SJME_JNI_FALSE)) || link == NULL)
+	{
+		/* If the link is not valid, it cannot be a weak reference. */
+		if (error == SJME_ERROR_NOT_ALLOC_LINK)
+			return SJME_ERROR_NOT_WEAK_REFERENCE;
+		
+		/* Otherwise, fail... */
 		return sjme_error_default(error);
+	}
+		
+	/* This should never be null. */
+	pool = link->pool;
+	if (pool == NULL || pool->magic != SJME_ALLOC_POOL_MAGIC)
+		return SJME_ERROR_NOT_WEAK_REFERENCE;
 	
 	/* Take ownership of lock. */
-	pool = link->pool;
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
 		&pool->spinLock)))
 		return sjme_error_default(error);
 	
-	/* No weak reference here? */
+	/* No weak reference here? Or it changed to something else? */
+	/* Also check if de-referencing would exceed the pool bounds. */
+	/* Or otherwise not marked valid. */
 	weak = link->weak;
-	if (weak == NULL)
+	weakAddr = (sjme_intPointer)weak;
+	if (weak == NULL || weakAddr < ((sjme_intPointer)pool) ||
+		weakAddr >= (((sjme_intPointer)pool) + pool->size) ||
+		weak->pointer != addr ||
+		sjme_atomic_sjme_jint_get(&weak->valid) !=
+			SJME_ALLOC_WEAK_VALID)
 		error = SJME_ERROR_NOT_WEAK_REFERENCE;
 	else
 		error = SJME_ERROR_NONE;
@@ -1517,15 +1582,15 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakUnRef)(
 #if defined(SJME_CONFIG_DEBUG)
 
 sjme_errorCode sjme_alloc_poolDump(
-	sjme_attrInNotNull sjme_alloc_pool* inPool)
+	sjme_attrInNotNull sjme_alloc_pool* allocPool)
 {
 	sjme_alloc_link* rover;
 
-	if (inPool == NULL)
+	if (allocPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Dump information on every link. */
-	for (rover = inPool->frontLink; rover != NULL; rover = rover->next)
+	for (rover = allocPool->frontLink; rover != NULL; rover = rover->next)
 	{
 		sjme_messageR(NULL, -1, NULL,
 			SJME_JNI_TRUE,

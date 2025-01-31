@@ -7,7 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <stdarg.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 

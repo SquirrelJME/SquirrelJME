@@ -19,7 +19,7 @@
 	#undef WIN32_LEAN_AND_MEAN
 #endif
 
-/* clang-format off */
+/* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_DARWIN)
@@ -268,7 +268,7 @@
 	}
 
 /* ------------------------------------------------------------------------ */
-/* clang-format on */
+/* clang-format on */ /* @formatter:on */
 
 /**
  * Common atomic function sets.
@@ -293,6 +293,8 @@ SJME_ATOMIC_FUNCTION(sjme_lpstr, 0); /* NOLINT(*-non-const-parameter) */
 SJME_ATOMIC_FUNCTION(sjme_lpcstr, 0); /* NOLINT(*-non-const-parameter) */
 
 SJME_ATOMIC_FUNCTION(sjme_jobject, 0);
+
+SJME_ATOMIC_FUNCTION(sjme_jclass, 0);
 
 SJME_ATOMIC_FUNCTION(sjme_pointer, 0);
 

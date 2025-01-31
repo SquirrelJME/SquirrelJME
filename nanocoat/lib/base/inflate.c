@@ -480,7 +480,7 @@ static sjme_errorCode sjme_inflate_dynamicBuildTree(
 	/* Need to allocate the tree? */
 	if ((*outTree) == NULL)
 		if (sjme_error_is(error = sjme_traverse_new(
-			inState->inPool, outTree,
+			inState->allocPool, outTree,
 			maxCount + SJME_INFLATE_TRAVERSE_EXTRA,
 			sjme_jint, 0)) ||
 			(*outTree) == NULL)
@@ -1386,6 +1386,9 @@ sjme_errorCode sjme_inflate_inflate(
 			case SJME_INFLATE_STEP_INFLATE_FROM_TREE:
 				error = sjme_inflate_stepInflateFromTree(inState);
 				break;
+
+			default:
+				return sjme_error_notImplemented(0);
 		}
 		
 		/* Did inflation fail? */
@@ -1412,7 +1415,7 @@ sjme_errorCode sjme_inflate_inflate(
 }
 
 sjme_errorCode sjme_inflate_new(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInNotNull sjme_inflate** outState,
 	sjme_attrInNotNull sjme_stream_input source)
 {
@@ -1424,19 +1427,19 @@ sjme_errorCode sjme_inflate_new(
 	sjme_bitStream_input input;
 	sjme_bitStream_output output;
 	
-	if (inPool == NULL || outState == NULL || source == NULL)
+	if (allocPool == NULL || outState == NULL || source == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Allocate resultant state. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inPool, sizeof(*result),
+	if (sjme_error_is(error = sjme_alloc(allocPool, sizeof(*result),
 		(sjme_pointer*)&result)) ||
 		result == NULL)
 		goto fail_allocResult;
 	
 	/* Allocate the input buffer. */
 	inputBuffer = NULL;
-	if (sjme_error_is(error = sjme_circleBuffer_new(inPool,
+	if (sjme_error_is(error = sjme_circleBuffer_new(allocPool,
 		&inputBuffer,
 		SJME_CIRCLE_BUFFER_QUEUE,
 		SJME_INFLATE_IO_BUFFER_SIZE)) || inputBuffer == NULL)
@@ -1444,7 +1447,7 @@ sjme_errorCode sjme_inflate_new(
 	
 	/* Allocate the output buffer. */
 	outputBuffer = NULL;
-	if (sjme_error_is(error = sjme_circleBuffer_new(inPool,
+	if (sjme_error_is(error = sjme_circleBuffer_new(allocPool,
 		&outputBuffer,
 		SJME_CIRCLE_BUFFER_QUEUE,
 		SJME_INFLATE_IO_BUFFER_SIZE)) || outputBuffer == NULL)
@@ -1452,7 +1455,7 @@ sjme_errorCode sjme_inflate_new(
 	
 	/* Allocate window. */
 	window = NULL;
-	if (sjme_error_is(error = sjme_circleBuffer_new(inPool,
+	if (sjme_error_is(error = sjme_circleBuffer_new(allocPool,
 		&window,
 		SJME_CIRCLE_BUFFER_WINDOW,
 		SJME_INFLATE_WINDOW_SIZE)) || window == NULL)
@@ -1460,20 +1463,20 @@ sjme_errorCode sjme_inflate_new(
 	
 	/* Open input bit stream. */
 	input = NULL;
-	if (sjme_error_is(error = sjme_bitStream_inputOpen(inPool,
+	if (sjme_error_is(error = sjme_bitStream_inputOpen(allocPool,
 		&input, sjme_inflate_bitRead,
 		result, NULL)) || input == NULL)
 		goto fail_openInput;
 	
 	/* Open output bit stream. */
 	output = NULL;
-	if (sjme_error_is(error = sjme_bitStream_outputOpen(inPool,
+	if (sjme_error_is(error = sjme_bitStream_outputOpen(allocPool,
 		&output, sjme_inflate_bitWrite,
 		result, NULL)) || output == NULL)
 		goto fail_openOutput;
 	
 	/* Store everything in the result now. */
-	result->inPool = inPool;
+	result->allocPool = allocPool;
 	result->failed = SJME_ERROR_NONE;
 	result->source = source;
 	result->input = input;

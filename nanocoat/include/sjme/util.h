@@ -443,6 +443,32 @@ sjme_errorCode sjme_util_lpstrTrimEnd(
 	sjme_attrInNotNullBuf(length) sjme_lpstr buf,
 	sjme_attrInPositiveNonZero sjme_jint length);
 
+#if defined(SJME_CONFIG_HAS_NO_UNALIGNED16)
+	
+/**
+ * Accesses an address for reading in an unaligned way.
+ *
+ * @param addr The address to access.
+ * @return The address of the un-aligned address, or a pointer to a wrapper
+ * which contains the value to be read.
+ * @since 2025/01/011
+ */
+const sjme_jshort* sjme_util_memUnaligned16(void* addr);
+	
+#else
+	
+/**
+ * Accesses an address in an unaligned way.
+ *
+ * @param addr The address to access.
+ * @return The address of the un-aligned address, or a pointer to a wrapper
+ * which contains the value to be read.
+ * @since 2025/01/011
+ */
+#define sjme_util_memUnaligned16(addr) ((const sjme_jshort*)(addr))
+	
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

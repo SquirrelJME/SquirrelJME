@@ -103,7 +103,7 @@ static const sjme_seekable_functions sjme_seekable_memoryFunctions =
 };
 
 sjme_errorCode sjme_seekable_openMemory(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length)
@@ -111,7 +111,7 @@ sjme_errorCode sjme_seekable_openMemory(
 	uintptr_t rawBase;
 	sjme_seekable_memoryInitData init;
 
-	if (inPool == NULL || outSeekable == NULL || base == NULL)
+	if (allocPool == NULL || outSeekable == NULL || base == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Check for overflow. */
@@ -125,7 +125,7 @@ sjme_errorCode sjme_seekable_openMemory(
 	init.length = length;
 	
 	/* Forward initialize. */
-	return sjme_seekable_open(inPool, outSeekable,
+	return sjme_seekable_open(allocPool, outSeekable,
 		&sjme_seekable_memoryFunctions,
 		&init, NULL);
 }

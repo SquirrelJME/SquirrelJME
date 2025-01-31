@@ -49,7 +49,7 @@ typedef struct sjme_zipBase
 	sjme_closeableBase closeable;
 	
 	/** The pool this was allocated within. */
-	sjme_alloc_pool* inPool;
+	sjme_alloc_pool* allocPool;
 	
 	/** The central directory position. */
 	sjme_jint centralDirPos;
@@ -152,7 +152,7 @@ sjme_errorCode sjme_zip_locateEntry(
 /**
  * Opens a Zip file at the given location.
  *
- * @param inPool The pool for structure allocation.
+ * @param allocPool The pool for structure allocation.
  * @param outZip The resultant opened Zip file.
  * @param rawData Raw data to the Zip in memory somewhere.
  * @param rawSize The length of the Zip data.
@@ -160,7 +160,7 @@ sjme_errorCode sjme_zip_locateEntry(
  * @since 2023/12/31
  */
 sjme_errorCode sjme_zip_openMemory(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_zip* outZip,
 	sjme_attrInNotNull void* rawData,
 	sjme_attrInPositive sjme_jint rawSize);
@@ -168,14 +168,14 @@ sjme_errorCode sjme_zip_openMemory(
 /**
  * Opens a Zip from the given seekable.
  * 
- * @param inPool The pool to allocate from.
+ * @param allocPool The pool to allocate from.
  * @param outZip The resultant opened Zip.
  * @param inSeekable The seekable to use for accessing data.
  * @return Any resultant error, if any.
  * @since 2024/08/12
  */
 sjme_errorCode sjme_zip_openSeekable(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_zip* outZip,
 	sjme_attrInNotNull sjme_seekable inSeekable); 
 

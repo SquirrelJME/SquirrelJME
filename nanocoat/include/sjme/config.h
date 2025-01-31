@@ -31,6 +31,51 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+	
+/** Visual Studio 6 */
+#define SJME_VERSION_MSVC_6 1200
+
+/** Visual Studio 2005 */
+#define SJME_VERSION_MSVC_2005 1400
+	
+#if defined(__clang__)
+	/** CLang LLVM Compiler. */
+	#define SJME_CONFIG_HAS_CLANG
+	
+	/** Is the CLang version the specified version? */
+	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) \
+		(__clang_major__ > major ? 1 : \
+		(__clang_major__ < major ? 0 : \
+		(__clang_minor__ >= minor)))
+#else
+	/** Is the CLang version the specified version? */
+	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) 0
+#endif
+	
+#if defined(_MSC_VER) && !defined(SJME_CONFIG_HAS_CLANG)
+	/** Microsoft Visual C++ Compiler. */
+	#define SJME_CONFIG_HAS_MSVC
+	
+	/** Is the MSVC version the specified version? */
+	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) \
+		(_MSC_VER >= against)
+#else
+	/** Is the MSVC version the specified version? */
+	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) 0
+#endif
+
+#if defined(__GNUC__) && !defined(SJME_CONFIG_HAS_CLANG)
+	/** GNU C Compiler. */
+	#define SJME_CONFIG_HAS_GCC
+	
+	/** Is the GCC version the specified version? */
+	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
+		(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
+		(defined(__GNUC_MINOR__) ? __GNUC_MINOR__ >= minor : 1)))
+#else
+	/** Is the GCC version the specified version? */
+	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
+#endif
 
 #if !defined(SJME_CONFIG_RELEASE) && !defined(SJME_CONFIG_DEBUG)
 	#if (defined(DEBUG) || defined(_DEBUG)) || \
@@ -60,6 +105,9 @@ extern "C" {
 #elif defined(__3DS__) || defined(_3DS)
 	/** Nintendo 3DS is available. */
 	#define SJME_CONFIG_HAS_NINTENDO_3DS
+#elif defined(SDCC) || defined(__SDCC)
+	/** SDCC is available. */
+	#define SJME_CONFIG_HAS_SDCC
 #elif defined(__linux__) || defined(linux) || defined(__linux)
 	/** Linux is available. */
 	#define SJME_CONFIG_HAS_LINUX
@@ -122,6 +170,16 @@ extern "C" {
 	#endif
 #endif
 
+#if defined(_ILP32) || defined(__ILP32__)
+	/** Has known long-pointer 32-bit model. */
+	#define SJME_CONFIG_HAS_ILP32
+	
+#elif defined(_LP64) || defined(__LP64__)
+	/** Has known long-pointer 64-bit model. */
+	#define SJME_CONFIG_HAS_LP64
+	
+#endif
+	
 #if defined(__amd64__) || defined(__amd64__) || defined(__x86_64__) || \
 	defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64)
 	/** Has AMD64. */
@@ -149,6 +207,20 @@ extern "C" {
 	
 	/** Has PowerPC 32-bit. */
 	#define SJME_CONFIG_HAS_ARCH_POWERPC_32
+#elif defined(__mips__) || defined(__mips) || defined(__MIPS__)
+	#if defined(SJME_CONFIG_HAS_LP64)
+		/** Has MIPS. */
+		#define SJME_CONFIG_HAS_ARCH_MIPS 64
+		
+		/** Has MIPS 64-bit. */
+		#define SJME_CONFIG_HAS_ARCH_MIPS_64
+	#else
+		/** Has MIPS. */
+		#define SJME_CONFIG_HAS_ARCH_MIPS 32
+		
+		/** Has MIPS 32-bit. */
+		#define SJME_CONFIG_HAS_ARCH_MIPS_32
+	#endif
 #elif defined(_M_I86) || defined(_M_IX86) || defined(__X86__) || \
 	defined(_X86_) || defined(__I86__) || defined(__i386) || \
 	defined(__i386__) || defined(__i486__) || defined(__i586__) || \
@@ -159,11 +231,11 @@ extern "C" {
 
 /* Attempt detection of pointer sizes based on architecture? */
 #if (defined(__SIZEOF_POINTER__) && __SIZEOF_POINTER__ == 4) || \
-	defined(_ILP32) || defined(__ILP32__)
+	defined(SJME_CONFIG_HAS_ILP32)
 	/** Pointer size. */
 	#define SJME_CONFIG_HAS_POINTER 32
 #elif (defined(__SIZEOF_POINTER__) && __SIZEOF_POINTER__ == 8) || \
-	defined(_LP64) || defined(_LP64)
+	defined(SJME_CONFIG_HAS_LP64)
 	/** Pointer size. */
 	#define SJME_CONFIG_HAS_POINTER 64
 #else
@@ -277,51 +349,6 @@ extern "C" {
 	#define sjme_flexibleArrayCount
 #endif
 
-/** Visual Studio 6 */
-#define SJME_VERSION_MSVC_6 1200
-
-/** Visual Studio 2005 */
-#define SJME_VERSION_MSVC_2005 1400
-	
-#if defined(__clang__)
-	/** CLang LLVM Compiler. */
-	#define SJME_CONFIG_HAS_CLANG
-	
-	/** Is the CLang version the specified version? */
-	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) \
-		(__clang_major__ > major ? 1 : \
-		(__clang_major__ < major ? 0 : \
-		(__clang_minor__ >= minor)))
-#else
-	/** Is the CLang version the specified version? */
-	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) 0
-#endif
-	
-#if defined(_MSC_VER) && !defined(SJME_CONFIG_HAS_CLANG)
-	/** Microsoft Visual C++ Compiler. */
-	#define SJME_CONFIG_HAS_MSVC
-	
-	/** Is the MSVC version the specified version? */
-	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) \
-		(_MSC_VER >= against)
-#else
-	/** Is the MSVC version the specified version? */
-	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) 0
-#endif
-
-#if defined(__GNUC__) && !defined(SJME_CONFIG_HAS_CLANG)
-	/** GNU C Compiler. */
-	#define SJME_CONFIG_HAS_GCC
-	
-	/** Is the GCC version the specified version? */
-	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
-		(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
-		(defined(__GNUC_MINOR__) ? __GNUC_MINOR__ >= minor : 1)))
-#else
-	/** Is the GCC version the specified version? */
-	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
-#endif
-	
 /* Visual C++. */
 #if defined(SJME_CONFIG_HAS_MSVC)
 	#include <sal.h>
@@ -676,6 +703,15 @@ extern "C" {
 	#define SJME_CONFIG_HAS_THREADS_FALLBACK
 #endif
 
+#if defined(SJME_CONFIG_HAS_WINDOWS_16)
+	#define SJME_CALL FAR PASCAL
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	#define SJME_CALL __stdcall 
+#else
+	/** SquirrelJME calling convention. */
+	#define SJME_CALL
+#endif
+
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/** Align to 32-bit. */
 	#define sjme_align32 __declspec(align(4))
@@ -685,15 +721,6 @@ extern "C" {
 #else
 	/** Align to 32-bit. */
 	#define sjme_align32 
-#endif
-
-#if defined(SJME_CONFIG_HAS_WINDOWS_16)
-	#define SJME_CALL FAR PASCAL
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
-	#define SJME_CALL __stdcall 
-#else
-	/** SquirrelJME calling convention. */
-	#define SJME_CALL
 #endif
 
 #if defined(SJME_CONFIG_HAS_MSVC)
@@ -718,18 +745,83 @@ extern "C" {
 	#define sjme_alignPointer
 #endif
 
+#if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	/** Packed structure. */
+	#define sjme_packed __attribute__((packed))
+#else
+	/** Packed structure. */
+	#define sjme_packed
+#endif
+	
 #if defined(SJME_CONFIG_HAS_NINTENDO_3DS) || \
 	defined(SJME_CONFIG_HAS_NINTENDO_WIIU) || \
-    defined(SJME_CONFIG_HAS_NINTENDO_WII)
+    defined(SJME_CONFIG_HAS_NINTENDO_WII) || \
+    defined(SJME_CONFIG_HAS_SDCC)
 	/* Disable errno support. */
-	#define SJME_CONFIG_MISSING_ERRNO
+	#define SJME_CONFIG_HAS_NO_ERRNO 1
 #endif
 
+#if defined(SJME_CONFIG_HAS_SDCC)
+	/** Has no standard C I/O support. */
+	#define SJME_CONFIG_HAS_NO_STDIO 1
+#endif
+
+#if defined(SJME_CONFIG_HAS_SDCC)
+	/** Has no abort() call. */
+	#define SJME_CONFIG_HAS_NO_ABORT 1
+#endif
+
+#if defined(SJME_CONFIG_HAS_SDCC)
+	/** Has no exit() call. */
+	#define SJME_CONFIG_HAS_NO_EXIT 1
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_VSNPRINTFA) && \
+	defined(SJME_CONFIG_HAS_NO_VSNPRINTFV)
+	/** No vsnprintf() */
+	#define SJME_CONFIG_HAS_NO_VSNPRINTF 1
+#endif
+		
 /* Missing standard C functions. */
-#if defined(SJME_CONFIG_HAS_NO_SNPRINTF)
-	#include "sjme/stdgone.h"
+#if defined(SJME_CONFIG_HAS_NO_ERRNO) || \
+	defined(SJME_CONFIG_HAS_NO_SNPRINTF) || \
+    defined(SJME_CONFIG_HAS_NO_STDARG) || \
+    defined(SJME_CONFIG_HAS_NO_VARARGS) || \
+    defined(SJME_CONFIG_HAS_NO_VSNPRINTF)
+	#include "sjme/stdGone.h"
 #endif
 
+/** Disable all linting of any kind. */
+#define sjme_noLint(what) (what) /* NOLINT */ /* ReSharper disable once all */
+
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/** Thread local storage. */
+	#define sjme_attrThreadLocal(type, name) \
+		static sjme_align32 type __declspec(thread) name;
+#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	/** Thread local storage. */
+	#define sjme_attrThreadLocal(type, name) \
+		static sjme_align32 __thread type name
+#else
+	/** Thread local storage. */
+	#define sjme_attrThreadLocal(type, name) \
+		static sjme_align32 type name
+#endif
+
+#if defined(SJME_CONFIG_HAS_ARCH_MIPS) || \
+	defined(SJME_CONFIG_HAS_ARCH_POWERPC)
+	/** Has no support for unaligned 16-bit access. */
+	#define SJME_CONFIG_HAS_NO_UNALIGNED16
+#endif
+
+#if defined(SJME_CONFIG_HAS_ARCH_IA16)
+	/** Full address range pointer. */
+	#define sjme_attrHugeP huge
+#else
+	/** Full address range pointer. */
+	#define sjme_attrHugeP
+#endif
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

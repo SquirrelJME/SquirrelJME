@@ -61,12 +61,11 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
-
-/* clang-format off */
+/* clang-format off */ /* @formatter:off */
 
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	/** A single thread. */
-	typedef pthread_t sjme_thread;
+	typedef pthread_t sjme_alignPointer sjme_thread;
 
 	/* On these systems pthread_t is a pointer. */
 	#if defined(SJME_CONFIG_HAS_MACOS) || \
@@ -104,7 +103,7 @@ extern "C" {
 	#define sjme_attrThreadCall
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/** A single thread. */
-	typedef HANDLE sjme_thread;
+	typedef HANDLE sjme_alignPointer sjme_thread;
 
 	/** The thread type. */
 	#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
@@ -131,9 +130,9 @@ extern "C" {
 	#define sjme_attrThreadCall WINAPI
 #else
 	/** Threads not supported. */
-	typedef struct sjme_thread_unsupported
+	typedef struct sjme_alignPointer sjme_thread_unsupported
 	{
-		int unsupported;
+		sjme_alignPointer int unsupported;
 	} sjme_thread_unsupported;
 	
 	/** A single thread. */
@@ -164,8 +163,8 @@ extern "C" {
 	#define sjme_attrThreadCall
 #endif
 
-/* clang-format on */
-/*--*/
+/* clang-format on */ /* @formatter:on */
+/*--------------------------------------------------------------------------*/
 
 SJME_ATOMIC_DECLARE(sjme_thread, 0);
 
@@ -184,17 +183,34 @@ typedef sjme_thread_result (sjme_attrThreadCall *sjme_thread_mainFunc)(
  * 
  * @since 2024/07/19
  */
-typedef struct sjme_thread_spinLock
+typedef struct sjme_alignPointer sjme_thread_spinLock
 {
 	/** The thread that is currently poking this lock. */
-	sjme_atomic_sjme_thread poke;
+	sjme_alignPointer sjme_atomic_sjme_thread poke;
 	
 	/** The thread that owns this lock. */
-	sjme_atomic_sjme_thread owner;
+	sjme_alignPointer sjme_atomic_sjme_thread owner;
 	
 	/** Lock count. */
-	sjme_atomic_sjme_jint count;
+	sjme_alignPointer sjme_atomic_sjme_jint count;
 } sjme_thread_spinLock;
+
+/**
+ * Read/write lock.
+ * 
+ * @since 2024/10/22
+ */
+typedef struct sjme_alignPointer sjme_thread_rwLock
+{
+	/** Pointer to the lock responsible for reading. */
+	sjme_alignPointer sjme_thread_spinLock* read;
+	
+	/** The number of times writes are locked. */
+	sjme_alignPointer sjme_atomic_sjme_jint writeCount;
+	
+	/** The write specific lock. */
+	sjme_alignPointer sjme_thread_spinLock write;
+} sjme_thread_rwLock;
 
 /**
  * Returns the current thread.
@@ -233,6 +249,50 @@ sjme_errorCode sjme_thread_new(
 	sjme_attrInNullable sjme_intPointer* outThreadId,
 	sjme_attrInNotNull sjme_thread_mainFunc inMain,
 	sjme_attrInNullable sjme_pointer anything);
+
+/**
+ * Grabs the read lock.
+ * 
+ * @param inLock The lock to use. 
+ * @return Any resultant error, if any.
+ * @since 2024/10/22
+ */
+sjme_errorCode sjme_thread_rwLockGrabRead(
+	sjme_attrInNotNull sjme_thread_rwLock* inLock);
+
+/**
+ * Grabs the write lock.
+ * 
+ * @param inLock The lock to use. 
+ * @return Any resultant error, if any.
+ * @since 2024/10/22
+ */
+sjme_errorCode sjme_thread_rwLockGrabWrite(
+	sjme_attrInNotNull sjme_thread_rwLock* inLock);
+
+/**
+ * Releases the read lock.
+ * 
+ * @param inLock The lock to release.
+ * @param outCount Optional count of the locks remaining.
+ * @return Any resultant error, if any.
+ * @since 2024/10/22
+ */
+sjme_errorCode sjme_thread_rwLockReleaseRead(
+	sjme_attrInNotNull sjme_thread_rwLock* inLock,
+	sjme_attrOutNullable sjme_jint* outCount);
+
+/**
+ * Releases the write lock.
+ * 
+ * @param inLock The lock to release.
+ * @param outCount Optional count of the locks remaining.
+ * @return Any resultant error, if any.
+ * @since 2024/10/22
+ */
+sjme_errorCode sjme_thread_rwLockReleaseWrite(
+	sjme_attrInNotNull sjme_thread_rwLock* inLock,
+	sjme_attrOutNullable sjme_jint* outCount);
 
 /**
  * Grabs a spin lock.

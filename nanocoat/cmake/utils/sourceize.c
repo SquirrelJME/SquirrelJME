@@ -58,7 +58,7 @@ static void makeC(const char* properName)
 	}
 	
 	/* Start header. */
-	fprintf(stdout, "#include <sjme/stdTypes.h>\n");
+	fprintf(stdout, "#include \"sjme/stdTypes.h\"\n");
 	fprintf(stdout, "const sjme_jubyte %s__bin[] = {\n",
 		properName);
 	
@@ -109,7 +109,7 @@ static void makeC(const char* properName)
 
 static void makeH(const char* properName)
 {
-	fprintf(stdout, "#include <sjme/stdTypes.h>\n");
+	fprintf(stdout, "#include \"sjme/stdTypes.h\"\n");
 	fprintf(stdout, "extern const sjme_jubyte %s__bin[];\n",
 		properName);
 	fprintf(stdout, "extern const sjme_jint %s__len;\n",

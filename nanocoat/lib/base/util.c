@@ -541,3 +541,26 @@ sjme_errorCode sjme_util_lpstrTrimEnd(
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
+
+#if defined(SJME_CONFIG_HAS_NO_UNALIGNED16)
+
+const sjme_jshort* sjme_util_memUnaligned16(void* addr)
+{
+	sjme_attrThreadLocal(sjme_jshort, temp);
+	sjme_jubyte* bytes;
+
+	/* Map in. */
+	bytes = addr;
+#if defined(SJME_CONFIG_HAS_BIG_ENDIAN)
+	temp = ((bytes[0] & 0xFF) << 8) |
+		(bytes[1] & 0xFF);
+#else
+	temp = ((bytes[1] & 0xFF) << 8) |
+		(bytes[0] & 0xFF);
+#endif
+
+	/* Return address of temporary. */
+	return &temp;
+}
+
+#endif

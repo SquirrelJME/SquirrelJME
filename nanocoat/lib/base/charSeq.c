@@ -112,6 +112,13 @@ sjme_errorCode sjme_charSeq_equalsCharSeq(
 	if (inSeq == NULL || outResult == NULL || equalsSeq == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Same sequence? */
+	if (inSeq == equalsSeq)
+	{
+		*outResult = SJME_JNI_TRUE;
+		return SJME_ERROR_NONE;
+	}
+	
 	/* Get length of both first. */
 	aLen = -1;
 	bLen = -1;
@@ -155,6 +162,25 @@ sjme_errorCode sjme_charSeq_equalsCharSeq(
 	return SJME_ERROR_NONE;
 }
 
+sjme_jboolean sjme_charSeq_equalsCharSeqR(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq* equalsSeq)
+{
+	sjme_jboolean result;
+	
+	if (inSeq == NULL || equalsSeq == NULL)
+		return SJME_JNI_FALSE;
+	
+	/* Perform the check. */
+	result = SJME_JNI_FALSE;
+	if (sjme_error_is(sjme_charSeq_equalsCharSeq(inSeq, &result,
+		equalsSeq)))
+		return SJME_JNI_FALSE;
+	
+	/* Return whatever result was given. */
+	return result;
+}
+
 sjme_errorCode sjme_charSeq_equalsUtf(
 	sjme_attrInNotNull const sjme_charSeq* inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,
@@ -169,7 +195,7 @@ sjme_errorCode sjme_charSeq_equalsUtf(
 	/* Setup sequence. */
 	memset(&equalsSeq, 0, sizeof(equalsSeq));
 	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-		&equalsSeq, equalsUtf)))
+		&equalsSeq, equalsUtf, NULL)))
 		return sjme_error_default(error);
 	
 	/* Forward. */
@@ -195,6 +221,41 @@ sjme_jboolean sjme_charSeq_equalsUtfR(
 	return result;
 }
 
+sjme_errorCode sjme_charSeq_hash(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrOutNotNull sjme_jint* outHash)
+{
+	sjme_errorCode error;
+	sjme_jint result, i, n;
+	sjme_jchar c;
+	
+	if (inSeq == NULL || outHash == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* How long is the string? */
+	n = -1;
+	if (sjme_error_is(error = sjme_charSeq_length(inSeq, &n)) || n < 0)
+		return sjme_error_default(error);
+
+	/* Calculate for the string. */
+	result = 0;
+	for (i = 0; i < n; i++)
+	{
+		/* Get next character. */
+		c = 0;
+		if (sjme_error_is(error = sjme_charSeq_charAt(inSeq, i, &c)))
+			return sjme_error_default(error);
+			
+		/* Calculate the hashCode(), the JavaDoc gives the following formula: */
+		/* == s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1] .... yikes! */
+		result = ((result << 5) - result) + (sjme_jint)c;
+	}
+
+	/* Success! */
+	*outHash = result;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_charSeq_length(
 	sjme_attrInNotNull const sjme_charSeq* inSeq,
 	sjme_attrOutNotNull sjme_jint* outLen)
@@ -202,7 +263,7 @@ sjme_errorCode sjme_charSeq_length(
 	if (inSeq == NULL || outLen == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inSeq->impl->length == NULL)
+	if (inSeq->impl == NULL || inSeq->impl->length == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Forward. */
@@ -236,14 +297,15 @@ sjme_errorCode sjme_charSeq_newStatic(
 
 sjme_errorCode sjme_charSeq_newUtfStatic(
 	sjme_attrInNotNull sjme_charSeq* inOutSeq,
-	sjme_attrInNotNull sjme_lpcstr inString)
+	sjme_attrInNotNull sjme_lpcstr inString,
+	sjme_attrInNullable sjme_frontEnd* inOptFrontEnd)
 {
 	if (inOutSeq == NULL || inString == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	return sjme_charSeq_newStatic(inOutSeq,
 		&sjme_charSeq_basicUtfFunctions,
-		inString, NULL);
+		inString, inOptFrontEnd);
 }
 
 sjme_errorCode sjme_charSeq_startsWithCharSeq(
@@ -283,7 +345,7 @@ sjme_errorCode sjme_charSeq_startsWithUtf(
 	/* Setup sequence. */
 	memset(&startsWithSeq, 0, sizeof(startsWithSeq));
 	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-		&startsWithSeq, startsWithUtf)))
+		&startsWithSeq, startsWithUtf, NULL)))
 		return sjme_error_default(error);
 	
 	/* Forward. */

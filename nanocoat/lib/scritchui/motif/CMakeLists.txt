@@ -11,9 +11,9 @@ find_package(Motif)
 
 # Declare base library
 add_library(ScritchUIMotif SHARED
-	$<TARGET_OBJECTS:BasePIC>
-	$<TARGET_OBJECTS:ScritchUICorePIC>
-	$<TARGET_OBJECTS:ScritchUIFBPIC>
+	$<TARGET_OBJECTS:${SQUIRRELJME_BASE_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_CORE_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_FB_LIB}>
 	motifComponent.c
 	motifContainer.c
 	motifCore.c

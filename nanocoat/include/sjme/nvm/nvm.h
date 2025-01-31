@@ -58,13 +58,6 @@ struct sjme_jobjectBase
 };
 
 /**
- * Class type.
- * 
- * @since 2023/07/25
- */
-typedef sjme_jobject sjme_jclass;
-
-/**
  * Throwable type.
  * 
  * @since 2023/07/25

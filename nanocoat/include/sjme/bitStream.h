@@ -201,7 +201,7 @@ sjme_errorCode sjme_bitStream_inputAlign(
 /**
  * Opens an input bit stream.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param resultStream The resultant stream.
  * @param readFunc The read function to use.
  * @param readFuncData The optional data to pass to the function.
@@ -210,7 +210,7 @@ sjme_errorCode sjme_bitStream_inputAlign(
  * @since 2024/08/26
  */
 sjme_errorCode sjme_bitStream_inputOpen(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_bitStream_input* resultStream,
 	sjme_attrInNotNull sjme_bitStream_inputReadByteFunc readFunc,
 	sjme_attrInNullable sjme_pointer readFuncData,
@@ -219,7 +219,7 @@ sjme_errorCode sjme_bitStream_inputOpen(
 /**
  * Opens a bit stream from a memory location.
  * 
- * @param inPool The pool to allocate within. 
+ * @param allocPool The pool to allocate within. 
  * @param resultStream The resultant stream.
  * @param base The base memory address.
  * @param length The length of the memory block.
@@ -227,7 +227,7 @@ sjme_errorCode sjme_bitStream_inputOpen(
  * @since 2024/08/27
  */
 sjme_errorCode sjme_bitStream_inputOpenMemory(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_bitStream_input* resultStream,
 	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length);
@@ -235,7 +235,7 @@ sjme_errorCode sjme_bitStream_inputOpenMemory(
 /**
  * Opens a bit stream which reads from the given @c sjme_stream_input .
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param resultStream The resultant stream.
  * @param inputStream The stream to read byte data from.
  * @param forwardClose Should close be forwarded to the given stream?
@@ -243,7 +243,7 @@ sjme_errorCode sjme_bitStream_inputOpenMemory(
  * @since 2024/08/26
  */
 sjme_errorCode sjme_bitStream_inputOpenStream(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_bitStream_input* resultStream,
 	sjme_attrInNotNull sjme_stream_input inputStream,
 	sjme_attrInValue sjme_jboolean forwardClose);
@@ -267,7 +267,7 @@ sjme_errorCode sjme_bitStream_inputRead(
 /**
  * Opens an output bit stream.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param resultStream The resultant stream.
  * @param writeFunc The write function to use.
  * @param writeFuncData The optional data to pass to the function.
@@ -276,7 +276,7 @@ sjme_errorCode sjme_bitStream_inputRead(
  * @since 2024/08/26
  */
 sjme_errorCode sjme_bitStream_outputOpen(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_bitStream_output* resultStream,
 	sjme_attrInNotNull sjme_bitStream_outputWriteByteFunc writeFunc,
 	sjme_attrInNullable sjme_pointer writeFuncData,
@@ -285,7 +285,7 @@ sjme_errorCode sjme_bitStream_outputOpen(
 /**
  * Opens an output bit stream which writes to the given output stream.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param resultStream The resultant output bit stream.
  * @param outputStream The stream to write.
  * @param forwardClose If this is closed, should @c outputStream be closed?
@@ -293,7 +293,7 @@ sjme_errorCode sjme_bitStream_outputOpen(
  * @since 2024/08/28
  */
 sjme_errorCode sjme_bitStream_outputOpenStream(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrOutNotNull sjme_bitStream_output* resultStream,
 	sjme_attrInNotNull sjme_stream_output outputStream,
 	sjme_attrInValue sjme_jboolean forwardClose);

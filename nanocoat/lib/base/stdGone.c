@@ -7,16 +7,31 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#if defined(SJME_CONFIG_HAS_NO_STDARG)
-	#if defined(SJME_CONFIG_HAS_NO_VARARGS)
-		#include <varargs.h>
-	#else
-	#endif
+#include "sjme/stdGone.h"
+
+#if defined(SJME_CONFIG_HAS_NO_ABORT)
+void abort()
+{
+#if defined(SJME_CONFIG_HAS_NO_EXIT)
+	for (;;)
+		;
 #else
-	#include <stdarg.h>
+	exit(7);
+#endif
+}
 #endif
 
-#include "sjme/stdgone.h"
+#if defined(SJME_CONFIG_HAS_NO_EXIT)
+void exit(int exitCode)
+{
+#if defined(SJME_CONFIG_HAS_NO_ABORT)
+	for (;;)
+		;
+#else
+	abort();
+#endif
+}
+#endif
 
 #if defined(SJME_CONFIG_HAS_NO_SNPRINTF)
 int snprintf(
@@ -33,15 +48,34 @@ int snprintf(
 	
 	va_start(args, format);
 
+	/* Perform the printing, note this is always available. */
+	vsnprintf(buf, bufSize, format, args);
+	
+	va_end(args);
+	
+	return result;
+}
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_VSNPRINTF)
+int vsnprintf(
+	sjme_attrInNotNull char* buf,
+	sjme_attrInPositive size_t bufSize,
+	sjme_attrInNotNull const char* format,
+	sjme_attrInValue va_list args)
+{
+	int result;
+	
+	if (buf == NULL || format == NULL || bufSize <= 0)
+		return -1;
+	
 	/* Perform the printing. */
 #if defined(MSC_VER)
 	result = _vsnprintf(buf, bufSize, format, args);
 	buf[bufSize - 1] = 0;
 #else
-	result = -1;
+	#error No vsnprintf implementation?
 #endif
-	
-	va_end(args, format);
 	
 	return result;
 }

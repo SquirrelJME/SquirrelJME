@@ -151,10 +151,11 @@ extern "C" {
  * @since 2024/01/08
  */
 #define SJME_ATOMIC_DECLARE(type, numPointerStars) \
-	typedef struct sjme_align64 SJME_ATOMIC_NAME(type, numPointerStars) \
+	typedef struct sjme_alignPointer SJME_ATOMIC_NAME(type, numPointerStars) \
 	{ \
 		/** The atomic type. */ \
-		SJME_TOKEN_TYPE(type, numPointerStars) _Atomic value; \
+		SJME_TOKEN_TYPE(type, numPointerStars) \
+			sjme_alignPointer _Atomic value; \
 	} SJME_ATOMIC_NAME(type, numPointerStars); \
 	SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars)
 
@@ -172,10 +173,11 @@ extern "C" {
  * @since 2024/01/08
  */
 #define SJME_ATOMIC_DECLARE(type, numPointerStars) \
-	typedef struct sjme_align64 SJME_ATOMIC_NAME(type, numPointerStars) \
+	typedef struct sjme_alignPointer SJME_ATOMIC_NAME(type, numPointerStars) \
 	{ \
 		/** The atomic value. */ \
-		SJME_TOKEN_TYPE(type, numPointerStars) volatile value; \
+		SJME_TOKEN_TYPE(type, numPointerStars) \
+			sjme_alignPointer volatile value; \
 	} SJME_ATOMIC_NAME(type, numPointerStars); \
 	SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars)
 
@@ -205,6 +207,9 @@ SJME_ATOMIC_DECLARE(sjme_intPointer , 0);
 
 /** Atomic @c sjme_jobject. */
 SJME_ATOMIC_DECLARE(sjme_jobject, 0);
+
+/** Atomic @c sjme_jclass. */
+SJME_ATOMIC_DECLARE(sjme_jclass, 0);
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_OLD)
 

@@ -7,7 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -110,17 +109,17 @@ sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 }
 
 sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInNullable sjme_alloc_pool* inPool,
+	sjme_attrInNullable sjme_alloc_pool* allocPool,
 	sjme_attrInValue sjme_intPointer context)
 {
 #if defined(SJME_CONFIG_DEBUG)
 	/* Dump entire pool contents. */
-	if (inPool != NULL)
-		sjme_alloc_poolDump(inPool);
+	if (allocPool != NULL)
+		sjme_alloc_poolDump(allocPool);
 
 	/* It could be huge... */
 	sjme_todoR(file, line, func, "OUT OF MEMORY %p: %d %p!",
-		inPool, (int)context, (void*)context);
+		allocPool, (int)context, (void*)context);
 #endif
 
 	return SJME_ERROR_OUT_OF_MEMORY;
@@ -129,6 +128,7 @@ sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 void sjme_genericMessage(sjme_lpcstr file, int line,
 	sjme_lpcstr func, sjme_lpcstr prefix, sjme_lpcstr format, va_list args)
 {
+#if !defined(SJME_CONFIG_HAS_NO_STDIO)
 	va_list copy;
 	char buf[DEBUG_BUF];
 	char fullBuf[DEBUG_BUF];
@@ -174,6 +174,7 @@ void sjme_genericMessage(sjme_lpcstr file, int line,
 	
 	/* Make sure it gets written. */
 	fflush(stderr);
+#endif
 }
 
 void sjme_messageR(sjme_lpcstr file, int line,

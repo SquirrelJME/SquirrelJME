@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <stdarg.h>
-
 #include "sjme/error.h"
 
 sjme_errorCode sjme_error_also(

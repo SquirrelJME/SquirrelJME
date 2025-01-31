@@ -251,7 +251,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 }
 
 static sjme_errorCode sjme_scritchui_core_apiInitActual(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
@@ -262,7 +262,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	sjme_errorCode error;
 	sjme_scritchui state;
 	
-	if (inPool == NULL || inImplFunc == NULL || outState == NULL)
+	if (allocPool == NULL || inImplFunc == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inImplFunc->apiInit == NULL)
@@ -270,12 +270,12 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	
 	/* Allocate state. */
 	state = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool, sizeof(*state),
+	if (sjme_error_is(error = sjme_alloc_weakNew(allocPool, sizeof(*state),
 		NULL, (void**)&state, NULL)) || state == NULL)
 		goto fail_alloc;
 	
 	/* Seed state. */
-	state->pool = inPool;
+	state->pool = allocPool;
 	state->api = &sjme_scritchUI_serialFunctions;
 	state->apiInThread = &sjme_scritchUI_coreFunctions;
 	state->intern = &sjme_scritchUI_coreIntern;
@@ -364,7 +364,7 @@ fail_alloc:
 }
 
 sjme_errorCode sjme_scritchui_core_apiInit(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool* allocPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
@@ -377,7 +377,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_scritchui state;
 	sjme_scritchui wrappedState;
 	
-	if (inPool == NULL || inImplFunc == NULL || outState == NULL)
+	if (allocPool == NULL || inImplFunc == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inImplFunc->apiInit == NULL)
@@ -390,13 +390,13 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	/* Normal top-level initialization. */
 	if (!needFbWrapper)
 	{
-		return sjme_scritchui_core_apiInitActual(inPool, outState,
+		return sjme_scritchui_core_apiInitActual(allocPool, outState,
 			inImplFunc, loopExecute, initFrontEnd, NULL, externals);
 	}
 	
 	/* Initialize API we are going to wrap. */
 	wrappedState = NULL;
-	if (sjme_error_is(error = sjme_scritchui_core_apiInitActual(inPool,
+	if (sjme_error_is(error = sjme_scritchui_core_apiInitActual(allocPool,
 		&wrappedState,
 		inImplFunc, NULL,
 		NULL, NULL, externals)) ||
@@ -417,7 +417,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	
 	/* Wrap this with the framebuffer call. */
 	state = NULL;
-	if (sjme_error_is(error = sjme_scritchui_core_apiInitActual(inPool,
+	if (sjme_error_is(error = sjme_scritchui_core_apiInitActual(allocPool,
 		&state,
 		&sjme_scritchui_fbFunctions,
 		loopExecute, initFrontEnd, wrappedState, externals)) ||
