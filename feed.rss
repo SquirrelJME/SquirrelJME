@@ -21,6 +21,21 @@
 	<lastBuildDate>Sun, 29 Dec 2024 18:02 EST</lastBuildDate>
 
 	<item>
+		<guid isPermaLink="false">2595fd13-e811-41ae-93f4-0fc3645bdd1b</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250128_2020.mkd</link>
+		<pubDate>Tue, 28 Jan 2025 20:20 EST</pubDate>
+
+		<title>SpringCoat Performance Improvements</title>
+		<description>I have not done much this month as my break continues,
+however I have been slowly getting back into the flow of things. There have
+been major improvements to SpringCoat performance around strings and DoJa
+application start times have been reduced greatly if you are using standalone.
+On the otherwise for NanoCoat, work continues on code execution!</description>
+	</item>
+
+	<!-- Not current -->
+
+	<item>
 		<guid isPermaLink="false">0c2d113f-10d8-4835-ba27-bc1156927d2f</guid>
 		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241229_1802.mkd</link>
 		<pubDate>Sun, 29 Dec 2024 18:02 EST</pubDate>
@@ -32,7 +47,6 @@ small improvements around many miscellaneous areas, along with
 working on the macOS Cocoa UI.</description>
 	</item>
 
-	<!-- Not current -->
 	<item>
 		<guid isPermaLink="false">8b04125a-678d-4943-9089-181d2414930a</guid>
 		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241124_1500.mkd</link>
