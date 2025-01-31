@@ -424,6 +424,11 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	/* Set. */
 	result->perType[SJME_JAVA_TYPE_ID_ALL].stack = maxStack;
 	result->perType[SJME_JAVA_TYPE_ID_ALL].locals = maxLocals;
+
+	/* TODO: For now just set all types to the same. */
+	sjme_message("TODO: Use proper per-type counts.");
+	for (i = 0; i < SJME_JAVA_TYPE_ID_ALL; i++)
+		result->perType[i] = result->perType[SJME_JAVA_TYPE_ID_ALL];
 	
 	/* Read in code length. */
 	codeLen = -1;
