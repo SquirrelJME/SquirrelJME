@@ -90,6 +90,16 @@ if(NOT libRetroIsStatic)
 	squirreljme_target_shared_library_exports(squirreljme_libretro)
 endif()
 
+# Duplicate binary
+if(EMSCRIPTEN)
+	add_custom_command(TARGET squirreljme_libretro POST_BUILD
+		BYPRODUCTS
+		"${SQUIRRELJME_DYLIB_OUTPUT_DIR}/squirreljme_libretro_emscripten.bc"
+		COMMAND "${CMAKE_COMMAND}" -E "copy"
+		"${SQUIRRELJME_DYLIB_OUTPUT_DIR}/squirreljme_libretro_emscripten.a"
+		"${SQUIRRELJME_DYLIB_OUTPUT_DIR}/squirreljme_libretro_emscripten.bc")
+endif()
+
 # Allow running the binary, as long as it is not static and we are on the
 # same system...
 find_program(retroArchExe "retroarch")

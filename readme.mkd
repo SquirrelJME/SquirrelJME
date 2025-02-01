@@ -81,9 +81,6 @@ Badges:
  * _Social and Community_
    * [![Discord](https://img.shields.io/discord/278929900893634560.svg?label=Discord%20Server)](
      https://discord.gg/9PkMMKt)
-   * [![Twitter](
-     https://img.shields.io/twitter/follow/SquirrelJME.svg?label=Follow%20on%20Twitter)](
-     https://twitter.com/SquirrelJME)
  * _Downloads and Activity_
    * ![Commit Activity](
      https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg?label=Code%20Commits)
@@ -160,7 +157,6 @@ Information:
  * [My Portfolio](https://shadowtail.dev/)
  * [My Public PGP Key](public-key.gpg.mkd)
  * [SquirrelJME BlueSky](https://bsky.app/profile/squirreljme.cc)
- * [SquirrelJME Twitter](https://twitter.com/SquirrelJME)
  * [SquirrelJME Mastodon](https://mastodon.online/@SquirrelJME)
  * Locations where you can get support:
    * [Discord](https://discord.gg/9PkMMKt)
@@ -173,7 +169,6 @@ Information:
    * [BlueSky](https://bsky.app/profile/squirreljme.cc)
    * [Mastodon (mastodon.online)](https://mastodon.online/@SquirrelJME)
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA/)
-   * [Twitter](https://twitter.com/SquirrelJME)
  * [Docker Hub](https://hub.docker.com/r/xerthesquirrel/squirreljme)
  * [SourceForge](https://sourceforge.net/p/squirreljme/)
  * Personal Accounts (If you wish to contact me this way)
@@ -182,7 +177,6 @@ Information:
    * [LinkedIn](https://www.linkedin.com/in/xerthesquirrel/)
    * [Mastodon (chitter.xyz)](https://chitter.xyz/@XerShadowTail)
    * [BlueSky](https://bsky.app/profile/xershadowtail.bsky.social)
-   * [Twitter](https://twitter.com/XerShadowTail)
    * [YouTube (Personal)](
      https://www.youtube.com/channel/UCJ4QrvbDhjtd7u6EpfBQ__g)
    * E-Mail: <xer@multiphasicapps.net>
