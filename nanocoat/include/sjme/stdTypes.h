@@ -348,6 +348,19 @@ typedef void sjme_attrHugeP* sjme_pointer;
 #define SJME_TYPEOF_IS_POINTER_sjme_pointer 1
 
 /**
+ * Generic volatile pointer.
+ *
+ * @since 2025/01/31
+ */
+typedef volatile void sjme_attrHugeP* sjme_vpointer;
+
+/** Basic @c sjme_pointer type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_vpointer SJME_BASIC_TYPE_ID_OBJECT
+
+/** Is a pointer for @c sjme_pointer ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_vpointer 1
+
+/**
  * Generic pointer to const data.
  *
  * @since 2023/12/27
@@ -670,7 +683,14 @@ typedef struct sjme_jvalueTyped
  *
  * @since 2023/11/18
  */
-typedef struct sjme_alloc_pool sjme_alloc_pool;
+typedef struct sjme_alloc_poolBase sjme_alloc_poolBase;
+
+/**
+ * Structure which stores the pooled memory allocator.
+ *
+ * @since 2023/11/18
+ */
+typedef volatile sjme_alloc_poolBase* sjme_alloc_pool;
 
 /*--------------------------------------------------------------------------*/
 

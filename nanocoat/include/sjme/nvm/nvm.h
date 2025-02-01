@@ -730,7 +730,7 @@ struct sjme_nvm_stateBase
 	sjme_nvm_commonBase common;
 	
 	/** The memory pool to use for all allocations. */
-	sjme_alloc_pool* allocPool;
+	sjme_alloc_pool allocPool;
 
 	/** The copy of the input boot parameters. */
 	const sjme_nvm_bootParam* bootParamCopy;

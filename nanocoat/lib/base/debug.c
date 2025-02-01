@@ -109,7 +109,7 @@ sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 }
 
 sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInNullable sjme_alloc_pool* allocPool,
+	sjme_attrInNullable sjme_alloc_pool allocPool,
 	sjme_attrInValue sjme_intPointer context)
 {
 #if defined(SJME_CONFIG_DEBUG)

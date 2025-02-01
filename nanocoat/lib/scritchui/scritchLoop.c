@@ -207,7 +207,7 @@ sjme_errorCode sjme_scritchui_core_loopIterate(
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated)
 {
 	if (inState == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Iteration is not possible if there is a thread running. */
 	if (inState->loopThread != SJME_THREAD_NULL)

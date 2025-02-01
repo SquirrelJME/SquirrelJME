@@ -40,7 +40,7 @@ SJME_TEST_DECLARE(testAllocReallocRandom)
 {
 	sjme_pointer chunk;
 	sjme_jint chunkLen, i, linkLen, desire;
-	sjme_alloc_pool* pool;
+	sjme_alloc_pool pool;
 	sjme_random random;
 	testLink* link;
 	testLink* lastLink;

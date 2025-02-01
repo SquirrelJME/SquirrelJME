@@ -42,7 +42,7 @@ static sjme_errorCode testEnqueue(
 SJME_TEST_DECLARE(testAllocWeakFreeLink)
 {
 	sjme_alloc_weak weak;
-	sjme_alloc_link* link;
+	sjme_alloc_link link;
 	sjme_pointer p;
 	
 	/* Allocate weak reference. */

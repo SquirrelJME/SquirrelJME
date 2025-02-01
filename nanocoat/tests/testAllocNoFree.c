@@ -23,9 +23,9 @@ SJME_TEST_DECLARE(testAllocNoFree)
 {
 	sjme_pointer chunk;
 	sjme_jint chunkLen;
-	sjme_alloc_pool* pool;
+	sjme_alloc_pool pool;
 	sjme_pointer block;
-	sjme_alloc_link* link;
+	sjme_alloc_link link;
 
 	/* Allocate data on the stack so it gets cleared. */
 	chunkLen = 32768;

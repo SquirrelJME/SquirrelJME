@@ -107,7 +107,7 @@ typedef enum sjme_seekable_unlockAction
 typedef struct sjme_seekable_implState
 {
 	/** The pool this is in. */
-	sjme_alloc_pool* allocPool;
+	sjme_alloc_pool allocPool;
 	
 	/** Internal handle. */
 	sjme_pointer handle;
@@ -218,7 +218,7 @@ struct sjme_seekableBase
 	sjme_thread_spinLock lock;
 	
 	/** The pool this is in. */
-	sjme_alloc_pool* allocPool;
+	sjme_alloc_pool allocPool;
 };
 
 /**
@@ -233,7 +233,7 @@ struct sjme_seekableBase
  * @since 2024/08/11
  */
 sjme_errorCode sjme_seekable_open(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull const sjme_seekable_functions* inFunctions,
 	sjme_attrInNullable sjme_pointer data,
@@ -250,7 +250,7 @@ sjme_errorCode sjme_seekable_open(
  * @since 2024/01/01
  */
 sjme_errorCode sjme_seekable_openMemory(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length);
@@ -267,7 +267,7 @@ sjme_errorCode sjme_seekable_openMemory(
  * @since 2024/01/01
  */
 sjme_errorCode sjme_seekable_openSeekable(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInPositive sjme_jint base,

@@ -53,7 +53,7 @@ typedef sjme_errorCode (*sjme_nal_currentTimeMillisFunc)(
  * @since 2024/08/11
  */
 typedef sjme_errorCode (*sjme_nal_fileOpenFunc)(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrOutNotNull sjme_seekable* outSeekable);
 

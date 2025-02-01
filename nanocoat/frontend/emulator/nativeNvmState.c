@@ -28,7 +28,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_NVM_STATE, _1_1nvmBoot)
 	/* Initialize new state. */
 	state = NULL;
 	if (sjme_error_is(error = sjme_nvm_boot(
-		SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr),
+		SJME_JLONG_TO_POINTER(sjme_alloc_pool, poolPtr),
 		SJME_JLONG_TO_POINTER(const sjme_nvm_bootParam*, paramPtr),
 		&state)) || state == NULL)
 	{

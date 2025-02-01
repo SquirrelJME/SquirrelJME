@@ -908,6 +908,7 @@ sjme_errorCode sjme_scritchui_win32_intern_getLastError(
 {
 	DWORD winErr;
 	
+	/* Do nothing if there is no state yet. */
 	if (inState == NULL)
 		return SJME_ERROR_NONE;
 	

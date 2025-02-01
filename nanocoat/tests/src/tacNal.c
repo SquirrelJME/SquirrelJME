@@ -29,7 +29,7 @@ sjme_errorCode sjme_nal_test_currentTimeMillis(
 }
 
 sjme_errorCode sjme_nal_test_fileOpen(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrOutNotNull sjme_seekable* outSeekable)
 {

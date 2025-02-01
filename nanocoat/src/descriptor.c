@@ -706,7 +706,7 @@ sjme_jint sjme_nvm_desc_compareMethodS(
 }
 
 sjme_errorCode sjme_nvm_desc_interpretBinaryName(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_nvm_desc_binaryName* outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
@@ -759,7 +759,7 @@ sjme_errorCode sjme_nvm_desc_interpretBinaryName(
 }
 
 sjme_errorCode sjme_nvm_desc_interpretClassName(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_nvm_desc_className* outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
@@ -861,7 +861,7 @@ sjme_errorCode sjme_nvm_desc_interpretClassName(
 }
 
 sjme_errorCode sjme_nvm_desc_interpretFieldType(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_nvm_desc_fieldType* outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
@@ -915,7 +915,7 @@ sjme_errorCode sjme_nvm_desc_interpretFieldType(
 }
 
 sjme_errorCode sjme_nvm_desc_interpretIdentifier(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_desc_identifier* outIdent,
 	sjme_attrInNotNull sjme_lpcstr inStr,
@@ -992,7 +992,7 @@ fail_countUp:
 }
 
 sjme_errorCode sjme_nvm_desc_interpretMethodType(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_nvm_desc_methodType* outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)

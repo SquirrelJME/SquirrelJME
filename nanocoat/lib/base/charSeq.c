@@ -305,7 +305,7 @@ sjme_errorCode sjme_charSeq_newUtfStatic(
 	
 	return sjme_charSeq_newStatic(inOutSeq,
 		&sjme_charSeq_basicUtfFunctions,
-		inString, inOptFrontEnd);
+		(sjme_pointer)inString, inOptFrontEnd);
 }
 
 sjme_errorCode sjme_charSeq_startsWithCharSeq(

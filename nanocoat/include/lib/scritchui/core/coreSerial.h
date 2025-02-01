@@ -229,7 +229,7 @@ typedef enum sjme_scritchui_serialType
 	SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)
 
 #define SUD_STRUCT_DEF(what, items) \
-	typedef struct SJME_SCRITCHUI_SERIAL_DATA_NAME(what) \
+	typedef volatile struct SJME_SCRITCHUI_SERIAL_DATA_NAME(what) \
 	{ \
 		items \
 	} SJME_SCRITCHUI_SERIAL_DATA_NAME(what)
@@ -510,7 +510,7 @@ SUD_STRUCT_DEF(windowSetVisible,
  * 
  * @since 2024/04/17
  */
-typedef union sjme_scritchui_serialDataUnion
+typedef volatile union sjme_scritchui_serialDataUnion
 {
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
@@ -583,7 +583,7 @@ typedef union sjme_scritchui_serialDataUnion
  * 
  * @since 2024/04/17
  */
-typedef struct sjme_scritchui_serialData
+typedef volatile struct sjme_scritchui_serialData
 {
 	/** The type of call this is. */
 	volatile sjme_scritchui_serialType type;

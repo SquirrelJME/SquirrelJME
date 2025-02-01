@@ -33,7 +33,7 @@ static sjme_errorCode sjme_seekable_closeHandler(
 }
 
 sjme_errorCode sjme_seekable_open(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull const sjme_seekable_functions* inFunctions,
 	sjme_attrInNullable sjme_pointer data,
@@ -83,7 +83,7 @@ sjme_errorCode sjme_seekable_open(
 }
 
 sjme_errorCode sjme_seekable_openSeekable(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInPositive sjme_jint base,
@@ -108,7 +108,7 @@ sjme_errorCode sjme_seekable_read(
 	sjme_errorCode error;
 	
 	if (seekable == NULL || outBuf == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (seekBase < 0 || length < 0 || (seekBase + length) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
@@ -146,7 +146,7 @@ sjme_errorCode sjme_seekable_readReverse(
 	sjme_jint flipBase, hi, lo, halfWord, temp;
 	
 	if (seekable == NULL || outBuf == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (wordSize < 2 || wordSize > 8 || (wordSize & 1) != 0)
 		return SJME_ERROR_INVALID_ARGUMENT;

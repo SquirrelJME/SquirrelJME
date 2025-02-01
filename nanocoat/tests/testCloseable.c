@@ -14,7 +14,7 @@
 #include "testCloseable.h"
 
 sjme_errorCode testCloseable_new(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_closeable* outCloseable,
 	sjme_attrInNotNull sjme_closeable_closeHandlerFunc handlerFunc,
 	sjme_attrInValue sjme_jboolean isRefCounted)

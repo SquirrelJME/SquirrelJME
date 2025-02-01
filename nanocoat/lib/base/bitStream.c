@@ -174,7 +174,7 @@ sjme_errorCode sjme_bitStream_inputAlign(
 }
 
 sjme_errorCode sjme_bitStream_inputOpen(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_bitStream_input* resultStream,
 	sjme_attrInNotNull sjme_bitStream_inputReadByteFunc readFunc,
 	sjme_attrInNullable sjme_pointer readFuncData,
@@ -212,7 +212,7 @@ fail_alloc:
 }
 
 sjme_errorCode sjme_bitStream_inputOpenMemory(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_bitStream_input* resultStream,
 	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length)
@@ -253,7 +253,7 @@ fail_openMemory:
 }
 
 sjme_errorCode sjme_bitStream_inputOpenStream(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_bitStream_input* resultStream,
 	sjme_attrInNotNull sjme_stream_input inputStream,
 	sjme_attrInValue sjme_jboolean forwardClose)
@@ -384,7 +384,7 @@ sjme_errorCode sjme_bitStream_inputRead(
 }
 
 sjme_errorCode sjme_bitStream_outputOpen(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_bitStream_output* resultStream,
 	sjme_attrInNotNull sjme_bitStream_outputWriteByteFunc writeFunc,
 	sjme_attrInNullable sjme_pointer writeFuncData,
@@ -421,7 +421,7 @@ fail_alloc:
 }
 
 sjme_errorCode sjme_bitStream_outputOpenStream(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_bitStream_output* resultStream,
 	sjme_attrInNotNull sjme_stream_output outputStream,
 	sjme_attrInValue sjme_jboolean forwardClose)

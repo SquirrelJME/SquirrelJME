@@ -204,7 +204,7 @@ sjme_errorCode sjme_nvm_rom_libraryHash(
 }
 
 sjme_errorCode sjme_nvm_rom_libraryNew(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNullable sjme_pointer data,

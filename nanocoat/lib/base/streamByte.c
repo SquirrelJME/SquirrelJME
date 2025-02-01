@@ -187,7 +187,7 @@ static const sjme_stream_outputFunctions sjme_stream_outputByteArrayFunctions =
 };
 
 sjme_errorCode sjme_stream_outputOpenByteArray(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInPositive sjme_jint initialLimit,
 	sjme_attrInNullable sjme_stream_outputByteArrayFinishFunc finish,
@@ -241,7 +241,7 @@ static sjme_errorCode sjme_stream_outputOpenByteArrayToTarget(
 }
 
 sjme_errorCode sjme_stream_outputOpenByteArrayTo(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInPositive sjme_jint initialLimit,
 	sjme_attrInNotNull sjme_stream_resultByteArray* result)

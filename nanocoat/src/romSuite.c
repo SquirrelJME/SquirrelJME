@@ -19,7 +19,7 @@
 #include "sjme/nvm/cleanup.h"
 
 sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
@@ -55,7 +55,7 @@ sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
 }
 
 sjme_errorCode sjme_nvm_rom_suiteFromMerge(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNotNull sjme_nvm_rom_suite* inSuites,
 	sjme_attrInPositive sjme_jint numInSuites)
@@ -71,7 +71,7 @@ sjme_errorCode sjme_nvm_rom_suiteFromMerge(
 }
 
 sjme_errorCode sjme_nvm_rom_suiteFromPayload(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNotNull const sjme_payload_config* payloadConfig)
 {
@@ -178,7 +178,7 @@ fail_list:
 }
 
 sjme_errorCode sjme_nvm_rom_suiteNew(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNotNull const sjme_nvm_rom_suiteFunctions* inFunctions,

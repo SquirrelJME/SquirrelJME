@@ -21,7 +21,7 @@
 #include "sjme/listUtil.h"
 
 static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
@@ -190,7 +190,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteListLibraries(
 	sjme_zip zip;
 	sjme_zip_entry zipEntry;
 	sjme_stream_input inputStream;
-	sjme_alloc_pool* allocPool;
+	sjme_alloc_pool allocPool;
 	sjme_list_sjme_lpstr* suiteNames;
 	sjme_list_sjme_nvm_rom_library* result;
 	sjme_nvm_rom_library lib;
@@ -312,7 +312,7 @@ static sjme_nvm_rom_suiteFunctions sjme_nvm_rom_zipSuiteFunctions =
 };
 
 sjme_errorCode sjme_nvm_rom_suiteFromZipSeekable(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNotNull sjme_seekable seekable)
 {

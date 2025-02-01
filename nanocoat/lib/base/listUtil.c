@@ -12,7 +12,7 @@
 #include "sjme/listUtil.h"
 
 sjme_errorCode sjme_listUtil_binListInt(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_jint** outList,
 	sjme_attrInNotNull sjme_stream_input inputStream)
 {
@@ -59,7 +59,7 @@ fail_allocList:
 }
 
 sjme_errorCode sjme_listUtil_binListUtf(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInNotNull sjme_stream_input inputStream)
 {

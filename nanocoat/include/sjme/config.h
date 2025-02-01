@@ -377,9 +377,6 @@ extern "C" {
 	/** Method takes input. */
 	#define sjme_attrInValue _In_
 	
-	/** Does not return. */
-	#define sjme_attrReturnNever _Always_(_Raises_SEH_exception_)
-	
 	/** Returns nullable value. */
 	#define sjme_attrReturnNullable _Outptr_result_maybenull_z_
 	
@@ -410,22 +407,10 @@ extern "C" {
 #elif defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
 	/* Clang has special analyzer stuff, but also same as GCC otherwise. */
 	#if defined(SJME_CONFIG_HAS_CLANG)
-		#if __has_feature(attribute_analyzer_noreturn)
-			/** Method does not return. */
-			#define sjme_attrReturnNever __attribute__((analyzer_noreturn))
-		#endif
-
 		/** Returns nullable value. */
 		#define sjme_attrReturnNullable _Nullable_result
 	#endif
 	
-	#if !defined(sjme_attrReturnNever)
-		#if defined(__builtin_unreachable)
-			/** Function never returns. */
-			#define sjme_attrReturnNever (__builtin_unreachable())
-		#endif
-	#endif
-
 	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
 		/** Artificial function. */
 		#define sjme_attrArtificial __attribute__((artificial))
@@ -461,11 +446,6 @@ extern "C" {
 	/** Not used enum constant. */
 	#define sjme_attrUnusedEnum(x) x sjme_attrUnused
 	
-	#if !defined(sjme_attrReturnNever)
-		/** Method does not return. */
-		#define sjme_attrReturnNever __attribute__((noreturn))
-	#endif
-
 	#if !defined(sjme_flexibleArrayCount)
 		/** Flexible array size count, GCC is fine with blank. */
 		#define sjme_flexibleArrayCount
@@ -517,11 +497,6 @@ extern "C" {
 #if !defined(sjme_attrInRange)
 	/** Input value range. */
 	#define sjme_attrInRange(lo, hi)
-#endif
-
-#if !defined(sjme_attrReturnNever)
-	/** Method does not return. */
-	#define sjme_attrReturnNever
 #endif
 
 #if !defined(sjme_attrReturnNullable)

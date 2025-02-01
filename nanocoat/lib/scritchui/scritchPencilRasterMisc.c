@@ -614,7 +614,7 @@ sjme_errorCode sjme_scritchpen_core_setParametersFrom(
 	sjme_errorCode error;
 	
 	if (g == NULL || from == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Initially successful. */
 	error = SJME_ERROR_NONE;

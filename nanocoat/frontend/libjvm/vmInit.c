@@ -31,7 +31,7 @@ sjme_attrUnused jint JNICALL JNI_CreateJavaVM(
 {
 	struct JNIInvokeInterface_* resultVm;
 	struct JNINativeInterface_* resultEnv;
-	sjme_alloc_pool* pool;
+	sjme_alloc_pool pool;
 	sjme_nvm nvmState;
 	JavaVMInitArgs* args;
 	jint i;

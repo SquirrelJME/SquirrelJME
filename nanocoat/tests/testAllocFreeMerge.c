@@ -172,9 +172,9 @@ const testOrderType testLinkOrder[NUM_SCENARIO] =
 	}
 };
 
-static void dumpPool(sjme_alloc_pool* pool, sjme_lpcstr what)
+static void dumpPool(sjme_alloc_pool pool, sjme_lpcstr what)
 {
-	sjme_alloc_link* rover;
+	sjme_alloc_link rover;
 	sjme_jint x;
 	
 	/* Debug view. */
@@ -202,12 +202,12 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 	sjme_jboolean isLast, isFree, wantFree;
 	sjme_jint chunkLen, linkNum, scenario, numUsed, numFree, x, atId;
 	uint8_t* block;
-	sjme_alloc_link* link;
-	sjme_alloc_pool* pool;
-	sjme_alloc_link* rover;
-	sjme_alloc_link* at;
+	sjme_alloc_link link;
+	sjme_alloc_pool pool;
+	sjme_alloc_link rover;
+	sjme_alloc_link at;
 	sjme_pointer blocks[NUM_WHICH];
-	sjme_alloc_link* links[NUM_WHICH];
+	sjme_alloc_link links[NUM_WHICH];
 	const testOrderType* order;
 	const testSequenceType* sequence;
 	

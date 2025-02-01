@@ -61,7 +61,7 @@ typedef sjme_errorCode (*sjme_listUtil_findItemCompareFunc)(
  * @since 2024/09/29
  */
 sjme_errorCode sjme_listUtil_binListInt(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_jint** outList,
 	sjme_attrInNotNull sjme_stream_input inputStream);
 
@@ -75,7 +75,7 @@ sjme_errorCode sjme_listUtil_binListInt(
  * @since 2024/09/29
  */
 sjme_errorCode sjme_listUtil_binListUtf(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInNotNull sjme_stream_input inputStream);
 

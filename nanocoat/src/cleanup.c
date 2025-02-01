@@ -385,7 +385,7 @@ sjme_errorCode sjme_nvm_allocR(
 	sjme_errorCode error;
 	sjme_closeable_closeHandlerFunc handler;
 	sjme_nvm_common result;
-	sjme_alloc_pool* allocPool;
+	sjme_alloc_pool allocPool;
 	
 	if (inState == NULL || outCommon == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -407,7 +407,7 @@ sjme_errorCode sjme_nvm_allocR(
 		inType != SJME_NVM_STRUCT_STRING_POOL_STRING)
 		allocPool = inState->allocPool;
 	else
-		allocPool = (sjme_alloc_pool*)inState;
+		allocPool = (sjme_alloc_pool)inState;
 	
 	/* Which handler is used? */
 	handler = NULL;

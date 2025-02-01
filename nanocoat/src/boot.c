@@ -113,7 +113,7 @@ static sjme_lpcstr sjme_nvm_romNames[] =
 };
 
 static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNotNull sjme_lpcstr basePath,
@@ -165,7 +165,7 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 }
 
 sjme_errorCode sjme_nvm_boot(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
 	sjme_attrOutNotNull sjme_nvm* outState)
 {
@@ -324,7 +324,7 @@ fail_reservedPoolAlloc:
 }
 
 sjme_errorCode sjme_nvm_defaultBootSuite(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite)
 {
@@ -500,7 +500,7 @@ sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
 }
 
 sjme_errorCode sjme_nvm_parseCommandLine(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrInOutNotNull sjme_nvm_bootParam* outParam,
 	sjme_attrInPositiveNonZero sjme_jint argc,

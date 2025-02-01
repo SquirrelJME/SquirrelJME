@@ -27,7 +27,7 @@
 int main(int argc, sjme_lpcstr* argv)
 {
 	sjme_errorCode error;
-	sjme_alloc_pool* pool;
+	sjme_alloc_pool pool;
 	sjme_nvm inState;
 	sjme_nvm_bootParam bootParam;
 	sjme_jint exitCode;

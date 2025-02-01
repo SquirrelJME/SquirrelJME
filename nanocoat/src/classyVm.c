@@ -255,7 +255,7 @@ fail_allocResult:
 }
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInValue sjme_javaTypeId typeId)
 {
@@ -408,7 +408,7 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
 	sjme_jclass result;
 	sjme_lpstr dupName;
 	sjme_jint autoLoad;
-	sjme_alloc_pool* allocPool;
+	sjme_alloc_pool allocPool;
 	sjme_nvm_isClasses isClasses;
 	
 	if (inLoader == NULL || outClass == NULL || outSlot == NULL ||
@@ -502,7 +502,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_jint i, n;
 	sjme_jclass superClass, interface, classType;
 	sjme_list_sjme_jclass* interfaces;
-	sjme_alloc_pool* allocPool;
+	sjme_alloc_pool allocPool;
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

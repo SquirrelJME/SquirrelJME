@@ -245,7 +245,7 @@ fail_releaseLock:
 }
 
 sjme_errorCode sjme_nvm_stringPool_new(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_nvm_stringPool* outStringPool)
 {
 	sjme_errorCode error;

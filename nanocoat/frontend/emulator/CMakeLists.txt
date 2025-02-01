@@ -35,8 +35,9 @@ add_dependencies(libEmulator
 	CorePIC)
 
 # We need to find all of the includes and such
-target_include_directories(libEmulator PRIVATE
-	"${CMAKE_SOURCE_DIR}/include"
+target_include_directories(libEmulator PUBLIC
+	"${CMAKE_SOURCE_DIR}/include")
+target_include_directories(libEmulator SYSTEM PRIVATE
 	${JNI_INCLUDE_DIRS}
 	${JAVA_INCLUDE_PATH}
 	${JAVA_INCLUDE_PATH2})

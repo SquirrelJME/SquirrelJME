@@ -175,7 +175,7 @@ static sjme_errorCode sjme_nvm_class_classFlagsParse(
 }
 
 static sjme_errorCode sjme_nvm_class_codeAttrLineNumberTable(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
@@ -194,7 +194,7 @@ static sjme_errorCode sjme_nvm_class_codeAttrLineNumberTable(
 }
 
 static sjme_errorCode sjme_nvm_class_codeAttrStackMap(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
@@ -213,7 +213,7 @@ static sjme_errorCode sjme_nvm_class_codeAttrStackMap(
 }
 
 static sjme_errorCode sjme_nvm_class_codeAttrStackMapTable(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
@@ -245,7 +245,7 @@ static const sjme_nvm_class_parseAttributeHandler sjme_nvm_class_codeAttr[] =
 };
 
 static sjme_errorCode sjme_nvm_class_fieldAttrConstantValue(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
@@ -372,7 +372,7 @@ static sjme_errorCode sjme_nvm_class_fieldFlagsParse(
 }
 
 static sjme_errorCode sjme_nvm_class_methodAttrCode(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
@@ -611,7 +611,7 @@ static sjme_errorCode sjme_nvm_class_methodFlagsParse(
 }
 
 static sjme_errorCode sjme_nvm_class_parseAttribute(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
@@ -731,7 +731,7 @@ sjme_errorCode sjme_nvm_class_descriptorToType(
 }
 
 sjme_errorCode sjme_nvm_class_parse(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_class_info* outClass)
@@ -1051,7 +1051,7 @@ fail_allocResult:
 }
 
 sjme_errorCode sjme_nvm_class_parseAttributes(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
@@ -1109,7 +1109,7 @@ fail_readCount:
 }
 
 sjme_errorCode sjme_nvm_class_parseConstantPool(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_class_poolInfo* outPool)
@@ -1470,7 +1470,7 @@ fail_allocResult:
 }
 
 sjme_errorCode sjme_nvm_class_parseField(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
@@ -1566,7 +1566,7 @@ fail_allocResult:
 }
 
 sjme_errorCode sjme_nvm_class_parseMethod(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,

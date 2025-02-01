@@ -792,7 +792,7 @@ typedef struct sjme_nvm_class_stackMap
  * @since 2024/09/21
  */
 typedef sjme_errorCode (*sjme_nvm_class_parseAttributeFunc)(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
@@ -844,7 +844,7 @@ sjme_errorCode sjme_nvm_class_descriptorToType(
  * @since 2024/01/03
  */
 sjme_errorCode sjme_nvm_class_parse(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_class_info* outClass);
@@ -862,7 +862,7 @@ sjme_errorCode sjme_nvm_class_parse(
  * @since 2024/09/21
  */
 sjme_errorCode sjme_nvm_class_parseAttributes(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
@@ -880,7 +880,7 @@ sjme_errorCode sjme_nvm_class_parseAttributes(
  * @since 2024/09/13
  */
 sjme_errorCode sjme_nvm_class_parseConstantPool(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_class_poolInfo* outPool);
@@ -897,7 +897,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
  * @since 2024/09/21
  */
 sjme_errorCode sjme_nvm_class_parseField(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
@@ -915,7 +915,7 @@ sjme_errorCode sjme_nvm_class_parseField(
  * @since 2024/09/21
  */
 sjme_errorCode sjme_nvm_class_parseMethod(
-	sjme_attrInNotNull sjme_alloc_pool* allocPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
