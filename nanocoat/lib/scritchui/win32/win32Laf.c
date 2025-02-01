@@ -20,7 +20,7 @@ sjme_errorCode sjme_scritchui_win32_lafElementColor(
 	HBRUSH brush;
 	LOGBRUSH logBrush;
 	
-	if (inState == NULL || inContext == NULL || outRGB == NULL)
+	if (inState == NULL || outRGB == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Which color ID to get? */

@@ -79,7 +79,7 @@ sjme_errorCode sjme_scritchui_win32_loopIterate(
 	}
 	
 	/* If there is no window, we handle it ourselves. */
-	if (message.hwnd == NULL && !(message.message == WM_TIMER))
+	if (message.hwnd == NULL && message.message != WM_TIMER)
 		return inState->implIntern->windowProc(inState,
 			message.hwnd, message.message, message.wParam, message.lParam,
 			NULL);
