@@ -130,7 +130,7 @@ extern "C" {
 	#define sjme_attrThreadCall WINAPI
 #else
 	/** Threads not supported. */
-	typedef struct sjme_alignPointer sjme_thread_unsupported
+	typedef volatile struct sjme_alignPointer sjme_thread_unsupported
 	{
 		sjme_alignPointer int unsupported;
 	} sjme_thread_unsupported;
@@ -183,7 +183,7 @@ typedef sjme_thread_result (sjme_attrThreadCall *sjme_thread_mainFunc)(
  * 
  * @since 2024/07/19
  */
-typedef struct sjme_alignPointer sjme_thread_spinLock
+typedef volatile struct sjme_alignPointer sjme_thread_spinLock
 {
 	/** The thread that is currently poking this lock. */
 	sjme_alignPointer sjme_atomic_sjme_thread poke;
@@ -200,7 +200,7 @@ typedef struct sjme_alignPointer sjme_thread_spinLock
  * 
  * @since 2024/10/22
  */
-typedef struct sjme_alignPointer sjme_thread_rwLock
+typedef volatile struct sjme_alignPointer sjme_thread_rwLock
 {
 	/** Pointer to the lock responsible for reading. */
 	sjme_alignPointer sjme_thread_spinLock* read;
@@ -248,7 +248,7 @@ sjme_errorCode sjme_thread_new(
 	sjme_attrInOutNotNull sjme_thread* outThread,
 	sjme_attrInNullable sjme_intPointer* outThreadId,
 	sjme_attrInNotNull sjme_thread_mainFunc inMain,
-	sjme_attrInNullable sjme_pointer anything);
+	sjme_attrInNullable sjme_thread_parameter anything);
 
 /**
  * Grabs the read lock.

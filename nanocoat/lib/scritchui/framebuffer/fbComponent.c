@@ -171,7 +171,7 @@ sjme_errorCode sjme_scritchui_fb_componentPosition(
 	sjme_scritchui_uiComponent wrappedComponent;
 	
 	if (inState == NULL || inComponent == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
@@ -195,7 +195,7 @@ sjme_errorCode sjme_scritchui_fb_componentRepaint(
 	sjme_scritchui_uiComponent wrappedComponent;
 	
 	if (inState == NULL || inComponent == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
@@ -215,7 +215,7 @@ sjme_errorCode sjme_scritchui_fb_componentRevalidate(
 	sjme_scritchui_uiComponent wrappedComponent;
 	
 	if (inState == NULL || inComponent == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
@@ -391,7 +391,7 @@ sjme_errorCode sjme_scritchui_fb_componentSize(
 	sjme_scritchui_uiComponent wrappedComponent;
 	
 	if (inState == NULL || inComponent == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;

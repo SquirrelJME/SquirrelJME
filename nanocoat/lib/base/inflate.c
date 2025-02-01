@@ -362,7 +362,7 @@ static sjme_errorCode sjme_inflate_dynamicBuildReadCode(
 	sjme_jint x;
 	
 	if (inState == NULL || codes == NULL || i == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (count <= 0 || maxCount <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;

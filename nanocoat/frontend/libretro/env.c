@@ -7,9 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <libretro.h>
+
 #include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
-#include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
 
 /** Variables to use within the core. */

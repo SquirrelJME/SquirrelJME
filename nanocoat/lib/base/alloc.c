@@ -586,7 +586,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 			rightLink = (sjme_alloc_link)&scanLink->block[roundSize];
 
 		/* Initialize block to remove any old data. */
-		memset(rightLink, 0, sizeof(*rightLink));
+		memset((sjme_pointer)rightLink, 0, sizeof(*rightLink));
 		
 		/* Guards for link. */
 		rightLink->guardFront = SJME_ALLOC_GUARD_FRONT;
@@ -689,7 +689,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		return sjme_error_default(error);
 	
 	/* Use the given link. */
-	*outAddr = &scanLink->block[0];
+	*outAddr = (sjme_pointer)&scanLink->block[0];
 	return SJME_ERROR_NONE;
 
 fail_corrupt:
@@ -881,7 +881,7 @@ static sjme_errorCode sjme_alloc_mergeFree(sjme_alloc_link link)
 	link->allocSize = link->blockSize;
 	
 	/* Wipe next side block to remove any stale data. */
-	memset(right, 0, sizeof(*right));
+	memset((sjme_pointer)right, 0, sizeof(*right));
 	
 	/* Should not have corrupted the block. */
 	if (sjme_alloc_checkCorruption(pool, link) ||
@@ -970,7 +970,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_free(
 	link->flags = 0;
 	
 	/* Clear block memory so stale memory is not around. */
-	memset(&link->block[0], 0, link->blockSize);
+	memset((sjme_pointer)&link->block[0], 0, link->blockSize);
 	
 	/* Restore allocation size to block size. */
 	link->allocSize = link->blockSize;

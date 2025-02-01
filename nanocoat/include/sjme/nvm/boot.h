@@ -82,10 +82,10 @@ struct sjme_nvm_bootParam
 	sjme_lpcstr mainClass;
 
 	/** Main arguments. */
-	const sjme_list_sjme_lpcstr* mainArgs;
+	sjme_list_sjme_lpcstr* mainArgs;
 
 	/** System properties. */
-	const sjme_list_sjme_lpcstr* sysProps;
+	sjme_list_sjme_lpcstr* sysProps;
 	
 	/** The native abstraction layer to use. */
 	const sjme_nal* nal;

@@ -45,7 +45,6 @@ AttributeMacros:
   - sjme_attrOutPositive
   - sjme_attrOutPositiveNonZero
   - sjme_attrOutRange
-  - sjme_attrReturnNever
   - sjme_attrReturnNullable
   - sjme_attrUnused
   - sjme_attrUnusedEnum

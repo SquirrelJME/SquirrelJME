@@ -163,7 +163,7 @@ void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  */
 sjme_errorCode sjme_dieR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message, ...)
-	sjme_attrReturnNever sjme_attrFormatOuter(3, 4);
+	sjme_attrFormatOuter(3, 4);
 
 /**
  * Indicates a fatal error and exits the program.
@@ -199,7 +199,7 @@ sjme_errorCode sjme_dieR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  */
 void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message, ...)
-	sjme_attrReturnNever sjme_attrFormatOuter(3, 4);
+	sjme_attrFormatOuter(3, 4);
 
 /**
  * Indicates a To-Do and then terminates the program.

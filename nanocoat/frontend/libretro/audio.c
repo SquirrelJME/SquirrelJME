@@ -7,9 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <libretro.h>
+
 #include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
-#include "3rdparty/libretro/libretro.h"
 
 sjme_attrUnused RETRO_API void retro_set_audio_sample(
 	retro_audio_sample_t sample)

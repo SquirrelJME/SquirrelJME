@@ -38,8 +38,10 @@ endif()
 
 # Include main headers
 target_include_directories(ScritchUIX11 PUBLIC
-	"${CMAKE_SOURCE_DIR}/include"
-	${X11_INCLUDE_DIR})
+	"${CMAKE_SOURCE_DIR}/include")
+target_include_directories(ScritchUIX11 SYSTEM PRIVATE
+	${X11_INCLUDE_DIR}
+	${X11_INCLUDE_DIRS})
 
 # Link in X11
 target_link_directories(ScritchUIX11 PUBLIC

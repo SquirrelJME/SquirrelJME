@@ -37,7 +37,8 @@ endif()
 
 # Include main headers
 target_include_directories(ScritchUIMotif PUBLIC
-	"${CMAKE_SOURCE_DIR}/include"
+	"${CMAKE_SOURCE_DIR}/include")
+target_include_directories(ScritchUIMotif SYSTEM PRIVATE
 	${MOTIF_INCLUDE_DIR}
 	${MOTIF_INCLUDE_DIRS})
 

@@ -22,7 +22,7 @@
 typedef struct sjme_stream_ioInit
 {
 	/** The base pointer to use. */
-	sjme_cpointer base;
+	sjme_pointer base;
 	
 	/** The length of the memory area. */
 	sjme_jint length;
@@ -60,7 +60,7 @@ static sjme_errorCode sjme_stream_inputMemoryInit(
 	sjme_stream_ioInit* init;
 	
 	if (stream == NULL || inImplState == NULL || data == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover initializer. */
 	init = data;
@@ -137,7 +137,7 @@ static sjme_errorCode sjme_stream_outputMemoryInit(
 	sjme_stream_ioInit* init;
 	
 	if (stream == NULL || inImplState == NULL || data == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover initializer. */
 	init = data;
@@ -206,7 +206,7 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 	
 	/* Setup initialization input. */
 	memset(&init, 0, sizeof(init));
-	init.base = base;
+	init.base = (sjme_pointer)base;
 	init.length = length;
 	
 	/* Forward initialization. */

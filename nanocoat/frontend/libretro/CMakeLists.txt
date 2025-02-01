@@ -82,6 +82,8 @@ set_target_properties(squirreljme_libretro PROPERTIES
 # Include main headers
 target_include_directories(squirreljme_libretro PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
+target_include_directories(squirreljme_libretro SYSTEM PRIVATE
+	"${CMAKE_SOURCE_DIR}/include/3rdparty/libretro")
 
 # Exports for Windows, etc.
 if(NOT libRetroIsStatic)

@@ -8,10 +8,10 @@
 // -------------------------------------------------------------------------*/
 
 #include <string.h>
+#include <libretro.h>
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
-#include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
 
 /** The description of input controls. */

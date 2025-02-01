@@ -45,7 +45,7 @@ static sjme_errorCode sjme_stream_inputSeekableClose(
 	sjme_errorCode error;
 	
 	if (stream == NULL || inImplState == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Only forward close if it was requested. */
 	if (inImplState->forwardClose)

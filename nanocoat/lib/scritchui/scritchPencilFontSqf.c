@@ -65,7 +65,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricCharValid(
 	sjme_jint index;
 	
 	if (inFont == NULL || outValid == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Recover SQF. */
 	sqf = inFont->context;

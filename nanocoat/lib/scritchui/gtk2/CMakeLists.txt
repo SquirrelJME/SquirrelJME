@@ -38,7 +38,8 @@ endif()
 
 # Include main headers
 target_include_directories(ScritchUIGTK2 PUBLIC
-	"${CMAKE_SOURCE_DIR}/include"
+	"${CMAKE_SOURCE_DIR}/include")
+target_include_directories(ScritchUIGTK2 SYSTEM PRIVATE
 	${GTK2_INCLUDE_DIRS})
 
 # Link in GTK2

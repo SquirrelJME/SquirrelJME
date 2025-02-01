@@ -570,7 +570,7 @@ sjme_errorCode sjme_circleBuffer_push(
 		buffer, &result,
 		(buffer->mode == SJME_CIRCLE_BUFFER_WINDOW ?
 			SJME_CIRCLE_BUFFER_PUSH_WINDOW : SJME_CIRCLE_BUFFER_PUSH_QUEUE),
-		inData, length, seekType, 0)))
+		(sjme_pointer)inData, length, seekType, 0)))
 		return sjme_error_default(error);
 	
 	/* Operate on it. */
