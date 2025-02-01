@@ -258,7 +258,7 @@ commands:
       - run:
           shell: bash.exe
           name: Download Older JDK
-          command: curl -o /c/users/circleci/jdk.zip <<parameters.jdk-url>>
+          command: curl -L -o /c/users/circleci/jdk.zip -C - <<parameters.jdk-url>>
       - run:
           shell: bash.exe
           name: Extract Older JDK
