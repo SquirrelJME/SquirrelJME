@@ -30,7 +30,7 @@ if(SQUIRRELJME_IS_LIBRETRO)
 
 		# Linking needs to be fixed here
 		set(CMAKE_STATIC_LIBRARY_SUFFIX
-			".bc")
+			".a")
 		set(CMAKE_C_CREATE_STATIC_LIBRARY
 			"emcc -o <TARGET> -shared <LINK_FLAGS> <OBJECTS>")
 		set(CMAKE_CXX_CREATE_STATIC_LIBRARY
