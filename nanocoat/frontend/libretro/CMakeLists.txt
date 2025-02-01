@@ -87,7 +87,7 @@ target_include_directories(squirreljme_libretro SYSTEM PRIVATE
 
 # Exports for Windows, etc.
 if(NOT libRetroIsStatic)
-	squirreljme_target_shared_library_exports(npapi)
+	squirreljme_target_shared_library_exports(squirreljme_libretro)
 endif()
 
 # Allow running the binary, as long as it is not static and we are on the

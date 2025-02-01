@@ -142,10 +142,20 @@ endmacro()
 
 # Generate exports, mostly for Windows
 macro(squirreljme_target_shared_library_exports target)
-	get_target_property(squirreljme_dylib_output_dir
-		${target} RUNTIME_OUTPUT_DIRECTORY)
-	get_target_property(squirreljme_dylib_output_name
-		${target} RUNTIME_OUTPUT_NAME)
+	# If there is a config used, just use the first one
+	if(NOT "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
+		list(GET "${CMAKE_CONFIGURATION_TYPES}" 0 firstConfig)
+
+		get_target_property(squirreljme_dylib_output_dir
+			${target} RUNTIME_OUTPUT_DIRECTORY_${firstConfig})
+		get_target_property(squirreljme_dylib_output_name
+			${target} RUNTIME_OUTPUT_NAME_${firstConfig})
+	else()
+		get_target_property(squirreljme_dylib_output_dir
+			${target} RUNTIME_OUTPUT_DIRECTORY)
+		get_target_property(squirreljme_dylib_output_name
+			${target} RUNTIME_OUTPUT_NAME)
+	endif()
 
 	if(MSVC)
 		target_link_options(${target} PRIVATE

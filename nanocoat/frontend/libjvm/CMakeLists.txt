@@ -40,6 +40,10 @@ target_link_libraries(libJvm PUBLIC
 	${SQUIRRELJME_LINK_LIBRARIES_Base}
 	${SQUIRRELJME_LINK_LIBRARIES_Core})
 
+# Where should this library be output?
+squirreljme_target_binary_output(libJvm
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+
 # Use a conforming name for the library
 squirreljme_target_binary_name(libJvm
 	"jvm")

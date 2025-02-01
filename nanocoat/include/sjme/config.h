@@ -796,6 +796,11 @@ extern "C" {
 	/** Full address range pointer. */
 	#define sjme_attrHugeP
 #endif
+
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/* Qualifier used multiple times, as there are volatile typedefs. */
+	#pragma warning(disable: 4114)
+#endif
 	
 /*--------------------------------------------------------------------------*/
 

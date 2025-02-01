@@ -31,5 +31,13 @@ target_link_libraries(npapi PUBLIC
 	${SQUIRRELJME_LINK_LIBRARIES_Base}
 	${SQUIRRELJME_LINK_LIBRARIES_Core})
 
+# Where should this library be output?
+squirreljme_target_binary_output(npapi
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+
+# Plugin library name
+squirreljme_target_binary_name(npapi
+	"squirreljme-npapi")
+
 # Exports for Windows, etc.
 squirreljme_target_shared_library_exports(npapi)
