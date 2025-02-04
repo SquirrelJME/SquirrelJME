@@ -487,7 +487,7 @@ public class DataInputStream
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @throws UTFDataFormatException If the input UTF data is not correct.
-	 * @since 2018/12/03
+	 * @since 2025/02/03
 	 */
 	@SuppressWarnings({"MagicNumber", "RedundantThrows", "FinalStaticMethod"})
 	@Api
