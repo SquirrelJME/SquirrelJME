@@ -27,9 +27,11 @@ final class __IAppliInterface__
 	implements ApplicationInterface<IApplication>
 {
 	/** Main application class. */
+	@SquirrelJMEVendorApi
 	protected final String mainClass;
 	
 	/** Arguments to the class. */
+	@SquirrelJMEVendorApi
 	private final String[] _args;
 	
 	/**
@@ -148,9 +150,6 @@ final class __IAppliInterface__
 	{
 		if (__instance == null)
 			throw new NullPointerException("NARG");
-		
-		// Set debug tracing for getting i-mode applications working
-		//DebugShelf.verbose(VerboseDebugFlag.ALLOCATION);
 		
 		// Start the application
 		__instance.start();
