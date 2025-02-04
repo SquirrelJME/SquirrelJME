@@ -837,20 +837,9 @@ public class Display
 	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches"})
 	public int numAlphaLevels()
 	{
-		throw Debugging.todo();
-		/*
-		switch (UIBackendFactory.getInstance(true).metric(_uiDisplay,
-			UIMetricType.DISPLAY_PIXEL_FORMAT))
-		{
-				// If the display format is 16-bit, just use this here
-			case UIPixelFormat.SHORT_RGBA4444:
-				return 16;
-			
-				// Use 256 since all other image formats would get their
-				// alpha colors calculated.
-			default:
-				return 256;
-		}*/
+		// This actually depends on the Graphics context, thus we always
+		// return the highest possible value here
+		return 256;
 	}
 	
 	/**

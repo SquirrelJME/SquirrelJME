@@ -343,7 +343,7 @@ sjme_errorCode sjme_jni_recoverEnvFrontEnd(
  */
 sjme_errorCode sjme_jni_jstringCharSeqStatic(
 	sjme_attrInNotNull JNIEnv* env,
-	sjme_attrInNotNull sjme_charSeq* inOutSeq,
+	sjme_attrInOutNotNull sjme_charSeq* inOutSeq,
 	sjme_attrInNotNull jstring inString);
 
 /**
