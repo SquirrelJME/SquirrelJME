@@ -220,11 +220,21 @@ sjme_errorCode sjme_scritchui_core_windowSetVisible(
 	/* Not implemented? */
 	if (inState->impl->windowSetVisible == NULL)
 		return sjme_error_notImplemented(0);
+
+	/* Being set as visible? */
+	inWindow->component.state.settingVisible = isVisible;
 	
 	/* Forward call. */
 	if (sjme_error_is(error = inState->impl->windowSetVisible(inState,
 		inWindow, isVisible)))
 		return sjme_error_default(error);
+	
+	/* The native window system has no means of determining window */
+	/* visibility, so we have to handle it manually if we show it. */
+	if (inState->bugs.windowVisibilityUnknown)
+		if (sjme_error_is(error = inState->intern->updateVisibleWindow(
+			inState, inWindow, isVisible)))
+			return sjme_error_default(error);
 	
 	/* If we have a minimum size set, making this window visible should */
 	/* be able to tell us the overhead of the window, so reset minimum */

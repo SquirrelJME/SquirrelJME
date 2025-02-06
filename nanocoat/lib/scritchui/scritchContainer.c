@@ -88,6 +88,9 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 	
 	/* Set free slot in component. */
 	list->elements[freeSlot] = addComponent;
+
+	/* Adding to a container sets as visible. */
+	addComponent->state.settingVisible = SJME_JNI_TRUE;
 	
 	/* Forward call. */	
 	if (sjme_error_is(error = inState->impl->containerAdd(inState,
@@ -177,6 +180,9 @@ sjme_errorCode sjme_scritchui_core_containerRemove(
 		/* Ignore ones that are not this one. */
 		if (list->elements[i] != removeComponent)
 			continue;
+
+		/* Removing from a container makes it not visible. */
+		removeComponent->state.settingVisible = SJME_JNI_FALSE;
 		
 		/* Forward call. */
 		if (sjme_error_is(error = inState->impl->containerRemove(
@@ -306,6 +312,155 @@ sjme_errorCode sjme_scritchui_core_containerSetBounds(
 		return sjme_error_default(error);
 	
 	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_core_intern_containerMaxSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNotNull sjme_scritchui_dim* outSize)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiContainer container;
+	sjme_scritchui_uiContainer subContainer;
+	sjme_scritchui_dim result, containerSize, viewSize, viewSuggest;
+	sjme_scritchui_uiView subView;
+	sjme_scritchui_uiComponent item;
+	sjme_jint i, n, sw, sh;
+	
+	if (inState == NULL || inContainer == NULL || outSize == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover container. */
+	container = NULL;
+	if (sjme_error_is(error = sjme_scritchui_core_intern_getContainer(
+		inState, inContainer,
+		&container)) || container == NULL)
+		return sjme_error_default(error);
+
+	/* Nothing in this? Ignore. */
+	if (container->components == NULL || container->components->length == 0)
+	{
+		memset(outSize, 0, sizeof(*outSize));
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Calculate maximum dimensional size. */
+	memset(&result, 0, sizeof(result));
+	for (i = 0, n = container->components->length; i < n; i++)
+	{
+		/* Ignore missing components. */
+		item = container->components->elements[i];
+		if (item == NULL)
+			continue;
+
+		/* Clear base. */
+		sw = 0;
+		sh = 0;
+		
+		/* Is this a viewport? */
+		subView = NULL;
+		memset(&viewSize, 0, sizeof(viewSize));
+		memset(&viewSuggest, 0, sizeof(viewSuggest));
+		if ((error = inState->intern->getView(
+			inState, item, &subView)))
+		{
+			/* This is a view! */
+			if (error == SJME_ERROR_NONE)
+			{
+				/* Get the current size. */
+				viewSize.width = subView->view.d.width;
+				viewSize.height = subView->view.d.height;
+				
+				/* And also the suggested size. */
+				viewSuggest.width = subView->lastSuggest.width;
+				viewSuggest.height = subView->lastSuggest.height;
+			}
+
+			/* Something else? */
+			else if (error != SJME_ERROR_INVALID_ARGUMENT)
+				return sjme_error_default(error);
+		}
+
+		/* Is this another container? */
+		subContainer = NULL;
+		memset(&containerSize, 0, sizeof(containerSize));
+		if ((error = inState->intern->getContainer(
+			inState, item, &subContainer)))
+		{
+			/* This is a container. */
+			if (error == SJME_ERROR_NONE)
+			{
+				/* Recursively get size. */
+				if (sjme_error_is(error =
+					inState->intern->containerMaxSize(
+						inState, item, &containerSize)))
+					return sjme_error_default(error);
+			}
+
+			/* Something else? */
+			else if (error != SJME_ERROR_INVALID_ARGUMENT)
+				return sjme_error_default(error);
+		}
+		
+		/* This is a view and either size is valid. */
+		if ((viewSuggest.width > 0 && viewSuggest.height > 0) ||
+			(viewSize.width > 0 && viewSize.height > 0))
+		{
+			/* Suggested view size is valid? */
+			if (viewSuggest.width > 0 && viewSuggest.height > 0)
+			{
+				if (viewSuggest.width > sw)
+					sw = viewSuggest.width;
+				if (viewSuggest.height > sh)
+					sh = viewSuggest.height;
+			}
+	
+			/* Standard view size is valid? */
+			else
+			{
+				if (viewSize.width > sw)
+					sw = viewSize.width;
+				if (viewSize.height > sh)
+					sh = viewSize.height;
+			}	
+		}
+
+		/* Container size is valid? */
+		else if (containerSize.width > 0 && containerSize.height > 0)
+		{
+			/* Add in base size. */
+			if (containerSize.width > sw)
+				sw = containerSize.width;
+			if (containerSize.height > sh)
+				sh = containerSize.height;
+		}
+
+		/* Item bounds MAY override the view size or the container size! */
+		if (item->bounds.d.width > 0 && item->bounds.d.height > 0)
+		{
+			/* Add in base size. */
+			if (item->bounds.d.width > sw)
+				sw = item->bounds.d.width;
+			if (item->bounds.d.height > sh)
+				sh = item->bounds.d.height;
+		}
+
+		/* Offset by whatever coordinates the bounds of this has? */
+		if (item->bounds.s.x > 0)
+			sw += item->bounds.s.x;
+		if (item->bounds.s.y > 0)
+			sh += item->bounds.s.y;
+
+		/* Greater than the size currently set? */
+		if (sw > result.width)
+			result.width = sw;
+		if (sh > result.height)
+			result.height = sh;
+	}
+	
+	/* Success! */
+	memmove(outSize, &result, sizeof(*outSize));
 	return SJME_ERROR_NONE;
 }
 

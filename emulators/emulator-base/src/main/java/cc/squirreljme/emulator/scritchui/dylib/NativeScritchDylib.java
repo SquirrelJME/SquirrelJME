@@ -471,6 +471,17 @@ public final class NativeScritchDylib
 	static native boolean __loopIsInThread(long __stateP);
 	
 	/**
+	 * Iterates a single loop run.
+	 *
+	 * @param __stateP The state pointer.
+	 * @return If this has terminated.
+	 * @throws MLECallError If the loop could not be iterated.
+	 * @since 2024/12/22
+	 */
+	static native boolean __loopIterate(long __stateP)
+		throws MLECallError;
+	
+	/**
 	 * Creates a hardware reference bracket to the native hardware graphics.
 	 * 
 	 * @param __pf The {@link UIPixelFormat} used for the draw.

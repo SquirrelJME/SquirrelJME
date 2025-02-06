@@ -199,6 +199,15 @@ sjme_errorCode sjme_scritchui_fb_labelSetString(
 	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInNullable sjme_lpcstr inString);
 
+sjme_errorCode sjme_scritchui_fb_lafDpiProject(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrInValue sjme_jboolean toBase,
+	sjme_attrInNullable sjme_jint* inOutX,
+	sjme_attrInNullable sjme_jint* inOutY,
+	sjme_attrInNullable sjme_jint* inOutW,
+	sjme_attrInNullable sjme_jint* inOutH);
+
 sjme_errorCode sjme_scritchui_fb_lafElementColor(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
@@ -224,6 +233,11 @@ sjme_errorCode sjme_scritchui_fb_loopExecuteWait(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything);
+
+sjme_errorCode sjme_scritchui_fb_loopIterate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_jboolean blocking,
+	sjme_attrOutNullable sjme_jboolean* outHasTerminated);
 
 sjme_errorCode sjme_scritchui_fb_menuBarNew(
 	sjme_attrInNotNull sjme_scritchui inState,

@@ -29,7 +29,7 @@
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
 
-sjme_debug_handlerFunctions* sjme_debug_handlers = NULL;
+SJME_DYLIB_EXPORT sjme_debug_handlerFunctions* sjme_debug_handlers = NULL;
 
 void sjme_debug_abort(void)
 {

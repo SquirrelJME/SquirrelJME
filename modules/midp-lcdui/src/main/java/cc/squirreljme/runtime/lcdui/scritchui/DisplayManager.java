@@ -20,6 +20,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -215,6 +216,7 @@ public final class DisplayManager
 		if (instance != null)
 			return instance;
 		
+		// Grab from the native system
 		try
 		{
 			instance = new DisplayManager(
@@ -226,6 +228,11 @@ public final class DisplayManager
 			throw new HeadlessDisplayException(__e);
 		}
 		
+		// Since we have it now, register idle runner
+		ApplicationHandler.setIdleTask(new __ExecIdle__(
+			instance.scritch().eventLoop()));
+		
+		// Use it!
 		return instance;
 	}
 }

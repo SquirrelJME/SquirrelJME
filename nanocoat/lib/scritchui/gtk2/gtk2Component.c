@@ -97,7 +97,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	/* Setup pencil for drawing. */
 	pencil = &paint->pencil;
 	memset(pencil, 0, sizeof(*pencil));
-	if (sjme_error_is(sjme_scritchpen_initStatic(pencil,
+	if (sjme_error_is(error = sjme_scritchpen_initStatic(pencil,
 		inState,
 		&sjme_scritchui_gtk2_pencilFunctions,
 		NULL, NULL,

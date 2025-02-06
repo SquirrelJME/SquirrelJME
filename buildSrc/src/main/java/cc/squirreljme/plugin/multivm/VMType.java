@@ -251,7 +251,8 @@ public enum VMType
 			String osName = System.getProperty("os.name");
 			if (osName != null &&
 				(osName.toLowerCase().contains("mac os") ||
-				osName.toLowerCase().contains("mac os x")))
+				osName.toLowerCase().contains("mac os x")) ||
+				osName.toLowerCase().contains("darwin"))
 				jvmArgs.add("-XstartOnFirstThread");
 			
 			// Copy any agent libraries which are not JDWP based ones, for

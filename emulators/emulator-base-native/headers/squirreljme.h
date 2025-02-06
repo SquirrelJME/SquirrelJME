@@ -324,6 +324,16 @@ sjme_errorCode sjme_jni_recoverEnv(
  * Recovers the Java environment pointer.
  *
  * @param outEnv The resultant environment.
+ * @return Any resultant error, if any.
+ * @since 2024/12/16
+ */
+sjme_errorCode sjme_jni_recoverEnvThis(
+	sjme_attrInOutNotNull JNIEnv** outEnv);
+
+/**
+ * Recovers the Java environment pointer.
+ *
+ * @param outEnv The resultant environment.
  * @param inFrontEnd The input front end.
  * @return Any resultant error, if any.
  * @since 2024/06/27

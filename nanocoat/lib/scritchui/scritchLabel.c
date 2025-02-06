@@ -39,6 +39,10 @@ sjme_errorCode sjme_scritchui_core_labelSetString(
 		labeled->label = NULL;
 	}
 	
+	/* If setting window title and there is none, use default title. */
+	if (inCommon->type == SJME_SCRITCHUI_TYPE_WINDOW && inString == NULL)
+		inString = "SquirrelJME";
+	
 	/* Make copy of label, if there is one to be set. */
 	if (inString != NULL)
 		if (sjme_error_is(error = sjme_alloc_strdup(inState->pool,

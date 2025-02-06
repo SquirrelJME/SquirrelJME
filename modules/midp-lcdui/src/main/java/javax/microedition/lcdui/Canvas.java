@@ -901,7 +901,7 @@ public abstract class Canvas
 		DisplayScale scale = __parent.display()._scale;
 		
 		// Setup new image with a raw buffer, if scaling is required
-		if (true || scale.requiresBuffer())
+		if (/*true ||*/ scale.requiresBuffer())
 		{
 			// Get the current texture size of the window
 			int w = Math.max(1, scale.textureW());
@@ -938,7 +938,7 @@ public abstract class Canvas
 		
 		// Is a buffer used for scaling?
 		Image buffer;
-		if (true || display.display()._scale.requiresBuffer())
+		if (/*true ||*/ display.display()._scale.requiresBuffer())
 		{
 			// Use this buffer
 			buffer = this._buffer;

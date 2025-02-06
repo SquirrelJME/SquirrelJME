@@ -53,12 +53,20 @@ squirreljme_include("platform.cmake")
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
 
+# Mac OS X Desktop?
+if(SQUIRRELJME_IS_APPLE_OR_GNUSTEP_DESKTOP)
+	enable_language(OBJC)
+endif()
+
 # Use for all builds
 add_compile_definitions(SJME_CONFIG_BUILD_ARCH=${SQUIRRELJME_ARCH})
 add_compile_definitions(SJME_CONFIG_BUILD_PLATFORM=${SQUIRRELJME_PLATFORM})
 
 # Win32 Options
 squirreljme_include("win32.cmake")
+
+# Apple Options
+squirreljme_include("apple.cmake")
 
 # Hardening options
 squirreljme_include("hardening.cmake")

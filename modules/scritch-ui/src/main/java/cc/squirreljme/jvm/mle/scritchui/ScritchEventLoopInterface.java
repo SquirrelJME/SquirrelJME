@@ -24,6 +24,26 @@ public interface ScritchEventLoopInterface
 	extends ScritchApiInterface
 {
 	/**
+	 * Returns whether the current thread is the event loop thread.
+	 *
+	 * @return If the current thread is the event loop thread.
+	 * @since 2024/03/16
+	 */
+	@SquirrelJMEVendorApi
+	boolean inLoop();
+	
+	/**
+	 * Iterates a single run of the event loop.
+	 *
+	 * @return
+	 * @throws MLECallError If the event loop encountered an error.
+	 * @since 2024/12/22
+	 */
+	@SquirrelJMEVendorApi
+	boolean iterate()
+		throws MLECallError;
+	
+	/**
 	 * Executes the given task in the event loop, if the current thread is
 	 * the event loop then this will run it immediately.
 	 *
@@ -65,13 +85,4 @@ public interface ScritchEventLoopInterface
 	@Async.Schedule
 	void loopExecuteWait(@NotNull Runnable __task)
 		throws MLECallError;
-	
-	/**
-	 * Returns whether the current thread is the event loop thread.
-	 *
-	 * @return If the current thread is the event loop thread.
-	 * @since 2024/03/16
-	 */
-	@SquirrelJMEVendorApi
-	boolean inLoop();
 }

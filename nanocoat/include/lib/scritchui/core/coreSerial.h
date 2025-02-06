@@ -136,6 +136,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c labelSetString . */
 	SJME_SCRITCHUI_SERIAL_TYPE_LABEL_SET_STRING,
 	
+	/** @c lafDpiProject. */
+	SJME_SCRITCHUI_SERIAL_TYPE_LAF_DPI_PROJECT,
+	
 	/** @c lafElementColor. */
 	SJME_SCRITCHUI_SERIAL_TYPE_LAF_ELEMENT_COLOR,
 		
@@ -399,6 +402,14 @@ SUD_STRUCT_DEF(labelSetString,
 	SDU_VAR(sjme_scritchui_uiCommon, inCommon);
 	SDU_VAR(sjme_lpcstr, inString););
 
+SUD_STRUCT_DEF(lafDpiProject,
+	SDU_VAR(sjme_scritchui_uiComponent, inContext);
+	SDU_VAR(sjme_jboolean, toBase);
+	SDU_VARP(sjme_jint, inOutX);
+	SDU_VARP(sjme_jint, inOutY);
+	SDU_VARP(sjme_jint, inOutW);
+	SDU_VARP(sjme_jint, inOutH););
+
 SUD_STRUCT_DEF(lafElementColor,
 	SDU_VAR(sjme_scritchui_uiComponent, inContext);
 	SDU_VARP(sjme_jint, outRGB);
@@ -546,6 +557,7 @@ typedef volatile union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(fontList);
 	SJME_SCRITCHUI_SDU_DEF(hardwareGraphics);
 	SJME_SCRITCHUI_SDU_DEF(labelSetString);
+	SJME_SCRITCHUI_SDU_DEF(lafDpiProject);
 	SJME_SCRITCHUI_SDU_DEF(lafElementColor);
 	SJME_SCRITCHUI_SDU_DEF(listNew);
 	SJME_SCRITCHUI_SDU_DEF(menuBarNew);
@@ -784,7 +796,16 @@ sjme_errorCode sjme_scritchui_coreSerial_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInNullable sjme_lpcstr inString);
-	
+
+sjme_errorCode sjme_scritchui_coreSerial_lafDpiProject(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrInValue sjme_jboolean toBase,
+	sjme_attrInNullable sjme_jint* inOutX,
+	sjme_attrInNullable sjme_jint* inOutY,
+	sjme_attrInNullable sjme_jint* inOutW,
+	sjme_attrInNullable sjme_jint* inOutH);
+
 sjme_errorCode sjme_scritchui_coreSerial_lafElementColor(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,

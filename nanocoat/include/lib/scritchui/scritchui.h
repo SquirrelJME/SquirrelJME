@@ -88,7 +88,7 @@ typedef enum sjme_scritchui_uiType
 
 /** Generic cast check. */
 #define SJME_SUI_CAST(uiType, type, v) \
-	((type)sjme_scritchui_checkCast((type), (v)))
+	((type)sjme_scritchui_checkCast((uiType), (v)))
 
 /** Common type. */
 #define SJME_SUI_CAST_COMMON(v) \
@@ -101,6 +101,10 @@ typedef enum sjme_scritchui_uiType
 /** Check cast to component kind. */
 #define SJME_SUI_CAST_COMPONENT(v) \
 	((sjme_scritchui_uiComponent)sjme_scritchui_checkCast_component((v)))
+
+/** Check cast to container kind. */
+#define SJME_SUI_CAST_CONTAINER(v) \
+	((sjme_scritchui_uiComponent)sjme_scritchui_checkCast_container((v)))
 
 /** Check cast to panel. */
 #define SJME_SUI_CAST_PANEL(v) \
@@ -119,8 +123,13 @@ typedef enum sjme_scritchui_uiType
 
 /** Check cast to menu item. */
 #define SJME_SUI_CAST_MENU_ITEM(v) \
-	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_MENU_Item, \
+	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_MENU_ITEM, \
 	sjme_scritchui_uiMenuItem, (v))
+
+/** Check cast to window. */
+#define SJME_SUI_CAST_WINDOW(v) \
+	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_WINDOW, \
+	sjme_scritchui_uiWindow, (v))
 
 /**
  * An opaque native handle.
@@ -371,6 +380,13 @@ typedef sjme_scritchui_uiCommonBase* sjme_scritchui_uiCommon;
 /**
  * Represents a choice of options such as those in a list.
  * 
+ * @since 2024/12/25
+ */
+typedef struct sjme_scritchui_uiChoiceBase sjme_scritchui_uiChoiceBase;
+
+/**
+ * Represents a choice of options such as those in a list.
+ * 
  * @since 2024/04/20
  */
 typedef struct sjme_scritchui_uiChoiceBase* sjme_scritchui_uiChoice;
@@ -390,11 +406,25 @@ typedef struct sjme_scritchui_uiChoiceItemBase sjme_scritchui_uiChoiceItemBase;
 typedef struct sjme_scritchui_uiChoiceItemBase* sjme_scritchui_uiChoiceItem;
 
 /**
+ * Base component structure within ScritchUI.
+ * 
+ * @since 2024/03/27
+ */
+typedef struct sjme_scritchui_uiComponentBase sjme_scritchui_uiComponentBase;
+
+/**
  * Component within ScritchUI.
  * 
  * @since 2024/03/27
  */
 typedef struct sjme_scritchui_uiComponentBase* sjme_scritchui_uiComponent;
+
+/**
+ * Represents a container which can contain other components.
+ * 
+ * @since 2024/12/25
+ */
+typedef struct sjme_scritchui_uiContainerBase sjme_scritchui_uiContainerBase;
 
 /**
  * Represents a container which can contain other components.
@@ -416,6 +446,13 @@ typedef struct sjme_scritchui_uiLabeledBase sjme_scritchui_uiLabeledBase;
  * @since 2024/07/22
  */
 typedef sjme_scritchui_uiLabeledBase* sjme_scritchui_uiLabeled;
+
+/**
+ * Base paintable for ScritchUI.
+ * 
+ * @since 2024/12/25
+ */
+typedef struct sjme_scritchui_uiPaintableBase sjme_scritchui_uiPaintableBase;
 
 /**
  * Base paintable for ScritchUI.
@@ -513,6 +550,13 @@ typedef struct sjme_scritchui_uiMenuItemBase* sjme_scritchui_uiMenuItem;
 /**
  * A single monitor screen on the display for ScritchUI.
  * 
+ * @since 2024/12/25
+ */
+typedef struct sjme_scritchui_uiScreenBase sjme_scritchui_uiScreenBase;
+
+/**
+ * A single monitor screen on the display for ScritchUI.
+ * 
  * @since 2024/04/06
  */
 typedef struct sjme_scritchui_uiScreenBase* sjme_scritchui_uiScreen;
@@ -544,9 +588,23 @@ typedef sjme_scritchui_uiViewBase* sjme_scritchui_uiView;
 /**
  * A window within ScritchUI.
  * 
+ * @since 2024/12/25
+ */
+typedef struct sjme_scritchui_uiWindowBase sjme_scritchui_uiWindowBase;
+
+/**
+ * A window within ScritchUI.
+ * 
  * @since 2024/03/27
  */
 typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
+
+/**
+ * ScritchUI Pencil state.
+ * 
+ * @since 2024/12/25
+ */
+typedef struct sjme_scritchui_pencilBase sjme_scritchui_pencilBase;
 
 /**
  * ScritchUI Pencil state.
@@ -1313,6 +1371,30 @@ typedef sjme_errorCode (*sjme_scritchui_labelSetStringFunc)(
 	sjme_attrInNullable sjme_lpcstr inString);
 
 /**
+ * Projects or reverses a projection of a coordinate within the base
+ * unscaled coordinate system to the host DPI.
+ * 
+ * @param inState The input state.
+ * @param inContext The context of the component the projection is for, may
+ * be @c NULL .
+ * @param toBase Reverse projection from scaled DPI space to base coordinates.
+ * @param inOutX Input/output X coordinates.
+ * @param inOutY Input/output Y coordinates.
+ * @param inOutW Input/output width.
+ * @param inOutH Input/output height.
+ * @return Any resultant error.
+ * @since 2024/12/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_lafDpiProjectFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrInValue sjme_jboolean toBase,
+	sjme_attrInNullable sjme_jint* inOutX,
+	sjme_attrInNullable sjme_jint* inOutY,
+	sjme_attrInNullable sjme_jint* inOutW,
+	sjme_attrInNullable sjme_jint* inOutH);
+
+/**
  * Returns the color for the given element based on the current look and feel.
  * 
  * @param inState The current state.
@@ -1820,6 +1902,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the close listener for a window. */
 	SJME_SCRITCHUI_QUICK_API(labelSetString);
+
+	/** Projects or reverses a projection of a scaled coordinate. */
+	SJME_SCRITCHUI_QUICK_API(lafDpiProject);
 	
 	/** Returns the element color for the look and feel. */
 	SJME_SCRITCHUI_QUICK_API(lafElementColor);
@@ -1970,8 +2055,14 @@ typedef struct sjme_scritchui_wmInfo
  */
 typedef struct sjme_scritchui_bugs
 {
+	/** Manual event polling. */
+	sjme_jboolean manualEventPoll;
+	
 	/** Do not set content size when the window is made visible. */
 	sjme_jboolean noContentSizeWhenVisible;
+	
+	/** It is unknown when a window is visible or not. */
+	sjme_jboolean windowVisibilityUnknown;
 } sjme_scritchui_bugs;
 
 /**
@@ -2008,6 +2099,64 @@ typedef struct sjme_scritchui_externalFunctions
 	/** Execute callback within the event loop and wait until termination. */
 	sjme_scritchui_loopExecuteFunc externalLoopExecuteWait;
 } sjme_scritchui_externalFunctions;
+
+/**
+ * Stores information for a single loop queue item.
+ * 
+ * @since 2024/12/31
+ */
+typedef struct sjme_scritchui_loopQueueItem sjme_scritchui_loopQueueItem;
+
+struct sjme_scritchui_loopQueueItem
+{
+	/** The function to execute. */
+	sjme_thread_mainFunc function;
+	
+	/** The "anything" value. */
+	sjme_thread_parameter anything;
+	
+	/** The next item in the queue. */
+	sjme_scritchui_loopQueueItem* next;
+};
+
+/**
+ * A chunk of loop queue slots.
+ * 
+ * @since 2024/12/31
+ */
+typedef struct sjme_scritchui_loopQueueChunk sjme_scritchui_loopQueueChunk;
+
+/** The size of the loop queue per chunk. */
+#define SJME_SCRITCHUI_LOOP_SIZE 32
+
+struct sjme_scritchui_loopQueueChunk
+{
+	/** The items in the loop queue. */
+	sjme_scritchui_loopQueueItem items[SJME_SCRITCHUI_LOOP_SIZE];
+	
+	/** The next chunk, if this is full. */
+	sjme_scritchui_loopQueueChunk* nextChunk;
+};
+
+/**
+ * The loop queue which contains multiple loop items.
+ * 
+ * @since 2024/12/31
+ */
+typedef struct sjme_scritchui_loopQueue
+{
+	/** The lock for the queue items. */
+	sjme_thread_spinLock lock;
+	
+	/** The first chunk. */
+	sjme_scritchui_loopQueueChunk* firstChunk;
+	
+	/** The next item in the queue. */
+	sjme_scritchui_loopQueueItem* next;
+	
+	/** The last item in the queue. */
+	sjme_scritchui_loopQueueItem* last;
+} sjme_scritchui_loopQueue;
 
 struct sjme_scritchui_stateBase
 {
@@ -2079,6 +2228,9 @@ struct sjme_scritchui_stateBase
 
 	/** Font cache. */
 	sjme_list_sjme_scritchui_pencilFont* fontCache;
+
+	/** The loop queue for manual event loops. */
+	sjme_alignPointer sjme_scritchui_loopQueue loopQueue;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */
@@ -2141,6 +2293,15 @@ sjme_pointer sjme_scritchui_checkCast(sjme_scritchui_uiType inType,
  * @since 2024/07/23
  */
 sjme_pointer sjme_scritchui_checkCast_component(sjme_pointer inPtr);
+
+/**
+ * Check cast of a given type against a container.
+ *
+ * @param inPtr The input pointer.
+ * @return Always @c inPtr .
+ * @since 2024/12/23
+ */
+sjme_pointer sjme_scritchui_checkCast_container(sjme_pointer inPtr);
 
 /**
  * Check cast of a given type against a menu kind.
