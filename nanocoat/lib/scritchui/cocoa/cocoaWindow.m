@@ -31,7 +31,7 @@
 		defer:NO];
 }
 
-- (BOOL)sjmeExecMenuItem:(id)what sjme_attrUsed
+- (BOOL)sjmeExecMenuItem:(id)what
 {
 	SJMEMenuItem* cocoaMenuItem;
 	sjme_scritchui inState;

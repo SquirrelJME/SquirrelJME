@@ -91,7 +91,7 @@ sjme_errorCode sjme_stream_inputAvailable(
 }
 
 sjme_errorCode sjme_stream_inputOpen(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull const sjme_stream_inputFunctions* inFunctions,
 	sjme_attrInNullable sjme_pointer data,
@@ -100,7 +100,7 @@ sjme_errorCode sjme_stream_inputOpen(
 	sjme_errorCode error;
 	sjme_stream_input result;
 	
-	if (inPool == NULL || outStream == NULL || inFunctions == NULL)
+	if (allocPool == NULL || outStream == NULL || inFunctions == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* These are required. */
@@ -109,14 +109,14 @@ sjme_errorCode sjme_stream_inputOpen(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		sizeof(*result), sjme_stream_inputClose,
 		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
 	
 	/* Setup details. */
-	result->implState.inPool = inPool;
+	result->implState.allocPool = allocPool;
 	result->functions = inFunctions;
 	
 	/* Copy front end? */
@@ -433,7 +433,7 @@ sjme_errorCode sjme_stream_inputReadValueJS(
 }
 
 sjme_errorCode sjme_stream_outputOpen(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInNotNull const sjme_stream_outputFunctions* inFunctions,
 	sjme_attrInNullable sjme_pointer data,
@@ -442,7 +442,7 @@ sjme_errorCode sjme_stream_outputOpen(
 	sjme_errorCode error;
 	sjme_stream_output result;
 	
-	if (inPool == NULL || outStream == NULL || inFunctions == NULL)
+	if (allocPool == NULL || outStream == NULL || inFunctions == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* These are required. */
@@ -451,14 +451,14 @@ sjme_errorCode sjme_stream_outputOpen(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		sizeof(*result), sjme_stream_outputClose,
 		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
 	
 	/* Setup details. */
-	result->implState.inPool = inPool;
+	result->implState.allocPool = allocPool;
 	result->functions = inFunctions;
 	
 	/* Copy front end? */

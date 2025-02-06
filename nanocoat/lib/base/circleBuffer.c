@@ -472,7 +472,7 @@ sjme_errorCode sjme_circleBuffer_get(
 }
 
 sjme_errorCode sjme_circleBuffer_new(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_circleBuffer** outBuffer,
 	sjme_attrInValue sjme_circleBuffer_mode inMode,
 	sjme_attrInPositiveNonZero sjme_jint length)
@@ -481,7 +481,7 @@ sjme_errorCode sjme_circleBuffer_new(
 	sjme_pointer storage;
 	sjme_circleBuffer* result;
 	
-	if (inPool == NULL || outBuffer == NULL)
+	if (allocPool == NULL || outBuffer == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inMode != SJME_CIRCLE_BUFFER_QUEUE &&
@@ -493,13 +493,13 @@ sjme_errorCode sjme_circleBuffer_new(
 	
 	/* Make sure we can allocate the buffer first. */
 	storage = NULL;
-	if (sjme_error_is(error = sjme_alloc(inPool,
+	if (sjme_error_is(error = sjme_alloc(allocPool,
 		length, (sjme_pointer*)&storage)) || storage == NULL)
 		goto fail_allocStorage;
 	
 	/* Then the actual buffer info. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inPool,
+	if (sjme_error_is(error = sjme_alloc(allocPool,
 		sizeof(*result), (sjme_pointer*)&result)) || result == NULL)
 		goto fail_allocResult; 
 	
@@ -570,7 +570,7 @@ sjme_errorCode sjme_circleBuffer_push(
 		buffer, &result,
 		(buffer->mode == SJME_CIRCLE_BUFFER_WINDOW ?
 			SJME_CIRCLE_BUFFER_PUSH_WINDOW : SJME_CIRCLE_BUFFER_PUSH_QUEUE),
-		inData, length, seekType, 0)))
+		(sjme_pointer)inData, length, seekType, 0)))
 		return sjme_error_default(error);
 	
 	/* Operate on it. */

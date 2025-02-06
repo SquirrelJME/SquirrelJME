@@ -1,0 +1,8 @@
+# SpringCoat Performance Improvements
+
+I have not done much this month as my break continues,
+however I have been slowly getting back into the flow of things. There have
+been major improvements to SpringCoat performance around strings and DoJa
+application start times have been reduced greatly if you are using standalone.
+On the otherwise for NanoCoat, work continues on code execution!
+

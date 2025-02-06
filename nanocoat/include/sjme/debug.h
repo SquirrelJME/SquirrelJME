@@ -16,8 +16,6 @@
 #ifndef SQUIRRELJME_DEBUG_H
 #define SQUIRRELJME_DEBUG_H
 
-#include <stdarg.h>
-
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
 
@@ -165,7 +163,7 @@ void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  */
 sjme_errorCode sjme_dieR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message, ...)
-	sjme_attrReturnNever sjme_attrFormatOuter(3, 4);
+	sjme_attrFormatOuter(3, 4);
 
 /**
  * Indicates a fatal error and exits the program.
@@ -201,7 +199,7 @@ sjme_errorCode sjme_dieR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  */
 void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message, ...)
-	sjme_attrReturnNever sjme_attrFormatOuter(3, 4);
+	sjme_attrFormatOuter(3, 4);
 
 /**
  * Indicates a To-Do and then terminates the program.
@@ -274,26 +272,26 @@ sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 /**
  * Allows for optional debug abort when out of memory is hit.
  *
- * @param inPool The pool the allocation was within, if applicable.
+ * @param allocPool The pool the allocation was within, if applicable.
  * @param context Any value.
  * @return Always @c SJME_ERROR_OUT_OF_MEMORY .
  * @since 2024/08/15
  */
 sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInNullable sjme_alloc_pool* inPool,
+	sjme_attrInNullable sjme_alloc_pool allocPool,
 	sjme_attrInValue sjme_intPointer context);
 
 /**
  * Allows for optional debug abort when out of memory is hit.
  *
- * @param inPool The pool the allocation was within, if applicable.
+ * @param allocPool The pool the allocation was within, if applicable.
  * @param context Any value.
  * @return Always @c SJME_ERROR_OUT_OF_MEMORY .
  * @since 2024/08/15
  */
-#define sjme_error_outOfMemory(inPool, context) \
+#define sjme_error_outOfMemory(allocPool, context) \
 	sjme_error_outOfMemoryR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, \
-	(inPool), (sjme_intPointer)(context))
+	(allocPool), (sjme_intPointer)(context))
 
 /**
  * Handles specific debug abort scenarios.

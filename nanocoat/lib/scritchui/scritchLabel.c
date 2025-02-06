@@ -32,7 +32,7 @@ sjme_errorCode sjme_scritchui_core_labelSetString(
 	{
 		/* Free. */
 		if (sjme_error_is(error = sjme_alloc_free(
-			labeled->label)))
+			(sjme_pointer)labeled->label)))
 			return sjme_error_default(error);
 			
 		/* Wipe. */

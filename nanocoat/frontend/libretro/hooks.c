@@ -7,4 +7,4 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "3rdparty/libretro/libretro.h"
+#include <libretro.h>

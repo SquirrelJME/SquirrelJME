@@ -219,7 +219,9 @@ public final class SpringThreadWorker
 			this.verboseEmit("Allocate object: %s", __cl);
 		
 		// The called constructor will allocate the space needed to store
-		// this object
+		// this object, strings always are allocated in a special way however
+		if ("java/lang/String".equals(__cl.name().toString()))
+			return new SpringStringObject(__cl, null);
 		return new SpringSimpleObject(__cl);
 	}
 	
@@ -401,68 +403,19 @@ public final class SpringThreadWorker
 		}
 		
 		// String object
-		else if (__in instanceof String)
+		else if ((__in instanceof String) ||
+			(__in instanceof ConstantValueString))
 		{
-			String s = (String)__in;
+			// Recover string
+			String s;
+			boolean intern = (__in instanceof ConstantValueString);
+			if (intern)
+				s = (String)((ConstantValueString)__in).boxedValue();
+			else
+				s = (String)__in;
 			
-			// Locate the string class
-			SpringClass strclass = this.loadClass(
-				new ClassName("java/lang/String"));
-				
-			// Setup an array of characters to represent the string data,
-			// this is the simplest thing to do right now
-			SpringObject array = (SpringObject)this.asVMObject(
-				s.toString().toCharArray());
-			
-			// Setup string which uses this sequence
-			SpringObject rv = this.newInstance(
-				new ClassName("java/lang/String"),
-				new MethodDescriptor("([CS)V"),
-				array, 0);
-			
-			return rv;
-		}
-		
-		// Constant string from the constant pool, which shared a global pool
-		// of string objects! This must be made so that "aaa" == "aaa" is true
-		// even across different classes!
-		else if (__in instanceof ConstantValueString)
-		{
-			ConstantValueString cvs = (ConstantValueString)__in;
-			
-			// Get the string map but lock on the class loader because a class
-			// might want a string but then another thread might be
-			// initializing some class, and it will just deadlock as they wait
-			// on each other
-			SpringMachine machine = this.machine;
-			Map<ConstantValueString, SpringObject> stringmap =
-				machine.__stringMap();
-			synchronized (machine.classLoader().classLoadingLock())
-			{
-				// Pre-cached object already exists?
-				SpringObject rv = stringmap.get(cvs);
-				if (rv != null)
-					return rv;
-				
-				// Setup an array of characters to represent the string data,
-				// this is the simplest thing to do right now
-				SpringObject array = (SpringObject)this.asVMObject(
-					cvs.toString().toCharArray());
-				
-				// Setup string which uses this sequence, but it also needs
-				// to be interned!
-				ClassName strclass = new ClassName("java/lang/String");
-				rv = (SpringObject)this.invokeMethod(false, strclass,
-					new MethodNameAndType("intern", "()Ljava/lang/String;"),
-					this.newInstance(strclass, new MethodDescriptor("([CS)V"),
-						array, 0));
-				
-				// Cache
-				stringmap.put(cvs, rv);
-				
-				// Use it
-				return rv;
-			}
+			// Build string object
+			return this.stringObject(intern, s);
 		}
 		
 		// A class object, as needed
@@ -1355,6 +1308,64 @@ public final class SpringThreadWorker
 		
 		// Run until it finishes execution
 		this.run(deepness);
+	}
+	
+	/**
+	 * Returns a string object.
+	 *
+	 * @param __intern Is this an intern string?
+	 * @param __s The string to wrap.
+	 * @return The resultant object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/01/23
+	 */
+	public Object stringObject(boolean __intern, String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Making an intern string?
+		SpringStringObject rv;
+		if (__intern)
+		{
+			// Recover the intern map
+			SpringMachine machine = this.machine;
+			Map<String, SpringStringObject> stringMap =
+				machine.__stringMap();
+			
+			// Lock
+			synchronized (stringMap)
+			{
+				// Use pre-existing string?
+				rv = stringMap.get(__s);
+				if (rv != null)
+					return rv;
+				
+				// Setup string object
+				rv = new SpringStringObject(this.loadClass(
+					new ClassName("java/lang/String")), __s);
+				
+				// Cache it
+				stringMap.put(__s, rv);
+			}
+		}
+		
+		// Otherwise normal string
+		else
+		{
+			// Setup string object
+			rv = new SpringStringObject(this.loadClass(
+				new ClassName("java/lang/String")), __s);
+		}
+		
+		// Call constructor for it
+		this.invokeMethod(false, rv.type().name(),
+			MethodNameAndType.ofArguments("<init>", null),
+			rv);
+		
+		// Return resultant string
+		return rv;
 	}
 	
 	/**

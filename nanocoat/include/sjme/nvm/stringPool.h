@@ -73,7 +73,7 @@ struct sjme_stringPool_base
 	sjme_list_sjme_stringPool_string* strings;
 	
 	/** The pool this is in. */
-	sjme_alloc_pool* inPool;
+	sjme_alloc_pool inPool;
 };
 
 struct sjme_stringPool_stringBase
@@ -178,7 +178,7 @@ sjme_errorCode sjme_stringPool_locateUtfR(
  * @since 2024/09/14
  */
 sjme_errorCode sjme_stringPool_new(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrOutNotNull sjme_stringPool* outStringPool);
 
 /*--------------------------------------------------------------------------*/

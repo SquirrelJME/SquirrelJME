@@ -272,7 +272,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
 	GtkTable* gtkTable;
 	
 	if (inState == NULL || inWindow == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Recover window and possibly the menu bar. */
 	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];

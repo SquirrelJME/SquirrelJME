@@ -244,7 +244,7 @@ sjme_errorCode sjme_zip_entryRead(
 	sjme_errorCode error;
 	sjme_jint nameLen, localHeaderPos, magic, actualDataPos, rawSize;
 	sjme_stream_input lowStream, hiStream, useStream;
-	sjme_alloc_pool* inPool;
+	sjme_alloc_pool allocPool;
 	sjme_zip inZip;
 	sjme_jchar lens[2];
 	
@@ -256,8 +256,8 @@ sjme_errorCode sjme_zip_entryRead(
 	if (inZip == NULL)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	inPool = inZip->inPool;
-	if (inPool == NULL)
+	allocPool = inZip->allocPool;
+	if (allocPool == NULL)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Non-deflate and Zip64 are not supported! */
@@ -284,8 +284,10 @@ sjme_errorCode sjme_zip_entryRead(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Debug. */
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("Open Zip entry: %s",
 		inEntry->name);
+#endif
 	
 	/* Lock the Zip. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(&inZip->lock)))
@@ -317,7 +319,7 @@ sjme_errorCode sjme_zip_entryRead(
 	actualDataPos = localHeaderPos + SJME_ZIP_LOCAL_LENGTH +
 		lens[0] + lens[1];
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("Lens: %d %d", lens[0], lens[1]);
 	sjme_message("Entry data at %d", actualDataPos);
@@ -342,7 +344,7 @@ sjme_errorCode sjme_zip_entryRead(
 	{
 		/* Actively decompress incoming data. */
 		if (sjme_error_is(error = sjme_stream_inputOpenInflate(
-			inPool, &hiStream, lowStream)) ||
+			allocPool, &hiStream, lowStream)) ||
 			hiStream == NULL)
 			goto fail_openHi;
 	}
@@ -533,7 +535,7 @@ fail_notFound:
 }
 
 sjme_errorCode sjme_zip_openMemory(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_zip* outZip,
 	sjme_attrInNotNull sjme_pointer rawData,
 	sjme_attrInPositive sjme_jint rawSize)
@@ -542,19 +544,19 @@ sjme_errorCode sjme_zip_openMemory(
 	sjme_seekable seekable;
 	sjme_zip result;
 	
-	if (inPool == NULL || outZip == NULL || rawData == NULL)
+	if (allocPool == NULL || outZip == NULL || rawData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Open seekable wrapping memory. */
 	seekable = NULL;
-	if (sjme_error_is(error = sjme_seekable_openMemory(inPool,
+	if (sjme_error_is(error = sjme_seekable_openMemory(allocPool,
 		&seekable, rawData, rawSize)) ||
 		seekable == NULL)
 		return sjme_error_default(error);
 	
 	/* Open Zip from this seekable now. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_zip_openSeekable(inPool,
+	if (sjme_error_is(error = sjme_zip_openSeekable(allocPool,
 		&result, seekable)) || result == NULL)
 	{
 		/* Destroy seekable before failing. */
@@ -569,7 +571,7 @@ sjme_errorCode sjme_zip_openMemory(
 }
 
 sjme_errorCode sjme_zip_openSeekable(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_zip* outZip,
 	sjme_attrInNotNull sjme_seekable inSeekable)
 {
@@ -578,7 +580,7 @@ sjme_errorCode sjme_zip_openSeekable(
 	sjme_jint archiveStartPos;
 	sjme_zip result;
 	
-	if (inPool == NULL || outZip == NULL || inSeekable == NULL)
+	if (allocPool == NULL || outZip == NULL || inSeekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Locate the central directory within the Zip. */
@@ -598,7 +600,7 @@ sjme_errorCode sjme_zip_openSeekable(
 	
 	/* Allocate Zip state structure. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_closeable_alloc(inPool,
+	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		sizeof(*result), sjme_zip_close,
 		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
@@ -608,7 +610,7 @@ sjme_errorCode sjme_zip_openSeekable(
 	sjme_message("Zip starts at %d", archiveStartPos);
 	
 	/* Store info. */
-	result->inPool = inPool;
+	result->allocPool = allocPool;
 	result->centralDirPos = centralDirPos;
 	result->logicalCentralDirPos = logicalCentralDirPos;
 	result->endCentralDirPos = endCentralDirPos;

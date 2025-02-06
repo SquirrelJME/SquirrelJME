@@ -29,7 +29,8 @@ add_dependencies(libJvm
 
 # We need to find all of the includes and such
 target_include_directories(libJvm PUBLIC
-	"${CMAKE_SOURCE_DIR}/include"
+	"${CMAKE_SOURCE_DIR}/include")
+target_include_directories(libJvm SYSTEM PRIVATE
 	${JNI_INCLUDE_DIRS}
 	${JAVA_INCLUDE_PATH}
 	${JAVA_INCLUDE_PATH2})
@@ -38,6 +39,10 @@ target_include_directories(libJvm PUBLIC
 target_link_libraries(libJvm PUBLIC
 	${SQUIRRELJME_LINK_LIBRARIES_Base}
 	${SQUIRRELJME_LINK_LIBRARIES_Core})
+
+# Where should this library be output?
+squirreljme_target_binary_output(libJvm
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
 # Use a conforming name for the library
 squirreljme_target_binary_name(libJvm

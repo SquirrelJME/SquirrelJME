@@ -112,7 +112,7 @@ static sjme_errorCode sjme_stream_outputByteArrayInit(
 		
 	/* Try to allocate an initial buffer. */
 	initBuf = NULL;
-	if (sjme_error_is(error = sjme_alloc(inImplState->inPool,
+	if (sjme_error_is(error = sjme_alloc(inImplState->allocPool,
 		init->initialLimit, &initBuf)) || initBuf == NULL)
 		goto fail_initBufAlloc;
 	
@@ -187,7 +187,7 @@ static const sjme_stream_outputFunctions sjme_stream_outputByteArrayFunctions =
 };
 
 sjme_errorCode sjme_stream_outputOpenByteArray(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInPositive sjme_jint initialLimit,
 	sjme_attrInNullable sjme_stream_outputByteArrayFinishFunc finish,
@@ -195,7 +195,7 @@ sjme_errorCode sjme_stream_outputOpenByteArray(
 {
 	sjme_stream_byteInit init;
 	
-	if (inPool == NULL || outStream == NULL)
+	if (allocPool == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Fallback to a default initial limit if zero. */
@@ -212,7 +212,7 @@ sjme_errorCode sjme_stream_outputOpenByteArray(
 	init.finishData = finishData;
 	
 	/* Forward to initialization routine. */
-	return sjme_stream_outputOpen(inPool,
+	return sjme_stream_outputOpen(allocPool,
 		outStream,
 		&sjme_stream_outputByteArrayFunctions,
 		&init,
@@ -241,16 +241,16 @@ static sjme_errorCode sjme_stream_outputOpenByteArrayToTarget(
 }
 
 sjme_errorCode sjme_stream_outputOpenByteArrayTo(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInPositive sjme_jint initialLimit,
 	sjme_attrInNotNull sjme_stream_resultByteArray* result)
 {
-	if (inPool == NULL || outStream == NULL || result == NULL)
+	if (allocPool == NULL || outStream == NULL || result == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Forward. */
-	return sjme_stream_outputOpenByteArray(inPool, outStream,
+	return sjme_stream_outputOpenByteArray(allocPool, outStream,
 		initialLimit, sjme_stream_outputOpenByteArrayToTarget,
 		result);
 }

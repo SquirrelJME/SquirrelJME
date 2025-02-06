@@ -10,6 +10,7 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.nttdocomo.io.SquirrelJMEWebRootConnectionFactory;
 import org.intellij.lang.annotations.Language;
@@ -18,9 +19,11 @@ import org.intellij.lang.annotations.Language;
 public abstract class IApplication
 {
 	/** The last application created. */
+	@SquirrelJMEVendorApi
 	static volatile IApplication _lastApp;
 	
 	/** Application args, these are injected within. */
+	@SquirrelJMEVendorApi
 	static volatile String[] _appArgs;
 	
 	{

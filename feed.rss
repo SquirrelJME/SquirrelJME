@@ -5,7 +5,7 @@
 	<description>SquirrelJME is a Java ME 8 Virtual Machine.</description>
 	<link>https://squirreljme.cc/</link>
 	<language>en-us</language>
-	<copyright>Copyright (C) 2013-2024 Stephanie Gawroriski</copyright>
+	<copyright>Copyright (C) 2013-2025 Stephanie Gawroriski</copyright>
 	<managingEditor>xer@multiphasicapps.net (Stephanie Gawroriski)</managingEditor>
 	<webMaster>xer@multiphasicapps.net (Stephanie Gawroriski)</webMaster>
 	<pubDate>Sun, 27 Oct 2024 18:20 EDT</pubDate>
@@ -18,7 +18,34 @@
 		rel="self" />
 
 	<!-- Update this accordingly! -->
-	<lastBuildDate>Sun, 24 Nov 2024 15:00 EST</lastBuildDate>
+	<lastBuildDate>Sun, 29 Dec 2024 18:02 EST</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">2595fd13-e811-41ae-93f4-0fc3645bdd1b</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250128_2020.mkd</link>
+		<pubDate>Tue, 28 Jan 2025 20:20 EST</pubDate>
+
+		<title>SpringCoat Performance Improvements</title>
+		<description>I have not done much this month as my break continues,
+however I have been slowly getting back into the flow of things. There have
+been major improvements to SpringCoat performance around strings and DoJa
+application start times have been reduced greatly if you are using standalone.
+On the otherwise for NanoCoat, work continues on code execution!</description>
+	</item>
+
+	<!-- Not current -->
+
+	<item>
+		<guid isPermaLink="false">0c2d113f-10d8-4835-ba27-bc1156927d2f</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241229_1802.mkd</link>
+		<pubDate>Sun, 29 Dec 2024 18:02 EST</pubDate>
+
+		<title>Quite a year!</title>
+		<description>This year has been quite the year! In the current month
+of December I have mostly been making minor bug fixes and other
+small improvements around many miscellaneous areas, along with
+working on the macOS Cocoa UI.</description>
+	</item>
 
 	<item>
 		<guid isPermaLink="false">8b04125a-678d-4943-9089-181d2414930a</guid>
@@ -27,10 +54,8 @@
 
 		<title>An Anti-Burnout Break is Needed</title>
 		<description>The year has been exciting and so much has been done,
-			but I also recognize that I need a much-needed break.</description>
+but I also recognize that I need a much-needed break.</description>
 	</item>
-
-	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">6c70e869-c158-4aed-a5f3-94f9f565749e</guid>
@@ -39,7 +64,7 @@
 
 		<title>State of SquirrelJME, October 2024</title>
 		<description>Too much to write in a short description,
-			but a large number of changes!</description>
+but a large number of changes!</description>
 	</item>
 
 	<item>

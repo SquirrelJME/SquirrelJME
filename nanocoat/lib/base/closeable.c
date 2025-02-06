@@ -20,7 +20,7 @@ static sjme_errorCode sjme_closeable_autoEnqueue(
 	sjme_closeable closeable;
 	
 	closeable = data;
-	if (weak == NULL || closeable == NULL)
+	if (closeable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Do not close if we are counting and our count is positive still. */
@@ -30,7 +30,7 @@ static sjme_errorCode sjme_closeable_autoEnqueue(
 		return SJME_ERROR_NONE;
 	
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("Closeable auto-close %p", closeable);
 #endif
 	
@@ -49,7 +49,7 @@ static sjme_errorCode sjme_closeable_autoEnqueue(
 }
 
 sjme_errorCode sjme_closeable_allocR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInNotNull sjme_closeable_closeHandlerFunc handler,
 	sjme_attrInValue sjme_jboolean refCounting,
@@ -60,20 +60,20 @@ sjme_errorCode sjme_closeable_allocR(
 	sjme_closeable result;
 	sjme_alloc_weak weak;
 	
-	if (inPool == NULL || handler == NULL || outCloseable == NULL)
+	if (allocPool == NULL || handler == NULL || outCloseable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Attempt allocation. */
 	result = NULL;
 	weak = NULL;
 #if defined(SJME_CONFIG_DEBUG)
-	if (sjme_error_is(error = sjme_alloc_weakNewR(inPool,
+	if (sjme_error_is(error = sjme_alloc_weakNewR(allocPool,
 		allocSize, sjme_closeable_autoEnqueue,
 		(sjme_pointer*)&result,
 		&weak, file, line, func)) ||
 		result == NULL)
 #else
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
+	if (sjme_error_is(error = sjme_alloc_weakNew(allocPool,
 		allocSize, sjme_closeable_autoEnqueue,
 		(sjme_pointer*)&result, &weak)) || result == NULL)
 #endif
@@ -91,8 +91,26 @@ sjme_errorCode sjme_closeable_allocR(
 sjme_errorCode sjme_closeable_close(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
+	sjme_errorCode error;
+	sjme_alloc_weak weak;
+	
 	if (closeable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Is this a valid weak pointer type closeable? */
+	weak = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakRefGet(closeable,
+		&weak)) || weak == NULL)
+	{
+		/* Close non-weak based closeable. */
+		if (error == SJME_ERROR_NOT_WEAK_REFERENCE)
+			return sjme_closeable_autoEnqueue(NULL, closeable,
+				0, SJME_JNI_FALSE,
+				SJME_JNI_FALSE);
+		
+		/* Fail otherwise. */
+		return sjme_error_default(error);
+	}
 	
 	/* Closing counts as an unref. */
 	return sjme_alloc_weakUnRef((sjme_pointer)closeable);

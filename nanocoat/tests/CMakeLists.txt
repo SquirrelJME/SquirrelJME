@@ -7,6 +7,13 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Testing framework for the main library
 
+# Specific handling for tests
+if(MSVC)
+	add_compile_options("/W0")
+elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	add_compile_options("-w")
+endif()
+
 # Decode all of the blobs to binary
 squirreljme_decode_dir("${CMAKE_CURRENT_SOURCE_DIR}/blobs"
 	"${CMAKE_CURRENT_BINARY_DIR}/blobs/binary")

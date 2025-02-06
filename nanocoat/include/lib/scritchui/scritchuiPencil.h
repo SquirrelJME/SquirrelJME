@@ -282,6 +282,16 @@ typedef sjme_errorCode (*sjme_scritchui_pencilBlendRGBIntoFunc)(
 	sjme_attrInPositive sjme_jint numPixels);
 
 /**
+ * Closes the given pencil.
+ * 
+ * @param g The pencil to close.
+ * @return Any resultant error, if any.
+ * @since 2025/02/05
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilCloseFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g);
+
+/**
  * This copies one region of the image to another region.
  *
  * Copying to a display device is not permitted because it may impact how
@@ -919,6 +929,9 @@ typedef sjme_errorCode (*sjme_scritchui_pencilTranslateFunc)(
  */
 typedef struct sjme_scritchui_pencilFunctions
 {
+	/** @c Close . */
+	SJME_SCRITCHUI_QUICK_PENCIL(Close, close);
+	
 	/** @c CopyArea . */
 	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 	
@@ -1066,6 +1079,9 @@ struct sjme_scritchui_pencilUtilFunctions
  */
 typedef struct sjme_scritchui_pencilImplFunctions
 {
+	/** @c Close . */
+	SJME_SCRITCHUI_QUICK_PENCIL(Close, close);
+	
 	/** @c CopyArea . */
 	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 	

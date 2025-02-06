@@ -43,7 +43,7 @@ SJME_TEST_DECLARE(testStringPoolSeq)
 	/* Open char sequence over the data. */
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(test->error = sjme_charSeq_newUtfStatic(
-		&seq, testUtf)))
+		&seq, testUtf, NULL)))
 		return sjme_unit_fail(test, "Could not create char sequence.");
 	
 	/* Locate string. */

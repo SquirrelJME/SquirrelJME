@@ -397,8 +397,35 @@ typedef enum sjme_errorCode
 	/** Invalid field flags. */
 	SJME_ERROR_INVALID_FIELD_FLAGS = -118,
 	
+	/** Not matched. */
+	SJME_ERROR_NOT_MATCHED = -119,
+	
+	/** Not a valid allocation link. */
+	SJME_ERROR_NOT_ALLOC_LINK = -120,
+	
+	/** Too many class members. */
+	SJME_ERROR_CLASS_TOO_MANY_MEMBERS = -121,
+	
+	/** Incompatible class change. */
+	SJME_ERROR_CLASS_CHANGED = -122,
+	
+	/** Method is not bound. */
+	SJME_ERROR_UNBOUND_METHOD = -123,
+
+	/** Argument count mismatch. */
+	SJME_ERROR_ARGUMENT_COUNT_MISMATCH = -124,
+
+	/** Argument type mismatch. */
+	SJME_ERROR_ARGUMENT_TYPE_MISMATCH = -125,
+
+	/** Tread index is not valid. */
+	SJME_ERROR_TREAD_INDEX_INVALID = -126,
+
+	/** Invalid instruction. */
+	SJME_ERROR_INVALID_INSTRUCTION = -127,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -119,
+	SJME_NUM_ERROR_CODES = -128,
 } sjme_errorCode;
 
 /**

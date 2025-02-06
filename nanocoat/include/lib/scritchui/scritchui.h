@@ -851,7 +851,7 @@ typedef sjme_errorCode (*sjme_scritchui_apiFlagsFunc)(
  * @since 2024/03/27
  */
 typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
@@ -2185,7 +2185,7 @@ struct sjme_scritchui_stateBase
 	const sjme_scritchui_externalFunctions* externals;
 	
 	/** The allocation pool to use for allocations. */
-	sjme_alloc_pool* pool;
+	sjme_alloc_pool pool;
 	
 	/** The event loop thread, if applicable. */
 	sjme_thread loopThread;
@@ -2250,7 +2250,7 @@ struct sjme_scritchui_stateBase
  * @since 2024/03/29
  */
 typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,

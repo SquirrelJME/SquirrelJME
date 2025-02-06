@@ -149,7 +149,7 @@ sjme_errorCode sjme_circleBuffer_get(
 /**
  * Allocates a new circular buffer.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outBuffer The resultant newly created buffer. 
  * @param inMode The mode that the buffer should be using.
  * @param length The maximum length of the buffer to allocate.
@@ -157,7 +157,7 @@ sjme_errorCode sjme_circleBuffer_get(
  * @since 2024/08/25
  */
 sjme_errorCode sjme_circleBuffer_new(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_circleBuffer** outBuffer,
 	sjme_attrInValue sjme_circleBuffer_mode inMode,
 	sjme_attrInPositiveNonZero sjme_jint length);

@@ -155,6 +155,20 @@ sjme_errorCode sjme_charSeq_equalsCharSeq(
 	sjme_attrInNotNull const sjme_charSeq* equalsSeq);
 
 /**
+ * Checks if the given character sequence equals the given character sequence,
+ * this returns the result rather than storing it in an output.
+ * 
+ * @param inSeq The sequence to check.
+ * @param equalsSeq The char sequence to check for equality against.
+ * @return Returns whether it matches, note that if there is an error
+ * then @c SJME_JNI_FALSE will be returned and the error will be hidden.
+ * @since 2024/11/09
+ */
+sjme_jboolean sjme_charSeq_equalsCharSeqR(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq* equalsSeq);
+
+/**
  * Checks if the given character sequence equals the given UTF string.
  * 
  * @param inSeq The sequence to check.
@@ -182,6 +196,18 @@ sjme_jboolean sjme_charSeq_equalsUtfR(
 	sjme_attrInNotNull sjme_lpcstr equalsUtf);
 
 /**
+ * Hashes the given string in accordance to Java's @c String.hashCode() .
+ * 
+ * @param inSeq The sequence to hash.
+ * @param outHash The resultant hash code.
+ * @return Any resultant error, if any.
+ * @since 2025/01/25
+ */
+sjme_errorCode sjme_charSeq_hash(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrOutNotNull sjme_jint* outHash);
+
+/**
  * Initializes the given static character sequence.
  * 
  * @param inOutSeq The input/output sequence.
@@ -203,12 +229,14 @@ sjme_errorCode sjme_charSeq_newStatic(
  * 
  * @param inOutSeq The resultant sequence.
  * @param inString The string to wrap.
+ * @param inOptFrontEnd The front end data to copy.
  * @return Any resultant error, if any.
  * @since 2024/07/26
  */
 sjme_errorCode sjme_charSeq_newUtfStatic(
 	sjme_attrInNotNull sjme_charSeq* inOutSeq,
-	sjme_attrInNotNull sjme_lpcstr inString);
+	sjme_attrInNotNull sjme_lpcstr inString,
+	sjme_attrInNullable sjme_frontEnd* inOptFrontEnd);
 
 /**
  * Checks if the given character sequence starts with the given character
@@ -230,7 +258,7 @@ sjme_errorCode sjme_charSeq_startsWithCharSeq(
  * 
  * @param inSeq The sequence to check.
  * @param outResult The result of the check.
- * @param startsWithSeq The UTF sequence to check the start for.
+ * @param startsWithUtf The UTF sequence to check the start for.
  * @return Any resultant error, if any.
  * @since 2024/08/08 
  */

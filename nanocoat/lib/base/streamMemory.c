@@ -22,7 +22,7 @@
 typedef struct sjme_stream_ioInit
 {
 	/** The base pointer to use. */
-	sjme_cpointer base;
+	sjme_pointer base;
 	
 	/** The length of the memory area. */
 	sjme_jint length;
@@ -60,7 +60,7 @@ static sjme_errorCode sjme_stream_inputMemoryInit(
 	sjme_stream_ioInit* init;
 	
 	if (stream == NULL || inImplState == NULL || data == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover initializer. */
 	init = data;
@@ -137,7 +137,7 @@ static sjme_errorCode sjme_stream_outputMemoryInit(
 	sjme_stream_ioInit* init;
 	
 	if (stream == NULL || inImplState == NULL || data == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover initializer. */
 	init = data;
@@ -188,7 +188,7 @@ static const sjme_stream_outputFunctions sjme_stream_outputMemoryFunctions =
 };
 
 sjme_errorCode sjme_stream_inputOpenMemory(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length)
@@ -196,7 +196,7 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 	sjme_stream_ioInit init;
 	uintptr_t realBase;
 
-	if (inPool == NULL || outStream == NULL || base == NULL)
+	if (allocPool == NULL || outStream == NULL || base == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Make sure memory does not overflow. */
@@ -206,17 +206,17 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 	
 	/* Setup initialization input. */
 	memset(&init, 0, sizeof(init));
-	init.base = base;
+	init.base = (sjme_pointer)base;
 	init.length = length;
 	
 	/* Forward initialization. */
-	return sjme_stream_inputOpen(inPool, outStream,
+	return sjme_stream_inputOpen(allocPool, outStream,
 		&sjme_stream_inputMemoryFunctions, &init,
 		NULL);
 }
 
 sjme_errorCode sjme_stream_outputOpenMemory(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length)
@@ -224,7 +224,7 @@ sjme_errorCode sjme_stream_outputOpenMemory(
 	sjme_stream_ioInit init;
 	uintptr_t realBase;
 
-	if (inPool == NULL || outStream == NULL || base == NULL)
+	if (allocPool == NULL || outStream == NULL || base == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Make sure memory does not overflow. */
@@ -238,7 +238,7 @@ sjme_errorCode sjme_stream_outputOpenMemory(
 	init.length = length;
 	
 	/* Forward initialization. */
-	return sjme_stream_outputOpen(inPool, outStream,
+	return sjme_stream_outputOpen(allocPool, outStream,
 		&sjme_stream_outputMemoryFunctions, &init,
 		NULL);
 }

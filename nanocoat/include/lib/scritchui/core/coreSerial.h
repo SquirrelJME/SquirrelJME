@@ -232,7 +232,7 @@ typedef enum sjme_scritchui_serialType
 	SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)
 
 #define SUD_STRUCT_DEF(what, items) \
-	typedef struct SJME_SCRITCHUI_SERIAL_DATA_NAME(what) \
+	typedef volatile struct SJME_SCRITCHUI_SERIAL_DATA_NAME(what) \
 	{ \
 		items \
 	} SJME_SCRITCHUI_SERIAL_DATA_NAME(what)
@@ -243,7 +243,7 @@ typedef enum sjme_scritchui_serialType
 #define SDU_VARP(type, name) \
 	type* volatile name
 
-/* clang-format off */
+/* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 
 SUD_STRUCT_DEF(choiceGetSelectedIndex,
@@ -506,7 +506,7 @@ SUD_STRUCT_DEF(windowSetVisible,
 	SDU_VAR(sjme_jboolean, isVisible););
 
 /* ------------------------------------------------------------------------ */
-/* clang-format on */
+/* clang-format on */ /* @formatter:on */
 
 #undef SUD_STRUCT_DEF
 #undef SDU_VAR
@@ -521,9 +521,9 @@ SUD_STRUCT_DEF(windowSetVisible,
  * 
  * @since 2024/04/17
  */
-typedef union sjme_scritchui_serialDataUnion
+typedef volatile union sjme_scritchui_serialDataUnion
 {
-/* clang-format off */
+/* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 	SJME_SCRITCHUI_SDU_DEF(choiceGetSelectedIndex);
 	SJME_SCRITCHUI_SDU_DEF(choiceItemGet);
@@ -584,7 +584,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(windowSetMenuItemActivateListener);
 	SJME_SCRITCHUI_SDU_DEF(windowSetVisible);
 /* ------------------------------------------------------------------------ */
-/* clang-format on */
+/* clang-format on */ /* @formatter:on */
 } sjme_scritchui_serialDataUnion;
 
 /* No longer needed. */
@@ -595,7 +595,7 @@ typedef union sjme_scritchui_serialDataUnion
  * 
  * @since 2024/04/17
  */
-typedef struct sjme_scritchui_serialData
+typedef volatile struct sjme_scritchui_serialData
 {
 	/** The type of call this is. */
 	volatile sjme_scritchui_serialType type;

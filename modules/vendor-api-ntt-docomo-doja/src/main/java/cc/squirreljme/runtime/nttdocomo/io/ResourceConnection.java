@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +23,7 @@ import javax.microedition.io.InputConnection;
  *
  * @since 2021/11/30
  */
+@SquirrelJMEVendorApi
 public class ResourceConnection
 	implements InputConnection
 {
@@ -39,6 +41,7 @@ public class ResourceConnection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/01
 	 */
+	@SquirrelJMEVendorApi
 	public ResourceConnection(Class<?> __pivot, String __rcName)
 		throws NullPointerException
 	{

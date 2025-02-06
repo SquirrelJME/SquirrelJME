@@ -7,7 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <stdarg.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 
@@ -136,7 +135,7 @@ sjme_errorCode sjme_scritchui_gtk2_intern_accelUpdate(
 	sjme_scritchui_uiMenuItem menuItem;
 	
 	if (inState == NULL || inCommon == NULL || gtkWidget == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Only work with menu items. */
 	if (inCommon->type != SJME_SCRITCHUI_TYPE_MENU_ITEM)
@@ -199,7 +198,7 @@ sjme_errorCode sjme_scritchui_gtk2_intern_checkError(
 	GError* err;
 	
 	if (inState == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Get error state. */
 	err = NULL;

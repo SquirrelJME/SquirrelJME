@@ -15,15 +15,15 @@
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
 
-/* clang-format off */
+/* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 
 /** Serial variables. */
 #define SJME_SCRITCHUI_SERIAL_VARS(what) \
 	sjme_errorCode error; \
 	sjme_jboolean direct; \
-	volatile sjme_scritchui_serialData data; \
-	SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)* volatile serial
+	sjme_scritchui_serialData data; \
+	SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)* serial
 
 /** Pre-check call to make. */
 #define SJME_SCRITCHUI_SERIAL_PRE_CHECK \
@@ -49,7 +49,7 @@
 
 /** Setup pre-serialization. */
 #define SJME_SCRITCHUI_SERIAL_SETUP(key, what) \
-	do { memset(&data, 0, sizeof(data)); \
+	do { memset((void*)&data, 0, sizeof(data)); \
 	data.type = (key); \
 	data.error = SJME_ERROR_UNKNOWN; \
 	data.state = inState; \
@@ -59,7 +59,7 @@
 #define SJME_SCRITCHUI_INVOKE_WAIT \
 	do { sjme_atomic_barrier(); \
 		if (sjme_error_is(error = inState->api->loopExecuteWait(inState, \
-		sjme_scritchui_serialDispatch, &data))) \
+		sjme_scritchui_serialDispatch, (void*)&data))) \
 		return sjme_error_default(error); \
 	return data.error; } while (0)
 
@@ -110,7 +110,7 @@
 		as->what.copyFrontEnd))
 
 /* ------------------------------------------------------------------------ */
-/* clang-format on */
+/* clang-format on */ /* @formatter:on */
 
 static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	sjme_attrInNullable sjme_thread_parameter anything)
@@ -135,7 +135,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	state = data->state;
 	as = &data->data;
 	
-/* clang-format off */
+/* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 	
 	/* Begin cases. */
@@ -514,7 +514,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_SWITCH_END
 	
 /* ------------------------------------------------------------------------ */
-/* clang-format on */
+/* clang-format on */ /* @formatter:on */
 	
 	/* Map result. */
 	return SJME_THREAD_RESULT(data->error);

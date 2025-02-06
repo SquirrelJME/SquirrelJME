@@ -109,7 +109,7 @@ int main(int argc, char** argv)
 	sjme_errorCode error;
 	sjme_scritchui_dylibApiFunc apiFunc;
 	sjme_scritchui uiState;
-	sjme_alloc_pool* inPool;
+	sjme_alloc_pool inPool;
 	sjme_scritchui_uiWindow mainWindow;
 
 	/* Set up a basic pool. */

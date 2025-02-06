@@ -293,7 +293,7 @@ sjme_errorCode sjme_traverse_iterateNextR(
 /**
  * Allocates a new traversal tree.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outTraverse The resultant traversal tree.
  * @param leafLength The size of the tree elements.
  * @param maxElements The maximum number of elements permitted in the tree.
@@ -301,7 +301,7 @@ sjme_errorCode sjme_traverse_iterateNextR(
  * @since 2024/09/01
  */
 sjme_errorCode sjme_traverse_newR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_traverse* outTraverse,
 	sjme_attrInPositiveNonZero sjme_jint leafLength,
 	sjme_attrInPositiveNonZero sjme_jint maxElements);
@@ -309,7 +309,7 @@ sjme_errorCode sjme_traverse_newR(
 /**
  * Allocates a new traversal tree.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outTraverse The resultant traversal tree.
  * @param maxElements The maximum number of elements permitted in the tree.
  * @param type The type being stored.
@@ -317,9 +317,9 @@ sjme_errorCode sjme_traverse_newR(
  * @return On any resultant error, if any.
  * @since 2024/09/02
  */
-#define sjme_traverse_new(inPool, outTraverse, maxElements, \
+#define sjme_traverse_new(allocPool, outTraverse, maxElements, \
 	type, numPointerStars) \
-	(sjme_traverse_newR((inPool), ((sjme_traverse*)(outTraverse)), \
+	(sjme_traverse_newR((allocPool), ((sjme_traverse*)(outTraverse)), \
 	sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), maxElements))
 
 /**

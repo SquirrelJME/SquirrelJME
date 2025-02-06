@@ -39,7 +39,14 @@ extern "C" {
  * 
  * @since 2023/11/18
  */
-typedef struct sjme_alloc_link sjme_alloc_link;
+typedef struct sjme_alloc_linkBase sjme_alloc_linkBase;
+
+/**
+ * Allocation link chain, each is a chain between each allocation.
+ * 
+ * @since 2023/11/18
+ */
+typedef volatile sjme_alloc_linkBase* sjme_alloc_link;
 
 /**
  * Allocation pool and link space types.
@@ -110,7 +117,7 @@ struct sjme_alloc_weakBase
 	sjme_atomic_sjme_jint valid;
 	
 	/** The link this points to, @c NULL if freed. */
-	sjme_alloc_link* link;
+	sjme_alloc_link link;
 	
 	/** The count for this weak reference, zero will free this reference. */
 	sjme_atomic_sjme_jint count;
@@ -125,28 +132,28 @@ struct sjme_alloc_weakBase
 	sjme_atomic_sjme_jint inEnqueue;
 };
 
-struct sjme_alloc_link
+struct sjme_alloc_linkBase
 {
 	/** The front guard. */
 	sjme_jint guardFront;
 	
 	/** The pool this is in. */
-	volatile sjme_alloc_pool* pool;
+	sjme_alloc_pool pool;
 	
 	/** Previous link. */
-	sjme_alloc_link* prev;
+	sjme_alloc_link prev;
 	
 	/** Next link. */
-	sjme_alloc_link* next;
+	sjme_alloc_link next;
 	
 	/** The space this is in. */
 	sjme_alloc_poolSpace space;
 	
 	/** The previous free link. */
-	sjme_alloc_link* freePrev;
+	sjme_alloc_link freePrev;
 	
 	/** The next free link. */
-	sjme_alloc_link* freeNext;
+	sjme_alloc_link freeNext;
 	
 	/** The weak reference this is attached to. */
 	sjme_alloc_weak weak;
@@ -186,7 +193,7 @@ struct sjme_alloc_link
  * @since 2023/11/16
  */
 #define SJME_SIZEOF_ALLOC_LINK(size) \
-	(offsetof(sjme_alloc_link, block) + (((size_t)(size)) * \
+	(offsetof(sjme_alloc_linkBase, block) + (((size_t)(size)) * \
 	sizeof(sjme_jubyte)))
 
 /**
@@ -194,8 +201,11 @@ struct sjme_alloc_link
  * 
  * @since 2023/11/18
  */
-struct sjme_alloc_pool
+struct sjme_alloc_poolBase
 {
+	/** Magic number for the pool. */
+	sjme_jint magic;
+	
 	/** The front end wrapped type. */
 	sjme_frontEnd frontEnd;
 
@@ -216,22 +226,22 @@ struct sjme_alloc_pool
 	} space[SJME_NUM_ALLOC_POOL_SPACE];
 	
 	/** Previous pool in multi-pool chain allocation. */
-	sjme_alloc_pool* prevPool;
+	sjme_alloc_pool prevPool;
 	
 	/** Next pool in multi-pool chain allocation. */
-	sjme_alloc_pool* nextPool;
+	sjme_alloc_pool nextPool;
 	
 	/** The front chain link. */
-	sjme_alloc_link* frontLink;
+	sjme_alloc_link frontLink;
 	
 	/** The back chain link. */
-	sjme_alloc_link* backLink;
+	sjme_alloc_link backLink;
 		
 	/** The first free link in the chain. */
-	sjme_alloc_link* freeFirstLink;
+	sjme_alloc_link freeFirstLink;
 		
 	/** The last free link in the chain. */
-	sjme_alloc_link* freeLastLink;
+	sjme_alloc_link freeLastLink;
 	
 	/** The memory block. */
 	sjme_jubyte block[sjme_flexibleArrayCount];
@@ -245,7 +255,7 @@ struct sjme_alloc_pool
  * @since 2023/11/16
  */
 #define SJME_SIZEOF_ALLOC_POOL(size) \
-	(sizeof(sjme_alloc_pool) + (((size_t)(size)) * \
+	(sizeof(sjme_alloc_poolBase) + (((size_t)(size)) * \
 	sizeof(sjme_jubyte)))
 
 /**
@@ -257,7 +267,7 @@ struct sjme_alloc_pool
  * @since 2023/11/18
  */
 sjme_errorCode sjme_alloc_poolInitMalloc(
-	sjme_attrOutNotNull sjme_alloc_pool** outPool,
+	sjme_attrOutNotNull sjme_alloc_pool* outPool,
 	sjme_attrInPositive sjme_jint size);
 
 /**
@@ -270,19 +280,19 @@ sjme_errorCode sjme_alloc_poolInitMalloc(
  * @since 2023/11/18
  */
 sjme_errorCode sjme_alloc_poolInitStatic(
-	sjme_attrOutNotNull sjme_alloc_pool** outPool,
+	sjme_attrOutNotNull sjme_alloc_pool* outPool,
 	sjme_attrInNotNull sjme_pointer baseAddr,
 	sjme_attrInPositive sjme_jint size);
 
 /**
  * Destroys the given allocation pool.
  * 
- * @param inPool The pool to destroy.
+ * @param allocPool The pool to destroy.
  * @return Any resultant error, if any.
  * @since 2024/08/08
  */
 sjme_errorCode sjme_alloc_poolDestroy(
-	sjme_attrOutNotNull sjme_alloc_pool* inPool);
+	sjme_attrInNotNull sjme_alloc_pool allocPool);
 
 /**
  * Returns the total space that is available within the pool, includes both
@@ -297,7 +307,7 @@ sjme_errorCode sjme_alloc_poolDestroy(
  * @since 2023/12/11
  */
 sjme_errorCode sjme_alloc_poolSpaceTotalSize(
-	sjme_attrInNotNull const sjme_alloc_pool* pool,
+	sjme_attrInNotNull const sjme_alloc_pool pool,
 	sjme_attrOutNullable sjme_jint* outTotal,
 	sjme_attrOutNullable sjme_jint* outReserved,
 	sjme_attrOutNullable sjme_jint* outUsable);
@@ -312,7 +322,7 @@ sjme_errorCode sjme_alloc_poolSpaceTotalSize(
  * @since 2023/11/19
  */
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
-	sjme_attrInNotNull volatile sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull sjme_pointer* outAddr
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
@@ -323,7 +333,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
  * The count starts at zero, so it is required for it to be counted up by
  * the allocator.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param size The number of bytes to allocate.
  * @param inEnqueue The optional function to call when this reference is
  * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
@@ -334,7 +344,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
  * @since 2024/07/08
  */
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
-	sjme_attrInNotNull volatile sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrOutNotNull sjme_pointer* outAddr,
@@ -352,7 +362,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
  * @since 2023/12/13
  */
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(
-	sjme_attrInNotNull volatile sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull sjme_pointer* outAddr,
 	sjme_attrInNotNull sjme_pointer inAddr
@@ -372,7 +382,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(
  * @since 2024/08/09
  */
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copyWeak)(
-	sjme_attrInNotNull volatile sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData,
@@ -384,7 +394,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copyWeak)(
 /**
  * Allocates a formatted string.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outString The output string.
  * @param format The format string.
  * @param ...
@@ -392,13 +402,31 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copyWeak)(
  * @since 2023/12/22
  */
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_lpstr* outString,
 	SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL SJME_DEBUG_ONLY_COMMA
 	sjme_attrInNotNull sjme_attrFormatArg const char* format,
 	...) SJME_DEBUG_TERNARY(sjme_attrFormatOuter(5, 6),
 		sjme_attrFormatOuter(2, 3));
 
+/**
+ * Grows the given allocation.
+ * 
+ * @param allocPool The allocation pool to allocate under.
+ * @param inOutAddr The input/output address.
+ * @param memberSize The size of individual members.
+ * @param currentCountP The pointer to the current count.
+ * @param newCount The new count to allocate.
+ * @return Any resultant errors, if any.
+ * @since 2025/01/28
+ */
+sjme_errorCode sjme_alloc_grow(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_pointer* inOutAddr,
+	sjme_attrInPositiveNonZero sjme_jint memberSize,
+	sjme_attrInNotNull sjme_jint* currentCountP,
+	sjme_attrInPositiveNonZero sjme_jint newCount);
+	
 /**
  * Reallocates memory, either growing it or shrinking... the pointer will be
  * adjusted accordingly.
@@ -417,14 +445,14 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 /**
  * Allocates a copy of the given C character sequence.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outString The output string copy.
  * @param stringToCopy The string to copy.
  * @return Any resultant error, if any.
  * @since 2024/07/21
  */
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_lpstr* outString,
 	sjme_attrInNotNull sjme_lpcstr stringToCopy
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
@@ -540,15 +568,15 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakRefE)(
 /**
  * Allocates a formatted string.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outString The output string.
  * @param format The format string.
  * @param ...
  * @return Any resultant error.
  * @since 2023/12/22
  */
-#define sjme_alloc_format(inPool, outString, ...) \
-	sjme_alloc_formatR((inPool), (outString), SJME_DEBUG_FILE_LINE_FUNC, \
+#define sjme_alloc_format(allocPool, outString, ...) \
+	sjme_alloc_formatR((allocPool), (outString), SJME_DEBUG_FILE_LINE_FUNC, \
 		__VA_ARGS__)
 
 /**
@@ -567,14 +595,14 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakRefE)(
 /**
  * Allocates a copy of the given C character sequence.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outString The output string copy.
  * @param stringToCopy The string to copy.
  * @return Any resultant error, if any.
  * @since 2024/07/21
  */
-#define sjme_alloc_strdup(inPool, outString, stringToCopy) \
-	sjme_alloc_strdupR((inPool), (outString), (stringToCopy), \
+#define sjme_alloc_strdup(allocPool, outString, stringToCopy) \
+	sjme_alloc_strdupR((allocPool), (outString), (stringToCopy), \
 	SJME_DEBUG_FILE_LINE_FUNC)
 
 /**
@@ -638,7 +666,7 @@ sjme_errorCode sjme_alloc_free(
  */
 sjme_errorCode sjme_alloc_getLink(
 	sjme_attrInNotNull sjme_pointer addr,
-	sjme_attrOutNotNull sjme_alloc_link** outLink);
+	sjme_attrOutNotNull sjme_alloc_link* outLink);
 
 /**
  * Gets the pointer pointed to by the given weak reference, if this returns
@@ -684,12 +712,12 @@ sjme_errorCode sjme_alloc_weakRefGet(
 /**
  * Dumps the entire pool.
  *
- * @param inPool The pool to dump.
+ * @param allocPool The pool to dump.
  * @return Any resultant error, if any.
  * @since 2024/08/16
  */
 sjme_errorCode sjme_alloc_poolDump(
-	sjme_attrInNotNull sjme_alloc_pool* inPool);
+	sjme_attrInNotNull sjme_alloc_pool allocPool);
 
 #endif
 

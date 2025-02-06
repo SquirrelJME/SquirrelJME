@@ -7,9 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <libretro.h>
+
 #include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
-#include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
 
 static retro_proc_address_t RETRO_CALLCONV sjme_libretro_extLookup(

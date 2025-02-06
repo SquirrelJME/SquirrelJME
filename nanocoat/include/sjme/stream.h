@@ -70,7 +70,7 @@ typedef sjme_stream_outputBase* sjme_stream_output;
 typedef struct sjme_stream_implState
 {
 	/** The pool this is in. */
-	sjme_alloc_pool* inPool;
+	sjme_alloc_pool allocPool;
 	
 	/** Internal handle. */
 	sjme_pointer handle;
@@ -291,7 +291,7 @@ sjme_errorCode sjme_stream_inputAvailable(
 /**
  * Opens an input stream.
  * 
- * @param inPool The pool to allocate within. 
+ * @param allocPool The pool to allocate within. 
  * @param outStream The resultant stream.
  * @param inFunctions Stream implementation functions.
  * @param data Any data to pass to the initialization routine.
@@ -300,7 +300,7 @@ sjme_errorCode sjme_stream_inputAvailable(
  * @since 2024/08/11
  */
 sjme_errorCode sjme_stream_inputOpen(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull const sjme_stream_inputFunctions* inFunctions,
 	sjme_attrInNullable sjme_pointer data,
@@ -309,14 +309,14 @@ sjme_errorCode sjme_stream_inputOpen(
 /**
  * Opens a decompressing input stream from the given compressed input stream.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outStream The resultant stream.
  * @param inCompressed The stream to decompress.
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
 sjme_errorCode sjme_stream_inputOpenInflate(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_stream_input inCompressed);
 	
@@ -325,7 +325,7 @@ sjme_errorCode sjme_stream_inputOpenInflate(
  *
  * Memory based streams are never blocking.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outStream The resultant stream.
  * @param base The buffer to access.
  * @param length The length of the buffer.
@@ -333,7 +333,7 @@ sjme_errorCode sjme_stream_inputOpenInflate(
  * @since 2023/12/31
  */
 sjme_errorCode sjme_stream_inputOpenMemory(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length);
@@ -601,7 +601,7 @@ typedef sjme_errorCode (*sjme_stream_outputByteArrayFinishFunc)(
 /**
  * Opens an output stream.
  * 
- * @param inPool The pool to allocate within. 
+ * @param allocPool The pool to allocate within. 
  * @param outStream The resultant stream.
  * @param inFunctions Stream implementation functions.
  * @param data Any data to pass to the initialization routine.
@@ -610,7 +610,7 @@ typedef sjme_errorCode (*sjme_stream_outputByteArrayFinishFunc)(
  * @since 2024/08/11
  */
 sjme_errorCode sjme_stream_outputOpen(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInNotNull const sjme_stream_outputFunctions* inFunctions,
 	sjme_attrInNullable sjme_pointer data,
@@ -619,7 +619,7 @@ sjme_errorCode sjme_stream_outputOpen(
 /**
  * Opens a dynamically resizing output byte array.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outStream The resultant output stream.
  * @param initialLimit The initial buffer limit.
  * @param finish The function to call when the stream is closed.
@@ -629,7 +629,7 @@ sjme_errorCode sjme_stream_outputOpen(
  * @since 2024/01/09
  */
 sjme_errorCode sjme_stream_outputOpenByteArray(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInPositive sjme_jint initialLimit,
 	sjme_attrInNotNull sjme_stream_outputByteArrayFinishFunc finish,
@@ -641,7 +641,7 @@ sjme_errorCode sjme_stream_outputOpenByteArray(
  * function use, for simplicity purposes. One should be aware of where the
  * result variable is stored and that it remains valid.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outStream The resultant output stream.
  * @param initialLimit The initial buffer limit.
  * @param result Where the result is to be written on close.
@@ -649,7 +649,7 @@ sjme_errorCode sjme_stream_outputOpenByteArray(
  * @since 2024/08/28
  */
 sjme_errorCode sjme_stream_outputOpenByteArrayTo(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInPositive sjme_jint initialLimit,
 	sjme_attrInNotNull sjme_stream_resultByteArray* result);
@@ -658,7 +658,7 @@ sjme_errorCode sjme_stream_outputOpenByteArrayTo(
  * Opens an output stream which writes to the given block of memory, note that
  * when it reaches the end of the block it will fail to write following it.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outStream The resultant output stream.
  * @param base The base memory address to write to.
  * @param length The length of the memory region.
@@ -666,7 +666,7 @@ sjme_errorCode sjme_stream_outputOpenByteArrayTo(
  * @since 2024/01/09
  */
 sjme_errorCode sjme_stream_outputOpenMemory(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length);

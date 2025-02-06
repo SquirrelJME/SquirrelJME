@@ -63,7 +63,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_toolboxFunctions =
 };
 
 sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(toolbox)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,

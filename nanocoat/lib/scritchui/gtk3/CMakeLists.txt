@@ -12,9 +12,9 @@ pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 
 # Declare base library
 add_library(ScritchUIGTK3 SHARED
-	$<TARGET_OBJECTS:BasePIC>
-	$<TARGET_OBJECTS:ScritchUICorePIC>
-	$<TARGET_OBJECTS:ScritchUIFBPIC>
+	$<TARGET_OBJECTS:${SQUIRRELJME_BASE_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_CORE_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_FB_LIB}>
 	gtk3Component.c
 	gtk3Container.c
 	gtk3Core.c
@@ -38,7 +38,8 @@ endif()
 
 # Include main headers
 target_include_directories(ScritchUIGTK3 PUBLIC
-	"${CMAKE_SOURCE_DIR}/include"
+	"${CMAKE_SOURCE_DIR}/include")
+target_include_directories(ScritchUIGTK3 SYSTEM PRIVATE
 	${GTK2_INCLUDE_DIRS})
 
 # Link in GTK

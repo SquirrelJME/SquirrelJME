@@ -115,7 +115,7 @@ static const sjme_stream_inputFunctions sjme_stream_inputInflateFunctions =
 };
 
 sjme_errorCode sjme_stream_inputOpenInflate(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_stream_input inCompressed)
 {
@@ -124,12 +124,12 @@ sjme_errorCode sjme_stream_inputOpenInflate(
 	sjme_stream_inflateInit init;
 	sjme_inflate* state;
 	
-	if (inPool == NULL || outStream == NULL || inCompressed == NULL)
+	if (allocPool == NULL || outStream == NULL || inCompressed == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Setup decompression state data. */
 	state = NULL;
-	if (sjme_error_is(error = sjme_inflate_new(inPool,
+	if (sjme_error_is(error = sjme_inflate_new(allocPool,
 		&state, inCompressed)) || state == NULL)
 		goto fail_inflateNew;
 	
@@ -139,7 +139,7 @@ sjme_errorCode sjme_stream_inputOpenInflate(
 	
 	/* Setup sub-stream. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_stream_inputOpen(inPool,
+	if (sjme_error_is(error = sjme_stream_inputOpen(allocPool,
 		&result, &sjme_stream_inputInflateFunctions,
 		&init, NULL)) || result == NULL)
 		goto fail_open;

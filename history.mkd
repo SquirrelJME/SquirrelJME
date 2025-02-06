@@ -1076,7 +1076,7 @@ this.
 
 ### 2024
 
-To be written...
+Much was done this year making many improvements in many places.
 
 #### January
 
@@ -1156,16 +1156,26 @@ shall see how that goes.
 
 #### September
 
-...
+This month I finished up the work I was doing for NanoCoat around class
+parsing and got that merged in.
 
 #### October
 
-...
+I started work on code execution and everything that it depends upon in
+NanoCoat. I continued work on the macOS Cocoa user interface. There were
+also miscellaneous changes as well. One big thing was the addition of the
+RSS feed, which would be very helpful.
 
 #### November
 
-....
+I continued working on code execution and various other miscellaneous changes.
 
 #### December
 
-....
+I really needed a break from NanoCoat, so I decided to take on. I worked
+a bunch on the macOS Cocoa interface along with many minor miscellaneous
+changes in `trunk`.
+
+### 2025
+
+...

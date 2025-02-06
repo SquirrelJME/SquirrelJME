@@ -173,7 +173,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_win32_loopMain(
 }
 
 sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(win32)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,

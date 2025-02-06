@@ -30,11 +30,20 @@ import org.jetbrains.annotations.Contract;
  * @since 2018/10/14
  */
 @Api
+@SuppressWarnings("ClassWithOnlyPrivateConstructors")
 public class Runtime
 {
 	/** There is only a single instance of the run-time. */
 	private static final Runtime _INSTANCE =
 		new Runtime();
+	
+	/** The timeout between {@link #gc()} calls. */
+	private static final long _GC_TIMEOUT =
+		60_000_000_000L;
+	
+	/** The Last time {@link #gc()} was called. */
+	private static volatile long _lastGc =
+		Long.MIN_VALUE;
 	
 	/**
 	 * Not used.
@@ -108,7 +117,16 @@ public class Runtime
 	@Api
 	public void gc()
 	{
-		RuntimeShelf.garbageCollect();
+		// Limit how often the garbage collector can run because some
+		// applications really love requesting garbage collection constantly
+		// when that is bad practice and it really does not need to be done
+		long last = Runtime._lastGc;
+		long now = System.nanoTime();
+		if ((now - last) >= Runtime._GC_TIMEOUT || last == Long.MIN_VALUE)
+		{
+			Runtime._lastGc = now;
+			RuntimeShelf.garbageCollect();
+		}
 	}
 	
 	/**

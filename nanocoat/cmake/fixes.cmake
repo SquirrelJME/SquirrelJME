@@ -30,13 +30,13 @@ if(SQUIRRELJME_IS_LIBRETRO)
 
 		# Linking needs to be fixed here
 		set(CMAKE_STATIC_LIBRARY_SUFFIX
-			".bc")
-		set(CMAKE_C_CREATE_STATIC_LIBRARY
-			"emcc -o <TARGET> -shared <LINK_FLAGS> <OBJECTS>")
-		set(CMAKE_CXX_CREATE_STATIC_LIBRARY
-			"emcc -o <TARGET> -shared <LINK_FLAGS> <OBJECTS>")
+			".a")
+#		set(CMAKE_C_CREATE_STATIC_LIBRARY
+#			"emcc -o <TARGET> -shared <LINK_FLAGS> <OBJECTS>")
+#		set(CMAKE_CXX_CREATE_STATIC_LIBRARY
+#			"emcc -o <TARGET> -shared <LINK_FLAGS> <OBJECTS>")
 		set(EMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES
-			ON)
+			OFF)
 	elseif(LIBRETRO_STATIC)
 		set(LIBRETRO_REALLY_STATIC ON)
 	endif()
@@ -142,10 +142,20 @@ endmacro()
 
 # Generate exports, mostly for Windows
 macro(squirreljme_target_shared_library_exports target)
-	get_target_property(squirreljme_dylib_output_dir
-		${target} RUNTIME_OUTPUT_DIRECTORY)
-	get_target_property(squirreljme_dylib_output_name
-		${target} RUNTIME_OUTPUT_NAME)
+	# If there is a config used, just use the first one
+	if(NOT "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
+		list(GET "${CMAKE_CONFIGURATION_TYPES}" 0 firstConfig)
+
+		get_target_property(squirreljme_dylib_output_dir
+			${target} RUNTIME_OUTPUT_DIRECTORY_${firstConfig})
+		get_target_property(squirreljme_dylib_output_name
+			${target} RUNTIME_OUTPUT_NAME_${firstConfig})
+	else()
+		get_target_property(squirreljme_dylib_output_dir
+			${target} RUNTIME_OUTPUT_DIRECTORY)
+		get_target_property(squirreljme_dylib_output_name
+			${target} RUNTIME_OUTPUT_NAME)
+	endif()
 
 	if(MSVC)
 		target_link_options(${target} PRIVATE
@@ -170,7 +180,7 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 # Quick compilation check
-macro(squirreljme_try_compile noun target source)
+macro(squirreljme_try_compile noun target source cdef)
 	try_compile(${target}
 		"${CMAKE_CURRENT_BINARY_DIR}"
 		SOURCES "${CMAKE_CURRENT_LIST_DIR}/${source}.c"
@@ -180,29 +190,43 @@ macro(squirreljme_try_compile noun target source)
 
 	message(DEBUG "${noun}: ${${target}_OUTPUT}")
 	message("${noun}: ${${target}}")
+	if(NOT ${target})
+		add_compile_definitions(
+			${cdef}=1)
+	endif()
 endmacro()
 
 # snprintf() available?
 squirreljme_try_compile("snprintf()"
-	SQUIRRELJME_SNPRINTF_TRY_VALID "trySNPrintF")
-if(NOT SQUIRRELJME_SNPRINTF_TRY_VALID)
-	add_compile_definitions(
-		SJME_CONFIG_HAS_NO_SNPRINTF=1)
-endif()
+	SQUIRRELJME_SNPRINTF_TRY_VALID
+	"trySNPrintF"
+	SJME_CONFIG_HAS_NO_SNPRINTF)
+
+# vsnprintf() available?
+squirreljme_try_compile("vsnprintf() with stdarg.h"
+	SQUIRRELJME_VSNPRINTFA_TRY_VALID
+	"tryVSNPrintFA"
+	SJME_CONFIG_HAS_NO_VSNPRINTFA)
+squirreljme_try_compile("vsnprintf() with varargs.h"
+	SQUIRRELJME_VSNPRINTFV_TRY_VALID
+	"tryVSNPrintFV"
+	SJME_CONFIG_HAS_NO_VSNPRINTFV)
 
 # stdarg.h available?
 squirreljme_try_compile("stdarg.h"
-	SQUIRRELJME_STDARG_TRY_VALID "tryStdArgH")
-if(NOT SQUIRRELJME_STDARG_TRY_VALID)
-	add_compile_definitions(
-		SJME_CONFIG_HAS_NO_STDARG=1)
-endif()
+	SQUIRRELJME_STDARG_TRY_VALID
+	"tryStdArgH"
+	SJME_CONFIG_HAS_NO_STDARG)
 
 # varargs.h available?
 squirreljme_try_compile("varargs.h"
-	SQUIRRELJME_VARARGS_TRY_VALID "tryVarArgsH")
-if(NOT SQUIRRELJME_VARARGS_TRY_VALID)
-	add_compile_definitions(
-		SJME_CONFIG_HAS_NO_VARARGS=1)
-endif()
+	SQUIRRELJME_VARARGS_TRY_VALID
+	"tryVarArgsH"
+	SJME_CONFIG_HAS_NO_VARARGS)
+
+# threads.h available?
+squirreljme_try_compile("threads.h"
+	SQUIRRELJME_C11_THREADS_TRY_VALID
+	"tryThreadsH"
+	SJME_CONFIG_HAS_NO_C11_THREADS)
 

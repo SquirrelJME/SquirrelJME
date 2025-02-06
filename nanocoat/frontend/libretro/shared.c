@@ -7,9 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <libretro.h>
+
 #include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
-#include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
 
 retro_environment_t sjme_libretro_envCallback = NULL;

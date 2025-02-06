@@ -10,6 +10,7 @@
 package com.oracle.json.spi;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonArrayBuilder;
 import com.oracle.json.JsonBuilderFactory;
@@ -44,10 +45,12 @@ import java.util.ServiceLoader;
  * @since 2014/07/26
  */
 @Api
+@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
 public abstract class JsonProvider
 {
 	/** Default provider for JSR353. */
-	private static final String DEFAULTPROVIDER =
+	@SquirrelJMEVendorApi
+	static final String DEFAULT_PROVIDER =
 		"net.multiphasicapps.jsr353.ImplProvider";	
 	
 	/** Cache. */
@@ -275,7 +278,7 @@ public abstract class JsonProvider
 				// Failed use default service
 				try
 				{
-					Class<?> cl = Class.forName(JsonProvider.DEFAULTPROVIDER);
+					Class<?> cl = Class.forName(JsonProvider.DEFAULT_PROVIDER);
 					Object o = cl.newInstance();
 					if (!(o instanceof JsonProvider))
 						throw new RuntimeException("Default JsonProvider " +

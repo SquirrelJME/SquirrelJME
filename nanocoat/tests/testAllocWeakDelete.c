@@ -41,8 +41,8 @@ SJME_TEST_DECLARE(testAllocWeakDelete)
 {
 	sjme_alloc_weak weak;
 	sjme_alloc_weak wasWeak;
-	sjme_alloc_link* link;
-	sjme_alloc_link* weakLink;
+	sjme_alloc_link link;
+	sjme_alloc_link weakLink;
 	sjme_pointer p;
 	
 	/* Allocate weak reference. */

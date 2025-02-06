@@ -29,7 +29,7 @@ sjme_errorCode sjme_scritchui_fb_screens(
 	sjme_scritchui_uiScreen makeScreen;
 	
 	if (inState == NULL || outScreens == NULL || inOutNumScreens == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;

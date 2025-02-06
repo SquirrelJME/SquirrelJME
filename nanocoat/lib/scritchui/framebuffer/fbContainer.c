@@ -24,7 +24,7 @@ sjme_errorCode sjme_scritchui_fb_containerAdd(
 	sjme_scritchui_uiComponent wrappedAddComponent;
 	
 	if (inState == NULL || inContainer == NULL || addComponent == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
@@ -49,7 +49,7 @@ sjme_errorCode sjme_scritchui_fb_containerRemove(
 	sjme_scritchui_uiComponent wrappedRemoveComponent;
 	
 	if (inState == NULL || inContainer == NULL || removeComponent == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
@@ -78,7 +78,7 @@ sjme_errorCode sjme_scritchui_fb_containerSetBounds(
 	sjme_scritchui_uiComponent wrappedInComponent;
 	
 	if (inState == NULL || inContainer == NULL || inComponent == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;

@@ -1810,7 +1810,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	jboolean libPathCharsCopy;
 	const char* nameChars;
 	jboolean nameCharsCopy;
-	sjme_alloc_pool* pool;
+	sjme_alloc_pool pool;
 	sjme_scritchui state;
 	sjme_frontEnd frontEnd;
 	sjme_debug_handlerFunctions** dylibDebugHandlers;

@@ -896,7 +896,8 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_USER(
 	/* Forward call. */
 	if (sjme_error_is(error = SJME_THREAD_RESULT_AS_ERROR(
 		threadMain(threadAnything))))
-		return sjme_error_defaultOr(error, SJME_ERROR_NATIVE_WIDGET_FAILURE);
+		return sjme_error_defaultOr(error,
+			SJME_ERROR_NATIVE_WIDGET_FAILURE);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -908,6 +909,7 @@ sjme_errorCode sjme_scritchui_win32_intern_getLastError(
 {
 	DWORD winErr;
 	
+	/* Do nothing if there is no state yet. */
 	if (inState == NULL)
 		return SJME_ERROR_NONE;
 	
@@ -915,10 +917,11 @@ sjme_errorCode sjme_scritchui_win32_intern_getLastError(
 	winErr = GetLastError();
 	SetLastError(0);
 	
-#if 0 && defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
-	sjme_message("GetLastError() == %d 0x%08x",
-		winErr, winErr);
+	if (winErr != 0)
+		sjme_message("GetLastError() == %d 0x%08x",
+			winErr, winErr);
 #endif
 	
 	/* Use given error, if successful. */
@@ -1066,9 +1069,9 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 			break;
 	}
 	
-#if 0 && defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
-	if (sjme_error_is(error))
+	if (sjme_error_is(error) && error != SJME_ERROR_USE_FALLBACK)
 		sjme_message("Win32 message FAIL: %p %d %p %p -> %d)",
 			hWnd, message, wParam, lParam, error);
 #endif

@@ -17,6 +17,11 @@ AllowShortLambdasOnASingleLine: None
 AlwaysBreakAfterDefinitionReturnType: false
 AlwaysBreakTemplateDeclarations: No
 AttributeMacros:
+  - sjme_align
+  - sjme_align32
+  - sjme_align64
+  - sjme_alignPointer
+  - sjme_packed
   - sjme_inline
   - sjme_noOptimize
   - sjme_attrArtificial
@@ -40,7 +45,6 @@ AttributeMacros:
   - sjme_attrOutPositive
   - sjme_attrOutPositiveNonZero
   - sjme_attrOutRange
-  - sjme_attrReturnNever
   - sjme_attrReturnNullable
   - sjme_attrUnused
   - sjme_attrUnusedEnum

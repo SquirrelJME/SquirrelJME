@@ -516,7 +516,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanGet(
 	void* rawScan;
 	
 	if (g == NULL || destRgb == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* We cannot access a region outside the image bounds. */
 	ex = x + inNumPixels;
@@ -579,7 +579,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 	sjme_jint* destRgb;
 	
 	if (g == NULL || srcRgb == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* We cannot access a region outside the image bounds. */
 	ex = x + inNumPixels;

@@ -303,7 +303,7 @@ sjme_errorCode sjme_traverse_iterateNextR(
 }
 
 sjme_errorCode sjme_traverse_newR(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_traverse* outTraverse,
 	sjme_attrInPositiveNonZero sjme_jint leafLength,
 	sjme_attrInPositiveNonZero sjme_jint maxElements)
@@ -313,7 +313,7 @@ sjme_errorCode sjme_traverse_newR(
 	sjme_jint storageSize, pointerBytes;
 	sjme_traverse result;
 	
-	if (inPool == NULL || outTraverse == NULL)
+	if (allocPool == NULL || outTraverse == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (leafLength <= 0 || maxElements <= 0)
@@ -342,7 +342,7 @@ sjme_errorCode sjme_traverse_newR(
 	
 	/* Allocate entire tree with storage. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inPool,
+	if (sjme_error_is(error = sjme_alloc(allocPool,
 		offsetof(sjme_traverse_base, storage) + storageSize,
 		(sjme_pointer*)&result)) || result == NULL)
 		goto fail_allocResult;

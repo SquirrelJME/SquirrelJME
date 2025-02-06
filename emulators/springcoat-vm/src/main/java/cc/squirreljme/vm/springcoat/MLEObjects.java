@@ -218,7 +218,7 @@ public final class MLEObjects
 	}
 	
 	/**
-	 * Checks if the object is {@code null}.
+	 * Checks if the object is not {@code null}.
 	 * 
 	 * @param __object The object to check.
 	 * @return The object.
@@ -232,6 +232,36 @@ public final class MLEObjects
 			throw new SpringMLECallError("Null object.");
 		
 		return (SpringObject)__object;
+	}
+	
+	/**
+	 * Checks if the object is not {@code null} and is of the given type.
+	 * 
+	 * @param <T> The type of object this must be.
+	 * @param __type The type of object this must be.
+	 * @param __object The object to check.
+	 * @return The object.
+	 * @throws SpringMLECallError If is null.
+	 * @since 2025/01/23
+	 */
+	public static <T extends SpringObject> T notNull(Class<T> __type,
+		Object __object)
+		throws SpringMLECallError
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		if (__object == null || SpringNullObject.NULL == __object)
+			throw new SpringMLECallError("Null object.");
+		
+		try
+		{
+			return __type.cast(__object);
+		}
+		catch (ClassCastException __e)
+		{
+			throw new SpringMLECallError("Not a " + __type);
+		}
 	}
 	
 	/**

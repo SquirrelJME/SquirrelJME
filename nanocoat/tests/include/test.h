@@ -62,7 +62,7 @@ typedef struct sjme_test
 	jmp_buf jumpPoint;
 
 	/** Allocation pool for tests, so one not need be setup. */
-	sjme_alloc_pool* pool;
+	sjme_alloc_pool pool;
 
 	/** Any extra global value that is needed. */
 	sjme_pointer global;
@@ -111,7 +111,7 @@ typedef struct sjme_availableTest
  * @return Any resultant error, if any.
  * @since 2024/09/28 
  */
-void sjme_test_leakCheck(sjme_alloc_pool* pool);
+void sjme_test_leakCheck(sjme_alloc_pool pool);
 #endif
 
 /*--------------------------------------------------------------------------*/

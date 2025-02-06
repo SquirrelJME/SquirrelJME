@@ -541,10 +541,10 @@ sjme_errorCode sjme_scritchui_core_choiceItemSetString(
 	{
 		/* Free. */
 		if (sjme_error_is(error = sjme_alloc_free(
-			choiceItem->string)))
+			(sjme_pointer)choiceItem->string)))
 		{
 			if (dup != NULL)
-				sjme_alloc_free(dup);
+				sjme_alloc_free((sjme_pointer)dup);
 			
 			return sjme_error_default(error);
 		}

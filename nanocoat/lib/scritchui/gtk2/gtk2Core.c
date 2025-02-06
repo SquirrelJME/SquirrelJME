@@ -126,7 +126,7 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 }
 
 sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,

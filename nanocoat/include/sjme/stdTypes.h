@@ -101,7 +101,7 @@ typedef enum sjme_basicTypeId
 	SJME_BASIC_TYPE_ID_BYTE = 11,
 
 	/** Number of basic type IDs. */
-	SJME_NUM_BASIC_TYPE_IDS = 11
+	SJME_NUM_BASIC_TYPE_IDS = 12
 } sjme_basicTypeId;
 
 /**
@@ -111,8 +111,10 @@ typedef enum sjme_basicTypeId
  */
 typedef enum sjme_jboolean
 {
+	/** False. */
 	SJME_JNI_FALSE = 0,
-
+	
+	/** True. */
 	SJME_JNI_TRUE = 1
 } sjme_jboolean;
 
@@ -280,21 +282,12 @@ typedef char sjme_cchar;
 /** Is a pointer for @c sjme_cchar ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_cchar 0
 
-#if defined(SJME_CONFIG_HAS_ARCH_IA16)
-	/**
-	 * Pointer to C string.
-	 *
-	 * @since 2023/12/17
-	 */
-	typedef sjme_cchar huge* sjme_lpstr;
-#else
-	/**
-	 * Pointer to C string.
-	 *
-	 * @since 2023/12/17
-	 */
-	typedef sjme_cchar* sjme_lpstr;
-#endif
+/**
+ * Pointer to C string.
+ *
+ * @since 2023/12/17
+ */
+typedef sjme_cchar sjme_attrHugeP* sjme_lpstr;
 
 /** Basic @c sjme_lpstr type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_lpstr SJME_BASIC_TYPE_ID_OBJECT
@@ -302,21 +295,12 @@ typedef char sjme_cchar;
 /** Is a pointer for @c sjme_lpstr ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_lpstr 1
 
-#if defined(SJME_CONFIG_HAS_ARCH_IA16)
-	/**
-	 * Pointer to constant C string.
-	 *
-	 * @since 2023/12/17
-	 */
-	typedef const sjme_cchar huge* sjme_lpcstr;
-#else
-	/**
-	 * Pointer to constant C string.
-	 *
-	 * @since 2023/12/17
-	 */
-	typedef const sjme_cchar* sjme_lpcstr;
-#endif
+/**
+ * Pointer to constant C string.
+ *
+ * @since 2023/12/17
+ */
+typedef const sjme_cchar sjme_attrHugeP* sjme_lpcstr;
 
 /** Basic @c sjme_lpcstr type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_lpcstr SJME_BASIC_TYPE_ID_OBJECT
@@ -324,21 +308,38 @@ typedef char sjme_cchar;
 /** Is a pointer for @c sjme_lpcstr ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_lpcstr 1
 
-#if defined(SJME_CONFIG_HAS_ARCH_IA16)
-	/**
-	 * Generic pointer.
-	 *
-	 * @since 2023/12/27
-	 */
-	typedef void huge* sjme_pointer;
-#else
-	/**
-	 * Generic pointer.
-	 *
-	 * @since 2023/12/27
-	 */
-	typedef void* sjme_pointer;
-#endif
+/**
+ * Pointer to wide C string.
+ *
+ * @since 2025/01/16
+ */
+typedef sjme_jchar sjme_attrHugeP* sjme_lpwstr;
+
+/** Basic @c sjme_lpwstr type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_lpwstr SJME_BASIC_TYPE_ID_OBJECT
+
+/** Is a pointer for @c sjme_lpwstr ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_lpwstr 1
+
+/**
+ * Pointer to constant wide C string.
+ *
+ * @since 2025/01/16
+ */
+typedef const sjme_jchar sjme_attrHugeP* sjme_lpcwstr;
+
+/** Basic @c sjme_lpcwstr type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_lpcwstr SJME_BASIC_TYPE_ID_OBJECT
+
+/** Is a pointer for @c sjme_lpcwstr ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_lpcwstr 1
+
+/**
+ * Generic pointer.
+ *
+ * @since 2023/12/27
+ */
+typedef void sjme_attrHugeP* sjme_pointer;
 
 /** Basic @c sjme_pointer type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_pointer SJME_BASIC_TYPE_ID_OBJECT
@@ -346,21 +347,25 @@ typedef char sjme_cchar;
 /** Is a pointer for @c sjme_pointer ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_pointer 1
 
-#if defined(SJME_CONFIG_HAS_ARCH_IA16)
-	/**
-	 * Generic pointer to const data.
-	 *
-	 * @since 2023/12/27
-	 */
-	typedef const void huge* sjme_cpointer;
-#else
-	/**
-	 * Generic pointer to const data.
-	 *
-	 * @since 2023/12/27
-	 */
-	typedef const void* sjme_cpointer;
-#endif
+/**
+ * Generic volatile pointer.
+ *
+ * @since 2025/01/31
+ */
+typedef volatile void sjme_attrHugeP* sjme_vpointer;
+
+/** Basic @c sjme_pointer type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_vpointer SJME_BASIC_TYPE_ID_OBJECT
+
+/** Is a pointer for @c sjme_pointer ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_vpointer 1
+
+/**
+ * Generic pointer to const data.
+ *
+ * @since 2023/12/27
+ */
+typedef const void sjme_attrHugeP* sjme_cpointer;
 
 /** Basic @c sjme_cpointer type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_cpointer SJME_BASIC_TYPE_ID_OBJECT
@@ -579,6 +584,52 @@ typedef sjme_jobjectBase* sjme_jobject;
 #define SJME_TYPEOF_IS_POINTER_sjme_jobject 1
 
 /**
+ * Class type.
+ * 
+ * @since 2024/10/19
+ */
+typedef struct sjme_jclassBase sjme_jclassBase;
+
+/**
+ * Class type.
+ * 
+ * @since 2023/07/25
+ */
+typedef sjme_jclassBase* sjme_jclass;
+
+/** Basic @c sjme_jclass type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jclass SJME_TYPEOF_BASIC_sjme_jobject
+
+/** Java @c sjme_jclass type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jclass SJME_TYPEOF_JAVA_sjme_jobject
+
+/** Is a pointer for @c sjme_jclass ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jclass SJME_TYPEOF_IS_POINTER_sjme_jobject
+
+/**
+ * String type.
+ * 
+ * @since 2025/01/20
+ */
+typedef struct sjme_jstringBase sjme_jstringBase;
+
+/**
+ * String type.
+ * 
+ * @since 2025/01/20
+ */
+typedef sjme_jstringBase* sjme_jstring;
+
+/** Basic @c sjme_jstring type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jstring SJME_TYPEOF_BASIC_sjme_jobject
+
+/** Java @c sjme_jstring type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jstring SJME_TYPEOF_JAVA_sjme_jobject
+
+/** Is a pointer for @c sjme_jstring ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jstring SJME_TYPEOF_IS_POINTER_sjme_jobject
+
+/**
  * Generic value union.
  *
  * @since 2024/01/05
@@ -614,11 +665,32 @@ typedef union sjme_jvalue
 } sjme_jvalue;
 
 /**
+ * Typed @c sjme_value .
+ *
+ * @since 2025/01/04
+ */
+typedef struct sjme_jvalueTyped
+{
+	/** The type of this value. */
+	sjme_javaTypeId type;
+
+	/** The value of this. */
+	sjme_jvalue value;
+} sjme_jvalueTyped;
+
+/**
  * Structure which stores the pooled memory allocator.
  *
  * @since 2023/11/18
  */
-typedef struct sjme_alloc_pool sjme_alloc_pool;
+typedef struct sjme_alloc_poolBase sjme_alloc_poolBase;
+
+/**
+ * Structure which stores the pooled memory allocator.
+ *
+ * @since 2023/11/18
+ */
+typedef volatile sjme_alloc_poolBase* sjme_alloc_pool;
 
 /*--------------------------------------------------------------------------*/
 

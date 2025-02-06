@@ -18,7 +18,7 @@ sjme_errorCode sjme_scritchui_core_scrollPanelNew(
 	sjme_attrOutNotNull sjme_scritchui_uiScrollPanel* outScrollPanel)
 {
 	if (inState == NULL || outScrollPanel == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Use generic function. */
 	return sjme_scritchui_coreGeneric_componentNew(inState,

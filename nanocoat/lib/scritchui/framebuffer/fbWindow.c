@@ -73,7 +73,7 @@ sjme_errorCode sjme_scritchui_fb_windowContentMinimumSize(
 	sjme_scritchui_uiWindow wrappedWindow;
 	
 	if (inState == NULL || inWindow == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
@@ -173,7 +173,7 @@ sjme_errorCode sjme_scritchui_fb_windowSetMenuBar(
 	sjme_scritchui_uiMenuBar wrappedMenuBar;
 	
 	if (inState == NULL || inWindow == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
@@ -199,7 +199,7 @@ sjme_errorCode sjme_scritchui_fb_windowSetVisible(
 	sjme_scritchui_uiWindow wrappedWindow;
 	
 	if (inState == NULL || inWindow == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;

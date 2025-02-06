@@ -147,6 +147,10 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 		(xSrc + wSrc) < 0 || (ySrc + hSrc) < 0 ||
 		origImgWidth < 0 || origImgHeight < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* The scanline length needs to be at least the image width. */
+	if (scanLen < 0 || origImgWidth > scanLen || wSrc > scanLen)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	if (off < 0 || dataLen < 0 || (off + dataLen) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
@@ -236,14 +240,11 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 		for (dx = 0; dx < m.tw; dx++, wx += m.x.wx, zy += m.x.zy)
 		{
 			/* Get pixel from source buffer. */
-			iwx = sjme_fixed_int(sjme_fixed_round(wx)) % origImgWidth;
-			izy = sjme_fixed_int(sjme_fixed_round(zy)) % origImgHeight;
+			iwx = sjme_fixed_int(wx) % origImgWidth;
+			iwx = ((iwx % origImgWidth) + origImgWidth) % origImgWidth;
 			
-			/* Keep in bounds. */
-			if (iwx < 0)
-				iwx += (wSrc - 1);
-			if (izy < 0)
-				izy += (hSrc - 1);
+			izy = sjme_fixed_int(zy) % origImgHeight;
+			izy = ((izy % origImgHeight) + origImgHeight) % origImgHeight;
 			
 			/* Copy pixel from source? */
 			at = off + ((izy * scanLen) + iwx);

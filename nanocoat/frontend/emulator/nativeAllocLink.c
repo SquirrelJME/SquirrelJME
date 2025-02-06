@@ -31,7 +31,7 @@ jint SJME_JNI_METHOD(SJME_CLASS_ALLOC_LINK, _1_1size)
 	}
 
 	/* Get the allocation size. */
-	return SJME_JLONG_TO_POINTER(sjme_alloc_link*, linkPtr)->allocSize;
+	return SJME_JLONG_TO_POINTER(sjme_alloc_link, linkPtr)->allocSize;
 }
 
 void SJME_JNI_METHOD(SJME_CLASS_ALLOC_LINK, _1_1write)

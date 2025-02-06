@@ -511,7 +511,7 @@ sjme_errorCode sjme_scritchui_core_intern_updateVisibleContainer(
 	sjme_jint i, n;
 	
 	if (inState == NULL || inContainer == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* We need the container itself. */
 	container = NULL;

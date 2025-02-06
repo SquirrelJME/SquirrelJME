@@ -75,7 +75,15 @@ public class DylibEventLoopInterface
 		if (__task == null)
 			throw new MLECallError("NARG");
 		
-		NativeScritchDylib.__loopExecute(this.dyLib._stateP, __task);
+		try
+		{
+			NativeScritchDylib.__loopExecute(this.dyLib._stateP, __task);
+		}
+		catch (MLECallError __e)
+		{
+			throw new MLECallError(String.format(
+				"loopExecute(%s) exception", __task), __e);
+		}
 	}
 	
 	/**
@@ -92,7 +100,15 @@ public class DylibEventLoopInterface
 		if (__task == null)
 			throw new MLECallError("NARG");
 		
-		NativeScritchDylib.__loopExecuteLater(this.dyLib._stateP, __task);
+		try
+		{
+			NativeScritchDylib.__loopExecuteLater(this.dyLib._stateP, __task);
+		}
+		catch (MLECallError __e)
+		{
+			throw new MLECallError(String.format(
+				"loopExecute(%s) exception", __task), __e);
+		}
 	}
 	
 	/**
@@ -109,9 +125,18 @@ public class DylibEventLoopInterface
 		if (__task == null)
 			throw new MLECallError("NARG");
 		
-		if (NativeScritchDylib.__loopIsInThread(this.dyLib._stateP))
-			__task.run();
-		else
-			NativeScritchDylib.__loopExecuteWait(this.dyLib._stateP, __task);
+		try
+		{
+			if (NativeScritchDylib.__loopIsInThread(this.dyLib._stateP))
+				__task.run();
+			else
+				NativeScritchDylib.__loopExecuteWait(this.dyLib._stateP,
+					__task);
+		}
+		catch (MLECallError __e)
+		{
+			throw new MLECallError(String.format(
+				"loopExecute(%s) exception", __task), __e);
+		}
 	}
 }

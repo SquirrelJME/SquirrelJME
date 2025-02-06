@@ -58,13 +58,6 @@ struct sjme_jobjectBase
 };
 
 /**
- * Class type.
- * 
- * @since 2023/07/25
- */
-typedef sjme_jobject sjme_jclass;
-
-/**
  * Throwable type.
  * 
  * @since 2023/07/25
@@ -840,10 +833,10 @@ struct sjme_nvm_stateBase
 	sjme_nvm_commonBase common;
 	
 	/** The memory pool to use for allocations. */
-	sjme_alloc_pool* allocPool;
+	sjme_alloc_pool allocPool;
 
 	/** The reserved memory pool. */
-	sjme_alloc_pool* reservedPool;
+	sjme_alloc_pool reservedPool;
 
 	/** The copy of the input boot parameters. */
 	const sjme_nvm_bootParam* bootParamCopy;

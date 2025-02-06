@@ -12,9 +12,9 @@ pkg_check_modules(X11 REQUIRED x11)
 
 # Declare base library
 add_library(ScritchUIX11 SHARED
-	$<TARGET_OBJECTS:BasePIC>
-	$<TARGET_OBJECTS:ScritchUICorePIC>
-	$<TARGET_OBJECTS:ScritchUIFBPIC>
+	$<TARGET_OBJECTS:${SQUIRRELJME_BASE_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_CORE_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_FB_LIB}>
 	x11Component.c
 	x11Container.c
 	x11Core.c
@@ -38,8 +38,10 @@ endif()
 
 # Include main headers
 target_include_directories(ScritchUIX11 PUBLIC
-	"${CMAKE_SOURCE_DIR}/include"
-	${X11_INCLUDE_DIR})
+	"${CMAKE_SOURCE_DIR}/include")
+target_include_directories(ScritchUIX11 SYSTEM PRIVATE
+	${X11_INCLUDE_DIR}
+	${X11_INCLUDE_DIRS})
 
 # Link in X11
 target_link_directories(ScritchUIX11 PUBLIC
