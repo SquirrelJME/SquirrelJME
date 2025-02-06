@@ -17,6 +17,8 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
+import java.io.Closeable;
+import java.io.IOException;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -34,6 +36,7 @@ import javax.microedition.lcdui.game.Sprite;
 @SquirrelJMEVendorApi
 public final class PencilGraphics
 	extends Graphics
+	implements Closeable
 {
 	/** The hardware bracket reference. */
 	@SquirrelJMEVendorApi
@@ -88,6 +91,10 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	private int _strokeStyle;
 	
+	/** Has this been closed? */
+	@SquirrelJMEVendorApi
+	private volatile boolean _isClosed;
+	
 	/**
 	 * Initializes the pencil graphics system.
 	 *
@@ -131,7 +138,39 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public void clipRect(int __x, int __y, int __w, int __h)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/02/05
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
+		// Always set as closed before actually closing
+		this._isClosed = true;
+		
+		// Close the graphics internally
+		try
+		{
+			PencilShelf.hardwareCloseGraphics(this.hardware);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -144,6 +183,10 @@ public final class PencilGraphics
 		int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Forward to native call
 		try
 		{
@@ -167,6 +210,10 @@ public final class PencilGraphics
 	public void drawArc(int __x, int __y, int __w, int __h, int __startAngle,
 	 int __arcAngle)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		throw Debugging.todo();
 	}
 	
@@ -180,6 +227,10 @@ public final class PencilGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		throw Debugging.todo();
 	}
 	
@@ -191,6 +242,10 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public void drawChar(char __s, int __x, int __y, int __anchor)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Fill single character first
 		char[] singleChar = this._singleChar;
 		singleChar[0] = __s;
@@ -223,6 +278,10 @@ public final class PencilGraphics
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __s.length)
 			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
 		
 		// Forward
 		try
@@ -259,7 +318,22 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
-		PencilShelf.hardwareDrawLine(this.hardware, __x1, __y1, __x2, __y2);
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
+		// Drawing may fail
+		try
+		{
+			PencilShelf.hardwareDrawLine(this.hardware,
+				__x1, __y1, __x2, __y2);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -272,11 +346,24 @@ public final class PencilGraphics
 		int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Forward Call
-		this.__drawRegion(__data, __off, __scanlen, __alpha,
-			0, 0, __w, __h, Sprite.TRANS_NONE,
-			__x, __y, Graphics.TOP | Graphics.LEFT, __w, __h,
-			__scanlen, (__data.length - __off) / __scanlen);
+		try
+		{
+			this.__drawRegion(__data, __off, __scanlen, __alpha,
+				0, 0, __w, __h, Sprite.TRANS_NONE,
+				__x, __y, Graphics.TOP | Graphics.LEFT, __w, __h,
+				__scanlen, (__data.length - __off) / __scanlen);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -289,6 +376,10 @@ public final class PencilGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		throw Debugging.todo();
 	}
 	
@@ -300,8 +391,21 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public void drawRect(int __x, int __y, int __w, int __h)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Forward to hardware
-		PencilShelf.hardwareDrawRect(this.hardware, __x, __y, __w, __h);
+		try
+		{
+			PencilShelf.hardwareDrawRect(this.hardware, __x, __y, __w, __h);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -315,6 +419,10 @@ public final class PencilGraphics
 		int __anch)
 		throws IllegalArgumentException, NullPointerException
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Forward call
 		this.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc,
 			__trans, __xdest, __ydest, __anch, __wsrc, __hsrc);
@@ -333,6 +441,10 @@ public final class PencilGraphics
 	{
 		if (__src == null)
 			throw new NullPointerException("NARG");
+		
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
 		
 		// If the image is direct, use the buffer that is inside rather than
 		// a copy, so we do not waste time copying from it!
@@ -362,10 +474,19 @@ public final class PencilGraphics
 		}
 		
 		// Perform the internal draw
-		this.__drawRegion(buf, offset, scanLen, __src.hasAlpha(),
-			__xsrc, __ysrc, __wsrc, __hsrc, __trans,
-			__xdest, __ydest, __anch,
-			__wdest, __hdest, __src.getWidth(), __src.getHeight());
+		try
+		{
+			this.__drawRegion(buf, offset, scanLen, __src.hasAlpha(),
+				__xsrc, __ysrc, __wsrc, __hsrc, __trans,
+				__xdest, __ydest, __anch,
+				__wdest, __hdest, __src.getWidth(), __src.getHeight());
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -377,6 +498,10 @@ public final class PencilGraphics
 	public void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __arcWidth, int __arcHeight)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		throw Debugging.todo();
 	}
 	
@@ -391,6 +516,10 @@ public final class PencilGraphics
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
+		
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
 		
 		// Forward
 		try
@@ -419,6 +548,10 @@ public final class PencilGraphics
 		if (__o < 0 || __l < 0 || (__o + __l) > __s.length())
 			throw new StringIndexOutOfBoundsException("IOOB");
 		
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Forward
 		try
 		{
@@ -439,6 +572,10 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public void drawText(Text __t, int __x, int __y)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		throw Debugging.todo();
 	}
 	
@@ -451,6 +588,10 @@ public final class PencilGraphics
 	public void fillArc(int __x, int __y, int __w, int __h, int __startAngle,
 		int __arcAngle)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		throw Debugging.todo();
 	}
 	
@@ -462,8 +603,21 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public void fillRect(int __x, int __y, int __w, int __h)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Forward to hardware
-		PencilShelf.hardwareFillRect(this.hardware, __x, __y, __w, __h);
+		try
+		{
+			PencilShelf.hardwareFillRect(this.hardware, __x, __y, __w, __h);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -475,6 +629,10 @@ public final class PencilGraphics
 	public void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __arcWidth, int __arcHeight)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		throw Debugging.todo();
 	}
 	
@@ -487,9 +645,22 @@ public final class PencilGraphics
 	public void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Forward to hardware
-		PencilShelf.hardwareFillTriangle(this.hardware, __x1, __y1, __x2, __y2,
-			__x3, __y3);
+		try
+		{
+			PencilShelf.hardwareFillTriangle(this.hardware,
+				__x1, __y1, __x2, __y2, __x3, __y3);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -670,6 +841,10 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public int getTranslateX()
 	{
+		// If closed, return an unknown value
+		if (this._isClosed)
+			return 0;
+		
 		return PencilShelf.hardwareTranslateXY(this.hardware, false);
 	}
 	
@@ -681,6 +856,10 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public int getTranslateY()
 	{
+		// If closed, return an unknown value
+		if (this._isClosed)
+			return 0;
+		
 		return PencilShelf.hardwareTranslateXY(this.hardware, true);
 	}
 	
@@ -693,6 +872,10 @@ public final class PencilGraphics
 	public void setAlpha(int __a)
 		throws IllegalArgumentException
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		this.setAlphaColor(__a,
 			this.getRedComponent(),
 			this.getGreenComponent(),
@@ -707,6 +890,10 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public void setAlphaColor(int __argb)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Mirror locally
 		this._argbColor = __argb;
 		
@@ -730,6 +917,10 @@ public final class PencilGraphics
 			throw new IllegalArgumentException(String.format(
 				"EB3t %d %d %d %d", __a, __r, __g, __b));
 		
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Set
 		this.setAlphaColor((__a << 24) | (__r << 16) | (__g << 8) | __b);
 	}
@@ -748,11 +939,24 @@ public final class PencilGraphics
 			(__m == Graphics.SRC && !this.hasAlpha))
 			throw new IllegalArgumentException("EB3u " + __m);
 		
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Cache locally
 		this._blendingMode = __m;
 		
 		// Forward to both software and hardware graphics
-		PencilShelf.hardwareSetBlendingMode(this.hardware, __m);
+		try
+		{
+			PencilShelf.hardwareSetBlendingMode(this.hardware, __m);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -763,6 +967,10 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public void setClip(int __x, int __y, int __w, int __h)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Calculate the base clip coordinates
 		int startX = __x + this.getTranslateX();
 		int startY = __y + this.getTranslateY();
@@ -798,7 +1006,16 @@ public final class PencilGraphics
 		this._clipHeight = clipEndY - clipY;
 		
 		// Forward to both software and hardware graphics
-		PencilShelf.hardwareSetClip(this.hardware, __x, __y, __w, __h);
+		try
+		{
+			PencilShelf.hardwareSetClip(this.hardware, __x, __y, __w, __h);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -810,6 +1027,10 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public void setColor(int __rgb)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		this.setAlphaColor((this.getAlphaColor() & 0xFF_000000) |
 			(__rgb & 0x00_FFFFFF));
 	}
@@ -823,6 +1044,10 @@ public final class PencilGraphics
 	public void setColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		this.setAlphaColor(this.getAlpha(), __r, __g, __b);
 	}
 	
@@ -834,6 +1059,10 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public void setFont(Font __font)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Clearing the font?
 		if (__font == null)
 			__font = Font.getDefaultFont();
@@ -842,8 +1071,17 @@ public final class PencilGraphics
 		this._font = __font;
 		
 		// Set font natively from the font details
-		PencilShelf.hardwareSetFont(this.hardware,
-			((PencilFontProvider)__font).__squirreljmePencilFont());
+		try
+		{
+			PencilShelf.hardwareSetFont(this.hardware,
+				((PencilFontProvider)__font).__squirreljmePencilFont());
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -854,6 +1092,10 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public void setGrayScale(int __v)
 	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		this.setAlphaColor(this.getAlpha(), __v, __v, __v);
 	}
 	
@@ -870,11 +1112,24 @@ public final class PencilGraphics
 		if (__style != Graphics.SOLID && __style != Graphics.DOTTED)
 			throw new IllegalArgumentException("EB3v");
 		
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Set
 		this._strokeStyle = __style;
 		
 		// Forward to both software and hardware graphics
-		PencilShelf.hardwareSetStrokeStyle(this.hardware, __style);
+		try
+		{
+			PencilShelf.hardwareSetStrokeStyle(this.hardware, __style);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -885,7 +1140,20 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public void translate(int __x, int __y)
 	{
-		PencilShelf.hardwareTranslate(this.hardware, __x, __y);
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
+		try
+		{
+			PencilShelf.hardwareTranslate(this.hardware, __x, __y);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -919,6 +1187,10 @@ public final class PencilGraphics
 	{
 		if (__data == null)
 			throw new NullPointerException("NARG");
+		
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
 		
 		// Forward to the native region drawing method
 		PencilShelf.hardwareDrawXRGB32Region(this.hardware,
