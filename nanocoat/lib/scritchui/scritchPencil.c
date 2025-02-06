@@ -14,8 +14,19 @@
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "lib/scritchui/core/coreRaster.h"
+#include "lib/scritchui/core/coreSerial.h"
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
+
+sjme_errorCode sjme_scritchpen_core_close(
+	sjme_attrInNotNull sjme_scritchui_pencil g)
+{
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Release the front-end. */
+	return sjme_frontEnd_release(g, &g->common.frontEnd);
+}
 
 sjme_errorCode sjme_scritchpen_core_lock(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
@@ -88,6 +99,7 @@ sjme_errorCode sjme_scritchpen_core_lockRelease(
 /** Core pencil functions. */
 static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 {
+	.close = sjme_scritchpen_core_close,
 	.copyArea = sjme_scritchpen_core_copyArea,
 	.drawChar = sjme_scritchpen_core_drawChar,
 	.drawChars = sjme_scritchpen_core_drawChars,
@@ -110,6 +122,35 @@ static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 	.setParametersFrom = sjme_scritchpen_core_setParametersFrom,
 	.setStrokeStyle = sjme_scritchpen_core_setStrokeStyle,
 	.translate = sjme_scritchpen_core_translate,
+};
+
+/** Core pencil functions, serialized to the event thread. */
+static const sjme_scritchui_pencilFunctions
+	sjme_scritchpen_coreSerial_functions =
+{
+	.close = sjme_scritchpen_core_close,
+	.copyArea = sjme_scritchpen_coreSerial_copyArea,
+	.drawChar = sjme_scritchpen_coreSerial_drawChar,
+	.drawChars = sjme_scritchpen_coreSerial_drawChars,
+	.drawHoriz = sjme_scritchpen_coreSerial_drawHoriz,
+	.drawLine = sjme_scritchpen_coreSerial_drawLine,
+	.drawPixel = sjme_scritchpen_coreSerial_drawPixel,
+	.drawRect = sjme_scritchpen_coreSerial_drawRect,
+	.drawSubstring = sjme_scritchpen_coreSerial_drawSubstring,
+	.drawTriangle = sjme_scritchpen_coreSerial_drawTriangle,
+	.drawXRGB32Region = sjme_scritchpen_coreSerial_drawXRGB32Region,
+	.fillRect = sjme_scritchpen_coreSerial_fillRect,
+	.fillTriangle = sjme_scritchpen_coreSerial_fillTriangle,
+	.mapColor = sjme_scritchpen_coreSerial_mapColor,
+	.setAlphaColor = sjme_scritchpen_coreSerial_setAlphaColor,
+	.setBlendingMode = sjme_scritchpen_coreSerial_setBlendingMode,
+	.setClip = sjme_scritchpen_coreSerial_setClip,
+	.setDefaultFont = sjme_scritchpen_coreSerial_setDefaultFont,
+	.setDefaults = sjme_scritchpen_coreSerial_setDefaults,
+	.setFont = sjme_scritchpen_coreSerial_setFont,
+	.setParametersFrom = sjme_scritchpen_coreSerial_setParametersFrom,
+	.setStrokeStyle = sjme_scritchpen_coreSerial_setStrokeStyle,
+	.translate = sjme_scritchpen_coreSerial_translate,
 };
 
 /** Utility functions. */
@@ -169,7 +210,10 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	memset(&result, 0, sizeof(result));
 	result.common.type = SJME_SCRITCHUI_TYPE_PENCIL;
 	result.common.state = inState;
-	result.api = &sjme_scritchpen_core_functions;
+	if (inFunctions->asyncSafe)
+		result.api = &sjme_scritchpen_core_functions;
+	else
+		result.api = &sjme_scritchpen_coreSerial_functions;
 	result.util = &sjme_scritchpen_coreUtil_functions;
 	result.impl = inFunctions;
 	result.lock = inLockFuncs;

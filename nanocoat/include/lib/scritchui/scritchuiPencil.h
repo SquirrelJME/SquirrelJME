@@ -1079,6 +1079,9 @@ struct sjme_scritchui_pencilUtilFunctions
  */
 typedef struct sjme_scritchui_pencilImplFunctions
 {
+	/** Asynchronous safe, can be called outside the event thread. */
+	sjme_jboolean asyncSafe;
+	
 	/** @c Close . */
 	SJME_SCRITCHUI_QUICK_PENCIL(Close, close);
 	

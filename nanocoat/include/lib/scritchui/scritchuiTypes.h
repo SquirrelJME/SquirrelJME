@@ -452,6 +452,9 @@ struct sjme_scritchui_pencilFontBase
 	/** External API. */
 	const sjme_scritchui_pencilFontFunctions* api;
 	
+	/** External API, executed from the loop thread. */
+	const sjme_scritchui_pencilFontFunctions* apiInThread;
+	
 	/** Internal implementation. */
 	const sjme_scritchui_pencilFontImplFunctions* impl;
 	

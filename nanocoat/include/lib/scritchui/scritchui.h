@@ -611,7 +611,7 @@ typedef struct sjme_scritchui_pencilBase sjme_scritchui_pencilBase;
  * 
  * @since 2024/05/01
  */
-typedef struct sjme_scritchui_pencilBase* sjme_scritchui_pencil;
+typedef sjme_scritchui_pencilBase* sjme_scritchui_pencil;
 
 /**
  * Font structure for ScritchUI Pencil.

@@ -121,7 +121,7 @@ typedef struct sjme_frontEnd sjme_frontEnd;
  * it may allocate and bind the data when this is called if applicable.
  * 
  * @param owner The owning object of the front end.
- * @param frontEnd The front end data.
+ * @param frontEnd The front end.
  * @param resultData The resultant bound data, which points to the native
  * binding reference.
  * @param action The action being performed on the instance.
@@ -130,7 +130,7 @@ typedef struct sjme_frontEnd sjme_frontEnd;
  */
 typedef sjme_errorCode (*sjme_frontEnd_binderFunc)(
 	sjme_attrInNotNull sjme_pointer owner,
-	sjme_attrInOutNotNull sjme_frontEndData* frontEnd,
+	sjme_attrInOutNotNull sjme_frontEnd* frontEnd,
 	sjme_attrOutNotNull sjme_pointer* resultData,
 	sjme_attrInValue sjme_frontEnd_bindAction action);
 
@@ -165,7 +165,7 @@ struct sjme_frontEnd
  * it may allocate and bind the data when this is called if applicable.
  * 
  * @param owner The owning object of the front end.
- * @param frontEnd The front end data.
+ * @param frontEnd The front end.
  * @param resultData The resultant bound data, which points to the native
  * binding reference.
  * @return Any resultant error, if any.
@@ -173,20 +173,21 @@ struct sjme_frontEnd
  */
 sjme_errorCode sjme_frontEnd_bind(
 	sjme_attrInNotNull sjme_pointer owner,
-	sjme_attrInOutNotNull sjme_frontEndData* frontEnd,
+	sjme_attrInOutNotNull sjme_frontEnd* frontEnd,
 	sjme_attrOutNotNull sjme_pointer* resultData);
 
 /**
- * This is called when a front end reference needs to be released.
+ * This is called when a front end reference needs to be released. If there
+ * is nothing to be released, then this does nothing.
  * 
  * @param owner The owning object of the front end.
- * @param frontEnd The front end data.
+ * @param frontEnd The front end.
  * @return Any resultant error, if any.
  * @since 2024/09/04
  */
 sjme_errorCode sjme_frontEnd_release(
 	sjme_attrInNotNull sjme_pointer owner,
-	sjme_attrInOutNotNull sjme_frontEndData* frontEnd);
+	sjme_attrInOutNotNull sjme_frontEnd* frontEnd);
 
 /*--------------------------------------------------------------------------*/
 
