@@ -253,7 +253,8 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
-static sjme_thread_result sjme_scritchui_core_grabExternalThreadId(
+static sjme_thread_result sjme_attrThreadCall
+	sjme_scritchui_core_grabExternalThreadId(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	sjme_scritchui state;
@@ -364,7 +365,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	/* Get current thread to potentially detect a case where the main thread */
 	/* is the event thread, in which case if we loop we will deadlock */
 	/* ourselves. */
-	currentThread = NULL;
+	currentThread = SJME_THREAD_NULL;
 	sjme_thread_current(&currentThread);
 
 	/* Wait for the ready signal, but only if required. */
