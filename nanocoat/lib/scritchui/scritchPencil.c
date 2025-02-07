@@ -214,6 +214,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 		result.api = &sjme_scritchpen_core_functions;
 	else
 		result.api = &sjme_scritchpen_coreSerial_functions;
+	result.apiInThread = &sjme_scritchpen_core_functions;
 	result.util = &sjme_scritchpen_coreUtil_functions;
 	result.impl = inFunctions;
 	result.lock = inLockFuncs;
