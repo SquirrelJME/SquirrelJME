@@ -60,6 +60,6 @@ sjme_errorCode sjme_scritchui_fb_lafElementColor(
 		wrappedComponent = inContext->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Just forward it. */
-	return wrappedState->api->lafElementColor(wrappedState,
+	return wrappedState->apiInThread->lafElementColor(wrappedState,
 		wrappedComponent, outRGB, elementColor);
 }

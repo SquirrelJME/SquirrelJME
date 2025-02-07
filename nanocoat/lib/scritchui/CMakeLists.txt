@@ -54,7 +54,6 @@ set(SJME_ScritchUICore_SOURCES
 	scritchPencilRasterShapes.c
 	scritchPencilRasterSimple.c
 	scritchPencilRasterText.c
-	scritchPencilSerial.c
 	scritchScreen.c
 	scritchScrollPanel.c
 	scritchSerialize.c

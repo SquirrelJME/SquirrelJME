@@ -324,7 +324,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 		result.prim.rawScanFill = sjme_scritchpen_corePrim_rawScanFillByte;
 	
 	/* Set defaults. */
-	result.api->setDefaults(&result);
+	result.apiInThread->setDefaults(&result);
 	
 	/* Success! Copy back. */
 	memmove(inPencil, &result, sizeof(result));
@@ -408,16 +408,16 @@ sjme_errorCode sjme_scritchpen_core_setDefaults(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Reset translation. */
-	g->api->translate(g, -g->state.translate.x, -g->state.translate.y);
+	g->apiInThread->translate(g, -g->state.translate.x, -g->state.translate.y);
 	
 	/* Set initial state, ignore any errors. */
-	g->api->setClip(g, 0, 0, g->width, g->height);
-	g->api->setAlphaColor(g, 0xFF000000);
-	g->api->setStrokeStyle(g,
+	g->apiInThread->setClip(g, 0, 0, g->width, g->height);
+	g->apiInThread->setAlphaColor(g, 0xFF000000);
+	g->apiInThread->setStrokeStyle(g,
 		SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
-	g->api->setBlendingMode(g,
+	g->apiInThread->setBlendingMode(g,
 		SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER);
-	g->api->setDefaultFont(g);
+	g->apiInThread->setDefaultFont(g);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

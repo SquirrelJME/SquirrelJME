@@ -279,7 +279,7 @@ SJME_TEST_DECLARE(testDescMethodType)
 		/* Parse recorded fields. */
 		fieldStrings = NULL;
 		if (sjme_error_is(sjme_list_flattenArgNul(test->pool,
-			&fieldStrings, entry->fields) ||
+			(void*)&fieldStrings, entry->fields) ||
 			fieldStrings == NULL))
 			return sjme_unit_fail(test, "Could not parse fields of %s?",
 				string);

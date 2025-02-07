@@ -243,7 +243,7 @@ typedef enum sjme_scritchui_serialType
 	SJME_SCRITCHUI_SERIAL_PEN_DRAW_CHARS,
 
 	/** @c drawLine . */
-	SJME_SCRITCHUI_SERIAL_PEN_DRAWLINE,
+	SJME_SCRITCHUI_SERIAL_PEN_DRAW_LINE,
 
 	/** @c drawPixel . */
 	SJME_SCRITCHUI_SERIAL_PEN_DRAW_PIXEL,
@@ -587,10 +587,7 @@ SDU_STRUCT_DEF(windowSetVisible,
 
 /* ------------------------------------------------------------------------ */
 	
-SDP_STRUCT_DEF(lock,
-	SDX_VAR(sjme_scritchui_pencil, g););
-
-SDP_STRUCT_DEF(lockRelease,
+SDP_STRUCT_DEF(graphicsCall,
 	SDX_VAR(sjme_scritchui_pencil, g););
 
 SDP_STRUCT_DEF(close,
@@ -831,8 +828,7 @@ typedef volatile union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(windowSetMenuItemActivateListener);
 	SJME_SCRITCHUI_SDU_DEF(windowSetVisible);
 /* ------------------------------------------------------------------------ */
-	SJME_SCRITCHUI_SDP_DEF(lock);
-	SJME_SCRITCHUI_SDP_DEF(lockRelease);
+	SJME_SCRITCHUI_SDP_DEF(graphicsCall);
 	SJME_SCRITCHUI_SDP_DEF(close);
 	SJME_SCRITCHUI_SDP_DEF(copyArea);
 	SJME_SCRITCHUI_SDP_DEF(drawHoriz);
@@ -1201,12 +1197,6 @@ sjme_errorCode sjme_scritchui_coreSerial_windowSetVisible(
 
 /*--------------------------------------------------------------------------*/
 	
-sjme_errorCode sjme_scritchpen_coreSerial_lock(
-	sjme_attrInNotNull sjme_scritchui_pencil g);
-
-sjme_errorCode sjme_scritchpen_coreSerial_lockRelease(
-	sjme_attrInNotNull sjme_scritchui_pencil g);
-
 sjme_errorCode sjme_scritchpen_coreSerial_close(
 	sjme_attrInNotNull sjme_scritchui_pencil g);
 
