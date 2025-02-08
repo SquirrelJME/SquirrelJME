@@ -30,6 +30,8 @@ sjme_errorCode sjme_frontEnd_release(
 	sjme_attrInNotNull sjme_pointer owner,
 	sjme_attrInOutNotNull sjme_frontEnd* frontEnd)
 {
+	sjme_errorCode error;
+	
 	if (owner == NULL || frontEnd == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -37,6 +39,26 @@ sjme_errorCode sjme_frontEnd_release(
 	if ((sjme_intPointer)frontEnd < (sjme_intPointer)owner)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Lock the front end*/
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&frontEnd->bindLock)))
+		return sjme_error_is(error);
+
+	/* Only if there is data or a wrapper, can we do an unbind. */
+	error = SJME_ERROR_NONE;
+	if (frontEnd->bindHandler != NULL)
+		if (frontEnd->data != NULL || frontEnd->wrapper != NULL)
+		{
+			/* Call handler. */
+			error = frontEnd->bindHandler(owner, frontEnd, &frontEnd->data,
+				SJME_FRONTEND_RELEASE);
+		}
+
+	/* Unlock! */
+	if (sjme_thread_spinLockRelease(&frontEnd->bindLock, NULL))
+		return sjme_error_default(error);
+
+	/* Failed or success? */
+	if (sjme_error_is(error))
+		return sjme_error_default(error);
+	return error;
 }
