@@ -13,6 +13,37 @@
 #include "squirreljme.h"
 #include "sjme/debug.h"
 
+static sjme_errorCode sjme_jni_releaseFrontEnd(
+	sjme_attrInNotNull sjme_pointer owner,
+	sjme_attrInOutNotNull sjme_frontEnd* frontEnd,
+	sjme_attrOutNotNull sjme_pointer* resultData,
+	sjme_attrInValue sjme_frontEnd_bindAction action)
+{
+	sjme_errorCode error;
+	JNIEnv* env;
+	jweak ref;
+
+	if (owner == NULL || frontEnd == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover the front end information. */
+	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(
+		&env, frontEnd)))
+		return sjme_error_default(error);
+
+	/* Delete global reference filled in via the front end filler. */
+	ref = frontEnd->wrapper;
+	if (action == SJME_FRONTEND_RELEASE)
+		if (ref != NULL)
+		{
+			frontEnd->wrapper = NULL;
+			(*env)->DeleteGlobalRef(env, ref);
+		}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_jboolean sjme_jni_checkVMException(JNIEnv* env)
 {
 	/* Was there an exception? */
@@ -168,6 +199,7 @@ sjme_errorCode sjme_jni_fillFrontEnd(JNIEnv* env, sjme_frontEnd* into,
 	into->data = vm;
 
 	/* Need to reference an object? */
+	into->bindHandler = sjme_jni_releaseFrontEnd;
 	if (ref != NULL)
 		into->wrapper = (*env)->NewGlobalRef(env, ref);
 	else

@@ -51,6 +51,7 @@ final class __ExecIdle__
 	@Override
 	public void run()
 	{
+		// Run the ScritchUI event loop for anything that needs it
 		this.loop.iterate();
 	}
 }

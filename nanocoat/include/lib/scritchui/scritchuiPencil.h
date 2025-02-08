@@ -579,7 +579,9 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillTriangleFunc)(
  * Locks the pencil for drawing.
  * 
  * @param g The pencil to lock.
- * @return Any resultant error, if any.
+ * @return Any resultant error, if any. Return the specific
+ * error code @c SJME_ERROR_RESOURCE_NOT_FOUND if the resource backing the
+ * pencil is no longer available.
  * @since 2024/07/08
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilLockFunc)(
@@ -1079,6 +1081,9 @@ struct sjme_scritchui_pencilUtilFunctions
  */
 typedef struct sjme_scritchui_pencilImplFunctions
 {
+	/** Asynchronous safe, can be called outside the event thread. */
+	sjme_jboolean asyncSafe;
+	
 	/** @c Close . */
 	SJME_SCRITCHUI_QUICK_PENCIL(Close, close);
 	

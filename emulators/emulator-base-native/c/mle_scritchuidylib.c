@@ -801,6 +801,8 @@ static sjme_errorCode mlePencilLock(
 
 	/* Get buffer to access. */
 	buf = state->source.wrapper;
+	if (buf == NULL)
+		return SJME_ERROR_RESOURCE_NOT_FOUND;
 
 	/* Obtain buffer. */
 	bufElem = NULL;

@@ -694,7 +694,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 		goto fail_badPaint;
 
 	/* The clipping area is set to the region that needs redrawing. */
-	pencil->api->setClip(pencil,
+	pencil->apiInThread->setClip(pencil,
 		paintInfo.rcPaint.left, paintInfo.rcPaint.top,
 		paintInfo.rcPaint.right - paintInfo.rcPaint.left,
 		paintInfo.rcPaint.bottom - paintInfo.rcPaint.top);

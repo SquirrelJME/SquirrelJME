@@ -31,6 +31,42 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+#if defined(__STDC__)
+	/** Has C89 Support. */
+	#define SJME_CONFIG_HAS_C89
+	
+	#if defined(__STDC_VERSION__)
+		#if __STDC_VERSION__ >= 201112L
+			/** Has C11 support. */
+			#define SJME_CONFIG_HAS_C11
+		#endif
+		
+		#if __STDC_VERSION__ >= 199901L
+			/** Has C99 support. */
+			#define SJME_CONFIG_HAS_C99
+		#endif
+		
+		#if __STDC_VERSION__ >= 199409L
+			/** Has C94 support. */
+			#define SJME_CONFIG_HAS_C94
+		#endif
+	#endif
+#endif
+
+#if defined(SJME_CONFIG_HAS_C11)
+	/** Has this specific C version. */
+	#define SJME_CONFIG_HAS_C 2011
+#elif defined(SJME_CONFIG_HAS_C99)
+	/** Has this specific C version. */
+	#define SJME_CONFIG_HAS_C 1999
+#elif defined(SJME_CONFIG_HAS_C94)
+	/** Has this specific C version. */
+	#define SJME_CONFIG_HAS_C 1994
+#elif defined(SJME_CONFIG_HAS_C89)
+	/** Has this specific C version. */
+	#define SJME_CONFIG_HAS_C 1989
+#endif
 	
 /** Visual Studio 6 */
 #define SJME_VERSION_MSVC_6 1200
@@ -344,7 +380,7 @@ extern "C" {
 #endif
 
 /* C99 supports flexible array members. */
-#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#if defined(SJME_CONFIG_HAS_C99)
 	/** Flexible array members. */
 	#define sjme_flexibleArrayCount
 #endif
@@ -614,8 +650,7 @@ extern "C" {
 #elif defined(SJME_CONFIG_HAS_WINDOWS)
 	/** Supports Windows Atomic Access. */
 	#define SJME_CONFIG_HAS_ATOMIC_WIN32
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L && \
-	!defined(__STDC_NO_ATOMICS__)
+#elif defined(SJME_CONFIG_HAS_C11) && !defined(__STDC_NO_ATOMICS__)
 	/** Supports C11 atomics. */
 	#define SJME_CONFIG_HAS_ATOMIC_C11
 #elif defined(SJME_CONFIG_HAS_CLANG)
@@ -801,7 +836,7 @@ extern "C" {
 	/* Qualifier used multiple times, as there are volatile typedefs. */
 	#pragma warning(disable: 4114)
 #endif
-	
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

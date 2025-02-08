@@ -107,7 +107,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		return FALSE;
 	
 	/* The clipping area is set to the region that needs redrawing. */
-	pencil->api->setClip(pencil, event->area.x, event->area.y,
+	pencil->apiInThread->setClip(pencil, event->area.x, event->area.y,
 		event->area.width, event->area.height);
 	
 	/* Forward to callback. */
@@ -116,7 +116,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		w, h, 0);
 	
 	/* Reset state. */
-	pencil->api->setDefaults(pencil);
+	pencil->apiInThread->setDefaults(pencil);
 	
 	/* Do not perform standard drawing, unless an error occurs. */
 	if (!sjme_error_is(error))

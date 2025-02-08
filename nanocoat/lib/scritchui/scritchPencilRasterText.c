@@ -270,7 +270,7 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 		
 		/* Render character, note always at top+left anchor. */
 		cw = 0;
-		if (sjme_error_is(error = g->api->drawChar(g, c, dx, dy,
+		if (sjme_error_is(error = g->apiInThread->drawChar(g, c, dx, dy,
 			0, &cw)))
 			goto fail_drawChar;
 		
