@@ -20,21 +20,50 @@
 /* ------------------------------------------------------------------------ */
 
 /** Serial variables. */
-#define SJME_SCRITCHUI_SERIAL_VARS(what) \
+#define SJME_SDX_VARS(what) \
 	sjme_errorCode error; \
 	sjme_jboolean direct; \
-	sjme_scritchui_serialData data; \
-	SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)* serial
+	sjme_scritchui_serialData sdData;
+
+/** Invoke serial call and wait for result. */
+#define SJME_SDX_WAIT \
+	do { sjme_atomic_barrier(); \
+		if (sjme_error_is(error = inState->api->loopExecuteWait(inState, \
+		sjme_scritchui_serialDispatch, (void*)&sdData))) \
+		return sjme_error_default(error); \
+	return sdData.error; } while (0)
+
+/** Pass a serial value. */
+#define SJME_SDX_PASS(what) \
+	serial->what = what
+
+/** Setup pre-serialization. */
+#define SJME_SDX_SETUP(key, what) \
+	do { memset((void*)&sdData, 0, sizeof(sdData)); \
+	sdData.type = (key); \
+	sdData.error = SJME_ERROR_UNKNOWN; \
+	sdData.state = inState; \
+	serial = &sdData.data.what; } while (0)
+
+/** The name for serial data. */
+#define SDX_STRUCT_NAME(where, what) \
+	SJME_TOKEN_PASTE4(sjme_scritch, where, _serialData_, what)
+
+/* ------------------------------------------------------------------------ */
+
+/** Serial variables. */
+#define SJME_SDU_VARS(what) \
+	SDX_STRUCT_NAME(ui, what)* serial
 
 /** Pre-check call to make. */
-#define SJME_SCRITCHUI_SERIAL_PRE_CHECK \
+#define SJME_SDU_PRE_CHECK \
 	do { if (inState == NULL) \
     { \
 		return SJME_ERROR_NULL_ARGUMENTS; \
 	} } while(0)
 
 /** Check for being in the loop. */
-#define SJME_SCRITCHUI_SERIAL_LOOP_CHECK(what) \
+#define SJME_SDU_LOOP_CHECK(what) \
 	do { \
 		error = SJME_ERROR_NOT_IMPLEMENTED; \
 		direct = SJME_JNI_FALSE; \
@@ -48,66 +77,29 @@
 			return sjme_error_default(error); \
 	} while (0)
 
-/** Setup pre-serialization. */
-#define SJME_SCRITCHUI_SERIAL_SETUP(key, what) \
-	do { memset((void*)&data, 0, sizeof(data)); \
-	data.type = (key); \
-	data.error = SJME_ERROR_UNKNOWN; \
-	data.state = inState; \
-	serial = &data.data.what; } while (0)
-
-/** Invoke serial call and wait for result. */
-#define SJME_SDX_WAIT \
-	do { sjme_atomic_barrier(); \
-		if (sjme_error_is(error = inState->api->loopExecuteWait(inState, \
-		sjme_scritchui_serialDispatch, (void*)&data))) \
-		return sjme_error_default(error); \
-	return data.error; } while (0)
-
 /** Common shared chunk of forwarding code, to reduce duplicates. */
 #define SJME_SDU_CHUNK(what, whatType, directInvokeArgs) \
-	SJME_SCRITCHUI_SERIAL_VARS(what); \
+	SJME_SDX_VARS(what); \
+	SJME_SDU_VARS(what); \
 	 \
-	SJME_SCRITCHUI_SERIAL_PRE_CHECK; \
-	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(what); \
+	SJME_SDU_PRE_CHECK; \
+	SJME_SDU_LOOP_CHECK(what); \
 	 \
 	/* Direct call? */ \
 	if (direct) \
 		return inState->apiInThread->what directInvokeArgs; \
 	 \
 	/* Serialize and Store. */ \
-	SJME_SCRITCHUI_SERIAL_SETUP( \
+	SJME_SDX_SETUP( \
 		whatType, \
 		what)
-
-/** Pass a serial value. */
-#define SJME_SDX_PASS(what) \
-	serial->what = what
-
-/** Declares dispatch type. */
-#define SJME_SCRITCHUI_DISPATCH_DECL(what) \
-	SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)* volatile what
-
-
-/** Performs dispatch call (pen). */
-#define SJME_SDP_CALL(what, args) \
-	do { \
-	if (as->graphicsCall.g->apiInThread->what == NULL) \
-		return SJME_THREAD_RESULT(sjme_error_notImplemented(0)); \
-	data->error = as->graphicsCall.g->apiInThread->what args; } while (0)
-
-/** Simplified case call (pen). */
-#define SJME_SDP_CASE(what, whatType, args) \
-	case whatType: \
-		SJME_SDP_CALL(what, args); \
-		break
 
 /** Performs dispatch call. */
 #define SJME_SDU_CALL(what, args) \
 	do { \
 	if (state->apiInThread->what == NULL) \
 		return SJME_THREAD_RESULT(sjme_error_notImplemented(0)); \
-	data->error = state->apiInThread->what args; } while (0)
+	sdData->error = state->apiInThread->what args; } while (0)
 
 /** Simplified case call. */
 #define SJME_SDU_CASE(what, whatType, args) \
@@ -125,17 +117,76 @@
 		as->what.copyFrontEnd))
 
 /* ------------------------------------------------------------------------ */
+
+/** Serial variables. */
+#define SJME_SDP_VARS(what) \
+	sjme_scritchui inState; \
+	SDX_STRUCT_NAME(pen, what)* serial
+
+/** Pre-check call to make. */
+#define SJME_SDP_PRE_CHECK \
+	do { if (g == NULL || g->common.state == NULL) \
+    { \
+		return SJME_ERROR_NULL_ARGUMENTS; \
+	} inState = g->common.state;} while(0)
+
+/** Check for being in the loop. */
+#define SJME_SDP_LOOP_CHECK(what) \
+	do { \
+		error = SJME_ERROR_NOT_IMPLEMENTED; \
+		direct = SJME_JNI_FALSE; \
+		 \
+		if (inState->api->loopIsInThread == NULL || \
+            g->api->what == NULL || \
+            g->apiInThread->what == NULL) \
+        	return sjme_error_notImplemented(0); \
+		if (sjme_error_is(error = inState->api->loopIsInThread(inState, \
+				&direct))) \
+			return sjme_error_default(error); \
+	} while (0)
+
+/** Common shared chunk of forwarding code, to reduce duplicates. */
+#define SJME_SDP_CHUNK(what, whatType, directInvokeArgs) \
+	SJME_SDX_VARS(what); \
+	SJME_SDP_VARS(what); \
+	 \
+	SJME_SDP_PRE_CHECK; \
+	SJME_SDP_LOOP_CHECK(what); \
+	 \
+	/* Direct call? */ \
+	if (direct) \
+		return g->apiInThread->what directInvokeArgs; \
+	 \
+	/* Serialize and Store. */ \
+	SJME_SDX_SETUP( \
+		whatType, \
+		what)
+
+/** Performs dispatch call (pen). */
+#define SJME_SDP_CALL(what, args) \
+	do { \
+	if (as->graphicsCall.g->apiInThread->what == NULL) \
+		return SJME_THREAD_RESULT(sjme_error_notImplemented(0)); \
+	sdData->error = as->graphicsCall.g->apiInThread->what args; } while (0)
+
+/** Simplified case call (pen). */
+#define SJME_SDP_CASE(what, whatType, args) \
+	case whatType: \
+		SJME_SDP_CALL(what, args); \
+		break
+
+/* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */
 
 static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
-#define SJME_SCRITCHUI_DISPATCH_SWITCH_BEGIN switch (data->type) {
+#define SJME_SCRITCHUI_DISPATCH_SWITCH_BEGIN switch (sdData->type) {
 #define SJME_SCRITCHUI_DISPATCH_SWITCH_END \
 	default: \
 		return SJME_THREAD_RESULT(sjme_error_notImplemented(0)); }
 	
-	volatile sjme_scritchui_serialData* data;
+	volatile sjme_scritchui_serialData* sdData;
 	sjme_scritchui_serialDataUnion* as;
 	sjme_scritchui state;
 	
@@ -143,12 +194,12 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
 		
 	/* Emit barrier so we can access this. */
-	data = (sjme_scritchui_serialData*)anything;
+	sdData = (sjme_scritchui_serialData*)anything;
 	sjme_atomic_barrier();
 	
 	/* Restore info. */
-	state = data->state;
-	as = &data->data;
+	state = sdData->state;
+	as = &sdData->data;
 	
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
@@ -710,7 +761,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 /* clang-format on */ /* @formatter:on */
 	
 	/* Map result. */
-	return SJME_THREAD_RESULT(data->error);
+	return SJME_THREAD_RESULT(sdData->error);
 
 #undef SJME_SCRITCHUI_DISPATCH_SWITCH_BEGIN
 #undef SJME_SCRITCHUI_DISPATCH_SWITCH_END
@@ -1620,8 +1671,14 @@ sjme_errorCode sjme_scritchui_coreSerial_windowSetVisible(
 sjme_errorCode sjme_scritchpen_coreSerial_close(
 sjme_attrInNotNull sjme_scritchui_pencil g)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(close,
+		SJME_SCRITCHUI_SERIAL_PEN_CLOSE,
+		(g));
+		
+	SJME_SDX_PASS(g);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_copyArea(
@@ -1634,8 +1691,21 @@ sjme_errorCode sjme_scritchpen_coreSerial_copyArea(
 	sjme_attrInValue sjme_jint dy,
 	sjme_attrInValue sjme_jint anchor)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(copyArea,
+		SJME_SCRITCHUI_SERIAL_PEN_COPY_AREA,
+		(g, sx, sy, w, h, dx, dy, anchor));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(sx);
+	SJME_SDX_PASS(sy);
+	SJME_SDX_PASS(w);
+	SJME_SDX_PASS(h);
+	SJME_SDX_PASS(dx);
+	SJME_SDX_PASS(dy);
+	SJME_SDX_PASS(anchor);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_drawHoriz(
@@ -1644,8 +1714,17 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawHoriz(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint w)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(drawHoriz,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_HORIZ,
+		(g, x, y, w));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	SJME_SDX_PASS(w);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_drawRect(
@@ -1655,8 +1734,18 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawRect(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(drawRect,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_RECT,
+		(g, x, y, w, h));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	SJME_SDX_PASS(w);
+	SJME_SDX_PASS(h);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_drawTriangle(
@@ -1668,8 +1757,20 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawTriangle(
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(drawTriangle,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_TRIANGLE,
+		(g, x1, y1, x2, y2, x3, y3));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x1);
+	SJME_SDX_PASS(y1);
+	SJME_SDX_PASS(x2);
+	SJME_SDX_PASS(y2);
+	SJME_SDX_PASS(x3);
+	SJME_SDX_PASS(y3);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_drawChar(
@@ -1680,8 +1781,19 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawChar(
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrOutNullable sjme_jint* outCw)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(drawChar,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_CHAR,
+		(g, c, x, y, anchor, outCw));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(c);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	SJME_SDX_PASS(anchor);
+	SJME_SDX_PASS(outCw);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_drawChars(
@@ -1693,8 +1805,20 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawChars(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(drawChars,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_CHARS,
+		(g, s, o, l, x, y, anchor));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(s);
+	SJME_SDX_PASS(o);
+	SJME_SDX_PASS(l);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	SJME_SDX_PASS(anchor);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_drawLine(
@@ -1704,8 +1828,18 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawLine(
 	sjme_attrInValue sjme_jint x2,
 	sjme_attrInValue sjme_jint y2)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(drawLine,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_LINE,
+		(g, x1, y1, x2, y2));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x1);
+	SJME_SDX_PASS(y1);
+	SJME_SDX_PASS(x2);
+	SJME_SDX_PASS(y2);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_drawPixel(
@@ -1713,8 +1847,16 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawPixel(
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(drawPixel,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_PIXEL,
+		(g, x, y));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 	
 sjme_errorCode sjme_scritchpen_coreSerial_drawSubstring(
@@ -1726,8 +1868,20 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawSubstring(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(drawSubstring,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_SUBSTRING,
+		(g, s, o, l, x, y, anchor));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(s);
+	SJME_SDX_PASS(o);
+	SJME_SDX_PASS(l);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	SJME_SDX_PASS(anchor);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_drawXRGB32Region(
@@ -1750,8 +1904,33 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawXRGB32Region(
 	sjme_attrInPositive sjme_jint origImgWidth,
 	sjme_attrInPositive sjme_jint origImgHeight)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(drawXRGB32Region,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_XRGB32REGION,
+		(g, data, off, dataLen, scanLen, alpha,
+			xSrc, ySrc, wSrc, hSrc, trans, xDest, yDest,
+			anchor, wDest, hDest, origImgWidth, origImgHeight));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(data);
+	SJME_SDX_PASS(off);
+	SJME_SDX_PASS(dataLen);
+	SJME_SDX_PASS(scanLen);
+	SJME_SDX_PASS(alpha);
+	SJME_SDX_PASS(xSrc);
+	SJME_SDX_PASS(ySrc);
+	SJME_SDX_PASS(wSrc);
+	SJME_SDX_PASS(hSrc);
+	SJME_SDX_PASS(trans);
+	SJME_SDX_PASS(xDest);
+	SJME_SDX_PASS(yDest);
+	SJME_SDX_PASS(anchor);
+	SJME_SDX_PASS(wDest);
+	SJME_SDX_PASS(hDest);
+	SJME_SDX_PASS(origImgWidth);
+	SJME_SDX_PASS(origImgHeight);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_fillRect(
@@ -1761,8 +1940,18 @@ sjme_errorCode sjme_scritchpen_coreSerial_fillRect(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(fillRect,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_RECT,
+		(g, x, y, w, h));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	SJME_SDX_PASS(w);
+	SJME_SDX_PASS(h);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_fillTriangle(
@@ -1774,8 +1963,20 @@ sjme_errorCode sjme_scritchpen_coreSerial_fillTriangle(
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(fillTriangle,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_TRIANGLE,
+		(g, x1, y1, x2, y2, x3, y3));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x1);
+	SJME_SDX_PASS(y1);
+	SJME_SDX_PASS(x2);
+	SJME_SDX_PASS(y2);
+	SJME_SDX_PASS(x3);
+	SJME_SDX_PASS(y3);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_mapColor(
@@ -1784,16 +1985,32 @@ sjme_errorCode sjme_scritchpen_coreSerial_mapColor(
 	sjme_attrInValue sjme_jint inRgbOrRaw,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(mapColor,
+		SJME_SCRITCHUI_SERIAL_PEN_MAP_COLOR,
+		(g, fromRaw, inRgbOrRaw, outColor));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(fromRaw);
+	SJME_SDX_PASS(inRgbOrRaw);
+	SJME_SDX_PASS(outColor);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_setAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(setAlphaColor,
+		SJME_SCRITCHUI_SERIAL_PEN_SET_ALPHA_COLOR,
+		(g, argb));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(argb);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_setBlendingMode(
@@ -1801,8 +2018,15 @@ sjme_errorCode sjme_scritchpen_coreSerial_setBlendingMode(
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
 	sjme_scritchui_pencilBlendingMode mode)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(setBlendingMode,
+		SJME_SCRITCHUI_SERIAL_PEN_SET_BLENDING_MODE,
+		(g, mode));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(mode);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_setClip(
@@ -1812,22 +2036,44 @@ sjme_errorCode sjme_scritchpen_coreSerial_setClip(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(setClip,
+		SJME_SCRITCHUI_SERIAL_PEN_SET_CLIP,
+		(g, x, y, w, h));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	SJME_SDX_PASS(w);
+	SJME_SDX_PASS(h);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_setDefaultFont(
 sjme_attrInNotNull sjme_scritchui_pencil g)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(setDefaultFont,
+		SJME_SCRITCHUI_SERIAL_PEN_SET_DEFAULT_FONT,
+		(g));
+		
+	SJME_SDX_PASS(g);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 	
 sjme_errorCode sjme_scritchpen_coreSerial_setDefaults(
 sjme_attrInNotNull sjme_scritchui_pencil g)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(setDefaults,
+		SJME_SCRITCHUI_SERIAL_PEN_SET_DEFAULTS,
+		(g));
+		
+	SJME_SDX_PASS(g);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 	
 sjme_errorCode sjme_scritchpen_coreSerial_setStrokeStyle(
@@ -1835,24 +2081,45 @@ sjme_errorCode sjme_scritchpen_coreSerial_setStrokeStyle(
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
 	sjme_scritchui_pencilStrokeMode style)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(setStrokeStyle,
+		SJME_SCRITCHUI_SERIAL_PEN_SET_STROKE_STYLE,
+		(g, style));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(style);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 	
 sjme_errorCode sjme_scritchpen_coreSerial_setFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_scritchui_pencilFont font)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(setFont,
+		SJME_SCRITCHUI_SERIAL_PEN_SET_FONT,
+		(g, font));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(font);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_setParametersFrom(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_scritchui_pencil from)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(setParametersFrom,
+		SJME_SCRITCHUI_SERIAL_PEN_SET_PARAMETERS_FROM,
+		(g, from));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(from);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
 sjme_errorCode sjme_scritchpen_coreSerial_translate(
@@ -1860,7 +2127,15 @@ sjme_errorCode sjme_scritchpen_coreSerial_translate(
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_SDP_CHUNK(translate,
+		SJME_SCRITCHUI_SERIAL_PEN_TRANSLATE,
+		(g, x, y));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
 }
 
