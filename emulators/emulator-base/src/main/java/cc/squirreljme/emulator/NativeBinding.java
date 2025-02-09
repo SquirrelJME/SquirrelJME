@@ -11,6 +11,7 @@ package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.ReflectionShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,22 +93,27 @@ public final class NativeBinding
 			NativeBinding.loadedLibPath = libFile;
 				
 			// Debug
-			System.err.printf("Java Version: %s%n",
-				System.getProperty("java.version"));
-			System.err.printf("Java Over-Layer: Loading %s...%n", libFile);
+			if (Debugging.ENABLED)
+			{
+				System.err.printf("Java Version: %s%n",
+					System.getProperty("java.version"));
+				System.err.printf("Java Over-Layer: Loading %s...%n", libFile);
+			}
 			
 			// Try loading the library now
 			System.load(libFile.toString());
 			
 			// Debug
-			System.err.printf("Java Over-Layer: Binding methods...%n");
+			if (Debugging.ENABLED)
+				System.err.printf("Java Over-Layer: Binding methods...%n");
 			
 			// Bind methods
 			if (NativeBinding.__bindMethods() != 0)
 				throw new RuntimeException("Could not bind methods!");
 			
 			// Debug
-			System.err.printf("Java Over-Layer: Methods bound!%n");
+			if (Debugging.ENABLED)
+				System.err.printf("Java Over-Layer: Methods bound!%n");
 		}
 		catch (IOException e)
 		{
@@ -117,8 +123,9 @@ public final class NativeBinding
 		// Track execution time
 		finally
 		{
-			System.err.printf("Java Over-Layer: Loading took %dms%n",
-				(System.nanoTime() - loadNs) / 1_000_000L);
+			if (Debugging.ENABLED)
+				System.err.printf("Java Over-Layer: Loading took %dms%n",
+					(System.nanoTime() - loadNs) / 1_000_000L);
 		}
 	}
 	

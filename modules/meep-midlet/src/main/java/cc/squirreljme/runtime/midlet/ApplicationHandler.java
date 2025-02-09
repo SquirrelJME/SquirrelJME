@@ -339,13 +339,13 @@ public final class ApplicationHandler
 	private static void __emit(Throwable __throwable)
 	{
 		// Show a noisy banner to make this visible
-		System.err.println("****************************************");
-		System.err.println("APPLICATION THREW EXCEPTION:");
+		Debugging.debugNote("****************************************");
+		Debugging.debugNote("APPLICATION THREW EXCEPTION:");
 		
 		// Make sure the output is printed
 		__throwable.printStackTrace(System.err);
 		
 		// End of banner
-		System.err.println("****************************************");
+		Debugging.debugNote("****************************************");
 	}
 }

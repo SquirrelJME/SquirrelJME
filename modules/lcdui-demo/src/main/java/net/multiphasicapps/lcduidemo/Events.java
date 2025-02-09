@@ -10,6 +10,7 @@
 package net.multiphasicapps.lcduidemo;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Font;
@@ -152,7 +153,7 @@ public class Events
 			this._numkeys++;
 			
 			// Report event
-			System.err.printf("Key Pressed: %d%n", __code);
+			Debugging.debugNote("Key Pressed: %d%n", __code);
 			
 			// Repaint to update stuff
 			this.repaint();
@@ -170,7 +171,7 @@ public class Events
 			this._numkeys++;
 			
 			// Report event
-			System.err.printf("Key Released: %d%n", __code);
+			Debugging.debugNote("Key Released: %d%n", __code);
 			
 			// Repaint to update stuff
 			this.repaint();
@@ -188,7 +189,7 @@ public class Events
 			this._numkeys++;
 			
 			// Report event
-			System.err.printf("Key Repeated: %d%n", __code);
+			Debugging.debugNote("Key Repeated: %d%n", __code);
 			
 			// Repaint to update stuff
 			this.repaint();
