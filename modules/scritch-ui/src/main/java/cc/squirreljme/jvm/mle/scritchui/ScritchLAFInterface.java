@@ -73,6 +73,15 @@ public interface ScritchLAFInterface
 	int lafFocusBorderStyle(boolean __focused);
 	
 	/**
+	 * Are alerts natively supported?
+	 *
+	 * @return If alerts are natively supported?
+	 * @since 2025/02/09
+	 */
+	@SquirrelJMEVendorApi
+	boolean lafHasAlerts();
+	
+	/**
 	 * Returns the image size that best represents the given element.
 	 *
 	 * @param __elem The element to get.

@@ -112,6 +112,8 @@
 
 #define FORWARD_DESC___lafElementColor "(" \
 	DESC_LONG DESC_LONG DESC_INT ")" DESC_INT
+#define FORWARD_DESC___lafHasAlerts "(" \
+	DESC_LONG ")" DESC_BOOLEAN
 
 #define FORWARD_DESC___labelSetString "(" \
 	DESC_LONG DESC_LONG DESC_STRING ")" DESC_VOID
@@ -1753,6 +1755,24 @@ JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	return rgb;
 }
 
+JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__lafHasAlerts)(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+
+	/* Recover state. */
+	state = (sjme_scritchui)stateP;
+	if (state == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Ask the native API. */
+	return state->hasAlerts;
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__labelSetString)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong componentP, jstring string)
@@ -2845,6 +2865,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __hardwareGraphics),
 	FORWARD_list(NativeScritchDylib, __labelSetString),
 	FORWARD_list(NativeScritchDylib, __lafElementColor),
+	FORWARD_list(NativeScritchDylib, __lafHasAlerts),
 	FORWARD_list(NativeScritchDylib, __linkInit),
 	FORWARD_list(NativeScritchDylib, __listNew),
 	FORWARD_list(NativeScritchDylib, __loopExecute),

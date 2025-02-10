@@ -69,6 +69,16 @@ public class DylibLookAndFeelInterface
 		return 0;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/02/09
+	 */
+	@Override
+	public boolean lafHasAlerts()
+	{
+		return NativeScritchDylib.__lafHasAlerts(this.dyLib._stateP);
+	}
+	
 	@Override
 	public int lafImageSize(int __elem, boolean __height)
 		throws MLECallError

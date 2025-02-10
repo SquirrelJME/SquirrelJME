@@ -9,11 +9,15 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.exceptions.MLECallErrorCode;
+import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchViewBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
@@ -110,6 +114,12 @@ public abstract class Screen
 		// Setup super first
 		super.__execRevalidate(__parent);
 		
+		// If this screen component just refers to the panel, we already
+		// did this in the super class so do absolutely nothing
+		ScritchComponentBracket component = this.__scritchComponent();
+		if (component == this.__state().scritchPanel())
+			return;
+		
 		// Get the display scale to determine how the list should scale
 		DisplayScale scale = __parent.display()._scale;
 		
@@ -121,13 +131,24 @@ public abstract class Screen
 		
 		// Make sure the displayable has the correct texture size and that
 		// either the view or the actual component if there is no view also
-		// has the given size
+		// has the given size, this sets the actual subcomponent accordingly
 		DisplayableState state = this.__state();
 		ScritchInterface scritchApi = state.scritchApi();
-		scritchApi.container().containerSetBounds(
-			state.scritchPanel(),
-			(view != null ? view : this.__scritchComponent()),
-			0, 0, w, h);
+		try
+		{
+			Debugging.debugNote("Revalidate S");
+			scritchApi.container().containerSetBounds(
+				state.scritchPanel(),
+				(view != null ? view : component),
+				0, 0, w, h);
+		}
+		catch (MLECallError __e)
+		{
+			// Ignore if not a subcomponent as there may be a desync
+			if (__e.distinction == MLECallErrorCode.NOT_SUB_COMPONENT)
+				return;
+			throw __e;
+		}
 	}
 	
 	/**

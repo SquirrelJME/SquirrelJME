@@ -410,6 +410,17 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Are native alerts supported?
+	 *
+	 * @param __stateP The state pointer.
+	 * @return If alerts are supported, or not.
+	 * @throws MLECallError On any errors.
+	 * @since 2025/02/09
+	 */
+	static native boolean __lafHasAlerts(long __stateP)
+		throws MLECallError;
+	
+	/**
 	 * Link in the library and load the given structure pointer.
 	 *
 	 * @param __libPath The library path.

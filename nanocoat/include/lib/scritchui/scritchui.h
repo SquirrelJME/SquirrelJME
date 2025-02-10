@@ -2211,9 +2211,6 @@ struct sjme_scritchui_stateBase
 	/** Function to obtain the current nanotime, for input events. */
 	sjme_nal_nanoTimeFunc nanoTime;
 	
-	/** Is this a panel only interface? */
-	sjme_jboolean isPanelOnly;
-	
 	/** Wrapped ScritchUI state, if this is a wrapper. */
 	sjme_scritchui wrappedState;
 	
@@ -2231,6 +2228,12 @@ struct sjme_scritchui_stateBase
 
 	/** The loop queue for manual event loops. */
 	sjme_alignPointer sjme_scritchui_loopQueue loopQueue;
+	
+	/** Is this a panel only interface? */
+	sjme_jboolean isPanelOnly;
+
+	/** Does this have alert support? */
+	sjme_jboolean hasAlerts;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */

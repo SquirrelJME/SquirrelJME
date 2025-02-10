@@ -392,6 +392,10 @@ sjme_errorCode sjme_scritchpen_core_drawHoriz(
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Not drawing anything? */
+	if (w <= 0)
+		return SJME_ERROR_NONE;
 		
 	/* Transform. */
 	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
@@ -433,7 +437,8 @@ sjme_errorCode sjme_scritchpen_core_drawLine(
 	
 	/* Actually a horizontal line? Use faster drawing. */
 	if (y1 == y2)
-		return g->apiInThread->drawHoriz(g, x1, y1, x2 - x1);
+		return g->apiInThread->drawHoriz(g, x1, y1,
+			(x2 < x1 ? x1 - x2 : x2 - x1));
 	
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
