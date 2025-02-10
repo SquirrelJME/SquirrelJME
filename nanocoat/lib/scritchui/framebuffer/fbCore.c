@@ -40,12 +40,13 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	.containerSetBounds = sjme_scritchui_fb_containerSetBounds,
 	.hardwareGraphics = NULL,
 	.labelSetString = sjme_scritchui_fb_labelSetString,
+	.lafDpiProject = sjme_scritchui_fb_lafDpiProject,
 	.lafElementColor = sjme_scritchui_fb_lafElementColor,
 	.listNew = sjme_scritchui_fb_listNew,
 	.loopExecute = sjme_scritchui_fb_loopExecute,
 	.loopExecuteLater = sjme_scritchui_fb_loopExecuteLater,
 	.loopExecuteWait = sjme_scritchui_fb_loopExecuteWait,
-	.loopIterate = NULL,
+	.loopIterate = sjme_scritchui_fb_loopIterate,
 	.menuBarNew = sjme_scritchui_fb_menuBarNew,
 	.menuInsert = sjme_scritchui_fb_menuInsert,
 	.menuItemNew = sjme_scritchui_fb_menuItemNew,
@@ -84,9 +85,10 @@ sjme_errorCode sjme_scritchui_fb_apiInit(
 	/* Debug. */
 	sjme_message("Framebuffer wrapper initialized!");
 	
-	/* Copy any native bugs. */
+	/* Copy any native bugs, and clear ones that make no sense for this. */
 	memmove(&inState->bugs, &inState->wrappedState->bugs,
 		sizeof(inState->bugs));
+	inState->bugs.windowVisibilityUnknown = SJME_JNI_FALSE;
 	
 	/* Set internal implementation functions. */
 	inState->implIntern = &sjme_scritchui_fbInter;

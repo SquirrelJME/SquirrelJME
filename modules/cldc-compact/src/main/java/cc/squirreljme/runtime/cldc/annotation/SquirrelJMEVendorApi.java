@@ -17,7 +17,8 @@ import java.lang.annotation.Target;
 
 /**
  * This represents an exported SquirrelJME API, one which is intended to be
- * used by third parties and otherwise on specifically SquirrelJME.
+ * used by third parties and otherwise on specifically SquirrelJME and
+ * within SquirrelJME.
  *
  * @since 2023/01/27
  */

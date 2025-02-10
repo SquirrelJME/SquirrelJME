@@ -410,6 +410,17 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Are native alerts supported?
+	 *
+	 * @param __stateP The state pointer.
+	 * @return If alerts are supported, or not.
+	 * @throws MLECallError On any errors.
+	 * @since 2025/02/09
+	 */
+	static native boolean __lafHasAlerts(long __stateP)
+		throws MLECallError;
+	
+	/**
 	 * Link in the library and load the given structure pointer.
 	 *
 	 * @param __libPath The library path.
@@ -469,6 +480,17 @@ public final class NativeScritchDylib
 	 * @since 2024/04/16
 	 */
 	static native boolean __loopIsInThread(long __stateP);
+	
+	/**
+	 * Iterates a single loop run.
+	 *
+	 * @param __stateP The state pointer.
+	 * @return If this has terminated.
+	 * @throws MLECallError If the loop could not be iterated.
+	 * @since 2024/12/22
+	 */
+	static native boolean __loopIterate(long __stateP)
+		throws MLECallError;
 	
 	/**
 	 * Creates a hardware reference bracket to the native hardware graphics.

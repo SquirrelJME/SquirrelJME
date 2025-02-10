@@ -224,7 +224,7 @@ public interface MLECallErrorCode
 	@SquirrelJMEVendorApi
 	byte ALREADY_IN_CONTAINER = -49;
 	
-	/** Not a sub component. */
+	/** Not a sub-component. */
 	@SquirrelJMEVendorApi
 	byte NOT_SUB_COMPONENT = -50;
 	

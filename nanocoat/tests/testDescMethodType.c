@@ -238,9 +238,9 @@ static const testDescMethodTypeEntry testEntries[] =
 SJME_TEST_DECLARE(testDescMethodType)
 {
 	const testDescMethodTypeEntry* entry;
-	sjme_nvm_desc_methodType result;
-	sjme_nvm_desc_fieldType field;
-	sjme_list_sjme_lpstr* fieldStrings;
+	sjme_desc_methodType result;
+	sjme_desc_fieldType field;
+	sjme_list_sjme_lpcstr* fieldStrings;
 	sjme_lpcstr string, subString;
 	sjme_jint strLen, subStrLen, strHash, atEntry, i;
 	
@@ -258,7 +258,7 @@ SJME_TEST_DECLARE(testDescMethodType)
 		
 		/* Interpret method entry. */
 		result = NULL;
-		if (sjme_error_is(sjme_nvm_desc_interpretMethodType(test->pool,
+		if (sjme_error_is(sjme_desc_interpretMethodType(test->pool,
 			&result, string, strLen)) || result == NULL)
 			return sjme_unit_fail(test, "Could not interpret %s?", string);
 		
@@ -279,8 +279,7 @@ SJME_TEST_DECLARE(testDescMethodType)
 		/* Parse recorded fields. */
 		fieldStrings = NULL;
 		if (sjme_error_is(sjme_list_flattenArgNul(test->pool,
-			(sjme_list_sjme_lpstr**)&fieldStrings,
-			entry->fields) ||
+			(void*)&fieldStrings, entry->fields) ||
 			fieldStrings == NULL))
 			return sjme_unit_fail(test, "Could not parse fields of %s?",
 				string);
@@ -298,14 +297,14 @@ SJME_TEST_DECLARE(testDescMethodType)
 			
 			/* Parse */
 			field = NULL;
-			if (sjme_error_is(sjme_nvm_desc_interpretFieldType(
+			if (sjme_error_is(sjme_desc_interpretFieldType(
 				test->pool, &field, subString,
 				subStrLen)) || field == NULL)
 				return sjme_unit_fail(test, "Could not parse field %s in %s?",
 					subString, string);
 			
 			/* Should be the same field. */
-			sjme_unit_equalI(test, 0, sjme_nvm_desc_compareFieldC(
+			sjme_unit_equalI(test, 0, sjme_desc_compareFieldC(
 				result->fields->elements[i], field),
 				"Decoded field %s is incorrect in %s (%.*s == %s)?",
 					subString, string,
@@ -317,67 +316,67 @@ SJME_TEST_DECLARE(testDescMethodType)
 	/* Invalid methods types. */
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
-		sjme_nvm_desc_interpretMethodType(test->pool,
+		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("")),
 		"Blank is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
-		sjme_nvm_desc_interpretMethodType(test->pool,
+		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("V")),
 		"Return only is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
-		sjme_nvm_desc_interpretMethodType(test->pool,
+		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("()")),
 		"Arguments only is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
-		sjme_nvm_desc_interpretMethodType(test->pool,
+		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("()II")),
 		"Double return type is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
-		sjme_nvm_desc_interpretMethodType(test->pool,
+		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("()[")),
 		"Unspecified array return is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
-		sjme_nvm_desc_interpretMethodType(test->pool,
+		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("()L")),
 		"Unspecified object return is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
-		sjme_nvm_desc_interpretMethodType(test->pool,
+		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("()LOops")),
 		"Unclosed object return is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
-		sjme_nvm_desc_interpretMethodType(test->pool,
+		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("([)V")),
 		"Unspecified array is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
-		sjme_nvm_desc_interpretMethodType(test->pool,
+		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("(L)V")),
 		"Unspecified object is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
-		sjme_nvm_desc_interpretMethodType(test->pool,
+		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("(LOops)V")),
 		"Unclosed object is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
-		sjme_nvm_desc_interpretMethodType(test->pool,
+		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("V()")),
 		"Wrong order is valid?");
 	

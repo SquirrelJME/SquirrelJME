@@ -156,14 +156,14 @@ static sjme_errorCode sjme_scritchui_baseInputListener(
 	logicalMouse = &inComponent->state.mouse[1];
 	
 	/* Mouse events. */
-	if (clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION ||
-		clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED ||
-		clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED)
+	if ((clone.type & (SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION |
+		SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED |
+		SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED)) != 0)
 	{
 		/* Is this a press/release event? */
 		isPressEvent = SJME_JNI_FALSE;
-		if (clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED ||
-			clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED)
+		if ((clone.type & (SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED |
+			SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED)) != 0)
 			isPressEvent = SJME_JNI_TRUE;
 		
 		/* Pull from logical unless position is set as some */
@@ -200,7 +200,8 @@ static sjme_errorCode sjme_scritchui_baseInputListener(
 		if (isPressEvent && clone.data.mouseButton.button != 0)
 		{
 			bit = (1 << (clone.data.mouseButton.button - 1)); 
-			if (clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED)
+			if ((clone.type &
+				SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED) != 0)
 				currentMouse->mouseButtons |= bit;
 			else
 				currentMouse->mouseButtons &= ~bit;
@@ -807,7 +808,7 @@ sjme_errorCode sjme_scritchui_core_componentSize(
 	
 	/* Not supported? */
 	if (inState->impl->componentSize == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
+		return sjme_error_notImplemented(0);
 	
 	/* Forward. */
 	return inState->impl->componentSize(inState, inComponent,

@@ -65,6 +65,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	.containerSetBounds = sjme_scritchui_win32_containerSetBounds,
 	.hardwareGraphics = NULL,
 	.labelSetString = sjme_scritchui_win32_labelSetString,
+	.lafDpiProject = NULL,
 	.lafElementColor = sjme_scritchui_win32_lafElementColor,
 	.listNew = NULL,
 	.loopExecute = NULL,

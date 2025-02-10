@@ -64,3 +64,21 @@ sjme_errorCode sjme_scritchui_fb_loopExecuteWait(
 	return wrappedState->apiInThread->loopExecuteWait(wrappedState,
 		callback, anything);
 }
+
+sjme_errorCode sjme_scritchui_fb_loopIterate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_jboolean blocking,
+	sjme_attrOutNullable sjme_jboolean* outHasTerminated)
+{
+	sjme_scritchui wrappedState;
+
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+
+	/* Forward call. */
+	return wrappedState->apiInThread->loopIterate(wrappedState, blocking,
+		outHasTerminated);
+}

@@ -173,3 +173,31 @@ SquirrelJME will automatically add to the classpath from:
  * `$SQUIRRELJME_JAVA_HOME/lib/`
  * `$SQUIRRELJME_JAVA_HOME/jre/lib/`
  * `{Data}/lib/`
+
+## Common Issues
+
+***STANDALONE ISSUE?:*** Try running with either or both of
+the options `-Xclutter:debug` and/or `-Xemulator:hosted`.
+
+***TRYING TO RUN DoJa/Star (i-mode) SOFTWARE?:*** Both
+DoJa and Star require the accompanying `.jam` file to be able
+to load the titles as the Jar has no information itself on
+how to start such titles. Some DoJa/Star software will also
+require the `.sp` (Scratchpad) file as it relies on DLC which
+must have already been downloaded, considering the services
+for downloading such DLC are no longer online.
+
+***UI Freezing/Broken on macOS?:*** Try running with the following
+command `java -XstartOnFirstThread -jar squirreljme-standalone.jar`, as this
+forces OpenJDK and derivatives to have the Cocoa event loop on the first
+thread, which is required for it to work correctly.
+
+## Scaling
+
+SquirrelJME supports scaling of any MIDP `Canvas`, to override the default
+scale factor you may specify:
+
+ * System property:
+   * `cc.squirreljme.scale=(multiplier|WxH)`
+ * Environment Variable:
+   * `SQUIRRELJME_SCALE=(multiplier|WxH)`

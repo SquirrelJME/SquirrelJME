@@ -57,6 +57,7 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchValueUpdateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchViewListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -95,19 +96,6 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void containerAdd(ScritchContainerBracket __container,
-		ScritchComponentBracket __component)
-		throws MLECallError
-	{
-		this.api.container().containerAdd(__container, __component);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
 	public PencilFontBracket[] builtinFonts()
 	{
 		return this.api.environment().builtinFonts();
@@ -119,83 +107,9 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void windowCallAttention(ScritchWindowBracket __window)
-		throws MLECallError
-	{
-		this.api.window().windowCallAttention(__window);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
 	public ScritchChoiceInterface choice()
 	{
 		return this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public ScritchComponentInterface component()
-	{
-		return this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public ScritchContainerInterface container()
-	{
-		return this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int windowContentHeight(
-		ScritchWindowBracket __window)
-		throws MLECallError
-	{
-		return this.api.window().windowContentHeight(__window);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void windowContentMinimumSize(ScritchWindowBracket __window,
-		int __w,
-		int __h)
-		throws MLECallError
-	{
-		this.api.window().windowContentMinimumSize(__window, __w, __h);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int windowContentWidth(
-		ScritchWindowBracket __window)
-		throws MLECallError
-	{
-		return this.api.window().windowContentWidth(__window);
 	}
 	
 	/**
@@ -228,11 +142,415 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public int screenDpi(
-		ScritchScreenBracket __screen)
+	public int choiceGetSelectedIndex(
+		ScritchChoiceBracket __choice)
 		throws MLECallError
 	{
-		return this.api.screen().screenDpi(__screen);
+		return this.api.choice().choiceGetSelectedIndex(__choice);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public int choiceInsert(
+		ScritchChoiceBracket __choice,
+		int __atIndex)
+		throws MLECallError
+	{
+		return this.api.choice().choiceInsert(__choice, __atIndex);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public int choiceLength(
+		@Nullable ScritchChoiceBracket __choice)
+		throws MLECallError
+	{
+		return this.api.choice().choiceLength(__choice);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void choiceSetEnabled(ScritchChoiceBracket __choice,
+		int __atIndex,
+		boolean __enabled)
+		throws MLECallError
+	{
+		this.api.choice().choiceSetEnabled(__choice, __atIndex, __enabled);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void choiceSetImage(ScritchChoiceBracket __choice,
+		int __atIndex,
+		@Nullable int[] __data,
+		int __off,
+		int __scanLen,
+		int __width,
+		int __height)
+		throws MLECallError
+	{
+		this.api.choice().choiceSetImage(__choice, __atIndex, __data, __off,
+			__scanLen, __width, __height);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void choiceSetSelected(ScritchChoiceBracket __choice,
+		int __atIndex,
+		boolean __selected)
+		throws MLECallError
+	{
+		this.api.choice().choiceSetSelected(__choice, __atIndex, __selected);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void choiceSetString(ScritchChoiceBracket __choice,
+		int __atIndex,
+		@Nullable String __string)
+		throws MLECallError
+	{
+		this.api.choice().choiceSetString(__choice, __atIndex, __string);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public ScritchComponentInterface component()
+	{
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public int componentGetHeight(
+		ScritchComponentBracket __component)
+		throws MLECallError
+	{
+		return this.api.component().componentGetHeight(__component);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public @Nullable ScritchComponentBracket componentGetParent(
+		ScritchComponentBracket __component)
+		throws MLECallError
+	{
+		return this.api.component().componentGetParent(__component);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void componentRepaint(ScritchComponentBracket __component)
+		throws MLECallError
+	{
+		this.api.paintable().componentRepaint(__component);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void componentRevalidate(ScritchComponentBracket __component)
+		throws MLECallError
+	{
+		this.api.component().componentRevalidate(__component);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void componentSetActivateListener(ScritchComponentBracket __component,
+		ScritchActivateListener __listener)
+		throws MLECallError
+	{
+		this.api.component().componentSetActivateListener(__component,
+			__listener);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void componentSetPaintListener(ScritchPaintableBracket __component,
+		@Nullable ScritchPaintListener __listener)
+		throws MLECallError
+	{
+		this.api.paintable().componentSetPaintListener(__component, __listener);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void componentSetSizeListener(ScritchComponentBracket __component,
+		ScritchSizeListener __listener)
+		throws MLECallError
+	{
+		this.api.component().componentSetSizeListener(__component, __listener);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void componentSetValueUpdateListener(ScritchComponentBracket __component,
+		ScritchValueUpdateListener __listener)
+		throws MLECallError
+	{
+		this.api.component().componentSetValueUpdateListener(__component, __listener);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void componentSetVisibleListener(ScritchComponentBracket __component,
+		ScritchVisibleListener __listener)
+		throws MLECallError
+	{
+		this.api.component().componentSetVisibleListener(__component, __listener);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public int componentWidth(
+		ScritchComponentBracket __component)
+		throws MLECallError
+	{
+		return this.api.component().componentWidth(__component);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public ScritchContainerInterface container()
+	{
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void containerAdd(ScritchContainerBracket __container,
+		ScritchComponentBracket __component)
+		throws MLECallError
+	{
+		this.api.container().containerAdd(__container, __component);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void containerRemoveAll(ScritchContainerBracket __container)
+		throws MLECallError
+	{
+		this.api.container().containerRemoveAll(__container);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void containerSetBounds(ScritchContainerBracket __container,
+		ScritchComponentBracket __component, int __x, int __y,
+		int __w,
+		int __h)
+		throws MLECallError
+	{
+		this.api.container().containerSetBounds(__container, __component,
+			__x, __y, __w, __h);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public ScritchEnvironmentInterface environment()
+	{
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public ScritchEventLoopInterface eventLoop()
+	{
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public PencilFontBracket fontDerive(
+		PencilFontBracket __font, int __style,
+		int __pixelSize)
+		throws MLECallError
+	{
+		return this.api.environment().fontDerive(__font, __style, __pixelSize);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public PencilBracket hardwareGraphics(int __pf,
+		int __bw,
+		int __bh,
+		Object __buf, @Nullable int[] __pal, int __sx, int __sy,
+		int __sw,
+		int __sh)
+		throws MLECallError
+	{
+		return this.api.hardwareGraphics(__pf, __bw, __bh, __buf, __pal,
+			__sx, __sy, __sw, __sh);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public boolean inLoop()
+	{
+		return this.api.eventLoop().inLoop();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public boolean isInhibitingSleep()
+	{
+		return this.api.environment().isInhibitingSleep();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public boolean isPanelOnly()
+	{
+		return this.api.environment().isPanelOnly();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return
+	 * @since 2024/12/22
+	 */
+	@Override
+	public boolean iterate()
+		throws MLECallError
+	{
+		return this.api.eventLoop().iterate();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public ScritchLabelInterface label()
+	{
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void labelSetString(ScritchLabelBracket __label,
+		@Nullable String __string)
+		throws MLECallError
+	{
+		this.api.label().labelSetString(__label, __string);
 	}
 	
 	/**
@@ -255,11 +573,22 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void panelEnableFocus(ScritchPanelBracket __panel, boolean __enabled,
-		boolean __default)
-		throws MLECallError
+	public int lafFocusBorderStyle(boolean __focused)
 	{
-		this.api.panel().panelEnableFocus(__panel, __enabled, __default);
+		return this.api.environment().lookAndFeel()
+			.lafFocusBorderStyle(__focused);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/02/09
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public boolean lafHasAlerts()
+	{
+		return this.api.environment().lookAndFeel()
+			.lafHasAlerts();
 	}
 	
 	/**
@@ -268,7 +597,44 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public ScritchEnvironmentInterface environment()
+	public @Nullable PencilFontBracket lafFont(int __element)
+		throws MLECallError
+	{
+		return this.api.environment().lookAndFeel().lafFont(__element);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public int lafImageSize(int __elem,
+		boolean __height)
+		throws MLECallError
+	{
+		return this.api.environment().lookAndFeel()
+			.lafImageSize(__elem, __height);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public boolean lafIsDarkMode()
+	{
+		return this.api.environment().lookAndFeel().lafIsDarkMode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public ScritchListInterface list()
 	{
 		return this;
 	}
@@ -279,7 +645,19 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public ScritchEventLoopInterface eventLoop()
+	public ScritchListBracket listNew(int __type)
+		throws MLECallError
+	{
+		return this.api.list().listNew(__type);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public ScritchLAFInterface lookAndFeel()
 	{
 		return this;
 	}
@@ -318,329 +696,6 @@ public class ScritchUnifiedWrapper
 		throws MLECallError
 	{
 		this.api.eventLoop().loopExecuteWait(__task);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int lafFocusBorderStyle(boolean __focused)
-	{
-		return this.api.environment().lookAndFeel()
-			.lafFocusBorderStyle(__focused);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public @Nullable PencilFontBracket lafFont(int __element)
-		throws MLECallError
-	{
-		return this.api.environment().lookAndFeel().lafFont(__element);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public PencilFontBracket fontDerive(
-		PencilFontBracket __font, int __style,
-		int __pixelSize)
-		throws MLECallError
-	{
-		return this.api.environment().fontDerive(__font, __style, __pixelSize);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public @Nullable ScritchComponentBracket componentGetParent(
-		ScritchComponentBracket __component)
-		throws MLECallError
-	{
-		return this.api.component().componentGetParent(__component);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int choiceGetSelectedIndex(
-		ScritchChoiceBracket __choice)
-		throws MLECallError
-	{
-		return this.api.choice().choiceGetSelectedIndex(__choice);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void viewGetView(ScritchViewBracket __view,
-		int[] __outRect)
-		throws MLECallError
-	{
-		this.api.view().viewGetView(__view, __outRect);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public PencilBracket hardwareGraphics(int __pf,
-		int __bw,
-		int __bh,
-		Object __buf, @Nullable int[] __pal, int __sx, int __sy,
-		int __sw,
-		int __sh)
-		throws MLECallError
-	{
-		return this.api.hardwareGraphics(__pf, __bw, __bh, __buf, __pal,
-			__sx, __sy, __sw, __sh);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public boolean windowHasFocus(ScritchWindowBracket __window)
-		throws MLECallError
-	{
-		return this.api.window().windowHasFocus(__window);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int screenHeight(
-		ScritchScreenBracket __screen)
-		throws MLECallError
-	{
-		return this.api.screen().screenHeight(__screen);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int componentGetHeight(
-		ScritchComponentBracket __component)
-		throws MLECallError
-	{
-		return this.api.component().componentGetHeight(__component);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	public int screenId(
-		ScritchScreenBracket __screen)
-		throws MLECallError
-	{
-		return this.api.screen().screenId(__screen);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int lafImageSize(int __elem,
-		boolean __height)
-		throws MLECallError
-	{
-		return this.api.environment().lookAndFeel()
-			.lafImageSize(__elem, __height);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public boolean inLoop()
-	{
-		return this.api.eventLoop().inLoop();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int windowInputTypes(ScritchWindowBracket __window)
-		throws MLECallError
-	{
-		return this.api.window().windowInputTypes(__window);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int choiceInsert(
-		ScritchChoiceBracket __choice,
-		int __atIndex)
-		throws MLECallError
-	{
-		return this.api.choice().choiceInsert(__choice, __atIndex);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public boolean screenIsBuiltIn(ScritchScreenBracket __screen)
-		throws MLECallError
-	{
-		return this.api.screen().screenIsBuiltIn(__screen);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public boolean lafIsDarkMode()
-	{
-		return this.api.environment().lookAndFeel().lafIsDarkMode();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public boolean isInhibitingSleep()
-	{
-		return this.api.environment().isInhibitingSleep();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public boolean isPanelOnly()
-	{
-		return this.api.environment().isPanelOnly();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public boolean screenIsPortrait(ScritchScreenBracket __screen)
-		throws MLECallError
-	{
-		return this.api.screen().screenIsPortrait(__screen);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public boolean windowIsVisible(ScritchWindowBracket __window)
-		throws MLECallError
-	{
-		return this.api.window().windowIsVisible(__window);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public ScritchLabelInterface label()
-	{
-		return this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int choiceLength(
-		@Nullable ScritchChoiceBracket __choice)
-		throws MLECallError
-	{
-		return this.api.choice().choiceLength(__choice);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public ScritchListInterface list()
-	{
-		return this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public ScritchListBracket listNew(int __type)
-		throws MLECallError
-	{
-		return this.api.list().listNew(__type);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public ScritchLAFInterface lookAndFeel()
-	{
-		return this;
 	}
 	
 	/**
@@ -723,21 +778,10 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public ScritchPanelBracket panelNew()
+	public void menuRemoveAll(ScritchMenuHasChildrenBracket __menuKind)
 		throws MLECallError
 	{
-		return this.api.panel().panelNew();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public ScritchWindowBracket windowNew()
-	{
-		return this.api.window().windowNew();
+		this.api.menu().menuRemoveAll(__menuKind);
 	}
 	
 	/**
@@ -780,10 +824,11 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void menuRemoveAll(ScritchMenuHasChildrenBracket __menuKind)
+	public void panelEnableFocus(ScritchPanelBracket __panel, boolean __enabled,
+		boolean __default)
 		throws MLECallError
 	{
-		this.api.menu().menuRemoveAll(__menuKind);
+		this.api.panel().panelEnableFocus(__panel, __enabled, __default);
 	}
 	
 	/**
@@ -792,10 +837,10 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void containerRemoveAll(ScritchContainerBracket __container)
+	public ScritchPanelBracket panelNew()
 		throws MLECallError
 	{
-		this.api.container().containerRemoveAll(__container);
+		return this.api.panel().panelNew();
 	}
 	
 	/**
@@ -804,22 +849,11 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void componentRepaint(ScritchComponentBracket __component)
+	public void panelSetInputListener(ScritchPanelBracket __panel,
+		@Nullable ScritchInputListener __listener)
 		throws MLECallError
 	{
-		this.api.paintable().componentRepaint(__component);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void componentRevalidate(ScritchComponentBracket __component)
-		throws MLECallError
-	{
-		this.api.component().componentRevalidate(__component);
+		this.api.panel().panelSetInputListener(__panel, __listener);
 	}
 	
 	/**
@@ -831,6 +865,81 @@ public class ScritchUnifiedWrapper
 	public ScritchScreenInterface screen()
 	{
 		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public int screenDpi(
+		ScritchScreenBracket __screen)
+		throws MLECallError
+	{
+		return this.api.screen().screenDpi(__screen);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public int screenHeight(
+		ScritchScreenBracket __screen)
+		throws MLECallError
+	{
+		return this.api.screen().screenHeight(__screen);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	public int screenId(
+		ScritchScreenBracket __screen)
+		throws MLECallError
+	{
+		return this.api.screen().screenId(__screen);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public boolean screenIsBuiltIn(ScritchScreenBracket __screen)
+		throws MLECallError
+	{
+		return this.api.screen().screenIsBuiltIn(__screen);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public boolean screenIsPortrait(ScritchScreenBracket __screen)
+		throws MLECallError
+	{
+		return this.api.screen().screenIsPortrait(__screen);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public int screenWidth(
+		ScritchScreenBracket __screen)
+		throws MLECallError
+	{
+		return this.api.screen().screenWidth(__screen);
 	}
 	
 	/**
@@ -873,12 +982,33 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void componentSetActivateListener(ScritchComponentBracket __component,
-		ScritchActivateListener __listener)
+	public void setInhibitSleep(boolean __inhibit)
+	{
+		this.api.environment().setInhibitSleep(__inhibit);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public ScritchViewInterface view()
+	{
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void viewGetView(ScritchViewBracket __view,
+		int[] __outRect)
 		throws MLECallError
 	{
-		this.api.component().componentSetActivateListener(__component,
-			__listener);
+		this.api.view().viewGetView(__view, __outRect);
 	}
 	
 	/**
@@ -901,204 +1031,11 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void containerSetBounds(ScritchContainerBracket __container,
-		ScritchComponentBracket __component, int __x, int __y,
-		int __w,
-		int __h)
-		throws MLECallError
-	{
-		this.api.container().containerSetBounds(__container, __component,
-			__x, __y, __w, __h);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void windowSetCloseListener(ScritchWindowBracket __window,
-		@Nullable ScritchCloseListener __listener)
-		throws MLECallError
-	{
-		this.api.window().windowSetCloseListener(__window, __listener);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void choiceSetEnabled(ScritchChoiceBracket __choice,
-		int __atIndex,
-		boolean __enabled)
-		throws MLECallError
-	{
-		this.api.choice().choiceSetEnabled(__choice, __atIndex, __enabled);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void choiceSetImage(ScritchChoiceBracket __choice,
-		int __atIndex,
-		@Nullable int[] __data,
-		int __off,
-		int __scanLen,
-		int __width,
-		int __height)
-		throws MLECallError
-	{
-		this.api.choice().choiceSetImage(__choice, __atIndex, __data, __off,
-			__scanLen, __width, __height);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void setInhibitSleep(boolean __inhibit)
-	{
-		this.api.environment().setInhibitSleep(__inhibit);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void panelSetInputListener(ScritchPanelBracket __panel,
-		@Nullable ScritchInputListener __listener)
-		throws MLECallError
-	{
-		this.api.panel().panelSetInputListener(__panel, __listener);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void windowSetMenuBar(ScritchWindowBracket __window,
-		@Nullable ScritchMenuBarBracket __menuBar)
-		throws MLECallError
-	{
-		this.api.window().windowSetMenuBar(__window, __menuBar);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void windowSetMenuItemActivateListener(
-		ScritchWindowBracket __window,
-		@Nullable ScritchMenuItemActivateListener __listener)
-		throws MLECallError
-	{
-		this.api.window().windowSetMenuItemActivateListener(__window, __listener);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void componentSetPaintListener(ScritchPaintableBracket __component,
-		@Nullable ScritchPaintListener __listener)
-		throws MLECallError
-	{
-		this.api.paintable().componentSetPaintListener(__component, __listener);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void choiceSetSelected(ScritchChoiceBracket __choice,
-		int __atIndex,
-		boolean __selected)
-		throws MLECallError
-	{
-		this.api.choice().choiceSetSelected(__choice, __atIndex, __selected);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void componentSetSizeListener(ScritchComponentBracket __component,
-		ScritchSizeListener __listener)
-		throws MLECallError
-	{
-		this.api.component().componentSetSizeListener(__component, __listener);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
 	public void viewSetSizeSuggestListener(ScritchViewBracket __view,
 		@Nullable ScritchSizeSuggestListener __listener)
 		throws MLECallError
 	{
 		this.api.view().viewSetSizeSuggestListener(__view, __listener);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void labelSetString(ScritchLabelBracket __label,
-		@Nullable String __string)
-		throws MLECallError
-	{
-		this.api.label().labelSetString(__label, __string);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void choiceSetString(ScritchChoiceBracket __choice,
-		int __atIndex,
-		@Nullable String __string)
-		throws MLECallError
-	{
-		this.api.choice().choiceSetString(__choice, __atIndex, __string);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void componentSetValueUpdateListener(ScritchComponentBracket __component,
-		ScritchValueUpdateListener __listener)
-		throws MLECallError
-	{
-		this.api.component().componentSetValueUpdateListener(__component, __listener);
 	}
 	
 	/**
@@ -1136,69 +1073,6 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void windowSetVisible(ScritchWindowBracket __window,
-		boolean __visible)
-		throws MLECallError
-	{
-		this.api.window().windowSetVisible(__window, __visible);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void componentSetVisibleListener(ScritchComponentBracket __component,
-		ScritchVisibleListener __listener)
-		throws MLECallError
-	{
-		this.api.component().componentSetVisibleListener(__component, __listener);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public ScritchViewInterface view()
-	{
-		return this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int screenWidth(
-		ScritchScreenBracket __screen)
-		throws MLECallError
-	{
-		return this.api.screen().screenWidth(__screen);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int componentWidth(
-		ScritchComponentBracket __component)
-		throws MLECallError
-	{
-		return this.api.component().componentWidth(__component);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
 	public ScritchWindowInterface window()
 	{
 		return this;
@@ -1210,8 +1084,160 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
+	public void windowCallAttention(ScritchWindowBracket __window)
+		throws MLECallError
+	{
+		this.api.window().windowCallAttention(__window);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public int windowContentHeight(
+		ScritchWindowBracket __window)
+		throws MLECallError
+	{
+		return this.api.window().windowContentHeight(__window);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void windowContentMinimumSize(ScritchWindowBracket __window,
+		int __w,
+		int __h)
+		throws MLECallError
+	{
+		this.api.window().windowContentMinimumSize(__window, __w, __h);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public int windowContentWidth(
+		ScritchWindowBracket __window)
+		throws MLECallError
+	{
+		return this.api.window().windowContentWidth(__window);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public boolean windowHasFocus(ScritchWindowBracket __window)
+		throws MLECallError
+	{
+		return this.api.window().windowHasFocus(__window);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public int windowInputTypes(ScritchWindowBracket __window)
+		throws MLECallError
+	{
+		return this.api.window().windowInputTypes(__window);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public boolean windowIsVisible(ScritchWindowBracket __window)
+		throws MLECallError
+	{
+		return this.api.window().windowIsVisible(__window);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
 	public int windowManagerType()
 	{
 		return this.api.environment().windowManagerType();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public ScritchWindowBracket windowNew()
+	{
+		return this.api.window().windowNew();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void windowSetCloseListener(ScritchWindowBracket __window,
+		@Nullable ScritchCloseListener __listener)
+		throws MLECallError
+	{
+		this.api.window().windowSetCloseListener(__window, __listener);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void windowSetMenuBar(ScritchWindowBracket __window,
+		@Nullable ScritchMenuBarBracket __menuBar)
+		throws MLECallError
+	{
+		this.api.window().windowSetMenuBar(__window, __menuBar);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void windowSetMenuItemActivateListener(
+		ScritchWindowBracket __window,
+		@Nullable ScritchMenuItemActivateListener __listener)
+		throws MLECallError
+	{
+		this.api.window().windowSetMenuItemActivateListener(__window, __listener);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void windowSetVisible(ScritchWindowBracket __window,
+		boolean __visible)
+		throws MLECallError
+	{
+		this.api.window().windowSetVisible(__window, __visible);
 	}
 }

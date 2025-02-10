@@ -37,6 +37,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	.containerRemove = sjme_scritchui_gtk2_containerRemove,
 	.containerSetBounds = sjme_scritchui_gtk2_containerSetBounds,
 	.labelSetString = sjme_scritchui_gtk2_labelSetString,
+	.lafDpiProject = NULL,
 	.lafElementColor = sjme_scritchui_gtk2_lafElementColor,
 	.listNew = NULL,
 	.loopExecute = NULL,

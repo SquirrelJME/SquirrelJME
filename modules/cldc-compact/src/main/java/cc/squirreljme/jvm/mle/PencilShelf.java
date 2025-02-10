@@ -75,6 +75,18 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * Closes the pencil and allows it to be re-used.
+	 *
+	 * @param __g The pencil to close.
+	 * @throws MLECallError If it could not be closed or has already been
+	 * closed.
+	 * @since 2025/02/05
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareCloseGraphics(@NotNull PencilBracket __g)
+		throws MLECallError;
+	
+	/**
 	 * This draws the outer edge of the ellipse from the given angles using
 	 * the color, alpha, and stroke style.
 	 *

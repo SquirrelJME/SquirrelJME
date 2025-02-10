@@ -10,6 +10,35 @@
 #include "lib/scritchui/framebuffer/fb.h"
 #include "lib/scritchui/scritchui.h"
 
+sjme_errorCode sjme_scritchui_fb_lafDpiProject(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrInValue sjme_jboolean toBase,
+	sjme_attrInNullable sjme_jint* inOutX,
+	sjme_attrInNullable sjme_jint* inOutY,
+	sjme_attrInNullable sjme_jint* inOutW,
+	sjme_attrInNullable sjme_jint* inOutH)
+{
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiComponent wrappedComponent;
+	
+	if (inState == NULL || (inOutX == NULL && inOutY == NULL &&
+		inOutW == NULL && inOutH == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	
+	/* Is there a wrapped component? */
+	wrappedComponent = NULL;
+	if (inContext != NULL)
+		wrappedComponent = inContext->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	/* Forward to the native implementation, since it knows its own scale. */
+	return wrappedState->apiInThread->lafDpiProject(wrappedState,
+		wrappedComponent, toBase, inOutX, inOutY, inOutW, inOutH);
+}
+
 sjme_errorCode sjme_scritchui_fb_lafElementColor(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
@@ -31,6 +60,6 @@ sjme_errorCode sjme_scritchui_fb_lafElementColor(
 		wrappedComponent = inContext->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Just forward it. */
-	return wrappedState->api->lafElementColor(wrappedState,
+	return wrappedState->apiInThread->lafElementColor(wrappedState,
 		wrappedComponent, outRGB, elementColor);
 }

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
@@ -25,6 +26,21 @@ import javax.microedition.midlet.MIDlet;
 @SquirrelJMEVendorApi
 public abstract class DisplayScale
 {
+	/** Display scale system property. */
+	@SquirrelJMEVendorApi
+	public static final String SCALE_PROPERTY =
+		"cc.squirreljme.scale";
+	
+	/** Display scale environment. */
+	@SquirrelJMEVendorApi
+	public static final String SCALE_ENV =
+		"SQUIRRELJME_SCALE";
+	
+	/** The default scaling. */
+	@SquirrelJMEVendorApi
+	public static final byte SCALE_DEFAULT =
+		2;
+	
 	/**
 	 * Does this display scale require a buffer?
 	 *
@@ -111,15 +127,16 @@ public abstract class DisplayScale
 	public abstract int textureY(int __y);
 	
 	/**
-	 * Returns the display scale that currently should be used.
+	 * Returns the application scale, how big the application should be.
 	 *
 	 * @param __scritch The Scritch API used.
 	 * @param __screen The screen to draw on.
 	 * @param __window The window for the display.
-	 * @return The resultant scale.
+	 * @return The resultant application scale.
 	 * @since 2024/03/21
 	 */
-	public static DisplayScale currentScale(ScritchInterface __scritch,
+	@SquirrelJMEVendorApi
+	public static DisplayScale applicationScale(ScritchInterface __scritch,
 		ScritchScreenBracket __screen, ScritchWindowBracket __window)
 		throws NullPointerException
 	{
@@ -202,6 +219,67 @@ public abstract class DisplayScale
 		
 		// Use default otherwise
 		return new DisplayFixedFlatScale(240, 320);
+	}
+	
+	/**
+	 * Returns the display scale that currently should be used.
+	 *
+	 * @param __scritch The Scritch API used.
+	 * @param __screen The screen to draw on.
+	 * @param __window The window for the display.
+	 * @return The resultant scale.
+	 * @since 2024/03/21
+	 */
+	@SquirrelJMEVendorApi
+	public static DisplayScale currentScale(ScritchInterface __scritch,
+		ScritchScreenBracket __screen, ScritchWindowBracket __window)
+		throws NullPointerException
+	{
+		// Get the scale the application uses
+		DisplayScale appScale = DisplayScale.applicationScale(__scritch,
+			__screen, __window);
+		
+		// Overridden by the user?
+		String override = System.getProperty(DisplayScale.SCALE_PROPERTY);
+		if (override == null)
+			override = RuntimeShelf.systemEnv(DisplayScale.SCALE_ENV);
+		
+		// Actually overridden?
+		int useW = 0;
+		int useH = 0;
+		int useScale = DisplayScale.SCALE_DEFAULT;
+		if (override != null && !override.isEmpty())
+			try
+			{
+				// WxH?
+				int s = override.indexOf('x');
+				if (s >= 0)
+				{
+					useW = Integer.parseInt(
+						override.substring(0, s), 10);
+					useH = Integer.parseInt(
+						override.substring(s + 1), 10);
+				}
+				
+				// Normal scale
+				else
+					useScale = Integer.parseInt(override, 10);
+			}
+			catch (NumberFormatException ignored)
+			{
+			}
+		
+		// Project scaled coordinates
+		int[] coord = new int[]{0, 0,
+			(useW > 0 ? useW : appScale.textureW() * Math.max(1, useScale)),
+			(useH > 0 ? useH : appScale.textureH() * Math.max(1, useScale))};
+		
+		// Did it actually change?
+		if (coord[2] != appScale.textureW() ||
+			coord[3] != appScale.textureH())
+			return new DisplayFloatScale(appScale,
+				coord[2], coord[3]);
+		return appScale;
 	}
 	
 	/**

@@ -11,6 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
@@ -202,12 +203,11 @@ public class Alert
 	@Api
 	public void setString(String __s)
 	{
-		throw Debugging.todo();
-		/*
-		this._message = __s;
+		// Debug, for potential error catching
+		Debugging.debugNote("Alert set to: %s", __s);
 		
-		todo.DEBUG.note("Set alert message: %s%n", __s);
-		*/
+		// Set message
+		this._message.set(__s);
 	}
 	
 	/**
@@ -241,16 +241,18 @@ public class Alert
 	@Api
 	public void setType(AlertType __t)
 	{
-		throw Debugging.todo();
-		/*
-		this._type = __t;
-		*/
+		synchronized (this)
+		{
+			this._type = __t;
+		}
 	}
 	
 	@Override
 	ScritchComponentBracket __scritchComponent()
 	{
-		throw Debugging.todo();
+		// Use the panel directly as we do not need to do anything special
+		// for this
+		return this.__state().scritchPanel();
 	}
 }
 

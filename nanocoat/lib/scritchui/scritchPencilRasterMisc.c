@@ -519,7 +519,7 @@ sjme_errorCode sjme_scritchpen_core_setBlendingMode(
 	
 	/* Set color again, to reset alpha blending state. */
 	color = &g->state.color;
-	g->api->setAlphaColor(g,
+	g->apiInThread->setAlphaColor(g,
 		(color->a << 24) | (color->r << 16) | (color->g << 8) |
 		color->b);
 	
@@ -620,30 +620,31 @@ sjme_errorCode sjme_scritchpen_core_setParametersFrom(
 	error = SJME_ERROR_NONE;
 	
 	/* Remove any current translation. */
-	error |= g->api->translate(g,
+	error |= g->apiInThread->translate(g,
 		-g->state.translate.x, -g->state.translate.y);
 	
 	/* Copy all basic parameters. */
-	error |= g->api->setAlphaColor(g, from->state.color.argb);
-	error |= g->api->setClip(g, from->state.clip.s.x, from->state.clip.s.y,
+	error |= g->apiInThread->setAlphaColor(g, from->state.color.argb);
+	error |= g->apiInThread->setClip(g,
+		from->state.clip.s.x, from->state.clip.s.y,
 		from->state.clip.d.width, from->state.clip.d.height);
-	error |= g->api->setStrokeStyle(g, from->state.stroke);
+	error |= g->apiInThread->setStrokeStyle(g, from->state.stroke);
 	
 	/* We can only copy the blending mode if we have alpha support. */
 	if (!g->hasAlpha)
-		error |= g->api->setBlendingMode(g,
+		error |= g->apiInThread->setBlendingMode(g,
 			SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER);
 	else
-		error |= g->api->setBlendingMode(g, from->state.blending);
+		error |= g->apiInThread->setBlendingMode(g, from->state.blending);
 	
 	/* If the other has no font, then just set the default. */
 	if (from->state.font == NULL)
-		error |= g->api->setDefaultFont(g);
+		error |= g->apiInThread->setDefaultFont(g);
 	else
-		error |= g->api->setFont(g, from->state.font);
+		error |= g->apiInThread->setFont(g, from->state.font);
 	
 	/* Re-translate to target coordinate system. */
-	error |= g->api->translate(g,
+	error |= g->apiInThread->translate(g,
 		from->state.translate.x, from->state.translate.y);
 	
 	/* Any resultant error? */

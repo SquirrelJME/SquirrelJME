@@ -326,7 +326,7 @@ public class Connector
 		throws IllegalArgumentException, IOException
 	{
 		// Open it, then close it
-		try (Connection c = Connector.open(__uri))
+		try (Connection c = Connector.open(__uri, Connector.READ))
 		{
 			/* {@squirreljme.error EC0z The specified URI is not an input
 			connection. (The URI)} */
@@ -356,7 +356,7 @@ public class Connector
 		throws IllegalArgumentException, IOException
 	{
 		// Open it, then close it
-		try (Connection c = Connector.open(__uri))
+		try (Connection c = Connector.open(__uri, Connector.WRITE))
 		{
 			/* {@squirreljme.error EC10 The specified URI is not an output
 			connection. (The URI)} */

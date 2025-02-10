@@ -92,13 +92,13 @@ static sjme_errorCode sjme_scritchui_fb_eventInput(
 		{
 			/* Check if we have focus. */
 			hasFocus = SJME_JNI_FALSE;
-			if (sjme_error_is(error = inState->api->componentFocusHas(
+			if (sjme_error_is(error = inState->apiInThread->componentFocusHas(
 				inState, inComponent, &hasFocus)))
 				return sjme_error_default(error);
 			
 			/* If we do not have focus, grab it and do nothing else. */
 			if (!hasFocus)
-				return inState->api->componentFocusGrab(
+				return inState->apiInThread->componentFocusGrab(
 					inState, inComponent);
 		}
 		
@@ -272,7 +272,7 @@ static sjme_errorCode sjme_scritchui_fb_intern_makeSelBuf(
 	if (sg == NULL)
 	{
 		/* Setup buffer drawing. */
-		if (sjme_error_is(inState->api->hardwareGraphics(inState,
+		if (sjme_error_is(inState->apiInThread->hardwareGraphics(inState,
 			&sg, NULL,
 			SJME_GFX_PIXEL_FORMAT_INT_RGB888,
 			cW, cH,
@@ -327,7 +327,7 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	
 	/* Setup wrapped panel to draw our widget on. */
 	wrappedPanel = NULL;
-	if (sjme_error_is(error = wrappedState->api->panelNew(
+	if (sjme_error_is(error = wrappedState->apiInThread->panelNew(
 		wrappedState, &wrappedPanel)) ||
 		wrappedPanel == NULL)
 		return sjme_error_default(error);
@@ -342,14 +342,14 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	if (isInteractive)
 	{
 		/* Enable focus on the widget. */
-		if (sjme_error_is(error = wrappedState->api->panelEnableFocus(
+		if (sjme_error_is(error = wrappedState->apiInThread->panelEnableFocus(
 			wrappedState, wrappedPanel,
 			SJME_JNI_TRUE, SJME_JNI_FALSE)))
 			return sjme_error_default(error);
 			
 		/* Set listener for events. */
 		if (sjme_error_is(error =
-			wrappedState->api->componentSetInputListener(
+			wrappedState->apiInThread->componentSetInputListener(
 			wrappedState,
 			SJME_SUI_CAST_COMPONENT(wrappedPanel),
 			sjme_scritchui_fb_eventInput, NULL)))
@@ -358,7 +358,7 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	
 	/* Set renderer for widget. */
 	if (sjme_error_is(error =
-		wrappedState->api->componentSetPaintListener(
+		wrappedState->apiInThread->componentSetPaintListener(
 		wrappedState,
 		SJME_SUI_CAST_COMPONENT(wrappedPanel),
 		paintListener, NULL)))
@@ -491,10 +491,10 @@ sjme_errorCode sjme_scritchui_fb_intern_refresh(
 		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Request repaint for the wrapped component. */
-	if (sjme_error_is(error = wrappedState->api->componentRevalidate(
+	if (sjme_error_is(error = wrappedState->apiInThread->componentRevalidate(
 		wrappedState, wrappedComponent)))
 		return sjme_error_default(error);
-	return wrappedState->api->componentRepaint(wrappedState,
+	return wrappedState->apiInThread->componentRepaint(wrappedState,
 		wrappedComponent,
 		0, 0, INT32_MAX, INT32_MAX);
 }
@@ -544,7 +544,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		wState = inComponent->common.handle[SJME_SUI_FB_H_WSTATE];
 	
 		/* Read in component size. */
-		if (sjme_error_is(error = inState->api->componentSize(
+		if (sjme_error_is(error = inState->apiInThread->componentSize(
 			inState, inComponent, &cW, &cH)))
 			goto fail_componentSize;
 	}
@@ -608,20 +608,22 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		}
 		
 		/* Remove old translation. */
-		g->api->translate(g, -g->state.translate.x, -g->state.translate.y);
+		g->apiInThread->translate(g,
+			-g->state.translate.x, -g->state.translate.y);
 		
 		/* Set clip bound for the item. */
-		g->api->setClip(g, bsx, bsy, bw, bh);
+		g->apiInThread->setClip(g, bsx, bsy, bw, bh);
 		
 		/* Translate to base coordinates. */
-		g->api->translate(g, bsx, bsy);
+		g->apiInThread->translate(g, bsx, bsy);
 		
 		/* Revert back to solid. */	
-		g->api->setStrokeStyle(g, SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
+		g->apiInThread->setStrokeStyle(g,
+			SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
 		
 		/* Set font to use? */
 		if (dlAt->type == SJME_SCRITCHUI_FB_DL_TYPE_TEXT)
-			g->api->setFont(g, dlAt->data.text.font);
+			g->apiInThread->setFont(g, dlAt->data.text.font);
 		
 		/* Determine base color. */
 		colorType = 0;
@@ -644,19 +646,19 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		}
 		
 		/* Set color. */
-		g->api->setAlphaColor(g, lafColors[colorType]);
+		g->apiInThread->setAlphaColor(g, lafColors[colorType]);
 		
 		/* Must handle drawing of the selection buffer */
 		doSel = (dlAt->selection != 0);
 		if (sg != NULL && doSel)
 		{
 			/* Copy all the translation and otherwise here. */
-			if (sjme_error_is(error = sg->api->setParametersFrom(sg,
+			if (sjme_error_is(error = sg->apiInThread->setParametersFrom(sg,
 				g)))
 				goto fail_sgCopyParam;
 			
 			/* The color is the selection index. */
-			if (sjme_error_is(error = sg->api->setAlphaColor(sg,
+			if (sjme_error_is(error = sg->apiInThread->setAlphaColor(sg,
 				0xFF000000 | dlAt->selection)))
 				goto fail_sgSelColor;
 		}
@@ -667,13 +669,16 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 				/* Normal box. */
 			case SJME_SCRITCHUI_FB_DL_TYPE_BOX:
 				if (dlAt->mod & SJME_SCRITCHUI_FB_DL_TYPE_MOD_SELECTED)
-					g->api->fillRect(g, 0, 0, bw - 1, bh - 1);
+					g->apiInThread->fillRect(g,
+						0, 0, bw - 1, bh - 1);
 				else
-					g->api->drawRect(g, 0, 0, bw - 1, bh - 1);
+					g->apiInThread->drawRect(g,
+						0, 0, bw - 1, bh - 1);
 				
 				/* Selection buffer, always filled here! */
 				if (sg != NULL && doSel)
-					sg->api->fillRect(sg, 0, 0, bw - 1, bh - 1);
+					sg->apiInThread->fillRect(sg,
+						0, 0, bw - 1, bh - 1);
 				break;
 				
 				/* Text item. */
@@ -693,17 +698,17 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 						goto fail_charSeqLen;
 						
 					/* Draw string. */
-					g->api->drawSubstring(g, &seq, 0, seqLen,
+					g->apiInThread->drawSubstring(g, &seq, 0, seqLen,
 						0, 0, 0);
 					
 					/* Selection buffer. */
 					if (sg != NULL && doSel)
-						sg->api->drawSubstring(sg, &seq, 0, seqLen,
+						sg->apiInThread->drawSubstring(sg, &seq, 0, seqLen,
 							0, 0, 0);
 					
 					/* If disabled, cross it out. */
 					if (dlAt->mod & SJME_SCRITCHUI_FB_DL_TYPE_MOD_DISABLED)
-						g->api->drawHoriz(g, 0, bh / 2, bw);
+						g->apiInThread->drawHoriz(g, 0, bh / 2, bw);
 				}
 				break;
 		}
@@ -715,29 +720,34 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	else if (useFocusRect.d.width > 0 && useFocusRect.d.height > 0)
 	{
 		/* Make sure we can actually draw here. */
-		g->api->translate(g, -g->state.translate.x, -g->state.translate.y);
-		g->api->setClip(g, 0, 0, g->width, g->height);
+		g->apiInThread->translate(g,
+			-g->state.translate.x, -g->state.translate.y);
+		g->apiInThread->setClip(g,
+			0, 0, g->width, g->height);
 		
 		/* Background. */
-		g->api->setAlphaColor(g, lafColors[
+		g->apiInThread->setAlphaColor(g, lafColors[
 			SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_FOREGROUND]);
-		g->api->setStrokeStyle(g, SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
+		g->apiInThread->setStrokeStyle(g,
+			SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
 		
 		/* Draw boxes for the focus set. */
-		g->api->drawRect(g, useFocusRect.s.x, useFocusRect.s.y,
+		g->apiInThread->drawRect(g, useFocusRect.s.x, useFocusRect.s.y,
 			useFocusRect.d.width - 1, useFocusRect.d.height - 1);
 		
 		/* Make it bright! */
-		g->api->setStrokeStyle(g, SJME_SCRITCHUI_PENCIL_STROKE_DOTTED);
-		g->api->setAlphaColor(g, lafColors[
+		g->apiInThread->setStrokeStyle(g,
+			SJME_SCRITCHUI_PENCIL_STROKE_DOTTED);
+		g->apiInThread->setAlphaColor(g, lafColors[
 			SJME_SCRITCHUI_LAF_ELEMENT_COLOR_FOCUS_BORDER]);
 		
 		/* Draw boxes for the focus set. */
-		g->api->drawRect(g, useFocusRect.s.x, useFocusRect.s.y,
+		g->apiInThread->drawRect(g, useFocusRect.s.x, useFocusRect.s.y,
 			useFocusRect.d.width - 1, useFocusRect.d.height - 1);
 		
 		/* Revert back to solid. */	
-		g->api->setStrokeStyle(g, SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
+		g->apiInThread->setStrokeStyle(g,
+			SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
 	}
 	
 	/* If we are within a viewport, make a size suggestion from our render! */

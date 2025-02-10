@@ -9,7 +9,7 @@ description = "Dumps GitHub Classic Projects through GitHub CLI"
 mainClassName = "cc.squirreljme.gh.classic.Main"
 
 dependencies {
-	implementation project(":modules:io")
+	implementation project(":modules:vendor-api-squirreljme-io")
 	
 	// Lombok for simpler getters/setters
 	implementation 'org.projectlombok:lombok:1.18.30'

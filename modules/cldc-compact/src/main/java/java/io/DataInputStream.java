@@ -9,7 +9,10 @@
 
 package java.io;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This class provides the ability to read binary data from a stream.
@@ -239,6 +242,9 @@ public class DataInputStream
 	public final void readFully(byte[] __b)
 		throws EOFException, IOException, NullPointerException
 	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
 		this.__readFully(__b, 0, __b.length);
 	}
 	
@@ -248,8 +254,11 @@ public class DataInputStream
 	 */
 	@Override
 	public final void readFully(byte[] __b, int __o, int __l)
-		throws EOFException, IOException
+		throws EOFException, IOException, NullPointerException
 	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+	
 		this.__readFully(__b, __o, __l);
 	}
 	
@@ -365,16 +374,15 @@ public class DataInputStream
 		InputStream in = this.in;
 		
 		// Read all values
-		int a = in.read(),
-			b = in.read();
+		int a = in.read();
+		int b = in.read();
 		
 		// If any were negative then all will be with OR
 		if ((a | b) < 0)
 			throw new EOFException("EOFF");
 		
 		// Remap values
-		return (int)(((a & 0xFF) << 8) |
-			(b & 0xFF));
+		return (((a & 0xFF) << 8) | (b & 0xFF));
 	}
 	
 	/**
@@ -479,8 +487,9 @@ public class DataInputStream
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @throws UTFDataFormatException If the input UTF data is not correct.
-	 * @since 2018/12/03
+	 * @since 2025/02/03
 	 */
+	@SuppressWarnings({"MagicNumber", "RedundantThrows", "FinalStaticMethod"})
 	@Api
 	public static final String readUTF(DataInput __in)
 		throws EOFException, IOException, NullPointerException,
@@ -489,94 +498,98 @@ public class DataInputStream
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// Read length and setup buffer
-		int len = __in.readUnsignedShort();
-		char[] buf = new char[len];
+		// Perhaps one day in the future this could be rewritten to allocate
+		// a single char array instance, load in everything into it and then
+		// perform some kind of in place mapping? Would be complicated though.
 		
-		// Instead of calling read multiple times to get multiple bytes we
-		// can just do a full read of the entire length. If the queue only
-		// contains single byte characters then we end up in the fast route
-		// otherwise once the queue is finished, we will start reading from
-		// the stream
-		byte[] queue = new byte[len];
-		int queueat = 0;
-		if (len > 0)
-			__in.readFully(queue);
+		// Read in byte length, if there is nothing then this is a blank string
+		int numBytes = __in.readUnsignedShort();
+		if (numBytes == 0)
+			return "";
+		
+		// Read in all bytes at once, since we can quickly operate on that...
+		// At the minimum, a full sequence of single byte characters means
+		// this will end up being read very quickly
+		int queueAt = 0;
+		byte[] queue = new byte[numBytes];
+		__in.readFully(queue);
 		
 		// Read all encoded character data, if EOF ever happens it will be
-		// generated for us
-		for (int i = 0; i < len; i++)
+		// generated for us, the number of characters is always lower than the
+		// number of bytes
+		int charAt = 0;
+		char[] result = new char[numBytes];
+		try
 		{
-			// Read character
-			int a = (queueat < len ? (queue[queueat++] & 0xFF) :
-				__in.readUnsignedByte());
-			
-			// Single byte
-			if ((a & 0b1000_0000) == 0b0000_0000)
+			while (queueAt < numBytes)
 			{
-				/* {@squirreljme.error ZZ0j The zero byte cannot be represented
-				with a zero value.} */
-				if (a == 0)
-					throw new UTFDataFormatException("ZZ0j");
+				// Read character
+				byte a = queue[queueAt++];
 				
-				buf[i] = (char)a;
-			}
-			
-			// Double byte
-			else if ((a & 0b1110_0000) == 0b1100_0000)
-			{
-				int b = (queueat < len ? (queue[queueat++] & 0xFF) :
-					__in.readUnsignedByte());
-				
-				/* {@squirreljme.error ZZ0k Invalid double byte character.
-				(The byte sequence)} */
-				if ((b & 0b1100_0000) != 0b1000_0000)
-					throw new UTFDataFormatException(String.format(
-						"ZZ0k %02x%02x", a, b));
-				
-				// Decode
-				buf[i] = (char)(((a & 0x1F) << 6) | (b & 0x3F));
-			}
-			
-			// Triple byte
-			else if ((a & 0b1111_0000) == 0b1110_0000)
-			{
-				// Can we quickly read at least one byte from the stream?
-				int b, c;
-				if (queueat < len)
+				// Single byte
+				if ((a & 0b1000_0000) == 0b0000_0000)
 				{
-					b = queue[queueat++] & 0xFF;
-					c = (queueat < len ? (queue[queueat++] & 0xFF) :
-						__in.readUnsignedByte());
+					/* {@squirreljme.error ZZ0j The zero byte cannot be
+					represented with a zero value.} */
+					if (a == 0)
+						throw new UTFDataFormatException("ZZ0j");
+					
+					result[charAt++] = (char)(a & 0xFF);
 				}
 				
-				// Nothing
+				// Double byte
+				else if ((a & 0b1110_0000) == 0b1100_0000)
+				{
+					byte b = queue[queueAt++];
+					
+					/* {@squirreljme.error ZZ0k Invalid double byte character.
+					(The byte sequence)} */
+					if ((b & 0b1100_0000) != 0b1000_0000)
+						throw new UTFDataFormatException(String.format(
+							"ZZ0k %02x%02x", a, b));
+					
+					// Decode
+					result[charAt++] = (char)(((a & 0x1F) << 6) | (b & 0x3F));
+				}
+				
+				// Triple byte
+				else if ((a & 0b1111_0000) == 0b1110_0000)
+				{
+					// Read in next set of characters
+					byte b = queue[queueAt++];
+					byte c = queue[queueAt++];
+					
+					/* {@squirreljme.error ZZ0l Invalid double byte character.
+					(The byte sequence)} */
+					if (((b & 0b1100_0000) != 0b1000_0000) ||
+						((c & 0b1100_0000) != 0b1000_0000))
+						throw new UTFDataFormatException(String.format(
+							"ZZ0l %02x%02x%02x", a, b, c));
+					
+					// Decode
+					result[charAt++] = (char)(((a & 0x0F) << 12) |
+						((b & 0x3F) << 6) |
+						(c & 0x3F));
+				}
+				
+				/* {@squirreljme.error ZZ0m Invalid byte sequence.
+					(The byte)} */
 				else
-				{
-					b = __in.readUnsignedByte();
-					c = __in.readUnsignedByte();
-				}
-				
-				/* {@squirreljme.error ZZ0l Invalid double byte character.
-				(The byte sequence)} */
-				if (((b & 0b1100_0000) != 0b1000_0000) ||
-					((c & 0b1100_0000) != 0b1000_0000))
-					throw new UTFDataFormatException(String.format(
-						"ZZ0l %02x%02x%02x", a, b, c));
-				
-				// Decode
-				buf[i] = (char)(((a & 0x0F) << 12) | ((b & 0x3F) << 6) |
-					(c & 0x3F));
+					throw new UTFDataFormatException(String.format("ZZ0m %02x",
+						a));
 			}
-			
-			/* {@squirreljme.error ZZ0m Invalid byte sequence. (The byte)} */
-			else
-				throw new UTFDataFormatException(String.format("ZZ0m %02x",
-					a));
 		}
 		
-		// Convert to string
-		return new String(buf);
+		/* Out of bounds read? */
+		catch (IndexOutOfBoundsException __e)
+		{
+			EOFException t = new EOFException("EOFF");
+			t.initCause(__e);
+			throw t;
+		}
+		
+		// Build string from the characters
+		return new String(result, 0, charAt);
 	}
 }
 

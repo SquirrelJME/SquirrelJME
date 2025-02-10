@@ -112,6 +112,8 @@
 
 #define FORWARD_DESC___lafElementColor "(" \
 	DESC_LONG DESC_LONG DESC_INT ")" DESC_INT
+#define FORWARD_DESC___lafHasAlerts "(" \
+	DESC_LONG ")" DESC_BOOLEAN
 
 #define FORWARD_DESC___labelSetString "(" \
 	DESC_LONG DESC_LONG DESC_STRING ")" DESC_VOID
@@ -124,6 +126,8 @@
 #define FORWARD_DESC___loopExecuteLater FORWARD_DESC___loopExecute
 #define FORWARD_DESC___loopExecuteWait FORWARD_DESC___loopExecute
 #define FORWARD_DESC___loopIsInThread "(" \
+	DESC_LONG ")" DESC_BOOLEAN
+#define FORWARD_DESC___loopIterate "(" \
 	DESC_LONG ")" DESC_BOOLEAN
 
 #define FORWARD_DESC___menuBarNew "(" \
@@ -799,6 +803,8 @@ static sjme_errorCode mlePencilLock(
 
 	/* Get buffer to access. */
 	buf = state->source.wrapper;
+	if (buf == NULL)
+		return SJME_ERROR_RESOURCE_NOT_FOUND;
 
 	/* Obtain buffer. */
 	bufElem = NULL;
@@ -879,8 +885,8 @@ static sjme_errorCode mleAwtCall(
 
 	/* We need the JVM state for this to work. */
 	env = NULL;
-	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(
-		&env, &inState->common.frontEnd)) || env == NULL)
+	if (sjme_error_is(error = sjme_jni_recoverEnvThis(
+		&env)) || env == NULL)
 		return sjme_error_defaultOr(error, SJME_ERROR_ILLEGAL_STATE);
 
 	/* Get the AWT event queue handler. */
@@ -908,7 +914,9 @@ static sjme_errorCode mleAwtCall(
 
 	/* Wrap callback. */
 	nativeWrapper = (*env)->NewObject(env, nativeClass, nativeNew,
-		(jlong)inState, (jlong)callback, (jlong)anything);
+		(jlong)((sjme_intPointer)inState),
+		(jlong)((sjme_intPointer)callback),
+		(jlong)((sjme_intPointer)anything));
 	if (nativeWrapper == NULL)
 		return SJME_ERROR_JNI_EXCEPTION;
 
@@ -919,7 +927,7 @@ static sjme_errorCode mleAwtCall(
 	return SJME_ERROR_NONE;
 }
 
-static const sjme_scritchui_externalFunctions mleMacOSExternalFuncs =
+static const sjme_scritchui_externalFunctions mleAwtLoopFuncs =
 {
 	.externalLoopExecuteLater = mleAwtCall,
 };
@@ -1747,6 +1755,24 @@ JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	return rgb;
 }
 
+JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__lafHasAlerts)(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+
+	/* Recover state. */
+	state = (sjme_scritchui)stateP;
+	if (state == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Ask the native API. */
+	return state->hasAlerts;
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__labelSetString)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong componentP, jstring string)
@@ -1881,8 +1907,8 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	state = NULL;
 	if (sjme_error_is(error = apiInitFunc(pool, &state,
 		mle_bindEventThread,
-#if defined(SJME_CONFIG_HAS_MACOS)
-		&mleMacOSExternalFuncs,
+#if 0 && defined(SJME_CONFIG_HAS_MACOS)
+		&mleAwtLoopFuncs,
 #else
 		NULL,
 #endif
@@ -2096,6 +2122,35 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 	/* Is this in thread? */
 	return inThread;
+}
+
+JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__loopIterate)(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_jboolean terminated;
+
+	state = (sjme_scritchui)stateP;
+	if (state == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return JNI_FALSE;
+	}
+
+	/* Query API. */
+	error = SJME_ERROR_NOT_IMPLEMENTED;
+	terminated = SJME_JNI_FALSE;
+	if (state->api->loopIterate == NULL ||
+		sjme_error_is(error = state->api->loopIterate(state,
+			SJME_JNI_FALSE, &terminated)))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return JNI_FALSE;
+	}
+
+	/* Did this terminate? */
+	return terminated;
 }
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuBarNew)
@@ -2810,12 +2865,14 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __hardwareGraphics),
 	FORWARD_list(NativeScritchDylib, __labelSetString),
 	FORWARD_list(NativeScritchDylib, __lafElementColor),
+	FORWARD_list(NativeScritchDylib, __lafHasAlerts),
 	FORWARD_list(NativeScritchDylib, __linkInit),
 	FORWARD_list(NativeScritchDylib, __listNew),
 	FORWARD_list(NativeScritchDylib, __loopExecute),
 	FORWARD_list(NativeScritchDylib, __loopExecuteLater),
 	FORWARD_list(NativeScritchDylib, __loopExecuteWait),
 	FORWARD_list(NativeScritchDylib, __loopIsInThread),
+	FORWARD_list(NativeScritchDylib, __loopIterate),
 	FORWARD_list(NativeScritchDylib, __menuBarNew),
 	FORWARD_list(NativeScritchDylib, __menuInsert),
 	FORWARD_list(NativeScritchDylib, __menuItemNew),

@@ -282,6 +282,16 @@ typedef sjme_errorCode (*sjme_scritchui_pencilBlendRGBIntoFunc)(
 	sjme_attrInPositive sjme_jint numPixels);
 
 /**
+ * Closes the given pencil.
+ * 
+ * @param g The pencil to close.
+ * @return Any resultant error, if any.
+ * @since 2025/02/05
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilCloseFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g);
+
+/**
  * This copies one region of the image to another region.
  *
  * Copying to a display device is not permitted because it may impact how
@@ -569,7 +579,9 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillTriangleFunc)(
  * Locks the pencil for drawing.
  * 
  * @param g The pencil to lock.
- * @return Any resultant error, if any.
+ * @return Any resultant error, if any. Return the specific
+ * error code @c SJME_ERROR_RESOURCE_NOT_FOUND if the resource backing the
+ * pencil is no longer available.
  * @since 2024/07/08
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilLockFunc)(
@@ -919,6 +931,9 @@ typedef sjme_errorCode (*sjme_scritchui_pencilTranslateFunc)(
  */
 typedef struct sjme_scritchui_pencilFunctions
 {
+	/** @c Close . */
+	SJME_SCRITCHUI_QUICK_PENCIL(Close, close);
+	
 	/** @c CopyArea . */
 	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 	
@@ -1066,6 +1081,12 @@ struct sjme_scritchui_pencilUtilFunctions
  */
 typedef struct sjme_scritchui_pencilImplFunctions
 {
+	/** Asynchronous safe, can be called outside the event thread. */
+	sjme_jboolean asyncSafe;
+	
+	/** @c Close . */
+	SJME_SCRITCHUI_QUICK_PENCIL(Close, close);
+	
 	/** @c CopyArea . */
 	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 	

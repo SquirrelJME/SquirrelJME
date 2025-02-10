@@ -92,6 +92,10 @@ sjme_errorCode sjme_scritchui_core_intern_viewSuggest(
 	if (rect.d.height > realSuggest.height)
 		realSuggest.height = rect.d.height;
 	
+	/* Record this suggestion as the last one. */
+	view->lastSuggest.width = realSuggest.width;
+	view->lastSuggest.height = realSuggest.height;
+	
 	/* Call suggestion function. */
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(view, sizeSuggest);
 	if (infoUser->callback != NULL)

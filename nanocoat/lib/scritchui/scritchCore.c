@@ -67,6 +67,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.hardwareGraphics = sjme_scritchui_coreSerial_hardwareGraphics,
 	.labelSetString = sjme_scritchui_coreSerial_labelSetString,
 	.listNew = sjme_scritchui_coreSerial_listNew,
+	.lafDpiProject = sjme_scritchui_coreSerial_lafDpiProject,
 	.lafElementColor = sjme_scritchui_coreSerial_lafElementColor,
 
 	/* Loops are unchanged. */
@@ -144,6 +145,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.fontList = sjme_scritchui_core_fontList,
 	.hardwareGraphics = sjme_scritchpen_core_hardwareGraphics,
 	.labelSetString = sjme_scritchui_core_labelSetString,
+	.lafDpiProject = sjme_scritchui_core_lafDpiProject,
 	.lafElementColor = sjme_scritchui_core_lafElementColor,
 	.listNew = sjme_scritchui_core_listNew,
 	.loopExecute = sjme_scritchui_core_loopExecute,
@@ -182,6 +184,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 {
 	.bindFocus = sjme_scritchui_core_intern_bindFocus,
+	.containerMaxSize = sjme_scritchui_core_intern_containerMaxSize,
 	.fontBuiltin = sjme_scritchui_core_intern_fontBuiltin,
 	.getChoice = sjme_scritchui_core_intern_getChoice,
 	.getContainer = sjme_scritchui_core_intern_getContainer,
@@ -218,7 +221,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 	
 	/* Debug. */
 	sjme_message("Waiting for top state to become mapped...");
-	
+
 	/* Recover wrapped state. */
 	topState = NULL;
 	while (topState == NULL)
@@ -250,6 +253,21 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
+static sjme_thread_result sjme_attrThreadCall
+	sjme_scritchui_core_grabExternalThreadId(
+	sjme_attrInNullable sjme_thread_parameter anything)
+{
+	sjme_scritchui state;
+
+	state = anything;
+	if (state == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+
+	/* Fill in thread as it is missing. */
+	return SJME_THREAD_RESULT(sjme_thread_current(
+		&state->loopThread));
+}
+
 static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
@@ -261,6 +279,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
+	sjme_thread currentThread;
 	
 	if (allocPool == NULL || inImplFunc == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -283,6 +302,11 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	state->wmInfo = &sjme_scritchUI_coreWmInfo;
 	state->nanoTime = sjme_nal_default.nanoTime;
 	state->externals = externals;
+
+	/* Use provided front end if a core interface. */
+	if (initFrontEnd != NULL)
+		memmove(&state->common.frontEnd, initFrontEnd,
+			sizeof(*initFrontEnd));
 	
 	/* Common initialize. */
 	if (sjme_error_is(error = state->intern->initCommon(state,
@@ -299,12 +323,16 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	else
 		state->loopThread = SJME_THREAD_NULL;
 	state->loopThreadInit = loopExecute;
-	
-	/* Use provided front end if a core interface. */
-	if (initFrontEnd != NULL)
-		memmove(&state->common.frontEnd, initFrontEnd,
-			sizeof(*initFrontEnd));
-	
+
+	/* If no loop thread was defined, and we have an overridden loop execute */
+	/* then we need to grab the actual thread ID. */
+	while (state->loopThread == SJME_THREAD_NULL && externals != NULL &&
+		externals->externalLoopExecuteLater != NULL)
+		if (sjme_error_is(error = externals->externalLoopExecuteLater(
+			state, sjme_scritchui_core_grabExternalThreadId,
+			state)))
+			goto fail_grabExternalThreadId;
+
 	/* Set wrapped state. */
 	if (wrappedState != NULL)
 		state->wrappedState = wrappedState;
@@ -329,13 +357,21 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 		sjme_thread_yield();
 		sjme_atomic_barrier();
 	}
-	
+
 	/* Debug. */
-	sjme_message("Waiting for thread ready (%p)...",
-		state);
-	
+	sjme_message("Waiting for thread ready (s=%p t=%p)...",
+		state, state->loopThread);
+
+	/* Get current thread to potentially detect a case where the main thread */
+	/* is the event thread, in which case if we loop we will deadlock */
+	/* ourselves. */
+	currentThread = SJME_THREAD_NULL;
+	sjme_thread_current(&currentThread);
+
 	/* Wait for the ready signal, but only if required. */
-	if (state->loopThread == SJME_THREAD_NULL)
+	if (state->loopThread == SJME_THREAD_NULL ||
+		(currentThread != SJME_THREAD_NULL &&
+			state->loopThread == currentThread))
 		sjme_atomic_sjme_jint_set(&state->loopThreadReady, 1);
 	else
 	{
@@ -346,11 +382,16 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 			sjme_atomic_barrier();
 		}
 	}
+
+	/* Debug. */
+	sjme_message("UI thread marked ready (s=%p t=%p)!",
+		state, state->loopThread);
 	
 	/* Return resultant state. */
 	*outState = state;
 	return SJME_ERROR_NONE;
 
+fail_grabExternalThreadId:
 fail_apiInit:
 fail_commonInit:
 fail_alloc:
@@ -589,15 +630,34 @@ sjme_pointer sjme_scritchui_checkCast_component(sjme_pointer inPtr)
 	
 	/* Check type. */
 	common = inPtr;
-	if (common->type != SJME_SCRITCHUI_TYPE_LIST &&
-		common->type != SJME_SCRITCHUI_TYPE_PANEL &&
+	if (common->type < SJME_SCRITCHUI_TYPE_FONT ||
+		common->type >= SJME_NUM_SCRITCHUI_UI_TYPES)
+	{
+		sjme_debug_abort();
+		return NULL;
+	}
+	
+	/* Return passed value. */
+	return inPtr;
+}
+
+sjme_pointer sjme_scritchui_checkCast_container(sjme_pointer inPtr)
+{
+	sjme_scritchui_uiCommon common;
+
+	if (inPtr == NULL)
+		return NULL;
+
+	/* Check type. */
+	common = inPtr;
+	if (common->type != SJME_SCRITCHUI_TYPE_PANEL &&
 		common->type != SJME_SCRITCHUI_TYPE_SCROLL_PANEL &&
 		common->type != SJME_SCRITCHUI_TYPE_WINDOW)
 	{
 		sjme_debug_abort();
 		return NULL;
 	}
-	
+
 	/* Return passed value. */
 	return inPtr;
 }

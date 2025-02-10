@@ -50,7 +50,7 @@ static Iterable<java.nio.file.Path> mapBaseNameP(Iterable<Path> input) {
 	
 	input.forEach({path -> result.add(path.getFileName())})
 	
-	return result;
+	return result
 }
 
 static String flatClasspath(Project project) {
@@ -125,7 +125,7 @@ shadowJar {
 			// Make sure there are no spaces or weird characters such as for
 			// Windows
 			return (osName + "-" + osArch).replaceAll(
-				Pattern.compile("[\\s<>:\"/\\\\|?*]"), "") 
+				Pattern.compile("[\\s<>:\"/\\\\|?*]"), "")
 		}))
 	
 	// Exclude IntelliJ Annotations, they are not needed
@@ -195,7 +195,7 @@ void __fillSpec(JavaExec __exec, VMType __emulator, boolean __isCluttered,
 				sub.description = "Runs the standalone VM via " +
 					"${vmType.properName}" +
 					(isDebug ? " with debugging" : "") +
-					(isCluttered ? " with cluttering" : "") + ".";
+					(isCluttered ? " with cluttering" : "") + "."
 				sub.group = "squirreljme"
 				
 				// Use simplified filler

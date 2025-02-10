@@ -40,6 +40,7 @@
       <option name="VISIBILITY" value="protected" />
       <option name="REPLACE_NULL_CHECK" value="false" />
       <option name="REPLACE_SUM" value="false" />
+      <option name="BLANK_LINES_AROUND_FIELD_WITH_ANNOTATIONS" value="1" />
       <option name="CLASS_NAMES_IN_JAVADOC" value="3" />
       <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99" />
       <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99" />
