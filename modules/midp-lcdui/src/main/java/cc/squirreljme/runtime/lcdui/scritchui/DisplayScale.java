@@ -26,6 +26,21 @@ import javax.microedition.midlet.MIDlet;
 @SquirrelJMEVendorApi
 public abstract class DisplayScale
 {
+	/** Display scale system property. */
+	@SquirrelJMEVendorApi
+	public static final String SCALE_PROPERTY =
+		"cc.squirreljme.scale";
+	
+	/** Display scale environment. */
+	@SquirrelJMEVendorApi
+	public static final String SCALE_ENV =
+		"SQUIRRELJME_SCALE";
+	
+	/** The default scaling. */
+	@SquirrelJMEVendorApi
+	public static final byte SCALE_DEFAULT =
+		2;
+	
 	/**
 	 * Does this display scale require a buffer?
 	 *
@@ -224,10 +239,40 @@ public abstract class DisplayScale
 		DisplayScale appScale = DisplayScale.applicationScale(__scritch,
 			__screen, __window);
 		
+		// Overridden by the user?
+		String override = System.getProperty(DisplayScale.SCALE_PROPERTY);
+		if (override == null)
+			override = RuntimeShelf.systemEnv(DisplayScale.SCALE_ENV);
+		
+		// Actually overridden?
+		int useW = 0;
+		int useH = 0;
+		int useScale = DisplayScale.SCALE_DEFAULT;
+		if (override != null && !override.isEmpty())
+			try
+			{
+				// WxH?
+				int s = override.indexOf('x');
+				if (s >= 0)
+				{
+					useW = Integer.parseInt(
+						override.substring(0, s), 10);
+					useH = Integer.parseInt(
+						override.substring(s + 1), 10);
+				}
+				
+				// Normal scale
+				else
+					useScale = Integer.parseInt(override, 10);
+			}
+			catch (NumberFormatException ignored)
+			{
+			}
+		
 		// Project scaled coordinates
 		int[] coord = new int[]{0, 0,
-			appScale.textureW() * 2, appScale.textureH() * 2};
-		/*__scritch.environment().lookAndFeel().lafDpiProject(true, coord);*/
+			(useW > 0 ? useW : appScale.textureW() * Math.max(1, useScale)),
+			(useH > 0 ? useH : appScale.textureH() * Math.max(1, useScale))};
 		
 		// Did it actually change?
 		if (coord[2] != appScale.textureW() ||

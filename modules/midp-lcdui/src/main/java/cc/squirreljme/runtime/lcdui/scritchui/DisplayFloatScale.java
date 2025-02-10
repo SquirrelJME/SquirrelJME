@@ -9,11 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Floating point scaling for displays.
@@ -50,7 +46,7 @@ public class DisplayFloatScale
 	
 	/** Y multiplier. */
 	@SquirrelJMEVendorApi
-	private final float mulH;
+	private final float mulY;
 	
 	/**
 	 * Initializes the scaling information.
@@ -76,7 +72,7 @@ public class DisplayFloatScale
 		this.scaledW = __scaledW;
 		this.scaledH = __scaledH;
 		this.mulX = ((float)__scaledW / (float)this.textureW);
-		this.mulH = ((float)__scaledH / (float)this.textureH);
+		this.mulY = ((float)__scaledH / (float)this.textureH);
 	}
 	
 	/**
@@ -109,7 +105,7 @@ public class DisplayFloatScale
 	@SquirrelJMEVendorApi
 	public int screenY(int __y)
 	{
-		return (int)(__y * this.mulH);
+		return (int)(__y * this.mulY);
 	}
 	
 	/**
@@ -164,7 +160,7 @@ public class DisplayFloatScale
 	@SquirrelJMEVendorApi
 	public int textureX(int __x)
 	{
-		throw Debugging.todo();
+		return (int)(__x / this.mulX);
 	}
 	
 	/**
@@ -175,6 +171,6 @@ public class DisplayFloatScale
 	@SquirrelJMEVendorApi
 	public int textureY(int __y)
 	{
-		throw Debugging.todo();
+		return (int)(__y / this.mulY);
 	}
 }
