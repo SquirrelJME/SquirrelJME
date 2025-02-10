@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 
 /**
@@ -20,6 +21,7 @@ import java.util.ArrayList;
  *
  * @since 2021/06/19
  */
+@SquirrelJMEVendorApi
 public class AutoCloseableList<T extends AutoCloseable>
 	extends ArrayList<T>
 	implements AutoCloseable
@@ -60,6 +62,7 @@ public class AutoCloseableList<T extends AutoCloseable>
 	 * @return {@code __t}.
 	 * @since 2021/06/19
 	 */
+	@SquirrelJMEVendorApi
 	public final T addThis(T __t)
 	{
 		this.add(__t);
@@ -76,6 +79,7 @@ public class AutoCloseableList<T extends AutoCloseable>
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2021/06/19
 	 */
+	@SquirrelJMEVendorApi
 	public final <E extends T> E addThis(E __t, Class<E> __cl)
 		throws NullPointerException
 	{

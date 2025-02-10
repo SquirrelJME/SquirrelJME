@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.List;
 
 /**
@@ -16,6 +17,7 @@ import java.util.List;
  *
  * @since 2017/11/30
  */
+@SquirrelJMEVendorApi
 public final class ArrayUtils
 {
 	/**
@@ -37,6 +39,7 @@ public final class ArrayUtils
 	 * @since 2017/11/30
 	 */
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	public static final <T> List<T> unmodifiableList(T... __e)
 		throws NullPointerException
 	{

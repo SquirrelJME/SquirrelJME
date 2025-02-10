@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractSet;
 import java.util.Collection;
@@ -20,6 +21,7 @@ import java.util.Iterator;
  *
  * @since 2018/03/21
  */
+@SquirrelJMEVendorApi
 public final class EnumSet<T extends Enum<T>>
 	extends AbstractSet<T>
 {
@@ -27,9 +29,11 @@ public final class EnumSet<T extends Enum<T>>
 	protected final Class<T> type;
 	
 	/** The number of used bits so far. */
+	@SquirrelJMEVendorApi
 	protected final int numbits;
 	
 	/** The number of ints in use. */
+	@SquirrelJMEVendorApi
 	protected final int numints;
 	
 	/** The values which are in the set, split into fields. */
@@ -45,6 +49,7 @@ public final class EnumSet<T extends Enum<T>>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/21
 	 */
+	@SquirrelJMEVendorApi
 	public EnumSet(Class<T> __cl)
 		throws NullPointerException
 	{
@@ -59,6 +64,7 @@ public final class EnumSet<T extends Enum<T>>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/21
 	 */
+	@SquirrelJMEVendorApi
 	public EnumSet(Class<T> __cl, Collection<? extends T> __v)
 		throws NullPointerException
 	{

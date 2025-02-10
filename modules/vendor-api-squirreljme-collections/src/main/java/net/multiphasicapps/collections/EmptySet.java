@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractSet;
@@ -21,6 +22,7 @@ import java.util.Set;
  *
  * @since 2016/04/10
  */
+@SquirrelJMEVendorApi
 public final class EmptySet
 	extends AbstractSet
 {
@@ -94,6 +96,7 @@ public final class EmptySet
 	 * @since 2016/04/10
 	 */
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	public static <V> Set<V> empty()
 	{
 		// Get reference

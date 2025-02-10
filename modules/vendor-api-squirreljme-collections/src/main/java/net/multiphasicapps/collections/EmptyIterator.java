@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
@@ -19,6 +20,7 @@ import java.util.NoSuchElementException;
  *
  * @since 2016/04/10
  */
+@SquirrelJMEVendorApi
 public final class EmptyIterator
 	implements Iterator
 {
