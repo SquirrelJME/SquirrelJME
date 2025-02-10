@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
@@ -111,15 +112,16 @@ public abstract class DisplayScale
 	public abstract int textureY(int __y);
 	
 	/**
-	 * Returns the display scale that currently should be used.
+	 * Returns the application scale, how big the application should be.
 	 *
 	 * @param __scritch The Scritch API used.
 	 * @param __screen The screen to draw on.
 	 * @param __window The window for the display.
-	 * @return The resultant scale.
+	 * @return The resultant application scale.
 	 * @since 2024/03/21
 	 */
-	public static DisplayScale currentScale(ScritchInterface __scritch,
+	@SquirrelJMEVendorApi
+	public static DisplayScale applicationScale(ScritchInterface __scritch,
 		ScritchScreenBracket __screen, ScritchWindowBracket __window)
 		throws NullPointerException
 	{
@@ -202,6 +204,37 @@ public abstract class DisplayScale
 		
 		// Use default otherwise
 		return new DisplayFixedFlatScale(240, 320);
+	}
+	
+	/**
+	 * Returns the display scale that currently should be used.
+	 *
+	 * @param __scritch The Scritch API used.
+	 * @param __screen The screen to draw on.
+	 * @param __window The window for the display.
+	 * @return The resultant scale.
+	 * @since 2024/03/21
+	 */
+	@SquirrelJMEVendorApi
+	public static DisplayScale currentScale(ScritchInterface __scritch,
+		ScritchScreenBracket __screen, ScritchWindowBracket __window)
+		throws NullPointerException
+	{
+		// Get the scale the application uses
+		DisplayScale appScale = DisplayScale.applicationScale(__scritch,
+			__screen, __window);
+		
+		// Project scaled coordinates
+		int[] coord = new int[]{0, 0,
+			appScale.textureW() * 2, appScale.textureH() * 2};
+		/*__scritch.environment().lookAndFeel().lafDpiProject(true, coord);*/
+		
+		// Did it actually change?
+		if (coord[2] != appScale.textureW() ||
+			coord[3] != appScale.textureH())
+			return new DisplayFloatScale(appScale,
+				coord[2], coord[3]);
+		return appScale;
 	}
 	
 	/**

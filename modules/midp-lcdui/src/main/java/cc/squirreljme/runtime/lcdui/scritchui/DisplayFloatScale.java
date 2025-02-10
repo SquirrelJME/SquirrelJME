@@ -24,17 +24,17 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public class DisplayFloatScale
 	extends DisplayScale
 {
-	/** The base screen. */
+	/** The base scale to use. */
 	@SquirrelJMEVendorApi
-	protected final ScritchScreenBracket screen;
+	protected final DisplayScale base;
 	
-	/** The base window. */
+	/** Source texture width. */
 	@SquirrelJMEVendorApi
-	protected final ScritchWindowBracket window;
+	private final int textureW;
 	
-	/** The scritch interface to use. */
+	/** Source texture height. */
 	@SquirrelJMEVendorApi
-	protected final ScritchInterface scritch;
+	private final int textureH;
 	
 	/** Scaled target width. */
 	@SquirrelJMEVendorApi
@@ -44,12 +44,18 @@ public class DisplayFloatScale
 	@SquirrelJMEVendorApi
 	private final int scaledH;
 	
+	/** X multiplier. */
+	@SquirrelJMEVendorApi
+	private final float mulX;
+	
+	/** Y multiplier. */
+	@SquirrelJMEVendorApi
+	private final float mulH;
+	
 	/**
 	 * Initializes the scaling information.
 	 *
-	 * @param __scritch The ScritchUI interface to use.
-	 * @param __screen The screen to access.
-	 * @param __window The window to access.
+	 * @param __base The base scale to use.
 	 * @param __scaledW The scaled width.
 	 * @param __scaledH The scaled height.
 	 * @throws IllegalArgumentException If the scale target is invalid.
@@ -57,19 +63,20 @@ public class DisplayFloatScale
 	 * @since 2024/03/11
 	 */
 	@SquirrelJMEVendorApi
-	public DisplayFloatScale(ScritchInterface __scritch,
-		ScritchScreenBracket __screen,
-		ScritchWindowBracket __window, int __scaledW, int __scaledH)
+	public DisplayFloatScale(DisplayScale __base,
+		int __scaledW, int __scaledH)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (__scritch == null || __screen == null || __window == null)
+		if (__base == null)
 			throw new NullPointerException("NARG");
 		
-		this.scritch = __scritch;
-		this.screen = __screen;
-		this.window = __window;
+		this.base = __base;
+		this.textureW = __base.textureW();
+		this.textureH = __base.textureH();
 		this.scaledW = __scaledW;
 		this.scaledH = __scaledH;
+		this.mulX = ((float)__scaledW / (float)this.textureW);
+		this.mulH = ((float)__scaledH / (float)this.textureH);
 	}
 	
 	/**
@@ -91,7 +98,7 @@ public class DisplayFloatScale
 	@SquirrelJMEVendorApi
 	public int screenX(int __x)
 	{
-		throw Debugging.todo();
+		return (int)(__x * this.mulX);
 	}
 	
 	/**
@@ -102,7 +109,7 @@ public class DisplayFloatScale
 	@SquirrelJMEVendorApi
 	public int screenY(int __y)
 	{
-		throw Debugging.todo();
+		return (int)(__y * this.mulH);
 	}
 	
 	/**
@@ -113,7 +120,7 @@ public class DisplayFloatScale
 	@SquirrelJMEVendorApi
 	public int textureH()
 	{
-		return this.scaledH;
+		return this.textureH;
 	}
 	
 	/**
@@ -124,7 +131,7 @@ public class DisplayFloatScale
 	@SquirrelJMEVendorApi
 	public int textureMaxH()
 	{
-		return this.scaledH;
+		return this.textureH;
 	}
 	
 	/**
@@ -135,7 +142,7 @@ public class DisplayFloatScale
 	@SquirrelJMEVendorApi
 	public int textureMaxW()
 	{
-		return this.scaledW;
+		return this.textureW;
 	}
 	
 	/**
@@ -146,7 +153,7 @@ public class DisplayFloatScale
 	@SquirrelJMEVendorApi
 	public int textureW()
 	{
-		return this.scaledW;
+		return this.textureW;
 	}
 	
 	/**

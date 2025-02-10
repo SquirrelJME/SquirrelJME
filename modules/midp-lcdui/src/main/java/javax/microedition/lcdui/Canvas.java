@@ -42,6 +42,11 @@ import org.jetbrains.annotations.Async;
 public abstract class Canvas
 	extends Displayable
 {
+	/** Force a buffer to be used? */
+	@SquirrelJMEVendorApi
+	private static final boolean _FORCE_BUFFER =
+		true;
+	
 	/** The maximum number of times to wait when servicing repaints. */
 	private static final int _REPAINT_STOP =
 		5;
@@ -901,7 +906,7 @@ public abstract class Canvas
 		DisplayScale scale = __parent.display()._scale;
 		
 		// Setup new image with a raw buffer, if scaling is required
-		if (/*true ||*/ scale.requiresBuffer())
+		if (Canvas._FORCE_BUFFER || scale.requiresBuffer())
 		{
 			// Get the current texture size of the window
 			int w = Math.max(1, scale.textureW());
@@ -938,7 +943,8 @@ public abstract class Canvas
 		
 		// Is a buffer used for scaling?
 		Image buffer;
-		if (/*true ||*/ display.display()._scale.requiresBuffer())
+		DisplayScale scale = display.display()._scale;
+		if (Canvas._FORCE_BUFFER || scale.requiresBuffer())
 		{
 			// Use this buffer
 			buffer = this._buffer;
@@ -995,7 +1001,11 @@ public abstract class Canvas
 				__gfx.setClip(0, 0, __sw, __sh);
 				
 				// Copy it over
-				__gfx.drawImage(buffer, 0, 0, 0);
+				__gfx.drawRegion(buffer, 0, 0,
+					scale.textureW(), scale.textureH(),
+					0, 0, 0, 0,
+					scale.screenX(scale.textureW()),
+					scale.screenY(scale.textureH()));
 			}
 		}
 		

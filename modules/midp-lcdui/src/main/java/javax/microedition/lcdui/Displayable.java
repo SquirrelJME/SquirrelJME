@@ -519,8 +519,8 @@ public abstract class Displayable
 		DisplayScale scale = __parent.display()._scale;
 		
 		// Get the current texture size of the window
-		int w = Math.max(1, scale.textureW());
-		int h = Math.max(1, scale.textureH());
+		int w = Math.max(1, scale.screenX(scale.textureW()));
+		int h = Math.max(1, scale.screenY(scale.textureH()));
 		
 		// Set absolute bounds of this displayable, of the Displayable's panel
 		DisplayableState state = this.__state();

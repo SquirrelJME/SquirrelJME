@@ -123,8 +123,8 @@ public abstract class Screen
 		// Get the display scale to determine how the list should scale
 		DisplayScale scale = __parent.display()._scale;
 		
-		int w = Math.max(1, scale.textureW());
-		int h = Math.max(1, scale.textureH());
+		int w = Math.max(1, scale.screenX(scale.textureW()));
+		int h = Math.max(1, scale.screenY(scale.textureH()));
 		
 		// There might be a view associated with this
 		ScritchViewBracket view = this.__scritchView();

@@ -190,7 +190,8 @@ class __ExecDisplaySetCurrent__
 			// Set the frame's preferred and minimum sizes for the content area
 			DisplayScale scale = display._scale;
 			windowApi.windowContentMinimumSize(window,
-				scale.textureMaxW(), scale.textureMaxH());
+				scale.screenX(scale.textureMaxW()),
+				scale.screenY(scale.textureMaxH()));
 			
 			// Make sure the parent is set
 			showNowState.setParent(displayState);
