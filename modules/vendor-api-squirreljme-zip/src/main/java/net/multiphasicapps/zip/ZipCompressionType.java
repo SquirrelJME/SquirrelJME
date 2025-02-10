@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.zip;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,25 +25,31 @@ import net.multiphasicapps.io.InflaterInputStream;
  *
  * @since 2016/07/15
  */
+@SquirrelJMEVendorApi
 public enum ZipCompressionType
 {
 	/** Data is not compressed. */
+	@SquirrelJMEVendorApi
 	NO_COMPRESSION(10, 0),
 	
 	/** Deflate algorithm. */
+	@SquirrelJMEVendorApi
 	DEFLATE(20, 8),
 	
 	/** End. */
 	;
 	
 	/** The default compression algorithm to use. */
+	@SquirrelJMEVendorApi
 	public static final ZipCompressionType DEFAULT_COMPRESSION =
 		ZipCompressionType.DEFLATE;
 	
 	/** The version needed to extract. */
+	@SquirrelJMEVendorApi
 	protected final int extractversion;
 	
 	/** The compression method. */
+	@SquirrelJMEVendorApi
 	protected final int method;
 	
 	/**
@@ -64,6 +71,7 @@ public enum ZipCompressionType
 	 * @return The required version.
 	 * @since 2016/07/15
 	 */
+	@SquirrelJMEVendorApi
 	public final int extractVersion()
 	{
 		return this.extractversion;
@@ -80,6 +88,7 @@ public enum ZipCompressionType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
+	@SquirrelJMEVendorApi
 	public final DecompressionInputStream inputStream(InputStream __is)
 		throws IOException, NullPointerException
 	{
@@ -99,6 +108,7 @@ public enum ZipCompressionType
 	 * @throws NullPointerException If no input stream was specified.
 	 * @since 2016/08/22
 	 */
+	@SquirrelJMEVendorApi
 	public final DecompressionInputStream inputStream(InputStream __is,
 		Checksum __cs)
 		throws IOException, NullPointerException
@@ -132,6 +142,7 @@ public enum ZipCompressionType
 	 * @return The compression method.
 	 * @since 2016/07/15
 	 */
+	@SquirrelJMEVendorApi
 	public final int method()
 	{
 		return this.method;
@@ -148,6 +159,7 @@ public enum ZipCompressionType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/15
 	 */
+	@SquirrelJMEVendorApi
 	public final OutputStream outputStream(OutputStream __os)
 		throws IOException, NullPointerException
 	{
@@ -166,6 +178,7 @@ public enum ZipCompressionType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/15
 	 */
+	@SquirrelJMEVendorApi
 	public final OutputStream outputStream(OutputStream __os,
 		CompressionLevel __cl)
 		throws IOException, NullPointerException
@@ -201,6 +214,7 @@ public enum ZipCompressionType
 	 * if it is unknown.
 	 * @since 2016/07/19
 	 */
+	@SquirrelJMEVendorApi
 	public static ZipCompressionType forMethod(int __m)
 	{
 		switch (__m)

@@ -9,12 +9,15 @@
 
 package net.multiphasicapps.zip;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This interface is used to represent an attribute which may be associated
  * with a ZIP entry (such as the creator and/or executable bit).
  *
  * @since 2016/08/07
  */
+@SquirrelJMEVendorApi
 public interface ZipEntryAttribute
 {
 }

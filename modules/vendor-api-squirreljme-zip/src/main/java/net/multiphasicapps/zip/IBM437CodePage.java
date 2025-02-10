@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.zip;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -17,6 +18,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2016/03/07
  */
+@SquirrelJMEVendorApi
 public final class IBM437CodePage
 {
 	/**
@@ -35,6 +37,7 @@ public final class IBM437CodePage
 	 * @return The translated value.
 	 * @since 2016/03/07
 	 */
+	@SquirrelJMEVendorApi
 	public static char byteToChar(byte __b)
 	{
 		return IBM437CodePage.byteToChar(((int)__b) & 0xFF);
@@ -49,6 +52,7 @@ public final class IBM437CodePage
 	 * of [0, 255].
 	 * @since 2016/03/07
 	 */
+	@SquirrelJMEVendorApi
 	public static char byteToChar(int __b)
 		throws IllegalArgumentException
 	{
@@ -210,6 +214,7 @@ public final class IBM437CodePage
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/07
 	 */
+	@SquirrelJMEVendorApi
 	public static String toString(byte[] __arr, int __off, int __len)
 		throws IllegalArgumentException, NullPointerException
 	{

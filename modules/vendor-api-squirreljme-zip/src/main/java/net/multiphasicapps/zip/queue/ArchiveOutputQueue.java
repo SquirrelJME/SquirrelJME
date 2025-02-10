@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.zip.queue;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.Closeable;
 import java.io.IOException;
@@ -26,17 +27,21 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
  *
  * @since 2023/08/12
  */
+@SquirrelJMEVendorApi
 public class ArchiveOutputQueue
 	implements Closeable
 {
 	/** The Zip to write to. */
+	@SquirrelJMEVendorApi
 	protected final ZipStreamWriter zip;
 	
 	/** Files which have been output to this archive and their CRC. */
+	@SquirrelJMEVendorApi
 	protected final Map<String, Integer> outputFiles =
 		new SortedTreeMap<>();
 	
 	/** Self reference, to lower object creation. */
+	@SquirrelJMEVendorApi
 	private final Reference<ArchiveOutputQueue> _self =
 		new WeakReference<>(this);
 	
@@ -50,6 +55,7 @@ public class ArchiveOutputQueue
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
+	@SquirrelJMEVendorApi
 	public ArchiveOutputQueue(ZipStreamWriter __zip)
 		throws NullPointerException
 	{
@@ -91,6 +97,7 @@ public class ArchiveOutputQueue
 	 * @throws IOException On write errors.
 	 * @since 2024/06/07
 	 */
+	@SquirrelJMEVendorApi
 	public void flush()
 		throws IOException
 	{
@@ -105,6 +112,7 @@ public class ArchiveOutputQueue
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/13
 	 */
+	@SquirrelJMEVendorApi
 	public boolean hasOutput(String __file)
 		throws NullPointerException
 	{
@@ -123,6 +131,7 @@ public class ArchiveOutputQueue
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
+	@SquirrelJMEVendorApi
 	public OutputStream nextEntry(String __name)
 		throws IOException, NullPointerException
 	{
@@ -148,6 +157,7 @@ public class ArchiveOutputQueue
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
+	@SquirrelJMEVendorApi
 	public PrintStream nextPrintStream(String __name)
 		throws IOException, NullPointerException
 	{
@@ -165,6 +175,7 @@ public class ArchiveOutputQueue
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/07
 	 */
+	@SquirrelJMEVendorApi
 	public void writeEntry(String __name, byte... __bytes)
 		throws IOException, NullPointerException
 	{

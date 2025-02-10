@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.zip.blockreader;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
@@ -23,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2016/12/30
  */
+@SquirrelJMEVendorApi
 public final class ZipBlockEntry
 {
 	/** Maximum version. */
@@ -94,16 +96,20 @@ public final class ZipBlockEntry
 		30;
 	
 	/** General purpose flag: Is UTF-8 encoded filename/comment? */
+	@SquirrelJMEVendorApi
 	protected static final int GPF_ENCODING_UTF8 =
 		(1 << 11);
 	
 	/** The owning reader. */
+	@SquirrelJMEVendorApi
 	protected final ZipBlockReader owner;
 	
 	/** The data accessor. */
+	@SquirrelJMEVendorApi
 	protected final BlockAccessor accessor;
 	
 	/** The position of this entry. */
+	@SquirrelJMEVendorApi
 	protected final long position;
 	
 	/** The name of this file. */
@@ -140,6 +146,7 @@ public final class ZipBlockEntry
 	 * @throws ZipException If the ZIP is malformed.
 	 * @since 2017/01/03
 	 */
+	@SquirrelJMEVendorApi
 	public boolean isDirectory()
 		throws IOException, ZipException
 	{
@@ -153,6 +160,7 @@ public final class ZipBlockEntry
 	 * valid.
 	 * @since 2018/03/06
 	 */
+	@SquirrelJMEVendorApi
 	public long lastModifiedTime()
 	{
 		return Long.MIN_VALUE;
@@ -164,6 +172,7 @@ public final class ZipBlockEntry
 	 * @return The entry name.
 	 * @since 2017/03/01
 	 */
+	@SquirrelJMEVendorApi
 	public String name()
 	{
 		return this.toString();
@@ -177,6 +186,7 @@ public final class ZipBlockEntry
 	 * @throws ZipException If it could not be opened.
 	 * @since 2016/12/30
 	 */
+	@SquirrelJMEVendorApi
 	public InputStream open()
 		throws IOException, ZipException
 	{
@@ -292,6 +302,7 @@ public final class ZipBlockEntry
 	 * @throws ZipException If the Zip is not correctly formatted.
 	 * @since 2024/01/14
 	 */
+	@SquirrelJMEVendorApi
 	public long uncompressedSize()
 		throws IOException, ZipException
 	{
@@ -311,7 +322,6 @@ public final class ZipBlockEntry
 	 * @throws ZipException If the Zip is not correctly formatted.
 	 * @since 2024/01/14
 	 */
-	@NotNull
 	private byte[] __readCentralDir()
 		throws IOException, ZipException
 	{

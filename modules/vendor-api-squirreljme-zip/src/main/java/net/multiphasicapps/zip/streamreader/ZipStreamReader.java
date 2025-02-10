@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.zip.streamreader;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.archive.ArchiveStreamReader;
 import java.io.Closeable;
 import java.io.EOFException;
@@ -32,6 +33,7 @@ import net.multiphasicapps.zip.ZipException;
  *
  * @since 2016/07/19
  */
+@SquirrelJMEVendorApi
 public class ZipStreamReader
 	implements ArchiveStreamReader, Closeable
 {
@@ -48,9 +50,11 @@ public class ZipStreamReader
 		0x04034B50;
 	
 	/** The dynamic history stream. */
+	@SquirrelJMEVendorApi
 	protected final DynamicHistoryInputStream input;
 	
 	/** This is used after an input structure is detected. */
+	@SquirrelJMEVendorApi
 	protected final ExtendedDataInputStream data;
 	
 	/** This can hold the local header except for the comment and filename. */
@@ -73,6 +77,7 @@ public class ZipStreamReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
+	@SquirrelJMEVendorApi
 	public ZipStreamReader(InputStream __is)
 		throws NullPointerException
 	{
@@ -111,6 +116,7 @@ public class ZipStreamReader
 	 * @return The deferred exception or {@code null} if there is none.
 	 * @since 2016/09/11
 	 */
+	@SquirrelJMEVendorApi
 	public ZipException deferred()
 	{
 		ZipException rv = this._defer;

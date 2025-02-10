@@ -93,9 +93,9 @@
             <option value="$PROJECT_DIR$/modules/vendor-api-sprintpcs" />
             <option value="$PROJECT_DIR$/modules/vendor-api-squirreljme-collections" />
             <option value="$PROJECT_DIR$/modules/vendor-api-squirreljme-io" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-squirreljme-zip" />
             <option value="$PROJECT_DIR$/modules/vendor-api-vodafone" />
             <option value="$PROJECT_DIR$/modules/wireless-messaging" />
-            <option value="$PROJECT_DIR$/modules/zip" />
             <option value="$PROJECT_DIR$/sdk" />
             <option value="$PROJECT_DIR$/tools" />
             <option value="$PROJECT_DIR$/tools/c-source-writer" />

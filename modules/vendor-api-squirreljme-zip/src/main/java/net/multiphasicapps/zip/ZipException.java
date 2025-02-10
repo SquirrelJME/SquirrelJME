@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.zip;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 
 /**
@@ -16,6 +17,7 @@ import java.io.IOException;
  *
  * @since 2016/08/02
  */
+@SquirrelJMEVendorApi
 public class ZipException
 	extends IOException
 {
@@ -24,6 +26,7 @@ public class ZipException
 	 *
 	 * @since 2016/08/02
 	 */
+	@SquirrelJMEVendorApi
 	public ZipException()
 	{
 	}
@@ -34,6 +37,7 @@ public class ZipException
 	 * @param __msg The exception message.
 	 * @since 2016/08/02
 	 */
+	@SquirrelJMEVendorApi
 	public ZipException(String __msg)
 	{
 		super(__msg);
@@ -46,6 +50,7 @@ public class ZipException
 	 * @param __c The cause.
 	 * @since 2016/08/02
 	 */
+	@SquirrelJMEVendorApi
 	public ZipException(String __msg, Throwable __c)
 	{
 		super(__msg, __c);
@@ -57,6 +62,7 @@ public class ZipException
 	 * @param __c The cause.
 	 * @since 2017/01/22
 	 */
+	@SquirrelJMEVendorApi
 	public ZipException(Throwable __c)
 	{
 		super(__c);
