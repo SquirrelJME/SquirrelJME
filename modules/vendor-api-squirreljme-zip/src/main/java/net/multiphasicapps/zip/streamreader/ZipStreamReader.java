@@ -18,7 +18,6 @@ import java.io.InputStream;
 import net.multiphasicapps.io.DataEndianess;
 import net.multiphasicapps.io.DynamicHistoryInputStream;
 import net.multiphasicapps.io.ExtendedDataInputStream;
-import net.multiphasicapps.zip.IBM437CodePage;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.ZipException;
 
@@ -298,7 +297,8 @@ public class ZipStreamReader
 			// Otherwise use codepage handling, Java ME only has two
 			// character sets available
 			else
-				filename = IBM437CodePage.toString(rawname, 0, fnl);
+				filename = new String(rawname, 0, fnl,
+					"ibm437");
 			
 			// Skip the comment
 			data.readFully(localheader, 0, Math.min(cml,

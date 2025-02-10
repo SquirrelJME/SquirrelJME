@@ -58,6 +58,9 @@ public final class CodecFactory
 			case BuiltInEncodingType.IBM037:
 				return new IBM037Decoder();
 			
+			case BuiltInEncodingType.IBM437:
+				return new IBM437Decoder();
+			
 			case BuiltInEncodingType.ISO_8859_1:
 				return new ISO88591Decoder();
 			
@@ -211,6 +214,7 @@ public final class CodecFactory
 		{
 			case "ascii":		return BuiltInEncodingType.ASCII;
 			case "ibm037":		return BuiltInEncodingType.IBM037;
+			case "ibm437":		return BuiltInEncodingType.IBM437;
 			case "iso-8859-1":	return BuiltInEncodingType.ISO_8859_1;
 			case "iso-8859-15":	return BuiltInEncodingType.ISO_8859_15;
 			case "shift-jis":	return BuiltInEncodingType.SHIFT_JIS;
@@ -240,6 +244,7 @@ public final class CodecFactory
 		{
 			case BuiltInEncodingType.ASCII:			return "ascii";
 			case BuiltInEncodingType.IBM037:		return "ibm037";
+			case BuiltInEncodingType.IBM437:		return "ibm437";
 			case BuiltInEncodingType.ISO_8859_1:	return "iso-8859-1";
 			case BuiltInEncodingType.ISO_8859_15:	return "iso-8859-15";
 			case BuiltInEncodingType.SHIFT_JIS:		return "shift-jis";
@@ -255,6 +260,9 @@ public final class CodecFactory
 	/**
 	 * Normalizes the name of the encoding since there are so many aliases that
 	 * way this code can operate very simply.
+	 * 
+	 * Encodings are listed at:
+	 * https://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html
 	 *
 	 * @param __n The encoding to normalize.
 	 * @return The normalized encoding, if it is not known then the input is
@@ -305,6 +313,16 @@ public final class CodecFactory
 			case "ibm-037":
 			case "ibm-37":
 				return "ibm037";
+				
+				// IBM437
+			case "ibm437":
+			case "ibm-437":
+			case "cp437":
+			case "437":
+			case "cspc8codepage437":
+			case "oem-us":
+			case "windows-437":
+				return "ibm437";
 			
 				// ISO-8859-1
 			case "819":
@@ -329,6 +347,10 @@ public final class CodecFactory
 			case "shift_jisx0213":
 			case "shift-jis":
 			case "shift-jisx0213":
+			case "x-sjis":
+			case "sjis":
+			case "ms_kanji":
+			case "csshiftjis":
 				return "shift-jis";
 			
 				// UTF-8

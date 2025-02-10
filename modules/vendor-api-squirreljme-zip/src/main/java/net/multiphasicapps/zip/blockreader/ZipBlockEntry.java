@@ -14,10 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.zip.IBM437CodePage;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.ZipException;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * This represents a single entry within a ZIP file which may be opened.
@@ -380,7 +378,7 @@ public final class ZipBlockEntry
 			
 			// DOS codepage
 			else
-				rv = IBM437CodePage.toString(rawname, 0, fnl);
+				rv = new String(rawname, 0, fnl, "ibm437");
 			
 			// Store for later
 			this._name = new WeakReference<>(rv);
