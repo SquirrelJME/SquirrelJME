@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.Closeable;
@@ -21,13 +22,16 @@ import java.io.OutputStream;
  *
  * @since 2024/02/04
  */
+@SquirrelJMEVendorApi
 public class ForwardInputToOutput
 	extends ForwardStream
 {
 	/** The stream to read from. */
+	@SquirrelJMEVendorApi
 	protected final InputStream in;
 	
 	/** The stream to write to. */
+	@SquirrelJMEVendorApi
 	protected final OutputStream out;
 	
 	/**
@@ -38,6 +42,7 @@ public class ForwardInputToOutput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/04
 	 */
+	@SquirrelJMEVendorApi
 	public ForwardInputToOutput(InputStream __from, OutputStream __to)
 		throws NullPointerException
 	{

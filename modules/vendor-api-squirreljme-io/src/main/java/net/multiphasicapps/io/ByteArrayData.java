@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -16,16 +17,20 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2016/08/11
  */
+@SquirrelJMEVendorApi
 public class ByteArrayData
 	implements RandomAccessData
 {
 	/** The starting offset. */
+	@SquirrelJMEVendorApi
 	protected final int offset;
 	
 	/** The number of bytes to access. */
+	@SquirrelJMEVendorApi
 	protected final int length;
 	
 	/** The endianess of the data to read. */
+	@SquirrelJMEVendorApi
 	protected final DataEndianess endianess;
 	
 	/** The backing array. */
@@ -39,6 +44,7 @@ public class ByteArrayData
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/11
 	 */
+	@SquirrelJMEVendorApi
 	public ByteArrayData(DataEndianess __end, byte... __b)
 		throws NullPointerException
 	{
@@ -57,6 +63,7 @@ public class ByteArrayData
 	 * @throws NullPointerException On null arguments
 	 * @since 2016/08/11
 	 */
+	@SquirrelJMEVendorApi
 	public ByteArrayData(DataEndianess __end, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{

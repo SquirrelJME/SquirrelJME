@@ -9,19 +9,24 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This is a bidirectional pipe which allows for sending and receiving on both
  * ends.
  *
  * @since 2024/01/19
  */
+@SquirrelJMEVendorApi
 public class BidirectionalPipe
 {
 	/** A to B. */
+	@SquirrelJMEVendorApi
 	protected final UnidirectionalPipe aToB =
 		new UnidirectionalPipe();
 	
 	/** B to A. */
+	@SquirrelJMEVendorApi
 	protected final UnidirectionalPipe bToA =
 		new UnidirectionalPipe();
 	
@@ -32,6 +37,7 @@ public class BidirectionalPipe
 	 * @return The resultant side of the pipe.
 	 * @since 2024/01/19
 	 */
+	@SquirrelJMEVendorApi
 	public BidirectionalPipeSide side(boolean __b)
 	{
 		// Get both sides

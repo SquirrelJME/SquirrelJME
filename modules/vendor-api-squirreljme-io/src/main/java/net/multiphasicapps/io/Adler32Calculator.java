@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This class calculates the Adler32 checksum.
  *
@@ -16,6 +18,7 @@ package net.multiphasicapps.io;
  *
  * @since 2017/03/05
  */
+@SquirrelJMEVendorApi
 public class Adler32Calculator
 	implements Checksum
 {

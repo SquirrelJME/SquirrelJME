@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import java.util.Map;
  *
  * @since 2016/07/16
  */
+@SquirrelJMEVendorApi
 public final class CRC32Table
 {
 	/** Static table reference. */
@@ -71,6 +73,7 @@ public final class CRC32Table
 	 * table.
 	 * @since 2021/11/13
 	 */
+	@SquirrelJMEVendorApi
 	public final int get(int __dx)
 		throws IndexOutOfBoundsException
 	{
@@ -84,6 +87,7 @@ public final class CRC32Table
 	 * @return The CRC table.
 	 * @since 2016/07/16
 	 */
+	@SquirrelJMEVendorApi
 	public static CRC32Table calculateTable(int __poly)
 	{
 		// Lock

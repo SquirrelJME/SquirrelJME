@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This is a data sink which supports the CRC 32 algorithm.
  *
@@ -16,22 +18,28 @@ package net.multiphasicapps.io;
  *
  * @since 2016/07/16
  */
+@SquirrelJMEVendorApi
 public class CRC32Calculator
 	implements Checksum
 {
 	/** The polynomial to use. */
+	@SquirrelJMEVendorApi
 	protected final int polynomial;
 	
 	/** The final XOR value. */
+	@SquirrelJMEVendorApi
 	protected final int finalXor;
 	
 	/** Reflect the data? */
+	@SquirrelJMEVendorApi
 	protected final boolean reflectData;
 	
 	/** Reflect the remainder? */
+	@SquirrelJMEVendorApi
 	protected final boolean reflectRemainder;
 	
 	/** The initial remainder. */
+	@SquirrelJMEVendorApi
 	protected final int initRemainder;
 	
 	/** The CRC Table. */
@@ -54,6 +62,7 @@ public class CRC32Calculator
 	 * @param __fxor The value to XOR the remainder with on return.
 	 * @since 2016/07/16
 	 */
+	@SquirrelJMEVendorApi
 	public CRC32Calculator(boolean __rdata, boolean __rrem, int __poly,
 		int __initrem, int __fxor)
 	{
@@ -164,6 +173,7 @@ public class CRC32Calculator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
+	@SquirrelJMEVendorApi
 	public static final int calculate(boolean __rdata, boolean __rrem,
 		int __poly, int __initrem, int __fxor, byte[] __b)
 		throws NullPointerException
@@ -192,6 +202,7 @@ public class CRC32Calculator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
+	@SquirrelJMEVendorApi
 	public static final int calculate(boolean __rdata, boolean __rrem,
 		int __poly, int __initrem, int __fxor, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
@@ -218,6 +229,7 @@ public class CRC32Calculator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
+	@SquirrelJMEVendorApi
 	public static final int calculateZip(byte[] __b)
 		throws NullPointerException
 	{
@@ -239,6 +251,7 @@ public class CRC32Calculator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
+	@SquirrelJMEVendorApi
 	public static final int calculateZip(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{

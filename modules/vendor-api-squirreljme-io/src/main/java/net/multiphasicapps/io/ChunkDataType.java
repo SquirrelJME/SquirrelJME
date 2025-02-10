@@ -9,29 +9,37 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * The type of data to write in.
  *
  * @since 2019/08/17
  */
+@SquirrelJMEVendorApi
 public enum ChunkDataType
 {
 	/** Byte. */
+	@SquirrelJMEVendorApi
 	BYTE(1),
 	
 	/** Short. */
+	@SquirrelJMEVendorApi
 	SHORT(2),
 	
 	/** Integer. */
+	@SquirrelJMEVendorApi
 	INTEGER(4),
 	
 	/** Long. */
+	@SquirrelJMEVendorApi
 	LONG(8),
 	
 	/* End. */
 	;
 	
 	/** The number of bytes used for the data type. */
+	@SquirrelJMEVendorApi
 	public final int numBytes;
 	
 	/**

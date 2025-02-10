@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -18,16 +19,20 @@ import java.lang.ref.WeakReference;
  *
  * @since 2020/12/04
  */
+@SquirrelJMEVendorApi
 public class ChunkFutureSection
 	implements ChunkFuture
 {
 	/** The kind of section this is. */
+	@SquirrelJMEVendorApi
 	protected final ChunkFutureSectionKind kind;
 	
 	/** The section this refers to. */
+	@SquirrelJMEVendorApi
 	protected final Reference<ChunkSection> section;
 	
 	/** The offset for the section. */
+	@SquirrelJMEVendorApi
 	protected final int offset;
 	
 	/**
@@ -39,6 +44,7 @@ public class ChunkFutureSection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/04
 	 */
+	@SquirrelJMEVendorApi
 	public ChunkFutureSection(ChunkFutureSectionKind __kind,
 		ChunkSection __section, int __off)
 		throws NullPointerException

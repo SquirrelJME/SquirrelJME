@@ -9,12 +9,15 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This interface is used to describe classes which allow access to data via
  * a specific position.
  *
  * @since 2016/08/11
  */
+@SquirrelJMEVendorApi
 public interface RandomAccessData
 	extends GettableEndianess
 {
@@ -30,6 +33,7 @@ public interface RandomAccessData
 	 * the array bounds.
 	 * @since 2016/08/11
 	 */
+	@SquirrelJMEVendorApi
 	void read(int __p, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException;
 	
@@ -41,6 +45,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
+	@SquirrelJMEVendorApi
 	int readByte(int __p)
 		throws IndexOutOfBoundsException;
 	
@@ -52,6 +57,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
+	@SquirrelJMEVendorApi
 	double readDouble(int __p)
 		throws IndexOutOfBoundsException;
 	
@@ -63,6 +69,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
+	@SquirrelJMEVendorApi
 	double readFloat(int __p)
 		throws IndexOutOfBoundsException;
 	
@@ -74,6 +81,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
+	@SquirrelJMEVendorApi
 	int readInt(int __p)
 		throws IndexOutOfBoundsException;
 	
@@ -85,6 +93,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
+	@SquirrelJMEVendorApi
 	long readLong(int __p)
 		throws IndexOutOfBoundsException;
 	
@@ -96,6 +105,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
+	@SquirrelJMEVendorApi
 	int readShort(int __p)
 		throws IndexOutOfBoundsException;
 	
@@ -107,6 +117,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
+	@SquirrelJMEVendorApi
 	int readUnsignedByte(int __p)
 		throws IndexOutOfBoundsException;
 	
@@ -118,6 +129,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
+	@SquirrelJMEVendorApi
 	int readUnsignedShort(int __p)
 		throws IndexOutOfBoundsException;
 }

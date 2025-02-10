@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -18,6 +19,7 @@ import java.io.Reader;
  *
  * @since 2021/05/22
  */
+@SquirrelJMEVendorApi
 public final class Base64Encoder
 	extends Reader
 {
@@ -30,6 +32,7 @@ public final class Base64Encoder
 		6;
 	
 	/** The stream to read from. */
+	@SquirrelJMEVendorApi
 	protected final InputStream in;
 	
 	/** The alphabet. */
@@ -59,6 +62,7 @@ public final class Base64Encoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/22
 	 */
+	@SquirrelJMEVendorApi
 	public Base64Encoder(InputStream __in)
 		throws NullPointerException
 	{
@@ -73,6 +77,7 @@ public final class Base64Encoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/22
 	 */
+	@SquirrelJMEVendorApi
 	public Base64Encoder(InputStream __in, Base64Alphabet __alphabet)
 		throws NullPointerException
 	{

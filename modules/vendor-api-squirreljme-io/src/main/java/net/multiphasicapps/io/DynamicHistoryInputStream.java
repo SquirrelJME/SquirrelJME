@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,13 +24,16 @@ import java.io.InputStream;
  *
  * @since 2016/07/19
  */
+@SquirrelJMEVendorApi
 public class DynamicHistoryInputStream
 	extends InputStream
 {
 	/** The backing buffer. */
+	@SquirrelJMEVendorApi
 	protected final ByteDeque buffer;
 	
 	/** The source input stream. */
+	@SquirrelJMEVendorApi
 	protected final InputStream input;
 	
 	/** Closed? */
@@ -46,6 +50,7 @@ public class DynamicHistoryInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
+	@SquirrelJMEVendorApi
 	public DynamicHistoryInputStream(InputStream __is)
 		throws NullPointerException
 	{
@@ -87,6 +92,7 @@ public class DynamicHistoryInputStream
 	 * @throws IOException On read errors.
 	 * @since 2016/07/19
 	 */
+	@SquirrelJMEVendorApi
 	public int grab(int __i)
 		throws IndexOutOfBoundsException, IOException
 	{
@@ -147,6 +153,7 @@ public class DynamicHistoryInputStream
 	 * @throws IOException On read errors.
 	 * @since 2016/07/19
 	 */
+	@SquirrelJMEVendorApi
 	public int peek(int __a)
 		throws IndexOutOfBoundsException, IOException
 	{
@@ -185,6 +192,7 @@ public class DynamicHistoryInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
+	@SquirrelJMEVendorApi
 	public int peek(int __a, byte[] __b)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
@@ -207,6 +215,7 @@ public class DynamicHistoryInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
+	@SquirrelJMEVendorApi
 	public int peek(int __a, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{

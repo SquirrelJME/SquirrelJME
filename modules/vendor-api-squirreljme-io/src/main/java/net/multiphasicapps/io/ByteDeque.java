@@ -11,6 +11,7 @@ package net.multiphasicapps.io;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,6 +31,7 @@ import java.util.NoSuchElementException;
  *
  * @since 2016/03/11
  */
+@SquirrelJMEVendorApi
 public class ByteDeque
 {
 	/**
@@ -51,6 +53,7 @@ public class ByteDeque
 		Integer.numberOfTrailingZeros(ByteDeque._BLOCK_SIZE);
 	
 	/** The maximum permitted capacity. */
+	@SquirrelJMEVendorApi
 	protected final int capacity;
 	
 	/** Blocks which make up the queue. */
@@ -89,6 +92,7 @@ public class ByteDeque
 	 *
 	 * @since 2016/03/11
 	 */
+	@SquirrelJMEVendorApi
 	public ByteDeque()
 	{
 		this(Integer.MAX_VALUE);
@@ -101,6 +105,7 @@ public class ByteDeque
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public ByteDeque(int __cap)
 		throws IllegalArgumentException
 	{
@@ -120,6 +125,7 @@ public class ByteDeque
 	 * @throws IllegalStateException If the capacity is violated.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final void addFirst(byte __b)
 		throws IllegalStateException
 	{
@@ -137,6 +143,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final void addFirst(byte[] __b)
 		throws IllegalStateException, NullPointerException
 	{
@@ -156,6 +163,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final void addFirst(byte[] __b, int __o, int __l)
 		throws IllegalStateException, IndexOutOfBoundsException,
 			NullPointerException
@@ -193,6 +201,7 @@ public class ByteDeque
 	 * @throws IllegalStateException If the capacity is violated.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final void addLast(byte __b)
 		throws IllegalStateException
 	{
@@ -210,6 +219,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final void addLast(byte[] __b)
 		throws IllegalStateException, NullPointerException
 	{
@@ -229,6 +239,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final void addLast(byte[] __b, int __o, int __l)
 		throws IllegalStateException, IndexOutOfBoundsException,
 			NullPointerException
@@ -306,6 +317,7 @@ public class ByteDeque
 	 * @return The number of bytes in the queue.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final int available()
 	{
 		return this._total;
@@ -316,6 +328,7 @@ public class ByteDeque
 	 *
 	 * @since 2016/08/02
 	 */
+	@SquirrelJMEVendorApi
 	public final void clear()
 	{
 		// Reset variables
@@ -338,6 +351,7 @@ public class ByteDeque
 	 * @throws IndexOutOfBoundsException If the number of bytes is negative.
 	 * @since 2016/08/04
 	 */
+	@SquirrelJMEVendorApi
 	public final int deleteFirst(int __l)
 		throws IndexOutOfBoundsException
 	{
@@ -424,6 +438,7 @@ public class ByteDeque
 	 * @throws IndexOutOfBoundsException If the address is not within bounds.
 	 * @since 2016/08/03
 	 */
+	@SquirrelJMEVendorApi
 	public final byte get(int __a)
 		throws IndexOutOfBoundsException
 	{
@@ -453,6 +468,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/03
 	 */
+	@SquirrelJMEVendorApi
 	public final int get(int __a, byte[] __b)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -474,6 +490,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/03
 	 */
+	@SquirrelJMEVendorApi
 	public final int get(int __a, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -512,6 +529,7 @@ public class ByteDeque
 	 * @throws NoSuchElementException If the deque is empty.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final byte getFirst()
 		throws NoSuchElementException
 	{
@@ -533,6 +551,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final int getFirst(byte[] __b)
 		throws NullPointerException
 	{
@@ -552,6 +571,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final int getFirst(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -566,6 +586,7 @@ public class ByteDeque
 	 * @throws NoSuchElementException If the deque is empty.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final byte getLast()
 		throws NoSuchElementException
 	{
@@ -587,6 +608,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final int getLast(byte[] __b)
 		throws NullPointerException
 	{
@@ -606,6 +628,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final int getLast(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -624,6 +647,7 @@ public class ByteDeque
 	 * @return Whether it is empty or not.
 	 * @since 2017/08/22
 	 */
+	@SquirrelJMEVendorApi
 	public final boolean isEmpty()
 	{
 		return this.available() == 0;
@@ -638,6 +662,7 @@ public class ByteDeque
 	 * added.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final boolean offerFirst(byte __b)
 	{
 		// May violate the capacity
@@ -664,6 +689,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final boolean offerFirst(byte[] __b)
 		throws NullPointerException
 	{
@@ -683,6 +709,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final boolean offerFirst(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException
 	{
@@ -709,6 +736,7 @@ public class ByteDeque
 	 * added.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final boolean offerLast(byte __b)
 	{
 		// May violate the capacity
@@ -735,6 +763,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final boolean offerLast(byte[] __b)
 		throws NullPointerException
 	{
@@ -754,6 +783,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final boolean offerLast(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException
 	{
@@ -779,6 +809,7 @@ public class ByteDeque
 	 * empty.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final int peekFirst()
 		throws NoSuchElementException
 	{
@@ -803,6 +834,7 @@ public class ByteDeque
 	 * empty.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final int peekLast()
 		throws NoSuchElementException
 	{
@@ -826,6 +858,7 @@ public class ByteDeque
 	 * @throws NoSuchElementException If not a single byte is available.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final byte removeFirst()
 		throws NoSuchElementException
 	{
@@ -847,6 +880,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final int removeFirst(byte[] __b)
 		throws NullPointerException
 	{
@@ -865,6 +899,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final int removeFirst(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -903,6 +938,7 @@ public class ByteDeque
 	 * @throws NoSuchElementException If not a single byte is available.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final byte removeLast()
 		throws NoSuchElementException
 	{
@@ -924,6 +960,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final int removeLast(byte[] __b)
 		throws NullPointerException
 	{
@@ -942,6 +979,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
+	@SquirrelJMEVendorApi
 	public final int removeLast(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -963,6 +1001,7 @@ public class ByteDeque
 	 * @throws IndexOutOfBoundsException If the address is not within bounds.
 	 * @since 2017/02/04
 	 */
+	@SquirrelJMEVendorApi
 	public final byte set(int __a)
 		throws IndexOutOfBoundsException
 	{
@@ -992,6 +1031,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/04
 	 */
+	@SquirrelJMEVendorApi
 	public final int set(int __a, byte[] __b)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -1013,6 +1053,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/04
 	 */
+	@SquirrelJMEVendorApi
 	public final int set(int __a, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -1049,6 +1090,7 @@ public class ByteDeque
 	 * @return The total number of bytes in this deque.
 	 * @since 2017/08/14
 	 */
+	@SquirrelJMEVendorApi
 	public final int size()
 	{
 		return this._total;
@@ -1060,6 +1102,7 @@ public class ByteDeque
 	 * @return The data contained within this deque.
 	 * @since 2017/02/04
 	 */
+	@SquirrelJMEVendorApi
 	public final byte[] toByteArray()
 	{
 		int sz = this.available();
@@ -1076,6 +1119,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/25
 	 */
+	@SquirrelJMEVendorApi
 	public final void writeTo(OutputStream __os)
 		throws IOException, NullPointerException
 	{

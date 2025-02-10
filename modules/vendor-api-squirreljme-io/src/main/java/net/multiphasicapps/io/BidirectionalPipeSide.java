@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -17,12 +18,15 @@ import java.io.OutputStream;
  *
  * @since 2024/01/19
  */
+@SquirrelJMEVendorApi
 public class BidirectionalPipeSide
 {
 	/** The input end of the pipe. */
+	@SquirrelJMEVendorApi
 	protected final InputStream in;
 	
 	/** The output end of the pipe. */
+	@SquirrelJMEVendorApi
 	protected final OutputStream out;
 	
 	/**
@@ -33,6 +37,7 @@ public class BidirectionalPipeSide
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
+	@SquirrelJMEVendorApi
 	public BidirectionalPipeSide(InputStream __in, OutputStream __out)
 		throws NullPointerException
 	{
@@ -50,6 +55,7 @@ public class BidirectionalPipeSide
 	 * @return The pipe input end.
 	 * @since 2024/01/19
 	 */
+	@SquirrelJMEVendorApi
 	public InputStream in()
 	{
 		return this.in;
@@ -61,6 +67,7 @@ public class BidirectionalPipeSide
 	 * @return The pipe input end.
 	 * @since 2024/01/19
 	 */
+	@SquirrelJMEVendorApi
 	public OutputStream out()
 	{
 		return this.out;

@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -17,34 +18,43 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2018/11/10
  */
+@SquirrelJMEVendorApi
 public enum CompressionLevel
 {
 	/** Fast compression level. */
+	@SquirrelJMEVendorApi
 	FASTEST,
 	
 	/** Faster compression. */
+	@SquirrelJMEVendorApi
 	FASTER,
 	
 	/** Fast compression. */
+	@SquirrelJMEVendorApi
 	FAST,
 	
 	/** Slow compression. */
+	@SquirrelJMEVendorApi
 	SLOW,
 	
 	/** Slower compression. */
+	@SquirrelJMEVendorApi
 	SLOWER,
 	
 	/** Slowest compression. */
+	@SquirrelJMEVendorApi
 	SLOWEST,
 	
 	/** End. */
 	;
 	
 	/** The default compression level. */
+	@SquirrelJMEVendorApi
 	public static final CompressionLevel DEFAULT =
 		CompressionLevel.SLOW;
 	
 	/** The best compression level. */
+	@SquirrelJMEVendorApi
 	public static final CompressionLevel BEST =
 		CompressionLevel.SLOWEST;
 	
@@ -55,6 +65,7 @@ public enum CompressionLevel
 	 * @return The block size to use for compression.
 	 * @since 2018/11/10
 	 */
+	@SquirrelJMEVendorApi
 	public final int blockSize()
 	{
 		switch (this)
@@ -81,6 +92,7 @@ public enum CompressionLevel
 	 * @return The compression level for the scale.
 	 * @since 2018/11/10
 	 */
+	@SquirrelJMEVendorApi
 	public static final CompressionLevel ofLevel(int __i)
 	{
 		switch (__i)

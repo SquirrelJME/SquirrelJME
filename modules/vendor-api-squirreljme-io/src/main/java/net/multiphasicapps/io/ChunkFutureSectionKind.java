@@ -9,17 +9,22 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This is the value to be written.
  *
  * @since 2019/08/17
  */
+@SquirrelJMEVendorApi
 public enum ChunkFutureSectionKind
 {
 	/** Address. */
+	@SquirrelJMEVendorApi
 	ADDRESS,
 	
 	/** Size. */
+	@SquirrelJMEVendorApi
 	SIZE,
 	
 	/* End. */
