@@ -15,7 +15,7 @@ squirreljme
 dependencies
 {
 	api project(":modules:cldc-compact")
-	api project(":modules:collections")
+	api project(":modules:vendor-api-squirreljme-collections")
 	api project(":modules:tool-classfile")
 	api project(":modules:debug-jdwp")
 }

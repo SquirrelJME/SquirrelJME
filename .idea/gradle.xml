@@ -26,7 +26,6 @@
             <option value="$PROJECT_DIR$/modules/cdc-xlet" />
             <option value="$PROJECT_DIR$/modules/cldc" />
             <option value="$PROJECT_DIR$/modules/cldc-compact" />
-            <option value="$PROJECT_DIR$/modules/collections" />
             <option value="$PROJECT_DIR$/modules/common-vm" />
             <option value="$PROJECT_DIR$/modules/csv" />
             <option value="$PROJECT_DIR$/modules/debug-jdwp" />
@@ -47,9 +46,7 @@
             <option value="$PROJECT_DIR$/modules/dio-uart" />
             <option value="$PROJECT_DIR$/modules/dio-watchdog" />
             <option value="$PROJECT_DIR$/modules/gcf" />
-            <option value="$PROJECT_DIR$/modules/io" />
             <option value="$PROJECT_DIR$/modules/io-file" />
-            <option value="$PROJECT_DIR$/modules/json" />
             <option value="$PROJECT_DIR$/modules/launcher" />
             <option value="$PROJECT_DIR$/modules/lcdui-demo" />
             <option value="$PROJECT_DIR$/modules/m3g" />
@@ -88,11 +85,14 @@
             <option value="$PROJECT_DIR$/modules/vendor-api-nokia" />
             <option value="$PROJECT_DIR$/modules/vendor-api-ntt-docomo-doja" />
             <option value="$PROJECT_DIR$/modules/vendor-api-ntt-docomo-star" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-oracle-json" />
             <option value="$PROJECT_DIR$/modules/vendor-api-samsung" />
             <option value="$PROJECT_DIR$/modules/vendor-api-siemens" />
             <option value="$PROJECT_DIR$/modules/vendor-api-skt" />
             <option value="$PROJECT_DIR$/modules/vendor-api-softbank-mexa" />
             <option value="$PROJECT_DIR$/modules/vendor-api-sprintpcs" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-squirreljme-collections" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-squirreljme-io" />
             <option value="$PROJECT_DIR$/modules/vendor-api-vodafone" />
             <option value="$PROJECT_DIR$/modules/wireless-messaging" />
             <option value="$PROJECT_DIR$/modules/zip" />
