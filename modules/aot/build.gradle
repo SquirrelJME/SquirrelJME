@@ -26,7 +26,7 @@ squirreljme
 dependencies
 {
 	api project(":modules:cldc")
-	api project(":modules:zip")
+	api project(":modules:vendor-api-squirreljme-zip")
 	api project(":modules:common-vm")
 	api project(":modules:vendor-api-squirreljme-io")
 	api project(":modules:vendor-api-squirreljme-collections")

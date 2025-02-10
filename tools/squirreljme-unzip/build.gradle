@@ -9,6 +9,6 @@ description = "Extracts ZIP files."
 mainClassName = "cc.squirreljme.unzip.Main"
 
 dependencies {
-	implementation project(":modules:zip")
+	implementation project(":modules:vendor-api-squirreljme-zip")
 	implementation project(":modules:vendor-api-squirreljme-io")
 }

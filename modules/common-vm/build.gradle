@@ -21,5 +21,5 @@ dependencies
 	api project(":modules:midp-lcdui")
 	api project(":modules:meep-swm")
 	api project(":modules:meep-midlet")
-	api project(":modules:zip")
+	api project(":modules:vendor-api-squirreljme-zip")
 }

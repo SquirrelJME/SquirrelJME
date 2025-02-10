@@ -26,7 +26,7 @@ dependencies
 	api project(":modules:common-vm")
 	api project(":modules:vendor-api-squirreljme-io")
 	api project(":modules:tac")
-	api project(":modules:zip")
+	api project(":modules:vendor-api-squirreljme-zip")
 	api project(":modules:debug-jdwp")
 	api project(":modules:debug-jdwp-vm-host")
 	api project(":modules:scritch-ui")
