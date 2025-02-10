@@ -16,7 +16,6 @@ import com.oracle.json.JsonObject;
 import com.oracle.json.JsonObjectBuilder;
 import com.oracle.json.JsonString;
 import com.oracle.json.JsonValue;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.collections.UnmodifiableMap;
