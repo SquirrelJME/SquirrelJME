@@ -67,9 +67,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cldc/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cldc/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cldc/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/collections/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/collections/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/collections/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/common-vm/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/common-vm/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/common-vm/out" />
@@ -133,12 +130,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/io-file/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/io-file/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/io-file/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/io/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/io/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/io/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/json/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/json/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/json/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/launcher/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/launcher/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/launcher/out" />
@@ -275,9 +266,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/wireless-messaging/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/wireless-messaging/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/wireless-messaging/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/zip/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/zip/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/zip/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/build" />
       <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/cmake-build-debug" />
       <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/cmake-build-release" />
@@ -326,6 +314,18 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../utils-dev" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/collections/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/collections/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/collections/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/io/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/io/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/io/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/json/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/json/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/json/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/zip/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/zip/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/zip/out" />
     </content>
   </component>
 </module>
