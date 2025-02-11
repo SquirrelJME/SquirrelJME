@@ -19,7 +19,8 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	sjme_nvm_class_poolEntry* entry;
 	sjme_nvm_class_poolEntryMember* member;
 	sjme_jclass classy;
-	sjme_lpcstr binaryName;
+	sjme_lpcstr binaryName, methodName, methodType;
+	sjme_nvm_frame newFrame;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* PC adjustment. */
@@ -35,23 +36,39 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 
 	/* Extract member information. */
 	member = &entry->member;
-	binaryName = sjme_charSeq_asLpcTemp(&member->inClass->descriptor->seq);
+	binaryName = (sjme_lpcstr)&member->inClass->descriptor->chars[0];
+	methodName = (sjme_lpcstr)&member->nameAndType->name->chars[0];
+	methodType = (sjme_lpcstr)&member->nameAndType->descriptor->chars[0];
 
 	/* Debug. */
 	sjme_message("invokestatic(into %s)", binaryName);
 	
 	/* Locate target class. */
 	classy = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadB(
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
 		inFrame->inThread->inTask->classLoader,
 		&classy,
 		inFrame->inThread,
 		binaryName,
 		SJME_JNI_TRUE)) || classy == NULL)
 		return sjme_error_default(error);
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Check permissions to call the target. */
+	sjme_message("TODO: Check invoke*() permissions.");
+
+	/* Pull in stack arguments for the call. */
+	sjme_message("TODO: Pop from stack for invoke*().");
+
+	/* Enter new stack frame for the target method, or at least try. */
+	newFrame = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadEnterC(
+		inFrame->inThread,
+		&newFrame,
+		classy,
+		SJME_NVM_CLASS_MEMBER_STATIC,
+		methodName, methodType,
+		0, NULL)) || newFrame == NULL)
+		return sjme_error_default(error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
