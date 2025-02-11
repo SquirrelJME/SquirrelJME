@@ -96,7 +96,7 @@ SJME_NVM_BYTECODE_SLOW(BIPush)
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* PC adjustment. */
-	pcNew->adjust = 3;
+	pcNew->adjust = 2;
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));

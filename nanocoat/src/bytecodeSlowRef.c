@@ -41,7 +41,8 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	methodType = (sjme_lpcstr)&member->nameAndType->descriptor->chars[0];
 
 	/* Debug. */
-	sjme_message("invokestatic(into %s)", binaryName);
+	sjme_message("invokestatic(%s:%s%s)",
+		binaryName, methodName, methodType);
 	
 	/* Locate target class. */
 	classy = NULL;
