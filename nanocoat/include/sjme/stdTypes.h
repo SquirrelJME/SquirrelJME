@@ -546,6 +546,10 @@ typedef struct sjme_pointerLen
 /** The Java type ID. */
 typedef sjme_basicTypeId sjme_javaTypeId;
 
+/** Is the given type ID considered wide? */
+#define SJME_TYPEID_IS_WIDE(t) \
+	((t) == SJME_JAVA_TYPE_ID_LONG || (t) == SJME_JAVA_TYPE_ID_DOUBLE)
+
 /**
  * Represents multiple type IDs.
  * 

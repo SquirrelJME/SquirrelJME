@@ -203,26 +203,34 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_jvalueTyped* inValue)
 {
-	sjme_frame_frameStack* stack;
-	sjme_jint at;
+	sjme_frame_frameStacks* stack;
+	sjme_frame_frameStack* perType;
+	sjme_jint pushCount, at;
+	sjme_jboolean isWide;
 	
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#if 0
-	/* Obtain the stack pivot. */
-	stack = &inFrame->stack[inValue->type];
+	/* Will the stack overflow? */
+	stack = &inFrame->stack;
+	isWide = SJME_TYPEID_IS_WIDE(inValue->type);
+	pushCount = (isWide ? 2 : 1);
+	if (stack->orderTop + pushCount > stack->orderLength)
+		return SJME_ERROR_STACK_OVERFLOW;
 
-	/* Where is this being written? */
-	at = stack->front + (stack->top++);
+	/* Will the per-type stack overflow? */
+	perType = &stack->stack[inValue->type];
+	if (perType->top + 1 > perType->length)
+		return SJME_ERROR_STACK_OVERFLOW;
 
-	/* Set next in the stack order. */
-	(*inFrame->stackOrder)[inFrame->stackFront +
-		(inFrame->stackUse++)] = inValue->type;
-#endif
+	/* Place onto the order, mark top invalid if required. */
+	stack->order[stack->orderTop++] = inValue->type;
+	if (isWide)
+		stack->order[stack->orderTop++] = SJME_NUM_JAVA_TYPE_IDS;
 
+	/* Take slot in the per-type stack. */
+	at = perType->top++;
+	
 	/* Forward call. */
 	return sjme_nvm_task_frameTreadSetT(inFrame,
 		at, inValue);
@@ -267,7 +275,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue)
 {
-	sjme_frame_frameStack* stack;
+	sjme_frame_frameStack* perType;
 	
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -275,40 +283,36 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	if (inValue->type < 0 || inValue->type >= SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#if 0
-	/* Obtain the stack pivot. */
-	stack = &inFrame->stack[inValue->type];
-
+	/* Obtain the per type. */
+	perType = &inFrame->stack.stack[inValue->type];
+	
 	/* Operating depends on the type. */
 	switch (inValue->type)
 	{
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			(*stack->base.jints)[typeIndex] = inValue->value.i;
+			perType->base.jints[typeIndex] = inValue->value.i;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_LONG:
-			(*stack->base.jlongs)[typeIndex] = inValue->value.j;
+			perType->base.jlongs[typeIndex] = inValue->value.j;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			(*stack->base.jfloats)[typeIndex] = inValue->value.f;
+			perType->base.jfloats[typeIndex] = inValue->value.f;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			(*stack->base.jdoubles)[typeIndex] = inValue->value.d;
+			perType->base.jdoubles[typeIndex] = inValue->value.d;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
 			sjme_message("TODO: Count object set.");
-			(*stack->base.jobjects)[typeIndex] = inValue->value.l;
+			perType->base.jobjects[typeIndex] = inValue->value.l;
 			break;
 			
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}
-#endif
 
 	/* Success! */
 	return SJME_ERROR_NONE;
