@@ -391,6 +391,22 @@ sjme_errorCode sjme_swap_uint_memmove(
 	return SJME_ERROR_NONE;
 }
 
+sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
+	sjme_intPointer align)
+{
+	sjme_intPointer mod;
+	
+	/* Force alignment to be valid. */
+	if (align <= 0)
+		align = 1;
+
+	/* Perform alignment. */
+	mod = (addr % align);
+	if (mod == 0)
+		return addr;
+	return addr + (align - mod);
+}
+
 sjme_juint sjme_util_intBitCountU(
 	sjme_attrInValue sjme_juint v)
 {

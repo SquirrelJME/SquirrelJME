@@ -24,8 +24,11 @@
 /** The number of threads to grow by. */
 #define SJME_NVM_THREAD_GROW 8
 
+/** The size of the thread stack. */
+#define SJME_NVM_THREAD_STACK_SIZE 32768
+
 /** Type size multiplier. */
-static const sjme_jint sjme_nvm_typeMul[5] =
+static const sjme_jint sjme_nvm_typeMul[SJME_NUM_JAVA_TYPE_IDS] =
 {
 	sizeof(sjme_jint),
 	sizeof(sjme_jlong),
@@ -40,52 +43,72 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_class_methodInfo targetInfo)
 {
-#define SJME_NVM_INIT_STACK_ORDER 256
-	
 	sjme_errorCode error;
-	sjme_frame_threadStack* threadStack;
-	sjme_jint i, n, stackOrderLen, needLen;
+	sjme_nvm_class_codeInfo code;
+	sjme_frame_threadStacks* store;
+	sjme_frame_frameStacks* stack;
+	sjme_nvm_class_codePerType* perType;
+	sjme_frame_frameStack* typeStack;
+	sjme_jint i;
+	sjme_intPointer typeOff[SJME_NUM_CODE_TYPE_IDS];
+	sjme_pointer storeBase;
 	
-	/* Which stack order length is needed now? Keep a minimum at all times. */
-	stackOrderLen = inThread->stackTop +
-		targetInfo->code->perType[SJME_JAVA_TYPE_ID_ALL].locals +
-		targetInfo->code->perType[SJME_JAVA_TYPE_ID_ALL].stack;
-	inThread->stackNextTop = stackOrderLen;
-	if (stackOrderLen < SJME_NVM_INIT_STACK_ORDER)
-		stackOrderLen = SJME_NVM_INIT_STACK_ORDER;
+	if (inState == NULL || inThread == NULL || inFrame == NULL ||
+		targetInfo == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Need to grow stack ordering information? */
-	if (sjme_error_is(error = sjme_alloc_grow(inThread->state->allocPool,
-		(sjme_pointer*)&inThread->stackOrder,
-		sizeof(*inThread->stackOrder),
-		&inThread->stackTotal,
-		stackOrderLen)))
-		return sjme_error_default(error);
-	
-	/* Need to grow type storage info? */
+	/* Get source and target framing information. */
+	store = &inThread->stack;
+	stack = &inFrame->stack;
+
+	/* Make sure it is cleared beforehand. */
+	memset(stack, 0, sizeof(*stack));
+
+	/* The ordering information can be taken directly from the code info. */
+	code = targetInfo->code;
+	stack->orderFront = code->perType[SJME_JAVA_TYPE_ID_ALL].locals;
+	stack->orderTop = stack->orderFront;
+	stack->orderLength = stack->orderFront +
+		code->perType[SJME_JAVA_TYPE_ID_ALL].stack;
+
+	/* Determine initial offset to store ordering information. */
+	typeOff[0] = sjme_util_alignTo(
+		sizeof(*stack->order) * stack->orderLength,
+		sizeof(sjme_pointer));
+
+	/* Determine the totals for each type. */
 	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
 	{
-		/* Get the storage here. */
-		threadStack = &inThread->stack[i];
+		perType = &code->perType[i];
+		typeStack = &stack->stack[i];
 
-		/* How much storage is needed for this? */
-		needLen = threadStack->top +
-			targetInfo->code->perType[SJME_JAVA_TYPE_ID_ALL].locals +
-			targetInfo->code->perType[SJME_JAVA_TYPE_ID_ALL].stack;
-		threadStack->nextTop = needLen;
+		/* Determine totals for per types. */
+		typeStack->front = perType->locals;
+		typeStack->top = typeStack->front;
+		typeStack->length = typeStack->front + perType->stack;
 
-		/* Need to grow stack storage? */
-		if (sjme_error_is(error = sjme_alloc_grow(inThread->state->allocPool,
-			(sjme_pointer*)&threadStack->storage.storage,
-			sjme_nvm_typeMul[i],
-			&inThread->stackTotal,
-			needLen)))
-			return sjme_error_default(error);
+		/* The offset for the next type is the total storage for this type. */
+		typeOff[i + 1] = sjme_util_alignTo(
+			sjme_util_alignTo(typeOff[i], sjme_nvm_typeMul[i]) +
+			(sjme_nvm_typeMul[i] * typeStack->length),
+			sizeof(sjme_pointer));
 	}
+
+	/* Is there enough memory to even allocate this big of a stack? */
+	if (store->storageTop + typeOff[SJME_JAVA_TYPE_ID_ALL] > store->storageLen)
+		return SJME_ERROR_OUT_OF_MEMORY;
+
+	/* Grab entire chunk. */
+	storeBase = SJME_POINTER_OFFSET(store->storage, store->storageTop);
+	store->storageTop += typeOff[SJME_JAVA_TYPE_ID_ALL];
+
+	/* Setup pointers. */
+	stack->order = SJME_POINTER_OFFSET(storeBase, 0);
+	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
+		stack->stack[i].base.base = SJME_POINTER_OFFSET(storeBase, typeOff[i]);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
-#undef SJME_NVM_INIT_STACK_ORDER
 }
 
 sjme_errorCode sjme_nvm_task_frameLocalSetL(
@@ -186,6 +209,9 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Obtain the stack pivot. */
 	stack = &inFrame->stack[inValue->type];
 
@@ -195,6 +221,7 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	/* Set next in the stack order. */
 	(*inFrame->stackOrder)[inFrame->stackFront +
 		(inFrame->stackUse++)] = inValue->type;
+#endif
 
 	/* Forward call. */
 	return sjme_nvm_task_frameTreadSetT(inFrame,
@@ -248,6 +275,9 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	if (inValue->type < 0 || inValue->type >= SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Obtain the stack pivot. */
 	stack = &inFrame->stack[inValue->type];
 
@@ -278,6 +308,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}
+#endif
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -525,6 +556,11 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		inThread, &result)) || result == NULL)
 		return sjme_error_default(error);
 
+	/* Perform stack and thread re-framing. */
+	if (sjme_error_is(error = sjme_nvm_task_stackReframe(
+		inThread->state, inThread, result, targetInfo)))
+		return sjme_error_default(error);
+
 	/* Setup initial locals, which are copied in from arguments. */
 	for (i = 0, dx = 0, n = argC; i < n;
 		i++, (dx += (argV[i].type == SJME_JAVA_TYPE_ID_LONG ||
@@ -532,11 +568,6 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
 			result, dx, &argV[i])))
 			return sjme_error_default(error);
-
-	/* Perform stack and thread re-framing. */
-	if (sjme_error_is(error = sjme_nvm_task_stackReframe(
-		inThread->state, inThread, result, targetInfo)))
-		return sjme_error_default(error);
 	
 	/* Set frame details. */
 #if 0
@@ -545,21 +576,6 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	result->inThread = inThread;
 	result->inCode = targetInfo->code;
 	result->pool = targetInfo->code->inMethod->inClass->pool;
-	result->stackOrder = &inThread->stackOrder;
-
-	/* Set type specific stack frame treads. */
-	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
-	{
-		result->stack[i].base.base = /*&*/SJME_POINTER_OFFSET(
-			inThread->stack[i].storage.storage,
-			sjme_nvm_typeMul[i] * inThread->stack[i].top);
-
-		/* Shift thread stack for individual types. */
-		inThread->stack[i].top = inThread->stack[i].nextTop;
-	}
-
-	/* Shift thread stack. */
-	inThread->stackTop = inThread->stackNextTop;
 	
 	/* Set frame as active. */
 	inThread->numFrames++;
@@ -694,13 +710,20 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	sjme_nvm_frame firstFrame;
 	sjme_nvm inState;
 	sjme_jint freeSlot, i, n;
+	sjme_pointer storage;
 	
 	if (inTask == NULL || outThread == NULL || threadName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Allocate stack storage. */
+	storage = NULL;
+	inState = inTask->inState;
+	if (sjme_error_is(error = sjme_alloc(inState->allocPool,
+		SJME_NVM_THREAD_STACK_SIZE, &storage)) || storage == NULL)
+		goto fail_allocStorage;
 	
 	/* Allocate thread structure. */
 	result = NULL;
-	inState = inTask->inState;
 	if (sjme_error_is(error = sjme_nvm_alloc(inState, sizeof(*result),
 		SJME_NVM_STRUCT_THREAD, SJME_AS_NVM_COMMONP(&result))))
 		goto fail_allocResult;
@@ -732,6 +755,8 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	result->inTask = inTask;
 	result->threadId = 1 + sjme_atomic_sjme_jint_getAdd(
 		&inState->nextThreadId, 1);
+	result->stack.storage = storage;
+	result->stack.storageLen = SJME_NVM_THREAD_STACK_SIZE;
 	
 	/* All new threads are considered initially sleeping. */
 	result->status = SJME_NVM_THREAD_STATUS_SLEEPING;
@@ -769,6 +794,9 @@ fail_lock:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
+fail_allocStorage:
+	sjme_alloc_free(storage);
+	
 	return sjme_error_default(error);
 }
 

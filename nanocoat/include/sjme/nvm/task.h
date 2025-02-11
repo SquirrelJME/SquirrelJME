@@ -127,11 +127,11 @@ typedef struct sjme_nvm_taskStringsBase sjme_nvm_taskStringsBase;
 typedef sjme_nvm_taskStringsBase* sjme_nvm_taskStrings;
 	
 /**
- * Stores the main thread stack frames.
+ * Contains information on all the thread stack frames.
  *
- * @since 2025/01/27
+ * @since 2025/02/10
  */
-typedef struct sjme_frame_threadStack sjme_frame_threadStack;
+typedef struct sjme_frame_threadStacks sjme_frame_threadStacks;
 	
 /**
  * Contains information on the stack framing information.
@@ -139,23 +139,42 @@ typedef struct sjme_frame_threadStack sjme_frame_threadStack;
  * @since 2025/01/27
  */
 typedef struct sjme_frame_frameStack sjme_frame_frameStack;
+	
+/**
+ * Contains information on all the frame stack information. 
+ *
+ * @since 2025/02/10
+ */
+typedef struct sjme_frame_frameStacks sjme_frame_frameStacks;
 
-struct sjme_frame_threadStack
+struct sjme_frame_threadStacks
 {
-	/** The top for this specific type. */
+	/** The storage for the stack. */
+	sjme_pointer storage;
+
+	/** The number of bytes used for storage. */
+	sjme_jint storageLen;
+
+	/** The address top of the stack top. */
+	sjme_jint storageTop;
+};
+	
+struct sjme_frame_frameStack
+{
+	/** The top of the stack frame. */
 	sjme_jint top;
 
-	/** The next top value. */
-	sjme_jint nextTop;
+	/** The front of the stack, anything before are local variables. */
+	sjme_jint front;
 
-	/** The number of items in storage. */
-	sjme_jint count;
+	/** The length of this stack. */
+	sjme_jint length;
 	
-	/** Storage for the given types in this thread. */
+	/** Pointer bases for the type on the frame. */
 	sjme_alignPointer union
 	{
-		/** Pointer storage. */
-		sjme_pointer storage;
+		/** Pointer base. */
+		sjme_pointer base;
 		
 		/** Integer values. */
 		sjme_jint* jints;
@@ -171,38 +190,28 @@ struct sjme_frame_threadStack
 
 		/** Object values. */
 		sjme_jobject* jobjects;
-	} storage;
-};
-	
-struct sjme_frame_frameStack
-{
-	/** The top for this specific type. */
-	sjme_jint top;
-
-	/** The front of the stack, anything before are local variables. */
-	sjme_jint front;
-	
-	/** Pointer bases for the type on the frame. */
-	sjme_alignPointer union
-	{
-		/** Pointer base. */
-		sjme_pointer base;
-		
-		/** Integer values. */
-		sjme_jint** jints;
-
-		/** Long values. */
-		sjme_jlong** jlongs;
-
-		/** Float values. */
-		sjme_jfloat** jfloats;
-
-		/** Double values. */
-		sjme_jdouble** jdoubles;
-
-		/** Object values. */
-		sjme_jobject** jobjects;
 	} base;
+};
+
+struct sjme_frame_frameStacks
+{
+	/** The number of bytes claimed for this frame. */
+	sjme_jint storageClaim;
+	
+	/** Stack framing information. */
+	sjme_frame_frameStack stack[SJME_NUM_JAVA_TYPE_IDS];
+
+	/** The order of the stack. */
+	sjme_javaTypeId* order;
+
+	/** The front of the stack, anything before this are local variables. */
+	sjme_jint orderFront;
+
+	/** The top of the order stack. */
+	sjme_jint orderTop;
+
+	/** The maximum size of the order. */
+	sjme_jint orderLength;
 };
 
 struct sjme_nvm_frameBase
@@ -225,17 +234,8 @@ struct sjme_nvm_frameBase
 	/** The code this is executing within. */
 	sjme_nvm_class_codeInfo inCode;
 
-	/** Stack framing information. */
-	sjme_frame_frameStack stack[SJME_NUM_JAVA_TYPE_IDS];
-
-	/** The order of the stack. */
-	sjme_javaTypeId** stackOrder;
-
-	/** The front of the stack, anything before this are local variables. */
-	sjme_jint stackFront;
-
-	/** The number of items on the stack. */
-	sjme_jint stackUse;
+	/** Stack information for the frame. */
+	sjme_frame_frameStacks stack;
 
 	/** Thread state flags. */
 	sjme_packed struct
@@ -345,20 +345,8 @@ struct sjme_nvm_threadBase
 	/** The stack frames. */
 	sjme_list_sjme_nvm_frame* frames;
 
-	/** Stack framing information. */
-	sjme_frame_threadStack stack[SJME_NUM_JAVA_TYPE_IDS];
-
-	/** Stack ordering information. */
-	sjme_javaTypeId* stackOrder;
-
-	/** The number of items used the stack. */
-	sjme_jint stackTop;
-
-	/** The next top value. */
-	sjme_jint stackNextTop;
-
-	/** The number of items available on the stack. */
-	sjme_jint stackTotal;
+	/** The stack information for the entire thread. */
+	sjme_frame_threadStacks stack;
 	
 	/** Throwable which has been tossed in the thread. */
 	sjme_jobject tossed;
