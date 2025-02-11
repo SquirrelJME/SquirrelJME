@@ -89,6 +89,7 @@ SJME_NVM_BYTECODE_SLOW(NoOp);
 /* Math */
 
 /* Reference */
+SJME_NVM_BYTECODE_SLOW(InvokeStatic);
 
 /* Stack */
 

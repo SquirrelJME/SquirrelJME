@@ -247,7 +247,7 @@ SJME_NVM_BYTECODE_SLOW(LdcW)
 	pcNew->adjust = 3;
 
 	/* Read in pool value. */
-	poolIndex = *sjme_util_memUnaligned16(&relRawCode[1]);
+	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
 	if (sjme_error_is(error = sjme_nvm_task_framePool(
 		inFrame, poolIndex, &entry,
 		SJME_NVM_CLASS_POOL_TYPE_INTEGER,
@@ -276,7 +276,7 @@ SJME_NVM_BYTECODE_SLOW(LdcWTwo)
 	pcNew->adjust = 3;
 
 	/* Read in pool value. */
-	poolIndex = *sjme_util_memUnaligned16(&relRawCode[1]);
+	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
 	if (sjme_error_is(error = sjme_nvm_task_framePool(
 		inFrame, poolIndex, &entry,
 		SJME_NVM_CLASS_POOL_TYPE_LONG,
@@ -304,7 +304,7 @@ SJME_NVM_BYTECODE_SLOW(SIPush)
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
 	value.type = SJME_JAVA_TYPE_ID_INTEGER;
-	value.value.i = *sjme_util_memUnaligned16(&relRawCode[1]);
+	value.value.i = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
 
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(

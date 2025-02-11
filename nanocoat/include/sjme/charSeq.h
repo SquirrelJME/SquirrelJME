@@ -105,6 +105,17 @@ struct sjme_charSeq
 };
 
 /**
+ * Returns a temporary pointer to the given character sequence as a
+ * standard @c sjme_lpcstr .
+ * 
+ * @param inSeq The input sequence.
+ * @return The resultant temporary pointer.
+ * @since 2025/02/10
+ */
+sjme_lpcstr sjme_charSeq_asLpcTemp(
+	sjme_attrInNotNull const sjme_charSeq* inSeq);
+	
+/**
  * Returns the character at the given index.
  * 
  * @param inSeq The input character sequence.

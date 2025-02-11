@@ -311,6 +311,14 @@ static sjme_inline sjme_attrArtificial sjme_jshort sjme_swap_short(
 	return (sjme_jchar)sjme_swap_ushort((sjme_jchar)in);
 }
 
+#if defined(SJME_CONFIG_BIG_ENDIAN)
+	/** A big endian unsigned short value. */
+	#define sjme_big_ushort(v) ((sjme_jushort)(v))
+#else
+	/** A big endian unsigned short value. */
+	#define sjme_big_ushort(v) (sjme_swap_ushort((v)))
+#endif
+
 /**
  * Performs @c memmove() followed by shifting up by 8 the destination buffer,
  * then following a byte swap.

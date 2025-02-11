@@ -58,6 +58,44 @@ static const sjme_charSeq_functions sjme_charSeq_basicUtfFunctions =
 	.length = sjme_charSeq_basicUtf_length,
 };
 
+sjme_lpcstr sjme_charSeq_asLpcTemp(
+	sjme_attrInNotNull const sjme_charSeq* inSeq)
+{
+#define BUF_SIZE 1024
+	sjme_attrThreadLocal(sjme_cchar, buf[BUF_SIZE]);
+	sjme_jchar c;
+	sjme_jint i, n;
+
+	/* Return NULL if NULL. */
+	if (inSeq == NULL)
+		return NULL;
+
+	/* Read in character length. */
+	n = -1;
+	if (sjme_error_is(sjme_charSeq_length(inSeq, &n)) || n < 0)
+		return NULL;
+
+	/* Clip to max. */
+	if (n >= BUF_SIZE)
+		n = BUF_SIZE - 1;
+
+	/* Lazily map characters down to ASCII. */
+	for (i = 0; i < n; i++)
+	{
+		if (sjme_error_is(sjme_charSeq_charAt(inSeq, i, &c)))
+			return NULL;
+		buf[i] = c & 0xFF;
+	}
+
+	/* Always end in NUL. */
+	buf[n] = 0;
+
+	/* Success! */
+	return &buf[0];
+
+#undef BUF_SIZE
+}
+
 sjme_errorCode sjme_charSeq_charAt(
 	sjme_attrInNotNull const sjme_charSeq* inSeq,
 	sjme_attrInPositive sjme_jint inIndex,
