@@ -383,12 +383,14 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 {
 	sjme_errorCode error;
 	sjme_jshort maxStack, maxLocals, numExcept;
-	sjme_jint codeLen, i, actualCodeLen;
+	sjme_jint codeLen, i, j, actualCodeLen;
 	sjme_nvm_class_methodInfo methodInfo;
 	sjme_nvm_class_codeInfo result;
 	sjme_jubyte* rawCode;
 	sjme_list_sjme_nvm_class_exceptionHandler* excepts;
 	sjme_nvm_class_exceptionHandler* except;
+	sjme_nvm_class_codePerType* perType;
+	sjme_jshort* localMap;
 	
 	methodInfo = context;
 	if (allocPool == NULL || inConstPool == NULL || inStringPool == NULL ||
@@ -420,15 +422,32 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	if (sjme_error_is(error = sjme_stream_inputReadValueJS(
 		attrStream, &maxLocals)) || maxLocals < 0)
 		goto fail_readMaxLocals;
+
+	/* Allocate full local map storage. */
+	localMap = NULL;
+	if (sjme_error_is(error = sjme_alloc(allocPool,
+		sizeof(*localMap) * ((maxLocals * SJME_NUM_JAVA_TYPE_IDS) + 1),
+		(sjme_pointer)&localMap)) || localMap == NULL)
+		goto fail_allocLocalMap;
 	
 	/* Set. */
 	result->perType[SJME_JAVA_TYPE_ID_ALL].stack = maxStack;
 	result->perType[SJME_JAVA_TYPE_ID_ALL].locals = maxLocals;
 
-	/* TODO: For now just set all types to the same. */
+	/* Build local and stack counts. */
 	sjme_message("TODO: Use proper per-type counts.");
 	for (i = 0; i < SJME_JAVA_TYPE_ID_ALL; i++)
-		result->perType[i] = result->perType[SJME_JAVA_TYPE_ID_ALL];
+	{
+		perType = &result->perType[i];
+		
+		/* TODO: For now just set all types to the same. */
+		*perType = result->perType[SJME_JAVA_TYPE_ID_ALL];
+
+		/* Local map is always set to specific local indexes per type. */
+		perType->localMap = &localMap[maxLocals * i];
+		for (j = 0; j < maxLocals; j++)
+			perType->localMap[j] = j;
+	}
 	
 	/* Read in code length. */
 	codeLen = -1;
@@ -538,6 +557,9 @@ fail_readNumExcept:
 fail_readRawCode:
 fail_allocRawCode:
 fail_readCodeLen:
+fail_allocLocalMap:
+	if (localMap != NULL)
+		sjme_alloc_free(localMap);
 fail_readMaxLocals:
 fail_readMaxStack:
 fail_allocResult:

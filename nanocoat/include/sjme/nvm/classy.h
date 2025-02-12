@@ -736,6 +736,9 @@ typedef struct sjme_nvm_class_codePerType
 
 	/** The maximum number of stack variables. */
 	sjme_jshort stack;
+
+	/** The map of local variables to actual local slots. */
+	sjme_jshort* localMap;
 } sjme_nvm_class_codePerType;
 
 /** The ID for all types. */
