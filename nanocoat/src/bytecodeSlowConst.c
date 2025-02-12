@@ -60,12 +60,11 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 		case SJME_NVM_CLASS_POOL_TYPE_STRING:
 			return sjme_nvm_task_frameStackPushStringP(
 				inFrame, entry->utf.utf);
-
+		
+		/* Invalid type. */
 		default:
+			return SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
 	}
-	
-	/* Invalid type. */
-	return SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
 }
 
 SJME_NVM_BYTECODE_SLOW(AConstNull)
