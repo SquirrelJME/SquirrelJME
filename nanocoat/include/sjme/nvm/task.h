@@ -356,6 +356,20 @@ struct sjme_nvm_threadBase
 };
 	
 /**
+ * Pushes the specified local to the stack.
+ * 
+ * @param inFrame The frame to push the local to the stack from.
+ * @param localType The type of local to push.
+ * @param localIndex The index of the local.
+ * @return Any resultant error, if any.
+ * @since 2025/02/12
+ */
+sjme_errorCode sjme_nvm_task_frameLocalPush(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInValue sjme_javaTypeId localType,
+	sjme_attrInPositive sjme_jint localIndex);
+	
+/**
  * Sets the value of a local variable within a frame using the local variable
  * index, which is the same as the Java index.
  * 
@@ -369,7 +383,7 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInPositive sjme_jint localIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue);
-
+	
 /**
  * Obtains the given frame pool.
  * 

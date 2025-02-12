@@ -111,6 +111,21 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_nvm_task_frameLocalPush(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInValue sjme_javaTypeId localType,
+	sjme_attrInPositive sjme_jint localIndex)
+{
+	if (inFrame == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (localType < 0 || localType >= SJME_NUM_JAVA_TYPE_IDS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInPositive sjme_jint localIndex,
