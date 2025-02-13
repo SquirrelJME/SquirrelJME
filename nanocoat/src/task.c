@@ -111,19 +111,88 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_task_valueCompose(
+	sjme_attrInOutNotNull sjme_jvalueTyped* inOutValue,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId valueType,
+	sjme_attrInPositive sjme_jint stackIndex,
+	sjme_attrInNotNull sjme_frame_frameStack* stack)
+{
+	if (inOutValue == NULL || stack == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (valueType < 0 || valueType >= SJME_NUM_JAVA_TYPE_IDS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (stackIndex < 0 || stackIndex >= stack->length)
+		return SJME_ERROR_TREAD_INDEX_INVALID;
+
+	/* Mapping index depends on the type. */
+	inOutValue->type = valueType;
+	switch (valueType)
+	{
+		case SJME_JAVA_TYPE_ID_INTEGER:
+			inOutValue->value.i = stack->base.jints[stackIndex];
+			break;
+			
+		case SJME_JAVA_TYPE_ID_LONG:
+			inOutValue->value.j = stack->base.jlongs[stackIndex];
+			break;
+			
+		case SJME_JAVA_TYPE_ID_FLOAT:
+			inOutValue->value.f = stack->base.jfloats[stackIndex];
+			break;
+			
+		case SJME_JAVA_TYPE_ID_DOUBLE:
+			inOutValue->value.d = stack->base.jdoubles[stackIndex];
+			break;
+			
+		case SJME_JAVA_TYPE_ID_OBJECT:
+			inOutValue->value.l = stack->base.jobjects[stackIndex];
+			break;
+			
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_task_frameLocalPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInValue sjme_javaTypeId localType,
 	sjme_attrInPositive sjme_jint localIndex)
 {
+	sjme_errorCode error;
+	sjme_nvm_class_codePerType* perType;
+	sjme_jint mappedSlot;
+	sjme_jvalueTyped value;
+	
 	if (inFrame == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (localType < 0 || localType >= SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	if (localIndex < 0 ||
+		localIndex >= inFrame->inCode->perType[SJME_JAVA_TYPE_ID_ALL].locals)
+		return SJME_ERROR_LOCAL_INDEX_INVALID;
+
+	/* The local variable is of the wrong type. */
+	if (inFrame->stack.order[localIndex] != localType)
+		return SJME_ERROR_LOCAL_INVALID_READ;
+
+	/* Determine where this maps from for the read. */
+	perType = &inFrame->inCode->perType[localType];
+	mappedSlot = inFrame->inCode->perType[localType].localMap[localIndex];
+	if (mappedSlot < 0 || mappedSlot > perType->locals)
+		return SJME_ERROR_TREAD_INDEX_INVALID;
+
+	/* Forward to stack push. */
+	if (sjme_error_is(error = sjme_nvm_task_valueCompose(&value,
+		localType, mappedSlot, &inFrame->stack.stack[localType])))
+		return sjme_error_default(error);
+	return sjme_nvm_task_frameStackPush(inFrame, &value);
 }
 
 sjme_errorCode sjme_nvm_task_frameLocalSetL(
@@ -212,6 +281,22 @@ skip_success:
 
 fail_notMatched:
 	return SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
+}
+
+sjme_errorCode sjme_nvm_task_frameStackPopA(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNotNullBuf(argC) sjme_javaTypeId* argT,
+	sjme_attrInNotNullBuf(argC) sjme_jvalueTyped* argV)
+{
+	if (inFrame == NULL || argT == NULL || argV == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (argC < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPush(

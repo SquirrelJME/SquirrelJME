@@ -407,6 +407,23 @@ sjme_errorCode sjme_nvm_task_framePool(
 	...);
 
 /**
+ * Pops multiple values from the stack and places their values into the given
+ * typed values.
+ * 
+ * @param inFrame The frame to pop from. 
+ * @param argC The number of values to pop.
+ * @param argT The types of values to pop.
+ * @param argV The resultant values which were popped.
+ * @return Any resultant errors, if any.
+ * @since 2025/02/13
+ */
+sjme_errorCode sjme_nvm_task_frameStackPopA(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNotNullBuf(argC) sjme_javaTypeId* argT,
+	sjme_attrInNotNullBuf(argC) sjme_jvalueTyped* argV);
+	
+/**
  * Pushes the given value to the stack.
  * 
  * @param inFrame The frame to push to.

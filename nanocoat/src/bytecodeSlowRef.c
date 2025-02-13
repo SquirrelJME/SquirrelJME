@@ -21,6 +21,9 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	sjme_jclass classy;
 	sjme_lpcstr binaryName, methodName, methodType;
 	sjme_nvm_frame newFrame;
+	sjme_jvalueTyped* argV;
+	sjme_jmethodID methodId;
+	sjme_nvm_class_methodInfo target;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* PC adjustment. */
@@ -53,22 +56,40 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		binaryName,
 		SJME_JNI_TRUE)) || classy == NULL)
 		return sjme_error_default(error);
+	
+	/* Locate method to execute. */
+	methodId = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+		classy, inFrame->inThread,
+		SJME_NVM_CLASS_MEMBER_STATIC,
+		methodName, methodType, &methodId)) || methodId == NULL)
+		return sjme_error_default(error);
+
+	/* Get the non-virtual target info. */
+	target = methodId->info[SJME_NVM_CALL_NON_VIRTUAL];
 
 	/* Check permissions to call the target. */
 	sjme_message("TODO: Check invoke*() permissions.");
 
+	/* Allocate pushed arguments. */
+	argV = sjme_alloca(sizeof(*argV) * (target->argC + 1));
+	if (argV == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+
 	/* Pull in stack arguments for the call. */
-	sjme_message("TODO: Pop from stack for invoke*().");
+	if (target->argC != 0)
+		if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(
+			inFrame, target->argC, target->argT, argV)))
+			return sjme_error_default(error);
 
 	/* Enter new stack frame for the target method, or at least try. */
 	newFrame = NULL;
-	if (sjme_error_is(error = sjme_nvm_task_threadEnterC(
+	if (sjme_error_is(error = sjme_nvm_task_threadEnter(
 		inFrame->inThread,
 		&newFrame,
-		classy,
-		SJME_NVM_CLASS_MEMBER_STATIC,
-		methodName, methodType,
-		0, NULL)) || newFrame == NULL)
+		methodId,
+		SJME_NVM_CALL_NON_VIRTUAL,
+		target->argC, argV)) || newFrame == NULL)
 		return sjme_error_default(error);
 	
 	/* Success? */
