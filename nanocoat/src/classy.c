@@ -79,6 +79,28 @@
 /** Class is an enum. */
 #define SJME_NVM_CLASS_ACC_ENUM INT16_C(0x4000)
 
+static sjme_errorCode sjme_nvm_class_calcMethodArgs(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_lpcstr typeDesc,
+	sjme_attrInNotNull sjme_jint* outArgC,
+	sjme_attrInNotNull sjme_javaTypeId** outArgT)
+{
+	if (allocPool == NULL || typeDesc == NULL ||
+		outArgC == NULL || outArgT == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Quick void method, such as a default constructor. */
+	if (strcmp(typeDesc, "()V") == 0)
+	{
+		*outArgC = 0;
+		*outArgT = NULL;
+		return SJME_ERROR_NONE;
+	}
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_nvm_class_readPoolRefIndex(
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inClassPool,
@@ -1649,11 +1671,18 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 		allocPool, inStream, inConstPool, inStringPool,
 		sjme_nvm_class_methodAttr, result)))
 		goto fail_parseAttributes;
+
+	/* Determine the number of method arguments. */
+	if (sjme_error_is(error = sjme_nvm_class_calcMethodArgs(
+		allocPool, (sjme_lpcstr)&type->utf.utf->chars[0],
+		&result->argC, &result->argT)))
+		goto fail_calcArgs;
 	
 	/* Success! */
 	*outMethod = result;
 	return SJME_ERROR_NONE;
-	
+
+fail_calcArgs:
 fail_parseAttributes:
 fail_refType:
 fail_readType:

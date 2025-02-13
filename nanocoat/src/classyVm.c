@@ -67,7 +67,6 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		sizeof(result), SJME_NVM_STRUCT_METHOD_ID,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
-
 	
 	/* The names always get set. */
 	result->name = thisInfo->name;
