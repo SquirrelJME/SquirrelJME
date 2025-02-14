@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.jsr353;
+package net.multiphasicapps.io;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,25 +23,22 @@ public class LineColumnReader
 	extends BufferedReader
 {
 	/** Default system wide tab character size. */
-	public static final int DEFAULT =
-		Integer.MIN_VALUE;
+	public static final int DEFAULT = Integer.MIN_VALUE;
 	
 	/** Internal default tab size. */
-	private static final int _DEFAULT_TAB_SIZE =
-		8;
-	
-	/** The current line. */
-	protected int line;
+	private static final int _DEFAULT_TAB_SIZE = 8;
 	
 	/** The current read column. */
 	protected int column;
+	
+	/** The current line. */
+	protected int line;
 	
 	/** The size of the tab character. */
 	protected int tabsize;
 	
 	/** Marked column. */
-	private int _mkdcol =
-		-1;
+	private int _mkdcol = -1;
 	
 	/**
 	 * Initializes the line and column count reader with a default tab size.
@@ -95,7 +92,7 @@ public class LineColumnReader
 	public void close()
 		throws IOException
 	{
-		synchronized(this.lock)
+		synchronized (this.lock)
 		{
 			// Has been closed, ignore
 			if (this.tabsize < 0)
@@ -128,7 +125,7 @@ public class LineColumnReader
 	
 	/**
 	 * Returns the line number.
-	 * 
+	 *
 	 * @return The line number.
 	 * @since 2022/07/12
 	 */
@@ -177,8 +174,8 @@ public class LineColumnReader
 	{
 		// Cannot be negative
 		if (__ral < 0)
-			throw new IllegalArgumentException(String.format(
-				"Negative read-ahead of %1$d.", __ral));
+			throw new IllegalArgumentException(
+				String.format("Negative read-ahead of %1$d.", __ral));
 		
 		// Locked
 		synchronized (this.lock)
@@ -222,38 +219,38 @@ public class LineColumnReader
 			// Read into a new buffer.
 			char[] nb = new char[__l];
 			int rc = super.read(nb, 0, nb.length);
-		
+			
 			// EOF or nothing read
 			if (rc <= 0)
 				return rc;
-		
+			
 			// Go through characters and evaluate them, luckily \n are
 			// compacted
 			for (int i = 0; i < rc; i++)
 			{
 				char c = nb[i];
-			
+				
 				// Tab
 				if (c == '\t')
-					this.column = (this.column -
-						(this.column % this.tabsize)) + this.tabsize;
-			
-				// New line
+					this.column =
+						(this.column - (this.column % this.tabsize)) + this.tabsize;
+					
+					// New line
 				else if (c == '\n')
 				{
 					this.column = 0;
 					this.line++;
 				}
-			
+				
 				// Other character
 				else
 					this.column++;
 			}
-		
+			
 			// Copy buffer to target
 			for (int i = 0; i < rc; i++)
 				__b[__o + i] = nb[i];
-		
+			
 			// Return the read count
 			return rc;
 		}
@@ -317,8 +314,8 @@ public class LineColumnReader
 	{
 		// Cannot be negative
 		if (__cn < 0)
-			throw new IllegalArgumentException(String.format(
-				"Negative column number %1$d.", __cn));
+			throw new IllegalArgumentException(
+				String.format("Negative column number %1$d.", __cn));
 		
 		// Locked
 		synchronized (this.lock)
@@ -344,8 +341,8 @@ public class LineColumnReader
 	{
 		// Cannot be <= 0
 		if (__ts <= 0 && __ts != LineColumnReader.DEFAULT)
-			throw new IllegalArgumentException(String.format(
-				"Zero or negative tab size (%1$d).", __ts));
+			throw new IllegalArgumentException(
+				String.format("Zero or negative tab size (%1$d).", __ts));
 		
 		synchronized (this.lock)
 		{
@@ -356,8 +353,8 @@ public class LineColumnReader
 			// Normal
 			if (__ts != LineColumnReader.DEFAULT)
 				this.tabsize = __ts;
-			
-			// Use system property
+				
+				// Use system property
 			else
 			{
 				try
@@ -367,14 +364,14 @@ public class LineColumnReader
 					// If no property use default
 					if (swts == null)
 						this.tabsize = LineColumnReader._DEFAULT_TAB_SIZE;
-				
-					// As number
+						
+						// As number
 					else
 						this.tabsize = Integer.parseInt(swts, 10);
 				}
-			
+				
 				// Not allowed; Not a number, or way out of range.
-				catch (SecurityException|NumberFormatException e)
+				catch (SecurityException | NumberFormatException e)
 				{
 					this.tabsize = LineColumnReader._DEFAULT_TAB_SIZE;
 				}

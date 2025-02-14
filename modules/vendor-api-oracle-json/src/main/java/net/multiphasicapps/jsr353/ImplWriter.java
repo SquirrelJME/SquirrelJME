@@ -29,11 +29,11 @@ public class ImplWriter
 	/** Generator to use. */
 	private final JsonGenerator _jg;
 	
-	/** Has been closed. */
-	private boolean _closed;
-	
 	/** Lock. */
 	private final Object _lock;
+	
+	/** Has been closed. */
+	private boolean _closed;
 	
 	/** Did already. */
 	private volatile boolean _did;
@@ -99,8 +99,8 @@ public class ImplWriter
 			// Already closed or did already
 			if (this._closed || this._did)
 				throw new IllegalStateException(
-					"Stream was closed or already " +
-					"performed an operation.");
+					"Stream was closed or already " + "performed an operation" +
+						".");
 			this._did = true;
 			
 			// Write object

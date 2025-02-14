@@ -138,9 +138,9 @@ public interface JsonObject
 	 * Invokes {@code getJsonString(__n).getString()}, if that fails then the
 	 * value of {@code __def} is returned instead.
 	 *
-	 * @return The string value, or {@code __def}.
 	 * @param __n The key name to obtain the value for.
 	 * @param __def The value to return if this is not a string.
+	 * @return The string value, or {@code __def}.
 	 * @since 2014/07/25
 	 */
 	@Api

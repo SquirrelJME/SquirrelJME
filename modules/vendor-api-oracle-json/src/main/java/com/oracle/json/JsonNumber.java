@@ -32,7 +32,8 @@ public interface JsonNumber
 	double doubleValue();
 	
 	/**
-	 * Compares this {@link JsonNumber} with another, returns {@code true} only
+	 * Compares this {@link JsonNumber} with another, returns {@code true}
+	 * only
 	 * if the other object is a {@link JsonNumber} and both values are equal.
 	 *
 	 * @return {@code true} if these match.
@@ -82,15 +83,6 @@ public interface JsonNumber
 	boolean isIntegral();
 	
 	/**
-	 * Returns the value that represents this value.
-	 * 
-	 * @return The value that represents this number.
-	 * @since 2022/07/12
-	 */
-	@Api
-	Number numberValue();
-	
-	/**
 	 * Invokes {@code numberValue().longValue()}, information may be lost.
 	 *
 	 * @return The long value.
@@ -109,6 +101,15 @@ public interface JsonNumber
 	 */
 	@Api
 	long longValueExact();
+	
+	/**
+	 * Returns the value that represents this value.
+	 *
+	 * @return The value that represents this number.
+	 * @since 2022/07/12
+	 */
+	@Api
+	Number numberValue();
 	
 	/**
 	 * Invokes {@code numberValue().toString()}.

@@ -25,7 +25,7 @@ public class JsonParsingException
 	private static final long serialVersionUID = 0xBAD5EE1A715A7100L;
 	
 	/** Where the parsing error was encountered. */
-	private final JsonLocation _loc;	
+	private final JsonLocation _loc;
 	
 	/**
 	 * Initializes with the specified message and location, however with no
@@ -85,6 +85,7 @@ public class JsonParsingException
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2015/06/07
 		 */
 		@Override
@@ -92,9 +93,10 @@ public class JsonParsingException
 		{
 			return -1L;
 		}
-	
+		
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2015/06/07
 		 */
 		@Override
@@ -102,9 +104,10 @@ public class JsonParsingException
 		{
 			return -1L;
 		}
-	
+		
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2015/06/07
 		 */
 		@Override

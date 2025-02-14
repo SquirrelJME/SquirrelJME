@@ -4,6 +4,6 @@
  *
  * @since 2014/07/25
  */
- 
+
 package com.oracle.json.spi;
 

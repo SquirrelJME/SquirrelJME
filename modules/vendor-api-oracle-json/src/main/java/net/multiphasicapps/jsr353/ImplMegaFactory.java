@@ -35,10 +35,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.UnmodifiableMap;
+import net.multiphasicapps.io.UTFDetectISR;
 
 /**
  * This class provides all the factory-ish methods combined into one since they
- * are all very quite similar in function, such as using a map. 
+ * are all very quite similar in function, such as using a map.
  *
  * @since 2014/08/01
  */
@@ -67,8 +68,9 @@ public class ImplMegaFactory
 		this._iopts = new HashMap<String, Object>();
 		if (__ops != null)
 		{
-			Set<Map.Entry<String, ?>> vmes = Unchecked.<Set<?>,
-				Set<Map.Entry<String, ?>>>cast(__ops.entrySet());
+			Set<Map.Entry<String, ?>> vmes =
+				Unchecked.<Set<?>, Set<Map.Entry<String, ?>>>cast(
+					__ops.entrySet());
 			for (Map.Entry<String, ?> e : vmes)
 			{
 				String k = e.getKey();
@@ -77,21 +79,7 @@ public class ImplMegaFactory
 				if (k.equals(JsonGenerator.PRETTY_PRINTING))
 					this._neat = true;
 			}
-		}	
-	}
-	
-	/**
-	 * Returns a read only map of the current configuration options in use, any
-	 * unsupported options will not be included in the map.
-	 *
-	 * @return A read-only map of the current configuration, the map may be
-	 * empty but must never be {@code null}.
-	 * @since 2014/08/01
-	 */
-	@Override
-	public final Map<String, ?> getConfigInUse()
-	{
-		return UnmodifiableMap.of(this._iopts);
+		}
 	}
 	
 	/**
@@ -107,122 +95,6 @@ public class ImplMegaFactory
 		return new ImplArrayBuilder();
 	}
 	
-	/**
-	 * Creates a {@link JsonObjectBuilder} which builds {@link JsonObject},
-	 * the factory configuration is used.
-	 *
-	 * @return A new object builder.
-	 * @since 2014/08/01
-	 */
-	@Override
-	public final JsonObjectBuilder createObjectBuilder()
-	{
-		return new ImplObjectBuilder();
-	}
-	
-	/**
-	 * Creates a JSON reader from the specified stream, the character encoding
-	 * is determined as described in RFC 4627, the factory configuration is
-	 * used.
-	 *
-	 * @param __i Stream to read from.
-	 * @return A JSON reader.
-	 * @since 2014/08/01
-	 */
-	@Override
-	public final JsonReader createReader(InputStream __i)
-	{
-		// Cannot be null
-		if (__i == null)
-			throw new NullPointerException("No input stream specified.");
-		
-		// Return auto-detection stream, sort of
-		return this.createReader(new UTFDetectISR(__i));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2014/08/01
-	 */
-	@Override
-	public final JsonReader createReader(InputStream __i, String __cs)
-		throws UnsupportedEncodingException
-	{
-		// Cannot be null
-		if (__i == null || __cs == null)
-			throw new NullPointerException(String.format(
-				"Null arguments: %1$s %2$s.",
-				(__i == null ? "__i" : ""), (__cs == null ? "__cs" : "")));
-		
-		// Return in a stream
-		return this.createReader(new InputStreamReader(__i, __cs));
-	}
-
-	/**
-	 * Creates a JSON reader from the specified stream, the factory
-	 * configuration is used.
-	 *
-	 * @param __r Stream to read from.
-	 * @return A JSON reader.
-	 * @since 2014/08/01
-	 */
-	@Override
-	public final JsonReader createReader(Reader __r)
-	{
-		// Cannot be null
-		if (__r == null)
-			throw new NullPointerException("No reader specified.");
-		
-		// Create reader
-		return new ImplReader(__r);
-	}
-
-	/**
-	 * Creates a writer to output JSON to the specified stream, the character
-	 * encoding uses UTF-8, the specified configuration is used.
-	 *
-	 * @param __o Stream to write data to.
-	 * @return A {@link JsonWriter}.
-	 * @since 2014/08/01
-	 */
-	@Override
-	public final JsonWriter createWriter(OutputStream __o)
-	{
-		try
-		{
-			return this.createWriter(__o, "utf-8");
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			throw Debugging.oops(e);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2014/08/01
-	 */
-	@Override
-	public final JsonWriter createWriter(OutputStream __o, String __charSet)
-		throws UnsupportedEncodingException
-	{
-		return this.createWriter(new OutputStreamWriter(__o, __charSet));
-	}
-	
-	/**
-	 * Creates a writer to output JSON to the specified stream, the specified
-	 * configuration is used.
-	 *
-	 * @param __w Stream to write data to.
-	 * @return A {@link JsonWriter}.
-	 * @since 2014/08/01
-	 */
-	@Override
-	public JsonWriter createWriter(Writer __w)
-	{
-		return new ImplWriter(__w, this._neat);
-	}
-
 	/**
 	 * Creates a generator which writes JSON to the specified stream using the
 	 * current factory configuration, the bytes are encoded in UTF-8.
@@ -277,6 +149,19 @@ public class ImplMegaFactory
 	}
 	
 	/**
+	 * Creates a {@link JsonObjectBuilder} which builds {@link JsonObject},
+	 * the factory configuration is used.
+	 *
+	 * @return A new object builder.
+	 * @since 2014/08/01
+	 */
+	@Override
+	public final JsonObjectBuilder createObjectBuilder()
+	{
+		return new ImplObjectBuilder();
+	}
+	
+	/**
 	 * Creates a JSON parser to parse the specified stream, the character
 	 * encoding is specified by RFC 4627, the factory configuration is used.
 	 *
@@ -311,9 +196,10 @@ public class ImplMegaFactory
 	{
 		// Cannot be null
 		if (__i == null || __charSet == null)
-			throw new NullPointerException(String.format(
-				"Null arguments: %1$s %2$s.",
-				(__i == null ? "__i" : ""), (__charSet == null ? "__cs" : "")));
+			throw new NullPointerException(
+				String.format("Null arguments: %1$s %2$s.",
+					(__i == null ? "__i" : ""),
+					(__charSet == null ? "__cs" : "")));
 		
 		// Return in a stream
 		return this.createParser(new InputStreamReader(__i, __charSet));
@@ -374,6 +260,127 @@ public class ImplMegaFactory
 		
 		// Create
 		return new ImplParser(__r);
+	}
+	
+	/**
+	 * Creates a JSON reader from the specified stream, the character encoding
+	 * is determined as described in RFC 4627, the factory configuration is
+	 * used.
+	 *
+	 * @param __i Stream to read from.
+	 * @return A JSON reader.
+	 * @since 2014/08/01
+	 */
+	@Override
+	public final JsonReader createReader(InputStream __i)
+	{
+		// Cannot be null
+		if (__i == null)
+			throw new NullPointerException("No input stream specified.");
+		
+		// Return auto-detection stream, sort of
+		return this.createReader(new UTFDetectISR(__i));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since 2014/08/01
+	 */
+	@Override
+	public final JsonReader createReader(InputStream __i, String __cs)
+		throws UnsupportedEncodingException
+	{
+		// Cannot be null
+		if (__i == null || __cs == null)
+			throw new NullPointerException(
+				String.format("Null arguments: %1$s %2$s.",
+					(__i == null ? "__i" : ""),
+					(__cs == null ? "__cs" : "")));
+		
+		// Return in a stream
+		return this.createReader(new InputStreamReader(__i, __cs));
+	}
+	
+	/**
+	 * Creates a JSON reader from the specified stream, the factory
+	 * configuration is used.
+	 *
+	 * @param __r Stream to read from.
+	 * @return A JSON reader.
+	 * @since 2014/08/01
+	 */
+	@Override
+	public final JsonReader createReader(Reader __r)
+	{
+		// Cannot be null
+		if (__r == null)
+			throw new NullPointerException("No reader specified.");
+		
+		// Create reader
+		return new ImplReader(__r);
+	}
+	
+	/**
+	 * Creates a writer to output JSON to the specified stream, the character
+	 * encoding uses UTF-8, the specified configuration is used.
+	 *
+	 * @param __o Stream to write data to.
+	 * @return A {@link JsonWriter}.
+	 * @since 2014/08/01
+	 */
+	@Override
+	public final JsonWriter createWriter(OutputStream __o)
+	{
+		try
+		{
+			return this.createWriter(__o, "utf-8");
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw Debugging.oops(e);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since 2014/08/01
+	 */
+	@Override
+	public final JsonWriter createWriter(OutputStream __o, String __charSet)
+		throws UnsupportedEncodingException
+	{
+		return this.createWriter(new OutputStreamWriter(__o, __charSet));
+	}
+	
+	/**
+	 * Creates a writer to output JSON to the specified stream, the specified
+	 * configuration is used.
+	 *
+	 * @param __w Stream to write data to.
+	 * @return A {@link JsonWriter}.
+	 * @since 2014/08/01
+	 */
+	@Override
+	public JsonWriter createWriter(Writer __w)
+	{
+		return new ImplWriter(__w, this._neat);
+	}
+	
+	/**
+	 * Returns a read only map of the current configuration options in use,
+	 * any
+	 * unsupported options will not be included in the map.
+	 *
+	 * @return A read-only map of the current configuration, the map may be
+	 * empty but must never be {@code null}.
+	 * @since 2014/08/01
+	 */
+	@Override
+	public final Map<String, ?> getConfigInUse()
+	{
+		return UnmodifiableMap.of(this._iopts);
 	}
 }
 

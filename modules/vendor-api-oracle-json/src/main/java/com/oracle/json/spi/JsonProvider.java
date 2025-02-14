@@ -51,7 +51,7 @@ public abstract class JsonProvider
 	/** Default provider for JSR353. */
 	@SquirrelJMEVendorApi
 	static final String DEFAULT_PROVIDER =
-		"net.multiphasicapps.jsr353.ImplProvider";	
+		"net.multiphasicapps.jsr353.ImplProvider";
 	
 	/** Cache. */
 	private static JsonProvider _jpc;
@@ -116,7 +116,8 @@ public abstract class JsonProvider
 	 *
 	 * Any unsupported options should be ignored.
 	 *
-	 * @param __cnf Configuration options for the factory, may be {@code null}.
+	 * @param __cnf Configuration options for the factory, may be {@code
+	 * null}.
 	 * @return A new generator factory.
 	 * @since 2014/07/26
 	 */
@@ -197,7 +198,8 @@ public abstract class JsonProvider
 	 *
 	 * Unsupported options should be ignored.
 	 *
-	 * @param __cnf Configuration settings for the reader, may be {@code null}.
+	 * @param __cnf Configuration settings for the reader, may be {@code
+	 * null}.
 	 * @return A new JSON reader factory.
 	 * @since 2014/07/26
 	 */
@@ -259,10 +261,10 @@ public abstract class JsonProvider
 				// Attempt service load
 				ServiceLoader<JsonProvider> sl =
 					ServiceLoader.<JsonProvider>load(JsonProvider.class);
-		
+				
 				// Go through services and return one
 				if (sl != null)
-					for (Iterator<JsonProvider> it = sl.iterator();;)
+					for (Iterator<JsonProvider> it = sl.iterator(); ; )
 						try
 						{
 							if ((JsonProvider._jpc = it.next()) != null)
@@ -274,37 +276,41 @@ public abstract class JsonProvider
 						{
 							break;
 						}
-		
+				
 				// Failed use default service
 				try
 				{
-					Class<?> cl = Class.forName(JsonProvider.DEFAULT_PROVIDER);
+					Class<?> cl =
+						Class.forName(JsonProvider.DEFAULT_PROVIDER);
 					Object o = cl.newInstance();
 					if (!(o instanceof JsonProvider))
-						throw new RuntimeException("Default JsonProvider " +
-							"is not a JsonProvider");
+						throw new RuntimeException(
+							"Default JsonProvider " + "is not a " +
+								"JsonProvider");
 					JsonProvider._jpc = (JsonProvider)o;
 				}
 				
 				// Oops
 				catch (ClassNotFoundException cnfe)
 				{
-					throw new RuntimeException("Could not find default " +
-						"JsonProvider.");
+					throw new RuntimeException(
+						"Could not find default " + "JsonProvider.");
 				}
 				
 				// Could not new
 				catch (InstantiationException ie)
 				{
-					throw new RuntimeException("Default JsonProvider could " +
-						"not be initialized.");
+					throw new RuntimeException(
+						"Default JsonProvider could " + "not be initialized" +
+							".");
 				}
 				
 				// Not accessable
 				catch (IllegalAccessException iae)
 				{
-					throw new RuntimeException("Default JsonProvider is " +
-						"not accessable (probably not public).");
+					throw new RuntimeException(
+						"Default JsonProvider is " + "not accessable " +
+							"(probably not public).");
 				}
 			}
 			

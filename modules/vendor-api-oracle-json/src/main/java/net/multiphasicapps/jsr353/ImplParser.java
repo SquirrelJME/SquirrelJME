@@ -26,11 +26,11 @@ public class ImplParser
 	extends BaseDecoder
 	implements JsonParser
 {
-	/** Current event. */
-	private Event _e;
-	
 	/** Has been closed. */
 	private boolean _closed;
+	
+	/** Current event. */
+	private Event _e;
 	
 	/**
 	 * Reads JSON data from the specified stream.
@@ -49,7 +49,7 @@ public class ImplParser
 	 * @param __i Input mechanism to use.
 	 * @since 2014/08/08
 	 */
-	public ImplParser(BaseDecoder.Input __i)
+	public ImplParser(BaseDecoderInput __i)
 	{
 		super(__i);
 	}
@@ -69,7 +69,7 @@ public class ImplParser
 		{
 			// Ignore if closed
 			if (this._closed)
-				return;	
+				return;
 			
 			// Close and set super close (it does the work)
 			this._closed = true;
@@ -132,7 +132,7 @@ public class ImplParser
 	}
 	
 	/**
-	 * Returns either the key name or a value if the parser is in the 
+	 * Returns either the key name or a value if the parser is in the
 	 * {@link Event#VALUE_NUMBER}, {@link Event#VALUE_STRING}, or
 	 * {@link Event#KEY_NAME} states.
 	 *
@@ -148,17 +148,15 @@ public class ImplParser
 		{
 			// Cannot be closed
 			if (this._closed)
-				throw new IllegalStateException(
-					"Parser has been closed.");
+				throw new IllegalStateException("Parser has been closed.");
 			
 			// Invalid state
-			if (this._e != Event.VALUE_NUMBER &&
-				this._e != Event.VALUE_STRING && this._e != Event.KEY_NAME)
-				throw new IllegalStateException(String.format(
-					"Invalid state: %1$s.", this._e));
+			if (this._e != Event.VALUE_NUMBER && this._e != Event.VALUE_STRING && this._e != Event.KEY_NAME)
+				throw new IllegalStateException(
+					String.format("Invalid state: %1$s.", this._e));
 			
-			throw new RuntimeException("TODO -- ImplParser::getString() " +
-				"is not implemented.");
+			throw new RuntimeException(
+				"TODO -- ImplParser::getString() " + "is not implemented.");
 		}
 	}
 	
@@ -178,12 +176,11 @@ public class ImplParser
 		{
 			// Cannot be closed
 			if (this._closed)
-				throw new IllegalStateException(
-					"Parser has been closed.");
+				throw new IllegalStateException("Parser has been closed.");
 			
 			// Check
-			throw new RuntimeException("TODO -- ImplParser::hasNext() " +
-				"is not implemented.");
+			throw new RuntimeException(
+				"TODO -- ImplParser::hasNext() " + "is not implemented.");
 		}
 	}
 	
@@ -221,11 +218,10 @@ public class ImplParser
 		{
 			// Cannot be closed
 			if (this._closed)
-				throw new IllegalStateException(
-					"Parser has been closed.");
+				throw new IllegalStateException("Parser has been closed.");
 			
-			throw new RuntimeException("TODO -- ImplParser::next() is not " +
-				"implemented.");
+			throw new RuntimeException(
+				"TODO -- ImplParser::next() is not " + "implemented.");
 		}
 	}
 	
@@ -248,8 +244,8 @@ public class ImplParser
 			
 			// Invalid state
 			if (this._e != Event.VALUE_NUMBER)
-				throw new IllegalStateException(String.format(
-					"Invalid state: %1$s.", this._e));
+				throw new IllegalStateException(
+					String.format("Invalid state: %1$s.", this._e));
 			
 			return ImplValueNumber.__parseNumber(this.getString());
 		}

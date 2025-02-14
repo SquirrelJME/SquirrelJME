@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.jsr353;
+package net.multiphasicapps.io;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -28,17 +28,17 @@ public class IndentedWriter
 	/** The stream to write to. */
 	protected final Writer out;
 	
+	/** Stream was closed. */
+	private boolean _closed;
+	
+	/** Set to true when indentation is about to be done. */
+	private boolean _doident;
+	
 	/** Indentation count. */
 	private int _ic;
 	
 	/** Padding character. */
 	private char _pad;
-	
-	/** Set to true when indentation is about to be done. */
-	private boolean _doident;
-	
-	/** Stream was closed. */
-	private boolean _closed;
 	
 	/**
 	 * Initializes a new indented writer with the default indentation of zero
@@ -83,6 +83,24 @@ public class IndentedWriter
 	}
 	
 	/**
+	 * Adds a relative amount of indentation and returns the old identation
+	 * level. A zero indentation is not possible.
+	 *
+	 * @param __v The relative amount of indentation to add.
+	 * @return The old indentation level.
+	 * @since 2014/05/29
+	 */
+	public int addIndent(int __v)
+	{
+		synchronized (this.lock)
+		{
+			int old = this._ic;
+			this.setIndent(this._ic + __v);
+			return old;
+		}
+	}
+	
+	/**
 	 * Closes the indented writer and the underlying output stream.
 	 *
 	 * @throws IOException If there was an error closing the stream.
@@ -104,102 +122,39 @@ public class IndentedWriter
 		}
 	}
 	
-	/**
-	 * Writes a single character to the output stream.
-	 *
-	 * @param __c The character to write.
-	 * @since 2014/04/29
-	 */
-	@Override
-	public void write(int __c)
-		throws IOException
-	{
-		synchronized (this.lock)
-		{
-			// If indenting, perform indentation
-			if (this._doident)
-			{
-				// Write the indentation level
-				for (int i = 0; i < this._ic; i++)
-					this.out.write(this._pad);
-			
-				// No longer indent
-				this._doident = false;
-			}
-		
-			// If newline, set indentation mark
-			if (__c == '\n')
-				this._doident = true;
-		
-			// Write character to wrapped stream
-			this.out.write(__c);
-		}
-	}
-	
-	/**
-	 * Writes to the indentation stream with the specified buffer, offset, and
-	 * length.
-	 *
-	 * @param __cbuf Character buffer to write to.
-	 * @param __off Offset into the buffer.
-	 * @param __len Length of the amount of data to write.
-	 * @since 2014/04/29
-	 */
-	@Override
-	public void write(char[] __cbuf, int __off, int __len)
-		throws IOException
-	{
-		synchronized (this.lock)
-		{
-			// Cannot be null
-			if (__cbuf == null)
-				throw new NullPointerException("No character buffer set.");
-		
-			// Cannot be out of bounds
-			if (__off < 0 || __off > __cbuf.length)
-				throw new IndexOutOfBoundsException(String.format(
-					"Illegal offset %1$d.", __off));
-		
-			// Cap length to input
-			if (__off + __len > __cbuf.length)
-				__len = __cbuf.length - __off;
-		
-			// Do not bother if not writing anything
-			if (__len <= 0)
-				return;
-		
-			// Write single characters
-			for (int i = 0; i < __len; i++)
-				this.write(__cbuf[__off + i]);
-		}
-	}
-	
-	/**
-	 * Writes to the indentation stream with the specified String, offset, and
-	 * length.
-	 *
-	 * This must be implemented so that the current methods are called.
-	 *
-	 * @param __s Character buffer to write to.
-	 * @param __off Offset into the buffer.
-	 * @param __len Length of the amount of data to write.
-	 * @since 2014/04/29
-	 */
-	@Override
-	public void write(String __s, int __off, int __len)
-		throws IOException
-	{
-		synchronized (this.lock)
-		{
-			this.write(__s.toCharArray(), __off, __len);
-		}
-	}
-	
 	@Override
 	public void flush()
 		throws IOException
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the current indentation level.
+	 *
+	 * @return The indentation level.
+	 * @since 2014/04/29
+	 */
+	public int getIndent()
+	{
+		synchronized (this.lock)
+		{
+			return this._ic;
+		}
+	}
+	
+	/**
+	 * Returns the current padding character.
+	 *
+	 * @return The padding character.
+	 * @since 2014/04/29
+	 */
+	public char getPad()
+	{
+		synchronized (this.lock)
+		{
+			return this._pad;
+		}
 	}
 	
 	/**
@@ -233,48 +188,93 @@ public class IndentedWriter
 	}
 	
 	/**
-	 * Returns the current indentation level.
+	 * Writes a single character to the output stream.
 	 *
-	 * @return The indentation level.
+	 * @param __c The character to write.
 	 * @since 2014/04/29
 	 */
-	public int getIndent()
+	@Override
+	public void write(int __c)
+		throws IOException
 	{
 		synchronized (this.lock)
 		{
-			return this._ic;
+			// If indenting, perform indentation
+			if (this._doident)
+			{
+				// Write the indentation level
+				for (int i = 0; i < this._ic; i++)
+					this.out.write(this._pad);
+				
+				// No longer indent
+				this._doident = false;
+			}
+			
+			// If newline, set indentation mark
+			if (__c == '\n')
+				this._doident = true;
+			
+			// Write character to wrapped stream
+			this.out.write(__c);
 		}
 	}
 	
 	/**
-	 * Returns the current padding character.
+	 * Writes to the indentation stream with the specified buffer, offset, and
+	 * length.
 	 *
-	 * @return The padding character.
+	 * @param __cbuf Character buffer to write to.
+	 * @param __off Offset into the buffer.
+	 * @param __len Length of the amount of data to write.
 	 * @since 2014/04/29
 	 */
-	public char getPad()
+	@Override
+	public void write(char[] __cbuf, int __off, int __len)
+		throws IOException
 	{
 		synchronized (this.lock)
 		{
-			return this._pad;
+			// Cannot be null
+			if (__cbuf == null)
+				throw new NullPointerException("No character buffer set.");
+			
+			// Cannot be out of bounds
+			if (__off < 0 || __off > __cbuf.length)
+				throw new IndexOutOfBoundsException(
+					String.format("Illegal offset %1$d.", __off));
+			
+			// Cap length to input
+			if (__off + __len > __cbuf.length)
+				__len = __cbuf.length - __off;
+			
+			// Do not bother if not writing anything
+			if (__len <= 0)
+				return;
+			
+			// Write single characters
+			for (int i = 0; i < __len; i++)
+				this.write(__cbuf[__off + i]);
 		}
 	}
 	
 	/**
-	 * Adds a relative amount of indentation and returns the old identation
-	 * level. A zero indentation is not possible.
+	 * Writes to the indentation stream with the specified String, offset, and
+	 * length.
 	 *
-	 * @param __v The relative amount of indentation to add.
-	 * @return The old indentation level.
-	 * @since 2014/05/29
+	 * This must be implemented so that the current methods are called.
+	 *
+	 * @param __s Character buffer to write to.
+	 * @param __off Offset into the buffer.
+	 * @param __len Length of the amount of data to write.
+	 * @since 2014/04/29
 	 */
-	public int addIndent(int __v)
+	@Override
+	public void write(String __s, int __off, int __len)
+		throws IOException
 	{
 		synchronized (this.lock)
 		{
-			int old = this._ic;
-			this.setIndent(this._ic + __v);
-			return old;
+			this.write(__s.toCharArray(), __off, __len);
 		}
 	}
 }

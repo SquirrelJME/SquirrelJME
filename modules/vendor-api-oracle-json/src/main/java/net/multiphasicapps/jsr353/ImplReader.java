@@ -34,14 +34,14 @@ public class ImplReader
 	extends BaseDecoder
 	implements JsonReader
 {
+	/** Builder stack. */
+	private List<SomeBuilder> _bs;
+	
 	/** Closed? */
 	private volatile boolean _closed;
 	
 	/** Did this already? */
 	private volatile boolean _did;
-	
-	/** Builder stack. */
-	private List<SomeBuilder> _bs;
 	
 	/** Key stack (needed for arrays and such). */
 	private List<String> _ks;
@@ -80,7 +80,7 @@ public class ImplReader
 			
 			// Close
 			super.close();
-		
+			
 			// Clear working vars
 			this._closed = true;
 			this._bs = null;
@@ -104,42 +104,40 @@ public class ImplReader
 		{
 			// Already closed
 			if (this._closed)
-				throw new JsonException(
-					"Stream has been closed.");
+				throw new JsonException("Stream has been closed.");
 			
 			// Already read a value?
 			if (this._did)
-				throw new JsonException(
-					"Data has already been read.");
+				throw new JsonException("Data has already been read.");
 			this._did = true;
 			
 			// Read bits constantly
 			JsonStructure rv = null;
-			for (;;)
+			for (; ; )
 			{
 				// Get the next bit and the kind
 				JsonLocation jl = this.input.getLocation();
-				BaseDecoder.Bit b = this.nextBit();
-				if (b == null)	// Done
+				BaseDecoderBit b = this.nextBit();
+				if (b == null)    // Done
 					break;
-				BaseDecoder.Bit.Kind k = b.getKind();
+				BaseDecoderBit.Kind k = b.getKind();
 				
 				// Push new object to stack (a builder)
-				if (k == BaseDecoder.Bit.Kind.PUSH_OBJECT)
+				if (k == BaseDecoderBit.Kind.PUSH_OBJECT)
 				{
 					this._bs.add(0, new ImplObjectBuilder());
 					continue;
 				}
 				
 				// Push an array to the stack
-				else if (k == BaseDecoder.Bit.Kind.PUSH_ARRAY)
+				else if (k == BaseDecoderBit.Kind.PUSH_ARRAY)
 				{
 					this._bs.add(0, new ImplArrayBuilder());
 					continue;
 				}
 				
 				// End of object
-				else if (k == BaseDecoder.Bit.Kind.FINISHED_OBJECT)
+				else if (k == BaseDecoderBit.Kind.FINISHED_OBJECT)
 				{
 					// Return built object
 					rv = ((JsonObjectBuilder)this._bs.remove(0)).build();
@@ -147,7 +145,7 @@ public class ImplReader
 				}
 				
 				// End of array
-				else if (k == BaseDecoder.Bit.Kind.FINISHED_ARRAY)
+				else if (k == BaseDecoderBit.Kind.FINISHED_ARRAY)
 				{
 					// Return built array
 					rv = ((JsonArrayBuilder)this._bs.remove(0)).build();
@@ -155,25 +153,22 @@ public class ImplReader
 				}
 				
 				// Declare a new key and put into the stack
-				else if (k == BaseDecoder.Bit.Kind.DECLARE_KEY)
+				else if (k == BaseDecoderBit.Kind.DECLARE_KEY)
 				{
 					this._ks.add(0, (String)b.get(0));
 					continue;
 				}
 				
 				// Add key/value pair to the thing.
-				else if ((k == BaseDecoder.Bit.Kind.ADD_OBJECT_KEYVAL) ||
-					(k == BaseDecoder.Bit.Kind.POP_ARRAY_ADD_OBJECT_KEYVAL) ||
-					(k == BaseDecoder.Bit.Kind.POP_OBJECT_ADD_OBJECT_KEYVAL))
+				else if ((k == BaseDecoderBit.Kind.ADD_OBJECT_KEYVAL) || (k == BaseDecoderBit.Kind.POP_ARRAY_ADD_OBJECT_KEYVAL) || (k == BaseDecoderBit.Kind.POP_OBJECT_ADD_OBJECT_KEYVAL))
 				{
 					// Obtain value
 					JsonValue v = null;
-					if (k == BaseDecoder.Bit.Kind.POP_ARRAY_ADD_OBJECT_KEYVAL)
+					if (k == BaseDecoderBit.Kind.POP_ARRAY_ADD_OBJECT_KEYVAL)
 						v = ((JsonArrayBuilder)this._bs.remove(0)).build();
-					else if (k == BaseDecoder.Bit.Kind.
-						POP_OBJECT_ADD_OBJECT_KEYVAL)
+					else if (k == BaseDecoderBit.Kind.POP_OBJECT_ADD_OBJECT_KEYVAL)
 						v = ((JsonObjectBuilder)this._bs.remove(0)).build();
-					else if (k == BaseDecoder.Bit.Kind.ADD_OBJECT_KEYVAL)
+					else if (k == BaseDecoderBit.Kind.ADD_OBJECT_KEYVAL)
 						v = (JsonValue)b.get(0);
 					
 					// Add to current object
@@ -190,17 +185,15 @@ public class ImplReader
 				}
 				
 				// Add value to array
-				else if ((k == BaseDecoder.Bit.Kind.ADD_ARRAY_VALUE) ||
-					(k == BaseDecoder.Bit.Kind.POP_OBJECT_ADD_ARRAY) ||
-					(k == BaseDecoder.Bit.Kind.POP_ARRAY_ADD_ARRAY))
+				else if ((k == BaseDecoderBit.Kind.ADD_ARRAY_VALUE) || (k == BaseDecoderBit.Kind.POP_OBJECT_ADD_ARRAY) || (k == BaseDecoderBit.Kind.POP_ARRAY_ADD_ARRAY))
 				{
 					// Obtain value
 					JsonValue v = null;
-					if (k == BaseDecoder.Bit.Kind.ADD_ARRAY_VALUE)
+					if (k == BaseDecoderBit.Kind.ADD_ARRAY_VALUE)
 						v = (JsonValue)b.get(0);
-					else if (k == BaseDecoder.Bit.Kind.POP_OBJECT_ADD_ARRAY)
+					else if (k == BaseDecoderBit.Kind.POP_OBJECT_ADD_ARRAY)
 						v = ((JsonObjectBuilder)this._bs.remove(0)).build();
-					else if (k == BaseDecoder.Bit.Kind.POP_ARRAY_ADD_ARRAY)
+					else if (k == BaseDecoderBit.Kind.POP_ARRAY_ADD_ARRAY)
 						v = ((JsonArrayBuilder)this._bs.remove(0)).build();
 					
 					// Add to current object
@@ -215,14 +208,15 @@ public class ImplReader
 				
 				// Unknown
 				else
-					throw new JsonParsingException(String.format(
-						"Unhandled kind action %1$s.", k), jl);
+					throw new JsonParsingException(
+						String.format("Unhandled kind action %1$s.", k), jl);
 			}
 			
 			// Not read (maybe not finished)
 			if (rv == null)
-				throw new JsonParsingException(String.format(
-					"No value has been read."), new SomeLocation());
+				throw new JsonParsingException(
+					String.format("No value has been read."),
+					new SomeLocation());
 			
 			// Return it
 			return rv;
@@ -245,11 +239,9 @@ public class ImplReader
 		{
 			// Read an array only
 			JsonStructure js = this.read();
-			if (js != null && js instanceof JsonArray && js.getValueType() ==
-				JsonValue.ValueType.ARRAY)
+			if (js != null && js instanceof JsonArray && js.getValueType() == JsonValue.ValueType.ARRAY)
 				return (JsonArray)js;
-			throw new JsonException(
-				"An array was not read.");
+			throw new JsonException("An array was not read.");
 		}
 	}
 	
@@ -269,11 +261,9 @@ public class ImplReader
 		{
 			// Read an object only
 			JsonStructure js = this.read();
-			if (js != null && js instanceof JsonObject && js.getValueType() ==
-				JsonValue.ValueType.OBJECT)
+			if (js != null && js instanceof JsonObject && js.getValueType() == JsonValue.ValueType.OBJECT)
 				return (JsonObject)js;
-			throw new JsonException(
-				"An object was not read.");
+			throw new JsonException("An object was not read.");
 		}
 	}
 }

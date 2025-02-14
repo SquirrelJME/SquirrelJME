@@ -76,7 +76,7 @@ public interface JsonParser
 	long getLong();
 	
 	/**
-	 * Returns either the key name or a value if the parser is in the 
+	 * Returns either the key name or a value if the parser is in the
 	 * {@link Event#VALUE_NUMBER}, {@link Event#VALUE_STRING}, or
 	 * {@link Event#KEY_NAME} states.
 	 *
@@ -134,54 +134,44 @@ public interface JsonParser
 	enum Event
 	{
 		/** The start of an array, the parser sits after the '['. */
-		@Api
-		START_ARRAY,
+		@Api START_ARRAY,
 		
 		/** The start of an object, the parser sits after the '{'. */
-		@Api
-		START_OBJECT,
+		@Api START_OBJECT,
 		
 		/**
 		 * The name of an object key, the parser sits after the name,
 		 * to obtain the key use {@link JsonParser#getString()}.
 		 */
-		@Api
-		KEY_NAME,
+		@Api KEY_NAME,
 		
 		/**
 		 * The value of an object (a string), the parser sits after the value,
 		 * to obtain the value use {@link JsonParser#getString()}.
 		 */
-		@Api
-		VALUE_STRING,
+		@Api VALUE_STRING,
 		
 		/**
 		 * The value of an object (a number), the parser sits after the value,
 		 * to obtain the value use {@link JsonParser#getInt()} or
 		 * {@link JsonParser#getLong()}.
 		 */
-		@Api
-		VALUE_NUMBER,
+		@Api VALUE_NUMBER,
 		
 		/** The value is {@code true}, the parser sits after the literal. */
-		@Api
-		VALUE_TRUE,
+		@Api VALUE_TRUE,
 		
 		/** The value is {@code false}, the parser sits after the literal. */
-		@Api
-		VALUE_FALSE,
+		@Api VALUE_FALSE,
 		
 		/** The value is {@code null}, the parser sits after the literal. */
-		@Api
-		VALUE_NULL,
+		@Api VALUE_NULL,
 		
 		/** End of an object, the parser sits after the '}'. */
-		@Api
-		END_OBJECT,
+		@Api END_OBJECT,
 		
 		/** End of an array, the parser sits after the ']'. */
-		@Api
-		END_ARRAY,
+		@Api END_ARRAY,
 		
 		/** End. */
 		;

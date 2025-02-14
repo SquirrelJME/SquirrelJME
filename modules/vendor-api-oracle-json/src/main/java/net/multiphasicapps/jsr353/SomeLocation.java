@@ -19,14 +19,14 @@ import com.oracle.json.stream.JsonLocation;
 public final class SomeLocation
 	implements JsonLocation
 {
+	/** The character number. */
+	private final long _char;
+	
 	/** The column number. */
 	private final long _col;
 	
 	/** The line number. */
 	private final long _line;
-	
-	/** The character number. */
-	private final long _char;	
 	
 	/**
 	 * Initializes the location, with nothing valid.
@@ -77,7 +77,7 @@ public final class SomeLocation
 	{
 		return this._col;
 	}
-
+	
 	/**
 	 * Returns the line number for the current event, or {@code -1} if
 	 * unknown.
@@ -90,7 +90,7 @@ public final class SomeLocation
 	{
 		return this._line;
 	}
-
+	
 	/**
 	 * Returns the stream offset for the current event, or {@code -1} if
 	 * unknown.

@@ -47,8 +47,7 @@ public class ImplValueObject
 	{
 		// Cannot be null
 		if (__v == null)
-			throw new NullPointerException(
-				"No input map specified.");
+			throw new NullPointerException("No input map specified.");
 		
 		// Lock on map, might not be worth it
 		synchronized (__v)
@@ -76,42 +75,6 @@ public class ImplValueObject
 	}
 	
 	/**
-	 * Returns the type of value this is.
-	 *
-	 * @return The type of value that this is.
-	 * @since 2014/08/05
-	 */
-	@Override
-	public ValueType getValueType()
-	{
-		return ValueType.OBJECT;
-	}
-	
-	/**
-	 * Returns the string representation of this value.
-	 *
-	 * @return The value of this object represented as a string.
-	 * @since 2014/08/05
-	 */
-	@SuppressWarnings("StringOperationCanBeSimplified")
-	@Override
-	public String toString()
-	{
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			 OutputStreamWriter writer = new OutputStreamWriter(baos))
-		{
-			new ImplWriter(writer, false).write(this);
-			writer.flush();
-			
-			return new String(baos.toByteArray(), "utf-8");
-		}
-		catch (IOException e)
-		{
-			throw Debugging.oops(e);
-		}
-	}
-	
-	/**
 	 * Returns the associated boolean value with the specified key.
 	 *
 	 * @param __n The key name to obtain the value for.
@@ -125,8 +88,7 @@ public class ImplValueObject
 	{
 		// Cannot be null
 		if (__n == null)
-			throw new NullPointerException(
-				"No key specified.");
+			throw new NullPointerException("No key specified.");
 		
 		// Find in map
 		JsonValue bv = this.get(__n);
@@ -134,20 +96,18 @@ public class ImplValueObject
 		// True
 		if (bv == JsonValue.TRUE)
 			return true;
-		
-		// False
+			
+			// False
 		else if (bv == JsonValue.FALSE)
 			return false;
-		
-		// No mapping
+			
+			// No mapping
 		else if (bv == null)
-			throw new NullPointerException(
-				"No mapping for this key.");
-		
-		// Error
+			throw new NullPointerException("No mapping for this key.");
+			
+			// Error
 		else
-			throw new ClassCastException(
-				"Not a boolean value.");
+			throw new ClassCastException("Not a boolean value.");
 	}
 	
 	/**
@@ -189,8 +149,7 @@ public class ImplValueObject
 	{
 		// Cannot be null
 		if (__n == null)
-			throw new NullPointerException(
-				"No key specified.");
+			throw new NullPointerException("No key specified.");
 		
 		// Call
 		return this.getJsonNumber(__n).intValue();
@@ -234,8 +193,7 @@ public class ImplValueObject
 	{
 		// Cannot be null
 		if (__n == null)
-			throw new NullPointerException(
-				"No key specified.");
+			throw new NullPointerException("No key specified.");
 		
 		// Get
 		return (JsonArray)this.get(__n);
@@ -254,8 +212,7 @@ public class ImplValueObject
 	{
 		// Cannot be null
 		if (__n == null)
-			throw new NullPointerException(
-				"No key specified.");
+			throw new NullPointerException("No key specified.");
 		
 		// Get
 		return (JsonNumber)this.get(__n);
@@ -274,8 +231,7 @@ public class ImplValueObject
 	{
 		// Cannot be null
 		if (__n == null)
-			throw new NullPointerException(
-				"No key specified.");
+			throw new NullPointerException("No key specified.");
 		
 		// Get
 		return (JsonObject)this.get(__n);
@@ -294,8 +250,7 @@ public class ImplValueObject
 	{
 		// Cannot be null
 		if (__n == null)
-			throw new NullPointerException(
-				"No key specified.");
+			throw new NullPointerException("No key specified.");
 		
 		// Get
 		return (JsonString)this.get(__n);
@@ -316,8 +271,7 @@ public class ImplValueObject
 	{
 		// Cannot be null
 		if (__n == null)
-			throw new NullPointerException(
-				"No key specified.");
+			throw new NullPointerException("No key specified.");
 		
 		// Call
 		return this.getJsonString(__n).getString();
@@ -327,9 +281,9 @@ public class ImplValueObject
 	 * Invokes {@code getJsonString(__n).getString()}, if that fails then the
 	 * value of {@code __def} is returned instead.
 	 *
-	 * @return The string value, or {@code __def}.
 	 * @param __n The key name to obtain the value for.
 	 * @param __def The value to return if this is not a string.
+	 * @return The string value, or {@code __def}.
 	 * @since 2014/08/05
 	 */
 	@Override
@@ -349,6 +303,18 @@ public class ImplValueObject
 	}
 	
 	/**
+	 * Returns the type of value this is.
+	 *
+	 * @return The type of value that this is.
+	 * @since 2014/08/05
+	 */
+	@Override
+	public ValueType getValueType()
+	{
+		return ValueType.OBJECT;
+	}
+	
+	/**
 	 * Returns {@code true} if the specified value is {@link JsonValue#NULL}.
 	 *
 	 * @param __n The key name to obtain the value for.
@@ -361,17 +327,39 @@ public class ImplValueObject
 	{
 		// Cannot be null
 		if (__n == null)
-			throw new NullPointerException(
-				"No key specified.");
+			throw new NullPointerException("No key specified.");
 		
 		// Get
 		JsonValue jv = this.get(__n);
 		if (jv == null)
-			throw new NullPointerException(
-				"Key has no assigned value.");
+			throw new NullPointerException("Key has no assigned value.");
 		
 		// Check
 		return (jv == JsonValue.NULL);
+	}
+	
+	/**
+	 * Returns the string representation of this value.
+	 *
+	 * @return The value of this object represented as a string.
+	 * @since 2014/08/05
+	 */
+	@SuppressWarnings("StringOperationCanBeSimplified")
+	@Override
+	public String toString()
+	{
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); OutputStreamWriter writer = new OutputStreamWriter(
+			baos))
+		{
+			new ImplWriter(writer, false).write(this);
+			writer.flush();
+			
+			return new String(baos.toByteArray(), "utf-8");
+		}
+		catch (IOException e)
+		{
+			throw Debugging.oops(e);
+		}
 	}
 }
 

@@ -19,59 +19,56 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 @Api
 public interface JsonValue
 {
-	/** The null literal. */
-	@Api
-	JsonValue NULL =
-		new JsonValue()
-		{
-			@Override
-			public ValueType getValueType()
-			{
-				return ValueType.NULL;
-			}
-		
-			@Override
-			public String toString()
-			{
-				return "null";
-			}
-		};
-	
-	/** The true literal .*/
-	@Api
-	JsonValue TRUE =
-		new JsonValue()
-		{
-			@Override
-			public ValueType getValueType()
-			{
-				return ValueType.TRUE;
-			}
-		
-			@Override
-			public String toString()
-			{
-				return "true";
-			}
-		};
-	
 	/** The false literal. */
 	@Api
-	JsonValue FALSE =
-		new JsonValue()
+	JsonValue FALSE = new JsonValue()
+	{
+		@Override
+		public ValueType getValueType()
 		{
-			@Override
-			public ValueType getValueType()
-			{
-				return ValueType.FALSE;
-			}
+			return ValueType.FALSE;
+		}
 		
-			@Override
-			public String toString()
-			{
-				return "false";
-			}
-		};
+		@Override
+		public String toString()
+		{
+			return "false";
+		}
+	};
+	
+	/** The null literal. */
+	@Api
+	JsonValue NULL = new JsonValue()
+	{
+		@Override
+		public ValueType getValueType()
+		{
+			return ValueType.NULL;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "null";
+		}
+	};
+	
+	/** The true literal . */
+	@Api
+	JsonValue TRUE = new JsonValue()
+	{
+		@Override
+		public ValueType getValueType()
+		{
+			return ValueType.TRUE;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "true";
+		}
+	};
 	
 	/**
 	 * Returns the type of value this is.
@@ -100,32 +97,25 @@ public interface JsonValue
 	enum ValueType
 	{
 		/** An array. */
-		@Api
-		ARRAY,
+		@Api ARRAY,
 		
 		/** An object. */
-		@Api
-		OBJECT,
+		@Api OBJECT,
 		
 		/** A string. */
-		@Api
-		STRING,
+		@Api STRING,
 		
 		/** A number. */
-		@Api
-		NUMBER,
+		@Api NUMBER,
 		
 		/** True. */
-		@Api
-		TRUE,
+		@Api TRUE,
 		
 		/** False. */
-		@Api
-		FALSE,
+		@Api FALSE,
 		
 		/** Null value. */
-		@Api
-		NULL,
+		@Api NULL,
 		
 		/** End. */
 		;

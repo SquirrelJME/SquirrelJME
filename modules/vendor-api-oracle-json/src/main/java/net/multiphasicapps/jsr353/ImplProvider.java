@@ -64,8 +64,7 @@ public class ImplProvider
 	 * @since 2014/08/01
 	 */
 	@Override
-	public JsonBuilderFactory createBuilderFactory(
-		Map<String, ?> __cnf)
+	public JsonBuilderFactory createBuilderFactory(Map<String, ?> __cnf)
 	{
 		return new ImplMegaFactory(__cnf);
 	}
@@ -102,13 +101,13 @@ public class ImplProvider
 	 *
 	 * Any unsupported options should be ignored.
 	 *
-	 * @param __cnf Configuration options for the factory, may be {@code null}.
+	 * @param __cnf Configuration options for the factory, may be {@code
+	 * null}.
 	 * @return A new generator factory.
 	 * @since 2014/08/01
 	 */
 	@Override
-	public JsonGeneratorFactory createGeneratorFactory(
-		Map<String, ?> __cnf)
+	public JsonGeneratorFactory createGeneratorFactory(Map<String, ?> __cnf)
 	{
 		return new ImplMegaFactory(__cnf);
 	}
@@ -165,8 +164,7 @@ public class ImplProvider
 	 * @since 2014/08/01
 	 */
 	@Override
-	public JsonParserFactory createParserFactory(
-		Map<String, ?> __cnf)
+	public JsonParserFactory createParserFactory(Map<String, ?> __cnf)
 	{
 		return new ImplMegaFactory(__cnf);
 	}
@@ -204,13 +202,13 @@ public class ImplProvider
 	 *
 	 * Unsupported options should be ignored.
 	 *
-	 * @param __cnf Configyration settings for the reader, may be {@code null}.
+	 * @param __cnf Configyration settings for the reader, may be {@code
+	 * null}.
 	 * @return A new JSON reader factory.
 	 * @since 2014/08/01
 	 */
 	@Override
-	public JsonReaderFactory createReaderFactory(
-		Map<String, ?> __cnf)
+	public JsonReaderFactory createReaderFactory(Map<String, ?> __cnf)
 	{
 		return new ImplMegaFactory(__cnf);
 	}
@@ -254,8 +252,7 @@ public class ImplProvider
 	 * @since 2014/08/01
 	 */
 	@Override
-	public JsonWriterFactory createWriterFactory(
-		Map<String, ?> __cnf)
+	public JsonWriterFactory createWriterFactory(Map<String, ?> __cnf)
 	{
 		return new ImplMegaFactory(__cnf);
 	}
