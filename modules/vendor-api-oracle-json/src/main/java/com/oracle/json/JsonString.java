@@ -33,7 +33,7 @@ public interface JsonString
 	boolean equals(Object __o);
 	
 	/**
-	 * Returns a character sequence which represents the internal string 
+	 * Returns a character sequence which represents the internal string
 	 * value.
 	 *
 	 * @return A character sequence for this specified string.

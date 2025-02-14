@@ -163,7 +163,8 @@ public class ReaderInput
 			
 			// Start Object
 			if (c == '{')
-				return new BaseDecoderData(BaseDecoderType.START_OBJECT, null);
+				return new BaseDecoderData(BaseDecoderType.START_OBJECT,
+					null);
 				
 				// End object
 			else if (c == '}')
@@ -280,7 +281,8 @@ public class ReaderInput
 				}
 				
 				// Is a string
-				return new BaseDecoderData(BaseDecoderType.STRING, sb.toString());
+				return new BaseDecoderData(BaseDecoderType.STRING,
+					sb.toString());
 			}
 			
 			// Start reading value
@@ -366,7 +368,8 @@ public class ReaderInput
 				}
 				
 				// A literal
-				return new BaseDecoderData(BaseDecoderType.LITERAL, sb.toString());
+				return new BaseDecoderData(BaseDecoderType.LITERAL,
+					sb.toString());
 			}
 			
 			// False, true, or null
@@ -405,7 +408,8 @@ public class ReaderInput
 						jl);
 				
 				// A literal
-				return new BaseDecoderData(BaseDecoderType.LITERAL, sb.toString());
+				return new BaseDecoderData(BaseDecoderType.LITERAL,
+					sb.toString());
 			}
 			
 			// Unknown

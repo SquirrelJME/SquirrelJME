@@ -120,24 +120,24 @@ public class ImplReader
 				BaseDecoderBit b = this.nextBit();
 				if (b == null)    // Done
 					break;
-				BaseDecoderBit.Kind k = b.getKind();
+				BaseDecoderKind k = b.getKind();
 				
 				// Push new object to stack (a builder)
-				if (k == BaseDecoderBit.Kind.PUSH_OBJECT)
+				if (k == BaseDecoderKind.PUSH_OBJECT)
 				{
 					this._bs.add(0, new ImplObjectBuilder());
 					continue;
 				}
 				
 				// Push an array to the stack
-				else if (k == BaseDecoderBit.Kind.PUSH_ARRAY)
+				else if (k == BaseDecoderKind.PUSH_ARRAY)
 				{
 					this._bs.add(0, new ImplArrayBuilder());
 					continue;
 				}
 				
 				// End of object
-				else if (k == BaseDecoderBit.Kind.FINISHED_OBJECT)
+				else if (k == BaseDecoderKind.FINISHED_OBJECT)
 				{
 					// Return built object
 					rv = ((JsonObjectBuilder)this._bs.remove(0)).build();
@@ -145,7 +145,7 @@ public class ImplReader
 				}
 				
 				// End of array
-				else if (k == BaseDecoderBit.Kind.FINISHED_ARRAY)
+				else if (k == BaseDecoderKind.FINISHED_ARRAY)
 				{
 					// Return built array
 					rv = ((JsonArrayBuilder)this._bs.remove(0)).build();
@@ -153,22 +153,22 @@ public class ImplReader
 				}
 				
 				// Declare a new key and put into the stack
-				else if (k == BaseDecoderBit.Kind.DECLARE_KEY)
+				else if (k == BaseDecoderKind.DECLARE_KEY)
 				{
 					this._ks.add(0, (String)b.get(0));
 					continue;
 				}
 				
 				// Add key/value pair to the thing.
-				else if ((k == BaseDecoderBit.Kind.ADD_OBJECT_KEYVAL) || (k == BaseDecoderBit.Kind.POP_ARRAY_ADD_OBJECT_KEYVAL) || (k == BaseDecoderBit.Kind.POP_OBJECT_ADD_OBJECT_KEYVAL))
+				else if ((k == BaseDecoderKind.ADD_OBJECT_KEYVAL) || (k == BaseDecoderKind.POP_ARRAY_ADD_OBJECT_KEYVAL) || (k == BaseDecoderKind.POP_OBJECT_ADD_OBJECT_KEYVAL))
 				{
 					// Obtain value
 					JsonValue v = null;
-					if (k == BaseDecoderBit.Kind.POP_ARRAY_ADD_OBJECT_KEYVAL)
+					if (k == BaseDecoderKind.POP_ARRAY_ADD_OBJECT_KEYVAL)
 						v = ((JsonArrayBuilder)this._bs.remove(0)).build();
-					else if (k == BaseDecoderBit.Kind.POP_OBJECT_ADD_OBJECT_KEYVAL)
+					else if (k == BaseDecoderKind.POP_OBJECT_ADD_OBJECT_KEYVAL)
 						v = ((JsonObjectBuilder)this._bs.remove(0)).build();
-					else if (k == BaseDecoderBit.Kind.ADD_OBJECT_KEYVAL)
+					else if (k == BaseDecoderKind.ADD_OBJECT_KEYVAL)
 						v = (JsonValue)b.get(0);
 					
 					// Add to current object
@@ -185,15 +185,15 @@ public class ImplReader
 				}
 				
 				// Add value to array
-				else if ((k == BaseDecoderBit.Kind.ADD_ARRAY_VALUE) || (k == BaseDecoderBit.Kind.POP_OBJECT_ADD_ARRAY) || (k == BaseDecoderBit.Kind.POP_ARRAY_ADD_ARRAY))
+				else if ((k == BaseDecoderKind.ADD_ARRAY_VALUE) || (k == BaseDecoderKind.POP_OBJECT_ADD_ARRAY) || (k == BaseDecoderKind.POP_ARRAY_ADD_ARRAY))
 				{
 					// Obtain value
 					JsonValue v = null;
-					if (k == BaseDecoderBit.Kind.ADD_ARRAY_VALUE)
+					if (k == BaseDecoderKind.ADD_ARRAY_VALUE)
 						v = (JsonValue)b.get(0);
-					else if (k == BaseDecoderBit.Kind.POP_OBJECT_ADD_ARRAY)
+					else if (k == BaseDecoderKind.POP_OBJECT_ADD_ARRAY)
 						v = ((JsonObjectBuilder)this._bs.remove(0)).build();
-					else if (k == BaseDecoderBit.Kind.POP_ARRAY_ADD_ARRAY)
+					else if (k == BaseDecoderKind.POP_ARRAY_ADD_ARRAY)
 						v = ((JsonArrayBuilder)this._bs.remove(0)).build();
 					
 					// Add to current object

@@ -285,7 +285,7 @@ public abstract class JsonProvider
 					Object o = cl.newInstance();
 					if (!(o instanceof JsonProvider))
 						throw new RuntimeException(
-							"Default JsonProvider " + "is not a " +
+							"Default JsonProvider " + "is not a " + 
 								"JsonProvider");
 					JsonProvider._jpc = (JsonProvider)o;
 				}
@@ -301,15 +301,14 @@ public abstract class JsonProvider
 				catch (InstantiationException ie)
 				{
 					throw new RuntimeException(
-						"Default JsonProvider could " + "not be initialized" +
-							".");
+						"Default JsonProvider could " + "not be initialized" + ".");
 				}
 				
 				// Not accessable
 				catch (IllegalAccessException iae)
 				{
 					throw new RuntimeException(
-						"Default JsonProvider is " + "not accessable " +
+						"Default JsonProvider is " + "not accessable " + 
 							"(probably not public).");
 				}
 			}

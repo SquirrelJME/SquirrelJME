@@ -183,7 +183,7 @@ public abstract class BaseDecoder
 					
 					// Create bit for this action
 					this._flush.addLast(
-						new BaseDecoderBit(BaseDecoderBit.Kind.PUSH_OBJECT));
+						new BaseDecoderBit(BaseDecoderKind.PUSH_OBJECT));
 				}
 				
 				// Unknown
@@ -213,7 +213,7 @@ public abstract class BaseDecoder
 						
 						// Gets as finished complete
 						this._flush.addLast(new BaseDecoderBit(
-							BaseDecoderBit.Kind.FINISHED_OBJECT));
+							BaseDecoderKind.FINISHED_OBJECT));
 					}
 					
 					// Top is now an object, set value
@@ -221,7 +221,7 @@ public abstract class BaseDecoder
 					{
 						this.__top().need(__Exp__.COMMA_OR_END);
 						this._flush.addLast(new BaseDecoderBit(
-							BaseDecoderBit.Kind.POP_OBJECT_ADD_OBJECT_KEYVAL));
+							BaseDecoderKind.POP_OBJECT_ADD_OBJECT_KEYVAL));
 					}
 					
 					// Top is now an array
@@ -229,7 +229,7 @@ public abstract class BaseDecoder
 					{
 						this.__top().need(__Exp__.COMMA_OR_END);
 						this._flush.addLast(new BaseDecoderBit(
-							BaseDecoderBit.Kind.POP_ARRAY_ADD_ARRAY));
+							BaseDecoderKind.POP_ARRAY_ADD_ARRAY));
 					}
 					
 					// Unknown
@@ -254,7 +254,7 @@ public abstract class BaseDecoder
 					
 					// Create bit for this action
 					this._flush.addLast(
-						new BaseDecoderBit(BaseDecoderBit.Kind.PUSH_ARRAY));
+						new BaseDecoderBit(BaseDecoderKind.PUSH_ARRAY));
 				}
 				
 				// Unknown
@@ -283,7 +283,7 @@ public abstract class BaseDecoder
 						
 						// Gets as finished complete
 						this._flush.addLast(new BaseDecoderBit(
-							BaseDecoderBit.Kind.FINISHED_ARRAY));
+							BaseDecoderKind.FINISHED_ARRAY));
 					}
 					
 					// Top is now an object, set value
@@ -291,7 +291,7 @@ public abstract class BaseDecoder
 					{
 						this.__top().need(__Exp__.COMMA_OR_END);
 						this._flush.addLast(new BaseDecoderBit(
-							BaseDecoderBit.Kind.POP_ARRAY_ADD_OBJECT_KEYVAL));
+							BaseDecoderKind.POP_ARRAY_ADD_OBJECT_KEYVAL));
 					}
 					
 					// Top is now an array
@@ -299,7 +299,7 @@ public abstract class BaseDecoder
 					{
 						this.__top().need(__Exp__.COMMA_OR_END);
 						this._flush.addLast(new BaseDecoderBit(
-							BaseDecoderBit.Kind.POP_ARRAY_ADD_ARRAY));
+							BaseDecoderKind.POP_ARRAY_ADD_ARRAY));
 					}
 					
 					// Unknown
@@ -338,12 +338,13 @@ public abstract class BaseDecoder
 					// Add to object
 					if (this.__top().isObject())
 						this._flush.addLast(new BaseDecoderBit(
-							BaseDecoderBit.Kind.ADD_OBJECT_KEYVAL, vv));
+							BaseDecoderKind.ADD_OBJECT_KEYVAL, vv));
 						
 						// Add to array
 					else if (this.__top().isArray())
-						this._flush.addLast(new BaseDecoderBit(
-							BaseDecoderBit.Kind.ADD_ARRAY_VALUE, vv));
+						this._flush.addLast(
+							new BaseDecoderBit(BaseDecoderKind.ADD_ARRAY_VALUE,
+								vv));
 						
 						// Unknown
 					else
@@ -367,7 +368,7 @@ public abstract class BaseDecoder
 					// Declare key
 					if (this.__top().isObject())
 						this._flush.addLast(
-							new BaseDecoderBit(BaseDecoderBit.Kind.DECLARE_KEY,
+							new BaseDecoderBit(BaseDecoderKind.DECLARE_KEY,
 								ds));
 						
 						// Not a key!?
@@ -385,14 +386,14 @@ public abstract class BaseDecoder
 					// Object value
 					if (this.__top().isObject())
 						this._flush.addLast(new BaseDecoderBit(
-							BaseDecoderBit.Kind.ADD_OBJECT_KEYVAL,
+							BaseDecoderKind.ADD_OBJECT_KEYVAL,
 							new ImplValueString(ds)));
 						
 						// Array entry
 					else if (this.__top().isArray())
-						this._flush.addLast(new BaseDecoderBit(
-							BaseDecoderBit.Kind.ADD_ARRAY_VALUE,
-							new ImplValueString(ds)));
+						this._flush.addLast(
+							new BaseDecoderBit(BaseDecoderKind.ADD_ARRAY_VALUE,
+								new ImplValueString(ds)));
 						
 						// Unknown
 					else

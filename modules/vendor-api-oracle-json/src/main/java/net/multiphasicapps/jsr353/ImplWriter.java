@@ -99,8 +99,8 @@ public class ImplWriter
 			// Already closed or did already
 			if (this._closed || this._did)
 				throw new IllegalStateException(
-					"Stream was closed or already " + "performed an operation" +
-						".");
+					"Stream was closed or already " + "performed an " +
+						"operation" + ".");
 			this._did = true;
 			
 			// Write object

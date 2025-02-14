@@ -143,7 +143,7 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an 
+	 * @throws JsonGenerationException If the current context is not an
 	 * object.
 	 * @since 2014/07/25
 	 */
@@ -159,7 +159,7 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an 
+	 * @throws JsonGenerationException If the current context is not an
 	 * object.
 	 * @since 2014/07/25
 	 */
@@ -175,7 +175,7 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an 
+	 * @throws JsonGenerationException If the current context is not an
 	 * object.
 	 * @since 2014/07/25
 	 */
@@ -190,7 +190,7 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an 
+	 * @throws JsonGenerationException If the current context is not an
 	 * object.
 	 * @since 2014/07/25
 	 */
@@ -206,7 +206,7 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an 
+	 * @throws JsonGenerationException If the current context is not an
 	 * object.
 	 * @since 2014/07/25
 	 */
@@ -221,7 +221,7 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an 
+	 * @throws JsonGenerationException If the current context is not an
 	 * object.
 	 * @since 2014/07/25
 	 */
@@ -261,7 +261,7 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an 
+	 * @throws JsonGenerationException If the current context is not an
 	 * object.
 	 * @since 2014/07/25
 	 */
@@ -293,7 +293,7 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If this is not within an object 
+	 * @throws JsonGenerationException If this is not within an object
 	 * context.
 	 * @since 2014/07/25
 	 */
@@ -324,7 +324,7 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If this is not within an object 
+	 * @throws JsonGenerationException If this is not within an object
 	 * context.
 	 * @since 2014/07/25
 	 */

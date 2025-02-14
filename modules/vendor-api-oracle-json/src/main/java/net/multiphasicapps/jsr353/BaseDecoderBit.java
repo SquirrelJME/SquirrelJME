@@ -23,7 +23,7 @@ public final class BaseDecoderBit
 	extends AbstractList<Object>
 {
 	/** The kind. */
-	private final Kind _k;
+	private final BaseDecoderKind _k;
 	
 	/** Values. */
 	private final Object[] _v;
@@ -35,7 +35,7 @@ public final class BaseDecoderBit
 	 * @param __v Values, uses the input value rather than a copy.
 	 * @since 2014/08/04
 	 */
-	BaseDecoderBit(Kind __k, Object... __v)
+	BaseDecoderBit(BaseDecoderKind __k, Object... __v)
 	{
 		// Cannot be null
 		if (__k == null)
@@ -67,7 +67,7 @@ public final class BaseDecoderBit
 	 * @return The action to perform.
 	 * @since 2014/08/04
 	 */
-	public Kind getKind()
+	public BaseDecoderKind getKind()
 	{
 		return this._k;
 	}
@@ -81,49 +81,5 @@ public final class BaseDecoderBit
 	public int size()
 	{
 		return this._v.length;
-	}
-	
-	/**
-	 * This represents the action to take when working with a decoder.
-	 *
-	 * @since 2014/08/04
-	 */
-	public enum Kind
-	{
-		/** Push an object. */
-		PUSH_OBJECT,
-		
-		/** Push an array. */
-		PUSH_ARRAY,
-		
-		/** Declare key. */
-		DECLARE_KEY,
-		
-		/** Sets the value of the key in an object. */
-		ADD_OBJECT_KEYVAL,
-		
-		/** Add array value. */
-		ADD_ARRAY_VALUE,
-		
-		/** Pop an array, then add to the value of a key. */
-		POP_ARRAY_ADD_OBJECT_KEYVAL,
-		
-		/** Pop an array, then add to an array. */
-		POP_ARRAY_ADD_ARRAY,
-		
-		/** Pop an object, then add to the array. */
-		POP_OBJECT_ADD_ARRAY,
-		
-		/** Pop object and add to object as value of an object. */
-		POP_OBJECT_ADD_OBJECT_KEYVAL,
-		
-		/** Finished object. */
-		FINISHED_OBJECT,
-		
-		/** Finished array. */
-		FINISHED_ARRAY,
-		
-		/** End. */
-		;
 	}
 }

@@ -97,25 +97,32 @@ public interface JsonValue
 	enum ValueType
 	{
 		/** An array. */
-		@Api ARRAY,
+		@Api
+		ARRAY,
 		
 		/** An object. */
-		@Api OBJECT,
+		@Api
+		OBJECT,
 		
 		/** A string. */
-		@Api STRING,
+		@Api
+		STRING,
 		
 		/** A number. */
-		@Api NUMBER,
+		@Api
+		NUMBER,
 		
 		/** True. */
-		@Api TRUE,
+		@Api
+		TRUE,
 		
 		/** False. */
-		@Api FALSE,
+		@Api
+		FALSE,
 		
 		/** Null value. */
-		@Api NULL,
+		@Api
+		NULL,
 		
 		/** End. */
 		;
