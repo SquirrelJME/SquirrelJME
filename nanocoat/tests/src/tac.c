@@ -66,7 +66,7 @@ int main(int argc, sjme_lpstr* argv)
 		goto fail_loadBootJar;
 	
 	/* Splice up the classpath. */
-	n = strlen(argv[3]);
+	n = strlen(argv[3]) + 1;
 	classpathSplice = NULL;
 	if (sjme_error_is(error = sjme_alloc(pool, n + 1,
 		(sjme_pointer*)&classpathSplice)) || classpathSplice == NULL)

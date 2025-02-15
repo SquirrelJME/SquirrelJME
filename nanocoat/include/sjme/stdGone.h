@@ -32,6 +32,11 @@
 	#include <threads.h>
 #endif
 
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/* Needed for alloca. */
+	#include <malloc.h>
+#endif
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
