@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.Responsify;
 import cc.squirreljme.plugin.multivm.gdb.GdbUtils;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
@@ -206,7 +207,7 @@ public class VMRunTaskDetached
 				debuggerArgs.add("localhost:" + port);
 				
 				// Fork process with the debugger
-				ProcessBuilder builder = new ProcessBuilder(debuggerArgs);
+				ProcessBuilder builder = Responsify.of(debuggerArgs);
 				
 				// Use our terminal and pipes for the output
 				builder.inheritIO();
@@ -271,7 +272,7 @@ public class VMRunTaskDetached
 		}
 		
 		// Setup process
-		ProcessBuilder procBuilder = new ProcessBuilder(procArgs);
+		ProcessBuilder procBuilder = Responsify.of(procArgs);
 		
 		// Working directory in the build directory, for any logs or
 		// otherwise

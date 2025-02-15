@@ -9,11 +9,14 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.Responsify;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
+import cc.squirreljme.plugin.util.GradleExecSpecFiller;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
+import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1082,18 +1085,23 @@ public enum VMType
 				args.add(arg);
 		
 		// Call the AOT backend
-		ExecResult exitResult = __task.getProject().javaexec(__spec ->
+		ExecResult exitResult = __task.getProject().exec(__spec ->
 			{
 				// Figure out the arguments to the JVM, it does not matter
 				// what the classpath is
+				SimpleJavaExecSpecFiller simple =
+					new SimpleJavaExecSpecFiller();
 				VMType.HOSTED.spawnJvmArguments(__task.getProject(),
 					__task.getClassifier(), false,
-					new GradleJavaExecSpecFiller(__spec),
+					simple,
 					"cc.squirreljme.jvm.aot.Main",
 					null, Collections.emptyMap(),
 					classPath,
 					classPath,
 					args.toArray(new String[args.size()]));
+				
+				// Set arguments to use
+				Responsify.into(__spec, simple.getCommandLine());
 				
 				// Use the error stream directly
 				__spec.setErrorOutput(new GuardedOutputStream(System.err));

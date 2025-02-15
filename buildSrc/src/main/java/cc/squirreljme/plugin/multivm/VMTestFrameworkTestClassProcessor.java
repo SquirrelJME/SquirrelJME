@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.Responsify;
 import cc.squirreljme.plugin.util.TestResultOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -355,10 +356,7 @@ public class VMTestFrameworkTestClassProcessor
 			TestRunParameters runTest = runParameters.get(__testName.normal);
 			
 			// Setup process to run
-			ProcessBuilder builder = new ProcessBuilder();
-			
-			// The command we are executing
-			builder.command(runTest.getCommandLine());
+			ProcessBuilder builder = Responsify.of(runTest.getCommandLine());
 			
 			// Redirect all the outputs we have
 			builder.redirectOutput(ProcessBuilder.Redirect.PIPE);
