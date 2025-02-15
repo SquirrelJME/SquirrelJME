@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.util;
 
+import cc.squirreljme.plugin.Responsify;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -117,8 +118,6 @@ public final class FossilExe
 	@SuppressWarnings("UseOfProcessBuilder")
 	public final Process runCommand(String... __args)
 	{
-		ProcessBuilder builder = new ProcessBuilder();
-		
 		// The first argument is always the command
 		List<String> command = new ArrayList<>();
 		command.add(this.exe.toAbsolutePath().toString());
@@ -128,7 +127,7 @@ public final class FossilExe
 			command.addAll(Arrays.<String>asList(__args));
 		
 		// Use this command
-		builder.command(command);
+		ProcessBuilder builder = Responsify.of(command);
 		
 		// Standard output is always printed to the console, for debugging
 		builder.redirectError(ProcessBuilder.Redirect.INHERIT);

@@ -92,7 +92,8 @@ public class Json
 	 *
 	 * Any unsupported options should be ignored.
 	 *
-	 * @param __cnf Configuration options for the factory, may be {@code null}.
+	 * @param __cnf Configuration options for the factory, may be {@code
+	 * null}.
 	 * @return A new generator factory.
 	 * @since 2014/07/25
 	 */
@@ -193,7 +194,8 @@ public class Json
 	 *
 	 * Unsupported options should be ignored.
 	 *
-	 * @param __cnf Configyration settings for the reader, may be {@code null}.
+	 * @param __cnf Configyration settings for the reader, may be {@code
+	 * null}.
 	 * @return A new JSON reader factory.
 	 * @since 2014/07/25
 	 */

@@ -10,6 +10,7 @@
 package net.multiphasicapps.jsr353;
 
 import com.oracle.json.JsonException;
+import com.oracle.json.JsonValue;
 import com.oracle.json.stream.JsonLocation;
 import com.oracle.json.stream.JsonParser;
 import com.oracle.json.stream.JsonParsingException;
@@ -26,11 +27,14 @@ public class ImplParser
 	extends BaseDecoder
 	implements JsonParser
 {
-	/** Current event. */
-	private Event _e;
-	
 	/** Has been closed. */
 	private boolean _closed;
+	
+	/** Current event. */
+	private Event _waiting;
+	
+	/** Last value. */
+	private JsonValue _value;
 	
 	/**
 	 * Reads JSON data from the specified stream.
@@ -49,7 +53,7 @@ public class ImplParser
 	 * @param __i Input mechanism to use.
 	 * @since 2014/08/08
 	 */
-	public ImplParser(BaseDecoder.Input __i)
+	public ImplParser(BaseDecoderInput __i)
 	{
 		super(__i);
 	}
@@ -69,7 +73,7 @@ public class ImplParser
 		{
 			// Ignore if closed
 			if (this._closed)
-				return;	
+				return;
 			
 			// Close and set super close (it does the work)
 			this._closed = true;
@@ -132,7 +136,7 @@ public class ImplParser
 	}
 	
 	/**
-	 * Returns either the key name or a value if the parser is in the 
+	 * Returns either the key name or a value if the parser is in the
 	 * {@link Event#VALUE_NUMBER}, {@link Event#VALUE_STRING}, or
 	 * {@link Event#KEY_NAME} states.
 	 *
@@ -148,17 +152,20 @@ public class ImplParser
 		{
 			// Cannot be closed
 			if (this._closed)
-				throw new IllegalStateException(
-					"Parser has been closed.");
+				throw new IllegalStateException("Parser has been closed.");
+			
+			// Enqueue next?
+			if (this._waiting == null)
+				this.__enqueue();
 			
 			// Invalid state
-			if (this._e != Event.VALUE_NUMBER &&
-				this._e != Event.VALUE_STRING && this._e != Event.KEY_NAME)
-				throw new IllegalStateException(String.format(
-					"Invalid state: %1$s.", this._e));
+			if (this._waiting != Event.VALUE_NUMBER &&
+				this._waiting != Event.VALUE_STRING &&
+				this._waiting != Event.KEY_NAME)
+				throw new IllegalStateException(
+					String.format("Invalid state: %1$s.", this._waiting));
 			
-			throw new RuntimeException("TODO -- ImplParser::getString() " +
-				"is not implemented.");
+			return this._value.toString();
 		}
 	}
 	
@@ -178,12 +185,15 @@ public class ImplParser
 		{
 			// Cannot be closed
 			if (this._closed)
-				throw new IllegalStateException(
-					"Parser has been closed.");
+				throw new IllegalStateException("Parser has been closed.");
 			
-			// Check
-			throw new RuntimeException("TODO -- ImplParser::hasNext() " +
-				"is not implemented.");
+			// There is already an event waiting?
+			Event waiting = this._waiting;
+			if (waiting != null)
+				return true;
+			
+			// Queue next
+			return (null != this.__enqueue());
 		}
 	}
 	
@@ -221,12 +231,127 @@ public class ImplParser
 		{
 			// Cannot be closed
 			if (this._closed)
-				throw new IllegalStateException(
-					"Parser has been closed.");
+				throw new IllegalStateException("Parser has been closed.");
 			
-			throw new RuntimeException("TODO -- ImplParser::next() is not " +
-				"implemented.");
+			// Need to enqueue event?
+			if (this._waiting == null)
+				this.__enqueue();
+			
+			// Is nothing left?
+			Event waiting = this._waiting;
+			if (waiting == null)
+				throw new NoSuchElementException("NSEE");
+			
+			// Clear out
+			this._waiting = null;
+			return waiting;
 		}
+	}
+	
+	/**
+	 * Enqueues the next event.
+	 *
+	 * @return The new event.
+	 * @since 2025/02/13
+	 */
+	private Event __enqueue()
+	{
+		// Get and handle the next event
+		Event setEvent = null;
+		JsonValue setValue = null;
+		while (setEvent == null)
+		{
+			BaseDecoderBit bit = this.nextBit();
+			switch (bit.getKind())
+			{
+				case PUSH_OBJECT:
+					setEvent = Event.START_OBJECT;
+					break;
+				
+				case PUSH_ARRAY:
+					setEvent = Event.START_ARRAY;
+					break;
+				
+				case DECLARE_KEY:
+					setEvent = Event.KEY_NAME;
+					break;
+				
+				case ADD_OBJECT_KEYVAL:
+				case ADD_ARRAY_VALUE:
+					try
+					{
+						setValue = (JsonValue)bit.get(0);
+						switch (setValue.getValueType())
+						{
+								// Force set of array
+							case ARRAY:
+								setEvent = Event.START_ARRAY;
+								break;
+								
+								// Force set of object
+							case OBJECT:
+								setEvent = Event.START_OBJECT;
+								break;
+								
+							case STRING:
+								setEvent = Event.VALUE_STRING;
+								break;
+								
+							case NUMBER:
+								setEvent = Event.VALUE_NUMBER;
+								break;
+								
+							case TRUE:
+								setEvent = Event.VALUE_TRUE;
+								break;
+								
+							case FALSE:
+								setEvent = Event.VALUE_FALSE;
+								break;
+								
+							case NULL:
+								setEvent = Event.VALUE_NULL;
+								break;
+								
+							default:
+								throw new JsonParsingException("UNKN",
+									this.getLocation());
+						}
+					}
+					catch (ClassCastException __e)
+					{
+						throw new JsonParsingException("CAST", __e,
+							this.getLocation());
+					}
+					break;
+				
+				// These are commas, so they always end up being null
+				// anyway
+				case POP_ARRAY_ADD_OBJECT_KEYVAL:
+				case POP_ARRAY_ADD_ARRAY:
+				case POP_OBJECT_ADD_ARRAY:
+				case POP_OBJECT_ADD_OBJECT_KEYVAL:
+					continue;
+				
+				case FINISHED_OBJECT:
+					setEvent = Event.END_OBJECT;
+					break;
+				
+				case FINISHED_ARRAY:
+					setEvent = Event.END_ARRAY;
+					break;
+				
+				// Unknown state
+				default:
+					throw new JsonParsingException("JSPE",
+						this.getLocation());
+			}
+		}
+		
+		// Set new event
+		this._waiting = setEvent;
+		this._value = setValue;
+		return setEvent;
 	}
 	
 	/**
@@ -246,14 +371,18 @@ public class ImplParser
 			if (this._closed)
 				throw new IllegalStateException("Parser has been closed.");
 			
-			// Invalid state
-			if (this._e != Event.VALUE_NUMBER)
-				throw new IllegalStateException(String.format(
-					"Invalid state: %1$s.", this._e));
+			// Enqueue next?
+			if (this._waiting == null)
+				this.__enqueue();
 			
+			// Invalid state
+			if (this._waiting != Event.VALUE_NUMBER)
+				throw new IllegalStateException(
+					String.format("Invalid state: %1$s.", this._waiting));
+			
+			// Decode number
 			return ImplValueNumber.__parseNumber(this.getString());
 		}
 	}
-	
 }
 

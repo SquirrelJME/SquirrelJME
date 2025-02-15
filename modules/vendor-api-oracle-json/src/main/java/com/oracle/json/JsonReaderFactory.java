@@ -51,7 +51,7 @@ public interface JsonReaderFactory
 	@Api
 	JsonReader createReader(InputStream __i, String __cs)
 		throws UnsupportedEncodingException;
-
+	
 	/**
 	 * Creates a JSON reader from the specified stream, the factory
 	 * configuration is used.
@@ -62,9 +62,10 @@ public interface JsonReaderFactory
 	 */
 	@Api
 	JsonReader createReader(Reader __r);
-
+	
 	/**
-	 * Returns a read only map of the current configuration options in use, any
+	 * Returns a read only map of the current configuration options in use,
+	 * any
 	 * unsupported options will not be included in the map.
 	 *
 	 * @return A read-only map of the current configuration, the map may be

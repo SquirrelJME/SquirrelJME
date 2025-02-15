@@ -33,7 +33,7 @@ public class ImplValueArray
 	implements JsonArray
 {
 	/** Internal list. */
-	private final List<JsonValue> _il;	
+	private final List<JsonValue> _il;
 	
 	/**
 	 * Initializes list of values from the base list.
@@ -45,8 +45,7 @@ public class ImplValueArray
 	{
 		// Cannot be null
 		if (__b == null)
-			throw new NullPointerException(
-				"No value list specified.");
+			throw new NullPointerException("No value list specified.");
 		
 		// Lock on that value, although it may not matter much
 		synchronized (__b)
@@ -55,7 +54,7 @@ public class ImplValueArray
 			List<JsonValue> n = new ArrayList<JsonValue>(__b);
 			
 			// Set internal list as read-only
-			this._il = UnmodifiableList.of(n); 
+			this._il = UnmodifiableList.of(n);
 		}
 	}
 	
@@ -63,8 +62,8 @@ public class ImplValueArray
 	 * Returns the element at the specified index.
 	 *
 	 * @param __i Index to obtain the value from.
-	 * @throws IndexOutOfBoundsException If this is out of bounds.
 	 * @return The element at this index.
+	 * @throws IndexOutOfBoundsException If this is out of bounds.
 	 * @since 2014/08/05
 	 */
 	@Override
@@ -74,51 +73,18 @@ public class ImplValueArray
 	}
 	
 	/**
-	 * Returns the size of this array.
+	 * Invokes {@code (JsonArray)get(__i)}.
 	 *
-	 * @return The size of this array.
+	 * @param __i Index into the array to look up.
+	 * @throws IndexOutOfBoundsException If the index is out of range.
+	 * @throws ClassCastException If the value is not assignable to
+	 * {@link JsonArray}.
 	 * @since 2014/08/05
 	 */
 	@Override
-	public int size()
+	public JsonArray getArray(int __i)
 	{
-		return this._il.size();
-	}
-	
-	/**
-	 * Returns the type of value this is.
-	 *
-	 * @return The type of value that this is.
-	 * @since 2014/08/05
-	 */
-	@Override
-	public ValueType getValueType()
-	{
-		return ValueType.ARRAY;
-	}
-	
-	/**
-	 * Returns the string representation of this value.
-	 *
-	 * @return The value of this array represented as a string.
-	 * @since 2014/08/05
-	 */
-	@SuppressWarnings("StringOperationCanBeSimplified")
-	@Override
-	public String toString()
-	{
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			OutputStreamWriter writer = new OutputStreamWriter(baos))
-		{
-			new ImplWriter(writer, false).write(this);
-			writer.flush();
-			
-			return new String(baos.toByteArray(), "utf-8");
-		}
-		catch (IOException e)
-		{
-			throw Debugging.oops(e);
-		}
+		return (JsonArray)this.get(__i);
 	}
 	
 	/**
@@ -141,15 +107,14 @@ public class ImplValueArray
 		// True
 		if (bv == JsonValue.TRUE)
 			return true;
-		
-		// False
+			
+			// False
 		else if (bv == JsonValue.FALSE)
 			return false;
-		
-		// Error
+			
+			// Error
 		else
-			throw new ClassCastException(
-				"Not a boolean value.");
+			throw new ClassCastException("Not a boolean value.");
 	}
 	
 	/**
@@ -228,18 +193,18 @@ public class ImplValueArray
 	}
 	
 	/**
-	 * Invokes {@code (JsonArray)get(__i)}.
+	 * Invokes {@code (JsonString)get(__i)}.
 	 *
 	 * @param __i Index into the array to look up.
 	 * @throws IndexOutOfBoundsException If the index is out of range.
 	 * @throws ClassCastException If the value is not assignable to
-	 * {@link JsonArray}.
+	 * {@link JsonString}.
 	 * @since 2014/08/05
 	 */
 	@Override
-	public JsonArray getArray(int __i)
+	public JsonString getJsonString(int __i)
 	{
-		return (JsonArray)this.get(__i);
+		return (JsonString)this.get(__i);
 	}
 	
 	/**
@@ -270,21 +235,6 @@ public class ImplValueArray
 	public JsonObject getObject(int __i)
 	{
 		return (JsonObject)this.get(__i);
-	}
-	
-	/**
-	 * Invokes {@code (JsonString)get(__i)}.
-	 *
-	 * @param __i Index into the array to look up.
-	 * @throws IndexOutOfBoundsException If the index is out of range.
-	 * @throws ClassCastException If the value is not assignable to
-	 * {@link JsonString}.
-	 * @since 2014/08/05
-	 */
-	@Override
-	public JsonString getJsonString(int __i)
-	{
-		return (JsonString)this.get(__i);
 	}
 	
 	/**
@@ -347,8 +297,7 @@ public class ImplValueArray
 	{
 		// Must extend JsonValue
 		if (!JsonValue.class.isAssignableFrom(__cl))
-			throw new ClassCastException(
-				"Class does not extend JsonValue.");
+			throw new ClassCastException("Class does not extend JsonValue.");
 		
 		// Return it
 		return Unchecked.<List<JsonValue>, List<T>>cast(
@@ -356,7 +305,20 @@ public class ImplValueArray
 	}
 	
 	/**
-	 * Returns {@code true} if the specified index is a {@link JsonValue#NULL}.
+	 * Returns the type of value this is.
+	 *
+	 * @return The type of value that this is.
+	 * @since 2014/08/05
+	 */
+	@Override
+	public ValueType getValueType()
+	{
+		return ValueType.ARRAY;
+	}
+	
+	/**
+	 * Returns {@code true} if the specified index is a
+	 * {@link JsonValue#NULL}.
 	 *
 	 * @param __i Index into the array to look up.
 	 * @throws IndexOutOfBoundsException If the index is out of range.
@@ -368,6 +330,42 @@ public class ImplValueArray
 		// Get and check
 		JsonValue jv = this.get(__i);
 		return (jv == JsonValue.NULL);
+	}
+	
+	/**
+	 * Returns the size of this array.
+	 *
+	 * @return The size of this array.
+	 * @since 2014/08/05
+	 */
+	@Override
+	public int size()
+	{
+		return this._il.size();
+	}
+	
+	/**
+	 * Returns the string representation of this value.
+	 *
+	 * @return The value of this array represented as a string.
+	 * @since 2014/08/05
+	 */
+	@SuppressWarnings("StringOperationCanBeSimplified")
+	@Override
+	public String toString()
+	{
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); OutputStreamWriter writer = new OutputStreamWriter(
+			baos))
+		{
+			new ImplWriter(writer, false).write(this);
+			writer.flush();
+			
+			return new String(baos.toByteArray(), "utf-8");
+		}
+		catch (IOException e)
+		{
+			throw Debugging.oops(e);
+		}
 	}
 }
 

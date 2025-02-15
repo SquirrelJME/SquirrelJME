@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.jsr353;
+package net.multiphasicapps.io;
 
 import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
 import java.io.Closeable;
@@ -31,7 +31,8 @@ import java.io.Reader;
  *
  * @since 2014/08/01
  */
-public class UTFDetectISR extends Reader
+public class UTFDetectISR
+	extends Reader
 {
 	/** Locking object. */
 	private final Object _lock = new Object();
@@ -59,55 +60,8 @@ public class UTFDetectISR extends Reader
 	}
 	
 	/**
-	 * Reads characters from the underlying stream.
-	 *
-	 * @param __b Buffer to read into.
-	 * @param __o Offset into buffer.
-	 * @param __l Length of read.
-	 * @return The number of characters read.
-	 * @throws IOException If there was an issue closing the stream.
-	 * @since 2014/08/01
-	 */
-	@Override
-	public int read(char[] __b, int __o, int __l)
-		throws IOException
-	{
-		synchronized (this._lock)
-		{
-			// Need to setup work stream
-			if (this._wrk == null)
-			{
-				// Read in 4 bytes
-				this._bix.mark(5);
-				int[] f = new int[4];
-				for (int i = 0; i < 4; i++)
-					f[i] = this._bix.read();
-				this._bix.reset();	// Go back
-				
-				// Based on a pattern
-				String css = null;
-				if (f[0] == 0 && f[1] == 0 && f[2] == 0 && f[3] != 0)
-					css = "UTF-32BE";
-				else if (f[0] != 0 && f[1] == 0 && f[2] == 0 && f[3] == 0)
-					css = "UTF-32LE";
-				else if (f[0] == 0 && f[1] != 0 && f[2] == 0 && f[3] != 0)
-					css = "UTF-16BE";
-				else if (f[0] != 0 && f[1] == 0 && f[2] != 0 && f[3] == 0)
-					css = "UTF-16LE";
-				else
-					css = "UTF-8";
-				
-				// Init using specified charset
-				this._wrk = new InputStreamReader(this._bix, css);
-			}
-			
-			// Read from work stream
-			return this._wrk.read(__b, __o, __l);
-		}
-	}
-	
-	/**
-	 * Closes this input stream and reliquishes any resources used, also closes
+	 * Closes this input stream and reliquishes any resources used, also 
+	 * closes
 	 * the underlying stream.
 	 *
 	 * @throws IOException If there was an issue closing the stream.
@@ -140,6 +94,54 @@ public class UTFDetectISR extends Reader
 				this._bix = null;
 				this._wrk = null;
 			}
+		}
+	}
+	
+	/**
+	 * Reads characters from the underlying stream.
+	 *
+	 * @param __b Buffer to read into.
+	 * @param __o Offset into buffer.
+	 * @param __l Length of read.
+	 * @return The number of characters read.
+	 * @throws IOException If there was an issue closing the stream.
+	 * @since 2014/08/01
+	 */
+	@Override
+	public int read(char[] __b, int __o, int __l)
+		throws IOException
+	{
+		synchronized (this._lock)
+		{
+			// Need to setup work stream
+			if (this._wrk == null)
+			{
+				// Read in 4 bytes
+				this._bix.mark(5);
+				int[] f = new int[4];
+				for (int i = 0; i < 4; i++)
+					f[i] = this._bix.read();
+				this._bix.reset();    // Go back
+				
+				// Based on a pattern
+				String css = null;
+				if (f[0] == 0 && f[1] == 0 && f[2] == 0 && f[3] != 0)
+					css = "UTF-32BE";
+				else if (f[0] != 0 && f[1] == 0 && f[2] == 0 && f[3] == 0)
+					css = "UTF-32LE";
+				else if (f[0] == 0 && f[1] != 0 && f[2] == 0 && f[3] != 0)
+					css = "UTF-16BE";
+				else if (f[0] != 0 && f[1] == 0 && f[2] != 0 && f[3] == 0)
+					css = "UTF-16LE";
+				else
+					css = "UTF-8";
+				
+				// Init using specified charset
+				this._wrk = new InputStreamReader(this._bix, css);
+			}
+			
+			// Read from work stream
+			return this._wrk.read(__b, __o, __l);
 		}
 	}
 }

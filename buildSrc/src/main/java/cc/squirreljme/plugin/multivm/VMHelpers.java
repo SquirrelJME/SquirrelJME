@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.Responsify;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.general.cmake.CMakeBuildTask;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
@@ -770,7 +771,7 @@ public final class VMHelpers
 		try
 		{
 			// Setup new process
-			ProcessBuilder builder = new ProcessBuilder("git",
+			ProcessBuilder builder = Responsify.of("git",
 				"rev-parse", "HEAD");
 			
 			builder.redirectOutput(ProcessBuilder.Redirect.PIPE);

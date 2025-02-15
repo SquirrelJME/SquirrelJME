@@ -27,8 +27,7 @@ public interface JsonGenerator
 {
 	/** Make the generated output nice looking, this must be supported. */
 	@Api
-	String PRETTY_PRINTING =
-		"javax.json.stream.JsonGenerator.prettyPrinting";
+	String PRETTY_PRINTING = "javax.json.stream.JsonGenerator.prettyPrinting";
 	
 	/**
 	 * Closes this generator and releases any used resources, the underlying
@@ -144,7 +143,8 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an object.
+	 * @throws JsonGenerationException If the current context is not an
+	 * object.
 	 * @since 2014/07/25
 	 */
 	@Api
@@ -159,7 +159,8 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an object.
+	 * @throws JsonGenerationException If the current context is not an
+	 * object.
 	 * @since 2014/07/25
 	 */
 	@Api
@@ -174,7 +175,8 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an object.
+	 * @throws JsonGenerationException If the current context is not an
+	 * object.
 	 * @since 2014/07/25
 	 */
 	@Api
@@ -188,7 +190,8 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an object.
+	 * @throws JsonGenerationException If the current context is not an
+	 * object.
 	 * @since 2014/07/25
 	 */
 	@Api
@@ -203,7 +206,8 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an object.
+	 * @throws JsonGenerationException If the current context is not an
+	 * object.
 	 * @since 2014/07/25
 	 */
 	@Api
@@ -217,7 +221,8 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an object.
+	 * @throws JsonGenerationException If the current context is not an
+	 * object.
 	 * @since 2014/07/25
 	 */
 	@Api
@@ -256,7 +261,8 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an object.
+	 * @throws JsonGenerationException If the current context is not an
+	 * object.
 	 * @since 2014/07/25
 	 */
 	@Api
@@ -287,7 +293,8 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If this is not within an object context.
+	 * @throws JsonGenerationException If this is not within an object
+	 * context.
 	 * @since 2014/07/25
 	 */
 	@Api
@@ -296,7 +303,8 @@ public interface JsonGenerator
 	/**
 	 * Writes the character which represents an object for writing key name
 	 * and value pairs; this may only be called in an array context or only
-	 * once when in no context; after it is written the context switches to it.
+	 * once when in no context; after it is written the context switches to
+	 * it.
 	 *
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
@@ -316,7 +324,8 @@ public interface JsonGenerator
 	 * @return {@code this}.
 	 * @throws JsonException If an {@link IOException} occurs it will be
 	 * wrapped in this exception.
-	 * @throws JsonGenerationException If this is not within an object context.
+	 * @throws JsonGenerationException If this is not within an object
+	 * context.
 	 * @since 2014/07/25
 	 */
 	@Api

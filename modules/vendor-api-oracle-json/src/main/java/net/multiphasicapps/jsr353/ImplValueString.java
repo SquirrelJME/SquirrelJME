@@ -32,34 +32,10 @@ public class ImplValueString
 	{
 		// Cannot be null
 		if (__v == null)
-			throw new NullPointerException(
-				"No string value specified.");
+			throw new NullPointerException("No string value specified.");
 		
 		// Set
 		this._val = __v;
-	}
-	
-	/**
-	 * Returns the type of value this is.
-	 *
-	 * @return The type of value that this is.
-	 * @since 2014/08/05
-	 */
-	@Override
-	public ValueType getValueType()
-	{
-		return ValueType.STRING;
-	}
-	/**
-	 * Returns the string representation of this value.
-	 *
-	 * @return The value of this object represented as a string.
-	 * @since 2014/08/05
-	 */
-	@Override
-	public String toString()
-	{
-		return this._val;
 	}
 	
 	/**
@@ -82,7 +58,8 @@ public class ImplValueString
 	}
 	
 	/**
-	 * Returns a character sequence which represents the internal string value.
+	 * Returns a character sequence which represents the internal string
+	 * value.
 	 *
 	 * @return A character sequence for this specified string.
 	 * @since 2014/08/05
@@ -106,6 +83,18 @@ public class ImplValueString
 	}
 	
 	/**
+	 * Returns the type of value this is.
+	 *
+	 * @return The type of value that this is.
+	 * @since 2014/08/05
+	 */
+	@Override
+	public ValueType getValueType()
+	{
+		return ValueType.STRING;
+	}
+	
+	/**
 	 * Invokes {@code getString().hashCode()}.
 	 *
 	 * @return The hash code.
@@ -118,6 +107,18 @@ public class ImplValueString
 	}
 	
 	/**
+	 * Returns the string representation of this value.
+	 *
+	 * @return The value of this object represented as a string.
+	 * @since 2014/08/05
+	 */
+	@Override
+	public String toString()
+	{
+		return this._val;
+	}
+	
+	/**
 	 * Escapes the specified string
 	 *
 	 * @param __v Value to escape.
@@ -127,8 +128,7 @@ public class ImplValueString
 	{
 		// Cannot be null
 		if (__v == null)
-			throw new NullPointerException(
-				"No string specified.");
+			throw new NullPointerException("No string specified.");
 		
 		// Run through the string
 		StringBuilder sb = new StringBuilder();
@@ -141,17 +141,33 @@ public class ImplValueString
 			char e = 0;
 			switch (c)
 			{
-					// Escapable sequences
-				case '\"': e = '\"'; break;
-				case '\\': e = '\\'; break;
-				case '/': e = '/'; break;
-				case '\b': e = 'b'; break;
-				case '\f': e = 'f'; break;
-				case '\n': e = 'n'; break;
-				case '\r': e = 'r'; break;
-				case '\t': e = 't'; break;
+				// Escapable sequences
+				case '\"':
+					e = '\"';
+					break;
+				case '\\':
+					e = '\\';
+					break;
+				case '/':
+					e = '/';
+					break;
+				case '\b':
+					e = 'b';
+					break;
+				case '\f':
+					e = 'f';
+					break;
+				case '\n':
+					e = 'n';
+					break;
+				case '\r':
+					e = 'r';
+					break;
+				case '\t':
+					e = 't';
+					break;
 				
-					// Not escaped
+				// Not escaped
 				default:
 					break;
 			}

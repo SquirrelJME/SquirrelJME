@@ -24,6 +24,18 @@ public interface JsonArray
 	extends JsonStructure, List<JsonValue>
 {
 	/**
+	 * Invokes {@code (JsonArray)get(__i)}.
+	 *
+	 * @param __i Index into the array to look up.
+	 * @throws IndexOutOfBoundsException If the index is out of range.
+	 * @throws ClassCastException If the value is not assignable to
+	 * {@link JsonArray}.
+	 * @since 2014/07/25
+	 */
+	@Api
+	JsonArray getArray(int __i);
+	
+	/**
 	 * Returns the boolean value at the specified position, {@code true} is
 	 * returned if it is {@link JsonValue#TRUE}, otherwise {@code false} is
 	 * returned if it is {@link JsonValue#FALSE}.
@@ -78,16 +90,16 @@ public interface JsonArray
 	int getInt(int __i, int __def);
 	
 	/**
-	 * Invokes {@code (JsonArray)get(__i)}.
+	 * Invokes {@code (JsonString)get(__i)}.
 	 *
 	 * @param __i Index into the array to look up.
 	 * @throws IndexOutOfBoundsException If the index is out of range.
 	 * @throws ClassCastException If the value is not assignable to
-	 * {@link JsonArray}.
+	 * {@link JsonString}.
 	 * @since 2014/07/25
 	 */
 	@Api
-	JsonArray getArray(int __i);
+	JsonString getJsonString(int __i);
 	
 	/**
 	 * Invokes {@code (JsonNumber)get(__i)}.
@@ -112,18 +124,6 @@ public interface JsonArray
 	 */
 	@Api
 	JsonObject getObject(int __i);
-	
-	/**
-	 * Invokes {@code (JsonString)get(__i)}.
-	 *
-	 * @param __i Index into the array to look up.
-	 * @throws IndexOutOfBoundsException If the index is out of range.
-	 * @throws ClassCastException If the value is not assignable to
-	 * {@link JsonString}.
-	 * @since 2014/07/25
-	 */
-	@Api
-	JsonString getJsonString(int __i);
 	
 	/**
 	 * Invokes {@code getJsonString(__i).getString()}.
@@ -164,7 +164,8 @@ public interface JsonArray
 	<T extends JsonValue> List<T> getValueAs(Class<T> __cl);
 	
 	/**
-	 * Returns {@code true} if the specified index is a {@link JsonValue#NULL}.
+	 * Returns {@code true} if the specified index is a
+	 * {@link JsonValue#NULL}.
 	 *
 	 * @param __i Index into the array to look up.
 	 * @throws IndexOutOfBoundsException If the index is out of range.

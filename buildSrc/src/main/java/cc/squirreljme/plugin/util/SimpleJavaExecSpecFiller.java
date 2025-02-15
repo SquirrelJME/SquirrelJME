@@ -22,8 +22,9 @@ import java.util.Map;
 import org.gradle.internal.os.OperatingSystem;
 
 /**
- * This is a simple Java execution specification filler which provides the
- * minimal functionality.
+ * This is a simple Java execution specification filler which does not
+ * have any of the Gradle extras and is used commonly
+ * with {@link ProcessBuilder} to launch Java directly.
  *
  * @since 2020/12/26
  */
@@ -187,6 +188,6 @@ public class SimpleJavaExecSpecFiller
 			return binPath;
 		
 		// Fallback to the system Java, assuming it exists
-		return Paths.get("java");
+		return javaExeName;
 	}
 }

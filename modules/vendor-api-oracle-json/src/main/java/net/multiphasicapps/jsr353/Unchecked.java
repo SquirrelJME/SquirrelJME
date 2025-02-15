@@ -41,6 +41,20 @@ public final class Unchecked
 	}
 	
 	/**
+	 * Unchecked array cast from component type F to component type T.
+	 *
+	 * @param <F> From component type.
+	 * @param <T> To component type.
+	 * @param __from The current array.
+	 * @since 2014/09/05
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static final <F, T> T[] arrayCast(F[] __from)
+	{
+		return (T[])__from;
+	}
+	
+	/**
 	 * Unchecked cast from type F to type T.
 	 *
 	 * @param <F> From type.
@@ -49,7 +63,7 @@ public final class Unchecked
 	 * @since 2014/09/05
 	 */
 	@SuppressWarnings({"unchecked"})
-	public static final <F,T> T cast(F __from)
+	public static final <F, T> T cast(F __from)
 	{
 		return (T)__from;
 	}
@@ -65,20 +79,6 @@ public final class Unchecked
 	public static final <T> Class<T> classOf(Class<?> __anon)
 	{
 		return (Class<T>)__anon;
-	}
-
-	/**
-	 * Unchecked array cast from component type F to component type T.
-	 *
-	 * @param <F> From component type.
-	 * @param <T> To component type.
-	 * @param __from The current array.
-	 * @since 2014/09/05
-	 */
-	@SuppressWarnings({"unchecked"})
-	public static final <F,T> T[] arrayCast(F[] __from)
-	{
-		return (T[])__from;
 	}
 	
 	/**

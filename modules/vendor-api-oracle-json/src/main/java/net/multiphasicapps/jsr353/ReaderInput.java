@@ -15,6 +15,7 @@ import com.oracle.json.stream.JsonParsingException;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
+import net.multiphasicapps.io.LineColumnReader;
 
 /**
  * This reads input from a {@link Reader}.
@@ -22,18 +23,17 @@ import java.io.Reader;
  * @since 2014/08/03
  */
 public class ReaderInput
-	extends BaseDecoder.Input
+	extends BaseDecoderInput
 	implements Closeable
 {
 	/** Internal reader capable of handling lines and columns. */
 	protected final LineColumnReader lcr;
 	
-	/** Peeked value. */
-	private int _peek =
-		Integer.MIN_VALUE;
-	
 	/** Has been closed. */
 	private boolean _closed;
+	
+	/** Peeked value. */
+	private int _peek = Integer.MIN_VALUE;
 	
 	/**
 	 * Parses data from the specified stream and interprets as tokens.
@@ -50,26 +50,6 @@ public class ReaderInput
 		
 		// Use line reader as the base
 		this.lcr = new LineColumnReader(__r, LineColumnReader.DEFAULT);
-	}
-	
-	/**
-	 * Returns the current JSON location.
-	 *
-	 * @return The current location.
-	 * @since 2014/08/04
-	 */
-	@Override
-	public JsonLocation getLocation()
-	{
-		synchronized (this.ilock)
-		{
-			// Cannot have been closed
-			if (this._closed)
-				throw new IllegalStateException("closedin");
-		
-			// Replaced by sub-classes if they support this.
-			return new SomeLocation(this.lcr.getLineNumber() + 1L, this.lcr.getColumnNumber());
-		}
 	}
 	
 	/**
@@ -105,6 +85,27 @@ public class ReaderInput
 	}
 	
 	/**
+	 * Returns the current JSON location.
+	 *
+	 * @return The current location.
+	 * @since 2014/08/04
+	 */
+	@Override
+	public JsonLocation getLocation()
+	{
+		synchronized (this.ilock)
+		{
+			// Cannot have been closed
+			if (this._closed)
+				throw new IllegalStateException("closedin");
+			
+			// Replaced by sub-classes if they support this.
+			return new SomeLocation(this.lcr.getLineNumber() + 1L,
+				this.lcr.getColumnNumber());
+		}
+	}
+	
+	/**
 	 * Reads raw tokens from the reader.
 	 *
 	 * @return The raw type of token just read, {@code null} if there is
@@ -114,7 +115,7 @@ public class ReaderInput
 	 * @since 2014/08/03
 	 */
 	@Override
-	protected Data next()
+	protected BaseDecoderData next()
 	{
 		synchronized (this.ilock)
 		{
@@ -127,7 +128,7 @@ public class ReaderInput
 			{
 				return this.__nextInternal();
 			}
-		
+			
 			// Error reading from stream.
 			catch (IOException ioe)
 			{
@@ -144,16 +145,16 @@ public class ReaderInput
 	 * @throws JsonParsingException On parser errors.
 	 * @since 2014/08/04
 	 */
-	private Data __nextInternal()
+	private BaseDecoderData __nextInternal()
 		throws IOException
 	{
 		// Reading loop
-		for (;;)
+		for (; ; )
 		{
 			// Read character
 			JsonLocation jl = this.getLocation();
 			int c = this.__read();
-			if (c < 0)	// EOF
+			if (c < 0)    // EOF
 				return null;
 			
 			// Skip whitespace
@@ -162,36 +163,36 @@ public class ReaderInput
 			
 			// Start Object
 			if (c == '{')
-				return new Data(Type.START_OBJECT, null);
-			
-			// End object
+				return new BaseDecoderData(BaseDecoderType.START_OBJECT,
+					null);
+				
+				// End object
 			else if (c == '}')
-				return new Data(Type.END_OBJECT, null);
-			
-			// Start array
+				return new BaseDecoderData(BaseDecoderType.END_OBJECT, null);
+				
+				// Start array
 			else if (c == '[')
-				return new Data(Type.START_ARRAY, null);
-			
-			// End array
+				return new BaseDecoderData(BaseDecoderType.START_ARRAY, null);
+				
+				// End array
 			else if (c == ']')
-				return new Data(Type.END_ARRAY, null);
-			
-			// String
+				return new BaseDecoderData(BaseDecoderType.END_ARRAY, null);
+				
+				// String
 			else if (c == '\"')
 			{
 				StringBuilder sb = new StringBuilder();
 				
 				// Read remaining string bits
 				boolean esc = false;
-				for (;;)
+				for (; ; )
 				{
 					// Read character
 					c = this.__read();
 					
 					// Cannot be EOF or any non-space whitespace
 					if (c < 0 || c == '\t' || c == '\r' || c == '\n')
-						throw new JsonParsingException("seol",
-							jl);
+						throw new JsonParsingException("seol", jl);
 					
 					// Escaped
 					if (esc)
@@ -204,12 +205,11 @@ public class ReaderInput
 							{
 								// Read char, cannot be EOF
 								if ((hex[i] = this.__read()) < 0)
-									throw new JsonParsingException(
-										"ueof", jl);
+									throw new JsonParsingException("ueof",
+										jl);
 								
 								// Read hex digit
-								int dig = Character.digit(
-									(char)hex[i], 16);
+								int dig = Character.digit((char)hex[i], 16);
 								
 								// Not a digit
 								if (dig < 0)
@@ -221,22 +221,38 @@ public class ReaderInput
 							}
 							
 							// Build sequence
-							c = (hex[0] << 12) | (hex[1] << 8) | (hex[2] << 4)
-								| hex[3];
+							c =
+								(hex[0] << 12) | (hex[1] << 8) | (hex[2] << 4) | hex[3];
 						}
 						
 						// Not complex
 						else
 							switch (c)
 							{
-								case '\"': c = '\"'; break;
-								case '\\': c = '\\'; break;
-								case '/': c = '/'; break;
-								case 'b': c = '\b'; break;
-								case 'f': c = '\f'; break;
-								case 'n': c = '\n'; break;
-								case 'r': c = '\r'; break;
-								case 't': c = '\t'; break;
+								case '\"':
+									c = '\"';
+									break;
+								case '\\':
+									c = '\\';
+									break;
+								case '/':
+									c = '/';
+									break;
+								case 'b':
+									c = '\b';
+									break;
+								case 'f':
+									c = '\f';
+									break;
+								case 'n':
+									c = '\n';
+									break;
+								case 'r':
+									c = '\r';
+									break;
+								case 't':
+									c = '\t';
+									break;
 								default:
 									throw new JsonParsingException(
 										String.format("illesc", c), jl);
@@ -253,30 +269,31 @@ public class ReaderInput
 						// End string
 						if (c == '\"')
 							break;
-						
-						// Escape
+							
+							// Escape
 						else if (c == '\\')
 							esc = true;
-						
-						// Put into token
+							
+							// Put into token
 						else
 							sb.append((char)c);
 					}
 				}
 				
 				// Is a string
-				return new Data(Type.STRING, sb.toString());
+				return new BaseDecoderData(BaseDecoderType.STRING,
+					sb.toString());
 			}
 			
 			// Start reading value
 			else if (c == ':')
-				return new Data(Type.COLON, null);
-			
-			// Next element
+				return new BaseDecoderData(BaseDecoderType.COLON, null);
+				
+				// Next element
 			else if (c == ',')
-				return new Data(Type.COMMA, null);
-			
-			// Numbers
+				return new BaseDecoderData(BaseDecoderType.COMMA, null);
+				
+				// Numbers
 			else if (c == '-' || (c >= '0' && c <= '9'))
 			{
 				StringBuilder sb = new StringBuilder();
@@ -287,18 +304,16 @@ public class ReaderInput
 				boolean cansign = false;
 				
 				// Continual read
-				for (;;)
+				for (; ; )
 				{
 					// Reached EOF
 					if (c < 0)
-						throw new JsonParsingException("eoflit",
-							jl);
+						throw new JsonParsingException("eoflit", jl);
 					
 					// Bad character
-					if (!(c == '-' || c == '+' || (c >= '0' && c <= '9') ||
-						c == 'e' || c == 'E' || c == '.'))
-						throw new JsonParsingException(String.format(
-							"illgnum", (char)c), jl);
+					if (!(c == '-' || c == '+' || (c >= '0' && c <= '9') || c == 'e' || c == 'E' || c == '.'))
+						throw new JsonParsingException(
+							String.format("illgnum", (char)c), jl);
 					
 					// Add
 					sb.append((char)c);
@@ -306,8 +321,7 @@ public class ReaderInput
 					// Peek next character, if it is a numerical form then
 					// continue
 					c = this.__peek();
-					if (c == '-' || c == '+' || (c >= '0' && c <= '9') ||
-						c == 'e' || c == 'E' || c == '.')
+					if (c == '-' || c == '+' || (c >= '0' && c <= '9') || c == 'e' || c == 'E' || c == '.')
 					{
 						// Make big E, a little e
 						if (c == 'E')
@@ -317,7 +331,8 @@ public class ReaderInput
 						if (c == '-' || c == '+')
 						{
 							if (!cansign)
-								throw new JsonParsingException("badnumsign", jl);
+								throw new JsonParsingException("badnumsign",
+									jl);
 							cansign = false;
 						}
 						
@@ -353,7 +368,8 @@ public class ReaderInput
 				}
 				
 				// A literal
-				return new Data(Type.LITERAL, sb.toString());
+				return new BaseDecoderData(BaseDecoderType.LITERAL,
+					sb.toString());
 			}
 			
 			// False, true, or null
@@ -385,20 +401,21 @@ public class ReaderInput
 				String ls = sb.toString();
 				
 				// Not the correct literal
-				if (!ls.equals("true") && !ls.equals("false") &&
-					!ls.equals("null"))
-					throw new JsonParsingException(
-						String.format("illlit", ls),
+				if (!ls.equals("true") && !ls.equals("false") && !ls.equals(
+					"null"))
+					throw new JsonParsingException(String.format("illlit",
+						ls),
 						jl);
 				
 				// A literal
-				return new Data(Type.LITERAL, sb.toString());
+				return new BaseDecoderData(BaseDecoderType.LITERAL,
+					sb.toString());
 			}
 			
 			// Unknown
 			else
-				throw new JsonParsingException(String.format(
-					"illchart", (char)c), jl);
+				throw new JsonParsingException(
+					String.format("illchart", (char)c), jl);
 		}
 	}
 	
@@ -432,7 +449,7 @@ public class ReaderInput
 		throws IOException
 	{
 		// Loop for queue
-		for (;;)
+		for (; ; )
 		{
 			// In queue
 			if (this._peek > Integer.MIN_VALUE)

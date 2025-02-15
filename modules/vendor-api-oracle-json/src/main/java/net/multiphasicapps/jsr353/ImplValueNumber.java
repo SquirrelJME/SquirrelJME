@@ -25,7 +25,7 @@ public class ImplValueNumber
 	
 	/**
 	 * Parses a string to get the number value.
-	 * 
+	 *
 	 * @param __s The string to parse.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/07/12
@@ -46,23 +46,10 @@ public class ImplValueNumber
 	{
 		// Cannot be null
 		if (__v == null)
-			throw new NullPointerException(
-				"No value specified.");
+			throw new NullPointerException("No value specified.");
 		
 		// Set
 		this._val = __v;
-	}
-	
-	/**
-	 * Returns the type of value this is.
-	 *
-	 * @return The type of value that this is.
-	 * @since 2014/08/07
-	 */
-	@Override
-	public ValueType getValueType()
-	{
-		return ValueType.NUMBER;
 	}
 	
 	/**
@@ -79,7 +66,8 @@ public class ImplValueNumber
 	}
 	
 	/**
-	 * Compares this {@link JsonNumber} with another, returns {@code true} only
+	 * Compares this {@link JsonNumber} with another, returns {@code true}
+	 * only
 	 * if the other object is a {@link JsonNumber} and both
 	 * {@link #numberValue()}s are equal.
 	 *
@@ -95,8 +83,19 @@ public class ImplValueNumber
 		
 		// Compare multiple values accordingly
 		JsonNumber o = (JsonNumber)__o;
-		return this.longValue() == o.longValue() &&
-			this.doubleValue() == o.doubleValue();
+		return this.longValue() == o.longValue() && this.doubleValue() == o.doubleValue();
+	}
+	
+	/**
+	 * Returns the type of value this is.
+	 *
+	 * @return The type of value that this is.
+	 * @since 2014/08/07
+	 */
+	@Override
+	public ValueType getValueType()
+	{
+		return ValueType.NUMBER;
 	}
 	
 	/**
@@ -157,16 +156,6 @@ public class ImplValueNumber
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2022/07/12
-	 */
-	@Override
-	public Number numberValue()
-	{
-		return this._val;
-	}
-	
-	/**
 	 * Invokes {@code numberValue().longValue()}, information may be lost.
 	 *
 	 * @return The long value.
@@ -193,6 +182,17 @@ public class ImplValueNumber
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
+	 * @since 2022/07/12
+	 */
+	@Override
+	public Number numberValue()
+	{
+		return this._val;
+	}
+	
+	/**
 	 * Invokes {@code numberValue().toString()}.
 	 *
 	 * @return The value as a string.
@@ -206,7 +206,7 @@ public class ImplValueNumber
 	
 	/**
 	 * Attempts to parse the given number.
-	 * 
+	 *
 	 * @param __s The string to parse.
 	 * @return The parsed number.
 	 * @throws NullPointerException On null arguments.

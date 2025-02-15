@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.jsr353;
+package net.multiphasicapps.io;
 
 import java.io.Reader;
 

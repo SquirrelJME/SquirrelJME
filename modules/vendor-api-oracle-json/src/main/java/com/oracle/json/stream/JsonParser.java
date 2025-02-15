@@ -76,7 +76,7 @@ public interface JsonParser
 	long getLong();
 	
 	/**
-	 * Returns either the key name or a value if the parser is in the 
+	 * Returns either the key name or a value if the parser is in the
 	 * {@link Event#VALUE_NUMBER}, {@link Event#VALUE_STRING}, or
 	 * {@link Event#KEY_NAME} states.
 	 *

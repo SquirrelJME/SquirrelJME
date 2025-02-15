@@ -84,7 +84,8 @@ public interface JsonParserFactory
 	JsonParser createParser(Reader __r);
 	
 	/**
-	 * Returns a read only map of the current configuration options in use, any
+	 * Returns a read only map of the current configuration options in use,
+	 * any
 	 * unsupported options will not be included in the map.
 	 *
 	 * @return A read-only map of the current configuration, the map may be
