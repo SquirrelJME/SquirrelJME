@@ -38,7 +38,7 @@ extern "C"
  *
  * @since 2023/07/25
  */
-typedef enum sjme_basicTypeId
+typedef enum sjme_attrPackedEnumByte(sjme_basicTypeId)
 {
 	/** Integer. */
 	SJME_BASIC_TYPE_ID_INTEGER = 0,
@@ -72,18 +72,18 @@ typedef enum sjme_basicTypeId
 	
 	/** The number of Java type IDs. */
 	SJME_NUM_JAVA_TYPE_IDS = 5,
-
-	/** Boolean or byte. */
-	SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE = SJME_NUM_JAVA_TYPE_IDS,
-	
-	/** Character or short type. */
-	SJME_JAVA_TYPE_ID_SHORT_OR_CHAR = 6,
 	
 	/** Void type. */
-	SJME_BASIC_TYPE_ID_VOID = 7,
+	SJME_BASIC_TYPE_ID_VOID = SJME_NUM_JAVA_TYPE_IDS,
 	
 	/** Void type. */
 	SJME_JAVA_TYPE_ID_VOID = SJME_BASIC_TYPE_ID_VOID,
+
+	/** Boolean or byte. */
+	SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE = 6,
+	
+	/** Character or short type. */
+	SJME_JAVA_TYPE_ID_SHORT_OR_CHAR = 7,
 	
 	/** End of extended Java types. */
 	SJME_NUM_EXTENDED_JAVA_TYPE_IDS = 8,

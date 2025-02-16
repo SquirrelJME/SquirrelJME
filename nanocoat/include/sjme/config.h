@@ -37,6 +37,16 @@ extern "C" {
 	#define SJME_CONFIG_HAS_C89
 	
 	#if defined(__STDC_VERSION__)
+		#if __STDC_VERSION__ >= 202311L
+			/** Has C23. */
+			#define SJME_CONFIG_HAS_C23
+		#endif
+		
+		#if __STDC_VERSION__ >= 201710L
+			/** Has C17. */
+			#define SJME_CONFIG_HAS_C17
+		#endif
+		
 		#if __STDC_VERSION__ >= 201112L
 			/** Has C11 support. */
 			#define SJME_CONFIG_HAS_C11
@@ -755,6 +765,17 @@ extern "C" {
 	#define sjme_alignPointer
 #endif
 
+#if defined(SJME_CONFIG_HAS_C23)
+	/** Packed enumeration. */
+	#define sjme_attrPackedEnumByte(name) name : sjme_jbyte
+#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	/** Packed enumeration. */
+	#define sjme_attrPackedEnumByte(name) __attribute__((packed)) name
+#else
+	/** Packed enumeration. */
+	#define sjme_attrPackedEnumByte(name) name
+#endif
+	
 #if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Packed structure. */
 	#define sjme_packed __attribute__((packed))

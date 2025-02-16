@@ -83,8 +83,16 @@ static sjme_errorCode sjme_nvm_class_calcMethodArgs(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_lpcstr typeDesc,
 	sjme_attrInNotNull sjme_jint* outArgC,
-	sjme_attrInNotNull sjme_javaTypeId** outArgT)
+	sjme_attrInNotNull sjme_javaTypeId** outArgT,
+	sjme_attrInNotNull sjme_javaTypeId* outArgR)
 {
+#define SJME_MAX_ARGS 256
+	sjme_javaTypeId args[SJME_MAX_ARGS];
+	const sjme_cchar* c;
+	sjme_jint argAt;
+	sjme_jboolean arrayScope, returnScope;
+	sjme_javaTypeId desire;
+	
 	if (allocPool == NULL || typeDesc == NULL ||
 		outArgC == NULL || outArgT == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -94,7 +102,85 @@ static sjme_errorCode sjme_nvm_class_calcMethodArgs(
 	{
 		*outArgC = 0;
 		*outArgT = NULL;
+		*outArgR = SJME_JAVA_TYPE_ID_VOID;
 		return SJME_ERROR_NONE;
+	}
+
+	/* Must start with parenthesis. */
+	c = typeDesc;
+	if (*(c++) != '(')
+		return SJME_ERROR_INVALID_METHOD_TYPE;
+
+	/* Init state. */
+	argAt = 0;
+	arrayScope = SJME_JNI_FALSE;
+	returnScope = SJME_JNI_FALSE;
+	memset(args, 0, sizeof(args));
+
+	/* Argument handling loop. */
+	desire = -1;
+	for (;;)
+	{
+		/* Which type? */
+		switch (*c)
+		{
+				/* Integer and promotions. */
+			case 'Z':
+			case 'B':
+			case 'S':
+			case 'C':
+			case 'I':
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+
+				/* Long. */
+			case 'J':
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+
+				/* Float. */
+			case 'F':
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+
+				/* Double. */
+			case 'D':
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+
+				/* Arrays. */
+			case '[':
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+
+				/* Object. */
+			case 'L':
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+
+				/* End of arguments. */
+			case ')':
+				/* Never valid for arrays or for return types. */
+				if (returnScope || arrayScope)
+					return SJME_ERROR_INVALID_METHOD_TYPE;
+				
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+
+				/* Void type. */
+			case 'V':
+				/* Only valid for return types and never arrays. */
+				if (!returnScope || arrayScope)
+					return SJME_ERROR_INVALID_METHOD_TYPE;
+				
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+
+				/* Invalid, includes NUL. */
+			case '\0':
+			default:
+				return SJME_ERROR_INVALID_METHOD_TYPE;
+		}
 	}
 	
 	sjme_todo("Impl?");
@@ -1675,7 +1761,7 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 	/* Determine the number of method arguments. */
 	if (sjme_error_is(error = sjme_nvm_class_calcMethodArgs(
 		allocPool, (sjme_lpcstr)&type->utf.utf->chars[0],
-		&result->argC, &result->argT)))
+		&result->argC, &result->argT, &result->argR)))
 		goto fail_calcArgs;
 	
 	/* Success! */

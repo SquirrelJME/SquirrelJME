@@ -714,6 +714,9 @@ struct sjme_nvm_class_methodInfoBase
 	/** Argument types. */
 	sjme_javaTypeId* argT;
 
+	/** Return type. */
+	sjme_javaTypeId argR;
+
 	/** The method code, if it is not native. */
 	sjme_nvm_class_codeInfo code;
 	
