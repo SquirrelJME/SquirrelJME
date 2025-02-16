@@ -750,12 +750,12 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	/* Locate method to execute. */
+	/* Locate method to execute, since we are calling it, it is required. */
 	id = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
-		inClass, inThread, instanceType, inName,
+		inClass, inThread, instanceType, SJME_JNI_TRUE, inName,
 		inType, &id)) || id == NULL)
-		return sjme_error_default(error);
+		return sjme_error_linkageError(error);
 	
 	/* Forward to implementation. */
 	return sjme_nvm_task_threadEnter(inThread, outFrame,

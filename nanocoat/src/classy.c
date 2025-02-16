@@ -79,114 +79,6 @@
 /** Class is an enum. */
 #define SJME_NVM_CLASS_ACC_ENUM INT16_C(0x4000)
 
-static sjme_errorCode sjme_nvm_class_calcMethodArgs(
-	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrInNotNull sjme_lpcstr typeDesc,
-	sjme_attrInNotNull sjme_jint* outArgC,
-	sjme_attrInNotNull sjme_javaTypeId** outArgT,
-	sjme_attrInNotNull sjme_javaTypeId* outArgR)
-{
-#define SJME_MAX_ARGS 256
-	sjme_javaTypeId args[SJME_MAX_ARGS];
-	const sjme_cchar* c;
-	sjme_jint argAt;
-	sjme_jboolean arrayScope, returnScope;
-	sjme_javaTypeId desire;
-	
-	if (allocPool == NULL || typeDesc == NULL ||
-		outArgC == NULL || outArgT == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Quick void method, such as a default constructor. */
-	if (strcmp(typeDesc, "()V") == 0)
-	{
-		*outArgC = 0;
-		*outArgT = NULL;
-		*outArgR = SJME_JAVA_TYPE_ID_VOID;
-		return SJME_ERROR_NONE;
-	}
-
-	/* Must start with parenthesis. */
-	c = typeDesc;
-	if (*(c++) != '(')
-		return SJME_ERROR_INVALID_METHOD_TYPE;
-
-	/* Init state. */
-	argAt = 0;
-	arrayScope = SJME_JNI_FALSE;
-	returnScope = SJME_JNI_FALSE;
-	memset(args, 0, sizeof(args));
-
-	/* Argument handling loop. */
-	desire = -1;
-	for (;;)
-	{
-		/* Which type? */
-		switch (*c)
-		{
-				/* Integer and promotions. */
-			case 'Z':
-			case 'B':
-			case 'S':
-			case 'C':
-			case 'I':
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
-
-				/* Long. */
-			case 'J':
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
-
-				/* Float. */
-			case 'F':
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
-
-				/* Double. */
-			case 'D':
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
-
-				/* Arrays. */
-			case '[':
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
-
-				/* Object. */
-			case 'L':
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
-
-				/* End of arguments. */
-			case ')':
-				/* Never valid for arrays or for return types. */
-				if (returnScope || arrayScope)
-					return SJME_ERROR_INVALID_METHOD_TYPE;
-				
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
-
-				/* Void type. */
-			case 'V':
-				/* Only valid for return types and never arrays. */
-				if (!returnScope || arrayScope)
-					return SJME_ERROR_INVALID_METHOD_TYPE;
-				
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
-
-				/* Invalid, includes NUL. */
-			case '\0':
-			default:
-				return SJME_ERROR_INVALID_METHOD_TYPE;
-		}
-	}
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
 static sjme_errorCode sjme_nvm_class_readPoolRefIndex(
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inClassPool,
@@ -812,6 +704,223 @@ static sjme_errorCode sjme_nvm_class_parseAttribute(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_nvm_class_calcMethodArgs(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_lpcstr typeDesc,
+	sjme_attrInNotNull sjme_jint* outArgC,
+	sjme_attrInNotNull sjme_javaTypeId** outArgT,
+	sjme_attrInNotNull sjme_javaTypeId* outArgR)
+{
+#define SJME_MAX_ARGS 65
+	sjme_errorCode error;
+	sjme_javaTypeId args[SJME_MAX_ARGS];
+	sjme_javaTypeId* result;
+	const sjme_cchar* c;
+	sjme_cchar d;
+	sjme_jint argAt, i, n;
+	sjme_jboolean arrayScope, returnScope, returnDid;
+	
+	if (allocPool == NULL || typeDesc == NULL ||
+		outArgC == NULL || outArgT == NULL || outArgR == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Quick void method, such as a default constructor. */
+	if (strcmp(typeDesc, "()V") == 0)
+	{
+		*outArgC = 0;
+		*outArgT = NULL;
+		*outArgR = SJME_JAVA_TYPE_ID_VOID;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Must start with parenthesis. */
+	c = typeDesc;
+	if (*(c++) != '(')
+		return sjme_error_linkageError(SJME_ERROR_INVALID_METHOD_TYPE);
+
+	/* Init state. */
+	argAt = 0;
+	arrayScope = SJME_JNI_FALSE;
+	returnScope = SJME_JNI_FALSE;
+	returnDid = SJME_JNI_FALSE;
+	memset(args, 0, sizeof(args));
+
+	/* Argument handling loop. */
+	for (;;)
+	{
+		/* Type would overflow? */
+		if (argAt >= SJME_MAX_ARGS)
+			return sjme_error_linkageError(SJME_ERROR_INVALID_METHOD_TYPE);
+		
+		/* Which type? */
+		switch (*(c++))
+		{
+				/* Integer and promotions. */
+			case 'Z':
+			case 'B':
+			case 'S':
+			case 'C':
+			case 'I':
+				if (returnScope)
+				{
+					if (returnDid)
+						return sjme_error_linkageError(
+							SJME_ERROR_INVALID_METHOD_TYPE);
+					returnDid = SJME_JNI_TRUE;
+				}
+			
+				/* Declare integer (or object if array). */
+				args[argAt++] = (arrayScope ? SJME_JAVA_TYPE_ID_OBJECT :
+					SJME_JAVA_TYPE_ID_INTEGER);
+				arrayScope = SJME_JNI_FALSE;
+				break;
+
+				/* Long. */
+			case 'J':
+				if (returnScope)
+				{
+					if (returnDid)
+						return sjme_error_linkageError(
+							SJME_ERROR_INVALID_METHOD_TYPE);
+					returnDid = SJME_JNI_TRUE;
+				}
+			
+				/* Declare long (or object if array). */
+				args[argAt++] = (arrayScope ? SJME_JAVA_TYPE_ID_OBJECT :
+					SJME_JAVA_TYPE_ID_LONG);
+				arrayScope = SJME_JNI_FALSE;
+				break;
+
+				/* Float. */
+			case 'F':
+				if (returnScope)
+				{
+					if (returnDid)
+						return sjme_error_linkageError(
+							SJME_ERROR_INVALID_METHOD_TYPE);
+					returnDid = SJME_JNI_TRUE;
+				}
+			
+				/* Declare float (or object if array). */
+				args[argAt++] = (arrayScope ? SJME_JAVA_TYPE_ID_OBJECT :
+					SJME_JAVA_TYPE_ID_FLOAT);
+				arrayScope = SJME_JNI_FALSE;
+				break;
+
+				/* Double. */
+			case 'D':
+				if (returnScope)
+				{
+					if (returnDid)
+						return sjme_error_linkageError(
+							SJME_ERROR_INVALID_METHOD_TYPE);
+					returnDid = SJME_JNI_TRUE;
+				}
+			
+				/* Declare double (or object if array). */
+				args[argAt++] = (arrayScope ? SJME_JAVA_TYPE_ID_OBJECT :
+					SJME_JAVA_TYPE_ID_DOUBLE);
+				arrayScope = SJME_JNI_FALSE;
+				break;
+
+				/* Arrays. */
+			case '[':
+				/* Enter the array scope. */
+				arrayScope = SJME_JNI_TRUE;
+				break;
+
+				/* Object. */
+			case 'L':
+				if (returnScope)
+				{
+					if (returnDid)
+						return sjme_error_linkageError(
+							SJME_ERROR_INVALID_METHOD_TYPE);
+					returnDid = SJME_JNI_TRUE;
+				}
+
+				/* Keep going until ending `;`. */
+				for (d = *c;; d = *(c++))
+				{
+					/* Straight up invalid. */
+					if (d == '.' || d == '[' || d == '\0')
+						return sjme_error_linkageError(
+							SJME_ERROR_INVALID_METHOD_TYPE);
+
+					/* End of type. */
+					if (d == ';')
+						break;
+				}
+
+				/* Declare object. */
+				args[argAt++] = SJME_JAVA_TYPE_ID_OBJECT;
+				arrayScope = SJME_JNI_FALSE;
+				break;
+
+				/* End of arguments. */
+			case ')':
+				/* Never valid for arrays or for return types. */
+				if (returnScope || arrayScope)
+					return sjme_error_linkageError(
+						SJME_ERROR_INVALID_METHOD_TYPE);
+
+				returnScope = SJME_JNI_TRUE;
+				break;
+
+				/* Void type. */
+			case 'V':
+				/* Only valid for return types and never arrays. */
+				if (!returnScope || arrayScope)
+					return sjme_error_linkageError(
+						SJME_ERROR_INVALID_METHOD_TYPE);
+
+				/* This is only ever the case for return types. */
+				returnDid = SJME_JNI_TRUE;
+
+				/* Set special void type. */
+				args[argAt++] = SJME_JAVA_TYPE_ID_VOID;
+				break;
+
+				/* NUL is only invalid when not properly at the end. */
+			case '\0':
+				if (returnDid)
+					break;
+				return sjme_error_linkageError(SJME_ERROR_INVALID_METHOD_TYPE);
+				
+				/* Invalid. */
+			default:
+				return sjme_error_linkageError(SJME_ERROR_INVALID_METHOD_TYPE);
+		}
+
+		/* True end of descriptor, with NUL. */
+		if ((*c) == '\0')
+			break;
+	}
+
+	/* Cannot end on array or miss a return type. */
+	if (arrayScope || !returnScope || argAt <= 0)
+		return sjme_error_linkageError(SJME_ERROR_INVALID_METHOD_TYPE);
+
+	/* Return type is always the last type. */
+	*outArgR = args[argAt - 1];
+
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc(allocPool,
+		sizeof(*result) * argAt, &result)) || result == NULL)
+		return sjme_error_default(error);
+
+	/* Fill in other arguments. */
+	for (i = 0, n = argAt - 1; i < n; i++)
+		result[i] = args[i];
+
+	/* Success! */
+	*outArgC = n;
+	*outArgT = result;
+	return SJME_ERROR_NONE;
+#undef SJME_MAX_ARGS
+}
+
 sjme_errorCode sjme_nvm_class_descriptorToType(
 	sjme_attrOutNotNull sjme_javaTypeId* outType,
 	sjme_attrInValue sjme_jboolean javaType,
@@ -853,7 +962,7 @@ sjme_errorCode sjme_nvm_class_descriptorToType(
 	
 	/* Not valid. */
 	else
-		return SJME_ERROR_INVALID_ARGUMENT;
+		return sjme_error_linkageError(SJME_ERROR_INVALID_METHOD_TYPE);
 	
 	/* Success! */
 	*outType = result;
@@ -1177,7 +1286,7 @@ fail_initResult:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
-	return sjme_error_default(error);
+	return sjme_error_linkageError(error);
 }
 
 sjme_errorCode sjme_nvm_class_parseAttributes(
@@ -1235,7 +1344,7 @@ fail_parseSingle:
 fail_readLen:
 fail_readName:
 fail_readCount:
-	return sjme_error_default(error);
+	return sjme_error_linkageError(error);
 }
 
 sjme_errorCode sjme_nvm_class_parseConstantPool(
@@ -1596,7 +1705,7 @@ fail_initCommon:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
-	return sjme_error_default(error);
+	return sjme_error_linkageError(error);
 }
 
 sjme_errorCode sjme_nvm_class_parseField(
@@ -1692,7 +1801,7 @@ fail_initResult:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
-	return sjme_error_default(error);
+	return sjme_error_linkageError(error);
 }
 
 sjme_errorCode sjme_nvm_class_parseMethod(
@@ -1779,5 +1888,5 @@ fail_initResult:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
-	return sjme_error_default(error);
+	return sjme_error_linkageError(error);
 }

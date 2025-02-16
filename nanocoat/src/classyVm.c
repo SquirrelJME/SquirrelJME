@@ -104,7 +104,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		/* Lookup this index. */
 		found = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_methodSourceByIndex(
-			thisClass, instanceType, i,
+			thisClass, instanceType, SJME_JNI_TRUE, i,
 			&found)) || found == NULL)
 			goto fail_badFind;
 		
@@ -208,7 +208,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 		methodInfo = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_methodSourceByIndex(
 			inClass, instanceType,
-			i, &methodInfo)) ||
+			SJME_JNI_TRUE, i, &methodInfo)) ||
 			methodInfo == NULL)
 			goto fail_noIndex;
 
@@ -250,7 +250,7 @@ fail_noIndex:
 fail_allocResult:
 	if (result != NULL)
 		sjme_alloc_free(result);
-	return sjme_error_default(error);
+	return sjme_error_linkageError(error);
 }
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
@@ -297,8 +297,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
 				inClass, SJME_NVM_CLASS_MEMBER_STATIC,
 				typeId, i,
 				&fieldInfo)) || fieldInfo == NULL)
-				return sjme_error_defaultOr(error,
-					SJME_ERROR_CLASS_CHANGED);
+				return sjme_error_linkageError(sjme_error_defaultOr(error,
+					SJME_ERROR_CLASS_CHANGED));
 			
 			/* Is there a static value to copy? */
 			if (fieldInfo->constVal.type == typeId)
@@ -336,7 +336,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 	/* Superclass info is required. */
 	superInfo = inSuperClass->info;
 	if (superInfo == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
+		return sjme_error_linkageError(SJME_ERROR_SUPER_CLASS_INVALID);
 	
 	/* For both static and instance fields. */
 	for (index = 0; index < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; index++)
@@ -355,7 +355,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 			/* Overflowed? */
 			if (inClass->fieldBase[index][i] < 0 ||
 				inClass->fieldCount[index][i] < 0)
-				return SJME_ERROR_CLASS_TOO_MANY_MEMBERS;
+				return sjme_error_linkageError(
+					SJME_ERROR_CLASS_TOO_MANY_MEMBERS);
 		}
 		
 		/* Methods are simpler as they are based on static/instance and not */
@@ -367,7 +368,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 		/* Overflowed? */
 		if (inClass->methodBase[index] < 0 ||
 			inClass->methodCount[index] < 0)
-			return SJME_ERROR_CLASS_TOO_MANY_MEMBERS;
+			return sjme_error_linkageError(SJME_ERROR_CLASS_TOO_MANY_MEMBERS);
 	}
 	
 	/* Success! */
@@ -393,7 +394,7 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadCheck(
 		return SJME_ERROR_NONE;
 	
 	/* Not matched. */
-	return SJME_ERROR_NOT_MATCHED;
+	return sjme_error_linkageError(SJME_ERROR_NOT_MATCHED);
 }
 
 static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
@@ -545,7 +546,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	loader = contextThread->inTask->classLoader;
 	if (info == NULL || loader == NULL)
 	{
-		error = SJME_ERROR_ILLEGAL_STATE;
+		error = sjme_error_linkageError(SJME_ERROR_INVALID_CLASS_LOADER);
 		goto fail_badState;
 	}
 	
@@ -708,7 +709,8 @@ fail_checkLoad:
 	/* Cache load error. */
 	sjme_atomic_sjme_jint_compareSet(&inClass->error,
 		SJME_ERROR_NONE, sjme_error_default(error));
-	return sjme_error_default(error);
+	
+	return sjme_error_linkageError(error);
 }
 
 sjme_errorCode sjme_nvm_vmClass_checkLoad(
@@ -729,7 +731,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	/* Error state occurred? */
 	error = sjme_atomic_sjme_jint_get(&inClass->error);
 	if (sjme_error_is(error))
-		return sjme_error_default(error);
+		return sjme_error_linkageError(error);
 	
 	/* Does not need to be loaded? */
 	if (sjme_atomic_sjme_jint_get(
@@ -747,7 +749,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	classLoader = contextThread->inTask->classLoader;
 	if (classLoader == NULL)
 	{
-		error = SJME_ERROR_ILLEGAL_STATE;
+		error = sjme_error_linkageError(SJME_ERROR_INVALID_CLASS_LOADER);
 		goto fail_badState;
 	}
 	
@@ -755,7 +757,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	classPath = classLoader->classPath;
 	if (classPath == NULL)
 	{
-		error = SJME_ERROR_ILLEGAL_STATE;
+		error = sjme_error_linkageError(SJME_ERROR_INVALID_CLASS_LOADER);
 		goto fail_badState;
 	}
 	
@@ -834,7 +836,8 @@ fail_badName:
 	/* Cache load error. */
 	sjme_atomic_sjme_jint_compareSet(&inClass->error,
 		SJME_ERROR_NONE, sjme_error_default(error));
-	return sjme_error_default(error);
+	
+	return sjme_error_linkageError(error);
 }
 
 sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
@@ -875,7 +878,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 		
 		/* This should not occur. */
 		if (atClass == NULL)
-			return SJME_ERROR_ILLEGAL_STATE;
+			return sjme_error_linkageError(SJME_ERROR_SUPER_CLASS_INVALID);
 	}
 
 	/* Find the associated method. */
@@ -886,7 +889,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 		/* Get the method here. */
 		field = fields->elements[i];
 		if (field == NULL)
-			return SJME_ERROR_ILLEGAL_STATE;
+			return sjme_error_linkageError(SJME_ERROR_NO_FIELD);
 		
 		/* If the static flag, index, and type matches, this is the one! */
 		if (field->flags.member.isStatic == wantStatic &&
@@ -899,7 +902,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 	}
 	
 	/* If this point is reached, the index is not valid. */
-	return SJME_ERROR_ILLEGAL_STATE;
+	return sjme_error_linkageError(SJME_ERROR_NO_FIELD);
 }
 
 sjme_errorCode sjme_nvm_vmClass_loaderLoad(
@@ -1047,7 +1050,7 @@ skip_foundClass:
 		&maybe->isLoaded) == SJME_VM_CLASS_INIT_LOAD_NEVER)
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
 			maybe, contextThread)))
-			return sjme_error_default(error);
+			return sjme_error_linkageError(error);
 	
 	/* Success! */
 	*outClass = maybe;
@@ -1063,8 +1066,10 @@ fail_lockWrite:
 fail_findFail:
 	/* Release the read lock before failing. */
 	sjme_thread_rwLockReleaseRead(&inLoader->rwLock, NULL);
-	
-	return sjme_error_default(error);
+
+	if (error == SJME_ERROR_NOT_MATCHED)
+		error = SJME_ERROR_NO_CLASS;
+	return sjme_error_linkageError(error);
 }
 
 sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(
@@ -1126,7 +1131,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(
 			break;
 		
 		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
+			return sjme_error_linkageError(SJME_ERROR_INVALID_FIELD_TYPE);
 	}
 	
 	/* Forward call. */
@@ -1216,7 +1221,7 @@ fail_dupList:
 	if (dup != NULL)
 		sjme_alloc_free(dup);
 	
-	return sjme_error_default(error);
+	return sjme_error_linkageError(error);
 }
 
 sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
@@ -1224,6 +1229,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInValue sjme_jboolean required,
 	sjme_attrInPositive sjme_lpcstr inName,
 	sjme_attrInPositive sjme_lpcstr inType,
 	sjme_attrOutNotNull sjme_jmethodID* outID)
@@ -1252,7 +1258,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 		/* There must be a valid method here. */
 		method = methods->elements[i];
 		if (method == NULL)
-			return SJME_ERROR_ILLEGAL_STATE;
+			return sjme_error_linkageError(SJME_ERROR_NO_METHOD);
 		
 		/* Is this the method. */
 		if (sjme_charSeq_equalsUtfR(&method->name->seq,
@@ -1266,13 +1272,16 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 	}
 
 	/* Not found. */
-	return SJME_ERROR_NO_METHOD;
+	if (!required)
+		return SJME_ERROR_NO_METHOD;
+	return sjme_error_linkageError(SJME_ERROR_NO_METHOD);
 }
 
 sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInValue sjme_jboolean required,
 	sjme_attrInPositive sjme_jint methodId,
 	sjme_attrOutNotNull sjme_nvm_class_methodInfo* outInfo)
 {
@@ -1302,9 +1311,9 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	{
 		atClass = sjme_atomic_sjme_jclass_get(&atClass->superClass);
 		
-		/* This should not occur. */
+		/* This should not occur, but it might. */
 		if (atClass == NULL)
-			return SJME_ERROR_ILLEGAL_STATE;
+			return sjme_error_linkageError(SJME_ERROR_SUPER_CLASS_INVALID);
 	}
 
 	/* Find the associated method. */
@@ -1315,7 +1324,7 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 		/* Get the method here. */
 		method = methods->elements[i];
 		if (method == NULL)
-			return SJME_ERROR_ILLEGAL_STATE;
+			return sjme_error_linkageError(SJME_ERROR_NO_METHOD);
 		
 		/* If the static flag and the index matches, this is the one! */
 		if (method->flags.member.isStatic == wantStatic &&
@@ -1327,5 +1336,7 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	}
 	
 	/* If this point is reached, the index is not valid. */
-	return SJME_ERROR_ILLEGAL_STATE;
+	if (!required)
+		return SJME_ERROR_NO_METHOD;
+	return sjme_error_linkageError(SJME_ERROR_NO_METHOD);
 }

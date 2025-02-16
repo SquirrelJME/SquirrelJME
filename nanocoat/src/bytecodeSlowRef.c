@@ -57,13 +57,13 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		SJME_JNI_TRUE)) || classy == NULL)
 		return sjme_error_default(error);
 	
-	/* Locate method to execute. */
+	/* Locate method to execute, it is required to be found. */
 	methodId = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
 		classy, inFrame->inThread,
-		SJME_NVM_CLASS_MEMBER_STATIC,
+		SJME_NVM_CLASS_MEMBER_STATIC, SJME_JNI_TRUE,
 		methodName, methodType, &methodId)) || methodId == NULL)
-		return sjme_error_default(error);
+		return sjme_error_linkageError(error);
 
 	/* Get the non-virtual target info. */
 	target = methodId->info[SJME_NVM_CALL_NON_VIRTUAL];

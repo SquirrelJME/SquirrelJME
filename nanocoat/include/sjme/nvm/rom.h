@@ -95,10 +95,10 @@ struct sjme_nvm_rom_libraryBase
 	sjme_jint rawSize;
 
 	/** Is raw access checked? */
-	sjme_jboolean checkedRawAccess : 1;
+	sjme_jboolean checkedRawAccess : sjme_booleanBit;
 
 	/** Is raw access valid. */
-	sjme_jboolean validRawAccess : 1;
+	sjme_jboolean validRawAccess : sjme_booleanBit;
 	
 	/** Generally a lock on cached class information. */
 	sjme_thread_rwLock rwLock;

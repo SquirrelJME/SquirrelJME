@@ -241,10 +241,10 @@ struct sjme_nvm_frameBase
 	sjme_packed struct
 	{
 		/** Enter synchronization was performed. */
-		sjme_jboolean synchronizedEnter : 1;
+		sjme_jboolean synchronizedEnter : sjme_booleanBit;
 
 		/** Exit synchronization was performed. */
-		sjme_jboolean synchronizedExit : 1;
+		sjme_jboolean synchronizedExit : sjme_booleanBit;
 	} flags;
 };
 

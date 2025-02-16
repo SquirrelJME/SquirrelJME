@@ -852,6 +852,9 @@ extern "C" {
 	#pragma warning(disable: 4114)
 #endif
 
+/** Bitfield count for @c sjme_jboolean . */
+#define sjme_booleanBit 2
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

@@ -133,7 +133,7 @@ struct sjme_nvm_desc_fieldTypeComponentBase
 	sjme_jint cells;
 		
 	/** Is this an array? */
-	sjme_jboolean isArray : 1;
+	sjme_jboolean isArray : sjme_booleanBit;
 		
 	/** Binary name of the component, if this is a binary name. */
 	sjme_pointerLen binaryName;
@@ -194,7 +194,7 @@ struct sjme_nvm_desc_classNameBase
 	sjme_pointerLen whole;
 	
 	/** Does this represent a field? */
-	sjme_jboolean isField : 1;
+	sjme_jboolean isField : sjme_booleanBit;
 	
 	/** The descriptor used. */
 	union

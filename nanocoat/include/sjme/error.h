@@ -423,9 +423,21 @@ typedef enum sjme_errorCode
 
 	/** Invalid instruction. */
 	SJME_ERROR_INVALID_INSTRUCTION = -127,
+
+	/** Generic linkage error. */
+	SJME_ERROR_LINKAGE_ERROR = -128,
+
+	/** The super class is not a valid class. */
+	SJME_ERROR_SUPER_CLASS_INVALID = -129,
+
+	/** The super class is not a valid class. */
+	SJME_ERROR_NO_FIELD = -130,
+
+	/** The class loader is not valid. */
+	SJME_ERROR_INVALID_CLASS_LOADER = -131,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -128,
+	SJME_NUM_ERROR_CODES = -132,
 } sjme_errorCode;
 
 /**

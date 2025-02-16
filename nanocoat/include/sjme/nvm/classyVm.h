@@ -265,6 +265,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
  * @param inClass The class to look within.
  * @param contextThread The thread this request is under.
  * @param instanceType The instance type of the method.
+ * @param required Is this method required?
  * @param inName The name of the method to find.
  * @param inType The type of the method to find.
  * @param outID The resultant method ID.
@@ -276,6 +277,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInValue sjme_jboolean required,
 	sjme_attrInPositive sjme_lpcstr inName,
 	sjme_attrInPositive sjme_lpcstr inType,
 	sjme_attrOutNotNull sjme_jmethodID* outID);
@@ -288,6 +290,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
  * 
  * @param inClass The class tree to look within. 
  * @param instanceType The type of instance this is.
+ * @param required Is this method required?
  * @param methodId The method identifier.
  * @param outInfo The output info.
  * @return Any resultant error.
@@ -297,6 +300,7 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInValue sjme_jboolean required,
 	sjme_attrInPositive sjme_jint methodId,
 	sjme_attrOutNotNull sjme_nvm_class_methodInfo* outInfo);
 
