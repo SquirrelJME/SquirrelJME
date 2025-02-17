@@ -35,9 +35,6 @@
 /** The back guard value. */
 #define SJME_ALLOC_GUARD_BACK INT32_C(0x6C65783F)
 
-/** Magic number for the pool. */
-#define SJME_ALLOC_POOL_MAGIC INT32_C(0x4C6F6C21)
-
 #if defined(SJME_CONFIG_DEBUG)
 /**
  * Prints information on a given link and returns.

@@ -381,23 +381,52 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	sjme_attrOutNotNull sjme_jclass inClass,
-	sjme_attrInNotNull sjme_nvm_thread contextThread)
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_nvm_vmClass_loader classLoader)
 {
+	sjme_errorCode error;
 	sjme_nvm_class_info info;
+	sjme_alloc_pool allocPool;
+	sjme_nvm_stringPool strings;
+	sjme_nvm_stringPool_string thisName, superName;
+	sjme_nvm inState;
 	
-	if (inClass == NULL || contextThread == NULL)
+	if (inClass == NULL || contextThread == NULL || classLoader == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
 
+	inState = contextThread->inTask->inState;
+	allocPool = contextThread->inTask->inState->allocPool;
+	strings = classLoader->nullStrings;
+
+	/* Lookup self name. */
+	thisName = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
+		strings, inClass->binaryName, -1, &thisName)) || thisName == NULL)
+		return sjme_error_outOfMemory(allocPool, 0);
+
+	/* The super class is always Object. */
+	superName = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
+		strings, "java/lang/Object", -1, &superName)) || superName == NULL)
+		return sjme_error_outOfMemory(allocPool, 0);
+
+	/* Allocate synthetic result. */
+	info = NULL;
+	if (sjme_error_is(error = sjme_nvm_alloc(inState,
+		sizeof(*info), SJME_NVM_STRUCT_CLASS_INFO, &info)) || info == NULL)
+		return sjme_error_outOfMemory(allocPool, sizeof(*info));
+	
 	/* Synthesize info for arrays. */
+	info->version = SJME_NVM_CLASS_CLDC_1_8;
+	info->name = thisName;
+	info->superName = superName;
 	info->flags.access.public = SJME_JNI_TRUE;
 	info->flags.final = SJME_JNI_TRUE;
 	info->flags.synthetic = SJME_JNI_TRUE;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Set synthetic class info. */
+	inClass->info = info;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
@@ -412,7 +441,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 	sjme_jint i, n;
 	sjme_cchar fileName[SJME_VM_CLASS_NAME_LIMIT];
 	
-	if (inClass == NULL || contextThread == NULL)
+	if (inClass == NULL || contextThread == NULL || classLoader == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* And the class path. */	
@@ -842,7 +871,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	if (inClass->binaryName[0] == '[')
 	{
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitArray(inClass,
-			contextThread)))
+			contextThread, classLoader)))
 			goto fail_initSpecific;
 	}
 
@@ -1221,9 +1250,16 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	sjme_list_sjme_jclass* classes;
 	sjme_nvm_rom_library lib;
 	sjme_jint i, n, cldcCompact;
+	sjme_nvm_stringPool nullStrings;
 	
 	if (inState == NULL || outLoader == NULL || classPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Allocate string pool for anything not coming from libraries. */
+	nullStrings = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_new(inState->allocPool,
+		&nullStrings)) || nullStrings == NULL)
+		goto fail_allocStrings;
 	
 	/* Duplicate list. */
 	dup = NULL;
@@ -1274,6 +1310,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	result->inState = inState;
 	result->classPath = dup;
 	result->classes = classes;
+	result->nullStrings = nullStrings;
 	
 	/* Success! */
 	*outLoader = result;
@@ -1290,6 +1327,9 @@ fail_nullJar:
 fail_dupList:
 	if (dup != NULL)
 		sjme_alloc_free(dup);
+fail_allocStrings:
+	if (nullStrings != NULL)
+		sjme_alloc_free(nullStrings);
 	
 	return sjme_error_vmError(NULL, error);
 }

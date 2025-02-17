@@ -240,7 +240,9 @@ fail_releaseLock:
 	/* Unlock before failing. */
 	sjme_thread_spinLockRelease(&inStringPool->common.lock,
 		NULL);
-	
+
+	if (error == SJME_ERROR_OUT_OF_MEMORY)
+		return sjme_error_outOfMemory(inStringPool->allocPool, 0);
 	return sjme_error_default(error);
 }
 

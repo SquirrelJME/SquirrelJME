@@ -395,19 +395,12 @@ sjme_errorCode sjme_nvm_allocR(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Recover pool, some types can use an aliased pool. */
-	if (inType != SJME_NVM_STRUCT_CLASS_INFO &&
-		inType != SJME_NVM_STRUCT_CODE &&
-		inType != SJME_NVM_STRUCT_FIELD_INFO &&
-		inType != SJME_NVM_STRUCT_METHOD_INFO &&
-		inType != SJME_NVM_STRUCT_POOL &&
-		inType != SJME_NVM_STRUCT_ROM_LIBRARY &&
-		inType != SJME_NVM_STRUCT_ROM_SUITE &&
-		inType != SJME_NVM_STRUCT_STATE &&
-		inType != SJME_NVM_STRUCT_STRING_POOL &&
-		inType != SJME_NVM_STRUCT_STRING_POOL_STRING)
+	if (sjme_nvm_isAR(inState, SJME_NVM_STRUCT_STATE))
 		allocPool = inState->allocPool;
-	else
+	else if (((sjme_alloc_pool)inState)->magic == SJME_ALLOC_POOL_MAGIC)
 		allocPool = (sjme_alloc_pool)inState;
+	else
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Which handler is used? */
 	handler = NULL;

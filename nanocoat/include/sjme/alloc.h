@@ -196,6 +196,9 @@ struct sjme_alloc_linkBase
 	(offsetof(sjme_alloc_linkBase, block) + (((size_t)(size)) * \
 	sizeof(sjme_jubyte)))
 
+/** Magic number for the pool. */
+#define SJME_ALLOC_POOL_MAGIC INT32_C(0x4C6F6C21)
+
 /**
  * Structure which stores the pooled memory allocator.
  * 

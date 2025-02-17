@@ -110,6 +110,9 @@ struct sjme_nvm_vmClass_loaderBase
 	
 	/** Classes which have been loaded. */
 	sjme_list_sjme_jclass* classes;
+
+	/** String pool for classes which do not come from suites or libraries. */
+	sjme_nvm_stringPool nullStrings;
 };
 
 /**

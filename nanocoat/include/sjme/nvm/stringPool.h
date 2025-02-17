@@ -69,11 +69,11 @@ struct sjme_nvm_stringPool_base
 	/** The virtual machine common base. */
 	sjme_nvm_commonBase common;
 	
-	/** Strings which are in the pool. */
-	sjme_list_sjme_nvm_stringPool_string* strings;
-	
 	/** The pool this is in. */
 	sjme_alloc_pool allocPool;
+	
+	/** Strings which are in the pool. */
+	sjme_list_sjme_nvm_stringPool_string* strings;
 };
 
 struct sjme_nvm_stringPool_stringBase
