@@ -37,6 +37,56 @@ static const sjme_jint sjme_nvm_typeMul[SJME_NUM_JAVA_TYPE_IDS] =
 	sizeof(sjme_jobject),
 };
 
+static sjme_errorCode sjme_nvm_task_countObjectDown(
+	sjme_attrInNotNull sjme_jobject* oldP,
+	sjme_attrInNotNull sjme_jobject newV)
+{
+	sjme_errorCode error;
+	sjme_jobject oldObject;
+	sjme_jboolean validObject, noSelfGc;
+	sjme_alloc_weak weak;
+
+	if (oldP == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If the old is the same as new, then do not count if the count would */
+	/* result in the object being GCed before it was set. */
+	oldObject = *oldP;
+	noSelfGc = SJME_JNI_FALSE;
+	if (oldObject != NULL && newV != NULL && oldObject == newV)
+	{
+		/* Only consider valid weak reference. */
+		weak = NULL;
+		if (sjme_error_is(error = sjme_alloc_weakRefGet(oldObject, &weak)))
+		{
+			if (error != SJME_ERROR_NOT_WEAK_REFERENCE)
+				return sjme_error_default(error);
+		}
+
+		/* Do not self GC if it would end up freeing the object before it */
+		/* could be set. */
+		noSelfGc = (sjme_atomic_sjme_jint_get(&weak->count) <= 1);
+	}
+
+	/* Count down if the old object exists, or in the case as above. */
+	if (oldObject != NULL && !noSelfGc)
+	{
+		/* Is this object actually valid? */
+		validObject = SJME_JNI_FALSE;
+		if (sjme_error_is(error = sjme_nvm_isA(oldObject,
+			SJME_NVM_STRUCT_OBJECT_INSTANCE,
+			&validObject)))
+			return sjme_error_default(error);
+
+		/* Count it down. */
+		if (sjme_error_is(error = sjme_alloc_weakUnRef(oldObject)))
+			return sjme_error_default(error);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_task_stackReframe(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
@@ -460,7 +510,9 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
 	sjme_attrInValue sjme_jboolean eraseOld)
 {
+	sjme_errorCode error;
 	sjme_frame_frameStack* perType;
+	sjme_jobject tempObject;
 	
 	if (inFrame == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -510,10 +562,20 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
-			outValue->value.l = perType->base.jobjects[typeIndex];
-		
+			/* Load into temporary as we may be erasing the value here. */
+			tempObject = perType->base.jobjects[typeIndex];
+
+			/* Is the value in the tread being cleared? */
 			if (eraseOld)
 				perType->base.jobjects[typeIndex] = NULL;
+
+			/* Otherwise, we technically have a copy so count up. */
+			else if (tempObject != NULL)
+				if (sjme_error_is(error = sjme_alloc_weakRef(tempObject,
+					NULL)))
+					return sjme_error_default(error);
+
+			outValue->value.l = tempObject;
 			break;
 			
 		default:
@@ -530,6 +592,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue)
 {
+	sjme_errorCode error;
 	sjme_frame_frameStack* perType;
 	
 	if (inFrame == NULL || inValue == NULL)
@@ -565,7 +628,13 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
-			sjme_message("TODO: Count object set.");
+			/* If there is an old value here, count it down. */
+			if (sjme_error_is(error = sjme_nvm_task_countObjectDown(
+				&perType->base.jobjects[typeIndex],
+				inValue->value.l)))
+				return sjme_error_default(error);
+
+			/* Set. */
 			perType->base.jobjects[typeIndex] = inValue->value.l;
 			break;
 			
