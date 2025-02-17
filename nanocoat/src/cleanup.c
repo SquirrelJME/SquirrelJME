@@ -550,11 +550,18 @@ sjme_errorCode sjme_nvm_isA(
 	}
 
 	/* Must be the type and the magic must be valid! */
+	/* Aliases of object types match objects as well. */
 	common = inWhat;
-	if (common->type == inType && common->magic == SJME_NVM_OBJECT_MAGIC)
+	if (common->magic != SJME_NVM_OBJECT_MAGIC)
+		*outResult = SJME_JNI_FALSE;
+	else if (common->type == inType ||
+		(inType == SJME_NVM_STRUCT_OBJECT_INSTANCE &&
+			(common->type == SJME_NVM_STRUCT_STRING_INSTANCE ||
+			common->type == SJME_NVM_STRUCT_CLASS_INSTANCE)))
 		*outResult = SJME_JNI_TRUE;
 	else
 		*outResult = SJME_JNI_FALSE;
+		
 	return SJME_ERROR_NONE;
 }
 

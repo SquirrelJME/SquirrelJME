@@ -379,6 +379,86 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
+	sjme_attrOutNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread)
+{
+	sjme_nvm_class_info info;
+	
+	if (inClass == NULL || contextThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+
+	/* Synthesize info for arrays. */
+	info->flags.access.public = SJME_JNI_TRUE;
+	info->flags.final = SJME_JNI_TRUE;
+	info->flags.synthetic = SJME_JNI_TRUE;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
+	sjme_attrOutNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_nvm_vmClass_loader classLoader)
+{
+	sjme_errorCode error;
+	sjme_list_sjme_nvm_rom_library* classPath;
+	sjme_nvm_class_info info;
+	sjme_nvm_rom_library tryLib;
+	sjme_jint i, n;
+	sjme_cchar fileName[SJME_VM_CLASS_NAME_LIMIT];
+	
+	if (inClass == NULL || contextThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* And the class path. */	
+	classPath = classLoader->classPath;
+	if (classPath == NULL)
+		return sjme_error_vmError(contextThread,
+			SJME_ERROR_INVALID_CLASS_LOADER);
+	
+	/* Determine the file name of the class. */
+	memset(fileName, 0, sizeof(fileName));
+	snprintf(fileName, SJME_VM_CLASS_NAME_LIMIT - 1,
+		"%.*s.class", (int)(strlen(&inClass->binaryName[1]) - 1),
+		&inClass->binaryName[1]);
+	
+	/* Find the class within the classpath. */
+	info = NULL;
+	for (i = 0, n = classPath->length; i < n; i++)
+	{
+		/* Try this library. */
+		tryLib = classPath->elements[i];
+		
+		/* Cache via the library handler itself. */
+		if (sjme_error_is(error = sjme_nvm_rom_libraryCacheClass(
+			tryLib, &info, fileName)) || info == NULL)
+		{
+			/* Not in this library, stop. */
+			if (error == SJME_ERROR_RESOURCE_NOT_FOUND)
+				continue;
+			
+			/* Fail. */
+			return sjme_error_vmError(contextThread, SJME_ERROR_NO_CLASS);
+		}
+		
+		/* Stop. */
+		break;
+	}
+	
+	/* No class exists. */
+	if (info == NULL)
+		return sjme_error_vmError(contextThread, SJME_ERROR_NO_CLASS);
+	
+	/* Set class info. */
+	inClass->info = info;
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_vmClass_loaderLoadCheck(
 	sjme_attrInNotNull sjme_list_sjme_pointer* inList,
 	sjme_attrInPositive sjme_jint checkIndex,
@@ -724,11 +804,6 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 {
 	sjme_errorCode error;
 	sjme_nvm_vmClass_loader classLoader;
-	sjme_list_sjme_nvm_rom_library* classPath;
-	sjme_nvm_class_info info;
-	sjme_nvm_rom_library tryLib;
-	sjme_jint i, n;
-	sjme_cchar fileName[SJME_VM_CLASS_NAME_LIMIT];
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -742,14 +817,6 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	if (sjme_atomic_sjme_jint_get(
 		&inClass->isLoaded) != SJME_VM_CLASS_INIT_LOAD_NEVER)
 		return SJME_ERROR_NONE;
-	
-	/* Cannot be loaded using this? */
-	if (inClass->binaryName[0] != 'L')
-	{
-		error = sjme_error_vmError(contextThread,
-			SJME_ERROR_INVALID_CLASS_NAME);
-		goto fail_badName;
-	}
 		
 	/* Recover the class loader. */
 	classLoader = contextThread->inTask->classLoader;
@@ -759,21 +826,6 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 			SJME_ERROR_INVALID_CLASS_LOADER);
 		goto fail_badState;
 	}
-	
-	/* And the class path. */	
-	classPath = classLoader->classPath;
-	if (classPath == NULL)
-	{
-		error = sjme_error_vmError(contextThread,
-			SJME_ERROR_INVALID_CLASS_LOADER);
-		goto fail_badState;
-	}
-	
-	/* Determine the file name of the class. */
-	memset(fileName, 0, sizeof(fileName));
-	snprintf(fileName, SJME_VM_CLASS_NAME_LIMIT - 1,
-		"%.*s.class", (int)(strlen(&inClass->binaryName[1]) - 1),
-		&inClass->binaryName[1]);
 	
 	/* Lock on this. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
@@ -785,39 +837,30 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 		SJME_VM_CLASS_INIT_LOAD_NEVER,
 		SJME_VM_CLASS_INIT_LOAD_CURRENT))
 		goto skip_doubleCalled;
-	
-	/* Find the class within the classpath. */
-	info = NULL;
-	for (i = 0, n = classPath->length; i < n; i++)
+
+	/* Array type? */
+	if (inClass->binaryName[0] == '[')
 	{
-		/* Try this library. */
-		tryLib = classPath->elements[i];
-		
-		/* Cache via the library handler itself. */
-		if (sjme_error_is(error = sjme_nvm_rom_libraryCacheClass(
-			tryLib, &info, fileName)) || info == NULL)
-		{
-			/* Not in this library, stop. */
-			if (error == SJME_ERROR_RESOURCE_NOT_FOUND)
-				continue;
-			
-			/* Fail. */
-			goto fail_badTryLib;
-		}
-		
-		/* Stop. */
-		break;
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitArray(inClass,
+			contextThread)))
+			goto fail_initSpecific;
+	}
+
+	/* Object type? */
+	else if (inClass->binaryName[0] == 'L')
+	{
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitStandard(inClass,
+			contextThread, classLoader)))
+			goto fail_initSpecific;
 	}
 	
-	/* No class exists. */
-	if (info == NULL)
+	/* Invalid */
+	else
 	{
-		error = SJME_ERROR_NO_CLASS;
-		goto fail_noClassFound;
+		error = sjme_error_vmError(contextThread,
+			SJME_ERROR_INVALID_CLASS_NAME);
+		goto fail_badName;
 	}
-	
-	/* Set class info. */
-	inClass->info = info;
 	
 	/* Set as done! */
 	sjme_atomic_sjme_jint_compareSet(&inClass->isLoaded,
@@ -835,6 +878,7 @@ skip_doubleCalled:
 	
 fail_noClassFound:
 fail_badTryLib:
+fail_initSpecific:
 	sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL);
 	
@@ -926,16 +970,15 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 	if (inLoader == NULL || outClass == NULL || contextThread == NULL ||
 		className == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Loading an array instead? */
-	if (className[0] == '[')
-		return sjme_nvm_vmClass_loaderLoadArrayA(inLoader,
-			outClass, contextThread, &className[1], 1);
 	
 	/* Determine actual name to use. */
 	memset(buf, 0, sizeof(buf));
-	snprintf(buf, SJME_VM_CLASS_NAME_LIMIT - 1,
-		"L%s;", className);
+	if (className[0] == '[')
+		snprintf(buf, SJME_VM_CLASS_NAME_LIMIT - 1,
+			"%s", className);
+	else
+		snprintf(buf, SJME_VM_CLASS_NAME_LIMIT - 1,
+			"L%s;", className);
 	
 	/* Forward call. */
 	return sjme_nvm_vmClass_loaderLoadB(inLoader, outClass,
@@ -1006,7 +1049,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 		binaryName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Determine has of the binary name for quicker checking. */
+	/* Determine hash of the binary name for quicker checking. */
 	hash = sjme_string_hash(binaryName);
 	
 	/* Grab the read lock to determine if we can skip loading. */
