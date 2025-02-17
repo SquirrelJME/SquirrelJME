@@ -317,6 +317,29 @@ sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	(allocPool), (sjme_intPointer)(context))
 
 /**
+ * Allows for optional debug abort when a virtual machine error occurs
+ * within the virtual machine.
+ *
+ * @param error The error code to use for the virtual machine error.
+ * @return One of the virtual machine error related error codes.
+ * @since 2025/02/16
+ */
+sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_errorCode error);
+
+/**
+ * Allows for optional debug abort when a virtual machine error occurs
+ * within the virtual machine.
+ *
+ * @param error The error code to use for the virtual machine error.
+ * @return One of the virtual machine error related error codes.
+ * @since 2025/02/16
+ */
+#define sjme_error_vmError(error) \
+	sjme_error_vmErrorR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, \
+	(error))
+
+/**
  * Handles specific debug abort scenarios.
  *
  * @return Return @c SJME_JNI_TRUE if it was handled and abort should be

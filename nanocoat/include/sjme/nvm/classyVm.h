@@ -75,6 +75,12 @@ typedef enum sjme_nvm_methodCallType
 
 struct sjme_jmethodIDBase
 {
+	/** Common virtual machine info. */
+	sjme_nvm_commonBase common;
+	
+	/** The class this method is in. */
+	sjme_jclass inClass;
+	
 	/** The name of this method. */
 	sjme_nvm_stringPool_string name;
 	

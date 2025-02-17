@@ -113,8 +113,6 @@ sjme_errorCode sjme_error_linkageErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	{
 		case SJME_ERROR_LOCAL_INDEX_INVALID:
 		case SJME_ERROR_STACK_INDEX_INVALID:
-		case SJME_ERROR_STACK_UNDERFLOW:
-		case SJME_ERROR_STACK_OVERFLOW:
 		case SJME_ERROR_TOP_NOT_INTEGER:
 		case SJME_ERROR_TOP_NOT_LONG:
 		case SJME_ERROR_TOP_NOT_FLOAT:
@@ -195,6 +193,47 @@ sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 #endif
 
 	return SJME_ERROR_OUT_OF_MEMORY;
+}
+
+sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_errorCode error)
+{
+	/* These are accepted linkage errors. */
+	switch (error)
+	{
+		case SJME_ERROR_LOCAL_INDEX_INVALID:
+		case SJME_ERROR_STACK_INDEX_INVALID:
+		case SJME_ERROR_STACK_UNDERFLOW:
+		case SJME_ERROR_STACK_OVERFLOW:
+		case SJME_ERROR_TOP_NOT_INTEGER:
+		case SJME_ERROR_TOP_NOT_LONG:
+		case SJME_ERROR_TOP_NOT_FLOAT:
+		case SJME_ERROR_TOP_NOT_DOUBLE:
+		case SJME_ERROR_TOP_NOT_OBJECT:
+		case SJME_ERROR_FRAME_MISSING_STACK_TREADS:
+		case SJME_ERROR_STACK_INVALID_READ:
+		case SJME_ERROR_STACK_INVALID_WRITE:
+		case SJME_ERROR_LOCAL_INVALID_READ:
+		case SJME_ERROR_LOCAL_INVALID_WRITE:
+		case SJME_ERROR_INVALID_REFERENCE_POP:
+		case SJME_ERROR_INVALID_REFERENCE_PUSH:
+		case SJME_ERROR_TREAD_INVALID_READ:
+		case SJME_ERROR_TREAD_INVALID_WRITE:
+		case SJME_ERROR_INVALID_INSTRUCTION:
+		case SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE:
+		case SJME_ERROR_INVALID_CLASS_POOL_INDEX:
+		case SJME_ERROR_PURE_VIRTUAL_CALL:
+#if defined(SJME_CONFIG_DEBUG)
+			sjme_todoR(file, line, func, "VM ERROR: %d!",
+				(int)error);
+#endif
+		
+			return error;
+
+			/* Other error. */
+		default:
+			return sjme_error_default(error);
+	}
 }
 
 void sjme_genericMessage(sjme_lpcstr file, int line,

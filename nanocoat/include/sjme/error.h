@@ -435,9 +435,12 @@ typedef enum sjme_errorCode
 
 	/** The class loader is not valid. */
 	SJME_ERROR_INVALID_CLASS_LOADER = -131,
+
+	/** Purely virtual method call. */
+	SJME_ERROR_PURE_VIRTUAL_CALL = -132,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -132,
+	SJME_NUM_ERROR_CODES = -133,
 } sjme_errorCode;
 
 /**

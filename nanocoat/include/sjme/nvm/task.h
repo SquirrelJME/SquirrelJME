@@ -407,6 +407,20 @@ sjme_errorCode sjme_nvm_task_framePool(
 	...);
 
 /**
+ * Pops values from the top of the stack.
+ * 
+ * @param inFrame The frame to pop from.
+ * @param typeId The type ID to pop.
+ * @param outValue The resultant value.
+ * @return Any resultant error, if any.
+ * @since 2025/02/16
+ */
+sjme_errorCode sjme_nvm_task_frameStackPop(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
+	sjme_attrInNotNull sjme_jvalueTyped* outValue);
+
+/**
  * Pops multiple values from the stack and places their values into the given
  * typed values.
  * 
@@ -458,6 +472,25 @@ sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
 sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_stringPool_string inString);
+	
+/**
+ * Gets the value of a variable within a frame using the typed index
+ * which is placed within its own frame set.
+ * 
+ * @param inFrame The frame to set the value in.
+ * @param typeId The type to read.
+ * @param typeIndex The type index to set.
+ * @param outValue The resultant value.
+ * @param eraseOld Erase the old value in the slot?
+ * @return Any resultant error, if any.
+ * @since 2025/02/16
+ */
+sjme_errorCode sjme_nvm_task_frameTreadGetT(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
+	sjme_attrInPositive sjme_jint typeIndex,
+	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
+	sjme_attrInValue sjme_jboolean eraseOld);
 	
 /**
  * Sets the value of a variable within a frame using the typed index

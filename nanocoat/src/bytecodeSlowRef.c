@@ -35,7 +35,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		inFrame, poolIndex, &entry,
 		SJME_NVM_CLASS_POOL_TYPE_METHOD,
 		0)))
-		return sjme_error_default(error);
+		return sjme_error_vmError(error);
 
 	/* Extract member information. */
 	member = &entry->member;
@@ -55,7 +55,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		inFrame->inThread,
 		binaryName,
 		SJME_JNI_TRUE)) || classy == NULL)
-		return sjme_error_default(error);
+		return sjme_error_linkageError(error);
 	
 	/* Locate method to execute, it is required to be found. */
 	methodId = NULL;
@@ -80,7 +80,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	if (target->argC != 0)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(
 			inFrame, target->argC, target->argT, argV)))
-			return sjme_error_default(error);
+			return sjme_error_vmError(error);
 
 	/* Enter new stack frame for the target method, or at least try. */
 	newFrame = NULL;
@@ -90,7 +90,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		methodId,
 		SJME_NVM_CALL_NON_VIRTUAL,
 		target->argC, argV)) || newFrame == NULL)
-		return sjme_error_default(error);
+		return sjme_error_vmError(error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
