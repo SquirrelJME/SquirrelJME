@@ -357,6 +357,16 @@ fail_notMatched:
 		SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE);
 }
 
+sjme_errorCode sjme_nvm_task_frameStackPeek(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
+	sjme_attrInNotNull sjme_jvalueTyped* outValue,
+	sjme_attrInValue sjme_jboolean copiedElsewhere)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_task_frameStackPop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,

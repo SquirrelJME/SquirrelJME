@@ -51,13 +51,13 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 
 	/* Pop object from the stack. */
 	memset(&value, 0, sizeof(value));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, &value)))
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPeek(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &value, SJME_JNI_FALSE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Not a match? */
 	/* b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b) */
-	if (value.value.l == NULL ||
+	if (value.value.l != NULL &&
 		!(value.value.l->isClass == desireClass ||
 		sjme_nvm_vmClass_isAssignableFrom(desireClass,
 			value.value.l->isClass)))

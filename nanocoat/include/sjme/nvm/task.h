@@ -407,7 +407,24 @@ sjme_errorCode sjme_nvm_task_framePool(
 	...);
 
 /**
- * Pops values from the top of the stack.
+ * Peeks a single value from the top of the stack.
+ * 
+ * @param inFrame The frame to pop from.
+ * @param typeId The type ID to pop.
+ * @param outValue The resultant value.
+ * @param copiedElsewhere Is this value copied elsewhere? That is if this is
+ * true, then this will be reference counted.
+ * @return Any resultant error, if any.
+ * @since 2025/02/17
+ */
+sjme_errorCode sjme_nvm_task_frameStackPeek(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
+	sjme_attrInNotNull sjme_jvalueTyped* outValue,
+	sjme_attrInValue sjme_jboolean copiedElsewhere);
+
+/**
+ * Pops a value from the top of the stack.
  * 
  * @param inFrame The frame to pop from.
  * @param typeId The type ID to pop.
