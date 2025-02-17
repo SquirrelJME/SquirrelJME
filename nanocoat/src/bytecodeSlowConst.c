@@ -63,7 +63,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 		
 		/* Invalid type. */
 		default:
-			return sjme_error_vmError(SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE);
+			return sjme_error_vmError(inFrame,
+				SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE);
 	}
 }
 
@@ -83,7 +84,7 @@ SJME_NVM_BYTECODE_SLOW(AConstNull)
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 		inFrame, &value)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -105,7 +106,7 @@ SJME_NVM_BYTECODE_SLOW(BIPush)
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 		inFrame, &value)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -130,7 +131,7 @@ SJME_NVM_BYTECODE_SLOW(DConstZ)
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 		inFrame, &value)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -157,7 +158,7 @@ SJME_NVM_BYTECODE_SLOW(FConstZ)
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 		inFrame, &value)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -179,7 +180,7 @@ SJME_NVM_BYTECODE_SLOW(IConstM)
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 		inFrame, &value)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -201,7 +202,7 @@ SJME_NVM_BYTECODE_SLOW(LConstZ)
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 		inFrame, &value)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -225,12 +226,12 @@ SJME_NVM_BYTECODE_SLOW(Ldc)
 		SJME_NVM_CLASS_POOL_TYPE_STRING,
 		SJME_NVM_CLASS_POOL_TYPE_CLASS,
 		0)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 
 	/* Forward to common handler. */
 	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame,
 		id, relRawCode, entry)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -254,12 +255,12 @@ SJME_NVM_BYTECODE_SLOW(LdcW)
 		SJME_NVM_CLASS_POOL_TYPE_STRING,
 		SJME_NVM_CLASS_POOL_TYPE_CLASS,
 		0)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 
 	/* Forward to common handler. */
 	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame,
 		id, relRawCode, entry)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -281,12 +282,12 @@ SJME_NVM_BYTECODE_SLOW(LdcWTwo)
 		SJME_NVM_CLASS_POOL_TYPE_LONG,
 		SJME_NVM_CLASS_POOL_TYPE_DOUBLE,
 		0)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 
 	/* Forward to common handler. */
 	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame,
 		id, relRawCode, entry)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -308,7 +309,7 @@ SJME_NVM_BYTECODE_SLOW(SIPush)
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 		inFrame, &value)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;

@@ -226,22 +226,22 @@ sjme_errorCode sjme_nvm_task_frameLocalPush(
 
 	if (localIndex < 0 ||
 		localIndex >= inFrame->inCode->perType[SJME_JAVA_TYPE_ID_ALL].locals)
-		return sjme_error_vmError(SJME_ERROR_LOCAL_INDEX_INVALID);
+		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INDEX_INVALID);
 
 	/* The local variable is of the wrong type. */
 	if (inFrame->stack.order[localIndex] != localType)
-		return sjme_error_vmError(SJME_ERROR_LOCAL_INVALID_READ);
+		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INVALID_READ);
 
 	/* Determine where this maps from for the read. */
 	perType = &inFrame->inCode->perType[localType];
 	mappedSlot = perType->localMap[localIndex];
 	if (mappedSlot < 0 || mappedSlot > perType->locals)
-		return sjme_error_vmError(SJME_ERROR_TREAD_INDEX_INVALID);
+		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
 
 	/* Forward to stack push. */
 	if (sjme_error_is(error = sjme_nvm_task_valueCompose(&value,
 		localType, mappedSlot, &inFrame->stack.stack[localType])))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 	return sjme_nvm_task_frameStackPush(inFrame, &value);
 }
 
@@ -269,18 +269,18 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	if (localIndex < 0 ||
 		((localIndex + (isWide ? 1 : 0)) >=
 			inFrame->inCode->perType[SJME_JAVA_TYPE_ID_ALL].locals))
-		return sjme_error_vmError(SJME_ERROR_LOCAL_INDEX_INVALID);
+		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INDEX_INVALID);
 
 	/* Is the index still valid on the tread? */
 	perType = &inFrame->inCode->perType[inValue->type];
 	mappedSlot = perType->localMap[localIndex];
 	if (mappedSlot < 0 || mappedSlot >= perType->locals)
-		return sjme_error_vmError(SJME_ERROR_TREAD_INDEX_INVALID);
+		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
 
 	/* Set tread value. */
 	if (sjme_error_is(error = sjme_nvm_task_frameTreadSetT(inFrame,
 		mappedSlot, inValue)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 
 	/* Replace order info. */
 	stack = &inFrame->stack;
@@ -313,7 +313,8 @@ sjme_errorCode sjme_nvm_task_framePool(
 	/* Is the index valid? */
 	pool = inFrame->pool->pool;
 	if (poolIndex <= 0 || poolIndex >= pool->length)
-		return sjme_error_vmError(SJME_ERROR_INVALID_CLASS_POOL_INDEX);
+		return sjme_error_vmError(inFrame,
+			SJME_ERROR_INVALID_CLASS_POOL_INDEX);
 
 	/* Get entry here, check for base validity. */
 	result = &pool->elements[poolIndex];
@@ -352,7 +353,8 @@ skip_success:
 	return SJME_ERROR_NONE;
 
 fail_notMatched:
-	return sjme_error_vmError(SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE);
+	return sjme_error_vmError(inFrame,
+		SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE);
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPop(
@@ -379,22 +381,22 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 	stack = &inFrame->stack;
 	newTop = stack->orderTop - (isWide ? 2 : 1);
 	if (newTop < stack->orderFront)
-		return sjme_error_vmError(SJME_ERROR_STACK_UNDERFLOW);
+		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
 
 	/* Top of the stack is the wrong type? */
 	if (stack->order[newTop] != typeId)
-		return sjme_error_vmError(SJME_ERROR_STACK_INVALID_READ);
+		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
 
 	/* Determine per type slot to remove. */
 	perType = &stack->stack[typeId];
 	newPerTop = perType->top - 1;
 	if (newPerTop < perType->front)
-		return sjme_error_vmError(SJME_ERROR_STACK_UNDERFLOW);
+		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
 
 	/* Read in value. */
 	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(
 		inFrame, typeId, newPerTop, outValue, SJME_JNI_TRUE)))
-		return sjme_error_vmError(sjme_error_defaultOr(error,
+		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
 			SJME_ERROR_STACK_INVALID_READ));
 
 	/* Remove from stack, from the main and on the per-type. */
@@ -426,7 +428,7 @@ sjme_errorCode sjme_nvm_task_frameStackPopA(
 	for (i = argC - 1; i >= 0; i--)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 			argT[i], &argV[i])))
-			return sjme_error_vmError(error);
+			return sjme_error_vmError(inFrame, error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -449,12 +451,12 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	isWide = SJME_TYPEID_IS_WIDE(inValue->type);
 	pushCount = (isWide ? 2 : 1);
 	if (stack->orderTop + pushCount > stack->orderLength)
-		return sjme_error_vmError(SJME_ERROR_STACK_OVERFLOW);
+		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_OVERFLOW);
 
 	/* Will the per-type stack overflow? */
 	perType = &stack->stack[inValue->type];
 	if (perType->top + 1 > perType->length)
-		return sjme_error_vmError(SJME_ERROR_STACK_OVERFLOW);
+		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_OVERFLOW);
 
 	/* Place onto the order, mark top invalid if required. */
 	stack->order[stack->orderTop++] = inValue->type;
@@ -497,7 +499,7 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 		inFrame->inThread,
 		SJME_AS_NVM_JSTRINGP(&value.value.l), inString)) ||
 		value.value.l == NULL)
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 
 	/* Push value. */
 	return sjme_nvm_task_frameStackPush(inFrame, &value);
@@ -525,7 +527,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 
 	/* Check the tread index. */
 	if (typeIndex < 0 || typeIndex >= perType->length)
-		return sjme_error_vmError(SJME_ERROR_TREAD_INDEX_INVALID);
+		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
 	
 	/* Operating depends on the type. */
 	switch (typeId)
@@ -579,7 +581,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 			break;
 			
 		default:
-			return sjme_error_vmError(SJME_ERROR_INVALID_FIELD_TYPE);
+			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_FIELD_TYPE);
 	}
 
 	/* Success! */
@@ -606,7 +608,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 
 	/* Check the tread index. */
 	if (typeIndex < 0 || typeIndex >= perType->length)
-		return sjme_error_vmError(SJME_ERROR_TREAD_INDEX_INVALID);
+		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
 	
 	/* Operating depends on the type. */
 	switch (inValue->type)
@@ -639,7 +641,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 			break;
 			
 		default:
-			return sjme_error_vmError(SJME_ERROR_INVALID_FIELD_TYPE);
+			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_FIELD_TYPE);
 	}
 
 	/* Success! */
@@ -931,31 +933,33 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	/* Recover target info. */
 	targetInfo = inMethod->info[callType];
 	if (targetInfo == NULL)
-		return sjme_error_linkageError(SJME_ERROR_UNBOUND_METHOD);
+		return sjme_error_vmError(inThread, SJME_ERROR_UNBOUND_METHOD);
 
 	/* No code loaded? */
 	if (targetInfo->code == NULL)
-		return sjme_error_vmError(SJME_ERROR_PURE_VIRTUAL_CALL);
+		return sjme_error_vmError(inThread, SJME_ERROR_PURE_VIRTUAL_CALL);
 	
 	/* Argument count mismatch? */
 	if (argC != targetInfo->argC)
-		return sjme_error_linkageError(SJME_ERROR_ARGUMENT_COUNT_MISMATCH);
+		return sjme_error_vmError(inThread,
+			SJME_ERROR_ARGUMENT_COUNT_MISMATCH);
 
 	/* Argument type mismatch? */
 	for (i = 0, n = argC; i < n; i++)
 		if (argV[i].type != targetInfo->argT[i])
-			return sjme_error_linkageError(SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
+			return sjme_error_vmError(inThread,
+				SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 	
 	/* Grab a frame from the thread's frame pool. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadFrameNext(
 		inThread, &result)) || result == NULL)
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inThread, error);
 
 	/* Perform stack and thread re-framing. */
 	if (sjme_error_is(error = sjme_nvm_task_stackReframe(
 		inThread->state, inThread, result, targetInfo)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inThread, error);
 
 	/* Set frame details, needed for local set. */
 	result->inClass = inMethod->inClass;
@@ -969,7 +973,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 			argV[i].type == SJME_JAVA_TYPE_ID_DOUBLE)) ? 2 : 1)
 		if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
 			result, dx, &argV[i])))
-			return sjme_error_vmError(error);
+			return sjme_error_vmError(inThread, error);
 	
 	/* Set frame as active. */
 	inThread->numFrames++;
@@ -1011,7 +1015,7 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
 		inTask->classLoader, &foundClass,
 		inThread, inClass, SJME_JNI_TRUE)))
-		return sjme_error_default(error);
+		return sjme_error_vmError(inThread, error);
 	
 	/* Forward to other call. */
 	return sjme_nvm_task_threadEnterC(
@@ -1045,7 +1049,7 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
 		inClass, inThread, instanceType, SJME_JNI_TRUE, inName,
 		inType, &id)) || id == NULL)
-		return sjme_error_linkageError(error);
+		return sjme_error_vmError(inThread, error);
 	
 	/* Forward to implementation. */
 	return sjme_nvm_task_threadEnter(inThread, outFrame,

@@ -438,9 +438,12 @@ typedef enum sjme_errorCode
 
 	/** Purely virtual method call. */
 	SJME_ERROR_PURE_VIRTUAL_CALL = -132,
+
+	/** Array is of negative size. */
+	SJME_ERROR_NEGATIVE_ARRAY_SIZE = -133,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -133,
+	SJME_NUM_ERROR_CODES = -134,
 } sjme_errorCode;
 
 /**

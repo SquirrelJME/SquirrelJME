@@ -415,6 +415,32 @@ struct sjme_nvm_stateBase
 /** Casts pointer to a pointer to a @c sjme_jstring . */
 #define SJME_AS_NVM_JSTRINGP(p) ((sjme_jstring*)(p))
 	
+/**
+ * Allows for optional debug abort when a virtual machine error occurs
+ * within the virtual machine.
+ *
+ * @param vmContext Virtual machine context.
+ * @param error The error code to use for the virtual machine error.
+ * @return One of the virtual machine error related error codes.
+ * @since 2025/02/16
+ */
+sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInNotNull void* vmContext,
+	sjme_attrInValue sjme_errorCode error);
+
+/**
+ * Allows for optional debug abort when a virtual machine error occurs
+ * within the virtual machine.
+ *
+ * @param vmContext Virtual machine context.
+ * @param error The error code to use for the virtual machine error.
+ * @return One of the virtual machine error related error codes.
+ * @since 2025/02/16
+ */
+#define sjme_error_vmError(vmContext, error) \
+	sjme_error_vmErrorR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, \
+	(vmContext), (error))
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

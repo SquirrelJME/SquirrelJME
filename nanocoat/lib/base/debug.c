@@ -25,6 +25,8 @@
 #include "sjme/debug.h"
 #include "sjme/alloc.h"
 #include "sjme/dylib.h"
+#include "sjme/nvm/cleanup.h"
+#include "sjme/nvm/task.h"
 
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
@@ -105,68 +107,6 @@ sjme_errorCode sjme_error_fatalR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_error_linkageErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_errorCode error)
-{
-	/* These are accepted linkage errors. */
-	switch (error)
-	{
-		case SJME_ERROR_LOCAL_INDEX_INVALID:
-		case SJME_ERROR_STACK_INDEX_INVALID:
-		case SJME_ERROR_TOP_NOT_INTEGER:
-		case SJME_ERROR_TOP_NOT_LONG:
-		case SJME_ERROR_TOP_NOT_FLOAT:
-		case SJME_ERROR_TOP_NOT_DOUBLE:
-		case SJME_ERROR_TOP_NOT_OBJECT:
-		case SJME_ERROR_FRAME_MISSING_STACK_TREADS:
-		case SJME_ERROR_STACK_INVALID_READ:
-		case SJME_ERROR_STACK_INVALID_WRITE:
-		case SJME_ERROR_LOCAL_INVALID_READ:
-		case SJME_ERROR_LOCAL_INVALID_WRITE:
-		case SJME_ERROR_INVALID_REFERENCE_POP:
-		case SJME_ERROR_INVALID_REFERENCE_PUSH:
-		case SJME_ERROR_TREAD_INVALID_READ:
-		case SJME_ERROR_TREAD_INVALID_WRITE:
-		case SJME_ERROR_INVALID_IDENTIFIER:
-		case SJME_ERROR_INVALID_BINARY_NAME:
-		case SJME_ERROR_INVALID_FIELD_TYPE:
-		case SJME_ERROR_INVALID_METHOD_TYPE:
-		case SJME_ERROR_INVALID_CLASS_NAME:
-		case SJME_ERROR_NO_CLASS:
-		case SJME_ERROR_NO_METHOD:
-		case SJME_ERROR_INVALID_CLASS_MAGIC:
-		case SJME_ERROR_INVALID_CLASS_VERSION:
-		case SJME_ERROR_INVALID_CLASS_POOL_COUNT:
-		case SJME_ERROR_INVALID_CLASS_POOL_INDEX:
-		case SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE:
-		case SJME_ERROR_INVALID_CLASS_FLAGS:
-		case SJME_ERROR_INVALID_METHOD_FLAGS:
-		case SJME_ERROR_METHOD_MULTIPLE_CODE:
-		case SJME_ERROR_INVALID_FIELD_FLAGS:
-		case SJME_ERROR_CLASS_TOO_MANY_MEMBERS:
-		case SJME_ERROR_CLASS_CHANGED:
-		case SJME_ERROR_UNBOUND_METHOD:
-		case SJME_ERROR_ARGUMENT_COUNT_MISMATCH:
-		case SJME_ERROR_ARGUMENT_TYPE_MISMATCH:
-		case SJME_ERROR_TREAD_INDEX_INVALID:
-		case SJME_ERROR_INVALID_INSTRUCTION:
-		case SJME_ERROR_LINKAGE_ERROR:
-		case SJME_ERROR_SUPER_CLASS_INVALID:
-		case SJME_ERROR_NO_FIELD:
-		case SJME_ERROR_INVALID_CLASS_LOADER:
-#if defined(SJME_CONFIG_DEBUG)
-			sjme_todoR(file, line, func, "LINKAGE ERROR: %d!",
-				(int)error);
-#endif
-		
-			return error;
-
-			/* Other error. */
-		default:
-			return sjme_error_default(error);
-	}
-}
-
 sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInValue sjme_intPointer context)
 {
@@ -193,47 +133,6 @@ sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 #endif
 
 	return SJME_ERROR_OUT_OF_MEMORY;
-}
-
-sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_errorCode error)
-{
-	/* These are accepted linkage errors. */
-	switch (error)
-	{
-		case SJME_ERROR_LOCAL_INDEX_INVALID:
-		case SJME_ERROR_STACK_INDEX_INVALID:
-		case SJME_ERROR_STACK_UNDERFLOW:
-		case SJME_ERROR_STACK_OVERFLOW:
-		case SJME_ERROR_TOP_NOT_INTEGER:
-		case SJME_ERROR_TOP_NOT_LONG:
-		case SJME_ERROR_TOP_NOT_FLOAT:
-		case SJME_ERROR_TOP_NOT_DOUBLE:
-		case SJME_ERROR_TOP_NOT_OBJECT:
-		case SJME_ERROR_FRAME_MISSING_STACK_TREADS:
-		case SJME_ERROR_STACK_INVALID_READ:
-		case SJME_ERROR_STACK_INVALID_WRITE:
-		case SJME_ERROR_LOCAL_INVALID_READ:
-		case SJME_ERROR_LOCAL_INVALID_WRITE:
-		case SJME_ERROR_INVALID_REFERENCE_POP:
-		case SJME_ERROR_INVALID_REFERENCE_PUSH:
-		case SJME_ERROR_TREAD_INVALID_READ:
-		case SJME_ERROR_TREAD_INVALID_WRITE:
-		case SJME_ERROR_INVALID_INSTRUCTION:
-		case SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE:
-		case SJME_ERROR_INVALID_CLASS_POOL_INDEX:
-		case SJME_ERROR_PURE_VIRTUAL_CALL:
-#if defined(SJME_CONFIG_DEBUG)
-			sjme_todoR(file, line, func, "VM ERROR: %d!",
-				(int)error);
-#endif
-		
-			return error;
-
-			/* Other error. */
-		default:
-			return sjme_error_default(error);
-	}
 }
 
 void sjme_genericMessage(sjme_lpcstr file, int line,

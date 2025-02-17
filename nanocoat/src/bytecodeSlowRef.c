@@ -11,7 +11,64 @@
 #include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/bytecodeSlow.h"
 #include "sjme/nvm/classy.h"
+#include "sjme/nvm/instance.h"
 #include "sjme/nvm/task.h"
+
+SJME_NVM_BYTECODE_SLOW(CheckCast)
+{
+	sjme_jint poolIndex;
+	sjme_nvm_class_poolEntry* entry;
+	sjme_nvm_class_poolEntryClass* classRef;
+	sjme_jclass desireClass;
+	sjme_lpcstr binaryName;
+	sjme_jvalueTyped value;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* PC adjustment. */
+	pcNew->adjust = 3;
+
+	/* Read in pool reference. */
+	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
+	if (sjme_error_is(error = sjme_nvm_task_framePool(
+		inFrame, poolIndex, &entry,
+		SJME_NVM_CLASS_POOL_TYPE_CLASS,
+		0)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Which class are we going for? */
+	classRef = &entry->classRef;
+	binaryName = (sjme_lpcstr)&classRef->descriptor->chars[0];
+	
+	/* Locate target class. */
+	desireClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		inFrame->inThread->inTask->classLoader,
+		&desireClass,
+		inFrame->inThread,
+		binaryName,
+		SJME_JNI_TRUE)) || desireClass == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* Pop object from the stack. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Not a match? */
+	/* b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b) */
+	if (value.value.l == NULL ||
+		!(value.value.l->isClass == desireClass ||
+		sjme_nvm_vmClass_isAssignableFrom(desireClass,
+			value.value.l->isClass)))
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
 
 SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 {
@@ -35,7 +92,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		inFrame, poolIndex, &entry,
 		SJME_NVM_CLASS_POOL_TYPE_METHOD,
 		0)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 
 	/* Extract member information. */
 	member = &entry->member;
@@ -55,7 +112,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		inFrame->inThread,
 		binaryName,
 		SJME_JNI_TRUE)) || classy == NULL)
-		return sjme_error_linkageError(error);
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Locate method to execute, it is required to be found. */
 	methodId = NULL;
@@ -63,7 +120,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		classy, inFrame->inThread,
 		SJME_NVM_CLASS_MEMBER_STATIC, SJME_JNI_TRUE,
 		methodName, methodType, &methodId)) || methodId == NULL)
-		return sjme_error_linkageError(error);
+		return sjme_error_vmError(inFrame, error);
 
 	/* Get the non-virtual target info. */
 	target = methodId->info[SJME_NVM_CALL_NON_VIRTUAL];
@@ -80,7 +137,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	if (target->argC != 0)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(
 			inFrame, target->argC, target->argT, argV)))
-			return sjme_error_vmError(error);
+			return sjme_error_vmError(inFrame, error);
 
 	/* Enter new stack frame for the target method, or at least try. */
 	newFrame = NULL;
@@ -90,7 +147,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		methodId,
 		SJME_NVM_CALL_NON_VIRTUAL,
 		target->argC, argV)) || newFrame == NULL)
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;

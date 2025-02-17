@@ -736,7 +736,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 	/* Must start with parenthesis. */
 	c = typeDesc;
 	if (*(c++) != '(')
-		return sjme_error_linkageError(SJME_ERROR_INVALID_METHOD_TYPE);
+		return sjme_error_vmError(NULL, SJME_ERROR_INVALID_METHOD_TYPE);
 
 	/* Init state. */
 	argAt = 0;
@@ -750,7 +750,8 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 	{
 		/* Type would overflow? */
 		if (argAt >= SJME_MAX_ARGS)
-			return sjme_error_linkageError(SJME_ERROR_INVALID_METHOD_TYPE);
+			return sjme_error_vmError(NULL,
+				SJME_ERROR_INVALID_METHOD_TYPE);
 		
 		/* Which type? */
 		switch (*(c++))
@@ -764,7 +765,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 				if (returnScope)
 				{
 					if (returnDid)
-						return sjme_error_linkageError(
+						return sjme_error_vmError(NULL, 
 							SJME_ERROR_INVALID_METHOD_TYPE);
 					returnDid = SJME_JNI_TRUE;
 				}
@@ -780,7 +781,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 				if (returnScope)
 				{
 					if (returnDid)
-						return sjme_error_linkageError(
+						return sjme_error_vmError(NULL, 
 							SJME_ERROR_INVALID_METHOD_TYPE);
 					returnDid = SJME_JNI_TRUE;
 				}
@@ -796,7 +797,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 				if (returnScope)
 				{
 					if (returnDid)
-						return sjme_error_linkageError(
+						return sjme_error_vmError(NULL, 
 							SJME_ERROR_INVALID_METHOD_TYPE);
 					returnDid = SJME_JNI_TRUE;
 				}
@@ -812,7 +813,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 				if (returnScope)
 				{
 					if (returnDid)
-						return sjme_error_linkageError(
+						return sjme_error_vmError(NULL, 
 							SJME_ERROR_INVALID_METHOD_TYPE);
 					returnDid = SJME_JNI_TRUE;
 				}
@@ -834,7 +835,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 				if (returnScope)
 				{
 					if (returnDid)
-						return sjme_error_linkageError(
+						return sjme_error_vmError(NULL, 
 							SJME_ERROR_INVALID_METHOD_TYPE);
 					returnDid = SJME_JNI_TRUE;
 				}
@@ -844,7 +845,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 				{
 					/* Straight up invalid. */
 					if (d == '.' || d == '[' || d == '\0')
-						return sjme_error_linkageError(
+						return sjme_error_vmError(NULL, 
 							SJME_ERROR_INVALID_METHOD_TYPE);
 
 					/* End of type. */
@@ -861,7 +862,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 			case ')':
 				/* Never valid for arrays or for return types. */
 				if (returnScope || arrayScope)
-					return sjme_error_linkageError(
+					return sjme_error_vmError(NULL, 
 						SJME_ERROR_INVALID_METHOD_TYPE);
 
 				returnScope = SJME_JNI_TRUE;
@@ -871,7 +872,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 			case 'V':
 				/* Only valid for return types and never arrays. */
 				if (!returnScope || arrayScope)
-					return sjme_error_linkageError(
+					return sjme_error_vmError(NULL, 
 						SJME_ERROR_INVALID_METHOD_TYPE);
 
 				/* This is only ever the case for return types. */
@@ -885,11 +886,13 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 			case '\0':
 				if (returnDid)
 					break;
-				return sjme_error_linkageError(SJME_ERROR_INVALID_METHOD_TYPE);
+				return sjme_error_vmError(NULL,
+					SJME_ERROR_INVALID_METHOD_TYPE);
 				
 				/* Invalid. */
 			default:
-				return sjme_error_linkageError(SJME_ERROR_INVALID_METHOD_TYPE);
+				return sjme_error_vmError(NULL,
+					SJME_ERROR_INVALID_METHOD_TYPE);
 		}
 
 		/* True end of descriptor, with NUL. */
@@ -899,7 +902,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 
 	/* Cannot end on array or miss a return type. */
 	if (arrayScope || !returnScope || argAt <= 0)
-		return sjme_error_linkageError(SJME_ERROR_INVALID_METHOD_TYPE);
+		return sjme_error_vmError(NULL, SJME_ERROR_INVALID_METHOD_TYPE);
 
 	/* Return type is always the last type. */
 	*outArgR = args[argAt - 1];
@@ -962,7 +965,7 @@ sjme_errorCode sjme_nvm_class_descriptorToType(
 	
 	/* Not valid. */
 	else
-		return sjme_error_linkageError(SJME_ERROR_INVALID_METHOD_TYPE);
+		return sjme_error_vmError(NULL, SJME_ERROR_INVALID_METHOD_TYPE);
 	
 	/* Success! */
 	*outType = result;
@@ -1286,7 +1289,7 @@ fail_initResult:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
-	return sjme_error_linkageError(error);
+	return sjme_error_vmError(NULL, error);
 }
 
 sjme_errorCode sjme_nvm_class_parseAttributes(
@@ -1344,7 +1347,7 @@ fail_parseSingle:
 fail_readLen:
 fail_readName:
 fail_readCount:
-	return sjme_error_linkageError(error);
+	return sjme_error_vmError(NULL, error);
 }
 
 sjme_errorCode sjme_nvm_class_parseConstantPool(
@@ -1384,7 +1387,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 	/* Invalid pool size? */
 	if (count < 0 || count >= INT16_MAX)
 	{
-		error = SJME_ERROR_INVALID_CLASS_POOL_COUNT;
+		error = sjme_error_vmError(NULL, SJME_ERROR_INVALID_CLASS_POOL_COUNT);
 		goto fail_poolCount;
 	}
 	
@@ -1705,7 +1708,7 @@ fail_initCommon:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
-	return sjme_error_linkageError(error);
+	return sjme_error_vmError(NULL, error);
 }
 
 sjme_errorCode sjme_nvm_class_parseField(
@@ -1801,7 +1804,7 @@ fail_initResult:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
-	return sjme_error_linkageError(error);
+	return sjme_error_vmError(NULL, error);
 }
 
 sjme_errorCode sjme_nvm_class_parseMethod(
@@ -1888,5 +1891,5 @@ fail_initResult:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
-	return sjme_error_linkageError(error);
+	return sjme_error_vmError(NULL, error);
 }

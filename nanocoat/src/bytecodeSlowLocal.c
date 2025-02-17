@@ -23,7 +23,7 @@ SJME_NVM_BYTECODE_SLOW(ALoadZ)
 		inFrame,
 		SJME_JAVA_TYPE_ID_OBJECT,
 		id - 42)))
-		return sjme_error_vmError(error);
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;

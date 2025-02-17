@@ -178,6 +178,22 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 	sjme_attrInValue sjme_jboolean doInit);
 
 /**
+ * Checks if the given class can be assigned to this one, the check is
+ * in the same order as @code instanceof Object @endcode that
+ * is @code b.getClass().isAssignableFrom(a.getClass()) ==
+ * (a instanceof b) @endcode
+ * and  @code (Class<B>)a @endcode does not throw @c ClassCastException.
+ * 
+ * @param canAssignTo Can @c fromClass be assigned to this class?
+ * @param fromClass The class to check if this can be assigned to.
+ * @return If the class is assignable from the given class.
+ * @since 2025/02/16
+ */
+sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
+	sjme_attrInNotNull sjme_jclass canAssignTo,
+	sjme_attrInNotNull sjme_jclass fromClass);
+	
+/**
  * Generates an array class type of the specified component type.
  * 
  * @param inLoader The loader to use. 

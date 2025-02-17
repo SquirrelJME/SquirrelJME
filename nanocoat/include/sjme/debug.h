@@ -257,29 +257,6 @@ sjme_errorCode sjme_error_fatalR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  */
 #define sjme_error_fatal(error) \
 	sjme_error_fatalR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, error)
-
-/**
- * Allows for optional debug abort when a linkage error occurs within the
- * virtual machine.
- *
- * @param error The error code to use for the linkage error.
- * @return One of the linkage error related error codes.
- * @since 2025/02/16
- */
-sjme_errorCode sjme_error_linkageErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_errorCode error);
-
-/**
- * Allows for optional debug abort when a linkage error occurs within the
- * virtual machine.
- *
- * @param error The error code to use for the linkage error.
- * @return One of the linkage error related error codes.
- * @since 2025/02/16
- */
-#define sjme_error_linkageError(error) \
-	sjme_error_linkageErrorR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, \
-	(error))
 	
 /**
  * Allows for optional debug abort when unimplemented code is hit.
@@ -325,29 +302,6 @@ sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 #define sjme_error_outOfMemory(allocPool, context) \
 	sjme_error_outOfMemoryR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, \
 	(allocPool), (sjme_intPointer)(context))
-
-/**
- * Allows for optional debug abort when a virtual machine error occurs
- * within the virtual machine.
- *
- * @param error The error code to use for the virtual machine error.
- * @return One of the virtual machine error related error codes.
- * @since 2025/02/16
- */
-sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_errorCode error);
-
-/**
- * Allows for optional debug abort when a virtual machine error occurs
- * within the virtual machine.
- *
- * @param error The error code to use for the virtual machine error.
- * @return One of the virtual machine error related error codes.
- * @since 2025/02/16
- */
-#define sjme_error_vmError(error) \
-	sjme_error_vmErrorR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, \
-	(error))
 
 /**
  * Handles specific debug abort scenarios.
