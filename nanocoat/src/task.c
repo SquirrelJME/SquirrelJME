@@ -184,7 +184,7 @@ sjme_errorCode sjme_nvm_task_frameLocalPush(
 
 	/* Determine where this maps from for the read. */
 	perType = &inFrame->inCode->perType[localType];
-	mappedSlot = inFrame->inCode->perType[localType].localMap[localIndex];
+	mappedSlot = perType->localMap[localIndex];
 	if (mappedSlot < 0 || mappedSlot > perType->locals)
 		return sjme_error_vmError(SJME_ERROR_TREAD_INDEX_INVALID);
 
@@ -202,6 +202,9 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 {
 	sjme_errorCode error;
 	sjme_jboolean isWide;
+	sjme_nvm_class_codePerType* perType;
+	sjme_jint mappedSlot;
+	sjme_frame_frameStacks* stack;
 	
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -217,9 +220,26 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 		((localIndex + (isWide ? 1 : 0)) >=
 			inFrame->inCode->perType[SJME_JAVA_TYPE_ID_ALL].locals))
 		return sjme_error_vmError(SJME_ERROR_LOCAL_INDEX_INVALID);
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Is the index still valid on the tread? */
+	perType = &inFrame->inCode->perType[inValue->type];
+	mappedSlot = perType->localMap[localIndex];
+	if (mappedSlot < 0 || mappedSlot >= perType->locals)
+		return sjme_error_vmError(SJME_ERROR_TREAD_INDEX_INVALID);
+
+	/* Set tread value. */
+	if (sjme_error_is(error = sjme_nvm_task_frameTreadSetT(inFrame,
+		mappedSlot, inValue)))
+		return sjme_error_vmError(error);
+
+	/* Replace order info. */
+	stack = &inFrame->stack;
+	stack->order[localIndex] = inValue->type;
+	if (isWide)
+		stack->order[localIndex + 1] = SJME_JAVA_TYPE_ID_VOID;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_task_framePool(
@@ -551,6 +571,66 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 			
 		default:
 			return sjme_error_vmError(SJME_ERROR_INVALID_FIELD_TYPE);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_task_stackTrace(
+	sjme_attrInNotNull sjme_nvm_thread inThread)
+{
+	sjme_nvm_frame frame;
+	sjme_jint i, instructionId;
+	sjme_jclass lastClass, nowClass;
+	sjme_nvm_class_codeInfo nowCode;
+	sjme_nvm_class_methodInfo nowMethod;
+	
+	if (inThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Empty? Do nothing. */
+	if (inThread->numFrames == 0)
+		return SJME_ERROR_NONE;
+
+	/* The compact SquirrelJME format is in the following form: */
+ 	/*  | IN java.lang.Class (Class.java) */
+  	/*  |- .whatever:(Lboop;)V @0h (:181 INVOKEINTERFACE@15) */
+
+	/* Start from the top of the stack. */
+	lastClass = NULL;
+	for (i = inThread->numFrames - 1; i >=0; i--)
+	{
+		/* Which frame is this? */
+		frame = inThread->frames->elements[i];
+
+		/* Did the class change? */
+		/* | IN java.lang.Class (Class.java) */
+		nowClass = frame->inClass;
+		if (nowClass != lastClass)
+			sjme_messageB(" | IN %s (%s)",
+				nowClass->binaryName, "<UNKNOWN>");
+
+		/* Print method trace. */
+		/*  |- .whatever:(Lboop;)V @0h (:181 INVOKEINTERFACE@15) */
+		nowCode = frame->inCode;
+		nowMethod = (nowCode != NULL ? frame->inCode->inMethod : NULL);
+		instructionId = (nowCode != NULL && frame->pc >= 0 &&
+			frame->pc < nowCode->rawCodeLen ?
+			nowCode->rawCode[frame->pc] & 0xFF : -1);
+		if (nowCode == NULL || nowMethod == NULL)
+			sjme_messageB(" | PURE VIRTUAL");
+		else
+			sjme_messageB(" | .%s:%s @%xh (:%d #%02x@%d)",
+				&nowMethod->name->chars[0],
+				&nowMethod->type->chars[0],
+				frame->pc,
+				-1,
+				instructionId,
+				frame->pc);
+
+		/* Set for next run. */
+		lastClass = nowClass;
 	}
 
 	/* Success! */

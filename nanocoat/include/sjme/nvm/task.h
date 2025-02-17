@@ -508,6 +508,17 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue);
 	
 /**
+ * Prints the stack trace for a thread using the standard compact SquirrelJME
+ * style stack traces.
+ * 
+ * @param inThread The thread to print the trace for.
+ * @return Any resultant error, if any.
+ * @since 2025/02/16
+ */
+sjme_errorCode sjme_nvm_task_stackTrace(
+	sjme_attrInNotNull sjme_nvm_thread inThread);
+	
+/**
  * Starts the task.
  *
  * @param inState The input state.
