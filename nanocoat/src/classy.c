@@ -910,7 +910,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 	/* Allocate result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc(allocPool,
-		sizeof(*result) * argAt, &result)) || result == NULL)
+		sizeof(*result) * argAt, (sjme_pointer*)&result)) || result == NULL)
 		return sjme_error_default(error);
 
 	/* Fill in other arguments. */

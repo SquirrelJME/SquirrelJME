@@ -375,6 +375,22 @@ static sjme_errorCode sjme_nvm_vmClass_methodBindClose(
 /** The magic number for NVM objects. */
 #define SJME_NVM_OBJECT_MAGIC UINT32_C(0x4E764D3F)
 
+static sjme_errorCode sjme_nvm_closeHandler(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_nvm_common common;
+	
+	common = SJME_AS_NVM_COMMON(closeable);
+	if (common == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Debug. */
+	sjme_message("GC FREE: %d:%p", common->type, common);
+
+	/* Forward to specific handler. */
+	return common->specificClose(SJME_AS_CLOSEABLE(common));
+}
+
 sjme_errorCode sjme_nvm_allocR(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
@@ -393,12 +409,16 @@ sjme_errorCode sjme_nvm_allocR(
 	if (inType <= SJME_NVM_STRUCT_UNKNOWN ||
 		inType >= SJME_NVM_NUM_STRUCT)
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* This is an error, likely sizeof(result) instead of sizeof(*result). */ 
+	if (allocSize < sizeof(sjme_nvm_commonBase))
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Recover pool, some types can use an aliased pool. */
-	if (sjme_nvm_isAR(inState, SJME_NVM_STRUCT_STATE))
-		allocPool = inState->allocPool;
-	else if (((sjme_alloc_pool)inState)->magic == SJME_ALLOC_POOL_MAGIC)
+	if (((sjme_alloc_pool)inState)->magic == SJME_ALLOC_POOL_MAGIC)
 		allocPool = (sjme_alloc_pool)inState;
+	else if (sjme_nvm_isAR(inState, SJME_NVM_STRUCT_STATE))
+		allocPool = inState->allocPool;
 	else
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
@@ -493,12 +513,12 @@ sjme_errorCode sjme_nvm_allocR(
 	result = NULL;
 #if defined(SJME_CONFIG_DEBUG)
 	if (sjme_error_is(error = sjme_closeable_allocR(allocPool,
-		allocSize, handler, SJME_JNI_TRUE,
+		allocSize, sjme_nvm_closeHandler, SJME_JNI_TRUE,
 		SJME_AS_CLOSEABLEP(&result), file, line, func)) ||
 		result == NULL)
 #else
 	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
-		allocSize, handler, SJME_JNI_TRUE,
+		allocSize, sjme_nvm_closeHandler, SJME_JNI_TRUE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 #endif
 		return sjme_error_default(error);
@@ -506,6 +526,10 @@ sjme_errorCode sjme_nvm_allocR(
 	/* Set fields. */
 	result->type = inType;
 	result->magic = SJME_NVM_OBJECT_MAGIC;
+	result->specificClose = handler;
+
+	/* Debug. */
+	sjme_message("GC ALLC: %d:%p (%d)", inType, result, allocSize);
 	
 	/* Success! */
 	*outCommon = result;

@@ -148,8 +148,9 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	if (store->storageTop + typeOff[SJME_JAVA_TYPE_ID_ALL] > store->storageLen)
 		return SJME_ERROR_OUT_OF_MEMORY;
 
-	/* Grab entire chunk. */
+	/* Grab a chunk of the stack. */
 	storeBase = SJME_POINTER_OFFSET(store->storage, store->storageTop);
+	stack->storageClaim = typeOff[SJME_JAVA_TYPE_ID_ALL];
 	store->storageTop += typeOff[SJME_JAVA_TYPE_ID_ALL];
 
 	/* Setup pointers. */
@@ -363,8 +364,58 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
 	sjme_attrInNotNull sjme_jvalueTyped* outValue,
 	sjme_attrInValue sjme_jboolean copiedElsewhere)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_frame_frameStacks* stack;
+	sjme_jboolean isWide;
+	sjme_jint peekTop, peekPerTop;
+	sjme_frame_frameStack* perType;
+	sjme_jvalueTyped tempValue;
+	
+	if (inFrame == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Is this wide? */
+	isWide = SJME_TYPEID_IS_WIDE(typeId);
+
+	/* Determine top of the stack, check for underflow. */
+	stack = &inFrame->stack;
+	peekTop = stack->orderTop - (isWide ? 2 : 1);
+	if (peekTop < stack->orderFront)
+		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
+
+	/* Is wide and very top is wrong. */
+	if (isWide && stack->order[peekTop + 1] != SJME_JAVA_TYPE_ID_VOID)
+		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
+
+	/* Top of the stack is the wrong type? */
+	if (stack->order[peekTop] != typeId)
+		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
+
+	/* Determine per type slot to peek. */
+	perType = &stack->stack[typeId];
+	peekPerTop = perType->top - 1;
+	if (peekPerTop < perType->front)
+		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
+
+	/* Read in value. */
+	memset(&tempValue, 0, sizeof(tempValue));
+	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(
+		inFrame, typeId, peekPerTop, &tempValue, SJME_JNI_FALSE)))
+		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
+			SJME_ERROR_STACK_INVALID_READ));
+
+	/* If copied elsewhere, count object up. */
+	if (copiedElsewhere && typeId == SJME_JAVA_TYPE_ID_OBJECT &&
+		tempValue.value.l != NULL)
+		if (sjme_error_is(error = sjme_alloc_weakRef(tempValue.value.l, NULL)))
+			return sjme_error_default(error);
+
+	/* Success! */
+	memmove(outValue, &tempValue, sizeof(*outValue));
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPop(
@@ -392,6 +443,10 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 	newTop = stack->orderTop - (isWide ? 2 : 1);
 	if (newTop < stack->orderFront)
 		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
+
+	/* Is wide and very top is wrong. */
+	if (isWide && stack->order[newTop + 1] != SJME_JAVA_TYPE_ID_VOID)
+		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
 
 	/* Top of the stack is the wrong type? */
 	if (stack->order[newTop] != typeId)
@@ -509,6 +564,10 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 		inFrame->inThread,
 		SJME_AS_NVM_JSTRINGP(&value.value.l), inString)) ||
 		value.value.l == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* Count up string. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(value.value.l, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push value. */
@@ -644,7 +703,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 			if (sjme_error_is(error = sjme_nvm_task_countObjectDown(
 				&perType->base.jobjects[typeIndex],
 				inValue->value.l)))
-				return sjme_error_default(error);
+				return sjme_error_vmError(inFrame, error);
 
 			/* Set. */
 			perType->base.jobjects[typeIndex] = inValue->value.l;
@@ -980,7 +1039,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	/* Setup initial locals, which are copied in from arguments. */
 	for (i = 0, dx = 0, n = argC; i < n;
 		i++, (dx += (argV[i].type == SJME_JAVA_TYPE_ID_LONG ||
-			argV[i].type == SJME_JAVA_TYPE_ID_DOUBLE)) ? 2 : 1)
+			argV[i].type == SJME_JAVA_TYPE_ID_DOUBLE) ? 2 : 1))
 		if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
 			result, dx, &argV[i])))
 			return sjme_error_vmError(inThread, error);

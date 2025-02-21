@@ -32,6 +32,8 @@ file(WRITE "${CMAKE_BINARY_DIR}/dylibprefix"
 file(WRITE "${CMAKE_BINARY_DIR}/dylibsuffix"
 	"${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
+include_directories("${CMAKE_SOURCE_DIR}/../../include/")
+
 # Hex decoding to binary
 add_executable(decode
 	decode.c)

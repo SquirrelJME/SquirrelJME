@@ -37,6 +37,8 @@
 	#include <malloc.h>
 #endif
 
+#include <string.h>
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED

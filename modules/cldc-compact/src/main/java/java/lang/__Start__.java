@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.UncaughtExceptionHandler;
 import java.util.Objects;
@@ -24,13 +25,16 @@ import java.util.Objects;
  * @since 2020/05/31
  */
 @SuppressWarnings("unused")
+@SquirrelJMEVendorApi
 final class __Start__
 {
 	/** The time to wait between each termination. */
+	@SquirrelJMEVendorApi
 	private static final int _TERM_WAIT_TIME =
 		30_000;
 	
 	/** Exit code for un-handled main exceptions. */
+	@SquirrelJMEVendorApi
 	private static final int _UNHANDLED_EXIT_CODE =
 		61;
 	
@@ -40,6 +44,7 @@ final class __Start__
 	 *
 	 * @since 2020/05/31
 	 */
+	@SquirrelJMEVendorApi
 	static void __base()
 	{
 		// Get both of our thread infos
@@ -108,6 +113,7 @@ final class __Start__
 	 *
 	 * @since 2020/05/31
 	 */
+	@SquirrelJMEVendorApi
 	static void __main()
 	{
 		// Debug

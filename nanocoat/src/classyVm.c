@@ -64,7 +64,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	/* Allocate result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(inState,
-		sizeof(result), SJME_NVM_STRUCT_METHOD_ID,
+		sizeof(*result), SJME_NVM_STRUCT_METHOD_ID,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
 
@@ -229,10 +229,15 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 			instanceType, i, methodInfo,
 			&bind)) || bind == NULL)
 			goto fail_initBind;
+
+		/* Stopped being consistent? */
+		if (result->length != n)
+			return SJME_ERROR_ILLEGAL_STATE;
 		
 		/* Store bind. */
 		result->elements[i] = bind;
 			
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("Bound `%s` %s %s%s -> %s %s%s",
 			inClass->binaryName,
@@ -242,6 +247,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 			&bind->info[1]->inClass->name->chars[0],
 			&bind->info[1]->name->chars[0],
 			&bind->info[1]->type->chars[0]);
+#endif
 	}
 	
 	/* Success! */
@@ -413,7 +419,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	/* Allocate synthetic result. */
 	info = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(inState,
-		sizeof(*info), SJME_NVM_STRUCT_CLASS_INFO, &info)) || info == NULL)
+		sizeof(*info), SJME_NVM_STRUCT_CLASS_INFO,
+		SJME_AS_NVM_COMMONP(&info))) || info == NULL)
 		return sjme_error_outOfMemory(allocPool, sizeof(*info));
 	
 	/* Synthesize info for arrays. */
@@ -616,6 +623,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_jclass superClass, interface, classType;
 	sjme_list_sjme_jclass* interfaces;
 	sjme_alloc_pool allocPool;
+	sjme_list_sjme_jmethodID* binds;
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -760,14 +768,17 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			(sjme_javaTypeId)i)))
 			goto fail_initFieldValues;
 	
-	/* Bind instance, and static, methods. */
+	/* Bind instance and static methods. */
 	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
+	{
+		binds = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBinds(
 			loader, inClass,
 			(sjme_nvm_class_instanceType)i,
-			&inClass->methodBinds[i])) ||
-			inClass->methodBinds[i] == NULL)
+			&binds)) || binds == NULL)
 			goto fail_bindMethods;
+		inClass->methodBinds[i] = binds;
+	}
 
 #if 0
 	/* Initialize statics fields with constant values. */

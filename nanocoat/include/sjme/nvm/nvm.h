@@ -321,6 +321,9 @@ struct sjme_nvm_commonBase
 	
 	/** The lock to access this common item. */
 	sjme_thread_spinLock lock;
+
+	/** Specific close handler. */
+	sjme_closeable_closeHandlerFunc specificClose;
 };
 
 /**
