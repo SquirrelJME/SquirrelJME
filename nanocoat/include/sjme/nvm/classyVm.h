@@ -86,6 +86,9 @@ struct sjme_jmethodIDBase
 	
 	/** The type of this method. */
 	sjme_nvm_stringPool_string type;
+
+	/** The method flags. */
+	sjme_nvm_class_methodFlags flags;
 	
 	/** The info this is bound to, for virtual and non-virtual calls. */
 	sjme_nvm_class_methodInfo info[SJME_NVM_NUM_METHOD_CALL_TYPE];

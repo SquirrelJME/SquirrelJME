@@ -28,6 +28,8 @@ squirreljme_multilib_add_static_library(Core
 	instance.c
 	jdwp.c
 	loop.c
+	mle.c
+	mleRuntime.c
 	modelessStars.c
 	nvm.c
 	rom.c

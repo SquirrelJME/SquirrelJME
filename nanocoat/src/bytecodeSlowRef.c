@@ -139,15 +139,27 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 			inFrame, target->argC, target->argT, argV)))
 			return sjme_error_vmError(inFrame, error);
 
+	/* If native, perform an MLE call. */
+	if (target->flags.native)
+	{
+		sjme_todo("MLE call %s %s%s", classy->binaryName,
+			&target->name->chars[0],
+			&target->type->chars[0]);
+		return sjme_error_notImplemented(0);
+	}
+
 	/* Enter new stack frame for the target method, or at least try. */
-	newFrame = NULL;
-	if (sjme_error_is(error = sjme_nvm_task_threadEnter(
-		inFrame->inThread,
-		&newFrame,
-		methodId,
-		SJME_NVM_CALL_NON_VIRTUAL,
-		target->argC, argV)) || newFrame == NULL)
-		return sjme_error_vmError(inFrame, error);
+	else
+	{
+		newFrame = NULL;
+		if (sjme_error_is(error = sjme_nvm_task_threadEnter(
+			inFrame->inThread,
+			&newFrame,
+			methodId,
+			SJME_NVM_CALL_NON_VIRTUAL,
+			target->argC, argV)) || newFrame == NULL)
+			return sjme_error_vmError(inFrame, error);
+	}
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;

@@ -74,6 +74,9 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	/* The names always get set. */
 	result->name = thisInfo->name;
 	result->type = thisInfo->type;
+
+	/* Also copy flags. */
+	result->flags = thisInfo->flags;
 	
 	/* Constructors always bind to self. */
 	/* Along with any private methods. */
