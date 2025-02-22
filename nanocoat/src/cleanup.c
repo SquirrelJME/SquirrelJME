@@ -528,8 +528,11 @@ sjme_errorCode sjme_nvm_allocR(
 	result->magic = SJME_NVM_OBJECT_MAGIC;
 	result->specificClose = handler;
 
+#if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
-	sjme_message("GC ALLC: %d:%p (%d)", inType, result, allocSize);
+	sjme_messageR(file, line, func, SJME_JNI_FALSE,
+		"GC ALLC: %d:%p (%d)", inType, result, allocSize);
+#endif
 	
 	/* Success! */
 	*outCommon = result;
