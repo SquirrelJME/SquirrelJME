@@ -12,6 +12,7 @@
 #include "sjme/nvm/bytecodeSlow.h"
 #include "sjme/nvm/classy.h"
 #include "sjme/nvm/instance.h"
+#include "sjme/nvm/mle.h"
 #include "sjme/nvm/task.h"
 
 SJME_NVM_BYTECODE_SLOW(CheckCast)
@@ -81,6 +82,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	sjme_jvalueTyped* argV;
 	sjme_jmethodID methodId;
 	sjme_nvm_class_methodInfo target;
+	sjme_jvalueTyped mleArgR;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* PC adjustment. */
@@ -142,10 +144,26 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	/* If native, perform an MLE call. */
 	if (target->flags.native)
 	{
-		sjme_todo("MLE call %s %s%s", classy->binaryName,
-			&target->name->chars[0],
-			&target->type->chars[0]);
-		return sjme_error_notImplemented(0);
+		/* Perform the native call. */
+		memset(&mleArgR, 0, sizeof(mleArgR));
+		if (sjme_error_is(error = sjme_mle_mleCall(inFrame,
+			classy->binaryName,
+			(sjme_lpcstr)&target->name->chars[0],
+			(sjme_lpcstr)&target->type->chars[0],
+			&mleArgR,
+			target->argC, argV)))
+			return sjme_error_vmError(inFrame, error);
+
+		/* Wrong type? */
+		if (mleArgR.type != target->argR)
+			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_METHOD_TYPE);
+
+		/* Is there a return value being pushed to the stack? */
+		if (mleArgR.type != SJME_JAVA_TYPE_ID_VOID)
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
 	}
 
 	/* Enter new stack frame for the target method, or at least try. */

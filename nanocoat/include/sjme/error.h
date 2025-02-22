@@ -441,9 +441,18 @@ typedef enum sjme_errorCode
 
 	/** Array is of negative size. */
 	SJME_ERROR_NEGATIVE_ARRAY_SIZE = -133,
+
+	/** MLE Call error. */
+	SJME_ERROR_MLE_CALL = -134,
+
+	/** Invalid MLE Shelf. */
+	SJME_ERROR_UNKNOWN_MLE_SHELF = -135,
+
+	/** Invalid MLE Function. */
+	SJME_ERROR_UNKNOWN_MLE_FUNCTION = -136,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -134,
+	SJME_NUM_ERROR_CODES = -137,
 } sjme_errorCode;
 
 /**
