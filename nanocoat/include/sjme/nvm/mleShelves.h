@@ -42,6 +42,21 @@ extern "C"
 /** Void type. */
 #define SJME_MV SJME_JAVA_TYPE_ID_VOID
 
+/** Builds a type descriptor. */
+#define SJME_MD(rv, args) "(" args ")" rv
+
+/** Array type. */
+#define SJME_MD_A(component) "[" component
+
+/** Byte type. */
+#define SJME_MD_B "B"
+
+/** Integer type. */
+#define SJME_MD_I "I"
+
+/** Pipe descriptor. */
+#define SJME_MD_PIPE "Lcc/squirreljme/jvm/mle/brackets/PipeBracket;"
+
 /** MLE Function name. */
 #define SJME_NVM_MLE_FUNCTION_NAME(name, alt) \
 	SJME_TOKEN_PASTE4(sjme_nvm_mleFunc_, name, _, alt)

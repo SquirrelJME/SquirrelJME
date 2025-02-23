@@ -76,8 +76,9 @@ sjme_errorCode sjme_mle_mleCall(
 				{
 					/* Check arguments. */
 					for (i = 0; i < argC; i++)
-						if (minor->argX[i] == '\0' ||
-							sjme_nvm_mleTToA[argV[i].type] != minor->argX[i])
+						if (minor->argX[i + 1] == '\0' ||
+							sjme_nvm_mleTToA[argV[i].type] !=
+								minor->argX[i + 1])
 							return SJME_ERROR_INCOMPATIBLE_MLE_CALL;
 					
 					/* Forward call. */
