@@ -25,6 +25,7 @@
 #include "sjme/alloc.h"
 #include "sjme/list.h"
 #include "sjme/atomic.h"
+#include "sjme/native.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -112,6 +113,9 @@ typedef enum sjme_nvm_structType
 {
 	/** Unknown. */
 	SJME_NVM_STRUCT_UNKNOWN,
+
+	/** Pipe bracket. */
+	SJME_NVM_STRUCT_BRACKET_PIPE,
 	
 	/** Class information. */
 	SJME_NVM_STRUCT_CLASS_INFO,
@@ -384,6 +388,9 @@ struct sjme_nvm_stateBase
 	
 	/** Hooks for the state. */
 	const sjme_nvm_stateHooks* hooks;
+
+	/** The native abstraction layer to use. */
+	const sjme_nal* nal;
 
 	/** The suite containing all the libraries. */
 	sjme_nvm_rom_suite suite;

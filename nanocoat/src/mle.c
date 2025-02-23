@@ -55,8 +55,6 @@ sjme_errorCode sjme_mle_mleCall(
 	sjme_attrInNullable sjme_jvalueTyped* argV)
 {
 	const sjme_nvm_mle* major;
-	const sjme_nvm_mleShelf* minor;
-	sjme_jint i;
 	
 	if (inFrame == NULL || className == NULL || methodName == NULL ||
 		methodType == NULL || argR == NULL || (argC > 0 && argV == NULL))
@@ -68,27 +66,53 @@ sjme_errorCode sjme_mle_mleCall(
 	/* Look for the shelf. */
 	for (major = sjme_nvm_mleShelves; major->className != NULL; major++)
 		if (strcmp(className, major->className) == 0)
-		{
-			/* Look for the function. */
-			for (minor = major->shelf; minor->name != NULL; minor++)
-				if (strcmp(methodName, minor->name) == 0 &&
-					strcmp(methodType, minor->type) == 0)
-				{
-					/* Check arguments. */
-					for (i = 0; i < argC; i++)
-						if (minor->argX[i + 1] == '\0' ||
-							sjme_nvm_mleTToA[argV[i].type] !=
-								minor->argX[i + 1])
-							return SJME_ERROR_INCOMPATIBLE_MLE_CALL;
-					
-					/* Forward call. */
-					return minor->function(inFrame, argR, argC, argV);
-				}
-			
-			/* Not found. */
-			return SJME_ERROR_UNKNOWN_MLE_FUNCTION;
-		}
+			return sjme_mle_mleCallShelf(inFrame, major, methodName,
+				methodType, argR, argC, argV);
 
 	/* Not found. */
 	return SJME_ERROR_UNKNOWN_MLE_SHELF;
+}
+
+sjme_errorCode sjme_mle_mleCallFunction(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull const sjme_nvm_mleShelf* function,
+	sjme_attrInNotNull sjme_jvalueTyped* argR,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalueTyped* argV)
+{
+	sjme_jint i;
+	
+	if (inFrame == NULL || function == NULL ||
+		argR == NULL || (argC > 0 && argV == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Check arguments. */
+	for (i = 0; i < argC; i++)
+		if (function->argX[i + 1] == '\0' ||
+			sjme_nvm_mleTToA[argV[i].type] != function->argX[i + 1])
+			return SJME_ERROR_INCOMPATIBLE_MLE_CALL;
+					
+	/* Forward call. */
+	return function->function(inFrame, argR, argC, argV);
+}
+
+sjme_errorCode sjme_mle_mleCallShelf(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull const sjme_nvm_mle* shelf,
+	sjme_attrInNotNull sjme_lpcstr methodName,
+	sjme_attrInNotNull sjme_lpcstr methodType,
+	sjme_attrInNotNull sjme_jvalueTyped* argR,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalueTyped* argV)
+{
+	const sjme_nvm_mleShelf* minor;
+	
+	/* Look for the function. */
+	for (minor = shelf->shelf; minor->name != NULL; minor++)
+		if (strcmp(methodName, minor->name) == 0 &&
+			strcmp(methodType, minor->type) == 0)
+			return sjme_mle_mleCallFunction(inFrame, minor, argR, argC, argV);
+	
+	/* Not found. */
+	return SJME_ERROR_UNKNOWN_MLE_FUNCTION;
 }

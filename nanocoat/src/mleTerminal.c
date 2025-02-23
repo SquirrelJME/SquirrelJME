@@ -32,6 +32,26 @@ SJME_NVM_MLE_FUNCTION_DECL(flush)
 
 SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 {
+	sjme_nvm_task_globals* globals;
+	sjme_nvm_mle_standardPipeType type;
+	sjme_jobject pipe;
+
+	/* Check. */
+	type = (sjme_nvm_mle_standardPipeType)argV[0].value.i;
+	if (type < 0 || type >= SJME_NVM_MLE_NUM_STD_PIPES)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Has a pipe already been created? We want single brackets for each */
+	/* standard pipe that exists. */
+	globals = &inFrame->inThread->inTask->globals;
+	pipe = globals->stdPipes[type];
+	if (pipe != NULL)
+	{
+		argR->type = SJME_JAVA_TYPE_ID_OBJECT;
+		argR->value.l = pipe;
+		return SJME_ERROR_NONE;
+	}
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }

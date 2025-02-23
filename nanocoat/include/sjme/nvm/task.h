@@ -20,6 +20,7 @@
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/rom.h"
 #include "sjme/nvm/classyVm.h"
+#include "sjme/nvm/mleConst.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -219,6 +220,9 @@ struct sjme_nvm_frameBase
 	/** Common virtual machine structure. */
 	sjme_nvm_commonBase common;
 
+	/** The state this frame is in. */
+	sjme_nvm inState;
+
 	/** The thread this frame is in. */
 	sjme_nvm_thread inThread;
 	
@@ -288,6 +292,20 @@ struct sjme_nvm_taskStringsBase
 	/** The interned strings. */
 	sjme_list_sjme_jstring* interns;
 };
+
+/**
+ * Globals for the task.
+ *
+ * @since 2025/02/23
+ */
+typedef struct sjme_nvm_task_globals
+{
+	/** The lock for global access. */
+	sjme_thread_spinLock lock;
+
+	/** The standard pipes for standard IO. */
+	sjme_jobject stdPipes[SJME_NVM_MLE_NUM_STD_PIPES];
+} sjme_nvm_task_globals;
 	
 struct sjme_nvm_taskBase
 {
@@ -314,6 +332,9 @@ struct sjme_nvm_taskBase
 
 	/** Internal strings for the task. */
 	sjme_nvm_taskStrings strings;
+
+	/** Globals for the task. */
+	sjme_nvm_task_globals globals;
 };
 
 struct sjme_nvm_threadBase

@@ -16,8 +16,6 @@
 #ifndef SQUIRRELJME_MLECONST_H
 #define SQUIRRELJME_MLECONST_H
 
-#include "sjme/nvm/mle.h"
-
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -30,6 +28,26 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * Standard pipe descriptor IDs.
+ *
+ * @since 2025/02/23
+ */
+typedef enum sjme_nvm_mle_standardPipeType
+{
+	/** Standard input. */
+	SJME_NVM_MLE_STD_PIPE_STDIN = 0,
+	
+	/** Standard output. */
+	SJME_NVM_MLE_STD_PIPE_STDOUT = 1,
+	
+	/** Standard error. */
+	SJME_NVM_MLE_STD_PIPE_STDERR = 2,
+	
+	/** The number of standard pipes. */
+	SJME_NVM_MLE_NUM_STD_PIPES = 3,
+} sjme_nvm_mle_standardPipeType;
+	
 /**
  * The virtual machine type.
  *
@@ -55,9 +73,6 @@ typedef enum sjme_nvm_mle_vmType
 	/** The number of VM types. */
 	SJME_NVM_MLE_NUM_VM_TYPES = 5,
 } sjme_nvm_mle_vmType;
-
-/** The NanoCoat Virtual Machine Type. */
-#define SJME_NVM_MLE_VM_TYPE_NANOCOAT 4
 
 /*--------------------------------------------------------------------------*/
 

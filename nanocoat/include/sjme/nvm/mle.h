@@ -103,6 +103,46 @@ sjme_errorCode sjme_mle_mleCall(
 	sjme_attrInNotNull sjme_jvalueTyped* argR,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV);
+	
+/**
+ * Performs a MLE native function call on the specified shelf.
+ * 
+ * @param inFrame The frame this is being called from.
+ * @param function The function to call.
+ * @param argR The return value of the call.
+ * @param argC The argument count.
+ * @param argV The argument values.
+ * @return Any resultant error, if any.
+ * @since 2025/02/23
+ */
+sjme_errorCode sjme_mle_mleCallFunction(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull const sjme_nvm_mleShelf* function,
+	sjme_attrInNotNull sjme_jvalueTyped* argR,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalueTyped* argV);
+
+/**
+ * Performs a MLE native function call on the specified shelf.
+ * 
+ * @param inFrame The frame this is being called from.
+ * @param shelf The shelf being executed.
+ * @param methodName The method name.
+ * @param methodType The method type.
+ * @param argR The return value of the call.
+ * @param argC The argument count.
+ * @param argV The argument values.
+ * @return Any resultant error, if any.
+ * @since 2025/02/23
+ */
+sjme_errorCode sjme_mle_mleCallShelf(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull const sjme_nvm_mle* shelf,
+	sjme_attrInNotNull sjme_lpcstr methodName,
+	sjme_attrInNotNull sjme_lpcstr methodType,
+	sjme_attrInNotNull sjme_jvalueTyped* argR,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalueTyped* argV);
 
 /*--------------------------------------------------------------------------*/
 

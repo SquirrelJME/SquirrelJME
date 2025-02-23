@@ -180,6 +180,10 @@ sjme_errorCode sjme_nvm_boot(
 	
 	if (allocPool == NULL || param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* These are required. */
+	if (param->nal == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Allocate resultant state. */
 	result = NULL;
@@ -203,6 +207,7 @@ sjme_errorCode sjme_nvm_boot(
 
 	/* Set parameters accordingly. */
 	result->allocPool = allocPool;
+	result->nal = param->nal;
 
 	/* Initialize base for suite merging. */
 	memset(mergeSuites, 0, sizeof(mergeSuites));

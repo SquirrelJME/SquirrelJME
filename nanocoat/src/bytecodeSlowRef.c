@@ -161,9 +161,19 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 
 		/* Is there a return value being pushed to the stack? */
 		if (mleArgR.type != SJME_JAVA_TYPE_ID_VOID)
+		{
+			/* Count up if an object. */
+			if (mleArgR.type == SJME_JAVA_TYPE_ID_OBJECT &&
+				mleArgR.value.l != NULL)
+				if (sjme_error_is(error = sjme_alloc_weakRef(
+					mleArgR.value.l, NULL)))
+					return sjme_error_vmError(inFrame, error);
+			
+			/* Push */
 			if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 				inFrame, &mleArgR)))
 				return sjme_error_vmError(inFrame, error);
+		}
 	}
 
 	/* Enter new stack frame for the target method, or at least try. */
