@@ -1466,7 +1466,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 			case SJME_NVM_CLASS_POOL_TYPE_FLOAT:
 				if (sjme_error_is(error = sjme_stream_inputReadValueJI(
 					inStream,
-					(sjme_jint*)&entry->constFloat.value.value)))
+					(sjme_jint*)&entry->constFloat.value.bits)))
 					goto fail_readItem;
 				break;
 				

@@ -452,7 +452,7 @@ typedef union sjme_jlong
 typedef union sjme_jfloat
 {
 	/** The raw integer bit value. */
-	sjme_jint value;
+	sjme_jint bits;
 
 #if defined(SJME_CONFIG_HAS_FLOAT_HARD)
 	/** The native float value. */

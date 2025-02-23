@@ -105,10 +105,10 @@ SJME_TEST_DECLARE(testStreamWriteValueJ)
 	STREAM_SEQ2(LONG, j.part.hi, j.part.lo, 0x87654321, 0x87654321);
 
 	/* dos.writeFloat(Float.intBitsToFloat(0x12345678)); */
-	STREAM_SEQ(FLOAT, f.value, 0x12345678);
+	STREAM_SEQ(FLOAT, f.bits, 0x12345678);
 
 	/* dos.writeFloat(Float.intBitsToFloat(0x87654321)); */
-	STREAM_SEQ(FLOAT, f.value, 0x87654321);
+	STREAM_SEQ(FLOAT, f.bits, 0x87654321);
 
 	/* dos.writeDouble(Double.longBitsToDouble(0x1234567812345678L)); */
 	STREAM_SEQ2(DOUBLE, d.bits.hi, d.bits.lo, 0x12345678, 0x12345678);

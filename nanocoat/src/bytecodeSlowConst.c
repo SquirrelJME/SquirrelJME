@@ -149,11 +149,11 @@ SJME_NVM_BYTECODE_SLOW(FConstZ)
 	memset(&value, 0, sizeof(value));
 	value.type = SJME_JAVA_TYPE_ID_FLOAT;
 	if (id == 11)
-		value.value.f.value = 0;
+		value.value.f.bits = 0;
 	else if (id == 12)
-		value.value.f.value = INT32_C(1065353216);
+		value.value.f.bits = INT32_C(1065353216);
 	else
-		value.value.f.value = INT32_C(1073741824);
+		value.value.f.bits = INT32_C(1073741824);
 
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
