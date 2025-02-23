@@ -864,7 +864,7 @@ extern "C" {
 #if defined(FLT_ROUNDS) && FLT_ROUNDS == 1 && \
 	defined(FLT_EVAL_METHOD) && FLT_EVAL_METHOD == 0 && \
 	defined(FLT_RADIX) && FLT_RADIX == 2
-
+	/* Compatible single floating point? */
 	#if !defined(SJME_CONFIG_HAS_FLOAT_SOFT) && \
 		defined(FLT_MANT_DIG) && FLT_MANT_DIG == 24 && \
 		((defined(FLT_HAS_SUBNORM) && FLT_HAS_SUBNORM == 1) || \
@@ -873,6 +873,7 @@ extern "C" {
 		#define SJME_CONFIG_HAS_FLOAT_HARD
 	#endif
 
+	/* Compatible double floating point? */
 	#if !defined(SJME_CONFIG_HAS_DOUBLE_SOFT) && \
 		defined(DBL_MANT_DIG) && DBL_MANT_DIG == 53 && \
 		((defined(DBL_HAS_SUBNORM) && DBL_HAS_SUBNORM == 1) || \
