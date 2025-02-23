@@ -107,7 +107,7 @@ SJME_NVM_MLE_FUNCTION_DECL(vmType)
 	return SJME_ERROR_NONE;
 }
 
-const sjme_nvm_mleShelf sjme_nvm_mleRuntimeShelf[] =
+SJME_NVM_MLE_SHELF_DECLARE(RuntimeShelf) =
 {
 	SJME_NVM_MLE_DEFINE(byteOrder, "()I",
 		"I"),

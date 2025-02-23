@@ -10,3 +10,8 @@
 #include "sjme/config.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
+
+SJME_NVM_MLE_SHELF_DECLARE(DebugShelf) =
+{
+	SJME_NVM_MLE_STOP()
+};

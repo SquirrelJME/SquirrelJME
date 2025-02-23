@@ -11,12 +11,30 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+/** Standard shelf definition. */
+#define SJME_NVM_MLE_SHELF_DEF(what) \
+	{"Lcc/squirreljme/jvm/mle/"#what";", \
+	SJME_TOKEN_PASTE(sjme_nvm_mle, what)}
+
 static const sjme_nvm_mle sjme_nvm_mleShelves[] =
 {
-	{
-		"Lcc/squirreljme/jvm/mle/RuntimeShelf;",
-		sjme_nvm_mleRuntimeShelf
-	},
+	SJME_NVM_MLE_SHELF_DEF(AtomicShelf),
+	SJME_NVM_MLE_SHELF_DEF(DebugShelf),
+	SJME_NVM_MLE_SHELF_DEF(JarPackageShelf),
+	SJME_NVM_MLE_SHELF_DEF(MathShelf),
+	SJME_NVM_MLE_SHELF_DEF(MidiShelf),
+	SJME_NVM_MLE_SHELF_DEF(NativeArchiveShelf),
+	SJME_NVM_MLE_SHELF_DEF(ObjectShelf),
+	SJME_NVM_MLE_SHELF_DEF(PencilFontShelf),
+	SJME_NVM_MLE_SHELF_DEF(PencilShelf),
+	SJME_NVM_MLE_SHELF_DEF(ReferenceShelf),
+	SJME_NVM_MLE_SHELF_DEF(ReflectionShelf),
+	SJME_NVM_MLE_SHELF_DEF(RuntimeShelf),
+	SJME_NVM_MLE_SHELF_DEF(StringShelf),
+	SJME_NVM_MLE_SHELF_DEF(TaskShelf),
+	SJME_NVM_MLE_SHELF_DEF(TerminalShelf),
+	SJME_NVM_MLE_SHELF_DEF(ThreadShelf),
+	SJME_NVM_MLE_SHELF_DEF(TypeShelf),
 	
 	{NULL, NULL}
 };

@@ -73,9 +73,27 @@ extern "C"
 /** Stop MLE definitions. */
 #define SJME_NVM_MLE_STOP() \
 	{NULL, NULL, NULL, NULL}
-	
-/** Runtime shelf. */
-extern const sjme_nvm_mleShelf sjme_nvm_mleRuntimeShelf[];
+
+#define SJME_NVM_MLE_SHELF_DECLARE(what) \
+	const sjme_nvm_mleShelf SJME_TOKEN_PASTE(sjme_nvm_mle, what)[]
+
+extern SJME_NVM_MLE_SHELF_DECLARE(AtomicShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(DebugShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(JarPackageShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(MathShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(MidiShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(NativeArchiveShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(ObjectShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(PencilFontShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(PencilShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(ReferenceShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(ReflectionShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(RuntimeShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(StringShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(TaskShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(TerminalShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(ThreadShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(TypeShelf);
 	
 /*--------------------------------------------------------------------------*/
 

@@ -6,3 +6,12 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
+
+#include "sjme/config.h"
+#include "sjme/nvm/mle.h"
+#include "sjme/nvm/mleShelves.h"
+
+SJME_NVM_MLE_SHELF_DECLARE(ReflectionShelf) =
+{
+	SJME_NVM_MLE_STOP()
+};

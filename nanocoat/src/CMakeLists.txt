@@ -40,7 +40,6 @@ squirreljme_multilib_add_static_library(Core
 	mlePencilFont.c
 	mleReference.c
 	mleReflection.c
-	mleRJPBIS.c
 	mleRuntime.c
 	mleScritchUi.c
 	mleString.c
