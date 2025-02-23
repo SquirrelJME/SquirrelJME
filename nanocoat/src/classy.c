@@ -1437,11 +1437,11 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 			case SJME_NVM_CLASS_POOL_TYPE_DOUBLE:
 				if (sjme_error_is(error = sjme_stream_inputReadValueJI(
 					inStream,
-					(sjme_jint*)&entry->constDouble.value.hi)))
+					(sjme_jint*)&entry->constDouble.value.bits.hi)))
 					goto fail_readItem;
 				if (sjme_error_is(error = sjme_stream_inputReadValueJI(
 					inStream,
-					(sjme_jint*)&entry->constDouble.value.lo)))
+					(sjme_jint*)&entry->constDouble.value.bits.lo)))
 					goto fail_readItem;
 				
 				/* Skip wide index. */

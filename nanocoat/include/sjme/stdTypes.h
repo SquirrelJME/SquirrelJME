@@ -474,20 +474,28 @@ typedef union sjme_jfloat
  * 
  * @sinc 2023/07/25
  */
-typedef struct sjme_jdouble
+typedef union sjme_jdouble
 {
+	struct sjme_packed
+	{
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
-	/** Low value. */
-	sjme_juint lo;
+		/** Low value. */
+		sjme_juint lo;
 
-	/** High value. */
-	sjme_juint hi;
+		/** High value. */
+		sjme_juint hi;
 #else
-	/** High value. */
-	sjme_juint hi;
-	
-	/** Low value. */
-	sjme_juint lo;
+		/** High value. */
+		sjme_juint hi;
+		
+		/** Low value. */
+		sjme_juint lo;
+#endif
+	} bits;
+
+#if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/** Native hardware double value. */
+	double native;
 #endif
 } sjme_jdouble;
 

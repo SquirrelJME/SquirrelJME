@@ -124,9 +124,9 @@ SJME_NVM_BYTECODE_SLOW(DConstZ)
 	memset(&value, 0, sizeof(value));
 	value.type = SJME_JAVA_TYPE_ID_DOUBLE;
 	if (id == 14)
-		value.value.d.hi = 0;
+		value.value.d.bits.hi = 0;
 	else
-		value.value.d.hi = UINT32_C(0x3FF00000);
+		value.value.d.bits.hi = UINT32_C(0x3FF00000);
 
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(

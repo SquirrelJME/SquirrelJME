@@ -135,10 +135,10 @@ SJME_TEST_DECLARE(testStreamWriteValueJBA)
 	STREAM_SEQ(FLOAT, f.value, 0x87654321);
 
 	/* dos.writeDouble(Double.longBitsToDouble(0x1234567812345678L)); */
-	STREAM_SEQ2(DOUBLE, d.hi, d.lo, 0x12345678, 0x12345678);
+	STREAM_SEQ2(DOUBLE, d.bits.hi, d.bits.lo, 0x12345678, 0x12345678);
 
 	/* dos.writeDouble(Double.longBitsToDouble(0x8765432187654321L)); */
-	STREAM_SEQ2(DOUBLE, d.hi, d.lo, 0x87654321, 0x87654321);
+	STREAM_SEQ2(DOUBLE, d.bits.hi, d.bits.lo, 0x87654321, 0x87654321);
 
 	/* Close stream. */
 	if (sjme_error_is(sjme_closeable_close(
