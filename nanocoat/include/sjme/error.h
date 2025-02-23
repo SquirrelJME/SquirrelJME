@@ -450,9 +450,12 @@ typedef enum sjme_errorCode
 
 	/** Invalid MLE Function. */
 	SJME_ERROR_UNKNOWN_MLE_FUNCTION = -136,
+
+	/** MLE call is not compatible. */
+	SJME_ERROR_INCOMPATIBLE_MLE_CALL = -137,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -137,
+	SJME_NUM_ERROR_CODES = -138,
 } sjme_errorCode;
 
 /**

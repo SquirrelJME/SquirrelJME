@@ -9,3 +9,19 @@
 
 #include "sjme/config.h"
 #include "sjme/nvm/mle.h"
+#include "sjme/nvm/mleShelves.h"
+
+SJME_NVM_MLE_FUNCTION_DECL(vmType)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+const sjme_nvm_mleShelf sjme_nvm_mleRuntimeShelf[] =
+{
+	SJME_NVM_MLE_DEFINE(vmType, "()I",
+		SJME_MI, 0, {}),
+	
+	{NULL, NULL, -1, -1, NULL, NULL},
+};
+

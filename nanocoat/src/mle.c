@@ -9,9 +9,15 @@
 
 #include "sjme/config.h"
 #include "sjme/nvm/mle.h"
+#include "sjme/nvm/mleShelves.h"
 
 static const sjme_nvm_mle sjme_nvm_mleShelves[] =
 {
+	{
+		"Lcc/squirreljme/jvm/mle/RuntimeShelf;",
+		sjme_nvm_mleRuntimeShelf
+	},
+	
 	{NULL, NULL}
 };
 
@@ -24,13 +30,44 @@ sjme_errorCode sjme_mle_mleCall(
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV)
 {
+	const sjme_nvm_mle* major;
+	const sjme_nvm_mleShelf* minor;
+	sjme_jint i;
+	
 	if (inFrame == NULL || className == NULL || methodName == NULL ||
 		methodType == NULL || argR == NULL || (argC > 0 && argV == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (argC < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	sjme_todo("Impl? %s:%s%s", className, methodName, methodType);
-	return sjme_error_notImplemented(0);
+
+	/* Look for the shelf. */
+	for (major = sjme_nvm_mleShelves; major->className != NULL; major++)
+		if (strcmp(className, major->className) == 0)
+		{
+			/* Look for the function. */
+			for (minor = major->shelf; minor->name != NULL; minor++)
+				if (strcmp(methodName, minor->name) == 0 &&
+					strcmp(methodType, minor->type) == 0)
+				{
+					/* Check count and return type. */
+					if (argC != minor->argC ||
+						argR->type != minor->argR)
+						return SJME_ERROR_INCOMPATIBLE_MLE_CALL;
+
+					/* Check argument types. */
+					for (i = 0; i < argC; i++)
+						if (argV[i].type != minor->argV[i])
+							return SJME_ERROR_INCOMPATIBLE_MLE_CALL;
+
+					/* Forward call. */
+					return minor->function(inFrame, argR, argC, argV);
+				}
+			
+			/* Not found. */
+			return SJME_ERROR_UNKNOWN_MLE_FUNCTION;
+		}
+
+	/* Not found. */
+	return SJME_ERROR_UNKNOWN_MLE_SHELF;
 }
