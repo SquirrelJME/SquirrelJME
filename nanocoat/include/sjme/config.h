@@ -867,14 +867,16 @@ extern "C" {
 
 	#if !defined(SJME_CONFIG_HAS_FLOAT_SOFT) && \
 		defined(FLT_MANT_DIG) && FLT_MANT_DIG == 24 && \
-		(defined(FLT_HAS_SUBNORM) || __FLT_HAS_DENORM__)
+		((defined(FLT_HAS_SUBNORM) && FLT_HAS_SUBNORM == 1) || \
+		(defined(__FLT_HAS_DENORM__) && __FLT_HAS_DENORM__ == 1))
 		/** Hardware single floating point. */
 		#define SJME_CONFIG_HAS_FLOAT_HARD
 	#endif
 
 	#if !defined(SJME_CONFIG_HAS_DOUBLE_SOFT) && \
 		defined(DBL_MANT_DIG) && DBL_MANT_DIG == 53 && \
-		(defined(DBL_HAS_SUBNORM) || __DBL_HAS_DENORM__)
+		((defined(DBL_HAS_SUBNORM) && DBL_HAS_SUBNORM == 1) || \
+		(defined(__DBL_HAS_DENORM__) && __DBL_HAS_DENORM__ == 1))
 		/** Hardware double floating point. */
 		#define SJME_CONFIG_HAS_DOUBLE_HARD
 	#endif
