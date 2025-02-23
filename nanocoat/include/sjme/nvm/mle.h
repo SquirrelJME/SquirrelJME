@@ -60,14 +60,8 @@ typedef struct sjme_nvm_mleShelf
 	/** The method type. */
 	sjme_lpcstr type;
 
-	/** Return type. */
-	sjme_javaTypeId argR;
-
-	/** Argument count. */
-	sjme_jint argC;
-
-	/** Argument types. */
-	const sjme_javaTypeId* argV;
+	/** Return type and arguments, flat. */
+	sjme_lpcstr argX;
 
 	/** The function which handles the call. */
 	sjme_nvm_mleFunc function;

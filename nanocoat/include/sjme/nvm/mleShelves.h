@@ -29,9 +29,18 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
-
+	
 /** Integer type. */
 #define SJME_MI SJME_JAVA_TYPE_ID_INTEGER
+
+/** Object type. */
+#define SJME_ML SJME_JAVA_TYPE_ID_OBJECT
+
+/** Long type. */
+#define SJME_MJ SJME_JAVA_TYPE_ID_LONG
+	
+/** Void type. */
+#define SJME_MV SJME_JAVA_TYPE_ID_VOID
 
 /** MLE Function name. */
 #define SJME_NVM_MLE_FUNCTION_NAME(name, alt) \
@@ -50,17 +59,21 @@ extern "C"
 	SJME_NVM_MLE_FUNCTION_DECL_ALT(name, none)
 
 /** Defines an MLE function. */
-#define SJME_NVM_MLE_DEFINE_ALT(name, alt, type, argR, argC, argV) \
+#define SJME_NVM_MLE_DEFINE_ALT(name, alt, type, argX) \
 	{ \
 		#name, type, \
-		argR, argC, argV, \
+		argX, \
 		SJME_NVM_MLE_FUNCTION_NAME(name, alt) \
 	}
 
 /** Defines an MLE function. */
-#define SJME_NVM_MLE_DEFINE(name, type, argR, argC, argV) \
-	SJME_NVM_MLE_DEFINE_ALT(name, none, type, argR, argC, argV)
+#define SJME_NVM_MLE_DEFINE(name, type, argX) \
+	SJME_NVM_MLE_DEFINE_ALT(name, none, type, argX)
 
+/** Stop MLE definitions. */
+#define SJME_NVM_MLE_STOP() \
+	{NULL, NULL, NULL, NULL}
+	
 /** Runtime shelf. */
 extern const sjme_nvm_mleShelf sjme_nvm_mleRuntimeShelf[];
 	

@@ -146,6 +146,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	{
 		/* Perform the native call. */
 		memset(&mleArgR, 0, sizeof(mleArgR));
+		mleArgR.type = SJME_JAVA_TYPE_ID_VOID;
 		if (sjme_error_is(error = sjme_mle_mleCall(inFrame,
 			classy->binaryName,
 			(sjme_lpcstr)&target->name->chars[0],
@@ -160,10 +161,9 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 
 		/* Is there a return value being pushed to the stack? */
 		if (mleArgR.type != SJME_JAVA_TYPE_ID_VOID)
-		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
+			if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+				inFrame, &mleArgR)))
+				return sjme_error_vmError(inFrame, error);
 	}
 
 	/* Enter new stack frame for the target method, or at least try. */

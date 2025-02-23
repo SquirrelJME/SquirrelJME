@@ -21,6 +21,12 @@ static const sjme_nvm_mle sjme_nvm_mleShelves[] =
 	{NULL, NULL}
 };
 
+/** Type ID to C character indicator. */
+static const sjme_cchar sjme_nvm_mleTToA[SJME_NUM_JAVA_TYPE_IDS + 2] =
+{
+	'I', 'J', 'F', 'D', 'L', 'V', '\0'
+};
+
 sjme_errorCode sjme_mle_mleCall(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_lpcstr className,
@@ -50,16 +56,12 @@ sjme_errorCode sjme_mle_mleCall(
 				if (strcmp(methodName, minor->name) == 0 &&
 					strcmp(methodType, minor->type) == 0)
 				{
-					/* Check count and return type. */
-					if (argC != minor->argC ||
-						argR->type != minor->argR)
-						return SJME_ERROR_INCOMPATIBLE_MLE_CALL;
-
-					/* Check argument types. */
+					/* Check arguments. */
 					for (i = 0; i < argC; i++)
-						if (argV[i].type != minor->argV[i])
+						if (minor->argX[i] == '\0' ||
+							sjme_nvm_mleTToA[argV[i].type] != minor->argX[i])
 							return SJME_ERROR_INCOMPATIBLE_MLE_CALL;
-
+					
 					/* Forward call. */
 					return minor->function(inFrame, argR, argC, argV);
 				}
