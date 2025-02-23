@@ -9,6 +9,7 @@
 
 #include "sjme/config.h"
 #include "sjme/nvm/mle.h"
+#include "sjme/nvm/mleConst.h"
 #include "sjme/nvm/mleShelves.h"
 
 SJME_NVM_MLE_FUNCTION_DECL(available)

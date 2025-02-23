@@ -9,10 +9,8 @@
 
 #include "sjme/config.h"
 #include "sjme/nvm/mle.h"
+#include "sjme/nvm/mleConst.h"
 #include "sjme/nvm/mleShelves.h"
-
-/** The NanoCoat Virtual Machine Type. */
-#define SJME_NVM_VM_TYPE_NANOCOAT 4
 
 SJME_NVM_MLE_FUNCTION_DECL(byteOrder)
 {
@@ -102,7 +100,7 @@ SJME_NVM_MLE_FUNCTION_DECL(vmType)
 {
 	/* Always returns this constant value of NanoCoat. */
 	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->value.i = SJME_NVM_VM_TYPE_NANOCOAT;
+	argR->value.i = SJME_NVM_MLE_VM_TYPE_NANOCOAT;
 
 	return SJME_ERROR_NONE;
 }
