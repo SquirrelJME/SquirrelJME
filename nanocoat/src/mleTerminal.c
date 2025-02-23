@@ -9,6 +9,7 @@
 
 #include "sjme/config.h"
 #include "sjme/nvm/mle.h"
+#include "sjme/nvm/mleBrackets.h"
 #include "sjme/nvm/mleConst.h"
 #include "sjme/nvm/mleShelves.h"
 
