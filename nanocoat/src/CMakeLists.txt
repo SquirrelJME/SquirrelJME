@@ -29,7 +29,25 @@ squirreljme_multilib_add_static_library(Core
 	jdwp.c
 	loop.c
 	mle.c
+	mleAtomic.c
+	mleDebug.c
+	mleJarPackage.c
+	mleMath.c
+	mleMidi.c
+	mleNativeArchive.c
+	mleObject.c
+	mlePencil.c
+	mlePencilFont.c
+	mleReference.c
+	mleReflection.c
+	mleRJPBIS.c
 	mleRuntime.c
+	mleScritchUi.c
+	mleString.c
+	mleTask.c
+	mleTerminal.c
+	mleThread.c
+	mleType.c
 	modelessStars.c
 	nvm.c
 	rom.c
