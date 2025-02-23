@@ -449,9 +449,15 @@ typedef union sjme_jlong
  * 
  * @sinc 2023/07/25
  */
-typedef struct sjme_jfloat
+typedef union sjme_jfloat
 {
+	/** The raw integer bit value. */
 	sjme_jint value;
+
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	/** The native float value. */
+	float native;
+#endif
 } sjme_jfloat;
 
 /** Basic @c sjme_jfloat type identifier. */

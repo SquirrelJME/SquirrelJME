@@ -21,6 +21,11 @@
 
 #include <stddef.h>
 
+/* Floating point header, determines if software floats should be used. */
+#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+	#include <float.h>
+#endif
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -29,7 +34,7 @@
 extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif     /* #ifdef __cplusplus */
-
+	
 /*--------------------------------------------------------------------------*/
 
 #if defined(__STDC__)
@@ -855,6 +860,36 @@ extern "C" {
 /** Bitfield count for @c sjme_jboolean . */
 #define sjme_booleanBit 2
 
+/* 32-bit floating point matches Java? */
+#if defined(FLT_ROUNDS) && FLT_ROUNDS == 1 && \
+	defined(FLT_EVAL_METHOD) && FLT_EVAL_METHOD == 0 && \
+	defined(FLT_RADIX) && FLT_RADIX == 2
+
+	#if !defined(SJME_CONFIG_HAS_FLOAT_SOFT) && \
+		defined(FLT_MANT_DIG) && FLT_MANT_DIG == 24 && \
+		(defined(FLT_HAS_SUBNORM) || __FLT_HAS_DENORM__)
+		/** Hardware single floating point. */
+		#define SJME_CONFIG_HAS_FLOAT_HARD
+	#endif
+
+	#if !defined(SJME_CONFIG_HAS_DOUBLE_SOFT) && \
+		defined(DBL_MANT_DIG) && DBL_MANT_DIG == 53 && \
+		(defined(DBL_HAS_SUBNORM) || __DBL_HAS_DENORM__)
+		/** Hardware double floating point. */
+		#define SJME_CONFIG_HAS_DOUBLE_HARD
+	#endif
+#endif
+
+#if !defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	/** Has software single floating point. */
+	#define SJME_CONFIG_HAS_FLOAT_SOFT
+#endif
+
+#if !defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/** Has software double floating point. */
+	#define SJME_CONFIG_HAS_DOUBLE_SOFT
+#endif
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

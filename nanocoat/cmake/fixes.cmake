@@ -196,6 +196,12 @@ macro(squirreljme_try_compile noun target source cdef)
 	endif()
 endmacro()
 
+# float.h available?
+squirreljme_try_compile("float.h"
+	SQUIRRELJME_FLOAT_H_TRY_VALID
+	"tryFloatH"
+	SJME_CONFIG_HAS_NO_FLOAT_H)
+
 # snprintf() available?
 squirreljme_try_compile("snprintf()"
 	SQUIRRELJME_SNPRINTF_TRY_VALID
