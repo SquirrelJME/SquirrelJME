@@ -7,9 +7,6 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Defines the base project and the versioning info
 
-# Easier includes
-include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
-
 # Needed for some ancient RetroArch toolchains
 if(${CMAKE_VERSION} VERSION_LESS "3.13")
 	message(STATUS "Ancient CMake has been detected (${CMAKE_VERSION})")
@@ -20,6 +17,9 @@ else()
 	message(STATUS "Detected CMake (${CMAKE_VERSION})")
 	cmake_minimum_required(VERSION 3.13)
 endif()
+
+# Easier includes
+include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
 
 # Determine version information
 squirreljme_include("identify-squirreljme-version.cmake")
