@@ -33,13 +33,22 @@ SJME_NVM_MLE_FUNCTION_DECL(flush)
 
 SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 {
+	sjme_errorCode error;
 	sjme_nvm_task_globals* globals;
 	sjme_nvm_mle_standardPipeType type;
-	sjme_jobject pipe;
+	sjme_nvm_mle_pipe pipe;
+	const sjme_nal* nal;
 
 	/* Check. */
 	type = (sjme_nvm_mle_standardPipeType)argV[0].value.i;
 	if (type < 0 || type >= SJME_NVM_MLE_NUM_STD_PIPES)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Check if the system even supports this. */
+	nal = inFrame->inState->nal;
+	if ((type == SJME_NVM_MLE_STD_PIPE_STDIN && nal->stdInF == NULL) ||
+		(type == SJME_NVM_MLE_STD_PIPE_STDOUT && nal->stdOutF == NULL) ||
+		(type == SJME_NVM_MLE_STD_PIPE_STDERR && nal->stdErrF == NULL))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has a pipe already been created? We want single brackets for each */
@@ -47,14 +56,61 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 	globals = &inFrame->inThread->inTask->globals;
 	pipe = globals->stdPipes[type];
 	if (pipe != NULL)
+		goto skip_validPipe;
+
+	/* Lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&globals->lock)))
+		return sjme_error_default(error);
+
+	/* Check again, and only initialize the pipe if it is still NULL. */
+	pipe = globals->stdPipes[type];
+	if (pipe == NULL)
+	{
+		/* Allocate pipe object. */
+		if (sjme_error_is(error = sjme_nvm_task_objectNewN(inFrame->inThread,
+			sizeof(*pipe), SJME_NVM_STRUCT_BRACKET_PIPE,
+			SJME_AS_JOBJECTP(&pipe), SJME_NVM_BRACKET_NAME_PIPE)) ||
+			pipe == NULL)
+			goto fail_badAlloc;
+		
+		/* Input pipe. */
+		if (type == SJME_NVM_MLE_STD_PIPE_STDIN)
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+		/* Output pipe. */
+		else
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+		/* Cache for later usage. */
+		globals->stdPipes[type] = pipe;
+	}
+
+	/* Unlock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(&globals->lock,
+		NULL)))
+		return sjme_error_default(error);
+
+skip_validPipe:
+	/* Is the pipe valid? */
+	if (pipe != NULL)
 	{
 		argR->type = SJME_JAVA_TYPE_ID_OBJECT;
-		argR->value.l = pipe;
+		argR->value.l = (sjme_jobject)pipe;
 		return SJME_ERROR_NONE;
 	}
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Not valid. */
+	return sjme_error_vmError(inFrame, SJME_ERROR_MLE_CALL);
+
+fail_badAlloc:
+	sjme_thread_spinLockRelease(&globals->lock, NULL);
+	return sjme_error_vmError(inFrame, error);
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(read)

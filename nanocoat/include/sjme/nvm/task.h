@@ -21,6 +21,7 @@
 #include "sjme/nvm/rom.h"
 #include "sjme/nvm/classyVm.h"
 #include "sjme/nvm/mleConst.h"
+#include "sjme/nvm/mleBrackets.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -304,7 +305,7 @@ typedef struct sjme_nvm_task_globals
 	sjme_thread_spinLock lock;
 
 	/** The standard pipes for standard IO. */
-	sjme_jobject stdPipes[SJME_NVM_MLE_NUM_STD_PIPES];
+	sjme_nvm_mle_pipe stdPipes[SJME_NVM_MLE_NUM_STD_PIPES];
 } sjme_nvm_task_globals;
 	
 struct sjme_nvm_taskBase
@@ -544,6 +545,44 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue);
+
+/**
+ * Allocates a new object.
+ * 
+ * @param contextThread The context thread for the allocation, if a class
+ * initialization is required.
+ * @param allocSize The allocation size.
+ * @param inType The NVM structure type.
+ * @param outObject The resultant object.
+ * @param inClass The class type to use for the object.
+ * @return Any resultant error, if any.
+ * @since 2025/02/23
+ */
+sjme_errorCode sjme_nvm_task_objectNew(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInNotNull sjme_jclass inClass);
+
+/**
+ * Allocates a new object.
+ * 
+ * @param contextThread The context thread for the allocation, if a class
+ * initialization is required.
+ * @param allocSize The allocation size.
+ * @param inType The NVM structure type.
+ * @param outObject The resultant object.
+ * @param inClass The class type to use for the object.
+ * @return Any resultant error, if any.
+ * @since 2025/02/23
+ */
+sjme_errorCode sjme_nvm_task_objectNewN(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInNotNull sjme_lpcstr inClass);
 	
 /**
  * Prints the stack trace for a thread using the standard compact SquirrelJME

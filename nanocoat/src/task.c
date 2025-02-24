@@ -717,6 +717,71 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_nvm_task_objectNew(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInNotNull sjme_jclass inClass)
+{
+	sjme_errorCode error;
+	sjme_jobject result;
+	
+	if (contextThread == NULL || outObject == NULL || inClass == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inType < 0 || inType >= SJME_NVM_NUM_STRUCT)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Make sure the class is initialized. */
+	if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(inClass,
+		contextThread)))
+		return sjme_error_vmError(contextThread, error);
+	
+	/* Setup string object. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_alloc(contextThread->state,
+		allocSize, inType,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
+		return sjme_error_vmError(contextThread, error);
+	
+	/* Set some basic details. */
+	result->isClass = inClass;
+	result->identityHash = (sjme_jint)result;
+	
+	/* Success! */
+	*outObject = result;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_task_objectNewN(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInNotNull sjme_lpcstr inClass)
+{
+	sjme_errorCode error;
+	sjme_jclass classy;
+	
+	if (contextThread == NULL || outObject == NULL || inClass == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inType < 0 || inType >= SJME_NVM_NUM_STRUCT)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Lookup the class first. */
+	classy = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		contextThread->inTask->classLoader, &classy, contextThread,
+		inClass, SJME_JNI_FALSE)) || classy == NULL)
+		return sjme_error_vmError(contextThread, error);
+
+	/* Forward call. */
+	return sjme_nvm_task_objectNew(contextThread, allocSize, inType,
+		outObject, classy);
+}
+
 sjme_errorCode sjme_nvm_task_stackTrace(
 	sjme_attrInNotNull sjme_nvm_thread inThread)
 {
@@ -1358,9 +1423,10 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 
 	/* Setup string object. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inThread->state,
+	if (sjme_error_is(error = sjme_nvm_task_objectNewN(inThread,
 		sizeof(*result), SJME_NVM_STRUCT_STRING_INSTANCE,
-		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
+		SJME_AS_JOBJECTP(&result), "java/lang/String")) ||
+		result == NULL)
 		goto fail_allocStringInstance;
 
 	/* Set string properties. */

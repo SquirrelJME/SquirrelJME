@@ -30,6 +30,46 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/** The name of the pipe bracket. */
+#define SJME_NVM_BRACKET_NAME_PIPE \
+	"cc/squirreljme/jvm/mle/brackets/PipeBracket"
+	
+/**
+ * Pipe bracket.
+ *
+ * @since 2025/02/23
+ */
+typedef struct sjme_nvm_mle_pipeBase sjme_nvm_mle_pipeBase;
+
+/**
+ * Pipe bracket.
+ *
+ * @since 2025/02/23
+ */
+typedef sjme_nvm_mle_pipeBase* sjme_nvm_mle_pipe;
+
+struct sjme_nvm_mle_pipeBase
+{
+	/** Base object. */
+	sjme_jobjectBase object;
+
+	/** Is output stream? */
+	sjme_jboolean isOutput;
+	
+	/** The wrapped stream. */
+	union
+	{
+		/** Base closeable. */
+		sjme_closeable closeable;
+		
+		/** Input stream. */
+		sjme_stream_input in;
+
+		/** Output stream. */
+		sjme_stream_output out;
+	} stream;
+};
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

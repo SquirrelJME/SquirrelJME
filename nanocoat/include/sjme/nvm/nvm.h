@@ -198,6 +198,12 @@ typedef struct sjme_nvm_commonBase sjme_nvm_commonBase;
  */
 typedef sjme_nvm_commonBase* sjme_nvm_common;
 
+/** Cast to object. */
+#define SJME_AS_JOBJECT(x) ((sjme_jobject)(x))
+
+/** Cast to pointer to object. */
+#define SJME_AS_JOBJECTP(x) ((sjme_jobject*)(x))
+
 /** Cast to common type. */
 #define SJME_AS_NVM_COMMON(x) ((sjme_nvm_common)(x))
 

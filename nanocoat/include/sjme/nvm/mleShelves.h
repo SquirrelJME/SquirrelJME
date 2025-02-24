@@ -17,6 +17,7 @@
 #define SQUIRRELJME_MLESHELVES_H
 
 #include "sjme/nvm/mle.h"
+#include "sjme/nvm/mleBrackets.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -54,8 +55,11 @@ extern "C"
 /** Integer type. */
 #define SJME_MD_I "I"
 
+/** Class type. */
+#define SJME_MD_L(name) "L" name ";"
+
 /** Pipe descriptor. */
-#define SJME_MD_PIPE "Lcc/squirreljme/jvm/mle/brackets/PipeBracket;"
+#define SJME_MD_PIPE SJME_MD_L(SJME_NVM_BRACKET_NAME_PIPE)
 
 /** MLE Function name. */
 #define SJME_NVM_MLE_FUNCTION_NAME(name, alt) \

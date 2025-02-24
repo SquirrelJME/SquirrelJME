@@ -115,6 +115,9 @@ typedef struct sjme_nal
 	
 	/** Get the current monotonic nanosecond time. */
 	sjme_nal_nanoTimeFunc nanoTime;
+
+	/** Standard input function. */
+	void* stdInF;
 	
 	/** Formatted output to standard error. */
 	sjme_nal_stdFFunc stdErrF;
