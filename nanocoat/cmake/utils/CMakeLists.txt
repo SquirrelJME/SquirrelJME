@@ -37,6 +37,9 @@ file(WRITE "${CMAKE_BINARY_DIR}/dylibsuffix"
 
 include_directories("${CMAKE_SOURCE_DIR}/../../include/")
 
+include("${CMAKE_SOURCE_DIR}/../fixes.cmake"
+	NO_POLICY_SCOPE)
+
 # Hex decoding to binary
 add_executable(decode
 	decode.c)
