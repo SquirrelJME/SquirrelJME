@@ -860,9 +860,20 @@ extern "C" {
 /** Bitfield count for @c sjme_jboolean . */
 #define sjme_booleanBit 2
 
+/* Clang is completely broken with FLT_ROUNDS. */ 
+#if defined(SJME_CONFIG_HAS_CLANG)
+	/** Assuming floating point rounds to nearest. */
+	#define SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST
+#elif !defined(SJME_CONFIG_HAS_NO_FLOAT_H) && \
+	defined(FLT_ROUNDS) && FLT_ROUNDS == 1
+	/** Has floating point that rounds to nearest. */
+	#define SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST
+#endif
+	
 /* 32-bit floating point matches Java? */
 #if !defined(SJME_CONFIG_HAS_NO_FLOAT_H) && \
-	defined(FLT_ROUNDS) && (FLT_ROUNDS == FLT_ROUNDS) && (FLT_ROUNDS == 1) && \
+	(defined(SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST) || \
+		defined(SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST)) && \
 	defined(FLT_EVAL_METHOD) && (FLT_EVAL_METHOD == 0) && \
 	defined(FLT_RADIX) && (FLT_RADIX == 2)
 	/* Compatible single floating point? */
