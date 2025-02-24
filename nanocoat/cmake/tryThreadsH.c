@@ -11,5 +11,6 @@
 
 int main(int argc, char** argv)
 {
+	thrd_t a;
 	return 0;
 }
