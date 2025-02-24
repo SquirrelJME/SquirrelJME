@@ -28,7 +28,7 @@
 	#include <stdarg.h>
 #endif
 
-#if defined(SJME_CONFIG_HAS_C11) && !defined(SJME_CONFIG_HAS_NO_C11_THREADS)
+#if !defined(SJME_CONFIG_HAS_NO_C11_THREADS)
 	#include <threads.h>
 #endif
 

@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Various utilities (backwards compatible make)
 
-SJME_CFLAGS=-I../../include/
+SJME_CFLAGS=-I../../include/ -DSJME_CONFIG_HAS_NO_C11_THREADS=1
 
 $(OUTPUT_DIR)/decode$(HOST_EXE_SUFFIX):		decode.c
 								$(CC) -o "$@" $(SJME_CFLAGS) $<
