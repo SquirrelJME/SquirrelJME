@@ -28,9 +28,6 @@ message(STATUS "Util generator is ${CMAKE_GENERATOR}...")
 # Declare Project
 project(CMakeUtils)
 
-# Ignore C11 threading
-add_compile_definitions(SJME_CONFIG_HAS_NO_C11_THREADS=1)
-
 # Always output binaries into the binary directory because we do not want
 # to bother with how things should be found...
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
@@ -54,6 +51,9 @@ include("${CMAKE_SOURCE_DIR}/../cmake-patch.cmake"
 	NO_POLICY_SCOPE)
 include("${CMAKE_SOURCE_DIR}/../fixes.cmake"
 	NO_POLICY_SCOPE)
+
+# Ignore C11 threading
+add_compile_definitions(SJME_CONFIG_HAS_NO_C11_THREADS=1)
 
 # Hex decoding to binary
 add_executable(decode
