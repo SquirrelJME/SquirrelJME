@@ -824,15 +824,20 @@ extern "C" {
 /** Disable all linting of any kind. */
 #define sjme_noLint(what) (what) /* NOLINT */ /* ReSharper disable once all */
 
-#if defined(SJME_CONFIG_HAS_MSVC)
-	/** Thread local storage. */
-	#define sjme_attrThreadLocal(type, name) \
-		static sjme_align32 type __declspec(thread) name;
-#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
-	/** Thread local storage. */
-	#define sjme_attrThreadLocal(type, name) \
-		static sjme_align32 __thread type name
-#else
+#if !defined(SJME_CONFIG_HAS_NO_THREAD_LOCAL)
+	#if defined(SJME_CONFIG_HAS_MSVC)
+		/** Thread local storage. */
+		#define sjme_attrThreadLocal(type, name) \
+			static sjme_align32 type __declspec(thread) name;
+	#elif defined(SJME_CONFIG_HAS_GCC) || \
+		defined(SJME_CONFIG_HAS_CLANG)
+		/** Thread local storage. */
+		#define sjme_attrThreadLocal(type, name) \
+			static sjme_align32 __thread type name
+	#endif
+#endif
+
+#if !defined(sjme_attrThreadLocal)
 	/** Thread local storage. */
 	#define sjme_attrThreadLocal(type, name) \
 		static sjme_align32 type name

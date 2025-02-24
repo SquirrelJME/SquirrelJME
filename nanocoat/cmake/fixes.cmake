@@ -185,6 +185,7 @@ macro(squirreljme_try_compile noun target source cdef)
 		"${CMAKE_CURRENT_BINARY_DIR}"
 		SOURCES "${CMAKE_CURRENT_LIST_DIR}/${source}.c"
 		CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
+			"-DINCLUDE_DIRECTORIES=${CMAKE_SOURCE_DIR}/include"
 		LINK_LIBRARIES ${CMAKE_THREAD_LIBS_INIT}
 		OUTPUT_VARIABLE ${target}_OUTPUT)
 
@@ -235,4 +236,10 @@ squirreljme_try_compile("threads.h"
 	SQUIRRELJME_C11_THREADS_TRY_VALID
 	"tryThreadsH"
 	SJME_CONFIG_HAS_NO_C11_THREADS)
+
+# Can use thread local?
+squirreljme_try_compile("sjme_attrThreadLocal"
+	SQUIRRELJME_C11_THREADS_TRY_THREAD_LOCAL
+	"tryThreadLocal"
+	SJME_CONFIG_HAS_NO_THREAD_LOCAL)
 
