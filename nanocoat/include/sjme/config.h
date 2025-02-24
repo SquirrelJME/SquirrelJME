@@ -861,7 +861,8 @@ extern "C" {
 #define sjme_booleanBit 2
 
 /* 32-bit floating point matches Java? */
-#if defined(FLT_ROUNDS) && FLT_ROUNDS == 1 && \
+#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H) && \
+	defined(FLT_ROUNDS) && FLT_ROUNDS == 1 && \
 	defined(FLT_EVAL_METHOD) && FLT_EVAL_METHOD == 0 && \
 	defined(FLT_RADIX) && FLT_RADIX == 2
 	/* Compatible single floating point? */
