@@ -12,61 +12,111 @@
 #include "sjme/nvm/bytecodeSlow.h"
 #include "sjme/nvm/task.h"
 
-typedef sjme_jboolean (*sjme_nvm_byteCode_compareFunc)(
+typedef sjme_jboolean (*sjme_nvm_byteCode_compareAFunc)(
+	sjme_attrInValue sjme_jobject a,
+	sjme_attrInValue sjme_jobject b);
+
+typedef sjme_jboolean (*sjme_nvm_byteCode_compareIFunc)(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b);
 
-sjme_jboolean sjme_nvm_byteCode_compareEq(
+sjme_jboolean sjme_nvm_byteCode_compareAEq(
+	sjme_attrInValue sjme_jobject a,
+	sjme_attrInValue sjme_jobject b)
+{
+	return a == b;
+}
+
+sjme_jboolean sjme_nvm_byteCode_compareANe(
+	sjme_attrInValue sjme_jobject a,
+	sjme_attrInValue sjme_jobject b)
+{
+	return a != b;
+}
+
+sjme_jboolean sjme_nvm_byteCode_compareIEq(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b)
 {
 	return a == b;
 }
 
-sjme_jboolean sjme_nvm_byteCode_compareGe(
+sjme_jboolean sjme_nvm_byteCode_compareIGe(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b)
 {
 	return a >= b;
 }
 
-sjme_jboolean sjme_nvm_byteCode_compareGt(
+sjme_jboolean sjme_nvm_byteCode_compareIGt(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b)
 {
 	return a > b;
 }
 
-sjme_jboolean sjme_nvm_byteCode_compareLe(
+sjme_jboolean sjme_nvm_byteCode_compareILe(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b)
 {
 	return a <= b;
 }
 
-sjme_jboolean sjme_nvm_byteCode_compareLt(
+sjme_jboolean sjme_nvm_byteCode_compareILt(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b)
 {
 	return a < b;
 }
 
-sjme_jboolean sjme_nvm_byteCode_compareNe(
+sjme_jboolean sjme_nvm_byteCode_compareINe(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b)
 {
 	return a != b;
 }
 
-static const sjme_nvm_byteCode_compareFunc sjme_nvm_byteCode_compares[6] =
+static const sjme_nvm_byteCode_compareAFunc sjme_nvm_byteCode_compareAs[2] =
 {
-	sjme_nvm_byteCode_compareEq,
-	sjme_nvm_byteCode_compareNe,
-	sjme_nvm_byteCode_compareLt,
-	sjme_nvm_byteCode_compareGe,
-	sjme_nvm_byteCode_compareGt,
-	sjme_nvm_byteCode_compareLe,
+	sjme_nvm_byteCode_compareAEq,
+	sjme_nvm_byteCode_compareANe,
 };
+
+static const sjme_nvm_byteCode_compareIFunc sjme_nvm_byteCode_compareIs[6] =
+{
+	sjme_nvm_byteCode_compareIEq,
+	sjme_nvm_byteCode_compareINe,
+	sjme_nvm_byteCode_compareILt,
+	sjme_nvm_byteCode_compareIGe,
+	sjme_nvm_byteCode_compareIGt,
+	sjme_nvm_byteCode_compareILe,
+};
+
+SJME_NVM_BYTECODE_SLOW(IfAX)
+{
+	sjme_jint offset;
+	sjme_jvalueTyped value;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	
+	/* Read the branch value. */
+	offset = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[1]));
+	
+	/* Pop single integer value. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Successful branch? */
+	if (sjme_nvm_byteCode_compareAs[id - 198](value.value.l, NULL))
+		pcNew->adjust = offset;
+
+	/* Failed branch. */
+	else
+		pcNew->adjust = 3;
+
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
 
 SJME_NVM_BYTECODE_SLOW(IfX)
 {
@@ -84,7 +134,7 @@ SJME_NVM_BYTECODE_SLOW(IfX)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
-	if (sjme_nvm_byteCode_compares[id - 153](value.value.i, 0))
+	if (sjme_nvm_byteCode_compareIs[id - 153](value.value.i, 0))
 		pcNew->adjust = offset;
 
 	/* Failed branch. */
@@ -114,13 +164,57 @@ SJME_NVM_BYTECODE_SLOW(IfICmpX)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
-	if (sjme_nvm_byteCode_compares[id - 159](a.value.i, b.value.i))
+	if (sjme_nvm_byteCode_compareIs[id - 159](a.value.i, b.value.i))
 		pcNew->adjust = offset;
 
 	/* Failed branch. */
 	else
 		pcNew->adjust = 3;
 
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(IfACmpX)
+{
+	sjme_jint offset;
+	sjme_jvalueTyped a, b;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	
+	/* Read the branch value. */
+	offset = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[1]));
+	
+	/* Pop both integer values. */
+	memset(&b, 0, sizeof(b));
+	memset(&a, 0, sizeof(a));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &b)))
+		return sjme_error_vmError(inFrame, error);
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &a)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Successful branch? */
+	if (sjme_nvm_byteCode_compareAs[id - 165](a.value.l, b.value.l))
+		pcNew->adjust = offset;
+
+	/* Failed branch. */
+	else
+		pcNew->adjust = 3;
+
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(Goto)
+{
+	sjme_jint offset;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	
+	/* Read the branch value. */
+	offset = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[1]));
+
+	/* Jumps according to the offset. */
+	pcNew->adjust = offset;
+	
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
 
