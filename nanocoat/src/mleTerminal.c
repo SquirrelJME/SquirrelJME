@@ -13,6 +13,45 @@
 #include "sjme/nvm/mleConst.h"
 #include "sjme/nvm/mleShelves.h"
 
+sjme_errorCode sjme_nvm_mleTerminal_stdOutInit(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState,
+	sjme_attrInNullable sjme_pointer data)
+{
+	if (stream == NULL || inImplState == NULL || data == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Only the context is needed. */
+	inImplState->handle = data;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_mleTerminal_stdOutWrite(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState,
+	sjme_attrInNotNull sjme_cpointer buf,
+	sjme_attrInPositiveNonZero sjme_jint length)
+{
+	sjme_nal_stdOFunc stdO;
+	
+	if (stream == NULL || inImplState == NULL || buf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (length <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Forward to native output. */
+	stdO = inImplState->handle;
+	return stdO(buf, 0, length);
+}
+
+/** Stream output functions. */
+static const sjme_stream_outputFunctions sjme_nvm_mleTerminal_stdOut =
+{
+	.init = sjme_nvm_mleTerminal_stdOutInit,
+	.write = sjme_nvm_mleTerminal_stdOutWrite,
+};
+
 SJME_NVM_MLE_FUNCTION_DECL(available)
 {
 	sjme_todo("Impl?");
@@ -37,6 +76,7 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 	sjme_nvm_task_globals* globals;
 	sjme_nvm_mle_standardPipeType type;
 	sjme_nvm_mle_pipe pipe;
+	sjme_nal_stdOFunc stdO;
 	const sjme_nal* nal;
 
 	/* Check. */
@@ -47,8 +87,8 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 	/* Check if the system even supports this. */
 	nal = inFrame->inState->nal;
 	if ((type == SJME_NVM_MLE_STD_PIPE_STDIN && nal->stdInF == NULL) ||
-		(type == SJME_NVM_MLE_STD_PIPE_STDOUT && nal->stdOutF == NULL) ||
-		(type == SJME_NVM_MLE_STD_PIPE_STDERR && nal->stdErrF == NULL))
+		(type == SJME_NVM_MLE_STD_PIPE_STDOUT && nal->stdOut == NULL) ||
+		(type == SJME_NVM_MLE_STD_PIPE_STDERR && nal->stdErr == NULL))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has a pipe already been created? We want single brackets for each */
@@ -83,8 +123,20 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 		/* Output pipe. */
 		else
 		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			/* Which output? */
+			stdO = (type == SJME_NVM_MLE_STD_PIPE_STDOUT ? nal->stdOut :
+				nal->stdErr);
+
+			/* Set as output. */
+			pipe->isOutput = SJME_JNI_TRUE;
+
+			/* Open target stream. */
+			pipe->stream.out = NULL;
+			if (sjme_error_is(error = sjme_stream_outputOpen(
+				inFrame->inState->allocPool, &pipe->stream.out,
+				&sjme_nvm_mleTerminal_stdOut, stdO, NULL)) ||
+				pipe->stream.out == NULL)
+				goto fail_badOpen;
 		}
 
 		/* Cache for later usage. */
@@ -108,6 +160,7 @@ skip_validPipe:
 	/* Not valid. */
 	return sjme_error_vmError(inFrame, SJME_ERROR_MLE_CALL);
 
+fail_badOpen:
 fail_badAlloc:
 	sjme_thread_spinLockRelease(&globals->lock, NULL);
 	return sjme_error_vmError(inFrame, error);

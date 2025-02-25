@@ -516,7 +516,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_charSeq argSeq;
 	sjme_jboolean jarSpecified;
 	const sjme_nvm_helpParam* help;
-	sjme_nal_stdFFunc helpOut;
+	sjme_nal_stdOFunc helpOut;
 	
 	if (allocPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -541,19 +541,19 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				"--version"))
 		{
 			/* Where is this information going? */
-			helpOut = nal->stdErrF;
+			helpOut = nal->stdErr;
 			if (sjme_charSeq_equalsUtfR(&argSeq, "--version"))
-				helpOut = nal->stdOutF;
+				helpOut = nal->stdOut;
 			
 			/* Print version information to stdout. */
 			/* https://www.oracle.com/java/technologies/javase/ */
 			/* versioning-naming.html */
-			helpOut(
+			sjme_nal_stdF(helpOut,
 				"java version \"1.8.0\"\n");
-			helpOut(
+			sjme_nal_stdF(helpOut,
 				"SquirrelJME Class Library, Micro Edition (build %s)\n",
 				SQUIRRELJME_VERSION);
-			helpOut(
+			sjme_nal_stdF(helpOut,
 				"SquirrelJME NanoCoat VM (build %s, %s)\n",
 				SQUIRRELJME_VERSION, SQUIRRELJME_VERSION_NANOCOAT);
 			
@@ -572,24 +572,24 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				"--help"))
 		{
 			/* Where is this information going? */
-			helpOut = nal->stdErrF;
+			helpOut = nal->stdErr;
 			if (sjme_charSeq_equalsUtfR(&argSeq, "--help"))
-				helpOut = nal->stdOutF;
+				helpOut = nal->stdOut;
 			
 			/* Normal usage. */
-			helpOut(
+			sjme_nal_stdF(helpOut,
 				"Usage: %s [Options] <MainClass> [Args...]\n", argv[0]);
-			helpOut(
+			sjme_nal_stdF(helpOut,
 				"Usage: %s [Options] -jar <Jar> [Args...]\n", argv[0]);
-			helpOut("\n");
+			sjme_nal_stdF(helpOut,"\n");
 			
 			/* And all the help parameters. */
-			helpOut("Options are:\n");
+			sjme_nal_stdF(helpOut, "Options are:\n");
 			for (help = &sjme_nvm_helpParams[0]; help->arg != NULL; help++)
 			{
-				helpOut("  %s\n",
+				sjme_nal_stdF(helpOut, "  %s\n",
 					help->arg);
-				helpOut("    %s\n",
+				sjme_nal_stdF(helpOut, "    %s\n",
 					help->desc);
 			}
 			

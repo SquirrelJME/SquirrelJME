@@ -86,17 +86,19 @@ typedef sjme_errorCode (*sjme_nal_nanoTimeFunc)(
 	sjme_attrCheckReturn;
 
 /**
- * Formatted text to standard stream.
- * 
- * @param format The format string.
- * @param ... Format arguments.
- * @return Any resultant error code.
- * @since 2024/08/08
+ * Writes data to a standard output type stream.
+ *
+ * @param buf The data buffer to write.
+ * @param off The offset into the buffer.
+ * @param len The number of bytes to write.
+ * @return Any resulant error, if any.
+ * @since 2025/02/25
  */
-typedef sjme_errorCode (*sjme_nal_stdFFunc)(
-	sjme_attrInNotNull sjme_lpcstr format,
-	...);
-
+typedef sjme_errorCode (*sjme_nal_stdOFunc)(
+	sjme_attrInNotNullBuf(len) sjme_cpointer buf,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositiveNonZero sjme_jint len);
+	
 /**
  * Native Abstraction Layer functions.
  * 
@@ -119,11 +121,11 @@ typedef struct sjme_nal
 	/** Standard input function. */
 	void* stdInF;
 	
-	/** Formatted output to standard error. */
-	sjme_nal_stdFFunc stdErrF;
+	/** Output to standard error. */
+	sjme_nal_stdOFunc stdErr;
 	
-	/** Formatted output to standard output. */
-	sjme_nal_stdFFunc stdOutF;
+	/** Output to standard output. */
+	sjme_nal_stdOFunc stdOut;
 } sjme_nal;
 
 /** Default native abstraction layer. */
@@ -153,6 +155,20 @@ sjme_errorCode sjme_nal_errno(sjme_jint errNum);
 
 #endif
 
+/**
+ * Writes to the given output.
+ * 
+ * @param outFunc The output function.
+ * @param format The format specifier.
+ * @param ... The format data.
+ * @return On any resultant error, if any.
+ * @since 2025/02/24
+ */
+sjme_errorCode sjme_nal_stdF(
+	sjme_attrInNotNull sjme_nal_stdOFunc outFunc,
+	sjme_attrInNotNull sjme_lpcstr format,
+	...);
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

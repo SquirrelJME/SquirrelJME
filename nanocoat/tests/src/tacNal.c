@@ -12,6 +12,10 @@
 
 #include "test.h"
 
+#define TAC_BUF_SIZE 2048
+
+static const sjme_cchar tacBuf[TAC_BUF_SIZE];
+
 sjme_errorCode sjme_nal_test_currentTimeMillis(
 	sjme_attrOutNotNull sjme_jlong* result)
 {
@@ -47,6 +51,9 @@ sjme_errorCode sjme_nal_test_getEnv(
 {
 	if (buf == NULL || env == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nal_test_nanoTime(
@@ -72,62 +79,30 @@ sjme_errorCode sjme_nal_test_nanoTime(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nal_test_stdErrF(
-	sjme_attrInNotNull sjme_lpcstr format,
-	...)
+sjme_errorCode sjme_nal_test_stdErr(
+	sjme_attrInNotNullBuf(len) sjme_cpointer buf,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositiveNonZero sjme_jint len)
 {
-#define BUFSIZE 512
-	sjme_errorCode error;
-	char buf[BUFSIZE];
-	va_list list;
+	sjme_jint i;
+	sjme_cchar c;
 	
-	if (format == NULL)
+	if (buf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Start argument parsing. */
-	va_start(list, format);
-	error = SJME_ERROR_NONE;
-	if (vsnprintf(buf, BUFSIZE, format, list) < 0)
-		error = SJME_ERROR_IO_EXCEPTION;
-	
-	/* End argument parsing. */
-	va_end(list);
 
-	/* Emit. */
-	sjme_message("E> %s", buf);
-	
-	/* Success? */
-	return error;
-#undef BUFSIZE
+	if (off < 0 || len < 0 || (buf + len) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
-sjme_errorCode sjme_nal_test_stdOutF(
-	sjme_attrInNotNull sjme_lpcstr format,
-	...)
+sjme_errorCode sjme_nal_test_stdOut(
+	sjme_attrInNotNullBuf(len) sjme_cpointer buf,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositiveNonZero sjme_jint len)
 {
-#define BUFSIZE 512
-	sjme_errorCode error;
-	char buf[BUFSIZE];
-	va_list list;
-	
-	if (format == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	/* Start argument parsing. */
-	va_start(list, format);
-	error = SJME_ERROR_NONE;
-	if (vsnprintf(buf, BUFSIZE, format, list) < 0)
-		error = SJME_ERROR_IO_EXCEPTION;
-	
-	/* End argument parsing. */
-	va_end(list);
-
-	/* Emit. */
-	sjme_message("O> %s", buf);
-	
-	/* Success? */
-	return error;
-#undef BUFSIZE
+	return sjme_nal_test_stdErr(buf, off, len);
 }
 
 const sjme_nal sjme_nal_test =
@@ -136,6 +111,6 @@ const sjme_nal sjme_nal_test =
 	.fileOpen = sjme_nal_test_fileOpen,
 	.getEnv = sjme_nal_test_getEnv,
 	.nanoTime = sjme_nal_test_nanoTime,
-	.stdErrF = sjme_nal_test_stdErrF,
-	.stdOutF = sjme_nal_test_stdOutF,
+	.stdErr = sjme_nal_test_stdErr,
+	.stdOut = sjme_nal_test_stdOut,
 };
