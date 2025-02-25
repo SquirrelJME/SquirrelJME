@@ -133,3 +133,17 @@ SJME_NVM_BYTECODE_SLOW(NoOp)
 	
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
+
+SJME_NVM_BYTECODE_SLOW(Return)
+{
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Must be returning void. */
+	if (inFrame->inCode->inMethod->argR != SJME_JAVA_TYPE_ID_VOID)
+		return sjme_error_vmError(inFrame, SJME_ERROR_WRONG_RETURN_TYPE);
+
+	/* Pop the current frame. */
+	pcNew->popFrame = SJME_JNI_TRUE;
+	
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}

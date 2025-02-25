@@ -37,56 +37,6 @@ static const sjme_jint sjme_nvm_typeMul[SJME_NUM_JAVA_TYPE_IDS] =
 	sizeof(sjme_jobject),
 };
 
-static sjme_errorCode sjme_nvm_task_countObjectDown(
-	sjme_attrInNotNull sjme_jobject* oldP,
-	sjme_attrInNotNull sjme_jobject newV)
-{
-	sjme_errorCode error;
-	sjme_jobject oldObject;
-	sjme_jboolean validObject, noSelfGc;
-	sjme_alloc_weak weak;
-
-	if (oldP == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* If the old is the same as new, then do not count if the count would */
-	/* result in the object being GCed before it was set. */
-	oldObject = *oldP;
-	noSelfGc = SJME_JNI_FALSE;
-	if (oldObject != NULL && newV != NULL && oldObject == newV)
-	{
-		/* Only consider valid weak reference. */
-		weak = NULL;
-		if (sjme_error_is(error = sjme_alloc_weakRefGet(oldObject, &weak)))
-		{
-			if (error != SJME_ERROR_NOT_WEAK_REFERENCE)
-				return sjme_error_default(error);
-		}
-
-		/* Do not self GC if it would end up freeing the object before it */
-		/* could be set. */
-		noSelfGc = (sjme_atomic_sjme_jint_get(&weak->count) <= 1);
-	}
-
-	/* Count down if the old object exists, or in the case as above. */
-	if (oldObject != NULL && !noSelfGc)
-	{
-		/* Is this object actually valid? */
-		validObject = SJME_JNI_FALSE;
-		if (sjme_error_is(error = sjme_nvm_isA(oldObject,
-			SJME_NVM_STRUCT_OBJECT_INSTANCE,
-			&validObject)))
-			return sjme_error_default(error);
-
-		/* Count it down. */
-		if (sjme_error_is(error = sjme_alloc_weakUnRef(oldObject)))
-			return sjme_error_default(error);
-	}
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
 static sjme_errorCode sjme_nvm_task_stackReframe(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
@@ -365,6 +315,23 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
 	sjme_attrInValue sjme_jboolean copiedElsewhere)
 {
 	sjme_errorCode error;
+#if 1
+	sjme_jvalueTyped temp;
+
+	/* Peek top value. */
+	memset(&temp, 0, sizeof(temp));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
+		0, &temp, copiedElsewhere)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Must be the same type. */
+	if (temp.type != typeId)
+		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
+
+	/* Success! */
+	memmove(outValue, &temp, sizeof(*outValue));
+	return SJME_ERROR_NONE;
+#else
 	sjme_frame_frameStacks* stack;
 	sjme_jboolean isWide;
 	sjme_jint peekTop, peekPerTop;
@@ -416,6 +383,7 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
 	/* Success! */
 	memmove(outValue, &tempValue, sizeof(*outValue));
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPop(
@@ -574,6 +542,66 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 	return sjme_nvm_task_frameStackPush(inFrame, &value);
 }
 
+sjme_errorCode sjme_nvm_task_frameStackTop(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInPositive sjme_jint depth,
+	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
+	sjme_attrInValue sjme_jboolean copiedElsewhere)
+{
+	sjme_errorCode error;
+	sjme_frame_frameStacks* stack;
+	sjme_jint newTop;
+	sjme_javaTypeId readType;
+	sjme_jvalueTyped temp;
+	sjme_jint sub[SJME_NUM_JAVA_TYPE_IDS];
+	
+	if (inFrame == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (depth < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Set initial position. */
+	stack = &inFrame->stack;
+	newTop = stack->orderTop;
+
+	/* Keep eating depth. */
+	memset(&sub, 0, sizeof(sub));
+	while ((depth--) >= 0)
+	{
+		/* Bump down and check overflow */
+		newTop--;
+		if (newTop < stack->orderFront)
+			return SJME_ERROR_STACK_UNDERFLOW;
+
+		/* Wide? */
+		if (stack->order[newTop] == SJME_JAVA_TYPE_ID_VOID)
+			newTop--;
+
+		/* Increase subtraction count for the given type, this is used */
+		/* to locate the slot on the stack. */
+		sub[stack->order[newTop]]++;
+	}
+
+	/* Copy out value. */
+	readType = stack->order[newTop];
+	memset(&temp, 0, sizeof(temp));
+	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(inFrame, readType,
+		stack->stack[readType].top - sub[readType],
+		&temp, SJME_JNI_FALSE)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* If copied elsewhere, count object up. */
+	if (copiedElsewhere && readType == SJME_JAVA_TYPE_ID_OBJECT &&
+		temp.value.l != NULL)
+		if (sjme_error_is(error = sjme_alloc_weakRef(temp.value.l, NULL)))
+			return sjme_error_default(error);
+	
+	/* Success! */
+	memmove(outValue, &temp, sizeof(*outValue));
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
@@ -700,7 +728,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
 			/* If there is an old value here, count it down. */
-			if (sjme_error_is(error = sjme_nvm_task_countObjectDown(
+			if (sjme_error_is(error = sjme_nvm_instance_countDown(
 				&perType->base.jobjects[typeIndex],
 				inValue->value.l)))
 				return sjme_error_vmError(inFrame, error);
@@ -1231,6 +1259,31 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 	*outFrame = result;
 	return SJME_ERROR_NONE;
 #undef SJME_NVM_FRAME_GROW_SIZE
+}
+
+sjme_errorCode sjme_nvm_task_threadLeave(
+	sjme_attrInNotNull sjme_nvm_thread inThread)
+{
+	sjme_nvm_frame topFrame;
+	sjme_jint topIndex;
+	
+	if (inThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Cannot pop a frame when there is nothing. */
+	topIndex = inThread->numFrames - 1;
+	if (topIndex <= -1)
+		return SJME_ERROR_INVALID_THREAD_STATE;
+
+	/* Get the top-most frame and make it not exist. */
+	topFrame = inThread->frames->elements[topIndex];
+	inThread->numFrames = topIndex;
+
+	/* Reduce the storage claim to free it up. */
+	inThread->stack.storageTop -= topFrame->stack.storageClaim;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_task_threadNew(

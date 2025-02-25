@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/nvm/instance.h"
+#include "sjme/nvm/cleanup.h"
 
 sjme_errorCode sjme_nvm_fieldValueSet(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
@@ -62,4 +63,56 @@ sjme_jint sjme_nvm_fieldValueSize(
 		offsetof(sjme_nvm_fieldValues, values) +
 		offsetof(sjme_nvm_rawFieldValues, jobjects);
 }
+
+
+sjme_errorCode sjme_nvm_instance_countDown(
+	sjme_attrInNotNull sjme_jobject* oldP,
+	sjme_attrInNotNull sjme_jobject newV)
+{
+	sjme_errorCode error;
+	sjme_jobject oldObject;
+	sjme_jboolean validObject, noSelfGc;
+	sjme_alloc_weak weak;
+
+	if (oldP == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If the old is the same as new, then do not count if the count would */
+	/* result in the object being GCed before it was set. */
+	oldObject = *oldP;
+	noSelfGc = SJME_JNI_FALSE;
+	if (oldObject != NULL && newV != NULL && oldObject == newV)
+	{
+		/* Only consider valid weak reference. */
+		weak = NULL;
+		if (sjme_error_is(error = sjme_alloc_weakRefGet(oldObject, &weak)))
+		{
+			if (error != SJME_ERROR_NOT_WEAK_REFERENCE)
+				return sjme_error_default(error);
+		}
+
+		/* Do not self GC if it would end up freeing the object before it */
+		/* could be set. */
+		noSelfGc = (sjme_atomic_sjme_jint_get(&weak->count) <= 1);
+	}
+
+	/* Count down if the old object exists, or in the case as above. */
+	if (oldObject != NULL && !noSelfGc)
+	{
+		/* Is this object actually valid? */
+		validObject = SJME_JNI_FALSE;
+		if (sjme_error_is(error = sjme_nvm_isA(oldObject,
+			SJME_NVM_STRUCT_OBJECT_INSTANCE,
+			&validObject)))
+			return sjme_error_default(error);
+
+		/* Count it down. */
+		if (sjme_error_is(error = sjme_alloc_weakUnRef(oldObject)))
+			return sjme_error_default(error);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 

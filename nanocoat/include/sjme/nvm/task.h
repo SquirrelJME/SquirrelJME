@@ -511,6 +511,23 @@ sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
 sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_stringPool_string inString);
+
+/**
+ * Returns the top of the stack, its type and value.
+ * 
+ * @param inFrame The frame to get the top of.
+ * @param depth The depth from the stack top.
+ * @param outValue The resultant value.
+ * @param copiedElsewhere Is this value copied elsewhere? That is if this is
+ * true, then this will be reference counted.
+ * @return Any resultant error, if any.
+ * @since 2025/02/24
+ */
+sjme_errorCode sjme_nvm_task_frameStackTop(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInPositive sjme_jint depth,
+	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
+	sjme_attrInValue sjme_jboolean copiedElsewhere);
 	
 /**
  * Gets the value of a variable within a frame using the typed index
@@ -686,13 +703,23 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
  * 
  * @param inThread The thread to get the next frame for.
  * @param outFrame The resultant frame.
- * @return Any resultant error.
+ * @return Any resultant error, if any.
  * @since 2025/01/04
  */
 sjme_errorCode sjme_nvm_task_threadFrameNext(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame);
 
+/**
+ * Leaves a frame of execution.
+ * 
+ * @param inThread The thread which is leaving a thread.
+ * @return Any resultant error, if any.
+ * @since 2025/02/24
+ */
+sjme_errorCode sjme_nvm_task_threadLeave(
+	sjme_attrInNotNull sjme_nvm_thread inThread);
+	
 /**
  * Creates a new thread within the given task.
  * 

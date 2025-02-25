@@ -102,9 +102,11 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	methodName = (sjme_lpcstr)&member->nameAndType->name->chars[0];
 	methodType = (sjme_lpcstr)&member->nameAndType->descriptor->chars[0];
 
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("invokestatic(%s:%s%s)",
 		binaryName, methodName, methodType);
+#endif
 	
 	/* Locate target class. */
 	classy = NULL;
@@ -128,7 +130,9 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	target = methodId->info[SJME_NVM_CALL_NON_VIRTUAL];
 
 	/* Check permissions to call the target. */
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("TODO: Check invoke*() permissions.");
+#endif
 
 	/* Allocate pushed arguments. */
 	argV = sjme_alloca(sizeof(*argV) * (target->argC + 1));

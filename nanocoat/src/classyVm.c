@@ -202,10 +202,12 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	if (sjme_error_is(error = sjme_list_alloc(inLoader->inState->allocPool,
 		n, &result, sjme_jmethodID, 0)) || result == NULL)
 		goto fail_allocResult;
-	
+
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("Binding %d/%d methods...",
 		inClass->methodCount[0], inClass->methodCount[1]);
+#endif
 	
 	/* Bind individual methods. */
 	for (i = 0; i < n; i++)
@@ -661,7 +663,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	}
 	
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("Initializing class: %s", inClass->binaryName);
 #endif
 	
@@ -1116,7 +1118,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 		goto skip_foundClass;
 	
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("Need to find class: %s", binaryName);
 #endif
 	

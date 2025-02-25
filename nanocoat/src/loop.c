@@ -178,8 +178,6 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	if (maxTics < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	sjme_message("Exec %p", inThread);
-
 	/* Initialized to make the linter not noisy. */
 	currentFrame = NULL;
 	rawCode = NULL;
@@ -212,12 +210,22 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		iv = *ev;
 
 		/* Execute narrow handler. */
-		pcNew.type = 0;
-		pcNew.adjust = 0;
+		memset(&pcNew, 0, sizeof(pcNew));
 		if (sjme_error_is(error =
 			sjme_nvm_byteCode_slowNarrowFunctions[iv](currentFrame,
 				iv, ev, &pcNew)))
-			return sjme_error_default(error);
+			return sjme_error_vmError(inThread, error);
+
+		/* Popping the current frame? */
+		if (pcNew.popFrame)
+		{
+			/* Pop the stack frame. */
+			if (sjme_error_is(error = sjme_nvm_task_threadLeave(inThread)))
+				return sjme_error_vmError(inThread, error);
+
+			/* On the next one the frame index will be invalid. */
+			continue;
+		}
 
 		/* Set new PC address, in non-exception cases. */
 		if (pcNew.type == SJME_NVM_BYTECODE_PC_RELATIVE)

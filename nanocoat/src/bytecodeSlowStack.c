@@ -8,3 +8,38 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/nvm/bytecode.h"
+#include "sjme/nvm/bytecodeSlow.h"
+#include "sjme/nvm/task.h"
+
+SJME_NVM_BYTECODE_SLOW(Pop)
+{
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	sjme_jvalueTyped top;
+
+	/* Only a single byte. */
+	pcNew->adjust = 1;
+
+	/* What is at the top of the stack? */
+	memset(&top, 0, sizeof(top));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
+		0, &top, SJME_JNI_FALSE)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Can only be narrow types. */
+	if (SJME_TYPEID_IS_WIDE(top.type))
+		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
+
+	/* Pop value and discard. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		top.type, &top)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* If an object, count it down. */
+	if (top.type == SJME_JAVA_TYPE_ID_OBJECT)
+		if (sjme_error_is(error = sjme_nvm_instance_countDown(
+			&top.value.l, NULL)))
+			return sjme_error_vmError(inFrame, error);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}

@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/config.h"
+#include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleBrackets.h"
 #include "sjme/nvm/mleConst.h"
@@ -174,8 +175,35 @@ SJME_NVM_MLE_FUNCTION_DECL(read)
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(write, single)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_nvm_mle_pipe pipe;
+	sjme_jbyte single;
+
+	/* Must be an actual pipe. */
+	pipe = (sjme_nvm_mle_pipe)argV[0].value.l;
+	if (!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Not an output pipe? */
+	if (!pipe->isOutput)
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Write call. */
+	single = (sjme_jbyte)argV[1].value.i;
+	if (sjme_error_is(sjme_stream_outputWrite(pipe->stream.out,
+		&single, 1)))
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+		
+		argR->type = SJME_JAVA_TYPE_ID_INTEGER;
+		argR->value.i = 1337;
+		return SJME_ERROR_MLE_CALL;
+	}
+
+	/* Success! */
+	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->value.i = 0;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(write, multi)
@@ -203,8 +231,7 @@ SJME_NVM_MLE_SHELF_DECLARE(TerminalShelf) =
 			SJME_MD_I),
 		"ILLII"),
 	SJME_NVM_MLE_DEFINE_ALT(write, single,
-		SJME_MD(SJME_MD_I, SJME_MD_PIPE SJME_MD_A(SJME_MD_B)
-			SJME_MD_I),
+		SJME_MD(SJME_MD_I, SJME_MD_PIPE SJME_MD_I),
 		"ILI"),
 	SJME_NVM_MLE_DEFINE_ALT(write, multi,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE SJME_MD_A(SJME_MD_B)

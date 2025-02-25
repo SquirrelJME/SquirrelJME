@@ -206,6 +206,19 @@ sjme_jint sjme_nvm_fieldValueSize(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
 	sjme_attrInPositiveNonZero sjme_jint n);
 
+	
+/**
+ * Checks if the given object can be counted down if the old value changes.
+ * 
+ * @param oldP The old pointer value.
+ * @param newV The new value.
+ * @return Any resultant error, if any.
+ * @since 2025/02/24
+ */
+sjme_errorCode sjme_nvm_instance_countDown(
+	sjme_attrInNotNull sjme_jobject* oldP,
+	sjme_attrInNotNull sjme_jobject newV);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

@@ -453,9 +453,12 @@ typedef enum sjme_errorCode
 
 	/** MLE call is not compatible. */
 	SJME_ERROR_INCOMPATIBLE_MLE_CALL = -137,
+
+	/** Return type is incorrect. */
+	SJME_ERROR_WRONG_RETURN_TYPE = -138,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -138,
+	SJME_NUM_ERROR_CODES = -139,
 } sjme_errorCode;
 
 /**

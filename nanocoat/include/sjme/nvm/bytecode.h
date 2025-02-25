@@ -740,6 +740,9 @@ typedef struct sjme_nvm_byteCode_pcNew
 	
 	/** The PC adjustment. */
 	sjme_jint adjust;
+
+	/** Should the current frame be popped? */
+	sjme_jboolean popFrame;
 } sjme_nvm_byteCode_pcNew;
 
 /**

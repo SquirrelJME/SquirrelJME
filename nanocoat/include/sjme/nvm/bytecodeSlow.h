@@ -88,7 +88,9 @@ SJME_NVM_BYTECODE_SLOW(NoOp);
 
 /* Local */
 SJME_NVM_BYTECODE_SLOW(ALoadZ);
+SJME_NVM_BYTECODE_SLOW(AStoreZ);
 SJME_NVM_BYTECODE_SLOW(ILoadZ);
+SJME_NVM_BYTECODE_SLOW(IStore);
 
 /* Math */
 
@@ -97,6 +99,8 @@ SJME_NVM_BYTECODE_SLOW(CheckCast);
 SJME_NVM_BYTECODE_SLOW(InvokeStatic);
 
 /* Stack */
+SJME_NVM_BYTECODE_SLOW(Pop);
+SJME_NVM_BYTECODE_SLOW(Return);
 
 /*--------------------------------------------------------------------------*/
 /* clang-format on */ /* @formatter:on */

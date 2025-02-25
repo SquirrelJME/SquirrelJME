@@ -93,8 +93,9 @@ sjme_errorCode sjme_nal_test_stdErr(
 	if (off < 0 || len < 0 || (buf + len) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	fwrite(SJME_POINTER_OFFSET(buf, off), 1, len, stdout);
+	fflush(stdout);
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nal_test_stdOut(
