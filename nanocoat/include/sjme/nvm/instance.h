@@ -206,6 +206,19 @@ sjme_jint sjme_nvm_fieldValueSize(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
 	sjme_attrInPositiveNonZero sjme_jint n);
 
+/**
+ * Checks if the given member can be accessed from the given class.
+ * 
+ * @param fromClass The source class.
+ * @param toMember The member being accessed.
+ * @param accessOkay If the access is acceptable.
+ * @return On any resultant error, if any.
+ * @since 2025/02/26
+ */
+sjme_errorCode sjme_nvm_instance_checkPermission(
+	sjme_attrInNotNull sjme_jclass fromClass,
+	sjme_attrInNotNull sjme_jmemberID toMember,
+	sjme_attrOutNotNull sjme_jboolean* accessOkay);
 	
 /**
  * Checks if the given object can be counted down if the old value changes.

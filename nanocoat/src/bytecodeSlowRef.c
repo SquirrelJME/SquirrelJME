@@ -83,6 +83,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	sjme_jmethodID methodId;
 	sjme_nvm_class_methodInfo target;
 	sjme_jvalueTyped mleArgR;
+	sjme_jboolean callOkay;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* PC adjustment. */
@@ -126,13 +127,16 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		methodName, methodType, &methodId)) || methodId == NULL)
 		return sjme_error_vmError(inFrame, error);
 
+	/* Check permissions to call the target. */
+	callOkay = SJME_JNI_FALSE;
+	if (sjme_error_is(error = sjme_nvm_instance_checkPermission(
+		inFrame->inClass, SJME_AS_JMEMBERID(methodId), &callOkay)) ||
+		!callOkay)
+		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
+			SJME_ERROR_CLASS_CHANGED));
+
 	/* Get the non-virtual target info. */
 	target = methodId->info[SJME_NVM_CALL_NON_VIRTUAL];
-
-	/* Check permissions to call the target. */
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
-	sjme_message("TODO: Check invoke*() permissions.");
-#endif
 
 	/* Allocate pushed arguments. */
 	argV = sjme_alloca(sizeof(*argV) * (target->argC + 1));

@@ -84,25 +84,46 @@ typedef struct sjme_any
 } sjme_any;
 
 /**
- * Represents an identifier of a method.
+ * Represents an identifier to a member.
+ * 
+ * @since 2025/02/26
+ */
+typedef struct sjme_jmemberIDBase sjme_jmemberIDBase;
+
+/**
+ * Represents an identifier to a member.
+ * 
+ * @since 2025/02/26
+ */
+typedef sjme_jmemberIDBase* sjme_jmemberID;
+
+/**
+ * Represents an identifier to a method.
  * 
  * @since 2024/10/19
  */
 typedef struct sjme_jmethodIDBase sjme_jmethodIDBase;
 
 /**
- * Represents an identifier of a method.
+ * Represents an identifier to a method.
  * 
  * @since 2024/10/19
  */
 typedef sjme_jmethodIDBase* sjme_jmethodID;
 
 /**
- * Represents an identifier of a field.
+ * Represents an identifier to a field.
  * 
- * @since 2024/10/19
+ * @since 2025/02/26
  */
-typedef struct sjme_jfieldIDBase* sjme_jfieldID;
+typedef struct sjme_jfieldIDBase sjme_jfieldIDBase;
+
+/**
+ * Represents an identifier to a field.
+ * 
+ * @since 2025/02/26
+ */
+typedef sjme_jfieldIDBase* sjme_jfieldID;
 
 /**
  * The type of structure a type is.
@@ -203,6 +224,9 @@ typedef sjme_nvm_commonBase* sjme_nvm_common;
 
 /** Cast to pointer to object. */
 #define SJME_AS_JOBJECTP(x) ((sjme_jobject*)(x))
+
+/** As a member ID. */
+#define SJME_AS_JMEMBERID(x) ((sjme_jmemberID)(x))
 
 /** Cast to common type. */
 #define SJME_AS_NVM_COMMON(x) ((sjme_nvm_common)(x))

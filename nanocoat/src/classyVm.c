@@ -69,11 +69,11 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		goto fail_allocResult;
 
 	/* Always in the current class. */
-	result->inClass = thisClass;
+	result->member.inClass = thisClass;
 	
 	/* The names always get set. */
-	result->name = thisInfo->name;
-	result->type = thisInfo->type;
+	result->member.name = thisInfo->name;
+	result->member.type = thisInfo->type;
 
 	/* Also copy flags. */
 	result->flags = thisInfo->flags;
@@ -1388,9 +1388,9 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 				SJME_ERROR_NO_METHOD);
 		
 		/* Is this the method. */
-		if (sjme_charSeq_equalsUtfR(&method->name->seq,
+		if (sjme_charSeq_equalsUtfR(&method->member.name->seq,
 				inName) &&
-			sjme_charSeq_equalsUtfR(&method->type->seq,
+			sjme_charSeq_equalsUtfR(&method->member.type->seq,
 				inType))
 		{
 			*outID = method;

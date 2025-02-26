@@ -73,25 +73,43 @@ typedef enum sjme_nvm_methodCallType
 	SJME_NVM_NUM_METHOD_CALL_TYPE,
 } sjme_nvm_methodCallType;
 
-struct sjme_jmethodIDBase
+struct sjme_jmemberIDBase
 {
 	/** Common virtual machine info. */
 	sjme_nvm_commonBase common;
 	
-	/** The class this method is in. */
+	/** The class this member is in. */
 	sjme_jclass inClass;
 	
-	/** The name of this method. */
+	/** The name of this member. */
 	sjme_nvm_stringPool_string name;
 	
-	/** The type of this method. */
+	/** The type of this member. */
 	sjme_nvm_stringPool_string type;
+};
+
+struct sjme_jmethodIDBase
+{
+	/** Member information. */
+	sjme_jmemberIDBase member;
 
 	/** The method flags. */
 	sjme_nvm_class_methodFlags flags;
 	
 	/** The info this is bound to, for virtual and non-virtual calls. */
 	sjme_nvm_class_methodInfo info[SJME_NVM_NUM_METHOD_CALL_TYPE];
+};
+
+struct sjme_jfieldIDBase
+{
+	/** Member information. */
+	sjme_jmemberIDBase member;
+
+	/** The field flags. */
+	sjme_nvm_class_fieldFlags flags;
+	
+	/** The field this is bound to. */
+	sjme_nvm_class_fieldInfo info;
 };
 
 /** List of method binds. */
