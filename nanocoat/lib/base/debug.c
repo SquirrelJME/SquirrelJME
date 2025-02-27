@@ -46,7 +46,8 @@ void sjme_debug_abort(void)
 	if (!IsDebuggerPresent())
 		return;
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG) && \
+	!(defined(__MINGW32__) || defined(__MINGW64__))
 	/* Do not pop up an annoying dialog. */
 	_set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
 
