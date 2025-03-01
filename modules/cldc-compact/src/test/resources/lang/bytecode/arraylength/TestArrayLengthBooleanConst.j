@@ -7,19 +7,20 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestArrayLengthNPEConst
-.super net/multiphasicapps/tac/TestInteger
+.class public lang/bytecode/arraylength/TestArrayLengthBooleanConst
+.super lang/bytecode/arraylength/__ArrayLength__
 
 .method public <init>()V
 	aload 0
-	invokenonvirtual net/multiphasicapps/tac/TestInteger/<init>()V
+	invokenonvirtual lang/bytecode/arraylength/__ArrayLength__/<init>()V
 	return
 .end method
 
 .method public test()I
 .limit stack 4
 ; Create array
-	aconst_null
+	bipush 4
+	newarray boolean
 	
 ; Return the length
 	arraylength

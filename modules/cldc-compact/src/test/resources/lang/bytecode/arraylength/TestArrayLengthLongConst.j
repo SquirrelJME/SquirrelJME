@@ -7,18 +7,22 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestAReturn
-.super net/multiphasicapps/tac/TestSupplier
+.class public lang/bytecode/arraylength/TestArrayLengthLongConst
+.super lang/bytecode/arraylength/__ArrayLength__
 
 .method public <init>()V
 	aload 0
-	invokenonvirtual net/multiphasicapps/tac/TestSupplier/<init>()V
+	invokenonvirtual lang/bytecode/arraylength/__ArrayLength__/<init>()V
 	return
 .end method
 
-.method public test()Ljava/lang/Object;
-.limit stack 2
-; Return null value
-	ldc "Squeak"
-	areturn
+.method public test()I
+.limit stack 4
+; Create array
+	bipush 4
+	newarray long
+	
+; Return the length
+	arraylength
+	ireturn
 .end method

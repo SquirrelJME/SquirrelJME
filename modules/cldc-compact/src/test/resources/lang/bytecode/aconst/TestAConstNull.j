@@ -7,22 +7,18 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestArrayLengthFloat
-.super lang/bytecode/__ArrayLength__
+.class public lang/bytecode/aconst/TestAConstNull
+.super net/multiphasicapps/tac/TestSupplier
 
 .method public <init>()V
 	aload 0
-	invokenonvirtual lang/bytecode/__ArrayLength__/<init>()V
+	invokenonvirtual net/multiphasicapps/tac/TestSupplier/<init>()V
 	return
 .end method
 
-.method public test()I
-.limit stack 4
-; Create array
-	invokestatic lang/bytecode/ByteCodeUtil/arrayLength()I
-	newarray float
-	
-; Return the length
-	arraylength
-	ireturn
+.method public test()Ljava/lang/Object;
+.limit stack 2
+; Return null value
+	aconst_null
+	areturn
 .end method

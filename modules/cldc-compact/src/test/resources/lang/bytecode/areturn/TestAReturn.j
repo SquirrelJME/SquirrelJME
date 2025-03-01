@@ -7,21 +7,18 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestArrayLengthNPE
-.super net/multiphasicapps/tac/TestInteger
+.class public lang/bytecode/areturn/TestAReturn
+.super net/multiphasicapps/tac/TestSupplier
 
 .method public <init>()V
 	aload 0
-	invokenonvirtual net/multiphasicapps/tac/TestInteger/<init>()V
+	invokenonvirtual net/multiphasicapps/tac/TestSupplier/<init>()V
 	return
 .end method
 
-.method public test()I
-.limit stack 4
-; Create array
-	invokestatic lang/bytecode/ByteCodeUtil/nullStringArray()[Ljava/lang/String;
-	
-; Return the length
-	arraylength
-	ireturn
+.method public test()Ljava/lang/Object;
+.limit stack 2
+; Return null value
+	ldc "Squeak"
+	areturn
 .end method

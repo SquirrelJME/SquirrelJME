@@ -7,21 +7,22 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestANewArrayNegative
-.super net/multiphasicapps/tac/TestSupplier
+.class public lang/bytecode/arraylength/TestArrayLengthFloatConst
+.super lang/bytecode/arraylength/__ArrayLength__
 
 .method public <init>()V
 	aload 0
-	invokenonvirtual net/multiphasicapps/tac/TestSupplier/<init>()V
+	invokenonvirtual lang/bytecode/arraylength/__ArrayLength__/<init>()V
 	return
 .end method
 
-.method public test()Ljava/lang/Object;
+.method public test()I
 .limit stack 4
-; Setup new array
-	bipush -2
-	anewarray java/lang/String
+; Create array
+	bipush 4
+	newarray float
 	
-; Return the array
-	areturn
+; Return the length
+	arraylength
+	ireturn
 .end method

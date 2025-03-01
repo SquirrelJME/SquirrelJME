@@ -7,20 +7,20 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestArrayLengthObjectConst
-.super lang/bytecode/__ArrayLength__
+.class public lang/bytecode/arraylength/TestArrayLengthInt
+.super lang/bytecode/arraylength/__ArrayLength__
 
 .method public <init>()V
 	aload 0
-	invokenonvirtual lang/bytecode/__ArrayLength__/<init>()V
+	invokenonvirtual lang/bytecode/arraylength/__ArrayLength__/<init>()V
 	return
 .end method
 
 .method public test()I
 .limit stack 4
 ; Create array
-	bipush 4
-	anewarray java/lang/String
+	invokestatic lang/bytecode/ByteCodeUtil/arrayLength()I
+	newarray int
 	
 ; Return the length
 	arraylength

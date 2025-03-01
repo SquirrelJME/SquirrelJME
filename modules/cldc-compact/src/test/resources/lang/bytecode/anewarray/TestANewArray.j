@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestANewArray
+.class public lang/bytecode/anewarray/TestANewArray
 .super net/multiphasicapps/tac/TestSupplier
 
 .method public <init>()V
