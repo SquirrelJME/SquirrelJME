@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class abstract public lang/bytecode/__ArrayLength__
+.class abstract public lang/bytecode/arraylength/__ArrayLength__
 .super net/multiphasicapps/tac/TestInteger
 
 .method public <init>()V
