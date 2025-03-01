@@ -88,7 +88,7 @@
 	ldc "f" 
 	ldc "g"
 	ldc "h"
-	invokestatic lang/bytecode/TestALoad/__internal(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;
+	invokestatic lang/bytecode/aload/TestALoad/__internal(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;
 
 ; Return value
 	areturn
