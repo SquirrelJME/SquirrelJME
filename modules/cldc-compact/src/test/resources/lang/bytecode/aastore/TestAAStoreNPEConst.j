@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestAAStoreDifferent
+.class public lang/bytecode/aastore/TestAAStoreNPEConst
 .super net/multiphasicapps/tac/TestSupplier
 
 .method public <init>()V
@@ -20,7 +20,7 @@
 .limit stack 6
 
 ; Obtain array
-	invokestatic lang/bytecode/ByteCodeUtil/makeStringArray()[Ljava/lang/String;
+	aconst_null
 	dup
 	
 ; Store to array

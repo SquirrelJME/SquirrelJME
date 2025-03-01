@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestAAStoreNPE
+.class public lang/bytecode/aastore/TestAAStoreNPE
 .super net/multiphasicapps/tac/TestSupplier
 
 .method public <init>()V

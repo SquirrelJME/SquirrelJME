@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestAAStoreOverflow
+.class public lang/bytecode/aastore/TestAAStoreDifferent
 .super net/multiphasicapps/tac/TestSupplier
 
 .method public <init>()V
@@ -24,8 +24,11 @@
 	dup
 	
 ; Store to array
-	bipush 4
-	ldc "squeak"
+	bipush 3
+	new java/lang/Integer
+	dup 
+	bipush 1
+	invokenonvirtual java/lang/Integer/<init>(I)V
 	aastore
 	
 ; Return value

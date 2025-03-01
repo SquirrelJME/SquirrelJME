@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestAAStoreNPEConst
+.class public lang/bytecode/aastore/TestAAStoreUnderflow
 .super net/multiphasicapps/tac/TestSupplier
 
 .method public <init>()V
@@ -20,15 +20,12 @@
 .limit stack 6
 
 ; Obtain array
-	aconst_null
+	invokestatic lang/bytecode/ByteCodeUtil/makeStringArray()[Ljava/lang/String;
 	dup
 	
 ; Store to array
-	bipush 3
-	new java/lang/Integer
-	dup 
-	bipush 1
-	invokenonvirtual java/lang/Integer/<init>(I)V
+	bipush -3
+	ldc "squeak"
 	aastore
 	
 ; Return value

@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestAAStoreUnderflow
+.class public lang/bytecode/aastore/TestAAStore
 .super net/multiphasicapps/tac/TestSupplier
 
 .method public <init>()V
@@ -17,14 +17,14 @@
 .end method
 
 .method public test()Ljava/lang/Object;
-.limit stack 6
+.limit stack 4
 
 ; Obtain array
 	invokestatic lang/bytecode/ByteCodeUtil/makeStringArray()[Ljava/lang/String;
 	dup
 	
 ; Store to array
-	bipush -3
+	bipush 3
 	ldc "squeak"
 	aastore
 	
