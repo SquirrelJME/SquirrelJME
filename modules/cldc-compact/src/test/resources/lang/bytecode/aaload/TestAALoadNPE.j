@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestAALoadNPEConst
+.class public lang/bytecode/aaload/TestAALoadNPE
 .super net/multiphasicapps/tac/TestSupplier
 
 .method public <init>()V
@@ -20,7 +20,7 @@
 .limit stack 2
 
 ; Obtain array
-	aconst_null
+	invokestatic lang/bytecode/ByteCodeUtil/nullStringArray()[Ljava/lang/String;
 	
 ; Load from array
 	bipush 3

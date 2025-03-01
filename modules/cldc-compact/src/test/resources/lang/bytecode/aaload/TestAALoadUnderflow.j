@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestAALoadUnderflow
+.class public lang/bytecode/aaload/TestAALoadUnderflow
 .super net/multiphasicapps/tac/TestSupplier
 
 .method public <init>()V
