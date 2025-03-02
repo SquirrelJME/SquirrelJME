@@ -8,8 +8,10 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/config.h"
+#include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
+
 SJME_NVM_MLE_FUNCTION_DECL(stringCharAt)
 {
 	sjme_todo("Impl?");
@@ -54,8 +56,17 @@ SJME_NVM_MLE_FUNCTION_DECL(stringIsIntern)
 
 SJME_NVM_MLE_FUNCTION_DECL(stringLength)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_jstring string;
+
+	/* Must be an actual pipe. */
+	string = (sjme_jstring)argV[0].value.l;
+	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* This is a simple value copy operation. */
+	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->value.i = string->length;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
