@@ -49,17 +49,32 @@ extern "C"
 /** Array type. */
 #define SJME_MD_A(component) "[" component
 
+/** Boolean type. */
+#define SJME_MD_Z "Z"
+	
 /** Byte type. */
 #define SJME_MD_B "B"
 
+/** Character type. */
+#define SJME_MD_C "C"
+
 /** Integer type. */
 #define SJME_MD_I "I"
+
+/** Void Type. */
+#define SJME_MD_V "V"
 
 /** Class type. */
 #define SJME_MD_L(name) "L" name ";"
 
 /** Pipe descriptor. */
 #define SJME_MD_PIPE SJME_MD_L(SJME_NVM_BRACKET_NAME_PIPE)
+
+/** String. */
+#define SJME_MD_STRING SJME_MD_L("java/lang/String")
+
+	/** Array of characters. */
+#define SJME_MD_AC SJME_MD_A(SJME_MD_C)
 
 /** MLE Function name. */
 #define SJME_NVM_MLE_FUNCTION_NAME(name, alt) \

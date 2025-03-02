@@ -10,8 +10,107 @@
 #include "sjme/config.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
+SJME_NVM_MLE_FUNCTION_DECL(stringCharAt)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(stringEquals)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(stringHash)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, chars)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, emptyOrThis)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, string)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(stringIsIntern)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(stringLength)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
 
 SJME_NVM_MLE_SHELF_DECLARE(StringShelf) =
 {
+	SJME_NVM_MLE_DEFINE(stringCharAt,
+		SJME_MD(SJME_MD_C, SJME_MD_STRING SJME_MD_I),
+		"ILI"),
+	SJME_NVM_MLE_DEFINE(stringEquals,
+		SJME_MD(SJME_MD_Z, SJME_MD_STRING SJME_MD_STRING),
+		"ILL"),
+	SJME_NVM_MLE_DEFINE(stringHash,
+		SJME_MD(SJME_MD_I, SJME_MD_STRING),
+		"IL"),
+	SJME_NVM_MLE_DEFINE_ALT(stringInit, chars,
+		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_AC SJME_MD_I SJME_MD_I),
+		"VLLII"),
+	SJME_NVM_MLE_DEFINE_ALT(stringInit, emptyOrThis,
+		SJME_MD(SJME_MD_V, SJME_MD_STRING),
+		"VL"),
+	SJME_NVM_MLE_DEFINE_ALT(stringInit, string,
+		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_STRING),
+		"VLL"),
+	SJME_NVM_MLE_DEFINE(stringIsIntern,
+		SJME_MD(SJME_MD_Z, SJME_MD_STRING),
+		"IL"),
+	SJME_NVM_MLE_DEFINE(stringLength,
+		SJME_MD(SJME_MD_I, SJME_MD_STRING),
+		"IL"),
+	SJME_NVM_MLE_DEFINE(stringToChar,
+		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_I
+			SJME_MD_AC SJME_MD_I SJME_MD_I),
+		"VLILII"),
+	SJME_NVM_MLE_DEFINE_ALT(stringValueOf, chars,
+		SJME_MD(SJME_MD_STRING, SJME_MD_Z SJME_MD_STRING),
+		"LIL"),
+	SJME_NVM_MLE_DEFINE_ALT(stringValueOf, string,
+		SJME_MD(SJME_MD_STRING, SJME_MD_Z SJME_MD_AC SJME_MD_I SJME_MD_I),
+		"LILII"),
 	SJME_NVM_MLE_STOP()
 };
