@@ -14,8 +14,31 @@
 
 SJME_NVM_MLE_FUNCTION_DECL(stringCharAt)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jstring string;
+	sjme_jint index;
+	sjme_jchar result;
+
+	/* Must be an actual string. */
+	string = (sjme_jstring)argV[0].value.l;
+	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Which index is desired? */
+	index = argV[1].value.i;
+	if (index < 0 || index >= string->length)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Read in character. */
+	result = 0;
+	if (sjme_error_is(error = sjme_charSeq_charAt(string->seq,
+		index, &result)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Give the result. */
+	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->value.i = result & 0xFFFF;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(stringEquals)
@@ -26,8 +49,17 @@ SJME_NVM_MLE_FUNCTION_DECL(stringEquals)
 
 SJME_NVM_MLE_FUNCTION_DECL(stringHash)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_jstring string;
+
+	/* Must be an actual string. */
+	string = (sjme_jstring)argV[0].value.l;
+	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* This is a simple value copy operation. */
+	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->value.i = string->hashCode;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, chars)
@@ -58,7 +90,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringLength)
 {
 	sjme_jstring string;
 
-	/* Must be an actual pipe. */
+	/* Must be an actual string. */
 	string = (sjme_jstring)argV[0].value.l;
 	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
