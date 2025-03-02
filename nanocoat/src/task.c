@@ -1145,6 +1145,12 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	result->inThread = inThread;
 	result->inCode = targetInfo->code;
 	result->pool = targetInfo->code->inMethod->inClass->pool;
+
+	/* Link to parent. */
+	if (inThread->numFrames == 0)
+		result->parent = NULL;
+	else
+		result->parent = inThread->frames->elements[inThread->numFrames - 1];
 	
 	/* Setup initial locals, which are copied in from arguments. */
 	for (i = 0, dx = 0, n = argC; i < n;

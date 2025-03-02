@@ -92,6 +92,16 @@ static const sjme_nvm_byteCode_compareIFunc sjme_nvm_byteCode_compareIs[6] =
 	sjme_nvm_byteCode_compareILe,
 };
 
+static const sjme_javaTypeId sjme_nvm_byteCode_returnTypes[6] =
+{
+	SJME_JAVA_TYPE_ID_INTEGER,
+	SJME_JAVA_TYPE_ID_LONG,
+	SJME_JAVA_TYPE_ID_FLOAT,
+	SJME_JAVA_TYPE_ID_DOUBLE,
+	SJME_JAVA_TYPE_ID_OBJECT,
+	SJME_JAVA_TYPE_ID_VOID,
+};
+
 SJME_NVM_BYTECODE_SLOW(IfAX)
 {
 	sjme_jint offset;
@@ -228,13 +238,35 @@ SJME_NVM_BYTECODE_SLOW(NoOp)
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
 
-SJME_NVM_BYTECODE_SLOW(Return)
+SJME_NVM_BYTECODE_SLOW(ReturnX)
 {
+	sjme_javaTypeId desire;
+	sjme_jvalueTyped result;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
-	/* Must be returning void. */
-	if (inFrame->inCode->inMethod->argR != SJME_JAVA_TYPE_ID_VOID)
+	/* Must be returning the same type. */
+	desire = sjme_nvm_byteCode_returnTypes[id - 172];
+	if (inFrame->inCode->inMethod->argR != desire)
 		return sjme_error_vmError(inFrame, SJME_ERROR_WRONG_RETURN_TYPE);
+
+	/* If not returning void, pop value to return onto the parent stack. */
+	if (desire != SJME_JAVA_TYPE_ID_VOID)
+	{
+		/* Must push onto something. */
+		if (inFrame->parent == NULL)
+			return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
+		
+		/* Pop value. */
+		memset(&result, 0, sizeof(result));
+		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+			desire, &result)))
+			return sjme_error_vmError(inFrame, error);
+
+		/* Push onto the parent stack. */
+		if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+			inFrame->parent, &result)))
+			return sjme_error_vmError(inFrame, error);
+	}
 
 	/* Pop the current frame. */
 	pcNew->popFrame = SJME_JNI_TRUE;

@@ -226,6 +226,9 @@ struct sjme_nvm_frameBase
 
 	/** The thread this frame is in. */
 	sjme_nvm_thread inThread;
+
+	/** The parent frame. */
+	sjme_nvm_frame parent;
 	
 	/** The current program counter. */
 	sjme_pcAddr pc;

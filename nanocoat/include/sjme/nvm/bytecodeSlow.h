@@ -88,6 +88,7 @@ SJME_NVM_BYTECODE_SLOW(IfACmpX);
 SJME_NVM_BYTECODE_SLOW(IfICmpX);
 SJME_NVM_BYTECODE_SLOW(Goto);
 SJME_NVM_BYTECODE_SLOW(NoOp);
+SJME_NVM_BYTECODE_SLOW(ReturnX);
 
 /* Local */
 SJME_NVM_BYTECODE_SLOW(ALoadZ);
@@ -104,7 +105,6 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual);
 
 /* Stack */
 SJME_NVM_BYTECODE_SLOW(Pop);
-SJME_NVM_BYTECODE_SLOW(Return);
 
 /*--------------------------------------------------------------------------*/
 /* clang-format on */ /* @formatter:on */
