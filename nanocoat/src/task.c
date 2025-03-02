@@ -1084,6 +1084,8 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_nvm_class_methodInfo targetInfo;
 	sjme_jint i, n, dx;
 	sjme_nvm_frame result;
+	sjme_jboolean isStatic;
+	sjme_jvalueTyped* argVParam;
 	
 	if (inThread == NULL || outFrame == NULL || inMethod == NULL ||
 		(argC != 0 && argV == NULL))
@@ -1100,15 +1102,29 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	/* No code loaded? */
 	if (targetInfo->code == NULL)
 		return sjme_error_vmError(inThread, SJME_ERROR_PURE_VIRTUAL_CALL);
+
+	/* Is the target static? */
+	isStatic = targetInfo->flags.member.isStatic;
+	if (isStatic && callType != SJME_NVM_CALL_NON_VIRTUAL)
+		return sjme_error_vmError(inThread,
+			SJME_ERROR_CLASS_CHANGED);
 	
 	/* Argument count mismatch? */
-	if (argC != targetInfo->argC)
+	if (argC != targetInfo->argC + (!isStatic ? 1 : 0))
 		return sjme_error_vmError(inThread,
 			SJME_ERROR_ARGUMENT_COUNT_MISMATCH);
 
 	/* Argument type mismatch? */
-	for (i = 0, n = argC; i < n; i++)
-		if (argV[i].type != targetInfo->argT[i])
+	argVParam = (!isStatic ? &argV[1] : argV);
+	for (i = 0, n = targetInfo->argC; i < n; i++)
+		if (argVParam[i].type != targetInfo->argT[i])
+			return sjme_error_vmError(inThread,
+				SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
+
+	/* If non-static, first must be a valid object. */
+	if (!isStatic)
+		if (argC == 0 || argV[0].type != SJME_JAVA_TYPE_ID_OBJECT ||
+			argV[0].value.l == NULL)
 			return sjme_error_vmError(inThread,
 				SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 	

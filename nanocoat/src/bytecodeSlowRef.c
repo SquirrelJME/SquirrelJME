@@ -15,6 +15,151 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/task.h"
 
+static sjme_errorCode sjme_nvm_byteCode_slowInvokeAny(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInRange(0, SJME_NVM_NUM_METHOD_CALL_TYPE)
+		sjme_nvm_methodCallType callType,
+	sjme_attrInNotNull sjme_lpcstr binaryName,
+	sjme_attrInNotNull sjme_lpcstr methodName,
+	sjme_attrInNotNull sjme_lpcstr methodType)
+{
+	sjme_errorCode error;
+	sjme_jclass classy;
+	sjme_nvm_frame newFrame;
+	sjme_jint argC;
+	sjme_jvalueTyped* argV;
+	sjme_jvalueTyped* argVParam;
+	sjme_jmethodID methodId;
+	sjme_nvm_class_methodInfo target;
+	sjme_jvalueTyped mleArgR;
+	sjme_jboolean callOkay, isStatic;
+
+	if (inFrame == NULL || binaryName == NULL || methodName == NULL ||
+		methodType == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (callType < 0 || callType >= SJME_NVM_NUM_METHOD_CALL_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Locate target class. */
+	classy = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		inFrame->inThread->inTask->classLoader,
+		&classy,
+		inFrame->inThread,
+		binaryName,
+		SJME_JNI_TRUE)) || classy == NULL)
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Locate method to execute, it is required to be found. */
+	methodId = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+		classy, inFrame->inThread,
+		instanceType, SJME_JNI_TRUE,
+		methodName, methodType, &methodId)) || methodId == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* Check permissions to call the target. */
+	callOkay = SJME_JNI_FALSE;
+	if (sjme_error_is(error = sjme_nvm_instance_checkPermission(
+		inFrame->inClass, SJME_AS_JMEMBERID(methodId), &callOkay)) ||
+		!callOkay)
+		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
+			SJME_ERROR_CLASS_CHANGED));
+
+	/* Get the non-virtual target info. */
+	target = methodId->info[callType];
+
+	/* Static-ness is wrong? */
+	isStatic = target->flags.member.isStatic;
+	if (isStatic && instanceType != SJME_NVM_CLASS_MEMBER_STATIC &&
+		callType != SJME_NVM_CALL_NON_VIRTUAL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+
+	/* Allocate pushed arguments. */
+	argC = target->argC + (!isStatic ? 1 : 0);
+	argV = sjme_alloca(sizeof(*argV) * (argC + 2));
+	if (argV == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	
+	/* Pull in stack arguments for the call. */
+	argVParam = (!isStatic ? &argV[1] : argV);
+	if (target->argC != 0)
+		if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(
+			inFrame, target->argC, target->argT, argVParam)))
+			return sjme_error_vmError(inFrame, error);
+
+	/* Pop instance. */
+	if (!isStatic)
+	{
+		/* Pop. */
+		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(
+			inFrame, SJME_JAVA_TYPE_ID_OBJECT, &argV[0])))
+			return sjme_error_vmError(inFrame, error);
+
+		/* Cannot be null. */
+		if (argV[0].value.l == NULL)
+			return sjme_error_vmError(inFrame,
+				SJME_ERROR_INVALID_REFERENCE_POP);
+	}
+
+	/* If native, perform an MLE call. */
+	if (target->flags.native && isStatic)
+	{
+		/* Perform the native call. */
+		memset(&mleArgR, 0, sizeof(mleArgR));
+		mleArgR.type = SJME_JAVA_TYPE_ID_VOID;
+		if (sjme_error_is(error = sjme_mle_mleCall(inFrame,
+			classy->binaryName,
+			(sjme_lpcstr)&target->name->chars[0],
+			(sjme_lpcstr)&target->type->chars[0],
+			&mleArgR,
+			argC, argV)))
+			return sjme_error_vmError(inFrame, error);
+
+		/* Wrong type? */
+		if (mleArgR.type != target->argR)
+			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_METHOD_TYPE);
+
+		/* Is there a return value being pushed to the stack? */
+		if (mleArgR.type != SJME_JAVA_TYPE_ID_VOID)
+		{
+			/* Count up if an object. */
+			if (mleArgR.type == SJME_JAVA_TYPE_ID_OBJECT &&
+				mleArgR.value.l != NULL)
+				if (sjme_error_is(error = sjme_alloc_weakRef(
+					mleArgR.value.l, NULL)))
+					return sjme_error_vmError(inFrame, error);
+			
+			/* Push */
+			if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+				inFrame, &mleArgR)))
+				return sjme_error_vmError(inFrame, error);
+		}
+	}
+
+	/* Enter new stack frame for the target method, or at least try. */
+	else
+	{
+		newFrame = NULL;
+		if (sjme_error_is(error = sjme_nvm_task_threadEnter(
+			inFrame->inThread,
+			&newFrame,
+			methodId,
+			callType,
+			argC, argV)) || newFrame == NULL)
+			return sjme_error_vmError(inFrame, error);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_BYTECODE_SLOW(CheckCast)
 {
 	sjme_jint poolIndex;
@@ -76,14 +221,6 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
 	sjme_nvm_class_poolEntryMember* member;
-	sjme_jclass classy;
-	sjme_lpcstr binaryName, methodName, methodType;
-	sjme_nvm_frame newFrame;
-	sjme_jvalueTyped* argV;
-	sjme_jmethodID methodId;
-	sjme_nvm_class_methodInfo target;
-	sjme_jvalueTyped mleArgR;
-	sjme_jboolean callOkay;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* PC adjustment. */
@@ -97,105 +234,47 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		0)))
 		return sjme_error_vmError(inFrame, error);
 
-	/* Extract member information. */
+	/* Perform the invocation. */
 	member = &entry->member;
-	binaryName = (sjme_lpcstr)&member->inClass->descriptor->chars[0];
-	methodName = (sjme_lpcstr)&member->nameAndType->name->chars[0];
-	methodType = (sjme_lpcstr)&member->nameAndType->descriptor->chars[0];
-
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
-	/* Debug. */
-	sjme_message("invokestatic(%s:%s%s)",
-		binaryName, methodName, methodType);
-#endif
-	
-	/* Locate target class. */
-	classy = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		inFrame->inThread->inTask->classLoader,
-		&classy,
-		inFrame->inThread,
-		binaryName,
-		SJME_JNI_TRUE)) || classy == NULL)
+	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvokeAny(inFrame,
+		SJME_NVM_CLASS_MEMBER_STATIC,
+		SJME_NVM_CALL_NON_VIRTUAL,
+		(sjme_lpcstr)&member->inClass->descriptor->chars[0],
+		(sjme_lpcstr)&member->nameAndType->name->chars[0],
+		(sjme_lpcstr)&member->nameAndType->descriptor->chars[0])))
 		return sjme_error_vmError(inFrame, error);
 	
-	/* Locate method to execute, it is required to be found. */
-	methodId = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
-		classy, inFrame->inThread,
-		SJME_NVM_CLASS_MEMBER_STATIC, SJME_JNI_TRUE,
-		methodName, methodType, &methodId)) || methodId == NULL)
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
+{
+	sjme_jint poolIndex;
+	sjme_nvm_class_poolEntry* entry;
+	sjme_nvm_class_poolEntryMember* member;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* PC adjustment. */
+	pcNew->adjust = 3;
+
+	/* Read in pool reference. */
+	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
+	if (sjme_error_is(error = sjme_nvm_task_framePool(
+		inFrame, poolIndex, &entry,
+		SJME_NVM_CLASS_POOL_TYPE_METHOD,
+		0)))
 		return sjme_error_vmError(inFrame, error);
 
-	/* Check permissions to call the target. */
-	callOkay = SJME_JNI_FALSE;
-	if (sjme_error_is(error = sjme_nvm_instance_checkPermission(
-		inFrame->inClass, SJME_AS_JMEMBERID(methodId), &callOkay)) ||
-		!callOkay)
-		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
-			SJME_ERROR_CLASS_CHANGED));
-
-	/* Get the non-virtual target info. */
-	target = methodId->info[SJME_NVM_CALL_NON_VIRTUAL];
-
-	/* Allocate pushed arguments. */
-	argV = sjme_alloca(sizeof(*argV) * (target->argC + 1));
-	if (argV == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
-
-	/* Pull in stack arguments for the call. */
-	if (target->argC != 0)
-		if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(
-			inFrame, target->argC, target->argT, argV)))
-			return sjme_error_vmError(inFrame, error);
-
-	/* If native, perform an MLE call. */
-	if (target->flags.native)
-	{
-		/* Perform the native call. */
-		memset(&mleArgR, 0, sizeof(mleArgR));
-		mleArgR.type = SJME_JAVA_TYPE_ID_VOID;
-		if (sjme_error_is(error = sjme_mle_mleCall(inFrame,
-			classy->binaryName,
-			(sjme_lpcstr)&target->name->chars[0],
-			(sjme_lpcstr)&target->type->chars[0],
-			&mleArgR,
-			target->argC, argV)))
-			return sjme_error_vmError(inFrame, error);
-
-		/* Wrong type? */
-		if (mleArgR.type != target->argR)
-			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_METHOD_TYPE);
-
-		/* Is there a return value being pushed to the stack? */
-		if (mleArgR.type != SJME_JAVA_TYPE_ID_VOID)
-		{
-			/* Count up if an object. */
-			if (mleArgR.type == SJME_JAVA_TYPE_ID_OBJECT &&
-				mleArgR.value.l != NULL)
-				if (sjme_error_is(error = sjme_alloc_weakRef(
-					mleArgR.value.l, NULL)))
-					return sjme_error_vmError(inFrame, error);
-			
-			/* Push */
-			if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-				inFrame, &mleArgR)))
-				return sjme_error_vmError(inFrame, error);
-		}
-	}
-
-	/* Enter new stack frame for the target method, or at least try. */
-	else
-	{
-		newFrame = NULL;
-		if (sjme_error_is(error = sjme_nvm_task_threadEnter(
-			inFrame->inThread,
-			&newFrame,
-			methodId,
-			SJME_NVM_CALL_NON_VIRTUAL,
-			target->argC, argV)) || newFrame == NULL)
-			return sjme_error_vmError(inFrame, error);
-	}
+	/* Perform the invocation. */
+	member = &entry->member;
+	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvokeAny(inFrame,
+		SJME_NVM_CLASS_MEMBER_INSTANCE,
+		SJME_NVM_CALL_VIRTUAL,
+		(sjme_lpcstr)&member->inClass->descriptor->chars[0],
+		(sjme_lpcstr)&member->nameAndType->name->chars[0],
+		(sjme_lpcstr)&member->nameAndType->descriptor->chars[0])))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;

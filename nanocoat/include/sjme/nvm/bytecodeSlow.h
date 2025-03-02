@@ -100,6 +100,7 @@ SJME_NVM_BYTECODE_SLOW(IStore);
 /* Reference */
 SJME_NVM_BYTECODE_SLOW(CheckCast);
 SJME_NVM_BYTECODE_SLOW(InvokeStatic);
+SJME_NVM_BYTECODE_SLOW(InvokeVirtual);
 
 /* Stack */
 SJME_NVM_BYTECODE_SLOW(Pop);
