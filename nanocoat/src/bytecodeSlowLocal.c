@@ -21,6 +21,20 @@ static const sjme_javaTypeId sjme_nvm_byteCode_xLoadType[5] =
 	SJME_JAVA_TYPE_ID_OBJECT,
 };
 
+SJME_NVM_BYTECODE_SLOW(IInc)
+{
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Adjust PC. */
+	pcNew->adjust = 3;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(XLoad)
 {
 	sjme_jint index;
