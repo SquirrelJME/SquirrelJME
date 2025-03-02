@@ -23,13 +23,24 @@ static const sjme_javaTypeId sjme_nvm_byteCode_xLoadType[5] =
 
 SJME_NVM_BYTECODE_SLOW(IInc)
 {
+	sjme_jint index, increment;
+	sjme_jint* value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* Adjust PC. */
 	pcNew->adjust = 3;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Directly access value. */
+	value = NULL;
+	index = relRawCode[1] & 0xFF;
+	if (sjme_error_is(error = sjme_nvm_task_frameLocalAddr(
+		inFrame, SJME_JAVA_TYPE_ID_INTEGER, index,
+		(sjme_pointer*)&value)) || value == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INVALID_READ);
+
+	/* Increment directly. */
+	increment = (sjme_jbyte)relRawCode[2];
+	(*value) += increment;
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;

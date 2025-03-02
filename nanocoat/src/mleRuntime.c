@@ -44,8 +44,20 @@ SJME_NVM_MLE_FUNCTION_DECL(garbageCollect)
 
 SJME_NVM_MLE_FUNCTION_DECL(lineEnding)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
+	
+#if defined(SJME_CONFIG_HAS_WINDOWS) || \
+	defined(SJME_CONFIG_HAS_WINDOWS_16) || \
+	defined(SJME_CONFIG_HAS_WINDOWS_32) || \
+	defined(SJME_CONFIG_HAS_PALMOS)
+	argR->value.i = SJME_NVM_MLE_LINE_ENDING_CRLF;
+#elif defined(SJME_CONFIG_HAS_MACOS_CLASSIC)
+	argR->value.i = SJME_NVM_MLE_LINE_ENDING_CR;
+#else
+	argR->value.i = SJME_NVM_MLE_LINE_ENDING_LF;
+#endif
+
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(locale)

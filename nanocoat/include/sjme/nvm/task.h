@@ -379,7 +379,23 @@ struct sjme_nvm_threadBase
 	/** What is the current schedule state of this thread? */
 	sjme_nvm_threadScheduleMode schedule;
 };
-	
+
+/**
+ * Returns the direct address to the local variable.
+ * 
+ * @param inFrame The thread frame.
+ * @param localType The type of local to access.
+ * @param localIndex The local index.
+ * @param outAddr The direct address to the local value.
+ * @return Any resultant error, if any.
+ * @since 2025/03/02
+ */
+sjme_errorCode sjme_nvm_task_frameLocalAddr(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId localType,
+	sjme_attrInPositive sjme_jint localIndex,
+	sjme_attrOutNotNull sjme_pointer* outAddr);
+
 /**
  * Pushes the specified local to the stack.
  * 
@@ -531,7 +547,23 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 	sjme_attrInPositive sjme_jint depth,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
 	sjme_attrInValue sjme_jboolean copiedElsewhere);
-	
+
+/**
+ * Returns the direct address to a tread value.
+ * 
+ * @param inFrame The input stack frame.
+ * @param typeId The type.
+ * @param typeIndex The index into the tread.
+ * @param outAddr The resultant address of the value.
+ * @return Any resultant value, if any.
+ * @since 2025/03/02
+ */
+sjme_errorCode sjme_nvm_task_frameTreadAddr(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
+	sjme_attrInPositive sjme_jint typeIndex,
+	sjme_attrOutNotNull sjme_pointer* outAddr);
+
 /**
  * Gets the value of a variable within a frame using the typed index
  * which is placed within its own frame set.

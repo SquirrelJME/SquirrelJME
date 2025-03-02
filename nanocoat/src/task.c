@@ -103,6 +103,9 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	stack->storageClaim = typeOff[SJME_JAVA_TYPE_ID_ALL];
 	store->storageTop += typeOff[SJME_JAVA_TYPE_ID_ALL];
 
+	/* Clear any data which used to be here. */
+	memset(storeBase, 0, typeOff[SJME_JAVA_TYPE_ID_ALL]);
+
 	/* Setup pointers. */
 	stack->order = SJME_POINTER_OFFSET(storeBase, 0);
 	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
@@ -157,6 +160,36 @@ static sjme_errorCode sjme_nvm_task_valueCompose(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_task_frameLocalAddr(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId localType,
+	sjme_attrInPositive sjme_jint localIndex,
+	sjme_attrOutNotNull sjme_pointer* outAddr)
+{
+	sjme_nvm_class_codePerType* perType;
+	sjme_jint mappedSlot;
+	
+	if (inFrame == NULL || outAddr == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (localType < 0 || localType >= SJME_NUM_JAVA_TYPE_IDS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (localIndex < 0 ||
+		localIndex >= inFrame->inCode->perType[SJME_JAVA_TYPE_ID_ALL].locals)
+		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INDEX_INVALID);
+	
+	/* Determine where this maps from for the read. */
+	perType = &inFrame->inCode->perType[localType];
+	mappedSlot = perType->localMap[localIndex];
+	if (mappedSlot < 0 || mappedSlot > perType->locals)
+		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
+
+	/* Directly access tread address. */
+	return sjme_nvm_task_frameTreadAddr(inFrame,
+		localType, mappedSlot, outAddr);
 }
 
 sjme_errorCode sjme_nvm_task_frameLocalPush(
@@ -599,6 +632,56 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 	
 	/* Success! */
 	memmove(outValue, &temp, sizeof(*outValue));
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_task_frameTreadAddr(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
+	sjme_attrInPositive sjme_jint typeIndex,
+	sjme_attrOutNotNull sjme_pointer* outAddr)
+{
+	sjme_frame_frameStack* perType;
+	
+	if (inFrame == NULL || outAddr == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Check the tread index. */
+	perType = &inFrame->stack.stack[typeId];
+	if (typeIndex < 0 || typeIndex >= perType->length)
+		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
+	
+	/* Operating depends on the type. */
+	switch (typeId)
+	{
+		case SJME_JAVA_TYPE_ID_INTEGER:
+			(*outAddr) = &perType->base.jints[typeIndex];
+			break;
+			
+		case SJME_JAVA_TYPE_ID_LONG:
+			(*outAddr) = &perType->base.jlongs[typeIndex];
+			break;
+			
+		case SJME_JAVA_TYPE_ID_FLOAT:
+			(*outAddr) = &perType->base.jfloats[typeIndex];
+			break;
+			
+		case SJME_JAVA_TYPE_ID_DOUBLE:
+			(*outAddr) = &perType->base.jdoubles[typeIndex];
+			break;
+			
+		case SJME_JAVA_TYPE_ID_OBJECT:
+			(*outAddr) = &perType->base.jobjects[typeIndex];
+			break;
+			
+		default:
+			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_FIELD_TYPE);
+	}
+
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 

@@ -29,6 +29,29 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * The type of line ending the system uses.
+ *
+ * @since 2025/03/02
+ */
+typedef enum sjme_nvm_mle_lineEndingType
+{
+	/** Unknown. */
+	SJME_NVM_MLE_LINE_ENDING_UNSPECIFIED = 0,
+	
+	/** LF. */
+	SJME_NVM_MLE_LINE_ENDING_LF = 1,
+	
+	/** CR. */
+	SJME_NVM_MLE_LINE_ENDING_CR = 2,
+	
+	/** CRLF. */
+	SJME_NVM_MLE_LINE_ENDING_CRLF = 3,
+		
+	/** Number of line ending types. */
+	SJME_NVM_MLE_NUM_LINE_ENDINGS = 4,
+} sjme_nvm_mle_lineEndingType;
+	
+/**
  * Standard pipe descriptor IDs.
  *
  * @since 2025/02/23
