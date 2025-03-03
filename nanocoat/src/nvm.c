@@ -71,6 +71,7 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_UNKNOWN_MLE_SHELF:
 		case SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE:
 		case SJME_ERROR_WRONG_RETURN_TYPE:
+		case SJME_ERROR_INVALID_CODE_ADDRESS:
 			return SJME_JNI_TRUE;
 
 		default:

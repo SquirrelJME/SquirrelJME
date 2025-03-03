@@ -847,6 +847,9 @@ extern "C" {
 	defined(SJME_CONFIG_HAS_ARCH_POWERPC)
 	/** Has no support for unaligned 16-bit access. */
 	#define SJME_CONFIG_HAS_NO_UNALIGNED16
+	
+	/** Has no support for unaligned 32-bit access. */
+	#define SJME_CONFIG_HAS_NO_UNALIGNED32
 #endif
 
 #if defined(SJME_CONFIG_HAS_ARCH_IA16)

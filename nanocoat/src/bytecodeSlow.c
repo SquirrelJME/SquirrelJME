@@ -183,7 +183,7 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
 	/* 167 */ SJME_NVM_BYTECODE_SLOW_NAME(Goto),
 	/* 168 */ sjme_nvm_byteCode_illegalInstruction,
 	/* 169 */ sjme_nvm_byteCode_illegalInstruction,
-	/* 170 */ sjme_nvm_byteCode_notImplemented,
+	/* 170 */ SJME_NVM_BYTECODE_SLOW_NAME(TableSwitch),
 	/* 171 */ sjme_nvm_byteCode_notImplemented,
 	/* 172 */ SJME_NVM_BYTECODE_SLOW_NAME(ReturnX),
 	/* 173 */ SJME_NVM_BYTECODE_SLOW_NAME(ReturnX),

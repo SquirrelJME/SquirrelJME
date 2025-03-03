@@ -435,7 +435,9 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	result->perType[SJME_JAVA_TYPE_ID_ALL].locals = maxLocals;
 
 	/* Build local and stack counts. */
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("TODO: Use proper per-type counts.");
+#endif
 	for (i = 0; i < SJME_JAVA_TYPE_ID_ALL; i++)
 	{
 		perType = &result->perType[i];

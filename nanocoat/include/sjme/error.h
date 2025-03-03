@@ -456,9 +456,12 @@ typedef enum sjme_errorCode
 
 	/** Return type is incorrect. */
 	SJME_ERROR_WRONG_RETURN_TYPE = -138,
+
+	/** The code address is not valid. */
+	SJME_ERROR_INVALID_CODE_ADDRESS = -139,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -139,
+	SJME_NUM_ERROR_CODES = -140,
 } sjme_errorCode;
 
 /**

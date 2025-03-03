@@ -232,6 +232,11 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 			currentFrame->pc += pcNew.adjust;
 		else
 			currentFrame->pc = pcNew.adjust;
+		
+		/* PC address is not valid. */
+		if (currentFrame->pc < 0 || currentFrame->pc > currentCode->rawCodeLen)
+			return sjme_error_vmError(inThread,
+				SJME_ERROR_INVALID_CODE_ADDRESS);
 	}
 	
 	/* Give remaining, if requested. */

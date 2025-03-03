@@ -273,3 +273,40 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 	
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
+
+SJME_NVM_BYTECODE_SLOW(TableSwitch)
+{
+	sjme_jint paramBase, lo, hi, tableCount;
+	sjme_jvalueTyped value;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Determine the relative base for parameters. */
+	paramBase = sjme_util_alignTo((inFrame->pc + 1), 4);
+
+	/* Read low and high values. */
+	lo = sjme_big_int(*sjme_util_memUnaligned32(&relRawCode[paramBase + 4]));
+	hi = sjme_big_int(*sjme_util_memUnaligned32(&relRawCode[paramBase + 8]));
+
+	/* The table must be valid. */
+	tableCount = (hi - lo) + 1;
+	if (lo > hi || tableCount <= 0)
+		return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_INSTRUCTION);
+
+	/* Read in switch value. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_INTEGER, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Would be a default jump? */
+	if (value.value.i < lo || value.value.i > hi)
+		pcNew->adjust = sjme_big_int(
+			*sjme_util_memUnaligned32(&relRawCode[paramBase]));
+
+	/* In the table. */
+	else
+		pcNew->adjust = sjme_big_int(*sjme_util_memUnaligned32(
+			&relRawCode[paramBase + 8 + (4 * (value.value.i - lo))]));
+	
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
