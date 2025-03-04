@@ -14,6 +14,14 @@
 #include "sjme/nvm/mleConst.h"
 #include "sjme/nvm/mleShelves.h"
 
+static sjme_jint sjme_nvm_mleFunc_mleTerminal_mapIoException(
+	sjme_attrInValue sjme_errorCode in,
+	sjme_attrOutNotNull sjme_jvalueTyped* result)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(available)
 {
 	sjme_todo("Impl?");
@@ -28,6 +36,7 @@ SJME_NVM_MLE_FUNCTION_DECL(close)
 
 SJME_NVM_MLE_FUNCTION_DECL(flush)
 {
+	sjme_errorCode error;
 	sjme_nvm_mle_pipe pipe;
 
 	/* Must be an actual pipe. */
@@ -40,15 +49,8 @@ SJME_NVM_MLE_FUNCTION_DECL(flush)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Write call. */
-	if (sjme_error_is(sjme_stream_outputFlush(pipe->stream.out)))
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-		
-		argR->type = SJME_JAVA_TYPE_ID_INTEGER;
-		argR->value.i = 1337;
-		return SJME_ERROR_MLE_CALL;
-	}
+	if (sjme_error_is(error = sjme_stream_outputFlush(pipe->stream.out)))
+		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
 
 	/* Success! */
 	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
@@ -147,6 +149,7 @@ SJME_NVM_MLE_FUNCTION_DECL(read)
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(write, single)
 {
+	sjme_errorCode error;
 	sjme_nvm_mle_pipe pipe;
 	sjme_jbyte single;
 
@@ -161,16 +164,9 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(write, single)
 	
 	/* Write call. */
 	single = (sjme_jbyte)argV[1].value.i;
-	if (sjme_error_is(sjme_stream_outputWrite(pipe->stream.out,
+	if (sjme_error_is(error = sjme_stream_outputWrite(pipe->stream.out,
 		&single, 1)))
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-		
-		argR->type = SJME_JAVA_TYPE_ID_INTEGER;
-		argR->value.i = 1337;
-		return SJME_ERROR_MLE_CALL;
-	}
+		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
 
 	/* Success! */
 	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
