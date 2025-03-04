@@ -10,10 +10,21 @@
 #include <string.h>
 #include <libretro.h>
 
+#include "sjme/config.h"
+
+#if defined(SJME_CONFIG_DEBUG)
+	#include <signal.h>
+#endif
+
+#include "lib/scritchui/scritchui.h"
+#include "lib/scritchui/pure/pure.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
 #include "frontend/libretro/shared.h"
 #include "sjme/dylib.h"
+
+/** The default pool size for ScritchUI on RetroArch. */
+#define SJME_LIBRETRO_SCRITCHUI_POOL_SIZE INT32_C(25165824)
 
 static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 	sjme_lpcstr partMessage)
@@ -59,6 +70,13 @@ static sjme_jboolean sjme_libretro_exitHandler(int exitCode)
 	return SJME_JNI_TRUE;
 }
 
+#if defined(SJME_CONFIG_DEBUG)
+static void sjme_libretro_signalHandler(int)
+{
+	/* Does nothing... */
+}
+#endif
+
 static sjme_jboolean sjme_libretro_abortHandler(void)
 {
 	/* Forward to the exit handler. */
@@ -83,8 +101,32 @@ sjme_attrUnused RETRO_API void retro_deinit(void)
 
 sjme_attrUnused RETRO_API void retro_init(void)
 {
+	sjme_errorCode error;
+	sjme_scritchui scritchUi;
+	sjme_alloc_pool scritchPool;
+	
 	/* Setup handlers for debug calls. */
 	sjme_debug_handlers = &sjme_libretro_debugHandlers;
+
+	/* Allocate ScritchUI memory. */
+	scritchPool = NULL;
+	sjme_message("Allocating ScritchUI memory...");
+	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&scritchPool,
+		SJME_LIBRETRO_SCRITCHUI_POOL_SIZE)) || scritchPool == NULL)
+		goto fail_initMem;
+
+	/* Initialize ScritchUI. */
+	scritchUi = NULL;
+	sjme_message("Initializing ScritchUI...");
+	if (sjme_error_is(error = SJME_SCRITCHUI_DYLIB_SYMBOL(pure)(
+		scritchPool, &scritchUi, NULL, NULL, NULL)) || scritchUi == NULL)
+		goto fail_initUi;
+	
+fail_initUi:
+fail_initMem:
+	if (scritchPool != NULL)
+		sjme_alloc_poolDestroy(scritchPool);
+	sjme_error_fatal(error);
 }
 
 sjme_attrUnused RETRO_API bool retro_load_game(

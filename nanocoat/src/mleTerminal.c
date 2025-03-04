@@ -15,7 +15,7 @@
 #include "sjme/nvm/mleShelves.h"
 
 static sjme_jint sjme_nvm_mleFunc_mleTerminal_mapIoException(
-	sjme_attrInValue sjme_errorCode in,
+	sjme_attrInValue sjme_errorCode error,
 	sjme_attrOutNotNull sjme_jvalueTyped* result)
 {
 	sjme_todo("Impl?");

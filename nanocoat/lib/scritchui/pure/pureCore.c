@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/core/core.h"
+#include "lib/scritchui/pure/pure.h"
 #include "lib/scritchui/scritchui.h"
 
 static const sjme_scritchui_implFunctions sjme_scritchui_pureFunctions =
