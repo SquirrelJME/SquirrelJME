@@ -541,9 +541,9 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				"--version"))
 		{
 			/* Where is this information going? */
-			helpOut = nal->stdErr;
+			helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].out;
 			if (sjme_charSeq_equalsUtfR(&argSeq, "--version"))
-				helpOut = nal->stdOut;
+				helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
 			
 			/* Print version information to stdout. */
 			/* https://www.oracle.com/java/technologies/javase/ */
@@ -572,9 +572,9 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				"--help"))
 		{
 			/* Where is this information going? */
-			helpOut = nal->stdErr;
+			helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].out;
 			if (sjme_charSeq_equalsUtfR(&argSeq, "--help"))
-				helpOut = nal->stdOut;
+				helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
 			
 			/* Normal usage. */
 			sjme_nal_stdF(helpOut,

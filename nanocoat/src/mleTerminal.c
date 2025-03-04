@@ -14,45 +14,6 @@
 #include "sjme/nvm/mleConst.h"
 #include "sjme/nvm/mleShelves.h"
 
-sjme_errorCode sjme_nvm_mleTerminal_stdOutInit(
-	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrInNotNull sjme_stream_implState* inImplState,
-	sjme_attrInNullable sjme_pointer data)
-{
-	if (stream == NULL || inImplState == NULL || data == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Only the context is needed. */
-	inImplState->handle = data;
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_nvm_mleTerminal_stdOutWrite(
-	sjme_attrInNotNull sjme_stream_output stream,
-	sjme_attrInNotNull sjme_stream_implState* inImplState,
-	sjme_attrInNotNull sjme_cpointer buf,
-	sjme_attrInPositiveNonZero sjme_jint length)
-{
-	sjme_nal_stdOFunc stdO;
-	
-	if (stream == NULL || inImplState == NULL || buf == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (length <= 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-	
-	/* Forward to native output. */
-	stdO = inImplState->handle;
-	return stdO(buf, 0, length);
-}
-
-/** Stream output functions. */
-static const sjme_stream_outputFunctions sjme_nvm_mleTerminal_stdOut =
-{
-	.init = sjme_nvm_mleTerminal_stdOutInit,
-	.write = sjme_nvm_mleTerminal_stdOutWrite,
-};
-
 SJME_NVM_MLE_FUNCTION_DECL(available)
 {
 	sjme_todo("Impl?");
@@ -67,8 +28,32 @@ SJME_NVM_MLE_FUNCTION_DECL(close)
 
 SJME_NVM_MLE_FUNCTION_DECL(flush)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_nvm_mle_pipe pipe;
+
+	/* Must be an actual pipe. */
+	pipe = (sjme_nvm_mle_pipe)argV[0].value.l;
+	if (!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Not an output pipe? */
+	if (!pipe->isOutput)
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Write call. */
+	if (sjme_error_is(sjme_stream_outputFlush(pipe->stream.out)))
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+		
+		argR->type = SJME_JAVA_TYPE_ID_INTEGER;
+		argR->value.i = 1337;
+		return SJME_ERROR_MLE_CALL;
+	}
+
+	/* Success! */
+	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->value.i = 0;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
@@ -77,21 +62,13 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 	sjme_nvm_task_globals* globals;
 	sjme_nvm_mle_standardPipeType type;
 	sjme_nvm_mle_pipe pipe;
-	sjme_nal_stdOFunc stdO;
 	const sjme_nal* nal;
 
 	/* Check. */
 	type = (sjme_nvm_mle_standardPipeType)argV[0].value.i;
 	if (type < 0 || type >= SJME_NVM_MLE_NUM_STD_PIPES)
 		return SJME_ERROR_MLE_CALL;
-
-	/* Check if the system even supports this. */
-	nal = inFrame->inState->nal;
-	if ((type == SJME_NVM_MLE_STD_PIPE_STDIN && nal->stdInF == NULL) ||
-		(type == SJME_NVM_MLE_STD_PIPE_STDOUT && nal->stdOut == NULL) ||
-		(type == SJME_NVM_MLE_STD_PIPE_STDERR && nal->stdErr == NULL))
-		return SJME_ERROR_MLE_CALL;
-
+	
 	/* Has a pipe already been created? We want single brackets for each */
 	/* standard pipe that exists. */
 	globals = &inFrame->inThread->inTask->globals;
@@ -113,8 +90,12 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 			SJME_AS_JOBJECTP(&pipe), SJME_NVM_BRACKET_NAME_PIPE)) ||
 			pipe == NULL)
 			goto fail_badAlloc;
+
+		/* Is this an output pipe? */
+		pipe->isOutput = (type != SJME_NVM_MLE_STD_PIPE_STDIN);
 		
 		/* Input pipe. */
+		nal = inFrame->inState->nal;
 		if (type == SJME_NVM_MLE_STD_PIPE_STDIN)
 		{
 			sjme_todo("Impl?");
@@ -124,18 +105,9 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 		/* Output pipe. */
 		else
 		{
-			/* Which output? */
-			stdO = (type == SJME_NVM_MLE_STD_PIPE_STDOUT ? nal->stdOut :
-				nal->stdErr);
-
-			/* Set as output. */
-			pipe->isOutput = SJME_JNI_TRUE;
-
-			/* Open target stream. */
-			pipe->stream.out = NULL;
-			if (sjme_error_is(error = sjme_stream_outputOpen(
+			if (sjme_error_is(error = sjme_stream_outputOpenStdIo(
 				inFrame->inState->allocPool, &pipe->stream.out,
-				&sjme_nvm_mleTerminal_stdOut, stdO, NULL)) ||
+				(sjme_pointer)&nal->stdIo[type])) ||
 				pipe->stream.out == NULL)
 				goto fail_badOpen;
 		}

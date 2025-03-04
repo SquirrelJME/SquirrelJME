@@ -112,6 +112,14 @@ const sjme_nal sjme_nal_test =
 	.fileOpen = sjme_nal_test_fileOpen,
 	.getEnv = sjme_nal_test_getEnv,
 	.nanoTime = sjme_nal_test_nanoTime,
-	.stdErr = sjme_nal_test_stdErr,
-	.stdOut = sjme_nal_test_stdOut,
+	{
+		{
+		},
+		{
+			.out = sjme_nal_test_stdOut,
+		},
+		{
+			.out = sjme_nal_test_stdErr,
+		},
+	}
 };

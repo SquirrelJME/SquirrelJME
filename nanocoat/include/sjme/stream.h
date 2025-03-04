@@ -22,6 +22,7 @@
 #include "sjme/alloc.h"
 #include "sjme/closeable.h"
 #include "sjme/seekable.h"
+#include "sjme/native.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -211,6 +212,18 @@ typedef sjme_errorCode (*sjme_stream_outputCloseFunc)(
 	sjme_attrInNotNull sjme_stream_implState* inImplState);
 
 /**
+ * Flushes the given output stream.
+ *
+ * @param stream The output stream to flush.
+ * @param inImplState The implementation state.
+ * @return On any resultant error, if any.
+ * @since 2025/03/03
+ */
+typedef sjme_errorCode (*sjme_stream_outputFlushFunc)(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState);
+
+/**
  * Initializes the new output stream.
  * 
  * @param stream The current stream.
@@ -249,6 +262,9 @@ typedef struct sjme_stream_outputFunctions
 {
 	/** Closes the specified stream. */
 	sjme_stream_outputCloseFunc close;
+
+	/** Flushes the given stream. */
+	sjme_stream_outputFlushFunc flush;
 	
 	/** Stream initialization. */
 	sjme_stream_outputInitFunc init;
@@ -599,6 +615,16 @@ typedef sjme_errorCode (*sjme_stream_outputByteArrayFinishFunc)(
 	sjme_attrInNullable sjme_pointer data);
 
 /**
+ * Flushes the given output stream.
+ * 
+ * @param stream The stream to flush.
+ * @return Any resultant error, if any.
+ * @since 2025/03/03
+ */
+sjme_errorCode sjme_stream_outputFlush(
+	sjme_attrInNotNull sjme_stream_output stream);
+
+/**
  * Opens an output stream.
  * 
  * @param allocPool The pool to allocate within. 
@@ -653,7 +679,7 @@ sjme_errorCode sjme_stream_outputOpenByteArrayTo(
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInPositive sjme_jint initialLimit,
 	sjme_attrInNotNull sjme_stream_resultByteArray* result);
-
+	
 /**
  * Opens an output stream which writes to the given block of memory, note that
  * when it reaches the end of the block it will fail to write following it.
@@ -670,6 +696,20 @@ sjme_errorCode sjme_stream_outputOpenMemory(
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Opens a stream to a NAL output.
+ * 
+ * @param allocPool The allocation pool to allocate within.
+ * @param outStream The resultant stream.
+ * @param nal The NAL to write to.
+ * @return Any resultant error, if any.
+ * @since 2025/03/03
+ */
+sjme_errorCode sjme_stream_outputOpenStdIo(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_stream_output* outStream,
+	sjme_attrInNotNull sjme_nal_stdIo* nal);
 
 /**
  * Writes to the given output stream.

@@ -330,8 +330,16 @@ const sjme_nal sjme_nal_default =
 	.fileOpen = sjme_nal_default_fileOpen,
 	.getEnv = sjme_nal_default_getEnv,
 	.nanoTime = sjme_nal_default_nanoTime,
-	.stdErr = sjme_nal_default_stdErr,
-	.stdOut = sjme_nal_default_stdOut,
+	{
+		{
+		},
+		{
+			.out = sjme_nal_default_stdOut,
+		},
+		{
+			.out = sjme_nal_default_stdErr
+		},
+	},
 };
 
 #if !defined(SJME_CONFIG_HAS_NO_ERRNO)

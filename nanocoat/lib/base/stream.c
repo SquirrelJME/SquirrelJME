@@ -432,6 +432,21 @@ sjme_errorCode sjme_stream_inputReadValueJS(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_stream_outputFlush(
+	sjme_attrInNotNull sjme_stream_output stream)
+{
+	sjme_stream_outputFlushFunc flush;
+	
+	if (stream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Only perform the flush if it is actually supported. */
+	flush = stream->functions->flush;
+	if (flush == NULL)
+		return SJME_ERROR_NONE;
+	return flush(stream, &stream->implState);
+}
+
 sjme_errorCode sjme_stream_outputOpen(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,

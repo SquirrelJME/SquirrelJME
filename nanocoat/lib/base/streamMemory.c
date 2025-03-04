@@ -183,6 +183,7 @@ static sjme_errorCode sjme_stream_outputMemoryWrite(
 static const sjme_stream_outputFunctions sjme_stream_outputMemoryFunctions =
 {
 	.close = sjme_stream_outputMemoryClose,
+	.flush = NULL,
 	.init = sjme_stream_outputMemoryInit,
 	.write = sjme_stream_outputMemoryWrite,
 };

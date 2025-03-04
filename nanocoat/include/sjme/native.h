@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_NATIVE_H
 #define SQUIRRELJME_NATIVE_H
 
+#include "nvm/mleConst.h"
+
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
 #include "sjme/seekable.h"
@@ -86,18 +88,46 @@ typedef sjme_errorCode (*sjme_nal_nanoTimeFunc)(
 	sjme_attrCheckReturn;
 
 /**
+ * Flushes the given output stream.
+ *
+ * @return Any resultant error.
+ * @since 2025/03/03
+ */
+typedef sjme_errorCode (*sjme_nal_stdIoFlush)(void);
+	
+/**
  * Writes data to a standard output type stream.
  *
  * @param buf The data buffer to write.
  * @param off The offset into the buffer.
  * @param len The number of bytes to write.
- * @return Any resulant error, if any.
+ * @return Any resultant error, if any.
  * @since 2025/02/25
  */
 typedef sjme_errorCode (*sjme_nal_stdOFunc)(
 	sjme_attrInNotNullBuf(len) sjme_cpointer buf,
 	sjme_attrInPositive sjme_jint off,
 	sjme_attrInPositiveNonZero sjme_jint len);
+
+/**
+ * Contains the needed function calls to perform calls to standard streams.
+ *
+ * @since 2025/03/03
+ */
+typedef struct sjme_nal_stdIo
+{
+	/** Close function. */
+	sjme_jboolean (*close)(void);
+	
+	/** Reads from the input. */
+	sjme_jboolean (*in)(void);
+
+	/** Writes to the output. */
+	sjme_nal_stdOFunc out;
+
+	/** Flushes the output stream. */
+	sjme_nal_stdIoFlush flush;
+} sjme_nal_stdIo;
 	
 /**
  * Native Abstraction Layer functions.
@@ -118,14 +148,8 @@ typedef struct sjme_nal
 	/** Get the current monotonic nanosecond time. */
 	sjme_nal_nanoTimeFunc nanoTime;
 
-	/** Standard input function. */
-	void* stdInF;
-	
-	/** Output to standard error. */
-	sjme_nal_stdOFunc stdErr;
-	
-	/** Output to standard output. */
-	sjme_nal_stdOFunc stdOut;
+	/** Standard input/output pipes. */
+	sjme_nal_stdIo stdIo[SJME_NVM_MLE_NUM_STD_PIPES];
 } sjme_nal;
 
 /** Default native abstraction layer. */
