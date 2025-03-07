@@ -115,12 +115,16 @@ sjme_attrUnused RETRO_API void retro_init(void)
 		SJME_LIBRETRO_SCRITCHUI_POOL_SIZE)) || scritchPool == NULL)
 		goto fail_initMem;
 
+#if 0
 	/* Initialize ScritchUI. */
 	scritchUi = NULL;
 	sjme_message("Initializing ScritchUI...");
 	if (sjme_error_is(error = SJME_SCRITCHUI_DYLIB_SYMBOL(pure)(
 		scritchPool, &scritchUi, NULL, NULL, NULL)) || scritchUi == NULL)
 		goto fail_initUi;
+#endif
+
+	return;
 	
 fail_initUi:
 fail_initMem:
