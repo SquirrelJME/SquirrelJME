@@ -67,14 +67,31 @@ extern "C"
 /** Class type. */
 #define SJME_MD_L(name) "L" name ";"
 
+/** Array of characters. */
+#define SJME_MD_AC SJME_MD_A(SJME_MD_C)
+
+/** Runnable. */
+#define SJME_MD_RUNNABLE SJME_MD_L("java/lang/Runnable")
+
 /** Pipe descriptor. */
 #define SJME_MD_PIPE SJME_MD_L(SJME_NVM_BRACKET_NAME_PIPE)
 
 /** String. */
 #define SJME_MD_STRING SJME_MD_L("java/lang/String")
 
-	/** Array of characters. */
-#define SJME_MD_AC SJME_MD_A(SJME_MD_C)
+/** Task. */
+#define SJME_MD_TASK SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TaskBracket")
+
+/** Thread. */
+#define SJME_MD_THREAD SJME_MD_L("java/lang/Thread")
+
+/** Trace point. */
+#define SJME_MD_TRACE_POINT \
+	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TracePointBracket")
+
+/** VM Thread. */
+#define SJME_MD_VM_THREAD \
+	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/VMThreadBracket")
 
 /** MLE Function name. */
 #define SJME_NVM_MLE_FUNCTION_NAME(name, alt) \

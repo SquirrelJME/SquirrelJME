@@ -39,20 +39,12 @@ public class TestThreadShelfInvalid
 				ThreadShelf.javaThreadIsStarted(null);
 				break;
 			
-			case 2:
-				ThreadShelf.javaThreadSetAlive(null, false);
-				break;
-			
 			case 3:
 				ThreadShelf.createVMThread(null, null);
 				break;
 			
 			case 4:
 				ThreadShelf.javaThreadClearInterrupt(null);
-				break;
-			
-			case 5:
-				ThreadShelf.javaThreadFlagStarted(null);
 				break;
 			
 			case 6:

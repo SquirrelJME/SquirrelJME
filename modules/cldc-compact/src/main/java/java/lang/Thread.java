@@ -61,14 +61,6 @@ public class Thread
 	/** The name of this thread. */
 	private volatile String _name;
 	
-	/** Has this thread been started? */
-	@SuppressWarnings("unused")
-	private volatile boolean _started;
-	
-	/** Is this thread alive? */
-	@SuppressWarnings("unused")
-	private volatile boolean _isAlive;
-	
 	/** The priority of the thread. */
 	private volatile int _priority =
 		Thread.NORM_PRIORITY;
@@ -240,7 +232,7 @@ public class Thread
 	@Api
 	public final boolean isAlive()
 	{
-		return this._isAlive;
+		return ThreadShelf.vmThreadIsAlive(this._vmThread);
 	}
 	
 	/**
@@ -327,7 +319,7 @@ public class Thread
 					return;
 				
 				// Did the thread die yet?
-				if (ThreadShelf.javaThreadIsStarted(this) &&
+				if (ThreadShelf.vmThreadIsStarted(this._vmThread) &&
 					!this.isAlive())
 					return;
 				
@@ -413,7 +405,7 @@ public class Thread
 		synchronized (this)
 		{
 			/* {@squirreljme.error ZZ21 A thread may only be started once.} */
-			if (ThreadShelf.javaThreadIsStarted(this))
+			if (ThreadShelf.vmThreadIsStarted(this._vmThread))
 				throw new IllegalThreadStateException("ZZ21");
 			
 			/* {@squirreljme.error ZZ22 Failed to start the thread.} */

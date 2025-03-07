@@ -36,7 +36,7 @@ static sjme_errorCode sjme_nvm_loop_subSchedule(
 	
 	/* Lock thread. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&inThread->common.lock)))
+		&inThread->object.common.lock)))
 		return sjme_error_default(error);
 
 	/* Ignore if already scheduled in this group. */
@@ -69,7 +69,7 @@ static sjme_errorCode sjme_nvm_loop_subSchedule(
 	/* Release thread lock. */
 skip_alreadyScheduled:
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&inThread->common.lock, NULL)))
+		&inThread->object.common.lock, NULL)))
 		return sjme_error_default(error);
 
 	/* Success! */
@@ -80,7 +80,7 @@ fail_growList:
 	
 fail_releaseSub:
 fail_lockSub:
-	sjme_thread_spinLockRelease(&inThread->common.lock, NULL);
+	sjme_thread_spinLockRelease(&inThread->object.common.lock, NULL);
 
 	return sjme_error_default(error);
 #undef SJME_NVM_SUB_GROW

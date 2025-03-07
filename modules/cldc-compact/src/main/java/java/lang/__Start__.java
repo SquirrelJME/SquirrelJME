@@ -55,10 +55,6 @@ final class __Start__
 		// have some fallback logic for handling it
 		try
 		{
-			// Mark the thread as alive
-			ThreadShelf.javaThreadFlagStarted(javaThread);
-			ThreadShelf.javaThreadSetAlive(javaThread, true);
-			
 			// Execute the thread, if we are the main thread we use an
 			// alternative run
 			if (ThreadShelf.vmThreadIsMain(vmThread))
@@ -97,14 +93,6 @@ final class __Start__
 				ThreadShelf.setTrace(Objects.toString(t.getMessage(), 
 					"No message."), DebugShelf.getThrowableTrace(t));
 			}
-		}
-		
-		// Make sure the thread is not marked as being alive on termination
-		finally
-		{
-			// Mark the thread as dead
-			ThreadShelf.javaThreadSetAlive(javaThread, false);
-			ThreadShelf.vmThreadEnd(vmThread);
 		}
 	}
 	

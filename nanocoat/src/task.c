@@ -1084,7 +1084,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	
 	/* Lock state on the task. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&result->common.lock)))
+		&result->object.common.lock)))
 		goto fail_preLockBeforeRelease;
 	
 	/* Unlock state, we no longer need to keep the state locked since we */
@@ -1106,7 +1106,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	
 	/* Release task specific lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&result->common.lock, NULL)))
+		&result->object.common.lock, NULL)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -1142,7 +1142,7 @@ fail_taskNewThread:
 fail_stateLockRelease:
 	/* Unlock task before fail. */
 	sjme_error_is(sjme_thread_spinLockRelease(
-		&result->common.lock, NULL));
+		&result->object.common.lock, NULL));
 	
 fail_other:
 	if (result != NULL)
@@ -1421,7 +1421,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	
 	/* Lock state on the task. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&inTask->common.lock)))
+		&inTask->object.common.lock)))
 		goto fail_lock;
 	
 	/* Find free slot in the thread list. */
@@ -1467,7 +1467,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	
 	/* Release task specific lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&inTask->common.lock, NULL)))
+		&inTask->object.common.lock, NULL)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -1480,7 +1480,7 @@ fail_enterFrame:
 	
 	/* Unlock before fail. */
 	sjme_error_is(sjme_thread_spinLockRelease(
-		&inTask->common.lock, NULL));
+		&inTask->object.common.lock, NULL));
 fail_lock:
 fail_allocResult:
 	if (result != NULL)

@@ -313,8 +313,8 @@ typedef struct sjme_nvm_task_globals
 	
 struct sjme_nvm_taskBase
 {
-	/** Common structure details. */
-	sjme_nvm_commonBase common;
+	/** The base object for the thread. */
+	sjme_jobjectBase object;
 	
 	/** The identifier of this task. */
 	sjme_jint id;
@@ -343,8 +343,8 @@ struct sjme_nvm_taskBase
 
 struct sjme_nvm_threadBase
 {
-	/** Common virtual machine structure. */
-	sjme_nvm_commonBase common;
+	/** The base object for the thread. */
+	sjme_jobjectBase object;
 	
 	/** The VM state this thread is in. */
 	sjme_nvm state;
@@ -363,6 +363,9 @@ struct sjme_nvm_threadBase
 	
 	/** The thread ID. */
 	sjme_jint threadId;
+
+	/** The @c java.lang.Thread this is bound to. */
+	sjme_jobject vmObject;
 	
 	/** The number of valid frames. */
 	sjme_jint numFrames;
