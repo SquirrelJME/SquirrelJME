@@ -16,69 +16,15 @@
 /** The amount the size of the string pool should grow. */
 #define SJME_STRING_POOL_GROW 256
 
-sjme_errorCode sjme_nvm_stringPool_locateSeq(
+sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_stringPool_string* outString,
 	sjme_attrInNotNull sjme_charSeq inSeq,
-	sjme_attrInPositive sjme_jint offset)
-{
-	if (inStringPool == NULL || inSeq == NULL || outString == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
-sjme_errorCode sjme_nvm_stringPool_locateStreamR(
-	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
-	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrOutNotNull sjme_nvm_stringPool_string* outString
+	sjme_attrInPositive sjme_jint offset
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
-	sjme_jshort length;
-	sjme_jbyte* chars;
-	sjme_jint count;
-	
-	if (inStringPool == NULL || inStream == NULL || outString == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Read in string length. */
-	length = -1;
-	if (sjme_error_is(error = sjme_stream_inputReadValueJS(
-		inStream, &length)) || length < 0)
-		return sjme_error_default(error);
-	
-	/* Allocate buffer to store it within. */
-	chars = sjme_alloca(length);
-	if (chars == NULL)
-		return sjme_error_outOfMemory(NULL, NULL);
-	memset(chars, 0, length);
-	
-	/* Need to read in everything. */
-	if (sjme_error_is(error = sjme_stream_inputReadFully(
-		inStream, &count, chars, length)))
-		return sjme_error_default(error);
-	
-	/* Too short of a read? */
-	if (count != length)
-		return SJME_ERROR_END_OF_FILE;
-	
-	/* Use normal locating logic. */
-	return sjme_nvm_stringPool_locateUtfR(inStringPool,
-		(sjme_lpcstr)chars, length, outString
-		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
-}
-
-sjme_errorCode sjme_nvm_stringPool_locateUtfR(
-	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
-	sjme_attrInNotNull sjme_lpcstr inUtf,
-	sjme_attrInNegativeOnePositive sjme_jint inUtfLen,
-	sjme_attrOutNotNull sjme_nvm_stringPool_string* outString
-	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
-{
-	sjme_errorCode error;
-	sjme_jint hash, i, n, firstFree;
+	sjme_jint hash, i, n, firstFree, length;
 	sjme_list_sjme_nvm_stringPool_string* strings;
 	sjme_list_sjme_nvm_stringPool_string* oldStrings;
 	sjme_nvm_stringPool_string result;
@@ -86,23 +32,27 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 	sjme_alloc_weak weak;
 	sjme_frontEnd frontEnd;
 	
-	if (inStringPool == NULL || inUtf == NULL || outString == NULL)
+	if (inStringPool == NULL || inSeq == NULL || outString == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inUtfLen < -1)
+	if (offset < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Lock pool. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
 		&inStringPool->common.lock)))
 		return sjme_error_default(error);
-	
-	/* Determine actual string length, if unknown. */
-	if (inUtfLen < 0)
-		inUtfLen = strlen(inUtf);
+
+	/* Calculate length of string. */
+	length = -1;
+	if (sjme_error_is(error = sjme_charSeq_length(inSeq, &length)) ||
+		length < 0)
+		return sjme_error_default(error);
 	
 	/* Calculate hash of string. */
-	hash = sjme_string_hashN(inUtf, inUtfLen);
+	hash = 0;
+	if (sjme_error_is(error = sjme_charSeq_hash(inSeq, &hash)))
+		return sjme_error_default(error);
 	
 	/* Try to locate the string first. */
 	strings = inStringPool->strings;
@@ -142,7 +92,7 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 		}
 		
 		/* If hash or length differ, not a possible match */
-		if (possible->seq->hash != hash || possible->seq->length != inUtfLen)
+		if (possible->seq->hash != hash || possible->seq->length != length)
 			continue;
 		
 		/* Must be exactly the same! */
@@ -187,14 +137,14 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 #if defined(SJME_CONFIG_DEBUG)
 		if (sjme_error_is(error = sjme_nvm_allocR(
 			(sjme_nvm)inStringPool->allocPool,
-			sizeof(*result) + inUtfLen + 1, 
+			sizeof(*result), 
 			SJME_NVM_STRUCT_STRING_POOL_STRING,
 			SJME_AS_NVM_COMMONP(&result), file, line, func)) ||
 			result == NULL)
 #else
 		if (sjme_error_is(error = sjme_nvm_alloc(
 			(sjme_nvm)inStringPool->allocPool,
-			sizeof(*result) + inUtfLen + 1,
+			sizeof(*result),
 			SJME_NVM_STRUCT_STRING_POOL_STRING,
 			SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 #endif
@@ -257,6 +207,65 @@ fail_releaseLock:
 	if (error == SJME_ERROR_OUT_OF_MEMORY)
 		return sjme_error_outOfMemory(inStringPool->allocPool, 0);
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_stringPool_locateStreamR(
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrOutNotNull sjme_nvm_stringPool_string* outString
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
+{
+	sjme_errorCode error;
+	sjme_jshort length;
+	sjme_jbyte* chars;
+	sjme_jint count;
+	sjme_charSeqStatic seq;
+	
+	if (inStringPool == NULL || inStream == NULL || outString == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Read in string length. */
+	length = -1;
+	if (sjme_error_is(error = sjme_stream_inputReadValueJS(
+		inStream, &length)) || length < 0)
+		return sjme_error_default(error);
+	
+	/* Allocate buffer to store it within. */
+	chars = sjme_alloca(length);
+	if (chars == NULL)
+		return sjme_error_outOfMemory(NULL, NULL);
+	memset(chars, 0, length);
+	
+	/* Need to read in everything. */
+	if (sjme_error_is(error = sjme_stream_inputReadFully(
+		inStream, &count, chars, length)))
+		return sjme_error_default(error);
+	
+	/* Too short of a read? */
+	if (count != length)
+		return SJME_ERROR_END_OF_FILE;
+
+	/* Setup base sequence. */
+	memset(&seq, 0, sizeof(seq));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&seq,
+		(sjme_lpcstr)chars)))
+		return sjme_error_default(error);
+	
+	/* Use normal locating logic. */
+	return sjme_nvm_stringPool_locateSeqR(inStringPool,
+		outString, &seq, 0 
+		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
+}
+
+sjme_errorCode sjme_nvm_stringPool_locateUtfR(
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
+	sjme_attrInNotNull sjme_lpcstr inUtf,
+	sjme_attrInNegativeOnePositive sjme_jint inUtfLen,
+	sjme_attrOutNotNull sjme_nvm_stringPool_string* outString
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_stringPool_new(

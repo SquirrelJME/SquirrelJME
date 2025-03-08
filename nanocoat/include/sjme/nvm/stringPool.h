@@ -93,14 +93,30 @@ struct sjme_nvm_stringPool_stringBase
  * @param inSeq The string to locate in the pool.
  * @param offset The offset into the sequence.
  * @return On any resultant error, if any.
- * @since 2024/09/14
+ * @since 2025/03/08
  */
-sjme_errorCode sjme_nvm_stringPool_locateSeq(
+sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_stringPool_string* outString,
 	sjme_attrInNotNull sjme_charSeq inSeq,
-	sjme_attrInPositive sjme_jint offset);
+	sjme_attrInPositive sjme_jint offset
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
+/**
+ * Locates the given string in the string pool.
+ * 
+ * @param inStringPool The string pool.
+ * @param outString The resultant pooled string.
+ * @param inSeq The string to locate in the pool.
+ * @param offset The offset into the sequence.
+ * @return On any resultant error, if any.
+ * @since 2025/03/08
+ */
+#define sjme_nvm_stringPool_locateSeq(inStringPool, outString, inSeq, offset) \
+	(sjme_nvm_stringPool_locateSeqR((inStringPool), (outString), \
+	(inSeq), (offset) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
+	
 /**
  * Locates the given string in the string pool.
  * 

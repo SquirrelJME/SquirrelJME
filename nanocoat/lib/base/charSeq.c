@@ -113,6 +113,9 @@ sjme_errorCode sjme_charSeq_newUtfStatic(
 	sjme_attrOutNotNull sjme_charSeqStatic* outSeq,
 	sjme_attrInNotNull sjme_lpcstr utfString)
 {
+	if (outSeq == NULL || utfString == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
