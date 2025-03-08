@@ -245,7 +245,7 @@ struct sjme_nvm_frameBase
 	/** Stack information for the frame. */
 	sjme_frame_frameStacks stack;
 
-	/** Thread state flags. */
+	/** Frame state flags. */
 	sjme_packed struct
 	{
 		/** Enter synchronization was performed. */
@@ -309,11 +309,17 @@ typedef struct sjme_nvm_task_globals
 
 	/** The standard pipes for standard IO. */
 	sjme_nvm_mle_pipe stdPipes[SJME_NVM_MLE_NUM_STD_PIPES];
+
+	/** Main class name to start in. */
+	sjme_jstring mainClassName;
+
+	/** Main arguments, as objects. */
+	sjme_list_sjme_jstring* mainArgs;
 } sjme_nvm_task_globals;
 	
 struct sjme_nvm_taskBase
 {
-	/** The base object for the thread. */
+	/** The base object for the task. */
 	sjme_jobjectBase object;
 	
 	/** The identifier of this task. */
@@ -363,6 +369,9 @@ struct sjme_nvm_threadBase
 	
 	/** The thread ID. */
 	sjme_jint threadId;
+
+	/** Is this the main thread? */
+	sjme_jboolean isMain;
 
 	/** The @c java.lang.Thread this is bound to. */
 	sjme_jobject vmObject;
@@ -813,6 +822,23 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfP(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jstring* outString,
 	sjme_attrInNotNull sjme_nvm_stringPool_string inPool);
+	
+/**
+ * Loads the given UTF string as a string object.
+ * 
+ * @param inThread The context thread to load as the string requires
+ * initialization.
+ * @param outString The resultant string object.
+ * @param isIntern Should this be interned?
+ * @param inUtf The input UTF string.
+ * @return Any resultant error, if any.
+ * @since 2025/03/07
+ */
+sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_jstring* outString,
+	sjme_attrInValue sjme_jboolean isIntern,
+	sjme_attrInNotNull sjme_lpcstr inUtf);
 	
 /*--------------------------------------------------------------------------*/
 

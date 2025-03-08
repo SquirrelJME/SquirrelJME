@@ -137,6 +137,43 @@ sjme_errorCode sjme_charSeq_deleteStatic(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_charSeq_dup(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_charSeq** destCopy,
+	sjme_attrInNotNull const sjme_charSeq* sourceFrom)
+{
+	sjme_errorCode error;
+	sjme_charSeq* result;
+	sjme_jint n, i, allocLen;
+	sjme_jchar* chars;
+	sjme_jboolean wide;
+	
+	if (allocPool == NULL || destCopy == NULL || sourceFrom == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Determine length to copy from. */
+	n = -1;
+	if (sjme_error_is(error = sjme_charSeq_length(sourceFrom, &n)) ||
+		n < 0)
+		return sjme_error_default(error);
+
+	/* Allocate temporary buffer. */
+	allocLen = sizeof(*chars) * (n + 1);
+	chars = sjme_alloca(allocLen);
+	if (chars == NULL)
+		return sjme_error_outOfMemory(NULL, allocLen);
+	memset(chars, 0, allocLen);
+	
+	/* Read in all source characters. */
+	for (i = 0; i < n; i++)
+		if (sjme_error_is(error = sjme_charSeq_charAt(sourceFrom, i,
+			&chars[i])))
+			return sjme_error_default(error);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_charSeq_equalsCharSeq(
 	sjme_attrInNotNull const sjme_charSeq* inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,

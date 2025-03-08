@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/config.h"
+#include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
@@ -37,8 +38,10 @@ SJME_NVM_MLE_FUNCTION_DECL(currentJavaThread)
 
 SJME_NVM_MLE_FUNCTION_DECL(currentVMThread)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Native threads are VM threads. */
+	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->value.l = (sjme_jobject)inFrame->inThread;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(equals)
@@ -73,6 +76,10 @@ SJME_NVM_MLE_FUNCTION_DECL(model)
 
 SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 {
+	sjme_nvm_task task;
+	
+	task = inFrame->inThread->inTask;
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -127,8 +134,17 @@ SJME_NVM_MLE_FUNCTION_DECL(vmThreadIsAlive)
 
 SJME_NVM_MLE_FUNCTION_DECL(vmThreadIsMain)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_nvm_thread thread;
+	
+	/* Must be a VMThread. */
+	thread = (sjme_nvm_thread)argV[0].value.l;
+	if (!sjme_nvm_isAR(thread, SJME_NVM_STRUCT_THREAD))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Is a simple flag get. */
+	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->value.i = !!thread->isMain;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(vmThreadIsStarted)

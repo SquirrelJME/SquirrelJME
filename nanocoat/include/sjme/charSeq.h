@@ -140,6 +140,20 @@ sjme_errorCode sjme_charSeq_deleteStatic(
 	sjme_attrInNotNull sjme_charSeq* inOutSeq);
 
 /**
+ * Makes a copy of the given character sequence.
+ * 
+ * @param allocPool The allocation pool to allocate within.
+ * @param destCopy The destination copy.
+ * @param sourceFrom The source to copy from.
+ * @return Any resultant error, if any.
+ * @since 2025/03/07
+ */
+sjme_errorCode sjme_charSeq_dup(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_charSeq** destCopy,
+	sjme_attrInNotNull const sjme_charSeq* sourceFrom);
+	
+/**
  * Returns the length of the character sequence.
  * 
  * @param inSeq The input character sequence.

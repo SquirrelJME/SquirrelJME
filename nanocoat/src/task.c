@@ -1099,6 +1099,17 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	if (sjme_error_is(error = sjme_nvm_task_threadNew(result,
 		&mainThread, "main")) || mainThread == NULL)
 		goto fail_taskNewThread;
+
+	/* The main thread gets flagged as the main thread. */
+	mainThread->isMain = SJME_JNI_TRUE;
+
+	/* Setup strings for main class and arguments. */
+	result->globals.mainClassName = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
+		mainThread, &result->globals.mainClassName, SJME_JNI_TRUE,
+		startConfig->mainClass)) ||
+		result->globals.mainClassName == NULL)
+		goto fail_mainClassString;
 	
 	/* The main thread of any task is always implicitly started. */
 	if (sjme_error_is(error = sjme_nvm_task_threadStart(mainThread)))
@@ -1137,6 +1148,7 @@ fail_allocTasks:
 	return sjme_error_default(error);
 
 	/* Post state lock, when accessing state is no longer needed. */
+fail_mainClassString:
 fail_startMain:
 fail_taskNewThread:
 fail_stateLockRelease:
@@ -1595,6 +1607,9 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	if (sjme_nvm_isAR(inSeq->frontEnd.wrapper,
 		SJME_NVM_STRUCT_STRING_POOL_STRING))
 	{
+		/* Force as intern, since there is no other way to treat this. */
+		isIntern = SJME_JNI_TRUE;
+		
 		/* Count up. */
 		if (sjme_error_is(error = sjme_alloc_weakRef(inSeq->frontEnd.wrapper,
 			NULL)))
@@ -1607,8 +1622,11 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	/* Otherwise... */
 	else
 	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Duplicate the sequence. */
+		if (sjme_error_is(error = sjme_charSeq_dup(
+			inThread->inTask->inState->allocPool,
+			&result->seq, inSeq)) || result->seq == NULL)
+			goto fail_dupSeq;
 	}
 	
 	/* Final intern setup. */
@@ -1644,11 +1662,20 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	*outString = result;
 	return SJME_ERROR_NONE;
 
+fail_dupSeq:
+	if (!isIntern && result != NULL && result->seq != NULL)
+	{
+		sjme_alloc_free(result->seq);
+		result->seq = NULL;
+	}
 fail_replaceList:
 fail_countPoolString:
 fail_allocStringInstance:
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Do not destroy loaded intern strings. */
+	if (!isIntern && result != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
+
+	return sjme_error_default(error);
 #undef SJME_INTERN_GROW
 }
 
@@ -1663,4 +1690,27 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfP(
 	/* Forward implementation. */
 	return sjme_nvm_task_threadStringValueOfCS(inThread,
 		outString, SJME_JNI_TRUE, &inPool->seq);
+}
+
+sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_jstring* outString,
+	sjme_attrInValue sjme_jboolean isIntern,
+	sjme_attrInNotNull sjme_lpcstr inUtf)
+{
+	sjme_errorCode error;
+	sjme_charSeq seq;
+	
+	if (inThread == NULL || outString == NULL || inUtf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Setup static sequence. */
+	memset(&seq, 0, sizeof(seq));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&seq,
+		inUtf, NULL)))
+		return sjme_error_default(error);
+
+	/* Forward implementation. */
+	return sjme_nvm_task_threadStringValueOfCS(inThread,
+		outString, isIntern, &seq);
 }

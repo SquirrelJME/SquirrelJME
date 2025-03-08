@@ -47,12 +47,9 @@ final class __Start__
 	@SquirrelJMEVendorApi
 	static void __base()
 	{
-		// Get both of our thread infos
-		Thread javaThread = ThreadShelf.currentJavaThread();
-		VMThreadBracket vmThread = ThreadShelf.toVMThread(javaThread);
-		
 		// We will need to catch any exceptions that the thread throws and
 		// have some fallback logic for handling it
+		VMThreadBracket vmThread = ThreadShelf.currentVMThread();
 		try
 		{
 			// Execute the thread, if we are the main thread we use an
@@ -65,6 +62,7 @@ final class __Start__
 			{
 				// Use the thread's runnable or otherwise run the thread itself
 				// if none was used
+				Thread javaThread = ThreadShelf.currentJavaThread();
 				Runnable run = ThreadShelf.javaThreadRunnable(javaThread);
 				if (run == null)
 					run = javaThread;

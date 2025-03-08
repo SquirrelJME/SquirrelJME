@@ -35,10 +35,6 @@ public class TestThreadShelfInvalid
 				ThreadShelf.vmThreadIsMain(null);
 				break;
 			
-			case 1:
-				ThreadShelf.javaThreadIsStarted(null);
-				break;
-			
 			case 3:
 				ThreadShelf.createVMThread(null, null);
 				break;
