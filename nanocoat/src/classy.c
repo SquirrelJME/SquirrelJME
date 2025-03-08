@@ -929,17 +929,16 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 sjme_errorCode sjme_nvm_class_descriptorToType(
 	sjme_attrOutNotNull sjme_javaTypeId* outType,
 	sjme_attrInValue sjme_jboolean javaType,
-	sjme_attrInNotNullBuf(descLen) sjme_lpcstr desc,
-	sjme_attrInPositiveNonZero sjme_jint descLen)
+	sjme_attrInNotNull sjme_charSeq descriptor)
 {
 	sjme_javaTypeId result;
 	
-	if (outType == NULL || desc == NULL)
+	if (outType == NULL || descriptor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (descLen <= 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	if (strncmp("Z", desc, descLen) == 0)
 		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
 			SJME_BASIC_TYPE_ID_BOOLEAN);
@@ -972,6 +971,7 @@ sjme_errorCode sjme_nvm_class_descriptorToType(
 	/* Success! */
 	*outType = result;
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_errorCode sjme_nvm_class_parse(
@@ -1084,18 +1084,18 @@ sjme_errorCode sjme_nvm_class_parse(
 		goto fail_refThisName;
 		
 	/* Locate the last slash character in the binary name. */
-	lastSlash = result->name->length - 1;
+	lastSlash = result->name->seq->length - 1;
 	while (lastSlash > 0)
-		if (result->name->chars[lastSlash] == '/')
+		if (SJME_ERROR_NONE == sjme_charSeq_charAtIs(result->name->seq,
+			lastSlash, '/'))
 			break;
 		else
 			lastSlash--;
 	
 	/* Locate string for package name. */
 	result->inPackage = NULL;
-	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
-		inStringPool, (sjme_lpcstr)&result->name->chars[0], lastSlash,
-		&result->inPackage)) ||
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateSeq(
+		inStringPool, &result->inPackage, result->name->seq, lastSlash)) ||
 		result->inPackage == NULL)
 		goto fail_inPackage;
 	
@@ -1337,7 +1337,7 @@ sjme_errorCode sjme_nvm_class_parseAttributes(
 		/* Stage it for stack allocations. */
 		if (sjme_error_is(error = sjme_nvm_class_parseAttribute(
 			allocPool, inStream, inConstPool, inStringPool, handlers,
-			context, (sjme_lpcstr)&name->utf.utf->chars[0],
+			context, sjme_charSeq_tempUtf(name->utf.utf->seq),
 			len)))
 			goto fail_parseSingle;
 	}
@@ -1778,14 +1778,10 @@ sjme_errorCode sjme_nvm_class_parseField(
 	
 	/* Determine type. */
 	if (sjme_error_is(error = sjme_nvm_class_descriptorToType(
-		&result->javaType, SJME_JNI_TRUE,
-		(sjme_lpcstr)&result->type->chars[0],
-		strlen((sjme_lpcstr)&result->type->chars[0]))))
+		&result->javaType, SJME_JNI_TRUE, result->type->seq)))
 		goto fail_determineType;
 	if (sjme_error_is(error = sjme_nvm_class_descriptorToType(
-		&result->basicType, SJME_JNI_FALSE,
-		(sjme_lpcstr)&result->type->chars[0],
-		strlen((sjme_lpcstr)&result->type->chars[0]))))
+		&result->basicType, SJME_JNI_FALSE, result->type->seq)))
 		goto fail_determineType;
 	
 	/* Initialize constant value to an invalid type. */
@@ -1874,7 +1870,7 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 
 	/* Determine the number of method arguments. */
 	if (sjme_error_is(error = sjme_nvm_class_calcMethodArgs(
-		allocPool, (sjme_lpcstr)&type->utf.utf->chars[0],
+		allocPool, sjme_charSeq_tempUtf(type->utf.utf->seq),
 		&result->argC, &result->argT, &result->argR)))
 		goto fail_calcArgs;
 	

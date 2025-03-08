@@ -50,12 +50,11 @@ SJME_TEST_DECLARE(testStringPoolUtf)
 		return sjme_unit_fail(test, "Could not count string?");
 	
 	/* Check to make sure it is valid. */
-	sjme_unit_equalI(test, 10, string->length,
+	sjme_unit_equalI(test, 10, string->seq->length,
 		"Length incorrect?");
-	sjme_unit_notEqualP(test, testUtf, string->seq.context,
-		"Copy was not made?");
-	sjme_unit_notEqualP(test, testUtf, &string->chars[0],
-		"Copy was not made?");
+	sjme_unit_notEqualI(test,
+		0, strcmp("Squirrels!", sjme_charSeq_tempUtf(string->seq)),
+		"String not equal?");
 	
 	/* Should be first. */
 	sjme_unit_equalP(test, string, stringPool->strings->elements[0],

@@ -241,7 +241,7 @@ sjme_errorCode sjme_jni_recoverEnvFrontEnd(
 }
 
 static sjme_errorCode sjme_jni_jstringCharAt(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq inSeq,
 	sjme_attrInPositive sjme_jint inIndex,
 	sjme_attrOutNotNull sjme_jchar* outChar)
 {
@@ -284,7 +284,7 @@ static sjme_errorCode sjme_jni_jstringCharAt(
 }
 
 static sjme_errorCode sjme_jni_jstringDelete(
-	sjme_attrInNotNull sjme_charSeq* inSeq)
+	sjme_attrInNotNull sjme_charSeq inSeq)
 {
 	sjme_errorCode error;
 	JNIEnv* env;
@@ -311,7 +311,7 @@ static sjme_errorCode sjme_jni_jstringDelete(
 }
 
 static sjme_errorCode sjme_jni_jstringLength(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jint* outLen)
 {
 	sjme_errorCode error;
@@ -346,7 +346,7 @@ static const sjme_charSeq_functions sjme_jni_jstringFunctions =
 
 sjme_errorCode sjme_jni_jstringCharSeqStatic(
 	sjme_attrInNotNull JNIEnv* env,
-	sjme_attrInOutNotNull sjme_charSeq* inOutSeq,
+	sjme_attrInOutNotNull sjme_charSeq inOutSeq,
 	sjme_attrInNotNull jstring inString)
 {
 	sjme_frontEnd frontEnd;

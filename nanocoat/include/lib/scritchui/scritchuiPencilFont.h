@@ -280,7 +280,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderCharFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontStringWidthFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInNotNull const sjme_charSeq* s,
+	sjme_attrInNotNull const sjme_charSeq s,
 	sjme_attrInPositive sjme_jint o,
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrOutNotNull sjme_jint* outWidth);

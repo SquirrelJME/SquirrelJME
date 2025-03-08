@@ -1861,7 +1861,7 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawPixel(
 	
 sjme_errorCode sjme_scritchpen_coreSerial_drawSubstring(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull const sjme_charSeq* s,
+	sjme_attrInNotNull const sjme_charSeq s,
 	sjme_attrInPositive sjme_jint o, 
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrInValue sjme_jint x,

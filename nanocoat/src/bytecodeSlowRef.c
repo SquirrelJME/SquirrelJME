@@ -116,8 +116,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeAny(
 		mleArgR.type = SJME_JAVA_TYPE_ID_VOID;
 		if (sjme_error_is(error = sjme_mle_mleCall(inFrame,
 			classy->binaryName,
-			(sjme_lpcstr)&target->name->chars[0],
-			(sjme_lpcstr)&target->type->chars[0],
+			sjme_charSeq_tempUtf(target->name->seq),
+			sjme_charSeq_tempUtf(target->type->seq),
 			&mleArgR,
 			argC, argV)))
 			return sjme_error_vmError(inFrame, error);
@@ -183,7 +183,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 
 	/* Which class are we going for? */
 	classRef = &entry->classRef;
-	binaryName = (sjme_lpcstr)&classRef->descriptor->chars[0];
+	binaryName = sjme_charSeq_tempUtf(classRef->descriptor->seq);
 	
 	/* Locate target class. */
 	desireClass = NULL;
@@ -239,9 +239,10 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvokeAny(inFrame,
 		SJME_NVM_CLASS_MEMBER_STATIC,
 		SJME_NVM_CALL_NON_VIRTUAL,
-		(sjme_lpcstr)&member->inClass->descriptor->chars[0],
-		(sjme_lpcstr)&member->nameAndType->name->chars[0],
-		(sjme_lpcstr)&member->nameAndType->descriptor->chars[0])))
+		sjme_charSeq_tempUtf(member->inClass->descriptor->seq),
+		sjme_charSeq_tempUtf(member->nameAndType->name->seq),
+		sjme_charSeq_tempUtf(
+			member->nameAndType->descriptor->seq))))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
@@ -271,9 +272,10 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvokeAny(inFrame,
 		SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_NVM_CALL_VIRTUAL,
-		(sjme_lpcstr)&member->inClass->descriptor->chars[0],
-		(sjme_lpcstr)&member->nameAndType->name->chars[0],
-		(sjme_lpcstr)&member->nameAndType->descriptor->chars[0])))
+		sjme_charSeq_tempUtf(member->inClass->descriptor->seq),
+		sjme_charSeq_tempUtf(member->nameAndType->name->seq),
+		sjme_charSeq_tempUtf(
+			member->nameAndType->descriptor->seq))))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */

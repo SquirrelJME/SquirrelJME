@@ -656,7 +656,7 @@ SDP_STRUCT_DEF(drawPixel,
 
 SDP_STRUCT_DEF(drawSubstring,
 	SDX_VAR(sjme_scritchui_pencil, g);
-	SDX_VARP(const sjme_charSeq, s);
+	SDX_VAR(sjme_charSeq, s);
 	SDX_VAR(sjme_jint, o);
 	SDX_VAR(sjme_jint, l);
 	SDX_VAR(sjme_jint, x);
@@ -1263,7 +1263,7 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawPixel(
 	
 sjme_errorCode sjme_scritchpen_coreSerial_drawSubstring(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull const sjme_charSeq* s,
+	sjme_attrInNotNull const sjme_charSeq s,
 	sjme_attrInPositive sjme_jint o, 
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrInValue sjme_jint x,

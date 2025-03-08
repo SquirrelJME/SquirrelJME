@@ -81,9 +81,9 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	/* Constructors always bind to self. */
 	/* Along with any private methods. */
 	/* Static as well. */
-	if (sjme_charSeq_equalsUtfR(&thisInfo->name->seq,
+	if (sjme_charSeq_equalsUtfR(thisInfo->name->seq,
 			"<init>") ||
-		sjme_charSeq_equalsUtfR(&thisInfo->name->seq,
+		sjme_charSeq_equalsUtfR(thisInfo->name->seq,
 			"<clinit>") ||
 		thisInfo->flags.member.access.private ||
 		thisInfo->flags.member.isStatic)
@@ -116,9 +116,9 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		
 		/* If not the same method or type, skip. */
 		if (!sjme_charSeq_equalsCharSeqR(
-				&found->name->seq, &thisInfo->name->seq) ||
+				found->name->seq, thisInfo->name->seq) ||
 			!sjme_charSeq_equalsCharSeqR(
-				&found->type->seq, &thisInfo->type->seq))
+				found->type->seq, thisInfo->type->seq))
 			continue;
 		
 		/* Private methods just go poof. */
@@ -132,8 +132,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		{
 			/* Not in same package, skip. */
 			if (!sjme_charSeq_equalsCharSeqR(
-					&found->inClass->inPackage->seq,
-					&thisInfo->inClass->inPackage->seq))
+					found->inClass->inPackage->seq,
+					thisInfo->inClass->inPackage->seq))
 				continue;
 		}
 		
@@ -695,7 +695,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		/* Find super class. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
 			loader, &superClass, contextThread,
-			(sjme_lpcstr)&info->superName->chars[0],
+			sjme_charSeq_tempUtf(info->superName->seq),
 			SJME_JNI_FALSE)) ||
 			superClass == NULL)
 			goto fail_findSuper;
@@ -725,8 +725,8 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			interface = NULL;
 			if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
 				loader, &interface, contextThread,
-				(sjme_lpcstr)
-					&info->interfaceNames->elements[i]->chars[0],
+				sjme_charSeq_tempUtf(
+					info->interfaceNames->elements[i]->seq),
 				SJME_JNI_FALSE)) ||
 				interface == NULL)
 				goto fail_findInterface;
@@ -1388,9 +1388,9 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 				SJME_ERROR_NO_METHOD);
 		
 		/* Is this the method. */
-		if (sjme_charSeq_equalsUtfR(&method->member.name->seq,
+		if (sjme_charSeq_equalsUtfR(method->member.name->seq,
 				inName) &&
-			sjme_charSeq_equalsUtfR(&method->member.type->seq,
+			sjme_charSeq_equalsUtfR(method->member.type->seq,
 				inType))
 		{
 			*outID = method;

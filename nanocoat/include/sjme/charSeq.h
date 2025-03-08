@@ -32,89 +32,73 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * A character sequence which contains a set of characters within a string,
- * may be modifiable or not.
+ * A character sequence which contains a set of characters within a string.
  * 
  * @since 2024/06/26
  */
-typedef struct sjme_charSeq sjme_charSeq;
+typedef struct sjme_charSeqStatic sjme_charSeqStatic;
 
 /**
- * Returns the character at the given index.
- * 
- * @param inSeq The input character sequence.
- * @param inIndex The index to get from.
- * @param outChar The resultant character.
- * @return Any resultant error, if any.
- * @since 2024/06/27
- */
-typedef sjme_errorCode (*sjme_charSeq_charAtFunc)(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
-	sjme_attrInPositive sjme_jint inIndex,
-	sjme_attrOutNotNull sjme_jchar* outChar);
-
-/**
- * Deletes the given static character sequence.
- * 
- * @param inSeq The input/output sequence. 
- * @return Any resultant error, if any.
- * @since 2024/06/26
- */
-typedef sjme_errorCode (*sjme_charSeq_deleteFunc)(
-	sjme_attrInNotNull sjme_charSeq* inSeq);
-
-/**
- * Returns the length of the character sequence.
- * 
- * @param inSeq The input character sequence.
- * @param outLen The sequence length.
- * @return Any resultant error, if any.
- * @since 2024/06/27
- */
-typedef sjme_errorCode (*sjme_charSeq_lengthFunc)(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
-	sjme_attrOutNotNull sjme_jint* outLen);
-
-/**
- * Functions which are used to process character sequences.
+ * A character sequence which contains a set of characters within a string.
  * 
  * @since 2024/06/26
  */
-typedef struct sjme_charSeq_functions
+typedef sjme_charSeqStatic* sjme_charSeq;
+
+/**
+ * The type of character encoding used in @c sjme_charSeq .
+ *
+ * @since 2025/03/07
+ */
+typedef enum sjme_charSeq_type
 {
-	/** The character at the given index. */
-	sjme_charSeq_charAtFunc charAt;
-	
-	/** Deleting the sequence and freeing any resources. */
-	sjme_charSeq_deleteFunc delete;
-	
-	/** The length of the character sequence. */
-	sjme_charSeq_lengthFunc length;
-} sjme_charSeq_functions;
+	/** Narrow bytes only. */
+	SJME_CHAR_SEQ_TYPE_NARROW,
 
-struct sjme_charSeq
+	/** Wide chars only. */
+	SJME_CHAR_SEQ_TYPE_WIDE,
+
+	/** Java Modified-UTF with length, offset by two bytes. */
+	SJME_CHAR_SEQ_TYPE_UTF,
+
+	/** Java Modified-UTF w/o length. */
+	SJME_CHAR_SEQ_TYPE_UTF_NO_LEN,
+
+	/** Static modified-UTF string. */
+	SJME_CHAR_SEQ_TYPE_STATIC,
+	
+	/** The number of character sequence types. */
+	SJME_CHAR_SEQ_NUM_TYPES,
+} sjme_charSeq_type;
+	
+struct sjme_charSeqStatic
 {
-	/** Front end data, if any. */
-	sjme_frontEnd frontEnd;
-	
-	/** Context pointer, if any. */
-	sjme_pointer context;
-	
-	/** The API for accessing the character sequence. */
-	const sjme_charSeq_functions* impl;
+	/** The type of sequence this is. */
+	sjme_charSeq_type type;
+
+	/** The length of this sequence. */
+	sjme_jint length;
+
+	/** The hashcode for this string. */
+	sjme_jint hash;
+
+	/** The sequence data. */
+	sjme_alignPointer union
+	{
+		/** Reference to another sequence. */
+		sjme_charSeq otherSeq;
+
+		/** Static UTF pointer. */
+		sjme_lpcstr staticUtf;
+
+		/** The bytes stored in the sequence. */
+		sjme_jbyte bytes[sjme_flexibleArrayCountUnion];
+
+		/** The characters stored in the sequence. */
+		sjme_jchar chars[sjme_flexibleArrayCountUnion];
+	} data;
 };
 
-/**
- * Returns a temporary pointer to the given character sequence as a
- * standard @c sjme_lpcstr .
- * 
- * @param inSeq The input sequence.
- * @return The resultant temporary pointer.
- * @since 2025/02/10
- */
-sjme_lpcstr sjme_charSeq_asLpcTemp(
-	sjme_attrInNotNull const sjme_charSeq* inSeq);
-	
 /**
  * Returns the character at the given index.
  * 
@@ -125,19 +109,23 @@ sjme_lpcstr sjme_charSeq_asLpcTemp(
  * @since 2024/06/27
  */
 sjme_errorCode sjme_charSeq_charAt(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrInPositive sjme_jint inIndex,
 	sjme_attrOutNotNull sjme_jchar* outChar);
 
 /**
- * Deletes the given static character sequence.
+ * Is the index in the sequence the given character?
  * 
- * @param inOutSeq The input/output sequence. 
+ * @param inSeq The input character sequence.
+ * @param inIndex The index to get from.
+ * @param wantChar The requested character.
  * @return Any resultant error, if any.
- * @since 2024/06/26
+ * @since 2025/03/07
  */
-sjme_errorCode sjme_charSeq_deleteStatic(
-	sjme_attrInNotNull sjme_charSeq* inOutSeq);
+sjme_errorCode sjme_charSeq_charAtIs(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInPositive sjme_jint inIndex,
+	sjme_attrOutNotNull sjme_jchar wantChar);
 
 /**
  * Makes a copy of the given character sequence.
@@ -150,8 +138,8 @@ sjme_errorCode sjme_charSeq_deleteStatic(
  */
 sjme_errorCode sjme_charSeq_dup(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_charSeq** destCopy,
-	sjme_attrInNotNull const sjme_charSeq* sourceFrom);
+	sjme_attrOutNotNull sjme_charSeq* destCopy,
+	sjme_attrInNotNull sjme_charSeq sourceFrom);
 	
 /**
  * Returns the length of the character sequence.
@@ -162,7 +150,7 @@ sjme_errorCode sjme_charSeq_dup(
  * @since 2024/06/27
  */
 sjme_errorCode sjme_charSeq_length(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jint* outLen);
 
 /**
@@ -175,9 +163,9 @@ sjme_errorCode sjme_charSeq_length(
  * @since 2024/08/08 
  */
 sjme_errorCode sjme_charSeq_equalsCharSeq(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,
-	sjme_attrInNotNull const sjme_charSeq* equalsSeq);
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInNotNull sjme_charSeq equalsSeq);
 
 /**
  * Checks if the given character sequence equals the given character sequence,
@@ -190,8 +178,8 @@ sjme_errorCode sjme_charSeq_equalsCharSeq(
  * @since 2024/11/09
  */
 sjme_jboolean sjme_charSeq_equalsCharSeqR(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
-	sjme_attrInNotNull const sjme_charSeq* equalsSeq);
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInNotNull sjme_charSeq equalsSeq);
 
 /**
  * Checks if the given character sequence equals the given UTF string.
@@ -203,7 +191,7 @@ sjme_jboolean sjme_charSeq_equalsCharSeqR(
  * @since 2024/08/08 
  */
 sjme_errorCode sjme_charSeq_equalsUtf(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,
 	sjme_attrInNotNull sjme_lpcstr equalsUtf);
 	
@@ -217,7 +205,7 @@ sjme_errorCode sjme_charSeq_equalsUtf(
  * @since 2024/08/08 
  */
 sjme_jboolean sjme_charSeq_equalsUtfR(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrInNotNull sjme_lpcstr equalsUtf);
 
 /**
@@ -229,39 +217,66 @@ sjme_jboolean sjme_charSeq_equalsUtfR(
  * @since 2025/01/25
  */
 sjme_errorCode sjme_charSeq_hash(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jint* outHash);
 
 /**
- * Initializes the given static character sequence.
+ * Allocates a new narrow character sequence.
  * 
- * @param inOutSeq The input/output sequence.
- * @param inFunctions The input functions for the character sequence.
- * @param inOptContext The context to set.
- * @param inOptFrontEnd The front end data to copy.
+ * @param allocPool The pool to allocate within.
+ * @param outSeq The resultant sequence.
+ * @param narrow The input narrow bytes for the string.
  * @return Any resultant error, if any.
- * @since 2024/06/27
+ * @since 2025/03/07
  */
-sjme_errorCode sjme_charSeq_newStatic(
-	sjme_attrInNotNull sjme_charSeq* inOutSeq,
-	sjme_attrInNotNull const sjme_charSeq_functions* inFunctions,
-	sjme_attrInNullable sjme_pointer inOptContext,
-	sjme_attrInNullable sjme_frontEnd* inOptFrontEnd);
+sjme_errorCode sjme_charSeq_newNarrow(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_charSeq* outSeq,
+	sjme_attrInNotNull const sjme_jbyte* narrow);
 
 /**
- * Creates a character sequence that accesses the given standard C string
- * as Utf characters. 
+ * Allocates a new modified-UTF character sequence.
  * 
- * @param inOutSeq The resultant sequence.
- * @param inString The string to wrap.
- * @param inOptFrontEnd The front end data to copy.
+ * @param allocPool The pool to allocate within.
+ * @param outSeq The resultant sequence.
+ * @param lenPrefixed If @c SJME_JNI_TRUE then the string is considered to be
+ * prefixed by the length and not NUL terminated; otherwise it is considered
+ * to be NUL terminated and not offset.
+ * @param utfString The input modified-UTF string.
  * @return Any resultant error, if any.
- * @since 2024/07/26
+ * @since 2025/03/07
+ */
+sjme_errorCode sjme_charSeq_newUtf(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_charSeq* outSeq,
+	sjme_attrInValue sjme_jboolean lenPrefixed,
+	sjme_attrInNotNull sjme_lpcstr utfString);
+
+/**
+ * Initializes a static UTF string.
+ * 
+ * @param outSeq The resultant static sequence.
+ * @param utfString The string to base from.
+ * @return Any resultant error, if any.
+ * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_newUtfStatic(
-	sjme_attrInNotNull sjme_charSeq* inOutSeq,
-	sjme_attrInNotNull sjme_lpcstr inString,
-	sjme_attrInNullable sjme_frontEnd* inOptFrontEnd);
+	sjme_attrOutNotNull sjme_charSeqStatic* outSeq,
+	sjme_attrInNotNull sjme_lpcstr utfString);
+	
+/**
+ * Allocates a new wide character sequence.
+ * 
+ * @param allocPool The pool to allocate within.
+ * @param outSeq The resultant sequence.
+ * @param wide The input wide bytes for the string.
+ * @return Any resultant error, if any.
+ * @since 2025/03/07
+ */
+sjme_errorCode sjme_charSeq_newWide(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_charSeq* outSeq,
+	sjme_attrInNotNull const sjme_jbyte* wide);
 
 /**
  * Checks if the given character sequence starts with the given character
@@ -274,9 +289,9 @@ sjme_errorCode sjme_charSeq_newUtfStatic(
  * @since 2024/08/08 
  */
 sjme_errorCode sjme_charSeq_startsWithCharSeq(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,
-	sjme_attrInNotNull const sjme_charSeq* startsWithSeq);
+	sjme_attrInNotNull sjme_charSeq startsWithSeq);
 
 /**
  * Checks if the given character sequence starts with the given UTF string.
@@ -288,7 +303,7 @@ sjme_errorCode sjme_charSeq_startsWithCharSeq(
  * @since 2024/08/08 
  */
 sjme_errorCode sjme_charSeq_startsWithUtf(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,
 	sjme_attrInNotNull sjme_lpcstr startsWithUtf);
 	
@@ -302,8 +317,18 @@ sjme_errorCode sjme_charSeq_startsWithUtf(
  * @since 2024/08/08 
  */
 sjme_jboolean sjme_charSeq_startsWithUtfR(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrInNotNull sjme_lpcstr startsWithUtf);
+
+/**
+ * Returns a temporary @c sjme_lpcstr over the character sequence.
+ * 
+ * @param inSeq The input sequence.
+ * @return The temporary @c sjme_lpcstr .
+ * @since 2025/03/07
+ */
+sjme_lpcstr sjme_charSeq_tempUtf(
+	sjme_attrInNotNull sjme_charSeq inSeq);
 
 /*--------------------------------------------------------------------------*/
 

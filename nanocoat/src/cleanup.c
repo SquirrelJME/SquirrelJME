@@ -174,23 +174,6 @@ static sjme_errorCode sjme_nvm_class_methodInfoClose(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_nvm_desc_identifierClose(
-	sjme_attrInNotNull sjme_closeable closeable)
-{
-	sjme_errorCode error;
-	sjme_nvm_desc_identifier info;
-	
-	/* Recover. */
-	info = (sjme_nvm_desc_identifier)closeable;
-	if (info == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	SJME_CLEANUP_CLOSE(info->whole);
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
 static sjme_errorCode sjme_nvm_rom_libraryClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -447,10 +430,6 @@ sjme_errorCode sjme_nvm_allocR(
 
 		case SJME_NVM_STRUCT_FRAME:
 			handler = sjme_nvm_threadFrameClose;
-			break;
-		
-		case SJME_NVM_STRUCT_IDENTIFIER:
-			handler = sjme_nvm_desc_identifierClose;
 			break;
 		
 		case SJME_NVM_STRUCT_IS_CLASSES:

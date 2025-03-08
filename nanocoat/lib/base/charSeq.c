@@ -13,8 +13,158 @@
 #include "sjme/debug.h"
 #include "sjme/util.h"
 
+sjme_errorCode sjme_charSeq_charAt(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInPositive sjme_jint inIndex,
+	sjme_attrOutNotNull sjme_jchar* outChar)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_charSeq_charAtIs(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInPositive sjme_jint inIndex,
+	sjme_attrOutNotNull sjme_jchar wantChar)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_charSeq_dup(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_charSeq* destCopy,
+	sjme_attrInNotNull sjme_charSeq sourceFrom)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_charSeq_length(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrOutNotNull sjme_jint* outLen)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_charSeq_equalsCharSeq(
+	sjme_attrOutNotNull sjme_jboolean* outResult,
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInNotNull sjme_charSeq equalsSeq)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_jboolean sjme_charSeq_equalsCharSeqR(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInNotNull sjme_charSeq equalsSeq)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_charSeq_equalsUtf(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrOutNotNull sjme_jboolean* outResult,
+	sjme_attrInNotNull sjme_lpcstr equalsUtf)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_jboolean sjme_charSeq_equalsUtfR(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInNotNull sjme_lpcstr equalsUtf)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_charSeq_hash(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrOutNotNull sjme_jint* outHash)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_charSeq_newNarrow(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_charSeq* outSeq,
+	sjme_attrInNotNull const sjme_jbyte* narrow)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_charSeq_newUtf(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_charSeq* outSeq,
+	sjme_attrInValue sjme_jboolean lenPrefixed,
+	sjme_attrInNotNull sjme_lpcstr utfString)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_charSeq_newUtfStatic(
+	sjme_attrOutNotNull sjme_charSeqStatic* outSeq,
+	sjme_attrInNotNull sjme_lpcstr utfString)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_charSeq_newWide(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_charSeq* outSeq,
+	sjme_attrInNotNull const sjme_jbyte* wide)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_charSeq_startsWithCharSeq(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrOutNotNull sjme_jboolean* outResult,
+	sjme_attrInNotNull sjme_charSeq startsWithSeq)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_charSeq_startsWithUtf(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrOutNotNull sjme_jboolean* outResult,
+	sjme_attrInNotNull sjme_lpcstr startsWithUtf)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_jboolean sjme_charSeq_startsWithUtfR(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInNotNull sjme_lpcstr startsWithUtf)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_lpcstr sjme_charSeq_tempUtf(
+	sjme_attrInNotNull sjme_charSeq inSeq)
+{
+	sjme_todo("Impl?");
+	return (sjme_lpcstr)sjme_error_notImplemented(0);
+}
+
+
+
+
+#if 0
 static sjme_errorCode sjme_charSeq_basicUtf_charAt(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq inSeq,
 	sjme_attrInPositive sjme_jint inIndex,
 	sjme_attrOutNotNull sjme_jchar* outChar)
 {
@@ -34,7 +184,7 @@ static sjme_errorCode sjme_charSeq_basicUtf_charAt(
 }
 
 static sjme_errorCode sjme_charSeq_basicUtf_length(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jint* outLen)
 {
 	sjme_jint len;
@@ -59,7 +209,7 @@ static const sjme_charSeq_functions sjme_charSeq_basicUtfFunctions =
 };
 
 sjme_lpcstr sjme_charSeq_asLpcTemp(
-	sjme_attrInNotNull const sjme_charSeq* inSeq)
+	sjme_attrInNotNull const sjme_charSeq inSeq)
 {
 #define BUF_SIZE 1024
 	sjme_attrThreadLocal(sjme_cchar, buf[BUF_SIZE]);
@@ -97,7 +247,7 @@ sjme_lpcstr sjme_charSeq_asLpcTemp(
 }
 
 sjme_errorCode sjme_charSeq_charAt(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq inSeq,
 	sjme_attrInPositive sjme_jint inIndex,
 	sjme_attrOutNotNull sjme_jchar* outChar)
 {
@@ -115,7 +265,7 @@ sjme_errorCode sjme_charSeq_charAt(
 }
 
 sjme_errorCode sjme_charSeq_deleteStatic(
-	sjme_attrInNotNull sjme_charSeq* inOutSeq)
+	sjme_attrInNotNull sjme_charSeq inOutSeq)
 {
 	sjme_errorCode error;
 	
@@ -139,11 +289,11 @@ sjme_errorCode sjme_charSeq_deleteStatic(
 
 sjme_errorCode sjme_charSeq_dup(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_charSeq** destCopy,
-	sjme_attrInNotNull const sjme_charSeq* sourceFrom)
+	sjme_attrOutNotNull sjme_charSeq* destCopy,
+	sjme_attrInNotNull const sjme_charSeq sourceFrom)
 {
 	sjme_errorCode error;
-	sjme_charSeq* result;
+	sjme_charSeq result;
 	sjme_jint n, i, allocLen;
 	sjme_jchar* chars;
 	sjme_jboolean wide;
@@ -175,9 +325,9 @@ sjme_errorCode sjme_charSeq_dup(
 }
 
 sjme_errorCode sjme_charSeq_equalsCharSeq(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,
-	sjme_attrInNotNull const sjme_charSeq* equalsSeq)
+	sjme_attrInNotNull const sjme_charSeq inSeq,
+	sjme_attrInNotNull const sjme_charSeq equalsSeq)
 {
 	sjme_errorCode error;
 	sjme_jint aLen, bLen;
@@ -238,8 +388,8 @@ sjme_errorCode sjme_charSeq_equalsCharSeq(
 }
 
 sjme_jboolean sjme_charSeq_equalsCharSeqR(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
-	sjme_attrInNotNull const sjme_charSeq* equalsSeq)
+	sjme_attrInNotNull const sjme_charSeq inSeq,
+	sjme_attrInNotNull const sjme_charSeq equalsSeq)
 {
 	sjme_jboolean result;
 	
@@ -257,7 +407,7 @@ sjme_jboolean sjme_charSeq_equalsCharSeqR(
 }
 
 sjme_errorCode sjme_charSeq_equalsUtf(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,
 	sjme_attrInNotNull sjme_lpcstr equalsUtf)
 {
@@ -278,7 +428,7 @@ sjme_errorCode sjme_charSeq_equalsUtf(
 }
 
 sjme_jboolean sjme_charSeq_equalsUtfR(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq inSeq,
 	sjme_attrInNotNull sjme_lpcstr equalsUtf)
 {
 	sjme_jboolean result;
@@ -297,7 +447,7 @@ sjme_jboolean sjme_charSeq_equalsUtfR(
 }
 
 sjme_errorCode sjme_charSeq_hash(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jint* outHash)
 {
 	sjme_errorCode error;
@@ -332,7 +482,7 @@ sjme_errorCode sjme_charSeq_hash(
 }
 
 sjme_errorCode sjme_charSeq_length(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jint* outLen)
 {
 	if (inSeq == NULL || outLen == NULL)
@@ -346,7 +496,7 @@ sjme_errorCode sjme_charSeq_length(
 }
 	
 sjme_errorCode sjme_charSeq_newStatic(
-	sjme_attrInNotNull sjme_charSeq* inOutSeq,
+	sjme_attrInNotNull sjme_charSeq inOutSeq,
 	sjme_attrInNotNull const sjme_charSeq_functions* inFunctions,
 	sjme_attrInNullable sjme_pointer inOptContext,
 	sjme_attrInNullable sjme_frontEnd* inOptFrontEnd)
@@ -371,7 +521,7 @@ sjme_errorCode sjme_charSeq_newStatic(
 }
 
 sjme_errorCode sjme_charSeq_newUtfStatic(
-	sjme_attrInNotNull sjme_charSeq* inOutSeq,
+	sjme_attrInNotNull sjme_charSeq inOutSeq,
 	sjme_attrInNotNull sjme_lpcstr inString,
 	sjme_attrInNullable sjme_frontEnd* inOptFrontEnd)
 {
@@ -384,9 +534,9 @@ sjme_errorCode sjme_charSeq_newUtfStatic(
 }
 
 sjme_errorCode sjme_charSeq_startsWithCharSeq(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,
-	sjme_attrInNotNull const sjme_charSeq* startsWithSeq)
+	sjme_attrInNotNull const sjme_charSeq startsWithSeq)
 {
 	sjme_errorCode error;
 	sjme_jint aLen, bLen;
@@ -407,7 +557,7 @@ sjme_errorCode sjme_charSeq_startsWithCharSeq(
 }
 
 sjme_errorCode sjme_charSeq_startsWithUtf(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,
 	sjme_attrInNotNull sjme_lpcstr startsWithUtf)
 {
@@ -428,7 +578,7 @@ sjme_errorCode sjme_charSeq_startsWithUtf(
 }
 
 sjme_jboolean sjme_charSeq_startsWithUtfR(
-	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInNotNull const sjme_charSeq inSeq,
 	sjme_attrInNotNull sjme_lpcstr startsWithUtf)
 {
 	sjme_jboolean result;
@@ -445,3 +595,4 @@ sjme_jboolean sjme_charSeq_startsWithUtfR(
 	/* Return whatever result was given. */
 	return result;
 }
+#endif

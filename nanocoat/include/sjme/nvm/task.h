@@ -806,7 +806,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jstring* outString,
 	sjme_attrInValue sjme_jboolean isIntern,
-	sjme_attrInNotNull sjme_charSeq* inSeq);
+	sjme_attrInNotNull sjme_charSeq inSeq);
 	
 /**
  * Loads the given string pool string as a string object.

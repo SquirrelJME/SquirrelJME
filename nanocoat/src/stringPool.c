@@ -18,8 +18,9 @@
 
 sjme_errorCode sjme_nvm_stringPool_locateSeq(
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
-	sjme_attrInNotNull sjme_charSeq* inSeq,
-	sjme_attrOutNotNull sjme_nvm_stringPool_string* outString)
+	sjme_attrOutNotNull sjme_nvm_stringPool_string* outString,
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInPositive sjme_jint offset)
 {
 	if (inStringPool == NULL || inSeq == NULL || outString == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -141,15 +142,19 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 		}
 		
 		/* If hash or length differ, not a possible match */
-		if (possible->hash != hash || possible->length != inUtfLen)
+		if (possible->seq->hash != hash || possible->seq->length != inUtfLen)
 			continue;
 		
 		/* Must be exactly the same! */
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+#if 0
 		if (0 == memcmp(&possible->chars[0], inUtf, inUtfLen))
 		{
 			result = possible;
 			break;
 		}
+#endif
 	}
 	
 	/* String is not in the pool. */
@@ -196,18 +201,26 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 			goto fail_stringAlloc;
 		
 		/* Fill in information. */
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+#if 0
 		memmove(&result->chars[0], inUtf, inUtfLen);
 		result->hash = hash;
 		result->length = inUtfLen;
+#endif
 
 		/* Setup back reference to this sequence. */
 		memset(&frontEnd, 0, sizeof(frontEnd));
 		frontEnd.wrapper = result;
 		
 		/* Setup string sequence. */
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+#if 0
 		if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
 			&result->seq, (sjme_lpcstr)&result->chars[0], &frontEnd)))
 			goto fail_initSeq;
+#endif
 		
 		/* Count up as the pool itself references it. */
 		if (sjme_error_is(error = sjme_alloc_weakRef(

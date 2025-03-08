@@ -938,8 +938,8 @@ sjme_errorCode sjme_nvm_task_stackTrace(
 			sjme_messageB(" | PURE VIRTUAL");
 		else
 			sjme_messageB(" | .%s:%s @%xh (:%d #%02x@%d)",
-				&nowMethod->name->chars[0],
-				&nowMethod->type->chars[0],
+				sjme_charSeq_tempUtf(nowMethod->name->seq),
+				sjme_charSeq_tempUtf(nowMethod->type->seq),
 				frame->pc,
 				-1,
 				instructionId,
@@ -1536,7 +1536,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jstring* outString,
 	sjme_attrInValue sjme_jboolean isIntern,
-	sjme_attrInNotNull sjme_charSeq* inSeq)
+	sjme_attrInNotNull sjme_charSeq inSeq)
 {
 #define SJME_INTERN_GROW 32
 	sjme_errorCode error;
@@ -1604,6 +1604,9 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	result->length = length;
 
 	/* Reference string pool directly. */
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	if (sjme_nvm_isAR(inSeq->frontEnd.wrapper,
 		SJME_NVM_STRUCT_STRING_POOL_STRING))
 	{
@@ -1628,6 +1631,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 			&result->seq, inSeq)) || result->seq == NULL)
 			goto fail_dupSeq;
 	}
+#endif
 	
 	/* Final intern setup. */
 	if (isIntern)
@@ -1689,7 +1693,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfP(
 
 	/* Forward implementation. */
 	return sjme_nvm_task_threadStringValueOfCS(inThread,
-		outString, SJME_JNI_TRUE, &inPool->seq);
+		outString, SJME_JNI_TRUE, inPool->seq);
 }
 
 sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
@@ -1704,6 +1708,9 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
 	if (inThread == NULL || outString == NULL || inUtf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Setup static sequence. */
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&seq,
@@ -1713,4 +1720,5 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
 	/* Forward implementation. */
 	return sjme_nvm_task_threadStringValueOfCS(inThread,
 		outString, isIntern, &seq);
+#endif
 }

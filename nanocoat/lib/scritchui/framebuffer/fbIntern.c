@@ -516,7 +516,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	sjme_scritchui_pencil sg;
 	sjme_jint bsx, bsy, bex, bey, bw, bh;
 	sjme_jint cW, cH;
-	sjme_charSeq seq;
+	sjme_charSeqStatic seq;
 	sjme_jint seqLen;
 	sjme_jboolean doSel;
 	sjme_jint i;
@@ -688,7 +688,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 					/* Load in string. */
 					memset(&seq, 0, sizeof(seq));
 					if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-						&seq, dlAt->data.text.string, NULL)))
+						&seq, dlAt->data.text.string)))
 						goto fail_charSeqLoad;
 					
 					/* Determine how long the string is. */

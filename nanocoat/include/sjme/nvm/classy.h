@@ -846,16 +846,14 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
  * @param outType The resultant type. 
  * @param javaType If @c SJME_JNI_TRUE then this will calculate the Java
  * type.
- * @param desc The input descriptor. 
- * @param descLen The length of the descriptor.
+ * @param descriptor The input descriptor.
  * @return Any resultant error, if any.
  * @since 2024/10/28
  */
 sjme_errorCode sjme_nvm_class_descriptorToType(
 	sjme_attrOutNotNull sjme_javaTypeId* outType,
 	sjme_attrInValue sjme_jboolean javaType,
-	sjme_attrInNotNullBuf(descLen) sjme_lpcstr desc,
-	sjme_attrInPositiveNonZero sjme_jint descLen);
+	sjme_attrInNotNull sjme_charSeq descriptor);
 
 /**
  * Parses a single class and loads its class information.

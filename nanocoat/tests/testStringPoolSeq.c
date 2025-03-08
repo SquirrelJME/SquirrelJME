@@ -26,7 +26,7 @@ SJME_TEST_DECLARE(testStringPoolSeq)
 {
 	sjme_nvm_stringPool stringPool;
 	sjme_nvm_stringPool_string string;
-	sjme_charSeq seq;
+	sjme_charSeqStatic seq;
 	
 	/* Create string pool. */
 	stringPool = NULL;
@@ -43,14 +43,13 @@ SJME_TEST_DECLARE(testStringPoolSeq)
 	/* Open char sequence over the data. */
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(test->error = sjme_charSeq_newUtfStatic(
-		&seq, testUtf, NULL)))
+		&seq, testUtf)))
 		return sjme_unit_fail(test, "Could not create char sequence.");
 	
 	/* Locate string. */
 	string = NULL;
 	if (sjme_error_is(test->error = sjme_nvm_stringPool_locateSeq(
-		stringPool, &seq,
-		&string)) || string == NULL)
+		stringPool, &string, &seq, 0)) || string == NULL)
 		return sjme_unit_fail(test, "Could not locate string?");
 	
 	/* We are using this, so count it. */
@@ -59,11 +58,10 @@ SJME_TEST_DECLARE(testStringPoolSeq)
 		return sjme_unit_fail(test, "Could not count string?");
 	
 	/* Check to make sure it is valid. */
-	sjme_unit_equalI(test, 10, string->length,
+	sjme_unit_equalI(test, 10, string->seq->length,
 		"Length incorrect?");
-	sjme_unit_notEqualP(test, testUtf, string->seq.context,
-		"Copy was not made?");
-	sjme_unit_notEqualI(test, 0, strcmp("Squirrels!", string->seq.context),
+	sjme_unit_notEqualI(test,
+		0, strcmp("Squirrels!", sjme_charSeq_tempUtf(string->seq)),
 		"String not equal?");
 	
 	/* Should be first. */
