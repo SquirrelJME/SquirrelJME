@@ -115,9 +115,9 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 			goto fail_badFind;
 		
 		/* If not the same method or type, skip. */
-		if (!sjme_charSeq_equalsCharSeqR(
+		if (!sjme_charSeq_equalsR(
 				found->name->seq, thisInfo->name->seq) ||
-			!sjme_charSeq_equalsCharSeqR(
+			!sjme_charSeq_equalsR(
 				found->type->seq, thisInfo->type->seq))
 			continue;
 		
@@ -131,7 +131,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 			!found->flags.member.access.public)
 		{
 			/* Not in same package, skip. */
-			if (!sjme_charSeq_equalsCharSeqR(
+			if (!sjme_charSeq_equalsR(
 					found->inClass->inPackage->seq,
 					thisInfo->inClass->inPackage->seq))
 				continue;

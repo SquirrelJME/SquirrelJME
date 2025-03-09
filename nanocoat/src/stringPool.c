@@ -90,21 +90,14 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 				firstFree = i;
 			continue;
 		}
-		
-		/* If hash or length differ, not a possible match */
-		if (possible->seq->hash != hash || possible->seq->length != length)
+
+		/* Check for the same sequence. */
+		if (!sjme_charSeq_equalsR(possible->seq, inSeq))
 			continue;
-		
-		/* Must be exactly the same! */
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-#if 0
-		if (0 == memcmp(&possible->chars[0], inUtf, inUtfLen))
-		{
-			result = possible;
-			break;
-		}
-#endif
+
+		/* This is the one! */
+		result = possible;
+		break;
 	}
 	
 	/* String is not in the pool. */
@@ -161,13 +154,10 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 		frontEnd.wrapper = result;
 		
 		/* Setup string sequence. */
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-#if 0
-		if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-			&result->seq, (sjme_lpcstr)&result->chars[0], &frontEnd)))
+		if (sjme_error_is(error = sjme_charSeq_dup(
+			inStringPool->allocPool, &result->seq, inSeq)) ||
+			result->seq == NULL)
 			goto fail_initSeq;
-#endif
 		
 		/* Count up as the pool itself references it. */
 		if (sjme_error_is(error = sjme_alloc_weakRef(

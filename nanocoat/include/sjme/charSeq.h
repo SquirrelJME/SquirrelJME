@@ -77,7 +77,7 @@ struct sjme_charSeqStatic
 	sjme_jint length;
 
 	/** The hashcode for this string. */
-	sjme_jint hash;
+	sjme_atomic_sjme_jint hash;
 
 	/** The sequence data. */
 	sjme_alignPointer union
@@ -153,30 +153,30 @@ sjme_errorCode sjme_charSeq_length(
 /**
  * Checks if the given character sequence equals the given character sequence.
  * 
- * @param inSeq The sequence to check.
+ * @param aSeq The sequence to check.
+ * @param bSeq The char sequence to check for equality against.
  * @param outResult The result of the check.
- * @param equalsSeq The char sequence to check for equality against.
  * @return Any resultant error, if any.
  * @since 2024/08/08 
  */
-sjme_errorCode sjme_charSeq_equalsCharSeq(
-	sjme_attrOutNotNull sjme_jboolean* outResult,
-	sjme_attrInNotNull sjme_charSeq inSeq,
-	sjme_attrInNotNull sjme_charSeq equalsSeq);
+	sjme_errorCode sjme_charSeq_equals(
+	sjme_attrInNotNull sjme_charSeq aSeq,
+	sjme_attrInNotNull sjme_charSeq bSeq,
+	sjme_attrOutNotNull sjme_jboolean* outResult);
 
 /**
  * Checks if the given character sequence equals the given character sequence,
  * this returns the result rather than storing it in an output.
  * 
- * @param inSeq The sequence to check.
- * @param equalsSeq The char sequence to check for equality against.
+ * @param aSeq The sequence to check.
+ * @param bSeq The char sequence to check for equality against.
  * @return Returns whether it matches, note that if there is an error
  * then @c SJME_JNI_FALSE will be returned and the error will be hidden.
  * @since 2024/11/09
  */
-sjme_jboolean sjme_charSeq_equalsCharSeqR(
-	sjme_attrInNotNull sjme_charSeq inSeq,
-	sjme_attrInNotNull sjme_charSeq equalsSeq);
+sjme_jboolean sjme_charSeq_equalsR(
+	sjme_attrInNotNull sjme_charSeq aSeq,
+	sjme_attrInNotNull sjme_charSeq bSeq);
 
 /**
  * Checks if the given character sequence equals the given UTF string.
@@ -223,13 +223,36 @@ sjme_errorCode sjme_charSeq_hash(
  * @param allocPool The pool to allocate within.
  * @param outSeq The resultant sequence.
  * @param narrow The input narrow bytes for the string.
+ * @param offset The offset into the string sequence.
+ * @param limitLen The length limit for the sequence.
  * @return Any resultant error, if any.
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_newNarrow(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_charSeq* outSeq,
-	sjme_attrInNotNull const sjme_jbyte* narrow);
+	sjme_attrInNotNull const sjme_jbyte* narrow,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInNegativeOnePositive sjme_jint limitLen);
+
+/**
+ * Allocates a new narrow character sequence from wide characters.
+ * 
+ * @param allocPool The pool to allocate within.
+ * @param outSeq The resultant sequence.
+ * @param wide The input wide characters for the string, the upper byte is
+ * ignored.
+ * @param offset The offset into the string sequence.
+ * @param limitLen The length limit for the sequence.
+ * @return Any resultant error, if any.
+ * @since 2025/03/08
+ */
+sjme_errorCode sjme_charSeq_newNarrowFromWide(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_charSeq* outSeq,
+	sjme_attrInNotNull const sjme_jchar* wide,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInNegativeOnePositive sjme_jint limitLen);
 
 /**
  * Allocates a new modified-UTF character sequence.
@@ -271,13 +294,17 @@ sjme_errorCode sjme_charSeq_newUtfStatic(
  * @param allocPool The pool to allocate within.
  * @param outSeq The resultant sequence.
  * @param wide The input wide bytes for the string.
+ * @param offset The offset into the string sequence.
+ * @param limitLen The length limit for the sequence.
  * @return Any resultant error, if any.
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_newWide(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_charSeq* outSeq,
-	sjme_attrInNotNull const sjme_jbyte* wide);
+	sjme_attrInNotNull const sjme_jchar* wide,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInNegativeOnePositive sjme_jint limitLen);
 
 /**
  * Checks if the given character sequence starts with the given character
