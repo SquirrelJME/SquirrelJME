@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -17,6 +18,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2023/08/09
  */
+@SquirrelJMEVendorApi
 public abstract class AbstractIntegerArray
 	implements IntegerArray
 {

@@ -9,16 +9,20 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * Wraps a byte array to provide integer access to it.
  *
  * @see UnsignedByteIntegerArray
  * @since 2019/05/09
  */
+@SquirrelJMEVendorApi
 public final class ByteIntegerArray
 	extends AbstractIntegerArray
 {
 	/** The backed array. */
+	@SquirrelJMEVendorApi
 	protected final byte[] array;
 	
 	/**
@@ -28,6 +32,7 @@ public final class ByteIntegerArray
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public ByteIntegerArray(byte[] __a)
 		throws NullPointerException
 	{

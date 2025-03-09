@@ -28,7 +28,6 @@ public final class MathUtils
 	{
 	}
 	
-	
 	/**
 	 * Rounds to the nearest power of two.
 	 *
@@ -36,6 +35,7 @@ public final class MathUtils
 	 * @return The resultant rounded value.
 	 * @since 2024/03/17
 	 */
+	@SquirrelJMEVendorApi
 	public static int nearestPowerOfTwo(int __val)
 	{
 		int hi = Math.max(1, Integer.highestOneBit(__val));

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -20,10 +21,12 @@ import java.util.NoSuchElementException;
  * @param <V> The value type.
  * @since 2018/11/01
  */
+@SquirrelJMEVendorApi
 public final class MapKeySetIterator<K, V>
 	implements Iterator<K>
 {
 	/** The entry set iterator. */
+	@SquirrelJMEVendorApi
 	protected final Iterator<Map.Entry<K, V>> iterator;
 	
 	/**
@@ -33,6 +36,7 @@ public final class MapKeySetIterator<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/01
 	 */
+	@SquirrelJMEVendorApi
 	public MapKeySetIterator(Iterator<Map.Entry<K, V>> __it)
 		throws NullPointerException
 	{
