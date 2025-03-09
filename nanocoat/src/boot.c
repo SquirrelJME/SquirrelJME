@@ -513,7 +513,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 {
 	sjme_errorCode error;
 	sjme_jint argAt;
-	sjme_charSeq argSeq;
+	sjme_charSeqStatic argSeq;
 	sjme_jboolean jarSpecified;
 	const sjme_nvm_helpParam* help;
 	sjme_nal_stdOFunc helpOut;
@@ -529,20 +529,20 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	for (argAt = 1; argAt < argc; argAt++)
 	{
 		/* Setup sequence to wrap argument for parsing. */
-		argSeq = NULL;
-		if (sjme_error_is(error = sjme_charSeq_newUtf(allocPool,
-			&argSeq, SJME_JNI_FALSE, argv[argAt])) || argSeq == NULL)
+		memset(&argSeq, 0, sizeof(argSeq));
+		if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
+			&argSeq, argv[argAt], 0, -1)))
 			return sjme_error_default(error);
 		
 		/* -version */
-		if (sjme_charSeq_equalsUtfR(argSeq,
+		if (sjme_charSeq_equalsUtfR(&argSeq,
 				"-version") ||
-			sjme_charSeq_equalsUtfR(argSeq,
+			sjme_charSeq_equalsUtfR(&argSeq,
 				"--version"))
 		{
 			/* Where is this information going? */
 			helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].out;
-			if (sjme_charSeq_equalsUtfR(argSeq, "--version"))
+			if (sjme_charSeq_equalsUtfR(&argSeq, "--version"))
 				helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
 			
 			/* Print version information to stdout. */
@@ -562,18 +562,18 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		}
 		
 		/* -help */
-		else if (sjme_charSeq_equalsUtfR(argSeq,
+		else if (sjme_charSeq_equalsUtfR(&argSeq,
 				"-?") ||
-			sjme_charSeq_equalsUtfR(argSeq,
+			sjme_charSeq_equalsUtfR(&argSeq,
 				"-h") ||
-			sjme_charSeq_equalsUtfR(argSeq,
+			sjme_charSeq_equalsUtfR(&argSeq,
 				"-help") ||
-			sjme_charSeq_equalsUtfR(argSeq,
+			sjme_charSeq_equalsUtfR(&argSeq,
 				"--help"))
 		{
 			/* Where is this information going? */
 			helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].out;
-			if (sjme_charSeq_equalsUtfR(argSeq, "--help"))
+			if (sjme_charSeq_equalsUtfR(&argSeq, "--help"))
 				helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
 			
 			/* Normal usage. */
@@ -598,106 +598,106 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		}
 		
 		/* -Xclutter:(release|debug) */
-		else if (sjme_charSeq_startsWithUtfR(argSeq,
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xclutter:"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* -Xdebug */
-		else if (sjme_charSeq_equalsUtfR(argSeq,
+		else if (sjme_charSeq_equalsUtfR(&argSeq,
 			"-Xdebug"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* -Xemulator:(vm) */
-		else if (sjme_charSeq_startsWithUtfR(argSeq,
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xemulator:"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* -Xentry:id */
-		else if (sjme_charSeq_startsWithUtfR(argSeq,
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xentry:"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* -Xjdwp:[hostname]:port */
-		else if (sjme_charSeq_startsWithUtfR(argSeq,
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xjdwp:"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* -Xlibraries:(class:path:...) */
-		else if (sjme_charSeq_startsWithUtfR(argSeq,
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xlibraries:"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* -Xscritchui:(ui) */
-		else if (sjme_charSeq_startsWithUtfR(argSeq,
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xscritchui:"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* -Xsnapshot:(path-to-nps) */
-		else if (sjme_charSeq_startsWithUtfR(argSeq,
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xsnapshot:"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* -Xthread:(single|coop|multi|smt) */
-		else if (sjme_charSeq_startsWithUtfR(argSeq,
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xthread:"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* -Xtrace:(flag|...) */
-		else if (sjme_charSeq_startsWithUtfR(argSeq,
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xtrace:"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* -Dsysprop=value */
-		else if (sjme_charSeq_startsWithUtfR(argSeq,
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-D"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* -classpath (class:path:...) */
-		else if (sjme_charSeq_equalsUtfR(argSeq,
+		else if (sjme_charSeq_equalsUtfR(&argSeq,
 			"-classpath"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* -zero/-Xint */
-		else if (sjme_charSeq_equalsUtfR(argSeq, "-zero") ||
-			sjme_charSeq_equalsUtfR(argSeq, "-Xint"))
+		else if (sjme_charSeq_equalsUtfR(&argSeq, "-zero") ||
+			sjme_charSeq_equalsUtfR(&argSeq, "-Xint"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* Ignored options. */
-		else if (sjme_charSeq_equalsUtfR(argSeq, "-client") ||
-			sjme_charSeq_equalsUtfR(argSeq, "-server") ||
-			sjme_charSeq_equalsUtfR(argSeq, "-XstartOnFirstThread"))
+		else if (sjme_charSeq_equalsUtfR(&argSeq, "-client") ||
+			sjme_charSeq_equalsUtfR(&argSeq, "-server") ||
+			sjme_charSeq_equalsUtfR(&argSeq, "-XstartOnFirstThread"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
 		/* -jar */
-		else if (sjme_charSeq_equalsUtfR(argSeq, "-jar"))
+		else if (sjme_charSeq_equalsUtfR(&argSeq, "-jar"))
 		{
 			/* We are using a Jar now. */
 			jarSpecified = SJME_JNI_TRUE;

@@ -150,14 +150,11 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 #endif
 			goto fail_stringAlloc;
 		
-		/* Fill in information. */
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-#if 0
-		memmove(&result->chars[0], inUtf, inUtfLen);
-		result->hash = hash;
-		result->length = inUtfLen;
-#endif
+		/* Make copy of the sequence. */
+		result->seq = NULL;
+		if (sjme_error_is(error = sjme_charSeq_dup(inStringPool->allocPool,
+			&result->seq, inSeq)) || result->seq == NULL)
+			goto fail_dupSeq;
 
 		/* Setup back reference to this sequence. */
 		memset(&frontEnd, 0, sizeof(frontEnd));
@@ -193,6 +190,12 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 fail_countUp:
 fail_initSeq:
 fail_initCommon:
+fail_dupSeq:
+	if (result != NULL && result->seq != NULL)
+	{
+		sjme_alloc_free(result->seq);
+		result->seq = NULL;
+	}
 fail_stringAlloc:
 	if (result != NULL)
 		sjme_alloc_free(result);
@@ -248,7 +251,7 @@ sjme_errorCode sjme_nvm_stringPool_locateStreamR(
 	/* Setup base sequence. */
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&seq,
-		(sjme_lpcstr)chars)))
+		(sjme_lpcstr)chars, 0, length)))
 		return sjme_error_default(error);
 	
 	/* Use normal locating logic. */

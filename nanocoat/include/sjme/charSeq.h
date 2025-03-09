@@ -61,11 +61,8 @@ typedef enum sjme_charSeq_type
 	/** Java Modified-UTF with length, offset by two bytes. */
 	SJME_CHAR_SEQ_TYPE_UTF,
 
-	/** Java Modified-UTF w/o length. */
-	SJME_CHAR_SEQ_TYPE_UTF_NO_LEN,
-
 	/** Static modified-UTF string. */
-	SJME_CHAR_SEQ_TYPE_STATIC,
+	SJME_CHAR_SEQ_TYPE_UTF_STATIC,
 	
 	/** The number of character sequence types. */
 	SJME_CHAR_SEQ_NUM_TYPES,
@@ -239,30 +236,34 @@ sjme_errorCode sjme_charSeq_newNarrow(
  * 
  * @param allocPool The pool to allocate within.
  * @param outSeq The resultant sequence.
- * @param lenPrefixed If @c SJME_JNI_TRUE then the string is considered to be
- * prefixed by the length and not NUL terminated; otherwise it is considered
- * to be NUL terminated and not offset.
  * @param utfString The input modified-UTF string.
+ * @param offset The offset into the string sequence.
+ * @param limitLen The length limit for the sequence.
  * @return Any resultant error, if any.
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_newUtf(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_charSeq* outSeq,
-	sjme_attrInValue sjme_jboolean lenPrefixed,
-	sjme_attrInNotNull sjme_lpcstr utfString);
+	sjme_attrInNotNull sjme_lpcstr utfString,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInNegativeOnePositive sjme_jint limitLen);
 
 /**
  * Initializes a static UTF string.
  * 
  * @param outSeq The resultant static sequence.
  * @param utfString The string to base from.
+ * @param offset The offset into the string sequence.
+ * @param limitLen The length limit for the sequence.
  * @return Any resultant error, if any.
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_newUtfStatic(
 	sjme_attrOutNotNull sjme_charSeqStatic* outSeq,
-	sjme_attrInNotNull sjme_lpcstr utfString);
+	sjme_attrInNotNull sjme_lpcstr utfString,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInNegativeOnePositive sjme_jint limitLen);
 	
 /**
  * Allocates a new wide character sequence.

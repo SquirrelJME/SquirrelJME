@@ -688,7 +688,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 					/* Load in string. */
 					memset(&seq, 0, sizeof(seq));
 					if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-						&seq, dlAt->data.text.string)))
+						&seq, dlAt->data.text.string, 0, -1)))
 						goto fail_charSeqLoad;
 					
 					/* Determine how long the string is. */

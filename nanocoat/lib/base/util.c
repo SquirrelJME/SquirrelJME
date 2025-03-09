@@ -304,7 +304,7 @@ sjme_jint sjme_string_length(sjme_lpcstr string)
 sjme_jint sjme_string_lengthN(sjme_lpcstr string, sjme_jint limit)
 {
 	sjme_jint result;
-	sjme_jint c;
+	sjme_jint c, rawIndex;
 	sjme_lpcstr p;
 	
 	if (string == NULL || limit < 0)
@@ -312,7 +312,8 @@ sjme_jint sjme_string_lengthN(sjme_lpcstr string, sjme_jint limit)
 
 	/* Read until end of string. */
 	result = 0;
-	for (p = string; *p != 0 && result < limit;)
+	rawIndex = 0;
+	for (p = string; *p != 0 && result < limit && rawIndex < limit; rawIndex++)
 	{
 		/* Decode character. */
 		c = sjme_string_decodeChar(p, &p);

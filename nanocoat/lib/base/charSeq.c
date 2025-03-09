@@ -44,8 +44,12 @@ sjme_errorCode sjme_charSeq_length(
 	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jint* outLen)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	if (inSeq == NULL || outLen == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* The length is always precalculated. */
+	*outLen = inSeq->length;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_charSeq_equalsCharSeq(
@@ -86,8 +90,12 @@ sjme_errorCode sjme_charSeq_hash(
 	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jint* outHash)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	if (inSeq == NULL || outHash == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* The hash is always precalculated. */
+	*outHash = inSeq->hash;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_charSeq_newNarrow(
@@ -102,8 +110,9 @@ sjme_errorCode sjme_charSeq_newNarrow(
 sjme_errorCode sjme_charSeq_newUtf(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_charSeq* outSeq,
-	sjme_attrInValue sjme_jboolean lenPrefixed,
-	sjme_attrInNotNull sjme_lpcstr utfString)
+	sjme_attrInNotNull sjme_lpcstr utfString,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInNegativeOnePositive sjme_jint limitLen)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -111,13 +120,45 @@ sjme_errorCode sjme_charSeq_newUtf(
 
 sjme_errorCode sjme_charSeq_newUtfStatic(
 	sjme_attrOutNotNull sjme_charSeqStatic* outSeq,
-	sjme_attrInNotNull sjme_lpcstr utfString)
+	sjme_attrInNotNull sjme_lpcstr utfString,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInNegativeOnePositive sjme_jint limitLen)
 {
+	sjme_lpcstr base;
+	sjme_jint hash, length;
+	
 	if (outSeq == NULL || utfString == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	if (offset < 0 || limitLen < -1)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	if (limitLen >= 0 && (offset + limitLen) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Calculate the actual base. */
+	base = SJME_POINTER_OFFSET(utfString, offset);
+
+	/* Calculate details. */
+	hash = sjme_string_hash(base);
+	if (limitLen < 0)
+		length = sjme_string_length(base);
+	else
+		length = sjme_string_lengthN(base, limitLen);
+
+	/* Length is not valid? */
+	if (length < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Setup target sequence. */
+	memset(outSeq, 0, sizeof(*outSeq));
+	outSeq->type = SJME_CHAR_SEQ_TYPE_UTF_STATIC;
+	outSeq->hash = hash;
+	outSeq->length = length;
+	outSeq->data.staticUtf = base;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_charSeq_newWide(
