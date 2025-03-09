@@ -19,7 +19,7 @@ dependencies {
 	
 	// ProGuard, minification
 	implementation "com.guardsquare:proguard-base:7.6.1"
-	implementation "com.guardsquare:proguard-core:9.1.8"
+	implementation "com.guardsquare:proguard-core:9.1.9"
 	
 	// Lombok for simpler getters/setters
 	implementation 'org.projectlombok:lombok:1.18.36'
