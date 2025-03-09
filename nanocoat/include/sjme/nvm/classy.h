@@ -802,7 +802,7 @@ typedef sjme_errorCode (*sjme_nvm_class_parseAttributeFunc)(
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
-	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNull sjme_charSeq attrName,
 	sjme_attrInNotNull sjme_stream_input attrStream,
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen);
@@ -846,14 +846,14 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
  * @param outType The resultant type. 
  * @param javaType If @c SJME_JNI_TRUE then this will calculate the Java
  * type.
- * @param descriptor The input descriptor.
+ * @param desc The input descriptor.
  * @return Any resultant error, if any.
  * @since 2024/10/28
  */
 sjme_errorCode sjme_nvm_class_descriptorToType(
 	sjme_attrOutNotNull sjme_javaTypeId* outType,
 	sjme_attrInValue sjme_jboolean javaType,
-	sjme_attrInNotNull sjme_charSeq descriptor);
+	sjme_attrInNotNull sjme_charSeq desc);
 
 /**
  * Parses a single class and loads its class information.

@@ -45,37 +45,9 @@ sjme_errorCode sjme_charSeq_charAt(
 
 	if (inIndex < 0 || inIndex >= inSeq->length)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-
-	/* Depends on the sequence type. */
-	result = -1;
-	switch (inSeq->type)
-	{
-		case SJME_CHAR_SEQ_TYPE_NARROW:
-			result = inSeq->data.bytes[inIndex] & 0xFF;
-			break;
-
-		case SJME_CHAR_SEQ_TYPE_WIDE:
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-
-		case SJME_CHAR_SEQ_TYPE_UTF:
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-
-		case SJME_CHAR_SEQ_TYPE_UTF_STATIC:
-			result = sjme_string_charAt(inSeq->data.staticUtf, inIndex);
-			break;
-
-		default:
-			return SJME_ERROR_ILLEGAL_STATE;
-	}
-
-	/* The read character was not valid. */
-	if (result < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-
-	/* Success! */
-	*outChar = (result & 0xFFFF);
+	
+	/* Read in character. */
+	*outChar = sjme_charSeq_charAtR(inSeq, inIndex);
 	return SJME_ERROR_NONE;
 }
 
@@ -90,15 +62,45 @@ sjme_errorCode sjme_charSeq_charAtIs(
 	if (inSeq == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Read the character. */
-	actual = 0;
-	if (sjme_error_is(error = sjme_charSeq_charAt(inSeq, inIndex, &actual)))
-		return sjme_error_default(error);
-
-	/* Does it actually match? */
-	if (actual != wantChar)
+	if (inIndex < 0 || inIndex >= inSeq->length)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Does the character actually match? */
+	if (sjme_charSeq_charAtR(inSeq, inIndex) != wantChar)
 		return SJME_ERROR_NOT_MATCHED;
 	return SJME_ERROR_NONE;
+}
+
+sjme_jchar sjme_charSeq_charAtR(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInPositive sjme_jint inIndex)
+{
+	if (inSeq == NULL)
+		return 0;
+
+	if (inIndex < 0 || inIndex >= inSeq->length)
+		return 0;
+
+	/* Depends on the sequence type. */
+	switch (inSeq->type)
+	{
+		case SJME_CHAR_SEQ_TYPE_NARROW:
+			return inSeq->data.bytes[inIndex] & 0xFF;
+
+		case SJME_CHAR_SEQ_TYPE_WIDE:
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+
+		case SJME_CHAR_SEQ_TYPE_UTF:
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+
+		case SJME_CHAR_SEQ_TYPE_UTF_STATIC:
+			return sjme_string_charAt(inSeq->data.staticUtf, inIndex);
+
+		default:
+			return 0;
+	}
 }
 
 sjme_errorCode sjme_charSeq_dup(
@@ -148,7 +150,7 @@ sjme_errorCode sjme_charSeq_equals(
 	sjme_attrOutNotNull sjme_jboolean* outResult)
 {
 	sjme_errorCode error;
-	sjme_jint aHash, bHash;
+	sjme_jint aHash, bHash, i, n;
 	
 	if (outResult == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -165,7 +167,8 @@ sjme_errorCode sjme_charSeq_equals(
 	}
 	
 	/* Lengths differ? Will never be equal. */
-	if (aSeq->length != bSeq->length)
+	n = aSeq->length;
+	if (n != bSeq->length)
 	{
 		*outResult = SJME_JNI_FALSE;
 		return SJME_ERROR_NONE;
@@ -185,9 +188,26 @@ sjme_errorCode sjme_charSeq_equals(
 		*outResult = SJME_JNI_FALSE;
 		return SJME_ERROR_NONE;
 	}
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Compare each character. */
+	for (i = 0; i < n; i++)
+		if (sjme_error_is(error = sjme_charSeq_charAtIs(aSeq, i,
+			sjme_charSeq_charAtR(bSeq, i))))
+		{
+			/* Not matched? */
+			if (error == SJME_ERROR_NOT_MATCHED)
+			{
+				*outResult = SJME_JNI_FALSE;
+				return SJME_ERROR_NONE;
+			}
+
+			/* Something else is wrong. */
+			return sjme_error_default(error);
+		}
+
+	/* Did not fail, so is a match! */
+	*outResult = SJME_JNI_TRUE;
+	return SJME_ERROR_NONE;
 }
 
 sjme_jboolean sjme_charSeq_equalsR(
@@ -205,20 +225,45 @@ sjme_jboolean sjme_charSeq_equalsR(
 }
 
 sjme_errorCode sjme_charSeq_equalsUtf(
-	sjme_attrInNotNull sjme_charSeq inSeq,
-	sjme_attrOutNotNull sjme_jboolean* outResult,
-	sjme_attrInNotNull sjme_lpcstr equalsUtf)
+	sjme_attrInNotNull sjme_charSeq aSeq,
+	sjme_attrInNotNull sjme_lpcstr bUtf,
+	sjme_attrOutNotNull sjme_jboolean* outResult)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_charSeqStatic bSeq;
+	
+	if (outResult == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Nulls are involved? */
+	if (aSeq == NULL || bUtf == NULL)
+	{
+		*outResult = ((aSeq == NULL) == (bUtf == NULL));
+		return SJME_ERROR_NONE;
+	}
+
+	/* Setup static sequence. */
+	memset(&bSeq, 0, sizeof(bSeq));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&bSeq,
+		bUtf, 0, -1)))
+		return sjme_error_default(error);
+
+	/* Forward comparison. */
+	return sjme_charSeq_equals(aSeq, &bSeq, outResult);
 }
 
 sjme_jboolean sjme_charSeq_equalsUtfR(
-	sjme_attrInNotNull sjme_charSeq inSeq,
-	sjme_attrInNotNull sjme_lpcstr equalsUtf)
+	sjme_attrInNotNull sjme_charSeq aSeq,
+	sjme_attrInNotNull sjme_lpcstr bUtf)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_jboolean result;
+
+	/* Forward to safer implementation. */
+	result = SJME_JNI_FALSE;
+	if (sjme_error_is(sjme_charSeq_equalsUtf(aSeq, bUtf, &result)))
+		return SJME_JNI_FALSE;
+	
+	return result;
 }
 
 sjme_errorCode sjme_charSeq_hash(

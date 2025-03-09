@@ -125,6 +125,20 @@ sjme_errorCode sjme_charSeq_charAtIs(
 	sjme_attrOutNotNull sjme_jchar wantChar);
 
 /**
+ * Returns the character at the given index, note that any errors will be
+ * hidden.
+ * 
+ * @param inSeq The input character sequence.
+ * @param inIndex The index to get from.
+ * @return The resultant character, any errors will result in @c 0 being
+ * returned which may be a valid character.
+ * @since 2025/03/09
+ */
+sjme_jchar sjme_charSeq_charAtR(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInPositive sjme_jint inIndex);
+
+/**
  * Makes a copy of the given character sequence.
  * 
  * @param allocPool The allocation pool to allocate within.
@@ -181,29 +195,29 @@ sjme_jboolean sjme_charSeq_equalsR(
 /**
  * Checks if the given character sequence equals the given UTF string.
  * 
- * @param inSeq The sequence to check.
+ * @param aSeq The sequence to check.
+ * @param bUtf The UTF sequence to check for equality against.
  * @param outResult The result of the check.
- * @param equalsUtf The UTF sequence to check for equality against.
  * @return Any resultant error, if any.
  * @since 2024/08/08 
  */
 sjme_errorCode sjme_charSeq_equalsUtf(
-	sjme_attrInNotNull sjme_charSeq inSeq,
-	sjme_attrOutNotNull sjme_jboolean* outResult,
-	sjme_attrInNotNull sjme_lpcstr equalsUtf);
+	sjme_attrInNotNull sjme_charSeq aSeq,
+	sjme_attrInNotNull sjme_lpcstr bUtf,
+	sjme_attrOutNotNull sjme_jboolean* outResult);
 	
 /**
  * Checks if the given character sequence equals the given UTF string.
  * 
- * @param inSeq The sequence to check.
- * @param equalsUtf The UTF sequence to check for equality against.
+ * @param aSeq The sequence to check.
+ * @param bUtf The UTF sequence to check for equality against.
  * @return Returns whether it matches, note that if there is an error
  * then @c SJME_JNI_FALSE will be returned and the error will be hidden.
  * @since 2024/08/08 
  */
 sjme_jboolean sjme_charSeq_equalsUtfR(
-	sjme_attrInNotNull sjme_charSeq inSeq,
-	sjme_attrInNotNull sjme_lpcstr equalsUtf);
+	sjme_attrInNotNull sjme_charSeq aSeq,
+	sjme_attrInNotNull sjme_lpcstr bUtf);
 
 /**
  * Hashes the given string in accordance to Java's @c String.hashCode() .

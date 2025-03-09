@@ -249,7 +249,7 @@ static sjme_errorCode sjme_nvm_class_fieldAttrConstantValue(
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
-	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNull sjme_charSeq attrName,
 	sjme_attrInNotNull sjme_stream_input attrStream,
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen)
@@ -376,7 +376,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
-	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNull sjme_charSeq attrName,
 	sjme_attrInNotNull sjme_stream_input attrStream,
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen)
@@ -641,7 +641,7 @@ static sjme_errorCode sjme_nvm_class_parseAttribute(
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull const sjme_nvm_class_parseAttributeHandler* handlers,
 	sjme_attrInNotNull sjme_pointer context,
-	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNull sjme_charSeq attrName,
 	sjme_attrInPositive sjme_jint attrLen)
 {
 	sjme_errorCode error, errorC;
@@ -673,7 +673,7 @@ static sjme_errorCode sjme_nvm_class_parseAttribute(
 	
 	/* Find and call handler for this. */
 	for (at = handlers; at->name != NULL && at->handler != NULL; at++)
-		if (0 == strcmp(at->name, attrName))
+		if (sjme_charSeq_equalsUtfR(attrName, at->name))
 		{
 			/* Load stream over the data. */
 			attrStream = NULL;
@@ -929,39 +929,37 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 sjme_errorCode sjme_nvm_class_descriptorToType(
 	sjme_attrOutNotNull sjme_javaTypeId* outType,
 	sjme_attrInValue sjme_jboolean javaType,
-	sjme_attrInNotNull sjme_charSeq descriptor)
+	sjme_attrInNotNull sjme_charSeq desc)
 {
 	sjme_javaTypeId result;
 	
-	if (outType == NULL || descriptor == NULL)
+	if (outType == NULL || desc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#if 0
-	if (strncmp("Z", desc, descLen) == 0)
+	
+	if (sjme_charSeq_equalsUtfR(desc, "Z"))
 		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
 			SJME_BASIC_TYPE_ID_BOOLEAN);
-	else if (strncmp("B", desc, descLen) == 0)
+	else if (sjme_charSeq_equalsUtfR(desc, "B"))
 		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
 			SJME_BASIC_TYPE_ID_BYTE);
-	else if (strncmp("S", desc, descLen) == 0)
+	else if (sjme_charSeq_equalsUtfR(desc, "S"))
 		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
 			SJME_BASIC_TYPE_ID_SHORT);
-	else if (strncmp("C", desc, descLen) == 0)
+	else if (sjme_charSeq_equalsUtfR(desc, "C"))
 		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
 			SJME_BASIC_TYPE_ID_CHARACTER);
-	else if (strncmp("I", desc, descLen) == 0)
+	else if (sjme_charSeq_equalsUtfR(desc, "I"))
 		result = SJME_JAVA_TYPE_ID_INTEGER;
-	else if (strncmp("J", desc, descLen) == 0)
+	else if (sjme_charSeq_equalsUtfR(desc, "J"))
 		result = SJME_JAVA_TYPE_ID_LONG;
-	else if (strncmp("F", desc, descLen) == 0)
+	else if (sjme_charSeq_equalsUtfR(desc, "F"))
 		result = SJME_JAVA_TYPE_ID_FLOAT;
-	else if (strncmp("D", desc, descLen) == 0)
+	else if (sjme_charSeq_equalsUtfR(desc, "D"))
 		result = SJME_JAVA_TYPE_ID_DOUBLE;
-	else if (desc[0] == '[')
+	else if (sjme_charSeq_charAtIs(desc, 0, '['))
 		result = SJME_JAVA_TYPE_ID_OBJECT;
-	else if (desc[0] == 'L' && desc[descLen - 1] == ';')
+	else if (sjme_charSeq_charAtIs(desc, 0, 'L') &&
+		sjme_charSeq_charAtIs(desc, desc->length - 1, ';'))
 		result = SJME_JAVA_TYPE_ID_OBJECT;
 	
 	/* Not valid. */
@@ -971,7 +969,6 @@ sjme_errorCode sjme_nvm_class_descriptorToType(
 	/* Success! */
 	*outType = result;
 	return SJME_ERROR_NONE;
-#endif
 }
 
 sjme_errorCode sjme_nvm_class_parse(
@@ -1337,7 +1334,7 @@ sjme_errorCode sjme_nvm_class_parseAttributes(
 		/* Stage it for stack allocations. */
 		if (sjme_error_is(error = sjme_nvm_class_parseAttribute(
 			allocPool, inStream, inConstPool, inStringPool, handlers,
-			context, sjme_charSeq_tempUtf(name->utf.utf->seq),
+			context, name->utf.utf->seq,
 			len)))
 			goto fail_parseSingle;
 	}
