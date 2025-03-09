@@ -21,9 +21,9 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeAny(
 		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInRange(0, SJME_NVM_NUM_METHOD_CALL_TYPE)
 		sjme_nvm_methodCallType callType,
-	sjme_attrInNotNull sjme_lpcstr binaryName,
-	sjme_attrInNotNull sjme_lpcstr methodName,
-	sjme_attrInNotNull sjme_lpcstr methodType)
+	sjme_attrInNotNull sjme_charSeq binaryName,
+	sjme_attrInNotNull sjme_charSeq methodName,
+	sjme_attrInNotNull sjme_charSeq methodType)
 {
 	sjme_errorCode error;
 	sjme_jclass classy;
@@ -116,8 +116,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeAny(
 		mleArgR.type = SJME_JAVA_TYPE_ID_VOID;
 		if (sjme_error_is(error = sjme_mle_mleCall(inFrame,
 			classy->binaryName,
-			sjme_charSeq_tempUtf(target->name->seq),
-			sjme_charSeq_tempUtf(target->type->seq),
+			target->name->seq,
+			target->type->seq,
 			&mleArgR,
 			argC, argV)))
 			return sjme_error_vmError(inFrame, error);
@@ -166,7 +166,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	sjme_nvm_class_poolEntry* entry;
 	sjme_nvm_class_poolEntryClass* classRef;
 	sjme_jclass desireClass;
-	sjme_lpcstr binaryName;
+	sjme_charSeq binaryName;
 	sjme_jvalueTyped value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
@@ -183,7 +183,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 
 	/* Which class are we going for? */
 	classRef = &entry->classRef;
-	binaryName = sjme_charSeq_tempUtf(classRef->descriptor->seq);
+	binaryName = classRef->descriptor->seq;
 	
 	/* Locate target class. */
 	desireClass = NULL;
@@ -239,10 +239,9 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvokeAny(inFrame,
 		SJME_NVM_CLASS_MEMBER_STATIC,
 		SJME_NVM_CALL_NON_VIRTUAL,
-		sjme_charSeq_tempUtf(member->inClass->descriptor->seq),
-		sjme_charSeq_tempUtf(member->nameAndType->name->seq),
-		sjme_charSeq_tempUtf(
-			member->nameAndType->descriptor->seq))))
+		member->inClass->descriptor->seq,
+		member->nameAndType->name->seq,
+		member->nameAndType->descriptor->seq)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
@@ -272,10 +271,9 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvokeAny(inFrame,
 		SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_NVM_CALL_VIRTUAL,
-		sjme_charSeq_tempUtf(member->inClass->descriptor->seq),
-		sjme_charSeq_tempUtf(member->nameAndType->name->seq),
-		sjme_charSeq_tempUtf(
-			member->nameAndType->descriptor->seq))))
+		member->inClass->descriptor->seq,
+		member->nameAndType->name->seq,
+		member->nameAndType->descriptor->seq)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */

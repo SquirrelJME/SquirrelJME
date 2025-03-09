@@ -47,9 +47,9 @@ static const sjme_cchar sjme_nvm_mleTToA[SJME_NUM_JAVA_TYPE_IDS + 2] =
 
 sjme_errorCode sjme_mle_mleCall(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_lpcstr className,
-	sjme_attrInNotNull sjme_lpcstr methodName,
-	sjme_attrInNotNull sjme_lpcstr methodType,
+	sjme_attrInNotNull sjme_charSeq className,
+	sjme_attrInNotNull sjme_charSeq methodName,
+	sjme_attrInNotNull sjme_charSeq methodType,
 	sjme_attrInNotNull sjme_jvalueTyped* argR,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV)
@@ -65,7 +65,7 @@ sjme_errorCode sjme_mle_mleCall(
 
 	/* Look for the shelf. */
 	for (major = sjme_nvm_mleShelves; major->className != NULL; major++)
-		if (strcmp(className, major->className) == 0)
+		if (sjme_charSeq_equalsUtfR(className, major->className))
 			return sjme_mle_mleCallShelf(inFrame, major, methodName,
 				methodType, argR, argC, argV);
 
@@ -99,8 +99,8 @@ sjme_errorCode sjme_mle_mleCallFunction(
 sjme_errorCode sjme_mle_mleCallShelf(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull const sjme_nvm_mle* shelf,
-	sjme_attrInNotNull sjme_lpcstr methodName,
-	sjme_attrInNotNull sjme_lpcstr methodType,
+	sjme_attrInNotNull sjme_charSeq methodName,
+	sjme_attrInNotNull sjme_charSeq methodType,
 	sjme_attrInNotNull sjme_jvalueTyped* argR,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV)
@@ -109,8 +109,8 @@ sjme_errorCode sjme_mle_mleCallShelf(
 	
 	/* Look for the function. */
 	for (minor = shelf->shelf; minor->name != NULL; minor++)
-		if (strcmp(methodName, minor->name) == 0 &&
-			strcmp(methodType, minor->type) == 0)
+		if (sjme_charSeq_equalsUtfR(methodName, minor->name) &&
+			sjme_charSeq_equalsUtfR(methodType, minor->type))
 			return sjme_mle_mleCallFunction(inFrame, minor, argR, argC, argV);
 	
 	/* Not found. */

@@ -834,7 +834,7 @@ typedef struct sjme_nvm_class_parseAttributeHandler
  */
 sjme_errorCode sjme_nvm_class_calcMethodArgs(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrInNotNull sjme_lpcstr typeDesc,
+	sjme_attrInNotNull sjme_charSeq typeDesc,
 	sjme_attrInNotNull sjme_jint* outArgC,
 	sjme_attrInNotNull sjme_javaTypeId** outArgT,
 	sjme_attrInNotNull sjme_javaTypeId* outArgR);

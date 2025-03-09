@@ -40,8 +40,7 @@ SJME_TEST_DECLARE(testStringPoolUtf)
 	/* Locate string. */
 	string = NULL;
 	if (sjme_error_is(test->error = sjme_nvm_stringPool_locateUtf(
-		stringPool, testUtf, -1,
-		&string)) || string == NULL)
+		stringPool, &string, testUtf, -1)) || string == NULL)
 		return sjme_unit_fail(test, "Could not locate string?");
 	
 	/* We are using this, so count it. */
@@ -63,8 +62,7 @@ SJME_TEST_DECLARE(testStringPoolUtf)
 	/* Locate string, again. */
 	stringTwo = NULL;
 	if (sjme_error_is(test->error = sjme_nvm_stringPool_locateUtf(
-		stringPool, testUtf, -1,
-		&stringTwo)) || stringTwo == NULL)
+		stringPool, &stringTwo, testUtf, -1)) || stringTwo == NULL)
 		return sjme_unit_fail(test, "Could not locate second string?");
 	
 	/* We are using this, so count it. */

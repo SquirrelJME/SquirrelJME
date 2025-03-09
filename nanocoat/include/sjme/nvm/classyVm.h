@@ -198,7 +198,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInNotNull sjme_lpcstr className,
+	sjme_attrInNotNull sjme_charSeq className,
 	sjme_attrInValue sjme_jboolean doInit);
 
 /**
@@ -256,22 +256,41 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadArrayA(
 	sjme_attrInPositiveNonZero sjme_jint dims);
 
 /**
- * Loads the specified class by the given binary name.
+ * Loads the specified class by the given field name.
  * 
  * @param inLoader The loader to use. 
  * @param outClass The resultant class.
  * @param contextThread The thread where any constructors can be called if
  * needed.
- * @param binaryName The binary name to load. 
+ * @param fieldName The field name to load. 
  * @param doInit Initialize this class?
  * @return Any resultant error, if any.
  * @since 2024/10/22
  */
-sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
+sjme_errorCode sjme_nvm_vmClass_loaderLoadF(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInNotNull sjme_lpcstr binaryName,
+	sjme_attrInNotNull sjme_charSeq fieldName,
+	sjme_attrInValue sjme_jboolean doInit);
+
+/**
+ * Loads the specified class by the given field name.
+ * 
+ * @param inLoader The loader to use. 
+ * @param outClass The resultant class.
+ * @param contextThread The thread where any constructors can be called if
+ * needed.
+ * @param fieldName The field name to load. 
+ * @param doInit Initialize this class?
+ * @return Any resultant error, if any.
+ * @since 2024/10/22
+ */
+sjme_errorCode sjme_nvm_vmClass_loaderLoadFU(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_lpcstr fieldName,
 	sjme_attrInValue sjme_jboolean doInit);
 
 /**
@@ -324,8 +343,8 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInValue sjme_jboolean required,
-	sjme_attrInPositive sjme_lpcstr inName,
-	sjme_attrInPositive sjme_lpcstr inType,
+	sjme_attrInPositive sjme_charSeq inName,
+	sjme_attrInPositive sjme_charSeq inType,
 	sjme_attrOutNotNull sjme_jmethodID* outID);
 
 /**

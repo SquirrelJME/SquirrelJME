@@ -708,7 +708,7 @@ static sjme_errorCode sjme_nvm_class_parseAttribute(
 
 sjme_errorCode sjme_nvm_class_calcMethodArgs(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrInNotNull sjme_lpcstr typeDesc,
+	sjme_attrInNotNull sjme_charSeq typeDesc,
 	sjme_attrInNotNull sjme_jint* outArgC,
 	sjme_attrInNotNull sjme_javaTypeId** outArgT,
 	sjme_attrInNotNull sjme_javaTypeId* outArgR)
@@ -717,17 +717,17 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 	sjme_errorCode error;
 	sjme_javaTypeId args[SJME_MAX_ARGS];
 	sjme_javaTypeId* result;
-	const sjme_cchar* c;
 	sjme_cchar d;
 	sjme_jint argAt, i, n;
 	sjme_jboolean arrayScope, returnScope, returnDid;
+	sjme_charSeq_it it;
 	
 	if (allocPool == NULL || typeDesc == NULL ||
 		outArgC == NULL || outArgT == NULL || outArgR == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Quick void method, such as a default constructor. */
-	if (strcmp(typeDesc, "()V") == 0)
+	if (sjme_charSeq_equalsUtfR(typeDesc, "()V"))
 	{
 		*outArgC = 0;
 		*outArgT = NULL;
@@ -735,9 +735,13 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 		return SJME_ERROR_NONE;
 	}
 
+	/* Setup iterator. */
+	memset(&it, 0, sizeof(it));
+	if (sjme_error_is(error = sjme_charSeq_itNew(typeDesc, 0, &it)))
+		return sjme_error_default(error);
+
 	/* Must start with parenthesis. */
-	c = typeDesc;
-	if (*(c++) != '(')
+	if (it.pp(&it) != '(')
 		return sjme_error_vmError(NULL, SJME_ERROR_INVALID_METHOD_TYPE);
 
 	/* Init state. */
@@ -756,7 +760,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 				SJME_ERROR_INVALID_METHOD_TYPE);
 		
 		/* Which type? */
-		switch (*(c++))
+		switch (it.pp(&it))
 		{
 				/* Integer and promotions. */
 			case 'Z':
@@ -843,7 +847,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 				}
 
 				/* Keep going until ending `;`. */
-				for (d = *c;; d = *(c++))
+				for (d = it.d(&it);; d = it.pp(&it))
 				{
 					/* Straight up invalid. */
 					if (d == '.' || d == '[' || d == '\0')
@@ -898,7 +902,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 		}
 
 		/* True end of descriptor, with NUL. */
-		if ((*c) == '\0')
+		if (it.d(&it) == '\0')
 			break;
 	}
 
@@ -1867,7 +1871,7 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 
 	/* Determine the number of method arguments. */
 	if (sjme_error_is(error = sjme_nvm_class_calcMethodArgs(
-		allocPool, sjme_charSeq_tempUtf(type->utf.utf->seq),
+		allocPool, type->utf.utf->seq,
 		&result->argC, &result->argT, &result->argR)))
 		goto fail_calcArgs;
 	

@@ -411,14 +411,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 
 	/* Lookup self name. */
 	thisName = NULL;
-	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
-		strings, inClass->binaryName, -1, &thisName)) || thisName == NULL)
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateSeq(
+		strings, &thisName, inClass->binaryName, 0)) || thisName == NULL)
 		return sjme_error_outOfMemory(allocPool, 0);
 
 	/* The super class is always Object. */
 	superName = NULL;
 	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
-		strings, "java/lang/Object", -1, &superName)) || superName == NULL)
+		strings, &superName, "java/lang/Object", -1)) || superName == NULL)
 		return sjme_error_outOfMemory(allocPool, 0);
 
 	/* Allocate synthetic result. */
@@ -463,10 +463,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 			SJME_ERROR_INVALID_CLASS_LOADER);
 	
 	/* Determine the file name of the class. */
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	memset(fileName, 0, sizeof(fileName));
 	snprintf(fileName, SJME_VM_CLASS_NAME_LIMIT - 1,
 		"%.*s.class", (int)(strlen(&inClass->binaryName[1]) - 1),
 		&inClass->binaryName[1]);
+#endif
 	
 	/* Find the class within the classpath. */
 	info = NULL;
@@ -515,19 +519,19 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadCheck(
 	
 	/* Could it be this one? */
 	if (againstI == maybe->binaryHash &&
-		strcmp(maybe->binaryName, againstP) == 0)
+		sjme_charSeq_equalsR(maybe->binaryName, againstP))
 		return SJME_ERROR_NONE;
 	
 	/* Not matched. */
 	return sjme_error_vmError(NULL, SJME_ERROR_NOT_MATCHED);
 }
 
-static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
+static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,
 	sjme_attrOutNotNull sjme_jclass* outSlot,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInNotNull sjme_lpcstr binaryName)
+	sjme_attrInNotNull sjme_charSeq binaryName)
 {
 	sjme_errorCode error;
 	sjme_jclass result;
@@ -540,6 +544,9 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
 		contextThread == NULL || binaryName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Cannot be blank. */
 	if (strlen(binaryName) <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
@@ -591,6 +598,7 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadBSubAlloc(
 	sjme_atomic_sjme_jint_set(&result->error, SJME_ERROR_NONE);
 	sjme_atomic_sjme_jint_set(&result->isLoaded, 0);
 	sjme_atomic_sjme_jint_set(&result->isInitialized, autoLoad);
+#endif
 	
 	/* Store into the output slot immediately for recursive loading. */
 	*outSlot = result;
@@ -679,7 +687,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	
 	/* This is always set to the @c Class type. */
 	classType = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadB(
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFU(
 		loader, &classType, contextThread,
 		"Ljava/lang/Class;", SJME_JNI_FALSE)) ||
 		classType == NULL)
@@ -694,8 +702,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	{
 		/* Find super class. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-			loader, &superClass, contextThread,
-			sjme_charSeq_tempUtf(info->superName->seq),
+			loader, &superClass, contextThread, info->superName->seq,
 			SJME_JNI_FALSE)) ||
 			superClass == NULL)
 			goto fail_findSuper;
@@ -725,8 +732,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			interface = NULL;
 			if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
 				loader, &interface, contextThread,
-				sjme_charSeq_tempUtf(
-					info->interfaceNames->elements[i]->seq),
+				info->interfaceNames->elements[i]->seq,
 				SJME_JNI_FALSE)) ||
 				interface == NULL)
 				goto fail_findInterface;
@@ -810,7 +816,8 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		goto fail_releaseLock;
 	
 	/* If this is Object, then implicitly initialize Class as well. */
-	if (strcmp(inClass->binaryName, "Ljava/lang/Object;") == 0)
+	if (sjme_charSeq_equalsUtfR(inClass->binaryName,
+		"Ljava/lang/Object;"))
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
 			classType, contextThread)))
 			goto fail_initClassType;
@@ -884,7 +891,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 		goto skip_doubleCalled;
 
 	/* Array type? */
-	if (inClass->binaryName[0] == '[')
+	if (sjme_charSeq_charAtIs(inClass->binaryName, 0, '['))
 	{
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitArray(inClass,
 			contextThread, classLoader)))
@@ -892,7 +899,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	}
 
 	/* Object type? */
-	else if (inClass->binaryName[0] == 'L')
+	else if (sjme_charSeq_charAtIs(inClass->binaryName, 0, 'L'))
 	{
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitStandard(inClass,
 			contextThread, classLoader)))
@@ -1007,27 +1014,30 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInNotNull sjme_lpcstr className,
+	sjme_attrInNotNull sjme_charSeq className,
 	sjme_attrInValue sjme_jboolean doInit)
 {
-	sjme_cchar buf[SJME_VM_CLASS_NAME_LIMIT];
+	sjme_errorCode error;
+	sjme_charSeqStatic wrapSeq;
 	
 	if (inLoader == NULL || outClass == NULL || contextThread == NULL ||
 		className == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Determine actual name to use. */
-	memset(buf, 0, sizeof(buf));
-	if (className[0] == '[')
-		snprintf(buf, SJME_VM_CLASS_NAME_LIMIT - 1,
-			"%s", className);
-	else
-		snprintf(buf, SJME_VM_CLASS_NAME_LIMIT - 1,
-			"L%s;", className);
-	
-	/* Forward call. */
-	return sjme_nvm_vmClass_loaderLoadB(inLoader, outClass,
-		contextThread, buf, doInit);
+
+	/* If any array, no wrapping needs to be done. */
+	if (sjme_charSeq_charAtIs(className, 0, '['))
+		return sjme_nvm_vmClass_loaderLoadF(inLoader, outClass,
+			contextThread, className, doInit);
+
+	/* Otherwise, wrap it in an object specifier. */
+	memset(&wrapSeq, 0, sizeof(wrapSeq));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStaticS(&wrapSeq,
+		"L", className, ";")))
+		return sjme_error_default(error);
+
+	/* Forward. */
+	return sjme_nvm_vmClass_loaderLoadF(inLoader, outClass,
+		contextThread, &wrapSeq, doInit);
 }
 
 sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
@@ -1078,11 +1088,11 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadArrayA(
 	return sjme_error_notImplemented(0);
 }
 
-sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
+sjme_errorCode sjme_nvm_vmClass_loaderLoadF(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInNotNull sjme_lpcstr binaryName,
+	sjme_attrInNotNull sjme_charSeq fieldName,
 	sjme_attrInValue sjme_jboolean doInit)
 {
 	sjme_errorCode error;
@@ -1091,11 +1101,13 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 	sjme_jclass maybe;
 	
 	if (inLoader == NULL || outClass == NULL || contextThread == NULL ||
-		binaryName == NULL)
+		fieldName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Determine hash of the binary name for quicker checking. */
-	hash = sjme_string_hash(binaryName);
+	hash = 0;
+	if (sjme_error_is(error = sjme_charSeq_hash(fieldName, &hash)))
+		return sjme_error_default(error);
 	
 	/* Grab the read lock to determine if we can skip loading. */
 	if (sjme_error_is(error = sjme_thread_rwLockGrabRead(
@@ -1110,7 +1122,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 		SJME_AS_LIST_POINTER(classes),
 		&freeSlot, (sjme_pointer*)&maybe,
 		sjme_nvm_vmClass_loaderLoadCheck,
-		hash, (sjme_pointer)binaryName)))
+		hash, (sjme_pointer)fieldName)))
 		goto fail_findFail;
 	
 	/* Found something? */
@@ -1142,10 +1154,10 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadB(
 	
 	/* Forward load of class. */
 	maybe = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadBSubAlloc(
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFSubAlloc(
 		inLoader, &maybe,
 		&classes->elements[freeSlot],
-		contextThread, binaryName)) || maybe == NULL)
+		contextThread, fieldName)) || maybe == NULL)
 		goto fail_loadClass;
 	
 	/* Release the write lock. */
@@ -1184,6 +1196,17 @@ fail_findFail:
 	if (error == SJME_ERROR_NOT_MATCHED)
 		error = SJME_ERROR_NO_CLASS;
 	return sjme_error_vmError(contextThread, error);
+}
+
+sjme_errorCode sjme_nvm_vmClass_loaderLoadFU(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_lpcstr fieldName,
+	sjme_attrInValue sjme_jboolean doInit)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(
@@ -1250,7 +1273,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(
 	}
 	
 	/* Forward call. */
-	return sjme_nvm_vmClass_loaderLoadB(inLoader, outClass,
+	return sjme_nvm_vmClass_loaderLoadFU(inLoader, outClass,
 		contextThread, buf, SJME_JNI_TRUE);
 #undef BUFSIZE
 }
@@ -1356,8 +1379,8 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInValue sjme_jboolean required,
-	sjme_attrInPositive sjme_lpcstr inName,
-	sjme_attrInPositive sjme_lpcstr inType,
+	sjme_attrInPositive sjme_charSeq inName,
+	sjme_attrInPositive sjme_charSeq inType,
 	sjme_attrOutNotNull sjme_jmethodID* outID)
 {
 	sjme_errorCode error;
@@ -1388,10 +1411,8 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 				SJME_ERROR_NO_METHOD);
 		
 		/* Is this the method. */
-		if (sjme_charSeq_equalsUtfR(method->member.name->seq,
-				inName) &&
-			sjme_charSeq_equalsUtfR(method->member.type->seq,
-				inType))
+		if (sjme_charSeq_equalsR(method->member.name->seq, inName) &&
+			sjme_charSeq_equalsR(method->member.type->seq, inType))
 		{
 			*outID = method;
 			return SJME_ERROR_NONE;

@@ -646,6 +646,25 @@ sjme_errorCode sjme_nvm_task_objectNewN(
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInNotNull sjme_charSeq inClass);
+	
+/**
+ * Allocates a new object.
+ * 
+ * @param contextThread The context thread for the allocation, if a class
+ * initialization is required.
+ * @param allocSize The allocation size.
+ * @param inType The NVM structure type.
+ * @param outObject The resultant object.
+ * @param inClass The class type to use for the object.
+ * @return Any resultant error, if any.
+ * @since 2025/03/09
+ */
+sjme_errorCode sjme_nvm_task_objectNewNU(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jobject* outObject,
 	sjme_attrInNotNull sjme_lpcstr inClass);
 	
 /**
@@ -739,8 +758,8 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInRange(0, SJME_ERROR_INVALID_ARGUMENT)
 		sjme_nvm_class_instanceType instanceType,
-	sjme_attrInNotNull sjme_lpcstr inName,
-	sjme_attrInNotNull sjme_lpcstr inType,
+	sjme_attrInNotNull sjme_charSeq inName,
+	sjme_attrInNotNull sjme_charSeq inType,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV);
 	

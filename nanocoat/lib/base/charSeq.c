@@ -33,6 +33,26 @@
 			n++; \
 	} } while(0)
 
+static sjme_jchar sjme_charSeq_itD(
+	sjme_attrInNotNull sjme_charSeq_it* it)
+{
+	if (it == NULL)
+		return 0;
+
+	/* Return the character at the current index. */
+	return sjme_charSeq_charAtR(it->seq, it->index);
+}
+
+static sjme_jchar sjme_charSeq_itPp(
+	sjme_attrInNotNull sjme_charSeq_it* it)
+{
+	if (it == NULL)
+		return 0;
+
+	/* Return the character at the current index, then increment. */
+	return sjme_charSeq_charAtR(it->seq, it->index++);
+}
+
 sjme_errorCode sjme_charSeq_charAt(
 	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrInPositive sjme_jint inIndex,
@@ -303,6 +323,28 @@ sjme_errorCode sjme_charSeq_hash(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_charSeq_itNew(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrOutNotNull sjme_charSeq_it* it)
+{
+	if (inSeq == NULL || it == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (offset < 0 || offset >= inSeq->length)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Setup iterator. */
+	memset(it, 0, sizeof(*it));
+	it->seq = inSeq;
+	it->index = offset;
+	it->d = sjme_charSeq_itD;
+	it->pp = sjme_charSeq_itPp;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_charSeq_newNarrow(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_charSeq* outSeq,
@@ -409,6 +451,16 @@ sjme_errorCode sjme_charSeq_newUtfStatic(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_charSeq_newUtfStaticS(
+	sjme_attrOutNotNull sjme_charSeqStatic* outSeq,
+	sjme_attrInNotNull sjme_lpcstr prefix,
+	sjme_attrInNotNull sjme_charSeq middle,
+	sjme_attrInNotNull sjme_lpcstr suffix)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_charSeq_newWide(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_charSeq* outSeq,
@@ -482,441 +534,3 @@ sjme_lpcstr sjme_charSeq_tempUtf(
 	sjme_todo("Impl?");
 	return (sjme_lpcstr)sjme_error_notImplemented(0);
 }
-
-
-
-
-#if 0
-static sjme_errorCode sjme_charSeq_basicUtf_charAt(
-	sjme_attrInNotNull const sjme_charSeq inSeq,
-	sjme_attrInPositive sjme_jint inIndex,
-	sjme_attrOutNotNull sjme_jchar* outChar)
-{
-	sjme_jint c;
-	
-	if (inSeq == NULL || outChar == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Obtain UTF character at position. */
-	c = sjme_string_charAt(inSeq->context, inIndex);
-	if (c < 0)
-		return SJME_ERROR_ILLEGAL_STATE;
-	
-	/* Success! */
-	*outChar = c;
-	return SJME_ERROR_NONE;
-}
-
-static sjme_errorCode sjme_charSeq_basicUtf_length(
-	sjme_attrInNotNull const sjme_charSeq inSeq,
-	sjme_attrOutNotNull sjme_jint* outLen)
-{
-	sjme_jint len;
-	
-	if (inSeq == NULL || outLen == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Determine string length. */
-	len = sjme_string_length(inSeq->context);
-	if (len < 0)
-		return SJME_ERROR_ILLEGAL_STATE;
-	
-	/* Success! */
-	*outLen = len;
-	return SJME_ERROR_NONE;
-}
-
-static const sjme_charSeq_functions sjme_charSeq_basicUtfFunctions =
-{
-	.charAt = sjme_charSeq_basicUtf_charAt,
-	.length = sjme_charSeq_basicUtf_length,
-};
-
-sjme_lpcstr sjme_charSeq_asLpcTemp(
-	sjme_attrInNotNull const sjme_charSeq inSeq)
-{
-#define BUF_SIZE 1024
-	sjme_attrThreadLocal(sjme_cchar, buf[BUF_SIZE]);
-	sjme_jchar c;
-	sjme_jint i, n;
-
-	/* Return NULL if NULL. */
-	if (inSeq == NULL)
-		return NULL;
-
-	/* Read in character length. */
-	n = -1;
-	if (sjme_error_is(sjme_charSeq_length(inSeq, &n)) || n < 0)
-		return NULL;
-
-	/* Clip to max. */
-	if (n >= BUF_SIZE)
-		n = BUF_SIZE - 1;
-
-	/* Lazily map characters down to ASCII. */
-	for (i = 0; i < n; i++)
-	{
-		if (sjme_error_is(sjme_charSeq_charAt(inSeq, i, &c)))
-			return NULL;
-		buf[i] = c & 0xFF;
-	}
-
-	/* Always end in NUL. */
-	buf[n] = 0;
-
-	/* Success! */
-	return &buf[0];
-
-#undef BUF_SIZE
-}
-
-sjme_errorCode sjme_charSeq_charAt(
-	sjme_attrInNotNull const sjme_charSeq inSeq,
-	sjme_attrInPositive sjme_jint inIndex,
-	sjme_attrOutNotNull sjme_jchar* outChar)
-{
-	if (inSeq == NULL || outChar == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (inIndex < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-	
-	if (inSeq->impl->charAt == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
-	
-	/* Forward. */
-	return inSeq->impl->charAt(inSeq, inIndex, outChar);
-}
-
-sjme_errorCode sjme_charSeq_deleteStatic(
-	sjme_attrInNotNull sjme_charSeq inOutSeq)
-{
-	sjme_errorCode error;
-	
-	if (inOutSeq == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Already deleted? */
-	if (inOutSeq->impl == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-	
-	/* If there is a deletion function, then call it. */
-	if (inOutSeq->impl->delete != NULL)
-		if (sjme_error_is(error = inOutSeq->impl->delete(
-			inOutSeq)))
-			return sjme_error_default(error);
-	
-	/* Clear out. */
-	memset(inOutSeq, 0, sizeof(*inOutSeq));
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_charSeq_dup(
-	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_charSeq* destCopy,
-	sjme_attrInNotNull const sjme_charSeq sourceFrom)
-{
-	sjme_errorCode error;
-	sjme_charSeq result;
-	sjme_jint n, i, allocLen;
-	sjme_jchar* chars;
-	sjme_jboolean wide;
-	
-	if (allocPool == NULL || destCopy == NULL || sourceFrom == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Determine length to copy from. */
-	n = -1;
-	if (sjme_error_is(error = sjme_charSeq_length(sourceFrom, &n)) ||
-		n < 0)
-		return sjme_error_default(error);
-
-	/* Allocate temporary buffer. */
-	allocLen = sizeof(*chars) * (n + 1);
-	chars = sjme_alloca(allocLen);
-	if (chars == NULL)
-		return sjme_error_outOfMemory(NULL, allocLen);
-	memset(chars, 0, allocLen);
-	
-	/* Read in all source characters. */
-	for (i = 0; i < n; i++)
-		if (sjme_error_is(error = sjme_charSeq_charAt(sourceFrom, i,
-			&chars[i])))
-			return sjme_error_default(error);
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-sjme_errorCode sjme_charSeq_equals(
-	sjme_attrOutNotNull sjme_jboolean* outResult,
-	sjme_attrInNotNull const sjme_charSeq inSeq,
-	sjme_attrInNotNull const sjme_charSeq equalsSeq)
-{
-	sjme_errorCode error;
-	sjme_jint aLen, bLen;
-	sjme_jint at;
-	sjme_jchar a, b;
-	
-	if (inSeq == NULL || outResult == NULL || equalsSeq == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Same sequence? */
-	if (inSeq == equalsSeq)
-	{
-		*outResult = SJME_JNI_TRUE;
-		return SJME_ERROR_NONE;
-	}
-	
-	/* Get length of both first. */
-	aLen = -1;
-	bLen = -1;
-	if (sjme_error_is(error = sjme_charSeq_length(inSeq,
-		&aLen)) || aLen < 0)
-		return sjme_error_default(error);
-	if (sjme_error_is(error = sjme_charSeq_length(equalsSeq,
-		&bLen)) || bLen < 0)
-		return sjme_error_default(error);
-	
-	/* Cannot possibly be equal? */
-	if (aLen != bLen)
-	{
-		*outResult = SJME_JNI_FALSE;
-		return SJME_ERROR_NONE;
-	}
-	
-	/* Compare each character. */
-	for (at = 0; at < aLen; at++)
-	{
-		/* Get both characters. */
-		a = 0;
-		b = 0;
-		if (sjme_error_is(error = sjme_charSeq_charAt(inSeq,
-			at, &a)))
-			return sjme_error_default(error);
-		if (sjme_error_is(error = sjme_charSeq_charAt(equalsSeq,
-			at, &b)))
-			return sjme_error_default(error);
-		
-		/* Are they not the same? */
-		if (a != b)
-		{
-			*outResult = SJME_JNI_FALSE;
-			return SJME_ERROR_NONE;
-		}
-	}
-	
-	/* There were no failed matches, so they are the same! */
-	*outResult = SJME_JNI_TRUE;
-	return SJME_ERROR_NONE;
-}
-
-sjme_jboolean sjme_charSeq_equalsR(
-	sjme_attrInNotNull const sjme_charSeq inSeq,
-	sjme_attrInNotNull const sjme_charSeq equalsSeq)
-{
-	sjme_jboolean result;
-	
-	if (inSeq == NULL || equalsSeq == NULL)
-		return SJME_JNI_FALSE;
-	
-	/* Perform the check. */
-	result = SJME_JNI_FALSE;
-	if (sjme_error_is(sjme_charSeq_equals(inSeq, &result,
-		equalsSeq)))
-		return SJME_JNI_FALSE;
-	
-	/* Return whatever result was given. */
-	return result;
-}
-
-sjme_errorCode sjme_charSeq_equalsUtf(
-	sjme_attrInNotNull const sjme_charSeq inSeq,
-	sjme_attrOutNotNull sjme_jboolean* outResult,
-	sjme_attrInNotNull sjme_lpcstr equalsUtf)
-{
-	sjme_errorCode error;
-	sjme_charSeq equalsSeq;
-	
-	if (inSeq == NULL || outResult == NULL || equalsUtf == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Setup sequence. */
-	memset(&equalsSeq, 0, sizeof(equalsSeq));
-	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-		&equalsSeq, equalsUtf, NULL)))
-		return sjme_error_default(error);
-	
-	/* Forward. */
-	return sjme_charSeq_equals(inSeq, outResult, &equalsSeq);
-}
-
-sjme_jboolean sjme_charSeq_equalsUtfR(
-	sjme_attrInNotNull const sjme_charSeq inSeq,
-	sjme_attrInNotNull sjme_lpcstr equalsUtf)
-{
-	sjme_jboolean result;
-	
-	if (inSeq == NULL || equalsUtf == NULL)
-		return SJME_JNI_FALSE;
-	
-	/* Perform the check. */
-	result = SJME_JNI_FALSE;
-	if (sjme_error_is(sjme_charSeq_equalsUtf(inSeq, &result,
-		equalsUtf)))
-		return SJME_JNI_FALSE;
-	
-	/* Return whatever result was given. */
-	return result;
-}
-
-sjme_errorCode sjme_charSeq_hash(
-	sjme_attrInNotNull const sjme_charSeq inSeq,
-	sjme_attrOutNotNull sjme_jint* outHash)
-{
-	sjme_errorCode error;
-	sjme_jint result, i, n;
-	sjme_jchar c;
-	
-	if (inSeq == NULL || outHash == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* How long is the string? */
-	n = -1;
-	if (sjme_error_is(error = sjme_charSeq_length(inSeq, &n)) || n < 0)
-		return sjme_error_default(error);
-
-	/* Calculate for the string. */
-	result = 0;
-	for (i = 0; i < n; i++)
-	{
-		/* Get next character. */
-		c = 0;
-		if (sjme_error_is(error = sjme_charSeq_charAt(inSeq, i, &c)))
-			return sjme_error_default(error);
-			
-		/* Calculate the hashCode(), the JavaDoc gives the following formula: */
-		/* == s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1] .... yikes! */
-		result = ((result << 5) - result) + (sjme_jint)c;
-	}
-
-	/* Success! */
-	*outHash = result;
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_charSeq_length(
-	sjme_attrInNotNull const sjme_charSeq inSeq,
-	sjme_attrOutNotNull sjme_jint* outLen)
-{
-	if (inSeq == NULL || outLen == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (inSeq->impl == NULL || inSeq->impl->length == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
-	
-	/* Forward. */
-	return inSeq->impl->length(inSeq, outLen);
-}
-	
-sjme_errorCode sjme_charSeq_newStatic(
-	sjme_attrInNotNull sjme_charSeq inOutSeq,
-	sjme_attrInNotNull const sjme_charSeq_functions* inFunctions,
-	sjme_attrInNullable sjme_pointer inOptContext,
-	sjme_attrInNullable sjme_frontEnd* inOptFrontEnd)
-{
-	if (inOutSeq == NULL || inFunctions == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Clear state. */
-	memset(inOutSeq, 0, sizeof(*inOutSeq));
-	
-	/* Fill in. */
-	inOutSeq->impl = inFunctions;
-	inOutSeq->context = inOptContext;
-	
-	/* Copy front end data? */
-	if (inOptFrontEnd != NULL)
-		memmove(&inOutSeq->frontEnd, inOptFrontEnd,
-			sizeof(*inOptFrontEnd));
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_charSeq_newUtfStatic(
-	sjme_attrInNotNull sjme_charSeq inOutSeq,
-	sjme_attrInNotNull sjme_lpcstr inString,
-	sjme_attrInNullable sjme_frontEnd* inOptFrontEnd)
-{
-	if (inOutSeq == NULL || inString == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	return sjme_charSeq_newStatic(inOutSeq,
-		&sjme_charSeq_basicUtfFunctions,
-		(sjme_pointer)inString, inOptFrontEnd);
-}
-
-sjme_errorCode sjme_charSeq_startsWithCharSeq(
-	sjme_attrInNotNull const sjme_charSeq inSeq,
-	sjme_attrOutNotNull sjme_jboolean* outResult,
-	sjme_attrInNotNull const sjme_charSeq startsWithSeq)
-{
-	sjme_errorCode error;
-	sjme_jint aLen, bLen;
-	
-	if (inSeq == NULL || outResult == NULL || startsWithSeq == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Get length of both first. */
-	aLen = -1;
-	bLen = -1;
-	if (sjme_error_is(error = sjme_charSeq_length(inSeq, &aLen)))
-		return sjme_error_default(error);
-	if (sjme_error_is(error = sjme_charSeq_length(startsWithSeq,
-		&bLen)))
-		return sjme_error_default(error);
-	
-	return sjme_error_notImplemented(0);
-}
-
-sjme_errorCode sjme_charSeq_startsWithUtf(
-	sjme_attrInNotNull const sjme_charSeq inSeq,
-	sjme_attrOutNotNull sjme_jboolean* outResult,
-	sjme_attrInNotNull sjme_lpcstr startsWithUtf)
-{
-	sjme_errorCode error;
-	sjme_charSeq startsWithSeq;
-	
-	if (inSeq == NULL || outResult == NULL || startsWithUtf == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Setup sequence. */
-	memset(&startsWithSeq, 0, sizeof(startsWithSeq));
-	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-		&startsWithSeq, startsWithUtf, NULL)))
-		return sjme_error_default(error);
-	
-	/* Forward. */
-	return sjme_charSeq_startsWithCharSeq(inSeq, outResult, &startsWithSeq);
-}
-
-sjme_jboolean sjme_charSeq_startsWithUtfR(
-	sjme_attrInNotNull const sjme_charSeq inSeq,
-	sjme_attrInNotNull sjme_lpcstr startsWithUtf)
-{
-	sjme_jboolean result;
-	
-	if (inSeq == NULL || startsWithUtf == NULL)
-		return SJME_JNI_FALSE;
-	
-	/* Perform the check. */
-	result = SJME_JNI_FALSE;
-	if (sjme_error_is(sjme_charSeq_startsWithUtf(inSeq, &result,
-		startsWithUtf)))
-		return SJME_JNI_FALSE;
-	
-	/* Return whatever result was given. */
-	return result;
-}
-#endif

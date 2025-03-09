@@ -97,9 +97,9 @@ typedef struct sjme_nvm_mle
  */
 sjme_errorCode sjme_mle_mleCall(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_lpcstr className,
-	sjme_attrInNotNull sjme_lpcstr methodName,
-	sjme_attrInNotNull sjme_lpcstr methodType,
+	sjme_attrInNotNull sjme_charSeq className,
+	sjme_attrInNotNull sjme_charSeq methodName,
+	sjme_attrInNotNull sjme_charSeq methodType,
 	sjme_attrInNotNull sjme_jvalueTyped* argR,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV);
@@ -138,8 +138,8 @@ sjme_errorCode sjme_mle_mleCallFunction(
 sjme_errorCode sjme_mle_mleCallShelf(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull const sjme_nvm_mle* shelf,
-	sjme_attrInNotNull sjme_lpcstr methodName,
-	sjme_attrInNotNull sjme_lpcstr methodType,
+	sjme_attrInNotNull sjme_charSeq methodName,
+	sjme_attrInNotNull sjme_charSeq methodType,
 	sjme_attrInNotNull sjme_jvalueTyped* argR,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV);

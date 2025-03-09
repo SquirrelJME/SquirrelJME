@@ -115,7 +115,7 @@ struct sjme_jclassBase
 	sjme_jobjectBase object;
 	
 	/** The binary name of this class. */
-	sjme_lpcstr binaryName;
+	sjme_charSeq binaryName;
 	
 	/** The has of the binary name. */
 	sjme_jint binaryHash;

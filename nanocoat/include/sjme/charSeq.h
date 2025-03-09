@@ -97,6 +97,38 @@ struct sjme_charSeqStatic
 };
 
 /**
+ * Iterator over character sequences.
+ *
+ * @since 2024/03/09
+ */
+typedef struct sjme_charSeq_it sjme_charSeq_it;
+
+/**
+ * Iterates the next character.
+ *
+ * @param it The iterator to iterate.
+ * @return The next iterated character.
+ * @since 2025/03/09
+ */
+typedef sjme_jchar (*sjme_charSeq_itFunc)(
+	sjme_attrInNotNull sjme_charSeq_it* it);
+
+struct sjme_charSeq_it
+{
+	/** The sequence this iterates over. */
+	sjme_charSeq seq;
+
+	/** The current character index. */
+	sjme_jint index;
+	
+	/** Performs @code *(c) @endcode . */
+	sjme_charSeq_itFunc d;
+	
+	/** Performs @code *(c++) @endcode . */
+	sjme_charSeq_itFunc pp;
+};
+
+/**
  * Returns the character at the given index.
  * 
  * @param inSeq The input character sequence.
@@ -173,7 +205,7 @@ sjme_errorCode sjme_charSeq_length(
  * @return Any resultant error, if any.
  * @since 2024/08/08 
  */
-	sjme_errorCode sjme_charSeq_equals(
+sjme_errorCode sjme_charSeq_equals(
 	sjme_attrInNotNull sjme_charSeq aSeq,
 	sjme_attrInNotNull sjme_charSeq bSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult);
@@ -232,6 +264,20 @@ sjme_errorCode sjme_charSeq_hash(
 	sjme_attrOutNotNull sjme_jint* outHash);
 
 /**
+ * Initializes a new iterator.
+ * 
+ * @param inSeq The input sequence.
+ * @param offset The offset into the sequence.
+ * @param it The target iterator.
+ * @return Any resultant error, if any.
+ * @since 2025/03/09
+ */
+sjme_errorCode sjme_charSeq_itNew(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrOutNotNull sjme_charSeq_it* it);
+
+/**
  * Allocates a new narrow character sequence.
  * 
  * @param allocPool The pool to allocate within.
@@ -287,7 +333,7 @@ sjme_errorCode sjme_charSeq_newUtf(
 	sjme_attrInNegativeOnePositive sjme_jint limitLen);
 
 /**
- * Initializes a static UTF string.
+ * Initializes a static character sequence from a UTF string.
  * 
  * @param outSeq The resultant static sequence.
  * @param utfString The string to base from.
@@ -301,7 +347,24 @@ sjme_errorCode sjme_charSeq_newUtfStatic(
 	sjme_attrInNotNull sjme_lpcstr utfString,
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInNegativeOnePositive sjme_jint limitLen);
-	
+
+/**
+ * Initializes a new static character sequence which is a character sequence
+ * surrounded by two static UTF strings.
+ * 
+ * @param outSeq The resultant sequence.
+ * @param prefix The UTF string prefix.
+ * @param middle The middle character sequence.
+ * @param suffix The UTF string suffix.
+ * @return Any resultant error, if any.
+ * @since 2025/03/09
+ */
+sjme_errorCode sjme_charSeq_newUtfStaticS(
+	sjme_attrOutNotNull sjme_charSeqStatic* outSeq,
+	sjme_attrInNotNull sjme_lpcstr prefix,
+	sjme_attrInNotNull sjme_charSeq middle,
+	sjme_attrInNotNull sjme_lpcstr suffix);
+
 /**
  * Allocates a new wide character sequence.
  * 
@@ -361,7 +424,7 @@ sjme_errorCode sjme_charSeq_startsWithUtf(
 sjme_jboolean sjme_charSeq_startsWithUtfR(
 	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrInNotNull sjme_lpcstr startsWithUtf);
-
+	
 /**
  * Returns a temporary @c sjme_lpcstr over the character sequence.
  * 

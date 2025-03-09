@@ -870,7 +870,7 @@ sjme_errorCode sjme_nvm_task_objectNewN(
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_jobject* outObject,
-	sjme_attrInNotNull sjme_lpcstr inClass)
+	sjme_attrInNotNull sjme_charSeq inClass)
 {
 	sjme_errorCode error;
 	sjme_jclass classy;
@@ -891,6 +891,17 @@ sjme_errorCode sjme_nvm_task_objectNewN(
 	/* Forward call. */
 	return sjme_nvm_task_objectNew(contextThread, allocSize, inType,
 		outObject, classy);
+}
+
+sjme_errorCode sjme_nvm_task_objectNewNU(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInNotNull sjme_lpcstr inClass)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_task_stackTrace(
@@ -1277,6 +1288,7 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
 	sjme_errorCode error;
 	sjme_nvm_task inTask;
 	sjme_jclass foundClass;
+	sjme_charSeqStatic classSeq, nameSeq, typeSeq;
 	
 	if (inThread == NULL || outFrame == NULL || inClass == NULL ||
 		inName == NULL || inType == NULL || (argC != 0 && argV == NULL))
@@ -1290,17 +1302,31 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
 	if (inTask == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
+	/* Wrap in sequences. */
+	memset(&classSeq, 0, sizeof(classSeq));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&classSeq,
+		inClass, 0, -1)))
+		return sjme_error_default(error);
+	memset(&nameSeq, 0, sizeof(classSeq));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&nameSeq,
+		inName, 0, -1)))
+		return sjme_error_default(error);
+	memset(&typeSeq, 0, sizeof(classSeq));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&typeSeq,
+		inType, 0, -1)))
+		return sjme_error_default(error);
+
 	/* Need to find the class first. */
 	foundClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
 		inTask->classLoader, &foundClass,
-		inThread, inClass, SJME_JNI_TRUE)))
+		inThread, &classSeq, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inThread, error);
 	
 	/* Forward to other call. */
 	return sjme_nvm_task_threadEnterC(
 		inThread, outFrame, foundClass, instanceType,
-		inName, inType, argC, argV);
+		&nameSeq, &typeSeq, argC, argV);
 }
 
 sjme_errorCode sjme_nvm_task_threadEnterC(
@@ -1309,8 +1335,8 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInRange(0, SJME_ERROR_INVALID_ARGUMENT)
 		sjme_nvm_class_instanceType instanceType,
-	sjme_attrInNotNull sjme_lpcstr inName,
-	sjme_attrInNotNull sjme_lpcstr inType,
+	sjme_attrInNotNull sjme_charSeq inName,
+	sjme_attrInNotNull sjme_charSeq inType,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV)
 {
@@ -1593,7 +1619,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 
 	/* Setup string object. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_task_objectNewN(inThread,
+	if (sjme_error_is(error = sjme_nvm_task_objectNewNU(inThread,
 		sizeof(*result), SJME_NVM_STRUCT_STRING_INSTANCE,
 		SJME_AS_JOBJECTP(&result), "java/lang/String")) ||
 		result == NULL)
