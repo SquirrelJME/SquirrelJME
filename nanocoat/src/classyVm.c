@@ -81,10 +81,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	/* Constructors always bind to self. */
 	/* Along with any private methods. */
 	/* Static as well. */
-	if (sjme_charSeq_equalsUtfR(thisInfo->name->seq,
-			"<init>") ||
-		sjme_charSeq_equalsUtfR(thisInfo->name->seq,
-			"<clinit>") ||
+	if (sjme_charSeq_equalsUtfR(thisInfo->name->seq, "<init>") ||
+		sjme_charSeq_equalsUtfR(thisInfo->name->seq, "<clinit>") ||
 		thisInfo->flags.member.access.private ||
 		thisInfo->flags.member.isStatic)
 	{
@@ -418,7 +416,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	/* The super class is always Object. */
 	superName = NULL;
 	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
-		strings, &superName, "java/lang/Object", -1)) || superName == NULL)
+		strings, &superName, "java/lang/Object", 0, -1)) || superName == NULL)
 		return sjme_error_outOfMemory(allocPool, 0);
 
 	/* Allocate synthetic result. */
@@ -535,20 +533,18 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 {
 	sjme_errorCode error;
 	sjme_jclass result;
-	sjme_lpstr dupName;
+	sjme_charSeq dupName;
 	sjme_jint autoLoad;
 	sjme_alloc_pool allocPool;
 	sjme_nvm_isClasses isClasses;
+	sjme_jchar firstChar;
 	
 	if (inLoader == NULL || outClass == NULL || outSlot == NULL ||
 		contextThread == NULL || binaryName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#if 0
 	/* Cannot be blank. */
-	if (strlen(binaryName) <= 0)
+	if (binaryName->length <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* We allocate within this pool. */
@@ -556,7 +552,7 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 
 	/* Duplicate binary name. */
 	dupName = NULL;
-	if (sjme_error_is(error = sjme_alloc_strdup(allocPool, &dupName,
+	if (sjme_error_is(error = sjme_charSeq_dup(allocPool, &dupName,
 		binaryName)) || dupName == NULL)
 		goto fail_dupName;
 	
@@ -584,21 +580,24 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	/* Unless this is a specific binary name, it is never loaded. */
 	/* Arrays and primitive types are always considered to be loaded. */
 	autoLoad = SJME_VM_CLASS_INIT_LOAD_NEVER;
-	if (binaryName[0] == '[' || (strlen(binaryName) == 1 &&
-		(binaryName[0] == 'Z' || binaryName[0] == 'B' ||
-		binaryName[0] == 'S' || binaryName[0] == 'C' ||
-		binaryName[0] == 'I' || binaryName[0] == 'J' ||
-		binaryName[0] == 'F' || binaryName[0] == 'D' ||
-		binaryName[0] == 'V')))
+	firstChar = sjme_charSeq_charAtR(dupName, 0);
+	if (firstChar == '[' || (dupName->length == 1 &&
+		(firstChar == 'Z' || firstChar == 'B' ||
+		firstChar == 'S' || firstChar == 'C' ||
+		firstChar == 'I' || firstChar == 'J' ||
+		firstChar == 'F' || firstChar == 'D' ||
+		firstChar == 'V')))
 		autoLoad = SJME_VM_CLASS_INIT_LOAD_DONE;
+
+	/* Pre-calculate hash. */
+	if (sjme_error_is(error = sjme_charSeq_hash(dupName, &result->binaryHash)))
+		goto fail_hash;
 	
 	/* Initialize base fields. */
 	result->binaryName = dupName;
-	result->binaryHash = sjme_string_hash(dupName);
 	sjme_atomic_sjme_jint_set(&result->error, SJME_ERROR_NONE);
 	sjme_atomic_sjme_jint_set(&result->isLoaded, 0);
 	sjme_atomic_sjme_jint_set(&result->isInitialized, autoLoad);
-#endif
 	
 	/* Store into the output slot immediately for recursive loading. */
 	*outSlot = result;
@@ -606,7 +605,8 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	/* Success! */
 	*outClass = result;
 	return SJME_ERROR_NONE;
-	
+
+fail_hash:
 fail_countUp:
 fail_allocIsClasses:
 	if (result != NULL)
@@ -1025,9 +1025,12 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* If any array, no wrapping needs to be done. */
-	if (sjme_charSeq_charAtIs(className, 0, '['))
+	error = sjme_charSeq_charAtIs(className, 0, '[');
+	if (!sjme_error_is(error))
 		return sjme_nvm_vmClass_loaderLoadF(inLoader, outClass,
 			contextThread, className, doInit);
+	else if (error != SJME_ERROR_NOT_MATCHED)
+		return sjme_error_default(error);
 
 	/* Otherwise, wrap it in an object specifier. */
 	memset(&wrapSeq, 0, sizeof(wrapSeq));
@@ -1205,8 +1208,22 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadFU(
 	sjme_attrInNotNull sjme_lpcstr fieldName,
 	sjme_attrInValue sjme_jboolean doInit)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_charSeqStatic seq;
+	
+	if (inLoader == NULL || outClass == NULL || contextThread == NULL ||
+		fieldName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Setup sequence. */
+	memset(&seq, 0, sizeof(seq));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&seq,
+		fieldName, 0, -1)))
+		return sjme_error_default(error);
+
+	/* Forward. */
+	return sjme_nvm_vmClass_loaderLoadF(inLoader, outClass,
+		contextThread, &seq, doInit);
 }
 
 sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(

@@ -254,11 +254,25 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_stringPool_string* outString,
 	sjme_attrInNotNull sjme_lpcstr inUtf,
+	sjme_attrInNegativeOnePositive sjme_jint offset,
 	sjme_attrInNegativeOnePositive sjme_jint inUtfLen
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_charSeqStatic seq;
+	
+	if (inStringPool == NULL || outString == NULL || inUtf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Setup sequence. */
+	memset(&seq, 0, sizeof(seq));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&seq,
+		inUtf, offset, inUtfLen)))
+		return sjme_error_default(error);
+
+	/* Forward call. */
+	return sjme_nvm_stringPool_locateSeq(inStringPool, outString,
+		&seq, 0);
 }
 
 sjme_errorCode sjme_nvm_stringPool_new(

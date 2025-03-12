@@ -151,6 +151,7 @@ sjme_errorCode sjme_nvm_stringPool_locateStreamR(
  * @param inStringPool The string pool.
  * @param outString The resultant pooled string.
  * @param inUtf The string to locate in the pool.
+ * @param offset The offset within the string.
  * @param inUtfLen The length of the string, if @c -1 then this will be
  * the same as @c strlen(inUtf) . 
  * @return On any resultant error, if any.
@@ -160,6 +161,7 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_stringPool_string* outString,
 	sjme_attrInNotNull sjme_lpcstr inUtf,
+	sjme_attrInNegativeOnePositive sjme_jint offset,
 	sjme_attrInNegativeOnePositive sjme_jint inUtfLen
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
@@ -169,15 +171,16 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
  * @param inStringPool The string pool.
  * @param outString The resultant pooled string.
  * @param inUtf The string to locate in the pool.
+ * @param offset The offset within the string.
  * @param inUtfLen The length of the string, if @c -1 then this will be
  * the same as @c strlen(inUtf) . 
  * @return On any resultant error, if any.
  * @since 2024/09/14
  */
 #define sjme_nvm_stringPool_locateUtf(inStringPool, outString, inUtf, \
-	inUtfLen) \
+	offset, inUtfLen) \
 	(sjme_nvm_stringPool_locateUtfR((inStringPool), (outString), \
-	(inUtf), (inUtfLen) \
+	(inUtf), (offset), (inUtfLen) \
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**

@@ -844,6 +844,7 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 						return sjme_error_vmError(NULL, 
 							SJME_ERROR_INVALID_METHOD_TYPE);
 					returnDid = SJME_JNI_TRUE;
+					
 				}
 
 				/* Keep going until ending `;`. */
