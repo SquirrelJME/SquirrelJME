@@ -221,8 +221,9 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("Binding %s %s%s...",
-			inClass->binaryName, &methodInfo->name->chars[0],
-			&methodInfo->type->chars[0]);
+			inClass->binaryName,
+			sjme_charSeq_tempUtf(methodInfo->name->seq),
+			sjme_charSeq_tempUtf(methodInfo->type->seq));
 #endif
 		
 		/* Perform the binding. */
@@ -461,14 +462,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 			SJME_ERROR_INVALID_CLASS_LOADER);
 	
 	/* Determine the file name of the class. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#if 0
 	memset(fileName, 0, sizeof(fileName));
 	snprintf(fileName, SJME_VM_CLASS_NAME_LIMIT - 1,
-		"%.*s.class", (int)(strlen(&inClass->binaryName[1]) - 1),
-		&inClass->binaryName[1]);
-#endif
+		"%s", sjme_charSeq_tempUtf(inClass->binaryName));
+	memmove(&fileName[0], &fileName[1],
+		sizeof(*fileName) * (SJME_VM_CLASS_NAME_LIMIT - 2));
+	if (strlen(fileName) > 0)
+		fileName[strlen(fileName) - 1] = '\0';
+	strncat(fileName, ".class", SJME_VM_CLASS_NAME_LIMIT - 1);
 	
 	/* Find the class within the classpath. */
 	info = NULL;
@@ -672,7 +673,8 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	
 	/* Debug. */
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
-	sjme_message("Initializing class: %s", inClass->binaryName);
+	sjme_message("Initializing class: %s",
+		sjme_charSeq_tempUtf(inClass->binaryName));
 #endif
 	
 	/* The class info should now be valid. */
@@ -742,13 +744,13 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		}
 	}
 	
-	/* Initialize super class now. */
+	/* Initialize super class now, recursive call. */
 	if (superClass != NULL)
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
 			superClass, contextThread)))
 			goto fail_initSuper;
 	
-	/* Then any interfaces. */
+	/* Then any interfaces, recursive call. */
 	if (interfaces != NULL)
 		for (i = 0, n = interfaces->length; i < n; i++)
 			if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
@@ -891,7 +893,8 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 		goto skip_doubleCalled;
 
 	/* Array type? */
-	if (sjme_charSeq_charAtIs(inClass->binaryName, 0, '['))
+	if (SJME_ERROR_NONE ==
+		sjme_charSeq_charAtIs(inClass->binaryName, 0, '['))
 	{
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitArray(inClass,
 			contextThread, classLoader)))
@@ -899,7 +902,8 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	}
 
 	/* Object type? */
-	else if (sjme_charSeq_charAtIs(inClass->binaryName, 0, 'L'))
+	else if (SJME_ERROR_NONE ==
+		sjme_charSeq_charAtIs(inClass->binaryName, 0, 'L'))
 	{
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitStandard(inClass,
 			contextThread, classLoader)))
@@ -1018,6 +1022,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 	sjme_attrInValue sjme_jboolean doInit)
 {
 	sjme_errorCode error;
+	sjme_lpstr wrapName;
 	sjme_charSeqStatic wrapSeq;
 	
 	if (inLoader == NULL || outClass == NULL || contextThread == NULL ||
@@ -1032,10 +1037,21 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 	else if (error != SJME_ERROR_NOT_MATCHED)
 		return sjme_error_default(error);
 
-	/* Otherwise, wrap it in an object specifier. */
+	/* Allocate wrapped name. */
+	wrapName = sjme_alloca(sizeof(*wrapName) * SJME_VM_CLASS_NAME_LIMIT);
+	if (wrapName == NULL)
+		return sjme_error_outOfMemory(NULL, SJME_VM_CLASS_NAME_LIMIT);
+	memset(wrapName, 0, sizeof(*wrapName) * SJME_VM_CLASS_NAME_LIMIT);
+
+	/* Wrap it in an object specifier. */
+	snprintf(wrapName, SJME_VM_CLASS_NAME_LIMIT - 1,
+		"L%s;", sjme_charSeq_tempUtf(className));
+	wrapName[SJME_VM_CLASS_NAME_LIMIT - 1] = '\0';
+
+	/* Setup sequence. */
 	memset(&wrapSeq, 0, sizeof(wrapSeq));
-	if (sjme_error_is(error = sjme_charSeq_newUtfStaticS(&wrapSeq,
-		"L", className, ";")))
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&wrapSeq,
+		wrapName, 0, -1)))
 		return sjme_error_default(error);
 
 	/* Forward. */

@@ -900,8 +900,20 @@ sjme_errorCode sjme_nvm_task_objectNewNU(
 	sjme_attrOutNotNull sjme_jobject* outObject,
 	sjme_attrInNotNull sjme_lpcstr inClass)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_charSeqStatic tempSeq;
+
+	if (contextThread == NULL || outObject == NULL || inClass == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Setup wrapped sequence. */
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&tempSeq,
+		inClass, 0, -1)))
+		return sjme_error_default(error);
+
+	/* Forward. */
+	return sjme_nvm_task_objectNewN(contextThread, allocSize, inType,
+		outObject, &tempSeq);
 }
 
 sjme_errorCode sjme_nvm_task_stackTrace(
@@ -1628,36 +1640,12 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	/* Set string properties. */
 	result->hashCode = hash;
 	result->length = length;
-
-	/* Reference string pool directly. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#if 0
-	if (sjme_nvm_isAR(inSeq->frontEnd.wrapper,
-		SJME_NVM_STRUCT_STRING_POOL_STRING))
-	{
-		/* Force as intern, since there is no other way to treat this. */
-		isIntern = SJME_JNI_TRUE;
-		
-		/* Count up. */
-		if (sjme_error_is(error = sjme_alloc_weakRef(inSeq->frontEnd.wrapper,
-			NULL)))
-			goto fail_countPoolString;
-
-		/* Reference. */
-		result->seq = inSeq;
-	}
-
-	/* Otherwise... */
-	else
-	{
-		/* Duplicate the sequence. */
-		if (sjme_error_is(error = sjme_charSeq_dup(
-			inThread->inTask->inState->allocPool,
-			&result->seq, inSeq)) || result->seq == NULL)
-			goto fail_dupSeq;
-	}
-#endif
+	
+	/* Duplicate the sequence. */
+	if (sjme_error_is(error = sjme_charSeq_dup(
+		inThread->inTask->inState->allocPool,
+		&result->seq, inSeq)) || result->seq == NULL)
+		goto fail_dupSeq;
 	
 	/* Final intern setup. */
 	if (isIntern)
@@ -1729,22 +1717,18 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
 	sjme_attrInNotNull sjme_lpcstr inUtf)
 {
 	sjme_errorCode error;
-	sjme_charSeq seq;
+	sjme_charSeqStatic tempSeq;
 	
 	if (inThread == NULL || outString == NULL || inUtf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#if 0
+	
 	/* Setup static sequence. */
-	memset(&seq, 0, sizeof(seq));
-	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&seq,
-		inUtf, NULL)))
+	memset(&tempSeq, 0, sizeof(tempSeq));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&tempSeq,
+		inUtf, 0, -1)))
 		return sjme_error_default(error);
 
 	/* Forward implementation. */
 	return sjme_nvm_task_threadStringValueOfCS(inThread,
-		outString, isIntern, &seq);
-#endif
+		outString, isIntern, &tempSeq);
 }

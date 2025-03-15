@@ -58,7 +58,7 @@ typedef enum sjme_charSeq_type
 	/** Wide chars only. */
 	SJME_CHAR_SEQ_TYPE_WIDE,
 
-	/** Java Modified-UTF with length, offset by two bytes. */
+	/** Java Modified-UTF. */
 	SJME_CHAR_SEQ_TYPE_UTF,
 
 	/** Static modified-UTF string. */
@@ -347,23 +347,6 @@ sjme_errorCode sjme_charSeq_newUtfStatic(
 	sjme_attrInNotNull sjme_lpcstr utfString,
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInNegativeOnePositive sjme_jint limitLen);
-
-/**
- * Initializes a new static character sequence which is a character sequence
- * surrounded by two static UTF strings.
- * 
- * @param outSeq The resultant sequence.
- * @param prefix The UTF string prefix.
- * @param middle The middle character sequence.
- * @param suffix The UTF string suffix.
- * @return Any resultant error, if any.
- * @since 2025/03/09
- */
-sjme_errorCode sjme_charSeq_newUtfStaticS(
-	sjme_attrOutNotNull sjme_charSeqStatic* outSeq,
-	sjme_attrInNotNull sjme_lpcstr prefix,
-	sjme_attrInNotNull sjme_charSeq middle,
-	sjme_attrInNotNull sjme_lpcstr suffix);
 
 /**
  * Allocates a new wide character sequence.

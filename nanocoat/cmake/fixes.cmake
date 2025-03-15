@@ -238,7 +238,7 @@ squirreljme_try_compile("threads.h"
 	SJME_CONFIG_HAS_NO_C11_THREADS)
 
 # Can use thread local?
-squirreljme_try_compile("sjme_attrThreadLocal"
+squirreljme_try_compile("sjme_threadLocal"
 	SQUIRRELJME_C11_THREADS_TRY_THREAD_LOCAL
 	"tryThreadLocal"
 	SJME_CONFIG_HAS_NO_THREAD_LOCAL)

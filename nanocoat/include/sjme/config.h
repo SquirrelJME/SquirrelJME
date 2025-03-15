@@ -827,19 +827,19 @@ extern "C" {
 #if !defined(SJME_CONFIG_HAS_NO_THREAD_LOCAL)
 	#if defined(SJME_CONFIG_HAS_MSVC)
 		/** Thread local storage. */
-		#define sjme_attrThreadLocal(type, name) \
+		#define sjme_threadLocal(type, name) \
 			static sjme_align32 type __declspec(thread) name;
 	#elif defined(SJME_CONFIG_HAS_GCC) || \
 		defined(SJME_CONFIG_HAS_CLANG)
 		/** Thread local storage. */
-		#define sjme_attrThreadLocal(type, name) \
+		#define sjme_threadLocal(type, name) \
 			static sjme_align32 __thread type name
 	#endif
 #endif
 
-#if !defined(sjme_attrThreadLocal)
+#if !defined(sjme_threadLocal)
 	/** Thread local storage. */
-	#define sjme_attrThreadLocal(type, name) \
+	#define sjme_threadLocal(type, name) \
 		static sjme_align32 type name
 #endif
 

@@ -451,16 +451,6 @@ sjme_errorCode sjme_charSeq_newUtfStatic(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_charSeq_newUtfStaticS(
-	sjme_attrOutNotNull sjme_charSeqStatic* outSeq,
-	sjme_attrInNotNull sjme_lpcstr prefix,
-	sjme_attrInNotNull sjme_charSeq middle,
-	sjme_attrInNotNull sjme_lpcstr suffix)
-{
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
 sjme_errorCode sjme_charSeq_newWide(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_charSeq* outSeq,
@@ -531,6 +521,43 @@ sjme_jboolean sjme_charSeq_startsWithUtfR(
 sjme_lpcstr sjme_charSeq_tempUtf(
 	sjme_attrInNotNull sjme_charSeq inSeq)
 {
-	sjme_todo("Impl?");
-	return (sjme_lpcstr)sjme_error_notImplemented(0);
+#define BUF_SIZE 512
+	sjme_threadLocal(sjme_cchar, buf[BUF_SIZE]);
+	sjme_jint i, o, n;
+	sjme_jchar c;
+	
+	if (inSeq == NULL)
+		return "null";
+
+	/* Is this already in the format of a standard string? */
+	if (inSeq->type == SJME_CHAR_SEQ_TYPE_UTF)
+		return (sjme_lpcstr)&inSeq->data.bytes[0];
+	else if (inSeq->type == SJME_CHAR_SEQ_TYPE_UTF_STATIC)
+		return inSeq->data.staticUtf;
+	
+	/* Translate all characters. */
+	memset(buf, 0, sizeof(buf));
+	for (i = 0, o = 0, n = inSeq->length; i < n; i++)
+	{
+		/* Get character here. */
+		c = sjme_charSeq_charAtR(inSeq, i);
+
+		/* Direct map. */
+		if (c <= 127)
+		{
+			if (o < BUF_SIZE - 1)
+				buf[o++] = c;
+		}
+		
+		/* Need to encode. */
+		else
+		{
+			sjme_todo("Impl?");
+		}
+	}
+	n = 0;
+
+	/* Use pointer to characters. */
+	return &buf[0];
+#undef BUF_SIZE
 }

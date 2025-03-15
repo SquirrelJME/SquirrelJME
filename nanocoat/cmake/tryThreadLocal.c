@@ -11,7 +11,7 @@
 
 int main(int argc, char** argv)
 {
-	sjme_attrThreadLocal(int, a);
+	sjme_threadLocal(int, a);
 	
 	a = 1234;
 	return 0;

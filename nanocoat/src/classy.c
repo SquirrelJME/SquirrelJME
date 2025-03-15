@@ -1088,11 +1088,13 @@ sjme_errorCode sjme_nvm_class_parse(
 	/* Locate the last slash character in the binary name. */
 	lastSlash = result->name->seq->length - 1;
 	while (lastSlash > 0)
+	{
 		if (SJME_ERROR_NONE == sjme_charSeq_charAtIs(result->name->seq,
 			lastSlash, '/'))
 			break;
-		else
-			lastSlash--;
+		
+		lastSlash--;
+	}
 	
 	/* Locate string for package name. */
 	result->inPackage = NULL;
