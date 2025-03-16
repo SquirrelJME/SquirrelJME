@@ -64,7 +64,6 @@ sjme_errorCode sjme_scritchui_cocoa_viewSetArea(
 		inViewArea == NULL || inViewPage == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-#if 0
 	/* Scroll panel. */
 	if (inComponent->common.type == SJME_SCRITCHUI_TYPE_SCROLL_PANEL)
 	{
@@ -79,7 +78,7 @@ sjme_errorCode sjme_scritchui_cocoa_viewSetArea(
 			0, 0, &areaW, &areaH);
 
 		/* Set new clip. */
-		[cocoaScroll displayRect:NSMakeRect(0, 0, areaW, areaH)];
+		[cocoaScroll setFrameSize:NSMakeSize(areaW, areaH)];
 		[cocoaScroll setNeedsDisplay:YES];
 	}
 
@@ -89,7 +88,6 @@ sjme_errorCode sjme_scritchui_cocoa_viewSetArea(
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
 	}
-#endif
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

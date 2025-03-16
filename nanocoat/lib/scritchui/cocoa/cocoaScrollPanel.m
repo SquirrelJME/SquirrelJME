@@ -32,7 +32,7 @@ sjme_errorCode sjme_scritchui_cocoa_scrollPanelNew(
 
 	/* Setup new scroll panel. */
 	cocoaScroll = [[SJMEScrollPanel new] initWithFrame:
-		NSMakeRect(0, 0, 10, 10)];
+		NSMakeRect(0, 0, 20, 20)];
 	cocoaClip = cocoaScroll.contentView;
 
 	/* Store it. */
