@@ -648,6 +648,29 @@ typedef sjme_jstringBase* sjme_jstring;
 #define SJME_TYPEOF_IS_POINTER_sjme_jstring SJME_TYPEOF_IS_POINTER_sjme_jobject
 
 /**
+ * Array type.
+ * 
+ * @since 2025/03/16
+ */
+typedef struct sjme_jarrayBase sjme_jarrayBase;
+
+/**
+ * Array type.
+ * 
+ * @since 2025/03/16
+ */
+typedef sjme_jarrayBase* sjme_jarray;
+
+/** Basic @c sjme_jarray type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jarray SJME_TYPEOF_BASIC_sjme_jobject
+
+/** Java @c sjme_jarray type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jarray SJME_TYPEOF_JAVA_sjme_jobject
+
+/** Is a pointer for @c sjme_jarray ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jarray SJME_TYPEOF_IS_POINTER_sjme_jobject
+
+/**
  * Generic value union.
  *
  * @since 2024/01/05

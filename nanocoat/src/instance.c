@@ -26,15 +26,15 @@ sjme_errorCode sjme_nvm_fieldValueSet(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	if (javaType == SJME_JAVA_TYPE_ID_INTEGER)
-		into->values.jints[atIndex] = value->i;
+		into->values.i[atIndex] = value->i;
 	else if (javaType == SJME_JAVA_TYPE_ID_LONG)
-		into->values.jlongs[atIndex] = value->j;
+		into->values.j[atIndex] = value->j;
 	else if (javaType == SJME_JAVA_TYPE_ID_FLOAT)
-		into->values.jfloats[atIndex] = value->f;
+		into->values.f[atIndex] = value->f;
 	else if (javaType == SJME_JAVA_TYPE_ID_DOUBLE)
-		into->values.jdoubles[atIndex] = value->d;
+		into->values.d[atIndex] = value->d;
 	else
-		into->values.jobjects[atIndex] = value->l;
+		into->values.l[atIndex] = value->l;
 
 	/* Success! */
 	return SJME_ERROR_NONE;

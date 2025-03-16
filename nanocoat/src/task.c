@@ -136,23 +136,23 @@ static sjme_errorCode sjme_nvm_task_valueCompose(
 	switch (valueType)
 	{
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			inOutValue->value.i = stack->base.jints[stackIndex];
+			inOutValue->value.i = stack->base.i[stackIndex];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_LONG:
-			inOutValue->value.j = stack->base.jlongs[stackIndex];
+			inOutValue->value.j = stack->base.j[stackIndex];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			inOutValue->value.f = stack->base.jfloats[stackIndex];
+			inOutValue->value.f = stack->base.f[stackIndex];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			inOutValue->value.d = stack->base.jdoubles[stackIndex];
+			inOutValue->value.d = stack->base.d[stackIndex];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
-			inOutValue->value.l = stack->base.jobjects[stackIndex];
+			inOutValue->value.l = stack->base.l[stackIndex];
 			break;
 			
 		default:
@@ -659,23 +659,23 @@ sjme_errorCode sjme_nvm_task_frameTreadAddr(
 	switch (typeId)
 	{
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			(*outAddr) = &perType->base.jints[typeIndex];
+			(*outAddr) = &perType->base.i[typeIndex];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_LONG:
-			(*outAddr) = &perType->base.jlongs[typeIndex];
+			(*outAddr) = &perType->base.j[typeIndex];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			(*outAddr) = &perType->base.jfloats[typeIndex];
+			(*outAddr) = &perType->base.f[typeIndex];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			(*outAddr) = &perType->base.jdoubles[typeIndex];
+			(*outAddr) = &perType->base.d[typeIndex];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
-			(*outAddr) = &perType->base.jobjects[typeIndex];
+			(*outAddr) = &perType->base.l[typeIndex];
 			break;
 			
 		default:
@@ -714,43 +714,43 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	switch (typeId)
 	{
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			outValue->value.i = perType->base.jints[typeIndex];
+			outValue->value.i = perType->base.i[typeIndex];
 		
 			if (eraseOld)
-				perType->base.jints[typeIndex] = 0;
+				perType->base.i[typeIndex] = 0;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_LONG:
-			outValue->value.j = perType->base.jlongs[typeIndex];
+			outValue->value.j = perType->base.j[typeIndex];
 		
 			if (eraseOld)
-				memset(&perType->base.jlongs[typeIndex], 0,
+				memset(&perType->base.j[typeIndex], 0,
 					sizeof(sjme_jlong));
 			break;
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			outValue->value.f = perType->base.jfloats[typeIndex];
+			outValue->value.f = perType->base.f[typeIndex];
 		
 			if (eraseOld)
-				memset(&perType->base.jfloats[typeIndex], 0,
+				memset(&perType->base.f[typeIndex], 0,
 					sizeof(sjme_jfloat));
 			break;
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			outValue->value.d = perType->base.jdoubles[typeIndex];
+			outValue->value.d = perType->base.d[typeIndex];
 		
 			if (eraseOld)
-				memset(&perType->base.jdoubles[typeIndex], 0,
+				memset(&perType->base.d[typeIndex], 0,
 					sizeof(sjme_jdouble));
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
 			/* Load into temporary as we may be erasing the value here. */
-			tempObject = perType->base.jobjects[typeIndex];
+			tempObject = perType->base.l[typeIndex];
 
 			/* Is the value in the tread being cleared? */
 			if (eraseOld)
-				perType->base.jobjects[typeIndex] = NULL;
+				perType->base.l[typeIndex] = NULL;
 
 			/* Otherwise, we technically have a copy so count up. */
 			else if (tempObject != NULL)
@@ -795,30 +795,30 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	switch (inValue->type)
 	{
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			perType->base.jints[typeIndex] = inValue->value.i;
+			perType->base.i[typeIndex] = inValue->value.i;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_LONG:
-			perType->base.jlongs[typeIndex] = inValue->value.j;
+			perType->base.j[typeIndex] = inValue->value.j;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			perType->base.jfloats[typeIndex] = inValue->value.f;
+			perType->base.f[typeIndex] = inValue->value.f;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			perType->base.jdoubles[typeIndex] = inValue->value.d;
+			perType->base.d[typeIndex] = inValue->value.d;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
 			/* If there is an old value here, count it down. */
 			if (sjme_error_is(error = sjme_nvm_instance_countDown(
-				&perType->base.jobjects[typeIndex],
+				&perType->base.l[typeIndex],
 				inValue->value.l)))
 				return sjme_error_vmError(inFrame, error);
 
 			/* Set. */
-			perType->base.jobjects[typeIndex] = inValue->value.l;
+			perType->base.l[typeIndex] = inValue->value.l;
 			break;
 			
 		default:

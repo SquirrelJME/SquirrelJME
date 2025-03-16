@@ -314,16 +314,16 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
 			if (fieldInfo->constVal.type == typeId)
 			{
 				if (typeId == SJME_JAVA_TYPE_ID_LONG)
-					fieldValues->values.jlongs[i] =
+					fieldValues->values.j[i] =
 						fieldInfo->constVal.value.java.j;
 				else if (typeId == SJME_JAVA_TYPE_ID_FLOAT)
-					fieldValues->values.jfloats[i] =
+					fieldValues->values.f[i] =
 						fieldInfo->constVal.value.java.f;
 				else if (typeId == SJME_JAVA_TYPE_ID_DOUBLE)
-					fieldValues->values.jdoubles[i] =
+					fieldValues->values.d[i] =
 						fieldInfo->constVal.value.java.d;
 				else
-					fieldValues->values.jints[i] =
+					fieldValues->values.i[i] =
 						fieldInfo->constVal.value.java.i;
 			}
 		}

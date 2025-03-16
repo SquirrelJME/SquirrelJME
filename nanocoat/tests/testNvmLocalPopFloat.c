@@ -80,7 +80,7 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopFloat)
 	/* Setup integer values. */
 	intsTread = frame->treads[SJME_JAVA_TYPE_ID_FLOAT];
 	stack = frame->stack;
-	intsTread->values.jfloats[1].value = 0x12345678;
+	intsTread->values.f[1].value = 0x12345678;
 	intsTread->count = intsTread->stackBaseIndex + 1;
 	stack->count = 1;
 	stack->order[0] = SJME_JAVA_TYPE_ID_FLOAT;
@@ -95,11 +95,11 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopFloat)
 		"Items in stack not lower?");
 	
 	/* Check that the value was moved over. */
-	sjme_unit_equalI(test, 0x12345678, intsTread->values.jfloats[0].value,
+	sjme_unit_equalI(test, 0x12345678, intsTread->values.f[0].value,
 		"Popped stack into local was not the correct value.");
 		
 	/* And the stack value was cleared. */
-	sjme_unit_equalI(test, 0, intsTread->values.jfloats[1].value,
+	sjme_unit_equalI(test, 0, intsTread->values.f[1].value,
 		"Stack value did not get cleared.");
 	
 	/* Success! */

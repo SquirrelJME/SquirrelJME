@@ -51,19 +51,19 @@ struct sjme_jobjectBase
 typedef union sjme_nvm_rawFieldValues
 {
 	/** Integer values. */
-	sjme_jint jints[sjme_flexibleArrayCountUnion];
+	sjme_jint i[sjme_flexibleArrayCountUnion];
 		
 	/** Long values. */
-	sjme_jlong jlongs[sjme_flexibleArrayCountUnion];
+	sjme_jlong j[sjme_flexibleArrayCountUnion];
 		
 	/** Float values. */
-	sjme_jfloat jfloats[sjme_flexibleArrayCountUnion];
+	sjme_jfloat f[sjme_flexibleArrayCountUnion];
 		
 	/** Double values. */
-	sjme_jdouble jdoubles[sjme_flexibleArrayCountUnion];
+	sjme_jdouble d[sjme_flexibleArrayCountUnion];
 		
 	/** Object reference values. */
-	sjme_jobject jobjects[sjme_flexibleArrayCountUnion];
+	sjme_jobject l[sjme_flexibleArrayCountUnion];
 } sjme_nvm_rawFieldValues;
 
 /**
@@ -176,6 +176,21 @@ struct sjme_jstringBase
 
 	/** The sequence of characters which make up the string. */
 	sjme_charSeq seq;
+};
+
+struct sjme_jarrayBase
+{
+	/** Base object. */
+	sjme_jobjectBase object;
+
+	/** The array type. */
+	sjme_javaTypeId type;
+
+	/** The length of the array. */
+	sjme_jint length;
+
+	/** The elements in the array. */
+	sjme_nvm_rawFieldValues elements;
 };
 
 /**
