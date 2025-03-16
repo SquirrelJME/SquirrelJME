@@ -13,6 +13,8 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 
 /**
  * Input event handler for canvases.
@@ -49,6 +51,11 @@ class __ExecCanvasInput__
 		if (canvas == null)
 			return;
 		
+		// Ignore canvases which are not shown
+		DisplayState display = canvas.__state().currentDisplay();
+		if (display == null)
+			return;
+		
 		KeyListener keyDefault = canvas.__defaultKeyListener();
 		KeyListener keyCustom = canvas._keyListener;
 		
@@ -60,6 +67,7 @@ class __ExecCanvasInput__
 				__i, __j, __k, __l);
 		
 		// Depends on the actual event that occurred
+		DisplayScale scale =display.display()._scale;
 		switch (__type)
 		{
 			case ScritchInputMethodType.KEY_PRESSED:
@@ -83,19 +91,25 @@ class __ExecCanvasInput__
 			case ScritchInputMethodType.MOUSE_MOTION:
 				// Only care for the first mouse button
 				if ((__a & 1) != 0)
-					canvas.pointerDragged(__c, __d);
+					canvas.pointerDragged(
+						scale.textureX(__c),
+						scale.textureY(__d));
 				break;
 				
 			case ScritchInputMethodType.MOUSE_BUTTON_PRESSED:
 				// Only care for the first mouse button
 				if (__e == 1)
-					canvas.pointerPressed(__c, __d);
+					canvas.pointerPressed(
+						scale.textureX(__c),
+						scale.textureY(__d));
 				break;
 				
 			case ScritchInputMethodType.MOUSE_BUTTON_RELEASED:
 				// Only care for the first mouse button
 				if (__e == 1)
-					canvas.pointerReleased(__c, __d);
+					canvas.pointerReleased(
+						scale.textureX(__c),
+						scale.textureY(__d));
 				break;
 		}
 	}

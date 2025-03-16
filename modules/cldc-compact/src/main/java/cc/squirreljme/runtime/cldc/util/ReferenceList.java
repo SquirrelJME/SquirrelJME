@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
@@ -26,10 +27,12 @@ import java.util.RandomAccess;
  * @param <T> The list contents.
  * @since 2022/08/27
  */
+@SquirrelJMEVendorApi
 public abstract class ReferenceList<T>
 	extends AbstractList<T>
 {
 	/** The source list. */
+	@SquirrelJMEVendorApi
 	protected final List<Reference<T>> source;
 	
 	/**
@@ -189,6 +192,7 @@ public abstract class ReferenceList<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/27
 	 */
+	@SquirrelJMEVendorApi
 	public static <T> ReferenceList<T> of(List<Reference<T>> __list)
 		throws NullPointerException
 	{

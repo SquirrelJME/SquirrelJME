@@ -57,6 +57,7 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchValueUpdateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchViewListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -576,6 +577,18 @@ public class ScritchUnifiedWrapper
 	{
 		return this.api.environment().lookAndFeel()
 			.lafFocusBorderStyle(__focused);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/02/09
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public boolean lafHasAlerts()
+	{
+		return this.api.environment().lookAndFeel()
+			.lafHasAlerts();
 	}
 	
 	/**

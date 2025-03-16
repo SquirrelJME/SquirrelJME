@@ -54,8 +54,13 @@ public interface BuiltInEncodingType
 	byte SHIFT_JIS =
 		6;
 	
+	/** IBM437. */
+	@SquirrelJMEVendorApi
+	byte IBM437 =
+		7;
+	
 	/** The number of built-in encodings. */
 	@SquirrelJMEVendorApi
 	byte NUM_BUILTIN_ENCODINGS =
-		7;
+		8;
 }

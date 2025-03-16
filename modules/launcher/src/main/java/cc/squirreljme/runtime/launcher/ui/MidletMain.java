@@ -199,7 +199,7 @@ public class MidletMain
 				this._autoLaunch = null;
 				
 				// Launch it
-				System.err.println("Auto-launching " + autoLaunch + "...");
+				Debugging.debugNote("Auto-launching " + autoLaunch + "...");
 				this.__launch(autoLaunch);
 			}
 		}

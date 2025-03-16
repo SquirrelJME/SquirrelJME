@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.cldc.util;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,6 +28,7 @@ import java.util.List;
  *
  * @since 2021/09/06
  */
+@SquirrelJMEVendorApi
 public final class StreamUtils
 {
 	/**
@@ -47,6 +49,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@SquirrelJMEVendorApi
 	public static byte[] buffer(InputStream __in)
 		throws IOException, NullPointerException
 	{
@@ -62,6 +65,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMEVendorApi
 	public static int bufferSize(InputStream __in)
 		throws IOException, NullPointerException
 	{
@@ -111,6 +115,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/10/14
 	 */
+	@SquirrelJMEVendorApi
 	public static void copy(byte[] __in, OutputStream __out)
 		throws IOException, NullPointerException
 	{
@@ -133,6 +138,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@SquirrelJMEVendorApi
 	public static void copy(InputStream __in, OutputStream __out)
 		throws IOException, NullPointerException
 	{
@@ -154,6 +160,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@SquirrelJMEVendorApi
 	public static void copy(InputStream __in, OutputStream __out,
 		byte[] __tempBuf)
 		throws IOException, NullPointerException
@@ -184,6 +191,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/10/03
 	 */
+	@SquirrelJMEVendorApi
 	public static byte[] readAll(InputStream __in)
 		throws IOException, NullPointerException
 	{
@@ -200,6 +208,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMEVendorApi
 	public static byte[] readAll(int __size, InputStream __in)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
@@ -241,6 +250,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/25
 	 */
+	@SquirrelJMEVendorApi
 	public static List<String> readAllLines(InputStream __in, String __charset)
 		throws IOException, NullPointerException
 	{
@@ -283,6 +293,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMEVendorApi
 	public static int readMostly(InputStream __in, byte[] __b)
 		throws IOException, NullPointerException
 	{
@@ -308,6 +319,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMEVendorApi
 	public static int readMostly(InputStream __in, byte[] __b, int __o,
 		int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException

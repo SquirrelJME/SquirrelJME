@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.general;
 
+import cc.squirreljme.plugin.Responsify;
 import cc.squirreljme.plugin.multivm.AlwaysFalse;
 import cc.squirreljme.plugin.util.FossilExe;
 import cc.squirreljme.plugin.util.PathUtils;
@@ -236,7 +237,7 @@ public class DeveloperNoteTask
 				if (path != null)
 					try
 					{
-						ProcessBuilder builder = new ProcessBuilder(
+						ProcessBuilder builder = Responsify.of(
 							path.toAbsolutePath().toString(), __url);
 						
 						builder.start();

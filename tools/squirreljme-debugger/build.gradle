@@ -23,10 +23,10 @@ dependencies {
 	implementation project(":modules:debug-jdwp")
 	implementation project(":modules:tango-icon-theme")
 	implementation project(":modules:common-vm")
-	implementation project(":modules:json")
+	implementation project(":modules:vendor-api-oracle-json")
 	implementation project(":modules:launcher")
 	
 	// Lombok for simpler getters/setters
-	implementation 'org.projectlombok:lombok:1.18.30'
-	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+	implementation 'org.projectlombok:lombok:1.18.36'
+	annotationProcessor 'org.projectlombok:lombok:1.18.36'
 }

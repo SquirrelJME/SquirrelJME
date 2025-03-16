@@ -13,6 +13,6 @@ dependencies
 {
 	implementation project(":modules:cldc-compact")
 	implementation project(":modules:midp-lcdui")
-	implementation project(":modules:io")
-	implementation project(":modules:collections")
+	implementation project(":modules:vendor-api-squirreljme-io")
+	implementation project(":modules:vendor-api-squirreljme-collections")
 }

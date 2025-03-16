@@ -33,7 +33,7 @@ dependencies {
 	}
 	
 	implementation project(":modules:io-file")
-	implementation project(":modules:json")
+	implementation project(":modules:vendor-api-oracle-json")
 	implementation project(":modules:markdown-writer")
 	implementation project(":modules:tool-classfile")
 }

@@ -73,7 +73,7 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	/* Get component actual size. */
 	cW = 0;
 	cH = 0;
-	if (sjme_error_is(error = inState->api->componentSize(inState,
+	if (sjme_error_is(error = inState->apiInThread->componentSize(inState,
 		inComponent, &cW, &cH)))
 		return sjme_error_default(error);
 	
@@ -219,7 +219,7 @@ static sjme_errorCode sjme_scritchui_fb_list_lightClick(
 	wState->subFocusIndex = atIndex;
 	
 	/* Set new state. */
-	return inState->api->choiceItemSetSelected(inState,
+	return inState->apiInThread->choiceItemSetSelected(inState,
 		inComponent, atIndex, newState);
 }
 
@@ -359,7 +359,7 @@ static sjme_errorCode sjme_scritchui_fb_list_lightSelect(
 		newState = !choiceItem->isSelected;
 		
 	/* Set new state. */
-	return inState->api->choiceItemSetSelected(inState,
+	return inState->apiInThread->choiceItemSetSelected(inState,
 		inComponent, atIndex, newState);
 }
 

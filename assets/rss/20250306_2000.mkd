@@ -1,0 +1,23 @@
+# February Update
+
+Hi! This month was pretty productive! There were a few bug fixes around
+buffers, and `DataInputStream.readUTF()` being completely incorrect... oops!
+One of the major things is the forced serialization of ScritchUI pencil drawing
+operations, which fixes a large number of graphical glitches, freezes, and
+crashes due to changes in how modern hardware works. Other than that, I have
+been progressing rather nicely with NanoCoat which has been very nice.
+
+An example below of what is being output so far, I will be continuing on
+getting more bytecodes executed along with the native shelf support.
+
+```
+DB (src/rom.c:181 in sjme_nvm_rom_resolveClassPathByName()): Found 
+cldc-compact-test.jar for 37.
+DB (src/task.c:979 in sjme_nvm_task_taskNew()): Start Main: net.
+multiphasicapps.tac.MainSingleRunner
+DB (src/task.c:983 in sjme_nvm_task_taskNew()): Start Arg[0]: lang.bytecode.
+imath.TestIXOr
+DB: Starting main thread...
+
+Process finished with exit code -1
+```

@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.exceptions.MLECallErrorCode;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -517,14 +519,25 @@ public abstract class Displayable
 		DisplayScale scale = __parent.display()._scale;
 		
 		// Get the current texture size of the window
-		int w = Math.max(1, scale.textureW());
-		int h = Math.max(1, scale.textureH());
+		int w = Math.max(1, scale.screenX(scale.textureW()));
+		int h = Math.max(1, scale.screenY(scale.textureH()));
 		
-		// Set absolute bounds of this displayable
+		// Set absolute bounds of this displayable, of the Displayable's panel
 		DisplayableState state = this.__state();
-		state.scritchApi().container().containerSetBounds(
-			__parent.scritchWindow(),
-			state.scritchPanel(), 0, 0, w, h);
+		try
+		{
+			Debugging.debugNote("Revalidate D");
+			state.scritchApi().container().containerSetBounds(
+				__parent.scritchWindow(),
+				state.scritchPanel(), 0, 0, w, h);
+		}
+		catch (MLECallError __e)
+		{
+			// Ignore if not a subcomponent as there may be a desync
+			if (__e.distinction == MLECallErrorCode.NOT_SUB_COMPONENT)
+				return;
+			throw __e;
+		}
 	}
 	
 	/**

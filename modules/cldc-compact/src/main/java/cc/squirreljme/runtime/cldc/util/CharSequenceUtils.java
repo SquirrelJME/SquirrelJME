@@ -17,6 +17,7 @@ import java.util.Arrays;
  *
  * @since 2017/11/30
  */
+@SquirrelJMEVendorApi
 public final class CharSequenceUtils
 {
 	/**
@@ -74,6 +75,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/01/21
 	 */
+	@SquirrelJMEVendorApi
 	public static int compareIgnoreCase(CharSequence __a, CharSequence __b)
 		throws NullPointerException
 	{
@@ -116,6 +118,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/01/21
 	 */
+	@SquirrelJMEVendorApi
 	public static boolean endsWith(CharSequence __what,
 		CharSequence __endsWith)
 		throws NullPointerException
@@ -156,6 +159,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/01/21
 	 */
+	@SquirrelJMEVendorApi
 	public static boolean equals(CharSequence __a, CharSequence __b)
 		throws NullPointerException
 	{
@@ -181,6 +185,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
+	@SquirrelJMEVendorApi
 	public static CharSequence[] fieldSplit(char __delim,
 		CharSequence __s)
 		throws NullPointerException
@@ -211,6 +216,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
+	@SquirrelJMEVendorApi
 	public static int firstIndex(char __c, CharSequence __s)
 		throws NullPointerException
 	{
@@ -233,6 +239,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
+	@SquirrelJMEVendorApi
 	public static int firstIndex(char[] __c, CharSequence __s)
 		throws NullPointerException
 	{
@@ -257,6 +264,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
+	@SquirrelJMEVendorApi
 	public static int firstIndex(String __c, CharSequence __s)
 		throws NullPointerException
 	{
@@ -277,6 +285,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
+	@SquirrelJMEVendorApi
 	public static int firstIndexSorted(char[] __c, CharSequence __s)
 		throws NullPointerException
 	{
@@ -306,6 +315,7 @@ public final class CharSequenceUtils
 	 * @return The index of the sequence or {@code -1} if it is not found.
 	 * @since 2019/05/14
 	 */
+	@SquirrelJMEVendorApi
 	public static int indexOf(CharSequence __src, CharSequence __lookFor,
 		int __index)
 	{
@@ -358,6 +368,7 @@ __outer:
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/01/21
 	 */
+	@SquirrelJMEVendorApi
 	public static int indexOf(CharSequence __s, int __c, int __i)
 		throws NullPointerException
 	{
@@ -391,6 +402,7 @@ __outer:
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/29
 	 */
+	@SquirrelJMEVendorApi
 	public static int lastIndexOf(String __s, int __c, int __i)
 		throws NullPointerException
 	{
@@ -425,6 +437,7 @@ __outer:
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/26
 	 */
+	@SquirrelJMEVendorApi
 	public static int[] multipleIndexOf(char __c, CharSequence __s)
 		throws NullPointerException
 	{
@@ -460,6 +473,7 @@ __outer:
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/01/22
 	 */
+	@SquirrelJMEVendorApi
 	public static boolean startsWith(CharSequence __what,
 		CharSequence __startsWith, int __startIndex)
 		throws IndexOutOfBoundsException, NullPointerException

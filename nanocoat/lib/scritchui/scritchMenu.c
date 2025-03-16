@@ -274,7 +274,7 @@ sjme_errorCode sjme_scritchui_core_menuRemoveAll(
 			return SJME_ERROR_ILLEGAL_STATE;
 		
 		/* Remove it. */
-		if (sjme_error_is(error = inState->api->menuRemove(inState,
+		if (sjme_error_is(error = inState->apiInThread->menuRemove(inState,
 			fromMenu, 0)))
 			return sjme_error_default(error);
 	}

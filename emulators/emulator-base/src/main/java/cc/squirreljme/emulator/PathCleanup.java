@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,7 +44,7 @@ public final class PathCleanup
 	public final void run()
 	{
 		// Notice
-		System.err.println("Cleaning up temporary libraries...");
+		Debugging.debugNote("Cleaning up temporary libraries...");
 		
 		// Cleanup
 		for (Path p : this._paths)

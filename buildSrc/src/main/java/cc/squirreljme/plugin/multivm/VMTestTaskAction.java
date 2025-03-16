@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.Responsify;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
@@ -577,8 +578,8 @@ public class VMTestTaskAction
 		try
 		{
 			// Spawn new process that will contain the CPU count
-			Process proc = new ProcessBuilder()
-				.command("cmd", "/C", "WMIC", "CPU", "Get", "/Format:List")
+			Process proc = Responsify.of(
+				"cmd", "/C", "WMIC", "CPU", "Get", "/Format:List")
 				.redirectError(ProcessBuilder.Redirect.INHERIT)
 				.start();
 			

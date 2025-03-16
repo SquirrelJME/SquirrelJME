@@ -8,7 +8,6 @@
 	<copyright>Copyright (C) 2013-2025 Stephanie Gawroriski</copyright>
 	<managingEditor>xer@multiphasicapps.net (Stephanie Gawroriski)</managingEditor>
 	<webMaster>xer@multiphasicapps.net (Stephanie Gawroriski)</webMaster>
-	<pubDate>Sun, 27 Oct 2024 18:20 EDT</pubDate>
 	<ttl>1800</ttl>
 
 	<!-- If the domain ever changes the default. -->
@@ -17,8 +16,26 @@
 	<atom:link href="https://multiphasicapps.net/doc/trunk/feed.rss"
 		rel="self" />
 
-	<!-- Update this accordingly! -->
-	<lastBuildDate>Sun, 29 Dec 2024 18:02 EST</lastBuildDate>
+	<!-- Update these accordingly! -->
+	<pubDate>Thu, 06 Mar 2025 20:00 EST</pubDate>
+	<lastBuildDate>Thu, 06 Mar 2025 20:00 EST</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">2eb7abe1-609d-42fc-a309-8f1540c3ee5d</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250306_2000.mkd</link>
+		<pubDate>Thu, 06 Mar 2025 20:00 EST</pubDate>
+
+		<title>February Update</title>
+		<description>Hi! This month was pretty productive! There were a few bug
+fixes around buffers, and <code>DataInputStream.readUTF()</code> being
+completely incorrect... oops!
+One of the major things is the forced serialization of ScritchUI pencil drawing
+operations, which fixes a large number of graphical glitches, freezes, and
+crashes due to changes in how modern hardware works. Other than that, I have
+been progressing rather nicely with NanoCoat which has been very nice.</description>
+	</item>
+
+	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">2595fd13-e811-41ae-93f4-0fc3645bdd1b</guid>
@@ -32,8 +49,6 @@ been major improvements to SpringCoat performance around strings and DoJa
 application start times have been reduced greatly if you are using standalone.
 On the otherwise for NanoCoat, work continues on code execution!</description>
 	</item>
-
-	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">0c2d113f-10d8-4835-ba27-bc1156927d2f</guid>
@@ -60,7 +75,7 @@ but I also recognize that I need a much-needed break.</description>
 	<item>
 		<guid isPermaLink="false">6c70e869-c158-4aed-a5f3-94f9f565749e</guid>
 		<link>https://squirreljme.cc/doc/trunk/assets/rss/20241028_1200.mkd</link>
-		<pubDate>Sun, 28 Oct 2024 12:00 EDT</pubDate>
+		<pubDate>Mon, 28 Oct 2024 12:00 EDT</pubDate>
 
 		<title>State of SquirrelJME, October 2024</title>
 		<description>Too much to write in a short description,

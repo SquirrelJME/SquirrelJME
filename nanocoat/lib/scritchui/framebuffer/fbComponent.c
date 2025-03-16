@@ -137,7 +137,7 @@ sjme_errorCode sjme_scritchui_fb_componentFocusGrab(
 	wrappedComponent = inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward. */
-	return wrappedState->api->componentFocusGrab(wrappedState, 
+	return wrappedState->apiInThread->componentFocusGrab(wrappedState, 
 		wrappedComponent);
 }
 
@@ -157,7 +157,7 @@ sjme_errorCode sjme_scritchui_fb_componentFocusHas(
 	wrappedComponent = inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward. */
-	return wrappedState->api->componentFocusHas(wrappedState, 
+	return wrappedState->apiInThread->componentFocusHas(wrappedState, 
 		wrappedComponent, outHasFocus);
 }
 

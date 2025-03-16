@@ -251,7 +251,7 @@ public final class EmulatedJarPackageShelf
 				vmLib = new DataContainerLibrary(segPath);
 			
 			// Debug
-			System.err.printf("Registered %s as a %s.%n",
+			Debugging.debugNote("Registered %s as a %s.%n",
 				segPath, vmLib.getClass().getName());
 			
 			// Wrap class library container

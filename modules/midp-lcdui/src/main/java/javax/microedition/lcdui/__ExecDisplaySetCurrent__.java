@@ -113,10 +113,36 @@ class __ExecDisplaySetCurrent__
 			null);
 		
 		// Debug
-		Debugging.debugNote("setCurrent(%p)", this.showNow);
+		Debugging.debugNote("setCurrent(%s (%s))",
+			showNow, showNowState);
+		
+		// What is currently being displayed?
+		DisplayableState current = displayState.current();
+		
+		// Showing an alert?
+		Displayable onExit = this.onExit;
+		if (showNow instanceof Alert)
+		{
+			// If the exit was not specified, then switch to the exit handler
+			if (onExit == null)
+				onExit = current.displayable();
+			
+			// Showing alerts is natively supported?
+			if (scritchApi.environment().lookAndFeel().lafHasAlerts())
+			{
+				// Pop up the alert
+				if (true)
+					Debugging.todo("Pop up alert box");
+				
+				// Switch to the exit handler instead and perform no other
+				// logic at all
+				new __ExecDisplaySetCurrent__(scritchApi, display, onExit,
+					null).run();
+				return;
+			}
+		}
 		
 		// No-op?
-		DisplayableState current = displayState.current();
 		if (current == showNowState)
 			return;
 		
@@ -164,7 +190,8 @@ class __ExecDisplaySetCurrent__
 			// Set the frame's preferred and minimum sizes for the content area
 			DisplayScale scale = display._scale;
 			windowApi.windowContentMinimumSize(window,
-				scale.textureMaxW(), scale.textureMaxH());
+				scale.screenX(scale.textureMaxW()),
+				scale.screenY(scale.textureMaxH()));
 			
 			// Make sure the parent is set
 			showNowState.setParent(displayState);

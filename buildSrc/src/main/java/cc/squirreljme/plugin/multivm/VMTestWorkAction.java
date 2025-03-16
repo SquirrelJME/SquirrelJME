@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.Responsify;
 import cc.squirreljme.plugin.util.GradleLoggerOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -88,7 +89,7 @@ public abstract class VMTestWorkAction
 			long nsStart = System.nanoTime();
 			
 			// Setup output handler
-			ProcessBuilder processBuilder = new ProcessBuilder(
+			ProcessBuilder processBuilder = Responsify.of(
 				parameters.getCommandLine().get().toArray(new String[0]));
 			processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
 			processBuilder.redirectError(ProcessBuilder.Redirect.PIPE);

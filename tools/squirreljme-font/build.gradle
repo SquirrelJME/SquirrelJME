@@ -31,13 +31,13 @@ dependencies {
 	implementation project(":emulators:emulator-base")
 	implementation project(":modules:cldc-compact")
 	implementation project(":tools:c-source-writer")
-	implementation project(":modules:io")
+	implementation project(":modules:vendor-api-squirreljme-io")
 	implementation project(":modules:io-file")
-	implementation project(":modules:zip")
+	implementation project(":modules:vendor-api-squirreljme-zip")
 	
 	// Lombok for simpler getters/setters
-	implementation 'org.projectlombok:lombok:1.18.30'
-	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+	implementation 'org.projectlombok:lombok:1.18.36'
+	annotationProcessor 'org.projectlombok:lombok:1.18.36'
 }
 
 class CompileFontTask extends DefaultTask {

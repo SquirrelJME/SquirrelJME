@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.general.cmake;
 
+import cc.squirreljme.plugin.Responsify;
 import cc.squirreljme.plugin.multivm.VMHelpers;
 import cc.squirreljme.plugin.multivm.VMTestTaskAction;
 import cc.squirreljme.plugin.util.ForwardInputToOutput;
@@ -343,8 +344,7 @@ public final class CMakeUtils
 			args.addAll(Arrays.asList(__args));
 		
 		// Set executable process
-		ProcessBuilder procBuilder = new ProcessBuilder();
-		procBuilder.command(args);
+		ProcessBuilder procBuilder = Responsify.of(args);
 		
 		// Working directory, if specified
 		if (__workDir != null)
