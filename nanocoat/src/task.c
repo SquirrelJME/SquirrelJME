@@ -949,7 +949,7 @@ sjme_errorCode sjme_nvm_task_stackTrace(
 		nowClass = frame->inClass;
 		if (nowClass != lastClass)
 			sjme_messageB(" | IN %s (%s)",
-				nowClass->binaryName, "<UNKNOWN>");
+				sjme_charSeq_tempUtf(nowClass->binaryName), "<UNKNOWN>");
 
 		/* Print method trace. */
 		/*  |- .whatever:(Lboop;)V @0h (:181 INVOKEINTERFACE@15) */
