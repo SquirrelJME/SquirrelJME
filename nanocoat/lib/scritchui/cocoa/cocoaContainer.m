@@ -112,6 +112,9 @@ sjme_errorCode sjme_scritchui_cocoa_containerSetBounds(
 	rect.size.height = abs(height);
 	[cocoaView setFrame:rect];
 
+	/* Update. */
+	[cocoaView setNeedsDisplay:YES];
+
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
