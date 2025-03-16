@@ -31,11 +31,9 @@ sjme_errorCode sjme_scritchui_cocoa_scrollPanelNew(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Setup new scroll panel. */
-	cocoaScroll = [SJMEScrollPanel new];
-
-	/* Need a clip view to cut content with. */
-	cocoaClip = [[NSClipView new]
-		initWithFrame:NSMakeRect(0, 0, 10, 10)];
+	cocoaScroll = [[SJMEScrollPanel new] initWithFrame:
+		NSMakeRect(0, 0, 10, 10)];
+	cocoaClip = cocoaScroll.contentView;
 
 	/* Store it. */
 	inScrollPanel->component.common.handle[SJME_SUI_COCOA_H_NSVIEW] =
@@ -43,6 +41,16 @@ sjme_errorCode sjme_scritchui_cocoa_scrollPanelNew(
 	inScrollPanel->component.common.handle[SJME_SUI_COCOA_H_NSVIEWB] =
 		cocoaClip;
 	cocoaScroll->scritchScroll = inScrollPanel;
+
+	/* Always have a scrollbar. */
+	[cocoaScroll setAutohidesScrollers:NO];
+	[cocoaScroll setHasHorizontalScroller:YES];
+	[cocoaScroll setHasVerticalScroller:YES];
+
+#if 0
+	/* Auto-resize to the container this is in. */
+	[cocoaScroll setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
+#endif
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

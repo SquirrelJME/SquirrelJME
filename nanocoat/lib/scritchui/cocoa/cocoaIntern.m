@@ -271,7 +271,7 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 	topView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
 	height = 0;
 	if (topView != NULL)
-		height = [topView frame].size.height;
+		height = abs((sjme_jint)[topView frame].size.height);
 
 	/* Set the position of each component, assuming they are valid. */
 	for (i = 0, n = components->length; i < n; i++)

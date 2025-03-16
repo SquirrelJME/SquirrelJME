@@ -20,7 +20,6 @@ sjme_errorCode sjme_scritchui_cocoa_containerAdd(
 	SJMEWindow* cocoaWindow;
 	SJMEScrollPanel* cocoaScroll;
 	SJMEPanel* cocoaPanel;
-	NSClipView* cocoaClip;
 	NSView* cocoaView;
 
 	if (inState == NULL || inContainer == NULL || inContainerData == NULL ||
@@ -58,14 +57,11 @@ sjme_errorCode sjme_scritchui_cocoa_containerAdd(
 	{
 		/* Recover the scroll panel. */
 		cocoaScroll = inContainer->common.handle[SJME_SUI_COCOA_H_NSVIEW];
-		cocoaClip = inContainer->common.handle[SJME_SUI_COCOA_H_NSVIEWB];
 
-		/* Use this. */
-		[cocoaClip setDocumentView:cocoaView];
-		[cocoaScroll setContentView:cocoaClip];
+		/* Use this as the document. */
+		[cocoaScroll setDocumentView:cocoaView];
 
 		/* Refresh everything. */
-		[cocoaClip setNeedsDisplay:true];
 		[cocoaScroll setNeedsDisplay:true];
 	}
 
@@ -76,7 +72,7 @@ sjme_errorCode sjme_scritchui_cocoa_containerAdd(
 		return sjme_error_notImplemented(inContainer->common.type);
 	}
 
-	/* Update. */
+	/* Refresh. */
 	[cocoaView setNeedsDisplay:true];
 
 	/* Success? */
@@ -105,15 +101,15 @@ sjme_errorCode sjme_scritchui_cocoa_containerSetBounds(
 	/* Set bounds for the view itself, only considers size. */
 	rect.origin.x = 0;
 	rect.origin.y = 0;
-	rect.size.width = width;
-	rect.size.height = height;
+	rect.size.width = abs(width);
+	rect.size.height = abs(height);
 	[cocoaView setBounds:rect];
 
 	/* Then set bounds for the frame. */
 	rect.origin.x = x;
 	rect.origin.y = y;
-	rect.size.width = width;
-	rect.size.height = height;
+	rect.size.width = abs(width);
+	rect.size.height = abs(height);
 	[cocoaView setFrame:rect];
 
 	/* Success? */
@@ -139,9 +135,9 @@ sjme_errorCode sjme_scritchui_cocoa_componentSize(
 	/* Are the frame coordinates in device or PDF space? */
 	base = [cocoaView frame];
 	if (outWidth != NULL)
-		*outWidth = (sjme_jint)base.size.width;
+		*outWidth = abs((sjme_jint)base.size.width);
 	if (outHeight != NULL)
-		*outHeight = (sjme_jint)base.size.height;
+		*outHeight = abs((sjme_jint)base.size.height);
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

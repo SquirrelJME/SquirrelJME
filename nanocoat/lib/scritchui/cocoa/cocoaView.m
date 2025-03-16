@@ -27,13 +27,13 @@ sjme_errorCode sjme_scritchui_cocoa_viewGetView(
 	{
 		/* Obtain rect. */
 		cocoaClip = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEWB];
-		rect = [cocoaClip documentVisibleRect];
+		rect = [cocoaClip documentRect];
 
 		/* Project coordinates. */
 		outViewRect->s.x = rect.origin.x;
 		outViewRect->s.y = rect.origin.y;
-		outViewRect->d.width = rect.size.width;
-		outViewRect->d.height = rect.size.height;
+		outViewRect->d.width = abs((sjme_jint)rect.size.width);
+		outViewRect->d.height = abs((sjme_jint)rect.size.height);
 		inState->apiInThread->lafDpiProject(inState, inComponent,
 			SJME_JNI_TRUE,
 			&outViewRect->s.x, &outViewRect->s.y,
@@ -57,33 +57,30 @@ sjme_errorCode sjme_scritchui_cocoa_viewSetArea(
 	sjme_attrInNotNull const sjme_scritchui_dim* inViewArea,
 	sjme_attrInNotNull const sjme_scritchui_dim* inViewPage)
 {
-	NSClipView* cocoaClip;
-	sjme_jint areaW, areaH, pageW, pageH;
+	SJMEScrollPanel* cocoaScroll;
+	sjme_jint areaW, areaH;
 
 	if (inState == NULL || inComponent == NULL ||
 		inViewArea == NULL || inViewPage == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+#if 0
 	/* Scroll panel. */
 	if (inComponent->common.type == SJME_SCRITCHUI_TYPE_SCROLL_PANEL)
 	{
 		/* Obtain rect. */
-		cocoaClip = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEWB];
+		cocoaScroll = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
 
 		/* Project coordinates. */
 		areaW = inViewArea->width;
 		areaH = inViewArea->height;
-		pageW = inViewPage->width;
-		pageH = inViewPage->height;
 		inState->apiInThread->lafDpiProject(inState, inComponent,
 			SJME_JNI_FALSE,
 			0, 0, &areaW, &areaH);
-		inState->apiInThread->lafDpiProject(inState, inComponent,
-			SJME_JNI_FALSE,
-			0, 0, &pageW, &pageH);
 
 		/* Set new clip. */
-		[cocoaClip displayRect:NSMakeRect(0, 0, pageW, pageH)];
+		[cocoaScroll displayRect:NSMakeRect(0, 0, areaW, areaH)];
+		[cocoaScroll setNeedsDisplay:YES];
 	}
 
 	/* Not implemented! */
@@ -92,6 +89,7 @@ sjme_errorCode sjme_scritchui_cocoa_viewSetArea(
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
 	}
+#endif
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
