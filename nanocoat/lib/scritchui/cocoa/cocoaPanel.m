@@ -88,7 +88,11 @@
 		inState,
 		&sjme_scritchui_cocoa_pencilFunctions,
 		NULL, NULL,
+#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 0, 0)
+		SJME_GFX_PIXEL_FORMAT_INT_BGR888,
+#else
 		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
+#endif
 		0, 0, w, h, w,
 		defaultFont, &frontEnd)))
 		goto fail_initPencil;
