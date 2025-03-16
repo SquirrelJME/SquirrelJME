@@ -18,6 +18,9 @@ sjme_errorCode sjme_scritchui_cocoa_containerAdd(
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent)
 {
 	SJMEWindow* cocoaWindow;
+	SJMEScrollPanel* cocoaScroll;
+	SJMEPanel* cocoaPanel;
+	NSClipView* cocoaClip;
 	NSView* cocoaView;
 
 	if (inState == NULL || inContainer == NULL || inContainerData == NULL ||
@@ -35,14 +38,46 @@ sjme_errorCode sjme_scritchui_cocoa_containerAdd(
 
 		/* Use this as the view. */
 		[[cocoaWindow contentView] addSubview:cocoaView];
-		[cocoaView setNeedsDisplay:true];
 	}
 
+	/* Adding to regular panel? */
+	else if (inContainer->common.type == SJME_SCRITCHUI_TYPE_PANEL)
+	{
+		/* Recover. */
+		cocoaPanel = inContainer->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+		/* Add it in. */
+		[cocoaPanel addSubview:cocoaView];
+
+		/* Refresh. */
+		[cocoaPanel setNeedsDisplay:true];
+	}
+
+	/* Adding to a scroll panel? */
+	else if (inContainer->common.type == SJME_SCRITCHUI_TYPE_SCROLL_PANEL)
+	{
+		/* Recover the scroll panel. */
+		cocoaScroll = inContainer->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+		cocoaClip = inContainer->common.handle[SJME_SUI_COCOA_H_NSVIEWB];
+
+		/* Use this. */
+		[cocoaClip setDocumentView:cocoaView];
+		[cocoaScroll setContentView:cocoaClip];
+
+		/* Refresh everything. */
+		[cocoaClip setNeedsDisplay:true];
+		[cocoaScroll setNeedsDisplay:true];
+	}
+
+	/* Not implemented! */
 	else
 	{
 		sjme_todo("Impl? %d", inContainer->common.type);
 		return sjme_error_notImplemented(inContainer->common.type);
 	}
+
+	/* Update. */
+	[cocoaView setNeedsDisplay:true];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

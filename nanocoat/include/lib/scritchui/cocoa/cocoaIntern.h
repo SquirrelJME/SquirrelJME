@@ -100,6 +100,18 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
 @end
 
 /**
+ * A panel which allows for scrolling interfaces.
+ */
+@interface SJMEScrollPanel : NSScrollView
+{
+@public
+	/** The scroll panel this is attached to. */
+	sjme_scritchui_uiScrollPanel scritchScroll;
+}
+
+@end
+
+/**
  * SquirrelJME Super Object.
  * 
  * @since 2024/08/16

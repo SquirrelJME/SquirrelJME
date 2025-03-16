@@ -260,6 +260,22 @@ sjme_errorCode sjme_scritchui_cocoa_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
+
+sjme_errorCode sjme_scritchui_cocoa_scrollPanelNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScrollPanel inScrollPanel,
+	sjme_attrInNullable sjme_pointer ignored);
+
+sjme_errorCode sjme_scritchui_cocoa_viewGetView(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_rect* outViewRect);
+
+sjme_errorCode sjme_scritchui_cocoa_viewSetArea(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull const sjme_scritchui_dim* inViewArea,
+	sjme_attrInNotNull const sjme_scritchui_dim* inViewPage);
 	
 sjme_errorCode sjme_scritchui_cocoa_windowContentMinimumSize(
 	sjme_attrInNotNull sjme_scritchui inState,
