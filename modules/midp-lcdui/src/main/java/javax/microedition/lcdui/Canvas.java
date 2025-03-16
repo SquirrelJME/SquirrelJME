@@ -44,8 +44,13 @@ public abstract class Canvas
 {
 	/** Force a buffer to be used? */
 	@SquirrelJMEVendorApi
-	private static final boolean _FORCE_BUFFER =
+	static final boolean _FORCE_BUFFER =
 		true;
+	
+	/** Force a buffer to not be used? */
+	@SquirrelJMEVendorApi
+	static final boolean _FORCE_NO_BUFFER =
+		false;
 	
 	/** The maximum number of times to wait when servicing repaints. */
 	private static final int _REPAINT_STOP =
@@ -906,7 +911,8 @@ public abstract class Canvas
 		DisplayScale scale = __parent.display()._scale;
 		
 		// Setup new image with a raw buffer, if scaling is required
-		if (Canvas._FORCE_BUFFER || scale.requiresBuffer())
+		if (!Canvas._FORCE_NO_BUFFER &&
+			(Canvas._FORCE_BUFFER || scale.requiresBuffer()))
 		{
 			// Get the current texture size of the window
 			int w = Math.max(1, scale.textureW());
@@ -944,7 +950,8 @@ public abstract class Canvas
 		// Is a buffer used for scaling?
 		Image buffer;
 		DisplayScale scale = display.display()._scale;
-		if (Canvas._FORCE_BUFFER || scale.requiresBuffer())
+		if (!Canvas._FORCE_NO_BUFFER &&
+			(Canvas._FORCE_BUFFER || scale.requiresBuffer()))
 		{
 			// Use this buffer
 			buffer = this._buffer;

@@ -209,10 +209,8 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilRawScanPutPure(
 {
 	sjme_scritchui inState;
 	NSView* nsView;
-	NSBitmapImageRep* imageRep;
-
-	NSPoint a, b;
-	NSBezierPath* path;
+	NSGraphicsContext* context;
+	NSImageRep* rawRep;
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -220,22 +218,30 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilRawScanPutPure(
 	/* Recover view and image representation. */
 	inState = g->common.state;
 	nsView = g->frontEnd.wrapper;
-	imageRep = g->frontEnd.data;
-	if (inState == NULL || nsView == NULL || nsView == nil ||
-		imageRep == NULL || imageRep == nil)
+	context = g->frontEnd.data;
+	if (inState == NULL || nsView == NULL || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
-	/* Setup line details, then draw. */
-	path = [NSBezierPath bezierPath];
-	a.x = x;
-	a.y = y;
-	[path moveToPoint:a];
-	b.x = x;
-	b.y = y + srcNumPixels;
-	[path lineToPoint:b];
-	[path setLineWidth:1.0];
-	/*[path setLineDash:1.0:1.0];*/
-	[path stroke];
+	/* Setup image representation. */
+	rawRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:
+		(unsigned char**)&srcRaw
+		pixelsWide:srcNumPixels
+		pixelsHigh:1
+		bitsPerSample:8
+		samplesPerPixel:4
+		hasAlpha:NO
+		isPlanar:NO
+		colorSpaceName:NSDeviceRGBColorSpace
+		bytesPerRow:srcRawLen
+		bitsPerPixel:32];
+	if (rawRep != NULL)
+	{
+		/* Draw pixels. */
+		[rawRep drawAtPoint:NSMakePoint(x, y)];
+
+		/* Cleanup. */
+		[rawRep release];
+	}
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
