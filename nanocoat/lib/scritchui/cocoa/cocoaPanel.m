@@ -179,7 +179,7 @@ fail_project:
 
 - (void)flagsChanged:(NSEvent*)event
 {
-
+	/* TODO: Handle this. */
 }
 
 - (id)initWithFrame:(NSRect)frame
