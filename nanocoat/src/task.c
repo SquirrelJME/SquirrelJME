@@ -17,6 +17,7 @@
 #include "sjme/debug.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/cleanup.h"
+#include "sjme/stdGone.h"
 
 /** The number of tasks to grow by. */
 #define SJME_NVM_TASK_GROW 4
@@ -981,6 +982,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_attrInNotNull const sjme_nvm_task_taskNewConfig* startConfig,
 	sjme_attrOutNullable sjme_nvm_task* outTask)
 {
+	sjme_cchar adjustMain[SJME_NVM_CLASS_NAME_LIMIT];
 	sjme_errorCode error;
 	sjme_list_sjme_nvm_task* tasks;
 	sjme_list_sjme_nvm_thread* threads;
@@ -989,6 +991,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_nvm_thread mainThread;
 	sjme_nvm_vmClass_loader classLoader;
 	sjme_nvm_taskStrings strings;
+	sjme_list_sjme_jstring* argStrings;
 
 	if (inState == NULL || startConfig == NULL || outTask == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1126,13 +1129,43 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	/* The main thread gets flagged as the main thread. */
 	mainThread->isMain = SJME_JNI_TRUE;
 
-	/* Setup strings for main class and arguments. */
+	/* Adjust the main class name, turn periods into slashes. */
+	memset(adjustMain, 0, sizeof(adjustMain));
+	snprintf(adjustMain, SJME_NVM_CLASS_NAME_LIMIT - 1,
+		"%s", startConfig->mainClass);
+	for (i = 0, n = strlen(adjustMain); i < n; i++)
+		if (adjustMain[i] == '.')
+			adjustMain[i] = '/';
+
+	/* Setup string for main class. */
 	result->globals.mainClassName = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
 		mainThread, &result->globals.mainClassName, SJME_JNI_TRUE,
-		startConfig->mainClass)) ||
+		adjustMain)) ||
 		result->globals.mainClassName == NULL)
 		goto fail_mainClassString;
+
+	/* Setup strings for main arguments. */
+	argStrings = NULL;
+	if (startConfig->mainArgs != NULL && startConfig->mainArgs->length > 0)
+	{
+		/* Setup string list. */
+		n = startConfig->mainArgs->length;
+		if (sjme_error_is(error = sjme_list_alloc(inState->allocPool,
+			n, &argStrings, sjme_jstring, 0)) || argStrings == NULL)
+			goto fail_mainArgsStrings;
+
+		/* Setup strings for each argument. */
+		for (i = 0; i < n; i++)
+			if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
+				mainThread, &argStrings->elements[i], SJME_JNI_TRUE,
+				startConfig->mainArgs->elements[i])) ||
+				argStrings->elements[i] == NULL)
+				goto fail_mainArgsString;
+	}
+	
+	/* Set argument strings. */
+	result->globals.mainArgs = argStrings;
 	
 	/* The main thread of any task is always implicitly started. */
 	if (sjme_error_is(error = sjme_nvm_task_threadStart(mainThread)))
@@ -1171,6 +1204,13 @@ fail_allocTasks:
 	return sjme_error_default(error);
 
 	/* Post state lock, when accessing state is no longer needed. */
+fail_mainArgsString:
+fail_mainArgsStrings:
+	if (argStrings != NULL)
+	{
+		sjme_alloc_free(argStrings);
+		argStrings = NULL;
+	}
 fail_mainClassString:
 fail_startMain:
 fail_taskNewThread:

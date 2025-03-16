@@ -17,9 +17,6 @@
 #include "sjme/nvm/task.h"
 #include "sjme/util.h"
 
-/** The class name length limit. */
-#define SJME_VM_CLASS_NAME_LIMIT 256
-
 /** The amount the class list grows by. */
 #define SJME_VM_CLASS_GROW_LEN 32
 
@@ -450,7 +447,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 	sjme_nvm_class_info info;
 	sjme_nvm_rom_library tryLib;
 	sjme_jint i, n;
-	sjme_cchar fileName[SJME_VM_CLASS_NAME_LIMIT];
+	sjme_cchar fileName[SJME_NVM_CLASS_NAME_LIMIT];
 	
 	if (inClass == NULL || contextThread == NULL || classLoader == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -463,13 +460,13 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 	
 	/* Determine the file name of the class. */
 	memset(fileName, 0, sizeof(fileName));
-	snprintf(fileName, SJME_VM_CLASS_NAME_LIMIT - 1,
+	snprintf(fileName, SJME_NVM_CLASS_NAME_LIMIT - 1,
 		"%s", sjme_charSeq_tempUtf(inClass->binaryName));
 	memmove(&fileName[0], &fileName[1],
-		sizeof(*fileName) * (SJME_VM_CLASS_NAME_LIMIT - 2));
+		sizeof(*fileName) * (SJME_NVM_CLASS_NAME_LIMIT - 2));
 	if (strlen(fileName) > 0)
 		fileName[strlen(fileName) - 1] = '\0';
-	strncat(fileName, ".class", SJME_VM_CLASS_NAME_LIMIT - 1);
+	strncat(fileName, ".class", SJME_NVM_CLASS_NAME_LIMIT - 1);
 	
 	/* Find the class within the classpath. */
 	info = NULL;
@@ -1035,18 +1032,22 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 		return sjme_nvm_vmClass_loaderLoadF(inLoader, outClass,
 			contextThread, className, doInit);
 	else if (error != SJME_ERROR_NOT_MATCHED)
-		return sjme_error_default(error);
+		return sjme_error_vmError(contextThread, error);
+
+	/* Check that the name does not contain any invalid characters. */
+	if (sjme_error_is(error = sjme_nvm_class_validBinaryName(className)))
+		return sjme_error_vmError(contextThread, error);
 
 	/* Allocate wrapped name. */
-	wrapName = sjme_alloca(sizeof(*wrapName) * SJME_VM_CLASS_NAME_LIMIT);
+	wrapName = sjme_alloca(sizeof(*wrapName) * SJME_NVM_CLASS_NAME_LIMIT);
 	if (wrapName == NULL)
-		return sjme_error_outOfMemory(NULL, SJME_VM_CLASS_NAME_LIMIT);
-	memset(wrapName, 0, sizeof(*wrapName) * SJME_VM_CLASS_NAME_LIMIT);
+		return sjme_error_outOfMemory(NULL, SJME_NVM_CLASS_NAME_LIMIT);
+	memset(wrapName, 0, sizeof(*wrapName) * SJME_NVM_CLASS_NAME_LIMIT);
 
 	/* Wrap it in an object specifier. */
-	snprintf(wrapName, SJME_VM_CLASS_NAME_LIMIT - 1,
+	snprintf(wrapName, SJME_NVM_CLASS_NAME_LIMIT - 1,
 		"L%s;", sjme_charSeq_tempUtf(className));
-	wrapName[SJME_VM_CLASS_NAME_LIMIT - 1] = '\0';
+	wrapName[SJME_NVM_CLASS_NAME_LIMIT - 1] = '\0';
 
 	/* Setup sequence. */
 	memset(&wrapSeq, 0, sizeof(wrapSeq));
@@ -1456,6 +1457,37 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 	if (!required)
 		return SJME_ERROR_NO_METHOD;
 	return sjme_error_vmError(contextThread, SJME_ERROR_NO_METHOD);
+}
+
+sjme_errorCode sjme_nvm_vmClass_methodIDByNameTypeU(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInValue sjme_jboolean required,
+	sjme_attrInPositive sjme_lpcstr inName,
+	sjme_attrInPositive sjme_lpcstr inType,
+	sjme_attrOutNotNull sjme_jmethodID* outID)
+{
+	sjme_errorCode error;
+	sjme_charSeqStatic wrapName, wrapType;
+	
+	if (inName == NULL || inType == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Wrap sequences. */
+	memset(&wrapName, 0, sizeof(wrapName));
+	memset(&wrapType, 0, sizeof(wrapType));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&wrapName,
+		inName, 0, -1)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&wrapType,
+		inType, 0, -1)))
+		return sjme_error_default(error);
+
+	/* Forward. */
+	return sjme_nvm_vmClass_methodIDByNameType(inClass, contextThread,
+		instanceType, required, &wrapName, &wrapType, outID);
 }
 
 sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(

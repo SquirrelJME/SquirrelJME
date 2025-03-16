@@ -76,12 +76,44 @@ SJME_NVM_MLE_FUNCTION_DECL(model)
 
 SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 {
+	sjme_errorCode error;
 	sjme_nvm_task task;
-	
-	task = inFrame->inThread->inTask;
+	sjme_jclass mainClass;
+	sjme_jmethodID mainMethod;
+	sjme_nvm_frame ignoreFrame;
+	sjme_jvalueTyped mainArgV[1];
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Recover task. */
+	task = inFrame->inThread->inTask;
+	if (task == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Locate the main class. */
+	mainClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(task->classLoader,
+		&mainClass, inFrame->inThread,
+		task->globals.mainClassName->seq, SJME_JNI_TRUE)) ||
+		mainClass == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* Locate the main method. */
+	mainMethod = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameTypeU(
+		mainClass, inFrame->inThread,
+		SJME_NVM_CLASS_MEMBER_STATIC, SJME_JNI_TRUE,
+		"main", "([Ljava/lang/String;)V", &mainMethod)) ||
+		mainMethod == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* Setup arguments. */
+	memset(mainArgV, 0, sizeof(mainArgV));
+	mainArgV[0].type = SJME_JAVA_TYPE_ID_OBJECT;
+	
+	/* Enter the frame. */
+	ignoreFrame = NULL;
+	return sjme_nvm_task_threadEnter(inFrame->inThread,
+		&ignoreFrame, mainMethod, SJME_NVM_CLASS_MEMBER_STATIC,
+		1, mainArgV);
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(setCurrentExitCode)

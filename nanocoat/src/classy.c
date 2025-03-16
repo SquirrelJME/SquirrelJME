@@ -1895,3 +1895,26 @@ fail_allocResult:
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 	return sjme_error_vmError(NULL, error);
 }
+
+sjme_errorCode sjme_nvm_class_validBinaryName(
+	sjme_attrInNotNull sjme_charSeq binaryName)
+{
+	sjme_jint i, n;
+	sjme_jchar c;
+	
+	if (binaryName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	for (i = 0, n = binaryName->length; i < n; i++)
+	{
+		c = sjme_charSeq_charAtR(binaryName, i);
+
+		/* These characters are invalid. */
+		if (c == '.' || c == ';' || c == '[' || c == '<' ||
+			c == '>' || c == ':')
+			return SJME_ERROR_INVALID_BINARY_NAME;
+	}
+	
+	/* Did not fail, so success! */
+	return SJME_ERROR_NONE;
+}

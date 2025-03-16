@@ -943,6 +943,16 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInOutNotNull sjme_nvm_class_methodInfo* outMethod);
 
+/**
+ * Checks if the binary name is valid.
+ * 
+ * @param binaryName The binary name to check.
+ * @return Any resultant error, if any.
+ * @since 2025/03/16
+ */
+sjme_errorCode sjme_nvm_class_validBinaryName(
+	sjme_attrInNotNull sjme_charSeq binaryName);
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

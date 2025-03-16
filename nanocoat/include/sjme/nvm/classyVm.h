@@ -31,7 +31,10 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
-
+	
+/** The class name length limit. */
+#define SJME_NVM_CLASS_NAME_LIMIT 256
+	
 /**
  * A list of classes.
  * 
@@ -345,6 +348,29 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 	sjme_attrInValue sjme_jboolean required,
 	sjme_attrInPositive sjme_charSeq inName,
 	sjme_attrInPositive sjme_charSeq inType,
+	sjme_attrOutNotNull sjme_jmethodID* outID);
+	
+/**
+ * Locates a method by the given name and type.
+ * 
+ * @param inClass The class to look within.
+ * @param contextThread The thread this request is under.
+ * @param instanceType The instance type of the method.
+ * @param required Is this method required?
+ * @param inName The name of the method to find.
+ * @param inType The type of the method to find.
+ * @param outID The resultant method ID.
+ * @return Any resultant error, if any.
+ * @since 2025/03/16 
+ */
+sjme_errorCode sjme_nvm_vmClass_methodIDByNameTypeU(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInValue sjme_jboolean required,
+	sjme_attrInPositive sjme_lpcstr inName,
+	sjme_attrInPositive sjme_lpcstr inType,
 	sjme_attrOutNotNull sjme_jmethodID* outID);
 
 /**

@@ -521,9 +521,10 @@ sjme_jboolean sjme_charSeq_startsWithUtfR(
 sjme_lpcstr sjme_charSeq_tempUtf(
 	sjme_attrInNotNull sjme_charSeq inSeq)
 {
-#define BUF_SIZE 512
-	sjme_threadLocal(sjme_cchar, buf[BUF_SIZE]);
-	sjme_jint i, o, n;
+#define TEMP_SIZE 512
+	sjme_threadLocal(sjme_cchar, buf[TEMP_SIZE]);
+	sjme_threadLocal(sjme_jint, tempAt);
+	sjme_jint baseAt, i, o, n, stage;
 	sjme_jchar c;
 	
 	if (inSeq == NULL)
@@ -534,30 +535,58 @@ sjme_lpcstr sjme_charSeq_tempUtf(
 		return (sjme_lpcstr)&inSeq->data.bytes[0];
 	else if (inSeq->type == SJME_CHAR_SEQ_TYPE_UTF_STATIC)
 		return inSeq->data.staticUtf;
-	
-	/* Translate all characters. */
-	memset(buf, 0, sizeof(buf));
-	for (i = 0, o = 0, n = inSeq->length; i < n; i++)
-	{
-		/* Get character here. */
-		c = sjme_charSeq_charAtR(inSeq, i);
 
-		/* Direct map. */
-		if (c <= 127)
+	/* Try a multi-stage write to fit as many temporary strings as needed. */
+	for (stage = 0, baseAt = tempAt; stage >= 0;)
+	{
+		/* Translate all characters. */
+		for (i = 0, o = baseAt, n = inSeq->length; i <= n; i++)
 		{
-			if (o < BUF_SIZE - 1)
+			/* Get character here. */
+			c = (i < n ? sjme_charSeq_charAtR(inSeq, i) : 0);
+			
+			/* Overflowing? */
+			if (o >= TEMP_SIZE - 1)
+			{
+				/* On first stage, reset everything to the start. */
+				if (stage == 0)
+				{
+					baseAt = 0;
+					tempAt = 0;
+					i = -1;
+					n = -1;
+					stage++;
+					break;
+				}
+
+				/* On second stage, just give up. */
+				else
+				{
+					stage = -1;
+					break;
+				}
+			}
+
+			/* Direct map. */
+			else if (c <= 127)
 				buf[o++] = c;
-		}
 		
-		/* Need to encode. */
-		else
+			/* Need to encode. */
+			else
+				sjme_todo("Impl?");
+		}
+
+		/* Reached end okay? Stop processing then... */
+		if (n >= inSeq->length)
 		{
-			sjme_todo("Impl?");
+			tempAt = o + 1;
+			if (tempAt >= TEMP_SIZE - 1)
+				tempAt = 0;
+			break;
 		}
 	}
-	n = 0;
-
-	/* Use pointer to characters. */
-	return &buf[0];
-#undef BUF_SIZE
+	
+	/* Use the base pointer. */
+	return &buf[baseAt];
+#undef TEMP_SIZE
 }
