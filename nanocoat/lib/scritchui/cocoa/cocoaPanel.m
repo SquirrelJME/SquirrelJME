@@ -163,6 +163,25 @@ fail_project:
 		sjme_message("Native draw failed: %d", error);
 }
 
+/** Generic Cocoa key handling. */
+#define SJME_SCRITCHUI_COCOA_KEY(typeFlags) \
+	sjme_scritchui inState; \
+	sjme_scritchui_uiPanel inPanel; \
+	 \
+	/* Recover the panel. */ \
+	inPanel = self->scritchPanel; \
+	inState = inPanel->component.common.state; \
+	 \
+	/* Call unified handler. */ \
+	inState->implIntern->eventKey(inState, \
+		SJME_SUI_CAST_COMPONENT(inPanel), \
+		event, (typeFlags))
+
+- (void)flagsChanged:(NSEvent*)event
+{
+
+}
+
 - (id)initWithFrame:(NSRect)frame
 {
 	return [super initWithFrame:frame];
@@ -180,6 +199,16 @@ fail_project:
 {
 	/* Always transparent! */
 	return NO;
+}
+
+- (void)keyDown:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_KEY(SJME_SCRITCHINPUT_TYPE_KEY_PRESSED);
+}
+
+- (void)keyUp:(NSEvent*)event
+{
+	SJME_SCRITCHUI_COCOA_KEY(SJME_SCRITCHINPUT_TYPE_KEY_RELEASED);
 }
 
 /** Generic Cocoa mouse handling. */

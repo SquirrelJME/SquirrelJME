@@ -152,6 +152,22 @@ typedef sjme_errorCode (*sjme_scritchui_cocoa_intern_containerFramingFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
 /**
+ * Handles Cocoa key events.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @param inEvent The input event.
+ * @param typeMask The event type mask.
+ * @return Any resultant error, if any.
+ * @since 2025/03/15
+ */
+typedef sjme_errorCode (*sjme_scritchui_cocoa_intern_eventKeyFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull NSEvent* inEvent,
+	sjme_attrInValue sjme_jint typeMask);
+
+/**
  * Normalizes and handles mouse events from Cocoa in a unified way.
  * 
  * @param inState The ScritchUI state.
@@ -193,6 +209,9 @@ struct sjme_scritchui_implInternFunctions
 	/** Performs container framing. */
 	sjme_scritchui_cocoa_intern_containerFramingFunc containerFraming;
 	
+	/** Key event handling. */
+	sjme_scritchui_cocoa_intern_eventKeyFunc eventKey;
+	
 	/** Mouse event handling. */
 	sjme_scritchui_cocoa_intern_eventMouseFunc eventMouse;
 	
@@ -207,6 +226,12 @@ sjme_errorCode sjme_scritchui_cocoa_intern_checkError(
 sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
+sjme_errorCode sjme_scritchui_cocoa_intern_eventKey(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull NSEvent* inEvent,
+	sjme_attrInValue sjme_jint typeMask);
 
 sjme_errorCode sjme_scritchui_cocoa_intern_eventMouse(
 	sjme_attrInNotNull sjme_scritchui inState,

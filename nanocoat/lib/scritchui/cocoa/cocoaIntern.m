@@ -16,6 +16,104 @@
 	#include <GNUstepGUI/GSDisplayServer.h>
 #endif
 
+static sjme_jint sjme_scritchui_cocoa_mapKey(
+	sjme_attrInValue sjme_jint inKey)
+{
+	switch (inKey)
+	{
+		case NSUpArrowFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_UP;
+		case NSDownArrowFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_DOWN;
+		case NSLeftArrowFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_LEFT;
+		case NSRightArrowFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_RIGHT;
+		case NSF1FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F1;
+		case NSF2FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F2;
+		case NSF3FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F3;
+		case NSF4FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F4;
+		case NSF5FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F5;
+		case NSF6FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F6;
+		case NSF7FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F7;
+		case NSF8FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F8;
+		case NSF9FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F9;
+		case NSF10FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F10;
+		case NSF11FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F11;
+		case NSF12FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F12;
+		case NSF13FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F13;
+		case NSF14FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F14;
+		case NSF15FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F15;
+		case NSF16FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F16;
+		case NSF17FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F17;
+		case NSF18FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F18;
+		case NSF19FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F19;
+		case NSF20FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F20;
+		case NSF21FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F21;
+		case NSF22FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F22;
+		case NSF23FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F23;
+		case NSF24FunctionKey:
+			return SJME_SCRITCHINPUT_KEY_F24;
+		case NSInsertFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_INSERT;
+		case NSDeleteFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_DELETE;
+		case NSHomeFunctionKey:
+		case NSBeginFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_HOME;
+		case NSEndFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_END;
+		case NSPageUpFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_PAGE_UP;
+		case NSPageDownFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_PAGE_DOWN;
+		case NSPrintScreenFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_PRINTSCREEN;
+		case NSScrollLockFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_SCROLLLOCK;
+		case NSPauseFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_PAUSE;
+		case NSMenuFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_CONTEXT_MENU;
+		case NSPrintFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_PRINTSCREEN;
+		case NSInsertCharFunctionKey:
+		case NSInsertLineFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_INSERT;
+		case NSDeleteCharFunctionKey:
+		case NSDeleteLineFunctionKey:
+		case NSClearLineFunctionKey:
+		case NSClearDisplayFunctionKey:
+			return SJME_SCRITCHINPUT_KEY_DELETE;
+	}
+
+	/* Not changed. */
+	return inKey;
+}
+
 NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 	@"sjme_scritchui_cocoa_loopExecuteNotif";
 
@@ -205,6 +303,70 @@ sjme_errorCode sjme_scritchui_cocoa_intern_containerFraming(
 	}
 
 	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_cocoa_intern_eventKey(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull NSEvent* inEvent,
+	sjme_attrInValue sjme_jint typeMask)
+{
+	sjme_errorCode errorKey, errorUnicode;
+	sjme_scritchui_listener_input* infoCore;
+	sjme_scritchinput_event fill;
+	NSView* cocoaView;
+	NSWindow* cocoaWindow;
+	sjme_jint key, unicode;
+
+	if (inState == NULL || inComponent == NULL || inEvent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get listener info. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, input);
+
+	/* Recover view. */
+	cocoaView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+	cocoaWindow = [cocoaView window];
+
+	/* No actual input listener? Or missing a window? */
+	if (infoCore->callback == NULL || cocoaWindow == NULL)
+		return SJME_ERROR_NONE;
+
+	/* All key events are in a string. */
+	unicode = 0;
+	key = 0;
+	if (inEvent.characters != NULL)
+		unicode = [inEvent.characters characterAtIndex:0];
+	if (inEvent.charactersIgnoringModifiers != NULL)
+		key = [inEvent.charactersIgnoringModifiers characterAtIndex:0];
+
+	/* Fill in event details. */
+	memset(&fill, 0, sizeof(fill));
+	fill.type = typeMask;
+	fill.time.full = [inEvent timestamp];
+	fill.data.key.code = sjme_scritchui_cocoa_mapKey(key);
+
+	/* Standard key handler. */
+	errorKey = SJME_ERROR_NONE;
+	if (key != 0)
+		errorKey = infoCore->callback(inState, inComponent, &fill);
+
+	/* Unicode handler. */
+	errorUnicode = SJME_ERROR_NONE;
+	if (unicode != 0 && (typeMask & SJME_SCRITCHINPUT_TYPE_KEY_PRESSED) != 0)
+	{
+		/* Set character details. */
+		fill.type = SJME_SCRITCHINPUT_TYPE_KEY_CHAR_PRESSED;
+		fill.data.key.code = unicode;
+
+		/* Handle it. */
+		errorUnicode = infoCore->callback(inState, inComponent, &fill);
+	}
+
+	/* Did either fail? */
+	if (sjme_error_is(errorKey) || sjme_error_is(errorUnicode))
+		return sjme_error_defaultOr(errorKey, errorUnicode);
 	return SJME_ERROR_NONE;
 }
 
