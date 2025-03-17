@@ -190,7 +190,7 @@ struct sjme_jarrayBase
 	sjme_jint length;
 
 	/** The elements in the array. */
-	sjme_nvm_rawFieldValues elements;
+	sjme_alignPointer sjme_nvm_rawFieldValues elements;
 };
 
 /**
