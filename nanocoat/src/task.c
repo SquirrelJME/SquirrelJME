@@ -829,6 +829,42 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_nvm_task_objectArrayNew(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInNotNull sjme_jclass arrayType,
+	sjme_attrInPositive sjme_jint arrayLength)
+{
+	if (contextThread == NULL || outObject == NULL || arrayType == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (arrayLength < 0)
+		return SJME_ERROR_NEGATIVE_ARRAY_SIZE;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_task_objectArrayNewT(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId componentType,
+	sjme_attrInPositive sjme_jint arrayLength)
+{
+	if (contextThread == NULL || outObject == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (componentType < 0 || componentType >= SJME_NUM_JAVA_TYPE_IDS ||
+		componentType == SJME_JAVA_TYPE_ID_OBJECT)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (arrayLength < 0)
+		return SJME_ERROR_NEGATIVE_ARRAY_SIZE;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_task_objectNew(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,

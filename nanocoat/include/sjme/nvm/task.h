@@ -179,19 +179,19 @@ struct sjme_frame_frameStack
 		sjme_pointer base;
 		
 		/** Integer values. */
-		sjme_jint* jints;
+		sjme_jint* i;
 
 		/** Long values. */
-		sjme_jlong* jlongs;
+		sjme_jlong* j;
 
 		/** Float values. */
-		sjme_jfloat* jfloats;
+		sjme_jfloat* f;
 
 		/** Double values. */
-		sjme_jdouble* jdoubles;
+		sjme_jdouble* d;
 
 		/** Object values. */
-		sjme_jobject* jobjects;
+		sjme_jobject* l;
 	} base;
 };
 
@@ -610,6 +610,38 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue);
 
+/**
+ * Allocates a new array object.
+ * 
+ * @param contextThread The thread the allocation is being performed in.
+ * @param outObject The resultant type.
+ * @param componentType The component type of the array.
+ * @param arrayLength The length of the array to allocate.
+ * @return Any resultant error, if any.
+ * @since 2025/03/17
+ */
+sjme_errorCode sjme_nvm_task_objectArrayNew(
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jclass componentType,
+	sjme_attrInPositive sjme_jint arrayLength);
+
+/**
+ * Allocates a new array object.
+ * 
+ * @param contextThread The thread the allocation is being performed in.
+ * @param outObject The resultant type.
+ * @param componentType The component type of the array.
+ * @param arrayLength The length of the array to allocate.
+ * @return Any resultant error, if any.
+ * @since 2025/03/17
+ */
+sjme_errorCode sjme_nvm_task_objectArrayNewT(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId componentType,
+	sjme_attrInPositive sjme_jint arrayLength);
+	
 /**
  * Allocates a new object.
  * 
