@@ -46,12 +46,59 @@ typedef struct sjme_charSeqStatic sjme_charSeqStatic;
 typedef sjme_charSeqStatic* sjme_charSeq;
 
 /**
+ * Returns the character at the given index.
+ * 
+ * @param inSeq The input character sequence.
+ * @param inIndex The index to get from.
+ * @return The resultant character.
+ * @since 2024/06/27
+ */
+typedef sjme_jchar (*sjme_charSeq_charAtFunc)(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInPositive sjme_jint inIndex);
+
+/**
+ * Returns the length of the character sequence.
+ * 
+ * @param inSeq The input character sequence.
+ * @param outLen The sequence length.
+ * @return Any resultant error, if any.
+ * @since 2024/06/27
+ */
+typedef sjme_errorCode (*sjme_charSeq_lengthFunc)(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrOutNotNull sjme_jint* outLen);
+
+/**
+ * Functions which are used to process character sequences.
+ * 
+ * @since 2024/06/26
+ */
+typedef struct sjme_charSeq_functions
+{
+	/** The character at the given index. */
+	sjme_charSeq_charAtFunc charAt;
+	
+	/** The length of the character sequence. */
+	sjme_charSeq_lengthFunc length;
+} sjme_charSeq_functions;
+
+/**
  * The type of character encoding used in @c sjme_charSeq .
  *
  * @since 2025/03/07
  */
 typedef enum sjme_charSeq_type
 {
+	/** Null character sequence. */
+	SJME_CHAR_SEQ_TYPE_NULL,
+	
+	/** Functional character sequence. */
+	SJME_CHAR_SEQ_TYPE_FUNCTION,
+	
+	/** Functional character sequence, static. */
+	SJME_CHAR_SEQ_TYPE_FUNCTION_STATIC,
+	
 	/** Narrow bytes only. */
 	SJME_CHAR_SEQ_TYPE_NARROW,
 
@@ -82,17 +129,27 @@ struct sjme_charSeqStatic
 	/** The sequence data. */
 	sjme_alignPointer union
 	{
-		/** Reference to another sequence. */
-		sjme_charSeq otherSeq;
-
-		/** Static UTF pointer. */
-		sjme_lpcstr staticUtf;
-
 		/** The bytes stored in the sequence. */
 		sjme_jbyte bytes[sjme_flexibleArrayCountUnion];
 
 		/** The characters stored in the sequence. */
 		sjme_jchar chars[sjme_flexibleArrayCountUnion];
+
+		/** Information for function based character sequences. */
+		struct
+		{
+			/** Functions that make up a functional character sequence. */
+			const sjme_charSeq_functions* impl;
+			
+			/** Front-end data, as needed. */
+			sjme_frontEnd frontEnd;
+		} function;
+		
+		/** Reference to another sequence. */
+		sjme_charSeq otherSeq;
+
+		/** Static UTF pointer. */
+		sjme_lpcstr staticUtf;
 	} data;
 };
 
@@ -277,6 +334,20 @@ sjme_errorCode sjme_charSeq_itNew(
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrOutNotNull sjme_charSeq_it* it);
 
+/**
+ * Initializes a new static function based character sequence.
+ * 
+ * @param outSeq The resultant sequence.
+ * @param functions The functions for referring to the characters.
+ * @param frontEnd Optional non-bindable front-end data to use.
+ * @return Any resultant error, if any.
+ * @since 2025/03/18
+ */
+sjme_errorCode sjme_charSeq_newFunctionStatic(
+	sjme_attrOutNotNull sjme_charSeqStatic* outSeq,
+	sjme_attrInNotNull const sjme_charSeq_functions* functions,
+	sjme_attrInNullable sjme_frontEnd* frontEnd);
+	
 /**
  * Allocates a new narrow character sequence.
  * 

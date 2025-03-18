@@ -61,7 +61,7 @@ sjme_jint sjme_nvm_fieldValueSize(
 	/* Base size is the offset of where values start */
 	return (baseSize * n) +
 		offsetof(sjme_nvm_fieldValues, values) +
-		offsetof(sjme_nvm_rawFieldValues, jobjects);
+		offsetof(sjme_nvm_rawFieldValues, l);
 }
 
 sjme_errorCode sjme_nvm_instance_checkPermission(

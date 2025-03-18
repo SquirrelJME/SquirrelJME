@@ -832,10 +832,10 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 sjme_errorCode sjme_nvm_task_objectArrayNew(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_jobject* outObject,
-	sjme_attrInNotNull sjme_jclass arrayType,
+	sjme_attrInNotNull sjme_jclass componentType,
 	sjme_attrInPositive sjme_jint arrayLength)
 {
-	if (contextThread == NULL || outObject == NULL || arrayType == NULL)
+	if (contextThread == NULL || outObject == NULL || componentType == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (arrayLength < 0)

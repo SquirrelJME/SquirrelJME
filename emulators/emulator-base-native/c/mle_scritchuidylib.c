@@ -206,7 +206,8 @@ typedef struct mle_callbackData
 	jmethodID javaCallbackId;
 } mle_callbackData;
 
-static void mle_scritchUiStoreCallback(JNIEnv* env, sjme_frontEnd* outFrontEnd,
+static void mle_scritchUiStoreCallback(JNIEnv* env,
+	sjme_frontEndBindable* outFrontEnd,
 	jobject javaListener)
 {
 	sjme_errorCode error;
@@ -218,7 +219,7 @@ static void mle_scritchUiStoreCallback(JNIEnv* env, sjme_frontEnd* outFrontEnd,
 
 static void mle_scritchUiRecoverCallback(JNIEnv* env,
 	sjme_scritchui_uiComponent inComponent,
-	sjme_frontEnd* frontEndP,
+	sjme_frontEndBindable* frontEndP,
 	sjme_lpcstr methodName,
 	sjme_lpcstr methodType,
 	mle_callbackData* callbackData)
@@ -226,10 +227,10 @@ static void mle_scritchUiRecoverCallback(JNIEnv* env,
 	jclass listenerClass;
 
 	/* Get the object that represents the component. */
-	callbackData->onWhat = (jobject)inComponent->common.frontEnd.wrapper;
+	callbackData->onWhat = (jobject)inComponent->common.frontEnd.base.wrapper;
 
 	/* Recover the callback we want to call. */
-	callbackData->javaCallback = frontEndP->wrapper;
+	callbackData->javaCallback = frontEndP->base.wrapper;
 
 	/* Get class of the listener. */
 	listenerClass = (*env)->GetObjectClass(env, callbackData->javaCallback);
@@ -252,7 +253,7 @@ static void mle_scritchUiRecoverEnv(
 	jint error;
 
 	/* Restore VM. */
-	vm = (JavaVM*)inState->common.frontEnd.data;
+	vm = (JavaVM*)inState->common.frontEnd.base.data;
 
 	/* Relocate env. */
 	env = NULL;
@@ -272,7 +273,7 @@ static void mle_simpleListenerSet(JNIEnv* env,
 	sjme_scritchui_voidListenerFunc wrapListener)
 {
 	sjme_errorCode error;
-	sjme_frontEnd newFrontEnd;
+	sjme_frontEndBindable newFrontEnd;
 
 	if (state == NULL || component == NULL)
 	{
@@ -463,8 +464,8 @@ static sjme_errorCode mle_scritchUiListenerMenuItemActivate(
 	skippy = (*env)->CallBooleanMethod(env,
 		callbackData.javaCallback, callbackData.javaCallbackId,
 
-		(jobject)inWindow->component.common.frontEnd.wrapper,
-		(jobject)activatedItem->common.frontEnd.wrapper);
+		(jobject)inWindow->component.common.frontEnd.base.wrapper,
+		(jobject)activatedItem->common.frontEnd.base.wrapper);
 
 	/* Failed? */
 	if (sjme_jni_checkVMException(env))
@@ -594,15 +595,15 @@ static sjme_errorCode mle_scritchUiListenerSizeSuggest(
 	/* Do we have a subcomponent? */
 	subObject = NULL;
 	if (subComponent != NULL)
-		subObject = (jobject)subComponent->common.frontEnd.wrapper;
+		subObject = (jobject)subComponent->common.frontEnd.base.wrapper;
 
 	/* Forward call. */
 	(*env)->CallVoidMethod(env,
 		callbackData.javaCallback, callbackData.javaCallbackId,
 
-		(jobject)inView->common.frontEnd.wrapper,
+		(jobject)inView->common.frontEnd.base.wrapper,
 		(subComponent == NULL ? NULL :
-			(jobject)subComponent->common.frontEnd.wrapper),
+			(jobject)subComponent->common.frontEnd.base.wrapper),
 		subDim->width,
 		subDim->height);
 
@@ -748,7 +749,7 @@ static sjme_thread_result sjme_attrThreadCall mle_bindEventThread(
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
 
 	/* Restore VM. */
-	vm = (JavaVM*)state->common.frontEnd.data;
+	vm = (JavaVM*)state->common.frontEnd.base.data;
 
 	/* If this thread is already attached, only attach once. */
 	checkEnv = NULL;
@@ -802,7 +803,7 @@ static sjme_errorCode mlePencilLock(
 		return sjme_error_default(error);
 
 	/* Get buffer to access. */
-	buf = state->source.wrapper;
+	buf = state->source.base.wrapper;
 	if (buf == NULL)
 		return SJME_ERROR_RESOURCE_NOT_FOUND;
 
@@ -845,7 +846,7 @@ static sjme_errorCode mlePencilLockRelease(
 		return sjme_error_default(error);
 
 	/* Get buffer to access. */
-	buf = state->source.wrapper;
+	buf = state->source.base.wrapper;
 
 	/* Release buffer. */
 	if (sjme_error_is(error = sjme_jni_arrayReleaseElements(env,
@@ -972,7 +973,7 @@ JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	/* Need to attach an object to it? */
-	instance = font->common.frontEnd.wrapper;
+	instance = font->common.frontEnd.base.wrapper;
 	if (instance == NULL)
 	{
 		/* Find constructor. */
@@ -1658,7 +1659,7 @@ JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	jintArray pal, jint sx, jint sy, jint sw, jint sh)
 {
 	sjme_errorCode error;
-	sjme_frontEnd frontSource;
+	sjme_frontEndBindable frontSource;
 	sjme_scritchui_pencil result;
 	sjme_alloc_weak resultWeak;
 	sjme_scritchui state;
@@ -1834,7 +1835,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	jboolean nameCharsCopy;
 	sjme_alloc_pool pool;
 	sjme_scritchui state;
-	sjme_frontEnd frontEnd;
+	sjme_frontEndBindable frontEnd;
 	sjme_debug_handlerFunctions** dylibDebugHandlers;
 
 	/* Use these debug handlers. */

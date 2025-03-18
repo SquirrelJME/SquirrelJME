@@ -269,7 +269,7 @@ sjme_errorCode sjme_scritchpen_initBuffer(
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint tx,
 	sjme_attrInValue sjme_jint ty,
 	sjme_attrInValue sjme_jint sx,
@@ -277,7 +277,7 @@ sjme_errorCode sjme_scritchpen_initBuffer(
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
-	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
+	sjme_attrInNullable const sjme_frontEndBindable* copyFrontEnd)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil result;
@@ -331,7 +331,7 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
 	sjme_attrInPositive sjme_jint bw,
 	sjme_attrInPositive sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint tx,
 	sjme_attrInValue sjme_jint ty,
 	sjme_attrInValue sjme_jint sx,
@@ -339,7 +339,7 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
 	sjme_attrInPositive sjme_jint sw,
 	sjme_attrInPositive sjme_jint sh,
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
-	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
+	sjme_attrInNullable const sjme_frontEndBindable* copyFrontEnd)
 {
 	const sjme_scritchui_pencilImplFunctions* chosen;
 	

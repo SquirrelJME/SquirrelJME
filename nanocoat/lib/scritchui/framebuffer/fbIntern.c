@@ -21,9 +21,9 @@ static sjme_errorCode sjme_scritchui_fb_selLock(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Just directly set the buffer. */
-	g->lockState.base = g->lockState.source.wrapper;
+	g->lockState.base = g->lockState.source.base.wrapper;
 	g->lockState.baseLimitBytes = (sjme_jint)(
-		(sjme_intPointer)g->lockState.source.data);
+		(sjme_intPointer)g->lockState.source.base.data);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -63,8 +63,8 @@ static sjme_errorCode sjme_scritchui_fb_eventInput(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Get owning state and component. */
-	inState = wrappedComponent->common.frontEnd.data;
-	inComponent = wrappedComponent->common.frontEnd.wrapper;
+	inState = wrappedComponent->common.frontEnd.base.data;
+	inComponent = wrappedComponent->common.frontEnd.base.wrapper;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -213,7 +213,7 @@ static sjme_errorCode sjme_scritchui_fb_intern_makeSelBuf(
 	sjme_attrInPositiveNonZero sjme_jint cH)
 {
 	sjme_errorCode error;
-	sjme_frontEnd sgFrontEnd;
+	sjme_frontEndBindable sgFrontEnd;
 	sjme_jint* tempSelBuf;
 	sjme_scritchui_pencil sg;
 	sjme_jint cT;
@@ -263,9 +263,9 @@ static sjme_errorCode sjme_scritchui_fb_intern_makeSelBuf(
 	
 	/* Setup front end to point to the buffer. */
 	memset(&sgFrontEnd, 0, sizeof(sgFrontEnd));
-	sgFrontEnd.data = (sjme_pointer)
+	sgFrontEnd.base.data = (sjme_pointer)
 		((sjme_intPointer)cT * sizeof(sjme_jint));
-	sgFrontEnd.wrapper = wState->selBuf;
+	sgFrontEnd.base.wrapper = wState->selBuf;
 	
 	/* Wrap a pencil over the selection buffer if we have none yet. */
 	sg = wState->selBufPencil;

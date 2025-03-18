@@ -104,12 +104,18 @@ sjme_jchar sjme_charSeq_charAtR(
 	/* Depends on the sequence type. */
 	switch (inSeq->type)
 	{
+		case SJME_CHAR_SEQ_TYPE_FUNCTION:
+		case SJME_CHAR_SEQ_TYPE_FUNCTION_STATIC:
+			if (inSeq->data.function.impl == NULL ||
+				inSeq->data.function.impl->charAt == NULL)
+				return 0;
+			return inSeq->data.function.impl->charAt(inSeq, inIndex);
+		
 		case SJME_CHAR_SEQ_TYPE_NARROW:
 			return inSeq->data.bytes[inIndex] & 0xFF;
 
-		case SJME_CHAR_SEQ_TYPE_WIDE:
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+		case SJME_CHAR_SEQ_TYPE_NULL:
+			return 0;
 
 		case SJME_CHAR_SEQ_TYPE_UTF:
 			sjme_todo("Impl?");
@@ -117,6 +123,10 @@ sjme_jchar sjme_charSeq_charAtR(
 
 		case SJME_CHAR_SEQ_TYPE_UTF_STATIC:
 			return sjme_string_charAt(inSeq->data.staticUtf, inIndex);
+
+		case SJME_CHAR_SEQ_TYPE_WIDE:
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
 
 		default:
 			return 0;
@@ -158,6 +168,11 @@ sjme_errorCode sjme_charSeq_length(
 {
 	if (inSeq == NULL || outLen == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Null sequences always have zero length. */
+	if (inSeq->type == SJME_CHAR_SEQ_TYPE_NULL)
+		if (inSeq->length != 0)
+			inSeq->length = 0;
 
 	/* The length is always precalculated. */
 	*outLen = inSeq->length;
@@ -340,6 +355,38 @@ sjme_errorCode sjme_charSeq_itNew(
 	it->index = offset;
 	it->d = sjme_charSeq_itD;
 	it->pp = sjme_charSeq_itPp;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_charSeq_newFunctionStatic(
+	sjme_attrOutNotNull sjme_charSeqStatic* outSeq,
+	sjme_attrInNotNull const sjme_charSeq_functions* functions,
+	sjme_attrInNullable sjme_frontEnd* frontEnd)
+{
+	sjme_errorCode error;
+	sjme_jint length;
+	
+	if (outSeq == NULL || functions == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Read in length. */
+	length = -1;
+	error = SJME_ERROR_NONE;
+	if (functions->length == NULL ||
+		sjme_error_is(error = functions->length(outSeq, &length)))
+		return sjme_error_defaultOr(error, SJME_ERROR_NOT_IMPLEMENTED);
+	
+	/* Setup target sequence. */
+	memset(outSeq, 0, sizeof(*outSeq));
+	outSeq->type = SJME_CHAR_SEQ_TYPE_FUNCTION_STATIC;
+	outSeq->length = length;
+	outSeq->data.function.impl = functions;
+	if (frontEnd != NULL)
+		memmove(&outSeq->data.function.frontEnd, frontEnd,
+			sizeof(*frontEnd));
+	outSeq->data.function.frontEnd.bindType = SJME_FRONTEND_BINDLESS;
 
 	/* Success! */
 	return SJME_ERROR_NONE;

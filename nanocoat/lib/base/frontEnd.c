@@ -12,7 +12,7 @@
 
 sjme_errorCode sjme_frontEnd_bind(
 	sjme_attrInNotNull sjme_pointer owner,
-	sjme_attrInOutNotNull sjme_frontEnd* frontEnd,
+	sjme_attrInOutNotNull sjme_frontEndBindable* frontEnd,
 	sjme_attrOutNotNull sjme_pointer* resultData)
 {
 	if (owner == NULL || frontEnd == NULL)
@@ -28,7 +28,7 @@ sjme_errorCode sjme_frontEnd_bind(
 
 sjme_errorCode sjme_frontEnd_release(
 	sjme_attrInNotNull sjme_pointer owner,
-	sjme_attrInOutNotNull sjme_frontEnd* frontEnd)
+	sjme_attrInOutNotNull sjme_frontEndBindable* frontEnd)
 {
 	sjme_errorCode error;
 	
@@ -46,10 +46,11 @@ sjme_errorCode sjme_frontEnd_release(
 	/* Only if there is data or a wrapper, can we do an unbind. */
 	error = SJME_ERROR_NONE;
 	if (frontEnd->bindHandler != NULL)
-		if (frontEnd->data != NULL || frontEnd->wrapper != NULL)
+		if (frontEnd->base.data != NULL || frontEnd->base.wrapper != NULL)
 		{
 			/* Call handler. */
-			error = frontEnd->bindHandler(owner, frontEnd, &frontEnd->data,
+			error = frontEnd->bindHandler(owner, frontEnd,
+				&frontEnd->base.data,
 				SJME_FRONTEND_RELEASE);
 		}
 

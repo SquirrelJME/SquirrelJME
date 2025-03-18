@@ -601,7 +601,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	sjme_scritchui_pencil pencil;
 	sjme_scritchui_pencilFont defaultFont;
 	sjme_scritchui_listener_paint* infoPaintCore;
-	sjme_frontEnd frontEnd;
+	sjme_frontEndBindable frontEnd;
 	HDC hDc;
 	PAINTSTRUCT paintInfo;
 	sjme_jint w, h, tx, ty;

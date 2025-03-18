@@ -212,6 +212,7 @@ sjme_errorCode sjme_nvm_rom_suiteNew(
 	if (copyFrontEnd != NULL)
 		memmove(&result->common.frontEnd, copyFrontEnd,
 			sizeof(*copyFrontEnd));
+	result->common.frontEnd.bindType = SJME_FRONTEND_BINDLESS;
 	
 	/* Call initializer. */
 	if (sjme_error_is(error = inFunctions->init(result, data)))

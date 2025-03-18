@@ -123,6 +123,7 @@ sjme_errorCode sjme_stream_inputOpen(
 	if (copyFrontEnd != NULL)
 		memmove(&result->frontEnd, copyFrontEnd,
 			sizeof(*copyFrontEnd));
+	result->frontEnd.bindType = SJME_FRONTEND_BINDLESS;
 		
 	/* Call sub-init. */
 	if (sjme_error_is(error = result->functions->init(result,
@@ -480,6 +481,7 @@ sjme_errorCode sjme_stream_outputOpen(
 	if (copyFrontEnd != NULL)
 		memmove(&result->frontEnd, copyFrontEnd,
 			sizeof(*copyFrontEnd));
+	result->frontEnd.bindType = SJME_FRONTEND_BINDLESS;
 		
 	/* Call sub-init. */
 	if (sjme_error_is(error = result->functions->init(result,

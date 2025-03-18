@@ -1179,7 +1179,7 @@ sjme_errorCode sjme_scritchpen_initBuffer(
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint tx,
 	sjme_attrInValue sjme_jint ty,
 	sjme_attrInValue sjme_jint sx,
@@ -1187,7 +1187,7 @@ sjme_errorCode sjme_scritchpen_initBuffer(
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
-	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
+	sjme_attrInNullable const sjme_frontEndBindable* copyFrontEnd);
 
 /**
  * Creates a hardware reference bracket to the native hardware graphics.
@@ -1216,7 +1216,7 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint tx,
 	sjme_attrInValue sjme_jint ty,
 	sjme_attrInValue sjme_jint sx,
@@ -1224,7 +1224,7 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
-	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
+	sjme_attrInNullable const sjme_frontEndBindable* copyFrontEnd);
 
 /**
  * Static pencil function initialization.
@@ -1250,7 +1250,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInValue sjme_jint tx,
 	sjme_attrInValue sjme_jint ty,
@@ -1258,7 +1258,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
-	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
+	sjme_attrInNullable const sjme_frontEndBindable* copyFrontEnd);
 
 /**
  * Represents a single point.

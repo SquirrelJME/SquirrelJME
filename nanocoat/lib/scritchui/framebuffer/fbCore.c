@@ -109,8 +109,8 @@ sjme_errorCode sjme_scritchui_fb_biMap(
 	topLevel->handle[SJME_SUI_FB_H_WRAPPED] = wrapped;
 	
 	/* Then map back to top level item. */
-	wrapped->frontEnd.wrapper = topLevel;
-	wrapped->frontEnd.data = inState;
+	wrapped->frontEnd.base.wrapper = topLevel;
+	wrapped->frontEnd.base.data = inState;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -121,7 +121,7 @@ sjme_errorCode sjme_scritchui_fb_biSetListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(void),
-	sjme_attrInOutNotNull sjme_frontEnd* wrappedFrontEnd)
+	sjme_attrInOutNotNull sjme_frontEndBindable* wrappedFrontEnd)
 {
 	if (inState == NULL || inComponent == NULL || infoCore == NULL ||
 		wrappedFrontEnd == NULL)
@@ -148,8 +148,8 @@ sjme_errorCode sjme_scritchui_fb_biSetListener(
 		infoCore->extra = (sjme_intPointer)inComponent;
 		
 		/* Put in information so the wrapped code can find the top level. */
-		wrappedFrontEnd->wrapper = inComponent;
-		wrappedFrontEnd->data = inState;
+		wrappedFrontEnd->base.wrapper = inComponent;
+		wrappedFrontEnd->base.data = inState;
 	}
 	
 	/* Make sure front end is copied or cleared as well. */

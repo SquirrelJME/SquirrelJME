@@ -305,8 +305,10 @@ sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
  * @return Any resultant error, if any.
  * @since 2024/06/27
  */
-sjme_errorCode sjme_jni_fillFrontEnd(JNIEnv* env, sjme_frontEnd* into,
-	jobject ref);
+sjme_errorCode sjme_jni_fillFrontEnd(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_frontEndBindable* into,
+	sjme_attrInNullable jobject ref);
 
 /**
  * Recovers the Java environment pointer.
@@ -340,7 +342,7 @@ sjme_errorCode sjme_jni_recoverEnvThis(
  */
 sjme_errorCode sjme_jni_recoverEnvFrontEnd(
 	sjme_attrInOutNotNull JNIEnv** outEnv,
-	sjme_attrInNotNull const sjme_frontEnd* inFrontEnd);
+	sjme_attrInNotNull const sjme_frontEndBindable* inFrontEnd);
 
 /**
  * Initializes a character sequence from a Java String.
@@ -351,9 +353,9 @@ sjme_errorCode sjme_jni_recoverEnvFrontEnd(
  * @return Any resultant error, if any.
  * @since 2024/06/26
  */
-sjme_errorCode sjme_jni_jstringCharSeqStatic(
+sjme_errorCode sjme_jni_charSeq(
 	sjme_attrInNotNull JNIEnv* env,
-	sjme_attrInOutNotNull sjme_charSeq inOutSeq,
+	sjme_attrInOutNotNull sjme_charSeqStatic* inOutSeq,
 	sjme_attrInNotNull jstring inString);
 
 /**

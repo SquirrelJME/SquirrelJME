@@ -15,7 +15,7 @@
 
 static sjme_errorCode sjme_jni_releaseFrontEnd(
 	sjme_attrInNotNull sjme_pointer owner,
-	sjme_attrInOutNotNull sjme_frontEnd* frontEnd,
+	sjme_attrInOutNotNull sjme_frontEndBindable* frontEnd,
 	sjme_attrOutNotNull sjme_pointer* resultData,
 	sjme_attrInValue sjme_frontEnd_bindAction action)
 {
@@ -32,11 +32,11 @@ static sjme_errorCode sjme_jni_releaseFrontEnd(
 		return sjme_error_default(error);
 
 	/* Delete global reference filled in via the front end filler. */
-	ref = frontEnd->wrapper;
+	ref = frontEnd->base.wrapper;
 	if (action == SJME_FRONTEND_RELEASE)
 		if (ref != NULL)
 		{
-			frontEnd->wrapper = NULL;
+			frontEnd->base.wrapper = NULL;
 			(*env)->DeleteGlobalRef(env, ref);
 		}
 
@@ -185,8 +185,10 @@ sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
 		DESC_DYLIB_PENCILFONT, fontInstance);
 }
 
-sjme_errorCode sjme_jni_fillFrontEnd(JNIEnv* env, sjme_frontEnd* into,
-	jobject ref)
+sjme_errorCode sjme_jni_fillFrontEnd(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_frontEndBindable* into,
+	sjme_attrInNullable jobject ref)
 {
 	JavaVM* vm;
 
@@ -196,14 +198,14 @@ sjme_errorCode sjme_jni_fillFrontEnd(JNIEnv* env, sjme_frontEnd* into,
 	/* Store referenced VM. */
 	vm = NULL;
 	(*env)->GetJavaVM(env, &vm);
-	into->data = vm;
+	into->base.data = vm;
 
 	/* Need to reference an object? */
 	into->bindHandler = sjme_jni_releaseFrontEnd;
 	if (ref != NULL)
-		into->wrapper = (*env)->NewGlobalRef(env, ref);
+		into->base.wrapper = (*env)->NewGlobalRef(env, ref);
 	else
-		into->wrapper = NULL;
+		into->base.wrapper = NULL;
 
 	return SJME_ERROR_NONE;
 }
@@ -231,83 +233,56 @@ sjme_errorCode sjme_jni_recoverEnv(
 
 sjme_errorCode sjme_jni_recoverEnvFrontEnd(
 	sjme_attrInOutNotNull JNIEnv** outEnv,
-	sjme_attrInNotNull const sjme_frontEnd* inFrontEnd)
+	sjme_attrInNotNull const sjme_frontEndBindable* inFrontEnd)
 {
 	if (outEnv == NULL || inFrontEnd == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Forward. */
-	return sjme_jni_recoverEnv(outEnv, inFrontEnd->data);
+	return sjme_jni_recoverEnv(outEnv, inFrontEnd->base.data);
 }
 
-static sjme_errorCode sjme_jni_jstringCharAt(
-	sjme_attrInNotNull const sjme_charSeq inSeq,
-	sjme_attrInPositive sjme_jint inIndex,
-	sjme_attrOutNotNull sjme_jchar* outChar)
+static sjme_jchar sjme_jni_jstringCharAt(
+	sjme_attrInNotNull sjme_charSeq inSeq,
+	sjme_attrInPositive sjme_jint inIndex)
 {
-	sjme_errorCode error;
 	JNIEnv* env;
 	jstring string;
 	const jchar* stringChars;
 	jboolean isCopy;
 	jint len;
+	jchar outChar;
 
-	if (inSeq == NULL || outChar == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
+	if (inSeq == NULL)
+		return 0;
 
 	/* Recover env. */
 	env = NULL;
-	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(
-		&env, &inSeq->frontEnd)) || env == NULL)
-		return sjme_error_default(error);
+	if (sjme_error_is(sjme_jni_recoverEnvFrontEnd(
+		&env, SJME_AS_FE_BINDABLEP(&inSeq->data.function.frontEnd))) ||
+		env == NULL)
+		return 0;
 
 	/* Get string. */
-	string = inSeq->frontEnd.wrapper;
+	string = inSeq->data.function.frontEnd.wrapper;
 
 	/* Not within the string bounds? */
 	len = (*env)->GetStringLength(env, string);
 	if (inIndex < 0 || inIndex >= len)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		return 0;
 
 	/* Need to access characters just to read one, sadly. */
 	isCopy = JNI_FALSE;
 	stringChars = (*env)->GetStringChars(env, string, &isCopy);
 
 	/* Copy character. */
-	*outChar = stringChars[inIndex];
+	outChar = stringChars[inIndex];
 
 	/* Cleanup. */
 	(*env)->ReleaseStringChars(env, string, stringChars);
 
 	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-static sjme_errorCode sjme_jni_jstringDelete(
-	sjme_attrInNotNull sjme_charSeq inSeq)
-{
-	sjme_errorCode error;
-	JNIEnv* env;
-	jstring string;
-
-	if (inSeq == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Recover env. */
-	env = NULL;
-	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(
-		&env, &inSeq->frontEnd)) || env == NULL)
-		return sjme_error_default(error);
-
-	/* Get string. */
-	string = inSeq->frontEnd.wrapper;
-
-	/* Remove global reference. */
-	(*env)->DeleteGlobalRef(env, string);
-	inSeq->frontEnd.wrapper = NULL;
-
-	/* Success! */
-	return SJME_ERROR_NONE;
+	return outChar;
 }
 
 static sjme_errorCode sjme_jni_jstringLength(
@@ -324,11 +299,12 @@ static sjme_errorCode sjme_jni_jstringLength(
 	/* Recover env. */
 	env = NULL;
 	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(
-		&env, &inSeq->frontEnd)) || env == NULL)
+		&env, SJME_AS_FE_BINDABLEP(&inSeq->data.function.frontEnd))) ||
+		env == NULL)
 		return sjme_error_default(error);
 
 	/* Get string. */
-	string = inSeq->frontEnd.wrapper;
+	string = inSeq->data.function.frontEnd.wrapper;
 
 	/* Get string length. */
 	*outLen = (*env)->GetStringLength(env, string);
@@ -340,16 +316,15 @@ static sjme_errorCode sjme_jni_jstringLength(
 static const sjme_charSeq_functions sjme_jni_jstringFunctions =
 {
 	.charAt = sjme_jni_jstringCharAt,
-	.delete = sjme_jni_jstringDelete,
 	.length = sjme_jni_jstringLength,
 };
 
-sjme_errorCode sjme_jni_jstringCharSeqStatic(
+sjme_errorCode sjme_jni_charSeq(
 	sjme_attrInNotNull JNIEnv* env,
-	sjme_attrInOutNotNull sjme_charSeq inOutSeq,
+	sjme_attrInOutNotNull sjme_charSeqStatic* inOutSeq,
 	sjme_attrInNotNull jstring inString)
 {
-	sjme_frontEnd frontEnd;
+	sjme_frontEndBindable frontEnd;
 	sjme_errorCode error;
 
 	if (env == NULL || inOutSeq == NULL || inString == NULL)
@@ -363,10 +338,9 @@ sjme_errorCode sjme_jni_jstringCharSeqStatic(
 
 	/* Initialize via forward. */
 	memset(inOutSeq, 0, sizeof(*inOutSeq));
-	return sjme_charSeq_newStatic(
+	return sjme_charSeq_newFunctionStatic(
 		inOutSeq, &sjme_jni_jstringFunctions,
-		NULL,
-		&frontEnd);
+		SJME_AS_FE_NORMALP(&frontEnd));
 }
 
 jlong sjme_jni_jlong(sjme_jlong value)

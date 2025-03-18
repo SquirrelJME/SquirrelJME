@@ -621,8 +621,8 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
  * @since 2025/03/17
  */
 sjme_errorCode sjme_nvm_task_objectArrayNew(
-	sjme_attrOutNotNull sjme_jobject* outObject,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrOutNotNull sjme_jobject* outObject,
 	sjme_attrInNotNull sjme_jclass componentType,
 	sjme_attrInPositive sjme_jint arrayLength);
 

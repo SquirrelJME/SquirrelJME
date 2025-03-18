@@ -344,7 +344,7 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 	sjme_attrInNotNull sjme_pointer inOnWhat,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore,
 	sjme_attrInNotNull sjme_pointer inListener,
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd,
+	sjme_attrInNullable sjme_frontEndBindable* copyFrontEnd,
 	sjme_attrInNotNull GCallback inGtkCallback,
 	sjme_attrInValue sjme_jboolean isAfter,
 	sjme_attrInPositiveNonZero sjme_jint numSignals,
