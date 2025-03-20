@@ -79,9 +79,11 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	sjme_errorCode error;
 	sjme_nvm_task task;
 	sjme_jclass mainClass;
+	sjme_jarray mainArgs;
 	sjme_jmethodID mainMethod;
 	sjme_nvm_frame ignoreFrame;
 	sjme_jvalueTyped mainArgV[1];
+	sjme_jint i, n;
 
 	/* Recover task. */
 	task = inFrame->inThread->inTask;
@@ -105,9 +107,24 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 		mainMethod == NULL)
 		return sjme_error_vmError(inFrame, error);
 
+	/* Allocate main arguments. */
+	mainArgs = NULL;
+	n = (task->globals.mainArgs == NULL ? 0 : task->globals.mainArgs->length);
+	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
+		inFrame->inThread, SJME_AS_JOBJECTP(&mainArgs),
+		sjme_nvm_task_commonClassR(inFrame->inThread,
+			SJME_NVM_TASK_COMMON_CLASS_STRING), n)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Fill in actual arguments. */
+	for (i = 0; i < n; i++)
+		mainArgs->elements.l[i] =
+			SJME_AS_JOBJECT(task->globals.mainArgs->elements[i]);
+	
 	/* Setup arguments. */
 	memset(mainArgV, 0, sizeof(mainArgV));
 	mainArgV[0].type = SJME_JAVA_TYPE_ID_OBJECT;
+	mainArgV[0].value.l = SJME_AS_JOBJECT(mainArgs);
 	
 	/* Enter the frame. */
 	ignoreFrame = NULL;

@@ -247,6 +247,95 @@ sjme_errorCode sjme_nvm_instance_countDown(
 	sjme_attrInNotNull sjme_jobject* oldP,
 	sjme_attrInNotNull sjme_jobject newV);
 
+/**
+ * Allocates a new array object.
+ * 
+ * @param contextThread The thread the allocation is being performed in.
+ * @param outObject The resultant type.
+ * @param componentType The component type of the array.
+ * @param arrayLength The length of the array to allocate.
+ * @return Any resultant error, if any.
+ * @since 2025/03/17
+ */
+sjme_errorCode sjme_nvm_instance_objectArrayNew(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInNotNull sjme_jclass componentType,
+	sjme_attrInPositive sjme_jint arrayLength);
+
+/**
+ * Allocates a new array object.
+ * 
+ * @param contextThread The thread the allocation is being performed in.
+ * @param outObject The resultant type.
+ * @param componentType The component type of the array.
+ * @param arrayLength The length of the array to allocate.
+ * @return Any resultant error, if any.
+ * @since 2025/03/17
+ */
+sjme_errorCode sjme_nvm_instance_objectArrayNewT(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId componentType,
+	sjme_attrInPositive sjme_jint arrayLength);
+	
+/**
+ * Allocates a new object.
+ * 
+ * @param contextThread The context thread for the allocation, if a class
+ * initialization is required.
+ * @param allocSize The allocation size.
+ * @param inType The NVM structure type.
+ * @param outObject The resultant object.
+ * @param inClass The class type to use for the object.
+ * @return Any resultant error, if any.
+ * @since 2025/02/23
+ */
+sjme_errorCode sjme_nvm_instance_objectNew(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInNotNull sjme_jclass inClass);
+
+/**
+ * Allocates a new object.
+ * 
+ * @param contextThread The context thread for the allocation, if a class
+ * initialization is required.
+ * @param allocSize The allocation size.
+ * @param inType The NVM structure type.
+ * @param outObject The resultant object.
+ * @param inClass The class type to use for the object.
+ * @return Any resultant error, if any.
+ * @since 2025/02/23
+ */
+sjme_errorCode sjme_nvm_instance_objectNewN(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInNotNull sjme_charSeq inClass);
+	
+/**
+ * Allocates a new object.
+ * 
+ * @param contextThread The context thread for the allocation, if a class
+ * initialization is required.
+ * @param allocSize The allocation size.
+ * @param inType The NVM structure type.
+ * @param outObject The resultant object.
+ * @param inClass The class type to use for the object.
+ * @return Any resultant error, if any.
+ * @since 2025/03/09
+ */
+sjme_errorCode sjme_nvm_instance_objectNewNU(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrInNotNull sjme_lpcstr inClass);
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

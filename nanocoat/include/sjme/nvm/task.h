@@ -298,11 +298,34 @@ struct sjme_nvm_taskStringsBase
 };
 
 /**
+ * A class that is very commonly used.
+ *
+ * @since 2025/03/20
+ */
+typedef enum sjme_nvm_task_commonClassId
+{
+	/** Null class. */
+	SJME_NVM_TASK_COMMON_CLASS_NULL,
+	
+	/** @c java.lang.Object . */
+	SJME_NVM_TASK_COMMON_CLASS_OBJECT,
+	
+	/** @c java.lang.Class . */
+	SJME_NVM_TASK_COMMON_CLASS_CLASS,
+	
+	/** @c java.lang.String . */
+	SJME_NVM_TASK_COMMON_CLASS_STRING,
+
+	/** The number of common classes. */
+	SJME_NVM_TASK_NUM_COMMON_CLASS
+} sjme_nvm_task_commonClassId;
+
+/**
  * Globals for the task.
  *
  * @since 2025/02/23
  */
-typedef struct sjme_nvm_task_globals
+typedef struct sjme_nvm_taskGlobals
 {
 	/** The lock for global access. */
 	sjme_thread_spinLock lock;
@@ -315,7 +338,10 @@ typedef struct sjme_nvm_task_globals
 
 	/** Main arguments, as objects. */
 	sjme_list_sjme_jstring* mainArgs;
-} sjme_nvm_task_globals;
+
+	/** Common classes. */
+	sjme_atomic_sjme_jclass commonClasses[SJME_NVM_TASK_NUM_COMMON_CLASS];
+} sjme_nvm_taskGlobals;
 	
 struct sjme_nvm_taskBase
 {
@@ -344,7 +370,7 @@ struct sjme_nvm_taskBase
 	sjme_nvm_taskStrings strings;
 
 	/** Globals for the task. */
-	sjme_nvm_task_globals globals;
+	sjme_nvm_taskGlobals globals;
 };
 
 struct sjme_nvm_threadBase
@@ -391,6 +417,34 @@ struct sjme_nvm_threadBase
 	/** What is the current schedule state of this thread? */
 	sjme_nvm_threadScheduleMode schedule;
 };
+
+/**
+ * Loads a cached common class.
+ * 
+ * @param contextThread The context thread.
+ * @param commonId The common class ID.
+ * @param outClass The resultant class.
+ * @return Any resultant error, if any.
+ * @since 2025/03/20
+ */
+sjme_errorCode sjme_nvm_task_commonClass(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_TASK_NUM_COMMON_CLASS)
+		sjme_nvm_task_commonClassId commonId,
+	sjme_attrOutNotNull sjme_jclass* outClass);
+
+/**
+ * Loads a cached common class.
+ * 
+ * @param contextThread The context thread.
+ * @param commonId The common class ID.
+ * @return The resultant class.
+ * @since 2025/03/20
+ */
+sjme_jclass sjme_nvm_task_commonClassR(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_TASK_NUM_COMMON_CLASS)
+		sjme_nvm_task_commonClassId commonId);
 
 /**
  * Returns the direct address to the local variable.
@@ -610,95 +664,6 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue);
 
-/**
- * Allocates a new array object.
- * 
- * @param contextThread The thread the allocation is being performed in.
- * @param outObject The resultant type.
- * @param componentType The component type of the array.
- * @param arrayLength The length of the array to allocate.
- * @return Any resultant error, if any.
- * @since 2025/03/17
- */
-sjme_errorCode sjme_nvm_task_objectArrayNew(
-	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrOutNotNull sjme_jobject* outObject,
-	sjme_attrInNotNull sjme_jclass componentType,
-	sjme_attrInPositive sjme_jint arrayLength);
-
-/**
- * Allocates a new array object.
- * 
- * @param contextThread The thread the allocation is being performed in.
- * @param outObject The resultant type.
- * @param componentType The component type of the array.
- * @param arrayLength The length of the array to allocate.
- * @return Any resultant error, if any.
- * @since 2025/03/17
- */
-sjme_errorCode sjme_nvm_task_objectArrayNewT(
-	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrOutNotNull sjme_jobject* outObject,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId componentType,
-	sjme_attrInPositive sjme_jint arrayLength);
-	
-/**
- * Allocates a new object.
- * 
- * @param contextThread The context thread for the allocation, if a class
- * initialization is required.
- * @param allocSize The allocation size.
- * @param inType The NVM structure type.
- * @param outObject The resultant object.
- * @param inClass The class type to use for the object.
- * @return Any resultant error, if any.
- * @since 2025/02/23
- */
-sjme_errorCode sjme_nvm_task_objectNew(
-	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInPositiveNonZero sjme_jint allocSize,
-	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
-	sjme_attrOutNotNull sjme_jobject* outObject,
-	sjme_attrInNotNull sjme_jclass inClass);
-
-/**
- * Allocates a new object.
- * 
- * @param contextThread The context thread for the allocation, if a class
- * initialization is required.
- * @param allocSize The allocation size.
- * @param inType The NVM structure type.
- * @param outObject The resultant object.
- * @param inClass The class type to use for the object.
- * @return Any resultant error, if any.
- * @since 2025/02/23
- */
-sjme_errorCode sjme_nvm_task_objectNewN(
-	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInPositiveNonZero sjme_jint allocSize,
-	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
-	sjme_attrOutNotNull sjme_jobject* outObject,
-	sjme_attrInNotNull sjme_charSeq inClass);
-	
-/**
- * Allocates a new object.
- * 
- * @param contextThread The context thread for the allocation, if a class
- * initialization is required.
- * @param allocSize The allocation size.
- * @param inType The NVM structure type.
- * @param outObject The resultant object.
- * @param inClass The class type to use for the object.
- * @return Any resultant error, if any.
- * @since 2025/03/09
- */
-sjme_errorCode sjme_nvm_task_objectNewNU(
-	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInPositiveNonZero sjme_jint allocSize,
-	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
-	sjme_attrOutNotNull sjme_jobject* outObject,
-	sjme_attrInNotNull sjme_lpcstr inClass);
-	
 /**
  * Prints the stack trace for a thread using the standard compact SquirrelJME
  * style stack traces.
