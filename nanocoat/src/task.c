@@ -1670,9 +1670,11 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 
 	/* Setup string object. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_instance_objectNewNU(inThread,
+	if (sjme_error_is(error = sjme_nvm_instance_objectNew(inThread,
 		sizeof(*result), SJME_NVM_STRUCT_STRING_INSTANCE,
-		SJME_AS_JOBJECTP(&result), "java/lang/String")) ||
+		SJME_AS_JOBJECTP(&result),
+		sjme_nvm_task_commonClassR(inThread,
+			SJME_NVM_TASK_COMMON_CLASS_STRING))) ||
 		result == NULL)
 		goto fail_allocStringInstance;
 
