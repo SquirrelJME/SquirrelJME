@@ -28,16 +28,6 @@
 /** The size of the thread stack. */
 #define SJME_NVM_THREAD_STACK_SIZE 32768
 
-/** Type size multiplier. */
-static const sjme_jint sjme_nvm_typeMul[SJME_NUM_JAVA_TYPE_IDS] =
-{
-	sizeof(sjme_jint),
-	sizeof(sjme_jlong),
-	sizeof(sjme_jfloat),
-	sizeof(sjme_jdouble),
-	sizeof(sjme_jobject),
-};
-
 static sjme_errorCode sjme_nvm_task_stackReframe(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,

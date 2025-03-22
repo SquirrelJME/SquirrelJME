@@ -412,11 +412,12 @@ sjme_errorCode sjme_nvm_allocR(
 		case SJME_NVM_STRUCT_CLASS_INFO:
 			handler = sjme_nvm_class_classInfoClose;
 			break;
-		
+
+		case SJME_NVM_STRUCT_ARRAY_INSTANCE:
+		case SJME_NVM_STRUCT_BRACKET_PIPE:
 		case SJME_NVM_STRUCT_CLASS_INSTANCE:
 		case SJME_NVM_STRUCT_OBJECT_INSTANCE:
 		case SJME_NVM_STRUCT_STRING_INSTANCE:
-		case SJME_NVM_STRUCT_BRACKET_PIPE:
 			handler = sjme_nvm_instanceClose;
 			break;
 			

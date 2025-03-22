@@ -15,6 +15,16 @@
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/tread.h"
 
+/** Type size multiplier. */
+const sjme_jint sjme_nvm_typeMul[SJME_NUM_JAVA_TYPE_IDS] =
+{
+	sizeof(sjme_jint),
+	sizeof(sjme_jlong),
+	sizeof(sjme_jfloat),
+	sizeof(sjme_jdouble),
+	sizeof(sjme_jobject),
+};
+
 static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 {
 	switch (error)

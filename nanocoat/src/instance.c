@@ -138,15 +138,49 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	sjme_attrInNotNull sjme_jclass componentType,
 	sjme_attrInPositive sjme_jint arrayLength)
 {
+	sjme_errorCode error;
+	sjme_jclass arrayClass;
+	sjme_jarray result;
+	sjme_jint allocSize;
+	sjme_cchar buf[SJME_NVM_CLASS_NAME_LIMIT];
+	
 	if (contextThread == NULL || outObject == NULL || componentType == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (arrayLength < 0)
 		return sjme_error_vmError(contextThread,
 			SJME_ERROR_NEGATIVE_ARRAY_SIZE);
+
+	/* Determine the allocation size. */
+	allocSize = sizeof(*result) +
+		(sjme_nvm_typeMul[componentType->typeId] * arrayLength);
+
+	/* Determine array type class name. */
+	memset(buf, 0, sizeof(buf));
+	snprintf(buf, SJME_NVM_CLASS_NAME_LIMIT - 1,
+		"[%s", sjme_charSeq_tempUtf(componentType->binaryName));
+
+	/* Locate array type class. */
+	arrayClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFU(
+		contextThread->inTask->classLoader,
+		&arrayClass, contextThread, buf, SJME_JNI_TRUE)) ||
+		arrayClass == NULL)
+		return sjme_error_vmError(contextThread, error);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_instance_objectNew(contextThread,
+		allocSize, SJME_NVM_STRUCT_ARRAY_INSTANCE,
+		SJME_AS_JOBJECTP(&result), arrayClass)) || result == NULL)
+		return sjme_error_vmError(contextThread, error);
+	
+	/* Setup array. */
+	result->length = arrayLength;
+
+	/* Success! */
+	*outObject = SJME_AS_JOBJECT(result);
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_instance_objectArrayNewT(
@@ -198,7 +232,7 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		return sjme_error_vmError(contextThread, error);
 	
-	/* Set some basic details. */
+	/* Setup object. */
 	result->isClass = inClass;
 	result->identityHash = (sjme_jint)result;
 	

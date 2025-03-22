@@ -20,15 +20,6 @@
 /** The amount the class list grows by. */
 #define SJME_VM_CLASS_GROW_LEN 32
 
-/** Initialize/load not happening. */
-#define SJME_VM_CLASS_INIT_LOAD_NEVER 0
-
-/** Initialize/load is currently happening. */
-#define SJME_VM_CLASS_INIT_LOAD_CURRENT 1
-
-/** Initialize/load is now done. */
-#define SJME_VM_CLASS_INIT_LOAD_DONE 2
-
 static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_jclass thisClass,
@@ -575,17 +566,40 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
 		goto fail_countUp;
 	
-	/* Unless this is a specific binary name, it is never loaded. */
-	/* Arrays and primitive types are always considered to be loaded. */
+	/* Set class type ID. */
+	switch (sjme_charSeq_charAtR(binaryName, 0))
+	{
+		case 'Z':
+		case 'B':
+		case 'S':
+		case 'C':
+		case 'I':
+			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
+			break;
+
+		case 'J':
+			result->typeId = SJME_JAVA_TYPE_ID_LONG;
+			break;
+
+		case 'F':
+			result->typeId = SJME_JAVA_TYPE_ID_FLOAT;
+			break;
+
+		case 'D':
+			result->typeId = SJME_JAVA_TYPE_ID_DOUBLE;
+			break;
+		
+		case 'L':
+		case '[':
+			result->typeId = SJME_JAVA_TYPE_ID_OBJECT;
+			break;
+
+		default:
+			goto fail_badType;
+	}
+
+	/* Classes start as never loaded. */
 	autoLoad = SJME_VM_CLASS_INIT_LOAD_NEVER;
-	firstChar = sjme_charSeq_charAtR(dupName, 0);
-	if (firstChar == '[' || (dupName->length == 1 &&
-		(firstChar == 'Z' || firstChar == 'B' ||
-		firstChar == 'S' || firstChar == 'C' ||
-		firstChar == 'I' || firstChar == 'J' ||
-		firstChar == 'F' || firstChar == 'D' ||
-		firstChar == 'V')))
-		autoLoad = SJME_VM_CLASS_INIT_LOAD_DONE;
 
 	/* Pre-calculate hash. */
 	if (sjme_error_is(error = sjme_charSeq_hash(dupName, &result->binaryHash)))
@@ -605,6 +619,7 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	return SJME_ERROR_NONE;
 
 fail_hash:
+fail_badType:
 fail_countUp:
 fail_allocIsClasses:
 	if (result != NULL)

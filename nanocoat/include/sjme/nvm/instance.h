@@ -109,6 +109,23 @@ struct sjme_nvm_isClassesBase
 	sjme_list_sjme_jclass* classes;
 };
 
+/**
+ * The class initialization stage.
+ *
+ * @since 2025/03/22
+ */
+typedef enum sjme_nvm_instance_classInit
+{
+	/** Initialize/load not happening. */
+	SJME_VM_CLASS_INIT_LOAD_NEVER = 0,
+
+	/** Initialize/load is currently happening. */
+	SJME_VM_CLASS_INIT_LOAD_CURRENT = 1,
+
+	/** Initialize/load is now done. */
+	SJME_VM_CLASS_INIT_LOAD_DONE = 2,
+} sjme_nvm_instance_classInit;
+
 struct sjme_jclassBase
 {
 	/** All classes are objects. */
@@ -161,6 +178,9 @@ struct sjme_jclassBase
 	
 	/** The classes this implements or extends. */
 	sjme_nvm_isClasses* isClasses;
+
+	/** The basic type ID of this class. */
+	sjme_javaTypeId typeId;
 };
 
 struct sjme_jstringBase

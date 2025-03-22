@@ -135,6 +135,9 @@ typedef enum sjme_nvm_structType
 	/** Unknown. */
 	SJME_NVM_STRUCT_UNKNOWN,
 
+	/** Array instance. */
+	SJME_NVM_STRUCT_ARRAY_INSTANCE,
+
 	/** Pipe bracket. */
 	SJME_NVM_STRUCT_BRACKET_PIPE,
 	
@@ -437,6 +440,9 @@ struct sjme_nvm_stateBase
 	/** The thread schedule. */
 	sjme_nvm_threadSchedule schedule;
 };
+
+/** Type size multiplier. */
+extern const sjme_jint sjme_nvm_typeMul[SJME_NUM_JAVA_TYPE_IDS];
 
 /**
  * Method initialization start.
