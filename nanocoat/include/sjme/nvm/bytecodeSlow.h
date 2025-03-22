@@ -101,6 +101,7 @@ SJME_NVM_BYTECODE_SLOW(XStoreZ);
 /* Math */
 
 /* Reference */
+SJME_NVM_BYTECODE_SLOW(ArrayLength);
 SJME_NVM_BYTECODE_SLOW(CheckCast);
 SJME_NVM_BYTECODE_SLOW(InvokeStatic);
 SJME_NVM_BYTECODE_SLOW(InvokeVirtual);

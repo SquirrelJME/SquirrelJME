@@ -11,6 +11,7 @@
 #include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/bytecodeSlow.h"
 #include "sjme/nvm/classy.h"
+#include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/instance.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/task.h"
@@ -158,6 +159,42 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeAny(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_BYTECODE_SLOW(ArrayLength)
+{
+	sjme_jarray array;
+	sjme_jvalueTyped value, result;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* PC adjustment. */
+	pcNew->adjust = 1;
+
+	/* Pop single object value. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Cannot be null. */
+	if (value.value.l == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
+
+	/* Must be an array type. */
+	array = SJME_AS_JARRAY(value.value.l);
+	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE))
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+
+	/* Push length onto the stack. */
+	memset(&result, 0, sizeof(result));
+	result.type = SJME_JAVA_TYPE_ID_INTEGER;
+	result.value.i = array->length;
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&result)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(CheckCast)

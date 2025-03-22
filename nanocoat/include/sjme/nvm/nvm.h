@@ -222,6 +222,9 @@ typedef struct sjme_nvm_commonBase sjme_nvm_commonBase;
  */
 typedef sjme_nvm_commonBase* sjme_nvm_common;
 
+/** Cast to array. */
+#define SJME_AS_JARRAY(x) ((sjme_jarray)(x))
+	
 /** Cast to object. */
 #define SJME_AS_JOBJECT(x) ((sjme_jobject)(x))
 

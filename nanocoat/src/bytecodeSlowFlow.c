@@ -111,7 +111,7 @@ SJME_NVM_BYTECODE_SLOW(IfAX)
 	/* Read the branch value. */
 	offset = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[1]));
 	
-	/* Pop single integer value. */
+	/* Pop single object value. */
 	memset(&value, 0, sizeof(value));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		SJME_JAVA_TYPE_ID_OBJECT, &value)))
