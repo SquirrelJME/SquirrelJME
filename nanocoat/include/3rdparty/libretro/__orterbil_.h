@@ -30,7 +30,6 @@
 #ifndef LIBRETRO_H__
 #define LIBRETRO_H__
 
-#include <stdint.h>
 #include <stddef.h>
 #include <limits.h>
 

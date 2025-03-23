@@ -72,34 +72,30 @@ typedef sjme_jint (*sjme_comparator)(sjme_cpointer a, sjme_cpointer b,
  * @param numPointerStars The number of pointer stars.
  * @since 2024/01/03
  */
-#define SJME_COMPARATOR_GENERIC(type, numPointerStars) \
-	static sjme_inline sjme_attrArtificial sjme_jint \
-		SJME_COMPARATOR(type, numPointerStars)( \
-		sjme_cpointer a, sjme_cpointer b, int elementSize) \
-	{ \
-		return (sjme_jint)(*((const type*)b) - *((const type*)a)); \
-	}
+#define SJME_COMPARATOR_GENERIC_DECLARE(type, numPointerStars) \
+	sjme_jint SJME_COMPARATOR(type, numPointerStars)( \
+		sjme_cpointer a, sjme_cpointer b, int elementSize)
 
 /** Generic @c sjme_jbyte comparator. */
-SJME_COMPARATOR_GENERIC(sjme_jbyte, 0)
+SJME_COMPARATOR_GENERIC_DECLARE(sjme_jbyte, 0);
 
 /** Generic @c sjme_jubyte comparator. */
-SJME_COMPARATOR_GENERIC(sjme_jubyte, 0)
+SJME_COMPARATOR_GENERIC_DECLARE(sjme_jubyte, 0);
 
 /** Generic @c sjme_jshort comparator. */
-SJME_COMPARATOR_GENERIC(sjme_jshort, 0)
+SJME_COMPARATOR_GENERIC_DECLARE(sjme_jshort, 0);
 
 /** Generic @c sjme_jchar comparator. */
-SJME_COMPARATOR_GENERIC(sjme_jchar, 0)
+SJME_COMPARATOR_GENERIC_DECLARE(sjme_jchar, 0);
 
 /** Generic @c sjme_jint comparator. */
-SJME_COMPARATOR_GENERIC(sjme_jint, 0)
+SJME_COMPARATOR_GENERIC_DECLARE(sjme_jint, 0);
 
 /** Generic @c sjme_juint comparator. */
-SJME_COMPARATOR_GENERIC(sjme_juint, 0)
+SJME_COMPARATOR_GENERIC_DECLARE(sjme_juint, 0);
 
 /** Generic @c sjme_cchar comparator. */
-SJME_COMPARATOR_GENERIC(sjme_cchar, 0)
+SJME_COMPARATOR_GENERIC_DECLARE(sjme_cchar, 0);
 
 /**
  * Compares two @c sjme_lpcstr .

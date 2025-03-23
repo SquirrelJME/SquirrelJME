@@ -237,15 +237,8 @@ sjme_jint sjme_string_lengthN(sjme_lpcstr string, sjme_jint limit);
  * @return The swapped value.
  * @since 2024/01/05
  */
-static sjme_inline sjme_attrArtificial sjme_juint sjme_swap_uint(
-	sjme_juint in)
-{
-	// 0xAABBCCDD -> 0xBBAADDCC
-	in = (((in & 0xFF00FF00) >> 8) | ((in & 0x00FF00FF) << 8));
-
-	// 0xBBAADDCC -> 0xDDCCBBAA
-	return (in >> 16) | (in << 16);
-}
+sjme_juint sjme_swap_uint(
+	sjme_attrInValue sjme_juint in);
 
 /**
  * Swaps an integer value.
@@ -254,11 +247,7 @@ static sjme_inline sjme_attrArtificial sjme_juint sjme_swap_uint(
  * @return The swapped value.
  * @since 2024/01/05
  */
-static sjme_inline sjme_attrArtificial sjme_jint sjme_swap_int(
-	sjme_jint in)
-{
-	return (sjme_jint)sjme_swap_uint((sjme_juint)in);
-}
+#define sjme_swap_int(in) ((sjme_jint)sjme_swap_uint((sjme_juint)(in)))
 
 /**
  * Swaps a long value.
@@ -267,23 +256,8 @@ static sjme_inline sjme_attrArtificial sjme_jint sjme_swap_int(
  * @return The swapped value.
  * @since 2024/01/05
  */
-static sjme_inline sjme_attrArtificial sjme_jlong sjme_swap_long(
-	sjme_jlong in)
-{
-	sjme_juint temp;
-
-	/* Swap high and low first. */
-	temp = in.part.hi;
-	in.part.hi = (sjme_jint)in.part.lo;
-	in.part.lo = temp;
-
-	/* Then finish swap each side. */
-	in.part.hi = sjme_swap_int(in.part.hi);
-	in.part.lo = sjme_swap_uint(in.part.lo);
-
-	/* Return the result. */
-	return in;
-}
+sjme_jlong sjme_swap_long(
+	sjme_attrInValue sjme_jlong in);
 
 /**
  * Swaps an unsigned short value.
@@ -292,11 +266,8 @@ static sjme_inline sjme_attrArtificial sjme_jlong sjme_swap_long(
  * @return The swapped value.
  * @since 2024/01/05
  */
-static sjme_inline sjme_attrArtificial sjme_jchar sjme_swap_ushort(
-	sjme_jchar in)
-{
-	return ((in >> 8) | (in << 8));
-}
+sjme_jchar sjme_swap_ushort(
+	sjme_attrInValue sjme_jchar in);
 
 /**
  * Swaps a short value.
@@ -305,11 +276,7 @@ static sjme_inline sjme_attrArtificial sjme_jchar sjme_swap_ushort(
  * @return The swapped value.
  * @since 2024/01/05
  */
-static sjme_inline sjme_attrArtificial sjme_jshort sjme_swap_short(
-	sjme_jshort in)
-{
-	return (sjme_jchar)sjme_swap_ushort((sjme_jchar)in);
-}
+#define sjme_swap_short(in) ((sjme_jchar)sjme_swap_ushort((sjme_jchar)(in)))
 
 /**
  * Performs @c memmove() followed by shifting up by 8 the destination buffer,

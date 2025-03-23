@@ -144,7 +144,7 @@ endmacro()
 macro(squirreljme_target_shared_library_exports target)
 	# If there is a config used, just use the first one
 	if(NOT "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
-		list(GET "${CMAKE_CONFIGURATION_TYPES}" 0 firstConfig)
+		list(GET CMAKE_CONFIGURATION_TYPES 0 firstConfig)
 
 		get_target_property(squirreljme_dylib_output_dir
 			${target} RUNTIME_OUTPUT_DIRECTORY_${firstConfig})

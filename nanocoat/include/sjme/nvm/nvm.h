@@ -630,39 +630,6 @@ typedef struct sjme_nvm_frameTread
 	(sizeof(type) * (size_t)(count)))
 
 /**
- * Calculates the size of a frame tread for a given type via variable.
- * 
- * @param typeId The type to get the size for.
- * @param count The number if items to store.
- * @return The size in bytes for the tread.
- * @since 2023/11/15
- */
-static sjme_inline sjme_attrArtificial size_t SJME_SIZEOF_FRAME_TREAD_VAR(
-	sjme_javaTypeId typeId, sjme_jint count)
-{
-	switch (typeId)
-	{
-		case SJME_JAVA_TYPE_ID_INTEGER:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jint, count, jint);
-		
-		case SJME_JAVA_TYPE_ID_LONG:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jlong, count, jlong);
-			
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jfloat, count, jfloat);
-			
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jdouble, count, jdouble);
-			
-		case SJME_JAVA_TYPE_ID_OBJECT:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jobject, count, jobject);
-	}
-	
-	/* Invalid. */
-	return 0;
-}
-
-/**
  * Represents information on a frame's stack storage.
  * 
  * @since 2023/11/16
