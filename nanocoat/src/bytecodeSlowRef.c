@@ -16,6 +16,18 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/task.h"
 
+static const sjme_basicTypeId sjme_nvm_byteCode_xArrayType[8] =
+{
+	SJME_JAVA_TYPE_ID_INTEGER,
+	SJME_JAVA_TYPE_ID_LONG,
+	SJME_JAVA_TYPE_ID_FLOAT,
+	SJME_JAVA_TYPE_ID_DOUBLE,
+	SJME_JAVA_TYPE_ID_OBJECT,
+	SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE,
+	SJME_BASIC_TYPE_ID_CHARACTER,
+	SJME_BASIC_TYPE_ID_SHORT,
+};
+
 static sjme_errorCode sjme_nvm_byteCode_slowInvokeAny(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
@@ -333,11 +345,47 @@ SJME_NVM_BYTECODE_SLOW(New)
 
 SJME_NVM_BYTECODE_SLOW(XALoad)
 {
+	sjme_jvalueTyped arrayValue;
+	sjme_jvalueTyped indexValue;
+	sjme_jarray array;
+	sjme_jint index;
+	sjme_basicTypeId arrayType;
+	sjme_jclass componentType;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* PC adjustment. */
 	pcNew->adjust = 1;
 
+	/* Read in index and array. */
+	memset(&indexValue, 0, sizeof(indexValue));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_INTEGER, &indexValue)))
+		return sjme_error_vmError(inFrame, error);
+	memset(&arrayValue, 0, sizeof(arrayValue));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &arrayValue)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Must not be null. */
+	array = SJME_AS_JARRAY(arrayValue.value.l);
+	if (array == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
+
+	/* Make sure the array is actually valid. */
+	arrayType = sjme_nvm_byteCode_xArrayType[id - 46];
+	componentType = sjme_atomic_sjme_jclass_get(
+		&array->object.isClass->componentType);
+	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
+		!array->object.isClass->info->isArray ||
+		componentType == NULL || componentType->arrayTypeId != arrayType)
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+
+	/* Check bounds. */
+	index = indexValue.value.i;
+	if (index < 0 || index >= array->length)
+		return sjme_error_vmError(inFrame,
+			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS);
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 	

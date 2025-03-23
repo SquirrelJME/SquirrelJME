@@ -216,6 +216,12 @@ struct sjme_jclassBase
 
 	/** The array type ID of this class. */
 	sjme_basicTypeId arrayTypeId;
+
+	/** The component type of this class, if it is an array. */
+	sjme_atomic_sjme_jclass componentType;
+
+	/** The phantom array type of this class. */
+	sjme_atomic_sjme_jclass phantomArrayType;
 };
 
 struct sjme_jstringBase

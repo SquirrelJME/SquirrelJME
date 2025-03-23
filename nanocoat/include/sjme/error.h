@@ -462,9 +462,12 @@ typedef enum sjme_errorCode
 
 	/** Stack pointer is null. */
 	SJME_ERROR_NULL_STACK_POINTER = -140,
+
+	/** Array index is out of bounds. */
+	SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS = -141,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -141,
+	SJME_NUM_ERROR_CODES = -142,
 } sjme_errorCode;
 
 /**

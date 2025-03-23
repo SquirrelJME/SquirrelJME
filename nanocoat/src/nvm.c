@@ -28,7 +28,7 @@ const sjme_jint sjme_nvm_typeMul[SJME_NUM_BASIC_TYPE_IDS] =
 	/* Either or types. */
 	0,
 	sizeof(sjme_jbyte),
-	sizeof(sjme_jshort) | sizeof(sjme_jchar),
+	sizeof(sjme_jshort),
 
 	/* Specific types. */
 	sizeof(sjme_jboolean),
@@ -95,6 +95,7 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_WRONG_RETURN_TYPE:
 		case SJME_ERROR_INVALID_CODE_ADDRESS:
 		case SJME_ERROR_NULL_STACK_POINTER:
+		case SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS:
 			return SJME_JNI_TRUE;
 
 		default:

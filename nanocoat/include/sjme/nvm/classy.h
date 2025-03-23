@@ -644,6 +644,9 @@ struct sjme_nvm_class_infoBase
 
 	/** Methods within the class. */
 	sjme_list_sjme_nvm_class_methodInfo* methods;
+
+	/** Is this an array? */
+	sjme_jboolean isArray;
 };
 
 /**

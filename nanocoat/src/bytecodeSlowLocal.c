@@ -14,14 +14,11 @@
 
 static const sjme_javaTypeId sjme_nvm_byteCode_xLoadType[5] =
 {
-	/* Basic. */
 	SJME_JAVA_TYPE_ID_INTEGER,
 	SJME_JAVA_TYPE_ID_LONG,
 	SJME_JAVA_TYPE_ID_FLOAT,
 	SJME_JAVA_TYPE_ID_DOUBLE,
 	SJME_JAVA_TYPE_ID_OBJECT,
-
-	/* Aarrays. */
 };
 
 SJME_NVM_BYTECODE_SLOW(IInc)
@@ -119,7 +116,7 @@ SJME_NVM_BYTECODE_SLOW(XStore)
 	else
 	{
 		pcNew->adjust = 2;
-	index = relRawCode[1] & 0xFF;
+		index = relRawCode[1] & 0xFF;
 	}
 
 	/* Pop object from the stack. */

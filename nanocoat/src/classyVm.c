@@ -422,9 +422,12 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	info->flags.access.public = SJME_JNI_TRUE;
 	info->flags.final = SJME_JNI_TRUE;
 	info->flags.synthetic = SJME_JNI_TRUE;
+	info->isArray = SJME_JNI_TRUE;
 
 	/* Set synthetic class info. */
 	inClass->info = info;
+
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -576,9 +579,13 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 			break;
 		
 		case 'S':
+			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
+			result->arrayTypeId = SJME_BASIC_TYPE_ID_SHORT;
+			break;
+		
 		case 'C':
 			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
-			result->arrayTypeId = SJME_JAVA_TYPE_ID_SHORT_OR_CHAR;
+			result->arrayTypeId = SJME_BASIC_TYPE_ID_CHARACTER;
 			break;
 		
 		case 'I':
