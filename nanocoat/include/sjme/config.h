@@ -829,15 +829,6 @@ extern "C" {
 	/** No vsnprintf() */
 	#define SJME_CONFIG_HAS_NO_VSNPRINTF 1
 #endif
-		
-/* Missing standard C functions. */
-#if defined(SJME_CONFIG_HAS_NO_ERRNO) || \
-	defined(SJME_CONFIG_HAS_NO_SNPRINTF) || \
-    defined(SJME_CONFIG_HAS_NO_STDARG) || \
-    defined(SJME_CONFIG_HAS_NO_VARARGS) || \
-    defined(SJME_CONFIG_HAS_NO_VSNPRINTF)
-	#include "sjme/stdGone.h"
-#endif
 
 /** Disable all linting of any kind. */
 #define sjme_noLint(what) (what) /* NOLINT */ /* ReSharper disable once all */
@@ -874,6 +865,9 @@ extern "C" {
 	/* Qualifier used multiple times, as there are volatile typedefs. */
 	#pragma warning(disable: 4114)
 #endif
+
+/* Missing standard C functions. */
+#include "sjme/stdGone.h"
 
 /*--------------------------------------------------------------------------*/
 
