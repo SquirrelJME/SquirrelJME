@@ -318,9 +318,13 @@ sjme_jboolean sjme_mock_doNvmFrame(
 			continue;
 		
 		/* Allocate target tread. */
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+#if 0
 		tread = sjme_mock_alloc(inState,
 			SJME_SIZEOF_FRAME_TREAD_VAR(typeId, treadMax));
 		newFrame->treads[typeId] = tread;
+#endif
 		
 		/* Setup stack base. */
 		stackBase = inData->current.data.nvmFrame.treads[typeId]

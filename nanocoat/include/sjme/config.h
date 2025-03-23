@@ -73,6 +73,14 @@ extern "C" {
 
 /** Visual Studio 2005 */
 #define SJME_VERSION_MSVC_2005 1400
+
+/** Visual Studio 2010 */
+#define SJME_VERSION_MSVC_2010 1600
+
+#if defined(__WATCOMC__)
+	/** Watcom C Compiler. */
+	#define SJME_CONFIG_HAS_WATCOM
+#endif
 	
 #if defined(__clang__)
 	/** CLang LLVM Compiler. */
@@ -299,6 +307,13 @@ extern "C" {
 	#define SJME_CONFIG_HAS_POINTER64
 #endif
 
+#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010) || \
+	defined(SJME_CONFIG_HAS_GCC) || \
+	defined(SJME_CONFIG_HAS_CLANG) || \
+	defined(SJME_CONFIG_HAS_C99)
+	#define SJME_CONFIG_HAS_STDINT
+#endif
+
 #if defined(SJME_CONFIG_ROM0)
 	/** ROM 0 Address. */
 	#define SJME_CONFIG_ROM0_ADDR &SJME_CONFIG_ROM0
@@ -383,10 +398,25 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_C99)
 	/** Flexible array members. */
 	#define sjme_flexibleArrayCount
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Flexible array count, MSVC requires 1 because C2233. */
+	#define sjme_flexibleArrayCount 1
+#elif defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
+	/** Flexible array size count, GCC is fine with blank. */
+	#define sjme_flexibleArrayCount
+#elif defined(SJME_CONFIG_HAS_WATCOM)
+	/** Flexible array size count. */
+	#define sjme_flexibleArrayCount
 #endif
 
-/* Visual C++. */
+/* Visual C++ has a differently named alloca. */
 #if defined(SJME_CONFIG_HAS_MSVC)
+	/** Allocate on the stack. */
+	#define sjme_alloca(size) _alloca((size))
+#endif
+
+/* Visual C SAL 2.0 Annotations. */
+#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
 	#include <sal.h>
 
 	/** Return value must be checked. */
@@ -405,7 +435,7 @@ extern "C" {
 	#define sjme_attrInNullable _In_opt_
 	
 	/** Takes input and produces output. */
-	#define sjme_attrInOutNotNull _In_opt_ _Out_opt_
+	#define sjme_attrInOutNotNull _In_ _Out_
 	
 	/** Input value range. */
 	#define sjme_attrInRange(lo, hi) _In_range_((lo), (hi))
@@ -428,18 +458,37 @@ extern "C" {
 	/** Output value range. */
 	#define sjme_attrOutRange(lo, hi) _Out_range_((lo), (hi))
 
-	#if !defined(sjme_flexibleArrayCount)
-		/** Flexible array count, MSVC requires 1 because C2233. */
-		#define sjme_flexibleArrayCount 1
-	#endif
-	
-	#if !defined(sjme_flexibleArrayCountUnion)
-		/** Flexible array count for union, MSVC requires 1 because C2233. */
-		#define sjme_flexibleArrayCountUnion 1
-	#endif
+/* Older Visual C++. */
+#elif SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_6)
+	#include <sal.h>
 
-	/** Allocate on the stack. */
-	#define sjme_alloca(size) _alloca((size))
+	/** Return value must be checked. */
+	#define sjme_attrCheckReturn __checkReturn
+
+	/** Formatted string argument. */
+	#define sjme_attrFormatArg __format_string
+
+	/** Input cannot be null. */
+	#define sjme_attrInNotNull __in
+
+	/** Input can be null. */
+	#define sjme_attrInNullable __in_opt
+
+	/** Takes input and produces output. */
+	#define sjme_attrInOutNotNull __in __out
+
+	/** Method takes input. */
+	#define sjme_attrInValue __in
+
+	/** Returns nullable value. */
+	#define sjme_attrReturnNullable __maybenull
+
+	/** Method gives output. */
+	#define sjme_attrOutNotNull __out
+
+	/** Method output can be null. */
+	#define sjme_attrOutNullable __out_opt
+
 #elif defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
 	/* Clang has special analyzer stuff, but also same as GCC otherwise. */
 	#if defined(SJME_CONFIG_HAS_CLANG)
@@ -481,17 +530,6 @@ extern "C" {
 
 	/** Not used enum constant. */
 	#define sjme_attrUnusedEnum(x) x sjme_attrUnused
-	
-	#if !defined(sjme_flexibleArrayCount)
-		/** Flexible array size count, GCC is fine with blank. */
-		#define sjme_flexibleArrayCount
-	#endif
-#elif defined(__WATCOMC__)
-	/** Flexible array size count. */
-	#define sjme_flexibleArrayCount
-
-	/** Flexible array count but for unions. */
-	#define sjme_flexibleArrayCountUnion 1
 #endif
 
 #if !defined(sjme_attrCallback)
@@ -610,7 +648,7 @@ extern "C" {
 
 #if !defined(sjme_flexibleArrayCountUnion)
 	/** Flexible array count but for unions. */
-	#define sjme_flexibleArrayCountUnion 0
+	#define sjme_flexibleArrayCountUnion 1
 #endif
 
 #if !defined(sjme_attrUnused)
