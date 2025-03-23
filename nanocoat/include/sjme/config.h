@@ -855,9 +855,6 @@ extern "C" {
 	/** No vsnprintf() */
 	#define SJME_CONFIG_HAS_NO_VSNPRINTF 1
 #endif
-		
-/* Missing standard C functions, always include these. */
-#include "sjme/stdGone.h"
 
 /** Disable all linting of any kind. */
 #define sjme_noLint(what) (what) /* NOLINT */ /* ReSharper disable once all */
@@ -950,6 +947,9 @@ extern "C" {
 	/** Has software double floating point. */
 	#define SJME_CONFIG_HAS_DOUBLE_SOFT
 #endif
+		
+/* Missing standard C functions, always include these. */
+#include "sjme/stdGone.h"
 	
 /*--------------------------------------------------------------------------*/
 
