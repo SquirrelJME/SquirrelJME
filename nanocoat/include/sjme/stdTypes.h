@@ -17,7 +17,6 @@
 #define SQUIRRELJME_STDTYPES_H
 
 #include <stdlib.h>
-#include <stdint.h>
 
 #include "sjme/config.h"
 

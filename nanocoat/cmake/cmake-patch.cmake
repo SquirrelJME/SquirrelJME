@@ -8,7 +8,7 @@
 # DESCRIPTION: Soft patching for CMake.
 
 # String joining
-if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.11")
+if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
 	macro(squirreljme_string_join sjGlue sjOut
 		sjList)
 		# Setup initial blank output
@@ -58,10 +58,11 @@ if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
 	# Additional linker options
 	macro(target_link_options)
 		# The target we are interested in...
-		list(GET "${ARGV}" 0 tloTarget)
+		set(ltoArgs "${ARGV}")
+		list(GET ltoArgs 0 tloTarget)
 
 		# Is there a before?
-		set(GET "${ARGV}" 1 tloMaybeBefore)
+		list(GET ltoArgs 1 tloMaybeBefore)
 		if(tloMaybeBefore STREQUAL "BEFORE")
 			# Mark as before
 			set(tloBefore YES)
@@ -85,8 +86,8 @@ if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
 			math(EXPR tloAtL "${tloAt} + 1")
 
 			# Extract sub-parameters
-			list(GET "${ARGV}" "${tloAtI}" tloInstance)
-			list(GET "${ARGV}" "${tloAtL}" tloFlag)
+			list(GET ltoArgs "${tloAtI}" tloInstance)
+			list(GET ltoArgs "${tloAtL}" tloFlag)
 
 			# Add library, ignore the instance for it
 			list(APPEND tloFlags "${tloFlag}")
@@ -95,16 +96,30 @@ if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
 			math(EXPR tloAt "${tloAt} + 2")
 		endwhile()
 
+		# Join options together
+		squirreljme_string_join(" " tloStrOpt "${tloFlags}")
+
+		# What should be used for link flags?
+		if(NOT "$<CONFIG>" STREQUAL "")
+			set(tloLinkFlagsName "LINK_FLAGS_$<CONFIG>")
+		else()
+			set(tloLinkFlagsName "LINK_FLAGS")
+		endif()
+
 		# Get old link options to add in the list...
 		get_target_property(tloOldLinkOpt ${tloTarget}
 			LINK_FLAGS)
-		squirreljme_string_join(" " tloStrOpt "${tloFlags}")
-		if(tloBefore)
-			set_target_properties(${tloTarget} PROPERTIES
-				LINK_FLAGS "${tloStrOpt} ${tloOldLinkOpt}")
+		if(tloOldLinkOpt)
+			if(tloBefore)
+				set_target_properties(${tloTarget} PROPERTIES
+					${tloLinkFlagsName} "${tloStrOpt} ${tloOldLinkOpt}")
+			else()
+				set_target_properties(${tloTarget} PROPERTIES
+					${tloLinkFlagsName} "${tloOldLinkOpt} ${tloStrOpt}")
+			endif()
 		else()
 			set_target_properties(${tloTarget} PROPERTIES
-				LINK_FLAGS "${tloOldLinkOpt} ${tloStrOpt}")
+				${tloLinkFlagsName} "${tloStrOpt}")
 		endif()
 	endmacro()
 else()

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;
@@ -18,17 +19,21 @@ import java.util.RandomAccess;
  *
  * @since 2020/07/11
  */
+@SquirrelJMEVendorApi
 public class ByteArrayList
 	extends AbstractList<Byte>
 	implements RandomAccess
 {
 	/** The backing array. */
+	@SquirrelJMEVendorApi
 	protected final byte[] array;
 	
 	/** The offset. */
+	@SquirrelJMEVendorApi
 	protected final int offset;
 	
 	/** The cached size. */
+	@SquirrelJMEVendorApi
 	protected final int size;
 	
 	/**
@@ -38,6 +43,7 @@ public class ByteArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
+	@SquirrelJMEVendorApi
 	public ByteArrayList(byte[] __a)
 		throws NullPointerException
 	{
@@ -55,6 +61,7 @@ public class ByteArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
+	@SquirrelJMEVendorApi
 	public ByteArrayList(byte[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -90,6 +97,7 @@ public class ByteArrayList
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @since 2020/07/11
 	 */
+	@SquirrelJMEVendorApi
 	public byte set(int __i, byte __v)
 		throws IndexOutOfBoundsException
 	{
@@ -140,6 +148,7 @@ public class ByteArrayList
 	 * @return The boxed list type.
 	 * @since 2020/07/11
 	 */
+	@SquirrelJMEVendorApi
 	public static List<Byte> asList(byte... __array)
 	{
 		return new ByteArrayList(__array);

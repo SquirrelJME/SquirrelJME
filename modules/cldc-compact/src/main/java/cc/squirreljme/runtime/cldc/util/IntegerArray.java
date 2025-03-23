@@ -9,11 +9,14 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This interface represents integer arrays.
  *
  * @since 2018/10/28
  */
+@SquirrelJMEVendorApi
 public interface IntegerArray
 {
 	/**
@@ -24,6 +27,7 @@ public interface IntegerArray
 	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
 	 * @since 2018/10/28
 	 */
+	@SquirrelJMEVendorApi
 	int get(int __i);
 	
 	/**
@@ -34,6 +38,7 @@ public interface IntegerArray
 	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
 	 * @since 2018/10/28
 	 */
+	@SquirrelJMEVendorApi
 	void set(int __i, int __v);
 	
 	/**
@@ -42,6 +47,7 @@ public interface IntegerArray
 	 * @return The array size.
 	 * @since 2018/10/28
 	 */
+	@SquirrelJMEVendorApi
 	int size();
 }
 

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractMap;
@@ -26,6 +27,7 @@ import java.util.Set;
  * @param <V> The type of value to store.
  * @since 2016/09/06
  */
+@SquirrelJMEVendorApi
 public class SortedTreeMap<K, V>
 	extends AbstractMap<K, V>
 {
@@ -57,6 +59,7 @@ public class SortedTreeMap<K, V>
 	 *
 	 * @since 2016/09/06
 	 */
+	@SquirrelJMEVendorApi
 	public SortedTreeMap()
 	{
 		this(NaturalComparator.<K>instance());
@@ -71,10 +74,12 @@ public class SortedTreeMap<K, V>
 	 * @since 2016/09/06
 	 */
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	public SortedTreeMap(Map<? extends Comparable<K>, ? extends V> __m)
 		throws NullPointerException
 	{
-		this(NaturalComparator.<K>instance(), (Map<? extends K, ? extends V>)__m);
+		this(NaturalComparator.<K>instance(),
+			(Map<? extends K, ? extends V>)__m);
 	}
 	
 	/**
@@ -85,6 +90,7 @@ public class SortedTreeMap<K, V>
 	 * @since 2016/09/06
 	 */
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	public SortedTreeMap(Comparator<? extends K> __comp)
 		throws NullPointerException
 	{
@@ -106,6 +112,7 @@ public class SortedTreeMap<K, V>
 	 * @since 2016/09/06
 	 */
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	public SortedTreeMap(Comparator<? extends K> __comp,
 		Map<? extends K, ? extends V> __m)
 		throws NullPointerException

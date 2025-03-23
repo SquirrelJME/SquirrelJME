@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Comparator;
@@ -18,6 +19,7 @@ import java.util.Comparator;
  *
  * @since 2016/09/06
  */
+@SquirrelJMEVendorApi
 public final class NaturalComparator<V>
 	implements Comparator<V>
 {
@@ -64,6 +66,7 @@ public final class NaturalComparator<V>
 	 * @since 2016/09/06
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SquirrelJMEVendorApi
 	public static final <V> NaturalComparator<V> instance()
 	{
 		Reference<NaturalComparator> ref = NaturalComparator._REF;

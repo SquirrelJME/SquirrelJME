@@ -45,8 +45,6 @@ file(WRITE "${CMAKE_BINARY_DIR}/dylibprefix"
 file(WRITE "${CMAKE_BINARY_DIR}/dylibsuffix"
 	"${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
-include_directories("${CMAKE_SOURCE_DIR}/../../include/")
-
 include("${CMAKE_SOURCE_DIR}/../cmake-patch.cmake"
 	NO_POLICY_SCOPE)
 include("${CMAKE_SOURCE_DIR}/../fixes.cmake"
@@ -54,6 +52,13 @@ include("${CMAKE_SOURCE_DIR}/../fixes.cmake"
 
 # Ignore C11 threading
 add_compile_definitions(SJME_CONFIG_HAS_NO_C11_THREADS=1)
+
+include_directories("${CMAKE_SOURCE_DIR}/../../include/")
+
+include("${CMAKE_SOURCE_DIR}/../cmake-patch.cmake"
+	NO_POLICY_SCOPE)
+include("${CMAKE_SOURCE_DIR}/../fixes.cmake"
+	NO_POLICY_SCOPE)
 
 # Hex decoding to binary
 add_executable(decode

@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_LIBRETRO_H
 #define SQUIRRELJME_LIBRETRO_H
 
+#include "sjme/stdGone.h"
+
 #if 0
 	#include "3rdparty/libretro/__experimental__.h"
 #else

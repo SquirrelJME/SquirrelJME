@@ -330,6 +330,40 @@ sjme_jint sjme_string_lengthN(sjme_lpcstr string, sjme_jint limit)
 	return result;
 }
 
+sjme_jlong sjme_swap_long(
+	sjme_attrInValue sjme_jlong in)
+{
+	sjme_juint temp;
+
+	/* Swap high and low first. */
+	temp = in.part.hi;
+	in.part.hi = (sjme_jint)in.part.lo;
+	in.part.lo = temp;
+
+	/* Then finish swap each side. */
+	in.part.hi = sjme_swap_int(in.part.hi);
+	in.part.lo = sjme_swap_uint(in.part.lo);
+
+	/* Return the result. */
+	return in;
+}
+
+sjme_juint sjme_swap_uint(
+	sjme_attrInValue sjme_juint in)
+{
+	// 0xAABBCCDD -> 0xBBAADDCC
+	in = (((in & 0xFF00FF00) >> 8) | ((in & 0x00FF00FF) << 8));
+
+	// 0xBBAADDCC -> 0xDDCCBBAA
+	return (in >> 16) | (in << 16);
+}
+
+sjme_jchar sjme_swap_ushort(
+	sjme_attrInValue sjme_jchar in)
+{
+	return ((in >> 8) | (in << 8));
+}
+
 sjme_errorCode sjme_swap_shu8_uint_memmove(
 	sjme_attrInNotNull sjme_pointer dest,
 	sjme_attrInNotNull sjme_pointer src,
