@@ -16,13 +16,25 @@
 #include "sjme/nvm/tread.h"
 
 /** Type size multiplier. */
-const sjme_jint sjme_nvm_typeMul[SJME_NUM_JAVA_TYPE_IDS] =
+const sjme_jint sjme_nvm_typeMul[SJME_NUM_BASIC_TYPE_IDS] =
 {
+	/* Java Types. */
 	sizeof(sjme_jint),
 	sizeof(sjme_jlong),
 	sizeof(sjme_jfloat),
 	sizeof(sjme_jdouble),
 	sizeof(sjme_jobject),
+
+	/* Either or types. */
+	0,
+	sizeof(sjme_jbyte),
+	sizeof(sjme_jshort) | sizeof(sjme_jchar),
+
+	/* Specific types. */
+	sizeof(sjme_jboolean),
+	sizeof(sjme_jbyte),
+	sizeof(sjme_jshort),
+	sizeof(sjme_jchar),
 };
 
 static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)

@@ -571,27 +571,40 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	{
 		case 'Z':
 		case 'B':
+			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
+			result->arrayTypeId = SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE;
+			break;
+		
 		case 'S':
 		case 'C':
+			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
+			result->arrayTypeId = SJME_JAVA_TYPE_ID_SHORT_OR_CHAR;
+			break;
+		
 		case 'I':
 			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
+			result->arrayTypeId = SJME_JAVA_TYPE_ID_INTEGER;
 			break;
 
 		case 'J':
 			result->typeId = SJME_JAVA_TYPE_ID_LONG;
+			result->arrayTypeId = SJME_JAVA_TYPE_ID_LONG;
 			break;
 
 		case 'F':
 			result->typeId = SJME_JAVA_TYPE_ID_FLOAT;
+			result->arrayTypeId = SJME_JAVA_TYPE_ID_FLOAT;
 			break;
 
 		case 'D':
 			result->typeId = SJME_JAVA_TYPE_ID_DOUBLE;
+			result->arrayTypeId = SJME_JAVA_TYPE_ID_DOUBLE;
 			break;
 		
 		case 'L':
 		case '[':
 			result->typeId = SJME_JAVA_TYPE_ID_OBJECT;
+			result->arrayTypeId = SJME_JAVA_TYPE_ID_OBJECT;
 			break;
 
 		default:

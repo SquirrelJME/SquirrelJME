@@ -44,6 +44,38 @@ struct sjme_jobjectBase
 };
 
 /**
+ * Raw array values.
+ *
+ * @since 2025/03/23
+ */
+typedef union sjme_nvm_rawArrayValues
+{
+	/** Byte/boolean values. */
+	sjme_jbyte b[sjme_flexibleArrayCountUnion];
+	
+	/** Short values. */
+	sjme_jshort s[sjme_flexibleArrayCountUnion];
+	
+	/** Char values. */
+	sjme_jshort c[sjme_flexibleArrayCountUnion];
+	
+	/** Integer values. */
+	sjme_jint i[sjme_flexibleArrayCountUnion];
+		
+	/** Long values. */
+	sjme_jlong j[sjme_flexibleArrayCountUnion];
+		
+	/** Float values. */
+	sjme_jfloat f[sjme_flexibleArrayCountUnion];
+		
+	/** Double values. */
+	sjme_jdouble d[sjme_flexibleArrayCountUnion];
+		
+	/** Object reference values. */
+	sjme_jobject l[sjme_flexibleArrayCountUnion];
+} sjme_nvm_rawArrayValues;
+
+/**
  * Raw field values.
  *
  * @since 2024/11/27
@@ -179,8 +211,11 @@ struct sjme_jclassBase
 	/** The classes this implements or extends. */
 	sjme_nvm_isClasses* isClasses;
 
-	/** The basic type ID of this class. */
+	/** The Java type ID of this class. */
 	sjme_javaTypeId typeId;
+
+	/** The array type ID of this class. */
+	sjme_basicTypeId arrayTypeId;
 };
 
 struct sjme_jstringBase
@@ -210,7 +245,7 @@ struct sjme_jarrayBase
 	sjme_jint length;
 
 	/** The elements in the array. */
-	sjme_alignPointer sjme_nvm_rawFieldValues elements;
+	sjme_alignPointer sjme_nvm_rawArrayValues elements;
 };
 
 /**

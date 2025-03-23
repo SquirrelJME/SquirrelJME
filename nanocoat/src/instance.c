@@ -153,7 +153,7 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 
 	/* Determine the allocation size. */
 	allocSize = sizeof(*result) +
-		(sjme_nvm_typeMul[componentType->typeId] * arrayLength);
+		(sjme_nvm_typeMul[componentType->arrayTypeId] * arrayLength);
 
 	/* Determine array type class name. */
 	memset(buf, 0, sizeof(buf));

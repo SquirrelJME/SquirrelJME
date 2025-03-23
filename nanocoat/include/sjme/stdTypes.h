@@ -87,17 +87,17 @@ typedef enum sjme_attrPackedEnumByte(sjme_basicTypeId)
 	/** End of extended Java types. */
 	SJME_NUM_EXTENDED_JAVA_TYPE_IDS = 8,
 
-	/** Short. */
-	SJME_BASIC_TYPE_ID_SHORT = SJME_NUM_EXTENDED_JAVA_TYPE_IDS,
-
-	/** Character. */
-	SJME_BASIC_TYPE_ID_CHARACTER = 9,
-
 	/** Specifically boolean. */
-	SJME_BASIC_TYPE_ID_BOOLEAN = 10,
+	SJME_BASIC_TYPE_ID_BOOLEAN = SJME_NUM_EXTENDED_JAVA_TYPE_IDS,
 
 	/** Specifically jbyte. */
-	SJME_BASIC_TYPE_ID_BYTE = 11,
+	SJME_BASIC_TYPE_ID_BYTE = 9,
+
+	/** Short. */
+	SJME_BASIC_TYPE_ID_SHORT = 10,
+
+	/** Character. */
+	SJME_BASIC_TYPE_ID_CHARACTER = 11,
 
 	/** Number of basic type IDs. */
 	SJME_NUM_BASIC_TYPE_IDS = 12

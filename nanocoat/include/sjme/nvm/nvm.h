@@ -445,7 +445,7 @@ struct sjme_nvm_stateBase
 };
 
 /** Type size multiplier. */
-extern const sjme_jint sjme_nvm_typeMul[SJME_NUM_JAVA_TYPE_IDS];
+extern const sjme_jint sjme_nvm_typeMul[SJME_NUM_BASIC_TYPE_IDS];
 
 /**
  * Method initialization start.
