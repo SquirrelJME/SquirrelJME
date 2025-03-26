@@ -347,6 +347,7 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 {
 	sjme_jvalueTyped arrayValue;
 	sjme_jvalueTyped indexValue;
+	sjme_jvalueTyped pushValue;
 	sjme_jarray array;
 	sjme_jint index;
 	sjme_basicTypeId arrayType;
@@ -385,9 +386,70 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	if (index < 0 || index >= array->length)
 		return sjme_error_vmError(inFrame,
 			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS);
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Load value to push. */
+	memset(&pushValue, 0, sizeof(pushValue));
+	pushValue.type = componentType->typeId;
+	switch (componentType->arrayTypeId)
+	{
+		case SJME_BASIC_TYPE_ID_BOOLEAN:
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+			
+		case SJME_BASIC_TYPE_ID_BYTE:
+			pushValue.value.i =
+				((sjme_jint)array->elements.b[index]) & INT32_C(0xFF);
+			if ((pushValue.value.i & INT32_C(0x80)) != 0)
+				pushValue.value.i |= INT32_C(0xFFFFFF00);
+			break;
+			
+		case SJME_BASIC_TYPE_ID_SHORT:
+			pushValue.value.i =
+				((sjme_jint)array->elements.s[index]) & INT32_C(0xFFFF);
+			if ((pushValue.value.i & INT32_C(0x8000)) != 0)
+				pushValue.value.i |= INT32_C(0xFFFF0000);
+			break;
+			
+		case SJME_BASIC_TYPE_ID_CHARACTER:
+			pushValue.value.i =
+				((sjme_jint)array->elements.c[index]) & INT32_C(0xFFFF);
+			break;
+			
+		case SJME_JAVA_TYPE_ID_INTEGER:
+			pushValue.value.i = array->elements.i[index];
+			break;
+			
+		case SJME_JAVA_TYPE_ID_LONG:
+			pushValue.value.j = array->elements.j[index];
+			break;
+			
+		case SJME_JAVA_TYPE_ID_FLOAT:
+			pushValue.value.f = array->elements.f[index];
+			break;
+			
+		case SJME_JAVA_TYPE_ID_DOUBLE:
+			pushValue.value.d = array->elements.d[index];
+			break;
+			
+		case SJME_JAVA_TYPE_ID_OBJECT:
+			pushValue.value.l = array->elements.l[index];
+
+			/* Count up if not null as it is now on the stack. */
+			if (pushValue.value.l != NULL)
+				if (sjme_error_is(error = sjme_alloc_weakRef(
+					pushValue.value.l, NULL)))
+					return sjme_error_vmError(inFrame, error);
+			break;
+
+		default:
+			return sjme_error_vmError(inFrame,
+				SJME_ERROR_STACK_INVALID_WRITE);
+	}
+
+	/* Push. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+		inFrame, &pushValue)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;

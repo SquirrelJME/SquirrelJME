@@ -382,11 +382,13 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_nvm_vmClass_loader classLoader)
 {
+	sjme_cchar componentTypeName[SJME_NVM_CLASS_NAME_LIMIT];
 	sjme_errorCode error;
 	sjme_nvm_class_info info;
 	sjme_alloc_pool allocPool;
 	sjme_nvm_stringPool strings;
 	sjme_nvm_stringPool_string thisName, superName;
+	sjme_jclass componentType;
 	sjme_nvm inState;
 	
 	if (inClass == NULL || contextThread == NULL || classLoader == NULL)
@@ -400,13 +402,13 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	thisName = NULL;
 	if (sjme_error_is(error = sjme_nvm_stringPool_locateSeq(
 		strings, &thisName, inClass->binaryName, 0)) || thisName == NULL)
-		return sjme_error_outOfMemory(allocPool, 0);
+		return sjme_error_vmError(contextThread, error);
 
 	/* The super class is always Object. */
 	superName = NULL;
 	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
 		strings, &superName, "java/lang/Object", 0, -1)) || superName == NULL)
-		return sjme_error_outOfMemory(allocPool, 0);
+		return sjme_error_vmError(contextThread, error);
 
 	/* Allocate synthetic result. */
 	info = NULL;
@@ -426,6 +428,24 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 
 	/* Set synthetic class info. */
 	inClass->info = info;
+
+	/* Determine component type class name. */
+	memset(componentTypeName, 0, sizeof(componentTypeName));
+	snprintf(componentTypeName, SJME_NVM_CLASS_NAME_LIMIT - 1,
+		"%s", (sjme_lpcstr)SJME_POINTER_OFFSET(
+			sjme_charSeq_tempUtf(inClass->binaryName), sizeof(sjme_cchar)));
+
+	/* Locate component type of the array. */
+	componentType = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFU(
+		contextThread->inTask->classLoader,
+		&componentType, contextThread, componentTypeName,
+		SJME_JNI_FALSE)) || componentType == NULL)
+		return sjme_error_vmError(contextThread, error);
+
+	/* Set component type. */
+	sjme_atomic_sjme_jclass_compareSet(&inClass->componentType,
+		NULL, componentType);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -573,9 +593,13 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	switch (sjme_charSeq_charAtR(binaryName, 0))
 	{
 		case 'Z':
+			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
+			result->arrayTypeId = SJME_BASIC_TYPE_ID_BOOLEAN;
+			break;
+		
 		case 'B':
 			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
-			result->arrayTypeId = SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE;
+			result->arrayTypeId = SJME_BASIC_TYPE_ID_BYTE;
 			break;
 		
 		case 'S':

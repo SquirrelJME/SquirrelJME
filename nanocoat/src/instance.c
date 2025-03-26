@@ -152,8 +152,12 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 			SJME_ERROR_NEGATIVE_ARRAY_SIZE);
 
 	/* Determine the allocation size. */
-	allocSize = sizeof(*result) +
-		(sjme_nvm_typeMul[componentType->arrayTypeId] * arrayLength);
+	allocSize = sizeof(*result);
+	if (componentType->arrayTypeId == SJME_BASIC_TYPE_ID_BOOLEAN)
+		allocSize = (arrayLength / 8) + 1;
+	else
+		allocSize += (sjme_nvm_typeMul[componentType->arrayTypeId] *
+			arrayLength);
 
 	/* Determine array type class name. */
 	memset(buf, 0, sizeof(buf));
