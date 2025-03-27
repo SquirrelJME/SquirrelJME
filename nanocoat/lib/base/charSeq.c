@@ -338,6 +338,23 @@ sjme_errorCode sjme_charSeq_hash(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_charSeq_hashR(
+	sjme_attrInNotNull sjme_charSeq inSeq)
+{
+	sjme_jint result;
+	
+	if (inSeq == NULL)
+		return 0;
+
+	/* Calculate the hash. */
+	result = 0;
+	if (sjme_error_is(sjme_charSeq_hash(inSeq, &result)))
+		return 0;
+
+	/* Return whatever the hash was. */
+	return result;
+}
+
 sjme_errorCode sjme_charSeq_itNew(
 	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrInPositive sjme_jint offset,

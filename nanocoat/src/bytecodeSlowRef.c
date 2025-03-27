@@ -265,6 +265,20 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
 
+SJME_NVM_BYTECODE_SLOW(InvokeInterface)
+{
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* PC adjustment. */
+	pcNew->adjust = 3;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 {
 	sjme_jint poolIndex;

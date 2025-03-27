@@ -76,6 +76,24 @@ typedef enum sjme_nvm_methodCallType
 	SJME_NVM_NUM_METHOD_CALL_TYPE,
 } sjme_nvm_methodCallType;
 
+/** List of method binds. */
+SJME_LIST_DECLARE(sjme_jmethodID, 0);
+	
+struct sjme_jinterfaceIDBase
+{
+	/** Common virtual machine info. */
+	sjme_nvm_commonBase common;
+
+	/** The class this interface is. */
+	sjme_jclass isInterface;
+
+	/** The hash of the binary name of the interface being implemented. */
+	sjme_jint binaryNameHash;
+
+	/** The methods which are bound to this interface instance. */
+	sjme_list_sjme_jmethodID* methods;
+};
+	
 struct sjme_jmemberIDBase
 {
 	/** Common virtual machine info. */
@@ -83,6 +101,9 @@ struct sjme_jmemberIDBase
 	
 	/** The class this member is in. */
 	sjme_jclass inClass;
+
+	/** The identifier hash of this member. */
+	sjme_jint idHash;
 	
 	/** The name of this member. */
 	sjme_nvm_stringPool_string name;
@@ -114,9 +135,6 @@ struct sjme_jfieldIDBase
 	/** The field this is bound to. */
 	sjme_nvm_class_fieldInfo info;
 };
-
-/** List of method binds. */
-SJME_LIST_DECLARE(sjme_jmethodID, 0);
 
 struct sjme_nvm_vmClass_loaderBase
 {

@@ -11,6 +11,7 @@
 
 #include "sjme/nvm/classy.h"
 #include "sjme/debug.h"
+#include "sjme/util.h"
 #include "sjme/nvm/cleanup.h"
 
 /** The magic number for classes. */
@@ -78,6 +79,11 @@
 
 /** Class is an enum. */
 #define SJME_NVM_CLASS_ACC_ENUM INT16_C(0x4000)
+
+/** Calculates the identifier hash for a member. */
+#define sjme_nvm_class_idHashMember(name, type) \
+	(sjme_charSeq_hashR((name)) ^ \
+		sjme_util_intReverse(sjme_charSeq_hashR((type))))
 
 static sjme_errorCode sjme_nvm_class_readPoolRefIndex(
 	sjme_attrInNotNull sjme_stream_input inStream,
@@ -1540,8 +1546,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				break;
 			
 			default:
-				sjme_todo("Impl? %d", tag);
-				return SJME_ERROR_NOT_IMPLEMENTED;
+				goto fail_initItem;
 		}
 	}
 	
@@ -1693,8 +1698,32 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				break;
 			
 			default:
-				sjme_todo("Impl? %d", tag);
-				return SJME_ERROR_NOT_IMPLEMENTED;
+				goto fail_initItem;
+		}
+	}
+
+	/* Third stage initialization, when everything is known. */
+	for (index = 1; index < count - 1; index++)
+	{
+		/* Which entry is being initialized? */
+		entry = &entries->elements[index];
+		
+		/* Initialize accordingly. */
+		switch (entry->type)
+		{
+				/* Member reference. */
+			case SJME_NVM_CLASS_POOL_TYPE_FIELD:
+			case SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD:
+			case SJME_NVM_CLASS_POOL_TYPE_METHOD:
+				/* Calculate the member ID hash. */
+				entry->member.idHash = sjme_nvm_class_idHashMember(
+					entry->member.nameAndType->name->seq,
+					entry->member.nameAndType->descriptor->seq);
+				break;
+
+				/* Not considered an error in the third stage. */
+			default:
+				break;
 		}
 	}
 	
@@ -1877,6 +1906,10 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 		allocPool, type->utf.utf->seq,
 		&result->argC, &result->argT, &result->argR)))
 		goto fail_calcArgs;
+	
+	/* The identifier hash is used for lookup. */
+	result->idHash = sjme_nvm_class_idHashMember(result->name->seq,
+		result->type->seq);
 	
 	/* Success! */
 	*outMethod = result;

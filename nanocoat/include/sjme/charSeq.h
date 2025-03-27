@@ -321,6 +321,18 @@ sjme_errorCode sjme_charSeq_hash(
 	sjme_attrOutNotNull sjme_jint* outHash);
 
 /**
+ * Hashes the given string in accordance to Java's @c String.hashCode() , note
+ * that this will any errors that occur.
+ * 
+ * @param inSeq The sequence to hash.
+ * @return The resultant hash code, this will be zero if any errors occur
+ * which may still be considered a valid hash.
+ * @since 2025/03/26
+ */
+sjme_errorCode sjme_charSeq_hashR(
+	sjme_attrInNotNull sjme_charSeq inSeq);
+
+/**
  * Initializes a new iterator.
  * 
  * @param inSeq The input sequence.

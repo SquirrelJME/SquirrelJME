@@ -198,7 +198,7 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
 	/* 182 */ SJME_NVM_BYTECODE_SLOW_NAME(InvokeVirtual),
 	/* 183 */ sjme_nvm_byteCode_notImplemented,
 	/* 184 */ SJME_NVM_BYTECODE_SLOW_NAME(InvokeStatic),
-	/* 185 */ sjme_nvm_byteCode_notImplemented,
+	/* 185 */ SJME_NVM_BYTECODE_SLOW_NAME(InvokeInterface),
 	/* 186 */ sjme_nvm_byteCode_illegalInstruction,
 	/* 187 */ SJME_NVM_BYTECODE_SLOW_NAME(New),
 	/* 188 */ sjme_nvm_byteCode_notImplemented,

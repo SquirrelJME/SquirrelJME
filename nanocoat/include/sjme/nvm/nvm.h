@@ -84,6 +84,20 @@ typedef struct sjme_any
 } sjme_any;
 
 /**
+ * Represents an identifier to an interface.
+ * 
+ * @since 2025/03/26
+ */
+typedef struct sjme_jinterfaceIDBase sjme_jinterfaceIDBase;
+
+/**
+ * Represents an identifier to an interface.
+ * 
+ * @since 2025/03/26
+ */
+typedef sjme_jinterfaceIDBase* sjme_jinterfaceID;
+
+/**
  * Represents an identifier to a member.
  * 
  * @since 2025/02/26

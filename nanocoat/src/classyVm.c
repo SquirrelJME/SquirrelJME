@@ -58,6 +58,9 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 
 	/* Always in the current class. */
 	result->member.inClass = thisClass;
+
+	/* The identifier hash is used for lookup. */
+	result->member.idHash = thisInfo->idHash;
 	
 	/* The names always get set. */
 	result->member.name = thisInfo->name;
@@ -443,9 +446,11 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 		SJME_JNI_FALSE)) || componentType == NULL)
 		return sjme_error_vmError(contextThread, error);
 
-	/* Set component type. */
+	/* Set component type, and tha phantom back link for quicker lookup. */
 	sjme_atomic_sjme_jclass_compareSet(&inClass->componentType,
 		NULL, componentType);
+	sjme_atomic_sjme_jclass_compareSet(&componentType->phantomArrayType,
+		NULL, inClass);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
