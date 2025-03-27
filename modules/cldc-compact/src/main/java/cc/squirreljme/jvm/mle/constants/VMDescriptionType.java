@@ -96,5 +96,5 @@ public interface VMDescriptionType
 	/** The current number of properties. */
 	@SquirrelJMEVendorApi
 	byte NUM_TYPES =
-		13;
+		14;
 }

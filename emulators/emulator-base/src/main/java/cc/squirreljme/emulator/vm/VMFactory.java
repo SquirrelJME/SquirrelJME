@@ -446,8 +446,9 @@ public abstract class VMFactory
 			if (Files.exists(jarPath))
 				for (String ext : VMFactory._EXTRA_EXT)
 				{
-					Path tryFile = Paths.get(
-						ScannerUtils.siblingByExt(rawJarPath, ext));
+					Path tryFile = jarPath.resolveSibling(
+						ScannerUtils.siblingByExt(
+							jarPath.getFileName().toString(), ext));
 					
 					if (Files.exists(tryFile))
 						libraries.add(tryFile.toString());
@@ -985,17 +986,25 @@ public abstract class VMFactory
 		__name = __name.substring(0, lastDot);
 		
 		// Chop down potential foo"-0.4.0" from the end
-		for (int n = __name.length(), i = n - 1; i >= 0; i--)
+		int lastDash = __name.indexOf('-');
+		if (lastDash >= 0)
 		{
-			char c = __name.charAt(i);
+			// Is there a dot after the dash?
+			int dotAfterDash = __name.indexOf('.', lastDash);
 			
-			// Still potentially a version bit
-			if (c == '.' || c == '-' || (c >= '0' && c <= '9'))
-				__name = __name.substring(0, i);
-			
-			// Do not need
-			else
-				break;
+			if (dotAfterDash >= 0)
+				for (int n = __name.length(), i = n - 1; i >= 0; i--)
+				{
+					char c = __name.charAt(i);
+					
+					// Still potentially a version bit
+					if (c == '.' || c == '-' || (c >= '0' && c <= '9'))
+						__name = __name.substring(0, i);
+						
+					// Do not need
+					else
+						break;
+				}
 		}
 		
 		// Use this name

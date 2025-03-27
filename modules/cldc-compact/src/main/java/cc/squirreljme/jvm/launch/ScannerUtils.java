@@ -40,8 +40,13 @@ public final class ScannerUtils
 		int lastDot = __jar.lastIndexOf('.');
 		int lastSlash = __jar.lastIndexOf('/');
 		
+		// System dependent slash
+		String fileSep = System.getProperty("file.separator");
+		int lastSep = (fileSep != null && fileSep.length() == 1 ?
+			__jar.lastIndexOf(fileSep.charAt(0)) : -1);
+		
 		// Is there an actual extension?
-		if (lastDot >= 0 && lastDot > lastSlash)
+		if (lastDot >= 0 && lastDot > Math.max(lastSlash, lastSep))
 			return __jar.substring(0, lastDot) + __ext;
 		
 		// Just append it otherwise

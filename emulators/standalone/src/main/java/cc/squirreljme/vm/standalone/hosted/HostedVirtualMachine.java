@@ -404,6 +404,8 @@ public class HostedVirtualMachine
 						StreamUtils.copy(in, out, tempBuf);
 					}
 				}
+				
+				// From a Zip
 				else
 				{
 					try (ZipOutputStream zip = new ZipOutputStream(out))

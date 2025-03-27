@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.nttdocomo.io;
 import cc.squirreljme.jvm.launch.IModeProperty;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
@@ -282,11 +283,15 @@ public final class ScratchPadStore
 		// Try to find the library that contains the seed
 		JarPackageBracket lib = null;
 		for (JarPackageBracket maybeLib : JarPackageShelf.libraries())
-			if (libName.equals(JarPackageShelf.libraryPath(maybeLib)))
+		{
+			String checkName = JarPackageShelf.libraryPath(maybeLib);
+			if (libName.equals(checkName) ||
+				libName.equals(SuiteUtils.baseName(checkName)))
 			{
 				lib = maybeLib;
 				break;
 			}
+		}
 		
 		// Not found?
 		if (lib == null)
