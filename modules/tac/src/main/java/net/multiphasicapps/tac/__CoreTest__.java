@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.debug.IncompleteCodeError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -149,7 +150,7 @@ abstract class __CoreTest__
 		catch (Throwable t)
 		{
 			// Errors are bad, stop testing and just fail here
-			if (t instanceof Error)
+			if (t instanceof Error && !(t instanceof IncompleteCodeError))
 				throw (Error)t;
 			
 			// The test parameter is not valid, so whoops!

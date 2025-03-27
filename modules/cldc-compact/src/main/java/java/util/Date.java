@@ -25,7 +25,7 @@ public class Date
 	implements Cloneable, Comparable<Date>
 {
 	/** The current Java time. */
-	private transient long _javatime;
+	private transient long _javaTime;
 	
 	/**
 	 * Initializes this date at the current system time.
@@ -47,7 +47,7 @@ public class Date
 	@Api
 	public Date(long __time)
 	{
-		this._javatime = __time;
+		this._javaTime = __time;
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class Date
 	@Override
 	public Object clone()
 	{
-		return new Date(((Date)this)._javatime);
+		return new Date(((Date)this)._javaTime);
 	}
 	
 	/**
@@ -71,8 +71,8 @@ public class Date
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		long a = this._javatime,
-			b = __b._javatime;
+		long a = this._javaTime;
+		long b = ((Date)__b)._javaTime;
 		
 		return (a < b ? -1 : (a > b ? 1 : 0));
 	}
@@ -90,7 +90,7 @@ public class Date
 		if (!(__o instanceof Date))
 			return false;
 		
-		return this._javatime == ((Date)__o)._javatime;
+		return this._javaTime == ((Date)__o)._javaTime;
 	}
 	
 	/**
@@ -102,7 +102,7 @@ public class Date
 	@Api
 	public long getTime()
 	{
-		return this._javatime;
+		return this._javaTime;
 	}
 	
 	/**
@@ -112,7 +112,7 @@ public class Date
 	@Override
 	public int hashCode()
 	{
-		long javatime = this._javatime;
+		long javatime = this._javaTime;
 		return (int)(javatime ^ (javatime >>> 32));
 	}
 	
@@ -125,7 +125,7 @@ public class Date
 	@Api
 	public void setTime(long __v)
 	{
-		this._javatime = __v;
+		this._javaTime = __v;
 	}
 	
 	/**

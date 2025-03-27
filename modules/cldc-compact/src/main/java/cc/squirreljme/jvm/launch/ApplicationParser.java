@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.EntryPoints;
 import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.SuiteInfo;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
@@ -319,7 +320,7 @@ public enum ApplicationParser
 			if (sp != null)
 				__sysProps.put(String.format("%s.%d",
 					IModeProperty.SEED_SCRATCHPAD_PREFIX, i),
-					__state.libraryPath(sp));
+					SuiteUtils.baseName(__state.libraryPath(sp)));
 		}
 	}
 }

@@ -112,7 +112,10 @@ public class MainSingleRunner
 				
 			case FAILED:
 			case TEST_EXCEPTION:
-				System.exit(ExitValueConstants.FAILURE);
+				if (testInstance instanceof IncompleteTest)
+					System.exit(ExitValueConstants.SKIPPED);
+				else
+					System.exit(ExitValueConstants.FAILURE);
 				break;
 			
 			case UNTESTABLE:

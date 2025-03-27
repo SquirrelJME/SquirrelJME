@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.time;
 
-import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Date;
 import java.util.TimeZone;
@@ -22,17 +21,32 @@ import java.util.TimeZone;
 public class UTCTimeZone
 	extends TimeZone
 {
+	/**
+	 * Initializes the base UTC time zone.
+	 *
+	 * @since 2024/02/02
+	 */
+	public UTCTimeZone()
+	{
+		this.setID("UTC");
+	}
+	
 	@Override
-	public int getOffset(int __a, int __b, int __c, int __d, int __e,
-		int __f)
+	public int getOffset(int __era, int __year, int __month, int __day,
+		int __dayOfWeek, int __dayMillis)
 	{
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/02/02
+	 */
 	@Override
 	public int getRawOffset()
 	{
-		throw Debugging.todo();
+		// Always zero for UTC
+		return 0;
 	}
 	
 	@Override
@@ -47,9 +61,14 @@ public class UTCTimeZone
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/02/02
+	 */
 	@Override
 	public boolean useDaylightTime()
 	{
-		throw Debugging.todo();
+		// UTC has no time zone
+		return false;
 	}
 }
