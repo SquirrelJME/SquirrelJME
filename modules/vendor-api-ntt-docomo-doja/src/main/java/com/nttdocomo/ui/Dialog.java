@@ -75,6 +75,20 @@ public class Dialog
 	}
 	
 	/**
+	 * Shows the dialog.
+	 *
+	 * @return The button which has been pressed.
+	 * @throws UIException If the dialog is already being shown.
+	 * @since 2025/03/27
+	 */
+	@Api
+	public int show()
+		throws UIException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/11/28
 	 */

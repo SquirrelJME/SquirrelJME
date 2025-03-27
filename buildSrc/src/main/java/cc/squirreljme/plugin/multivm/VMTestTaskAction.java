@@ -539,6 +539,9 @@ public class VMTestTaskAction
 			sysProps.put("cc.squirreljme.test.vm",
 				__classifier.getBangletVariant().banglet);
 		
+		// Disable exit() in Debugging handler
+		sysProps.put("cc.squirreljme.noexit", "true");
+		
 		// Print test result manifest?
 		if (Boolean.getBoolean(VMTestTaskAction.PRINT_TEST_MANIFEST) ||
 			(__task.hasProperty(VMTestTaskAction.PRINT_TEST_MANIFEST) &&

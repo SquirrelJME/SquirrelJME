@@ -48,6 +48,11 @@ public final class Debugging
 	public static boolean VERBOSE =
 		Boolean.getBoolean("cc.squirreljme.verbose");
 	
+	/** Do not execute exit on the virtual machine. */
+	@SquirrelJMEVendorApi
+	public static boolean NO_EXIT =
+		Boolean.getBoolean("cc.squirreljme.noexit");
+	
 	/** Only bytes up to this value are permitted in the output. */
 	private static final int _BYTE_LIMIT =
 		0x7E;
@@ -229,7 +234,7 @@ public final class Debugging
 			Debugging.todoNote("TODO TRIPPED IN TODO HANDLER: ");
 			
 			// Toss up and see what happens here
-			return new Error("Recursive TODO");
+			return new IncompleteCodeError();
 		}
 		Debugging._tripped = true;
 		
@@ -355,7 +360,8 @@ public final class Debugging
 			// Just exit directly so there is no way to continue, if we can
 			try
 			{
-				System.exit(Debugging._TODO_EXIT_STATUS);
+				if (!Debugging.NO_EXIT)
+					System.exit(Debugging._TODO_EXIT_STATUS);
 			}
 			catch (SecurityException ignored)
 			{
@@ -364,7 +370,7 @@ public final class Debugging
 		}
 		
 		// Throw normal error here
-		throw new Error("TODO");
+		throw new IncompleteCodeError();
 	}
 	
 	/**
