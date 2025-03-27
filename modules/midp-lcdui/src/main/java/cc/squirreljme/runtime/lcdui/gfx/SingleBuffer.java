@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.gfx;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import java.util.Arrays;
 import javax.microedition.lcdui.Graphics;
@@ -20,6 +21,7 @@ import javax.microedition.lcdui.Graphics;
  *
  * @since 2022/02/25
  */
+@SquirrelJMEVendorApi
 public final class SingleBuffer
 {
 	/** The color to fill with on resizes. */
@@ -43,6 +45,7 @@ public final class SingleBuffer
 	 * @param __resizeFillColor The color to fill with when resizing.
 	 * @since 2022/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public SingleBuffer(int __resizeFillColor)
 	{
 		this.fillColor = __resizeFillColor;
@@ -53,6 +56,7 @@ public final class SingleBuffer
 	 * 
 	 * @since 2022/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public void clear()
 	{
 		Arrays.fill(this._pixels, this.fillColor);
@@ -69,6 +73,7 @@ public final class SingleBuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public void copyFrom(SingleBuffer __source,
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
@@ -138,6 +143,7 @@ public final class SingleBuffer
 	 * @throws IllegalArgumentException If the width and/or height are invalid.
 	 * @since 2022/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public Graphics getGraphics(int __width, int __height)
 		throws IllegalArgumentException
 	{
@@ -175,6 +181,7 @@ public final class SingleBuffer
 	 * @param __g The graphics to paint onto.
 	 * @since 2022/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public void paint(Graphics __g)
 	{
 		// The fastest way to draw onto the screen is to do a direct draw

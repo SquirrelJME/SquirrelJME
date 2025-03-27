@@ -13,6 +13,7 @@ import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.jdwp.host.JDWPHostFactory;
 import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.AvailableSuites;
+import cc.squirreljme.jvm.launch.ScannerUtils;
 import cc.squirreljme.jvm.launch.SuiteScanner;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
@@ -90,6 +91,15 @@ public abstract class VMFactory
 	/** Internal JAR directory root (debug). */
 	private static final String STANDALONE_DIRECTORY_DEBUG =
 		"X-SquirrelJME-Standalone-Internal-Debug-Jar-Root";
+	
+	/** Extra Jar Extensions. */
+	private static final String[] _EXTRA_EXT =
+		new String[] {
+			".adf", ".ADF", ".jad", ".JAD", ".jam", ".JAM", ".sec", ".SEC", 
+			".sp", ".SP", ".sp0", ".SP0", ".sp1", ".SP1", ".sp2", ".SP2", 
+			".sp3", ".SP3", ".sp4", ".SP4", ".sp5", ".SP5", ".sp6", ".SP6", 
+			".sp7", ".SP7", ".sp8", ".SP8", ".sp9", ".SP9", ".sto", ".STO"
+		};
 	
 	/** The separator character. */
 	private static final char SEPARATOR_CHAR;
@@ -430,6 +440,18 @@ public abstract class VMFactory
 			// Make sure this exists in the library path
 			if (!libraries.contains(rawJarPath))
 				libraries.add(rawJarPath);
+			
+			// Add any other extensions adjacent to the Jar
+			Path jarPath = Paths.get(rawJarPath);
+			if (Files.exists(jarPath))
+				for (String ext : VMFactory._EXTRA_EXT)
+				{
+					Path tryFile = Paths.get(
+						ScannerUtils.siblingByExt(rawJarPath, ext));
+					
+					if (Files.exists(tryFile))
+						libraries.add(tryFile.toString());
+				}
 			
 			mainClass = null;
 		}
