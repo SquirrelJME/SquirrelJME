@@ -327,7 +327,7 @@ commands:
           when: on_fail
       - run:
           name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
+          command: rm -f emulators/standalone/build/libs/standalone-*.jar
       - store_artifacts:
           path: emulators/standalone/build/libs/
           destination: .
@@ -344,7 +344,7 @@ commands:
           when: on_fail
       - run:
           name: Remove distracting JAR, if any
-          command: rm emulators/emulator-base/build/*.jar
+          command: rm -f emulators/emulator-base/build/*.jar
       - store_artifacts:
           path: emulators/emulator-base/build/libs
           destination: .
