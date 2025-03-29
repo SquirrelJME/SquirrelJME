@@ -446,10 +446,10 @@ jobs:
           home: "/c/users/circleci/"
           store-home: "c:/users/circleci/"
 
-  build_windows_i386_standalone:
+  build_windows_i386_natives:
     executor:
       name: win/default
-      shell: cmd.exe
+      shell: bash.exe
       size: medium
     environment:
       # Use older JDK for CircleCI
@@ -459,22 +459,7 @@ jobs:
       - attach_workspace:
           at: .
       - windows-install-required
-      - run:
-          shell: bash.exe
-          name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
-      - run:
-          name: Construct Standalone (Retry)
-          shell: bash.exe
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
-          when: on_fail
-      - run:
-          shell: bash.exe
-          name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
-      - store_artifacts:
-          path: emulators/standalone/build/libs/
-          destination: .
+      - natives-unix-common-build
 
   build_windows_amd64_setup:
     executor:
@@ -537,10 +522,10 @@ jobs:
           home: "/c/users/circleci/"
           store-home: "c:/users/circleci/"
 
-  build_windows_amd64_standalone:
+  build_windows_amd64_natives:
     executor:
       name: win/default
-      shell: cmd.exe
+      shell: bash.exe
       size: medium
     environment:
       # Use a reduced amount of memory to all the VMs so that it does not
@@ -554,22 +539,7 @@ jobs:
       - attach_workspace:
           at: .
       - windows-install-required
-      - run:
-          name: Construct Standalone
-          shell: bash.exe
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
-      - run:
-          name: Construct Standalone (Retry)
-          shell: bash.exe
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
-          when: on_fail
-      - run:
-          shell: bash.exe
-          name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
-      - store_artifacts:
-          path: emulators/standalone/build/libs/
-          destination: .
+      - natives-unix-common-build
 
   ################################# MAC OS X #################################
   build_macosx_amd64:
