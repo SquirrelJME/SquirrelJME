@@ -377,6 +377,15 @@ jobs:
           working_directory: /home/circleci/work/co
           command: ./gradlew clean --parallel
       - run:
+          name: Build CI/CD Bundle Tasks
+          working_directory: /home/circleci/work/co
+          command: ./gradlew :tools:cicd-release-bundle:jar --parallel
+      - run:
+          name: Build CI/CD Bundle Tasks (Retry)
+          working_directory: /home/circleci/work/co
+          command: ./gradlew :tools:cicd-release-bundle:jar --parallel
+          when: on_fail
+      - run:
           name: Run CI/CD Bundle Tasks
           working_directory: /home/circleci/work/co
           command: ./gradlew :tools:cicd-release-bundle:run --parallel
