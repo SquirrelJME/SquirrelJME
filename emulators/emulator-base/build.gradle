@@ -65,7 +65,7 @@ mimeDecode.get().dependsOn(libsNativeNanoCoat)
 
 // Package native libraries into OS and architecture dependent areas
 TaskProvider<Zip> archiveNatives = tasks.register('archiveNatives', Zip.class) {
-	dependsOn mimeDecode, libNativeEmulatorBase, libsNativeNanoCoat
+	dependsOn libNativeEmulatorBase, libsNativeNanoCoat
 	
 	group = "squirreljme"
 	description = "Archives the native SquirrelJME libraries."
@@ -88,7 +88,7 @@ TaskProvider<Zip> archiveNatives = tasks.register('archiveNatives', Zip.class) {
 // We need the native library in the JAR before we can properly use it
 // But we can compile the Java code just fine without it
 jar {
-	dependsOn archiveNatives
+	dependsOn mimeDecode, archiveNatives
 	
 	inputs.files(project.provider({ ->
 		archiveNatives.get().outputs.getFiles().getSingleFile()
