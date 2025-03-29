@@ -365,9 +365,9 @@ jobs:
           working_directory: /home/circleci/work/co
           command: fossil open /home/repo/squirreljme.fossil --force
       - run:
-          name: Checkout trunk
+          name: Checkout current branch
           working_directory: /home/circleci/work/co
-          command: fossil checkout trunk || echo "Ignoring..."
+          command: fossil checkout $CIRCLE_BRANCH || echo "Ignoring..."
       - run:
           name: Updating checkout
           working_directory: /home/circleci/work/co
