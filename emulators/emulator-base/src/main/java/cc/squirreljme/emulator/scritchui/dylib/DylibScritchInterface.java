@@ -339,7 +339,9 @@ public class DylibScritchInterface
 		// Get list of available interfaces
 		List<String> potentials = new ArrayList<>();
 		try (InputStream in = DylibScritchInterface.class
-			.getResourceAsStream("/libsquirreljme-scritchui.list"))
+			.getResourceAsStream(
+				NativeBinding.nativePrefix() +
+					"/libsquirreljme-scritchui.list"))
 		{
 			if (in == null)
 				throw new MLECallError(

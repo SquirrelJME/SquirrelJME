@@ -90,9 +90,14 @@ TaskProvider<Zip> archiveNatives = tasks.register('archiveNatives', Zip.class) {
 jar {
 	dependsOn archiveNatives
 	
+	inputs.files(project.provider({ ->
+		archiveNatives.get().outputs.getFiles().getSingleFile()
+	}))
+	
 	from project.provider({ ->
 		zipTree(archiveNatives.get().outputs.getFiles().getSingleFile())
-			.getElements() })
+			.getAsFileTree()
+	})
 	
 	into "/"
 }
