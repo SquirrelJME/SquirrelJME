@@ -344,7 +344,7 @@ commands:
           when: on_fail
       - run:
           name: Remove distracting JAR, if any
-          command: rm -f emulators/emulator-base/build/*.jar
+          command: rm -f emulators/emulator-base/build/libs/*.jar
       - store_artifacts:
           path: emulators/emulator-base/build/libs
           destination: .
@@ -633,6 +633,14 @@ jobs:
           os: "linux-amd64"
           vm: "hosted"
       - persist-gradle
+  build_linux_amd64_standalone:
+    executor: build-on-linux-amd64
+    steps:
+      - checkout
+      - linux-install-required
+      - attach_workspace:
+          at: .
+      - standalone-unix-common-build
   build_linux_amd64_natives:
     executor: build-on-linux-amd64
     steps:
@@ -830,6 +838,14 @@ workflows:
             branches:
               only:
                 - trunk
+      - build_linux_amd64_standalone:
+          requires:
+            - build_linux_amd64
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
       - build_linux_amd64_natives:
           requires:
             - build_linux_amd64
@@ -964,6 +980,7 @@ workflows:
       ############################## DEPLOYMENT ##############################
       - bundle:
           requires:
+            - build_linux_amd64_standalone
             - build_linux_amd64_natives
             - build_windows_i386_natives
             - build_windows_amd64_natives
