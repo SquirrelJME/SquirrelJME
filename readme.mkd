@@ -26,9 +26,9 @@ ability to play older J2ME software and games designed for flip-phones.
    * Kat Adam-MacEwen
    * Kat@CMYKat Designs & Illustrations <https://www.cmykatgraphics.ca/>
 
-Please support me on [Patreon](https://www.patreon.com/SquirrelJME)!
-
 Thank you to [Hit Save!](https://hitsave.org/) for sponsoring **SquirrelJME**!
+
+Please support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
 > Dedicated to _Emily_ (1998-2020), the developer
 > of [Mu](https://github.com/meepingsnesroms/Mu), I valued our friendship

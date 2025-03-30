@@ -17,8 +17,29 @@
 		rel="self" />
 
 	<!-- Update these accordingly! -->
-	<pubDate>Thu, 06 Mar 2025 20:00 EST</pubDate>
-	<lastBuildDate>Thu, 06 Mar 2025 20:00 EST</lastBuildDate>
+	<pubDate>Sun, 30 Mar 2025 04:00 EDT</pubDate>
+	<lastBuildDate>Sun, 30 Mar 2025 04:00 EDT</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">67fab4da-ae95-46e6-a328-a3c8f4af8c64</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250330_0400.mkd</link>
+		<pubDate>Sun, 30 Mar 2025 04:00 EDT</pubDate>
+
+		<title>March Update!</title>
+		<description>SquirrelJME now has a single standalone Jar which is multi-platform, so now
+it will be easier to run it without having to fully know what your system is.
+
+I decided to just merge in the calendar implementation despite it being
+incomplete, since it was a very long-lived branch that I just wanted to close.
+A large number of DoJa software requires a calendar implementation, so this
+should be an initial first-step for that.
+
+Other than that, there has been continued work on NanoCoat which is
+progressing well. Currently, I am working on the main startup sequence for
+applications.</description>
+	</item>
+
+	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">2eb7abe1-609d-42fc-a309-8f1540c3ee5d</guid>
@@ -34,8 +55,6 @@ operations, which fixes a large number of graphical glitches, freezes, and
 crashes due to changes in how modern hardware works. Other than that, I have
 been progressing rather nicely with NanoCoat which has been very nice.</description>
 	</item>
-
-	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">2595fd13-e811-41ae-93f4-0fc3645bdd1b</guid>
