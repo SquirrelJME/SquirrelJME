@@ -104,9 +104,10 @@ public class Main
 			// Keep reading entries
 			for (;;)
 			{
+				// Get next entry, stop if there are no more
 				ZipEntry entry = zip.getNextEntry();
 				if (entry == null)
-					continue;
+					break;
 				
 				// Ignore directories
 				if (entry.isDirectory())
@@ -359,6 +360,7 @@ public class Main
 			// Write each entry
 			for (Map.Entry<String, byte[]> item : merged.entrySet())
 			{
+				System.err.printf("Writing %s...%n", item.getKey());
 				zip.putNextEntry(new ZipEntry(item.getKey()));
 				
 				zip.write(item.getValue());
