@@ -215,6 +215,21 @@ commands:
       - linux-debian-apt-get-install:
           packages: cmake build-essential curl wget gcc g++ make clang git openssh-client
       - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: gnustep-devel gnustep-core-devel libgnustep-base-dev libgnustep-gui-dev
+      - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: libsdl1.2-compat-dev
+      - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: libsdl2-compat-dev
+      - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: libmotif-dev
+      - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: libgtk2.0-dev
+      - linux-debian-apt-get-install-optional:
           look: javac
           packages: openjdk-17-jdk
       - linux-debian-apt-get-install-optional:
@@ -327,9 +342,26 @@ commands:
           when: on_fail
       - run:
           name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
+          command: rm -f emulators/standalone/build/libs/standalone-*.jar
       - store_artifacts:
           path: emulators/standalone/build/libs/
+          destination: .
+
+  # Common Build for Natives (UNIX)
+  natives-unix-common-build:
+    steps:
+      - run:
+          name: Construct Natives
+          command: ./gradlew :emulators:emulator-base:archiveNatives <<pipeline.parameters.standard-gradle-options>>
+      - run:
+          name: Construct Natives (Retry)
+          command: ./gradlew :emulators:emulator-base:archiveNatives <<pipeline.parameters.standard-gradle-options>>
+          when: on_fail
+      - run:
+          name: Remove distracting JAR, if any
+          command: rm -f emulators/emulator-base/build/libs/*.jar
+      - store_artifacts:
+          path: emulators/emulator-base/build/libs
           destination: .
 
 jobs:
@@ -348,9 +380,9 @@ jobs:
           working_directory: /home/circleci/work/co
           command: fossil open /home/repo/squirreljme.fossil --force
       - run:
-          name: Checkout trunk
+          name: Checkout current branch
           working_directory: /home/circleci/work/co
-          command: fossil checkout trunk || echo "Ignoring..."
+          command: fossil checkout $CIRCLE_BRANCH || echo "Ignoring..."
       - run:
           name: Updating checkout
           working_directory: /home/circleci/work/co
@@ -359,6 +391,15 @@ jobs:
           name: Ensure build is clean
           working_directory: /home/circleci/work/co
           command: ./gradlew clean --parallel
+      - run:
+          name: Build CI/CD Bundle Tasks
+          working_directory: /home/circleci/work/co
+          command: ./gradlew :tools:cicd-release-bundle:jar --parallel
+      - run:
+          name: Build CI/CD Bundle Tasks (Retry)
+          working_directory: /home/circleci/work/co
+          command: ./gradlew :tools:cicd-release-bundle:jar --parallel
+          when: on_fail
       - run:
           name: Run CI/CD Bundle Tasks
           working_directory: /home/circleci/work/co
@@ -429,10 +470,10 @@ jobs:
           home: "/c/users/circleci/"
           store-home: "c:/users/circleci/"
 
-  build_windows_i386_standalone:
+  build_windows_i386_natives:
     executor:
       name: win/default
-      shell: cmd.exe
+      shell: bash.exe
       size: medium
     environment:
       # Use older JDK for CircleCI
@@ -442,22 +483,7 @@ jobs:
       - attach_workspace:
           at: .
       - windows-install-required
-      - run:
-          shell: bash.exe
-          name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
-      - run:
-          name: Construct Standalone (Retry)
-          shell: bash.exe
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
-          when: on_fail
-      - run:
-          shell: bash.exe
-          name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
-      - store_artifacts:
-          path: emulators/standalone/build/libs/
-          destination: .
+      - natives-unix-common-build
 
   build_windows_amd64_setup:
     executor:
@@ -520,10 +546,10 @@ jobs:
           home: "/c/users/circleci/"
           store-home: "c:/users/circleci/"
 
-  build_windows_amd64_standalone:
+  build_windows_amd64_natives:
     executor:
       name: win/default
-      shell: cmd.exe
+      shell: bash.exe
       size: medium
     environment:
       # Use a reduced amount of memory to all the VMs so that it does not
@@ -537,22 +563,7 @@ jobs:
       - attach_workspace:
           at: .
       - windows-install-required
-      - run:
-          name: Construct Standalone
-          shell: bash.exe
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
-      - run:
-          name: Construct Standalone (Retry)
-          shell: bash.exe
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
-          when: on_fail
-      - run:
-          shell: bash.exe
-          name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
-      - store_artifacts:
-          path: emulators/standalone/build/libs/
-          destination: .
+      - natives-unix-common-build
 
   ################################# MAC OS X #################################
   build_macosx_amd64:
@@ -580,7 +591,7 @@ jobs:
           where: "vm-test-hosted-release"
           os: "macosx"
           vm: "hosted"
-  build_macosx_amd64_standalone:
+  build_macosx_amd64_natives:
     executor: build-on-macos
     environment:
       # macOS's default heap size is too low
@@ -589,7 +600,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - standalone-unix-common-build
+      - natives-unix-common-build
 
   build_macosx_aarch64:
     executor: build-on-macos-m1
@@ -613,13 +624,13 @@ jobs:
           where: "vm-test-hosted-release"
           os: "macosx-m1"
           vm: "hosted"
-  build_macosx_aarch64_standalone:
+  build_macosx_aarch64_natives:
     executor: build-on-macos-m1
     steps:
       - checkout
       - attach_workspace:
           at: .
-      - standalone-unix-common-build
+      - natives-unix-common-build
 
   ################################### LINUX ##################################
   # Linux AMD64
@@ -654,6 +665,14 @@ jobs:
       - attach_workspace:
           at: .
       - standalone-unix-common-build
+  build_linux_amd64_natives:
+    executor: build-on-linux-amd64
+    steps:
+      - checkout
+      - linux-install-required
+      - attach_workspace:
+          at: .
+      - natives-unix-common-build
   build_linux_amd64_standalone_flatpak:
     executor: build-on-linux-amd64
     steps:
@@ -687,14 +706,14 @@ jobs:
           os: "linux-arm64"
           vm: "hosted"
       - persist-gradle
-  build_linux_aarch64_standalone:
+  build_linux_aarch64_natives:
     executor: build-on-linux-arm64
     steps:
       - checkout
       - linux-install-required
       - attach_workspace:
           at: .
-      - standalone-unix-common-build
+      - natives-unix-common-build
   build_linux_aarch64_standalone_flatpak:
     executor: build-on-linux-arm64
     steps:
@@ -727,13 +746,13 @@ jobs:
           os: "linux-arm64"
           vm: "hosted"
       - persist-gradle
-  build_linux_riscv64_standalone:
+  build_linux_riscv64_natives:
     executor: build-on-linux-riscv64
     steps:
       - checkout
       - attach_workspace:
           at: .
-      - standalone-unix-common-build
+      - natives-unix-common-build
 
   ### OSS SonaType Nexus
   sonatype_publish:
@@ -850,6 +869,15 @@ workflows:
             branches:
               only:
                 - trunk
+                - wip-universal
+      - build_linux_amd64_natives:
+          requires:
+            - build_linux_amd64
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
       - build_linux_amd64_standalone_flatpak:
           requires:
             - build_linux_amd64
@@ -857,16 +885,19 @@ workflows:
             branches:
               only:
                 - trunk
+                - wip-universal
 
       # ARM64
       - build_linux_arm64
-      - build_linux_aarch64_standalone:
+                - wip-universal
+      - build_linux_aarch64_natives:
           requires:
             - build_linux_arm64
           filters:
             branches:
               only:
                 - trunk
+                - wip-universal
       - build_linux_aarch64_standalone_flatpak:
           requires:
             - build_linux_arm64
@@ -874,62 +905,70 @@ workflows:
             branches:
               only:
                 - trunk
+                - wip-universal
 
       # RISC-V 64-bit
 #      - build_linux_riscv64
-#      - build_linux_riscv64_standalone:
+#      - build_linux_riscv64_natives:
 #          requires:
 #            - build_linux_riscv64
 #          filters:
 #            branches:
 #              only:
 #                - trunk
+#                - wip-universal
 
       # Windows 32-bit
       - build_windows_i386_setup
+                - wip-universal
       - build_windows_i386:
           requires:
             - build_windows_i386_setup
-      - build_windows_i386_standalone:
+                - wip-universal
+      - build_windows_i386_natives:
           requires:
             - build_windows_i386
           filters:
             branches:
               only:
                 - trunk
+                - wip-universal
 
       # Windows 64-bit
       - build_windows_amd64_setup
       - build_windows_amd64:
           requires:
             - build_windows_amd64_setup
-      - build_windows_amd64_standalone:
+      - build_windows_amd64_natives:
           requires:
             - build_windows_amd64
           filters:
             branches:
               only:
                 - trunk
+                - wip-universal
 
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
       # Currently, I have an overabundance of credits...
       - build_macosx_amd64
       - build_macosx_aarch64
-      - build_macosx_amd64_standalone:
-          requires:
-            - build_macosx_amd64
-          filters:
-            branches:
-              only:
-                - trunk
-      - build_macosx_aarch64_standalone:
+      - build_macosx_aarch64_natives:
           requires:
             - build_macosx_aarch64
           filters:
             branches:
               only:
                 - trunk
+                - wip-universal
+      - build_macosx_amd64_natives:
+          requires:
+            - build_macosx_amd64
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
 
       # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
       - sonatype_publish:
@@ -954,16 +993,18 @@ workflows:
       - bundle:
           requires:
             - build_linux_amd64_standalone
+            - build_linux_amd64_natives
+            - build_windows_i386_natives
+            - build_windows_amd64_natives
+            - build_macosx_amd64_natives
+            - build_macosx_aarch64_natives
             - build_linux_amd64_standalone_flatpak
             - build_linux_aarch64_standalone_flatpak
-            - build_windows_i386_standalone
-            - build_windows_amd64_standalone
-            - build_macosx_amd64_standalone
-            - build_macosx_aarch64_standalone
           filters:
             branches:
               only:
                 - trunk
+                - wip-universal
 
   #################### TASKS TO INCREASE USER FRIENDLINESS ####################
   friendliness:

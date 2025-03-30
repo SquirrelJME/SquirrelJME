@@ -31,11 +31,31 @@ final class __MIDPImage__
 	@Language("http-url-reference")
 	final String _uri;
 	
+	/** Input stream data. */
+	final InputStream _in;
+	
 	/** The actual loaded image. */
 	volatile javax.microedition.lcdui.Image _image;
 	
 	/** The number of times this has been used. */
 	volatile int _useCount;
+	
+	/**
+	 * Initializes the wrapped image.
+	 *
+	 * @param __in The image to wrap.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/03/28
+	 */
+	__MIDPImage__(InputStream __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		this._uri = null;
+		this._in = __in;
+	}
 	
 	/**
 	 * Initializes the wrapped image.
@@ -51,6 +71,7 @@ final class __MIDPImage__
 			throw new NullPointerException("NARG");
 		
 		this._uri = __uri;
+		this._in = null;
 	}
 	
 	/**
@@ -144,7 +165,8 @@ final class __MIDPImage__
 			}
 			
 			// Load in the image
-			try (InputStream in = Connector.openInputStream(this._uri))
+			try (InputStream in = (this._in != null ? this._in :
+				Connector.openInputStream(this._uri)))
 			{
 				this._image = javax.microedition.lcdui.Image.createImage(in);
 			}

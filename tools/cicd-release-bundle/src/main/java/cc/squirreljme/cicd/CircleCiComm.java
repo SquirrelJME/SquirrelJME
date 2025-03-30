@@ -9,17 +9,17 @@
 
 package cc.squirreljme.cicd;
 
+import cc.squirreljme.cicd.circleci.CircleCiArtifact;
 import cc.squirreljme.cicd.circleci.CircleCiJobArtifacts;
 import cc.squirreljme.cicd.circleci.CircleCiWorkflowJobs;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URLConnection;
-import javax.net.ssl.HttpsURLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * CircleCi communication.
@@ -117,16 +117,46 @@ public class CircleCiComm
 	}
 	
 	/**
+	 * Downloads all artifacts for a given job number.
+	 *
+	 * @param __jobNumber The job number.
+	 * @return The downloaded artifacts.
+	 * @throws IOException On read errors.
+	 * @since 2025/03/29
+	 */
+	public static List<Artifact> download(int __jobNumber)
+		throws IOException
+	{
+		List<Artifact> result = new ArrayList<>();
+		
+		// Get artifacts for this job
+		CircleCiJobArtifacts artifacts =
+			CircleCiComm.jobArtifacts(__jobNumber);
+		for (CircleCiArtifact artifact : artifacts.getItems())
+		{
+			// Get the URL to the artifact
+			try (InputStream in = URI.create(artifact.getUrl())
+				.toURL().openStream())
+			{
+				// Load into the map
+				result.add(new Artifact(artifact.getPath(),
+					StreamUtils.readAll(1048576, in)));
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * Returns the artifacts in a job.
 	 *
 	 * @param __jobNumber The job number.
 	 * @return The artifacts in this job.
 	 * @throws IOException On read/write errors.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2024/10/06
 	 */
 	public static CircleCiJobArtifacts jobArtifacts(int __jobNumber)
-		throws IOException, NullPointerException
+		throws IOException
 	{
 		return CircleCiComm.api(CircleCiJobArtifacts.class,
 			"GET", "project",

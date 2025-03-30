@@ -1,12 +1,6 @@
 import cc.squirreljme.plugin.general.cmake.CMakeBuildTask
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask
 
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.nio.file.StandardOpenOption
-import java.util.concurrent.TimeUnit
-import java.util.regex.Pattern
-
 plugins
 {
 	id "java-library"
@@ -69,15 +63,42 @@ compileJava.dependsOn(libsNativeNanoCoat)
 mimeDecode.get().dependsOn(libNativeEmulatorBase)
 mimeDecode.get().dependsOn(libsNativeNanoCoat)
 
-// We need the native library in the JAR before we can properly use it
-// But we can compile the Java code just fine without it
-jar {
-	dependsOn mimeDecode, libNativeEmulatorBase, libsNativeNanoCoat
+// Package native libraries into OS and architecture dependent areas
+TaskProvider<Zip> archiveNatives = tasks.register('archiveNatives', Zip.class) {
+	dependsOn libNativeEmulatorBase, libsNativeNanoCoat
+	
+	group = "squirreljme"
+	description = "Archives the native SquirrelJME libraries."
+	
+	destinationDirectory.set(project.buildDir.toPath().resolve("libs").toFile())
+	archiveBaseName.set(project.provider({ ->
+		return "natives-" + (String)rootProject.squirreljmeSystemDash
+	}))
 
 	from libNativeEmulatorBase.get().cmakeOutFile.toFile()
 	from project.provider({ ->
 		zipTree(libsNativeNanoCoat.get().cmakeOutFile.toFile())
 			.getElements() })
+	
+	into project.provider({ ->
+		return "/natives/" + (String)rootProject.squirreljmeSystemSlash + "/"
+	})
+}
+
+// We need the native library in the JAR before we can properly use it
+// But we can compile the Java code just fine without it
+jar {
+	dependsOn mimeDecode, archiveNatives
+	
+	inputs.files(project.provider({ ->
+		archiveNatives.get().outputs.getFiles().getSingleFile()
+	}))
+	
+	from project.provider({ ->
+		zipTree(archiveNatives.get().outputs.getFiles().getSingleFile())
+			.getAsFileTree()
+	})
+	
 	into "/"
 }
 

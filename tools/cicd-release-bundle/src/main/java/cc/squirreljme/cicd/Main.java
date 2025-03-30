@@ -9,22 +9,28 @@
 
 package cc.squirreljme.cicd;
 
-import cc.squirreljme.cicd.circleci.CircleCiArtifact;
 import cc.squirreljme.cicd.circleci.CircleCiJob;
-import cc.squirreljme.cicd.circleci.CircleCiJobArtifacts;
 import cc.squirreljme.cicd.circleci.CircleCiWorkflowJobs;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Main entry point.
@@ -33,6 +39,10 @@ import java.util.regex.Pattern;
  */
 public class Main
 {
+	/** The instance of Fossil. */
+	public static final FossilCommand FOSSIL =
+		FossilCommand.instance();
+	
 	/**
 	 * Determines the base directory based on the version.
 	 * 
@@ -75,6 +85,63 @@ public class Main
 	}
 	
 	/**
+	 * Loads a Zip into the given map.
+	 *
+	 * @param __into The map to load into.
+	 * @param __from The Zip to load from.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/03/29
+	 */
+	public static void loadZip(Map<String, byte[]> __into, InputStream __from)
+		throws IOException, NullPointerException
+	{
+		if (__into == null || __from == null)
+			throw new NullPointerException("NARG");
+		
+		try (ZipInputStream zip = new ZipInputStream(__from))
+		{
+			// Keep reading entries
+			for (;;)
+			{
+				// Get next entry, stop if there are no more
+				ZipEntry entry = zip.getNextEntry();
+				if (entry == null)
+					break;
+				
+				// Ignore directories
+				if (entry.isDirectory())
+					continue;
+				
+				// Load into the map
+				__into.put(entry.getName(),
+					StreamUtils.readAll(1048576, zip));
+			}
+		}
+	}
+	
+	/**
+	 * Loads a Zip into the given map.
+	 *
+	 * @param __into The map to load into.
+	 * @param __from The Zip to load from.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/03/29
+	 */
+	public static void loadZip(Map<String, byte[]> __into, byte[] __from)
+		throws IOException, NullPointerException
+	{
+		if (__into == null || __from == null)
+			throw new NullPointerException("NARG");
+		
+		try (InputStream in = new ByteArrayInputStream(__from))
+		{
+			Main.loadZip(__into, in); 
+		}
+	}
+	
+	/**
 	 * Main entry point.
 	 *
 	 * @param __args Program arguments.
@@ -113,8 +180,7 @@ public class Main
 		
 		// Upload files into the un-versioned space
 		// romNanoCoatRelease=/home/.../squirreljme.jar
-		FossilCommand fossil = FossilCommand.instance();
-		if (fossil != null)
+		if (Main.FOSSIL != null)
 		{
 			// .tgz and .zip files, for distros generally
 			Path tempFile = Files.createTempFile("archive", ".tmp");
@@ -125,7 +191,7 @@ public class Main
 					Files.deleteIfExists(tempFile);
 					
 					// Obtain source archive
-					fossil.exec(fileType,
+					Main.FOSSIL.exec(fileType,
 						Objects.toString(fossilCommit, "trunk"),
 						tempFile.toAbsolutePath().toString(),
 						"--name",
@@ -137,8 +203,8 @@ public class Main
 					String target = Main.uvTarget(baseDir, version, name);
 					
 					// Upload source
-					fossil.add(tempFile, target);
-					fossil.add(mark, target + ".mkd");
+					Main.FOSSIL.add(tempFile, target);
+					Main.FOSSIL.add(mark, target + ".mkd");
 				}
 				finally
 				{
@@ -162,55 +228,159 @@ public class Main
 				// Store into un-versioned space
 				System.err.printf("Storing `%s` as `%s`...%n",
 					path, target);
-				fossil.add(path, target);
-				fossil.add(mark, target + ".mkd");
+				Main.FOSSIL.add(path, target);
+				Main.FOSSIL.add(mark, target + ".mkd");
 			}
 		}
 		
+		// Natives used for the standalone
+		Artifact standaloneBase = null;
+		List<Artifact> standaloneNative = new ArrayList<>();
+		
 		// Read in workflow jobs
 		String workflowId = System.getenv("CIRCLE_WORKFLOW_ID");
-		if (workflowId != null)
+		if (workflowId != null && Main.FOSSIL != null)
 		{
 			CircleCiWorkflowJobs jobs = CircleCiComm.workflowJobs(workflowId);
 			
 			// Go through all jobs
 			for (CircleCiJob job : jobs.getItems())
 			{
-				// Is this a job we care about?
-				String target;
-				try
-				{
-					target = Main.uvTarget(baseDir, version, job.getName());
-					if (target == null)
-						continue;
-				}
-				catch (IllegalArgumentException __ignored)
-				{
-					continue;
-				}
+				String jobName = job.getName();
 				
-				// Get artifacts for this job
-				CircleCiJobArtifacts artifacts =
-					CircleCiComm.jobArtifacts(job.getJobNumber());
-				for (CircleCiArtifact artifact : artifacts.getItems())
-				{
-					// Get the URL to the artifact
-					System.err.printf("Downloading `%s` as `%s`...%n",
-						artifact.getUrl(), target);
-					try (InputStream in = URI.create(artifact.getUrl())
-						.toURL().openStream())
-					{
-						// Store into un-versioned space
-						fossil.add(StreamUtils.readAll(1048576, in),
-							target);
-						fossil.add(mark, target + ".mkd");
-					}
-					
-					// Only care about the first
-					break;
-				}
+				// Part of the universal standalone?
+				if (jobName.endsWith("_natives"))
+					standaloneNative.addAll(
+						CircleCiComm.download(job.getJobNumber()));
+				else if (jobName.equals("build_linux_amd64_standalone"))
+					standaloneBase = CircleCiComm.download(job.getJobNumber())
+						.get(0);
+				
+				// Standard upload?
+				if (jobName.startsWith("rom") ||
+					jobName.contains("_standalone"))
+					Main.taskDirectUpload(job, baseDir, version, mark);
 			}
 		}
+		
+		// Build universal Jar that contains every architecture
+		if (Main.FOSSIL != null && standaloneBase != null)
+			Main.taskUniversal(baseDir, version, mark,
+				standaloneBase, standaloneNative);
+	}
+	
+	/**
+	 * Performs a direct upload of the artifact.
+	 *
+	 * @param __job The job this is.
+	 * @param __baseDir The base directory.
+	 * @param __version The SquirrelJME version.
+	 * @param __mark The marking to use.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/03/29
+	 */
+	public static void taskDirectUpload(CircleCiJob __job, String __baseDir,
+		String __version, byte[] __mark)
+		throws IOException, NullPointerException
+	{
+		if (__job == null || __baseDir == null || __version == null ||
+			__mark == null)
+			throw new NullPointerException("NARG");
+		
+		// Is this a job we care about?
+		String target;
+		try
+		{
+			target = Main.uvTarget(__baseDir, __version, __job.getName());
+			if (target == null)
+				return;
+		}
+		catch (IllegalArgumentException __ignored)
+		{
+			return;
+		}
+		
+		// Get artifacts for this job
+		for (Artifact artifact : CircleCiComm.download(__job.getJobNumber()))
+		{
+			// Get the URL to the artifact
+			System.err.printf("Uploading `%s` as `%s`...%n",
+				artifact.getPath(), target);
+			
+			// Store into un-versioned space
+			Main.FOSSIL.add(artifact.getData(), target);
+			Main.FOSSIL.add(__mark, target + ".mkd");
+			
+			// Only care about the first
+			break;
+		}
+	}
+	
+	/**
+	 * Combines a universal SquirrelJME standalone Jar. 
+	 *
+	 * @param __baseDir The base directory.
+	 * @param __version The SquirrelJME version.
+	 * @param __mark The marking to use.
+	 * @param __standaloneBase The base standalone.
+	 * @param __standaloneNative The natives to merge.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/03/29
+	 */
+	public static void taskUniversal(String __baseDir, String __version,
+		byte[] __mark, Artifact __standaloneBase,
+		List<Artifact> __standaloneNative)
+		throws IOException, NullPointerException
+	{
+		if (__baseDir == null || __version == null || __mark == null ||
+			__standaloneBase == null || __standaloneNative == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		System.err.printf("Combining universal from %s %s...%n",
+			__standaloneBase, __standaloneNative);
+		
+		// Load in and merge all ZIPs
+		Map<String, byte[]> merged = new TreeMap<>();
+		Main.loadZip(merged, __standaloneBase.getData());
+		for (Artifact artifact : __standaloneNative)
+			Main.loadZip(merged, artifact.getData());
+		
+		// Build resultant Zip
+		byte[] result;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ZipOutputStream zip = new ZipOutputStream(baos,
+				StandardCharsets.UTF_8))
+		{
+			// Use compression!
+			zip.setLevel(9);
+			
+			// Write each entry
+			for (Map.Entry<String, byte[]> item : merged.entrySet())
+			{
+				System.err.printf("Writing %s...%n", item.getKey());
+				zip.putNextEntry(new ZipEntry(item.getKey()));
+				
+				zip.write(item.getValue());
+				
+				zip.closeEntry();
+			}
+			
+			// Close the Zip
+			zip.finish();
+			zip.flush();
+			
+			// Grab the resultant final Zip
+			result = baos.toByteArray();
+		}
+		
+		// Store Zip into the fossil repository
+		String target = Main.uvTarget(__baseDir, __version,
+			"squirreljme-standalone-%s.jar");
+		Main.FOSSIL.add(result, target);
+		Main.FOSSIL.add(__mark, target + ".mkd");
 	}
 	
 	/**
@@ -282,14 +452,19 @@ public class Main
 			case "build_linux_amd64_standalone_flatpak":
 				name = "squirreljme-%s-amd64.flatpak";
 				break;
+				
+				// Allowed same
+			case "squirreljme-standalone-%s.jar":
+				name = __name;
+				break;
 			
 			default:
-				name = __name;
+				name = null;
 				break;
 		}
 		
 		// Construct
 		return String.format("%s/%s", __baseDir,
-			String.format(name, __version));
+			(name != null ? String.format(name, __version) : __name));
 	}
 }

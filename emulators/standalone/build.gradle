@@ -113,19 +113,7 @@ shadowJar {
 	// Set the suffix of the JAR to be the OS name and arch, since there is
 	// a dynamic library within for it
 	archiveClassifier.set(project.provider({ ->
-			String osName = System.getProperty("os.name").toLowerCase()
-			String osArch = System.getProperty("os.arch").toLowerCase()
-			
-			// Normalize OS names
-			if (osName.contains("windows"))
-				osName = "windows"
-			else if (osName.contains("mac os") || osName.contains("macos"))
-				osName = "macos"
-			
-			// Make sure there are no spaces or weird characters such as for
-			// Windows
-			return (osName + "-" + osArch).replaceAll(
-				Pattern.compile("[\\s<>:\"/\\\\|?*]"), "")
+			return (String)rootProject.squirreljmeSystemDash
 		}))
 	
 	// Exclude IntelliJ Annotations, they are not needed
