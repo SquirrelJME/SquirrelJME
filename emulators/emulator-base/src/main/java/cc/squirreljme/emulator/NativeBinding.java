@@ -22,6 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 
 /**
@@ -164,8 +166,8 @@ public final class NativeBinding
 		// Copy resource to the output
 		Path tempDir = null;
 		Path libFile = null;
-		try (InputStream in = NativeBinding.class.
-			getResourceAsStream("/" + libName))
+		try (InputStream in = NativeBinding.class.getResourceAsStream(
+			NativeBinding.nativePrefix() + "/" + libName))
 		{
 			if (in == null)
 				throw new IOException(String.format(
@@ -277,6 +279,41 @@ public final class NativeBinding
 		
 		// Call main
 		ReflectionShelf.invokeMain(TypeShelf.findType(targetMain), targetArgs);
+	}
+	
+	/**
+	 * Determines the native directory.
+	 *
+	 * @return The native directory.
+	 * @since 2025/03/29
+	 */
+	public static String nativePrefix()
+	{
+		// Normalize OS name
+		String osName = System.getProperty("os.name")
+			.toLowerCase(Locale.ROOT)
+			.replaceAll("[\\s<>:\"/\\\\|?*]", "");
+		if (osName.contains("windows"))
+			osName = "windows";
+		else if (osName.contains("mac os") || osName.contains("macos"))
+			osName = "macos";
+		else if (osName.contains("linux"))
+			osName = "linux";
+		else if (osName.contains("solaris"))
+			osName = "solaris";
+		else if (osName.contains("bsd"))
+			osName = "bsd";
+		
+		// Normalize OS arch
+		String osArch = System.getProperty("os.arch")
+			.toLowerCase(Locale.ROOT)
+			.replaceAll("[\\s<>:\"/\\\\|?*]", "");
+		if (osArch.equalsIgnoreCase("arm64") ||
+			osArch.equalsIgnoreCase("arm64-v8") ||
+			osArch.equalsIgnoreCase("aarch64"))
+			osArch = "aarch64";
+		
+		return "/natives/" + osName + "/" + osArch;
 	}
 	
 	/**

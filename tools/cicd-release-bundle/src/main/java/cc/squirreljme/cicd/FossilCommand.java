@@ -69,6 +69,7 @@ public class FossilCommand
 		if (__path == null || __target == null)
 			throw new NullPointerException("NARG");
 		
+		System.err.printf("Storing %s...%n", __target);
 		this.exec("uv", "add",
 			__path.toAbsolutePath().toString(), "--as", __target);
 	}
