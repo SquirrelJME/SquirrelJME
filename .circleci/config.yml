@@ -215,6 +215,21 @@ commands:
       - linux-debian-apt-get-install:
           packages: cmake build-essential curl wget gcc g++ make clang git openssh-client
       - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: gnustep-devel gnustep-core-devel libgnustep-base-dev libgnustep-gui-dev
+      - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: libsdl1.2-compat-dev
+      - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: libsdl2-compat-dev
+      - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: libmotif-dev
+      - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: libgtk2.0-dev
+      - linux-debian-apt-get-install-optional:
           look: javac
           packages: openjdk-17-jdk
       - linux-debian-apt-get-install-optional:
