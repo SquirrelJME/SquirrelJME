@@ -60,9 +60,6 @@
       <module name="squirreljme.tools.squirreljme-font" target="17" />
       <module name="squirreljme.tools.squirreljme-font.main" target="17" />
       <module name="squirreljme.tools.squirreljme-font.test" target="17" />
-      <module name="squirreljme.tools.squirreljme-javadoc-compat" target="1.9" />
-      <module name="squirreljme.tools.squirreljme-javadoc-compat.main" target="1.9" />
-      <module name="squirreljme.tools.squirreljme-javadoc-compat.test" target="1.9" />
       <module name="squirreljme.tools.squirreljme-javap" target="17" />
       <module name="squirreljme.tools.squirreljme-javap.main" target="17" />
       <module name="squirreljme.tools.squirreljme-javap.test" target="17" />

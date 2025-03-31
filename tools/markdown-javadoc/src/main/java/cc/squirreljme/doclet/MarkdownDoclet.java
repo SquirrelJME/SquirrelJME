@@ -100,7 +100,7 @@ public class MarkdownDoclet
 	 * @param __outputDir The directory where the output goes.
 	 * @param __docTitle The document title.
 	 * @param __allProjects All project paths.
-	 * @param __projectName The project name.
+	 * @param __projectName
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/23
 	 */

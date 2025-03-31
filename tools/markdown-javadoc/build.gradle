@@ -1,42 +1,37 @@
+import org.gradle.plugins.ide.idea.model.IdeaLanguageLevel
+
+import java.nio.file.Files
+import java.nio.file.Paths
+
 plugins {
 	id "java-library"
+	id "idea"
 }
 
 apply plugin: "com.github.johnrengelman.shadow"
 
-// Depends on the current Java Version
-if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
-	sourceCompatibility = JavaVersion.VERSION_1_9
-	targetCompatibility = JavaVersion.VERSION_1_9
-} else {
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+// Java 8 Only
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+jar {
 }
 
 shadowJar {
-	dependsOn jar, project.provider { ->
-		project(":tools:squirreljme-javadoc-compat").tasks.named("jar")
-	}
-	
-	from project.provider { ->
-		project(":tools:squirreljme-javadoc-compat").buildDir.toPath()
-			.resolve("libs")
-			.resolve("squirreljme-javadoc-compat-${rootProject.version}.jar")
-			.toFile()
-	}
+	dependsOn jar
 }
 
 dependencies {
 	// Depend directly on tools.jar so it is brought in, or the module
 	if (rootProject.hasProperty("squirreljmeFakeJavaDocSdk") &&
 		rootProject.squirreljmeFakeJavaDocSdk) {
-		implementation project(":tools:squirreljme-javadoc-classic")
+		implementation project(":tools:fake-javadoc-sdk")
 	} else {
 		logger.lifecycle("Tools 1 ${rootProject.squirreljmeToolsJar.getFiles()}")
 		logger.lifecycle("Tools 2 ${rootProject.ext.squirreljmeToolsJar.getFiles()}")
 		implementation files(rootProject.ext.squirreljmeToolsJar)
 	}
-
+	
 	implementation project(":modules:io-file")
 	implementation project(":modules:vendor-api-oracle-json")
 	implementation project(":modules:markdown-writer")
