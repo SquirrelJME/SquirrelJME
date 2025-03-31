@@ -25,7 +25,7 @@ dependencies {
 	// Depend directly on tools.jar so it is brought in, or the module
 	if (rootProject.hasProperty("squirreljmeFakeJavaDocSdk") &&
 		rootProject.squirreljmeFakeJavaDocSdk) {
-		implementation project(":tools:fake-javadoc-sdk")
+		implementation project(":tools:squirreljme-javadoc-classic")
 	} else {
 		logger.lifecycle("Tools 1 ${rootProject.squirreljmeToolsJar.getFiles()}")
 		logger.lifecycle("Tools 2 ${rootProject.ext.squirreljmeToolsJar.getFiles()}")
