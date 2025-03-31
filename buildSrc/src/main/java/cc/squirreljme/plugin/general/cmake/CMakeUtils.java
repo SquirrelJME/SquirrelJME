@@ -351,8 +351,10 @@ public final class CMakeUtils
 			procBuilder.directory(__workDir.toFile());
 		
 		// Use more CPUs!
-		procBuilder.environment().put("CMAKE_BUILD_PARALLEL_LEVEL",
+		Map<String, String> env = procBuilder.environment();
+		env.put("CMAKE_BUILD_PARALLEL_LEVEL",
 			Integer.toString(VMTestTaskAction.physicalProcessorCount()));
+		env.put("SQUIRRELJME_GRADLE", "YES");
 		
 		// Log the output somewhere
 		if (__in != null)
@@ -443,7 +445,7 @@ public final class CMakeUtils
 				"configure",
 				__task.getProject().getBuildDir().toPath(),
 				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
-				"-DSQUIRRELJME_GRADLE=" + __task.cmakeRules.get(0),
+				"-DSQUIRRELJME_GRADLE=YES",
 				genPlatform,
 				"-S", cmakeSource.toAbsolutePath().toString(),
 				"-B", cmakeBuild.toAbsolutePath().toString());
@@ -455,7 +457,7 @@ public final class CMakeUtils
 				"configure",
 				__task.getProject().getBuildDir().toPath(),
 				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
-				"-DSQUIRRELJME_GRADLE=" + __task.cmakeRules.get(0),
+				"-DSQUIRRELJME_GRADLE=YES",
 				genPlatform,
 				cmakeSource.toAbsolutePath().toString());
 	}
