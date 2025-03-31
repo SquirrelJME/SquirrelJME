@@ -130,13 +130,16 @@ if (JavaVersion.current() >= JavaVersion.VERSION_HIGHER ||
 }
 
 // On Java 8 we have tools.jar for JavaDoc
+// Otherwise, do not use it for Java 13 and up
 FileCollection toolsJar	= files(Paths.get("${System.properties['java.home']}")
 	.getParent().resolve("lib").resolve("tools.jar"))
-if (!Files.exists(toolsJar.singleFile.toPath())) {
-	// If on Java 9 or higher the module must be pulled in, but it does not
-	// exist since Java 17
+if (JavaVersion.current() >= JavaVersion.VERSION_13) {
+	toolsJar = null
+} else if (!Files.exists(toolsJar.singleFile.toPath())) {
+	// If on Java 9 or higher the module must be pulled in, but it is no
+	// longer supported since Java 13
 	if (JavaVersion.current() >= JavaVersion.VERSION_1_9 &&
-		JavaVersion.current() < JavaVersion.VERSION_16) {
+		JavaVersion.current() < JavaVersion.VERSION_13) {
 		// Windows/Linux
 		toolsJar = files(Paths.get("${System.properties['java.home']}")
 			.getParent().resolve("jmods").resolve("jdk.javadoc.jmod"))
@@ -151,7 +154,7 @@ if (!Files.exists(toolsJar.singleFile.toPath())) {
 
 // What should we do for this?
 def squirreljmeFakeJavaDocSdk =
-	!Files.exists(toolsJar.singleFile.toPath())
+	toolsJar == null || !Files.exists(toolsJar.singleFile.toPath())
 if (squirreljmeFakeJavaDocSdk) {
 	// Use fake API for building
 	gradle.beforeProject({proj ->
@@ -194,12 +197,17 @@ file(rootProject.projectDir.toPath().resolve("emulators"))
 file(rootProject.projectDir.toPath().resolve("tools"))
 	.eachDir(
 	{ subdir ->
-		// We may or may not want to include this accordingly
-		if ("fake-javadoc-sdk".equals(subdir.name)) {
-			if (squirreljmeFakeJavaDocSdk) {
-				logger.lifecycle("Including Fake JavaDoc SDK!")
+		def isClassic = "squirreljme-javadoc-classic".equals(subdir.name)
+		def isCompat = "squirreljme-javadoc-compat".equals(subdir.name)
+		
+		// Special handling for JavaDoc
+		if (isClassic || isCompat) {
+			if (isCompat && squirreljmeFakeJavaDocSdk) {
+				logger.lifecycle("Including compatibility layer")
+			} else if (isClassic && squirreljmeFakeJavaDocSdk) {
+				logger.lifecycle("Including Classic JavaDoc!")
 			} else {
-				logger.lifecycle("Not including Fake JavaDoc SDK, becuase " +
+				logger.lifecycle("Not including JavaDoc layer, because " +
 					"${toolsJar.getFiles()} exists...")
 				return
 			}

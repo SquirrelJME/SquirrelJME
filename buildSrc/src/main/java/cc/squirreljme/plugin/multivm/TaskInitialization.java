@@ -600,10 +600,10 @@ public final class TaskInitialization
 		mdJavaDoc.setGroup("squirreljme");
 		mdJavaDoc.setDescription("Generates Markdown JavaDoc.");
 		
-		// This has a hard dependency and we do not want to get out of order
+		// This has a hard dependency, we do not want to get out of order
 		mdJavaDoc.mustRunAfter(
 			docletProject.getTasks().getByName("clean"),
-			docletProject.getTasks().getByName("jar"));
+			docletProject.getTasks().getByName("shadowJar"));
 		
 		// We are using a specific classpath, in this case it is just
 		// SpringCoat's libraries for runtime

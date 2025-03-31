@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-module squirreljme.tools.markdown.javadoc.main {
+module squirreljme.javadoc.compat {
+	//requires squirreljme.javadoc.classic;
 	requires jdk.javadoc;
 }
