@@ -1131,6 +1131,10 @@ sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 	if (canAssignTo == NULL || fromClass == NULL)
 		return SJME_JNI_FALSE;
 
+	/* Same exact class is simple. */
+	if (canAssignTo == fromClass)
+		return SJME_JNI_TRUE;
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -1469,6 +1473,20 @@ fail_allocStrings:
 		sjme_alloc_free(nullStrings);
 	
 	return sjme_error_vmError(NULL, error);
+}
+
+sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrOutNotNull sjme_jmethodID* outID,
+	sjme_attrInNotNull sjme_jobject forObject,
+	sjme_attrInNotNull sjme_nvm_class_poolEntryMember* forMember)
+{
+	if (contextThread == NULL || outID == NULL || forObject == NULL ||
+		forMember == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(

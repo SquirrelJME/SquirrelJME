@@ -28,62 +28,25 @@ static const sjme_basicTypeId sjme_nvm_byteCode_xArrayType[8] =
 	SJME_BASIC_TYPE_ID_SHORT,
 };
 
-static sjme_errorCode sjme_nvm_byteCode_slowInvokeAny(
+static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInRange(0, SJME_NVM_NUM_METHOD_CALL_TYPE)
 		sjme_nvm_methodCallType callType,
-	sjme_attrInNotNull sjme_charSeq binaryName,
-	sjme_attrInNotNull sjme_charSeq methodName,
-	sjme_attrInNotNull sjme_charSeq methodType)
+	sjme_attrInNotNull sjme_jmethodID methodId)
 {
 	sjme_errorCode error;
-	sjme_jclass classy;
 	sjme_nvm_frame newFrame;
 	sjme_jint argC;
 	sjme_jvalueTyped* argV;
 	sjme_jvalueTyped* argVParam;
-	sjme_jmethodID methodId;
-	sjme_nvm_class_methodInfo target;
 	sjme_jvalueTyped mleArgR;
-	sjme_jboolean callOkay, isStatic;
+	sjme_jboolean isStatic;
+	sjme_nvm_class_methodInfo target;
 
-	if (inFrame == NULL || binaryName == NULL || methodName == NULL ||
-		methodType == NULL)
+	if (inFrame == NULL || methodId == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	if (callType < 0 || callType >= SJME_NVM_NUM_METHOD_CALL_TYPE)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* Locate target class. */
-	classy = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		inFrame->inThread->inTask->classLoader,
-		&classy,
-		inFrame->inThread,
-		binaryName,
-		SJME_JNI_TRUE)) || classy == NULL)
-		return sjme_error_vmError(inFrame, error);
-	
-	/* Locate method to execute, it is required to be found. */
-	methodId = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
-		classy, inFrame->inThread,
-		instanceType, SJME_JNI_TRUE,
-		methodName, methodType, &methodId)) || methodId == NULL)
-		return sjme_error_vmError(inFrame, error);
-
-	/* Check permissions to call the target. */
-	callOkay = SJME_JNI_FALSE;
-	if (sjme_error_is(error = sjme_nvm_instance_checkPermission(
-		inFrame->inClass, SJME_AS_JMEMBERID(methodId), &callOkay)) ||
-		!callOkay)
-		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
-			SJME_ERROR_CLASS_CHANGED));
 
 	/* Get the non-virtual target info. */
 	target = methodId->info[callType];
@@ -93,7 +56,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeAny(
 	if (isStatic && instanceType != SJME_NVM_CLASS_MEMBER_STATIC &&
 		callType != SJME_NVM_CALL_NON_VIRTUAL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
-
+	
 	/* Allocate pushed arguments. */
 	argC = target->argC + (!isStatic ? 1 : 0);
 	argV = sjme_alloca(sizeof(*argV) * (argC + 2));
@@ -119,6 +82,11 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeAny(
 		if (argV[0].value.l == NULL)
 			return sjme_error_vmError(inFrame,
 				SJME_ERROR_INVALID_REFERENCE_POP);
+		
+		/* Must be the same or a compatible class as the call site. */
+		if (!sjme_nvm_vmClass_isAssignableFrom(
+			methodId->member.inClass, argV[0].value.l->isClass))
+			return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 	}
 
 	/* If native, perform an MLE call. */
@@ -128,7 +96,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeAny(
 		memset(&mleArgR, 0, sizeof(mleArgR));
 		mleArgR.type = SJME_JAVA_TYPE_ID_VOID;
 		if (sjme_error_is(error = sjme_mle_mleCall(inFrame,
-			classy->binaryName,
+			target->inClass->name->seq,
 			target->name->seq,
 			target->type->seq,
 			&mleArgR,
@@ -168,6 +136,66 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeAny(
 			argC, argV)) || newFrame == NULL)
 			return sjme_error_vmError(inFrame, error);
 	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_byteCode_slowInvokeAny(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInRange(0, SJME_NVM_NUM_METHOD_CALL_TYPE)
+		sjme_nvm_methodCallType callType,
+	sjme_attrInNotNull sjme_charSeq binaryName,
+	sjme_attrInNotNull sjme_charSeq methodName,
+	sjme_attrInNotNull sjme_charSeq methodType)
+{
+	sjme_errorCode error;
+	sjme_jclass classy;
+	sjme_jmethodID methodId;
+	sjme_jboolean callOkay;
+
+	if (inFrame == NULL || binaryName == NULL || methodName == NULL ||
+		methodType == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (callType < 0 || callType >= SJME_NVM_NUM_METHOD_CALL_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Locate target class. */
+	classy = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		inFrame->inThread->inTask->classLoader,
+		&classy,
+		inFrame->inThread,
+		binaryName,
+		SJME_JNI_TRUE)) || classy == NULL)
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Locate method to execute, it is required to be found. */
+	methodId = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+		classy, inFrame->inThread,
+		instanceType, SJME_JNI_TRUE,
+		methodName, methodType, &methodId)) || methodId == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* Check permissions to call the target. */
+	callOkay = SJME_JNI_FALSE;
+	if (sjme_error_is(error = sjme_nvm_instance_checkPermission(
+		inFrame->inClass, SJME_AS_JMEMBERID(methodId), &callOkay)) ||
+		!callOkay)
+		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
+			SJME_ERROR_CLASS_CHANGED));
+
+	/* Perform the call. */
+	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvoke(
+		inFrame, instanceType, callType, methodId)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -267,13 +295,60 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 
 SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 {
+	sjme_jmethodID methodId;
+	sjme_jint poolIndex, depth;
+	sjme_nvm_class_poolEntryMember* methodRef;
+	sjme_jvalueTyped depthRef;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* PC adjustment. */
-	pcNew->adjust = 3;
+	pcNew->adjust = 5;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Always zero. */
+	if (0 != relRawCode[4])
+		return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_INSTRUCTION);
+
+	/* The count is used to refer to the base object to determine what is */
+	/* used to determine the call site. */
+	depth = (relRawCode[3] & 0xFF);
+	if (depth <= 0)
+		return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_INSTRUCTION);
+
+	/* Read in the reference. */
+	memset(&depthRef, 0, sizeof(depthRef));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame, depth - 1,
+		&depthRef, SJME_JNI_FALSE)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* It must be an object type. */
+	if (depthRef.type != SJME_JAVA_TYPE_ID_OBJECT)
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+
+	/* It cannot be null. */
+	if (depthRef.value.l == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
+	
+	/* Read in pool reference. */
+	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
+	if (sjme_error_is(error = sjme_nvm_task_framePool(
+		inFrame, poolIndex, (sjme_nvm_class_poolEntry**)&methodRef,
+		SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD,
+		0)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Lookup interface method. */
+	methodId = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByInterface(
+		inFrame->inThread, &methodId, depthRef.value.l, methodRef)) ||
+		methodId == NULL)
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Perform the invocation. */
+	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvoke(inFrame,
+		SJME_NVM_CLASS_MEMBER_INSTANCE,
+		SJME_NVM_CALL_VIRTUAL,
+		methodId)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;

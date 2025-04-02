@@ -13,7 +13,7 @@
 
 /** Standard shelf definition. */
 #define SJME_NVM_MLE_SHELF_DEF(what) \
-	{"Lcc/squirreljme/jvm/mle/"#what";", \
+	{"cc/squirreljme/jvm/mle/"#what, \
 	SJME_TOKEN_PASTE(sjme_nvm_mle, what)}
 
 static const sjme_nvm_mle sjme_nvm_mleShelves[] =

@@ -346,6 +346,22 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	sjme_attrInNotNull sjme_list_sjme_nvm_rom_library* classPath);
 
 /**
+ * Looks up a method ID from an interface call.
+ * 
+ * @param contextThread The current context thread.
+ * @param outID The resultant method ID.
+ * @param forObject The object this is for.
+ * @param forMember The interface this is invoking.
+ * @return Any resultant error, if any.
+ * @since 2025/04/01
+ */
+sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrOutNotNull sjme_jmethodID* outID,
+	sjme_attrInNotNull sjme_jobject forObject,
+	sjme_attrInNotNull sjme_nvm_class_poolEntryMember* forMember);
+	
+/**
  * Locates a method by the given name and type.
  * 
  * @param inClass The class to look within.
