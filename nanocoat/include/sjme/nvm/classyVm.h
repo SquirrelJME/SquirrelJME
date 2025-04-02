@@ -78,7 +78,10 @@ typedef enum sjme_nvm_methodCallType
 
 /** List of method binds. */
 SJME_LIST_DECLARE(sjme_jmethodID, 0);
-	
+
+/** List of interface binds. */
+SJME_LIST_DECLARE(sjme_jinterfaceID, 0);
+
 struct sjme_jinterfaceIDBase
 {
 	/** Common virtual machine info. */
@@ -87,8 +90,8 @@ struct sjme_jinterfaceIDBase
 	/** The class this interface is. */
 	sjme_jclass isInterface;
 
-	/** The hash of the binary name of the interface being implemented. */
-	sjme_jint binaryNameHash;
+	/** The hash of the descriptor of the interface being implemented. */
+	sjme_jint descriptorHash;
 
 	/** The methods which are bound to this interface instance. */
 	sjme_list_sjme_jmethodID* methods;
@@ -228,6 +231,8 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
  * is @code b.getClass().isAssignableFrom(a.getClass()) ==
  * (a instanceof b) @endcode
  * and  @code (Class<B>)a @endcode does not throw @c ClassCastException.
+ *
+ * This will hide errors if the classes are not valid. 
  * 
  * @param canAssignTo Can @c fromClass be assigned to this class?
  * @param fromClass The class to check if this can be assigned to.
@@ -237,6 +242,18 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 	sjme_attrInNotNull sjme_jclass canAssignTo,
 	sjme_attrInNotNull sjme_jclass fromClass);
+	
+/**
+ * Returns the is-classes for the given class.
+ *
+ * @param inClass The current class.
+ * @param outIsClasses The resultant is-classes.
+ * @return Any resultant error, if any.
+ * @since 2025/04/02
+ */
+sjme_errorCode sjme_nvm_vmClass_isClasses(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrOutNotNull sjme_list_sjme_jclass** outIsClasses);
 	
 /**
  * Generates an array class type of the specified component type.

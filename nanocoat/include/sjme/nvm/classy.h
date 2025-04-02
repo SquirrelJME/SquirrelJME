@@ -408,6 +408,9 @@ struct sjme_nvm_class_poolEntryClass
 	
 	/** The descriptor this represents. */
 	sjme_nvm_stringPool_string descriptor;
+
+	/** The hash of the descriptor. */
+	sjme_jint descriptorHash;
 };
 
 /**

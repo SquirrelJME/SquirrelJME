@@ -1711,6 +1711,12 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 		/* Initialize accordingly. */
 		switch (entry->type)
 		{
+				/* Class reference. */
+			case SJME_NVM_CLASS_POOL_TYPE_CLASS:
+				entry->classRef.descriptorHash =
+					sjme_charSeq_hashR(entry->classRef.descriptor->seq);
+				break;
+			
 				/* Member reference. */
 			case SJME_NVM_CLASS_POOL_TYPE_FIELD:
 			case SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD:

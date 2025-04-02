@@ -1128,6 +1128,9 @@ sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 	sjme_attrInNotNull sjme_jclass canAssignTo,
 	sjme_attrInNotNull sjme_jclass fromClass)
 {
+	sjme_list_sjme_jclass* fromClasses;
+	sjme_jint i, n;
+
 	if (canAssignTo == NULL || fromClass == NULL)
 		return SJME_JNI_FALSE;
 
@@ -1135,6 +1138,31 @@ sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 	if (canAssignTo == fromClass)
 		return SJME_JNI_TRUE;
 
+	/* Get the list of classes the source class is. */
+	/* b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b). */
+	fromClasses = NULL;
+	if (sjme_error_is(sjme_nvm_vmClass_isClasses(
+		fromClass, &fromClasses)) || fromClasses == NULL)
+		return SJME_JNI_FALSE;
+
+	/* Can any of these classes be assigned to this? */
+	for (i = 0, n = fromClasses->length; i < n; i++)
+		if (canAssignTo == fromClasses->elements[i])
+			return SJME_JNI_TRUE;
+
+	/* Failed to find a match. */
+	return SJME_JNI_FALSE;
+}
+
+sjme_errorCode sjme_nvm_vmClass_isClasses(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrOutNotNull sjme_list_sjme_jclass** outIsClasses)
+{
+	if (inClass == NULL || outIsClasses == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/*sjme_list_sjme_jinterfaceID* interfaceBinds*/
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -1481,9 +1509,53 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 	sjme_attrInNotNull sjme_jobject forObject,
 	sjme_attrInNotNull sjme_nvm_class_poolEntryMember* forMember)
 {
+	sjme_errorCode error;
+	sjme_list_sjme_jclass* isClasses;
+	sjme_list_sjme_jinterfaceID* binds;
+	sjme_jint i, n, start, wantHash;
+	sjme_jinterfaceID interfaceId, maybeId;
+	sjme_jboolean cycled;
+	
 	if (contextThread == NULL || outID == NULL || forObject == NULL ||
 		forMember == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* The interface binds list is inferred by is-classes. */
+	isClasses = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_isClasses(forObject->isClass,
+		&isClasses)) || isClasses == NULL)
+		return sjme_error_vmError(contextThread, error);
+
+	/* Recover binds. */
+	binds = forObject->isClass->interfaceBinds;
+	if (binds == NULL)
+		return sjme_error_vmError(contextThread, SJME_ERROR_ILLEGAL_STATE);
+
+	/* Locate the interface by its ID. */
+	interfaceId = NULL;
+	n = binds->length;
+	wantHash = forMember->inClass->descriptorHash;
+	start = wantHash % n;
+	for (i = start, cycled = SJME_JNI_FALSE; !cycled || (cycled && i != start);
+		i = (i + 1) % n, cycled = SJME_JNI_TRUE)
+	{
+		/* If the hash is wrong, it cannot be this one. */
+		maybeId = binds->elements[i];
+		if (maybeId->descriptorHash != wantHash)
+			continue;
+
+		/* Is this the same interface? */
+		if (!sjme_charSeq_equalsR(maybeId->isInterface->info->name->seq,
+			forMember->inClass->descriptor->seq))
+			continue;
+		
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Not found. */
+	if (interfaceId == NULL)
+		return sjme_error_vmError(contextThread, SJME_ERROR_CLASS_CAST);
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

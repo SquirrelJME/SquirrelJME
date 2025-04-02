@@ -208,6 +208,9 @@ struct sjme_jclassBase
 	sjme_list_sjme_jmethodID* methodBinds[
 		SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
 	
+	/** Interface method binds. */
+	sjme_list_sjme_jinterfaceID* interfaceBinds;
+	
 	/** The classes this implements or extends. */
 	sjme_nvm_isClasses* isClasses;
 
