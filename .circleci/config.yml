@@ -888,8 +888,11 @@ workflows:
                 - wip-universal
 
       # ARM64
-      - build_linux_arm64
-                - wip-universal
+      - build_linux_arm64:
+          filters:
+            branches:
+              only:
+                - trunk
       - build_linux_aarch64_natives:
           requires:
             - build_linux_arm64
