@@ -136,6 +136,9 @@ struct sjme_nvm_isClassesBase
 	
 	/** Read/write lock for this. */
 	sjme_thread_rwLock rwLock;
+
+	/** Is this is-classes state initialized? */
+	sjme_atomic_sjme_jint isInitialized;
 	
 	/** The classes that this class @c implements / @c extends . */
 	sjme_list_sjme_jclass* classes;
@@ -212,7 +215,7 @@ struct sjme_jclassBase
 	sjme_list_sjme_jinterfaceID* interfaceBinds;
 	
 	/** The classes this implements or extends. */
-	sjme_nvm_isClasses* isClasses;
+	sjme_nvm_isClasses isClasses;
 
 	/** The Java type ID of this class. */
 	sjme_javaTypeId typeId;

@@ -919,11 +919,19 @@ workflows:
 #                - wip-universal
 
       # Windows 32-bit
-      - build_windows_i386_setup
+      - build_windows_i386_setup:
+          filters:
+            branches:
+              only:
+                - trunk
                 - wip-universal
       - build_windows_i386:
           requires:
             - build_windows_i386_setup
+          filters:
+            branches:
+              only:
+                - trunk
                 - wip-universal
       - build_windows_i386_natives:
           requires:
@@ -935,10 +943,18 @@ workflows:
                 - wip-universal
 
       # Windows 64-bit
-      - build_windows_amd64_setup
+      - build_windows_amd64_setup:
+          filters:
+            branches:
+              only:
+                - trunk
       - build_windows_amd64:
           requires:
             - build_windows_amd64_setup
+          filters:
+            branches:
+              only:
+                - trunk
       - build_windows_amd64_natives:
           requires:
             - build_windows_amd64
@@ -950,20 +966,27 @@ workflows:
 
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
-      # Currently, I have an overabundance of credits...
-      - build_macosx_amd64
-      - build_macosx_aarch64
-      - build_macosx_aarch64_natives:
+      - build_macosx_amd64:
+          filters:
+            branches:
+              only:
+                - trunk
+      - build_macosx_amd64_natives:
           requires:
-            - build_macosx_aarch64
+            - build_macosx_amd64
           filters:
             branches:
               only:
                 - trunk
                 - wip-universal
-      - build_macosx_amd64_natives:
+      - build_macosx_aarch64:
+          filters:
+            branches:
+              only:
+                - trunk
+      - build_macosx_aarch64_natives:
           requires:
-            - build_macosx_amd64
+            - build_macosx_aarch64
           filters:
             branches:
               only:

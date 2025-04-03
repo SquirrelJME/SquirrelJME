@@ -919,6 +919,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 {
 	sjme_errorCode error;
 	sjme_nvm_vmClass_loader classLoader;
+	sjme_nvm_isClasses isClasses;
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -976,8 +977,20 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	{
 		error = sjme_error_vmError(contextThread,
 			SJME_ERROR_INVALID_CLASS_NAME);
-		goto fail_badName;
+		goto fail_initSpecific;
 	}
+
+	/* Allocate base for is-classes. */
+	isClasses = NULL;
+	if (sjme_error_is(error = sjme_nvm_alloc(contextThread->state,
+		sizeof(*isClasses), SJME_NVM_STRUCT_IS_CLASSES,
+		SJME_AS_NVM_COMMONP(&isClasses))) ||
+		isClasses == NULL)
+		goto fail_allocIsClasses;
+
+	/* Setup base is-classes. */
+	isClasses->rwLock.read = &isClasses->common.lock;
+	inClass->isClasses = isClasses;
 	
 	/* Set as done! */
 	sjme_atomic_sjme_jint_compareSet(&inClass->isLoaded,
@@ -995,6 +1008,7 @@ skip_doubleCalled:
 	
 fail_noClassFound:
 fail_badTryLib:
+fail_allocIsClasses:
 fail_initSpecific:
 	sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL);
@@ -1158,13 +1172,20 @@ sjme_errorCode sjme_nvm_vmClass_isClasses(
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrOutNotNull sjme_list_sjme_jclass** outIsClasses)
 {
+	sjme_nvm_isClasses isClasses;
+	
 	if (inClass == NULL || outIsClasses == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/*sjme_list_sjme_jinterfaceID* interfaceBinds*/
+
+	/* Get pre-allocated is-classes. */
+	isClasses = inClass->isClasses;
+	if (isClasses == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+	
+	/*sjme_list_sjme_jinterfaceID* interfaceBinds*/
 }
 
 sjme_errorCode sjme_nvm_vmClass_loaderLoadArray(
