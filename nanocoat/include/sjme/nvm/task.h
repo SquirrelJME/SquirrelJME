@@ -379,7 +379,7 @@ struct sjme_nvm_threadBase
 	sjme_jobjectBase object;
 	
 	/** The VM state this thread is in. */
-	sjme_nvm state;
+	sjme_nvm inState;
 	
 	/** The owning task. */
 	sjme_nvm_task inTask;

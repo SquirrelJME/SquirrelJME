@@ -172,6 +172,9 @@ typedef enum sjme_nvm_structType
 	
 	/** Identifier. */
 	SJME_NVM_STRUCT_IDENTIFIER,
+
+	/** Interface binding. */ 
+	SJME_NVM_STRUCT_INTERFACE_ID,
 	
 	/** The classes a class is. */
 	SJME_NVM_STRUCT_IS_CLASSES,

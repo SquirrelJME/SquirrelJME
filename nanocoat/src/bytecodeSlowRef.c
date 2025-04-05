@@ -85,6 +85,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		
 		/* Must be the same or a compatible class as the call site. */
 		if (!sjme_nvm_vmClass_isAssignableFrom(
+			inFrame->inThread,
 			methodId->member.inClass, argV[0].value.l->isClass))
 			return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 	}
@@ -282,8 +283,8 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	/* b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b) */
 	if (value.value.l != NULL &&
 		!(value.value.l->isClass == desireClass ||
-		sjme_nvm_vmClass_isAssignableFrom(desireClass,
-			value.value.l->isClass)))
+		sjme_nvm_vmClass_isAssignableFrom(inFrame->inThread,
+			desireClass, value.value.l->isClass)))
 	{
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
@@ -339,7 +340,8 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 	/* Lookup interface method. */
 	methodId = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByInterface(
-		inFrame->inThread, &methodId, depthRef.value.l, methodRef)) ||
+		inFrame->inThread, SJME_JNI_TRUE, &methodId,
+		depthRef.value.l, methodRef)) ||
 		methodId == NULL)
 		return sjme_error_vmError(inFrame, error);
 	

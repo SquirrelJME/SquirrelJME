@@ -333,6 +333,16 @@ static sjme_errorCode sjme_nvm_vmClass_isClassesClose(
 	return sjme_error_notImplemented(0);
 }
 
+static sjme_errorCode sjme_nvm_vmClass_interfaceIDClose(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	if (closeable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_nvm_vmClass_loaderClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -432,6 +442,10 @@ sjme_errorCode sjme_nvm_allocR(
 		case SJME_NVM_STRUCT_FRAME:
 			handler = sjme_nvm_threadFrameClose;
 			break;
+
+		case SJME_NVM_STRUCT_INTERFACE_ID:
+			handler = sjme_nvm_vmClass_interfaceIDClose;
+		break;
 		
 		case SJME_NVM_STRUCT_IS_CLASSES:
 			handler = sjme_nvm_vmClass_isClassesClose;

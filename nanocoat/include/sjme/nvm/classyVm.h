@@ -233,25 +233,29 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
  * and  @code (Class<B>)a @endcode does not throw @c ClassCastException.
  *
  * This will hide errors if the classes are not valid. 
- * 
+ *
+ * @param contextThread The context thread.
  * @param canAssignTo Can @c fromClass be assigned to this class?
  * @param fromClass The class to check if this can be assigned to.
  * @return If the class is assignable from the given class.
  * @since 2025/02/16
  */
 sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jclass canAssignTo,
 	sjme_attrInNotNull sjme_jclass fromClass);
 	
 /**
  * Returns the is-classes for the given class.
  *
+ * @param contextThread The context thread.
  * @param inClass The current class.
  * @param outIsClasses The resultant is-classes.
  * @return Any resultant error, if any.
  * @since 2025/04/02
  */
 sjme_errorCode sjme_nvm_vmClass_isClasses(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrOutNotNull sjme_list_sjme_jclass** outIsClasses);
 	
@@ -366,6 +370,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
  * Looks up a method ID from an interface call.
  * 
  * @param contextThread The current context thread.
+ * @param required Is this required to be found?
  * @param outID The resultant method ID.
  * @param forObject The object this is for.
  * @param forMember The interface this is invoking.
@@ -374,6 +379,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
  */
 sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInValue sjme_jboolean required,
 	sjme_attrOutNotNull sjme_jmethodID* outID,
 	sjme_attrInNotNull sjme_jobject forObject,
 	sjme_attrInNotNull sjme_nvm_class_poolEntryMember* forMember);

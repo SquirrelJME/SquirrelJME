@@ -134,12 +134,6 @@ struct sjme_nvm_isClassesBase
 	/** Common base for all objects. */
 	sjme_nvm_commonBase common;
 	
-	/** Read/write lock for this. */
-	sjme_thread_rwLock rwLock;
-
-	/** Is this is-classes state initialized? */
-	sjme_atomic_sjme_jint isInitialized;
-	
 	/** The classes that this class @c implements / @c extends . */
 	sjme_list_sjme_jclass* classes;
 };
