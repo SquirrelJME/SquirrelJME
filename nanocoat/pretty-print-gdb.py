@@ -163,6 +163,7 @@ class sjme_jclass:
             return []
 
         result = [[".name()", self.to_string()]]
+        result += sjme_jobject(self.value["object"].reference_value()).children()
         generic_children(result, self.value)
         return result
 
@@ -203,6 +204,52 @@ class sjme_jstring:
             return sjme_char_seq(self.value["seq"]).to_string()
         except:
             return "<NULL>"
+
+# Anything based on sjme_jobject
+class sjme_jobject_like:
+    def __init__(self, value):
+        self.value = value
+
+    def like_cast(self, what):
+        if self.value.type.code == gdb.TYPE_CODE_PTR:
+            return self.value.cast(gdb.lookup_type(f"{what}*"))
+        return self.value.cast(gdb.lookup_type(f"{what}"))
+
+    def like(self):
+        struct_id = (self.value.cast(gdb.lookup_type("sjme_nvm_commonBase"))["type"])
+        # SJME_NVM_STRUCT_ARRAY_INSTANCE
+        #if struct_id == 1:
+        #    return sjme_jarray(self.value.cast(gdb.lookup_type("sjme_jarray")))
+
+        # SJME_NVM_STRUCT_CLASS_INSTANCE
+        if struct_id == 4:
+            return sjme_jclass(self.like_cast("sjme_jclassBase"))
+
+        # SJME_NVM_STRUCT_STRING_INSTANCE
+        if struct_id == 18:
+            return sjme_jstring(self.like_cast("sjme_jstringBase"))
+
+        # SJME_NVM_STRUCT_OBJECT_INSTANCE or otherwise
+        return sjme_jobject(self.like_cast("sjme_jobjectBase"))
+
+    def display_hint(self):
+        # Do nothing on nulls
+        if is_null(self.value):
+            return "string"
+
+        return self.like().display_hint()
+
+    def children(self):
+        # Do nothing on nulls
+        if is_null(self.value):
+            return []
+
+        return self.like().children()
+
+    def to_string(self):
+        if is_null(self.value):
+            return "<NULL>"
+        return self.like().to_string()
 
 # sjme_list_...
 class sjme_jlist:
@@ -258,12 +305,10 @@ def sjme_printer_types(value):
         return sjme_char_seq(value)
     elif str(stripped).find("sjme_nvm_stringPool_stringBase") == 0:
         return sjme_nvm_string_pool(value)
-    elif str(stripped).find("sjme_jobject") == 0:
-        return sjme_jobject(value)
-    elif str(stripped).find("sjme_jclass") == 0:
-        return sjme_jclass(value)
-    elif str(stripped).find("sjme_jstring") == 0:
-        return sjme_jstring(value)
+    elif ((str(stripped).find("sjme_jobject") == 0 or
+        str(stripped).find("sjme_jclass") == 0 or
+        str(stripped).find("sjme_jstring") == 0)):
+        return sjme_jobject_like(value)
     elif str(stripped).find("sjme_list_") == 0:
         return sjme_jlist(value)
     return None
