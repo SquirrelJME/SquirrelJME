@@ -619,3 +619,17 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
+
+SJME_NVM_BYTECODE_SLOW(XAStore)
+{
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* PC adjustment. */
+	pcNew->adjust = 1;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
