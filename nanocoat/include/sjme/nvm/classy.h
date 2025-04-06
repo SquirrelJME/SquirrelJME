@@ -460,9 +460,6 @@ typedef struct sjme_nvm_class_poolEntryMember
 
 	/** The name and type used. */
 	const sjme_nvm_class_poolEntryNameAndType* nameAndType;
-	
-	/** The identifier hash. */
-	sjme_jint idHash;
 } sjme_nvm_class_poolEntryMember;
 
 /**
@@ -540,6 +537,9 @@ struct sjme_nvm_class_poolEntryNameAndType
 
 	/** The type. */
 	sjme_nvm_stringPool_string descriptor;
+	
+	/** The identifier hash. */
+	sjme_jint idHash;
 };
 
 /**

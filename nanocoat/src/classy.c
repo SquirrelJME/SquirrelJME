@@ -1718,13 +1718,11 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				break;
 			
 				/* Member reference. */
-			case SJME_NVM_CLASS_POOL_TYPE_FIELD:
-			case SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD:
-			case SJME_NVM_CLASS_POOL_TYPE_METHOD:
+			case SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE:
 				/* Calculate the member ID hash. */
-				entry->member.idHash = sjme_nvm_class_idHashMember(
-					entry->member.nameAndType->name->seq,
-					entry->member.nameAndType->descriptor->seq);
+				entry->nameAndType.idHash = sjme_nvm_class_idHashMember(
+					entry->nameAndType.name->seq,
+					entry->nameAndType.descriptor->seq);
 				break;
 
 				/* Not considered an error in the third stage. */

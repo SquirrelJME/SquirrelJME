@@ -20,6 +20,22 @@
 /** The amount the class list grows by. */
 #define SJME_VM_CLASS_GROW_LEN 32
 
+static sjme_errorCode sjme_nvm_vmClass_bindInterface(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jclass isClass,
+	sjme_attrInNotNull sjme_list_sjme_jinterfaceID* binds)
+{
+	sjme_errorCode error;
+	sjme_jint i, n;
+	
+	if (contextThread == NULL || isClass == NULL || binds == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_jclass thisClass,
@@ -1744,7 +1760,10 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 	sjme_attrInNotNull sjme_nvm_class_poolEntryMember* forMember)
 {
 	sjme_errorCode error;
+	sjme_jclass forClass;
 	sjme_list_sjme_jclass* isClasses;
+	sjme_list_sjme_jmethodID* methods;
+	sjme_jmethodID method;
 	sjme_list_sjme_jinterfaceID* binds;
 	sjme_jint i, n, start, wantHash;
 	sjme_jinterfaceID interfaceId, maybeId;
@@ -1754,15 +1773,22 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 		forMember == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Must be a reference to an interface. */
+	if (forMember->type != SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD)
+		return sjme_error_vmError(contextThread, SJME_ERROR_CLASS_CHANGED);
+
+	/* Everything acts in relation to the object's class. */
+	forClass = forObject->isClass;
+	
 	/* The interface binds list is inferred by is-classes. */
 	isClasses = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_isClasses(
 		contextThread,
-		forObject->isClass, &isClasses)) || isClasses == NULL)
+		forClass, &isClasses)) || isClasses == NULL)
 		return sjme_error_vmError(contextThread, error);
 
 	/* Recover binds. */
-	binds = forObject->isClass->interfaceBinds;
+	binds = forClass->interfaceBinds;
 	if (binds == NULL)
 	{
 		/* No binds mean that the class implements no interfaces. */
@@ -1788,17 +1814,51 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 		if (!sjme_charSeq_equalsR(maybeId->isInterface->info->name->seq,
 			forMember->inClass->descriptor->seq))
 			continue;
-		
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+
+		/* Need to initialize method binds? */
+		if (maybeId->methods == NULL)
+			if (!sjme_error_is(error = sjme_nvm_vmClass_bindInterface(
+				contextThread, forClass, binds)) ||
+				maybeId->methods == NULL)
+				return sjme_error_vmError(contextThread, error);
+
+		/* This is the one! */
+		interfaceId = maybeId;
 	}
 
 	/* Not found. */
 	if (interfaceId == NULL)
 		return sjme_error_vmError(contextThread, SJME_ERROR_CLASS_CAST);
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Calculate hash for the name and type. */
+	wantHash = forMember->nameAndType->idHash;
+
+	/* Go through methods. */
+	methods = interfaceId->methods;
+	for (i = 0, n = methods->length; i < n; i++)
+	{
+		/* Check method. */
+		method = methods->elements[i];
+
+		/* If not the hash, it cannot be this. */
+		if (method->member.idHash != wantHash)
+			continue;
+		
+		/* Is this the method. */
+		if (sjme_charSeq_equalsR(method->member.name->seq,
+				forMember->nameAndType->name->seq) &&
+			sjme_charSeq_equalsR(method->member.type->seq,
+				forMember->nameAndType->descriptor->seq))
+		{
+			*outID = method;
+			return SJME_ERROR_NONE;
+		}
+	}
+
+	/* Not found. */
+	if (!required)
+		return SJME_ERROR_NO_METHOD;
+	return sjme_error_vmError(contextThread, SJME_ERROR_NO_METHOD);
 }
 
 sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
