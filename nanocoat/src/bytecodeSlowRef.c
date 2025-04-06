@@ -434,6 +434,80 @@ SJME_NVM_BYTECODE_SLOW(New)
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
 
+SJME_NVM_BYTECODE_SLOW(NewArray)
+{
+	sjme_jvalueTyped length, array;
+	sjme_basicTypeId arrayType;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* PC adjustment. */
+	pcNew->adjust = 2;
+
+	/* Read in array length. */
+	memset(&length, 0, sizeof(length));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_INTEGER, &length)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Length is not valid. */
+	if (length.value.i < 0)
+		return sjme_error_vmError(inFrame, SJME_ERROR_NEGATIVE_ARRAY_SIZE);
+
+	/* Map array type. */
+	switch (relRawCode[1])
+	{
+		case 4:
+			arrayType = SJME_BASIC_TYPE_ID_BOOLEAN;
+			break;
+		
+		case 5:
+			arrayType = SJME_BASIC_TYPE_ID_CHARACTER;
+			break;
+		
+		case 6:
+			arrayType = SJME_JAVA_TYPE_ID_FLOAT;
+			break;
+		
+		case 7:
+			arrayType = SJME_JAVA_TYPE_ID_DOUBLE;
+			break;
+		
+		case 8:
+			arrayType = SJME_BASIC_TYPE_ID_BYTE;
+			break;
+		
+		case 9:
+			arrayType = SJME_BASIC_TYPE_ID_SHORT;
+			break;
+		
+		case 10:
+			arrayType = SJME_JAVA_TYPE_ID_INTEGER;
+			break;
+		
+		case 11:
+			arrayType = SJME_JAVA_TYPE_ID_LONG;
+			break;
+		
+		default:
+			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_INSTRUCTION);
+	}
+
+	/* Create new array. */
+	memset(&array, 0, sizeof(array));
+	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNewT(
+		inFrame->inThread, &array.value.l, arrayType, length.value.i)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Push to the stack. */
+	array.type = SJME_JAVA_TYPE_ID_OBJECT;
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&array)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(XALoad)
 {
 	sjme_jvalueTyped arrayValue;

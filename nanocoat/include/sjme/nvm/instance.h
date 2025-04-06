@@ -337,7 +337,8 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 sjme_errorCode sjme_nvm_instance_objectArrayNewT(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_jobject* outObject,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId componentType,
+	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS)
+		sjme_basicTypeId componentType,
 	sjme_attrInPositive sjme_jint arrayLength);
 	
 /**

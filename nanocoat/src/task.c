@@ -183,12 +183,48 @@ sjme_errorCode sjme_nvm_task_commonClass(
 	commonName = NULL;
 	switch (commonId)
 	{
+		case SJME_NVM_TASK_COMMON_CLASS_CLASS:
+			commonName = "Ljava/lang/Class;";
+			break;
+		
 		case SJME_NVM_TASK_COMMON_CLASS_OBJECT:
 			commonName = "Ljava/lang/Object;";
 			break;
-		
-		case SJME_NVM_TASK_COMMON_CLASS_CLASS:
-			commonName = "Ljava/lang/Class;";
+	
+		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BOOLEAN:
+			commonName = "Z";
+			break;
+	
+		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BYTE:
+			commonName = "B";
+			break;
+	
+		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_CHARACTER:
+			commonName = "C";
+			break;
+	
+		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_DOUBLE:
+			commonName = "D";
+			break;
+	
+		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_FLOAT:
+			commonName = "F";
+			break;
+	
+		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_INTEGER:
+			commonName = "I";
+			break;
+	
+		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_LONG:
+			commonName = "J";
+			break;
+	
+		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_SHORT:
+			commonName = "S";
+			break;
+	
+		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_VOID:
+			commonName = "F";
 			break;
 		
 		case SJME_NVM_TASK_COMMON_CLASS_STRING:

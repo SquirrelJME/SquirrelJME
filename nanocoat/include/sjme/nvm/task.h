@@ -307,11 +307,38 @@ typedef enum sjme_nvm_task_commonClassId
 	/** Null class. */
 	SJME_NVM_TASK_COMMON_CLASS_NULL,
 	
+	/** @c java.lang.Class . */
+	SJME_NVM_TASK_COMMON_CLASS_CLASS,
+	
 	/** @c java.lang.Object . */
 	SJME_NVM_TASK_COMMON_CLASS_OBJECT,
 	
-	/** @c java.lang.Class . */
-	SJME_NVM_TASK_COMMON_CLASS_CLASS,
+	/** @c boolean . */
+	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BOOLEAN,
+	
+	/** @c byte . */
+	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BYTE,
+	
+	/** @c char . */
+	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_CHARACTER,
+	
+	/** @c double . */
+	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_DOUBLE,
+	
+	/** @c float . */
+	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_FLOAT,
+	
+	/** @c int . */
+	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_INTEGER,
+	
+	/** @c long . */
+	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_LONG,
+	
+	/** @c short . */
+	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_SHORT,
+	
+	/** @c void . */
+	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_VOID,
 	
 	/** @c java.lang.String . */
 	SJME_NVM_TASK_COMMON_CLASS_STRING,

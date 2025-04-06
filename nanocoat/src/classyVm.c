@@ -548,6 +548,54 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_vmClass_checkInitPrimitive(
+	sjme_attrOutNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_nvm_vmClass_loader classLoader)
+{
+	sjme_errorCode error;
+	sjme_nvm_class_info info;
+	sjme_alloc_pool allocPool;
+	sjme_nvm_stringPool strings;
+	sjme_nvm_stringPool_string thisName;
+	sjme_nvm inState;
+	
+	if (inClass == NULL || contextThread == NULL || classLoader == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	inState = contextThread->inTask->inState;
+	allocPool = contextThread->inTask->inState->allocPool;
+	strings = classLoader->nullStrings;
+
+	/* Lookup self name. */
+	thisName = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateSeq(
+		strings, &thisName, inClass->binaryName, 0)) || thisName == NULL)
+		return sjme_error_vmError(contextThread, error);
+
+	/* Allocate synthetic result. */
+	info = NULL;
+	if (sjme_error_is(error = sjme_nvm_alloc(inState,
+		sizeof(*info), SJME_NVM_STRUCT_CLASS_INFO,
+		SJME_AS_NVM_COMMONP(&info))) || info == NULL)
+		return sjme_error_outOfMemory(allocPool, sizeof(*info));
+	
+	/* Synthesize info for primitive types. */
+	/* Magically, they have no super class! */
+	info->version = SJME_NVM_CLASS_CLDC_1_8;
+	info->name = thisName;
+	info->superName = NULL;
+	info->flags.access.public = SJME_JNI_TRUE;
+	info->flags.final = SJME_JNI_TRUE;
+	info->flags.synthetic = SJME_JNI_TRUE;
+
+	/* Set synthetic class info. */
+	inClass->info = info;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 	sjme_attrOutNotNull sjme_jclass inClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
@@ -791,6 +839,11 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	/* Set class type ID. */
 	switch (sjme_charSeq_charAtR(binaryName, 0))
 	{
+		case 'V':
+			result->typeId = SJME_JAVA_TYPE_ID_VOID;
+			result->arrayTypeId = SJME_JAVA_TYPE_ID_VOID;
+			break;
+		
 		case 'Z':
 			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
 			result->arrayTypeId = SJME_BASIC_TYPE_ID_BOOLEAN;
@@ -1166,12 +1219,12 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 			goto fail_initSpecific;
 	}
 	
-	/* Invalid */
+	/* Primitive Type */
 	else
 	{
-		error = sjme_error_vmError(contextThread,
-			SJME_ERROR_INVALID_CLASS_NAME);
-		goto fail_initSpecific;
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitPrimitive(inClass,
+			contextThread, classLoader)))
+			goto fail_initSpecific;
 	}
 
 	/* Allocate base for is-classes. */

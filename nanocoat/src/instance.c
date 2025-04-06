@@ -151,6 +151,10 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 		return sjme_error_vmError(contextThread,
 			SJME_ERROR_NEGATIVE_ARRAY_SIZE);
 
+	/* Cannot be void. */
+	if (componentType->arrayTypeId == SJME_JAVA_TYPE_ID_VOID)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
 	/* Determine the allocation size. */
 	allocSize = sizeof(*result);
 	if (componentType->arrayTypeId == SJME_BASIC_TYPE_ID_BOOLEAN)
@@ -190,22 +194,75 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 sjme_errorCode sjme_nvm_instance_objectArrayNewT(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_jobject* outObject,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId componentType,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_basicTypeId componentType,
 	sjme_attrInPositive sjme_jint arrayLength)
 {
+	sjme_errorCode error;
+	sjme_jclass componentClass;
+	sjme_nvm_task_commonClassId commonId;
+	
 	if (contextThread == NULL || outObject == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (componentType < 0 || componentType >= SJME_NUM_JAVA_TYPE_IDS ||
-		componentType == SJME_JAVA_TYPE_ID_OBJECT)
+	if (componentType < 0 || componentType >= SJME_NUM_BASIC_TYPE_IDS ||
+		componentType == SJME_JAVA_TYPE_ID_OBJECT ||
+		componentType == SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE ||
+		componentType == SJME_JAVA_TYPE_ID_SHORT_OR_CHAR ||
+		componentType == SJME_BASIC_TYPE_ID_VOID)
 		return SJME_ERROR_INVALID_ARGUMENT;
-
+	
 	if (arrayLength < 0)
 		return sjme_error_vmError(contextThread,
 			SJME_ERROR_NEGATIVE_ARRAY_SIZE);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Determine the common ID to use. */
+	switch (componentType)
+	{
+		case SJME_BASIC_TYPE_ID_BOOLEAN:
+			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BOOLEAN;
+			break;
+
+		case SJME_BASIC_TYPE_ID_BYTE:
+			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BYTE;
+			break;
+
+		case SJME_BASIC_TYPE_ID_SHORT:
+			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_SHORT;
+			break;
+
+		case SJME_BASIC_TYPE_ID_CHARACTER:
+			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_CHARACTER;
+			break;
+
+		case SJME_BASIC_TYPE_ID_INTEGER:
+			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_INTEGER;
+			break;
+
+		case SJME_BASIC_TYPE_ID_LONG:
+			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_LONG;
+			break;
+
+		case SJME_BASIC_TYPE_ID_FLOAT:
+			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_FLOAT;
+			break;
+
+		case SJME_BASIC_TYPE_ID_DOUBLE:
+			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_DOUBLE;
+			break;
+
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+
+	/* Load the component class. */
+	componentClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_commonClass(
+		contextThread, commonId, &componentClass)) || componentClass == NULL)
+		return sjme_error_vmError(contextThread, error);
+
+	/* Forward initialize. */
+	return sjme_nvm_instance_objectArrayNew(contextThread, outObject,
+		componentClass, arrayLength);
 }
 
 sjme_errorCode sjme_nvm_instance_objectNew(
