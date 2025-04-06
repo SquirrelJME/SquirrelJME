@@ -22,18 +22,94 @@
 
 static sjme_errorCode sjme_nvm_vmClass_bindInterface(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInNotNull sjme_jclass isClass,
-	sjme_attrInNotNull sjme_list_sjme_jinterfaceID* binds)
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_jinterfaceID interfaceBind)
 {
 	sjme_errorCode error;
-	sjme_jint i, n;
+	sjme_jint i, n, at;
+	sjme_list_sjme_jmethodID* methods;
+	sjme_list_sjme_jmethodID* fromMethods;
+	sjme_jmethodID target, use;
+	sjme_jclass isInterface;
 	
-	if (contextThread == NULL || isClass == NULL || binds == NULL)
+	if (contextThread == NULL || inClass == NULL || interfaceBind == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* The interface needs to be fully initialized. */
+	isInterface = interfaceBind->isInterface;
+	if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
+		isInterface, contextThread)))
+		return sjme_error_vmError(contextThread, error);
+
+	/* Lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&interfaceBind->common.lock)))
+		return sjme_error_default(error);
 	
+	/* All the virtual methods of the interface become viable targets for */
+	/* interface method calls. This is because even though an interface such */
+	/* as CharSequence may have subSequence(), it is valid to use */
+	/* CharSequence with getClass() from Object. */
+
+	/* Setup target list. */
+	fromMethods = isInterface->methodBinds[SJME_NVM_CLASS_MEMBER_INSTANCE];
+	n = fromMethods->length;
+	methods = NULL;
+	if (sjme_error_is(error = sjme_list_alloc(
+		contextThread->inState->allocPool, n + 1, &methods,
+		sjme_jmethodID, 0)) || methods == NULL)
+		goto fail_allocList;
+
+	/* Locate for every possible target method. */
+	for (i = 0; i < n; i++)
+	{
+		/* Which methods are we binding? */
+		target = fromMethods->elements[i];
+
+		/* Ignore anything that is not public. */
+		if (!target->flags.member.access.public)
+			continue;
+
+		/* Locate method in the current class. */
+		use = NULL;
+		if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+			inClass, contextThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
+			SJME_JNI_TRUE,
+			target->member.name->seq, target->member.type->seq,
+			&use)) || use == NULL)
+			goto fail_findMethod;
+
+		/* Use hashed position for it. */
+		for (at = abs(use->member.idHash) % n;; at = (at + 1) % n)
+			if (methods->elements[at] == NULL)
+			{
+				methods->elements[at] = use;
+				break;
+			}
+	}
+
+	/* Store method bind table. */
+	interfaceBind->methods = methods;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Release. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&interfaceBind->common.lock, NULL)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_findMethod:
+fail_allocList:
+	if (methods != NULL)
+	{
+		sjme_alloc_free(methods);
+		methods = NULL;
+	}
+
+	/* Release before failing. */
+	sjme_thread_spinLockRelease(&interfaceBind->common.lock, NULL);
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
@@ -1817,8 +1893,8 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 
 		/* Need to initialize method binds? */
 		if (maybeId->methods == NULL)
-			if (!sjme_error_is(error = sjme_nvm_vmClass_bindInterface(
-				contextThread, forClass, binds)) ||
+			if (sjme_error_is(error = sjme_nvm_vmClass_bindInterface(
+				contextThread, forClass, maybeId)) ||
 				maybeId->methods == NULL)
 				return sjme_error_vmError(contextThread, error);
 
@@ -1837,8 +1913,10 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 	methods = interfaceId->methods;
 	for (i = 0, n = methods->length; i < n; i++)
 	{
-		/* Check method. */
+		/* Check method, NULL might be a private method in Object. */
 		method = methods->elements[i];
+		if (method == NULL)
+			continue;
 
 		/* If not the hash, it cannot be this. */
 		if (method->member.idHash != wantHash)

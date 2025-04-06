@@ -7,7 +7,6 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: GDB Pretty Printers for SquirrelJME
 
-import sys
 import gdb
 import gdb.printing
 
@@ -32,7 +31,6 @@ def base_type(stripped):
         stripped = str(stripped)[7:]
 
     return str(stripped)
-
 
 def is_null(value):
     try:
@@ -271,6 +269,3 @@ def sjme_printer_types(value):
     return None
 
 gdb.pretty_printers.append(sjme_printer_types)
-#gdb.printing.register_pretty_printer(
-#    gdb.current_objfile(),
-#    sjme_printer_types)
