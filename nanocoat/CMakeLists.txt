@@ -7,14 +7,13 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Defines the base project and the versioning info
 
-# Needed for some ancient RetroArch toolchains
-if(${CMAKE_VERSION} VERSION_LESS "3.13")
-	message(STATUS "Ancient CMake has been detected (${CMAKE_VERSION})")
+# Allow a dynamic range of CMake versions to allow older systems
+message(STATUS "Detected CMake (${CMAKE_VERSION})")
+if(${CMAKE_VERSION} VERSION_LESS "3.7")
+	cmake_minimum_required(VERSION 3.0)
+elseif(${CMAKE_VERSION} VERSION_LESS "3.13")
 	cmake_minimum_required(VERSION 3.7)
-
-	# Needs to be this or newer
 else()
-	message(STATUS "Detected CMake (${CMAKE_VERSION})")
 	cmake_minimum_required(VERSION 3.13)
 endif()
 

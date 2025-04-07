@@ -10,31 +10,38 @@
 package cc.squirreljme.runtime.cldc;
 
 import cc.squirreljme.jvm.mle.constants.PhoneModelType;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Contains information on SquirrelJME.
  *
  * @since 2018/12/05
  */
+@SquirrelJMEVendorApi
 public final class SquirrelJME
 {
 	/** The major version of SquirrelJME. */
+	@SquirrelJMEVendorApi
 	public static final byte MAJOR_VERSION =
 		0;
 	
 	/** The minor version of SquirrelJME. */
+	@SquirrelJMEVendorApi
 	public static final byte MINOR_VERSION =
 		3;
 	
 	/** The release version of SquirrelJME. */
+	@SquirrelJMEVendorApi
 	public static final byte RELEASE_VERSION =
 		0;
 	
 	/** The version of this SquirrelJME runtime. */
+	@SquirrelJMEVendorApi
 	public static final String RUNTIME_VERSION =
 		"0.3.0";
 	
 	/** The microedition platform. */
+	@SquirrelJMEVendorApi
 	public static final String MICROEDITION_PLATFORM =
 		"SquirrelJME/0.3.0";
 	
@@ -53,6 +60,7 @@ public final class SquirrelJME
 	 * @param __phoneModel The current phone model.
 	 * @since 2022/02/14
 	 */
+	@SquirrelJMEVendorApi
 	public static String platform(int __phoneModel)
 	{
 		// This can vary

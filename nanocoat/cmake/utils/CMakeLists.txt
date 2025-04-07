@@ -7,19 +7,13 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Various utilities
 
-# Needed for some ancient RetroArch toolchains
-if(${CMAKE_VERSION} VERSION_LESS "3.13")
-	message(STATUS "Ancient CMake has been detected (${CMAKE_VERSION})")
-	# Just allow a very early 3.0 release so all utilities work regardless
-	if(${CMAKE_VERSION} VERSION_LESS "3.7")
-		cmake_minimum_required(VERSION 3.0)
-	else()
-		cmake_minimum_required(VERSION 3.7)
-	endif()
-
-	# Needs to be this or newer
+# Allow a dynamic range of CMake versions to allow older systems
+message(STATUS "Detected CMake (${CMAKE_VERSION})")
+if(${CMAKE_VERSION} VERSION_LESS "3.7")
+	cmake_minimum_required(VERSION 3.0)
+elseif(${CMAKE_VERSION} VERSION_LESS "3.13")
+	cmake_minimum_required(VERSION 3.7)
 else()
-	message(STATUS "Detected CMake (${CMAKE_VERSION})")
 	cmake_minimum_required(VERSION 3.13)
 endif()
 

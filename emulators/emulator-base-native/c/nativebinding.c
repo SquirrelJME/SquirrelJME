@@ -66,8 +66,10 @@ sjme_debug_handlerFunctions sjme_jni_debugHandlers =
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	// Used to indicate that something might be happened
 	fprintf(stderr, "JNI Sub-Level: Loading Library...\n");
+#endif
 
 	// Support Java 7!
 	return JNI_VERSION_1_6;
@@ -79,8 +81,10 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 {
 	jint rv = 0;
 
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* It is happening! */
 	fprintf(stderr, "JNI Sub-Level: Binding Methods...\n");
+#endif
 
 	/* Use these debug handlers. */
 	sjme_debug_handlers = &sjme_jni_debugHandlers;
@@ -107,8 +111,10 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 	rv |= mleNativeScritchDylibInit(env, classy);
 	rv |= mleNativeScritchInterfaceInit(env, classy);
 
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* It happened! */
 	fprintf(stderr, "JNI Sub-Level: Methods are now bound!\n");
+#endif
 
 	return rv;
 }

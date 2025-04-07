@@ -95,7 +95,7 @@ public final class NativeBinding
 			NativeBinding.loadedLibPath = libFile;
 				
 			// Debug
-			if (Debugging.ENABLED)
+			if (Debugging.VERBOSE)
 			{
 				System.err.printf("Java Version: %s%n",
 					System.getProperty("java.version"));
@@ -106,7 +106,7 @@ public final class NativeBinding
 			System.load(libFile.toString());
 			
 			// Debug
-			if (Debugging.ENABLED)
+			if (Debugging.VERBOSE)
 				System.err.printf("Java Over-Layer: Binding methods...%n");
 			
 			// Bind methods
@@ -114,7 +114,7 @@ public final class NativeBinding
 				throw new RuntimeException("Could not bind methods!");
 			
 			// Debug
-			if (Debugging.ENABLED)
+			if (Debugging.VERBOSE)
 				System.err.printf("Java Over-Layer: Methods bound!%n");
 		}
 		catch (IOException e)
@@ -125,7 +125,7 @@ public final class NativeBinding
 		// Track execution time
 		finally
 		{
-			if (Debugging.ENABLED)
+			if (Debugging.VERBOSE)
 				System.err.printf("Java Over-Layer: Loading took %dms%n",
 					(System.nanoTime() - loadNs) / 1_000_000L);
 		}
@@ -158,7 +158,8 @@ public final class NativeBinding
 			libName = __libBaseName;
 		
 		// Debug
-		System.err.printf("Java Over-Layer: Locating %s...%n", libName);
+		if (Debugging.VERBOSE)
+			System.err.printf("Java Over-Layer: Locating %s...%n", libName);
 		
 		// Timing for extraction
 		long startNs = System.nanoTime();
@@ -185,8 +186,9 @@ public final class NativeBinding
 			libFile = tempDir.resolve(libName);
 			
 			// Debug
-			System.err.printf("Java Over-Layer: Extracting %s...%n",
-				libName);
+			if (Debugging.VERBOSE)
+				System.err.printf("Java Over-Layer: Extracting %s...%n",
+					libName);
 			
 			// Write to the disk as we can only load there
 			try (OutputStream out = Files.newOutputStream(libFile,
@@ -215,8 +217,9 @@ public final class NativeBinding
 				new PathCleanup(libFile, tempDir));
 		
 			// Debug
-			System.err.printf("Java Over-Layer: Extracted to %s...%n",
-				libFile);
+			if (Debugging.VERBOSE)
+				System.err.printf("Java Over-Layer: Extracted to %s...%n",
+					libFile);
 			
 			// Use this path
 			return libFile;
@@ -243,8 +246,9 @@ public final class NativeBinding
 		// Track execution time
 		finally
 		{
-			System.err.printf("Java Over-Layer: Extraction took %dms%n",
-				(System.nanoTime() - startNs) / 1_000_000L);
+			if (Debugging.VERBOSE)
+				System.err.printf("Java Over-Layer: Extraction took %dms%n",
+					(System.nanoTime() - startNs) / 1_000_000L);
 		}
 	}
 	

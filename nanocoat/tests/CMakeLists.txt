@@ -207,11 +207,23 @@ endforeach()
 
 # Load in TAC tests from rom/squirreljme-(slow-)test.list
 foreach(testListFile
-	"${CMAKE_SOURCE_DIR}/rom/squirreljme-slow-test.list"
-	"${CMAKE_SOURCE_DIR}/rom/squirreljme-test.list")
+	"${CMAKE_SOURCE_DIR}/rom/squirreljme-test.list"
+	"${CMAKE_SOURCE_DIR}/rom/squirreljme-slow-test.list")
 	# Not actually here?
 	if (NOT EXISTS "${testListFile}")
 		continue()
+	endif()
+
+	# Note it
+	message(STATUS "Using tests from ${testListFile}...")
+
+	# Are these the debug test variants?
+	string(FIND "${testListFile}" "squirreljme-slow-test.list"
+		testDebugVariant)
+	if("${testDebugVariant}" GREATER_EQUAL "0")
+		set(tacPrefix "tac-debug")
+	else()
+		set(tacPrefix "tac")
 	endif()
 
 	# Determine actual Jar name
@@ -230,7 +242,7 @@ foreach(testListFile
 		list(GET tacTestNameList 2 tacTestClass)
 
 		set(tacTestName "${test}")
-		set(tacTestLongName "tac:${tacTestJar}:${tacTestClass}")
+		set(tacTestLongName "${tacPrefix}:${tacTestJar}:${tacTestClass}")
 
 		# Register it
 		message(STATUS "TAC Test: ${tacTestLongName}")
@@ -257,7 +269,4 @@ foreach(testListFile
 		set_tests_properties("${tacTestLongName}"
 			PROPERTIES LABEL "${tacTestLongName}")
 	endforeach()
-
-	# Stop and do not add the next set of tests
-	break()
 endforeach()

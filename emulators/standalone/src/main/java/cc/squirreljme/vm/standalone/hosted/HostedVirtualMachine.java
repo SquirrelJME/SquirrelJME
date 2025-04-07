@@ -300,7 +300,8 @@ public class HostedVirtualMachine
 			builder.command(args);
 			
 			// Debug
-			Debugging.debugNote("Hosted Args: %s", args);
+			if (Debugging.VERBOSE)
+				Debugging.debugNote("Hosted Args: %s", args);
 			
 			// Execute the virtual machine, wait for it to complete
 			process = builder.start();

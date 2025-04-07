@@ -444,7 +444,7 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          command: gradlew clean <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - run:
           shell: cmd.exe
@@ -520,7 +520,7 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          command: gradlew clean <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
       - run:
           name: Gradle Build and Test (Retry)
