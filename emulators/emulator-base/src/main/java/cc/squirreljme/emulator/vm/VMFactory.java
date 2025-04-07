@@ -186,7 +186,9 @@ public abstract class VMFactory
 		try (InputStream in = VMFactory.class
 			.getResourceAsStream("/META-INF/MANIFEST.MF"))
 		{
-			Debugging.debugNote("GOT MANIFEST: %s", in);
+			if (Debugging.VERBOSE)
+				Debugging.debugNote("GOT MANIFEST: %s", in);
+			
 			if (in != null)
 				metaManifest = new JavaManifest(in);
 		}
@@ -202,6 +204,9 @@ public abstract class VMFactory
 		boolean didJar = false;
 		String rawJarPath = null;
 		String rawJarEntry = null;
+		
+		// Was the -version switch used?
+		String didVersion = null;
 		
 		// Clutter level of the library
 		String clutterLevel = "release";
@@ -226,6 +231,8 @@ public abstract class VMFactory
 		// -zero
 		// -client
 		// -server
+		// -version
+		// --version
 		// -XstartOnFirstThread
 		// -Xscritchui:(ui)
 		// Optionally `-jar`
@@ -379,6 +386,10 @@ public abstract class VMFactory
 					item.substring("-Xscritchui:".length()));
 			}
 			
+			// Version information (stdout/stderr)
+			else if (item.equals("-version") || item.equals("--version"))
+				didVersion = item;
+			
 			// Unknown
 			else
 				throw new IllegalArgumentException(String.format(
@@ -403,9 +414,26 @@ public abstract class VMFactory
 					VMFactory.__addPaths(libraries, entry);
 		}
 		
-		// Did not do -jar, so do normal command line parse
+		// Version output
 		String mainClass;
-		if (!didJar)
+		if (didVersion != null)
+		{
+			mainClass = "cc.squirreljme.runtime.cldc.PrintVersion";
+			mainArgs.add(didVersion);
+			
+			// Forces no -jar
+			didJar = false;
+			
+			// Default class path for launching
+			String defCp = metaManifest.getMainAttributes().getValue(
+				VMFactory.STANDALONE_CLASSPATH);
+			if (defCp != null && !defCp.isEmpty())
+				for (String entry : VMFactory.__unSeparateClassPath(defCp))
+					VMFactory.__addPaths(suiteClasspath, entry);
+		}
+		
+		// Did not do -jar, so do normal command line parse
+		else if (!didJar)
 		{
 			// Main class is here
 			mainClass = queue.pollFirst();
@@ -435,6 +463,8 @@ public abstract class VMFactory
 					mainArgs.add(defParam);
 			}
 		}
+		
+		// -jar switch
 		else
 		{
 			// Make sure this exists in the library path
@@ -499,8 +529,9 @@ public abstract class VMFactory
 				continue;
 			
 			// Note it
-			Debugging.debugNote("Registering %s (%s)",
-				normalName, path);
+			if (Debugging.VERBOSE)
+				Debugging.debugNote("Registering %s (%s)",
+					normalName, path);
 			
 			// Is there a built-in resource based for this JAR itself?
 			VMClassLibrary place;
@@ -640,10 +671,13 @@ public abstract class VMFactory
 		int exitCode = -1;
 		try
 		{
-			// Debug
-			Debugging.debugNote("Starting virtual machine (in %s)...",
-				mainClass);
-			Debugging.debugNote("Args: %s", Arrays.asList(__args));
+			if (Debugging.VERBOSE)
+			{
+				// Debug
+				Debugging.debugNote("Starting virtual machine (in %s)...",
+					mainClass);
+				Debugging.debugNote("Args: %s", Arrays.asList(__args));
+			}
 			
 			// Run the VM
 			VirtualMachine vm = VMFactory.mainVm(vmName,

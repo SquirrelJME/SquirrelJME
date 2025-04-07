@@ -266,7 +266,7 @@ public final class SpringTaskManager
 	@Override
 	public String vmName()
 	{
-		return "SquirrelJME SpringCoat";
+		return "SquirrelJME SpringCoat VM";
 	}
 	
 	/**

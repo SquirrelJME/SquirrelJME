@@ -49,7 +49,8 @@ public class HostedCleanup
 	public void run()
 	{
 		// Note
-		Debugging.debugNote("Cleaning up...");
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("Cleaning up...");
 		
 		try
 		{
@@ -64,7 +65,6 @@ public class HostedCleanup
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
 				}
 			
 			// Delete final directory
@@ -72,7 +72,6 @@ public class HostedCleanup
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
 		}
 	}
 }
