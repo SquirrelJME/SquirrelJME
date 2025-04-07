@@ -102,7 +102,7 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
 	/* .86 */ SJME_NVM_BYTECODE_SLOW_NAME(XAStore),
 	/* .87 */ SJME_NVM_BYTECODE_SLOW_NAME(Pop),
 	/* .88 */ sjme_nvm_byteCode_notImplemented,
-	/* .89 */ sjme_nvm_byteCode_notImplemented,
+	/* .89 */ SJME_NVM_BYTECODE_SLOW_NAME(Dup),
 	/* .90 */ sjme_nvm_byteCode_notImplemented,
 	/* .91 */ sjme_nvm_byteCode_notImplemented,
 	/* .92 */ sjme_nvm_byteCode_notImplemented,

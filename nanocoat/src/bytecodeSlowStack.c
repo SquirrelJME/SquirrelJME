@@ -11,10 +11,37 @@
 #include "sjme/nvm/bytecodeSlow.h"
 #include "sjme/nvm/task.h"
 
+SJME_NVM_BYTECODE_SLOW(Dup)
+{
+	sjme_jvalueTyped top;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Only a single byte. */
+	pcNew->adjust = 1;
+
+	/* What is at the top of the stack? */
+	memset(&top, 0, sizeof(top));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
+		0, &top, SJME_JNI_FALSE)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Must not be a wide type. */
+	if (top.type == SJME_JAVA_TYPE_ID_LONG ||
+		top.type == SJME_JAVA_TYPE_ID_DOUBLE)
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+
+	/* Push a copy of it. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame, &top)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(Pop)
 {
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
 	sjme_jvalueTyped top;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* Only a single byte. */
 	pcNew->adjust = 1;

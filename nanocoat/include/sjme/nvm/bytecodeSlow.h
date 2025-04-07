@@ -112,6 +112,7 @@ SJME_NVM_BYTECODE_SLOW(XALoad);
 SJME_NVM_BYTECODE_SLOW(XAStore);
 
 /* Stack */
+SJME_NVM_BYTECODE_SLOW(Dup);
 SJME_NVM_BYTECODE_SLOW(Pop);
 
 /*--------------------------------------------------------------------------*/
