@@ -791,7 +791,7 @@ struct sjme_nvm_commonBase
 	sjme_frontEnd frontEnd;
 	
 	/** The lock to access this common item. */
-	sjme_thread_spinLock lock;
+	sjme_alignPointer sjme_thread_spinLock lock;
 };
 
 struct sjme_nvm_stateBase

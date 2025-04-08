@@ -2146,7 +2146,7 @@ struct sjme_scritchui_loopQueueChunk
 typedef struct sjme_scritchui_loopQueue
 {
 	/** The lock for the queue items. */
-	sjme_thread_spinLock lock;
+	sjme_alignPointer sjme_thread_spinLock lock;
 	
 	/** The first chunk. */
 	sjme_scritchui_loopQueueChunk* firstChunk;
@@ -2197,7 +2197,7 @@ struct sjme_scritchui_stateBase
 	sjme_thread_mainFunc loopThreadInit;
 	
 	/** Indicator that the main loop is ready for execution. */
-	sjme_atomic_sjme_jint loopThreadReady;
+	sjme_alignPointer sjme_atomic_sjme_jint loopThreadReady;
 	
 	/** The available screens. */
 	sjme_list_sjme_scritchui_uiScreen* screens;
@@ -2215,7 +2215,7 @@ struct sjme_scritchui_stateBase
 	sjme_scritchui wrappedState;
 	
 	/** Reference to owning state. */
-	sjme_atomic_sjme_pointer topState;
+	sjme_alignPointer sjme_atomic_sjme_pointer topState;
 	
 	/** The next ID for opaque menu items. */
 	sjme_jint nextMenuItemId;
