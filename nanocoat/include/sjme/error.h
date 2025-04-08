@@ -532,6 +532,18 @@ sjme_errorCode sjme_error_default(
 sjme_errorCode sjme_error_defaultOr(
 	sjme_errorCode error, sjme_errorCode otherwise);
 
+/**
+ * Masks the given error with another.
+ *
+ * @param error The error code to be masked.
+ * @param mask The error to mask with.
+ * @return Returns @c mask .
+ * @since 2025/04/08
+ */
+sjme_errorCode sjme_error_mask(
+	sjme_attrInValue sjme_errorCode error,
+	sjme_attrInValue sjme_errorCode mask);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

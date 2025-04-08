@@ -115,8 +115,29 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jboolean intern;
+	sjme_jstring string;
+
+	/* Intern the string? */
+	intern = !!argV[0].value.i;
+
+	/* Must be an actual string. */
+	string = (sjme_jstring)argV[1].value.l;
+	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Obtain string value from the sequence. */
+	argR->value.l = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfCS(
+		inFrame->inThread,
+		SJME_AS_NVM_JSTRINGP(&argR->value.l), intern, string->seq) ||
+		argR->value.l == NULL))
+		return sjme_error_default(error);
+
+	/* Success! */
+	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_SHELF_DECLARE(StringShelf) =
@@ -150,10 +171,10 @@ SJME_NVM_MLE_SHELF_DECLARE(StringShelf) =
 			SJME_MD_AC SJME_MD_I SJME_MD_I),
 		"VLILII"),
 	SJME_NVM_MLE_DEFINE_ALT(stringValueOf, chars,
-		SJME_MD(SJME_MD_STRING, SJME_MD_Z SJME_MD_STRING),
-		"LIL"),
-	SJME_NVM_MLE_DEFINE_ALT(stringValueOf, string,
 		SJME_MD(SJME_MD_STRING, SJME_MD_Z SJME_MD_AC SJME_MD_I SJME_MD_I),
 		"LILII"),
+	SJME_NVM_MLE_DEFINE_ALT(stringValueOf, string,
+		SJME_MD(SJME_MD_STRING, SJME_MD_Z SJME_MD_STRING),
+		"LIL"),
 	SJME_NVM_MLE_STOP()
 };

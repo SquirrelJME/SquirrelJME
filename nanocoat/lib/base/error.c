@@ -83,3 +83,10 @@ sjme_errorCode sjme_error_defaultOr(
 
 	return error;
 }
+
+sjme_errorCode sjme_error_mask(
+	sjme_attrUnused sjme_attrInValue sjme_errorCode error,
+	sjme_attrInValue sjme_errorCode mask)
+{
+	return sjme_error_default(mask);
+}
