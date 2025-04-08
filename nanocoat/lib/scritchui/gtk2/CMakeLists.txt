@@ -7,8 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # Bring in GTK2
-find_package(PkgConfig)
-pkg_check_modules(GTK2 REQUIRED gtk+-2.0)
+squirreljme_include("find-gtk2.cmake")
 
 # Declare base library
 add_library(ScritchUIGTK2 SHARED
@@ -40,11 +39,14 @@ endif()
 target_include_directories(ScritchUIGTK2 PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 target_include_directories(ScritchUIGTK2 SYSTEM PRIVATE
-	${GTK2_INCLUDE_DIRS})
+	${GTK2_INCLUDE_DIR} ${GTK2_INCLUDE_DIRS})
 
 # Link in GTK2
-target_link_directories(ScritchUIGTK2 PUBLIC
-	${GTK2_LIBRARY_DIRS})
+if(DEFINED GTK2_LIBRARY_DIRS)
+	target_link_directories(ScritchUIGTK2 PUBLIC
+		${GTK2_LIBRARY_DIRS})
+endif()
+
 target_link_libraries(ScritchUIGTK2 PUBLIC
 	${GTK2_LIBRARIES})
 

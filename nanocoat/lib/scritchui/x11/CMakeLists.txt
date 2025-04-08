@@ -7,8 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # We need to know where X11 is
-find_package(PkgConfig)
-pkg_check_modules(X11 REQUIRED x11)
+squirreljme_include("find-x11.cmake")
 
 # Declare base library
 add_library(ScritchUIX11 SHARED
