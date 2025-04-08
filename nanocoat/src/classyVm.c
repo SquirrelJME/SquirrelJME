@@ -840,59 +840,52 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	switch (sjme_charSeq_charAtR(binaryName, 0))
 	{
 		case 'V':
-			result->typeId = SJME_JAVA_TYPE_ID_VOID;
 			result->arrayTypeId = SJME_JAVA_TYPE_ID_VOID;
 			break;
 		
 		case 'Z':
-			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
 			result->arrayTypeId = SJME_BASIC_TYPE_ID_BOOLEAN;
 			break;
 		
 		case 'B':
-			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
 			result->arrayTypeId = SJME_BASIC_TYPE_ID_BYTE;
 			break;
 		
 		case 'S':
-			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
 			result->arrayTypeId = SJME_BASIC_TYPE_ID_SHORT;
 			break;
 		
 		case 'C':
-			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
 			result->arrayTypeId = SJME_BASIC_TYPE_ID_CHARACTER;
 			break;
 		
 		case 'I':
-			result->typeId = SJME_JAVA_TYPE_ID_INTEGER;
 			result->arrayTypeId = SJME_JAVA_TYPE_ID_INTEGER;
 			break;
 
 		case 'J':
-			result->typeId = SJME_JAVA_TYPE_ID_LONG;
 			result->arrayTypeId = SJME_JAVA_TYPE_ID_LONG;
 			break;
 
 		case 'F':
-			result->typeId = SJME_JAVA_TYPE_ID_FLOAT;
 			result->arrayTypeId = SJME_JAVA_TYPE_ID_FLOAT;
 			break;
 
 		case 'D':
-			result->typeId = SJME_JAVA_TYPE_ID_DOUBLE;
 			result->arrayTypeId = SJME_JAVA_TYPE_ID_DOUBLE;
 			break;
 		
 		case 'L':
 		case '[':
-			result->typeId = SJME_JAVA_TYPE_ID_OBJECT;
 			result->arrayTypeId = SJME_JAVA_TYPE_ID_OBJECT;
 			break;
 
 		default:
 			goto fail_badType;
 	}
+
+	/* Promote the array type to the stack type. */
+	result->typeId = sjme_nvm_typePromote[result->arrayTypeId];
 
 	/* Classes start as never loaded. */
 	autoLoad = SJME_VM_CLASS_INIT_LOAD_NEVER;

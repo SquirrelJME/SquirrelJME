@@ -37,6 +37,27 @@ const sjme_jint sjme_nvm_typeMul[SJME_NUM_BASIC_TYPE_IDS] =
 	sizeof(sjme_jchar),
 };
 
+const sjme_jint sjme_nvm_typePromote[SJME_NUM_BASIC_TYPE_IDS] =
+{
+	/* Basic types. */
+	SJME_JAVA_TYPE_ID_INTEGER,
+	SJME_JAVA_TYPE_ID_LONG,
+	SJME_JAVA_TYPE_ID_FLOAT,
+	SJME_JAVA_TYPE_ID_DOUBLE,
+	SJME_JAVA_TYPE_ID_OBJECT,
+
+	/* Void. */
+	SJME_JAVA_TYPE_ID_VOID,
+
+	/* Promoted. */
+	SJME_JAVA_TYPE_ID_INTEGER,
+	SJME_JAVA_TYPE_ID_INTEGER,
+	SJME_JAVA_TYPE_ID_INTEGER,
+	SJME_JAVA_TYPE_ID_INTEGER,
+	SJME_JAVA_TYPE_ID_INTEGER,
+	SJME_JAVA_TYPE_ID_INTEGER,
+};
+
 static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 {
 	switch (error)

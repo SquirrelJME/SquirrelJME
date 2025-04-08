@@ -622,13 +622,106 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 
 SJME_NVM_BYTECODE_SLOW(XAStore)
 {
+	sjme_jvalueTyped popValue;
+	sjme_jvalueTyped arrayValue;
+	sjme_jvalueTyped indexValue;
+	sjme_jarray array;
+	sjme_jint index;
+	sjme_basicTypeId arrayType;
+	sjme_javaTypeId promoteType;
+	sjme_jclass componentType;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* PC adjustment. */
 	pcNew->adjust = 1;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Determine the type to read from the stack and to store to the array. */
+	arrayType = sjme_nvm_byteCode_xArrayType[id - 79];
+	promoteType = sjme_nvm_typePromote[arrayType];
+
+	/* Read in value, index, and array. */
+	memset(&popValue, 0, sizeof(popValue));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		promoteType, &popValue)))
+		return sjme_error_vmError(inFrame, error);
+	memset(&indexValue, 0, sizeof(indexValue));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_INTEGER, &indexValue)))
+		return sjme_error_vmError(inFrame, error);
+	memset(&arrayValue, 0, sizeof(arrayValue));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &arrayValue)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Must not be null. */
+	array = SJME_AS_JARRAY(arrayValue.value.l);
+	if (array == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
+
+	/* Make sure the array is actually valid. */
+	componentType = sjme_atomic_sjme_jclass_get(
+		&array->object.isClass->componentType);
+	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
+		!array->object.isClass->info->isArray ||
+		componentType == NULL || componentType->arrayTypeId != arrayType ||
+		popValue.type != componentType->typeId)
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+
+	/* Check bounds. */
+	index = indexValue.value.i;
+	if (index < 0 || index >= array->length)
+		return sjme_error_vmError(inFrame,
+			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS);
+
+	/* Store value into the array. */
+	switch (componentType->arrayTypeId)
+	{
+		case SJME_BASIC_TYPE_ID_BOOLEAN:
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+			
+		case SJME_BASIC_TYPE_ID_BYTE:
+			array->elements.b[index] = (sjme_jbyte)popValue.value.i;
+			break;
+			
+		case SJME_BASIC_TYPE_ID_SHORT:
+			array->elements.s[index] = (sjme_jshort)popValue.value.i;
+			break;
+			
+		case SJME_BASIC_TYPE_ID_CHARACTER:
+			array->elements.c[index] = (sjme_jchar)popValue.value.i;
+			break;
+			
+		case SJME_JAVA_TYPE_ID_INTEGER:
+			array->elements.i[index] = popValue.value.i;
+			break;
+			
+		case SJME_JAVA_TYPE_ID_LONG:
+			array->elements.j[index] = popValue.value.j;
+			break;
+			
+		case SJME_JAVA_TYPE_ID_FLOAT:
+			array->elements.f[index] = popValue.value.f;
+			break;
+			
+		case SJME_JAVA_TYPE_ID_DOUBLE:
+			array->elements.d[index] = popValue.value.d;
+			break;
+			
+		case SJME_JAVA_TYPE_ID_OBJECT:
+			/* Count down if there is an old value. */
+			if (sjme_error_is(error = sjme_nvm_instance_countDown(
+				&array->elements.l[index], popValue.value.l)))
+				return sjme_error_vmError(inFrame, error);
+
+			/* Set new value. */
+			array->elements.l[index] = popValue.value.l;
+			break;
+
+		default:
+			return sjme_error_vmError(inFrame,
+				SJME_ERROR_STACK_INVALID_READ);
+	}
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
