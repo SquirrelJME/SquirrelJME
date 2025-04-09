@@ -19,10 +19,10 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 @SquirrelJMEVendorApi
 public interface VerboseDebugFlag
 {
-	/** All verbosity settings. */
+	/** All verbosity settings, except for exclusionary ones. */
 	@SquirrelJMEVendorApi
 	int ALL =
-		0xFFFF_FFFF;
+		~(0x4_0000 | 0x8_0000);
 	
 	/** Be verbose on the called instructions. */
 	@SquirrelJMEVendorApi
@@ -113,4 +113,14 @@ public interface VerboseDebugFlag
 	@SquirrelJMEVendorApi
 	int IGNORED_EXCEPTION =
 		0x2_0000;
+	
+	/** Not on the main thread. */
+	@SquirrelJMEVendorApi
+	int NOT_MAIN_THREAD =
+		0x4_0000;
+	
+	/** Only in the default package. */
+	@SquirrelJMEVendorApi
+	int DEFAULT_PACKAGE =
+		0x8_0000;
 }

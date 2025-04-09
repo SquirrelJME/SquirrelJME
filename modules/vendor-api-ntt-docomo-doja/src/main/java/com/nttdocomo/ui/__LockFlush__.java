@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import java.lang.ref.WeakReference;
 
 /**
@@ -23,6 +24,9 @@ final class __LockFlush__
 	
 	/** The lock count. */
 	private volatile int _count;
+	
+	/** Called out of thread? */
+	private volatile boolean _outOfThread;
 	
 	/**
 	 * Initializes the lock flush against the given canvas. 
@@ -41,6 +45,26 @@ final class __LockFlush__
 	}
 	
 	/**
+	 * This is used to flag if another thread in DoJa is performing the
+	 * drawing, rather than the main event loop which is the proper way of
+	 * handling this.
+	 *
+	 * @return {@code this}.
+	 * @since 2025/04/09
+	 */
+	__LockFlush__ __checkThread()
+	{
+		// Flag if we are not in the event thread
+		if (!NativeScritchInterface.nativeInterface().eventLoop().inLoop())
+			synchronized (this)
+			{
+				this._outOfThread = true;
+			}
+		
+		return this;
+	}
+	
+	/**
 	 * Specifies that a double buffered draw operation has started. If
 	 * double buffering is not supported, this does nothing.
 	 *
@@ -48,10 +72,24 @@ final class __LockFlush__
 	 */
 	void __lock()
 	{
-		// Count up
 		synchronized (this)
 		{
+			// Count up
 			this._count++;
+		}
+	}
+	
+	/**
+	 * Returns whether this was claimed outside the ScritchUI thread.
+	 *
+	 * @return Whether this was claimed outside the ScritchUI thread.
+	 * @since 2025/04/09
+	 */
+	boolean __outOfThread()
+	{
+		synchronized (this)
+		{
+			return this._outOfThread;
 		}
 	}
 	
@@ -65,6 +103,10 @@ final class __LockFlush__
 	 */
 	void __unlock(boolean __forced)
 	{
+		// If we are in the event loop, do not lock
+		if (NativeScritchInterface.nativeInterface().eventLoop().inLoop())
+			return;
+		
 		// Count down
 		int count;
 		synchronized (this)
@@ -77,6 +119,9 @@ final class __LockFlush__
 			
 			// Set new count
 			this._count = count;
+			
+			// Notify that the lock state has changed
+			this.notifyAll();
 		}
 		
 		// Flush graphics?
@@ -88,6 +133,7 @@ final class __LockFlush__
 				return;
 			
 			// Tell canvas to repaint itself
+			target._midpCanvas._doubleBuffer.flush();
 			target.__displayable().repaint();
 		}
 	}
