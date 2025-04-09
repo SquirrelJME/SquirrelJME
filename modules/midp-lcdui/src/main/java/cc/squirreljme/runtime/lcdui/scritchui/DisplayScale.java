@@ -158,24 +158,26 @@ public abstract class DisplayScale
 			override = RuntimeShelf.systemEnv(DisplayScale.FRAME_ENV);
 		if (override != null && !override.isEmpty())
 		{
-			// Parse values
-			int s = override.indexOf('x');
 			int useW = -1;
 			int useH = -1;
-			try
-			{
-				useW = Integer.parseInt(
-					override.substring(0, s), 10);
-				useH = Integer.parseInt(
-					override.substring(s + 1), 10);
-			}
-			catch (NumberFormatException ignored)
-			{
-			}
+			
+			// Parse values
+			int s = override.indexOf('x');
+			if (s >= 0)
+				try
+				{
+					useW = Integer.parseInt(
+						override.substring(0, s), 10);
+					useH = Integer.parseInt(
+						override.substring(s + 1), 10);
+				}
+				catch (NumberFormatException ignored)
+				{
+				}
 			
 			// Is the override valid?
 			if (useW > 0 && useH > 0)
-				new DisplayFixedFlatScale(useW, useH);
+				return new DisplayFixedFlatScale(useW, useH);
 		}
 		
 		// Try to figure out what a MIDlet desires as far as size is concerned
