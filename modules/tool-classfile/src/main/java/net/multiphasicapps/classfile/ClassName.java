@@ -231,7 +231,7 @@ public class ClassName
 	 * Returns the package that this class is within. Primitive types and
 	 * arrays are not part of any package.
 	 *
-	 * @return The package or {@code null} if it is not in the package.
+	 * @return The package or {@code null} if it is not in a package.
 	 * @since 2017/10/09
 	 */
 	public BinaryName inPackage()

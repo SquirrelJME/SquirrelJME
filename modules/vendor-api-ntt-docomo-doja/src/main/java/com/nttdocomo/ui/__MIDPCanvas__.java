@@ -9,7 +9,6 @@
 
 package com.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Graphics;
@@ -105,27 +104,30 @@ final class __MIDPCanvas__
 		if (rv == null)
 			return;
 		
-		// Draw with this buffer size
-		int w = rv.getWidth();
-		int h = rv.getHeight();
-		
-		// Perform a standard paint within i-mode using our double buffered
-		// image
+		// Only draw if not being called out of thread, this is a shim of
+		// sorts for DoJa applications that either draw correctly or draw
+		// themselves in the main loop when they should not
 		DoubleBuffer doubleBuffer = this._doubleBuffer;
-		__BGColor__ bgColor = rv._bgColor;
-		Graphics mg = doubleBuffer.getGraphics(w, h);
-		com.nttdocomo.ui.Graphics g = new com.nttdocomo.ui.Graphics(
-			mg, bgColor, null);
+		if (!rv._lockFlush.__outOfThread())
+		{
+			// Draw with this buffer size
+			int w = rv.getWidth();
+			int h = rv.getHeight();
+			
+			// Perform a standard paint within i-mode using our double buffered
+			// image
+			__BGColor__ bgColor = rv._bgColor;
+			Graphics mg = doubleBuffer.getGraphics(w, h);
+			com.nttdocomo.ui.Graphics g = new com.nttdocomo.ui.Graphics(mg,
+				bgColor, rv._lockFlush);
+			
+			// Forward paint call
+			rv.paint(g);
+		}
 		
-		// Fill with the background color
-		/*int oldColor = mg.getAlphaColor();
-		mg.setAlphaColor(bgColor._bgColor | 0xFF_000000);
-		mg.fillRect(0, 0, w, h);
-		mg.setAlphaColor(oldColor);*/
-		
-		// Forward paint call
-		rv.paint(g);
-		
+		// Regardless of whether this drawn in another thread incorrectly,
+		// a number of DoJa software depends on the actual proper drawing to
+		// perform the actual buffer update
 		// Paint the buffer to the given target
 		doubleBuffer.flush();
 		doubleBuffer.paint(__g);

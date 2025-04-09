@@ -1388,12 +1388,32 @@ public final class SpringThreadWorker
 	 */
 	public boolean verboseCheck(int __flags)
 	{
-		// Was tracing enabled for this flag?
-		if ((this.machine._globalTrace & __flags) != 0)
-			return true;
+		VMTraceFlagTracker verbose = this._verbose;
 		
+		// Determine the current frame level
 		SpringThreadFrame frame = this.thread.currentFrame();
-		return this._verbose.check((frame == null ? 0 : frame.level), __flags);
+		int level = (frame == null ? 0 : frame.level);
+		
+		// Are these exclusion flags applicable?
+		boolean excludeMain = ((this.machine._globalTrace &
+			VerboseDebugFlag.NOT_MAIN_THREAD) != 0) ||
+			verbose.check(level, VerboseDebugFlag.NOT_MAIN_THREAD);
+		boolean excludeNonDef = ((this.machine._globalTrace &
+			VerboseDebugFlag.DEFAULT_PACKAGE) != 0) ||
+			verbose.check(level, VerboseDebugFlag.DEFAULT_PACKAGE);
+		
+		// Excluding the main thread?
+		if (excludeMain && this.thread.isMain())
+			return false;
+		
+		// Excluding non-default classes?
+		if (excludeNonDef && frame != null && frame.springClass != null &&
+			!"".equals(frame.springClass.name().inPackage().toString()))
+			return false;
+		
+		// Otherwise, if it is set globally or locally per frame
+		return ((this.machine._globalTrace & __flags) != 0) ||
+			verbose.check(level, __flags);
 	}
 	
 	/**

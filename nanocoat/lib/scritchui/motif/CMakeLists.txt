@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # We need to know where Motif is
-find_package(Motif)
+squirreljme_include("find-motif.cmake")
 
 # Declare base library
 add_library(ScritchUIMotif SHARED

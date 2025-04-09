@@ -95,9 +95,11 @@ The available options are:
    * `all` -- Enable all.
    * `allocation` -- Allocations such as `new`.
    * `classInitialize` -- Class is initialized.
+   * `defaultPackage` -- In default package only.
    * `ignoredException` -- Exception that may be ignored.
    * `instructions` -- Instructions being executed.
    * `invokeStatic` -- Static invocations.
+   * `notMainThread` -- Do not trace on the main thread.
    * `methodEntry` -- Entry of methods.
    * `methodExit` -- Exit of methods.
    * `missingClass` -- Class does not exist.

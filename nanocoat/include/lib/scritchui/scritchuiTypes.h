@@ -43,10 +43,10 @@ extern "C" {
 typedef struct sjme_scritchui_pencilLockState
 {
 	/** Spin lock for access to the buffer. */
-	sjme_thread_spinLock spinLock;
+	sjme_alignPointer sjme_thread_spinLock spinLock;
 	
 	/** The times this was opened. */
-	sjme_atomic_sjme_jint count;
+	sjme_alignPointer sjme_atomic_sjme_jint count;
 	
 	/** The front end source for drawing. */
 	sjme_frontEndBindable source;
@@ -345,7 +345,7 @@ struct sjme_scritchui_uiPaintableBase
 	sjme_intPointer extra;
 	
 	/** Is this currently in paint? */
-	sjme_atomic_sjme_jint inPaint;
+	sjme_alignPointer sjme_atomic_sjme_jint inPaint;
 	
 	/** Belayed painting. */
 	sjme_scritchui_rect belayRect;

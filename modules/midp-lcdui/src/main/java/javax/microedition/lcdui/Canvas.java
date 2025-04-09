@@ -687,7 +687,8 @@ public abstract class Canvas
 		// We need to actually queue the repaint rather than doing the
 		// repaint in the event loop potentially because MIDP expects it
 		// to be queued.
-		this.__state().scritchApi().eventLoop().loopExecuteLater(this._repainter);
+		this.__state().scritchApi().eventLoop()
+			.loopExecuteLater(this._repainter);
 	}
 	
 	/**

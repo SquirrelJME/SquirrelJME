@@ -158,6 +158,9 @@ struct sjme_frontEnd
 	/** Any data as needed. */
 	sjme_frontEndData data;
 	
+	/** The lock when binding/releasing is being performed on this. */
+	sjme_alignPointer sjme_thread_spinLock bindLock;
+	
 	/** The binding type used. */
 	sjme_frontEnd_bindType bindType;
 };
