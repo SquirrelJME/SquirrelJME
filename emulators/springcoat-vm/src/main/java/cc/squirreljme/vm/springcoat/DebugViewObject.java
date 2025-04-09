@@ -93,7 +93,10 @@ public class DebugViewObject
 	@Override
 	public String readString(Object __which)
 	{
-		throw Debugging.todo();
+		if (!(__which instanceof SpringStringObject))
+			return null;
+		
+		return ((SpringStringObject)__which).toString();
 	}
 	
 	/**
