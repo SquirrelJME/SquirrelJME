@@ -9,6 +9,10 @@
 
 package cc.squirreljme.runtime.nttdocomo;
 
+import cc.squirreljme.jvm.launch.IModeProperty;
+import cc.squirreljme.jvm.suite.Profile;
+import cc.squirreljme.jvm.suite.SuiteVersion;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -17,11 +21,15 @@ import java.util.Map;
  *
  * @since 2024/07/28
  */
+@SquirrelJMEVendorApi
 public final class DoJaRuntime
 {
 	/** Internally set properties. */
 	private static final Map<String, String> _PROPERTIES =
 		new LinkedHashMap<>();
+	
+	/** The cached DoJa version. */
+	private static volatile SuiteVersion _VERSION;
 	
 	/**
 	 * Not used.
@@ -40,6 +48,7 @@ public final class DoJaRuntime
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/28
 	 */
+	@SquirrelJMEVendorApi
 	public static String getProperty(String __key)
 		throws NullPointerException
 	{
@@ -76,5 +85,60 @@ public final class DoJaRuntime
 		{
 			DoJaRuntime._PROPERTIES.put(__key, __value);
 		}
+	}
+	
+	/**
+	 * Returns the DoJa version.
+	 *
+	 * @return The DoJa version.
+	 * @since 2025/04/09
+	 */
+	@SquirrelJMEVendorApi
+	public static SuiteVersion version()
+	{
+		// Already cached?
+		SuiteVersion version = DoJaRuntime._VERSION;
+		if (version != null)
+			return version;
+		
+		// Setup version based on the current profile
+		String profile = DoJaRuntime.getProperty(
+			IModeProperty.DOJA_PROFILE_PROPERTY);
+		if (profile != null && !profile.isEmpty())
+			version = new Profile(profile).version();
+		else
+			version = new SuiteVersion(5, 1);
+		
+		// Cache and use it
+		DoJaRuntime._VERSION = version;
+		return version;
+	}
+	
+	/**
+	 * Checks if the DoJa version is before the given version.
+	 *
+	 * @param __major The major version.
+	 * @param __minor The minor version.
+	 * @return If this is before the given DoJa version.
+	 * @since 2025/04/09
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean versionBefore(int __major, int __minor)
+	{
+		return !DoJaRuntime.version().atLeast(__major, __minor);	
+	}
+	
+	/**
+	 * Checks if the DoJa version is at least the given version.
+	 *
+	 * @param __major The major version.
+	 * @param __minor The minor version.
+	 * @return If this is at least the given DoJa version.
+	 * @since 2025/04/09
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean versionLeast(int __major, int __minor)
+	{
+		return DoJaRuntime.version().atLeast(__major, __minor);	
 	}
 }

@@ -11,6 +11,7 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
 import cc.squirreljme.runtime.nttdocomo.ui.EightBitImageStore;
 import com.nttdocomo.opt.ui.Graphics2;
 import javax.microedition.lcdui.game.Sprite;
@@ -459,7 +460,11 @@ public class Graphics
 	public void setColor(int __c)
 		throws IllegalArgumentException
 	{
-		this._graphics.setColor(__c);
+		// Before 4.0, alpha is completely excluded from the color
+		if (DoJaRuntime.versionBefore(4, 0))
+			this._graphics.setAlphaColor(__c | 0xFF_000000);
+		else
+			this._graphics.setAlphaColor(__c);
 	}
 	
 	/**
@@ -578,40 +583,48 @@ public class Graphics
 	public static int getColorOfName(int __name)
 		throws IllegalArgumentException
 	{
+		// Before 4.0, negative values are never returned
+		int alphaMask;
+		if (DoJaRuntime.versionBefore(4, 0))
+			alphaMask = 0;
+		else
+			alphaMask = 0xFF_000000;
+		
+		// Depends on the color name
 		switch (__name)
 		{
 			case Graphics.AQUA:
-				return 0x00FFFF;
+				return 0x00FFFF | alphaMask;
 			case Graphics.BLACK:
-				return 0x000000;
+				return 0x000000 | alphaMask;
 			case Graphics.BLUE:
-				return 0x0000FF;
+				return 0x0000FF | alphaMask;
 			case Graphics.FUCHSIA:
-				return 0xFF00FF;
+				return 0xFF00FF | alphaMask;
 			case Graphics.GRAY:
-				return 0x808080;
+				return 0x808080 | alphaMask;
 			case Graphics.GREEN:
-				return 0x008000;
+				return 0x008000 | alphaMask;
 			case Graphics.LIME:
-				return 0x00FF00;
+				return 0x00FF00 | alphaMask;
 			case Graphics.MAROON:
-				return 0x800000;
+				return 0x800000 | alphaMask;
 			case Graphics.NAVY:
-				return 0x000080;
+				return 0x000080 | alphaMask;
 			case Graphics.OLIVE:
-				return 0x808000;
+				return 0x808000 | alphaMask;
 			case Graphics.PURPLE:
-				return 0x800080;
+				return 0x800080 | alphaMask;
 			case Graphics.RED:
-				return 0xFF0000;
+				return 0xFF0000 | alphaMask;
 			case Graphics.SILVER:
-				return 0xC0C0C0;
+				return 0xC0C0C0 | alphaMask;
 			case Graphics.TEAL:
-				return 0x008080;
+				return 0x008080 | alphaMask;
 			case Graphics.WHITE:
-				return 0xFFFFFF;
+				return 0xFFFFFF | alphaMask;
 			case Graphics.YELLOW:
-				return 0xFFFF00;
+				return 0xFFFF00 | alphaMask;
 		}
 		
 		// {@squirreljme.error AH0r Invalid color. (The color)}
@@ -621,6 +634,9 @@ public class Graphics
 	@Api
 	public static int getColorOfRGB(int __r, int __g, int __b)
 	{
+		// Before 4.0, negative values are never returned
+		if (DoJaRuntime.versionBefore(4, 0))
+			return Graphics.getColorOfRGB(__r, __g, __b, 0);
 		return Graphics.getColorOfRGB(__r, __g, __b, 255);
 	}
 	
