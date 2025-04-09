@@ -10,6 +10,7 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
+import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
 import java.lang.ref.WeakReference;
 
 /**
@@ -65,6 +66,20 @@ final class __LockFlush__
 	}
 	
 	/**
+	 * Returns whether this is locked or not.
+	 *
+	 * @return Whether this is locked or not.
+	 * @since 2025/04/09
+	 */
+	boolean __isLocked()
+	{
+		synchronized (this)
+		{
+			return this._count > 0;
+		}
+	}
+	
+	/**
 	 * Specifies that a double buffered draw operation has started. If
 	 * double buffering is not supported, this does nothing.
 	 *
@@ -77,6 +92,14 @@ final class __LockFlush__
 			// Count up
 			this._count++;
 		}
+		
+		// Ignore if GCed
+		Canvas target = this._target.get();
+		if (target == null)
+			return;
+		
+		// Clear the off-screen buffer before drawing
+		target._midpCanvas._doubleBuffer.clear();
 	}
 	
 	/**
@@ -133,7 +156,8 @@ final class __LockFlush__
 				return;
 			
 			// Tell canvas to repaint itself
-			target._midpCanvas._doubleBuffer.flush();
+			DoubleBuffer doubleBuffer = target._midpCanvas._doubleBuffer;
+			doubleBuffer.flush();
 			target.__displayable().repaint();
 		}
 	}
