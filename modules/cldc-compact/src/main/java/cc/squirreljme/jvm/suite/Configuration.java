@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -21,16 +22,20 @@ import java.util.Objects;
  *
  * @since 2016/12/14
  */
+@SquirrelJMEVendorApi
 public final class Configuration
 	implements Comparable<Configuration>, MarkedDependency, MarkedProvided
 {
 	/** Name. */
+	@SquirrelJMEVendorApi
 	protected final APIName name;
 	
 	/** Version. */
+	@SquirrelJMEVendorApi
 	protected final SuiteVersion version;
 	
 	/** Is this configuration compact? */
+	@SquirrelJMEVendorApi
 	protected final boolean compact;
 	
 	/** String representation. */
@@ -45,6 +50,7 @@ public final class Configuration
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
+	@SquirrelJMEVendorApi
 	public Configuration(APIName __n, SuiteVersion __v, boolean __c)
 		throws NullPointerException
 	{
@@ -64,6 +70,7 @@ public final class Configuration
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
+	@SquirrelJMEVendorApi
 	public Configuration(String __n)
 		throws NullPointerException
 	{
@@ -141,6 +148,24 @@ public final class Configuration
 	}
 	
 	/**
+	 * Checks if this configuration is the specified one.
+	 *
+	 * @param __key The key to check.
+	 * @return If this is the given configuration.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/09
+	 */
+	@SquirrelJMEVendorApi
+	public boolean is(String __key)
+		throws NullPointerException
+	{
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		return __key.equalsIgnoreCase(this.name.toString());
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/12/31
 	 */
@@ -162,6 +187,18 @@ public final class Configuration
 			throw new NullPointerException("NARG");
 		
 		return this.equals(__mp);
+	}
+	
+	/**
+	 * Returns the API name.
+	 *
+	 * @return The API name.
+	 * @since 2025/04/09
+	 */
+	@SquirrelJMEVendorApi
+	public APIName name()
+	{
+		return this.name;
 	}
 	
 	/**
@@ -188,6 +225,7 @@ public final class Configuration
 	 * @return The configuration version.
 	 * @since 2017/12/05
 	 */
+	@SquirrelJMEVendorApi
 	public SuiteVersion version()
 	{
 		return this.version;
