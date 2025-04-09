@@ -194,12 +194,18 @@ command `java -XstartOnFirstThread -jar squirreljme-standalone.jar`, as this
 forces OpenJDK and derivatives to have the Cocoa event loop on the first
 thread, which is required for it to work correctly.
 
-## Scaling
+## Framing/Scaling
 
-SquirrelJME supports scaling of any MIDP `Canvas`, to override the default
-scale factor you may specify:
+SquirrelJME supports framing and scaling of any MIDP `Canvas`, to override
+the default scale factor you may specify:
 
- * System property:
-   * `cc.squirreljme.scale=(multiplier|WxH)`
- * Environment Variable:
-   * `SQUIRRELJME_SCALE=(multiplier|WxH)`
+ * Framing -- Sets the default resolution of SquirrelJME
+   * System property:
+     * `cc.squirreljme.frame=WxH`
+   * Environment Variable:
+     * `SQUIRRELJME_FRAME=WxH`
+ * Scaling -- Sets the output resolution that the frame is scaled to
+   * System property:
+     * `cc.squirreljme.scale=(multiplier|WxH)`
+   * Environment Variable:
+     * `SQUIRRELJME_SCALE=(multiplier|WxH)`

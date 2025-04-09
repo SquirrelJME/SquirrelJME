@@ -36,6 +36,16 @@ public abstract class DisplayScale
 	public static final String SCALE_ENV =
 		"SQUIRRELJME_SCALE";
 	
+	/** Display frame system property. */
+	@SquirrelJMEVendorApi
+	public static final String FRAME_PROPERTY =
+		"cc.squirreljme.frame";
+	
+	/** Display frame environment. */
+	@SquirrelJMEVendorApi
+	public static final String FRAME_ENV =
+		"SQUIRRELJME_FRAME";
+	
 	/** The default scaling. */
 	@SquirrelJMEVendorApi
 	public static final byte SCALE_DEFAULT =
@@ -141,6 +151,32 @@ public abstract class DisplayScale
 		throws NullPointerException
 	{
 		DisplayScale rv;
+		
+		// Overridden by the user?
+		String override = System.getProperty(DisplayScale.FRAME_PROPERTY);
+		if (override == null)
+			override = RuntimeShelf.systemEnv(DisplayScale.FRAME_ENV);
+		if (override != null && !override.isEmpty())
+		{
+			// Parse values
+			int s = override.indexOf('x');
+			int useW = -1;
+			int useH = -1;
+			try
+			{
+				useW = Integer.parseInt(
+					override.substring(0, s), 10);
+				useH = Integer.parseInt(
+					override.substring(s + 1), 10);
+			}
+			catch (NumberFormatException ignored)
+			{
+			}
+			
+			// Is the override valid?
+			if (useW > 0 && useH > 0)
+				new DisplayFixedFlatScale(useW, useH);
+		}
 		
 		// Try to figure out what a MIDlet desires as far as size is concerned
 		MIDlet midlet = ActiveMidlet.optional();
