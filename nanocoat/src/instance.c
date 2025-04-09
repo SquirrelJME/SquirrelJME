@@ -184,6 +184,7 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 		return sjme_error_vmError(contextThread, error);
 	
 	/* Setup array. */
+	result->type = componentType->arrayTypeId;
 	result->length = arrayLength;
 
 	/* Success! */

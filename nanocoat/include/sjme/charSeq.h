@@ -450,6 +450,22 @@ sjme_errorCode sjme_charSeq_newWide(
 	sjme_attrInNegativeOnePositive sjme_jint limitLen);
 
 /**
+ * Allocates a new static wide character sequence.
+ * 
+ * @param inOutSeq The input/output sequence.
+ * @param wide The input wide bytes for the string.
+ * @param offset The offset into the string sequence.
+ * @param limitLen The length limit for the sequence.
+ * @return Any resultant error, if any.
+ * @since 2025/04/08
+ */
+sjme_errorCode sjme_charSeq_newWideStatic(
+	sjme_attrInOutNotNull sjme_charSeqStatic* inOutSeq,
+	sjme_attrInNotNull const sjme_jchar* wide,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInNegativeOnePositive sjme_jint limitLen);
+
+/**
  * Checks if the given character sequence starts with the given character
  * sequence.
  * 

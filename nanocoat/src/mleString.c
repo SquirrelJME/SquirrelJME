@@ -109,8 +109,49 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jboolean intern;
+	sjme_jarray array;
+	sjme_jint off, len;
+	sjme_charSeqStatic seq;
+
+	/* Intern the string? */
+	intern = !!argV[0].value.i;
+
+	/* Must be an actual array. */
+	array = (sjme_jarray)argV[1].value.l;
+	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Must be a char array. */
+	if (array->type != SJME_BASIC_TYPE_ID_CHARACTER)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Read offset and length. */
+	off = argV[2].value.i;
+	len = argV[3].value.i;
+
+	/* Check bounds. */
+	if (off < 0 || len < 0 || (off + len) < 0)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Wrap a wide sequence. */
+	memset(&seq, 0, sizeof(seq));
+	if (sjme_error_is(error = sjme_charSeq_newWideStatic(&seq,
+		(sjme_jchar*)&array->elements.c[0], off, array->length)))
+		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
+
+	/* Obtain string value from the sequence. */
+	argR->value.l = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfCS(
+		inFrame->inThread,
+		SJME_AS_NVM_JSTRINGP(&argR->value.l), intern, &seq) ||
+		argR->value.l == NULL))
+		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
+
+	/* Success! */
+	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)

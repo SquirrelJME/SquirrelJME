@@ -556,6 +556,25 @@ sjme_errorCode sjme_charSeq_newWide(
 	return sjme_error_notImplemented(0);
 }
 
+sjme_errorCode sjme_charSeq_newWideStatic(
+	sjme_attrInOutNotNull sjme_charSeqStatic* inOutSeq,
+	sjme_attrInNotNull const sjme_jchar* wide,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInNegativeOnePositive sjme_jint limitLen)
+{
+	if (inOutSeq == NULL || wide == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (offset < 0 || limitLen < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	if (limitLen >= 0 && (offset + limitLen) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_charSeq_startsWithCharSeq(
 	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,
