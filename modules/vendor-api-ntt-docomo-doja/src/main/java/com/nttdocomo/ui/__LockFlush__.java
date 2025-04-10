@@ -92,14 +92,6 @@ final class __LockFlush__
 			// Count up
 			this._count++;
 		}
-		
-		// Ignore if GCed
-		Canvas target = this._target.get();
-		if (target == null)
-			return;
-		
-		// Clear the off-screen buffer before drawing
-		target._midpCanvas._doubleBuffer.clear();
 	}
 	
 	/**
