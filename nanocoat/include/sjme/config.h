@@ -752,12 +752,15 @@ extern "C" {
 #endif
 
 #if defined(SJME_CONFIG_HAS_WINDOWS_16)
-	#define SJME_CALL FAR PASCAL
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
-	#define SJME_CALL __stdcall 
+	/** SquirrelJME exported calling convention. */
+	#define sjme_attrExportCall FAR PASCAL
+#elif defined(SJME_CONFIG_HAS_WINDOWS) || \
+	defined(SJME_CONFIG_HAS_WINDOWS_32)
+	/** SquirrelJME exported calling convention. */
+	#define sjme_attrExportCall __stdcall
 #else
-	/** SquirrelJME calling convention. */
-	#define SJME_CALL
+	/** SquirrelJME exported calling convention. */
+	#define sjme_attrExportCall
 #endif
 
 #if defined(SJME_CONFIG_HAS_MSVC)

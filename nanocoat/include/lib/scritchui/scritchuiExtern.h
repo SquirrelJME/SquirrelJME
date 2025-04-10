@@ -31,7 +31,7 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /** The internal builtin fallback font. */
-extern SJME_DYLIB_EXPORT const
+extern sjme_attrExport const
 	struct sjme_scritchui_sqfCodepage sqf_font_sanserif_12;
 
 /*--------------------------------------------------------------------------*/

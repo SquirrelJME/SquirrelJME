@@ -422,6 +422,9 @@ public abstract class VMFactory
 		{
 			mainClass = "cc.squirreljme.runtime.cldc.PrintVersion";
 			mainArgs.add(didVersion);
+			mainArgs.add(Objects.toString(metaManifest.getMainAttributes()
+				.getValue("X-SquirrelJME-BuildVersion"),
+				"tarball"));
 			
 			// Forces no -jar
 			didJar = false;

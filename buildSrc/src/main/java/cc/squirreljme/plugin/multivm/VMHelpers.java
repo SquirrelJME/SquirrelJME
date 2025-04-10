@@ -16,6 +16,8 @@ import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.FileLocation;
+import cc.squirreljme.plugin.util.FossilExe;
+import cc.squirreljme.plugin.util.InvalidFossilExeException;
 import cc.squirreljme.plugin.util.TestDetection;
 import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
 import java.io.BufferedReader;
@@ -65,6 +67,7 @@ import org.gradle.api.capabilities.Capability;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.internal.impldep.org.joda.time.LocalDate;
 import org.gradle.jvm.tasks.Jar;
 
 /**
@@ -266,6 +269,103 @@ public final class VMHelpers
 		}
 		
 		return Collections.unmodifiableMap(result);
+	}
+	
+	/**
+	 * Returns the build version of SquirrelJME.
+	 *
+	 * @param __project The reference to a project.
+	 * @return The SquirrelJME build version.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/10
+	 */
+	public static String buildVersion(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// Fossil version?
+		try
+		{
+			// The current hash
+			String hash = null;
+			
+			// Get info on the current version
+			Collection<String> info = FossilExe.instance().runLineOutput(
+				"info", "current");
+			if (info != null && !info.isEmpty())
+				for (String line : info)
+					if (line != null && line.startsWith("hash:"))
+					{
+						// We only care about the right side of this
+						int col = line.indexOf(':');
+						if (col < 0)
+							continue;
+						
+						// Splice out and trim
+						line = line.substring(col + 1).trim();
+						
+						// Split out the first space
+						int space = line.indexOf(' ');
+						if (space < 0)
+							space = line.indexOf('\t');
+						
+						// Trim?
+						if (space >= 0)
+							line = line.substring(0, space).trim();
+						
+						// Use this version
+						hash = line;
+						break;
+					}
+			
+			// Is the hash valid?
+			if (hash != null)
+			{
+				if (!sb.isEmpty())
+					sb.append('-');
+				sb.append(String.format("w%s",
+					hash.trim().toLowerCase(Locale.ROOT).substring(0, 6)));
+			}
+		}
+		catch (InvalidFossilExeException ignored)
+		{
+		}
+		
+		// Git Version?
+		String git = VMHelpers.hashGit(__project);
+		if (git != null && !git.isEmpty())
+		{
+			if (!sb.isEmpty())
+				sb.append('-');
+			sb.append(String.format("x%s",
+				git.trim().toLowerCase(Locale.ROOT).substring(0, 6)));
+		}
+		
+		// CircleCI pipeline version?
+		String circleCi = System.getenv("CIRCLE_SHA1");
+		if (circleCi != null && !circleCi.isEmpty())
+		{
+			if (!sb.isEmpty())
+				sb.append('-');
+			sb.append(String.format("y%s",
+				circleCi.trim().toLowerCase(Locale.ROOT).substring(0, 6)));
+		}
+		
+		// Is this some random tarball build?
+		if (sb.isEmpty())
+		{
+			LocalDate now = LocalDate.now();
+			sb.append(String.format("z%02d%03d0",
+				Math.abs(now.getYear() % 100),
+				Math.abs(now.getDayOfYear() % 366)));
+		}
+		
+		// Use this version!
+		return sb.toString();
 	}
 	
 	/**

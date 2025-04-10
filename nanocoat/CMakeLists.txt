@@ -118,6 +118,8 @@ endif()
 # Declare Version
 add_compile_definitions(
 	SQUIRRELJME_VERSION_TRIM=${SQUIRRELJME_VERSION})
+add_compile_definitions(
+	SQUIRRELJME_VERSION_BUILD=${SQUIRRELJME_VERSION_BUILD})
 
 # Debugging?
 if(SQUIRRELJME_IS_DEBUG)

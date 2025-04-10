@@ -50,3 +50,5 @@ endif()
 # Show ID version
 message(STATUS
 	"Version ID: ${SQUIRRELJME_VERSION_ID}")
+message(STATUS
+	"Build ID (if any): ${SQUIRRELJME_VERSION_BUILD}")

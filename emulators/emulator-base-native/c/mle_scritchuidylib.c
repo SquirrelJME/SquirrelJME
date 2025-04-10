@@ -1858,8 +1858,9 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	nameChars = (*env)->GetStringUTFChars(env, name, &nameCharsCopy);
 
 	memset(buf, 0, sizeof(buf));
-	snprintf(buf, BUF_SIZE - 2,
-		"sjme_scritchui_dylibApi%s", nameChars);
+	snprintf(buf, BUF_SIZE - 2, "%s%s",
+		SJME_TOKEN_STRING_PP(SJME_SCRITCHUI_DYLIB_SYMBOL_PREFIX),
+		nameChars);
 	buf[BUF_SIZE - 1] = 0;
 
 	/* Release name. */

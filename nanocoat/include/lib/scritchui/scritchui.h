@@ -2252,7 +2252,7 @@ struct sjme_scritchui_stateBase
  * @return Any error code that may occur.
  * @since 2024/03/29
  */
-typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
+typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchui_dylibApiFunc)(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
@@ -2271,9 +2271,16 @@ typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
 #define SJME_SCRITCHUI_DYLIB_PATHNAME(x) \
 	SJME_CONFIG_DYLIB_PATHNAME(SJME_SCRITCHUI_DYLIB_NAME(x))
 
+/** The prefix for the dynamic library. */
+#define SJME_SCRITCHUI_DYLIB_SYMBOL_PREFIX sjme_scritchui_dylibApi
+
 /** The symbol to use with @c sjme_scritchui_dylibApiFunc . */
 #define SJME_SCRITCHUI_DYLIB_SYMBOL(x) \
-	SJME_TOKEN_PASTE(sjme_scritchui_dylibApi, x)
+	SJME_TOKEN_PASTE_PP(SJME_SCRITCHUI_DYLIB_SYMBOL_PREFIX, x)
+
+/** Declares the API export . */
+#define SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(x) \
+	sjme_attrExportCall SJME_SCRITCHUI_DYLIB_SYMBOL(x)
 		
 #endif
 

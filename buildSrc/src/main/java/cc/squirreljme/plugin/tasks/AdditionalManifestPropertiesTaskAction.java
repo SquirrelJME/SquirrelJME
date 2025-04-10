@@ -110,6 +110,10 @@ public class AdditionalManifestPropertiesTaskAction
 		attributes.putValue("X-SquirrelJME-InternalProjectName",
 			internalProjectName);
 		
+		// Versioning information
+		attributes.putValue("X-SquirrelJME-BuildVersion",
+			VMHelpers.buildVersion(__task.getProject()));
+		
 		// Generation really depends on the application type
 		// The main sources are whatever, but everything else such as
 		// text fixtures is considered a library dependency wise

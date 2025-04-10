@@ -446,6 +446,8 @@ public final class CMakeUtils
 				__task.getProject().getBuildDir().toPath(),
 				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
 				"-DSQUIRRELJME_GRADLE=YES",
+				String.format("-DSQUIRRELJME_VERSION_BUILD=%s",
+					VMHelpers.buildVersion(__task.getProject())),
 				genPlatform,
 				"-S", cmakeSource.toAbsolutePath().toString(),
 				"-B", cmakeBuild.toAbsolutePath().toString());
