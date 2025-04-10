@@ -32,6 +32,17 @@ public class FossilException
 	/**
 	 * Initializes the exception.
 	 *
+	 * @param __message The exception message.
+	 * @since 2025/04/10
+	 */
+	public FossilException(String __message)
+	{
+		super(__message);
+	}
+	
+	/**
+	 * Initializes the exception.
+	 *
 	 * @param __cause The cause of the exception.
 	 * @since 2025/04/10
 	 */
