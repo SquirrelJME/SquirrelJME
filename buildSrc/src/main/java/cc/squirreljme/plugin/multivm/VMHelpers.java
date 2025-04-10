@@ -16,6 +16,7 @@ import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.FileLocation;
+import cc.squirreljme.plugin.util.FossilException;
 import cc.squirreljme.plugin.util.FossilExe;
 import cc.squirreljme.plugin.util.InvalidFossilExeException;
 import cc.squirreljme.plugin.util.TestDetection;
@@ -338,7 +339,7 @@ public final class VMHelpers
 					hash.trim().toLowerCase(Locale.ROOT).substring(0, 6)));
 			}
 		}
-		catch (InvalidFossilExeException ignored)
+		catch (InvalidFossilExeException|FossilException ignored)
 		{
 		}
 		

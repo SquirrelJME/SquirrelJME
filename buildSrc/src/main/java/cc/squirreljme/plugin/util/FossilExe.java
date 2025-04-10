@@ -143,7 +143,7 @@ public final class FossilExe
 		}
 		catch (IOException e)
 		{
-			throw new RuntimeException("Could not execute command.", e);
+			throw new FossilException("Could not execute command.", e);
 		}
 	}
 	
@@ -173,10 +173,10 @@ public final class FossilExe
 			}
 		}
 		
-		// Could no read the command result
+		// Could not read the command result
 		catch (IOException e)
 		{
-			throw new RuntimeException("Line read/write error.", e);
+			throw new FossilException("Line read/write error.", e);
 		}
 		
 		return rv;
@@ -216,7 +216,7 @@ public final class FossilExe
 				{
 					int exitCode = process.waitFor();
 					if (0 != exitCode)
-						throw new RuntimeException(String.format(
+						throw new FossilException(String.format(
 							"Exited %s with failure %d: %d bytes",
 							Arrays.asList(__args), exitCode,
 							out.toByteArray().length));
@@ -233,7 +233,7 @@ public final class FossilExe
 		// Could not read the command result
 		catch (IOException e)
 		{
-			throw new RuntimeException("Raw read/write error.", e);
+			throw new FossilException("Raw read/write error.", e);
 		}
 		
 		// Make sure the process stops
@@ -349,7 +349,7 @@ public final class FossilExe
 		// Could not write data
 		catch (IOException e)
 		{
-			throw new RuntimeException(
+			throw new FossilException(
 				"Could not store file: " + __fileName, e);
 		}
 		
