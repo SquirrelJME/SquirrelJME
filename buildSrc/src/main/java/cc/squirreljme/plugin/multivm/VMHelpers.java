@@ -102,9 +102,12 @@ public final class VMHelpers
 	private static final String _MULTI_PARAMETERS_KEY =
 		"multi-parameters";
 	
-	/* Copy buffer size. */
+	/** Copy buffer size. */
 	public static final int COPY_BUFFER =
 		4096;
+	
+	/** Cached build version. */
+	private static volatile String _cachedBuildVersion;
 	
 	/**
 	 * Not used.
@@ -285,6 +288,10 @@ public final class VMHelpers
 		if (__project == null)
 			throw new NullPointerException("NARG");
 		
+		String cached = VMHelpers._cachedBuildVersion;
+		if (cached != null)
+			return cached;
+		
 		StringBuilder sb = new StringBuilder();
 		
 		// Fossil version?
@@ -365,7 +372,9 @@ public final class VMHelpers
 		}
 		
 		// Use this version!
-		return sb.toString();
+		cached = sb.toString();
+		VMHelpers._cachedBuildVersion = cached;
+		return cached;
 	}
 	
 	/**
