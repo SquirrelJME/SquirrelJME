@@ -9,12 +9,12 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.launch.IModeProperty;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import javax.microedition.midlet.MIDlet;
 
@@ -235,7 +235,6 @@ public abstract class DisplayScale
 		// DoJa with a defined screen size
 		String doJaSize = System.getProperty(
 			"cc.squirreljme.imode.adf.DrawArea");
-		Debugging.debugNote("Scale: %s", doJaSize);
 		if (doJaSize != null)
 		{
 			// Parse it
@@ -254,6 +253,15 @@ public abstract class DisplayScale
 				{
 				}
 		}
+		
+		// DoJa profile
+		String dojaProfile = System.getProperty(
+			IModeProperty.DOJA_PROFILE_PROPERTY);
+		if (dojaProfile != null && !dojaProfile.isEmpty())
+			if (dojaProfile.equalsIgnoreCase("DoJa-1.0"))
+				return new DisplayFixedFlatScale(120, 160);
+			else
+				return new DisplayFixedFlatScale(240, 240);
 		
 		// Use default otherwise
 		return new DisplayFixedFlatScale(240, 320);
