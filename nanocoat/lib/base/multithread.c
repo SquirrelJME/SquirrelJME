@@ -56,7 +56,7 @@ sjme_jboolean sjme_thread_equal(
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	HMODULE kernel;
-	DWORD (*getThreadIdFunc)(HANDLE);
+	DWORD (WINAPI* getThreadIdFunc)(HANDLE);
 #endif
 	
 	if ((aThread == SJME_THREAD_NULL) != (bThread == SJME_THREAD_NULL))
