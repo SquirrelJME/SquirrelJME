@@ -2280,7 +2280,7 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchui_dylibApiFunc)(
 
 /** Declares the API export . */
 #define SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(x) \
-	sjme_attrExportCall SJME_SCRITCHUI_DYLIB_SYMBOL(x)
+	sjme_attrExport sjme_attrExportCall SJME_SCRITCHUI_DYLIB_SYMBOL(x)
 		
 #endif
 

@@ -62,7 +62,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_toolboxFunctions =
 	.windowSetVisible = NULL,
 };
 
-sjme_errorCode sjme_attrExport SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(toolbox)(
+sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(toolbox)(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
