@@ -378,66 +378,45 @@ jobs:
       - run:
           name: Open repository
           working_directory: /home/circleci/work/co
-          command: fossil open /home/repo/squirreljme.fossil --force
-      - run:
-          name: Open repository (Retry)
-          working_directory: /home/circleci/work/co
-          command: fossil open /home/repo/squirreljme.fossil --force
-          when: on_fail
+          command: |
+            fossil close --force || echo "Ignored..."
+            for i in seq 1 10
+            do
+              if fossil open /home/repo/squirreljme.fossil --force
+              then
+                break
+              fi
+
+              for j in seq 1 42
+              do
+                echo "Waiting..."
+                sleep 1
+              done
+            done
       - run:
           name: Checkout current branch
           working_directory: /home/circleci/work/co
-          command: fossil checkout $CIRCLE_BRANCH || echo "Ignoring..."
-          when: always
-      - run:
-          name: Checkout current branch (Retry)
-          working_directory: /home/circleci/work/co
-          command: fossil checkout $CIRCLE_BRANCH || echo "Ignoring..."
-          when: on_fail
+          command: fossil checkout $CIRCLE_BRANCH
       - run:
           name: Updating checkout
           working_directory: /home/circleci/work/co
-          command: fossil update || echo "Ignoring..."
-          when: always
-      - run:
-          name: Updating checkout (Retry)
-          working_directory: /home/circleci/work/co
-          command: fossil update || echo "Ignoring..."
-          when: on_fail
+          command: fossil update
       - run:
           name: Ensure build is clean
           working_directory: /home/circleci/work/co
           command: ./gradlew clean --parallel
-          when: always
       - run:
-          name: Ensure build is clean (Retry)
-          working_directory: /home/circleci/work/co
-          command: ./gradlew clean --parallel
-          when: on_fail
-      - run:
-          name: Build CI/CD Bundle Tasks
+          name: Build CI/CD Bundle Task
           working_directory: /home/circleci/work/co
           command: ./gradlew :tools:cicd-release-bundle:jar --parallel
-          when: always
-      - run:
-          name: Build CI/CD Bundle Tasks (Retry)
-          working_directory: /home/circleci/work/co
-          command: ./gradlew :tools:cicd-release-bundle:jar --parallel
-          when: on_fail
       - run:
           name: Run CI/CD Bundle Tasks
           working_directory: /home/circleci/work/co
           command: ./gradlew :tools:cicd-release-bundle:run --parallel
-          when: always
-      - run:
-          name: Run CI/CD Bundle Tasks (Retry)
-          working_directory: /home/circleci/work/co
-          command: ./gradlew :tools:cicd-release-bundle:run --parallel
-          when: on_fail
       - run:
           name: Close repository
           working_directory: /home/circleci/work/co
-          command: fossil close --force
+          command: fossil close --force || echo "Ignored..."
           when: always
 
   ################################## WINDOWS #################################
