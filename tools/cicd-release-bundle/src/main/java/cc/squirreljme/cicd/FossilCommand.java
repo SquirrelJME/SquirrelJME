@@ -9,6 +9,7 @@
 
 package cc.squirreljme.cicd;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -138,7 +139,9 @@ public class FossilCommand
 		
 		// Run multiple times, in the event the database is locked...
 		List<IOException> fails = new ArrayList<>();
-		for (int i = 0; i < FossilCommand.RETRY_COUNT; i++)
+		for (int i = 0, retryHoldOff = FossilCommand.RETRY_DELAY;
+			i < FossilCommand.RETRY_COUNT;
+			i++, retryHoldOff += FossilCommand.RETRY_DELAY)
 			try
 			{
 				// Setup process
@@ -155,10 +158,13 @@ public class FossilCommand
 					return;
 				
 				// Mark failure
-				fails.add(new IOException("Exited with " + exit));
+				fails.add(new IOException(
+					String.format("Attempt %d exited with %d", i, exit)));
 				
 				// Wait a bit before running it again
-				Thread.sleep(FossilCommand.RETRY_DELAY);
+				System.err.printf("Retrying in %d seconds...%n",
+					retryHoldOff);
+				Thread.sleep(retryHoldOff);
 			}
 			catch (InterruptedException __e)
 			{
