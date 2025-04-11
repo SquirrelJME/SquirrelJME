@@ -69,6 +69,7 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(motif)(
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
 {
+	SJME_DYLIB_EXPORT_UNDECORATED;
 	sjme_errorCode error;
 	sjme_scritchui state;
 

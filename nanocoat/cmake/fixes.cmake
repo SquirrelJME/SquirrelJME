@@ -150,19 +150,24 @@ macro(squirreljme_target_shared_library_exports target)
 			${target} RUNTIME_OUTPUT_DIRECTORY_${firstConfig})
 		get_target_property(squirreljme_dylib_output_name
 			${target} RUNTIME_OUTPUT_NAME_${firstConfig})
-	else()
+	endif()
+
+	if(NOT squirreljme_dylib_output_dir)
 		get_target_property(squirreljme_dylib_output_dir
 			${target} RUNTIME_OUTPUT_DIRECTORY)
+	endif()
+	if(NOT squirreljme_dylib_output_name)
 		get_target_property(squirreljme_dylib_output_name
 			${target} RUNTIME_OUTPUT_NAME)
 	endif()
 
 	# If not set, use the default
 	if(NOT squirreljme_dylib_output_dir)
-		set(squirreljme_dylib_output_dir "${CMAKE_CURRENT_BINARY_DIR}")
+		set(squirreljme_dylib_output_dir
+			"${CMAKE_CURRENT_BINARY_DIR}")
 	endif()
 
-	if(MSVC AND squirreljme_dylib_output_name)
+	if(MSVC)
 		target_link_options(${target} PRIVATE
 			"/IMPLIB:${squirreljme_dylib_output_dir}/${squirreljme_dylib_output_name}.lib")
 	endif()
