@@ -19,5 +19,5 @@ sjme_errorCode sjme_nvm_tick(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("sjme_nvm_tick()");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }

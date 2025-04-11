@@ -105,7 +105,7 @@ sjme_errorCode sjme_stream_inputOpen(
 	
 	/* These are required. */
 	if (inFunctions->read == NULL || inFunctions->init == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Allocate result. */
 	result = NULL;
@@ -447,7 +447,7 @@ sjme_errorCode sjme_stream_outputOpen(
 	
 	/* These are required. */
 	if (inFunctions->write == NULL || inFunctions->init == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Allocate result. */
 	result = NULL;

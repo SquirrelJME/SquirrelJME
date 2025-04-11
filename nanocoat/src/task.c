@@ -41,5 +41,5 @@ sjme_errorCode sjme_task_start(
 #endif
 
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }

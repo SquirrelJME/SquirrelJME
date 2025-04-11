@@ -15,5 +15,5 @@ sjme_errorCode sjme_byteCode_map(
 	sjme_attrOutNotNull const sjme_byteCode_functionMap** outMapping)
 {
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }

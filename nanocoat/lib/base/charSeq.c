@@ -70,7 +70,7 @@ sjme_errorCode sjme_charSeq_charAt(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	if (inSeq->impl->charAt == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Forward. */
 	return inSeq->impl->charAt(inSeq, inIndex, outChar);
@@ -264,7 +264,7 @@ sjme_errorCode sjme_charSeq_length(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inSeq->impl == NULL || inSeq->impl->length == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Forward. */
 	return inSeq->impl->length(inSeq, outLen);

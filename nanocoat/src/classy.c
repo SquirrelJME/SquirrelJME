@@ -190,7 +190,7 @@ static sjme_errorCode sjme_class_codeAttrLineNumberTable(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 static sjme_errorCode sjme_class_codeAttrStackMap(
@@ -209,7 +209,7 @@ static sjme_errorCode sjme_class_codeAttrStackMap(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 static sjme_errorCode sjme_class_codeAttrStackMapTable(
@@ -228,7 +228,7 @@ static sjme_errorCode sjme_class_codeAttrStackMapTable(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 static const sjme_class_parseAttributeHandlerInfo sjme_class_codeAttr[] =
@@ -1155,7 +1155,7 @@ sjme_errorCode sjme_class_parseConstantPool(
 			
 			default:
 				sjme_todo("Impl? %d", tag);
-				return SJME_ERROR_NOT_IMPLEMENTED;
+				return sjme_error_notImplemented(0);
 		}
 	}
 	
@@ -1308,7 +1308,7 @@ sjme_errorCode sjme_class_parseConstantPool(
 			
 			default:
 				sjme_todo("Impl? %d", tag);
-				return SJME_ERROR_NOT_IMPLEMENTED;
+				return sjme_error_notImplemented(0);
 		}
 	}
 	

@@ -32,7 +32,7 @@ static sjme_errorCode sjme_nvm_localPopGeneric(
 	sjme_attrOutNullable sjme_pointer outStackValue)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 #if 0
 	SJME_EXCEPT_VDEF;
 	sjme_javaTypeId topType;
@@ -140,7 +140,7 @@ sjme_errorCode sjme_nvm_arrayStore(sjme_nvm_frame frame,
 	sjme_any* value)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 	
 sjme_errorCode sjme_nvm_checkCast(sjme_nvm_frame frame,
@@ -148,14 +148,14 @@ sjme_errorCode sjme_nvm_checkCast(sjme_nvm_frame frame,
 	sjme_dynamic_linkage_data_classObject* type)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 	
 sjme_errorCode sjme_nvm_countReferenceDown(sjme_nvm_frame frame,
 	sjme_jobject instance)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 	
 sjme_tempIndex sjme_nvm_fieldGetToTemp(sjme_nvm_frame frame,
@@ -172,7 +172,7 @@ sjme_errorCode sjme_nvm_fieldPut(sjme_nvm_frame frame,
 	sjme_any* value)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_gcObject(
@@ -180,7 +180,7 @@ sjme_errorCode sjme_nvm_gcObject(
 	sjme_attrInNullable sjme_jobject instance)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 #if 0
 	SJME_EXCEPT_VDEF;
 	sjme_nvm state;
@@ -215,7 +215,7 @@ sjme_errorCode sjme_nvm_invoke(sjme_nvm_frame frame,
 	sjme_dynamic_linkage_data_invokeNormal* method)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_localPopDouble(sjme_nvm_frame frame,
@@ -258,7 +258,7 @@ sjme_errorCode sjme_nvm_localPopReference(sjme_nvm_frame frame,
 	sjme_jint localIndex)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 #if 0
 	SJME_EXCEPT_VDEF;
 	sjme_jobject oldLocalValue, stackValue;
@@ -293,35 +293,35 @@ sjme_errorCode sjme_nvm_localPushDouble(sjme_nvm_frame frame,
 	sjme_jint index)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_localPushFloat(sjme_nvm_frame frame,
 	sjme_jint index)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_localPushInteger(sjme_nvm_frame frame,
 	sjme_jint index)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_localPushLong(sjme_nvm_frame frame,
 	sjme_jint index)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_localPushReference(sjme_nvm_frame frame,
 	sjme_jint index)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_localReadInteger(
@@ -330,7 +330,7 @@ sjme_errorCode sjme_nvm_localReadInteger(
 	sjme_attrOutNotNull sjme_jint* outValue)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 	
 sjme_errorCode sjme_nvm_localStoreInteger(sjme_nvm_frame frame,
@@ -338,7 +338,7 @@ sjme_errorCode sjme_nvm_localStoreInteger(sjme_nvm_frame frame,
 	sjme_jint value)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_tempIndex sjme_nvm_lookupClassObjectIntoTemp(sjme_nvm_frame frame,
@@ -360,7 +360,7 @@ sjme_errorCode sjme_nvm_monitor(sjme_nvm_frame frame,
 	sjme_jboolean isEnter)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_tempIndex sjme_nvm_newArrayIntoTemp(sjme_nvm_frame frame,
@@ -382,14 +382,14 @@ sjme_errorCode sjme_nvm_returnFromMethod(sjme_nvm_frame frame,
 	sjme_any* value)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_stackPopAny(sjme_nvm_frame frame,
 	sjme_any* output)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_tempIndex sjme_nvm_stackPopAnyToTemp(sjme_nvm_frame frame)
@@ -413,7 +413,7 @@ sjme_jobject sjme_nvm_stackPopReference(sjme_nvm_frame frame)
 sjme_errorCode sjme_nvm_stackPopReferenceThenThrow(sjme_nvm_frame frame)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_tempIndex sjme_nvm_stackPopReferenceToTemp(sjme_nvm_frame frame)
@@ -426,14 +426,14 @@ sjme_errorCode sjme_nvm_stackPushAny(sjme_nvm_frame frame,
 	sjme_any* input)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_stackPushAnyFromTemp(sjme_nvm_frame frame,
 	sjme_tempIndex input)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_stackPushDoubleParts(sjme_nvm_frame frame,
@@ -441,21 +441,21 @@ sjme_errorCode sjme_nvm_stackPushDoubleParts(sjme_nvm_frame frame,
 	sjme_jint lo)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_stackPushFloatRaw(sjme_nvm_frame frame,
 	sjme_jint rawValue)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_stackPushInteger(sjme_nvm_frame frame,
 	sjme_jint value)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_stackPushIntegerIsInstanceOf(sjme_nvm_frame frame,
@@ -463,7 +463,7 @@ sjme_errorCode sjme_nvm_stackPushIntegerIsInstanceOf(sjme_nvm_frame frame,
 	sjme_dynamic_linkage_data_classObject* type)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_stackPushLongParts(sjme_nvm_frame frame,
@@ -471,33 +471,33 @@ sjme_errorCode sjme_nvm_stackPushLongParts(sjme_nvm_frame frame,
 	sjme_jint lo)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 	
 sjme_errorCode sjme_nvm_stackPushReference(sjme_nvm_frame frame,
 	sjme_jobject instance)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_stackPushReferenceFromTemp(sjme_nvm_frame frame,
 	sjme_tempIndex tempIndex)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_tempDiscard(sjme_nvm_frame frame)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_throwExecute(sjme_nvm_frame frame)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_topFrame(
@@ -505,5 +505,5 @@ sjme_errorCode sjme_nvm_topFrame(
 	sjme_attrOutNotNull sjme_nvm_frame outFrame)
 {
 	sjme_todo("Implement");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }

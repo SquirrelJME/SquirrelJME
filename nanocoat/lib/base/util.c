@@ -44,7 +44,7 @@ sjme_errorCode sjme_randomInit(
 	sjme_attrInValue sjme_jint seedLo)
 {
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_randomInitL(
@@ -52,7 +52,7 @@ sjme_errorCode sjme_randomInitL(
 	sjme_attrInValue sjme_jlong seed)
 {
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_randomNextInt(
@@ -60,7 +60,7 @@ sjme_errorCode sjme_randomNextInt(
 	sjme_attrOutNotNull sjme_jint* outValue)
 {
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 	
 sjme_errorCode sjme_randomNextIntMax(
@@ -69,7 +69,7 @@ sjme_errorCode sjme_randomNextIntMax(
 	sjme_attrInPositiveNonZero sjme_jint maxValue)
 {
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index)

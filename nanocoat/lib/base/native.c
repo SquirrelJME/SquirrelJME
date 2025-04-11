@@ -191,7 +191,7 @@ static sjme_errorCode sjme_nal_default_fileOpen(
 	*outSeekable = result;
 	return SJME_ERROR_NONE;
 #else
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 #endif
 }
 
@@ -266,7 +266,7 @@ static sjme_errorCode sjme_nal_default_nanoTime(
 	result->full = spec.tv_nsec + (spec.tv_sec * UINT64_C(1000000000));
 	return SJME_ERROR_NONE;
 #else
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 #endif
 }
 

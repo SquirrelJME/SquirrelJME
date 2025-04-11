@@ -436,7 +436,7 @@ sjme_errorCode sjme_list_newVAR(
 				/* Type not implemented. */
 			default:
 				sjme_todo("Implement: %d", basicTypeId);
-				return SJME_ERROR_NOT_IMPLEMENTED;
+				return sjme_error_notImplemented(0);
 		}
 	}
 
@@ -489,7 +489,7 @@ sjme_errorCode sjme_list_search(
 	sjme_attrOutNotNull sjme_jint* outIndex)
 {
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_list_searchBinary(
@@ -499,7 +499,7 @@ sjme_errorCode sjme_list_searchBinary(
 	sjme_attrOutNotNull sjme_jint* outIndex)
 {
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_list_searchReverse(
@@ -509,7 +509,7 @@ sjme_errorCode sjme_list_searchReverse(
 	sjme_attrOutNotNull sjme_jint* outIndex)
 {
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_list_sort(
@@ -517,5 +517,5 @@ sjme_errorCode sjme_list_sort(
 	sjme_attrInNotNull sjme_comparator comparator)
 {
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }

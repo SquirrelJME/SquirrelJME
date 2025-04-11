@@ -55,7 +55,7 @@ sjme_errorCode sjme_dylib_close(
 	return SJME_ERROR_NONE;
 #else
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 #endif
 }
 
@@ -100,7 +100,7 @@ sjme_errorCode sjme_dylib_lookup(
 	return SJME_ERROR_NONE;
 #else
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 #endif
 }
 
@@ -137,7 +137,7 @@ sjme_errorCode sjme_dylib_name(
 #elif defined(SJME_CONFIG_HAS_MACOS)
 	snprintf(outName, outLen - 1, "lib%s.dylib", inLibName);
 #else
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 #endif
 	
 	/* Always add NULL. */
@@ -146,7 +146,7 @@ sjme_errorCode sjme_dylib_name(
 	/* Success! */
 	return SJME_ERROR_NONE;
 #else
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 #endif
 }
 
@@ -190,7 +190,7 @@ sjme_errorCode sjme_dylib_open(
 	return SJME_ERROR_NONE;
 #else
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 #endif
 }
 
@@ -227,6 +227,6 @@ sjme_errorCode sjme_dylib_self(
 	return SJME_ERROR_NONE;
 #else
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 #endif
 }

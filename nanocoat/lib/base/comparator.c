@@ -52,7 +52,7 @@ sjme_jint SJME_COMPARATOR(sjme_lpcstr, 0)(sjme_cpointer a, sjme_cpointer b,
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_jint SJME_COMPARATOR_INSENSITIVE(sjme_lpcstr, 0)(
@@ -62,5 +62,5 @@ sjme_jint SJME_COMPARATOR_INSENSITIVE(sjme_lpcstr, 0)(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }

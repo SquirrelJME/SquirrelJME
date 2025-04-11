@@ -168,12 +168,13 @@ void sjme_genericMessage(sjme_lpcstr file, int line,
 	if (sjme_debug_handlers != NULL && sjme_debug_handlers->message != NULL)
 		handled = sjme_debug_handlers->message(
 			fullBuf, buf);
-	
+
+	/* Make sure it gets written somewhere. */
 	if (!handled)
+	{
 		fprintf(stderr, "%s\n", fullBuf);
-	
-	/* Make sure it gets written. */
-	fflush(stderr);
+		fflush(stderr);
+	}
 #endif
 }
 

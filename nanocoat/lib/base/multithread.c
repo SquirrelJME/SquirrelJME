@@ -41,7 +41,7 @@ sjme_errorCode sjme_thread_current(
 		return SJME_ERROR_ILLEGAL_STATE;
 #else
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 #endif
 	
 	/* Use given result. */
@@ -121,7 +121,7 @@ sjme_errorCode sjme_thread_new(
 	threadId = winThreadId;
 #else
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 #endif
 	
 	/* Success! */

@@ -59,7 +59,7 @@ sjme_errorCode sjme_rom_libraryNew(
 	/* Required. */
 	if (inFunctions->init == NULL ||
 		inFunctions->close == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Allocate result. */
 	result = NULL;
@@ -234,7 +234,7 @@ sjme_errorCode sjme_rom_libraryResourceAsStream(
 	/* These must be set. */
 	if (library->functions == NULL ||
 		library->functions->resourceStream == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Lock library. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(

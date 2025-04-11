@@ -25,7 +25,7 @@ sjme_errorCode sjme_stringPool_locateSeq(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_stringPool_locateStreamR(
