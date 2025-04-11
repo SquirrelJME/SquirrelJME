@@ -360,6 +360,7 @@ sjme_errorCode sjme_thread_spinLockRelease(
 	}
 	
 	/* We own the lock hopefully, so count down. */
+	count = -1;
 	if ((owned = sjme_atomic_sjme_thread_compareSet(&inLock->owner,
 		current, current)))
 	{
@@ -382,10 +383,13 @@ sjme_errorCode sjme_thread_spinLockRelease(
 	sjme_atomic_barrier();
 	sjme_thread_yield();
 	sjme_atomic_barrier();
-	
+
+#if defined(SJME_CONFIG_DEBUG)
 	/* Do we not own the lock? */
 	if (!owned)
-		return sjme_error_fatal(SJME_ERROR_NOT_LOCK_OWNER);
+		sjme_message("Lock %p owner %p is not %p",
+			inLock, sjme_atomic_sjme_thread_get(&inLock->owner), current);
+#endif
 	
 	/* Give the lock count that is left. */
 	if (outCount != NULL)
