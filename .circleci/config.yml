@@ -380,21 +380,45 @@ jobs:
           working_directory: /home/circleci/work/co
           command: fossil open /home/repo/squirreljme.fossil --force
       - run:
+          name: Open repository (Retry)
+          working_directory: /home/circleci/work/co
+          command: fossil open /home/repo/squirreljme.fossil --force
+          when: on_fail
+      - run:
           name: Checkout current branch
           working_directory: /home/circleci/work/co
           command: fossil checkout $CIRCLE_BRANCH || echo "Ignoring..."
+          when: always
+      - run:
+          name: Checkout current branch (Retry)
+          working_directory: /home/circleci/work/co
+          command: fossil checkout $CIRCLE_BRANCH || echo "Ignoring..."
+          when: on_fail
       - run:
           name: Updating checkout
           working_directory: /home/circleci/work/co
           command: fossil update || echo "Ignoring..."
+          when: always
+      - run:
+          name: Updating checkout (Retry)
+          working_directory: /home/circleci/work/co
+          command: fossil update || echo "Ignoring..."
+          when: on_fail
       - run:
           name: Ensure build is clean
           working_directory: /home/circleci/work/co
           command: ./gradlew clean --parallel
+          when: always
+      - run:
+          name: Ensure build is clean (Retry)
+          working_directory: /home/circleci/work/co
+          command: ./gradlew clean --parallel
+          when: on_fail
       - run:
           name: Build CI/CD Bundle Tasks
           working_directory: /home/circleci/work/co
           command: ./gradlew :tools:cicd-release-bundle:jar --parallel
+          when: always
       - run:
           name: Build CI/CD Bundle Tasks (Retry)
           working_directory: /home/circleci/work/co
@@ -404,6 +428,7 @@ jobs:
           name: Run CI/CD Bundle Tasks
           working_directory: /home/circleci/work/co
           command: ./gradlew :tools:cicd-release-bundle:run --parallel
+          when: always
       - run:
           name: Run CI/CD Bundle Tasks (Retry)
           working_directory: /home/circleci/work/co
