@@ -27,7 +27,8 @@ TaskProvider<Task> internals = tasks.register('internals') {
 	dependsOn(
 		rootProject.tasks.named("romNanoCoatDebug"),
 		rootProject.tasks.named("romNanoCoatRelease"),
-		rootProject.tasks.named("romTestNanoCoatDebug"))
+		rootProject.tasks.named("romTestNanoCoatDebug"),
+		project(":emulators:standalone").tasks.named("shadowJar"))
 	mustRunAfter(tasks.named("clean"))
 }
 
@@ -43,7 +44,6 @@ CommandLineArgumentProvider argProvider = ({ ->
 		}
 		
 		if (item instanceof Task) {
-			
 			Task sub = (Task)item
 			
 			for (File file : sub.outputs.files.asFileTree.files) {

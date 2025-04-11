@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -113,7 +114,7 @@ public class Main
 				if (entry.isDirectory())
 					continue;
 				
-				// Load into the map
+				// Load into the map, replace existing files
 				__into.put(entry.getName(),
 					StreamUtils.readAll(1048576, zip));
 			}
@@ -178,6 +179,9 @@ public class Main
 			dateCommit, fossilCommit,
 			gitCommit).getBytes(StandardCharsets.UTF_8);
 		
+		// Base used for the standalone
+		Artifact standaloneBase = null;
+		
 		// Upload files into the un-versioned space
 		// romNanoCoatRelease=/home/.../squirreljme.jar
 		if (Main.FOSSIL != null)
@@ -222,6 +226,18 @@ public class Main
 				String name = arg.substring(0, eq);
 				Path path = Paths.get(arg.substring(eq + 1));
 				
+				// Treat standalone's shadowJar as the basis
+				if (path.getFileName().toString()
+					.toLowerCase(Locale.ROOT)
+					.contains("squirreljme-standalone"))
+				{
+					if (standaloneBase == null)
+						standaloneBase = new Artifact(
+							path.getFileName().toString(),
+							Files.readAllBytes(path));
+					continue;
+				}
+				
 				// Determine target name
 				String target = Main.uvTarget(baseDir, version, name);
 				
@@ -234,7 +250,6 @@ public class Main
 		}
 		
 		// Natives used for the standalone
-		Artifact standaloneBase = null;
 		List<Artifact> standaloneNative = new ArrayList<>();
 		
 		// Read in workflow jobs
@@ -253,8 +268,12 @@ public class Main
 					standaloneNative.addAll(
 						CircleCiComm.download(job.getJobNumber()));
 				else if (jobName.equals("build_linux_amd64_standalone"))
-					standaloneBase = CircleCiComm.download(job.getJobNumber())
-						.get(0);
+				{
+					// If not already determine, use this as the basis
+					if (standaloneBase == null)
+						standaloneBase = CircleCiComm.download(
+							job.getJobNumber()).get(0);
+				}
 				
 				// Standard upload?
 				if (jobName.startsWith("rom") ||

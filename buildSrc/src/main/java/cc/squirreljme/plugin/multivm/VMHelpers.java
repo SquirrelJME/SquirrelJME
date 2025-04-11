@@ -333,7 +333,7 @@ public final class VMHelpers
 			// Is the hash valid?
 			if (hash != null)
 			{
-				if (sb.length() == 0)
+				if (sb.length() != 0)
 					sb.append('-');
 				sb.append(String.format("w%s",
 					hash.trim().toLowerCase(Locale.ROOT).substring(0, 6)));
@@ -347,27 +347,29 @@ public final class VMHelpers
 		String git = VMHelpers.hashGit(__project);
 		if (git != null && !git.isEmpty())
 		{
-			if (sb.length() == 0)
+			if (sb.length() != 0)
 				sb.append('-');
 			sb.append(String.format("x%s",
 				git.trim().toLowerCase(Locale.ROOT).substring(0, 6)));
 		}
-		
-		// CircleCI pipeline version?
-		String circleCi = System.getenv("CIRCLE_SHA1");
-		if (circleCi != null && !circleCi.isEmpty())
+		else
 		{
-			if (sb.length() == 0)
-				sb.append('-');
-			sb.append(String.format("y%s",
-				circleCi.trim().toLowerCase(Locale.ROOT).substring(0, 6)));
+			// CircleCI pipeline version? (Same as Git)
+			String circleCi = System.getenv("CIRCLE_SHA1");
+			if (circleCi != null && !circleCi.isEmpty())
+			{
+				if (sb.length() != 0)
+					sb.append('-');
+				sb.append(String.format("x%s",
+					circleCi.trim().toLowerCase(Locale.ROOT).substring(0, 6)));
+			}
 		}
 		
 		// Is this some random tarball build?
 		if (sb.length() == 0)
 		{
 			LocalDate now = LocalDate.now();
-			sb.append(String.format("z%02d%03d0",
+			sb.append(String.format("y%02d%03d0",
 				Math.abs(now.getYear() % 100),
 				Math.abs(now.getDayOfYear() % 366)));
 		}
