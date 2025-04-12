@@ -14,6 +14,7 @@
 	#include <sched.h>
 #elif defined(SJME_CONFIG_HAS_WINDOWS)
 	#include <processthreadsapi.h>
+	#include <windows.h>
 #endif
 
 #include "sjme/debug.h"
@@ -35,10 +36,8 @@ sjme_errorCode sjme_thread_current(
 	if (result == 0 || result == SJME_THREAD_NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	/* Query. */
-	result = GetCurrentThread();
-	if (result == NULL || result == SJME_THREAD_NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
+	/* Query the current thread ID, the main thread might be zero. */
+	result = SJME_THREAD_BUMP(GetCurrentThreadId());
 #else
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -55,8 +54,6 @@ sjme_jboolean sjme_thread_equal(
 {
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	HMODULE kernel;
-	DWORD (WINAPI* getThreadIdFunc)(HANDLE);
 #endif
 	
 	if ((aThread == SJME_THREAD_NULL) != (bThread == SJME_THREAD_NULL))
@@ -68,18 +65,9 @@ sjme_jboolean sjme_thread_equal(
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	return pthread_equal(aThread, bThread);
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	/* Obtain the kernel library. */
-	kernel = GetModuleHandle("kernel32.dll");
-	if (kernel == NULL)
-		return aThread == bThread;
-	
-	/* Is there GetThreadId(), which is base 2003/Vista? */
-	getThreadIdFunc = ((void*)GetProcAddress(kernel, "GetThreadId"));
-	if (getThreadIdFunc == NULL)
-		return aThread == bThread;
-	
-	/* Use that function instead! */
-	return getThreadIdFunc(aThread) == getThreadIdFunc(bThread);
+	/* To prevent handle exhaustion, threads are identified solely by their */
+	/* identifier. */
+	return aThread == bThread;
 #else
 	return aThread == bThread;
 #endif
@@ -93,7 +81,6 @@ sjme_errorCode sjme_thread_new(
 {
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	DWORD winThreadId;
 #endif
 	sjme_thread result;
 	sjme_intPointer threadId;
@@ -113,12 +100,18 @@ sjme_errorCode sjme_thread_new(
 	threadId = (sjme_intPointer)result;
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/* Setup new thread. */
-	threadId = 0;
-	result = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)inMain,
-		anything, 0, &winThreadId);
-	if (result == NULL || result == SJME_THREAD_NULL)
+	result = SJME_THREAD_NULL;
+	threadId = (sjme_intPointer)CreateThread(NULL, 0,
+		(LPTHREAD_START_ROUTINE)inMain,
+		anything, 0, &result);
+	if (threadId == 0 || result == SJME_THREAD_NULL)
+	{
+		SetLastError(0);
 		return SJME_ERROR_CANNOT_CREATE;
-	threadId = winThreadId;
+	}
+
+	/* Windows requires thread bumping. */
+	result = SJME_THREAD_BUMP(result);
 #else
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -412,6 +405,7 @@ void sjme_thread_yield(void)
 #elif defined(SJME_CONFIG_HAS_THREADS_PTHREAD_BSD)
 	pthread_yield();
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	SwitchToThread();
+	if (!SwitchToThread())
+		SetLastError(0);
 #endif
 }

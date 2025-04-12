@@ -11,7 +11,7 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
-static LRESULT sjme_scritchui_win32_windowProcForward(
+static LRESULT WINAPI sjme_scritchui_win32_windowProcForward(
 	HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	sjme_scritchui inState;
