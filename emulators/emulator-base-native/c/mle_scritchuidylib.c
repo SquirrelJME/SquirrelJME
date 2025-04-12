@@ -867,7 +867,7 @@ static const sjme_scritchui_pencilLockFunctions mlePencilLockFuncs =
 	.lockRelease = mlePencilLockRelease,
 };
 
-static sjme_errorCode sjme_attrThreadCall mleAwtCall(
+static sjme_errorCode mleAwtCall(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything)
