@@ -386,6 +386,11 @@ public final class System
 			case "java.version":
 				return "1.8.0";
 				
+				// The info for the Java VM
+			case "java.vm.info":
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.VM_INFO);
+				
 				// The version of the JVM (full)
 			case "java.vm.version":
 				return RuntimeShelf.vmDescription(

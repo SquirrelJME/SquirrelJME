@@ -125,13 +125,14 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
-sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
+sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(gtk2)(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
 	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd)
 {
+	SJME_DYLIB_EXPORT_UNDECORATED;
 	sjme_errorCode error;
 	sjme_scritchui state;
 

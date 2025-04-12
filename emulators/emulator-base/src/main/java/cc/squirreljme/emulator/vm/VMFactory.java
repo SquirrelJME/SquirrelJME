@@ -316,7 +316,7 @@ public abstract class VMFactory
 			else if (item.startsWith("-Xlibraries:"))
 			{
 				for (String entry : VMFactory.__unSeparateClassPath(
-					item.substring(item.indexOf(':') + 1)))
+					item.substring(item.indexOf(':') + 1), false))
 					VMFactory.__addPaths(libraries, entry);
 			}
 			
@@ -346,7 +346,8 @@ public abstract class VMFactory
 					throw new IllegalArgumentException("Classpath missing.");
 				
 				// Extract path elements
-				for (String entry : VMFactory.__unSeparateClassPath(strings))
+				for (String entry : VMFactory.__unSeparateClassPath(strings,
+					false))
 					VMFactory.__addPaths(suiteClasspath, entry);
 			}
 			
@@ -410,7 +411,8 @@ public abstract class VMFactory
 			String defLib = metaManifest.getMainAttributes().getValue(
 				VMFactory.STANDALONE_LIBRARY);
 			if (defLib != null && !defLib.isEmpty())
-				for (String entry : VMFactory.__unSeparateClassPath(defLib))
+				for (String entry : VMFactory.__unSeparateClassPath(defLib,
+					true))
 					VMFactory.__addPaths(libraries, entry);
 		}
 		
@@ -420,6 +422,9 @@ public abstract class VMFactory
 		{
 			mainClass = "cc.squirreljme.runtime.cldc.PrintVersion";
 			mainArgs.add(didVersion);
+			mainArgs.add(Objects.toString(metaManifest.getMainAttributes()
+				.getValue("X-SquirrelJME-BuildVersion"),
+				"tarball"));
 			
 			// Forces no -jar
 			didJar = false;
@@ -428,7 +433,8 @@ public abstract class VMFactory
 			String defCp = metaManifest.getMainAttributes().getValue(
 				VMFactory.STANDALONE_CLASSPATH);
 			if (defCp != null && !defCp.isEmpty())
-				for (String entry : VMFactory.__unSeparateClassPath(defCp))
+				for (String entry : VMFactory.__unSeparateClassPath(defCp,
+					true))
 					VMFactory.__addPaths(suiteClasspath, entry);
 		}
 		
@@ -453,7 +459,8 @@ public abstract class VMFactory
 				String defCp = metaManifest.getMainAttributes().getValue(
 					VMFactory.STANDALONE_CLASSPATH);
 				if (defCp != null && !defCp.isEmpty())
-					for (String entry : VMFactory.__unSeparateClassPath(defCp))
+					for (String entry : VMFactory.__unSeparateClassPath(defCp,
+						true))
 						VMFactory.__addPaths(suiteClasspath, entry);
 				
 				// Default parameter?
@@ -1174,7 +1181,8 @@ public abstract class VMFactory
 		// Class path to the environment?
 		String classPath = System.getenv("SQUIRRELJME_CLASSPATH");
 		if (classPath != null)
-			for (String path : VMFactory.__unSeparateClassPath(classPath))
+			for (String path : VMFactory.__unSeparateClassPath(classPath,
+				false))
 				VMFactory.__addPathsWildcard(__libraries, path);
 		
 		// Java Home Directory?
@@ -1311,12 +1319,13 @@ public abstract class VMFactory
 	
 	/**
 	 * Merges path entries for the classpath.
-	 * 
+	 *
 	 * @param __in The input string.
+	 * @param __def Use the default separator as well.
 	 * @return The un-separated string.
 	 * @since 2022/06/13
 	 */
-	private static String[] __unSeparateClassPath(String __in)
+	private static String[] __unSeparateClassPath(String __in, boolean __def)
 	{
 		List<String> result = new ArrayList<>();
 		
@@ -1324,7 +1333,10 @@ public abstract class VMFactory
 		for (int i = 0, n = __in.length(); i < n; i++)
 		{
 			// Get location of the next colon
+			// Fallback to default if specified
 			int dx = __in.indexOf(VMFactory.SEPARATOR_CHAR, i);
+			if (__def && dx < 0)
+				dx = __in.indexOf(':', i);
 			if (dx < 0)
 				dx = n;
 			

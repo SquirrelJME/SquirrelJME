@@ -9,14 +9,16 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.launch.IModeProperty;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import javax.microedition.midlet.MIDlet;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for display scaling.
@@ -158,76 +160,16 @@ public abstract class DisplayScale
 			override = RuntimeShelf.systemEnv(DisplayScale.FRAME_ENV);
 		if (override != null && !override.isEmpty())
 		{
-			int useW = -1;
-			int useH = -1;
-			
-			// Parse values
-			int s = override.indexOf('x');
-			if (s >= 0)
-				try
-				{
-					useW = Integer.parseInt(
-						override.substring(0, s), 10);
-					useH = Integer.parseInt(
-						override.substring(s + 1), 10);
-				}
-				catch (NumberFormatException ignored)
-				{
-				}
-			
-			// Is the override valid?
-			if (useW > 0 && useH > 0)
-				return new DisplayFixedFlatScale(useW, useH);
+			rv = DisplayScale.__xyOverride(override);
+			if (rv != null)
+				return rv;
 		}
 		
 		// Try to figure out what a MIDlet desires as far as size is concerned
 		MIDlet midlet = ActiveMidlet.optional();
 		if (midlet != null)
 		{
-			// SquirrelJME Specific
-			rv = DisplayScale.__midlet(midlet,
-				"X-SquirrelJME-Resolution", false, 'x');
-			if (rv != null)
-				return rv;
-			
-			// MEXA API
-			rv = DisplayScale.__midlet(midlet,
-				"MIDxlet-ScreenSize", false, ',');
-			if (rv != null)
-				return rv;
-			
-			// Vodafone API
-			rv = DisplayScale.__midlet(midlet,
-				"MIDxlet-Application-Resolution", false,
-				',');
-			if (rv != null)
-				return rv;
-			
-			// Mode Vodafone?
-			rv = DisplayScale.__midlet(midlet,
-				"MIDxlet-Application-Range", true,
-				',');
-			if (rv != null)
-				return rv;
-			
-			// Nokia
-			rv = DisplayScale.__midlet(midlet,
-				"Nokia-MIDlet-Original-Display-Size", false,
-				',');
-			if (rv != null)
-				return rv;
-			
-			// Nokia (alternative)
-			rv = DisplayScale.__midlet(midlet,
-				"Nokia-MIDlet-Target-Display-Size", false,
-				',');
-			if (rv != null)
-				return rv;
-			
-			// SEMC?
-			rv = DisplayScale.__midlet(midlet,
-				"SEMC-Screen-Size", false,
-				',');
+			rv = DisplayScale.__midlet(midlet);
 			if (rv != null)
 				return rv;
 		}
@@ -235,24 +177,34 @@ public abstract class DisplayScale
 		// DoJa with a defined screen size
 		String doJaSize = System.getProperty(
 			"cc.squirreljme.imode.adf.DrawArea");
-		Debugging.debugNote("Scale: %s", doJaSize);
 		if (doJaSize != null)
 		{
-			// Parse it
-			int x = doJaSize.indexOf('x');
-			if (x >= 1)
-				try
-				{
-					int width = Math.max(96, Integer.parseInt(
-						doJaSize.substring(0, x), 10));
-					int height = Math.max(72, Integer.parseInt(
-						doJaSize.substring(x + 1), 10));
-					
-					return new DisplayFixedFlatScale(width, height);
-				}
-				catch (NumberFormatException ignored)
-				{
-				}
+			rv = DisplayScale.__dojaDrawArea(doJaSize);
+			if (rv != null)
+				return rv;
+		}
+		
+		// DoJa specific phone model
+		String dojaTargetDevice = System.getProperty(
+			IModeProperty.ADF_PROPERTY_PREFIX + "." + 
+				IModeProperty._TARGET_DEVICE);
+		if (dojaTargetDevice != null && dojaTargetDevice.isEmpty())
+		{
+			rv = DisplayScale.__dojaTargetDevice(
+				dojaTargetDevice.toLowerCase());
+			if (rv != null)
+				return rv;
+		}
+		
+		// DoJa profile
+		String dojaProfile = System.getProperty(
+			IModeProperty.DOJA_PROFILE_PROPERTY);
+		if (dojaProfile != null && !dojaProfile.isEmpty())
+		{
+			rv = DisplayScale.__dojaProfile(
+				dojaProfile.trim().toLowerCase());
+			if (rv != null)
+				return rv;
 		}
 		
 		// Use default otherwise
@@ -321,6 +273,182 @@ public abstract class DisplayScale
 	}
 	
 	/**
+	 * Parses the DoJa draw area.
+	 *
+	 * @param __v The input value.
+	 * @return The resultant scale.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/10
+	 */
+	private static DisplayFixedFlatScale __dojaDrawArea(String __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Parse it
+		int x = __v.indexOf('x');
+		if (x >= 1)
+			try
+			{
+				int width = Math.max(96, Integer.parseInt(
+					__v.substring(0, x), 10));
+				int height = Math.max(72, Integer.parseInt(
+					__v.substring(x + 1), 10));
+				
+				return new DisplayFixedFlatScale(width, height);
+			}
+			catch (NumberFormatException ignored)
+			{
+			}
+		
+		return null;
+	}
+	
+	/**
+	 * Returns a resolution based on the target device.
+	 *
+	 * @param __devices The DoJa device list.
+	 * @return The display scale for the given device.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/10
+	 */
+	private static DisplayScale __dojaTargetDevice(String __devices)
+		throws NullPointerException
+	{
+		if (__devices == null)
+			throw new NullPointerException("NARG");
+		
+		// Split by commas, as that is the expected format
+		for (String device : StringUtils.basicSplit(',', __devices))
+		{
+			// Ignore blank devices
+			device = device.trim().toLowerCase();
+			if (device.isEmpty())
+				continue;
+			
+			// Depends on the device type
+			switch (device)
+			{
+				case "so503i":
+				case "so503is":
+					return new DisplayFixedFlatScale(120, 120);
+					
+				case "f503i":
+				case "f503is":
+				case "n2001":
+				case "n2002":
+				case "n503i":
+				case "n503is":
+				case "p2002":
+				case "p503i":
+				case "p503is":
+					return new DisplayFixedFlatScale(120, 130);
+					
+				case "so504i":
+					return new DisplayFixedFlatScale(128, 128);
+					
+				case "d503i":
+				case "d503is":
+					return new DisplayFixedFlatScale(132, 126);
+					
+				case "d2101v":
+					return new DisplayFixedFlatScale(132, 130);
+					
+				case "f504i":
+				case "f504is":
+					return new DisplayFixedFlatScale(132, 136);
+					
+				case "d504i":
+				case "p504i":
+				case "p504is":
+					return new DisplayFixedFlatScale(132, 144);
+					
+				case "n504i":
+				case "n504is":
+					return new DisplayFixedFlatScale(160, 180);
+					
+				case "nm850ig":
+				case "t2101v":
+					return new DisplayFixedFlatScale(176, 144);
+					
+				case "n600i":
+					return new DisplayFixedFlatScale(176, 180);
+					
+				case "f2051":
+				case "f2102v":
+				case "p2101v":
+					return new DisplayFixedFlatScale(176, 182);
+					
+				case "l600i":
+				case "l601i":
+				case "n2051":
+				case "n2102v":
+				case "n2701":
+				case "p2102v":
+					return new DisplayFixedFlatScale(176, 198);
+					
+				case "sh2101v":
+					return new DisplayFixedFlatScale(240, 160);
+					
+				case "sh505i":
+				case "sh505is":
+				case "sh506ic":
+				case "sh900i":
+					return new DisplayFixedFlatScale(240, 252);
+					
+				case "p505i":
+				case "p505is":
+				case "p506ic":
+				case "p506icii":
+					return new DisplayFixedFlatScale(240, 266);
+					
+				case "m702ig":
+				case "m702is":
+					return new DisplayFixedFlatScale(240, 267);
+					
+				case "f505i":
+				case "f505igps":
+				case "f506i":
+					return new DisplayFixedFlatScale(240, 268);
+					
+				case "d505i":
+				case "d505is":
+				case "d506i":
+				case "d900i":
+				case "n506i":
+				case "n506is":
+				case "n506isii":
+					return new DisplayFixedFlatScale(240, 270);
+			}
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
+	 * Returns the device size based on the DoJa profile.
+	 *
+	 * @param __profile The profile to use.
+	 * @return The resultant screen size based on the profile.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/10
+	 */
+	private static DisplayScale __dojaProfile(String __profile)
+		throws NullPointerException
+	{
+		if (__profile == null)
+			throw new NullPointerException("NARG");
+		
+		if (__profile.equalsIgnoreCase("DoJa-1.0"))
+			return new DisplayFixedFlatScale(240, 160);
+		
+		// Use this otherwise
+		return new DisplayFixedFlatScale(240, 240);
+	}
+	
+	/**
 	 * Parses a key from a MIDlet manifest for screen sizes.
 	 *
 	 * @param __midlet The MIDlet to parse from.
@@ -345,6 +473,72 @@ public abstract class DisplayScale
 		return new DisplayFixedFlatScale(
 			DisplayScale.__parse(value, __delim, __swap),
 			DisplayScale.__parse(value, __delim, !__swap));
+	}
+	
+	/**
+	 * Parses MIDlet based versions.
+	 *
+	 * @param __midlet The midlet used.
+	 * @return The resultant scale.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/10
+	 */
+	private static DisplayScale __midlet(MIDlet __midlet)
+		throws NullPointerException
+	{
+		if (__midlet == null)
+			throw new NullPointerException("NARG");
+		
+		DisplayScale rv;
+		
+		// SquirrelJME Specific
+		rv = DisplayScale.__midlet(__midlet,
+			"X-SquirrelJME-Resolution", false, 'x');
+		if (rv != null)
+			return rv;
+		
+		// MEXA API
+		rv = DisplayScale.__midlet(__midlet,
+			"MIDxlet-ScreenSize", false, ',');
+		if (rv != null)
+			return rv;
+		
+		// Vodafone API
+		rv = DisplayScale.__midlet(__midlet,
+			"MIDxlet-Application-Resolution", false,
+			',');
+		if (rv != null)
+			return rv;
+		
+		// Mode Vodafone?
+		rv = DisplayScale.__midlet(__midlet,
+			"MIDxlet-Application-Range", true,
+			',');
+		if (rv != null)
+			return rv;
+		
+		// Nokia
+		rv = DisplayScale.__midlet(__midlet,
+			"Nokia-MIDlet-Original-Display-Size", false,
+			',');
+		if (rv != null)
+			return rv;
+		
+		// Nokia (alternative)
+		rv = DisplayScale.__midlet(__midlet,
+			"Nokia-MIDlet-Target-Display-Size", false,
+			',');
+		if (rv != null)
+			return rv;
+		
+		// SEMC?
+		rv = DisplayScale.__midlet(__midlet,
+			"SEMC-Screen-Size", false,
+			',');
+		if (rv != null)
+			return rv;
+		
+		return null;
 	}
 	
 	/**
@@ -387,5 +581,42 @@ public abstract class DisplayScale
 		
 		// Fallback
 		return (__height ? 320 : 240);
+	}
+	
+	/**
+	 * Parses an WxH override.
+	 *
+	 * @param __v The input value.
+	 * @return The resultant scale.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/10
+	 */
+	private static DisplayFixedFlatScale __xyOverride(String __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		int useW = -1;
+		int useH = -1;
+		
+		// Parse values
+		int s = __v.indexOf('x');
+		if (s >= 0)
+			try
+			{
+				useW = Integer.parseInt(
+					__v.substring(0, s), 10);
+				useH = Integer.parseInt(
+					__v.substring(s + 1), 10);
+			}
+			catch (NumberFormatException ignored)
+			{
+			}
+		
+		// Is the override valid?
+		if (useW > 0 && useH > 0)
+			return new DisplayFixedFlatScale(useW, useH);
+		return null;
 	}
 }

@@ -11,7 +11,7 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
-static LRESULT sjme_scritchui_win32_windowProcForward(
+static LRESULT WINAPI sjme_scritchui_win32_windowProcForward(
 	HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	sjme_scritchui inState;
@@ -172,13 +172,14 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_win32_loopMain(
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
-sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(win32)(
+sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(win32)(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
 	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd)
 {
+	SJME_DYLIB_EXPORT_UNDECORATED;
 	sjme_errorCode error;
 	sjme_scritchui state;
 

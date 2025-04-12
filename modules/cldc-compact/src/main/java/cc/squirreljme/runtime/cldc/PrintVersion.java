@@ -16,6 +16,8 @@ import java.io.PrintStream;
 
 /**
  * Prints the SquirrelJME version information.
+ * 
+ * https://www.oracle.com/java/technologies/javase/versioning-naming.html
  *
  * @since 2025/04/07
  */
@@ -49,11 +51,13 @@ public final class PrintVersion
 		
 		// Print the version string out, using the standard output format
 		out.printf("java version \"1.8.0\"%n");
-		out.printf("SquirrelJME Class Library, Micro Edition (build %s)%n",
-			SquirrelJME.RUNTIME_VERSION);
-		out.printf("%s (build %s)%n",
+		out.printf("SquirrelJME Class Library, Micro Edition (build %s-%s)%n",
+			SquirrelJME.RUNTIME_VERSION,
+			(__args != null && __args.length >= 2 ? __args[1] : "tarball"));
+		out.printf("%s (build %s, %s)%n",
 			RuntimeShelf.vmDescription(VMDescriptionType.VM_NAME),
-			RuntimeShelf.vmDescription(VMDescriptionType.VM_VERSION));
+			RuntimeShelf.vmDescription(VMDescriptionType.VM_VERSION),
+			RuntimeShelf.vmDescription(VMDescriptionType.VM_INFO));
 		
 		// Success!
 		System.exit(0);

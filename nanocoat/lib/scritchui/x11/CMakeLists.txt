@@ -51,3 +51,7 @@ target_link_libraries(ScritchUIX11
 # ScritchUI requires a normalized library name
 squirreljme_target_binary_name(ScritchUIX11
 	"squirreljme-scritchui-x11")
+
+# Generate exports
+squirreljme_target_shared_library_exports(ScritchUIX11)
+

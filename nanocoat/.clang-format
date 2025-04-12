@@ -48,9 +48,10 @@ AttributeMacros:
   - sjme_attrReturnNullable
   - sjme_attrUnused
   - sjme_attrUnusedEnum
-  - SJME_DYLIB_EXPORT
+  - sjme_attrExport
   - SJME_DYLIB_IMPORT
   - sjme_attrThreadCall
+  - sjme_attrExportCall
   - JNIEXPORT
   - JNIIMPORT
   - JNICALL

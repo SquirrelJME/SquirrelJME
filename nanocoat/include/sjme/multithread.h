@@ -103,13 +103,13 @@ extern "C" {
 	#define sjme_attrThreadCall
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/** A single thread. */
-	typedef HANDLE sjme_alignPointer sjme_thread;
+	typedef DWORD sjme_thread;
 
 	/** The thread type. */
-	#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
+	#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_jint
 
 	/** Is a thread a pointer? */
-	#define SJME_TYPEOF_IS_POINTER_sjme_thread 1
+	#define SJME_TYPEOF_IS_POINTER_sjme_thread 0
 	
 	/** Thread result. */
 	typedef DWORD sjme_thread_result;
@@ -118,13 +118,19 @@ extern "C" {
 	typedef LPVOID sjme_thread_parameter;
 	
 	/** Null thread handle. */
-	#define SJME_THREAD_NULL NULL
+	#define SJME_THREAD_NULL 0
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((DWORD)(err))
 
 	/** Thread result cast to error. */
 	#define SJME_THREAD_RESULT_AS_ERROR(result) ((sjme_errorCode)(result))
+
+	/** Bump Thread. */
+	#define SJME_THREAD_BUMP(x) ((x) + 1)
+
+	/** Unbump Thread. */
+	#define SJME_THREAD_UNBUMP(x) ((x) - 1)
 	
 	/** Calling convention to use for thread entry points. */
 	#define sjme_attrThreadCall WINAPI

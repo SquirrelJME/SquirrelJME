@@ -144,6 +144,11 @@ public interface IModeProperty
 	String _SP_SIZE =
 		"SPsize";
 	
+	/** The target device. */
+	@SquirrelJMEVendorApi
+	String _TARGET_DEVICE =
+		"TargetDevice";
+	
 	/** Boot class for Star. */
 	@SquirrelJMEVendorApi
 	String _STAR_BOOT_CLASS =

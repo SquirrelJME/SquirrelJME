@@ -89,6 +89,9 @@ public class EmulatedRuntimeShelf
 			case VMDescriptionType.PATH_SEPARATOR:
 				return System.getProperty("file.separator");
 				
+			case VMDescriptionType.VM_INFO:
+				return System.getProperty("java.vm.info");
+				
 			default:
 				throw new MLECallError("Invalid " + __type);
 		}

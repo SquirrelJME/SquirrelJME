@@ -28,7 +28,7 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(pure)(
+sjme_errorCode sjme_attrExport SJME_SCRITCHUI_DYLIB_SYMBOL(pure)(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,

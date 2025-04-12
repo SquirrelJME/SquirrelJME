@@ -269,6 +269,9 @@ public enum MLERuntime
 				case VMDescriptionType.VM_EMAIL:
 					return "xer@multiphasicapps.net";
 					
+				case VMDescriptionType.VM_INFO:
+					return "non-native pure interpreter";
+					
 				case VMDescriptionType.VM_NAME:
 					return __thread.machine.tasks.vmName();
 				

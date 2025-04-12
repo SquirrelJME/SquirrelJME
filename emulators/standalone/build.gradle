@@ -79,6 +79,9 @@ jar {
 	// We need to set specific manifest properties
 	manifest {
 		attributes \
+			"X-SquirrelJME-BuildVersion": project.provider({ -> 
+					VMHelpers.buildVersion(project)
+				}),
 			"X-SquirrelJME-Standalone-Main-Class":
 				"javax.microedition.midlet.__MainHandler__",
 			"X-SquirrelJME-Standalone-Parameter":

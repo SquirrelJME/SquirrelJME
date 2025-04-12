@@ -65,7 +65,7 @@
 /** Check for being in the loop. */
 #define SJME_SDU_LOOP_CHECK(what) \
 	do { \
-		error = SJME_ERROR_NOT_IMPLEMENTED; \
+		error = SJME_NUM_ERROR_CODES; \
 		direct = SJME_JNI_FALSE; \
 		 \
 		if (inState->api->loopIsInThread == NULL || \
@@ -133,7 +133,7 @@
 /** Check for being in the loop. */
 #define SJME_SDP_LOOP_CHECK(what) \
 	do { \
-		error = SJME_ERROR_NOT_IMPLEMENTED; \
+		error = SJME_NUM_ERROR_CODES; \
 		direct = SJME_JNI_FALSE; \
 		 \
 		if (inState->api->loopIsInThread == NULL || \

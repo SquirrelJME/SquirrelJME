@@ -421,7 +421,7 @@ function(squirreljme_sourceize_dir inputDir outputDir)
 endfunction()
 
 # Set variable for dynamic library import
-macro(squirreljme_library_set var target)
+macro(squirreljme_util_library_set var target)
 	if(MSVC)
 		set(${var}
 			"${SQUIRRELJME_UTIL_DIR}/${SQUIRRELJME_HOST_DYLIB_PREFIX}${target}.lib")

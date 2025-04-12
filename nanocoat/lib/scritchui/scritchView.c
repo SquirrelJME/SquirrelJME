@@ -227,7 +227,7 @@ sjme_errorCode sjme_scritchui_core_viewSetView(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inState->impl->viewSetView == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Obtain view. */
 	view = NULL;

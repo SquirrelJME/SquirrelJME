@@ -85,9 +85,12 @@ sjme_errorCode sjme_scritchpen_core_lockRelease(
 		state = &g->lockState;
 		
 		/* Forward if release is needed. */
-		if (sjme_atomic_sjme_jint_getAdd(&state->count, -1) == 1)
+		if (sjme_atomic_sjme_jint_getAdd(&state->count, -1) <= 1)
+		{
+			sjme_atomic_sjme_jint_set(&state->count, 0);
 			if (sjme_error_is(error = g->lock->lockRelease(g)))
 				return sjme_error_default(error);
+		}
 		
 		/* Release the spin lock. */
 		if (sjme_error_is(error = sjme_thread_spinLockRelease(

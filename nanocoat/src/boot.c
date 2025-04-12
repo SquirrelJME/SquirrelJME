@@ -343,7 +343,7 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 	
 	/* We cannot load if filesystem access is not supported. */
 	if (nal->fileOpen == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Get default data directory. */
 	memset(&dataPath, 0, sizeof(dataPath));
@@ -501,7 +501,7 @@ sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
 	
 	/* Finished. */
 	sjme_todo("sjme_nvm_destroy()");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_parseCommandLine(

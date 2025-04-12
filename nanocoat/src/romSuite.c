@@ -134,7 +134,7 @@ sjme_errorCode sjme_nvm_rom_suiteLibraries(
 	/* Check list function. */
 	listFunc = inSuite->functions->list;
 	if (listFunc == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Lock suite. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
@@ -195,7 +195,7 @@ sjme_errorCode sjme_nvm_rom_suiteNew(
 		inFunctions->libraryId == NULL ||
 		inFunctions->list == NULL ||
 		inFunctions->loadLibrary == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 		
 	/* Allocate resultant suite. */
 	result = NULL;

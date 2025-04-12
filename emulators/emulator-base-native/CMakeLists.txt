@@ -101,3 +101,6 @@ set_target_properties(libEmulatorBase PROPERTIES
 # Always make this position independent
 set_property(TARGET libEmulatorBase
 	PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+# Library Exports
+squirreljme_target_shared_library_exports(libEmulatorBase)

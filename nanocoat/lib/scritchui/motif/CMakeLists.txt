@@ -49,3 +49,6 @@ target_link_libraries(ScritchUIMotif
 # ScritchUI requires a normalized library name
 squirreljme_target_binary_name(ScritchUIMotif
 	"squirreljme-scritchui-motif")
+
+# Generate exports
+squirreljme_target_shared_library_exports(ScritchUIMotif)

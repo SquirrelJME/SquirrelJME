@@ -66,6 +66,8 @@ sjme_debug_handlerFunctions sjme_jni_debugHandlers =
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
+	SJME_DYLIB_EXPORT_UNDECORATED;
+
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	// Used to indicate that something might be happened
 	fprintf(stderr, "JNI Sub-Level: Loading Library...\n");
@@ -79,6 +81,7 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 	Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethods
 	(JNIEnv* env, jclass classy)
 {
+	SJME_DYLIB_EXPORT_UNDECORATED;
 	jint rv = 0;
 
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)

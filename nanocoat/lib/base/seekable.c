@@ -50,7 +50,7 @@ sjme_errorCode sjme_seekable_open(
 		inFunctions->read == NULL ||
 		inFunctions->init == NULL ||
 		inFunctions->close == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Setup result. */
 	result = NULL;
@@ -114,7 +114,7 @@ sjme_errorCode sjme_seekable_read(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	if (seekable->functions->read == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Lock seekable. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
@@ -158,7 +158,7 @@ sjme_errorCode sjme_seekable_readReverse(
 		return SJME_ERROR_UNALIGNED_ACCESS;
 	
 	if (seekable->functions->read == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Setup temporary buffer. */
 	tempBuf = sjme_alloca(length);
@@ -228,7 +228,7 @@ sjme_errorCode sjme_seekable_size(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (seekable->functions->size == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 		
 	/* Lock seekable. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(

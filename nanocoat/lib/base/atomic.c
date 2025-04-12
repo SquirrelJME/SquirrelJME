@@ -133,14 +133,6 @@
 
 #elif defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
 
-	/** The value type. */
-	#define SJME_ATOMIC_WIN32_TYPE(type, numPointerStars) \
-		SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, LONG, LONG64)
-		
-	/** The value type for getAdd. */
-	#define SJME_ATOMIC_WIN32_TYPEGA(type, numPointerStars) \
-		SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, LONG, LONG64)
-
 	#if SJME_CONFIG_HAS_POINTER == 64
 		#define SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
 			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
@@ -153,6 +145,8 @@
 		#define SJME_ATOMIC_WIN32_X(type, numPointerStars) \
 			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
 				InterlockedCompareExchange, InterlockedCompareExchange64)
+
+		#define SJME_ATOMIC_WIN32_POINTER LONG64
 	#else
 		#define SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
 			InterlockedAdd
@@ -162,7 +156,19 @@
 
 		#define SJME_ATOMIC_WIN32_X(type, numPointerStars) \
         	InterlockedCompareExchange
+
+		#define SJME_ATOMIC_WIN32_POINTER LONG
 	#endif
+
+	/** The value type. */
+	#define SJME_ATOMIC_WIN32_TYPE(type, numPointerStars) \
+		SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
+			LONG, SJME_ATOMIC_WIN32_POINTER)
+
+	/** The value type for getAdd. */
+	#define SJME_ATOMIC_WIN32_TYPEGA(type, numPointerStars) \
+		SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
+			LONG, SJME_ATOMIC_WIN32_POINTER)
 	
 	#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
 		SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
