@@ -110,6 +110,9 @@ typedef enum sjme_charSeq_type
 
 	/** Static modified-UTF string. */
 	SJME_CHAR_SEQ_TYPE_UTF_STATIC,
+
+	/** Static wide chars only. */
+	SJME_CHAR_SEQ_TYPE_WIDE_STATIC,
 	
 	/** The number of character sequence types. */
 	SJME_CHAR_SEQ_NUM_TYPES,
@@ -150,6 +153,9 @@ struct sjme_charSeqStatic
 
 		/** Static UTF pointer. */
 		sjme_lpcstr staticUtf;
+
+		/** Static wide pointer. */
+		sjme_lpcwstr staticWide;
 	} data;
 };
 

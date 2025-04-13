@@ -145,6 +145,26 @@ sjme_errorCode sjme_charSeq_dup(
 	if (allocPool == NULL || destCopy == NULL || sourceFrom == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Can we copy based on a pre-known type? */
+	switch (sourceFrom->type)
+	{
+		case SJME_CHAR_SEQ_TYPE_NARROW:
+			return sjme_charSeq_newNarrow(allocPool, destCopy,
+				sourceFrom->data.bytes, 0, sourceFrom->length);
+		
+		case SJME_CHAR_SEQ_TYPE_WIDE:
+			return sjme_charSeq_newWide(allocPool, destCopy,
+				sourceFrom->data.chars, 0, sourceFrom->length);
+		
+		case SJME_CHAR_SEQ_TYPE_WIDE_STATIC:
+			return sjme_charSeq_newWide(allocPool, destCopy,
+				sourceFrom->data.staticWide, 0,
+				sourceFrom->length);
+
+		default:
+			break;
+	}
+
 	/* Need to allocate the character data first. */
 	n = sourceFrom->length;
 	chars = sjme_alloca(sizeof(*chars) * (n + 1));
@@ -416,8 +436,40 @@ sjme_errorCode sjme_charSeq_newNarrow(
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInNegativeOnePositive sjme_jint limitLen)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_jint i, n;
+	sjme_charSeq result;
+	const sjme_jbyte* base;
+	sjme_jbyte* out;
+	
+	if (allocPool == NULL || outSeq == NULL || narrow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (offset < 0 || limitLen < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	if (limitLen >= 0 && (offset + limitLen) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Calculate actual base and length. */
+	sjme_charSeq_calcBaseLen(narrow);
+
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(sjme_alloc(allocPool,
+		sjme_charSeq_calcSize(sjme_jbyte, n),
+		(sjme_pointer*)&result)) || result == NULL)
+		return sjme_error_outOfMemory(allocPool, n);
+
+	/* Fill in. */
+	result->type = SJME_CHAR_SEQ_TYPE_NARROW;
+	result->length = n;
+	out = &result->data.bytes[0];
+	for (i = 0; i < n; i++)
+		out[i] = base[i];
+
+	/* Success! */
+	*outSeq = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_charSeq_newNarrowFromWide(
@@ -562,6 +614,9 @@ sjme_errorCode sjme_charSeq_newWideStatic(
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInNegativeOnePositive sjme_jint limitLen)
 {
+	sjme_jint n;
+	const sjme_jchar* base;
+	
 	if (inOutSeq == NULL || wide == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -570,9 +625,22 @@ sjme_errorCode sjme_charSeq_newWideStatic(
 
 	if (limitLen >= 0 && (offset + limitLen) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Calculate actual base and length. */
+	sjme_charSeq_calcBaseLen(wide);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Length is not valid? */
+	if (n < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Setup target sequence. */
+	memset(inOutSeq, 0, sizeof(*inOutSeq));
+	inOutSeq->type = SJME_CHAR_SEQ_TYPE_WIDE_STATIC;
+	inOutSeq->length = n;
+	inOutSeq->data.staticWide = base;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_charSeq_startsWithCharSeq(
