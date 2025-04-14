@@ -82,6 +82,9 @@ extern "C"
 /** Task. */
 #define SJME_MD_TASK SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TaskBracket")
 
+/** Type. */
+#define SJME_MD_TYPE SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TypeBracket")
+
 /** Thread. */
 #define SJME_MD_THREAD SJME_MD_L("java/lang/Thread")
 
