@@ -21,8 +21,8 @@ dependencies
 	api project(":modules:meep-rms")
 	
 	// For encoding/decoding base64
-	api project(":modules:io")
+	api project(":modules:vendor-api-squirreljme-io")
 	
 	// For the actual JSON data
-	api project(":modules:json")
+	api project(":modules:vendor-api-oracle-json")
 }

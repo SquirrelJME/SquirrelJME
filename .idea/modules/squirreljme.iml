@@ -176,6 +176,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-provisioning/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-provisioning/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-provisioning/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-rms-json/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-rms-json/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-rms-json/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-rms/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-rms/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-rms/out" />
