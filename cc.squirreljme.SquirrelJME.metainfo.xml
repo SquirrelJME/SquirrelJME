@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>cc.squirreljme.SquirrelJME</id>
+
+	<name>SquirrelJME</name>
+	<developer_name>Stephanie Gawroriski</developer_name>
+	<summary>Java ME 8 Virtual Machine.</summary>
+	<url type="homepage">https://squirreljme.cc/</url>
+	<update_contact>xerthesquirrel@gmail.com</update_contact>
+
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>MPL-2.0</project_license>
+
+	<description>
+		<p>
+			Java ME 8 Virtual Machine.
+		</p>
+	</description>
+
+	<launchable type="desktop-id">cc.squirreljme.SquirrelJME.desktop</launchable>
+	<launchable type="desktop-id">cc.squirreljme.Default.desktop</launchable>
+	<launchable type="desktop-id">cc.squirreljme.Hosted.desktop</launchable>
+	<launchable type="desktop-id">cc.squirreljme.SpringCoat.desktop</launchable>
+	<launchable type="desktop-id">cc.squirreljme.NanaoCoat.desktop</launchable>
+</component>

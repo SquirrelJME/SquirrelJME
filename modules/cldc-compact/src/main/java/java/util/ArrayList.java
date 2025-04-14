@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -61,8 +61,8 @@ public class ArrayList<E>
 	public ArrayList(int __cap)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ2e Attempt to initialize array list with
-		// a negative capacity. (The capacity)}
+		/* {@squirreljme.error ZZ2e Attempt to initialize array list with
+		a negative capacity. (The capacity)} */
 		if (__cap < 0)
 			throw new IllegalArgumentException(
 				String.format("ZZ2e %d", __cap));

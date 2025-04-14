@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -60,12 +60,12 @@ public final class FieldDescriptor
 		// Set
 		this.string = __n;
 		
-		// {@squirreljme.error JC2q The field descriptor cannot be blank. (The
-		// field descriptor)}
+		/* {@squirreljme.error JC2q The field descriptor cannot be blank. (The
+		field descriptor)} */
 		int n = __n.length();
 		if (n <= 0)
 			throw new InvalidClassFormatException(
-				String.format("JC2q %s", __n));
+				String.format("JC2q %s", __n), this);
 		
 		// Depends on the first character
 		char c = __n.charAt(0);
@@ -101,7 +101,8 @@ public final class FieldDescriptor
 				this.dimensions = dims;
 				
 				// Parse component
-				this.component = new FieldDescriptor(__n.substring(1));
+				this.component = new FieldDescriptor(
+					__n.substring(1));
 				break;
 				
 				// Class
@@ -110,21 +111,21 @@ public final class FieldDescriptor
 				this.dimensions = 0;
 				this.component = null;
 				
-				// {@squirreljme.error JC2r The field descriptor for a class
-				// must end with a semicolon. (The field descriptor)}
+				/* {@squirreljme.error JC2r The field descriptor for a class
+				must end with a semicolon. (The field descriptor)} */
 				if (';' != __n.charAt(n - 1))
 					throw new InvalidClassFormatException(
-						String.format("JC2r %s", __n));
+						String.format("JC2r %s", __n), this);
 				
 				// Decode
 				this.classname = new ClassName(__n.substring(1, n - 1));
 				break;
 				
-				// {@squirreljme.error JC2s The field descriptor is not valid.
-				// (The field descriptor)}
+				/* {@squirreljme.error JC2s The field descriptor is not valid.
+				(The field descriptor)} */
 			default:
 				throw new InvalidClassFormatException(
-					String.format("JC2s %s", __n));
+					String.format("JC2s %s", __n), this);
 		}
 	}
 	
@@ -142,7 +143,7 @@ public final class FieldDescriptor
 		if (__d == 0)
 			return this;
 		
-		// {@squirreljme.error JC2t Cannot add negative dimensions.}
+		/* {@squirreljme.error JC2t Cannot add negative dimensions.} */
 		if (__d < 0)
 			throw new IllegalArgumentException("JC2t");
 		
@@ -314,6 +315,20 @@ public final class FieldDescriptor
 			default:
 				return null;
 		}
+	}
+	
+	/**
+	 * Returns the root component type.
+	 *
+	 * @return The root component type.
+	 * @since 2024/08/02
+	 */
+	public final FieldDescriptor rootComponentType()
+	{
+		if (this.isArray())
+			return this.componentType().rootComponentType();
+		
+		return null;
 	}
 	
 	/**

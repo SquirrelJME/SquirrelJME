@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,8 +11,10 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.util.GradleLoggerOutputStream;
+import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
+import cc.squirreljme.plugin.Responsify;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -109,13 +111,16 @@ public class VMFullSuiteTaskAction
 		__task.getLogger().debug("Classpath: {}", classPath);
 		
 		// Run the virtual machine with everything
-		ExecResult exitResult = __task.getProject().javaexec(__spec ->
+		ExecResult exitResult = __task.getProject().exec(__spec ->
 			{
 				// Use filled JVM arguments
+				SimpleJavaExecSpecFiller simple =
+					new SimpleJavaExecSpecFiller();
 				this.classifier.getVmType().spawnJvmArguments(
-					(VMBaseTask)__task,
+					__task.getProject(),
+					this.classifier,
 					true,
-					new GradleJavaExecSpecFiller(__spec),
+					simple,
 					UnassistedLaunchEntry.MIDLET_MAIN_CLASS,
 					"fullSuite",
 					new LinkedHashMap<String, String>(),
@@ -123,16 +128,22 @@ public class VMFullSuiteTaskAction
 					classPath.<Path>toArray(new Path[classPath.size()]),
 					"cc.squirreljme.runtime.launcher.ui.MidletMain");
 				
+				// Set arguments to use
+				Responsify.into(__spec, simple.getCommandLine());
+				
 				// Use these streams directly
 				__spec.setStandardOutput(new GradleLoggerOutputStream(
-					__task.getLogger(), LogLevel.LIFECYCLE, -1, -1));
+					__task.getLogger(), LogLevel.LIFECYCLE,
+					-1, -1));
 				__spec.setErrorOutput(new GradleLoggerOutputStream(
-					__task.getLogger(), LogLevel.ERROR, -1, -1));
+					__task.getLogger(), LogLevel.ERROR,
+					-1, -1));
 			});
 		
 		// Did the task fail?
 		int exitValue = exitResult.getExitValue();
 		if (exitValue != 0)
-			throw new RuntimeException("Task exited with: " + exitValue);
+			throw new RuntimeException(
+				String.format("Task exited with: %d %08x", exitValue, exitValue));
 	}
 }

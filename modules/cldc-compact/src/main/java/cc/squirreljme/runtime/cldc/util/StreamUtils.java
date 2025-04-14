@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,17 +11,24 @@ package cc.squirreljme.runtime.cldc.util;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * General utilities for streams.
  *
  * @since 2021/09/06
  */
+@SquirrelJMEVendorApi
 public final class StreamUtils
 {
 	/**
@@ -42,6 +49,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@SquirrelJMEVendorApi
 	public static byte[] buffer(InputStream __in)
 		throws IOException, NullPointerException
 	{
@@ -57,6 +65,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMEVendorApi
 	public static int bufferSize(InputStream __in)
 		throws IOException, NullPointerException
 	{
@@ -97,6 +106,29 @@ public final class StreamUtils
 	}
 	
 	/**
+	 * Copies the given byte array to the given output stream, the stream
+	 * is not closed by this method.
+	 * 
+	 * @param __in The input byte array.
+	 * @param __out The output stream.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/10/14
+	 */
+	@SquirrelJMEVendorApi
+	public static void copy(byte[] __in, OutputStream __out)
+		throws IOException, NullPointerException
+	{
+		if (__in == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		try (ByteArrayInputStream in = new ByteArrayInputStream(__in))
+		{
+			StreamUtils.copy(in, __out, StreamUtils.buffer(null));
+		}
+	}
+	
+	/**
 	 * Copies the given input stream to the given output stream, the streams
 	 * are not closed by this method.
 	 * 
@@ -106,6 +138,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@SquirrelJMEVendorApi
 	public static void copy(InputStream __in, OutputStream __out)
 		throws IOException, NullPointerException
 	{
@@ -127,6 +160,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@SquirrelJMEVendorApi
 	public static void copy(InputStream __in, OutputStream __out,
 		byte[] __tempBuf)
 		throws IOException, NullPointerException
@@ -152,27 +186,46 @@ public final class StreamUtils
 	 * Reads every byte within the input stream.
 	 * 
 	 * @param __in The stream to read from.
-	 * @return A byte array containing all of the stream bytes.
+	 * @return A byte array containing all the stream bytes.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/10/03
+	 */
+	@SquirrelJMEVendorApi
+	public static byte[] readAll(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		return StreamUtils.readAll(StreamUtils.bufferSize(__in), __in);
+	}
+	
+	/**
+	 * Reads every byte within the input stream.
+	 * 
+	 * @param __size The size of the buffer to allocate.
+	 * @param __in The stream to read from.
+	 * @return A byte array containing all the stream bytes.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/05
 	 */
-	public static byte[] readAll(InputStream __in)
-		throws IOException, NullPointerException
+	@SquirrelJMEVendorApi
+	public static byte[] readAll(int __size, InputStream __in)
+		throws IllegalArgumentException, IOException, NullPointerException
 	{
 		if (__in == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
+		if (__size <= 0)
+			throw new IllegalArgumentException("ZERO");
 		
 		// Setup buffers for temporary copy
-		int bufLen = StreamUtils.bufferSize(__in);
-		byte[] buf = new byte[bufLen];
+		byte[] buf = new byte[__size];
 		
 		// Write into our target buffer
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(bufLen))
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(__size))
 		{
 			for (;;)
 			{
-				int rc = __in.read(buf, 0, bufLen);
+				int rc = __in.read(buf, 0, __size);
 				
 				// EOF?
 				if (rc < 0)
@@ -188,6 +241,47 @@ public final class StreamUtils
 	}
 	
 	/**
+	 * Reads every line within the input stream.
+	 * 
+	 * @param __in The stream to read from.
+	 * @param __charset The character set to use.
+	 * @return A list of all the lines.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	@SquirrelJMEVendorApi
+	public static List<String> readAllLines(InputStream __in, String __charset)
+		throws IOException, NullPointerException
+	{
+		if (__in == null || __charset == null)
+			throw new NullPointerException("NARG");
+		
+		BufferedReader in = new BufferedReader(
+			new InputStreamReader(__in, __charset));
+		
+		// Read all lines
+		List<String> result = new ArrayList<>();
+		for (;;)
+		{
+			// Stop on EOF
+			String ln = in.readLine();
+			if (ln == null)
+				break;
+			
+			// Ignore blank lines
+			ln = ln.trim();
+			if (ln.isEmpty())
+				continue;
+			
+			// Store as read
+			result.add(ln);
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * Similarly to {@link DataInputStream#readFully(byte[], int, int)} this
 	 * will read all of the bytes within the stream however this will return
 	 * a lower return value if EOF was reached.
@@ -199,6 +293,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMEVendorApi
 	public static int readMostly(InputStream __in, byte[] __b)
 		throws IOException, NullPointerException
 	{
@@ -224,6 +319,7 @@ public final class StreamUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMEVendorApi
 	public static int readMostly(InputStream __in, byte[] __b, int __o,
 		int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException

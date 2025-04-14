@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -28,4 +28,14 @@ public interface SuiteScanListener
 	 * @since 2020/12/29
 	 */
 	void scanned(Application __app, int __dx, int __total);
+	
+	/**
+	 * This is called when a Jar index has been skipped, there is no
+	 * application there.
+	 *
+	 * @param __dx The index of the Jar.
+	 * @param __total The total number of JARs scanned.
+	 * @since 2024/12/06
+	 */
+	void skipped(int __dx, int __total);
 }

@@ -26,5 +26,5 @@ dependencies
 
 	api project(":modules:meep-midlet")
 	api project(":modules:meep-swm")
-	api project(":modules:collections")
+	api project(":modules:vendor-api-squirreljme-collections")
 }

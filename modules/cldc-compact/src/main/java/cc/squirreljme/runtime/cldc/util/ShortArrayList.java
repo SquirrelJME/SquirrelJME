@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;
@@ -18,17 +19,21 @@ import java.util.RandomAccess;
  *
  * @since 2020/07/11
  */
+@SquirrelJMEVendorApi
 public class ShortArrayList
 	extends AbstractList<Short>
 	implements RandomAccess
 {
 	/** The backing array. */
+	@SquirrelJMEVendorApi
 	protected final short[] array;
 	
 	/** The offset. */
+	@SquirrelJMEVendorApi
 	protected final int offset;
 	
 	/** The cached size. */
+	@SquirrelJMEVendorApi
 	protected final int size;
 	
 	/**
@@ -38,6 +43,7 @@ public class ShortArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
+	@SquirrelJMEVendorApi
 	public ShortArrayList(short[] __a)
 		throws NullPointerException
 	{
@@ -55,6 +61,7 @@ public class ShortArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
+	@SquirrelJMEVendorApi
 	public ShortArrayList(short[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -90,6 +97,7 @@ public class ShortArrayList
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @since 2020/07/11
 	 */
+	@SquirrelJMEVendorApi
 	public short set(int __i, short __v)
 		throws IndexOutOfBoundsException
 	{
@@ -140,6 +148,7 @@ public class ShortArrayList
 	 * @return The boxed list type.
 	 * @since 2020/07/11
 	 */
+	@SquirrelJMEVendorApi
 	public static List<Short> asList(short... __array)
 	{
 		return new ShortArrayList(__array);

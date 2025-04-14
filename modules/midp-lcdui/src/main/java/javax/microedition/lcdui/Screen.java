@@ -3,15 +3,26 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.exceptions.MLECallErrorCode;
+import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchViewBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
+import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 /**
  * This is the base class for all user interactive displays.
@@ -35,24 +46,142 @@ public abstract class Screen
 	}
 	
 	/**
-	 * State specific to screens.
-	 * 
-	 * @since 2023/01/14
+	 * Returns the ScritchUI component.
+	 *
+	 * @return The ScritchUI component.
+	 * @since 2024/07/25
 	 */
-	abstract static class __ScreenState__
-		extends Displayable.__DisplayableState__
+	abstract ScritchComponentBracket __scritchComponent();
+	
+	/**
+	 * Returns the viewport, if there is one.
+	 *
+	 * @return The viewport, if available.
+	 * @since 2024/07/29
+	 */
+	ScritchViewBracket __scritchView()
 	{
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__ScreenState__(UIBackend __backend, DisplayWidget __self)
+		return null;
+	}
+	
+	/**
+	 * Returns the displayable height.
+	 *
+	 * @return The displayable height.
+	 * @since 2024/07/28
+	 */
+	final int __getHeight()
+	{
+		// Get direct widget size
+		DisplayableState state = this.__state();
+		if (state.currentDisplay() != null)
+			state.scritchApi().component()
+				.componentGetHeight(this.__scritchComponent());
+		
+		// Otherwise, fallback to the owning or default display
+		return ScritchLcdUiUtils.lcduiDisplaySize(state,
+			true);
+	}
+	
+	/**
+	 * Returns the displayable width.
+	 *
+	 * @return The displayable width.
+	 * @since 2024/07/28
+	 */
+	final int __getWidth()
+	{
+		// Get direct widget size
+		DisplayableState state = this.__state();
+		if (state.currentDisplay() != null)
+			state.scritchApi().component()
+				.componentWidth(this.__scritchComponent());
+		
+		// Otherwise, fallback to the owning or default display
+		return ScritchLcdUiUtils.lcduiDisplaySize(state,
+			false);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/25
+	 */
+	@Override
+	@MustBeInvokedByOverriders
+	@SquirrelJMEVendorApi
+	void __execRevalidate(DisplayState __parent)
+	{
+		// Setup super first
+		super.__execRevalidate(__parent);
+		
+		// If this screen component just refers to the panel, we already
+		// did this in the super class so do absolutely nothing
+		ScritchComponentBracket component = this.__scritchComponent();
+		if (component == this.__state().scritchPanel())
+			return;
+		
+		// Get the display scale to determine how the list should scale
+		DisplayScale scale = __parent.display()._scale;
+		
+		int w = Math.max(1, scale.screenX(scale.textureW()));
+		int h = Math.max(1, scale.screenY(scale.textureH()));
+		
+		// There might be a view associated with this
+		ScritchViewBracket view = this.__scritchView();
+		
+		// Make sure the displayable has the correct texture size and that
+		// either the view or the actual component if there is no view also
+		// has the given size, this sets the actual subcomponent accordingly
+		DisplayableState state = this.__state();
+		ScritchInterface scritchApi = state.scritchApi();
+		try
 		{
-			super(__backend, __self);
+			Debugging.debugNote("Revalidate S");
+			scritchApi.container().containerSetBounds(
+				state.scritchPanel(),
+				(view != null ? view : component),
+				0, 0, w, h);
 		}
+		catch (MLECallError __e)
+		{
+			// Ignore if not a subcomponent as there may be a desync
+			if (__e.distinction == MLECallErrorCode.NOT_SUB_COMPONENT)
+				return;
+			throw __e;
+		}
+	}
+	
+	/**
+	 * Common setup for any screen items which need a viewport.
+	 *
+	 * @param __scritchApi The ScritchUI API.
+	 * @param __newItem The item to wrap.
+	 * @return The resultant view.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/29
+	 */
+	static ScritchViewBracket __setupView(ScritchInterface __scritchApi,
+		ScritchComponentBracket __newItem)
+		throws NullPointerException
+	{
+		if (__scritchApi == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup viewport where the item will be in
+		ScritchViewBracket newView = __scritchApi.scrollPanel()
+			.scrollPanelNew();
+		
+		// Put the item into the view
+		__scritchApi.container().containerAdd(newView,
+			__newItem);
+		
+		// Setup size suggestion interface so whenever the item gives its
+		// suggested size, it will automatically update accordingly
+		__scritchApi.view().viewSetSizeSuggestListener(newView,
+			new __ExecViewSizeSuggest__(__scritchApi));
+		
+		// Return the used view
+		return newView;
 	}
 }
 

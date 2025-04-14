@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -119,6 +119,19 @@ public final class Method
 	}
 	
 	/**
+	 * Returns the number of slots used for the method call.
+	 * 
+	 * @return The argument slot count for this method, handles static or
+	 * instance methods.
+	 * @since 2023/05/31
+	 */
+	public int argumentSlotCount()
+	{
+		return (this.methodflags.isStatic() ? 0 : 1) +
+			this.methodtype.argumentSlotCount();
+	}
+	
+	/**
 	 * Returns the byte code for this method.
 	 *
 	 * @return The byte code for this method or {@code null} if there is none.
@@ -171,6 +184,17 @@ public final class Method
 				this.classname, this.methodname, this.methodtype));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the class this method is in.
+	 * 
+	 * @return The class this method is in.
+	 * @since 2023/05/28
+	 */
+	public ClassName inClass()
+	{
+		return this.classname;
 	}
 	
 	/**
@@ -300,9 +324,21 @@ public final class Method
 			int rawflags = __in.readUnsignedShort();
 			
 			// Parse name, this is needed to see if it is a constructor
-			MethodName name = new MethodName(
-				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
-				__in.readUnsignedShort()).toString());
+			MethodName name;
+			int nameDx = __in.readUnsignedShort();
+			try
+			{
+				name = new MethodName(
+					__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+						nameDx).toString());
+			}
+			catch (InvalidClassFormatException __e)
+			{
+				/* {@squirreljme.error JC5a. */
+				throw new InvalidClassFormatException(String.format(
+					"JC5a %d %d %s", nm, nameDx,
+					__pool.get(Object.class, nameDx)), __e);
+			}
 			
 			// Initialize the flags now that we know the class name, this way
 			// we can determine if this is a constructor or not
@@ -313,8 +349,8 @@ public final class Method
 				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 				__in.readUnsignedShort()).toString());
 			
-			// {@squirreljme.error JC3f A duplicate method exists within the
-			// class. (The method name; The method descriptor)}
+			/* {@squirreljme.error JC3f A duplicate method exists within the
+			class. (The method name; The method descriptor)} */
 			if (!dup.add(new NameAndType(name.toString(), type.toString())))
 				throw new InvalidClassFormatException(String.format(
 					"JC3f %s %s", name, type));
@@ -329,10 +365,10 @@ public final class Method
 			Attribute maybecode = attrs.get("Code");
 			byte[] code = (maybecode == null ? null : maybecode.bytes());
 			
-			// {@squirreljme.error JC3g The specified method does not have
-			// the correct matching for abstract and if code exists or not.
-			// (The current
-			// class; The method name; The method type; The method flags)}
+			/* {@squirreljme.error JC3g The specified method does not have
+			the correct matching for abstract and if code exists or not.
+			(The current
+			class; The method name; The method type; The method flags)} */
 			if ((code == null) != (flags.isAbstract() | flags.isNative()))
 				throw new InvalidClassFormatException(String.format(
 					"JC3g %s %s %s %s", __tn, name, type, flags));

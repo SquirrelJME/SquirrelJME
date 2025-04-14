@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,8 +11,6 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 @Api
 public class Gauge
@@ -66,17 +64,17 @@ public class Gauge
 	{
 		super(__l);
 		
-		// {@squirreljme.error EB24 An interactive gauge cannot have a negative
-		// maximum value.}
+		/* {@squirreljme.error EB24 An interactive gauge cannot have a negative
+		maximum value.} */
 		if (__int && __max < 0)
 			throw new IllegalArgumentException("EB24");
 		
-		// {@squirreljme.error EB25 A non-interactive gauge cannot have a
-		// negative value that is not indefinite.}
+		/* {@squirreljme.error EB25 A non-interactive gauge cannot have a
+		negative value that is not indefinite.} */
 		if (!__int && !(__max >= 0 || __max == Gauge.INDEFINITE))
 			throw new IllegalArgumentException("EB25");
 		
-		// {@squirreljme.error EB26 Invalid symbolism for indefinite range.}
+		/* {@squirreljme.error EB26 Invalid symbolism for indefinite range.} */
 		if (__max == Gauge.INDEFINITE && __iv != Gauge.CONTINUOUS_IDLE &&
 			__iv != Gauge.CONTINUOUS_RUNNING && __iv != Gauge.INCREMENTAL_IDLE &&
 			__iv != Gauge.INCREMENTAL_UPDATING)
@@ -133,13 +131,17 @@ public class Gauge
 	public void setLabel(String __l)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB27 Cannot set the label of a gauge associated
-		// with an alert.}
+		throw Debugging.todo();
+		/*
+		/* {@squirreljme.error EB27 Cannot set the label of a gauge associated
+		with an alert.} * /
 		if (this._displayable instanceof Alert)
 			throw new IllegalArgumentException("EB27");
 		
 		// Use super logic
 		super.setLabel(__l);
+		
+		 */
 	}
 	
 	@Api
@@ -158,38 +160,6 @@ public class Gauge
 	public void setValue(int __a)
 	{
 		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
-	@Override
-	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
-	{
-		return new __GaugeState__(__backend, this);
-	}
-	
-	/**
-	 * Gauge state.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __GaugeState__
-		extends Item.__ItemState__
-	{
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__GaugeState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-		}
 	}
 }
 

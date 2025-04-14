@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -61,7 +61,7 @@ public class Object
 			return dest;
 		}
 		
-		// {@squirreljme.error ZZ1d This object does not support being cloned.}
+		/* {@squirreljme.error ZZ1d This object does not support being cloned.} */
 		if (!(this instanceof Cloneable))
 			throw new CloneNotSupportedException("ZZ1d");
 		
@@ -126,8 +126,8 @@ public class Object
 	public final void notify()
 		throws IllegalMonitorStateException
 	{
-		// {@squirreljme.error ZZ1e This thread does not own the monitor for
-		// this thread.}
+		/* {@squirreljme.error ZZ1e This thread does not own the monitor for
+		this thread.} */
 		if (ObjectShelf.notify(this, false) < 0)
 			throw new IllegalMonitorStateException("ZZ1e");
 	}
@@ -143,8 +143,8 @@ public class Object
 	public final void notifyAll()
 		throws IllegalMonitorStateException
 	{
-		// {@squirreljme.error ZZ1f This thread does not own the monitor for
-		// this thread.}
+		/* {@squirreljme.error ZZ1f This thread does not own the monitor for
+		this thread.} */
 		if (ObjectShelf.notify(this, false) < 0)
 			throw new IllegalMonitorStateException("ZZ1f");
 	}
@@ -241,8 +241,8 @@ public class Object
 		// going on
 		switch (ObjectShelf.wait(this, __ms, __ns))
 		{
-				// {@squirreljme.error ZZ1g Cannot wait on monitor because
-				// this thread does not own the monitor.}
+				/* {@squirreljme.error ZZ1g Cannot wait on monitor because
+				this thread does not own the monitor.} */
 			case MonitorResultType.NOT_OWNED:
 				throw new IllegalMonitorStateException("ZZ1g");
 			
@@ -257,8 +257,8 @@ public class Object
 				
 				throw new InterruptedException("ZZ1h");
 				
-				// {@squirreljme.error ZZ14 MLE Call returned an invalid
-				// monitor result status.}
+				/* {@squirreljme.error ZZ14 MLE Call returned an invalid
+				monitor result status.} */
 			default:
 				throw new MLECallError("ZZ14");
 		}

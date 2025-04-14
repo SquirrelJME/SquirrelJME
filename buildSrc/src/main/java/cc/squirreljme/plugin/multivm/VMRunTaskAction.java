@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,17 +12,25 @@ package cc.squirreljme.plugin.multivm;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
-import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
+import cc.squirreljme.plugin.util.ForwardInputToOutput;
 import cc.squirreljme.plugin.util.GradleLoggerOutputStream;
+import cc.squirreljme.plugin.util.JavaExecSpecFiller;
+import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller;
+import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
-import org.gradle.process.ExecResult;
 
 /**
  * Runs the program within the virtual machine.
@@ -58,61 +66,22 @@ public class VMRunTaskAction
 	@Override
 	public void execute(Task __task)
 	{
+		// The task owning this
+		VMRunTask runTask = (VMRunTask)__task;
+		
 		// Need this to get the program details
 		SquirrelJMEPluginConfiguration config =
 			SquirrelJMEPluginConfiguration.configuration(__task.getProject());
-			
-		// Gather the class path to use for target execution, this is all the
-		// SquirrelJME modules this depends on
-		VMSpecifier vmType = this.classifier.getVmType();
-		Path[] classPath = VMHelpers.runClassPath(__task,
-			this.classifier, true);
 		
-		// Debug
-		__task.getLogger().debug("Classpath: {}", Arrays.asList(classPath));
-		
-		// Determine the main entry class or MIDlet to use
-		JavaMEMidlet midlet = JavaMEMidlet.find(config.midlets);
-		String mainClass = VMHelpers.mainClass(config, midlet);
-		
-		// Debug
-		__task.getLogger().debug("MIDlet: {}", midlet);
-		__task.getLogger().debug("MainClass: {}", mainClass);
-		
-		// If executing a MIDlet, then the single main argument is the actual
-		// name of the MIDlet to execute
-		List<String> args = new ArrayList<>();
-		if (midlet != null)
-			args.add(midlet.mainClass);
-		
-		// Debug
-		__task.getLogger().debug("Target Working Dir: {}",
-			System.getProperty("user.dir"));
-		
-		// Execute the virtual machine, if the exit status is non-zero then
-		// the task execution will be considered as a failure
-		ExecResult exitResult = __task.getProject().javaexec(__spec ->
-			{
-				// Use filled JVM arguments
-				vmType.spawnJvmArguments((VMBaseTask)__task, true,
-					new GradleJavaExecSpecFiller(__spec), mainClass,
-					(midlet != null ? midlet.mainClass : mainClass),
-					Collections.<String, String>emptyMap(),
-					classPath, classPath,
-					args.<String>toArray(new String[args.size()]));
-				
-				// Use these streams directly
-				__spec.setStandardOutput(new GradleLoggerOutputStream(
-					__task.getLogger(), LogLevel.LIFECYCLE,
-					-1, -1));
-				__spec.setErrorOutput(new GradleLoggerOutputStream(
-					__task.getLogger(), LogLevel.ERROR,
-					-1, -1));
-			});
-		
-		// Did the task fail?
-		int exitValue = exitResult.getExitValue();
-		if (exitValue != 0)
-			throw new RuntimeException("Task exited with: " + exitValue);
+		// Setup detached runner then execute it
+		new VMRunTaskDetached(this.classifier,
+			__task.getLogger(),
+			VMHelpers.runClassPath(__task,
+				this.classifier, true),
+			runTask.midlet,
+			VMHelpers.mainClass(config, runTask.midlet),
+			runTask.getProject().getBuildDir().toPath(),
+			__task.getProject(),
+			runTask.debugServer).run();
 	}
 }

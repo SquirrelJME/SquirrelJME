@@ -1,4 +1,5 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEProfile
 import cc.squirreljme.plugin.swm.JavaMEStandard
 import org.iban4j.CountryCode
 
@@ -6,17 +7,27 @@ description = "Proprietary J-Phone API"
 version = rootProject.version
 
 squirreljme
-	{
-		javaDocErrorCode = "LE"
-		swmType = JavaMEMidletType.API
-		swmName = "J-Phone API"
-		swmVendor = "Stephanie Gawroriski"
-		originalApiVendor = "J-Phone (Vodafone Group plc)"
-		originalApiVendorUrl = "https://www.vodafone.com/"
-		originalApiVendorCountry = CountryCode.GB
-		tags += "j2me"
-		tags += "jphone"
-	}
+{
+	javaDocErrorCode = "LE"
+	swmType = JavaMEMidletType.API
+	swmName = "J-Phone API"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "J-Phone (Vodafone Group plc)"
+	originalApiVendorUrl = "https://www.vodafone.com/"
+	originalApiVendorCountry = CountryCode.GB
+	definedProfiles += new JavaMEProfile("JSCL-1.0")
+	definedProfiles += new JavaMEProfile("JSCL-1.1")
+	definedProfiles += new JavaMEProfile("JSCL-1.2")
+	definedProfiles += new JavaMEProfile("JSCL-1.2.1")
+	definedProfiles += new JavaMEProfile("JSCL-1.2.2")
+	definedProfiles += new JavaMEProfile("JSCL-1.3")
+	definedProfiles += new JavaMEProfile("JSCL-1.4.2")
+	definedProfiles += new JavaMEProfile("VSCL-1.0")
+	definedProfiles += new JavaMEProfile("VSCL-2.0")
+	definedProfiles += new JavaMEProfile("VSCL-2.1")
+	tags += "j2me"
+	tags += "jphone"
+}
 
 dependencies
 {

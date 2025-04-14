@@ -1,0 +1,16 @@
+# 2023/06/04
+
+## 15:10
+
+I was on vacation which is nice, I also installed Linux on my laptop which is way
+more performing and smoother... programming should go much easier. It should also
+be much better in battery life. I know I have not have not really been leaving much
+notes but I should do that again. I suppose since then I have started new medication
+for things and I can concentrate much easier like I used to when I was able to just
+focus on thing. Of course work takes a large portion of my time. But regardless I
+decided to make NanoCoat which is byte code compiled to C, at least in a cheap
+and quick fashion, of which I can write a bunch of code and whatnot. My plan is to just
+have it where I have NanoCoat for certain low level platforms like PS2 and 3DS and
+such. But generally this is just a stopgap since writing RatufaCoat is going to take
+much longer as it is generally better written and will be the longer lasting virtual
+machine. So that is where things stand currently.

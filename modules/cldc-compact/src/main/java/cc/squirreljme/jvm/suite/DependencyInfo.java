@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -270,6 +270,19 @@ public final class DependencyInfo
 			// Decode dependency
 			depends.add(new SuiteDependency(value));
 		}
+		
+		// MIDxlet (JSCL generally)
+		value = attr.getValue("midxlet-api");
+		if (value != null)
+			for (String s : StringUtils.basicSplit(" \t", value))
+				depends.add(new Profile(s));
+		
+		// MEXA OpenGL
+		value = attr.getValue("midxlet-opgl");
+		if (value != null && value.equalsIgnoreCase("y"))
+			depends.add(new SuiteDependency(SuiteDependencyType.PROPRIETARY,
+				SuiteDependencyLevel.REQUIRED,
+				"squirreljme.project@vendor-api-softbank-mexa;;"));
 		
 		// Build
 		return new DependencyInfo(depends);

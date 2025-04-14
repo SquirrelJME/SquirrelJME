@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
+
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Wraps a short array to provide integer access to it.
@@ -15,10 +17,12 @@ package cc.squirreljme.runtime.cldc.util;
  * @see UnsignedShortIntegerArray
  * @since 2019/05/09
  */
+@SquirrelJMEVendorApi
 public final class ShortIntegerArray
-	implements IntegerArray
+	extends AbstractIntegerArray
 {
 	/** The backed array. */
+	@SquirrelJMEVendorApi
 	protected final short[] array;
 	
 	/**
@@ -28,6 +32,7 @@ public final class ShortIntegerArray
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public ShortIntegerArray(short[] __a)
 		throws NullPointerException
 	{

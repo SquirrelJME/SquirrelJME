@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -59,17 +59,26 @@ public final class ServiceLoader<S>
 	@Override
 	public Iterator<S> iterator()
 	{
-		Class<S> search = this._search;
-		__ServiceLoaderCache__<S> cache = this._cache;
-		
-		// Use the cached array?
-		Object[] use = cache._cache;
-		if (use != null)
-			return new __ServiceLoaderCachedIterator__<S>(search, use);
-		
-		// Cache it
-		else
-			return new __ServiceLoaderFreshIterator__<S>(search, cache);
+		synchronized (this)
+		{
+			Class<S> search = this._search;
+			__ServiceLoaderCache__<S> cache = this._cache;
+			
+			// Use the cached array?
+			Object[] use = cache._cache;
+			if (use != null)
+				return new __ServiceLoaderCachedIterator__<S>(search, use);
+			
+			// Otherwise load everything in with the fresh iterator
+			Iterator<S> it = new __ServiceLoaderFreshIterator__<S>(search,
+				cache);
+			while (it.hasNext())
+				it.next();
+			
+			// Use cached set
+			return new __ServiceLoaderCachedIterator__<S>(search,
+				cache._cache);
+		}
 	}
 	
 	/**
@@ -80,8 +89,11 @@ public final class ServiceLoader<S>
 	@Api
 	public void reload()
 	{
-		// Clear the cache
-		this._cache._cache = null;
+		synchronized (this)
+		{
+			// Clear the cache
+			this._cache._cache = null;
+		}
 	}
 	
 	/**

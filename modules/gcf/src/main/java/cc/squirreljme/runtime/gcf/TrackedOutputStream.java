@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -68,7 +68,7 @@ public final class TrackedOutputStream
 	public final void flush()
 		throws IOException
 	{
-		// {@squirreljme.error EC0v The output has been closed.}
+		/* {@squirreljme.error EC0v The output has been closed.} */
 		if (this.tracker._outclosed)
 			throw new IOException("EC0v");
 		
@@ -84,7 +84,7 @@ public final class TrackedOutputStream
 	public final void write(int __b)
 		throws IOException
 	{
-		// {@squirreljme.error EC0w The output has been closed.}
+		/* {@squirreljme.error EC0w The output has been closed.} */
 		if (this.tracker._outclosed)
 			throw new IOException("EC0w");
 		
@@ -100,7 +100,7 @@ public final class TrackedOutputStream
 	public final void write(byte[] __b)
 		throws IOException, NullPointerException
 	{
-		// {@squirreljme.error EC0x The output has been closed.}
+		/* {@squirreljme.error EC0x The output has been closed.} */
 		if (this.tracker._outclosed)
 			throw new IOException("EC0x");
 		
@@ -116,7 +116,7 @@ public final class TrackedOutputStream
 	public final void write(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
-		// {@squirreljme.error EC0y The output has been closed.}
+		/* {@squirreljme.error EC0y The output has been closed.} */
 		if (this.tracker._outclosed)
 			throw new IOException("EC0y");
 		

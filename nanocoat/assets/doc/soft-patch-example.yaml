@@ -1,0 +1,22 @@
+$schema: https://squirreljme.cc/doc/trunk/nanocoat/assets/doc/soft-patch.yaml
+inClass:
+  cute/Squirrel:
+    flags:
+      - clear abstract
+      - set final
+    inField:
+      cute:Z:
+        constantValue: true
+    inMethod:
+      isCute:()Z:
+        return: true
+      makeNoise:()V:
+        bytecode:
+          - replace @3 with ldc "Squeak!"
+inResource:
+  squeak.txt: |
+    base64:U3F1ZWFrIQ==
+inScratchPad:
+  # scratchpad:///0;pos=42,length=1234
+  0 at 42 len 1234: |
+    base64:U3F1ZWFrIQ==

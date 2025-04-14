@@ -3,28 +3,37 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.Responsify;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.general.cmake.CMakeBuildTask;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.FileLocation;
+import cc.squirreljme.plugin.util.FossilException;
+import cc.squirreljme.plugin.util.FossilExe;
+import cc.squirreljme.plugin.util.InvalidFossilExeException;
 import cc.squirreljme.plugin.util.TestDetection;
 import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,6 +56,10 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
@@ -90,9 +103,12 @@ public final class VMHelpers
 	private static final String _MULTI_PARAMETERS_KEY =
 		"multi-parameters";
 	
-	/* Copy buffer size. */
+	/** Copy buffer size. */
 	public static final int COPY_BUFFER =
 		4096;
+	
+	/** Cached build version. */
+	private static volatile String _cachedBuildVersion;
 	
 	/**
 	 * Not used.
@@ -260,6 +276,111 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Returns the build version of SquirrelJME.
+	 *
+	 * @param __project The reference to a project.
+	 * @return The SquirrelJME build version.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/10
+	 */
+	public static String buildVersion(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+		
+		String cached = VMHelpers._cachedBuildVersion;
+		if (cached != null)
+			return cached;
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// Fossil version?
+		try
+		{
+			// The current hash
+			String hash = null;
+			
+			// Get info on the current version
+			Collection<String> info = FossilExe.instance().runLineOutput(
+				"info", "current");
+			if (info != null && !info.isEmpty())
+				for (String line : info)
+					if (line != null && line.startsWith("hash:"))
+					{
+						// We only care about the right side of this
+						int col = line.indexOf(':');
+						if (col < 0)
+							continue;
+						
+						// Splice out and trim
+						line = line.substring(col + 1).trim();
+						
+						// Split out the first space
+						int space = line.indexOf(' ');
+						if (space < 0)
+							space = line.indexOf('\t');
+						
+						// Trim?
+						if (space >= 0)
+							line = line.substring(0, space).trim();
+						
+						// Use this version
+						hash = line;
+						break;
+					}
+			
+			// Is the hash valid?
+			if (hash != null)
+			{
+				if (sb.length() != 0)
+					sb.append('-');
+				sb.append(String.format("w%s",
+					hash.trim().toLowerCase(Locale.ROOT).substring(0, 6)));
+			}
+		}
+		catch (InvalidFossilExeException|FossilException ignored)
+		{
+		}
+		
+		// Git Version?
+		String git = VMHelpers.hashGit(__project);
+		if (git != null && !git.isEmpty())
+		{
+			if (sb.length() != 0)
+				sb.append('-');
+			sb.append(String.format("x%s",
+				git.trim().toLowerCase(Locale.ROOT).substring(0, 6)));
+		}
+		else
+		{
+			// CircleCI pipeline version? (Same as Git)
+			String circleCi = System.getenv("CIRCLE_SHA1");
+			if (circleCi != null && !circleCi.isEmpty())
+			{
+				if (sb.length() != 0)
+					sb.append('-');
+				sb.append(String.format("x%s",
+					circleCi.trim().toLowerCase(Locale.ROOT).substring(0, 6)));
+			}
+		}
+		
+		// Is this some random tarball build?
+		if (sb.length() == 0)
+		{
+			LocalDate now = LocalDate.now();
+			sb.append(String.format("y%02d%03d0",
+				Math.abs(now.getYear() % 100),
+				Math.abs(now.getDayOfYear() % 366)));
+		}
+		
+		// Use this version!
+		cached = sb.toString();
+		VMHelpers._cachedBuildVersion = cached;
+		return cached;
+	}
+	
+	/**
 	 * Returns the cache directory of the project.
 	 * 
 	 * @param __project The project to get the cache directory of.
@@ -294,10 +415,7 @@ public final class VMHelpers
 	public static String classpathAsString(Path... __paths)
 		throws NullPointerException
 	{
-		if (__paths == null)
-			throw new NullPointerException("NARG");
-		
-		return VMHelpers.classpathAsString(Arrays.asList(__paths));
+		return VMHelpers.classpathAsString(false, __paths);
 	}
 	
 	/**
@@ -311,15 +429,50 @@ public final class VMHelpers
 	public static String classpathAsString(Iterable<Path> __paths)
 		throws NullPointerException
 	{
+		return VMHelpers.classpathAsString(false, __paths);
+	}
+	
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __unix Use UNIX separator and not the system one.
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	public static String classpathAsString(boolean __unix, Path... __paths)
+		throws NullPointerException
+	{
+		if (__paths == null)
+			throw new NullPointerException("NARG");
+		
+		return VMHelpers.classpathAsString(Arrays.asList(__paths));
+	}
+	
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __unix Use UNIX separator and not the system one.
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	public static String classpathAsString(boolean __unix,
+		Iterable<Path> __paths)
+		throws NullPointerException
+	{
 		if (__paths == null)
 			throw new NullPointerException("NARG");
 		
 		StringBuilder sb = new StringBuilder();
 		
+		char separator = (__unix ? ':' : File.pathSeparatorChar);
 		for (Path path : __paths)
 		{
 			if (sb.length() > 0)
-				sb.append(File.pathSeparatorChar);
+				sb.append(separator);
 			sb.append(path);
 		}
 		
@@ -447,37 +600,153 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Copies from the input into the output while recompressing the Zip file.
+	 * 
+	 * @param __in The input.
+	 * @param __out The output.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/08
+	 */
+	public static void copyRecompressZip(InputStream __in, OutputStream __out)
+		throws IOException, NullPointerException
+	{
+		if (__in == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		try (ZipInputStream inZip = new ZipInputStream(__in);
+			 ZipOutputStream outZip = new ZipOutputStream(__out))
+		{
+			// Maximum compression
+			outZip.setMethod(ZipOutputStream.DEFLATED);
+			outZip.setLevel(9);
+			
+			// Recompress each entry
+			for (;;)
+			{
+				// Get next entry, if null there are none left
+				ZipEntry entry = inZip.getNextEntry();
+				if (entry == null)
+					break;
+				
+				// Start entry
+				outZip.putNextEntry(new ZipEntry(entry.getName()));
+				
+				// Copy entry data
+				VMHelpers.copy(inZip, outZip);
+				
+				// Finished writing
+				outZip.closeEntry();
+			}
+			
+			// Finalize zip
+			outZip.finish();
+			outZip.flush();
+		}
+		
+		// Make sure output is flushed
+		__out.flush();
+	}
+	
+	/**
+	 * Deletes the given directory tree.
+	 *
+	 * @param __task The task deleting for.
+	 * @param __path The path to delete.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/04/08
+	 */
+	public static void deleteDirTree(Task __task, Path __path)
+		throws NullPointerException
+	{
+		if (__task == null || __path == null)
+			throw new NullPointerException("NARG");
+		
+		// Ignore if not a directory
+		Path base = __path.toAbsolutePath().normalize();
+		if (!Files.isDirectory(__path))
+			return;
+		
+		// Collect files to delete
+		Set<Path> deleteFiles = new LinkedHashSet<>();
+		Set<Path> deleteDirs = new LinkedHashSet<>();
+		
+		// Perform the walk to collect files
+		try (Stream<Path> walk = Files.walk(__path))
+		{
+			walk.forEach((__it) -> {
+				Path normal = __it.toAbsolutePath().normalize();
+				
+				if (Files.isDirectory(normal))
+					deleteDirs.add(normal);
+				else
+					deleteFiles.add(normal);
+			});
+		}
+		catch (IOException __e)
+		{
+			__e.printStackTrace();
+		}
+		
+		// Run through and delete files then directories
+		for (Set<Path> rawByes : Arrays.asList(deleteFiles, deleteDirs))
+		{
+			List<Path> byes = new ArrayList<>(rawByes);
+			Collections.reverse(byes);
+			
+			for (Path bye : byes)
+			{
+				// Note
+				__task.getLogger().lifecycle(
+					String.format("Cleaning %s...", bye));
+				
+				// Skip out of tree files
+				if (!bye.startsWith(base))
+				{
+					__task.getLogger().lifecycle(
+						String.format("%s is out of tree, skipping...", bye));
+					continue;
+				}
+				
+				// Perform deletion
+				try
+				{
+					Files.deleteIfExists(bye);
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Attempts to find the emulator library so that can be loaded directly
 	 * instead of being extracted by each test process, if possible.
 	 * 
-	 * @param __task The task running under.
+	 * @param __anyProject Any project.
 	 * @return The path to the emulator library.
 	 * @since 2020/12/01
 	 */
 	@SuppressWarnings("ConstantConditions")
-	public static Path findEmulatorLib(Task __task)
+	public static Path findEmulatorLib(Project __anyProject)
 		throws NullPointerException
 	{
-		if (__task == null)
+		if (__anyProject == null)
 			throw new NullPointerException("NARG");
-		
-		// Figure out what the library is called
-		String libName = System.mapLibraryName("emulator-base");
 		
 		// We need to look through the emulator base tasks to determine
 		// the library to select
-		Project emuBase = __task.getProject().getRootProject()
+		Project emuBase = __anyProject.getRootProject()
 			.findProject(":emulators:emulator-base");
 		
-		// Is this valid?
-		Object raw = emuBase.getExtensions().getExtraProperties()
-			.get("libPathBase");
-		if (!(raw instanceof Path))
-			return null;
+		// Get the CMake Task for this
+		CMakeBuildTask cmake = (CMakeBuildTask)emuBase.getTasks()
+			.getByName("libNativeEmulatorBase");
 		
-		// Library is here?
-		return ((Path)raw).resolve(
-			System.mapLibraryName("emulator-base")).toAbsolutePath();
+		// Use the resultant library
+		return cmake.cmakeOutFile;
 	}
 	
 	/**
@@ -491,17 +760,31 @@ public final class VMHelpers
 		throws NullPointerException
 	{
 		Collection<Path> libPath = new LinkedHashSet<>();
-		for (Task dep : __task.getTaskDependencies().getDependencies(__task))
-		{
-			//System.err.printf("Task: %s %s%n", dep, dep.getClass());
-			
-			// Load executable library tasks from our own VM
-			if (dep instanceof VMExecutableTask)
-				for (File file : dep.getOutputs().getFiles())
-					libPath.add(file.toPath());
-		}
+		for (VMLibraryTask dep : VMHelpers.fullSuiteLibrariesTasks(__task))
+			for (File file : dep.getOutputs().getFiles())
+				libPath.add(file.toPath());
 		
 		return libPath;
+	}
+	
+	/**
+	 * Returns the full suite library tasks for a given task.
+	 * 
+	 * @param __task The task to get.
+	 * @return The path for the full suite libraries.
+	 * @since 2024/03/05
+	 */
+	public static Collection<VMLibraryTask> fullSuiteLibrariesTasks(
+		Task __task)
+		throws NullPointerException
+	{
+		// Load executable library tasks from our own VM
+		Collection<VMLibraryTask> result = new LinkedHashSet<>();
+		for (Task dep : __task.getTaskDependencies().getDependencies(__task))
+			if (dep instanceof VMLibraryTask)
+				result.add((VMLibraryTask)dep);
+		
+		return result;
 	}
 	
 	/**
@@ -553,6 +836,81 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Returns the current Fossil commit hash.
+	 *
+	 * @param __project The project.
+	 * @return The hash or {@code null} if not in a Fossil checkout.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/10/06
+	 */
+	public static String hashFossil(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+		
+		Path possible = __project.getRootProject()
+			.getProjectDir().toPath().resolve("manifest.uuid");
+		if (Files.exists(possible))
+			try
+			{
+				List<String> lines = Files.readAllLines(possible);
+				if (!lines.isEmpty() && lines.get(0) != null)
+					return lines.get(0).trim().toLowerCase(Locale.ROOT);
+			}
+			catch (IOException __ignored)
+			{
+			}
+		
+		// Not in a Fossil checkout
+		return null;
+	}
+	
+	/**
+	 * Returns the current Git commit hash.
+	 *
+	 * @param __project The project.
+	 * @return The hash or {@code null} if not in a Git checkout.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/10/06
+	 */
+	public static String hashGit(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+		
+		try
+		{
+			// Setup new process
+			ProcessBuilder builder = Responsify.of("git",
+				"rev-parse", "HEAD");
+			
+			builder.redirectOutput(ProcessBuilder.Redirect.PIPE);
+			builder.directory(__project.getRootProject().getProjectDir());
+			
+			// Start and wait for it to complete
+			Process process = builder.start();
+			process.waitFor();
+			
+			// Read in hash
+			try (InputStream in = process.getInputStream();
+				 InputStreamReader isr = new InputStreamReader(in);
+				 BufferedReader br = new BufferedReader(isr))
+			{
+				String maybe = br.readLine();
+				if (maybe != null)
+					return maybe.trim().toLowerCase(Locale.ROOT);
+			}
+		}
+		catch (IOException|InterruptedException __ignored)
+		{
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Returns the task that creates the JAR.
 	 * 
 	 * @param __project The project to get from.
@@ -589,7 +947,7 @@ public final class VMHelpers
 	 * Returns the main class to execute.
 	 *
 	 * @param __cfg The configuration.
-	 * @param __midlet The MIDlet to be ran.
+	 * @param __midlet The MIDlet to be run.
 	 * @return The main class.
 	 * @throws NullPointerException If {@code __cfg} is {@code null}.
 	 * @since 2020/03/06
@@ -602,10 +960,28 @@ public final class VMHelpers
 			throw new NullPointerException("NARG");
 		
 		// We either run the MIDlet or we do not
-		return (__midlet != null ?
-			UnassistedLaunchEntry.MIDLET_MAIN_CLASS :
-			Objects.requireNonNull(__cfg.mainClass,
-			"No main class in project."));
+		return VMHelpers.mainClass(__midlet, __cfg.mainClass);
+	}
+	
+	/**
+	 * Determines the main class to use.
+	 *
+	 * @param __midlet The MIDlet to execute.
+	 * @param __mainClass The main class to run.
+	 * @return The class for execution.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/28
+	 */
+	public static String mainClass(JavaMEMidlet __midlet, String __mainClass)
+		throws NullPointerException
+	{
+		if (__midlet == null && __mainClass == null)
+			throw new NullPointerException("No main class specified.");
+		
+		// We either run the MIDlet or we do not
+		if (__midlet != null)
+			return UnassistedLaunchEntry.MIDLET_MAIN_CLASS;
+		return __mainClass;
 	}
 	
 	/**
@@ -833,6 +1209,41 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Recompresses the given Zip file.
+	 *
+	 * @param __zip The ZIP to recompress.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/08
+	 */
+	public static void recompressZip(Path __zip)
+		throws IOException, NullPointerException
+	{
+		if (__zip == null)
+			throw new NullPointerException("NARG");
+		
+		// Load in everything for copy
+		byte[] result;
+		byte[] inZip = Files.readAllBytes(__zip);
+		try (InputStream in = new ByteArrayInputStream(inZip);
+			 ByteArrayOutputStream out = new ByteArrayOutputStream(
+				 inZip.length))
+		{
+			// Perform recompression
+			VMHelpers.copyRecompressZip(in, out);
+			
+			// Get resultant output
+			result = out.toByteArray();
+		}
+		
+		// Replace everything
+		Files.write(__zip, result,
+			StandardOpenOption.TRUNCATE_EXISTING,
+			StandardOpenOption.WRITE,
+			StandardOpenOption.CREATE);
+	}
+	
+	/**
 	 * Resolves path elements as needed to determine where a file is.
 	 * 
 	 * @param __in The input to resolve.
@@ -1007,6 +1418,43 @@ public final class VMHelpers
 				classPath.add(file.toPath());
 		
 		return classPath.toArray(new Path[classPath.size()]);
+	}
+	
+	/**
+	 * Returns the internal class path specifier to run the given tasks. 
+	 *
+	 * @param __project The project.
+	 * @param __classifier The classifier used.
+	 * @param __optional Include optional JARs?
+	 * @return The class path string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	public static String runClassPathAsInternalClassPath(
+		Project __project, SourceTargetClassifier __classifier,
+		boolean __optional)
+		throws NullPointerException
+	{
+		// Get tasks that are used for dependency running
+		Iterable<VMLibraryTask> tasks =
+			VMHelpers.<VMLibraryTask>resolveProjectTasks(
+				VMLibraryTask.class, __project, VMHelpers
+					.runClassTasks(__project, __classifier, __optional));
+		
+		// Build paths from it
+		StringBuilder result = new StringBuilder();
+		for (VMLibraryTask task : tasks)
+		{
+			// Path separator before
+			if (result.length() > 0)
+				result.append(":");
+			
+			// Use Jar name here
+			result.append(VMHelpers.projectInternalNameViaSourceSet(
+				task.getProject(), task.getSourceSet()) + ".jar");
+		}
+		
+		return result.toString();
 	}
 	
 	/**
@@ -1212,6 +1660,23 @@ public final class VMHelpers
 		
 		// Is only valid if there is at least one test
 		return new AvailableTests(available, false);
+	}
+	
+	/**
+	 * Translates a path to a string.
+	 *
+	 * @param __name The input string file name.
+	 * @return The resultant path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/09/03
+	 */
+	public static Path stringToPath(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		return Paths.get("", __name.split(Pattern.quote("/")));
 	}
 	
 	/**

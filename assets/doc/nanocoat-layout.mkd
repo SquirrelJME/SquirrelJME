@@ -1,0 +1,59 @@
+# NanoCoat Layout
+
+This document specifies the layout of a NanoCoat Zip which contains
+sources and tables for merging and otherwise. NanoCoat is built on top
+of tables which are used to create the most compact possible output
+executable which removes any and all duplicates. As such, the structure
+is akin to a `Map` of source code and constants.
+
+## Libraries
+
+Libraries are Jars which have been run through the NanoCoat AOT Compiler
+which outputs to tables and C source code.
+
+ * `shared/` -- Fragments and otherwise which are shared across different
+   ROMs and libraries. All sources within are identified by their fingerprint.
+   On merging the content of the individual files should be exactly the same.
+   * `char/` -- Strings which are referred to by other parts of the code.
+   * `code/` -- Source code, based on the code fingerprint and is
+     agnostic of the actual method the code belongs to. For example
+     this may contain a source code file called `code_deadbeef.c` where
+     `deadbeef` is the code fragment identifier.
+   * `ints/` -- Class interface lists.
+   * `lncl/` -- Linkages for `Class` references.
+   * `lnfa/` -- Linkages for field access.
+   * `lnmi/` -- Linkages for method invocations.
+   * `lnst/` -- Linkages for `String` references.
+   * `lnvd/` -- Linkages for `double` values.
+   * `lnvf/` -- Linkages for `float` values.
+   * `lnvi/` -- Linkages for `int` values.
+   * `lnvj/` -- Linkages for `long` values.
+   * `rsrc/` -- Jar resources, unlikely these are duplicated but in the event
+     they are, this will be handled accordingly.
+   * `tyfi/` -- Field type information.
+   * `tyme/` -- Method type information.
+   * `valn/` -- Locals/Stack variable limit tables.
+ * `lib/` -- Library code root.
+   * `$CLUTTER_LEVEL/` -- The clutter level of the library.
+     * `$SOURCE_SET/` -- The source set for the library, will be one of
+       _main_, _test_, or _testFixtures_. 
+       * `$MODULE_NAME/` -- The name of the library module, for example this
+         will be _cldc-compact_.
+         * `classes/` -- Classes within the library
+           * `$CLASS.c` -- Individual class information files, these do not
+             contain any code but instead link to shared fragments.
+         * `$MODULE_NAME.c` -- Module library information file.
+         * `CMakeLists.txt` -- CMake Build file for the library.
+
+## ROMs
+
+ROMs are a collection of libraries, which their file structure layout
+is the same as libraries however they have been flattened from multiple
+libraries into a single set of files.
+
+ * `rom/` -- ROM code root.
+   * `$CLUTTER_LEVEL/` -- The name of the ROM, which is the clutter level. 
+     * `$SOURCE_SET/` -- The ROM source set, will be one of _main_, _test_,
+       or _testFixtures_. 
+       * `$SOURCE_SET.c` -- ROM information source.
+       * `CMakeLists.txt` -- CMake Build file for the ROM. 

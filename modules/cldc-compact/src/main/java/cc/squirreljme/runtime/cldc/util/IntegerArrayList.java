@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;
@@ -18,18 +19,14 @@ import java.util.RandomAccess;
  *
  * @since 2020/07/11
  */
+@SquirrelJMEVendorApi
 public class IntegerArrayList
 	extends AbstractList<Integer>
 	implements RandomAccess
 {
 	/** The backing array. */
-	protected final int[] array;
-	
-	/** The offset. */
-	protected final int offset;
-	
-	/** The cached size. */
-	protected final int size;
+	@SquirrelJMEVendorApi
+	protected final IntegerArray array;
 	
 	/**
 	 * Initializes the long array view.
@@ -38,6 +35,7 @@ public class IntegerArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
+	@SquirrelJMEVendorApi
 	public IntegerArrayList(int[] __a)
 		throws NullPointerException
 	{
@@ -55,17 +53,27 @@ public class IntegerArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
+	@SquirrelJMEVendorApi
 	public IntegerArrayList(int[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
+		this(new IntegerIntegerArray(__a, __o, __l));
+	}
+	
+	/**
+	 * Initializes the list.
+	 *
+	 * @param __a The array to access.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public IntegerArrayList(IntegerArray __a)
+		throws NullPointerException
+	{
 		if (__a == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __a.length)
-			throw new IndexOutOfBoundsException("IOOB");
 		
 		this.array = __a;
-		this.offset = __o;
-		this.size = __l;
 	}
 	
 	/**
@@ -75,10 +83,10 @@ public class IntegerArrayList
 	@Override
 	public Integer get(int __i)
 	{
-		if (__i < 0 || __i >= this.size)
+		if (__i < 0 || __i >= this.array.size())
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		return this.array[this.offset + __i];
+		return this.array.get(__i);
 	}
 	
 	/**
@@ -90,10 +98,18 @@ public class IntegerArrayList
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @since 2020/07/11
 	 */
+	@SquirrelJMEVendorApi
 	public int set(int __i, int __v)
 		throws IndexOutOfBoundsException
 	{
-		return this.set(__i, Integer.valueOf(__v));
+		IntegerArray array = this.array;
+		if (__i < 0 || __i >= array.size())
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Cycle values
+		int old = array.get(__i);
+		array.set(__i, __v);
+		return old;
 	}
 	
 	/**
@@ -106,21 +122,8 @@ public class IntegerArrayList
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
-		if (__i < 0 || __i >= this.size)
-			throw new IndexOutOfBoundsException("IOOB");
 		
-		// The true index to access
-		int trueDx = this.offset + __i;
-		
-		// Get old value
-		int[] array = this.array;
-		int rv = array[trueDx];
-		
-		// Set new value
-		array[trueDx] = __v;
-		
-		// Return the old value
-		return rv;
+		return this.set(__i, __v.intValue());
 	}
 	
 	/**
@@ -130,7 +133,7 @@ public class IntegerArrayList
 	@Override
 	public int size()
 	{
-		return this.size;
+		return this.array.size();
 	}
 	
 	/**
@@ -140,6 +143,7 @@ public class IntegerArrayList
 	 * @return The boxed list type.
 	 * @since 2020/07/11
 	 */
+	@SquirrelJMEVendorApi
 	public static List<Integer> asList(int... __array)
 	{
 		return new IntegerArrayList(__array);
@@ -152,6 +156,7 @@ public class IntegerArrayList
 	 * @return The array as a string or {@code "null"} if {@code null}.
 	 * @since 2022/02/04
 	 */
+	@SquirrelJMEVendorApi
 	public static String toString(int... __ints)
 	{
 		if (__ints == null)

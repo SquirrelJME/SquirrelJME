@@ -3,13 +3,15 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import java.util.Arrays;
 import javax.microedition.lcdui.Graphics;
@@ -19,6 +21,7 @@ import javax.microedition.lcdui.Graphics;
  *
  * @since 2022/02/25
  */
+@SquirrelJMEVendorApi
 public final class SingleBuffer
 {
 	/** The color to fill with on resizes. */
@@ -42,6 +45,7 @@ public final class SingleBuffer
 	 * @param __resizeFillColor The color to fill with when resizing.
 	 * @since 2022/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public SingleBuffer(int __resizeFillColor)
 	{
 		this.fillColor = __resizeFillColor;
@@ -52,6 +56,7 @@ public final class SingleBuffer
 	 * 
 	 * @since 2022/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public void clear()
 	{
 		Arrays.fill(this._pixels, this.fillColor);
@@ -61,15 +66,27 @@ public final class SingleBuffer
 	 * Copies from the source buffer.
 	 * 
 	 * @param __source The source buffer.
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __w The width.
+	 * @param __h The height.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/25
 	 */
-	public void copyFrom(SingleBuffer __source)
+	@SquirrelJMEVendorApi
+	public void copyFrom(SingleBuffer __source,
+		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
 		if (__source == null)
 			throw new NullPointerException("NARG");
-			
+		
+		// Force in bounds
+		if (__x < 0)
+			__x = 0;
+		if (__y < 0)
+			__y = 0;
+		
 		// Get destination parameters
 		int[] destPixels = this._pixels;
 		int destLimit = destPixels.length;
@@ -80,15 +97,35 @@ public final class SingleBuffer
 		int srcHeight = __source._height;
 		int srcArea = srcWidth * srcHeight;
 		
+		// Cap dimensions
+		int ex = __x + __w;
+		int ey = __y + __h;
+		if (ex > srcWidth)
+			ex = srcWidth;
+		if (ey > srcHeight)
+			ey = srcHeight;
+		__w = ex - __x;
+		__h = ey - __y;
+		
 		// If the source is larger, we need a new and bigger array but we
 		// can just automatically copy that array over
 		if (srcArea > destLimit)
 			this._pixels = Arrays.copyOf(srcPixels, srcArea);
 		
-		// Only copy what is needed
-		else
-			System.arraycopy(srcPixels, 0,
+		// Full copy? We can just copy everything at once
+		else if (__x == 0 && __y == 0 && __w == srcWidth && __h == srcHeight)
+			ObjectShelf.arrayCopy(srcPixels, 0,
 				destPixels, 0, srcArea);
+		
+		// Copying only a certain region
+		else
+		{
+			// Quick copy each row
+			int scanBase = __x;
+			for (int y = __y; y < ey; y++, scanBase += srcWidth)
+				ObjectShelf.arrayCopy(srcPixels, scanBase,
+					destPixels, scanBase, __w);
+		}
 		
 		// Copy the parameters over
 		this._width = srcWidth;
@@ -106,10 +143,11 @@ public final class SingleBuffer
 	 * @throws IllegalArgumentException If the width and/or height are invalid.
 	 * @since 2022/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public Graphics getGraphics(int __width, int __height)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB31 Invalid buffer dimensions.}
+		/* {@squirreljme.error EB31 Invalid buffer dimensions.} */
 		if (__width <= 0 || __height <= 0)
 			throw new IllegalArgumentException("EB31");
 		
@@ -133,7 +171,7 @@ public final class SingleBuffer
 		// Create graphics to wrap it, alpha is not used for buffers!
 		return PencilGraphics.hardwareGraphics(UIPixelFormat.INT_RGB888,
 			__width, __height,
-			pixels, 0, null,
+			pixels, null,
 			0, 0, __width, __height);
 	}
 	
@@ -143,6 +181,7 @@ public final class SingleBuffer
 	 * @param __g The graphics to paint onto.
 	 * @since 2022/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public void paint(Graphics __g)
 	{
 		// The fastest way to draw onto the screen is to do a direct draw

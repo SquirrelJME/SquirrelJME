@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -50,8 +51,22 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static double add(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Adds two values.
+	 *
+	 * @param __a A value.
+	 * @param __b B value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static double add(double __a, double __b)
+	{
+		return SoftDouble.add(MathShelf.rawDoubleToLong(__a),
+			MathShelf.rawDoubleToLong(__b));
 	}
 	
 	/**
@@ -65,8 +80,22 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static int cmpl(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Compares two values.
+	 *
+	 * @param __a A value.
+	 * @param __b B value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static int cmpl(double __a, double __b)
+	{
+		return SoftDouble.cmpl(MathShelf.rawDoubleToLong(__a),
+			MathShelf.rawDoubleToLong(__b));
 	}
 	
 	/**
@@ -80,8 +109,22 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static int cmpg(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Compares two values.
+	 *
+	 * @param __a A value.
+	 * @param __b B value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static int cmpg(double __a, double __b)
+	{
+		return SoftDouble.cmpg(MathShelf.rawDoubleToLong(__a),
+			MathShelf.rawDoubleToLong(__b));
 	}
 	
 	/**
@@ -95,8 +138,22 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static double div(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Divides two values.
+	 *
+	 * @param __a A value.
+	 * @param __b B value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static double div(double __a, double __b)
+	{
+		return SoftDouble.div(MathShelf.rawDoubleToLong(__a),
+			MathShelf.rawDoubleToLong(__b));
 	}
 	
 	/**
@@ -113,6 +170,19 @@ public final class SoftDouble
 	}
 	
 	/**
+	 * Is this Not a Number?
+	 * 
+	 * @param __a The value to check.
+	 * @return If this is not a number.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isNaN(double __a)
+	{
+		return SoftDouble.isNaN(MathShelf.rawDoubleToLong(__a));
+	}
+	
+	/**
 	 * Multiplies two values.
 	 *
 	 * @param __a A value.
@@ -123,8 +193,22 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static double mul(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Multiplies two values.
+	 *
+	 * @param __a A value.
+	 * @param __b B value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static double mul(double __a, double __b)
+	{
+		return SoftDouble.mul(MathShelf.rawDoubleToLong(__a),
+			MathShelf.rawDoubleToLong(__b));
 	}
 	
 	/**
@@ -137,8 +221,20 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static double neg(long __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Negates a value.
+	 *
+	 * @param __a A value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static double neg(double __a)
+	{
+		return SoftDouble.neg(MathShelf.rawDoubleToLong(__a));
 	}
 	
 	/**
@@ -156,6 +252,21 @@ public final class SoftDouble
 	}
 	
 	/**
+	 * ORs value, used for constants.
+	 *
+	 * @param __a A value.
+	 * @param __b B value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static double or(double __a, double __b)
+	{
+		return SoftDouble.or(MathShelf.rawDoubleToLong(__a),
+			MathShelf.rawDoubleToLong(__b));
+	}
+	
+	/**
 	 * Remainders a value.
 	 *
 	 * @param __a A value.
@@ -166,8 +277,22 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static double rem(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Remainders a value.
+	 *
+	 * @param __a A value.
+	 * @param __b B value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static double rem(double __a, double __b)
+	{
+		return SoftDouble.rem(MathShelf.rawDoubleToLong(__a),
+			MathShelf.rawDoubleToLong(__b));
 	}
 	
 	/**
@@ -181,8 +306,22 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static double sub(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Subtracts values.
+	 *
+	 * @param __a A value.
+	 * @param __b B value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static double sub(double __a, double __b)
+	{
+		return SoftDouble.sub(MathShelf.rawDoubleToLong(__a),
+			MathShelf.rawDoubleToLong(__b));
 	}
 	
 	/**
@@ -195,8 +334,20 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static float toFloat(long __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Converts to float.
+	 *
+	 * @param __a A value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float toFloat(double __a)
+	{
+		return SoftDouble.toFloat(MathShelf.rawDoubleToLong(__a));
 	}
 	
 	/**
@@ -209,8 +360,20 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static int toInteger(long __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Converts to integer.
+	 *
+	 * @param __a A value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static int toInteger(double __a)
+	{
+		return SoftDouble.toInteger(MathShelf.rawDoubleToLong(__a));
 	}
 	
 	/**
@@ -223,8 +386,20 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static long toLong(long __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Converts to long.
+	 *
+	 * @param __a A value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long toLong(double __a)
+	{
+		return SoftDouble.toLong(MathShelf.rawDoubleToLong(__a));
 	}
 }
 

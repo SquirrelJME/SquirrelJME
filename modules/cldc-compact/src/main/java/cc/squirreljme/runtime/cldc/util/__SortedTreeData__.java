@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -112,10 +112,10 @@ class __SortedTreeData__<K, V>
 	 * @since 2016/09/07
 	 */
 	@Override
-	public V setValue(V __a)
+	public V setValue(V __v)
 	{
 		V rv = this._value;
-		this._value = __a;
+		this._value = __v;
 		return rv;
 	}
 	

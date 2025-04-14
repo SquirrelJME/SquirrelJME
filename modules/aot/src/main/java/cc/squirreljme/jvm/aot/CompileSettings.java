@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -61,8 +61,8 @@ public final class CompileSettings
 					isBootLoader = true;
 					break;
 				
-					// {@squirreljme.error AE06 Unknown compilation setting.
-					// (The argument)}
+					/* {@squirreljme.error AE06 Unknown compilation setting.
+					(The argument)} */
 				default:
 					throw new IllegalArgumentException("AE06 " + arg);
 			}

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ public class VMFullSuite
 		
 		// This depends on everything!
 		this.dependsOn(new VMFullSuiteDepends(this, __classifier),
-			new VMEmulatorDependencies(this,
+			new VMEmulatorDependencies(this.getProject(),
 				__classifier.getTargetClassifier()));
 		
 		// Actual running of everything

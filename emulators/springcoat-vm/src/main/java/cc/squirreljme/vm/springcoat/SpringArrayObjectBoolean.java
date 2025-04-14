@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -82,8 +82,8 @@ public final class SpringArrayObjectBoolean
 			return (C)Integer.valueOf((this._elements[__dx] ? 1 : 0));
 		}
 		
-		// {@squirreljme.error BK02 Out of bounds access to array. (The index;
-		// The length of the array)}
+		/* {@squirreljme.error BK02 Out of bounds access to array. (The index;
+		The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
@@ -111,15 +111,15 @@ public final class SpringArrayObjectBoolean
 			this._elements[__dx] = v;
 		}
 		
-		// {@squirreljme.error BK03 Could not set the index in the boolean
-		// array.}
+		/* {@squirreljme.error BK03 Could not set the index in the boolean
+		array.} */
 		catch (ClassCastException e)
 		{
 			throw new SpringArrayStoreException("BK03", e);
 		}
 		
-		// {@squirreljme.error BK04 Out of bounds access to array. (The index;
-		// The length of the array)}
+		/* {@squirreljme.error BK04 Out of bounds access to array. (The index;
+		The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(

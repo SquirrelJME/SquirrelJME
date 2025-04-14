@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+multi-parameters: format0.mid format1.mid
+result: NoResult
+thrown: NoExceptionThrown
+secondary-started: true
+secondary-end: true
+secondary-stopped: true

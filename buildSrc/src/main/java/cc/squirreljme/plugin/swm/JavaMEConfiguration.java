@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -78,8 +78,8 @@ public final class JavaMEConfiguration
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error DG02 Expected two or three fields for the
-		// configuration. (The input string)}
+		/* {@squirreljme.error DG02 Expected two or three fields for the
+		configuration. (The input string)} */
 		String[] fields = StringUtils.fieldSplit('-', __n);
 		int fn = fields.length;
 		if (fn != 2 && fn != 3)

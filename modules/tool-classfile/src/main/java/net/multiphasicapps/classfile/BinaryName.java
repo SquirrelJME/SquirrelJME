@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @since 2017/09/27
  */
 public final class BinaryName
-	implements Comparable<BinaryName>, Iterable<ClassIdentifier>
+	implements Comparable<BinaryName>, Contexual, Iterable<ClassIdentifier>
 {
 	/** The identifiers in the name. */
 	private final ClassIdentifier[] _identifiers;
@@ -91,8 +91,8 @@ public final class BinaryName
 		if (__ids == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC0h A binary name cannot have zero identifier
-		// fragments.}
+		/* {@squirreljme.error JC0h A binary name cannot have zero identifier
+		fragments.} */
 		if (__ids.length <= 0)
 			throw new IllegalArgumentException("JC0h");
 		

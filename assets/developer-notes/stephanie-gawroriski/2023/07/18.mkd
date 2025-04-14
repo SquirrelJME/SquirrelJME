@@ -1,0 +1,14 @@
+# 2023/07/18
+
+## 09:20
+
+NanoCoat so far has been going very well, which is good so far. When it comes to
+testing it, I am going to have to export a list of all the tests and how they
+are ran so that it can be loaded into CTest and then individual tests can be setup.
+This way, if I wanted to I could just run a single test but also as well if needed
+I can run them all automatically. The sooner I can automate running them all the
+better, then I can go about testing things and otherwise. I think once I get all
+of the tests passing, I will consider NanoCoat done enough to be merged into `trunk`
+accordingly. Then following that would probably be a LCDUI implementation for software
+graphics and more. I think for the temporary screen as seen on RetroArch could
+probably go with some nice trans colors and stars.

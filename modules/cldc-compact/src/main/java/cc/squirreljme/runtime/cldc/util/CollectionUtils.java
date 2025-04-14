@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.List;
 import java.util.RandomAccess;
 
@@ -17,6 +18,7 @@ import java.util.RandomAccess;
  *
  * @since 2021/02/25
  */
+@SquirrelJMEVendorApi
 public final class CollectionUtils
 {
 	/**
@@ -36,6 +38,7 @@ public final class CollectionUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public static List<Integer> asIntegerList(List<Character> __chars)
 		throws NullPointerException
 	{

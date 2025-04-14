@@ -1,7 +1,0 @@
-result: NoResult
-thrown: NoExceptionThrown
-skip-on-timeout: true
-secondary-width: true
-secondary-height: true
-secondary-wdisp: true
-secondary-hdisp: true

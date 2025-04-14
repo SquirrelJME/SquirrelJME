@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -165,6 +165,12 @@ public final class DataSerialization
 					c = ')';
 					break;
 					
+					// Comma
+				case ',':
+					escape = true;
+					c = 'c';
+					break;
+					
 					// Delete
 				case 0x7F:
 					escape = true;
@@ -253,6 +259,10 @@ public final class DataSerialization
 		// No exception was thrown
 		else if (__o instanceof __NoExceptionThrown__)
 			return "NoExceptionThrown";
+		
+		// Drop value
+		else if (__o instanceof __Drop__)
+			return "Drop";
 		
 		// Boolean values
 		else if (__o instanceof Boolean)

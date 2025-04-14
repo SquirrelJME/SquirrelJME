@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -83,8 +83,8 @@ public final class SpringArrayObjectShort
 			return (C)Integer.valueOf(this._elements[__dx]);
 		}
 		
-		// {@squirreljme.error BK0q Out of bounds access to array. (The index;
-		// The length of the array)}
+		/* {@squirreljme.error BK0q Out of bounds access to array. (The index;
+		The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
@@ -106,15 +106,15 @@ public final class SpringArrayObjectShort
 			this._elements[__dx] = ((Integer)__v).shortValue();
 		}
 		
-		// {@squirreljme.error BK0r Could not set the index in the short
-		// array.}
+		/* {@squirreljme.error BK0r Could not set the index in the short
+		array.} */
 		catch (ClassCastException e)
 		{
 			throw new SpringArrayStoreException("BK0r", e);
 		}
 		
-		// {@squirreljme.error BK0s Out of bounds access to array. (The index;
-		// The length of the array)}
+		/* {@squirreljme.error BK0s Out of bounds access to array. (The index;
+		The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(

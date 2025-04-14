@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+secondary-y00: string[8]:fg,fg,bg,bg,bg,bg,bg,bg
+secondary-y01: string[8]:fg,fg,fg,bg,bg,bg,bg,bg
+secondary-y02: string[8]:bg,fg,fg,fg,bg,bg,bg,bg
+secondary-y03: string[8]:bg,bg,bg,bg,bg,fg,fg,fg
+secondary-y04: string[8]:bg,bg,bg,bg,bg,bg,fg,fg
+secondary-y05: string[8]:bg,#88,#88,#88,bg,bg,bg,bg

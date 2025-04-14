@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -98,13 +98,13 @@ public final class ProfiledFrame
 	public final void enteredFrame(long __ns)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AH01 Cannot enter frame which is in the
-		// entered state.}
+		/* {@squirreljme.error AH01 Cannot enter frame which is in the
+		entered state.} */
 		long cs = this._currentstart;
 		if (cs != Long.MIN_VALUE)
 			throw new IllegalStateException("AH01");
 			
-		// {@squirreljme.error AH02 Cannot enter frame that is in an invoke.}
+		/* {@squirreljme.error AH02 Cannot enter frame that is in an invoke.} */
 		if (this._currentsubstart != Long.MIN_VALUE)
 			throw new IllegalStateException("AH02");
 		
@@ -130,13 +130,13 @@ public final class ProfiledFrame
 	public final long[] exitedFrame(long __ns)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AH03 Cannot exit frame which is in the
-		// exited state.}
+		/* {@squirreljme.error AH03 Cannot exit frame which is in the
+		exited state.} */
 		long cs = this._currentstart;
 		if (cs == Long.MIN_VALUE)
 			throw new IllegalStateException("AH03");
 		
-		// {@squirreljme.error AH04 Cannot exit frame that is in an invoke.}
+		/* {@squirreljme.error AH04 Cannot exit frame that is in an invoke.} */
 		if (this._currentsubstart != Long.MIN_VALUE)
 			throw new IllegalStateException("AH04");
 		
@@ -191,7 +191,7 @@ public final class ProfiledFrame
 	public final long invokeEnd(long __ns)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AH05 Frame is not in an invoke.}
+		/* {@squirreljme.error AH05 Frame is not in an invoke.} */
 		long css = this._currentsubstart;
 		if (css == Long.MIN_VALUE)
 			throw new IllegalStateException("AH05");
@@ -215,7 +215,7 @@ public final class ProfiledFrame
 	public final void invokeStart(long __ns)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AH06 Frame is already invoking another frame.}
+		/* {@squirreljme.error AH06 Frame is already invoking another frame.} */
 		long css = this._currentsubstart;
 		if (css != Long.MIN_VALUE)
 			throw new IllegalStateException("AH06");

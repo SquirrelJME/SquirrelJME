@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm.mle.constants;
+
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This class contains all of the packages which are protected and are not
@@ -15,6 +17,7 @@ package cc.squirreljme.jvm.mle.constants;
  *
  * @since 2020/06/21
  */
+@SquirrelJMEVendorApi
 public final class ProtectedPackages
 {
 	/**
@@ -38,13 +41,14 @@ public final class ProtectedPackages
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/21
 	 */
+	@SquirrelJMEVendorApi
 	public static boolean isProtectedPackage(String __name)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ37 Package contains a period. (The name)}
+		/* {@squirreljme.error ZZ37 Package contains a period. (The name)} */
 		if (__name.indexOf('.') >= 0)
 			throw new IllegalArgumentException("ZZ37 " + __name);
 		

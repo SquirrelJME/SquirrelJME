@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -17,7 +17,8 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation is used to specify that the given method is serialized and
- * will never be called in parallel ever by the LCDUI display driver.
+ * will never be called in parallel ever by the LCDUI display driver, it does
+ * not have any effect on the method and is just a documentation indicator.
  *
  * @since 2017/08/19
  */

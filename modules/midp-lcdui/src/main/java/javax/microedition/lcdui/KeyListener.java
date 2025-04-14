@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import org.jetbrains.annotations.Async;
 
 /**
  * This is the key listener interface which is used for a slightly more
@@ -64,6 +65,7 @@ public interface KeyListener
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	void keyPressed(int __kc, int __km);
 	
 	/**
@@ -75,6 +77,7 @@ public interface KeyListener
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	void keyReleased(int __kc, int __km);
 	
 	/**
@@ -86,6 +89,7 @@ public interface KeyListener
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	void keyRepeated(int __kc, int __km);
 }
 

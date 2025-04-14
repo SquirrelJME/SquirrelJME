@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.midlet;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.midlet.MIDlet;
 
@@ -20,6 +21,7 @@ import javax.microedition.midlet.MIDlet;
  * @see ApplicationInterface
  * @since 2021/11/30
  */
+@SquirrelJMEVendorApi
 public final class ApplicationHandler
 {
 	/** Undefined application name. */
@@ -30,7 +32,12 @@ public final class ApplicationHandler
 	private static volatile ApplicationInterface<?> _CURRENT_INTERFACE;
 	
 	/** The current application instance. */
+	@SquirrelJMEVendorApi
 	private static volatile Object _CURRENT_INSTANCE;
+	
+	/** The current idle task. */
+	@SquirrelJMEVendorApi
+	private static volatile Runnable _idleTask;
 	
 	/** The current vendor. */
 	private static String _CURRENT_VENDOR;
@@ -38,9 +45,13 @@ public final class ApplicationHandler
 	/** The current name. */
 	private static String _CURRENT_NAME;
 	
-	/** One second in milliseconds. */
+	/** The time to wait after termination. */
 	private static final int _TERM_WAIT_TIME =
 		30_000;
+	
+	/** The time to wait between idle ticks. */
+	private static final int _IDLE_TICK =
+		16;
 	
 	/** Maximum settle time after starting. */
 	private static final long _SETTLE_NS =
@@ -52,6 +63,7 @@ public final class ApplicationHandler
 	 * @return The current application interface.
 	 * @since 2022/02/14
 	 */
+	@SquirrelJMEVendorApi
 	public static ApplicationInterface<?> currentInterface()
 	{
 		return ApplicationHandler._CURRENT_INTERFACE;
@@ -63,6 +75,7 @@ public final class ApplicationHandler
 	 * @return The current application instance.
 	 * @since 2022/02/14
 	 */
+	@SquirrelJMEVendorApi
 	public static Object currentInstance()
 	{
 		return ApplicationHandler._CURRENT_INSTANCE;
@@ -74,6 +87,7 @@ public final class ApplicationHandler
 	 * @return The current name.
 	 * @since 2019/04/14
 	 */
+	@SquirrelJMEVendorApi
 	public static String currentName()
 	{
 		String rv;
@@ -113,6 +127,7 @@ public final class ApplicationHandler
 	 * @return The current vendor.
 	 * @since 2019/04/14
 	 */
+	@SquirrelJMEVendorApi
 	public static String currentVendor()
 	{
 		String rv;
@@ -155,6 +170,7 @@ public final class ApplicationHandler
 	 * @throws Throwable On any exception.
 	 * @since 2021/11/30
 	 */
+	@SquirrelJMEVendorApi
 	public static <T> void main(ApplicationInterface<T> __ai)
 		throws NullPointerException, Throwable
 	{
@@ -190,19 +206,11 @@ public final class ApplicationHandler
 			{
 				throwable = cause;
 				
-				// Show a noisy banner to make this visible
-				System.err.println("****************************************");
-				System.err.println("APPLICATION THREW EXCEPTION:");
-				
-				// Make sure the output is printed
-				throwable.printStackTrace(System.err);
-				
-				// End of banner
-				System.err.println("****************************************");
+				// Show trace
+				ApplicationHandler.__emit(throwable);
 			}
 			
-			// After termination of the MIDlet wait for threads to settle
-			// before checking them
+			// Give the application time to settle after starting
 			long lastTime;
 			while ((lastTime = System.nanoTime()) < settledNs)
 				try
@@ -212,6 +220,16 @@ public final class ApplicationHandler
 				catch (Throwable ignored)
 				{
 				}
+				
+			// Debug
+			Debugging.debugNote("Application settled.");
+			
+			// Grab idle task
+			Runnable idleTask;
+			synchronized (ApplicationHandler.class)
+			{
+				idleTask = ApplicationHandler._idleTask;
+			}
 			
 			// Although we did start the application, the startApp only
 			// ever does initialization and sets some events and otherwise...
@@ -220,6 +238,20 @@ public final class ApplicationHandler
 			// a daemon graphics thread which we want to count as well.
 			for (int currentCount = -1;;)
 			{
+				// Run idle task
+				if (idleTask != null)
+					try
+					{
+						idleTask.run();
+					}
+					catch (Throwable cause)
+					{
+						throwable = cause;
+						
+						// Show trace
+						ApplicationHandler.__emit(cause);
+					}
+				
 				// Get the current thread count with daemon threads
 				currentCount = ThreadShelf.aliveThreadCount(
 					false, true);
@@ -236,7 +268,11 @@ public final class ApplicationHandler
 				
 				// Wait for there to be an update to the thread state before
 				// checking again
-				ThreadShelf.waitForUpdate(ApplicationHandler._TERM_WAIT_TIME);
+				if (idleTask != null)
+					ThreadShelf.waitForUpdate(ApplicationHandler._IDLE_TICK);
+				else
+					ThreadShelf.waitForUpdate(
+						ApplicationHandler._TERM_WAIT_TIME);
 			}
 			
 			// If an exception was thrown then fail here
@@ -253,6 +289,26 @@ public final class ApplicationHandler
 	}
 	
 	/**
+	 * Sets the idle task to run in the termination wait loop.
+	 *
+	 * @param __run The task to run while waiting.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/12/22
+	 */
+	@SquirrelJMEVendorApi
+	public static void setIdleTask(Runnable __run)
+		throws NullPointerException
+	{
+		if (__run == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (ApplicationHandler.class)
+		{
+			ApplicationHandler._idleTask = __run;
+		}
+	}
+	
+	/**
 	 * Forces the set of the suite name and vendor.
 	 * 
 	 * @param __name The name to set.
@@ -260,6 +316,7 @@ public final class ApplicationHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/02
 	 */
+	@SquirrelJMEVendorApi
 	public static void setNameAndVendor(String __name, String __vend)
 		throws NullPointerException
 	{
@@ -271,5 +328,24 @@ public final class ApplicationHandler
 			ApplicationHandler._CURRENT_NAME = __name;
 			ApplicationHandler._CURRENT_VENDOR = __vend;
 		}
+	}
+	
+	/**
+	 * Emits throwable message.
+	 *
+	 * @param __throwable The throwable to emit a message for.
+	 * @since 2024/12/22
+	 */
+	private static void __emit(Throwable __throwable)
+	{
+		// Show a noisy banner to make this visible
+		Debugging.debugNote("****************************************");
+		Debugging.debugNote("APPLICATION THREW EXCEPTION:");
+		
+		// Make sure the output is printed
+		__throwable.printStackTrace(System.err);
+		
+		// End of banner
+		Debugging.debugNote("****************************************");
 	}
 }

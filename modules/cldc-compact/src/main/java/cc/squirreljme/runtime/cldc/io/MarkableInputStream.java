@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -120,7 +120,7 @@ public class MarkableInputStream
 		if (this._isClosed)
 			return;
 		
-		// {@squirreljme.error ZZ4h Zero or negative read limit for mark.}
+		/* {@squirreljme.error ZZ4h Zero or negative read limit for mark.} */
 		if (__readLimit <= 0)
 			throw new IllegalArgumentException("ZZ4h");
 			
@@ -224,7 +224,7 @@ public class MarkableInputStream
 		if (this._isClosed)
 			throw new IOException("CLOS");
 		
-		// {@squirreljme.error ZZ4g No mark was previously set.}
+		/* {@squirreljme.error ZZ4g No mark was previously set.} */
 		if (this._readLimit < 0)
 			throw new IOException("ZZ4g");
 		

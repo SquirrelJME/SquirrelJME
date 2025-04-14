@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -269,6 +269,9 @@ public enum MLERuntime
 				case VMDescriptionType.VM_EMAIL:
 					return "xer@multiphasicapps.net";
 					
+				case VMDescriptionType.VM_INFO:
+					return "non-native pure interpreter";
+					
 				case VMDescriptionType.VM_NAME:
 					return __thread.machine.tasks.vmName();
 				
@@ -280,6 +283,9 @@ public enum MLERuntime
 					
 				case VMDescriptionType.VM_VENDOR:
 					return "Stephanie Gawroriski";
+					
+				case VMDescriptionType.PATH_SEPARATOR:
+					return System.getProperty("file.separator");
 			}
 			
 			return null;

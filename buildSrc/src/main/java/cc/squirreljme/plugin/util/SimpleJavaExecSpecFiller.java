@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -22,8 +22,9 @@ import java.util.Map;
 import org.gradle.internal.os.OperatingSystem;
 
 /**
- * This is a simple Java execution specification filler which provides the
- * minimal functionality.
+ * This is a simple Java execution specification filler which does not
+ * have any of the Gradle extras and is used commonly
+ * with {@link ProcessBuilder} to launch Java directly.
  *
  * @since 2020/12/26
  */
@@ -73,7 +74,7 @@ public class SimpleJavaExecSpecFiller
 		List<String> result = new ArrayList<>();
 		
 		// Find the Java executable
-		result.add(SimpleJavaExecSpecFiller.__findJavaExe().toString());
+		result.add(SimpleJavaExecSpecFiller.findJavaExe().toString());
 		
 		// Define the classpath
 		StringBuilder classPath = new StringBuilder();
@@ -167,7 +168,7 @@ public class SimpleJavaExecSpecFiller
 	 * @return The Java executable.
 	 * @since 2020/12/27
 	 */
-	private static Path __findJavaExe()
+	public static Path findJavaExe()
 	{
 		String javaHomeRaw = System.getProperty("java.home");
 		Path javaHome = (javaHomeRaw != null ? Paths.get(javaHomeRaw) : null);
@@ -187,6 +188,6 @@ public class SimpleJavaExecSpecFiller
 			return binPath;
 		
 		// Fallback to the system Java, assuming it exists
-		return Paths.get("java");
+		return javaExeName;
 	}
 }

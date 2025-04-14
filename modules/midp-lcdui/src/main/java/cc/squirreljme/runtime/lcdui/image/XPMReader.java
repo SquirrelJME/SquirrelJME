@@ -3,18 +3,18 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
-import javax.microedition.lcdui.Image;
 
 /**
  * This class is able to read XPM images.
@@ -29,36 +29,43 @@ import javax.microedition.lcdui.Image;
  * @since 2016/05/08
  */
 public class XPMReader
+	implements ImageReader
 {
 	/** Source stream. */
 	protected final InputStream in;
+	
+	/** The factory used to create images. */
+	private final NativeImageLoadCallback loader;
 	
 	/**
 	 * Initializes the XPM image reader.
 	 *
 	 * @param __is The input stream.
+	 * @param __loader The callback used to create images.
 	 * @since 2016/05/08
 	 */
-	public XPMReader(InputStream __is)
+	public XPMReader(InputStream __is, NativeImageLoadCallback __loader)
 		throws NullPointerException
 	{
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
 		this.in = __is;
+		this.loader = __loader;
 	}
 	
 	/**
 	 * Reads the XPM image data from the specified input stream.
 	 *
-	 * @return The read image data.
 	 * @throws IOException If the XPM is not valid.
 	 * @since 2017/02/10
 	 */
-	public Image parse()
+	@Override
+	public void parse()
 		throws IOException
 	{
 		InputStream in = this.in;
+		NativeImageLoadCallback loader = this.loader;
 		
 		// Create character stripper
 		__CharStripper__ cs = new __CharStripper__(new InputStreamReader(in,
@@ -81,15 +88,24 @@ public class XPMReader
 		boolean alpha = this.__readColorTable(
 			cs, codes, palette, numcolors, pxchars);
 		
+		// Set the palette
+		boolean wantIndex = loader.setPalette(palette, 0, numcolors,
+			alpha, -1);
+		
 		// Target array
 		int area = width * height;
 		int[] data = new int[area];
 		
+		// Initialize
+		loader.initialize(width, height, false, false);
+		
 		// Read pixels
-		this.__readPixels(cs, width, height, data, pxchars, codes, palette);
+		this.__readPixels(cs, width, height, data, pxchars, codes, palette,
+			wantIndex);
 		
 		// Create image
-		return Image.createRGBImage(data, width, height, alpha);
+		loader.addImage(data, 0, data.length,
+			0, alpha);
 	}
 	
 	/**
@@ -386,11 +402,14 @@ public class XPMReader
 	 * @param __pxchars The characters per pixel.
 	 * @param __codes The character codes.
 	 * @param __palette The color palette.
+	 * @param __wantIndex Do we want indexed colors and not the actual RGB
+	 * color?
 	 * @throws IOException On read errors.
 	 * @since 2016/05/22
 	 */
 	private void __readPixels(Reader __cs, int __width, int __height,
-		int[] __data, int __pxchars, int[] __codes, int[] __palette)
+		int[] __data, int __pxchars, int[] __codes, int[] __palette,
+		boolean __wantIndex)
 		throws IOException
 	{
 		// Read the XPM image data for each rows
@@ -424,10 +443,14 @@ __outer:
 						code |= c << 16;
 				}
 				
+				// Direct index
+				if (__wantIndex)
+					__data[z++] = code;
+				
 				// Used this color just before? In solidly linear areas, this
 				// reduces the need for constant binary searches and increases
 				// the parsing speed slightly.
-				if (code == lastcode)
+				else if (code == lastcode)
 					__data[z++] = lastpall;
 				
 				// Find the code used

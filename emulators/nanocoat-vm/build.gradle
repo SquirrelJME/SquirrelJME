@@ -1,0 +1,91 @@
+import cc.squirreljme.plugin.general.cmake.CMakeBuildTask
+
+import java.nio.file.Files
+
+plugins
+{
+	id "java-library"
+}
+
+description = "This is able to use the NanoCoat shared library to run the " +
+	"code within the emulator."
+
+dependencies
+{
+	api project(":emulators:emulator-base")
+	
+	api project(":modules:cldc-compact")
+	api project(":modules:common-vm")
+	api project(":modules:meep-swm")
+	api project(":modules:tool-classfile")
+	api project(":modules:debug-jdwp")
+	api project(":modules:debug-jdwp-vm-host")
+	api project(":tools:squirreljme-debugger")
+}
+
+Provider<CMakeBuildTask> libNativeNanoCoat = tasks.register(
+	"libNativeNanoCoat",
+	CMakeBuildTask.class,
+	gradle.rootProject.projectDir.toPath().resolve("nanocoat"),
+	System.mapLibraryName("emulator-nanocoat"),
+	["libEmulator"])
+
+libNativeNanoCoat.configure { taskIsh ->
+	// Get source root for extra dependency checking
+	java.nio.file.Path cmakeRoot = taskIsh.cmakeSource
+	
+	// Where is the CMake root? It depends on it
+	taskIsh.inputs.files(
+		cmakeRoot.resolve("CMakeLists.txt"),
+		cmakeRoot.resolve("squirreljme-version"),
+		cmakeRoot.resolve("frontend").resolve("CMakeLists.txt"))
+	taskIsh.inputs.dir(cmakeRoot.resolve("cmake"))
+	taskIsh.inputs.dir(cmakeRoot.resolve("include"))
+	taskIsh.inputs.dir(cmakeRoot.resolve("src"))
+	taskIsh.inputs.dir(cmakeRoot.resolve("frontend").resolve("emulator"))
+}
+
+// We need to include the native library here so NanoCoat actually works
+jar {
+	// Requires the NanoCoat library
+	dependsOn libNativeNanoCoat
+	
+	// Include library into the root
+	from libNativeNanoCoat.get().cmakeOutFile.toFile()
+	into "/"
+}
+
+// JAR resources
+processResources {
+	// We need to embed the shared library here
+	dependsOn libNativeNanoCoat
+}
+
+java {
+	// Use a fixed version of the JVM
+	compileJava
+	{
+		sourceCompatibility = JavaVersion.VERSION_1_8
+		targetCompatibility = JavaVersion.VERSION_1_8
+		
+		// Use the default bootstrap classpath
+		options.bootstrapClasspath = null
+	}
+
+	// Maximize debugging
+	compileJava.options.debug = true
+	compileJava.options.debugOptions.setDebugLevel("source,lines,vars")
+
+	// Copy settings
+	compileTestJava.options.debug = compileJava.options.debug
+	compileTestJava.options.debugOptions = compileJava.options.debugOptions
+	
+	javadoc.options.tags = [ "squirreljme.property",
+		"squirreljme.env",
+		"squirreljme.error",
+		"squirreljme.syscallparam",
+		"squirreljme.syscallreturn",
+		"squirreljme.tsiparam",
+		"squirreljme.configtype",
+		"squirreljme.uiwidgetparam" ]
+}

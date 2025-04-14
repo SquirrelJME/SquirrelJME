@@ -27,6 +27,8 @@ squirreljme
 	tags += "nttdocomo"
 	tags += "imode"
 	tags += "doja"
+	
+	
 }
 
 dependencies
@@ -35,4 +37,6 @@ dependencies
 	api project(":modules:meep-midlet")
 	api project(":modules:meep-rms")
 	api project(":modules:midp-lcdui")
+	api project(":modules:vendor-api-squirreljme-zip")
+	api project(":modules:vendor-api-jblend")
 }

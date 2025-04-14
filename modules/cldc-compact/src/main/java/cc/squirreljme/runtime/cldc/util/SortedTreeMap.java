@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractMap;
@@ -26,6 +27,7 @@ import java.util.Set;
  * @param <V> The type of value to store.
  * @since 2016/09/06
  */
+@SquirrelJMEVendorApi
 public class SortedTreeMap<K, V>
 	extends AbstractMap<K, V>
 {
@@ -57,6 +59,7 @@ public class SortedTreeMap<K, V>
 	 *
 	 * @since 2016/09/06
 	 */
+	@SquirrelJMEVendorApi
 	public SortedTreeMap()
 	{
 		this(NaturalComparator.<K>instance());
@@ -71,10 +74,12 @@ public class SortedTreeMap<K, V>
 	 * @since 2016/09/06
 	 */
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	public SortedTreeMap(Map<? extends Comparable<K>, ? extends V> __m)
 		throws NullPointerException
 	{
-		this(NaturalComparator.<K>instance(), (Map<? extends K, ? extends V>)__m);
+		this(NaturalComparator.<K>instance(),
+			(Map<? extends K, ? extends V>)__m);
 	}
 	
 	/**
@@ -85,6 +90,7 @@ public class SortedTreeMap<K, V>
 	 * @since 2016/09/06
 	 */
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	public SortedTreeMap(Comparator<? extends K> __comp)
 		throws NullPointerException
 	{
@@ -106,6 +112,7 @@ public class SortedTreeMap<K, V>
 	 * @since 2016/09/06
 	 */
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	public SortedTreeMap(Comparator<? extends K> __comp,
 		Map<? extends K, ? extends V> __m)
 		throws NullPointerException
@@ -186,7 +193,8 @@ public class SortedTreeMap<K, V>
 	{
 		// Insert node
 		__Found__ found = new __Found__();
-		__SortedTreeNode__<K, V> now = this.__insert(null, this._root, found, __k, __v);
+		__SortedTreeNode__<K, V> now = this.__insert(
+			null, this._root, found, __k, __v);
 		
 		// The root of the tree always becomes black
 		now.__makeBlack();
@@ -206,7 +214,8 @@ public class SortedTreeMap<K, V>
 	{
 		// Delete node
 		__Found__ found = new __Found__();
-		__SortedTreeNode__<K, V> newroot = this.__remove(this._root, found, (K)__k);
+		__SortedTreeNode__<K, V> newroot = this.__remove(
+			this._root, found, (K)__k);
 		
 		// The root of the tree is always black
 		this._root = newroot;

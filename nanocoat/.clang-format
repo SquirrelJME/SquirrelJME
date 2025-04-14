@@ -1,0 +1,162 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+AccessModifierOffset: -4
+AlignAfterOpenBracket: DontAlign
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignEscapedNewlines: DontAlign
+AlignOperands: false
+AlignTrailingComments: false
+AllowAllConstructorInitializersOnNextLine: false
+AllowShortBlocksOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLambdasOnASingleLine: None
+AlwaysBreakAfterDefinitionReturnType: false
+AlwaysBreakTemplateDeclarations: No
+AttributeMacros:
+  - sjme_align
+  - sjme_align32
+  - sjme_align64
+  - sjme_alignPointer
+  - sjme_packed
+  - sjme_inline
+  - sjme_noOptimize
+  - sjme_attrArtificial
+  - sjme_attrCallback
+  - sjme_attrCheckReturn
+  - sjme_attrDeprecated
+  - sjme_attrFormatArg
+  - sjme_attrFormatOuter
+  - sjme_attrInNegativeOnePositive
+  - sjme_attrInNotNull
+  - sjme_attrInNullable
+  - sjme_attrInOutNotNull
+  - sjme_attrInPositive
+  - sjme_attrInPositiveNonZero
+  - sjme_attrInRange
+  - sjme_attrInValue
+  - sjme_attrOutNegativeOnePositive
+  - sjme_attrOutNotNull
+  - sjme_attrOutNotNullBuf
+  - sjme_attrOutNullable
+  - sjme_attrOutPositive
+  - sjme_attrOutPositiveNonZero
+  - sjme_attrOutRange
+  - sjme_attrReturnNullable
+  - sjme_attrUnused
+  - sjme_attrUnusedEnum
+  - sjme_attrExport
+  - SJME_DYLIB_IMPORT
+  - sjme_attrThreadCall
+  - sjme_attrExportCall
+  - JNIEXPORT
+  - JNIIMPORT
+  - JNICALL
+BinPackParameters: false
+BraceWrapping:
+  AfterCaseLabel: true
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeLambdaBody: true
+  BeforeWhile: false
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+BreakAfterAttributes: Leave
+BreakBeforeBraces: Custom
+BreakBeforeTernaryOperators: false
+BreakConstructorInitializers: AfterColon
+BreakConstructorInitializersBeforeComma: false
+BreakInheritanceList: AfterComma
+ColumnLimit: 79
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+FixNamespaceComments: false
+ForEachMacros:
+  - SJME_FOREACH_TODO
+IfMacros:
+  - SJME_IF_TODO
+IncludeCategories:
+  - Regex: '^<.*'
+    Priority: 1
+  - Regex: '^".*'
+    Priority: 2
+  - Regex: '.*'
+    Priority: 3
+IncludeIsMainRegex: '([-_](test|unittest))?$'
+IndentCaseBlocks: true
+IndentCaseLabels: true
+IndentGotoLabels: false
+IndentWidth: 4
+InsertNewlineAtEOF: true
+LineEnding: LF
+MacroBlockBegin: ''
+MacroBlockEnd: ''
+PenaltyBreakComment: 1000000
+PenaltyReturnTypeOnItsOwnLine: 10
+PointerAlignment: Left
+ReferenceAlignment: Left
+ReflowComments: false
+SortIncludes: Never
+SpaceBeforeParensOptions:
+  AfterControlStatements: true
+  AfterForeachMacros: true
+  AfterFunctionDeclarationName: false
+  AfterFunctionDefinitionName: false
+  AfterIfMacros: true
+  AfterOverloadedOperator: false
+  AfterRequiresInClause: false
+  AfterRequiresInExpression: false
+  BeforeNonEmptyParentheses: false
+SpaceInEmptyParentheses: false
+SpacesInAngles: false
+SpacesInConditionalStatement: false
+SpacesInContainerLiterals: false
+SpacesInCStyleCastParentheses: false
+SpacesInParensOptions:
+  InConditionalStatements: false
+  InCStyleCasts: false
+  InEmptyParentheses: false
+  Other: false
+SpacesInParentheses: false
+Standard: c++11
+StatementAttributeLikeMacros:
+  - SJME_DEPRECATED
+StatementMacros:
+  - SJME_REFPTR_CODE_BEGIN
+  - SJME_REFPTR_CODE_END
+  - SJME_REFPTR_VAR
+  - SJME_SCRITCHUI_DISPATCH_DECL
+  - SJME_SCRITCHUI_DISPATCH_CASE
+  - SJME_SCRITCHUI_DISPATCH_SWITCH_BEGIN
+  - SJME_SCRITCHUI_DISPATCH_SWITCH_END
+  - SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER
+  - SJME_SCRITCHUI_SERIAL_CHUNK
+  - SJME_SCRITCHUI_SERIAL_PASS
+  - SJME_SCRITCHUI_INVOKE_WAIT
+  - RECOVER_FONT
+  - SJME_ATOMIC_FUNCTION
+TabWidth: 4
+TypenameMacros:
+  - SJME_LIST_NAME
+UseTab: Always
+WhitespaceSensitiveMacros:
+  - SJME_TOKEN_STRING
+  - SJME_TOKEN_STRING_PP
+  - SUD_STRUCT_DEF
+  - SDU_VAR
+  - SDU_VARP
+  - SJME_SCRITCHUI_SERIAL_CHUNK
+  - sjme_error_is
+  - CHECK_AND_FORWARD
+...

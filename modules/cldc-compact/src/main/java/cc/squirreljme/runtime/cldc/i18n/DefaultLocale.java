@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.cldc.i18n;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
+import java.util.NoSuchElementException;
 
 /**
  * This class provides access to the default locale.
@@ -54,7 +55,7 @@ public final class DefaultLocale
 			case BuiltInLocaleType.ENGLISH_US:
 				return new LocaleEnUs();
 			
-				// {@squirreljme.error ZZ3v Unknown built-in locale ID. (ID)}
+				/* {@squirreljme.error ZZ3v Unknown built-in locale ID. (ID)} */
 			default:
 				throw new IllegalArgumentException("ZZ3v " + __id);
 		}
@@ -91,6 +92,35 @@ public final class DefaultLocale
 	}
 	
 	/**
+	 * Returns the built-in locale from the given string.
+	 *
+	 * @param __locale The locale to get.
+	 * @return The built-in locale ID.
+	 * @throws NullPointerException On null arguments.
+	 * @throws NoSuchElementException If the locale is unsupported.
+	 * @since 2024/07/24
+	 */
+	public static int toBuiltIn(String __locale)
+		throws NullPointerException, NoSuchElementException
+	{
+		if (__locale == null)
+			throw new NullPointerException("NARG");
+		
+		// Normalization makes it easier to match
+		switch ((__locale = __locale.toLowerCase()))
+		{
+			case "en_us":
+			case "en-us":		return BuiltInLocaleType.ENGLISH_US;
+			
+				/* {@squirreljme.error ZZ01 Unknown locale. (The input
+				locale)} */
+			default:
+				throw new NoSuchElementException(
+					String.format("ZZ01 %s", __locale));
+		}
+	}
+	
+	/**
 	 * Returns the string representation of the given locale.
 	 *
 	 * @param __builtIn The {@link BuiltInLocaleType}.
@@ -106,8 +136,8 @@ public final class DefaultLocale
 		{
 			case BuiltInLocaleType.ENGLISH_US:	return "en-US";
 			
-				// {@squirreljme.error ZZ4a Unknown built-in encoding.
-				// (The built-in encoding ID)}.
+				/* {@squirreljme.error ZZ4a Unknown built-in encoding.
+				(The built-in encoding ID)} */
 			default:
 				throw new IllegalArgumentException("ZZ4a " + __builtIn);
 		}

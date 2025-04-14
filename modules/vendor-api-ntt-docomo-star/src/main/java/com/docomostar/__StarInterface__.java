@@ -3,14 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.docomostar;
 
-import cc.squirreljme.jvm.launch.IModeApplication;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jvm.launch.IModeProperty;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import cc.squirreljme.runtime.midlet.ApplicationType;
@@ -21,6 +21,7 @@ import java.util.Objects;
  *
  * @since 2022/02/28
  */
+@SquirrelJMEVendorApi
 final class __StarInterface__
 	implements ApplicationInterface<StarApplication>
 {
@@ -38,7 +39,8 @@ final class __StarInterface__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/28
 	 */
-	public __StarInterface__(String __mainClass, String... __args)
+	@SquirrelJMEVendorApi
+	__StarInterface__(String __mainClass, String... __args)
 		throws NullPointerException
 	{
 		if (__mainClass == null)
@@ -53,6 +55,7 @@ final class __StarInterface__
 	 * @since 2022/02/28
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void destroy(StarApplication __instance, Throwable __thrown)
 		throws NullPointerException, Throwable
 	{
@@ -70,6 +73,7 @@ final class __StarInterface__
 	 * @since 2022/02/28
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public StarApplication newInstance()
 		throws Throwable
 	{
@@ -84,8 +88,8 @@ final class __StarInterface__
 		
 		// Load the suite and vendor which is needed for RMS to properly
 		// identify our own records
-		String appName = System.getProperty(IModeApplication.NAME_PROPERTY);
-		String appVend = System.getProperty(IModeApplication.VENDOR_PROPERTY);
+		String appName = System.getProperty(IModeProperty.NAME_PROPERTY);
+		String appVend = System.getProperty(IModeProperty.VENDOR_PROPERTY);
 		ApplicationHandler.setNameAndVendor(
 			Objects.toString(appName, mainClass),
 			Objects.toString(appVend, "SquirrelJME-Star"));
@@ -98,8 +102,8 @@ final class __StarInterface__
 		}
 		catch (ClassNotFoundException e)
 		{
-			// {@squirreljme.error AN02 Could not find main Star class.
-			// (Class)}
+			/* {@squirreljme.error AN02 Could not find main Star class.
+			(Class)} */
 			throw new RuntimeException(String.format(
 				"AN02 %s", mainClass), e);
 		}
@@ -118,13 +122,13 @@ final class __StarInterface__
 			}
 			catch (ClassCastException e)
 			{
-				// {@squirreljme.error AN04 Class not a StarApplication.}
+				/* {@squirreljme.error AN04 Class not a StarApplication.} */
 				throw new RuntimeException("AN04", e);
 			}
 		}
 		catch (IllegalAccessException|InstantiationException e)
 		{
-			// {@squirreljme.error AN03 Could not instantiate class.}
+			/* {@squirreljme.error AN03 Could not instantiate class.} */
 			throw new RuntimeException("AN03", e);
 		}
 	}
@@ -134,6 +138,7 @@ final class __StarInterface__
 	 * @since 2022/02/28
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void startApp(StarApplication __instance)
 		throws NullPointerException, Throwable
 	{
@@ -149,6 +154,7 @@ final class __StarInterface__
 	 * @since 2022/07/21
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ApplicationType type()
 	{
 		return ApplicationType.NTT_DOCOMO_STAR;

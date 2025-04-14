@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.emulator.vm;
 
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.vm.InMemoryClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
@@ -78,10 +79,7 @@ public final class PathSuiteManager
 						continue;
 					
 					String fn = p.getFileName().toString();
-					if (fn.endsWith(".jar") || fn.endsWith(".JAR") ||
-						fn.endsWith(".jad") || fn.endsWith(".JAD") ||
-						fn.endsWith(".jam") || fn.endsWith(".JAM") ||
-						fn.endsWith(".kjx") || fn.endsWith(".KJX"))
+					if (SuiteUtils.isAny(fn))
 						rv.add(fn);
 				}
 			}
@@ -101,6 +99,30 @@ public final class PathSuiteManager
 			e.printStackTrace();
 			
 			return new String[0];
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/12/18
+	 */
+	@Override
+	public int libraryId(VMClassLibrary __lib)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__lib == null)
+			throw new NullPointerException("NARG");
+		
+		Map<String, VMClassLibrary> cache = this._cache;
+		synchronized (cache)
+		{
+			// The library must have been previously loaded first
+			if (!cache.values().contains(__lib))
+				throw new IllegalArgumentException(
+					"Unknown library: " + __lib);
+			
+			Path path = __lib.path();
+			return (path != null ? path.hashCode() : __lib.name().hashCode());
 		}
 	}
 	

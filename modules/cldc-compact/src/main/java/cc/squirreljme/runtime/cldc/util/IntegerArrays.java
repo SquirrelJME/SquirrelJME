@@ -3,20 +3,25 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.RandomAccess;
 
 /**
  * This class contains utilities used for {@link IntegerArray}.
  *
  * @since 2018/10/28
  */
+@SquirrelJMEVendorApi
 public final class IntegerArrays
 {
 	/**
@@ -44,6 +49,7 @@ public final class IntegerArrays
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/28
 	 */
+	@SquirrelJMEVendorApi
 	public static int binarySearch(IntegerArray __a, int __from, int __to,
 		int __key)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
@@ -120,6 +126,7 @@ public final class IntegerArrays
 	 * @see ShellSort#sort(List, int, int, Comparator) 
 	 * @since 2018/10/28
 	 */
+	@SquirrelJMEVendorApi
 	public static void sort(IntegerArray __a, int __from, int __to)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
@@ -164,6 +171,64 @@ public final class IntegerArrays
 				__a.set(__from + j, temp);
 			}
 		}
+	}
+	
+	/**
+	 * Maps an integer list to a primitive array.
+	 *
+	 * @param __list The input collection.
+	 * @return The primitive array of the given list.
+	 * @throws NullPointerException On null arguments or the list contains
+	 * a {@code null} value.
+	 * @since 2023/08/09
+	 */
+	@SquirrelJMEVendorApi
+	public static int[] toIntArray(Collection<Integer> __list)
+		throws NullPointerException
+	{
+		if (__list == null)
+			throw new NullPointerException();
+		
+		// Use indexes instead
+		if (__list instanceof List && __list instanceof RandomAccess)
+			return IntegerArrays.toIntArray((List<Integer>)__list);
+		
+		// Map values
+		int i = 0;
+		int n = __list.size();
+		int[] result = new int[n];
+		for (Integer __integer : __list)
+			result[i++] = __integer;
+			
+		return result;
+	}
+	
+	/**
+	 * Maps an integer list to a primitive array.
+	 *
+	 * @param __list The input list.
+	 * @return The primitive array of the given list.
+	 * @throws NullPointerException On null arguments or the list contains
+	 * a {@code null} value.
+	 * @since 2023/08/09
+	 */
+	@SquirrelJMEVendorApi
+	public static int[] toIntArray(List<Integer> __list)
+		throws NullPointerException
+	{
+		if (__list == null)
+			throw new NullPointerException();
+		
+		// If not random access, create an iterator
+		if (!(__list instanceof RandomAccess))
+			return IntegerArrays.toIntArray((Collection<Integer>)__list);
+		
+		int n = __list.size();
+		int[] result = new int[n];
+		for (int i = 0; i < n; i++)
+			result[i] = __list.get(i);
+		
+		return result;
 	}
 	
 	/**

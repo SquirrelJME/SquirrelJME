@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -191,8 +191,8 @@ final class __AbstractListListIterator__<E>
 		// Check modification
 		this.__checkConcurrent();
 		
-		// {@squirreljme.error ZZ2c No previously returned element was
-		// iterated, it was already removed, or an element was added.}
+		/* {@squirreljme.error ZZ2c No previously returned element was
+		iterated, it was already removed, or an element was added.} */
 		int rmdx = this._lastNextPrevIndex;
 		if (rmdx < 0)
 			throw new IllegalStateException("ZZ2c");
@@ -220,8 +220,8 @@ final class __AbstractListListIterator__<E>
 		// Check modification
 		this.__checkConcurrent();
 		
-		// {@squirreljme.error ZZ3z No previous call to next or previous was
-		// performed.}
+		/* {@squirreljme.error ZZ3z No previous call to next or previous was
+		performed.} */
 		int index = this._lastNextPrevIndex;
 		if (index < 0)
 			throw new IllegalStateException("ZZ2c");
@@ -242,7 +242,7 @@ final class __AbstractListListIterator__<E>
 	private void __checkConcurrent()
 		throws ConcurrentModificationException
 	{
-		// {@squirreljme.error ZZ2d List has been concurrently modified.}
+		/* {@squirreljme.error ZZ2d List has been concurrently modified.} */
 		if (this._atmod != this.owner.modCount)
 			throw new ConcurrentModificationException("ZZ2d");
 	}

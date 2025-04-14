@@ -1,0 +1,32 @@
+[
+   {
+      "cards_url" : "https://api.github.com/projects/columns/3439988/cards",
+      "created_at" : "2018-09-20T14:24:28Z",
+      "id" : 3439988,
+      "name" : "To do",
+      "node_id" : "MDEzOlByb2plY3RDb2x1bW4zNDM5OTg4",
+      "project_url" : "https://api.github.com/projects/1798877",
+      "updated_at" : "2023-06-11T18:30:37Z",
+      "url" : "https://api.github.com/projects/columns/3439988"
+   },
+   {
+      "cards_url" : "https://api.github.com/projects/columns/3439989/cards",
+      "created_at" : "2018-09-20T14:24:28Z",
+      "id" : 3439989,
+      "name" : "In progress",
+      "node_id" : "MDEzOlByb2plY3RDb2x1bW4zNDM5OTg5",
+      "project_url" : "https://api.github.com/projects/1798877",
+      "updated_at" : "2024-08-08T01:51:31Z",
+      "url" : "https://api.github.com/projects/columns/3439989"
+   },
+   {
+      "cards_url" : "https://api.github.com/projects/columns/3439990/cards",
+      "created_at" : "2018-09-20T14:24:28Z",
+      "id" : 3439990,
+      "name" : "Done",
+      "node_id" : "MDEzOlByb2plY3RDb2x1bW4zNDM5OTkw",
+      "project_url" : "https://api.github.com/projects/1798877",
+      "updated_at" : "2024-08-08T01:51:31Z",
+      "url" : "https://api.github.com/projects/columns/3439990"
+   }
+]

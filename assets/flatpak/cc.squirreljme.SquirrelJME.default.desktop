@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=SquirrelJME
+Comment=Java ME 8 Virtual Machine.
+Type=Application
+Categories=Utility;Emulator;
+Exec=/app/bin/squirreljme.sh
+Terminal=false
+Icon=cc.squirreljme.SquirrelJME

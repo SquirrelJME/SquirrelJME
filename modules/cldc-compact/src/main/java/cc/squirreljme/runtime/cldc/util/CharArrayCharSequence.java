@@ -3,12 +3,13 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -16,6 +17,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2022/06/29
  */
+@SquirrelJMEVendorApi
 public final class CharArrayCharSequence
 	implements CharSequence
 {
@@ -35,6 +37,7 @@ public final class CharArrayCharSequence
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/06/29
 	 */
+	@SquirrelJMEVendorApi
 	public CharArrayCharSequence(char[] __c)
 		throws NullPointerException
 	{
@@ -52,6 +55,7 @@ public final class CharArrayCharSequence
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/06/29
 	 */
+	@SquirrelJMEVendorApi
 	public CharArrayCharSequence(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{

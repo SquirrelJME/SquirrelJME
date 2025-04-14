@@ -3,21 +3,25 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
+
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This wraps a character array and provides integer access to it.
  *
  * @since 2018/10/28
  */
+@SquirrelJMEVendorApi
 public final class CharacterIntegerArray
-	implements IntegerArray
+	extends AbstractIntegerArray
 {
 	/** The backed array. */
+	@SquirrelJMEVendorApi
 	protected final char[] array;
 	
 	/**
@@ -27,6 +31,7 @@ public final class CharacterIntegerArray
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/28
 	 */
+	@SquirrelJMEVendorApi
 	public CharacterIntegerArray(char[] __a)
 		throws NullPointerException
 	{

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ final class __ServiceLoaderFreshIterator__<S>
 		this._search = __s;
 		this._cache = __c;
 		
-		// All of the suites to look within
+		// All the suites to look within
 		this._jarsLeft.addAll(
 			Arrays.<JarPackageBracket>asList(JarPackageShelf.classPath()));
 	}
@@ -122,8 +122,8 @@ final class __ServiceLoaderFreshIterator__<S>
 					return true;
 				}
 				
-				// {@squirreljme.error ZZ30 Could not load the service
-				// class.}
+				/* {@squirreljme.error ZZ30 Could not load the service
+				class.} */
 				catch (ClassCastException|IllegalAccessException|
 					InstantiationException|ClassNotFoundException e)
 				{
@@ -241,8 +241,8 @@ final class __ServiceLoaderFreshIterator__<S>
 			}
 		}
 		
-		// {@squirreljme.error ZZ31 Could not read the services
-		// list.}
+		/* {@squirreljme.error ZZ31 Could not read the services
+		list.} */
 		catch (IOException e)
 		{
 			throw new ServiceConfigurationError("ZZ31", e);

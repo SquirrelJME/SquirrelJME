@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ import java.util.Iterator;
  * @since 2022/09/21
  */
 public final class LocalVariableTable
-	implements Iterable<LocalVariableInfo>
+	implements Contexual, Iterable<LocalVariableInfo>
 {
 	/** The entries within the table. */
 	private final LocalVariableInfo[] _entries;

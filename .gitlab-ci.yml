@@ -2,7 +2,7 @@
 # SquirrelJME
 #     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 # ---------------------------------------------------------------------------
-# SquirrelJME is under the GNU General Public License v3+, or later.
+# SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 # DESCRIPTION: GitLab CI/CD for libRetro
@@ -12,217 +12,249 @@
 ##############################################################################
 
 # Core definitions
-.core-defs:
+.core-nanocoat:
   variables:
     CORENAME: squirreljme
-    JNI_PATH: ratufacoat/libretro/
-    MAKEFILE_PATH: ratufacoat
-    MAKEFILE: makefilelibretro
+    CMAKE_SOURCE_ROOT: nanocoat
+    SQUIRRELJME_SPECIAL_BUILD_LIBRETRO: 1
 
 # Inclusion templates, required for the build to work
 include:
-  ################################## DESKTOPS ################################
-  # Linux 32-bit
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/linux-i686.yml'
-
-  # Linux 64-bit
+    file: '/android-cmake.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/linux-x64.yml'
-
-  # MacOS 64-bit
+    file: '/ctr-static-cmake.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/osx-x64.yml'
-
-  # MacOS ARM 64-bit
+    file: '/dingux-cmake.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/osx-arm64.yml'
-
-  # Windows 32-bit
+    file: '/djgpp-static-cmake.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/windows-i686-mingw.yml'
-
-  # Windows 64-bit
+    file: '/emscripten-static-cmake.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/windows-x64-mingw.yml'
-
-  ################################## CELLULAR ################################
-  # Android
+    file: '/ios-cmake.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/android-jni.yml'
-
-  # iOS 9
+    file: '/libnx-static-cmake.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/ios9.yml'
-
-  ################################## CONSOLES ################################
-  # Dingux (GCW Zero)
+    file: '/linux-cmake.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/dingux-mips32.yml'
-
-  # Nintendo 3DS
+    file: '/ngc-static-cmake.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/ctr-static.yml'
-
-  # Nintendo GameCube
+    file: '/orbis-static-cmake.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/ngc-static.yml'
-
-  # Nintendo Switch
+    file: '/osx-cmake-arm64.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/libnx-static.yml'
-
-  # Nintendo Wii
+    file: '/osx-cmake-ppc.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/wii-static.yml'
-
-  # Nintendo Wii U
+    file: '/osx-cmake-x86.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/wiiu-static.yml'
-
-  # PLayStation 2
+    file: '/ps2-static-cmake.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/ps2-static.yml'
-
-  # PlayStation Vita
+    file: '/psp-static-cmake.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/vita-static.yml'
-
-  #################################### MISC ##################################
-  # Emscripten
+    file: '/tvos-cmake.yml'
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/emscripten-static.yml'
+    file: '/vita-static-cmake.yml'
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/wii-static-cmake.yml'
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/wiiu-static-cmake.yml'
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/windows-cmake-mingw.yml'
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/windows-cmake-msvc19.yml'
 
-# Stages for building
+# Stages for building, required
 stages:
   - build-prepare
   - build-shared
   - build-static
 
-##############################################################################
-#################################### STAGES ##################################
-##############################################################################
+# Inclusion of all build types, note that platforms are in the form of:
+# - libretro-build-$PLATFORM
+# - android-ARCH
 
-################################### DESKTOPS #################################
-# Linux 32-bit
-libretro-build-linux-i686:
-  extends:
-    - .libretro-linux-i686-make-default
-    - .core-defs
-
-# Linux 64-bit
-libretro-build-linux-x64:
-  extends:
-    - .libretro-linux-x64-make-default
-    - .core-defs
-
-# MacOS 64-bit
-libretro-build-osx-x64:
-  extends:
-    - .libretro-osx-x64-make-default
-    - .core-defs
-
-# MacOS ARM 64-bit
-libretro-build-osx-arm64:
-  extends:
-    - .libretro-osx-arm64-make-default
-    - .core-defs
-
-# Windows 32-bit
-libretro-build-windows-i686:
-  extends:
-    - .libretro-windows-i686-mingw-make-default
-    - .core-defs
-
-# Windows 64-bit
-libretro-build-windows-x64:
-  extends:
-    - .libretro-windows-x64-mingw-make-default
-    - .core-defs
-
-################################### CELLULAR #################################
-# Android ARMv7a
-android-armeabi-v7a:
-  extends:
-    - .libretro-android-jni-armeabi-v7a
-    - .core-defs
-
-# Android ARMv8a
+# android-cmake.yml
 android-arm64-v8a:
   extends:
-    - .libretro-android-jni-arm64-v8a
-    - .core-defs
+    - .libretro-android-cmake-arm64-v8a
+    - .core-nanocoat
 
-# Android 64-bit x86
-android-x86_64:
+android-armeabi-v7a:
   extends:
-    - .libretro-android-jni-x86_64
-    - .core-defs
+    - .libretro-android-cmake-armeabi-v7a
+    - .core-nanocoat
 
-# Android 32-bit x86
 android-x86:
   extends:
-    - .libretro-android-jni-x86
-    - .core-defs
+    - .libretro-android-cmake-x86
+    - .core-nanocoat
 
-# iOS 9
-libretro-build-ios9:
+android-x86_64:
   extends:
-    - .libretro-ios9-make-default
-    - .core-defs
+    - .libretro-android-cmake-x86_64
+    - .core-nanocoat
 
-################################### CONSOLES #################################
-# Dingux (GCW Zero)
-libretro-build-dingux-mips32:
-  extends:
-    - .libretro-dingux-mips32-make-default
-    - .core-defs
-
-# Nintendo 3DS
+# ctr-static-cmake.yml
 libretro-build-ctr:
   extends:
-    - .libretro-ctr-static-retroarch-master
-    - .core-defs
+    - .libretro-ctr-static-cmake-retroarch-master
+    - .core-nanocoat
 
-# Nintendo GameCube
-libretro-build-ngc:
+# dingux-cmake.yml
+libretro-build-dingux-mips32:
   extends:
-    - .libretro-ngc-static-retroarch-master
-    - .core-defs
+    - .libretro-dingux-cmake-mips32
+    - .core-nanocoat
 
-# Nintendo Switch
-libretro-build-libnx-aarch64:
+libretro-build-dingux-odbeta-mips32:
   extends:
-    - .libretro-libnx-static-retroarch-master
-    - .core-defs
+    - .libretro-dingux-odbeta-cmake-mips32
+    - .core-nanocoat
 
-# Nintendo Wii
-libretro-build-wii:
+libretro-build-miyoo-arm32:
   extends:
-    - .libretro-wii-static-retroarch-master
-    - .core-defs
+    - .libretro-miyoo-cmake-arm32
+    - .core-nanocoat
 
-# Nintendo Wii U
-libretro-build-wiiu:
+libretro-build-retrofw-mips32:
   extends:
-    - .libretro-wiiu-static-retroarch-master
-    - .core-defs
+    - .libretro-retrofw-odbeta-cmake-mips32
+    - .core-nanocoat
 
-# PlayStation 2
-libretro-build-ps2:
+libretro-build-rs90-odbeta-mips32:
   extends:
-    - .libretro-ps2-static-retroarch-master
-    - .core-defs
+    - .libretro-rs90-odbeta-cmake-mips32
+    - .core-nanocoat
 
-# PlayStation Vita
-libretro-build-vita:
+# djgpp-static-cmake.yml
+libretro-build-djgpp: # TODO: What should this be called?
   extends:
-    - .libretro-vita-static-retroarch-master
-    - .core-defs
+    - .libretro-djgpp-static-cmake-retroarch-master
+    - .core-nanocoat
 
-#################################### MISC ##################################
-# Emscripten
+# emscripten-static-cmake.yml
 libretro-build-emscripten:
   extends:
-    - .libretro-emscripten-static-retroarch-master
-    - .core-defs
+    - .libretro-emscripten-static-cmake-retroarch-master
+    - .core-nanocoat
+
+# ios-cmake.yml
+libretro-build-ios-arm64:
+  extends:
+    - .libretro-ios-cmake-arm64
+    - .core-nanocoat
+
+libretro-build-ios9:
+  extends:
+    - .libretro-ios-cmake-ios9
+    - .core-nanocoat
+
+# libnx-static-cmake.yml
+libretro-build-libnx:
+  extends:
+    - .libretro-libnx-static-cmake-retroarch-master
+    - .core-nanocoat
+
+# linux-cmake.yml
+libretro-build-linux-i686:
+  extends:
+    - .libretro-linux-cmake-x86
+    - .core-nanocoat
+
+libretro-build-linux-x64:
+  extends:
+    - .libretro-linux-cmake-x86_64
+    - .core-nanocoat
+
+# ngc-static-cmake.yml
+libretro-build-ngc:
+  extends:
+    - .libretro-ngc-static-cmake-retroarch-master
+    - .core-nanocoat
+
+# orbis-static-cmake.yml (Toolchain is currently broken, no CMake Toolchain)
+#libretro-build-orbis:
+#  extends:
+#    - .libretro-orbis-static-cmake-retroarch-master
+#    - .core-nanocoat
+
+# osx-cmake-arm64.yml
+libretro-build-osx-arm64:
+  extends:
+    - .libretro-osx-cmake-arm64
+    - .core-nanocoat
+
+# osx-cmake-ppc.yml
+libretro-build-osx-ppc:
+  extends:
+    - .libretro-osx-cmake-ppc
+    - .core-nanocoat
+
+# osx-cmake-x86.yml
+libretro-build-osx-x86: # TODO: What should this be called?
+  extends:
+    - .libretro-osx-cmake-x86
+    - .core-nanocoat
+
+libretro-build-osx-x64:
+  extends:
+    - .libretro-osx-cmake-x86_64
+    - .core-nanocoat
+
+# ps2-static-cmake.yml
+libretro-build-ps2:
+  extends:
+    - .libretro-ps2-static-cmake-retroarch-master
+    - .core-nanocoat
+
+# psp-static-cmake.yml
+libretro-build-psp:
+  extends:
+    - .libretro-psp-static-cmake-retroarch-master
+    - .core-nanocoat
+
+# tvos-cmake.yml
+libretro-build-tvos-arm64:
+  extends:
+    - .libretro-tvos-cmake-arm64
+    - .core-nanocoat
+
+# vita-static-cmake.yml
+libretro-build-vita:
+  extends:
+    - .libretro-vita-static-cmake-retroarch-master
+    - .core-nanocoat
+
+# wii-static-cmake.yml
+libretro-build-wii:
+  extends:
+    - .libretro-wii-static-cmake-retroarch-master
+    - .core-nanocoat
+
+# wiiu-static-cmake.yml
+libretro-build-wiiu:
+  extends:
+    - .libretro-wiiu-static-cmake-retroarch-master
+    - .core-nanocoat
+
+# windows-cmake-mingw.yml
+libretro-build-windows-i686:
+  extends:
+    - .libretro-windows-cmake-x86
+    - .core-nanocoat
+
+libretro-build-windows-x64:
+  extends:
+    - .libretro-windows-cmake-x86_64
+    - .core-nanocoat
+
+# windows-cmake-msvc19.yml
+#libretro-build-windows-msvc19-i686: # TODO: What should this be called?
+#  extends:
+#    - .libretro-windows-msvc19-cmake-x86
+#    - .core-nanocoat
+
+#libretro-build-windows-msvc19-x64: # TODO: What should this be called?
+#  extends:
+#    - .libretro-windows-msvc19-cmake-x64
+#    - .core-nanocoat

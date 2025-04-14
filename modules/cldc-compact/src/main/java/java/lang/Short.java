@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -64,10 +64,14 @@ public final class Short
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/04/03
+	 */
 	@Override
 	public byte byteValue()
 	{
-		throw Debugging.todo();
+		return (byte)this._value;
 	}
 	
 	@Override
@@ -82,10 +86,19 @@ public final class Short
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/04/03
+	 */
 	@Override
-	public boolean equals(Object __a)
+	public boolean equals(Object __o)
 	{
-		throw Debugging.todo();
+		if (this == __o)
+			return true;
+		if (!(this instanceof Short))
+			return false;
+		
+		return this._value == ((Short)__o)._value;
 	}
 	
 	@Override
@@ -94,10 +107,14 @@ public final class Short
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/04/03
+	 */
 	@Override
 	public int hashCode()
 	{
-		throw Debugging.todo();
+		return this.intValue();
 	}
 	
 	/**

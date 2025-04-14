@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@ import java.util.List;
  * @since 2018/05/15
  */
 public final class InnerClasses
-	implements Iterable<InnerClass>
+	implements Contexual, Iterable<InnerClass>
 {
 	/** The declared inner classes. */
 	private final InnerClass[] _inners;

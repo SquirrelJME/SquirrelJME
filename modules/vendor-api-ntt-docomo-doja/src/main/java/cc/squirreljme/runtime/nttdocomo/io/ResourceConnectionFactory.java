@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import com.nttdocomo.ui.IApplication;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import javax.microedition.io.ConnectionOption;
  * @see ResourceConnection
  * @since 2021/11/30
  */
+@SquirrelJMEVendorApi
 public class ResourceConnectionFactory
 	implements CustomConnectionFactory
 {
@@ -33,6 +35,7 @@ public class ResourceConnectionFactory
 	 */
 	@SuppressWarnings("resource")
 	@Override
+	@SquirrelJMEVendorApi
 	public Connection connect(String __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
@@ -62,10 +65,10 @@ public class ResourceConnectionFactory
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/11/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public String scheme()
 	{
 		return "resource";

@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -63,8 +63,8 @@ public class VMModernTestTask
 		// Depends on the library to exist first along with the emulator
 		// itself
 		this.dependsOn(this.getProject().provider(
-				new VMRunDependencies(this, __classifier)),
-			new VMEmulatorDependencies(this,
+				new VMRunDependencies(this.getProject(), __classifier)),
+			new VMEmulatorDependencies(this.getProject(),
 				__classifier.getTargetClassifier()));
 		
 		// Add the entire JAR as input, so that if it changes for any reason

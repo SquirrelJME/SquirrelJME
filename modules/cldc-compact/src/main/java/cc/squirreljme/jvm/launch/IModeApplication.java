@@ -3,13 +3,12 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm.launch;
 
-import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.PhoneModelType;
@@ -20,8 +19,13 @@ import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.Profile;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.util.StringUtils;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -33,72 +37,14 @@ import java.util.Objects;
 public class IModeApplication
 	extends Application
 {
-	/** Property for the scratch pad sizes. */
-	public static final String SCRATCH_PAD_PROPERTY =
-		"cc.squirreljme.imode.scratchpads";
-	
-	/** Property for the application name. */
-	public static final String NAME_PROPERTY =
-		"cc.squirreljme.imode.name";
-	
-	/** Property for the application vendor. */
-	public static final String VENDOR_PROPERTY =
-		"cc.squirreljme.imode.vendor";
-	
-	/** The prefix for ADF properties. */
-	public static final String ADF_PROPERTY_PREFIX =
-		"cc.squirrlejme.imode.adf";
-	
-	/** Boot class for DoJa. */
-	private static final String _DOJA_BOOT_CLASS =
-		"com.nttdocomo.ui.__AppLaunch__";
-	
-	/** Boot class for Star. */
-	private static final String _STAR_BOOT_CLASS =
-		"com.docomostar.__StarAppLaunch__";
-	
-	/** The application name. */
-	private static final String _APP_NAME =
-		"AppName";
-	
-	/** The application launch class. */
-	private static final String _APP_CLASS =
-		"AppClass";
-	
-	/** Application parameters. */
-	private static final String _APP_PARAMS =
-		"AppParam";
-	
-	/** Application type (Star). */
-	private static final String _APP_TYPE =
-		"AppType";
-	
-	/** The configuration to use. */
-	private static final String _CONFIGURATION_VER =
-		"Configurationver";
-	
-	/** KVM Version, same as {@link #_CONFIGURATION_VER}. */
-	private static final String _KVM_VER =
-		"KvmVer";
-	
-	/** Profile version (DoJa 2.0+). */
-	private static final String _PROFILE_VER =
-		"ProfileVer";
-	
-	/** Application icon. */
-	private static final String _APP_ICON =
-		"AppIcon";
-	
-	/** Scratch pad sizes. */
-	private static final String _SP_SIZE =
-		"SPsize";
-	
-	/** Draw area. */
-	private static final String _DRAW_AREA =
-		"DrawArea";
+	/** The Jar path. */
+	protected final String jarPath;
 	
 	/** ADF Properties. */
 	private final Map<String, String> _adfProps;
+	
+	/** Extra system properties. */
+	private final Map<String, String> _extraSysProps;
 	
 	/**
 	 * The application to load.
@@ -106,20 +52,43 @@ public class IModeApplication
 	 * @param __jar The JAR used.
 	 * @param __libs The libraries to map.
 	 * @param __adfProps Properties for the ADF/JAM.
+	 * @param __jarPath The Jar path.
 	 * @throws InvalidSuiteException If this suite is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/06/13
 	 */
 	IModeApplication(JarPackageBracket __jar, __Libraries__ __libs,
-		Map<String, String> __adfProps)
+		Map<String, String> __adfProps, String __jarPath)
+		throws InvalidSuiteException, NullPointerException
+	{
+		this(__jar, __libs, __adfProps, __jarPath, null);
+	}
+	
+	/**
+	 * The application to load.
+	 *
+	 * @param __jar The JAR used.
+	 * @param __libs The libraries to map.
+	 * @param __adfProps Properties for the ADF/JAM.
+	 * @param __jarPath The Jar path.
+	 * @param __sysProps Extra system properties.
+	 * @throws InvalidSuiteException If this suite is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/04/13
+	 */
+	IModeApplication(JarPackageBracket __jar, __Libraries__ __libs,
+		Map<String, String> __adfProps, String __jarPath, 
+		Map<String, String> __sysProps)
 		throws InvalidSuiteException, NullPointerException
 	{
 		super(__jar, __libs);
 		
 		this._adfProps = __adfProps;
+		this._extraSysProps = __sysProps;
+		this.jarPath = __jarPath;
 		
-		if (!__adfProps.containsKey(IModeApplication._APP_NAME) ||
-			!__adfProps.containsKey(IModeApplication._APP_CLASS))
+		if (!__adfProps.containsKey(IModeProperty._APP_NAME) ||
+			!__adfProps.containsKey(IModeProperty._APP_CLASS))
 			throw new InvalidSuiteException();
 	}
 	
@@ -130,16 +99,29 @@ public class IModeApplication
 	@Override
 	public String displayName()
 	{
-		String appName = this._adfProps.get(IModeApplication._APP_NAME);
-		String appClass = this._adfProps.get(IModeApplication._APP_CLASS);
+		String appName = this._adfProps.get(IModeProperty._APP_NAME);
+		String appClass = this._adfProps.get(IModeProperty._APP_CLASS);
 		
 		if (appName != null)
 		{
+			// If this contains any non-ISO-8859-1 characters, then append the
+			// Jar name
+			boolean nonIso = false;
+			for (int i = 0, n = appName.length(); i < n; i++)
+				if (appName.charAt(i) > 0xFF)
+				{
+					nonIso = true;
+					break;
+				}
+			
 			// If the application name contains an invalid character then
 			// it is an unsupported character we do not know about
-			if (appName.indexOf(0xFFFD) >= 0)
-				return appName + " (" +
-					JarPackageShelf.libraryPath(this.jar) + ")";
+			if (nonIso || appName.indexOf(0xFFFD) >= 0)
+			{
+				String jarPath = this.jarPath;
+				if (jarPath != null)
+					return appName + " (" + SuiteUtils.baseName(jarPath) + ")";
+			}
 			
 			return appName;
 		}
@@ -156,8 +138,8 @@ public class IModeApplication
 	{
 		Map<String, String> adfProps = this._adfProps;
 		return new EntryPoint(this.displayName(),
-			adfProps.get(IModeApplication._APP_CLASS),
-			adfProps.get(IModeApplication._APP_ICON),
+			adfProps.get(IModeProperty._APP_CLASS),
+			adfProps.get(IModeProperty._APP_ICON),
 			false); 
 	}
 	
@@ -187,36 +169,9 @@ public class IModeApplication
 	@Override
 	public DependencyInfo loaderDependencies()
 	{
-		// This determines which library set to load
-		Map<String, String> adfProps = this._adfProps;
-		String config = Objects.toString(
-			adfProps.get(IModeApplication._CONFIGURATION_VER),
-			adfProps.get(IModeApplication._KVM_VER));
-		String profile = adfProps.get(IModeApplication._PROFILE_VER);
-		String scratchPad = adfProps.get(IModeApplication._SP_SIZE);
-		
-		// Used as heuristic for versioning
-		String drawArea = adfProps.get(IModeApplication._DRAW_AREA);
-		
-		// Try to guess a reasonable version to use
-		if (config == null || config.isEmpty())
-			config = "CLDC-1.1";
-		if (profile == null || profile.isEmpty())
-		{
-			// The AppType property essentially specifies that this is a Star
-			// application, otherwise it will be a DoJa application
-			if (adfProps.get(IModeApplication._APP_TYPE) != null)
-				profile = "Star-1.0";
-			
-			// Based on which properties exist, try to guess the specific
-			// version of DoJa used...
-			else if (scratchPad != null && scratchPad.indexOf(',') > 0)
-				profile = "DoJa-3.0";
-			else if (drawArea != null)
-				profile = "DoJa-2.0";
-			else
-				profile = "DoJa-1.0";
-		}
+		// Determine and depend on the given configuration and profile pair
+		String config = this.__configuration();
+		String profile = this.__profile();
 		
 		return new DependencyInfo(new Configuration(config),
 			new Profile(profile));
@@ -230,11 +185,22 @@ public class IModeApplication
 	public String[] loaderEntryArgs()
 	{
 		EntryPoint entry = this.entryPoint();
-		String args = this._adfProps.get(IModeApplication._APP_PARAMS);
+		String appArgs = this._adfProps.get(IModeProperty._APP_PARAMS);
 		
-		if (args == null)
-			return new String[]{entry.entryPoint()};
-		return new String[]{entry.entryPoint(), args};
+		// Set initial base property set
+		List<String> args = new ArrayList<>();
+		for (Map.Entry<String, String> e : this.__properties().entrySet())
+			args.add(String.format("-Xadf:%s=%s",
+				e.getKey(), e.getValue()));
+		
+		// Application entry point and arguments as its main
+		args.add(entry.entryPoint());
+		if (appArgs != null)
+			args.addAll(Arrays.asList(
+				StringUtils.fieldSplitAndTrim(' ', appArgs)));
+		
+		// Give it
+		return args.toArray(new String[args.size()]);
 	}
 	
 	/**
@@ -246,8 +212,8 @@ public class IModeApplication
 	{
 		// Always use the application helper
 		if (this.isStarApplication())
-			return IModeApplication._STAR_BOOT_CLASS;
-		return IModeApplication._DOJA_BOOT_CLASS;
+			return IModeProperty._STAR_BOOT_CLASS;
+		return IModeProperty._DOJA_BOOT_CLASS;
 	}
 	
 	/**
@@ -257,20 +223,112 @@ public class IModeApplication
 	@Override
 	public Map<String, String> loaderSystemProperties()
 	{
+		return this.__properties();
+	}
+	
+	/**
+	 * Determines the Java ME configuration.
+	 *
+	 * @return Determines the Java ME configuration.
+	 * @since 2025/04/09
+	 */
+	private String __configuration()
+	{
+		Map<String, String> adfProps = this._adfProps;
+		
+		// Use the modern parameter first
+		String modern = adfProps.get(IModeProperty._CONFIGURATION_VER);
+		if (modern != null && !modern.isEmpty())
+			return modern;
+		
+		// Followed by the older setting
+		String legacy = adfProps.get(IModeProperty._KVM_VER);
+		if (legacy != null && !legacy.isEmpty())
+			return legacy;
+		
+		// Default to the oldest
+		return "CLDC-1.0";
+	}
+	
+	/**
+	 * Determines the DoJa profile.
+	 *
+	 * @return Determines the DoJa profile.
+	 * @since 2025/04/09
+	 */
+	private String __profile()
+	{
+		// Is a profile specified?
+		Map<String, String> adfProps = this._adfProps;
+		String profile = adfProps.get(IModeProperty._PROFILE_VER);
+		if (profile != null && !profile.isEmpty())
+			return profile;
+		
+		// The configuration is used to determine newer DoJa versions
+		Configuration config = new Configuration(this.__configuration());
+		
+		// Used as heuristics for versioning
+		String scratchPad = adfProps.get(IModeProperty._SP_SIZE);
+		String drawArea = adfProps.get(IModeProperty._DRAW_AREA);
+		String useBrowser = adfProps.get(IModeProperty._USE_BROWSER);
+		String launchApp = adfProps.get(IModeProperty._LAUNCH_APP);
+		
+		// The AppType property essentially specifies that this is a Star
+		// application, otherwise it will be a DoJa application
+		if (adfProps.get(IModeProperty._APP_TYPE) != null)
+			return "Star-1.0";
+			
+		// Based on which properties exist, try to guess the specific
+		// version of DoJa used...
+		else if (config.is("CLDC") &&
+			config.version().atLeast(1, 1))
+			return "DoJa-4.0";
+		else if ((scratchPad != null && scratchPad.indexOf(',') > 0) ||
+			launchApp != null)
+			return "DoJa-3.0";
+		else if (drawArea != null || useBrowser != null)
+			return "DoJa-2.0";
+		
+		// Unknown
+		return "DoJa-1.0";
+	}
+	
+	/**
+	 * Determines the system properties to use.
+	 *
+	 * @return The system properties to use.
+	 * @since 2021/12/01
+	 */
+	private Map<String, String> __properties()
+	{
 		Map<String, String> adfProps = this._adfProps;
 		Map<String, String> rv = new LinkedHashMap<>();
 		
+		// Any base system properties to be added
+		Map<String, String> extraSysProps = this._extraSysProps;
+		if (extraSysProps != null && !extraSysProps.isEmpty())
+			rv.putAll(extraSysProps);
+		
 		// Application name and vendor, needed for RMS
 		String nameProp = Objects.toString(
-			adfProps.get(IModeApplication._APP_NAME),
-			adfProps.get(IModeApplication._APP_CLASS));
-		rv.put(IModeApplication.NAME_PROPERTY, nameProp);
-		rv.put(IModeApplication.VENDOR_PROPERTY, "SquirrelJME-i-Mode");
+			adfProps.get(IModeProperty._APP_NAME),
+			adfProps.get(IModeProperty._APP_CLASS));
+		rv.put(IModeProperty.NAME_PROPERTY, nameProp);
+		rv.put(IModeProperty.VENDOR_PROPERTY, "SquirrelJME-i-Mode");
+		
+		// Encoding and locale override
+		rv.put(Application.OVERRIDE_ENCODING, "shift-jis");
+		rv.put(Application.OVERRIDE_LOCALE, "ja-JP");
+		
+		// Set the profile used
+		String profile = this.__profile();
+		rv.put(Application.MICROEDITION_PROFILES, profile);
+		rv.put(IModeProperty.DOJA_PROFILE_PROPERTY, profile);
 		
 		// Scratch pad sizes
-		String spSize = adfProps.get(IModeApplication._SP_SIZE);
+		String spSize = adfProps.get(IModeProperty._SP_SIZE);
 		if (spSize != null && !spSize.isEmpty())
-			rv.put(IModeApplication.SCRATCH_PAD_PROPERTY, spSize);
+			rv.put(IModeProperty.SCRATCH_PAD_PROPERTY, spSize);
 		
 		// If a specific phone model is used, set the platform property
 		// explicitly
@@ -281,7 +339,7 @@ public class IModeApplication
 		// Copy all ADF properties to system properties, it can be used in
 		// the future to access specific properties accordingly
 		for (Map.Entry<String, String> property : adfProps.entrySet())
-			rv.put(IModeApplication.ADF_PROPERTY_PREFIX + "." +
+			rv.put(IModeProperty.ADF_PROPERTY_PREFIX + "." +
 				property.getKey(), property.getValue());
 		
 		return rv;

@@ -3,12 +3,13 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.Responsify;
 import cc.squirreljme.plugin.util.TestResultOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -30,6 +31,7 @@ import org.gradle.api.internal.tasks.testing.TestClassRunInfo;
 import org.gradle.api.internal.tasks.testing.TestCompleteEvent;
 import org.gradle.api.internal.tasks.testing.TestResultProcessor;
 import org.gradle.api.internal.tasks.testing.TestStartEvent;
+import org.gradle.api.tasks.testing.TestFailure;
 import org.gradle.api.tasks.testing.TestOutputEvent;
 import org.gradle.api.tasks.testing.TestResult;
 import org.gradle.internal.id.IdGenerator;
@@ -272,8 +274,8 @@ public class VMTestFrameworkTestClassProcessor
 		if (finalResult == TestResult.ResultType.FAILURE)
 			VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
 				(__rp) -> __rp.failure(suiteDesc.getId(),
-					VMTestFrameworkTestClassProcessor
-						.messageThrow("Tests have failed.")));
+					TestFailure.fromTestFrameworkFailure(VMTestFrameworkTestClassProcessor
+						.messageThrow("Tests have failed."))));
 		
 		// Use the final result from all the test runs
 		VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
@@ -354,10 +356,7 @@ public class VMTestFrameworkTestClassProcessor
 			TestRunParameters runTest = runParameters.get(__testName.normal);
 			
 			// Setup process to run
-			ProcessBuilder builder = new ProcessBuilder();
-			
-			// The command we are executing
-			builder.command(runTest.getCommandLine());
+			ProcessBuilder builder = Responsify.of(runTest.getCommandLine());
 			
 			// Redirect all the outputs we have
 			builder.redirectOutput(ProcessBuilder.Redirect.PIPE);
@@ -385,7 +384,7 @@ public class VMTestFrameworkTestClassProcessor
 				// Failed to start test
 				VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
 					(__rp) -> __rp.failure(__suiteDesc.getId(),
-						new Throwable("Failed to start test.")));
+						TestFailure.fromTestFrameworkFailure(new Throwable("Failed to start test."))));
 				
 				throw new RuntimeException(__e);
 			}
@@ -476,9 +475,9 @@ public class VMTestFrameworkTestClassProcessor
 			if (finalResult == TestResult.ResultType.FAILURE)
 				VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
 					(__rp) -> __rp.failure(methodDesc.getId(),
-						VMTestFrameworkTestClassProcessor 
+						TestFailure.fromTestFrameworkFailure(VMTestFrameworkTestClassProcessor
 							.messageThrow("Test failed: " +
-								__testName.normal)));
+								__testName.normal))));
 			
 			// Mark method as completed
 			VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,

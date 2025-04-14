@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -19,6 +19,7 @@ import java.util.Objects;
  * @since 2017/02/09
  */
 public final class ExceptionHandler
+	implements Contexual
 {
 	/** The start address. */
 	protected final int startpc;
@@ -48,17 +49,17 @@ public final class ExceptionHandler
 	ExceptionHandler(int __spc, int __epc, int __hpc, ClassName __cn)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC2l An address is negative. (The start address;
-		// The end address; The handler address)}
+		/* {@squirreljme.error JC2l An address is negative. (The start address;
+		The end address; The handler address)} */
 		if (__spc < 0 || __epc < 0 || __hpc < 0)
 			throw new InvalidClassFormatException(
-				String.format("JC2l %d %d %d", __spc, __epc, __hpc));
+				String.format("JC2l %d %d %d", __spc, __epc, __hpc), this);
 		
-		// {@squirreljme.error JC2m The end address is at or before the start
-		// address. (The start address; The end address)}
+		/* {@squirreljme.error JC2m The end address is at or before the start
+		address. (The start address; The end address)} */
 		if (__epc <= __spc)
 			throw new InvalidClassFormatException(String.format("JC2m %d %d",
-				__spc, __epc));
+				__spc, __epc), this);
 		
 		// Set
 		this.startpc = __spc;

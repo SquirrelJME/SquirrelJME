@@ -1,0 +1,13 @@
+# March Update!
+
+SquirrelJME now has a single standalone Jar which is multi-platform, so now
+it will be easier to run it without having to fully know what your system is.
+
+I decided to just merge in the calendar implementation despite it being
+incomplete, since it was a very long-lived branch that I just wanted to close.
+A large number of DoJa software requires a calendar implementation, so this
+should be an initial first-step for that.
+
+Other than that, there has been continued work on NanoCoat which is
+progressing well. Currently, I am working on the main startup sequence for
+applications.

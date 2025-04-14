@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -64,6 +64,10 @@ public class VMCompactLibraryTaskAction
 	/** Settings to use in the configuration for keeping, etc. */
 	static final String[] _PARSE_SETTINGS = new String[]
 		{
+			// Ignore all JetBrains IntelliJ related annotations
+			"-dontwarn", "org.jetbrains.annotations.**",
+			"-dontwarn", "org.intellij.lang.annotations.**",
+			
 			// Adjust manifest resources
 			"-adaptresourcefilenames", "**",
 			"-adaptresourcefilecontents",
@@ -168,6 +172,15 @@ public class VMCompactLibraryTaskAction
 					"<init>", "(", "...", ")", ";",
 				"}",
 			
+			// Assume the debug flags are always false
+			"-assumevalues",
+				"class", "cc.squirreljme.runtime.cldc.debug.Debugging", "{",
+					"public", "static", "boolean", "ENABLED",
+						"=", "false", ";",
+					"public", "static", "boolean", "VERBOSE",
+						"=", "false", ";",
+				"}",
+			
 			// Remove any code that calls these debugging calls
 			"-assumenosideeffects",
 				"class", "cc.squirreljme.runtime.cldc.debug.Debugging", "{",
@@ -204,6 +217,33 @@ public class VMCompactLibraryTaskAction
 					"void", "todoNote", "(",
 						"java.lang.String", ",",
 						"java.lang.Object[]", ")", ";",
+				"}",
+			
+			// Disable some DebugShelf methods
+			"-assumevalues",
+				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
+					"int", "verbose", "(",
+						"int", ")", "=", "0", ";",
+					"int", "verboseInternalThread", "(",
+						"int", ")", "=", "0", ";",
+				"}",
+			"-assumenosideeffects",
+				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
+					"int", "verbose", "(",
+						"int", ")", ";",
+					"int", "verboseInternalThread", "(",
+						"int", ")", ";",
+					"void", "verboseStop", "(",
+						"int", ")", ";",
+				"}",
+			"-assumenoexternalsideeffects",
+				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
+					"int", "verbose", "(",
+						"int", ")", ";",
+					"int", "verboseInternalThread", "(",
+						"int", ")", ";",
+					"void", "verboseStop", "(",
+						"int", ")", ";",
 				"}",
 		};
 	

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ public class BufferedWriter
 {
 	/**
 	 * This buffer size is kept small by default since having a large buffer
-	 * for a memory contrained system is not really that important and will
+	 * for a memory contained system is not really that important and will
 	 * pretty much only be used by console output. So as such to prevent
 	 * wasting memory with streams that will not likely be used for most
 	 * programs (MIDlets) or they will be outputting characters anyway.
@@ -80,8 +80,8 @@ public class BufferedWriter
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0h Requested a buffer size that is zero or
-		// negative. (The requested buffer size)}
+		/* {@squirreljme.error ZZ0h Requested a buffer size that is zero or
+		negative. (The requested buffer size)} */
 		if (__bs <= 0)
 			throw new IllegalArgumentException(String.format("ZZ0h %d", __bs));
 		

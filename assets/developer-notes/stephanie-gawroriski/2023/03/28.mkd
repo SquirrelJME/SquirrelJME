@@ -1,0 +1,9 @@
+# 2023/03/28
+
+## 14:01
+
+I had a thought with RMS and SpringCoat, I could do a sort of file system 
+translation layer that can exist on disk but is used locally for testing and 
+otherwise. It would do its best to not allow breaking out, but would not be
+too tightened as it would only be used when testing. That way I can test
+reading and writing the RMS data as JSON.

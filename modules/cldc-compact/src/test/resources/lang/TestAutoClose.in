@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-before: false
+secondary-middle: false
+secondary-after: true

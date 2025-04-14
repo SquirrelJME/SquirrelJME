@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -170,9 +170,9 @@ final class __SuiteTracker__
 					
 					// This will be the only chance to print the installation
 					// report
-					// {@squirreljme.error DG0t Failed to install the program
-					// due to the specified error. (The error code; The more
-					// detailed message associated with the error)}
+					/* {@squirreljme.error DG0t Failed to install the program
+					due to the specified error. (The error code; The more
+					detailed message associated with the error)} * /
 					System.err.printf("DG0t %s %s%n", code, report.message());
 					
 					// Mark as done

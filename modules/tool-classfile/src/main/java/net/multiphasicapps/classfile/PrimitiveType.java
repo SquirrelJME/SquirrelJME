@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -66,6 +66,17 @@ public enum PrimitiveType
 			default:
 				throw Debugging.oops();
 		}
+	}
+	
+	/**
+	 * Returns the field descriptor of the given type.
+	 * 
+	 * @return The field descriptor of the primitive type.
+	 * @since 2023/07/03
+	 */
+	public FieldDescriptor field()
+	{
+		return this.toClassName().field();
 	}
 	
 	/**

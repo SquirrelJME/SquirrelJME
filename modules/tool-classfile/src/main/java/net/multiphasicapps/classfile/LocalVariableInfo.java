@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -17,6 +17,7 @@ import java.util.Objects;
  * @since 2022/09/23
  */
 public final class LocalVariableInfo
+	implements Contexual
 {
 	/** Start PC address. */
 	public final int startPc;

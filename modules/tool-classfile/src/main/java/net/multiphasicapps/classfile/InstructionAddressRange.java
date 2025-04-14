@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  * @since 2019/03/21
  */
 public final class InstructionAddressRange
-	implements Comparable<InstructionAddressRange>
+	implements Contexual, Comparable<InstructionAddressRange>
 {
 	/** The start address. */
 	protected final int start;

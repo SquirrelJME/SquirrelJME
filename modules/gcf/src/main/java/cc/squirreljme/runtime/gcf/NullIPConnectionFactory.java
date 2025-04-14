@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ public final class NullIPConnectionFactory
 	public final IPAddress resolveAddress(IPAddress __addr)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
-		// {@squirreljme.error EC0i Host name resolution not supported.}
+		/* {@squirreljme.error EC0i Host name resolution not supported.} */
 		throw new ConnectionNotFoundException("EC0i");
 	}
 	
@@ -43,8 +43,8 @@ public final class NullIPConnectionFactory
 	public final TCPClientConnection tcpClientConnect(IPAddress __addr)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
-		// {@squirreljme.error EC0j TCP client connections are not
-		// supported.}
+		/* {@squirreljme.error EC0j TCP client connections are not
+		supported.} */
 		throw new ConnectionNotFoundException("EC0j");
 	}
 }

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -72,8 +72,8 @@ public abstract class BasicPermission
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ2b The name for basic permissions cannot
-		// be empty.}
+		/* {@squirreljme.error ZZ2b The name for basic permissions cannot
+		be empty.} */
 		if (__name.equals(""))
 			throw new IllegalArgumentException("ZZ0z");
 		

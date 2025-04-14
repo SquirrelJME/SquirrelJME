@@ -1,0 +1,27 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+import org.iban4j.CountryCode
+
+description = "SoftBank MEXA API"
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "MX"
+	swmType = JavaMEMidletType.API
+	swmName = "SoftBank MEXA API"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "SoftBank Group Corp."
+	originalApiVendorUrl = "https://group.softbank/"
+	originalApiVendorCountry = CountryCode.JP
+	tags += "mexa"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+	
+	api project(":modules:vendor-api-khronos-opengles")
+	api project(":modules:vendor-api-jblend")
+	api project(":modules:vendor-api-jphone")
+}

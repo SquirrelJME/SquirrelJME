@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.RandomAccess;
  *
  * @since 2019/05/10
  */
+@SquirrelJMEVendorApi
 public class ShellSort
 {
 	/** Gaps used in shell sort, used as a base to determine the gap size. */
@@ -38,11 +40,12 @@ public class ShellSort
 	 * @throws IllegalArgumentException If the length is negative.
 	 * @since 2021/07/02
 	 */
+	@SquirrelJMEVendorApi
 	public static int[] gaps(int __n)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ5e Request of gaps with a negative list
-		// size.}
+		/* {@squirreljme.error ZZ5e Request of gaps with a negative list
+		size.} */
 		if (__n < 0)
 			throw new IllegalArgumentException("ZZ5e");
 		
@@ -97,6 +100,7 @@ public class ShellSort
 	 * @see IntegerArrays#sort(IntegerArray, int, int) 
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public static <T> void sort(List<T> __a,
 		int __from, int __to, Comparator<? super T> __comp)
 		throws IndexOutOfBoundsException, IllegalArgumentException,

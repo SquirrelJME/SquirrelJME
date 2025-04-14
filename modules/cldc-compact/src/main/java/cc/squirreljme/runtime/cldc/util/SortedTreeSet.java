@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Comparator;
@@ -25,6 +26,7 @@ import java.util.Set;
  * @param <V> The type of value stored in the set.
  * @since 2016/09/06
  */
+@SquirrelJMEVendorApi
 public class SortedTreeSet<V>
 	extends AbstractSet<V>
 {
@@ -40,6 +42,7 @@ public class SortedTreeSet<V>
 	 *
 	 * @since 2016/09/06
 	 */
+	@SquirrelJMEVendorApi
 	public SortedTreeSet()
 	{
 		this(NaturalComparator.<V>instance());
@@ -54,6 +57,7 @@ public class SortedTreeSet<V>
 	 * @since 2016/09/06
 	 */
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	public SortedTreeSet(Collection<? extends Comparable<V>> __s)
 		throws NullPointerException
 	{
@@ -67,6 +71,7 @@ public class SortedTreeSet<V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
+	@SquirrelJMEVendorApi
 	public SortedTreeSet(Comparator<? extends V> __comp)
 		throws NullPointerException
 	{
@@ -87,6 +92,7 @@ public class SortedTreeSet<V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
+	@SquirrelJMEVendorApi
 	public SortedTreeSet(Comparator<? extends V> __comp,
 		Collection<? extends V> __s)
 		throws NullPointerException

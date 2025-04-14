@@ -3,13 +3,15 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractList;
+import java.util.List;
 import java.util.RandomAccess;
 
 /**
@@ -17,17 +19,21 @@ import java.util.RandomAccess;
  *
  * @since 2020/01/01
  */
+@SquirrelJMEVendorApi
 public class FloatArrayList
 	extends AbstractList<Float>
 	implements RandomAccess
 {
 	/** The backing array. */
+	@SquirrelJMEVendorApi
 	protected final float[] array;
 	
 	/** The offset. */
+	@SquirrelJMEVendorApi
 	protected final int offset;
 	
 	/** The cached size. */
+	@SquirrelJMEVendorApi
 	protected final int size;
 	
 	/**
@@ -37,6 +43,7 @@ public class FloatArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/01/01
 	 */
+	@SquirrelJMEVendorApi
 	public FloatArrayList(float[] __a)
 		throws NullPointerException
 	{
@@ -54,6 +61,7 @@ public class FloatArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/01/01
 	 */
+	@SquirrelJMEVendorApi
 	public FloatArrayList(float[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -89,6 +97,7 @@ public class FloatArrayList
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @since 2020/01/01
 	 */
+	@SquirrelJMEVendorApi
 	public float set(int __i, float __v)
 		throws IndexOutOfBoundsException
 	{
@@ -130,6 +139,19 @@ public class FloatArrayList
 	public int size()
 	{
 		return this.size;
+	}
+	
+	/**
+	 * Returns the boxed list type of the given primitive array.
+	 * 
+	 * @param __array The array to wrap.
+	 * @return The boxed list type.
+	 * @since 2023/05/29
+	 */
+	@SquirrelJMEVendorApi
+	public static List<Float> asList(float... __array)
+	{
+		return new FloatArrayList(__array);
 	}
 }
 

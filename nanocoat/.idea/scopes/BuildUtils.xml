@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="BuildUtils" pattern="file[nanocoat]:cmake/utils//*" />
+</component>

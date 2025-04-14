@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.StringShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -62,8 +63,8 @@ public final class StringBuilder
 	public StringBuilder(int __c)
 		throws NegativeArraySizeException
 	{
-		// {@squirreljme.error ZZ1n The initial capacity cannot be negative.
-		// (The initial capacity)}
+		/* {@squirreljme.error ZZ1n The initial capacity cannot be negative.
+		(The initial capacity)} */
 		if (__c < 0)
 			throw new NegativeArraySizeException(
 				String.format("ZZ1n %d", __c));
@@ -169,7 +170,7 @@ public final class StringBuilder
 	@Override
 	public StringBuilder append(CharSequence __v)
 	{
-		// Print null instead
+		// Use null instead?
 		if (__v == null)
 			__v = "null";
 		
@@ -201,9 +202,28 @@ public final class StringBuilder
 		int at = this._at;
 		char[] buffer = (at + len > limit ? this.__buffer(len) : this._buffer);
 		
+		// Can natively write string here?
+		if (__v instanceof String)
+		{
+			StringShelf.stringToChar((String)__v, __s,
+				buffer, at, len);
+			at += len;
+		}
+		
+		// Copy from another StringBuilder
+		else if (__v instanceof StringBuilder)
+		{
+			System.arraycopy(((StringBuilder)__v)._buffer, __s,
+				buffer, at, len);
+			at += len;
+		}
+		
 		// Place input characters at this point
-		while (__s < __e)
-			buffer[at++] = __v.charAt(__s++);
+		else
+		{
+			while (__s < __e)
+				buffer[at++] = __v.charAt(__s++);
+		}
 		
 		// Set new size
 		this._at = at;
@@ -355,7 +375,7 @@ public final class StringBuilder
 	public char charAt(int __dx)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ1o Out of bound access. (The index)}
+		/* {@squirreljme.error ZZ1o Out of bound access. (The index)} */
 		if (__dx < 0 || __dx >= this._at)
 			throw new IndexOutOfBoundsException("ZZ1o " + __dx);
 		
@@ -567,7 +587,7 @@ public final class StringBuilder
 	public StringBuilder insert(int __dx, CharSequence __v)
 		throws IndexOutOfBoundsException
 	{
-		// Print null instead
+		// Use null instead
 		if (__v == null)
 			__v = "null";
 		
@@ -589,8 +609,8 @@ public final class StringBuilder
 	public StringBuilder insert(int __dx, CharSequence __v, int __s, int __e)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ1p Cannot insert sequence at a negative
-		// index.}
+		/* {@squirreljme.error ZZ1p Cannot insert sequence at a negative
+		index.} */
 		if (__dx < 0)
 			throw new IndexOutOfBoundsException("ZZ1p");
 		
@@ -607,9 +627,9 @@ public final class StringBuilder
 		int at = this._at;
 		char[] buffer = (at + len > limit ? this.__buffer(len) : this._buffer);
 		
-		// {@squirreljme.error ZZ1q The index of insertion exceeds the
-		// length of the current string. (The insertion index; The string
-		// length)}
+		/* {@squirreljme.error ZZ1q The index of insertion exceeds the
+		length of the current string. (The insertion index; The string
+		length)} */
 		if (__dx > at)
 			throw new IndexOutOfBoundsException(
 				String.format("ZZ1q %d %d", __dx, at));
@@ -618,12 +638,28 @@ public final class StringBuilder
 		// properly fit
 		System.arraycopy(buffer, __dx,
 			buffer, __dx + len, at - __dx);
-		/*for (int i = at - 1, o = i + len; i >= __dx; i--, o--)
-			buffer[o] = buffer[i];*/
 		
+		// Can use quicker native operation due to String?
 		// Place input characters at this point
-		while (__s < __e)
-			buffer[__dx++] = __v.charAt(__s++);
+		if (__v instanceof String)
+		{
+			StringShelf.stringToChar((String)__v, __s,
+				buffer, __dx, len);
+		}
+		
+		// Insert from another StringBuilder?
+		else if (__v instanceof StringBuilder)
+		{
+			System.arraycopy(((StringBuilder)__v)._buffer, __s,
+				buffer, __dx, len);
+		}
+		
+		// Otherwise, slower copy
+		else
+		{
+			while (__s < __e)
+				buffer[__dx++] = __v.charAt(__s++);
+		}
 		
 		// Set new size
 		this._at = at + len;
@@ -659,8 +695,8 @@ public final class StringBuilder
 	public StringBuilder insert(int __dx, char __v)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ1r Cannot insert sequence at a negative
-		// index.}
+		/* {@squirreljme.error ZZ1r Cannot insert sequence at a negative
+		index.} */
 		if (__dx < 0)
 			throw new IndexOutOfBoundsException("ZZ1r");
 		
@@ -669,9 +705,9 @@ public final class StringBuilder
 		int at = this._at;
 		char[] buffer = (at + 1 > limit ? this.__buffer(1) : this._buffer);
 		
-		// {@squirreljme.error ZZ1s The index of insertion exceeds the
-		// length of the current string. (The insertion index; The string
-		// length)}
+		/* {@squirreljme.error ZZ1s The index of insertion exceeds the
+		length of the current string. (The insertion index; The string
+		length)} */
 		if (__dx > at)
 			throw new IndexOutOfBoundsException(String.format(
 				"ZZ1s %d %d", __dx, at));
@@ -839,13 +875,11 @@ public final class StringBuilder
 	 * @since 2018/10/13
 	 */
 	@Api
-	@ImplementationNote("This does not actually even pad NULs it just " +
-		"sets the length or regrows the buffer as needed.")
 	public void setLength(int __nl)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ1t Attempt to use a length of a negative
-		// size.}
+		/* {@squirreljme.error ZZ1t Attempt to use a length of a negative
+		size.} */
 		if (__nl < 0)
 			throw new IndexOutOfBoundsException("ZZ1t");
 		
@@ -903,8 +937,8 @@ public final class StringBuilder
 	 * Returns a string which is a substring of the given portion of the
 	 * string.
 	 *
-	 * @param __s The start.
-	 * @param __e The end.
+	 * @param __s The start, inclusive.
+	 * @param __e The end, exclusive.
 	 * @return The resulting sub-string.
 	 * @throws StringIndexOutOfBoundsException If the specified positions
 	 * are not within the string bounds.
@@ -914,7 +948,7 @@ public final class StringBuilder
 	public String substring(int __s, int __e)
 		throws StringIndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ1u String index out of bounds.}
+		/* {@squirreljme.error ZZ1u String index out of bounds.} */
 		int len = this._at;
 		if (__s < 0 || __e < 0 || __s > __e || __s > len || __e > len)
 			throw new StringIndexOutOfBoundsException("ZZ1u");

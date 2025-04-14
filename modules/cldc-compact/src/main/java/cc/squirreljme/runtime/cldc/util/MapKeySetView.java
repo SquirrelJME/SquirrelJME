@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -20,13 +21,16 @@ import java.util.Map;
  * @param <V> The value stored.
  * @since 2018/10/10
  */
+@SquirrelJMEVendorApi
 public final class MapKeySetView<K, V>
 	extends AbstractSet<K>
 {
 	/** The backing map. */
+	@SquirrelJMEVendorApi
 	protected final Map<K, V> map;
 	
 	/** Is adding allowed? */
+	@SquirrelJMEVendorApi
 	protected final boolean allowAdd;
 	
 	/**
@@ -37,6 +41,7 @@ public final class MapKeySetView<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/01
 	 */
+	@SquirrelJMEVendorApi
 	public MapKeySetView(Map<K, V> __map, boolean __allowAdd)
 		throws NullPointerException
 	{

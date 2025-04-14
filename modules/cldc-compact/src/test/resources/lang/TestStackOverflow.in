@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+skip-on-timeout: true
+result: ExceptionThrown
+thrown: throwable:StackOverflowError

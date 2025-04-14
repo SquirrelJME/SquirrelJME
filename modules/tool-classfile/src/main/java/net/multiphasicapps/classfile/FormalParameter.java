@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2018/05/14
  */
 public final class FormalParameter
+	implements Contexual
 {
 	/**
 	 * {@inheritDoc}

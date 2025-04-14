@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -1457,7 +1457,7 @@ public class Arrays
 			ShellSort.<T>sort(Arrays.<T>asList(__a), __from, __to, __comp);
 		}
 		
-		// {@squirreljme.error ZZ2h Out of bounds access when sorting array.}
+		/* {@squirreljme.error ZZ2h Out of bounds access when sorting array.} */
 		catch (IndexOutOfBoundsException e)
 		{
 			if (e instanceof ArrayIndexOutOfBoundsException)

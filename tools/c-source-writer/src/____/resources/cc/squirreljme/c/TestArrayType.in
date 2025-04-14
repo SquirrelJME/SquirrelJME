@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-int: string[6]:int,foo,[,2,],;
+secondary-intint: string[9]:int,foo,[,2,],[,3,],;
+secondary-constint: string[7]:const,int,foo,[,2,],;
+secondary-constarray: true
+secondary-arrayofpointer: string[7]:int,*,foo,[,2,],;
+secondary-pointerpointerarray: string[10]:int,(,*,*,foo,),[,2,],;
+secondary-pointerarrayarray: string[12]:int,(,*,foo,),[,2,],[,3,],;
+secondary-constpointerarray: string[10]:int,(,*,const,foo,),[,2,],;
+secondary-alt: string[13]:int,(,*,const,*,*,const,foo,),[,2,],;
+secondary-alttwo: string[12]:int,(,*,foo,[,2,],),[,3,],;

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -74,7 +74,7 @@ public class Main
 			
 			// Output structure for the font
 			ps.println("/** SQF Defined Font. */");
-			ps.println("static sjme_sqf sjme_font =");
+			ps.println("static sjme_scritchui_sqf sjme_font =");
 			ps.println("{");
 			
 			// All four fields in the header

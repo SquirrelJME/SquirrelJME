@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -216,7 +216,7 @@ public class Random
 	public int nextInt(int __cap)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ2z Cap value must be a positive integer}
+		/* {@squirreljme.error ZZ2z Cap value must be a positive integer} */
 		if (__cap <= 0)
 			throw new IllegalArgumentException("ZZ2z");
 		

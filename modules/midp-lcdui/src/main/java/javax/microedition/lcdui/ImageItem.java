@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,8 +11,6 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 @Api
 public class ImageItem
@@ -85,8 +83,8 @@ public class ImageItem
 	{
 		super(__l);
 		
-		// {@squirreljme.error EB2i The appearance mode is not valid.
-		// (The appearance mode)}
+		/* {@squirreljme.error EB2i The appearance mode is not valid.
+		(The appearance mode)} */
 		if (__am != Item.PLAIN && __am != Item.BUTTON && __am != Item.HYPERLINK)
 			throw new IllegalArgumentException("EB2i " + __am);
 		
@@ -156,38 +154,6 @@ public class ImageItem
 		throws IllegalArgumentException
 	{
 		super.setLayout(__lay);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
-	@Override
-	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
-	{
-		return new __ImageItemState__(__backend, this);
-	}
-	
-	/**
-	 * Image item state.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __ImageItemState__
-		extends Item.__ItemState__
-	{
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__ImageItemState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-		}
 	}
 }
 

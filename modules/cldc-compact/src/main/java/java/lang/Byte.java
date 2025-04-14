@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -210,7 +210,7 @@ public final class Byte
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0t Byte value out of bounds.}
+		/* {@squirreljme.error ZZ0t Byte value out of bounds.} */
 		int val = Integer.decode(__s);
 		if (val < Byte.MIN_VALUE || val > Byte.MAX_VALUE)
 			throw new NumberFormatException("ZZ0t");
@@ -235,7 +235,7 @@ public final class Byte
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0u Byte value out of range.}
+		/* {@squirreljme.error ZZ0u Byte value out of range.} */
 		int val = Integer.parseInt(__s, __r);
 		if (val < Byte.MIN_VALUE || val > Byte.MAX_VALUE)
 			throw new NumberFormatException("ZZ0u");

@@ -1,0 +1,22 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+plugins
+{
+	id "java"
+}
+
+version = "1.8.$squirreljmeVMVersion"
+description = "Reserved for CDC BD-J XLet."
+
+squirreljme
+{
+	javaDocErrorCode = "ZG"
+	swmType = JavaMEMidletType.API
+	swmName = "Connected Device Configuration (BD-J Xlet)"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	api project(":modules:cdc-pbp")
+}

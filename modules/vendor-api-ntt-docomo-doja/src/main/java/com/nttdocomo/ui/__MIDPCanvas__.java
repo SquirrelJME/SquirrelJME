@@ -25,7 +25,8 @@ final class __MIDPCanvas__
 	private final Reference<Canvas> _imodeCanvas;
 	
 	/** Double buffered image for drawing operations. */
-	final DoubleBuffer _doubleBuffer = new DoubleBuffer(0xFFFFFFFF);
+	final DoubleBuffer _doubleBuffer =
+		new DoubleBuffer(0xFFFFFFFF);
 	
 	/**
 	 * Initializes the base canvas.
@@ -56,7 +57,8 @@ final class __MIDPCanvas__
 		if (rv == null)
 			return;
 		
-		rv.processEvent(Display.KEY_PRESSED_EVENT, Display.__mapKey(__code));
+		// Forward to handler
+		rv.__key(true, Display.__mapKey(__code));
 	}
 	
 	/**
@@ -72,7 +74,8 @@ final class __MIDPCanvas__
 		if (rv == null)
 			return;
 		
-		rv.processEvent(Display.KEY_RELEASED_EVENT, Display.__mapKey(__code));
+		// Forward to handler
+		rv.__key(false, Display.__mapKey(__code));
 	}
 	
 	/**
@@ -83,8 +86,8 @@ final class __MIDPCanvas__
 	@Override
 	protected void keyRepeated(int __code)
 	{
-		// There are no key repeats in i-mode, so say it is a press
-		this.keyPressed(__code);
+		// There are no key repeats in i-mode, so ignore it as most
+		// applications will get very confused by them
 	}
 	
 	/**
@@ -101,15 +104,37 @@ final class __MIDPCanvas__
 		if (rv == null)
 			return;
 		
-		// Perform a standard paint within i-mode using our double buffered
-		// image
+		// Only draw if not being called out of thread, this is a shim of
+		// sorts for DoJa applications that either draw correctly or draw
+		// themselves in the main loop when they should not
+		__LockFlush__ lockFlush = rv._lockFlush;
 		DoubleBuffer doubleBuffer = this._doubleBuffer;
-		rv.paint(new com.nttdocomo.ui.Graphics(
-			doubleBuffer.getGraphics(rv.getWidth(), rv.getHeight()),
-			rv._bgColor));
+		if (!lockFlush.__outOfThread())
+		{
+			// Draw with this buffer size
+			int w = rv.getWidth();
+			int h = rv.getHeight();
+			
+			// Perform a standard paint within i-mode using our double buffered
+			// image
+			__BGColor__ bgColor = rv._bgColor;
+			Graphics mg = doubleBuffer.getGraphics(w, h);
+			com.nttdocomo.ui.Graphics g = new com.nttdocomo.ui.Graphics(mg,
+				bgColor, lockFlush);
+			
+			// Forward paint call
+			rv.paint(g);
+		}
 		
-		// Paint the buffer to the given target
-		doubleBuffer.flush();
-		doubleBuffer.paint(__g);
+		// Regardless of whether this drawn in another thread incorrectly,
+		// a number of DoJa software depends on the actual proper drawing to
+		// perform the actual buffer update
+		// If the buffer is locked, do not update as the view will flicker
+		if (!lockFlush.__isLocked())
+		{
+			// Paint the buffer to the given target
+			doubleBuffer.flush();
+			doubleBuffer.paint(__g);
+		}
 	}
 }

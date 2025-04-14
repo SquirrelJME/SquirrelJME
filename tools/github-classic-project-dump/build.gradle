@@ -1,0 +1,21 @@
+plugins {
+	id "java"
+	id "application"
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+description = "Dumps GitHub Classic Projects through GitHub CLI"
+mainClassName = "cc.squirreljme.gh.classic.Main"
+
+dependencies {
+	implementation project(":modules:vendor-api-squirreljme-io")
+	
+	// Lombok for simpler getters/setters
+	implementation 'org.projectlombok:lombok:1.18.36'
+	annotationProcessor 'org.projectlombok:lombok:1.18.36'
+	
+	// Jackson, for JSON APIs
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr353:2.17.2'
+	implementation 'org.glassfish:javax.json:1.1'
+}

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -185,7 +185,7 @@ public class ShiftJisDecoder
 		}
 		catch (IOException e)
 		{
-			// {@squirreljme.error ZZ4i Could not load the Shift-JIS table.}
+			/* {@squirreljme.error ZZ4i Could not load the Shift-JIS table.} */
 			throw new RuntimeException("ZZ4i", e);
 		}
 	}

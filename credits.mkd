@@ -14,6 +14,11 @@ is used, refer to that for library bring-ins.
  * _"crystalct"_
    * RatufaCoat updates related to LibRetro:
      * PS3 Toolchain updates.
+ * _"EXL"_
+   * E378i (JV-Lite2 Wireless Edition) device access. 
+ * [ej-technologies](https://www.ej-technologies.com/)
+   * Install4J Open Source License.
+   * <https://www.ej-technologies.com/products/install4j/overview.html>.
  * Francisco Javier Trujillo Mata
    * RatufaCoat updates related to LibRetro:
      * PS2 Toolchain updates.

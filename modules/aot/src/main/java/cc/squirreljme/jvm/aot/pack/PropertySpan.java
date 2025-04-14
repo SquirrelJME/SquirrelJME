@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ public final class PropertySpan
 	public PropertySpan(int __numProperties)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AJ02 Invalid number of properties.}
+		/* {@squirreljme.error AJ02 Invalid number of properties.} */
 		if (__numProperties <= 0)
 			throw new IllegalArgumentException("AJ02 " + __numProperties);
 		

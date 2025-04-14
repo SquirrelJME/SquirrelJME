@@ -6,82 +6,49 @@
       <profile name="Gradle Imported" enabled="true">
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.24/13a394eed5c4f9efb2a6d956e2086f1d81e857d9/lombok-1.18.24.jar" />
+          <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.28/a2ff5da8bcd8b1b26f36b806ced63213362c6dcc/lombok-1.18.28.jar" />
         </processorPath>
+        <module name="Projects.squirreljme.buildSrc.main" />
+      </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.36/5a30490a6e14977d97d9c73c924c1f1b5311ea95/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="squirreljme.tools.github-classic-project-dump.main" />
+        <module name="squirreljme.tools.cicd-release-bundle.main" />
+        <module name="squirreljme.tools.squirreljme-font.main" />
         <module name="squirreljme.buildSrc.main" />
+        <module name="squirreljme.tools.squirreljme-debugger.main" />
+        <module name="squirreljme.tools.squirreljme-javap.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
-      <module name="squirreljme.buildSrc.markdownJavaDoc" target="11" />
-      <module name="squirreljme.emulators.emulator-runner.main" target="8" />
-      <module name="squirreljme.emulators.emulator-runner.test" target="8" />
-      <module name="squirreljme.emulators.interpreter-vm" target="11" />
-      <module name="squirreljme.emulators.interpreter-vm.test" target="11" />
-      <module name="squirreljme.emulators.summercoat-vm" target="11" />
-      <module name="squirreljme.emulators.summercoat-vm.test" target="11" />
-      <module name="squirreljme.main" target="1.7" />
-      <module name="squirreljme.modules.all-vms.main" target="1.7" />
-      <module name="squirreljme.modules.all-vms.test" target="1.7" />
-      <module name="squirreljme.modules.aot-summercoat-base.main" target="1.7" />
-      <module name="squirreljme.modules.aot-summercoat-base.test" target="1.7" />
-      <module name="squirreljme.modules.build.main" target="1.7" />
-      <module name="squirreljme.modules.build.test" target="1.7" />
-      <module name="squirreljme.modules.common-vm-stubs.main" target="1.7" />
-      <module name="squirreljme.modules.common-vm-stubs.test" target="1.7" />
-      <module name="squirreljme.modules.main" target="1.7" />
-      <module name="squirreljme.modules.nokia.main" target="1.7" />
-      <module name="squirreljme.modules.nokia.test" target="1.7" />
-      <module name="squirreljme.modules.nttdocomo-api.main" target="1.7" />
-      <module name="squirreljme.modules.nttdocomo-api.test" target="1.7" />
-      <module name="squirreljme.modules.nttdocomo-doja-api.main" target="1.7" />
-      <module name="squirreljme.modules.nttdocomo-doja-api.test" target="1.7" />
-      <module name="squirreljme.modules.springcoat-vm.main" target="1.7" />
-      <module name="squirreljme.modules.springcoat-vm.test" target="1.7" />
-      <module name="squirreljme.modules.strings.main" target="1.7" />
-      <module name="squirreljme.modules.strings.test" target="1.7" />
-      <module name="squirreljme.modules.strings.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.summercoat-vm.main" target="1.7" />
-      <module name="squirreljme.modules.summercoat-vm.test" target="1.7" />
-      <module name="squirreljme.modules.supervisor.main" target="1.7" />
-      <module name="squirreljme.modules.supervisor.test" target="1.7" />
-      <module name="squirreljme.modules.supervisor.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.tac-runner.main" target="1.7" />
-      <module name="squirreljme.modules.tac-runner.test" target="1.7" />
-      <module name="squirreljme.modules.tac-runner.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.test" target="1.7" />
-      <module name="squirreljme.modules.tool-compiler.main" target="1.7" />
-      <module name="squirreljme.modules.tool-compiler.test" target="1.7" />
-      <module name="squirreljme.modules.tool-compiler.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.tool-jarfile.main" target="1.7" />
-      <module name="squirreljme.modules.tool-jarfile.test" target="1.7" />
-      <module name="squirreljme.modules.tool-jarfile.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.tool-jdwp.main" target="1.7" />
-      <module name="squirreljme.modules.tool-jdwp.test" target="1.7" />
-      <module name="squirreljme.modules.tool-jdwp.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.tool-manifest-reader.main" target="1.7" />
-      <module name="squirreljme.modules.tool-manifest-reader.test" target="1.7" />
-      <module name="squirreljme.modules.tool-manifest-reader.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.tool-packfile.main" target="1.7" />
-      <module name="squirreljme.modules.tool-packfile.test" target="1.7" />
-      <module name="squirreljme.modules.tool-packfile.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.tool-profiler.main" target="1.7" />
-      <module name="squirreljme.modules.tool-profiler.test" target="1.7" />
-      <module name="squirreljme.modules.tool-profiler.testFixtures" target="1.7" />
-      <module name="squirreljme.test" target="1.7" />
-      <module name="squirreljme.tools.dump-class.main" target="1.8" />
-      <module name="squirreljme.tools.dump-class.test" target="1.8" />
-      <module name="squirreljme.tools.dump-zip.main" target="1.8" />
-      <module name="squirreljme.tools.dump-zip.test" target="1.8" />
-      <module name="squirreljme.tools.instruction-popcount.main" target="1.7" />
-      <module name="squirreljme.tools.instruction-popcount.test" target="1.7" />
-      <module name="squirreljme.tools.javap.main" target="1.7" />
-      <module name="squirreljme.tools.javap.test" target="1.7" />
-      <module name="squirreljme.tools.sxs.main" target="1.7" />
-      <module name="squirreljme.tools.sxs.test" target="1.7" />
-      <module name="squirreljme.tools.uudecode.main" target="1.8" />
-      <module name="squirreljme.tools.uudecode.test" target="1.8" />
-      <module name="squirreljme.utilities.main" target="1.7" />
-      <module name="squirreljme.utilities.test" target="1.7" />
+      <module name="Projects.squirreljme.buildSrc.main" target="11" />
+      <module name="squirreljme.tools.unzip.test" target="17" />
+      <module name="Stephanie Gawroriski.squirreljme.buildSrc.main" target="11" />
+      <module name="stephanie.squirreljme.buildSrc" target="11" />
+      <module name="stephanie.squirreljme.buildSrc.main" target="11" />
+      <module name="stephanie.squirreljme.buildSrc.test" target="11" />
+      <module name="stephanie.squirreljme.buildSrc.test~1" target="11" />
+      <module name="stephanie.squirreljme.emulators.emulator-base" target="11" />
+      <module name="stephanie.squirreljme.emulators.emulator-base.test" target="11" />
+      <module name="stephanie.squirreljme.emulators.nanocoat-vm" target="11" />
+      <module name="stephanie.squirreljme.emulators.nanocoat-vm.test" target="11" />
+      <module name="stephanie.squirreljme.emulators.nanocoat-vm.test~1" target="11" />
+      <module name="stephanie.squirreljme.emulators.springcoat-vm" target="11" />
+      <module name="stephanie.squirreljme.emulators.springcoat-vm.test" target="11" />
+      <module name="stephanie.squirreljme.emulators.standalone" target="11" />
+      <module name="stephanie.squirreljme.emulators.standalone.test" target="11" />
+      <module name="stephanie.squirreljme.tools.pcf-to-sqf" target="11" />
+      <module name="stephanie.squirreljme.tools.pcf-to-sqf.main" target="11" />
+      <module name="stephanie.squirreljme.tools.pcf-to-sqf.test" target="11" />
+      <module name="stephanie.squirreljme.tools.sqf-to-c" target="11" />
+      <module name="stephanie.squirreljme.tools.sqf-to-c.main" target="11" />
+      <module name="stephanie.squirreljme.tools.sqf-to-c.test" target="11" />
+      <module name="stephanie.squirreljme.tools.txt-to-pbm" target="11" />
+      <module name="stephanie.squirreljme.tools.txt-to-pbm.main" target="11" />
+      <module name="stephanie.squirreljme.tools.txt-to-pbm.test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

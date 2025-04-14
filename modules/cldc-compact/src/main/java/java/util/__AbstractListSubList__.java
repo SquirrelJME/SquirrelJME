@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ final class __AbstractListSubList__<E>
 		if (__list == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ3r End point is before starting point.}
+		/* {@squirreljme.error ZZ3r End point is before starting point.} */
 		if (__from > __to)
 			throw new IllegalArgumentException("ZZ3r");
 		

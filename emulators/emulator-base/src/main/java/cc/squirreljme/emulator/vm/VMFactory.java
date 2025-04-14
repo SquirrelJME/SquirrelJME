@@ -3,15 +3,26 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
-import cc.squirreljme.jdwp.JDWPFactory;
+import cc.squirreljme.jdwp.host.JDWPHostFactory;
+import cc.squirreljme.jvm.launch.Application;
+import cc.squirreljme.jvm.launch.AvailableSuites;
+import cc.squirreljme.jvm.launch.ScannerUtils;
+import cc.squirreljme.jvm.launch.SuiteScanner;
+import cc.squirreljme.jvm.manifest.JavaManifest;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
+import cc.squirreljme.jvm.suite.EntryPoint;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.full.SystemPathProvider;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.NameOverrideClassLibrary;
@@ -20,8 +31,11 @@ import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StreamTokenizer;
+import java.io.StringReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,12 +45,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import java.util.ServiceLoader;
-import java.util.jar.Manifest;
 
 /**
  * This class is used to initialize virtual machines based on a set of factory
@@ -72,6 +88,19 @@ public abstract class VMFactory
 	private static final String STANDALONE_DIRECTORY =
 		"X-SquirrelJME-Standalone-Internal-Jar-Root";
 	
+	/** Internal JAR directory root (debug). */
+	private static final String STANDALONE_DIRECTORY_DEBUG =
+		"X-SquirrelJME-Standalone-Internal-Debug-Jar-Root";
+	
+	/** Extra Jar Extensions. */
+	private static final String[] _EXTRA_EXT =
+		new String[] {
+			".adf", ".ADF", ".jad", ".JAD", ".jam", ".JAM", ".sec", ".SEC", 
+			".sp", ".SP", ".sp0", ".SP0", ".sp1", ".SP1", ".sp2", ".SP2", 
+			".sp3", ".SP3", ".sp4", ".SP4", ".sp5", ".SP5", ".sp6", ".SP6", 
+			".sp7", ".SP7", ".sp8", ".SP8", ".sp9", ".SP9", ".sto", ".STO"
+		};
+	
 	/** The separator character. */
 	private static final char SEPARATOR_CHAR;
 	
@@ -105,13 +134,13 @@ public abstract class VMFactory
 	/**
 	 * Creates the virtual machine using the given parameters.
 	 *
-	 * @param __ps The profiler snapshot to write to.
+	 * @param __profiler The profiler snapshot to write to.
 	 * @param __jdwp The debugger to use.
 	 * @param __threadModel The threading model to use.
-	 * @param __sm The suite manager.
-	 * @param __cp The classpath to initialize with.
-	 * @param __maincl The main class to start executing.
-	 * @param __sprops System properties for the running program.
+	 * @param __suiteManager The suite manager.
+	 * @param __classpath The classpath to initialize with.
+	 * @param __mainClass The main class to start executing.
+	 * @param __sysProps System properties for the running program.
 	 * @param __args Arguments for the running program.
 	 * @return An instance of the virtual machine.
 	 * @throws IllegalArgumentException If an input argument is not valid.
@@ -119,10 +148,10 @@ public abstract class VMFactory
 	 * @throws VMException If the virtual machine could not be created.
 	 * @since 2018/11/17
 	 */
-	protected abstract VirtualMachine createVM(ProfilerSnapshot __ps,
-		JDWPFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __sm,
-		VMClassLibrary[] __cp,
-		String __maincl, Map<String, String> __sprops, String[] __args)
+	protected abstract VirtualMachine createVM(ProfilerSnapshot __profiler,
+		JDWPHostFactory __jdwp, VMThreadModel __threadModel,
+		VMSuiteManager __suiteManager, VMClassLibrary[] __classpath,
+		String __mainClass, Map<String, String> __sysProps, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException;
 	
 	/**
@@ -146,32 +175,67 @@ public abstract class VMFactory
 		// Debugging host and port, if enabled
 		String jdwpHost = null; 
 		int jdwpPort = -1;
+		boolean internalDebug = false;
+		boolean internalDebugFork = true;
 		
 		// Threading model
 		VMThreadModel threadModel = VMThreadModel.DEFAULT;
 		
 		// Load our own META-INF/MANIFEST.MF for some special properties
-		Manifest metaManifest = null;
+		JavaManifest metaManifest = null;
 		try (InputStream in = VMFactory.class
 			.getResourceAsStream("/META-INF/MANIFEST.MF"))
 		{
-			Debugging.debugNote("GOT MANIFEST: %s", in);
+			if (Debugging.VERBOSE)
+				Debugging.debugNote("GOT MANIFEST: %s", in);
+			
 			if (in != null)
-				metaManifest = new Manifest(in);
+				metaManifest = new JavaManifest(in);
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 		
+		// Initial trace bits
+		int initTraceBits = 0;
+		
+		// Was the -jar switch used?
+		boolean didJar = false;
+		String rawJarPath = null;
+		String rawJarEntry = null;
+		
+		// Was the -version switch used?
+		String didVersion = null;
+		
+		// Clutter level of the library
+		String clutterLevel = "release";
+		
+		// Load in standard system properties
+		VMFactory.__standardSysProps(systemProperties);
+		
+		// Load in standard paths
+		VMFactory.__standardPaths(libraries);
+		
 		// Command line format is:
 		// -Xemulator:(vm)
 		// -Xsnapshot:(path-to-nps)
+		// -Xentry:id
 		// -Xlibraries:(class:path:...)
 		// -Xjdwp:[hostname]:port
 		// -Xthread:(single|coop|multi|smt)
 		// -Dsysprop=value
 		// -classpath (class:path:...)
+		// -Xclutter:(release|debug)
+		// -Xtrace:(flag|...)
+		// -zero
+		// -client
+		// -server
+		// -version
+		// --version
+		// -XstartOnFirstThread
+		// -Xscritchui:(ui)
+		// Optionally `-jar`
 		// Main-class
 		// Arguments...
 		Deque<String> queue = new LinkedList<>(Arrays.<String>asList(__args));
@@ -204,7 +268,28 @@ public abstract class VMFactory
 				
 				// Split hostname and port
 				jdwpHost = hostPort.substring(0, lastCol);
-				jdwpPort = Integer.parseInt(hostPort.substring(lastCol + 1));
+				jdwpPort = Integer.parseInt(
+					hostPort.substring(lastCol + 1));
+			}
+			
+			// Direct debugger usage
+			else if (item.startsWith("-Xdebug") ||
+				item.startsWith("-Xdebug:"))
+			{
+				// Just set this flag
+				internalDebug = true;
+				
+				// Should the debugger be forked?
+				int col = item.indexOf(':');
+				if (col >= 0)
+				{
+					String param = item.substring(col + 1);
+					
+					if ("fork".equals(param))
+						internalDebugFork = true;
+					else if ("nofork".equals(param))
+						internalDebugFork = false;
+				}	
 			}
 			
 			// Select a VM
@@ -231,9 +316,26 @@ public abstract class VMFactory
 			else if (item.startsWith("-Xlibraries:"))
 			{
 				for (String entry : VMFactory.__unSeparateClassPath(
-					item.substring(item.indexOf(':') + 1)))
+					item.substring(item.indexOf(':') + 1), false))
 					VMFactory.__addPaths(libraries, entry);
 			}
+			
+			// Jar entry point selection
+			else if (item.startsWith("-Xentry:"))
+			{
+				rawJarEntry = item.substring("-Xentry:".length());
+			}
+			
+			// Initial trace options
+			else if (item.startsWith("-Xtrace:"))
+			{
+				initTraceBits = VMTraceFlagTracker.parseBits(
+					item.substring("-Xtrace:".length()));
+			}
+			
+			// Clutter level to use
+			else if (item.startsWith("-Xclutter:"))
+				clutterLevel = item.substring("-Xclutter:".length());
 			
 			// JARs to load
 			else if (item.equals("-classpath") || item.equals("-cp"))
@@ -241,12 +343,53 @@ public abstract class VMFactory
 				// Get argument attached to this
 				String strings = queue.pollFirst();
 				if (strings == null)
-					throw new NullPointerException("Classpath missing.");
+					throw new IllegalArgumentException("Classpath missing.");
 				
 				// Extract path elements
-				for (String entry : VMFactory.__unSeparateClassPath(strings))
+				for (String entry : VMFactory.__unSeparateClassPath(strings,
+					false))
 					VMFactory.__addPaths(suiteClasspath, entry);
 			}
+			
+			// Direct Jar launch
+			else if (item.equals("-jar"))
+			{
+				// Get Jar attached to this
+				String string = queue.pollFirst();
+				if (string == null)
+					throw new IllegalArgumentException(
+						"Jar argument missing.");
+				
+				// We use this Jar
+				rawJarPath = string;
+				
+				// We stop everything and just parse everything else as a Jar
+				// directly...
+				didJar = true;
+				break;
+			}
+			
+			// Alias for SpringCoat
+			else if (item.equals("-zero") || item.equals("-Xint"))
+				vmName = "springcoat";
+			
+			// Ignored
+			else if (item.equals("-client") || item.equals("-server") ||
+				item.equals("-XstartOnFirstThread"))
+			{
+				// Ignored
+			}
+			
+			// ScritchUI library
+			else if (item.startsWith("-Xscritchui:"))
+			{
+				systemProperties.put("cc.squirreljme.scritchui",
+					item.substring("-Xscritchui:".length()));
+			}
+			
+			// Version information (stdout/stderr)
+			else if (item.equals("-version") || item.equals("--version"))
+				didVersion = item;
 			
 			// Unknown
 			else
@@ -254,41 +397,101 @@ public abstract class VMFactory
 					"Unknown command line switch: %s", item));
 		}
 		
-		// Main program arguments
-		Collection<String> mainArgs = new LinkedList<>();
+		// These options are mutually exclusive...
+		if (internalDebug && (jdwpHost != null || jdwpPort >= 1))
+			throw new IllegalArgumentException(
+				"-Xdebug and -Xjdwp are mutually exclusive.");
 		
-		// Main class is here
-		String mainClass = queue.pollFirst();
-		if (mainClass == null || mainClass.isEmpty())
+		// Main program arguments
+		List<String> mainArgs = new LinkedList<>();
+		
+		// Default built in libraries, if available?
+		if (metaManifest != null)
 		{
-			// Try from the manifest
-			if (metaManifest != null)
-				mainClass = metaManifest.getMainAttributes().getValue(
-					VMFactory.STANDALONE_MAIN_CLASS);
+			String defLib = metaManifest.getMainAttributes().getValue(
+				VMFactory.STANDALONE_LIBRARY);
+			if (defLib != null && !defLib.isEmpty())
+				for (String entry : VMFactory.__unSeparateClassPath(defLib,
+					true))
+					VMFactory.__addPaths(libraries, entry);
+		}
+		
+		// Version output
+		String mainClass;
+		if (didVersion != null)
+		{
+			mainClass = "cc.squirreljme.runtime.cldc.PrintVersion";
+			mainArgs.add(didVersion);
+			mainArgs.add(Objects.toString(metaManifest.getMainAttributes()
+				.getValue("X-SquirrelJME-BuildVersion"),
+				"tarball"));
 			
-			// Still failed?
-			if (mainClass == null || mainClass.isEmpty())
-				throw new IllegalArgumentException("No main class specified.");
+			// Forces no -jar
+			didJar = false;
 			
 			// Default class path for launching
-			String defCp = metaManifest.getMainAttributes()
-				.getValue(VMFactory.STANDALONE_CLASSPATH);
+			String defCp = metaManifest.getMainAttributes().getValue(
+				VMFactory.STANDALONE_CLASSPATH);
 			if (defCp != null && !defCp.isEmpty())
-				for (String entry : VMFactory.__unSeparateClassPath(defCp))
+				for (String entry : VMFactory.__unSeparateClassPath(defCp,
+					true))
 					VMFactory.__addPaths(suiteClasspath, entry);
+		}
+		
+		// Did not do -jar, so do normal command line parse
+		else if (!didJar)
+		{
+			// Main class is here
+			mainClass = queue.pollFirst();
+			if (mainClass == null || mainClass.isEmpty())
+			{
+				// Try from the manifest
+				if (metaManifest != null)
+					mainClass = metaManifest.getMainAttributes().getValue(
+						VMFactory.STANDALONE_MAIN_CLASS);
+				
+				// Still failed?
+				if (mainClass == null || mainClass.isEmpty())
+					throw new IllegalArgumentException(
+						"No main class specified.");
+				
+				// Default class path for launching
+				String defCp = metaManifest.getMainAttributes().getValue(
+					VMFactory.STANDALONE_CLASSPATH);
+				if (defCp != null && !defCp.isEmpty())
+					for (String entry : VMFactory.__unSeparateClassPath(defCp,
+						true))
+						VMFactory.__addPaths(suiteClasspath, entry);
+				
+				// Default parameter?
+				String defParam = metaManifest.getMainAttributes().getValue(
+					VMFactory.STANDALONE_PARAMETER);
+				if (defParam != null && !defParam.isEmpty())
+					mainArgs.add(defParam);
+			}
+		}
+		
+		// -jar switch
+		else
+		{
+			// Make sure this exists in the library path
+			if (!libraries.contains(rawJarPath))
+				libraries.add(rawJarPath);
 			
-			// Default library for what is available
-			String defLib = metaManifest.getMainAttributes()
-				.getValue(VMFactory.STANDALONE_LIBRARY);
-			if (defLib != null && !defLib.isEmpty())
-				for (String entry : VMFactory.__unSeparateClassPath(defLib))
-					VMFactory.__addPaths(libraries, entry);
+			// Add any other extensions adjacent to the Jar
+			Path jarPath = Paths.get(rawJarPath);
+			if (Files.exists(jarPath))
+				for (String ext : VMFactory._EXTRA_EXT)
+				{
+					Path tryFile = jarPath.resolveSibling(
+						ScannerUtils.siblingByExt(
+							jarPath.getFileName().toString(), ext));
+					
+					if (Files.exists(tryFile))
+						libraries.add(tryFile.toString());
+				}
 			
-			// Default parameter?
-			String defParam = metaManifest.getMainAttributes()
-				.getValue(VMFactory.STANDALONE_PARAMETER);
-			if (defParam != null && !defParam.isEmpty())
-				mainArgs.add(defParam);
+			mainClass = null;
 		}
 		
 		// Fill in the rest with the main argument calls
@@ -303,14 +506,22 @@ public abstract class VMFactory
 		ResourceBasedSuiteManager standaloneDir = null;
 		if (metaManifest != null)
 		{
-			String prefix = metaManifest.getMainAttributes()
-				.getValue(VMFactory.STANDALONE_DIRECTORY);
+			String prefix;
+			if (Objects.equals("debug", clutterLevel))
+				prefix = metaManifest.getMainAttributes()
+					.getValue(VMFactory.STANDALONE_DIRECTORY_DEBUG);
+			else
+				prefix = metaManifest.getMainAttributes()
+					.getValue(VMFactory.STANDALONE_DIRECTORY);
 			
 			// If it exists, use it!
 			if (prefix != null)
 				standaloneDir = new ResourceBasedSuiteManager(
 					VMFactory.class, prefix);
 		}
+		
+		// Found Jar library?
+		VMClassLibrary jarLib = null;
 		
 		// Determine any suites that are available in the suite library
 		Map<String, VMClassLibrary> suites = new LinkedHashMap<>();
@@ -325,8 +536,9 @@ public abstract class VMFactory
 				continue;
 			
 			// Note it
-			Debugging.debugNote("Registering %s (%s)",
-				normalName, path);
+			if (Debugging.VERBOSE)
+				Debugging.debugNote("Registering %s (%s)",
+					normalName, path);
 			
 			// Is there a built-in resource based for this JAR itself?
 			VMClassLibrary place;
@@ -347,8 +559,15 @@ public abstract class VMFactory
 			
 			// Place in the class library, but make sure the name matches
 			// the normalized name of the JAR
-			suites.put(normalName,
-				new NameOverrideClassLibrary(place, normalName));
+			VMClassLibrary target =
+				new NameOverrideClassLibrary(place, normalName);
+			suites.put(normalName, target);
+			
+			// Is this a Jar we are launching?
+			if (rawJarPath != null)
+				if (rawJarPath.equals(normalName) ||
+					rawJarPath.equals(library))
+					jarLib = target;
 		}
 		
 		// Go through the class path and normalize the names so that it finds
@@ -358,26 +577,138 @@ public abstract class VMFactory
 			classpath.add(VMFactory.__normalizeName(
 				Paths.get(classItem).getFileName().toString()));
 		
+		// Now that we loaded in all the libraries we can do the resolution
+		// for the -jar switch
+		if (didJar)
+		{
+			// Initialize fake shelf
+			FakeJarPackageShelf fakeShelf = new FakeJarPackageShelf(suites);
+			
+			// No original launching Jar found?
+			if (jarLib == null)
+				throw new IllegalArgumentException(
+					"Could not find the original Jar?");
+			
+			// Map to a fake jar
+			JarPackageBracket fakeJar = new FakeJarPackageBracket(jarLib);
+			
+			// Setup suite scanner to use our fake suite list and combined
+			// libraries accordingly, scan all suites to get available
+			// applications we can potentially launch
+			SuiteScanner scanner = new SuiteScanner(false, fakeShelf);
+			AvailableSuites available = scanner.scanSuites();
+			
+			// Find applications for our Jar
+			Application[] apps = available.findApplications(fakeJar);
+			if (apps == null || apps.length == 0)
+				throw new IllegalArgumentException("Found no applications " +
+					"within jar: " + rawJarPath);
+			
+			// Debug note them
+			for (int i = 0, n = apps.length; i < n; i++)
+				Debugging.debugNote("Application %d: %s",
+					i, apps[i].entryPoint());
+			
+			// Which index are we launching?
+			int launchIndex;
+			if (rawJarEntry == null)
+				launchIndex = 0;
+			else
+			{
+				// Mappable to integer?
+				try
+				{
+					launchIndex = Integer.parseInt(rawJarEntry);
+				}
+				catch (NumberFormatException ignored)
+				{
+					launchIndex = 0;
+					for (int i = 0, n = apps.length; i < n; i++)
+					{
+						Application app = apps[i];
+						
+						if (rawJarEntry.equals(
+							app.entryPoint().name()) || rawJarEntry.equals(
+							app.entryPoint().entryPoint()))
+						{
+							launchIndex = i;
+							break;
+						}
+					}
+				}
+			}
+			
+			// Fill in launch information accordingly
+			Application app = apps[launchIndex];
+			EntryPoint appEntry = app.entryPoint();
+			
+			// There might need to be a helper for this
+			mainClass = app.loaderEntryClass();
+			if (mainClass == null)
+				mainClass = appEntry.entryPoint();
+			
+			// Extract any needed system properties
+			Map<String, String> wantProps = app.loaderSystemProperties();
+			if (wantProps != null)
+				systemProperties.putAll(wantProps);
+			
+			// Do we need special loader arguments to pass before this, so
+			// it can correctly launch?
+			String[] loaderArgs = app.loaderEntryArgs();
+			if (loaderArgs != null && loaderArgs.length > 0)
+				mainArgs.addAll(0, Arrays.asList(loaderArgs));
+			
+			// Need to use the classpath to run the jar with
+			classpath.clear();
+			for (JarPackageBracket jar : app.classPath())
+			{
+				// Get the original path
+				String path = fakeShelf.libraryPath(jar);
+				
+				// Debug
+				Debugging.debugNote("Adding into classpath: %s",
+					path);
+				
+				// Add it
+				classpath.add(path);
+			}
+		}
+		
 		// Run the VM, but always make sure we can
 		int exitCode = -1;
 		try
 		{
-			// Debug
-			Debugging.debugNote("Starting virtual machine (in %s)...",
-				mainClass);
-			Debugging.debugNote("Args: %s", Arrays.asList(__args));
+			if (Debugging.VERBOSE)
+			{
+				// Debug
+				Debugging.debugNote("Starting virtual machine (in %s)...",
+					mainClass);
+				Debugging.debugNote("Args: %s", Arrays.asList(__args));
+			}
 			
 			// Run the VM
 			VirtualMachine vm = VMFactory.mainVm(vmName,
 				profilerSnapshot,
-				(jdwpPort >= 1 ?
-					VMFactory.__setupJdwp(jdwpHost, jdwpPort) : null),
+				(internalDebug ?
+					VMFactory.__setupJdwpInternal(internalDebugFork) :
+					(jdwpPort >= 1 ? VMFactory.__setupJdwp(jdwpHost,
+						jdwpPort) : null)),
 				threadModel,
 				new ArraySuiteManager(suites.values()),
 				classpath.<String>toArray(new String[classpath.size()]),
 				mainClass,
 				systemProperties,
 				mainArgs.<String>toArray(new String[mainArgs.size()]));
+			
+			// Set global trace bits for the VM
+			if (VMTraceFlagTracker.GLOBAL_TRACING_BITS != 0)
+				vm.setTraceBits(true,
+					VMTraceFlagTracker.GLOBAL_TRACING_BITS);
+			
+			// Set trace bits for the VM
+			if (initTraceBits != 0)
+				vm.setTraceBits(true,
+					initTraceBits);
 			
 			// Run the virtual machine until it exits, but do not exit yet
 			// because we want the snapshot to be created
@@ -439,7 +770,7 @@ public abstract class VMFactory
 	 * @since 2018/11/17
 	 */
 	public static VirtualMachine mainVm(String __vm, ProfilerSnapshot __ps,
-		JDWPFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __sm,
+		JDWPHostFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __sm,
 		String[] __cp,
 		String __bootcl, Map<String, String> __sprops, String... __args)
 		throws IllegalArgumentException, NullPointerException, VMException
@@ -482,8 +813,8 @@ public abstract class VMFactory
 			}
 		}
 		
-		// {@squirreljme.error AK03 The specified virtual machine does not
-		// exist. (The virtual machine name)}
+		/* {@squirreljme.error AK03 The specified virtual machine does not
+		exist. (The virtual machine name)} */
 		if (factory == null)
 			throw new VMException("AK03 " + __vm);
 		
@@ -525,23 +856,73 @@ public abstract class VMFactory
 			throw new NullPointerException("NARG");
 		
 		// Add directly if not a wildcard
-		if (!__path.endsWith("*"))
+		if (!__path.endsWith("*") && !__path.startsWith("wildcard="))
 		{
 			__files.add(__path);
 			return;
 		}
 		
-		// Try searching for JAR files in a directory
+		// Try multiple different wildcard types
+		String basePath;
+		if (__path.startsWith("wildcard="))
+			basePath = __path.substring("wildcard=".length());
+		else if (__path.endsWith("*.*"))
+			basePath = __path.substring(0, __path.length() - 3);
+		else if (__path.endsWith("**"))
+			basePath = __path.substring(0, __path.length() - 2);
+		else
+			basePath = __path.substring(0, __path.length() - 1);
+		
+		// Realize it
+		VMFactory.__addPathsWildcard(__files, basePath);
+	}
+	
+	/**
+	 * Adds wildcard directory.
+	 *
+	 * @param __files The files to place into.
+	 * @param __basePath The base path.
+	 * @since 2024/02/25
+	 */
+	private static void __addPathsWildcard(Collection<String> __files,
+		String __basePath)
+		throws NullPointerException
+	{
+		if (__files == null || __basePath == null)
+			throw new NullPointerException("NARG");
+		
+		VMFactory.__addPathsWildcard(__files, Paths.get(__basePath));
+	}
+	
+	/**
+	 * Adds wildcard directory.
+	 *
+	 * @param __files The files to place into.
+	 * @param __basePath The base path.
+	 * @since 2024/02/25
+	 */
+	private static void __addPathsWildcard(Collection<String> __files,
+		Path __basePath)
+		throws NullPointerException
+	{
+		if (__files == null || __basePath == null)
+			throw new NullPointerException("NARG");
+		
 		try
 		{
-			Path startPath = Paths.get(
-				__path.substring(0, __path.length() - 1));
-			Files.walkFileTree(startPath, new __JarWalker__(__files));
+			// Ignore if not a directory
+			if (!Files.isDirectory(__basePath))
+				return;
+			
+			Files.walkFileTree(__basePath,
+				new HashSet<FileVisitOption>(
+					Arrays.asList(FileVisitOption.FOLLOW_LINKS)),
+				64,
+				new __JarWalker__(__files));
 		}
-		catch (IOException e)
+		catch (IOException __e)
 		{
-			throw new RuntimeException(String.format(
-				"Could not load wildcard JARs: %s", __path), e);
+			__e.printStackTrace();
 		}
 	}
 	
@@ -637,11 +1018,7 @@ public abstract class VMFactory
 			throw new NullPointerException("NARG");
 		
 		// Not a known extension or normalized type
-		if (!(__name.endsWith(".jar") || __name.endsWith(".JAR") ||
-			__name.endsWith(".jad") || __name.endsWith(".JAD") ||
-			__name.endsWith(".jam") || __name.endsWith(".JAM") ||
-			__name.endsWith(".sqc") || __name.endsWith(".SQC") ||
-			__name.endsWith(".kjx") || __name.endsWith(".KJX")))
+		if (!SuiteUtils.isAny(__name))
 			return __name;
 		
 		// Get the base name of the JAR or SQC
@@ -650,17 +1027,25 @@ public abstract class VMFactory
 		__name = __name.substring(0, lastDot);
 		
 		// Chop down potential foo"-0.4.0" from the end
-		for (int n = __name.length(), i = n - 1; i >= 0; i--)
+		int lastDash = __name.indexOf('-');
+		if (lastDash >= 0)
 		{
-			char c = __name.charAt(i);
+			// Is there a dot after the dash?
+			int dotAfterDash = __name.indexOf('.', lastDash);
 			
-			// Still potentially a version bit
-			if (c == '.' || c == '-' || (c >= '0' && c <= '9'))
-				__name = __name.substring(0, i);
-			
-			// Do not need
-			else
-				break;
+			if (dotAfterDash >= 0)
+				for (int n = __name.length(), i = n - 1; i >= 0; i--)
+				{
+					char c = __name.charAt(i);
+					
+					// Still potentially a version bit
+					if (c == '.' || c == '-' || (c >= '0' && c <= '9'))
+						__name = __name.substring(0, i);
+						
+					// Do not need
+					else
+						break;
+				}
 		}
 		
 		// Use this name
@@ -669,20 +1054,14 @@ public abstract class VMFactory
 	
 	/**
 	 * Sets up JDWP stream for connection.
-	 * 
+	 *
 	 * @param __host The hostname to use, if {@code null} this will be
 	 * a server.
 	 * @param __port The port to listen on.
 	 * @since 2021/03/08
 	 */
-	private static JDWPFactory __setupJdwp(String __host, int __port)
+	private static JDWPHostFactory __setupJdwp(String __host, int __port)
 	{
-		// Listening?
-		if (__host == null)
-		{
-			throw Debugging.todo();
-		}
-		
 		// Try opening the socket
 		Socket socket = null;
 		try
@@ -696,8 +1075,8 @@ public abstract class VMFactory
 				socket = new Socket(__host, __port);
 			
 			// Use factory to create it
-			return new JDWPFactory(socket.getInputStream(),
-				socket.getOutputStream());
+			return new JDWPHostFactory(socket.getInputStream(),
+				socket.getOutputStream(), __port);
 		}
 		
 		// Could not open the socket?
@@ -720,13 +1099,233 @@ public abstract class VMFactory
 	}
 	
 	/**
-	 * Unseparates for classpath.
-	 * 
+	 * Sets up an internal JDWP based debugger that is built into SquirrelJME. 
+	 *
+	 * @param __fork Should the debugger be forked?
+	 * @return The factory for creating the buffer.
+	 * @since 2024/01/19
+	 */
+	private static JDWPHostFactory __setupJdwpInternal(boolean __fork)
+	{
+		// Look for service for it
+		for (VMDebuggerService service :
+			ServiceLoader.load(VMDebuggerService.class))
+		{
+			// Running forked VM?
+			if (__fork)
+			{
+				// Choose random port that is not likely to be used
+				int port = 32767 +
+					new Random(System.currentTimeMillis())
+						.nextInt(32767);
+				
+				// Determine arguments for the debugger
+				List<String> args = new ArrayList<>();
+				
+				// Use this Java command
+				args.add(Objects.toString(RuntimeShelf.vmDescription(
+					VMDescriptionType.EXECUTABLE_PATH), "java"));
+				
+				// Use the same classpath as the host
+				args.add("-classpath");
+				args.add(System.getProperty("java.class.path"));
+				
+				// Launch into the debugger instead
+				args.add("cc.squirreljme.debugger.Main");
+				args.add("localhost:" + port);
+				
+				// Fork process with the debugger
+				ProcessBuilder builder = new ProcessBuilder(args);
+				
+				// Use our terminal and pipes for the output
+				builder.inheritIO();
+				
+				// Use the same working directory as the host
+				builder.directory(Paths
+					.get(System.getProperty("user.dir")).toFile());
+				
+				// Start the debugger
+				try
+				{
+					// Start the debugger
+					builder.start();
+				
+					// Start listening for the connection
+					return VMFactory.__setupJdwp(null, port);
+				}
+				
+				// It failed, so fallback to internal debugger
+				catch (IOException __e)
+				{
+					new RuntimeException("Could not fork debugger.", __e)
+						.printStackTrace(System.err);
+				}
+			}
+			
+			// Otherwise use non-forked debugger
+			return service.jdwpFactory();
+		}
+		
+		// Not found, does nothing
+		return null;
+	}
+	
+	/**
+	 * Load in standard paths.
+	 *
+	 * @param __libraries The libraries to load into.
+	 * @since 2024/02/25
+	 */
+	private static void __standardPaths(Collection<String> __libraries)
+	{
+		// Class path to the environment?
+		String classPath = System.getenv("SQUIRRELJME_CLASSPATH");
+		if (classPath != null)
+			for (String path : VMFactory.__unSeparateClassPath(classPath,
+				false))
+				VMFactory.__addPathsWildcard(__libraries, path);
+		
+		// Java Home Directory?
+		String rawJavaHome = System.getenv("SQUIRRELJME_JAVA_HOME");
+		if (rawJavaHome != null)
+		{
+			Path javaHome = Paths.get(rawJavaHome);
+			
+			VMFactory.__addPathsWildcard(__libraries,
+				javaHome.resolve("lib"));
+			VMFactory.__addPathsWildcard(__libraries,
+				javaHome.resolve("jre").resolve("lib"));
+		}
+		
+		// Standard data libraries?
+		SystemPathProvider paths = SystemPathProvider.provider();
+		Path dataPath = paths.data();
+		if (dataPath != null)
+			VMFactory.__addPathsWildcard(__libraries,
+				dataPath.resolve("lib"));
+	}
+	
+	/**
+	 * Loads standard system properties from the environment and
+	 * configuration.
+	 *
+	 * @param __sysProps The system properties to load into.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/02/25
+	 */
+	private static void __standardSysProps(
+		Map<String, String> __sysProps)
+		throws NullPointerException
+	{
+		if (__sysProps == null)
+			throw new NullPointerException("NARG");
+		
+		SystemPathProvider paths = SystemPathProvider.provider();
+		
+		// Configuration file, if it exists?
+		Path configDir = paths.config();
+		if (configDir != null)
+		{
+			Path configFile = configDir.resolve(
+				"squirreljme.properties");
+			if (Files.exists(configFile))
+				try
+				{
+					for (String line : Files.readAllLines(configFile))
+					{
+						// Comment?
+						line = line.trim();
+						if (line.isEmpty() || line.startsWith("#"))
+							continue;
+						
+						// Add property?
+						int eq = line.indexOf('=');
+						if (eq > 0)
+							__sysProps.put(line.substring(0, eq).trim(),
+								line.substring(eq + 1).trim());
+					}
+				}
+				catch (IOException __e)
+				{
+					__e.printStackTrace();
+				}
+		}
+		
+		// Extra Java VM options
+		String javaOpts = System.getenv("SQUIRRELJME_JAVA_OPTS");
+		if (javaOpts != null)
+			try
+			{
+				// Setup tokenizer
+				StreamTokenizer tokenizer = new StreamTokenizer(
+					new StringReader(javaOpts));
+				tokenizer.resetSyntax();
+				tokenizer.quoteChar('\"');
+				tokenizer.quoteChar('\'');
+				tokenizer.wordChars('.', '.');
+				tokenizer.wordChars('-', '-');
+				tokenizer.wordChars('_', '_');
+				tokenizer.wordChars('a', 'z');
+				tokenizer.wordChars('A', 'Z');
+				tokenizer.wordChars('0', '9');
+				
+				// Handle all tokens
+				String key = null;
+				String val = null;
+				boolean wantKey = true;
+				boolean wantVal = false;
+				for (;;)
+				{
+					// Read in more tokens
+					int token = tokenizer.nextToken();
+					if (token == StreamTokenizer.TT_EOF)
+						break;
+					
+					// Token string?
+					if (tokenizer.sval != null)
+					{
+						if (wantKey && tokenizer.sval.startsWith("-D"))
+							key = tokenizer.sval.substring(2);
+						else if (wantVal)
+						{
+							// Add in key
+							val = tokenizer.sval;
+							__sysProps.put(key, val);
+							
+							// Clear
+							key = null;
+							val = null;
+							
+							// Reset
+							wantKey = true;
+							wantVal = false;
+						}
+					}
+					else if (token == '=')
+					{
+						if (wantKey)
+						{
+							wantKey = false;
+							wantVal = true;
+						}
+					}
+				}
+			}
+			catch (IOException __e)
+			{
+				__e.printStackTrace();
+			}
+	}
+	
+	/**
+	 * Merges path entries for the classpath.
+	 *
 	 * @param __in The input string.
+	 * @param __def Use the default separator as well.
 	 * @return The un-separated string.
 	 * @since 2022/06/13
 	 */
-	private static String[] __unSeparateClassPath(String __in)
+	private static String[] __unSeparateClassPath(String __in, boolean __def)
 	{
 		List<String> result = new ArrayList<>();
 		
@@ -734,7 +1333,10 @@ public abstract class VMFactory
 		for (int i = 0, n = __in.length(); i < n; i++)
 		{
 			// Get location of the next colon
+			// Fallback to default if specified
 			int dx = __in.indexOf(VMFactory.SEPARATOR_CHAR, i);
+			if (__def && dx < 0)
+				dx = __in.indexOf(':', i);
 			if (dx < 0)
 				dx = n;
 			

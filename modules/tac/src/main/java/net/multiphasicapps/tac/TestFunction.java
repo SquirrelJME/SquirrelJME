@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ public abstract class TestFunction<A, R>
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
-		// {@squirreljme.error BU06 Test takes one parameter.}
+		/* {@squirreljme.error BU06 Test takes one parameter.} */
 		if (__args.length != 1)
 			throw new InvalidTestParameterException("BU06");
 		

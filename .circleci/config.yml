@@ -15,56 +15,64 @@ version: 2.1
 
 executors:
   build-on-linux-amd64:
-    docker:
-      - image: cimg/openjdk:11.0
+    #docker:
+    #  - image: debian:bookworm
+    machine:
+      image: ubuntu-2204:2024.01.1
     resource_class: medium
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+
+      # Fix Debian package install
+      DEBIAN_FRONTEND: noninteractive
+      NEEDRESTART_MODE: l
+      NEEDRESTART_SUSPEND: 1
+
   build-on-linux-arm64:
-    docker:
-      - image: cimg/ubuntu-2004:current
+    #docker:
+    #  - image: debian:bookworm
+    machine:
+      image: ubuntu-2204:2024.01.1
     resource_class: arm.medium
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
 
-# This is in the documentation but does not actually work, new feature?
-#  build-on-windows:
-#    windows:
-#      name: win/default
-#      shell: cmd.exe
-#    resource_class: medium
-#    environment:
-#      # Use a reduced amount of memory to all the VMs so that it does not
-#      # try grabbing all the memory that is available to the system.
-#      JAVA_OPTS: -Xmx3g
+      # Fix Debian package install
+      DEBIAN_FRONTEND: noninteractive
+      NEEDRESTART_MODE: l
+      NEEDRESTART_SUSPEND: 1
+
+  build-on-linux-riscv64:
+    machine: true
+    resource_class: squirreljme/squirreljme-linux-riscv64
+
+  # This is in the documentation but does not actually work, new feature?
+  #  build-on-windows:
+  #    windows:
+  #      name: win/default
+  #      shell: cmd.exe
+  #    resource_class: medium
+  #    environment:
+  #      # Use a reduced amount of memory to all the VMs so that it does not
+  #      # try grabbing all the memory that is available to the system.
+  #      JAVA_OPTS: -Xmx3g
 
   build-on-macos:
-    macos:
-      xcode: 13.2.1
-    resource_class: macos.x86.medium.gen2
-    environment:
-      # Do not auto-update brew as this takes forever, and we really just want
-      # a single package
-      HOMEBREW_NO_AUTO_UPDATE: 1
-
-      # Do not auto-clean brew, this wastes time and everything will be thrown
-      # out when the container finishes anyway
-      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
-
-      # Do not send analytics
-      HOMEBREW_NO_ANALYTICS: 1
-
-      # Do not clean up after installation
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    machine: true
+    resource_class: squirreljme/squirreljme-macos-x86
 
   build-on-macos-m1:
     machine: true
     resource_class: squirreljme/squirreljme-macos-m1
 
+  squirreljme-bundle:
+    machine: true
+    resource_class: squirreljme/bundle
+
 orbs:
-  win: circleci/windows@2.4.0
+  win: circleci/windows@5.0
 
 # Parameters to simplify commands
 parameters:
@@ -73,10 +81,25 @@ parameters:
     type: string
     default: --console plain --continue --parallel --no-daemon --stacktrace
 
+  standard-exclusion:
+    type: string
+    default: -x testSpringCoat -x testSpringCoatRelease -x testSpringCoatDebug -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc
+
   # Standard build for systems
   standard-build-options:
     type: string
-    default: build testHosted -x testSpringCoat -x testSpringCoatRelease -x testSpringCoatDebug -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc
+    default: build testHosted <<pipeline.parameters.standard-exclusion>>
+
+  # Windows JDK versions
+  windows-jdk-base-dir:
+    type: string
+    default: jdk-11.0.23
+  windows-jdk-i386:
+    type: string
+    default: https://download.bell-sw.com/java/11.0.23+12/bellsoft-jdk11.0.23+12-windows-i586.zip
+  windows-jdk-amd64:
+    type: string
+    default: https://download.bell-sw.com/java/11.0.23+12/bellsoft-jdk11.0.23+12-windows-amd64.zip
 
 # Commands that are used by almost everything
 commands:
@@ -140,37 +163,299 @@ commands:
       - store_artifacts:
           path: <<parameters.store-home>>/test-results
 
+  # Standard apt-get install
+  linux-debian-apt-get-install:
+    parameters:
+      packages:
+        type: string
+    steps:
+      - run:
+          name: Install packages
+          environment:
+            DEBIAN_FRONTEND: noninteractive
+            NEEDRESTART_MODE: l
+            NEEDRESTART_SUSPEND: 1
+          command: |
+            sudo apt-get install -y --no-install-recommends <<parameters.packages>>
+
+  # Standard apt-get install, optional
+  linux-debian-apt-get-install-optional:
+    parameters:
+      packages:
+        type: string
+      look:
+        type: string
+    steps:
+      - run:
+          name: Install packages (optional)
+          environment:
+            DEBIAN_FRONTEND: noninteractive
+            NEEDRESTART_MODE: l
+            NEEDRESTART_SUSPEND: 1
+          command: |
+            if ! which "<<parameters.look>>"; then sudo apt-get install -y --no-install-recommends <<parameters.packages>> || echo "Failed, but ignoring..."; fi
+
   # Install standard packages in Debian/Ubuntu
   linux-install-required:
     steps:
       - run:
-          name: Update package lists
-          command: sudo apt-get update -y
+          name: Install Sudo
+          environment:
+            DEBIAN_FRONTEND: noninteractive
+            NEEDRESTART_MODE: l
+            NEEDRESTART_SUSPEND: 1
+          command: apt-get update -y && apt-get -yqq install sudo || echo "Failed, but ignoring..."
       - run:
-          name: Install required dependencies
-          command: sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-11-jdk gcc g++ make
+          name: Update package lists
+          environment:
+            DEBIAN_FRONTEND: noninteractive
+            NEEDRESTART_MODE: l
+            NEEDRESTART_SUSPEND: 1
+          command: sudo apt-get update -y
+      - linux-debian-apt-get-install:
+          packages: cmake build-essential curl wget gcc g++ make clang git openssh-client
+      - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: gnustep-devel gnustep-core-devel libgnustep-base-dev libgnustep-gui-dev
+      - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: libsdl1.2-compat-dev
+      - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: libsdl2-compat-dev
+      - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: libmotif-dev
+      - linux-debian-apt-get-install-optional:
+          look: always-attempt-to-install-this
+          packages: libgtk2.0-dev
+      - linux-debian-apt-get-install-optional:
+          look: javac
+          packages: openjdk-17-jdk
+      - linux-debian-apt-get-install-optional:
+          look: javac
+          packages: openjdk-11-jdk
+      - linux-debian-apt-get-install-optional:
+          look: javac
+          packages: openjdk-8-jdk
+      - linux-debian-apt-get-install-optional:
+          look: javac
+          packages: openjdk-7-jdk
+
+  # Install required packages on Windows
+  windows-install-required:
+    steps:
+      - run:
+          name: Install CMake
+          shell: cmd.exe
+          command: choco install cmake -y
+      - run:
+          name: Install CMake (Retry)
+          shell: cmd.exe
+          command: choco install cmake -y
+          when: on_fail
+      - run:
+          name: Install Mingw-w64
+          shell: cmd.exe
+          command: choco install mingw -y
+      - run:
+          name: Install Mingw-w64 (Retry)
+          shell: cmd.exe
+          command: choco install mingw -y
+          when: on_fail
+
+  # Windows JDK Install
+  windows-install-jdk:
+    parameters:
+      jdk-url:
+        type: string
+    steps:
+      - run:
+          shell: bash.exe
+          name: Download Older JDK
+          command: curl -L -o /c/users/circleci/jdk.zip -C - <<parameters.jdk-url>>
+      - run:
+          shell: bash.exe
+          name: Extract Older JDK
+          command: unzip /c/users/circleci/jdk.zip
+      - persist_to_workspace:
+          root: .
+          paths:
+            - <<pipeline.parameters.windows-jdk-base-dir>>/
+
+  # Install required packages on macOS
+  macos-install-required:
+    steps:
+      - run:
+          # Only OpenJDK is required, Gradle always uses Gradle wrapper so
+          # we do not need that... also CMake as well for native code
+          name: Install Dependencies
+          command: brew install openjdk@11 coreutils cmake
+      - run:
+          name: Install Dependencies (Retry)
+          command: brew install openjdk@11 coreutils cmake
+          when: on_fail
+
+  # Install what is required by Flatpak
+  flatpak-install-required:
+    steps:
+      - linux-debian-apt-get-install:
+          packages: flatpak flatpak-builder
+      - run:
+          name: Register Flathub
+          command: flatpak remote-add --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+      - run:
+          name: Flatpak FreeDesktop Platform
+          command: flatpak install --user -y --noninteractive flathub org.freedesktop.Platform//23.08
+      - run:
+          name: Flatpak FreeDesktop SDK
+          command: flatpak install --user -y --noninteractive flathub org.freedesktop.Sdk//23.08
+      - run:
+          name: Flatpak OpenJDK
+          command: flatpak install --user -y --noninteractive flathub runtime/org.freedesktop.Sdk.Extension.openjdk11//23.08
+
+  # Flatpak Common Build Rules
+  flatpak-common-build:
+    parameters:
+      arch:
+        type: string
+    steps:
+      - run:
+          name: Flatpak Build and Install
+          command: flatpak-builder --user --install --install-deps-from=flathub --allow-missing-runtimes --force-clean build-dir cc.squirreljme.SquirrelJME.yml
+      - run:
+          name: Flatpak Bundle
+          command: flatpak build-bundle $HOME/.local/share/flatpak/repo squirreljme-0.3.0-<<parameters.arch>>.flatpak cc.squirreljme.SquirrelJME
+      - store_artifacts:
+          path: squirreljme-0.3.0-<<parameters.arch>>.flatpak
+          destination: squirreljme-0.3.0-<<parameters.arch>>.flatpak
+
+  # Common Build for Standalone (UNIX)
+  standalone-unix-common-build:
+    steps:
+      - run:
+          name: Construct Standalone
+          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
+      - run:
+          name: Construct Standalone (Retry)
+          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
+          when: on_fail
+      - run:
+          name: Remove distracting JAR, if any
+          command: rm -f emulators/standalone/build/libs/standalone-*.jar
+      - store_artifacts:
+          path: emulators/standalone/build/libs/
+          destination: .
+
+  # Common Build for Natives (UNIX)
+  natives-unix-common-build:
+    steps:
+      - run:
+          name: Construct Natives
+          command: ./gradlew :emulators:emulator-base:archiveNatives <<pipeline.parameters.standard-gradle-options>>
+      - run:
+          name: Construct Natives (Retry)
+          command: ./gradlew :emulators:emulator-base:archiveNatives <<pipeline.parameters.standard-gradle-options>>
+          when: on_fail
+      - run:
+          name: Remove distracting JAR, if any
+          command: rm -f emulators/emulator-base/build/libs/*.jar
+      - store_artifacts:
+          path: emulators/emulator-base/build/libs
+          destination: .
 
 jobs:
+  ################################## BUNDLE ##################################
+  bundle:
+    executor: squirreljme-bundle
+    steps:
+      - run:
+          name: Delete working directory
+          command: rm -rf /home/circleci/work/co || echo "Ignoring..."
+      - run:
+          name: Setup working directory
+          command: mkdir -p /home/circleci/work/co || echo "Ignoring..."
+      - run:
+          name: Open repository
+          working_directory: /home/circleci/work/co
+          command: |
+            fossil close --force || echo "Ignored..."
+            for i in seq 1 10
+            do
+              if fossil open /home/repo/squirreljme.fossil --force
+              then
+                break
+              fi
+
+              for j in seq 1 42
+              do
+                echo "Waiting..."
+                sleep 1
+              done
+            done
+      - run:
+          name: Checkout current branch
+          working_directory: /home/circleci/work/co
+          command: fossil checkout $CIRCLE_BRANCH
+      - run:
+          name: Updating checkout
+          working_directory: /home/circleci/work/co
+          command: fossil update
+      - run:
+          name: Ensure build is clean
+          working_directory: /home/circleci/work/co
+          command: ./gradlew clean --parallel
+      - run:
+          name: Build CI/CD Bundle Task
+          working_directory: /home/circleci/work/co
+          command: ./gradlew :tools:cicd-release-bundle:jar --parallel
+      - run:
+          name: Run CI/CD Bundle Tasks
+          working_directory: /home/circleci/work/co
+          command: ./gradlew :tools:cicd-release-bundle:run --parallel
+      - run:
+          name: Close repository
+          working_directory: /home/circleci/work/co
+          command: fossil close --force || echo "Ignored..."
+          when: always
+
   ################################## WINDOWS #################################
-  build_windows:
+  build_windows_i386_setup:
+    executor:
+      name: win/default
+      shell: cmd.exe
+      size: medium
+    steps:
+      - windows-install-jdk:
+          jdk-url: <<pipeline.parameters.windows-jdk-i386>>
+
+  build_windows_i386:
     executor:
       name: win/default
       shell: cmd.exe
       size: medium
     environment:
-      # Use a reduced amount of memory to all the VMs so that it does not
-      # try grabbing all the memory that is available to the system.
-      JAVA_OPTS: -Xmx3g
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/project/<<pipeline.parameters.windows-jdk-base-dir>>/
     steps:
       - checkout
+      - attach_workspace:
+          at: .
+      - windows-install-required
       - run:
           shell: cmd.exe
           name: Gradle Build and Test
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: gradlew clean <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+      - run:
+          shell: cmd.exe
+          name: Gradle Build and Test (Retry)
+          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+          when: on_fail
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -189,32 +474,34 @@ jobs:
           home: "/c/users/circleci/"
           store-home: "c:/users/circleci/"
 
-  build_windows_standalone:
+  build_windows_i386_natives:
     executor:
       name: win/default
-      shell: cmd.exe
+      shell: bash.exe
       size: medium
     environment:
-      # Use a reduced amount of memory to all the VMs so that it does not
-      # try grabbing all the memory that is available to the system.
-      JAVA_OPTS: -Xmx3g
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/project/<<pipeline.parameters.windows-jdk-base-dir>>/
     steps:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          shell: bash.exe
-          name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
-      - run:
-          shell: bash.exe
-          name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
-      - store_artifacts:
-          path: emulators/standalone/build/libs/
-          destination: .
+      - windows-install-required
+      - natives-unix-common-build
 
-  ratufacoat_build_windows:
+  build_windows_amd64_setup:
+    executor:
+      name: win/default
+      shell: cmd.exe
+      size: medium
+    environment:
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/project/<<pipeline.parameters.windows-jdk-base-dir>>/
+    steps:
+      - windows-install-jdk:
+          jdk-url: <<pipeline.parameters.windows-jdk-amd64>>
+
+  build_windows_amd64:
     executor:
       name: win/default
       shell: cmd.exe
@@ -223,45 +510,82 @@ jobs:
       # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
       JAVA_OPTS: -Xmx3g
+
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/project/<<pipeline.parameters.windows-jdk-base-dir>>/
     steps:
       - checkout
       - attach_workspace:
           at: .
+      - windows-install-required
       - run:
-          name: Install required dependencies
-          working_directory: ratufacoat
+          name: Gradle Build and Test
           shell: cmd.exe
-          command: choco install cmake.install
+          # According to documentation, Gradle on Windows has trouble and tries
+          # to make way too many workers which causes extreme resource.
+          # contention --max-workers=2
+          command: gradlew clean <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
       - run:
-          name: Setup CMake build
-          working_directory: ratufacoat
+          name: Gradle Build and Test (Retry)
+          shell: cmd.exe
+          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+          when: on_fail
+      - persist-gradle
+      - save-test-results:
+          where: "vm-test-hosted-debug"
+          os: "windows"
+          vm: "hosted"
           shell: bash.exe
-          command: |
-            "$PROGRAMFILES/CMake/bin/cmake.exe" .
-      - run:
-          name: Compile CMake build
-          working_directory: ratufacoat
+          find: /usr/bin/find
+          home: "/c/users/circleci/"
+          store-home: "c:/users/circleci/"
+      - save-test-results:
+          where: "vm-test-hosted-release"
+          os: "windows"
+          vm: "hosted"
           shell: bash.exe
-          command: |
-            "$PROGRAMFILES/CMake/bin/cmake.exe" --build .
-      - store_artifacts:
-          path: ratufacoat\src\Debug\SquirrelJME.exe
-          destination: SquirrelJME.exe
+          find: /usr/bin/find
+          home: "/c/users/circleci/"
+          store-home: "c:/users/circleci/"
+
+  build_windows_amd64_natives:
+    executor:
+      name: win/default
+      shell: bash.exe
+      size: medium
+    environment:
+      # Use a reduced amount of memory to all the VMs so that it does not
+      # try grabbing all the memory that is available to the system.
+      JAVA_OPTS: -Xmx3g
+
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/project/<<pipeline.parameters.windows-jdk-base-dir>>/
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - windows-install-required
+      - natives-unix-common-build
 
   ################################# MAC OS X #################################
-  build_macosx:
+  build_macosx_amd64:
     executor: build-on-macos
+    environment:
+      # macOS's default heap size is too low
+      JAVA_OPTS: -Xmx4g
     steps:
       - checkout
       - run:
-          # Only OpenJDK is required, Gradle always uses Gradle wrapper so
-          # we do not need that
-          name: Install OpenJDK 11
-          command: brew install openjdk@11 coreutils
-      - run:
           name: Gradle Build and Test
-          command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+      - run:
+          name: Gradle Build and Test (Retry)
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+          when: on_fail
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -271,14 +595,30 @@ jobs:
           where: "vm-test-hosted-release"
           os: "macosx"
           vm: "hosted"
-  build_macosx_m1:
+  build_macosx_amd64_natives:
+    executor: build-on-macos
+    environment:
+      # macOS's default heap size is too low
+      JAVA_OPTS: -Xmx4g
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - natives-unix-common-build
+
+  build_macosx_aarch64:
     executor: build-on-macos-m1
     steps:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+      - run:
+          name: Gradle Build and Test (Retry)
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+          when: on_fail
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -288,65 +628,16 @@ jobs:
           where: "vm-test-hosted-release"
           os: "macosx-m1"
           vm: "hosted"
-
-  build_macosx_standalone:
-    executor: build-on-macos
-    steps:
-      - checkout
-      - run:
-          # Only OpenJDK is required, Gradle always uses Gradle wrapper so
-          # we do not need that
-          name: Install OpenJDK 11
-          command: brew install openjdk@11 coreutils
-      - attach_workspace:
-          at: .
-      - run:
-          name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
-      - run:
-          name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
-      - store_artifacts:
-          path: emulators/standalone/build/libs/
-          destination: .
-  build_macosx_m1_standalone:
+  build_macosx_aarch64_natives:
     executor: build-on-macos-m1
     steps:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
-      - run:
-          name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
-      - store_artifacts:
-          path: emulators/standalone/build/libs/
-          destination: .
-
-  ratufacoat_build_macosx:
-    executor: build-on-macos
-    steps:
-      - checkout
-      - run:
-          name: Install CMake
-          command: brew install cmake coreutils
-      - attach_workspace:
-          at: .
-      - run:
-          name: Setup CMake build
-          working_directory: ratufacoat
-          command: cmake .
-      - run:
-          name: Compile CMake build
-          working_directory: ratufacoat
-          command: cmake --build .
-      - store_artifacts:
-          path: ratufacoat/src/SquirrelJME
-          destination: SquirrelJME
+      - natives-unix-common-build
 
   ################################### LINUX ##################################
+  # Linux AMD64
   build_linux_amd64:
     executor: build-on-linux-amd64
     steps:
@@ -354,8 +645,13 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+      - run:
+          name: Gradle Build and Test (Retry)
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+          when: on_fail
       - save-test-results:
           where: "vm-test-hosted-debug"
           os: "linux-amd64"
@@ -372,16 +668,25 @@ jobs:
       - linux-install-required
       - attach_workspace:
           at: .
-      - run:
-          name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
-      - run:
-          name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
-      - store_artifacts:
-          path: emulators/standalone/build/libs/
-          destination: .
+      - standalone-unix-common-build
+  build_linux_amd64_natives:
+    executor: build-on-linux-amd64
+    steps:
+      - checkout
+      - linux-install-required
+      - attach_workspace:
+          at: .
+      - natives-unix-common-build
+  build_linux_amd64_standalone_flatpak:
+    executor: build-on-linux-amd64
+    steps:
+      - checkout
+      - linux-install-required
+      - flatpak-install-required
+      - flatpak-common-build:
+          arch: amd64
 
+  # Linux ARM64
   build_linux_arm64:
     executor: build-on-linux-arm64
     steps:
@@ -389,8 +694,13 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+      - run:
+          name: Gradle Build and Test (Retry)
+          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+          when: on_fail
       - save-test-results:
           where: "vm-test-hosted-debug"
           os: "linux-arm64"
@@ -400,22 +710,53 @@ jobs:
           os: "linux-arm64"
           vm: "hosted"
       - persist-gradle
-  build_linux_arm64_standalone:
+  build_linux_aarch64_natives:
     executor: build-on-linux-arm64
     steps:
       - checkout
       - linux-install-required
       - attach_workspace:
           at: .
+      - natives-unix-common-build
+  build_linux_aarch64_standalone_flatpak:
+    executor: build-on-linux-arm64
+    steps:
+      - checkout
+      - linux-install-required
+      - flatpak-install-required
+      - flatpak-common-build:
+          arch: arm64
+
+  # Linux RISC-V 64-bit
+  build_linux_riscv64:
+    executor: build-on-linux-riscv64
+    steps:
+      - checkout
       - run:
-          name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
+          name: Gradle Build and Test
+          command: timeout --foreground 120m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 120m
       - run:
-          name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
-      - store_artifacts:
-          path: emulators/standalone/build/libs/
-          destination: .
+          name: Gradle Build and Test (Retry)
+          command: timeout --foreground 120m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 120m
+          when: on_fail
+      - save-test-results:
+          where: "vm-test-hosted-debug"
+          os: "linux-arm64"
+          vm: "hosted"
+      - save-test-results:
+          where: "vm-test-hosted-release"
+          os: "linux-arm64"
+          vm: "hosted"
+      - persist-gradle
+  build_linux_riscv64_natives:
+    executor: build-on-linux-riscv64
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - natives-unix-common-build
 
   ### OSS SonaType Nexus
   sonatype_publish:
@@ -429,26 +770,6 @@ jobs:
           name: Publish to OSS SonaType
           command: ./gradlew publishMavenPublicationToMavenRepository <<pipeline.parameters.standard-gradle-options>> || circleci-agent step halt
 
-  ### RatufaCoat
-  ratufacoat_build_linux:
-    executor: build-on-linux-amd64
-    steps:
-      - checkout
-      - linux-install-required
-      - attach_workspace:
-          at: .
-      - run:
-          name: Setup CMake build
-          working_directory: ratufacoat
-          command: cmake .
-      - run:
-          name: Compile CMake build
-          working_directory: ratufacoat
-          command: cmake --build .
-      - store_artifacts:
-          path: ratufacoat/src/SquirrelJME
-          destination: SquirrelJME
-
   ### SpringCoat
   test_springcoat_debug:
     executor: build-on-linux-amd64
@@ -459,8 +780,8 @@ jobs:
           at: .
       - run:
           name: SpringCoat Tests
-          command: timeout --foreground 30m ./gradlew testSpringCoatDebug <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: timeout --foreground 60m ./gradlew testSpringCoatDebug <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
       - save-test-results:
           where: "vm-test-springcoat-debug"
           os: "linux"
@@ -474,32 +795,12 @@ jobs:
           at: .
       - run:
           name: SpringCoat Tests
-          command: timeout --foreground 30m ./gradlew testSpringCoatRelease <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: timeout --foreground 60m ./gradlew testSpringCoatRelease <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
       - save-test-results:
           where: "vm-test-springcoat-release"
           os: "linux"
           vm: "springcoat"
-
-  test_summercoat:
-    executor: build-on-linux-amd64
-    steps:
-      - checkout
-      - linux-install-required
-      - attach_workspace:
-          at: .
-      - run:
-          name: SummerCoat Tests
-          command: timeout --foreground 30m ./gradlew testSummerCoat <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
-      - save-test-results:
-          where: "vm-test-summercoat-debug"
-          os: "linux"
-          vm: "summercoat"
-      - save-test-results:
-          where: "vm-test-summercoat-release"
-          os: "linux"
-          vm: "summercoat"
 
   ################################### USERS ##################################
   export_user_guide:
@@ -544,117 +845,146 @@ jobs:
           command: ./gradlew testJar <<pipeline.parameters.standard-gradle-options>>
       - persist-gradle
 
-  # Constructs the ROM fragment libraries for SummerCoat, since they are used
-  # for general ROM construction
-  construct_libSummerCoat:
-    executor: build-on-linux-amd64
-    steps:
-      - checkout
-      - linux-install-required
-      - attach_workspace:
-          at: .
-      - run:
-          name: Construct SummerCoat Libraries
-          command: ./gradlew libSummerCoat <<pipeline.parameters.standard-gradle-options>>
-      - persist-gradle
-
-  # All the tests so that they can run from within SummerCoat
-  construct_libTestSummerCoat:
-    executor: build-on-linux-amd64
-    steps:
-      - checkout
-      - linux-install-required
-      - attach_workspace:
-          at: .
-      - run:
-          name: Construct Test SummerCoat Libraries
-          command: ./gradlew libTestSummerCoat <<pipeline.parameters.standard-gradle-options>>
-      - persist-gradle
-
-  # Constructs the standard SummerCoat ROM, could be uploaded later
-  construct_romSummerCoat:
-    executor: build-on-linux-amd64
-    steps:
-      - checkout
-      - linux-install-required
-      - attach_workspace:
-          at: .
-      - run:
-          name: Construct SummerCoat ROM
-          command: ./gradlew romSummerCoat <<pipeline.parameters.standard-gradle-options>>
-      - persist-gradle
-
-  # Constructs the test SummerCoat ROM, could be uploaded later, this is so
-  # that any RatufaCoats have an actual ROM that can be tested to ensure that
-  # it properly works.
-  construct_romTestSummerCoat:
-    executor: build-on-linux-amd64
-    steps:
-      - checkout
-      - linux-install-required
-      - attach_workspace:
-          at: .
-      - run:
-          name: Construct Test SummerCoat ROM
-          command: ./gradlew romTestSummerCoat <<pipeline.parameters.standard-gradle-options>>
-      - persist-gradle
-
 workflows:
   version: 2
   tests:
     jobs:
       ############################# STANDARD TESTS ############################
+      # AMD64
       - build_linux_amd64
-#      - build_linux_arm64
       - test_springcoat_debug:
           requires:
             - construct_testJars
+          filters:
+            branches:
+              only:
+                - trunk
       - test_springcoat_release:
           requires:
             - construct_testJars
-#      - test_summercoat:
-#          requires:
-#            - construct_libTestSummerCoat
+          filters:
+            branches:
+              only:
+                - trunk
       - build_linux_amd64_standalone:
-           requires:
-             - build_linux_amd64
-#      - build_linux_arm64_standalone:
+          requires:
+            - build_linux_amd64
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
+      - build_linux_amd64_natives:
+          requires:
+            - build_linux_amd64
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
+      - build_linux_amd64_standalone_flatpak:
+          requires:
+            - build_linux_amd64
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
+
+      # ARM64
+      - build_linux_arm64:
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
+      - build_linux_aarch64_natives:
+          requires:
+            - build_linux_arm64
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
+      - build_linux_aarch64_standalone_flatpak:
+          requires:
+            - build_linux_arm64
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
+
+      # RISC-V 64-bit
+#      - build_linux_riscv64
+#      - build_linux_riscv64_natives:
 #          requires:
-#            - build_linux_arm64
+#            - build_linux_riscv64
+#          filters:
+#            branches:
+#              only:
+#                - trunk
+#                - wip-universal
+
+      # Windows 32-bit
+      - build_windows_i386_setup:
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
+      - build_windows_i386:
+          requires:
+            - build_windows_i386_setup
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
+      - build_windows_i386_natives:
+          requires:
+            - build_windows_i386
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
+
+      # Windows 64-bit
+      - build_windows_amd64_setup
+      - build_windows_amd64:
+          requires:
+            - build_windows_amd64_setup
+      - build_windows_amd64_natives:
+          requires:
+            - build_windows_amd64
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
 
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
-      # Currently I have an overabundance of credits...
-      - build_macosx
-#          filters:
-#            branches:
-#              only:
-#                - trunk
-      - build_macosx_m1
-#          filters:
-#            branches:
-#              only:
-#                - trunk
-      - build_macosx_standalone:
-           requires:
-             - build_macosx
-      - build_macosx_m1_standalone:
-           requires:
-             - build_macosx_m1
-
-      # Building on Windows is currently expensive and takes longer, so only
-      # run these builds on trunk to lower costs.
-      # Currently have an overabundance of credits...
-      - build_windows
-#          requires:
-#            - build_linux
-#          filters:
-#            branches:
-#              only:
-#                - trunk
-      - build_windows_standalone:
-           requires:
-             - build_windows
+      # Currently, I have an overabundance of credits...
+      - build_macosx_amd64
+      - build_macosx_aarch64
+      - build_macosx_aarch64_natives:
+          requires:
+            - build_macosx_aarch64
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
+      - build_macosx_amd64_natives:
+          requires:
+            - build_macosx_amd64
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
 
       # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
       - sonatype_publish:
@@ -670,32 +1000,27 @@ workflows:
       - construct_testJars:
           requires:
             - build_linux_amd64
-#      - construct_libSummerCoat:
-#          requires:
-#            - build_linux_amd64
-#      - construct_libTestSummerCoat:
-#          requires:
-#            - construct_testJars
-#      - construct_romSummerCoat:
-#          requires:
-#            - construct_libSummerCoat
-#      - construct_romTestSummerCoat:
-#          requires:
-#            - construct_libTestSummerCoat
+          filters:
+            branches:
+              only:
+                - trunk
 
-      ############################## RATUFACOAT ##############################
-#      - ratufacoat_build_windows:
-#          requires:
-#            - build_windows
-#            - construct_romTestSummerCoat
-#      - ratufacoat_build_linux:
-#          requires:
-#            - build_linux_amd64
-#            - construct_romTestSummerCoat
-#      - ratufacoat_build_macosx:
-#          requires:
-#            - build_macosx
-#            - construct_romTestSummerCoat
+      ############################## DEPLOYMENT ##############################
+      - bundle:
+          requires:
+            - build_linux_amd64_standalone
+            - build_linux_amd64_natives
+            - build_windows_i386_natives
+            - build_windows_amd64_natives
+            - build_macosx_amd64_natives
+            - build_macosx_aarch64_natives
+            - build_linux_amd64_standalone_flatpak
+            - build_linux_aarch64_standalone_flatpak
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-universal
 
   #################### TASKS TO INCREASE USER FRIENDLINESS ####################
   friendliness:

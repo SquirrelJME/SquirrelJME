@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -47,6 +47,19 @@ public enum ClutterLevel
 		if (this == ClutterLevel.RELEASE)
 			return ClutterLevel.DEBUG;
 		return ClutterLevel.RELEASE;
+	}
+	
+	/**
+	 * Returns the proper noun of the clutter level.
+	 *
+	 * @return The proper noun of the clutter level.
+	 * @since 2024/03/04
+	 */
+	public String properNoun()
+	{
+		if (this == ClutterLevel.RELEASE)
+			return "Release";
+		return "Debug";
 	}
 	
 	/**

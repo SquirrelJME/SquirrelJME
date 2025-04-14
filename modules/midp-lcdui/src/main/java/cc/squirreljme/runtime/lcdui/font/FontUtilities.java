@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -101,7 +101,7 @@ public final class FontUtilities
 			case Font.SIZE_LARGE:
 				return 16;
 			
-				// {@squirreljme.error EB07 Invalid logical font size.}
+				/* {@squirreljme.error EB07 Invalid logical font size.} */
 			default:
 				throw new IllegalArgumentException("EB07");
 		}

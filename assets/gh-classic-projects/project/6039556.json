@@ -1,0 +1,32 @@
+[
+   {
+      "cards_url" : "https://api.github.com/projects/columns/11961474/cards",
+      "created_at" : "2020-12-05T00:11:51Z",
+      "id" : 11961474,
+      "name" : "To do",
+      "node_id" : "MDEzOlByb2plY3RDb2x1bW4xMTk2MTQ3NA==",
+      "project_url" : "https://api.github.com/projects/6039556",
+      "updated_at" : "2020-12-05T00:12:14Z",
+      "url" : "https://api.github.com/projects/columns/11961474"
+   },
+   {
+      "cards_url" : "https://api.github.com/projects/columns/11961475/cards",
+      "created_at" : "2020-12-05T00:11:52Z",
+      "id" : 11961475,
+      "name" : "In progress",
+      "node_id" : "MDEzOlByb2plY3RDb2x1bW4xMTk2MTQ3NQ==",
+      "project_url" : "https://api.github.com/projects/6039556",
+      "updated_at" : "2020-12-05T00:11:52Z",
+      "url" : "https://api.github.com/projects/columns/11961475"
+   },
+   {
+      "cards_url" : "https://api.github.com/projects/columns/11961476/cards",
+      "created_at" : "2020-12-05T00:11:52Z",
+      "id" : 11961476,
+      "name" : "Done",
+      "node_id" : "MDEzOlByb2plY3RDb2x1bW4xMTk2MTQ3Ng==",
+      "project_url" : "https://api.github.com/projects/6039556",
+      "updated_at" : "2020-12-05T00:11:52Z",
+      "url" : "https://api.github.com/projects/columns/11961476"
+   }
+]

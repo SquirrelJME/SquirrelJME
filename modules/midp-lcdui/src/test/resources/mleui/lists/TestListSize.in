@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-result: NoResult
-thrown: NoExceptionThrown
-secondary-start--size: int:0
-secondary-first--size: int:6
-secondary-empty--size: int:0
-secondary-last--size: int:6

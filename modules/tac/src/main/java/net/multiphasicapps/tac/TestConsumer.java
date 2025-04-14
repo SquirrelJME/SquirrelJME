@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -49,8 +49,8 @@ public abstract class TestConsumer<A>
 		if (this instanceof OptionalFirstParameter)
 			testArg = (__args.length == 0 ? null : __args[0]);
 		
-		// {@squirreljme.error BU05 Test takes one parameter. (The number of
-		// passed parameters)}
+		/* {@squirreljme.error BU05 Test takes one parameter. (The number of
+		passed parameters)} */
 		else if (__args.length != 1)
 			throw new InvalidTestParameterException("BU05 " + __args.length);
 		

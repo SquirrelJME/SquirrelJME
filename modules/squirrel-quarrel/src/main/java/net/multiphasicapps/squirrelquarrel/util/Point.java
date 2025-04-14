@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -56,16 +56,16 @@ public final class Point
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BE0g Point must start and end with parenthesis.
-		// (The input string)}
+		/* {@squirreljme.error BE0g Point must start and end with parenthesis.
+		(The input string)} */
 		if (!__s.startsWith("(") || !__s.endsWith(")"))
 			throw new IllegalArgumentException("BE0g " + __s);
 		
 		// Trim those out
 		__s = __s.substring(1, __s.length() - 1);
 		
-		// {@squirreljme.error BE0h Point must have a comma between the
-		// units. (The input string)}
+		/* {@squirreljme.error BE0h Point must have a comma between the
+		units. (The input string)} */
 		int com = __s.indexOf(',');
 		if (com < 0)
 			throw new IllegalArgumentException("BE0h " + __s);

@@ -1,0 +1,1 @@
+This Jar is meant to be run with `java -jar` and not be extracted.

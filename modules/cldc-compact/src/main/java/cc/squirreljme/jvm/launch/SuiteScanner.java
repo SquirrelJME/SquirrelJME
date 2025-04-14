@@ -3,29 +3,18 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm.launch;
 
-import cc.squirreljme.jvm.manifest.JavaManifest;
-import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.suite.EntryPoint;
-import cc.squirreljme.jvm.suite.EntryPoints;
-import cc.squirreljme.jvm.suite.InvalidSuiteException;
-import cc.squirreljme.jvm.suite.SuiteInfo;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -38,17 +27,39 @@ import java.util.Map;
  */
 public final class SuiteScanner
 {
-	/** Data resource name. */
-	private static final String _DATA_RESOURCE =
-		"$DATA$";
+	/** The shelf to access. */
+	protected final VirtualJarPackageShelf shelf;
+	
+	/** Allow parallel scanning? */
+	protected final boolean parallel;
 	
 	/**
-	 * Not used.
+	 * Initializes the base suite scanner.
 	 * 
+	 * @param __parallel Allow parallel scanning?
 	 * @since 2020/12/28
 	 */
-	private SuiteScanner()
+	public SuiteScanner(boolean __parallel)
 	{
+		this(__parallel, new DefaultJarPackageShelf());
+	}
+	
+	/**
+	 * Initializes the suite scanner.
+	 *
+	 * @param __parallel Allow parallel scanning?
+	 * @param __shelf The shelf to initialize from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/06
+	 */
+	public SuiteScanner(boolean __parallel, VirtualJarPackageShelf __shelf)
+		throws NullPointerException
+	{
+		if (__shelf == null)
+			throw new NullPointerException("NARG");
+		
+		this.shelf = __shelf;
+		this.parallel = __parallel;
 	}
 	
 	/**
@@ -58,9 +69,9 @@ public final class SuiteScanner
 	 * @return The state of scanned suites.
 	 * @since 2020/12/28
 	 */
-	public static AvailableSuites scanSuites()
+	public AvailableSuites scanSuites()
 	{
-		return SuiteScanner.scanSuites(null);
+		return this.scanSuites(null);
 	}
 	
 	/**
@@ -72,10 +83,10 @@ public final class SuiteScanner
 	 * @return The state of scanned suites.
 	 * @since 2020/12/29
 	 */
-	public static AvailableSuites scanSuites(SuiteScanListener __listener)
+	public AvailableSuites scanSuites(SuiteScanListener __listener)
 	{
 		// Get all the available libraries
-		JarPackageBracket[] jars = JarPackageShelf.libraries();
+		JarPackageBracket[] jars = this.shelf.libraries();
 		int numJars = jars.length;
 		
 		// Load the names of all JARs and map to brackets, this is later used
@@ -85,9 +96,15 @@ public final class SuiteScanner
 		{
 			for (JarPackageBracket jar : jars)
 			{
-				String name = JarPackageShelf.libraryPath(jar);
+				String name = this.shelf.libraryPath(jar);
 				if (name != null)
+				{
+					// Full path
 					nameToJar.put(name, jar);
+					
+					// Short path
+					nameToJar.put(SuiteUtils.baseName(name), jar);
+				}
 			}
 		}
 		
@@ -99,16 +116,20 @@ public final class SuiteScanner
 		
 		// How many CPUs are available? This is so we can split the suite
 		// loading operations across multiple threads at once for faster
-		// scanning... On SpringCoat scans can take awhile so we want to
+		// scanning... On SpringCoat scans can take a while, so we want to
 		// make it as fast as we can...
-		int numThreads = Math.max(1,
-			(int)RuntimeShelf.vmStatistic(VMStatisticType.CPU_THREAD_COUNT));
+		int numThreads;
+		if (this.parallel)
+			numThreads = Math.max(1, (int)RuntimeShelf.vmStatistic(
+				VMStatisticType.CPU_THREAD_COUNT));
+		else
+			numThreads = 1;
 		
 		// Locate programs via the library path, single threaded, so we do not
 		// need to anything more complex
 		__SuiteScannerCounter__ jarIndexCount = new __SuiteScannerCounter__();
 		if (numThreads <= 1)
-			SuiteScanner.__loadStripe(__listener, jars, numJars, nameToJar,
+			this.__loadStripe(__listener, jars, numJars, nameToJar,
 				libs, result, 0, numJars, jarIndexCount);
 		
 		// Stripe loads to each CPU that is available
@@ -133,13 +154,14 @@ public final class SuiteScanner
 				// Setup thread and start it
 				Thread thread = new Thread(new __SuiteScannerStripe__(done,
 					__listener, jars, numJars, nameToJar, libs, result, at,
-					Math.min(numJars, at + baseSplitLen), jarIndexCount),
+					Math.min(numJars, at + baseSplitLen), jarIndexCount,
+					this),
 					"SquirrelJMESuiteScanStripe-" + stripe);
 				thread.start();
 			}
 			
 			// Run our first stripe in this thread, so we do not waste it
-			SuiteScanner.__loadStripe(__listener, jars, numJars, nameToJar,
+			this.__loadStripe(__listener, jars, numJars, nameToJar,
 				libs, result, 0, baseSplitLen, jarIndexCount);
 			
 			// Wait until everything is done
@@ -164,8 +186,8 @@ public final class SuiteScanner
 		// Finalize suite list
 		synchronized (result)
 		{
-			return new AvailableSuites(libs, result
-				.<Application>toArray(new Application[result.size()]));
+			return new AvailableSuites(this.shelf, libs,
+				result.<Application>toArray(new Application[result.size()]));
 		}
 	}
 	
@@ -184,7 +206,7 @@ public final class SuiteScanner
 	 * accuracy in the totals.
 	 * @since 2022/10/03
 	 */
-	static void __loadStripe(SuiteScanListener __listener,
+	void __loadStripe(SuiteScanListener __listener,
 		JarPackageBracket[] __jars, int __numJars,
 		Map<String, JarPackageBracket> __nameToJar, __Libraries__ __libs,
 		List<Application> __result, int __startPos, int __endPos,
@@ -205,193 +227,34 @@ public final class SuiteScanner
 			}
 			
 			// Ignore non-JARs
-			String libPath = JarPackageShelf.libraryPath(jar);
-			if (!libPath.endsWith(".jar") && !libPath.endsWith(".JAR") &&
-				!libPath.endsWith(".kjx") && !libPath.endsWith(".KJX"))
+			String libPath = this.shelf.libraryPath(jar);
+			if (!SuiteUtils.isJar(libPath))
+			{
+				// Do indicate them as skipped, otherwise the progress bar
+				// will never fill up all the way
+				if (__listener != null)
+					__listener.skipped(accurateJarIndex, __numJars);
+				
+				// Skip
 				continue;
+			}
 			
 			// Debug
 			Debugging.debugNote("Checking %s...", libPath);
 			
-			// Scan for multiple application types, since it is very possible
-			// for an application to be in hybrid form (such as MIDP/i-mode)
-			SuiteScanner.__scanJava(__listener, __numJars, __libs, __result,
-				accurateJarIndex, jar);
-			SuiteScanner.__scanIMode(__listener, __numJars, __libs,
-				__nameToJar, __result, accurateJarIndex, jar);
-		}
-	}
-	
-	/**
-	 * Scans for an i-mode application and loads them.
-	 * 
-	 * @param __listener The listener used for load events.
-	 * @param __nameToJar The name to JAR mapping, used to find the JAM file.
-	 * @param __result The target applications.
-	 * @param __jarDx The JAR index.
-	 * @param __jar The JAR to check.
-	 * @since 2021/06/013
-	 */
-	private static void __scanIMode(SuiteScanListener __listener,
-		int __numJars, __Libraries__ __libs,
-		Map<String, JarPackageBracket> __nameToJar,
-		List<Application> __result,
-		int __jarDx, JarPackageBracket __jar)
-	{
-		// Try to determine what our JAM would be called
-		String jarName = JarPackageShelf.libraryPath(__jar);
-		String jamName;
-		if (jarName.endsWith(".jar"))
-			jamName = jarName.substring(0, jarName.length() - 4) + ".jam";
-		else if (jarName.endsWith(".JAR"))
-			jamName = jarName.substring(0, jarName.length() - 4) + ".JAM";
-		else
-			jamName = jarName + ".jam";
-		
-		// Determine the name of the JAM file to load
-		JarPackageBracket jam;
-		synchronized (__nameToJar)
-		{
-			jam = __nameToJar.get(jamName);
-		}
-		
-		// If there is no JAM file, this cannot be an i-mode application
-		if (jam == null)
-			return;
-		
-		// Load the ADF/JAM descriptor that describes this application
-		Map<String, String> adfProps = new LinkedHashMap<>();
-		try (InputStream jamIn = JarPackageShelf.openResource(jam,
-			SuiteScanner._DATA_RESOURCE))
-		{
-			// Missing? Cannot be an i-mode application
-			if (jamIn == null)
-				return;
+			// Setup parser state
+			ApplicationParserState state = new ApplicationParserState(
+				__listener, __numJars, __libs, __nameToJar, __result,
+				accurateJarIndex, jar, this.shelf);
 			
-			// Load in the JAM (Is encoded in Japanese)
-			try (BufferedReader jamBr = new BufferedReader(
-				new InputStreamReader(jamIn, "shift-jis")))
-			{
-				for (;;)
-				{
-					// EOF?
-					String ln = jamBr.readLine();
-					if (ln == null)
-						break;
-					
-					// No equal sign, ignore
-					int eq = ln.indexOf('=');
-					if (eq < 0)
-						continue;
-					
-					// Split into key and value form
-					String key = ln.substring(0, eq).trim();
-					String val = ln.substring(eq + 1).trim();
-					
-					// Store into if the key is valid
-					if (!key.isEmpty())
-						adfProps.put(key, val);
-				}
-			}
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			return;
-		} 
+			// Scan for all the application types accordingly
+			boolean foundAny = false;
+			for (ApplicationParser parser : ApplicationParser.values())
+				foundAny |= parser.parse(state);
 			
-		// Load application
-		try
-		{
-			Application app = new IModeApplication(__jar, __libs, adfProps);
-			synchronized (app)
-			{
-				__result.add(app);
-			}
-			
-			// Indicate that it was scanned
-			if (__listener != null)
-				__listener.scanned(app, __jarDx, __numJars);
-		}
-		catch (InvalidSuiteException e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Scans for Java applications in the given JAR.
-	 * 
-	 * @param __listener The listener used.
-	 * @param __numJars The number of JARs.
-	 * @param __libs The available support libraries.
-	 * @param __result Where applications go.
-	 * @param __jarDx The Jar Index.
-	 * @param __jar The JAR to check.
-	 * @since 2021/06/13
-	 */
-	private static void __scanJava(SuiteScanListener __listener,
-		int __numJars, __Libraries__ __libs, List<Application> __result,
-		int __jarDx, JarPackageBracket __jar)
-	{
-		// Try to read the manifest from the given JAR and process the
-		// suite information
-		SuiteInfo info;
-		JavaManifest man;
-		try (InputStream rc = JarPackageShelf.openResource(__jar,
-			"META-INF/MANIFEST.MF"))
-		{
-			// If no manifest exists, might not be a JAR
-			if (rc == null)
-			{
-				Debugging.debugNote("No META-INF/MANIFEST.MF in %s...",
-					JarPackageShelf.libraryPath(__jar));
-				
-				return;
-			}
-			
-			man = new JavaManifest(rc);
-			info = new SuiteInfo(man);
-		}
-		
-		// Prevent bad JARs and files from messing things up
-		catch (IOException|InvalidSuiteException|MLECallError e)
-		{
-			e.printStackTrace();
-			return;
-		}
-		
-		switch (info.type())
-		{
-			// Handle library
-			case LIBLET:
-			case SQUIRRELJME_API:
-				__libs.__register(info, __jar);
-				return;
-			
-			// Handle application
-			case MIDLET:
-				// Setup application information for all possible entry
-				// points
-				for (EntryPoint e : new EntryPoints(man))
-				{
-					// Load application
-					JavaApplication app =
-						new JavaApplication(info, __jar, __libs, e);
-					synchronized (__result)
-					{
-						__result.add(app);
-					}
-					
-					// Indicate that it was scanned
-					if (__listener != null)
-						__listener.scanned(app, __jarDx, __numJars);
-				}
-				return;
-			
-			// Unknown?
-			default:
-				throw Debugging.oops();
+			// Nothing was found, so indicate it as skipped
+			if (!foundAny && __listener != null)
+				__listener.skipped(accurateJarIndex, __numJars);
 		}
 	}
 }

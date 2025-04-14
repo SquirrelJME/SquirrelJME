@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -42,8 +42,8 @@ public final class TableOfContentsWriter
 	public TableOfContentsWriter(int __numTocProperties)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AJ01 Zero or negative table of contents
-		// entries specified.}
+		/* {@squirreljme.error AJ01 Zero or negative table of contents
+		entries specified.} */
 		if (__numTocProperties <= 0)
 			throw new IllegalArgumentException("AJ01");
 		

@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;
@@ -22,7 +23,7 @@ import java.lang.ref.WeakReference;
  * @since 2018/09/15
  */
 public abstract class SpringArrayObject
-	implements SpringObject
+	implements SpringArray, SpringObject
 {
 	/** The monitor for this array. */
 	protected final SpringMonitor monitor =
@@ -65,8 +66,8 @@ public abstract class SpringArrayObject
 		if (!__self.isArray())
 			throw new IllegalArgumentException("Type not an array: " + __self);
 		
-		// {@squirreljme.error BK01 Attempt to allocate an array of a
-		// negative size. (The length requested)}
+		/* {@squirreljme.error BK01 Attempt to allocate an array of a
+		negative size. (The length requested)} */
 		if (__l < 0)
 			throw new SpringNegativeArraySizeException(
 				String.format("BK01 %d", __l));
@@ -82,6 +83,7 @@ public abstract class SpringArrayObject
 	 * @return The array.
 	 * @since 2018/11/19
 	 */
+	@Override
 	public abstract Object array();
 	
 	/**
@@ -98,8 +100,19 @@ public abstract class SpringArrayObject
 	 * bounds.
 	 * @since 2018/09/16
 	 */
+	@Override
 	public abstract <C> C get(Class<C> __cl, int __dx)
 		throws NullPointerException, SpringArrayIndexOutOfBoundsException;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/04
+	 */
+	@Override
+	public boolean isArray()
+	{
+		return true;
+	}
 	
 	/**
 	 * Sets the index to the specified value.
@@ -112,6 +125,7 @@ public abstract class SpringArrayObject
 	 * bounds.
 	 * @since 2018/09/16
 	 */
+	@Override
 	public abstract void set(int __dx, Object __v)
 		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException;
 	
@@ -121,6 +135,7 @@ public abstract class SpringArrayObject
 	 * @return The array length.
 	 * @since 2018/09/16
 	 */
+	@Override
 	public final int length()
 	{
 		return this.length;

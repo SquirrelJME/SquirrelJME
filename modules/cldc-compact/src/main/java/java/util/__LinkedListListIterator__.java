@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -240,9 +240,9 @@ final class __LinkedListListIterator__<E>
 		// Check modification
 		this.__checkConcurrent();
 		
-		// {@squirreljme.error ZZ2u Cannot remove the element from the
-		// linked list because there was no previous call to next or
-		// previous, or add was called.}
+		/* {@squirreljme.error ZZ2u Cannot remove the element from the
+		linked list because there was no previous call to next or
+		previous, or add was called.} */
 		__Link__<E> last = this._last;
 		if (last == null)
 			throw new IllegalStateException("ZZ2u");
@@ -280,9 +280,9 @@ final class __LinkedListListIterator__<E>
 		// Check modification
 		this.__checkConcurrent();
 		
-		// {@squirreljme.error ZZ2v Cannot set the element from the
-		// linked list because there was no previous call to next or
-		// previous, or add was called.}
+		/* {@squirreljme.error ZZ2v Cannot set the element from the
+		linked list because there was no previous call to next or
+		previous, or add was called.} */
 		__Link__<E> last = this._last;
 		if (last == null)
 			throw new IllegalStateException("ZZ2v");
@@ -300,7 +300,7 @@ final class __LinkedListListIterator__<E>
 	private void __checkConcurrent()
 		throws ConcurrentModificationException
 	{
-		// {@squirreljme.error ZZ2w List has been concurrently modified.}
+		/* {@squirreljme.error ZZ2w List has been concurrently modified.} */
 		if (this._atmod != this.list.modCount)
 		{
 			// Just empty these out so they are never used again

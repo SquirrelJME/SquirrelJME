@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -352,6 +352,30 @@ public enum MLEObject
 		}
 	},
 	
+	/** {@link ObjectShelf#arrayIntsToBytes(int[], int, byte[], int, int)}. */
+	ARRAY_INTS_TO_BYTES("arrayIntsToBytes:([II[BII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/01/24
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringArrayObjectInteger source = MLEObjects.notNull(
+				SpringArrayObjectInteger.class, __args[0]);
+			int sourceOff = (Integer)__args[1];
+			SpringArrayObjectByte dest = MLEObjects.notNull(
+				SpringArrayObjectByte.class, __args[2]);
+			int destOff = (Integer)__args[3];
+			int len = (Integer)__args[4];
+			
+			ObjectShelf.arrayIntsToBytes(source.array(), sourceOff,
+				dest.array(), destOff, len);
+			return null;
+		}
+	},
+	
 	/** {@link ObjectShelf#arrayLength(Object)}. */
 	ARRAY_LENGTH("arrayLength:(Ljava/lang/Object;)I")
 	{
@@ -362,7 +386,7 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringObject object = MLEType.__notNullObject(__args[0]);
+			SpringObject object = MLEObjects.notNull(__args[0]);
 			
 			if (object instanceof SpringArrayObject)
 				return ((SpringArrayObject)object).length();
@@ -386,7 +410,7 @@ public enum MLEObject
 			if (len < 0)
 				throw new SpringMLECallError("Negative array size.");
 			
-			SpringClass type = MLEType.__type(__args[0]).getSpringClass();
+			SpringClass type = MLEObjects.type(__args[0]).getSpringClass();
 			if (!type.isArray())
 				throw new SpringMLECallError("Type not an array.");
 			
@@ -404,7 +428,7 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringThread vmThread = MLEThread.__vmThread(
+			SpringThread vmThread = MLEObjects.threadVm(
 				MLEThread.TO_VM_THREAD.handle(__thread, __args[0]))
 				.getThread();
 			SpringObject target = (SpringObject)__args[1];
@@ -428,7 +452,7 @@ public enum MLEObject
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			SpringObject object = (SpringObject)__args[0];
-			return System.identityHashCode(MLEType.__notNullObject(object));
+			return System.identityHashCode(MLEObjects.notNull(object));
 		}
 	},
 	
@@ -442,7 +466,7 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringObject object = MLEType.__notNullObject(__args[0]);
+			SpringObject object = MLEObjects.notNull(__args[0]);
 			
 			if (object instanceof SpringArrayObject)
 				return 1;
@@ -477,7 +501,7 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringClass type = MLEType.__type(__args[0]).getSpringClass();
+			SpringClass type = MLEObjects.type(__args[0]).getSpringClass();
 			
 			if (type.isArray())
 				throw new SpringMLECallError("Cannot newInstance array");
@@ -496,7 +520,7 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringObject target = MLEType.__notNullObject(__args[0]);
+			SpringObject target = MLEObjects.notNull(__args[0]);
 			boolean notifyAll = (int)__args[1] != 0;
 			
 			// Verbose debug?
@@ -520,7 +544,7 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringObject target = MLEType.__notNullObject(__args[0]);
+			SpringObject target = MLEObjects.notNull(__args[0]);
 			long ms = (long)__args[1];
 			int ns = (int)__args[2];
 			

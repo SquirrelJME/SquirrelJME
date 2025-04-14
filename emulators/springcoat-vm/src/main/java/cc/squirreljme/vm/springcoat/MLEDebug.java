@@ -3,12 +3,15 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.host.JDWPHostController;
+import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.host.trips.JDWPTripVmState;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
@@ -23,6 +26,27 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 public enum MLEDebug
 	implements MLEFunction
 {
+	/** {@link DebugShelf#breakpoint()}. */
+	BREAKPOINT("breakpoint:()V")
+	{
+		/**
+		 * {@inheritDoc
+		 * @since 2023/01/30
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// If a debugger is attached, break immediately on everything
+			JDWPHostController jdwp =
+				__thread.machine.taskManager().jdwpController;
+			if (jdwp != null)
+				jdwp.<JDWPTripVmState>trip(JDWPTripVmState.class,
+					JDWPGlobalTrip.VM_STATE).userDefined(__thread.thread);
+			
+			return null;
+		}
+	},
+	
 	/** {@link DebugShelf#getThrowableTrace(Throwable)}. */
 	GET_THROWABLE_TRACE("getThrowableTrace:(Ljava/lang/Throwable;)" +
 		"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;")
@@ -60,7 +84,7 @@ public enum MLEDebug
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEDebug.__trace(__args[0]).getTrace().address();
+			return MLEObjects.debugTrace(__args[0]).getTrace().address();
 		}
 	},
 	
@@ -75,7 +99,7 @@ public enum MLEDebug
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return __thread.asVMObject(MLEDebug.__trace(__args[0])
+			return __thread.asVMObject(MLEObjects.debugTrace(__args[0])
 				.getTrace().className());
 		}
 	},
@@ -91,7 +115,7 @@ public enum MLEDebug
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return __thread.asVMObject(MLEDebug.__trace(__args[0])
+			return __thread.asVMObject(MLEObjects.debugTrace(__args[0])
 				.getTrace().file());
 		}
 	},
@@ -107,7 +131,7 @@ public enum MLEDebug
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEDebug.__trace(__args[0]).getTrace().byteCodeAddress();
+			return MLEObjects.debugTrace(__args[0]).getTrace().byteCodeAddress();
 		}
 	},
 	
@@ -122,7 +146,7 @@ public enum MLEDebug
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEDebug.__trace(__args[0]).getTrace()
+			return MLEObjects.debugTrace(__args[0]).getTrace()
 				.byteCodeInstruction();
 		}
 	},
@@ -138,7 +162,7 @@ public enum MLEDebug
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEDebug.__trace(__args[0]).getTrace().line();
+			return MLEObjects.debugTrace(__args[0]).getTrace().line();
 		}
 	},
 	
@@ -153,7 +177,7 @@ public enum MLEDebug
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return __thread.asVMObject(MLEDebug.__trace(__args[0])
+			return __thread.asVMObject(MLEObjects.debugTrace(__args[0])
 				.getTrace().methodName());
 		}
 	},
@@ -169,7 +193,7 @@ public enum MLEDebug
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return __thread.asVMObject(MLEDebug.__trace(__args[0])
+			return __thread.asVMObject(MLEObjects.debugTrace(__args[0])
 				.getTrace().methodDescriptor());
 		}
 	},
@@ -185,6 +209,14 @@ public enum MLEDebug
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
+			if (true)
+			{
+				System.err.println("*******************************");
+				__thread.thread.printStackTrace(System.err);
+				System.err.println("*******************************");
+				System.err.flush();
+			}
+			
 			CallTraceElement[] trace = __thread.thread.getStackTrace();
 			
 			int n = trace.length;
@@ -283,20 +315,4 @@ public enum MLEDebug
 		return this.key;
 	}
 	
-	/**
-	 * Checks if this is a trace point object.
-	 * 
-	 * @param __object The object to check.
-	 * @return As a trace point if this is one.
-	 * @throws SpringMLECallError If this is not a trace point object.
-	 * @since 2020/06/22
-	 */
-	static TracePointObject __trace(Object __object)
-		throws SpringMLECallError
-	{
-		if (!(__object instanceof TracePointObject))
-			throw new SpringMLECallError("Not a trace point.");
-		
-		return (TracePointObject)__object; 
-	}
 }

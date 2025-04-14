@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,11 +11,14 @@ package cc.squirreljme.runtime.launcher.ui;
 
 import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.SuiteScanListener;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
@@ -56,6 +59,9 @@ final class __ProgressListener__
 	/** The current refresh state. */
 	protected final __RefreshState__ refreshState;
 	
+	/** The Jar indexes that were processed. */
+	private final Set<Integer> _processedIndex;
+	
 	/** The default application icon, if one is missing. */
 	protected volatile Image _defaultIcon;
 	
@@ -83,6 +89,7 @@ final class __ProgressListener__
 		this.refreshCanvas = __refreshCanvas;
 		this.refreshState = __refreshState;
 		this.mainDisplay = __mainDisplay;
+		this._processedIndex = new HashSet<>();
 	}
 	
 	/**
@@ -98,27 +105,9 @@ final class __ProgressListener__
 		
 		ArrayList<Application> listedSuites = this.listedSuites;
 		List programList = this.programList;
-		SplashScreen refreshCanvas = this.refreshCanvas;
-		__RefreshState__ refreshState = this.refreshState;
 		
-		// Update title to reflect this discovery
-		String updateMessage = String.format(
-			"Querying Suites (Found %d of %d)...", __dx + 1, __total);
-		synchronized (programList)
-		{
-			programList.setTitle(updateMessage);
-		}
-		
-		// Update splash screen
-		synchronized (refreshState)
-		{
-			refreshState.set(updateMessage, __dx + 1, __total);
-			if (refreshCanvas != null)
-				synchronized (refreshCanvas)
-				{
-					refreshCanvas.requestRepaint();
-				}
-		}
+		// Count up
+		this.__counter(__dx, __total);
 		
 		// Try to load the image for the application
 		// Do this first, so we can keep the application list update
@@ -185,17 +174,76 @@ final class __ProgressListener__
 		// Determine where this should go and remember the suite
 		synchronized (listedSuites)
 		{
-			int at = Collections.binarySearch(listedSuites, __app,
-				this._comparator);
-			if (at < 0)
-				at = -(at + 1);
-			listedSuites.add(at, __app);
+			// Always insert where it belongs
+			int at;
+			if (listedSuites.isEmpty())
+				at = 0;
+			else
+			{
+				at = Collections.binarySearch(listedSuites, __app,
+					this._comparator);
+				if (at < 0)
+					at = -(at + 1);
+			}
 			
 			// Add entry to the list
+			listedSuites.add(at, __app);
 			synchronized (programList)
 			{
 				programList.insert(at, __app.displayName(), icon);
 			}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/12/06
+	 */
+	@Override
+	public void skipped(int __dx, int __total)
+	{
+		this.__counter(__dx, __total);
+	}
+	
+	/**
+	 * Updates and refreshes the counter.
+	 *
+	 * @param __dx The current Jar index.
+	 * @param __total The current total.
+	 * @since 2024/12/06
+	 */
+	private void __counter(int __dx, int __total)
+	{
+		SplashScreen refreshCanvas = this.refreshCanvas;
+		__RefreshState__ refreshState = this.refreshState;
+		
+		// Only count once!
+		Set<Integer> processedIndex = this._processedIndex;
+		int processed;
+		synchronized (this)
+		{
+			processedIndex.add(__dx);
+			processed = processedIndex.size();
+		}
+		
+		// Update title to reflect this discovery
+		String updateMessage = String.format(
+			"Querying Suites (Found %d of %d)...", processed, __total);
+		List programList = this.programList;
+		synchronized (programList)
+		{
+			programList.setTitle(updateMessage);
+		}
+		
+		// Update splash screen
+		synchronized (refreshState)
+		{
+			refreshState.set(updateMessage, processed, __total);
+			if (refreshCanvas != null)
+				synchronized (refreshCanvas)
+				{
+					refreshCanvas.requestRepaint();
+				}
 		}
 	}
 	

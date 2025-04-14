@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,6 +74,14 @@ public interface VMSpecifier
 	boolean hasDumping();
 	
 	/**
+	 * Does this have an emulator available
+	 * 
+	 * @return If an emulator is available.
+	 * @since 2023/05/28
+	 */
+	boolean hasEmulator();
+	
+	/**
 	 * Is the emulator for this JIT capable, as in there does not need to be
 	 * a library or ROM compilation before running?
 	 * 
@@ -82,6 +91,14 @@ public interface VMSpecifier
 	boolean hasEmulatorJit();
 	
 	/**
+	 * Does this have native port support?
+	 * 
+	 * @return The native port support.
+	 * @since 2023/05/31
+	 */
+	NativePortSupport[] hasNativePortSupport();
+	
+	/**
 	 * Is there a ROM task for the VM?
 	 * 
 	 * @param __variant The variant used.
@@ -89,6 +106,17 @@ public interface VMSpecifier
 	 * @since 2020/08/23
 	 */
 	boolean hasRom(BangletVariant __variant);
+	
+	/**
+	 * If the ROM contains only members of its own source set, then this
+	 * will be {@code true}. This means that there will be {@code main},
+	 * {@code testFixtures}, and {@code test} ROMs.
+	 *
+	 * @param __variant The banglet variant.
+	 * @return If this is a single source set or not.
+	 * @since 2023/07/25
+	 */
+	boolean isSingleSourceSetRom(BangletVariant __variant);
 	
 	/**
 	 * Returns the name of the project that is used to run this using the
@@ -175,8 +203,8 @@ public interface VMSpecifier
 	 * Fills the execution spec with the arguments used to create the
 	 * virtual machine.
 	 *
-	 * @param __task The task used as a latch to obtain the needed virtual
-	 * machine and other details.
+	 * @param __anyProject Any project.
+	 * @param __classifier The classifier to use.
 	 * @param __debugEligible Is this eligible for debug?
 	 * @param __execSpec The execution spec to fill.
 	 * @param __mainClass The main class to execute.
@@ -188,7 +216,8 @@ public interface VMSpecifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	void spawnJvmArguments(VMBaseTask __task, boolean __debugEligible,
+	void spawnJvmArguments(Project __anyProject, 
+		SourceTargetClassifier __classifier, boolean __debugEligible,
 		JavaExecSpecFiller __execSpec, String __mainClass,
 		String __commonName, Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String... __args)

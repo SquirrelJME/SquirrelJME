@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ import net.multiphasicapps.collections.UnmodifiableMap;
  * @since 2017/10/09
  */
 public final class StackMapTable
-	implements Iterable<Map.Entry<Integer, StackMapTableState>>
+	implements Contexual, Iterable<Map.Entry<Integer, StackMapTableState>>
 {
 	/** Stack map states. */
 	private final Map<Integer, StackMapTableState> _states;

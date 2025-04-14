@@ -14,11 +14,14 @@ squirreljme
 	definedStandards += new JavaMEStandard("microedition.midlet;;")
 	tags += "meep"
 	tags += "required"
+	
+	// Pull in MEEP profile by default
+	optionalDependencies += project(":modules:profile-meep")
 }
 
 dependencies
 {
 	api project(":modules:cldc-compact")
 	
-	api project(":modules:collections")
+	api project(":modules:vendor-api-squirreljme-collections")
 }

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.cldc.io;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.UnsupportedEncodingException;
 
@@ -20,9 +21,11 @@ import java.io.UnsupportedEncodingException;
  *
  * @since 2018/09/16
  */
+@SquirrelJMEVendorApi
 public final class CodecFactory
 {
 	/** The encoding to use if it is unknown or not set anywhere. */
+	@SquirrelJMEVendorApi
 	public static final String FALLBACK_ENCODING =
 		"utf-8";
 	
@@ -43,6 +46,7 @@ public final class CodecFactory
 	 * @throws UnsupportedEncodingException If the encoding is invalid.
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMEVendorApi
 	public static Decoder decoder(int __builtIn)
 		throws UnsupportedEncodingException
 	{
@@ -53,6 +57,9 @@ public final class CodecFactory
 			
 			case BuiltInEncodingType.IBM037:
 				return new IBM037Decoder();
+			
+			case BuiltInEncodingType.IBM437:
+				return new IBM437Decoder();
 			
 			case BuiltInEncodingType.ISO_8859_1:
 				return new ISO88591Decoder();
@@ -66,8 +73,8 @@ public final class CodecFactory
 			case BuiltInEncodingType.UTF8:
 				return new UTF8Decoder();
 				
-				// {@squirreljme.error ZZ47 Unsupported decoder.
-				// (The built-in encoding ID)}
+				/* {@squirreljme.error ZZ47 Unsupported decoder.
+				(The built-in encoding ID)} */
 			case BuiltInEncodingType.UNSPECIFIED:
 			default:
 				throw new UnsupportedEncodingException("ZZ47 " + __builtIn);
@@ -83,6 +90,7 @@ public final class CodecFactory
 	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2018/10/13
 	 */
+	@SquirrelJMEVendorApi
 	public static Decoder decoder(String __enc)
 		throws NullPointerException, UnsupportedEncodingException
 	{
@@ -95,6 +103,7 @@ public final class CodecFactory
 	 * @return The default decoder.
 	 * @since 2018/10/13
 	 */
+	@SquirrelJMEVendorApi
 	public static Decoder defaultDecoder()
 	{
 		try
@@ -103,8 +112,8 @@ public final class CodecFactory
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			// {@squirreljme.error ZZ02 Built-in encoding is not configured
-			// properly.}
+			/* {@squirreljme.error ZZ02 Built-in encoding is not configured
+			properly.} */
 			throw new Error("ZZ02", e);
 		}
 	}
@@ -115,6 +124,7 @@ public final class CodecFactory
 	 * @return The default encoder.
 	 * @since 2018/09/16
 	 */
+	@SquirrelJMEVendorApi
 	public static Encoder defaultEncoder()
 	{
 		try
@@ -123,8 +133,8 @@ public final class CodecFactory
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			// {@squirreljme.error ZZ04 Built-in encoding is not configured
-			// properly.}
+			/* {@squirreljme.error ZZ04 Built-in encoding is not configured
+			properly.} */
 			throw new Error("ZZ04", e);
 		}
 	}
@@ -137,6 +147,7 @@ public final class CodecFactory
 	 * @throws UnsupportedEncodingException If the encoder is not valid.
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMEVendorApi
 	public static Encoder encoder(int __builtIn)
 		throws UnsupportedEncodingException
 	{
@@ -160,8 +171,8 @@ public final class CodecFactory
 			case BuiltInEncodingType.UTF8:
 				return new UTF8Encoder();
 				
-				// {@squirreljme.error ZZ48 Unsupported encoder.
-				// (The built-in encoding ID)}
+				/* {@squirreljme.error ZZ48 Unsupported encoder.
+				(The built-in encoding ID)} */
 			case BuiltInEncodingType.UNSPECIFIED:
 			default:
 				throw new UnsupportedEncodingException("ZZ48 " + __builtIn);
@@ -177,6 +188,7 @@ public final class CodecFactory
 	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2018/09/17
 	 */
+	@SquirrelJMEVendorApi
 	public static Encoder encoder(String __enc)
 		throws NullPointerException, UnsupportedEncodingException
 	{
@@ -190,6 +202,7 @@ public final class CodecFactory
 	 * @return The built-in encoding.
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMEVendorApi
 	public static int toBuiltIn(String __enc)
 		throws UnsupportedEncodingException
 	{
@@ -201,13 +214,14 @@ public final class CodecFactory
 		{
 			case "ascii":		return BuiltInEncodingType.ASCII;
 			case "ibm037":		return BuiltInEncodingType.IBM037;
+			case "ibm437":		return BuiltInEncodingType.IBM437;
 			case "iso-8859-1":	return BuiltInEncodingType.ISO_8859_1;
 			case "iso-8859-15":	return BuiltInEncodingType.ISO_8859_15;
 			case "shift-jis":	return BuiltInEncodingType.SHIFT_JIS;
 			case "utf-8":		return BuiltInEncodingType.UTF8;
 			
-				// {@squirreljme.error ZZ01 Unknown encoding. (The input
-				// encoding)}
+				/* {@squirreljme.error ZZ01 Unknown encoding. (The input
+				encoding)} */
 			default:
 				throw new UnsupportedEncodingException(
 					String.format("ZZ01 %s", __enc));
@@ -222,6 +236,7 @@ public final class CodecFactory
 	 * @throws IllegalArgumentException If the encoding is not valid.
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMEVendorApi
 	public static String toString(int __builtIn)
 		throws IllegalArgumentException
 	{
@@ -229,13 +244,14 @@ public final class CodecFactory
 		{
 			case BuiltInEncodingType.ASCII:			return "ascii";
 			case BuiltInEncodingType.IBM037:		return "ibm037";
+			case BuiltInEncodingType.IBM437:		return "ibm437";
 			case BuiltInEncodingType.ISO_8859_1:	return "iso-8859-1";
 			case BuiltInEncodingType.ISO_8859_15:	return "iso-8859-15";
 			case BuiltInEncodingType.SHIFT_JIS:		return "shift-jis";
 			case BuiltInEncodingType.UTF8:			return "utf-8";
 			
-				// {@squirreljme.error ZZ49 Invalid built-in encoding.
-				// (The built-in ID}}
+				/* {@squirreljme.error ZZ49 Invalid built-in encoding.
+				(The built-in ID}} */
 			default:
 				throw new IllegalArgumentException("ZZ49 " + __builtIn);
 		}
@@ -244,6 +260,9 @@ public final class CodecFactory
 	/**
 	 * Normalizes the name of the encoding since there are so many aliases that
 	 * way this code can operate very simply.
+	 * 
+	 * Encodings are listed at:
+	 * https://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html
 	 *
 	 * @param __n The encoding to normalize.
 	 * @return The normalized encoding, if it is not known then the input is
@@ -294,6 +313,16 @@ public final class CodecFactory
 			case "ibm-037":
 			case "ibm-37":
 				return "ibm037";
+				
+				// IBM437
+			case "ibm437":
+			case "ibm-437":
+			case "cp437":
+			case "437":
+			case "cspc8codepage437":
+			case "oem-us":
+			case "windows-437":
+				return "ibm437";
 			
 				// ISO-8859-1
 			case "819":
@@ -318,6 +347,10 @@ public final class CodecFactory
 			case "shift_jisx0213":
 			case "shift-jis":
 			case "shift-jisx0213":
+			case "x-sjis":
+			case "sjis":
+			case "ms_kanji":
+			case "csshiftjis":
 				return "shift-jis";
 			
 				// UTF-8

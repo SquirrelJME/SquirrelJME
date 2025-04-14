@@ -3,16 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.scritchui.ImageTracker;
+import cc.squirreljme.runtime.lcdui.scritchui.StringTracker;
 
 @Api
 public class Alert
@@ -32,10 +36,10 @@ public class Alert
 		-2;
 	
 	/** The message to display. */
-	volatile String _message;
+	final StringTracker _message;
 	
 	/** The image to use. */
-	volatile Image _image;
+	final ImageTracker _image;
 	
 	/** The type of alert this is. */
 	volatile AlertType _type;
@@ -68,14 +72,15 @@ public class Alert
 	public Alert(String __title, String __message, Image __icon,
 		AlertType __type)
 	{
-		this._message = __message;
-		this._image = __icon;
-		this._type = __type;
+		ScritchInterface scritch = DisplayManager.instance().scritch();
 		
-		// Set titles
-		this._userTitle = __title;
-		if (__title != null)
-			this._displayTitle = __title;
+		// Title for this alert
+		this._trackerTitle.set(__title);
+		
+		// Alert details
+		this._message = new StringTracker(scritch.eventLoop(), __message);
+		this._image = new ImageTracker(scritch.eventLoop(), __icon);
+		this._type = __type;
 	}
 	
 	@Override
@@ -198,12 +203,11 @@ public class Alert
 	@Api
 	public void setString(String __s)
 	{
-		throw Debugging.todo();
-		/*
-		this._message = __s;
+		// Debug, for potential error catching
+		Debugging.debugNote("Alert set to: %s", __s);
 		
-		todo.DEBUG.note("Set alert message: %s%n", __s);
-		*/
+		// Set message
+		this._message.set(__s);
 	}
 	
 	/**
@@ -219,8 +223,8 @@ public class Alert
 	public void setTimeout(int __ms)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB19 The specified number of milliseconds is
-		// negative. (The number of milliseconds specified)}
+		/* {@squirreljme.error EB19 The specified number of milliseconds is
+		negative. (The number of milliseconds specified)} */
 		if (__ms < 0 && __ms != Alert.FOREVER)
 			throw new IllegalArgumentException(String.format("EB19 %d", __ms));
 		
@@ -237,42 +241,18 @@ public class Alert
 	@Api
 	public void setType(AlertType __t)
 	{
-		throw Debugging.todo();
-		/*
-		this._type = __t;
-		*/
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
-	@Override
-	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
-	{
-		return new __AlertState__(__backend, this);
-	}
-	
-	/**
-	 * State for alerts.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __AlertState__
-		extends Screen.__ScreenState__
-	{
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__AlertState__(UIBackend __backend, DisplayWidget __self)
+		synchronized (this)
 		{
-			super(__backend, __self);
+			this._type = __t;
 		}
+	}
+	
+	@Override
+	ScritchComponentBracket __scritchComponent()
+	{
+		// Use the panel directly as we do not need to do anything special
+		// for this
+		return this.__state().scritchPanel();
 	}
 }
 

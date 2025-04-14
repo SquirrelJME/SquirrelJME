@@ -1,0 +1,11 @@
+# 2023/07/16
+
+## 19:30
+
+I need to make sure I have tests for MULTIANEWARRAY for all the number of array
+lengths that could be created accordingly, it will be lots of tests but oh well.
+
+## 19:34
+
+My medications are definitely kicking in because I am getting the passing out
+feeling, but I feel I am very nearly done with this.

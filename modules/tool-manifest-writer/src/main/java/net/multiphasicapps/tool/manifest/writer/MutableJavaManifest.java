@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -151,8 +151,8 @@ public class MutableJavaManifest
 			}
 		}
 		
-		// {@squirreljme.error AB01 Failed to build the immutable manifest
-		// from the mutable one.}
+		/* {@squirreljme.error AB01 Failed to build the immutable manifest
+		from the mutable one.} */
 		catch (IOException e)
 		{
 			throw new JavaManifestException("AB01", e);
@@ -194,8 +194,8 @@ public class MutableJavaManifest
 		if (__k == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AB02 The specified value is of the wrong
-		// class type.}
+		/* {@squirreljme.error AB02 The specified value is of the wrong
+		class type.} */
 		if (!(__v instanceof MutableJavaManifestAttributes))
 			throw new ClassCastException("AB02");
 		

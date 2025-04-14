@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -308,7 +308,7 @@ final class __VolumeEnumeration__
 			this._lastmod = nowmod;
 		}
 		
-		// {@squirreljme.error DC0g Could not rebuild the enumeration.}
+		/* {@squirreljme.error DC0g Could not rebuild the enumeration.} */
 		catch (RecordStoreException e)
 		{
 			throw new RuntimeException("DC0g", e);
@@ -340,8 +340,8 @@ final class __VolumeEnumeration__
 	private void __checkDestroy()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error DC0h Record store enumeration has been
-		// destoryed.}
+		/* {@squirreljme.error DC0h Record store enumeration has been
+		destoryed.} */
 		if (this._destroyed)
 			throw new IllegalStateException("DC0h");
 	}
@@ -364,7 +364,7 @@ final class __VolumeEnumeration__
 		}
 		catch (RecordStoreException e)
 		{
-			// {@squirreljme.error DC0i Could not check for updates.}
+			/* {@squirreljme.error DC0i Could not check for updates.} */
 			throw new IllegalStateException("DC0i", e);
 		}
 	}

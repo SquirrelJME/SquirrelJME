@@ -7,7 +7,7 @@ squirreljme
 {
 	javaDocErrorCode = "AG"
 	swmType = JavaMEMidletType.LIBRARY
-	swmName = "JDWP Implementation"
+	swmName = "JDWP Interface Protocol"
 	swmVendor = "Stephanie Gawroriski"
 	tags += "debug"
 }
@@ -15,6 +15,6 @@ squirreljme
 dependencies
 {
 	api project(":modules:cldc-compact")
-	api project(":modules:collections")
+	api project(":modules:vendor-api-squirreljme-collections")
 	api project(":modules:tool-classfile")
 }

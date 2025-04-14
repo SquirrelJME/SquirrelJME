@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -172,6 +172,39 @@ public abstract class AbstractImageDemo
 			// Plain image drawing
 			__g.drawImage(image, 0, basey,
 				Graphics.TOP | Graphics.LEFT);
+			basey += h;
+			
+			// Big Lex
+			__g.drawRegion(image, 0, 0, w, h,
+				0, 0, basey, 0,
+				w * 2, h * 2);
+			basey += (h * 2);
+			
+			// Little Lex
+			__g.drawRegion(image, 0, 0, w, h,
+				0, 0, basey, 0,
+				w / 2, h / 2);
+			basey += h / 2;
+			
+			// Thicc Lex
+			__g.drawRegion(image, 0, 0, w, h,
+				0, 0, basey, 0,
+				w * 4, h / 2);
+			basey += h / 2;
+			
+			// Back to top
+			int basex = (w * 4) + (w / 2);
+			basey = 0;
+			
+			// Half of a lex, width
+			__g.drawRegion(image, w / 2, 0, w / 2, h,
+				0, basex, basey, 0);
+			basey += h;
+			
+			// Half of a lex, Height
+			__g.drawRegion(image, 0, h / 2, w, h / 2,
+				0, basex, basey, 0);
+			basey += h;
 		}
 	}
 }

@@ -3,13 +3,11 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
-
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Lock for the layout.
@@ -72,8 +70,8 @@ final class __LayoutLock__
 		// Performs the opposite of utilize
 		synchronized (this)
 		{
-			// {@squirreljme.error EB35 Form layout update called outside
-			// permitted method.}
+			/* {@squirreljme.error EB35 Form layout update called outside
+			permitted method.} */
 			if (this._thread != Thread.currentThread())
 				throw new IllegalStateException("EB35");
 			
@@ -94,8 +92,8 @@ final class __LayoutLock__
 	{
 		synchronized (this)
 		{
-			// {@squirreljme.error EB34 Form layout update called outside
-			// permitted method.}
+			/* {@squirreljme.error EB34 Form layout update called outside
+			permitted method.} */
 			if (this._thread != Thread.currentThread())
 				throw new IllegalStateException("EB34");
 			

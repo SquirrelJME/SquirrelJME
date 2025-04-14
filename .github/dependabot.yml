@@ -10,6 +10,8 @@ updates:
     schedule:
       interval: "monthly"
       day: friday
+    ignore:
+      - dependency-name: "org.iban4j:iban4j"
   - package-ecosystem: "docker"
     directory: "/"
     rebase-strategy: "disabled"

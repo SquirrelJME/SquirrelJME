@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -88,8 +88,9 @@ public final class SpringFieldStorage
 		}
 		
 		// If the field starts with a constant, it must be initialized
+		// But this is only considered for static variables
 		ConstantValue cv = __f.field.constantValue();
-		if (cv != null)
+		if (cv != null && __f.flags().isStatic())
 			init = cv.boxedValue();
 		
 		// Set initial value
@@ -161,7 +162,7 @@ public final class SpringFieldStorage
 		/*todo.DEBUG.note("%s::%s = %s", this.inclass, this.nameandtype,
 			__v);*/
 		
-		// {@squirreljme.error BK18 Attempt to write to final field.}
+		/* {@squirreljme.error BK18 Attempt to write to final field.} */
 		if (this.isFinal && !__writeFinal)
 			throw new SpringIllegalAccessException("BK18");
 		

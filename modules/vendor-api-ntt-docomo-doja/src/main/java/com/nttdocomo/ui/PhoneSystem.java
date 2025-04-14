@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.BacklightControl;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
 import cc.squirreljme.runtime.nttdocomo.ui.VendorPhoneSystem;
+import javax.microedition.lcdui.Displayable;
 
 @Api
 public class PhoneSystem
@@ -37,21 +38,35 @@ public class PhoneSystem
 	public static final int MIN_VENDOR_ATTR = 64;
 	
 	@SuppressWarnings("FinalStaticMethod")
+	@Api
 	public static final void setAttribute(int __attr, int __value)
 	{
 		// Backlight control
 		if (__attr == PhoneSystem.DEV_BACKLIGHT)
 		{
+			// Change level
 			if (__value == PhoneSystem.ATTR_BACKLIGHT_ON)
 				BacklightControl.setLevel(BacklightControl.MAX_LEVEL);
 			else if (__value == PhoneSystem.ATTR_BACKLIGHT_OFF)
 				BacklightControl.setLevel(BacklightControl.MIN_LEVEL);
 			
+			// Some software such as Final Fantasy 1 for DoJa sets the
+			// backlight constantly every frame to force the screen to refresh,
+			// despite there being repaint()
+			javax.microedition.lcdui.Display display = Display.__midpDisplay();
+			if (display != null)
+			{
+				Displayable current = display.getCurrent();
+				if (current instanceof javax.microedition.lcdui.Canvas)
+					((javax.microedition.lcdui.Canvas)current).repaint();
+			}
+			
 			return;
 		}
 		
 		// Vibration
-		else if (__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_F503I_SO503I || __attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_P503I)
+		else if (__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_F503I_SO503I ||
+			__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_P503I)
 		{
 			// Different phones have different means of turning on the shake
 			boolean isOn;

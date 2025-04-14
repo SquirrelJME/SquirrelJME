@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-result: NoResult
-thrown: NoExceptionThrown
-multi-parameters: NATIVE
-disabled-multi-parameters: FRAMEBUFFER

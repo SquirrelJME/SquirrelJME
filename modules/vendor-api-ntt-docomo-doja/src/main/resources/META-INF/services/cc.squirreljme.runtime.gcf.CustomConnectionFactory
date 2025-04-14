@@ -11,3 +11,6 @@ cc.squirreljme.runtime.nttdocomo.io.ResourceConnectionFactory
 
 # scratchpad://
 cc.squirreljme.runtime.nttdocomo.io.ScratchPadConnectionFactory
+
+# SquirrelJME i-mode HTTP web service
+cc.squirreljme.runtime.nttdocomo.io.SquirrelJMEWebRootConnectionFactory

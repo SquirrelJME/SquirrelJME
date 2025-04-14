@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -311,8 +311,8 @@ public final class WritableMemoryOutputStream
 		if (__len <= 0)
 			throw new IllegalArgumentException("INEG");
 		
-		// {@squirreljme.error ZZ41 Reached end of memory stream.
-		// (The position; The length of the stream; The length checked)}
+		/* {@squirreljme.error ZZ41 Reached end of memory stream.
+		(The position; The length of the stream; The length checked)} */
 		int at = this._at;
 		if (at + (__len - 1) > this.length)
 			throw new EOFException(String.format("ZZ41 %d %d %d",

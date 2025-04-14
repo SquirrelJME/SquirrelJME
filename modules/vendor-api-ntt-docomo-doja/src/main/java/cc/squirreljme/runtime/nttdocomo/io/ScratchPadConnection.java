@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,11 +25,12 @@ import javax.microedition.io.StreamConnection;
  *
  * @since 2021/11/30
  */
+@SquirrelJMEVendorApi
 public class ScratchPadConnection
 	implements StreamConnection
 {
 	/** The parameters for the scratch pad. */
-	private final __ScratchPadParams__ params;
+	private final ScratchPadParams params;
 	
 	/** The byte area length. */
 	private final int length;
@@ -49,7 +51,8 @@ public class ScratchPadConnection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/01
 	 */
-	public ScratchPadConnection(__ScratchPadParams__ __params, int __pad,
+	@SquirrelJMEVendorApi
+	public ScratchPadConnection(ScratchPadParams __params, int __pad,
 		int __pos, int __len)
 		throws NullPointerException
 	{
@@ -68,6 +71,7 @@ public class ScratchPadConnection
 	 * @since 2021/11/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void close()
 		throws IOException
 	{
@@ -80,6 +84,7 @@ public class ScratchPadConnection
 	 * @since 2021/11/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public DataInputStream openDataInputStream()
 		throws IOException
 	{
@@ -92,6 +97,7 @@ public class ScratchPadConnection
 	 * @since 2021/11/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public DataOutputStream openDataOutputStream()
 		throws IOException
 	{
@@ -104,10 +110,11 @@ public class ScratchPadConnection
 	 * @since 2021/11/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public OutputStream openOutputStream()
 		throws IOException
 	{
-		return __ScratchPadStore__.__open(this.pad, this.params).outputStream(
+		return ScratchPadStore.__open(this.pad, this.params).outputStream(
 			this.pos, this.length);
 	}
 	
@@ -117,10 +124,11 @@ public class ScratchPadConnection
 	 * @since 2021/11/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public InputStream openInputStream()
 		throws IOException
 	{
-		return __ScratchPadStore__.__open(this.pad, this.params).inputStream(
+		return ScratchPadStore.__open(this.pad, this.params).inputStream(
 			this.pos, this.length);
 	}
 }

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -228,9 +228,10 @@ public final class ProxyGraphics
 	 */
 	@Override
 	public void drawRoundRect(int __a, int __b, int __c, int __d,
-		int __e,  int __f)
+		int __arcWidth,  int __arcHeight)
 	{
-		this.__graphics().drawRoundRect(__a, __b, __c, __d, __e, __f);
+		this.__graphics().drawRoundRect(__a, __b, __c, __d, __arcWidth,
+			__arcHeight);
 	}
 	
 	/**
@@ -291,9 +292,10 @@ public final class ProxyGraphics
 	 */
 	@Override
 	public void fillRoundRect(int __a, int __b, int __c, int __d,
-		int __e, int __f)
+		int __arcWidth, int __arcHeight)
 	{
-		this.__graphics().fillRoundRect(__a, __b, __c, __d, __e, __f);
+		this.__graphics().fillRoundRect(__a, __b, __c, __d, __arcWidth,
+			__arcHeight);
 	}
 	
 	/**
@@ -509,8 +511,8 @@ public final class ProxyGraphics
 	@Override
 	public void setAlphaColor(int __a, int __r, int __g, int __b)
 	{
-		// {@squirreljme.error EB2y Color out of range. (Alpha; Red; Green;
-		// Blue)}
+		/* {@squirreljme.error EB2y Color out of range. (Alpha; Red; Green;
+		Blue)} */
 		if (__a < 0 || __a > 255 || __r < 0 || __r > 255 ||
 			__g < 0 || __g > 255 || __b < 0 || __b > 255)
 			throw new IllegalArgumentException(String.format(
@@ -527,7 +529,7 @@ public final class ProxyGraphics
 	@Override
 	public void setBlendingMode(int __m)
 	{
-		// {@squirreljme.error EB2x Invalid blending mode. (The mode)}
+		/* {@squirreljme.error EB2x Invalid blending mode. (The mode)} */
 		if (__m != Graphics.SRC && __m != Graphics.SRC_OVER)
 			throw new IllegalArgumentException("EB2x " + __m);
 		
@@ -626,7 +628,7 @@ public final class ProxyGraphics
 	@Override
 	public void setStrokeStyle(int __style)
 	{
-		// {@squirreljme.error EB2z Illegal stroke style.}
+		/* {@squirreljme.error EB2z Illegal stroke style.} */
 		if (__style != Graphics.SOLID && __style != Graphics.DOTTED)
 			throw new IllegalArgumentException("EB2z");
 		

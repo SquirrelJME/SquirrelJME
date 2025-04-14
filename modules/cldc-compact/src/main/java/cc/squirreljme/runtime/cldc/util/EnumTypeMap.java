@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractMap;
 import java.util.Set;
@@ -18,11 +19,16 @@ import java.util.Set;
  *
  * @since 2021/03/13
  */
+@SquirrelJMEVendorApi
 public final class EnumTypeMap<E extends Enum<E>, V>
 	extends AbstractMap<E, V>
 {
 	/** The type of value to store. */
+	@SquirrelJMEVendorApi
 	protected final Class<E> type;
+	
+	/** The stored keys. */
+	private final E[] _keys;
 	
 	/** Stored values. */
 	private final Object[] _values;
@@ -35,6 +41,7 @@ public final class EnumTypeMap<E extends Enum<E>, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
+	@SquirrelJMEVendorApi
 	public EnumTypeMap(Class<E> __type, E... __keys)
 		throws NullPointerException
 	{
@@ -42,6 +49,7 @@ public final class EnumTypeMap<E extends Enum<E>, V>
 			throw new NullPointerException("NARG");
 		
 		this.type = __type;
+		this._keys = __keys.clone();
 		this._values = new Object[__keys.length];
 	}
 	
@@ -52,7 +60,17 @@ public final class EnumTypeMap<E extends Enum<E>, V>
 	@Override
 	public boolean containsKey(Object __key)
 	{
-		throw Debugging.todo();
+		// Not this type, so it will never exist
+		if (__key == null || !this.type.isInstance(__key))
+			return false;
+		
+		// Has the key been set?
+		for (E key : this._keys)
+			if (key == __key)
+				return true;
+		
+		// Does not exist otherwise
+		return false;
 	}
 	
 	/**
@@ -62,7 +80,7 @@ public final class EnumTypeMap<E extends Enum<E>, V>
 	@Override
 	public Set<Entry<E, V>> entrySet()
 	{
-		throw Debugging.todo();
+		return new __ArrayEntrySet__<E, V>(this._keys, this._values);
 	}
 	
 	/**
@@ -90,7 +108,7 @@ public final class EnumTypeMap<E extends Enum<E>, V>
 	@Override
 	public V put(E __key, V __value)
 	{
-		// {@squirreljme.error ZZ1i Cannot store key into map.} 
+		/* {@squirreljme.error ZZ1i Cannot store key into map.} */ 
 		if (!this.type.isInstance(__key))
 			throw new IllegalArgumentException("ZZ1i");
 		

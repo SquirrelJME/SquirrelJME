@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -193,9 +193,10 @@ public class BasicForwardingGraphics
 	 */
 	@Override
 	public void drawRoundRect(int __a, int __b, int __c, int __d,
-		int __e,  int __f)
+		int __arcWidth,  int __arcHeight)
 	{
-		this.graphics.drawRoundRect(__a, __b, __c, __d, __e, __f);
+		this.graphics.drawRoundRect(__a, __b, __c, __d, __arcWidth,
+			__arcHeight);
 	}
 	
 	/**
@@ -256,9 +257,10 @@ public class BasicForwardingGraphics
 	 */
 	@Override
 	public void fillRoundRect(int __a, int __b, int __c, int __d,
-		int __e, int __f)
+		int __arcWidth, int __arcHeight)
 	{
-		this.graphics.fillRoundRect(__a, __b, __c, __d, __e, __f);
+		this.graphics.fillRoundRect(__a, __b, __c, __d, __arcWidth,
+			__arcHeight);
 	}
 	
 	/**

@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.UnsignedInteger;
@@ -22,7 +23,8 @@ import cc.squirreljme.runtime.cldc.util.UnsignedInteger;
  * @since 2019/05/24
  */
 @SquirrelJMEVendorApi
-@SuppressWarnings({"CommentedOutCode", "MagicNumber", "OverlyComplexClass"})
+@SuppressWarnings({"CommentedOutCode", "MagicNumber", "OverlyComplexClass",
+	"SpellCheckingInspection"})
 public final class SoftFloat
 {
 	/** The sign mask. */
@@ -90,8 +92,22 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static float add(int __a, int __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Adds two values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float add(float __a, float __b)
+	{
+		return SoftFloat.add(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
 	}
 	
 	/**
@@ -113,6 +129,21 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Compares two values, NaN returns {@code -1}.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static int cmpl(float __a, float __b)
+	{
+		return SoftFloat.cmpl(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
+	}
+	
+	/**
 	 * Compares two values, NaN returns {@code 1}.
 	 *
 	 * @param __a A.
@@ -121,13 +152,27 @@ public final class SoftFloat
 	 * @since 2019/05/24
 	 */
 	@SquirrelJMEVendorApi
-	@SuppressWarnings("SpellCheckingInspection")
 	public static int cmpg(int __a, int __b)
 	{
 		if (SoftFloat.isNaN(__a) || SoftFloat.isNaN(__b))
 			return 1;
 		
 		return SoftFloat.__cmp(__a, __b);
+	}
+	
+	/**
+	 * Compares two values, NaN returns {@code 1}.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static int cmpg(float __a, float __b)
+	{
+		return SoftFloat.cmpg(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
 	}
 	
 	/**
@@ -141,8 +186,22 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static float div(int __a, int __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Divides two values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float div(float __a, float __b)
+	{
+		return SoftFloat.div(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
 	}
 	
 	/**
@@ -156,6 +215,19 @@ public final class SoftFloat
 	public static boolean isNaN(int __a)
 	{
 		return SoftFloat.NAN_MASK == (__a & SoftFloat.NAN_MASK);
+	}
+	
+	/**
+	 * Is this Not a Number?
+	 * 
+	 * @param __a The value to check.
+	 * @return If this is not a number.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isNaN(float __a)
+	{
+		return SoftFloat.isNaN(MathShelf.rawFloatToInt(__a));
 	}
 	
 	/**
@@ -225,8 +297,8 @@ public final class SoftFloat
 					SoftFloat.__packToF32UI(signZ, 0, 0));
 				
 			long normExpSig = SoftFloat.__normSubnormalF32Sig(sigA);
-			expA = (short)Assembly.longUnpackHigh(normExpSig);
-			sigA = Assembly.longUnpackLow(normExpSig);
+			expA = (short)MathShelf.longUnpackHigh(normExpSig);
+			sigA = MathShelf.longUnpackLow(normExpSig);
 		}
 		
 		// if ( ! expB )
@@ -238,8 +310,8 @@ public final class SoftFloat
 					SoftFloat.__packToF32UI(signZ, 0, 0));
 				
 			long normExpSig = SoftFloat.__normSubnormalF32Sig(sigB);
-			expB = (short)Assembly.longUnpackHigh(normExpSig);
-			sigB = Assembly.longUnpackLow(normExpSig);
+			expB = (short)MathShelf.longUnpackHigh(normExpSig);
+			sigB = MathShelf.longUnpackLow(normExpSig);
 		}
 		
 		int expZ = (short)(expA + expB - 0x7F);
@@ -263,6 +335,21 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Multiplies two values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float mul(float __a, float __b)
+	{
+		return SoftFloat.mul(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
+	}
+	
+	/**
 	 * Negates a value.
 	 *
 	 * @param __a A.
@@ -272,8 +359,20 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static float neg(int __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Negates a value.
+	 *
+	 * @param __a A.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float neg(float __a)
+	{
+		return SoftFloat.neg(MathShelf.rawFloatToInt(__a));
 	}
 	
 	/**
@@ -287,7 +386,22 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static float or(int __a, int __b)
 	{
-		return Assembly.intBitsToFloat(__a | __b);
+		return MathShelf.rawIntToFloat(__a | __b);
+	}
+	
+	/**
+	 * Ors a value, used for constant loading.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float or(float __a, float __b)
+	{
+		return SoftFloat.or(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
 	}
 	
 	/**
@@ -301,8 +415,22 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static float rem(int __a, int __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Remainders a value.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float rem(float __a, float __b)
+	{
+		return SoftFloat.rem(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
 	}
 	
 	/**
@@ -316,8 +444,22 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static float sub(int __a, int __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Subtracts values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float sub(float __a, float __b)
+	{
+		return SoftFloat.sub(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
 	}
 	
 	/**
@@ -330,8 +472,20 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static double toDouble(int __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Converts to double.
+	 *
+	 * @param __a A.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static double toDouble(float __a)
+	{
+		return SoftFloat.toDouble(MathShelf.rawFloatToInt(__a));
 	}
 	
 	/**
@@ -352,13 +506,26 @@ public final class SoftFloat
 			sig |= 0x0080_0000;
 		
 		// sig64 = (uint_fast64_t) sig<<32;
-		long sig64 = Assembly.longPack(0, sig);
+		long sig64 = MathShelf.longPack(0, sig);
 		int shiftDist = 0xAA - exp;
 		
 		if (UnsignedInteger.compareUnsigned(0, shiftDist) < 0)
 			sig64 = SoftFloat.__shiftRightJam64(sig64, shiftDist);
 		
 		return SoftFloat.__roundToI32(sign, sig64);
+	}
+	
+	/**
+	 * Converts to integer.
+	 *
+	 * @param __a A.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static int toInteger(float __a)
+	{
+		return SoftFloat.toInteger(MathShelf.rawFloatToInt(__a));
 	}
 	
 	/**
@@ -371,8 +538,20 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static long toLong(int __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Converts to long.
+	 *
+	 * @param __a A.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long toLong(float __a)
+	{
+		return SoftFloat.toLong(MathShelf.rawFloatToInt(__a));
 	}
 	
 	/**
@@ -471,8 +650,7 @@ public final class SoftFloat
 	 * @return The resultant value.
 	 * @since 2021/04/08
 	 */
-	protected static int __normRoundPackToF32(boolean __sign, int __exp,
-		int __sig)
+	static int __normRoundPackToF32(boolean __sign, int __exp, int __sig)
 	{
 		int shiftDist;
 		
@@ -510,7 +688,7 @@ public final class SoftFloat
 		
 		// struct exp16_sig32 { int_fast16_t exp; uint_fast32_t sig; };
 		// exp = 1 - shiftDist ,, sig = sig<<shiftDist
-		return Assembly.longPack(__sig << shiftDist,
+		return MathShelf.longPack(__sig << shiftDist,
 			(short)(1 - shiftDist));
 	}
 	
@@ -525,7 +703,7 @@ public final class SoftFloat
 	 * @return The packed value.
 	 * @since 2021/04/08
 	 */
-	protected static int __packToF32UI(boolean __sign, int __exp, int __sig)
+	static int __packToF32UI(boolean __sign, int __exp, int __sig)
 	{
 		// (((uint32_t) (sign)<<31) + ((uint32_t) (exp)<<23) + (sig))
 		return (__sign ? SoftFloat.SIGN_MASK : 0) + ((__exp) << 23) + (__sig);

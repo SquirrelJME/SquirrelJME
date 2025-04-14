@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,6 +12,7 @@ package cc.squirreljme.plugin.general;
 import cc.squirreljme.plugin.multivm.TaskInitialization;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.tasks.TaskContainer;
 
 /**
  * This is a plugin that performs general SquirrelJME tasks and is mostly used
@@ -30,32 +31,34 @@ public class GeneralSquirrelJMEPlugin
 	@Override
 	public void apply(Project __project)
 	{
+		TaskContainer tasks = __project.getTasks();
+		
 		// Print Fossil executable path
-		FossilExeTask exeTask = __project.getTasks().create("fossilExe",
+		FossilExeTask exeTask = tasks.create("fossilExe",
 			FossilExeTask.class);
 		
 		// Print Fossil executable path
-		__project.getTasks().create("fossilVersion",
+		tasks.create("fossilVersion",
 			FossilExeVersionTask.class, exeTask);
 		
 		// Print Fossil user
-		__project.getTasks().create("fossilUser",
+		tasks.create("fossilUser",
 			FossilUserTask.class, exeTask);
 		
 		// Developer note
-		__project.getTasks().create("developerNote",
+		tasks.create("developerNote",
 			DeveloperNoteTask.class, exeTask);
 		
 		// Recreate the developer note calendar
-		__project.getTasks().create("recreateDeveloperNoteCalendar",
+		tasks.create("recreateDeveloperNoteCalendar",
 			RecreateDeveloperNoteCalendarTask.class, exeTask);
 		
 		// List error prefixes used by projects
-		__project.getTasks().create("listErrorPrefixes",
+		tasks.create("listErrorPrefixes",
 			ListErrorPrefixTask.class);
 		
 		// Determine the next error prefix that is available
-		__project.getTasks().create("nextErrorPrefix",
+		tasks.create("nextErrorPrefix",
 			NextErrorPrefixTask.class);
 		
 		// Setup ROM tasks, only once
@@ -63,5 +66,9 @@ public class GeneralSquirrelJMEPlugin
 		
 		// Initialize the full suite tasks
 		TaskInitialization.initializeFullSuiteTask(__project);
+		
+		// Bundling the build from CI/CD
+		tasks.create("bundleCiCd",
+			BundleCiCdTask.class);
 	}
 }

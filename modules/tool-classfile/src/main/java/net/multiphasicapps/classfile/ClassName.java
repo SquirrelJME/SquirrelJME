@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ import java.util.Objects;
  * @since 2017/09/27
  */
 public class ClassName
-	implements Comparable<ClassName>
+	implements Contexual, Comparable<ClassName>
 {
 	/** The binary name of the class. */
 	protected final BinaryName binary;
@@ -93,7 +93,7 @@ public class ClassName
 		if (__d == 0)
 			return this;
 		
-		// {@squirreljme.error JC2j Cannot add negative dimensions.}
+		/* {@squirreljme.error JC2j Cannot add negative dimensions.} */
 		if (__d < 0)
 			throw new IllegalArgumentException("JC2j");
 		
@@ -146,8 +146,8 @@ public class ClassName
 	public final ClassName componentType()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error JC2k This class is not an array, cannot get
-		// the component type. (The name of this class)}
+		/* {@squirreljme.error JC2k This class is not an array, cannot get
+		the component type. (The name of this class)} */
 		if (!this.isArray())
 			throw new IllegalStateException(String.format("JC2k %s", this));
 		
@@ -231,7 +231,7 @@ public class ClassName
 	 * Returns the package that this class is within. Primitive types and
 	 * arrays are not part of any package.
 	 *
-	 * @return The package or {@code null} if it is not in the package.
+	 * @return The package or {@code null} if it is not in a package.
 	 * @since 2017/10/09
 	 */
 	public BinaryName inPackage()
@@ -333,8 +333,8 @@ public class ClassName
 	public final ClassName rootComponentType()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error JC4w This class is not an array, cannot get
-		// the root component type. (The name of this class)}
+		/* {@squirreljme.error JC4w This class is not an array, cannot get
+		the root component type. (The name of this class)} */
 		if (!this.isArray())
 			throw new IllegalStateException(String.format("JC4w %s", this));
 		
@@ -356,8 +356,8 @@ public class ClassName
 	public ClassIdentifier simpleName()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error JC0g Cannot get the simple name of a primitive
-		// or array type.}
+		/* {@squirreljme.error JC0g Cannot get the simple name of a primitive
+		or array type.} */
 		if (this.isArray() || this.isPrimitive())
 			throw new IllegalStateException("JC0g");
 		return this.binary.simpleName();
@@ -436,6 +436,24 @@ public class ClassName
 			default:
 				throw Debugging.oops();
 		}
+	}
+	
+	/**
+	 * Parses a runtime class name to a virtual machine class name.
+	 *
+	 * @param __in The input runtime string.
+	 * @return The resultant class name.
+	 * @throws InvalidClassFormatException If the class name is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/08/04
+	 */
+	public static ClassName fromRuntimeName(String __in)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		return new ClassName(__in.replace('.', '/'));
 	}
 	
 	/**

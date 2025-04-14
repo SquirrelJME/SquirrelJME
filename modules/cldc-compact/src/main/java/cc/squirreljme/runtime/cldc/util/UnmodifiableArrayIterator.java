@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.cldc.util;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * This is an iterator where elements cannot be removed and where it iterates
@@ -19,6 +20,7 @@ import java.util.NoSuchElementException;
  * @param <T> The type to use.
  * @since 2018/05/13
  */
+@UnmodifiableView
 public final class UnmodifiableArrayIterator<T>
 	implements Iterator<T>
 {

@@ -1,0 +1,15 @@
+# 2023/07/26
+
+## 10:23
+
+I am at the point where I can implement the main logic of NanoCoat while on
+the process of getting tests from SquirrelJME running accordingly. At least
+once that happens and all tests pass I can continue on to the main interface.
+I will note that NanoCoat is pretty large in general. What I could actually
+do though is with the split source set ROMs when I do build for targets such
+as RetroArch I can just outright ignore `test` and `testFixtures` and just
+include main... everything will still work just fine. That kind of gives me
+the thought if I should do the same for SummerCoat... I mean the entire reason I
+am working on NanoCoat, besides getting things out quicker, is to use it as
+a sort of proving ground for SummerCoat... and maybe even build off it
+accordingly.

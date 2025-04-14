@@ -14,6 +14,7 @@ import com.nttdocomo.io.ConnectionException;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.io.Connector;
+import org.intellij.lang.annotations.Language;
 
 /**
  * This wraps a MIDP {@link javax.microedition.lcdui.Image} so it can be
@@ -27,7 +28,11 @@ final class __MIDPImage__
 	implements MediaImage
 {
 	/** The URI of the image. */
+	@Language("http-url-reference")
 	final String _uri;
+	
+	/** Input stream data. */
+	final InputStream _in;
 	
 	/** The actual loaded image. */
 	volatile javax.microedition.lcdui.Image _image;
@@ -38,17 +43,35 @@ final class __MIDPImage__
 	/**
 	 * Initializes the wrapped image.
 	 *
+	 * @param __in The image to wrap.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/03/28
+	 */
+	__MIDPImage__(InputStream __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		this._uri = null;
+		this._in = __in;
+	}
+	
+	/**
+	 * Initializes the wrapped image.
+	 *
 	 * @param __uri The image to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/01
 	 */
-	__MIDPImage__(String __uri)
+	__MIDPImage__(@Language("http-url-reference") String __uri)
 		throws NullPointerException
 	{
 		if (__uri == null)
 			throw new NullPointerException("NARG");
 		
 		this._uri = __uri;
+		this._in = null;
 	}
 	
 	/**
@@ -59,7 +82,11 @@ final class __MIDPImage__
 	@Override
 	public void dispose()
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			this._image = null;
+			this._useCount = 0;
+		}
 	}
 	
 	/**
@@ -138,7 +165,8 @@ final class __MIDPImage__
 			}
 			
 			// Load in the image
-			try (InputStream in = Connector.openInputStream(this._uri))
+			try (InputStream in = (this._in != null ? this._in :
+				Connector.openInputStream(this._uri)))
 			{
 				this._image = javax.microedition.lcdui.Image.createImage(in);
 			}

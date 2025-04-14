@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -14,7 +14,6 @@ import cc.squirreljme.jvm.launch.SuiteScanListener;
 import cc.squirreljme.jvm.launch.SuiteScanner;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -153,7 +152,7 @@ public class MidletMain
 			}
 			
 			// Scan all the available suites for launching
-			SuiteScanner.scanSuites(handler);
+			new SuiteScanner(true).scanSuites(handler);
 			
 			// All done so, return the title back
 			programList.setTitle("SquirrelJME Launcher");
@@ -200,7 +199,7 @@ public class MidletMain
 				this._autoLaunch = null;
 				
 				// Launch it
-				System.err.println("Auto-launching " + autoLaunch + "...");
+				Debugging.debugNote("Auto-launching " + autoLaunch + "...");
 				this.__launch(autoLaunch);
 			}
 		}
@@ -213,17 +212,6 @@ public class MidletMain
 	@Override
 	protected void startApp()
 	{
-		// If the system lacks a display for LCDUI, instead use the LUI based
-		// launcher so that launching and otherwise is still very possible
-		try
-		{
-			UIBackendFactory.getInstance(false);
-		}
-		catch (IllegalArgumentException e)
-		{
-			throw Debugging.todo("Use LUI launcher instead!");
-		}
-		
 		// We will need to access our own display to build the list of
 		// MIDlets that could actually be run
 		Display display = Display.getDisplay(this);

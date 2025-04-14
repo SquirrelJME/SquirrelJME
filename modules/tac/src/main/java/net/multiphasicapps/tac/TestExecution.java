@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package net.multiphasicapps.tac;
 
+import java.io.IOException;
 import java.io.PrintStream;
 
 /**
@@ -18,6 +19,10 @@ import java.io.PrintStream;
  */
 public final class TestExecution
 {
+	/** Print the resultant output manifest? */
+	public static final String RESULT_MANIFEST =
+		"net.multiphasicapps.tac.resultManifest";
+	
 	/** The status of the test. */
 	public final TestStatus status;
 	
@@ -65,6 +70,20 @@ public final class TestExecution
 	{
 		if (__ps == null)
 			throw new NullPointerException("NARG");
+		
+		// Write manifest value?
+		if (Boolean.getBoolean(TestExecution.RESULT_MANIFEST))
+		{
+			System.err.println("********************************");
+			try
+			{
+				this.result.writeAsManifest(System.err);
+			}
+			catch (IOException ignored)
+			{
+			}
+			System.err.println("********************************");
+		}
 			
 		switch (this.status)
 		{
@@ -86,14 +105,14 @@ public final class TestExecution
 				break;
 			
 			case TEST_EXCEPTION:
-				// {@squirreljme.error BU0d The test failed to run properly.
-				// (The given test)}
+				/* {@squirreljme.error BU0d The test failed to run properly.
+				(The given test)} */
 				__ps.printf("BU0d %s%n", this.testClass);
 				break;
 			
 			case UNTESTABLE:
-				// {@squirreljme.error BU0c Test could not be ran
-				// potentially because a condition was not met. (Test class)}
+				/* {@squirreljme.error BU0c Test could not be ran
+				potentially because a condition was not met. (Test class)} */
 				__ps.printf("BU0c %s%n", this.testClass);
 				break;
 		}

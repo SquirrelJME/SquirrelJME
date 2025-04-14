@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.Responsify;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
@@ -28,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -53,9 +55,14 @@ import org.gradle.workers.WorkerExecutor;
 public class VMTestTaskAction
 	implements Action<Task>
 {
+	
 	/** The special key for quick finding test results. */
 	static final String _SPECIAL_KEY = 
 		"XERSQUIRRELJMEXER";
+	
+	/** Print the test manifest? */
+	public static final String PRINT_TEST_MANIFEST =
+		"net.multiphasicapps.tac.resultManifest";
 	
 	/** The maximum parallel tests that can run at once. */
 	private static final int _MAX_PARALLEL_TESTS =
@@ -471,7 +478,7 @@ public class VMTestTaskAction
 		}
 		
 		// Can we directly refer to the emulator library already?
-		Path emuLib = VMHelpers.findEmulatorLib(__task);
+		Path emuLib = VMHelpers.findEmulatorLib(__task.getProject());
 		if (emuLib != null && Files.exists(emuLib))
 			sysProps.put("squirreljme.emulator.libpath", emuLib.toString());
 		
@@ -532,9 +539,20 @@ public class VMTestTaskAction
 			sysProps.put("cc.squirreljme.test.vm",
 				__classifier.getBangletVariant().banglet);
 		
+		// Disable exit() in Debugging handler
+		sysProps.put("cc.squirreljme.noexit", "true");
+		
+		// Print test result manifest?
+		if (Boolean.getBoolean(VMTestTaskAction.PRINT_TEST_MANIFEST) ||
+			(__task.hasProperty(VMTestTaskAction.PRINT_TEST_MANIFEST) &&
+			Boolean.parseBoolean(Objects.toString(
+				__task.property(VMTestTaskAction.PRINT_TEST_MANIFEST)))))
+			sysProps.put(VMTestTaskAction.PRINT_TEST_MANIFEST, "true");
+		
 		// Determine the arguments that are used to spawn the JVM
 		JavaExecSpecFiller execSpec = new SimpleJavaExecSpecFiller();
-		__classifier.getVmType().spawnJvmArguments(__task, true,
+		__classifier.getVmType().spawnJvmArguments(__task.getProject(),
+			__classifier, true,
 			execSpec, mainClass, __testName, sysProps,
 			classPath, classPath, mainArgs);
 		
@@ -563,8 +581,8 @@ public class VMTestTaskAction
 		try
 		{
 			// Spawn new process that will contain the CPU count
-			Process proc = new ProcessBuilder()
-				.command("cmd", "/C", "WMIC", "CPU", "Get", "/Format:List")
+			Process proc = Responsify.of(
+				"cmd", "/C", "WMIC", "CPU", "Get", "/Format:List")
 				.redirectError(ProcessBuilder.Redirect.INHERIT)
 				.start();
 			

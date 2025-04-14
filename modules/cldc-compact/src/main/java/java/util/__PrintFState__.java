@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ final class __PrintFState__
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ3a Null argument was passed.}
+		/* {@squirreljme.error ZZ3a Null argument was passed.} */
 		C rv = this.<C>__argument(__cl, null);
 		if (rv == null)
 			throw new NullPointerException("ZZ3a");
@@ -105,8 +105,8 @@ final class __PrintFState__
 		int argdx = this._argdx,
 			usedx = (argdx < 0 ? global._lineardx++ : argdx - 1);
 		
-		// {@squirreljme.error ZZ3b Request to use argument which is not
-		// within the bounds of the input arguments. (The argument index)}
+		/* {@squirreljme.error ZZ3b Request to use argument which is not
+		within the bounds of the input arguments. (The argument index)} */
 		Object[] args = global._args;
 		if (usedx < 0 || usedx >= args.length)
 			throw new IllegalArgumentException("ZZ3b " + (usedx + 1));
@@ -116,8 +116,8 @@ final class __PrintFState__
 		if (rv == null)
 			return __def;
 		
-		// {@squirreljme.error ZZ3c Expected argument of one class however it
-		// was instead another class. (The requested class; The actual class)}
+		/* {@squirreljme.error ZZ3c Expected argument of one class however it
+		was instead another class. (The requested class; The actual class)} */
 		if (!__cl.isInstance(rv))
 			throw new IllegalArgumentException("ZZ3c " + __cl + " " +
 				rv.getClass());
@@ -174,8 +174,8 @@ final class __PrintFState__
 	final void __setArgumentIndex(int __dx)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ3d Argument index already set or is of an
-		// invalid value. (The index used)}
+		/* {@squirreljme.error ZZ3d Argument index already set or is of an
+		invalid value. (The index used)} */
 		if (__dx <= 0 || this._argdx >= 1)
 			throw new IllegalArgumentException("ZZ3d " + __dx);
 		
@@ -193,12 +193,12 @@ final class __PrintFState__
 	final void __setConversion(int __p, int __s)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ3e The conversion has already been specified.}
+		/* {@squirreljme.error ZZ3e The conversion has already been specified.} */
 		if (this._conv != null)
 			throw new IllegalArgumentException("ZZ3e");
 		
-		// {@squirreljme.error ZZ3f Invalid conversion specified. (The first
-		// character; The second character)}
+		/* {@squirreljme.error ZZ3f Invalid conversion specified. (The first
+		character; The second character)} */
 		__PrintFConversion__ conv = __PrintFConversion__.__decode(__p, __s);
 		if (conv == null)
 			throw new IllegalArgumentException("ZZ3f " + (char)__p + " " +
@@ -228,8 +228,8 @@ final class __PrintFState__
 		// Need this to do sanity checks
 		__PrintFCategory__ cat = conv.__category();
 		
-		// {@squirreljme.error ZZ3g The specified flag cannot be specified
-		// for the given conversion. (The conversion; The flag)}
+		/* {@squirreljme.error ZZ3g The specified flag cannot be specified
+		for the given conversion. (The conversion; The flag)} */
 		boolean[] flags = this._flags;
 		for (int i = 0, n = __PrintFFlag__.COUNT; i < n; i++)
 		{
@@ -239,13 +239,13 @@ final class __PrintFState__
 					flag);
 		}
 		
-		// {@squirreljme.error ZZ3h Width cannot be specified for the given
-		// convesion. (The conversion)}
+		/* {@squirreljme.error ZZ3h Width cannot be specified for the given
+		convesion. (The conversion)} */
 		if (this._width > 0 && !cat.__hasWidth())
 			throw new IllegalArgumentException("ZZ3h " + conv);
 		
-		// {@squirreljme.error ZZ3i Precision cannot be specified for the
-		// given conversion. (The conversion)}
+		/* {@squirreljme.error ZZ3i Precision cannot be specified for the
+		given conversion. (The conversion)} */
 		if (this._precision > 0 && !cat.__hasPrecision())
 			throw new IllegalArgumentException("ZZ3i " + conv);
 	}
@@ -273,8 +273,8 @@ final class __PrintFState__
 		if (flags[ord])
 			throw new IllegalArgumentException("ZZ1p " + __c);
 		
-		// {@squirreljme.error ZZ3j Always signed and space for positive values
-		// cannot be combined for format flags.}
+		/* {@squirreljme.error ZZ3j Always signed and space for positive values
+		cannot be combined for format flags.} */
 		if ((f == __PrintFFlag__.ALWAYS_SIGNED &&
 			flags[__PrintFFlag__.SPACE_FOR_POSITIVE.ordinal()]) ||
 			(f == __PrintFFlag__.SPACE_FOR_POSITIVE &&
@@ -296,8 +296,8 @@ final class __PrintFState__
 	final void __setWidth(int __w)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ3k Width already or is of an invalid value.
-		// (The width used)}
+		/* {@squirreljme.error ZZ3k Width already or is of an invalid value.
+		(The width used)} */
 		if (__w <= 0 || this._width >= 1)
 			throw new IllegalArgumentException("ZZ3k " + __w);
 		
@@ -314,8 +314,8 @@ final class __PrintFState__
 	final int __width()
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ3l No width was specified where one was
-		// expected.}
+		/* {@squirreljme.error ZZ3l No width was specified where one was
+		expected.} */
 		int rv = this._width;
 		if (rv < 0)
 			throw new IllegalArgumentException("ZZ3l");

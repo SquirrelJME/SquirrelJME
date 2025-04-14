@@ -3,13 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
@@ -257,14 +257,14 @@ public final class Long
 	public static long parseLong(String __v, int __radix)
 		throws NumberFormatException
 	{
-		// {@squirreljme.error ZZ25 The radix is out of bounds. (The radix)}
+		/* {@squirreljme.error ZZ25 The radix is out of bounds. (The radix)} */
 		if (__radix < Character.MIN_RADIX || __radix > Character.MAX_RADIX)
 			throw new NumberFormatException("ZZ25 " + __radix);
 			
 		if (__v == null)
 			throw new NumberFormatException("ZZ26");
 		
-		// {@squirreljme.error ZZ26 String is null or has zero length.}
+		/* {@squirreljme.error ZZ26 String is null or has zero length.} */
 		int n = __v.length();
 		if (n <= 0)
 			throw new NumberFormatException("ZZ26");
@@ -286,13 +286,13 @@ public final class Long
 			// Convert to digit
 			long dig = Character.digit(c, __radix);
 			
-			// {@squirreljme.error ZZ27 Character out of range of radix.
-			// (The input string; The out of range character)}
+			/* {@squirreljme.error ZZ27 Character out of range of radix.
+			(The input string; The out of range character)} */
 			if (dig < 0)
 				throw new NumberFormatException("ZZ27 " + __v + " " + c);
 			
-			// {@squirreljme.error ZZ28 Input integer out of range of 64-bit
-			// long. (The input string)}
+			/* {@squirreljme.error ZZ28 Input integer out of range of 64-bit
+			long. (The input string)} */
 			long prod = rv * __radix;
 			if (rv != 0 && (neg ? (prod > rv) : (prod < rv)))
 				throw new NumberFormatException("ZZ28 " + __v);
@@ -332,11 +332,11 @@ public final class Long
 	@Api
 	public static long reverse(long __l)
 	{
-		int hi = Assembly.longUnpackHigh(__l);
-		int lo = Assembly.longUnpackLow(__l);
+		int hi = MathShelf.longUnpackHigh(__l);
+		int lo = MathShelf.longUnpackLow(__l);
 		
 		// Hi is placed lo, and lo is placed hi
-		return Assembly.longPack(Integer.reverse(hi), Integer.reverse(lo));
+		return MathShelf.longPack(Integer.reverse(hi), Integer.reverse(lo));
 	}
 	
 	/**

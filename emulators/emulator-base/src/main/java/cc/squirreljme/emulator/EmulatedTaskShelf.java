@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -60,6 +60,58 @@ public final class EmulatedTaskShelf
 	/** Original property prefix. */
 	public static final String ORIGINAL_PROP_PREFIX =
 		"squirreljme.orig.";
+	
+	/** Are we on Windows? */
+	private static final boolean _ON_WINDOWS;
+	
+	static
+	{
+		String osName = System.getProperty("os.name");
+		_ON_WINDOWS = osName.toLowerCase().contains("windows");
+	}
+	
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/21
+	 */
+	public static String classpathAsString(Path... __paths)
+		throws NullPointerException
+	{
+		if (__paths == null)
+			throw new NullPointerException("NARG");
+		
+		return EmulatedTaskShelf.classpathAsString(Arrays.asList(__paths));
+	}
+	
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/29
+	 */
+	public static String classpathAsString(Iterable<Path> __paths)
+		throws NullPointerException
+	{
+		if (__paths == null)
+			throw new NullPointerException("NARG");
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for (Path path : __paths)
+		{
+			if (sb.length() > 0)
+				sb.append(File.pathSeparatorChar);
+			sb.append(path);
+		}
+		
+		return sb.toString();
+	}
 	
 	/**
 	 * As {@link TaskShelf#start(JarPackageBracket[], String, String[],
@@ -131,11 +183,22 @@ public final class EmulatedTaskShelf
 					case EmulatedTaskShelf.RUN_CLASSPATH:
 					case EmulatedTaskShelf.HOSTED_VM_CLASSPATH:
 					case EmulatedTaskShelf.HOSTED_VM_SUPPORTPATH:
+					case NativeBinding.LIB_PRELOAD:
 						sysProps.put(key,
 							Objects.toString(e.getValue(), ""));
 						break;
 				}
 			}
+		}
+		
+		// Library preload, if applicable?
+		String preloadLib = sysProps.get(NativeBinding.LIB_PRELOAD);
+		if (preloadLib == null || preloadLib.isEmpty())
+		{
+			Path emulatorLib = NativeBinding.loadedLibraryPath();
+			if (emulatorLib != null)
+				sysProps.put(NativeBinding.LIB_PRELOAD,
+					emulatorLib.toAbsolutePath().toString());
 		}
 		
 		// Load system property pairs
@@ -155,7 +218,7 @@ public final class EmulatedTaskShelf
 		
 		// We need to tell it what our own classpath is, logically
 		sysProps.put(EmulatedTaskShelf.RUN_CLASSPATH,
-			EmulatedTaskShelf.__classpathAsString(runClassPath));
+			EmulatedTaskShelf.classpathAsString(runClassPath));
 		
 		// Combine these two to make the running classpath, this includes the
 		// emulator as well
@@ -164,7 +227,7 @@ public final class EmulatedTaskShelf
 		allLibs.addAll(Arrays.<Path>asList(runClassPath));
 		
 		// Tell the target what classpath we are running under
-		String allLibsStr = EmulatedTaskShelf.__classpathAsString(allLibs);
+		String allLibsStr = EmulatedTaskShelf.classpathAsString(allLibs);
 		sysProps.put(EmulatedTaskShelf.HOSTED_VM_CLASSPATH,
 			allLibsStr);
 		
@@ -176,8 +239,8 @@ public final class EmulatedTaskShelf
 		// Use all declared system properties to ensure that they are properly
 		// inherited from the host virtual machine
 		for (Map.Entry<String, String> e : sysProps.entrySet())
-			args.add(String.format("-D%s=%s",
-				e.getKey(), e.getValue()));
+			args.add(EmulatedTaskShelf.__escape(String.format("-D%s=%s",
+				e.getKey(), e.getValue())));
 		
 		
 		// Use special main handler which handles loading the required
@@ -270,49 +333,6 @@ public final class EmulatedTaskShelf
 	}
 	
 	/**
-	 * Returns the class path as a string.
-	 *
-	 * @param __paths Class paths.
-	 * @return The class path as a string.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/08/21
-	 */
-	static String __classpathAsString(Path... __paths)
-		throws NullPointerException
-	{
-		if (__paths == null)
-			throw new NullPointerException("NARG");
-		
-		return EmulatedTaskShelf.__classpathAsString(Arrays.asList(__paths));
-	}
-	
-	/**
-	 * Returns the class path as a string.
-	 *
-	 * @param __paths Class paths.
-	 * @return The class path as a string.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/02/29
-	 */
-	static String __classpathAsString(Iterable<Path> __paths)
-		throws NullPointerException
-	{
-		if (__paths == null)
-			throw new NullPointerException("NARG");
-		
-		StringBuilder sb = new StringBuilder();
-		
-		for (Path path : __paths)
-		{
-			if (sb.length() > 0)
-				sb.append(File.pathSeparatorChar);
-			sb.append(path);
-		}
-		
-		return sb.toString();
-	}
-	
-	/**
 	 * Decodes the classpath string.
 	 * 
 	 * @param __string The string to decode.
@@ -331,5 +351,37 @@ public final class EmulatedTaskShelf
 			result.add(Paths.get(split));
 		
 		return result.<Path>toArray(new Path[result.size()]);
+	}
+	
+	/**
+	 * Escapes the given string.
+	 * 
+	 * @param __s The string to escape.
+	 * @return The escaped string.
+	 * @since 2023/04/13
+	 */
+	static String __escape(String __s)
+	{
+		// Do not escape outside of Windows
+		if (!EmulatedTaskShelf._ON_WINDOWS)
+			return __s;
+		
+		// No quotes to escape?
+		if (__s.indexOf('"') < 0)
+			return __s;
+		
+		// Process each character and look for quotes
+		StringBuilder result = new StringBuilder();
+		for (int i = 0, n = __s.length(); i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Escape quote if found
+			if (c == '"')
+				result.append('\\');
+			result.append(c);
+		}
+		
+		return result.toString();
 	}
 }

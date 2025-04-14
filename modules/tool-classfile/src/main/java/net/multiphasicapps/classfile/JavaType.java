@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -21,6 +21,7 @@ import java.util.Objects;
  * @since 2017/07/26
  */
 public final class JavaType
+	implements Contexual
 {
 	/** The top of a long. */
 	public static final JavaType TOP_LONG =
@@ -241,6 +242,17 @@ public final class JavaType
 			return false;
 		PrimitiveType pt = type.primitiveType();
 		return pt != null && pt.isWide();
+	}
+	
+	/**
+	 * Returns the simple storage type of this type.
+	 * 
+	 * @return The simple storage type.
+	 * @since 2023/07/03
+	 */
+	public final SimpleStorageType simpleStorageType()
+	{
+		return this.type.simpleStorageType();
 	}
 	
 	/**

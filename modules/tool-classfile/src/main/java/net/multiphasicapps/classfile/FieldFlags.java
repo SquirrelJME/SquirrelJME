@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -177,11 +177,11 @@ public final class FieldFlags
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC2u A field cannot be both {@code final} and
-		// {@code volatile}. (The field flags)}
+		/* {@squirreljme.error JC2u A field cannot be both `final` and
+		`volatile`. (The field flags)} */
 		if (this.isFinal() && this.isVolatile())
 			throw new InvalidClassFormatException(
-				String.format("JC2u %s", this));
+				String.format("JC2u %s", this), this);
 		
 		// If the class is an interface, some flags cannot be set
 		if (__oc.isInterface())
@@ -197,11 +197,11 @@ public final class FieldFlags
 				// Is it set?
 				boolean has = this.contains(f);
 				
-				// {@squirreljme.error JC2v Flags for interface field has an
-				// incorrect set of flags. (The field flags)}
+				/* {@squirreljme.error JC2v Flags for interface field has an
+				incorrect set of flags. (The field flags)} */
 				if (must != has && !maybe)
 					throw new InvalidClassFormatException(
-						String.format("JC2v %s", this));
+						String.format("JC2v %s", this), this);
 			}
 	}
 }

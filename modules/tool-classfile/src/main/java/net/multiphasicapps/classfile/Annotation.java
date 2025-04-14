@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ import net.multiphasicapps.collections.UnmodifiableMap;
  * @since 2018/06/16
  */
 public final class Annotation
-	implements AnnotationValue
+	implements AnnotationValue, Contexual
 {
 	/** The type name of the annotation. */
 	protected final ClassName typename;
@@ -59,11 +59,11 @@ public final class Annotation
 			if (k == null || v == null)
 				throw new NullPointerException();
 			
-			// {@squirreljme.error JC1t Duplicate key within annotation. (The
-			// key)}
+			/* {@squirreljme.error JC1t Duplicate key within annotation. (The
+			key)} */
 			if (null != values.put(k, v))
 				throw new InvalidClassFormatException(String.format(
-					"JC1t %s", k));
+					"JC1t %s", k), this);
 		}
 	}
 	
@@ -161,7 +161,7 @@ public final class Annotation
 			<UTFConstantEntry>get(UTFConstantEntry.class,
 			__in.readUnsignedShort()).toString())).className();
 		
-		// {@squirreljme.error JC1u Annotation type is not correct. (The type)}
+		/* {@squirreljme.error JC1u Annotation type is not correct. (The type)} */
 		if (typename == null)
 			throw new InvalidClassFormatException(String.format("JC1u %s",
 				rawtypename));
@@ -213,7 +213,7 @@ public final class Annotation
 			
 			case 's':
 				return new AnnotationValueString(
-					__pool.<ConstantValueString>get(ConstantValueString.class,
+					__pool.<UTFConstantEntry>get(UTFConstantEntry.class,
 					__in.readUnsignedShort()).toString());
 			
 			case 'e':
@@ -247,8 +247,8 @@ public final class Annotation
 					return new AnnotationValueArray(values);
 				}
 			
-				// {@squirreljme.error JC1v Invalid tag specified in
-				// annotation. (The tag used)}
+				/* {@squirreljme.error JC1v Invalid tag specified in
+				annotation. (The tag used)} */
 			default:
 				throw new InvalidClassFormatException(
 					String.format("JC1v %c", tag));

@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm.mle.constants;
+
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This represents the type of SquirrelJME virtual machine that is currently
@@ -16,25 +18,36 @@ package cc.squirreljme.jvm.mle.constants;
  *
  * @since 2020/06/16
  */
+@SquirrelJMEVendorApi
 public interface VMType
 {
 	/** Not known. */
+	@SquirrelJMEVendorApi
 	byte UNKNOWN =
 		0;
 	
 	/** Running on Standard Java SE. */
+	@SquirrelJMEVendorApi
 	byte JAVA_SE =
 		1;
 	
 	/** Running on SpringCoat. */
+	@SquirrelJMEVendorApi
 	byte SPRINGCOAT =
 		2;
 	
 	/** Running on SummerCoat. */
+	@SquirrelJMEVendorApi
 	byte SUMMERCOAT =
 		3;
 	
-	/** The number of VM types. */
-	byte NUM_VMTYPES =
+	/** Running on NanoCoat. */
+	@SquirrelJMEVendorApi
+	byte NANOCOAT =
 		4;
+	
+	/** The number of VM types. */
+	@SquirrelJMEVendorApi
+	byte NUM_VMTYPES =
+		5;
 }

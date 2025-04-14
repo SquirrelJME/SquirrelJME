@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-intboopsqueak: string[9]:int,(,*,cute,),(,unsigned\_char,),;
+secondary-const: string[10]:int,(,*,const,cute,),(,unsigned\_char,),;
+secondary-pointerpointer: string[10]:int,(,*,*,cute,),(,unsigned\_char,),;
+secondary-alt: string[13]:int,(,*,const,*,*,const,cute,),(,unsigned\_char,),;
+secondary-array: string[13]:int,(,*,const,cute,[,2,],),(,unsigned\_char,),;
+secondary-arrayarray: string[16]:int,(,*,const,cute,[,2,],[,3,],),(,
+  unsigned\_char,),;
+secondary-returnarray: string[12]:int,(,*,cute,),(,unsigned\_char,),
+  [,2,],;
+secondary-returnarraytwo: string[15]:int,(,*,cute,),(,unsigned\_char,),
+  [,2,],[,3,],;

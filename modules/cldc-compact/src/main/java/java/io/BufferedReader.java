@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -49,6 +49,9 @@ public class BufferedReader
 	/** The write position of the buffer (the valid characters). */
 	private int _wp;
 	
+	/** Internal string buffer to prevent allocations. */
+	private StringBuilder _sBuffer;
+	
 	/**
 	 * Initializes the reader.
 	 *
@@ -66,13 +69,13 @@ public class BufferedReader
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0g Cannot have a zero or negative buffer
-		// size.}
+		/* {@squirreljme.error ZZ0g Cannot have a zero or negative buffer
+		size.} */
 		if (__bs <= 0)
 			throw new IllegalArgumentException("ZZ0g");
 		
 		this._in = __r;
-		this._buf = new char[__bs];
+		this._buf = new char[__bs + 1];
 		this._limit = __bs;
 	}
 	
@@ -258,14 +261,28 @@ public class BufferedReader
 			throw new IOException("CLSD");
 		
 		// Read/write positions
-		int rp = this._rp,
-			wp = this._wp;
+		int rp = this._rp;
+		int wp = this._wp;
+		int limit = this._limit;
 		
 		// The line is potentially what is left in the buffer perhaps
 		// But do not make a super tiny string builder, make a guess as to
 		// what the average line length is.
 		int diff = wp - rp;
-		StringBuilder sb = new StringBuilder((Math.max(diff, 64)));
+		
+		// Do we need to allocate the buffer?
+		StringBuilder sb = this._sBuffer;
+		if (sb == null)
+		{
+			sb = new StringBuilder(64);
+			this._sBuffer = sb;
+		}
+		
+		// Wipe before read
+		sb.setLength(0);
+		
+		// Ensure we can fit everything
+		sb.ensureCapacity(Math.max(diff, 64));
 		
 		// Continually read data
 		Reader in = this._in;
@@ -273,9 +290,9 @@ public class BufferedReader
 		for (;;)
 		{
 			// Was newline read? Did we stop on a CR?
-			boolean readnl = false,
-				stoppedoncr = false,
-				readeof = false;
+			boolean readNl = false;
+			boolean stoppedOnCr = false;
+			boolean readEof = false;
 			
 			// Scan
 			int ln = rp;
@@ -288,9 +305,9 @@ public class BufferedReader
 				{
 					// Stop on end of line characters
 					char c = buf[ln];
-					if ((stoppedoncr = (c == '\r')) || c == '\n')
+					if ((stoppedOnCr = (c == '\r')) || c == '\n')
 					{
-						readnl = true;
+						readNl = true;
 						break;
 					}
 					
@@ -309,7 +326,7 @@ public class BufferedReader
 			if (rp == wp)
 			{
 				// Read in new characters to the buffer
-				int rc = in.read(buf, 0, this._limit);
+				int rc = in.read(buf, 0, limit);
 				
 				// EOF was reached, if the buffer was empty then nothing was
 				// read anyway
@@ -317,9 +334,15 @@ public class BufferedReader
 				{
 					// True EOF
 					if (!wasinbuf && sb.length() == 0)
+					{
+						// Be sure these are cleared before we leave
+						this._rp = 0;
+						this._wp = 0;
+						
 						return null;
+					}
 					
-					readeof = true;
+					readEof = true;
 				}
 				
 				// Set new properties
@@ -328,13 +351,13 @@ public class BufferedReader
 			}
 			
 			// Eat newline?
-			if (readnl)
+			if (readNl)
 			{
 				// We stopped on a CR, need to check if the following character
 				// is a newline. However since the CRLF pair can end on a
 				// buffer read barrier, it must be checked to make sure
 				// there is absolutely no connection still.
-				if (stoppedoncr)
+				if (stoppedOnCr)
 				{
 					// There are characters left in the buffer
 					int gap = ln + 1;
@@ -387,7 +410,7 @@ public class BufferedReader
 			}
 			
 			// Nothing else to do on EOF
-			if (readeof)
+			if (readEof)
 				break;
 		}
 		

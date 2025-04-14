@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,8 +11,6 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -65,7 +63,7 @@ public class DateField
 	{
 		super(__l);
 		
-		// {@squirreljme.error EB1g Invalid date field mode. (The mode)}
+		/* {@squirreljme.error EB1g Invalid date field mode. (The mode)} */
 		if (__m != DateField.DATE && __m != DateField.DATE_TIME && __m != DateField.TIME)
 			throw new IllegalArgumentException("EB1g " + __m);
 		
@@ -94,38 +92,6 @@ public class DateField
 	public void setInputMode(int __a)
 	{
 		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
-	@Override
-	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
-	{
-		return new __DateFieldState__(__backend, this);
-	}
-	
-	/**
-	 * Date field state.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __DateFieldState__
-		extends Item.__ItemState__
-	{
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__DateFieldState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-		}
 	}
 }
 

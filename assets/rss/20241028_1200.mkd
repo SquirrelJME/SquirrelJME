@@ -1,0 +1,70 @@
+# State of SquirrelJME, October 2024
+
+So with the sporadic updates and information, or otherwise, regarding
+SquirrelJME and questions... it was suggested that I make a kind of post
+describing the state of everything so to speak. So this is that!
+
+I do want to thank [Hit Save!](https://hitsave.org/) for sponsoring
+SquirrelJME! This is honestly going to be a huge help and will cover the costs
+of CI/CD.
+
+Half of the year was spent building up ScritchUI which was a complete rewrite
+of the user interface system in SquirrelJME. The old UI system was full of
+bugs and there were a number of software titles which would freeze or not
+even function at all, usually crashing. With the new UI in place, this is
+fixed, it now handles situations of badly implemented usages of the UI
+in software titles. An example of bad usage would be drawing from multiple
+threads, or performing event handling in the wrong order. ScritchUI alleviates
+this by forcing everything to happen in regard to the UI in the UI thread
+itself. This now means that titles such as MegaMan Legacy of Network and
+Phantom of Network now enter past the title screen, assuming the utility
+class `java.util.Calendar` is implemented, and Super Monkey Ball now actually
+renders something and does not instantly crash. This itself was a huge
+undertaking but one that was very much needed. So in short, so much old
+software is broken because it now has to deal with something it never had to
+deal with in the past: multiple CPUs each with their own cache. Hopefully,
+not anymore!
+
+What is done?
+
+ * MIDI Playback (small)
+   * Currently, very simple MIDI playback.
+   * In the future I plan to switch to SF2 as this will be needed for
+     proper DoJa/Star support.
+ * NanoCoat descriptor and name parsing (tiny)
+ * ScritchUI (huge, March 2024 - August 2024)
+   * Native widget system for user interfaces, required to be done for
+     major compatibility fixes.
+
+What is in progress?
+
+ * `java.util.Calendar` (small)
+   * Needed for some software, currently there is a partial implementation.
+ * NanoCoat byte code execution (huge)
+   * This actually interprets the byte code and makes it so the software
+     runs. This is a huge chunk of work that is currently in progress.
+ * ScritchUI Cocoa (small)
+   * UI library for macOS, NeXTSTEP, and GNUstep. 
+
+What needs to be done?
+
+ * ScritchUI Pure Framebuffer UI (small)
+   * Support for systems which have no native widget system and thus
+     everything needs to be drawn and handled by SquirrelJME itself.
+ * Fixing ScritchUI Out of Memory Issues (medium)
+   * There are some cases where ScritchUI does not properly free resources,
+     so it eventually runs through all available memory.
+ * RetroArch Core Implementation (medium)
+   * The actual core itself, at the time it is gotten to everything else above
+     would be done, so it would just be fitting in everything together.
+
+I am expecting a release candidate window to start from at the
+earliest _December 2024_ to at the latest _March 2025_. A release candidate
+is a version that could be released, but naturally there could be some major
+bugs or crashes that need fixing first, this is to avoid those so please do
+test if you get a chance to!
+
+Going forward, I will be using this RSS feed which I have essentially built
+into the repository itself as its own versioned resource. I rewired it through
+some services I have been paying for as well which were sitting idle since the
+destruction of Twitter.

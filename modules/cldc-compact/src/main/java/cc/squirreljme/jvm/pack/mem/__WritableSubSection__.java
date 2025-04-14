@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -114,8 +114,8 @@ class __WritableSubSection__
 		if (__base == 0 && __len == this.memRegionSize())
 			return this;
 		
-		// {@squirreljme.error ZZ4r Sub-section would be out of range of
-		// this memory region. (The base address; The length)}
+		/* {@squirreljme.error ZZ4r Sub-section would be out of range of
+		this memory region. (The base address; The length)} */
 		if (__base < 0 || __len < 0 || (__base + __len) > this.memRegionSize())
 			throw new MemoryAccessException(__base,
 				"ZZ4r " + __base + " " + __len);

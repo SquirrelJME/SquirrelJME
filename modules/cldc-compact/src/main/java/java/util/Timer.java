@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import org.jetbrains.annotations.Async;
 
 /**
  * The timer class is used to schedule events for the future which may
@@ -114,11 +115,13 @@ public class Timer
 	 * @since 2018/12/11
 	 */
 	@Api
+	@Async.Schedule
 	public void schedule(TimerTask __task, Date __time)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this._thread.__schedule(__task, __time, false, false, 0);
+		this._thread.__schedule(__task, __time, false,
+			false, 0);
 	}
 	
 	/**
@@ -136,6 +139,7 @@ public class Timer
 	 * @since 2018/12/11
 	 */
 	@Api
+	@Async.Schedule
 	public void schedule(TimerTask __task, Date __time, long __period)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
@@ -155,6 +159,7 @@ public class Timer
 	 * @since 2018/12/11
 	 */
 	@Api
+	@Async.Schedule
 	public void schedule(TimerTask __task, long __delay)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
@@ -177,6 +182,7 @@ public class Timer
 	 * @since 2018/12/11
 	 */
 	@Api
+	@Async.Schedule
 	public void schedule(TimerTask __task, long __delay, long __period)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
@@ -200,6 +206,7 @@ public class Timer
 	 * @since 2018/12/11
 	 */
 	@Api
+	@Async.Schedule
 	public void scheduleAtFixedRate(TimerTask __task, Date __first,
 		long __period)
 		throws IllegalArgumentException, IllegalStateException,
@@ -224,6 +231,7 @@ public class Timer
 	 * @since 2018/12/11
 	 */
 	@Api
+	@Async.Schedule
 	public void scheduleAtFixedRate(TimerTask __task, long __delay,
 		long __period)
 		throws IllegalArgumentException, IllegalStateException,

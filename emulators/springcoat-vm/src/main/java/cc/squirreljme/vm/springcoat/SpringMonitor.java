@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -107,13 +107,13 @@ public final class SpringMonitor
 		// Lock on the monitor lock
 		synchronized (this)
 		{
-			// {@squirreljme.error BK1c This thread does not own the
-			// monitor.}
+			/* {@squirreljme.error BK1c This thread does not own the
+			monitor.} */
 			if (this._owner != __t)
 				throw new SpringIllegalMonitorStateException("BK1c");	
 			
-			// {@squirreljme.error BK1d No previous entry call was made.
-			// (The monitor entry count)}
+			/* {@squirreljme.error BK1d No previous entry call was made.
+			(The monitor entry count)} */
 			int count = this._count;
 			if (count <= 0)
 				throw new SpringIllegalMonitorStateException(
@@ -318,7 +318,7 @@ public final class SpringMonitor
 	private static void __changeState(SpringThread __thread, boolean __wait)
 	{
 		// Get the profiler information
-		SpringThread.Frame currentFrame = __thread.currentFrame();
+		SpringThreadFrame currentFrame = __thread.currentFrame();
 		ProfiledFrame profiler = (currentFrame == null ? null :
 			currentFrame._profiler);
 		

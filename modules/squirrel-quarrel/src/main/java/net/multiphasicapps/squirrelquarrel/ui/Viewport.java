@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -61,7 +61,7 @@ public final class Viewport
 	public Viewport(int __lw, int __lh)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BE07 The viewport cannot have a negative size.}
+		/* {@squirreljme.error BE07 The viewport cannot have a negative size.} */
 		if (__lw <= 0 || __lh <= 0)
 			throw new IllegalArgumentException("BE07");
 		
@@ -186,8 +186,8 @@ public final class Viewport
 	public void setSize(int __w, int __h)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BE08 Cannot set the viewport size to be zero
-		// or negative.}
+		/* {@squirreljme.error BE08 Cannot set the viewport size to be zero
+		or negative.} */
 		if (__w <= 0 || __h <= 0)
 			throw new IllegalArgumentException("BE08");
 		

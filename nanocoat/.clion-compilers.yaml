@@ -1,0 +1,111 @@
+compilers:
+  - description: OpenWatcom 32-bit OS/2 target (Natalia Portillo)
+    match-args: "-bt=os2"
+    match-compiler-exe: "(.*/)?wcl386(\\.exe)?"
+    include-dirs:
+      - "${compiler-exe-dir}/../h"
+      - "${compiler-exe-dir}/../h/os2"
+    defines-text: "
+#define __X86__ 1
+#define __386__ 1
+#define M_I386 1
+#define _M_I386 1
+#define _M_IX86 500
+#define __OS2__ 1
+#define __FLAT__ 1
+#define M_386FM 1
+#define _M_386FM 1
+#define __WATCOMC__ 1280
+#define _INTEGRAL_MAX_BITS 64"
+  - description: OpenWatcom 32-bit DOS target (Natalia Portillo)
+    match-args: "-bt=dos"
+    match-compiler-exe: "(.*/)?wcl386(\\.exe)?"
+    include-dirs:
+      - "${compiler-exe-dir}/../h"
+    defines-text: "
+#define __X86__ 1
+#define __386__ 1
+#define M_I386 1
+#define _M_I386 1
+#define _M_IX86 500
+#define _DOS 1
+#define MSDOS 1
+#define __DOS__ 1
+#define __FLAT__ 1
+#define M_386FM 1
+#define _M_386FM 1
+#define __WATCOMC__ 1280
+#define _INTEGRAL_MAX_BITS 64"
+  - description: OpenWatcom 32-bit Windows target (Natalia Portillo)
+    match-args: "-bt=nt"
+    match-compiler-exe: "(.*/)?wcl386(\\.exe)?"
+    include-dirs:
+      - "${compiler-exe-dir}/../h"
+      - "${compiler-exe-dir}/../h/nt"
+    defines-text: "
+#define __X86__ 1
+#define __386__ 1
+#define M_I386 1
+#define _M_I386 1
+#define _M_IX86 500
+#define __NT__ 1
+#define _WIN32 1
+#define __FLAT__ 1
+#define M_386FM 1
+#define _M_386FM 1
+#define __WATCOMC__ 1280
+#define _INTEGRAL_MAX_BITS 64"
+  - description: OpenWatcom 16-bit OS/2 target (Natalia Portillo)
+    match-args: "-bt=os2"
+    match-compiler-exe: "(.*/)?wcl(\\.exe)?"
+    include-dirs:
+      - "${compiler-exe-dir}/../h"
+      - "${compiler-exe-dir}/../h/os21x"
+    defines-text: "
+#define __X86__ 1
+#define __I86__ 1
+#define M_I86 1
+#define _M_I86 1
+#define _M_IX86 0
+#define __OS2__ 1
+#define __LARGE__ 1
+#define M_I86LM 1
+#define _M_I86LM 1
+#define __WATCOMC__ 1280
+#define _INTEGRAL_MAX_BITS 64"
+  - description: OpenWatcom 16-bit DOS target
+    match-args: "-bt=dos"
+    match-compiler-exe: "(.*/)?wcl(\\.exe)?"
+    include-dirs: "${compiler-exe-dir}/../h"
+    defines-text: "
+#define __X86__ 1
+#define __I86__ 1
+#define M_I86 1
+#define _M_I86 1
+#define _M_IX86 0
+#define __DOS__ 1
+#define _DOS 1
+#define MSDOS 1
+#define __LARGE__ 1
+#define M_I86LM 1
+#define _M_I86LM 1
+#define __WATCOMC__ 1280
+#define _INTEGRAL_MAX_BITS 64"
+  - description: OpenWatcom 32-bit Linux target
+    match-args: "-bt=linux"
+    match-compiler-exe: "(.*/)?wcl386(\\.exe)?"
+    include-dirs:
+      - "${compiler-exe-dir}/../lh"
+    defines-text: "
+#define __X86__ 1
+#define __386__ 1
+#define M_I386 1
+#define _M_I386 1
+#define _M_IX86 500
+#define __LINUX__ 1
+#define __UNIX__ 1
+#define __FLAT__ 1
+#define M_386FM 1
+#define _M_386FM 1
+#define __WATCOMC__ 1280
+#define _INTEGRAL_MAX_BITS 64"

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -101,14 +101,14 @@ public final class EditableText
 	public void setConstraints(int __c)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB01 The specified constraint type is not
-		// valid. (The type)}
+		/* {@squirreljme.error EB01 The specified constraint type is not
+		valid. (The type)} */
 		int type = (__c & TextField.CONSTRAINT_MASK);
 		if (type < 0 || type > EditableText._MAX_CONSTRAINT)
 			throw new IllegalArgumentException(String.format("EB01 %d", type));
 		
-		// {@squirreljme.error EB02 The specified constraint flags are not
-		// valid. (The constraint flags)}
+		/* {@squirreljme.error EB02 The specified constraint flags are not
+		valid. (The constraint flags)} */
 		if (((__c ^ type) & ~EditableText._VALID_CONSTRAINT_FLAG_BITS) != 0)
 			throw new IllegalArgumentException(String.format("EB02 %04x",
 				__c >>> 16));
@@ -145,16 +145,16 @@ public final class EditableText
 	public int setMaxSize(int __ms)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB03 The maximum characters in the text field
-		// cannot be zero or negative. (The maximum characters)}
+		/* {@squirreljme.error EB03 The maximum characters in the text field
+		cannot be zero or negative. (The maximum characters)} */
 		if (__ms <= 0)
 			throw new IllegalArgumentException(String.format("EB03 %d", __ms));
 		
 		// Lock
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error EB04 Cannot set the maximum size because the
-			// input text field would have an invalid value.}
+			/* {@squirreljme.error EB04 Cannot set the maximum size because the
+			input text field would have an invalid value.} */
 			if (!EditableText.__check(this._value, __ms, this._constraints))
 				throw new IllegalArgumentException("EB04");
 		
@@ -184,8 +184,8 @@ public final class EditableText
 		// Lock
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error EB05 Cannot set the specified string
-			// because it is not valid within the constraints.}
+			/* {@squirreljme.error EB05 Cannot set the specified string
+			because it is not valid within the constraints.} */
 			if (!EditableText.__check(__s, this._maxlength, this._constraints))
 				throw new IllegalArgumentException("EB05");
 			

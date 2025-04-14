@@ -1,6 +1,6 @@
 <component name="CopyrightManager">
   <copyright>
-    <option name="notice" value="---------------------------------------------------------------------------&#10;SquirrelJME&#10;    Copyright (C) Stephanie Gawroriski &lt;xer@multiphasicapps.net&gt;&#10;---------------------------------------------------------------------------&#10;SquirrelJME is under the GNU General Public License v3+, or later.&#10;See license.mkd for licensing and copyright information.&#10;---------------------------------------------------------------------------" />
+    <option name="notice" value="---------------------------------------------------------------------------&#10;SquirrelJME&#10;    Copyright (C) Stephanie Gawroriski &lt;xer@multiphasicapps.net&gt;&#10;---------------------------------------------------------------------------&#10;SquirrelJME is under the Mozilla Public License Version 2.0.&#10;See license.mkd for licensing and copyright information.&#10;---------------------------------------------------------------------------" />
     <option name="myName" value="DefaultCopyright" />
   </copyright>
 </component>

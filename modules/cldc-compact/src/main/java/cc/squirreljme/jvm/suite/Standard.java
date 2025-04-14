@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -68,14 +68,14 @@ public final class Standard
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error DG04 Expected input standard string to
-		// contain three fields separated by semi-colon. (The input string)}
+		/* {@squirreljme.error DG04 Expected input standard string to
+		contain three fields separated by semi-colon. (The input string)} */
 		String[] splice = StringUtils.fieldSplitAndTrim(';', __s);
 		if (splice.length != 3)
 			throw new InvalidSuiteException(String.format("DG04 %s", __s));
 		
-		// {@squirreljme.error DG05 Name in standard string is empty. (The
-		// input string)}
+		/* {@squirreljme.error DG05 Name in standard string is empty. (The
+		input string)} */
 		String name = splice[0];
 		if (name.isEmpty())
 			throw new InvalidSuiteException(String.format("DG05 %s", __s));

@@ -11,6 +11,10 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
+import cc.squirreljme.runtime.nttdocomo.ui.EightBitImageStore;
+import com.nttdocomo.opt.ui.Graphics2;
+import javax.microedition.lcdui.game.Sprite;
 
 /**
  * This is used for drawing graphics onto a raster surface.
@@ -20,6 +24,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 @Api
 public class Graphics
+	extends Graphics2
 {
 	/** {@code #00FF00} via {@link #getColorOfName(int)}. */
 	@Api
@@ -33,6 +38,38 @@ public class Graphics
 	@Api
 	public static final int BLUE = 1;
 	
+	/** Flip horizontal. */
+	@Api
+	public static final int	FLIP_HORIZONTAL = 1;
+	
+	/** No flipping. */
+	@Api
+	public static final int	FLIP_NONE = 0;
+	
+	/** Rotate 180 degrees . */
+	@Api
+	public static final int	FLIP_ROTATE = 3;
+	
+	/** Rotate left. */
+	@Api
+	public static final int	FLIP_ROTATE_LEFT = 4;
+	
+	/** Rotate Right . */
+	@Api
+	public static final int	FLIP_ROTATE_RIGHT = 5;
+	
+	/** Rotate right, flip horizontal . */
+	@Api
+	public static final int	FLIP_ROTATE_RIGHT_HORIZONTAL = 6;
+	
+	/** Rotate right, flip vertical . */
+	@Api
+	public static final int	FLIP_ROTATE_RIGHT_VERTICAL = 7;
+	
+	/** Flip vertically. */
+	@Api
+	public static final int	FLIP_VERTICAL = 2;
+		
 	/** {@code #FF0000} via {@link #getColorOfName(int)}. */
 	@Api
 	public static final int FUCHSIA = 5;
@@ -88,8 +125,15 @@ public class Graphics
 	/** The background color for {@link #clearRect(int, int, int, int)}. */
 	private final __BGColor__ _bgColor;
 	
+	/** The flush handler, which is optional. */
+	private final __LockFlush__ _lockFlush;
+	
 	/** The base graphics to forward to. */
 	private final javax.microedition.lcdui.Graphics _graphics;
+	
+	/** The default image flip mode. */
+	private volatile int _flipMode =
+		Graphics.FLIP_NONE;
 	
 	/**
 	 * Wraps the given graphics object.
@@ -97,10 +141,13 @@ public class Graphics
 	 * @param __g The graphics to wrap.
 	 * @param __bgColor The background color for
 	 * {@link #clearRect(int, int, int, int)}.
+	 * @param __flush Optional flush callback to be executed when this
+	 * occurs.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/14
 	 */
-	Graphics(javax.microedition.lcdui.Graphics __g, __BGColor__ __bgColor)
+	Graphics(javax.microedition.lcdui.Graphics __g, __BGColor__ __bgColor,
+		__LockFlush__ __flush)
 		throws NullPointerException
 	{
 		if (__g == null)
@@ -108,6 +155,10 @@ public class Graphics
 		
 		this._graphics = __g;
 		this._bgColor = __bgColor;
+		this._lockFlush = __flush;
+		
+		// Default to the default font to use
+		__g.setFont(Font.getDefaultFont()._midpFont);
 	}
 	
 	@Api
@@ -155,6 +206,42 @@ public class Graphics
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * This draws the outer edge of the ellipse from the given angles using
+	 * the color, alpha, and stroke style.
+	 *
+	 * The coordinates are treated as if they were in a rectangular region. As
+	 * such the center of the ellipse to draw the outline of is in the center
+	 * of the specified rectangle.
+	 *
+	 * Note that no lines are drawn to the center point, so the shape does not
+	 * result in a pie slice.
+	 *
+	 * The angles are in degrees and visually the angles match those of the
+	 * unit circle correctly transformed to the output surface. As such, zero
+	 * degrees has the point of {@code (__w, __h / 2)}, that is it points to
+	 * the right. An angle at 45 degrees will always point to the top right
+	 * corner.
+	 *
+	 * If the width or height are zero, then nothing is drawn. The arc will
+	 * cover an area of {@code __w + 1} and {@code __h + 1}.
+	 *
+	 * @param __x The X position of the upper left corner, will be translated.
+	 * @param __y The Y position of the upper left corner, will be translated.
+	 * @param __w The width of the arc.
+	 * @param __h The height of the arc.
+	 * @param __startAngle The starting angle in degrees, 
+	 * @param __arcAngle The offset from the starting angle, negative values
+	 * indicate clockwise direction while positive values are counterclockwise.
+	 * @since 2022/10/07
+	 */
+	@Api
+	public void drawArc(int __x, int __y, int __w, int __h,
+		int __startAngle, int __arcAngle)
+	{
+		this._graphics.drawArc(__x, __y, __w, __h, __startAngle, __arcAngle);
+	}
+	
 	@Api
 	public void drawChars(char[] __c, int __x, int __y, int __off, int __len)
 		throws IllegalArgumentException
@@ -169,20 +256,28 @@ public class Graphics
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		// What can even be done here?
-		if (!(__i instanceof __MIDPImage__))
-			throw new UIException(UIException.UNSUPPORTED_FORMAT);
+		this.drawImage(__i, __x, __y, 0, 0,
+			__i.getWidth(), __i.getHeight());
+	}
+	
+	@Api
+	public void drawImage(Image __i, int __dx, int __dy, int __sx, int __sy,
+		int __w, int __h)
+		throws IllegalArgumentException, NullPointerException, UIException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
 		
-		// Forward base image
-		__MIDPImage__ midpImage = (__MIDPImage__)__i;
-		this._graphics.drawImage(midpImage.__midpImage(), __x, __y,
-			javax.microedition.lcdui.Graphics.TOP | javax.microedition.lcdui.Graphics.LEFT);
+		// Forward to other call, as it simplifies the shared logic
+		this.drawScaledImage(__i,
+			__dx, __dy, __w, __h,
+			__sx, __sy, __w, __h);
 	}
 	
 	@Api
 	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
-		throw Debugging.todo();
+		this._graphics.drawLine(__x1, __y1, __x2, __y2);
 	}
 	
 	@Api
@@ -208,6 +303,62 @@ public class Graphics
 	}
 	
 	@Api
+	public void drawScaledImage(Image __i, int __dx, int __dy,
+		int __dw, int __dh, int __sx, int __sy, int __sw, int __sh)
+		throws IllegalArgumentException, UIException, NullPointerException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		if (__dw < 0 || __dh < 0 || __sw < 0 || __sh < 0)
+			throw new IllegalArgumentException("ILLA");
+		
+		// Which image is being drawn?
+		javax.microedition.lcdui.Image target;
+		target = Graphics.__recoverImage(__i);
+		
+		// Which flip mode
+		int trans = this.__mapFlip();
+		
+		// DoJa is more lenient when drawing out of range graphics, it just
+		// gets clipped into range
+		if (__sx < 0)
+		{
+			// Note sx is negative, so we subtract width
+			__sw += __sx;
+			__sx = 0;
+		}
+		
+		if (__sy < 0)
+		{
+			// Note sy is negative, so we subtract height
+			__sh += __sy;
+			__sy = 0;
+		}
+		
+		int ex = __sx + __sw;
+		int ey = __sy + __sh;
+		if (ex > target.getWidth())
+			ex = target.getWidth();
+		if (ey > target.getHeight())
+			ey = target.getHeight();
+		
+		// Get corrected size
+		__sw = ex - __sx;
+		__sh = ey - __sy;
+		
+		// Not drawing anything after correcting?
+		if (__sw <= 0 || __sh <= 0)
+			return;
+		
+		// Draw it
+		this._graphics.drawRegion(target, __sx, __sy,
+			__sw, __sh, trans, __dx, __dy,
+			javax.microedition.lcdui.Graphics.TOP |
+			javax.microedition.lcdui.Graphics.LEFT,
+			__dw, __dh);
+	}
+	
+	@Api
 	public void drawString(String __s, int __x, int __y)
 		throws NullPointerException
 	{
@@ -216,6 +367,33 @@ public class Graphics
 		
 		this._graphics.drawString(__s, __x, __y,
 			javax.microedition.lcdui.Graphics.BASELINE);
+	}
+	
+	/**
+	 * This draws the filled slice of an ellipse (like a pie slice) from the
+	 * given angles using the color, alpha, and stroke style.
+	 *
+	 * Unlike {@link #drawArc(int, int, int, int, int, int)}, the width and
+	 * height are not increased by a single pixel.
+	 *
+	 * Otherwise, this follows the same set of rules as
+	 * {@link #drawArc(int, int, int, int, int, int)}.
+	 *
+	 * @param __x The X position of the upper left corner, will be translated.
+	 * @param __y The Y position of the upper left corner, will be translated.
+	 * @param __w The width of the arc.
+	 * @param __h The height of the arc.
+	 * @param __startAngle The starting angle in degrees, 
+	 * @param __arcAngle The offset from the starting angle, negative values
+	 * indicate clockwise direction while positive values are counterclockwise.
+	 * @see #drawArc(int, int, int, int, int, int)
+	 * @since 2022/10/07
+	 */
+	@Api
+	public void fillArc(int __x, int __y, int __w, int __h,
+		int __startAngle, int __arcAngle)
+	{
+		this._graphics.fillArc(__x, __y, __w, __h, __startAngle, __arcAngle);
 	}
 	
 	@Api
@@ -240,26 +418,96 @@ public class Graphics
 		this._graphics.fillRect(__x, __y, __w, __h);
 	}
 	
+	/**
+	 * Specifies that a double buffered draw operation has started. If
+	 * double buffering is not supported, this does nothing.
+	 *
+	 * @since 2024/06/24
+	 */
 	@Api
 	public void lock()
 	{
-		// Has no effect on SquirrelJME
+		__LockFlush__ lockFlush = this._lockFlush;
+		if (lockFlush != null)
+			lockFlush.__lock();
 	}
 	
+	/**
+	 * Sets the new clipping area of the destination image. The previous
+	 * clipping area is replaced.
+	 *
+	 * @param __x The X coordinate, will be translated.
+	 * @param __y The Y coordinate, will be translated.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2022/10/07
+	 */
+	@Api
+	public void setClip(int __x, int __y, int __w, int __h)
+	{
+		this._graphics.setClip(__x, __y, __w, __h);
+	}
+	
+	/**
+	 * Sets the given color.
+	 * 
+	 * @param __c The color to use.
+	 * @throws IllegalArgumentException If the color is not valid for this
+	 * device.
+	 * @since 202/10/07
+	 */
 	@Api
 	public void setColor(int __c)
 		throws IllegalArgumentException
 	{
-		if ((__c & 0xFF_000000) != 0)
-			throw Debugging.todo("Invalid color? %08x", __c);
-		
-		this._graphics.setColor(__c);
+		// Before 4.0, alpha is completely excluded from the color
+		if (DoJaRuntime.versionBefore(4, 0))
+			this._graphics.setAlphaColor(__c | 0xFF_000000);
+		else
+			this._graphics.setAlphaColor(__c);
 	}
 	
+	/**
+	 * Sets the default flip mode to use when drawing images.
+	 *
+	 * @param __mode The flip mode to use.
+	 * @throws IllegalArgumentException If the flip mode is not valid.
+	 * @since 2024/08/11
+	 */
+	@Api
+	public void setFlipMode(int __mode)
+		throws IllegalArgumentException
+	{
+		/** {@squirreljme.error AH1f Invalid flip mode. (The mode)} */
+		if (__mode != Graphics.FLIP_HORIZONTAL &&
+			__mode != Graphics.FLIP_NONE &&
+			__mode != Graphics.FLIP_ROTATE &&
+			__mode != Graphics.FLIP_ROTATE_LEFT &&
+			__mode != Graphics.FLIP_ROTATE_RIGHT &&
+			__mode != Graphics.FLIP_ROTATE_RIGHT_HORIZONTAL &&
+			__mode != Graphics.FLIP_ROTATE_RIGHT_VERTICAL &&
+			__mode != Graphics.FLIP_VERTICAL)
+			throw new IllegalArgumentException("AH1f " + __mode);
+		
+		// Set it
+		this._flipMode = __mode;
+	}
+	
+	/**
+	 * Sets the font to use for drawing.
+	 * 
+	 * @param __f The font to use.
+	 * @throws NullPointerException If no font was specified.
+	 * @since 2022/10/07
+	 */
 	@Api
 	public void setFont(Font __f)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		this._graphics.setFont(__f._midpFont);
 	}
 	
 	/**
@@ -277,50 +525,106 @@ public class Graphics
 			__y - graphics.getTranslateY());
 	}
 	
+	/**
+	 * Unlocks the double buffering operation.
+	 *
+	 * @param __forced If the operation is forced
+	 * then the buffer is immediately drawn and the lock count is set to
+	 * zero, otherwise this will only draw when the lock count is zero. 
+	 * @since 2024/06/24
+	 */
 	@Api
 	public void unlock(boolean __forced)
 	{
-		// Has no effect on SquirrelJME
+		__LockFlush__ lockFlush = this._lockFlush;
+		if (lockFlush != null)
+			lockFlush.__unlock(__forced);
+	}
+	
+	/**
+	 * Maps the flip mode.
+	 *
+	 * @return The flip mode.
+	 * @since 2024/08/13
+	 */
+	private int __mapFlip()
+	{
+		switch (this._flipMode)
+		{
+			case Graphics.FLIP_HORIZONTAL:
+				return Sprite.TRANS_MIRROR;
+			
+			case Graphics.FLIP_ROTATE:
+				return Sprite.TRANS_ROT180;
+			
+			case Graphics.FLIP_ROTATE_LEFT:
+				return Sprite.TRANS_ROT270;
+			
+			case Graphics.FLIP_ROTATE_RIGHT:
+				return Sprite.TRANS_ROT90;
+			
+			case Graphics.FLIP_ROTATE_RIGHT_HORIZONTAL:
+				return Sprite.TRANS_MIRROR_ROT270;
+			
+			case Graphics.FLIP_ROTATE_RIGHT_VERTICAL:
+				return Sprite.TRANS_MIRROR_ROT90;
+				
+			case Graphics.FLIP_VERTICAL:
+				return Sprite.TRANS_MIRROR_ROT180;
+				
+			case Graphics.FLIP_NONE:
+			default:
+				return Sprite.TRANS_NONE;
+		}
 	}
 	
 	@SuppressWarnings("MagicNumber")
+	@Api
 	public static int getColorOfName(int __name)
 		throws IllegalArgumentException
 	{
+		// Before 4.0, negative values are never returned
+		int alphaMask;
+		if (DoJaRuntime.versionBefore(4, 0))
+			alphaMask = 0;
+		else
+			alphaMask = 0xFF_000000;
+		
+		// Depends on the color name
 		switch (__name)
 		{
 			case Graphics.AQUA:
-				return 0x00FFFF;
+				return 0x00FFFF | alphaMask;
 			case Graphics.BLACK:
-				return 0x000000;
+				return 0x000000 | alphaMask;
 			case Graphics.BLUE:
-				return 0x0000FF;
+				return 0x0000FF | alphaMask;
 			case Graphics.FUCHSIA:
-				return 0xFF00FF;
+				return 0xFF00FF | alphaMask;
 			case Graphics.GRAY:
-				return 0x808080;
+				return 0x808080 | alphaMask;
 			case Graphics.GREEN:
-				return 0x008000;
+				return 0x008000 | alphaMask;
 			case Graphics.LIME:
-				return 0x00FF00;
+				return 0x00FF00 | alphaMask;
 			case Graphics.MAROON:
-				return 0x800000;
+				return 0x800000 | alphaMask;
 			case Graphics.NAVY:
-				return 0x000080;
+				return 0x000080 | alphaMask;
 			case Graphics.OLIVE:
-				return 0x808000;
+				return 0x808000 | alphaMask;
 			case Graphics.PURPLE:
-				return 0x800080;
+				return 0x800080 | alphaMask;
 			case Graphics.RED:
-				return 0xFF0000;
+				return 0xFF0000 | alphaMask;
 			case Graphics.SILVER:
-				return 0xC0C0C0;
+				return 0xC0C0C0 | alphaMask;
 			case Graphics.TEAL:
-				return 0x008080;
+				return 0x008080 | alphaMask;
 			case Graphics.WHITE:
-				return 0xFFFFFF;
+				return 0xFFFFFF | alphaMask;
 			case Graphics.YELLOW:
-				return 0xFFFF00;
+				return 0xFFFF00 | alphaMask;
 		}
 		
 		// {@squirreljme.error AH0r Invalid color. (The color)}
@@ -330,6 +634,82 @@ public class Graphics
 	@Api
 	public static int getColorOfRGB(int __r, int __g, int __b)
 	{
-		throw Debugging.todo();
+		// Before 4.0, negative values are never returned
+		if (DoJaRuntime.versionBefore(4, 0))
+			return Graphics.getColorOfRGB(__r, __g, __b, 0);
+		return Graphics.getColorOfRGB(__r, __g, __b, 255);
+	}
+	
+	/**
+	 * Returns the color code for the given RGBA color.
+	 * 
+	 * @param __r The red color.
+	 * @param __g The green color.
+	 * @param __b The blue color.
+	 * @param __a The alpha level.
+	 * @return The color code.
+	 * @throws IllegalArgumentException If the values are out of range.
+	 * @since 2022/10/07
+	 */
+	@Api
+	public static int getColorOfRGB(int __r, int __g, int __b, int __a)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error AH0t Color out of range.}
+		if (__r < 0 || __r > 255 ||
+			__g < 0 || __g > 255 ||
+			__b < 0 || __b > 255 ||
+			__a < 0 || __a > 255)
+			throw new IllegalArgumentException("AH0t");
+		
+		return (__a << 24) |
+			(__r << 16) |
+			(__g << 8) |
+			__b;
+	}
+	
+	
+	/**
+	 * Recovers the image to draw.
+	 *
+	 * @param __i The source image.
+	 * @return The resultant image.
+	 * @throws UIException If the image has been disposed of or is otherwise
+	 * invalid.
+	 * @since 2024/08/13
+	 */
+	private static javax.microedition.lcdui.Image __recoverImage(Image __i)
+		throws UIException
+	{
+		if (__i instanceof __MIDPImage__)
+			return ((__MIDPImage__)__i).__midpImage();
+		
+		// Mutable image
+		else if (__i instanceof __MutableImage__)
+			return __i._midpImage;
+		
+		// 8-bit image
+		else if (__i instanceof __8BitImage__)
+		{
+			// Get the actual image to be drawn
+			__8BitImage__ bitImage = (__8BitImage__)__i;
+			EightBitImageStore store = bitImage._store;
+			
+			// Disposed?
+			if (store == null)
+				throw new UIException(UIException.ILLEGAL_STATE);
+			
+			// Get realized image
+			return store.midpImage();
+		}
+		
+		// Not supported at all
+		else
+		{
+			// Debug
+			Debugging.todoNote("Unsupported image %s", __i.getClass());
+			
+			throw new UIException(UIException.UNSUPPORTED_FORMAT);
+		}
 	}
 }

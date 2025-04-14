@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,6 +12,7 @@ package cc.squirreljme.vm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This class represents a class library which represents a single JAR file
@@ -56,6 +57,7 @@ public interface VMClassLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/13
 	 */
+	@Nullable
 	InputStream resourceAsStream(String __rc)
 		throws IOException, NullPointerException;
 }

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
  * @since 2017/09/02
  */
 public final class StackMapTableEntry
+	implements Contexual
 {
 	/** The top of a long. */
 	public static final StackMapTableEntry TOP_LONG =
@@ -52,6 +53,10 @@ public final class StackMapTableEntry
 	public static final StackMapTableEntry DOUBLE =
 		new StackMapTableEntry(JavaType.DOUBLE, true);
 	
+	/** Initialized object. */
+	public static final StackMapTableEntry INITIALIZED_OBJECT =
+		new StackMapTableEntry(JavaType.OBJECT, true);
+	
 	/** The type. */
 	protected final JavaType type;
 	
@@ -60,6 +65,22 @@ public final class StackMapTableEntry
 	
 	/** String representation. */
 	private Reference<String> _string;
+	
+	/**
+	 * Initializes the stack map entry.
+	 *
+	 * @param __t The type of variable to store.
+	 * @param __init If {@code true} this variable is initialized.
+	 * @throws InvalidClassFormatException If a non-object is set as not
+	 * initialized.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableEntry(FieldDescriptor __t, boolean __init)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		this(new JavaType(__t), __init);
+	}
 	
 	/**
 	 * Initializes the stack map entry.
@@ -81,21 +102,21 @@ public final class StackMapTableEntry
 		// Nothing can never be initialized
 		if (__t.equals(JavaType.NOTHING))
 		{
-			// {@squirreljme.error JC3v The nothing type cannot be initialized.
-			// (The type)}
+			/* {@squirreljme.error JC3v The nothing type cannot be initialized.
+			(The type)} */
 			if (__init && __t.equals(JavaType.NOTHING))
 				throw new InvalidClassFormatException(
-					String.format("JI3w %s", __t));
+					String.format("JI3w %s", __t), this);
 		}
 		
 		// Otherwise only objects may be initialized
 		else
 		{
-			// {@squirreljme.error JC3w Non-object types cannot be.
-			// uninitialized (The type)}
+			/* {@squirreljme.error JC3w Non-object types cannot be.
+			uninitialized (The type)} */
 			if (!__init && !__t.isObject())
 				throw new InvalidClassFormatException(
-					String.format("JC3w %s", __t));
+					String.format("JC3w %s", __t), this);
 		}
 		
 		// Set
@@ -137,6 +158,17 @@ public final class StackMapTableEntry
 	public boolean isInitialized()
 	{
 		return this.isinitialized;
+	}
+	
+	/**
+	 * Is this the nothing type?
+	 *
+	 * @return If this is the nothing type.
+	 * @since 2023/08/13
+	 */
+	public boolean isNothing()
+	{
+		return this.type.isNothing();
 	}
 	
 	/**

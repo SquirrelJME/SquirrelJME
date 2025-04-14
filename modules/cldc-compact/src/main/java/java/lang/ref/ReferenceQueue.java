@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -60,7 +60,7 @@ public class ReferenceQueue<T>
 	public Reference<? extends T> remove(long __ms)
 		throws IllegalArgumentException, InterruptedException
 	{
-		// {@squirreljme.error ZZ2a A negative timeout was specified.}
+		/* {@squirreljme.error ZZ2a A negative timeout was specified.} */
 		if (__ms < 0)
 			throw new IllegalArgumentException("ZZ2a");
 		

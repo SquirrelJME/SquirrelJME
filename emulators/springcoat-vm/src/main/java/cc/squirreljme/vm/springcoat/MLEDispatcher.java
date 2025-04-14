@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -13,17 +13,21 @@ import cc.squirreljme.jvm.mle.AtomicShelf;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.MathShelf;
+import cc.squirreljme.jvm.mle.MidiShelf;
+import cc.squirreljme.jvm.mle.NativeArchiveShelf;
 import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.PencilFontShelf;
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.ReferenceShelf;
 import cc.squirreljme.jvm.mle.ReflectionShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.StringShelf;
 import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.util.Map;
@@ -55,6 +59,14 @@ public enum MLEDispatcher
 	MATH("cc/squirreljme/jvm/mle/MathShelf",
 		MLEMath.values()),
 	
+	/** {@link MidiShelf}. */
+	MIDI("cc/squirreljme/jvm/mle/MidiShelf",
+		MLEMidi.values()),
+	
+	/** {@link NativeArchiveShelf}. */
+	NATIVE_ARCHIVE("cc/squirreljme/jvm/mle/NativeArchiveShelf",
+		MLENativeArchive.values()),
+	
 	/** {@link ObjectShelf}. */
 	OBJECT("cc/squirreljme/jvm/mle/ObjectShelf",
 		MLEObject.values()),
@@ -62,6 +74,10 @@ public enum MLEDispatcher
 	/** {@link PencilShelf}. */
 	PENCIL("cc/squirreljme/jvm/mle/PencilShelf",
 		MLEPencil.values()),
+	
+	/** {@link PencilFontShelf}. */
+	PENCIL_FONT("cc/squirreljme/jvm/mle/PencilFontShelf",
+		MLEPencilFontShelf.values()),
 	
 	/** {@link ReferenceShelf}. */
 	REFERENCE("cc/squirreljme/jvm/mle/ReferenceShelf",
@@ -74,6 +90,14 @@ public enum MLEDispatcher
 	/** {@link RuntimeShelf}. */
 	RUNTIME("cc/squirreljme/jvm/mle/RuntimeShelf",
 		MLERuntime.values()),
+	
+	/** {@link NativeScritchInterface}. */
+	SCRITCH_UI("cc/squirreljme/jvm/mle/scritchui/NativeScritchInterface",
+		MLEScritchUI.values()),
+	
+	/** {@link StringShelf}. */
+	STRING("cc/squirreljme/jvm/mle/StringShelf",
+		MLEString.values()),
 	
 	/** {@link TaskShelf}. */
 	TASK("cc/squirreljme/jvm/mle/TaskShelf",
@@ -90,10 +114,6 @@ public enum MLEDispatcher
 	/** {@link TypeShelf}. */
 	TYPE("cc/squirreljme/jvm/mle/TypeShelf",
 		MLEType.values()),
-	
-	/** {@link UIFormShelf}. */
-	UI_FORM("cc/squirreljme/jvm/mle/UIFormShelf",
-		MLEUIForm.values()),
 	
 	/* End. */
 	;

@@ -1,4 +1,4 @@
-SplineFontDB: 3.0
+SplineFontDB: 3.2
 FontName: sansserif
 FullName: SquirrelJME Sans Serif
 FamilyName: SansSerif
@@ -21,7 +21,7 @@ OS2Version: 0
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1508688836
-ModificationTime: 1556749544
+ModificationTime: 1719633305
 PfmFamily: 33
 TTFWeight: 400
 TTFWidth: 5
@@ -50,7 +50,7 @@ NameList: AGL For New Fonts
 DisplaySize: 16
 AntiAlias: 1
 FitToEm: 0
-WinInfo: 0 24 12
+WinInfo: 0 28 10
 OnlyBitmaps: 1
 BeginPrivate: 0
 EndPrivate

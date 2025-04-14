@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ public final class HTTPRequestBuilder
 	public final void flush()
 		throws IOException
 	{
-		// {@squirreljme.error EC04 Cannot flush closed HTTP stream.}
+		/* {@squirreljme.error EC04 Cannot flush closed HTTP stream.} */
 		if (this.tracker._state != HTTPState.SETUP)
 			throw new IOException("EC04");
 		
@@ -225,7 +225,7 @@ public final class HTTPRequestBuilder
 	public final void write(int __b)
 		throws IOException
 	{
-		// {@squirreljme.error EC05 Cannot write more HTTP data.}
+		/* {@squirreljme.error EC05 Cannot write more HTTP data.} */
 		if (this.tracker._state != HTTPState.SETUP)
 			throw new IOException("EC05");
 		
@@ -258,7 +258,7 @@ public final class HTTPRequestBuilder
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __a.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error EC06 Cannot write more HTTP data.}
+		/* {@squirreljme.error EC06 Cannot write more HTTP data.} */
 		if (this.tracker._state != HTTPState.SETUP)
 			throw new IOException("EC06");
 		

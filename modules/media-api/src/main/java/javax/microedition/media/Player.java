@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ public interface Player
 	
 	@Api
 	void prefetch()
-		throws MediaException;
+		throws IllegalStateException, MediaException, SecurityException;
 	
 	@Api
 	void realize()
@@ -76,14 +76,15 @@ public interface Player
 	void removePlayerListener(PlayerListener __a);
 	
 	@Api
-	void setLoopCount(int __a);
+	void setLoopCount(int __count)
+		throws IllegalArgumentException, IllegalStateException;
 	
 	@Api
 	long setMediaTime(long __now)
 		throws MediaException;
 	
 	@Api
-	void setTimeBase(TimeBase __a)
+	void setTimeBase(TimeBase __timeBase)
 		throws MediaException;
 	
 	@Api

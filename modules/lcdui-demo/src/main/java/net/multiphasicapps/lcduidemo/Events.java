@@ -3,12 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package net.multiphasicapps.lcduidemo;
 
+import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Font;
@@ -123,7 +125,7 @@ public class Events
 			this.setTitle("Events");
 			
 			// Draw as opaque, so we do not need to update everything
-			this.setPaintMode(true);
+			this.setPaintMode(false);
 		}
 			
 		/**
@@ -151,7 +153,7 @@ public class Events
 			this._numkeys++;
 			
 			// Report event
-			System.err.printf("Key Pressed: %d%n", __code);
+			Debugging.debugNote("Key Pressed: %d%n", __code);
 			
 			// Repaint to update stuff
 			this.repaint();
@@ -169,7 +171,7 @@ public class Events
 			this._numkeys++;
 			
 			// Report event
-			System.err.printf("Key Released: %d%n", __code);
+			Debugging.debugNote("Key Released: %d%n", __code);
 			
 			// Repaint to update stuff
 			this.repaint();
@@ -187,7 +189,7 @@ public class Events
 			this._numkeys++;
 			
 			// Report event
-			System.err.printf("Key Repeated: %d%n", __code);
+			Debugging.debugNote("Key Repeated: %d%n", __code);
 			
 			// Repaint to update stuff
 			this.repaint();

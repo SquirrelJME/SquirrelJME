@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ public class ArrayIndexOutOfBoundsException
 	@Api
 	public ArrayIndexOutOfBoundsException(int __i)
 	{
-		// {@squirreljme.error ZZ0r Array index out of bounds. (The index)}
+		/* {@squirreljme.error ZZ0r Array index out of bounds. (The index)} */
 		super("ZZ0r " + __i);
 	}
 	

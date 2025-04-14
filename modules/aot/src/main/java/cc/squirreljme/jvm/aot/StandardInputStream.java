@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -129,8 +129,8 @@ public final class StandardInputStream
 			if (__eofOkay && __code == PipeErrorType.END_OF_FILE)
 				return PipeErrorType.END_OF_FILE;
 			
-			// {@squirreljme.error AE05 I/O Exception reading from standard
-			// input. (The error)}
+			/* {@squirreljme.error AE05 I/O Exception reading from standard
+			input. (The error)} */
 			throw new IOException("AE05 " + __code);
 		}
 		

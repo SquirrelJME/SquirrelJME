@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,9 +12,11 @@ package cc.squirreljme.emulator.vm;
 import cc.squirreljme.vm.ResourceBasedClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +64,30 @@ public final class ResourceBasedSuiteManager
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/12/18
+	 */
+	@Override
+	public int libraryId(VMClassLibrary __lib)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__lib == null)
+			throw new NullPointerException("NARG");
+		
+		Map<String, VMClassLibrary> cache = this._cache;
+		synchronized (cache)
+		{
+			// The library must have been previously loaded first
+			if (!cache.values().contains(__lib))
+				throw new IllegalArgumentException(
+					"Unknown library: " + __lib);
+			
+			Path path = __lib.path();
+			return (path != null ? path.hashCode() : __lib.name().hashCode());
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/11/14
 	 */
 	@Override
@@ -84,27 +110,13 @@ public final class ResourceBasedSuiteManager
 				return libs;
 			}
 			
-			// Will just be a normal list
+			// The suites are a UTF encoded list
 			List<String> rv = new ArrayList<>();
-			try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(in, "utf-8")))
+			try (DataInputStream dis = new DataInputStream(in))
 			{
-				for (;;)
-				{
-					String ln = br.readLine();
-					
-					// EOF
-					if (ln == null)
-						break;
-					
-					// Trim and ignore empty lines
-					ln = ln.trim();
-					if (ln.isEmpty())
-						continue;
-					
-					// Add otherwise
-					rv.add(ln);
-				}
+				int n = dis.readInt();
+				for (int i = 0; i < n; i++)
+					rv.add(dis.readUTF());
 			}
 			
 			// Cache and return
@@ -112,7 +124,7 @@ public final class ResourceBasedSuiteManager
 			return libs;
 		}
 		
-		// {@squirreljme.error AK01 Could not read the library list.}
+		/* {@squirreljme.error AK01 Could not read the library list.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("AK01", e);

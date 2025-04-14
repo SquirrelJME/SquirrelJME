@@ -1,4 +1,0 @@
-# SummerCoat Test ROM
-
-This ROM is used the same as the SummerCoat ROM except that it includes all
-of the test projects, to ensure that the VM works correctly.

@@ -3,17 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.nokia.mid.ui;
 
-import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
 
 /**
@@ -36,7 +33,7 @@ public class DeviceControl
 	public static void flashLights(long __ms)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2z Cannot blink for a negative duration.}
+		/* {@squirreljme.error EB2z Cannot blink for a negative duration.} */
 		if (__ms < 0)
 			throw new IllegalArgumentException("EB2z");
 		
@@ -61,15 +58,17 @@ public class DeviceControl
 	public static void setLights(int __num, int __lvl)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB31 Only light number zero is supported.
-		// (The light number)}
+		/* {@squirreljme.error EB31 Only light number zero is supported.
+		(The light number)} */
 		if (__num != 0)
 			throw new IllegalArgumentException("EB31 " + __num);
 		
-		// {@squirreljme.error EB32 Light level out of range. (The level)}
+		/* {@squirreljme.error EB32 Light level out of range. (The level)} */
 		if (__lvl < 0 || __lvl > 100)
 			throw new IllegalArgumentException("EB32 " + __lvl);
 		
+		throw Debugging.todo();
+		/*
 		// If controlling the backlight is supported, allow it to be changed
 		UIBackend backend = UIBackendFactory.getInstance(true);
 		if (backend.metric(backend.displays()[0],
@@ -109,11 +108,11 @@ public class DeviceControl
 	public static void startVibra(int __freq, long __ms)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB33 Cannot vibrate for a negative duration.}
+		/* {@squirreljme.error EB33 Cannot vibrate for a negative duration.} */
 		if (__ms < 0)
 			throw new IllegalArgumentException("EB33");
 		
-		// {@squirreljme.error EB34 Frequency out of range. (The frequency)}
+		/* {@squirreljme.error EB34 Frequency out of range. (The frequency)} */
 		if (__freq < 0 || __freq > 100)
 			throw new IllegalArgumentException("EB34 " + __freq);
 		

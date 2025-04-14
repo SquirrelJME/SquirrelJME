@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,13 +11,16 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.general.UpdateFossilJavaDoc;
+import cc.squirreljme.plugin.multivm.gdb.GdbUtils;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.JasminAssembleTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
 import cc.squirreljme.plugin.tasks.TestsJarTask;
 import java.io.File;
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,7 +37,6 @@ import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
-import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.api.tasks.javadoc.Javadoc;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.external.javadoc.CoreJavadocOptions;
@@ -91,6 +93,8 @@ public final class TaskInitialization
 			__project.getLogger().debug("Could not defunct test task.", e);
 		}
 		
+		// The "check" task also depends on "test" which we do not want to
+		// run that way
 		Task check = __project.getTasks().getByName("check");
 		for (Iterator<Object> it = check.getDependsOn().iterator();
 			it.hasNext();)
@@ -302,82 +306,90 @@ public final class TaskInitialization
 				TaskInitialization.task("dump", __classifier),
 				VMDumpLibraryTask.class, __classifier, libTask);
 		
-		// Running the target
-		if (__classifier.isMainSourceSet())
-			tasks.create(
-				TaskInitialization.task("run", __classifier),
-				VMRunTask.class, __classifier, libTask);
-		
-		// Testing the target
-		else if (__classifier.isTestSourceSet())
+		// Emulator targets, which run the VM with the resultant code
+		if (__classifier.getVmType().hasEmulator())
 		{
-			Task vmTest;
-			String taskName = TaskInitialization.task("test",
-				__classifier);
-			
-			// Creating the legacy or modern test task? Using the modern one
-			// is recommended if using IntelliJ or otherwise...
-			if (TaskInitialization.LEGACY_TEST_FRAMEWORK)
-				vmTest = tasks.create(taskName,
-					VMLegacyTestTask.class, __classifier, libTask);
-			else
-				vmTest = tasks.create(taskName,
-					VMModernTestTask.class, __classifier, libTask);
-			
-			// Since there is a release and debug variant, have the base test
-			// refer to both of these
-			String bothName = TaskInitialization.task("test",
-				__classifier.getSourceSet(),
-				__classifier.getVmType(), __classifier.getBangletVariant(),
-				null);
-			
-			// If the task is missing, create it
-			Test bothTest = (Test)__project.getTasks().findByName(bothName);
-			if (bothTest == null)
+			// Running the target, we want to be smarter and handle the
+			// various entry points but at this point there is no
+			// configuration information loaded yet... so do this later.
+			if (__classifier.isMainSourceSet())
 			{
-				// Create a test task, so IDEs like IntelliJ can pick this up
-				// despite there being no actual tests that exist
-				bothTest = __project.getTasks().create(bothName, Test.class);
-				
-				// Setup description of these
-				bothTest.setGroup("squirreljme");
-				
-				// Make sure the description makes sense
-				if (__classifier.getVmType().allowOnlyDebug())
-					bothTest.setDescription(String.format("Alias for %s.",
-						taskName));
-				else
-					bothTest.setDescription(
-						String.format("Runs both test tasks %s and %s.",
-							taskName, TaskInitialization.task("test",
-								__classifier.withClutterLevel(__classifier
-									.getTargetClassifier().getClutterLevel()
-									.opposite()))));
-				
-				// Gradle will think these are JUnit tests and then fail
-				// so exclude everything
-				bothTest.setScanForTestClasses(false);
-				bothTest.include();
-				bothTest.exclude("**");
 			}
 			
-			// Add to the both task as a dependency
-			bothTest.dependsOn(vmTest);
-			
-			// Make the standard test task depend on these two VM tasks
-			// so that way if it is run, both are run accordingly
-			if (__classifier.getVmType().isGoldTest())
+			// Testing the target
+			else if (__classifier.isTestSourceSet())
 			{
-				Test test = (Test)__project.getTasks().getByName("test");
+				Task vmTest;
+				String taskName = TaskInitialization.task("test",
+					__classifier);
 				
-				// Test needs this
-				test.dependsOn(vmTest);
+				// Creating the legacy or modern test task? Using the modern
+				// one is recommended if using IntelliJ or otherwise...
+				if (TaskInitialization.LEGACY_TEST_FRAMEWORK)
+					vmTest = tasks.create(taskName, VMLegacyTestTask.class,
+						__classifier, libTask);
+				else
+					vmTest = tasks.create(taskName, VMModernTestTask.class,
+						__classifier, libTask);
 				
-				// Gradle will think these are JUnit tests and then fail
-				// so exclude everything
-				test.setScanForTestClasses(false);
-				test.include();
-				test.exclude("**");
+				// Since there is a release and debug variant, have the base
+				// test refer to both of these
+				String bothName = TaskInitialization.task("test",
+					__classifier.getSourceSet(), __classifier.getVmType(),
+					__classifier.getBangletVariant(), null);
+				
+				// If the task is missing, create it
+				Test bothTest = (Test)__project.getTasks()
+					.findByName(bothName);
+				if (bothTest == null)
+				{
+					// Create a test task, so IDEs like IntelliJ can pick this
+					// up despite there being no actual tests that exist
+					bothTest = __project.getTasks().create(bothName,
+						Test.class);
+					
+					// Setup description of these
+					bothTest.setGroup("squirreljme");
+					
+					// Make sure the description makes sense
+					if (__classifier.getVmType().allowOnlyDebug())
+						bothTest.setDescription(
+							String.format("Alias for %s.", taskName));
+					else
+						bothTest.setDescription(
+							String.format("Runs both test tasks %s and %s.",
+								taskName, TaskInitialization.task(
+									"test",
+									__classifier.withClutterLevel(
+										__classifier.getTargetClassifier()
+											.getClutterLevel().opposite()))));
+					
+					// Gradle will think these are JUnit tests and then fail
+					// so exclude everything
+					bothTest.setScanForTestClasses(false);
+					bothTest.include();
+					bothTest.exclude("**");
+				}
+				
+				// Add to the both task as a dependency
+				bothTest.dependsOn(vmTest);
+				
+				// Make the standard test task depend on these two VM tasks
+				// so that way if it is run, both are run accordingly
+				if (__classifier.getVmType().isGoldTest())
+				{
+					Test test = (Test)__project.getTasks()
+						.getByName("test");
+					
+					// Test needs this
+					test.dependsOn(vmTest);
+					
+					// Gradle will think these are JUnit tests and then fail
+					// so exclude everything
+					test.setScanForTestClasses(false);
+					test.include();
+					test.exclude("**");
+				}
 			}
 		}
 	}
@@ -443,17 +455,64 @@ public final class TaskInitialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/17
 	 */
-	private static void initializeFullSuiteTask(Project __project,
+	public static void initializeFullSuiteTask(Project __project,
 		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
 		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
-		// Standard ROM
-		__project.getTasks().create(
+		// Is this a single source set ROM?
+		VMSpecifier vmType = __classifier.getVmType();
+		boolean isSingleSourceSetRom = vmType.isSingleSourceSetRom(
+			__classifier.getBangletVariant());
+		
+		// Do not run if there is no emulator
+		if (!__classifier.getVmType().hasEmulator())
+			return;
+		
+		// Standard run everything as one, only allow main and test source
+		// sets to be a candidate for full
+		if (!__classifier.isMainSourceSet() && !__classifier.isTestSourceSet())
+			return;
+		
+		// If this is a debug only target and the requested clutter level is
+		// not debugging, then do not make such a task
+		if (__classifier.getVmType().allowOnlyDebug() &&
+			!__classifier.getTargetClassifier().getClutterLevel().isDebug())
+			return;
+		
+		// Create task
+		TaskContainer tasks = __project.getTasks();
+		tasks.create(
 			TaskInitialization.task("full", __classifier),
 			VMFullSuite.class, __classifier);
+		
+		// Add generic runner for whatever we want
+		MakeRunTaskProvider provider = (__useName, __useClassifier,
+			__useMainClass, __useMidlet, __useDebugServer) -> {
+			tasks.create(__useName,
+				VMRunWhateverTask.class, __useClassifier,
+				__useMainClass, __useMidlet,
+				__useDebugServer);};
+		
+		// Is there GDB?
+		URI[] gdbServer = GdbUtils.debuggerUri();
+		
+		// Setup a bunch of fake MIDlets to possibly run
+		int n = 3;
+		JavaMEMidlet[] midlets = new JavaMEMidlet[n];
+		for (int i = 1; i <= n; i++)
+			midlets[i - 1] = new JavaMEMidlet("" + i, null,
+				"" + i);
+		
+		// Make all the tasks
+		TaskInitialization.makeRunTasks(provider,
+			TaskInitialization.task("runJar", __classifier),
+			"main",
+			midlets,
+			__classifier,
+			gdbServer);
 	}
 	
 	/**
@@ -470,9 +529,63 @@ public final class TaskInitialization
 			throw new NullPointerException("NARG");
 		
 		// Configuration, for modifiers
-		SquirrelJMEPluginConfiguration squirreljmeConf =
+		SquirrelJMEPluginConfiguration config =
 			SquirrelJMEPluginConfiguration.configuration(__project);
-			
+		
+		// Do we have main class and midlets?
+		boolean hasMain = (config.mainClass != null &&
+			!config.mainClass.isEmpty());
+		boolean hasMidlets = (config.midlets != null &&
+			!config.midlets.isEmpty());
+		
+		// Tasks for registration and otherwise
+		TaskContainer tasks = __project.getTasks();
+		
+		// Is there GDB?
+		URI[] gdbServer = GdbUtils.debuggerUri();
+		
+		// Handle all source sets
+		if (hasMain || hasMidlets)
+			for (String sourceSet : TaskInitialization._SOURCE_SETS)
+			{
+				// Only consider the main source set
+				if (!sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
+					continue;
+				
+				// Handle each virtual machine
+				for (VMType vmType : VMType.values())
+				{
+					// We cannot run on something that has no emulator
+					if (!vmType.hasEmulator())
+						continue;
+					
+					// We then have release/debug
+					for (ClutterLevel clutterLevel : ClutterLevel.values())
+					{
+						// Build classifier
+						SourceTargetClassifier classifier =
+							new SourceTargetClassifier(sourceSet, vmType,
+								BangletVariant.NONE, clutterLevel);
+						
+						// Dependent library task
+						VMLibraryTask libTask =
+							(VMLibraryTask)tasks.findByName(
+								TaskInitialization.task("lib",
+									classifier));
+						if (libTask == null)
+							continue;
+						
+						// Index for base IDs
+						int index = 0;
+						
+						// Make all the run tasks
+						TaskInitialization.makeRunTasks(classifier, hasMain,
+							tasks, libTask, config,
+							gdbServer, hasMidlets);
+					}
+				}
+			}
+		
 		// We need to evaluate the Doclet project first since we need
 		// the Jar task, which if we use normal evaluation does not exist
 		// yet...
@@ -480,7 +593,7 @@ public final class TaskInitialization
 			__project.evaluationDependsOn(":tools:markdown-javadoc");
 		
 		// Setup task for creating JavaDoc
-		Javadoc mdJavaDoc = __project.getTasks()
+		Javadoc mdJavaDoc = tasks
 			.create("markdownJavaDoc", Javadoc.class);
 		
 		// What does this do?
@@ -502,13 +615,14 @@ public final class TaskInitialization
 				classifier));
 				
 		// We need to know how to make the classes
-		Task classes = __project.getTasks().getByName(TaskInitialization.task(
+		Task classes = tasks.getByName(TaskInitialization.task(
 			"", SourceSet.MAIN_SOURCE_SET_NAME, "classes"));
 		
 		// Where do we find the JAR?
 		Provider<Task> jarProvider = __project.provider(() ->
 			__project.getRootProject().findProject(
-			":tools:markdown-javadoc").getTasks().getByName("shadowJar"));
+			":tools:markdown-javadoc").getTasks()
+				.getByName("shadowJar"));
 		
 		// SpringCoat related tasks
 		Provider<Iterable<Task>> springCoatTasks = __project.provider(() ->
@@ -555,7 +669,7 @@ public final class TaskInitialization
 			.toFile());
 		mdJavaDoc.source(sourceSet.getAllJava());
 		mdJavaDoc.setClasspath(useClassPath);
-		mdJavaDoc.setTitle(squirreljmeConf.swmName);
+		mdJavaDoc.setTitle(config.swmName);
 		
 		// Determine the paths where all markdown JavaDocs are being stored
 		List<Path> projectPaths = new ArrayList<>();
@@ -621,6 +735,134 @@ public final class TaskInitialization
 	}
 	
 	/**
+	 * Makes run tasks.
+	 *
+	 * @param __provider The task creation provider.
+	 * @param __name The name of the task.
+	 * @param __mainClass The main class.
+	 * @param __midlet The midlet to create for.
+	 * @param __classifier The classifier used.
+	 * @param __gdbServer The GBD server.
+	 * @since 2024/07/28
+	 */
+	public static void makeRunTasks(MakeRunTaskProvider __provider,
+		String __name, String __mainClass, JavaMEMidlet __midlet,
+		SourceTargetClassifier __classifier, URI[] __gdbServer)
+	{
+		if (__provider == null || __name == null || __classifier == null ||
+			__mainClass == null || __midlet == null)
+			throw new NullPointerException("NARG");
+		
+		if (!__mainClass.isEmpty() && __midlet != JavaMEMidlet.NONE)
+			throw new IllegalArgumentException(
+				"Main class and MIDlet are exclusive to each other");
+		
+		// Main debug-free task
+		__provider.makeTask(__name,
+			__classifier, __mainClass, __midlet,
+			VMRunTask.NO_DEBUG_SERVER);
+		
+		// JDWP and Internal JDWP Tasks
+		__provider.makeTask(__name + "Jdwp",
+			__classifier, __mainClass, __midlet,
+			VMRunTask.JDWP_HOST);
+		__provider.makeTask(__name + "JdwpInternal",
+			__classifier, __mainClass, __midlet,
+			VMRunTask.INTERNAL);
+		
+		// GDB if it exists
+		if (__gdbServer != null && __gdbServer.length > 0)
+			for (URI server : __gdbServer)
+				__provider.makeTask(__name +
+					TaskInitialization.uppercaseFirst(server.getScheme()),
+					__classifier, __mainClass, __midlet,
+					server);
+	}
+	
+	/**
+	 * Makes tasks for the main class and all the MIDlets.
+	 *
+	 * @param __provider The provider for creating tasks.
+	 * @param __name The task base name.
+	 * @param __mainClass The main class.
+	 * @param __midlets The MIDlets to create for.
+	 * @param __classifier The classifier used.
+	 * @param __gdbServer The GDB server.
+	 * @since 2024/07/28
+	 */
+	public static void makeRunTasks(MakeRunTaskProvider __provider,
+		String __name, String __mainClass, JavaMEMidlet[] __midlets,
+		SourceTargetClassifier __classifier, URI[] __gdbServer)
+	{
+		// Consider standard Java mains first
+		int index = 0;
+		if (__mainClass != null && !__mainClass.isEmpty())
+		{
+			// Make tasks
+			TaskInitialization.makeRunTasks(__provider,
+				__name, __mainClass, JavaMEMidlet.NONE, __classifier,
+				__gdbServer);
+			
+			// Count up
+			index++;
+		}
+		
+		// Then any MIDlets
+		if (__midlets != null && __midlets.length > 0)
+			for (JavaMEMidlet midlet : __midlets)
+			{
+				// Add digit following for different midlets
+				String realName = (index > 0 ?
+					__name + index : __name);
+				
+				// Make tasks
+				TaskInitialization.makeRunTasks(__provider,
+					realName, "", midlet, __classifier,
+					__gdbServer);
+				
+				// Count up
+				index++;
+			}
+	}
+	
+	/**
+	 * Creates run tasks.
+	 *
+	 * @param __classifier The classifier used.
+	 * @param __hasMain Is there a main class specified?
+	 * @param __tasks The tasks.
+	 * @param __libTask The current library task.
+	 * @param __config The configuration used.
+	 * @param __gdbServer The GDB server.
+	 * @param __hasMidlets Does this have MIDlets?
+	 * @since 2024/07/28
+	 */
+	public static void makeRunTasks(SourceTargetClassifier __classifier,
+		boolean __hasMain, TaskContainer __tasks, VMLibraryTask __libTask,
+		SquirrelJMEPluginConfiguration __config, URI[] __gdbServer,
+		boolean __hasMidlets)
+	{
+		// Base name for task
+		String name = TaskInitialization.task("run", __classifier);
+		
+		MakeRunTaskProvider provider = (__useName,
+				__useClassifier,
+				__useMainClass, __useMidlet, __useDebugServer) -> {
+				__tasks.create(__useName,
+					VMRunTask.class, __useClassifier, __libTask,
+					__useMainClass, __useMidlet,
+					__useDebugServer);};
+		
+		TaskInitialization.makeRunTasks(provider,
+			name,
+			(String)(__hasMain ? __config.mainClass : null),
+			(JavaMEMidlet[])(__hasMidlets ? __config.midlets.toArray(
+				new JavaMEMidlet[0]) : null),
+			__classifier,
+			__gdbServer);
+	}
+	
+	/**
 	 * Returns the path to the markdown JavaDoc for a project.
 	 * 
 	 * @param __project The project to get for.
@@ -651,13 +893,19 @@ public final class TaskInitialization
 			throw new NullPointerException("NARG");
 			
 		// Initialize or both main classes and such
-		for (ClutterLevel clutterLevel : ClutterLevel.values())
-			for (String sourceSet : TaskInitialization._SOURCE_SETS)
-				for (VMType vmType : VMType.values())
+		for (VMType vmType : VMType.values())
+		{
+			// Sequential clean storage?
+			List<Task> sequentialClean = new ArrayList<>();
+			
+			// Process for each possible combination
+			for (ClutterLevel clutterLevel : ClutterLevel.values())
+				for (String sourceSet : TaskInitialization._SOURCE_SETS)
 					for (BangletVariant variant : vmType.banglets())
 						TaskInitialization.romTasks(__project,
 							new SourceTargetClassifier(sourceSet, vmType,
-								variant, clutterLevel));
+								variant, clutterLevel), sequentialClean);
+		}
 	}
 	
 	/**
@@ -665,34 +913,86 @@ public final class TaskInitialization
 	 * 
 	 * @param __project The root project.
 	 * @param __classifier The classifier used.
+	 * @param __sequentialClean Sequential clean list.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
-	private static void romTasks(Project __project,
-		SourceTargetClassifier __classifier)
+	public static void romTasks(Project __project,
+		SourceTargetClassifier __classifier, List<Task> __sequentialClean)
 		throws NullPointerException
 	{
-		if (__project == null || __classifier == null)
+		if (__project == null || __classifier == null ||
+			__sequentialClean == null)
 			throw new NullPointerException("NARG");
 			
 		// Everything will be working on these tasks
 		TaskContainer tasks = __project.getTasks();
 		
+		// Determine if this is a single source set ROM
+		VMSpecifier vmType = __classifier.getVmType();
+		boolean isSingleSourceSetRom = vmType.isSingleSourceSetRom(
+			__classifier.getBangletVariant());
+		
 		// Does the VM utilize ROMs?
 		// Test fixtures are just for testing, so there is no test fixtures
-		// ROM variant...
-		if (__classifier.getVmType()
-			.hasRom(__classifier.getBangletVariant()) &&
-			!__classifier.isTestFixturesSourceSet())
+		// ROM variant... unless we are a single source set ROM variant
+		if (vmType.hasRom(__classifier.getBangletVariant()) &&
+			(isSingleSourceSetRom || !__classifier.isTestFixturesSourceSet()))
 		{
 			String baseName = TaskInitialization.task("rom",
 				__classifier);
 			VMRomTask rom = tasks.create(baseName, VMRomTask.class,
 				__classifier);
 			
-			// Full RatufaCoat Built-In
-			__project.getTasks().create(baseName + "RatufaCoat",
-				RatufaCoatBuiltInTask.class,  __classifier, rom);
+			// Which native ports are supported?
+			for (NativePortSupport nativePort :
+				__classifier.getVmType().hasNativePortSupport())
+			{
+				Task nativeTask;
+				String taskName;
+				switch (nativePort)
+				{
+					case NANOCOAT:
+						// Create task
+						taskName = baseName + "NanoCoat";
+						nativeTask = tasks.create(
+							taskName,
+							NanoCoatBuiltInTask.class,
+							__classifier, rom);
+						break;
+						
+					default:
+						throw new Error(nativePort.toString());
+				}
+				
+				// Setup cleaning task
+				Task cleanTask = nativePort.cleanTask(nativeTask,
+					__classifier);
+				
+				// Clean should call these accordingly
+				__project.afterEvaluate((__p) ->
+					cleanTask.getProject().getRootProject().getTasks()
+						.getByName("clean").dependsOn(cleanTask));
+				
+				// Does clean have to be done sequentially and not in
+				// parallel? This means the clean task is quite complicated
+				// and not easily determined, probably because it looks at
+				// all the ROM files.
+				if (isSingleSourceSetRom || nativePort.isSequentialClean())
+				{
+					// Have this task run after the previous clean task that
+					// was generated
+					if (!__sequentialClean.isEmpty())
+						cleanTask.mustRunAfter(__sequentialClean.get(
+							__sequentialClean.size() - 1));
+					
+					// Add self to the sequential clean list
+					__sequentialClean.add(cleanTask);
+				}
+				
+				// Clean, if it occurs, must happen before
+				nativeTask.mustRunAfter(cleanTask);
+			}
 		}
 	}
 	
