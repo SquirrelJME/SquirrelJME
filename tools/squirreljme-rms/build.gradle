@@ -7,8 +7,8 @@ plugins {
 
 apply plugin: "com.github.johnrengelman.shadow"
 
-description = "SquirrelJME Java Class Dumper"
-mainClassName = "cc.squirreljme.javap.Main"
+description = "SquirrelJME RMS Manager"
+mainClassName = "cc.squirreljme.tool.rms.Main"
 
 tasks.register("mimeDecode", MimeDecodeResourcesTask.class,
 	"main",
@@ -20,10 +20,6 @@ jar.dependsOn("mimeDecode")
 
 dependencies {
 	implementation project(":emulators:emulator-base")
-	implementation project(":modules:tool-classfile")
-	implementation project(":modules:markdown-writer")
-	
-	// Lombok for simpler getters/setters
-	implementation 'org.projectlombok:lombok:1.18.36'
-	annotationProcessor 'org.projectlombok:lombok:1.18.36'
+	implementation project(":modules:meep-rms")
+
 }

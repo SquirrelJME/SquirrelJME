@@ -317,6 +317,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-rms/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-rms/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-rms/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-unzip/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-unzip/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-unzip/out" />

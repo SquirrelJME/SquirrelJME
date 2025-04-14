@@ -106,6 +106,7 @@
             <option value="$PROJECT_DIR$/tools/squirreljme-debugger" />
             <option value="$PROJECT_DIR$/tools/squirreljme-font" />
             <option value="$PROJECT_DIR$/tools/squirreljme-javap" />
+            <option value="$PROJECT_DIR$/tools/squirreljme-rms" />
             <option value="$PROJECT_DIR$/tools/squirreljme-unzip" />
             <option value="$PROJECT_DIR$/tools/txt-to-pbm" />
           </set>
