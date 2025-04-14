@@ -16,6 +16,7 @@ package cc.squirreljme.runtime.rms;
  *
  * @since 2018/12/13
  */
+@Deprecated
 public interface VinylRecord
 {
 	/** No memory is available. */

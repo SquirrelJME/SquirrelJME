@@ -56,6 +56,7 @@ public class RecordStore
 		0;
 	
 	/** The vinyl record where everything is stored. */
+	@Deprecated
 	static final VinylRecord _VINYL;
 	
 	/** Existing record stores. */

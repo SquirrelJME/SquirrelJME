@@ -176,9 +176,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-provisioning/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-provisioning/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-provisioning/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-rms-json/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-rms-json/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-rms-json/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-rms/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-rms/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/meep-rms/out" />
@@ -298,9 +295,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/cicd-release-bundle/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/cicd-release-bundle/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/cicd-release-bundle/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/github-classic-project-dump/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/github-classic-project-dump/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/github-classic-project-dump/out" />
