@@ -15,9 +15,6 @@ squirreljme
 	definedStandards += new JavaMEStandard("microedition.rms;;")
 	tags += "meep"
 	tags += "j2me"
-	
-	// JSON implementation, if available
-	optionalDependencies += project(":modules:meep-rms-json")
 }
 
 dependencies
@@ -27,4 +24,8 @@ dependencies
 	api project(":modules:meep-midlet")
 	api project(":modules:meep-swm")
 	api project(":modules:vendor-api-squirreljme-collections")
+
+	// For encoding/decoding base64 and JSON
+	api project(":modules:vendor-api-squirreljme-io")
+	api project(":modules:vendor-api-oracle-json")
 }
