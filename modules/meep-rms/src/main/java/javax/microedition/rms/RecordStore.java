@@ -9,14 +9,15 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.jvm.suite.SuiteIdentifier;
+import cc.squirreljme.jvm.suite.SuiteName;
+import cc.squirreljme.jvm.suite.SuiteVendor;
+import cc.squirreljme.jvm.suite.SuiteVersion;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.rms.SuiteHash;
-import cc.squirreljme.runtime.rms.TemporaryVinylRecord;
-import cc.squirreljme.runtime.rms.VinylLock;
-import cc.squirreljme.runtime.rms.VinylRecord;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -55,80 +56,38 @@ public class RecordStore
 	public static final int AUTHMODE_PRIVATE =
 		0;
 	
-	/** The vinyl record where everything is stored. */
-	@Deprecated
-	static final VinylRecord _VINYL;
-	
-	/** Existing record stores. */
-	static final Map<Integer, RecordStore> _STORE_CACHE =
-		new LinkedHashMap<>();
-	
 	/** Identity map for listeners */
 	private final Set<RecordListener> _listeners =
 		new IdentityLinkedHashSet<>();
 	
-	/** The volume ID. */
-	private final int _vid;
+	/** The owner of this record. */
+	private final SuiteIdentifier _owner;
 	
-	/** The name. */
+	/** The name of this record. */
 	private final String _name;
 	
 	/** Write to this? */
 	private final boolean _write;
 	
-	/** How many times has this been opened? */
-	private volatile int _opens;
-	
 	/**
-	 * Initializes the record store manager.
+	 * Initializes the record store handler.
 	 *
-	 * @since 2017/02/27
-	 */
-	static
-	{
-		// See if there is a service, this will fall back to an implementation
-		// that is not shared and will only exist as long as the current
-		// program is running
-		VinylRecord vr;
-		try
-		{
-			Debugging.todoNote("Implement storage backed RMS.");
-			String vclass = null;//Debugging.<String>todoObject();
-			vr = (vclass == null ? new TemporaryVinylRecord() :
-				(VinylRecord)Class.forName(vclass).newInstance());
-		}
-		
-		// If it fails to initialize, just use a blank one
-		catch (ClassNotFoundException|IllegalAccessException|
-			InstantiationException e)
-		{
-			vr = new TemporaryVinylRecord();
-		}
-		
-		// Set
-		_VINYL = vr;
-	}
-	
-	/**
-	 * Initializes the access to the record store.
-	 *
-	 * @param __vid The volume ID.
-	 * @param __name The name.
-	 * @param __w Write to this?
+	 * @param __owner The owning suite name and vendor.
+	 * @param __name The name of this record.
+	 * @param __write Can we write to this record?
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/14
+	 * @since 2025/04/15
 	 */
-	@Api
-	private RecordStore(int __vid, String __name, boolean __w)
+	RecordStore(SuiteIdentifier __owner, String __name,
+		boolean __write)
 		throws NullPointerException
 	{
-		if (__name == null)
+		if (__owner == null || __name == null)
 			throw new NullPointerException("NARG");
 		
-		this._vid = __vid;
+		this._owner = __owner;
 		this._name = __name;
-		this._write = __w;
-		this._opens = 1;
+		this._write = __write;
 	}
 	
 	/**
@@ -1082,7 +1041,8 @@ public class RecordStore
 			SecureRecordStoreException, SecurityException
 	{
 		return RecordStore.__openRecordStore(__n,
-			ApplicationHandler.currentVendor(), ApplicationHandler.currentName(),
+			ApplicationHandler.currentVendor(),
+			ApplicationHandler.currentName(),
 			__create, __auth, __write, __pass);
 	}
 	
@@ -1109,7 +1069,8 @@ public class RecordStore
 			RecordStoreFullException, RecordStoreNotFoundException,
 			SecureRecordStoreException, SecurityException
 	{
-		return RecordStore.openRecordStore(__n, __create, __auth, __write, "");
+		return RecordStore.openRecordStore(__n, __create, __auth,
+			__write, "");
 	}
 	
 	/**
@@ -1152,7 +1113,7 @@ public class RecordStore
 	 * @param __n The name of the record store, must consist of 1 to 32
 	 * Unicode characters.
 	 * @param __vend The vendor of the other suite.
-	 * @param __suite The suite.
+	 * @param __suite The suite name.
 	 * @param __pass The password to the record store.
 	 * @return The opened record store.
 	 * @throws IllegalArgumentException If the name, vendor, or suite names
@@ -1174,8 +1135,8 @@ public class RecordStore
 			RecordStoreNotFoundException, SecureRecordStoreException,
 			SecurityException
 	{
-		return RecordStore.__openRecordStore(__n, __vend, __suite, false,
-			RecordStore.AUTHMODE_ANY, false, __pass);
+		return RecordStore.__openRecordStore(__n, __vend, __suite,
+			false, RecordStore.AUTHMODE_ANY, false, __pass);
 	}
 	
 	/**
@@ -1245,6 +1206,8 @@ public class RecordStore
 	 *
 	 * @param __name The name of the record store, must consist of 1 to 32
 	 * Unicode characters.
+	 * @param __vend The vendor of the other suite.
+	 * @param __suite The suite name.
 	 * @param __create If {@code true} then if the record store does not
 	 * exist it will be created.
 	 * @param __auth The authorization mode of the record which may permit
@@ -1285,60 +1248,33 @@ public class RecordStore
 		if (namelen < 1 || namelen > 32)
 			throw new IllegalArgumentException("DC0d " + __name);
 		
-		// Get identifier, used to find the record
-		long sid = SuiteHash.identifier(__vend, __suite),
-			mysid = SuiteHash.currentIdentifier();
+		// Determine the owner of the suite
+		SuiteIdentifier owner = new SuiteIdentifier(new SuiteName(__suite),
+			new SuiteVendor(__vend), SuiteVersion.MIN_VERSION);
+		SuiteIdentifier self = ApplicationHandler.suiteIdentifier();
 		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
-		{
-			// Go through all records and try to find a pre-existing one
-			int rv = -1;
-			for (int rid : vinyl.volumeList())
-			{
-				// Belongs to another suite?
-				if (sid != vinyl.volumeSuiteIdentifier(rid))
-					continue;
-				
-				// Same name?
-				if (__name.equals(vinyl.volumeName(rid)))
-				{
-					rv = rid;
-					break;
-				}
-			}
-			
-			// Open a record which already exists
-			if (rv >= 0)
-			{
-				// Use a pre-cached store
-				Map<Integer, RecordStore> cache = RecordStore._STORE_CACHE;
-				RecordStore rs = cache.get(rv);
-				if (rs == null)
-					cache.put(rv, (rs = new RecordStore(rv, __name,
-						sid == mysid || vinyl.volumeOtherWritable(rv))));
-				
-				// Increment the open count
-				rs._opens++;
-				return rs;
-			}
-			
-			/* {@squirreljme.error DC0e Could not find the specified record
-			store. (The name; The vendor; The suite)} */
-			if (!__create)
-				throw new RecordStoreNotFoundException(
-					String.format("DC0e %s %s %s", __name, __vend, __suite));
-			
-			/* {@squirreljme.error DC0f Could not create the record, it is
-			likely that there is not enough space remaining.} */
-			rv = vinyl.volumeCreate(sid, __name, __write);
-			if (rv < 0)
-				throw new RecordStoreFullException("DC0f");
-			
-			// Since we created it, we can just return the info
-			return new RecordStore(rv, __name, sid == mysid || __write);
-		}
+		// Setup accessor over the record store, using the storage shelves
+		// We always have permission to write our own store
+		boolean isSelf = owner.equals(self);
+		RecordStore result = new RecordStore(owner,
+			__name, isSelf || __write);
+		
+		// Check to see if it exists
+		/* {@squirreljme.error DC0e Could not find the specified record
+		store. (The name; The vendor; The suite)} */
+		if ((!__create || !isSelf) && !result.__exists())
+			throw new RecordStoreNotFoundException(
+				String.format("DC0e %s %s %s", __name, __vend, __suite));
+		
+		// Not isSelf and is not other writable?
+		/* {@squirreljme.error DC0f Could not open record store of another
+		suite as it is not marked as other writable.} */
+		if (!isSelf && result.__exists() && !result.__isOtherWritable())
+			throw new RecordStoreException(
+				String.format("DC0f %s %s %s", __name, __vend, __suite));
+		
+		// Return the resultant store
+		return result;
 	}
 }
 

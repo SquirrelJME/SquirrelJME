@@ -11,8 +11,6 @@ package javax.microedition.rms;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.rms.VinylLock;
-import cc.squirreljme.runtime.rms.VinylRecord;
 
 /**
  * This stores information on a record store.
