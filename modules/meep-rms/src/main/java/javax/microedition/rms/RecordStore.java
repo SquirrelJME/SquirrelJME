@@ -19,9 +19,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.rms.SuiteHash;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.IdentityLinkedHashSet;
 
@@ -66,20 +64,19 @@ public class RecordStore
 	/** The name of this record. */
 	private final String _name;
 	
-	/** Write to this? */
-	private final boolean _write;
+	/** Is this our own record? */
+	private final boolean _isSelf;
 	
 	/**
 	 * Initializes the record store handler.
 	 *
 	 * @param __owner The owning suite name and vendor.
 	 * @param __name The name of this record.
-	 * @param __write Can we write to this record?
+	 * @param __self Is this a record we own? 
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/15
 	 */
-	RecordStore(SuiteIdentifier __owner, String __name,
-		boolean __write)
+	RecordStore(SuiteIdentifier __owner, String __name, boolean __self)
 		throws NullPointerException
 	{
 		if (__owner == null || __name == null)
@@ -87,7 +84,7 @@ public class RecordStore
 		
 		this._owner = __owner;
 		this._name = __name;
-		this._write = __write;
+		this._isSelf = __self;
 	}
 	
 	/**
@@ -120,7 +117,7 @@ public class RecordStore
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		/* {@squirreljme.error DC01 Cannot write record to read-only store.} */
-		if (!this._write)
+		if (!this._isWritable)
 			throw new RecordStoreException("DC01");
 		
 		// Used for later
@@ -812,7 +809,7 @@ public class RecordStore
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		/* {@squirreljme.error DC06 Cannot write record to read-only store.} */
-		if (!this._write)
+		if (!this._isWritable)
 			throw new RecordStoreException("DC06");
 		
 		// Used for later
@@ -1216,6 +1213,7 @@ public class RecordStore
 	 * @param __write If {@code true} then the record store may be written to
 	 * by other suites. If the record already exists then this argument will be
 	 * ignored.
+	 * @param __pass The password to use for the record, this is optional.
 	 * @return The newly opened or created record store, if the record store
 	 * is already open then it will return the already open one.
 	 * @throws IllegalArgumentException If the name is not valid or the
@@ -1256,15 +1254,20 @@ public class RecordStore
 		// Setup accessor over the record store, using the storage shelves
 		// We always have permission to write our own store
 		boolean isSelf = owner.equals(self);
-		RecordStore result = new RecordStore(owner,
-			__name, isSelf || __write);
+		RecordStore result = new RecordStore(owner, __name, isSelf);
 		
-		// Check to see if it exists
-		/* {@squirreljme.error DC0e Could not find the specified record
-		store. (The name; The vendor; The suite)} */
-		if ((!__create || !isSelf) && !result.__exists())
-			throw new RecordStoreNotFoundException(
-				String.format("DC0e %s %s %s", __name, __vend, __suite));
+		// If this does not exist, we may need to initialize it
+		if (!result.__exists())
+		{
+			/* {@squirreljme.error DC0e Could not find the specified record
+			store. (The name; The vendor; The suite)} */
+			if (!__create || !isSelf)
+				throw new RecordStoreNotFoundException(
+					String.format("DC0e %s %s %s", __name, __vend, __suite));
+			
+			// Set the access mode
+			result.__setAccess(__auth, __write, __pass);
+		}
 		
 		// Not isSelf and is not other writable?
 		/* {@squirreljme.error DC0f Could not open record store of another
