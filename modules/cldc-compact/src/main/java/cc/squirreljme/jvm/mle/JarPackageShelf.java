@@ -80,11 +80,13 @@ public final class JarPackageShelf
 	 * representation of the JAR file in string form.
 	 * 
 	 * @param __jar The JAR to get the path of.
-	 * @return The path of the given JAR.
+	 * @return The path of the given JAR, may be {@code null} if there is no
+	 * valid representable path.
 	 * @throws MLECallError If the JAR is not valid.
 	 * @since 2020/10/31
 	 */
 	@SquirrelJMEVendorApi
+	@Nullable
 	public static native String libraryPath(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 	

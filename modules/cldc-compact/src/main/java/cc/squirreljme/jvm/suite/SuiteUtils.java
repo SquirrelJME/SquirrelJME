@@ -9,11 +9,19 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.jvm.launch.ScannerUtils;
+import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Map;
+
 /**
  * General suite utils.
  *
  * @since 2024/01/06
  */
+@SquirrelJMEVendorApi
 public final class SuiteUtils
 {
 	/**
@@ -33,6 +41,7 @@ public final class SuiteUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/06
 	 */
+	@SquirrelJMEVendorApi
 	public static String baseName(String __name)
 		throws NullPointerException
 	{
@@ -58,12 +67,88 @@ public final class SuiteUtils
 	}
 	
 	/**
+	 * Finds a name in the given map.
+	 *
+	 * @param __in The map to look in.
+	 * @param __name The name to get.
+	 * @return The resultant jar which was found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/17
+	 */
+	public static JarPackageBracket findName(
+		Map<String, JarPackageBracket> __in, String __name)
+		throws NullPointerException
+	{
+		if (__in == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		// Direct name match?
+		JarPackageBracket maybe = __in.get(__name);
+		if (maybe != null)
+			return maybe;
+		
+		// Use shorter base name match instead?
+		maybe = __in.get(SuiteUtils.baseName(__name));
+		if (maybe != null)
+			return maybe;
+		
+		// Try searching through each bracket manually
+		return SuiteUtils.findName(__in.values(), __name);
+	}
+	
+	/**
+	 * Finds a name in the given Jar collection.
+	 *
+	 * @param __in The collection to look in.
+	 * @param __name The name to get.
+	 * @return The resultant jar which was found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/17
+	 */
+	@SquirrelJMEVendorApi
+	public static JarPackageBracket findName(
+		Iterable<JarPackageBracket> __in, String __name)
+		throws NullPointerException
+	{
+		if (__in == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		// We want to search for shortened names as well
+		String baseName = SuiteUtils.baseName(__name);
+		
+		// Go through all brackets to find a name
+		for (JarPackageBracket jar : __in)
+		{
+			// Skip nulls
+			if (jar == null)
+				continue;
+			
+			// There might not be a known path
+			String jarName = JarPackageShelf.libraryPath(jar);
+			if (jarName == null)
+				continue;
+			
+			// Is this a name match?
+			String jarBase = SuiteUtils.baseName(jarName);
+			if (__name.equals(jarName) ||
+				__name.equals(jarBase) ||
+				baseName.equals(jarName) ||
+				baseName.equals(jarBase))
+				return jar;
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
 	 * Is this a Jar or resource?
 	 *
 	 * @param __name The name to check.
 	 * @return If it is a Jar or resource.
 	 * @since 2024/01/06
 	 */
+	@SquirrelJMEVendorApi
 	public static boolean isAny(String __name)
 	{
 		return SuiteUtils.isJar(__name) || SuiteUtils.isResource(__name);
@@ -76,6 +161,7 @@ public final class SuiteUtils
 	 * @return If it is a Jar.
 	 * @since 2024/01/06
 	 */
+	@SquirrelJMEVendorApi
 	public static boolean isJar(String __name)
 	{
 		return __name.endsWith(".jar") || __name.endsWith(".JAR") ||
@@ -89,6 +175,7 @@ public final class SuiteUtils
 	 * @return If it is a resource.
 	 * @since 2024/01/06
 	 */
+	@SquirrelJMEVendorApi
 	public static boolean isResource(String __name)
 	{
 		// Standard Jar
