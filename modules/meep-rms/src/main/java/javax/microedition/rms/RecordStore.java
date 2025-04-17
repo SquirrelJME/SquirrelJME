@@ -137,6 +137,8 @@ public class RecordStore
 		int rv;
 		RecordListener[] listeners = this.__listeners();
 		
+		throw Debugging.todo();
+		/*
 		// Lock
 		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -153,6 +155,8 @@ public class RecordStore
 		for (RecordListener l : listeners)
 			l.recordAdded(this, rv);
 		return rv;
+		
+		 */
 	}
 	
 	/**
@@ -230,6 +234,8 @@ public class RecordStore
 	public void closeRecordStore()
 		throws RecordStoreNotOpenException, RecordStoreException
 	{
+		throw Debugging.todo();
+		/*
 		// Lock the record, so that only a single thread is messing with the
 		// open counts and such
 		VinylRecord vinyl = RecordStore._VINYL;
@@ -242,6 +248,8 @@ public class RecordStore
 			if ((--this._opens) <= 0)
 				this._listeners.clear();
 		}
+		
+		 */
 	}
 	
 	/**
@@ -262,6 +270,8 @@ public class RecordStore
 		// Used later
 		RecordListener[] listeners = this.__listeners();
 		
+		throw Debugging.todo();
+		/*
 		// Lock
 		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -277,6 +287,8 @@ public class RecordStore
 		// Report to the listeners
 		for (RecordListener l : listeners)
 			l.recordDeleted(this, __id);
+			
+		 */
 	}
 	
 	/**
@@ -305,6 +317,8 @@ public class RecordStore
 		// Check open
 		this.__checkOpen();
 		
+		throw Debugging.todo();
+		/*
 		// Build one and perform a rebuild to initialize it
 		__VolumeEnumeration__ rv = new __VolumeEnumeration__(this, __f,
 			__c, __ku, __tags);
@@ -312,6 +326,8 @@ public class RecordStore
 		
 		// Use it
 		return rv;
+		
+		 */
 	}
 	
 	/**
@@ -346,6 +362,8 @@ public class RecordStore
 		// Check open
 		this.__checkOpen();
 		
+		throw Debugging.todo();
+		/*
 		// Lock
 		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -366,12 +384,14 @@ public class RecordStore
 					throw (RecordStoreNotOpenException)e;
 				
 				/* {@squirreljme.error DC02 Could not get the record store
-				time.} */
+				time.} * /
 				throw new RuntimeException("DC02", e);
 			}
 			
 			return time[0];
 		}
+		
+		 */
 	}
 	
 	/**
@@ -408,6 +428,8 @@ public class RecordStore
 	public int getNextRecordID()
 		throws RecordStoreException, RecordStoreNotOpenException
 	{
+		throw Debugging.todo();
+		/*
 		// Lock
 		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -421,6 +443,8 @@ public class RecordStore
 			
 			return rv;
 		}
+		
+		 */
 	}
 	
 	/**
@@ -437,6 +461,8 @@ public class RecordStore
 		// Check open
 		this.__checkOpen();
 		
+		throw Debugging.todo();
+		/*
 		// Lock
 		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -457,7 +483,7 @@ public class RecordStore
 				catch (RecordStoreException e)
 				{
 					/* {@squirreljme.error DC03 Error getting list of
-					records.} */
+					records.} * /
 					RecordStoreNotOpenException t =
 						new RecordStoreNotOpenException("DC03");
 					t.initCause(e);
@@ -467,6 +493,8 @@ public class RecordStore
 			// Return array size
 			return pages.length;
 		}
+		
+		 */
 	}
 	
 	/**
@@ -489,6 +517,8 @@ public class RecordStore
 		// Check open
 		this.__checkOpen();
 		
+		throw Debugging.todo();
+		/*
 		// This volume
 		int vid = this._vid;
 		
@@ -509,6 +539,8 @@ public class RecordStore
 			
 			return rv;
 		}
+		
+		 */
 	}
 	
 	/**
@@ -539,6 +571,8 @@ public class RecordStore
 		if (__o < 0)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
+		throw Debugging.todo();
+		/*
 		// This volume
 		int vid = this._vid;
 		
@@ -554,7 +588,7 @@ public class RecordStore
 			RecordStore.__checkError(size);
 			
 			/* {@squirreljme.error DC04 The record does not fit into the
-			output.} */
+			output.} * /
 			if (size < 0 || (__o + size) > __b.length)
 				throw new ArrayIndexOutOfBoundsException("DC04");
 			
@@ -565,6 +599,8 @@ public class RecordStore
 			// Size is used as the return value
 			return size;
 		}
+		
+		 */
 	}
 	
 	/**
@@ -583,6 +619,8 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
+		throw Debugging.todo();
+		/*
 		// Lock
 		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -597,6 +635,8 @@ public class RecordStore
 			// Return it
 			return size;
 		}
+		
+		 */
 	}
 	
 	/**
@@ -613,8 +653,12 @@ public class RecordStore
 		// Check open
 		this.__checkOpen();
 		
+		throw Debugging.todo();
+		/*
 		// Just quickly create
 		return new RecordStoreInfo(this._vid);
+		
+		 */
 	}
 	
 	/**
@@ -666,6 +710,8 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
+		throw Debugging.todo();
+		/*
 		// Lock
 		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -679,6 +725,8 @@ public class RecordStore
 			
 			return rv;
 		}
+		
+		 */
 	}
 	
 	/**
@@ -693,6 +741,8 @@ public class RecordStore
 	public int getVersion()
 		throws RecordStoreNotOpenException
 	{
+		throw Debugging.todo();
+		/*
 		// Lock
 		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -712,12 +762,14 @@ public class RecordStore
 					throw (RecordStoreNotOpenException)e;
 				
 				/* {@squirreljme.error DC05 Could not get the record store
-				version.} */
+				version.} * /
 				throw new RuntimeException("DC05", e);
 			}
 			
 			return rv;
 		}
+		
+		 */
 	}
 	
 	/**
@@ -765,12 +817,16 @@ public class RecordStore
 		throws IllegalArgumentException, IllegalStateException,
 			RecordStoreException, SecurityException
 	{
+		throw Debugging.todo();
+		/*
 		// Lock
 		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			throw Debugging.todo();
 		}
+		
+		 */
 	}
 	
 	/**
@@ -803,7 +859,10 @@ public class RecordStore
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		/* {@squirreljme.error DC06 Cannot write record to read-only store.} */
+		throw Debugging.todo();
+		/*
+		/* {@squirreljme.error DC06 Cannot write record to read-only
+		store.} * /
 		if (!this.__isSelfWritable())
 			throw new RecordStoreException("DC06");
 		
@@ -825,6 +884,8 @@ public class RecordStore
 		// Report to the listeners
 		for (RecordListener l : listeners)
 			l.recordChanged(this, __id);
+			
+		 */
 	}
 	
 	/**
@@ -860,9 +921,13 @@ public class RecordStore
 	private void __checkOpen()
 		throws RecordStoreNotOpenException
 	{
-		/* {@squirreljme.error DC07 This record store is not open.} */
+		throw Debugging.todo();
+		/*
+		/* {@squirreljme.error DC07 This record store is not open.} * /
 		if (this._opens <= 0)
 			throw new RecordStoreNotOpenException("DC07");
+			
+		 */
 	}
 	
 	/**
@@ -924,6 +989,8 @@ public class RecordStore
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
+		throw Debugging.todo();
+		/*
 		// Our suite identifier to find our own records
 		long mysid = SuiteHash.currentIdentifier();
 		
@@ -948,12 +1015,14 @@ public class RecordStore
 			}
 			
 			/* {@squirreljme.error DC08 Cannot delete the specified record
-			store because it does not exist. (The name of the store)} */
+			store because it does not exist. (The name of the store)} * /
 			if (got == -1)
 				throw new RecordStoreNotFoundException("DC08 " + __n);
 			
 			throw Debugging.todo();
 		}
+		
+		 */
 	}
 	
 	/**
@@ -968,6 +1037,8 @@ public class RecordStore
 	@Api
 	public static String[] listRecordStores()
 	{
+		throw Debugging.todo();
+		/*
 		// Our suite identifier to find our own records
 		long mysid = SuiteHash.currentIdentifier();
 		
@@ -989,6 +1060,8 @@ public class RecordStore
 			
 			return rv.<String>toArray(new String[rv.size()]);
 		}
+		
+		 */
 	}
 	
 	/**
@@ -1167,25 +1240,30 @@ public class RecordStore
 	private static void __checkError(int __id)
 		throws RecordStoreException
 	{
+		throw Debugging.todo();
+		/*
 		// Error was detected
 		if (__id < 0)
 		{
 			/* {@squirreljme.error DC09 Could not add the record, there might
-			not be enough free space available.} */
+			not be enough free space available.} * /
 			if (__id == VinylRecord.ERROR_NO_MEMORY)
 				throw new RecordStoreFullException("DC09");
 			
-			/* {@squirreljme.error DC0a No such record store exists.} */
+			/* {@squirreljme.error DC0a No such record store exists.} * /
 			if (__id == VinylRecord.ERROR_NO_VOLUME)
 				throw new RecordStoreNotFoundException("DC0a");
 			
-			/* {@squirreljme.error DC0b No such record exists.} */
+			/* {@squirreljme.error DC0b No such record exists.} * /
 			if (__id == VinylRecord.ERROR_NO_PAGE)
 				throw new InvalidRecordIDException("DC0b");
 			
-			/* {@squirreljme.error DC0c Unknown record store error. (Error)} */
+			/* {@squirreljme.error DC0c Unknown record store error.
+			(Error)} * /
 			throw new RecordStoreException("DC0c " + __id);
 		}
+		
+		 */
 	}
 	
 	/**

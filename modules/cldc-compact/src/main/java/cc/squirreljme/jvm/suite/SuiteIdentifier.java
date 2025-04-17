@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -18,16 +19,20 @@ import java.lang.ref.WeakReference;
  *
  * @since 2016/10/12
  */
+@SquirrelJMEVendorApi
 public final class SuiteIdentifier
 	implements Comparable<SuiteIdentifier>
 {
 	/** The suite name. */
+	@SquirrelJMEVendorApi
 	protected final SuiteName name;
 	
 	/** The suite vendor. */
+	@SquirrelJMEVendorApi
 	protected final SuiteVendor vendor;
 	
 	/** The suite version. */
+	@SquirrelJMEVendorApi
 	protected final SuiteVersion version;
 	
 	/** String representation. */
@@ -42,6 +47,7 @@ public final class SuiteIdentifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
+	@SquirrelJMEVendorApi
 	public SuiteIdentifier(SuiteName __name, SuiteVendor __ven,
 		SuiteVersion __ver)
 		throws NullPointerException
@@ -58,6 +64,7 @@ public final class SuiteIdentifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
+	@SquirrelJMEVendorApi
 	public SuiteIdentifier(SuiteVendor __ven, SuiteName __name,
 		SuiteVersion __ver)
 		throws NullPointerException
@@ -130,6 +137,7 @@ public final class SuiteIdentifier
 	 * @return The suite name.
 	 * @since 2016/10/12
 	 */
+	@SquirrelJMEVendorApi
 	public SuiteName name()
 	{
 		return this.name;
@@ -161,6 +169,7 @@ public final class SuiteIdentifier
 	 * @return The suite vendor.
 	 * @since 2016/10/12
 	 */
+	@SquirrelJMEVendorApi
 	public SuiteVendor vendor()
 	{
 		return this.vendor;
@@ -172,6 +181,7 @@ public final class SuiteIdentifier
 	 * @return The suite version.
 	 * @since 2016/10/12
 	 */
+	@SquirrelJMEVendorApi
 	public SuiteVersion version()
 	{
 		return this.version;
