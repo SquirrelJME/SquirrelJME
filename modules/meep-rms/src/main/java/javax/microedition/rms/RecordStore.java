@@ -18,6 +18,8 @@ import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.rms.SuiteHash;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -54,9 +56,17 @@ public class RecordStore
 	public static final int AUTHMODE_PRIVATE =
 		0;
 	
+	/** Record stores which have been opened. */
+	private static final List<Reference<RecordStore>> _existing =
+		new ArrayList<>();
+	
 	/** Identity map for listeners */
 	private final Set<RecordListener> _listeners =
 		new IdentityLinkedHashSet<>();
+	
+	/** Internal synchronization lock. */
+	final Object _lock =
+		new Object();
 	
 	/** The owner of this record. */
 	private final SuiteIdentifier _owner;
@@ -66,6 +76,9 @@ public class RecordStore
 	
 	/** Is this our own record? */
 	private final boolean _isSelf;
+	
+	/** Cached meta information accessor. */
+	private volatile Reference<RecordStoreInfo> _metaRef;
 	
 	/**
 	 * Initializes the record store handler.
@@ -117,7 +130,7 @@ public class RecordStore
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		/* {@squirreljme.error DC01 Cannot write record to read-only store.} */
-		if (!this._isWritable)
+		if (!this.__info().__isSelfWritable())
 			throw new RecordStoreException("DC01");
 		
 		// Used for later
@@ -182,20 +195,11 @@ public class RecordStore
 		if (__l == null)
 			return;
 		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		// Add listener
+		Set<RecordListener> listeners = this._listeners;
+		synchronized (this._lock)
 		{
-			// No effect if closed
-			if (this._opens <= 0)
-				return;
-			
-			// Add listener
-			Set<RecordListener> listeners = this._listeners;
-			synchronized (listeners)
-			{
-				listeners.add(__l);
-			}
+			listeners.add(__l);
 		}
 	}
 	
@@ -730,20 +734,11 @@ public class RecordStore
 		if (__l == null)
 			return;
 		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		// Remove listener
+		Set<RecordListener> listeners = this._listeners;
+		synchronized (this._lock)
 		{
-			// No effect if closed
-			if (this._opens <= 0)
-				return;
-			
-			// Remove listener
-			Set<RecordListener> listeners = this._listeners;
-			synchronized (listeners)
-			{
-				listeners.remove(__l);
-			}
+			listeners.remove(__l);
 		}
 	}
 	
@@ -809,7 +804,7 @@ public class RecordStore
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		/* {@squirreljme.error DC06 Cannot write record to read-only store.} */
-		if (!this._isWritable)
+		if (!this.__isSelfWritable())
 			throw new RecordStoreException("DC06");
 		
 		// Used for later
@@ -871,36 +866,38 @@ public class RecordStore
 	}
 	
 	/**
-	 * Lists the pages that exist within this record store.
-	 *
-	 * @return The page IDs.
-	 * @since 2019/05/13
-	 */
-	final int[] __listPages()
-		throws RecordStoreNotOpenException
-	{
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
-		{
-			// Check open
-			this.__checkOpen();
-			
-			return vinyl.pageList(this._vid);
-		}
-	}
-	
-	/**
-	 * Returns all of the listeners for this record store.
+	 * Returns all the listeners for this record store.
 	 *
 	 * @return The listeners.
 	 * @since 2019/04/15
 	 */
 	private RecordListener[] __listeners()
 	{
-		Set<RecordListener> listeners = this._listeners;
-		return listeners.<RecordListener>toArray(
-			new RecordListener[listeners.size()]);
+		synchronized (this._lock)
+		{
+			Set<RecordListener> listeners = this._listeners;
+			return listeners.toArray(new RecordListener[listeners.size()]);
+		}
+	}
+	
+	/**
+	 * Returns the meta information accessor for this record store.
+	 *
+	 * @return The meta info accessor.
+	 * @since 2025/04/16
+	 */
+	final RecordStoreInfo __info()
+	{
+		Reference<RecordStoreInfo> ref = this._metaRef;
+		RecordStoreInfo result = null;
+		if (ref == null || (result = ref.get()) == null)
+		{
+			result = new RecordStoreInfo(this._owner, this._name,
+				this._isSelf);
+			this._metaRef = new WeakReference<>(result);
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -1249,15 +1246,62 @@ public class RecordStore
 		// Determine the owner of the suite
 		SuiteIdentifier owner = new SuiteIdentifier(new SuiteName(__suite),
 			new SuiteVendor(__vend), SuiteVersion.MIN_VERSION);
-		SuiteIdentifier self = ApplicationHandler.suiteIdentifier();
 		
-		// Setup accessor over the record store, using the storage shelves
-		// We always have permission to write our own store
+		// Determine if this is our own suite's record store
+		SuiteIdentifier self = ApplicationHandler.suiteIdentifier();
 		boolean isSelf = owner.equals(self);
-		RecordStore result = new RecordStore(owner, __name, isSelf);
+		
+		// Check to see if this suite is already in memory
+		RecordStore result = null;
+		synchronized (RecordStore.class)
+		{
+			// Look through record stores we know about already
+			List<Reference<RecordStore>> existing = RecordStore._existing;
+			int freeSlot = -1;
+			for (int i = 0, n = existing.size(); i < n; i++)
+			{
+				// Ignore blank slots
+				Reference<RecordStore> ref = existing.get(i);
+				if (ref == null)
+				{
+					freeSlot = i;
+					continue;
+				}
+				
+				// If this slot was GCed, clear it
+				RecordStore check = ref.get();
+				if (check == null)
+				{
+					existing.set(i, null);
+					freeSlot = i;
+					continue;
+				}
+				
+				// Is this the record store we want?
+				if (owner.equals(check._owner) && __name.equals(check._name))
+				{
+					result = check;
+					break;
+				}
+			}
+			
+			// Need to set up a new store cache?
+			if (result == null)
+			{
+				// Setup new accessor
+				result = new RecordStore(owner, __name, isSelf);
+				
+				// Store cache at the free slot we found
+				Reference<RecordStore> ref = new WeakReference<>(result);
+				if (freeSlot < 0)
+					existing.add(ref);
+				else
+					existing.set(freeSlot, ref);
+			}
+		}
 		
 		// If this does not exist, we may need to initialize it
-		if (!result.__exists())
+		if (!result.__info().__exists())
 		{
 			/* {@squirreljme.error DC0e Could not find the specified record
 			store. (The name; The vendor; The suite)} */
@@ -1266,13 +1310,14 @@ public class RecordStore
 					String.format("DC0e %s %s %s", __name, __vend, __suite));
 			
 			// Set the access mode
-			result.__setAccess(__auth, __write, __pass);
+			result.__info().__setAccess(__auth, __write, __pass);
 		}
 		
 		// Not isSelf and is not other writable?
 		/* {@squirreljme.error DC0f Could not open record store of another
 		suite as it is not marked as other writable.} */
-		if (!isSelf && result.__exists() && !result.__isOtherWritable())
+		if (!isSelf && result.__info().__exists() &&
+			!result.__info().__isOtherWritable())
 			throw new RecordStoreException(
 				String.format("DC0f %s %s %s", __name, __vend, __suite));
 		

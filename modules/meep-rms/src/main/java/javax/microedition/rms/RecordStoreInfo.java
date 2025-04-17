@@ -9,6 +9,7 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -20,18 +21,33 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 @Api
 public final class RecordStoreInfo
 {
-	/** The volume ID. */
-	private final int _vid;
+	/** The owner of this record. */
+	private final SuiteIdentifier _owner;
+	
+	/** The name of this record. */
+	private final String _name;
+	
+	/** Is this our own record? */
+	private final boolean _isSelf;
 	
 	/**
-	 * Used internally.
+	 * Initializes the record meta handler.
 	 *
-	 * @param __vid The volume ID.
-	 * @since 2017/02/26
+	 * @param __owner The owning suite name and vendor.
+	 * @param __name The name of this record.
+	 * @param __self Is this a record we own? 
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/16
 	 */
-	RecordStoreInfo(int __vid)
+	RecordStoreInfo(SuiteIdentifier __owner, String __name, boolean __self)
+		throws NullPointerException
 	{
-		this._vid = __vid;
+		if (__owner == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		this._owner = __owner;
+		this._name = __name;
+		this._isSelf = __self;
 	}
 	
 	/**
@@ -80,12 +96,7 @@ public final class RecordStoreInfo
 	public long getSizeAvailable()
 		throws RecordStoreNotOpenException
 	{
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
-		{
-			return vinyl.vinylSizeAvailable();
-		}
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -115,6 +126,79 @@ public final class RecordStoreInfo
 	@Api
 	public boolean isWriteable()
 		throws RecordStoreNotOpenException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Checks if this record store actually exists on the disk.
+	 *
+	 * @return If this actually exists.
+	 * @since 2025/04/16
+	 */
+	boolean __exists()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the file that refers to the given record ID.
+	 *
+	 * @param __id The sub-record ID.
+	 * @return The file associated with this ID, {@code -1} will create a
+	 * new one.
+	 * @throws IllegalArgumentException If the ID is not valid.
+	 * @since 2025/04/16
+	 */
+	String __idFile(int __id)
+		throws IllegalArgumentException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Determines all the valid record IDs that exist.
+	 *
+	 * @return All the existing record IDs.
+	 * @since 2025/04/16
+	 */
+	int[] __ids()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Is this writable by others?
+	 *
+	 * @return If this is writable by others.
+	 * @since 2025/04/16
+	 */
+	boolean __isOtherWritable()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Is this record store writable by this application?
+	 *
+	 * @return If this can be written to.
+	 * @since 2025/04/16
+	 */
+	@SuppressWarnings("ConstantValue")
+	boolean __isSelfWritable()
+	{
+		return this._isSelf || this.__isOtherWritable();
+	}
+	
+	/**
+	 * Sets the access mode for this record store.
+	 *
+	 * @param __auth The authorization to use.
+	 * @param __otherWrite If this can be written by others.
+	 * @param __pass The password to use.
+	 * @since 2025/04/16
+	 */
+	void __setAccess(int __auth, boolean __otherWrite, String __pass)
 	{
 		throw Debugging.todo();
 	}

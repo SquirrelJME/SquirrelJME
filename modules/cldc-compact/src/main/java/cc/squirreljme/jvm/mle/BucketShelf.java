@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
+import cc.squirreljme.jvm.mle.constants.BucketWriteMode;
 import cc.squirreljme.jvm.mle.constants.StandardBucketType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -106,6 +107,7 @@ public final class BucketShelf
 	 * @param __buf The buffer to read from.
 	 * @param __off The offset into the buffer.
 	 * @param __len The number of bytes to write.
+	 * @param __mode The {@link BucketWriteMode} of the bucket.
 	 * @throws MLECallError On null arguments; or the offset and/or length are
 	 * out of bounds or negative.
 	 * @since 2025/04/14
@@ -117,6 +119,7 @@ public final class BucketShelf
 		@Range(from = 0, to = Integer.MAX_VALUE) int __fileOff,
 		@NotNull byte[] __buf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
+		@Range(from = 0, to = Integer.MAX_VALUE) int __len,
+		@MagicConstant(valuesFromClass = BucketWriteMode.class) int __mode)
 		throws MLECallError;
 }

@@ -24,8 +24,4 @@ dependencies
 	api project(":modules:meep-midlet")
 	api project(":modules:meep-swm")
 	api project(":modules:vendor-api-squirreljme-collections")
-
-	// For encoding/decoding base64 and JSON
-	api project(":modules:vendor-api-squirreljme-io")
-	api project(":modules:vendor-api-oracle-json")
 }
