@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -56,6 +57,44 @@ public final class BucketShelf
 	public static native BucketBracket bucket(
 		@MagicConstant(valuesFromClass = StandardBucketType.class)
 			int __type)
+		throws MLECallError;
+	
+	/**
+	 * Lists all files in the bucket.
+	 *
+	 * @param __bucket The bucket to the get the list of file from.
+	 * @return The list of files in the bucket.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/04/16
+	 */
+	@SquirrelJMEVendorApi
+	public static native String[] list(
+		@NotNull BucketBracket __bucket)
+		throws MLECallError;
+	
+	/**
+	 * Lists all files in the bucket with a conditional filter. Note that
+	 * all conditional filters if specified must be matched, there also is an
+	 * option of inverting the filter to match anything otherwise.
+	 *
+	 * @param __bucket The bucket to the get the list of file from.
+	 * @param __not Inverts the condition if {@code __prefix},
+	 * {@code __contains}, and/or {@code __suffix} are set.
+	 * @param __prefix An optional prefix to filter file names with.
+	 * @param __contains An optional string to check if the file name contains
+	 * the given name.
+	 * @param __suffix An optional suffix to filter file names with.
+	 * @return The list of files in the bucket.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/04/16
+	 */
+	@SquirrelJMEVendorApi
+	public static native String[] list(
+		@NotNull BucketBracket __bucket,
+		boolean __not,
+		@Nullable String __prefix,
+		@Nullable String __contains,
+		@Nullable String __suffix)
 		throws MLECallError;
 	
 	/**
