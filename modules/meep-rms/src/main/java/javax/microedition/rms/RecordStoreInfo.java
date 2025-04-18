@@ -12,6 +12,8 @@ package javax.microedition.rms;
 import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
+import net.multiphasicapps.io.Base64Encoder;
 
 /**
  * This stores information on a record store.
@@ -29,6 +31,12 @@ public final class RecordStoreInfo
 	
 	/** Is this our own record? */
 	private final boolean _isSelf;
+	
+	/** The base name for this record. */
+	final String baseName;
+	
+	/** The meta info file name. */
+	final String metaName;
 	
 	/**
 	 * Initializes the record meta handler.
@@ -48,6 +56,23 @@ public final class RecordStoreInfo
 		this._owner = __owner;
 		this._name = __name;
 		this._isSelf = __self;
+		
+		// Determine the meta filename
+		try
+		{
+			this.baseName = String.format("%08x%02d%s", __owner.hashCode(),
+				__name.length(),
+				Base64Encoder.encode(__name.getBytes()).toLowerCase());
+			this.metaName = this.baseName + ".json";
+		}
+		catch (IOException __e)
+		{
+			throw new RuntimeException(__e);
+		}
+		
+		// Debug
+		Debugging.debugNote("RecordStore: %s %s -> %s",
+			__owner, __name, this.baseName);
 	}
 	
 	/**
