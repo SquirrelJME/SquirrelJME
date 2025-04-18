@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import java.util.NoSuchElementException;
+
 /**
  * Executes adjustments to the default menu which contains commands.
  *
@@ -60,6 +62,13 @@ class __ExecDisplayableDefaultCommand__
 			if (this._add)
 				pinned.append(this._command);
 			else
-				pinned.remove(this._command);
+				try
+				{
+					pinned.remove(this._command);
+				}
+				catch (IllegalStateException|NoSuchElementException ignored)
+				{
+					// Ignore if we could not remove the default command
+				}
 	}
 }

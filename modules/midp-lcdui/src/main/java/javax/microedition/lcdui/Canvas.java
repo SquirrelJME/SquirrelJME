@@ -25,6 +25,7 @@ import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
+import cc.squirreljme.runtime.midlet.MeepRuntime;
 import org.jetbrains.annotations.Async;
 
 /**
@@ -45,7 +46,7 @@ public abstract class Canvas
 	/** Force a buffer to be used? */
 	@SquirrelJMEVendorApi
 	private static final boolean _FORCE_BUFFER =
-		true;
+		false;
 	
 	/** The maximum number of times to wait when servicing repaints. */
 	private static final int _REPAINT_STOP =
@@ -278,8 +279,7 @@ public abstract class Canvas
 	KeyListener _keyListener;
 	
 	/** Is the rendering transparent or opaque? */
-	boolean _isOpaque =
-		true;
+	boolean _isOpaque;
 	
 	/** Should this be run full-screen? */
 	volatile boolean _isFullScreen;
@@ -325,6 +325,10 @@ public abstract class Canvas
 		
 		// Setup repaint callback
 		this._repainter = new __ExecCanvasRepainter__(this);
+		
+		// Before MIDP 3, all pixels are required to be drawn by the
+		// application... otherwise by default the canvas is wiped
+		this._isOpaque = MeepRuntime.versionLeast(3, 0);
 	}
 	
 	/**
@@ -567,16 +571,22 @@ public abstract class Canvas
 	}
 	
 	/**
-	 * This method always returns {@code true} because all implementations
-	 * must double buffer canvases.
+	 * Returns whether the backing buffer is double buffered.
 	 *
-	 * @return {@code true}.
+	 * @return If the backing buffer is double buffered.
 	 * @since 2017/05/13
 	 */
 	@Api
 	public boolean isDoubleBuffered()
 	{
-		return true;
+		// Not on screen? Only if the buffer is forced
+		DisplayState display = this.__state().currentDisplay();
+		if (display == null)
+			return Canvas._FORCE_BUFFER;
+		
+		// If a buffer is forced or if scaling requires a buffer
+		return Canvas._FORCE_BUFFER ||
+			display.display()._scale.requiresBuffer();
 	}
 	
 	/**
@@ -717,7 +727,8 @@ public abstract class Canvas
 			return;
 		
 		// Same as repaint, but just draw the entire region
-		this.__state().scritchApi().eventLoop().loopExecuteLater(this._repainter);
+		this.__state().scritchApi().eventLoop()
+			.loopExecuteLater(this._repainter);
 	}
 	
 	/**
@@ -967,7 +978,7 @@ public abstract class Canvas
 		}
 		
 		// Draw background?
-		if (!this._isOpaque)
+		if (this._isOpaque)
 		{
 			ScritchLAFInterface lafApi =
 				this.__state().scritchApi().environment().lookAndFeel();
