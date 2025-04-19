@@ -155,7 +155,7 @@ public class EmulatedBucketShelf
 	 * @since 2025/04/14
 	 */
 	@SquirrelJMEVendorApi
-	public static int length(
+	public static long length(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file)
 		throws MLECallError

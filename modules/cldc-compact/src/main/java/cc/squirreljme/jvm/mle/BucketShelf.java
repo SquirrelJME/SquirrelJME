@@ -142,7 +142,7 @@ public final class BucketShelf
 	 * @since 2025/04/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native int length(
+	public static native long length(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file)
 		throws MLECallError;
