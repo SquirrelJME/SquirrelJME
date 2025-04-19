@@ -102,6 +102,16 @@ public final class EventTranslate
 			case Canvas.KEY_NUM8:				return Canvas.DOWN;
 			case Canvas.KEY_NUM9:				return Canvas.GAME_D;
 			
+				// A-D as their corresponding game keys
+			case 'a':
+			case 'A':							return Canvas.GAME_A;
+			case 'b':
+			case 'B':							return Canvas.GAME_B;
+			case 'c':
+			case 'C':							return Canvas.GAME_C;
+			case 'd':
+			case 'D':							return Canvas.GAME_D;
+			
 				// Arrow keys map to their direct game keys
 			case Canvas.KEY_UP:					return Canvas.UP;
 			case Canvas.KEY_DOWN:				return Canvas.DOWN;
