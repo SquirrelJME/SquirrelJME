@@ -11,6 +11,46 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
+static sjme_errorCode sjme_scritchui_win32_windowCenter(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow)
+{
+	HWND window;
+	RECT rect, desktop;
+	sjme_jint w, h, dw, dh;
+
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover window. */
+	window = inWindow->component.common.handle[SJME_SUI_WIN32_H_HWND];
+
+	/* Determine size of the window. */
+	memset(&rect, 0, sizeof(rect));
+	GetWindowRect(window, &rect);
+	w = inWindow->component.bounds.d.width;
+	if (w <= 0)
+		w = rect.right - rect.left;
+	h = inWindow->component.bounds.d.height;
+	if (h <= 0)
+		h = rect.bottom - rect.top;
+
+	/* Get the size of the desktop. */
+	memset(&desktop, 0, sizeof(desktop));
+	SystemParametersInfo(SPI_GETWORKAREA, 0, &desktop, 0);
+	dw = desktop.right - desktop.left;
+	dh = desktop.bottom - desktop.top;
+
+	/* Center on the screen and make it appear on top. */
+	SetWindowPos(window,
+		HWND_TOP,
+		(dw / 4) + (w / 4), (dh / 8) + (h / 8),
+		0, 0, SWP_NOSIZE);
+
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+}
+
 sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
@@ -76,9 +116,9 @@ sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
 	if (0 == SetWindowPlacement(window, &placement))
 		return inState->implIntern->getLastError(inState,
 			SJME_ERROR_NATIVE_WIDGET_FAILURE);
-	
-	/* Success? */
-	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+
+	/* Center the window before leaving */
+	return sjme_scritchui_win32_windowCenter(inState, inWindow);
 }
 
 sjme_errorCode sjme_scritchui_win32_windowNew(
@@ -176,9 +216,11 @@ sjme_errorCode sjme_scritchui_win32_windowSetVisible(
 	
 	/* Recover window. */
 	window = inWindow->component.common.handle[SJME_SUI_WIN32_H_HWND];
-	
+
 	/* Change visibility. */
 	SetLastError(0);
+	SetWindowPos(window, HWND_TOP,
+		0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 	ShowWindow(window, (isVisible ? SW_SHOW : SW_HIDE));
 	
 	/* Success? */
