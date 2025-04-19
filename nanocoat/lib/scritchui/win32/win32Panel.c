@@ -57,7 +57,7 @@ sjme_errorCode sjme_scritchui_win32_panelEnableFocus(
 	/* Despite error being the value of zero, it still seems it can be */
 	/* set to something else, despite being successful. */
 	SetLastError(0);
-	
+
 	/* Success? */
 	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
 }
@@ -79,6 +79,7 @@ sjme_errorCode sjme_scritchui_win32_panelNew(
 	windowClass.cbSize = sizeof(windowClass);
 	windowClass.style = CS_VREDRAW | CS_HREDRAW | CS_OWNDC;
 	windowClass.hInstance = GetModuleHandle(NULL);
+	windowClass.hCursor = LoadCursor(NULL, IDC_CROSS);
 	windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	windowClass.lpszClassName = inPanel->component.strId;
 	windowClass.lpfnWndProc = inState->implIntern->windowProcWin32;

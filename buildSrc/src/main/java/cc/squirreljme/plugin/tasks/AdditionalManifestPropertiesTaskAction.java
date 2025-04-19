@@ -177,6 +177,11 @@ public class AdditionalManifestPropertiesTaskAction
 					attributes.putValue("X-SquirrelJME-NoLauncher",
 						"true");
 			}
+			
+			// No profile was specified? Default to MEEP-8.0
+			if (attributes.getValue("Microedition-Profile") == null)
+				attributes.putValue("Microedition-Profile",
+					"MEEP-8.0");
 		}
 		
 		// Library

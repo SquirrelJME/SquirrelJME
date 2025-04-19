@@ -200,7 +200,7 @@ public abstract class MIDlet
 						__p, type, rv);
 					
 					// Use it
-					return rv;
+					return rv.trim();
 				}
 			}
 		}

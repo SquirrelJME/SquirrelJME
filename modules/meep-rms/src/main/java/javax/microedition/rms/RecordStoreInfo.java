@@ -9,6 +9,10 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.jvm.mle.BucketShelf;
+import cc.squirreljme.jvm.mle.brackets.BucketBracket;
+import cc.squirreljme.jvm.mle.constants.StandardBucketType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -23,14 +27,17 @@ import net.multiphasicapps.io.Base64Encoder;
 @Api
 public final class RecordStoreInfo
 {
+	/** The bucket used to access the information. */
+	final BucketBracket _bucket;
+	
 	/** The owner of this record. */
-	private final SuiteIdentifier _owner;
+	final SuiteIdentifier _owner;
 	
 	/** The name of this record. */
-	private final String _name;
+	final String _name;
 	
 	/** Is this our own record? */
-	private final boolean _isSelf;
+	final boolean _isSelf;
 	
 	/** The base name for this record. */
 	final String baseName;
@@ -45,13 +52,25 @@ public final class RecordStoreInfo
 	 * @param __name The name of this record.
 	 * @param __self Is this a record we own? 
 	 * @throws NullPointerException On null arguments.
+	 * @throws RecordStoreException If the bucket could not be opened.
 	 * @since 2025/04/16
 	 */
 	RecordStoreInfo(SuiteIdentifier __owner, String __name, boolean __self)
-		throws NullPointerException
+		throws NullPointerException, RecordStoreException
 	{
 		if (__owner == null || __name == null)
 			throw new NullPointerException("NARG");
+		
+		// Load in the bucket
+		try
+		{
+			this._bucket = BucketShelf.bucket(StandardBucketType.DATA_BUCKET);
+		}
+		catch (MLECallError __e)
+		{
+			throw RecordStoreInfo.__cause(
+				new RecordStoreException(__e.getMessage()), __e);
+		}
 		
 		this._owner = __owner;
 		this._name = __name;
@@ -67,7 +86,8 @@ public final class RecordStoreInfo
 		}
 		catch (IOException __e)
 		{
-			throw new RuntimeException(__e);
+			throw RecordStoreInfo.__cause(
+				new RecordStoreException(__e.getMessage()), __e);
 		}
 		
 		// Debug
@@ -159,11 +179,22 @@ public final class RecordStoreInfo
 	 * Checks if this record store actually exists on the disk.
 	 *
 	 * @return If this actually exists.
+	 * @throws RecordStoreException If this could not determined.
 	 * @since 2025/04/16
 	 */
 	boolean __exists()
+		throws RecordStoreException
 	{
-		throw Debugging.todo();
+		try
+		{
+			// The meta-file must exist
+			return BucketShelf.exists(this._bucket, this.metaName);
+		}
+		catch (MLECallError __e)
+		{
+			throw RecordStoreInfo.__cause(
+				new RecordStoreException(__e.getMessage()), __e);
+		}
 	}
 	
 	/**
@@ -226,6 +257,26 @@ public final class RecordStoreInfo
 	void __setAccess(int __auth, boolean __otherWrite, String __pass)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Initializes the cause of the exception.
+	 *
+	 * @param <E> The exception to initialize.
+	 * @param __e The exception to initialize.
+	 * @param __t The cause of the exception.
+	 * @return The resultant exception.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/18
+	 */
+	static <E extends RecordStoreException> E __cause(E __e, Throwable __t)
+		throws NullPointerException
+	{
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		__e.initCause(__t);
+		return __e;
 	}
 }
 

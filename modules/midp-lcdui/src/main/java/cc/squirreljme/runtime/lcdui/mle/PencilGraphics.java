@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
+import cc.squirreljme.runtime.midlet.MeepRuntime;
 import java.io.Closeable;
 import java.io.IOException;
 import javax.microedition.lcdui.Font;
@@ -142,7 +143,66 @@ public final class PencilGraphics
 		if (this._isClosed)
 			return;
 		
-		throw Debugging.todo();
+		// Calculate the base clip coordinates
+		int startX = __x + this.getTranslateX();
+		int startY = __y + this.getTranslateY();
+		int endX = startX + __w;
+		int endY = startY + __h;
+		
+		// Normalize X
+		if (endX < startX)
+		{
+			int temp = endX;
+			endX = startX;
+			startX = temp;
+		}
+		
+		// Normalize Y
+		if (endY < startY)
+		{
+			int temp = endY;
+			endY = startY;
+			startY = temp;
+		}
+		
+		// Get the original clip
+		int oldX = this._clipX;
+		int oldY = this._clipY;
+		int oldEndX = oldX + this._clipWidth;
+		int oldEndY = oldY + this._clipHeight;
+		
+		// Determine the bounds of all of these
+		int clipX = Math.max(oldX,
+			Math.min(this.surfaceW, Math.max(0, startX)));
+		int clipY = Math.max(oldY,
+			Math.min(this.surfaceH, Math.max(0, startY)));
+		int clipEndX = Math.min(oldEndX,
+			Math.min(this.surfaceW, Math.max(0, endX)));
+		int clipEndY = Math.min(oldEndY,
+			Math.min(this.surfaceH, Math.max(0, endY)));
+		
+		// Record internally
+		this._clipX = clipX;
+		this._clipY = clipY;
+		this._clipWidth = clipEndX - clipX;
+		this._clipHeight = clipEndY - clipY;
+		
+		// Set hardware clipping
+		try
+		{
+			// Translation needs to be undone, and we need to use the properly
+			// shrunken clip
+			PencilShelf.hardwareSetClip(this.hardware,
+				clipX - this.getTranslateX(),
+				clipY - this.getTranslateY(),
+				clipEndX - clipX, clipEndY - clipY);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -894,6 +954,10 @@ public final class PencilGraphics
 		if (this._isClosed)
 			return;
 		
+		// Force no alpha on older MIDP
+		if (MeepRuntime.versionBefore(3, 0))
+			__argb |= 0xFF_000000;
+		
 		// Mirror locally
 		this._argbColor = __argb;
 		
@@ -946,7 +1010,7 @@ public final class PencilGraphics
 		// Cache locally
 		this._blendingMode = __m;
 		
-		// Forward to both software and hardware graphics
+		// Set hardware clip
 		try
 		{
 			PencilShelf.hardwareSetBlendingMode(this.hardware, __m);
@@ -1005,7 +1069,7 @@ public final class PencilGraphics
 		this._clipWidth = clipEndX - clipX;
 		this._clipHeight = clipEndY - clipY;
 		
-		// Forward to both software and hardware graphics
+		// Set hardware clipping
 		try
 		{
 			PencilShelf.hardwareSetClip(this.hardware, __x, __y, __w, __h);

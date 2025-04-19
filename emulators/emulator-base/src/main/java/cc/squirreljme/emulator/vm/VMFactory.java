@@ -563,11 +563,18 @@ public abstract class VMFactory
 				new NameOverrideClassLibrary(place, normalName);
 			suites.put(normalName, target);
 			
-			// Is this a Jar we are launching?
+			// Is this the Jar we are launching?
 			if (rawJarPath != null)
+			{
+				String rawBasePath = SuiteUtils.baseName(rawJarPath);
 				if (rawJarPath.equals(normalName) ||
-					rawJarPath.equals(library))
+					rawJarPath.equals(library) ||
+					rawBasePath.equals(normalName) ||
+					rawBasePath.equals(library) ||
+					rawBasePath.equals(SuiteUtils.baseName(normalName)) ||
+					rawBasePath.equals(SuiteUtils.baseName(library)))
 					jarLib = target;
+			}
 		}
 		
 		// Go through the class path and normalize the names so that it finds

@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchChoiceInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchChoiceBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.util.ArrayList;
 import javax.microedition.lcdui.Image;
 
 /**
@@ -50,14 +51,19 @@ final class __ExecChoiceUpsert__
 	private final int _imageHeight;
 	
 	/** The return value from insert. */
+	@SquirrelJMEVendorApi
 	volatile int _result;
 	
 	/** If there was an exception. */
 	@SquirrelJMEVendorApi
 	volatile MLECallError _error;
 	
+	/** The cache to store into. */
+	@SquirrelJMEVendorApi
+	private final ArrayList<CachedChoice> _cache;
+	
 	/**
-	 * Initializes the choice upsertion executor.
+	 * Initializes the choice insertion executor.
 	 *
 	 * @param __scritchApi The API interface.
 	 * @param __widget The choice to modify.
@@ -65,16 +71,18 @@ final class __ExecChoiceUpsert__
 	 * @param __atIndex The index to insert at.
 	 * @param __str The string to use.
 	 * @param __img The image to use.
+	 * @param __cache The cache to insert into.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/25
 	 */
 	@SquirrelJMEVendorApi
 	__ExecChoiceUpsert__(ScritchInterface __scritchApi,
 		ScritchChoiceBracket __widget, boolean __insert,
-		int __atIndex, String __str, Image __img)
+		int __atIndex, String __str, Image __img,
+		ArrayList<CachedChoice> __cache)
 		throws NullPointerException
 	{
-		if (__scritchApi == null || __widget == null)
+		if (__scritchApi == null || __widget == null || __cache == null)
 			throw new NullPointerException("NARG");
 		
 		// Store for later run
@@ -83,6 +91,7 @@ final class __ExecChoiceUpsert__
 		this._insert = __insert;
 		this._atIndex = __atIndex;
 		this._string = __str;
+		this._cache = __cache;
 		
 		// Image being set?
 		if (__img != null)
@@ -130,12 +139,22 @@ final class __ExecChoiceUpsert__
 			if (this._insert)
 				result = choiceApi.choiceInsert(widget, result);
 			
+			// Store into the cache
+			synchronized (this._cache)
+			{
+				if (this._insert)
+					this._cache.add(result, null);
+				this._cache.set(result, new CachedChoice(
+					this._string));
+			}
+			
 			// Set string data
 			choiceApi.choiceSetString(widget, result, this._string);
 			
 			// Set image data?
 			if (this._imageData != null)
-				choiceApi.choiceSetImage(widget, result, this._imageData, 0,
+				choiceApi.choiceSetImage(widget, result, this._imageData,
+					0,
 					this._imageWidth, this._imageWidth, this._imageHeight);
 				
 			// Make sure result is set 

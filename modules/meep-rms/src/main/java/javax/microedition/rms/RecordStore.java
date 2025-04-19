@@ -952,6 +952,7 @@ public class RecordStore
 	 * @since 2025/04/16
 	 */
 	final RecordStoreInfo __info()
+		throws RecordStoreException
 	{
 		Reference<RecordStoreInfo> ref = this._metaRef;
 		RecordStoreInfo result = null;

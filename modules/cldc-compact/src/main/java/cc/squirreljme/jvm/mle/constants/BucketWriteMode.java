@@ -50,8 +50,13 @@ public interface BucketWriteMode
 	byte APPEND_ONLY =
 		3;
 	
+	/** The data in the file is replaced, the offset must be at zero. */
+	@SquirrelJMEVendorApi
+	byte TRUNCATE =
+		4;
+	
 	/** The number of bucket writing modes. */
 	@SquirrelJMEVendorApi
 	byte NUM_MODES =
-		4;
+		5;
 }

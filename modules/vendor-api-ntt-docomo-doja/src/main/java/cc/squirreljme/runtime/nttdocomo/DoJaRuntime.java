@@ -105,7 +105,7 @@ public final class DoJaRuntime
 		String profile = DoJaRuntime.getProperty(
 			IModeProperty.DOJA_PROFILE_PROPERTY);
 		if (profile != null && !profile.isEmpty())
-			version = new Profile(profile).version();
+			version = new Profile(profile.trim()).version();
 		else
 			version = new SuiteVersion(5, 1);
 		

@@ -7,31 +7,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle;
+package cc.squirreljme.emulator;
 
+import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.mle.constants.BucketWriteMode;
 import cc.squirreljme.jvm.mle.constants.StandardBucketType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
- * This shelf is for the long term storage of data which is saved between
- * instances and sessions of SquirrelJME.
- * 
- * This generally is used for RMS data storage and configuration data.
- * 
- * Access to buckets shall be atomic to the best effort, utilizing file
- * system locks where possible.
+ * Emulates {@link BucketShelf}.
  *
- * @since 2025/04/14
+ * @since 2025/04/18
  */
-@SquirrelJMEVendorApi
-public final class BucketShelf
+public class EmulatedBucketShelf
 {
 	/**
 	 * Deletes the file in the given bucket.
@@ -43,10 +38,13 @@ public final class BucketShelf
 	 * @since 2025/04/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean delete(
+	public static boolean delete(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the last modified time of the given bucket file.
@@ -59,10 +57,13 @@ public final class BucketShelf
 	 * @since 2025/04/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native long lastModifiedTime(
+	public static long lastModifiedTime(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the given bucket file exists.
@@ -74,10 +75,13 @@ public final class BucketShelf
 	 * @since 2025/04/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean exists(
+	public static boolean exists(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Accesses the given bucket.
@@ -89,10 +93,13 @@ public final class BucketShelf
 	 * @since 2025/04/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native BucketBracket bucket(
+	public static BucketBracket bucket(
 		@MagicConstant(valuesFromClass = StandardBucketType.class)
 			int __type)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Lists all files in the bucket.
@@ -103,9 +110,12 @@ public final class BucketShelf
 	 * @since 2025/04/16
 	 */
 	@SquirrelJMEVendorApi
-	public static native String[] list(
+	public static String[] list(
 		@NotNull BucketBracket __bucket)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Lists all files in the bucket with a conditional filter. Note that
@@ -124,13 +134,16 @@ public final class BucketShelf
 	 * @since 2025/04/16
 	 */
 	@SquirrelJMEVendorApi
-	public static native String[] list(
+	public static String[] list(
 		@NotNull BucketBracket __bucket,
 		boolean __not,
 		@Nullable String __prefix,
 		@Nullable String __contains,
 		@Nullable String __suffix)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the length of the file within the bucket.
@@ -142,10 +155,13 @@ public final class BucketShelf
 	 * @since 2025/04/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native int length(
+	public static int length(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Reads data from the given bucket.
@@ -163,14 +179,17 @@ public final class BucketShelf
 	 * @since 2025/04/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native int read(
+	public static int read(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __fileOff,
 		@NotNull byte[] __buf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Writes data to the given bucket.
@@ -187,7 +206,7 @@ public final class BucketShelf
 	 * @since 2025/04/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native void write(
+	public static void write(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __fileOff,
@@ -195,5 +214,8 @@ public final class BucketShelf
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __len,
 		@MagicConstant(valuesFromClass = BucketWriteMode.class) int __mode)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 }

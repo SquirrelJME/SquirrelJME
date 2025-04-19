@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.constants.NonStandardKey;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
@@ -60,14 +61,28 @@ class __ExecCanvasInput__
 		KeyListener keyCustom = canvas._keyListener;
 		
 		// Debug
-		if (false)
+		if (Debugging.VERBOSE)
 			Debugging.debugNote(
 				"Event %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
 				__type, __time, __a, __b, __c, __d, __e, __f, __g, __h,
 				__i, __j, __k, __l);
 		
+		// Remap some special keys in the event a system is not capable of
+		// typing such keys
+		switch (__type)
+		{
+			case ScritchInputMethodType.KEY_PRESSED:
+			case ScritchInputMethodType.KEY_RELEASED:
+			case ScritchInputMethodType.KEY_REPEATED:
+				if (__a == NonStandardKey.F7)
+					__a = '*';
+				else if (__a == NonStandardKey.F8)
+					__a = '#';
+				break;
+		}
+		
 		// Depends on the actual event that occurred
-		DisplayScale scale =display.display()._scale;
+		DisplayScale scale = display.display()._scale;
 		switch (__type)
 		{
 			case ScritchInputMethodType.KEY_PRESSED:

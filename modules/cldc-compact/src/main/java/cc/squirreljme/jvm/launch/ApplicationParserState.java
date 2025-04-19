@@ -129,16 +129,11 @@ public final class ApplicationParserState
 				if (ext == null)
 					throw new NullPointerException("NARG");
 				
-				JarPackageBracket maybe = nameToJar.get(
+				// Find it by name
+				JarPackageBracket maybe = SuiteUtils.findName(nameToJar,
 					ScannerUtils.siblingByExt(__jarName, ext));
 				if (maybe != null)
-				{
-					// Try with short name instead
-					maybe = nameToJar.get(ScannerUtils.siblingByExt(
-						SuiteUtils.baseName(__jarName), ext));
-					if (maybe != null)
-						return maybe;
-				}
+					return maybe;
 			}
 		}
 		
