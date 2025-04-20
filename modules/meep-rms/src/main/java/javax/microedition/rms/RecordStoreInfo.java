@@ -275,7 +275,7 @@ public final class RecordStoreInfo
 	RecordStoreSession __meta()
 		throws RecordStoreException
 	{
-		throw Debugging.todo();
+		return new RecordStoreSession(this._bucket, this.metaName);
 	}
 	
 	/**

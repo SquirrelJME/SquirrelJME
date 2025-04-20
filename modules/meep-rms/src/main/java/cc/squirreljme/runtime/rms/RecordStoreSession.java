@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.rms;
 
+import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.rms.RecordStore;
@@ -33,6 +34,21 @@ public class RecordStoreSession
 	@SquirrelJMEVendorApi
 	public static final String PASSWORD =
 		"password";
+	
+	/**
+	 * Initializes the session.
+	 *
+	 * @param __bucket The bucket to access.
+	 * @param __fileName The file name of the data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/20
+	 */
+	@SquirrelJMEVendorApi
+	public RecordStoreSession(BucketBracket __bucket, String __fileName)
+		throws NullPointerException
+	{
+		super(__bucket, __fileName);
+	}
 	
 	/**
 	 * Returns the integer value for a given key or a default value.
