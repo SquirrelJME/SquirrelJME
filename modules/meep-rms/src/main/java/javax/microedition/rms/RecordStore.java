@@ -622,15 +622,22 @@ public class RecordStore
 	public RecordStoreInfo getRecordStoreInfo()
 		throws RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
-		throw Debugging.todo();
-		/*
-		// Just quickly create
-		return new RecordStoreInfo(this._vid);
-		
-		 */
+		synchronized (this._lock)
+		{
+			// Check open
+			this.__checkOpen();
+			
+			// Load info
+			try
+			{
+				return this.__info();
+			}
+			catch (RecordStoreException __e)
+			{
+				throw RecordUtils.wrap(
+					new RecordStoreNotOpenException(__e.getMessage()), __e);
+			}
+		}
 	}
 	
 	/**
