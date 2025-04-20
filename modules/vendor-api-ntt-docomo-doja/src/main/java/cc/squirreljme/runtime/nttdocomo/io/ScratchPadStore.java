@@ -37,7 +37,7 @@ public final class ScratchPadStore
 	
 	/** The record store key prefix. */
 	private static final String _STORE_KEY_PREFIX =
-		"SquirrelJME-i-Appli-";
+		"ScratchPad-";
 	
 	/** STO Header size. */
 	private static final int _STO_HEADER_LEN =
@@ -76,16 +76,29 @@ public final class ScratchPadStore
 		this._data = data;
 		try (RecordStore store = this.__rmsStore())
 		{
+			// Do we need to seed?
+			boolean needSeed = false;
+			
 			// Nothing was actually created ever?
 			if (store.getNumRecords() <= 0)
-			{
-				ScratchPadStore.__seed(__pad, data);
-				return;
-			}
+				needSeed = true;
 			
-			// Read in the data
-			if (__length != store.getRecord(0, data, 0))
-				Debugging.debugNote("i-appli record size mismatch?");
+			// Read in the data, the length is invalid or does not match
+			// then it has to be seeded
+			else
+				try
+				{
+					if (__length != store.getRecord(0, data, 0))
+						needSeed = true;
+				}
+				catch (RecordStoreException ignored)
+				{
+					needSeed = true;
+				}
+				
+			// Do we actually need to seed the data?
+			if (needSeed)
+				ScratchPadStore.__seed(__pad, data);
 		}
 		
 		// {@squirreljme.error AH0m Could not read pre-existing data from

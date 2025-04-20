@@ -72,8 +72,8 @@ FORWARD_IMPL(Bucket, read,
 	FORWARD_IMPL_pass(bucket, fileName, fileOff, buf, off, len))
 FORWARD_IMPL_VOID(Bucket, write,
 	FORWARD_IMPL_args(jobject bucket, jstring fileName,
-		jint fileOff, jarray buf, jint off, jint len),
-	FORWARD_IMPL_pass(bucket, fileName, fileOff, buf, off, len))
+		jint fileOff, jarray buf, jint off, jint len, jint mode),
+	FORWARD_IMPL_pass(bucket, fileName, fileOff, buf, off, len, mode))
 
 static const JNINativeMethod mleBucketMethods[] =
 {

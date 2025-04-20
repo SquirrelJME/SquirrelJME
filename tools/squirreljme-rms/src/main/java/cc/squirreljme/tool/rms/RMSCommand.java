@@ -38,6 +38,11 @@ public enum RMSCommand
 	{
 	},
 	
+	/** Calculate the prefix used for suites. */
+	PREFIX("prefix", "basename")
+	{
+	},
+	
 	/** Set ID. */
 	SET_ID("setid", "changeid")
 	{

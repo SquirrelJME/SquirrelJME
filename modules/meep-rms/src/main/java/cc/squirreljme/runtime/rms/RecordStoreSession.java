@@ -132,13 +132,15 @@ public class RecordStoreSession
 					// Base key to operate on
 					String key = entry.getKey();
 					
-					// If the value has been updated, use the new value
+					// If the value has been updated, do not write yet
 					JsonValue updatedVal = updates.get(key);
 					if (updatedVal != null)
 						out.write(key, updatedVal);
-					else
-						out.write(key, entry.getValue());
 				}
+			
+			// Write out all updated values
+			for (Map.Entry<String, JsonValue> entry : updates.entrySet())
+				out.write(entry.getKey(), entry.getValue());
 			
 			// End object
 			out.writeEnd();

@@ -28,35 +28,13 @@ public interface BucketWriteMode
 	byte OVERWRITE =
 		0;
 	
-	/**
-	 * Overwrites data within the file but does not allow extra data to be
-	 * added at the end, files remain a constant size. Writes outside will
-	 * be silently discarded.
-	 */
-	@SquirrelJMEVendorApi
-	byte OVERWRITE_DISCARD =
-		1;
-	
-	/**
-	 * If writing exceeds the end of the file, it will be expanded to include
-	 * the extra data. Data before the end of file can be overwritten.
-	 */
-	@SquirrelJMEVendorApi
-	byte APPEND =
-		2;
-	
-	/** Similar to append except that earlier data cannot be overwritten. */
-	@SquirrelJMEVendorApi
-	byte APPEND_ONLY =
-		3;
-	
 	/** The data in the file is replaced, the offset must be at zero. */
 	@SquirrelJMEVendorApi
 	byte TRUNCATE =
-		4;
+		1;
 	
 	/** The number of bucket writing modes. */
 	@SquirrelJMEVendorApi
 	byte NUM_MODES =
-		5;
+		2;
 }

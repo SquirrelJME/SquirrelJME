@@ -17,8 +17,13 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.SystemPathProvider;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -238,6 +243,59 @@ public class EmulatedBucketShelf
 		@MagicConstant(valuesFromClass = BucketWriteMode.class) int __mode)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__bucket == null || __file == null || __buf == null)
+			throw new MLECallError("NARG");
+		
+		if (__fileOff < 0 || __off < 0 || __len < 0 || (__off + __len) < 0)
+			throw new MLECallError("IOOB");
+		
+		// Which target path
+		Path target = ((EmulatedBucketBracket)__bucket).__resolve(__file);
+		
+		// Depends on the write mode
+		Path tempFile = null;
+		try (InputStream in = new ByteArrayInputStream(__buf, __off, __len))
+		{
+			// Make sure the target directory exists
+			Files.createDirectories(target.getParent());
+			
+			// Create temporary file
+			tempFile = Files.createTempFile("squirreljme", ".rms");
+			
+			// Depends on the mode
+			switch (__mode)
+			{
+				case BucketWriteMode.TRUNCATE:
+					if (__fileOff != 0)
+						throw new MLECallError(
+							"File offset must be zero.");
+					
+					Files.write(tempFile, StreamUtils.readAll(in));
+					break;
+				
+				default:
+					throw Debugging.todo(__mode);
+			}
+			
+			// Replace the original file
+			Files.move(tempFile, target,
+				StandardCopyOption.REPLACE_EXISTING);
+		}
+		catch (IOException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
+		finally
+		{
+			// Make sure the temporary is gone
+			if (tempFile != null)
+				try
+				{
+					Files.deleteIfExists(tempFile);
+				}
+				catch (IOException ignored)
+				{
+				}
+		}
 	}
 }

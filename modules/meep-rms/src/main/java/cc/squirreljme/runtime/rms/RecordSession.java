@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.constants.BucketWriteMode;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import java.io.ByteArrayInputStream;
 import javax.microedition.rms.RecordStoreException;
 
@@ -82,6 +83,11 @@ public class RecordSession
 		if (commit != null)
 			try
 			{
+				// Debug
+				if (Debugging.ENABLED)
+					HexDumpOutputStream.dump(System.err, commit);
+				
+				// Commit it
 				BucketShelf.write(this.bucket, this.fileName, 0,
 					commit, 0, commit.length,
 					BucketWriteMode.TRUNCATE);
