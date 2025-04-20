@@ -94,7 +94,12 @@ public class OverridingPathProvider
 	@Override
 	public Path state()
 	{
-		throw Debugging.todo();
+		Path replace = OverridingPathProvider.__env(
+			"SQUIRRELJME_STATE_HOME");
+		if (replace != null)
+			return replace;
+		
+		return this.provider.state();
 	}
 	
 	/**

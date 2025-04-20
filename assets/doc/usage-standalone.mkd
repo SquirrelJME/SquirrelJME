@@ -161,6 +161,7 @@ with `~` that is replaced with `$HOME` or `%USERPROFILE%`:
  * `SQUIRRELJME_CACHE_HOME` for _Cache_ path.
  * `SQUIRRELJME_CONFIG_HOME` for _Configuration_ path.
  * `SQUIRRELJME_DATA_HOME` for _Data_ path.
+ * `SQUIRRELJME_STATE_HOME` for _State_ path.
 
 SquirrelJME will automatically add to system properties for a properties file:
 

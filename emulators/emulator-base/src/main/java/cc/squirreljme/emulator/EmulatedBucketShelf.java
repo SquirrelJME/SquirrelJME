@@ -16,6 +16,9 @@ import cc.squirreljme.jvm.mle.constants.StandardBucketType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.full.SystemPathProvider;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +31,8 @@ import org.jetbrains.annotations.Range;
  */
 public class EmulatedBucketShelf
 {
+	private static volatile EmulatedBucketBracket _dataBucket;
+	
 	/**
 	 * Deletes the file in the given bucket.
 	 *
@@ -80,7 +85,11 @@ public class EmulatedBucketShelf
 		@NotNull String __file)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__bucket == null || __file == null)
+			throw new MLECallError("NARG");
+		
+		Path path = ((EmulatedBucketBracket)__bucket).__resolve(__file);
+		return Files.exists(path);
 	}
 	
 	/**
@@ -98,7 +107,20 @@ public class EmulatedBucketShelf
 			int __type)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__type != StandardBucketType.DATA_BUCKET)
+			throw new MLECallError("Unknown bucket type: " + __type);
+		
+		synchronized (EmulatedBucketShelf.class)
+		{
+			EmulatedBucketBracket result = EmulatedBucketShelf._dataBucket;
+			if (result != null)
+				return result;
+			
+			result = new EmulatedBucketBracket(SystemPathProvider.provider()
+				.state().resolve("data"));
+			EmulatedBucketShelf._dataBucket = result;
+			return result;
+		}
 	}
 	
 	/**

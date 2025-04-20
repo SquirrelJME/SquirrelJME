@@ -27,6 +27,9 @@ import org.jetbrains.annotations.Range;
  * 
  * Access to buckets shall be atomic to the best effort, utilizing file
  * system locks where possible.
+ * 
+ * Bucket filenames may not contain any slash character, be called {@code .},
+ * and/or be called {@code ..}.
  *
  * @since 2025/04/14
  */
