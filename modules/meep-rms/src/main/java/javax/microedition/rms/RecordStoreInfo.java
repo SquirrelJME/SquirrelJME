@@ -292,6 +292,23 @@ public final class RecordStoreInfo
 	{
 		try (RecordStoreSession session = this.__meta())
 		{
+			// Write suite information
+			session.set(RecordStoreSession.OWNER_NAME,
+				this._owner.name().toString());
+			session.set(RecordStoreSession.OWNER_VENDOR,
+				this._owner.vendor().toString());
+			session.set(RecordStoreSession.OWNER_VERSION,
+				this._owner.version().toString());
+			
+			// Write record information
+			session.set(RecordStoreSession.RECORD_NAME,
+				this._name);
+			
+			// Write base name, could be used for recovery?
+			session.set(RecordStoreSession.BASE_NAME,
+				this.baseName);
+			
+			// Write access information
 			session.set(RecordStoreSession.AUTHENTICATION,
 				__auth);
 			session.set(RecordStoreSession.OTHER_WRITE,

@@ -314,7 +314,8 @@ public class IModeApplication
 			adfProps.get(IModeProperty._APP_NAME),
 			adfProps.get(IModeProperty._APP_CLASS));
 		rv.put(IModeProperty.NAME_PROPERTY, nameProp);
-		rv.put(IModeProperty.VENDOR_PROPERTY, "SquirrelJME-i-Mode");
+		rv.put(IModeProperty.VENDOR_PROPERTY,
+			"SquirrelJME-DoJa");
 		
 		// Encoding and locale override
 		rv.put(Application.OVERRIDE_ENCODING, "shift-jis");

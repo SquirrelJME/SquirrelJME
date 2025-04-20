@@ -9,7 +9,10 @@
 
 package cc.squirreljme.runtime.rms;
 
+import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
+import cc.squirreljme.jvm.mle.constants.BucketWriteMode;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
@@ -24,6 +27,10 @@ import javax.microedition.rms.RecordStoreException;
 public class RecordSession
 	implements AutoCloseable
 {
+	/** An empty record. */
+	private static final byte[] _EMPTY = 
+		new byte[0];
+	
 	/** The bucket to access. */
 	@SquirrelJMEVendorApi
 	protected final BucketBracket bucket;
@@ -31,6 +38,9 @@ public class RecordSession
 	/** The file name within the bucket. */
 	@SquirrelJMEVendorApi
 	protected final String fileName;
+	
+	/** The target data to commit. */
+	private volatile byte[] _commit;
 	
 	/**
 	 * Initializes the session.
@@ -60,7 +70,27 @@ public class RecordSession
 	public void close()
 		throws RecordStoreException
 	{
-		throw Debugging.todo();
+		// Get any data to commit
+		byte[] commit;
+		synchronized (this)
+		{
+			commit = this._commit;
+			this._commit = null;
+		}
+		
+		// Is there anything to commit?
+		if (commit != null)
+			try
+			{
+				BucketShelf.write(this.bucket, this.fileName, 0,
+					commit, 0, commit.length,
+					BucketWriteMode.TRUNCATE);
+			}
+			catch (MLECallError __e)
+			{
+				throw RecordUtils.wrap(
+					new RecordStoreException(__e.getMessage()), __e);
+			}
 	}
 	
 	/**
@@ -72,6 +102,10 @@ public class RecordSession
 	@SquirrelJMEVendorApi
 	public final ByteArrayInputStream read()
 	{
+		// If the data does not exist, this will always be empty
+		if (!BucketShelf.exists(this.bucket, this.fileName))
+			return new ByteArrayInputStream(RecordSession._EMPTY);
+		
 		throw Debugging.todo();
 	}
 	
@@ -97,5 +131,25 @@ public class RecordSession
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Sets all the data to be written to the buffer.
+	 *
+	 * @param __buf The buffer of data to set for writing.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/20
+	 */
+	public void writeAll(byte[] __buf)
+		throws NullPointerException
+	{
+		if (__buf == null)
+			throw new NullPointerException("NARG");
+		
+		// Commit everything
+		synchronized (this)
+		{
+			this._commit = __buf.clone();
+		}
 	}
 }
