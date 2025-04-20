@@ -19,7 +19,12 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.rms.RecordSession;
 import cc.squirreljme.runtime.rms.RecordStoreSession;
 import cc.squirreljme.runtime.rms.RecordUtils;
+import com.oracle.json.JsonArray;
+import com.oracle.json.JsonNumber;
+import com.oracle.json.JsonObject;
+import com.oracle.json.JsonValue;
 import java.io.IOException;
+import java.util.Set;
 import net.multiphasicapps.io.Base64Encoder;
 
 /**
@@ -244,11 +249,34 @@ public final class RecordStoreInfo
 	 * Determines all the valid record IDs that exist.
 	 *
 	 * @return All the existing record IDs.
+	 * @throws RecordStoreException If the IDs could not be obtained.
 	 * @since 2025/04/16
 	 */
 	int[] __ids()
+		throws RecordStoreException
 	{
-		throw Debugging.todo();
+		try (RecordStoreSession session = this.__meta())
+		{
+			JsonArray ids = session.getArray(RecordStoreSession.IDS);
+			if (ids == null)
+				return new int[0];
+			
+			// Read in all record IDs
+			int n = ids.size();
+			int[] result = new int[n];
+			for (int i = 0; i < n; i++)
+				try
+				{
+					result[i++] = ids.getInt(i);
+				}
+				catch (ClassCastException __e)
+				{
+					throw RecordUtils.wrap(
+						new RecordStoreException(__e.getMessage()), __e);
+				}
+			
+			return result;
+		}
 	}
 	
 	/**

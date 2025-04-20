@@ -17,7 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
-import cc.squirreljme.runtime.rms.SuiteHash;
+import cc.squirreljme.runtime.rms.RecordUtils;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -79,6 +79,9 @@ public class RecordStore
 	
 	/** Cached meta information accessor. */
 	private volatile Reference<RecordStoreInfo> _metaRef;
+	
+	/** The number of times this has been opened. */
+	private volatile int _openCount;
 	
 	/**
 	 * Initializes the record store handler.
@@ -461,40 +464,16 @@ public class RecordStore
 		// Check open
 		this.__checkOpen();
 		
-		throw Debugging.todo();
-		/*
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		// The ID count is the record count
+		try
 		{
-			// Get record list
-			int[] pages = vinyl.pageList(this._vid);
-			
-			// Check for error
-			if (pages.length > 0)
-				try
-				{
-					RecordStore.__checkError(pages[0]);
-				}
-				catch (RecordStoreNotOpenException e)
-				{
-					throw e;
-				}
-				catch (RecordStoreException e)
-				{
-					/* {@squirreljme.error DC03 Error getting list of
-					records.} * /
-					RecordStoreNotOpenException t =
-						new RecordStoreNotOpenException("DC03");
-					t.initCause(e);
-					throw t;
-				}
-			
-			// Return array size
-			return pages.length;
+			return this.__info().__ids().length;
 		}
-		
-		 */
+		catch (RecordStoreException __e)
+		{
+			throw RecordUtils.wrap(
+				new RecordStoreNotOpenException(__e.getMessage()), __e);
+		}
 	}
 	
 	/**
@@ -921,13 +900,12 @@ public class RecordStore
 	private void __checkOpen()
 		throws RecordStoreNotOpenException
 	{
-		throw Debugging.todo();
-		/*
-		/* {@squirreljme.error DC07 This record store is not open.} * /
-		if (this._opens <= 0)
-			throw new RecordStoreNotOpenException("DC07");
-			
-		 */
+		synchronized (this)
+		{
+			/* {@squirreljme.error DC07 This record store is not open.} */
+			if (this._openCount <= 0)
+				throw new RecordStoreNotOpenException("DC07");
+		}
 	}
 	
 	/**
@@ -1400,8 +1378,12 @@ public class RecordStore
 			throw new RecordStoreException(
 				String.format("DC0f %s %s %s", __name, __vend, __suite));
 		
-		// Return the resultant store
-		return result;
+		// Return the resultant store, after bumping the count
+		synchronized (result)
+		{
+			result._openCount += 1;
+			return result;
+		}
 	}
 }
 

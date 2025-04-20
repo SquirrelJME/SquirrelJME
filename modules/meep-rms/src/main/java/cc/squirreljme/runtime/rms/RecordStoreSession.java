@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.oracle.json.Json;
+import com.oracle.json.JsonArray;
 import com.oracle.json.JsonObject;
 import com.oracle.json.JsonReader;
 import com.oracle.json.JsonValue;
@@ -74,6 +75,11 @@ public class RecordStoreSession
 	@SquirrelJMEVendorApi
 	public static final String BASE_NAME =
 		"baseName";
+	
+	/** Record IDs. */
+	@SquirrelJMEVendorApi
+	public static final String IDS =
+		"ids";
 	
 	/** Newly overwritten keys. */
 	private final Map<String, JsonValue> _updates =
@@ -165,16 +171,72 @@ public class RecordStoreSession
 	}
 	
 	/**
+	 * Gets the object for the given key.
+	 *
+	 * @param __key The key to get.
+	 * @return The resultant value.
+	 * @throws RecordStoreException If the value is not an integer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/20
+	 */
+	@SquirrelJMEVendorApi
+	public JsonArray getArray(String __key)
+		throws RecordStoreException, NullPointerException
+	{
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		// Overridden?
+		JsonValue result;
+		synchronized (this)
+		{
+			result = this._updates.get(__key);
+			if (result != null)
+				try
+				{
+					return (JsonArray)result;
+				}
+				catch (ClassCastException __e)
+				{
+					throw RecordUtils.wrap(
+						new RecordStoreException(__e.getMessage()), __e);
+				}
+		}
+		
+		// Load in Json
+		JsonObject json = this.__load();
+		if (json == null)
+			return null;
+		
+		// Is there a value here?
+		try
+		{
+			return json.getJsonArray(__key);
+		}
+		catch(ClassCastException __e)
+		{
+			throw RecordUtils.wrap(
+				new RecordStoreException(__e.getMessage()), __e);
+		}
+	}
+	
+	/**
 	 * Returns the integer value for a given key or a default value.
 	 *
 	 * @param __key The key to get the value of.
 	 * @param __default The default value to return if it is not set.
 	 * @return The resultant integer value.
+	 * @throws RecordStoreException If the value is not an integer.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/20
 	 */
 	@SquirrelJMEVendorApi
 	public int getInteger(String __key, int __default)
+		throws RecordStoreException, NullPointerException
 	{
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
 		throw Debugging.todo();
 	}
 	
