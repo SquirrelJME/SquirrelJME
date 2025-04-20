@@ -16,15 +16,10 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.rms.RecordSession;
 import cc.squirreljme.runtime.rms.RecordStoreSession;
 import cc.squirreljme.runtime.rms.RecordUtils;
 import com.oracle.json.JsonArray;
-import com.oracle.json.JsonNumber;
-import com.oracle.json.JsonObject;
-import com.oracle.json.JsonValue;
 import java.io.IOException;
-import java.util.Set;
 import net.multiphasicapps.io.Base64Encoder;
 
 /**
@@ -48,25 +43,33 @@ public final class RecordStoreInfo
 	final boolean _isSelf;
 	
 	/** The base name for this record. */
-	final String baseName;
+	final String _baseName;
 	
 	/** The meta info file name. */
-	final String metaName;
+	final String _metaName;
+	
+	/** The lock for this record store. */
+	private final Object _lock;
+	
+	/** The meta session. */
+	private volatile RecordStoreSession _metaSession;
 	
 	/**
 	 * Initializes the record meta handler.
 	 *
 	 * @param __owner The owning suite name and vendor.
 	 * @param __name The name of this record.
-	 * @param __self Is this a record we own? 
+	 * @param __self Is this a record we own?
+	 * @param __lock The lock used for accessing record information.
 	 * @throws NullPointerException On null arguments.
 	 * @throws RecordStoreException If the bucket could not be opened.
 	 * @since 2025/04/16
 	 */
-	RecordStoreInfo(SuiteIdentifier __owner, String __name, boolean __self)
+	RecordStoreInfo(SuiteIdentifier __owner, String __name, boolean __self,
+		Object __lock)
 		throws NullPointerException, RecordStoreException
 	{
-		if (__owner == null || __name == null)
+		if (__owner == null || __name == null || __lock == null)
 			throw new NullPointerException("NARG");
 		
 		// Load in the bucket
@@ -83,14 +86,15 @@ public final class RecordStoreInfo
 		this._owner = __owner;
 		this._name = __name;
 		this._isSelf = __self;
+		this._lock = __lock;
 		
 		// Determine the meta filename
 		try
 		{
-			this.baseName = String.format("%08x%02d%s", __owner.hashCode(),
+			this._baseName = String.format("%08x%02d%s", __owner.hashCode(),
 				__name.length(),
 				Base64Encoder.encode(__name.getBytes()).toLowerCase());
-			this.metaName = this.baseName + ".json";
+			this._metaName = this._baseName + ".json";
 		}
 		catch (IOException __e)
 		{
@@ -100,7 +104,7 @@ public final class RecordStoreInfo
 		
 		// Debug
 		Debugging.debugNote("RecordStore: %s %s -> %s",
-			__owner, __name, this.baseName);
+			__owner, __name, this._baseName);
 	}
 	
 	/**
@@ -116,22 +120,25 @@ public final class RecordStoreInfo
 	public int getAuthMode()
 		throws RecordStoreNotOpenException
 	{
-		try (RecordStoreSession session = this.__meta())
+		synchronized (this._lock)
 		{
-			int result = session.getInteger(
-				RecordStoreSession.AUTHENTICATION,
-				RecordStore.AUTHMODE_PRIVATE);
-			
-			/* Use a default if unspecified. */
-			if (result != RecordStore.AUTHMODE_PRIVATE &&
-				result != RecordStore.AUTHMODE_ANY)
-				return RecordStore.AUTHMODE_PRIVATE;
-			return result;
-		}
-		catch (RecordStoreException __e)
-		{
-			throw RecordUtils.wrap(
-				new RecordStoreNotOpenException(__e.getMessage()), __e);
+			try (RecordStoreSession session = this.__meta())
+			{
+				int result = session.getInteger(
+					RecordStoreSession.AUTHENTICATION,
+					RecordStore.AUTHMODE_PRIVATE);
+				
+				/* Use a default if unspecified. */
+				if (result != RecordStore.AUTHMODE_PRIVATE &&
+					result != RecordStore.AUTHMODE_ANY)
+					return RecordStore.AUTHMODE_PRIVATE;
+				return result;
+			}
+			catch (RecordStoreException __e)
+			{
+				throw RecordUtils.wrap(
+					new RecordStoreNotOpenException(__e.getMessage()), __e);
+			}
 		}
 	}
 	
@@ -196,15 +203,18 @@ public final class RecordStoreInfo
 	public boolean isWriteable()
 		throws RecordStoreNotOpenException
 	{
-		try (RecordStoreSession session = this.__meta())
+		synchronized (this._lock)
 		{
-			return (session.getInteger(
-				RecordStoreSession.OTHER_WRITE, 1) != 0);
-		}
-		catch (RecordStoreException __e)
-		{
-			throw RecordUtils.wrap(
-				new RecordStoreNotOpenException(__e.getMessage()), __e);
+			try (RecordStoreSession session = this.__meta())
+			{
+				return (session.getInteger(RecordStoreSession.OTHER_WRITE,
+					1) != 0);
+			}
+			catch (RecordStoreException __e)
+			{
+				throw RecordUtils.wrap(
+					new RecordStoreNotOpenException(__e.getMessage()), __e);
+			}
 		}
 	}
 	
@@ -212,21 +222,38 @@ public final class RecordStoreInfo
 	 * Checks if this record store actually exists on the disk.
 	 *
 	 * @return If this actually exists.
-	 * @throws RecordStoreException If this could not determined.
+	 * @throws RecordStoreException If this could not be determined.
 	 * @since 2025/04/16
 	 */
 	boolean __exists()
 		throws RecordStoreException
 	{
-		try
+		synchronized (this._lock)
 		{
-			// The meta-file must exist
-			return BucketShelf.exists(this._bucket, this.metaName);
-		}
-		catch (MLECallError __e)
-		{
-			throw RecordUtils.wrap(
-				new RecordStoreException(__e.getMessage()), __e);
+			try
+			{
+				// If the metafile does not exist, it cannot be read
+				if (!BucketShelf.exists(this._bucket, this._metaName))
+					return false;
+				
+				// The metafile could exist, but not have any actual
+				// information in it
+				try (RecordStoreSession meta = this.__meta())
+				{
+					String any = meta.getString(RecordStoreSession.OWNER_NAME,
+						null);
+					if (any == null || any.isEmpty())
+						return false;
+				}
+				
+				// It exists otherwise!
+				return true;
+			}
+			catch (MLECallError __e)
+			{
+				throw RecordUtils.wrap(
+					new RecordStoreException(__e.getMessage()), __e);
+			}
 		}
 	}
 	
@@ -255,27 +282,30 @@ public final class RecordStoreInfo
 	int[] __ids()
 		throws RecordStoreException
 	{
-		try (RecordStoreSession session = this.__meta())
+		synchronized (this._lock)
 		{
-			JsonArray ids = session.getArray(RecordStoreSession.IDS);
-			if (ids == null)
-				return new int[0];
-			
-			// Read in all record IDs
-			int n = ids.size();
-			int[] result = new int[n];
-			for (int i = 0; i < n; i++)
-				try
-				{
-					result[i++] = ids.getInt(i);
-				}
-				catch (ClassCastException __e)
-				{
-					throw RecordUtils.wrap(
-						new RecordStoreException(__e.getMessage()), __e);
-				}
-			
-			return result;
+			try (RecordStoreSession session = this.__meta())
+			{
+				JsonArray ids = session.getArray(RecordStoreSession.IDS);
+				if (ids == null)
+					return new int[0];
+				
+				// Read in all record IDs
+				int n = ids.size();
+				int[] result = new int[n];
+				for (int i = 0; i < n; i++)
+					try
+					{
+						result[i++] = ids.getInt(i);
+					}
+					catch (ClassCastException __e)
+					{
+						throw RecordUtils.wrap(
+							new RecordStoreException(__e.getMessage()), __e);
+					}
+				
+				return result;
+			}
 		}
 	}
 	
@@ -286,7 +316,6 @@ public final class RecordStoreInfo
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2025/04/16
 	 */
-	@SuppressWarnings("ConstantValue")
 	boolean __isSelfWritable()
 		throws RecordStoreNotOpenException
 	{
@@ -303,7 +332,21 @@ public final class RecordStoreInfo
 	RecordStoreSession __meta()
 		throws RecordStoreException
 	{
-		return new RecordStoreSession(this._bucket, this.metaName);
+		synchronized (this._lock)
+		{
+			// Always keep the same meta session
+			RecordStoreSession result = this._metaSession;
+			if (result != null)
+				return result;
+			
+			// Setup new session
+			result = new RecordStoreSession(this._bucket, this._metaName,
+				this._lock);
+			
+			// Cache and use it
+			this._metaSession = result;
+			return result;
+		}
 	}
 	
 	/**
@@ -318,31 +361,31 @@ public final class RecordStoreInfo
 	void __setAccess(int __auth, boolean __otherWrite, String __pass)
 		throws RecordStoreException
 	{
-		try (RecordStoreSession session = this.__meta())
+		synchronized (this._lock)
 		{
-			// Write suite information
-			session.set(RecordStoreSession.OWNER_NAME,
-				this._owner.name().toString());
-			session.set(RecordStoreSession.OWNER_VENDOR,
-				this._owner.vendor().toString());
-			session.set(RecordStoreSession.OWNER_VERSION,
-				this._owner.version().toString());
-			
-			// Write record information
-			session.set(RecordStoreSession.RECORD_NAME,
-				this._name);
-			
-			// Write base name, could be used for recovery?
-			session.set(RecordStoreSession.BASE_NAME,
-				this.baseName);
-			
-			// Write access information
-			session.set(RecordStoreSession.AUTHENTICATION,
-				__auth);
-			session.set(RecordStoreSession.OTHER_WRITE,
-				(__otherWrite ? 1 : 0));
-			session.set(RecordStoreSession.PASSWORD,
-				(__pass != null ? __pass : ""));
+			try (RecordStoreSession session = this.__meta())
+			{
+				// Write suite information
+				session.set(RecordStoreSession.OWNER_NAME,
+					this._owner.name().toString());
+				session.set(RecordStoreSession.OWNER_VENDOR,
+					this._owner.vendor().toString());
+				session.set(RecordStoreSession.OWNER_VERSION,
+					this._owner.version().toString());
+				
+				// Write record information
+				session.set(RecordStoreSession.RECORD_NAME, this._name);
+				
+				// Write base name, could be used for recovery?
+				session.set(RecordStoreSession.BASE_NAME, this._baseName);
+				
+				// Write access information
+				session.set(RecordStoreSession.AUTHENTICATION, __auth);
+				session.set(RecordStoreSession.OTHER_WRITE,
+					(__otherWrite ? 1 : 0));
+				session.set(RecordStoreSession.PASSWORD,
+					(__pass != null ? __pass : ""));
+			}
 		}
 	}
 }

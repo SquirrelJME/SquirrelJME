@@ -78,7 +78,7 @@ public class RecordStore
 	private final boolean _isSelf;
 	
 	/** Cached meta information accessor. */
-	private volatile Reference<RecordStoreInfo> _metaRef;
+	private volatile RecordStoreInfo _metaRef;
 	
 	/** The number of times this has been opened. */
 	private volatile int _openCount;
@@ -237,22 +237,15 @@ public class RecordStore
 	public void closeRecordStore()
 		throws RecordStoreNotOpenException, RecordStoreException
 	{
-		throw Debugging.todo();
-		/*
-		// Lock the record, so that only a single thread is messing with the
-		// open counts and such
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
-			// Check open
-			this.__checkOpen();
+			// Fail if already closed
+			if (this._openCount <= 0)
+				throw new RecordStoreNotOpenException("CLSD");
 			
-			// If closed then remove all the listeners
-			if ((--this._opens) <= 0)
-				this._listeners.clear();
+			// Otherwise reduce
+			this._openCount -= 1;
 		}
-		
-		 */
 	}
 	
 	/**
@@ -900,7 +893,7 @@ public class RecordStore
 	private void __checkOpen()
 		throws RecordStoreNotOpenException
 	{
-		synchronized (this)
+		synchronized (this._lock)
 		{
 			/* {@squirreljme.error DC07 This record store is not open.} */
 			if (this._openCount <= 0)
@@ -932,13 +925,12 @@ public class RecordStore
 	final RecordStoreInfo __info()
 		throws RecordStoreException
 	{
-		Reference<RecordStoreInfo> ref = this._metaRef;
-		RecordStoreInfo result = null;
-		if (ref == null || (result = ref.get()) == null)
+		RecordStoreInfo result = this._metaRef;
+		if (result == null)
 		{
-			result = new RecordStoreInfo(this._owner, this._name,
-				this._isSelf);
-			this._metaRef = new WeakReference<>(result);
+			result = new RecordStoreInfo(this._owner, this._name, this._isSelf,
+				this._lock);
+			this._metaRef = result;
 		}
 		
 		return result;
@@ -1357,30 +1349,32 @@ public class RecordStore
 			}
 		}
 		
-		// If this does not exist, we may need to initialize it
-		if (!result.__info().__exists())
+		// We need to lock on the store's lock
+		synchronized (result._lock)
 		{
-			/* {@squirreljme.error DC0e Could not find the specified record
-			store. (The name; The vendor; The suite)} */
-			if (!__create || !isSelf)
-				throw new RecordStoreNotFoundException(
-					String.format("DC0e %s %s %s", __name, __vend, __suite));
+			// If this does not exist, we may need to initialize it
+			if (!result.__info().__exists())
+			{
+				/* {@squirreljme.error DC0e Could not find the specified record
+				store. (The name; The vendor; The suite)} */
+				if (!__create || !isSelf)
+					throw new RecordStoreNotFoundException(
+						String.format("DC0e %s %s %s", __name, __vend,
+							__suite));
+				
+				// Set the access mode
+				result.__info().__setAccess(__auth, __write, __pass);
+			}
 			
-			// Set the access mode
-			result.__info().__setAccess(__auth, __write, __pass);
-		}
-		
-		// Not isSelf and is not other writable?
-		/* {@squirreljme.error DC0f Could not open record store of another
-		suite as it is not marked as other writable.} */
-		if (!isSelf && result.__info().__exists() &&
-			!result.__info().isWriteable())
-			throw new RecordStoreException(
-				String.format("DC0f %s %s %s", __name, __vend, __suite));
-		
-		// Return the resultant store, after bumping the count
-		synchronized (result)
-		{
+			// Not isSelf and is not other writable?
+			/* {@squirreljme.error DC0f Could not open record store of another
+			suite as it is not marked as other writable.} */
+			if (!isSelf && result.__info().__exists() &&
+				!result.__info().isWriteable())
+				throw new RecordStoreException(
+					String.format("DC0f %s %s %s", __name, __vend, __suite));
+			
+			// Return the resultant store, after bumping the count
 			result._openCount += 1;
 			return result;
 		}

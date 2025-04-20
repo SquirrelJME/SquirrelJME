@@ -19,11 +19,15 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.SystemPathProvider;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -187,7 +191,24 @@ public class EmulatedBucketShelf
 		@NotNull String __file)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__bucket == null || __file == null)
+			throw new MLECallError("NARG");
+		
+		Path path = ((EmulatedBucketBracket)__bucket).__resolve(__file);
+		try
+		{
+			if (!Files.exists(path))
+				return -1;
+			return Files.size(path);
+		}
+		catch (FileNotFoundException __e)
+		{
+			return -1;
+		}
+		catch (IOException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
 	}
 	
 	/**
@@ -215,7 +236,25 @@ public class EmulatedBucketShelf
 		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__bucket == null || __file == null || __buf == null)
+			throw new MLECallError("NARG");
+		
+		if (__fileOff < 0 || __off < 0 || __len < 0 ||
+			(__off + __len) < 0 || (__off + __len) > __buf.length)
+			throw new MLECallError("IOOB");
+		
+		// Open the file to read a chunk of it
+		Path path = ((EmulatedBucketBracket)__bucket).__resolve(__file);
+		try (FileChannel channel = FileChannel.open(path,
+			StandardOpenOption.READ))
+		{
+			return channel.read(ByteBuffer.wrap(__buf, __off, __len),
+				__fileOff);
+		}
+		catch (IOException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
 	}
 	
 	/**
