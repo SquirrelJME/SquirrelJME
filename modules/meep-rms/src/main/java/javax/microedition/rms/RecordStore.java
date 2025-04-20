@@ -1396,7 +1396,7 @@ public class RecordStore
 		/* {@squirreljme.error DC0f Could not open record store of another
 		suite as it is not marked as other writable.} */
 		if (!isSelf && result.__info().__exists() &&
-			!result.__info().__isOtherWritable())
+			!result.__info().isWriteable())
 			throw new RecordStoreException(
 				String.format("DC0f %s %s %s", __name, __vend, __suite));
 		

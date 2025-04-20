@@ -16,6 +16,9 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.rms.RecordSession;
+import cc.squirreljme.runtime.rms.RecordStoreSession;
+import cc.squirreljme.runtime.rms.RecordUtils;
 import java.io.IOException;
 import net.multiphasicapps.io.Base64Encoder;
 
@@ -68,7 +71,7 @@ public final class RecordStoreInfo
 		}
 		catch (MLECallError __e)
 		{
-			throw RecordStoreInfo.__cause(
+			throw RecordUtils.wrap(
 				new RecordStoreException(__e.getMessage()), __e);
 		}
 		
@@ -86,7 +89,7 @@ public final class RecordStoreInfo
 		}
 		catch (IOException __e)
 		{
-			throw RecordStoreInfo.__cause(
+			throw RecordUtils.wrap(
 				new RecordStoreException(__e.getMessage()), __e);
 		}
 		
@@ -108,7 +111,23 @@ public final class RecordStoreInfo
 	public int getAuthMode()
 		throws RecordStoreNotOpenException
 	{
-		throw Debugging.todo();
+		try (RecordStoreSession session = this.__meta())
+		{
+			int result = session.getInteger(
+				RecordStoreSession.AUTHENTICATION,
+				RecordStore.AUTHMODE_PRIVATE);
+			
+			/* Use a default if unspecified. */
+			if (result != RecordStore.AUTHMODE_PRIVATE &&
+				result != RecordStore.AUTHMODE_ANY)
+				return RecordStore.AUTHMODE_PRIVATE;
+			return result;
+		}
+		catch (RecordStoreException __e)
+		{
+			throw RecordUtils.wrap(
+				new RecordStoreNotOpenException(__e.getMessage()), __e);
+		}
 	}
 	
 	/**
@@ -172,7 +191,16 @@ public final class RecordStoreInfo
 	public boolean isWriteable()
 		throws RecordStoreNotOpenException
 	{
-		throw Debugging.todo();
+		try (RecordStoreSession session = this.__meta())
+		{
+			return (session.getInteger(
+				RecordStoreSession.OTHER_WRITE, 1) != 0);
+		}
+		catch (RecordStoreException __e)
+		{
+			throw RecordUtils.wrap(
+				new RecordStoreNotOpenException(__e.getMessage()), __e);
+		}
 	}
 	
 	/**
@@ -192,7 +220,7 @@ public final class RecordStoreInfo
 		}
 		catch (MLECallError __e)
 		{
-			throw RecordStoreInfo.__cause(
+			throw RecordUtils.wrap(
 				new RecordStoreException(__e.getMessage()), __e);
 		}
 	}
@@ -224,26 +252,30 @@ public final class RecordStoreInfo
 	}
 	
 	/**
-	 * Is this writable by others?
-	 *
-	 * @return If this is writable by others.
-	 * @since 2025/04/16
-	 */
-	boolean __isOtherWritable()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
 	 * Is this record store writable by this application?
 	 *
 	 * @return If this can be written to.
+	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2025/04/16
 	 */
 	@SuppressWarnings("ConstantValue")
 	boolean __isSelfWritable()
+		throws RecordStoreNotOpenException
 	{
-		return this._isSelf || this.__isOtherWritable();
+		return this._isSelf || this.isWriteable();
+	}
+	
+	/**
+	 * Opens a meta session.
+	 *
+	 * @return The opened meta session.
+	 * @throws RecordStoreException If the session could not be opened 
+	 * @since 2025/04/20
+	 */
+	RecordStoreSession __meta()
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -252,31 +284,21 @@ public final class RecordStoreInfo
 	 * @param __auth The authorization to use.
 	 * @param __otherWrite If this can be written by others.
 	 * @param __pass The password to use.
+	 * @throws RecordStoreException If the record could not be opened.
 	 * @since 2025/04/16
 	 */
 	void __setAccess(int __auth, boolean __otherWrite, String __pass)
+		throws RecordStoreException
 	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Initializes the cause of the exception.
-	 *
-	 * @param <E> The exception to initialize.
-	 * @param __e The exception to initialize.
-	 * @param __t The cause of the exception.
-	 * @return The resultant exception.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2025/04/18
-	 */
-	static <E extends RecordStoreException> E __cause(E __e, Throwable __t)
-		throws NullPointerException
-	{
-		if (__e == null)
-			throw new NullPointerException("NARG");
-		
-		__e.initCause(__t);
-		return __e;
+		try (RecordStoreSession session = this.__meta())
+		{
+			session.set(RecordStoreSession.AUTHENTICATION,
+				__auth);
+			session.set(RecordStoreSession.OTHER_WRITE,
+				(__otherWrite ? 1 : 0));
+			session.set(RecordStoreSession.PASSWORD,
+				(__pass != null ? __pass : ""));
+		}
 	}
 }
 
