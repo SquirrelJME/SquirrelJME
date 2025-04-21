@@ -136,6 +136,20 @@ public class RecordSession
 	}
 	
 	/**
+	 * Returns the length of the record.
+	 *
+	 * @return The record length.
+	 * @throws RecordStoreException If the length could not be determined.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	public int length()
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Open an input stream over the record data.
 	 *
 	 * @return An input stream over the data.

@@ -153,12 +153,20 @@ public class RecordStore
 			listeners = this.__listeners();
 			
 			// Open new session with the given tag
-			id = this.__info().__nextId(true);
-			this.__info().__tag(id, __tag);
-			try (RecordSession session = this.__info().__open(id))
+			try (RecordStoreSession session = this.__info().__meta())
 			{
-				// Write all bytes into it
-				session.writeAll(__b, __o, __l);
+				// Allocate a new ID
+				id = session.nextId(true);
+				
+				// Set tag for the ID
+				session.setTag(id, __tag);
+				
+				// Open sub-session
+				try (RecordSession sub = session.open(id))
+				{
+					// Write all bytes into it
+					sub.writeAll(__b, __o, __l);
+				}
 			}
 		}
 		
@@ -418,19 +426,21 @@ public class RecordStore
 	public int getNextRecordID()
 		throws RecordStoreException, RecordStoreNotOpenException
 	{
-		// The ID count is the record count
-		try
+		synchronized (this)
 		{
-			// Check open
-			this.__checkOpen();
-			
-			// Return the next available ID, but do not allocate it
-			return this.__info().__nextId(false);
-		}
-		catch (RecordStoreException __e)
-		{
-			throw RecordUtils.wrap(
-				new RecordStoreNotOpenException(__e.getMessage()), __e);
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				// Check open
+				this.__checkOpen();
+				
+				// Get the next available ID without allocating
+				return session.nextId(false);
+			}
+			catch (RecordStoreException __e)
+			{
+				throw RecordUtils.wrap(
+					new RecordStoreNotOpenException(__e.getMessage()), __e);
+			}
 		}
 	}
 	
@@ -445,18 +455,21 @@ public class RecordStore
 	public int getNumRecords()
 		throws RecordStoreNotOpenException
 	{
-		// The ID count is the record count
-		try
+		synchronized (this)
 		{
-			// Check open
-			this.__checkOpen();
-			
-			return this.__info().__ids().length;
-		}
-		catch (RecordStoreException __e)
-		{
-			throw RecordUtils.wrap(
-				new RecordStoreNotOpenException(__e.getMessage()), __e);
+			// The ID count is the record count
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				// Check open
+				this.__checkOpen();
+				
+				return session.ids().length;
+			}
+			catch (RecordStoreException __e)
+			{
+				throw RecordUtils.wrap(
+					new RecordStoreNotOpenException(__e.getMessage()), __e);
+			}
 		}
 	}
 	
@@ -477,20 +490,26 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		synchronized (this._lock)
+		synchronized (this)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Open existing session
-			try (RecordSession session = this.__info().__open(__id))
+			try (RecordStoreSession session = this.__info().__meta())
 			{
-				// No data?
-				byte[] result = session.readAll();
-				if (result == null || result.length == 0)
-					return null;
-				
-				return Arrays.copyOf(result, result.length);
+				// Open existing session
+				try (RecordSession sub = session.open(__id))
+				{
+					// No data?
+					int length = sub.length();
+					if (length <= 0)
+						return null;
+					
+					// Read in data chunk
+					byte[] result = new byte[length];
+					sub.read(result, 0, length);
+					return result;
+				}
 			}
 		}
 	}
@@ -523,24 +542,28 @@ public class RecordStore
 		if (__o < 0 || __o > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		synchronized (this._lock)
+		synchronized (this)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Open existing session
-			try (RecordSession session = this.__info().__open(__id))
+			try (RecordStoreSession session = this.__info().__meta())
 			{
-				// Nothing to read?
-				byte[] result = session.readAll();
-				if (result == null || result.length == 0)
-					return 0;
-				
-				// Direct copy
-				int limit = Math.min(__b.length - __o, result.length);
-				System.arraycopy(result, 0,
-					__b, __o, limit);
-				return limit;
+				// Open existing session
+				try (RecordSession sub = session.open(__id))
+				{
+					// No data?
+					int length = sub.length();
+					if (length <= 0)
+						return 0;
+					
+					// How much data can actually be read?
+					int limit = Math.min(__b.length - __o, length);
+					
+					// Read in data chunk
+					sub.read(__b, __o, limit);
+					return limit;
+				}
 			}
 		}
 	}
@@ -566,13 +589,12 @@ public class RecordStore
 			// Check open
 			this.__checkOpen();
 			
-			// Open existing session
-			try (RecordSession session = this.__info().__open(__id))
+			try (RecordStoreSession session = this.__info().__meta())
 			{
-				byte[] data = session.readAll();
-				if (data == null)
-					return 0;
-				return data.length;
+				try (RecordSession sub = session.open(__id))
+				{
+					return sub.length();
+				}
 			}
 		}
 	}
@@ -661,7 +683,10 @@ public class RecordStore
 			this.__checkOpen();
 			
 			// Get tag
-			return this.__info().__tag(__id);
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				return session.getTag(__id);
+			}
 		}
 	}
 	
@@ -784,7 +809,6 @@ public class RecordStore
 			(__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		int id;
 		RecordListener[] listeners;
 		
 		synchronized (this._lock)
@@ -800,22 +824,25 @@ public class RecordStore
 			// Used for later broadcasting
 			listeners = this.__listeners();
 			
-			// Open existing session
-			this.__info().__tag(__id, __tag);
-			try (RecordSession session = this.__info().__open(__id))
+			// Open existing session, set a new tag
+			try (RecordStoreSession session = this.__info().__meta())
 			{
-				// Get the ID of the session
-				id = session.id;
+				// Set tag for the ID
+				session.setTag(__id, __tag);
 				
-				// Write all bytes into it
-				session.writeAll(__b, __o, __l);
+				// Open sub-session
+				try (RecordSession sub = session.open(__id))
+				{
+					// Write all bytes into it
+					sub.writeAll(__b, __o, __l);
+				}
 			}
 		}
 		
 		// Broadcast to listeners
 		if (listeners != null)
 			for (RecordListener listener : listeners)
-				listener.recordChanged(this, id);
+				listener.recordChanged(this, __id);
 	}
 	
 	/**
@@ -1287,7 +1314,10 @@ public class RecordStore
 							__suite));
 				
 				// Set the access mode
-				result.__info().__setAccess(__auth, __write, __pass);
+				try (RecordStoreSession session = result.__info().__meta())
+				{
+					session.setAccess(__auth, __write, __pass);
+				}
 			}
 			
 			// Not isSelf and is not other writable?

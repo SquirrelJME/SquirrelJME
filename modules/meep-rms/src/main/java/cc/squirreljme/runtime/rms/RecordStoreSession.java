@@ -10,6 +10,10 @@
 package cc.squirreljme.runtime.rms;
 
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
+import cc.squirreljme.jvm.suite.SuiteIdentifier;
+import cc.squirreljme.jvm.suite.SuiteName;
+import cc.squirreljme.jvm.suite.SuiteVendor;
+import cc.squirreljme.jvm.suite.SuiteVersion;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.oracle.json.Json;
@@ -28,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
-import javax.microedition.rms.RecordStoreInfo;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * This contains the session specifically for {@link RecordStore}'s metadata.
@@ -43,36 +47,6 @@ public class RecordStoreSession
 	@SquirrelJMEVendorApi
 	public static final String AUTHENTICATION =
 		"authentication";
-	
-	/** The other write key. */
-	@SquirrelJMEVendorApi
-	public static final String OTHER_WRITE =
-		"otherWrite";
-	
-	/** The password key. */
-	@SquirrelJMEVendorApi
-	public static final String PASSWORD =
-		"password";
-	
-	/** The owner name. */
-	@SquirrelJMEVendorApi
-	public static final String OWNER_NAME =
-		"ownerName";
-	
-	/** The owner vendor. */
-	@SquirrelJMEVendorApi
-	public static final String OWNER_VENDOR =
-		"ownerVendor";
-	
-	/** The owner version. */
-	@SquirrelJMEVendorApi
-	public static final String OWNER_VERSION =
-		"ownerVersion";
-	
-	/** The name of this record. */
-	@SquirrelJMEVendorApi
-	public static final String RECORD_NAME =
-		"recordName";
 	
 	/** The base name used for files. */
 	@SquirrelJMEVendorApi
@@ -89,6 +63,36 @@ public class RecordStoreSession
 	public static final String MODIFICATION_COUNT =
 		"modificationCount";
 	
+	/** The other write key. */
+	@SquirrelJMEVendorApi
+	public static final String OTHER_WRITE =
+		"otherWrite";
+	
+	/** The owner name. */
+	@SquirrelJMEVendorApi
+	public static final String OWNER_NAME =
+		"ownerName";
+	
+	/** The owner vendor. */
+	@SquirrelJMEVendorApi
+	public static final String OWNER_VENDOR =
+		"ownerVendor";
+	
+	/** The owner version. */
+	@SquirrelJMEVendorApi
+	public static final String OWNER_VERSION =
+		"ownerVersion";
+	
+	/** The password key. */
+	@SquirrelJMEVendorApi
+	public static final String PASSWORD =
+		"password";
+	
+	/** The name of this record. */
+	@SquirrelJMEVendorApi
+	public static final String RECORD_NAME =
+		"recordName";
+	
 	/** Newly overwritten keys. */
 	private final Map<String, JsonValue> _updates =
 		new HashMap<>();
@@ -96,21 +100,33 @@ public class RecordStoreSession
 	/** The read JSON data. */
 	private volatile JsonObject _json;
 	
+	/** The name of this record. */
+	private volatile String _name;
+	
+	/** The owner of this record. */
+	private volatile SuiteIdentifier _owner;
+	
 	/**
 	 * Initializes the session.
 	 *
 	 * @param __bucket The bucket to access.
 	 * @param __fileName The file name of the data.
 	 * @param __lock The lock used for access.
+	 * @param __owner The record store owner.
+	 * @param __name The recored store name.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/20
 	 */
 	@SquirrelJMEVendorApi
 	public RecordStoreSession(BucketBracket __bucket, String __fileName,
-		Object __lock)
+		Object __lock, SuiteIdentifier __owner, String __name)
 		throws NullPointerException
 	{
 		super(__bucket, __fileName, __lock, -1);
+		
+		// Set these if available
+		this._owner = __owner;
+		this._name = __name;
 	}
 	
 	/**
@@ -254,6 +270,21 @@ public class RecordStoreSession
 	}
 	
 	/**
+	 * Returns the tag for a given ID.
+	 *
+	 * @param __id The ID to get the tag for.
+	 * @return The resultant tag.
+	 * @throws RecordStoreException If the tag could not be obtained.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	public int getTag(int __id)
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Gets a general JSON Value.
 	 *
 	 * @param <V> The value type.
@@ -302,6 +333,124 @@ public class RecordStoreSession
 				throw RecordUtils.wrap(
 					new RecordStoreException(__e.getMessage()), __e);
 			}
+		}
+	}
+	
+	/**
+	 * Returns the available record IDs.
+	 *
+	 * @return The record IDs.
+	 * @throws RecordStoreException If the IDs could not be determined.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	public int[] ids()
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the name of this record.
+	 *
+	 * @return The record name.
+	 * @throws RecordStoreException If this information is not known.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	public String name()
+		throws RecordStoreException
+	{
+		// From manifest info?
+		synchronized (this.lock)
+		{
+			// Has this been set from construction?
+			String name = this._name;
+			if (name != null)
+				return null;
+			
+			// The record store must have a name
+			/* {@squirreljme.error AD10 RecordStore has no name.} */
+			name = this.getString(RecordStoreSession.RECORD_NAME,
+				null);
+			if (name == null)
+				throw new RecordStoreException(
+					__error__("AD11"));
+			
+			// Cache and use it
+			this._name = name;
+			return name;
+		}
+	}
+	
+	/**
+	 * Returns the next ID.
+	 *
+	 * @param __allocate Should this ID be allocated?
+	 * @return The resultant ID.
+	 * @throws RecordStoreException If the record could not be allocated.
+	 * @since 2025/04/21
+	 */
+	public int nextId(boolean __allocate)
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Opens a record with the given ID.
+	 *
+	 * @param __id The ID to open.
+	 * @return The session for the given record.
+	 * @throws RecordStoreException If it could not be opened.
+	 * @since 2025/04/21
+	 */
+	public RecordSession open(int __id)
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the owner of this suite.
+	 *
+	 * @return The suite owner.
+	 * @throws RecordStoreException If this information is not known.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	public SuiteIdentifier owner()
+		throws RecordStoreException
+	{
+		// From manifest info?
+		synchronized (this.lock)
+		{
+			// Has this been set from construction?
+			SuiteIdentifier owner = this._owner;
+			if (owner != null)
+				return null;
+			
+			// Get all of these values
+			String name = this.getString(RecordStoreSession.OWNER_NAME,
+				null);
+			String vendor = this.getString(RecordStoreSession.OWNER_VENDOR,
+				null);
+			String version = this.getString(RecordStoreSession.OWNER_VERSION,
+				null);
+			
+			// If any are missing, this is not valid
+			/* {@squirreljme.error AD10 RecordStore has no identifier.} */
+			if (name == null || vendor == null || version == null)
+				throw new RecordStoreException(
+					__error__("AD10 %s %s %s", name, vendor, version));
+			
+			// Build
+			owner = new SuiteIdentifier(new SuiteName(name),
+				new SuiteVendor(vendor), new SuiteVersion(version));
+			
+			// Cache and use it
+			this._owner = owner;
+			return owner;
 		}
 	}
 	
@@ -373,6 +522,78 @@ public class RecordStoreSession
 					this.getInteger(RecordStoreSession.MODIFICATION_COUNT,
 						0) + 1);
 		}
+	}
+	
+	/**
+	 * Sets the access mode for this record store.
+	 *
+	 * @param __auth The authorization to use.
+	 * @param __otherWrite If this can be written by others.
+	 * @param __pass The password to use.
+	 * @throws RecordStoreException If the record could not be opened.
+	 * @since 2025/04/16
+	 */
+	@SquirrelJMEVendorApi
+	public void setAccess(int __auth, boolean __otherWrite, String __pass)
+		throws RecordStoreException
+	{
+		synchronized (this.lock)
+		{
+			// Write suite information
+			SuiteIdentifier owner = this.owner();
+			this.set(RecordStoreSession.OWNER_NAME,
+				owner.name().toString());
+			this.set(RecordStoreSession.OWNER_VENDOR,
+				owner.vendor().toString());
+			this.set(RecordStoreSession.OWNER_VERSION,
+				owner.version().toString());
+			
+			// Write record information
+			this.set(RecordStoreSession.RECORD_NAME,
+				this.name());
+			
+			// Write base name, could be used for recovery?
+			String fileName = this.fileName;
+			int lastDot = fileName.lastIndexOf('.');
+			this.set(RecordStoreSession.BASE_NAME,
+				(lastDot >= 0 ? fileName.substring(0, lastDot) : fileName));
+			
+			// Write access information
+			this.set(RecordStoreSession.AUTHENTICATION, __auth);
+			this.set(RecordStoreSession.OTHER_WRITE,
+				(__otherWrite ? 1 : 0));
+			this.set(RecordStoreSession.PASSWORD,
+				(__pass != null ? __pass : ""));
+		}
+	}
+	
+	/**
+	 * Sets the tag for the given record.
+	 *
+	 * @param __id The ID of the record to set the tag of.
+	 * @param __tag The tag to set.
+	 * @throws RecordStoreException If the tag could not be set.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	public void setTag(int __id, int __tag)
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the total size of the record store.
+	 *
+	 * @return The total size of the record store.
+	 * @throws RecordStoreException If the size could not be determined.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	public long totalSize()
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

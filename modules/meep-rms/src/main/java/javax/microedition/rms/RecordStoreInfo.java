@@ -157,25 +157,11 @@ public final class RecordStoreInfo
 	public long getSize()
 		throws RecordStoreNotOpenException
 	{
-		long total = 0;
 		synchronized (this._lock)
 		{
-			try
+			try (RecordStoreSession session = this.__meta())
 			{
-				for (int id : this.__ids())
-					try (RecordSession session = this.__open(id))
-					{
-						byte[] data = session.readAll();
-						if (data != null)
-						{
-							// Do not overflow
-							long size = data.length;
-							if (total + size < 0)
-								total = Long.MAX_VALUE;
-							else
-								total += size;
-						}
-					}
+				return session.totalSize();
 			}
 			catch (RecordStoreException __e)
 			{
@@ -183,9 +169,6 @@ public final class RecordStoreInfo
 					new RecordStoreNotOpenException(__e.getMessage()), __e);
 			}
 		}
-		
-		// Return the actual size of records
-		return total;
 	}
 	
 	/**
@@ -373,110 +356,12 @@ public final class RecordStoreInfo
 			
 			// Setup new session
 			result = new RecordStoreSession(this._bucket, this._metaName,
-				this._lock);
+				this._lock, this._owner, this._name);
 			
 			// Cache and use it
 			this._metaSession = result;
 			return result;
 		}
-	}
-	
-	/**
-	 * Returns the next ID.
-	 *
-	 * @param __allocate Should this ID be allocated?
-	 * @return The resultant ID.
-	 * @throws RecordStoreException If the record could not be allocated.
-	 * @since 2025/04/21
-	 */
-	int __nextId(boolean __allocate)
-		throws RecordStoreException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Opens a record with the given ID.
-	 *
-	 * @param __id The ID to open.
-	 * @return The session for the given record.
-	 * @throws RecordStoreException If it could not be opened.
-	 * @since 2025/04/21
-	 */
-	RecordSession __open(int __id)
-		throws RecordStoreException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Sets the access mode for this record store.
-	 *
-	 * @param __auth The authorization to use.
-	 * @param __otherWrite If this can be written by others.
-	 * @param __pass The password to use.
-	 * @throws RecordStoreException If the record could not be opened.
-	 * @since 2025/04/16
-	 */
-	void __setAccess(int __auth, boolean __otherWrite, String __pass)
-		throws RecordStoreException
-	{
-		synchronized (this._lock)
-		{
-			try (RecordStoreSession session = this.__meta())
-			{
-				// Write suite information
-				session.set(RecordStoreSession.OWNER_NAME,
-					this._owner.name().toString());
-				session.set(RecordStoreSession.OWNER_VENDOR,
-					this._owner.vendor().toString());
-				session.set(RecordStoreSession.OWNER_VERSION,
-					this._owner.version().toString());
-				
-				// Write record information
-				session.set(RecordStoreSession.RECORD_NAME, this._name);
-				
-				// Write base name, could be used for recovery?
-				session.set(RecordStoreSession.BASE_NAME, this._baseName);
-				
-				// Write access information
-				session.set(RecordStoreSession.AUTHENTICATION, __auth);
-				session.set(RecordStoreSession.OTHER_WRITE,
-					(__otherWrite ? 1 : 0));
-				session.set(RecordStoreSession.PASSWORD,
-					(__pass != null ? __pass : ""));
-			}
-		}
-	}
-	
-	/**
-	 * Returns the tag for a given ID.
-	 *
-	 * @param __id The ID to get the tag for.
-	 * @return The resultant tag.
-	 * @throws RecordStoreException If the tag could not be obtained.
-	 * @since 2025/04/21
-	 */
-	@SquirrelJMEVendorApi
-	int __tag(int __id)
-		throws RecordStoreException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Sets the tag for the given record.
-	 *
-	 * @param __id The ID of the record to set the tag of.
-	 * @param __tag The tag to set.
-	 * @throws RecordStoreException If the tag could not be set.
-	 * @since 2025/04/21
-	 */
-	@SquirrelJMEVendorApi
-	void __tag(int __id, int __tag)
-		throws RecordStoreException
-	{
-		throw Debugging.todo();
 	}
 }
 
