@@ -327,20 +327,13 @@ public class RecordStore
 		RecordComparator __c, boolean __ku, int[] __tags)
 		throws RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
-		throw Debugging.todo();
-		/*
-		// Build one and perform a rebuild to initialize it
-		__VolumeEnumeration__ rv = new __VolumeEnumeration__(this, __f,
-			__c, __ku, __tags);
-		rv.rebuild();
-		
-		// Use it
-		return rv;
-		
-		 */
+		synchronized (this._lock)
+		{
+			// Check open
+			this.__checkOpen();
+			
+			throw Debugging.todo();
+		}
 	}
 	
 	/**

@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.oracle.json.Json;
 import com.oracle.json.JsonArray;
+import com.oracle.json.JsonArrayBuilder;
 import com.oracle.json.JsonNumber;
 import com.oracle.json.JsonObject;
 import com.oracle.json.JsonReader;
@@ -28,6 +29,7 @@ import com.oracle.json.stream.JsonParsingException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.microedition.rms.RecordStore;
@@ -347,7 +349,23 @@ public class RecordStoreSession
 	public int[] ids()
 		throws RecordStoreException
 	{
-		throw Debugging.todo();
+		synchronized (this.lock)
+		{
+			// No records at all?
+			JsonArray ids = this.getArray(RecordStoreSession.IDS);
+			if (ids == null || ids.isEmpty())
+				return new int[0];
+			
+			// Map in IDs
+			int n = ids.size();
+			int[] result = new int[n];
+			for (int i = 0; i < n; i++)
+				result[i] = ids.getInt(i, -i);
+			
+			// Make sure they are always sorted before returning
+			Arrays.sort(result);
+			return result;
+		}
 	}
 	
 	/**
@@ -394,7 +412,46 @@ public class RecordStoreSession
 	public int nextId(boolean __allocate)
 		throws RecordStoreException
 	{
-		throw Debugging.todo();
+		synchronized (this.lock)
+		{
+			// Grab all known IDs
+			int[] ids = this.ids();
+			
+			// Find the next ID which is not taken
+			int nextId = 0;
+			while (Arrays.binarySearch(ids, nextId) >= 0)
+				nextId++;
+			
+			// If not allocating, return it now
+			if (!__allocate)
+				return nextId;
+			
+			// Otherwise, build an array from it
+			JsonArrayBuilder builder = Json.createArrayBuilder();
+			boolean injected = false;
+			for (int i = 0, n = ids.length; i < n; i++)
+			{
+				// Add existing ID
+				builder.add(ids[i]);
+				
+				// Is this the spot where the ID would be injected?
+				if (!injected && nextId > ids[i])
+				{
+					builder.add(nextId);
+					injected = true;
+				}
+			}
+			
+			// Was the ID never injected?
+			if (!injected)
+				builder.add(nextId);
+			
+			// Store new IDs
+			this.set(RecordStoreSession.IDS, builder.build());
+			
+			// Return the newly allocated ID
+			return nextId;
+		}
 	}
 	
 	/**
