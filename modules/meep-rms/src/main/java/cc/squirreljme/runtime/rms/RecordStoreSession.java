@@ -84,6 +84,11 @@ public class RecordStoreSession
 	public static final String IDS =
 		"ids";
 	
+	/** The modification count of the record. */
+	@SquirrelJMEVendorApi
+	public static final String MODIFICATION_COUNT =
+		"modificationCount";
+	
 	/** Newly overwritten keys. */
 	private final Map<String, JsonValue> _updates =
 		new HashMap<>();
@@ -105,7 +110,7 @@ public class RecordStoreSession
 		Object __lock)
 		throws NullPointerException
 	{
-		super(__bucket, __fileName, __lock);
+		super(__bucket, __fileName, __lock, -1);
 	}
 	
 	/**
@@ -316,12 +321,8 @@ public class RecordStoreSession
 		if (__key == null)
 			throw new NullPointerException("NARG");
 		
-		synchronized (this.lock)
-		{
-			this._updates.put(__key,
-				Json.createObjectBuilder().add("key", __val)
-					.build().get("key"));
-		}
+		this.set(__key, Json.createObjectBuilder().add("key", __val)
+			.build().get("key"));
 	}
 	
 	/**
@@ -340,11 +341,37 @@ public class RecordStoreSession
 		if (__key == null || __val == null)
 			throw new NullPointerException("NARG");
 		
+		this.set(__key, Json.createObjectBuilder().add("key", __val)
+			.build().get("key"));
+	}
+	
+	/**
+	 * Sets the given key to the specified value.
+	 *
+	 * @param __key The key to set.
+	 * @param __val The value to use.
+	 * @throws NullPointerException On null arguments.
+	 * @throws RecordStoreException If the key could not be set.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	public void set(String __key, JsonValue __val)
+		throws NullPointerException, RecordStoreException
+	{
+		if (__key == null || __val == null)
+			throw new NullPointerException("NARG");
+		
 		synchronized (this.lock)
 		{
-			this._updates.put(__key,
-				Json.createObjectBuilder().add("key", __val)
-					.build().get("key"));
+			// Put in new value
+			this._updates.put(__key, __val);
+			
+			// Also update the modification count, if this is not that
+			// otherwise this would recurse infinitely
+			if (!__key.equals(RecordStoreSession.MODIFICATION_COUNT))
+				this.set(RecordStoreSession.MODIFICATION_COUNT,
+					this.getInteger(RecordStoreSession.MODIFICATION_COUNT,
+						0) + 1);
 		}
 	}
 	

@@ -15,7 +15,9 @@ import cc.squirreljme.jvm.mle.constants.StandardBucketType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.rms.RecordSession;
 import cc.squirreljme.runtime.rms.RecordStoreSession;
 import cc.squirreljme.runtime.rms.RecordUtils;
 import com.oracle.json.JsonArray;
@@ -155,7 +157,35 @@ public final class RecordStoreInfo
 	public long getSize()
 		throws RecordStoreNotOpenException
 	{
-		throw Debugging.todo();
+		long total = 0;
+		synchronized (this._lock)
+		{
+			try
+			{
+				for (int id : this.__ids())
+					try (RecordSession session = this.__open(id))
+					{
+						byte[] data = session.readAll();
+						if (data != null)
+						{
+							// Do not overflow
+							long size = data.length;
+							if (total + size < 0)
+								total = Long.MAX_VALUE;
+							else
+								total += size;
+						}
+					}
+			}
+			catch (RecordStoreException __e)
+			{
+				throw RecordUtils.wrap(
+					new RecordStoreNotOpenException(__e.getMessage()), __e);
+			}
+		}
+		
+		// Return the actual size of records
+		return total;
 	}
 	
 	/**
@@ -172,7 +202,8 @@ public final class RecordStoreInfo
 	public long getSizeAvailable()
 		throws RecordStoreNotOpenException
 	{
-		throw Debugging.todo();
+		// Use any value here, since it is unknown
+		return Integer.MAX_VALUE >> 1;
 	}
 	
 	/**
@@ -186,7 +217,8 @@ public final class RecordStoreInfo
 	public boolean isEncrypted()
 		throws RecordStoreNotOpenException
 	{
-		throw Debugging.todo();
+		// No encryption is supported
+		return false;
 	}
 	
 	/**
@@ -350,6 +382,34 @@ public final class RecordStoreInfo
 	}
 	
 	/**
+	 * Returns the next ID.
+	 *
+	 * @param __allocate Should this ID be allocated?
+	 * @return The resultant ID.
+	 * @throws RecordStoreException If the record could not be allocated.
+	 * @since 2025/04/21
+	 */
+	int __nextId(boolean __allocate)
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Opens a record with the given ID.
+	 *
+	 * @param __id The ID to open.
+	 * @return The session for the given record.
+	 * @throws RecordStoreException If it could not be opened.
+	 * @since 2025/04/21
+	 */
+	RecordSession __open(int __id)
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Sets the access mode for this record store.
 	 *
 	 * @param __auth The authorization to use.
@@ -387,6 +447,36 @@ public final class RecordStoreInfo
 					(__pass != null ? __pass : ""));
 			}
 		}
+	}
+	
+	/**
+	 * Returns the tag for a given ID.
+	 *
+	 * @param __id The ID to get the tag for.
+	 * @return The resultant tag.
+	 * @throws RecordStoreException If the tag could not be obtained.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	int __tag(int __id)
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Sets the tag for the given record.
+	 *
+	 * @param __id The ID of the record to set the tag of.
+	 * @param __tag The tag to set.
+	 * @throws RecordStoreException If the tag could not be set.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	void __tag(int __id, int __tag)
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
 	}
 }
 

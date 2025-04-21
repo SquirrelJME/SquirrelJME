@@ -19,7 +19,9 @@ import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import java.io.ByteArrayInputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import javax.microedition.rms.RecordStoreException;
+import net.multiphasicapps.collections.ArrayUtils;
 
 /**
  * Records and keeps a session for a record store.
@@ -46,6 +48,9 @@ public class RecordSession
 	@SquirrelJMEVendorApi
 	protected final Object lock;
 	
+	@SquirrelJMEVendorApi
+	public final int id;
+	
 	/** The origin read data. */
 	private volatile Reference<byte[]> _read;
 	
@@ -58,12 +63,13 @@ public class RecordSession
 	 * @param __bucket The bucket to access.
 	 * @param __fileName The file name of the data.
 	 * @param __lock The lock used for access.
+	 * @param __id The session ID.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/20
 	 */
 	@SquirrelJMEVendorApi
 	public RecordSession(BucketBracket __bucket, String __fileName,
-		Object __lock)
+		Object __lock, int __id)
 		throws NullPointerException
 	{
 		if (__bucket == null || __fileName == null || __lock == null)
@@ -72,6 +78,7 @@ public class RecordSession
 		this.bucket = __bucket;
 		this.fileName = __fileName;
 		this.lock = __lock;
+		this.id = __id;
 	}
 	
 	/**
@@ -112,6 +119,20 @@ public class RecordSession
 						new RecordStoreException(__e.getMessage()), __e);
 				}
 		}
+	}
+	
+	/**
+	 * Returns the last modified time of the session.
+	 *
+	 * @return The last modified time.
+	 * @throws RecordStoreException If the record is not valid.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	public long lastModified()
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -243,5 +264,36 @@ public class RecordSession
 			// always
 			this._read = new WeakReference<>(__buf);
 		}
+	}
+	
+	/**
+	 * Sets all the data to be written to the buffer.
+	 *
+	 * @param __buf The buffer of data to set for writing, for efficiency
+	 * the buffer is not copied.
+	 * @param __off The buffer offset.
+	 * @param __len The length of the data.
+	 * @throws IndexOutOfBoundsException If the index and/or offset are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	public void writeAll(byte[] __buf, int __off, int __len)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__buf == null)
+			throw new NullPointerException("NARG");
+		if (__off < 0 || __len < 0 || (__off + __len) < 0 ||
+			(__off + __len) > __buf.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Copy bytes to new base array
+		byte[] dup = new byte[__len];
+		System.arraycopy(__buf, __off,
+			dup, 0, __len);
+		
+		// Commit this data
+		this.writeAll(dup);
 	}
 }

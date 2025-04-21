@@ -17,10 +17,13 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
+import cc.squirreljme.runtime.rms.RecordSession;
+import cc.squirreljme.runtime.rms.RecordStoreSession;
 import cc.squirreljme.runtime.rms.RecordUtils;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.IdentityLinkedHashSet;
@@ -129,37 +132,43 @@ public class RecordStore
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 ||
+			(__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		/* {@squirreljme.error DC01 Cannot write record to read-only store.} */
-		if (!this.__info().__isSelfWritable())
-			throw new RecordStoreException("DC01");
+		int id;
+		RecordListener[] listeners;
 		
-		// Used for later
-		int rv;
-		RecordListener[] listeners = this.__listeners();
-		
-		throw Debugging.todo();
-		/*
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Add the page
-			rv = vinyl.pageAdd(this._vid, __b, __o, __l, __tag);
-			RecordStore.__checkError(rv);
+			/* {@squirreljme.error DC01 Cannot write record to read-only
+			store.} */
+			if (!this.__info().__isSelfWritable())
+				throw new RecordStoreException("DC01");
+			
+			// Used for later broadcasting
+			listeners = this.__listeners();
+			
+			// Open new session with the given tag
+			id = this.__info().__nextId(true);
+			this.__info().__tag(id, __tag);
+			try (RecordSession session = this.__info().__open(id))
+			{
+				// Write all bytes into it
+				session.writeAll(__b, __o, __l);
+			}
 		}
 		
-		// Report to the listeners
-		for (RecordListener l : listeners)
-			l.recordAdded(this, rv);
-		return rv;
+		// Broadcast to listeners
+		if (listeners != null)
+			for (RecordListener listener : listeners)
+				listener.recordAdded(this, id);
 		
-		 */
+		// Return resultant ID
+		return id;
 	}
 	
 	/**
@@ -355,39 +364,21 @@ public class RecordStore
 	public long getLastModified()
 		throws RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
-		throw Debugging.todo();
-		/*
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			long[] time = new long[1];
-			int rv = vinyl.volumeModTime(this._vid, time);
-			
-			try
+			try (RecordStoreSession session = this.__info().__meta())
 			{
-				RecordStore.__checkError(rv);
+				return session.lastModified();
 			}
-			catch (RecordStoreException e)
+			catch (RecordStoreException __e)
 			{
-				if (e instanceof RecordStoreNotOpenException)
-					throw (RecordStoreNotOpenException)e;
-				
-				/* {@squirreljme.error DC02 Could not get the record store
-				time.} * /
-				throw new RuntimeException("DC02", e);
+				throw RecordUtils.wrap(
+					new RecordStoreNotOpenException(__e.getMessage()), __e);
 			}
-			
-			return time[0];
 		}
-		
-		 */
 	}
 	
 	/**
@@ -401,10 +392,13 @@ public class RecordStore
 	public String getName()
 		throws RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
-		return this._name;
+		synchronized (this._lock)
+		{
+			// Check open
+			this.__checkOpen();
+			
+			return this._name;
+		}
 	}
 	
 	/**
@@ -424,23 +418,20 @@ public class RecordStore
 	public int getNextRecordID()
 		throws RecordStoreException, RecordStoreNotOpenException
 	{
-		throw Debugging.todo();
-		/*
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		// The ID count is the record count
+		try
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Get next ID as a guess
-			int rv = vinyl.pageNextId(this._vid);
-			RecordStore.__checkError(rv);
-			
-			return rv;
+			// Return the next available ID, but do not allocate it
+			return this.__info().__nextId(false);
 		}
-		
-		 */
+		catch (RecordStoreException __e)
+		{
+			throw RecordUtils.wrap(
+				new RecordStoreNotOpenException(__e.getMessage()), __e);
+		}
 	}
 	
 	/**
@@ -454,12 +445,12 @@ public class RecordStore
 	public int getNumRecords()
 		throws RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
 		// The ID count is the record count
 		try
 		{
+			// Check open
+			this.__checkOpen();
+			
 			return this.__info().__ids().length;
 		}
 		catch (RecordStoreException __e)
@@ -486,33 +477,22 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
-		throw Debugging.todo();
-		/*
-		// This volume
-		int vid = this._vid;
-		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
-			// Need to know the size of the record
-			int size = vinyl.pageSize(vid, __id);
-			RecordStore.__checkError(size);
+			// Check open
+			this.__checkOpen();
 			
-			// Allocate data to read from it
-			byte[] rv = new byte[size];
-			
-			// Read data
-			int read = vinyl.pageRead(vid, __id, rv, 0, size);
-			RecordStore.__checkError(read);
-			
-			return rv;
+			// Open existing session
+			try (RecordSession session = this.__info().__open(__id))
+			{
+				// No data?
+				byte[] result = session.readAll();
+				if (result == null || result.length == 0)
+					return null;
+				
+				return Arrays.copyOf(result, result.length);
+			}
 		}
-		
-		 */
 	}
 	
 	/**
@@ -540,39 +520,29 @@ public class RecordStore
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0)
+		if (__o < 0 || __o > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		throw Debugging.todo();
-		/*
-		// This volume
-		int vid = this._vid;
-		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Need to know the size of the record
-			int size = vinyl.pageSize(vid, __id);
-			RecordStore.__checkError(size);
-			
-			/* {@squirreljme.error DC04 The record does not fit into the
-			output.} * /
-			if (size < 0 || (__o + size) > __b.length)
-				throw new ArrayIndexOutOfBoundsException("DC04");
-			
-			// Read data
-			int read = vinyl.pageRead(vid, __id, __b, __o, size);
-			RecordStore.__checkError(read);
-			
-			// Size is used as the return value
-			return size;
+			// Open existing session
+			try (RecordSession session = this.__info().__open(__id))
+			{
+				// Nothing to read?
+				byte[] result = session.readAll();
+				if (result == null || result.length == 0)
+					return 0;
+				
+				// Direct copy
+				int limit = Math.min(__b.length - __o, result.length);
+				System.arraycopy(result, 0,
+					__b, __o, limit);
+				return limit;
+			}
 		}
-		
-		 */
 	}
 	
 	/**
@@ -591,24 +561,20 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		throw Debugging.todo();
-		/*
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Need to know the size of the record
-			int size = vinyl.pageSize(this._vid, __id);
-			RecordStore.__checkError(size);
-			
-			// Return it
-			return size;
+			// Open existing session
+			try (RecordSession session = this.__info().__open(__id))
+			{
+				byte[] data = session.readAll();
+				if (data == null)
+					return 0;
+				return data.length;
+			}
 		}
-		
-		 */
 	}
 	
 	/**
@@ -689,23 +655,14 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		throw Debugging.todo();
-		/*
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Get and check tag
-			int rv = vinyl.pageTag(this._vid, __id);
-			RecordStore.__checkError(rv);
-			
-			return rv;
+			// Get tag
+			return this.__info().__tag(__id);
 		}
-		
-		 */
 	}
 	
 	/**
@@ -720,35 +677,23 @@ public class RecordStore
 	public int getVersion()
 		throws RecordStoreNotOpenException
 	{
-		throw Debugging.todo();
-		/*
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			int rv = vinyl.volumeModCount(this._vid);
-			
-			try
+			// This would be in the meta-info
+			try (RecordStoreSession session = this.__info().__meta())
 			{
-				RecordStore.__checkError(rv);
+				return session.getInteger(
+					RecordStoreSession.MODIFICATION_COUNT, 0);
 			}
-			catch (RecordStoreException e)
+			catch (RecordStoreException __e)
 			{
-				if (e instanceof RecordStoreNotOpenException)
-					throw (RecordStoreNotOpenException)e;
-				
-				/* {@squirreljme.error DC05 Could not get the record store
-				version.} * /
-				throw new RuntimeException("DC05", e);
+				throw RecordUtils.wrap(
+					new RecordStoreNotOpenException(__e.getMessage()), __e);
 			}
-			
-			return rv;
 		}
-		
-		 */
 	}
 	
 	/**
@@ -835,36 +780,42 @@ public class RecordStore
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 ||
+			(__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		throw Debugging.todo();
-		/*
-		/* {@squirreljme.error DC06 Cannot write record to read-only
-		store.} * /
-		if (!this.__isSelfWritable())
-			throw new RecordStoreException("DC06");
+		int id;
+		RecordListener[] listeners;
 		
-		// Used for later
-		RecordListener[] listeners = this.__listeners();
-		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Set the page
-			__id = vinyl.pageSet(this._vid, __id, __b, __o, __l, __tag);
-			RecordStore.__checkError(__id);
+			/* {@squirreljme.error DC01 Cannot write record to read-only
+			store.} */
+			if (!this.__info().__isSelfWritable())
+				throw new RecordStoreException("DC01");
+			
+			// Used for later broadcasting
+			listeners = this.__listeners();
+			
+			// Open existing session
+			this.__info().__tag(__id, __tag);
+			try (RecordSession session = this.__info().__open(__id))
+			{
+				// Get the ID of the session
+				id = session.id;
+				
+				// Write all bytes into it
+				session.writeAll(__b, __o, __l);
+			}
 		}
 		
-		// Report to the listeners
-		for (RecordListener l : listeners)
-			l.recordChanged(this, __id);
-			
-		 */
+		// Broadcast to listeners
+		if (listeners != null)
+			for (RecordListener listener : listeners)
+				listener.recordChanged(this, id);
 	}
 	
 	/**
@@ -911,7 +862,7 @@ public class RecordStore
 	/**
 	 * Returns all the listeners for this record store.
 	 *
-	 * @return The listeners.
+	 * @return The listeners, or {@code null if there are none}.
 	 * @since 2019/04/15
 	 */
 	private RecordListener[] __listeners()
@@ -919,6 +870,8 @@ public class RecordStore
 		synchronized (this._lock)
 		{
 			Set<RecordListener> listeners = this._listeners;
+			if (listeners.isEmpty())
+				return null;
 			return listeners.toArray(new RecordListener[listeners.size()]);
 		}
 	}
@@ -1206,42 +1159,6 @@ public class RecordStore
 			SecurityException
 	{
 		return RecordStore.openRecordStore(__n, __vend, __suite, "");
-	}
-	
-	/**
-	 * Checks for an error and throws an exception potentially.
-	 *
-	 * @param __id The ID to check, negative indicates error.
-	 * @throws RecordStoreException If there is an error.
-	 * @since 2019/05/01
-	 */
-	private static void __checkError(int __id)
-		throws RecordStoreException
-	{
-		throw Debugging.todo();
-		/*
-		// Error was detected
-		if (__id < 0)
-		{
-			/* {@squirreljme.error DC09 Could not add the record, there might
-			not be enough free space available.} * /
-			if (__id == VinylRecord.ERROR_NO_MEMORY)
-				throw new RecordStoreFullException("DC09");
-			
-			/* {@squirreljme.error DC0a No such record store exists.} * /
-			if (__id == VinylRecord.ERROR_NO_VOLUME)
-				throw new RecordStoreNotFoundException("DC0a");
-			
-			/* {@squirreljme.error DC0b No such record exists.} * /
-			if (__id == VinylRecord.ERROR_NO_PAGE)
-				throw new InvalidRecordIDException("DC0b");
-			
-			/* {@squirreljme.error DC0c Unknown record store error.
-			(Error)} * /
-			throw new RecordStoreException("DC0c " + __id);
-		}
-		
-		 */
 	}
 	
 	/**
