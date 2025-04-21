@@ -95,6 +95,10 @@ public class RecordStoreSession
 	public static final String RECORD_NAME =
 		"recordName";
 	
+	/** Tag prefix. */
+	public static final String TAG_PREFIX =
+		"tag:";
+	
 	/** Newly overwritten keys. */
 	private final Map<String, JsonValue> _updates =
 		new HashMap<>();
@@ -283,7 +287,11 @@ public class RecordStoreSession
 	public int getTag(int __id)
 		throws RecordStoreException
 	{
-		throw Debugging.todo();
+		synchronized (this.lock)
+		{
+			return this.getInteger(RecordStoreSession.TAG_PREFIX + __id,
+				0);
+		}
 	}
 	
 	/**
@@ -636,7 +644,10 @@ public class RecordStoreSession
 	public void setTag(int __id, int __tag)
 		throws RecordStoreException
 	{
-		throw Debugging.todo();
+		synchronized (this.lock)
+		{
+			this.set(RecordStoreSession.TAG_PREFIX + __id, __tag);
+		}
 	}
 	
 	/**

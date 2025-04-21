@@ -186,7 +186,7 @@ public final class RecordStoreInfo
 		throws RecordStoreNotOpenException
 	{
 		// Use any value here, since it is unknown
-		return Integer.MAX_VALUE >> 1;
+		return Integer.MAX_VALUE >>> 1;
 	}
 	
 	/**
@@ -268,58 +268,6 @@ public final class RecordStoreInfo
 			{
 				throw RecordUtils.wrap(
 					new RecordStoreException(__e.getMessage()), __e);
-			}
-		}
-	}
-	
-	/**
-	 * Returns the file that refers to the given record ID.
-	 *
-	 * @param __id The sub-record ID.
-	 * @return The file associated with this ID, {@code -1} will create a
-	 * new one.
-	 * @throws IllegalArgumentException If the ID is not valid.
-	 * @since 2025/04/16
-	 */
-	String __idFile(int __id)
-		throws IllegalArgumentException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Determines all the valid record IDs that exist.
-	 *
-	 * @return All the existing record IDs.
-	 * @throws RecordStoreException If the IDs could not be obtained.
-	 * @since 2025/04/16
-	 */
-	int[] __ids()
-		throws RecordStoreException
-	{
-		synchronized (this._lock)
-		{
-			try (RecordStoreSession session = this.__meta())
-			{
-				JsonArray ids = session.getArray(RecordStoreSession.IDS);
-				if (ids == null)
-					return new int[0];
-				
-				// Read in all record IDs
-				int n = ids.size();
-				int[] result = new int[n];
-				for (int i = 0; i < n; i++)
-					try
-					{
-						result[i++] = ids.getInt(i);
-					}
-					catch (ClassCastException __e)
-					{
-						throw RecordUtils.wrap(
-							new RecordStoreException(__e.getMessage()), __e);
-					}
-				
-				return result;
 			}
 		}
 	}
