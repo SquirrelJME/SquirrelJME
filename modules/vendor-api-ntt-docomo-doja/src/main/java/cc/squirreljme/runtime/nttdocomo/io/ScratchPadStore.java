@@ -21,6 +21,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
@@ -105,7 +106,9 @@ public final class ScratchPadStore
 		// the record store.}
 		catch (RecordStoreException __e)
 		{
-			throw new IOException("AH0m", __e);
+			IOException toss = new ConnectionNotFoundException("AH0m");
+			toss.initCause(__e);
+			throw toss;
 		}
 	}
 	

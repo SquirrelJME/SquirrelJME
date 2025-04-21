@@ -96,8 +96,13 @@ public class RecordStoreSession
 		"recordName";
 	
 	/** Tag prefix. */
+	@SquirrelJMEVendorApi
 	public static final String TAG_PREFIX =
 		"tag:";
+	
+	/** The base name used for records. */
+	@SquirrelJMEVendorApi
+	protected final String baseName;
 	
 	/** Newly overwritten keys. */
 	private final Map<String, JsonValue> _updates =
@@ -133,6 +138,14 @@ public class RecordStoreSession
 		// Set these if available
 		this._owner = __owner;
 		this._name = __name;
+		
+		// Determine base name
+		String fileName = this.fileName;
+		int lastDot = fileName.lastIndexOf('.');
+		if (lastDot >= 0)
+			this.baseName = fileName.substring(0, lastDot);
+		else
+			this.baseName = fileName;
 	}
 	
 	/**
@@ -141,6 +154,24 @@ public class RecordStoreSession
 	 */
 	@Override
 	public void close()
+		throws RecordStoreException
+	{
+		synchronized (this.lock)
+		{
+			// Make sure it is flushed
+			this.flush();
+			
+			// Forward close
+			super.close();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/04/21
+	 */
+	@Override
+	public void flush()
 		throws RecordStoreException
 	{
 		synchronized (this.lock)
@@ -204,8 +235,8 @@ public class RecordStoreSession
 			// Set data to be written for the record
 			this.writeAll(chunk);
 			
-			// Forward close
-			super.close();
+			// Commit
+			super.flush();
 		}
 	}
 	
@@ -473,7 +504,17 @@ public class RecordStoreSession
 	public RecordSession open(int __id)
 		throws RecordStoreException
 	{
-		throw Debugging.todo();
+		// Cannot be negative
+		if (__id < 0)
+			throw new RecordStoreException("NEGV");
+		
+		synchronized (this.lock)
+		{
+			// This is as simple as opening a new session
+			return new RecordSession(this.bucket,
+				this.baseName + "." + __id,
+				this.lock, __id);
+		}
 	}
 	
 	/**
@@ -575,6 +616,9 @@ public class RecordStoreSession
 		if (__key == null || __val == null)
 			throw new NullPointerException("NARG");
 		
+		// Debug
+		Debugging.debugNote("set(%s, %s)", __key, __val);
+		
 		synchronized (this.lock)
 		{
 			// Put in new value
@@ -586,6 +630,9 @@ public class RecordStoreSession
 				this.set(RecordStoreSession.MODIFICATION_COUNT,
 					this.getInteger(RecordStoreSession.MODIFICATION_COUNT,
 						0) + 1);
+			
+			// Make sure data is written
+			this.flush();
 		}
 	}
 	
@@ -602,6 +649,10 @@ public class RecordStoreSession
 	public void setAccess(int __auth, boolean __otherWrite, String __pass)
 		throws RecordStoreException
 	{
+		
+		// Debug
+		Debugging.debugNote("setAccess()");
+		
 		synchronized (this.lock)
 		{
 			// Write suite information
@@ -618,10 +669,7 @@ public class RecordStoreSession
 				this.name());
 			
 			// Write base name, could be used for recovery?
-			String fileName = this.fileName;
-			int lastDot = fileName.lastIndexOf('.');
-			this.set(RecordStoreSession.BASE_NAME,
-				(lastDot >= 0 ? fileName.substring(0, lastDot) : fileName));
+			this.set(RecordStoreSession.BASE_NAME, this.baseName);
 			
 			// Write access information
 			this.set(RecordStoreSession.AUTHENTICATION, __auth);

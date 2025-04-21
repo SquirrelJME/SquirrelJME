@@ -48,6 +48,7 @@ public class RecordSession
 	@SquirrelJMEVendorApi
 	protected final Object lock;
 	
+	/** The record ID. */
 	@SquirrelJMEVendorApi
 	public final int id;
 	
@@ -90,13 +91,27 @@ public class RecordSession
 	public void close()
 		throws RecordStoreException
 	{
+		// Commit any data
+		this.flush();
+	}
+	
+	/**
+	 * Flushes the record store information.
+	 *
+	 * @throws RecordStoreException If it could not be flushed.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	public void flush()
+		throws RecordStoreException
+	{
 		// Get any data to commit
 		byte[] commit;
 		synchronized (this.lock)
 		{
 			commit = this._commit;
 			this._commit = null;
-		
+			
 			// Is there anything to commit?
 			if (commit != null)
 				try
@@ -259,11 +274,12 @@ public class RecordSession
 	 * @param __buf The buffer of data to set for writing, for efficiency
 	 * the buffer is not copied.
 	 * @throws NullPointerException On null arguments.
+	 * @throws RecordStoreException If the data could not be written.
 	 * @since 2025/04/20
 	 */
 	@SquirrelJMEVendorApi
 	public void writeAll(byte[] __buf)
-		throws NullPointerException
+		throws NullPointerException, RecordStoreException
 	{
 		if (__buf == null)
 			throw new NullPointerException("NARG");
@@ -277,6 +293,9 @@ public class RecordSession
 			// Since we updated the data, we want to read the latest data
 			// always
 			this._read = new WeakReference<>(__buf);
+			
+			// Make sure we commit
+			this.flush();
 		}
 	}
 	
@@ -290,11 +309,13 @@ public class RecordSession
 	 * @throws IndexOutOfBoundsException If the index and/or offset are
 	 * negative or exceed the array bounds.
 	 * @throws NullPointerException On null arguments.
+	 * @throws RecordStoreException If the data could not be written.
 	 * @since 2025/04/21
 	 */
 	@SquirrelJMEVendorApi
 	public void writeAll(byte[] __buf, int __off, int __len)
-		throws IndexOutOfBoundsException, NullPointerException
+		throws IndexOutOfBoundsException, NullPointerException,
+			RecordStoreException
 	{
 		if (__buf == null)
 			throw new NullPointerException("NARG");
@@ -302,12 +323,14 @@ public class RecordSession
 			(__off + __len) > __buf.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// Copy bytes to new base array
-		byte[] dup = new byte[__len];
-		System.arraycopy(__buf, __off,
-			dup, 0, __len);
-		
-		// Commit this data
-		this.writeAll(dup);
+		synchronized (this.lock)
+		{
+			// Copy bytes to new base array
+			byte[] dup = new byte[__len];
+			System.arraycopy(__buf, __off, dup, 0, __len);
+			
+			// Commit this data
+			this.writeAll(dup);
+		}
 	}
 }
