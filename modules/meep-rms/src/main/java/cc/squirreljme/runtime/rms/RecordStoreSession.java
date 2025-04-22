@@ -625,6 +625,29 @@ public class RecordStoreSession
 	}
 	
 	/**
+	 * Purges this record store.
+	 *
+	 * @throws RecordStoreException If this could not be purged.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	public void purge()
+		throws RecordStoreException
+	{
+		synchronized (this)
+		{
+			// Delete all IDs
+			for (int id : this.ids())
+				this.delete(id);
+			
+			// Clear all updates and use a blank JSON as the base
+			// When the session is closed, nothing should remain
+			this._updates.clear();
+			this._json = Json.createObjectBuilder().build();
+		}
+	}
+	
+	/**
 	 * Sets the given key to the specified value.
 	 *
 	 * @param __key The key to set.

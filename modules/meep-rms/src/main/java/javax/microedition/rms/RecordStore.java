@@ -921,7 +921,7 @@ public class RecordStore
 	 * {@link RecordListener#recordDeleted(RecordStore, int)}
 	 * listeners associated with the given record store.
 	 *
-	 * @param __n The name of the record store to delete.
+	 * @param __name The name of the record store to delete.
 	 * @throws RecordStoreException If the record store cannot be deleted due
 	 * to being owned by another suite or deletion is not possible.
 	 * @throws RecordStoreNotFoundException If the given record store was not
@@ -929,47 +929,25 @@ public class RecordStore
 	 * @since 2017/02/26
 	 */
 	@Api
-	public static void deleteRecordStore(String __n)
+	public static void deleteRecordStore(String __name)
 		throws NullPointerException, RecordStoreException,
 			RecordStoreNotFoundException
 	{
-		if (__n == null)
+		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
-		/*
-		// Our suite identifier to find our own records
-		long mysid = SuiteHash.currentIdentifier();
-		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		// Open record under ourself
+		SuiteIdentifier self = ApplicationHandler.suiteIdentifier();
+		try (RecordStore store = RecordStore.__openRecordStore(__name,
+			self.vendor().toString(), self.name().toString(), false,
+			RecordStore.AUTHMODE_ANY, true, null))
 		{
-			// Try to locate our record
-			int got = -1;
-			for (int rid : vinyl.volumeList())
+			try (RecordStoreSession session = store.__info().__meta())
 			{
-				// Another suite's volume
-				if (mysid != vinyl.volumeSuiteIdentifier(rid))
-					continue;
-				
-				// Found the record?
-				if (__n.equals(vinyl.volumeName(rid)))
-				{
-					got = -1;
-					break;
-				}
+				// Purge the record
+				session.purge();
 			}
-			
-			/* {@squirreljme.error DC08 Cannot delete the specified record
-			store because it does not exist. (The name of the store)} * /
-			if (got == -1)
-				throw new RecordStoreNotFoundException("DC08 " + __n);
-			
-			throw Debugging.todo();
 		}
-		
-		 */
 	}
 	
 	/**
