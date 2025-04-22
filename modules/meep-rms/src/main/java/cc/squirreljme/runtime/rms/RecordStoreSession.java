@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.rms;
 
 import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.jvm.suite.SuiteName;
 import cc.squirreljme.jvm.suite.SuiteVendor;
@@ -35,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
+import javax.microedition.rms.RecordStoreNotOpenException;
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -162,6 +164,52 @@ public class RecordStoreSession
 		
 		// Forward close
 		super.close();
+	}
+	
+	/**
+	 * Deletes the given record.
+	 *
+	 * @param __id The record ID to delete.
+	 * @throws RecordStoreException If the record could not be deleted.
+	 * @since 2025/04/21
+	 */
+	@SquirrelJMEVendorApi
+	public void delete(int __id)
+		throws RecordStoreException
+	{
+		synchronized (this.lock)
+		{
+			// Find index where this ID is
+			int[] ids = this.ids();
+			int at = 0;
+			int n = ids.length;
+			for (; at < n; at++)
+				if (ids[at] == __id)
+					break;
+			
+			// Not found? Then do nothing
+			if (at >= n)
+				return;
+			
+			// Keep other IDs
+			JsonArrayBuilder builder = Json.createArrayBuilder();
+			for (; at < n; at++)
+				if (ids[at] != __id)
+					builder.add(ids[at]);
+			
+			// Set new IDs and clear any tags for it
+			this.set(RecordStoreSession.IDS, builder.build());
+			
+			// Delete the file on disk for that record, ignore failures
+			try
+			{
+				BucketShelf.delete(this.bucket,
+					this.baseName + "." + __id);
+			}
+			catch (MLECallError ignored)
+			{
+			}
+		}
 	}
 	
 	/**

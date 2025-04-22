@@ -57,7 +57,21 @@ public class EmulatedBucketShelf
 		@NotNull String __file)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__bucket == null || __file == null)
+			throw new MLECallError("NARG");
+		
+		// Which target path
+		Path target = ((EmulatedBucketBracket)__bucket).__resolve(__file);
+		
+		// Delete it
+		try
+		{
+			return Files.deleteIfExists(target);
+		}
+		catch (IOException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
 	}
 	
 	/**
@@ -76,7 +90,21 @@ public class EmulatedBucketShelf
 		@NotNull String __file)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__bucket == null || __file == null)
+			throw new MLECallError("NARG");
+		
+		// Which target path
+		Path target = ((EmulatedBucketBracket)__bucket).__resolve(__file);
+		
+		// Get the time of the file
+		try
+		{
+			return Files.getLastModifiedTime(target).toMillis();
+		}
+		catch (IOException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
 	}
 	
 	/**

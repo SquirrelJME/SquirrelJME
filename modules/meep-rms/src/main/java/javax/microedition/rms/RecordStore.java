@@ -279,28 +279,25 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreNotOpenException,
 			RecordStoreException, SecurityException
 	{
-		// Used later
-		RecordListener[] listeners = this.__listeners();
-		
-		throw Debugging.todo();
-		/*
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		RecordListener[] listeners;
+		synchronized (this)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Delete it
-			int rv = vinyl.pageDelete(this._vid, __id);
-			RecordStore.__checkError(rv);
+			// Used for later broadcasting
+			listeners = this.__listeners();
+			
+			// Delete the given record
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				session.delete(__id);
+			}
 		}
 		
 		// Report to the listeners
 		for (RecordListener l : listeners)
 			l.recordDeleted(this, __id);
-			
-		 */
 	}
 	
 	/**

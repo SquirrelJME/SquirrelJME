@@ -112,7 +112,15 @@ public class RecordSession
 	public long lastModified()
 		throws RecordStoreException
 	{
-		throw Debugging.todo();
+		try
+		{
+			return BucketShelf.lastModifiedTime(this.bucket, this.fileName);
+		}
+		catch (MLECallError __e)
+		{
+			throw RecordUtils.wrap(
+				new RecordStoreException(__e.getMessage()), __e);
+		}
 	}
 	
 	/**
