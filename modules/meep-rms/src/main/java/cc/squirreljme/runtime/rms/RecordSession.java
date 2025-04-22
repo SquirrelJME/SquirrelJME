@@ -52,12 +52,6 @@ public class RecordSession
 	@SquirrelJMEVendorApi
 	public final int id;
 	
-	/** The origin read data. */
-	private volatile Reference<byte[]> _read;
-	
-	/** The target data to commit. */
-	private volatile byte[] _commit;
-	
 	/**
 	 * Initializes the session.
 	 *
@@ -105,35 +99,6 @@ public class RecordSession
 	public void flush()
 		throws RecordStoreException
 	{
-		// Get any data to commit
-		byte[] commit;
-		synchronized (this.lock)
-		{
-			commit = this._commit;
-			this._commit = null;
-			
-			// Is there anything to commit?
-			if (commit != null)
-				try
-				{
-					// Debug
-					if (Debugging.ENABLED)
-					{
-						Debugging.debugNote("Session %s", this);
-						HexDumpOutputStream.dump(System.err, commit);
-					}
-					
-					// Commit it
-					BucketShelf.write(this.bucket, this.fileName, 0,
-						commit, 0, commit.length,
-						BucketWriteMode.TRUNCATE);
-				}
-				catch (MLECallError __e)
-				{
-					throw RecordUtils.wrap(
-						new RecordStoreException(__e.getMessage()), __e);
-				}
-		}
 	}
 	
 	/**
@@ -161,7 +126,16 @@ public class RecordSession
 	public int length()
 		throws RecordStoreException
 	{
-		throw Debugging.todo();
+		try
+		{
+			return (int)Math.min(Integer.MAX_VALUE,
+				BucketShelf.length(this.bucket, this.fileName));
+		}
+		catch (MLECallError __e)
+		{
+			throw RecordUtils.wrap(
+				new RecordStoreException(__e.getMessage()), __e);
+		}
 	}
 	
 	/**
@@ -203,7 +177,11 @@ public class RecordSession
 		if (__off < 0 || __len < 0 || (__off + __len) < 0)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw Debugging.todo();
+		synchronized (this.lock)
+		{
+			return BucketShelf.read(this.bucket, this.fileName,
+				0, __buf, __off, __len);
+		}
 	}
 	
 	/**
@@ -217,53 +195,25 @@ public class RecordSession
 	public byte[] readAll()
 		throws RecordStoreException
 	{
+		BucketBracket bucket = this.bucket;
+		String fileName = this.fileName;
+		
 		synchronized (this.lock)
 		{
-			// Use committed data first
-			if (this._commit != null)
-				return this._commit;
+			// Is there an actual file here?
+			long length = BucketShelf.length(bucket, fileName);
+			if (length <= 0)
+				return new byte[0];
 			
-			// Check to see if there is a cache of all the data already
-			Reference<byte[]> ref = this._read;
-			byte[] result = null;
-			if (ref == null || (result = ref.get()) == null)
-			{
-				// Read in
-				try
-				{
-					// Determine the data length
-					BucketBracket bucket = this.bucket;
-					String fileName = this.fileName;
-					long length = BucketShelf.length(bucket, fileName);
-					
-					// Does not exist?
-					if (length < 0)
-						result = new byte[0];
-						
-					// Read in everything
-					else
-					{
-						int capped = (int)Math.min(length, Integer.MAX_VALUE);
-						result = new byte[capped];
-						BucketShelf.read(bucket, fileName, 0,
-							result, 0, capped);
-					}
-				}
-				catch (MLECallError __e)
-				{
-					throw RecordUtils.wrap(
-						new RecordStoreException(__e.getMessage()), __e);
-				}
-				
-				// Cache it
-				this._read = new WeakReference<>(result);
-			}
+			// Limit maximum size of read
+			int limit = (int)Math.min(length, Integer.MAX_VALUE);
 			
-			// Debug?
-			if (Debugging.ENABLED)
-				HexDumpOutputStream.dump(System.err, result);
+			// Read in all the data
+			byte[] result = new byte[limit];
+			BucketShelf.read(bucket, fileName,
+				0, result, 0, limit);
 			
-			// Use what was read
+			// Return resultant read
 			return result;
 		}
 	}
@@ -271,8 +221,7 @@ public class RecordSession
 	/**
 	 * Sets all the data to be written to the buffer.
 	 *
-	 * @param __buf The buffer of data to set for writing, for efficiency
-	 * the buffer is not copied.
+	 * @param __buf The buffer of data to set for writing.
 	 * @throws NullPointerException On null arguments.
 	 * @throws RecordStoreException If the data could not be written.
 	 * @since 2025/04/20
@@ -284,26 +233,14 @@ public class RecordSession
 		if (__buf == null)
 			throw new NullPointerException("NARG");
 		
-		// Commit everything
-		synchronized (this.lock)
-		{
-			// This gets committed for writing later
-			this._commit = __buf;
-			
-			// Since we updated the data, we want to read the latest data
-			// always
-			this._read = new WeakReference<>(__buf);
-			
-			// Make sure we commit
-			this.flush();
-		}
+		// Forward
+		this.writeAll(__buf, 0, __buf.length);
 	}
 	
 	/**
 	 * Sets all the data to be written to the buffer.
 	 *
-	 * @param __buf The buffer of data to set for writing, for efficiency
-	 * the buffer is not copied.
+	 * @param __buf The buffer of data to set for writing.
 	 * @param __off The buffer offset.
 	 * @param __len The length of the data.
 	 * @throws IndexOutOfBoundsException If the index and/or offset are
@@ -325,12 +262,10 @@ public class RecordSession
 		
 		synchronized (this.lock)
 		{
-			// Copy bytes to new base array
-			byte[] dup = new byte[__len];
-			System.arraycopy(__buf, __off, dup, 0, __len);
-			
-			// Commit this data
-			this.writeAll(dup);
+			// Write everything to file
+			BucketShelf.write(this.bucket, this.fileName,
+				0, __buf, __off, __len,
+				BucketWriteMode.TRUNCATE);
 		}
 	}
 }

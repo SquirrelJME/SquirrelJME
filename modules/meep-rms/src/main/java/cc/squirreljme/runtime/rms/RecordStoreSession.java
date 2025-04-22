@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.rms;
 
+import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.jvm.suite.SuiteName;
@@ -156,14 +157,11 @@ public class RecordStoreSession
 	public void close()
 		throws RecordStoreException
 	{
-		synchronized (this.lock)
-		{
-			// Make sure it is flushed
-			this.flush();
-			
-			// Forward close
-			super.close();
-		}
+		// Make sure this is flushed
+		this.flush();
+		
+		// Forward close
+		super.close();
 	}
 	
 	/**
@@ -174,13 +172,11 @@ public class RecordStoreSession
 	public void flush()
 		throws RecordStoreException
 	{
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("flush()");
+		
 		synchronized (this.lock)
 		{
-			// If no updates were made, do nothing
-			Map<String, JsonValue> updates = this._updates;
-			if (updates.isEmpty())
-				return;
-			
 			// Load in the JSON data, if available
 			JsonObject base;
 			try
@@ -194,6 +190,7 @@ public class RecordStoreSession
 			
 			// Write new JSON data with updated fields
 			byte[] chunk;
+			Map<String, JsonValue> updates = this._updates;
 			try (ByteArrayOutputStream raw = new ByteArrayOutputStream(
 				1024); JsonGenerator out = Json.createGenerator(raw))
 			{
@@ -207,10 +204,10 @@ public class RecordStoreSession
 						// Base key to operate on
 						String key = entry.getKey();
 						
-						// If the value has been updated, do not write yet
+						// Only write values which have not been updated
 						JsonValue updatedVal = updates.get(key);
-						if (updatedVal != null)
-							out.write(key, updatedVal);
+						if (updatedVal == null)
+							out.write(key, entry.getValue());
 					}
 				
 				// Write out all updated values
@@ -232,10 +229,8 @@ public class RecordStoreSession
 					new RecordStoreException(__e.getMessage()), __e);
 			}
 			
-			// Set data to be written for the record
+			// Write JSON data to disk
 			this.writeAll(chunk);
-			
-			// Commit
 			super.flush();
 		}
 	}
@@ -318,6 +313,9 @@ public class RecordStoreSession
 	public int getTag(int __id)
 		throws RecordStoreException
 	{
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("getTag(%d)", __id);
+		
 		synchronized (this.lock)
 		{
 			return this.getInteger(RecordStoreSession.TAG_PREFIX + __id,
@@ -344,13 +342,11 @@ public class RecordStoreSession
 		if (__cl == null || __key == null)
 			throw new NullPointerException("NARG");
 		
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("getValue(%s)", __key);
+		
 		synchronized (this.lock)
 		{
-			// Load in Json
-			JsonObject json = this.__load();
-			if (json == null)
-				return null;
-			
 			// Overridden?
 			JsonValue result = this._updates.get(__key);
 			if (result != null)
@@ -363,6 +359,11 @@ public class RecordStoreSession
 					throw RecordUtils.wrap(
 						new RecordStoreException(__e.getMessage()), __e);
 				}
+			
+			// Load in Json
+			JsonObject json = this.__load();
+			if (json == null)
+				return null;
 			
 			// Is there a value here?
 			try
@@ -388,6 +389,9 @@ public class RecordStoreSession
 	public int[] ids()
 		throws RecordStoreException
 	{
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("ids()");
+		
 		synchronized (this.lock)
 		{
 			// No records at all?
@@ -418,13 +422,16 @@ public class RecordStoreSession
 	public String name()
 		throws RecordStoreException
 	{
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("name()");
+		
 		// From manifest info?
 		synchronized (this.lock)
 		{
 			// Has this been set from construction?
 			String name = this._name;
 			if (name != null)
-				return null;
+				return name;
 			
 			// The record store must have a name
 			/* {@squirreljme.error AD10 RecordStore has no name.} */
@@ -451,6 +458,9 @@ public class RecordStoreSession
 	public int nextId(boolean __allocate)
 		throws RecordStoreException
 	{
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("nextId(%b)", __allocate);
+		
 		synchronized (this.lock)
 		{
 			// Grab all known IDs
@@ -508,6 +518,9 @@ public class RecordStoreSession
 		if (__id < 0)
 			throw new RecordStoreException("NEGV");
 		
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("open(%d)", __id);
+		
 		synchronized (this.lock)
 		{
 			// This is as simple as opening a new session
@@ -528,13 +541,16 @@ public class RecordStoreSession
 	public SuiteIdentifier owner()
 		throws RecordStoreException
 	{
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("owner()");
+		
 		// From manifest info?
 		synchronized (this.lock)
 		{
 			// Has this been set from construction?
 			SuiteIdentifier owner = this._owner;
 			if (owner != null)
-				return null;
+				return owner;
 			
 			// Get all of these values
 			String name = this.getString(RecordStoreSession.OWNER_NAME,
@@ -617,10 +633,14 @@ public class RecordStoreSession
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		Debugging.debugNote("set(%s, %s)", __key, __val);
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("setValue(%s, %s)", __key, __val);
 		
 		synchronized (this.lock)
 		{
+			// Make sure original JSON is loaded
+			this.__load();
+			
 			// Put in new value
 			this._updates.put(__key, __val);
 			
@@ -630,9 +650,6 @@ public class RecordStoreSession
 				this.set(RecordStoreSession.MODIFICATION_COUNT,
 					this.getInteger(RecordStoreSession.MODIFICATION_COUNT,
 						0) + 1);
-			
-			// Make sure data is written
-			this.flush();
 		}
 	}
 	
@@ -649,9 +666,10 @@ public class RecordStoreSession
 	public void setAccess(int __auth, boolean __otherWrite, String __pass)
 		throws RecordStoreException
 	{
-		
 		// Debug
-		Debugging.debugNote("setAccess()");
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("setAccess(%d, %b, %s)",
+				__auth, __otherWrite, __pass);
 		
 		synchronized (this.lock)
 		{
@@ -692,6 +710,9 @@ public class RecordStoreSession
 	public void setTag(int __id, int __tag)
 		throws RecordStoreException
 	{
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("setTag(%d, %d)", __id, __tag);
+		
 		synchronized (this.lock)
 		{
 			this.set(RecordStoreSession.TAG_PREFIX + __id, __tag);
@@ -713,6 +734,38 @@ public class RecordStoreSession
 	}
 	
 	/**
+	 * Checks if this record store actually exists on the disk and is
+	 * considered valid.
+	 *
+	 * @return If this actually exists and valid.
+	 * @throws RecordStoreException If this could not be determined.
+	 * @since 2025/04/16
+	 */
+	@SquirrelJMEVendorApi
+	public boolean valid()
+		throws RecordStoreException
+	{
+		synchronized (this.lock)
+		{
+			// Does not exist on the disk
+			if (!BucketShelf.exists(this.bucket, this.fileName))
+				return false;
+			
+			// Length on the disk is too tiny
+			if (BucketShelf.length(this.bucket, this.fileName) < 12)
+				return false;
+			
+			// These keys are not set
+			if (this.getString(RecordStoreSession.OWNER_NAME,
+				null) == null)
+				return false;
+			
+			// Considered valid otherwise
+			return true;
+		}
+	}
+	
+	/**
 	 * Loads the stored JSON metadata.
 	 *
 	 * @return The loaded JSON.
@@ -728,9 +781,21 @@ public class RecordStoreSession
 			JsonObject result = this._json;
 			if (result != null)
 				return result;
+			
+			// Grab all bytes, if there is nothing, use a blank object
+			byte[] raw = this.readAll();
+			if (raw == null || raw.length == 0)
+			{
+				// Make a blank object
+				result = Json.createObjectBuilder().build();
+				
+				// Cache it and use it
+				this._json = result;
+				return result;
+			}
 		
 			// Read in meta JSON
-			try (ByteArrayInputStream in = this.read();
+			try (ByteArrayInputStream in = new ByteArrayInputStream(raw);
 				JsonReader reader = Json.createReader(in))
 			{
 				result = reader.readObject();
@@ -741,6 +806,7 @@ public class RecordStoreSession
 			}
 			catch (IOException|JsonParsingException __e)
 			{
+				__e.printStackTrace();
 				throw RecordUtils.wrap(
 					new RecordStoreException(__e.getMessage()), __e);
 			}

@@ -23,7 +23,6 @@ import cc.squirreljme.runtime.rms.RecordUtils;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.IdentityLinkedHashSet;
@@ -1296,34 +1295,35 @@ public class RecordStore
 		// We need to lock on the store's lock
 		synchronized (result._lock)
 		{
-			// If this does not exist, we may need to initialize it
-			if (!result.__info().__exists())
+			try (RecordStoreSession session = result.__info().__meta())
 			{
-				/* {@squirreljme.error DC0e Could not find the specified record
-				store. (The name; The vendor; The suite)} */
-				if (!__create || !isSelf)
-					throw new RecordStoreNotFoundException(
-						String.format("DC0e %s %s %s", __name, __vend,
-							__suite));
-				
-				// Set the access mode
-				try (RecordStoreSession session = result.__info().__meta())
+				// If this does not exist, we may need to initialize it
+				if (!session.valid())
 				{
+					/* {@squirreljme.error DC0e Could not find the specified record
+					store. (The name; The vendor; The suite)} */
+					if (!__create || !isSelf)
+						throw new RecordStoreNotFoundException(
+							String.format("DC0e %s %s %s", __name, __vend,
+								__suite));
+					
+					// Set the access mode
 					session.setAccess(__auth, __write, __pass);
 				}
+				
+				// Not isSelf and is not other writable?
+				/* {@squirreljme.error DC0f Could not open record store of
+				another suite as it is not marked as other writable.} */
+				if (!isSelf && session.valid() &&
+					!result.__info().isWriteable())
+					throw new RecordStoreException(
+						String.format("DC0f %s %s %s", __name, __vend,
+							__suite));
+				
+				// Return the resultant store, after bumping the count
+				result._openCount += 1;
+				return result;
 			}
-			
-			// Not isSelf and is not other writable?
-			/* {@squirreljme.error DC0f Could not open record store of another
-			suite as it is not marked as other writable.} */
-			if (!isSelf && result.__info().__exists() &&
-				!result.__info().isWriteable())
-				throw new RecordStoreException(
-					String.format("DC0f %s %s %s", __name, __vend, __suite));
-			
-			// Return the resultant store, after bumping the count
-			result._openCount += 1;
-			return result;
 		}
 	}
 }

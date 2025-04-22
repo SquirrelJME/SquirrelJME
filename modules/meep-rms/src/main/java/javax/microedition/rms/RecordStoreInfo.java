@@ -234,45 +234,6 @@ public final class RecordStoreInfo
 	}
 	
 	/**
-	 * Checks if this record store actually exists on the disk.
-	 *
-	 * @return If this actually exists.
-	 * @throws RecordStoreException If this could not be determined.
-	 * @since 2025/04/16
-	 */
-	boolean __exists()
-		throws RecordStoreException
-	{
-		synchronized (this._lock)
-		{
-			try
-			{
-				// If the metafile does not exist, it cannot be read
-				if (!BucketShelf.exists(this._bucket, this._metaName))
-					return false;
-				
-				// The metafile could exist, but not have any actual
-				// information in it
-				try (RecordStoreSession meta = this.__meta())
-				{
-					String any = meta.getString(RecordStoreSession.OWNER_NAME,
-						null);
-					if (any == null || any.isEmpty())
-						return false;
-				}
-				
-				// It exists otherwise!
-				return true;
-			}
-			catch (MLECallError __e)
-			{
-				throw RecordUtils.wrap(
-					new RecordStoreException(__e.getMessage()), __e);
-			}
-		}
-	}
-	
-	/**
 	 * Is this record store writable by this application?
 	 *
 	 * @return If this can be written to.
