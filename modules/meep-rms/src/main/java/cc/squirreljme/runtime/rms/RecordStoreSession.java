@@ -127,16 +127,18 @@ public class RecordStoreSession
 	 * @param __fileName The file name of the data.
 	 * @param __lock The lock used for access.
 	 * @param __owner The record store owner.
-	 * @param __name The recored store name.
+	 * @param __name The recorded store name.
+	 * @param __readOnly Is this session read-only?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/20
 	 */
 	@SquirrelJMEVendorApi
 	public RecordStoreSession(BucketBracket __bucket, String __fileName,
-		Object __lock, SuiteIdentifier __owner, String __name)
+		Object __lock, SuiteIdentifier __owner, String __name,
+		boolean __readOnly)
 		throws NullPointerException
 	{
-		super(__bucket, __fileName, __lock, -1);
+		super(__bucket, __fileName, __lock, -1, __readOnly);
 		
 		// Set these if available
 		this._owner = __owner;
@@ -220,6 +222,10 @@ public class RecordStoreSession
 	public void flush()
 		throws RecordStoreException
 	{
+		// Do nothing if read-only
+		if (this.readOnly)
+			return;
+		
 		if (Debugging.VERBOSE)
 			Debugging.debugNote("flush()");
 		
@@ -574,7 +580,7 @@ public class RecordStoreSession
 			// This is as simple as opening a new session
 			return new RecordSession(this.bucket,
 				this.baseName + "." + __id,
-				this.lock, __id);
+				this.lock, __id, false);
 		}
 	}
 	
@@ -702,6 +708,10 @@ public class RecordStoreSession
 	{
 		if (__key == null || __val == null)
 			throw new NullPointerException("NARG");
+		
+		// Fail if readonly
+		if (this.readOnly)
+			throw new RecordStoreException("RORO");
 		
 		// Debug
 		if (Debugging.VERBOSE)
@@ -882,5 +892,18 @@ public class RecordStoreSession
 					new RecordStoreException(__e.getMessage()), __e);
 			}
 		}
+	}
+	
+	/**
+	 * Locates all record stores.
+	 *
+	 * @return All record stores.
+	 * @throws RecordStoreException
+	 * @since 2025/04/21
+	 */
+	public static Object[] locateAll()
+		throws RecordStoreException
+	{
+		throw Debugging.todo();
 	}
 }

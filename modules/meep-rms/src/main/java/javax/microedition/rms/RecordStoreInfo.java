@@ -265,7 +265,7 @@ public final class RecordStoreInfo
 			
 			// Setup new session
 			result = new RecordStoreSession(this._bucket, this._metaName,
-				this._lock, this._owner, this._name);
+				this._lock, this._owner, this._name, false);
 			
 			// Cache and use it
 			this._metaSession = result;

@@ -50,7 +50,11 @@ public class RecordSession
 	
 	/** The record ID. */
 	@SquirrelJMEVendorApi
-	public final int id;
+	protected final int id;
+	
+	/** Is this session read-only? */
+	@SquirrelJMEVendorApi
+	protected final boolean readOnly;
 	
 	/**
 	 * Initializes the session.
@@ -59,12 +63,13 @@ public class RecordSession
 	 * @param __fileName The file name of the data.
 	 * @param __lock The lock used for access.
 	 * @param __id The session ID.
+	 * @param __readOnly Is this session read-only?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/20
 	 */
 	@SquirrelJMEVendorApi
 	public RecordSession(BucketBracket __bucket, String __fileName,
-		Object __lock, int __id)
+		Object __lock, int __id, boolean __readOnly)
 		throws NullPointerException
 	{
 		if (__bucket == null || __fileName == null || __lock == null)
@@ -74,6 +79,7 @@ public class RecordSession
 		this.fileName = __fileName;
 		this.lock = __lock;
 		this.id = __id;
+		this.readOnly = __readOnly;
 	}
 	
 	/**
@@ -267,6 +273,10 @@ public class RecordSession
 		if (__off < 0 || __len < 0 || (__off + __len) < 0 ||
 			(__off + __len) > __buf.length)
 			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Fail if readonly
+		if (this.readOnly)
+			throw new RecordStoreException("RORO");
 		
 		synchronized (this.lock)
 		{
