@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.IncompleteCodeError;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -65,8 +66,12 @@ abstract class __CoreTest__
 	@Override
 	public final TestExecution runExecution(String... __mainargs)
 	{
-		// Use to name this test
+		// Used to name this test
 		Class<?> self = this.getClass();
+		
+		// Self identify suites
+		ApplicationHandler.setNameAndVendor(self.getName(),
+			"SquirrelJME-TAC");
 		
 		// Read the inputs for the test
 		Object[] args = this.__parseInput(self, __mainargs);
