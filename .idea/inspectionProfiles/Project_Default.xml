@@ -22,11 +22,15 @@
     <inspection_tool class="BooleanMethodIsAlwaysInverted" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ConstantValue" enabled="false" level="TEXT ATTRIBUTES" enabled_by_default="false" editorAttributes="CONSIDERATION_ATTRIBUTES" />
     <inspection_tool class="EditorConfigEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JUnit3StyleTestMethodInJUnit4Class" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit4AnnotatedMethodInJUnit3TestCase" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JUnit5AssertionsConverter" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit5MalformedNestedClass" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit5MalformedParameterized" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit5MalformedRepeated" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit5Platform" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JUnitMalformedDeclaration" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="JUnitMixedFramework" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JavaDoc" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="TOP_LEVEL_CLASS_OPTIONS">
         <value>
@@ -61,6 +65,8 @@
     <inspection_tool class="JavadocDeclaration" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ADDITIONAL_TAGS" value="squirreljme.syscallparam,squirreljme.syscallreturn,squirreljme.property,squirreljme.error,squirreljme.property,squirreljme.configtype" />
     </inspection_tool>
+    <inspection_tool class="Junit4Converter" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="Junit4RunWithInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MissingJavadoc" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="PACKAGE_SETTINGS">
         <Options>

@@ -55,7 +55,6 @@ import org.gradle.workers.WorkerExecutor;
 public class VMTestTaskAction
 	implements Action<Task>
 {
-	
 	/** The special key for quick finding test results. */
 	static final String _SPECIAL_KEY = 
 		"XERSQUIRRELJMEXER";
@@ -104,10 +103,13 @@ public class VMTestTaskAction
 	public void execute(Task __task)
 	{
 		// The task used for testing
-		Test testTask = (Test)__task;
+		VMBaseTestTask task = (VMBaseTestTask)__task;
+		Logger logger = __task.getLogger();
+		
+		// Wipe state first
+		VMTestTaskAction.resetState(task);
 		
 		// Debug
-		Logger logger = __task.getLogger();
 		logger.debug("Tests: {}", VMHelpers.runningTests(
 			__task.getProject(), this.classifier.getSourceSet()));
 		
@@ -120,7 +122,7 @@ public class VMTestTaskAction
 		Path resultDir = VMHelpers.testResultXmlDir(__task.getProject(),
 			this.classifier).get();
 		
-		// All the result files will be read afterwards to determine whether
+		// All the result files will be read afterward to determine whether
 		// this task will pass or fail
 		Map<String, Path> xmlResults = new TreeMap<>();
 		
@@ -164,7 +166,7 @@ public class VMTestTaskAction
 			// Calculate test running parameters
 			CandidateTestFiles candidate = tests.get(testName);
 			TestRunParameters runTest = VMTestTaskAction.runTest(
-				(VMBaseTask)__task, this.classifier, runSuite, testName,
+				task, this.classifier, runSuite, testName,
 				candidate);
 			
 			// Where will the results be read from?
@@ -439,6 +441,35 @@ public class VMTestTaskAction
 	}
 	
 	/**
+	 * Resets the application state.
+	 *
+	 * @param __task The task being reset.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/23
+	 */
+	public static void resetState(VMBaseTestTask __task)
+		throws NullPointerException
+	{
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		Logger logger = __task.getLogger();
+		
+		// Before we can properly execute tests in a fresh environment, we need
+		// to clear the application state
+		Path statePath = __task.statePath();
+		logger.debug("Application state is in {}", statePath);
+		if (Files.isDirectory(statePath))
+		{
+			// Notice
+			logger.lifecycle("Clearing state in {}", statePath);
+			
+			// Clear everything, ignore failures
+			VMHelpers.deleteDirTree(__task, statePath);
+		}
+	}
+	
+	/**
 	 * Initializes the suite parameters.
 	 *
 	 * @param __task The task.
@@ -504,7 +535,7 @@ public class VMTestTaskAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/09/11
 	 */
-	public static TestRunParameters runTest(VMBaseTask __task,
+	public static TestRunParameters runTest(VMBaseTestTask __task,
 		SourceTargetClassifier __classifier,
 		SuiteRunParameters __runSuite, String __testName,
 		CandidateTestFiles __candidate)
@@ -532,15 +563,42 @@ public class VMTestTaskAction
 		// Deserialize classpath
 		Path[] classPath = SerializedPath.unboxPaths(__runSuite.classPath);
 		
+		// For system property setup
 		Map<String, String> sysProps = new LinkedHashMap<>(
 			__runSuite.getSysProps());
+		
+		// Target only a specific virtual machine
 		if (Boolean.parseBoolean(
 			__candidate.expectedValues.get("test-vm-target")))
 			sysProps.put("cc.squirreljme.test.vm",
 				__classifier.getBangletVariant().banglet);
 		
-		// Disable exit() in Debugging handler
+		// Disable exit() in Debugging handler, so we get the full trace
+		// and exiting. This may be important for specific systems to be
+		// reliable
 		sysProps.put("cc.squirreljme.noexit", "true");
+		
+		// Because we are not technically a MIDlet, we need to set some
+		// kind of suite details to remain valid
+		sysProps.put(
+			"cc.squirreljme.runtime.midlet.override.midlet-vendor",
+			TaskInitialization.task("SquirrelJME-TAC", __classifier));
+		sysProps.put(
+			"cc.squirreljme.runtime.midlet.override.midlet-name",
+			__testName);
+		
+		// Create and use temporary directories for the SquirrelJME state so
+		// that the user configuration is not destroyed by tests
+		Path pathBase = __task.statePath()
+			.resolve(__testName).toAbsolutePath();
+		sysProps.put("cc.squirreljme.cache.home",
+			pathBase.resolve("cache").toString());
+		sysProps.put("cc.squirreljme.config.home",
+			pathBase.resolve("config").toString());
+		sysProps.put("cc.squirreljme.data.home",
+			pathBase.resolve("data").toString());
+		sysProps.put("cc.squirreljme.state.home",
+			pathBase.resolve("state").toString());
 		
 		// Print test result manifest?
 		if (Boolean.getBoolean(VMTestTaskAction.PRINT_TEST_MANIFEST) ||
@@ -565,6 +623,28 @@ public class VMTestTaskAction
 		return builder
 			.commandLine(commandLine)
 			.build();
+	}
+	
+	/**
+	 * Returns the base state path for the classifier.
+	 *
+	 * @param __task The task to get the base for.
+	 * @param __classifier The classifier used.
+	 * @return The path to the application state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/23
+	 */
+	public static Path statePath(VMBaseTestTask __task,
+		SourceTargetClassifier __classifier)
+		throws NullPointerException
+	{
+		if (__task == null || __classifier == null)
+			throw new NullPointerException("NARG");
+		
+		return __task.getProject().getBuildDir().toPath()
+			.resolve("squirreljme").resolve("test-state")
+			.resolve(TaskInitialization.task("", __classifier))
+			.toAbsolutePath();
 	}
 	
 	/**

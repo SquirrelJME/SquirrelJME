@@ -52,8 +52,9 @@ abstract class __RecordTest__<T>
 		{
 		}
 		
-		// Open the database y creating a new one
-		try (RecordStore rs = RecordStore.openRecordStore("rms-test", true))
+		// Open the database by creating a new one
+		try (RecordStore rs = RecordStore.openRecordStore("rms-test",
+			true))
 		{
 			// Run test on it
 			return this.test(rs);

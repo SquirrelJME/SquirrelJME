@@ -11,21 +11,24 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.util.SingleTaskOutputFile;
+import groovy.lang.Closure;
+import java.nio.file.Path;
 import javax.inject.Inject;
 import lombok.Getter;
+import org.gradle.api.Task;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.api.tasks.testing.TestTaskReports;
 import org.gradle.workers.WorkerExecutor;
 
 /**
- * Not Described.
+ * Modern testing engine using Gradle's testing.
  *
  * @since 2022/09/11
  */
 public class VMModernTestTask
 	extends Test
-	implements VMBaseTask, VMExecutableTask
+	implements VMBaseTask, VMExecutableTask, VMBaseTestTask
 {
 	/** The classifier used. */
 	@Internal
@@ -117,5 +120,27 @@ public class VMModernTestTask
 		this.getTestLogging().setShowExceptions(true);
 		this.getTestLogging().setShowStackTraces(true);
 		this.getTestLogging().setShowCauses(true);
+		
+		// Before we can actually run tests, we need to clear the state
+		this.beforeSuite(new Closure<Object>(this) {
+				@SuppressWarnings("unused")
+				public Object doCall()
+				{
+					VMTestTaskAction.resetState(
+						(VMBaseTestTask)this.getOwner());
+					return null;
+				}
+			});
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/04/23
+	 */
+	@Override
+	public Path statePath()
+	{
+		return VMTestTaskAction.statePath(this,
+			this.classifier);
 	}
 }

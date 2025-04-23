@@ -1,33 +1,29 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import javax.microedition.rms.RecordStore;
-import javax.microedition.rms.RecordStoreException;
+package cc.squirreljme.plugin.multivm;
+
+import java.nio.file.Path;
 
 /**
- * Tests that nothing is done on the record.
+ * Base task for testing related tasks.
  *
- * @since 2018/12/13
+ * @since 2025/04/23
  */
-public class TestNothing
-	extends __RecordTest__<Object>
+public interface VMBaseTestTask
+	extends VMBaseTask
 {
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/13
+	 * Returns the directory where state exists.
+	 *
+	 * @return The directory where state exists.
+	 * @since 2025/04/23
 	 */
-	@Override
-	public Object test(RecordStore __rs)
-		throws RecordStoreException
-	{
-		// Does nothing!
-		return null;
-	}
+	Path statePath();
 }
-
