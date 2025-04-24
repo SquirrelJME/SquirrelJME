@@ -323,9 +323,6 @@ public class EmulatedBucketShelf
 		Path tempFile = null;
 		try (InputStream in = new ByteArrayInputStream(__buf, __off, __len))
 		{
-			// Make sure the target directory exists
-			Files.createDirectories(target.getParent());
-			
 			// Create temporary file
 			tempFile = Files.createTempFile("squirreljme", ".rms");
 			
@@ -345,6 +342,7 @@ public class EmulatedBucketShelf
 			}
 			
 			// Replace the original file
+			Files.createDirectories(target.getParent());
 			Files.move(tempFile, target,
 				StandardCopyOption.REPLACE_EXISTING);
 		}

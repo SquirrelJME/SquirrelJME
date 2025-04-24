@@ -8,6 +8,8 @@
 // ---------------------------------------------------------------------------
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
+import javax.microedition.rms.RecordStore;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -22,10 +24,24 @@ public class TestListing
 	 * {@inheritDoc}
 	 * @since 2025/04/23
 	 */
+	@SuppressWarnings("EmptyTryBlock")
 	@Override
 	public void test()
 		throws Throwable
 	{
-		throw Debugging.todo();
+		// Create a bunch of records
+		for (String name : Arrays.asList("a", "b", "c"))
+			try (RecordStore ignore = RecordStore.openRecordStore(name,
+				true))
+			{
+				// Do nothing
+			}
+		
+		// Locate all store names
+		String[] names = RecordStore.listRecordStores();
+		
+		// Sort them as the order is undefined, then report
+		Arrays.sort(names);
+		this.secondary("names", names);
 	}
 }

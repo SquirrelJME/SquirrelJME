@@ -18,6 +18,7 @@ import lombok.Getter;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.testing.Test;
+import org.gradle.api.tasks.testing.TestDescriptor;
 import org.gradle.api.tasks.testing.TestTaskReports;
 import org.gradle.workers.WorkerExecutor;
 
@@ -122,15 +123,18 @@ public class VMModernTestTask
 		this.getTestLogging().setShowCauses(true);
 		
 		// Before we can actually run tests, we need to clear the state
-		this.beforeSuite(new Closure<Object>(this) {
+		this.beforeTest(new Closure<Object>(this, this)
+			{
 				@SuppressWarnings("unused")
-				public Object doCall()
+				public Object doCall(TestDescriptor __desc)
 				{
 					VMTestTaskAction.resetState(
-						(VMBaseTestTask)this.getOwner());
+						(VMBaseTestTask)this.getOwner(),
+						__desc.getClassName());
 					return null;
 				}
 			});
+		
 	}
 	
 	/**

@@ -8,6 +8,8 @@
 // ---------------------------------------------------------------------------
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
+import javax.microedition.rms.RecordStore;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**

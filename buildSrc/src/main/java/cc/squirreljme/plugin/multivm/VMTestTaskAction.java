@@ -107,7 +107,7 @@ public class VMTestTaskAction
 		Logger logger = __task.getLogger();
 		
 		// Wipe state first
-		VMTestTaskAction.resetState(task);
+		VMTestTaskAction.resetState(task, null);
 		
 		// Debug
 		logger.debug("Tests: {}", VMHelpers.runningTests(
@@ -444,10 +444,11 @@ public class VMTestTaskAction
 	 * Resets the application state.
 	 *
 	 * @param __task The task being reset.
+	 * @param __specific Delete the data for a specific test, optional.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/23
 	 */
-	public static void resetState(VMBaseTestTask __task)
+	public static void resetState(VMBaseTestTask __task, String __specific)
 		throws NullPointerException
 	{
 		if (__task == null)
@@ -455,10 +456,14 @@ public class VMTestTaskAction
 		
 		Logger logger = __task.getLogger();
 		
+		// Determine the state path
+		Path statePath = __task.statePath();
+		if (__specific != null && !__specific.isEmpty())
+			statePath = statePath.resolve(__specific);
+		
 		// Before we can properly execute tests in a fresh environment, we need
 		// to clear the application state
-		Path statePath = __task.statePath();
-		logger.debug("Application state is in {}", statePath);
+		logger.lifecycle("Application state is in {}", statePath);
 		if (Files.isDirectory(statePath))
 		{
 			// Notice

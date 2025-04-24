@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
 result: NoResult
 thrown: NoExceptionThrown
-secondary-first: int:7
-secondary-second: int:9
+secondary-blank: byte[0]:

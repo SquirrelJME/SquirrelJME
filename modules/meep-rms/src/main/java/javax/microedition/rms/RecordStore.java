@@ -23,6 +23,7 @@ import cc.squirreljme.runtime.rms.RecordUtils;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.IdentityLinkedHashSet;
@@ -496,13 +497,18 @@ public class RecordStore
 			
 			try (RecordStoreSession session = this.__info().__meta())
 			{
+				// Not found?
+				int[] ids = session.ids();
+				if (Arrays.binarySearch(ids, __id) < 0)
+					return null;
+				
 				// Open existing session
 				try (RecordSession sub = session.open(__id))
 				{
 					// No data?
 					int length = sub.length();
 					if (length <= 0)
-						return null;
+						return new byte[0];
 					
 					// Read in data chunk
 					byte[] result = new byte[length];

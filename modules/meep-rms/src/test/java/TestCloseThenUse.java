@@ -8,6 +8,7 @@
 // ---------------------------------------------------------------------------
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import javax.microedition.rms.RecordStore;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -26,6 +27,14 @@ public class TestCloseThenUse
 	public void test()
 		throws Throwable
 	{
-		throw Debugging.todo();
+		RecordStore outer;
+		try (RecordStore store = RecordStore.openRecordStore("test",
+			true))
+		{
+			outer = store;
+		}
+		
+		// This should fail
+		outer.getNumRecords();
 	}
 }
