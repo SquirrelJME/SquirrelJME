@@ -9,25 +9,30 @@
 
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
+import net.multiphasicapps.tac.TestRunnable;
 
 /**
  * Tests that nothing is done on the record.
  *
  * @since 2018/12/13
  */
-public class TestNothing
-	extends __RecordTest__<Object>
+public class TestOpenCreate
+	extends TestRunnable
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/12/13
 	 */
 	@Override
-	public Object test(RecordStore __rs)
-		throws RecordStoreException
+	public void test()
+		throws Throwable
 	{
-		// Does nothing!
-		return null;
+		// Open new database, creating it for testing
+		try (RecordStore ignore = RecordStore.openRecordStore("test",
+			true))
+		{
+			// Do nothing!
+		}
 	}
 }
 
