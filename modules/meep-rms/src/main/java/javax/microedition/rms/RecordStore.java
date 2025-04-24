@@ -296,8 +296,9 @@ public class RecordStore
 		}
 		
 		// Report to the listeners
-		for (RecordListener l : listeners)
-			l.recordDeleted(this, __id);
+		if (listeners != null)
+			for (RecordListener l : listeners)
+				l.recordDeleted(this, __id);
 	}
 	
 	/**
