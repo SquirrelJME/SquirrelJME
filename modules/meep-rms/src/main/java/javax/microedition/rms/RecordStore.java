@@ -59,7 +59,7 @@ public class RecordStore
 		0;
 	
 	/** Record stores which have been opened. */
-	private static final List<Reference<RecordStore>> _existing =
+	private static final List<RecordStore> _existing =
 		new ArrayList<>();
 	
 	/** Identity map for listeners */
@@ -219,10 +219,14 @@ public class RecordStore
 			return;
 		
 		// Add listener
-		Set<RecordListener> listeners = this._listeners;
 		synchronized (this._lock)
 		{
-			listeners.add(__l);
+			// Do nothing if closed
+			if (this._openCount <= 0)
+				return;
+			
+			// Only gets added once
+			this._listeners.add(__l);
 		}
 	}
 	
@@ -259,8 +263,13 @@ public class RecordStore
 			if (this._openCount <= 0)
 				throw new RecordStoreNotOpenException("CLSD");
 			
-			// Otherwise reduce
-			this._openCount -= 1;
+			// Otherwise reduce, if we are fully closed then remove this from
+			// the existing set of record stores
+			if ((--this._openCount) <= 0)
+				synchronized (RecordStore.class)
+				{
+					RecordStore._existing.remove(this);
+				}
 		}
 	}
 	
@@ -726,10 +735,9 @@ public class RecordStore
 			return;
 		
 		// Remove listener
-		Set<RecordListener> listeners = this._listeners;
 		synchronized (this._lock)
 		{
-			listeners.remove(__l);
+			this._listeners.remove(__l);
 		}
 	}
 	
@@ -1224,23 +1232,14 @@ public class RecordStore
 		synchronized (RecordStore.class)
 		{
 			// Look through record stores we know about already
-			List<Reference<RecordStore>> existing = RecordStore._existing;
+			List<RecordStore> existing = RecordStore._existing;
 			int freeSlot = -1;
 			for (int i = 0, n = existing.size(); i < n; i++)
 			{
 				// Ignore blank slots
-				Reference<RecordStore> ref = existing.get(i);
-				if (ref == null)
-				{
-					freeSlot = i;
-					continue;
-				}
-				
-				// If this slot was GCed, clear it
-				RecordStore check = ref.get();
+				RecordStore check = existing.get(i);
 				if (check == null)
 				{
-					existing.set(i, null);
 					freeSlot = i;
 					continue;
 				}
@@ -1260,11 +1259,10 @@ public class RecordStore
 				result = new RecordStore(owner, __name, isSelf);
 				
 				// Store cache at the free slot we found
-				Reference<RecordStore> ref = new WeakReference<>(result);
 				if (freeSlot < 0)
-					existing.add(ref);
+					existing.add(result);
 				else
-					existing.set(freeSlot, ref);
+					existing.set(freeSlot, result);
 			}
 		}
 		
