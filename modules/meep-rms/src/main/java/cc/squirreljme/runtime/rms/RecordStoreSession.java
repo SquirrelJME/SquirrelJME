@@ -32,8 +32,10 @@ import com.oracle.json.stream.JsonParsingException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
@@ -925,6 +927,27 @@ public class RecordStoreSession
 		if (__bucket == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		List<RecordIteration> result = new ArrayList<>();
+		
+		// Go through all items and process them
+		Object lock = new Object();
+		for (String item : BucketShelf.list(__bucket, false,
+			null, null, ".rms"))
+			try (RecordStoreSession session = new RecordStoreSession(
+				__bucket, item, lock, null, null,
+				true))
+			{
+				// The iteration is essentially how to rebuild it
+				result.add(new RecordIteration(__bucket,
+					session.baseName,
+					session.owner(), session.name()));
+			}
+			catch (RecordStoreException|NullPointerException ignored)
+			{
+				// Ignore records considered to be invalid
+			}
+		
+		// Return the result of the iteration, for later enumeration
+		return result.toArray(new RecordIteration[result.size()]);
 	}
 }
