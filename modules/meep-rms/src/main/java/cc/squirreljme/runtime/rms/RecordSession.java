@@ -145,7 +145,7 @@ public class RecordSession
 			if (!BucketShelf.exists(this.bucket, this.fileName))
 				return 0;
 			return (int)Math.min(Integer.MAX_VALUE,
-				BucketShelf.length(this.bucket, this.fileName));
+				Math.max(0, BucketShelf.length(this.bucket, this.fileName)));
 		}
 		catch (MLECallError __e)
 		{

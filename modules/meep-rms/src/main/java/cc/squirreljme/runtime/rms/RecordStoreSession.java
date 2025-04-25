@@ -814,7 +814,23 @@ public class RecordStoreSession
 	public long totalSize()
 		throws RecordStoreException
 	{
-		throw Debugging.todo();
+		long total = 0;
+		synchronized (this.lock)
+		{
+			// Add initial size of self
+			total += this.length();
+			
+			// Count up lengths
+			for (int id : this.ids())
+				try (RecordSession sub = this.open(id))
+				{
+					total += sub.length();
+					if (total < 0)
+						total = Long.MAX_VALUE;
+				}
+		}
+		
+		return total;
 	}
 	
 	/**
