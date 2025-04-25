@@ -9,6 +9,7 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.jvm.suite.SuiteName;
 import cc.squirreljme.jvm.suite.SuiteVendor;
@@ -17,6 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
+import cc.squirreljme.runtime.rms.RecordIteration;
 import cc.squirreljme.runtime.rms.RecordSession;
 import cc.squirreljme.runtime.rms.RecordStoreSession;
 import cc.squirreljme.runtime.rms.RecordUtils;
@@ -977,31 +979,18 @@ public class RecordStore
 	@Api
 	public static String[] listRecordStores()
 	{
-		throw Debugging.todo();
-		/*
-		// Our suite identifier to find our own records
-		long mysid = SuiteHash.currentIdentifier();
+		List<String> result = new ArrayList<>();
 		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
-		{
-			List<String> rv = new ArrayList<>();
-			
-			// Go through all IDs and locate record store info
-			for (int rid : vinyl.volumeList())
-			{
-				// Do not add records which belong to another suite
-				if (mysid != vinyl.volumeSuiteIdentifier(rid))
-					continue;
-				
-				rv.add(vinyl.volumeName(rid));
-			}
-			
-			return rv.<String>toArray(new String[rv.size()]);
-		}
+		// Match records owned by ourselves
+		SuiteIdentifier self = ApplicationHandler.suiteIdentifier();
+		for (RecordIteration iteration : RecordStoreSession.locateAll())
+			if (self.equals(iteration.owner))
+				result.add(iteration.name);
 		
-		 */
+		// If there are none, then this will be null
+		if (result.isEmpty())
+			return null;
+		return result.toArray(new String[result.size()]);
 	}
 	
 	/**

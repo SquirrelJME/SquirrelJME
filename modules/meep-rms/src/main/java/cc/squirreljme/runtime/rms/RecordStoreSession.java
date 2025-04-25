@@ -901,12 +901,10 @@ public class RecordStoreSession
 	 * Iterates and locates all record stores.
 	 *
 	 * @return All record stores that were found during an iteration.
-	 * @throws RecordStoreException If records could not be located.
 	 * @since 2025/04/21
 	 */
 	@SquirrelJMEVendorApi
 	public static RecordIteration[] locateAll()
-		throws RecordStoreException
 	{
 		return RecordStoreSession.locateAll(BucketShelf.bucket(
 			StandardBucketType.DATA_BUCKET));
@@ -917,12 +915,11 @@ public class RecordStoreSession
 	 *
 	 * @return All record stores that were found during an iteration.
 	 * @throws NullPointerException On null arguments.
-	 * @throws RecordStoreException If records could not be located.
 	 * @since 2025/04/21
 	 */
 	@SquirrelJMEVendorApi
 	public static RecordIteration[] locateAll(BucketBracket __bucket)
-		throws NullPointerException, RecordStoreException
+		throws NullPointerException
 	{
 		if (__bucket == null)
 			throw new NullPointerException("NARG");

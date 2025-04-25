@@ -87,7 +87,7 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 
 #define FORWARD_listAlt(className, methodName, alt) \
 	{FORWARD_stringy(methodName), \
-	FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName)), \
+	FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName ## _ ## alt)), \
 	(void*)Impl_mle_ ## className ## _ ## methodName ## _ ## alt}
 
 #define FORWARD_IMPL_none()

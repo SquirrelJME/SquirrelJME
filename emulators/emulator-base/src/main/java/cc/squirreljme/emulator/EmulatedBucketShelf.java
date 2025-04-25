@@ -28,6 +28,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -173,7 +176,8 @@ public class EmulatedBucketShelf
 		@NotNull BucketBracket __bucket)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return EmulatedBucketShelf.list(__bucket,
+			false, null, null, null);
 	}
 	
 	/**
@@ -201,7 +205,59 @@ public class EmulatedBucketShelf
 		@Nullable String __suffix)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__bucket == null)
+			throw new MLECallError("NARG");
+		
+		// Obtain base path to scan through
+		Path root = ((EmulatedBucketBracket)__bucket).root;
+		
+		// Performing any kind of matching?
+		int matching = (__prefix != null ? 1 : 0) |
+			(__contains != null ? 2 : 0) |
+			(__suffix != null ? 4 : 0);
+		
+		// List directory contents, no recursion ever
+		List<String> result = new ArrayList<>();
+		try (Stream<Path> stream = Files.list(root))
+		{
+			for (Path path : stream.toArray(Path[]::new))
+			{
+				// Only consider regular files
+				if (!Files.isRegularFile(path))
+					continue;
+				
+				// Operate on the base name of the file
+				String baseName = path.getFileName().toString();
+				
+				// Limiting matches?
+				if (matching != 0)
+				{
+					// Find actual sub-match candidates
+					int found = ((__prefix != null &&
+							baseName.startsWith(__prefix)) ? 1 : 0) |
+						((__contains != null &&
+							baseName.contains(__contains)) ? 2 : 0) |
+						((__suffix != null &&
+							baseName.endsWith(__suffix)) ? 4 : 0);
+					
+					// Is this a valid full match? And also matches
+					// the not condition for flipping?
+					if (((found & matching) == matching) != __not)
+						result.add(baseName);
+				}
+				
+				// Not doing so, just add it
+				else
+					result.add(baseName);
+			}
+		}
+		catch (IOException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
+		
+		// Return resultant list
+		return result.toArray(new String[result.size()]);
 	}
 	
 	/**
