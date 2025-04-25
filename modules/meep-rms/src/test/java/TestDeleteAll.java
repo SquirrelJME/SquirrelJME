@@ -8,6 +8,9 @@
 // ---------------------------------------------------------------------------
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import javax.microedition.rms.RecordListener;
+import javax.microedition.rms.RecordStore;
+import javax.microedition.rms.RecordStoreNotFoundException;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -26,6 +29,37 @@ public class TestDeleteAll
 	public void test()
 		throws Throwable
 	{
-		throw Debugging.todo();
+		// Open new database, creating it for testing
+		try (RecordStore store = RecordStore.openRecordStore("test",
+			true))
+		{
+			// Create a bunch of records
+			for (int i = 0; i < 25; i++)
+				store.addRecord(new byte[i], 0, i);
+			
+			// To mark created count
+			this.secondary("created", store.getNumRecords());
+		}
+		
+		// Delete the record store
+		RecordStore.deleteRecordStore("test");
+		
+		// Creating the record store should fail
+		try (RecordStore ignored = RecordStore.openRecordStore("test",
+			false))
+		{
+			this.fail();
+		}
+		catch (RecordStoreNotFoundException ignored)
+		{
+			// This is good!
+		}
+		
+		// Create it again, there should be zero records
+		try (RecordStore store = RecordStore.openRecordStore("test",
+			true))
+		{
+			this.secondary("count", store.getNumRecords());
+		}
 	}
 }
