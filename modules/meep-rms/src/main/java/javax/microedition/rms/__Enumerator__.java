@@ -242,17 +242,18 @@ final class __Enumerator__
 			int index = Arrays.binarySearch(ids, iteratedAt);
 			if (index < 0)
 				index = -(index + 1);
+			else
+				index = index + 1;
 			
 			// End reached?
-			int check = index + 1;
-			if (check >= ids.length)
+			if (index >= ids.length)
 			{
 				this._iteratedAt = Integer.MAX_VALUE;
 				throw new InvalidRecordIDException("NSEE");
 			}
 			
 			// Set new position
-			int result = ids[check];
+			int result = ids[index];
 			this._iteratedAt = result;
 			return result;
 		}
@@ -313,17 +314,18 @@ final class __Enumerator__
 			int index = Arrays.binarySearch(ids, iteratedAt);
 			if (index < 0)
 				index = -(index + 1);
+			else
+				index = index - 1;
 			
 			// End reached?
-			int check = index - 1;
-			if (check < 0)
+			if (index < 0)
 			{
 				this._iteratedAt = Integer.MIN_VALUE;
 				throw new InvalidRecordIDException("NSEE");
 			}
 			
 			// Set new position
-			int result = ids[check];
+			int result = ids[index];
 			this._iteratedAt = result;
 			return result;
 		}
