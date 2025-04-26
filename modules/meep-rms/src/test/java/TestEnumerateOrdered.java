@@ -9,6 +9,7 @@
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.rms.RecordStore;
+import net.multiphasicapps.tac.UntestableException;
 
 /**
  * Tests ordered enumerations.

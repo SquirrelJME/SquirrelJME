@@ -38,8 +38,13 @@ public class TestMeta
 		try (RecordStore store = RecordStore.openRecordStore("test",
 			true))
 		{
+			// Available size should be greater than zero
 			this.secondary("available", 
 				store.getSizeAvailable() > 0);
+			
+			// Last modified should be non-zero
+			this.secondary("modified",
+				store.getLastModified() > 0);
 			
 			// Create a bunch of record of a fixed size, it should total at
 			// least all of them

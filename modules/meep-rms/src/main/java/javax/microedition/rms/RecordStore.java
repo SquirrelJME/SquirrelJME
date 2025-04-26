@@ -341,7 +341,9 @@ public class RecordStore
 			// Check open
 			this.__checkOpen();
 			
-			throw Debugging.todo();
+			// Build new enumeration
+			return new __Enumerator__(this, this._lock,
+				__f, __c, __ku, __tags);
 		}
 	}
 	
