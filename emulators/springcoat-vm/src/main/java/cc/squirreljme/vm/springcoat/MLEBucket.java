@@ -11,16 +11,29 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * Wrapper for buckets.
+ * Wrapper for {@link BucketShelf}.
  *
  * @since 2025/04/25
  */
 public enum MLEBucket
 	implements MLEFunction
 {
+	/** {@link BucketShelf#bucket(int)}. */
+	BUCKET("bucket:(I)Lcc/squirreljme/jvm/mle/brackets/BucketBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/04/25
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return __thread.machine.bucket((int)__args[0]);
+		}
+	},
+	
 	/** {@link BucketShelf#delete(BucketBracket, String)}. */
 	DELETE("delete:(Lcc/squirreljme/jvm/mle/brackets/BucketBracket;" +
 		"Ljava/lang/String;)Z")
@@ -32,22 +45,9 @@ public enum MLEBucket
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
-		}
-	},
-	
-	/** {@link BucketShelf#lastModifiedTime(BucketBracket, String)}. */
-	LAST_MODIFIED_TIME("lastModifiedTime:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/BucketBracket;Ljava/lang/String;)J")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2025/04/25
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			throw Debugging.todo();
+			return (BucketShelf.delete(
+				MLEObjects.bucket(__args[0]),
+				MLEObjects.string(__args[1])) ? 1 : 0);
 		}
 	},
 	
@@ -62,12 +62,15 @@ public enum MLEBucket
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			return (BucketShelf.exists(
+				MLEObjects.bucket(__args[0]),
+				MLEObjects.string(__args[1])) ? 1 : 0);
 		}
 	},
 	
-	/** {@link BucketShelf#bucket(int)}. */
-	BUCKET("bucket:(I)Lcc/squirreljme/jvm/mle/brackets/BucketBracket;")
+	/** {@link BucketShelf#lastModifiedTime(BucketBracket, String)}. */
+	LAST_MODIFIED_TIME("lastModifiedTime:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/BucketBracket;Ljava/lang/String;)J")
 	{
 		/**
 		 * {@inheritDoc}
@@ -76,41 +79,9 @@ public enum MLEBucket
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
-		}
-	},
-	
-	/** {@link BucketShelf#list(BucketBracket)}. */
-	LIST("list:(Lcc/squirreljme/jvm/mle/brackets/BucketBracket;)" +
-		"LLjava/lang/String;")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2025/04/25
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			throw Debugging.todo();
-		}
-	},
-	
-	/**
-	 * {@link BucketShelf#list(BucketBracket, boolean, String, String,
-	 * String)}.
-	 */
-	LIST_FILTERED("list:(Lcc/squirreljme/jvm/mle/brackets/BucketBracket;" +
-		"ZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)" +
-		"LLjava/lang/String;")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2025/04/25
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			throw Debugging.todo();
+			return BucketShelf.lastModifiedTime(
+				MLEObjects.bucket(__args[0]),
+				MLEObjects.string(__args[1]));
 		}
 	},
 	
@@ -125,7 +96,49 @@ public enum MLEBucket
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			return BucketShelf.length(
+				MLEObjects.bucket(__args[0]),
+				MLEObjects.string(__args[1]));
+		}
+	},
+	
+	/** {@link BucketShelf#list(BucketBracket)}. */
+	LIST("list:(Lcc/squirreljme/jvm/mle/brackets/BucketBracket;)" +
+		"[Ljava/lang/String;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/04/25
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return __thread.asVMObject(BucketShelf.list(
+				MLEObjects.bucket(__args[0])));
+		}
+	},
+	
+	/**
+	 * {@link BucketShelf#list(BucketBracket, boolean, String, String,
+	 * String)}.
+	 */
+	LIST_FILTERED("list:(Lcc/squirreljme/jvm/mle/brackets/BucketBracket;" +
+		"ZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)" +
+		"[Ljava/lang/String;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/04/25
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return __thread.asVMObject(BucketShelf.list(
+				MLEObjects.bucket(__args[0]),
+				(int)__args[1] != 0,
+				MLEObjects.string(__args[2]),
+				MLEObjects.string(__args[3]),
+				MLEObjects.string(__args[4])));
 		}
 	},
 	
@@ -143,7 +156,13 @@ public enum MLEBucket
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			return BucketShelf.read(
+				MLEObjects.bucket(__args[0]),
+				MLEObjects.string(__args[1]),
+				(int)__args[2],
+				MLEObjects.byteArray(__args[3]),
+				(int)__args[4],
+				(int)__args[5]);
 		}
 	},
 	
@@ -161,7 +180,15 @@ public enum MLEBucket
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			BucketShelf.write(
+				MLEObjects.bucket(__args[0]),
+				MLEObjects.string(__args[1]),
+				(int)__args[2],
+				MLEObjects.byteArray(__args[3]),
+				(int)__args[4],
+				(int)__args[5],
+				(int)__args[6]);
+			return null;
 		}
 	},
 	

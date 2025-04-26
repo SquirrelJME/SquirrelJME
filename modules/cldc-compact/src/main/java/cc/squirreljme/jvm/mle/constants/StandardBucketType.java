@@ -24,8 +24,8 @@ public interface StandardBucketType
 	byte DATA_BUCKET =
 		0;
 	
-	/** The number of standard domains. */
+	/** The number of standard buckets. */
 	@SquirrelJMEVendorApi
-	byte NUM_STANDARD =
+	byte NUM_BUCKETS =
 		1;
 }

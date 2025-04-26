@@ -37,6 +37,21 @@ import org.jetbrains.annotations.Range;
 public final class BucketShelf
 {
 	/**
+	 * Accesses the given bucket.
+	 *
+	 * @param __type The type of bucket to open.
+	 * @return The standard bucket.
+	 * @throws MLECallError If the standard bucket type is not valid or not
+	 * supported.
+	 * @since 2025/04/14
+	 */
+	@SquirrelJMEVendorApi
+	public static native BucketBracket bucket(
+		@MagicConstant(valuesFromClass = StandardBucketType.class)
+			int __type)
+		throws MLECallError;
+	
+	/**
 	 * Deletes the file in the given bucket.
 	 *
 	 * @param __bucket The bucket to access.
@@ -47,6 +62,21 @@ public final class BucketShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native boolean delete(
+		@NotNull BucketBracket __bucket,
+		@NotNull String __file)
+		throws MLECallError;
+	
+	/**
+	 * Checks if the given bucket file exists.
+	 *
+	 * @param __bucket The bucket to access.
+	 * @param __file The file to check if it exists.
+	 * @return If the file exists or not.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/04/17
+	 */
+	@SquirrelJMEVendorApi
+	public static native boolean exists(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file)
 		throws MLECallError;
@@ -68,33 +98,18 @@ public final class BucketShelf
 		throws MLECallError;
 	
 	/**
-	 * Checks if the given bucket file exists.
+	 * Returns the length of the file within the bucket.
 	 *
 	 * @param __bucket The bucket to access.
-	 * @param __file The file to check if it exists.
-	 * @return If the file exists or not.
+	 * @param __file The file to get the length of.
+	 * @return The length of the file or {@code -1} if it does not exist.
 	 * @throws MLECallError On null arguments.
-	 * @since 2025/04/17
-	 */
-	@SquirrelJMEVendorApi
-	public static native boolean exists(
-		@NotNull BucketBracket __bucket,
-		@NotNull String __file)
-		throws MLECallError;
-	
-	/**
-	 * Accesses the given bucket.
-	 *
-	 * @param __type The type of bucket to open.
-	 * @return The standard bucket.
-	 * @throws MLECallError If the standard bucket type is not valid or not
-	 * supported.
 	 * @since 2025/04/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native BucketBracket bucket(
-		@MagicConstant(valuesFromClass = StandardBucketType.class)
-			int __type)
+	public static native long length(
+		@NotNull BucketBracket __bucket,
+		@NotNull String __file)
 		throws MLECallError;
 	
 	/**
@@ -133,21 +148,6 @@ public final class BucketShelf
 		@Nullable String __prefix,
 		@Nullable String __contains,
 		@Nullable String __suffix)
-		throws MLECallError;
-	
-	/**
-	 * Returns the length of the file within the bucket.
-	 *
-	 * @param __bucket The bucket to access.
-	 * @param __file The file to get the length of.
-	 * @return The length of the file or {@code -1} if it does not exist.
-	 * @throws MLECallError On null arguments.
-	 * @since 2025/04/14
-	 */
-	@SquirrelJMEVendorApi
-	public static native long length(
-		@NotNull BucketBracket __bucket,
-		@NotNull String __file)
 		throws MLECallError;
 	
 	/**
