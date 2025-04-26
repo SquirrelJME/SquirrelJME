@@ -9,18 +9,23 @@
 
 package cc.squirreljme.jvm.manifest;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This represents a key which is used in a manifest, it is case insensitive
  * when it comes to ASCII values.
  *
  * @since 2016/05/29
  */
+@SquirrelJMEVendorApi
 public final class JavaManifestKey
 {
 	/** The used string. */
+	@SquirrelJMEVendorApi
 	protected final String string;
 	
 	/** The actual input string. */
+	@SquirrelJMEVendorApi
 	protected final String inputString;
 	
 	/**
@@ -30,6 +35,7 @@ public final class JavaManifestKey
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/29
 	 */
+	@SquirrelJMEVendorApi
 	public JavaManifestKey(String __s)
 		throws NullPointerException
 	{
@@ -72,12 +78,13 @@ public final class JavaManifestKey
 	
 	/**
 	 * Returns the input string which was passed to this key, this string
-	 * cannot be used for comparative purposes and it intended to be used
+	 * cannot be used for comparative purposes, and it intended to be used
 	 * for case matching in the output manifest.
 	 *
 	 * @return The input string.
 	 * @since 2017/11/26
 	 */
+	@SquirrelJMEVendorApi
 	public String inputString()
 	{
 		return this.inputString;

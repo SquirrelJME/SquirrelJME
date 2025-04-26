@@ -47,7 +47,7 @@ public interface RecordEnumeration
 	/**
 	 * This is used to quickly obtain the record at the specified index within
 	 * this enumeration. When using this behavior it is recommended to not
-	 * keep the enumeraton up to date, otherwise it is implementation defined.
+	 * keep the enumeration up to date, otherwise it is implementation defined.
 	 *
 	 * @param __i The index to get.
 	 * @return The record ID.

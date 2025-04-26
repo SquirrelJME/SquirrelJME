@@ -17,6 +17,7 @@
 #include "sjme/charSeq.h"
 
 /** Initializing methods. */
+jint JNICALL mleBucketInit(JNIEnv* env, jclass classy);
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
 jint JNICALL mleDylibBaseObjectInit(JNIEnv* env, jclass classy);
 jint JNICALL mleJarInit(JNIEnv* env, jclass classy);
@@ -84,6 +85,11 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName)), \
 	(void*)Impl_mle_ ## className ## _ ## methodName}
 
+#define FORWARD_listAlt(className, methodName, alt) \
+	{FORWARD_stringy(methodName), \
+	FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName ## _ ## alt)), \
+	(void*)Impl_mle_ ## className ## _ ## methodName ## _ ## alt}
+
 #define FORWARD_IMPL_none()
 
 #define FORWARD_IMPL_args(...) , __VA_ARGS__
@@ -116,6 +122,18 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 			pass); \
 	}
 
+#define FORWARD_IMPL_ALT(className, methodName, alt, rtype, rjava, args, pass) \
+	JNIEXPORT rtype JNICALL Impl_mle_ ## className ## _ ## methodName ## _ ## alt( \
+		JNIEnv* env, jclass classy args) \
+	{ \
+		return FORWARD_paste(forwardCallStatic, rjava)(env, \
+			FORWARD_NATIVE_CLASS, \
+			FORWARD_stringy(methodName), \
+			FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName ## _ ## alt)) \
+			pass); \
+	}
+
+#define DESC_METHOD(rv, args) "(" args ")" rv
 #define DESC_ARRAY(x) "[" x
 #define DESC_CLASS(x) "L" x ";"
 #define DESC_BOOLEAN "Z"
@@ -133,6 +151,8 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_STRING DESC_CLASS("java/lang/String")
 #define DESC_BYTE_BUFFER DESC_CLASS("java/nio/ByteBuffer")
 
+#define DESC_BUCKET \
+	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/BucketBracket")
 #define DESC_JARPACKAGE \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/JarPackageBracket")
 #define DESC_PENCIL \

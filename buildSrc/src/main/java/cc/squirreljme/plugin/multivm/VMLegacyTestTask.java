@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.util.SingleTaskOutputFile;
+import java.nio.file.Path;
 import javax.inject.Inject;
 import lombok.Getter;
 import org.gradle.api.DefaultTask;
@@ -24,7 +25,7 @@ import org.gradle.workers.WorkerExecutor;
  */
 public class VMLegacyTestTask
 	extends DefaultTask
-	implements VMBaseTask, VMExecutableTask
+	implements VMBaseTask, VMExecutableTask, VMBaseTestTask
 {
 	/** Property for running single test. */
 	public static final String SINGLE_TEST_PROPERTY =
@@ -101,5 +102,16 @@ public class VMLegacyTestTask
 		
 		// Performs the action of the task
 		this.doLast(new VMTestTaskAction(__executor, __classifier));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/04/23
+	 */
+	@Override
+	public Path statePath()
+	{
+		return VMTestTaskAction.statePath(this,
+			this.classifier);
 	}
 }

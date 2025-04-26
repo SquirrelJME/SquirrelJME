@@ -231,6 +231,20 @@ sjme_errorCode sjme_jni_recoverEnv(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_jni_recoverEnvThis(
+	sjme_attrInOutNotNull JNIEnv** outEnv)
+{
+	JavaVM* vm;
+	jint resultLen;
+
+	vm = NULL;
+	if (JNI_OK != JNI_GetCreatedJavaVMs(&vm, 1, &resultLen) ||
+		resultLen == 0)
+		return SJME_JNI_FALSE;
+
+	return sjme_jni_recoverEnv(outEnv, vm);
+}
+
 sjme_errorCode sjme_jni_recoverEnvFrontEnd(
 	sjme_attrInOutNotNull JNIEnv** outEnv,
 	sjme_attrInNotNull const sjme_frontEndBindable* inFrontEnd)

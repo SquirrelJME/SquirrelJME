@@ -93,6 +93,7 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 	sjme_debug_handlers = &sjme_jni_debugHandlers;
 
 	/* Initialize all functions. */
+	rv |= mleBucketInit(env, classy);
 	rv |= mleDebugInit(env, classy);
 	rv |= mleJarInit(env, classy);
 	rv |= mleMathInit(env, classy);

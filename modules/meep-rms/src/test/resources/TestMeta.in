@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-available: true
+secondary-size: true
+secondary-name: string:test
+secondary-single: int:10
+secondary-modified: true

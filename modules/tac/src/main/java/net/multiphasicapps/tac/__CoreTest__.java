@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.IncompleteCodeError;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -58,6 +59,17 @@ abstract class __CoreTest__
 		throws Throwable;
 	
 	/**
+	 * Fails the test.
+	 *
+	 * @since 2025/04/23
+	 */
+	@SquirrelJMEVendorApi
+	public final void fail()
+	{
+		throw new AssertionError();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2020/02/23
 	 */
@@ -65,8 +77,12 @@ abstract class __CoreTest__
 	@Override
 	public final TestExecution runExecution(String... __mainargs)
 	{
-		// Use to name this test
+		// Used to name this test
 		Class<?> self = this.getClass();
+		
+		// Self identify suites
+		ApplicationHandler.setNameAndVendor(self.getName(),
+			"SquirrelJME-TAC");
 		
 		// Read the inputs for the test
 		Object[] args = this.__parseInput(self, __mainargs);
@@ -150,7 +166,8 @@ abstract class __CoreTest__
 		catch (Throwable t)
 		{
 			// Errors are bad, stop testing and just fail here
-			if (t instanceof Error && !(t instanceof IncompleteCodeError))
+			if (t instanceof Error && !(t instanceof IncompleteCodeError) &&
+				!(t instanceof AssertionError))
 				throw (Error)t;
 			
 			// The test parameter is not valid, so whoops!
@@ -192,6 +209,7 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2018/10/07
 	 */
+	@SquirrelJMEVendorApi
 	public final void secondary(String __key, Object __v)
 		throws NullPointerException
 	{
@@ -207,6 +225,7 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/16
 	 */
+	@SquirrelJMEVendorApi
 	public final void secondary(String __key, boolean __v)
 		throws NullPointerException
 	{
@@ -222,6 +241,7 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/17
 	 */
+	@SquirrelJMEVendorApi
 	public final void secondary(String __key, byte __v)
 		throws NullPointerException
 	{
@@ -237,6 +257,7 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/17
 	 */
+	@SquirrelJMEVendorApi
 	public final void secondary(String __key, short __v)
 		throws NullPointerException
 	{
@@ -252,6 +273,7 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/17
 	 */
+	@SquirrelJMEVendorApi
 	public final void secondary(String __key, char __v)
 		throws NullPointerException
 	{
@@ -267,6 +289,7 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/16
 	 */
+	@SquirrelJMEVendorApi
 	public final void secondary(String __key, int __v)
 		throws NullPointerException
 	{
@@ -282,6 +305,7 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/16
 	 */
+	@SquirrelJMEVendorApi
 	public final void secondary(String __key, long __v)
 		throws NullPointerException
 	{
@@ -297,6 +321,7 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/16
 	 */
+	@SquirrelJMEVendorApi
 	public final void secondary(String __key, float __v)
 		throws NullPointerException
 	{
@@ -312,6 +337,7 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/16
 	 */
+	@SquirrelJMEVendorApi
 	public final void secondary(String __key, double __v)
 		throws NullPointerException
 	{

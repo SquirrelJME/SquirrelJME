@@ -1,37 +1,40 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.rms.RecordStore;
-import javax.microedition.rms.RecordStoreException;
+import net.multiphasicapps.tac.TestRunnable;
 
 /**
- * Tests that nothing is done on the record.
+ * Tests closing then using a record store.
  *
- * @since 2018/12/13
+ * @since 2025/04/23
  */
-public class TestNothing
-	extends __RecordTest__<Object>
+public class TestCloseThenUse
+	extends TestRunnable
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/12/13
+	 * @since 2025/04/23
 	 */
 	@Override
-	public Object test(RecordStore __rs)
-		throws RecordStoreException
+	public void test()
+		throws Throwable
 	{
-		try (RecordStore rs = RecordStore.openRecordStore("rmstest",
+		RecordStore outer;
+		try (RecordStore store = RecordStore.openRecordStore("test",
 			true))
 		{
+			outer = store;
 		}
 		
-		return null;
+		// This should fail
+		outer.getNumRecords();
 	}
 }
-

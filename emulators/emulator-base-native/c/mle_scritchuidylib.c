@@ -18,6 +18,8 @@
 #include "sjme/debug.h"
 #include "sjme/dylib.h"
 
+#define SJME_JNI_MEMORY (64 * 1048576)
+
 /** The class being implemented. */
 #define IMPL_CLASS "cc/squirreljme/emulator/scritchui/dylib/" \
 	"NativeScritchDylib"
@@ -868,7 +870,7 @@ static const sjme_scritchui_pencilLockFunctions mlePencilLockFuncs =
 	.lockRelease = mlePencilLockRelease,
 };
 
-static sjme_errorCode sjme_attrThreadCall mleAwtCall(
+static sjme_errorCode mleAwtCall(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything)
@@ -1847,7 +1849,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	/* We need a pool for allocations. */
 	pool = NULL;
 	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&pool,
-		4 * 1048576)) || pool == NULL)
+		SJME_JNI_MEMORY)) || pool == NULL)
 		goto fail_poolInit;
 
 	/* Resolve path. */

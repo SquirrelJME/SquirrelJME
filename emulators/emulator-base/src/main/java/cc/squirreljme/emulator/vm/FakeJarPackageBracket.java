@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.vm;
 
+import cc.squirreljme.emulator.EmulatedJarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.vm.VMClassLibrary;
 
@@ -18,6 +19,7 @@ import cc.squirreljme.vm.VMClassLibrary;
  * @since 2024/01/06
  */
 public final class FakeJarPackageBracket
+	extends EmulatedJarPackageBracket
 	implements JarPackageBracket
 {
 	/** The library this wraps. */
@@ -33,6 +35,8 @@ public final class FakeJarPackageBracket
 	public FakeJarPackageBracket(VMClassLibrary __library)
 		throws NullPointerException
 	{
+		super(__library);
+		
 		this.library = __library;
 	}
 }

@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.AtomicShelf;
+import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.MathShelf;
@@ -46,6 +47,10 @@ public enum MLEDispatcher
 	/** {@link AtomicShelf}. */
 	ATOMIC("cc/squirreljme/jvm/mle/AtomicShelf",
 		MLEAtomic.values()),
+	
+	/** {@link BucketShelf}. */
+	BUCKET("cc/squirreljme/jvm/mle/BucketShelf",
+		MLEBucket.values()),
 	
 	/** {@link DebugShelf}. */
 	DEBUG("cc/squirreljme/jvm/mle/DebugShelf",

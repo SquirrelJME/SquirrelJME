@@ -92,7 +92,7 @@ public final class SplashScreen
 		this._loadingBarWidth = width;
 		this._loadingBarHeight = gen._verHeight;
 		this._loadingStrX = centerX;
-		this._loadingStrY = this._loadingBarY + (gen._verHeight / 2);
+		this._loadingStrY = this._loadingBarY + (gen._verHeight / 4);
 		
 		// Load the launcher image in a background thread so the splash screen
 		// can still display the copyright notice

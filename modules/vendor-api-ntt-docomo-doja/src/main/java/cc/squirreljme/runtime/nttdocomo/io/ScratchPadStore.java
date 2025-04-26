@@ -21,6 +21,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
@@ -37,7 +38,7 @@ public final class ScratchPadStore
 	
 	/** The record store key prefix. */
 	private static final String _STORE_KEY_PREFIX =
-		"SquirrelJME-i-Appli-";
+		"ScratchPad-";
 	
 	/** STO Header size. */
 	private static final int _STO_HEADER_LEN =
@@ -76,23 +77,44 @@ public final class ScratchPadStore
 		this._data = data;
 		try (RecordStore store = this.__rmsStore())
 		{
+			// Do we need to seed?
+			boolean needSeed = false;
+			
 			// Nothing was actually created ever?
 			if (store.getNumRecords() <= 0)
-			{
-				ScratchPadStore.__seed(__pad, data);
-				return;
-			}
+				needSeed = true;
 			
-			// Read in the data
-			if (__length != store.getRecord(0, data, 0))
-				Debugging.debugNote("i-appli record size mismatch?");
+			// Read in the data, the length is invalid or does not match
+			// then it has to be seeded
+			else
+				try
+				{
+					if (__length != store.getRecord(0, data, 0))
+						needSeed = true;
+				}
+				catch (RecordStoreException __e)
+				{
+					if (Debugging.ENABLED)
+						__e.printStackTrace();
+					
+					needSeed = true;
+				}
+				
+			// Do we actually need to seed the data?
+			if (needSeed)
+				ScratchPadStore.__seed(__pad, data);
 		}
 		
 		// {@squirreljme.error AH0m Could not read pre-existing data from
 		// the record store.}
 		catch (RecordStoreException __e)
 		{
-			throw new IOException("AH0m", __e);
+			if (Debugging.ENABLED)
+				__e.printStackTrace();
+			
+			IOException toss = new ConnectionNotFoundException("AH0m");
+			toss.initCause(__e);
+			throw toss;
 		}
 	}
 	
@@ -123,6 +145,9 @@ public final class ScratchPadStore
 			// record store.}
 			catch (RecordStoreException __e)
 			{
+				if (Debugging.ENABLED)
+					__e.printStackTrace();
+				
 				throw new IOException("AH0l", __e);
 			}
 		}
@@ -371,7 +396,8 @@ public final class ScratchPadStore
 			}
 			catch (IOException __e)
 			{
-				__e.printStackTrace();
+				if (Debugging.ENABLED)
+					__e.printStackTrace();
 				
 				// Ignore
 				return;
