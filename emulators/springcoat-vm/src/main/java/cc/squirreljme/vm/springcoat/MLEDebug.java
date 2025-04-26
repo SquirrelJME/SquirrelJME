@@ -314,5 +314,4 @@ public enum MLEDebug
 	{
 		return this.key;
 	}
-	
 }
