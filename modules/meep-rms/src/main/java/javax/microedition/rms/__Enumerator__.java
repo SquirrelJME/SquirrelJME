@@ -129,21 +129,19 @@ final class __Enumerator__
 	{
 		synchronized (this.lock)
 		{
-			// At the very end?
 			int iteratedAt = this._iteratedAt;
-			if (iteratedAt == Integer.MAX_VALUE)
+			try
+			{
+				return this.nextRecordId() >= 0;
+			}
+			catch (InvalidRecordIDException ignored)
+			{
 				return false;
-			
-			// Potentially rebuild?
-			int[] ids = this.__rebuild(false);
-			
-			// Determine the position of where our iterator is at
-			int index = Arrays.binarySearch(ids, iteratedAt);
-			if (index < 0)
-				index = -(index + 1);
-			
-			// Is this still within bounds?
-			return (index + 1) < ids.length;
+			}
+			finally
+			{
+				this._iteratedAt = iteratedAt;
+			}
 		}
 	}
 	
@@ -156,21 +154,19 @@ final class __Enumerator__
 	{
 		synchronized (this.lock)
 		{
-			// At the very start?
 			int iteratedAt = this._iteratedAt;
-			if (iteratedAt == Integer.MIN_VALUE)
+			try
+			{
+				return this.previousRecordId() >= 0;
+			}
+			catch (InvalidRecordIDException ignored)
+			{
 				return false;
-			
-			// Potentially rebuild?
-			int[] ids = this.__rebuild(false);
-			
-			// Determine the position of where our iterator is at
-			int index = Arrays.binarySearch(ids, iteratedAt);
-			if (index < 0)
-				index = -(index + 1);
-			
-			// Is this still within bounds?
-			return (index - 1) >= 0;
+			}
+			finally
+			{
+				this._iteratedAt = iteratedAt;
+			}
 		}
 	}
 	
@@ -242,6 +238,8 @@ final class __Enumerator__
 			int index = Arrays.binarySearch(ids, iteratedAt);
 			if (index < 0)
 				index = -(index + 1);
+			else if (iteratedAt == Integer.MIN_VALUE)
+				index = 0;
 			else
 				index = index + 1;
 			
@@ -314,6 +312,8 @@ final class __Enumerator__
 			int index = Arrays.binarySearch(ids, iteratedAt);
 			if (index < 0)
 				index = -(index + 1);
+			else if (iteratedAt == Integer.MAX_VALUE && ids.length > 0)
+				index = ids[ids.length - 1];
 			else
 				index = index - 1;
 			
