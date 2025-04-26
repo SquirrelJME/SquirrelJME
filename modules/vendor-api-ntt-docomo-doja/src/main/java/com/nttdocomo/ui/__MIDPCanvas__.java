@@ -42,6 +42,10 @@ final class __MIDPCanvas__
 			throw new NullPointerException("NARG");
 		
 		this._imodeCanvas = __imodeCanvas;
+		
+		// This is drawn transparent, as we double buffer and never wipe
+		// what is drawn
+		this.setPaintMode(false);
 	}
 	
 	/**
