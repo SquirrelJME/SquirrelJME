@@ -159,8 +159,13 @@ To override the defaults, you may instead use the following, if any start
 with `~` that is replaced with `$HOME` or `%USERPROFILE%`:
 
  * `SQUIRRELJME_CACHE_HOME` for _Cache_ path.
+   * Alternatively the property `cc.squirreljme.cache.home`.
  * `SQUIRRELJME_CONFIG_HOME` for _Configuration_ path.
+   * Alternatively the property `cc.squirreljme.config.home`.
  * `SQUIRRELJME_DATA_HOME` for _Data_ path.
+   * Alternatively the property `cc.squirreljme.data.home`.
+ * `SQUIRRELJME_STATE_HOME` for _State_ path.
+   * Alternatively the property `cc.squirreljme.state.home`.
 
 SquirrelJME will automatically add to system properties for a properties file:
 

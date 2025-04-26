@@ -33,6 +33,7 @@ message(STATUS "NanoCoat include is: ${nanocoatIncludePath}")
 # Declare library
 add_library(libEmulatorBase SHARED
 	c/jniHelper.c
+	c/mle_bucket.c
 	c/mle_debug.c
 	c/mle_jar.c
 	c/mle_math.c

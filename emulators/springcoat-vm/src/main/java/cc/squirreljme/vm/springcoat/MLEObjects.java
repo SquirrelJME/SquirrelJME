@@ -9,11 +9,13 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.vm.OverlayVMClassLibrary;
 import cc.squirreljme.vm.RawVMClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.springcoat.brackets.BucketObject;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.brackets.MidiDeviceObject;
 import cc.squirreljme.vm.springcoat.brackets.MidiPortObject;
@@ -120,6 +122,54 @@ public final class MLEObjects
 				"Not a NativeArchiveEntryObject.");
 		
 		return (NativeArchiveEntryObject)__object; 
+	}
+	
+	/**
+	 * Returns the bucket object.
+	 *
+	 * @param __object The object to check.
+	 * @return The resultant bucket.
+	 * @throws SpringMLECallError If this is not a bucket.
+	 * @since 2025/04/25
+	 */
+	public static BucketBracket bucket(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof BucketObject))
+			throw new SpringMLECallError(
+				"Not a BucketObject.");
+		
+		return ((BucketObject)__object).bucket;
+	}
+	
+	/**
+	 * Returns the direct byte array.
+	 *
+	 * @param __object The byte array to obtain.
+	 * @return The resultant byte array.
+	 * @throws SpringMLECallError If this is not a byte array.
+	 * @since 2025/04/25
+	 */
+	public static byte[] byteArray(Object __object)
+		throws SpringMLECallError
+	{
+		return MLEObjects.notNull(
+			SpringArrayObjectByte.class, __object).array();
+	}
+	
+	/**
+	 * Returns the direct character array.
+	 *
+	 * @param __object The character array to obtain.
+	 * @return The resultant character array.
+	 * @throws SpringMLECallError If this is not a character array.
+	 * @since 2025/04/25
+	 */
+	public static char[] charArray(Object __object)
+		throws SpringMLECallError
+	{
+		return MLEObjects.notNull(
+			SpringArrayObjectChar.class, __object).array();
 	}
 	
 	/**
@@ -312,6 +362,23 @@ public final class MLEObjects
 			throw new SpringMLECallError("Not a SpringSimpleObject.");
 		
 		return (SpringSimpleObject)__object; 
+	}
+	
+	/**
+	 * Returns the directly represented string, or {@code null} if the
+	 * reference is {@code null}.
+	 *
+	 * @param __object The string object.
+	 * @return The resultant string or {@code null}.
+	 * @since 2025/04/25
+	 */
+	public static String string(Object __object)
+	{
+		if (__object == null || __object == SpringNullObject.NULL)
+			return null;
+		
+		return MLEObjects.notNull(
+			SpringStringObject.class, __object).toString();
 	}
 	
 	/**

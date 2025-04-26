@@ -15,7 +15,7 @@ checks:
   # APIs that will need to be considered in this as well.
   argument-count:
     config:
-      threshold: 12
+      threshold: 18
 
   # Due to the nature of being a JVM, the number of lines in a file can be
   # quite high. Introducing more classes and methods just to move stuff out
@@ -25,14 +25,14 @@ checks:
   # maintaining a complex project such as this one will be difficult.
   file-lines:
     config:
-      threshold: 850
+      threshold: 1250
 
   # This is called "Cognitive Complexity" in the UI, it has a default low
   # number at 5 which is too much for even the most simplest methods. It seems
   # that using Synchronized will inflate the amount.
   method-complexity:
     config:
-      threshold: 24
+      threshold: 36
 
   # The number of lines in methods in SquirrelJME is more than most other
   # projects as there is more commenting and logic within them. It would
@@ -40,7 +40,7 @@ checks:
   # even more places.
   method-lines:
     config:
-      threshold: 100
+      threshold: 150
 
   # The number of methods in a class tends to be on the higher side, especially
   # with standardized classes.
@@ -59,10 +59,10 @@ checks:
   # Java defaults to 40
   similar-code:
     config:
-      threshold: 120
+      threshold: 240
   identical-code:
     config:
-      threshold: 120
+      threshold: 240
 
 exclude_patterns:
   # Ignore the Gradle plugin

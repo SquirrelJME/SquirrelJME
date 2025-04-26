@@ -158,6 +158,7 @@ out-[A-F0-9]*
 # NanoCoat ROM
 nanocoat/rom/squirreljme.jar
 nanocoat/rom/squirreljme-test.jar
+nanocoat/rom/squirreljme-test.list
 nanocoat/rom/squirreljme-fast.jar
 nanocoat/rom/squirreljme-fast-test.jar
 nanocoat/rom/squirreljme-fast-test.list

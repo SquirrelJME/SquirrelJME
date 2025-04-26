@@ -10,6 +10,7 @@
 package net.multiphasicapps.io;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -207,5 +208,86 @@ public final class Base64Encoder
 			this._paddingLeft = (byte)paddingLeft;
 			this._totalBytes = totalBytes;
 		}
+	}
+	
+	/**
+	 * Encodes the given buffer.
+	 *
+	 * @param __buf The buffer to encode.
+	 * @return The resultant string.
+	 * @throws IOException If the data could not be encoded.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/17
+	 */
+	@SquirrelJMEVendorApi
+	public static String encode(byte[] __buf)
+		throws IOException, NullPointerException
+	{
+		if (__buf == null)
+			throw new NullPointerException("NARG");
+		
+		return Base64Encoder.encode(
+			new StringBuffer(__buf.length * 3), __buf).toString();
+	}
+	
+	/**
+	 * Encodes the given buffer.
+	 *
+	 * @param __into Where to append the data. 
+	 * @param __buf The buffer to encode.
+	 * @return Always {@code __into}.
+	 * @throws IOException If the data could not be encoded.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/17
+	 */
+	@SquirrelJMEVendorApi
+	public static <A extends Appendable> A encode(A __into, byte[] __buf)
+		throws IOException, NullPointerException
+	{
+		if (__into == null || __buf == null)
+			throw new NullPointerException("NARG");
+		
+		// Encode constantly
+		try (InputStream in = new ByteArrayInputStream(__buf))
+		{
+			return Base64Encoder.encode(__into, in);
+		}
+	}
+	
+	/**
+	 * Encodes the given stream fully.
+	 *
+	 * @param __into Where to append the data. 
+	 * @param __in The stream to encode.
+	 * @return Always {@code __into}.
+	 * @throws IOException If the data could not be encoded.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/04/17
+	 */
+	@SquirrelJMEVendorApi
+	public static <A extends Appendable> A encode(A __into, InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__into == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Encode constantly
+		try (Base64Encoder encoder = new Base64Encoder(__in))
+		{
+			for (;;)
+			{
+				// Read next character, stop on EOF
+				int c = encoder.read();
+				if (c < 0)
+					break;
+				
+				// Append to the output
+				if (c > 0x20)
+					__into.append((char)c);
+			}
+		}
+		
+		// Return the target appendable
+		return __into;
 	}
 }

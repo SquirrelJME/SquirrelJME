@@ -64,4 +64,24 @@ public abstract class AbstractIntegerArray
 		
 		return rv;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/04/25
+	 */
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder("[");
+		
+		for (int i = 0, n = this.size(); i < n; i++)
+		{
+			if (i > 0)
+				sb.append(", ");
+			sb.append(this.get(i));
+		}
+			
+		sb.append("]");
+		return sb.toString();
+	}
 }

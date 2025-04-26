@@ -10,6 +10,7 @@
 package javax.microedition.rms;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * General exception for record stores.

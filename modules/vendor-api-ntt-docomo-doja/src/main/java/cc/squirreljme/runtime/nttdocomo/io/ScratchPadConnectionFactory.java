@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.nttdocomo.io;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import java.io.IOException;
@@ -124,6 +125,9 @@ public class ScratchPadConnectionFactory
 		// part)}
 		catch (NumberFormatException __e)
 		{
+			if (Debugging.ENABLED)
+				__e.printStackTrace();
+			
 			throw new ConnectionNotFoundException("AH0b " + __part);
 		}
 		

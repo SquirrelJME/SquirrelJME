@@ -152,7 +152,7 @@ public final class String
 	public String(byte[] __b, String __e)
 		throws NullPointerException, UnsupportedEncodingException
 	{
-		this(__b, 0, __b.length, CodecFactory.decoder(__e));
+		this(__b, 0,  __b.length, CodecFactory.decoder(__e));
 	}
 	
 	/**

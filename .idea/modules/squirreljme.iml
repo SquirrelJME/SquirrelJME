@@ -295,9 +295,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/cicd-release-bundle/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/cicd-release-bundle/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/cicd-release-bundle/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/github-classic-project-dump/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/github-classic-project-dump/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/github-classic-project-dump/out" />
@@ -320,6 +317,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-rms/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-rms/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-rms/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-unzip/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-unzip/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-unzip/out" />
