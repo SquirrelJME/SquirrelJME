@@ -424,12 +424,44 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 SJME_NVM_BYTECODE_SLOW(New)
 {
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	sjme_jint poolIndex;
+	sjme_jvalueTyped result;
+	sjme_nvm_class_poolEntry* entry;
+	sjme_jclass desireClass;
 
 	/* PC adjustment. */
 	pcNew->adjust = 3;
+	
+	/* Read in pool reference. */
+	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
+	if (sjme_error_is(error = sjme_nvm_task_framePool(
+		inFrame, poolIndex, &entry,
+		SJME_NVM_CLASS_POOL_TYPE_CLASS,
+		0)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Locate target class. */
+	desireClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		inFrame->inTask->classLoader,
+		&desireClass,
+		inFrame->inThread,
+		entry->classRef.descriptor->seq,
+		SJME_JNI_TRUE)) || desireClass == NULL)
+		return sjme_error_vmError(inFrame, error);
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Allocate new instance of the given object. */
+	memset(&result, 0, sizeof(result));
+	if (sjme_error_is(error = sjme_nvm_instance_objectNew(
+		inFrame->inThread, -1, SJME_NVM_STRUCT_OBJECT_INSTANCE,
+		&result.value.l, desireClass)) || result.value.l == NULL)
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Push allocate class to the stack. */
+	result.type = SJME_JAVA_TYPE_ID_OBJECT;
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&result)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;

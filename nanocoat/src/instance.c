@@ -268,7 +268,7 @@ sjme_errorCode sjme_nvm_instance_objectArrayNewT(
 
 sjme_errorCode sjme_nvm_instance_objectNew(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInNegativeOnePositive sjme_jint allocSize,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_jobject* outObject,
 	sjme_attrInNotNull sjme_jclass inClass)
@@ -279,7 +279,9 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 	if (contextThread == NULL || outObject == NULL || inClass == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (inType < 0 || inType >= SJME_NVM_NUM_STRUCT)
+	if (inType < 0 || inType >= SJME_NVM_NUM_STRUCT || allocSize < -1 ||
+		allocSize == 0 ||
+		(inType != SJME_NVM_STRUCT_OBJECT_INSTANCE && allocSize <= 0))
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Make sure the class is initialized. */
@@ -287,7 +289,35 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 		contextThread)))
 		return sjme_error_vmError(contextThread, error);
 	
-	/* Setup string object. */
+	/* Need to calculate/determine object size? */
+	if (inType == SJME_NVM_STRUCT_OBJECT_INSTANCE && allocSize < 0)
+	{
+		/* Cannot be these types as they are allocated implicitly by */
+		/* the virtual machine. */
+		if (inClass == sjme_nvm_task_commonClassR(contextThread,
+			SJME_NVM_TASK_COMMON_CLASS_CLASS))
+			return SJME_ERROR_INVALID_ARGUMENT;
+		
+		/* If this is string, they get remapped. */
+		else if (inClass == sjme_nvm_task_commonClassR(contextThread,
+			SJME_NVM_TASK_COMMON_CLASS_STRING))
+		{
+			inType = SJME_NVM_TASK_COMMON_CLASS_STRING;
+			allocSize = sizeof(sjme_jstringBase);
+		}
+
+		/* Otherwise calculate object storage. */
+		else
+		{
+			/* Base size is always the base object size. */
+			allocSize = sizeof(sjme_jobjectBase);
+			
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+	}
+	
+	/* Setup object. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(contextThread->inState,
 		allocSize, inType,

@@ -355,7 +355,7 @@ sjme_errorCode sjme_nvm_instance_objectArrayNewT(
  */
 sjme_errorCode sjme_nvm_instance_objectNew(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInPositiveNonZero sjme_jint allocSize,
+	sjme_attrInNegativeOnePositive sjme_jint allocSize,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_jobject* outObject,
 	sjme_attrInNotNull sjme_jclass inClass);
