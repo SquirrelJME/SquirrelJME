@@ -227,6 +227,9 @@ struct sjme_nvm_frameBase
 	/** The thread this frame is in. */
 	sjme_nvm_thread inThread;
 
+	/** The task this is in. */
+	sjme_nvm_task inTask;
+
 	/** The parent frame. */
 	sjme_nvm_frame parent;
 	

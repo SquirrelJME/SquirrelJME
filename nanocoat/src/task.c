@@ -1326,6 +1326,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	result->inClass = inMethod->member.inClass;
 	result->inState = inThread->inTask->inState;
 	result->inThread = inThread;
+	result->inTask = inThread->inTask;
 	result->inCode = targetInfo->code;
 	result->pool = targetInfo->code->inMethod->inClass->pool;
 

@@ -10,11 +10,45 @@
 #include "sjme/config.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
+#include "sjme/nvm/cleanup.h"
 
 SJME_NVM_MLE_FUNCTION_DECL(findType)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jstring string;
+	sjme_jclass foundClass;
+
+	/* Must be an actual string. */
+	string = (sjme_jstring)argV[0].value.l;
+	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Specifically an array type? */
+	foundClass = NULL;
+	if (sjme_charSeq_charAtIs(string->seq, 0, '[') ==
+		SJME_ERROR_NONE)
+	{
+		/* Can just use the field type loader here. */
+		if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadF(
+			inFrame->inTask->classLoader, &foundClass,
+			inFrame->inThread, string->seq, SJME_JNI_FALSE)) ||
+			foundClass == NULL)
+			return sjme_error_vmError(inFrame, error);
+	}
+	else
+	{
+		/* Otherwise this will be a binary name. */
+		if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+			inFrame->inTask->classLoader, &foundClass,
+			inFrame->inThread, string->seq, SJME_JNI_FALSE)) ||
+			foundClass == NULL)
+			return sjme_error_vmError(inFrame, error);
+	}
+	
+	/* Success! */
+	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
+	argV->value.l = SJME_AS_JOBJECT(foundClass);
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_SHELF_DECLARE(TypeShelf) =

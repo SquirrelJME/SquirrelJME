@@ -207,7 +207,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 	sjme_attrOutNotNull sjme_nvm_class_fieldInfo* outInfo);
 
 /**
- * Loads the specified class by the given name.
+ * Loads the specified class by the given binary name.
  * 
  * @param inLoader The loader to use. 
  * @param outClass The resultant class.

@@ -171,7 +171,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeAny(
 	/* Locate target class. */
 	classy = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		inFrame->inThread->inTask->classLoader,
+		inFrame->inTask->classLoader,
 		&classy,
 		inFrame->inThread,
 		binaryName,
@@ -267,7 +267,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	/* Locate target class. */
 	desireClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		inFrame->inThread->inTask->classLoader,
+		inFrame->inTask->classLoader,
 		&desireClass,
 		inFrame->inThread,
 		binaryName,

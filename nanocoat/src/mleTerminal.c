@@ -73,7 +73,7 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 	
 	/* Has a pipe already been created? We want single brackets for each */
 	/* standard pipe that exists. */
-	globals = &inFrame->inThread->inTask->globals;
+	globals = &inFrame->inTask->globals;
 	pipe = globals->stdPipes[type];
 	if (pipe != NULL)
 		goto skip_validPipe;
