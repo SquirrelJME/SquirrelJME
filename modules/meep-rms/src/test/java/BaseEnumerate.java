@@ -31,6 +31,10 @@ public abstract class BaseEnumerate
 	public static final byte[] DATA_C =
 		new byte[]{11, 9, 5, 3, 1, 12, 81, 31};
 	
+	/** Fourth set of data. */
+	public static final byte[] DATA_D =
+		new byte[]{1, 3, 5, 12, 11, 9, 81, 31};
+	
 	/**
 	 * Tests running an enumeration test.
 	 *
@@ -61,11 +65,11 @@ public abstract class BaseEnumerate
 			true))
 		{
 			idA = store.addRecord(BaseEnumerate.DATA_A, 0,
-				BaseEnumerate.DATA_A.length);
+				BaseEnumerate.DATA_A.length, 1);
 			idB = store.addRecord(BaseEnumerate.DATA_B, 0,
-				BaseEnumerate.DATA_B.length);
+				BaseEnumerate.DATA_B.length, 2);
 			idC = store.addRecord(BaseEnumerate.DATA_C, 0,
-				BaseEnumerate.DATA_C.length);
+				BaseEnumerate.DATA_C.length, 3);
 		}
 		
 		// It should be able to be opened again

@@ -9,7 +9,6 @@
 
 package javax.microedition.rms;
 
-import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.jvm.suite.SuiteName;
 import cc.squirreljme.jvm.suite.SuiteVendor;
@@ -22,8 +21,6 @@ import cc.squirreljme.runtime.rms.RecordIteration;
 import cc.squirreljme.runtime.rms.RecordSession;
 import cc.squirreljme.runtime.rms.RecordStoreSession;
 import cc.squirreljme.runtime.rms.RecordUtils;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -319,11 +316,12 @@ public class RecordStore
 	 * If a comparator is not specified then the traversal order is not
 	 * defined.
 	 *
-	 * @param __f An optional filter used to filter records, may be
+	 * @param __filter An optional filter used to filter records, may be
 	 * {@code null}.
-	 * @param __c An optional comparator used to modify the sort order, may
-	 * be {@code null}.
-	 * @param __ku If {@code true} then the enumeration is kept up to date.
+	 * @param __comparator An optional comparator used to modify the sort
+	 * order, may be {@code null}.
+	 * @param __keepUpdated If {@code true} then the enumeration is kept up
+	 * to date.
 	 * @param __tags The tags to use for basic filtering, if this is empty then
 	 * an empty enumeration will be returned, if this is {@code null} then all
 	 * tags will be selected.
@@ -332,8 +330,8 @@ public class RecordStore
 	 * @since 2017/02/26
 	 */
 	@Api
-	public RecordEnumeration enumerateRecords(RecordFilter __f,
-		RecordComparator __c, boolean __ku, int[] __tags)
+	public RecordEnumeration enumerateRecords(RecordFilter __filter,
+		RecordComparator __comparator, boolean __keepUpdated, int[] __tags)
 		throws RecordStoreNotOpenException
 	{
 		synchronized (this._lock)
@@ -342,27 +340,32 @@ public class RecordStore
 			this.__checkOpen();
 			
 			// Build new enumeration
-			return new __Enumerator__(this, this._lock,
-				__f, __c, __ku, __tags);
+			return new __Enumerator__(this, this._lock, __filter, __comparator,
+				__keepUpdated, __tags);
 		}
 	}
 	
 	/**
-	 * Calls {@code enumerateRecords(__f, __c, __ku, null)}.
+	 * Calls {@code enumerateRecords(__filter, __comparator, __keepUpdated,
+	 * null)}.
 	 *
-	 * @param __f As forwarded.
-	 * @param __c As forwarded.
-	 * @param __ku As forwarded.
-	 * @return As forwarded.
+	 * @param __filter An optional filter used to filter records, may be
+	 * {@code null}.
+	 * @param __comparator An optional comparator used to modify the sort
+	 * order, may be {@code null}.
+	 * @param __keepUpdated If {@code true} then the enumeration is kept up
+	 * to date.
+	 * @return The enumeration over the records.
 	 * @throws RecordStoreNotOpenException As forwarded.
 	 * @since 2017/02/26
 	 */
 	@Api
-	public RecordEnumeration enumerateRecords(RecordFilter __f,
-		RecordComparator __c, boolean __ku)
+	public RecordEnumeration enumerateRecords(RecordFilter __filter,
+		RecordComparator __comparator, boolean __keepUpdated)
 		throws RecordStoreNotOpenException
 	{
-		return this.enumerateRecords(__f, __c, __ku, null);
+		return this.enumerateRecords(__filter, __comparator, __keepUpdated,
+			null);
 	}
 	
 	/**

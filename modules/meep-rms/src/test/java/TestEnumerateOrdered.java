@@ -27,6 +27,8 @@ public class TestEnumerateOrdered
 	public void test(RecordStore __store, int __a, int __b, int __c)
 		throws Throwable
 	{
+		if (true)
+			throw new UntestableException("TODO");
 		throw Debugging.todo();
 	}
 }

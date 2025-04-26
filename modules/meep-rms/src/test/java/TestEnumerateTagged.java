@@ -8,6 +8,7 @@
 // ---------------------------------------------------------------------------
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import javax.microedition.rms.RecordEnumeration;
 import javax.microedition.rms.RecordStore;
 
 /**
@@ -26,6 +27,23 @@ public class TestEnumerateTagged
 	public void test(RecordStore __store, int __a, int __b, int __c)
 		throws Throwable
 	{
-		throw Debugging.todo();
+		// Enumerate, no filters or otherwise
+		RecordEnumeration iterator = __store.enumerateRecords(
+			null, null, false, new int[]{2, 3});
+		
+		// Go through each
+		while (iterator.hasNextElement())
+		{
+			// Get the ID of the next record
+			int id = iterator.nextRecordId();
+			
+			// Matched one?
+			if (id == __a)
+				this.secondary("founda", true);
+			else if (id == __b)
+				this.secondary("foundb", true);
+			else if (id == __c)
+				this.secondary("foundc", true);
+		}
 	}
 }
