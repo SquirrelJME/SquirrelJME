@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../include/sjme/config.h"
+#include "sjme/config.h"
 
 /**
  * Returns the platform.

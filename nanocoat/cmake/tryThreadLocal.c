@@ -7,10 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <threads.h>
+#include "sjme/config.h"
 
 int main(int argc, char** argv)
 {
-	thrd_t a;
+	sjme_threadLocal(int, a);
+	
+	a = 1234;
 	return 0;
 }
