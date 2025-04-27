@@ -39,7 +39,7 @@ public interface LineEndingType
 	byte CRLF =
 		3;
 		
-	/** Number of line types. */
+	/** Number of line ending types. */
 	@SquirrelJMEVendorApi
 	byte NUM_LINE_ENDINGS =
 		4;

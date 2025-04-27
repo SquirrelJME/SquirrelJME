@@ -255,24 +255,6 @@ public enum MLEThread
 		}
 	}, 
 	
-	/** {@link ThreadShelf#javaThreadFlagStarted(Thread)}. */
-	JAVA_THREAD_FLAG_STARTED("javaThreadFlagStarted:(Ljava/lang/" +
-		"Thread;)V")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/18
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			// Just set the started field to true
-			MLEObjects.threadJava(__thread, __args[0]).fieldByNameAndType(
-				false, "_started", "Z").set(true);
-			return null;
-		}
-	},
-	
 	/** {@link ThreadShelf#javaThreadIsStarted(Thread)}. */
 	JAVA_THREAD_IS_STARTED("javaThreadIsStarted:(Ljava/lang/Thread;)Z")
 	{
@@ -302,25 +284,6 @@ public enum MLEThread
 				.fieldByNameAndType(
 				false, "_runnable",
 				"Ljava/lang/Runnable;").get();
-		}
-	},
-	
-	/** {@link ThreadShelf#javaThreadSetAlive(Thread, boolean)}. */
-	JAVA_THREAD_SET_ALIVE("javaThreadSetAlive:(Ljava/lang/Thread;Z)V")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/18
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			// Just set the started field to true
-			MLEObjects.threadJava(__thread, __args[0]).fieldByNameAndType(
-				false, "_isAlive", "Z")
-				.set((int)__args[1] != 0);
-			
-			return null;
 		}
 	},
 	
@@ -531,30 +494,6 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#vmThreadEnd(VMThreadBracket)}. */
-	VM_THREAD_END("vmThreadEnd:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"VMThreadBracket;)V")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			SpringThread thread = MLEObjects.threadVm(__args[0]).getThread();
-			
-			// If debugging, signal that the thread has ended
-			JDWPHostController jdwp = thread.machine()
-				.taskManager().jdwpController;
-			if (jdwp != null)
-				jdwp.<JDWPTripThread>trip(JDWPTripThread.class,
-					JDWPGlobalTrip.THREAD).alive(thread, true);
-			
-			return null;
-		}
-	},
-	
 	/** {@link ThreadShelf#vmThreadId(VMThreadBracket)}. */
 	VM_THREAD_ID("vmThreadId:(Lcc/squirreljme/jvm/mle/brackets/" +
 		"VMThreadBracket;)I")
@@ -590,6 +529,22 @@ public enum MLEThread
 		}
 	},
 	
+	/** {@link ThreadShelf#vmThreadIsAlive(VMThreadBracket)}. */
+	VM_THREAD_IS_ALIVE("vmThreadIsAlive:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/VMThreadBracket;)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringThread thread = MLEObjects.threadVm(__args[0]).getThread();
+			return thread._worker != null && !thread.isTerminated();
+		}
+	},
+	
 	/** {@link ThreadShelf#vmThreadIsMain(VMThreadBracket)}. */
 	VM_THREAD_IS_MAIN("vmThreadIsMain:(Lcc/squirreljme/jvm/mle/" +
 		"brackets/VMThreadBracket;)Z")
@@ -602,6 +557,22 @@ public enum MLEThread
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return MLEObjects.threadVm(__args[0]).getThread().isMain();
+		}
+	},
+	
+	/** {@link ThreadShelf#vmThreadIsStarted(VMThreadBracket)}. */
+	VM_THREAD_IS_STARTED("vmThreadIsStarted:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/VMThreadBracket;)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringThread thread = MLEObjects.threadVm(__args[0]).getThread();
+			return thread._worker != null;
 		}
 	},
 	
