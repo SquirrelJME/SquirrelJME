@@ -173,8 +173,8 @@
     </clangFormatSettings>
     <files>
       <extensions>
-        <pair source="c" header="h" fileNamingConvention="CAMEL_CASE" />
         <pair source="cxx" header="hxx" fileNamingConvention="CAMEL_CASE" />
+        <pair source="c" header="h" fileNamingConvention="CAMEL_CASE" />
         <pair source="cu" header="cuh" fileNamingConvention="CAMEL_CASE" />
       </extensions>
     </files>
