@@ -31,18 +31,6 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-struct sjme_jobjectBase
-{
-	/** Common base for all objects. */
-	sjme_nvm_commonBase common;
-	
-	/** The identity hashcode. */
-	sjme_jint identityHash;
-	
-	/** The current class that this is. */
-	sjme_jclass isClass;
-};
-
 /**
  * Raw array values.
  *
@@ -109,11 +97,29 @@ typedef struct sjme_nvm_fieldValues
 	sjme_javaTypeId type;
 	
 	/** The number of items in this tread. */
-	sjme_jint count;
+	sjme_jint length;
+
+	/** The internal byte size of this tread. */
+	sjme_jint size;
 	
 	/** Values within the tread. */
 	sjme_nvm_rawFieldValues values;
 } sjme_nvm_fieldValues;
+
+struct sjme_jobjectBase
+{
+	/** Common base for all objects. */
+	sjme_nvm_commonBase common;
+	
+	/** The identity hashcode. */
+	sjme_jint identityHash;
+	
+	/** The current class that this is. */
+	sjme_jclass isClass;
+
+	/** Pointers to field offsets within this object. */
+	sjme_nvm_fieldValues* fields[SJME_NUM_JAVA_TYPE_IDS];
+};
 
 /**
  * Stores the classes that this class @c implements or @c extends .

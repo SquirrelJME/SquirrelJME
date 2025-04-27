@@ -23,7 +23,7 @@ sjme_errorCode sjme_nvm_fieldValueSet(
 	if (into->type != javaType)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	if (atIndex < 0 || atIndex >= into->count)
+	if (atIndex < 0 || atIndex >= into->length)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	if (javaType == SJME_JAVA_TYPE_ID_INTEGER)

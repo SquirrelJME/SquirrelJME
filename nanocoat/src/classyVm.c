@@ -381,7 +381,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
 	
 	/* Store type and count for this tread. */
 	fieldValues->type = typeId;
-	fieldValues->count = n;
+	fieldValues->length = n;
+	fieldValues->size = (n * sjme_nvm_typeMul[typeId]);
 	
 	/* Setup individual static fields with non-object constants. */
 	if (typeId != SJME_JAVA_TYPE_ID_OBJECT)
