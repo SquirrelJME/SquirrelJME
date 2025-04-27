@@ -191,6 +191,7 @@ endif()
 
 # Quick compilation check
 macro(squirreljme_try_compile noun target source cdef)
+	message(NOTICE "Checking compile of ${noun}...")
 	try_compile(${target}
 		"${CMAKE_CURRENT_BINARY_DIR}"
 		SOURCES "${CMAKE_CURRENT_LIST_DIR}/${source}.c"
