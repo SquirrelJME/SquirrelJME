@@ -167,10 +167,13 @@ public final class ScratchPadStore
 		throws IndexOutOfBoundsException
 	{
 		byte[] data = this._data;
-		if (__pos < 0 || __length < 0 || (__pos + __length) < 0 ||
-			(__pos + __length) > data.length)
+		if (__pos < 0 || __length < 0 || (__pos + __length) < 0)
 			throw new IndexOutOfBoundsException("IOOB");
 		
+		// Do not read past the end
+		if ((__pos + __length) > data.length)
+			return new ByteArrayInputStream(data, __pos,
+				data.length - __pos);
 		return new ByteArrayInputStream(data, __pos, __length);
 	}
 	
@@ -190,9 +193,11 @@ public final class ScratchPadStore
 	public OutputStream outputStream(int __pos, int __len)
 		throws IndexOutOfBoundsException, IOException
 	{
+		// There would normally be a (__pos + __len) > data.length check
+		// here, however there could be a stream past the bounds which
+		// is dropped
 		byte[] data = this._data;
-		if (__pos < 0 || __len < 0 || (__pos + __len) < 0 ||
-			(__pos + __len) > data.length)
+		if (__pos < 0 || __len < 0 || (__pos + __len) < 0)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		return new ScratchPadOutputTransaction(this, __pos, __len);
@@ -216,13 +221,19 @@ public final class ScratchPadStore
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Perform the copy
 		synchronized (this)
 		{
-			System.arraycopy(__b, 0, this._data, __o, __l);
+			// Do not write past the end
+			if ((__o + __l) > __b.length)
+				System.arraycopy(__b, 0,
+					this._data, __o, __b.length - __o);
+			else
+				System.arraycopy(__b, 0,
+					this._data, __o, __l);
 		}
 	}
 	
