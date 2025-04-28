@@ -34,6 +34,10 @@ public class TestThreadShelfInvalid
 			case 0:
 				ThreadShelf.vmThreadIsMain(null);
 				break;
+				
+			case 1:
+			case 2:
+				break;
 			
 			case 3:
 				ThreadShelf.createVMThread(null, null);
@@ -41,6 +45,9 @@ public class TestThreadShelfInvalid
 			
 			case 4:
 				ThreadShelf.javaThreadClearInterrupt(null);
+				break;
+				
+			case 5:
 				break;
 			
 			case 6:
