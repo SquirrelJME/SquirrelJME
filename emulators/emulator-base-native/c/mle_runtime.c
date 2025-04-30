@@ -35,6 +35,16 @@
 #define RUNTIME_VMDESCRIPTION_DESC "(I)Ljava/lang/String;"
 #define RUNTIME_VMSTATISTIC_DESC "(I)J"
 
+#define FORWARD_CLASS "cc/squirreljme/jvm/mle/RuntimeShelf"
+#define FORWARD_NATIVE_CLASS RUNTIME_CLASSNAME
+
+#define FORWARD_DESC_browseLocal \
+	DESC_METHOD(DESC_VOID, DESC_BOOLEAN DESC_STRING)
+
+FORWARD_IMPL_VOID(Runtime, browseLocal,
+	FORWARD_IMPL_args(jboolean create, jstring path),
+	FORWARD_IMPL_pass(create, path))
+
 JNIEXPORT void JNICALL Impl_mle_RuntimeShelf_garbageCollect(
 	JNIEnv* env, jclass classy)
 {
@@ -56,7 +66,7 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 {
 #define NATIVE_EXEC_PATH_LEN 768
 	char fileName[NATIVE_EXEC_PATH_LEN];
-	
+
 #if defined(__APPLE__)
 	uint32_t fileNameLen;
 #elif defined(__FreeBSD__)
@@ -66,13 +76,13 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 #elif defined(__sun) || defined(__illumos__)
 	const char* bip;
 #endif
-	
+
 	// Executable path of the VM binary (EXECUTABLE_PATH)
 	if (id == 6)
 	{
 		// Clear buffer
 		memset(fileName, 0, sizeof(fileName));
-		
+
 		// Use native system APIs to get this information
 #if defined(_WIN32) || defined(_WIN64)
 		GetModuleFileNameA(NULL, fileName, NATIVE_EXEC_PATH_LEN);
@@ -94,7 +104,7 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 			sysCtlInput[1] = KERN_PROC;
 			sysCtlInput[2] = KERN_PROC_PATHNAME;
 			sysCtlInput[3] = -1;
-			
+
 			// Perform the call
 			fileNameLen = NATIVE_EXEC_PATH_LEN;
 			sysctl(mib, 4, fileName, &fileNameLen, NULL, 0);
@@ -104,7 +114,7 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 		if (bip != NULL)
 			strncpy(fileName, bip, NATIVE_EXEC_PATH_LEN - 1);
 #endif
-	
+
 		// Convert to Java String if Valid
 		if (fileName[0] != 0)
 		{
@@ -112,7 +122,7 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 			return (*env)->NewStringUTF(env, fileName);
 		}
 	}
-	
+
 	return (jstring)forwardCallStaticObject(env, RUNTIME_CLASSNAME,
 		"vmDescription", RUNTIME_VMDESCRIPTION_DESC,
 		id);
@@ -158,6 +168,7 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_vmType(
 
 static const JNINativeMethod mleRuntimeMethods[] =
 {
+	FORWARD_list(Runtime, browseLocal),
 	{"garbageCollect", "()V", (void*)Impl_mle_RuntimeShelf_garbageCollect},
 	{"lineEnding", "()I", (void*)Impl_mle_RuntimeShelf_lineEnding},
 	{"memoryProfile", RUNTIME_MEMORYPROFILE_DESC, (void*)Impl_mle_RuntimeShelf_memoryProfile},

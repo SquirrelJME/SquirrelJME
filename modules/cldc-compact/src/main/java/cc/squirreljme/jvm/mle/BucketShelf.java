@@ -151,6 +151,20 @@ public final class BucketShelf
 		throws MLECallError;
 	
 	/**
+	 * Returns the path to the bucket on the disk, if known.
+	 *
+	 * @param __bucket The bucket to get the path of.
+	 * @return The path to the bucket on the local disk or {@code null} if it
+	 * is not known.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/04/29
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	public static native String path(@NotNull BucketBracket __bucket)
+		throws MLECallError;
+	
+	/**
 	 * Reads data from the given bucket.
 	 *
 	 * @param __bucket The bucket to read from.

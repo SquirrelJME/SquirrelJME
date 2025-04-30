@@ -29,6 +29,8 @@
 		DESC_STRING DESC_STRING DESC_STRING)
 #define FORWARD_DESC_length \
 	DESC_METHOD(DESC_LONG, DESC_BUCKET DESC_STRING)
+#define FORWARD_DESC_path \
+	DESC_METHOD(DESC_STRING, DESC_BUCKET)
 #define FORWARD_DESC_read \
 	DESC_METHOD(DESC_INT, DESC_BUCKET DESC_STRING \
 	DESC_INT DESC_ARRAY(DESC_BYTE) DESC_INT DESC_INT)
@@ -65,6 +67,10 @@ FORWARD_IMPL(Bucket, length,
 	jlong, Long,
 	FORWARD_IMPL_args(jobject bucket, jstring fileName),
 	FORWARD_IMPL_pass(bucket, fileName))
+FORWARD_IMPL(Bucket, path,
+	jobject, Object,
+	FORWARD_IMPL_args(jobject bucket),
+	FORWARD_IMPL_pass(bucket))
 FORWARD_IMPL(Bucket, read,
 	jint, Integer,
 	FORWARD_IMPL_args(jobject bucket, jstring fileName,
@@ -84,6 +90,7 @@ static const JNINativeMethod mleBucketMethods[] =
 	FORWARD_list(Bucket, list),
 	FORWARD_listAlt(Bucket, list, filtered),
 	FORWARD_list(Bucket, length),
+	FORWARD_list(Bucket, path),
 	FORWARD_list(Bucket, read),
 	FORWARD_list(Bucket, write),
 };

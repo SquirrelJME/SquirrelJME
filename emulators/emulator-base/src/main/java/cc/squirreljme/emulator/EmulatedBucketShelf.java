@@ -29,7 +29,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +45,9 @@ import org.jetbrains.annotations.Range;
  */
 public class EmulatedBucketShelf
 {
-	private static volatile EmulatedBucketBracket _dataBucket;
+	/** Cached buckets. */
+	private static final Map<Integer, EmulatedBucketBracket> _buckets =
+		new HashMap<>();
 	
 	/**
 	 * Deletes the file in the given bucket.
@@ -147,18 +151,30 @@ public class EmulatedBucketShelf
 			int __type)
 		throws MLECallError
 	{
-		if (__type != StandardBucketType.DATA_BUCKET)
-			throw new MLECallError("Unknown bucket type: " + __type);
-		
+		Map<Integer, EmulatedBucketBracket> buckets =
+			EmulatedBucketShelf._buckets;
+		Integer type = __type;
 		synchronized (EmulatedBucketShelf.class)
 		{
-			EmulatedBucketBracket result = EmulatedBucketShelf._dataBucket;
-			if (result != null)
-				return result;
+			// Already known?
+			if (buckets.containsKey(type))
+				return buckets.get(type);
 			
-			result = new EmulatedBucketBracket(SystemPathProvider.provider()
-				.state().resolve("data"));
-			EmulatedBucketShelf._dataBucket = result;
+			// Otherwise setup new bucket
+			EmulatedBucketBracket result;
+			if (__type == StandardBucketType.DATA_BUCKET)
+				result = new EmulatedBucketBracket(
+					SystemPathProvider.provider().state()
+						.resolve("data"));
+			else if (__type == StandardBucketType.LIBRARIES_BUCKET)
+				result = new EmulatedBucketBracket(
+					SystemPathProvider.provider().data()
+						.resolve("lib"));
+			else
+				throw new MLECallError("Unknown bucket type: " + __type);
+			
+			// Cache and use it
+			buckets.put(type, result);
 			return result;
 		}
 	}
@@ -293,6 +309,27 @@ public class EmulatedBucketShelf
 		{
 			throw new MLECallError(__e.getMessage(), __e);
 		}
+	}
+	
+	/**
+	 * Returns the path to the bucket on the disk, if known.
+	 *
+	 * @param __bucket The bucket to get the path of.
+	 * @return The path to the bucket on the local disk or {@code null} if it
+	 * is not known.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/04/29
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	public static String path(@NotNull BucketBracket __bucket)
+		throws MLECallError
+	{
+		if (__bucket == null)
+			throw new MLECallError("No bucket specified.");
+		
+		return ((EmulatedBucketBracket)__bucket).root
+			.normalize().toAbsolutePath().toString();
 	}
 	
 	/**

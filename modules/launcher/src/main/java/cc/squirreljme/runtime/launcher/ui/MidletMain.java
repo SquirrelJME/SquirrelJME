@@ -12,7 +12,11 @@ package cc.squirreljme.runtime.launcher.ui;
 import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.SuiteScanListener;
 import cc.squirreljme.jvm.launch.SuiteScanner;
+import cc.squirreljme.jvm.mle.BucketShelf;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
+import cc.squirreljme.jvm.mle.constants.StandardBucketType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +54,10 @@ public class MidletMain
 	/** The about command. */
 	public static final Command ABOUT_COMMAND =
 		new Command("About", Command.HELP, 2);
+	
+	/** Browse the system library directory. */
+	public static final Command BROWSE_LIBRARY_COMMAND =
+		new Command("Browse Library", Command.ITEM, 99);
 	
 	/** Timer used to reschedule things. */
 	static final Timer _TIMER =
@@ -221,6 +229,7 @@ public class MidletMain
 		List programList = this.programList;
 		programList.addCommand(MidletMain.EXIT_COMMAND);
 		programList.addCommand(MidletMain.ABOUT_COMMAND);
+		programList.addCommand(MidletMain.BROWSE_LIBRARY_COMMAND);
 		
 		// Need to handle commands and such
 		__CommandHandler__ ch = new __CommandHandler__();
@@ -404,6 +413,19 @@ public class MidletMain
 			{
 				Debugging.todoNote("Show about screen.");
 			}
+			
+			// Browse the library path
+			else if (__c == MidletMain.BROWSE_LIBRARY_COMMAND)
+				try
+				{
+					RuntimeShelf.browseLocal(true,
+						BucketShelf.path(BucketShelf.bucket(
+							StandardBucketType.LIBRARIES_BUCKET)));
+				}
+				catch (MLECallError __e)
+				{
+					__e.printStackTrace();
+				}
 		}
 	}
 }

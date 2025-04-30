@@ -66,7 +66,8 @@ public final class AccessController
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		Debugging.todoNote("Check permission: %s", __p);
+		if (Debugging.VERBOSE)
+			Debugging.todoNote("Check permission: %s", __p);
 	}
 }
 
