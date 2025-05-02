@@ -1,0 +1,17 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "Keitai Wiki Community Music Implementation"
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "KW"
+	swmType = JavaMEMidletType.API
+	swmName = "Keitai Wiki Community Music Implementation"
+	swmVendor = "Keitai Wiki Community"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}
