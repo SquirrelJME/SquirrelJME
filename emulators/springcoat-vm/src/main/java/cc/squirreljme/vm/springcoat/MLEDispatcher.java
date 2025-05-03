@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.AtomicShelf;
 import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.MathAccelShelf;
 import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.MidiShelf;
 import cc.squirreljme.jvm.mle.NativeArchiveShelf;
@@ -63,6 +64,10 @@ public enum MLEDispatcher
 	/** {@link MathShelf}. */
 	MATH("cc/squirreljme/jvm/mle/MathShelf",
 		MLEMath.values()),
+	
+	/** {@link MathAccelShelf}. */
+	MATH_ACCEL("cc/squirreljme/jvm/mle/MathAccelShelf",
+		MLEMathAccel.values()),
 	
 	/** {@link MidiShelf}. */
 	MIDI("cc/squirreljme/jvm/mle/MidiShelf",
