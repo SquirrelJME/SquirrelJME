@@ -41,10 +41,10 @@ import java.util.Iterator;
  * Rudimentary sample generator that uses sine waves for everything. This class
  * is intended for basic testing and is not suitable for general use.
  *
- * @see Sampler
+ * @see SamplerProvider
  */
-public class SineSampler
-	implements Sampler
+public class SineSamplerProvider
+	implements SamplerProvider
 {
 	
 	
@@ -172,7 +172,7 @@ public class SineSampler
 	 * Sampler instance
 	 */
 	static class Instance
-		implements Sampler.Instance
+		implements Sampler
 	{
 		
 		
@@ -249,10 +249,10 @@ public class SineSampler
 		 */
 		public void keyOff(int channel, int key)
 		{
-			if (channel < 0 || channel >= this.channels.length || SineSampler.A4 + key < 0 || SineSampler.A4 + key >= 128)
+			if (channel < 0 || channel >= this.channels.length || SineSamplerProvider.A4 + key < 0 || SineSamplerProvider.A4 + key >= 128)
 				return;
 			Channel chan = this.channels[channel];
-			Note note = chan.notesOn[SineSampler.A4 + key];
+			Note note = chan.notesOn[SineSamplerProvider.A4 + key];
 			if (note != null)
 			{
 				note.playing = false;
@@ -282,17 +282,17 @@ public class SineSampler
 			// Error checking
 			if (Float.isInfinite(velocity) || velocity < 0.0f)
 				throw new IllegalArgumentException("Invalid velocity.");
-			if (channel < 0 || channel >= this.channels.length || SineSampler.A4 + key < 0 || SineSampler.A4 + key >= 128)
+			if (channel < 0 || channel >= this.channels.length || SineSamplerProvider.A4 + key < 0 || SineSamplerProvider.A4 + key >= 128)
 				return;
 			
 			// Working variables
 			Channel chan = this.channels[channel];
-			Note note = chan.notesOn[SineSampler.A4 + key];
+			Note note = chan.notesOn[SineSamplerProvider.A4 + key];
 			
 			// No note is currently playing on the specified key
 			if (note == null)
 			{
-				note = chan.notesOn[SineSampler.A4 + key] = new Note();
+				note = chan.notesOn[SineSamplerProvider.A4 + key] = new Note();
 				chan.notesOut.add(note);
 				note.channel = chan;
 				note.volLeftLevel = 0.0f;
@@ -611,7 +611,7 @@ public class SineSampler
 	/**
 	 * Create a sampler.
 	 */
-	public SineSampler()
+	public SineSamplerProvider()
 	{
 	}
 	
@@ -627,7 +627,7 @@ public class SineSampler
 	 * @throws IllegalArgumentException if {@code sampleRate} is a
 	 * non-number or is less than or equal to zero.
 	 */
-	public Sampler.Instance instance(float sampleRate)
+	public Sampler instance(float sampleRate)
 	{
 		if (Float.isInfinite(sampleRate) || sampleRate <= 0.0f)
 			throw new IllegalArgumentException("Invalid sampling rate.");

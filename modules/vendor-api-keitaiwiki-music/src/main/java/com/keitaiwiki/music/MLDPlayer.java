@@ -41,7 +41,7 @@ import java.util.HashSet;
  * sample buffer.
  *
  * @see MLD
- * @see Sampler
+ * @see SamplerProvider
  */
 public class MLDPlayer
 {
@@ -133,7 +133,7 @@ public class MLDPlayer
 	/**
 	 * Sample generator
 	 */
-	final Sampler.Instance sampler;
+	final Sampler sampler;
 	
 	/**
 	 * Processing setTime()
@@ -166,9 +166,9 @@ public class MLDPlayer
 	 * @throws IllegalArgumentException if {@code sampleRate} is a
 	 * non-number or is less than or equal to zero.
 	 * @see MLD
-	 * @see Sampler
+	 * @see SamplerProvider
 	 */
-	public MLDPlayer(MLD mld, Sampler sampler, float sampleRate)
+	public MLDPlayer(MLD mld, SamplerProvider sampler, float sampleRate)
 	{
 		
 		// Error checking
@@ -362,7 +362,7 @@ public class MLDPlayer
 	 * {@code render(samples, offset, frames, 1.0f, 1.0f, true, true)}.<br
 	 * ><br>
 	 * For information regarding the operations of this method, see
-	 * {@link Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)}.
+	 * {@link Sampler#render(float[], int, int, float, float, boolean, boolean)}.
 	 *
 	 * @param samples Output sample buffer.
 	 * @param offset Index in {@code samples} of the first audio frame to
@@ -377,7 +377,7 @@ public class MLDPlayer
 	 * negative, or if {@code offset + frames * 2 > samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative.
 	 * @see #render(float[],int,int,float,float,boolean,boolean)
-	 * @see Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
+	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 */
 	public int render(float[] samples, int offset, int frames)
 	{
@@ -389,7 +389,7 @@ public class MLDPlayer
 	 * {@code render(samples, offset, frames, amplitude, amplitude,
 	 * true, true)}.<br><br>
 	 * For information regarding the operations of this method, see
-	 * {@link Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)}.
+	 * {@link Sampler#render(float[], int, int, float, float, boolean, boolean)}.
 	 *
 	 * @param samples Output sample buffer.
 	 * @param offset Index in {@code samples} of the first audio frame to
@@ -407,7 +407,7 @@ public class MLDPlayer
 	 * @throws IllegalArgumentException if {@code frames} is negative, or if
 	 * {@code amplitude} is a non-number or is negative.
 	 * @see #render(float[],int,int,float,float,boolean,boolean)
-	 * @see Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
+	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 */
 	public int render(float[] samples, int offset, int frames,
 		float amplitude)
@@ -422,7 +422,7 @@ public class MLDPlayer
 	 * {@code render(samples, offset, frames, left, right, true, true)}.
 	 * <br><br>
 	 * For information regarding the operations of this method, see
-	 * {@link Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)}.
+	 * {@link Sampler#render(float[], int, int, float, float, boolean, boolean)}.
 	 *
 	 * @param samples Output sample buffer.
 	 * @param offset Index in {@code samples} of the first audio frame to
@@ -442,7 +442,7 @@ public class MLDPlayer
 	 * @throws IllegalArgumentException if {@code frames} is negative, or if
 	 * {@code left} or {@code right} is a non-number or is negative.
 	 * @see #render(float[],int,int,float,float,boolean,boolean)
-	 * @see Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
+	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 */
 	public int render(float[] samples, int offset, int frames, float left,
 		float right)
@@ -453,7 +453,7 @@ public class MLDPlayer
 	/**
 	 * Generate output samples. <br><br>
 	 * For information regarding the operations of this method, see
-	 * {@link Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)}.
+	 * {@link Sampler#render(float[], int, int, float, float, boolean, boolean)}.
 	 * <br><br>
 	 * If an event is raised during playback, rendering will stop and return
 	 * before generating any more samples. When this happens, the return value
@@ -481,7 +481,7 @@ public class MLDPlayer
 	 * negative, or if {@code offset + frames * 2 > samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative, or if
 	 * {@code left} or {@code right} is a non-number or is negative.
-	 * @see Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
+	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 * @see #getEvents()
 	 * @see #render(float[],int,int)
 	 * @see #render(float[],int,int,float)

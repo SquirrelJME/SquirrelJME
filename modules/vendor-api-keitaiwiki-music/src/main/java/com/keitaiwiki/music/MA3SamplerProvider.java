@@ -59,8 +59,8 @@ import java.util.Base64;
  * This class only implements the relevant OPL features that it requires, and
  * is not a general-purpose OPL emulator.
  */
-public class MA3Sampler
-	implements Sampler
+public class MA3SamplerProvider
+	implements SamplerProvider
 {
 	
 	
@@ -98,7 +98,7 @@ public class MA3Sampler
 	/**
 	 * Specifies the use of MA-2 algorithms for FM synthesis.
 	 *
-	 * @see MA3Sampler(int,int,int)
+	 * @see MA3SamplerProvider (int,int,int)
 	 * @see #setDrumType(int) 
 	 * @see #setInstrumentType(int) 
 	 */
@@ -107,7 +107,7 @@ public class MA3Sampler
 	/**
 	 * Specifies the use of 2-operator MA-3 algorithms for FM synthesis.
 	 *
-	 * @see MA3Sampler(int,int,int)
+	 * @see MA3SamplerProvider (int,int,int)
 	 * @see #setDrumType(int)
 	 * @see #setInstrumentType(int)
 	 */
@@ -116,7 +116,7 @@ public class MA3Sampler
 	/**
 	 * Specifies the use of 4-operator MA-3 algorithms for FM synthesis.
 	 *
-	 * @see MA3Sampler(int,int,int)
+	 * @see MA3SamplerProvider (int,int,int)
 	 * @see #setDrumType(int) 
 	 * @see #setInstrumentType(int) 
 	 */
@@ -134,7 +134,7 @@ public class MA3Sampler
 	/**
 	 * Specifies the use of MA-3 waves for wave drum synthesis.
 	 *
-	 * @see MA3Sampler(int,int,int)
+	 * @see MA3SamplerProvider (int,int,int)
 	 * @see #setWaveDrumType(int) 
 	 */
 	public static final int WAVE_DRUM_MA3 = 0;
@@ -143,7 +143,7 @@ public class MA3Sampler
 	 * Specifies that FM drum algorithms always be used in place of wave
 	 * drums.
 	 *
-	 * @see MA3Sampler(int,int,int)
+	 * @see MA3SamplerProvider (int,int,int)
 	 * @see #setWaveDrumType(int) 
 	 */
 	public static final int WAVE_DRUM_NONE = -1;
@@ -261,20 +261,20 @@ public class MA3Sampler
 		
 		// Named waves
 		//  Sawtooth
-		int[] saw = MA3Sampler.WAVES[24];
+		int[] saw = MA3SamplerProvider.WAVES[24];
 		//  Sine
-		int[] sin = MA3Sampler.WAVES[0];
+		int[] sin = MA3SamplerProvider.WAVES[0];
 		//  Triangle
-		int[] tri = MA3Sampler.WAVES[16];
+		int[] tri = MA3SamplerProvider.WAVES[16];
 		//  Trapezoid (clamped 2*triangle)
-		int[] trp = MA3Sampler.WAVES[8];
+		int[] trp = MA3SamplerProvider.WAVES[8];
 		
 		// Quarter-period lookup tables
 		for (int x = 0; x < 256; x++)
 		{
 			
 			// Binary exponent table
-			MA3Sampler.EXP[x] = 1024 | (int)Math.round(
+			MA3SamplerProvider.EXP[x] = 1024 | (int)Math.round(
 				(Math.pow(2, (255 - x) / 256.0) - 1) * 1024);
 			
 			// Sine table
@@ -282,20 +282,20 @@ public class MA3Sampler
 				-Math.log(Math.sin((x + 0.5) * Math.PI / 256 / 2)) / Math.log(
 					2) * 256);
 			sin[x] = sin[511 - x] = y;
-			sin[512 + x] = sin[1023 - x] = y | MA3Sampler.MINUS;
+			sin[512 + x] = sin[1023 - x] = y | MA3SamplerProvider.MINUS;
 			
 			// Triangle table
 			y = (int)Math.round(
 				-Math.log((x + 0.5) / 256) / Math.log(2) * 256);
 			tri[x] = tri[511 - x] = y;
-			tri[512 + x] = tri[1023 - x] = y | MA3Sampler.MINUS;
+			tri[512 + x] = tri[1023 - x] = y | MA3SamplerProvider.MINUS;
 		}
 		
 		// Trapezoid table
 		for (int x = 0; x < 1024; x++)
 		{
-			trp[x] = x < 128 ? tri[x << 1] : x < 256 ? MA3Sampler.FULL :
-				x < 512 ? trp[511 - x] : trp[1023 - x] | MA3Sampler.MINUS;
+			trp[x] = x < 128 ? tri[x << 1] : x < 256 ? MA3SamplerProvider.FULL :
+				x < 512 ? trp[511 - x] : trp[1023 - x] | MA3SamplerProvider.MINUS;
 		}
 		
 		// Sawtooth table
@@ -304,80 +304,80 @@ public class MA3Sampler
 			int y = (int)Math.round(
 				-Math.log((x + 0.5) / 512) / Math.log(2) * 256);
 			saw[x] = y;
-			saw[1023 - x] = y | MA3Sampler.MINUS;
+			saw[1023 - x] = y | MA3SamplerProvider.MINUS;
 		}
 		
 		// Compute other waveforms
 		for (int x = 0; x < 1024; x++)
 		{
 			// WAVES[ 0] is sin
-			MA3Sampler.WAVES[1][x] = x < 512 ? sin[x] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[2][x] = sin[x & 511];
-			MA3Sampler.WAVES[3][x] =
-				(x & 511) < 256 ? sin[x & 255] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[4][x] = x < 512 ? sin[x << 1] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[5][x] =
-				x < 512 ? sin[x << 1 & 511] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[6][x] =
-				x < 512 ? MA3Sampler.FULL : MA3Sampler.MINUS;
-			MA3Sampler.WAVES[7][x] =
-				x < 512 ? (MA3Sampler.EXP[255 ^ x >> 1] - 1024) << 1 :
-					MA3Sampler.WAVES[7][1023 - x] | MA3Sampler.MINUS;
+			MA3SamplerProvider.WAVES[1][x] = x < 512 ? sin[x] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[2][x] = sin[x & 511];
+			MA3SamplerProvider.WAVES[3][x] =
+				(x & 511) < 256 ? sin[x & 255] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[4][x] = x < 512 ? sin[x << 1] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[5][x] =
+				x < 512 ? sin[x << 1 & 511] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[6][x] =
+				x < 512 ? MA3SamplerProvider.FULL : MA3SamplerProvider.MINUS;
+			MA3SamplerProvider.WAVES[7][x] =
+				x < 512 ? (MA3SamplerProvider.EXP[255 ^ x >> 1] - 1024) << 1 :
+					MA3SamplerProvider.WAVES[7][1023 - x] | MA3SamplerProvider.MINUS;
 			// WAVES[ 8] is trp
-			MA3Sampler.WAVES[9][x] = x < 512 ? trp[x] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[10][x] = trp[x & 511];
-			MA3Sampler.WAVES[11][x] =
-				(x & 511) < 256 ? trp[x & 255] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[12][x] = x < 512 ? trp[x << 1] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[13][x] =
-				x < 512 ? trp[x << 1 & 511] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[14][x] =
-				x < 512 ? MA3Sampler.FULL : MA3Sampler.ZERO;
+			MA3SamplerProvider.WAVES[9][x] = x < 512 ? trp[x] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[10][x] = trp[x & 511];
+			MA3SamplerProvider.WAVES[11][x] =
+				(x & 511) < 256 ? trp[x & 255] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[12][x] = x < 512 ? trp[x << 1] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[13][x] =
+				x < 512 ? trp[x << 1 & 511] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[14][x] =
+				x < 512 ? MA3SamplerProvider.FULL : MA3SamplerProvider.ZERO;
 			//  PCM RAM
-			MA3Sampler.WAVES[15][x] = MA3Sampler.ZERO;
+			MA3SamplerProvider.WAVES[15][x] = MA3SamplerProvider.ZERO;
 			// WAVES[16] is tri
-			MA3Sampler.WAVES[17][x] = x < 512 ? tri[x] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[18][x] = tri[x & 511];
-			MA3Sampler.WAVES[19][x] =
-				(x & 511) < 256 ? tri[x & 255] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[20][x] = x < 512 ? tri[x << 1] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[21][x] =
-				x < 512 ? tri[x << 1 & 511] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[22][x] =
-				(x & 511) < 256 ? MA3Sampler.FULL : MA3Sampler.ZERO;
+			MA3SamplerProvider.WAVES[17][x] = x < 512 ? tri[x] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[18][x] = tri[x & 511];
+			MA3SamplerProvider.WAVES[19][x] =
+				(x & 511) < 256 ? tri[x & 255] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[20][x] = x < 512 ? tri[x << 1] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[21][x] =
+				x < 512 ? tri[x << 1 & 511] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[22][x] =
+				(x & 511) < 256 ? MA3SamplerProvider.FULL : MA3SamplerProvider.ZERO;
 			//  PCM RAM
-			MA3Sampler.WAVES[23][x] = MA3Sampler.ZERO;
+			MA3SamplerProvider.WAVES[23][x] = MA3SamplerProvider.ZERO;
 			// WAVES[24] is saw
-			MA3Sampler.WAVES[25][x] = x < 512 ? saw[x] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[26][x] = saw[x & 511];
-			MA3Sampler.WAVES[27][x] = x < 128 ? saw[x] :
-				x >= 512 && x < 768 ? saw[x - 512 << 1] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[28][x] = x < 512 ? saw[x << 1] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[29][x] =
-				x < 512 ? saw[x << 1 & 511] : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[30][x] =
-				x < 256 ? MA3Sampler.FULL : MA3Sampler.ZERO;
+			MA3SamplerProvider.WAVES[25][x] = x < 512 ? saw[x] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[26][x] = saw[x & 511];
+			MA3SamplerProvider.WAVES[27][x] = x < 128 ? saw[x] :
+				x >= 512 && x < 768 ? saw[x - 512 << 1] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[28][x] = x < 512 ? saw[x << 1] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[29][x] =
+				x < 512 ? saw[x << 1 & 511] : MA3SamplerProvider.ZERO;
+			MA3SamplerProvider.WAVES[30][x] =
+				x < 256 ? MA3SamplerProvider.FULL : MA3SamplerProvider.ZERO;
 			//  PCM RAM
-			MA3Sampler.WAVES[31][x] = MA3Sampler.ZERO;
+			MA3SamplerProvider.WAVES[31][x] = MA3SamplerProvider.ZERO;
 		}
 		
 		// Compute amplitude modulation LFO
 		for (int x = 0; x < 26; x++)
-			MA3Sampler.AM_LFO_A[x] = MA3Sampler.AM_LFO_A[51 - x] = x;
+			MA3SamplerProvider.AM_LFO_A[x] = MA3SamplerProvider.AM_LFO_A[51 - x] = x;
 		
 		// Compute sustain levels
-		MA3Sampler.SUSTAINS[0] = 0;
-		MA3Sampler.SUSTAINS[15] = 511;
+		MA3SamplerProvider.SUSTAINS[0] = 0;
+		MA3SamplerProvider.SUSTAINS[15] = 511;
 		for (int x = 1; x < 15; x++)
 		{
-			MA3Sampler.SUSTAINS[x] = (int)Math.round(
+			MA3SamplerProvider.SUSTAINS[x] = (int)Math.round(
 				16 * Math.pow(2, Math.log(x) / Math.log(2)));
 		}
 		
 		// Compute wave drum envelope levels
 		for (int x = 0; x < 512; x++)
 		{
-			MA3Sampler.WAVE_ENV[x] = (int)Math.round(
+			MA3SamplerProvider.WAVE_ENV[x] = (int)Math.round(
 				32767 * Math.pow(10, x * -96.0 / 511 / 20));
 		}
 		
@@ -388,12 +388,12 @@ public class MA3Sampler
 	 * Create a sampler with default parameters. Same as invoking
 	 * {@code MA3Sampler(FM_MA3_4OP, FM_MA3_4OP, WAVE_DRUM_MA3)}.
 	 *
-	 * @see MA3Sampler(int,int,int)
+	 * @see MA3SamplerProvider (int,int,int)
 	 */
-	public MA3Sampler()
+	public MA3SamplerProvider()
 	{
-		this(MA3Sampler.FM_MA3_4OP, MA3Sampler.FM_MA3_4OP,
-			MA3Sampler.WAVE_DRUM_MA3);
+		this(MA3SamplerProvider.FM_MA3_4OP, MA3SamplerProvider.FM_MA3_4OP,
+			MA3SamplerProvider.WAVE_DRUM_MA3);
 	}
 	
 	/**
@@ -418,10 +418,10 @@ public class MA3Sampler
 	 * @see #setInstrumentType(int)
 	 * @see #setWaveDrumType(int)
 	 */
-	public MA3Sampler(int instrumentType, int drumType, int waveDrumType)
+	public MA3SamplerProvider(int instrumentType, int drumType, int waveDrumType)
 	{
 		super();
-		this.algWaveDrums = MA3Sampler.MA3_DRUMS_WAVE;
+		this.algWaveDrums = MA3SamplerProvider.MA3_DRUMS_WAVE;
 		this.setInstrumentType(instrumentType);
 		this.setDrumType(drumType);
 		this.setWaveDrumType(waveDrumType);
@@ -482,7 +482,7 @@ public class MA3Sampler
 	 * @throws IllegalArgumentException if {@code sampleRate} is a
 	 * non-number or is less than or equal to zero.
 	 */
-	public Sampler.Instance instance(float sampleRate)
+	public Sampler instance(float sampleRate)
 	{
 		if (Float.isInfinite(sampleRate) || sampleRate <= 0.0f)
 			throw new IllegalArgumentException("Invalid sampling rate.");
@@ -508,14 +508,14 @@ public class MA3Sampler
 	{
 		switch (type)
 		{
-			case MA3Sampler.FM_MA2:
-				this.algDrums = MA3Sampler.MA2_DRUMS;
+			case MA3SamplerProvider.FM_MA2:
+				this.algDrums = MA3SamplerProvider.MA2_DRUMS;
 				break;
-			case MA3Sampler.FM_MA3_2OP:
-				this.algDrums = MA3Sampler.MA3_DRUMS_2OP;
+			case MA3SamplerProvider.FM_MA3_2OP:
+				this.algDrums = MA3SamplerProvider.MA3_DRUMS_2OP;
 				break;
-			case MA3Sampler.FM_MA3_4OP:
-				this.algDrums = MA3Sampler.MA3_DRUMS_4OP;
+			case MA3SamplerProvider.FM_MA3_4OP:
+				this.algDrums = MA3SamplerProvider.MA3_DRUMS_4OP;
 				break;
 			default:
 				throw new IllegalArgumentException("Invalid type.");
@@ -545,14 +545,14 @@ public class MA3Sampler
 	{
 		switch (type)
 		{
-			case MA3Sampler.FM_MA2:
-				this.algInstruments = MA3Sampler.MA2_INSTRUMENTS;
+			case MA3SamplerProvider.FM_MA2:
+				this.algInstruments = MA3SamplerProvider.MA2_INSTRUMENTS;
 				break;
-			case MA3Sampler.FM_MA3_2OP:
-				this.algInstruments = MA3Sampler.MA3_INSTRUMENTS_2OP;
+			case MA3SamplerProvider.FM_MA3_2OP:
+				this.algInstruments = MA3SamplerProvider.MA3_INSTRUMENTS_2OP;
 				break;
-			case MA3Sampler.FM_MA3_4OP:
-				this.algInstruments = MA3Sampler.MA3_INSTRUMENTS_4OP;
+			case MA3SamplerProvider.FM_MA3_4OP:
+				this.algInstruments = MA3SamplerProvider.MA3_INSTRUMENTS_4OP;
 				break;
 			default:
 				throw new IllegalArgumentException("Invalid type.");
@@ -579,11 +579,11 @@ public class MA3Sampler
 	{
 		switch (type)
 		{
-			case MA3Sampler.WAVE_DRUM_NONE:
+			case MA3SamplerProvider.WAVE_DRUM_NONE:
 				this.algWaveDrums = null;
 				break;
-			case MA3Sampler.WAVE_DRUM_MA3:
-				this.algWaveDrums = MA3Sampler.MA3_DRUMS_WAVE;
+			case MA3SamplerProvider.WAVE_DRUM_MA3:
+				this.algWaveDrums = MA3SamplerProvider.MA3_DRUMS_WAVE;
 				break;
 			default:
 				throw new IllegalArgumentException("Invalid type.");
@@ -623,7 +623,7 @@ public class MA3Sampler
 				
 				// Compute the next quantization step size
 				An = Math.min(
-					Math.max(MA3Sampler.AICA_STEPS[bits & 7] * An >> 8, 127),
+					Math.max(MA3SamplerProvider.AICA_STEPS[bits & 7] * An >> 8, 127),
 					24576);
 			}
 		}
@@ -644,7 +644,7 @@ public class MA3Sampler
 		for (int x = 0; x < roms.length; x++)
 		{
 			byte[] adpcm = base64.decode(roms[x]);
-			ret[x] = MA3Sampler.decodeAICA(adpcm, 0, adpcm.length);
+			ret[x] = MA3SamplerProvider.decodeAICA(adpcm, 0, adpcm.length);
 		}
 		return ret;
 	}
@@ -827,7 +827,7 @@ public class MA3Sampler
 			
 			this.isDrum = true;
 			this.isWave = true;
-			this.wavAdvance = this.fs / MA3Sampler.SAMPLE_RATE;
+			this.wavAdvance = this.fs / MA3SamplerProvider.SAMPLE_RATE;
 			this.initVolume();
 		}
 		
@@ -1045,7 +1045,7 @@ public class MA3Sampler
 	
 	
 	class Instance
-		implements Sampler.Instance
+		implements Sampler
 	{
 		
 		
@@ -1133,7 +1133,7 @@ public class MA3Sampler
 			this.sampleRate = sampleRate;
 			this.smpNext = new float[2];
 			this.smpPrev = new float[2];
-			this.smpWidth = MA3Sampler.SAMPLE_RATE / sampleRate;
+			this.smpWidth = MA3SamplerProvider.SAMPLE_RATE / sampleRate;
 			this.volRate = 1 / (sampleRate * 0.01f);
 			this.wavDrums = new Algorithm[128];
 			
@@ -1186,10 +1186,10 @@ public class MA3Sampler
 		 */
 		public void keyOff(int channel, int key)
 		{
-			if (channel < 0 || channel >= this.channels.length || MA3Sampler.A4 + key < 0 || MA3Sampler.A4 + key >= 128)
+			if (channel < 0 || channel >= this.channels.length || MA3SamplerProvider.A4 + key < 0 || MA3SamplerProvider.A4 + key >= 128)
 				return;
 			Channel chan = this.channels[channel];
-			Note note = chan.notesOn[MA3Sampler.A4 + key];
+			Note note = chan.notesOn[MA3SamplerProvider.A4 + key];
 			if (note != null)
 				note.off();
 		}
@@ -1203,7 +1203,7 @@ public class MA3Sampler
 			// Error checking
 			if (Float.isInfinite(velocity) || velocity < 0.0f)
 				throw new IllegalArgumentException("Invalid velocity.");
-			if (channel < 0 || channel >= this.channels.length || MA3Sampler.A4 + key < 0 || MA3Sampler.A4 + key >= 128)
+			if (channel < 0 || channel >= this.channels.length || MA3SamplerProvider.A4 + key < 0 || MA3SamplerProvider.A4 + key >= 128)
 				return;
 			
 			// Working variables
@@ -1211,7 +1211,7 @@ public class MA3Sampler
 			Channel chan = this.channels[channel];
 			float freqBase = 0;
 			boolean isWave = false;
-			Note note = chan.notesOn[MA3Sampler.A4 + key];
+			Note note = chan.notesOn[MA3SamplerProvider.A4 + key];
 			
 			// FM instrument algorithm
 			if (!chan.isDrum)
@@ -1236,14 +1236,14 @@ public class MA3Sampler
 						program |= (chan.prgBank & 1) << 6;
 				}
 				
-				algorithm = MA3Sampler.this.algInstruments[program];
+				algorithm = MA3SamplerProvider.this.algInstruments[program];
 				freqBase = (float)(440 * Math.pow(2, key / 12.0));
 			}
 			
 			// Drum algorithm
 			else
 			{
-				if (MA3Sampler.this.prgWaveDrumType != MA3Sampler.WAVE_DRUM_NONE)
+				if (MA3SamplerProvider.this.prgWaveDrumType != MA3SamplerProvider.WAVE_DRUM_NONE)
 				{
 					algorithm = this.getDrumWave(key);
 					isWave = algorithm != null;
@@ -1272,7 +1272,7 @@ public class MA3Sampler
 				}
 				
 				// Create the new note
-				note = chan.notesOn[MA3Sampler.A4 + key] = new Note(chan,
+				note = chan.notesOn[MA3SamplerProvider.A4 + key] = new Note(chan,
 					algorithm);
 				chan.notesOut.add(note);
 			}
@@ -1559,7 +1559,7 @@ public class MA3Sampler
 					this.stopWaveDrums();
 					break;
 				case 0x06: // Supply wave drum samples
-					this.wavRam = MA3Sampler.decodeAICA(message, 4,
+					this.wavRam = MA3SamplerProvider.decodeAICA(message, 4,
 						message.length - 4);
 					this.stopWaveDrums();
 					break;
@@ -1596,11 +1596,11 @@ public class MA3Sampler
 				key += 35;
 			
 			// Error checking
-			if (key < 0 || key >= MA3Sampler.this.algDrums.length)
+			if (key < 0 || key >= MA3SamplerProvider.this.algDrums.length)
 				return null;
 			
 			// Select the preset algorithm
-			return MA3Sampler.this.algDrums[key];
+			return MA3SamplerProvider.this.algDrums[key];
 		}
 		
 		/**
@@ -1614,7 +1614,7 @@ public class MA3Sampler
 				return null;
 			
 			// Select the registered wave algorithm, if available
-			Algorithm[] algs = MA3Sampler.this.algWaveDrums;
+			Algorithm[] algs = MA3SamplerProvider.this.algWaveDrums;
 			Algorithm ret = null;
 			if (key < 0)
 			{
@@ -1682,7 +1682,7 @@ public class MA3Sampler
 				Algorithm drum = new Algorithm(message, src + 1);
 				
 				// Error checking
-				if (drum.drumKey >= 24 && drum.drumKey <= 91 || drum.ep < drum.lp || drum.rm && (drum.waveId == 7 || drum.ep > MA3Sampler.MA3_WAVEROM[drum.waveId].length))
+				if (drum.drumKey >= 24 && drum.drumKey <= 91 || drum.ep < drum.lp || drum.rm && (drum.waveId == 7 || drum.ep > MA3SamplerProvider.MA3_WAVEROM[drum.waveId].length))
 					continue;
 				
 				// Register the wave drum
@@ -1838,10 +1838,10 @@ public class MA3Sampler
 			this.playing = false;
 			for (Operator op : this.operators)
 			{
-				if (op.envStage == MA3Sampler.ENV_DONE || op.xof)
+				if (op.envStage == MA3SamplerProvider.ENV_DONE || op.xof)
 					continue;
 				op.envRate = op.rr;
-				op.envStage = MA3Sampler.ENV_RELEASE;
+				op.envStage = MA3SamplerProvider.ENV_RELEASE;
 			}
 		}
 		
@@ -1853,12 +1853,12 @@ public class MA3Sampler
 			this.envDone = true;
 			
 			// Test all relevant operators
-			int bits = MA3Sampler.ENV_FLAGS[this.algorithm.alg];
+			int bits = MA3SamplerProvider.ENV_FLAGS[this.algorithm.alg];
 			for (int x = 0; x < this.operators.length; x++, bits >>= 1)
 			{
 				if ((bits & 1) != 0)
 					this.envDone =
-						this.envDone && this.operators[x].envStage == MA3Sampler.ENV_DONE;
+						this.envDone && this.operators[x].envStage == MA3SamplerProvider.ENV_DONE;
 			}
 			
 			// If all relevant operators are done, shut off the note
@@ -1880,9 +1880,9 @@ public class MA3Sampler
 			double freq =
 				this.algorithm.isDrum ? this.freqBase : this.freqBase * bend;
 			this.block = Math.min(7, Math.max(0, (int)(Math.round(
-				Math.log(freq / 440) * MA3Sampler.MAGIC_B) + 57) / 12));
+				Math.log(freq / 440) * MA3SamplerProvider.MAGIC_B) + 57) / 12));
 			this.f_number = Math.min(1023, Math.max(0, (int)Math.round(
-				freq * (1 << 20 - this.block) * MA3Sampler.MAGIC_F)));
+				freq * (1 << 20 - this.block) * MA3SamplerProvider.MAGIC_F)));
 			
 			// Notify operators
 			for (Operator op : this.operators)
@@ -2006,7 +2006,7 @@ public class MA3Sampler
 			for (Operator op : this.operators)
 			{
 				op.envLevel = 511;
-				op.envStage = MA3Sampler.ENV_DONE;
+				op.envStage = MA3SamplerProvider.ENV_DONE;
 			}
 		}
 		
@@ -2275,7 +2275,7 @@ public class MA3Sampler
 			this.envLevel = 511;
 			this.envPhase = 0;
 			this.envRate = this.ar;
-			this.envStage = MA3Sampler.ENV_ATTACK;
+			this.envStage = MA3SamplerProvider.ENV_ATTACK;
 			this.instance = note.instance;
 			this.note = note;
 			this.oscPhase = 0;
@@ -2289,9 +2289,9 @@ public class MA3Sampler
 		void onFrequency()
 		{
 			this.envRof =
-				(this.note.block << 1 | this.note.f_number >> 8 + MA3Sampler.NTS & 1) >> ((this.ksr ^ 1) << 1);
+				(this.note.block << 1 | this.note.f_number >> 8 + MA3SamplerProvider.NTS & 1) >> ((this.ksr ^ 1) << 1);
 			this.kslOut = Math.max(0,
-				MA3Sampler.KSL_B[this.ksl] * ((this.note.block << 3) - MA3Sampler.KSL_F[this.note.f_number >> 6]));
+				MA3SamplerProvider.KSL_B[this.ksl] * ((this.note.block << 3) - MA3SamplerProvider.KSL_F[this.note.f_number >> 6]));
 		}
 		
 		/**
@@ -2303,7 +2303,7 @@ public class MA3Sampler
 			int x, y;
 			
 			// The envelope has finished
-			if (this.envStage == MA3Sampler.ENV_DONE)
+			if (this.envStage == MA3SamplerProvider.ENV_DONE)
 				return 0;
 			
 			// FM sample
@@ -2313,16 +2313,16 @@ public class MA3Sampler
 					mod += this.fb0 + this.fb1 >> 9 - this.fb;
 				this.fb1 = this.fb0;
 				x =
-					MA3Sampler.WAVES[this.ws][(this.oscPhase >> 9) + mod & 1023] + (this.envOut << 3);
+					MA3SamplerProvider.WAVES[this.ws][(this.oscPhase >> 9) + mod & 1023] + (this.envOut << 3);
 				this.fb0 =
-					MA3Sampler.EXP[x & 0xFF] << 1 >> (x >> 8 & 31) ^ x >> 31;
+					MA3SamplerProvider.EXP[x & 0xFF] << 1 >> (x >> 8 & 31) ^ x >> 31;
 			}
 			
 			// Wave sample
 			else
 			{
 				int[] samples = !this.algorithm.rm ? this.instance.wavRam :
-					MA3Sampler.MA3_WAVEROM[this.algorithm.waveId];
+					MA3SamplerProvider.MA3_WAVEROM[this.algorithm.waveId];
 				
 				// Select the sample from wave memory
 				if (samples != null && this.wavSample < this.algorithm.ep)
@@ -2331,7 +2331,7 @@ public class MA3Sampler
 					// Produce the output sample
 					x = (int)Math.floor(this.wavSample);
 					this.fb0 =
-						samples[x] * MA3Sampler.WAVE_ENV[this.envOut] / 32767;
+						samples[x] * MA3SamplerProvider.WAVE_ENV[this.envOut] / 32767;
 					
 					// Advance to the next sample
 					this.wavSample += this.algorithm.wavAdvance;
@@ -2364,7 +2364,7 @@ public class MA3Sampler
 			this.envPhase &= 0x7FFF;
 			switch (this.envStage)
 			{
-				case MA3Sampler.ENV_ATTACK:
+				case MA3SamplerProvider.ENV_ATTACK:
 					if (y == 0)
 						break;
 					this.envLevel += ~(this.envLevel * y >> 3);
@@ -2372,27 +2372,27 @@ public class MA3Sampler
 					{
 						this.envLevel = 0;
 						this.envRate = this.dr;
-						this.envStage = MA3Sampler.ENV_DECAY;
+						this.envStage = MA3SamplerProvider.ENV_DECAY;
 					}
 					break;
-				case MA3Sampler.ENV_DECAY:
-				case MA3Sampler.ENV_SUSTAIN:
-				case MA3Sampler.ENV_RELEASE:
+				case MA3SamplerProvider.ENV_DECAY:
+				case MA3SamplerProvider.ENV_SUSTAIN:
+				case MA3SamplerProvider.ENV_RELEASE:
 					this.envLevel += y;
-					if (this.envStage == MA3Sampler.ENV_DECAY && this.envLevel >= MA3Sampler.SUSTAINS[this.sl])
+					if (this.envStage == MA3SamplerProvider.ENV_DECAY && this.envLevel >= MA3SamplerProvider.SUSTAINS[this.sl])
 					{
-						this.envLevel = MA3Sampler.SUSTAINS[this.sl];
+						this.envLevel = MA3SamplerProvider.SUSTAINS[this.sl];
 						this.envRate = this.sr;
-						this.envStage = MA3Sampler.ENV_SUSTAIN;
+						this.envStage = MA3SamplerProvider.ENV_SUSTAIN;
 					}
 					if (this.envLevel >= 511)
 					{
 						this.envLevel = 511;
-						this.envStage = MA3Sampler.ENV_DONE;
+						this.envStage = MA3SamplerProvider.ENV_DONE;
 						this.note.onEnvelopeDone();
 					}
 					break;
-				case MA3Sampler.ENV_DONE:
+				case MA3SamplerProvider.ENV_DONE:
 					this.envLevel = 511;
 					break;
 			}
@@ -2402,9 +2402,9 @@ public class MA3Sampler
 			if (this.eam)
 			{
 				this.envOut +=
-					MA3Sampler.AM_LFO_A[this.amPhase >> 12] << this.dam >> 2;
+					MA3SamplerProvider.AM_LFO_A[this.amPhase >> 12] << this.dam >> 2;
 				this.amPhase =
-					(this.amPhase + MA3Sampler.AM_LFO_B[this.algorithm.lfo]) % (0x34000);
+					(this.amPhase + MA3SamplerProvider.AM_LFO_B[this.algorithm.lfo]) % (0x34000);
 			}
 			this.envOut = Math.min(Math.max(this.envOut, 0), 511);
 			
@@ -2414,7 +2414,7 @@ public class MA3Sampler
 			
 			// Advance the oscillator
 			this.oscPhase +=
-				(this.note.f_number << this.note.block >> 1) * MA3Sampler.MULTIS[this.multi] >> 1;
+				(this.note.f_number << this.note.block >> 1) * MA3SamplerProvider.MULTIS[this.multi] >> 1;
 			
 			// According to available resources, the below algorithm should be
 			// correct for vibrato, but no significance has been observed and
@@ -3074,7 +3074,7 @@ public class MA3Sampler
 	/**
 	 * Wave synthesis ROM for MA-3
 	 */
-	static final int[][] MA3_WAVEROM = MA3Sampler.waveRom(
+	static final int[][] MA3_WAVEROM = MA3SamplerProvider.waveRom(
 		new String[] {"93cXB1" + 
 			"/wgn9PubQYiZEIiIAIiIAIiIAIiIC3cOQ3L9QCaagwCH2JgpkRWwCYAjvwSvGE" + 
 			"X8BZCxiooBvHQIkBKbmXgYgTW6iVEAgrATsAsAOAAI3UkvEoPaqypigdiAkYkWm7paGi"
