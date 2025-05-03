@@ -48,8 +48,8 @@ public class MLD
 	
 	static final int CUEPOINT_END = 1;
 	
-	/// ///////////////////////////// Constants
-	/// ////////////////////////////////
+	
+	
 	
 	// Cuepoints
 	static final int CUEPOINT_START = 0;
@@ -292,8 +292,8 @@ public class MLD
 	}
 	
 	
-	////////////////////////////// Constructors 
-	///////////////////////////////
+	
+	
 	
 	/**
 	 * Retrieve the copyright of the MLD resource.
@@ -346,8 +346,8 @@ public class MLD
 	}
 	
 	
-	///////////////////////////// Public Methods 
-	//////////////////////////////
+	
+	
 	
 	/**
 	 * Retrieve the version of the MLD resource.
@@ -359,8 +359,8 @@ public class MLD
 		return this.vers;
 	}
 	
-	/// ////////////////////////// Private Methods
-	/// /////////////////////////////
+	
+	
 	
 	// Parse an ADPCM chunk
 	private ADPCM adpcm(Reader reader)
@@ -372,8 +372,8 @@ public class MLD
 		return ret;
 	}
 	
-	/// /////////////////////// Event Parsing Methods
-	/// //////////////////////////
+	
+	
 	
 	// Parse an event
 	private Event event(int note, int track, Reader reader)
@@ -591,8 +591,8 @@ public class MLD
 		return event;
 	}
 	
-	/// ////////////////////// Header Parsing Methods
-	/// //////////////////////////
+	
+	
 	
 	// Parse the file header
 	private void header(Reader reader)
@@ -978,8 +978,8 @@ public class MLD
 		return ret;
 	}
 	
-	/// ////////////////////////////// Classes
-	/// /////////////////////////////////
+	
+	
 	
 	// ADPCM sample data class
 	class ADPCM

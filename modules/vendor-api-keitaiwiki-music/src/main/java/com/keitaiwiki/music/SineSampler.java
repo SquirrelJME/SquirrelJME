@@ -46,14 +46,14 @@ public class SineSampler
 	implements Sampler
 {
 	
-	/// ///////////////////////////// Constants 
-	/// ////////////////////////////////
+	
+	
 	
 	private static final int A4 = 81; // Key index bias
 	
 	
-	/// ////////////////////////////// Classes 
-	/// /////////////////////////////////
+	
+	
 	
 	// Output channel
 	private class Channel
@@ -120,8 +120,8 @@ public class SineSampler
 		final float volRate;      // Automatic volume adjustment rate
 		
 		
-		/// ///////////////////////// Constructors 
-		/// /////////////////////////////
+		
+		
 		
 		// Constructor
 		Instance(float sampleRate)
@@ -146,8 +146,8 @@ public class SineSampler
 		}
 		
 		
-		/// //////////////////////// Public Methods 
-		/// ////////////////////////////
+		
+		
 		
 		// Specify a channel's program bank.
 		public void bankChange(int channel, int bank)
@@ -381,8 +381,8 @@ public class SineSampler
 		}
 		
 		
-		/// //////////////////////// Private Methods 
-		/// ///////////////////////////
+		
+		
 		
 		// Render samples on a channel
 		private void chanRender(Channel chan, float[] samples, int offset,
@@ -472,8 +472,8 @@ public class SineSampler
 	}
 	
 	
-	////////////////////////////// Constructors 
-	///////////////////////////////
+	
+	
 	
 	/**
 	 * Create a sampler.
@@ -483,8 +483,8 @@ public class SineSampler
 	}
 	
 	
-	///////////////////////////// Public Methods 
-	//////////////////////////////
+	
+	
 	
 	/**
 	 * Produces an instance of this sampler that can be used to render 

@@ -40,8 +40,8 @@ package com.keitaiwiki.music;
 public interface Sampler
 {
 	
-	/////////////////////////////// Interfaces 
-	////////////////////////////////
+	
+	
 	
 	/**
 	 * Produces an instance of this sampler that can be used to render
@@ -57,8 +57,8 @@ public interface Sampler
 	Instance instance(float sampleRate);
 	
 	
-	///////////////////////////////// Methods 
-	/////////////////////////////////
+	
+	
 	
 	/**
 	 * Sample-generating instance of a {@code Sampler}. Configurations on the

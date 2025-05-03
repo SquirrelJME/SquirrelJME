@@ -77,8 +77,8 @@ public class MA3Sampler
 	private int prgWaveDrumType;   // Wave drums algorithm type
 	
 	
-	//////////////////////////////// Constants 
-	////////////////////////////////
+	
+	
 	
 	/**
 	 * Specifies the use of MA-2 algorithms for FM synthesis.
@@ -134,8 +134,8 @@ public class MA3Sampler
 	public static final int WAVE_DRUM_NONE = -1;
 	
 	
-	/// ///////////////////////// Private Constants 
-	/// ////////////////////////////
+	
+	
 	
 	// Lookup tables
 	private static final int[] AM_LFO_A; // Amplitude modulation levels
@@ -325,8 +325,8 @@ public class MA3Sampler
 	}
 	
 	
-	////////////////////////////// Constructors 
-	///////////////////////////////
+	
+	
 	
 	/**
 	 * Create a sampler with default parameters. Same as invoking
@@ -372,8 +372,8 @@ public class MA3Sampler
 	}
 	
 	
-	///////////////////////////// Public Methods 
-	//////////////////////////////
+	
+	
 	
 	/**
 	 * Retrieve the current FM synthesis drum algorithm type. This will be the
@@ -539,8 +539,8 @@ public class MA3Sampler
 	}
 	
 	
-	/// ////////////////////////// Private Methods 
-	/// /////////////////////////////
+	
+	
 	
 	// Decode ADPCM samples encoded as YAMAHA AICA
 	static int[] decodeAICA(byte[] adpcm, int offset, int length)
@@ -594,8 +594,8 @@ public class MA3Sampler
 	}
 	
 	
-	/// ///////////////////////////// Algorithm 
-	/// ////////////////////////////////
+	
+	
 	
 	// Template algorithm for OPL synthesis
 	private static class Algorithm
@@ -635,8 +635,8 @@ public class MA3Sampler
 		int waveId;     // Wave ROM index
 		
 		
-		/// //////////////////////// Static Methods 
-		/// ////////////////////////////
+		
+		
 		
 		private static Algorithm[] from(String[] defs, boolean isDrum,
 			boolean isWave)
@@ -667,8 +667,8 @@ public class MA3Sampler
 		}
 		
 		
-		/// ///////////////////////// Constructors 
-		/// /////////////////////////////
+		
+		
 		
 		// FM constructor
 		private Algorithm(byte[] bytes, boolean isDrum)
@@ -729,8 +729,8 @@ public class MA3Sampler
 		}
 		
 		
-		/// //////////////////////// Private Methods 
-		/// ///////////////////////////
+		
+		
 		
 		// Initialize volume settings
 		private void initVolume()
@@ -781,8 +781,8 @@ public class MA3Sampler
 	}
 	
 	
-	/// ////////////////////////////// Channel 
-	/// /////////////////////////////////
+	
+	
 	
 	// Output channel
 	private class Channel
@@ -823,8 +823,8 @@ public class MA3Sampler
 		float volRightOut; // Right stereo output amplitude
 		
 		
-		/// ///////////////////////// Constructors 
-		/// /////////////////////////////
+		
+		
 		
 		Channel(Instance instance, int index)
 		{
@@ -835,8 +835,8 @@ public class MA3Sampler
 		}
 		
 		
-		/// //////////////////////// Private Methods 
-		/// ///////////////////////////
+		
+		
 		
 		// Frequency has changed
 		private void onFrequency()
@@ -892,8 +892,8 @@ public class MA3Sampler
 	}
 	
 	
-	/// ///////////////////////////// Instance 
-	/// /////////////////////////////////
+	
+	
 	private class Instance
 		implements Sampler.Instance
 	{
@@ -930,8 +930,8 @@ public class MA3Sampler
 		int[] wavRam;      // Wave RAM, decoded from ADPCM
 		
 		
-		/// ///////////////////////// Constructors 
-		/// /////////////////////////////
+		
+		
 		
 		Instance(float sampleRate)
 		{
@@ -954,8 +954,8 @@ public class MA3Sampler
 		}
 		
 		
-		/// //////////////////////// Public Methods 
-		/// ////////////////////////////
+		
+		
 		
 		// Specify a channel's program bank.
 		public void bankChange(int channel, int bank)
@@ -1359,8 +1359,8 @@ public class MA3Sampler
 		}
 		
 		
-		/// //////////////////////// Private Methods 
-		/// ///////////////////////////
+		
+		
 		
 		// Retrieve an algorithm for playing an FM drum note
 		private Algorithm getDrumFM(int key)
@@ -1468,8 +1468,8 @@ public class MA3Sampler
 	}
 	
 	
-	/// /////////////////////////////// Note 
-	/// ///////////////////////////////////
+	
+	
 	
 	// Audio source
 	private class Note
@@ -1512,8 +1512,8 @@ public class MA3Sampler
 		float volRightOut; // Right stereo output amplitude
 		
 		
-		/// ///////////////////////// Constructors 
-		/// /////////////////////////////
+		
+		
 		
 		private Note(Channel channel, Algorithm algorithm)
 		{
@@ -1535,8 +1535,8 @@ public class MA3Sampler
 		}
 		
 		
-		/// //////////////////////// Private Methods 
-		/// ///////////////////////////
+		
+		
 		
 		// Perform easing on an amplitude controller
 		private float ease(float level, float target)
@@ -1714,8 +1714,8 @@ public class MA3Sampler
 	}
 	
 	
-	/// ///////////////////////////// Operator 
-	/// /////////////////////////////////
+	
+	
 	
 	// Individual FM algorithm operator
 	private static class Operator
@@ -1792,8 +1792,8 @@ public class MA3Sampler
 		float wavSample; //     Current wave source sample
 		
 		
-		/// ///////////////////////// Constructors 
-		/// /////////////////////////////
+		
+		
 		
 		// Template constructor
 		private Operator(byte[] bytes, int offset)
@@ -1879,8 +1879,8 @@ public class MA3Sampler
 		}
 		
 		
-		/// //////////////////////// Private Methods 
-		/// ///////////////////////////
+		
+		
 		
 		// Frequency has changed
 		private void onFrequency()
@@ -2033,8 +2033,8 @@ public class MA3Sampler
 	}
 	
 	
-	/// ////////////////////////////// Assets 
-	/// //////////////////////////////////
+	
+	
 	
 	// Instrument algorithms for MA-2
 	private static final Algorithm[] MA2_INSTRUMENTS = Algorithm.from(

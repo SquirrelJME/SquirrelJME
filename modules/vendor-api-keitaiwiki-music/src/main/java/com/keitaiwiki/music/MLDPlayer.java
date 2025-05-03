@@ -67,8 +67,8 @@ public class MLDPlayer
 	 */
 	public static final int EVENT_LOOP = 1;
 	
-	/// ///////////////////////// Private Constants
-	/// ////////////////////////////
+	
+	
 	
 	private static final int A4 = 48; // Key index bias
 	
@@ -96,8 +96,8 @@ public class MLDPlayer
 	private final float sampleRate;    // Output sampling rate
 	
 	
-	/// ///////////////////////////// Constants
-	/// /////////////////////////////
+	
+	
 	
 	private final Sampler.Instance sampler;       // Sample generator
 	
@@ -106,8 +106,8 @@ public class MLDPlayer
 	private long tickNow;       // Sequencer position in ticks
 	
 	
-	/// /////////////////////////////// Event
-	/// ///////////////////////////////
+	
+	
 	
 	private final Track[] tracks;        // Sequencer state
 	
@@ -223,8 +223,8 @@ public class MLDPlayer
 	}
 	
 	
-	////////////////////////////// Constructors 
-	///////////////////////////////
+	
+	
 	
 	/**
 	 * Retrieve and acknowledge all pending events. If this method is not
@@ -245,8 +245,8 @@ public class MLDPlayer
 	}
 	
 	
-	///////////////////////////// Public Methods 
-	//////////////////////////////
+	
+	
 	
 	/**
 	 * Retrieve the current playback position in the sequence. The range of
@@ -618,8 +618,8 @@ public class MLDPlayer
 		return this.isFinished();
 	}
 	
-	/// /////////////////////////// Event Methods
-	/// //////////////////////////////
+	
+	
 	
 	// bank-change
 	private void evtBankChange(Track track, MLD.Event event)
@@ -839,8 +839,8 @@ public class MLDPlayer
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
-	/// ////////////////////////// Private Methods
-	/// /////////////////////////////
+	
+	
 	
 	// Process events on a track
 	private void process(Track track, int ticks)
@@ -978,8 +978,8 @@ public class MLDPlayer
 		return ret;
 	}
 	
-	/// ////////////////////////////// Classes
-	/// /////////////////////////////////
+	
+	
 	
 	// Playback channel
 	private class Channel
