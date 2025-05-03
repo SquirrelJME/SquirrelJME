@@ -654,6 +654,7 @@ public class MA3Sampler
 	 * Template algorithm for OPL synthesis
 	 */
 	static class Algorithm
+		implements BasicAlgorithm
 	{
 		
 		
@@ -888,6 +889,7 @@ public class MA3Sampler
 	 * Output channel
 	 */
 	static class Channel
+		implements BasicChannel
 	{
 		
 		
@@ -1707,6 +1709,7 @@ public class MA3Sampler
 	 * Audio source
 	 */
 	class Note
+		implements BasicNote
 	{
 		
 		/**
@@ -2014,6 +2017,7 @@ public class MA3Sampler
 	 * Individual FM algorithm operator
 	 */
 	static class Operator
+		implements BasicOperator
 	{
 		
 		/**

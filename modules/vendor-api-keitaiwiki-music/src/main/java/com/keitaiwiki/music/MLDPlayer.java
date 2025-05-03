@@ -1057,6 +1057,7 @@ public class MLDPlayer
 	 * Playback channel
 	 */
 	static class Channel
+		implements BasicChannel
 	{
 		/**
 		 * All notes currently on keys
@@ -1079,6 +1080,7 @@ public class MLDPlayer
 	 * @see #getEvents()
 	 */
 	public static class Event
+		implements BasicEvent
 	{
 		
 		/**
@@ -1115,6 +1117,7 @@ public class MLDPlayer
 	 * Music note
 	 */
 	static class Note
+		implements BasicNote
 	{
 		/**
 		 * Output channel
@@ -1136,6 +1139,7 @@ public class MLDPlayer
 	 * Event list state
 	 */
 	static class Track
+		implements BasicTrack
 	{
 		/**
 		 * Starting cuepoint

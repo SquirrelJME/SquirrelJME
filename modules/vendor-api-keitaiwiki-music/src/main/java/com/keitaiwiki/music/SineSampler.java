@@ -58,6 +58,7 @@ public class SineSampler
 	 * Output channel
 	 */
 	static class Channel
+		implements BasicChannel
 	{
 		/**
 		 * Pitch bend base ratio
@@ -114,6 +115,7 @@ public class SineSampler
 	 * Music note
 	 */
 	static class Note
+		implements BasicNote
 	{
 		/**
 		 * Amount to increment phase per frame

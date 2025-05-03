@@ -1114,7 +1114,8 @@ public class MLD
 	/**
 	 * ADPCM sample data class
 	 */
-	class ADPCM
+	static class ADPCM
+		implements BasicSampleData
 	{
 		/**
 		 * Significance not yet known
@@ -1125,7 +1126,8 @@ public class MLD
 	/**
 	 * Sequencer event data class
 	 */
-	class Event
+	static class Event
+		implements BasicEvent
 	{
 		
 		/**
@@ -1233,7 +1235,7 @@ public class MLD
 	/**
 	 * Utility class for reading binary data
 	 */
-	class Reader
+	static class Reader
 	{
 		/**
 		 * Backing data store
@@ -1342,8 +1344,9 @@ public class MLD
 	/**
 	 * Event list
 	 */
-	class Track
+	static class Track
 		extends ArrayList<Event>
+		implements BasicTrack
 	{
 		/**
 		 * Initial event offset on reset
