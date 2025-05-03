@@ -33,6 +33,7 @@
 package com.keitaiwiki.music;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -96,20 +97,20 @@ public class SineSampler implements Sampler {
         Instance(float sampleRate) {
 
             // Instance fields
-            channels        = new Channel[16];
+			this.channels = new Channel[16];
             this.sampleRate = sampleRate;
-            volRate         = 1 / (sampleRate * 0.01f);
+			this.volRate = 1 / (sampleRate * 0.01f);
 
             // Channels
-            for (int x = 0; x < channels.length; x++) {
-                Channel chan  = channels[x] = new Channel();
+            for (int x = 0; x < this.channels.length; x++) {
+                Channel chan  = this.channels[x] = new Channel();
                 chan.index    = x;
                 chan.notesOn  = new Note[127]; // C-2 .. G8
-                chan.notesOut = new ArrayList<Note>();
+                chan.notesOut = new ArrayList<>();
             }
 
             // Reset all state
-            reset();
+			this.reset();
         }
 
 
@@ -129,11 +130,10 @@ public class SineSampler implements Sampler {
         // Deactivate a key that has previoulsy been activated on a channel.
         public void keyOff(int channel, int key) {
             if (
-                channel  < 0 || channel  >= channels.length ||
-                A4 + key < 0 || A4 + key >= 128
+                channel  < 0 || channel  >= this.channels.length || SineSampler.A4 + key < 0 || SineSampler.A4 + key >= 128
             ) return;
-            Channel chan = channels[channel];
-            Note    note = chan.notesOn[A4 + key];
+            Channel chan = this.channels[channel];
+            Note    note = chan.notesOn[SineSampler.A4 + key];
             if (note != null) {
                 note.playing = false;
                 note.volBase = 0;
@@ -142,7 +142,7 @@ public class SineSampler implements Sampler {
 
         // Determine whether or not any notes are producing output.
         public boolean isFinished() {
-            for (Channel chan : channels) {
+            for (Channel chan : this.channels) {
                 if (chan.notesOut.size() != 0)
                     return false;
             }
@@ -156,17 +156,16 @@ public class SineSampler implements Sampler {
             if (!Float.isFinite(velocity) || velocity < 0.0f)
                 throw new IllegalArgumentException("Invalid velocity.");
             if (
-                channel  < 0 || channel  >= channels.length ||
-                A4 + key < 0 || A4 + key >= 128
+                channel  < 0 || channel  >= this.channels.length || SineSampler.A4 + key < 0 || SineSampler.A4 + key >= 128
             ) return;
 
             // Working variables
-            Channel chan = channels[channel];
-            Note    note = chan.notesOn[A4 + key];
+            Channel chan = this.channels[channel];
+            Note    note = chan.notesOn[SineSampler.A4 + key];
 
             // No note is currently playing on the specified key
             if (note == null) {
-                note = chan.notesOn[A4 + key] = new Note();
+                note = chan.notesOn[SineSampler.A4 + key] = new Note();
                 chan.notesOut.add(note);
                 note.channel       = chan;
                 note.volLeftLevel  = 0.0f;
@@ -184,23 +183,23 @@ public class SineSampler implements Sampler {
         public void masterTune(float semitones) {
             if (!Float.isFinite(semitones))
                 throw new IllegalArgumentException("Invalid semitones.");
-            masterTune = (float) Math.pow(2, semitones);
+			this.masterTune = (float) Math.pow(2, semitones);
         }
 
         // Specify the global volume.
         public void masterVolume(float volume) {
             if (!Float.isFinite(volume) || volume < 0.0f)
                 throw new IllegalArgumentException("Invalid volume.");
-            masterVolume = volume;
+			this.masterVolume = volume;
         }
 
         // Specify stereo panning on a channel.
         public void panpot(int channel, float panpot) {
             if (!Float.isFinite(panpot) || panpot < -1.0f || panpot > 1.0f)
                 throw new IllegalArgumentException("Invalid panpot.");
-            if (channel < 0 || channel >= channels.length)
+            if (channel < 0 || channel >= this.channels.length)
                 return;
-            Channel chan    = channels[channel];
+            Channel chan    = this.channels[channel];
             chan.volPanning = (panpot + 1) / 2;
             chan.volLeft    = (1.0f - chan.volPanning) * chan.volLevel;
             chan.volRight   =         chan.volPanning  * chan.volLevel;
@@ -210,9 +209,9 @@ public class SineSampler implements Sampler {
         public void pitchBend(int channel, float semitones) {
             if (!Float.isFinite(semitones))
                 throw new IllegalArgumentException("Invalid semitones.");
-            if (channel < 0 || channel >= channels.length)
+            if (channel < 0 || channel >= this.channels.length)
                 return;
-            Channel chan  = channels[channel];
+            Channel chan  = this.channels[channel];
             chan.bendBase = semitones;
             chan.bendOut  = (float) Math.pow(2, chan.bendBase*chan.bendRange);
         }
@@ -221,9 +220,9 @@ public class SineSampler implements Sampler {
         public void pitchBendRange(int channel, float range) {
             if (!Float.isFinite(range) || range < 0.0f)
                 throw new IllegalArgumentException("Invalid range.");
-            if (channel < 0 || channel >= channels.length)
+            if (channel < 0 || channel >= this.channels.length)
                 return;
-            Channel chan   = channels[channel];
+            Channel chan   = this.channels[channel];
             chan.bendRange = range;
             chan.bendOut   = (float) Math.pow(2, chan.bendBase*chan.bendRange);
         }
@@ -235,13 +234,13 @@ public class SineSampler implements Sampler {
 
         // Generate output samples.
         public void render(float[] samples, int offset, int frames) {
-            render(samples, offset, frames, 1.0f, true, true);
+			this.render(samples, offset, frames, 1.0f, true, true);
         }
 
         // Generate output samples.
         public void render(float[] samples, int offset, int frames,
             float amplitude) {
-            render(samples, offset, frames, amplitude, true, true);
+			this.render(samples, offset, frames, amplitude, true, true);
         }
 
         // Generate output samples.
@@ -267,8 +266,8 @@ public class SineSampler implements Sampler {
             }
 
             // Render output samples
-            for (Channel chan : channels)
-                chanRender(chan, samples, offset, frames, amplitude);
+            for (Channel chan : this.channels)
+				this.chanRender(chan, samples, offset, frames, amplitude);
 
             // Clamp the output buffer
             if (clamp) {
@@ -284,11 +283,11 @@ public class SineSampler implements Sampler {
         public void reset() {
 
             // Global fields
-            masterTune   = 1.0f;
-            masterVolume = 1.0f;
+			this.masterTune = 1.0f;
+			this.masterVolume = 1.0f;
 
             // Channels
-            for (Channel chan : channels) {
+            for (Channel chan : this.channels) {
                 chan.bendBase   = 0.0f;
                 chan.bendOut    = 1.0f;
                 chan.bendRange  = 2;
@@ -298,8 +297,7 @@ public class SineSampler implements Sampler {
                 chan.volRight   = 0.5f;
 
                 // Stop playing all notes
-                for (int x = 0; x < chan.notesOn.length; x++)
-                    chan.notesOn[x] = null;
+				Arrays.fill(chan.notesOn, null);
                 for (Note note : chan.notesOut) {
                     note.playing = false;
                     note.volBase = 0.0f;
@@ -317,9 +315,9 @@ public class SineSampler implements Sampler {
         public void volume(int channel, float volume) {
             if (!Float.isFinite(volume) || volume < 0.0f)
                 throw new IllegalArgumentException("Invalid volume.");
-            if (channel < 0 || channel >= channels.length)
+            if (channel < 0 || channel >= this.channels.length)
                 return;
-            Channel chan  = channels[channel];
+            Channel chan  = this.channels[channel];
             chan.volLevel = volume;
             chan.volLeft  = (1.0f - chan.volPanning) * chan.volLevel;
             chan.volRight =         chan.volPanning  * chan.volLevel;
@@ -334,13 +332,12 @@ public class SineSampler implements Sampler {
             int frames, float amplitude) {
 
             // Working variables
-            float bend = masterTune * chan.bendOut;
+            float bend = this.masterTune * chan.bendOut;
 
             // Process all notes
             Iterator<Note> iter = chan.notesOut.iterator();
             while (iter.hasNext()) {
-                if (
-                    noteRender(iter.next(), samples, offset, frames,
+                if (this.noteRender(iter.next(), samples, offset, frames,
                         amplitude, chan.volLeft, chan.volRight, bend)
                 ) iter.remove();
             }
@@ -360,7 +357,7 @@ public class SineSampler implements Sampler {
 
             // Working variables
             float freq    = note.freqBase * bend;
-            float advance = freq / sampleRate;
+            float advance = freq / this.sampleRate;
 
             // Compute desired left and right volume levels
             note.volLeftTarget  = note.volBase * left;
@@ -370,15 +367,13 @@ public class SineSampler implements Sampler {
             for (int x = 0; x < frames; x++) {
 
                 // Generate one sample
-                float sample = sample(note, advance);
+                float sample = this.sample(note, advance);
                 samples[offset++] += sample * note.volLeftLevel  * amplitude;
                 samples[offset++] += sample * note.volRightLevel * amplitude;
 
                 // Adjust stereo levels
-                note.volLeftLevel  =
-                    volAdjust(note.volLeftLevel , note.volLeftTarget );
-                note.volRightLevel =
-                    volAdjust(note.volRightLevel, note.volRightTarget);
+                note.volLeftLevel  = this.volAdjust(note.volLeftLevel , note.volLeftTarget );
+                note.volRightLevel = this.volAdjust(note.volRightLevel, note.volRightTarget);
 
                 // Note has finished
                 if (
@@ -407,8 +402,8 @@ public class SineSampler implements Sampler {
         // Move a volume level closer to its target
         private float volAdjust(float level, float target) {
             return level < target ?
-                Math.min(level + volRate, target) :
-                Math.max(level - volRate, target)
+                Math.min(level + this.volRate, target) :
+                Math.max(level - this.volRate, target)
             ;
         }
 
