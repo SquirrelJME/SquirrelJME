@@ -485,7 +485,7 @@ public class MA3SamplerProvider
 	{
 		if (Float.isInfinite(sampleRate) || sampleRate <= 0.0f)
 			throw new IllegalArgumentException("Invalid sampling rate.");
-		return new Instance(sampleRate);
+		return new Instance(this, sampleRate);
 	}
 	
 	/**
@@ -649,10 +649,10 @@ public class MA3SamplerProvider
 	}
 	
 	
-	class Instance
+	static class Instance
 		implements Sampler
 	{
-		
+		private final MA3SamplerProvider ma3;
 		
 		/**
 		 * Amplitude modulator phase
@@ -730,7 +730,7 @@ public class MA3SamplerProvider
 		int[] wavRam;
 		
 		
-		Instance(float sampleRate)
+		Instance(MA3SamplerProvider __ma3, float sampleRate)
 		{
 			
 			
@@ -748,6 +748,7 @@ public class MA3SamplerProvider
 			
 			// Initialize state
 			this.reset();
+			this.ma3 = __ma3;
 		}
 		
 		
@@ -841,14 +842,14 @@ public class MA3SamplerProvider
 						program |= (chan.prgBank & 1) << 6;
 				}
 				
-				algorithm = MA3SamplerProvider.this.algInstruments[program];
+				algorithm = this.ma3.algInstruments[program];
 				freqBase = (float)(440 * Math.pow(2, key / 12.0));
 			}
 			
 			// Drum algorithm
 			else
 			{
-				if (MA3SamplerProvider.this.prgWaveDrumType != MA3SamplerProvider.WAVE_DRUM_NONE)
+				if (this.ma3.prgWaveDrumType != MA3SamplerProvider.WAVE_DRUM_NONE)
 				{
 					algorithm = this.getDrumWave(key);
 					isWave = algorithm != null;
@@ -1201,11 +1202,11 @@ public class MA3SamplerProvider
 				key += 35;
 			
 			// Error checking
-			if (key < 0 || key >= MA3SamplerProvider.this.algDrums.length)
+			if (key < 0 || key >= this.ma3.algDrums.length)
 				return null;
 			
 			// Select the preset algorithm
-			return MA3SamplerProvider.this.algDrums[key];
+			return this.ma3.algDrums[key];
 		}
 		
 		/**
@@ -1219,7 +1220,7 @@ public class MA3SamplerProvider
 				return null;
 			
 			// Select the registered wave algorithm, if available
-			MA3Algorithm[] algs = MA3SamplerProvider.this.algWaveDrums;
+			MA3Algorithm[] algs = this.ma3.algWaveDrums;
 			MA3Algorithm ret = null;
 			if (key < 0)
 			{
