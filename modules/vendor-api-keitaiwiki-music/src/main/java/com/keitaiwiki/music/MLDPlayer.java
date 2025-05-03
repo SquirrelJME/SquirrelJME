@@ -69,49 +69,79 @@ public class MLDPlayer
 	
 	private static final int A4 = 48; // Key index bias
 	
-	// Playback channels
+	/**
+	 * Playback channels
+	 */
 	private Channel[] channels;
 	
-	// Pending events
+	/**
+	 * Pending events
+	 */
 	private ArrayList<Event> events;
 	
-	// Key events enabled by key
+	/**
+	 * Key events enabled by key
+	 */
 	private HashSet<Integer> evtKeys;
 	
-	// Playback events are enabled
+	/**
+	 * Playback events are enabled
+	 */
 	private boolean evtPlayback;
 	
-	// Sequencer has no more events
+	/**
+	 * Sequencer has no more events
+	 */
 	private boolean finished;
 	
-	// Output frames in one tick
+	/**
+	 * Output frames in one tick
+	 */
 	private float framesPerTick;
 	
-	// Sequence resource
+	/**
+	 * Sequence resource
+	 */
 	private final MLD mld;
 	
-	// Output frames to process
+	/**
+	 * Output frames to process
+	 */
 	private float pendingFrames;
 	
-	// Sequencer ticks to process
+	/**
+	 * Sequencer ticks to process
+	 */
 	private int pendingTicks;
 	
-	// Sequencer position in frames
+	/**
+	 * Sequencer position in frames
+	 */
 	private long position;
 	
-	// Output sampling rate
+	/**
+	 * Output sampling rate
+	 */
 	private final float sampleRate;
 	
-	// Sample generator
+	/**
+	 * Sample generator
+	 */
 	private final Sampler.Instance sampler;
 	
-	// Processing setTime()
+	/**
+	 * Processing setTime()
+	 */
 	private boolean seeking;
 	
-	// Sequencer position in ticks
+	/**
+	 * Sequencer position in ticks
+	 */
 	private long tickNow;
 	
-	// Sequencer state
+	/**
+	 * Sequencer state
+	 */
 	private final Track[] tracks;
 	
 	
@@ -179,7 +209,7 @@ public class MLDPlayer
 	 *
 	 * @param key A key number to register.
 	 * @see Event
-	 * @see getEvents()
+	 * @see #getEvents()
 	 */
 	public void addEventKey(int key)
 	{
@@ -194,7 +224,7 @@ public class MLDPlayer
 	 * @param keys A list of key numbers to register.
 	 * @throws NullPointerException if {@code keys} is {@code null}.
 	 * @see Event
-	 * @see getEvents()
+	 * @see #getEvents()
 	 */
 	public void addEventKeys(int[] keys)
 	{
@@ -218,7 +248,7 @@ public class MLDPlayer
 	 * sequence
 	 * loops and {@code withoutLooping} is {@code true}, returns the number of
 	 * seconds in the sequence up until the first loop occurs.
-	 * @see MLD#getDuration(boolean)
+	 * @see #MLD#getDuration(boolean)
 	 */
 	public double getDuration(boolean withoutLooping)
 	{
@@ -236,9 +266,9 @@ public class MLDPlayer
 	 *
 	 * @return An array of all pending events, now acknowledged.
 	 * @see Event
-	 * @see addEventKey(int)
-	 * @see addEventKeys(int[])
-	 * @see setPlaybackEventsEnabled(boolean)
+	 * @see #addEventKey(int)
+	 * @see #addEventKeys(int[])
+	 * @see #setPlaybackEventsEnabled(boolean)
 	 */
 	public Event[] getEvents()
 	{
@@ -270,8 +300,8 @@ public class MLDPlayer
 	 *
 	 * @return The number of seconds processed, relative to the start of the
 	 * sequence.
-	 * @see setTime(double)
-	 * @see MLD#getDuration(boolean)
+	 * @see #setTime(double)
+	 * @see #MLD#getDuration(boolean)
 	 */
 	public double getTime()
 	{
@@ -302,7 +332,7 @@ public class MLDPlayer
 	 *
 	 * @param key A key number to unregister.
 	 * @see Event
-	 * @see getEvents()
+	 * @see #getEvents()
 	 */
 	public void removeEventKey(int key)
 	{
@@ -315,7 +345,7 @@ public class MLDPlayer
 	 * @param keys A list of key numbers to unregister.
 	 * @throws NullPointerException if {@code keys} is {@code null}.
 	 * @see Event
-	 * @see getEvents()
+	 * @see #getEvents()
 	 */
 	public void removeEventKeys(int[] keys)
 	{
@@ -344,8 +374,8 @@ public class MLDPlayer
 	 * @throws ArrayIndexOutOfBoundsException if {@code offset} is
 	 * negative, or if {@code offset + frames * 2 > samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative.
-	 * @see render(float[],int,int,float,float,boolean,boolean)
-	 * @see Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
+	 * @see #render(float[],int,int,float,float,boolean,boolean)
+	 * @see #Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
 	 */
 	public int render(float[] samples, int offset, int frames)
 	{
@@ -374,8 +404,8 @@ public class MLDPlayer
 	 * negative, or if {@code offset + frames * 2 > samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative, or if
 	 * {@code amplitude} is a non-number or is negative.
-	 * @see render(float[],int,int,float,float,boolean,boolean)
-	 * @see Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
+	 * @see #render(float[],int,int,float,float,boolean,boolean)
+	 * @see #Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
 	 */
 	public int render(float[] samples, int offset, int frames,
 		float amplitude)
@@ -408,8 +438,8 @@ public class MLDPlayer
 	 * negative, or if {@code offset + frames * 2 > samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative, or if
 	 * {@code left} or {@code right} is a non-number or is negative.
-	 * @see render(float[],int,int,float,float,boolean,boolean)
-	 * @see Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
+	 * @see #render(float[],int,int,float,float,boolean,boolean)
+	 * @see #Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
 	 */
 	public int render(float[] samples, int offset, int frames, float left,
 		float right)
@@ -448,11 +478,11 @@ public class MLDPlayer
 	 * negative, or if {@code offset + frames * 2 > samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative, or if
 	 * {@code left} or {@code right} is a non-number or is negative.
-	 * @see Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
-	 * @see getEvents()
-	 * @see render(float[],int,int)
-	 * @see render(float[],int,int,float)
-	 * @see render(float[],int,int,float,float)
+	 * @see #Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
+	 * @see #getEvents()
+	 * @see #render(float[],int,int)
+	 * @see #render(float[],int,int,float)
+	 * @see #render(float[],int,int,float,float)
 	 */
 	public int render(float[] samples, int offset, int frames, float left,
 		float right, boolean erase, boolean clamp)
@@ -567,7 +597,7 @@ public class MLDPlayer
 	 * @param enabled Whether or not playback events can be raised during
 	 * rendering.
 	 * @see Event
-	 * @see getEvents()
+	 * @see #getEvents()
 	 */
 	public void setPlaybackEventsEnabled(boolean enabled)
 	{
@@ -589,8 +619,8 @@ public class MLDPlayer
 	 * the operation.
 	 * @throws IllegalArgumentException if {@code seconds} is a non-number
 	 * or is negative.
-	 * @see getTime()
-	 * @see MLD#getDuration(boolean)
+	 * @see #getTime()
+	 * @see #MLD#getDuration(boolean)
 	 */
 	public boolean setTime(double seconds)
 	{
@@ -1021,10 +1051,14 @@ public class MLDPlayer
 	
 	private class Channel
 	{
-		// All notes currently on keys
+		/**
+		 * All notes currently on keys
+		 */
 		Note[] notesOn;
 		
-		// All notes that are generating output
+		/**
+		 * All notes that are generating output
+		 */
 		ArrayList<Note> notesOut;
 	}
 	
@@ -1035,7 +1069,7 @@ public class MLDPlayer
 	 * condition is satisfied. Events are obtained by the caller and
 	 * acknowledged via {@link getEvents()}.
 	 *
-	 * @see getEvents()
+	 * @see #getEvents()
 	 */
 	static public class Event
 	{
@@ -1075,13 +1109,19 @@ public class MLDPlayer
 	 */
 	static private class Note
 	{
-		// Output channel
+		/**
+		 * Output channel
+		 */
 		int channel;
 		
-		// Ticks before note expires
+		/**
+		 * Ticks before note expires
+		 */
 		int gateTime;
 		
-		// Key index
+		/**
+		 * Key index
+		 */
 		int key;
 	}
 	
@@ -1090,22 +1130,34 @@ public class MLDPlayer
 	 */
 	private static class Track
 	{
-		// Starting cuepoint
+		/**
+		 * Starting cuepoint
+		 */
 		int cuepoint;
 		
-		// Track has no more events
+		/**
+		 * Track has no more events
+		 */
 		boolean finished;
 		
-		// Index within sequencer
+		/**
+		 * Index within sequencer
+		 */
 		int index;
 		
-		// Event list
+		/**
+		 * Event list
+		 */
 		MLD.Track mld;
 		
-		// Current event offset
+		/**
+		 * Current event offset
+		 */
 		int offset;
 		
-		// Event ticks until next event
+		/**
+		 * Event ticks until next event
+		 */
 		int ticks;
 	}
 	

@@ -43,7 +43,9 @@ import java.util.Iterator;
  */
 public class SineSampler implements Sampler {
 
-    // Key index bias
+    /**
+	 * Key index bias
+	 */
     private static final int A4 = 81;
 
 
@@ -53,25 +55,45 @@ public class SineSampler implements Sampler {
 	 */
 	
 	private static class Channel {
-        // Pitch bend base ratio
+        /**
+		 * Pitch bend base ratio
+		 */
         float           bendBase;
-        // Effective channel frequency ratio
+        /**
+		 * Effective channel frequency ratio
+		 */
         float           bendOut;
-        // Pitch bend magnitude
+        /**
+		 * Pitch bend magnitude
+		 */
         float           bendRange;
-        // Index in sampler
+        /**
+		 * Index in sampler
+		 */
         int             index;
-        // All notes currently on keys
+        /**
+		 * All notes currently on keys
+		 */
         Note[]          notesOn;
-        // All notes that are generating output
+        /**
+		 * All notes that are generating output
+		 */
         ArrayList<Note> notesOut;
-        // Left stereo amplitude
+        /**
+		 * Left stereo amplitude
+		 */
         float           volLeft;
-        // Channel output amplitude
+        /**
+		 * Channel output amplitude
+		 */
         float           volLevel;
-        // Stereo level
+        /**
+		 * Stereo level
+		 */
         float           volPanning;
-        // Right stereo amplitude
+        /**
+		 * Right stereo amplitude
+		 */
         float           volRight;
     }
 
@@ -79,25 +101,45 @@ public class SineSampler implements Sampler {
 	 * Music note
 	 */
     private static class Note {
-        // Amount to increment phase per frame
+        /**
+		 * Amount to increment phase per frame
+		 */
         float   advance;
-        // Encapsulating channel
+        /**
+		 * Encapsulating channel
+		 */
         Channel channel;
-        // Base frequency
+        /**
+		 * Base frequency
+		 */
         float   freqBase;
-        // Note is currently active on its key
+        /**
+		 * Note is currently active on its key
+		 */
         boolean playing;
-        // Base volume
+        /**
+		 * Base volume
+		 */
         float   volBase;
-        // Current left stereo volume
+        /**
+		 * Current left stereo volume
+		 */
         float   volLeftLevel;
-        // Target left stereo volume
+        /**
+		 * Target left stereo volume
+		 */
         float   volLeftTarget;
-        // Current right stereo volume
+        /**
+		 * Current right stereo volume
+		 */
         float   volRightLevel;
-        // Target right stereo volume
+        /**
+		 * Target right stereo volume
+		 */
         float   volRightTarget;
-        // Position in wave period
+        /**
+		 * Position in wave period
+		 */
         float   wavPhase;
     }
 
@@ -106,15 +148,25 @@ public class SineSampler implements Sampler {
 	 */
     private class Instance implements Sampler.Instance {
 
-        // Channel states
+        /**
+		 * Channel states
+		 */
         Channel[] channels;
-        // Global pitch bend
+        /**
+		 * Global pitch bend
+		 */
         float     masterTune;
-        // Global volume
+        /**
+		 * Global volume
+		 */
         float     masterVolume;
-        // Output sampling rate
+        /**
+		 * Output sampling rate
+		 */
         float     sampleRate;
-        // Automatic volume adjustment rate
+        /**
+		 * Automatic volume adjustment rate
+		 */
         float     volRate;
 
 

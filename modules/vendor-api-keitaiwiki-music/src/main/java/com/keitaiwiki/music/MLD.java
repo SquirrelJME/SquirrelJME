@@ -121,59 +121,89 @@ public class MLD
 	
 	/**
 	 * FourCCs
+	 * "adat"
 	 */
-	// "adat"
 	private static final int FOURCC_ADAT = 0x61646174;
 	
-	// "ainf"
+	/**
+	 * "ainf"
+	 */
 	private static final int FOURCC_AINF = 0x61696E66;
 	
-	// "auth"
+	/**
+	 * "auth"
+	 */
 	private static final int FOURCC_AUTH = 0x61757468;
 	
-	// "copy"
+	/**
+	 * "copy"
+	 */
 	private static final int FOURCC_COPY = 0x636F7079;
 	
-	// "cuep"
+	/**
+	 * "cuep"
+	 */
 	private static final int FOURCC_CUEP = 0x63756570;
 	
-	// "date"
+	/**
+	 * "date"
+	 */
 	private static final int FOURCC_DATE = 0x64617465;
 	
-	// "exst"
+	/**
+	 * "exst"
+	 */
 	private static final int FOURCC_EXST = 0x65787374;
 	
-	// "melo"
+	/**
+	 * "melo"
+	 */
 	private static final int FOURCC_MELO = 0x6D656C6F;
 	
-	// "note"
+	/**
+	 * "note"
+	 */
 	private static final int FOURCC_NOTE = 0x6E6F7465;
 	
-	// "prot"
+	/**
+	 * "prot"
+	 */
 	private static final int FOURCC_PROT = 0x70726F74;
 	
-	// "sorc"
+	/**
+	 * "sorc"
+	 */
 	private static final int FOURCC_SORC = 0x736F7263;
 	
-	// "supt"
+	/**
+	 * "supt"
+	 */
 	private static final int FOURCC_SUPT = 0x73757074;
 	
-	// "thrd"
+	/**
+	 * "thrd"
+	 */
 	private static final int FOURCC_THRD = 0x74687264;
 	
-	// "titl"
+	/**
+	 * "titl"
+	 */
 	private static final int FOURCC_TITL = 0x7469746C;
 	
-	// "trac"
+	/**
+	 * "trac"
+	 */
 	private static final int FOURCC_TRAC = 0x74726163;
 	
-	// "vers"
+	/**
+	 * "vers"
+	 */
 	private static final int FOURCC_VERS = 0x76657273;
 	
 	/**
 	 * Instance fields
+	 * Sample data
 	 */
-	// Sample data
 	ADPCM[] adpcms;
 	
 	/**
@@ -194,7 +224,9 @@ public class MLD
 	
 	String date;
 	
-	// Total runtime in seconds, or POSITIVE_INFINITY
+	/**
+	 * Total runtime in seconds, or POSITIVE_INFINITY
+	 */
 	double duration;
 	
 	byte[] exst;
@@ -213,7 +245,9 @@ public class MLD
 	
 	boolean hasWaveData;
 	
-	// Encoded header chunk
+	/**
+	 * Encoded header chunk
+	 */
 	byte[] header;
 	
 	int note;
@@ -226,15 +260,21 @@ public class MLD
 	
 	byte[] thrd;
 	
-	// Tick count at the end of the last event
+	/**
+	 * Tick count at the end of the last event
+	 */
 	long tickEnd;
 	
-	// Tick count of the loop destination
+	/**
+	 * Tick count of the loop destination
+	 */
 	long tickLoop;
 	
 	String titl;
 	
-	// Event lists
+	/**
+	 * Event lists
+	 */
 	Track[] tracks;
 	
 	String vers;
@@ -247,7 +287,7 @@ public class MLD
 	 * @param data A byte array contining the MLD resource.
 	 * @throws NullPointerException if {@code data} is {@code null}.
 	 * @throws RuntimeException if an error occurs during decoding.
-	 * @see MLD(byte[],int,int)
+	 * @see #MLD(byte[],int,int)
 	 */
 	public MLD(byte[] data)
 	{
@@ -360,8 +400,8 @@ public class MLD
 	 * sequence
 	 * loops and {@code withoutLooping} is {@code true}, returns the number of
 	 * seconds in the sequence up until the first loop occurs.
-	 * @see MLDPlayer#getTime()
-	 * @see MLDPlayer#setTime(double)
+	 * @see #MLDPlayer#getTime()
+	 * @see #MLDPlayer#setTime(double)
 	 */
 	public double getDuration(boolean withoutLooping)
 	{
@@ -1083,7 +1123,9 @@ public class MLD
 	
 	static class ADPCM
 	{
-		// Significance not yet known
+		/**
+		 * Significance not yet known
+		 */
 		byte[] data;
 	}
 	
@@ -1100,30 +1142,38 @@ public class MLD
 		
 		/**
 		 * Instance fields
+		 * Normalized channel ID, out of 16
 		 */
-		// Normalized channel ID, out of 16
 		int channel;
 		
 		/**
 		 * Note fields
+		 * Channel index 0..3 within parent track
 		 */
-		// Channel index 0..3 within parent track
 		int channelIndex;
 		
 		int cuepoint;
 		
-		// ext-info and unknown event data
+		/**
+		 * ext-info and unknown event data
+		 */
 		byte[] data;
 		
-		// Time delta: number of ticks since last event
+		/**
+		 * Time delta: number of ticks since last event
+		 */
 		int delta;
 		
 		boolean enable;
 		
-		// Number of ticks until note off
+		/**
+		 * Number of ticks until note off
+		 */
 		int gateTime;
 		
-		// Meta event ID
+		/**
+		 * Meta event ID
+		 */
 		int id;
 		
 		int jumpCount;
@@ -1132,21 +1182,31 @@ public class MLD
 		
 		int jumpPoint;
 		
-		// Normalized key ID, relative to A4
+		/**
+		 * Normalized key ID, relative to A4
+		 */
 		int key;
 		
-		// Base key index
+		/**
+		 * Base key index
+		 */
 		int keyNumber;
 		
-		// Number of octaves to adjust keyNumber
+		/**
+		 * Number of octaves to adjust keyNumber
+		 */
 		int octaveShift;
 		
-		// Location in MLD asset
+		/**
+		 * Location in MLD asset
+		 */
 		int offset;
 		
 		float panpot;
 		
-		// Event parameter bits
+		/**
+		 * Event parameter bits
+		 */
 		int param;
 		
 		int program;
@@ -1155,17 +1215,23 @@ public class MLD
 		
 		float semitones;
 		
-		// note-status, second byte of event data
+		/**
+		 * note-status, second byte of event data
+		 */
 		int status;
 		
 		int tempo;
 		
 		int timebase;
 		
-		// Event category
+		/**
+		 * Event category
+		 */
 		int type;
 		
-		// Base volume
+		/**
+		 * Base volume
+		 */
 		float velocity;
 		
 		float volume;
@@ -1176,16 +1242,24 @@ public class MLD
 	 */
 	static class Reader
 	{
-		// Backing data store
+		/**
+		 * Backing data store
+		 */
 		byte[] data;
 		
-		// Length of current segment
+		/**
+		 * Length of current segment
+		 */
 		int length;
 		
-		// Current input offset
+		/**
+		 * Current input offset
+		 */
 		int offset;
 		
-		// Offset of start of current segment
+		/**
+		 * Offset of start of current segment
+		 */
 		int start;
 		
 		/**
@@ -1278,10 +1352,14 @@ public class MLD
 	class Track
 		extends ArrayList<Event>
 	{
-		// Initial event offset on reset
+		/**
+		 * Initial event offset on reset
+		 */
 		int cue;
 		
-		// Channel index base
+		/**
+		 * Channel index base
+		 */
 		int index;
 	}
 	

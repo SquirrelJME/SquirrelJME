@@ -63,18 +63,28 @@ public class MA3Sampler implements Sampler {
 
     /**
 	 * Instance fields
+	 * FM drum algorithms
 	 */
-    // FM drum algorithms
-    private Algorithm[] algDrums;
-    // FM instrument algorithms
+	private Algorithm[] algDrums;
+    /**
+	 * FM instrument algorithms
+	 */
     private Algorithm[] algInstruments;
-    // Wave drum algorithms
+    /**
+	 * Wave drum algorithms
+	 */
     private Algorithm[] algWaveDrums;
-    // FM drum algorithm type
+    /**
+	 * FM drum algorithm type
+	 */
     private int         prgDrumType;
-    // FM instrument algorithm type
+    /**
+	 * FM instrument algorithm type
+	 */
     private int         prgInstrumentType;
-    // Wave drums algorithm type
+    /**
+	 * Wave drums algorithm type
+	 */
     private int         prgWaveDrumType;
 
 
@@ -83,7 +93,7 @@ public class MA3Sampler implements Sampler {
 
     /**
      * Specifies the use of MA-2 algorithms for FM synthesis.
-     * @see MA3Sampler(int,int,int)
+     * @see #MA3Sampler(int,int,int)
      * @see #setDrumType
      * @see #setInstrumentType
      */
@@ -91,17 +101,17 @@ public class MA3Sampler implements Sampler {
 
     /**
      * Specifies the use of 2-operator MA-3 algorithms for FM synthesis.
-     * @see MA3Sampler(int,int,int)
-     * @see setDrumType
-     * @see setInstrumentType
+     * @see #MA3Sampler(int,int,int)
+     * @see #setDrumType
+     * @see #setInstrumentType
      */
     public static final int FM_MA3_2OP = 1;
 
     /**
      * Specifies the use of 4-operator MA-3 algorithms for FM synthesis.
-     * @see MA3Sampler(int,int,int)
-     * @see setDrumType
-     * @see setInstrumentType
+     * @see #MA3Sampler(int,int,int)
+     * @see #setDrumType
+     * @see #setInstrumentType
      */
     public static final int FM_MA3_4OP = 0;
 
@@ -109,21 +119,21 @@ public class MA3Sampler implements Sampler {
      * Nominal hardware sampling rate. When rendering samples at this rate, the
      * output will have a 1:1 correspondence with what the hardware would
      * produce.
-     * @see instance(float)
+     * @see #instance(float)
      */
     public static final float SAMPLE_RATE = 33868800.0f / 684;
 
     /**
      * Specifies the use of MA-3 waves for wave drum synthesis.
-     * @see MA3Sampler(int,int,int)
-     * @see setWaveDrumType
+     * @see #MA3Sampler(int,int,int)
+     * @see #setWaveDrumType
      */
     public static final int WAVE_DRUM_MA3 = 0;
 
     /**
      * Specifies that FM drum algorithms always be used in place of wave drums.
-     * @see MA3Sampler(int,int,int)
-     * @see setWaveDrumType
+     * @see #MA3Sampler(int,int,int)
+     * @see #setWaveDrumType
      */
     public static final int WAVE_DRUM_NONE = -1;
 
@@ -132,17 +142,25 @@ public class MA3Sampler implements Sampler {
     /**
 	 * ///////////////////////// Private Constants ////////////////////////////
 	 * Lookup tables
+	 * Amplitude modulation levels
 	 */
 	
-	// Amplitude modulation levels
 	private static final int[]   AM_LFO_A;
-    // Binary exponent
+    /**
+	 * Binary exponent
+	 */
     private static final int[]   EXP;
-    // Sustain levels
+    /**
+	 * Sustain levels
+	 */
     private static final int[]   SUSTAINS;
-    // Wave drum envelope levels
+    /**
+	 * Wave drum envelope levels
+	 */
     private static final int[]   WAVE_ENV;
-    // Waveforms
+    /**
+	 * Waveforms
+	 */
     private static final int[][] WAVES;
 
     /**
@@ -186,17 +204,23 @@ public class MA3Sampler implements Sampler {
 
     /**
 	 * Formula constants
+	 * Key index bias
 	 */
-    // Key index bias
-    private static final int    A4      = 81;
-    // Wave maximum
+	private static final int    A4      = 81;
+    /**
+	 * Wave maximum
+	 */
     private static final int    FULL    =  0;
     private static final int    NTS     =  1;
     private static final double MAGIC_B = 12 / Math.log(2);
     private static final double MAGIC_F = 684 / 33868800.0;
-    // Wave negative
+    /**
+	 * Wave negative
+	 */
     private static final int    MINUS   = 0x80000000;
-    // Wave minimum
+    /**
+	 * Wave minimum
+	 */
     private static final int    ZERO    = 0x1000;
 
     /**
@@ -320,7 +344,7 @@ public class MA3Sampler implements Sampler {
     /**
      * Create a sampler with default parameters. Same as invoking
      * {@code MA3Sampler(FM_MA3_4OP, FM_MA3_4OP, WAVE_DRUM_MA3)}.
-     * @see MA3Sampler(int,int,int)
+     * @see #MA3Sampler(int,int,int)
      */
     public MA3Sampler() {
         this(MA3Sampler.FM_MA3_4OP, MA3Sampler.FM_MA3_4OP, MA3Sampler.WAVE_DRUM_MA3);
@@ -342,9 +366,9 @@ public class MA3Sampler implements Sampler {
      * @exception IllegalArgumentException if the value of
      * {@code instrumentType}, {@code drumType} or {@code waveDrumType} is
      * invalid.
-     * @see setDrumType(int)
-     * @see setInstrumentType(int)
-     * @see setWaveDrumType(int)
+     * @see #setDrumType(int)
+     * @see #setInstrumentType(int)
+     * @see #setWaveDrumType(int)
      */
     public MA3Sampler(int instrumentType, int drumType, int waveDrumType) {
         super();
@@ -361,7 +385,7 @@ public class MA3Sampler implements Sampler {
      * value most recently used with {@code setDrumType()}.
      * @return The current FM synthesis drum algorithm type: {@code FM_MA2},
      * {@code FM_MA3_2OP} or {@code FM_MA3_4OP}.
-     * @see setDrumType(int)
+     * @see #setDrumType(int)
      */
     public int getDrumType() {
         return this.prgDrumType;
@@ -372,7 +396,7 @@ public class MA3Sampler implements Sampler {
      * be the value most recently used with {@code setInstrumentType()}.
      * @return The current FM synthesis instrument algorithm type:
      * {@code FM_MA2}, {@code FM_MA3_2OP} or {@code FM_MA3_4OP}.
-     * @see setInstrumentType(int)
+     * @see #setInstrumentType(int)
      */
     public int getInstrumentType() {
         return this.prgInstrumentType;
@@ -383,7 +407,7 @@ public class MA3Sampler implements Sampler {
      * the value most recently used with {@code setWaveDrumType()}.
      * @return The current wave synthesis drum algorithm type:
      * {@code WAVE_DRUM_NONE} or {@code WAVE_DRUM_MA3}.
-     * @see setWaveDrumType(int)
+     * @see #setWaveDrumType(int)
      */
     public int getWaveDrumType() {
         return this.prgWaveDrumType;
@@ -415,9 +439,9 @@ public class MA3Sampler implements Sampler {
      * @return The value of {@code type}.
      * @exception IllegalArgumentException if the value of {@code type} is
      * invalid.
-     * @see getDrumType()
-     * @see setInstrumentType(int)
-     * @see setWaveDrumType(int)
+     * @see #getDrumType()
+     * @see #setInstrumentType(int)
+     * @see #setWaveDrumType(int)
      */
     public int setDrumType(int type) {
         switch (type) {
@@ -444,9 +468,9 @@ public class MA3Sampler implements Sampler {
      * @return The value of {@code type}.
      * @exception IllegalArgumentException if the value of {@code type} is
      * invalid.
-     * @see getInstrumentType()
-     * @see setDrumType(int)
-     * @see setWaveDrumType(int)
+     * @see #getInstrumentType()
+     * @see #setDrumType(int)
+     * @see #setWaveDrumType(int)
      */
     public int setInstrumentType(int type) {
         switch (type) {
@@ -472,9 +496,9 @@ public class MA3Sampler implements Sampler {
      * @return The value of {@code type}.
      * @exception IllegalArgumentException if the value of {@code type} is
      * invalid.
-     * @see getWaveDrumType()
-     * @see setDrumType(int)
-     * @see setInstrumentType(int)
+     * @see #getWaveDrumType()
+     * @see #setDrumType(int)
+     * @see #setInstrumentType(int)
      */
     public int setWaveDrumType(int type) {
         switch (type) {
@@ -491,7 +515,6 @@ public class MA3Sampler implements Sampler {
 
 
     /**
-	 * ////////////////////////// Private Methods /////////////////////////////
 	 * Decode ADPCM samples encoded as YAMAHA AICA
 	 */
 	
@@ -551,38 +574,68 @@ public class MA3Sampler implements Sampler {
 
         /**
 		 * Instance fields
+		 * Operator connection algorithm
 		 */
-        // Operator connection algorithm
-        int        alg;
-        // Key played for drum notes
+		int        alg;
+        /**
+		 * Key played for drum notes
+		 */
         int        drumKey;
-        // Wave end point
+        /**
+		 * Wave end point
+		 */
         int        ep;
-        // Drum frequency base
+        /**
+		 * Drum frequency base
+		 */
         float      freqBase;
-        // Wave sampling frequency
+        /**
+		 * Wave sampling frequency
+		 */
         int        fs;
-        // Is a drum note
+        /**
+		 * Is a drum note
+		 */
         boolean    isDrum;
-        // Is a wave rum algorithm
+        /**
+		 * Is a wave rum algorithm
+		 */
         boolean    isWave;
-        // Modulation LFO rate multiplier
+        /**
+		 * Modulation LFO rate multiplier
+		 */
         int        lfo;
-        // Wave loop point
+        /**
+		 * Wave loop point
+		 */
         int        lp;
-        // FM operator templates
+        /**
+		 * FM operator templates
+		 */
         Operator[] operators;
-        // Stereo balance
+        /**
+		 * Stereo balance
+		 */
         int        panpot;
-        // Wave ROM select
+        /**
+		 * Wave ROM select
+		 */
         boolean    rm;
-        // Left stereo amplitude
+        /**
+		 * Left stereo amplitude
+		 */
         float      volLeft;
-        // Right stereo amplitude
+        /**
+		 * Right stereo amplitude
+		 */
         float      volRight;
-        // Wave samples to advance per output sample
+        /**
+		 * Wave samples to advance per output sample
+		 */
         float      wavAdvance;
-        // Wave ROM index
+        /**
+		 * Wave ROM index
+		 */
         int        waveId;
 		
         private static Algorithm[] from(String[] defs,
@@ -1637,78 +1690,142 @@ public class MA3Sampler implements Sampler {
 
         /**
 		 * OPL registers
+		 * Envelope attack rate
 		 */
-        // Envelope attack rate
-        int     ar;
-        // Amplitude modulation depth
+		int     ar;
+        /**
+		 * Amplitude modulation depth
+		 */
         int     dam;
-        // Envelope decay rate
+        /**
+		 * Envelope decay rate
+		 */
         int     dr;
-        // Detune shift
+        /**
+		 * Detune shift
+		 */
         int     dt;
-        // Frequency modulation depth
+        /**
+		 * Frequency modulation depth
+		 */
         int     dvb;
-        // Enable amplitude modulation
+        /**
+		 * Enable amplitude modulation
+		 */
         boolean eam;
-        // Enable frequency modulation
+        /**
+		 * Enable frequency modulation
+		 */
         boolean evb;
-        // Feedback rate index
+        /**
+		 * Feedback rate index
+		 */
         int     fb;
-        // Attenuation index per octave
+        /**
+		 * Attenuation index per octave
+		 */
         int     ksl;
-        // Envelope rate modifier scale
+        /**
+		 * Envelope rate modifier scale
+		 */
         int     ksr;
-        // Frequency multiplier
+        /**
+		 * Frequency multiplier
+		 */
         int     multi;
-        // Envelope release rate
+        /**
+		 * Envelope release rate
+		 */
         int     rr;
-        // Envelope sustain level
+        /**
+		 * Envelope sustain level
+		 */
         int     sl;
-        // Envelope sustain rate
+        /**
+		 * Envelope sustain rate
+		 */
         int     sr;
-        // MIDI Hold 1 is supported
+        /**
+		 * MIDI Hold 1 is supported
+		 */
         boolean sus;
-        // Envelope attenuation
+        /**
+		 * Envelope attenuation
+		 */
         int     tl;
-        // Wave function index
+        /**
+		 * Wave function index
+		 */
         int     ws;
-        // Ignore key-off response
+        /**
+		 * Ignore key-off response
+		 */
         boolean xof;
 
         /**
 		 * Instance fields
+		 * Encapsulating algorithm
 		 */
-        //     Encapsulating algorithm
-        Algorithm algorithm;
-        // u14 Amplitude modulation counter
+		Algorithm algorithm;
+        /**
+		 * u14 Amplitude modulation counter
+		 */
         int       amPhase;
-        // u9  Current envelope level
+        /**
+		 * u9  Current envelope level
+		 */
         int       envLevel;
-        // u9  Effective envelope output
+        /**
+		 * u9  Effective envelope output
+		 */
         int       envOut;
-        // u15 Envelope phase counter
+        /**
+		 * u15 Envelope phase counter
+		 */
         int       envPhase;
-        //     Current envelope rate of change
+        /**
+		 * Current envelope rate of change
+		 */
         int       envRate;
-        //     Envelope rate offset modifier
+        /**
+		 * Envelope rate offset modifier
+		 */
         int       envRof;
-        //     Envelope processing stage
+        /**
+		 * Envelope processing stage
+		 */
         int       envStage;
-        //     Most recent output sample
+        /**
+		 * Most recent output sample
+		 */
         int       fb0;
-        //     Second-most recent output sample
+        /**
+		 * Second-most recent output sample
+		 */
         int       fb1;
-        //     Encapsulating instance
+        /**
+		 * Encapsulating instance
+		 */
         Instance  instance;
-        //     Wave drum parameters are valid
+        /**
+		 * Wave drum parameters are valid
+		 */
         boolean   isValid;
-        //     KSL attenuation level
+        /**
+		 * KSL attenuation level
+		 */
         int       kslOut;
-        //     Encapsulating note
+        /**
+		 * Encapsulating note
+		 */
         Note      note;
-        // u10 Oscillator counter
+        /**
+		 * u10 Oscillator counter
+		 */
         int       oscPhase;
-        //     Current wave source sample
+        /**
+		 * Current wave source sample
+		 */
         float     wavSample;
 
 

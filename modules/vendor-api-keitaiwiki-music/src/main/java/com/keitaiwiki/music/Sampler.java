@@ -90,7 +90,7 @@ public interface Sampler
 		 *
 		 * @param channel The index of the channel to configure.
 		 * @param bank The bank number.
-		 * @see programChange(int,int)
+		 * @see #programChange(int,int)
 		 */
 		void bankChange(int channel, int bank);
 		
@@ -117,7 +117,7 @@ public interface Sampler
 		 * @param channel The index of the channel to configure.
 		 * @param key The number of the key to configure. A value of zero
 		 * corresponds to the note A<sub>4</sub>.
-		 * @see keyOn(int,int,float)
+		 * @see #keyOn(int,int,float)
 		 */
 		void keyOff(int channel, int key);
 		
@@ -146,9 +146,9 @@ public interface Sampler
 		 * 0.0f being silence and 1.0f being full-volume.
 		 * @throws IllegalArgumentException if {@code velocity} is a
 		 * non-number or is negative.
-		 * @see keyOff(int,int)
-		 * @see pitchBend(int,float)
-		 * @see pitchBendRange(int,float)
+		 * @see #keyOff(int,int)
+		 * @see #pitchBend(int,float)
+		 * @see #pitchBendRange(int,float)
 		 */
 		void keyOn(int channel, int key, float velocity);
 		
@@ -166,7 +166,7 @@ public interface Sampler
 		 * bend as a number of cents rather than semitones.
 		 * @throws IllegalArgumentException if {@code semitones} is a
 		 * non-number.
-		 * @see pitchBend(int,float)
+		 * @see #pitchBend(int,float)
 		 */
 		void masterTune(float semitones);
 		
@@ -212,8 +212,8 @@ public interface Sampler
 		 * bend as a number of cents rather than semitones.
 		 * @throws IllegalArgumentException if {@code semitones} is a
 		 * non-number.
-		 * @see masterTune(float)
-		 * @see pitchBendRange(int,float)
+		 * @see #masterTune(float)
+		 * @see #pitchBendRange(int,float)
 		 */
 		void pitchBend(int channel, float semitones);
 		
@@ -228,7 +228,7 @@ public interface Sampler
 		 * channel.
 		 * @throws IllegalArgumentException if {@code range} is a non-number
 		 * or is negative.
-		 * @see pitchBend(int,float)
+		 * @see #pitchBend(int,float)
 		 */
 		void pitchBendRange(int channel, float range);
 		
@@ -239,7 +239,7 @@ public interface Sampler
 		 *
 		 * @param channel The index of the channel to configure.
 		 * @param program The program number.
-		 * @see bankChange(int,int)
+		 * @see #bankChange(int,int)
 		 */
 		void programChange(int channel, int program);
 		
@@ -258,7 +258,7 @@ public interface Sampler
 		 * @throws ArrayIndexOutOfBoundsException if {@code offset} is
 		 * negative, or if {@code offset + frames * 2 > samples.length}.
 		 * @throws IllegalArgumentException if {@code frames} is negative.
-		 * @see render(float[],int,int,float,float,boolean,boolean)
+		 * @see #render(float[],int,int,float,float,boolean,boolean)
 		 */
 		void render(float[] samples, int offset, int frames);
 		
@@ -280,7 +280,7 @@ public interface Sampler
 		 * negative, or if {@code offset + frames * 2 > samples.length}.
 		 * @throws IllegalArgumentException if {@code frames} is negative,
 		 * or if {@code amplitude} is a non-number or is negative.
-		 * @see render(float[],int,int,float,float,boolean,boolean)
+		 * @see #render(float[],int,int,float,float,boolean,boolean)
 		 */
 		void render(float[] samples, int offset, int frames, float amplitude);
 		
@@ -304,7 +304,7 @@ public interface Sampler
 		 * negative, or if {@code offset + frames * 2 > samples.length}.
 		 * @throws IllegalArgumentException if {@code frames} is negative,
 		 * or if {@code left} or {@code right} is a non-number or is negative.
-		 * @see render(float[],int,int,float,float,boolean,boolean)
+		 * @see #render(float[],int,int,float,float,boolean,boolean)
 		 */
 		void render(float[] samples, int offset, int frames, float left,
 			float right);
@@ -346,9 +346,9 @@ public interface Sampler
 		 * negative, or if {@code offset + frames * 2 > samples.length}.
 		 * @throws IllegalArgumentException if {@code frames} is negative,
 		 * or if {@code left} or {@code right} is a non-number or is negative.
-		 * @see render(float[],int,int)
-		 * @see render(float[],int,int,float)
-		 * @see render(float[],int,int,float,float)
+		 * @see #render(float[],int,int)
+		 * @see #render(float[],int,int,float)
+		 * @see #render(float[],int,int,float,float)
 		 */
 		void render(float[] samples, int offset, int frames, float left,
 			float right, boolean erase, boolean clamp);
@@ -380,7 +380,7 @@ public interface Sampler
 		 * @param channel The index of the channel to configure.
 		 * @param volume The volume level, with 0.0f being silence and 1.0f
 		 * being full-volume.
-		 * @see masterVolume(float)
+		 * @see #masterVolume(float)
 		 */
 		void volume(int channel, float volume);
 	}
