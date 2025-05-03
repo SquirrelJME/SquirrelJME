@@ -163,7 +163,7 @@ class MA3Operator
 	/**
 	 * Encapsulating instance
 	 */
-	MA3SamplerProvider.Instance instance;
+	MA3Sampler instance;
 	
 	/**
 	 * Wave drum parameters are valid

@@ -51,7 +51,7 @@ class MA3Channel
 	/**
 	 * Encapsulating instance
 	 */
-	final MA3SamplerProvider.Instance instance;
+	final MA3Sampler instance;
 	
 	/**
 	 * All notes currently on keys
@@ -122,7 +122,7 @@ class MA3Channel
 	float volRightOut;
 	
 	
-	MA3Channel(MA3SamplerProvider.Instance instance, int index)
+	MA3Channel(MA3Sampler instance, int index)
 	{
 		this.index = index;
 		this.instance = instance;

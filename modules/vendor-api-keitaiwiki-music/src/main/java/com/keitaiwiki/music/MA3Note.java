@@ -52,7 +52,7 @@ class MA3Note
 	/**
 	 * Encapsulating instance
 	 */
-	final MA3SamplerProvider.Instance instance;
+	final MA3Sampler instance;
 	
 	/**
 	 * OPL operators
