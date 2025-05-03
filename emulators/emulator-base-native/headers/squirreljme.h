@@ -22,6 +22,7 @@ jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
 jint JNICALL mleDylibBaseObjectInit(JNIEnv* env, jclass classy);
 jint JNICALL mleJarInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMathInit(JNIEnv* env, jclass classy);
+jint JNICALL mleMathAccelInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMidiInit(JNIEnv* env, jclass classy);
 jint JNICALL mleNativeArchiveInit(JNIEnv* env, jclass classy);
 jint JNICALL mleNativeScritchCallbackInit(JNIEnv* env, jclass classy);
@@ -57,6 +58,9 @@ jint JNICALL forwardCallStaticInteger(JNIEnv* env,
 	const char* const classy, const char* const name, const char* const type,
 	...);
 jlong JNICALL forwardCallStaticLong(JNIEnv* env,
+	const char* const classy, const char* const name, const char* const type,
+	...);
+jdouble JNICALL forwardCallStaticDouble(JNIEnv* env,
 	const char* const classy, const char* const name, const char* const type,
 	...);
 jobject JNICALL forwardCallStaticObject(JNIEnv* env,

@@ -39,6 +39,7 @@ add_library(libEmulatorBase SHARED
 	c/mle_debug.c
 	c/mle_jar.c
 	c/mle_math.c
+	c/mle_mathaccel.c
 	c/mle_midi.c
 	c/mle_nativearchive.c
 	c/mle_object.c
