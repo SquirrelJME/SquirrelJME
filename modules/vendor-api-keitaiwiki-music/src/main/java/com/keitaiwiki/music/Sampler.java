@@ -41,8 +41,6 @@ public interface Sampler
 {
 	
 	
-	
-	
 	/**
 	 * Produces an instance of this sampler that can be used to render
 	 * samples.
@@ -55,9 +53,6 @@ public interface Sampler
 	 * non-number or is less than or equal to zero.
 	 */
 	Instance instance(float sampleRate);
-	
-	
-	
 	
 	
 	/**

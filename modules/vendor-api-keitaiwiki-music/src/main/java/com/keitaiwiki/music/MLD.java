@@ -49,8 +49,6 @@ public class MLD
 	static final int CUEPOINT_END = 1;
 	
 	
-	
-	
 	/**
 	 * Cuepoints
 	 */
@@ -370,9 +368,6 @@ public class MLD
 	}
 	
 	
-	
-	
-	
 	/**
 	 * Retrieve the copyright of the MLD resource.
 	 *
@@ -424,9 +419,6 @@ public class MLD
 	}
 	
 	
-	
-	
-	
 	/**
 	 * Retrieve the version of the MLD resource.
 	 *
@@ -436,8 +428,6 @@ public class MLD
 	{
 		return this.vers;
 	}
-	
-	
 	
 	
 	/**
@@ -451,8 +441,6 @@ public class MLD
 		ret.data = reader.bytes(reader.u32());
 		return ret;
 	}
-	
-	
 	
 	
 	/**
@@ -700,8 +688,6 @@ public class MLD
 		event.volume = (event.param & 0x3F) / 63.0f;
 		return event;
 	}
-	
-	
 	
 	
 	/**
@@ -1123,8 +1109,6 @@ public class MLD
 		}
 		return ret;
 	}
-	
-	
 	
 	
 	/**

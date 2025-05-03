@@ -68,8 +68,6 @@ public class MLDPlayer
 	public static final int EVENT_LOOP = 1;
 	
 	
-	
-	
 	/**
 	 * Key index bias
 	 */
@@ -132,9 +130,6 @@ public class MLDPlayer
 	final float sampleRate;
 	
 	
-	
-	
-	
 	/**
 	 * Sample generator
 	 */
@@ -149,9 +144,6 @@ public class MLDPlayer
 	 * Sequencer position in ticks
 	 */
 	long tickNow;
-	
-	
-	
 	
 	
 	/**
@@ -272,9 +264,6 @@ public class MLDPlayer
 	}
 	
 	
-	
-	
-	
 	/**
 	 * Retrieve and acknowledge all pending events. If this method is not
 	 * called, events will remain in the queue and prevent samples from being
@@ -292,9 +281,6 @@ public class MLDPlayer
 		this.events.clear();
 		return ret;
 	}
-	
-	
-	
 	
 	
 	/**
@@ -669,8 +655,6 @@ public class MLDPlayer
 	}
 	
 	
-	
-	
 	/**
 	 * bank-change
 	 */
@@ -920,8 +904,6 @@ public class MLDPlayer
 	}
 	
 	
-	
-	
 	/**
 	 * Process events on a track
 	 */
@@ -1035,7 +1017,8 @@ public class MLDPlayer
 		for (var other : this.tracks)
 			finished = finished && other.finished;
 		if (finished)
-			this.events.add(new Event(this.getTime(), MLDPlayer.EVENT_END, 0));
+			this.events.add(new Event(this.getTime(), MLDPlayer.EVENT_END,
+				0));
 	}
 	
 	/**
@@ -1068,8 +1051,6 @@ public class MLDPlayer
 		}
 		return ret;
 	}
-	
-	
 	
 	
 	/**

@@ -48,15 +48,10 @@ public class SineSampler
 {
 	
 	
-	
-	
 	/**
 	 * Key index bias
 	 */
 	static final int A4 = 81;
-	
-	
-	
 	
 	
 	/**
@@ -205,9 +200,6 @@ public class SineSampler
 		final float volRate;
 		
 		
-		
-		
-		
 		/**
 		 * Constructor
 		 */
@@ -232,9 +224,6 @@ public class SineSampler
 			// Reset all state
 			this.reset();
 		}
-		
-		
-		
 		
 		
 		/**
@@ -404,14 +393,16 @@ public class SineSampler
 		}
 		
 		@Override
-		public void render(float[] samples, int offset, int frames, float left,
+		public void render(float[] samples, int offset, int frames,
+			float left,
 			float right)
 		{
 			throw Debugging.todo();
 		}
 		
 		@Override
-		public void render(float[] samples, int offset, int frames, float left,
+		public void render(float[] samples, int offset, int frames,
+			float left,
 			float right, boolean erase, boolean clamp)
 		{
 			throw Debugging.todo();
@@ -426,8 +417,8 @@ public class SineSampler
 			
 			// Error checking
 			if (samples == null)
-				throw new NullPointerException("A sample buffer is required" +
-					".");
+				throw new NullPointerException(
+					"A sample buffer is required" + ".");
 			if (frames < 0)
 				throw new IllegalArgumentException("Invalid frames.");
 			if (offset < 0 || offset + frames * 2 > samples.length)
@@ -517,14 +508,11 @@ public class SineSampler
 		}
 		
 		
-		
-		
-		
 		/**
 		 * Render samples on a channel
 		 */
-		void chanRender(Channel chan, float[] samples, int offset,
-			int frames, float amplitude)
+		void chanRender(Channel chan, float[] samples, int offset, int frames,
+			float amplitude)
 		{
 			
 			// Working variables
@@ -552,8 +540,8 @@ public class SineSampler
 		/**
 		 * Render samples on a note
 		 */
-		boolean noteRender(Note note, float[] samples, int offset,
-			int frames, float amplitude, float left, float right, float bend)
+		boolean noteRender(Note note, float[] samples, int offset, int frames,
+			float amplitude, float left, float right, float bend)
 		{
 			
 			// Working variables
@@ -618,9 +606,6 @@ public class SineSampler
 	}
 	
 	
-	
-	
-	
 	/**
 	 * Create a sampler.
 	 */
@@ -629,15 +614,12 @@ public class SineSampler
 	}
 	
 	
-	
-	
-	
 	/**
-	 * Produces an instance of this sampler that can be used to render 
+	 * Produces an instance of this sampler that can be used to render
 	 * samples.
 	 *
 	 * @param sampleRate The output sampling rate of the rendered samples.
-	 * @return A new sampler instance that can render samples using the 
+	 * @return A new sampler instance that can render samples using the
 	 * current
 	 * configuration of this sampler itself.
 	 * @throws IllegalArgumentException if {@code sampleRate} is a
