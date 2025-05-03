@@ -63,18 +63,24 @@ public class MA3Sampler
 	implements Sampler
 {
 	
-	// Instance fields
-	private Algorithm[] algDrums;          // FM drum algorithms
 	
-	private Algorithm[] algInstruments;    // FM instrument algorithms
+	//  FM drum algorithms
+	Algorithm[] algDrums;
 	
-	private Algorithm[] algWaveDrums;      // Wave drum algorithms
+	//  FM instrument algorithms
+	Algorithm[] algInstruments;
 	
-	private int prgDrumType;       // FM drum algorithm type
+	//  Wave drum algorithms
+	Algorithm[] algWaveDrums;
 	
-	private int prgInstrumentType; // FM instrument algorithm type
+	//  FM drum algorithm type
+	int prgDrumType;
 	
-	private int prgWaveDrumType;   // Wave drums algorithm type
+	//  FM instrument algorithm type
+	int prgInstrumentType;
+	
+	//  Wave drums algorithm type
+	int prgWaveDrumType;
 	
 	
 	
@@ -138,62 +144,71 @@ public class MA3Sampler
 	
 	
 	// Lookup tables
-	private static final int[] AM_LFO_A; // Amplitude modulation levels
+	//  Amplitude modulation levels
+	static final int[] AM_LFO_A;
 	
-	private static final int[] EXP;      // Binary exponent
+	//  Binary exponent
+	static final int[] EXP;
 	
-	private static final int[] SUSTAINS; // Sustain levels
+	//  Sustain levels
+	static final int[] SUSTAINS;
 	
-	private static final int[] WAVE_ENV; // Wave drum envelope levels
+	//  Wave drum envelope levels
+	static final int[] WAVE_ENV;
 	
-	private static final int[][] WAVES;    // Waveforms
+	//  Waveforms
+	static final int[][] WAVES;
 	
 	// Envelope stages
-	private static final int ENV_ATTACK = 0;
+	static final int ENV_ATTACK = 0;
 	
-	private static final int ENV_DECAY = 1;
+	static final int ENV_DECAY = 1;
 	
-	private static final int ENV_SUSTAIN = 2;
+	static final int ENV_SUSTAIN = 2;
 	
-	private static final int ENV_RELEASE = 3;
+	static final int ENV_RELEASE = 3;
 	
-	private static final int ENV_DONE = 4;
+	static final int ENV_DONE = 4;
 	
 	// Envelope attenuation parameters by BLOCK and F_NUMBER, used with KSL
-	private static final int[] KSL_B = {0, 2, 1, 4};
+	static final int[] KSL_B = {0, 2, 1, 4};
 	
-	private static final int[] KSL_F =
+	static final int[] KSL_F =
 		{56, 32, 24, 19, 16, 13, 11, 9, 8, 6, 5, 4, 3, 2, 1, 0};
 	
 	// Frequency multipliers, doubled to implement with a right shift
-	private static final int[] MULTIS =
+	static final int[] MULTIS =
 		{1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 20, 24, 24, 30, 30};
 	
 	// YAMAHA AICA ADPCM quantization step size lookup table
-	private static final int[] AICA_STEPS =
+	static final int[] AICA_STEPS =
 		{230, 230, 230, 230, 307, 409, 512, 614};
 	
 	// Bit flags indicating which FM operators control the final output
-	private static final int[] ENV_FLAGS =
+	static final int[] ENV_FLAGS =
 		{0b10, 0b11, 0b1111, 0b1000, 0b1000, 0b1010, 0b1001, 0b1101};
 	
 	// Amplitude modulation LFO phase-advance
-	private static final int[] AM_LFO_B = {8, 18, 26, 31};
+	static final int[] AM_LFO_B = {8, 18, 26, 31};
 	
 	// Formula constants
-	private static final int A4 = 81;         // Key index bias
+	//  Key index bias
+	static final int A4 = 81;
 	
-	private static final int FULL = 0;         // Wave maximum
+	//  Wave maximum
+	static final int FULL = 0;
 	
-	private static final int NTS = 1;
+	static final int NTS = 1;
 	
-	private static final double MAGIC_B = 12 / Math.log(2);
+	static final double MAGIC_B = 12 / Math.log(2);
 	
-	private static final double MAGIC_F = 684 / 33868800.0;
+	static final double MAGIC_F = 684 / 33868800.0;
 	
-	private static final int MINUS = 0x80000000; // Wave negative
+	//  Wave negative
+	static final int MINUS = 0x80000000;
 	
-	private static final int ZERO = 0x1000;     // Wave minimum
+	//  Wave minimum
+	static final int ZERO = 0x1000;
 	
 	// Compute lookup tables
 	// Formulas courtesy of Gambrell and Niemitalo: "OPLx decapsulated"
@@ -208,10 +223,14 @@ public class MA3Sampler
 		WAVES = new int[32][1024];
 		
 		// Named waves
-		int[] saw = MA3Sampler.WAVES[24]; // Sawtooth
-		int[] sin = MA3Sampler.WAVES[0]; // Sine
-		int[] tri = MA3Sampler.WAVES[16]; // Triangle
-		int[] trp = MA3Sampler.WAVES[8]; // Trapezoid (clamped 2*triangle)
+		//  Sawtooth
+		int[] saw = MA3Sampler.WAVES[24];
+		//  Sine
+		int[] sin = MA3Sampler.WAVES[0];
+		//  Triangle
+		int[] tri = MA3Sampler.WAVES[16];
+		//  Trapezoid (clamped 2*triangle)
+		int[] trp = MA3Sampler.WAVES[8];
 		
 		// Quarter-period lookup tables
 		for (int x = 0; x < 256; x++)
@@ -277,7 +296,8 @@ public class MA3Sampler
 				x < 512 ? trp[x << 1 & 511] : MA3Sampler.ZERO;
 			MA3Sampler.WAVES[14][x] =
 				x < 512 ? MA3Sampler.FULL : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[15][x] = MA3Sampler.ZERO; // PCM RAM
+			//  PCM RAM
+			MA3Sampler.WAVES[15][x] = MA3Sampler.ZERO;
 			// WAVES[16] is tri
 			MA3Sampler.WAVES[17][x] = x < 512 ? tri[x] : MA3Sampler.ZERO;
 			MA3Sampler.WAVES[18][x] = tri[x & 511];
@@ -288,7 +308,8 @@ public class MA3Sampler
 				x < 512 ? tri[x << 1 & 511] : MA3Sampler.ZERO;
 			MA3Sampler.WAVES[22][x] =
 				(x & 511) < 256 ? MA3Sampler.FULL : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[23][x] = MA3Sampler.ZERO; // PCM RAM
+			//  PCM RAM
+			MA3Sampler.WAVES[23][x] = MA3Sampler.ZERO;
 			// WAVES[24] is saw
 			MA3Sampler.WAVES[25][x] = x < 512 ? saw[x] : MA3Sampler.ZERO;
 			MA3Sampler.WAVES[26][x] = saw[x & 511];
@@ -299,7 +320,8 @@ public class MA3Sampler
 				x < 512 ? saw[x << 1 & 511] : MA3Sampler.ZERO;
 			MA3Sampler.WAVES[30][x] =
 				x < 256 ? MA3Sampler.FULL : MA3Sampler.ZERO;
-			MA3Sampler.WAVES[31][x] = MA3Sampler.ZERO; // PCM RAM
+			//  PCM RAM
+			MA3Sampler.WAVES[31][x] = MA3Sampler.ZERO;
 		}
 		
 		// Compute amplitude modulation LFO
@@ -546,8 +568,10 @@ public class MA3Sampler
 	static int[] decodeAICA(byte[] adpcm, int offset, int length)
 	{
 		int[] ret = new int[length * 2];
-		int An = 127; // Quantization step size
-		int Xn = 0; // Predictor
+		//  Quantization step size
+		int An = 127;
+		//  Predictor
+		int Xn = 0;
 		
 		// Process all ADPCM bytes
 		for (int src = offset, dest = 0; src < offset + length; src++)
@@ -598,47 +622,63 @@ public class MA3Sampler
 	
 	
 	// Template algorithm for OPL synthesis
-	private static class Algorithm
+	static class Algorithm
 	{
 		
-		// Instance fields
-		int alg;        // Operator connection algorithm
 		
-		final int drumKey;    // Key played for drum notes
+		//  Operator connection algorithm
+		int alg;
 		
-		int ep;         // Wave end point
+		//  Key played for drum notes
+		final int drumKey;
 		
-		float freqBase;   // Drum frequency base
+		//  Wave end point
+		int ep;
 		
-		int fs;         // Wave sampling frequency
+		//  Drum frequency base
+		float freqBase;
 		
-		final boolean isDrum;     // Is a drum note
+		//  Wave sampling frequency
+		int fs;
 		
-		final boolean isWave;     // Is a wave rum algorithm
+		//  Is a drum note
+		final boolean isDrum;
 		
-		final int lfo;        // Modulation LFO rate multiplier
+		//  Is a wave rum algorithm
+		final boolean isWave;
 		
-		int lp;         // Wave loop point
+		//  Modulation LFO rate multiplier
+		final int lfo;
 		
-		final Operator[] operators;  // FM operator templates
+		//  Wave loop point
+		int lp;
 		
-		final int panpot;     // Stereo balance
+		//  FM operator templates
+		final Operator[] operators;
 		
-		boolean rm;         // Wave ROM select
+		//  Stereo balance
+		final int panpot;
 		
-		float volLeft;    // Left stereo amplitude
+		//  Wave ROM select
+		boolean rm;
 		
-		float volRight;   // Right stereo amplitude
+		//  Left stereo amplitude
+		float volLeft;
 		
-		float wavAdvance; // Wave samples to advance per output sample
+		//  Right stereo amplitude
+		float volRight;
 		
-		int waveId;     // Wave ROM index
+		//  Wave samples to advance per output sample
+		float wavAdvance;
+		
+		//  Wave ROM index
+		int waveId;
 		
 		
 		
 		
 		
-		private static Algorithm[] from(String[] defs, boolean isDrum,
+		static Algorithm[] from(String[] defs, boolean isDrum,
 			boolean isWave)
 		{
 			Base64.Decoder base64 = Base64.getMimeDecoder();
@@ -671,7 +711,7 @@ public class MA3Sampler
 		
 		
 		// FM constructor
-		private Algorithm(byte[] bytes, boolean isDrum)
+		Algorithm(byte[] bytes, boolean isDrum)
 		{
 			
 			// Decode bits
@@ -685,7 +725,7 @@ public class MA3Sampler
 			for (int x = 0; x < this.operators.length; x++)
 				this.operators[x] = new Operator(bytes, 3 + x * 7);
 			
-			// Instance fields
+			
 			this.freqBase = (float)(440 * Math.pow(2,
 				(this.drumKey - 69) / 12.0));
 			this.isDrum = isDrum;
@@ -694,9 +734,10 @@ public class MA3Sampler
 		}
 		
 		// Wave drum constructor
-		private Algorithm(byte[] message, int offset)
+		Algorithm(byte[] message, int offset)
 		{
-			int bits; // Scratch
+			//  Scratch
+			int bits;
 			
 			// Parse fields
 			this.drumKey = message[offset++] & 0xFF;
@@ -710,7 +751,8 @@ public class MA3Sampler
 			this.lfo = bits >> 6 & 3;
 			// pcm  = bits >> 1 & 1;
 			this.operators = new Operator[] {new Operator(offset, message)};
-			offset += 7; // 5 for operator, 2 unknown (always zero?)
+			//  5 for operator, 2 unknown (always zero?)
+			offset += 7;
 			this.lp =
 				(message[offset] & 0xFF) << 8 | message[offset + 1] & 0xFF;
 			offset += 2;
@@ -721,7 +763,7 @@ public class MA3Sampler
 			this.rm = (bits >> 7 & 1) != 0;
 			this.waveId = bits & 7;
 			
-			// Instance fields
+			
 			this.isDrum = true;
 			this.isWave = true;
 			this.wavAdvance = this.fs / MA3Sampler.SAMPLE_RATE;
@@ -733,14 +775,14 @@ public class MA3Sampler
 		
 		
 		// Initialize volume settings
-		private void initVolume()
+		void initVolume()
 		{
 			this.volRight = this.panpot / (this.panpot <= 15 ? 30.0f : 31.0f);
 			this.volLeft = 1 - this.volRight;
 		}
 		
 		// Debugging output
-		private String debug()
+		String debug()
 		{
 			StringBuilder ret = new StringBuilder();
 			ret.append(String.format("LFO:     %d\n", this.lfo));
@@ -785,42 +827,57 @@ public class MA3Sampler
 	
 	
 	// Output channel
-	private class Channel
+	class Channel
 	{
 		
-		// Instance fields
-		float bendBase;    // Pitch bend base ratio
 		
-		float bendOut;     // Effective channel frequency ratio
+		//  Pitch bend base ratio
+		float bendBase;
 		
-		float bendRange;   // Pitch bend magnitude
+		//  Effective channel frequency ratio
+		float bendOut;
 		
-		final int index;       // Index in sampler
+		//  Pitch bend magnitude
+		float bendRange;
 		
-		final Instance instance;    // Encapsulating instance
+		//  Index in sampler
+		final int index;
 		
-		boolean isDrum;      // The channel plays drum notes
+		//  Encapsulating instance
+		final Instance instance;
 		
-		final Note[] notesOn;     // All notes currently on keys
+		//  The channel plays drum notes
+		boolean isDrum;
+		
+		//  All notes currently on keys
+		final Note[] notesOn;
 		
 		final ArrayList<Note> notesOut;
 			// All notes that are generating output
 		
-		int prgBank;     // Program bank
+		//  Program bank
+		int prgBank;
 		
-		int prgProgram;  // Program index in bank
+		//  Program index in bank
+		int prgProgram;
 		
-		float volLeft;     // Left stereo amplitude
+		//  Left stereo amplitude
+		float volLeft;
 		
-		float volLeftOut;  // Left stereo output amplitude
+		//  Left stereo output amplitude
+		float volLeftOut;
 		
-		float volLevel;    // Channel output amplitude
+		//  Channel output amplitude
+		float volLevel;
 		
-		float volPanning;  // Stereo level
+		//  Stereo level
+		float volPanning;
 		
-		float volRight;    // Right stereo amplitude
+		//  Right stereo amplitude
+		float volRight;
 		
-		float volRightOut; // Right stereo output amplitude
+		//  Right stereo output amplitude
+		float volRightOut;
 		
 		
 		
@@ -830,7 +887,8 @@ public class MA3Sampler
 		{
 			this.index = index;
 			this.instance = instance;
-			this.notesOn = new Note[128]; // C-2 .. G8
+			//  C-2 .. G8
+			this.notesOn = new Note[128];
 			this.notesOut = new ArrayList<>();
 		}
 		
@@ -839,7 +897,7 @@ public class MA3Sampler
 		
 		
 		// Frequency has changed
-		private void onFrequency()
+		void onFrequency()
 		{
 			float bend = this.instance.bendOut * this.bendOut;
 			for (Note note : this.notesOut)
@@ -847,7 +905,7 @@ public class MA3Sampler
 		}
 		
 		// Volume has changed
-		private void onVolume()
+		void onVolume()
 		{
 			this.volLeftOut = this.instance.volOut * this.volLeft;
 			this.volRightOut = this.instance.volOut * this.volRight;
@@ -856,7 +914,7 @@ public class MA3Sampler
 		}
 		
 		// Render the next input sample
-		private void render()
+		void render()
 		{
 			for (int x = 0; x < this.notesOut.size(); x++)
 			{
@@ -866,10 +924,10 @@ public class MA3Sampler
 		}
 		
 		// Initialize state
-		private void reset()
+		void reset()
 		{
 			
-			// Instance fields
+			
 			this.bendBase = 0.0f;
 			this.bendOut = 1.0f;
 			this.bendRange = 2.0f;
@@ -894,40 +952,55 @@ public class MA3Sampler
 	
 	
 	
-	private class Instance
+	class Instance
 		implements Sampler.Instance
 	{
 		
-		// Instance fields
-		int amPhase;     // Amplitude modulator phase
 		
-		float bendOut;     // Global pitch bend
+		//  Amplitude modulator phase
+		int amPhase;
 		
-		final Channel[] channels;    // Channel states
+		//  Global pitch bend
+		float bendOut;
 		
-		final float sampleRate;  // Output sampling rate
+		//  Channel states
+		final Channel[] channels;
 		
-		final float[] smpNext;     // Next input sample
+		//  Output sampling rate
+		final float sampleRate;
 		
-		float smpPosition; // Position between input samples
+		//  Next input sample
+		final float[] smpNext;
 		
-		final float[] smpPrev;     // Previous input sample
+		//  Position between input samples
+		float smpPosition;
 		
-		final float smpWidth;    // Number of input samples per output sample
+		//  Previous input sample
+		final float[] smpPrev;
 		
-		int vibPhase;    // Frequency modulator phase
+		//  Number of input samples per output sample
+		final float smpWidth;
 		
-		float volFade;     // Global attenuation
+		//  Frequency modulator phase
+		int vibPhase;
 		
-		float volLevel;    // Global volume
+		//  Global attenuation
+		float volFade;
 		
-		float volOut;      // Effective global volume
+		//  Global volume
+		float volLevel;
 		
-		final float volRate;     // Automatic volume adjustment rate
+		//  Effective global volume
+		float volOut;
 		
-		final Algorithm[] wavDrums;    // Registered wave drums
+		//  Automatic volume adjustment rate
+		final float volRate;
 		
-		int[] wavRam;      // Wave RAM, decoded from ADPCM
+		//  Registered wave drums
+		final Algorithm[] wavDrums;
+		
+		//  Wave RAM, decoded from ADPCM
+		int[] wavRam;
 		
 		
 		
@@ -936,7 +1009,7 @@ public class MA3Sampler
 		Instance(float sampleRate)
 		{
 			
-			// Instance fields
+			
 			this.channels = new Channel[10];
 			this.sampleRate = sampleRate;
 			this.smpNext = new float[2];
@@ -1208,7 +1281,8 @@ public class MA3Sampler
 			{
 				float l = this.smpPosition;
 				float r = l + this.smpWidth;
-				float a, b; // Scratch
+				//  Scratch
+				float a, b;
 				
 				// Edge case: need the next input sample
 				if (l == 0.0f)
@@ -1363,7 +1437,7 @@ public class MA3Sampler
 		
 		
 		// Retrieve an algorithm for playing an FM drum note
-		private Algorithm getDrumFM(int key)
+		Algorithm getDrumFM(int key)
 		{
 			
 			// Transform wave drum keys into FM drum keys
@@ -1379,7 +1453,7 @@ public class MA3Sampler
 		}
 		
 		// Retrieve an algorithm for playing a wave drum note
-		private Algorithm getDrumWave(int key)
+		Algorithm getDrumWave(int key)
 		{
 			
 			// Error checking
@@ -1405,7 +1479,7 @@ public class MA3Sampler
 		}
 		
 		// Master volume has changed
-		private void onVolume()
+		void onVolume()
 		{
 			this.volOut = (1.0f - this.volFade) * this.volLevel;
 			for (Channel chan : this.channels)
@@ -1413,7 +1487,7 @@ public class MA3Sampler
 		}
 		
 		// Produce one input sample
-		private void sample()
+		void sample()
 		{
 			this.smpNext[0] = this.smpNext[1] = 0.0f;
 			for (Channel chan : this.channels)
@@ -1423,7 +1497,7 @@ public class MA3Sampler
 		}
 		
 		// Specify the global fade.
-		private void setMasterFade(byte[] message)
+		void setMasterFade(byte[] message)
 		{
 			if (message.length < 5)
 				return;
@@ -1432,7 +1506,7 @@ public class MA3Sampler
 		}
 		
 		// Decode and register wave drum definitions
-		private void setWaveDrums(byte[] message)
+		void setWaveDrums(byte[] message)
 		{
 			
 			// De-register existing wave drums
@@ -1457,7 +1531,7 @@ public class MA3Sampler
 		}
 		
 		// Terminate any existing wave drum notes
-		private void stopWaveDrums()
+		void stopWaveDrums()
 		{
 			for (Channel chan : this.channels)
 				for (Note note : chan.notesOut)
@@ -1472,53 +1546,70 @@ public class MA3Sampler
 	
 	
 	// Audio source
-	private class Note
+	class Note
 	{
 		
 		// OPL registers
-		int block;    // Octave index
+		//  Octave index
+		int block;
 		
-		int f_number; // Frequency divider
-		
-		// Instance fields
-		int amPhase;     // Amplitude modulator phase
-		
-		float advance;     // Frequency advancement when dissociated
-		
-		final Algorithm algorithm;   // FM operator algorithm
-		
-		float ampLeft;     // Effective left stereo amplitude
-		
-		float ampRight;    // Effective right stereo amplitude
-		
-		final Channel channel;     // Encapsulating channel
-		
-		boolean envDone;     // All operator envelopes are finished
-		
-		float freqBase;    // Base frequency
-		
-		final Instance instance;    // Encapsulating instance
-		
-		final Operator[] operators;   // OPL operators
-		
-		boolean playing;     // Note is currently active on its key
-		
-		final float sample;      // Current output sample
-		
-		float volBase;     // Base volume
-		
-		float volLeftOut;  // Left stereo output amplitude
-		
-		float volRightOut; // Right stereo output amplitude
+		//  Frequency divider
+		int f_number;
 		
 		
+		//  Amplitude modulator phase
+		int amPhase;
+		
+		//  Frequency advancement when dissociated
+		float advance;
+		
+		//  FM operator algorithm
+		final Algorithm algorithm;
+		
+		//  Effective left stereo amplitude
+		float ampLeft;
+		
+		//  Effective right stereo amplitude
+		float ampRight;
+		
+		//  Encapsulating channel
+		final Channel channel;
+		
+		//  All operator envelopes are finished
+		boolean envDone;
+		
+		//  Base frequency
+		float freqBase;
+		
+		//  Encapsulating instance
+		final Instance instance;
+		
+		//  OPL operators
+		final Operator[] operators;
+		
+		//  Note is currently active on its key
+		boolean playing;
+		
+		//  Current output sample
+		final float sample;
+		
+		//  Base volume
+		float volBase;
+		
+		//  Left stereo output amplitude
+		float volLeftOut;
+		
+		//  Right stereo output amplitude
+		float volRightOut;
 		
 		
 		
-		private Note(Channel channel, Algorithm algorithm)
+		
+		
+		Note(Channel channel, Algorithm algorithm)
 		{
 			
-			// Instance fields
+			
 			this.algorithm = algorithm;
 			this.envDone = false;
 			this.ampLeft = 0.0f;
@@ -1539,7 +1630,7 @@ public class MA3Sampler
 		
 		
 		// Perform easing on an amplitude controller
-		private float ease(float level, float target)
+		float ease(float level, float target)
 		{
 			return level < target ? Math.min(target,
 				level + this.instance.volRate) : level > target ? Math.max(
@@ -1547,7 +1638,7 @@ public class MA3Sampler
 		}
 		
 		// Key-off processing
-		private void off()
+		void off()
 		{
 			this.playing = false;
 			for (Operator op : this.operators)
@@ -1560,7 +1651,7 @@ public class MA3Sampler
 		}
 		
 		// An envelope has finished
-		private void onEnvelopeDone()
+		void onEnvelopeDone()
 		{
 			this.envDone = true;
 			
@@ -1579,7 +1670,7 @@ public class MA3Sampler
 		}
 		
 		// Frequency has changed
-		private void onFrequency(double bend)
+		void onFrequency(double bend)
 		{
 			
 			// Wave notes don't use oscillators
@@ -1600,7 +1691,7 @@ public class MA3Sampler
 		}
 		
 		// Master volume has changed
-		private void onVolume()
+		void onVolume()
 		{
 			this.volLeftOut =
 				this.volBase * this.algorithm.volLeft * this.channel.volLeftOut;
@@ -1609,7 +1700,7 @@ public class MA3Sampler
 		}
 		
 		// Render the next input sample
-		private boolean render()
+		boolean render()
 		{
 			
 			// Compute desired left and right volume levels
@@ -1636,7 +1727,7 @@ public class MA3Sampler
 		}
 		
 		// Generate an FM sample
-		private float sampleFM()
+		float sampleFM()
 		{
 			int out1, out2, out3, out4;
 			int ret = 0;
@@ -1695,11 +1786,12 @@ public class MA3Sampler
 					ret = out1 + out3 + out4;
 					break;
 			}
-			return ret / 8170.0f; // Twice the max sample value
+			//  Twice the max sample value
+			return ret / 8170.0f;
 		}
 		
 		// Terminate playback
-		private void stop()
+		void stop()
 		{
 			this.envDone = true;
 			this.playing = false;
@@ -1718,85 +1810,119 @@ public class MA3Sampler
 	
 	
 	// Individual FM algorithm operator
-	private static class Operator
+	static class Operator
 	{
 		
 		// OPL registers
-		final int ar;    // Envelope attack rate
+		//  Envelope attack rate
+		final int ar;
 		
-		final int dam;   // Amplitude modulation depth
+		//  Amplitude modulation depth
+		final int dam;
 		
-		final int dr;    // Envelope decay rate
+		//  Envelope decay rate
+		final int dr;
 		
-		int dt;    // Detune shift
+		//  Detune shift
+		int dt;
 		
-		final int dvb;   // Frequency modulation depth
+		//  Frequency modulation depth
+		final int dvb;
 		
-		final boolean eam;   // Enable amplutide modulation
+		//  Enable amplutide modulation
+		final boolean eam;
 		
-		final boolean evb;   // Enable frequency modulation
+		//  Enable frequency modulation
+		final boolean evb;
 		
-		int fb;    // Feedback rate index
+		//  Feedback rate index
+		int fb;
 		
-		int ksl;   // Attenuation index per octave
+		//  Attenuation index per octave
+		int ksl;
 		
-		int ksr;   // Envelope rate modifier scale
+		//  Envelope rate modifier scale
+		int ksr;
 		
-		int multi; // Frequency multiplier
+		//  Frequency multiplier
+		int multi;
 		
-		final int rr;    // Envelope release rate
+		//  Envelope release rate
+		final int rr;
 		
-		final int sl;    // Envelope sustain level
+		//  Envelope sustain level
+		final int sl;
 		
-		final int sr;    // Envelope sustain rate
+		//  Envelope sustain rate
+		final int sr;
 		
-		final boolean sus;   // MIDI Hold 1 is supported
+		//  MIDI Hold 1 is supported
+		final boolean sus;
 		
-		final int tl;    // Envelope attenuation
+		//  Envelope attenuation
+		final int tl;
 		
-		int ws;    // Wave function index
+		//  Wave function index
+		int ws;
 		
-		final boolean xof;   // Ignore key-off response
+		//  Ignore key-off response
+		final boolean xof;
 		
-		// Instance fields
-		Algorithm algorithm; //     Encapsulating algorithm
 		
-		int amPhase;   // u14 Amplitude modulation counter
+		//      Encapsulating algorithm
+		Algorithm algorithm;
 		
-		int envLevel;  // u9  Current envelope level
+		//  u14 Amplitude modulation counter
+		int amPhase;
 		
-		int envOut;    // u9  Effective envelope output
+		//  u9  Current envelope level
+		int envLevel;
 		
-		int envPhase;  // u15 Envelope phase counter
+		//  u9  Effective envelope output
+		int envOut;
 		
-		int envRate;   //     Current envelope rate of change
+		//  u15 Envelope phase counter
+		int envPhase;
 		
-		int envRof;    //     Envelope rate offset modifier
+		//      Current envelope rate of change
+		int envRate;
 		
-		int envStage;  //     Envelope processing stage
+		//      Envelope rate offset modifier
+		int envRof;
 		
-		int fb0;       //     Most recent output sample
+		//      Envelope processing stage
+		int envStage;
 		
-		int fb1;       //     Second-most recent output sample
+		//      Most recent output sample
+		int fb0;
 		
-		Instance instance;  //     Encapsulating instance
+		//      Second-most recent output sample
+		int fb1;
 		
-		boolean isValid;   //     Wave drum parameters are valid
+		//      Encapsulating instance
+		Instance instance;
 		
-		int kslOut;    //     KSL attenuation level
+		//      Wave drum parameters are valid
+		boolean isValid;
 		
-		Note note;      //     Encapsulating note
+		//      KSL attenuation level
+		int kslOut;
 		
-		int oscPhase;  // u10 Oscillator counter
+		//      Encapsulating note
+		Note note;
 		
-		float wavSample; //     Current wave source sample
+		//  u10 Oscillator counter
+		int oscPhase;
+		
+		//      Current wave source sample
+		float wavSample;
 		
 		
 		
 		
 		
 		// Template constructor
-		private Operator(byte[] bytes, int offset)
+		Operator(byte[] bytes, int offset)
 		{
 			this.sus = (bytes[offset] >> 3 & 1) != 0;
 			this.ksr = bytes[offset] >> 2 & 1;
@@ -1819,7 +1945,7 @@ public class MA3Sampler
 		}
 		
 		// Wave constructor
-		private Operator(int offset, byte[] message)
+		Operator(int offset, byte[] message)
 		{
 			int bits;
 			bits = message[offset++] & 0xFF;
@@ -1842,7 +1968,7 @@ public class MA3Sampler
 		}
 		
 		// Playback constructor
-		private Operator(Note note, Operator o)
+		Operator(Note note, Operator o)
 		{
 			
 			// OPL registers
@@ -1865,7 +1991,7 @@ public class MA3Sampler
 			this.ws = o.ws;
 			this.xof = o.xof;
 			
-			// Instance fields
+			
 			this.algorithm = note.algorithm;
 			this.amPhase = note.instance.amPhase;
 			this.envLevel = 511;
@@ -1883,7 +2009,7 @@ public class MA3Sampler
 		
 		
 		// Frequency has changed
-		private void onFrequency()
+		void onFrequency()
 		{
 			this.envRof =
 				(this.note.block << 1 | this.note.f_number >> 8 + MA3Sampler.NTS & 1) >> ((this.ksr ^ 1) << 1);
@@ -1892,9 +2018,10 @@ public class MA3Sampler
 		}
 		
 		// Generate a sample on an operator
-		private int sample(int mod, boolean feedback)
+		int sample(int mod, boolean feedback)
 		{
-			int x, y; // Scratch
+			//  Scratch
+			int x, y;
 			
 			// The envelope has finished
 			if (this.envStage == MA3Sampler.ENV_DONE)
@@ -2037,7 +2164,7 @@ public class MA3Sampler
 	
 	
 	// Instrument algorithms for MA-2
-	private static final Algorithm[] MA2_INSTRUMENTS = Algorithm.from(
+	static final Algorithm[] MA2_INSTRUMENTS = Algorithm.from(
 		new String[] {"AXgAABDyBUo6gAAQ8gZ6AIA=", // GrandPno
 			"AXgABBDyBFo+oAAQ8gZaAKA=", // BritePno
 			"AXgABBDxBVoZgAAQ8gZ6AIA=", // E.GrandP
@@ -2169,7 +2296,7 @@ public class MA3Sampler
 		}, false, false);
 	
 	// Drum algorithms for MA-2
-	private static final Algorithm[] MA2_DRUMS = Algorithm.from(
+	static final Algorithm[] MA2_DRUMS = Algorithm.from(
 		new String[] {"AXhPADD3APoMwQQwqP/6AMY=", // SeqClick H
 			"AXg9AAD4ADoA4AQQmkRaIOA=", // Brush Tap
 			"AXgzAUBoBgoU4AAAWERKXOA=", // Brush Swirl L
@@ -2234,7 +2361,7 @@ public class MA3Sampler
 		}, true, false);
 	
 	// FM instrument algorithms for MA-3, 2 operators
-	private static final Algorithm[] MA3_INSTRUMENTS_2OP = Algorithm.from(
+	static final Algorithm[] MA3_INSTRUMENTS_2OP = Algorithm.from(
 		new String[] {"AXgADBD0IyhCZQ0Q8hY4AgA=", // GrandPno
 			"AXgADBD0IzhBjQ0Q8hY4EAA=", // BritePno
 			"AXgADBDxFTpkwA0Q8SZoIAA=", // E.GrandP
@@ -2366,7 +2493,7 @@ public class MA3Sampler
 		}, false, false);
 	
 	// FM instrument algorithms for MA-3, 4 operators
-	private static final Algorithm[] MA3_INSTRUMENTS_4OP = Algorithm.from(
+	static final Algorithm[] MA3_INSTRUMENTS_4OP = Algorithm.from(
 		new String[] {"AXsACBD3BvCdCAxQ4yMgcwAJENEUMFgADRDTJkACAA==", // 
 		// GrandPno
 			"AXsADBDyIlCeAAhQ8iPwcgANEPIi0GYADRDyFUAoAA==", // BritePno
@@ -2499,7 +2626,7 @@ public class MA3Sampler
 		}, false, false);
 	
 	// FM drum algorithms for MA-3, 2 operators
-	private static final Algorithm[] MA3_DRUMS_2OP = Algorithm.from(
+	static final Algorithm[] MA3_DRUMS_2OP = Algorithm.from(
 		new String[] {"AXlYAC3wnwYIUAAl+p8ZAAA=", // SeqClick H
 			"AXgdAAHWWQoA+AABiIkmEAA=", // Brush Tap
 			"AHg8ABqiAwQA+AIAZQcyKGA=", // Brush Swirl L
@@ -2564,7 +2691,7 @@ public class MA3Sampler
 		}, true, false);
 	
 	// FM drum algorithms for MA-3, 4 operators
-	private static final Algorithm[] MA3_DRUMS_4OP = Algorithm.from(
+	static final Algorithm[] MA3_DRUMS_4OP = Algorithm.from(
 		new String[] {"AX1IAGHw/wrgxARR+P/KAAAAofv/upwGBFHr//oEAA==", // 
 		// SeqClick H
 			"AX1BAFH4ADoA4AABmIu6AgAAwfhuOpAGABHNiAqyBg==", // Brush Tap
@@ -2630,7 +2757,7 @@ public class MA3Sampler
 		}, true, false);
 	
 	// Wave drum algorithms for MA-3
-	private static final Algorithm[] MA3_DRUMS_WAVE = Algorithm.from(
+	static final Algorithm[] MA3_DRUMS_WAVE = Algorithm.from(
 		new String[] {"Hz6AeQAI8PAQAAAAC5sLm4E=", // Snare L
 			"ISMoeQAI8PAQAAAAA6kDqYA=", // Bass Drum L
 			"IycQeQAI8PAQAAAAA6kDqYA=", // Bass Drum M
@@ -2655,7 +2782,7 @@ public class MA3Sampler
 		}, true, true);
 	
 	// Wave synthesis ROM for MA-3
-	private static final int[][] MA3_WAVEROM = MA3Sampler.waveRom(
+	static final int[][] MA3_WAVEROM = MA3Sampler.waveRom(
 		new String[] {"93cXB1" +
 			"/wgn9PubQYiZEIiIAIiIAIiIAIiIC3cOQ3L9QCaagwCH2JgpkRWwCYAjvwSvGE" + 
 			"X8BZCxiooBvHQIkBKbmXgYgTW6iVEAgrATsAsAOAAI3UkvEoPaqypigdiAkYkWm7paGi" + "OQqZWyiNxSAaCRCYtRIa84AYAKUwCcpoC4EpoZgumacBCbhrgCiBGyoMlCg8SPCBCSmw" + "QooUH9EiChGbBDmhELdRmRCxEpBoDLN7uAMbsOAoiqMcCA2IkNM4ATnoA3upEaJwCRAR" + "DJQIGpSiKJB6qaMZKHsJktGUKwE8CSu2iBKJG8VRDKKBPIyhTMmzGBCIT4oawCAqghgD" + "mod9oJRboBCAEVqQmJMrGMEzL9qkABoZqqG586CYQKuCifATPJukGeMhiDGyQOJAkAAR" + "IAwJqNYYiIjRqJN6G5GQgAM+maNIjCm2o5I+CBgbgPQ4DZCQlDmIKYmiCLUAA5cCQglI" + "iDNqkJUYkiggu8eRGRyAwYqrtI3SIR2LkC6otAAKmbIighBtoAQIk3EBEhgJ0ZUCEAqQ" + "KpuL+IOtsQKYH5m4AcmWKBsIwKFDHpkAGh+xgggKHLqQCMABKBkboDEoIxkoMJWDAAKC" + "EQCAiJiIiAiIiAA=", "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" + "LPMBCCiYAA==", "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" + "CAgICAgICAg=", "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" + "gICA", "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"});

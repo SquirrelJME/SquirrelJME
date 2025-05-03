@@ -70,46 +70,62 @@ public class MLDPlayer
 	
 	
 	
-	private static final int A4 = 48; // Key index bias
-	
-	// Instance fields
-	private final Channel[] channels;      // Playback channels
-	
-	private final ArrayList<Event> events;        // Pending events
-	
-	private final HashSet<Integer> evtKeys;       // Key events enabled by key
-	
-	private boolean evtPlayback;   // Playback events are enabled
-	
-	private boolean finished;      // Sequencer has no more events
-	
-	private float framesPerTick; // Output frames in one tick
-	
-	private final MLD mld;           // Sequence resource
-	
-	private float pendingFrames; // Output frames to process
-	
-	private int pendingTicks;  // Sequencer ticks to process
-	
-	private long position;      // Sequencer position in frames
-	
-	private final float sampleRate;    // Output sampling rate
+	//  Key index bias
+	static final int A4 = 48;
 	
 	
+	//  Playback channels
+	final Channel[] channels;
+	
+	//  Pending events
+	final ArrayList<Event> events;
+	
+	//  Key events enabled by key
+	final HashSet<Integer> evtKeys;
+	
+	//  Playback events are enabled
+	boolean evtPlayback;
+	
+	//  Sequencer has no more events
+	boolean finished;
+	
+	//  Output frames in one tick
+	float framesPerTick;
+	
+	//  Sequence resource
+	final MLD mld;
+	
+	//  Output frames to process
+	float pendingFrames;
+	
+	//  Sequencer ticks to process
+	int pendingTicks;
+	
+	//  Sequencer position in frames
+	long position;
+	
+	//  Output sampling rate
+	final float sampleRate;
 	
 	
 	
-	private final Sampler.Instance sampler;       // Sample generator
-	
-	private boolean seeking;       // Processing setTime()
-	
-	private long tickNow;       // Sequencer position in ticks
 	
 	
+	//  Sample generator
+	final Sampler.Instance sampler;
+	
+	//  Processing setTime()
+	boolean seeking;
+	
+	//  Sequencer position in ticks
+	long tickNow;
 	
 	
 	
-	private final Track[] tracks;        // Sequencer state
+	
+	
+	//  Sequencer state
+	final Track[] tracks;
 	
 	
 	/**
@@ -139,7 +155,7 @@ public class MLDPlayer
 		if (Float.isInfinite(sampleRate) || sampleRate <= 0.0f)
 			throw new IllegalArgumentException("Invalid sampling rate.");
 		
-		// Instance fields
+		
 		this.channels = new Channel[16];
 		this.events = new ArrayList<>();
 		this.evtKeys = new HashSet<>();
@@ -154,7 +170,8 @@ public class MLDPlayer
 		for (int x = 0; x < this.channels.length; x++)
 		{
 			Channel chan = this.channels[x] = new Channel();
-			chan.notesOn = new Note[99]; // A0 .. C6
+			//  A0 .. C6
+			chan.notesOn = new Note[99];
 			chan.notesOut = new ArrayList<>();
 		}
 		
@@ -455,7 +472,8 @@ public class MLDPlayer
 	public int render(float[] samples, int offset, int frames, float left,
 		float right, boolean erase, boolean clamp)
 	{
-		int ret = 0; // Total frames output so far
+		//  Total frames output so far
+		int ret = 0;
 		
 		// Error checking
 		if (!this.seeking)
@@ -622,14 +640,14 @@ public class MLDPlayer
 	
 	
 	// bank-change
-	private void evtBankChange(Track track, MLD.Event event)
+	void evtBankChange(Track track, MLD.Event event)
 	{
 		this.sampler.bankChange(event.channel, event.bank);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
 	// cuepoint
-	private void evtCuepoint(Track track, MLD.Event event)
+	void evtCuepoint(Track track, MLD.Event event)
 	{
 		
 		// cuepoint-end
@@ -656,20 +674,20 @@ public class MLDPlayer
 	}
 	
 	// drum-enable
-	private void evtDrumEnable(Track track, MLD.Event event)
+	void evtDrumEnable(Track track, MLD.Event event)
 	{
 		this.sampler.drumEnable(event.channel, event.enable);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
 	// end-of-track
-	private void evtEndOfTrack(Track track, MLD.Event event)
+	void evtEndOfTrack(Track track, MLD.Event event)
 	{
 		track.finished = true;
 	}
 	
 	// ext-B event
-	private void evtExtB(Track track, MLD.Event e)
+	void evtExtB(Track track, MLD.Event e)
 	{
 		switch (e.id)
 		{
@@ -728,28 +746,28 @@ public class MLDPlayer
 	}
 	
 	// ext-info event
-	private void evtExtInfo(Track track, MLD.Event e)
+	void evtExtInfo(Track track, MLD.Event e)
 	{
 		this.sampler.sysEx(e.data);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
 	// master-tune
-	private void evtMasterTune(Track track, MLD.Event event)
+	void evtMasterTune(Track track, MLD.Event event)
 	{
 		this.sampler.masterTune(event.semitones);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
 	// master-volume
-	private void evtMasterVolume(Track track, MLD.Event event)
+	void evtMasterVolume(Track track, MLD.Event event)
 	{
 		this.sampler.masterVolume(event.volume);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
 	// note
-	private void evtNote(Track track, MLD.Event event)
+	void evtNote(Track track, MLD.Event event)
 	{
 		Channel chan = this.channels[event.channel];
 		Note note = chan.notesOn[MLDPlayer.A4 + event.key];
@@ -794,35 +812,35 @@ public class MLDPlayer
 	}
 	
 	// panpot
-	private void evtPanPot(Track track, MLD.Event event)
+	void evtPanPot(Track track, MLD.Event event)
 	{
 		this.sampler.panpot(event.channel, event.panpot);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
 	// pitchbend
-	private void evtPitchBend(Track track, MLD.Event event)
+	void evtPitchBend(Track track, MLD.Event event)
 	{
 		this.sampler.pitchBend(event.channel, event.semitones);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
 	// pitchbend-range
-	private void evtPitchRange(Track track, MLD.Event event)
+	void evtPitchRange(Track track, MLD.Event event)
 	{
 		this.sampler.pitchBendRange(event.channel, event.range);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
 	// program-change
-	private void evtProgramChange(Track track, MLD.Event event)
+	void evtProgramChange(Track track, MLD.Event event)
 	{
 		this.sampler.programChange(event.channel, event.program);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
 	// timebase-tempo
-	private void evtTimebaseTempo(Track track, MLD.Event event)
+	void evtTimebaseTempo(Track track, MLD.Event event)
 	{
 		if (event.timebase == -1)
 			return;
@@ -833,7 +851,7 @@ public class MLDPlayer
 	}
 	
 	// volume
-	private void evtVolume(Track track, MLD.Event event)
+	void evtVolume(Track track, MLD.Event event)
 	{
 		this.sampler.volume(event.channel, event.volume);
 		this.setTrackOffset(track, track.offset + 1);
@@ -843,7 +861,7 @@ public class MLDPlayer
 	
 	
 	// Process events on a track
-	private void process(Track track, int ticks)
+	void process(Track track, int ticks)
 	{
 		
 		// The track has finished
@@ -887,10 +905,10 @@ public class MLDPlayer
 	}
 	
 	// Initialize state in preparation for playback
-	private void reset()
+	void reset()
 	{
 		
-		// Instance fields
+		
 		this.pendingFrames = 0;
 		this.pendingTicks = 0;
 		this.position = 0;
@@ -927,13 +945,13 @@ public class MLDPlayer
 	}
 	
 	// Compute the number of output frames in one event tick
-	private void setTempo(int timebase, int tempo)
+	void setTempo(int timebase, int tempo)
 	{
 		this.framesPerTick = (60 * this.sampleRate) / (timebase * tempo);
 	}
 	
 	// Specify the event offset of a track
-	private void setTrackOffset(Track track, int offset)
+	void setTrackOffset(Track track, int offset)
 	{
 		
 		// Configure the track
@@ -952,7 +970,7 @@ public class MLDPlayer
 	}
 	
 	// Determine how many ticks can be processed until a note expires
-	private int untilNote()
+	int untilNote()
 	{
 		int ret = -1;
 		for (Channel chan : this.channels)
@@ -965,7 +983,7 @@ public class MLDPlayer
 	}
 	
 	// Determine how many ticks can be processed until the next event
-	private int untilTrack()
+	int untilTrack()
 	{
 		int ret = -1;
 		for (Track track : this.tracks)
@@ -982,11 +1000,13 @@ public class MLDPlayer
 	
 	
 	// Playback channel
-	private class Channel
+	class Channel
 	{
-		Note[] notesOn;  // All notes currently on keys
+		//  All notes currently on keys
+		Note[] notesOn;
 		
-		ArrayList<Note> notesOut; // All notes that are generating output
+		//  All notes that are generating output
+		ArrayList<Note> notesOut;
 	}
 	
 	/**
@@ -1020,7 +1040,7 @@ public class MLDPlayer
 		public final int type;
 		
 		// Internal constructor
-		private Event(double time, int type, int data)
+		Event(double time, int type, int data)
 		{
 			this.data = data;
 			this.time = time;
@@ -1030,29 +1050,38 @@ public class MLDPlayer
 	}
 	
 	// Music note
-	private class Note
+	class Note
 	{
-		int channel;  // Output channel
+		//  Output channel
+		int channel;
 		
-		int gateTime; // Ticks before note expires
+		//  Ticks before note expires
+		int gateTime;
 		
-		int key;      // Key index
+		//  Key index
+		int key;
 	}
 	
 	// Event list state
-	private class Track
+	class Track
 	{
-		int cuepoint; // Starting cuepoint
+		//  Starting cuepoint
+		int cuepoint;
 		
-		boolean finished; // Track has no more events
+		//  Track has no more events
+		boolean finished;
 		
-		int index;    // Index within sequencer
+		//  Index within sequencer
+		int index;
 		
-		MLD.Track mld;      // Event list
+		//  Event list
+		MLD.Track mld;
 		
-		int offset;   // Current event offset
+		//  Current event offset
+		int offset;
 		
-		int ticks;    // Event ticks until next event
+		//  Event ticks until next event
+		int ticks;
 	}
 	
 }

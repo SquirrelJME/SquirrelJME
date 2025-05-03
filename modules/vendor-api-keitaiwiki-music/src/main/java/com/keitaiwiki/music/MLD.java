@@ -112,40 +112,57 @@ public class MLD
 	static final int NOTE_4 = 1;
 	
 	// FourCCs
-	private static final int FOURCC_ADAT = 0x61646174; // "adat"
+	//  "adat"
+	static final int FOURCC_ADAT = 0x61646174;
 	
-	private static final int FOURCC_AINF = 0x61696E66; // "ainf"
+	//  "ainf"
+	static final int FOURCC_AINF = 0x61696E66;
 	
-	private static final int FOURCC_AUTH = 0x61757468; // "auth"
+	//  "auth"
+	static final int FOURCC_AUTH = 0x61757468;
 	
-	private static final int FOURCC_COPY = 0x636F7079; // "copy"
+	//  "copy"
+	static final int FOURCC_COPY = 0x636F7079;
 	
-	private static final int FOURCC_CUEP = 0x63756570; // "cuep"
+	//  "cuep"
+	static final int FOURCC_CUEP = 0x63756570;
 	
-	private static final int FOURCC_DATE = 0x64617465; // "date"
+	//  "date"
+	static final int FOURCC_DATE = 0x64617465;
 	
-	private static final int FOURCC_EXST = 0x65787374; // "exst"
+	//  "exst"
+	static final int FOURCC_EXST = 0x65787374;
 	
-	private static final int FOURCC_MELO = 0x6D656C6F; // "melo"
+	//  "melo"
+	static final int FOURCC_MELO = 0x6D656C6F;
 	
-	private static final int FOURCC_NOTE = 0x6E6F7465; // "note"
+	//  "note"
+	static final int FOURCC_NOTE = 0x6E6F7465;
 	
-	private static final int FOURCC_PROT = 0x70726F74; // "prot"
+	//  "prot"
+	static final int FOURCC_PROT = 0x70726F74;
 	
-	private static final int FOURCC_SORC = 0x736F7263; // "sorc"
+	//  "sorc"
+	static final int FOURCC_SORC = 0x736F7263;
 	
-	private static final int FOURCC_SUPT = 0x73757074; // "supt"
+	//  "supt"
+	static final int FOURCC_SUPT = 0x73757074;
 	
-	private static final int FOURCC_THRD = 0x74687264; // "thrd"
+	//  "thrd"
+	static final int FOURCC_THRD = 0x74687264;
 	
-	private static final int FOURCC_TITL = 0x7469746C; // "titl"
+	//  "titl"
+	static final int FOURCC_TITL = 0x7469746C;
 	
-	private static final int FOURCC_TRAC = 0x74726163; // "trac"
+	//  "trac"
+	static final int FOURCC_TRAC = 0x74726163;
 	
-	private static final int FOURCC_VERS = 0x76657273; // "vers"
+	//  "vers"
+	static final int FOURCC_VERS = 0x76657273;
 	
-	// Instance fields
-	ADPCM[] adpcms;   // Sample data
+	
+	//  Sample data
+	ADPCM[] adpcms;
 	
 	// Header subchunks
 	byte[] ainf;
@@ -161,7 +178,8 @@ public class MLD
 	
 	String date;
 	
-	double duration; // Total runtime in seconds, or POSITIVE_INFINITY
+	//  Total runtime in seconds, or POSITIVE_INFINITY
+	double duration;
 	
 	byte[] exst;
 	
@@ -179,7 +197,8 @@ public class MLD
 	
 	boolean hasWaveData;
 	
-	byte[] header;   // Encoded header chunk
+	//  Encoded header chunk
+	byte[] header;
 	
 	int note;
 	
@@ -191,13 +210,16 @@ public class MLD
 	
 	byte[] thrd;
 	
-	long tickEnd;  // Tick count at the end of the last event
+	//  Tick count at the end of the last event
+	long tickEnd;
 	
-	long tickLoop; // Tick count of the loop destination
+	//  Tick count of the loop destination
+	long tickLoop;
 	
 	String titl;
 	
-	Track[] tracks;   // Event lists
+	//  Event lists
+	Track[] tracks;
 	
 	String vers;
 	
@@ -363,7 +385,7 @@ public class MLD
 	
 	
 	// Parse an ADPCM chunk
-	private ADPCM adpcm(Reader reader)
+	ADPCM adpcm(Reader reader)
 	{
 		if (reader.u32() != MLD.FOURCC_ADAT)
 			throw new RuntimeException("Missing \"adat\" chunk.");
@@ -376,7 +398,7 @@ public class MLD
 	
 	
 	// Parse an event
-	private Event event(int note, int track, Reader reader)
+	Event event(int note, int track, Reader reader)
 	{
 		Event event = new Event();
 		
@@ -461,21 +483,21 @@ public class MLD
 	}
 	
 	// Parse a bank-change event
-	private Event eventBankChange(Event event)
+	Event eventBankChange(Event event)
 	{
 		event.bank = event.param & 0x3F;
 		return event;
 	}
 	
 	// Parse a cuepoint event
-	private Event eventCuepoint(Event event)
+	Event eventCuepoint(Event event)
 	{
 		event.cuepoint = event.param;
 		return event;
 	}
 	
 	// Parse a drum-enable event
-	private Event eventDrumEnable(Event event)
+	Event eventDrumEnable(Event event)
 	{
 		event.channel = event.param >> 3 & 15;
 		event.enable = (event.param & 1) != 0;
@@ -483,7 +505,7 @@ public class MLD
 	}
 	
 	// Parse an ext-info event
-	private Event eventExtInfo(Event event, Reader reader)
+	Event eventExtInfo(Event event, Reader reader)
 	{
 		event.type = MLD.EVENT_TYPE_EXT_INFO;
 		event.data = reader.bytes(reader.u16());
@@ -491,7 +513,7 @@ public class MLD
 	}
 	
 	// Parse a jump event
-	private Event eventJump(Event event)
+	Event eventJump(Event event)
 	{
 		event.jumpCount = event.param & 15;
 		event.jumpId = event.param >> 4 & 3;
@@ -500,21 +522,21 @@ public class MLD
 	}
 	
 	// Parse a master-tune event
-	private Event eventMasterTune(Event event)
+	Event eventMasterTune(Event event)
 	{
 		event.semitones = ((event.param & 0x7F) - 64) / 64.0f;
 		return event;
 	}
 	
 	// Parse a master-volume event
-	private Event eventMasterVolume(Event event)
+	Event eventMasterVolume(Event event)
 	{
 		event.volume = (event.param & 0x7F) / 127.0f;
 		return event;
 	}
 	
 	// Parse a note event
-	private Event eventNote(int note, int track, Event event, Reader reader)
+	Event eventNote(int note, int track, Event event, Reader reader)
 	{
 		
 		// Common processing
@@ -545,7 +567,7 @@ public class MLD
 	}
 	
 	// Parse a panpot event
-	private Event eventPanPot(Event event)
+	Event eventPanPot(Event event)
 	{
 		int param = event.param & 0x3F;
 		event.panpot = param < 32 ? param / 32.0f - 1 : (param - 32) / 31.0f;
@@ -553,28 +575,28 @@ public class MLD
 	}
 	
 	// Parse a pitchbend event
-	private Event eventPitchBend(Event event)
+	Event eventPitchBend(Event event)
 	{
 		event.semitones = ((event.param & 0x3F) - 32) / 3200.0f;
 		return event;
 	}
 	
 	// Parse a pitchbend-range event
-	private Event eventPitchBendRange(Event event)
+	Event eventPitchBendRange(Event event)
 	{
 		event.range = event.param & 0x3F;
 		return event;
 	}
 	
 	// Parse a program-change event
-	private Event eventProgramChange(Event event)
+	Event eventProgramChange(Event event)
 	{
 		event.program = event.param & 0x3F;
 		return event;
 	}
 	
 	// Parse a timebase-tempo event
-	private Event eventTimebaseTempo(Event event)
+	Event eventTimebaseTempo(Event event)
 	{
 		event.bank = event.id;
 		event.tempo = event.param;
@@ -585,7 +607,7 @@ public class MLD
 	}
 	
 	// Parse a volume event
-	private Event eventVolume(Event event)
+	Event eventVolume(Event event)
 	{
 		event.volume = (event.param & 0x3F) / 63.0f;
 		return event;
@@ -595,7 +617,7 @@ public class MLD
 	
 	
 	// Parse the file header
-	private void header(Reader reader)
+	void header(Reader reader)
 	{
 		reader = reader.reader(reader.u16());
 		this.header = reader.bytes(reader.length);
@@ -682,7 +704,7 @@ public class MLD
 	}
 	
 	// Parse a header "ainf" subchunk
-	private void headerAINF(Reader reader)
+	void headerAINF(Reader reader)
 	{
 		this.ainf = reader.bytes(reader.length);
 		if (this.ainf.length > 0)
@@ -690,38 +712,38 @@ public class MLD
 	}
 	
 	// Parse a header "auth" subchunk
-	private void headerAUTH(Reader reader)
+	void headerAUTH(Reader reader)
 	{
 		this.auth = reader.bytes(reader.length);
 	}
 	
 	// Parse a header "copy" subchunk
-	private void headerCOPY(Reader reader)
+	void headerCOPY(Reader reader)
 	{
 		this.copy = this.shiftJIS(reader.bytes(reader.length));
 	}
 	
 	// Parse a header "cuep" subchunk
-	private void headerCUEP(Reader reader)
+	void headerCUEP(Reader reader)
 	{
 		for (int x = 0; x < this.cuep.length; x++)
 			this.cuep[x] = reader.u32();
 	}
 	
 	// Parse a header "date" subchunk
-	private void headerDATE(Reader reader)
+	void headerDATE(Reader reader)
 	{
 		this.date = this.shiftJIS(reader.bytes(reader.length));
 	}
 	
 	// Parse a header "exst" subchunk
-	private void headerEXST(Reader reader)
+	void headerEXST(Reader reader)
 	{
 		this.exst = reader.bytes(reader.length);
 	}
 	
 	// Parse a header "note" subchunk
-	private void headerNOTE(Reader reader)
+	void headerNOTE(Reader reader)
 	{
 		this.note = reader.u16();
 		if (this.note >> 1 == 0)
@@ -731,43 +753,43 @@ public class MLD
 	}
 	
 	// Parse a header "prot" subchunk
-	private void headerPROT(Reader reader)
+	void headerPROT(Reader reader)
 	{
 		this.prot = this.shiftJIS(reader.bytes(reader.length));
 	}
 	
 	// Parse a header "sorc" subchunk
-	private void headerSORC(Reader reader)
+	void headerSORC(Reader reader)
 	{
 		this.sorc = reader.u8();
 	}
 	
 	// Parse a header "supt" subchunk
-	private void headerSUPT(Reader reader)
+	void headerSUPT(Reader reader)
 	{
 		this.supt = this.shiftJIS(reader.bytes(reader.length));
 	}
 	
 	// Parse a header "thrd" subchunk
-	private void headerTHRD(Reader reader)
+	void headerTHRD(Reader reader)
 	{
 		this.thrd = reader.bytes(reader.length);
 	}
 	
 	// Parse a header "titl" subchunk
-	private void headerTITL(Reader reader)
+	void headerTITL(Reader reader)
 	{
 		this.titl = this.shiftJIS(reader.bytes(reader.length));
 	}
 	
 	// Parse a header "vers" subchunk
-	private void headerVERS(Reader reader)
+	void headerVERS(Reader reader)
 	{
 		this.vers = this.shiftJIS(reader.bytes(reader.length));
 	}
 	
 	// Measure the duration and tick counters
-	private void inspect()
+	void inspect()
 	{
 		double tempo = 60.0 / (48 * 128);
 		long tickNow = 0;
@@ -899,7 +921,7 @@ public class MLD
 	}
 	
 	// Parse an MLD file
-	private void parse(DataInputStream stream)
+	void parse(DataInputStream stream)
 		throws IOException
 	{
 		
@@ -942,7 +964,7 @@ public class MLD
 	}
 	
 	// Decode a string as Shift_JIS
-	private String shiftJIS(byte[] bytes)
+	String shiftJIS(byte[] bytes)
 	{
 		try
 		{
@@ -955,7 +977,7 @@ public class MLD
 	}
 	
 	// Parse a track
-	private Track track(int note, int index, Reader reader)
+	Track track(int note, int index, Reader reader)
 	{
 		
 		// Error checking
@@ -984,7 +1006,8 @@ public class MLD
 	// ADPCM sample data class
 	class ADPCM
 	{
-		byte[] data; // Significance not yet known
+		//  Significance not yet known
+		byte[] data;
 	}
 	
 	// Sequencer event data class
@@ -994,23 +1017,29 @@ public class MLD
 		// ext-B fields
 		int bank;
 		
-		// Instance fields
-		int channel; // Normalized channel ID, out of 16
+		
+		//  Normalized channel ID, out of 16
+		int channel;
 		
 		// Note fields
-		int channelIndex; // Channel index 0..3 within parent track
+		//  Channel index 0..3 within parent track
+		int channelIndex;
 		
 		int cuepoint;
 		
-		byte[] data;    // ext-info and unknown event data
+		//  ext-info and unknown event data
+		byte[] data;
 		
-		int delta;   // Time delta: number of ticks since last event
+		//  Time delta: number of ticks since last event
+		int delta;
 		
 		boolean enable;
 		
-		int gateTime;     // Number of ticks until note off
+		//  Number of ticks until note off
+		int gateTime;
 		
-		int id;      // Meta event ID
+		//  Meta event ID
+		int id;
 		
 		int jumpCount;
 		
@@ -1018,17 +1047,22 @@ public class MLD
 		
 		int jumpPoint;
 		
-		int key;     // Normalized key ID, relative to A4
+		//  Normalized key ID, relative to A4
+		int key;
 		
-		int keyNumber;    // Base key index
+		//  Base key index
+		int keyNumber;
 		
-		int octaveShift;  // Number of octaves to adjust keyNumber
+		//  Number of octaves to adjust keyNumber
+		int octaveShift;
 		
-		int offset;  // Location in MLD asset
+		//  Location in MLD asset
+		int offset;
 		
 		float panpot;
 		
-		int param;   // Event parameter bits
+		//  Event parameter bits
+		int param;
 		
 		int program;
 		
@@ -1036,15 +1070,18 @@ public class MLD
 		
 		float semitones;
 		
-		int status;  // note-status, second byte of event data
+		//  note-status, second byte of event data
+		int status;
 		
 		int tempo;
 		
 		int timebase;
 		
-		int type;    // Event category
+		//  Event category
+		int type;
 		
-		float velocity;     // Base volume
+		//  Base volume
+		float velocity;
 		
 		float volume;
 	}
@@ -1052,13 +1089,17 @@ public class MLD
 	// Utility class for reading binary data
 	class Reader
 	{
-		final byte[] data;   // Backing data store
+		//  Backing data store
+		final byte[] data;
 		
-		final int length; // Length of current segment
+		//  Length of current segment
+		final int length;
 		
-		int offset; // Current input offset
+		//  Current input offset
+		int offset;
 		
-		final int start;  // Offset of start of current segment
+		//  Offset of start of current segment
+		final int start;
 		
 		// Constructor
 		Reader(byte[] data, int start, int length)
@@ -1132,9 +1173,11 @@ public class MLD
 	class Track
 		extends ArrayList<Event>
 	{
-		int cue;   // Initial event offset on reset
+		//  Initial event offset on reset
+		int cue;
 		
-		int index; // Channel index base
+		//  Channel index base
+		int index;
 	}
 	
 }

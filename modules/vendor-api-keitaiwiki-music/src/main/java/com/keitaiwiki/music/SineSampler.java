@@ -49,75 +49,101 @@ public class SineSampler
 	
 	
 	
-	private static final int A4 = 81; // Key index bias
+	//  Key index bias
+	static final int A4 = 81;
 	
 	
 	
 	
 	
 	// Output channel
-	private class Channel
+	class Channel
 	{
-		float bendBase;   // Pitch bend base ratio
+		//  Pitch bend base ratio
+		float bendBase;
 		
-		float bendOut;    // Effective channel frequency ratio
+		//  Effective channel frequency ratio
+		float bendOut;
 		
-		float bendRange;  // Pitch bend magnitude
+		//  Pitch bend magnitude
+		float bendRange;
 		
-		int index;      // Index in sampler
+		//  Index in sampler
+		int index;
 		
-		Note[] notesOn;    // All notes currently on keys
+		//  All notes currently on keys
+		Note[] notesOn;
 		
-		ArrayList<Note> notesOut;   // All notes that are generating output
+		//  All notes that are generating output
+		ArrayList<Note> notesOut;
 		
-		float volLeft;    // Left stereo amplitude
+		//  Left stereo amplitude
+		float volLeft;
 		
-		float volLevel;   // Channel output amplitude
+		//  Channel output amplitude
+		float volLevel;
 		
-		float volPanning; // Stereo level
+		//  Stereo level
+		float volPanning;
 		
-		float volRight;   // Right stereo amplitude
+		//  Right stereo amplitude
+		float volRight;
 	}
 	
 	// Music note
-	private class Note
+	class Note
 	{
-		float advance;        // Amount to increment phase per frame
+		//  Amount to increment phase per frame
+		float advance;
 		
-		Channel channel;        // Encapsulating channel
+		//  Encapsulating channel
+		Channel channel;
 		
-		float freqBase;       // Base frequency
+		//  Base frequency
+		float freqBase;
 		
-		boolean playing;        // Note is currently active on its key
+		//  Note is currently active on its key
+		boolean playing;
 		
-		float volBase;        // Base volume
+		//  Base volume
+		float volBase;
 		
-		float volLeftLevel;   // Current left stereo volume
+		//  Current left stereo volume
+		float volLeftLevel;
 		
-		float volLeftTarget;  // Target left stereo volume
+		//  Target left stereo volume
+		float volLeftTarget;
 		
-		float volRightLevel;  // Current right stereo volume
+		//  Current right stereo volume
+		float volRightLevel;
 		
-		float volRightTarget; // Target right stereo volume
+		//  Target right stereo volume
+		float volRightTarget;
 		
-		float wavPhase;       // Position in wave period
+		//  Position in wave period
+		float wavPhase;
 	}
 	
 	// Sampler instance
-	private class Instance
+	class Instance
 		implements Sampler.Instance
 	{
 		
-		// instance fields
-		final Channel[] channels;     // Channel states
 		
-		float masterTune;   // Global pitch bend
+		//  Channel states
+		final Channel[] channels;
 		
-		float masterVolume; // Global volume
+		//  Global pitch bend
+		float masterTune;
 		
-		final float sampleRate;   // Output sampling rate
+		//  Global volume
+		float masterVolume;
 		
-		final float volRate;      // Automatic volume adjustment rate
+		//  Output sampling rate
+		final float sampleRate;
+		
+		//  Automatic volume adjustment rate
+		final float volRate;
 		
 		
 		
@@ -127,7 +153,7 @@ public class SineSampler
 		Instance(float sampleRate)
 		{
 			
-			// Instance fields
+			
 			this.channels = new Channel[16];
 			this.sampleRate = sampleRate;
 			this.volRate = 1 / (sampleRate * 0.01f);
@@ -137,7 +163,8 @@ public class SineSampler
 			{
 				Channel chan = this.channels[x] = new Channel();
 				chan.index = x;
-				chan.notesOn = new Note[127]; // C-2 .. G8
+				//  C-2 .. G8
+				chan.notesOn = new Note[127];
 				chan.notesOut = new ArrayList<>();
 			}
 			
@@ -385,7 +412,7 @@ public class SineSampler
 		
 		
 		// Render samples on a channel
-		private void chanRender(Channel chan, float[] samples, int offset,
+		void chanRender(Channel chan, float[] samples, int offset,
 			int frames, float amplitude)
 		{
 			
@@ -412,7 +439,7 @@ public class SineSampler
 		}
 		
 		// Render samples on a note
-		private boolean noteRender(Note note, float[] samples, int offset,
+		boolean noteRender(Note note, float[] samples, int offset,
 			int frames, float amplitude, float left, float right, float bend)
 		{
 			
@@ -449,7 +476,7 @@ public class SineSampler
 		}
 		
 		// Generate a sample on a note
-		private float sample(Note note, float advance)
+		float sample(Note note, float advance)
 		{
 			float ret = (float)Math.sin(note.wavPhase * Math.PI * 2);
 			note.wavPhase = (note.wavPhase + advance) % 1;
@@ -463,7 +490,7 @@ public class SineSampler
 		}
 		
 		// Move a volume level closer to its target
-		private float volAdjust(float level, float target)
+		float volAdjust(float level, float target)
 		{
 			return level < target ? Math.min(level + this.volRate, target) :
 				Math.max(level - this.volRate, target);
