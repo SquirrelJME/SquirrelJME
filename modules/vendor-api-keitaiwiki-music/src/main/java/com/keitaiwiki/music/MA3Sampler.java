@@ -99,8 +99,8 @@ public class MA3Sampler
 	 * Specifies the use of MA-2 algorithms for FM synthesis.
 	 *
 	 * @see MA3Sampler(int,int,int)
-	 * @see setDrumType
-	 * @see setInstrumentType
+	 * @see #setDrumType(int) 
+	 * @see #setInstrumentType(int) 
 	 */
 	public static final int FM_MA2 = 2;
 	
@@ -108,8 +108,8 @@ public class MA3Sampler
 	 * Specifies the use of 2-operator MA-3 algorithms for FM synthesis.
 	 *
 	 * @see MA3Sampler(int,int,int)
-	 * @see setDrumType
-	 * @see setInstrumentType
+	 * @see #setDrumType(int)
+	 * @see #setInstrumentType(int)
 	 */
 	public static final int FM_MA3_2OP = 1;
 	
@@ -117,8 +117,8 @@ public class MA3Sampler
 	 * Specifies the use of 4-operator MA-3 algorithms for FM synthesis.
 	 *
 	 * @see MA3Sampler(int,int,int)
-	 * @see setDrumType
-	 * @see setInstrumentType
+	 * @see #setDrumType(int) 
+	 * @see #setInstrumentType(int) 
 	 */
 	public static final int FM_MA3_4OP = 0;
 	
@@ -127,7 +127,7 @@ public class MA3Sampler
 	 * the
 	 * output will have a 1:1 correspondence with what the hardware would
 	 * produce.
-	 * @see instance(float)
+	 * @see #instance(float)
 	 */
 	public static final float SAMPLE_RATE = 33868800.0f / 684;
 	
@@ -135,7 +135,7 @@ public class MA3Sampler
 	 * Specifies the use of MA-3 waves for wave drum synthesis.
 	 *
 	 * @see MA3Sampler(int,int,int)
-	 * @see setWaveDrumType
+	 * @see #setWaveDrumType(int) 
 	 */
 	public static final int WAVE_DRUM_MA3 = 0;
 	
@@ -144,7 +144,7 @@ public class MA3Sampler
 	 * drums.
 	 *
 	 * @see MA3Sampler(int,int,int)
-	 * @see setWaveDrumType
+	 * @see #setWaveDrumType(int) 
 	 */
 	public static final int WAVE_DRUM_NONE = -1;
 	
@@ -414,9 +414,9 @@ public class MA3Sampler
 	 * @throws IllegalArgumentException if the value of
 	 * {@code instrumentType}, {@code drumType} or {@code waveDrumType} is
 	 * invalid.
-	 * @see setDrumType(int)
-	 * @see setInstrumentType(int)
-	 * @see setWaveDrumType(int)
+	 * @see #setDrumType(int)
+	 * @see #setInstrumentType(int)
+	 * @see #setWaveDrumType(int)
 	 */
 	public MA3Sampler(int instrumentType, int drumType, int waveDrumType)
 	{
@@ -434,7 +434,7 @@ public class MA3Sampler
 	 *
 	 * @return The current FM synthesis drum algorithm type: {@code FM_MA2},
 	 * {@code FM_MA3_2OP} or {@code FM_MA3_4OP}.
-	 * @see setDrumType(int)
+	 * @see #setDrumType(int)
 	 */
 	public int getDrumType()
 	{
@@ -447,7 +447,7 @@ public class MA3Sampler
 	 *
 	 * @return The current FM synthesis instrument algorithm type:
 	 * {@code FM_MA2}, {@code FM_MA3_2OP} or {@code FM_MA3_4OP}.
-	 * @see setInstrumentType(int)
+	 * @see #setInstrumentType(int)
 	 */
 	public int getInstrumentType()
 	{
@@ -460,7 +460,7 @@ public class MA3Sampler
 	 *
 	 * @return The current wave synthesis drum algorithm type:
 	 * {@code WAVE_DRUM_NONE} or {@code WAVE_DRUM_MA3}.
-	 * @see setWaveDrumType(int)
+	 * @see #setWaveDrumType(int)
 	 */
 	public int getWaveDrumType()
 	{
@@ -500,9 +500,9 @@ public class MA3Sampler
 	 * @return The value of {@code type}.
 	 * @throws IllegalArgumentException if the value of {@code type} is
 	 * invalid.
-	 * @see getDrumType()
-	 * @see setInstrumentType(int)
-	 * @see setWaveDrumType(int)
+	 * @see #getDrumType()
+	 * @see #setInstrumentType(int)
+	 * @see #setWaveDrumType(int)
 	 */
 	public int setDrumType(int type)
 	{
@@ -537,9 +537,9 @@ public class MA3Sampler
 	 * @return The value of {@code type}.
 	 * @throws IllegalArgumentException if the value of {@code type} is
 	 * invalid.
-	 * @see getInstrumentType()
-	 * @see setDrumType(int)
-	 * @see setWaveDrumType(int)
+	 * @see #getInstrumentType()
+	 * @see #setDrumType(int)
+	 * @see #setWaveDrumType(int)
 	 */
 	public int setInstrumentType(int type)
 	{
@@ -571,9 +571,9 @@ public class MA3Sampler
 	 * @return The value of {@code type}.
 	 * @throws IllegalArgumentException if the value of {@code type} is
 	 * invalid.
-	 * @see getWaveDrumType()
-	 * @see setDrumType(int)
-	 * @see setInstrumentType(int)
+	 * @see #getWaveDrumType()
+	 * @see #setDrumType(int)
+	 * @see #setInstrumentType(int)
 	 */
 	public int setWaveDrumType(int type)
 	{

@@ -217,7 +217,7 @@ public class MLDPlayer
 	 *
 	 * @param key A key number to register.
 	 * @see Event
-	 * @see getEvents()
+	 * @see #getEvents()
 	 */
 	public void addEventKey(int key)
 	{
@@ -232,7 +232,7 @@ public class MLDPlayer
 	 * @param keys A list of key numbers to register.
 	 * @throws NullPointerException if {@code keys} is {@code null}.
 	 * @see Event
-	 * @see getEvents()
+	 * @see #getEvents()
 	 */
 	public void addEventKeys(int[] keys)
 	{
@@ -271,9 +271,9 @@ public class MLDPlayer
 	 *
 	 * @return An array of all pending events, now acknowledged.
 	 * @see Event
-	 * @see addEventKey(int)
-	 * @see addEventKeys(int[])
-	 * @see setPlaybackEventsEnabled(boolean)
+	 * @see #addEventKey(int)
+	 * @see #addEventKeys(int[])
+	 * @see #setPlaybackEventsEnabled(boolean)
 	 */
 	public Event[] getEvents()
 	{
@@ -302,7 +302,7 @@ public class MLDPlayer
 	 *
 	 * @return The number of seconds processed, relative to the start of the
 	 * sequence.
-	 * @see setTime(double)
+	 * @see #setTime(double)
 	 * @see MLD#getDuration(boolean)
 	 */
 	public double getTime()
@@ -334,7 +334,7 @@ public class MLDPlayer
 	 *
 	 * @param key A key number to unregister.
 	 * @see Event
-	 * @see getEvents()
+	 * @see #getEvents()
 	 */
 	public void removeEventKey(int key)
 	{
@@ -347,7 +347,7 @@ public class MLDPlayer
 	 * @param keys A list of key numbers to unregister.
 	 * @throws NullPointerException if {@code keys} is {@code null}.
 	 * @see Event
-	 * @see getEvents()
+	 * @see #getEvents()
 	 */
 	public void removeEventKeys(int[] keys)
 	{
@@ -376,7 +376,7 @@ public class MLDPlayer
 	 * @throws ArrayIndexOutOfBoundsException if {@code offset} is
 	 * negative, or if {@code offset + frames * 2 > samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative.
-	 * @see render(float[],int,int,float,float,boolean,boolean)
+	 * @see #render(float[],int,int,float,float,boolean,boolean)
 	 * @see Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
 	 */
 	public int render(float[] samples, int offset, int frames)
@@ -406,7 +406,7 @@ public class MLDPlayer
 	 * negative, or if {@code offset + frames * 2 > samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative, or if
 	 * {@code amplitude} is a non-number or is negative.
-	 * @see render(float[],int,int,float,float,boolean,boolean)
+	 * @see #render(float[],int,int,float,float,boolean,boolean)
 	 * @see Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
 	 */
 	public int render(float[] samples, int offset, int frames,
@@ -441,7 +441,7 @@ public class MLDPlayer
 	 * negative, or if {@code offset + frames * 2 > samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative, or if
 	 * {@code left} or {@code right} is a non-number or is negative.
-	 * @see render(float[],int,int,float,float,boolean,boolean)
+	 * @see #render(float[],int,int,float,float,boolean,boolean)
 	 * @see Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
 	 */
 	public int render(float[] samples, int offset, int frames, float left,
@@ -457,7 +457,7 @@ public class MLDPlayer
 	 * <br><br>
 	 * If an event is raised during playback, rendering will stop and return
 	 * before generating any more samples. When this happens, the return value
-	 * may be less than {@code frames}. {@link getEvents()} should be called
+	 * may be less than {@code frames}. {@link #getEvents()} should be called
 	 * after every call to {@code render()} while events are enabled.
 	 *
 	 * @param samples Output sample buffer.
@@ -482,10 +482,10 @@ public class MLDPlayer
 	 * @throws IllegalArgumentException if {@code frames} is negative, or if
 	 * {@code left} or {@code right} is a non-number or is negative.
 	 * @see Sampler.Instance#render(float[], int, int, float, float, boolean, boolean)
-	 * @see getEvents()
-	 * @see render(float[],int,int)
-	 * @see render(float[],int,int,float)
-	 * @see render(float[],int,int,float,float)
+	 * @see #getEvents()
+	 * @see #render(float[],int,int)
+	 * @see #render(float[],int,int,float)
+	 * @see #render(float[],int,int,float,float)
 	 */
 	public int render(float[] samples, int offset, int frames, float left,
 		float right, boolean erase, boolean clamp)
@@ -603,7 +603,7 @@ public class MLDPlayer
 	 * @param enabled Whether or not playback events can be raised during
 	 * rendering.
 	 * @see Event
-	 * @see getEvents()
+	 * @see #getEvents()
 	 */
 	public void setPlaybackEventsEnabled(boolean enabled)
 	{
@@ -1014,7 +1014,7 @@ public class MLDPlayer
 		if (!track.finished || !this.evtPlayback)
 			return;
 		boolean finished = true;
-		for (var other : this.tracks)
+		for (Track other : this.tracks)
 			finished = finished && other.finished;
 		if (finished)
 			this.events.add(new Event(this.getTime(), MLDPlayer.EVENT_END,
@@ -1074,9 +1074,9 @@ public class MLDPlayer
 	 * the
 	 * {@code render()} methods will terminate early any time an event
 	 * condition is satisfied. Events are obtained by the caller and
-	 * acknowledged via {@link getEvents()}.
+	 * acknowledged via {@link #getEvents()}.
 	 *
-	 * @see getEvents()
+	 * @see #getEvents()
 	 */
 	public static class Event
 	{
