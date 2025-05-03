@@ -55,120 +55,6 @@ public class SineSamplerProvider
 	
 	
 	/**
-	 * Output channel
-	 */
-	static class Channel
-		implements BasicChannel
-	{
-		/**
-		 * Pitch bend base ratio
-		 */
-		float bendBase;
-		
-		/**
-		 * Effective channel frequency ratio
-		 */
-		float bendOut;
-		
-		/**
-		 * Pitch bend magnitude
-		 */
-		float bendRange;
-		
-		/**
-		 * Index in sampler
-		 */
-		int index;
-		
-		/**
-		 * All notes currently on keys
-		 */
-		Note[] notesOn;
-		
-		/**
-		 * All notes that are generating output
-		 */
-		ArrayList<Note> notesOut;
-		
-		/**
-		 * Left stereo amplitude
-		 */
-		float volLeft;
-		
-		/**
-		 * Channel output amplitude
-		 */
-		float volLevel;
-		
-		/**
-		 * Stereo level
-		 */
-		float volPanning;
-		
-		/**
-		 * Right stereo amplitude
-		 */
-		float volRight;
-	}
-	
-	/**
-	 * Music note
-	 */
-	static class Note
-		implements BasicNote
-	{
-		/**
-		 * Amount to increment phase per frame
-		 */
-		float advance;
-		
-		/**
-		 * Encapsulating channel
-		 */
-		Channel channel;
-		
-		/**
-		 * Base frequency
-		 */
-		float freqBase;
-		
-		/**
-		 * Note is currently active on its key
-		 */
-		boolean playing;
-		
-		/**
-		 * Base volume
-		 */
-		float volBase;
-		
-		/**
-		 * Current left stereo volume
-		 */
-		float volLeftLevel;
-		
-		/**
-		 * Target left stereo volume
-		 */
-		float volLeftTarget;
-		
-		/**
-		 * Current right stereo volume
-		 */
-		float volRightLevel;
-		
-		/**
-		 * Target right stereo volume
-		 */
-		float volRightTarget;
-		
-		/**
-		 * Position in wave period
-		 */
-		float wavPhase;
-	}
-	
-	/**
 	 * Sampler instance
 	 */
 	static class Instance
@@ -179,7 +65,7 @@ public class SineSamplerProvider
 		/**
 		 * Channel states
 		 */
-		final Channel[] channels;
+		final SineChannel[] channels;
 		
 		/**
 		 * Global pitch bend
@@ -209,17 +95,17 @@ public class SineSamplerProvider
 		{
 			
 			
-			this.channels = new Channel[16];
+			this.channels = new SineChannel[16];
 			this.sampleRate = sampleRate;
 			this.volRate = 1 / (sampleRate * 0.01f);
 			
 			// Channels
 			for (int x = 0; x < this.channels.length; x++)
 			{
-				Channel chan = this.channels[x] = new Channel();
+				SineChannel chan = this.channels[x] = new SineChannel();
 				chan.index = x;
 				//  C-2 .. G8
-				chan.notesOn = new Note[127];
+				chan.notesOn = new SineNote[127];
 				chan.notesOut = new ArrayList<>();
 			}
 			
@@ -251,8 +137,8 @@ public class SineSamplerProvider
 		{
 			if (channel < 0 || channel >= this.channels.length || SineSamplerProvider.A4 + key < 0 || SineSamplerProvider.A4 + key >= 128)
 				return;
-			Channel chan = this.channels[channel];
-			Note note = chan.notesOn[SineSamplerProvider.A4 + key];
+			SineChannel chan = this.channels[channel];
+			SineNote note = chan.notesOn[SineSamplerProvider.A4 + key];
 			if (note != null)
 			{
 				note.playing = false;
@@ -265,7 +151,7 @@ public class SineSamplerProvider
 		 */
 		public boolean isFinished()
 		{
-			for (Channel chan : this.channels)
+			for (SineChannel chan : this.channels)
 			{
 				if (chan.notesOut.size() != 0)
 					return false;
@@ -286,13 +172,13 @@ public class SineSamplerProvider
 				return;
 			
 			// Working variables
-			Channel chan = this.channels[channel];
-			Note note = chan.notesOn[SineSamplerProvider.A4 + key];
+			SineChannel chan = this.channels[channel];
+			SineNote note = chan.notesOn[SineSamplerProvider.A4 + key];
 			
 			// No note is currently playing on the specified key
 			if (note == null)
 			{
-				note = chan.notesOn[SineSamplerProvider.A4 + key] = new Note();
+				note = chan.notesOn[SineSamplerProvider.A4 + key] = new SineNote();
 				chan.notesOut.add(note);
 				note.channel = chan;
 				note.volLeftLevel = 0.0f;
@@ -335,7 +221,7 @@ public class SineSamplerProvider
 				throw new IllegalArgumentException("Invalid panpot.");
 			if (channel < 0 || channel >= this.channels.length)
 				return;
-			Channel chan = this.channels[channel];
+			SineChannel chan = this.channels[channel];
 			chan.volPanning = (panpot + 1) / 2;
 			chan.volLeft = (1.0f - chan.volPanning) * chan.volLevel;
 			chan.volRight = chan.volPanning * chan.volLevel;
@@ -350,7 +236,7 @@ public class SineSamplerProvider
 				throw new IllegalArgumentException("Invalid semitones.");
 			if (channel < 0 || channel >= this.channels.length)
 				return;
-			Channel chan = this.channels[channel];
+			SineChannel chan = this.channels[channel];
 			chan.bendBase = semitones;
 			chan.bendOut = (float)Math.pow(2, chan.bendBase * chan.bendRange);
 		}
@@ -364,7 +250,7 @@ public class SineSamplerProvider
 				throw new IllegalArgumentException("Invalid range.");
 			if (channel < 0 || channel >= this.channels.length)
 				return;
-			Channel chan = this.channels[channel];
+			SineChannel chan = this.channels[channel];
 			chan.bendRange = range;
 			chan.bendOut = (float)Math.pow(2, chan.bendBase * chan.bendRange);
 		}
@@ -439,7 +325,7 @@ public class SineSamplerProvider
 			}
 			
 			// Render output samples
-			for (Channel chan : this.channels)
+			for (SineChannel chan : this.channels)
 				this.chanRender(chan, samples, offset, frames, amplitude);
 			
 			// Clamp the output buffer
@@ -465,7 +351,7 @@ public class SineSamplerProvider
 			this.masterVolume = 1.0f;
 			
 			// Channels
-			for (Channel chan : this.channels)
+			for (SineChannel chan : this.channels)
 			{
 				chan.bendBase = 0.0f;
 				chan.bendOut = 1.0f;
@@ -477,7 +363,7 @@ public class SineSamplerProvider
 				
 				// Stop playing all notes
 				Arrays.fill(chan.notesOn, null);
-				for (Note note : chan.notesOut)
+				for (SineNote note : chan.notesOut)
 				{
 					note.playing = false;
 					note.volBase = 0.0f;
@@ -503,7 +389,7 @@ public class SineSamplerProvider
 				throw new IllegalArgumentException("Invalid volume.");
 			if (channel < 0 || channel >= this.channels.length)
 				return;
-			Channel chan = this.channels[channel];
+			SineChannel chan = this.channels[channel];
 			chan.volLevel = volume;
 			chan.volLeft = (1.0f - chan.volPanning) * chan.volLevel;
 			chan.volRight = chan.volPanning * chan.volLevel;
@@ -513,7 +399,7 @@ public class SineSamplerProvider
 		/**
 		 * Render samples on a channel
 		 */
-		void chanRender(Channel chan, float[] samples, int offset, int frames,
+		void chanRender(SineChannel chan, float[] samples, int offset, int frames,
 			float amplitude)
 		{
 			
@@ -521,7 +407,7 @@ public class SineSamplerProvider
 			float bend = this.masterTune * chan.bendOut;
 			
 			// Process all notes
-			Iterator<Note> iter = chan.notesOut.iterator();
+			Iterator<SineNote> iter = chan.notesOut.iterator();
 			while (iter.hasNext())
 			{
 				if (this.noteRender(iter.next(), samples, offset, frames,
@@ -532,7 +418,7 @@ public class SineSamplerProvider
 			// Disassociate inactive notes
 			for (int x = 0; x < chan.notesOn.length; x++)
 			{
-				Note note = chan.notesOn[x];
+				SineNote note = chan.notesOn[x];
 				if (note != null && !note.playing)
 					chan.notesOn[x] = null;
 			}
@@ -542,7 +428,7 @@ public class SineSamplerProvider
 		/**
 		 * Render samples on a note
 		 */
-		boolean noteRender(Note note, float[] samples, int offset, int frames,
+		boolean noteRender(SineNote note, float[] samples, int offset, int frames,
 			float amplitude, float left, float right, float bend)
 		{
 			
@@ -581,7 +467,7 @@ public class SineSamplerProvider
 		/**
 		 * Generate a sample on a note
 		 */
-		float sample(Note note, float advance)
+		float sample(SineNote note, float advance)
 		{
 			float ret = (float)Math.sin(note.wavPhase * Math.PI * 2);
 			note.wavPhase = (note.wavPhase + advance) % 1;

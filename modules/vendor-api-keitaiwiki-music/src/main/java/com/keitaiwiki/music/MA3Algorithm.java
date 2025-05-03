@@ -1,0 +1,246 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package com.keitaiwiki.music;
+
+import java.util.Base64;
+
+/**
+ * Template algorithm for OPL synthesis
+ */
+class MA3Algorithm
+	implements BasicAlgorithm
+{
+	
+	
+	/**
+	 * Operator connection algorithm
+	 */
+	int alg;
+	
+	/**
+	 * Key played for drum notes
+	 */
+	final int drumKey;
+	
+	/**
+	 * Wave end point
+	 */
+	int ep;
+	
+	/**
+	 * Drum frequency base
+	 */
+	float freqBase;
+	
+	/**
+	 * Wave sampling frequency
+	 */
+	int fs;
+	
+	/**
+	 * Is a drum note
+	 */
+	final boolean isDrum;
+	
+	/**
+	 * Is a wave rum algorithm
+	 */
+	final boolean isWave;
+	
+	/**
+	 * Modulation LFO rate multiplier
+	 */
+	final int lfo;
+	
+	/**
+	 * Wave loop point
+	 */
+	int lp;
+	
+	/**
+	 * FM operator templates
+	 */
+	final MA3Operator[] operators;
+	
+	/**
+	 * Stereo balance
+	 */
+	final int panpot;
+	
+	/**
+	 * Wave ROM select
+	 */
+	boolean rm;
+	
+	/**
+	 * Left stereo amplitude
+	 */
+	float volLeft;
+	
+	/**
+	 * Right stereo amplitude
+	 */
+	float volRight;
+	
+	/**
+	 * Wave samples to advance per output sample
+	 */
+	float wavAdvance;
+	
+	/**
+	 * Wave ROM index
+	 */
+	int waveId;
+	
+	
+	static MA3Algorithm[] from(String[] defs, boolean isDrum, boolean isWave)
+	{
+		Base64.Decoder base64 = Base64.getMimeDecoder();
+		MA3Algorithm[] ret = null;
+		
+		// FM presets
+		if (!isWave)
+		{
+			ret = new MA3Algorithm[defs.length];
+			for (int x = 0; x < defs.length; x++)
+				ret[x] = new MA3Algorithm(base64.decode(defs[x]), isDrum);
+		}
+		
+		// Wave drum presets
+		else
+		{
+			ret = new MA3Algorithm[61];
+			for (int x = 0; x < defs.length; x++)
+			{
+				MA3Algorithm alg = new MA3Algorithm(base64.decode(defs[x]), 0);
+				ret[alg.drumKey - 24] = alg;
+			}
+		}
+		
+		return ret;
+	}
+	
+	
+	/**
+	 * FM constructor
+	 */
+	MA3Algorithm(byte[] bytes, boolean isDrum)
+	{
+		
+		// Decode bits
+		this.lfo = bytes[0] & 3;
+		this.panpot = bytes[1] >> 3 & 31;
+		this.alg = bytes[1] & 7;
+		this.drumKey = bytes[2] & 127;
+		
+		// Operators
+		this.operators = new MA3Operator[this.alg < 2 ? 2 : 4];
+		for (int x = 0; x < this.operators.length; x++)
+			this.operators[x] = new MA3Operator(bytes, 3 + x * 7);
+		
+		
+		this.freqBase = (float)(440 * Math.pow(2,
+			(this.drumKey - 69) / 12.0));
+		this.isDrum = isDrum;
+		this.isWave = false;
+		this.initVolume();
+	}
+	
+	/**
+	 * Wave drum constructor
+	 */
+	MA3Algorithm(byte[] message, int offset)
+	{
+		//  Scratch
+		int bits;
+		
+		// Parse fields
+		this.drumKey = message[offset++] & 0xFF;
+		this.fs =
+			(message[offset] & 0xFF) << 8 | message[offset + 1] & 0xFF;
+		offset += 2;
+		bits = message[offset++] & 0xFF;
+		this.panpot = bits >> 3 & 31;
+		// pe   = bits & 1;
+		bits = message[offset++] & 0xFF;
+		this.lfo = bits >> 6 & 3;
+		// pcm  = bits >> 1 & 1;
+		this.operators = new MA3Operator[] {new MA3Operator(offset, message)};
+		//  5 for operator, 2 unknown (always zero?)
+		offset += 7;
+		this.lp =
+			(message[offset] & 0xFF) << 8 | message[offset + 1] & 0xFF;
+		offset += 2;
+		this.ep =
+			(message[offset] & 0xFF) << 8 | message[offset + 1] & 0xFF;
+		offset += 2;
+		bits = message[offset++] & 0xFF;
+		this.rm = (bits >> 7 & 1) != 0;
+		this.waveId = bits & 7;
+		
+		
+		this.isDrum = true;
+		this.isWave = true;
+		this.wavAdvance = this.fs / MA3SamplerProvider.SAMPLE_RATE;
+		this.initVolume();
+	}
+	
+	
+	/**
+	 * Initialize volume settings
+	 */
+	void initVolume()
+	{
+		this.volRight = this.panpot / (this.panpot <= 15 ? 30.0f : 31.0f);
+		this.volLeft = 1 - this.volRight;
+	}
+	
+	/**
+	 * Debugging output
+	 */
+	String debug()
+	{
+		StringBuilder ret = new StringBuilder();
+		ret.append(String.format("LFO:     %d\n", this.lfo));
+		ret.append(String.format("PANPOT:  %d\n", this.panpot));
+		ret.append(String.format("ALG:     %d\n", this.alg));
+		ret.append(String.format("DrumKey: %d\n", this.drumKey));
+		ret.append(String.format("Fs:      %d\n", this.fs));
+		ret.append(String.format("RM:      %d\n", this.rm ? 1 : 0));
+		ret.append(String.format("Wave ID: %d\n", this.waveId));
+		ret.append(String.format("LP:      %d\n", this.lp));
+		ret.append(String.format("EP:      %d\n", this.ep));
+		for (int x = 0; x < this.operators.length; x++)
+		{
+			MA3Operator op = this.operators[x];
+			ret.append(String.format("Operator %d\n", x + 1));
+			ret.append(String.format("  MULTI: %d\n", op.multi));
+			ret.append(String.format("  DT:    %d\n", op.dt));
+			ret.append(String.format("  AR:    %d\n", op.ar));
+			ret.append(String.format("  DR:    %d\n", op.dr));
+			ret.append(String.format("  SR:    %d\n", op.sr));
+			ret.append(String.format("  RR:    %d\n", op.rr));
+			ret.append(String.format("  SL:    %d\n", op.sl));
+			ret.append(String.format("  TL:    %d\n", op.tl));
+			ret.append(String.format("  KSL:   %d\n", op.ksl));
+			ret.append(String.format("  DAM:   %d\n", op.dam));
+			ret.append(String.format("  DVB:   %d\n", op.dvb));
+			ret.append(String.format("  FB:    %d\n", op.fb));
+			ret.append(String.format("  WS:    %d\n", op.ws));
+			ret.append(String.format("  XOF:   %s\n", op.xof + ""));
+			ret.append(String.format("  SUS:   %s\n", op.sus + ""));
+			ret.append(String.format("  KSR:   %d\n", op.ksr));
+			ret.append(String.format("  EAM:   %s\n", op.eam + ""));
+			ret.append(String.format("  EVB:   %s\n", op.evb + ""));
+		}
+		return ret.toString();
+	}
+	
+}

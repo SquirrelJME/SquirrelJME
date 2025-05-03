@@ -658,7 +658,7 @@ public class MLDPlayer
 	/**
 	 * bank-change
 	 */
-	void evtBankChange(Track track, MLD.Event event)
+	void evtBankChange(Track track, MLDEvent event)
 	{
 		this.sampler.bankChange(event.channel, event.bank);
 		this.setTrackOffset(track, track.offset + 1);
@@ -667,7 +667,7 @@ public class MLDPlayer
 	/**
 	 * cuepoint
 	 */
-	void evtCuepoint(Track track, MLD.Event event)
+	void evtCuepoint(Track track, MLDEvent event)
 	{
 		
 		// cuepoint-end
@@ -696,7 +696,7 @@ public class MLDPlayer
 	/**
 	 * drum-enable
 	 */
-	void evtDrumEnable(Track track, MLD.Event event)
+	void evtDrumEnable(Track track, MLDEvent event)
 	{
 		this.sampler.drumEnable(event.channel, event.enable);
 		this.setTrackOffset(track, track.offset + 1);
@@ -705,7 +705,7 @@ public class MLDPlayer
 	/**
 	 * end-of-track
 	 */
-	void evtEndOfTrack(Track track, MLD.Event event)
+	void evtEndOfTrack(Track track, MLDEvent event)
 	{
 		track.finished = true;
 	}
@@ -713,7 +713,7 @@ public class MLDPlayer
 	/**
 	 * ext-B event
 	 */
-	void evtExtB(Track track, MLD.Event e)
+	void evtExtB(Track track, MLDEvent e)
 	{
 		switch (e.id)
 		{
@@ -774,7 +774,7 @@ public class MLDPlayer
 	/**
 	 * ext-info event
 	 */
-	void evtExtInfo(Track track, MLD.Event e)
+	void evtExtInfo(Track track, MLDEvent e)
 	{
 		this.sampler.sysEx(e.data);
 		this.setTrackOffset(track, track.offset + 1);
@@ -783,7 +783,7 @@ public class MLDPlayer
 	/**
 	 * master-tune
 	 */
-	void evtMasterTune(Track track, MLD.Event event)
+	void evtMasterTune(Track track, MLDEvent event)
 	{
 		this.sampler.masterTune(event.semitones);
 		this.setTrackOffset(track, track.offset + 1);
@@ -792,7 +792,7 @@ public class MLDPlayer
 	/**
 	 * master-volume
 	 */
-	void evtMasterVolume(Track track, MLD.Event event)
+	void evtMasterVolume(Track track, MLDEvent event)
 	{
 		this.sampler.masterVolume(event.volume);
 		this.setTrackOffset(track, track.offset + 1);
@@ -801,7 +801,7 @@ public class MLDPlayer
 	/**
 	 * note
 	 */
-	void evtNote(Track track, MLD.Event event)
+	void evtNote(Track track, MLDEvent event)
 	{
 		Channel chan = this.channels[event.channel];
 		Note note = chan.notesOn[MLDPlayer.A4 + event.key];
@@ -848,7 +848,7 @@ public class MLDPlayer
 	/**
 	 * panpot
 	 */
-	void evtPanPot(Track track, MLD.Event event)
+	void evtPanPot(Track track, MLDEvent event)
 	{
 		this.sampler.panpot(event.channel, event.panpot);
 		this.setTrackOffset(track, track.offset + 1);
@@ -857,7 +857,7 @@ public class MLDPlayer
 	/**
 	 * pitchbend
 	 */
-	void evtPitchBend(Track track, MLD.Event event)
+	void evtPitchBend(Track track, MLDEvent event)
 	{
 		this.sampler.pitchBend(event.channel, event.semitones);
 		this.setTrackOffset(track, track.offset + 1);
@@ -866,7 +866,7 @@ public class MLDPlayer
 	/**
 	 * pitchbend-range
 	 */
-	void evtPitchRange(Track track, MLD.Event event)
+	void evtPitchRange(Track track, MLDEvent event)
 	{
 		this.sampler.pitchBendRange(event.channel, event.range);
 		this.setTrackOffset(track, track.offset + 1);
@@ -875,7 +875,7 @@ public class MLDPlayer
 	/**
 	 * program-change
 	 */
-	void evtProgramChange(Track track, MLD.Event event)
+	void evtProgramChange(Track track, MLDEvent event)
 	{
 		this.sampler.programChange(event.channel, event.program);
 		this.setTrackOffset(track, track.offset + 1);
@@ -884,7 +884,7 @@ public class MLDPlayer
 	/**
 	 * timebase-tempo
 	 */
-	void evtTimebaseTempo(Track track, MLD.Event event)
+	void evtTimebaseTempo(Track track, MLDEvent event)
 	{
 		if (event.timebase == -1)
 			return;
@@ -897,7 +897,7 @@ public class MLDPlayer
 	/**
 	 * volume
 	 */
-	void evtVolume(Track track, MLD.Event event)
+	void evtVolume(Track track, MLDEvent event)
 	{
 		this.sampler.volume(event.channel, event.volume);
 		this.setTrackOffset(track, track.offset + 1);
@@ -922,7 +922,7 @@ public class MLDPlayer
 		// Process all events this tick
 		while (track.ticks == 0)
 		{
-			MLD.Event event = track.mld.get(track.offset);
+			MLDEvent event = track.mld.get(track.offset);
 			
 			// Process the event
 			switch (event.type)
@@ -1159,7 +1159,7 @@ public class MLDPlayer
 		/**
 		 * Event list
 		 */
-		MLD.Track mld;
+		MLDTrack mld;
 		
 		/**
 		 * Current event offset

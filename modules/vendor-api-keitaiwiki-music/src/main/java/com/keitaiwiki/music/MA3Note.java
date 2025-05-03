@@ -1,0 +1,316 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package com.keitaiwiki.music;
+/**
+ * Audio source
+ */
+class MA3Note
+	implements BasicNote
+{
+	
+	/**
+	 * OPL registers
+	 * Octave index
+	 */
+	int block;
+	
+	/**
+	 * Frequency divider
+	 */
+	int f_number;
+	
+	
+	/**
+	 * Amplitude modulator phase
+	 */
+	int amPhase;
+	
+	/**
+	 * Frequency advancement when dissociated
+	 */
+	float advance;
+	
+	/**
+	 * FM operator algorithm
+	 */
+	final MA3Algorithm algorithm;
+	
+	/**
+	 * Effective left stereo amplitude
+	 */
+	float ampLeft;
+	
+	/**
+	 * Effective right stereo amplitude
+	 */
+	float ampRight;
+	
+	/**
+	 * Encapsulating channel
+	 */
+	final MA3Channel channel;
+	
+	/**
+	 * All operator envelopes are finished
+	 */
+	boolean envDone;
+	
+	/**
+	 * Base frequency
+	 */
+	float freqBase;
+	
+	/**
+	 * Encapsulating instance
+	 */
+	final MA3SamplerProvider.Instance instance;
+	
+	/**
+	 * OPL operators
+	 */
+	final MA3Operator[] operators;
+	
+	/**
+	 * Note is currently active on its key
+	 */
+	boolean playing;
+	
+	/**
+	 * Current output sample
+	 */
+	final float sample;
+	
+	/**
+	 * Base volume
+	 */
+	float volBase;
+	
+	/**
+	 * Left stereo output amplitude
+	 */
+	float volLeftOut;
+	
+	/**
+	 * Right stereo output amplitude
+	 */
+	float volRightOut;
+	
+	
+	MA3Note(MA3Channel channel, MA3Algorithm algorithm)
+	{
+		
+		
+		this.algorithm = algorithm;
+		this.envDone = false;
+		this.ampLeft = 0.0f;
+		this.ampRight = 0.0f;
+		this.channel = channel;
+		this.instance = channel.instance;
+		this.operators = new MA3Operator[algorithm.operators.length];
+		this.sample = 0.0f;
+		
+		// Operators
+		for (int x = 0; x < this.operators.length; x++)
+			this.operators[x] = new MA3Operator(this,
+				algorithm.operators[x]);
+	}
+	
+	
+	/**
+	 * Perform easing on an amplitude controller
+	 */
+	float ease(float level, float target)
+	{
+		return level < target ? Math.min(target,
+			level + this.instance.volRate) : level > target ? Math.max(
+			target, level - this.instance.volRate) : level;
+	}
+	
+	/**
+	 * Key-off processing
+	 */
+	void off()
+	{
+		this.playing = false;
+		for (MA3Operator op : this.operators)
+		{
+			if (op.envStage == MA3SamplerProvider.ENV_DONE || op.xof)
+				continue;
+			op.envRate = op.rr;
+			op.envStage = MA3SamplerProvider.ENV_RELEASE;
+		}
+	}
+	
+	/**
+	 * An envelope has finished
+	 */
+	void onEnvelopeDone()
+	{
+		this.envDone = true;
+		
+		// Test all relevant operators
+		int bits = MA3SamplerProvider.ENV_FLAGS[this.algorithm.alg];
+		for (int x = 0; x < this.operators.length; x++, bits >>= 1)
+		{
+			if ((bits & 1) != 0)
+				this.envDone =
+					this.envDone && this.operators[x].envStage == MA3SamplerProvider.ENV_DONE;
+		}
+		
+		// If all relevant operators are done, shut off the note
+		if (this.envDone)
+			this.playing = false;
+	}
+	
+	/**
+	 * Frequency has changed
+	 */
+	void onFrequency(double bend)
+	{
+		
+		// Wave notes don't use oscillators
+		if (this.algorithm.isWave)
+			return;
+		
+		// Compute BLOCK and F_NUMBER
+		double freq =
+			this.algorithm.isDrum ? this.freqBase : this.freqBase * bend;
+		this.block = Math.min(7, Math.max(0, (int)(Math.round(
+			Math.log(freq / 440) * MA3SamplerProvider.MAGIC_B) + 57) / 12));
+		this.f_number = Math.min(1023, Math.max(0, (int)Math.round(
+			freq * (1 << 20 - this.block) * MA3SamplerProvider.MAGIC_F)));
+		
+		// Notify operators
+		for (MA3Operator op : this.operators)
+			op.onFrequency();
+	}
+	
+	/**
+	 * Master volume has changed
+	 */
+	void onVolume()
+	{
+		this.volLeftOut =
+			this.volBase * this.algorithm.volLeft * this.channel.volLeftOut;
+		this.volRightOut =
+			this.volBase * this.algorithm.volRight * this.channel.volRightOut;
+	}
+	
+	/**
+	 * Render the next input sample
+	 */
+	boolean render()
+	{
+		
+		// Compute desired left and right volume levels
+		float tgtLeft = 0.0f;
+		float tgtRight = 0.0f;
+		if (!this.envDone)
+		{
+			tgtLeft = this.volLeftOut;
+			tgtRight = this.volRightOut;
+		}
+		
+		// Generate the sample
+		float sample = !this.algorithm.isWave ? this.sampleFM() :
+			this.operators[0].sample(0, false) / 32768.0f;
+		this.instance.smpNext[0] += sample * this.ampLeft;
+		this.instance.smpNext[1] += sample * this.ampRight;
+		
+		// Adjust stereo levels
+		this.ampLeft = this.ease(this.ampLeft, tgtLeft);
+		this.ampRight = this.ease(this.ampRight, tgtRight);
+		
+		// Indicate whether the note has finished generating output
+		return !this.playing && this.ampLeft == 0 && this.ampRight == 0;
+	}
+	
+	/**
+	 * Generate an FM sample
+	 */
+	float sampleFM()
+	{
+		int out1, out2, out3, out4;
+		int ret = 0;
+		switch (this.algorithm.alg)
+		{
+			case 0:
+				out1 = this.operators[0].sample(0, true);
+				out2 = this.operators[1].sample(out1, false);
+				ret = out2;
+				break;
+			case 1:
+				out1 = this.operators[0].sample(0, true);
+				out2 = this.operators[1].sample(0, false);
+				ret = out1 + out2;
+				break;
+			case 2:
+				out1 = this.operators[0].sample(0, true);
+				out2 = this.operators[1].sample(0, false);
+				out3 = this.operators[2].sample(0, true);
+				out4 = this.operators[3].sample(0, false);
+				ret = out1 + out2 + out3 + out4;
+				break;
+			case 3:
+				out1 = this.operators[0].sample(0, true);
+				out2 = this.operators[1].sample(0, false);
+				out3 = this.operators[2].sample(out2, false);
+				out4 = this.operators[3].sample(out1 + out3, false);
+				ret = out4;
+				break;
+			case 4:
+				out1 = this.operators[0].sample(0, true);
+				out2 = this.operators[1].sample(out1, false);
+				out3 = this.operators[2].sample(out2, false);
+				out4 = this.operators[3].sample(out3, false);
+				ret = out4;
+				break;
+			case 5:
+				out1 = this.operators[0].sample(0, true);
+				out2 = this.operators[1].sample(out1, false);
+				out3 = this.operators[2].sample(0, true);
+				out4 = this.operators[3].sample(out3, false);
+				ret = out2 + out4;
+				break;
+			case 6:
+				out1 = this.operators[0].sample(0, true);
+				out2 = this.operators[1].sample(0, false);
+				out3 = this.operators[2].sample(out2, false);
+				out4 = this.operators[3].sample(out3, false);
+				ret = out1 + out4;
+				break;
+			case 7:
+				out1 = this.operators[0].sample(0, true);
+				out2 = this.operators[1].sample(0, false);
+				out3 = this.operators[2].sample(out2, false);
+				out4 = this.operators[3].sample(0, false);
+				ret = out1 + out3 + out4;
+				break;
+		}
+		//  Twice the max sample value
+		return ret / 8170.0f;
+	}
+	
+	/**
+	 * Terminate playback
+	 */
+	void stop()
+	{
+		this.envDone = true;
+		this.playing = false;
+		this.volBase = 0.0f;
+		for (MA3Operator op : this.operators)
+		{
+			op.envLevel = 511;
+			op.envStage = MA3SamplerProvider.ENV_DONE;
+		}
+	}
+	
+}
