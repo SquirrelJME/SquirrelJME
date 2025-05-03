@@ -88,7 +88,7 @@ public interface Sampler
 	 *
 	 * @see Sampler
 	 */
-	public interface Instance
+	interface Instance
 	{
 		
 		/**
