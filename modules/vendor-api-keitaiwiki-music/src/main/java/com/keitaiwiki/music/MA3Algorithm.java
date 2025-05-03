@@ -32,16 +32,12 @@
 
 package com.keitaiwiki.music;
 
-import java.util.Base64;
-
 /**
  * Template algorithm for OPL synthesis
  */
 class MA3Algorithm
 	implements BasicAlgorithm
 {
-	
-	
 	/**
 	 * Key played for drum notes
 	 */
@@ -235,27 +231,25 @@ class MA3Algorithm
 		this.volLeft = 1 - this.volRight;
 	}
 	
-	static MA3Algorithm[] from(String[] defs, boolean isDrum, boolean isWave)
+	static MA3Algorithm[] from(RomData defs, boolean isDrum, boolean isWave)
 	{
-		Base64.Decoder base64 = Base64.getMimeDecoder();
-		MA3Algorithm[] ret = null;
+		MA3Algorithm[] ret;
 		
 		// FM presets
 		if (!isWave)
 		{
-			ret = new MA3Algorithm[defs.length];
-			for (int x = 0; x < defs.length; x++)
-				ret[x] = new MA3Algorithm(base64.decode(defs[x]), isDrum);
+			ret = new MA3Algorithm[defs.count];
+			for (int x = 0, n = defs.count; x < n; x++)
+				ret[x] = new MA3Algorithm(defs.bytes(x), isDrum);
 		}
 		
 		// Wave drum presets
 		else
 		{
 			ret = new MA3Algorithm[61];
-			for (int x = 0; x < defs.length; x++)
+			for (int x = 0, n = defs.count; x < n; x++)
 			{
-				MA3Algorithm alg = new MA3Algorithm(base64.decode(defs[x]),
-					0);
+				MA3Algorithm alg = new MA3Algorithm(defs.bytes(x), 0);
 				ret[alg.drumKey - 24] = alg;
 			}
 		}

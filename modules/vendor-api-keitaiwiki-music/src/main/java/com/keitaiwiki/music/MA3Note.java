@@ -32,6 +32,8 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.util.FDMLMath;
+
 /**
  * Audio source
  */
@@ -205,7 +207,7 @@ class MA3Note
 		double freq =
 			this.algorithm.isDrum ? this.freqBase : this.freqBase * bend;
 		this.block = Math.min(7, Math.max(0, (int)(Math.round(
-			Math.log(freq / 440) * MA3SamplerProvider.MAGIC_B) + 57) / 12));
+			FDMLMath.log(freq / 440) * MA3SamplerProvider.MAGIC_B) + 57) / 12));
 		this.f_number = Math.min(1023, Math.max(0, (int)Math.round(
 			freq * (1 << 20 - this.block) * MA3SamplerProvider.MAGIC_F)));
 		

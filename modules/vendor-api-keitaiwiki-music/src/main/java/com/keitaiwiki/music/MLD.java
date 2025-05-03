@@ -36,8 +36,6 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * Decoder for i-melody MLD sequences.
@@ -349,20 +347,6 @@ public class MLD
 	{
 		this.parse(in instanceof DataInputStream ? (DataInputStream)in :
 			new DataInputStream(in));
-	}
-	
-	/**
-	 * Decode from an {@code Path}. The data at the start of the referenced
-	 * file must be an MLD resource.
-	 *
-	 * @param path The path to decode from.
-	 * @throws RuntimeException if an error occurs during decoding.
-	 * @throws IOException if a path access error occurs.
-	 */
-	public MLD(Path path)
-		throws IOException
-	{
-		this.parse(new DataInputStream(Files.newInputStream(path)));
 	}
 	
 	
