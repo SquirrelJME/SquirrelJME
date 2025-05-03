@@ -48,12 +48,10 @@ public class MLD
 	
 	static final int CUEPOINT_END = 1;
 	
-	/**
-	 * ///////////////////////////// Constants
-	 * ////////////////////////////////
-	 * Cuepoints
-	 */
+	/// ///////////////////////////// Constants 
+	/// ////////////////////////////////
 	
+	// Cuepoints
 	static final int CUEPOINT_START = 0;
 	
 	static final int EVENT_BANK_CHANGE = 0xE1;
@@ -68,9 +66,7 @@ public class MLD
 	
 	static final int EVENT_MASTER_TUNE = 0xB3;
 	
-	/**
-	 * Event ext-B IDs
-	 */
+	// Event ext-B IDs
 	static final int EVENT_MASTER_VOLUME = 0xB0;
 	
 	static final int EVENT_NOP = 0xDE;
@@ -99,9 +95,7 @@ public class MLD
 	
 	static final int EVENT_TYPE_NOTE = 0;
 	
-	/**
-	 * Event types
-	 */
+	// Event types
 	static final int EVENT_TYPE_UNKNOWN = -1;
 	
 	static final int EVENT_VOLUME = 0xE2;
@@ -112,110 +106,53 @@ public class MLD
 	
 	static final int EVENT_X_DRUM_ENABLE = 0xBA;
 	
-	/**
-	 * "note" types
-	 */
+	// "note" types
 	static final int NOTE_3 = 0;
 	
 	static final int NOTE_4 = 1;
 	
-	/**
-	 * FourCCs
-	 * "adat"
-	 */
-	private static final int FOURCC_ADAT = 0x61646174;
+	// FourCCs
+	private static final int FOURCC_ADAT = 0x61646174; // "adat"
 	
-	/**
-	 * "ainf"
-	 */
-	private static final int FOURCC_AINF = 0x61696E66;
+	private static final int FOURCC_AINF = 0x61696E66; // "ainf"
 	
-	/**
-	 * "auth"
-	 */
-	private static final int FOURCC_AUTH = 0x61757468;
+	private static final int FOURCC_AUTH = 0x61757468; // "auth"
 	
-	/**
-	 * "copy"
-	 */
-	private static final int FOURCC_COPY = 0x636F7079;
+	private static final int FOURCC_COPY = 0x636F7079; // "copy"
 	
-	/**
-	 * "cuep"
-	 */
-	private static final int FOURCC_CUEP = 0x63756570;
+	private static final int FOURCC_CUEP = 0x63756570; // "cuep"
 	
-	/**
-	 * "date"
-	 */
-	private static final int FOURCC_DATE = 0x64617465;
+	private static final int FOURCC_DATE = 0x64617465; // "date"
 	
-	/**
-	 * "exst"
-	 */
-	private static final int FOURCC_EXST = 0x65787374;
+	private static final int FOURCC_EXST = 0x65787374; // "exst"
 	
-	/**
-	 * "melo"
-	 */
-	private static final int FOURCC_MELO = 0x6D656C6F;
+	private static final int FOURCC_MELO = 0x6D656C6F; // "melo"
 	
-	/**
-	 * "note"
-	 */
-	private static final int FOURCC_NOTE = 0x6E6F7465;
+	private static final int FOURCC_NOTE = 0x6E6F7465; // "note"
 	
-	/**
-	 * "prot"
-	 */
-	private static final int FOURCC_PROT = 0x70726F74;
+	private static final int FOURCC_PROT = 0x70726F74; // "prot"
 	
-	/**
-	 * "sorc"
-	 */
-	private static final int FOURCC_SORC = 0x736F7263;
+	private static final int FOURCC_SORC = 0x736F7263; // "sorc"
 	
-	/**
-	 * "supt"
-	 */
-	private static final int FOURCC_SUPT = 0x73757074;
+	private static final int FOURCC_SUPT = 0x73757074; // "supt"
 	
-	/**
-	 * "thrd"
-	 */
-	private static final int FOURCC_THRD = 0x74687264;
+	private static final int FOURCC_THRD = 0x74687264; // "thrd"
 	
-	/**
-	 * "titl"
-	 */
-	private static final int FOURCC_TITL = 0x7469746C;
+	private static final int FOURCC_TITL = 0x7469746C; // "titl"
 	
-	/**
-	 * "trac"
-	 */
-	private static final int FOURCC_TRAC = 0x74726163;
+	private static final int FOURCC_TRAC = 0x74726163; // "trac"
 	
-	/**
-	 * "vers"
-	 */
-	private static final int FOURCC_VERS = 0x76657273;
+	private static final int FOURCC_VERS = 0x76657273; // "vers"
 	
-	/**
-	 * Instance fields
-	 * Sample data
-	 */
-	ADPCM[] adpcms;
+	// Instance fields
+	ADPCM[] adpcms;   // Sample data
 	
-	/**
-	 * Header subchunks
-	 */
+	// Header subchunks
 	byte[] ainf;
 	
 	byte[] auth;
 	
-	/**
-	 * Content type header fields
-	 */
+	// Content type header fields
 	int contentType;
 	
 	String copy;
@@ -224,10 +161,7 @@ public class MLD
 	
 	String date;
 	
-	/**
-	 * Total runtime in seconds, or POSITIVE_INFINITY
-	 */
-	double duration;
+	double duration; // Total runtime in seconds, or POSITIVE_INFINITY
 	
 	byte[] exst;
 	
@@ -245,10 +179,7 @@ public class MLD
 	
 	boolean hasWaveData;
 	
-	/**
-	 * Encoded header chunk
-	 */
-	byte[] header;
+	byte[] header;   // Encoded header chunk
 	
 	int note;
 	
@@ -260,22 +191,13 @@ public class MLD
 	
 	byte[] thrd;
 	
-	/**
-	 * Tick count at the end of the last event
-	 */
-	long tickEnd;
+	long tickEnd;  // Tick count at the end of the last event
 	
-	/**
-	 * Tick count of the loop destination
-	 */
-	long tickLoop;
+	long tickLoop; // Tick count of the loop destination
 	
 	String titl;
 	
-	/**
-	 * Event lists
-	 */
-	Track[] tracks;
+	Track[] tracks;   // Event lists
 	
 	String vers;
 	
@@ -287,7 +209,7 @@ public class MLD
 	 * @param data A byte array contining the MLD resource.
 	 * @throws NullPointerException if {@code data} is {@code null}.
 	 * @throws RuntimeException if an error occurs during decoding.
-	 * @see #MLD(byte[],int,int)
+	 * @see MLD(byte[],int,int)
 	 */
 	public MLD(byte[] data)
 	{
@@ -329,7 +251,7 @@ public class MLD
 		try (ByteArrayInputStream stream = new ByteArrayInputStream(data,
 			offset, length))
 		{
-			this.parse(new DataInputStream(stream));
+			parse(new DataInputStream(stream));
 		}
 		catch (IOException e)
 		{
@@ -351,7 +273,7 @@ public class MLD
 	public MLD(InputStream in)
 		throws IOException
 	{
-		this.parse(in instanceof DataInputStream ? (DataInputStream)in :
+		parse(in instanceof DataInputStream ? (DataInputStream)in :
 			new DataInputStream(in));
 	}
 	
@@ -366,8 +288,12 @@ public class MLD
 	public MLD(Path path)
 		throws IOException
 	{
-		this.parse(new DataInputStream(Files.newInputStream(path)));
+		parse(new DataInputStream(Files.newInputStream(path)));
 	}
+	
+	
+	////////////////////////////// Constructors 
+	///////////////////////////////
 	
 	/**
 	 * Retrieve the copyright of the MLD resource.
@@ -376,7 +302,7 @@ public class MLD
 	 */
 	public String getCopyright()
 	{
-		return this.copy;
+		return copy;
 	}
 	
 	/**
@@ -386,7 +312,7 @@ public class MLD
 	 */
 	public String getDate()
 	{
-		return this.date;
+		return date;
 	}
 	
 	/**
@@ -400,12 +326,12 @@ public class MLD
 	 * sequence
 	 * loops and {@code withoutLooping} is {@code true}, returns the number of
 	 * seconds in the sequence up until the first loop occurs.
-	 * @see #MLDPlayer#getTime()
-	 * @see #MLDPlayer#setTime(double)
+	 * @see MLDPlayer#getTime()
+	 * @see MLDPlayer#setTime(double)
 	 */
 	public double getDuration(boolean withoutLooping)
 	{
-		return withoutLooping || this.tickLoop == -1 ? this.duration :
+		return withoutLooping || tickLoop == -1 ? duration :
 			Double.POSITIVE_INFINITY;
 	}
 	
@@ -416,8 +342,12 @@ public class MLD
 	 */
 	public String getTitle()
 	{
-		return this.titl;
+		return titl;
 	}
+	
+	
+	///////////////////////////// Public Methods 
+	//////////////////////////////
 	
 	/**
 	 * Retrieve the version of the MLD resource.
@@ -426,30 +356,26 @@ public class MLD
 	 */
 	public String getVersion()
 	{
-		return this.vers;
+		return vers;
 	}
 	
-	/**
-	 * ////////////////////////// Private Methods
-	 * /////////////////////////////
-	 * Parse an ADPCM chunk
-	 */
+	/// ////////////////////////// Private Methods 
+	/// /////////////////////////////
 	
+	// Parse an ADPCM chunk
 	private ADPCM adpcm(Reader reader)
 	{
-		if (reader.u32() != MLD.FOURCC_ADAT)
+		if (reader.u32() != FOURCC_ADAT)
 			throw new RuntimeException("Missing \"adat\" chunk.");
 		ADPCM ret = new ADPCM();
 		ret.data = reader.bytes(reader.u32());
 		return ret;
 	}
 	
-	/**
-	 * /////////////////////// Event Parsing Methods
-	 * //////////////////////////
-	 * Parse an event
-	 */
+	/// /////////////////////// Event Parsing Methods 
+	/// //////////////////////////
 	
+	// Parse an event
 	private Event event(int note, int track, Reader reader)
 	{
 		Event event = new Event();
@@ -461,71 +387,71 @@ public class MLD
 		
 		// Note event
 		if ((event.status & 0x3F) != 63)
-			return this.eventNote(note, track, event, reader);
+			return eventNote(note, track, event, reader);
 		
 		// Meta event fields
 		event.id = reader.u8();
 		
 		// ext-info event
 		if (event.id >= 0xF0)
-			return this.eventExtInfo(event, reader);
+			return eventExtInfo(event, reader);
 		
 		// Unknown event
 		if (event.id < 0x80)
 		{
-			event.type = MLD.EVENT_TYPE_UNKNOWN;
+			event.type = EVENT_TYPE_UNKNOWN;
 			event.data = reader.bytes(2);
 			return event;
 		}
 		
 		// Common ext-B processing
-		event.type = MLD.EVENT_TYPE_EXT_B;
+		event.type = EVENT_TYPE_EXT_B;
 		event.param = reader.u8();
 		event.channelIndex = event.param >> 6;
 		event.channel = track << 2 | event.channelIndex;
 		
 		// timebase-tempo event
-		if ((event.id & 0xF0) == MLD.EVENT_TIMEBASE_TEMPO)
-			return this.eventTimebaseTempo(event);
+		if ((event.id & 0xF0) == EVENT_TIMEBASE_TEMPO)
+			return eventTimebaseTempo(event);
 		
 		// Other event
 		switch (event.id)
 		{
 			
 			// Events that need further processing
-			case MLD.EVENT_BANK_CHANGE:
-				return this.eventBankChange(event);
-			case MLD.EVENT_CUEPOINT:
-				return this.eventCuepoint(event);
-			case MLD.EVENT_JUMP:
-				return this.eventJump(event);
-			case MLD.EVENT_MASTER_TUNE:
-				return this.eventMasterTune(event);
-			case MLD.EVENT_MASTER_VOLUME:
-				return this.eventMasterVolume(event);
-			case MLD.EVENT_PANPOT:
-				return this.eventPanPot(event);
-			case MLD.EVENT_PITCHBEND:
-				return this.eventPitchBend(event);
-			case MLD.EVENT_PITCHBEND_RANGE:
-				return this.eventPitchBendRange(event);
-			case MLD.EVENT_PROGRAM_CHANGE:
-				return this.eventProgramChange(event);
-			case MLD.EVENT_VOLUME:
-				return this.eventVolume(event);
-			case MLD.EVENT_X_DRUM_ENABLE:
-				return this.eventDrumEnable(event);
+			case EVENT_BANK_CHANGE:
+				return eventBankChange(event);
+			case EVENT_CUEPOINT:
+				return eventCuepoint(event);
+			case EVENT_JUMP:
+				return eventJump(event);
+			case EVENT_MASTER_TUNE:
+				return eventMasterTune(event);
+			case EVENT_MASTER_VOLUME:
+				return eventMasterVolume(event);
+			case EVENT_PANPOT:
+				return eventPanPot(event);
+			case EVENT_PITCHBEND:
+				return eventPitchBend(event);
+			case EVENT_PITCHBEND_RANGE:
+				return eventPitchBendRange(event);
+			case EVENT_PROGRAM_CHANGE:
+				return eventProgramChange(event);
+			case EVENT_VOLUME:
+				return eventVolume(event);
+			case EVENT_X_DRUM_ENABLE:
+				return eventDrumEnable(event);
 			
 			// Events that do not need further processing
-			case MLD.EVENT_CHANNEL_ASSIGN:      // Not implemented
-			case MLD.EVENT_PART_CONFIGURATION:  // Not implemented
-			case MLD.EVENT_WAVE_CHANNEL_PANPOT: // Not implemented
-			case MLD.EVENT_WAVE_CHANNEL_VOLUME: // Not implemented
-			case MLD.EVENT_END_OF_TRACK:
-			case MLD.EVENT_NOP:
-			case MLD.EVENT_PAUSE:
-			case MLD.EVENT_RESET:
-			case MLD.EVENT_STOP:
+			case EVENT_CHANNEL_ASSIGN:      // Not implemented
+			case EVENT_PART_CONFIGURATION:  // Not implemented
+			case EVENT_WAVE_CHANNEL_PANPOT: // Not implemented
+			case EVENT_WAVE_CHANNEL_VOLUME: // Not implemented
+			case EVENT_END_OF_TRACK:
+			case EVENT_NOP:
+			case EVENT_PAUSE:
+			case EVENT_RESET:
+			case EVENT_STOP:
 				break;
 			
 			// Unrecognized events
@@ -534,27 +460,21 @@ public class MLD
 		return event;
 	}
 	
-	/**
-	 * Parse a bank-change event
-	 */
+	// Parse a bank-change event
 	private Event eventBankChange(Event event)
 	{
 		event.bank = event.param & 0x3F;
 		return event;
 	}
 	
-	/**
-	 * Parse a cuepoint event
-	 */
+	// Parse a cuepoint event
 	private Event eventCuepoint(Event event)
 	{
 		event.cuepoint = event.param;
 		return event;
 	}
 	
-	/**
-	 * Parse a drum-enable event
-	 */
+	// Parse a drum-enable event
 	private Event eventDrumEnable(Event event)
 	{
 		event.channel = event.param >> 3 & 15;
@@ -562,19 +482,15 @@ public class MLD
 		return event;
 	}
 	
-	/**
-	 * Parse an ext-info event
-	 */
+	// Parse an ext-info event
 	private Event eventExtInfo(Event event, Reader reader)
 	{
-		event.type = MLD.EVENT_TYPE_EXT_INFO;
+		event.type = EVENT_TYPE_EXT_INFO;
 		event.data = reader.bytes(reader.u16());
 		return event;
 	}
 	
-	/**
-	 * Parse a jump event
-	 */
+	// Parse a jump event
 	private Event eventJump(Event event)
 	{
 		event.jumpCount = event.param & 15;
@@ -583,38 +499,32 @@ public class MLD
 		return event;
 	}
 	
-	/**
-	 * Parse a master-tune event
-	 */
+	// Parse a master-tune event
 	private Event eventMasterTune(Event event)
 	{
 		event.semitones = ((event.param & 0x7F) - 64) / 64.0f;
 		return event;
 	}
 	
-	/**
-	 * Parse a master-volume event
-	 */
+	// Parse a master-volume event
 	private Event eventMasterVolume(Event event)
 	{
 		event.volume = (event.param & 0x7F) / 127.0f;
 		return event;
 	}
 	
-	/**
-	 * Parse a note event
-	 */
+	// Parse a note event
 	private Event eventNote(int note, int track, Event event, Reader reader)
 	{
 		
 		// Common processing
-		event.type = MLD.EVENT_TYPE_NOTE;
+		event.type = EVENT_TYPE_NOTE;
 		event.channelIndex = event.status >> 6;
 		event.gateTime = reader.u8();
 		event.keyNumber = event.status & 63;
 		
 		// Note events are 3 bytes
-		if (note == MLD.NOTE_3)
+		if (note == NOTE_3)
 		{
 			event.octaveShift = 0;
 			event.velocity = 1.0f;
@@ -634,9 +544,7 @@ public class MLD
 		return event;
 	}
 	
-	/**
-	 * Parse a panpot event
-	 */
+	// Parse a panpot event
 	private Event eventPanPot(Event event)
 	{
 		int param = event.param & 0x3F;
@@ -644,95 +552,83 @@ public class MLD
 		return event;
 	}
 	
-	/**
-	 * Parse a pitchbend event
-	 */
+	// Parse a pitchbend event
 	private Event eventPitchBend(Event event)
 	{
 		event.semitones = ((event.param & 0x3F) - 32) / 3200.0f;
 		return event;
 	}
 	
-	/**
-	 * Parse a pitchbend-range event
-	 */
+	// Parse a pitchbend-range event
 	private Event eventPitchBendRange(Event event)
 	{
 		event.range = event.param & 0x3F;
 		return event;
 	}
 	
-	/**
-	 * Parse a program-change event
-	 */
+	// Parse a program-change event
 	private Event eventProgramChange(Event event)
 	{
 		event.program = event.param & 0x3F;
 		return event;
 	}
 	
-	/**
-	 * Parse a timebase-tempo event
-	 */
+	// Parse a timebase-tempo event
 	private Event eventTimebaseTempo(Event event)
 	{
 		event.bank = event.id;
 		event.tempo = event.param;
 		event.timebase = (event.id & 7) == 7 ? -1 :
 			((event.id & 15) > 7 ? 15 : 6) << (event.id & 7);
-		event.id = MLD.EVENT_TIMEBASE_TEMPO;
+		event.id = EVENT_TIMEBASE_TEMPO;
 		return event;
 	}
 	
-	/**
-	 * Parse a volume event
-	 */
+	// Parse a volume event
 	private Event eventVolume(Event event)
 	{
 		event.volume = (event.param & 0x3F) / 63.0f;
 		return event;
 	}
 	
-	/**
-	 * ////////////////////// Header Parsing Methods
-	 * //////////////////////////
-	 * Parse the file header
-	 */
+	/// ////////////////////// Header Parsing Methods 
+	/// //////////////////////////
 	
+	// Parse the file header
 	private void header(Reader reader)
 	{
 		reader = reader.reader(reader.u16());
-		this.header = reader.bytes(reader.length);
+		header = reader.bytes(reader.length);
 		reader.offset -= reader.length;
 		
 		// Content type
-		this.contentType = reader.u16();
-		if ((this.contentType & 0xFF00) == 0x0200)
+		contentType = reader.u16();
+		if ((contentType & 0xFF00) == 0x0200)
 		{
-			int bits = this.contentType & 0x00FF;
-			this.hasMusicEvents = (bits & 0x01) != 0;
-			this.hasWaveData = (bits & 0x02) != 0;
-			this.hasTextData = (bits & 0x04) != 0;
-			this.hasImageData = (bits & 0x08) != 0;
-			this.hasFemaleVocals = (bits & 0x10) != 0;
-			this.hasMaleVocals = (bits & 0x20) != 0;
-			this.hasOtherVocals = (bits & 0x40) != 0;
+			int bits = contentType & 0x00FF;
+			hasMusicEvents = (bits & 0x01) != 0;
+			hasWaveData = (bits & 0x02) != 0;
+			hasTextData = (bits & 0x04) != 0;
+			hasImageData = (bits & 0x08) != 0;
+			hasFemaleVocals = (bits & 0x10) != 0;
+			hasMaleVocals = (bits & 0x20) != 0;
+			hasOtherVocals = (bits & 0x40) != 0;
 		}
 		
 		// Error checking
-		if (this.contentType != 0x0101)
+		if (contentType != 0x0101)
 		{
 			throw new RuntimeException(
 				String.format("Unsupported content type: 0x%04X",
-					this.contentType));
+					contentType));
 		}
 		
 		// Number of tracks
 		int numTracks = reader.u8();
 		if (numTracks > 4)
 			throw new RuntimeException("Invalid track count: " + numTracks);
-		this.cuep = new int[numTracks];
-		this.tracks = new Track[numTracks];
+		cuep = new int[numTracks];
+		tracks = new Track[numTracks];
 		
 		// Header subchunks
 		while (!reader.isEOF())
@@ -741,180 +637,152 @@ public class MLD
 			Reader chunk = reader.reader(reader.u16());
 			switch (id)
 			{
-				case MLD.FOURCC_AINF:
-					this.headerAINF(chunk);
+				case FOURCC_AINF:
+					headerAINF(chunk);
 					break;
-				case MLD.FOURCC_AUTH:
-					this.headerAUTH(chunk);
+				case FOURCC_AUTH:
+					headerAUTH(chunk);
 					break;
-				case MLD.FOURCC_COPY:
-					this.headerCOPY(chunk);
+				case FOURCC_COPY:
+					headerCOPY(chunk);
 					break;
-				case MLD.FOURCC_CUEP:
-					this.headerCUEP(chunk);
+				case FOURCC_CUEP:
+					headerCUEP(chunk);
 					break;
-				case MLD.FOURCC_DATE:
-					this.headerDATE(chunk);
+				case FOURCC_DATE:
+					headerDATE(chunk);
 					break;
-				case MLD.FOURCC_EXST:
-					this.headerEXST(chunk);
+				case FOURCC_EXST:
+					headerEXST(chunk);
 					break;
-				case MLD.FOURCC_NOTE:
-					this.headerNOTE(chunk);
+				case FOURCC_NOTE:
+					headerNOTE(chunk);
 					break;
-				case MLD.FOURCC_PROT:
-					this.headerPROT(chunk);
+				case FOURCC_PROT:
+					headerPROT(chunk);
 					break;
-				case MLD.FOURCC_SORC:
-					this.headerSORC(chunk);
+				case FOURCC_SORC:
+					headerSORC(chunk);
 					break;
-				case MLD.FOURCC_SUPT:
-					this.headerSUPT(chunk);
+				case FOURCC_SUPT:
+					headerSUPT(chunk);
 					break;
-				case MLD.FOURCC_THRD:
-					this.headerTHRD(chunk);
+				case FOURCC_THRD:
+					headerTHRD(chunk);
 					break;
-				case MLD.FOURCC_TITL:
-					this.headerTITL(chunk);
+				case FOURCC_TITL:
+					headerTITL(chunk);
 					break;
-				case MLD.FOURCC_VERS:
-					this.headerVERS(chunk);
+				case FOURCC_VERS:
+					headerVERS(chunk);
 					break;
 			}
 		}
 		
 	}
 	
-	/**
-	 * Parse a header "ainf" subchunk
-	 */
+	// Parse a header "ainf" subchunk
 	private void headerAINF(Reader reader)
 	{
-		this.ainf = reader.bytes(reader.length);
-		if (this.ainf.length > 0)
-			this.adpcms = new ADPCM[this.ainf[0] & 0xFF];
+		ainf = reader.bytes(reader.length);
+		if (ainf.length > 0)
+			adpcms = new ADPCM[ainf[0] & 0xFF];
 	}
 	
-	/**
-	 * Parse a header "auth" subchunk
-	 */
+	// Parse a header "auth" subchunk
 	private void headerAUTH(Reader reader)
 	{
-		this.auth = reader.bytes(reader.length);
+		auth = reader.bytes(reader.length);
 	}
 	
-	/**
-	 * Parse a header "copy" subchunk
-	 */
+	// Parse a header "copy" subchunk
 	private void headerCOPY(Reader reader)
 	{
-		this.copy = this.shiftJIS(reader.bytes(reader.length));
+		copy = shiftJIS(reader.bytes(reader.length));
 	}
 	
-	/**
-	 * Parse a header "cuep" subchunk
-	 */
+	// Parse a header "cuep" subchunk
 	private void headerCUEP(Reader reader)
 	{
-		for (int x = 0; x < this.cuep.length; x++)
-			this.cuep[x] = reader.u32();
+		for (int x = 0; x < cuep.length; x++)
+			cuep[x] = reader.u32();
 	}
 	
-	/**
-	 * Parse a header "date" subchunk
-	 */
+	// Parse a header "date" subchunk
 	private void headerDATE(Reader reader)
 	{
-		this.date = this.shiftJIS(reader.bytes(reader.length));
+		date = shiftJIS(reader.bytes(reader.length));
 	}
 	
-	/**
-	 * Parse a header "exst" subchunk
-	 */
+	// Parse a header "exst" subchunk
 	private void headerEXST(Reader reader)
 	{
-		this.exst = reader.bytes(reader.length);
+		exst = reader.bytes(reader.length);
 	}
 	
-	/**
-	 * Parse a header "note" subchunk
-	 */
+	// Parse a header "note" subchunk
 	private void headerNOTE(Reader reader)
 	{
-		this.note = reader.u16();
-		if (this.note >> 1 == 0)
+		note = reader.u16();
+		if (note >> 1 == 0)
 			return;
 		throw new RuntimeException(
-			String.format("Invalid \"note\": 0x%04X", this.note));
+			String.format("Invalid \"note\": 0x%04X" + note));
 	}
 	
-	/**
-	 * Parse a header "prot" subchunk
-	 */
+	// Parse a header "prot" subchunk
 	private void headerPROT(Reader reader)
 	{
-		this.prot = this.shiftJIS(reader.bytes(reader.length));
+		prot = shiftJIS(reader.bytes(reader.length));
 	}
 	
-	/**
-	 * Parse a header "sorc" subchunk
-	 */
+	// Parse a header "sorc" subchunk
 	private void headerSORC(Reader reader)
 	{
-		this.sorc = reader.u8();
+		sorc = reader.u8();
 	}
 	
-	/**
-	 * Parse a header "supt" subchunk
-	 */
+	// Parse a header "supt" subchunk
 	private void headerSUPT(Reader reader)
 	{
-		this.supt = this.shiftJIS(reader.bytes(reader.length));
+		supt = shiftJIS(reader.bytes(reader.length));
 	}
 	
-	/**
-	 * Parse a header "thrd" subchunk
-	 */
+	// Parse a header "thrd" subchunk
 	private void headerTHRD(Reader reader)
 	{
-		this.thrd = reader.bytes(reader.length);
+		thrd = reader.bytes(reader.length);
 	}
 	
-	/**
-	 * Parse a header "titl" subchunk
-	 */
+	// Parse a header "titl" subchunk
 	private void headerTITL(Reader reader)
 	{
-		this.titl = this.shiftJIS(reader.bytes(reader.length));
+		titl = shiftJIS(reader.bytes(reader.length));
 	}
 	
-	/**
-	 * Parse a header "vers" subchunk
-	 */
+	// Parse a header "vers" subchunk
 	private void headerVERS(Reader reader)
 	{
-		this.vers = this.shiftJIS(reader.bytes(reader.length));
+		vers = shiftJIS(reader.bytes(reader.length));
 	}
 	
-	/**
-	 * Measure the duration and tick counters
-	 */
+	// Measure the duration and tick counters
 	private void inspect()
 	{
 		double tempo = 60.0 / (48 * 128);
 		long tickNow = 0;
-		int[] trkPos = new int[this.tracks.length];
-		int[] trkUntil = new int[this.tracks.length];
+		int[] trkPos = new int[tracks.length];
+		int[] trkUntil = new int[tracks.length];
 		
 		// Initialize instance fields
-		this.duration = 0.0;
-		this.tickEnd = 0;
-		this.tickLoop = -1;
+		duration = 0.0;
+		tickEnd = 0;
+		tickLoop = -1;
 		
 		// Record the start time of each track's first event
-		for (int x = 0; x < this.tracks.length; x++)
+		for (int x = 0; x < tracks.length; x++)
 		{
-			Track track = this.tracks[x];
+			Track track = tracks[x];
 			if (track.size() != 0)
 			{
 				trkPos[x] = 0;
@@ -930,7 +798,7 @@ public class MLD
 			
 			// Determine the number of ticks until the next event
 			int until = -1;
-			for (int x = 0; x < this.tracks.length; x++)
+			for (int x = 0; x < tracks.length; x++)
 			{
 				int tu = trkUntil[x];
 				if (tu != -1 && (until == -1 || tu < until))
@@ -942,17 +810,17 @@ public class MLD
 				break;
 			
 			// Advance to the next event
-			this.duration += until * tempo;
+			duration += until * tempo;
 			tickNow += until;
-			this.tickEnd = Math.max(this.tickEnd, tickNow);
-			for (int x = 0; x < this.tracks.length; x++)
+			tickEnd = Math.max(tickEnd, tickNow);
+			for (int x = 0; x < tracks.length; x++)
 			{
 				if (trkUntil[x] != -1)
 					trkUntil[x] -= until;
 			}
 			
 			// Process all relevant events that happen right now
-			for (int x = 0; x < this.tracks.length; x++)
+			for (int x = 0; x < tracks.length; x++)
 			{
 				
 				// No more events right now on this track
@@ -960,7 +828,7 @@ public class MLD
 					continue;
 				
 				// Retrieve the next event
-				Track track = this.tracks[x];
+				Track track = tracks[x];
 				Event event = track.get(trkPos[x]++);
 				
 				// Additional events on this track
@@ -972,7 +840,7 @@ public class MLD
 					trkUntil[x] = -1;
 				
 				// end-of-track
-				if (event.type == MLD.EVENT_TYPE_EXT_B && event.id == MLD.EVENT_END_OF_TRACK)
+				if (event.type == EVENT_TYPE_EXT_B && event.id == EVENT_END_OF_TRACK)
 				{
 					trkUntil[x] = -1;
 					continue;
@@ -982,36 +850,36 @@ public class MLD
 				x--;
 				
 				// note
-				if (event.type == MLD.EVENT_TYPE_NOTE)
+				if (event.type == EVENT_TYPE_NOTE)
 				{
-					this.tickEnd = Math.max(this.tickEnd, tickNow + event.gateTime);
+					tickEnd = Math.max(tickEnd, tickNow + event.gateTime);
 					continue;
 				}
 				
 				// Next must be ext-B
-				if (event.type != MLD.EVENT_TYPE_EXT_B)
+				if (event.type != EVENT_TYPE_EXT_B)
 					continue;
 				
 				// timebase-tempo
-				if ((event.id & 0xF0) == MLD.EVENT_TIMEBASE_TEMPO)
+				if ((event.id & 0xF0) == EVENT_TIMEBASE_TEMPO)
 				{
 					tempo = 60.0 / (event.timebase * event.tempo);
 					continue;
 				}
 				
 				// Next must be cuepoint
-				if (event.id != MLD.EVENT_CUEPOINT)
+				if (event.id != EVENT_CUEPOINT)
 					continue;
 				
 				// cuepoint start
-				if (event.cuepoint == MLD.CUEPOINT_START)
+				if (event.cuepoint == CUEPOINT_START)
 				{
-					this.tickLoop = tickNow;
+					tickLoop = tickNow;
 					continue;
 				}
 				
 				// cuepoint end, but the loop point isn't set
-				if (this.tickLoop == -1)
+				if (tickLoop == -1)
 					continue;
 				
 				// If a cuepoint end and note both happen on the
@@ -1019,25 +887,23 @@ public class MLD
 				// it still play the note?
 				
 				// cuepoint end
-				this.tickEnd = tickNow;
+				tickEnd = tickNow;
 				return;
 			}
 			
 		}
 		
 		// The entire sequence was scanned
-		this.tickLoop = -1;
+		tickLoop = -1;
 	}
 	
-	/**
-	 * Parse an MLD file
-	 */
+	// Parse an MLD file
 	private void parse(DataInputStream stream)
 		throws IOException
 	{
 		
 		// File signature
-		if (stream.readInt() != MLD.FOURCC_MELO)
+		if (stream.readInt() != FOURCC_MELO)
 			throw new RuntimeException("Missing \"melo\" signature.");
 		
 		// File length
@@ -1057,26 +923,24 @@ public class MLD
 		}
 		
 		// Default fields
-		this.adpcms = new ADPCM[0];
-		this.note = MLD.NOTE_3;
+		adpcms = new ADPCM[0];
+		note = NOTE_3;
 		
 		// Working variables
 		Reader reader = new Reader(data, 8, length);
 		
 		// Parse the file
-		this.header(reader);
-		for (int x = 0; x < this.adpcms.length; x++)
-			this.adpcms[x] = this.adpcm(reader);
-		for (int x = 0; x < this.tracks.length; x++)
-			this.tracks[x] = this.track(this.note, x, reader);
+		header(reader);
+		for (int x = 0; x < adpcms.length; x++)
+			adpcms[x] = adpcm(reader);
+		for (int x = 0; x < tracks.length; x++)
+			tracks[x] = track(note, x, reader);
 		
 		// Measure the duration and tick counters
-		this.inspect();
+		inspect();
 	}
 	
-	/**
-	 * Decode a string as Shift_JIS
-	 */
+	// Decode a string as Shift_JIS
 	private String shiftJIS(byte[] bytes)
 	{
 		try
@@ -1089,92 +953,63 @@ public class MLD
 		}
 	}
 	
-	/**
-	 * Parse a track
-	 */
+	// Parse a track
 	private Track track(int note, int index, Reader reader)
 	{
 		
 		// Error checking
-		if (reader.u32() != MLD.FOURCC_TRAC)
+		if (reader.u32() != FOURCC_TRAC)
 			throw new RuntimeException("Missing \"trac\" chunk.");
 		
 		// Working variables
 		Track ret = new Track();
 		ret.index = index;
 		reader = reader.reader(reader.u32());
-		int cue = reader.offset + this.cuep[index];
+		int cue = reader.offset + cuep[index];
 		
 		// Parse events
 		while (!reader.isEOF())
 		{
 			if (reader.offset == cue)
 				ret.cue = ret.size();
-			ret.add(this.event(note, index, reader));
+			ret.add(event(note, index, reader));
 		}
 		return ret;
 	}
 	
-	/**
-	 * ////////////////////////////// Classes
-	 * /////////////////////////////////
-	 * ADPCM sample data class
-	 */
+	/// ////////////////////////////// Classes 
+	/// /////////////////////////////////
 	
-	static class ADPCM
+	// ADPCM sample data class
+	class ADPCM
 	{
-		/**
-		 * Significance not yet known
-		 */
-		byte[] data;
+		byte[] data; // Significance not yet known
 	}
 	
-	/**
-	 * Sequencer event data class
-	 */
-	static class Event
+	// Sequencer event data class
+	class Event
 	{
 		
-		/**
-		 * ext-B fields
-		 */
+		// ext-B fields
 		int bank;
 		
-		/**
-		 * Instance fields
-		 * Normalized channel ID, out of 16
-		 */
-		int channel;
+		// Instance fields
+		int channel; // Normalized channel ID, out of 16
 		
-		/**
-		 * Note fields
-		 * Channel index 0..3 within parent track
-		 */
-		int channelIndex;
+		// Note fields
+		int channelIndex; // Channel index 0..3 within parent track
 		
 		int cuepoint;
 		
-		/**
-		 * ext-info and unknown event data
-		 */
-		byte[] data;
+		byte[] data;    // ext-info and unknown event data
 		
-		/**
-		 * Time delta: number of ticks since last event
-		 */
-		int delta;
+		int delta;   // Time delta: number of ticks since last event
 		
 		boolean enable;
 		
-		/**
-		 * Number of ticks until note off
-		 */
-		int gateTime;
+		int gateTime;     // Number of ticks until note off
 		
-		/**
-		 * Meta event ID
-		 */
-		int id;
+		int id;      // Meta event ID
 		
 		int jumpCount;
 		
@@ -1182,32 +1017,17 @@ public class MLD
 		
 		int jumpPoint;
 		
-		/**
-		 * Normalized key ID, relative to A4
-		 */
-		int key;
+		int key;     // Normalized key ID, relative to A4
 		
-		/**
-		 * Base key index
-		 */
-		int keyNumber;
+		int keyNumber;    // Base key index
 		
-		/**
-		 * Number of octaves to adjust keyNumber
-		 */
-		int octaveShift;
+		int octaveShift;  // Number of octaves to adjust keyNumber
 		
-		/**
-		 * Location in MLD asset
-		 */
-		int offset;
+		int offset;  // Location in MLD asset
 		
 		float panpot;
 		
-		/**
-		 * Event parameter bits
-		 */
-		int param;
+		int param;   // Event parameter bits
 		
 		int program;
 		
@@ -1215,152 +1035,105 @@ public class MLD
 		
 		float semitones;
 		
-		/**
-		 * note-status, second byte of event data
-		 */
-		int status;
+		int status;  // note-status, second byte of event data
 		
 		int tempo;
 		
 		int timebase;
 		
-		/**
-		 * Event category
-		 */
-		int type;
+		int type;    // Event category
 		
-		/**
-		 * Base volume
-		 */
-		float velocity;
+		float velocity;     // Base volume
 		
 		float volume;
 	}
 	
-	/**
-	 * Utility class for reading binary data
-	 */
-	static class Reader
+	// Utility class for reading binary data
+	class Reader
 	{
-		/**
-		 * Backing data store
-		 */
-		byte[] data;
+		byte[] data;   // Backing data store
 		
-		/**
-		 * Length of current segment
-		 */
-		int length;
+		int length; // Length of current segment
 		
-		/**
-		 * Current input offset
-		 */
-		int offset;
+		int offset; // Current input offset
 		
-		/**
-		 * Offset of start of current segment
-		 */
-		int start;
+		int start;  // Offset of start of current segment
 		
-		/**
-		 * Constructor
-		 */
+		// Constructor
 		Reader(byte[] data, int start, int length)
 		{
 			this.data = data;
 			this.length = length;
-			this.offset = start;
+			offset = start;
 			this.start = start;
 		}
 		
-		/**
-		 * Read a byte array
-		 */
+		// Read a byte array
 		byte[] bytes(int length)
 		{
-			if (this.offset + length > this.start + this.length)
+			if (offset + length > start + this.length)
 				throw new RuntimeException("Unexpected EOF.");
 			byte[] ret = new byte[length];
-			System.arraycopy(this.data, this.offset, ret, 0, length);
-			this.offset += length;
+			System.arraycopy(data, offset, ret, 0, length);
+			offset += length;
 			return ret;
 		}
 		
-		/**
-		 * Determine whether the stream has reached its end
-		 */
+		// Determine whether the stream has reached its end
 		boolean isEOF()
 		{
-			return this.offset == this.start + this.length;
+			return offset == start + length;
 		}
 		
-		/**
-		 * Produce a new Reader to access a subset of this one
-		 */
+		// Produce a new Reader to access a subset of this one
 		Reader reader(int length)
 		{
-			Reader ret = new Reader(this.data, this.offset, length);
-			this.skip(length);
+			Reader ret = new Reader(data, offset, length);
+			skip(length);
 			return ret;
 		}
 		
-		/**
-		 * Advance the input
-		 */
+		// Advance the input
 		void skip(int length)
 		{
-			if (this.offset + length > this.start + this.length)
+			if (offset + length > start + this.length)
 				throw new RuntimeException("Unexpected EOF.");
-			this.offset += length;
+			offset += length;
 		}
 		
-		/**
-		 * Read a 16-bit unsigned integer
-		 */
+		// Read a 16-bit unsigned integer
 		int u16()
 		{
-			int ret = this.u8() << 8;
-			return ret | this.u8();
+			int ret = u8() << 8;
+			return ret | u8();
 		}
 		
-		/**
-		 * Read a 32-bit unsigned integer
-		 */
+		// Read a 32-bit unsigned integer
 		int u32()
 		{
-			int ret = this.u16() << 16;
+			int ret = u16() << 16;
 			if (ret < 0)
 				throw new RuntimeException("Unsupported U32 value.");
-			return ret | this.u16();
+			return ret | u16();
 		}
 		
-		/**
-		 * Read an 8-bit unsigned integer
-		 */
+		// Read an 8-bit unsigned integer
 		int u8()
 		{
-			if (this.offset == this.start + this.length)
+			if (offset == start + length)
 				throw new RuntimeException("Unexpected EOF.");
-			return this.data[this.offset++] & 0xFF;
+			return data[offset++] & 0xFF;
 		}
 		
 	}
 	
-	/**
-	 * Event list
-	 */
+	// Event list
 	class Track
 		extends ArrayList<Event>
 	{
-		/**
-		 * Initial event offset on reset
-		 */
-		int cue;
+		int cue;   // Initial event offset on reset
 		
-		/**
-		 * Channel index base
-		 */
-		int index;
+		int index; // Channel index base
 	}
 	
 }

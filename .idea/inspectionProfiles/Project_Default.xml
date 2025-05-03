@@ -22,7 +22,6 @@
     <inspection_tool class="BooleanMethodIsAlwaysInverted" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ConstantValue" enabled="false" level="TEXT ATTRIBUTES" enabled_by_default="false" editorAttributes="CONSIDERATION_ATTRIBUTES" />
     <inspection_tool class="EditorConfigEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="HtmlTagCanBeJavadocTag" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="JUnit3StyleTestMethodInJUnit4Class" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit4AnnotatedMethodInJUnit3TestCase" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit5AssertionsConverter" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -102,17 +101,6 @@
         </Options>
       </option>
     </inspection_tool>
-    <inspection_tool class="ReplaceWithJavadoc" enabled="true" level="GRAMMAR_ERROR" enabled_by_default="true" editorAttributes="GRAMMAR_ERROR" />
-    <inspection_tool class="SSBasedInspection" enabled="true" level="WARNING" enabled_by_default="true">
-      <replaceConfiguration name="SquirrelJME -- Usage of Float.isFinite()" description="SquirrelJME -- Usage of Float.isFinite()" suppressId="squirreljme_floatIsFinite" text="java.lang.Float.isFinite($any$)" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="true" shortenFQN="true" replacement="!java.lang.Float.isInfinite($any$)">
-        <constraint name="__context__" within="" contains="" />
-        <constraint name="any" within="" contains="" />
-      </replaceConfiguration>
-      <replaceConfiguration name="SquirrelJME -- Usage of Float.isFinite()" text="java.lang.Double.isFinite($any$)" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="true" shortenFQN="true" replacement="!java.lang.Double.isInfinite($any$)">
-        <constraint name="__context__" within="" contains="" />
-        <constraint name="any" within="" contains="" />
-      </replaceConfiguration>
-    </inspection_tool>
     <inspection_tool class="SamePackageImport" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SimplifiableJUnitAssertion" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SizeReplaceableByIsEmpty" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -131,7 +119,6 @@
       <option name="m_ignoreStaticAccessFromStaticContext" value="false" />
     </inspection_tool>
     <inspection_tool class="ced03fc8-111a-390f-8655-ed7465debd5f" enabled="true" level="GRAMMAR_ERROR" enabled_by_default="true" editorAttributes="TEXT_STYLE_ERROR" />
-    <inspection_tool class="f4542b52-6394-3401-998b-e131d65bca58" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="f93a96c1-2c44-3074-aa46-c5bbec2c6b07" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
   </profile>
 </component>
