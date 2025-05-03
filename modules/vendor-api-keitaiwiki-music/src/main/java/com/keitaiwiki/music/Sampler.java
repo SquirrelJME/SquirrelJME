@@ -44,11 +44,11 @@ public interface Sampler
 	////////////////////////////////
 	
 	/**
-	 * Produces an instance of this sampler that can be used to render 
+	 * Produces an instance of this sampler that can be used to render
 	 * samples.
 	 *
 	 * @param sampleRate The output sampling rate of the rendered samples.
-	 * @return A new sampler instance that can render samples using the 
+	 * @return A new sampler instance that can render samples using the
 	 * current
 	 * configuration of this sampler itself.
 	 * @throws IllegalArgumentException if {@code sampleRate} is a
@@ -63,7 +63,7 @@ public interface Sampler
 	/**
 	 * Sample-generating instance of a {@code Sampler}. Configurations on the
 	 * sampler object can propagate down to its instances.<br><br>
-	 * Any unsupported features specified by the methods of this class 
+	 * Any unsupported features specified by the methods of this class
 	 * (such as
 	 * channel numbers that are beyond what the sampler supports) are silently
 	 * ignored without throwing any exceptions.<br><br>
@@ -137,7 +137,7 @@ public interface Sampler
 		 * Frequencies are given by the following formula:<br><br>
 		 * <code>&nbsp; &nbsp; &nbsp; frequencyHz = 440 * 2<sup
 		 * >((key + pitchBend) / 12)</sup></code><br><br>
-		 * 440 Hz is the frequency of the note A<sub>4</sub>, known as 
+		 * 440 Hz is the frequency of the note A<sub>4</sub>, known as
 		 * "concert
 		 * A" (the A above middle C), and is the reference frequency in most
 		 * modern instrument tuning. For regular instruments, {@code key}
@@ -162,7 +162,7 @@ public interface Sampler
 		
 		/**
 		 * Specify the global pitch bend. The master tuning is multiplied by
-		 * each channel's base tuning to determine the effective tuning on 
+		 * each channel's base tuning to determine the effective tuning on
 		 * that
 		 * channel.<br><br>
 		 * The default master tuning is 0.0f.<br><br>
@@ -206,7 +206,7 @@ public interface Sampler
 		
 		/**
 		 * Specify a channel's pitch bend. The master tuning is multiplied by
-		 * each channel's base tuning to determine the effective tuning on 
+		 * each channel's base tuning to determine the effective tuning on
 		 * that
 		 * channel. The number of semitones is multiplied by the channel's
 		 * current pitch bend range to calculate the effective tuning.<br><br>
@@ -232,7 +232,7 @@ public interface Sampler
 		 * The default pitch bend range on all channels is 2.0f.
 		 *
 		 * @param channel The index of the channel to configure.
-		 * @param range The magnitude of the maximum pitch bend on the 
+		 * @param range The magnitude of the maximum pitch bend on the
 		 * channel.
 		 * @throws IllegalArgumentException if {@code range} is a non-number
 		 * or is negative.
@@ -362,7 +362,7 @@ public interface Sampler
 			float right, boolean erase, boolean clamp);
 		
 		/**
-		 * Initialize all output state. All currently active notes are 
+		 * Initialize all output state. All currently active notes are
 		 * stopped,
 		 * and all master, channel and sampler-specific configurations are
 		 * reinitialized to their default values.

@@ -67,7 +67,7 @@ public class MLDPlayer
 	 */
 	public static final int EVENT_LOOP = 1;
 	
-	/// ///////////////////////// Private Constants 
+	/// ///////////////////////// Private Constants
 	/// ////////////////////////////
 	
 	private static final int A4 = 48; // Key index bias
@@ -96,8 +96,8 @@ public class MLDPlayer
 	private final float sampleRate;    // Output sampling rate
 	
 	
-	//////////////////////////////// Constants 
-	////////////////////////////////
+	/// ///////////////////////////// Constants
+	/// /////////////////////////////
 	
 	private final Sampler.Instance sampler;       // Sample generator
 	
@@ -106,8 +106,8 @@ public class MLDPlayer
 	private long tickNow;       // Sequencer position in ticks
 	
 	
-	////////////////////////////////// Event 
-	//////////////////////////////////
+	/// /////////////////////////////// Event
+	/// ///////////////////////////////
 	
 	private final Track[] tracks;        // Sequencer state
 	
@@ -184,7 +184,7 @@ public class MLDPlayer
 	}
 	
 	/**
-	 * Registers multiple keys to raise events for during rendering. Key 
+	 * Registers multiple keys to raise events for during rendering. Key
 	 * number
 	 * 0 is the note A<sub>4</sub>.
 	 *
@@ -211,7 +211,7 @@ public class MLDPlayer
 	 * value.
 	 * @return If the sequence does not loop, the number of seconds in the
 	 * sequence. If the sequence loops and {@code withoutLooping} is
-	 * {@code false}, returns {@code Double.POSITIVE_INFINITY}. If the 
+	 * {@code false}, returns {@code Double.POSITIVE_INFINITY}. If the
 	 * sequence
 	 * loops and {@code withoutLooping} is {@code true}, returns the number of
 	 * seconds in the sequence up until the first loop occurs.
@@ -250,7 +250,7 @@ public class MLDPlayer
 	
 	/**
 	 * Retrieve the current playback position in the sequence. The range of
-	 * values represents the start of the sequence at 0.0 and either the 
+	 * values represents the start of the sequence at 0.0 and either the
 	 * end of
 	 * the sequence or the point where looping occurs at 1.0.
 	 *
@@ -333,7 +333,7 @@ public class MLDPlayer
 	 * @param offset Index in {@code samples} of the first audio frame to
 	 * output.
 	 * @param frames The number of audio frames to output.
-	 * @return The number of samples generated, or -1 if playback has 
+	 * @return The number of samples generated, or -1 if playback has
 	 * finished.
 	 * May be less than {@code frames} if playback of the underlying sequence
 	 * completes before all frames have been processed.
@@ -362,7 +362,7 @@ public class MLDPlayer
 	 * @param frames The number of audio frames to output.
 	 * @param amplitude A multiplier that is applied to all samples
 	 * generated.
-	 * @return The number of samples generated, or -1 if playback has 
+	 * @return The number of samples generated, or -1 if playback has
 	 * finished.
 	 * May be less than {@code frames} if playback of the underlying sequence
 	 * completes before all frames have been processed.
@@ -377,7 +377,8 @@ public class MLDPlayer
 	public int render(float[] samples, int offset, int frames,
 		float amplitude)
 	{
-		return this.render(samples, offset, frames, amplitude, amplitude, true,
+		return this.render(samples, offset, frames, amplitude, amplitude,
+			true,
 			true);
 	}
 	
@@ -396,7 +397,7 @@ public class MLDPlayer
 	 * generated.
 	 * @param right A multiplier that is applied to all right-stereo samples
 	 * generated.
-	 * @return The number of samples generated, or -1 if playback has 
+	 * @return The number of samples generated, or -1 if playback has
 	 * finished.
 	 * May be less than {@code frames} if playback of the underlying sequence
 	 * completes before all frames have been processed.
@@ -436,7 +437,7 @@ public class MLDPlayer
 	 * to them when {@code false}
 	 * @param clamp Specifies whether to restrict the sample buffer values
 	 * to -1.0f to +1.0f inclusive.
-	 * @return The number of samples generated, or -1 if playback has 
+	 * @return The number of samples generated, or -1 if playback has
 	 * finished.
 	 * May be less than {@code frames} if playback of the underlying sequence
 	 * completes before all frames have been processed.
@@ -460,8 +461,8 @@ public class MLDPlayer
 		if (!this.seeking)
 		{
 			if (samples == null)
-				throw new NullPointerException("A sample buffer is required" +
-					".");
+				throw new NullPointerException(
+					"A sample buffer is required" + ".");
 			if (frames < 0)
 				throw new IllegalArgumentException("Invalid frames.");
 			if (offset < 0 || offset + frames * 2 > samples.length)
@@ -472,8 +473,8 @@ public class MLDPlayer
 			if (Float.isInfinite(left) || left < 0.0f)
 				throw new IllegalArgumentException("Invalid left amplitude.");
 			if (Float.isInfinite(right) || right < 0.0f)
-				throw new IllegalArgumentException("Invalid right amplitude" +
-					".");
+				throw new IllegalArgumentException(
+					"Invalid right amplitude" + ".");
 		}
 		
 		// Sequencer is not playing
@@ -495,7 +496,8 @@ public class MLDPlayer
 				// Render the samples
 				int f = Math.min(frames, (int)Math.floor(this.pendingFrames));
 				if (!this.seeking)
-					this.sampler.render(samples, offset, f, left, right, erase,
+					this.sampler.render(samples, offset, f, left, right,
+						erase,
 						clamp);
 				
 				// State management
@@ -548,16 +550,17 @@ public class MLDPlayer
 				return ret;
 			}
 			int untilNote = this.untilNote();
-			this.pendingTicks = untilNote == -1 ? untilTrack : Math.min(untilTrack,
-				untilNote);
-			this.pendingFrames += (float)Math.floor(this.pendingTicks * this.framesPerTick);
+			this.pendingTicks = untilNote == -1 ? untilTrack : Math.min(
+				untilTrack, untilNote);
+			this.pendingFrames += (float)Math.floor(
+				this.pendingTicks * this.framesPerTick);
 		}
 		
 		return ret;
 	}
 	
 	/**
-	 * Specify whether or not to raise playback events. Playback events 
+	 * Specify whether or not to raise playback events. Playback events
 	 * include
 	 * {@code EVENT_END} and {@code EVENT_LOOP}.
 	 *
@@ -580,7 +583,7 @@ public class MLDPlayer
 	 * position in the sequence retrieved by subsequent calls to
 	 * {@code getTime()} may be less than {@code seconds}.
 	 *
-	 * @param seconds The number of seconds from the beginning of the 
+	 * @param seconds The number of seconds from the beginning of the
 	 * sequence.
 	 * @return {@code true} if the end of the sequence was encountered during
 	 * the operation.
@@ -615,7 +618,7 @@ public class MLDPlayer
 		return this.isFinished();
 	}
 	
-	/// /////////////////////////// Event Methods 
+	/// /////////////////////////// Event Methods
 	/// //////////////////////////////
 	
 	// bank-change
@@ -635,7 +638,8 @@ public class MLDPlayer
 			for (Track t : this.tracks)
 				this.setTrackOffset(t, t.cuepoint);
 			if (this.evtPlayback)
-				this.events.add(new Event(this.getTime(), MLDPlayer.EVENT_LOOP, 0));
+				this.events.add(
+					new Event(this.getTime(), MLDPlayer.EVENT_LOOP, 0));
 			return;
 		}
 		
@@ -755,7 +759,8 @@ public class MLDPlayer
 		
 		// Raise an event
 		if (this.evtKeys.contains(event.key))
-			this.events.add(new Event(this.getTime(), MLDPlayer.EVENT_KEY, event.key));
+			this.events.add(
+				new Event(this.getTime(), MLDPlayer.EVENT_KEY, event.key));
 		
 		// Velocity 0 is regarded as key-off
 		if (event.velocity == 0)
@@ -834,7 +839,7 @@ public class MLDPlayer
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
-	/// ////////////////////////// Private Methods 
+	/// ////////////////////////// Private Methods
 	/// /////////////////////////////
 	
 	// Process events on a track
@@ -942,7 +947,8 @@ public class MLDPlayer
 		for (var other : this.tracks)
 			finished = finished && other.finished;
 		if (finished)
-			this.events.add(new Event(this.getTime(), MLDPlayer.EVENT_END, 0));
+			this.events.add(new Event(this.getTime(), MLDPlayer.EVENT_END,
+				0));
 	}
 	
 	// Determine how many ticks can be processed until a note expires
@@ -972,7 +978,7 @@ public class MLDPlayer
 		return ret;
 	}
 	
-	/// ////////////////////////////// Classes 
+	/// ////////////////////////////// Classes
 	/// /////////////////////////////////
 	
 	// Playback channel

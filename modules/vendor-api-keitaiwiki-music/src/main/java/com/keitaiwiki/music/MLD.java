@@ -48,7 +48,7 @@ public class MLD
 	
 	static final int CUEPOINT_END = 1;
 	
-	/// ///////////////////////////// Constants 
+	/// ///////////////////////////// Constants
 	/// ////////////////////////////////
 	
 	// Cuepoints
@@ -217,7 +217,7 @@ public class MLD
 	}
 	
 	/**
-	 * Decode from a byte array. If the {@code length} argument specifies 
+	 * Decode from a byte array. If the {@code length} argument specifies
 	 * bytes
 	 * beyond the end of the MLD resource, the extra bytes will not be
 	 * processed.
@@ -322,7 +322,7 @@ public class MLD
 	 * value.
 	 * @return If the sequence does not loop, the number of seconds in the
 	 * sequence. If the sequence loops and {@code withoutLooping} is
-	 * {@code false}, returns {@code Double.POSITIVE_INFINITY}. If the 
+	 * {@code false}, returns {@code Double.POSITIVE_INFINITY}. If the
 	 * sequence
 	 * loops and {@code withoutLooping} is {@code true}, returns the number of
 	 * seconds in the sequence up until the first loop occurs.
@@ -359,7 +359,7 @@ public class MLD
 		return this.vers;
 	}
 	
-	/// ////////////////////////// Private Methods 
+	/// ////////////////////////// Private Methods
 	/// /////////////////////////////
 	
 	// Parse an ADPCM chunk
@@ -372,7 +372,7 @@ public class MLD
 		return ret;
 	}
 	
-	/// /////////////////////// Event Parsing Methods 
+	/// /////////////////////// Event Parsing Methods
 	/// //////////////////////////
 	
 	// Parse an event
@@ -591,7 +591,7 @@ public class MLD
 		return event;
 	}
 	
-	/// ////////////////////// Header Parsing Methods 
+	/// ////////////////////// Header Parsing Methods
 	/// //////////////////////////
 	
 	// Parse the file header
@@ -852,7 +852,8 @@ public class MLD
 				// note
 				if (event.type == MLD.EVENT_TYPE_NOTE)
 				{
-					this.tickEnd = Math.max(this.tickEnd, tickNow + event.gateTime);
+					this.tickEnd = Math.max(this.tickEnd,
+						tickNow + event.gateTime);
 					continue;
 				}
 				
@@ -977,7 +978,7 @@ public class MLD
 		return ret;
 	}
 	
-	/// ////////////////////////////// Classes 
+	/// ////////////////////////////// Classes
 	/// /////////////////////////////////
 	
 	// ADPCM sample data class
