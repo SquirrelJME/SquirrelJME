@@ -43,29 +43,9 @@ class MA3Algorithm
 	
 	
 	/**
-	 * Operator connection algorithm
-	 */
-	int alg;
-	
-	/**
 	 * Key played for drum notes
 	 */
 	final int drumKey;
-	
-	/**
-	 * Wave end point
-	 */
-	int ep;
-	
-	/**
-	 * Drum frequency base
-	 */
-	float freqBase;
-	
-	/**
-	 * Wave sampling frequency
-	 */
-	int fs;
 	
 	/**
 	 * Is a drum note
@@ -83,11 +63,6 @@ class MA3Algorithm
 	final int lfo;
 	
 	/**
-	 * Wave loop point
-	 */
-	int lp;
-	
-	/**
 	 * FM operator templates
 	 */
 	final MA3Operator[] operators;
@@ -96,6 +71,31 @@ class MA3Algorithm
 	 * Stereo balance
 	 */
 	final int panpot;
+	
+	/**
+	 * Operator connection algorithm
+	 */
+	int alg;
+	
+	/**
+	 * Wave end point
+	 */
+	int ep;
+	
+	/**
+	 * Drum frequency base
+	 */
+	float freqBase;
+	
+	/**
+	 * Wave sampling frequency
+	 */
+	int fs;
+	
+	/**
+	 * Wave loop point
+	 */
+	int lp;
 	
 	/**
 	 * Wave ROM select
@@ -123,34 +123,6 @@ class MA3Algorithm
 	int waveId;
 	
 	
-	static MA3Algorithm[] from(String[] defs, boolean isDrum, boolean isWave)
-	{
-		Base64.Decoder base64 = Base64.getMimeDecoder();
-		MA3Algorithm[] ret = null;
-		
-		// FM presets
-		if (!isWave)
-		{
-			ret = new MA3Algorithm[defs.length];
-			for (int x = 0; x < defs.length; x++)
-				ret[x] = new MA3Algorithm(base64.decode(defs[x]), isDrum);
-		}
-		
-		// Wave drum presets
-		else
-		{
-			ret = new MA3Algorithm[61];
-			for (int x = 0; x < defs.length; x++)
-			{
-				MA3Algorithm alg = new MA3Algorithm(base64.decode(defs[x]), 0);
-				ret[alg.drumKey - 24] = alg;
-			}
-		}
-		
-		return ret;
-	}
-	
-	
 	/**
 	 * FM constructor
 	 */
@@ -176,6 +148,7 @@ class MA3Algorithm
 		this.initVolume();
 	}
 	
+	
 	/**
 	 * Wave drum constructor
 	 */
@@ -186,8 +159,7 @@ class MA3Algorithm
 		
 		// Parse fields
 		this.drumKey = message[offset++] & 0xFF;
-		this.fs =
-			(message[offset] & 0xFF) << 8 | message[offset + 1] & 0xFF;
+		this.fs = (message[offset] & 0xFF) << 8 | message[offset + 1] & 0xFF;
 		offset += 2;
 		bits = message[offset++] & 0xFF;
 		this.panpot = bits >> 3 & 31;
@@ -198,11 +170,9 @@ class MA3Algorithm
 		this.operators = new MA3Operator[] {new MA3Operator(offset, message)};
 		//  5 for operator, 2 unknown (always zero?)
 		offset += 7;
-		this.lp =
-			(message[offset] & 0xFF) << 8 | message[offset + 1] & 0xFF;
+		this.lp = (message[offset] & 0xFF) << 8 | message[offset + 1] & 0xFF;
 		offset += 2;
-		this.ep =
-			(message[offset] & 0xFF) << 8 | message[offset + 1] & 0xFF;
+		this.ep = (message[offset] & 0xFF) << 8 | message[offset + 1] & 0xFF;
 		offset += 2;
 		bits = message[offset++] & 0xFF;
 		this.rm = (bits >> 7 & 1) != 0;
@@ -213,16 +183,6 @@ class MA3Algorithm
 		this.isWave = true;
 		this.wavAdvance = this.fs / MA3SamplerProvider.SAMPLE_RATE;
 		this.initVolume();
-	}
-	
-	
-	/**
-	 * Initialize volume settings
-	 */
-	void initVolume()
-	{
-		this.volRight = this.panpot / (this.panpot <= 15 ? 30.0f : 31.0f);
-		this.volLeft = 1 - this.volRight;
 	}
 	
 	/**
@@ -264,6 +224,43 @@ class MA3Algorithm
 			ret.append(String.format("  EVB:   %s\n", op.evb + ""));
 		}
 		return ret.toString();
+	}
+	
+	/**
+	 * Initialize volume settings
+	 */
+	void initVolume()
+	{
+		this.volRight = this.panpot / (this.panpot <= 15 ? 30.0f : 31.0f);
+		this.volLeft = 1 - this.volRight;
+	}
+	
+	static MA3Algorithm[] from(String[] defs, boolean isDrum, boolean isWave)
+	{
+		Base64.Decoder base64 = Base64.getMimeDecoder();
+		MA3Algorithm[] ret = null;
+		
+		// FM presets
+		if (!isWave)
+		{
+			ret = new MA3Algorithm[defs.length];
+			for (int x = 0; x < defs.length; x++)
+				ret[x] = new MA3Algorithm(base64.decode(defs[x]), isDrum);
+		}
+		
+		// Wave drum presets
+		else
+		{
+			ret = new MA3Algorithm[61];
+			for (int x = 0; x < defs.length; x++)
+			{
+				MA3Algorithm alg = new MA3Algorithm(base64.decode(defs[x]),
+					0);
+				ret[alg.drumKey - 24] = alg;
+			}
+		}
+		
+		return ret;
 	}
 	
 }

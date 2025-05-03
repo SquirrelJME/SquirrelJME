@@ -40,56 +40,14 @@ class MA3Note
 {
 	
 	/**
-	 * OPL registers
-	 * Octave index
-	 */
-	int block;
-	
-	/**
-	 * Frequency divider
-	 */
-	int f_number;
-	
-	
-	/**
-	 * Amplitude modulator phase
-	 */
-	int amPhase;
-	
-	/**
-	 * Frequency advancement when dissociated
-	 */
-	float advance;
-	
-	/**
 	 * FM operator algorithm
 	 */
 	final MA3Algorithm algorithm;
 	
 	/**
-	 * Effective left stereo amplitude
-	 */
-	float ampLeft;
-	
-	/**
-	 * Effective right stereo amplitude
-	 */
-	float ampRight;
-	
-	/**
 	 * Encapsulating channel
 	 */
 	final MA3Channel channel;
-	
-	/**
-	 * All operator envelopes are finished
-	 */
-	boolean envDone;
-	
-	/**
-	 * Base frequency
-	 */
-	float freqBase;
 	
 	/**
 	 * Encapsulating instance
@@ -102,14 +60,55 @@ class MA3Note
 	final MA3Operator[] operators;
 	
 	/**
-	 * Note is currently active on its key
-	 */
-	boolean playing;
-	
-	/**
 	 * Current output sample
 	 */
 	final float sample;
+	
+	/**
+	 * Frequency advancement when dissociated
+	 */
+	float advance;
+	
+	/**
+	 * Amplitude modulator phase
+	 */
+	int amPhase;
+	
+	/**
+	 * Effective left stereo amplitude
+	 */
+	float ampLeft;
+	
+	/**
+	 * Effective right stereo amplitude
+	 */
+	float ampRight;
+	
+	/**
+	 * OPL registers
+	 * Octave index
+	 */
+	int block;
+	
+	/**
+	 * All operator envelopes are finished
+	 */
+	boolean envDone;
+	
+	/**
+	 * Frequency divider
+	 */
+	int f_number;
+	
+	/**
+	 * Base frequency
+	 */
+	float freqBase;
+	
+	/**
+	 * Note is currently active on its key
+	 */
+	boolean playing;
 	
 	/**
 	 * Base volume
@@ -142,8 +141,7 @@ class MA3Note
 		
 		// Operators
 		for (int x = 0; x < this.operators.length; x++)
-			this.operators[x] = new MA3Operator(this,
-				algorithm.operators[x]);
+			this.operators[x] = new MA3Operator(this, algorithm.operators[x]);
 	}
 	
 	
@@ -153,8 +151,8 @@ class MA3Note
 	float ease(float level, float target)
 	{
 		return level < target ? Math.min(target,
-			level + this.instance.volRate) : level > target ? Math.max(
-			target, level - this.instance.volRate) : level;
+			level + this.instance.volRate) : level > target ? Math.max(target,
+			level - this.instance.volRate) : level;
 	}
 	
 	/**

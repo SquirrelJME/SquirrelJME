@@ -49,21 +49,21 @@ public class MLDPlayer
 	/**
 	 * Event type that notifies when a non-looping sequence finishes.
 	 *
-	 * @see Event
+	 * @see MLDPlayerEvent
 	 */
 	public static final int EVENT_END = 0;
 	
 	/**
 	 * Event type that notifies when a particular key is played.
 	 *
-	 * @see Event
+	 * @see MLDPlayerEvent
 	 */
 	public static final int EVENT_KEY = 2;
 	
 	/**
 	 * Event type that notifies when a sequence loops.
 	 *
-	 * @see Event
+	 * @see MLDPlayerEvent
 	 */
 	public static final int EVENT_LOOP = 1;
 	
@@ -77,17 +77,37 @@ public class MLDPlayer
 	/**
 	 * Playback channels
 	 */
-	final Channel[] channels;
+	final MLDChannel[] channels;
 	
 	/**
 	 * Pending events
 	 */
-	final ArrayList<Event> events;
+	final ArrayList<MLDPlayerEvent> events;
 	
 	/**
 	 * Key events enabled by key
 	 */
 	final HashSet<Integer> evtKeys;
+	
+	/**
+	 * Sequence resource
+	 */
+	final MLD mld;
+	
+	/**
+	 * Output sampling rate
+	 */
+	final float sampleRate;
+	
+	/**
+	 * Sample generator
+	 */
+	final Sampler sampler;
+	
+	/**
+	 * Sequencer state
+	 */
+	final MLDPlayerTrack[] tracks;
 	
 	/**
 	 * Playback events are enabled
@@ -105,11 +125,6 @@ public class MLDPlayer
 	float framesPerTick;
 	
 	/**
-	 * Sequence resource
-	 */
-	final MLD mld;
-	
-	/**
 	 * Output frames to process
 	 */
 	float pendingFrames;
@@ -125,17 +140,6 @@ public class MLDPlayer
 	long position;
 	
 	/**
-	 * Output sampling rate
-	 */
-	final float sampleRate;
-	
-	
-	/**
-	 * Sample generator
-	 */
-	final Sampler sampler;
-	
-	/**
 	 * Processing setTime()
 	 */
 	boolean seeking;
@@ -144,12 +148,6 @@ public class MLDPlayer
 	 * Sequencer position in ticks
 	 */
 	long tickNow;
-	
-	
-	/**
-	 * Sequencer state
-	 */
-	final Track[] tracks;
 	
 	
 	/**
@@ -180,7 +178,7 @@ public class MLDPlayer
 			throw new IllegalArgumentException("Invalid sampling rate.");
 		
 		
-		this.channels = new Channel[16];
+		this.channels = new MLDChannel[16];
 		this.events = new ArrayList<>();
 		this.evtKeys = new HashSet<>();
 		this.evtPlayback = false;
@@ -188,21 +186,21 @@ public class MLDPlayer
 		this.sampler = sampler.instance(sampleRate);
 		this.sampleRate = sampleRate;
 		this.seeking = false;
-		this.tracks = new Track[mld.tracks.length];
+		this.tracks = new MLDPlayerTrack[mld.tracks.length];
 		
 		// Channels
 		for (int x = 0; x < this.channels.length; x++)
 		{
-			Channel chan = this.channels[x] = new Channel();
+			MLDChannel chan = this.channels[x] = new MLDChannel();
 			//  A0 .. C6
-			chan.notesOn = new Note[99];
+			chan.notesOn = new MLDNote[99];
 			chan.notesOut = new ArrayList<>();
 		}
 		
 		// Tracks
 		for (int x = 0; x < this.tracks.length; x++)
 		{
-			Track track = this.tracks[x] = new Track();
+			MLDPlayerTrack track = this.tracks[x] = new MLDPlayerTrack();
 			track.index = x;
 			track.mld = mld.tracks[x];
 		}
@@ -216,7 +214,7 @@ public class MLDPlayer
 	 * the note A<sub>4</sub>.
 	 *
 	 * @param key A key number to register.
-	 * @see Event
+	 * @see MLDPlayerEvent
 	 * @see #getEvents()
 	 */
 	public void addEventKey(int key)
@@ -231,7 +229,7 @@ public class MLDPlayer
 	 *
 	 * @param keys A list of key numbers to register.
 	 * @throws NullPointerException if {@code keys} is {@code null}.
-	 * @see Event
+	 * @see MLDPlayerEvent
 	 * @see #getEvents()
 	 */
 	public void addEventKeys(int[] keys)
@@ -270,14 +268,14 @@ public class MLDPlayer
 	 * rendered.
 	 *
 	 * @return An array of all pending events, now acknowledged.
-	 * @see Event
+	 * @see MLDPlayerEvent
 	 * @see #addEventKey(int)
 	 * @see #addEventKeys(int[])
 	 * @see #setPlaybackEventsEnabled(boolean)
 	 */
-	public Event[] getEvents()
+	public MLDPlayerEvent[] getEvents()
 	{
-		Event[] ret = this.events.toArray(new Event[this.events.size()]);
+		MLDPlayerEvent[] ret = this.events.toArray(new MLDPlayerEvent[this.events.size()]);
 		this.events.clear();
 		return ret;
 	}
@@ -321,7 +319,7 @@ public class MLDPlayer
 	{
 		if (!this.sampler.isFinished())
 			return false;
-		for (Track track : this.tracks)
+		for (MLDPlayerTrack track : this.tracks)
 		{
 			if (!track.finished)
 				return false;
@@ -333,7 +331,7 @@ public class MLDPlayer
 	 * Unregisters a keys from raising events during rendering.
 	 *
 	 * @param key A key number to unregister.
-	 * @see Event
+	 * @see MLDPlayerEvent
 	 * @see #getEvents()
 	 */
 	public void removeEventKey(int key)
@@ -346,7 +344,7 @@ public class MLDPlayer
 	 *
 	 * @param keys A list of key numbers to unregister.
 	 * @throws NullPointerException if {@code keys} is {@code null}.
-	 * @see Event
+	 * @see MLDPlayerEvent
 	 * @see #getEvents()
 	 */
 	public void removeEventKeys(int[] keys)
@@ -376,7 +374,7 @@ public class MLDPlayer
 	 * @throws ArrayIndexOutOfBoundsException if {@code offset} is
 	 * negative, or if {@code offset + frames * 2 > samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative.
-	 * @see #render(float[],int,int,float,float,boolean,boolean)
+	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 */
 	public int render(float[] samples, int offset, int frames)
@@ -406,7 +404,7 @@ public class MLDPlayer
 	 * negative, or if {@code offset + frames * 2 > samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative, or if
 	 * {@code amplitude} is a non-number or is negative.
-	 * @see #render(float[],int,int,float,float,boolean,boolean)
+	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 */
 	public int render(float[] samples, int offset, int frames,
@@ -441,7 +439,7 @@ public class MLDPlayer
 	 * negative, or if {@code offset + frames * 2 > samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative, or if
 	 * {@code left} or {@code right} is a non-number or is negative.
-	 * @see #render(float[],int,int,float,float,boolean,boolean)
+	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 */
 	public int render(float[] samples, int offset, int frames, float left,
@@ -483,9 +481,9 @@ public class MLDPlayer
 	 * {@code left} or {@code right} is a non-number or is negative.
 	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 * @see #getEvents()
-	 * @see #render(float[],int,int)
-	 * @see #render(float[],int,int,float)
-	 * @see #render(float[],int,int,float,float)
+	 * @see #render(float[], int, int)
+	 * @see #render(float[], int, int, float)
+	 * @see #render(float[], int, int, float, float)
 	 */
 	public int render(float[] samples, int offset, int frames, float left,
 		float right, boolean erase, boolean clamp)
@@ -556,19 +554,19 @@ public class MLDPlayer
 				this.tickNow += this.pendingTicks;
 				
 				// Notes
-				for (Channel chan : this.channels)
-					for (Note note : chan.notesOut)
+				for (MLDChannel chan : this.channels)
+					for (MLDNote note : chan.notesOut)
 						note.gateTime -= this.pendingTicks;
 				
 				// Tracks
-				for (Track track : this.tracks)
+				for (MLDPlayerTrack track : this.tracks)
 					this.process(track, this.pendingTicks);
 				
 				// Remove expired notes
-				for (Channel chan : this.channels)
+				for (MLDChannel chan : this.channels)
 					for (int x = 0; x < chan.notesOut.size(); x++)
 					{
-						Note note = chan.notesOut.get(x);
+						MLDNote note = chan.notesOut.get(x);
 						if (note.gateTime != 0)
 							continue;
 						this.sampler.keyOff(note.channel, note.key);
@@ -602,7 +600,7 @@ public class MLDPlayer
 	 *
 	 * @param enabled Whether or not playback events can be raised during
 	 * rendering.
-	 * @see Event
+	 * @see MLDPlayerEvent
 	 * @see #getEvents()
 	 */
 	public void setPlaybackEventsEnabled(boolean enabled)
@@ -658,7 +656,7 @@ public class MLDPlayer
 	/**
 	 * bank-change
 	 */
-	void evtBankChange(Track track, MLDEvent event)
+	void evtBankChange(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.bankChange(event.channel, event.bank);
 		this.setTrackOffset(track, track.offset + 1);
@@ -667,17 +665,17 @@ public class MLDPlayer
 	/**
 	 * cuepoint
 	 */
-	void evtCuepoint(Track track, MLDEvent event)
+	void evtCuepoint(MLDPlayerTrack track, MLDEvent event)
 	{
 		
 		// cuepoint-end
 		if (event.cuepoint == MLD.CUEPOINT_END && this.tracks[0].cuepoint != -1)
 		{
-			for (Track t : this.tracks)
+			for (MLDPlayerTrack t : this.tracks)
 				this.setTrackOffset(t, t.cuepoint);
 			if (this.evtPlayback)
 				this.events.add(
-					new Event(this.getTime(), MLDPlayer.EVENT_LOOP, 0));
+					new MLDPlayerEvent(this.getTime(), MLDPlayer.EVENT_LOOP, 0));
 			return;
 		}
 		
@@ -687,7 +685,7 @@ public class MLDPlayer
 		// cuepoint-start
 		if (event.cuepoint == MLD.CUEPOINT_START)
 		{
-			for (Track t : this.tracks)
+			for (MLDPlayerTrack t : this.tracks)
 				t.cuepoint = t.offset;
 		}
 		
@@ -696,7 +694,7 @@ public class MLDPlayer
 	/**
 	 * drum-enable
 	 */
-	void evtDrumEnable(Track track, MLDEvent event)
+	void evtDrumEnable(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.drumEnable(event.channel, event.enable);
 		this.setTrackOffset(track, track.offset + 1);
@@ -705,7 +703,7 @@ public class MLDPlayer
 	/**
 	 * end-of-track
 	 */
-	void evtEndOfTrack(Track track, MLDEvent event)
+	void evtEndOfTrack(MLDPlayerTrack track, MLDEvent event)
 	{
 		track.finished = true;
 	}
@@ -713,7 +711,7 @@ public class MLDPlayer
 	/**
 	 * ext-B event
 	 */
-	void evtExtB(Track track, MLDEvent e)
+	void evtExtB(MLDPlayerTrack track, MLDEvent e)
 	{
 		switch (e.id)
 		{
@@ -774,7 +772,7 @@ public class MLDPlayer
 	/**
 	 * ext-info event
 	 */
-	void evtExtInfo(Track track, MLDEvent e)
+	void evtExtInfo(MLDPlayerTrack track, MLDEvent e)
 	{
 		this.sampler.sysEx(e.data);
 		this.setTrackOffset(track, track.offset + 1);
@@ -783,7 +781,7 @@ public class MLDPlayer
 	/**
 	 * master-tune
 	 */
-	void evtMasterTune(Track track, MLDEvent event)
+	void evtMasterTune(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.masterTune(event.semitones);
 		this.setTrackOffset(track, track.offset + 1);
@@ -792,7 +790,7 @@ public class MLDPlayer
 	/**
 	 * master-volume
 	 */
-	void evtMasterVolume(Track track, MLDEvent event)
+	void evtMasterVolume(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.masterVolume(event.volume);
 		this.setTrackOffset(track, track.offset + 1);
@@ -801,10 +799,10 @@ public class MLDPlayer
 	/**
 	 * note
 	 */
-	void evtNote(Track track, MLDEvent event)
+	void evtNote(MLDPlayerTrack track, MLDEvent event)
 	{
-		Channel chan = this.channels[event.channel];
-		Note note = chan.notesOn[MLDPlayer.A4 + event.key];
+		MLDChannel chan = this.channels[event.channel];
+		MLDNote note = chan.notesOn[MLDPlayer.A4 + event.key];
 		
 		// Common processing
 		this.setTrackOffset(track, track.offset + 1);
@@ -812,7 +810,7 @@ public class MLDPlayer
 		// Raise an event
 		if (this.evtKeys.contains(event.key))
 			this.events.add(
-				new Event(this.getTime(), MLDPlayer.EVENT_KEY, event.key));
+				new MLDPlayerEvent(this.getTime(), MLDPlayer.EVENT_KEY, event.key));
 		
 		// Velocity 0 is regarded as key-off
 		if (event.velocity == 0)
@@ -833,7 +831,7 @@ public class MLDPlayer
 		// Get or create the note for this key
 		if (note == null)
 		{
-			note = new Note();
+			note = new MLDNote();
 			note.channel = event.channel;
 			note.gateTime = 0;
 			note.key = event.key;
@@ -848,7 +846,7 @@ public class MLDPlayer
 	/**
 	 * panpot
 	 */
-	void evtPanPot(Track track, MLDEvent event)
+	void evtPanPot(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.panpot(event.channel, event.panpot);
 		this.setTrackOffset(track, track.offset + 1);
@@ -857,7 +855,7 @@ public class MLDPlayer
 	/**
 	 * pitchbend
 	 */
-	void evtPitchBend(Track track, MLDEvent event)
+	void evtPitchBend(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.pitchBend(event.channel, event.semitones);
 		this.setTrackOffset(track, track.offset + 1);
@@ -866,7 +864,7 @@ public class MLDPlayer
 	/**
 	 * pitchbend-range
 	 */
-	void evtPitchRange(Track track, MLDEvent event)
+	void evtPitchRange(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.pitchBendRange(event.channel, event.range);
 		this.setTrackOffset(track, track.offset + 1);
@@ -875,7 +873,7 @@ public class MLDPlayer
 	/**
 	 * program-change
 	 */
-	void evtProgramChange(Track track, MLDEvent event)
+	void evtProgramChange(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.programChange(event.channel, event.program);
 		this.setTrackOffset(track, track.offset + 1);
@@ -884,7 +882,7 @@ public class MLDPlayer
 	/**
 	 * timebase-tempo
 	 */
-	void evtTimebaseTempo(Track track, MLDEvent event)
+	void evtTimebaseTempo(MLDPlayerTrack track, MLDEvent event)
 	{
 		if (event.timebase == -1)
 			return;
@@ -897,7 +895,7 @@ public class MLDPlayer
 	/**
 	 * volume
 	 */
-	void evtVolume(Track track, MLDEvent event)
+	void evtVolume(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.volume(event.channel, event.volume);
 		this.setTrackOffset(track, track.offset + 1);
@@ -907,7 +905,7 @@ public class MLDPlayer
 	/**
 	 * Process events on a track
 	 */
-	void process(Track track, int ticks)
+	void process(MLDPlayerTrack track, int ticks)
 	{
 		
 		// The track has finished
@@ -968,14 +966,14 @@ public class MLDPlayer
 		this.sampler.reset();
 		
 		// Channels
-		for (Channel chan : this.channels)
+		for (MLDChannel chan : this.channels)
 		{
 			Arrays.fill(chan.notesOn, null);
 			chan.notesOut.clear();
 		}
 		
 		// Tracks
-		for (Track track : this.tracks)
+		for (MLDPlayerTrack track : this.tracks)
 		{
 			track.cuepoint = -1;
 			track.offset = track.mld.cue;
@@ -985,7 +983,7 @@ public class MLDPlayer
 		
 		// Initialize playback
 		this.finished = true;
-		for (Track track : this.tracks)
+		for (MLDPlayerTrack track : this.tracks)
 		{
 			this.process(track, 0);
 			this.finished = this.finished && track.finished;
@@ -1003,7 +1001,7 @@ public class MLDPlayer
 	/**
 	 * Specify the event offset of a track
 	 */
-	void setTrackOffset(Track track, int offset)
+	void setTrackOffset(MLDPlayerTrack track, int offset)
 	{
 		
 		// Configure the track
@@ -1014,10 +1012,10 @@ public class MLDPlayer
 		if (!track.finished || !this.evtPlayback)
 			return;
 		boolean finished = true;
-		for (Track other : this.tracks)
+		for (MLDPlayerTrack other : this.tracks)
 			finished = finished && other.finished;
 		if (finished)
-			this.events.add(new Event(this.getTime(), MLDPlayer.EVENT_END,
+			this.events.add(new MLDPlayerEvent(this.getTime(), MLDPlayer.EVENT_END,
 				0));
 	}
 	
@@ -1027,8 +1025,8 @@ public class MLDPlayer
 	int untilNote()
 	{
 		int ret = -1;
-		for (Channel chan : this.channels)
-			for (Note note : chan.notesOut)
+		for (MLDChannel chan : this.channels)
+			for (MLDNote note : chan.notesOut)
 			{
 				if (ret == -1 || note.gateTime < ret)
 					ret = note.gateTime;
@@ -1042,7 +1040,7 @@ public class MLDPlayer
 	int untilTrack()
 	{
 		int ret = -1;
-		for (Track track : this.tracks)
+		for (MLDPlayerTrack track : this.tracks)
 		{
 			if (track.finished)
 				continue;
@@ -1052,124 +1050,5 @@ public class MLDPlayer
 		return ret;
 	}
 	
-	
-	/**
-	 * Playback channel
-	 */
-	static class Channel
-		implements BasicChannel
-	{
-		/**
-		 * All notes currently on keys
-		 */
-		Note[] notesOn;
-		
-		/**
-		 * All notes that are generating output
-		 */
-		ArrayList<Note> notesOut;
-	}
-	
-	/**
-	 * Notifies of a scenario that arises during playback. When configured,
-	 * the
-	 * {@code render()} methods will terminate early any time an event
-	 * condition is satisfied. Events are obtained by the caller and
-	 * acknowledged via {@link #getEvents()}.
-	 *
-	 * @see #getEvents()
-	 */
-	public static class Event
-		implements BasicEvent
-	{
-		
-		/**
-		 * Additional event data, if relevant. For {@code EVENT_KEY} events,
-		 * this will be the key number.
-		 */
-		public final int data;
-		
-		/**
-		 * Time in seconds since the beginning of playback when the event was
-		 * raised.
-		 */
-		public final double time;
-		
-		/**
-		 * Indicates the type of event that was raised: {@code EVENT_END},
-		 * {@code EVENT_KEY} or {@code EVENT_LOOP}.
-		 */
-		public final int type;
-		
-		/**
-		 * Internal constructor
-		 */
-		Event(double time, int type, int data)
-		{
-			this.data = data;
-			this.time = time;
-			this.type = type;
-		}
-		
-	}
-	
-	/**
-	 * Music note
-	 */
-	static class Note
-		implements BasicNote
-	{
-		/**
-		 * Output channel
-		 */
-		int channel;
-		
-		/**
-		 * Ticks before note expires
-		 */
-		int gateTime;
-		
-		/**
-		 * Key index
-		 */
-		int key;
-	}
-	
-	/**
-	 * Event list state
-	 */
-	static class Track
-		implements BasicTrack
-	{
-		/**
-		 * Starting cuepoint
-		 */
-		int cuepoint;
-		
-		/**
-		 * Track has no more events
-		 */
-		boolean finished;
-		
-		/**
-		 * Index within sequencer
-		 */
-		int index;
-		
-		/**
-		 * Event list
-		 */
-		MLDTrack mld;
-		
-		/**
-		 * Current event offset
-		 */
-		int offset;
-		
-		/**
-		 * Event ticks until next event
-		 */
-		int ticks;
-	}
 	
 }

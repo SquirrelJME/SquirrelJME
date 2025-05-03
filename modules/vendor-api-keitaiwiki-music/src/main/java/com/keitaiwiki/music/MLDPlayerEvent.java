@@ -33,111 +33,44 @@
 package com.keitaiwiki.music;
 
 /**
- * Utility class for reading binary data
+ * Notifies of a scenario that arises during playback. When configured,
+ * the
+ * {@code render()} methods will terminate early any time an event
+ * condition is satisfied. Events are obtained by the caller and
+ * acknowledged via {@link MLDPlayer#getEvents()}.
+ *
+ * @see MLDPlayer#getEvents()
  */
-class MLDBinaryReader
+public class MLDPlayerEvent
+	implements BasicEvent
 {
-	/**
-	 * Backing data store
-	 */
-	final byte[] data;
 	
 	/**
-	 * Length of current segment
+	 * Additional event data, if relevant. For {@code EVENT_KEY} events,
+	 * this will be the key number.
 	 */
-	final int length;
+	public final int data;
 	
 	/**
-	 * Offset of start of current segment
+	 * Time in seconds since the beginning of playback when the event was
+	 * raised.
 	 */
-	final int start;
+	public final double time;
 	
 	/**
-	 * Current input offset
+	 * Indicates the type of event that was raised: {@code EVENT_END},
+	 * {@code EVENT_KEY} or {@code EVENT_LOOP}.
 	 */
-	int offset;
+	public final int type;
 	
 	/**
-	 * Constructor
+	 * Internal constructor
 	 */
-	MLDBinaryReader(byte[] data, int start, int length)
+	MLDPlayerEvent(double time, int type, int data)
 	{
 		this.data = data;
-		this.length = length;
-		this.offset = start;
-		this.start = start;
-	}
-	
-	/**
-	 * Read a byte array
-	 */
-	byte[] bytes(int length)
-	{
-		if (this.offset + length > this.start + this.length)
-			throw new RuntimeException("Unexpected EOF.");
-		byte[] ret = new byte[length];
-		System.arraycopy(this.data, this.offset, ret, 0, length);
-		this.offset += length;
-		return ret;
-	}
-	
-	/**
-	 * Determine whether the stream has reached its end
-	 */
-	boolean isEOF()
-	{
-		return this.offset == this.start + this.length;
-	}
-	
-	/**
-	 * Produce a new Reader to access a subset of this one
-	 */
-	MLDBinaryReader reader(int length)
-	{
-		MLDBinaryReader ret = new MLDBinaryReader(this.data, this.offset,
-			length);
-		this.skip(length);
-		return ret;
-	}
-	
-	/**
-	 * Advance the input
-	 */
-	void skip(int length)
-	{
-		if (this.offset + length > this.start + this.length)
-			throw new RuntimeException("Unexpected EOF.");
-		this.offset += length;
-	}
-	
-	/**
-	 * Read a 16-bit unsigned integer
-	 */
-	int u16()
-	{
-		int ret = this.u8() << 8;
-		return ret | this.u8();
-	}
-	
-	/**
-	 * Read a 32-bit unsigned integer
-	 */
-	int u32()
-	{
-		int ret = this.u16() << 16;
-		if (ret < 0)
-			throw new RuntimeException("Unsupported U32 value.");
-		return ret | this.u16();
-	}
-	
-	/**
-	 * Read an 8-bit unsigned integer
-	 */
-	int u8()
-	{
-		if (this.offset == this.start + this.length)
-			throw new RuntimeException("Unexpected EOF.");
-		return this.data[this.offset++] & 0xFF;
+		this.time = time;
+		this.type = type;
 	}
 	
 }

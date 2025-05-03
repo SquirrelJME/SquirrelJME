@@ -110,13 +110,6 @@ public class MLD
 	static final int EVENT_X_DRUM_ENABLE = 0xBA;
 	
 	/**
-	 * "note" types
-	 */
-	static final int NOTE_3 = 0;
-	
-	static final int NOTE_4 = 1;
-	
-	/**
 	 * FourCCs
 	 * "adat"
 	 */
@@ -197,6 +190,12 @@ public class MLD
 	 */
 	static final int FOURCC_VERS = 0x76657273;
 	
+	/**
+	 * "note" types
+	 */
+	static final int NOTE_3 = 0;
+	
+	static final int NOTE_4 = 1;
 	
 	/**
 	 * Sample data
@@ -599,7 +598,8 @@ public class MLD
 	/**
 	 * Parse a note event
 	 */
-	MLDEvent eventNote(int note, int track, MLDEvent event, MLDBinaryReader reader)
+	MLDEvent eventNote(int note, int track, MLDEvent event,
+		MLDBinaryReader reader)
 	{
 		
 		// Common processing

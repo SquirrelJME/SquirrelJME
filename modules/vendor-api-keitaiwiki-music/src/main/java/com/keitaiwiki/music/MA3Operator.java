@@ -56,11 +56,6 @@ class MA3Operator
 	final int dr;
 	
 	/**
-	 * Detune shift
-	 */
-	int dt;
-	
-	/**
 	 * Frequency modulation depth
 	 */
 	final int dvb;
@@ -74,26 +69,6 @@ class MA3Operator
 	 * Enable frequency modulation
 	 */
 	final boolean evb;
-	
-	/**
-	 * Feedback rate index
-	 */
-	int fb;
-	
-	/**
-	 * Attenuation index per octave
-	 */
-	int ksl;
-	
-	/**
-	 * Envelope rate modifier scale
-	 */
-	int ksr;
-	
-	/**
-	 * Frequency multiplier
-	 */
-	int multi;
 	
 	/**
 	 * Envelope release rate
@@ -121,15 +96,9 @@ class MA3Operator
 	final int tl;
 	
 	/**
-	 * Wave function index
-	 */
-	int ws;
-	
-	/**
 	 * Ignore key-off response
 	 */
 	final boolean xof;
-	
 	
 	/**
 	 * Encapsulating algorithm
@@ -140,6 +109,11 @@ class MA3Operator
 	 * u14 Amplitude modulation counter
 	 */
 	int amPhase;
+	
+	/**
+	 * Detune shift
+	 */
+	int dt;
 	
 	/**
 	 * u9  Current envelope level
@@ -172,6 +146,11 @@ class MA3Operator
 	int envStage;
 	
 	/**
+	 * Feedback rate index
+	 */
+	int fb;
+	
+	/**
 	 * Most recent output sample
 	 */
 	int fb0;
@@ -192,9 +171,24 @@ class MA3Operator
 	boolean isValid;
 	
 	/**
+	 * Attenuation index per octave
+	 */
+	int ksl;
+	
+	/**
 	 * KSL attenuation level
 	 */
 	int kslOut;
+	
+	/**
+	 * Envelope rate modifier scale
+	 */
+	int ksr;
+	
+	/**
+	 * Frequency multiplier
+	 */
+	int multi;
 	
 	/**
 	 * Encapsulating note
@@ -210,6 +204,11 @@ class MA3Operator
 	 * Current wave source sample
 	 */
 	float wavSample;
+	
+	/**
+	 * Wave function index
+	 */
+	int ws;
 	
 	
 	/**

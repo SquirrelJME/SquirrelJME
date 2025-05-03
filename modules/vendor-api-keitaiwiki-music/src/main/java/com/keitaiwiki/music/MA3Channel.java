@@ -44,6 +44,23 @@ class MA3Channel
 	
 	
 	/**
+	 * Index in sampler
+	 */
+	final int index;
+	
+	/**
+	 * Encapsulating instance
+	 */
+	final MA3SamplerProvider.Instance instance;
+	
+	/**
+	 * All notes currently on keys
+	 */
+	final MA3Note[] notesOn;
+	
+	final ArrayList<MA3Note> notesOut;
+	
+	/**
 	 * Pitch bend base ratio
 	 */
 	float bendBase;
@@ -59,26 +76,9 @@ class MA3Channel
 	float bendRange;
 	
 	/**
-	 * Index in sampler
-	 */
-	final int index;
-	
-	/**
-	 * Encapsulating instance
-	 */
-	final MA3SamplerProvider.Instance instance;
-	
-	/**
 	 * The channel plays drum notes
 	 */
 	boolean isDrum;
-	
-	/**
-	 * All notes currently on keys
-	 */
-	final MA3Note[] notesOn;
-	
-	final ArrayList<MA3Note> notesOut;
 	// All notes that are generating output
 	
 	/**
