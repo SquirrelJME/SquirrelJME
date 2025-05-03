@@ -39,10 +39,6 @@ package com.keitaiwiki.music;
  */
 public interface Sampler
 {
-	
-	/////////////////////////////// Interfaces 
-	////////////////////////////////
-	
 	/**
 	 * Produces an instance of this sampler that can be used to render 
 	 * samples.
@@ -55,10 +51,6 @@ public interface Sampler
 	 * non-number or is less than or equal to zero.
 	 */
 	Instance instance(float sampleRate);
-	
-	
-	///////////////////////////////// Methods 
-	/////////////////////////////////
 	
 	/**
 	 * Sample-generating instance of a {@code Sampler}. Configurations on the

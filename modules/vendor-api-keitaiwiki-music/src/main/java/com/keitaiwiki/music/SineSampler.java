@@ -43,58 +43,88 @@ import java.util.Iterator;
  */
 public class SineSampler implements Sampler {
 
-    //////////////////////////////// Constants ////////////////////////////////
-
-    private static final int A4 = 81; // Key index bias
-
+    // Key index bias
+    private static final int A4 = 81;
 
 
-    ///////////////////////////////// Classes /////////////////////////////////
 
-    // Output channel
-    private class Channel {
-        float           bendBase;   // Pitch bend base ratio
-        float           bendOut;    // Effective channel frequency ratio
-        float           bendRange;  // Pitch bend magnitude
-        int             index;      // Index in sampler
-        Note[]          notesOn;    // All notes currently on keys
-        ArrayList<Note> notesOut;   // All notes that are generating output
-        float           volLeft;    // Left stereo amplitude
-        float           volLevel;   // Channel output amplitude
-        float           volPanning; // Stereo level
-        float           volRight;   // Right stereo amplitude
+    /**
+	 * Output channel
+	 */
+	
+	private static class Channel {
+        // Pitch bend base ratio
+        float           bendBase;
+        // Effective channel frequency ratio
+        float           bendOut;
+        // Pitch bend magnitude
+        float           bendRange;
+        // Index in sampler
+        int             index;
+        // All notes currently on keys
+        Note[]          notesOn;
+        // All notes that are generating output
+        ArrayList<Note> notesOut;
+        // Left stereo amplitude
+        float           volLeft;
+        // Channel output amplitude
+        float           volLevel;
+        // Stereo level
+        float           volPanning;
+        // Right stereo amplitude
+        float           volRight;
     }
 
-    // Music note
-    private class Note {
-        float   advance;        // Amount to increment phase per frame
-        Channel channel;        // Encapsulating channel
-        float   freqBase;       // Base frequency
-        boolean playing;        // Note is currently active on its key
-        float   volBase;        // Base volume
-        float   volLeftLevel;   // Current left stereo volume
-        float   volLeftTarget;  // Target left stereo volume
-        float   volRightLevel;  // Current right stereo volume
-        float   volRightTarget; // Target right stereo volume
-        float   wavPhase;       // Position in wave period
+    /**
+	 * Music note
+	 */
+    private static class Note {
+        // Amount to increment phase per frame
+        float   advance;
+        // Encapsulating channel
+        Channel channel;
+        // Base frequency
+        float   freqBase;
+        // Note is currently active on its key
+        boolean playing;
+        // Base volume
+        float   volBase;
+        // Current left stereo volume
+        float   volLeftLevel;
+        // Target left stereo volume
+        float   volLeftTarget;
+        // Current right stereo volume
+        float   volRightLevel;
+        // Target right stereo volume
+        float   volRightTarget;
+        // Position in wave period
+        float   wavPhase;
     }
 
-    // Sampler instance
+    /**
+	 * Sampler instance
+	 */
     private class Instance implements Sampler.Instance {
 
-        // instance fields
-        Channel[] channels;     // Channel states
-        float     masterTune;   // Global pitch bend
-        float     masterVolume; // Global volume
-        float     sampleRate;   // Output sampling rate
-        float     volRate;      // Automatic volume adjustment rate
+        // Channel states
+        Channel[] channels;
+        // Global pitch bend
+        float     masterTune;
+        // Global volume
+        float     masterVolume;
+        // Output sampling rate
+        float     sampleRate;
+        // Automatic volume adjustment rate
+        float     volRate;
 
 
 
-        //////////////////////////// Constructors /////////////////////////////
-
-        // Constructor
-        Instance(float sampleRate) {
+        /**
+		 * ///////////////////////// Constructors /////////////////////////////
+		 * Constructor
+		 */
+		
+		Instance(float sampleRate) {
 
             // Instance fields
 			this.channels = new Channel[16];
@@ -115,19 +145,24 @@ public class SineSampler implements Sampler {
 
 
 
-        /////////////////////////// Public Methods ////////////////////////////
-
-        // Specify a channel's program bank.
-        public void bankChange(int channel, int bank) {
+        /**
+		 * Specify a channel's program bank.
+		 */
+		
+		public void bankChange(int channel, int bank) {
             // Not implementing
         }
 
-        // Specify whether a channel should play drum notes.
+        /**
+		 * Specify whether a channel should play drum notes.
+		 */
         public void drumEnable(int channel, boolean enable) {
             // Not implementing
         }
 
-        // Deactivate a key that has previoulsy been activated on a channel.
+        /**
+		 * Deactivate a key that has previoulsy been activated on a channel.
+		 */
         public void keyOff(int channel, int key) {
             if (
                 channel  < 0 || channel  >= this.channels.length || SineSampler.A4 + key < 0 || SineSampler.A4 + key >= 128
@@ -140,7 +175,9 @@ public class SineSampler implements Sampler {
             }
         }
 
-        // Determine whether or not any notes are producing output.
+        /**
+		 * Determine whether or not any notes are producing output.
+		 */
         public boolean isFinished() {
             for (Channel chan : this.channels) {
                 if (chan.notesOut.size() != 0)
@@ -149,7 +186,9 @@ public class SineSampler implements Sampler {
             return true;
         }
 
-        // Activate a key on a channel.
+        /**
+		 * Activate a key on a channel.
+		 */
         public void keyOn(int channel, int key, float velocity) {
 
             // Error checking
@@ -179,21 +218,27 @@ public class SineSampler implements Sampler {
             note.volBase  = velocity;
         }
 
-        // Specify the global pitch bend.
+        /**
+		 * Specify the global pitch bend.
+		 */
         public void masterTune(float semitones) {
             if (!Float.isFinite(semitones))
                 throw new IllegalArgumentException("Invalid semitones.");
 			this.masterTune = (float) Math.pow(2, semitones);
         }
 
-        // Specify the global volume.
+        /**
+		 * Specify the global volume.
+		 */
         public void masterVolume(float volume) {
             if (!Float.isFinite(volume) || volume < 0.0f)
                 throw new IllegalArgumentException("Invalid volume.");
 			this.masterVolume = volume;
         }
 
-        // Specify stereo panning on a channel.
+        /**
+		 * Specify stereo panning on a channel.
+		 */
         public void panpot(int channel, float panpot) {
             if (!Float.isFinite(panpot) || panpot < -1.0f || panpot > 1.0f)
                 throw new IllegalArgumentException("Invalid panpot.");
@@ -205,7 +250,9 @@ public class SineSampler implements Sampler {
             chan.volRight   =         chan.volPanning  * chan.volLevel;
         }
 
-        // Specify a channel's pitch bend.
+        /**
+		 * Specify a channel's pitch bend.
+		 */
         public void pitchBend(int channel, float semitones) {
             if (!Float.isFinite(semitones))
                 throw new IllegalArgumentException("Invalid semitones.");
@@ -216,7 +263,9 @@ public class SineSampler implements Sampler {
             chan.bendOut  = (float) Math.pow(2, chan.bendBase*chan.bendRange);
         }
 
-        // Specify the range of a channel's pitch bend.
+        /**
+		 * Specify the range of a channel's pitch bend.
+		 */
         public void pitchBendRange(int channel, float range) {
             if (!Float.isFinite(range) || range < 0.0f)
                 throw new IllegalArgumentException("Invalid range.");
@@ -227,23 +276,31 @@ public class SineSampler implements Sampler {
             chan.bendOut   = (float) Math.pow(2, chan.bendBase*chan.bendRange);
         }
 
-        // Speicfy a channel's program number.
+        /**
+		 * Speicfy a channel's program number.
+		 */
         public void programChange(int channel, int program) {
             // Not implementing
         }
 
-        // Generate output samples.
+        /**
+		 * Generate output samples.
+		 */
         public void render(float[] samples, int offset, int frames) {
 			this.render(samples, offset, frames, 1.0f, true, true);
         }
 
-        // Generate output samples.
+        /**
+		 * Generate output samples.
+		 */
         public void render(float[] samples, int offset, int frames,
             float amplitude) {
 			this.render(samples, offset, frames, amplitude, true, true);
         }
 
-        // Generate output samples.
+        /**
+		 * Generate output samples.
+		 */
         public void render(float[] samples, int offset, int frames,
             float amplitude, boolean erase, boolean clamp) {
 
@@ -279,7 +336,9 @@ public class SineSampler implements Sampler {
 
         }
 
-        // Initialize all output state.
+        /**
+		 * Initialize all output state.
+		 */
         public void reset() {
 
             // Global fields
@@ -306,12 +365,16 @@ public class SineSampler implements Sampler {
 
         }
 
-        // Process a SysEx message.
+        /**
+		 * Process a SysEx message.
+		 */
         public void sysEx(byte[] message) {
             // Not implementing
         }
 
-        // Specify a channel's volume
+        /**
+		 * Specify a channel's volume
+		 */
         public void volume(int channel, float volume) {
             if (!Float.isFinite(volume) || volume < 0.0f)
                 throw new IllegalArgumentException("Invalid volume.");
@@ -325,10 +388,11 @@ public class SineSampler implements Sampler {
 
 
 
-        /////////////////////////// Private Methods ///////////////////////////
-
-        // Render samples on a channel
-        private void chanRender(Channel chan, float[] samples, int offset,
+        /**
+		 * Render samples on a channel
+		 */
+		
+		private void chanRender(Channel chan, float[] samples, int offset,
             int frames, float amplitude) {
 
             // Working variables
@@ -351,7 +415,9 @@ public class SineSampler implements Sampler {
 
         }
 
-        // Render samples on a note
+        /**
+		 * Render samples on a note
+		 */
         private boolean noteRender(Note note, float[] samples, int offset,
             int frames, float amplitude, float left, float right, float bend) {
 
@@ -387,19 +453,25 @@ public class SineSampler implements Sampler {
             return false;
         }
 
-        // Generate a sample on a note
+        /**
+		 * Generate a sample on a note
+		 */
         private float sample(Note note, float advance) {
             float ret = (float) Math.sin(note.wavPhase * Math.PI * 2);
             note.wavPhase = (note.wavPhase + advance) % 1;
             return ret;
         }
 
-        // Process a SysExt message
+        /**
+		 * Process a SysExt message
+		 */
         public void sysExt(byte[] message) {
             // Not implementing
         }
 
-        // Move a volume level closer to its target
+        /**
+		 * Move a volume level closer to its target
+		 */
         private float volAdjust(float level, float target) {
             return level < target ?
                 Math.min(level + this.volRate, target) :
@@ -408,20 +480,12 @@ public class SineSampler implements Sampler {
         }
 
     }
-
-
-
-    ////////////////////////////// Constructors ///////////////////////////////
-
+	
     /**
      * Create a sampler.
      */
     public SineSampler() {}
-
-
-
-    ///////////////////////////// Public Methods //////////////////////////////
-
+	
     /**
      * Produces an instance of this sampler that can be used to render samples.
      * @param sampleRate The output sampling rate of the rendered samples.
