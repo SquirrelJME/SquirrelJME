@@ -32,6 +32,7 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -49,107 +50,167 @@ public class SineSampler
 	
 	
 	
-	//  Key index bias
+	/**
+	 * Key index bias
+	 */
 	static final int A4 = 81;
 	
 	
 	
 	
 	
-	// Output channel
-	class Channel
+	/**
+	 * Output channel
+	 */
+	static class Channel
 	{
-		//  Pitch bend base ratio
+		/**
+		 * Pitch bend base ratio
+		 */
 		float bendBase;
 		
-		//  Effective channel frequency ratio
+		/**
+		 * Effective channel frequency ratio
+		 */
 		float bendOut;
 		
-		//  Pitch bend magnitude
+		/**
+		 * Pitch bend magnitude
+		 */
 		float bendRange;
 		
-		//  Index in sampler
+		/**
+		 * Index in sampler
+		 */
 		int index;
 		
-		//  All notes currently on keys
+		/**
+		 * All notes currently on keys
+		 */
 		Note[] notesOn;
 		
-		//  All notes that are generating output
+		/**
+		 * All notes that are generating output
+		 */
 		ArrayList<Note> notesOut;
 		
-		//  Left stereo amplitude
+		/**
+		 * Left stereo amplitude
+		 */
 		float volLeft;
 		
-		//  Channel output amplitude
+		/**
+		 * Channel output amplitude
+		 */
 		float volLevel;
 		
-		//  Stereo level
+		/**
+		 * Stereo level
+		 */
 		float volPanning;
 		
-		//  Right stereo amplitude
+		/**
+		 * Right stereo amplitude
+		 */
 		float volRight;
 	}
 	
-	// Music note
-	class Note
+	/**
+	 * Music note
+	 */
+	static class Note
 	{
-		//  Amount to increment phase per frame
+		/**
+		 * Amount to increment phase per frame
+		 */
 		float advance;
 		
-		//  Encapsulating channel
+		/**
+		 * Encapsulating channel
+		 */
 		Channel channel;
 		
-		//  Base frequency
+		/**
+		 * Base frequency
+		 */
 		float freqBase;
 		
-		//  Note is currently active on its key
+		/**
+		 * Note is currently active on its key
+		 */
 		boolean playing;
 		
-		//  Base volume
+		/**
+		 * Base volume
+		 */
 		float volBase;
 		
-		//  Current left stereo volume
+		/**
+		 * Current left stereo volume
+		 */
 		float volLeftLevel;
 		
-		//  Target left stereo volume
+		/**
+		 * Target left stereo volume
+		 */
 		float volLeftTarget;
 		
-		//  Current right stereo volume
+		/**
+		 * Current right stereo volume
+		 */
 		float volRightLevel;
 		
-		//  Target right stereo volume
+		/**
+		 * Target right stereo volume
+		 */
 		float volRightTarget;
 		
-		//  Position in wave period
+		/**
+		 * Position in wave period
+		 */
 		float wavPhase;
 	}
 	
-	// Sampler instance
-	class Instance
+	/**
+	 * Sampler instance
+	 */
+	static class Instance
 		implements Sampler.Instance
 	{
 		
 		
-		//  Channel states
+		/**
+		 * Channel states
+		 */
 		final Channel[] channels;
 		
-		//  Global pitch bend
+		/**
+		 * Global pitch bend
+		 */
 		float masterTune;
 		
-		//  Global volume
+		/**
+		 * Global volume
+		 */
 		float masterVolume;
 		
-		//  Output sampling rate
+		/**
+		 * Output sampling rate
+		 */
 		final float sampleRate;
 		
-		//  Automatic volume adjustment rate
+		/**
+		 * Automatic volume adjustment rate
+		 */
 		final float volRate;
 		
 		
 		
 		
 		
-		// Constructor
+		/**
+		 * Constructor
+		 */
 		Instance(float sampleRate)
 		{
 			
@@ -176,19 +237,25 @@ public class SineSampler
 		
 		
 		
-		// Specify a channel's program bank.
+		/**
+		 * Specify a channel's program bank.
+		 */
 		public void bankChange(int channel, int bank)
 		{
 			// Not implementing
 		}
 		
-		// Specify whether a channel should play drum notes.
+		/**
+		 * Specify whether a channel should play drum notes.
+		 */
 		public void drumEnable(int channel, boolean enable)
 		{
 			// Not implementing
 		}
 		
-		// Deactivate a key that has previoulsy been activated on a channel.
+		/**
+		 * Deactivate a key that has previoulsy been activated on a channel.
+		 */
 		public void keyOff(int channel, int key)
 		{
 			if (channel < 0 || channel >= this.channels.length || SineSampler.A4 + key < 0 || SineSampler.A4 + key >= 128)
@@ -202,7 +269,9 @@ public class SineSampler
 			}
 		}
 		
-		// Determine whether or not any notes are producing output.
+		/**
+		 * Determine whether or not any notes are producing output.
+		 */
 		public boolean isFinished()
 		{
 			for (Channel chan : this.channels)
@@ -213,7 +282,9 @@ public class SineSampler
 			return true;
 		}
 		
-		// Activate a key on a channel.
+		/**
+		 * Activate a key on a channel.
+		 */
 		public void keyOn(int channel, int key, float velocity)
 		{
 			
@@ -244,7 +315,9 @@ public class SineSampler
 			note.volBase = velocity;
 		}
 		
-		// Specify the global pitch bend.
+		/**
+		 * Specify the global pitch bend.
+		 */
 		public void masterTune(float semitones)
 		{
 			if (Float.isInfinite(semitones))
@@ -252,7 +325,9 @@ public class SineSampler
 			this.masterTune = (float)Math.pow(2, semitones);
 		}
 		
-		// Specify the global volume.
+		/**
+		 * Specify the global volume.
+		 */
 		public void masterVolume(float volume)
 		{
 			if (Float.isInfinite(volume) || volume < 0.0f)
@@ -260,7 +335,9 @@ public class SineSampler
 			this.masterVolume = volume;
 		}
 		
-		// Specify stereo panning on a channel.
+		/**
+		 * Specify stereo panning on a channel.
+		 */
 		public void panpot(int channel, float panpot)
 		{
 			if (Float.isInfinite(panpot) || panpot < -1.0f || panpot > 1.0f)
@@ -273,7 +350,9 @@ public class SineSampler
 			chan.volRight = chan.volPanning * chan.volLevel;
 		}
 		
-		// Specify a channel's pitch bend.
+		/**
+		 * Specify a channel's pitch bend.
+		 */
 		public void pitchBend(int channel, float semitones)
 		{
 			if (Float.isInfinite(semitones))
@@ -285,7 +364,9 @@ public class SineSampler
 			chan.bendOut = (float)Math.pow(2, chan.bendBase * chan.bendRange);
 		}
 		
-		// Specify the range of a channel's pitch bend.
+		/**
+		 * Specify the range of a channel's pitch bend.
+		 */
 		public void pitchBendRange(int channel, float range)
 		{
 			if (Float.isInfinite(range) || range < 0.0f)
@@ -297,26 +378,48 @@ public class SineSampler
 			chan.bendOut = (float)Math.pow(2, chan.bendBase * chan.bendRange);
 		}
 		
-		// Speicfy a channel's program number.
+		/**
+		 * Speicfy a channel's program number.
+		 */
 		public void programChange(int channel, int program)
 		{
 			// Not implementing
 		}
 		
-		// Generate output samples.
+		/**
+		 * Generate output samples.
+		 */
 		public void render(float[] samples, int offset, int frames)
 		{
 			this.render(samples, offset, frames, 1.0f, true, true);
 		}
 		
-		// Generate output samples.
+		/**
+		 * Generate output samples.
+		 */
 		public void render(float[] samples, int offset, int frames,
 			float amplitude)
 		{
 			this.render(samples, offset, frames, amplitude, true, true);
 		}
 		
-		// Generate output samples.
+		@Override
+		public void render(float[] samples, int offset, int frames, float left,
+			float right)
+		{
+			throw Debugging.todo();
+		}
+		
+		@Override
+		public void render(float[] samples, int offset, int frames, float left,
+			float right, boolean erase, boolean clamp)
+		{
+			throw Debugging.todo();
+		}
+		
+		/**
+		 * Generate output samples.
+		 */
 		public void render(float[] samples, int offset, int frames,
 			float amplitude, boolean erase, boolean clamp)
 		{
@@ -358,7 +461,9 @@ public class SineSampler
 			
 		}
 		
-		// Initialize all output state.
+		/**
+		 * Initialize all output state.
+		 */
 		public void reset()
 		{
 			
@@ -388,13 +493,17 @@ public class SineSampler
 			
 		}
 		
-		// Process a SysEx message.
+		/**
+		 * Process a SysEx message.
+		 */
 		public void sysEx(byte[] message)
 		{
 			// Not implementing
 		}
 		
-		// Specify a channel's volume
+		/**
+		 * Specify a channel's volume
+		 */
 		public void volume(int channel, float volume)
 		{
 			if (Float.isInfinite(volume) || volume < 0.0f)
@@ -411,7 +520,9 @@ public class SineSampler
 		
 		
 		
-		// Render samples on a channel
+		/**
+		 * Render samples on a channel
+		 */
 		void chanRender(Channel chan, float[] samples, int offset,
 			int frames, float amplitude)
 		{
@@ -438,7 +549,9 @@ public class SineSampler
 			
 		}
 		
-		// Render samples on a note
+		/**
+		 * Render samples on a note
+		 */
 		boolean noteRender(Note note, float[] samples, int offset,
 			int frames, float amplitude, float left, float right, float bend)
 		{
@@ -475,7 +588,9 @@ public class SineSampler
 			return false;
 		}
 		
-		// Generate a sample on a note
+		/**
+		 * Generate a sample on a note
+		 */
 		float sample(Note note, float advance)
 		{
 			float ret = (float)Math.sin(note.wavPhase * Math.PI * 2);
@@ -483,13 +598,17 @@ public class SineSampler
 			return ret;
 		}
 		
-		// Process a SysExt message
+		/**
+		 * Process a SysExt message
+		 */
 		public void sysExt(byte[] message)
 		{
 			// Not implementing
 		}
 		
-		// Move a volume level closer to its target
+		/**
+		 * Move a volume level closer to its target
+		 */
 		float volAdjust(float level, float target)
 		{
 			return level < target ? Math.min(level + this.volRate, target) :

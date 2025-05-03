@@ -70,61 +70,93 @@ public class MLDPlayer
 	
 	
 	
-	//  Key index bias
+	/**
+	 * Key index bias
+	 */
 	static final int A4 = 48;
 	
 	
-	//  Playback channels
+	/**
+	 * Playback channels
+	 */
 	final Channel[] channels;
 	
-	//  Pending events
+	/**
+	 * Pending events
+	 */
 	final ArrayList<Event> events;
 	
-	//  Key events enabled by key
+	/**
+	 * Key events enabled by key
+	 */
 	final HashSet<Integer> evtKeys;
 	
-	//  Playback events are enabled
+	/**
+	 * Playback events are enabled
+	 */
 	boolean evtPlayback;
 	
-	//  Sequencer has no more events
+	/**
+	 * Sequencer has no more events
+	 */
 	boolean finished;
 	
-	//  Output frames in one tick
+	/**
+	 * Output frames in one tick
+	 */
 	float framesPerTick;
 	
-	//  Sequence resource
+	/**
+	 * Sequence resource
+	 */
 	final MLD mld;
 	
-	//  Output frames to process
+	/**
+	 * Output frames to process
+	 */
 	float pendingFrames;
 	
-	//  Sequencer ticks to process
+	/**
+	 * Sequencer ticks to process
+	 */
 	int pendingTicks;
 	
-	//  Sequencer position in frames
+	/**
+	 * Sequencer position in frames
+	 */
 	long position;
 	
-	//  Output sampling rate
+	/**
+	 * Output sampling rate
+	 */
 	final float sampleRate;
 	
 	
 	
 	
 	
-	//  Sample generator
+	/**
+	 * Sample generator
+	 */
 	final Sampler.Instance sampler;
 	
-	//  Processing setTime()
+	/**
+	 * Processing setTime()
+	 */
 	boolean seeking;
 	
-	//  Sequencer position in ticks
+	/**
+	 * Sequencer position in ticks
+	 */
 	long tickNow;
 	
 	
 	
 	
 	
-	//  Sequencer state
+	/**
+	 * Sequencer state
+	 */
 	final Track[] tracks;
 	
 	
@@ -607,7 +639,7 @@ public class MLDPlayer
 	 * the operation.
 	 * @throws IllegalArgumentException if {@code seconds} is a non-number
 	 * or is negative.
-	 * @see getTime()
+	 * @see #getTime()
 	 * @see MLD#getDuration(boolean)
 	 */
 	public boolean setTime(double seconds)
@@ -639,14 +671,18 @@ public class MLDPlayer
 	
 	
 	
-	// bank-change
+	/**
+	 * bank-change
+	 */
 	void evtBankChange(Track track, MLD.Event event)
 	{
 		this.sampler.bankChange(event.channel, event.bank);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
-	// cuepoint
+	/**
+	 * cuepoint
+	 */
 	void evtCuepoint(Track track, MLD.Event event)
 	{
 		
@@ -673,20 +709,26 @@ public class MLDPlayer
 		
 	}
 	
-	// drum-enable
+	/**
+	 * drum-enable
+	 */
 	void evtDrumEnable(Track track, MLD.Event event)
 	{
 		this.sampler.drumEnable(event.channel, event.enable);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
-	// end-of-track
+	/**
+	 * end-of-track
+	 */
 	void evtEndOfTrack(Track track, MLD.Event event)
 	{
 		track.finished = true;
 	}
 	
-	// ext-B event
+	/**
+	 * ext-B event
+	 */
 	void evtExtB(Track track, MLD.Event e)
 	{
 		switch (e.id)
@@ -745,28 +787,36 @@ public class MLDPlayer
 		}
 	}
 	
-	// ext-info event
+	/**
+	 * ext-info event
+	 */
 	void evtExtInfo(Track track, MLD.Event e)
 	{
 		this.sampler.sysEx(e.data);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
-	// master-tune
+	/**
+	 * master-tune
+	 */
 	void evtMasterTune(Track track, MLD.Event event)
 	{
 		this.sampler.masterTune(event.semitones);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
-	// master-volume
+	/**
+	 * master-volume
+	 */
 	void evtMasterVolume(Track track, MLD.Event event)
 	{
 		this.sampler.masterVolume(event.volume);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
-	// note
+	/**
+	 * note
+	 */
 	void evtNote(Track track, MLD.Event event)
 	{
 		Channel chan = this.channels[event.channel];
@@ -811,35 +861,45 @@ public class MLDPlayer
 		note.gateTime = event.gateTime;
 	}
 	
-	// panpot
+	/**
+	 * panpot
+	 */
 	void evtPanPot(Track track, MLD.Event event)
 	{
 		this.sampler.panpot(event.channel, event.panpot);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
-	// pitchbend
+	/**
+	 * pitchbend
+	 */
 	void evtPitchBend(Track track, MLD.Event event)
 	{
 		this.sampler.pitchBend(event.channel, event.semitones);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
-	// pitchbend-range
+	/**
+	 * pitchbend-range
+	 */
 	void evtPitchRange(Track track, MLD.Event event)
 	{
 		this.sampler.pitchBendRange(event.channel, event.range);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
-	// program-change
+	/**
+	 * program-change
+	 */
 	void evtProgramChange(Track track, MLD.Event event)
 	{
 		this.sampler.programChange(event.channel, event.program);
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
-	// timebase-tempo
+	/**
+	 * timebase-tempo
+	 */
 	void evtTimebaseTempo(Track track, MLD.Event event)
 	{
 		if (event.timebase == -1)
@@ -850,7 +910,9 @@ public class MLDPlayer
 		this.setTrackOffset(track, track.offset + 1);
 	}
 	
-	// volume
+	/**
+	 * volume
+	 */
 	void evtVolume(Track track, MLD.Event event)
 	{
 		this.sampler.volume(event.channel, event.volume);
@@ -860,7 +922,9 @@ public class MLDPlayer
 	
 	
 	
-	// Process events on a track
+	/**
+	 * Process events on a track
+	 */
 	void process(Track track, int ticks)
 	{
 		
@@ -904,7 +968,9 @@ public class MLDPlayer
 		
 	}
 	
-	// Initialize state in preparation for playback
+	/**
+	 * Initialize state in preparation for playback
+	 */
 	void reset()
 	{
 		
@@ -944,13 +1010,17 @@ public class MLDPlayer
 		}
 	}
 	
-	// Compute the number of output frames in one event tick
+	/**
+	 * Compute the number of output frames in one event tick
+	 */
 	void setTempo(int timebase, int tempo)
 	{
 		this.framesPerTick = (60 * this.sampleRate) / (timebase * tempo);
 	}
 	
-	// Specify the event offset of a track
+	/**
+	 * Specify the event offset of a track
+	 */
 	void setTrackOffset(Track track, int offset)
 	{
 		
@@ -965,11 +1035,12 @@ public class MLDPlayer
 		for (var other : this.tracks)
 			finished = finished && other.finished;
 		if (finished)
-			this.events.add(new Event(this.getTime(), MLDPlayer.EVENT_END,
-				0));
+			this.events.add(new Event(this.getTime(), MLDPlayer.EVENT_END, 0));
 	}
 	
-	// Determine how many ticks can be processed until a note expires
+	/**
+	 * Determine how many ticks can be processed until a note expires
+	 */
 	int untilNote()
 	{
 		int ret = -1;
@@ -982,7 +1053,9 @@ public class MLDPlayer
 		return ret;
 	}
 	
-	// Determine how many ticks can be processed until the next event
+	/**
+	 * Determine how many ticks can be processed until the next event
+	 */
 	int untilTrack()
 	{
 		int ret = -1;
@@ -999,13 +1072,19 @@ public class MLDPlayer
 	
 	
 	
-	// Playback channel
-	class Channel
+	/**
+	 * Playback channel
+	 */
+	static class Channel
 	{
-		//  All notes currently on keys
+		/**
+		 * All notes currently on keys
+		 */
 		Note[] notesOn;
 		
-		//  All notes that are generating output
+		/**
+		 * All notes that are generating output
+		 */
 		ArrayList<Note> notesOut;
 	}
 	
@@ -1018,7 +1097,7 @@ public class MLDPlayer
 	 *
 	 * @see getEvents()
 	 */
-	public class Event
+	public static class Event
 	{
 		
 		/**
@@ -1039,7 +1118,9 @@ public class MLDPlayer
 		 */
 		public final int type;
 		
-		// Internal constructor
+		/**
+		 * Internal constructor
+		 */
 		Event(double time, int type, int data)
 		{
 			this.data = data;
@@ -1049,38 +1130,60 @@ public class MLDPlayer
 		
 	}
 	
-	// Music note
-	class Note
+	/**
+	 * Music note
+	 */
+	static class Note
 	{
-		//  Output channel
+		/**
+		 * Output channel
+		 */
 		int channel;
 		
-		//  Ticks before note expires
+		/**
+		 * Ticks before note expires
+		 */
 		int gateTime;
 		
-		//  Key index
+		/**
+		 * Key index
+		 */
 		int key;
 	}
 	
-	// Event list state
-	class Track
+	/**
+	 * Event list state
+	 */
+	static class Track
 	{
-		//  Starting cuepoint
+		/**
+		 * Starting cuepoint
+		 */
 		int cuepoint;
 		
-		//  Track has no more events
+		/**
+		 * Track has no more events
+		 */
 		boolean finished;
 		
-		//  Index within sequencer
+		/**
+		 * Index within sequencer
+		 */
 		int index;
 		
-		//  Event list
+		/**
+		 * Event list
+		 */
 		MLD.Track mld;
 		
-		//  Current event offset
+		/**
+		 * Current event offset
+		 */
 		int offset;
 		
-		//  Event ticks until next event
+		/**
+		 * Event ticks until next event
+		 */
 		int ticks;
 	}
 	
