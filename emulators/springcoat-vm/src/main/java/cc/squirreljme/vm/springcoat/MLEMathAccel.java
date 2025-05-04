@@ -119,6 +119,20 @@ public enum MLEMathAccel
 		}
 	},
 	
+	/** {@link MathAccelShelf#exp(double)}. */
+	EXP("exp:(D)D")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/05/03
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return MathAccelShelf.exp((double)__args[0]);
+		}
+	},
+	
 	/** {@link MathAccelShelf#floor(double)}. */
 	FLOOR("floor:(D)D")
 	{
@@ -144,6 +158,21 @@ public enum MLEMathAccel
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return MathAccelShelf.log((double)__args[0]);
+		}
+	},
+	
+	/** {@link MathAccelShelf#pow(double, double)}. */
+	POW("pow:(DD)J")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/05/03
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return MathAccelShelf.pow((double)__args[0],
+				(double)__args[1]);
 		}
 	},
 	

@@ -123,6 +123,19 @@ public class EmulatedMathAccelShelf
 	}
 	
 	/**
+	 * Performs the {@code exp(x)} function.
+	 *
+	 * @param __v The value to perform the function on.
+	 * @return The resultant value.
+	 * @since 2025/05/03
+	 */
+	@SquirrelJMEVendorApi
+	public static double exp(double __v)
+	{
+		return Math.exp(__v);
+	}
+	
+	/**
 	 * Performs the {@code floor(x)} function.
 	 *
 	 * @param __v The value to perform the function on.
@@ -146,6 +159,20 @@ public class EmulatedMathAccelShelf
 	public static double log(double __v)
 	{
 		return Math.log(__v);
+	}
+	
+	/**
+	 * Performs the {@code pow(x, y)} function.
+	 *
+	 * @param __x The first value.
+	 * @param __y The second value.
+	 * @return The resultant value.
+	 * @since 2025/05/03
+	 */
+	@SquirrelJMEVendorApi
+	public static double pow(double __x, double __y)
+	{
+		return Math.pow(__x, __y);
 	}
 	
 	/**

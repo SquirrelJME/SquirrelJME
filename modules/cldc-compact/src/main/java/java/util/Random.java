@@ -11,6 +11,7 @@ package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import cc.squirreljme.runtime.cldc.util.FDMLMath;
 
 /**
@@ -178,7 +179,7 @@ public class Random
 				} while (s >= 1 || s == 0);
 				
 				double multiplier =
-					FDMLMath.sqrt(-2 * FDMLMath.log(s) / s);
+					Math.sqrt(-2 * ExtraMath.log(s) / s);
 				
 				// Store for next time
 				this._nextg = v2 * multiplier;

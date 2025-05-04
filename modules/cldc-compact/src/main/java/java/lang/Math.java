@@ -248,23 +248,6 @@ public final strictfp class Math
 	}
 	
 	/**
-	 * Returns the logarithm of the given number.
-	 *
-	 * This method does not exist in CLDC and is SquirrelJME specified.
-	 *
-	 * @param __v The value to get the logarithm from.
-	 * @return The logarithm for the given value.
-	 * @since 2018/11/03
-	 */
-	@Api
-	@Deprecated
-	@ImplementationNote("This method does not exist in the CLDC library.")
-	public static strictfp double log(double __v)
-	{
-		return FDMLMath.log(__v);
-	}
-	
-	/**
 	 * Returns the higher of the two values.
 	 *
 	 * @param __a The first.

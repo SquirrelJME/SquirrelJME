@@ -28,10 +28,14 @@
 	DESC_METHOD(DESC_DOUBLE, DESC_DOUBLE)
 #define FORWARD_DESC_cos \
 	DESC_METHOD(DESC_DOUBLE, DESC_DOUBLE)
+#define FORWARD_DESC_exp \
+	DESC_METHOD(DESC_DOUBLE, DESC_DOUBLE)
 #define FORWARD_DESC_floor \
 	DESC_METHOD(DESC_DOUBLE, DESC_DOUBLE)
 #define FORWARD_DESC_log \
 	DESC_METHOD(DESC_DOUBLE, DESC_DOUBLE)
+#define FORWARD_DESC_pow \
+	DESC_METHOD(DESC_DOUBLE, DESC_DOUBLE DESC_DOUBLE)
 #define FORWARD_DESC_round \
 	DESC_METHOD(DESC_LONG, DESC_DOUBLE)
 #define FORWARD_DESC_signum \
@@ -71,6 +75,10 @@ FORWARD_IMPL(MathAccel, cos,
 	jdouble, Double,
 	FORWARD_IMPL_args(jdouble value),
 	FORWARD_IMPL_pass(value))
+FORWARD_IMPL(MathAccel, exp,
+	jdouble, Double,
+	FORWARD_IMPL_args(jdouble value),
+	FORWARD_IMPL_pass(value))
 FORWARD_IMPL(MathAccel, floor,
 	jdouble, Double,
 	FORWARD_IMPL_args(jdouble value),
@@ -79,6 +87,10 @@ FORWARD_IMPL(MathAccel, log,
 	jdouble, Double,
 	FORWARD_IMPL_args(jdouble value),
 	FORWARD_IMPL_pass(value))
+FORWARD_IMPL(MathAccel, pow,
+	jdouble, Double,
+	FORWARD_IMPL_args(jdouble a, jdouble b),
+	FORWARD_IMPL_pass(a, b))
 FORWARD_IMPL(MathAccel, round,
 	jlong, Long,
 	FORWARD_IMPL_args(jdouble value),
@@ -109,8 +121,10 @@ static const JNINativeMethod mleMathAccelMethods[] =
 	FORWARD_list(MathAccel, atan2),
 	FORWARD_list(MathAccel, ceil),
 	FORWARD_list(MathAccel, cos),
+	FORWARD_list(MathAccel, exp),
 	FORWARD_list(MathAccel, floor),
 	FORWARD_list(MathAccel, log),
+	FORWARD_list(MathAccel, pow),
 	FORWARD_list(MathAccel, round),
 	FORWARD_list(MathAccel, signum),
 	FORWARD_list(MathAccel, sin),
