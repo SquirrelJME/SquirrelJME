@@ -32,11 +32,14 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * Sample generator for music sequencer players. Invoking {@code instance()}
  * will produce an object that can be used to render the actual samples of
  * audio.
  */
+@SquirrelJMEVendorApi
 public interface SamplerProvider
 {
 	/**
@@ -50,5 +53,6 @@ public interface SamplerProvider
 	 * @throws IllegalArgumentException if {@code sampleRate} is a
 	 * non-number or is less than or equal to zero.
 	 */
+	@SquirrelJMEVendorApi
 	Sampler instance(float sampleRate);
 }

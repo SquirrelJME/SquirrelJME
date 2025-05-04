@@ -32,6 +32,7 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import java.util.Iterator;
 /**
  * Sampler instance
  */
+@SquirrelJMEVendorApi
 class SineSampler
 	implements Sampler
 {
@@ -49,32 +51,38 @@ class SineSampler
 	/**
 	 * Channel states
 	 */
+	@SquirrelJMEVendorApi
 	final SineChannel[] channels;
 	
 	/**
 	 * Global pitch bend
 	 */
+	@SquirrelJMEVendorApi
 	float masterTune;
 	
 	/**
 	 * Global volume
 	 */
+	@SquirrelJMEVendorApi
 	float masterVolume;
 	
 	/**
 	 * Output sampling rate
 	 */
+	@SquirrelJMEVendorApi
 	final float sampleRate;
 	
 	/**
 	 * Automatic volume adjustment rate
 	 */
+	@SquirrelJMEVendorApi
 	final float volRate;
 	
 	
 	/**
 	 * Constructor
 	 */
+	@SquirrelJMEVendorApi
 	SineSampler(float sampleRate)
 	{
 		
@@ -101,6 +109,7 @@ class SineSampler
 	/**
 	 * Specify a channel's program bank.
 	 */
+	@SquirrelJMEVendorApi
 	public void bankChange(int channel, int bank)
 	{
 		// Not implementing
@@ -109,6 +118,7 @@ class SineSampler
 	/**
 	 * Specify whether a channel should play drum notes.
 	 */
+	@SquirrelJMEVendorApi
 	public void drumEnable(int channel, boolean enable)
 	{
 		// Not implementing
@@ -117,6 +127,7 @@ class SineSampler
 	/**
 	 * Deactivate a key that has previoulsy been activated on a channel.
 	 */
+	@SquirrelJMEVendorApi
 	public void keyOff(int channel, int key)
 	{
 		if (channel < 0 || channel >= this.channels.length || SineSamplerProvider.A4 + key < 0 || SineSamplerProvider.A4 + key >= 128)
@@ -133,6 +144,7 @@ class SineSampler
 	/**
 	 * Determine whether or not any notes are producing output.
 	 */
+	@SquirrelJMEVendorApi
 	public boolean isFinished()
 	{
 		for (SineChannel chan : this.channels)
@@ -146,6 +158,7 @@ class SineSampler
 	/**
 	 * Activate a key on a channel.
 	 */
+	@SquirrelJMEVendorApi
 	public void keyOn(int channel, int key, float velocity)
 	{
 		
@@ -180,6 +193,7 @@ class SineSampler
 	/**
 	 * Specify the global pitch bend.
 	 */
+	@SquirrelJMEVendorApi
 	public void masterTune(float semitones)
 	{
 		if (Float.isInfinite(semitones))
@@ -190,6 +204,7 @@ class SineSampler
 	/**
 	 * Specify the global volume.
 	 */
+	@SquirrelJMEVendorApi
 	public void masterVolume(float volume)
 	{
 		if (Float.isInfinite(volume) || volume < 0.0f)
@@ -200,6 +215,7 @@ class SineSampler
 	/**
 	 * Specify stereo panning on a channel.
 	 */
+	@SquirrelJMEVendorApi
 	public void panpot(int channel, float panpot)
 	{
 		if (Float.isInfinite(panpot) || panpot < -1.0f || panpot > 1.0f)
@@ -215,6 +231,7 @@ class SineSampler
 	/**
 	 * Specify a channel's pitch bend.
 	 */
+	@SquirrelJMEVendorApi
 	public void pitchBend(int channel, float semitones)
 	{
 		if (Float.isInfinite(semitones))
@@ -229,6 +246,7 @@ class SineSampler
 	/**
 	 * Specify the range of a channel's pitch bend.
 	 */
+	@SquirrelJMEVendorApi
 	public void pitchBendRange(int channel, float range)
 	{
 		if (Float.isInfinite(range) || range < 0.0f)
@@ -243,6 +261,7 @@ class SineSampler
 	/**
 	 * Speicfy a channel's program number.
 	 */
+	@SquirrelJMEVendorApi
 	public void programChange(int channel, int program)
 	{
 		// Not implementing
@@ -251,6 +270,7 @@ class SineSampler
 	/**
 	 * Generate output samples.
 	 */
+	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames)
 	{
 		this.render(samples, offset, frames, 1.0f, true, true);
@@ -259,6 +279,7 @@ class SineSampler
 	/**
 	 * Generate output samples.
 	 */
+	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames,
 		float amplitude)
 	{
@@ -266,6 +287,7 @@ class SineSampler
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames, float left,
 		float right)
 	{
@@ -273,6 +295,7 @@ class SineSampler
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames, float left,
 		float right, boolean erase, boolean clamp)
 	{
@@ -282,6 +305,7 @@ class SineSampler
 	/**
 	 * Generate output samples.
 	 */
+	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames,
 		float amplitude, boolean erase, boolean clamp)
 	{
@@ -326,6 +350,7 @@ class SineSampler
 	/**
 	 * Initialize all output state.
 	 */
+	@SquirrelJMEVendorApi
 	public void reset()
 	{
 		
@@ -358,6 +383,7 @@ class SineSampler
 	/**
 	 * Process a SysEx message.
 	 */
+	@SquirrelJMEVendorApi
 	public void sysEx(byte[] message)
 	{
 		// Not implementing
@@ -366,6 +392,7 @@ class SineSampler
 	/**
 	 * Specify a channel's volume
 	 */
+	@SquirrelJMEVendorApi
 	public void volume(int channel, float volume)
 	{
 		if (Float.isInfinite(volume) || volume < 0.0f)
@@ -382,6 +409,7 @@ class SineSampler
 	/**
 	 * Render samples on a channel
 	 */
+	@SquirrelJMEVendorApi
 	void chanRender(SineChannel chan, float[] samples, int offset, int frames,
 		float amplitude)
 	{
@@ -411,6 +439,7 @@ class SineSampler
 	/**
 	 * Render samples on a note
 	 */
+	@SquirrelJMEVendorApi
 	boolean noteRender(SineNote note, float[] samples, int offset, int frames,
 		float amplitude, float left, float right, float bend)
 	{
@@ -450,6 +479,7 @@ class SineSampler
 	/**
 	 * Generate a sample on a note
 	 */
+	@SquirrelJMEVendorApi
 	float sample(SineNote note, float advance)
 	{
 		float ret = (float)Math.sin(note.wavPhase * Math.PI * 2);
@@ -460,6 +490,7 @@ class SineSampler
 	/**
 	 * Process a SysExt message
 	 */
+	@SquirrelJMEVendorApi
 	public void sysExt(byte[] message)
 	{
 		// Not implementing
@@ -468,6 +499,7 @@ class SineSampler
 	/**
 	 * Move a volume level closer to its target
 	 */
+	@SquirrelJMEVendorApi
 	float volAdjust(float level, float target)
 	{
 		return level < target ? Math.min(level + this.volRate, target) :

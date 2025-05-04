@@ -32,21 +32,25 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 
 /**
  * Playback channel
  */
+@SquirrelJMEVendorApi
 class MLDChannel
 	implements BasicChannel
 {
 	/**
 	 * All notes currently on keys
 	 */
+	@SquirrelJMEVendorApi
 	MLDNote[] notesOn;
 	
 	/**
 	 * All notes that are generating output
 	 */
+	@SquirrelJMEVendorApi
 	ArrayList<MLDNote> notesOut;
 }

@@ -32,6 +32,7 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -40,237 +41,308 @@ import java.io.InputStream;
 /**
  * Decoder for i-melody MLD sequences.
  */
+@SquirrelJMEVendorApi
 public class MLD
 {
-	
+	@SquirrelJMEVendorApi
 	static final int CUEPOINT_END = 1;
-	
 	
 	/**
 	 * Cuepoints
 	 */
+	@SquirrelJMEVendorApi
 	static final int CUEPOINT_START = 0;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_BANK_CHANGE = 0xE1;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_CHANNEL_ASSIGN = 0xE5;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_CUEPOINT = 0xD0;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_END_OF_TRACK = 0xDF;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_JUMP = 0xD1;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_MASTER_TUNE = 0xB3;
 	
 	/**
 	 * Event ext-B IDs
 	 */
+	@SquirrelJMEVendorApi
 	static final int EVENT_MASTER_VOLUME = 0xB0;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_NOP = 0xDE;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_PANPOT = 0xE3;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_PART_CONFIGURATION = 0xB9;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_PAUSE = 0xBD;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_PITCHBEND = 0xE4;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_PITCHBEND_RANGE = 0xE7;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_PROGRAM_CHANGE = 0xE0;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_RESET = 0xBF;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_STOP = 0xBE;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_TIMEBASE_TEMPO = 0xC0;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_TYPE_EXT_B = 1;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_TYPE_EXT_INFO = 2;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_TYPE_NOTE = 0;
 	
 	/**
 	 * Event types
 	 */
+	@SquirrelJMEVendorApi
 	static final int EVENT_TYPE_UNKNOWN = -1;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_VOLUME = 0xE2;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_WAVE_CHANNEL_PANPOT = 0xE9;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_WAVE_CHANNEL_VOLUME = 0xE8;
 	
+	@SquirrelJMEVendorApi
 	static final int EVENT_X_DRUM_ENABLE = 0xBA;
 	
 	/**
 	 * FourCCs
 	 * "adat"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_ADAT = 0x61646174;
 	
 	/**
 	 * "ainf"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_AINF = 0x61696E66;
 	
 	/**
 	 * "auth"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_AUTH = 0x61757468;
 	
 	/**
 	 * "copy"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_COPY = 0x636F7079;
 	
 	/**
 	 * "cuep"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_CUEP = 0x63756570;
 	
 	/**
 	 * "date"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_DATE = 0x64617465;
 	
 	/**
 	 * "exst"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_EXST = 0x65787374;
 	
 	/**
 	 * "melo"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_MELO = 0x6D656C6F;
 	
 	/**
 	 * "note"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_NOTE = 0x6E6F7465;
 	
 	/**
 	 * "prot"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_PROT = 0x70726F74;
 	
 	/**
 	 * "sorc"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_SORC = 0x736F7263;
 	
 	/**
 	 * "supt"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_SUPT = 0x73757074;
 	
 	/**
 	 * "thrd"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_THRD = 0x74687264;
 	
 	/**
 	 * "titl"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_TITL = 0x7469746C;
 	
 	/**
 	 * "trac"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_TRAC = 0x74726163;
 	
 	/**
 	 * "vers"
 	 */
+	@SquirrelJMEVendorApi
 	static final int FOURCC_VERS = 0x76657273;
 	
 	/**
 	 * "note" types
 	 */
+	@SquirrelJMEVendorApi
 	static final int NOTE_3 = 0;
 	
+	@SquirrelJMEVendorApi
 	static final int NOTE_4 = 1;
 	
 	/**
 	 * Sample data
 	 */
+	@SquirrelJMEVendorApi
 	MLDADPCM[] adpcms;
 	
 	/**
 	 * Header subchunks
 	 */
+	@SquirrelJMEVendorApi
 	byte[] ainf;
 	
+	@SquirrelJMEVendorApi
 	byte[] auth;
 	
 	/**
 	 * Content type header fields
 	 */
+	@SquirrelJMEVendorApi
 	int contentType;
 	
+	@SquirrelJMEVendorApi
 	String copy;
 	
+	@SquirrelJMEVendorApi
 	int[] cuep;
 	
+	@SquirrelJMEVendorApi
 	String date;
 	
 	/**
 	 * Total runtime in seconds, or POSITIVE_INFINITY
 	 */
+	@SquirrelJMEVendorApi
 	double duration;
 	
+	@SquirrelJMEVendorApi
 	byte[] exst;
 	
+	@SquirrelJMEVendorApi
 	boolean hasFemaleVocals;
 	
+	@SquirrelJMEVendorApi
 	boolean hasImageData;
 	
+	@SquirrelJMEVendorApi
 	boolean hasMaleVocals;
 	
+	@SquirrelJMEVendorApi
 	boolean hasMusicEvents;
 	
+	@SquirrelJMEVendorApi
 	boolean hasOtherVocals;
 	
+	@SquirrelJMEVendorApi
 	boolean hasTextData;
 	
+	@SquirrelJMEVendorApi
 	boolean hasWaveData;
 	
 	/**
 	 * Encoded header chunk
 	 */
+	@SquirrelJMEVendorApi
 	byte[] header;
 	
+	@SquirrelJMEVendorApi
 	int note;
 	
+	@SquirrelJMEVendorApi
 	String prot;
 	
+	@SquirrelJMEVendorApi
 	int sorc;
 	
+	@SquirrelJMEVendorApi
 	String supt;
 	
+	@SquirrelJMEVendorApi
 	byte[] thrd;
 	
 	/**
 	 * Tick count at the end of the last event
 	 */
+	@SquirrelJMEVendorApi
 	long tickEnd;
 	
 	/**
 	 * Tick count of the loop destination
 	 */
+	@SquirrelJMEVendorApi
 	long tickLoop;
 	
+	@SquirrelJMEVendorApi
 	String titl;
 	
 	/**
 	 * Event lists
 	 */
+	@SquirrelJMEVendorApi
 	MLDTrack[] tracks;
 	
+	@SquirrelJMEVendorApi
 	String vers;
 	
 	
@@ -283,6 +355,7 @@ public class MLD
 	 * @throws RuntimeException if an error occurs during decoding.
 	 * @see MLD(byte[],int,int)
 	 */
+	@SquirrelJMEVendorApi
 	public MLD(byte[] data)
 	{
 		this(data, 0, data.length);
@@ -305,6 +378,7 @@ public class MLD
 	 * or {@code offset + length > data.length}.
 	 * @throws RuntimeException if an error occurs during decoding.
 	 */
+	@SquirrelJMEVendorApi
 	public MLD(byte[] data, int offset, int length)
 	{
 		
@@ -342,6 +416,7 @@ public class MLD
 	 * @throws RuntimeException if an error occurs during decoding.
 	 * @throws IOException if a stream access error occurs.
 	 */
+	@SquirrelJMEVendorApi
 	public MLD(InputStream in)
 		throws IOException
 	{
@@ -355,6 +430,7 @@ public class MLD
 	 *
 	 * @return The copyright text if available, or {@code null} otherwise.
 	 */
+	@SquirrelJMEVendorApi
 	public String getCopyright()
 	{
 		return this.copy;
@@ -365,6 +441,7 @@ public class MLD
 	 *
 	 * @return The date text if available, or {@code null} otherwise.
 	 */
+	@SquirrelJMEVendorApi
 	public String getDate()
 	{
 		return this.date;
@@ -384,6 +461,7 @@ public class MLD
 	 * @see MLDPlayer#getTime()
 	 * @see MLDPlayer#setTime(double)
 	 */
+	@SquirrelJMEVendorApi
 	public double getDuration(boolean withoutLooping)
 	{
 		return withoutLooping || this.tickLoop == -1 ? this.duration :
@@ -395,6 +473,7 @@ public class MLD
 	 *
 	 * @return The title text if available, or {@code null} otherwise.
 	 */
+	@SquirrelJMEVendorApi
 	public String getTitle()
 	{
 		return this.titl;
@@ -406,6 +485,7 @@ public class MLD
 	 *
 	 * @return The version text if available, or {@code null} otherwise.
 	 */
+	@SquirrelJMEVendorApi
 	public String getVersion()
 	{
 		return this.vers;
@@ -415,6 +495,7 @@ public class MLD
 	/**
 	 * Parse an ADPCM chunk
 	 */
+	@SquirrelJMEVendorApi
 	MLDADPCM adpcm(MLDBinaryReader reader)
 	{
 		if (reader.u32() != MLD.FOURCC_ADAT)
@@ -428,6 +509,7 @@ public class MLD
 	/**
 	 * Parse an event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent event(int note, int track, MLDBinaryReader reader)
 	{
 		MLDEvent event = new MLDEvent();
@@ -515,6 +597,7 @@ public class MLD
 	/**
 	 * Parse a bank-change event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventBankChange(MLDEvent event)
 	{
 		event.bank = event.param & 0x3F;
@@ -524,6 +607,7 @@ public class MLD
 	/**
 	 * Parse a cuepoint event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventCuepoint(MLDEvent event)
 	{
 		event.cuepoint = event.param;
@@ -533,6 +617,7 @@ public class MLD
 	/**
 	 * Parse a drum-enable event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventDrumEnable(MLDEvent event)
 	{
 		event.channel = event.param >> 3 & 15;
@@ -543,6 +628,7 @@ public class MLD
 	/**
 	 * Parse an ext-info event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventExtInfo(MLDEvent event, MLDBinaryReader reader)
 	{
 		event.type = MLD.EVENT_TYPE_EXT_INFO;
@@ -553,6 +639,7 @@ public class MLD
 	/**
 	 * Parse a jump event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventJump(MLDEvent event)
 	{
 		event.jumpCount = event.param & 15;
@@ -564,6 +651,7 @@ public class MLD
 	/**
 	 * Parse a master-tune event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventMasterTune(MLDEvent event)
 	{
 		event.semitones = ((event.param & 0x7F) - 64) / 64.0f;
@@ -573,6 +661,7 @@ public class MLD
 	/**
 	 * Parse a master-volume event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventMasterVolume(MLDEvent event)
 	{
 		event.volume = (event.param & 0x7F) / 127.0f;
@@ -582,6 +671,7 @@ public class MLD
 	/**
 	 * Parse a note event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventNote(int note, int track, MLDEvent event,
 		MLDBinaryReader reader)
 	{
@@ -616,6 +706,7 @@ public class MLD
 	/**
 	 * Parse a panpot event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventPanPot(MLDEvent event)
 	{
 		int param = event.param & 0x3F;
@@ -626,6 +717,7 @@ public class MLD
 	/**
 	 * Parse a pitchbend event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventPitchBend(MLDEvent event)
 	{
 		event.semitones = ((event.param & 0x3F) - 32) / 3200.0f;
@@ -635,6 +727,7 @@ public class MLD
 	/**
 	 * Parse a pitchbend-range event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventPitchBendRange(MLDEvent event)
 	{
 		event.range = event.param & 0x3F;
@@ -644,6 +737,7 @@ public class MLD
 	/**
 	 * Parse a program-change event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventProgramChange(MLDEvent event)
 	{
 		event.program = event.param & 0x3F;
@@ -653,6 +747,7 @@ public class MLD
 	/**
 	 * Parse a timebase-tempo event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventTimebaseTempo(MLDEvent event)
 	{
 		event.bank = event.id;
@@ -666,6 +761,7 @@ public class MLD
 	/**
 	 * Parse a volume event
 	 */
+	@SquirrelJMEVendorApi
 	MLDEvent eventVolume(MLDEvent event)
 	{
 		event.volume = (event.param & 0x3F) / 63.0f;
@@ -676,6 +772,7 @@ public class MLD
 	/**
 	 * Parse the file header
 	 */
+	@SquirrelJMEVendorApi
 	void header(MLDBinaryReader reader)
 	{
 		reader = reader.reader(reader.u16());
@@ -765,6 +862,7 @@ public class MLD
 	/**
 	 * Parse a header "ainf" subchunk
 	 */
+	@SquirrelJMEVendorApi
 	void headerAINF(MLDBinaryReader reader)
 	{
 		this.ainf = reader.bytes(reader.length);
@@ -775,6 +873,7 @@ public class MLD
 	/**
 	 * Parse a header "auth" subchunk
 	 */
+	@SquirrelJMEVendorApi
 	void headerAUTH(MLDBinaryReader reader)
 	{
 		this.auth = reader.bytes(reader.length);
@@ -783,6 +882,7 @@ public class MLD
 	/**
 	 * Parse a header "copy" subchunk
 	 */
+	@SquirrelJMEVendorApi
 	void headerCOPY(MLDBinaryReader reader)
 	{
 		this.copy = this.shiftJIS(reader.bytes(reader.length));
@@ -791,6 +891,7 @@ public class MLD
 	/**
 	 * Parse a header "cuep" subchunk
 	 */
+	@SquirrelJMEVendorApi
 	void headerCUEP(MLDBinaryReader reader)
 	{
 		for (int x = 0; x < this.cuep.length; x++)
@@ -800,6 +901,7 @@ public class MLD
 	/**
 	 * Parse a header "date" subchunk
 	 */
+	@SquirrelJMEVendorApi
 	void headerDATE(MLDBinaryReader reader)
 	{
 		this.date = this.shiftJIS(reader.bytes(reader.length));
@@ -808,6 +910,7 @@ public class MLD
 	/**
 	 * Parse a header "exst" subchunk
 	 */
+	@SquirrelJMEVendorApi
 	void headerEXST(MLDBinaryReader reader)
 	{
 		this.exst = reader.bytes(reader.length);
@@ -816,6 +919,7 @@ public class MLD
 	/**
 	 * Parse a header "note" subchunk
 	 */
+	@SquirrelJMEVendorApi
 	void headerNOTE(MLDBinaryReader reader)
 	{
 		this.note = reader.u16();
@@ -828,6 +932,7 @@ public class MLD
 	/**
 	 * Parse a header "prot" subchunk
 	 */
+	@SquirrelJMEVendorApi
 	void headerPROT(MLDBinaryReader reader)
 	{
 		this.prot = this.shiftJIS(reader.bytes(reader.length));
@@ -836,6 +941,7 @@ public class MLD
 	/**
 	 * Parse a header "sorc" subchunk
 	 */
+	@SquirrelJMEVendorApi
 	void headerSORC(MLDBinaryReader reader)
 	{
 		this.sorc = reader.u8();
@@ -844,6 +950,7 @@ public class MLD
 	/**
 	 * Parse a header "supt" subchunk
 	 */
+	@SquirrelJMEVendorApi
 	void headerSUPT(MLDBinaryReader reader)
 	{
 		this.supt = this.shiftJIS(reader.bytes(reader.length));
@@ -852,6 +959,7 @@ public class MLD
 	/**
 	 * Parse a header "thrd" subchunk
 	 */
+	@SquirrelJMEVendorApi
 	void headerTHRD(MLDBinaryReader reader)
 	{
 		this.thrd = reader.bytes(reader.length);
@@ -860,6 +968,7 @@ public class MLD
 	/**
 	 * Parse a header "titl" subchunk
 	 */
+	@SquirrelJMEVendorApi
 	void headerTITL(MLDBinaryReader reader)
 	{
 		this.titl = this.shiftJIS(reader.bytes(reader.length));
@@ -868,6 +977,7 @@ public class MLD
 	/**
 	 * Parse a header "vers" subchunk
 	 */
+	@SquirrelJMEVendorApi
 	void headerVERS(MLDBinaryReader reader)
 	{
 		this.vers = this.shiftJIS(reader.bytes(reader.length));
@@ -876,6 +986,7 @@ public class MLD
 	/**
 	 * Measure the duration and tick counters
 	 */
+	@SquirrelJMEVendorApi
 	void inspect()
 	{
 		double tempo = 60.0 / (48 * 128);
@@ -1010,6 +1121,7 @@ public class MLD
 	/**
 	 * Parse an MLD file
 	 */
+	@SquirrelJMEVendorApi
 	void parse(DataInputStream stream)
 		throws IOException
 	{
@@ -1055,6 +1167,7 @@ public class MLD
 	/**
 	 * Decode a string as Shift_JIS
 	 */
+	@SquirrelJMEVendorApi
 	String shiftJIS(byte[] bytes)
 	{
 		try
@@ -1070,6 +1183,7 @@ public class MLD
 	/**
 	 * Parse a track
 	 */
+	@SquirrelJMEVendorApi
 	MLDTrack track(int note, int index, MLDBinaryReader reader)
 	{
 		

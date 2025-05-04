@@ -32,6 +32,7 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -51,6 +52,7 @@ public class MLDPlayer
 	 *
 	 * @see MLDPlayerEvent
 	 */
+	@SquirrelJMEVendorApi
 	public static final int EVENT_END = 0;
 	
 	/**
@@ -58,6 +60,7 @@ public class MLDPlayer
 	 *
 	 * @see MLDPlayerEvent
 	 */
+	@SquirrelJMEVendorApi
 	public static final int EVENT_KEY = 2;
 	
 	/**
@@ -65,88 +68,105 @@ public class MLDPlayer
 	 *
 	 * @see MLDPlayerEvent
 	 */
+	@SquirrelJMEVendorApi
 	public static final int EVENT_LOOP = 1;
 	
 	
 	/**
 	 * Key index bias
 	 */
+	@SquirrelJMEVendorApi
 	static final int A4 = 48;
 	
 	
 	/**
 	 * Playback channels
 	 */
+	@SquirrelJMEVendorApi
 	final MLDChannel[] channels;
 	
 	/**
 	 * Pending events
 	 */
+	@SquirrelJMEVendorApi
 	final ArrayList<MLDPlayerEvent> events;
 	
 	/**
 	 * Key events enabled by key
 	 */
+	@SquirrelJMEVendorApi
 	final HashSet<Integer> evtKeys;
 	
 	/**
 	 * Sequence resource
 	 */
+	@SquirrelJMEVendorApi
 	final MLD mld;
 	
 	/**
 	 * Output sampling rate
 	 */
+	@SquirrelJMEVendorApi
 	final float sampleRate;
 	
 	/**
 	 * Sample generator
 	 */
+	@SquirrelJMEVendorApi
 	final Sampler sampler;
 	
 	/**
 	 * Sequencer state
 	 */
+	@SquirrelJMEVendorApi
 	final MLDPlayerTrack[] tracks;
 	
 	/**
 	 * Playback events are enabled
 	 */
+	@SquirrelJMEVendorApi
 	boolean evtPlayback;
 	
 	/**
 	 * Sequencer has no more events
 	 */
+	@SquirrelJMEVendorApi
 	boolean finished;
 	
 	/**
 	 * Output frames in one tick
 	 */
+	@SquirrelJMEVendorApi
 	float framesPerTick;
 	
 	/**
 	 * Output frames to process
 	 */
+	@SquirrelJMEVendorApi
 	float pendingFrames;
 	
 	/**
 	 * Sequencer ticks to process
 	 */
+	@SquirrelJMEVendorApi
 	int pendingTicks;
 	
 	/**
 	 * Sequencer position in frames
 	 */
+	@SquirrelJMEVendorApi
 	long position;
 	
 	/**
 	 * Processing setTime()
 	 */
+	@SquirrelJMEVendorApi
 	boolean seeking;
 	
 	/**
 	 * Sequencer position in ticks
 	 */
+	@SquirrelJMEVendorApi
 	long tickNow;
 	
 	
@@ -166,6 +186,7 @@ public class MLDPlayer
 	 * @see MLD
 	 * @see SamplerProvider
 	 */
+	@SquirrelJMEVendorApi
 	public MLDPlayer(MLD mld, SamplerProvider sampler, float sampleRate)
 	{
 		
@@ -217,6 +238,7 @@ public class MLDPlayer
 	 * @see MLDPlayerEvent
 	 * @see #getEvents()
 	 */
+	@SquirrelJMEVendorApi
 	public void addEventKey(int key)
 	{
 		this.evtKeys.add(key);
@@ -232,6 +254,7 @@ public class MLDPlayer
 	 * @see MLDPlayerEvent
 	 * @see #getEvents()
 	 */
+	@SquirrelJMEVendorApi
 	public void addEventKeys(int[] keys)
 	{
 		if (keys == null)
@@ -256,6 +279,7 @@ public class MLDPlayer
 	 * seconds in the sequence up until the first loop occurs.
 	 * @see MLD#getDuration(boolean)
 	 */
+	@SquirrelJMEVendorApi
 	public double getDuration(boolean withoutLooping)
 	{
 		return this.mld.getDuration(withoutLooping);
@@ -273,6 +297,7 @@ public class MLDPlayer
 	 * @see #addEventKeys(int[])
 	 * @see #setPlaybackEventsEnabled(boolean)
 	 */
+	@SquirrelJMEVendorApi
 	public MLDPlayerEvent[] getEvents()
 	{
 		MLDPlayerEvent[] ret = this.events.toArray(new MLDPlayerEvent[this.events.size()]);
@@ -290,6 +315,7 @@ public class MLDPlayer
 	 * @return The proportion of the total sequence for the current playback
 	 * position.
 	 */
+	@SquirrelJMEVendorApi
 	public double getPosition()
 	{
 		return (double)this.tickNow / this.mld.tickEnd;
@@ -303,6 +329,7 @@ public class MLDPlayer
 	 * @see #setTime(double)
 	 * @see MLD#getDuration(boolean)
 	 */
+	@SquirrelJMEVendorApi
 	public double getTime()
 	{
 		return (double)this.position / this.sampleRate;
@@ -315,6 +342,7 @@ public class MLDPlayer
 	 *
 	 * @return {@code true} if all playback has completed.
 	 */
+	@SquirrelJMEVendorApi
 	public boolean isFinished()
 	{
 		if (!this.sampler.isFinished())
@@ -334,6 +362,7 @@ public class MLDPlayer
 	 * @see MLDPlayerEvent
 	 * @see #getEvents()
 	 */
+	@SquirrelJMEVendorApi
 	public void removeEventKey(int key)
 	{
 		this.evtKeys.remove(key);
@@ -347,6 +376,7 @@ public class MLDPlayer
 	 * @see MLDPlayerEvent
 	 * @see #getEvents()
 	 */
+	@SquirrelJMEVendorApi
 	public void removeEventKeys(int[] keys)
 	{
 		if (keys == null)
@@ -377,6 +407,7 @@ public class MLDPlayer
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 */
+	@SquirrelJMEVendorApi
 	public int render(float[] samples, int offset, int frames)
 	{
 		return this.render(samples, offset, frames, 1.0f, 1.0f, true, true);
@@ -407,6 +438,7 @@ public class MLDPlayer
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 */
+	@SquirrelJMEVendorApi
 	public int render(float[] samples, int offset, int frames,
 		float amplitude)
 	{
@@ -442,6 +474,7 @@ public class MLDPlayer
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 */
+	@SquirrelJMEVendorApi
 	public int render(float[] samples, int offset, int frames, float left,
 		float right)
 	{
@@ -485,6 +518,7 @@ public class MLDPlayer
 	 * @see #render(float[], int, int, float)
 	 * @see #render(float[], int, int, float, float)
 	 */
+	@SquirrelJMEVendorApi
 	public int render(float[] samples, int offset, int frames, float left,
 		float right, boolean erase, boolean clamp)
 	{
@@ -603,6 +637,7 @@ public class MLDPlayer
 	 * @see MLDPlayerEvent
 	 * @see #getEvents()
 	 */
+	@SquirrelJMEVendorApi
 	public void setPlaybackEventsEnabled(boolean enabled)
 	{
 		this.evtPlayback = enabled;
@@ -626,6 +661,7 @@ public class MLDPlayer
 	 * @see #getTime()
 	 * @see MLD#getDuration(boolean)
 	 */
+	@SquirrelJMEVendorApi
 	public boolean setTime(double seconds)
 	{
 		
@@ -656,6 +692,7 @@ public class MLDPlayer
 	/**
 	 * bank-change
 	 */
+	@SquirrelJMEVendorApi
 	void evtBankChange(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.bankChange(event.channel, event.bank);
@@ -665,6 +702,7 @@ public class MLDPlayer
 	/**
 	 * cuepoint
 	 */
+	@SquirrelJMEVendorApi
 	void evtCuepoint(MLDPlayerTrack track, MLDEvent event)
 	{
 		
@@ -694,6 +732,7 @@ public class MLDPlayer
 	/**
 	 * drum-enable
 	 */
+	@SquirrelJMEVendorApi
 	void evtDrumEnable(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.drumEnable(event.channel, event.enable);
@@ -703,6 +742,7 @@ public class MLDPlayer
 	/**
 	 * end-of-track
 	 */
+	@SquirrelJMEVendorApi
 	void evtEndOfTrack(MLDPlayerTrack track, MLDEvent event)
 	{
 		track.finished = true;
@@ -711,6 +751,7 @@ public class MLDPlayer
 	/**
 	 * ext-B event
 	 */
+	@SquirrelJMEVendorApi
 	void evtExtB(MLDPlayerTrack track, MLDEvent e)
 	{
 		switch (e.id)
@@ -772,6 +813,7 @@ public class MLDPlayer
 	/**
 	 * ext-info event
 	 */
+	@SquirrelJMEVendorApi
 	void evtExtInfo(MLDPlayerTrack track, MLDEvent e)
 	{
 		this.sampler.sysEx(e.data);
@@ -781,6 +823,7 @@ public class MLDPlayer
 	/**
 	 * master-tune
 	 */
+	@SquirrelJMEVendorApi
 	void evtMasterTune(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.masterTune(event.semitones);
@@ -790,6 +833,7 @@ public class MLDPlayer
 	/**
 	 * master-volume
 	 */
+	@SquirrelJMEVendorApi
 	void evtMasterVolume(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.masterVolume(event.volume);
@@ -799,6 +843,7 @@ public class MLDPlayer
 	/**
 	 * note
 	 */
+	@SquirrelJMEVendorApi
 	void evtNote(MLDPlayerTrack track, MLDEvent event)
 	{
 		MLDChannel chan = this.channels[event.channel];
@@ -846,6 +891,7 @@ public class MLDPlayer
 	/**
 	 * panpot
 	 */
+	@SquirrelJMEVendorApi
 	void evtPanPot(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.panpot(event.channel, event.panpot);
@@ -855,6 +901,7 @@ public class MLDPlayer
 	/**
 	 * pitchbend
 	 */
+	@SquirrelJMEVendorApi
 	void evtPitchBend(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.pitchBend(event.channel, event.semitones);
@@ -864,6 +911,7 @@ public class MLDPlayer
 	/**
 	 * pitchbend-range
 	 */
+	@SquirrelJMEVendorApi
 	void evtPitchRange(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.pitchBendRange(event.channel, event.range);
@@ -873,6 +921,7 @@ public class MLDPlayer
 	/**
 	 * program-change
 	 */
+	@SquirrelJMEVendorApi
 	void evtProgramChange(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.programChange(event.channel, event.program);
@@ -882,6 +931,7 @@ public class MLDPlayer
 	/**
 	 * timebase-tempo
 	 */
+	@SquirrelJMEVendorApi
 	void evtTimebaseTempo(MLDPlayerTrack track, MLDEvent event)
 	{
 		if (event.timebase == -1)
@@ -895,6 +945,7 @@ public class MLDPlayer
 	/**
 	 * volume
 	 */
+	@SquirrelJMEVendorApi
 	void evtVolume(MLDPlayerTrack track, MLDEvent event)
 	{
 		this.sampler.volume(event.channel, event.volume);
@@ -905,6 +956,7 @@ public class MLDPlayer
 	/**
 	 * Process events on a track
 	 */
+	@SquirrelJMEVendorApi
 	void process(MLDPlayerTrack track, int ticks)
 	{
 		
@@ -951,6 +1003,7 @@ public class MLDPlayer
 	/**
 	 * Initialize state in preparation for playback
 	 */
+	@SquirrelJMEVendorApi
 	void reset()
 	{
 		
@@ -993,6 +1046,7 @@ public class MLDPlayer
 	/**
 	 * Compute the number of output frames in one event tick
 	 */
+	@SquirrelJMEVendorApi
 	void setTempo(int timebase, int tempo)
 	{
 		this.framesPerTick = (60 * this.sampleRate) / (timebase * tempo);
@@ -1001,6 +1055,7 @@ public class MLDPlayer
 	/**
 	 * Specify the event offset of a track
 	 */
+	@SquirrelJMEVendorApi
 	void setTrackOffset(MLDPlayerTrack track, int offset)
 	{
 		
@@ -1022,6 +1077,7 @@ public class MLDPlayer
 	/**
 	 * Determine how many ticks can be processed until a note expires
 	 */
+	@SquirrelJMEVendorApi
 	int untilNote()
 	{
 		int ret = -1;
@@ -1037,6 +1093,7 @@ public class MLDPlayer
 	/**
 	 * Determine how many ticks can be processed until the next event
 	 */
+	@SquirrelJMEVendorApi
 	int untilTrack()
 	{
 		int ret = -1;

@@ -32,6 +32,7 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 
 /**
@@ -43,87 +44,104 @@ class MA3Algorithm
 	/**
 	 * Key played for drum notes
 	 */
+	@SquirrelJMEVendorApi
 	final int drumKey;
 	
 	/**
 	 * Is a drum note
 	 */
+	@SquirrelJMEVendorApi
 	final boolean isDrum;
 	
 	/**
 	 * Is a wave rum algorithm
 	 */
+	@SquirrelJMEVendorApi
 	final boolean isWave;
 	
 	/**
 	 * Modulation LFO rate multiplier
 	 */
+	@SquirrelJMEVendorApi
 	final int lfo;
 	
 	/**
 	 * FM operator templates
 	 */
+	@SquirrelJMEVendorApi
 	final MA3Operator[] operators;
 	
 	/**
 	 * Stereo balance
 	 */
+	@SquirrelJMEVendorApi
 	final int panpot;
 	
 	/**
 	 * Operator connection algorithm
 	 */
+	@SquirrelJMEVendorApi
 	int alg;
 	
 	/**
 	 * Wave end point
 	 */
+	@SquirrelJMEVendorApi
 	int ep;
 	
 	/**
 	 * Drum frequency base
 	 */
+	@SquirrelJMEVendorApi
 	float freqBase;
 	
 	/**
 	 * Wave sampling frequency
 	 */
+	@SquirrelJMEVendorApi
 	int fs;
 	
 	/**
 	 * Wave loop point
 	 */
+	@SquirrelJMEVendorApi
 	int lp;
 	
 	/**
 	 * Wave ROM select
 	 */
+	@SquirrelJMEVendorApi
 	boolean rm;
 	
 	/**
 	 * Left stereo amplitude
 	 */
+	@SquirrelJMEVendorApi
 	float volLeft;
 	
 	/**
 	 * Right stereo amplitude
 	 */
+	@SquirrelJMEVendorApi
 	float volRight;
 	
 	/**
 	 * Wave samples to advance per output sample
 	 */
+	@SquirrelJMEVendorApi
 	float wavAdvance;
 	
 	/**
 	 * Wave ROM index
 	 */
+	@SquirrelJMEVendorApi
 	int waveId;
 	
 	
 	/**
 	 * FM constructor
 	 */
+	@SquirrelJMEVendorApi
 	MA3Algorithm(byte[] bytes, boolean isDrum)
 	{
 		
@@ -150,6 +168,7 @@ class MA3Algorithm
 	/**
 	 * Wave drum constructor
 	 */
+	@SquirrelJMEVendorApi
 	MA3Algorithm(byte[] message, int offset)
 	{
 		//  Scratch
@@ -186,6 +205,7 @@ class MA3Algorithm
 	/**
 	 * Debugging output
 	 */
+	@SquirrelJMEVendorApi
 	String debug()
 	{
 		StringBuilder ret = new StringBuilder();
@@ -227,12 +247,14 @@ class MA3Algorithm
 	/**
 	 * Initialize volume settings
 	 */
+	@SquirrelJMEVendorApi
 	void initVolume()
 	{
 		this.volRight = this.panpot / (this.panpot <= 15 ? 30.0f : 31.0f);
 		this.volLeft = 1 - this.volRight;
 	}
 	
+	@SquirrelJMEVendorApi
 	static MA3Algorithm[] from(RomData defs, boolean isDrum, boolean isWave)
 	{
 		MA3Algorithm[] ret;

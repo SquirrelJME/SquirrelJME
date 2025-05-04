@@ -32,106 +32,121 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 
 /**
  * Audio source
  */
+@SquirrelJMEVendorApi
 class MA3Note
 	implements BasicNote
 {
-	
 	/**
 	 * FM operator algorithm
 	 */
+	@SquirrelJMEVendorApi
 	final MA3Algorithm algorithm;
 	
 	/**
 	 * Encapsulating channel
 	 */
+	@SquirrelJMEVendorApi
 	final MA3Channel channel;
 	
 	/**
 	 * Encapsulating instance
 	 */
+	@SquirrelJMEVendorApi
 	final MA3Sampler instance;
 	
 	/**
 	 * OPL operators
 	 */
+	@SquirrelJMEVendorApi
 	final MA3Operator[] operators;
 	
 	/**
 	 * Current output sample
 	 */
+	@SquirrelJMEVendorApi
 	final float sample;
 	
 	/**
 	 * Frequency advancement when dissociated
 	 */
+	@SquirrelJMEVendorApi
 	float advance;
 	
 	/**
 	 * Amplitude modulator phase
 	 */
+	@SquirrelJMEVendorApi
 	int amPhase;
 	
 	/**
 	 * Effective left stereo amplitude
 	 */
+	@SquirrelJMEVendorApi
 	float ampLeft;
 	
 	/**
 	 * Effective right stereo amplitude
 	 */
+	@SquirrelJMEVendorApi
 	float ampRight;
 	
 	/**
-	 * OPL registers
 	 * Octave index
 	 */
+	@SquirrelJMEVendorApi
 	int block;
 	
 	/**
 	 * All operator envelopes are finished
 	 */
+	@SquirrelJMEVendorApi
 	boolean envDone;
 	
 	/**
 	 * Frequency divider
 	 */
+	@SquirrelJMEVendorApi
 	int f_number;
 	
 	/**
 	 * Base frequency
 	 */
+	@SquirrelJMEVendorApi
 	float freqBase;
 	
 	/**
 	 * Note is currently active on its key
 	 */
+	@SquirrelJMEVendorApi
 	boolean playing;
 	
 	/**
 	 * Base volume
 	 */
+	@SquirrelJMEVendorApi
 	float volBase;
 	
 	/**
 	 * Left stereo output amplitude
 	 */
+	@SquirrelJMEVendorApi
 	float volLeftOut;
 	
 	/**
 	 * Right stereo output amplitude
 	 */
+	@SquirrelJMEVendorApi
 	float volRightOut;
 	
-	
+	@SquirrelJMEVendorApi
 	MA3Note(MA3Channel channel, MA3Algorithm algorithm)
 	{
-		
-		
 		this.algorithm = algorithm;
 		this.envDone = false;
 		this.ampLeft = 0.0f;
@@ -150,6 +165,7 @@ class MA3Note
 	/**
 	 * Perform easing on an amplitude controller
 	 */
+	@SquirrelJMEVendorApi
 	float ease(float level, float target)
 	{
 		return level < target ? Math.min(target,
@@ -160,6 +176,7 @@ class MA3Note
 	/**
 	 * Key-off processing
 	 */
+	@SquirrelJMEVendorApi
 	void off()
 	{
 		this.playing = false;
@@ -175,6 +192,7 @@ class MA3Note
 	/**
 	 * An envelope has finished
 	 */
+	@SquirrelJMEVendorApi
 	void onEnvelopeDone()
 	{
 		this.envDone = true;
@@ -196,6 +214,7 @@ class MA3Note
 	/**
 	 * Frequency has changed
 	 */
+	@SquirrelJMEVendorApi
 	void onFrequency(double bend)
 	{
 		
@@ -219,6 +238,7 @@ class MA3Note
 	/**
 	 * Master volume has changed
 	 */
+	@SquirrelJMEVendorApi
 	void onVolume()
 	{
 		this.volLeftOut =
@@ -230,9 +250,9 @@ class MA3Note
 	/**
 	 * Render the next input sample
 	 */
+	@SquirrelJMEVendorApi
 	boolean render()
 	{
-		
 		// Compute desired left and right volume levels
 		float tgtLeft = 0.0f;
 		float tgtRight = 0.0f;
@@ -259,6 +279,7 @@ class MA3Note
 	/**
 	 * Generate an FM sample
 	 */
+	@SquirrelJMEVendorApi
 	float sampleFM()
 	{
 		int out1, out2, out3, out4;
@@ -325,6 +346,7 @@ class MA3Note
 	/**
 	 * Terminate playback
 	 */
+	@SquirrelJMEVendorApi
 	void stop()
 	{
 		this.envDone = true;
@@ -336,5 +358,4 @@ class MA3Note
 			op.envStage = MA3SamplerProvider.ENV_DONE;
 		}
 	}
-	
 }

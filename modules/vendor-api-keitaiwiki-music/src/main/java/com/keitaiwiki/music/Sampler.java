@@ -32,6 +32,8 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * Sample-generating instance of a {@code Sampler}. Configurations on the
  * sampler object can propagate down to its instances.<br><br>
@@ -60,6 +62,7 @@ package com.keitaiwiki.music;
  *
  * @see SamplerProvider
  */
+@SquirrelJMEVendorApi
 public interface Sampler
 {
 	
@@ -72,6 +75,7 @@ public interface Sampler
 	 * @param bank The bank number.
 	 * @see #programChange(int, int)
 	 */
+	@SquirrelJMEVendorApi
 	void bankChange(int channel, int bank);
 	
 	/**
@@ -81,6 +85,7 @@ public interface Sampler
 	 * @param channel The index of the channel to configure.
 	 * @param enable Whether to enable drum notes on the channel.
 	 */
+	@SquirrelJMEVendorApi
 	void drumEnable(int channel, boolean enable);
 	
 	/**
@@ -88,6 +93,7 @@ public interface Sampler
 	 *
 	 * @return {@code true} if there are no notes generating any output.
 	 */
+	@SquirrelJMEVendorApi
 	boolean isFinished();
 	
 	/**
@@ -99,6 +105,7 @@ public interface Sampler
 	 * corresponds to the note A<sub>4</sub>.
 	 * @see #keyOn(int, int, float)
 	 */
+	@SquirrelJMEVendorApi
 	void keyOff(int channel, int key);
 	
 	/**
@@ -130,6 +137,7 @@ public interface Sampler
 	 * @see #pitchBend(int, float)
 	 * @see #pitchBendRange(int, float)
 	 */
+	@SquirrelJMEVendorApi
 	void keyOn(int channel, int key, float velocity);
 	
 	/**
@@ -148,6 +156,7 @@ public interface Sampler
 	 * non-number.
 	 * @see #pitchBend(int, float)
 	 */
+	@SquirrelJMEVendorApi
 	void masterTune(float semitones);
 	
 	/**
@@ -161,6 +170,7 @@ public interface Sampler
 	 * @throws IllegalArgumentException if {@code volume} is a
 	 * non-number or is negative.
 	 */
+	@SquirrelJMEVendorApi
 	void masterVolume(float volume);
 	
 	/**
@@ -174,6 +184,7 @@ public interface Sampler
 	 * @throws IllegalArgumentException if {@code panpot} is a
 	 * non-number, is less than -1.0f or is greater than +1.0f.
 	 */
+	@SquirrelJMEVendorApi
 	void panpot(int channel, float panpot);
 	
 	/**
@@ -195,6 +206,7 @@ public interface Sampler
 	 * @see #masterTune(float)
 	 * @see #pitchBendRange(int, float)
 	 */
+	@SquirrelJMEVendorApi
 	void pitchBend(int channel, float semitones);
 	
 	/**
@@ -210,6 +222,7 @@ public interface Sampler
 	 * or is negative.
 	 * @see #pitchBend(int, float)
 	 */
+	@SquirrelJMEVendorApi
 	void pitchBendRange(int channel, float range);
 	
 	/**
@@ -221,6 +234,7 @@ public interface Sampler
 	 * @param program The program number.
 	 * @see #bankChange(int, int)
 	 */
+	@SquirrelJMEVendorApi
 	void programChange(int channel, int program);
 	
 	/**
@@ -240,6 +254,7 @@ public interface Sampler
 	 * @throws IllegalArgumentException if {@code frames} is negative.
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 */
+	@SquirrelJMEVendorApi
 	void render(float[] samples, int offset, int frames);
 	
 	/**
@@ -262,6 +277,7 @@ public interface Sampler
 	 * or if {@code amplitude} is a non-number or is negative.
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 */
+	@SquirrelJMEVendorApi
 	void render(float[] samples, int offset, int frames, float amplitude);
 	
 	/**
@@ -286,6 +302,7 @@ public interface Sampler
 	 * or if {@code left} or {@code right} is a non-number or is negative.
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 */
+	@SquirrelJMEVendorApi
 	void render(float[] samples, int offset, int frames, float left,
 		float right);
 	
@@ -330,6 +347,7 @@ public interface Sampler
 	 * @see #render(float[], int, int, float)
 	 * @see #render(float[], int, int, float, float)
 	 */
+	@SquirrelJMEVendorApi
 	void render(float[] samples, int offset, int frames, float left,
 		float right, boolean erase, boolean clamp);
 	
@@ -339,6 +357,7 @@ public interface Sampler
 	 * and all master, channel and sampler-specific configurations are
 	 * reinitialized to their default values.
 	 */
+	@SquirrelJMEVendorApi
 	void reset();
 	
 	/**
@@ -349,6 +368,7 @@ public interface Sampler
 	 *
 	 * @param message The body data of the vendor-exclusive message.
 	 */
+	@SquirrelJMEVendorApi
 	void sysEx(byte[] message);
 	
 	/**
@@ -362,5 +382,6 @@ public interface Sampler
 	 * being full-volume.
 	 * @see #masterVolume(float)
 	 */
+	@SquirrelJMEVendorApi
 	void volume(int channel, float volume);
 }

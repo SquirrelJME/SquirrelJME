@@ -9,6 +9,7 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import java.util.Arrays;
 
@@ -17,87 +18,105 @@ import java.util.Arrays;
  *
  * @since 2025/05/02
  */
+@SquirrelJMEVendorApi
 class MA3Sampler
 	implements Sampler
 {
+	@SquirrelJMEVendorApi
 	private final MA3SamplerProvider ma3;
 	
 	/**
 	 * Amplitude modulator phase
 	 */
+	@SquirrelJMEVendorApi
 	int amPhase;
 	
 	/**
 	 * Global pitch bend
 	 */
+	@SquirrelJMEVendorApi
 	float bendOut;
 	
 	/**
 	 * Channel states
 	 */
+	@SquirrelJMEVendorApi
 	final MA3Channel[] channels;
 	
 	/**
 	 * Output sampling rate
 	 */
+	@SquirrelJMEVendorApi
 	final float sampleRate;
 	
 	/**
 	 * Next input sample
 	 */
+	@SquirrelJMEVendorApi
 	final float[] smpNext;
 	
 	/**
 	 * Position between input samples
 	 */
+	@SquirrelJMEVendorApi
 	float smpPosition;
 	
 	/**
 	 * Previous input sample
 	 */
+	@SquirrelJMEVendorApi
 	final float[] smpPrev;
 	
 	/**
 	 * Number of input samples per output sample
 	 */
+	@SquirrelJMEVendorApi
 	final float smpWidth;
 	
 	/**
 	 * Frequency modulator phase
 	 */
+	@SquirrelJMEVendorApi
 	int vibPhase;
 	
 	/**
 	 * Global attenuation
 	 */
+	@SquirrelJMEVendorApi
 	float volFade;
 	
 	/**
 	 * Global volume
 	 */
+	@SquirrelJMEVendorApi
 	float volLevel;
 	
 	/**
 	 * Effective global volume
 	 */
+	@SquirrelJMEVendorApi
 	float volOut;
 	
 	/**
 	 * Automatic volume adjustment rate
 	 */
+	@SquirrelJMEVendorApi
 	final float volRate;
 	
 	/**
 	 * Registered wave drums
 	 */
+	@SquirrelJMEVendorApi
 	final MA3Algorithm[] wavDrums;
 	
 	/**
 	 * Wave RAM, decoded from ADPCM
 	 */
+	@SquirrelJMEVendorApi
 	int[] wavRam;
 	
 	
+	@SquirrelJMEVendorApi
 	MA3Sampler(MA3SamplerProvider __ma3, float sampleRate)
 	{
 		
@@ -123,6 +142,7 @@ class MA3Sampler
 	/**
 	 * Specify a channel's program bank.
 	 */
+	@SquirrelJMEVendorApi
 	public void bankChange(int channel, int bank)
 	{
 		if (channel < 0 || channel >= this.channels.length)
@@ -134,6 +154,7 @@ class MA3Sampler
 	/**
 	 * Specify whether a channel should play drum notes.
 	 */
+	@SquirrelJMEVendorApi
 	public void drumEnable(int channel, boolean enable)
 	{
 		if (channel < 0 || channel >= this.channels.length)
@@ -145,6 +166,7 @@ class MA3Sampler
 	/**
 	 * Determine whether or not any notes are producing output.
 	 */
+	@SquirrelJMEVendorApi
 	public boolean isFinished()
 	{
 		for (MA3Channel chan : this.channels)
@@ -171,6 +193,7 @@ class MA3Sampler
 	/**
 	 * Activate a key on a channel.
 	 */
+	@SquirrelJMEVendorApi
 	public void keyOn(int channel, int key, float velocity)
 	{
 		
@@ -266,6 +289,7 @@ class MA3Sampler
 	/**
 	 * Specify the global pitch bend.
 	 */
+	@SquirrelJMEVendorApi
 	public void masterTune(float semitones)
 	{
 		if (Float.isInfinite(semitones))
@@ -278,6 +302,7 @@ class MA3Sampler
 	/**
 	 * Specify the global volume.
 	 */
+	@SquirrelJMEVendorApi
 	public void masterVolume(float volume)
 	{
 		if (Float.isInfinite(volume) || volume < 0.0f)
@@ -290,6 +315,7 @@ class MA3Sampler
 	/**
 	 * Specify stereo panning on a channel.
 	 */
+	@SquirrelJMEVendorApi
 	public void panpot(int channel, float panpot)
 	{
 		if (Float.isInfinite(panpot) || panpot < -1.0f || panpot > 1.0f)
@@ -306,6 +332,7 @@ class MA3Sampler
 	/**
 	 * Specify a channel's pitch bend.
 	 */
+	@SquirrelJMEVendorApi
 	public void pitchBend(int channel, float semitones)
 	{
 		if (Float.isInfinite(semitones))
@@ -321,6 +348,7 @@ class MA3Sampler
 	/**
 	 * Specify the range of a channel's pitch bend.
 	 */
+	@SquirrelJMEVendorApi
 	public void pitchBendRange(int channel, float range)
 	{
 		if (Float.isInfinite(range) || range < 0.0f)
@@ -336,6 +364,7 @@ class MA3Sampler
 	/**
 	 * Speicfy a channel's program number.
 	 */
+	@SquirrelJMEVendorApi
 	public void programChange(int channel, int program)
 	{
 		MA3Channel chan = this.channels[channel];
@@ -345,6 +374,7 @@ class MA3Sampler
 	/**
 	 * Generate output samples.
 	 */
+	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames)
 	{
 		this.render(samples, offset, frames, 1.0f, 1.0f, true, true);
@@ -353,6 +383,7 @@ class MA3Sampler
 	/**
 	 * Generate output samples.
 	 */
+	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames,
 		float amplitude)
 	{
@@ -363,6 +394,7 @@ class MA3Sampler
 	/**
 	 * Generate output samples.
 	 */
+	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames, float left,
 		float right)
 	{
@@ -372,6 +404,7 @@ class MA3Sampler
 	/**
 	 * Generate output samples.
 	 */
+	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames, float left,
 		float right, boolean erase, boolean clamp)
 	{
@@ -490,6 +523,7 @@ class MA3Sampler
 	/**
 	 * Initialize all output state.
 	 */
+	@SquirrelJMEVendorApi
 	public void reset()
 	{
 		this.amPhase = 0;
@@ -509,6 +543,7 @@ class MA3Sampler
 	/**
 	 * Process a SysEx message.
 	 */
+	@SquirrelJMEVendorApi
 	public void sysEx(byte[] message)
 	{
 		
@@ -542,6 +577,7 @@ class MA3Sampler
 	/**
 	 * Specify a channel's volume.
 	 */
+	@SquirrelJMEVendorApi
 	public void volume(int channel, float volume)
 	{
 		if (Float.isInfinite(volume) || volume < 0.0f)
@@ -560,6 +596,7 @@ class MA3Sampler
 	/**
 	 * Retrieve an algorithm for playing an FM drum note
 	 */
+	@SquirrelJMEVendorApi
 	MA3Algorithm getDrumFM(int key)
 	{
 		
@@ -578,6 +615,7 @@ class MA3Sampler
 	/**
 	 * Retrieve an algorithm for playing a wave drum note
 	 */
+	@SquirrelJMEVendorApi
 	MA3Algorithm getDrumWave(int key)
 	{
 		
@@ -606,6 +644,7 @@ class MA3Sampler
 	/**
 	 * Master volume has changed
 	 */
+	@SquirrelJMEVendorApi
 	void onVolume()
 	{
 		this.volOut = (1.0f - this.volFade) * this.volLevel;
@@ -616,6 +655,7 @@ class MA3Sampler
 	/**
 	 * Produce one input sample
 	 */
+	@SquirrelJMEVendorApi
 	void sample()
 	{
 		this.smpNext[0] = this.smpNext[1] = 0.0f;
@@ -628,6 +668,7 @@ class MA3Sampler
 	/**
 	 * Specify the global fade.
 	 */
+	@SquirrelJMEVendorApi
 	void setMasterFade(byte[] message)
 	{
 		if (message.length < 5)
@@ -639,6 +680,7 @@ class MA3Sampler
 	/**
 	 * Decode and register wave drum definitions
 	 */
+	@SquirrelJMEVendorApi
 	void setWaveDrums(byte[] message)
 	{
 		
@@ -666,6 +708,7 @@ class MA3Sampler
 	/**
 	 * Terminate any existing wave drum notes
 	 */
+	@SquirrelJMEVendorApi
 	void stopWaveDrums()
 	{
 		for (MA3Channel chan : this.channels)
@@ -673,5 +716,4 @@ class MA3Sampler
 				if (note.algorithm.isWave)
 					note.stop();
 	}
-	
 }

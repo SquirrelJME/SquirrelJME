@@ -32,11 +32,14 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * Basic sample data.
  *
  * @since 2025/05/02
  */
+@SquirrelJMEVendorApi
 public interface BasicSampleData
 {
 }

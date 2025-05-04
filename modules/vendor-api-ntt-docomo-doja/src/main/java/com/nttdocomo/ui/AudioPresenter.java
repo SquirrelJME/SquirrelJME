@@ -10,6 +10,7 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.HashMap;
 import java.util.Map;
@@ -123,6 +124,10 @@ public class AudioPresenter
 	protected static final int MIN_VENDOR_AUDIO_EVENT =
 		64;
 	
+	/** The listener to use for media events. */
+	@SquirrelJMEVendorApi
+	volatile MediaListener _listener;
+	
 	/**
 	 * This cannot be instantiated by the user.
 	 *
@@ -153,11 +158,44 @@ public class AudioPresenter
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Sets the given attribute.
+	 *
+	 * @param __attribute The attribute to set.
+	 * @param __value The value to set.
+	 * @throws IllegalArgumentException For DoJa 2.0 and up, if a valid
+	 * attribute it passed and its value is not valid.
+	 * @since 2025/05/04
+	 */
 	@Api
 	@Override
 	public void setAttribute(int __attribute, int __value)
+		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		switch (__attribute)
+		{
+			case AudioPresenter.CHANGE_TEMPO:
+				throw Debugging.todo();
+				
+			case AudioPresenter.LOOP_COUNT:
+				throw Debugging.todo();
+				
+			case AudioPresenter.PRIORITY:
+				throw Debugging.todo();
+				
+			case AudioPresenter.SET_VOLUME:
+				throw Debugging.todo();
+				
+			case AudioPresenter.SYNC_MODE:
+				throw Debugging.todo();
+				
+			case AudioPresenter.TRANSPOSE_KEY:
+				throw Debugging.todo();
+				
+				// Unknown, ignore
+			default:
+				break;
+		}
 	}
 	
 	@Api
@@ -166,11 +204,18 @@ public class AudioPresenter
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/05/04
+	 */
 	@Api
 	@Override
 	public void setMediaListener(MediaListener __listener)
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			this._listener = __listener;
+		}
 	}
 	
 	@Api

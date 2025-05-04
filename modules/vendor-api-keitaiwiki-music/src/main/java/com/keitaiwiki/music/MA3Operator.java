@@ -32,188 +32,224 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * Individual FM algorithm operator
  */
+@SquirrelJMEVendorApi
 class MA3Operator
 	implements BasicOperator
 {
-	
 	/**
 	 * OPL registers
 	 * Envelope attack rate
 	 */
+	@SquirrelJMEVendorApi
 	final int ar;
 	
 	/**
 	 * Amplitude modulation depth
 	 */
+	@SquirrelJMEVendorApi
 	final int dam;
 	
 	/**
 	 * Envelope decay rate
 	 */
+	@SquirrelJMEVendorApi
 	final int dr;
 	
 	/**
 	 * Frequency modulation depth
 	 */
+	@SquirrelJMEVendorApi
 	final int dvb;
 	
 	/**
 	 * Enable amplutide modulation
 	 */
+	@SquirrelJMEVendorApi
 	final boolean eam;
 	
 	/**
 	 * Enable frequency modulation
 	 */
+	@SquirrelJMEVendorApi
 	final boolean evb;
 	
 	/**
 	 * Envelope release rate
 	 */
+	@SquirrelJMEVendorApi
 	final int rr;
 	
 	/**
 	 * Envelope sustain level
 	 */
+	@SquirrelJMEVendorApi
 	final int sl;
 	
 	/**
 	 * Envelope sustain rate
 	 */
+	@SquirrelJMEVendorApi
 	final int sr;
 	
 	/**
 	 * MIDI Hold 1 is supported
 	 */
+	@SquirrelJMEVendorApi
 	final boolean sus;
 	
 	/**
 	 * Envelope attenuation
 	 */
+	@SquirrelJMEVendorApi
 	final int tl;
 	
 	/**
 	 * Ignore key-off response
 	 */
+	@SquirrelJMEVendorApi
 	final boolean xof;
 	
 	/**
 	 * Encapsulating algorithm
 	 */
+	@SquirrelJMEVendorApi
 	MA3Algorithm algorithm;
 	
 	/**
 	 * u14 Amplitude modulation counter
 	 */
+	@SquirrelJMEVendorApi
 	int amPhase;
 	
 	/**
 	 * Detune shift
 	 */
+	@SquirrelJMEVendorApi
 	int dt;
 	
 	/**
 	 * u9  Current envelope level
 	 */
+	@SquirrelJMEVendorApi
 	int envLevel;
 	
 	/**
 	 * u9  Effective envelope output
 	 */
+	@SquirrelJMEVendorApi
 	int envOut;
 	
 	/**
 	 * u15 Envelope phase counter
 	 */
+	@SquirrelJMEVendorApi
 	int envPhase;
 	
 	/**
 	 * Current envelope rate of change
 	 */
+	@SquirrelJMEVendorApi
 	int envRate;
 	
 	/**
 	 * Envelope rate offset modifier
 	 */
+	@SquirrelJMEVendorApi
 	int envRof;
 	
 	/**
 	 * Envelope processing stage
 	 */
+	@SquirrelJMEVendorApi
 	int envStage;
 	
 	/**
 	 * Feedback rate index
 	 */
+	@SquirrelJMEVendorApi
 	int fb;
 	
 	/**
 	 * Most recent output sample
 	 */
+	@SquirrelJMEVendorApi
 	int fb0;
 	
 	/**
 	 * Second-most recent output sample
 	 */
+	@SquirrelJMEVendorApi
 	int fb1;
 	
 	/**
 	 * Encapsulating instance
 	 */
+	@SquirrelJMEVendorApi
 	MA3Sampler instance;
 	
 	/**
 	 * Wave drum parameters are valid
 	 */
+	@SquirrelJMEVendorApi
 	boolean isValid;
 	
 	/**
 	 * Attenuation index per octave
 	 */
+	@SquirrelJMEVendorApi
 	int ksl;
 	
 	/**
 	 * KSL attenuation level
 	 */
+	@SquirrelJMEVendorApi
 	int kslOut;
 	
 	/**
 	 * Envelope rate modifier scale
 	 */
+	@SquirrelJMEVendorApi
 	int ksr;
 	
 	/**
 	 * Frequency multiplier
 	 */
+	@SquirrelJMEVendorApi
 	int multi;
 	
 	/**
 	 * Encapsulating note
 	 */
+	@SquirrelJMEVendorApi
 	MA3Note note;
 	
 	/**
 	 * u10 Oscillator counter
 	 */
+	@SquirrelJMEVendorApi
 	int oscPhase;
 	
 	/**
 	 * Current wave source sample
 	 */
+	@SquirrelJMEVendorApi
 	float wavSample;
 	
 	/**
 	 * Wave function index
 	 */
+	@SquirrelJMEVendorApi
 	int ws;
-	
 	
 	/**
 	 * Template constructor
 	 */
+	@SquirrelJMEVendorApi
 	MA3Operator(byte[] bytes, int offset)
 	{
 		this.sus = (bytes[offset] >> 3 & 1) != 0;
@@ -239,6 +275,7 @@ class MA3Operator
 	/**
 	 * Wave constructor
 	 */
+	@SquirrelJMEVendorApi
 	MA3Operator(int offset, byte[] message)
 	{
 		int bits;
@@ -264,6 +301,7 @@ class MA3Operator
 	/**
 	 * Playback constructor
 	 */
+	@SquirrelJMEVendorApi
 	MA3Operator(MA3Note note, MA3Operator o)
 	{
 		
@@ -304,6 +342,7 @@ class MA3Operator
 	/**
 	 * Frequency has changed
 	 */
+	@SquirrelJMEVendorApi
 	void onFrequency()
 	{
 		this.envRof =
@@ -315,6 +354,7 @@ class MA3Operator
 	/**
 	 * Generate a sample on an operator
 	 */
+	@SquirrelJMEVendorApi
 	int sample(int mod, boolean feedback)
 	{
 		//  Scratch

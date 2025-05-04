@@ -32,34 +32,42 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * Utility class for reading binary data
  */
+@SquirrelJMEVendorApi
 class MLDBinaryReader
 {
 	/**
 	 * Backing data store
 	 */
+	@SquirrelJMEVendorApi
 	final byte[] data;
 	
 	/**
 	 * Length of current segment
 	 */
+	@SquirrelJMEVendorApi
 	final int length;
 	
 	/**
 	 * Offset of start of current segment
 	 */
+	@SquirrelJMEVendorApi
 	final int start;
 	
 	/**
 	 * Current input offset
 	 */
+	@SquirrelJMEVendorApi
 	int offset;
 	
 	/**
 	 * Constructor
 	 */
+	@SquirrelJMEVendorApi
 	MLDBinaryReader(byte[] data, int start, int length)
 	{
 		this.data = data;
@@ -71,6 +79,7 @@ class MLDBinaryReader
 	/**
 	 * Read a byte array
 	 */
+	@SquirrelJMEVendorApi
 	byte[] bytes(int length)
 	{
 		if (this.offset + length > this.start + this.length)
@@ -84,6 +93,7 @@ class MLDBinaryReader
 	/**
 	 * Determine whether the stream has reached its end
 	 */
+	@SquirrelJMEVendorApi
 	boolean isEOF()
 	{
 		return this.offset == this.start + this.length;
@@ -92,6 +102,7 @@ class MLDBinaryReader
 	/**
 	 * Produce a new Reader to access a subset of this one
 	 */
+	@SquirrelJMEVendorApi
 	MLDBinaryReader reader(int length)
 	{
 		MLDBinaryReader ret = new MLDBinaryReader(this.data, this.offset,
@@ -103,6 +114,7 @@ class MLDBinaryReader
 	/**
 	 * Advance the input
 	 */
+	@SquirrelJMEVendorApi
 	void skip(int length)
 	{
 		if (this.offset + length > this.start + this.length)
@@ -113,6 +125,7 @@ class MLDBinaryReader
 	/**
 	 * Read a 16-bit unsigned integer
 	 */
+	@SquirrelJMEVendorApi
 	int u16()
 	{
 		int ret = this.u8() << 8;
@@ -122,6 +135,7 @@ class MLDBinaryReader
 	/**
 	 * Read a 32-bit unsigned integer
 	 */
+	@SquirrelJMEVendorApi
 	int u32()
 	{
 		int ret = this.u16() << 16;
@@ -133,6 +147,7 @@ class MLDBinaryReader
 	/**
 	 * Read an 8-bit unsigned integer
 	 */
+	@SquirrelJMEVendorApi
 	int u8()
 	{
 		if (this.offset == this.start + this.length)

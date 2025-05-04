@@ -32,6 +32,8 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * Notifies of a scenario that arises during playback. When configured,
  * the
@@ -41,6 +43,7 @@ package com.keitaiwiki.music;
  *
  * @see MLDPlayer#getEvents()
  */
+@SquirrelJMEVendorApi
 public class MLDPlayerEvent
 	implements BasicEvent
 {
@@ -49,23 +52,27 @@ public class MLDPlayerEvent
 	 * Additional event data, if relevant. For {@code EVENT_KEY} events,
 	 * this will be the key number.
 	 */
+	@SquirrelJMEVendorApi
 	public final int data;
 	
 	/**
 	 * Time in seconds since the beginning of playback when the event was
 	 * raised.
 	 */
+	@SquirrelJMEVendorApi
 	public final double time;
 	
 	/**
 	 * Indicates the type of event that was raised: {@code EVENT_END},
 	 * {@code EVENT_KEY} or {@code EVENT_LOOP}.
 	 */
+	@SquirrelJMEVendorApi
 	public final int type;
 	
 	/**
 	 * Internal constructor
 	 */
+	@SquirrelJMEVendorApi
 	MLDPlayerEvent(double time, int type, int data)
 	{
 		this.data = data;
