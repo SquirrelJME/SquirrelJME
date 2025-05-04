@@ -71,17 +71,38 @@ public class AudioPresenter
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Initializes a presenter that is capable of playing audio files.
+	 *
+	 * @return The resultant audio presenter.
+	 * @throws UIException If no resources are available for playback.
+	 * @since 2025/05/04
+	 */
 	@Api
 	public static AudioPresenter getAudioPresenter()
+		throws UIException
 	{
-		Debugging.todoNote("Impl DoJa getAudioPresenter()");
-		return new NullAudioPresenter();
+		return AudioPresenter.getAudioPresenter(0);
 	}
 	
+	/**
+	 * Initializes a presenter that is capable of playing audio files.
+	 *
+	 * @param __port The port to play audio under.
+	 * @return The resultant audio presenter.
+	 * @throws IllegalArgumentException If the port number is negative or
+	 * exceeds the number of supported ports.
+	 * @throws UIException If no resources are available for playback.
+	 * @since 2025/05/04
+	 */
 	@Api
 	public static AudioPresenter getAudioPresenter(int __port)
+		throws IllegalArgumentException, UIException
 	{
-		Debugging.todoNote("Impl DoJa getAudioPresenter(%d)", __port);
-		return new NullAudioPresenter();
+		if (__port < 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		
+		throw Debugging.todo();
 	}
 }

@@ -20,6 +20,7 @@ import com.nttdocomo.ui.MediaSound;
  *
  * @since 2024/01/14
  */
+@Deprecated
 public class NullAudioPresenter
 	extends AudioPresenter
 {
