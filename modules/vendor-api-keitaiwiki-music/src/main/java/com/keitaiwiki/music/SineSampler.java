@@ -33,6 +33,7 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -171,7 +172,7 @@ class SineSampler
 		}
 		
 		// Configure fields
-		note.freqBase = (float)(440 * Math.pow(2, key / 12.0));
+		note.freqBase = (float)(440 * ExtraMath.pow(2, key / 12.0));
 		note.playing = true;
 		note.volBase = velocity;
 	}
@@ -183,7 +184,7 @@ class SineSampler
 	{
 		if (Float.isInfinite(semitones))
 			throw new IllegalArgumentException("Invalid semitones.");
-		this.masterTune = (float)Math.pow(2, semitones);
+		this.masterTune = (float)ExtraMath.pow(2, semitones);
 	}
 	
 	/**
@@ -222,7 +223,7 @@ class SineSampler
 			return;
 		SineChannel chan = this.channels[channel];
 		chan.bendBase = semitones;
-		chan.bendOut = (float)Math.pow(2, chan.bendBase * chan.bendRange);
+		chan.bendOut = (float)ExtraMath.pow(2, chan.bendBase * chan.bendRange);
 	}
 	
 	/**
@@ -236,7 +237,7 @@ class SineSampler
 			return;
 		SineChannel chan = this.channels[channel];
 		chan.bendRange = range;
-		chan.bendOut = (float)Math.pow(2, chan.bendBase * chan.bendRange);
+		chan.bendOut = (float)ExtraMath.pow(2, chan.bendBase * chan.bendRange);
 	}
 	
 	/**

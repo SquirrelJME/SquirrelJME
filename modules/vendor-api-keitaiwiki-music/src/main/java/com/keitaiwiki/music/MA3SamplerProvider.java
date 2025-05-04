@@ -32,7 +32,7 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.util.FDMLMath;
+import cc.squirreljme.runtime.cldc.util.ExtraMath;
 
 /**
  * Sample generator that mimics YAMAHA MA-3. Supports FM synthesis using MA-2
@@ -229,7 +229,7 @@ public class MA3SamplerProvider
 	
 	static final int NTS = 1;
 	
-	static final double MAGIC_B = 12 / FDMLMath.log(2);
+	static final double MAGIC_B = 12 / ExtraMath.log(2);
 	
 	static final double MAGIC_F = 684 / 33868800.0;
 	
@@ -273,18 +273,18 @@ public class MA3SamplerProvider
 			
 			// Binary exponent table
 			MA3SamplerProvider.EXP[x] = 1024 | (int)Math.round(
-				(Math.pow(2, (255 - x) / 256.0) - 1) * 1024);
+				(ExtraMath.pow(2, (255 - x) / 256.0) - 1) * 1024);
 			
 			// Sine table
 			int y = (int)Math.round(
-				-FDMLMath.log(Math.sin((x + 0.5) * Math.PI / 256 / 2)) / FDMLMath.log(
+				-ExtraMath.log(Math.sin((x + 0.5) * Math.PI / 256 / 2)) / ExtraMath.log(
 					2) * 256);
 			sin[x] = sin[511 - x] = y;
 			sin[512 + x] = sin[1023 - x] = y | MA3SamplerProvider.MINUS;
 			
 			// Triangle table
 			y = (int)Math.round(
-				-FDMLMath.log((x + 0.5) / 256) / FDMLMath.log(2) * 256);
+				-ExtraMath.log((x + 0.5) / 256) / ExtraMath.log(2) * 256);
 			tri[x] = tri[511 - x] = y;
 			tri[512 + x] = tri[1023 - x] = y | MA3SamplerProvider.MINUS;
 		}
@@ -300,7 +300,7 @@ public class MA3SamplerProvider
 		for (int x = 0; x < 512; x++)
 		{
 			int y = (int)Math.round(
-				-FDMLMath.log((x + 0.5) / 512) / FDMLMath.log(2) * 256);
+				-ExtraMath.log((x + 0.5) / 512) / ExtraMath.log(2) * 256);
 			saw[x] = y;
 			saw[1023 - x] = y | MA3SamplerProvider.MINUS;
 		}
@@ -369,14 +369,14 @@ public class MA3SamplerProvider
 		for (int x = 1; x < 15; x++)
 		{
 			MA3SamplerProvider.SUSTAINS[x] = (int)Math.round(
-				16 * Math.pow(2, FDMLMath.log(x) / FDMLMath.log(2)));
+				16 * ExtraMath.pow(2, ExtraMath.log(x) / ExtraMath.log(2)));
 		}
 		
 		// Compute wave drum envelope levels
 		for (int x = 0; x < 512; x++)
 		{
 			MA3SamplerProvider.WAVE_ENV[x] = (int)Math.round(
-				32767 * Math.pow(10, x * -96.0 / 511 / 20));
+				32767 * ExtraMath.pow(10, x * -96.0 / 511 / 20));
 		}
 		
 	}

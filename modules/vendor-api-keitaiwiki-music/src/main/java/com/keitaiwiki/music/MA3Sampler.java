@@ -9,6 +9,7 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import java.util.Arrays;
 
 /**
@@ -210,7 +211,7 @@ class MA3Sampler
 			}
 			
 			algorithm = this.ma3.algInstruments[program];
-			freqBase = (float)(440 * Math.pow(2, key / 12.0));
+			freqBase = (float)(440 * ExtraMath.pow(2, key / 12.0));
 		}
 		
 		// Drum algorithm
@@ -269,7 +270,7 @@ class MA3Sampler
 	{
 		if (Float.isInfinite(semitones))
 			throw new IllegalArgumentException("Invalid semitones.");
-		this.bendOut = (float)Math.pow(2, semitones);
+		this.bendOut = (float)ExtraMath.pow(2, semitones);
 		for (MA3Channel chan : this.channels)
 			chan.onFrequency();
 	}
@@ -281,7 +282,7 @@ class MA3Sampler
 	{
 		if (Float.isInfinite(volume) || volume < 0.0f)
 			throw new IllegalArgumentException("Invalid volume.");
-		this.volLevel = volume == 0.0f ? 0.0f : (float)Math.pow(2,
+		this.volLevel = volume == 0.0f ? 0.0f : (float)ExtraMath.pow(2,
 			(1 - volume) * -96 / 20);
 		this.onVolume();
 	}
@@ -313,7 +314,7 @@ class MA3Sampler
 			return;
 		MA3Channel chan = this.channels[channel];
 		chan.bendBase = semitones;
-		chan.bendOut = (float)Math.pow(2, chan.bendBase * chan.bendRange);
+		chan.bendOut = (float)ExtraMath.pow(2, chan.bendBase * chan.bendRange);
 		chan.onFrequency();
 	}
 	
@@ -328,7 +329,7 @@ class MA3Sampler
 			return;
 		MA3Channel chan = this.channels[channel];
 		chan.bendRange = range;
-		chan.bendOut = (float)Math.pow(2, chan.bendBase * chan.bendRange);
+		chan.bendOut = (float)ExtraMath.pow(2, chan.bendBase * chan.bendRange);
 		chan.onFrequency();
 	}
 	
@@ -548,7 +549,7 @@ class MA3Sampler
 		if (channel < 0 || channel >= this.channels.length)
 			return;
 		MA3Channel chan = this.channels[channel];
-		chan.volLevel = volume == 0.0f ? 0.0f : (float)Math.pow(2,
+		chan.volLevel = volume == 0.0f ? 0.0f : (float)ExtraMath.pow(2,
 			(1 - volume) * -96 / 20);
 		chan.volLeft = (1.0f - chan.volPanning) * chan.volLevel;
 		chan.volRight = chan.volPanning * chan.volLevel;

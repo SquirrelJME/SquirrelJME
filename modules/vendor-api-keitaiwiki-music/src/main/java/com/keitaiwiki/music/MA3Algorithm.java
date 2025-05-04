@@ -32,6 +32,8 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.util.ExtraMath;
+
 /**
  * Template algorithm for OPL synthesis
  */
@@ -137,7 +139,7 @@ class MA3Algorithm
 			this.operators[x] = new MA3Operator(bytes, 3 + x * 7);
 		
 		
-		this.freqBase = (float)(440 * Math.pow(2,
+		this.freqBase = (float)(440 * ExtraMath.pow(2,
 			(this.drumKey - 69) / 12.0));
 		this.isDrum = isDrum;
 		this.isWave = false;
