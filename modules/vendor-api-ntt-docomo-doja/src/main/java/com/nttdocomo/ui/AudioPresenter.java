@@ -11,12 +11,128 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.nttdocomo.ui.NullAudioPresenter;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * An audio presenter is used to play media files. 
+ *
+ * @since 2025/05/04
+ */
 @Api
 public class AudioPresenter
 	implements MediaPresenter
 {
+	/** The presenters that are available for each slot. */
+	private static final Map<Integer, AudioPresenter> _ports =
+		new HashMap<>();
+	
+	@Api
+	public static final int ATTR_SYNC_OFF =
+		0;
+	
+	@Api
+	public static final int ATTR_SYNC_ON =
+		1;
+	
+	@Api
+	public static final int AUDIO_COMPLETE =
+		3;
+	
+	@Api
+	public static final int AUDIO_LOOPED =
+		7;
+	
+	@Api
+	public static final int AUDIO_PAUSED =
+		5;
+	
+	@Api
+	public static final int AUDIO_PLAYING =
+		1;
+	
+	@Api
+	public static final int AUDIO_RESTARTED =
+		6;
+	
+	@Api
+	public static final int AUDIO_STOPPED =
+		2;
+	
+	@Api
+	public static final int AUDIO_SYNC =
+		4;
+	
+	@Api
+	public static final int CHANGE_TEMPO =
+		5;
+	
+	@Api
+	public static final int LOOP_COUNT =
+		6;
+	
+	@Api
+	public static final int MAX_OPTION_ATTR =
+		255;
+	
+	@Api
+	public static final int MAX_PRIORITY =
+		10;
+	
+	@Api
+	public static final int MIN_OPTION_ATTR =
+		128;
+	
+	@Api
+	public static final int MIN_PRIORITY =
+		1;
+	
+	@Api
+	public static final int NORM_PRIORITY =
+		5;
+	
+	@Api
+	public static final int PRIORITY =
+		1;
+	
+	@Api
+	public static final int SET_VOLUME =
+		4;
+	
+	@Api
+	public static final int SYNC_MODE =
+		2;
+	
+	@Api
+	public static final int TRANSPOSE_KEY =
+		3;
+	
+	@Api
+	protected static final int MAX_VENDOR_ATTR =
+		127;
+	
+	@Api
+	protected static final int MAX_VENDOR_AUDIO_EVENT =
+		127;
+	
+	@Api
+	protected static final int MIN_VENDOR_ATTR =
+		64;
+	
+	@Api
+	protected static final int MIN_VENDOR_AUDIO_EVENT =
+		64;
+	
+	/**
+	 * This cannot be instantiated by the user.
+	 *
+	 * @since 2025/05/04
+	 */
+	@Api
+	protected AudioPresenter()
+	{
+	}
+	
 	@Api
 	public int getCurrentTime()
 	{
@@ -54,8 +170,7 @@ public class AudioPresenter
 	@Override
 	public void setMediaListener(MediaListener __listener)
 	{
-		Debugging.todoNote("Impl DoJa setMediaListener().");
-		/*throw Debugging.todo();*/
+		throw Debugging.todo();
 	}
 	
 	@Api
@@ -102,7 +217,21 @@ public class AudioPresenter
 		if (__port < 0)
 			throw new IllegalArgumentException("NEGV");
 		
-		
-		throw Debugging.todo();
+		// Lock on this
+		Map<Integer, AudioPresenter> ports = AudioPresenter._ports;
+		synchronized (AudioPresenter.class)
+		{
+			// Was a presenter already created for this port?
+			AudioPresenter result = ports.get(__port);
+			if (result != null)
+				return result;
+			
+			// Otherwise set up a new one
+			result = new AudioPresenter();
+			ports.put(__port, result);
+			
+			// Use this one
+			return result;
+		}
 	}
 }

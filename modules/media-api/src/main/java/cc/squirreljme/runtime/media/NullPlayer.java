@@ -22,6 +22,7 @@ import javax.microedition.media.control.VolumeControl;
  * @since 2019/04/15
  */
 @SquirrelJMEVendorApi
+@Deprecated
 public final class NullPlayer
 	extends AbstractPlayer
 {
