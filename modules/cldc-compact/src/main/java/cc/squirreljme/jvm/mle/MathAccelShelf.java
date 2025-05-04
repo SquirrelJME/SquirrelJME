@@ -102,6 +102,16 @@ public class MathAccelShelf
 	public static native double cos(double __v);
 	
 	/**
+	 * Performs the {@code exp(x)} function.
+	 *
+	 * @param __v The value to perform the function on.
+	 * @return The resultant value.
+	 * @since 2025/05/03
+	 */
+	@SquirrelJMEVendorApi
+	public static native double exp(double __v);
+	
+	/**
 	 * Performs the {@code floor(x)} function.
 	 *
 	 * @param __v The value to perform the function on.
@@ -120,6 +130,17 @@ public class MathAccelShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native double log(double __v);
+	
+	/**
+	 * Performs the {@code pow(x, y)} function.
+	 *
+	 * @param __x The first value.
+	 * @param __y The second value.
+	 * @return The resultant value.
+	 * @since 2025/05/03
+	 */
+	@SquirrelJMEVendorApi
+	public static native double pow(double __x, double __y);
 	
 	/**
 	 * Performs the {@code round(x)} function.
