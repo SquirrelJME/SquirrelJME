@@ -88,4 +88,9 @@ public interface MathAccelFlag
 	@SquirrelJMEVendorApi
 	short TAN =
 		0x2000;
+	
+	/** exp. */
+	@SquirrelJMEVendorApi
+	short EXP =
+		0x4000;
 }
