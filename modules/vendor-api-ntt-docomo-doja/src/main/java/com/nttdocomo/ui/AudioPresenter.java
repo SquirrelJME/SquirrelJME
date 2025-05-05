@@ -15,6 +15,8 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
 import java.util.HashMap;
 import java.util.Map;
+import javax.microedition.media.MediaException;
+import javax.microedition.media.Player;
 
 /**
  * An audio presenter is used to play media files. 
@@ -134,6 +136,10 @@ public class AudioPresenter
 	volatile int _priority =
 		AudioPresenter.NORM_PRIORITY;
 	
+	/** The current audio player. */
+	@SquirrelJMEVendorApi
+	volatile Player _current;
+	
 	/**
 	 * This cannot be instantiated by the user.
 	 *
@@ -244,11 +250,35 @@ public class AudioPresenter
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Stops playing the audio, does nothing if the audio is already stopped.
+	 * 
+	 * If a listener is attached, it is notified with {@link #AUDIO_STOPPED}.
+	 *
+	 * @throws UIException 
+	 * @since 2025/05/05
+	 */
 	@Api
 	@Override
 	public void stop()
+		throws UIException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			Player current = this._current;
+			if (current != null)
+				try
+				{
+					current.stop();
+				}
+				catch (IllegalStateException|MediaException __e)
+				{
+					UIException toss = new UIException(
+						UIException.ILLEGAL_STATE, __e.getMessage());
+					toss.initCause(__e);
+					throw toss;
+				}
+		}
 	}
 	
 	/**
