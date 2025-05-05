@@ -16,6 +16,7 @@ import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 import javax.microedition.media.TimeBase;
+import org.intellij.lang.annotations.Language;
 
 /**
  * Common implementation of players.
@@ -32,6 +33,7 @@ public abstract class AbstractPlayer
 		new TrackPosition();
 	
 	/** The mime type. */
+	@Language("mime-type-reference")
 	private final String _mime;
 	
 	/** Listeners available. */
@@ -66,7 +68,7 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/24
 	 */
 	@SquirrelJMEVendorApi
-	protected AbstractPlayer(String __mime)
+	protected AbstractPlayer(@Language("mime-type-reference") String __mime)
 		throws NullPointerException
 	{
 		if (__mime == null)
@@ -208,6 +210,7 @@ public abstract class AbstractPlayer
 	 */
 	@Override
 	@SquirrelJMEVendorApi
+	@Language("mime-type-reference")
 	public final String getContentType()
 	{
 		return this._mime;

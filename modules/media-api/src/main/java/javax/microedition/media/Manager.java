@@ -9,6 +9,8 @@
 
 package javax.microedition.media;
 
+import cc.squirreljme.jvm.mle.AudioStreamShelf;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
@@ -16,6 +18,7 @@ import cc.squirreljme.runtime.media.NullPlayer;
 import cc.squirreljme.runtime.media.SystemNanoTimeBase;
 import cc.squirreljme.runtime.media.midi.MidiControlPlayer;
 import cc.squirreljme.runtime.media.midi.MidiPlayer;
+import cc.squirreljme.runtime.media.mld.IMelodyPlayer;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.io.Connection;
@@ -77,7 +80,8 @@ public final class Manager
 	 * @since 2025/05/04
 	 */
 	@Api
-	public static Player createPlayer(InputStream __in, String __contentType)
+	public static Player createPlayer(InputStream __in,
+		@Language("mime-type-reference") String __contentType)
 		throws IOException, MediaException, NullPointerException,
 			SecurityException
 	{
@@ -100,6 +104,17 @@ public final class Manager
 					"EA1a"));
 		}
 		
+		// Native audio stream support?
+		try
+		{
+			if (!AudioStreamShelf.decoderSupports(__contentType))
+				throw Debugging.todo();
+		}
+		catch (MLECallError|LinkageError ignored)
+		{
+			// Either it failed to load or some native library failed
+		}
+		
 		// Depends on the content type
 		switch (__contentType)
 		{
@@ -110,6 +125,12 @@ public final class Manager
 			case "audio/x-midi":
 			case "music/crescendo":
 				return new MidiPlayer(__in);
+				
+				// i-melody MLD
+			case "application/x-mld":
+			case "application/x-mld-music":
+			case "audio/x-mld":
+				return new IMelodyPlayer(__in);
 		}
 		
 		/* {@squirreljme.error EA1b Unsupported content type. (The content
@@ -224,6 +245,7 @@ public final class Manager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/24
 	 */
+	@Language("mime-type-reference")
 	private static String __guessContentType(InputStream __in)
 		throws IOException, NullPointerException
 	{
@@ -242,6 +264,10 @@ public final class Manager
 		if ((a == 'M' && b == 'T' && c == 'h' && d == 'd') ||
 			(a == 'M' && b == 'T' && c == 'r' && d == 'k'))
 			return "audio/midi";
+		
+		// i-melody MLD
+		if ((a == 'm' && b == 'e' && c == 'l' && d == 'o'))
+			return "audio/x-mld";
 		
 		// Unknown
 		return null;

@@ -681,8 +681,8 @@ public class Graphics
 	private static javax.microedition.lcdui.Image __recoverImage(Image __i)
 		throws UIException
 	{
-		if (__i instanceof __MIDPImage__)
-			return ((__MIDPImage__)__i).__midpImage();
+		if (__i != null)
+			return __i._midpImage;
 		
 		// Mutable image
 		else if (__i instanceof __MutableImage__)

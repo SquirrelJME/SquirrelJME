@@ -10,6 +10,7 @@
 package javax.microedition.media;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import org.intellij.lang.annotations.Language;
 
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 @Api
@@ -50,6 +51,7 @@ public interface Player
 	void deallocate();
 	
 	@Api
+	@Language("mime-type-reference")
 	String getContentType();
 	
 	@Api

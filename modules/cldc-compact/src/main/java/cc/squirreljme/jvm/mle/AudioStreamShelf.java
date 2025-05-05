@@ -10,12 +10,14 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
+import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamPlayer;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 import cc.squirreljme.jvm.mle.constants.AudioPositionType;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.Language;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -85,13 +87,58 @@ public final class AudioStreamShelf
 	@NotNull
 	public static native AudioStreamPlayer decoder(
 		@Nullable String __urlOrFile,
-		@Nullable String __mimeType,
+		@Nullable @Language("mime-type-reference") String __mimeType,
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
 		@Range(from = -1, to = AudioStreamFormat.NUM_FORMATS)
 			int __format,
 		@NotNull byte[] __buf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
+		throws MLECallError;
+	
+	/**
+	 * Checks if the native audio system supports decoding the given format.
+	 *
+	 * @param __contentType The content type.
+	 * @return If the audio system supports the given format.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/05/05
+	 */
+	@SquirrelJMEVendorApi
+	public static native boolean decoderSupports(
+		@NotNull @Language("mime-type-reference") String __contentType)
+		throws MLECallError;
+	
+	/**
+	 * Creates a {@link MidiPortBracket} attached to a decoder that is capable
+	 * of playing and decoding MIDI.
+	 *
+	 * @param __mimeType The mime type of the decoder.
+	 * @return The MIDI port.
+	 * @throws MLECallError On null arguments or if the mime type does not
+	 * support MIDI playback.
+	 * @since 2025/05/05
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	public static native MidiPortBracket midiPort(
+		@NotNull @Language("mime-type-reference") String __mimeType)
+		throws MLECallError;
+	
+	/**
+	 * Returns the renderer that is associated with a {@link MidiPortBracket}
+	 * that can be used to render to an audio stream.
+	 *
+	 * @param __midiPort The MIDI port to get the audio stream from.
+	 * @return The audio stream renderer for the given MIDI port.
+	 * @throws MLECallError On null arguments or if the MIDI port is not
+	 * one that is managed by audio streams.
+	 * @since 2025/05/05
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	public static native AudioStreamRenderer midiRenderer(
+		@NotNull MidiPortBracket __midiPort)
 		throws MLECallError;
 	
 	/**
