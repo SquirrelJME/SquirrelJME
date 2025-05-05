@@ -12,6 +12,7 @@ package com.nttdocomo.ui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -128,6 +129,11 @@ public class AudioPresenter
 	@SquirrelJMEVendorApi
 	volatile MediaListener _listener;
 	
+	/** The priority of this presenter. */
+	@SquirrelJMEVendorApi
+	volatile int _priority =
+		AudioPresenter.NORM_PRIORITY;
+	
 	/**
 	 * This cannot be instantiated by the user.
 	 *
@@ -181,7 +187,21 @@ public class AudioPresenter
 				throw Debugging.todo();
 				
 			case AudioPresenter.PRIORITY:
-				throw Debugging.todo();
+				// Does not exist before DoJa 2.0
+				if (DoJaRuntime.versionBefore(2, 0))
+					return;
+				
+				// Out of range?
+				if (__value < AudioPresenter.MIN_PRIORITY ||
+					__value > AudioPresenter.MAX_PRIORITY)
+					throw new IllegalArgumentException("INVL");
+				
+				// Set priority
+				synchronized (this)
+				{
+					this._priority = __value;
+				}
+				break;
 				
 			case AudioPresenter.SET_VOLUME:
 				throw Debugging.todo();
