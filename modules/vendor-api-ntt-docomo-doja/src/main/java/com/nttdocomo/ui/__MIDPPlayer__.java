@@ -12,8 +12,11 @@ package com.nttdocomo.ui;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.nttdocomo.media.AbstractMediaSound;
 import com.nttdocomo.io.ConnectionException;
+import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.io.InputConnection;
+import javax.microedition.media.Manager;
+import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 
 /**
@@ -24,6 +27,9 @@ import javax.microedition.media.Player;
 final class __MIDPPlayer__
 	extends AbstractMediaSound
 {
+	/** The currently loaded player. */
+	volatile Player _player;
+	
 	/**
 	 * Initializes the source player.
 	 *
@@ -45,7 +51,21 @@ final class __MIDPPlayer__
 	protected void becomingRealized(InputStream __in, MediaResource __copy)
 		throws NullPointerException, UIException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			try
+			{
+				// Load in the player data
+				this._player = Manager.createPlayer(__in, null);
+			}
+			catch (IOException|MediaException __e)
+			{
+				UIException toss = new UIException(
+					UIException.UNSUPPORTED_FORMAT, __e.getMessage());
+				toss.initCause(__e);
+				throw toss;
+			}
+		}
 	}
 	
 	/**

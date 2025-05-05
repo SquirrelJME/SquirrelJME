@@ -131,14 +131,20 @@ public class AudioPresenter
 	@SquirrelJMEVendorApi
 	volatile MediaListener _listener;
 	
+	/** The current audio player. */
+	@SquirrelJMEVendorApi
+	volatile Player _current;
+	
 	/** The priority of this presenter. */
 	@SquirrelJMEVendorApi
 	volatile int _priority =
 		AudioPresenter.NORM_PRIORITY;
 	
-	/** The current audio player. */
+	/** The volume scale. */
+	
 	@SquirrelJMEVendorApi
-	volatile Player _current;
+	volatile int _volume =
+		100;
 	
 	/**
 	 * This cannot be instantiated by the user.
@@ -163,11 +169,34 @@ public class AudioPresenter
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Plays the currently loaded audio. 
+	 *
+	 * If there is a listener attached, {@link #AUDIO_PLAYING} will be sent.
+	 * When playback stops, {@link #AUDIO_STOPPED} will be sent otherwise
+	 * if a loop occurs {@link #AUDIO_LOOPED} will be sent.
+	 * 
+	 * @since 2025/05/05
+	 */
 	@Api
 	@Override
 	public void play()
+		throws UIException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			try
+			{
+				this.__current().start();
+			}
+			catch (IllegalStateException|MediaException __e)
+			{
+				UIException toss = new UIException(
+					UIException.ILLEGAL_STATE, __e.getMessage());
+				toss.initCause(__e);
+				throw toss;
+			}
+		}
 	}
 	
 	/**
@@ -210,7 +239,20 @@ public class AudioPresenter
 				break;
 				
 			case AudioPresenter.SET_VOLUME:
-				throw Debugging.todo();
+				// Does not exist before DoJa 3.0
+				if (DoJaRuntime.versionBefore(3, 0))
+					return;
+				
+				// Out of range?
+				if (__value < 0 || __value > 100)
+					throw new IllegalArgumentException("INVL");
+				
+				// Set priority
+				synchronized (this)
+				{
+					this._volume = __value;
+				}
+				break;
 				
 			case AudioPresenter.SYNC_MODE:
 				throw Debugging.todo();
@@ -244,10 +286,42 @@ public class AudioPresenter
 		}
 	}
 	
+	/**
+	 * Sets the sound to be played.
+	 *
+	 * @param __data The sound data.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UIException If the sound is currently being played, the
+	 * sound is not currently used, or the sound is not supported.
+	 * @since 2025/05/05
+	 */
 	@Api
 	public void setSound(MediaSound __data)
+		throws NullPointerException, UIException
 	{
-		throw Debugging.todo();
+		if (__data == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			// Incorrect type?
+			if (!(__data instanceof __MIDPPlayer__))
+				throw new UIException(
+					UIException.UNSUPPORTED_FORMAT);
+			
+			// Cannot set audio if there currently is playing audio 
+			Player current = this._current;
+			if (current != null && current.getState() == Player.STARTED)
+				throw new UIException(UIException.ILLEGAL_STATE);
+			
+			// No player set?
+			Player player = ((__MIDPPlayer__)__data)._player;
+			if (player == null)
+				throw new UIException(UIException.ILLEGAL_STATE);
+			
+			// Use the given player
+			this._current = player;
+		}
 	}
 	
 	/**
@@ -255,7 +329,7 @@ public class AudioPresenter
 	 * 
 	 * If a listener is attached, it is notified with {@link #AUDIO_STOPPED}.
 	 *
-	 * @throws UIException 
+	 * @throws UIException If the player could not be stopped.
 	 * @since 2025/05/05
 	 */
 	@Api
@@ -265,19 +339,37 @@ public class AudioPresenter
 	{
 		synchronized (this)
 		{
+			try
+			{
+				this.__current().stop();
+			}
+			catch (IllegalStateException|MediaException __e)
+			{
+				UIException toss = new UIException(
+					UIException.ILLEGAL_STATE, __e.getMessage());
+				toss.initCause(__e);
+				throw toss;
+			}
+		}
+	}
+	
+	/**
+	 * Returns the current player instance.
+	 *
+	 * @return The current player instance.
+	 * @throws UIException If there is no current player.
+	 * @since 2025/05/05
+	 */
+	private Player __current()
+		throws UIException
+	{
+		synchronized (this)
+		{
 			Player current = this._current;
-			if (current != null)
-				try
-				{
-					current.stop();
-				}
-				catch (IllegalStateException|MediaException __e)
-				{
-					UIException toss = new UIException(
-						UIException.ILLEGAL_STATE, __e.getMessage());
-					toss.initCause(__e);
-					throw toss;
-				}
+			if (current == null)
+				throw new UIException(UIException.ILLEGAL_STATE);
+			
+			return current;
 		}
 	}
 	

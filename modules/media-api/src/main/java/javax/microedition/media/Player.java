@@ -11,6 +11,7 @@ package javax.microedition.media;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import org.intellij.lang.annotations.Language;
+import org.intellij.lang.annotations.MagicConstant;
 
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 @Api
@@ -61,6 +62,7 @@ public interface Player
 	long getMediaTime();
 	
 	@Api
+	@MagicConstant(valuesFromClass = Player.class)
 	int getState();
 	
 	@Api
