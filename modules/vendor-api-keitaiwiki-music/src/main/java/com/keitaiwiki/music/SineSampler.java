@@ -109,6 +109,7 @@ class SineSampler
 	/**
 	 * Specify a channel's program bank.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void bankChange(int channel, int bank)
 	{
@@ -118,6 +119,7 @@ class SineSampler
 	/**
 	 * Specify whether a channel should play drum notes.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void drumEnable(int channel, boolean enable)
 	{
@@ -127,6 +129,7 @@ class SineSampler
 	/**
 	 * Deactivate a key that has previoulsy been activated on a channel.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void keyOff(int channel, int key)
 	{
@@ -144,6 +147,7 @@ class SineSampler
 	/**
 	 * Determine whether or not any notes are producing output.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public boolean isFinished()
 	{
@@ -158,6 +162,7 @@ class SineSampler
 	/**
 	 * Activate a key on a channel.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void keyOn(int channel, int key, float velocity)
 	{
@@ -193,6 +198,7 @@ class SineSampler
 	/**
 	 * Specify the global pitch bend.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void masterTune(float semitones)
 	{
@@ -204,6 +210,7 @@ class SineSampler
 	/**
 	 * Specify the global volume.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void masterVolume(float volume)
 	{
@@ -215,6 +222,7 @@ class SineSampler
 	/**
 	 * Specify stereo panning on a channel.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void panpot(int channel, float panpot)
 	{
@@ -231,6 +239,7 @@ class SineSampler
 	/**
 	 * Specify a channel's pitch bend.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void pitchBend(int channel, float semitones)
 	{
@@ -246,6 +255,7 @@ class SineSampler
 	/**
 	 * Specify the range of a channel's pitch bend.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void pitchBendRange(int channel, float range)
 	{
@@ -261,6 +271,7 @@ class SineSampler
 	/**
 	 * Speicfy a channel's program number.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void programChange(int channel, int program)
 	{
@@ -270,6 +281,7 @@ class SineSampler
 	/**
 	 * Generate output samples.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames)
 	{
@@ -279,6 +291,7 @@ class SineSampler
 	/**
 	 * Generate output samples.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames,
 		float amplitude)
@@ -350,6 +363,7 @@ class SineSampler
 	/**
 	 * Initialize all output state.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void reset()
 	{
@@ -381,8 +395,19 @@ class SineSampler
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2025/05/05
+	 */
+	@Override
+	public float sampleRate()
+	{
+		return this.sampleRate;
+	}
+	
+	/**
 	 * Process a SysEx message.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void sysEx(byte[] message)
 	{
@@ -392,6 +417,7 @@ class SineSampler
 	/**
 	 * Specify a channel's volume
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void volume(int channel, float volume)
 	{

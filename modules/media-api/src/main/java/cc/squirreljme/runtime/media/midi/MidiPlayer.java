@@ -9,6 +9,7 @@
 package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
@@ -31,6 +32,7 @@ import javax.microedition.media.control.MIDIControl;
  *
  * @since 2022/04/24
  */
+@SquirrelJMEVendorApi
 public class MidiPlayer
 	extends AbstractPlayer
 {
@@ -46,9 +48,11 @@ public class MidiPlayer
 		0x4D54726B;
 	
 	/** The control used to emit MIDI sounds. */
+	@SquirrelJMEVendorApi
 	protected final MIDIControl midiControl;
 	
 	/** The un-realized input stream. */
+	@SquirrelJMEVendorApi
 	private volatile InputStreamConnection _unrealizedIn;
 	
 	/** The MIDI track data. */

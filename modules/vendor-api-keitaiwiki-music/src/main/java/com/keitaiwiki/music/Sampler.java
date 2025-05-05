@@ -361,6 +361,15 @@ public interface Sampler
 	void reset();
 	
 	/**
+	 * Returns the sample rate.
+	 *
+	 * @return The sample rate.
+	 * @since 2025/05/05
+	 */
+	@SquirrelJMEVendorApi
+	float sampleRate();
+	
+	/**
 	 * Process a SysEx message. Functionality that is not part of the
 	 * relevant specificaiton (usually MIDI) is configured through such
 	 * messages. The binary format of a SysEx message depends on the

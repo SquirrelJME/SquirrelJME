@@ -10,6 +10,7 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import java.util.Arrays;
 
@@ -142,6 +143,7 @@ class MA3Sampler
 	/**
 	 * Specify a channel's program bank.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void bankChange(int channel, int bank)
 	{
@@ -154,6 +156,7 @@ class MA3Sampler
 	/**
 	 * Specify whether a channel should play drum notes.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void drumEnable(int channel, boolean enable)
 	{
@@ -166,6 +169,7 @@ class MA3Sampler
 	/**
 	 * Determine whether or not any notes are producing output.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public boolean isFinished()
 	{
@@ -180,6 +184,7 @@ class MA3Sampler
 	/**
 	 * Deactivate a key that has previoulsy been activated on a channel.
 	 */
+	@Override
 	public void keyOff(int channel, int key)
 	{
 		if (channel < 0 || channel >= this.channels.length || MA3SamplerProvider.A4 + key < 0 || MA3SamplerProvider.A4 + key >= 128)
@@ -193,6 +198,7 @@ class MA3Sampler
 	/**
 	 * Activate a key on a channel.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void keyOn(int channel, int key, float velocity)
 	{
@@ -289,6 +295,7 @@ class MA3Sampler
 	/**
 	 * Specify the global pitch bend.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void masterTune(float semitones)
 	{
@@ -302,6 +309,7 @@ class MA3Sampler
 	/**
 	 * Specify the global volume.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void masterVolume(float volume)
 	{
@@ -315,6 +323,7 @@ class MA3Sampler
 	/**
 	 * Specify stereo panning on a channel.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void panpot(int channel, float panpot)
 	{
@@ -332,6 +341,7 @@ class MA3Sampler
 	/**
 	 * Specify a channel's pitch bend.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void pitchBend(int channel, float semitones)
 	{
@@ -348,6 +358,7 @@ class MA3Sampler
 	/**
 	 * Specify the range of a channel's pitch bend.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void pitchBendRange(int channel, float range)
 	{
@@ -364,6 +375,7 @@ class MA3Sampler
 	/**
 	 * Speicfy a channel's program number.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void programChange(int channel, int program)
 	{
@@ -374,6 +386,7 @@ class MA3Sampler
 	/**
 	 * Generate output samples.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames)
 	{
@@ -383,6 +396,7 @@ class MA3Sampler
 	/**
 	 * Generate output samples.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames,
 		float amplitude)
@@ -394,6 +408,7 @@ class MA3Sampler
 	/**
 	 * Generate output samples.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames, float left,
 		float right)
@@ -404,6 +419,7 @@ class MA3Sampler
 	/**
 	 * Generate output samples.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames, float left,
 		float right, boolean erase, boolean clamp)
@@ -523,6 +539,7 @@ class MA3Sampler
 	/**
 	 * Initialize all output state.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void reset()
 	{
@@ -541,8 +558,19 @@ class MA3Sampler
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2025/05/05
+	 */
+	@Override
+	public float sampleRate()
+	{
+		return this.sampleRate;
+	}
+	
+	/**
 	 * Process a SysEx message.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void sysEx(byte[] message)
 	{
@@ -577,6 +605,7 @@ class MA3Sampler
 	/**
 	 * Specify a channel's volume.
 	 */
+	@Override
 	@SquirrelJMEVendorApi
 	public void volume(int channel, float volume)
 	{
