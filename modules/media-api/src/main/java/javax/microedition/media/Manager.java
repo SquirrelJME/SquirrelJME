@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
+import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.NullPlayer;
 import cc.squirreljme.runtime.media.SystemNanoTimeBase;
 import cc.squirreljme.runtime.media.midi.MidiControlPlayer;
@@ -124,13 +125,13 @@ public final class Manager
 			case "audio/x-mid":
 			case "audio/x-midi":
 			case "music/crescendo":
-				return new MidiPlayer(__in);
+				return new MidiPlayer(new InputStreamConnection(__in));
 				
 				// i-melody MLD
 			case "application/x-mld":
 			case "application/x-mld-music":
 			case "audio/x-mld":
-				return new IMelodyPlayer(__in);
+				return new IMelodyPlayer(new InputStreamConnection(__in));
 		}
 		
 		/* {@squirreljme.error EA1b Unsupported content type. (The content

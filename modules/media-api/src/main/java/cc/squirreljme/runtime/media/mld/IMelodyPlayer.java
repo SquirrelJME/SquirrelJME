@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.media.mld;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import java.io.InputStream;
 import javax.microedition.media.Control;
@@ -26,7 +27,7 @@ public class IMelodyPlayer
 	extends AbstractPlayer
 {
 	/** The unrealized data input. */
-	private volatile InputStream _unrealizedIn;
+	private volatile InputStreamConnection _unrealizedIn;
 	
 	/**
 	 * Initializes the MLD player.
@@ -35,7 +36,7 @@ public class IMelodyPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/05/05
 	 */
-	public IMelodyPlayer(InputStream __in)
+	public IMelodyPlayer(InputStreamConnection __in)
 		throws NullPointerException
 	{
 		super("audio/x-mld");

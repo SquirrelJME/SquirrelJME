@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.media.midi;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -48,7 +49,7 @@ public class MidiPlayer
 	protected final MIDIControl midiControl;
 	
 	/** The un-realized input stream. */
-	private volatile InputStream _unrealizedIn;
+	private volatile InputStreamConnection _unrealizedIn;
 	
 	/** The MIDI track data. */
 	private volatile byte[] _data;
@@ -73,7 +74,7 @@ public class MidiPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/24
 	 */
-	public MidiPlayer(InputStream __in)
+	public MidiPlayer(InputStreamConnection __in)
 		throws IOException, MediaException, NullPointerException
 	{
 		super("audio/midi");
@@ -113,9 +114,15 @@ public class MidiPlayer
 				if (data != null)
 					return;
 				
+				// Data is already destroyed?
+				if (this._unrealizedIn == null)
+					throw new MediaException("GONE");
+				
 				// Read in the data and drop the unrealized stream
-				this._data = StreamUtils.readAll(this._unrealizedIn);
-				this._unrealizedIn = null;
+				try (InputStream in = this._unrealizedIn.openInputStream())
+				{
+					this._data = StreamUtils.readAll(in);
+				}
 			}
 		}
 		catch (IOException e)
