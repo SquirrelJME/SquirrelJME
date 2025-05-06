@@ -120,7 +120,6 @@ public class IMelodyPlayer
 		synchronized (this)
 		{
 			// Set start time
-			//this._mldPlayer.setTime();
 			
 			throw Debugging.todo();
 		}
@@ -194,8 +193,18 @@ public class IMelodyPlayer
 	 */
 	@Override
 	public long getMediaTime()
+		throws IllegalStateException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// Can only get the time if the player is valid
+			MLDPlayer mldPlayer = this._mldPlayer;
+			if (mldPlayer == null)
+				throw new IllegalStateException("GONE");
+			
+			// This uses double time
+			return (long)(mldPlayer.getTime() * 1_000_000_000D);
+		}
 	}
 	
 	/**
@@ -206,7 +215,19 @@ public class IMelodyPlayer
 	public long setMediaTime(long __now)
 		throws MediaException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// Can only set the time if the player is valid
+			MLDPlayer mldPlayer = this._mldPlayer;
+			if (mldPlayer == null)
+				throw new MediaException("GONE");
+			
+			// This uses double time
+			mldPlayer.setTime((double)__now / 1_000_000_000D);
+			
+			// Use the actually set time
+			return this.getMediaTime();
+		}
 	}
 	
 	/**

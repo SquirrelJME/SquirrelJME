@@ -59,7 +59,8 @@ public interface Player
 	long getDuration();
 	
 	@Api
-	long getMediaTime();
+	long getMediaTime()
+		throws IllegalStateException;
 	
 	@Api
 	@MagicConstant(valuesFromClass = Player.class)
