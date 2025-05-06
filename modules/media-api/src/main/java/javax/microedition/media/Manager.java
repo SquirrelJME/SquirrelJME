@@ -108,12 +108,12 @@ public final class Manager
 		// Native audio stream support?
 		try
 		{
-			if (!AudioStreamShelf.decoderSupports(__contentType))
+			if (AudioStreamShelf.decoderSupports(__contentType))
 				throw Debugging.todo();
 		}
-		catch (MLECallError|LinkageError ignored)
+		catch (MLECallError ignored)
 		{
-			// Either it failed to load or some native library failed
+			// An error occurred while determining this
 		}
 		
 		// Depends on the content type

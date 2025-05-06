@@ -7,8 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle;
+package cc.squirreljme.emulator;
 
+import cc.squirreljme.jvm.mle.AudioStreamShelf;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamPlayer;
@@ -17,6 +18,7 @@ import cc.squirreljme.jvm.mle.constants.AudioPositionType;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.intellij.lang.annotations.Language;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
@@ -24,19 +26,18 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
- * This shelf provides access and callbacks for audio streaming.
+ * Emulated {@link AudioStreamShelf}.
  *
- * @since 2025/05/04
+ * @since 2025/05/06
  */
-@SquirrelJMEVendorApi
-public final class AudioStreamShelf
+public class EmulatedAudioStreamShelf
 {
 	/**
 	 * Not used. 
 	 *
 	 * @since 2025/05/04
 	 */
-	private AudioStreamShelf()
+	private EmulatedAudioStreamShelf()
 	{
 	}
 	
@@ -57,15 +58,18 @@ public final class AudioStreamShelf
 	 */
 	@NotNull
 	@SquirrelJMEVendorApi
-	public static native AudioStreamBracket create(
+	public static AudioStreamBracket create(
 		@NotNull String __name,
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
 		@Range(from = -1, to = AudioStreamFormat.NUM_FORMATS)
-			int __format,
+		int __format,
 		@Range(from = -1, to = Integer.MAX_VALUE) int __rate,
 		@MagicConstant(valuesFromClass = AudioPositionType.class)
-			int[] __channels)
-		throws MLECallError;
+		int[] __channels)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Creates a decoder that is capable of playing the given audio format.
@@ -87,17 +91,20 @@ public final class AudioStreamShelf
 	 */
 	@SquirrelJMEVendorApi
 	@NotNull
-	public static native AudioStreamPlayer decoder(
+	public static AudioStreamPlayer decoder(
 		@Nullable String __urlOrFile,
 		@Nullable @Language("mime-type-reference") String __mimeType,
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
 		@Range(from = -1, to = AudioStreamFormat.NUM_FORMATS)
-			int __format,
+		int __format,
 		@Range(from = -1, to = Integer.MAX_VALUE) int __rate,
 		@NotNull byte[] __buf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the native audio system supports decoding the given format.
@@ -108,9 +115,21 @@ public final class AudioStreamShelf
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean decoderSupports(
+	public static boolean decoderSupports(
 		@NotNull @Language("mime-type-reference") String __contentType)
-		throws MLECallError;
+		throws MLECallError
+	{
+		if (__contentType == null)
+			throw new MLECallError("NARG");
+		
+		// Depends on the type
+		switch (__contentType)
+		{
+				// Not yet supported
+			default:
+				return false;
+		}
+	}
 	
 	/**
 	 * Creates a {@link MidiPortBracket} attached to a decoder that is capable
@@ -130,12 +149,15 @@ public final class AudioStreamShelf
 	 */
 	@SquirrelJMEVendorApi
 	@NotNull
-	public static native MidiPortBracket midiPort(
+	public static MidiPortBracket midiPort(
 		@NotNull @Language("mime-type-reference") String __mimeType,
 		@Range(from = -1, to = AudioStreamFormat.NUM_FORMATS)
-			int __format,
+		int __format,
 		@Range(from = -1, to = Integer.MAX_VALUE) int __rate)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the renderer that is associated with a {@link MidiPortBracket}
@@ -149,9 +171,12 @@ public final class AudioStreamShelf
 	 */
 	@SquirrelJMEVendorApi
 	@NotNull
-	public static native AudioStreamRenderer midiRenderer(
+	public static AudioStreamRenderer midiRenderer(
 		@NotNull MidiPortBracket __midiPort)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Registers the given renderer to the stream.
@@ -168,12 +193,15 @@ public final class AudioStreamShelf
 	 * @since 2025/05/04
 	 */
 	@SquirrelJMEVendorApi
-	public static native void register(
+	public static void register(
 		@NotNull AudioStreamBracket __stream,
 		@NotNull AudioStreamRenderer __renderer,
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
 		@Range(from = -1, to = AudioStreamFormat.NUM_FORMATS)
-			int __format,
+		int __format,
 		@Range(from = -1, to = Integer.MAX_VALUE) int __rate)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 }

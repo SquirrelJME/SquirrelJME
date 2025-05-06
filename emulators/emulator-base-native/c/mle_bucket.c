@@ -98,7 +98,7 @@ static const JNINativeMethod mleBucketMethods[] =
 jint JNICALL mleBucketInit(JNIEnv* env, jclass classy)
 {
 	return (*env)->RegisterNatives(env,
-		(*env)->FindClass(env, "cc/squirreljme/jvm/mle/BucketShelf"),
+		(*env)->FindClass(env, FORWARD_CLASS),
 		mleBucketMethods, sizeof(mleBucketMethods) /
 			sizeof(JNINativeMethod));
 }
