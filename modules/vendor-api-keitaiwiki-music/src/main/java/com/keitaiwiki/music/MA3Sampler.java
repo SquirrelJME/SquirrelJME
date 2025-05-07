@@ -21,6 +21,7 @@ import java.util.Arrays;
  */
 @SquirrelJMEVendorApi
 class MA3Sampler
+	extends AbstractSampler
 	implements Sampler
 {
 	@SquirrelJMEVendorApi

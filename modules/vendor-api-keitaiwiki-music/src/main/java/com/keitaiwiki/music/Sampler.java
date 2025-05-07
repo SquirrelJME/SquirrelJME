@@ -2,6 +2,7 @@
 // ---------------------------------------------------------------------------
 // Keitai Wiki Community Music Implementation
 //     Originally written and contributed by Guy Perfect
+//     Continued maintenance and upkeep by SquirrelJME/Stephanie Gawroriski
 // ---------------------------------------------------------------------------
 // This specific file is under the given license:
 // This is free and unencumbered software released into the public domain.
@@ -32,6 +33,7 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -64,8 +66,8 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  */
 @SquirrelJMEVendorApi
 public interface Sampler
+	extends AudioStreamRenderer
 {
-	
 	/**
 	 * Specify a channel's program bank. The bank expands the total number
 	 * of programs available to a channel.<br><br>

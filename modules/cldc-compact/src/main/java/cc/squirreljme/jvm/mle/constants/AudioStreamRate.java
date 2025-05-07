@@ -12,55 +12,55 @@ package cc.squirreljme.jvm.mle.constants;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Represents the format of an audio stream.
+ * Audio stream rates.
  *
- * @since 2025/05/04
+ * @since 2025/05/07
  */
 @SquirrelJMEVendorApi
-public interface AudioStreamFormat
+public interface AudioStreamRate
 {
 	/** Automatic. */
 	@SquirrelJMEVendorApi
 	byte AUTOMATIC =
 		-1;
 	
-	/** Unsigned 8-bit PCM. */
+	/** 8000 Hz. */
 	@SquirrelJMEVendorApi
-	byte BYTE_U8 =
-		0;
+	int HZ_8000 =
+		8000;
 	
-	/** 8-bit a-law. */
+	/** 11025 Hz. */
 	@SquirrelJMEVendorApi
-	byte BYTE_ALAW =
-		1;
+	int HZ_11025 =
+		11025;
 	
-	/** 8-bit mu-law. */
+	/** 16000 Hz. */
 	@SquirrelJMEVendorApi
-	byte BYTE_ULAW =
-		2;
+	int HZ_16000 =
+		16000;
 	
-	/** Signed 16-bit. */
+	/** 22050 Hz. */
 	@SquirrelJMEVendorApi
-	byte SHORT_S16 =
-		3;
+	int HZ_22050 =
+		22050;
 	
-	/** Signed 24-bit, as integer type. */
+	/** 24000 Hz. */
 	@SquirrelJMEVendorApi
-	byte INT_S24 =
-		4;
+	int HZ_24000 =
+		24000;
 	
-	/** Signed 32-bit. */
+	/** 44100 Hz. */
 	@SquirrelJMEVendorApi
-	byte INT_S32 =
-		5;
+	int HZ_44100 =
+		44100;
 	
-	/** 32-bit floating point. */
+	/** 48000 Hz. */
 	@SquirrelJMEVendorApi
-	byte FLOAT_F32 =
-		6;
+	int HZ_48000 =
+		48000;
 	
-	/** The number of audio formats. */
+	/** Maximum supported sample rate. */
 	@SquirrelJMEVendorApi
-	byte NUM_FORMATS =
-		7;
+	int MAX_SAMPLE_RATE =
+		384000;
 }

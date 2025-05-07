@@ -9,6 +9,9 @@
 
 package cc.squirreljme.runtime.media.mld;
 
+import cc.squirreljme.jvm.mle.AudioStreamShelf;
+import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
+import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
@@ -16,7 +19,6 @@ import cc.squirreljme.runtime.media.AbstractPlayer;
 import com.keitaiwiki.music.MA3SamplerProvider;
 import com.keitaiwiki.music.MLD;
 import com.keitaiwiki.music.MLDPlayer;
-import com.keitaiwiki.music.Sampler;
 import com.keitaiwiki.music.SamplerProvider;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +42,9 @@ public class IMelodyPlayer
 	
 	/** The MLD player. */
 	private volatile MLDPlayer _mldPlayer;
+	
+	/** The audio stream used. */
+	private volatile AudioStreamBracket _stream;
 	
 	/** The unrealized data input. */
 	private volatile InputStreamConnection _unrealizedIn;
@@ -119,9 +124,18 @@ public class IMelodyPlayer
 	{
 		synchronized (this)
 		{
-			// Set start time
+			// Create native audio stream for playback
+			AudioStreamBracket stream = AudioStreamShelf.create(
+				"SquirrelJME-MLD-Player", -1,
+				-1,
+				AudioStreamChannels.STEREO);
 			
-			throw Debugging.todo();
+			// Set the stream
+			this._stream = stream;
+			
+			// Start rendering the stream, which will cause the audio to be
+			// played
+			AudioStreamShelf.register(stream, this._mldPlayer.sampler);
 		}
 	}
 	
@@ -133,7 +147,18 @@ public class IMelodyPlayer
 	protected void becomingStopped()
 		throws MediaException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// Clear out the old stream
+			AudioStreamBracket stream = this._stream;
+			this._stream = null;
+			
+			// Stop rendering the stream
+			AudioStreamShelf.unregister(stream, this._mldPlayer.sampler);
+			
+			// Destroy the stream
+			AudioStreamShelf.destroy(stream);
+		}
 	}
 	
 	/**

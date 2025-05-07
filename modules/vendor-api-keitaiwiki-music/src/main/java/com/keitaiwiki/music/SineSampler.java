@@ -2,6 +2,7 @@
 // ---------------------------------------------------------------------------
 // Keitai Wiki Community Music Implementation
 //     Originally written and contributed by Guy Perfect
+//     Continued maintenance and upkeep by SquirrelJME/Stephanie Gawroriski
 // ---------------------------------------------------------------------------
 // This specific file is under the given license:
 // This is free and unencumbered software released into the public domain.
@@ -44,10 +45,9 @@ import java.util.Iterator;
  */
 @SquirrelJMEVendorApi
 class SineSampler
+	extends AbstractSampler
 	implements Sampler
 {
-	
-	
 	/**
 	 * Channel states
 	 */

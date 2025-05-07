@@ -11,9 +11,12 @@ package cc.squirreljme.jvm.mle.callbacks;
 
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.constants.AudioRenderResult;
+import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * This callback is used for rendering of audio streams.
@@ -24,6 +27,42 @@ import org.intellij.lang.annotations.MagicConstant;
 public interface AudioStreamRenderer
 	extends ShelfCallback
 {
+	/**
+	 * Asks the renderer for the preferred channel count.
+	 *
+	 * @param __channels The channel count that the stream will be using.
+	 * @return The channel count the renderer will be using.
+	 * @since 2025/05/07
+	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+	int preferChannels(
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+		int __channels);
+	
+	/**
+	 * Asks the renderer for the preferred format.
+	 *
+	 * @param __format The format that the stream will be using.
+	 * @return The format the renderer will be using.
+	 * @since 2025/05/07
+	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+	int preferFormat(@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+		int __format);
+	
+	/**
+	 * Asks the renderer for the preferred rate.
+	 *
+	 * @param __rate The rate that the stream will be using.
+	 * @return The rate the renderer will be using.
+	 * @since 2025/05/07
+	 */
+	@SquirrelJMEVendorApi
+	@Range(from = 0, to = Integer.MAX_VALUE)
+	int preferRate(@Range(from = 0, to = Integer.MAX_VALUE) int __rate);
+	
 	/**
 	 * Renders to the given audio stream.
 	 *
@@ -39,8 +78,11 @@ public interface AudioStreamRenderer
 	 */
 	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = AudioRenderResult.class)
-	int render(AudioStreamBracket __stream,
+	int render(@NotNull AudioStreamBracket __stream,
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __format,
-		int __rate, int __channels,
-		Object __buf, int __off, int __len);
+		@Range(from = 0, to = Integer.MAX_VALUE) int __rate,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __channels,
+		@NotNull Object __buf,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __len);
 }

@@ -14,8 +14,9 @@ import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamPlayer;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
-import cc.squirreljme.jvm.mle.constants.AudioPositionType;
+import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
+import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -61,11 +62,11 @@ public class EmulatedAudioStreamShelf
 	public static AudioStreamBracket create(
 		@NotNull String __name,
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
-		@Range(from = -1, to = AudioStreamFormat.NUM_FORMATS)
-		int __format,
-		@Range(from = -1, to = Integer.MAX_VALUE) int __rate,
-		@MagicConstant(valuesFromClass = AudioPositionType.class)
-		int[] __channels)
+			int __format,
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -95,14 +96,19 @@ public class EmulatedAudioStreamShelf
 		@Nullable String __urlOrFile,
 		@Nullable @Language("mime-type-reference") String __mimeType,
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
-		@Range(from = -1, to = AudioStreamFormat.NUM_FORMATS)
-		int __format,
-		@Range(from = -1, to = Integer.MAX_VALUE) int __rate,
+			int __format,
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels,
 		@NotNull byte[] __buf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
 		throws MLECallError
 	{
+		if (__urlOrFile == null && __mimeType == null)
+			throw new MLECallError("NARG");
+		
 		throw Debugging.todo();
 	}
 	
@@ -130,6 +136,20 @@ public class EmulatedAudioStreamShelf
 				return false;
 		}
 	}
+	/**
+	 * Destroys the given audio stream.
+	 *
+	 * @param __stream The stream to destroy.
+	 * @throws MLECallError On null arguments or if the stream could not
+	 * be destroyed.
+	 * @since 2025/05/07
+	 */
+	@SquirrelJMEVendorApi
+	public static void destroy(@NotNull AudioStreamBracket __stream)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Creates a {@link MidiPortBracket} attached to a decoder that is capable
@@ -151,11 +171,21 @@ public class EmulatedAudioStreamShelf
 	@NotNull
 	public static MidiPortBracket midiPort(
 		@NotNull @Language("mime-type-reference") String __mimeType,
-		@Range(from = -1, to = AudioStreamFormat.NUM_FORMATS)
-		int __format,
-		@Range(from = -1, to = Integer.MAX_VALUE) int __rate)
+		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+			int __format,
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels)
 		throws MLECallError
 	{
+		if (__mimeType == null)
+			throw new MLECallError("NARG");
+		
+		if (__format < -1 || __format >= AudioStreamFormat.NUM_FORMATS ||
+			__rate < -1 || __rate == 0)
+			throw new MLECallError("Invalid rate/format");
+		
 		throw Debugging.todo();
 	}
 	
@@ -175,6 +205,9 @@ public class EmulatedAudioStreamShelf
 		@NotNull MidiPortBracket __midiPort)
 		throws MLECallError
 	{
+		if (__midiPort == null)
+			throw new MLECallError("NARG");
+		
 		throw Debugging.todo();
 	}
 	
@@ -183,11 +216,6 @@ public class EmulatedAudioStreamShelf
 	 *
 	 * @param __stream The stream to render to.
 	 * @param __renderer The renderer to register.
-	 * @param __format The format to use for rendering, if {@code -1} then it
-	 * will use the same format as {@code __stream} and not perform any
-	 * re-encoding.
-	 * @param __rate The frequency of the audio, if {@code -1} then the
-	 * renderer will use the same format as {@code __stream}.
 	 * @throws MLECallError On null arguments or if the renderer could not
 	 * be registered.
 	 * @since 2025/05/04
@@ -195,13 +223,34 @@ public class EmulatedAudioStreamShelf
 	@SquirrelJMEVendorApi
 	public static void register(
 		@NotNull AudioStreamBracket __stream,
-		@NotNull AudioStreamRenderer __renderer,
-		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
-		@Range(from = -1, to = AudioStreamFormat.NUM_FORMATS)
-		int __format,
-		@Range(from = -1, to = Integer.MAX_VALUE) int __rate)
+		@NotNull AudioStreamRenderer __renderer)
 		throws MLECallError
 	{
+		if (__stream == null || __renderer == null)
+			throw new MLECallError("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Removes the renderer from the given stream, causing it to no longer
+	 * be used as a source of audio.
+	 *
+	 * @param __stream The stream to remove the renderer from.
+	 * @param __renderer The renderer to remove.
+	 * @throws MLECallError On null arguments or if the renderer could not
+	 * be removed.
+	 * @since 2025/05/07
+	 */
+	@SquirrelJMEVendorApi
+	public static void unregister(
+		@NotNull AudioStreamBracket __stream,
+		@NotNull AudioStreamRenderer __renderer)
+		throws MLECallError
+	{
+		if (__stream == null || __renderer == null)
+			throw new MLECallError("NARG");
+		
 		throw Debugging.todo();
 	}
 }

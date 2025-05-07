@@ -9,16 +9,6 @@
 # Include common macros to make things easier
 squirreljme_include("scritchui.cmake")
 
-if(SQUIRRELJME_ENABLE_FPIC)
-	set(SQUIRRELJME_BASE_LIB BasePIC)
-	set(SQUIRRELJME_SCRITCHUI_CORE_LIB ScritchUICorePIC)
-	set(SQUIRRELJME_SCRITCHUI_FB_LIB ScritchUIFBPIC)
-else()
-	set(SQUIRRELJME_BASE_LIB Base)
-	set(SQUIRRELJME_SCRITCHUI_CORE_LIB ScritchUICore)
-	set(SQUIRRELJME_SCRITCHUI_FB_LIB ScritchUIFB)
-endif()
-
 # Enable prototype developer ScritchUI implementations?
 option(SQUIRRELJME_ENABLE_GUI_DEVELOPER
 	"Enable Developer Prototype GUIs" OFF)

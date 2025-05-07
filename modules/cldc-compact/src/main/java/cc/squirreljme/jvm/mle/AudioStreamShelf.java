@@ -13,8 +13,9 @@ import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamPlayer;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
-import cc.squirreljme.jvm.mle.constants.AudioPositionType;
+import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
+import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.Language;
@@ -45,11 +46,11 @@ public final class AudioStreamShelf
 	 *
 	 * @param __name The name of the audio stream.
 	 * @param __format The format of the audio stream, {@code -1} means to
-	 * use the preferred format that the system uses.
-	 * @param __rate The rate of the audio stream, {@code -1} means to use
-	 * the preferred rate that the system uses.
-	 * @param __channels The number of channels in the stream and their
-	 * mappings.
+	 * determine it automatically.
+	 * @param __rate The rate of the audio stream, {@code -1} means to
+	 * determine it automatically.
+	 * @param __channels The number of channels to use for the
+	 * stream, {@code -1} means to determine it automatically.
 	 * @return The resultant audio stream.
 	 * @throws MLECallError On null arguments, invalid arguments, or if the
 	 * stream could not be created.
@@ -60,11 +61,11 @@ public final class AudioStreamShelf
 	public static native AudioStreamBracket create(
 		@NotNull String __name,
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
-		@Range(from = -1, to = AudioStreamFormat.NUM_FORMATS)
 			int __format,
-		@Range(from = -1, to = Integer.MAX_VALUE) int __rate,
-		@MagicConstant(valuesFromClass = AudioPositionType.class)
-			int[] __channels)
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels)
 		throws MLECallError;
 	
 	/**
@@ -78,6 +79,8 @@ public final class AudioStreamShelf
 	 * were {@code -1}.
 	 * @param __rate The frequency of the audio, if {@code -1} then the
 	 * decoder will use its preferred rate.
+	 * @param __channels The channels count, if {@code -1} then the
+	 * decoder will use its preferred channel count.
 	 * @param __buf The buffer of the stream data.
 	 * @param __off The offset into the buffer.
 	 * @param __len The length of the buffer data.
@@ -91,9 +94,11 @@ public final class AudioStreamShelf
 		@Nullable String __urlOrFile,
 		@Nullable @Language("mime-type-reference") String __mimeType,
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
-		@Range(from = -1, to = AudioStreamFormat.NUM_FORMATS)
 			int __format,
-		@Range(from = -1, to = Integer.MAX_VALUE) int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels,
 		@NotNull byte[] __buf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
@@ -113,6 +118,18 @@ public final class AudioStreamShelf
 		throws MLECallError;
 	
 	/**
+	 * Destroys the given audio stream.
+	 *
+	 * @param __stream The stream to destroy.
+	 * @throws MLECallError On null arguments or if the stream could not
+	 * be destroyed.
+	 * @since 2025/05/07
+	 */
+	@SquirrelJMEVendorApi
+	public static native void destroy(@NotNull AudioStreamBracket __stream)
+		throws MLECallError;
+	
+	/**
 	 * Creates a {@link MidiPortBracket} attached to a decoder that is capable
 	 * of playing and decoding MIDI.
 	 *
@@ -123,6 +140,8 @@ public final class AudioStreamShelf
 	 * were {@code -1}.
 	 * @param __rate The frequency of the audio, if {@code -1} then the
 	 * decoder will use its preferred rate.
+	 * @param __channels The channels count, if {@code -1} then the
+	 * decoder will use its preferred channel count.
 	 * @return The MIDI port.
 	 * @throws MLECallError On null arguments or if the mime type does not
 	 * support MIDI playback.
@@ -132,9 +151,12 @@ public final class AudioStreamShelf
 	@NotNull
 	public static native MidiPortBracket midiPort(
 		@NotNull @Language("mime-type-reference") String __mimeType,
-		@Range(from = -1, to = AudioStreamFormat.NUM_FORMATS)
+		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
 			int __format,
-		@Range(from = -1, to = Integer.MAX_VALUE) int __rate)
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels)
 		throws MLECallError;
 	
 	/**
@@ -158,11 +180,6 @@ public final class AudioStreamShelf
 	 *
 	 * @param __stream The stream to render to.
 	 * @param __renderer The renderer to register.
-	 * @param __format The format to use for rendering, if {@code -1} then it
-	 * will use the same format as {@code __stream} and not perform any
-	 * re-encoding.
-	 * @param __rate The frequency of the audio, if {@code -1} then the
-	 * renderer will use the same format as {@code __stream}.
 	 * @throws MLECallError On null arguments or if the renderer could not
 	 * be registered.
 	 * @since 2025/05/04
@@ -170,10 +187,22 @@ public final class AudioStreamShelf
 	@SquirrelJMEVendorApi
 	public static native void register(
 		@NotNull AudioStreamBracket __stream,
-		@NotNull AudioStreamRenderer __renderer,
-		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
-		@Range(from = -1, to = AudioStreamFormat.NUM_FORMATS)
-			int __format,
-		@Range(from = -1, to = Integer.MAX_VALUE) int __rate)
+		@NotNull AudioStreamRenderer __renderer)
+		throws MLECallError;
+	
+	/**
+	 * Removes the renderer from the given stream, causing it to no longer
+	 * be used as a source of audio.
+	 *
+	 * @param __stream The stream to remove the renderer from.
+	 * @param __renderer The renderer to remove.
+	 * @throws MLECallError On null arguments or if the renderer could not
+	 * be removed.
+	 * @since 2025/05/07
+	 */
+	@SquirrelJMEVendorApi
+	public static native void unregister(
+		@NotNull AudioStreamBracket __stream,
+		@NotNull AudioStreamRenderer __renderer)
 		throws MLECallError;
 }

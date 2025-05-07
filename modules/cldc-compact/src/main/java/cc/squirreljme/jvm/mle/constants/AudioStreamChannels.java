@@ -17,55 +17,25 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @since 2025/05/04
  */
 @SquirrelJMEVendorApi
-public interface AudioPositionType
+public interface AudioStreamChannels
 {
 	/** Mono audio. */
 	@SquirrelJMEVendorApi
 	byte MONO =
-		0;
-	
-	/** Front left. */
-	@SquirrelJMEVendorApi
-	byte FRONT_LEFT =
 		1;
 	
-	/** Front center. */
+	/** Stereo. */
 	@SquirrelJMEVendorApi
-	byte FRONT_CENTER =
+	byte STEREO =
 		2;
 	
-	/** Front right. */
+	/** Basic surround sound. */
 	@SquirrelJMEVendorApi
-	byte FRONT_RIGHT =
-		3;
-	
-	/** Rear left. */
-	@SquirrelJMEVendorApi
-	byte REAR_LEFT =
+	byte BASIC_SURROUND =
 		4;
 	
-	/** Rear center. */
+	/** Full surround sound. */
 	@SquirrelJMEVendorApi
-	byte REAR_CENTER =
-		5;
-	
-	/** Rear right. */
-	@SquirrelJMEVendorApi
-	byte REAR_RIGHT =
-		6;
-	
-	/** Side left. */
-	@SquirrelJMEVendorApi
-	byte SIDE_LEFT =
-		7;
-	
-	/** Side right. */
-	@SquirrelJMEVendorApi
-	byte SIDE_RIGHT =
+	byte FULL_SURROUND =
 		8;
-	
-	/** The number of audio positions. */
-	@SquirrelJMEVendorApi
-	byte NUM_POSITIONS =
-		9;
 }

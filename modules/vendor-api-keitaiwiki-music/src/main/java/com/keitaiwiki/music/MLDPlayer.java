@@ -2,6 +2,7 @@
 // ---------------------------------------------------------------------------
 // Keitai Wiki Community Music Implementation
 //     Originally written and contributed by Guy Perfect
+//     Continued maintenance and upkeep by SquirrelJME/Stephanie Gawroriski
 // ---------------------------------------------------------------------------
 // This specific file is under the given license:
 // This is free and unencumbered software released into the public domain.
@@ -113,7 +114,7 @@ public class MLDPlayer
 	 * Sample generator
 	 */
 	@SquirrelJMEVendorApi
-	final Sampler sampler;
+	public final Sampler sampler;
 	
 	/**
 	 * Sequencer state
@@ -197,7 +198,6 @@ public class MLDPlayer
 			throw new NullPointerException("A sampler is required.");
 		if (Float.isInfinite(sampleRate) || sampleRate <= 0.0f)
 			throw new IllegalArgumentException("Invalid sampling rate.");
-		
 		
 		this.channels = new MLDChannel[16];
 		this.events = new ArrayList<>();
