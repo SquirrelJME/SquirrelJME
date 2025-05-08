@@ -69,17 +69,30 @@ class __ExecCanvasInput__
 		
 		// Remap some special keys in the event a system is not capable of
 		// typing such keys
-		switch (__type)
-		{
-			case ScritchInputMethodType.KEY_PRESSED:
-			case ScritchInputMethodType.KEY_RELEASED:
-			case ScritchInputMethodType.KEY_REPEATED:
-				if (__a == NonStandardKey.F7)
-					__a = '*';
-				else if (__a == NonStandardKey.F8)
-					__a = '#';
-				break;
-		}
+		if (__type == ScritchInputMethodType.KEY_PRESSED ||
+			__type == ScritchInputMethodType.KEY_RELEASED ||
+			__type == ScritchInputMethodType.KEY_REPEATED)
+			switch (__a)
+			{
+				case NonStandardKey.F7:					__a = '*'; break;
+				case NonStandardKey.F8:					__a = '#'; break;
+				case NonStandardKey.NUMPAD_0:			__a = '0'; break;
+				case NonStandardKey.NUMPAD_1:			__a = '1'; break;
+				case NonStandardKey.NUMPAD_2:			__a = '2'; break;
+				case NonStandardKey.NUMPAD_3:			__a = '3'; break;
+				case NonStandardKey.NUMPAD_4:			__a = '4'; break;
+				case NonStandardKey.NUMPAD_5:			__a = '5'; break;
+				case NonStandardKey.NUMPAD_6:			__a = '6'; break;
+				case NonStandardKey.NUMPAD_7:			__a = '7'; break;
+				case NonStandardKey.NUMPAD_8:			__a = '8'; break;
+				case NonStandardKey.NUMPAD_9:			__a = '9'; break;
+				case NonStandardKey.NUMPAD_MULTIPLY:	__a = '*'; break;
+				case NonStandardKey.NUMPAD_DIVIDE:		__a = '#'; break;
+				case NonStandardKey.NUMPAD_ENTER:		__a = '\n'; break;
+				case NonStandardKey.NUMPAD_DECIMAL:		__a = '.'; break;
+				case NonStandardKey.NUMPAD_MINUS:		__a = '-'; break;
+				case NonStandardKey.NUMPAD_PLUS:		__a = '+'; break;
+			}
 		
 		// Depends on the actual event that occurred
 		DisplayScale scale = display.display()._scale;
