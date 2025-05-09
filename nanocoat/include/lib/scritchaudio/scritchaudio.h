@@ -18,6 +18,7 @@
 
 #include "sjme/config.h"
 #include "sjme/alloc.h"
+#include "sjme/list.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -45,6 +46,56 @@ typedef struct sjme_scritchaudioBase sjme_scritchaudioBase;
  */
 typedef sjme_scritchaudioBase* sjme_scritchaudio;
 
+/**
+ * A single ScritchAudio stream.
+ *
+ * @since 2025/05/08
+ */
+typedef struct sjme_scritchaudio_streamBase sjme_scritchaudio_streamBase;
+
+/**
+ * A single ScritchAudio stream.
+ *
+ * @since 2025/05/08
+ */
+typedef sjme_scritchaudio_streamBase* sjme_scritchaudio_stream;
+
+/**
+ * A ScritchAudio render source.
+ *
+ * @since 2025/05/08
+ */
+typedef struct sjme_scritchaudio_sourceBase sjme_scritchaudio_sourceBase;
+
+/**
+ * A ScritchAudio render source.
+ *
+ * @since 2025/05/08
+ */
+typedef sjme_scritchaudio_sourceBase* sjme_scritchaudio_source;
+
+/**
+ * A single ScritchAudio MIDI port.
+ *
+ * @since 2025/05/08
+ */
+typedef struct sjme_scritchaudio_midiPortBase sjme_scritchaudio_midiPortBase;
+
+/**
+ * A single ScritchAudio MIDI port.
+ *
+ * @since 2025/05/08
+ */
+typedef sjme_scritchaudio_midiPortBase* sjme_scritchaudio_midiPort;
+
+/** A list of ScritchAudio MIDI ports. */
+SJME_LIST_DECLARE(sjme_scritchaudio_midiPort, 0);
+
+/**
+ * The audio format for audio encoding.
+ *
+ * @since 2025/05/08
+ */
 typedef enum sjme_scritchaudio_format
 {
 	/** Automatic. */
@@ -75,6 +126,11 @@ typedef enum sjme_scritchaudio_format
 	SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS = 7,
 } sjme_scritchaudio_format;
 
+/**
+ * The standard set of audio sampling rates.
+ *
+ * @since 2025/05/08
+ */
 typedef enum sjme_scritchaudio_rate
 {
 	/** Automatic. */
@@ -105,6 +161,11 @@ typedef enum sjme_scritchaudio_rate
 	SJME_SCRITCHAUDIO_RATE_MAX_SAMPLE_RATE = 384000,
 } sjme_scritchaudio_rate;
 
+/**
+ * The output channels.
+ *
+ * @since 2025/05/08
+ */
 typedef enum sjme_scritchaudio_channels
 {
 	/** Mono audio. */
@@ -120,47 +181,75 @@ typedef enum sjme_scritchaudio_channels
 	SJME_SCRITCHAUDIO_CHANNELS_FULL_SURROUND = 8,
 } sjme_scritchaudio_channels;
 
-typedef sjme_errorCode (*sjme_scritchaudio_createFunc)(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
-	sjme_attrOutNotNull sjme_scritchaudio* outAudio,
+/**
+ * Queries the MIDI ports and synths that are available to the system.
+ *
+ * @param inState The ScritchAudio state.
+ * @param inOutPorts The ports which are available.
+ * @param outNumPorts The number of ports that are available, this value may
+ * be larger than the list if it is too small.
+ * @return Any resultant error, if any.
+ * @since 2025/05/08
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_queryMidiPortsFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInOutNotNull sjme_list_sjme_scritchaudio_midiPort* inOutPorts,
+	sjme_attrOutNotNull sjme_jint* outNumPorts);
+
+/**
+ * Attaches or detaches a source renderer to or from a stream.
+ *
+ * @param inState The ScritchAudio state.
+ * @param inStream The stream to attach to or detach from.
+ * @param attach Is the source being attached to the stream?
+ * @param source The source being attached or detached.
+ * @return Any resultant error, if any.
+ * @since 2025/05/08
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_sourceAttachFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInValue sjme_jboolean attach,
+	sjme_attrInNotNull sjme_scritchaudio_source source);
+
+/**
+ * Creates a new audio stream.
+ *
+ * @param inState The input state.
+ * @param outStream The resultant audio stream.
+ * @param inFormat The audio format to use, @c -1 means to use the system
+ * preferred format.
+ * @param inRate The rate to use, @c -1 means to use the system preferred
+ * rate.
+ * @param inChannels The number of channels to use, @c -1 means to use the
+ * system preferred channels.
+ * @return Any resultant error, if any.
+ * @since 2025/05/08
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_streamCreateFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrOutNotNull sjme_scritchaudio_stream* outStream,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
-	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels numChannels);
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels);
+
 	
 /**
  * Functions for operating on ScritchAudio.
  *
  * @since 2025/05/07
  */
-typedef struct sjme_scritchaudio_functions
+typedef struct sjme_scritchaudio_apiFunctions
 {
+	/** Queries the MIDI ports and synths available. */
+	sjme_scritchaudio_queryMidiPortsFunc queryMidiPorts;
+
+	/** Attaches or detaches a source. */
+	sjme_scritchaudio_sourceAttachFunc sourceAttach;
+	
 	/** Create a new audio stream. */
-	sjme_scritchaudio_createFunc create;
-
-	/** Create a new native decoder for a file format. */ 
-	void* decoder;
-
-	/** Does the decoder support the given file format? */
-	void* decoderSupports;
-
-	/** Destroys an audio stream. */
-	void* destroy;
-
-	/** Performs manual iteration and pumping of audio data. */
-	void* loopIterate;
-
-	/** Opens a native MIDI interface to the host system. */
-	void* midiPort;
-
-	/** Opens a synthesizer based MIDI interface using a renderer. */
-	void* midiSynth;
-
-	/** Attaches a renderer to a stream. */
-	void* rendererAttach;
-
-	/** Detaches a renderer from a stream. */
-	void* rendererDetach;
-} sjme_scritchaudio_functions;
+	sjme_scritchaudio_streamCreateFunc streamCreate;
+} sjme_scritchaudio_apiFunctions;
 
 /*--------------------------------------------------------------------------*/
 
