@@ -13,8 +13,8 @@
  * @since 2024/08/09
  */
 
-#ifndef SQUIRRELJME_ERROR_H
-#define SQUIRRELJME_ERROR_H
+#ifndef SJME_C_ERROR_H
+#define SJME_C_ERROR_H
 
 #include "sjme/stdTypes.h"
 

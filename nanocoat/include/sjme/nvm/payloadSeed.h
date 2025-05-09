@@ -13,8 +13,8 @@
  * @since 2023/07/27
  */
 
-#ifndef SQUIRRELJME_PAYLOADSEED_H
-#define SQUIRRELJME_PAYLOADSEED_H
+#ifndef SJME_C_PAYLOADSEED_H
+#define SJME_C_PAYLOADSEED_H
 
 #include "sjme/config.h"
 #include "sjme/payload.h"

@@ -13,8 +13,8 @@
  * @since 2024/09/28
  */
 
-#ifndef SQUIRRELJME_TESTCLOSEABLE_H
-#define SQUIRRELJME_TESTCLOSEABLE_H
+#ifndef SJME_C_TESTCLOSEABLE_H
+#define SJME_C_TESTCLOSEABLE_H
 
 #include "sjme/alloc.h"
 #include "sjme/closeable.h"

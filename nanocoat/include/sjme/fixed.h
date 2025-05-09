@@ -13,8 +13,8 @@
  * @since 2024/06/27
  */
 
-#ifndef SQUIRRELJME_FIXED_H
-#define SQUIRRELJME_FIXED_H
+#ifndef SJME_C_FIXED_H
+#define SJME_C_FIXED_H
 
 #include "sjme/stdTypes.h"
 

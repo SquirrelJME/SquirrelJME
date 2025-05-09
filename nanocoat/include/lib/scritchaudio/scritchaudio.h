@@ -13,8 +13,8 @@
  * @since 2025/05/07
  */
 
-#ifndef SCRITCHAUDIO_H
-#define SCRITCHAUDIO_H
+#ifndef SJME_C_SCRITCHAUDIO_H
+#define SJME_C_SCRITCHAUDIO_H
 
 #include "sjme/config.h"
 #include "sjme/alloc.h"
@@ -243,7 +243,7 @@ typedef struct sjme_scritchaudio_apiFunctions
 {
 	/** Queries the MIDI ports and synths available. */
 	sjme_scritchaudio_queryMidiPortsFunc queryMidiPorts;
-
+	
 	/** Attaches or detaches a source. */
 	sjme_scritchaudio_sourceAttachFunc sourceAttach;
 	

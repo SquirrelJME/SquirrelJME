@@ -13,8 +13,8 @@
  * @since 2024/06/26
  */
 
-#ifndef SQUIRRELJME_CHARSEQ_H
-#define SQUIRRELJME_CHARSEQ_H
+#ifndef SJME_C_CHARSEQ_H
+#define SJME_C_CHARSEQ_H
 
 #include "sjme/frontEnd.h"
 #include "sjme/stdTypes.h"

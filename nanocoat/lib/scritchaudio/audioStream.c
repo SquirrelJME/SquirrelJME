@@ -7,20 +7,15 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-/**
- * Standard int sizes.
- * 
- * @since 2023/12/01
- */
+#include "lib/scritchaudio/scritchaudio.h"
 
-#ifndef SJME_C_SJMEINT_H
-#define SJME_C_SJMEINT_H
-
-#if defined(_MSC_VER)
-	typedef unsigned __int8 uint8_t;
-	typedef signed __int32 int32_t; 
-#else
-	#include <stdint.h>
-#endif
-
-#endif /* SQUIRRELJME_SJMEINT_H */
+sjme_errorCode sjme_scritchaudio_core_streamCreate(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrOutNotNull sjme_scritchaudio_stream* outStream,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}

@@ -13,8 +13,8 @@
  * @since 2023/12/09
  */
 
-#ifndef SQUIRRELJME_REVPROTO_H
-#define SQUIRRELJME_REVPROTO_H
+#ifndef SJME_C_REVPROTO_H
+#define SJME_C_REVPROTO_H
 
 #include "frontend/libjvm/revTypes.h"
 

@@ -13,8 +13,8 @@
  * @since 2024/08/09
  */
 
-#ifndef SQUIRRELJME_TOKENUTILS_H
-#define SQUIRRELJME_TOKENUTILS_H
+#ifndef SJME_C_TOKENUTILS_H
+#define SJME_C_TOKENUTILS_H
 
 #include "sjme/config.h"
 #include "sjme/stdTypes.h"

@@ -13,8 +13,8 @@
  * @since 2024/07/24
  */
 
-#ifndef SQUIRRELJME_FBINTERN_H
-#define SQUIRRELJME_FBINTERN_H
+#ifndef SJME_C_FBINTERN_H
+#define SJME_C_FBINTERN_H
 
 #include "lib/scritchui/framebuffer/fb.h"
 #include "lib/scritchui/scritchui.h"

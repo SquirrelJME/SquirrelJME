@@ -8,42 +8,44 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Motif ScritchUI implementation.
+ * Open Sound System defines.
  * 
- * @since 2024/07/30
+ * @since 2025/05/09
  */
 
-#ifndef SJME_C_MOTIF_H
-#define SJME_C_MOTIF_H
+#ifndef SJME_C_OSS_H
+#define SJME_C_OSS_H
 
-#include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/scritchuiImpl.h"
-#include "lib/scritchui/scritchuiPencil.h"
-#include "sjme/config.h"
-#include "sjme/debug.h"
-
+#include "lib/scritchaudio/scritchaudio.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
-	#ifndef SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_SQUIRRELJME_MOTIF_H
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_OSS_H
 extern "C"
 {
-	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+	
+sjme_errorCode sjme_scritchaudio_oss_streamCreate(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrOutNotNull sjme_scritchaudio_stream* outStream,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels);
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-	#ifdef SJME_CXX_SQUIRRELJME_MOTIF_H
+#ifdef SJME_CXX_OSS_H
 }
-		#undef SJME_CXX_SQUIRRELJME_MOTIF_H
-		#undef SJME_CXX_IS_EXTERNED
-	#endif /* #ifdef SJME_CXX_SQUIRRELJME_MOTIF_H */
+#undef SJME_CXX_OSS_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_OSS_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_MOTIF_H */
+#endif /* OSS_H */

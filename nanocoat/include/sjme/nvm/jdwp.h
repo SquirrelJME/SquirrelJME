@@ -13,8 +13,8 @@
  * @since 2024/02/04
  */
 
-#ifndef SQUIRRELJME_JDWP_H
-#define SQUIRRELJME_JDWP_H
+#ifndef SJME_C_JDWP_H
+#define SJME_C_JDWP_H
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/stream.h"

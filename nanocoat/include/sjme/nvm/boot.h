@@ -13,8 +13,8 @@
  * @since 2023/07/29
  */
 
-#ifndef SQUIRRELJME_BOOT_H
-#define SQUIRRELJME_BOOT_H
+#ifndef SJME_C_BOOT_H
+#define SJME_C_BOOT_H
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/alloc.h"

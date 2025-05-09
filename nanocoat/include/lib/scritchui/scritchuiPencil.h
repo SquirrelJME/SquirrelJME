@@ -13,8 +13,8 @@
  * @since 2024/05/01
  */
 
-#ifndef SQUIRRELJME_SCRITCHUIPENCIL_H
-#define SQUIRRELJME_SCRITCHUIPENCIL_H
+#ifndef SJME_C_SCRITCHUIPENCIL_H
+#define SJME_C_SCRITCHUIPENCIL_H
 
 #include "lib/scritchui/scritchui.h"
 #include "sjme/charSeq.h"

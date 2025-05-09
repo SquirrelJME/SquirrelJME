@@ -7,20 +7,4 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-/**
- * Standard int sizes.
- * 
- * @since 2023/12/01
- */
-
-#ifndef SJME_C_SJMEINT_H
-#define SJME_C_SJMEINT_H
-
-#if defined(_MSC_VER)
-	typedef unsigned __int8 uint8_t;
-	typedef signed __int32 int32_t; 
-#else
-	#include <stdint.h>
-#endif
-
-#endif /* SQUIRRELJME_SJMEINT_H */
+#include "lib/scritchaudio/scritchaudio.h"

@@ -13,8 +13,8 @@
  * @since 2023/12/12
  */
 
-#ifndef SQUIRRELJME_ROMINTERNAL_H
-#define SQUIRRELJME_ROMINTERNAL_H
+#ifndef SJME_C_ROMINTERNAL_H
+#define SJME_C_ROMINTERNAL_H
 
 #include "sjme/nvm/rom.h"
 

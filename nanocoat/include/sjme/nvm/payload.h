@@ -14,8 +14,8 @@
  * @since 2023/07/27
  */
 
-#ifndef SQUIRRELJME_PAYLOAD_H
-#define SQUIRRELJME_PAYLOAD_H
+#ifndef SJME_C_PAYLOAD_H
+#define SJME_C_PAYLOAD_H
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/config.h"

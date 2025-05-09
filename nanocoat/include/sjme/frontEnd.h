@@ -13,8 +13,8 @@
  * @since 2024/09/04
  */
 
-#ifndef SQUIRRELJME_FRONTEND_H
-#define SQUIRRELJME_FRONTEND_H
+#ifndef SJME_C_FRONTEND_H
+#define SJME_C_FRONTEND_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"

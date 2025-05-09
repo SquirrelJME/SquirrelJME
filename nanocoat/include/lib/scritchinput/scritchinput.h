@@ -13,8 +13,8 @@
  * @since 2024/05/01
  */
 
-#ifndef SQUIRRELJME_SCRITCHINPUT_H
-#define SQUIRRELJME_SCRITCHINPUT_H
+#ifndef SJME_C_SCRITCHINPUT_H
+#define SJME_C_SCRITCHINPUT_H
 
 #include "sjme/stdTypes.h"
 

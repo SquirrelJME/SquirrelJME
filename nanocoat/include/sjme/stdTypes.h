@@ -13,8 +13,8 @@
  * @since 2024/08/09
  */
 
-#ifndef SQUIRRELJME_STDTYPES_H
-#define SQUIRRELJME_STDTYPES_H
+#ifndef SJME_C_STDTYPES_H
+#define SJME_C_STDTYPES_H
 
 #include <stdlib.h>
 

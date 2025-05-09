@@ -13,8 +13,8 @@
  * @since 2024/08/12
  */
 
-#ifndef SQUIRRELJME_CLOSEABLE_H
-#define SQUIRRELJME_CLOSEABLE_H
+#ifndef SJME_C_CLOSEABLE_H
+#define SJME_C_CLOSEABLE_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/atomic.h"

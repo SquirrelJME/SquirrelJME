@@ -13,8 +13,8 @@
  * @since 2023/12/16
  */
 
-#ifndef SQUIRRELJME_MULTITHREAD_H
-#define SQUIRRELJME_MULTITHREAD_H
+#ifndef SJME_C_MULTITHREAD_H
+#define SJME_C_MULTITHREAD_H
 
 #include "sjme/config.h"
 #include "sjme/error.h"

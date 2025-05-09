@@ -13,8 +13,10 @@
  * @since 2025/05/07
  */
 
-#ifndef OSSINTERN_H
-#define OSSINTERN_H
+#ifndef SJME_C_OSSINTERN_H
+#define SJME_C_OSSINTERN_H
+
+#include "lib/scritchaudio/oss/oss.h"
 
 #if defined(SQUIRRELJME_OSS_INCLUDE_FILE)
 	#include SQUIRRELJME_OSS_INCLUDE_FILE

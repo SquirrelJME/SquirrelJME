@@ -13,8 +13,8 @@
  * @since 2023/12/17
  */
 
-#ifndef SQUIRRELJME_LIST_H
-#define SQUIRRELJME_LIST_H
+#ifndef SJME_C_LIST_H
+#define SJME_C_LIST_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/debug.h"

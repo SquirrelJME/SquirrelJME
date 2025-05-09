@@ -14,8 +14,8 @@
  * @since 2023/12/30
  */
 
-#ifndef SQUIRRELJME_STREAM_H
-#define SQUIRRELJME_STREAM_H
+#ifndef SJME_C_STREAM_H
+#define SJME_C_STREAM_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"

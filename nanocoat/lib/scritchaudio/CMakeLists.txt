@@ -11,7 +11,8 @@ squirreljme_include("scritchui.cmake")
 
 # Core ScritchAudio Library
 squirreljme_multilib_add_library(ScritchAudioCore
-	audioCore.c)
+	audioCore.c
+	audioStream.c)
 
 # Include main headers
 squirreljme_multilib_target_include_directories(ScritchAudioCore PUBLIC

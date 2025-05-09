@@ -13,8 +13,8 @@
  * @since 2024/03/27
  */
 
-#ifndef SQUIRRELJME_SCRITCHUI_H
-#define SQUIRRELJME_SCRITCHUI_H
+#ifndef SJME_C_SCRITCHUI_H
+#define SJME_C_SCRITCHUI_H
 
 #include "sjme/config.h"
 #include "sjme/multithread.h"

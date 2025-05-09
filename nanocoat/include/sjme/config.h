@@ -16,8 +16,8 @@
  * @since 2023/07/27
  */
 
-#ifndef SQUIRRELJME_CONFIG_H
-#define SQUIRRELJME_CONFIG_H
+#ifndef SJME_C_CONFIG_H
+#define SJME_C_CONFIG_H
 
 #include <stddef.h>
 
