@@ -10,7 +10,8 @@
 add_library(ScritchAudioOSS SHARED
 	$<TARGET_OBJECTS:${SQUIRRELJME_BASE_LIB}>
 	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHAUDIO_CORE_LIB}>
-	ossCore.c)
+	ossCore.c
+	ossStream.c)
 
 # Always make it PIC
 if(SQUIRRELJME_ENABLE_FPIC)
