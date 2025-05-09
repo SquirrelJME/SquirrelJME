@@ -17,6 +17,9 @@ squirreljme_multilib_add_library(ScritchAudioCore
 squirreljme_multilib_target_include_directories(ScritchAudioCore PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
+# Software Mixer
+add_subdirectory(softmix)
+
 # Open Sound System
 squirreljme_include("find-oss.cmake")
 
