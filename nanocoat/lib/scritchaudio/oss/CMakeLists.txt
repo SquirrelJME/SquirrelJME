@@ -11,6 +11,7 @@ add_library(ScritchAudioOSS SHARED
 	$<TARGET_OBJECTS:${SQUIRRELJME_BASE_LIB}>
 	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHAUDIO_CORE_LIB}>
 	ossCore.c
+	ossMidi.c
 	ossStream.c)
 
 # Always make it PIC

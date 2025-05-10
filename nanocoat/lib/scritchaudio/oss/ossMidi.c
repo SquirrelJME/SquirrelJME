@@ -8,15 +8,3 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchaudio/oss/ossIntern.h"
-
-/**
- * OSS implementation functions.
- *
- * @since 2025/05/10
- */
-static const sjme_scritchaudio_implFunctions sjme_scritchaudio_ossFunctions =
-{
-	.queryMidiPorts = sjme_scritchaudio_oss_queryMidiPorts,
-	.sourceAttach = sjme_scritchaudio_oss_sourceAttach,
-	.streamCreate = sjme_scritchaudio_oss_streamCreate,
-};

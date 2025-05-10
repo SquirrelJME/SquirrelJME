@@ -251,6 +251,23 @@ typedef struct sjme_scritchaudio_apiFunctions
 	sjme_scritchaudio_streamCreateFunc streamCreate;
 } sjme_scritchaudio_apiFunctions;
 
+/**
+ * ScritchAudio implementation functions.
+ *
+ * @since 2025/05/10
+ */
+typedef struct sjme_scritchaudio_implFunctions
+{
+	/** Queries the MIDI ports and synths available. */
+	sjme_scritchaudio_queryMidiPortsFunc queryMidiPorts;
+	
+	/** Attaches or detaches a source. */
+	sjme_scritchaudio_sourceAttachFunc sourceAttach;
+	
+	/** Create a new audio stream. */
+	sjme_scritchaudio_streamCreateFunc streamCreate;
+} sjme_scritchaudio_implFunctions;
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
