@@ -39,6 +39,8 @@ target_include_directories(ScritchUIWin32 PUBLIC
 # ScritchUI requires a normalized library name
 squirreljme_target_binary_name(ScritchUIWin32
 	"squirreljme-scritchui-win32")
+squirreljme_target_binary_output(ScritchUIWin32
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
 # Generate exports
 squirreljme_target_shared_library_exports(ScritchUIWin32)

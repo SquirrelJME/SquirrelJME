@@ -20,7 +20,11 @@ endif()
 
 # If either are set we have OSS
 if(OSS_INCLUDE_BASE)
+	set(OSS_FOUND YES)
 	set(OSS_INCLUDE_FILE "soundcard.h")
 elseif(OSS_INCLUDE_SYS)
+	set(OSS_FOUND YES)
 	set(OSS_INCLUDE_FILE "sys/soundcard.h")
+else()
+	set(OSS_FOUND NO)
 endif()

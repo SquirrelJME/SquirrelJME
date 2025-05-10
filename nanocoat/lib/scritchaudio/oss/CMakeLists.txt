@@ -30,6 +30,8 @@ target_include_directories(ScritchAudioOSS PUBLIC
 # ScritchAudio requires a normalized library name
 squirreljme_target_binary_name(ScritchAudioOSS
 	"squirreljme-scritchaudio-oss")
+squirreljme_target_binary_output(ScritchAudioOSS
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
 # Generate exports
 squirreljme_target_shared_library_exports(ScritchAudioOSS)

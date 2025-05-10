@@ -9,6 +9,9 @@
 # Include common macros to make things easier
 squirreljme_include("scritchui.cmake")
 
+# Reset any state
+squirreljme_scritchany_enable(audio Audio)
+
 # Core ScritchAudio Library
 squirreljme_multilib_add_library(ScritchAudioCore
 	audioCore.c
@@ -24,6 +27,7 @@ add_subdirectory(softmix)
 # Open Sound System
 squirreljme_include("find-oss.cmake")
 
-if(OSS_INCLUDE_FILE)
-	add_subdirectory(oss)
+option(SQUIRRELJME_ENABLE_AUDIO_OSS "Enable OSS Audio" ON)
+if(SQUIRRELJME_ENABLE_AUDIO_OSS)
+	squirreljme_scritchaudio_build(OSS_FOUND oss OSS)
 endif()
