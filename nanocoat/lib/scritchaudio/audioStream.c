@@ -8,6 +8,17 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchaudio/scritchaudio.h"
+#include "lib/scritchaudio/scritchaudioIntern.h"
+
+sjme_errorCode sjme_scritchaudio_core_sourceAttach(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInValue sjme_jboolean attach,
+	sjme_attrInNotNull sjme_scritchaudio_source source)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
 
 sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	sjme_attrInNotNull sjme_scritchaudio inState,

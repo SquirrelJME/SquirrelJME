@@ -8,3 +8,4 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchaudio/scritchaudio.h"
+#include "lib/scritchaudio/scritchaudioIntern.h"

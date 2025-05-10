@@ -8,27 +8,21 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Internal OSS definitions.
+ * Internal ScritchAudio definitions.
  * 
- * @since 2025/05/07
+ * @since 2025/05/10
  */
 
-#ifndef SJME_C_OSSINTERN_H
-#define SJME_C_OSSINTERN_H
+#ifndef SJME_C_SCRITCHAUDIOINTERN_H
+#define SJME_C_SCRITCHAUDIOINTERN_H
 
-#include "lib/scritchaudio/oss/oss.h"
-
-#if defined(SQUIRRELJME_OSS_INCLUDE_FILE)
-	#include SQUIRRELJME_OSS_INCLUDE_FILE
-#else
-	#include <sys/soundcard.h>
-#endif
+#include "lib/scritchaudio/scritchaudio.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_OSSINTERN_H
+#define SJME_CXX_SCRITCHAUDIOINTERN_H
 extern "C"
 {
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
@@ -36,18 +30,18 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 	
-sjme_errorCode sjme_scritchaudio_oss_queryMidiPorts(
+sjme_errorCode sjme_scritchaudio_core_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInOutNotNull sjme_list_sjme_scritchaudio_midiPort* inOutPorts,
 	sjme_attrOutNotNull sjme_jint* outNumPorts);
 	
-sjme_errorCode sjme_scritchaudio_oss_sourceAttach(
+sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrInValue sjme_jboolean attach,
 	sjme_attrInNotNull sjme_scritchaudio_source source);
 	
-sjme_errorCode sjme_scritchaudio_oss_streamCreate(
+sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrOutNotNull sjme_scritchaudio_stream* outStream,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
@@ -58,11 +52,11 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_OSSINTERN_H
+#ifdef SJME_CXX_SCRITCHAUDIOINTERN_H
 }
-#undef SJME_CXX_OSSINTERN_H
+#undef SJME_CXX_SCRITCHAUDIOINTERN_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_OSSINTERN_H */
+#endif /* #ifdef SJME_CXX_SCRITCHAUDIOINTERN_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* OSSINTERN_H */
+#endif /* SJME_C_SCRITCHAUDIOINTERN_H */

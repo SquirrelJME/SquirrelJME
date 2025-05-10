@@ -232,7 +232,6 @@ typedef sjme_errorCode (*sjme_scritchaudio_streamCreateFunc)(
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels);
-
 	
 /**
  * Functions for operating on ScritchAudio.

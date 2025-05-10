@@ -8,3 +8,13 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchaudio/scritchaudio.h"
+#include "lib/scritchaudio/scritchaudioIntern.h"
+
+sjme_errorCode sjme_scritchaudio_core_queryMidiPorts(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInOutNotNull sjme_list_sjme_scritchaudio_midiPort* inOutPorts,
+	sjme_attrOutNotNull sjme_jint* outNumPorts)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
