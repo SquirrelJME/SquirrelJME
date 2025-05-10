@@ -170,6 +170,13 @@ public class MLDPlayer
 	@SquirrelJMEVendorApi
 	long tickNow;
 	
+	/** Looping is enabled. */
+	@SquirrelJMEVendorApi
+	boolean loopEnabled;
+	
+	/** Stop all notes when looping. */
+	@SquirrelJMEVendorApi
+	boolean loopStopAll;
 	
 	/**
 	 * Begin MLD playback. Instances of a {@code Sampler} are used in
@@ -203,6 +210,8 @@ public class MLDPlayer
 		this.events = new ArrayList<>();
 		this.evtKeys = new HashSet<>();
 		this.evtPlayback = false;
+		this.loopEnabled = true;
+		this.loopStopAll = true;
 		this.mld = mld;
 		this.sampler = sampler.instance(sampleRate);
 		this.sampleRate = sampleRate;
@@ -228,6 +237,30 @@ public class MLDPlayer
 		
 		// Prepare for playback
 		this.reset();
+	}
+	
+	/**
+	 * Determine whether looping is enabled.
+	 *
+	 * @return {@code true} if looping is enabled.
+	 * @see #setLoopEnabled(boolean)
+	 */
+	@SquirrelJMEVendorApi
+	public boolean getLoopEnabled()
+	{
+		return this.loopEnabled;
+	}
+	
+	/**
+	 * Determine whether notes are stopped when looping.
+	 *
+	 * @return {@code true} if all notes are stopped when looping.
+	 * @see #setLoopStopAll(boolean)
+	 */
+	@SquirrelJMEVendorApi
+	public boolean getLoopStopAll()
+	{
+		return this.loopStopAll;
 	}
 	
 	/**
@@ -300,7 +333,8 @@ public class MLDPlayer
 	@SquirrelJMEVendorApi
 	public MLDPlayerEvent[] getEvents()
 	{
-		MLDPlayerEvent[] ret = this.events.toArray(new MLDPlayerEvent[this.events.size()]);
+		MLDPlayerEvent[] ret = this.events.toArray(
+			new MLDPlayerEvent[this.events.size()]);
 		this.events.clear();
 		return ret;
 	}
@@ -547,7 +581,7 @@ public class MLDPlayer
 		
 		// Sequencer is not playing
 		if (this.finished)
-			return -1;
+			this.pendingFrames = frames;
 		
 		// Process all output frames
 		while (frames > 0)
@@ -577,7 +611,7 @@ public class MLDPlayer
 				
 				// All output frames have been processed
 				if (frames == 0)
-					return ret;
+					return this.finished ? -1 : ret;
 			}
 			
 			// Process event ticks
@@ -709,11 +743,23 @@ public class MLDPlayer
 		// cuepoint-end
 		if (event.cuepoint == MLD.CUEPOINT_END && this.tracks[0].cuepoint != -1)
 		{
-			for (MLDPlayerTrack t : this.tracks)
-				this.setTrackOffset(t, t.cuepoint);
-			if (this.evtPlayback)
-				this.events.add(
-					new MLDPlayerEvent(this.getTime(), MLDPlayer.EVENT_LOOP, 0));
+			// Process only if looping is enabled
+			if (this.loopEnabled)
+			{
+				if (this.loopStopAll)
+					this.sampler.stopAll();
+				for (MLDPlayerTrack t : this.tracks)
+					this.setTrackOffset(t, t.cuepoint);
+				if (this.evtPlayback)
+					this.events.add(
+						new MLDPlayerEvent(this.getTime(),
+							MLDPlayer.EVENT_LOOP, 0));
+			}
+			
+			// Looping is disabled
+			else
+				this.setTrackOffset(track, track.offset + 1);
+			
 			return;
 		}
 		
@@ -855,7 +901,8 @@ public class MLDPlayer
 		// Raise an event
 		if (this.evtKeys.contains(event.key))
 			this.events.add(
-				new MLDPlayerEvent(this.getTime(), MLDPlayer.EVENT_KEY, event.key));
+				new MLDPlayerEvent(this.getTime(), MLDPlayer.EVENT_KEY,
+					event.key));
 		
 		// Velocity 0 is regarded as key-off
 		if (event.velocity == 0)
@@ -878,7 +925,6 @@ public class MLDPlayer
 		{
 			note = new MLDNote();
 			note.channel = event.channel;
-			note.gateTime = 0;
 			note.key = event.key;
 			chan.notesOn[MLDPlayer.A4 + event.key] = note;
 			chan.notesOut.add(note);
@@ -1001,13 +1047,14 @@ public class MLDPlayer
 	}
 	
 	/**
-	 * Initialize state in preparation for playback
+	 * Initialize state in preparation for playback. All notes are stopped and
+	 * all sequencer state is reset to the beginning of the sequence.
 	 */
 	@SquirrelJMEVendorApi
-	void reset()
+	public void reset()
 	{
 		
-		
+		// Instance fields
 		this.pendingFrames = 0;
 		this.pendingTicks = 0;
 		this.position = 0;
@@ -1041,6 +1088,38 @@ public class MLDPlayer
 			this.process(track, 0);
 			this.finished = this.finished && track.finished;
 		}
+		
+	}
+	
+	/**
+	 * Specify whether to enable looping. When disabled, loop points
+	 * defined in
+	 * the sequence data will not be processed.
+	 *
+	 * @param enabled If {@code true}, looping will be enabled.
+	 * @return the value of {@code enabled}
+	 * @see #getLoopEnabled()
+	 */
+	@SquirrelJMEVendorApi
+	public boolean setLoopEnabled(boolean enabled)
+	{
+		return this.loopEnabled = enabled;
+	}
+	
+	/**
+	 * Specify whether to stop all notes when looping. If notes are not
+	 * stopped, it is possible for adjustments to volume or pitch-bend to
+	 * affect ongoing notes in undesirable ways. If notes <i>are</i> stopped,
+	 * it is possible for ongoing notes to be truncated in undesirable ways.
+	 *
+	 * @param stopAll If {@code true}, all notes will be stopped when looping.
+	 * @return the value of {@code stopAll}
+	 * @see #getLoopStopAll()
+	 */
+	@SquirrelJMEVendorApi
+	public boolean setLoopStopAll(boolean stopAll)
+	{
+		return this.loopStopAll = stopAll;
 	}
 	
 	/**
@@ -1070,8 +1149,8 @@ public class MLDPlayer
 		for (MLDPlayerTrack other : this.tracks)
 			finished = finished && other.finished;
 		if (finished)
-			this.events.add(new MLDPlayerEvent(this.getTime(), MLDPlayer.EVENT_END,
-				0));
+			this.events.add(
+				new MLDPlayerEvent(this.getTime(), MLDPlayer.EVENT_END, 0));
 	}
 	
 	/**

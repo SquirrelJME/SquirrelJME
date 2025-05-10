@@ -339,6 +339,38 @@ class MA3Operator
 		this.wavSample = 0;
 	}
 	
+	/** SysEx constructor. */
+	@SquirrelJMEVendorApi
+	MA3Operator(byte[] message, int offset, boolean diff)
+	{
+		int bits;
+		bits = message[offset++] & 0xFF;
+		this.sr = bits >> 4 & 15;
+		this.xof = (bits >> 3 & 1) != 0;
+		this.sus = (bits >> 1 & 1) != 0;
+		this.ksr = bits & 1;
+		bits = message[offset++] & 0xFF;
+		this.rr = bits >> 4 & 15;
+		this.dr = bits & 15;
+		bits = message[offset++] & 0xFF;
+		this.ar = bits >> 4 & 15;
+		this.sl = bits & 15;
+		bits = message[offset++] & 0xFF;
+		this.tl = bits >> 2 & 63;
+		this.ksl = bits & 3;
+		bits = message[offset++] & 0xFF;
+		this.dam = bits >> 5 & 3;
+		this.eam = (bits >> 4 & 1) != 0;
+		this.dvb = bits >> 1 & 3;
+		this.evb = (bits & 1) != 0;
+		bits = message[offset++] & 0xFF;
+		this.multi = bits >> 4 & 15;
+		this.dt = bits & 7;
+		bits = message[offset++] & 0xFF;
+		this.ws = bits >> 3 & 31;
+		this.fb = bits & 7;
+	}
+	
 	
 	/**
 	 * Frequency has changed

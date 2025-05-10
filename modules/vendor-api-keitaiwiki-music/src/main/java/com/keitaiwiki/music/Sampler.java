@@ -372,6 +372,14 @@ public interface Sampler
 	float sampleRate();
 	
 	/**
+	 * Terminate all active notes. This may be needed depending on a
+	 * sequencer's looping logic. This method immediately cancels all notes
+	 * without going through key-off processing.
+	 */
+	@SquirrelJMEVendorApi
+	void stopAll();
+	
+	/**
 	 * Process a SysEx message. Functionality that is not part of the
 	 * relevant specificaiton (usually MIDI) is configured through such
 	 * messages. The binary format of a SysEx message depends on the

@@ -34,11 +34,9 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 
 /**
  * Sampler instance
@@ -89,7 +87,7 @@ class SineSampler
 		
 		this.channels = new SineChannel[16];
 		this.sampleRate = sampleRate;
-		this.volRate = 1 / (sampleRate * 0.01f);
+		this.volRate = 1 / (sampleRate * 0.1f);
 		
 		// Channels
 		for (int x = 0; x < this.channels.length; x++)
@@ -104,7 +102,6 @@ class SineSampler
 		// Reset all state
 		this.reset();
 	}
-	
 	
 	/**
 	 * Specify a channel's program bank.
@@ -249,7 +246,8 @@ class SineSampler
 			return;
 		SineChannel chan = this.channels[channel];
 		chan.bendBase = semitones;
-		chan.bendOut = (float)ExtraMath.pow(2, chan.bendBase * chan.bendRange);
+		chan.bendOut = (float)ExtraMath.pow(2,
+			chan.bendBase * chan.bendRange);
 	}
 	
 	/**
@@ -265,7 +263,8 @@ class SineSampler
 			return;
 		SineChannel chan = this.channels[channel];
 		chan.bendRange = range;
-		chan.bendOut = (float)ExtraMath.pow(2, chan.bendBase * chan.bendRange);
+		chan.bendOut = (float)ExtraMath.pow(2,
+			chan.bendBase * chan.bendRange);
 	}
 	
 	/**
@@ -285,7 +284,7 @@ class SineSampler
 	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames)
 	{
-		this.render(samples, offset, frames, 1.0f, true, true);
+		this.render(samples, offset, frames, 1.0f, 1.0f, true, true);
 	}
 	
 	/**
@@ -296,7 +295,8 @@ class SineSampler
 	public void render(float[] samples, int offset, int frames,
 		float amplitude)
 	{
-		this.render(samples, offset, frames, amplitude, true, true);
+		this.render(samples, offset, frames, amplitude, amplitude, true,
+			true);
 	}
 	
 	@Override
@@ -304,25 +304,16 @@ class SineSampler
 	public void render(float[] samples, int offset, int frames, float left,
 		float right)
 	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	@SquirrelJMEVendorApi
-	public void render(float[] samples, int offset, int frames, float left,
-		float right, boolean erase, boolean clamp)
-	{
-		throw Debugging.todo();
+		this.render(samples, offset, frames, left, right, true, true);
 	}
 	
 	/**
 	 * Generate output samples.
 	 */
 	@SquirrelJMEVendorApi
-	public void render(float[] samples, int offset, int frames,
-		float amplitude, boolean erase, boolean clamp)
+	public void render(float[] samples, int offset, int frames, float left,
+		float right, boolean erase, boolean clamp)
 	{
-		
 		// Error checking
 		if (samples == null)
 			throw new NullPointerException(
@@ -334,8 +325,11 @@ class SineSampler
 			throw new ArrayIndexOutOfBoundsException(
 				"Invalid range in sample buffer.");
 		}
-		if (Float.isInfinite(amplitude) || amplitude < 0.0f)
-			throw new IllegalArgumentException("Invalid amplitude.");
+		
+		if (Float.isInfinite(left) || left < 0.0f)
+			throw new IllegalArgumentException("Invalid left.");
+		if (Float.isInfinite(right) || right < 0.0f)
+			throw new IllegalArgumentException("Invalid right.");
 		
 		// Erase the output buffer
 		if (erase)
@@ -346,7 +340,7 @@ class SineSampler
 		
 		// Render output samples
 		for (SineChannel chan : this.channels)
-			this.chanRender(chan, samples, offset, frames, amplitude);
+			this.chanRender(chan, samples, offset, frames, left, right);
 		
 		// Clamp the output buffer
 		if (clamp)
@@ -358,6 +352,21 @@ class SineSampler
 			}
 		}
 		
+	}
+	
+	/** Terminate all active notes. */
+	@SquirrelJMEVendorApi
+	public void stopAll()
+	{
+		for (SineChannel chan : this.channels)
+		{
+			Arrays.fill(chan.notesOn, null);
+			for (SineNote note : chan.notesOut)
+			{
+				note.playing = false;
+				note.volBase = 0.0f;
+			}
+		}
 	}
 	
 	/**
@@ -396,6 +405,7 @@ class SineSampler
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2025/05/05
 	 */
 	@Override
@@ -437,19 +447,20 @@ class SineSampler
 	 */
 	@SquirrelJMEVendorApi
 	void chanRender(SineChannel chan, float[] samples, int offset, int frames,
-		float amplitude)
+		float left, float right)
 	{
 		
 		// Working variables
 		float bend = this.masterTune * chan.bendOut;
+		left *= chan.volLeft;
+		right *= chan.volRight;
 		
 		// Process all notes
-		Iterator<SineNote> iter = chan.notesOut.iterator();
-		while (iter.hasNext())
+		for (int x = 0; x < chan.notesOut.size(); x++)
 		{
-			if (this.noteRender(iter.next(), samples, offset, frames,
-				amplitude, chan.volLeft, chan.volRight, bend))
-				iter.remove();
+			if (this.noteRender(chan.notesOut.get(x), samples, offset, frames,
+				chan.volLeft * left, chan.volRight * right, bend))
+				chan.notesOut.remove(x--);
 		}
 		
 		// Disassociate inactive notes
@@ -462,12 +473,20 @@ class SineSampler
 		
 	}
 	
+	/** Perform easing on an amplitude controller. */
+	@SquirrelJMEVendorApi
+	float ease(float level, float target)
+	{
+		return level < target ? Math.min(target, level + this.volRate) :
+			level > target ? Math.max(target, level - this.volRate) : level;
+	}
+	
 	/**
 	 * Render samples on a note
 	 */
 	@SquirrelJMEVendorApi
 	boolean noteRender(SineNote note, float[] samples, int offset, int frames,
-		float amplitude, float left, float right, float bend)
+		float left, float right, float bend)
 	{
 		
 		// Working variables
@@ -484,13 +503,13 @@ class SineSampler
 			
 			// Generate one sample
 			float sample = this.sample(note, advance);
-			samples[offset++] += sample * note.volLeftLevel * amplitude;
-			samples[offset++] += sample * note.volRightLevel * amplitude;
+			samples[offset++] += sample * note.volLeftLevel;
+			samples[offset++] += sample * note.volRightLevel;
 			
 			// Adjust stereo levels
-			note.volLeftLevel = this.volAdjust(note.volLeftLevel,
+			note.volLeftLevel = this.ease(note.volLeftLevel,
 				note.volLeftTarget);
-			note.volRightLevel = this.volAdjust(note.volRightLevel,
+			note.volRightLevel = this.ease(note.volRightLevel,
 				note.volRightTarget);
 			
 			// Note has finished

@@ -122,7 +122,7 @@ class MA3Note
 	float freqBase;
 	
 	/**
-	 * Note is currently active on its key
+	 * Note is generating output
 	 */
 	@SquirrelJMEVendorApi
 	boolean playing;
@@ -145,8 +145,12 @@ class MA3Note
 	@SquirrelJMEVendorApi
 	float volRightOut;
 	
+	/** Key index within channel. */
 	@SquirrelJMEVendorApi
-	MA3Note(MA3Channel channel, MA3Algorithm algorithm)
+	int key;
+	
+	@SquirrelJMEVendorApi
+	MA3Note(MA3Channel channel, int key, MA3Algorithm algorithm)
 	{
 		this.algorithm = algorithm;
 		this.envDone = false;
@@ -154,7 +158,9 @@ class MA3Note
 		this.ampRight = 0.0f;
 		this.channel = channel;
 		this.instance = channel.instance;
+		this.key = key;
 		this.operators = new MA3Operator[algorithm.operators.length];
+		this.playing = true;
 		this.sample = 0.0f;
 		
 		// Operators
@@ -180,7 +186,19 @@ class MA3Note
 	@SquirrelJMEVendorApi
 	void off()
 	{
-		this.playing = false;
+		// A data-supplied FM algorithm never decays
+		if (this.algorithm.isForever)
+		{
+			this.stop();
+			return;
+		}
+		
+		// Ignore key-off for wave drums
+		// Should apply to certain hi-hat notes, but needs research
+		if (this.algorithm.isWave)
+			return;
+		
+		// Regular processing: switch all operators to release stage
 		for (MA3Operator op : this.operators)
 		{
 			if (op.envStage == MA3SamplerProvider.ENV_DONE || op.xof)
@@ -199,12 +217,13 @@ class MA3Note
 		this.envDone = true;
 		
 		// Test all relevant operators
-		int bits = MA3SamplerProvider.ENV_FLAGS[this.algorithm.alg];
-		for (int x = 0; x < this.operators.length; x++, bits >>= 1)
+		int flags = this.algorithm.isWave ? 1 :
+			MA3SamplerProvider.ENV_FLAGS[this.algorithm.alg];
+		for (int x = 0; x < this.operators.length; x++, flags >>= 1)
 		{
-			if ((bits & 1) != 0)
-				this.envDone =
-					this.envDone && this.operators[x].envStage == MA3SamplerProvider.ENV_DONE;
+			if ((flags & 1) != 0)
+				this.envDone = this.envDone &&
+					this.operators[x].envStage == MA3SamplerProvider.ENV_DONE;
 		}
 		
 		// If all relevant operators are done, shut off the note
@@ -226,8 +245,8 @@ class MA3Note
 		// Compute BLOCK and F_NUMBER
 		double freq =
 			this.algorithm.isDrum ? this.freqBase : this.freqBase * bend;
-		this.block = Math.min(7, Math.max(0, (int)(Math.round(
-			ExtraMath.log(freq / 440) * MA3SamplerProvider.MAGIC_B) + 57) / 12));
+		this.block = Math.min(7, Math.max(0, (int)(Math.round(ExtraMath.log(
+			freq / 440) * MA3SamplerProvider.MAGIC_B) + 57) / 12));
 		this.f_number = Math.min(1023, Math.max(0, (int)Math.round(
 			freq * (1 << 20 - this.block) * MA3SamplerProvider.MAGIC_F)));
 		

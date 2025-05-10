@@ -34,6 +34,7 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -665,7 +666,7 @@ public class MLD
 	@SquirrelJMEVendorApi
 	MLDEvent eventMasterVolume(MLDEvent event)
 	{
-		event.volume = (event.param & 0x7F) / 127.0f;
+		event.volume = this.volumeToAmplitude((event.param & 0x7F) / 127.0f);
 		return event;
 	}
 	
@@ -765,7 +766,7 @@ public class MLD
 	@SquirrelJMEVendorApi
 	MLDEvent eventVolume(MLDEvent event)
 	{
-		event.volume = (event.param & 0x3F) / 63.0f;
+		event.volume = this.volumeToAmplitude((event.param & 0x3F) / 63.0f);
 		return event;
 	}
 	
@@ -1208,5 +1209,11 @@ public class MLD
 		return ret;
 	}
 	
-	
+	/** Convert a volume parameter to a linear amplitude. */
+	@SquirrelJMEVendorApi
+	float volumeToAmplitude(float param)
+	{
+		return param == 0.0f ? 0.0f : (float)ExtraMath.pow(2,
+			(1 - param) * -96 / 20);
+	}
 }

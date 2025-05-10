@@ -47,6 +47,7 @@ import cc.squirreljme.runtime.cldc.util.ExtraMath;
  *  </thead>
  *  <tbody>
  *    <tr><td>Master</td><td>Fade</td><td>0.0f</td></tr>
+ *    <tr><td>Master</td><td>Custom FM instruments</td><td>None</td></tr>
  *    <tr><td>Master</td><td>Custom wave drums</td><td>None</td></tr>
  *    <tr><td>Sampler</td><td>Drum type</td>
  *      <td>{@code FM_MA3_4OP}</td></tr>

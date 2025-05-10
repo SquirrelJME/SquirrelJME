@@ -10,9 +10,10 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Not Described.
@@ -117,13 +118,20 @@ class MA3Sampler
 	@SquirrelJMEVendorApi
 	int[] wavRam;
 	
+	/** 2-operator instruments. */
+	@SquirrelJMEVendorApi
+	Map<Integer, MA3Algorithm> fm2ops;
+	
+	/** 4-operator instruments. */
+	@SquirrelJMEVendorApi
+	Map<Integer, MA3Algorithm> fm4ops;
 	
 	@SquirrelJMEVendorApi
 	MA3Sampler(MA3SamplerProvider __ma3, float sampleRate)
 	{
-		
-		
 		this.channels = new MA3Channel[10];
+		this.fm2ops = new HashMap<>();
+		this.fm4ops = new HashMap<>();
 		this.sampleRate = sampleRate;
 		this.smpNext = new float[2];
 		this.smpPrev = new float[2];
@@ -194,6 +202,7 @@ class MA3Sampler
 		MA3Note note = chan.notesOn[MA3SamplerProvider.A4 + key];
 		if (note != null)
 			note.off();
+		chan.notesOn[MA3SamplerProvider.A4 + key] = null;
 	}
 	
 	/**
@@ -220,27 +229,7 @@ class MA3Sampler
 		// FM instrument algorithm
 		if (!chan.isDrum)
 		{
-			int program = chan.prgProgram & 0x3F;
-			
-			// Adjust program by bank number
-			switch (chan.prgBank)
-			{
-				case 0:
-				case 1:
-					// These banks appear to disregard the program number.
-					program = 0;
-					break;
-				case 8:
-				case 9:
-					// These appear to be special filter banks associated
-					// with SysEx messages beginning with 11 01 F0 04.
-					
-					// Fallthrough
-				default:
-					program |= (chan.prgBank & 1) << 6;
-			}
-			
-			algorithm = this.ma3.algInstruments[program];
+			algorithm = this.getFMInstrument(chan.prgBank, chan.prgProgram);
 			freqBase = (float)(440 * ExtraMath.pow(2, key / 12.0));
 		}
 		
@@ -260,29 +249,24 @@ class MA3Sampler
 			isWave = algorithm.isWave;
 		}
 		
-		// Force a new note if drums or algorithm change
-		if (chan.isDrum || note != null && (!note.playing || note.algorithm != algorithm))
-			note = null;
 		
-		// Spawn a new note
+		// Stop the previous note if necessary
+		if (note != null && (chan.isDrum || note.algorithm != algorithm))
+		{
+			keyOff(channel, key);
+			note = null;
+		}
+		
+		// Spawn a new note if necessary
 		if (note == null)
 		{
-			
-			// Stop any non-drum notes on the channel
-			for (MA3Note other : chan.notesOut)
-			{
-				if (!other.algorithm.isDrum)
-					other.stop();
-			}
-			
 			// Create the new note
-			note = chan.notesOn[MA3SamplerProvider.A4 + key] = new MA3Note(
-				chan, algorithm);
+			note = new MA3Note(chan, key, algorithm);
+			chan.notesOn[MA3SamplerProvider.A4 + key] = note;
 			chan.notesOut.add(note);
 		}
 		
 		// Configure fields
-		note.playing = true;
 		note.volBase = velocity;
 		note.onVolume();
 		if (!isWave)
@@ -316,8 +300,7 @@ class MA3Sampler
 	{
 		if (Float.isInfinite(volume) || volume < 0.0f)
 			throw new IllegalArgumentException("Invalid volume.");
-		this.volLevel = volume == 0.0f ? 0.0f : (float)ExtraMath.pow(2,
-			(1 - volume) * -96 / 20);
+		this.volLevel = volume;
 		this.onVolume();
 	}
 	
@@ -352,7 +335,8 @@ class MA3Sampler
 			return;
 		MA3Channel chan = this.channels[channel];
 		chan.bendBase = semitones;
-		chan.bendOut = (float)ExtraMath.pow(2, chan.bendBase * chan.bendRange);
+		chan.bendOut = (float)ExtraMath.pow(2,
+			chan.bendBase * chan.bendRange);
 		chan.onFrequency();
 	}
 	
@@ -369,7 +353,8 @@ class MA3Sampler
 			return;
 		MA3Channel chan = this.channels[channel];
 		chan.bendRange = range;
-		chan.bendOut = (float)ExtraMath.pow(2, chan.bendBase * chan.bendRange);
+		chan.bendOut = (float)ExtraMath.pow(2,
+			chan.bendBase * chan.bendRange);
 		chan.onFrequency();
 	}
 	
@@ -553,13 +538,28 @@ class MA3Sampler
 		this.volLevel = 1.0f;
 		this.volOut = 1.0f;
 		this.wavRam = null;
+		this.fm2ops.clear();
+		this.fm4ops.clear();
 		for (MA3Channel chan : this.channels)
 			chan.reset();
 		Arrays.fill(this.wavDrums, null);
 	}
 	
+	/** Terminate all active notes. */
+	@SquirrelJMEVendorApi
+	public void stopAll()
+	{
+		for (MA3Channel chan : this.channels)
+		{
+			Arrays.fill(chan.notesOn, null);
+			for (MA3Note note : chan.notesOut)
+				note.stop();
+		}
+	}
+	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2025/05/05
 	 */
 	@Override
@@ -583,12 +583,17 @@ class MA3Sampler
 		// Processing by sub-message type
 		switch (message[3] & 0xFF)
 		{
+			case 0x00:// Seen in Smwemu_N.dll at 10028975
+				break;
+			case 0x01:// Seen in Smwemu_N.dll at 1002899D
+				break;
+			case 0x02:// Seen in Smwemu_N.dll at 100289B4
+				break;
 			case 0x03: // Specify the global fade
 				this.setMasterFade(message);
 				break;
 			case 0x04:
-				// This message appears to define post-processing line
-				// filters for instruments.
+				this.setFMAlgorithms(message);
 				break;
 			case 0x05: // Register wave drum algorithms
 				this.setWaveDrums(message);
@@ -615,13 +620,82 @@ class MA3Sampler
 		if (channel < 0 || channel >= this.channels.length)
 			return;
 		MA3Channel chan = this.channels[channel];
-		chan.volLevel = volume == 0.0f ? 0.0f : (float)ExtraMath.pow(2,
-			(1 - volume) * -96 / 20);
+		chan.volLevel = volume;
 		chan.volLeft = (1.0f - chan.volPanning) * chan.volLevel;
 		chan.volRight = chan.volPanning * chan.volLevel;
 		chan.onVolume();
 	}
 	
+	/** Retrieve an algorithm for playing an FM instrument. */
+	@SquirrelJMEVendorApi
+	MA3Algorithm getFMInstrument(int bank, int program)
+	{
+		int hashKey = bank << 8 | program;
+		MA3Algorithm ret = null;
+		
+		// Running in 4-algorithm mode
+		if (this.ma3.prgInstrumentType == MA3SamplerProvider.FM_MA3_4OP)
+			ret = this.fm4ops.get(hashKey);
+		
+		// Fallback to 2-algorithm mode
+		if (ret == null)
+			ret = this.fm2ops.get(hashKey);
+		
+		// Fallback to preset
+		if (ret == null)
+		{
+			ret = this.ma3.algInstruments[bank < 2 ? 0 : // Apparent behavior
+				(bank & 1) << 6 | program & 0x3F];
+		}
+		
+		return ret;
+	}
+	
+	/** Specify FM algorithms. */
+	@SquirrelJMEVendorApi
+	void setFMAlgorithms(byte[] message)
+	{
+		
+		// Process all algorithms in the message
+		for (int offset = 4; offset < message.length; )
+		{
+			
+			// Algorithm type: 1=two-operator, 2=four-operator
+			int type = message[offset] & 0xFF;
+			if (type != 1 && type != 2)
+				break;
+			
+			// Error checking
+			int size = type == 1 ? 20 : 34;
+			if (offset + size > message.length)
+				break;
+			
+			// Decode the algorithm
+			MA3Algorithm algorithm;
+			try
+			{
+				algorithm = new MA3Algorithm(offset, message);
+			}
+			catch (Exception e)
+			{
+				break;
+			}
+			
+			// Error checking
+			if (type == 1 && algorithm.operators.length == 4)
+				continue;
+			
+			// Register the algorithm
+			(type == 1 ? this.fm2ops : this.fm4ops).put(
+				(message[offset + 1] & 0xFF) << 8 | // Bank
+					message[offset + 2] & 0xFF,        // Program
+				algorithm);
+			
+			// Advance to the next algorithm
+			offset += size;
+		}
+		
+	}
 	
 	/**
 	 * Retrieve an algorithm for playing an FM drum note

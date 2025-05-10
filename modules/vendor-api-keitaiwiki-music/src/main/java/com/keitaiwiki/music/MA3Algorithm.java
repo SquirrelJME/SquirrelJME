@@ -46,19 +46,23 @@ class MA3Algorithm
 	 * Key played for drum notes
 	 */
 	@SquirrelJMEVendorApi
-	final int drumKey;
+	int drumKey;
 	
 	/**
 	 * Is a drum note
 	 */
 	@SquirrelJMEVendorApi
-	final boolean isDrum;
+	boolean isDrum;
+	
+	/** Envelopes never fully decay. */
+	@SquirrelJMEVendorApi
+	boolean isForever;
 	
 	/**
 	 * Is a wave rum algorithm
 	 */
 	@SquirrelJMEVendorApi
-	final boolean isWave;
+	boolean isWave;
 	
 	/**
 	 * Modulation LFO rate multiplier
@@ -77,6 +81,10 @@ class MA3Algorithm
 	 */
 	@SquirrelJMEVendorApi
 	final int panpot;
+	
+	/** Unknown significance. */
+	@SquirrelJMEVendorApi
+	boolean pe;
 	
 	/**
 	 * Operator connection algorithm
@@ -162,7 +170,7 @@ class MA3Algorithm
 			(this.drumKey - 69) / 12.0));
 		this.isDrum = isDrum;
 		this.isWave = false;
-		this.initVolume();
+		this.initPost();
 	}
 	
 	
@@ -181,7 +189,7 @@ class MA3Algorithm
 		offset += 2;
 		bits = message[offset++] & 0xFF;
 		this.panpot = bits >> 3 & 31;
-		// pe   = bits & 1;
+		this.pe = (bits & 1) != 0;
 		bits = message[offset++] & 0xFF;
 		this.lfo = bits >> 6 & 3;
 		// pcm  = bits >> 1 & 1;
@@ -200,49 +208,28 @@ class MA3Algorithm
 		this.isDrum = true;
 		this.isWave = true;
 		this.wavAdvance = this.fs / MA3SamplerProvider.SAMPLE_RATE;
-		this.initVolume();
+		this.initPost();
 	}
 	
-	/**
-	 * Debugging output
-	 */
+	/** FM SysEx constructor. */
 	@SquirrelJMEVendorApi
-	String debug()
+	MA3Algorithm(int offset, byte[] message)
 	{
-		StringBuilder ret = new StringBuilder();
-		ret.append(String.format("LFO:     %d\n", this.lfo));
-		ret.append(String.format("PANPOT:  %d\n", this.panpot));
-		ret.append(String.format("ALG:     %d\n", this.alg));
-		ret.append(String.format("DrumKey: %d\n", this.drumKey));
-		ret.append(String.format("Fs:      %d\n", this.fs));
-		ret.append(String.format("RM:      %d\n", this.rm ? 1 : 0));
-		ret.append(String.format("Wave ID: %d\n", this.waveId));
-		ret.append(String.format("LP:      %d\n", this.lp));
-		ret.append(String.format("EP:      %d\n", this.ep));
-		for (int x = 0; x < this.operators.length; x++)
-		{
-			MA3Operator op = this.operators[x];
-			ret.append(String.format("Operator %d\n", x + 1));
-			ret.append(String.format("  MULTI: %d\n", op.multi));
-			ret.append(String.format("  DT:    %d\n", op.dt));
-			ret.append(String.format("  AR:    %d\n", op.ar));
-			ret.append(String.format("  DR:    %d\n", op.dr));
-			ret.append(String.format("  SR:    %d\n", op.sr));
-			ret.append(String.format("  RR:    %d\n", op.rr));
-			ret.append(String.format("  SL:    %d\n", op.sl));
-			ret.append(String.format("  TL:    %d\n", op.tl));
-			ret.append(String.format("  KSL:   %d\n", op.ksl));
-			ret.append(String.format("  DAM:   %d\n", op.dam));
-			ret.append(String.format("  DVB:   %d\n", op.dvb));
-			ret.append(String.format("  FB:    %d\n", op.fb));
-			ret.append(String.format("  WS:    %d\n", op.ws));
-			ret.append(String.format("  XOF:   %s\n", op.xof + ""));
-			ret.append(String.format("  SUS:   %s\n", op.sus + ""));
-			ret.append(String.format("  KSR:   %d\n", op.ksr));
-			ret.append(String.format("  EAM:   %s\n", op.eam + ""));
-			ret.append(String.format("  EVB:   %s\n", op.evb + ""));
-		}
-		return ret.toString();
+		int bits;
+		int type = message[offset] & 0xFF;
+		offset += 4;
+		bits = message[offset++] & 0xFF;
+		this.panpot = bits >> 3 & 31;
+		bits = message[offset++] & 0xFF;
+		this.lfo = bits >> 6 & 3;
+		this.pe = (bits >> 5 & 1) != 0;
+		this.alg = bits & 7;
+		if (this.alg > 1 && type == 0x01)
+			throw new RuntimeException("Operator count mismatch");
+		this.operators = new MA3Operator[this.alg < 2 ? 2 : 4];
+		for (int x = 0; x < this.operators.length; x++, offset += 7)
+			this.operators[x] = new MA3Operator(message, offset, true);
+		this.initPost();
 	}
 	
 	/**
@@ -253,6 +240,25 @@ class MA3Algorithm
 	{
 		this.volRight = this.panpot / (this.panpot <= 15 ? 30.0f : 31.0f);
 		this.volLeft = 1 - this.volRight;
+	}
+	
+	@SquirrelJMEVendorApi
+	void initPost()
+	{
+		// Test whether the envelopes fully decay
+		if (!this.isWave /*|| lp < ep*/)
+		{
+			int flags =
+				this.isWave ? 1 : MA3SamplerProvider.ENV_FLAGS[this.alg];
+			for (int x = 0; !this.isForever && x < this.operators.length; x++,
+				flags >>= 1)
+			{
+				MA3Operator op = this.operators[x];
+				this.isForever = (flags & 1) != 0 && (op.xof ?
+					op.sr == 0 || op.dr == 0 && op.sr != 0 : op.rr == 0);
+			}
+		}
+		this.initVolume();
 	}
 	
 	@SquirrelJMEVendorApi
@@ -281,5 +287,4 @@ class MA3Algorithm
 		
 		return ret;
 	}
-	
 }
