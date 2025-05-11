@@ -20,6 +20,9 @@ import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 import org.intellij.lang.annotations.Language;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +36,15 @@ import org.jetbrains.annotations.Range;
  */
 public class EmulatedAudioStreamShelf
 {
+	/** The path to the dynamic library path. */
+	static volatile Path _dylibPath;
+	
+	/** The pointer to the dynamic library instance. */
+	static volatile long _dylibPtr;
+	
+	/** The state pointer. */
+	static volatile long _statePtr;
+	
 	/**
 	 * Not used. 
 	 *
@@ -69,6 +81,16 @@ public class EmulatedAudioStreamShelf
 			int __channels)
 		throws MLECallError
 	{
+		if (__name == null)
+			throw new MLECallError("NARG");
+		
+		if (__format < -1 || __format >= AudioStreamFormat.NUM_FORMATS ||
+			__rate < -1 || __channels <= 0)
+			throw new MLECallError("Invalid rate/format/channels");
+		
+		// Make sure the dynamic library is initialized
+		EmulatedAudioStreamShelf.__dylibInit();
+		
 		throw Debugging.todo();
 	}
 	
@@ -108,6 +130,12 @@ public class EmulatedAudioStreamShelf
 	{
 		if (__urlOrFile == null && __mimeType == null)
 			throw new MLECallError("NARG");
+		if (__format < -1 || __format >= AudioStreamFormat.NUM_FORMATS ||
+			__rate < -1 || __channels <= 0)
+			throw new MLECallError("Invalid rate/format/channels");
+		
+		// Make sure the dynamic library is initialized
+		EmulatedAudioStreamShelf.__dylibInit();
 		
 		throw Debugging.todo();
 	}
@@ -127,6 +155,9 @@ public class EmulatedAudioStreamShelf
 	{
 		if (__contentType == null)
 			throw new MLECallError("NARG");
+		
+		// Make sure the dynamic library is initialized
+		EmulatedAudioStreamShelf.__dylibInit();
 		
 		// Depends on the type
 		switch (__contentType)
@@ -148,6 +179,12 @@ public class EmulatedAudioStreamShelf
 	public static void destroy(@NotNull AudioStreamBracket __stream)
 		throws MLECallError
 	{
+		if (__stream == null)
+			throw new MLECallError("NARG");
+		
+		// Make sure the dynamic library is initialized
+		EmulatedAudioStreamShelf.__dylibInit();
+		
 		throw Debugging.todo();
 	}
 	
@@ -183,8 +220,11 @@ public class EmulatedAudioStreamShelf
 			throw new MLECallError("NARG");
 		
 		if (__format < -1 || __format >= AudioStreamFormat.NUM_FORMATS ||
-			__rate < -1 || __rate == 0)
-			throw new MLECallError("Invalid rate/format");
+			__rate < -1 || __channels <= 0)
+			throw new MLECallError("Invalid rate/format/channels");
+		
+		// Make sure the dynamic library is initialized
+		EmulatedAudioStreamShelf.__dylibInit();
 		
 		throw Debugging.todo();
 	}
@@ -208,6 +248,9 @@ public class EmulatedAudioStreamShelf
 		if (__midiPort == null)
 			throw new MLECallError("NARG");
 		
+		// Make sure the dynamic library is initialized
+		EmulatedAudioStreamShelf.__dylibInit();
+		
 		throw Debugging.todo();
 	}
 	
@@ -228,6 +271,9 @@ public class EmulatedAudioStreamShelf
 	{
 		if (__stream == null || __renderer == null)
 			throw new MLECallError("NARG");
+		
+		// Make sure the dynamic library is initialized
+		EmulatedAudioStreamShelf.__dylibInit();
 		
 		throw Debugging.todo();
 	}
@@ -251,6 +297,106 @@ public class EmulatedAudioStreamShelf
 		if (__stream == null || __renderer == null)
 			throw new MLECallError("NARG");
 		
+		// Make sure the dynamic library is initialized
+		EmulatedAudioStreamShelf.__dylibInit();
+		
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Initializes the dynamic library interface.
+	 *
+	 * @return The state pointer.
+	 * @since 2025/05/11
+	 */
+	static long __dylibInit()
+	{
+		synchronized (EmulatedAudioStreamShelf.class)
+		{
+			// Does not need initialization?
+			if (EmulatedAudioStreamShelf._statePtr != 0)
+				return EmulatedAudioStreamShelf._statePtr;
+			
+			// Try multiple libraries for a given order
+			for (String order : EmulatedAudioStreamShelf.__dylibOrder())
+			{
+				long maybe = EmulatedAudioStreamShelf.__dylibInit(order);
+				if (maybe != 0)
+				{
+					EmulatedAudioStreamShelf._statePtr = maybe;
+					return maybe;
+				}
+			}
+		}
+		
+		// Could not initialize any audio
+		throw new MLECallError("No audio support");
+	}
+	
+	/**
+	 * Initializes the specific library. 
+	 *
+	 * @param __name The name of the library to initialize.
+	 * @return The state pointer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/05/11
+	 */
+	static long __dylibInit(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// This could fail
+		try
+		{
+			// Determine the actual library name
+			String libName = System.mapLibraryName(
+				"squirreljme-scritchaudio-" + __name);
+			
+			// Where does this library exist?
+			Path path = NativeBinding.libFromResources(libName, false);
+			
+			// Attempt native load of state
+			return EmulatedAudioStreamShelf.__dylibLoad(
+				path.toAbsolutePath().toString());
+		}
+		catch (LinkageError|MLECallError __e)
+		{
+			__e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	/**
+	 * Performs the actual library load.
+	 *
+	 * @param __path The path to load.
+	 * @return The state pointer.
+	 * @throws MLECallError If loading failed.
+	 * @since 2025/05/11
+	 */
+	static native long __dylibLoad(String __path)
+		throws MLECallError;
+	
+	/**
+	 * Returns the dynamic library order to use.
+	 *
+	 * @return The dynamic library order.
+	 * @since 2025/05/11
+	 */
+	static List<String> __dylibOrder()
+	{
+		switch (NativeBinding.nativeOs())
+		{
+			case "windows":
+				return Arrays.asList("pulse", "winmm");
+				
+			case "macos":
+				return Arrays.asList("pulse", "coreaudio");
+				
+			default:
+				return Arrays.asList("pulse", "alsa", "oss");
+		}
 	}
 }

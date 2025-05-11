@@ -286,6 +286,31 @@ public final class NativeBinding
 	}
 	
 	/**
+	 * Returns the name of the native operating system.
+	 *
+	 * @return The native operating system name.
+	 * @since 2025/05/11
+	 */
+	public static String nativeOs()
+	{
+		// Normalize OS name
+		String osName = System.getProperty("os.name")
+			.toLowerCase(Locale.ROOT)
+			.replaceAll("[\\s<>:\"/\\\\|?*]", "");
+		if (osName.contains("windows"))
+			return "windows";
+		else if (osName.contains("mac os") || osName.contains("macos"))
+			return "macos";
+		else if (osName.contains("linux"))
+			return "linux";
+		else if (osName.contains("solaris"))
+			return "solaris";
+		else if (osName.contains("bsd"))
+			return "bsd";
+		return osName;
+	}
+	
+	/**
 	 * Determines the native directory.
 	 *
 	 * @return The native directory.
@@ -294,19 +319,7 @@ public final class NativeBinding
 	public static String nativePrefix()
 	{
 		// Normalize OS name
-		String osName = System.getProperty("os.name")
-			.toLowerCase(Locale.ROOT)
-			.replaceAll("[\\s<>:\"/\\\\|?*]", "");
-		if (osName.contains("windows"))
-			osName = "windows";
-		else if (osName.contains("mac os") || osName.contains("macos"))
-			osName = "macos";
-		else if (osName.contains("linux"))
-			osName = "linux";
-		else if (osName.contains("solaris"))
-			osName = "solaris";
-		else if (osName.contains("bsd"))
-			osName = "bsd";
+		String osName = NativeBinding.nativeOs();
 		
 		// Normalize OS arch
 		String osArch = System.getProperty("os.arch")
