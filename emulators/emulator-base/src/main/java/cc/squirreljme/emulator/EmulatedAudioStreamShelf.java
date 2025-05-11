@@ -36,12 +36,6 @@ import org.jetbrains.annotations.Range;
  */
 public class EmulatedAudioStreamShelf
 {
-	/** The path to the dynamic library path. */
-	static volatile Path _dylibPath;
-	
-	/** The pointer to the dynamic library instance. */
-	static volatile long _dylibPtr;
-	
 	/** The state pointer. */
 	static volatile long _statePtr;
 	
@@ -359,7 +353,7 @@ public class EmulatedAudioStreamShelf
 			
 			// Attempt native load of state
 			return EmulatedAudioStreamShelf.__dylibLoad(
-				path.toAbsolutePath().toString());
+				path.toAbsolutePath().toString(), __name.toLowerCase());
 		}
 		catch (LinkageError|MLECallError __e)
 		{
@@ -372,11 +366,12 @@ public class EmulatedAudioStreamShelf
 	 * Performs the actual library load.
 	 *
 	 * @param __path The path to load.
+	 * @param __name The name of the library.
 	 * @return The state pointer.
 	 * @throws MLECallError If loading failed.
 	 * @since 2025/05/11
 	 */
-	static native long __dylibLoad(String __path)
+	static native long __dylibLoad(String __path, String __name)
 		throws MLECallError;
 	
 	/**

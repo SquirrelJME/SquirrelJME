@@ -277,6 +277,15 @@ jintArray sjme_jni_mappedArrayInt(JNIEnv* env,
 void sjme_jni_throwMLECallError(JNIEnv* env, sjme_errorCode code);
 
 /**
+ * Throws a @c NullPointerException .
+ *
+ * @param env The current Java environment.
+ * @param code The error code.
+ * @since 2025/05/11
+ */
+void sjme_jni_throwNullPointerException(JNIEnv* env);
+
+/**
  * Throws the given throwable type.
  *
  * @param env The current Java environment.

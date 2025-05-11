@@ -26,7 +26,7 @@ sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(oss)(
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
 {
-	if (inPool == NULL || outState == NULL || initFrontEnd == NULL)
+	if (inPool == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
