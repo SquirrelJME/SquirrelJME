@@ -19,6 +19,7 @@
 #include "sjme/config.h"
 #include "sjme/alloc.h"
 #include "sjme/list.h"
+#include "lib/scritchany/scritchany.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -266,6 +267,44 @@ typedef struct sjme_scritchaudio_implFunctions
 	/** Create a new audio stream. */
 	sjme_scritchaudio_streamCreateFunc streamCreate;
 } sjme_scritchaudio_implFunctions;
+
+/**
+ * Dynamic library entry point for ScritchAudio.
+ *
+ * @param inPool The input pool.
+ * @param outState The resultant audio state.
+ * @param initFrontEnd the initial front-end state.
+ * @return Any resultant error, if any.
+ * @since 2025/05/11
+ */
+typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchaudio_dylibApiFunc)(
+	sjme_attrInNotNull sjme_alloc_pool inPool,
+	sjme_attrInOutNotNull sjme_scritchaudio* outState,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
+	
+/** The base name for the ScritchAudio dynamic library. */
+#define SJME_SCRITCHAUDIO_DYLIB_NAME_BASE \
+	SJME_SCRITCHANY_DYLIB_NAME_BASE(audio)
+
+/** The name of the dynamic library for ScritchAudio. */
+#define SJME_SCRITCHAUDIO_DYLIB_NAME(x) \
+	SJME_SCRITCHANY_DYLIB_NAME(audio, x)
+
+/** The path name for the dynamic library for ScritchAudio. */
+#define SJME_SCRITCHAUDIO_DYLIB_PATHNAME(x) \
+	SJME_SCRITCHANY_DYLIB_PATHNAME(audio, x)
+
+/** The prefix for the dynamic library. */
+#define SJME_SCRITCHAUDIO_DYLIB_SYMBOL_PREFIX \
+	SJME_SCRITCHANY_DYLIB_SYMBOL_PREFIX(audio)
+
+/** The symbol to use with @c sjme_scritchaudio_dylibApiFunc . */
+#define SJME_SCRITCHAUDIO_DYLIB_SYMBOL(x) \
+	SJME_SCRITCHANY_DYLIB_SYMBOL(audio, x)
+
+/** Declares the API export . */
+#define SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(x) \
+	SJME_SCRITCHANY_DYLIB_SYMBOL_DECLARE(audio, x)
 
 /*--------------------------------------------------------------------------*/
 

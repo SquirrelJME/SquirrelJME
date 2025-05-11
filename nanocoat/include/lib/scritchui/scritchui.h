@@ -27,6 +27,7 @@
 #include "sjme/alloc.h"
 #include "sjme/dylib.h"
 #include "sjme/stream.h"
+#include "lib/scritchany/scritchany.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -2261,26 +2262,27 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchui_dylibApiFunc)(
 
 /** The base name for the ScritchUI dynamic library. */
 #define SJME_SCRITCHUI_DYLIB_NAME_BASE \
-	"squirreljme-scritchui-"
+	SJME_SCRITCHANY_DYLIB_NAME_BASE(ui)
 
 /** The name of the dynamic library for ScritchUI. */
 #define SJME_SCRITCHUI_DYLIB_NAME(x) \
-	SJME_SCRITCHUI_DYLIB_NAME_BASE SJME_TOKEN_STRING_PP(x)
+	SJME_SCRITCHANY_DYLIB_NAME(ui, x)
 
 /** The path name for the dynamic library for ScritchUI. */
 #define SJME_SCRITCHUI_DYLIB_PATHNAME(x) \
-	SJME_CONFIG_DYLIB_PATHNAME(SJME_SCRITCHUI_DYLIB_NAME(x))
+	SJME_SCRITCHANY_DYLIB_PATHNAME(ui, x)
 
 /** The prefix for the dynamic library. */
-#define SJME_SCRITCHUI_DYLIB_SYMBOL_PREFIX sjme_scritchui_dylibApi
+#define SJME_SCRITCHUI_DYLIB_SYMBOL_PREFIX \
+	SJME_SCRITCHANY_DYLIB_SYMBOL_PREFIX(ui)
 
 /** The symbol to use with @c sjme_scritchui_dylibApiFunc . */
 #define SJME_SCRITCHUI_DYLIB_SYMBOL(x) \
-	SJME_TOKEN_PASTE_PP(SJME_SCRITCHUI_DYLIB_SYMBOL_PREFIX, x)
+	SJME_SCRITCHANY_DYLIB_SYMBOL(ui, x)
 
 /** Declares the API export . */
 #define SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(x) \
-	sjme_attrExport sjme_attrExportCall SJME_SCRITCHUI_DYLIB_SYMBOL(x)
+	SJME_SCRITCHANY_DYLIB_SYMBOL_DECLARE(ui, x)
 		
 #endif
 

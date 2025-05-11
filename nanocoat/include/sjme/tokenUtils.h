@@ -32,6 +32,22 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * A single token.
+ * 
+ * @param a The token.
+ * @since 2025/05/11
+ */
+#define SJME_TOKEN___(a) a
+	
+/**
+ * A single token.
+ * 
+ * @param a The token.
+ * @since 2025/05/11
+ */
+#define SJME_TOKEN(a) SJME_TOKEN___(a)
+	
+/**
  * Pastes two tokens together.
  * 
  * @param a The first token.

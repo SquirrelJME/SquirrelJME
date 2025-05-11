@@ -117,7 +117,7 @@ public final class NativeBinding
 			if (Debugging.VERBOSE)
 				System.err.printf("Java Over-Layer: Methods bound!%n");
 		}
-		catch (IOException e)
+		catch (LinkageError e)
 		{
 			throw new RuntimeException("Could not load library.", e);
 		}
@@ -144,11 +144,11 @@ public final class NativeBinding
 	 * @param __libBaseName The library base name.
 	 * @param __map Should the name be mapped?
 	 * @return The loaded library.
-	 * @throws IOException On read/write errors.
+	 * @throws LinkageError On read/write errors.
 	 * @since 2020/12/01
 	 */
 	public static Path libFromResources(String __libBaseName, boolean __map)
-		throws IOException
+		throws LinkageError
 	{
 		// Find the library to load
 		String libName;
@@ -171,7 +171,7 @@ public final class NativeBinding
 			NativeBinding.nativePrefix() + "/" + libName))
 		{
 			if (in == null)
-				throw new IOException(String.format(
+				throw new LinkageError(String.format(
 					"Library %s not found in resource.", libName));
 			
 			// Place all the native libraries in the same location
@@ -240,7 +240,7 @@ public final class NativeBinding
 				e.addSuppressed(f);
 			}
 			
-			throw new IOException("Could not copy native library.", e);
+			throw new LinkageError("Could not copy native library.", e);
 		}
 		
 		// Track execution time
