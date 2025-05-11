@@ -83,7 +83,7 @@ public class EmulatedAudioStreamShelf
 			throw new MLECallError("Invalid rate/format/channels");
 		
 		// Make sure the dynamic library is initialized
-		EmulatedAudioStreamShelf.__dylibInit();
+		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
 		
 		throw Debugging.todo();
 	}
@@ -129,7 +129,7 @@ public class EmulatedAudioStreamShelf
 			throw new MLECallError("Invalid rate/format/channels");
 		
 		// Make sure the dynamic library is initialized
-		EmulatedAudioStreamShelf.__dylibInit();
+		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
 		
 		throw Debugging.todo();
 	}
@@ -149,9 +149,6 @@ public class EmulatedAudioStreamShelf
 	{
 		if (__contentType == null)
 			throw new MLECallError("NARG");
-		
-		// Make sure the dynamic library is initialized
-		EmulatedAudioStreamShelf.__dylibInit();
 		
 		// Depends on the type
 		switch (__contentType)
@@ -177,7 +174,7 @@ public class EmulatedAudioStreamShelf
 			throw new MLECallError("NARG");
 		
 		// Make sure the dynamic library is initialized
-		EmulatedAudioStreamShelf.__dylibInit();
+		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
 		
 		throw Debugging.todo();
 	}
@@ -218,7 +215,7 @@ public class EmulatedAudioStreamShelf
 			throw new MLECallError("Invalid rate/format/channels");
 		
 		// Make sure the dynamic library is initialized
-		EmulatedAudioStreamShelf.__dylibInit();
+		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
 		
 		throw Debugging.todo();
 	}
@@ -243,7 +240,7 @@ public class EmulatedAudioStreamShelf
 			throw new MLECallError("NARG");
 		
 		// Make sure the dynamic library is initialized
-		EmulatedAudioStreamShelf.__dylibInit();
+		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
 		
 		throw Debugging.todo();
 	}
@@ -267,7 +264,7 @@ public class EmulatedAudioStreamShelf
 			throw new MLECallError("NARG");
 		
 		// Make sure the dynamic library is initialized
-		EmulatedAudioStreamShelf.__dylibInit();
+		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
 		
 		throw Debugging.todo();
 	}
@@ -292,7 +289,7 @@ public class EmulatedAudioStreamShelf
 			throw new MLECallError("NARG");
 		
 		// Make sure the dynamic library is initialized
-		EmulatedAudioStreamShelf.__dylibInit();
+		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
 		
 		throw Debugging.todo();
 	}

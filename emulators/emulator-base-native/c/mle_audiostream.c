@@ -123,8 +123,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __dylibLoad)(
 	/* Lookup API initializer. */
 	apiInit = NULL;
 	if (sjme_error_is(error = sjme_dylib_lookup(dylib,
-		buf, (sjme_pointer*)&apiInit)) ||
-						  apiInit == NULL)
+		buf, (sjme_pointer*)&apiInit)) || apiInit == NULL)
 		goto fail_lookupInit;
 
 	/* Allocate memory pool. */

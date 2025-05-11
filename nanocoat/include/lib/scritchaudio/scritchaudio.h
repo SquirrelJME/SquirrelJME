@@ -268,6 +268,27 @@ typedef struct sjme_scritchaudio_implFunctions
 	sjme_scritchaudio_streamCreateFunc streamCreate;
 } sjme_scritchaudio_implFunctions;
 
+struct sjme_scritchaudioBase
+{
+	/** The allocation pool to use. */
+	sjme_alloc_pool pool;
+
+	/** The front end. */
+	sjme_frontEnd frontEnd;
+	
+	/** Api Functions. */
+	sjme_scritchaudio_apiFunctions api;
+
+	/** Implementation functions. */
+	sjme_scritchaudio_implFunctions impl;
+	
+	/** The audio loop thread, if applicable. */
+	sjme_thread loopThread;
+	
+	/** The current audio thread ID, if applicable. */
+	sjme_intPointer loopThreadId;
+};
+	
 /**
  * Dynamic library entry point for ScritchAudio.
  *
