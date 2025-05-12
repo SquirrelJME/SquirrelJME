@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <lib/scritchaudio/scritchaudioIntern.h>
+
 #include "lib/scritchaudio/oss/ossIntern.h"
 
 /**
@@ -16,6 +18,7 @@
  */
 static const sjme_scritchaudio_implFunctions sjme_scritchaudio_ossFunctions =
 {
+	.apiInit = sjme_scritchaudio_oss_apiInit,
 	.queryMidiPorts = sjme_scritchaudio_oss_queryMidiPorts,
 	.sourceAttach = sjme_scritchaudio_oss_sourceAttach,
 	.streamCreate = sjme_scritchaudio_oss_streamCreate,
@@ -26,9 +29,29 @@ sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(oss)(
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
 {
+	sjme_errorCode error;
+	sjme_scritchaudio result;
+	
 	if (inPool == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Forward initialize. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_scritchaudio_core_init(inPool, &result,
+		initFrontEnd, &sjme_scritchaudio_ossFunctions)) || result == NULL)
+		return sjme_error_default(error);
 	
+	/* Success! */
+	*outState = result;
+	return SJME_ERROR_NULL_ARGUMENTS;
+}
+
+sjme_errorCode sjme_scritchaudio_oss_apiInit(
+	sjme_attrInNotNull sjme_scritchaudio inState)
+{
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }

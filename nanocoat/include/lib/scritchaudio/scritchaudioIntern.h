@@ -29,6 +29,12 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+sjme_errorCode sjme_scritchaudio_core_init(
+	sjme_attrInNotNull sjme_alloc_pool inPool,
+	sjme_attrInOutNotNull sjme_scritchaudio* outState,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
+	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* functions);
 	
 sjme_errorCode sjme_scritchaudio_core_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,

@@ -30,6 +30,9 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+sjme_errorCode sjme_scritchaudio_softmix_apiInit(
+	sjme_attrInNotNull sjme_scritchaudio inState);
+	
 sjme_errorCode sjme_scritchaudio_softmix_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInOutNotNull sjme_list_sjme_scritchaudio_midiPort* inOutPorts,

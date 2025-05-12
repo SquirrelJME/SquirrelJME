@@ -183,6 +183,16 @@ typedef enum sjme_scritchaudio_channels
 } sjme_scritchaudio_channels;
 
 /**
+ * Internal implementation initialization function.
+ *
+ * @param inState The ScritchAudio state.
+ * @return Any resultant error, if any.
+ * @since 2025/05/12
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_apiInitFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState);
+	
+/**
  * Queries the MIDI ports and synths that are available to the system.
  *
  * @param inState The ScritchAudio state.
@@ -258,6 +268,9 @@ typedef struct sjme_scritchaudio_apiFunctions
  */
 typedef struct sjme_scritchaudio_implFunctions
 {
+	/** Api initialization. */
+	sjme_scritchaudio_apiInitFunc apiInit;
+	
 	/** Queries the MIDI ports and synths available. */
 	sjme_scritchaudio_queryMidiPortsFunc queryMidiPorts;
 	
@@ -287,6 +300,12 @@ struct sjme_scritchaudioBase
 	
 	/** The current audio thread ID, if applicable. */
 	sjme_intPointer loopThreadId;
+	
+	/** Wrapped ScritchAudio state, if this is a wrapper. */
+	sjme_scritchaudio wrappedState;
+	
+	/** Reference to the owning state. */
+	sjme_alignPointer sjme_atomic_sjme_pointer topState;
 };
 	
 /**

@@ -35,6 +35,9 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+sjme_errorCode sjme_scritchaudio_oss_apiInit(
+	sjme_attrInNotNull sjme_scritchaudio inState);
 	
 sjme_errorCode sjme_scritchaudio_oss_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,
