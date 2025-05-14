@@ -36,6 +36,12 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/** The device name for digital audio output. */
+#define SJME_SCRITCHAUDIO_OSS_DSP "/dev/dsp"
+
+/** The device name for MIDI input/output. */
+#define SJME_SCRITCHAUDIO_OSS_MIDI "/dev/midi"
+	
 sjme_errorCode sjme_scritchaudio_oss_apiInit(
 	sjme_attrInNotNull sjme_scritchaudio inState);
 	

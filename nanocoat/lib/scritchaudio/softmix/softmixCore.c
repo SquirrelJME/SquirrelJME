@@ -14,8 +14,7 @@
  *
  * @since 2025/05/10
  */
-static const sjme_scritchaudio_implFunctions
-	sjme_scritchaudio_softmixFunctions =
+const sjme_scritchaudio_implFunctions sjme_scritchaudio_softmixFunctions =
 {
 	.apiInit = sjme_scritchaudio_softmix_apiInit,
 	.queryMidiPorts = sjme_scritchaudio_softmix_queryMidiPorts,

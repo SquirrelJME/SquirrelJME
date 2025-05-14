@@ -30,6 +30,10 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/** Software mixer wrapper functions. */
+extern const sjme_scritchaudio_implFunctions
+	sjme_scritchaudio_softmixFunctions;
+	
 sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 	sjme_attrInNotNull sjme_scritchaudio inState);
 	

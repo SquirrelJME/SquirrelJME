@@ -7,8 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <lib/scritchaudio/scritchaudioIntern.h>
+#include <string.h>
+#include <sys/stat.h>
 
+#include "lib/scritchaudio/scritchaudioIntern.h"
 #include "lib/scritchaudio/oss/ossIntern.h"
 
 /**
@@ -49,8 +51,19 @@ sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(oss)(
 sjme_errorCode sjme_scritchaudio_oss_apiInit(
 	sjme_attrInNotNull sjme_scritchaudio inState)
 {
+	struct stat ignored;
+	int dspResult, midiResult;
+	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* OSS not available in any way? These would be the default output and */
+	/* the default MIDI device. */
+	memset(&ignored, 0, sizeof(ignored));
+	dspResult = stat(SJME_SCRITCHAUDIO_OSS_DSP, &ignored);
+	midiResult = stat(SJME_SCRITCHAUDIO_OSS_MIDI, &ignored);
+	if (dspResult != 0 && midiResult == 0)
+		return SJME_ERROR_HEADLESS_AUDIO;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
