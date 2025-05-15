@@ -26,9 +26,24 @@ const sjme_scritchaudio_implFunctions sjme_scritchaudio_softmixFunctions =
 sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 	sjme_attrInNotNull sjme_scritchaudio inState)
 {
+	sjme_scritchaudio wrappedStated;
+	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Recover the wrapped state. */
+	wrappedStated = inState->wrappedState;
+	if (wrappedStated == NULL)
+		return SJME_ERROR_HEADLESS_AUDIO;
+
+	/* If the wrapped state must be manually polled, we like having threaded */
+	/* audio. */
+	if (wrappedStated->bugs.manualPoll)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }

@@ -69,9 +69,10 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	/* Call inner initialization. */
 	if (sjme_error_is(error = inImplFunc->apiInit(result)))
 		goto fail_apiInit;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Success! */
+	*outState = result;
+	return SJME_ERROR_NONE;
 
 fail_apiInit:
 fail_allocResult:

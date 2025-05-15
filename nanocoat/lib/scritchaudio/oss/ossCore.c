@@ -69,6 +69,6 @@ sjme_errorCode sjme_scritchaudio_oss_apiInit(
 	if (dspResult != 0 && midiResult == 0)
 		return SJME_ERROR_HEADLESS_AUDIO;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Success! Not much else to do here. */
+	return SJME_ERROR_NONE;
 }
