@@ -7,9 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "lib/scritchaudio/scritchaudio.h"
 #include "lib/scritchaudio/scritchaudioIntern.h"
 #include "lib/scritchaudio/softmix/softmixIntern.h"
+
+/**
+ * Standard API functions.
+ *
+ * @since 2025/05/10
+ */
+static const sjme_scritchaudio_apiFunctions sjme_scritchaudio_coreFunctions =
+{
+	.queryMidiPorts = sjme_scritchaudio_core_queryMidiPorts,
+	.loopIterate = sjme_scritchaudio_core_loopIterate,
+	.sourceAttach = sjme_scritchaudio_core_sourceAttach,
+	.streamCreate = sjme_scritchaudio_core_streamCreate,
+};
 
 static sjme_errorCode sjme_scritchaudio_core_initActual(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
@@ -18,15 +33,51 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
 	sjme_attrInNotNull sjme_scritchaudio wrappedStated)
 {
+	sjme_errorCode error;
+	sjme_scritchaudio result;
 	
 	if (inPool == NULL || outState == NULL || inImplFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inImplFunc->apiInit == NULL)
 		return sjme_error_notImplemented(0);
+
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc(inPool, sizeof(*result),
+		(sjme_pointer*)&result)) ||
+		result == NULL)
+		goto fail_allocResult;
+
+	/* Set base details. */
+	result->pool = inPool;
+	result->api = &sjme_scritchaudio_coreFunctions;
+	result->impl = inImplFunc;
+
+	/* Bind wrapped states together? */
+	if (wrappedStated != NULL)
+	{
+		/* Bind each other. */
+		result->wrappedState = wrappedStated;
+		sjme_atomic_sjme_pointer_set(&wrappedStated->topState, result);
+
+		/* Take the wrapped state's thread information, if applicable. */
+		result->loopThread = wrappedStated->loopThread;
+		result->loopThreadId = wrappedStated->loopThreadId;
+	}
+
+	/* Call inner initialization. */
+	if (sjme_error_is(error = inImplFunc->apiInit(result)))
+		goto fail_apiInit;
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+
+fail_apiInit:
+fail_allocResult:
+	if (result != NULL)
+		sjme_scritchaudio_core_destroy(result);
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchaudio_core_destroy(

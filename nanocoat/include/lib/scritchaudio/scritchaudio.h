@@ -191,6 +191,17 @@ typedef enum sjme_scritchaudio_channels
  */
 typedef sjme_errorCode (*sjme_scritchaudio_apiInitFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState);
+
+/**
+ * Loop iteration for audio processing, if there is no background thread
+ * for audio-processing.
+ *
+ * @param inState The ScritchAudio state.
+ * @return Any resultant error, if any.
+ * @since 2025/05/15
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState);
 	
 /**
  * Queries the MIDI ports and synths that are available to the system.
@@ -251,6 +262,9 @@ typedef sjme_errorCode (*sjme_scritchaudio_streamCreateFunc)(
  */
 typedef struct sjme_scritchaudio_apiFunctions
 {
+	/** Iterates the audio loop. */
+	sjme_scritchaudio_loopIterateFunc loopIterate;
+	
 	/** Queries the MIDI ports and synths available. */
 	sjme_scritchaudio_queryMidiPortsFunc queryMidiPorts;
 	
@@ -271,6 +285,9 @@ typedef struct sjme_scritchaudio_implFunctions
 	/** Api initialization. */
 	sjme_scritchaudio_apiInitFunc apiInit;
 	
+	/** Iterates the audio loop. */
+	sjme_scritchaudio_loopIterateFunc loopIterate;
+	
 	/** Queries the MIDI ports and synths available. */
 	sjme_scritchaudio_queryMidiPortsFunc queryMidiPorts;
 	
@@ -281,6 +298,17 @@ typedef struct sjme_scritchaudio_implFunctions
 	sjme_scritchaudio_streamCreateFunc streamCreate;
 } sjme_scritchaudio_implFunctions;
 
+/**
+ * ScritchAudio bugs.
+ *
+ * @since 2025/05/15
+ */
+typedef struct sjme_scritchaudio_bugs
+{
+	/** Audio is manually polled, there is no system managed loop. */
+	sjme_jboolean manualPoll; 
+} sjme_scritchaudio_bugs;
+
 struct sjme_scritchaudioBase
 {
 	/** The allocation pool to use. */
@@ -290,10 +318,10 @@ struct sjme_scritchaudioBase
 	sjme_frontEnd frontEnd;
 	
 	/** Api Functions. */
-	sjme_scritchaudio_apiFunctions api;
+	const sjme_scritchaudio_apiFunctions* api;
 
 	/** Implementation functions. */
-	sjme_scritchaudio_implFunctions impl;
+	const sjme_scritchaudio_implFunctions* impl;
 	
 	/** The audio loop thread, if applicable. */
 	sjme_thread loopThread;
@@ -306,6 +334,9 @@ struct sjme_scritchaudioBase
 	
 	/** Reference to the owning state. */
 	sjme_alignPointer sjme_atomic_sjme_pointer topState;
+
+	/** Bugs. */
+	sjme_scritchaudio_bugs bugs;
 };
 	
 /**

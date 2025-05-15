@@ -44,6 +44,9 @@ extern "C"
 	
 sjme_errorCode sjme_scritchaudio_oss_apiInit(
 	sjme_attrInNotNull sjme_scritchaudio inState);
+
+sjme_errorCode sjme_scritchaudio_oss_loopIterate(
+	sjme_attrInNotNull sjme_scritchaudio inState);
 	
 sjme_errorCode sjme_scritchaudio_oss_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,

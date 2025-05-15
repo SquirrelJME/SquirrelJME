@@ -21,6 +21,7 @@
 static const sjme_scritchaudio_implFunctions sjme_scritchaudio_ossFunctions =
 {
 	.apiInit = sjme_scritchaudio_oss_apiInit,
+	.loopIterate = sjme_scritchaudio_oss_loopIterate,
 	.queryMidiPorts = sjme_scritchaudio_oss_queryMidiPorts,
 	.sourceAttach = sjme_scritchaudio_oss_sourceAttach,
 	.streamCreate = sjme_scritchaudio_oss_streamCreate,
@@ -56,6 +57,9 @@ sjme_errorCode sjme_scritchaudio_oss_apiInit(
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* OSS is always manually polled. */
+	inState->bugs.manualPoll = SJME_JNI_TRUE;
 
 	/* OSS not available in any way? These would be the default output and */
 	/* the default MIDI device. */

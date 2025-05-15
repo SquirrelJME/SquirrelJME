@@ -39,6 +39,9 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
 	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc);
 	
+sjme_errorCode sjme_scritchaudio_core_loopIterate(
+	sjme_attrInNotNull sjme_scritchaudio inState);
+	
 sjme_errorCode sjme_scritchaudio_core_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInOutNotNull sjme_list_sjme_scritchaudio_midiPort* inOutPorts,

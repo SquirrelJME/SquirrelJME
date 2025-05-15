@@ -9,26 +9,12 @@
 
 #include "lib/scritchaudio/softmix/softmixIntern.h"
 
-/**
- * Software Mixer implementation functions.
- *
- * @since 2025/05/10
- */
-const sjme_scritchaudio_implFunctions sjme_scritchaudio_softmixFunctions =
-{
-	.apiInit = sjme_scritchaudio_softmix_apiInit,
-	.loopIterate = sjme_scritchaudio_softmix_loopIterate,
-	.queryMidiPorts = sjme_scritchaudio_softmix_queryMidiPorts,
-	.sourceAttach = sjme_scritchaudio_softmix_sourceAttach,
-	.streamCreate = sjme_scritchaudio_softmix_streamCreate,
-};
-
-sjme_errorCode sjme_scritchaudio_softmix_apiInit(
+sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState)
 {
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }

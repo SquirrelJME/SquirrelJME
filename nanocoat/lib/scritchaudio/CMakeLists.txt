@@ -15,6 +15,7 @@ squirreljme_scritchany_enable(audio Audio)
 # Core ScritchAudio Library
 squirreljme_multilib_add_library(ScritchAudioCore
 	audioCore.c
+	audioLoop.c
 	audioMidi.c
 	audioStream.c)
 

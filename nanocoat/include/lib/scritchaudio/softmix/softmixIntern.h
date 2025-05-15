@@ -36,6 +36,9 @@ extern const sjme_scritchaudio_implFunctions
 	
 sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 	sjme_attrInNotNull sjme_scritchaudio inState);
+
+sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
+	sjme_attrInNotNull sjme_scritchaudio inState);
 	
 sjme_errorCode sjme_scritchaudio_softmix_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,
