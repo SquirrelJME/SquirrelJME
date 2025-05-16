@@ -27,7 +27,6 @@ static const sjme_scritchui_wmInfo sjme_scritchUI_coreWmInfo =
 static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 {
 	/* As normal. */
-	.apiFlags = NULL,
 	.choiceGetSelectedIndex = sjme_scritchui_coreSerial_choiceGetSelectedIndex,
 	.choiceItemGet = sjme_scritchui_coreSerial_choiceItemGet,
 	.choiceItemInsert = sjme_scritchui_coreSerial_choiceItemInsert,
@@ -109,7 +108,6 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 /** Core Function set for ScritchUI. */
 static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 {
-	.apiFlags = NULL,
 	.choiceGetSelectedIndex = sjme_scritchui_core_choiceGetSelectedIndex,
 	.choiceItemGet = sjme_scritchui_core_choiceItemGet,
 	.choiceItemInsert = sjme_scritchui_core_choiceItemInsert,
@@ -315,7 +313,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 		goto fail_commonInit;
 	
 	/* By default, everything is panel only. */
-	state->isPanelOnly = SJME_JNI_TRUE;
+	state->platformFlags |= SJME_SCRITCHUI_LAF_PLATFORM_PANEL_ONLY;
 	
 	/* Loop initialization. */
 	if (wrappedState != NULL)

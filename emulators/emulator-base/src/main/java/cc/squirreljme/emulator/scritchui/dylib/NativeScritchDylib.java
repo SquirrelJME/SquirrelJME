@@ -368,17 +368,6 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
-	 * Checks to see if this is a panel only interface. 
-	 *
-	 * @param __stateP The state pointer.
-	 * @return If this is panel only.
-	 * @throws MLECallError If the state pointer is invalid.
-	 * @since 2024/07/16
-	 */
-	static native boolean __envIsPanelOnly(long __stateP)
-		throws MLECallError;
-	
-	/**
 	 * Derives the given font.
 	 *
 	 * @param __stateP The state pointer.
@@ -410,14 +399,14 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
-	 * Are native alerts supported?
+	 * Returns the ScritchUI platform flags.
 	 *
 	 * @param __stateP The state pointer.
-	 * @return If alerts are supported, or not.
-	 * @throws MLECallError On any errors.
-	 * @since 2025/02/09
+	 * @return The platform flags.
+	 * @throws MLECallError If this could not be obtained.
+	 * @since 2025/05/15
 	 */
-	static native boolean __lafHasAlerts(long __stateP)
+	static native int __lafPlatformFlags(long __stateP)
 		throws MLECallError;
 	
 	/**

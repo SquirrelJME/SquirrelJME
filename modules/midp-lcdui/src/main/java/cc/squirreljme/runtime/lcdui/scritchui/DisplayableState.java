@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFPlatformFlag;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -99,6 +100,20 @@ public final class DisplayableState
 		if (result == null)
 			throw new IllegalStateException("GCGC");
 		return result;
+	}
+	
+	/**
+	 * Does this use the calculator layout?
+	 *
+	 * @return If this uses the calculator layout.
+	 * @since 2025/05/15
+	 */
+	@SquirrelJMEVendorApi
+	public boolean isCalcLayout()
+	{
+		return (this.scritchApi.environment()
+			.lookAndFeel().lafPlatformFlags() &
+			ScritchLAFPlatformFlag.NUMPAD_CALC_LAYOUT) != 0;
 	}
 	
 	/**

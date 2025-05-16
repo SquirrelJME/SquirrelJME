@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.constants.NonStandardKey;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFPlatformFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
@@ -72,27 +73,7 @@ class __ExecCanvasInput__
 		if (__type == ScritchInputMethodType.KEY_PRESSED ||
 			__type == ScritchInputMethodType.KEY_RELEASED ||
 			__type == ScritchInputMethodType.KEY_REPEATED)
-			switch (__a)
-			{
-				case NonStandardKey.F7:					__a = '*'; break;
-				case NonStandardKey.F8:					__a = '#'; break;
-				case NonStandardKey.NUMPAD_0:			__a = '0'; break;
-				case NonStandardKey.NUMPAD_1:			__a = '1'; break;
-				case NonStandardKey.NUMPAD_2:			__a = '2'; break;
-				case NonStandardKey.NUMPAD_3:			__a = '3'; break;
-				case NonStandardKey.NUMPAD_4:			__a = '4'; break;
-				case NonStandardKey.NUMPAD_5:			__a = '5'; break;
-				case NonStandardKey.NUMPAD_6:			__a = '6'; break;
-				case NonStandardKey.NUMPAD_7:			__a = '7'; break;
-				case NonStandardKey.NUMPAD_8:			__a = '8'; break;
-				case NonStandardKey.NUMPAD_9:			__a = '9'; break;
-				case NonStandardKey.NUMPAD_MULTIPLY:	__a = '*'; break;
-				case NonStandardKey.NUMPAD_DIVIDE:		__a = '#'; break;
-				case NonStandardKey.NUMPAD_ENTER:		__a = '\n'; break;
-				case NonStandardKey.NUMPAD_DECIMAL:		__a = '.'; break;
-				case NonStandardKey.NUMPAD_MINUS:		__a = '-'; break;
-				case NonStandardKey.NUMPAD_PLUS:		__a = '+'; break;
-			}
+			__a = this.__remap(display, __a);
 		
 		// Depends on the actual event that occurred
 		DisplayScale scale = display.display()._scale;
@@ -140,5 +121,86 @@ class __ExecCanvasInput__
 						scale.textureY(__d));
 				break;
 		}
+	}
+	
+	/**
+	 * Remaps the given key.
+	 *
+	 * @param __display The display this is under.
+	 * @param __code The code to remap.
+	 * @return The remapped code.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/05/15
+	 */
+	private int __remap(DisplayState __display, int __code)
+		throws NullPointerException
+	{
+		if (__display == null)
+			throw new NullPointerException("NARG");
+		
+		boolean calcLayout = __display.isCalcLayout();
+		switch (__code)
+		{
+			case NonStandardKey.F7:
+			case NonStandardKey.NUMPAD_MULTIPLY:
+			case NonStandardKey.NUMPAD_PLUS:
+				return '*';
+				
+			case NonStandardKey.F8:
+			case NonStandardKey.NUMPAD_DIVIDE:
+			case NonStandardKey.NUMPAD_MINUS:
+				return '#';
+				
+			case NonStandardKey.NUMPAD_0:
+				return '0';
+				
+			case NonStandardKey.NUMPAD_1:
+				if (calcLayout)
+					return '7';
+				return '1';
+				
+			case NonStandardKey.NUMPAD_2:
+				if (calcLayout)
+					return '8';
+				return '2';
+				
+			case NonStandardKey.NUMPAD_3:
+				if (calcLayout)
+					return '9';
+				return '3';
+				
+			case NonStandardKey.NUMPAD_4:
+				return '4';
+				
+			case NonStandardKey.NUMPAD_5:
+				return '5';
+				
+			case NonStandardKey.NUMPAD_6:
+				return '6';
+				
+			case NonStandardKey.NUMPAD_7:
+				if (calcLayout)
+					return '1';
+				return '7';
+				
+			case NonStandardKey.NUMPAD_8:
+				if (calcLayout)
+					return '2';
+				return '8';
+				
+			case NonStandardKey.NUMPAD_9:
+				if (calcLayout)
+					return '3';
+				return '9';
+				
+			case NonStandardKey.NUMPAD_ENTER:
+				return '\n';
+				
+			case NonStandardKey.NUMPAD_DECIMAL:
+				return '.';
+		}
+		
+		// Untouched
+		return __code;
 	}
 }

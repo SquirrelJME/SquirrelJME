@@ -140,17 +140,6 @@ typedef enum sjme_scritchui_uiType
 typedef sjme_pointer sjme_scritchui_handle;
 
 /**
- * API Flags for ScritchUI.
- * 
- * @since 2024/03/29
- */
-typedef enum sjme_scritchui_apiFlag
-{
-	/** Only panels are supported for this interface. */
-	SJME_SCRITCHUI_API_FLAG_PANEL_ONLY = 1,
-} sjme_scritchui_apiFlag;
-
-/**
  * Which type of screen update has occurred?
  * 
  * @since 2024/04/09
@@ -235,6 +224,26 @@ typedef enum sjme_scritchui_choiceType
 	/** The number of choice types. */
 	SJME_SCRITCHUI_NUM_CHOICE_TYPES = 3,
 } sjme_scritchui_choiceType;
+
+/**
+ * Indicates a flag that specifies how a look and feel operates.
+ *
+ * @since 2025/05/15
+ */
+typedef enum sjme_scritchui_lafPlatformFlag
+{
+	/** Dark mode is enabled. */
+	SJME_SCRITCHUI_LAF_PLATFORM_DARK_MODE = 1,
+
+	/** The number pad follows the calculator layout. */
+	SJME_SCRITCHUI_LAF_PLATFORM_NUMPAD_CALC_LAYOUT = 2,
+
+	/** Panel only interface. */
+	SJME_SCRITCHUI_LAF_PLATFORM_PANEL_ONLY = 4,
+
+	/** Are native alerts available? */
+	SJME_SCRITCHUI_LAF_PLATFORM_HAS_ALERTS = 8,
+} sjme_scritchui_lafPlatformFlag;
 
 /**
  * The element color type for look and feel.
@@ -826,18 +835,6 @@ typedef sjme_errorCode (*sjme_scritchui_visibleListenerFunc)(
 
 /** Void listener function. */
 typedef sjme_errorCode (*sjme_scritchui_voidListenerFunc)(void);
-
-/**
- * Obtains the flags which describe the interface.
- * 
- * @param inState The input ScritchUI state.
- * @param outFlags The output flags for this interface.
- * @return Any error code if applicable.
- * @since 2024/03/29
- */
-typedef sjme_errorCode (*sjme_scritchui_apiFlagsFunc)(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrOutNotNull sjme_jint outFlags);
 
 /**
  * Initializes the native UI interface needed by ScritchUI.
@@ -1805,9 +1802,6 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetVisibleFunc)(
 
 struct sjme_scritchui_apiFunctions
 {
-	/** API flags. */
-	SJME_SCRITCHUI_QUICK_API(apiFlags);
-	
 	/** Get the first selected index of a choice. */
 	SJME_SCRITCHUI_QUICK_API(choiceGetSelectedIndex);
 	
@@ -2229,12 +2223,9 @@ struct sjme_scritchui_stateBase
 
 	/** The loop queue for manual event loops. */
 	sjme_alignPointer sjme_scritchui_loopQueue loopQueue;
-	
-	/** Is this a panel only interface? */
-	sjme_jboolean isPanelOnly;
 
-	/** Does this have alert support? */
-	sjme_jboolean hasAlerts;
+	/** Platform flags (@c sjme_scritchui_lafPlatformFlag ). */
+	sjme_jint platformFlags;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */
