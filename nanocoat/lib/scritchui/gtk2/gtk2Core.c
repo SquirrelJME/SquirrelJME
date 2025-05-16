@@ -164,6 +164,9 @@ sjme_errorCode sjme_scritchui_gtk2_apiInit(
 	
 	/* This is a standard desktop. */
 	inState->wmType = SJME_SCRITCHUI_WM_TYPE_STANDARD_DESKTOP;
+
+	/* The number pad uses the calculator layout. */
+	inState->platformFlags |= SJME_SCRITCHUI_LAF_PLATFORM_NUMPAD_CALC_LAYOUT;
 		
 	/* Debug. */
 	sjme_message("GTK thread setup...");

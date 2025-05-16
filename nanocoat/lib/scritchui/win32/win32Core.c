@@ -213,6 +213,9 @@ sjme_errorCode sjme_scritchui_win32_apiInit(
 	
 	/* This is a standard desktop. */
 	inState->wmType = SJME_SCRITCHUI_WM_TYPE_STANDARD_DESKTOP;
+
+	/* The number pad uses the calculator layout. */
+	inState->platformFlags |= SJME_SCRITCHUI_LAF_PLATFORM_NUMPAD_CALC_LAYOUT;
 	
 	/* Are we on Windows 9x? */
 	memset(&winVer, 0, sizeof(winVer));

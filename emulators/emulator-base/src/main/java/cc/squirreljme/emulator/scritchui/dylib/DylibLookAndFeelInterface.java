@@ -63,6 +63,10 @@ public class DylibLookAndFeelInterface
 				((DylibComponentObject)__context).objectPointer()), __element);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/05/15
+	 */
 	@Override
 	public int lafFocusBorderStyle(boolean __focused)
 	{
@@ -71,14 +75,8 @@ public class DylibLookAndFeelInterface
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/02/09
+	 * @since 2025/05/15
 	 */
-	@Override
-	public boolean lafHasAlerts()
-	{
-		return NativeScritchDylib.__lafHasAlerts(this.dyLib._stateP);
-	}
-	
 	@Override
 	public int lafImageSize(int __elem, boolean __height)
 		throws MLECallError
@@ -86,9 +84,13 @@ public class DylibLookAndFeelInterface
 		return 16;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/05/15
+	 */
 	@Override
-	public boolean lafIsDarkMode()
+	public int lafPlatformFlags()
 	{
-		return false;
+		return NativeScritchDylib.__lafPlatformFlags(this.dyLib._stateP);
 	}
 }

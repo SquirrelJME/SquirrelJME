@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFPlatformFlag;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
@@ -94,6 +95,21 @@ public final class DisplayState
 	public final Display display()
 	{
 		return this.lcduiDisplay;
+	}
+	
+	/**
+	 * Does this use the calculator layout?
+	 *
+	 * @return If this uses the calculator layout.
+	 * @since 2025/05/15
+	 */
+	@SquirrelJMEVendorApi
+	public boolean isCalcLayout()
+	{
+		DisplayableState current = this.current();
+		if (current != null)
+			return current.isCalcLayout();
+		return false;
 	}
 	
 	/**

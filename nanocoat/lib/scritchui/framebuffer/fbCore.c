@@ -89,6 +89,9 @@ sjme_errorCode sjme_scritchui_fb_apiInit(
 	memmove(&inState->bugs, &inState->wrappedState->bugs,
 		sizeof(inState->bugs));
 	inState->bugs.windowVisibilityUnknown = SJME_JNI_FALSE;
+
+	/* Copy all LAF platform flags. */
+	inState->platformFlags = inState->wrappedState->platformFlags;
 	
 	/* Set internal implementation functions. */
 	inState->implIntern = &sjme_scritchui_fbInter;
