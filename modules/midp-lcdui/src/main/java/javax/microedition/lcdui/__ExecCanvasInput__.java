@@ -143,10 +143,12 @@ class __ExecCanvasInput__
 		{
 			case NonStandardKey.F7:
 			case NonStandardKey.NUMPAD_MULTIPLY:
+			case NonStandardKey.NUMPAD_PLUS:
 				return '*';
 				
 			case NonStandardKey.F8:
 			case NonStandardKey.NUMPAD_DIVIDE:
+			case NonStandardKey.NUMPAD_MINUS:
 				return '#';
 				
 			case NonStandardKey.NUMPAD_0:
@@ -196,12 +198,6 @@ class __ExecCanvasInput__
 				
 			case NonStandardKey.NUMPAD_DECIMAL:
 				return '.';
-				
-			case NonStandardKey.NUMPAD_MINUS:
-				return '-';
-				
-			case NonStandardKey.NUMPAD_PLUS:
-				return '+';
 		}
 		
 		// Untouched
