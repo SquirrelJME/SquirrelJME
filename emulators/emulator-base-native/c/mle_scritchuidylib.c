@@ -1914,7 +1914,7 @@ fail_dyLibOpen:
 fail_poolInit:
 	/* Delete pool. */
 	if (pool != NULL)
-		free(pool);
+		free((void*)pool);
 
 	/* Fail. */
 	sjme_jni_throwMLECallError(env, sjme_error_default(error));

@@ -55,16 +55,19 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	result->impl = inImplFunc;
 
 	/* Use a "sleeping" rate so if manually polling the CPU does not burn. */
+	sjme_message("State %p", result);
 	sjme_atomic_sjme_jint_set(&result->pollDelayMillis,
 		SJME_SCRITCHAUDIO_SLEEP_RATE_MS);
 	sjme_atomic_sjme_jint_set(&result->pollDelayNanos,
 		SJME_SCRITCHAUDIO_SLEEP_RATE_NS);
 
 	/* Copy front end data. */
+	sjme_message("State %p", result);
 	if (initFrontEnd != NULL)
 		memmove(&result->frontEnd, initFrontEnd, sizeof(result->frontEnd));
 
 	/* Bind wrapped states together? */
+	sjme_message("State %p", result);
 	if (wrappedStated != NULL)
 	{
 		/* Bind each other. */
@@ -77,8 +80,13 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	}
 
 	/* Call inner initialization. */
+	sjme_message("State %p", result);
+	sjme_message("State API %p->%p", result, result->api);
 	if (sjme_error_is(error = result->impl->apiInit(result)))
 		goto fail_apiInit;
+
+	/* Mark loop thread as ready. */
+	sjme_atomic_sjme_jint_set(&result->loopThreadReady, 1);
 
 	/* Success! */
 	*outState = result;
@@ -122,12 +130,14 @@ sjme_errorCode sjme_scritchaudio_core_init(
 
 	/* Initialize the lower level state. */
 	lower = NULL;
+	sjme_message("State Lower %p", lower);
 	if (sjme_error_is(error = sjme_scritchaudio_core_initActual(inPool,
 		&lower, NULL, inImplFunc, NULL)) || lower == NULL)
 		goto fail_initLower;
 
 	/* Initialize upper wrapper. */
 	higher = NULL;
+	sjme_message("State Higher %p", higher);
 	if (sjme_error_is(error = sjme_scritchaudio_core_initActual(inPool,
 		&higher, initFrontEnd, &sjme_scritchaudio_softmixFunctions, lower)) ||
 		higher == NULL)

@@ -348,6 +348,9 @@ struct sjme_scritchaudioBase
 	
 	/** The current audio thread ID, if applicable. */
 	sjme_thread_id loopThreadId;
+
+	/** The loop thread is ready. */
+	sjme_atomic_sjme_jint loopThreadReady;
 	
 	/** Wrapped ScritchAudio state, if this is a wrapper. */
 	sjme_scritchaudio wrappedState;

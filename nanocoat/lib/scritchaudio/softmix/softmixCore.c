@@ -34,9 +34,14 @@ static sjme_attrThreadCall sjme_thread_result sjme_scritchaudio_softmix_poll(
 	if (inState == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
 
-	sjme_message("Loopy State %p", inState);
-	sjme_message("Loopy API %p", inState->api);
-	sjme_message("Loopy Iterate %p", inState->api->loopIterate);
+	/* Await loop ready. */
+	sjme_atomic_barrier();
+	while (sjme_atomic_sjme_jint_get(&inState->loopThreadReady) == 0)
+	{
+		sjme_atomic_barrier();
+		sjme_thread_yield();
+		sjme_atomic_barrier();
+	}
 	
 	/* Enter threading loop. */
 	for (;;)
@@ -73,6 +78,7 @@ sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 	/* If the wrapped state must be manually polled, we like having threaded */
 	/* audio. Note that even if there is no thread defined the operating */
 	/* system could call back into the audio subroutine. */
+	sjme_message("State %p", inState);
 	if (wrappedStated->bugs.manualPoll)
 	{
 		/* There needs to be a loop iterator here. */
@@ -83,7 +89,7 @@ sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 		}
 			
 		/* Create thread that loops infinitely. */
-		sjme_message("Loopy Pre-State %p", inState);
+		sjme_message("State %p->%p", inState, inState->api);
 		if (sjme_error_is(error = sjme_thread_new(&inState->loopThread,
 			&inState->loopThreadId,
 			sjme_scritchaudio_softmix_poll, inState)))

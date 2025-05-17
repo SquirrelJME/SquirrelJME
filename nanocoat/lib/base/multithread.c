@@ -97,6 +97,8 @@ sjme_errorCode sjme_thread_new(
 
 	/* Emit barrier. */
 	sjme_atomic_barrier();
+	sjme_thread_yield();
+	sjme_atomic_barrier();
 
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	/* Setup new thread. */
