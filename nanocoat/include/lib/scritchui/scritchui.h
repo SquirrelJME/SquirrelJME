@@ -2186,7 +2186,7 @@ struct sjme_scritchui_stateBase
 	sjme_thread loopThread;
 	
 	/** The current loop thread ID, if applicable. */
-	sjme_intPointer loopThreadId;
+	sjme_thread_id loopThreadId;
 	
 	/** Loop thread initializer if one was passed. */
 	sjme_thread_mainFunc loopThreadInit;

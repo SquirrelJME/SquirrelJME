@@ -63,6 +63,9 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 /* clang-format off */ /* @formatter:off */
 
+/** The thread identifier. */
+typedef sjme_intPointer sjme_thread_id;
+	
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	/** A single thread. */
 	typedef pthread_t sjme_alignPointer sjme_thread;
@@ -252,7 +255,7 @@ sjme_jboolean sjme_thread_equal(
  */
 sjme_errorCode sjme_thread_new(
 	sjme_attrInOutNotNull sjme_thread* outThread,
-	sjme_attrInNullable sjme_intPointer* outThreadId,
+	sjme_attrInNullable sjme_thread_id* outThreadId,
 	sjme_attrInNotNull sjme_thread_mainFunc inMain,
 	sjme_attrInNullable sjme_thread_parameter anything);
 
@@ -321,6 +324,16 @@ sjme_errorCode sjme_thread_spinLockRelease(
 	sjme_attrInNotNull sjme_thread_spinLock* inLock,
 	sjme_attrOutNullable sjme_jint* outCount);
 
+/**
+ * Sleeps for the given time duration.
+ * 
+ * @param millis The number of milliseconds to sleep for.
+ * @param nanos The number of nanoseconds to sleep for.
+ * @since 2025/05/16
+ */
+void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
+	sjme_attrInPositive sjme_jint nanos);
+	
 /**
  * Yields execution.
  * 

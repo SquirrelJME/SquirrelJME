@@ -190,6 +190,14 @@ extern "C" {
 	#define SJME_CONFIG_HAS_BEOS
 #endif
 
+#if defined(SJME_CONFIG_HAS_LINUX) || \
+	defined(SJME_CONFIG_HAS_BSD) || \
+	defined(SJME_CONFIG_HAS_MACOS) || \
+	defined(SJME_CONFIG_HAS_CYGWIN)
+	/** POSIX is available. */
+	#define SJME_CONFIG_HAS_POSIX
+#endif
+	
 /** Possibly detect endianess. */
 #if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
 	!defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)

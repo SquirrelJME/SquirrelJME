@@ -54,6 +54,16 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	result->api = &sjme_scritchaudio_coreFunctions;
 	result->impl = inImplFunc;
 
+	/* Use a "sleeping" rate so if manually polling the CPU does not burn. */
+	sjme_atomic_sjme_jint_set(&result->pollDelayMillis,
+		SJME_SCRITCHAUDIO_SLEEP_RATE_MS);
+	sjme_atomic_sjme_jint_set(&result->pollDelayNanos,
+		SJME_SCRITCHAUDIO_SLEEP_RATE_NS);
+
+	/* Copy front end data. */
+	if (initFrontEnd != NULL)
+		memmove(&result->frontEnd, initFrontEnd, sizeof(result->frontEnd));
+
 	/* Bind wrapped states together? */
 	if (wrappedStated != NULL)
 	{
@@ -67,7 +77,7 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	}
 
 	/* Call inner initialization. */
-	if (sjme_error_is(error = inImplFunc->apiInit(result)))
+	if (sjme_error_is(error = result->impl->apiInit(result)))
 		goto fail_apiInit;
 
 	/* Success! */

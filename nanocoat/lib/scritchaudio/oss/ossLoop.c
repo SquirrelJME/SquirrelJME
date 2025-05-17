@@ -15,7 +15,8 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 {
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Nothing. */
+	sjme_message("OSS Tick.");
+	return SJME_ERROR_NONE;
 }

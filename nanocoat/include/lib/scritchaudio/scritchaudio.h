@@ -306,8 +306,28 @@ typedef struct sjme_scritchaudio_implFunctions
 typedef struct sjme_scritchaudio_bugs
 {
 	/** Audio is manually polled, there is no system managed loop. */
-	sjme_jboolean manualPoll; 
+	sjme_jboolean manualPoll;
 } sjme_scritchaudio_bugs;
+
+/**
+ * ScritchAudio time.
+ *
+ * @since 2025/05/16
+ */
+typedef struct sjme_scritchaudio_time
+{
+	/** Milliseconds. */
+	sjme_jint millis;
+
+	/** Nanoseconds. */
+	sjme_jint nanos;
+} sjme_scritchaudio_time;
+
+/** The sleeping rate when no audio is playing (millis). */
+#define SJME_SCRITCHAUDIO_SLEEP_RATE_MS 1000
+
+/** The sleeping rate when no audio is playing (nanos). */
+#define SJME_SCRITCHAUDIO_SLEEP_RATE_NS 0
 
 struct sjme_scritchaudioBase
 {
@@ -327,7 +347,7 @@ struct sjme_scritchaudioBase
 	sjme_thread loopThread;
 	
 	/** The current audio thread ID, if applicable. */
-	sjme_intPointer loopThreadId;
+	sjme_thread_id loopThreadId;
 	
 	/** Wrapped ScritchAudio state, if this is a wrapper. */
 	sjme_scritchaudio wrappedState;
@@ -337,6 +357,12 @@ struct sjme_scritchaudioBase
 
 	/** Bugs. */
 	sjme_scritchaudio_bugs bugs;
+
+	/** The delay between manual polls (Millis). */
+	sjme_atomic_sjme_jint pollDelayMillis;
+
+	/** The delay between manual polls (Nanos). */
+	sjme_atomic_sjme_jint pollDelayNanos;
 };
 	
 /**

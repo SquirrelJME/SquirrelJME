@@ -15,7 +15,9 @@ sjme_errorCode sjme_scritchaudio_core_loopIterate(
 {
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Only forward if the handler supports this. */
+	if (inState->impl->loopIterate != NULL)
+		return inState->impl->loopIterate(inState);
+	return SJME_ERROR_NONE;
 }
