@@ -78,7 +78,6 @@ sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 	/* If the wrapped state must be manually polled, we like having threaded */
 	/* audio. Note that even if there is no thread defined the operating */
 	/* system could call back into the audio subroutine. */
-	sjme_message("State %p", inState);
 	if (wrappedStated->bugs.manualPoll)
 	{
 		/* There needs to be a loop iterator here. */

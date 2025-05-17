@@ -46,7 +46,7 @@ sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(oss)(
 	
 	/* Success! */
 	*outState = result;
-	return SJME_ERROR_NULL_ARGUMENTS;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchaudio_oss_apiInit(
