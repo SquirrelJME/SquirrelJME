@@ -88,6 +88,9 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __dylibLoad)(
 		return 0;
 	}
 
+	/* Globally reference self so this remains always loaded. */
+	(*env)->NewGlobalRef(env, classy);
+
 	/* Get the path characters. */
 	pathCopy = SJME_JNI_FALSE;
 	pathChars = (*env)->GetStringUTFChars(env, path, &pathCopy);
