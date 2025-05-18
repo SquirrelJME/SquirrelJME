@@ -33,6 +33,8 @@
 #define FORWARD_DESC_unregister \
 	DESC_METHOD(DESC_VOID, DESC_AUDIOSTREAM DESC_AUDIORENDERER)
 
+#define FORWARD_DESC___create \
+	DESC_METHOD(DESC_LONG, DESC_LONG DESC_STRING DESC_INT DESC_INT DESC_INT)
 #define FORWARD_DESC___dylibLoad \
 	DESC_METHOD(DESC_LONG, DESC_STRING DESC_STRING)
 
@@ -66,6 +68,46 @@ FORWARD_IMPL_VOID(AudioStream, register,
 FORWARD_IMPL_VOID(AudioStream, unregister,
 	FORWARD_IMPL_args(jobject stream, jobject renderer),
 	FORWARD_IMPL_pass(stream, renderer))
+
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __create)(
+	JNIEnv* env, jclass classy, jlong statePtr, jstring name, jint format,
+	jint rate, jint channels)
+{
+	sjme_errorCode error;
+	sjme_scritchaudio inState;
+	sjme_scritchaudio_stream result;
+	const char* nameChars;
+	jboolean nameCopy;
+
+	/* Recover state. */
+	inState = (sjme_scritchaudio)statePtr;
+	if (inState == NULL || name == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Extract characters. */
+	nameChars = (*env)->GetStringUTFChars(env, name, &nameCopy);
+
+	/* Create native stream. */
+	result = NULL;
+	if (sjme_error_is(error = inState->api->streamCreate(inState, &result,
+		nameChars, format, rate, channels)) || result == NULL)
+	{
+		/* Free characters. */
+		(*env)->ReleaseStringUTFChars(env, name, nameChars);
+
+		sjme_jni_throwMLECallError(env, error);
+		return 0;
+	}
+
+	/* Free characters. */
+	(*env)->ReleaseStringUTFChars(env, name, nameChars);
+
+	/* Success! */
+	return (sjme_intPointer)result;
+}
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __dylibLoad)(
 	JNIEnv* env, jclass classy, jstring path, jstring name)
@@ -178,6 +220,7 @@ static const JNINativeMethod mleAudioStreamMethods[] =
 
 static const JNINativeMethod mleEmulAudioStreamMethods[] =
 {
+	FORWARD_list(Emulated, __create),
 	FORWARD_list(Emulated, __dylibLoad),
 };
 

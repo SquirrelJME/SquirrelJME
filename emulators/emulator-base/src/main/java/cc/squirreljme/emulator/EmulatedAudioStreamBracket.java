@@ -10,9 +10,6 @@
 package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.SourceDataLine;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Not Described.
@@ -22,33 +19,48 @@ import org.jetbrains.annotations.NotNull;
 public class EmulatedAudioStreamBracket
 	implements AudioStreamBracket
 {
-	/** The format used. */
-	final AudioFormat format;
+	/** The state pointer. */
+	protected final long statePtr;
 	
-	/** The audio line. */
-	final SourceDataLine line;
+	/** The stream pointer. */
+	protected final long streamPtr;
 	
-	/** The channel mapping. */
-	final int[] channels;
+	/** The name of the stream. */
+	protected final String name;
+	
+	/** The format. */
+	protected final int format;
+	
+	/** The rate. */
+	protected final int rate;
+	
+	/** The number of channels. */
+	protected final int channels;
 	
 	/**
-	 * Initializes the native audio.
+	 * Initializes the emulated audio stream.
 	 *
-	 * @param __format The format used.
-	 * @param __line The line used.
-	 * @param __channels The channels used.
+	 * @param __statePtr The state pointer.
+	 * @param __streamPtr The stream pointer.
+	 * @param __name The stream name.
+	 * @param __format The stream format.
+	 * @param __rate The stream rate.
+	 * @param __channels The stream channels.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2025/05/07
+	 * @since 2025/05/18
 	 */
-	public EmulatedAudioStreamBracket(AudioFormat __format,
-		SourceDataLine __line, int[] __channels)
+	public EmulatedAudioStreamBracket(long __statePtr, long __streamPtr,
+		String __name, int __format, int __rate, int __channels)
 		throws NullPointerException
 	{
-		if (__format == null || __line == null || __channels == null)
+		if (__statePtr == 0 || __streamPtr == 0 || __name == null)
 			throw new NullPointerException("NARG");
 		
+		this.statePtr = __statePtr;
+		this.streamPtr = __streamPtr;
+		this.name = __name;
 		this.format = __format;
-		this.line = __line;
+		this.rate = __rate;
 		this.channels = __channels;
 	}
 }

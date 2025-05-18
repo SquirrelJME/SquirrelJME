@@ -21,7 +21,7 @@ public interface AudioStreamRate
 {
 	/** Automatic. */
 	@SquirrelJMEVendorApi
-	byte AUTOMATIC =
+	int AUTOMATIC =
 		-1;
 	
 	/** 8000 Hz. */

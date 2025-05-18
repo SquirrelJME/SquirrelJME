@@ -75,17 +75,14 @@ public class EmulatedAudioStreamShelf
 			int __channels)
 		throws MLECallError
 	{
-		if (__name == null)
-			throw new MLECallError("NARG");
-		
-		if (__format < -1 || __format >= AudioStreamFormat.NUM_FORMATS ||
-			__rate < -1 || __channels <= 0)
-			throw new MLECallError("Invalid rate/format/channels");
-		
 		// Make sure the dynamic library is initialized
 		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
 		
-		throw Debugging.todo();
+		// Create new stream and wrap it
+		return new EmulatedAudioStreamBracket(statePtr,
+			EmulatedAudioStreamShelf.__create(statePtr, __name,
+				__format, __rate, __channels),
+			__name, __format, __rate, __channels);
 	}
 	
 	/**
@@ -293,6 +290,22 @@ public class EmulatedAudioStreamShelf
 		
 		throw Debugging.todo();
 	}
+	
+	/**
+	 * Creates a new audio stream.
+	 *
+	 * @param __statePtr The state pointer.
+	 * @param __name The audio stream name.
+	 * @param __format The stream format.
+	 * @param __rate The stream rate.
+	 * @param __channels The stream channels.
+	 * @return The audio stream pointer.
+	 * @throws MLECallError If it could not be created.
+	 * @since 2025/05/18
+	 */
+	native static long __create(long __statePtr, String __name, int __format,
+		int __rate, int __channels)
+		throws MLECallError;
 	
 	/**
 	 * Initializes the dynamic library interface.

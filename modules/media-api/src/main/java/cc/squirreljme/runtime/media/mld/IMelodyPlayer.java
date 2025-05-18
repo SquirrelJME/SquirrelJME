@@ -12,6 +12,9 @@ package cc.squirreljme.runtime.media.mld;
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
+import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
+import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
@@ -125,17 +128,36 @@ public class IMelodyPlayer
 		synchronized (this)
 		{
 			// Create native audio stream for playback
-			AudioStreamBracket stream = AudioStreamShelf.create(
-				"SquirrelJME-MLD-Player", -1,
-				-1,
-				AudioStreamChannels.STEREO);
+			AudioStreamBracket stream;
+			try
+			{
+				stream = AudioStreamShelf.create(
+					"SquirrelJME-MLD-Player",
+					AudioStreamFormat.AUTOMATIC, AudioStreamRate.AUTOMATIC,
+					AudioStreamChannels.STEREO);
+			}
+			catch (MLECallError __e)
+			{
+				MediaException toss = new MediaException(__e.getMessage());
+				toss.initCause(__e);
+				throw toss;
+			}
 			
 			// Set the stream
 			this._stream = stream;
 			
 			// Start rendering the stream, which will cause the audio to be
 			// played
-			AudioStreamShelf.register(stream, this._mldPlayer.sampler);
+			try
+			{
+				AudioStreamShelf.register(stream, this._mldPlayer.sampler);
+			}
+			catch (MLECallError __e)
+			{
+				MediaException toss = new MediaException(__e.getMessage());
+				toss.initCause(__e);
+				throw toss;
+			}
 		}
 	}
 	
@@ -153,11 +175,20 @@ public class IMelodyPlayer
 			AudioStreamBracket stream = this._stream;
 			this._stream = null;
 			
-			// Stop rendering the stream
-			AudioStreamShelf.unregister(stream, this._mldPlayer.sampler);
-			
-			// Destroy the stream
-			AudioStreamShelf.destroy(stream);
+			try
+			{
+				// Stop rendering the stream
+				AudioStreamShelf.unregister(stream, this._mldPlayer.sampler);
+				
+				// Destroy the stream
+				AudioStreamShelf.destroy(stream);
+			}
+			catch (MLECallError __e)
+			{
+				MediaException toss = new MediaException(__e.getMessage());
+				toss.initCause(__e);
+				throw toss;
+			}
 		}
 	}
 	

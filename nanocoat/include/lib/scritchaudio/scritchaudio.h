@@ -169,6 +169,9 @@ typedef enum sjme_scritchaudio_rate
  */
 typedef enum sjme_scritchaudio_channels
 {
+	/** Automatic. */
+	SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC = -1,
+	
 	/** Mono audio. */
 	SJME_SCRITCHAUDIO_CHANNELS_MONO = 1,
 	
@@ -239,6 +242,7 @@ typedef sjme_errorCode (*sjme_scritchaudio_sourceAttachFunc)(
  *
  * @param inState The input state.
  * @param outStream The resultant audio stream.
+ * @param inName The name of the stream.
  * @param inFormat The audio format to use, @c -1 means to use the system
  * preferred format.
  * @param inRate The rate to use, @c -1 means to use the system preferred
@@ -251,6 +255,7 @@ typedef sjme_errorCode (*sjme_scritchaudio_sourceAttachFunc)(
 typedef sjme_errorCode (*sjme_scritchaudio_streamCreateFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrOutNotNull sjme_scritchaudio_stream* outStream,
+	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels);
@@ -331,6 +336,9 @@ typedef struct sjme_scritchaudio_time
 
 struct sjme_scritchaudioBase
 {
+	/** The lock for audio streams and otherwise. */
+	sjme_thread_spinLock lock;
+	
 	/** The allocation pool to use. */
 	sjme_alloc_pool pool;
 
