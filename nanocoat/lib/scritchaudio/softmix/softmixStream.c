@@ -50,18 +50,6 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	if (inState == NULL || outStream == NULL || inName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inFormat != SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC &&
-		(inFormat < 0 || inFormat >= SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS))
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	if (inRate != SJME_SCRITCHAUDIO_RATE_AUTOMATIC &&
-		(inRate <= 0))
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	if (inChannels != SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC &&
-		(inChannels <= 0))
-		return SJME_ERROR_INVALID_ARGUMENT;
-
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
 	if (wrappedState == NULL)

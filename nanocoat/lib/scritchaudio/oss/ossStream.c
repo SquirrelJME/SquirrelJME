@@ -85,20 +85,28 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 		return SJME_ERROR_HEADLESS_AUDIO;
 
 	/* Set new OSS format. */
-	error = SJME_ERROR_UNKNOWN;
 	ossFormat = sjme_scritchaudio_oss_format[inFormat];
 	if (ioctl(fd, SNDCTL_DSP_SETFMT, &ossFormat) == -1)
+	{
+		error = SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
 		goto fail_format;
+	}
 
 	/* Set number of channels. */
 	ossChannels = inChannels;
 	if (ioctl(fd, SNDCTL_DSP_CHANNELS, &ossChannels) == -1)
+	{
+		error = SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
 		goto fail_format;
+	}
 
 	/* Set sample rate. */
 	ossRate = inRate;
 	if (ioctl(fd, SNDCTL_DSP_SPEED, &ossRate) == -1)
+	{
+		error = SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
 		goto fail_format;
+	}
 
 	/* Allocate result. */
 	result = NULL;
@@ -120,10 +128,7 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 fail_allocResult:
 	if (result != NULL)
 		sjme_alloc_free(result);
-	close(fd);
-	return sjme_error_default(error);
-	
 fail_format:
 	close(fd);
-	return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
+	return sjme_error_default(error);
 }
