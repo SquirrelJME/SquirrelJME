@@ -7,7 +7,40 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/config.h"
+
+#if defined(SJME_CONFIG_HAS_LINUX)
+	#include <sys/ioctl.h>
+#else
+	#include <stropts.h>
+#endif
+
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 #include "lib/scritchaudio/oss/ossIntern.h"
+
+/** OSS Audio formats. */
+static const int
+	sjme_scritchaudio_oss_format[SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS] =
+{
+	AFMT_U8,
+	AFMT_A_LAW,
+	AFMT_MU_LAW,
+	AFMT_S16_NE,
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN) && \
+	defined(AFMT_S32_LE)
+	AFMT_S32_LE,
+#elif defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
+	defined(AFMT_S32_BE)
+	AFMT_S32_BE,
+#else
+	-1,
+#endif
+	-1,
+	-1,
+};
 
 sjme_errorCode sjme_scritchaudio_oss_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
@@ -27,8 +60,14 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels)
 {
+	int fd, ossFormat, ossChannels, ossRate;
+	
 	if (inState == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Unsupported format? */
+	if (sjme_scritchaudio_oss_format[inFormat] == -1)
+		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
 
 	/* If automatic, choose a format to use. */
 	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
@@ -37,6 +76,35 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 		inRate = SJME_SCRITCHAUDIO_RATE_HZ_44100;
 	if (inChannels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
 		inChannels = SJME_SCRITCHAUDIO_CHANNELS_STEREO;
+
+	/* Try to open the DSP device. */
+	fd = open(SJME_SCRITCHAUDIO_OSS_DSP, O_RDONLY, 0);
+	if (fd == -1)
+		return SJME_ERROR_HEADLESS_AUDIO;
+
+	/* Set new OSS format. */
+	ossFormat = sjme_scritchaudio_oss_format[inFormat];
+	if (ioctl(fd, SNDCTL_DSP_SETFMT, &ossFormat) == -1)
+	{
+		close(fd);
+		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
+	}
+
+	/* Set number of channels. */
+	ossChannels = inChannels;
+	if (ioctl(fd, SNDCTL_DSP_CHANNELS, &ossChannels) == -1)
+	{
+		close(fd);
+		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
+	}
+
+	/* Set sample rate. */
+	ossRate = inRate;
+	if (ioctl(fd, SNDCTL_DSP_SPEED, &ossRate) == -1)
+	{
+		close(fd);
+		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
+	}
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

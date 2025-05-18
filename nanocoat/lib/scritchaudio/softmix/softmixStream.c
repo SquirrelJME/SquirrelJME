@@ -77,13 +77,6 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 		if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
 			return sjme_error_default(error);
 	}
-
-	/* We do not need to convert the stream ourselves. */
-	if (result != NULL)
-	{
-		*outStream = result;
-		return SJME_ERROR_NONE;
-	}
 	
 	/* If automatic, choose a format to use. */
 	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
@@ -99,8 +92,12 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	origChannels = inChannels;
 
 	/* Fallback to less precise formats. */
-	while (result != NULL)
+	while (result == NULL)
 	{
+		/* Debug. */
+		sjme_message("streamCreate(%d, %d, %d)",
+			inFormat, inRate, inChannels);
+		
 		/* Try to use the requested format. */
 		if (sjme_error_is(error = wrappedState->impl->streamCreate(
 			wrappedState, &result, inName, inFormat, inRate, inChannels)) ||
@@ -133,7 +130,15 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 		}
 	}
 
-	/* Setup conversion for the stream. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Do we need to convert the stream? */
+	if (origFormat != inFormat || origRate != inRate ||
+		origChannels != inChannels)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Success! */
+	*outStream = result;
+	return SJME_ERROR_NONE;
 }
