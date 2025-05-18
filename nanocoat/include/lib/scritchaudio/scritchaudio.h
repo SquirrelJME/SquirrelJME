@@ -375,6 +375,36 @@ struct sjme_scritchaudioBase
 	/** The delay between manual polls (Nanos). */
 	sjme_atomic_sjme_jint pollDelayNanos;
 };
+
+/**
+ * Audio stream information.
+ *
+ * @since 2025/05/18
+ */
+struct sjme_scritchaudio_streamBase
+{
+	/** The state this is in. */
+	sjme_scritchaudio inState;
+
+	/** The stream format. */
+	sjme_scritchaudio_format format;
+
+	/** The stream rate. */
+	sjme_scritchaudio_rate rate;
+
+	/** The stream channels. */
+	sjme_scritchaudio_channels channels;
+
+	/** Stream data. */
+	struct
+	{
+		/** The file descriptor, if applicable. */
+		int fd;
+		
+		/** The stream this wrapped. */
+		sjme_scritchaudio_stream wrapped;
+	} data;
+};
 	
 /**
  * Dynamic library entry point for ScritchAudio.

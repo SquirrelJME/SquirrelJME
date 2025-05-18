@@ -61,6 +61,8 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels)
 {
 	int fd, ossFormat, ossChannels, ossRate;
+	sjme_scritchaudio_stream result;
+	sjme_errorCode error;
 	
 	if (inState == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -83,29 +85,45 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 		return SJME_ERROR_HEADLESS_AUDIO;
 
 	/* Set new OSS format. */
+	error = SJME_ERROR_UNKNOWN;
 	ossFormat = sjme_scritchaudio_oss_format[inFormat];
 	if (ioctl(fd, SNDCTL_DSP_SETFMT, &ossFormat) == -1)
-	{
-		close(fd);
-		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
-	}
+		goto fail_format;
 
 	/* Set number of channels. */
 	ossChannels = inChannels;
 	if (ioctl(fd, SNDCTL_DSP_CHANNELS, &ossChannels) == -1)
-	{
-		close(fd);
-		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
-	}
+		goto fail_format;
 
 	/* Set sample rate. */
 	ossRate = inRate;
 	if (ioctl(fd, SNDCTL_DSP_SPEED, &ossRate) == -1)
-	{
-		close(fd);
-		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
-	}
+		goto fail_format;
+
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc(inState->pool,
+		sizeof(*result), (sjme_pointer*)&result)) || result == NULL)
+		goto fail_allocResult;
+
+	/* Set stream details. */
+	result->inState = inState;
+	result->format = inFormat;
+	result->rate = inRate;
+	result->channels = inChannels;
+	result->data.fd = fd;
+
+	/* Return the resultant stream. */
+	*outStream = result;
+	return SJME_ERROR_NONE;
+
+fail_allocResult:
+	if (result != NULL)
+		sjme_alloc_free(result);
+	close(fd);
+	return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+fail_format:
+	close(fd);
+	return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
 }
