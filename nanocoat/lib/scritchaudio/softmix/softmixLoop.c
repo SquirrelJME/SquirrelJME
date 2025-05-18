@@ -23,7 +23,7 @@ sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Finish off with the native iterator. */
-	if (wrappedState->impl->loopIterate != NULL)
-		return wrappedState->impl->loopIterate(wrappedState);
+	if (wrappedState->api->loopIterate != NULL)
+		return wrappedState->api->loopIterate(wrappedState);
 	return SJME_ERROR_NONE;
 }

@@ -42,7 +42,7 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 {
 	sjme_scritchaudio wrappedState;
 	sjme_errorCode error;
-	sjme_scritchaudio_stream result;
+	sjme_scritchaudio_stream wrapped, result;
 	sjme_scritchaudio_format origFormat;
 	sjme_scritchaudio_rate origRate;
 	sjme_scritchaudio_channels origChannels;
@@ -68,10 +68,10 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Try to use the requested format. */
-	result = NULL;
-	if (sjme_error_is(error = wrappedState->impl->streamCreate(
-		wrappedState, &result, inName, inFormat, inRate, inChannels)) ||
-		result == NULL)
+	wrapped = NULL;
+	if (sjme_error_is(error = wrappedState->api->streamCreate(
+		wrappedState, &wrapped, inName, inFormat, inRate, inChannels)) ||
+		wrapped == NULL)
 	{
 		/* Only check against unsupported format. */
 		if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
@@ -92,16 +92,16 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	origChannels = inChannels;
 
 	/* Fallback to less precise formats. */
-	while (result == NULL)
+	while (wrapped == NULL)
 	{
 		/* Debug. */
 		sjme_message("streamCreate(%d, %d, %d)",
 			inFormat, inRate, inChannels);
 		
 		/* Try to use the requested format. */
-		if (sjme_error_is(error = wrappedState->impl->streamCreate(
-			wrappedState, &result, inName, inFormat, inRate, inChannels)) ||
-			result == NULL)
+		if (sjme_error_is(error = wrappedState->api->streamCreate(
+			wrappedState, &wrapped, inName, inFormat, inRate, inChannels)) ||
+			wrapped == NULL)
 		{
 			/* Only check against unsupported format. */
 			if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
@@ -129,6 +129,19 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 			}
 		}
 	}
+	
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc(inState->pool,
+		sizeof(*result), (sjme_pointer*)&result)) || wrapped == NULL)
+		goto fail_allocResult;
+
+	/* Set stream details. */
+	result->inState = inState;
+	result->format = origFormat;
+	result->rate = origRate;
+	result->channels = origChannels;
+	result->data.wrapped = wrapped;
 
 	/* Do we need to convert the stream? */
 	if (origFormat != inFormat || origRate != inRate ||
@@ -141,4 +154,11 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	/* Success! */
 	*outStream = result;
 	return SJME_ERROR_NONE;
+fail_allocResult:
+	if (wrapped != NULL)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+	return sjme_error_default(error);
 }
