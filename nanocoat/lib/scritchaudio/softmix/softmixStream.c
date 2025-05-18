@@ -125,19 +125,15 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 		goto fail_allocResult;
 
 	/* Set stream details. */
+	/* Note that if the stream needs to be wrapped with a format conversion */
+	/* that is handled in the renderer by comparing the wrapped format */
+	/* with the renderer format. If a renderer happens to have the same */
+	/* format, then we do no conversion. */
 	result->inState = inState;
 	result->format = origFormat;
 	result->rate = origRate;
 	result->channels = origChannels;
 	result->data.wrapped = wrapped;
-
-	/* Do we need to convert the stream? */
-	if (origFormat != inFormat || origRate != inRate ||
-		origChannels != inChannels)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
 
 	/* Success! */
 	*outStream = result;
