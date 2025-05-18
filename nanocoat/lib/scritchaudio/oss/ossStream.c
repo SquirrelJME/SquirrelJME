@@ -45,8 +45,8 @@ static const int
 sjme_errorCode sjme_scritchaudio_oss_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInValue sjme_jboolean attach,
-	sjme_attrInNotNull sjme_scritchaudio_source source)
+	sjme_attrOutNullable sjme_scritchaudio_source* outSource,
+	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc* renderFunc)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

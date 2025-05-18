@@ -225,21 +225,34 @@ typedef sjme_errorCode (*sjme_scritchaudio_queryMidiPortsFunc)(
 	sjme_attrOutNotNull sjme_jint* outNumPorts);
 
 /**
- * Attaches or detaches a source renderer to or from a stream.
+ * Callback function for when a render is occurring.
+ *
+ * @param inState The ScritchAudio state.
+ * @param inSource The source being rendered.
+ * @return Any resultant error, if any.
+ * @since 2025/05/18
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_sourceRenderFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_source inSource);
+	
+/**
+ * Attaches a source renderer to the given stream, the renderer will use the
+ * same format that the stream uses.
  *
  * @param inState The ScritchAudio state.
  * @param inStream The stream to attach to or detach from.
- * @param attach Is the source being attached to the stream?
- * @param source The source being attached or detached.
+ * @param outSource The resultant source.
+ * @param renderFunc The render function to use.
  * @return Any resultant error, if any.
- * @since 2025/05/08
+ * @since 2025/05/18
  */
 typedef sjme_errorCode (*sjme_scritchaudio_sourceAttachFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInValue sjme_jboolean attach,
-	sjme_attrInNotNull sjme_scritchaudio_source source);
-
+	sjme_attrOutNullable sjme_scritchaudio_source* outSource,
+	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc* renderFunc);
+	
 /**
  * Creates a new audio stream.
  *

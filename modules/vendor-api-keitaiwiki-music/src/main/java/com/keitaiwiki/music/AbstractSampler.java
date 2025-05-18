@@ -32,39 +32,6 @@ public abstract class AbstractSampler
 	 * @since 2025/05/07
 	 */
 	@Override
-	public int preferChannels(int __channels)
-	{
-		return 2;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/05/07
-	 */
-	@Override
-	public int preferFormat(int __format)
-	{
-		// This is always 32-bit floats
-		return AudioStreamFormat.FLOAT_F32;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/05/07
-	 */
-	@Override
-	public @Range(from = 0, to = Integer.MAX_VALUE) int preferRate(
-		@Range(from = 0, to = Integer.MAX_VALUE) int __rate)
-	{
-		// Always give the renderer's rate
-		return (int)this.sampleRate();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/05/07
-	 */
-	@Override
 	public int render(@NotNull AudioStreamBracket __stream, int __format,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __rate,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __channels,

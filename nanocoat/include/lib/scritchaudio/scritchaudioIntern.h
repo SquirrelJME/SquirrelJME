@@ -50,8 +50,8 @@ sjme_errorCode sjme_scritchaudio_core_queryMidiPorts(
 sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInValue sjme_jboolean attach,
-	sjme_attrInNotNull sjme_scritchaudio_source source);
+	sjme_attrOutNullable sjme_scritchaudio_source* outSource,
+	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc* renderFunc);
 	
 sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	sjme_attrInNotNull sjme_scritchaudio inState,

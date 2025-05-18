@@ -151,7 +151,7 @@ public class IMelodyPlayer
 			// played
 			try
 			{
-				AudioStreamShelf.register(stream, this._mldPlayer.sampler);
+				AudioStreamShelf.attach(stream, this._mldPlayer.sampler);
 			}
 			catch (MLECallError __e)
 			{

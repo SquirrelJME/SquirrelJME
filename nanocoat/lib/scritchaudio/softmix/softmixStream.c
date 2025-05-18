@@ -25,8 +25,8 @@ static const sjme_scritchaudio_format
 sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInValue sjme_jboolean attach,
-	sjme_attrInNotNull sjme_scritchaudio_source source)
+	sjme_attrOutNullable sjme_scritchaudio_source* outSource,
+	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc* renderFunc)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -138,6 +138,7 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	/* Success! */
 	*outStream = result;
 	return SJME_ERROR_NONE;
+	
 fail_allocResult:
 	if (wrapped != NULL)
 	{

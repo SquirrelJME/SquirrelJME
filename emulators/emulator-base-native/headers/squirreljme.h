@@ -158,6 +158,8 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 
 #define DESC_AUDIOSTREAM \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/AudioStreamBracket")
+#define DESC_AUDIOCONN DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/brackets/AudioStreamConnectionBracket")
 #define DESC_BUCKET \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/BucketBracket")
 #define DESC_JARPACKAGE \

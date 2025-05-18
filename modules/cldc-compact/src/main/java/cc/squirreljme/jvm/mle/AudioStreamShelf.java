@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
+import cc.squirreljme.jvm.mle.brackets.AudioStreamConnectionBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamPlayer;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
@@ -40,6 +41,22 @@ public final class AudioStreamShelf
 	private AudioStreamShelf()
 	{
 	}
+	
+	/**
+	 * Attach the given renderer to the stream.
+	 *
+	 * @param __stream The stream to render to.
+	 * @param __renderer The renderer to attach.
+	 * @return The connection state.
+	 * @throws MLECallError On null arguments or if the renderer could not
+	 * be attached.
+	 * @since 2025/05/04
+	 */
+	@SquirrelJMEVendorApi
+	public static native AudioStreamConnectionBracket attach(
+		@NotNull AudioStreamBracket __stream,
+		@NotNull AudioStreamRenderer __renderer)
+		throws MLECallError;
 	
 	/**
 	 * Creates a native audio stream.
@@ -173,21 +190,6 @@ public final class AudioStreamShelf
 	@NotNull
 	public static native AudioStreamRenderer midiRenderer(
 		@NotNull MidiPortBracket __midiPort)
-		throws MLECallError;
-	
-	/**
-	 * Registers the given renderer to the stream.
-	 *
-	 * @param __stream The stream to render to.
-	 * @param __renderer The renderer to register.
-	 * @throws MLECallError On null arguments or if the renderer could not
-	 * be registered.
-	 * @since 2025/05/04
-	 */
-	@SquirrelJMEVendorApi
-	public static native void register(
-		@NotNull AudioStreamBracket __stream,
-		@NotNull AudioStreamRenderer __renderer)
 		throws MLECallError;
 	
 	/**

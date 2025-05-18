@@ -11,6 +11,7 @@ package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
+import cc.squirreljme.jvm.mle.brackets.AudioStreamConnectionBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamPlayer;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
@@ -46,6 +47,35 @@ public class EmulatedAudioStreamShelf
 	 */
 	private EmulatedAudioStreamShelf()
 	{
+	}
+	
+	/**
+	 * Attaches the given renderer to the stream.
+	 *
+	 * @param __stream The stream to render to.
+	 * @param __renderer The renderer to register.
+	 * @throws MLECallError On null arguments or if the renderer could not
+	 * be registered.
+	 * @since 2025/05/04
+	 */
+	@SquirrelJMEVendorApi
+	public static AudioStreamConnectionBracket attach(
+		@NotNull AudioStreamBracket __stream,
+		@NotNull AudioStreamRenderer __renderer)
+		throws MLECallError
+	{
+		if (__stream == null || __renderer == null)
+			throw new MLECallError("NARG");
+		
+		// Make sure the dynamic library is initialized
+		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
+		
+		// Wrap renderer
+		return new EmulatedAudioConnectionBracket(statePtr, 
+			EmulatedAudioStreamShelf.__attach(statePtr,
+				((EmulatedAudioStreamBracket)__stream).streamPtr,
+				__renderer), (EmulatedAudioStreamBracket)__stream,
+			__renderer);
 	}
 	
 	/**
@@ -243,30 +273,6 @@ public class EmulatedAudioStreamShelf
 	}
 	
 	/**
-	 * Registers the given renderer to the stream.
-	 *
-	 * @param __stream The stream to render to.
-	 * @param __renderer The renderer to register.
-	 * @throws MLECallError On null arguments or if the renderer could not
-	 * be registered.
-	 * @since 2025/05/04
-	 */
-	@SquirrelJMEVendorApi
-	public static void register(
-		@NotNull AudioStreamBracket __stream,
-		@NotNull AudioStreamRenderer __renderer)
-		throws MLECallError
-	{
-		if (__stream == null || __renderer == null)
-			throw new MLECallError("NARG");
-		
-		// Make sure the dynamic library is initialized
-		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
-		
-		throw Debugging.todo();
-	}
-	
-	/**
 	 * Removes the renderer from the given stream, causing it to no longer
 	 * be used as a source of audio.
 	 *
@@ -290,6 +296,20 @@ public class EmulatedAudioStreamShelf
 		
 		throw Debugging.todo();
 	}
+	
+	/**
+	 * Attaches the given renderer to the stream.
+	 *
+	 * @param __statePtr The state pointer.
+	 * @param __streamPtr The stream pointer.
+	 * @param __renderer The renderer to attach.
+	 * @return The pointer to the renderer.
+	 * @throws MLECallError If the renderer could not be attached.
+	 * @since 2025/05/18
+	 */
+	native static long __attach(long __statePtr, long __streamPtr,
+		AudioStreamRenderer __renderer)
+		throws MLECallError;
 	
 	/**
 	 * Creates a new audio stream.

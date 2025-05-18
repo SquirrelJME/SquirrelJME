@@ -28,42 +28,6 @@ public interface AudioStreamRenderer
 	extends ShelfCallback
 {
 	/**
-	 * Asks the renderer for the preferred channel count.
-	 *
-	 * @param __channels The channel count that the stream will be using.
-	 * @return The channel count the renderer will be using.
-	 * @since 2025/05/07
-	 */
-	@SquirrelJMEVendorApi
-	@MagicConstant(valuesFromClass = AudioStreamChannels.class)
-	int preferChannels(
-		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
-		int __channels);
-	
-	/**
-	 * Asks the renderer for the preferred format.
-	 *
-	 * @param __format The format that the stream will be using.
-	 * @return The format the renderer will be using.
-	 * @since 2025/05/07
-	 */
-	@SquirrelJMEVendorApi
-	@MagicConstant(valuesFromClass = AudioStreamFormat.class)
-	int preferFormat(@MagicConstant(valuesFromClass = AudioStreamFormat.class)
-		int __format);
-	
-	/**
-	 * Asks the renderer for the preferred rate.
-	 *
-	 * @param __rate The rate that the stream will be using.
-	 * @return The rate the renderer will be using.
-	 * @since 2025/05/07
-	 */
-	@SquirrelJMEVendorApi
-	@Range(from = 0, to = Integer.MAX_VALUE)
-	int preferRate(@Range(from = 0, to = Integer.MAX_VALUE) int __rate);
-	
-	/**
 	 * Renders to the given audio stream.
 	 *
 	 * @param __stream The stream being rendered to.
