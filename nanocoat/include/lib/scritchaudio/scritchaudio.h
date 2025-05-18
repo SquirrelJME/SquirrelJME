@@ -61,6 +61,9 @@ typedef struct sjme_scritchaudio_streamBase sjme_scritchaudio_streamBase;
  */
 typedef sjme_scritchaudio_streamBase* sjme_scritchaudio_stream;
 
+/** A list of audio streams. */
+SJME_LIST_DECLARE(sjme_scritchaudio_stream, 0);
+
 /**
  * A ScritchAudio render source.
  *
@@ -374,6 +377,9 @@ struct sjme_scritchaudioBase
 
 	/** The delay between manual polls (Nanos). */
 	sjme_atomic_sjme_jint pollDelayNanos;
+
+	/** The currently active audio streams. */
+	sjme_list_sjme_scritchaudio_stream* streams;
 };
 
 /**
