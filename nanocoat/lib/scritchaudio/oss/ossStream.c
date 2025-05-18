@@ -29,6 +29,14 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 {
 	if (inState == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* If automatic, choose a format to use. */
+	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
+		inFormat = SJME_SCRITCHAUDIO_FORMAT_BYTE_U8;
+	if (inRate == SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
+		inRate = SJME_SCRITCHAUDIO_RATE_HZ_44100;
+	if (inChannels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
+		inChannels = SJME_SCRITCHAUDIO_CHANNELS_STEREO;
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

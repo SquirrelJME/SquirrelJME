@@ -28,10 +28,12 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels)
 {
+	sjme_errorCode error;
+	sjme_scritchaudio_stream result;
+	
 	if (inState == NULL || outStream == NULL || inName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	sjme_message("create(%d %d %d)", inFormat, inRate, inChannels);
+	
 	if (inFormat != SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC &&
 		(inFormat < 0 || inFormat >= SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS))
 		return SJME_ERROR_INVALID_ARGUMENT;
@@ -43,6 +45,16 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	if (inChannels != SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC &&
 		(inChannels <= 0))
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Missing? */
+	if (inState->impl->streamCreate == NULL)
+		return sjme_error_notImplemented(0);
+
+	/* Forward to implementation. */
+	result = NULL;
+	if (sjme_error_is(error = inState->impl->streamCreate(inState,
+		&result, inName, inFormat, inRate, inChannels)) || result == NULL)
+		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

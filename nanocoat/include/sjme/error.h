@@ -426,9 +426,12 @@ typedef enum sjme_errorCode
 
 	/** No audio system is available. */
 	SJME_ERROR_HEADLESS_AUDIO = -128,
+
+	/** Unsupported audio format. */
+	SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT = 129,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -129,
+	SJME_NUM_ERROR_CODES = -130,
 } sjme_errorCode;
 
 /**

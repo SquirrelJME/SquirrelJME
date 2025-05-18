@@ -133,7 +133,8 @@ public class IMelodyPlayer
 			{
 				stream = AudioStreamShelf.create(
 					"SquirrelJME-MLD-Player",
-					AudioStreamFormat.AUTOMATIC, AudioStreamRate.AUTOMATIC,
+					AudioStreamFormat.FLOAT_F32,
+					AudioStreamRate.HZ_44100,
 					AudioStreamChannels.STEREO);
 			}
 			catch (MLECallError __e)
