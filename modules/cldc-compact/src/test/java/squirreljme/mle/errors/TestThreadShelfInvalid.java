@@ -35,12 +35,26 @@ public class TestThreadShelfInvalid
 				ThreadShelf.vmThreadIsMain(null);
 				break;
 			
+			case 1:
+				ThreadShelf.setTrace(null,
+					new TracePointBracket[0]);
+				break;
+			
+			case 2:
+				ThreadShelf.setTrace("message",
+					new TracePointBracket[]{null});
+				break;
+			
 			case 3:
 				ThreadShelf.createVMThread(null, null);
 				break;
 			
 			case 4:
 				ThreadShelf.javaThreadClearInterrupt(null);
+				break;
+				
+			case 5:
+				ThreadShelf.setTrace("message", null);
 				break;
 			
 			case 6:
@@ -97,19 +111,8 @@ public class TestThreadShelfInvalid
 				ThreadShelf.setTrace(null, null);
 				break;
 			
-			case 19:
-				ThreadShelf.setTrace("message", null);
-				break;
-			
-			case 20:
-				ThreadShelf.setTrace(null,
-					new TracePointBracket[0]);
-				break;
-			
-			case 21:
-				ThreadShelf.setTrace("message",
-					new TracePointBracket[]{null});
-				break;
+			default:
+				return true;
 		}
 		
 		return false;

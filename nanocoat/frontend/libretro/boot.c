@@ -22,9 +22,24 @@
 #include "sjme/debug.h"
 #include "frontend/libretro/shared.h"
 #include "sjme/dylib.h"
+#include "sjme/native.h"
 
 /** The default pool size for ScritchUI on RetroArch. */
 #define SJME_LIBRETRO_SCRITCHUI_POOL_SIZE INT32_C(25165824)
+
+/** The various names that the runtime Jar can be. */
+static sjme_lpcstr sjme_libretro_romNames[] =
+{
+	"squirreljme-"SQUIRRELJME_VERSION"-fast.jar",
+	"squirreljme-"SQUIRRELJME_VERSION".jar",
+	"squirreljme-"SQUIRRELJME_VERSION"-slow.jar",
+	"squirreljme-"SQUIRRELJME_VERSION"-slow-test.jar",
+	"squirreljme-fast.jar",
+	"squirreljme.jar",
+	"squirreljme-slow.jar",
+	"squirreljme-slow-test.jar",
+	NULL,
+};
 
 static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 	sjme_lpcstr partMessage)
@@ -70,13 +85,6 @@ static sjme_jboolean sjme_libretro_exitHandler(int exitCode)
 	return SJME_JNI_TRUE;
 }
 
-#if defined(SJME_CONFIG_DEBUG)
-static void sjme_libretro_signalHandler(int)
-{
-	/* Does nothing... */
-}
-#endif
-
 static sjme_jboolean sjme_libretro_abortHandler(void)
 {
 	/* Forward to the exit handler. */
@@ -88,6 +96,20 @@ static sjme_debug_handlerFunctions sjme_libretro_debugHandlers =
 	.abort = sjme_libretro_abortHandler,
 	.exit = sjme_libretro_exitHandler,
 	.message = sjme_libretro_debugMessageHandler,
+};
+
+static const sjme_nal sjme_libretro_nal =
+{
+	.currentTimeMillis = NULL,
+	.fileOpen = NULL,
+	.getEnv = NULL,
+	.nanoTime = NULL,
+	.stdIo =
+	{
+		NULL,
+		NULL,
+		NULL,
+	},
 };
 
 sjme_attrUnused RETRO_API unsigned retro_api_version(void)
@@ -104,9 +126,14 @@ sjme_attrUnused RETRO_API void retro_init(void)
 	sjme_errorCode error;
 	sjme_scritchui scritchUi;
 	sjme_alloc_pool scritchPool;
+	const sjme_nal* nal;
+	sjme_seekable bootSeek;
 	
 	/* Setup handlers for debug calls. */
 	sjme_debug_handlers = &sjme_libretro_debugHandlers;
+
+	/* Use the RetroArch NAL. */
+	nal = &sjme_libretro_nal;
 
 	/* Allocate ScritchUI memory. */
 	scritchPool = NULL;
@@ -116,6 +143,12 @@ sjme_attrUnused RETRO_API void retro_init(void)
 		goto fail_initMem;
 
 #if 0
+	/* Open seekable to the boot Jar. */
+	bootSeek = NULL;
+	if (sjme_error_is(error = nal->fileOpen(pool, argv[1],
+		&bootSeek)) || bootSeek == NULL)
+		goto fail_openBootJar;
+
 	/* Initialize ScritchUI. */
 	scritchUi = NULL;
 	sjme_message("Initializing ScritchUI...");
@@ -125,7 +158,8 @@ sjme_attrUnused RETRO_API void retro_init(void)
 #endif
 
 	return;
-	
+
+fail_openBootJar:
 fail_initUi:
 fail_initMem:
 	if (scritchPool != NULL)

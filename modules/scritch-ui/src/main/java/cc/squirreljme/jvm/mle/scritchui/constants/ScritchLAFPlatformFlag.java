@@ -7,30 +7,36 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.constants;
+package cc.squirreljme.jvm.mle.scritchui.constants;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Represents a bucket which is of a standard domain.
+ * Platform flags which define how a ScritchUI interface operates on a
+ * given platform.
  *
- * @since 2025/04/14
+ * @since 2025/05/15
  */
 @SquirrelJMEVendorApi
-public interface StandardBucketType
+public interface ScritchLAFPlatformFlag
 {
-	/** The data bucket. */
+	/** Dark mode is enabled. */
 	@SquirrelJMEVendorApi
-	byte DATA_BUCKET =
-		0;
-	
-	/** The library bucket. */
-	@SquirrelJMEVendorApi
-	byte LIBRARIES_BUCKET =
+	byte DARK_MODE =
 		1;
-	
-	/** The number of standard buckets. */
+
+	/** The number pad follows the calculator layout. */
 	@SquirrelJMEVendorApi
-	byte NUM_BUCKETS =
+	byte NUMPAD_CALC_LAYOUT =
 		2;
+
+	/** Panel only interface. */
+	@SquirrelJMEVendorApi
+	byte PANEL_ONLY =
+		4;
+
+	/** Are native alerts available? */
+	@SquirrelJMEVendorApi
+	byte HAS_ALERTS =
+		8;
 }

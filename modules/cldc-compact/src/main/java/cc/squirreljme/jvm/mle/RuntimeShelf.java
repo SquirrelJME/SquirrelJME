@@ -44,6 +44,19 @@ public final class RuntimeShelf
 	}
 	
 	/**
+	 * Browses a local filesystem path in the system file browser.
+	 *
+	 * @param __create Create the directory if possible.
+	 * @param __path The path to browse.
+	 * @throws MLECallError On null arguments or if the path is invalid.
+	 * @since 2025/04/29
+	 */
+	@SquirrelJMEVendorApi
+	public static native void browseLocal(boolean __create,
+		@NotNull String __path)
+		throws MLECallError;
+	
+	/**
 	 * Returns the byte order of the system.
 	 * 
 	 * @return The {@link ByteOrderType} of the system.

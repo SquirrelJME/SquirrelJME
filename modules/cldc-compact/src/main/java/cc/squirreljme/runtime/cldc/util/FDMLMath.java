@@ -150,7 +150,8 @@ public final strictfp class FDMLMath
 		
 		// normalize x or x/2
 		// __HI(__v) = hx | (i^0x3FF00000);
-		__v = FDMLMath.__compose(hx | (i ^ 0x3FF00000), FDMLMath.__lo(__v));
+		__v = FDMLMath.__compose(hx | (i ^ 0x3FF00000),
+			FDMLMath.__lo(__v));
 		k += (i >> 20);
 		f = __v - 1.0;
 		
@@ -172,7 +173,8 @@ public final strictfp class FDMLMath
 			else
 			{
 				dk = (double)k;
-				return dk * FDMLMath._LN2_HI - ((r - dk * FDMLMath._LN2_LO) - f);
+				return dk * FDMLMath._LN2_HI -
+					((r - dk * FDMLMath._LN2_LO) - f);
 			}
 		}
 		
@@ -183,7 +185,8 @@ public final strictfp class FDMLMath
 		w = z * z;
 		j = 0x6B851 - hx;
 		t1 = w * (FDMLMath._LG2 + w * (FDMLMath._LG4 + w * FDMLMath._LG6));
-		t2 = z * (FDMLMath._LG1 + w * (FDMLMath._LG3 + w * (FDMLMath._LG5 + w * FDMLMath._LG7)));
+		t2 = z * (FDMLMath._LG1 + w * (FDMLMath._LG3 + w * (FDMLMath._LG5 + w
+			* FDMLMath._LG7)));
 		i |= j;
 		r = t2 + t1;
 		
@@ -201,7 +204,8 @@ public final strictfp class FDMLMath
 			if (k == 0)
 				return f - s * (f - r);
 			else
-				return dk * FDMLMath._LN2_HI - (( s * (f - r) - dk * FDMLMath._LN2_LO) - f);
+				return dk * FDMLMath._LN2_HI - (( s * (f - r) - dk *
+					FDMLMath._LN2_LO) - f);
 		}
 	}
 
@@ -313,7 +317,8 @@ public final strictfp class FDMLMath
 			{
 				uus1 = uut1 + uur;
 				
-				if (((uut1 & FDMLMath._SIGN) == FDMLMath._SIGN) && (uus1 & FDMLMath._SIGN) == 0)
+				if (((uut1 & FDMLMath._SIGN) == FDMLMath._SIGN) &&
+					(uus1 & FDMLMath._SIGN) == 0)
 					s0 += 1;
 				
 				ix0 -= t;

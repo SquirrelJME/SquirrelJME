@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
@@ -30,6 +31,30 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 public enum MLERuntime
 	implements MLEFunction
 {
+	/** {@link RuntimeShelf#browseLocal(boolean, String)}. */
+	BROWSE_LOCAL("browseLocal:(ZLjava/lang/String;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/04/29
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				RuntimeShelf.browseLocal(
+					(int)__args[0] != 0,
+					MLEObjects.string(__args[1]));
+			}
+			catch (MLECallError __e)
+			{
+				throw new SpringMLECallError(__e.getMessage(), __e);
+			}
+			return null;
+		}
+	},
+	
 	/** {@link RuntimeShelf#byteOrder()}. */
 	BYTE_ORDER("byteOrder:()I")
 	{

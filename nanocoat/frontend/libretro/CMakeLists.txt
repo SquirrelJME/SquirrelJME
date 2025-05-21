@@ -109,9 +109,14 @@ if(EMSCRIPTEN)
 		"${SQUIRRELJME_DYLIB_OUTPUT_DIR}/squirreljme_libretro_emscripten.bc")
 endif()
 
+# Locate the RetroArch binary
+find_program(retroArchExe "retroarch" NO_CACHE
+	PATHS "C:/RetroArch-Win64"
+		"C:/RetroArch"
+		"$ENV{APPDATA}/RetroArch")
+
 # Allow running the binary, as long as it is not static and we are on the
 # same system...
-find_program(retroArchExe "retroarch")
 find_program(gdbExe "gdbserver")
 if(retroArchExe AND NOT libRetroIsStatic AND
 	NOT EMSCRIPTEN AND
@@ -119,6 +124,7 @@ if(retroArchExe AND NOT libRetroIsStatic AND
 	# Add target to run accordingly
 	add_custom_target(RunSquirreljme_libretro
 		COMMAND "${retroArchExe}"
+			"-v"
 			"-L" "$<TARGET_FILE:squirreljme_libretro>"
 			"--no-patch"
 			"--appendconfig=${CMAKE_CURRENT_SOURCE_DIR}/test.config"

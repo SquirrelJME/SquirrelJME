@@ -280,12 +280,13 @@ static sjme_errorCode sjme_nal_default_stdErr(
 	if (buf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (off < 0 || len < 0 || (buf + len) < 0)
+	if (off < 0 || len < 0 || (off + len) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 #if !defined(SJME_CONFIG_HAS_NO_STDIO)
 	error = SJME_ERROR_NONE;
-	if (fwrite(SJME_POINTER_OFFSET(buf, off), len, 1, stderr) <= 0)
+	if (fwrite(SJME_POINTER_OFFSET(buf, off), len, 1,
+		stderr) <= 0)
 		error = SJME_ERROR_IO_EXCEPTION;
 	if (EOF == fflush(stderr))
 		error = SJME_ERROR_IO_EXCEPTION;
@@ -308,12 +309,13 @@ static sjme_errorCode sjme_nal_default_stdOut(
 	if (buf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (off < 0 || len < 0 || (buf + len) < 0)
+	if (off < 0 || len < 0 || (off + len) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 #if !defined(SJME_CONFIG_HAS_NO_STDIO)
 	error = SJME_ERROR_NONE;
-	if (fwrite(SJME_POINTER_OFFSET(buf, off), len, 1, stdout) <= 0)
+	if (fwrite(SJME_POINTER_OFFSET(buf, off), len,
+		1, stdout) <= 0)
 		error = SJME_ERROR_IO_EXCEPTION;
 	
 #else

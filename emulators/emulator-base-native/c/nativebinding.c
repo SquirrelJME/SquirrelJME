@@ -97,6 +97,7 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 	rv |= mleDebugInit(env, classy);
 	rv |= mleJarInit(env, classy);
 	rv |= mleMathInit(env, classy);
+	rv |= mleMathAccelInit(env, classy);
 	rv |= mleMidiInit(env, classy);
 	rv |= mleNativeArchiveInit(env, classy);
 	rv |= mleObjectInit(env, classy);

@@ -916,13 +916,14 @@ extern "C" {
 #define sjme_booleanBit 2
 
 /* Clang is completely broken with FLT_ROUNDS. */ 
-#if defined(SJME_CONFIG_HAS_CLANG)
+#if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_MSVC)
 	/** Assuming floating point rounds to nearest. */
 	#define SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST
-#elif !defined(SJME_CONFIG_HAS_NO_FLOAT_H) && \
-	defined(FLT_ROUNDS) && FLT_ROUNDS == 1
-	/** Has floating point that rounds to nearest. */
-	#define SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST
+#elif !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+	#if defined(FLT_ROUNDS) && FLT_ROUNDS == 1
+		/** Has floating point that rounds to nearest. */
+		#define SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST
+	#endif
 #endif
 	
 /* 32-bit floating point matches Java? */

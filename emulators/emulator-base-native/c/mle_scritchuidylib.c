@@ -99,9 +99,6 @@
 	DESC_LONG DESC_LONG DESC_LONG \
 	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER ")" DESC_VOID
 
-#define FORWARD_DESC___envIsPanelOnly "(" \
-	DESC_LONG ")" DESC_BOOLEAN
-
 #define FORWARD_DESC___fontDerive "(" \
 	DESC_LONG DESC_LONG DESC_INT DESC_INT ")" DESC_LONG
 
@@ -114,8 +111,8 @@
 
 #define FORWARD_DESC___lafElementColor "(" \
 	DESC_LONG DESC_LONG DESC_INT ")" DESC_INT
-#define FORWARD_DESC___lafHasAlerts "(" \
-	DESC_LONG ")" DESC_BOOLEAN
+#define FORWARD_DESC___lafPlatformFlags "(" \
+	DESC_LONG ")" DESC_INT
 
 #define FORWARD_DESC___labelSetString "(" \
 	DESC_LONG DESC_LONG DESC_STRING ")" DESC_VOID
@@ -1604,24 +1601,6 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 }
 
-JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
-	__envIsPanelOnly)(JNIEnv* env, jclass classy, jlong stateP)
-{
-	sjme_scritchui state;
-
-	if (stateP == 0)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
-
-	/* Restore. */
-	state = (sjme_scritchui)stateP;
-
-	/* Depends on whatever is in the state. */
-	return state->isPanelOnly;
-}
-
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__fontDerive)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong fontP, jint style, jint pixelSize)
@@ -1758,8 +1737,8 @@ JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	return rgb;
 }
 
-JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
-	__lafHasAlerts)(JNIEnv* env, jclass classy, jlong stateP)
+JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__lafPlatformFlags)(JNIEnv* env, jclass classy, jlong stateP)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
@@ -1773,7 +1752,7 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	/* Ask the native API. */
-	return state->hasAlerts;
+	return state->platformFlags;
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -2864,12 +2843,11 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __containerAdd),
 	FORWARD_list(NativeScritchDylib, __containerRemoveAll),
 	FORWARD_list(NativeScritchDylib, __containerSetBounds),
-	FORWARD_list(NativeScritchDylib, __envIsPanelOnly),
 	FORWARD_list(NativeScritchDylib, __fontDerive),
 	FORWARD_list(NativeScritchDylib, __hardwareGraphics),
 	FORWARD_list(NativeScritchDylib, __labelSetString),
 	FORWARD_list(NativeScritchDylib, __lafElementColor),
-	FORWARD_list(NativeScritchDylib, __lafHasAlerts),
+	FORWARD_list(NativeScritchDylib, __lafPlatformFlags),
 	FORWARD_list(NativeScritchDylib, __linkInit),
 	FORWARD_list(NativeScritchDylib, __listNew),
 	FORWARD_list(NativeScritchDylib, __loopExecute),

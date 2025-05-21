@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Wrapper for {@link BucketShelf}.
@@ -139,6 +140,22 @@ public enum MLEBucket
 				MLEObjects.string(__args[2]),
 				MLEObjects.string(__args[3]),
 				MLEObjects.string(__args[4])));
+		}
+	},
+	
+	/** {@link BucketShelf#path(BucketBracket)}. */
+	PATH("path:(Lcc/squirreljme/jvm/mle/brackets/BucketBracket;)" +
+		"Ljava/lang/String;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/04/29
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return __thread.asVMObject(BucketShelf.path(
+				MLEObjects.bucket(__args[0])));
 		}
 	},
 	
