@@ -17,8 +17,49 @@
 		rel="self" />
 
 	<!-- Update these accordingly! -->
-	<pubDate>Sun, 30 Mar 2025 04:00 EDT</pubDate>
-	<lastBuildDate>Sun, 30 Mar 2025 04:00 EDT</lastBuildDate>
+	<pubDate>Thu, 22 May 2025 19:00 EDT</pubDate>
+	<lastBuildDate>Thu, 22 May 2025 19:00 EDT</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">818c13b6-b248-49a6-91dc-4c6d7c607765</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250522_1900.mkd</link>
+		<pubDate>Thu, 22 May 2025 19:00 EDT</pubDate>
+
+		<title>Belated April and May Update!</title>
+		<description>Okay, so I kind of forgot to post an update last month! Oops, I knew I
+was forgetting something!
+
+In May there was a kindly contributed MA-3 music emulator donated to
+SquirrelJME by the alias of _Guy Perfect_, which means that SquirrelJME will
+soon get sound support for both MIDP and DoJa! I am currently working on
+integrating this taking a break from NanoCoat's execution work to get this
+into the standalone! Will definitely have an update once that is in!
+
+There were some important compatibility improvements in April, which will
+definitely improve things! SquirrelJME now changes the functionality of
+certain API functions depending on the platform version requested by the
+software. There have been changes over the course of both Java ME and DoJa
+where the behavior of methods just changed! Now this is correctly handled
+and as such, graphically everything looks far better and less glitchy!
+
+The other major compatibility improvement is that the Record Management
+System, or RMS, now is implemented in a proper way and is stored to disk. So
+any data or progress that an application/game saves will be stored and
+resumes. This also applies to DoJa as well!
+
+There were additional minor compatibility fixes with DoJa due to some
+software requiring very lenient scratchpad behavior, as such this has been
+additionally applied to SquirrelJME. This mostly fixes the Legacy of Network
+and Phantom of Network games.
+
+The number pad now properly works and inverts accordingly so that it matches
+the layout of the dial-pad, since keyboard number pads have the calculator
+layout.
+
+Work on NanoCoat code execution continues, not much to say there!</description>
+	</item>
+
+	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">67fab4da-ae95-46e6-a328-a3c8f4af8c64</guid>
@@ -38,8 +79,6 @@ Other than that, there has been continued work on NanoCoat which is
 progressing well. Currently, I am working on the main startup sequence for
 applications.</description>
 	</item>
-
-	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">2eb7abe1-609d-42fc-a309-8f1540c3ee5d</guid>
