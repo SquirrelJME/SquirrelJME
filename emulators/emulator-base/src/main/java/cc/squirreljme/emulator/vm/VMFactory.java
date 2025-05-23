@@ -109,6 +109,8 @@ public abstract class VMFactory
 	
 	static
 	{
+		
+		
 		// Determine the path separator character
 		String sepString = System.getProperty("path.separator");
 		SEPARATOR_CHAR = (sepString == null || sepString.isEmpty() ? ':' :
