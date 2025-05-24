@@ -420,7 +420,12 @@ return console.askYesNo(message, true);
               </object>
             </add>
           </property>
-          <property name="executableName" type="string">squirreljme</property>
+          <property name="executableDirectory">
+            <object class="java.io.File">
+              <string>.</string>
+            </object>
+          </property>
+          <property name="executableName" type="string">squirreljme-updater</property>
           <property name="useCustomIcon" type="boolean" value="true" />
           <property name="windowTitle" type="string">${i18n:updater.WindowTitle("${compiler:sys.fullName}")}</property>
         </serializedBean>
