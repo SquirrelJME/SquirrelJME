@@ -130,7 +130,7 @@ return console.askOkCancel(message, true);
                       <entry>
                         <string>en</string>
                         <object class="com.install4j.api.beans.ExternalFile">
-                          <string>/home/stephanie/squirreljme/readme.mkd</string>
+                          <string>./readme.mkd</string>
                         </object>
                       </entry>
                     </property>
