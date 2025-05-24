@@ -36,6 +36,8 @@ CommandLineArgumentProvider argProvider = ({ ->
 	// Pass in SquirrelJME version
 	List<String> args = new ArrayList<>()
 	args.add(squirreljmeVersion)
+	args.add(rootProject.projectDir.toPath().toAbsolutePath()
+		.normalize().toString())
 	
 	// Pass all task dependencies
 	for (Object item : internals.get().dependsOn) {
@@ -74,3 +76,4 @@ run {
 	
 	getArgumentProviders().add(argProvider)
 }
+

@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -43,6 +44,10 @@ public class Main
 	/** The instance of Fossil. */
 	public static final FossilCommand FOSSIL =
 		FossilCommand.instance();
+	
+	/** The instance of Install4J. */
+	public static final Install4JCommand INSTALL4J =
+		Install4JCommand.instance();
 	
 	/**
 	 * Determines the base directory based on the version.
@@ -153,13 +158,14 @@ public class Main
 		throws IOException
 	{
 		// Needs to have something
-		if (__args == null || __args.length < 1)
+		if (__args == null || __args.length < 2)
 			throw new IllegalArgumentException(
-				"Usage: [version] [task=output...]");
+				"Usage: [version] [projectRoot] [task=output...]");
 		
 		// Get the SquirrelJME version
 		String version = __args[0];
 		String baseDir = Main.baseDir(version);
+		Path projectRoot = Paths.get(__args[1]).toAbsolutePath().normalize();
 		
 		// Load in Git/Fossil commit and the current date
 		String dateCommit = new Date().toString();
@@ -216,8 +222,10 @@ public class Main
 				}
 			
 			// Artifacts from the build
-			for (String arg : Arrays.asList(__args).subList(1, __args.length))
+			for (String arg : Arrays.asList(__args).subList(2,
+				__args.length))
 			{
+				// Not a key/value pair
 				int eq = arg.indexOf('=');
 				if (eq < 0)
 					continue;
@@ -285,7 +293,7 @@ public class Main
 		// Build universal Jar that contains every architecture
 		if (Main.FOSSIL != null && standaloneBase != null)
 			Main.taskUniversal(baseDir, version, mark,
-				standaloneBase, standaloneNative);
+				standaloneBase, standaloneNative, projectRoot);
 	}
 	
 	/**
@@ -337,24 +345,26 @@ public class Main
 	}
 	
 	/**
-	 * Combines a universal SquirrelJME standalone Jar. 
+	 * Combines a universal SquirrelJME standalone Jar.
 	 *
 	 * @param __baseDir The base directory.
 	 * @param __version The SquirrelJME version.
 	 * @param __mark The marking to use.
 	 * @param __standaloneBase The base standalone.
 	 * @param __standaloneNative The natives to merge.
+	 * @param __projectRoot The project root.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/03/29
 	 */
 	public static void taskUniversal(String __baseDir, String __version,
 		byte[] __mark, Artifact __standaloneBase,
-		List<Artifact> __standaloneNative)
+		List<Artifact> __standaloneNative, Path __projectRoot)
 		throws IOException, NullPointerException
 	{
 		if (__baseDir == null || __version == null || __mark == null ||
-			__standaloneBase == null || __standaloneNative == null)
+			__standaloneBase == null || __standaloneNative == null ||
+			__projectRoot == null)
 			throw new NullPointerException("NARG");
 		
 		// Debug
@@ -395,11 +405,66 @@ public class Main
 			result = baos.toByteArray();
 		}
 		
-		// Store Zip into the fossil repository
+		// Store final Zip into the fossil repository
 		String target = Main.uvTarget(__baseDir, __version,
 			"squirreljme-standalone-%s.jar");
 		Main.FOSSIL.add(result, target);
 		Main.FOSSIL.add(__mark, target + ".mkd");
+		
+		// Build install4j media?
+		if (Main.INSTALL4J != null)
+		{
+			// Determine directories used for inputs and outputs
+			Path buildBase = __projectRoot.resolve("build")
+				.resolve("install4j");
+			Path inDir = buildBase.resolve("in");
+			Path outDir = buildBase.resolve("out");
+			
+			// Make sure all directories exist
+			Files.createDirectories(inDir);
+			Files.createDirectories(outDir);
+			
+			// Place universal into the input directory
+			Files.write(outDir.resolve(Utils.baseName(target)), result,
+				StandardOpenOption.CREATE, StandardOpenOption.WRITE,
+				StandardOpenOption.TRUNCATE_EXISTING);
+			
+			// Build media
+			Main.INSTALL4J.media(__projectRoot.resolve(
+				"squirreljme.install4j"));
+			
+			// Upload all resultant files
+			for (String line : Files.readAllLines(outDir.resolve(
+				"output.txt")))
+			{
+				// Trim extra space
+				line = line.trim();
+				
+				// Strip comments
+				int fh = line.indexOf('#');
+				if (fh >= 0)
+					line = line.substring(0, fh);
+				
+				// Empty line?
+				if (line.isEmpty())
+					continue;
+				
+				// File is split by tabs
+				String[] cols = line.split(Pattern.quote("\t"));
+				if (cols.length >= 4)
+				{
+					// Where was the output file?
+					Path installed = Paths.get(cols[3]).toAbsolutePath()
+						.normalize();
+					
+					// Upload to the unversioned space
+					String sub = Main.uvTarget(__baseDir, __version,
+						Utils.baseName(cols[3]));
+					Main.FOSSIL.add(installed, sub);
+					Main.FOSSIL.add(__mark, sub + ".mkd");
+				}
+			}
+		}
 	}
 	
 	/**

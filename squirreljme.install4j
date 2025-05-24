@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="10.0.7" transformSequenceNumber="10">
   <directoryPresets config="./build" />
-  <application name="SquirrelJME" applicationId="5232-9992-4953-4137" mediaDir="./build" compression="9" lzmaCompression="true" pack200Compression="true" shortName="squirreljme" publisher="Stephanie Gawroriski" publisherWeb="https://squirreljme.cc/" version="0.3.0" allPathsRelative="true" backupOnSave="true" autoSave="true" macVolumeId="b44c0629f58949ee" javaMinVersion="1.8.0_452" javaMaxVersion="11">
+  <application name="SquirrelJME" applicationId="5232-9992-4953-4137" mediaDir="./build/install4j/out" compression="9" lzmaCompression="true" pack200Compression="true" shortName="squirreljme" publisher="Stephanie Gawroriski" publisherWeb="https://squirreljme.cc/" version="0.3.0" allPathsRelative="true" backupOnSave="true" autoSave="true" macVolumeId="b44c0629f58949ee" javaMinVersion="1.8.0_452" javaMaxVersion="11">
     <jreBundles jdkProviderId="Adoptium" release="8/latest" />
   </application>
   <files defaultFileMode="755">
@@ -9,7 +9,7 @@
       <mountPoint id="26" />
     </mountPoints>
     <entries>
-      <dirEntry mountPoint="26" file="./emulators/standalone/build/libs" fileMode="755" overrideFileMode="true" subDirectory="libs" overrideDirMode="true" />
+      <dirEntry mountPoint="26" file="./build/install4j/in" fileMode="755" overrideFileMode="true" subDirectory="libs" overrideDirMode="true" />
     </entries>
   </files>
   <launchers>
@@ -496,7 +496,9 @@ return console.askYesNo(message, true);
     </macosFolder>
   </mediaSets>
   <buildIds buildAll="false">
+    <mediaSet refId="28" />
     <mediaSet refId="31" />
+    <mediaSet refId="32" />
   </buildIds>
   <buildOptions verbose="true" />
 </install4j>
