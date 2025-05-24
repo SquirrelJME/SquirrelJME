@@ -70,7 +70,7 @@ public class Utils
 			{
 				Path maybe = Paths.get(path, exeName);
 				if (Files.exists(maybe) && Files.isExecutable(maybe))
-					return maybe.toAbsolutePath();
+					return maybe.toAbsolutePath().normalize();
 			}
 		
 		// Not found

@@ -53,6 +53,7 @@ public class Install4JCommand
 			throw new NullPointerException("NARG");
 		
 		ProcessBuilder builder = new ProcessBuilder(
+			this.exe.toString(),
 			__project.toAbsolutePath().normalize().toString());
 		builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 		builder.redirectError(ProcessBuilder.Redirect.INHERIT);
