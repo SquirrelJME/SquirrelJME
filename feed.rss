@@ -17,8 +17,22 @@
 		rel="self" />
 
 	<!-- Update these accordingly! -->
-	<pubDate>Thu, 22 May 2025 19:00 EDT</pubDate>
-	<lastBuildDate>Thu, 22 May 2025 19:00 EDT</lastBuildDate>
+	<pubDate>Sat, 24 May 2025 19:00 EDT</pubDate>
+	<lastBuildDate>Sat, 24 May 2025 19:00 EDT</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">ff39f3a8-5382-4fe6-8124-dd0fca7f1f1a</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250524_1900.mkd</link>
+		<pubDate>Sat, 24 May 2025 19:00 EDT</pubDate>
+
+		<title>There is now an installer!</title>
+		<description>An installer for Windows, Linux, and macOS is now available! There
+additionally is update functionality, which should work. It should now be
+easier to use the standalone version without having to install a Java SE
+virtual machine yourself and using the command line, unless you still wish to.</description>
+	</item>
+
+	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">818c13b6-b248-49a6-91dc-4c6d7c607765</guid>
@@ -58,8 +72,6 @@ layout.
 
 Work on NanoCoat code execution continues, not much to say there!</description>
 	</item>
-
-	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">67fab4da-ae95-46e6-a328-a3c8f4af8c64</guid>
