@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="10.0.7" transformSequenceNumber="10">
-  <directoryPresets config="./build/install4j/in" />
+  <directoryPresets config="." />
   <application name="SquirrelJME" applicationId="5232-9992-4953-4137" mediaDir="./build/install4j/out" compression="9" lzmaCompression="true" pack200Compression="true" shortName="squirreljme" publisher="Stephanie Gawroriski" publisherWeb="https://squirreljme.cc/" version="0.3.0" allPathsRelative="true" backupOnSave="true" autoSave="true" macVolumeId="b44c0629f58949ee" javaMinVersion="1.8.0_452" javaMaxVersion="11">
     <jreBundles jdkProviderId="Adoptium" release="8/latest" />
   </application>
@@ -9,7 +9,15 @@
       <mountPoint id="26" />
     </mountPoints>
     <entries>
-      <dirEntry mountPoint="26" file="./build/install4j/in" fileMode="755" overrideFileMode="true" subDirectory="libs" overrideDirMode="true" />
+      <fileEntry mountPoint="26" file="./readme.mkd" />
+      <fileEntry mountPoint="26" file="./license.mkd" />
+      <fileEntry mountPoint="26" file="./third-party.mkd" />
+      <fileEntry mountPoint="26" file="./assets/user-guide/faq.mkd" />
+      <fileEntry mountPoint="26" file="./compatibility.mkd" />
+      <fileEntry mountPoint="26" file="./credits.mkd" />
+      <fileEntry mountPoint="26" file="./assets/doc/supported-formats.mkd" />
+      <fileEntry mountPoint="26" file="./assets/doc/usage-standalone.mkd" />
+      <dirEntry mountPoint="26" file="./build/install4j/in" fileMode="755" overrideFileMode="true" subDirectory="libs" excludeSuffixes="*.png" overrideDirMode="true" />
     </entries>
   </files>
   <launchers>
@@ -96,6 +104,88 @@ return console.askOkCancel(message, true);
                 <serializedBean>
                   <property name="labelText" type="string">${i18n:ClickNext}</property>
                 </serializedBean>
+              </formComponent>
+            </formComponents>
+          </screen>
+          <screen name="Display text" id="56" beanClass="com.install4j.runtime.beans.screens.FormScreen" rollbackBarrierExitCode="0">
+            <serializedBean>
+              <property name="scrollable" type="boolean" value="false" />
+              <property name="subTitle" type="string">Readme</property>
+              <property name="title" type="string">Readme</property>
+            </serializedBean>
+            <formComponents>
+              <formComponent id="57" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent" useExternalParametrization="true" externalParametrizationName="Header" externalParametrizationMode="include">
+                <serializedBean>
+                  <property name="hideIfBlank" type="boolean" value="true" />
+                </serializedBean>
+                <visibilityScript>!context.isConsole()</visibilityScript>
+                <externalParametrizationPropertyNames>
+                  <propertyName>labelText</propertyName>
+                </externalParametrizationPropertyNames>
+              </formComponent>
+              <formComponent id="58" beanClass="com.install4j.runtime.beans.formcomponents.HtmlDisplayFormComponent" useExternalParametrization="true" externalParametrizationName="HTML or text display" externalParametrizationMode="include">
+                <serializedBean>
+                  <property name="displayedTextFile" id="LocalizedExternalFile0">
+                    <property name="languageIdToExternalFile">
+                      <entry>
+                        <string>en</string>
+                        <object class="com.install4j.api.beans.ExternalFile">
+                          <string>/home/stephanie/squirreljme/readme.mkd</string>
+                        </object>
+                      </entry>
+                    </property>
+                  </property>
+                  <property name="fillVertical" type="boolean" value="true" />
+                </serializedBean>
+                <externalParametrizationPropertyNames>
+                  <propertyName>textSource</propertyName>
+                  <propertyName>displayedText</propertyName>
+                  <propertyName>displayedTextFile</propertyName>
+                  <propertyName>variableName</propertyName>
+                </externalParametrizationPropertyNames>
+              </formComponent>
+              <formComponent id="59" beanClass="com.install4j.runtime.beans.formcomponents.ConsoleHandlerFormComponent">
+                <serializedBean>
+                  <property name="consoleScript">
+                    <object class="com.install4j.api.beans.ScriptProperty">
+                      <property name="value" type="string">console.waitForEnter();
+return true;
+</property>
+                    </object>
+                  </property>
+                </serializedBean>
+              </formComponent>
+            </formComponents>
+          </screen>
+          <screen id="49" beanClass="com.install4j.runtime.beans.screens.LicenseScreen" rollbackBarrierExitCode="0">
+            <formComponents>
+              <formComponent id="50" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent">
+                <serializedBean>
+                  <property name="labelText" type="string">${i18n:LicenseLabel3}</property>
+                </serializedBean>
+              </formComponent>
+              <formComponent id="51" beanClass="com.install4j.runtime.beans.formcomponents.LicenseComponent" useExternalParametrization="true" externalParametrizationName="License Agreement" externalParametrizationMode="include">
+                <serializedBean>
+                  <property name="displayedTextFile" id="LocalizedExternalFile0">
+                    <property name="languageIdToExternalFile">
+                      <entry>
+                        <string>en</string>
+                        <object class="com.install4j.api.beans.ExternalFile">
+                          <string>./license.mkd</string>
+                        </object>
+                      </entry>
+                    </property>
+                  </property>
+                  <property name="fillVertical" type="boolean" value="true" />
+                </serializedBean>
+                <externalParametrizationPropertyNames>
+                  <propertyName>textSource</propertyName>
+                  <propertyName>displayedText</propertyName>
+                  <propertyName>displayedTextFile</propertyName>
+                  <propertyName>variableName</propertyName>
+                  <propertyName>acceptInitiallySelected</propertyName>
+                  <propertyName>readAllRequired</propertyName>
+                </externalParametrizationPropertyNames>
               </formComponent>
             </formComponents>
           </screen>

@@ -425,7 +425,7 @@ public class Main
 			Files.createDirectories(outDir);
 			
 			// Place universal into the input directory
-			Files.write(outDir.resolve(Utils.baseName(target)), result,
+			Files.write(inDir.resolve(Utils.baseName(target)), result,
 				StandardOpenOption.CREATE, StandardOpenOption.WRITE,
 				StandardOpenOption.TRUNCATE_EXISTING);
 			
