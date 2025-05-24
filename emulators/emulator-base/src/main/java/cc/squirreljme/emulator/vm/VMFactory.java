@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.launch.AvailableSuites;
 import cc.squirreljme.jvm.launch.ScannerUtils;
 import cc.squirreljme.jvm.launch.SuiteScanner;
 import cc.squirreljme.jvm.manifest.JavaManifest;
+import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
@@ -35,6 +36,7 @@ import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -184,20 +187,7 @@ public abstract class VMFactory
 		VMThreadModel threadModel = VMThreadModel.DEFAULT;
 		
 		// Load our own META-INF/MANIFEST.MF for some special properties
-		JavaManifest metaManifest = null;
-		try (InputStream in = VMFactory.class
-			.getResourceAsStream("/META-INF/MANIFEST.MF"))
-		{
-			if (Debugging.VERBOSE)
-				Debugging.debugNote("GOT MANIFEST: %s", in);
-			
-			if (in != null)
-				metaManifest = new JavaManifest(in);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		JavaManifest metaManifest = VMFactory.__findManifest();
 		
 		// Initial trace bits
 		int initTraceBits = 0;
@@ -933,6 +923,155 @@ public abstract class VMFactory
 		{
 			__e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Attempts to locate the main manifest.
+	 *
+	 * @return The manifest.
+	 * @since 2025/05/23
+	 */
+	private static JavaManifest __findManifest()
+	{
+		// Try various names
+		for (String name : Arrays.asList("/META-INF/MANIFEST.MF",
+			"META-INF/MANIFEST.MF", "/SQUIRRELJME-STANDALONE.MF",
+			"SQUIRRELJME-STANDALONE.MF"))
+		{
+			JavaManifest result = VMFactory.__findManifest(name);
+			if (result != null)
+				return result;
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
+	 * Attempts to locate the manifest.
+	 *
+	 * @param __name The name of the resource.
+	 * @return The manifest.
+	 * @since 2025/05/23
+	 */
+	private static JavaManifest __findManifest(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// From VMFactory pivot?
+		JavaManifest result = VMFactory.__findManifest(
+			VMFactory.class, __name);
+		if (result != null)
+			return result;
+		
+		// From the VMFactory class loader?
+		result = VMFactory.__findManifest(
+			VMFactory.class.getClassLoader(), __name);
+		if (result != null)
+			return result;
+		
+		// From the system class loader?
+		result = VMFactory.__findManifest(
+			ClassLoader.getSystemClassLoader(), __name);
+		if (result != null)
+			return result;
+		
+		// Not found
+		return null;
+	}
+	
+	/**
+	 * Finds a manifest from the specified class loader.
+	 *
+	 * @param __classLoader The class loader.
+	 * @param __rc The resource name.
+	 * @return The resultant manifest.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/05/23
+	 */
+	private static JavaManifest __findManifest(ClassLoader __classLoader,
+		String __rc)
+		throws NullPointerException
+	{
+		if (__classLoader == null || __rc == null)
+			throw new NullPointerException("NARG");
+		
+		try
+		{
+			// Look everywhere for it
+			Enumeration<URL> rcs = __classLoader.getResources(__rc);
+			while (rcs.hasMoreElements())
+			{
+				URL url = rcs.nextElement();
+				try (InputStream in = url.openStream())
+				{
+					JavaManifest result = VMFactory.__findManifest(
+						new JavaManifest(in));
+					if (result != null)
+						return result;
+				}
+				catch (IOException ignored)
+				{
+				}
+			}
+		}
+		catch (IOException ignored)
+		{
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
+	 * Finds a manifest from the pivot class.
+	 *
+	 * @param __pivot The pivot class.
+	 * @param __rc The resource name.
+	 * @return The resultant manifest.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/05/23
+	 */
+	private static JavaManifest __findManifest(Class<?> __pivot, String __rc)
+		throws NullPointerException
+	{
+		if (__pivot == null || __rc == null)
+			throw new NullPointerException("NARG");
+		
+		try (InputStream in = __pivot.getResourceAsStream(__rc))
+		{
+			if (in != null)
+				return VMFactory.__findManifest(new JavaManifest(in));
+		}
+		catch (IOException ignored)
+		{
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
+	 * Checks the manifest to see if it is valid.
+	 *
+	 * @param __in The input manifest.
+	 * @return The resultant manifest if valid, otherwise {@code null}.
+	 * @since 2025/05/23
+	 */
+	private static JavaManifest __findManifest(JavaManifest __in)
+	{
+		if (__in == null)
+			return null;
+		
+		// Check for SquirrelJME keys
+		JavaManifestAttributes attr = __in.getMainAttributes();
+		if (attr.getValue(VMFactory.STANDALONE_LIBRARY) != null ||
+			attr.getValue("X-SquirrelJME-BuildVersion") != null)
+			return __in;
+		
+		return null;
 	}
 	
 	/**

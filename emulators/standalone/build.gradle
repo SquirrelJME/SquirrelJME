@@ -1,8 +1,17 @@
 import cc.squirreljme.plugin.general.CollateResourceJarsTask
 import cc.squirreljme.plugin.multivm.*
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier
+import org.apache.tools.ant.util.StreamUtils
+import org.gradle.api.internal.file.archive.ZipFileTree
 
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import java.nio.file.StandardOpenOption
 import java.util.regex.Pattern
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 plugins
 {
@@ -102,16 +111,96 @@ jar {
 	}
 }
 
+def finalizeShadowJar = tasks.register("finalizeShadowJar", {
+	group = "squirreljme"
+	description = "Finalizes the result of shadowJar."
+	
+	/*inputs.file(project.provider { -> shadowJar.outputs.files.singleFile})
+	outputs.file(project.provider { -> shadowJar.outputs.files.singleFile})*/
+	
+	outputs.upToDateWhen { Task __task ->
+		// If missing, this is not up to date
+		java.nio.file.Path srcPath = shadowJar.outputs.files.singleFile.toPath()
+		if (!Files.exists(srcPath)) {
+			return false
+		}
+		
+		// Must have the standalone entry, if it does we do not have to touch
+		// it
+		try (ZipFile zip = new ZipFile(srcPath.toFile())) {
+			return zip.getEntry("SQUIRRELJME-STANDALONE.MF") != null
+		}
+	}
+	
+	doLast {
+		java.nio.file.Path srcPath = shadowJar.outputs.files.singleFile.toPath()
+		java.nio.file.Path tmpPath = Files.createTempFile("final", ".jar")
+		
+		boolean wroteSquirrel = false
+		try (ZipOutputStream dst = new ZipOutputStream(
+				Files.newOutputStream(tmpPath, StandardOpenOption.WRITE,
+					StandardOpenOption.TRUNCATE_EXISTING,
+					StandardOpenOption.CREATE));
+			ZipInputStream src = new ZipInputStream(
+				Files.newInputStream(srcPath, StandardOpenOption.READ))) {
+			for (;;) {
+				ZipEntry entry = src.getNextEntry()
+				if (entry == null) {
+					break
+				}
+				
+				// Skip directories
+				if (entry.isDirectory()) {
+					continue
+				}
+				
+				// Do not write entry twice.
+				if (wroteSquirrel && entry.name == "SQUIRRELJME-STANDALONE.MF") {
+					continue
+				}
+				
+				// Read all input bytes
+				byte[] data = VMHelpers.readAll(src)
+				
+				// Write output
+				dst.putNextEntry(entry)
+				dst.write(data)
+				dst.closeEntry()
+				
+				// If this is the manifest, duplicate it
+				if (entry.name == "META-INF/MANIFEST.MF") {
+					dst.putNextEntry(new ZipEntry("SQUIRRELJME-STANDALONE.MF"))
+					dst.write(data)
+					dst.closeEntry()
+
+					wroteSquirrel = true
+				}
+			}
+			
+			// Finalize
+			dst.finish()
+			dst.flush()
+			dst.close()
+		}
+		
+		Files.move(tmpPath, srcPath, StandardCopyOption.REPLACE_EXISTING)
+	}
+})
+
 // Configuration for ShadowJar
 shadowJar {
 	dependsOn collateResourceJars, collateResourceJarsDebug
 	mustRunAfter collateResourceJars, collateResourceJarsDebug
+	finalizedBy finalizeShadowJar
 	
 	// Always SquirrelJME
 	archiveBaseName.set("squirreljme-standalone")
 	
 	// Always merge service files, otherwise multiple VMs will just not work
 	mergeServiceFiles()
+	
+	// Inherit all files
+	duplicatesStrategy = DuplicatesStrategy.INHERIT
 	
 	// Set the suffix of the JAR to be the OS name and arch, since there is
 	// a dynamic library within for it

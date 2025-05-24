@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="10.0.7" transformSequenceNumber="10">
   <directoryPresets config="./build" />
-  <application name="SquirrelJME" applicationId="5232-9992-4953-4137" mediaDir="./build" compression="9" pack200Compression="true" shrinkRuntime="false" shortName="squirreljme" publisher="Stephanie Gawroriski" publisherWeb="https://squirreljme.cc/" version="0.3.0" allPathsRelative="true" backupOnSave="true" autoSave="true" macVolumeId="b44c0629f58949ee" javaMinVersion="1.8.0_452" javaMaxVersion="17">
+  <application name="SquirrelJME" applicationId="5232-9992-4953-4137" mediaDir="./build" compression="9" lzmaCompression="true" pack200Compression="true" shortName="squirreljme" publisher="Stephanie Gawroriski" publisherWeb="https://squirreljme.cc/" version="0.3.0" allPathsRelative="true" backupOnSave="true" autoSave="true" macVolumeId="b44c0629f58949ee" javaMinVersion="1.8.0_452" javaMaxVersion="11">
     <jreBundles jdkProviderId="Adoptium" release="8/latest" />
   </application>
   <files defaultFileMode="755">
@@ -17,11 +17,18 @@
       <executable name="squirreljme" iconSet="true" redirectStderr="false" executableMode="gui" changeWorkingDirectory="false" checkConsoleParameter="true" dpiAware="true">
         <versionInfo include="true" fileVersion="0.3.0.0" fileDescription="SquirrelJME" legalCopyright="Copyright (C) 2016-2025 Stephanie Gawroriski" internalName="SquirrelJME" productName="SquirrelJME" />
       </executable>
-      <java mainClass="cc.squirreljme.vm.standalone.main.Main" preferredVM="client">
+      <java mainClass="cc.squirreljme.vm.standalone.main.Main" allowVMPassthroughParameters="false" preferredVM="client">
         <classPath>
           <archive location="squirreljme-standalone-*.jar" />
         </classPath>
       </java>
+      <vmOptionsFile mode="content">
+        <content># Framing -- Sets the default resolution of SquirrelJME
+#cc.squirreljme.frame=WxH
+
+# Scaling -- Sets the output resolution that the frame is scaled to
+#cc.squirreljme.scale=(multiplier|WxH)</content>
+      </vmOptionsFile>
       <iconImageFiles>
         <file path="./assets/mascot/head_8x8.png" />
         <file path="./assets/mascot/head_16x16.png" />
