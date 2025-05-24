@@ -1,3 +1,9 @@
+import cc.squirreljme.plugin.multivm.VMHelpers
+import cc.squirreljme.plugin.util.MIMEFileDecoder
+
+import java.nio.file.Files
+import java.nio.file.StandardOpenOption
+
 plugins {
 	id "java"
 	id "application"
@@ -30,6 +36,32 @@ TaskProvider<Task> internals = tasks.register('internals') {
 		rootProject.tasks.named("romTestNanoCoatDebug"),
 		project(":emulators:standalone").tasks.named("shadowJar"))
 	mustRunAfter(tasks.named("clean"))
+	
+	doLast {
+		java.nio.file.Path inBase = rootProject.projectDir.toPath()
+			.resolve("assets").resolve("mascot")
+		java.nio.file.Path outBase = rootProject.projectDir.toPath()
+			.resolve("build").resolve("install4j").resolve("in")
+		
+		// Make sure the output exists
+		Files.createDirectories(outBase)
+		
+		// Decode files
+		for (String name : Arrays.asList("head_8x8.png",
+			"head_16x16.png",
+			"head_24x24.png",
+			"head_32x32.png",
+			"head_48x48.png",
+			"head_64x64.png",
+			"head_128x128.png")) {
+			try (MIMEFileDecoder mime = new MIMEFileDecoder(Files.newInputStream(
+				inBase.resolve(name + ".__mime"), StandardOpenOption.READ))) {
+				Files.write(outBase.resolve(name), VMHelpers.readAll(mime),
+					StandardOpenOption.CREATE, StandardOpenOption.WRITE,
+					StandardOpenOption.TRUNCATE_EXISTING)
+			}
+		}
+	}
 }
 
 CommandLineArgumentProvider argProvider = ({ ->
