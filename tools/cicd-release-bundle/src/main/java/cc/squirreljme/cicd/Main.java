@@ -433,7 +433,11 @@ public class Main
 			Main.INSTALL4J.media(__projectRoot.resolve(
 				"squirreljme.install4j"));
 			
-			// Upload all resultant files
+			// Setup files for upload
+			List<String> toUpload = new ArrayList<>();
+			toUpload.add("updates.xml");
+			
+			// Determine files to upload
 			for (String line : Files.readAllLines(outDir.resolve(
 				"output.txt")))
 			{
@@ -452,17 +456,21 @@ public class Main
 				// File is split by tabs
 				String[] cols = line.split(Pattern.quote("\t"));
 				if (cols.length >= 4)
-				{
-					// Where was the output file?
-					Path installed = Paths.get(cols[3]).toAbsolutePath()
-						.normalize();
-					
-					// Upload to the unversioned space
-					String sub = Main.uvTarget(__baseDir, __version,
-						Utils.baseName(cols[3]));
-					Main.FOSSIL.add(installed, sub);
-					Main.FOSSIL.add(__mark, sub + ".mkd");
-				}
+					toUpload.add(cols[3]);
+			}
+			
+			// Upload all files
+			for (String upload : toUpload)
+			{
+				// Where was the output file?
+				Path installed = Paths.get(upload).toAbsolutePath()
+					.normalize();
+				
+				// Upload to the unversioned space
+				String sub = Main.uvTarget(__baseDir, __version,
+					Utils.baseName(upload));
+				Main.FOSSIL.add(installed, sub);
+				Main.FOSSIL.add(__mark, sub + ".mkd");
 			}
 		}
 	}

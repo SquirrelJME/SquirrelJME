@@ -40,7 +40,7 @@
       </iconImageFiles>
     </launcher>
   </launchers>
-  <installerGui autoUpdateDescriptorUrl="https://squirreljme.cc/uv/release/updates.xml">
+  <installerGui autoUpdateDescriptorUrl="https://squirreljme.cc/uv/unstable/0.3.0/updates.xml" useAutoUpdateBaseUrl="true" autoUpdateBaseUrl="https://squirreljme.cc/uv/unstable/0.3.0/">
     <laf type="native" />
     <applications>
       <application id="installer" beanClass="com.install4j.runtime.beans.applications.InstallerApplication">
