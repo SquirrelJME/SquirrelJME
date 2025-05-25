@@ -4,3 +4,6 @@ ratufacoat/.idea/*.xml
 
 # Blog index (could be generated on Windows)
 assets/developer-notes/index.mkd
+
+# Install4J
+squirreljme.install4j

@@ -1195,7 +1195,7 @@ public final class VMHelpers
 		
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream(4096))
 		{
-			byte[] buf = new byte[4096];
+			byte[] buf = new byte[65536];
 			for (;;)
 			{
 				int rc = __in.read(buf);

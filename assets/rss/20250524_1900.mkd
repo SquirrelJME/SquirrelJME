@@ -1,0 +1,6 @@
+# There is now an installer!
+
+An installer for Windows, Linux, and macOS is now available! There
+additionally is update functionality, which should work. It should now be
+easier to use the standalone version without having to install a Java SE
+virtual machine yourself and using the command line, unless you still wish to.
