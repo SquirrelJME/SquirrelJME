@@ -72,6 +72,17 @@ FORWARD_IMPL_VOID(AudioStream, unregister,
 	FORWARD_IMPL_args(jobject stream, jobject renderer),
 	FORWARD_IMPL_pass(stream, renderer))
 
+static sjme_errorCode sjme_jni_renderAudio(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_source inSource)
+{
+	if (inState == NULL || inSource == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __attach)(
 	JNIEnv* env, jclass classy, jlong statePtr, jlong streamPtr,
 	jobject javaRenderer)
@@ -79,6 +90,8 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __attach)(
 	sjme_errorCode error;
 	sjme_scritchaudio inState;
 	sjme_scritchaudio_stream inStream;
+	sjme_scritchaudio_source result;
+	sjme_frontEnd frontEnd;
 
 	/* Recover state. */
 	inState = (sjme_scritchaudio)statePtr;
@@ -89,8 +102,26 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __attach)(
 		return 0;
 	}
 
-	sjme_todo("Impl");
-	return sjme_error_notImplemented(0);
+	/* Initialize front end. */
+	memset(&frontEnd, 0, sizeof(frontEnd));
+	if (sjme_error_is(error = sjme_jni_fillFrontEnd(env, &frontEnd,
+		javaRenderer)))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return 0;
+	}
+
+	/* Setup source. */
+	result = NULL;
+	if (sjme_error_is(error = inState->api->sourceAttach(inState, inStream,
+		&result, sjme_jni_renderAudio, &frontEnd)) || result == NULL)
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return 0;
+	}
+
+	/* Return the resultant source. */
+	return (sjme_intPointer)result;
 }
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __create)(

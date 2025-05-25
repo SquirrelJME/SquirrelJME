@@ -244,6 +244,7 @@ typedef sjme_errorCode (*sjme_scritchaudio_sourceRenderFunc)(
  * @param inStream The stream to attach to or detach from.
  * @param outSource The resultant source.
  * @param renderFunc The render function to use.
+ * @param initFrontEnd The front end used for the renderer.
  * @return Any resultant error, if any.
  * @since 2025/05/18
  */
@@ -251,7 +252,8 @@ typedef sjme_errorCode (*sjme_scritchaudio_sourceAttachFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrOutNullable sjme_scritchaudio_source* outSource,
-	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc* renderFunc);
+	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc renderFunc,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
 	
 /**
  * Creates a new audio stream.
@@ -423,6 +425,21 @@ struct sjme_scritchaudio_streamBase
 		/** The stream this wrapped. */
 		sjme_scritchaudio_stream wrapped;
 	} data;
+};
+
+struct sjme_scritchaudio_sourceBase
+{
+	/** The lock for this source, used when rendering. */
+	sjme_thread_spinLock lock;
+	
+	/** The state this is in. */
+	sjme_scritchaudio inState;
+
+	/** The stream this is attached to. */
+	sjme_scritchaudio_stream inStream;
+
+	/** The front end data. */
+	sjme_frontEnd frontEnd;
 };
 	
 /**

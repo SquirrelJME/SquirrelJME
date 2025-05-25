@@ -26,7 +26,8 @@ sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrOutNullable sjme_scritchaudio_source* outSource,
-	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc* renderFunc)
+	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc renderFunc,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

@@ -12,7 +12,7 @@ package cc.squirreljme.emulator;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 
 /**
- * Not Described.
+ * Bracket for emulated audio streams.
  *
  * @since 2025/05/07
  */
