@@ -184,9 +184,11 @@ public class Main
 		}
 		String gitCommit = System.getenv("CIRCLE_SHA1");
 		byte[] mark = String.format(
-			"date:%s\r\nfossil:%s\r\ngit:%s\r\n",
+			"date:%s\r\nfossil:%s\r\ngit:%s\r\ninstall4j:%s\r\n",
 			dateCommit, fossilCommit,
-			gitCommit).getBytes(StandardCharsets.UTF_8);
+			gitCommit, String.format("%s_%d", version,
+				now.toInstant().getEpochSecond()))
+				.getBytes(StandardCharsets.UTF_8);
 		
 		// Base used for the standalone
 		Artifact standaloneBase = null;
