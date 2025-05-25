@@ -394,7 +394,7 @@ return console.askYesNo(message, true);
           </screen>
         </screens>
       </application>
-      <application name="Standalone update downloader" id="60" beanClass="com.install4j.runtime.beans.applications.CustomApplication" launchMode="startupSync" launchInNewProcess="false" launchSchedule="always">
+      <application name="Standalone update downloader" id="60" beanClass="com.install4j.runtime.beans.applications.CustomApplication" launchMode="startupSync" launchSchedule="always">
         <serializedBean>
           <property name="customIconImageFiles">
             <add>
@@ -429,6 +429,8 @@ return console.askYesNo(message, true);
             </object>
           </property>
           <property name="executableName" type="string">squirreljme-updater</property>
+          <property name="executionMode" type="enum" class="com.install4j.runtime.beans.applications.ExecutionMode" value="UNATTENDED_WITH_PROGRESS" />
+          <property name="splashMessage" type="string">Updating SquirrelJME</property>
           <property name="useCustomIcon" type="boolean" value="true" />
           <property name="windowTitle" type="string">${i18n:updater.WindowTitle("${compiler:sys.fullName}")}</property>
         </serializedBean>
