@@ -50,7 +50,7 @@
         <file path="./build/install4j/in/head_128x128.png" />
       </iconImageFiles>
     </launcher>
-    <launcher name="squirreljme-debugger" id="124" menuName="SquirrelJME Debugger" customMacBundleIdentifier="true" macBundleIdentifier="cc.squirreljme" swtApp="true" addMacApplicationCategory="true" macApplicationCategory="public.app-category.utilities" checkUpdater="true" updateExecutionMode="unattended">
+    <launcher name="squirreljme-debugger" id="124" menuName="SquirrelJME Debugger" customMacBundleIdentifier="true" macBundleIdentifier="cc.squirreljme" swtApp="true" addMacApplicationCategory="true" macApplicationCategory="public.app-category.utilities" checkUpdater="true">
       <executable name="squirreljme-debugger" iconSet="true" redirectStderr="false" executableMode="gui" changeWorkingDirectory="false" checkConsoleParameter="true" dpiAware="true">
         <versionInfo include="true" fileVersion="0.3.0.0" fileDescription="SquirrelJME" legalCopyright="Copyright (C) 2016-2025 Stephanie Gawroriski" internalName="SquirrelJME" productName="SquirrelJME" />
       </executable>
