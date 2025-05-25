@@ -42,11 +42,13 @@ public class Install4JCommand
 	 * Builds the Install4J install media.
 	 *
 	 * @param __project The project root.
+	 * @param __version The SquirrelJME version.
+	 * @param __epochSecond The epoch second.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/05/23
 	 */
-	public void media(Path __project)
+	public void media(Path __project, String __version, long __epochSecond)
 		throws IOException, NullPointerException
 	{
 		if (__project == null)
@@ -54,6 +56,7 @@ public class Install4JCommand
 		
 		ProcessBuilder builder = new ProcessBuilder(
 			this.exe.toString(),
+			"-r", String.format("%s_%d", __version, __epochSecond),
 			__project.toAbsolutePath().normalize().toString());
 		builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 		builder.redirectError(ProcessBuilder.Redirect.INHERIT);

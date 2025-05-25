@@ -167,8 +167,11 @@ public class Main
 		String baseDir = Main.baseDir(version);
 		Path projectRoot = Paths.get(__args[1]).toAbsolutePath().normalize();
 		
+		// Current date
+		Date now = new Date();
+		
 		// Load in Git/Fossil commit and the current date
-		String dateCommit = new Date().toString();
+		String dateCommit = now.toString();
 		String fossilCommit = null;
 		try
 		{
@@ -293,7 +296,8 @@ public class Main
 		// Build universal Jar that contains every architecture
 		if (Main.FOSSIL != null && standaloneBase != null)
 			Main.taskUniversal(baseDir, version, mark,
-				standaloneBase, standaloneNative, projectRoot);
+				standaloneBase, standaloneNative, projectRoot,
+				now.toInstant().getEpochSecond());
 	}
 	
 	/**
@@ -353,13 +357,15 @@ public class Main
 	 * @param __standaloneBase The base standalone.
 	 * @param __standaloneNative The natives to merge.
 	 * @param __projectRoot The project root.
+	 * @param __epochSecond The seconds since the epoch.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/03/29
 	 */
 	public static void taskUniversal(String __baseDir, String __version,
 		byte[] __mark, Artifact __standaloneBase,
-		List<Artifact> __standaloneNative, Path __projectRoot)
+		List<Artifact> __standaloneNative, Path __projectRoot,
+		long __epochSecond)
 		throws IOException, NullPointerException
 	{
 		if (__baseDir == null || __version == null || __mark == null ||
@@ -431,7 +437,7 @@ public class Main
 			
 			// Build media
 			Main.INSTALL4J.media(__projectRoot.resolve(
-				"squirreljme.install4j"));
+				"squirreljme.install4j"), __version, __epochSecond);
 			
 			// Setup files for upload
 			List<Path> toUpload = new ArrayList<>();
