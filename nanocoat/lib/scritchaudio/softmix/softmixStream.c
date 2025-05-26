@@ -22,15 +22,46 @@ static const sjme_scritchaudio_format
 	SJME_SCRITCHAUDIO_FORMAT_INT_S32,
 };
 
+static sjme_errorCode sjme_scritchaudio_softmix_wrappedRender(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_source inSource)
+{
+	if (inState == NULL || inSource == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrOutNullable sjme_scritchaudio_source* outSource,
-	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc renderFunc,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
+	sjme_attrInNotNull sjme_scritchaudio_source inSource)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_scritchaudio wrappedState;
+	sjme_scritchaudio_source result;
+	
+	if (inState == NULL || inStream == NULL || inSource == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	if (wrappedState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Forward to wrapped. */
+	result = NULL;
+	if (sjme_error_is(error = wrappedState->api->sourceAttach(wrappedState,
+		inStream->data.wrapped, &result,
+		sjme_scritchaudio_softmix_wrappedRender, NULL)) || result == NULL)
+		return sjme_error_default(error);
+
+	/* Set wrapped. */
+	inSource->data.wrapped = result;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
@@ -146,5 +177,6 @@ fail_allocResult:
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
 	}
+	
 	return sjme_error_default(error);
 }

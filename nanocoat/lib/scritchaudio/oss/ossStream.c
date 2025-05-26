@@ -45,12 +45,13 @@ static const int
 sjme_errorCode sjme_scritchaudio_oss_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrOutNullable sjme_scritchaudio_source* outSource,
-	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc renderFunc,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
+	sjme_attrInNotNull sjme_scritchaudio_source inSource)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	if (inState == NULL || inStream == NULL || inSource == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* OSS is completely manually polled, so nothing is ever registered. */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchaudio_oss_streamCreate(

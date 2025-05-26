@@ -78,6 +78,9 @@ typedef struct sjme_scritchaudio_sourceBase sjme_scritchaudio_sourceBase;
  */
 typedef sjme_scritchaudio_sourceBase* sjme_scritchaudio_source;
 
+/** A list of sources. */
+SJME_LIST_DECLARE(sjme_scritchaudio_source, 0);
+
 /**
  * A single ScritchAudio MIDI port.
  *
@@ -254,7 +257,22 @@ typedef sjme_errorCode (*sjme_scritchaudio_sourceAttachFunc)(
 	sjme_attrOutNullable sjme_scritchaudio_source* outSource,
 	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc renderFunc,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
-	
+
+/**
+ * Attaches a source renderer to the given stream, the renderer will use the
+ * same format that the stream uses.
+ *
+ * @param inState The ScritchAudio state.
+ * @param inStream The stream to attach to or detach from.
+ * @param inSource The resultant source.
+ * @return Any resultant error, if any.
+ * @since 2025/05/25
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_sourceAttachImplFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNotNull sjme_scritchaudio_source inSource);
+
 /**
  * Creates a new audio stream.
  *
@@ -315,7 +333,7 @@ typedef struct sjme_scritchaudio_implFunctions
 	sjme_scritchaudio_queryMidiPortsFunc queryMidiPorts;
 	
 	/** Attaches or detaches a source. */
-	sjme_scritchaudio_sourceAttachFunc sourceAttach;
+	sjme_scritchaudio_sourceAttachImplFunc sourceAttach;
 	
 	/** Create a new audio stream. */
 	sjme_scritchaudio_streamCreateFunc streamCreate;
@@ -404,6 +422,9 @@ struct sjme_scritchaudioBase
  */
 struct sjme_scritchaudio_streamBase
 {
+	/** The lock for this source, used when rendering. */
+	sjme_thread_spinLock lock;
+	
 	/** The state this is in. */
 	sjme_scritchaudio inState;
 
@@ -415,6 +436,9 @@ struct sjme_scritchaudio_streamBase
 
 	/** The stream channels. */
 	sjme_scritchaudio_channels channels;
+
+	/** The sources attached to this stream. */
+	sjme_list_sjme_scritchaudio_source* sources;
 
 	/** Stream data. */
 	struct
@@ -438,8 +462,18 @@ struct sjme_scritchaudio_sourceBase
 	/** The stream this is attached to. */
 	sjme_scritchaudio_stream inStream;
 
+	/** The renderer function. */
+	sjme_scritchaudio_sourceRenderFunc renderFunc;
+
 	/** The front end data. */
 	sjme_frontEnd frontEnd;
+
+	/** The source data. */
+	struct
+	{
+		/** The wrapped source. */
+		sjme_scritchaudio_source wrapped;
+	} data;
 };
 	
 /**
