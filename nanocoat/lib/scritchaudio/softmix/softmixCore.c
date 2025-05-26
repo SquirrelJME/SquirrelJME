@@ -64,7 +64,7 @@ static sjme_attrThreadCall sjme_thread_result sjme_scritchaudio_softmix_poll(
 
 sjme_errorCode sjme_scritchaudio_softmix_disconnect(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConnection)
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

@@ -226,26 +226,26 @@ typedef sjme_errorCode (*sjme_scritchaudio_apiInitFunc)(
  * Disconnects the given connection.
  *
  * @param inState The ScritchAudio state.
- * @param inConnection The connection being disconnected.
+ * @param inConn The connection being disconnected.
  * @return Any resultant error, if any.
  * @since 2025/05/26
  */
 typedef sjme_errorCode (*sjme_scritchaudio_disconnectFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConnection);
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn);
 
 /**
  * Called when the peer has been disconnected.
  *
  * @param inState The ScritchAudio state.
- * @param inConnection The connection being disconnected.
+ * @param inConn The connection being disconnected.
  * @param inPeer The peer that disconnected.
  * @return Any resultant error, if any.
  * @since 2025/05/26
  */
 typedef sjme_errorCode (*sjme_scritchaudio_disconnectPeerFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConnection,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInNotNull sjme_scritchaudio_connection inPeer);
 	
 /**

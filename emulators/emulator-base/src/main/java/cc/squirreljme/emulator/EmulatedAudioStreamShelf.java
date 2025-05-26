@@ -71,7 +71,7 @@ public class EmulatedAudioStreamShelf
 		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
 		
 		// Wrap renderer
-		return new EmulatedAudioConnectionBracket(statePtr, 
+		return new EmulatedAudioSourceBracket(statePtr, 
 			EmulatedAudioStreamShelf.__attach(statePtr,
 				((EmulatedAudioStreamBracket)__stream).streamPtr,
 				__renderer), (EmulatedAudioStreamBracket)__stream,
@@ -205,7 +205,8 @@ public class EmulatedAudioStreamShelf
 		// Make sure the dynamic library is initialized
 		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
 		
-		throw Debugging.todo();
+		EmulatedAudioStreamShelf.__disconnect(statePtr,
+			((EmulatedAudioConnectionBracket)__conn).instancePtr);
 	}
 	
 	/**
@@ -302,6 +303,18 @@ public class EmulatedAudioStreamShelf
 	 */
 	native static long __create(long __statePtr, String __name, int __format,
 		int __rate, int __channels)
+		throws MLECallError;
+	
+	/**
+	 * Disconnects the given connection.
+	 *
+	 * @param __statePtr The state pointer.
+	 * @param __connPtr The connection pointer.
+	 * @throws MLECallError On null arguments or if the connection could not
+	 * be disconnected.
+	 * @since 2025/05/26
+	 */
+	private static native void __disconnect(long __statePtr, long __connPtr)
 		throws MLECallError;
 	
 	/**

@@ -35,7 +35,7 @@ sjme_errorCode sjme_scritchaudio_core_destroy(
 	
 sjme_errorCode sjme_scritchaudio_core_disconnect(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConnection);
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn);
 
 sjme_errorCode sjme_scritchaudio_core_init(
 	sjme_attrInNotNull sjme_alloc_pool inPool,

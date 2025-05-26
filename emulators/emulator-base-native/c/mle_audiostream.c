@@ -35,6 +35,8 @@
 
 #define FORWARD_DESC___attach \
 	DESC_METHOD(DESC_LONG, DESC_LONG DESC_LONG DESC_AUDIORENDERER)
+#define FORWARD_DESC___disconnect \
+	DESC_METHOD(DESC_VOID, DESC_LONG DESC_LONG)
 #define FORWARD_DESC___create \
 	DESC_METHOD(DESC_LONG, DESC_LONG DESC_STRING DESC_INT DESC_INT DESC_INT)
 #define FORWARD_DESC___dylibLoad \
@@ -161,6 +163,30 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __create)(
 	return (sjme_intPointer)result;
 }
 
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __disconnect)(
+	JNIEnv* env, jclass classy, jlong statePtr, jlong connPtr)
+{
+	sjme_errorCode error;
+	sjme_scritchaudio inState;
+	sjme_scritchaudio_connection inConn;
+
+	/* Recover state. */
+	inState = (sjme_scritchaudio)statePtr;
+	inConn = (sjme_scritchaudio_connection)connPtr;
+	if (inState == NULL || inConn == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Forward call. */
+	if (sjme_error_is(error = inState->api->disconnect(inState, inConn)))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return 0;
+	}
+}
+
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __dylibLoad)(
 	JNIEnv* env, jclass classy, jstring path, jstring name)
 {
@@ -273,6 +299,7 @@ static const JNINativeMethod mleEmulAudioStreamMethods[] =
 {
 	FORWARD_list(Emulated, __attach),
 	FORWARD_list(Emulated, __create),
+	FORWARD_list(Emulated, __disconnect),
 	FORWARD_list(Emulated, __dylibLoad),
 };
 

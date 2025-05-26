@@ -9,38 +9,43 @@
 
 package cc.squirreljme.emulator;
 
-import cc.squirreljme.jvm.mle.brackets.AudioStreamConnectionBracket;
+import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 
 /**
  * Emulated audio stream connection.
  *
  * @since 2025/05/18
  */
-public abstract class EmulatedAudioConnectionBracket
-	implements AudioStreamConnectionBracket
+public class EmulatedAudioSourceBracket
+	extends EmulatedAudioConnectionBracket
 {
-	/** The state pointer. */
-	protected final long statePtr;
+	/** The audio stream bracket. */
+	protected final EmulatedAudioStreamBracket stream;
 	
-	/** The instance pointer. */
-	protected final long instancePtr;
+	/** The renderer to call. */
+	protected final AudioStreamRenderer renderer;
 	
 	/**
 	 * Initializes the audio connection.
 	 *
 	 * @param __statePtr The state pointer.
-	 * @param __instancePtr The instance pointer.
+	 * @param __instancePtr The renderer pointer.
+	 * @param __stream The stream this is connected to.
+	 * @param __renderer The renderer to call.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/05/25
 	 */
-	EmulatedAudioConnectionBracket(long __statePtr,
-		long __instancePtr)
+	EmulatedAudioSourceBracket(long __statePtr,
+		long __instancePtr, EmulatedAudioStreamBracket __stream,
+		AudioStreamRenderer __renderer)
 		throws NullPointerException
 	{
-		if (__statePtr == 0 || __instancePtr == 0)
+		super(__statePtr, __instancePtr);
+		
+		if (__stream == null || __renderer == null)
 			throw new NullPointerException("NARG");
 		
-		this.statePtr = __statePtr;
-		this.instancePtr = __instancePtr;
+		this.stream = __stream;
+		this.renderer = __renderer;
 	}
 }

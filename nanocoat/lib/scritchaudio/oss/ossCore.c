@@ -76,7 +76,7 @@ sjme_errorCode sjme_scritchaudio_oss_apiInit(
 
 sjme_errorCode sjme_scritchaudio_oss_disconnect(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConnection)
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

@@ -20,6 +20,7 @@
  */
 static const sjme_scritchaudio_apiFunctions sjme_scritchaudio_coreFunctions =
 {
+	.disconnect = sjme_scritchaudio_core_disconnect,
 	.queryMidiPorts = sjme_scritchaudio_core_queryMidiPorts,
 	.loopIterate = sjme_scritchaudio_core_loopIterate,
 	.sourceAttach = sjme_scritchaudio_core_sourceAttach,
@@ -104,7 +105,7 @@ sjme_errorCode sjme_scritchaudio_core_destroy(
 
 sjme_errorCode sjme_scritchaudio_core_disconnect(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConnection)
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
