@@ -107,6 +107,15 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
 {
+	sjme_errorCode error;
+	
+	if (inState == NULL || inConn == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Must be of the same state. */
+	if (inConn->inState != inState)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
