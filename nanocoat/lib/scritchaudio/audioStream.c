@@ -12,6 +12,14 @@
 #include "lib/scritchaudio/scritchaudio.h"
 #include "lib/scritchaudio/scritchaudioIntern.h"
 
+static sjme_errorCode sjme_scritchaudio_core_sourceNoPeers(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
@@ -39,6 +47,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	result->connection.inState = inState;
 	result->inStream = inStream;
 	result->renderFunc = renderFunc;
+	result->connection.noPeers = sjme_scritchaudio_core_sourceNoPeers;
 	if (initFrontEnd != NULL)
 		memmove(&result->frontEnd, initFrontEnd, sizeof(*initFrontEnd));
 
@@ -52,34 +61,11 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 		&inStream->connection.lock)))
 		goto fail_lockGrab;
 
-	/* Find a free slot in the sources. */
-	freeSlot = -1;
-	sources = inStream->sources;
-	n = 0;
-	if (sources != NULL)
-		for (i = 0, n = sources->length; i < n; i++)
-			if (sources->elements[i] == NULL)
-			{
-				freeSlot = i;
-				break;
-			}
-
-	/* No room? Grow the list. */
-	if (freeSlot < 0)
-	{
-		/* Grow the list. */
-		if (sjme_error_is(error = sjme_list_replace(inState->pool,
-			n + GROW_SIZE, &sources, sjme_scritchaudio_source, 0)) ||
-			sources == NULL)
-			goto fail_growList;
-
-		/* Free slot is at the end. */
-		freeSlot = n;
-	}
-
-	/* Store into this slot. */
-	sources->elements[freeSlot] = result;
-
+	/* Inject into list. */
+	if (sjme_error_is(error = sjme_list_injectGrow(inState->pool,
+		GROW_SIZE, &inStream->sources, result, sjme_scritchaudio_source, 0)))
+		goto fail_growList;
+	
 	/* Connect peers. */
 	if (sjme_error_is(error = inState->intern->peerConnect(inState,
 		SJME_AS_AUDIO_CONN(inStream),

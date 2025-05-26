@@ -33,6 +33,31 @@ static sjme_errorCode sjme_scritchaudio_softmix_wrappedRender(
 	return sjme_error_notImplemented(0);
 }
 
+static sjme_errorCode sjme_scritchaudio_softmix_streamNoPeers(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_scritchaudio_softmix_sourceNoPeers(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_scritchaudio_softmix_sourcePeerDisconnect(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
+	sjme_attrInNotNull sjme_scritchaudio_connection inPeer)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
@@ -57,6 +82,11 @@ sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 		sjme_scritchaudio_softmix_wrappedRender, NULL)) || result == NULL)
 		return sjme_error_default(error);
 
+	/* Initialize data. */
+	result->connection.noPeers = sjme_scritchaudio_softmix_sourceNoPeers;
+	result->connection.peerDisconnect =
+		sjme_scritchaudio_softmix_sourcePeerDisconnect;
+	
 	/* Set wrapped. */
 	inSource->data.wrapped = result;
 
@@ -166,6 +196,7 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	result->rate = origRate;
 	result->channels = origChannels;
 	result->data.wrapped = wrapped;
+	result->connection.noPeers = sjme_scritchaudio_softmix_streamNoPeers;
 
 	/* Success! */
 	*outStream = result;

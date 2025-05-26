@@ -51,7 +51,12 @@ sjme_errorCode sjme_scritchaudio_core_queryMidiPorts(
 	sjme_attrInOutNotNull sjme_list_sjme_scritchaudio_midiPort* inOutPorts,
 	sjme_attrOutNotNull sjme_jint* outNumPorts);
 	
-sjme_errorCode sjme_scritchaudio_peerConnect(
+sjme_errorCode sjme_scritchaudio_core_peerConnect(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
+	sjme_attrInNotNull sjme_scritchaudio_connection inPeer);
+	
+sjme_errorCode sjme_scritchaudio_core_peerDisconnect(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInNotNull sjme_scritchaudio_connection inPeer);

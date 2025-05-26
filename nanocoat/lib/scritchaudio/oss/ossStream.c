@@ -42,6 +42,32 @@ static const int
 	-1,
 };
 
+
+static sjme_errorCode sjme_scritchaudio_oss_streamNoPeers(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_scritchaudio_oss_sourceNoPeers(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_scritchaudio_oss_sourcePeerDisconnect(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
+	sjme_attrInNotNull sjme_scritchaudio_connection inPeer)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchaudio_oss_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
@@ -49,6 +75,11 @@ sjme_errorCode sjme_scritchaudio_oss_sourceAttach(
 {
 	if (inState == NULL || inStream == NULL || inSource == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Just set peer disconnection functions, despite not doing much. */
+	inSource->connection.noPeers = sjme_scritchaudio_oss_sourceNoPeers;
+	inSource->connection.peerDisconnect =
+		sjme_scritchaudio_oss_sourcePeerDisconnect;
 
 	/* OSS is completely manually polled, so nothing is ever registered. */
 	return SJME_ERROR_NONE;
@@ -122,6 +153,7 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 	result->rate = inRate;
 	result->channels = inChannels;
 	result->data.fd = fd;
+	result->connection.noPeers = sjme_scritchaudio_oss_streamNoPeers;
 
 	/* Return the resultant stream. */
 	*outStream = result;

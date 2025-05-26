@@ -401,6 +401,9 @@ typedef struct sjme_scritchaudio_internFunctions
 {
 	/** Connect two peers. */
 	sjme_scritchaudio_peerConnectFunc peerConnect;
+	
+	/** Disconnect two peers. */
+	sjme_scritchaudio_peerConnectFunc peerDisconnect;
 } sjme_scritchaudio_internFunctions;
 
 /**
@@ -518,6 +521,9 @@ struct sjme_scritchaudio_connectionBase
 	
 	/** Called when the peer disconnected. */
 	sjme_scritchaudio_peerConnectFunc peerDisconnect;
+
+	/** Called when there are no peers remaining. */
+	sjme_scritchaudio_disconnectFunc noPeers;
 
 	/** The connections this is connected to. */
 	sjme_list_sjme_scritchaudio_connection* peers;
