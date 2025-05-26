@@ -135,18 +135,6 @@ public final class AudioStreamShelf
 		throws MLECallError;
 	
 	/**
-	 * Destroys the given audio stream.
-	 *
-	 * @param __stream The stream to destroy.
-	 * @throws MLECallError On null arguments or if the stream could not
-	 * be destroyed.
-	 * @since 2025/05/07
-	 */
-	@SquirrelJMEVendorApi
-	public static native void destroy(@NotNull AudioStreamBracket __stream)
-		throws MLECallError;
-	
-	/**
 	 * Disconnects the given connection.
 	 *
 	 * @param __conn The connection to disconnect.

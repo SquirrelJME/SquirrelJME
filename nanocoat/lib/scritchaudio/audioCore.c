@@ -102,6 +102,14 @@ sjme_errorCode sjme_scritchaudio_core_destroy(
 	return sjme_error_notImplemented(0);
 }
 
+sjme_errorCode sjme_scritchaudio_core_disconnect(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConnection)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchaudio_core_init(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,

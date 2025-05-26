@@ -192,7 +192,7 @@ public class IMelodyPlayer
 				}
 				
 				// Destroy the stream
-				AudioStreamShelf.destroy(stream);
+				AudioStreamShelf.disconnect(stream);
 			}
 			catch (MLECallError __e)
 			{

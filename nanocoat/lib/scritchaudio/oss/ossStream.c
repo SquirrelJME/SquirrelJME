@@ -117,7 +117,7 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 		goto fail_allocResult;
 
 	/* Set stream details. */
-	result->inState = inState;
+	result->connection.inState = inState;
 	result->format = inFormat;
 	result->rate = inRate;
 	result->channels = inChannels;

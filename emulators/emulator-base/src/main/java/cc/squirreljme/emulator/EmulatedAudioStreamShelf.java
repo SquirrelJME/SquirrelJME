@@ -185,26 +185,6 @@ public class EmulatedAudioStreamShelf
 				return false;
 		}
 	}
-	/**
-	 * Destroys the given audio stream.
-	 *
-	 * @param __stream The stream to destroy.
-	 * @throws MLECallError On null arguments or if the stream could not
-	 * be destroyed.
-	 * @since 2025/05/07
-	 */
-	@SquirrelJMEVendorApi
-	public static void destroy(@NotNull AudioStreamBracket __stream)
-		throws MLECallError
-	{
-		if (__stream == null)
-			throw new MLECallError("NARG");
-		
-		// Make sure the dynamic library is initialized
-		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
-		
-		throw Debugging.todo();
-	}
 	
 	/**
 	 * Disconnects the given connection.

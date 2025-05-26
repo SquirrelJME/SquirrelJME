@@ -99,6 +99,27 @@ typedef sjme_scritchaudio_midiPortBase* sjme_scritchaudio_midiPort;
 SJME_LIST_DECLARE(sjme_scritchaudio_midiPort, 0);
 
 /**
+ * Represents a single connection.
+ *
+ * @since 2025/05/26
+ */
+typedef struct sjme_scritchaudio_connectionBase
+	sjme_scritchaudio_connectionBase;
+
+/**
+ * Represents a single connection.
+ *
+ * @since 2025/05/26
+ */
+typedef sjme_scritchaudio_connectionBase* sjme_scritchaudio_connection;
+
+/** A list of connections. */
+SJME_LIST_DECLARE(sjme_scritchaudio_connection, 0);
+
+/** Cast to connection type. */
+#define SJME_AS_AUDIO_CONN(x) ((sjme_scritchaudio_connection)(x))
+
+/**
  * The audio format for audio encoding.
  *
  * @since 2025/05/08
@@ -202,6 +223,32 @@ typedef sjme_errorCode (*sjme_scritchaudio_apiInitFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState);
 
 /**
+ * Disconnects the given connection.
+ *
+ * @param inState The ScritchAudio state.
+ * @param inConnection The connection being disconnected.
+ * @return Any resultant error, if any.
+ * @since 2025/05/26
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_disconnectFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConnection);
+
+/**
+ * Called when the peer has been disconnected.
+ *
+ * @param inState The ScritchAudio state.
+ * @param inConnection The connection being disconnected.
+ * @param inPeer The peer that disconnected.
+ * @return Any resultant error, if any.
+ * @since 2025/05/26
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_disconnectPeerFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConnection,
+	sjme_attrInNotNull sjme_scritchaudio_connection inPeer);
+	
+/**
  * Loop iteration for audio processing, if there is no background thread
  * for audio-processing.
  *
@@ -303,6 +350,9 @@ typedef sjme_errorCode (*sjme_scritchaudio_streamCreateFunc)(
  */
 typedef struct sjme_scritchaudio_apiFunctions
 {
+	/** Disconnects a connection. */
+	sjme_scritchaudio_disconnectFunc disconnect;
+	
 	/** Iterates the audio loop. */
 	sjme_scritchaudio_loopIterateFunc loopIterate;
 	
@@ -325,6 +375,9 @@ typedef struct sjme_scritchaudio_implFunctions
 {
 	/** Api initialization. */
 	sjme_scritchaudio_apiInitFunc apiInit;
+	
+	/** Disconnects a connection. */
+	sjme_scritchaudio_disconnectFunc disconnect;
 	
 	/** Iterates the audio loop. */
 	sjme_scritchaudio_loopIterateFunc loopIterate;
@@ -416,17 +469,53 @@ struct sjme_scritchaudioBase
 };
 
 /**
- * Audio stream information.
+ * Represents the type that a connection is.
  *
- * @since 2025/05/18
+ * @since 2025/05/26
  */
-struct sjme_scritchaudio_streamBase
+typedef enum sjme_scritchaudio_connectionType
+{
+	/** Invalid connection type. */
+	SJME_SCRITCHAUDIO_CONN_INVALID,
+
+	/** A stream. */
+	SJME_SCRITCHAUDIO_CONN_STREAM,
+
+	/** A source which generates data for a stream. */
+	SJME_SCRITCHAUDIO_CONN_SOURCE,
+
+	/** A sink which reads data from a device, such as a microphone. */
+	SJME_SCRITCHAUDIO_CONN_SINK,
+	
+	/** The number of connection types. */
+	SJME_SCRITCHAUDIO_NUM_CONN_TYPES
+} sjme_scritchaudio_connectionType;
+
+struct sjme_scritchaudio_connectionBase
 {
 	/** The lock for this source, used when rendering. */
 	sjme_thread_spinLock lock;
+
+	/** The type of connection this is. */
+	sjme_scritchaudio_connectionType type;
 	
 	/** The state this is in. */
 	sjme_scritchaudio inState;
+
+	/** Internal handler for handling disconnection. */
+	sjme_scritchaudio_disconnectFunc handleDisconnect;
+
+	/** Called when the peer disconnected. */
+	sjme_scritchaudio_disconnectPeerFunc peerDisconnected;
+
+	/** The connections this is connected to. */
+	sjme_list_sjme_scritchaudio_connection* peers;
+};
+
+struct sjme_scritchaudio_streamBase
+{
+	/** The connection. */
+	sjme_scritchaudio_connectionBase connection;
 
 	/** The stream format. */
 	sjme_scritchaudio_format format;
@@ -453,11 +542,8 @@ struct sjme_scritchaudio_streamBase
 
 struct sjme_scritchaudio_sourceBase
 {
-	/** The lock for this source, used when rendering. */
-	sjme_thread_spinLock lock;
-	
-	/** The state this is in. */
-	sjme_scritchaudio inState;
+	/** The connection. */
+	sjme_scritchaudio_connectionBase connection;
 
 	/** The stream this is attached to. */
 	sjme_scritchaudio_stream inStream;

@@ -21,6 +21,7 @@
 static const sjme_scritchaudio_implFunctions sjme_scritchaudio_ossFunctions =
 {
 	.apiInit = sjme_scritchaudio_oss_apiInit,
+	.disconnect = sjme_scritchaudio_oss_disconnect,
 	.loopIterate = sjme_scritchaudio_oss_loopIterate,
 	.queryMidiPorts = sjme_scritchaudio_oss_queryMidiPorts,
 	.sourceAttach = sjme_scritchaudio_oss_sourceAttach,
@@ -71,4 +72,12 @@ sjme_errorCode sjme_scritchaudio_oss_apiInit(
 
 	/* Success! Not much else to do here. */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchaudio_oss_disconnect(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConnection)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }

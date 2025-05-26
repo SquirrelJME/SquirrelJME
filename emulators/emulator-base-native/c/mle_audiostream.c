@@ -57,9 +57,6 @@ FORWARD_IMPL(AudioStream, decoderSupports,
 	jboolean, Boolean,
 	FORWARD_IMPL_args(jstring mime),
 	FORWARD_IMPL_pass(mime))
-FORWARD_IMPL_VOID(AudioStream, destroy,
-	FORWARD_IMPL_args(jobject stream),
-	FORWARD_IMPL_pass(stream))
 FORWARD_IMPL_VOID(AudioStream, disconnect,
 	FORWARD_IMPL_args(jobject conn),
 	FORWARD_IMPL_pass(conn))
@@ -267,7 +264,6 @@ static const JNINativeMethod mleAudioStreamMethods[] =
 	FORWARD_list(AudioStream, create),
 	FORWARD_list(AudioStream, decoder),
 	FORWARD_list(AudioStream, decoderSupports),
-	FORWARD_list(AudioStream, destroy),
 	FORWARD_list(AudioStream, disconnect),
 	FORWARD_list(AudioStream, midiPort),
 	FORWARD_list(AudioStream, midiRenderer),

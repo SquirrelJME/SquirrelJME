@@ -36,7 +36,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 		goto fail_allocResult;
 
 	/* Initialize state. */
-	result->inState = inState;
+	result->connection.inState = inState;
 	result->inStream = inStream;
 	result->renderFunc = renderFunc;
 	if (initFrontEnd != NULL)
@@ -49,7 +49,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 
 	/* Lock the stream. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&inStream->lock)))
+		&inStream->connection.lock)))
 		goto fail_lockGrab;
 
 	/* Find a free slot in the sources. */
@@ -82,7 +82,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 
 	/* Release the lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&inStream->lock, NULL)))
+		&inStream->connection.lock, NULL)))
 		goto fail_lockRelease;
 
 	/* Success! */
@@ -91,7 +91,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 
 fail_growList:
 fail_lockGrab:
-	sjme_thread_spinLockRelease(&inStream->lock, NULL);
+	sjme_thread_spinLockRelease(&inStream->connection.lock, NULL);
 	
 fail_lockRelease:
 fail_implInit:
