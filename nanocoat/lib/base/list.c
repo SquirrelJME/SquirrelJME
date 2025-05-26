@@ -325,8 +325,10 @@ sjme_errorCode sjme_list_flattenArgNul(
 static sjme_jint sjme_list_injectGrowComparator(sjme_cpointer a,
 	sjme_cpointer b, int elementSize)
 {
-	sjme_todo("Impl?");
-	return -1;
+	if (a == NULL || b == NULL || elementSize <= 0)
+		return -1;
+
+	return memcmp(a, b, elementSize);
 }
 
 sjme_errorCode sjme_list_injectGrowR(
