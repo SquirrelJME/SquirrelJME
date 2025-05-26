@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
-//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+//	 Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
@@ -30,7 +30,7 @@
 		#define SJME_CXX_SQUIRRELJME_LIST_H
 extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif     /* #ifdef __cplusplus */
+#endif	 /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
 
@@ -222,7 +222,7 @@ sjme_errorCode sjme_list_copyR(
  */
 #define sjme_list_copy(allocPool, inNewLength, inOldList, outNewList, type, \
 	numPointerStars) \
-    sjme_list_copyR((allocPool), (inNewLength), (inOldList), \
+	sjme_list_copyR((allocPool), (inNewLength), (inOldList), \
 		(sjme_pointer*)(outNewList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
@@ -263,6 +263,50 @@ sjme_errorCode sjme_list_directInitR(
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(*(outList)))
+
+/**
+ * Injects into the given list a free matching @c NULL slot.
+ *
+ * @param allocPool The pool to allocate within.
+ * @param growSize The size to grow by.
+ * @param inOutList The input and output list.
+ * @param injectValue The value to inject.
+ * @param elementSize The size of the list elements.
+ * @param elementOffset The offset of elements in the list.
+ * @param pointerCheck A check to see if it is a valid pointer.
+ * @return Any resultant error code, if any.
+ * @since 2025/05/26
+ */
+sjme_errorCode sjme_list_injectGrowR(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInPositive sjme_jint growSize,
+	sjme_attrInOutNotNull sjme_pointer* inOutList,
+	sjme_attrInNotNull sjme_pointer injectValue,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Injects into the given list a free matching @c NULL slot.
+ *
+ * @param allocPool The pool to allocate within.
+ * @param growSize The size to grow by.
+ * @param inOutList The input and output list.
+ * @param injectValue The value to inject.
+ * @param type The list type.
+ * @param numPointerStars The number of pointer stars.
+ * @return Any error state.
+ * @since 2025/05/26
+ */
+#define sjme_list_injectGrow(allocPool, growSize, inOutList, \
+	injectValue, type, numPointerStars) \
+	sjme_list_injectGrowR((allocPool), (growSize), \
+		(sjme_pointer*)(inOutList), (sjme_pointer)(injectValue), \
+		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
+		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		sizeof(**(inOutList)) SJME_DEBUG_ONLY_COMMA \
+		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Create a new list with the given set of arguments.
@@ -480,7 +524,7 @@ sjme_errorCode sjme_list_replaceR(
  */
 #define sjme_list_replace(allocPool, inNewLength, inOutList, \
 	type, numPointerStars) \
-    sjme_list_replaceR((allocPool), (inNewLength), \
+	sjme_list_replaceR((allocPool), (inNewLength), \
 		(sjme_pointer*)(inOutList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
@@ -570,6 +614,6 @@ sjme_errorCode sjme_list_sort(
 		#undef SJME_CXX_SQUIRRELJME_LIST_H
 		#undef SJME_CXX_IS_EXTERNED
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_LIST_H */
-#endif     /* #ifdef __cplusplus */
+#endif	 /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_LIST_H */

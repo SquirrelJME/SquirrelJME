@@ -1239,14 +1239,27 @@ return true;</property>
     <windows name="Windows" id="28" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:squirreljme.installer_version}" msiScope="perUser" msiCustomProductId="73a357e1-c9e3-4819-9552-60beb7e44f95" architecture="64">
       <jreBundle installOnlyIfNecessary="true" />
     </windows>
-    <unixInstaller name="Unix Installer" id="31" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:squirreljme.installer_version}">
-      <jreBundle jdkProviderId="Adoptium" release="8/latest" overrideJdkRelease="true" />
+    <unixInstaller name="Solaris AMD64 Installer" id="31" mediaFileName="${compiler:sys.shortName}_solaris-amd64_${compiler:squirreljme.installer_version}">
+      <jreBundle jdkProviderId="Adoptium" release="8/latest" overrideJdkRelease="true" platform="solaris-amd64" />
     </unixInstaller>
     <macosFolder name="macOS Folder" id="32" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:squirreljme.installer_version}" architecture="universal" compressDmg="true">
       <jreBundle jdkProviderId="Adoptium" release="11/latest" overrideJdkRelease="true" />
     </macosFolder>
+    <windowsArchive name="Windows Archive" id="128" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:squirreljme.installer_version}" architecture="64">
+      <jreBundle usePack200="true" />
+    </windowsArchive>
+    <linuxRPM name="Linux RPM" id="129" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:squirreljme.installer_version}" />
+    <linuxDeb name="Debian AMD64" id="130" mediaFileName="${compiler:sys.shortName}_linux-amd64_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="amd64">
+      <jreBundle usePack200="true" />
+    </linuxDeb>
+    <linuxDeb name="Debian ARM" id="143" mediaFileName="${compiler:sys.shortName}_linux-arm_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="armel">
+      <jreBundle usePack200="true" platform="linux-arm" />
+    </linuxDeb>
+    <linuxDeb name="Debian AARCH64" id="146" mediaFileName="${compiler:sys.shortName}_linux-aarch64_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="aarch64">
+      <jreBundle usePack200="true" platform="linux-aarch64" />
+    </linuxDeb>
   </mediaSets>
-  <buildIds buildAll="false">
+  <buildIds>
     <mediaSet refId="28" />
   </buildIds>
   <buildOptions verbose="true" />
