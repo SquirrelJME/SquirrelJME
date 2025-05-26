@@ -27,6 +27,11 @@ static const sjme_scritchaudio_apiFunctions sjme_scritchaudio_coreFunctions =
 	.streamCreate = sjme_scritchaudio_core_streamCreate,
 };
 
+static const sjme_scritchaudio_internFunctions sjme_scritchaudio_coreInterns =
+{
+	.peerConnect = sjme_scritchaudio_peerConnect,
+};
+
 static sjme_errorCode sjme_scritchaudio_core_initActual(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
@@ -54,6 +59,7 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	result->pool = inPool;
 	result->api = &sjme_scritchaudio_coreFunctions;
 	result->impl = inImplFunc;
+	result->intern = &sjme_scritchaudio_coreInterns;
 
 	/* Use a "sleeping" rate so if manually polling the CPU does not burn. */
 	sjme_atomic_sjme_jint_set(&result->pollDelayMillis,
@@ -99,23 +105,6 @@ fail_allocResult:
 sjme_errorCode sjme_scritchaudio_core_destroy(
 	sjme_attrInNotNull sjme_scritchaudio inState)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-sjme_errorCode sjme_scritchaudio_core_disconnect(
-	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
-{
-	sjme_errorCode error;
-	
-	if (inState == NULL || inConn == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Must be of the same state. */
-	if (inConn->inState != inState)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }

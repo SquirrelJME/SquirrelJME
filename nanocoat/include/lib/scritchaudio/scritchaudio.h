@@ -235,15 +235,15 @@ typedef sjme_errorCode (*sjme_scritchaudio_disconnectFunc)(
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn);
 
 /**
- * Called when the peer has been disconnected.
+ * Called when the peer has been connected or disconnected.
  *
  * @param inState The ScritchAudio state.
- * @param inConn The connection being disconnected.
- * @param inPeer The peer that disconnected.
+ * @param inConn The connection being connected/disconnected.
+ * @param inPeer The peer that connected/disconnected.
  * @return Any resultant error, if any.
  * @since 2025/05/26
  */
-typedef sjme_errorCode (*sjme_scritchaudio_disconnectPeerFunc)(
+typedef sjme_errorCode (*sjme_scritchaudio_peerConnectFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInNotNull sjme_scritchaudio_connection inPeer);
@@ -393,6 +393,17 @@ typedef struct sjme_scritchaudio_implFunctions
 } sjme_scritchaudio_implFunctions;
 
 /**
+ * Internal functions.
+ *
+ * @since 2025/05/26
+ */
+typedef struct sjme_scritchaudio_internFunctions
+{
+	/** Connect two peers. */
+	sjme_scritchaudio_peerConnectFunc peerConnect;
+} sjme_scritchaudio_internFunctions;
+
+/**
  * ScritchAudio bugs.
  *
  * @since 2025/05/15
@@ -439,6 +450,9 @@ struct sjme_scritchaudioBase
 
 	/** Implementation functions. */
 	const sjme_scritchaudio_implFunctions* impl;
+
+	/** Internal functions. */
+	const sjme_scritchaudio_internFunctions* intern;
 	
 	/** The audio loop thread, if applicable. */
 	sjme_thread loopThread;
@@ -501,12 +515,9 @@ struct sjme_scritchaudio_connectionBase
 	
 	/** The state this is in. */
 	sjme_scritchaudio inState;
-
-	/** Internal handler for handling disconnection. */
-	sjme_scritchaudio_disconnectFunc handleDisconnect;
-
+	
 	/** Called when the peer disconnected. */
-	sjme_scritchaudio_disconnectPeerFunc peerDisconnected;
+	sjme_scritchaudio_peerConnectFunc peerDisconnect;
 
 	/** The connections this is connected to. */
 	sjme_list_sjme_scritchaudio_connection* peers;

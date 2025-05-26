@@ -80,6 +80,12 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	/* Store into this slot. */
 	sources->elements[freeSlot] = result;
 
+	/* Connect peers. */
+	if (sjme_error_is(error = inState->intern->peerConnect(inState,
+		SJME_AS_AUDIO_CONN(inStream),
+		SJME_AS_AUDIO_CONN(result))))
+		goto fail_peerConnect;
+
 	/* Release the lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&inStream->connection.lock, NULL)))
@@ -89,6 +95,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	*outSource = result;
 	return SJME_ERROR_NONE;
 
+fail_peerConnect:
 fail_growList:
 fail_lockGrab:
 	sjme_thread_spinLockRelease(&inStream->connection.lock, NULL);
