@@ -18,43 +18,15 @@ static sjme_errorCode sjme_scritchaudio_peerConnectSub(
 {
 #define GROW_SIZE 8
 	sjme_errorCode error;
-	sjme_list_sjme_scritchaudio_connection* peers;
-	sjme_jint i, n, freeSlot;
 	
 	if (inState == NULL || inConn == NULL || inPeer == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Find a free slot. */
-	peers = inConn->peers;
-	freeSlot = -1;
-	n = 0;
-	if (peers != NULL)
-		for (i = 0, n = peers->length; i < n; i++)
-			if (peers->elements[i] == NULL)
-			{
-				freeSlot = i;
-				break;
-			}
+	/* Fill in free slot. */
+	if (sjme_error_is(error = sjme_list_injectGrow(inState->pool,
+		GROW_SIZE, &inConn->peers, inPeer, sjme_scritchaudio_connection, 0)))
+		return sjme_error_default(error);
 	
-	/* No free slot found? */
-	if (freeSlot < 0)
-	{
-		/* Grow the list. */
-		if (sjme_error_is(error = sjme_list_replace(inState->pool,
-			n + GROW_SIZE, &peers, sjme_scritchaudio_connection, 0)) ||
-			peers == NULL)
-			return sjme_error_default(error);
-
-		/* Set new list. */
-		inConn->peers = peers;
-
-		/* Free slot is at the end. */
-		freeSlot = n;
-	}
-
-	/* Set peer at the free slot. */
-	peers->elements[freeSlot] = inPeer;
-
 	/* Success! */
 	return SJME_ERROR_NONE;
 #undef GROW_SIZE

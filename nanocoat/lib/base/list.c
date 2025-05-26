@@ -325,8 +325,10 @@ sjme_errorCode sjme_list_flattenArgNul(
 static sjme_jint sjme_list_injectGrowComparator(sjme_cpointer a,
 	sjme_cpointer b, int elementSize)
 {
-	sjme_todo("Impl?");
-	return -1;
+	if (a == NULL || b == NULL || elementSize <= 0)
+		return -1;
+
+	return memcmp(a, b, elementSize);
 }
 
 sjme_errorCode sjme_list_injectGrowR(
@@ -557,8 +559,30 @@ sjme_errorCode sjme_list_search(
 	sjme_attrInNotNull sjme_cpointer findWhat,
 	sjme_attrOutNotNull sjme_jint* outIndex)
 {
-	sjme_todo("Implement this?");
-	return sjme_error_notImplemented(0);
+	sjme_list_void* list;
+	sjme_jint i, n;
+	sjme_pointer base;
+
+	if (inList == NULL || comparator == NULL || findWhat == NULL ||
+		outIndex == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Look in a void list. */
+	list = (sjme_list_void*)inList;
+
+	/* Go through the entire list. */
+	base = SJME_POINTER_OFFSET(list, list->elementOffset);
+	for (i = 0, n = list->length; i < n;
+		i++, base = SJME_POINTER_OFFSET(base, list->elementSize))
+		if (0 == comparator(base, findWhat, list->elementSize))
+		{
+			*outIndex = i;
+			return SJME_ERROR_NONE;
+		}
+
+	/* Not found. */
+	*outIndex = -1;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_list_searchBinary(
