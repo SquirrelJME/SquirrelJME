@@ -147,6 +147,19 @@ public final class AudioStreamShelf
 		throws MLECallError;
 	
 	/**
+	 * Disconnects the given connection.
+	 *
+	 * @param __conn The connection to disconnect.
+	 * @throws MLECallError On null arguments or if the connection could not
+	 * be disconnected.
+	 * @since 2025/05/25
+	 */
+	@SquirrelJMEVendorApi
+	public static native void disconnect(
+		@NotNull AudioStreamConnectionBracket __conn)
+		throws MLECallError;
+	
+	/**
 	 * Creates a {@link MidiPortBracket} attached to a decoder that is capable
 	 * of playing and decoding MIDI.
 	 *
@@ -190,21 +203,5 @@ public final class AudioStreamShelf
 	@NotNull
 	public static native AudioStreamRenderer midiRenderer(
 		@NotNull MidiPortBracket __midiPort)
-		throws MLECallError;
-	
-	/**
-	 * Removes the renderer from the given stream, causing it to no longer
-	 * be used as a source of audio.
-	 *
-	 * @param __stream The stream to remove the renderer from.
-	 * @param __renderer The renderer to remove.
-	 * @throws MLECallError On null arguments or if the renderer could not
-	 * be removed.
-	 * @since 2025/05/07
-	 */
-	@SquirrelJMEVendorApi
-	public static native void unregister(
-		@NotNull AudioStreamBracket __stream,
-		@NotNull AudioStreamRenderer __renderer)
 		throws MLECallError;
 }

@@ -26,12 +26,12 @@
 	DESC_METHOD(DESC_BOOLEAN, DESC_STRING)
 #define FORWARD_DESC_destroy \
 	DESC_METHOD(DESC_VOID, DESC_AUDIOSTREAM)
+#define FORWARD_DESC_disconnect \
+	DESC_METHOD(DESC_VOID, DESC_AUDIOCONN)
 #define FORWARD_DESC_midiPort \
 	DESC_METHOD(DESC_MIDIPORT, DESC_STRING DESC_INT DESC_INT DESC_INT)
 #define FORWARD_DESC_midiRenderer \
 	DESC_METHOD(DESC_AUDIORENDERER, DESC_MIDIPORT)
-#define FORWARD_DESC_unregister \
-	DESC_METHOD(DESC_VOID, DESC_AUDIOSTREAM DESC_AUDIORENDERER)
 
 #define FORWARD_DESC___attach \
 	DESC_METHOD(DESC_LONG, DESC_LONG DESC_LONG DESC_AUDIORENDERER)
@@ -60,6 +60,9 @@ FORWARD_IMPL(AudioStream, decoderSupports,
 FORWARD_IMPL_VOID(AudioStream, destroy,
 	FORWARD_IMPL_args(jobject stream),
 	FORWARD_IMPL_pass(stream))
+FORWARD_IMPL_VOID(AudioStream, disconnect,
+	FORWARD_IMPL_args(jobject conn),
+	FORWARD_IMPL_pass(conn))
 FORWARD_IMPL(AudioStream, midiPort,
 	jobject, Object,
 	FORWARD_IMPL_args(jstring mime, jint format, jint rate, jint channels),
@@ -68,9 +71,6 @@ FORWARD_IMPL(AudioStream, midiRenderer,
 	jobject, Object,
 	FORWARD_IMPL_args(jobject port),
 	FORWARD_IMPL_pass(port))
-FORWARD_IMPL_VOID(AudioStream, unregister,
-	FORWARD_IMPL_args(jobject stream, jobject renderer),
-	FORWARD_IMPL_pass(stream, renderer))
 
 static sjme_errorCode sjme_jni_renderAudio(
 	sjme_attrInNotNull sjme_scritchaudio inState,
@@ -268,9 +268,9 @@ static const JNINativeMethod mleAudioStreamMethods[] =
 	FORWARD_list(AudioStream, decoder),
 	FORWARD_list(AudioStream, decoderSupports),
 	FORWARD_list(AudioStream, destroy),
+	FORWARD_list(AudioStream, disconnect),
 	FORWARD_list(AudioStream, midiPort),
 	FORWARD_list(AudioStream, midiRenderer),
-	FORWARD_list(AudioStream, unregister),
 };
 
 static const JNINativeMethod mleEmulAudioStreamMethods[] =
