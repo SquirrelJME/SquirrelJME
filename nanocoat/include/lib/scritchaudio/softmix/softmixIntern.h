@@ -42,7 +42,9 @@ sjme_errorCode sjme_scritchaudio_softmix_disconnect(
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn);;
 
 sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
-	sjme_attrInNotNull sjme_scritchaudio inState);
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInValue sjme_jlong clock,
+	sjme_attrInValue sjme_jint expected48KHzSamples);
 	
 sjme_errorCode sjme_scritchaudio_softmix_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,

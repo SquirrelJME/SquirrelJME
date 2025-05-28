@@ -127,6 +127,14 @@ public class AudioPresenter
 	protected static final int MIN_VENDOR_AUDIO_EVENT =
 		64;
 	
+	/** The maximum number of explicit ports. */
+	@SquirrelJMEVendorApi
+	private static final int _MAX_PORT_DIFF = 24;
+	
+	/** Port differential. */
+	@SquirrelJMEVendorApi
+	private static volatile int _portDiff;
+	
 	/** The listener to use for media events. */
 	@SquirrelJMEVendorApi
 	volatile MediaListener _listener;
@@ -141,7 +149,6 @@ public class AudioPresenter
 		AudioPresenter.NORM_PRIORITY;
 	
 	/** The volume scale. */
-	
 	@SquirrelJMEVendorApi
 	volatile int _volume =
 		100;
@@ -384,7 +391,27 @@ public class AudioPresenter
 	public static AudioPresenter getAudioPresenter()
 		throws UIException
 	{
-		return AudioPresenter.getAudioPresenter(0);
+		// Before DoJa 3.0, only a single sound could be played at once
+		if (DoJaRuntime.versionBefore(3, 0))
+			return AudioPresenter.getAudioPresenter(0);
+		
+		// Otherwise pick a new port to play on
+		int port;
+		synchronized (AudioPresenter.class)
+		{
+			// Get the next port to use
+			int portDiff = AudioPresenter._portDiff;
+			port = Integer.MAX_VALUE - portDiff;
+			
+			// Cycle port.
+			if (portDiff >= AudioPresenter._MAX_PORT_DIFF)
+				AudioPresenter._portDiff = 0;
+			else
+				AudioPresenter._portDiff = portDiff + 1;
+		}
+		
+		// Use the given cycled port.
+		return AudioPresenter.getAudioPresenter(port);
 	}
 	
 	/**

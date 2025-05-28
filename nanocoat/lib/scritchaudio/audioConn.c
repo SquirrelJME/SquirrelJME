@@ -58,7 +58,7 @@ static sjme_errorCode sjme_scritchaudio_core_peerNone(
 			return sjme_error_default(error);
 
 	/* Free peer list. */
-	if (inConn->peers != NULL)
+	if (explicit && inConn->peers != NULL)
 	{
 		sjme_alloc_free(inConn->peers);
 		inConn->peers = NULL;
@@ -246,8 +246,10 @@ sjme_errorCode sjme_scritchaudio_core_peerConnect(
 	if (inState != inConn->inState && inState != inPeer->inState)
 		return SJME_ERROR_AUDIO_STATE_MISMATCH - 5;
 
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("%p <==> %p", inConn, inPeer);
+#endif
 
 	/* Grab peer lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(&inPeer->lock)))
@@ -315,20 +317,17 @@ sjme_errorCode sjme_scritchaudio_core_peerDisconnect(
 		check = peers->elements[i];
 		if (check == inPeer)
 		{
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 			/* Debug, only when we find a peer to disconnect. */
 			sjme_message("%p <//> %p (%s)", inConn, inPeer,
 				(explicit ? "EXPLICIT" : "---"));
+#endif
 			
 			/* Call sub-disconnect handler if there is one. */
 			if (inConn->peerDisconnect != NULL)
 				if (sjme_error_is(error = inConn->peerDisconnect(
 					inState, inConn, inPeer, explicit)))
-				{
-					/* Connection was destroyed, can do nothing more. */
-					if (error == SJME_ERROR_AUDIO_DESTROYED)
-						return SJME_ERROR_NONE;
 					goto fail_subDisconnect;
-				}
 			
 			/* Clear peer and do not count it. */
 			wasFound = SJME_JNI_TRUE;
@@ -358,12 +357,12 @@ skip_noPeers:
 	
 	/* All peers were removed, dispatch the no-peer handler. */
 	if (numPeers <= 0)
-		if (sjme_error_is(error = sjme_scritchaudio_core_peerNoneDispatch(
+		if (sjme_error_is(error = inState->intern->peerNoneDispatch(
 			inState, inConn, explicit)))
 		{
 			/* Connection was destroyed, can do nothing more. */
 			if (error == SJME_ERROR_AUDIO_DESTROYED)
-				return SJME_ERROR_NONE;
+				return SJME_ERROR_AUDIO_DESTROYED;
 			
 			return sjme_error_default(error);
 		}

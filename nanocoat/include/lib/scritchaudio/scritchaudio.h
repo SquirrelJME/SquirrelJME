@@ -20,6 +20,7 @@
 #include "sjme/alloc.h"
 #include "sjme/list.h"
 #include "lib/scritchany/scritchany.h"
+#include "sjme/native.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -282,6 +283,22 @@ typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState);
 	
 /**
+ * Loop iteration for audio processing, if there is no background thread
+ * for audio-processing.
+ *
+ * @param inState The ScritchAudio state.
+ * @param clock The current audio clock.
+ * @param expected44KHzSamples The number of expected samples to render at
+ * 44KHz.
+ * @return Any resultant error, if any.
+ * @since 2025/05/28
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_loopIterateImplFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInValue sjme_jlong clock,
+	sjme_attrInValue sjme_jint expected44KHzSamples);
+	
+/**
  * Queries the MIDI ports and synths that are available to the system.
  *
  * @param inState The ScritchAudio state.
@@ -402,7 +419,7 @@ typedef struct sjme_scritchaudio_implFunctions
 	sjme_scritchaudio_disconnectFunc disconnect;
 	
 	/** Iterates the audio loop. */
-	sjme_scritchaudio_loopIterateFunc loopIterate;
+	sjme_scritchaudio_loopIterateImplFunc loopIterate;
 	
 	/** Queries the MIDI ports and synths available. */
 	sjme_scritchaudio_queryMidiPortsFunc queryMidiPorts;
@@ -462,6 +479,20 @@ typedef struct sjme_scritchaudio_time
 /** The sleeping rate when no audio is playing (nanos). */
 #define SJME_SCRITCHAUDIO_SLEEP_RATE_NS 0
 
+/**
+ * Represents an audio clock.
+ *
+ * @since 2025/05/28
+ */
+typedef struct sjme_scritchaudio_clock
+{
+	/** The base clock. */
+	sjme_jlong clockBase;
+
+	/** The current clock time. */
+	sjme_jlong clock;
+} sjme_scritchaudio_clock;
+
 struct sjme_scritchaudioBase
 {
 	/** The lock for audio streams and otherwise. */
@@ -472,6 +503,12 @@ struct sjme_scritchaudioBase
 
 	/** The front end. */
 	sjme_frontEnd frontEnd;
+
+	/** The audio clock. */
+	sjme_scritchaudio_clock clock;
+
+	/** The native abstraction layer to use. */
+	const sjme_nal* nal;
 	
 	/** Api Functions. */
 	const sjme_scritchaudio_apiFunctions* api;

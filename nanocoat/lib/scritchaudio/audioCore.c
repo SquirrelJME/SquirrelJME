@@ -43,11 +43,17 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 {
 	sjme_errorCode error;
 	sjme_scritchaudio result;
+	const sjme_nal* nal;
 	
 	if (inPool == NULL || outState == NULL || inImplFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inImplFunc->apiInit == NULL)
+		return sjme_error_notImplemented(0);
+
+	/* Use the given NAL. */
+	nal = &sjme_nal_default;
+	if (nal->nanoTime == NULL)
 		return sjme_error_notImplemented(0);
 
 	/* Allocate result. */
@@ -62,6 +68,20 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	result->api = &sjme_scritchaudio_coreFunctions;
 	result->impl = inImplFunc;
 	result->intern = &sjme_scritchaudio_coreInterns;
+	result->nal = nal;
+
+	/* Set clock base, if wrapped use that as it was first. */
+	if (wrappedStated != NULL)
+		memmove(&result->clock, &wrappedStated->clock,
+			sizeof(result->clock));
+
+	/* Otherwise, derive from the monotonic clock. */
+	else
+	{
+		result->nal->nanoTime(&result->clock.clockBase);
+		memmove(&result->clock.clock, &result->clock.clockBase,
+			sizeof(result->clock.clock));
+	}
 
 	/* Use a "sleeping" rate so if manually polling the CPU does not burn. */
 	sjme_atomic_sjme_jint_set(&result->pollDelayMillis,

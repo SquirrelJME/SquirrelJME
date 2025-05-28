@@ -75,14 +75,54 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerNone(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchaudio_softmix_sourcePeerDisconnect(
+static sjme_errorCode sjme_scritchaudio_softmix_peerDisconnect(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInNotNull sjme_scritchaudio_connection inPeer,
 	sjme_attrInValue sjme_jboolean explicit)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_scritchaudio wrappedState;
+	sjme_scritchaudio_connection wrappedConn;
+	sjme_scritchaudio_connection wrappedPeer;
+	
+	if (inState == NULL || inConn == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inState != inConn->inState)
+		return SJME_ERROR_AUDIO_STATE_MISMATCH - 1;
+
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	if (wrappedState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Is this a wrapped connection we know about? */
+	wrappedConn = NULL;
+	if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM)
+		wrappedConn = SJME_AS_AUDIO_CONN(
+			SJME_AS_AUDIO_STREAM(inConn)->data.wrapped);
+	else if (inConn->type == SJME_SCRITCHAUDIO_CONN_SOURCE)
+		wrappedConn = SJME_AS_AUDIO_CONN(
+			SJME_AS_AUDIO_SOURCE(inConn)->data.wrapped);
+	
+	/* Is this a wrapped peer we know about? */
+	wrappedPeer = NULL;
+	if (inPeer->type == SJME_SCRITCHAUDIO_CONN_STREAM)
+		wrappedPeer = SJME_AS_AUDIO_CONN(
+			SJME_AS_AUDIO_STREAM(inPeer)->data.wrapped);
+	else if (inPeer->type == SJME_SCRITCHAUDIO_CONN_SOURCE)
+		wrappedPeer = SJME_AS_AUDIO_CONN(
+			SJME_AS_AUDIO_SOURCE(inPeer)->data.wrapped);
+
+	/* Do we know about this connection type? */
+	/* Forward disconnect signal to the lower level. */
+	if (wrappedConn != NULL && wrappedPeer != NULL)
+		if (wrappedConn->peerDisconnect != NULL)
+			return wrappedConn->peerDisconnect(wrappedState,
+				wrappedConn, wrappedPeer, explicit);
+
+	/* Otherwise, do nothing. */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
@@ -92,7 +132,7 @@ sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 {
 	sjme_errorCode error;
 	sjme_scritchaudio wrappedState;
-	sjme_scritchaudio_source result;
+	sjme_scritchaudio_source wrapped;
 	
 	if (inState == NULL || inStream == NULL || inSource == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -103,20 +143,17 @@ sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward to wrapped. */
-	result = NULL;
+	wrapped = NULL;
 	if (sjme_error_is(error = wrappedState->api->sourceAttach(wrappedState,
-		inStream->data.wrapped, &result,
-		sjme_scritchaudio_softmix_wrappedRender, NULL)) || result == NULL)
+		inStream->data.wrapped, &wrapped,
+		sjme_scritchaudio_softmix_wrappedRender, NULL)) || wrapped == NULL)
 		return sjme_error_default(error);
 
 	/* Initialize data. */
-	result->connection.inState = inState;
-	result->connection.noPeers = sjme_scritchaudio_softmix_peerNone;
-	result->connection.peerDisconnect =
-		sjme_scritchaudio_softmix_sourcePeerDisconnect;
-	
-	/* Set wrapped. */
-	inSource->data.wrapped = result;
+	inSource->connection.noPeers = sjme_scritchaudio_softmix_peerNone;
+	inSource->connection.peerDisconnect =
+		sjme_scritchaudio_softmix_peerDisconnect;
+	inSource->data.wrapped = wrapped;
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -172,9 +209,11 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	/* Fallback to less precise formats. */
 	while (wrapped == NULL)
 	{
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("streamCreate(%d, %d, %d)",
 			inFormat, inRate, inChannels);
+#endif
 		
 		/* Try to use the requested format. */
 		if (sjme_error_is(error = wrappedState->api->streamCreate(
@@ -226,6 +265,12 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	result->channels = origChannels;
 	result->data.wrapped = wrapped;
 	result->connection.noPeers = sjme_scritchaudio_softmix_peerNone;
+	result->connection.peerDisconnect =
+		sjme_scritchaudio_softmix_peerDisconnect;
+
+	/* We created a stream, so make sure the audio playback is faster. */
+	sjme_atomic_sjme_jint_set(&inState->pollDelayMillis, 25);
+	sjme_atomic_sjme_jint_set(&inState->pollDelayNanos, 0);
 
 	/* Success! */
 	*outStream = result;

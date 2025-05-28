@@ -42,7 +42,7 @@ static const int
 	-1,
 };
 
-static sjme_errorCode sjme_scritchaudio_oss_streamNoPeers(
+static sjme_errorCode sjme_scritchaudio_oss_peerNone(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInValue sjme_jboolean explicit)
@@ -52,36 +52,33 @@ static sjme_errorCode sjme_scritchaudio_oss_streamNoPeers(
 
 	if (inState != inConn->inState)
 		return SJME_ERROR_AUDIO_STATE_MISMATCH - 7;
-	
-	sjme_message("oss_streamNoPeers(%p, %p, %d)",
+
+	/* OSS does not care about any peers. */
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+	sjme_message("oss_peerNone(%p, %p, %d)",
 		inState, inConn, explicit);
+#endif
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchaudio_oss_sourceNoPeers(
+static sjme_errorCode sjme_scritchaudio_oss_peerDisconnect(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
+	sjme_attrInNotNull sjme_scritchaudio_connection inPeer,
 	sjme_attrInValue sjme_jboolean explicit)
 {
 	if (inState == NULL || inConn == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState != inConn->inState)
-		return SJME_ERROR_AUDIO_STATE_MISMATCH - 8;
-	
-	sjme_message("oss_sourceNoPeers(%p, %p, %d)",
-		inState, inConn, explicit);
-	return SJME_ERROR_NONE;
-}
+		return SJME_ERROR_AUDIO_STATE_MISMATCH - 7;
 
-static sjme_errorCode sjme_scritchaudio_oss_sourcePeerDisconnect(
-	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
-	sjme_attrInNotNull sjme_scritchaudio_connection inPeer,
-	sjme_attrInValue sjme_jboolean explicit)
-{
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* OSS does not care about any peers. */
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+	sjme_message("oss_peerDisconnect(%p, %p, %p, %d)",
+		inState, inConn, inPeer, explicit);
+#endif
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchaudio_oss_sourceAttach(
@@ -93,9 +90,9 @@ sjme_errorCode sjme_scritchaudio_oss_sourceAttach(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Just set peer disconnection functions, despite not doing much. */
-	inSource->connection.noPeers = sjme_scritchaudio_oss_sourceNoPeers;
+	inSource->connection.noPeers = sjme_scritchaudio_oss_peerNone;
 	inSource->connection.peerDisconnect =
-		sjme_scritchaudio_oss_sourcePeerDisconnect;
+		sjme_scritchaudio_oss_peerDisconnect;
 
 	/* OSS is completely manually polled, so nothing is ever registered. */
 	return SJME_ERROR_NONE;
@@ -170,7 +167,8 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 	result->rate = inRate;
 	result->channels = inChannels;
 	result->data.fd = fd;
-	result->connection.noPeers = sjme_scritchaudio_oss_streamNoPeers;
+	result->connection.noPeers = sjme_scritchaudio_oss_peerNone;
+	result->connection.peerDisconnect = sjme_scritchaudio_oss_peerDisconnect;
 
 	/* Return the resultant stream. */
 	*outStream = result;
