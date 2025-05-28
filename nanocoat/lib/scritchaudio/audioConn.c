@@ -95,12 +95,6 @@ static sjme_errorCode sjme_scritchaudio_core_peerNoneSource(
 	inStream = inSource->inStream;
 	if (inStream != NULL)
 	{
-		/* Disconnecting from source. */
-		if (sjme_error_is(error = sjme_scritchaudio_core_peerDisconnect(
-			inState, SJME_AS_AUDIO_CONN(inSource),
-			SJME_AS_AUDIO_CONN(inStream), SJME_JNI_TRUE)))
-			return sjme_error_default(error);
-		
 		/* Disassociate. */
 		inSource->inStream = NULL;
 		
