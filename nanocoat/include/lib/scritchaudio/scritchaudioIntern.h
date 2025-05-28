@@ -60,7 +60,12 @@ sjme_errorCode sjme_scritchaudio_core_peerConnect(
 sjme_errorCode sjme_scritchaudio_core_peerDisconnect(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
-	sjme_attrInNotNull sjme_scritchaudio_connection inPeer,
+	sjme_attrInNullable sjme_scritchaudio_connection inPeer,
+	sjme_attrInValue sjme_jboolean explicit);
+	
+sjme_errorCode sjme_scritchaudio_core_peerNoneDispatch(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInValue sjme_jboolean explicit);
 	
 sjme_errorCode sjme_scritchaudio_core_sourceAttach(

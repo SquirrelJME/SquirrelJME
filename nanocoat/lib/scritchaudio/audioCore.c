@@ -31,6 +31,7 @@ static const sjme_scritchaudio_internFunctions sjme_scritchaudio_coreInterns =
 {
 	.peerConnect = sjme_scritchaudio_core_peerConnect,
 	.peerDisconnect = sjme_scritchaudio_core_peerDisconnect,
+	.peerNoneDispatch = sjme_scritchaudio_core_peerNoneDispatch,
 };
 
 static sjme_errorCode sjme_scritchaudio_core_initActual(

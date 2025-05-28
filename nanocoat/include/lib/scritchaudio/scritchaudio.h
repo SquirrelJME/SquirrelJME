@@ -426,6 +426,9 @@ typedef struct sjme_scritchaudio_internFunctions
 	
 	/** Disconnect two peers. */
 	sjme_scritchaudio_peerConnectFunc peerDisconnect;
+	
+	/** Dispatch peer none. */
+	sjme_scritchaudio_peerNoneFunc peerNoneDispatch;
 } sjme_scritchaudio_internFunctions;
 
 /**

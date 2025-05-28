@@ -51,10 +51,11 @@ static sjme_errorCode sjme_scritchaudio_oss_streamNoPeers(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState != inConn->inState)
-		return SJME_ERROR_INVALID_ARGUMENT;
+		return SJME_ERROR_AUDIO_STATE_MISMATCH - 7;
 	
-	sjme_todo("Impl? %d", explicit);
-	return sjme_error_notImplemented(0);
+	sjme_message("oss_streamNoPeers(%p, %p, %d)",
+		inState, inConn, explicit);
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchaudio_oss_sourceNoPeers(
@@ -66,10 +67,11 @@ static sjme_errorCode sjme_scritchaudio_oss_sourceNoPeers(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState != inConn->inState)
-		return SJME_ERROR_INVALID_ARGUMENT;
+		return SJME_ERROR_AUDIO_STATE_MISMATCH - 8;
 	
-	sjme_todo("Impl? %d", explicit);
-	return sjme_error_notImplemented(0);
+	sjme_message("oss_sourceNoPeers(%p, %p, %d)",
+		inState, inConn, explicit);
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchaudio_oss_sourcePeerDisconnect(

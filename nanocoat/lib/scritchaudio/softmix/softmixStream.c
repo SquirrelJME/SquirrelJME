@@ -45,28 +45,30 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerNone(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState != inConn->inState)
-		return SJME_ERROR_INVALID_ARGUMENT;
+		return SJME_ERROR_AUDIO_STATE_MISMATCH - 1;
 
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
 	if (wrappedState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
-	/* Only forward disconnect if explicit. */
-	if (explicit)
+	/* Is this a wrapped connection we know about? */
+	wrappedConn = NULL;
+	if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM)
+		wrappedConn = SJME_AS_AUDIO_CONN(
+			SJME_AS_AUDIO_STREAM(inConn)->data.wrapped);
+	else if (inConn->type == SJME_SCRITCHAUDIO_CONN_SOURCE)
+		wrappedConn = SJME_AS_AUDIO_CONN(
+			SJME_AS_AUDIO_SOURCE(inConn)->data.wrapped);
+
+	/* Do we know about this connection type? */
+	if (wrappedConn != NULL)
 	{
-		/* Is this a wrapped connection we know about? */
-		wrappedConn = NULL;
-		if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM)
-			wrappedConn = SJME_AS_AUDIO_CONN(
-				SJME_AS_AUDIO_STREAM(inConn)->data.wrapped);
-		else if (inConn->type == SJME_SCRITCHAUDIO_CONN_SOURCE)
-			wrappedConn = SJME_AS_AUDIO_CONN(
-				SJME_AS_AUDIO_SOURCE(inConn)->data.wrapped);
-		
-		/* Handle disconnect if we know about this. */
-		if (wrappedConn != NULL)
+		/* Handle disconnect if explicit, otherwise soft dispatch */
+		if (explicit)
 			return wrappedState->api->disconnect(wrappedState, wrappedConn);
+		return wrappedState->intern->peerNoneDispatch(wrappedState,
+			wrappedConn, SJME_JNI_FALSE);
 	}
 
 	/* Otherwise, do nothing. */
@@ -108,6 +110,7 @@ sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 		return sjme_error_default(error);
 
 	/* Initialize data. */
+	result->connection.inState = inState;
 	result->connection.noPeers = sjme_scritchaudio_softmix_peerNone;
 	result->connection.peerDisconnect =
 		sjme_scritchaudio_softmix_sourcePeerDisconnect;
