@@ -17,8 +17,6 @@
 
 #define FORWARD_DESC_attach \
 	DESC_METHOD(DESC_AUDIOCONN, DESC_AUDIOSTREAM DESC_AUDIORENDERER)
-#define FORWARD_DESC_create \
-	DESC_METHOD(DESC_AUDIOSTREAM, DESC_STRING DESC_INT DESC_INT DESC_INT)
 #define FORWARD_DESC_decoder \
 	DESC_METHOD(DESC_AUDIOPLAYER, DESC_STRING DESC_STRING DESC_INT \
 	DESC_INT DESC_INT DESC_ARRAY(DESC_BYTE) DESC_INT DESC_INT)
@@ -32,24 +30,22 @@
 	DESC_METHOD(DESC_MIDIPORT, DESC_STRING DESC_INT DESC_INT DESC_INT)
 #define FORWARD_DESC_midiRenderer \
 	DESC_METHOD(DESC_AUDIORENDERER, DESC_MIDIPORT)
+#define FORWARD_DESC_stream \
+	DESC_METHOD(DESC_AUDIOSTREAM, )
 
 #define FORWARD_DESC___attach \
 	DESC_METHOD(DESC_LONG, DESC_LONG DESC_LONG DESC_AUDIORENDERER)
 #define FORWARD_DESC___disconnect \
 	DESC_METHOD(DESC_VOID, DESC_LONG DESC_LONG)
-#define FORWARD_DESC___create \
-	DESC_METHOD(DESC_LONG, DESC_LONG DESC_STRING DESC_INT DESC_INT DESC_INT)
 #define FORWARD_DESC___dylibLoad \
 	DESC_METHOD(DESC_LONG, DESC_STRING DESC_STRING)
+#define FORWARD_DESC___stream \
+	DESC_METHOD(DESC_LONG, DESC_LONG)
 
 FORWARD_IMPL(AudioStream, attach,
 	jobject, Object,
 	FORWARD_IMPL_args(jobject stream, jobject renderer),
 	FORWARD_IMPL_pass(stream, renderer))
-FORWARD_IMPL(AudioStream, create,
-	jobject, Object,
-	FORWARD_IMPL_args(jstring name, jint format, jint rate, jint channels),
-	FORWARD_IMPL_pass(name, format, rate, channels))
 FORWARD_IMPL(AudioStream, decoder,
 	jobject, Object,
 	FORWARD_IMPL_args(jstring urlFile, jstring mime, jint format,
@@ -70,6 +66,10 @@ FORWARD_IMPL(AudioStream, midiRenderer,
 	jobject, Object,
 	FORWARD_IMPL_args(jobject port),
 	FORWARD_IMPL_pass(port))
+FORWARD_IMPL(AudioStream, stream,
+	jobject, Object,
+	FORWARD_IMPL_none(),
+	FORWARD_IMPL_none())
 
 static sjme_errorCode sjme_jni_renderAudio(
 	sjme_attrInNotNull sjme_scritchaudio inState,
@@ -123,47 +123,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __attach)(
 	return (sjme_intPointer)result;
 }
 
-JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __create)(
-	JNIEnv* env, jclass classy, jlong statePtr, jstring name, jint format,
-	jint rate, jint channels)
-{
-	sjme_errorCode error;
-	sjme_scritchaudio inState;
-	sjme_scritchaudio_stream result;
-	const char* nameChars;
-	jboolean nameCopy;
-
-	/* Recover state. */
-	inState = (sjme_scritchaudio)statePtr;
-	if (inState == NULL || name == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
-
-	/* Extract characters. */
-	nameChars = (*env)->GetStringUTFChars(env, name, &nameCopy);
-
-	/* Create native stream. */
-	result = NULL;
-	if (sjme_error_is(error = inState->api->streamCreate(inState, &result,
-		nameChars, format, rate, channels)) || result == NULL)
-	{
-		/* Free characters. */
-		(*env)->ReleaseStringUTFChars(env, name, nameChars);
-
-		sjme_jni_throwMLECallError(env, error);
-		return 0;
-	}
-
-	/* Free characters. */
-	(*env)->ReleaseStringUTFChars(env, name, nameChars);
-
-	/* Success! */
-	return (sjme_intPointer)result;
-}
-
-JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __disconnect)(
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(Emulated, __disconnect)(
 	JNIEnv* env, jclass classy, jlong statePtr, jlong connPtr)
 {
 	sjme_errorCode error;
@@ -176,15 +136,29 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __disconnect)(
 	if (inState == NULL || inConn == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
+		return;
 	}
 
 	/* Forward call. */
 	if (sjme_error_is(error = inState->api->disconnect(inState, inConn)))
-	{
 		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __stream)(
+	JNIEnv* env, jclass classy, jlong statePtr)
+{
+	sjme_scritchaudio inState;
+
+	/* Recover state. */
+	inState = (sjme_scritchaudio)statePtr;
+	if (inState == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return 0;
 	}
+
+	/* Return the native audio stream! */
+	return (sjme_intPointer)inState->stream;
 }
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __dylibLoad)(
@@ -287,20 +261,20 @@ fail_badPath:
 static const JNINativeMethod mleAudioStreamMethods[] =
 {
 	FORWARD_list(AudioStream, attach),
-	FORWARD_list(AudioStream, create),
 	FORWARD_list(AudioStream, decoder),
 	FORWARD_list(AudioStream, decoderSupports),
 	FORWARD_list(AudioStream, disconnect),
 	FORWARD_list(AudioStream, midiPort),
 	FORWARD_list(AudioStream, midiRenderer),
+	FORWARD_list(AudioStream, stream),
 };
 
 static const JNINativeMethod mleEmulAudioStreamMethods[] =
 {
 	FORWARD_list(Emulated, __attach),
-	FORWARD_list(Emulated, __create),
 	FORWARD_list(Emulated, __disconnect),
 	FORWARD_list(Emulated, __dylibLoad),
+	FORWARD_list(Emulated, __stream),
 };
 
 jint JNICALL mleAudioStreamInit(JNIEnv* env, jclass classy)

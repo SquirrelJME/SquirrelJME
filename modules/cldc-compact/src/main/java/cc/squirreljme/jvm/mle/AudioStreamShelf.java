@@ -59,33 +59,6 @@ public final class AudioStreamShelf
 		throws MLECallError;
 	
 	/**
-	 * Creates a native audio stream.
-	 *
-	 * @param __name The name of the audio stream.
-	 * @param __format The format of the audio stream, {@code -1} means to
-	 * determine it automatically.
-	 * @param __rate The rate of the audio stream, {@code -1} means to
-	 * determine it automatically.
-	 * @param __channels The number of channels to use for the
-	 * stream, {@code -1} means to determine it automatically.
-	 * @return The resultant audio stream.
-	 * @throws MLECallError On null arguments, invalid arguments, or if the
-	 * stream could not be created.
-	 * @since 2025/05/04
-	 */
-	@NotNull
-	@SquirrelJMEVendorApi
-	public static native AudioStreamBracket create(
-		@NotNull String __name,
-		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
-			int __format,
-		@MagicConstant(valuesFromClass = AudioStreamRate.class)
-			int __rate,
-		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
-			int __channels)
-		throws MLECallError;
-	
-	/**
 	 * Creates a decoder that is capable of playing the given audio format.
 	 *
 	 * @param __urlOrFile The URL or file name.
@@ -191,5 +164,18 @@ public final class AudioStreamShelf
 	@NotNull
 	public static native AudioStreamRenderer midiRenderer(
 		@NotNull MidiPortBracket __midiPort)
+		throws MLECallError;
+	
+	/**
+	 * Returns the native audio stream.
+	 *
+	 * @return The native audio stream.
+	 * @throws MLECallError On null arguments, invalid arguments, or if the
+	 * stream does not exist.
+	 * @since 2025/05/04
+	 */
+	@NotNull
+	@SquirrelJMEVendorApi
+	public static native AudioStreamBracket stream()
 		throws MLECallError;
 }

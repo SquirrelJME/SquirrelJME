@@ -51,7 +51,7 @@ static sjme_errorCode sjme_scritchaudio_oss_peerNone(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState != inConn->inState)
-		return SJME_ERROR_AUDIO_STATE_MISMATCH - 7;
+		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
 	/* OSS does not care about any peers. */
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
@@ -71,7 +71,7 @@ static sjme_errorCode sjme_scritchaudio_oss_peerDisconnect(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState != inConn->inState)
-		return SJME_ERROR_AUDIO_STATE_MISMATCH - 7;
+		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
 	/* OSS does not care about any peers. */
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)

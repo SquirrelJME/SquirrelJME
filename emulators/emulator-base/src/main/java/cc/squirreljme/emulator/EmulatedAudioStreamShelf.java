@@ -37,6 +37,9 @@ import org.jetbrains.annotations.Range;
  */
 public class EmulatedAudioStreamShelf
 {
+	/** The native stream. */
+	static volatile EmulatedAudioStreamBracket _stream;
+	
 	/** The state pointer. */
 	static volatile long _statePtr;
 	
@@ -76,43 +79,6 @@ public class EmulatedAudioStreamShelf
 				((EmulatedAudioStreamBracket)__stream).streamPtr,
 				__renderer), (EmulatedAudioStreamBracket)__stream,
 			__renderer);
-	}
-	
-	/**
-	 * Creates a native audio stream.
-	 *
-	 * @param __name The name of the audio stream.
-	 * @param __format The format of the audio stream, {@code -1} means to
-	 * use the preferred format that the system uses.
-	 * @param __rate The rate of the audio stream, {@code -1} means to use
-	 * the preferred rate that the system uses.
-	 * @param __channels The number of channels in the stream and their
-	 * mappings.
-	 * @return The resultant audio stream.
-	 * @throws MLECallError On null arguments, invalid arguments, or if the
-	 * stream could not be created.
-	 * @since 2025/05/04
-	 */
-	@NotNull
-	@SquirrelJMEVendorApi
-	public static AudioStreamBracket create(
-		@NotNull String __name,
-		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
-			int __format,
-		@MagicConstant(valuesFromClass = AudioStreamRate.class)
-			int __rate,
-		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
-			int __channels)
-		throws MLECallError
-	{
-		// Make sure the dynamic library is initialized
-		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
-		
-		// Create new stream and wrap it
-		return new EmulatedAudioStreamBracket(statePtr,
-			EmulatedAudioStreamShelf.__create(statePtr, __name,
-				__format, __rate, __channels),
-			__name, __format, __rate, __channels);
 	}
 	
 	/**
@@ -276,6 +242,39 @@ public class EmulatedAudioStreamShelf
 	}
 	
 	/**
+	 * Returns the native audio stream.
+	 *
+	 * @return The native audio stream.
+	 * @throws MLECallError On null arguments, invalid arguments, or if the
+	 * stream does not exist.
+	 * @since 2025/05/04
+	 */
+	@NotNull
+	@SquirrelJMEVendorApi
+	public static AudioStreamBracket stream()
+		throws MLECallError
+	{
+		// Make sure the dynamic library is initialized
+		long statePtr = EmulatedAudioStreamShelf.__dylibInit();
+		
+		// Load or setup stream?
+		EmulatedAudioStreamBracket result;
+		synchronized (EmulatedAudioStreamShelf.class)
+		{
+			// Already been cached?
+			result = EmulatedAudioStreamShelf._stream;
+			if (result != null)
+				return result;
+			
+			// Create wrapper for it
+			result = new EmulatedAudioStreamBracket(statePtr,
+				EmulatedAudioStreamShelf.__stream(statePtr));
+			EmulatedAudioStreamShelf._stream = result;
+			return result;
+		}
+	}
+	
+	/**
 	 * Attaches the given renderer to the stream.
 	 *
 	 * @param __statePtr The state pointer.
@@ -287,22 +286,6 @@ public class EmulatedAudioStreamShelf
 	 */
 	native static long __attach(long __statePtr, long __streamPtr,
 		AudioStreamRenderer __renderer)
-		throws MLECallError;
-	
-	/**
-	 * Creates a new audio stream.
-	 *
-	 * @param __statePtr The state pointer.
-	 * @param __name The audio stream name.
-	 * @param __format The stream format.
-	 * @param __rate The stream rate.
-	 * @param __channels The stream channels.
-	 * @return The audio stream pointer.
-	 * @throws MLECallError If it could not be created.
-	 * @since 2025/05/18
-	 */
-	native static long __create(long __statePtr, String __name, int __format,
-		int __rate, int __channels)
 		throws MLECallError;
 	
 	/**
@@ -414,4 +397,15 @@ public class EmulatedAudioStreamShelf
 				return Arrays.asList("pulse", "alsa", "oss");
 		}
 	}
+	
+	/**
+	 * Returns the native stream pointer.
+	 *
+	 * @param __statePtr The state pointer.
+	 * @return The audio stream pointer.
+	 * @throws MLECallError If it could not be obtained.
+	 * @since 2025/05/18
+	 */
+	native static long __stream(long __statePtr)
+		throws MLECallError;
 }

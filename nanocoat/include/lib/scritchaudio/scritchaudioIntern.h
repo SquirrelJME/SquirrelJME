@@ -36,6 +36,15 @@ sjme_errorCode sjme_scritchaudio_core_destroy(
 sjme_errorCode sjme_scritchaudio_core_disconnect(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn);
+	
+sjme_errorCode sjme_scritchaudio_core_fallbackNext(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_format origFormat,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate origRate,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels origChannels,
+	sjme_attrInOutNotNull sjme_scritchaudio_format* adjustFormat,
+	sjme_attrInOutNotNull sjme_scritchaudio_rate* adjustRate,
+	sjme_attrInOutNotNull sjme_scritchaudio_channels* adjustChannels);
 
 sjme_errorCode sjme_scritchaudio_core_init(
 	sjme_attrInNotNull sjme_alloc_pool inPool,

@@ -21,6 +21,11 @@
 
 #include <stddef.h>
 
+/* Floating point header, determines if software floats should be used. */
+#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+	#include <float.h>
+#endif
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -884,6 +889,55 @@ extern "C" {
 #else
 	/** Export as an undecorated symbol. */
 	#define SJME_DYLIB_EXPORT_UNDECORATED
+#endif
+
+/** Bitfield count for @c sjme_jboolean . */
+#define sjme_booleanBit 2
+
+/* Clang is completely broken with FLT_ROUNDS. */ 
+#if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_MSVC)
+	/** Assuming floating point rounds to nearest. */
+	#define SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST
+#elif !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+	#if defined(FLT_ROUNDS) && FLT_ROUNDS == 1
+		/** Has floating point that rounds to nearest. */
+		#define SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST
+	#endif
+#endif
+	
+/* 32-bit floating point matches Java? */
+#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H) && \
+	(defined(SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST) || \
+		defined(SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST)) && \
+	defined(FLT_EVAL_METHOD) && (FLT_EVAL_METHOD == 0) && \
+	defined(FLT_RADIX) && (FLT_RADIX == 2)
+	/* Compatible single floating point? */
+	#if !defined(SJME_CONFIG_HAS_FLOAT_SOFT) && \
+		defined(FLT_MANT_DIG) && (FLT_MANT_DIG == 24) && \
+		((defined(FLT_HAS_SUBNORM) && (FLT_HAS_SUBNORM == 1)) || \
+		(defined(__FLT_HAS_DENORM__) && (__FLT_HAS_DENORM__ == 1)))
+		/** Hardware single floating point. */
+		#define SJME_CONFIG_HAS_FLOAT_HARD
+	#endif
+
+	/* Compatible double floating point? */
+	#if !defined(SJME_CONFIG_HAS_DOUBLE_SOFT) && \
+		defined(DBL_MANT_DIG) && (DBL_MANT_DIG == 53) && \
+		((defined(DBL_HAS_SUBNORM) && (DBL_HAS_SUBNORM == 1)) || \
+		(defined(__DBL_HAS_DENORM__) && (__DBL_HAS_DENORM__ == 1)))
+		/** Hardware double floating point. */
+		#define SJME_CONFIG_HAS_DOUBLE_HARD
+	#endif
+#endif
+
+#if !defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	/** Has software single floating point. */
+	#define SJME_CONFIG_HAS_FLOAT_SOFT
+#endif
+
+#if !defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/** Has software double floating point. */
+	#define SJME_CONFIG_HAS_DOUBLE_SOFT
 #endif
 
 /* Missing standard C functions. */

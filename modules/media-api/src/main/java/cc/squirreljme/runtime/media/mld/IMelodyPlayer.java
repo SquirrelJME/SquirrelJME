@@ -135,11 +135,7 @@ public class IMelodyPlayer
 			AudioStreamBracket stream;
 			try
 			{
-				stream = AudioStreamShelf.create(
-					"SquirrelJME-MLD-Player",
-					AudioStreamFormat.FLOAT_F32,
-					AudioStreamRate.HZ_44100,
-					AudioStreamChannels.STEREO);
+				stream = AudioStreamShelf.stream();
 			}
 			catch (MLECallError __e)
 			{
@@ -181,9 +177,6 @@ public class IMelodyPlayer
 	{
 		synchronized (this)
 		{
-			// Clear out the old stream
-			AudioStreamBracket stream = this._stream;
-			
 			try
 			{
 				// Disconnect
@@ -192,13 +185,6 @@ public class IMelodyPlayer
 				{
 					this._connection = null;
 					AudioStreamShelf.disconnect(connection);
-				}
-				
-				// Destroy the stream
-				if (stream != null)
-				{
-					this._stream = null;
-					AudioStreamShelf.disconnect(stream);
 				}
 			}
 			catch (MLECallError __e)

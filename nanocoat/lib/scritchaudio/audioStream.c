@@ -22,8 +22,6 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 #define GROW_SIZE 8
 	sjme_errorCode error;
 	sjme_scritchaudio_source result;
-	sjme_list_sjme_scritchaudio_source* sources;
-	sjme_jint i, n, freeSlot;
 	
 	if (inState == NULL || inStream == NULL || outSource == NULL ||
 		renderFunc == NULL)
@@ -123,21 +121,7 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	if (sjme_error_is(error = inState->impl->streamCreate(inState,
 		&result, inName, inFormat, inRate, inChannels)) || result == NULL)
 		goto fail_implCreate;
-
-	/* Grab the lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(&inState->lock)))
-		goto fail_grabLock;
-
-	/* Fill in. */
-	if (sjme_error_is(error = sjme_list_injectGrow(inState->pool,
-		GROW_SIZE, &inState->streams, &result, sjme_scritchaudio_stream, 0)))
-		goto fail_inject;
 	
-	/* Release lock before returning. */
-	if (sjme_error_is(error = sjme_thread_spinLockRelease(&inState->lock,
-		NULL)))
-		goto fail_releaseLock;
-
 	/* Success! */
 	*outStream = result;
 	return SJME_ERROR_NONE;

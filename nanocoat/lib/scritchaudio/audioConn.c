@@ -49,7 +49,7 @@ static sjme_errorCode sjme_scritchaudio_core_peerNone(
 		sjme_message("(%p, %p ->%d ->%p, %d)", inState, inConn,
 			inConn->type, inConn->inState, explicit);
 		
-		return SJME_ERROR_AUDIO_STATE_MISMATCH - 2;
+		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 	}
 	
 	/* Call no-peers handler if one is specified. */
@@ -83,7 +83,7 @@ static sjme_errorCode sjme_scritchaudio_core_peerNoneSource(
 
 	/* Wrong owner? */
 	if (inState != inSource->connection.inState)
-		return SJME_ERROR_AUDIO_STATE_MISMATCH - 3;
+		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
 	/* Generic no-peer handler. */
 	if (sjme_error_is(error = sjme_scritchaudio_core_peerNone(inState,
@@ -166,7 +166,7 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 
 	/* Must be of the same state. */
 	if (inConn->inState != inState)
-		return SJME_ERROR_AUDIO_STATE_MISMATCH - 4;
+		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
 	/* Lock current connection. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(&inConn->lock)))
@@ -244,7 +244,7 @@ sjme_errorCode sjme_scritchaudio_core_peerConnect(
 
 	/* Must be of the same state. */
 	if (inState != inConn->inState && inState != inPeer->inState)
-		return SJME_ERROR_AUDIO_STATE_MISMATCH - 5;
+		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
@@ -297,7 +297,7 @@ sjme_errorCode sjme_scritchaudio_core_peerDisconnect(
 	/* Must be of the same state. */
 	if (inState != inConn->inState &&
 		(inPeer != NULL && inState != inPeer->inState))
-		return SJME_ERROR_AUDIO_STATE_MISMATCH - 6;
+		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
 	/* Lock current connection. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(&inConn->lock)))

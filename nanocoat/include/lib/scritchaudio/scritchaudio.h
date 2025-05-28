@@ -242,6 +242,55 @@ typedef sjme_errorCode (*sjme_scritchaudio_disconnectFunc)(
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn);
 
 /**
+ * Determines the next fallback to use.
+ *
+ * @param inState The input state.
+ * @param origFormat The original format.
+ * @param origRate The original rate.
+ * @param origChannels The original channels.
+ * @param adjustFormat The adjusted format.
+ * @param adjustRate The adjusted rate.
+ * @param adjustChannels The adjusted channels.
+ * @return On any resultant error, if any.
+ * @since 2025/05/28
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_fallbackNextFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_format origFormat,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate origRate,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels origChannels,
+	sjme_attrInOutNotNull sjme_scritchaudio_format* adjustFormat,
+	sjme_attrInOutNotNull sjme_scritchaudio_rate* adjustRate,
+	sjme_attrInOutNotNull sjme_scritchaudio_channels* adjustChannels);
+	
+/**
+ * Loop iteration for audio processing, if there is no background thread
+ * for audio-processing.
+ *
+ * @param inState The ScritchAudio state.
+ * @return Any resultant error, if any.
+ * @since 2025/05/15
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState);
+	
+/**
+ * Loop iteration for audio processing, if there is no background thread
+ * for audio-processing.
+ *
+ * @param inState The ScritchAudio state.
+ * @param clock The current audio clock.
+ * @param expected44KHzSamples The number of expected samples to render at
+ * 44KHz.
+ * @return Any resultant error, if any.
+ * @since 2025/05/28
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_loopIterateImplFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInValue sjme_jlong clock,
+	sjme_attrInValue sjme_jint expected44KHzSamples);
+
+/**
  * Called when there are no peers.
  *
  * @param inState The ScritchAudio state.
@@ -270,33 +319,6 @@ typedef sjme_errorCode (*sjme_scritchaudio_peerConnectFunc)(
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInNotNull sjme_scritchaudio_connection inPeer,
 	sjme_attrInValue sjme_jboolean explicit);
-	
-/**
- * Loop iteration for audio processing, if there is no background thread
- * for audio-processing.
- *
- * @param inState The ScritchAudio state.
- * @return Any resultant error, if any.
- * @since 2025/05/15
- */
-typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
-	sjme_attrInNotNull sjme_scritchaudio inState);
-	
-/**
- * Loop iteration for audio processing, if there is no background thread
- * for audio-processing.
- *
- * @param inState The ScritchAudio state.
- * @param clock The current audio clock.
- * @param expected44KHzSamples The number of expected samples to render at
- * 44KHz.
- * @return Any resultant error, if any.
- * @since 2025/05/28
- */
-typedef sjme_errorCode (*sjme_scritchaudio_loopIterateImplFunc)(
-	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInValue sjme_jlong clock,
-	sjme_attrInValue sjme_jint expected44KHzSamples);
 	
 /**
  * Queries the MIDI ports and synths that are available to the system.
@@ -400,9 +422,6 @@ typedef struct sjme_scritchaudio_apiFunctions
 	
 	/** Attaches or detaches a source. */
 	sjme_scritchaudio_sourceAttachFunc sourceAttach;
-	
-	/** Create a new audio stream. */
-	sjme_scritchaudio_streamCreateFunc streamCreate;
 } sjme_scritchaudio_apiFunctions;
 
 /**
@@ -438,6 +457,9 @@ typedef struct sjme_scritchaudio_implFunctions
  */
 typedef struct sjme_scritchaudio_internFunctions
 {
+	/** Determines the next fallback. */
+	sjme_scritchaudio_fallbackNextFunc fallbackNext;
+	
 	/** Connect two peers. */
 	sjme_scritchaudio_peerConnectFunc peerConnect;
 	
@@ -446,6 +468,9 @@ typedef struct sjme_scritchaudio_internFunctions
 	
 	/** Dispatch peer none. */
 	sjme_scritchaudio_peerNoneFunc peerNoneDispatch;
+	
+	/** Create a new audio stream. */
+	sjme_scritchaudio_streamCreateFunc streamCreate;
 } sjme_scritchaudio_internFunctions;
 
 /**
@@ -543,8 +568,8 @@ struct sjme_scritchaudioBase
 	/** The delay between manual polls (Nanos). */
 	sjme_atomic_sjme_jint pollDelayNanos;
 
-	/** The currently active audio streams. */
-	sjme_list_sjme_scritchaudio_stream* streams;
+	/** The output audio stream. */
+	sjme_scritchaudio_stream stream;
 };
 
 /**

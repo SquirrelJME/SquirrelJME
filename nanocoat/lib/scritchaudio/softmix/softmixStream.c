@@ -9,19 +9,6 @@
 
 #include "lib/scritchaudio/softmix/softmixIntern.h"
 
-/** Fallback for audio formats. */
-static const sjme_scritchaudio_format
-	sjme_scritchaudio_formatFallback[SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS] =
-{
-	SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS,
-	SJME_SCRITCHAUDIO_FORMAT_BYTE_U8,
-	SJME_SCRITCHAUDIO_FORMAT_BYTE_U8,
-	SJME_SCRITCHAUDIO_FORMAT_BYTE_U8,
-	SJME_SCRITCHAUDIO_FORMAT_SHORT_S16,
-	SJME_SCRITCHAUDIO_FORMAT_INT_S24,
-	SJME_SCRITCHAUDIO_FORMAT_INT_S32,
-};
-
 static sjme_errorCode sjme_scritchaudio_softmix_wrappedRender(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_source inSource)
@@ -45,7 +32,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerNone(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState != inConn->inState)
-		return SJME_ERROR_AUDIO_STATE_MISMATCH - 1;
+		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
@@ -89,7 +76,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerDisconnect(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState != inConn->inState)
-		return SJME_ERROR_AUDIO_STATE_MISMATCH - 1;
+		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
@@ -181,17 +168,6 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	wrappedState = inState->wrappedState;
 	if (wrappedState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-
-	/* Try to use the requested format. */
-	wrapped = NULL;
-	if (sjme_error_is(error = wrappedState->api->streamCreate(
-		wrappedState, &wrapped, inName, inFormat, inRate, inChannels)) ||
-		wrapped == NULL)
-	{
-		/* Only check against unsupported format. */
-		if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
-			return sjme_error_default(error);
-	}
 	
 	/* If automatic, choose a format to use. */
 	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
@@ -207,6 +183,7 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	origChannels = inChannels;
 
 	/* Fallback to less precise formats. */
+	wrapped = NULL;
 	while (wrapped == NULL)
 	{
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
@@ -216,34 +193,19 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 #endif
 		
 		/* Try to use the requested format. */
-		if (sjme_error_is(error = wrappedState->api->streamCreate(
+		if (sjme_error_is(error = wrappedState->intern->streamCreate(
 			wrappedState, &wrapped, inName, inFormat, inRate, inChannels)) ||
 			wrapped == NULL)
 		{
 			/* Only check against unsupported format. */
 			if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
 				return sjme_error_default(error);
-
-			/* Use a fallback audio format. */
-			inFormat = sjme_scritchaudio_formatFallback[inFormat];
-			if (inFormat == SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS)
-			{
-				/* Maybe the rate is too high? */
-				inRate /= 2;
-				if (inRate < SJME_SCRITCHAUDIO_RATE_HZ_8000)
-				{
-					/* Maybe the number of channels is not supported? */
-					inChannels /= 2;
-					if (inChannels <= 0)
-						return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
-
-					/* We reduced the channel count, so revert the rate. */
-					inRate = origRate;
-				}
-
-				/* We reduced the rate, so revert the format. */
-				inFormat = origFormat;
-			}
+			
+			/* Reduce the rate. */
+			if (sjme_error_is(error = inState->intern->fallbackNext(
+				inState, origFormat, origRate, origChannels,
+				&inFormat, &inRate, &inChannels)))
+				return sjme_error_default(error);
 		}
 	}
 	
