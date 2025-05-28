@@ -67,7 +67,8 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
 	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
-	sjme_attrInNotNull sjme_scritchaudio wrappedStated)
+	sjme_attrInNotNull sjme_scritchaudio wrappedStated,
+	sjme_attrInValue sjme_jboolean isHigher)
 {
 	sjme_errorCode error;
 	sjme_scritchaudio result;
@@ -144,50 +145,55 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 
 	/* Mark loop thread as ready. */
 	sjme_atomic_sjme_jint_set(&result->loopThreadReady, 1);
-	
-	/* Use an automatically determined format. */
-#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
-	inFormat = SJME_SCRITCHAUDIO_FORMAT_FLOAT_F32;
-#else
-	inFormat = SJME_SCRITCHAUDIO_FORMAT_INT_S32;
-#endif
-	inRate = SJME_SCRITCHAUDIO_RATE_HZ_48000;
-	inChannels = SJME_SCRITCHAUDIO_CHANNELS_STEREO;
 
-	/* Remember the original values, for loop returning. */
-	origFormat = inFormat;
-	origRate = inRate;
-	origChannels = inChannels;
-
-	/* Fallback to less precise formats. */
-	while (onlyStream == NULL)
+	/* Only create the stream when this is the higher level layer. */
+	if (isHigher)
 	{
+		/* Use an automatically determined format. */
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+		inFormat = SJME_SCRITCHAUDIO_FORMAT_FLOAT_F32;
+#else
+		inFormat = SJME_SCRITCHAUDIO_FORMAT_INT_S32;
+#endif
+		inRate = SJME_SCRITCHAUDIO_RATE_HZ_48000;
+		inChannels = SJME_SCRITCHAUDIO_CHANNELS_STEREO;
+
+		/* Remember the original values, for loop returning. */
+		origFormat = inFormat;
+		origRate = inRate;
+		origChannels = inChannels;
+
+		/* Fallback to less precise formats. */
+		onlyStream = NULL;
+		while (onlyStream == NULL)
+		{
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
-		/* Debug. */
-		sjme_message("streamCreate(%d, %d, %d)",
-			inFormat, inRate, inChannels);
+			/* Debug. */
+			sjme_message("streamCreate(%d, %d, %d)",
+				inFormat, inRate, inChannels);
 #endif
 		
-		/* Try to use the requested format. */
-		if (sjme_error_is(error = result->intern->streamCreate(
-			result, &onlyStream, "SquirrelJME",
-			inFormat, inRate, inChannels)) ||
-			onlyStream == NULL)
-		{
-			/* Only check against unsupported format. */
-			if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
-				goto fail_noFormats;
+			/* Try to use the requested format. */
+			if (sjme_error_is(error = result->intern->streamCreate(
+				result, &onlyStream, "SquirrelJME",
+				inFormat, inRate, inChannels)) ||
+				onlyStream == NULL)
+			{
+				/* Only check against unsupported format. */
+				if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
+					goto fail_noFormats;
 
-			/* Reduce the rate. */
-			if (sjme_error_is(error = result->intern->fallbackNext(
-				result, origFormat, origRate, origChannels,
-				&inFormat, &inRate, &inChannels)))
-				goto fail_noFormats;
+				/* Reduce the rate. */
+				if (sjme_error_is(error = result->intern->fallbackNext(
+					result, origFormat, origRate, origChannels,
+					&inFormat, &inRate, &inChannels)))
+					goto fail_noFormats;
+			}
 		}
-	}
 
-	/* Set the only audio stream. */
-	result->stream = onlyStream;
+		/* Set the only audio stream. */
+		result->stream = onlyStream;
+	}
 
 	/* Success! */
 	*outState = result;
@@ -275,19 +281,20 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	/* Normal top-level initialization. */
 	if (!needSoftMixWrapper)
 		return sjme_scritchaudio_core_initActual(inPool, outState,
-			initFrontEnd, inImplFunc, NULL);
+			initFrontEnd, inImplFunc, NULL, SJME_JNI_TRUE);
 
 	/* Initialize the lower level state. */
 	lower = NULL;
 	sjme_message("State Lower %p", lower);
 	if (sjme_error_is(error = sjme_scritchaudio_core_initActual(inPool,
-		&lower, NULL, inImplFunc, NULL)) || lower == NULL)
+		&lower, NULL, inImplFunc, NULL, SJME_JNI_FALSE)) || lower == NULL)
 		goto fail_initLower;
 
 	/* Initialize upper wrapper. */
 	higher = NULL;
 	if (sjme_error_is(error = sjme_scritchaudio_core_initActual(inPool,
-		&higher, initFrontEnd, &sjme_scritchaudio_softmixFunctions, lower)) ||
+		&higher, initFrontEnd, &sjme_scritchaudio_softmixFunctions,
+		lower, SJME_JNI_TRUE)) ||
 		higher == NULL)
 		goto fail_initHigher;
 

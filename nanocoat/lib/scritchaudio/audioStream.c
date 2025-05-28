@@ -121,6 +121,10 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	if (sjme_error_is(error = inState->impl->streamCreate(inState,
 		&result, inName, inFormat, inRate, inChannels)) || result == NULL)
 		goto fail_implCreate;
+
+	/* No stream has been set yet? */
+	if (inState->stream == NULL)
+		inState->stream = result;
 	
 	/* Success! */
 	*outStream = result;
