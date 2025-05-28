@@ -143,6 +143,8 @@ public class IMelodyPlayer
 			}
 			catch (MLECallError __e)
 			{
+				__e.printStackTrace();
+				
 				MediaException toss = new MediaException(__e.getMessage());
 				toss.initCause(__e);
 				throw toss;
@@ -160,6 +162,8 @@ public class IMelodyPlayer
 			}
 			catch (MLECallError __e)
 			{
+				__e.printStackTrace();
+				
 				MediaException toss = new MediaException(__e.getMessage());
 				toss.initCause(__e);
 				throw toss;
@@ -179,7 +183,6 @@ public class IMelodyPlayer
 		{
 			// Clear out the old stream
 			AudioStreamBracket stream = this._stream;
-			this._stream = null;
 			
 			try
 			{
@@ -192,10 +195,16 @@ public class IMelodyPlayer
 				}
 				
 				// Destroy the stream
-				AudioStreamShelf.disconnect(stream);
+				if (stream != null)
+				{
+					this._stream = null;
+					AudioStreamShelf.disconnect(stream);
+				}
 			}
 			catch (MLECallError __e)
 			{
+				__e.printStackTrace();
+				
 				MediaException toss = new MediaException(__e.getMessage());
 				toss.initCause(__e);
 				throw toss;

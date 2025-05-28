@@ -119,6 +119,12 @@ SJME_LIST_DECLARE(sjme_scritchaudio_connection, 0);
 /** Cast to connection type. */
 #define SJME_AS_AUDIO_CONN(x) ((sjme_scritchaudio_connection)(x))
 
+/** Cast to stream type. */
+#define SJME_AS_AUDIO_STREAM(x) ((sjme_scritchaudio_stream)(x))
+
+/** Cast to source type. */
+#define SJME_AS_AUDIO_SOURCE(x) ((sjme_scritchaudio_source)(x))
+
 /**
  * The audio format for audio encoding.
  *
@@ -240,13 +246,15 @@ typedef sjme_errorCode (*sjme_scritchaudio_disconnectFunc)(
  * @param inState The ScritchAudio state.
  * @param inConn The connection being connected/disconnected.
  * @param inPeer The peer that connected/disconnected.
+ * @param explicit Is this an explicit connection?
  * @return Any resultant error, if any.
  * @since 2025/05/26
  */
 typedef sjme_errorCode (*sjme_scritchaudio_peerConnectFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
-	sjme_attrInNotNull sjme_scritchaudio_connection inPeer);
+	sjme_attrInNotNull sjme_scritchaudio_connection inPeer,
+	sjme_attrInValue sjme_jboolean explicit);
 	
 /**
  * Loop iteration for audio processing, if there is no background thread
@@ -527,6 +535,9 @@ struct sjme_scritchaudio_connectionBase
 
 	/** The connections this is connected to. */
 	sjme_list_sjme_scritchaudio_connection* peers;
+
+	/** Is this disconnecting? */
+	sjme_atomic_sjme_jint disconnecting;
 };
 
 struct sjme_scritchaudio_streamBase

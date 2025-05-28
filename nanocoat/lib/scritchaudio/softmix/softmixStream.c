@@ -52,7 +52,8 @@ static sjme_errorCode sjme_scritchaudio_softmix_sourceNoPeers(
 static sjme_errorCode sjme_scritchaudio_softmix_sourcePeerDisconnect(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
-	sjme_attrInNotNull sjme_scritchaudio_connection inPeer)
+	sjme_attrInNotNull sjme_scritchaudio_connection inPeer,
+	sjme_attrInValue sjme_jboolean explicit)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -192,6 +193,7 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	/* with the renderer format. If a renderer happens to have the same */
 	/* format, then we do no conversion. */
 	result->connection.inState = inState;
+	result->connection.type = SJME_SCRITCHAUDIO_CONN_STREAM;
 	result->format = origFormat;
 	result->rate = origRate;
 	result->channels = origChannels;

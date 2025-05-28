@@ -12,14 +12,6 @@
 #include "lib/scritchaudio/scritchaudio.h"
 #include "lib/scritchaudio/scritchaudioIntern.h"
 
-static sjme_errorCode sjme_scritchaudio_core_sourceNoPeers(
-	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
-{
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
 sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
@@ -45,9 +37,9 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 
 	/* Initialize state. */
 	result->connection.inState = inState;
+	result->connection.type = SJME_SCRITCHAUDIO_CONN_SOURCE;
 	result->inStream = inStream;
 	result->renderFunc = renderFunc;
-	result->connection.noPeers = sjme_scritchaudio_core_sourceNoPeers;
 	if (initFrontEnd != NULL)
 		memmove(&result->frontEnd, initFrontEnd, sizeof(*initFrontEnd));
 
@@ -69,7 +61,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	/* Connect peers. */
 	if (sjme_error_is(error = inState->intern->peerConnect(inState,
 		SJME_AS_AUDIO_CONN(inStream),
-		SJME_AS_AUDIO_CONN(result))))
+		SJME_AS_AUDIO_CONN(result), SJME_JNI_TRUE)))
 		goto fail_peerConnect;
 
 	/* Release the lock. */
