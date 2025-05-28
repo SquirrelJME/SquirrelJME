@@ -33,20 +33,44 @@ static sjme_errorCode sjme_scritchaudio_softmix_wrappedRender(
 	return sjme_error_notImplemented(0);
 }
 
-static sjme_errorCode sjme_scritchaudio_softmix_streamNoPeers(
+static sjme_errorCode sjme_scritchaudio_softmix_peerNone(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
+	sjme_attrInValue sjme_jboolean explicit)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
+	sjme_scritchaudio wrappedState;
+	sjme_scritchaudio_connection wrappedConn;
+	
+	if (inState == NULL || inConn == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
 
-static sjme_errorCode sjme_scritchaudio_softmix_sourceNoPeers(
-	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
-{
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	if (inState != inConn->inState)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	if (wrappedState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Only forward disconnect if explicit. */
+	if (explicit)
+	{
+		/* Is this a wrapped connection we know about? */
+		wrappedConn = NULL;
+		if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM)
+			wrappedConn = SJME_AS_AUDIO_CONN(
+				SJME_AS_AUDIO_STREAM(inConn)->data.wrapped);
+		else if (inConn->type == SJME_SCRITCHAUDIO_CONN_SOURCE)
+			wrappedConn = SJME_AS_AUDIO_CONN(
+				SJME_AS_AUDIO_SOURCE(inConn)->data.wrapped);
+		
+		/* Handle disconnect if we know about this. */
+		if (wrappedConn != NULL)
+			return wrappedState->api->disconnect(wrappedState, wrappedConn);
+	}
+
+	/* Otherwise, do nothing. */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchaudio_softmix_sourcePeerDisconnect(
@@ -84,7 +108,7 @@ sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 		return sjme_error_default(error);
 
 	/* Initialize data. */
-	result->connection.noPeers = sjme_scritchaudio_softmix_sourceNoPeers;
+	result->connection.noPeers = sjme_scritchaudio_softmix_peerNone;
 	result->connection.peerDisconnect =
 		sjme_scritchaudio_softmix_sourcePeerDisconnect;
 	
@@ -198,7 +222,7 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	result->rate = origRate;
 	result->channels = origChannels;
 	result->data.wrapped = wrapped;
-	result->connection.noPeers = sjme_scritchaudio_softmix_streamNoPeers;
+	result->connection.noPeers = sjme_scritchaudio_softmix_peerNone;
 
 	/* Success! */
 	*outStream = result;

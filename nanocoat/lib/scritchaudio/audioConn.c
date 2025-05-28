@@ -34,7 +34,8 @@ static sjme_errorCode sjme_scritchaudio_peerConnectSub(
 
 static sjme_errorCode sjme_scritchaudio_core_peerNone(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
+	sjme_attrInValue sjme_jboolean explicit)
 {
 	sjme_errorCode error;
 	
@@ -49,11 +50,12 @@ static sjme_errorCode sjme_scritchaudio_core_peerNone(
 	if (inConn->noPeers != NULL)
 	{
 		/* Call handler. */
-		if (sjme_error_is(error = inConn->noPeers(inState, inConn)))
+		if (sjme_error_is(error = inConn->noPeers(inState, inConn, explicit)))
 			return sjme_error_default(error);
 
-		/* Invalidate so it cannot be called again. */
-		inConn->noPeers = NULL;
+		/* Invalidate so it cannot be called again if explicit. */
+		if (explicit)
+			inConn->noPeers = NULL;
 	}
 
 	/* Free peer list. */
@@ -69,7 +71,8 @@ static sjme_errorCode sjme_scritchaudio_core_peerNone(
 
 static sjme_errorCode sjme_scritchaudio_core_peerNoneSource(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_source inSource)
+	sjme_attrInNotNull sjme_scritchaudio_source inSource,
+	sjme_attrInValue sjme_jboolean explicit)
 {
 	sjme_errorCode error;
 	sjme_scritchaudio_stream inStream;
@@ -85,7 +88,7 @@ static sjme_errorCode sjme_scritchaudio_core_peerNoneSource(
 
 	/* Generic no-peer handler. */
 	if (sjme_error_is(error = sjme_scritchaudio_core_peerNone(inState,
-		SJME_AS_AUDIO_CONN(inSource))))
+		SJME_AS_AUDIO_CONN(inSource), explicit)))
 		return sjme_error_default(error);
 	
 	/* Unlink the source from the stream. */
@@ -122,10 +125,14 @@ static sjme_errorCode sjme_scritchaudio_core_peerNoneSource(
 			return sjme_error_default(error);
 	}
 
-	/* Free the source. */
-	sjme_alloc_free(inSource);
+	/* Free the source, if explicit. */
+	if (explicit)
+	{
+		sjme_alloc_free(inSource);
+		return SJME_ERROR_AUDIO_DESTROYED;
+	}
 
-	/* Success! */
+	/* Otherwise, stop. */
 	return SJME_ERROR_NONE;
 }
 
@@ -136,26 +143,24 @@ static sjme_errorCode sjme_scritchaudio_core_peerNoneDispatch(
 {
 	if (inState == NULL || inConn == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* If this is not an explicit no-peer, do not kill the stream. */
-	if (!explicit && inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM)
-		return SJME_ERROR_NONE;
 	
-	/* No-peer is a full disconnect, it can only happen once. */
-	if (!sjme_atomic_sjme_jint_compareSet(&inConn->disconnecting,
-		0, 1))
-		return SJME_ERROR_NONE;
+	/* Explicit no-peer is a full disconnect, it can only happen once. */
+	if (explicit)
+		if (!sjme_atomic_sjme_jint_compareSet(&inConn->disconnecting,
+			0, 1))
+			return SJME_ERROR_NONE;
 
 	/* Call sub-handler. */
 	switch (inConn->type)
 	{
 		case SJME_SCRITCHAUDIO_CONN_SOURCE:
 			return sjme_scritchaudio_core_peerNoneSource(inState,
-				SJME_AS_AUDIO_SOURCE(inConn));
-
+				SJME_AS_AUDIO_SOURCE(inConn), explicit);
+		
 		default:
-			return sjme_scritchaudio_core_peerNone(inState, inConn);
 	}
+	
+	return sjme_scritchaudio_core_peerNone(inState, inConn, explicit);
 }
 
 sjme_errorCode sjme_scritchaudio_core_disconnect(
@@ -288,7 +293,8 @@ sjme_errorCode sjme_scritchaudio_core_peerDisconnect(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Debug. */
-	sjme_message("%p <//> %p", inConn, inPeer);
+	sjme_message("%p <//> %p (%s)", inConn, inPeer,
+		(explicit ? "EXPLICIT" : "---"));
 
 	/* Lock current connection. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(&inConn->lock)))
@@ -312,18 +318,16 @@ sjme_errorCode sjme_scritchaudio_core_peerDisconnect(
 			wasFound = SJME_JNI_TRUE;
 			peers->elements[i] = NULL;
 			
-			/* Reverse peer disconnect. */
-			/* It is never explicit as a reverse disconnect is always */
-			/* implicit since the other side just got cut off. */
-			if (sjme_error_is(error = inState->intern->peerDisconnect(
-				inState, inPeer, inConn, SJME_JNI_FALSE)))
-				goto fail_reverse;
-			
-			/* Call disconnect handler if there is one. */
+			/* Call sub-disconnect handler if there is one. */
 			if (inConn->peerDisconnect != NULL)
 				if (sjme_error_is(error = inConn->peerDisconnect(
 					inState, inConn, inPeer, explicit)))
 					goto fail_subDisconnect;
+			
+			/* Reverse peer disconnect. */
+			if (sjme_error_is(error = inState->intern->peerDisconnect(
+				inState, inPeer, inConn, SJME_JNI_FALSE)))
+				goto fail_reverse;
 		}
 
 		/* Count up peer otherwise. */
@@ -338,14 +342,21 @@ skip_noPeers:
 		return sjme_error_default(error);
 
 	/* Do not call no-peer if the peer was never in here. */
-	if (!wasFound)
+	/* However, if we are explicit then we always no peer. */
+	if (!wasFound && !explicit)
 		return SJME_ERROR_NONE;
 	
 	/* All peers were removed, dispatch the no-peer handler. */
 	if (numPeers <= 0)
 		if (sjme_error_is(error = sjme_scritchaudio_core_peerNoneDispatch(
-			inState, inConn, SJME_JNI_FALSE)))
+			inState, inConn, explicit)))
+		{
+			/* Connection was destroyed, can do nothing more. */
+			if (error == SJME_ERROR_AUDIO_DESTROYED)
+				return SJME_ERROR_NONE;
+			
 			return sjme_error_default(error);
+		}
 
 	/* Success! */
 	return SJME_ERROR_NONE;

@@ -241,6 +241,20 @@ typedef sjme_errorCode (*sjme_scritchaudio_disconnectFunc)(
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn);
 
 /**
+ * Called when there are no peers.
+ *
+ * @param inState The ScritchAudio state.
+ * @param inConn The connection with no peers.
+ * @param explicit Is this an explicit no-peer?
+ * @return Any resultant error, if any.
+ * @since 2025/05/27
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_peerNoneFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
+	sjme_attrInValue sjme_jboolean explicit);
+
+/**
  * Called when the peer has been connected or disconnected.
  *
  * @param inState The ScritchAudio state.
@@ -531,7 +545,7 @@ struct sjme_scritchaudio_connectionBase
 	sjme_scritchaudio_peerConnectFunc peerDisconnect;
 
 	/** Called when there are no peers remaining. */
-	sjme_scritchaudio_disconnectFunc noPeers;
+	sjme_scritchaudio_peerNoneFunc noPeers;
 
 	/** The connections this is connected to. */
 	sjme_list_sjme_scritchaudio_connection* peers;

@@ -42,20 +42,33 @@ static const int
 	-1,
 };
 
-
 static sjme_errorCode sjme_scritchaudio_oss_streamNoPeers(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
+	sjme_attrInValue sjme_jboolean explicit)
 {
-	sjme_todo("Impl?");
+	if (inState == NULL || inConn == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inState != inConn->inState)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl? %d", explicit);
 	return sjme_error_notImplemented(0);
 }
 
 static sjme_errorCode sjme_scritchaudio_oss_sourceNoPeers(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
+	sjme_attrInValue sjme_jboolean explicit)
 {
-	sjme_todo("Impl?");
+	if (inState == NULL || inConn == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inState != inConn->inState)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl? %d", explicit);
 	return sjme_error_notImplemented(0);
 }
 
