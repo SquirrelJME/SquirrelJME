@@ -24,7 +24,7 @@ static sjme_errorCode sjme_scritchaudio_peerConnectSub(
 
 	/* Fill in free slot. */
 	if (sjme_error_is(error = sjme_list_injectGrow(inState->pool,
-		GROW_SIZE, &inConn->peers, inPeer, sjme_scritchaudio_connection, 0)))
+		GROW_SIZE, &inConn->peers, &inPeer, sjme_scritchaudio_connection, 0)))
 		return sjme_error_default(error);
 	
 	/* Success! */

@@ -55,7 +55,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 
 	/* Inject into list. */
 	if (sjme_error_is(error = sjme_list_injectGrow(inState->pool,
-		GROW_SIZE, &inStream->sources, result, sjme_scritchaudio_source, 0)))
+		GROW_SIZE, &inStream->sources, &result, sjme_scritchaudio_source, 0)))
 		goto fail_growList;
 	
 	/* Connect peers. */
@@ -130,7 +130,7 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 
 	/* Fill in. */
 	if (sjme_error_is(error = sjme_list_injectGrow(inState->pool,
-		GROW_SIZE, &inState->streams, result, sjme_scritchaudio_stream, 0)))
+		GROW_SIZE, &inState->streams, &result, sjme_scritchaudio_stream, 0)))
 		goto fail_inject;
 	
 	/* Release lock before returning. */
