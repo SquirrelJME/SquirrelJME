@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
-import javax.microedition.rms.RecordStoreNotOpenException;
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -105,6 +104,11 @@ public class RecordStoreSession
 	@SquirrelJMEVendorApi
 	public static final String TAG_PREFIX =
 		"tag:";
+	
+	/** Compatible last ID for older MIDP. */
+	@SquirrelJMEVendorApi
+	public static final String COMPATIBLE_LAST_ID =
+		"compatibleLastId";
 	
 	/** The base name used for records. */
 	@SquirrelJMEVendorApi
@@ -508,29 +512,48 @@ public class RecordStoreSession
 	 * Returns the next ID.
 	 *
 	 * @param __allocate Should this ID be allocated?
+	 * @param __compatible Compatibility with older software before MEEP 8
+	 * which relies on every ID to be unique.
 	 * @return The resultant ID.
 	 * @throws RecordStoreException If the record could not be allocated.
 	 * @since 2025/04/21
 	 */
-	public int nextId(boolean __allocate)
+	public int nextId(boolean __allocate, boolean __compatible)
 		throws RecordStoreException
 	{
 		if (Debugging.VERBOSE)
-			Debugging.debugNote("nextId(%b)", __allocate);
+			Debugging.debugNote("nextId(%b, %b)", __allocate,
+				__compatible);
 		
 		synchronized (this.lock)
 		{
 			// Grab all known IDs
 			int[] ids = this.ids();
 			
+			// Get the current last compatible ID number
+			int compatId = this.getInteger(
+				RecordStoreSession.COMPATIBLE_LAST_ID, 0);
+			
 			// Find the next ID which is not taken
-			int nextId = 0;
-			while (Arrays.binarySearch(ids, nextId) >= 0)
-				nextId++;
+			int freeId = 0;
+			while (Arrays.binarySearch(ids, freeId) >= 0)
+				freeId++;
+			
+			// Compatibility mode where all new IDs are always higher?
+			int useId;
+			if (__compatible)
+			{
+				// Make sure the used ID is truly not used
+				useId = Math.max(compatId, freeId);
+				while (Arrays.binarySearch(ids, useId) >= 0)
+					useId++;
+			}
+			else
+				useId = freeId;
 			
 			// If not allocating, return it now
 			if (!__allocate)
-				return nextId;
+				return useId;
 			
 			// Otherwise, build an array from it
 			JsonArrayBuilder builder = Json.createArrayBuilder();
@@ -541,22 +564,26 @@ public class RecordStoreSession
 				builder.add(ids[i]);
 				
 				// Is this the spot where the ID would be injected?
-				if (!injected && nextId > ids[i])
+				if (!injected && useId > ids[i])
 				{
-					builder.add(nextId);
+					builder.add(useId);
 					injected = true;
 				}
 			}
 			
 			// Was the ID never injected?
 			if (!injected)
-				builder.add(nextId);
+				builder.add(useId);
+			
+			// Use the highest of all the values for the compatible ID
+			this.set(RecordStoreSession.COMPATIBLE_LAST_ID,
+				Math.max(useId, Math.max(compatId, freeId)));
 			
 			// Store new IDs
 			this.set(RecordStoreSession.IDS, builder.build());
 			
 			// Return the newly allocated ID
-			return nextId;
+			return useId;
 		}
 	}
 	
