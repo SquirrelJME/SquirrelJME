@@ -160,6 +160,7 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 	sjme_jint i, n;
 	sjme_scritchaudio_connection peer;
 	sjme_list_sjme_scritchaudio_connection* peers;
+	sjme_thread_spinLock* sharedLock;
 	
 	if (inState == NULL || inConn == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -169,7 +170,8 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
 	/* Lock current connection. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(inConn->lock)))
+	sharedLock = inConn->lock;
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(sharedLock)))
 		return sjme_error_default(error);
 
 	/* Find the first available peer. */
@@ -195,7 +197,7 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 			{
 				/* Was this destroyed? */
 				if (error == SJME_ERROR_AUDIO_DESTROYED)
-					return SJME_ERROR_NONE;
+					goto skip_releaseLock;
 				goto fail_peerDisconnect;
 			}
 
@@ -214,12 +216,13 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 	{
 		/* Was this destroyed? */
 		if (error == SJME_ERROR_AUDIO_DESTROYED)
-			return SJME_ERROR_NONE;
+			goto skip_releaseLock;
 		goto fail_peerDisconnect;
 	}
 
 	/* Release the lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockRelease(inConn->lock,
+skip_releaseLock:
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(sharedLock,
 		NULL)))
 		return sjme_error_default(error);
 
@@ -227,7 +230,7 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 	return SJME_ERROR_NONE;
 	
 fail_peerDisconnect:
-	sjme_thread_spinLockRelease(inConn->lock, NULL);
+	sjme_thread_spinLockRelease(sharedLock, NULL);
 	return sjme_error_default(error);
 }
 
