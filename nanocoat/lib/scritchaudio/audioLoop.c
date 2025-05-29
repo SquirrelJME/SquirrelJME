@@ -31,13 +31,16 @@ sjme_errorCode sjme_scritchaudio_core_loopIterate(
 		return SJME_ERROR_NONE;
 
 	/* Get the latency to determine the sample count. */
+	/* Add extra latency of 25ms. */
 	latency = (sjme_atomic_sjme_jint_get(&inState->pollDelayMillis) *
-		1000000) + sjme_atomic_sjme_jint_get(&inState->pollDelayNanos);
+		1000000) + 25000000;
+	if (sjme_atomic_sjme_jint_get(&inState->pollDelayNanos) > 0)
+		latency += 1000000;
 
 	/* Calculate the expected number of samples. */
 	/* rate * latency. */
-	expected44KHzSamples = (441 * (latency / 100)) / 1000;
-	expected48KHzSamples = (448 * (latency / 100)) / 1000;
+	expected44KHzSamples = (441 * (latency / 10000)) / 1000;
+	expected48KHzSamples = (448 * (latency / 10000)) / 1000;
 	
 	/* Only forward if the handler supports this. */
 	if (inState->impl->loopIterate != NULL)

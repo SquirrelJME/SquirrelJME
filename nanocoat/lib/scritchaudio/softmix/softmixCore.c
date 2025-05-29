@@ -29,6 +29,7 @@ static sjme_attrThreadCall sjme_thread_result sjme_scritchaudio_softmix_poll(
 {
 	sjme_errorCode error;
 	sjme_scritchaudio inState;
+	sjme_jint nanoSum, milliCarry;
 
 	/* Recover state. */
 	inState = rawState;
@@ -45,17 +46,28 @@ static sjme_attrThreadCall sjme_thread_result sjme_scritchaudio_softmix_poll(
 	}
 	
 	/* Enter threading loop. */
-	for (;;)
+	for (nanoSum = 0, milliCarry = 0;;)
 	{
 		/* Call loop iteration handler. */
 		if (sjme_error_is(error = inState->api->loopIterate(inState)))
 			sjme_message("Audio error: %d", error);
 
+		/* Keep everything at millisecond accuracy. Thus round up nanos */
+		/* to millis by carrying. */
+		nanoSum += sjme_atomic_sjme_jint_get(&inState->pollDelayNanos);
+		if (nanoSum >= 1000000)
+		{
+			milliCarry++;
+			nanoSum -= 1000000;
+		}
+		
 		/* Use the polling delay time to sleep until more audio is ready */
 		/* or more data can be pushed to the buffer. */
+		/* Use carried milliseconds. */
 		sjme_thread_sleep(
-			sjme_atomic_sjme_jint_get(&inState->pollDelayMillis),
-			sjme_atomic_sjme_jint_get(&inState->pollDelayNanos));
+			sjme_atomic_sjme_jint_get(&inState->pollDelayMillis) +
+			milliCarry, 0);
+		milliCarry = 0;
 		sjme_thread_yield();
 	}
 

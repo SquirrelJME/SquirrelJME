@@ -82,7 +82,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 		goto fail_lockRelease;
 	
 	/* We attached a source, so make sure the audio playback is faster. */
-	sjme_atomic_sjme_jint_set(&inState->pollDelayMillis, 25);
+	sjme_atomic_sjme_jint_set(&inState->pollDelayMillis, 75);
 	sjme_atomic_sjme_jint_set(&inState->pollDelayNanos, 0);
 
 	/* Success! */

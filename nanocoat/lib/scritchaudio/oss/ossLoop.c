@@ -21,8 +21,12 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 {
 	int fd, trigger;
 	sjme_scritchaudio_stream stream;
-	sjme_jint freqAt, samples, bytesPerSample, bufSize;
+	sjme_jint freqAt, samples, totalSamples, bytesPerSample, bufSize;
 	sjme_pointer buf;
+
+	sjme_jint i;
+	sjme_jshort* a;
+	sjme_jbyte* b;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -62,12 +66,21 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	bytesPerSample = sjme_scritchaudio_bytesPerSample[stream->format];
 
 	/* Allocate sample buffer */
-	bufSize = bytesPerSample * stream->channels * samples;
+	totalSamples = stream->channels * samples;
+	bufSize = bytesPerSample * totalSamples;
 	buf = sjme_alloca(bufSize);
 	if (buf == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
 
 	/* Render the buffer. */
+	a = buf;
+	b = buf;
+	if (bytesPerSample == 2)
+		for (i = 0; i < totalSamples; i++)
+			a[i] = rand();
+	else if (bytesPerSample == 1)
+		for (i = 0; i < totalSamples; i++)
+			b[i] = rand();
 	
 	/* Disable playback. */
 	trigger = 0;
