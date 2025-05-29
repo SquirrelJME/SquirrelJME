@@ -12,6 +12,19 @@
 #include "lib/scritchaudio/scritchaudio.h"
 #include "lib/scritchaudio/scritchaudioIntern.h"
 
+/** The number of bytes per sample. */
+const sjme_jint sjme_scritchaudio_bytesPerSample
+	[SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS] =
+{
+	1,
+	1,
+	1,
+	2,
+	4,
+	4,
+	4,
+};
+
 sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
@@ -34,6 +47,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 		goto fail_allocResult;
 
 	/* Initialize state. */
+	result->connection.lock = inStream->connection.lock;
 	result->connection.inState = inState;
 	result->connection.type = SJME_SCRITCHAUDIO_CONN_SOURCE;
 	result->inStream = inStream;
@@ -48,7 +62,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 
 	/* Lock the stream. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&inStream->connection.lock)))
+		inStream->connection.lock)))
 		goto fail_lockGrab;
 
 	/* Inject into list. */
@@ -64,8 +78,12 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 
 	/* Release the lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&inStream->connection.lock, NULL)))
+		inStream->connection.lock, NULL)))
 		goto fail_lockRelease;
+	
+	/* We attached a source, so make sure the audio playback is faster. */
+	sjme_atomic_sjme_jint_set(&inState->pollDelayMillis, 25);
+	sjme_atomic_sjme_jint_set(&inState->pollDelayNanos, 0);
 
 	/* Success! */
 	*outSource = result;
@@ -74,7 +92,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 fail_peerConnect:
 fail_growList:
 fail_lockGrab:
-	sjme_thread_spinLockRelease(&inStream->connection.lock, NULL);
+	sjme_thread_spinLockRelease(inStream->connection.lock, NULL);
 	
 fail_lockRelease:
 fail_implInit:

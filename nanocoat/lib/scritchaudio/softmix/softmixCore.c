@@ -49,13 +49,14 @@ static sjme_attrThreadCall sjme_thread_result sjme_scritchaudio_softmix_poll(
 	{
 		/* Call loop iteration handler. */
 		if (sjme_error_is(error = inState->api->loopIterate(inState)))
-			return SJME_THREAD_RESULT(sjme_error_default(error));
+			sjme_message("Audio error: %d", error);
 
 		/* Use the polling delay time to sleep until more audio is ready */
 		/* or more data can be pushed to the buffer. */
 		sjme_thread_sleep(
 			sjme_atomic_sjme_jint_get(&inState->pollDelayMillis),
 			sjme_atomic_sjme_jint_get(&inState->pollDelayNanos));
+		sjme_thread_yield();
 	}
 
 	/* Finished. */
@@ -97,7 +98,6 @@ sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 		}
 			
 		/* Create thread that loops infinitely. */
-		sjme_message("State %p->%p", inState, inState->api);
 		if (sjme_error_is(error = sjme_thread_new(&inState->loopThread,
 			&inState->loopThreadId,
 			sjme_scritchaudio_softmix_poll, inState)))

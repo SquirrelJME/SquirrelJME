@@ -106,9 +106,11 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels)
 {
-	int fd, ossFormat, ossChannels, ossRate;
+	int fd;
+	volatile int ossFormat, ossChannels, ossRate, actual;
 	sjme_scritchaudio_stream result;
 	sjme_errorCode error;
+	sjme_jint single, i, n;
 	
 	if (inState == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -126,10 +128,25 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 		inChannels = SJME_SCRITCHAUDIO_CHANNELS_STEREO;
 
 	/* Try to open the DSP device. */
-	fd = open(SJME_SCRITCHAUDIO_OSS_DSP, O_RDONLY, 0);
+	fd = open(SJME_SCRITCHAUDIO_OSS_DSP, O_WRONLY | O_NONBLOCK, 0);
 	if (fd == -1)
 		return SJME_ERROR_HEADLESS_AUDIO;
 
+	/* Get hardware supported formats. */
+	actual = 0;
+	if (ioctl(fd, SNDCTL_DSP_GETFMTS, &actual) == -1)
+	{
+		error = SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
+		goto fail_format;
+	}
+
+	/* Is the format not supported by the actual hardware? */
+	if ((actual & sjme_scritchaudio_oss_format[inFormat]) == 0)
+	{
+		error = SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
+		goto fail_format;
+	}
+	
 	/* Set new OSS format. */
 	ossFormat = sjme_scritchaudio_oss_format[inFormat];
 	if (ioctl(fd, SNDCTL_DSP_SETFMT, &ossFormat) == -1)
@@ -146,9 +163,17 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 		goto fail_format;
 	}
 
-	/* Set sample rate. */
+	/* Set sample rate, must be set last! */
 	ossRate = inRate;
 	if (ioctl(fd, SNDCTL_DSP_SPEED, &ossRate) == -1)
+	{
+		error = SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
+		goto fail_format;
+	}
+
+	/* Check final format. */
+	if (ossChannels != inChannels || ossRate != inRate ||
+		ossFormat != sjme_scritchaudio_oss_format[inFormat])
 	{
 		error = SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
 		goto fail_format;
@@ -161,6 +186,7 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 		goto fail_allocResult;
 
 	/* Set stream details. */
+	result->connection.lock = &result->sharedLock;
 	result->connection.inState = inState;
 	result->connection.type = SJME_SCRITCHAUDIO_CONN_STREAM;
 	result->format = inFormat;

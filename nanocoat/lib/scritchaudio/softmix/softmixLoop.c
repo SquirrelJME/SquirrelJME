@@ -24,7 +24,8 @@ static sjme_errorCode sjme_scritchaudio_softmix_streamMix(
 sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInValue sjme_jlong clock,
-	sjme_attrInValue sjme_jint expected48KHzSamples)
+	sjme_attrInValue sjme_jint expected48KHzSamples,
+	sjme_attrInValue sjme_jint expected44KHzSamples)
 {
 	sjme_errorCode error;
 	sjme_scritchaudio wrappedState;
@@ -45,7 +46,7 @@ sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
 	/* most everything was already calculated. */
 	if (wrappedState->impl->loopIterate != NULL)
 		return wrappedState->impl->loopIterate(wrappedState, clock,
-			expected48KHzSamples);
+			expected48KHzSamples, expected44KHzSamples);
 	
 	return SJME_ERROR_NONE;
 }

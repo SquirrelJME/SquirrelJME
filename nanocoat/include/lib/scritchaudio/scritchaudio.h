@@ -161,6 +161,10 @@ typedef enum sjme_scritchaudio_format
 	SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS = 7,
 } sjme_scritchaudio_format;
 
+/** The number of bytes per sample. */
+extern const sjme_jint sjme_scritchaudio_bytesPerSample
+	[SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS];
+	
 /**
  * The standard set of audio sampling rates.
  *
@@ -280,6 +284,8 @@ typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
  *
  * @param inState The ScritchAudio state.
  * @param clock The current audio clock.
+ * @param expected48KHzSamples The number of expected samples to render at
+ * 48KHz.
  * @param expected44KHzSamples The number of expected samples to render at
  * 44KHz.
  * @return Any resultant error, if any.
@@ -288,6 +294,7 @@ typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
 typedef sjme_errorCode (*sjme_scritchaudio_loopIterateImplFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInValue sjme_jlong clock,
+	sjme_attrInValue sjme_jint expected48KHzSamples,
 	sjme_attrInValue sjme_jint expected44KHzSamples);
 
 /**
@@ -597,8 +604,8 @@ typedef enum sjme_scritchaudio_connectionType
 
 struct sjme_scritchaudio_connectionBase
 {
-	/** The lock for this source, used when rendering. */
-	sjme_thread_spinLock lock;
+	/** The lock for this connection, used when rendering. */
+	sjme_thread_spinLock* lock;
 
 	/** The type of connection this is. */
 	sjme_scritchaudio_connectionType type;
@@ -645,6 +652,9 @@ struct sjme_scritchaudio_streamBase
 		/** The stream this wrapped. */
 		sjme_scritchaudio_stream wrapped;
 	} data;
+
+	/** The shared stream lock. */
+	sjme_thread_spinLock sharedLock;
 };
 
 struct sjme_scritchaudio_sourceBase

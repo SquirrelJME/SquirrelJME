@@ -220,6 +220,7 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	/* that is handled in the renderer by comparing the wrapped format */
 	/* with the renderer format. If a renderer happens to have the same */
 	/* format, then we do no conversion. */
+	result->connection.lock = &result->sharedLock;
 	result->connection.inState = inState;
 	result->connection.type = SJME_SCRITCHAUDIO_CONN_STREAM;
 	result->format = origFormat;
@@ -229,10 +230,6 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	result->connection.noPeers = sjme_scritchaudio_softmix_peerNone;
 	result->connection.peerDisconnect =
 		sjme_scritchaudio_softmix_peerDisconnect;
-
-	/* We created a stream, so make sure the audio playback is faster. */
-	sjme_atomic_sjme_jint_set(&inState->pollDelayMillis, 25);
-	sjme_atomic_sjme_jint_set(&inState->pollDelayNanos, 0);
 
 	/* Success! */
 	*outStream = result;
