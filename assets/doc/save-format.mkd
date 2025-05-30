@@ -1,0 +1,128 @@
+# RecordStore Management System Save Format Specification 1.0.0
+
+Any data saved from `RecordStore` is saved to disk in an easy to parse format
+which includes a JSON metadata file along with the individual records in their
+own binary files. This makes it simple to implement and allows for efficient
+handling of save data and for the transfer of such data between different
+emulators. The format is derived from SquirrelJME's save format with
+modifications, note that SquirrelJME now follows this specification.
+
+This specification is implemented by:
+
+ * SquirrelJME
+ * FreeJ2ME-Plus
+
+There are two main file formats:
+
+ * `[baseName].rms` -- RecordStore Metadata
+   * JSON containing metadata for the RecordStore.
+ * `[baseName].[recordId]` -- Individual record data
+   * This is flat binary data with no headers, footers, or otherwise.
+   * If a record has ID 3 and contains 300 bytes of data then this
+     would be a file called `[baseName].3` containing 300 bytes of data.
+
+## `[baseName].rms` -- RecordStore Metadata
+
+Specific types:
+
+ * `dateString`
+   * A date in the following format: `"2025-05-30 01:43:04"`
+ * `versionString`
+   * A MIDP 3+ compatible version number: `"[0-9]+.[0-9]+.[0-9]"+`.
+
+The following JSON keys are defined:
+
+ * `rmsVersion`: versionString
+   * The currently defined version of this specification.
+   * Current value is `"1.0.0"`
+ * `rmsDate`: dateString
+   * A human-readable timestamp of the last modification date of the
+     record store.
+   * _SquirrelJME_: Not implemented.
+ * `authentication`: integer
+   * The authentication mode of the record store, determines if
+     other applications have access to it.
+   * `AUTHMODE_PRIVATE` is `0`, `AUTHMODE_ANY` is `1`.
+ * `baseName`: string
+   * The base name used for the `.rms` and record data files.
+   * _SquirrelJME_: This is used to relocate records in the event the file's
+     base name has been renamed.
+ * `ids`: array[int]
+   * The record IDs which are currently valid and existing for this
+     record store.
+   * These IDs will correlate to `[baseName].[recordId]` files.
+ * `modificationCount`: int
+   * The number of times the record store has been modified.
+   * _SquirrelJME_: Includes metadata modifications.
+   * _FreeJ2ME-Plus_: Only includes data modifications.
+ * `lastModified`: int
+   * Milliseconds since the UNIX epoch in UTC when the record store was
+     last modified.
+   * Equivalent to: `System.currentTimeMillis()`.
+ * `otherWrite`: int
+   * Are other MIDlets permitted to write data into this record store?
+   * Read-only is `0`, Writable is `1`.
+ * `ownerName`: string
+   * The owner name of this record store.
+   * This is derived from `MIDlet-Name`.
+ * `ownerVendor`: string
+   * The owner vendor of this record store.
+   * This is derived from `MIDlet-Vendor`.
+ * `ownerVersion`: versionString
+   * The owner version of this record store.
+   * This is derived from `MIDlet-Version`.
+   * _SquirrelJME_: This is ignored and will always be treated as `"0.0.0"`.
+ * `password`: string
+   * The password used to lock access to the record store.
+   * Note that this is stored as plain text.
+ * `recordName`: string
+   * The name of the record.
+   * At creation time this is set from `RecordStore.openRecordStore()`.
+ * `tag:[recordId]`: int
+   * For every valid `recordId` in `ids`, each record will have a tag
+     value specified.
+   * Only valid for MIDP 3+, if unsupported this value will be `0`.
+   * _FreeJ2ME-Plus_: Ignored as only up to MIDP 2.1 is supported.
+
+## `baseName` Calculation
+
+The `baseName` hash is calculated as:
+
+```java
+public class BaseNameCalculation
+{
+    public static String calculate(String __ownerName,
+        String __ownerVendor, String __recordName)
+    {
+        /* Encoded with the Basic alphabet: A-Z a-z + / = */
+        String base64Encoded = Base64.getEncoder()
+            .encodeToString(__recordName.getBytes())
+            .toLowerCase()
+            .replace('=', '_');
+        
+        return String.format("%08x%02d%s",
+            __ownerName.hashCode() ^ __ownerVendor.hashCode(),
+            __recordName.length(),
+            base64Encoded);
+    }
+}
+```
+
+## DoJa/Star Scratchpads
+
+For DoJa/Star Scratchpads, the following metadata values are always set
+with the specific values:
+
+ * `ownerVendor`: `SquirrelJME-DoJa`
+ * `ownerName`: Derived from the ADF/JAM value `AppName`
+ * `recordName`: `ScratchPad-[0-16]`
+   * Represents which scratchpad this belongs to.
+
+All scratchpad data for the given scratchpad is placed into the first
+record ID of one (`1`).
+
+## `[baseName].[recordId]` -- Individual record data
+
+This is solely a flat binary file with no headers, footers, or otherwise. It
+consists only of the bytes that were passed to `RecordStore.addRecord()`
+or `RecordStore.setRecord()`.
