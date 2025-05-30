@@ -50,6 +50,16 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 public class RecordStoreSession
 	extends RecordSession
 {
+	/** The current RMS version format. */
+	@SquirrelJMEVendorApi
+	public static final SuiteVersion CURRENT_RMS_VERSION =
+		new SuiteVersion(1, 0, 0);
+	
+	/** The version of the record store format. */
+	@SquirrelJMEVendorApi
+	public static final String RMS_VERSION =
+		"rmsVersion";
+	
 	/** The authentication key. */
 	@SquirrelJMEVendorApi
 	public static final String AUTHENTICATION =
@@ -69,6 +79,11 @@ public class RecordStoreSession
 	@SquirrelJMEVendorApi
 	public static final String MODIFICATION_COUNT =
 		"modificationCount";
+	
+	/** The last modification time. */
+	@SquirrelJMEVendorApi
+	public static final String LAST_MODIFIED =
+		"lastModified";
 	
 	/** The other write key. */
 	@SquirrelJMEVendorApi
@@ -641,8 +656,7 @@ public class RecordStoreSession
 				null);
 			String vendor = this.getString(RecordStoreSession.OWNER_VENDOR,
 				null);
-			String version = this.getString(RecordStoreSession.OWNER_VERSION,
-				null);
+			String version = "0.0.0";
 			
 			// If any are missing, this is not valid
 			/* {@squirreljme.error AD10 RecordStore has no identifier.} */
@@ -710,6 +724,26 @@ public class RecordStoreSession
 	 * @param __val The value to use.
 	 * @throws NullPointerException On null arguments.
 	 * @throws RecordStoreException If the key could not be set.
+	 * @since 2025/05/29
+	 */
+	@SquirrelJMEVendorApi
+	public void set(String __key, long __val)
+		throws NullPointerException, RecordStoreException
+	{
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		this.set(__key, Json.createObjectBuilder().add("key", __val)
+			.build().get("key"));
+	}
+	
+	/**
+	 * Sets the given key to the specified value.
+	 *
+	 * @param __key The key to set.
+	 * @param __val The value to use.
+	 * @throws NullPointerException On null arguments.
+	 * @throws RecordStoreException If the key could not be set.
 	 * @since 2025/04/20
 	 */
 	@SquirrelJMEVendorApi
@@ -755,12 +789,31 @@ public class RecordStoreSession
 			// Put in new value
 			this._updates.put(__key, __val);
 			
-			// Also update the modification count, if this is not that
+			// Also update the modification count and time, if this is not that
 			// otherwise this would recurse infinitely
-			if (!__key.equals(RecordStoreSession.MODIFICATION_COUNT))
+			if (!__key.equals(RecordStoreSession.MODIFICATION_COUNT) &&
+				!__key.equals(RecordStoreSession.LAST_MODIFIED) &&
+				!__key.equals(RecordStoreSession.OWNER_VERSION) &&
+				!__key.equals(RecordStoreSession.RMS_VERSION))
+			{
+				// Store the RMS record version always
+				this.set(RecordStoreSession.RMS_VERSION,
+					RecordStoreSession.CURRENT_RMS_VERSION.toString());
+				
+				// Set time accordingly
 				this.set(RecordStoreSession.MODIFICATION_COUNT,
 					this.getInteger(RecordStoreSession.MODIFICATION_COUNT,
 						0) + 1);
+				this.set(RecordStoreSession.LAST_MODIFIED,
+					System.currentTimeMillis());
+				
+				// Is there an ownerVersion already set? This is ignored by
+				// SquirrelJME due to MIDP 3
+				String ownerVersion = this.getString(
+					RecordStoreSession.OWNER_VERSION, null);
+				if (ownerVersion == null)
+					this.set(RecordStoreSession.OWNER_VERSION, "0.0.0");
+			}
 		}
 	}
 	
@@ -790,8 +843,6 @@ public class RecordStoreSession
 				owner.name().toString());
 			this.set(RecordStoreSession.OWNER_VENDOR,
 				owner.vendor().toString());
-			this.set(RecordStoreSession.OWNER_VERSION,
-				owner.version().toString());
 			
 			// Write record information
 			this.set(RecordStoreSession.RECORD_NAME,
