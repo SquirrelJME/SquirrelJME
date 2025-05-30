@@ -118,7 +118,8 @@ with the specific values:
  * `ownerVendor`: `SquirrelJME-DoJa`
  * `ownerName`: Derived from the ADF/JAM value `AppName`
  * `recordName`: `ScratchPad-[0-16]`
-   * Represents which scratchpad this belongs to.
+   * Represents which scratchpad this belongs to, all scratchpads go into
+     their own record stores and are differentiated by record name.
 
 All scratchpad data for the given scratchpad is placed into the first
 record ID of one (`1`).
