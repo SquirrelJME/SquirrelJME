@@ -592,7 +592,7 @@ public class RecordStoreSession
 			
 			// Use the highest of all the values for the compatible ID
 			this.set(RecordStoreSession.COMPATIBLE_LAST_ID,
-				Math.max(useId, Math.max(compatId, freeId)));
+				Math.max(useId, Math.max(compatId, freeId)) + 1);
 			
 			// Store new IDs
 			this.set(RecordStoreSession.IDS, builder.build());
