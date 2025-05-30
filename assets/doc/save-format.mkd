@@ -69,7 +69,9 @@ The following JSON keys are defined:
    * The owner vendor of this record store.
    * This is derived from `MIDlet-Vendor`.
  * `ownerVersion`: versionString
-   * The owner version of this record store.
+   * The owner version of this record store, when a record store is loaded
+     the version number need not be considered unless there is a desire to
+     have version specific storage.
    * This is derived from `MIDlet-Version`.
    * _SquirrelJME_: This is ignored and will always be treated as `"0.0.0"`.
  * `password`: string
@@ -96,7 +98,7 @@ public class BaseNameCalculation
     {
         /* Encoded with the Basic alphabet: A-Z a-z + / = */
         String base64Encoded = Base64.getEncoder()
-            .encodeToString(__recordName.getBytes())
+            .encodeToString(__recordName.getBytes("utf-8"))
             .toLowerCase()
             .replace('=', '_');
         
@@ -126,3 +128,11 @@ record ID of one (`1`).
 This is solely a flat binary file with no headers, footers, or otherwise. It
 consists only of the bytes that were passed to `RecordStore.addRecord()`
 or `RecordStore.setRecord()`.
+
+## Changelog
+
+ * _SquirrelJME_ to _RMS Save Format Specification 1.0.0_
+   * `rmsVersion` added.
+   * `rmsDate` added.
+   * `lastModified` added.
+   * `ownerVersion` is now optional and need not be always `0.0.0`.
