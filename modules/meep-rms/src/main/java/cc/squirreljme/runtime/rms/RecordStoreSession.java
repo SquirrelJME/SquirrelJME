@@ -532,10 +532,10 @@ public class RecordStoreSession
 			
 			// Get the current last compatible ID number
 			int compatId = this.getInteger(
-				RecordStoreSession.COMPATIBLE_LAST_ID, 0);
+				RecordStoreSession.COMPATIBLE_LAST_ID, 1);
 			
-			// Find the next ID which is not taken
-			int freeId = 0;
+			// Find the next ID which is not taken, always start at one
+			int freeId = 1;
 			while (Arrays.binarySearch(ids, freeId) >= 0)
 				freeId++;
 			
