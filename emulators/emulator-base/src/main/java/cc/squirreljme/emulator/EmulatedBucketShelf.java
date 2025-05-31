@@ -267,6 +267,10 @@ public class EmulatedBucketShelf
 					result.add(baseName);
 			}
 		}
+		catch (FileNotFoundException ignored)
+		{
+			// RMS directory does not exist
+		}
 		catch (IOException __e)
 		{
 			throw new MLECallError(__e.getMessage(), __e);
