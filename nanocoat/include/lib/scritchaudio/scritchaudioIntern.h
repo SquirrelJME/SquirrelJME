@@ -50,7 +50,8 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
-	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc);
+	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
+	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread);
 	
 sjme_errorCode sjme_scritchaudio_core_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState);

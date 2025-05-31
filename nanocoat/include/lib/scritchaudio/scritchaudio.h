@@ -631,6 +631,9 @@ struct sjme_scritchaudioBase
 
 	/** The output audio stream. */
 	sjme_scritchaudio_stream stream;
+
+	/** Called to bind the audio thread. */
+	sjme_thread_mainFunc bindAudioThread;
 };
 
 /**
@@ -741,6 +744,7 @@ struct sjme_scritchaudio_sourceBase
  *
  * @param inPool The input pool.
  * @param outState The resultant audio state.
+ * @param bindAudioThread Called if the event thread needs to be initialized.
  * @param initFrontEnd the initial front-end state.
  * @return Any resultant error, if any.
  * @since 2025/05/11
@@ -748,6 +752,7 @@ struct sjme_scritchaudio_sourceBase
 typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchaudio_dylibApiFunc)(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
+	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
 	
 /** The base name for the ScritchAudio dynamic library. */

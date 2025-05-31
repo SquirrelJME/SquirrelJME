@@ -71,15 +71,66 @@ FORWARD_IMPL(AudioStream, stream,
 	FORWARD_IMPL_none(),
 	FORWARD_IMPL_none())
 
+static sjme_thread_result sjme_jni_bindAudioThread(
+	sjme_thread_parameter anything)
+{
+	sjme_scritchaudio inState;
+	JavaVM* vm;
+	JNIEnv* env;
+	JNIEnv* checkEnv;
+	JavaVMAttachArgs attachArgs;
+	jint error;
+
+	/* Debug. */
+	sjme_message("Binding ScritchAudio thread to JNI...");
+
+	/* Restore state. */
+	inState = (sjme_scritchaudio)anything;
+	if (inState == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+
+	/* Restore VM. */
+	vm = (JavaVM*)inState->frontEnd.data;
+
+	/* If this thread is already attached, only attach once. */
+	checkEnv = NULL;
+	error = (*vm)->GetEnv(vm, (void**)&checkEnv, JNI_VERSION_1_1);
+	if (error == JNI_OK)
+		return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+
+	/* Setup arguments. */
+	memset(&attachArgs, 0, sizeof(attachArgs));
+	attachArgs.version = JNI_VERSION_1_1;
+	attachArgs.name = "ScritchAudioLoop";
+
+	/* Attach audio loop to the JVM. */
+	env = NULL;
+	error = (*vm)->AttachCurrentThreadAsDaemon(vm, (void**)&env, &attachArgs);
+	if (env == NULL)
+		sjme_die("Could not attach thread: %d??", error);
+
+	/* Success! */
+	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+}
+
 static sjme_errorCode sjme_jni_renderAudio(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_source inSource,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo,
 	sjme_attrInNotNull sjme_scritchaudio_buffer* buf)
 {
+	sjme_errorCode error;
+	JNIEnv* env;
+
 	if (inState == NULL || inSource == NULL || renderInfo == NULL ||
 		buf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover the Java environment. */
+	env = NULL;
+	if (sjme_error_is(sjme_jni_recoverEnvFrontEnd(&env,
+		&inSource->frontEnd)) || env == NULL)
+		return SJME_ERROR_NATIVE_ERROR;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -178,6 +229,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __dylibLoad)(
 	sjme_scritchaudio_dylibApiFunc apiInit;
 	sjme_scritchaudio result;
 	sjme_alloc_pool pool;
+	sjme_frontEnd frontEnd;
 
 	if (env == NULL || classy == NULL || path == NULL)
 	{
@@ -232,9 +284,14 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __dylibLoad)(
 		16 * 1048576)) || pool == NULL)
 		goto fail_allocPool;
 
+	/* Setup frontend data. */
+	memset(&frontEnd, 0, sizeof(frontEnd));
+	(*env)->GetJavaVM(env, (void*)&frontEnd.data);
+
 	/* Initialize the API. */
 	result = NULL;
-	if (sjme_error_is(error = apiInit(pool, &result, NULL)) ||
+	if (sjme_error_is(error = apiInit(pool, &result,
+		sjme_jni_bindAudioThread, &frontEnd)) ||
 		result == NULL)
 		goto fail_init;
 

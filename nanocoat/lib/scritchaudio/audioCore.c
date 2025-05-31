@@ -70,7 +70,8 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
 	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
 	sjme_attrInNotNull sjme_scritchaudio wrappedStated,
-	sjme_attrInValue sjme_jboolean isHigher)
+	sjme_attrInValue sjme_jboolean isHigher,
+	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread)
 {
 	sjme_errorCode error;
 	sjme_scritchaudio result;
@@ -105,6 +106,7 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	result->impl = inImplFunc;
 	result->intern = &sjme_scritchaudio_coreInterns;
 	result->nal = nal;
+	result->bindAudioThread = bindAudioThread;
 
 	/* Set clock base, if wrapped use that as it was first. */
 	if (wrappedStated != NULL)
@@ -267,7 +269,8 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
-	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc)
+	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
+	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread)
 {
 	sjme_jboolean isSoftMixWrapper, needSoftMixWrapper;
 	sjme_scritchaudio lower, higher;
@@ -283,20 +286,22 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	/* Normal top-level initialization. */
 	if (!needSoftMixWrapper)
 		return sjme_scritchaudio_core_initActual(inPool, outState,
-			initFrontEnd, inImplFunc, NULL, SJME_JNI_TRUE);
+			initFrontEnd, inImplFunc, NULL, SJME_JNI_TRUE,
+			bindAudioThread);
 
 	/* Initialize the lower level state. */
 	lower = NULL;
 	sjme_message("State Lower %p", lower);
 	if (sjme_error_is(error = sjme_scritchaudio_core_initActual(inPool,
-		&lower, NULL, inImplFunc, NULL, SJME_JNI_FALSE)) || lower == NULL)
+		&lower, NULL, inImplFunc, NULL, SJME_JNI_FALSE, NULL)) ||
+		lower == NULL)
 		goto fail_initLower;
 
 	/* Initialize upper wrapper. */
 	higher = NULL;
 	if (sjme_error_is(error = sjme_scritchaudio_core_initActual(inPool,
 		&higher, initFrontEnd, &sjme_scritchaudio_softmixFunctions,
-		lower, SJME_JNI_TRUE)) ||
+		lower, SJME_JNI_TRUE, bindAudioThread)) ||
 		higher == NULL)
 		goto fail_initHigher;
 

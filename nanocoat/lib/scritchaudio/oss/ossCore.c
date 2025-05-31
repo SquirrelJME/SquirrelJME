@@ -31,6 +31,7 @@ static const sjme_scritchaudio_implFunctions sjme_scritchaudio_ossFunctions =
 sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(oss)(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
+	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
 {
 	sjme_errorCode error;
@@ -42,7 +43,8 @@ sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(oss)(
 	/* Forward initialize. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_scritchaudio_core_init(inPool, &result,
-		initFrontEnd, &sjme_scritchaudio_ossFunctions)) || result == NULL)
+		initFrontEnd, &sjme_scritchaudio_ossFunctions,
+		bindAudioThread)) || result == NULL)
 		return sjme_error_default(error);
 	
 	/* Success! */

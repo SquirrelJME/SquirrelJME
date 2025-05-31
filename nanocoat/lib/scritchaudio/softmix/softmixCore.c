@@ -36,6 +36,10 @@ static sjme_attrThreadCall sjme_thread_result sjme_scritchaudio_softmix_poll(
 	if (inState == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
 
+	/* Does a binder need to be called? */
+	if (inState->bindAudioThread != NULL)
+		inState->bindAudioThread(inState);
+	
 	/* Await loop ready. */
 	sjme_atomic_barrier();
 	while (sjme_atomic_sjme_jint_get(&inState->loopThreadReady) == 0)
@@ -108,7 +112,7 @@ sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 			error = sjme_error_notImplemented(0);
 			goto fail_noLoopIterate;
 		}
-			
+		
 		/* Create thread that loops infinitely. */
 		if (sjme_error_is(error = sjme_thread_new(&inState->loopThread,
 			&inState->loopThreadId,
