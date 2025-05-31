@@ -115,7 +115,7 @@ public class BaseNameCalculation
 For DoJa/Star Scratchpads, the following metadata values are always set
 with the specific values:
 
- * `ownerVendor`: `SquirrelJME-DoJa`
+ * `ownerVendor`: `Keitai-DoJa`
  * `ownerName`: Derived from the ADF/JAM value `AppName`
  * `recordName`: `ScratchPad-[0-16]`
    * Represents which scratchpad this belongs to, all scratchpads go into
@@ -137,3 +137,5 @@ or `RecordStore.setRecord()`.
    * `rmsDate` added.
    * `lastModified` added.
    * `ownerVersion` is now optional and need not be always `0.0.0`.
+   * For DoJa, `ownerVendor` is now `Keitai-DoJa` instead
+     of `SquirrelJME-DoJa`.
