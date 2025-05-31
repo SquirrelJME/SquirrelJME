@@ -89,7 +89,7 @@ public final class ScratchPadStore
 			else
 				try
 				{
-					if (__length != store.getRecord(0, data, 0))
+					if (__length != store.getRecord(1, data, 0))
 						needSeed = true;
 				}
 				catch (RecordStoreException __e)
@@ -138,7 +138,7 @@ public final class ScratchPadStore
 				if (store.getNumRecords() <= 0)
 					store.addRecord(data, 0, data.length);
 				else
-					store.setRecord(0, data, 0, data.length);
+					store.setRecord(1, data, 0, data.length);
 			}
 			
 			// {@squirreljme.error AH0l Could not write scratch pad to the

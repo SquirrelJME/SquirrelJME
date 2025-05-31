@@ -99,7 +99,7 @@ final class __IAppliInterface__
 		String appVend = System.getProperty(IModeProperty.VENDOR_PROPERTY);
 		ApplicationHandler.setNameAndVendor(
 			Objects.toString(appName, mainClass),
-			Objects.toString(appVend, "SquirrelJME-DoJa"));
+			Objects.toString(appVend, "Keitai-DoJa"));
 		
 		// Locate the main class before we initialize it
 		Class<?> classType;

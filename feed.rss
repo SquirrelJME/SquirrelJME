@@ -17,8 +17,26 @@
 		rel="self" />
 
 	<!-- Update these accordingly! -->
-	<pubDate>Sat, 24 May 2025 19:00 EDT</pubDate>
-	<lastBuildDate>Sat, 24 May 2025 19:00 EDT</lastBuildDate>
+	<pubDate>Fri, 30 May 2025 12:30 EDT</pubDate>
+	<lastBuildDate>Fri, 30 May 2025 12:30 EDT</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">d4ff685b-5e4e-4ae6-aeeb-ee82bc4ede51</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250530_1230.mkd</link>
+		<pubDate>Fri, 30 May 2025 12:30 EDT</pubDate>
+
+		<title>SquirrelJME and FreeJ2ME-Plus can share saves!</title>
+		<description>In cooperation with the developer of FreeJ2ME-Plus, a derivation of
+SquirrelJME's existing save format was created which now both emulators
+implement which means that saves are sharable between the two emulators!
+
+The format consists of a JSON metadata file along with basic binaries of
+record data, so it is very simple and easy to implement.
+
+A specification is available at https://squirreljme.cc/doc/trunk/assets/doc/save-format.mkd.</description>
+	</item>
+
+	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">ff39f3a8-5382-4fe6-8124-dd0fca7f1f1a</guid>
@@ -31,8 +49,6 @@ additionally is update functionality, which should work. It should now be
 easier to use the standalone version without having to install a Java SE
 virtual machine yourself and using the command line, unless you still wish to.</description>
 	</item>
-
-	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">818c13b6-b248-49a6-91dc-4c6d7c607765</guid>

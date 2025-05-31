@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
+import cc.squirreljme.runtime.midlet.MeepRuntime;
 import cc.squirreljme.runtime.rms.RecordIteration;
 import cc.squirreljme.runtime.rms.RecordSession;
 import cc.squirreljme.runtime.rms.RecordStoreSession;
@@ -155,7 +156,8 @@ public class RecordStore
 			try (RecordStoreSession session = this.__info().__meta())
 			{
 				// Allocate a new ID
-				id = session.nextId(true);
+				id = session.nextId(true,
+					MeepRuntime.versionBefore(8, 0));
 				
 				// Set tag for the ID
 				session.setTag(id, __tag);
@@ -441,7 +443,8 @@ public class RecordStore
 				this.__checkOpen();
 				
 				// Get the next available ID without allocating
-				return session.nextId(false);
+				return session.nextId(false,
+					MeepRuntime.versionBefore(8, 0));
 			}
 			catch (RecordStoreException __e)
 			{
