@@ -435,9 +435,12 @@ typedef enum sjme_errorCode
 
 	/** The state is mismatched. */
 	SJME_ERROR_AUDIO_STATE_MISMATCH = -131,
+
+	/** No audio resources are available. */
+	SJME_ERROR_AUDIO_NO_RESOURCES = -132,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -132,
+	SJME_NUM_ERROR_CODES = -133,
 } sjme_errorCode;
 
 /**

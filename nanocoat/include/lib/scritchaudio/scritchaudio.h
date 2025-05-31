@@ -250,6 +250,26 @@ struct sjme_scritchaudio_renderInfo
 	/** The buffer size. */
 	sjme_jint bufSize;
 };
+
+/**
+ * Represents a single audio buffer.
+ *
+ * @since 2025/05/31
+ */
+typedef union sjme_scritchaudio_buffer
+{
+	/** Unsigned byte. */
+	sjme_jubyte u[sjme_flexibleArrayCountUnion];
+
+	/** Short. */
+	sjme_jshort s[sjme_flexibleArrayCountUnion];
+
+	/** Integer. */
+	sjme_jint i[sjme_flexibleArrayCountUnion];
+
+	/** Float. */
+	sjme_jfloat f[sjme_flexibleArrayCountUnion];
+} sjme_scritchaudio_buffer;
 	
 /**
  * Internal implementation initialization function.
@@ -371,12 +391,16 @@ typedef sjme_errorCode (*sjme_scritchaudio_queryMidiPortsFunc)(
  *
  * @param inState The ScritchAudio state.
  * @param inSource The source being rendered.
+ * @param renderInfo The information needed for rendering.
+ * @param buf The buffer to render to.
  * @return Any resultant error, if any.
  * @since 2025/05/18
  */
 typedef sjme_errorCode (*sjme_scritchaudio_sourceRenderFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_source inSource);
+	sjme_attrInNotNull sjme_scritchaudio_source inSource,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo,
+	sjme_attrInNotNull sjme_scritchaudio_buffer* buf);
 	
 /**
  * Attaches a source renderer to the given stream, the renderer will use the
@@ -678,6 +702,9 @@ struct sjme_scritchaudio_streamBase
 		
 		/** The stream this wrapped. */
 		sjme_scritchaudio_stream wrapped;
+
+		/** The source stream for mixing. */
+		sjme_scritchaudio_source wrappedSource;
 	} data;
 
 	/** The shared stream lock. */

@@ -86,8 +86,18 @@ sjme_errorCode sjme_scritchaudio_oss_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrInNotNull sjme_scritchaudio_source inSource)
 {
+	sjme_list_sjme_scritchaudio_source* sources;
+	sjme_jint i, n;
+	
 	if (inState == NULL || inStream == NULL || inSource == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* There can only be a single OSS source at a time. */
+	sources = inStream->sources;
+	if (sources != NULL)
+		for (i = 0, n = sources->length; i < n; i++)
+			if (sources->elements[i] != NULL)
+				return SJME_ERROR_AUDIO_NO_RESOURCES;
 
 	/* Just set peer disconnection functions, despite not doing much. */
 	inSource->connection.noPeers = sjme_scritchaudio_oss_peerNone;

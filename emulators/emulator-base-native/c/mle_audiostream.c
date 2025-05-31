@@ -73,9 +73,12 @@ FORWARD_IMPL(AudioStream, stream,
 
 static sjme_errorCode sjme_jni_renderAudio(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_source inSource)
+	sjme_attrInNotNull sjme_scritchaudio_source inSource,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo,
+	sjme_attrInNotNull sjme_scritchaudio_buffer* buf)
 {
-	if (inState == NULL || inSource == NULL)
+	if (inState == NULL || inSource == NULL || renderInfo == NULL ||
+		buf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	sjme_todo("Impl?");

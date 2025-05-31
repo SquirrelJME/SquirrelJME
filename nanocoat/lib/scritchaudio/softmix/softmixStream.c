@@ -11,9 +11,12 @@
 
 static sjme_errorCode sjme_scritchaudio_softmix_wrappedRender(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_source inSource)
+	sjme_attrInNotNull sjme_scritchaudio_source inSource,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo,
+	sjme_attrInNotNull sjme_scritchaudio_buffer* buf)
 {
-	if (inState == NULL || inSource == NULL)
+	if (inState == NULL || inSource == NULL || renderInfo == NULL ||
+		buf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	sjme_todo("Impl?");
@@ -129,18 +132,12 @@ sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 	if (wrappedState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* Forward to wrapped. */
-	wrapped = NULL;
-	if (sjme_error_is(error = wrappedState->api->sourceAttach(wrappedState,
-		inStream->data.wrapped, &wrapped,
-		sjme_scritchaudio_softmix_wrappedRender, NULL)) || wrapped == NULL)
-		return sjme_error_default(error);
-
 	/* Initialize data. */
+	/* Note that the source is not forwarded as we do mixing ourselves when */
+	/* it is requested. */
 	inSource->connection.noPeers = sjme_scritchaudio_softmix_peerNone;
 	inSource->connection.peerDisconnect =
 		sjme_scritchaudio_softmix_peerDisconnect;
-	inSource->data.wrapped = wrapped;
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -160,6 +157,7 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	sjme_scritchaudio_format origFormat;
 	sjme_scritchaudio_rate origRate;
 	sjme_scritchaudio_channels origChannels;
+	sjme_scritchaudio_source wrappedSource;
 	
 	if (inState == NULL || outStream == NULL || inName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -230,12 +228,20 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	result->connection.noPeers = sjme_scritchaudio_softmix_peerNone;
 	result->connection.peerDisconnect =
 		sjme_scritchaudio_softmix_peerDisconnect;
+	
+	/* Setup underlying source stream to render mixed audio. */
+	wrappedSource = NULL;
+	if (sjme_error_is(error = wrappedState->api->sourceAttach(wrappedState,
+		wrapped, &wrappedSource,
+		sjme_scritchaudio_softmix_wrappedRender, NULL)) || wrapped == NULL)
+		goto fail_subSource;
 
 	/* Success! */
 	*outStream = result;
 	return SJME_ERROR_NONE;
 	
 fail_allocResult:
+fail_subSource:
 	if (wrapped != NULL)
 	{
 		sjme_todo("Impl?");

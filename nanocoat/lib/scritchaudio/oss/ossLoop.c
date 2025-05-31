@@ -18,9 +18,12 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
 {
+	sjme_errorCode error;
 	int fd, trigger;
 	sjme_pointer buf;
-	sjme_jint bufSize;
+	sjme_jint bufSize, i, n;
+	sjme_scritchaudio_source source;
+	sjme_list_sjme_scritchaudio_source* sources;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -34,6 +37,22 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	sjme_message("OSS Tick: %lld", inState->clock.clock.full / 1000000);
 #endif
 
+	/* Recover the single source. */
+	sources = inStream->sources;
+	if (sources == NULL)
+		return SJME_ERROR_NONE;
+	source = NULL;
+	for (i = 0, n = sources->length; i < n; i++)
+	{
+		source = sources->elements[i];
+		if (source != NULL)
+			break;
+	}
+
+	/* None found? */
+	if (source == NULL)
+		return SJME_ERROR_NONE;
+
 	/* Recover the file descriptor. */
 	fd = inStream->data.fd;
 	
@@ -42,6 +61,11 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	buf = sjme_alloca(bufSize);
 	if (buf == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
+
+	/* Render source. */
+	if (sjme_error_is(error = source->renderFunc(inState,
+		source, renderInfo, (sjme_scritchaudio_buffer*)buf)))
+		return sjme_error_default(error);
 	
 	/* Disable playback. */
 	trigger = 0;
