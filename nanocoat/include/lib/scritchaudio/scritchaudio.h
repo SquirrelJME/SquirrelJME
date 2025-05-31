@@ -512,6 +512,9 @@ typedef struct sjme_scritchaudio_implFunctions
  */
 typedef struct sjme_scritchaudio_internFunctions
 {
+	/** Calculate the rendering information. */
+	sjme_scritchaudio_loopIterateRenderFunc calcRenderInfo;
+	
 	/** Determines the next fallback. */
 	sjme_scritchaudio_fallbackNextFunc fallbackNext;
 	

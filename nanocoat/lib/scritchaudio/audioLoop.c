@@ -12,36 +12,7 @@
 #include "lib/scritchaudio/scritchaudio.h"
 #include "lib/scritchaudio/scritchaudioIntern.h"
 
-sjme_errorCode sjme_scritchaudio_core_loopIterate(
-	sjme_attrInNotNull sjme_scritchaudio inState)
-{
-	sjme_jlong now;
-	sjme_scritchaudio_stream stream;
-	sjme_scritchaudio_renderInfo renderInfo;
-	
-	if (inState == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Update the clock time. */
-	inState->nal->nanoTime(&now);
-	inState->clock.clock.full = now.full - inState->clock.clockBase.full;
-
-	/* If there is no stream, do not bother. */
-	stream = inState->stream;
-	if (stream == NULL)
-		return SJME_ERROR_NONE;
-	
-	/* Only forward if the handler supports this. */
-	if (inState->impl->loopIterate == NULL)
-		return SJME_ERROR_NONE;
-
-	/* Forward. */
-	memset(&renderInfo, 0, sizeof(renderInfo));
-	renderInfo.clock = inState->clock.clock;
-	return inState->intern->loopIterate(inState, stream, &renderInfo);
-}
-
-sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
+sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
@@ -53,10 +24,9 @@ sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
 
 	if (inState == NULL || inStream == NULL || renderInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Only forward if the handler supports this. */
-	if (inState->impl->loopIterate == NULL)
-		return SJME_ERROR_NONE;
+
+	/* Set the clock. */
+	renderInfo->clock = inState->clock.clock;
 	
 	/* Get the latency to determine the sample count. */
 	/* Add extra latency of 25ms. */
@@ -97,6 +67,57 @@ sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
 	renderInfo->totalSamples = inStream->channels * renderInfo->samples;
 	renderInfo->bufSize = renderInfo->bytesPerSample *
 		renderInfo->totalSamples;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchaudio_core_loopIterate(
+	sjme_attrInNotNull sjme_scritchaudio inState)
+{
+	sjme_jlong now;
+	sjme_scritchaudio_stream stream;
+	sjme_scritchaudio_renderInfo renderInfo;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Update the clock time. */
+	inState->nal->nanoTime(&now);
+	inState->clock.clock.full = now.full - inState->clock.clockBase.full;
+
+	/* If there is no stream, do not bother. */
+	stream = inState->stream;
+	if (stream == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Only forward if the handler supports this. */
+	if (inState->impl->loopIterate == NULL)
+		return SJME_ERROR_NONE;
+
+	/* Forward. */
+	memset(&renderInfo, 0, sizeof(renderInfo));
+	return inState->intern->loopIterate(inState, stream, &renderInfo);
+}
+
+sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
+{
+	sjme_errorCode error;
+
+	if (inState == NULL || inStream == NULL || renderInfo == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Only forward if the handler supports this. */
+	if (inState->impl->loopIterate == NULL)
+		return SJME_ERROR_NONE;
+
+	/* Calculate the render info. */
+	if (sjme_error_is(error = inState->intern->calcRenderInfo(inState,
+		inStream, renderInfo)))
+		return sjme_error_default(error);
 	
 	/* Lock the shared lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(

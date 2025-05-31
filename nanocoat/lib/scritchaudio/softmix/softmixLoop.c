@@ -45,7 +45,6 @@ sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
 	/* Go directly to the intern handler. */
 	memset(&newInfo, 0, sizeof(newInfo));
 	newInfo.parent = renderInfo;
-	newInfo.clock = wrappedState->clock.clock;
 	return wrappedState->intern->loopIterate(wrappedState,
 		inStream->data.wrapped, &newInfo);
 }
