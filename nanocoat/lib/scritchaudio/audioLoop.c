@@ -7,16 +7,17 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "lib/scritchaudio/scritchaudio.h"
 #include "lib/scritchaudio/scritchaudioIntern.h"
 
 sjme_errorCode sjme_scritchaudio_core_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState)
 {
-	sjme_errorCode error;
 	sjme_jlong now;
-	sjme_jint latency, expected44KHzSamples, expected48KHzSamples;
 	sjme_scritchaudio_stream stream;
+	sjme_scritchaudio_renderInfo renderInfo;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -29,7 +30,34 @@ sjme_errorCode sjme_scritchaudio_core_loopIterate(
 	stream = inState->stream;
 	if (stream == NULL)
 		return SJME_ERROR_NONE;
+	
+	/* Only forward if the handler supports this. */
+	if (inState->impl->loopIterate == NULL)
+		return SJME_ERROR_NONE;
 
+	/* Forward. */
+	memset(&renderInfo, 0, sizeof(renderInfo));
+	renderInfo.clock = inState->clock.clock;
+	return inState->intern->loopIterate(inState, stream, &renderInfo);
+}
+
+sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
+{
+	sjme_errorCode error;
+	sjme_jint latency, freqAt;
+	sjme_jint expected48KHzSamples;
+	sjme_jint expected44KHzSamples;
+
+	if (inState == NULL || inStream == NULL || renderInfo == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Only forward if the handler supports this. */
+	if (inState->impl->loopIterate == NULL)
+		return SJME_ERROR_NONE;
+	
 	/* Get the latency to determine the sample count. */
 	/* Add extra latency of 25ms. */
 	latency = (sjme_atomic_sjme_jint_get(&inState->pollDelayMillis) *
@@ -42,26 +70,47 @@ sjme_errorCode sjme_scritchaudio_core_loopIterate(
 	expected44KHzSamples = (441 * (latency / 10000)) / 1000;
 	expected48KHzSamples = (448 * (latency / 10000)) / 1000;
 	
-	/* Only forward if the handler supports this. */
-	if (inState->impl->loopIterate != NULL)
+	/* Which base samples do we start at? */
+	if ((inStream->rate % 8000) == 0)
 	{
-		/* Lock the shared lock. */
-		if (sjme_error_is(error = sjme_thread_spinLockGrab(
-			&stream->sharedLock)))
-			return sjme_error_default(error);
-		
-		/* Run the loop. */
-		error = inState->impl->loopIterate(inState, inState->clock.clock,
-			expected48KHzSamples, expected44KHzSamples);
-
-		/* Release the lock. */
-		if (sjme_error_is(sjme_thread_spinLockRelease(&stream->sharedLock,
-			NULL)))
-			return sjme_error_defaultOr(error, SJME_ERROR_ILLEGAL_STATE);
-
-		/* Return whatever error was given. */
-		return error;
+		freqAt = 48000;
+		renderInfo->samples = expected48KHzSamples;
+	}
+	else
+	{
+		freqAt = 44100;
+		renderInfo->samples = expected44KHzSamples;
 	}
 	
-	return SJME_ERROR_NONE;
+	/* Trim down sample count until we match the given set. */
+	while (freqAt > inStream->rate)
+	{
+		renderInfo->samples >>= 2;
+		freqAt >>= 2;
+	}
+
+	/* Bytes per sample? */
+	renderInfo->bytesPerSample = sjme_scritchaudio_bytesPerSample[
+		inStream->format];
+
+	/* Allocate sample buffer */
+	renderInfo->totalSamples = inStream->channels * renderInfo->samples;
+	renderInfo->bufSize = renderInfo->bytesPerSample *
+		renderInfo->totalSamples;
+	
+	/* Lock the shared lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&inStream->sharedLock)))
+		return sjme_error_default(error);
+	
+	/* Run the loop. */
+	error = inState->impl->loopIterate(inState, inStream, renderInfo);
+
+	/* Release the lock. */
+	if (sjme_error_is(sjme_thread_spinLockRelease(&inStream->sharedLock,
+		NULL)))
+		return sjme_error_defaultOr(error, SJME_ERROR_ILLEGAL_STATE);
+
+	/* Return whatever error was given. */
+	return error;
 }

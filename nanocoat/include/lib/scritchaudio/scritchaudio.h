@@ -224,6 +224,34 @@ typedef enum sjme_scritchaudio_channels
 } sjme_scritchaudio_channels;
 
 /**
+ * This contains the information needed to render.
+ *
+ * @since 2025/05/31
+ */
+typedef struct sjme_scritchaudio_renderInfo sjme_scritchaudio_renderInfo;
+
+struct sjme_scritchaudio_renderInfo
+{
+	/** The parent render info, if any. */
+	sjme_scritchaudio_renderInfo* parent;
+	
+	/** The system clock. */
+	sjme_jlong clock;
+
+	/** The number of samples. */
+	sjme_jint samples;
+
+	/** The total samples, with channels. */
+	sjme_jint totalSamples;
+
+	/** The bytes per sample. */
+	sjme_jint bytesPerSample;
+
+	/** The buffer size. */
+	sjme_jint bufSize;
+};
+	
+/**
  * Internal implementation initialization function.
  *
  * @param inState The ScritchAudio state.
@@ -283,19 +311,15 @@ typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
  * for audio-processing.
  *
  * @param inState The ScritchAudio state.
- * @param clock The current audio clock.
- * @param expected48KHzSamples The number of expected samples to render at
- * 48KHz.
- * @param expected44KHzSamples The number of expected samples to render at
- * 44KHz.
+ * @param inStream The stream to render in.
+ * @param renderInfo The information needed for rendering.
  * @return Any resultant error, if any.
  * @since 2025/05/28
  */
-typedef sjme_errorCode (*sjme_scritchaudio_loopIterateImplFunc)(
+typedef sjme_errorCode (*sjme_scritchaudio_loopIterateRenderFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInValue sjme_jlong clock,
-	sjme_attrInValue sjme_jint expected48KHzSamples,
-	sjme_attrInValue sjme_jint expected44KHzSamples);
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
 
 /**
  * Called when there are no peers.
@@ -445,7 +469,7 @@ typedef struct sjme_scritchaudio_implFunctions
 	sjme_scritchaudio_disconnectFunc disconnect;
 	
 	/** Iterates the audio loop. */
-	sjme_scritchaudio_loopIterateImplFunc loopIterate;
+	sjme_scritchaudio_loopIterateRenderFunc loopIterate;
 	
 	/** Queries the MIDI ports and synths available. */
 	sjme_scritchaudio_queryMidiPortsFunc queryMidiPorts;
@@ -466,6 +490,9 @@ typedef struct sjme_scritchaudio_internFunctions
 {
 	/** Determines the next fallback. */
 	sjme_scritchaudio_fallbackNextFunc fallbackNext;
+	
+	/** Iterates the audio loop. */
+	sjme_scritchaudio_loopIterateRenderFunc loopIterate;
 	
 	/** Connect two peers. */
 	sjme_scritchaudio_peerConnectFunc peerConnect;

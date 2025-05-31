@@ -23,12 +23,12 @@ static sjme_errorCode sjme_scritchaudio_softmix_streamMix(
 
 sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInValue sjme_jlong clock,
-	sjme_attrInValue sjme_jint expected48KHzSamples,
-	sjme_attrInValue sjme_jint expected44KHzSamples)
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
 {
 	sjme_errorCode error;
 	sjme_scritchaudio wrappedState;
+	sjme_scritchaudio_renderInfo newInfo;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -41,12 +41,11 @@ sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
 	/* Copy the clock directly. */
 	memmove(&wrappedState->clock.clock, &clock,
 		sizeof(inState->clock.clock));
-	
-	/* Forward directly to the native iterator, skipping any API code as */
-	/* most everything was already calculated. */
-	if (wrappedState->impl->loopIterate != NULL)
-		return wrappedState->impl->loopIterate(wrappedState, clock,
-			expected48KHzSamples, expected44KHzSamples);
-	
-	return SJME_ERROR_NONE;
+
+	/* Go directly to the intern handler. */
+	memset(&newInfo, 0, sizeof(newInfo));
+	newInfo.parent = renderInfo;
+	newInfo.clock = wrappedState->clock.clock;
+	return wrappedState->intern->loopIterate(wrappedState,
+		inStream->data.wrapped, &newInfo);
 }

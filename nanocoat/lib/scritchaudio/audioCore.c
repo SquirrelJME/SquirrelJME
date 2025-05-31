@@ -56,6 +56,7 @@ static const sjme_scritchaudio_apiFunctions sjme_scritchaudio_coreFunctions =
 static const sjme_scritchaudio_internFunctions sjme_scritchaudio_coreInterns =
 {
 	.fallbackNext = sjme_scritchaudio_core_fallbackNext,
+	.loopIterate = sjme_scritchaudio_core_loopIterateIntern,
 	.peerConnect = sjme_scritchaudio_core_peerConnect,
 	.peerDisconnect = sjme_scritchaudio_core_peerDisconnect,
 	.peerNoneDispatch = sjme_scritchaudio_core_peerNoneDispatch,

@@ -51,9 +51,8 @@ sjme_errorCode sjme_scritchaudio_oss_disconnect(
 
 sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInValue sjme_jlong clock,
-	sjme_attrInValue sjme_jint expected48KHzSamples,
-	sjme_attrInValue sjme_jint expected44KHzSamples);
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
 	
 sjme_errorCode sjme_scritchaudio_oss_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,

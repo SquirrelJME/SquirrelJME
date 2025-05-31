@@ -15,25 +15,19 @@
 
 sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInValue sjme_jlong clock,
-	sjme_attrInValue sjme_jint expected48KHzSamples,
-	sjme_attrInValue sjme_jint expected44KHzSamples)
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
 {
 	int fd, trigger;
-	sjme_scritchaudio_stream stream;
-	sjme_jint freqAt, samples, totalSamples, bytesPerSample, bufSize;
 	sjme_pointer buf;
-
-	sjme_jint i;
-	sjme_jshort* a;
-	sjme_jbyte* b;
+	sjme_jint bufSize;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Recover stream, ignore if not ready yet. */
-	stream = inState->stream;
-	if (stream == NULL)
+	inStream = inState->stream;
+	if (inStream == NULL)
 		return SJME_ERROR_NONE;
 	
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
@@ -41,46 +35,13 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 #endif
 
 	/* Recover the file descriptor. */
-	fd = stream->data.fd;
-
-	/* Which base samples do we start at? */
-	if ((stream->rate % 8000) == 0)
-	{
-		freqAt = 48000;
-		samples = expected48KHzSamples;
-	}
-	else
-	{
-		freqAt = 44100;
-		samples = expected44KHzSamples;
-	}
+	fd = inStream->data.fd;
 	
-	/* Trim down sample count until we match the given set. */
-	while (freqAt > stream->rate)
-	{
-		samples >>= 2;
-		freqAt >>= 2;
-	}
-
-	/* Bytes per sample? */
-	bytesPerSample = sjme_scritchaudio_bytesPerSample[stream->format];
-
 	/* Allocate sample buffer */
-	totalSamples = stream->channels * samples;
-	bufSize = bytesPerSample * totalSamples;
+	bufSize = renderInfo->bufSize;
 	buf = sjme_alloca(bufSize);
 	if (buf == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
-
-	/* Render the buffer. */
-	a = buf;
-	b = buf;
-	if (bytesPerSample == 2)
-		for (i = 0; i < totalSamples; i++)
-			a[i] = rand();
-	else if (bytesPerSample == 1)
-		for (i = 0; i < totalSamples; i++)
-			b[i] = rand();
 	
 	/* Disable playback. */
 	trigger = 0;
