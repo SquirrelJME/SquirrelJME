@@ -26,8 +26,6 @@ static const int
 	sjme_scritchaudio_oss_format[SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS] =
 {
 	AFMT_U8,
-	AFMT_A_LAW,
-	AFMT_MU_LAW,
 	AFMT_S16_NE,
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN) && \
 	defined(AFMT_S32_LE)
@@ -38,7 +36,6 @@ static const int
 #else
 	-1,
 #endif
-	-1,
 	-1,
 };
 

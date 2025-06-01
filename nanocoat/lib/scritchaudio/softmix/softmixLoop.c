@@ -11,16 +11,6 @@
 
 #include "lib/scritchaudio/softmix/softmixIntern.h"
 
-static sjme_errorCode sjme_scritchaudio_softmix_streamMix(
-	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInValue sjme_jlong clock,
-	sjme_attrInValue sjme_jint expected48KHzSamples)
-{
-	sjme_todo("Impl");
-	return sjme_error_notImplemented(0);
-}
-
 sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,

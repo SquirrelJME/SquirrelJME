@@ -10,7 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
-import cc.squirreljme.jvm.mle.brackets.AudioStreamConnectionBracket;
+import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamPlayer;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
@@ -53,7 +53,7 @@ public final class AudioStreamShelf
 	 * @since 2025/05/04
 	 */
 	@SquirrelJMEVendorApi
-	public static native AudioStreamConnectionBracket attach(
+	public static native AudioConnectionBracket attach(
 		@NotNull AudioStreamBracket __stream,
 		@NotNull AudioStreamRenderer __renderer)
 		throws MLECallError;
@@ -117,7 +117,7 @@ public final class AudioStreamShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native void disconnect(
-		@NotNull AudioStreamConnectionBracket __conn)
+		@NotNull AudioConnectionBracket __conn)
 		throws MLECallError;
 	
 	/**

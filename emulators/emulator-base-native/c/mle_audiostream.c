@@ -144,7 +144,8 @@ static sjme_errorCode sjme_jni_renderAudio(
 
 	/* Forward call to the renderer. */
 	forwardCallStaticVoid(env, FORWARD_NATIVE_CLASS,
-		"__render", "(Ljava/nio/ByteBuffer;JIIIIIII)V",
+		"__render",
+		"("DESC_AUDIORENDERER"Ljava/nio/ByteBuffer;JIIIIIII)V",
 		sourceBracket, byteBuffer, renderInfo->clock, renderInfo->samples,
 		renderInfo->totalSamples, renderInfo->bytesPerSample,
 		renderInfo->bufSize, inSource->inStream->format,

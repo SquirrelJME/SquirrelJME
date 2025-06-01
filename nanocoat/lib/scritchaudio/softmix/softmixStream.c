@@ -10,53 +10,65 @@
 #include <string.h>
 
 #include "lib/scritchaudio/softmix/softmixIntern.h"
+#include "sjme/fixed.h"
 
 static sjme_errorCode sjme_scritchaudio_softmix_renderSource(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_source inSource,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* wrappedRenderInfo,
-	sjme_attrInNotNull sjme_scritchaudio_buffer* wrappedBuf)
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* sourceInfo,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* destInfo,
+	sjme_attrInNotNull sjme_scritchaudio_buffer* destBuf)
 {
 	sjme_errorCode error;
 	sjme_jint bufSize;
 	sjme_pointer buf;
+	sjme_scritchaudio_softmix_mixer mixer;
 	
-	if (inState == NULL || inSource == NULL || renderInfo == NULL)
+	if (inState == NULL || inSource == NULL || sourceInfo == NULL)
 		return SJME_ERROR_NONE;
 
 	/* Allocate buffer to render to. */
-	bufSize = renderInfo->bufSize;
+	bufSize = sourceInfo->bufSize;
 	buf = sjme_alloca(bufSize);
 	if (buf == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
+	memset(buf, 0, bufSize);
 
 	/* Call source render function. */
 	if (sjme_error_is(error = inSource->renderFunc(inState, inSource,
-		renderInfo, buf)))
+		sourceInfo, buf)))
 		return sjme_error_default(error);
+
+	/* Get the mixer to use. */
+	mixer = sjme_scritchaudio_softmix_mixers[sourceInfo->format]
+		[destInfo->format];
+	if (mixer == NULL)
+	{
+		sjme_todo("Mixing %d -> %d", sourceInfo->format, destInfo->format);
+		return sjme_error_notImplemented((sourceInfo->format *
+			SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS) + destInfo->format);
+	}
 	
 	/* Mix audio into the target buffer. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	return mixer(sourceInfo, buf, destInfo, destBuf);
 }
 
 static sjme_errorCode sjme_scritchaudio_softmix_wrappedRender(
 	sjme_attrInNotNull sjme_scritchaudio wrappedState,
 	sjme_attrInNotNull sjme_scritchaudio_source wrappedSource,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo,
-	sjme_attrInNotNull sjme_scritchaudio_buffer* wrappedBuf)
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* destInfo,
+	sjme_attrInNotNull sjme_scritchaudio_buffer* destBuf)
 {
 	sjme_errorCode error, anyError;
 	sjme_scritchaudio inState, sourceState;
 	sjme_scritchaudio_stream inStream, wrappedStream, sourceStream;
 	sjme_scritchaudio_source source;
 	sjme_list_sjme_scritchaudio_source* sources;
-	sjme_scritchaudio_renderInfo subInfo;
+	sjme_scritchaudio_renderInfo sourceInfo;
 	sjme_jint i, n;
 	
-	if (wrappedState == NULL || wrappedSource == NULL || renderInfo == NULL ||
-		wrappedBuf == NULL)
+	if (wrappedState == NULL || wrappedSource == NULL || destInfo == NULL ||
+		destBuf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Recover the top level state. */
@@ -93,14 +105,23 @@ static sjme_errorCode sjme_scritchaudio_softmix_wrappedRender(
 		sourceStream = source->inStream;
 
 		/* Calculate the sub-render info. */
-		memset(&subInfo, 0, sizeof(subInfo));
+		memset(&sourceInfo, 0, sizeof(sourceInfo));
 		if (sjme_error_is(error = inState->intern->calcRenderInfo(
-			sourceState, sourceStream, &subInfo)))
+			sourceState, sourceStream, &sourceInfo)))
 			goto fail_any;
+
+		/* Calculate the rate scale. */
+		sourceInfo.fromIncr = sjme_fixed_div(
+			sjme_fixed_hi(sourceInfo.rate / 100),
+			sjme_fixed_hi(destInfo->rate / 100));
+		destInfo->fromIncr = sourceInfo.fromIncr;
+		sourceInfo.toIncr = SJME_FIXED_ONE;
+		destInfo->toIncr = sourceInfo.toIncr;
 
 		/* Forward render. */
 		if (sjme_error_is(error = sjme_scritchaudio_softmix_renderSource(
-			sourceState, source, &subInfo, renderInfo, wrappedBuf)))
+			sourceState, source, &sourceInfo,
+			destInfo, destBuf)))
 			goto fail_any;
 
 		continue;

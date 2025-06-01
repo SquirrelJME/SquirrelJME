@@ -29,6 +29,21 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/** The number of bits to shift for fractions. */
+#define SJME_FIXED_SHIFT 16
+
+/** The number of bits in an entire fixed value. */
+#define SJME_FIXED_FULL_BITS 32
+
+/** The value one. */
+#define SJME_FIXED_ONE 0x10000
+
+/** The masked for shifted values. */
+#define SJME_FIXED_MASK 0xFFFF
+
+/** The masked for rounding values. */
+#define SJME_FIXED_ROUND_MASK 0x800
+
 /**
  * Ceiling a fixed point number, removing any fractional value.
  * 

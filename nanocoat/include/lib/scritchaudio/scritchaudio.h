@@ -139,26 +139,17 @@ typedef enum sjme_scritchaudio_format
 	/** Unsigned 8-bit PCM. */
 	SJME_SCRITCHAUDIO_FORMAT_BYTE_U8 = 0,
 	
-	/** 8-bit a-law. */
-	SJME_SCRITCHAUDIO_FORMAT_BYTE_ALAW = 1,
-	
-	/** 8-bit mu-law. */
-	SJME_SCRITCHAUDIO_FORMAT_BYTE_ULAW = 2,
-	
 	/** Signed 16-bit. */
-	SJME_SCRITCHAUDIO_FORMAT_SHORT_S16 = 3,
-	
-	/** Signed 24-bit, as integer type. */
-	SJME_SCRITCHAUDIO_FORMAT_INT_S24 = 4,
+	SJME_SCRITCHAUDIO_FORMAT_SHORT_S16 = 1,
 	
 	/** Signed 32-bit. */
-	SJME_SCRITCHAUDIO_FORMAT_INT_S32 = 5,
+	SJME_SCRITCHAUDIO_FORMAT_INT_S32 = 2,
 	
 	/** 32-bit floating point. */
-	SJME_SCRITCHAUDIO_FORMAT_FLOAT_F32 = 6,
+	SJME_SCRITCHAUDIO_FORMAT_FLOAT_F32 = 3,
 	
 	/** The number of audio formats. */
-	SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS = 7,
+	SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS = 4,
 } sjme_scritchaudio_format;
 
 /** The number of bytes per sample. */
@@ -237,6 +228,12 @@ struct sjme_scritchaudio_renderInfo
 	
 	/** The system clock. */
 	sjme_jlong clock;
+
+	/** The format. */
+	sjme_scritchaudio_format format;
+
+	/** The rate. */
+	sjme_scritchaudio_rate rate;
 
 	/** The number of samples. */
 	sjme_jint samples;

@@ -29,38 +29,23 @@ public interface AudioStreamFormat
 	byte BYTE_U8 =
 		0;
 	
-	/** 8-bit a-law. */
-	@SquirrelJMEVendorApi
-	byte BYTE_ALAW =
-		1;
-	
-	/** 8-bit mu-law. */
-	@SquirrelJMEVendorApi
-	byte BYTE_ULAW =
-		2;
-	
 	/** Signed 16-bit. */
 	@SquirrelJMEVendorApi
 	byte SHORT_S16 =
-		3;
-	
-	/** Signed 24-bit, as integer type. */
-	@SquirrelJMEVendorApi
-	byte INT_S24 =
-		4;
+		1;
 	
 	/** Signed 32-bit. */
 	@SquirrelJMEVendorApi
 	byte INT_S32 =
-		5;
+		2;
 	
 	/** 32-bit floating point. */
 	@SquirrelJMEVendorApi
 	byte FLOAT_F32 =
-		6;
+		3;
 	
 	/** The number of audio formats. */
 	@SquirrelJMEVendorApi
 	byte NUM_FORMATS =
-		7;
+		4;
 }

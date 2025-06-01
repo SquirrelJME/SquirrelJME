@@ -19,6 +19,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  */
 @SquirrelJMEVendorApi
 @GhostObject
-public interface AudioStreamConnectionBracket
+public interface AudioConnectionBracket
 {
 }

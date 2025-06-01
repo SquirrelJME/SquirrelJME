@@ -30,19 +30,17 @@ public interface AudioStreamRenderer
 	/**
 	 * Renders to the given audio stream.
 	 *
-	 * @param __stream The stream being rendered to.
 	 * @param __format The format of the stream.
 	 * @param __rate The rate of the stream.
 	 * @param __channels The number of channels to render.
 	 * @param __buf The buffer to the data.
 	 * @param __off The offset into the buffer.
 	 * @param __len The length of the buffer.
-	 * @return The result of the rendering.
 	 * @since 2025/05/04
 	 */
 	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = AudioRenderResult.class)
-	int render(@NotNull AudioStreamBracket __stream,
+	void render(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __format,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __rate,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __channels,

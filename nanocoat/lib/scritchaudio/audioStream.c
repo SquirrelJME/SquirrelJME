@@ -17,10 +17,7 @@ const sjme_jint sjme_scritchaudio_bytesPerSample
 	[SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS] =
 {
 	1,
-	1,
-	1,
 	2,
-	4,
 	4,
 	4,
 };

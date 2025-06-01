@@ -11,7 +11,7 @@ package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
-import cc.squirreljme.jvm.mle.brackets.AudioStreamConnectionBracket;
+import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamPlayer;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
@@ -21,6 +21,7 @@ import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +63,7 @@ public class EmulatedAudioStreamShelf
 	 * @since 2025/05/04
 	 */
 	@SquirrelJMEVendorApi
-	public static AudioStreamConnectionBracket attach(
+	public static AudioConnectionBracket attach(
 		@NotNull AudioStreamBracket __stream,
 		@NotNull AudioStreamRenderer __renderer)
 		throws MLECallError
@@ -162,7 +163,7 @@ public class EmulatedAudioStreamShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static void disconnect(
-		@NotNull AudioStreamConnectionBracket __conn)
+		@NotNull AudioConnectionBracket __conn)
 		throws MLECallError
 	{
 		if (__conn == null)
@@ -396,6 +397,61 @@ public class EmulatedAudioStreamShelf
 			default:
 				return Arrays.asList("pulse", "alsa", "oss");
 		}
+	}
+	
+	/**
+	 * Renders the audio stream. 
+	 *
+	 * @param __conn The connection.
+	 * @param __buf The buffer to render to.
+	 * @param __clock The clock.
+	 * @param __samples The samples.
+	 * @param __totalSamples The total samples.
+	 * @param __bytesPerSample The bytes per sample.
+	 * @param __bufSize The buffer size.
+	 * @param __format The format used.
+	 * @param __rate The rate.
+	 * @param __channels The channels.
+	 * @since 2025/05/31
+	 */
+	@SquirrelJMEVendorApi
+	static void __render(AudioStreamRenderer __conn, ByteBuffer __buf,
+		long __clock, int __samples, int __totalSamples, int __bytesPerSample,
+		int __bufSize, int __format, int __rate, int __channels)
+	{
+		if (__conn == null || __buf == null)
+			throw new MLECallError("NARG");
+		
+		if (!(__conn instanceof AudioStreamRenderer))
+			throw new MLECallError("CAST");
+		
+		AudioStreamRenderer renderer = (AudioStreamRenderer)__conn;
+		
+		// Set up a new array to render within
+		Object lowerBuf;
+		int lowerBufLen = __bufSize / __bytesPerSample;
+		if (__format == AudioStreamFormat.FLOAT_F32)
+			lowerBuf = new float[lowerBufLen];
+		else if (__bytesPerSample == 4)
+			lowerBuf = new int[lowerBufLen];
+		else if (__bytesPerSample == 2)
+			lowerBuf = new short[lowerBufLen];
+		else
+			lowerBuf = new byte[lowerBufLen];
+		
+		// Do the actual render
+		renderer.render(__format, __rate, __channels,
+			lowerBuf, 0, __bufSize / __bytesPerSample);
+		
+		// Copy everything back to the main buffer
+		if (__format == AudioStreamFormat.FLOAT_F32)
+			__buf.asFloatBuffer().put((float[])lowerBuf);
+		else if (__bytesPerSample == 4)
+			__buf.asIntBuffer().put((int[])lowerBuf);
+		else if (__bytesPerSample == 2)
+			__buf.asShortBuffer().put((short[])lowerBuf);
+		else
+			__buf.put((byte[])lowerBuf);
 	}
 	
 	/**

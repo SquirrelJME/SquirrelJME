@@ -9,7 +9,7 @@
 
 package cc.squirreljme.emulator;
 
-import cc.squirreljme.jvm.mle.brackets.AudioStreamConnectionBracket;
+import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
 
 /**
  * Emulated audio stream connection.
@@ -17,7 +17,7 @@ import cc.squirreljme.jvm.mle.brackets.AudioStreamConnectionBracket;
  * @since 2025/05/18
  */
 public abstract class EmulatedAudioConnectionBracket
-	implements AudioStreamConnectionBracket
+	implements AudioConnectionBracket
 {
 	/** The state pointer. */
 	protected final long statePtr;

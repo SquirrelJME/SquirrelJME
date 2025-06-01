@@ -11,6 +11,7 @@ squirreljme_multilib_add_static_library(ScritchAudioSoftMix
 	softmixCore.c
 	softmixLoop.c
 	softmixMidi.c
+	softmixMix.c
 	softmixStream.c)
 
 # Include main headers

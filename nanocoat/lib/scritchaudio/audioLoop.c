@@ -39,8 +39,12 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	/* rate * latency. */
 	expected44KHzSamples = (441 * (latency / 10000)) / 1000;
 	expected48KHzSamples = (448 * (latency / 10000)) / 1000;
+
+	/* Copy the used format. */
+	renderInfo->format = inStream->format;
 	
 	/* Which base samples do we start at? */
+	renderInfo->rate = inStream->rate;
 	if ((inStream->rate % 8000) == 0)
 	{
 		freqAt = 48000;

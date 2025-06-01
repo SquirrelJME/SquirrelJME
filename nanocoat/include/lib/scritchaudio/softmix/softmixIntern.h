@@ -30,9 +30,30 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * Handles mixing.
+ *
+ * @param sourceInfo The source information.
+ * @param sourceBuf The source buffer.
+ * @param destInfo The destination info.
+ * @param destBuf The destination buffer.
+ * @return Any resultant error.
+ * @since 2025/05/31
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_softmix_mixer)(
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* sourceInfo,
+	sjme_attrInNotNull sjme_scritchaudio_buffer* sourceBuf,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* destInfo,
+	sjme_attrInNotNull sjme_scritchaudio_buffer* destBuf);
+	
 /** Software mixer wrapper functions. */
 extern const sjme_scritchaudio_implFunctions
 	sjme_scritchaudio_softmixFunctions;
+
+/** Available software mixer functions. */
+extern const sjme_scritchaudio_softmix_mixer
+	sjme_scritchaudio_softmix_mixers[SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS]
+	[SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS];
 	
 sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 	sjme_attrInNotNull sjme_scritchaudio inState);

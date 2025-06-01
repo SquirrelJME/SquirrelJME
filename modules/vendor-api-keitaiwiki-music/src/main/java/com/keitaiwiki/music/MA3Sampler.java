@@ -376,7 +376,8 @@ class MA3Sampler
 	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames)
 	{
-		this.render(samples, offset, frames, 1.0f, 1.0f, true, true);
+		this.render(samples, offset, frames, 1.0f, 1.0f,
+			true, true);
 	}
 	
 	/**
@@ -399,7 +400,8 @@ class MA3Sampler
 	public void render(float[] samples, int offset, int frames, float left,
 		float right)
 	{
-		this.render(samples, offset, frames, left, right, true, true);
+		this.render(samples, offset, frames, left, right,
+			true, true);
 	}
 	
 	/**

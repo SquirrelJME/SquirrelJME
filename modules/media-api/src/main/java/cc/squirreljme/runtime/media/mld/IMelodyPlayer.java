@@ -11,10 +11,7 @@ package cc.squirreljme.runtime.media.mld;
 
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
-import cc.squirreljme.jvm.mle.brackets.AudioStreamConnectionBracket;
-import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
-import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
-import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
+import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -42,7 +39,7 @@ public class IMelodyPlayer
 	private static MA3SamplerProvider _SAMPLER;
 	
 	/** The audio connection. */
-	private volatile AudioStreamConnectionBracket _connection;
+	private volatile AudioConnectionBracket _connection;
 	
 	/** The MLD data. */
 	private volatile MLD _mld;
@@ -180,7 +177,7 @@ public class IMelodyPlayer
 			try
 			{
 				// Disconnect
-				AudioStreamConnectionBracket connection = this._connection;
+				AudioConnectionBracket connection = this._connection;
 				if (connection != null)
 				{
 					this._connection = null;

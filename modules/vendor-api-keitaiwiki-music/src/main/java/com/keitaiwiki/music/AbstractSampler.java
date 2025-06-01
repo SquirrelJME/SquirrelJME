@@ -32,13 +32,10 @@ public abstract class AbstractSampler
 	 * @since 2025/05/07
 	 */
 	@Override
-	public int render(@NotNull AudioStreamBracket __stream, int __format,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __rate,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __channels,
-		@NotNull Object __buf,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
+	public void render(int __format, int __rate, int __channels, Object __buf,
+		int __off, int __len)
 	{
-		throw Debugging.todo();
+		// offset + frames * 2 > samples.length
+		this.render((float[])__buf, 0, __len / __channels);
 	}
 }
