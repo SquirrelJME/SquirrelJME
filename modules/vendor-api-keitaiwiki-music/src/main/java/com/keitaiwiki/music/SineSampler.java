@@ -33,451 +33,522 @@
 
 package com.keitaiwiki.music;
 
-import java.util.*;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.util.ExtraMath;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
- * Rudimentary sample generator that uses sine waves for everything. This class
- * is intended for basic testing and is not suitable for general use.
- * @see Sampler
+ * Sampler instance
  */
-public class SineSampler implements Sampler {
-
-    //////////////////////////////// Constants ////////////////////////////////
-
-    private static final int A4 = 81; // Key index bias
-
-
-
-    ///////////////////////////////// Classes /////////////////////////////////
-
-    // Output channel
-    private class Channel {
-        float           bendBase;   // Pitch bend base ratio
-        float           bendOut;    // Effective channel frequency ratio
-        float           bendRange;  // Pitch bend magnitude
-        int             index;      // Index in sampler
-        Note[]          notesOn;    // All notes currently on keys
-        ArrayList<Note> notesOut;   // All notes that are generating output
-        float           volLeft;    // Left stereo amplitude
-        float           volLevel;   // Channel output amplitude
-        float           volPanning; // Stereo level
-        float           volRight;   // Right stereo amplitude
-    }
-
-    // Music note
-    private class Note {
-        float   advance;        // Amount to increment phase per frame
-        Channel channel;        // Encapsulating channel
-        float   freqBase;       // Base frequency
-        boolean playing;        // Note is currently active on its key
-        float   volBase;        // Base volume
-        float   volLeftLevel;   // Current left stereo volume
-        float   volLeftTarget;  // Target left stereo volume
-        float   volRightLevel;  // Current right stereo volume
-        float   volRightTarget; // Target right stereo volume
-        float   wavPhase;       // Position in wave period
-    }
-
-    // Sampler instance
-    private class Instance 
-		extends AbstractSampler
-		implements Sampler.Instance {
-
-        // instance fields
-        Channel[] channels;     // Channel states
-        float     masterTune;   // Global pitch bend
-        float     masterVolume; // Global volume
-        float     sampleRate;   // Output sampling rate
-        float     volRate;      // Automatic volume adjustment rate
-
-
-
-        //////////////////////////// Constructors /////////////////////////////
-
-        // Constructor
-        Instance(float sampleRate) {
-
-            // Instance fields
-            channels        = new Channel[16];
-            this.sampleRate = sampleRate;
-            volRate         = 1 / (sampleRate * 0.1f);
-
-            // Channels
-            for (int x = 0; x < channels.length; x++) {
-                Channel chan  = channels[x] = new Channel();
-                chan.index    = x;
-                chan.notesOn  = new Note[127]; // C-2 .. G8
-                chan.notesOut = new ArrayList<Note>();
-            }
-
-            // Reset all state
-            reset();
-        }
-
-
-
-        /////////////////////////// Public Methods ////////////////////////////
-
-        // Specify a channel's program bank.
-        public void bankChange(int channel, int bank) {
-            // Not implementing
-        }
-
-        // Specify whether a channel should play drum notes.
-        public void drumEnable(int channel, boolean enable) {
-            // Not implementing
-        }
-
-        // Determine whether or not any notes are producing output.
-        public boolean isFinished() {
-            for (Channel chan : channels) {
-                if (chan.notesOut.size() != 0)
-                    return false;
-            }
-            return true;
-        }
-
-        // Deactivate a key that has previoulsy been activated on a channel.
-        public void keyOff(int channel, int key) {
-            if (
-                channel  < 0 || channel  >= channels.length ||
-                A4 + key < 0 || A4 + key >= 128
-            ) return;
-            Channel chan = channels[channel];
-            Note    note = chan.notesOn[A4 + key];
-            if (note != null) {
-                note.playing = false;
-                note.volBase = 0;
-            }
-        }
-
-        // Activate a key on a channel.
-        public void keyOn(int channel, int key, float velocity) {
-
-            // Error checking
-            if (!__Bridge__.floatIsFinite(velocity) || velocity < 0.0f)
-                throw new IllegalArgumentException("Invalid velocity.");
-            if (
-                channel  < 0 || channel  >= channels.length ||
-                A4 + key < 0 || A4 + key >= 128
-            ) return;
-
-            // Working variables
-            Channel chan = channels[channel];
-            Note    note = chan.notesOn[A4 + key];
-
-            // No note is currently playing on the specified key
-            if (note == null) {
-                note = chan.notesOn[A4 + key] = new Note();
-                chan.notesOut.add(note);
-                note.channel       = chan;
-                note.volLeftLevel  = 0.0f;
-                note.volRightLevel = 0.0f;
-                note.wavPhase      = 0.0f;
-            }
-
-            // Configure fields
-            note.freqBase = (float) (440 * __Bridge__.pow(2, key / 12.0));
-            note.playing  = true;
-            note.volBase  = velocity;
-        }
-
-        // Specify the global pitch bend.
-        public void masterTune(float semitones) {
-            if (!__Bridge__.floatIsFinite(semitones))
-                throw new IllegalArgumentException("Invalid semitones.");
-            masterTune = (float) __Bridge__.pow(2, semitones);
-        }
-
-        // Specify the global volume.
-        public void masterVolume(float volume) {
-            if (!__Bridge__.floatIsFinite(volume) || volume < 0.0f)
-                throw new IllegalArgumentException("Invalid volume.");
-            masterVolume = volume;
-        }
-
-        // Specify stereo panning on a channel.
-        public void panpot(int channel, float panpot) {
-            if (!__Bridge__.floatIsFinite(panpot) || panpot < -1.0f || panpot > 1.0f)
-                throw new IllegalArgumentException("Invalid panpot.");
-            if (channel < 0 || channel >= channels.length)
-                return;
-            Channel chan    = channels[channel];
-            chan.volPanning = (panpot + 1) / 2;
-            chan.volLeft    = (1.0f - chan.volPanning) * chan.volLevel;
-            chan.volRight   =         chan.volPanning  * chan.volLevel;
-        }
-
-        // Specify a channel's pitch bend.
-        public void pitchBend(int channel, float semitones) {
-            if (!__Bridge__.floatIsFinite(semitones))
-                throw new IllegalArgumentException("Invalid semitones.");
-            if (channel < 0 || channel >= channels.length)
-                return;
-            Channel chan  = channels[channel];
-            chan.bendBase = semitones;
-            chan.bendOut  = (float) __Bridge__.pow(2, chan.bendBase*chan.bendRange);
-        }
-
-        // Specify the range of a channel's pitch bend.
-        public void pitchBendRange(int channel, float range) {
-            if (!__Bridge__.floatIsFinite(range) || range < 0.0f)
-                throw new IllegalArgumentException("Invalid range.");
-            if (channel < 0 || channel >= channels.length)
-                return;
-            Channel chan   = channels[channel];
-            chan.bendRange = range;
-            chan.bendOut   = (float) __Bridge__.pow(2, chan.bendBase*chan.bendRange);
-        }
-
-        // Speicfy a channel's program number.
-        public void programChange(int channel, int program) {
-            // Not implementing
-        }
-
-        // Generate output samples.
-        public void render(float[] samples, int offset, int frames) {
-            render(samples, offset, frames, 1.0f, true, true);
-        }
-
-        // Generate output samples.
-        public void render(float[] samples, int offset, int frames,
-            float amplitude) {
-            render(samples, offset, frames, amplitude, true, true);
-        }
-
-        // Generate output samples.
-        public void render(float[] samples, int offset, int frames,
-            float amplitude, boolean erase, boolean clamp) {
-            render(samples, offset, frames,
-                amplitude, amplitude, erase, clamp);
-        }
-
-        // Generate output samples.
-        public void render(float[] samples, int offset, int frames,
-            float left, float right) {
-            render(samples, offset, frames, left, right, true, true);
-        }
-
-        // Generate output samples.
-        public void render(float[] samples, int offset, int frames,
-            float left, float right, boolean erase, boolean clamp) {
-
-            // Error checking
-            if (samples == null)
-                throw new NullPointerException("A sample buffer is required.");
-            if (frames < 0)
-                throw new IllegalArgumentException("Invalid frames.");
-            if (offset < 0 || offset + frames * 2 > samples.length) {
-                throw new ArrayIndexOutOfBoundsException(
-                    "Invalid range in sample buffer.");
-            }
-            if (!__Bridge__.floatIsFinite(left ) || left  < 0.0f)
-                throw new IllegalArgumentException("Invalid left." );
-            if (!__Bridge__.floatIsFinite(right) || right < 0.0f)
-                throw new IllegalArgumentException("Invalid right.");
-
-            // Erase the output buffer
-            if (erase) {
-                for (int x = frames * 2 - 1; x >= 0; x--)
-                    samples[offset + x] = 0.0f;
-            }
-
-            // Render output samples
-            for (Channel chan : channels)
-                chanRender(chan, samples, offset, frames, left, right);
-
-            // Clamp the output buffer
-            if (clamp) {
-                for (int x = frames * 2 - 1; x >= 0; x--) {
-                    samples[offset + x] =
-                        Math.min(Math.max(samples[offset + x], -1.0f), 1.0f);
-                }
-            }
-
-        }
-
-        // Initialize all output state.
-        public void reset() {
-
-            // Global fields
-            masterTune   = 1.0f;
-            masterVolume = 1.0f;
-
-            // Channels
-            for (Channel chan : channels) {
-                chan.bendBase   = 0.0f;
-                chan.bendOut    = 1.0f;
-                chan.bendRange  = 2;
-                chan.volLevel   = 1.0f;
-                chan.volPanning = 0.5f;
-                chan.volLeft    = 0.5f;
-                chan.volRight   = 0.5f;
-
-                // Stop playing all notes
-                for (int x = 0; x < chan.notesOn.length; x++)
-                    chan.notesOn[x] = null;
-                for (Note note : chan.notesOut) {
-                    note.playing = false;
-                    note.volBase = 0.0f;
-                }
-            }
-
-        }
-
-        // Terminate all active notes.
-        public void stopAll() {
-            for (Channel chan : channels) {
-                for (int x = 0; x < chan.notesOn.length; x++)
-                    chan.notesOn[x] = null;
-                for (Note note : chan.notesOut) {
-                    note.playing = false;
-                    note.volBase = 0.0f;
-                }
-            }
-        };
-
-        // Process a SysEx message.
-        public void sysEx(byte[] message) {
-            // Not implementing
-        }
-
-        // Specify a channel's volume
-        public void volume(int channel, float volume) {
-            if (!__Bridge__.floatIsFinite(volume) || volume < 0.0f)
-                throw new IllegalArgumentException("Invalid volume.");
-            if (channel < 0 || channel >= channels.length)
-                return;
-            Channel chan  = channels[channel];
-            chan.volLevel = volume;
-            chan.volLeft  = (1.0f - chan.volPanning) * chan.volLevel;
-            chan.volRight =         chan.volPanning  * chan.volLevel;
-        }
-
-
-
-        /////////////////////////// Private Methods ///////////////////////////
-
-        // Render samples on a channel
-        private void chanRender(Channel chan, float[] samples, int offset,
-            int frames, float left, float right) {
-
-            // Working variables
-            float bend = masterTune * chan.bendOut;
-            left      *= chan.volLeft;
-            right     *= chan.volRight;
-
-            // Process all notes
-            for (int x = 0; x < chan.notesOut.size(); x++) {
-                if (
-                    noteRender(chan.notesOut.get(x), samples, offset, frames,
-                        chan.volLeft  * left, chan.volRight * right, bend)
-                ) chan.notesOut.remove(x--);
-            }
-
-            // Disassociate inactive notes
-            for (int x = 0; x < chan.notesOn.length; x++) {
-                Note note = chan.notesOn[x];
-                if (note != null && !note.playing)
-                    chan.notesOn[x] = null;
-            }
-
-        }
-
-        // Perform easing on an amplitude controller
-        private float ease(float level, float target) {
-            return
-                level < target ? Math.min(target, level + volRate) :
-                level > target ? Math.max(target, level - volRate) :
-                level
-            ;
-        }
-
-        // Render samples on a note
-        private boolean noteRender(Note note, float[] samples, int offset,
-            int frames, float left, float right, float bend) {
-
-            // Working variables
-            float freq    = note.freqBase * bend;
-            float advance = freq / sampleRate;
-
-            // Compute desired left and right volume levels
-            note.volLeftTarget  = note.volBase * left;
-            note.volRightTarget = note.volBase * right;
-
-            // Process all samples
-            for (int x = 0; x < frames; x++) {
-
-                // Generate one sample
-                float sample = sample(note, advance);
-                samples[offset++] += sample * note.volLeftLevel;
-                samples[offset++] += sample * note.volRightLevel;
-
-                // Adjust stereo levels
-                note.volLeftLevel  =
-                    ease(note.volLeftLevel , note.volLeftTarget );
-                note.volRightLevel =
-                    ease(note.volRightLevel, note.volRightTarget);
-
-                // Note has finished
-                if (
-                    !note.playing           &&
-                    note.volLeftLevel  == 0 &&
-                    note.volRightLevel == 0
-                ) return true;
-            }
-
-            // Note has not finished
-            return false;
-        }
-
-        // Generate a sample on a note
-        private float sample(Note note, float advance) {
-            float ret = (float) Math.sin(note.wavPhase * Math.PI * 2);
-            note.wavPhase = (note.wavPhase + advance) % 1;
-            return ret;
-        }
-
-        // Process a SysExt message
-        public void sysExt(byte[] message) {
-            // Not implementing
-        }
-
-        // Move a volume level closer to its target
-        private float volAdjust(float level, float target) {
-            return level < target ?
-                Math.min(level + volRate, target) :
-                Math.max(level - volRate, target)
-            ;
-        }
-
-    }
-
-
-
-    ////////////////////////////// Constructors ///////////////////////////////
-
-    /**
-     * Create a sampler.
-     */
-    public SineSampler() {}
-
-
-
-    ///////////////////////////// Public Methods //////////////////////////////
-
-    /**
-     * Produces an instance of this sampler that can be used to render samples.
-     * @param sampleRate The output sampling rate of the rendered samples.
-     * @return A new sampler instance that can render samples using the current
-     * configuration of this sampler itself.
-     * @exception IllegalArgumentException if {@code sampleRate} is a
-     * non-number or is less than or equal to zero.
-     */
-    public Sampler.Instance instance(float sampleRate) {
-        if (!__Bridge__.floatIsFinite(sampleRate) || sampleRate <= 0.0f)
-            throw new IllegalArgumentException("Invalid sampling rate.");
-        return new Instance(sampleRate);
-    }
-
+@SquirrelJMEVendorApi
+public class SineSampler
+	extends AbstractSampler
+	implements Sampler
+{
+	/**
+	 * Channel states
+	 */
+	@SquirrelJMEVendorApi
+	final SineChannel[] channels;
+	
+	/**
+	 * Global pitch bend
+	 */
+	@SquirrelJMEVendorApi
+	float masterTune;
+	
+	/**
+	 * Global volume
+	 */
+	@SquirrelJMEVendorApi
+	float masterVolume;
+	
+	/**
+	 * Output sampling rate
+	 */
+	@SquirrelJMEVendorApi
+	final float sampleRate;
+	
+	/**
+	 * Automatic volume adjustment rate
+	 */
+	@SquirrelJMEVendorApi
+	final float volRate;
+	
+	
+	/**
+	 * Constructor
+	 */
+	@SquirrelJMEVendorApi
+	public SineSampler(float sampleRate)
+	{
+		
+		
+		this.channels = new SineChannel[16];
+		this.sampleRate = sampleRate;
+		this.volRate = 1 / (sampleRate * 0.1f);
+		
+		// Channels
+		for (int x = 0; x < this.channels.length; x++)
+		{
+			SineChannel chan = this.channels[x] = new SineChannel();
+			chan.index = x;
+			//  C-2 .. G8
+			chan.notesOn = new SineNote[127];
+			chan.notesOut = new ArrayList<>();
+		}
+		
+		// Reset all state
+		this.reset();
+	}
+	
+	/**
+	 * Specify a channel's program bank.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void bankChange(int channel, int bank)
+	{
+		// Not implementing
+	}
+	
+	/**
+	 * Specify whether a channel should play drum notes.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void drumEnable(int channel, boolean enable)
+	{
+		// Not implementing
+	}
+	
+	/**
+	 * Deactivate a key that has previoulsy been activated on a channel.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void keyOff(int channel, int key)
+	{
+		if (channel < 0 || channel >= this.channels.length || SineSamplerProvider.A4 + key < 0 || SineSamplerProvider.A4 + key >= 128)
+			return;
+		SineChannel chan = this.channels[channel];
+		SineNote note = chan.notesOn[SineSamplerProvider.A4 + key];
+		if (note != null)
+		{
+			note.playing = false;
+			note.volBase = 0;
+		}
+	}
+	
+	/**
+	 * Determine whether or not any notes are producing output.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public boolean isFinished()
+	{
+		for (SineChannel chan : this.channels)
+		{
+			if (chan.notesOut.size() != 0)
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Activate a key on a channel.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void keyOn(int channel, int key, float velocity)
+	{
+		
+		// Error checking
+		if (Float.isInfinite(velocity) || velocity < 0.0f)
+			throw new IllegalArgumentException("Invalid velocity.");
+		if (channel < 0 || channel >= this.channels.length || SineSamplerProvider.A4 + key < 0 || SineSamplerProvider.A4 + key >= 128)
+			return;
+		
+		// Working variables
+		SineChannel chan = this.channels[channel];
+		SineNote note = chan.notesOn[SineSamplerProvider.A4 + key];
+		
+		// No note is currently playing on the specified key
+		if (note == null)
+		{
+			note = chan.notesOn[SineSamplerProvider.A4 + key] =
+				new SineNote();
+			chan.notesOut.add(note);
+			note.channel = chan;
+			note.volLeftLevel = 0.0f;
+			note.volRightLevel = 0.0f;
+			note.wavPhase = 0.0f;
+		}
+		
+		// Configure fields
+		note.freqBase = (float)(440 * ExtraMath.pow(2, key / 12.0));
+		note.playing = true;
+		note.volBase = velocity;
+	}
+	
+	/**
+	 * Specify the global pitch bend.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void masterTune(float semitones)
+	{
+		if (Float.isInfinite(semitones))
+			throw new IllegalArgumentException("Invalid semitones.");
+		this.masterTune = (float)ExtraMath.pow(2, semitones);
+	}
+	
+	/**
+	 * Specify the global volume.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void masterVolume(float volume)
+	{
+		if (Float.isInfinite(volume) || volume < 0.0f)
+			throw new IllegalArgumentException("Invalid volume.");
+		this.masterVolume = volume;
+	}
+	
+	/**
+	 * Specify stereo panning on a channel.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void panpot(int channel, float panpot)
+	{
+		if (Float.isInfinite(panpot) || panpot < -1.0f || panpot > 1.0f)
+			throw new IllegalArgumentException("Invalid panpot.");
+		if (channel < 0 || channel >= this.channels.length)
+			return;
+		SineChannel chan = this.channels[channel];
+		chan.volPanning = (panpot + 1) / 2;
+		chan.volLeft = (1.0f - chan.volPanning) * chan.volLevel;
+		chan.volRight = chan.volPanning * chan.volLevel;
+	}
+	
+	/**
+	 * Specify a channel's pitch bend.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void pitchBend(int channel, float semitones)
+	{
+		if (Float.isInfinite(semitones))
+			throw new IllegalArgumentException("Invalid semitones.");
+		if (channel < 0 || channel >= this.channels.length)
+			return;
+		SineChannel chan = this.channels[channel];
+		chan.bendBase = semitones;
+		chan.bendOut = (float)ExtraMath.pow(2,
+			chan.bendBase * chan.bendRange);
+	}
+	
+	/**
+	 * Specify the range of a channel's pitch bend.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void pitchBendRange(int channel, float range)
+	{
+		if (Float.isInfinite(range) || range < 0.0f)
+			throw new IllegalArgumentException("Invalid range.");
+		if (channel < 0 || channel >= this.channels.length)
+			return;
+		SineChannel chan = this.channels[channel];
+		chan.bendRange = range;
+		chan.bendOut = (float)ExtraMath.pow(2,
+			chan.bendBase * chan.bendRange);
+	}
+	
+	/**
+	 * Speicfy a channel's program number.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void programChange(int channel, int program)
+	{
+		// Not implementing
+	}
+	
+	/**
+	 * Generate output samples.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void render(float[] samples, int offset, int frames)
+	{
+		this.render(samples, offset, frames, 1.0f, 1.0f, true, true);
+	}
+	
+	/**
+	 * Generate output samples.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void render(float[] samples, int offset, int frames,
+		float amplitude)
+	{
+		this.render(samples, offset, frames, amplitude, amplitude, true,
+			true);
+	}
+	
+	@Override
+	@SquirrelJMEVendorApi
+	public void render(float[] samples, int offset, int frames, float left,
+		float right)
+	{
+		this.render(samples, offset, frames, left, right, true, true);
+	}
+	
+	/**
+	 * Generate output samples.
+	 */
+	@SquirrelJMEVendorApi
+	public void render(float[] samples, int offset, int frames, float left,
+		float right, boolean erase, boolean clamp)
+	{
+		// Error checking
+		if (samples == null)
+			throw new NullPointerException(
+				"A sample buffer is required" + ".");
+		if (frames < 0)
+			throw new IllegalArgumentException("Invalid frames.");
+		if (offset < 0 || offset + frames * 2 > samples.length)
+		{
+			throw new ArrayIndexOutOfBoundsException(
+				"Invalid range in sample buffer.");
+		}
+		
+		if (Float.isInfinite(left) || left < 0.0f)
+			throw new IllegalArgumentException("Invalid left.");
+		if (Float.isInfinite(right) || right < 0.0f)
+			throw new IllegalArgumentException("Invalid right.");
+		
+		// Erase the output buffer
+		if (erase)
+		{
+			for (int x = frames * 2 - 1; x >= 0; x--)
+				samples[offset + x] = 0.0f;
+		}
+		
+		// Render output samples
+		for (SineChannel chan : this.channels)
+			this.chanRender(chan, samples, offset, frames, left, right);
+		
+		// Clamp the output buffer
+		if (clamp)
+		{
+			for (int x = frames * 2 - 1; x >= 0; x--)
+			{
+				samples[offset + x] = Math.min(
+					Math.max(samples[offset + x], -1.0f), 1.0f);
+			}
+		}
+		
+	}
+	
+	/** Terminate all active notes. */
+	@SquirrelJMEVendorApi
+	public void stopAll()
+	{
+		for (SineChannel chan : this.channels)
+		{
+			Arrays.fill(chan.notesOn, null);
+			for (SineNote note : chan.notesOut)
+			{
+				note.playing = false;
+				note.volBase = 0.0f;
+			}
+		}
+	}
+	
+	/**
+	 * Initialize all output state.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void reset()
+	{
+		
+		// Global fields
+		this.masterTune = 1.0f;
+		this.masterVolume = 1.0f;
+		
+		// Channels
+		for (SineChannel chan : this.channels)
+		{
+			chan.bendBase = 0.0f;
+			chan.bendOut = 1.0f;
+			chan.bendRange = 2;
+			chan.volLevel = 1.0f;
+			chan.volPanning = 0.5f;
+			chan.volLeft = 0.5f;
+			chan.volRight = 0.5f;
+			
+			// Stop playing all notes
+			Arrays.fill(chan.notesOn, null);
+			for (SineNote note : chan.notesOut)
+			{
+				note.playing = false;
+				note.volBase = 0.0f;
+			}
+		}
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since 2025/05/05
+	 */
+	@Override
+	public float sampleRate()
+	{
+		return this.sampleRate;
+	}
+	
+	/**
+	 * Process a SysEx message.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void sysEx(byte[] message)
+	{
+		// Not implementing
+	}
+	
+	/**
+	 * Specify a channel's volume
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void volume(int channel, float volume)
+	{
+		if (Float.isInfinite(volume) || volume < 0.0f)
+			throw new IllegalArgumentException("Invalid volume.");
+		if (channel < 0 || channel >= this.channels.length)
+			return;
+		SineChannel chan = this.channels[channel];
+		chan.volLevel = volume;
+		chan.volLeft = (1.0f - chan.volPanning) * chan.volLevel;
+		chan.volRight = chan.volPanning * chan.volLevel;
+	}
+	
+	
+	/**
+	 * Render samples on a channel
+	 */
+	@SquirrelJMEVendorApi
+	void chanRender(SineChannel chan, float[] samples, int offset, int frames,
+		float left, float right)
+	{
+		
+		// Working variables
+		float bend = this.masterTune * chan.bendOut;
+		left *= chan.volLeft;
+		right *= chan.volRight;
+		
+		// Process all notes
+		for (int x = 0; x < chan.notesOut.size(); x++)
+		{
+			if (this.noteRender(chan.notesOut.get(x), samples, offset, frames,
+				chan.volLeft * left, chan.volRight * right, bend))
+				chan.notesOut.remove(x--);
+		}
+		
+		// Disassociate inactive notes
+		for (int x = 0; x < chan.notesOn.length; x++)
+		{
+			SineNote note = chan.notesOn[x];
+			if (note != null && !note.playing)
+				chan.notesOn[x] = null;
+		}
+		
+	}
+	
+	/** Perform easing on an amplitude controller. */
+	@SquirrelJMEVendorApi
+	float ease(float level, float target)
+	{
+		return level < target ? Math.min(target, level + this.volRate) :
+			level > target ? Math.max(target, level - this.volRate) : level;
+	}
+	
+	/**
+	 * Render samples on a note
+	 */
+	@SquirrelJMEVendorApi
+	boolean noteRender(SineNote note, float[] samples, int offset, int frames,
+		float left, float right, float bend)
+	{
+		
+		// Working variables
+		float freq = note.freqBase * bend;
+		float advance = freq / this.sampleRate;
+		
+		// Compute desired left and right volume levels
+		note.volLeftTarget = note.volBase * left;
+		note.volRightTarget = note.volBase * right;
+		
+		// Process all samples
+		for (int x = 0; x < frames; x++)
+		{
+			
+			// Generate one sample
+			float sample = this.sample(note, advance);
+			samples[offset++] += sample * note.volLeftLevel;
+			samples[offset++] += sample * note.volRightLevel;
+			
+			// Adjust stereo levels
+			note.volLeftLevel = this.ease(note.volLeftLevel,
+				note.volLeftTarget);
+			note.volRightLevel = this.ease(note.volRightLevel,
+				note.volRightTarget);
+			
+			// Note has finished
+			if (!note.playing && note.volLeftLevel == 0 && note.volRightLevel == 0)
+				return true;
+		}
+		
+		// Note has not finished
+		return false;
+	}
+	
+	/**
+	 * Generate a sample on a note
+	 */
+	@SquirrelJMEVendorApi
+	float sample(SineNote note, float advance)
+	{
+		float ret = (float)Math.sin(note.wavPhase * Math.PI * 2);
+		note.wavPhase = (note.wavPhase + advance) % 1;
+		return ret;
+	}
+	
+	/**
+	 * Process a SysExt message
+	 */
+	@SquirrelJMEVendorApi
+	public void sysExt(byte[] message)
+	{
+		// Not implementing
+	}
+	
+	/**
+	 * Move a volume level closer to its target
+	 */
+	@SquirrelJMEVendorApi
+	float volAdjust(float level, float target)
+	{
+		return level < target ? Math.min(level + this.volRate, target) :
+			Math.max(level - this.volRate, target);
+	}
+	
 }

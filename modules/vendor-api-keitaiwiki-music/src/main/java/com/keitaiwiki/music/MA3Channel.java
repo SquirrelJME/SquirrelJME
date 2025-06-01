@@ -34,8 +34,178 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.util.ArrayList;
+import java.util.Arrays;
 
+/**
+ * Output channel
+ */
 @SquirrelJMEVendorApi
-public interface MA3Channel
+class MA3Channel
+	implements BasicChannel
 {
+	/**
+	 * Index in sampler
+	 */
+	@SquirrelJMEVendorApi
+	final int index;
+	
+	/**
+	 * Encapsulating instance
+	 */
+	@SquirrelJMEVendorApi
+	final MA3Sampler instance;
+	
+	/**
+	 * All notes currently on keys
+	 */
+	@SquirrelJMEVendorApi
+	final MA3Note[] notesOn;
+	
+	@SquirrelJMEVendorApi
+	final ArrayList<MA3Note> notesOut;
+	
+	/**
+	 * Pitch bend base ratio
+	 */
+	@SquirrelJMEVendorApi
+	float bendBase;
+	
+	/**
+	 * Effective channel frequency ratio
+	 */
+	@SquirrelJMEVendorApi
+	float bendOut;
+	
+	/**
+	 * Pitch bend magnitude
+	 */
+	@SquirrelJMEVendorApi
+	float bendRange;
+	
+	/**
+	 * The channel plays drum notes
+	 */
+	@SquirrelJMEVendorApi
+	boolean isDrum;
+	
+	/**
+	 * Program bank
+	 */
+	@SquirrelJMEVendorApi
+	int prgBank;
+	
+	/**
+	 * Program index in bank
+	 */
+	@SquirrelJMEVendorApi
+	int prgProgram;
+	
+	/**
+	 * Left stereo amplitude
+	 */
+	@SquirrelJMEVendorApi
+	float volLeft;
+	
+	/**
+	 * Left stereo output amplitude
+	 */
+	@SquirrelJMEVendorApi
+	float volLeftOut;
+	
+	/**
+	 * Channel output amplitude
+	 */
+	@SquirrelJMEVendorApi
+	float volLevel;
+	
+	/**
+	 * Stereo level
+	 */
+	@SquirrelJMEVendorApi
+	float volPanning;
+	
+	/**
+	 * Right stereo amplitude
+	 */
+	@SquirrelJMEVendorApi
+	float volRight;
+	
+	/**
+	 * Right stereo output amplitude
+	 */
+	@SquirrelJMEVendorApi
+	float volRightOut;
+	
+	@SquirrelJMEVendorApi
+	MA3Channel(MA3Sampler instance, int index)
+	{
+		this.index = index;
+		this.instance = instance;
+		//  C-2 .. G8
+		this.notesOn = new MA3Note[128];
+		this.notesOut = new ArrayList<>();
+	}
+	
+	/**
+	 * Frequency has changed
+	 */
+	@SquirrelJMEVendorApi
+	void onFrequency()
+	{
+		float bend = this.instance.bendOut * this.bendOut;
+		for (MA3Note note : this.notesOut)
+			note.onFrequency(this.bendOut);
+	}
+	
+	/**
+	 * Volume has changed
+	 */
+	@SquirrelJMEVendorApi
+	void onVolume()
+	{
+		this.volLeftOut = this.instance.volOut * this.volLeft;
+		this.volRightOut = this.instance.volOut * this.volRight;
+		for (MA3Note note : this.notesOut)
+			note.onVolume();
+	}
+	
+	/**
+	 * Render the next input sample
+	 */
+	@SquirrelJMEVendorApi
+	void render()
+	{
+		for (int x = 0; x < this.notesOut.size(); x++)
+		{
+			if (this.notesOut.get(x).render())
+				this.notesOut.remove(x--);
+		}
+	}
+	
+	/**
+	 * Initialize state
+	 */
+	@SquirrelJMEVendorApi
+	void reset()
+	{
+		this.bendBase = 0.0f;
+		this.bendOut = 1.0f;
+		this.bendRange = 2.0f;
+		this.isDrum = false;
+		this.prgBank = 0;
+		this.prgProgram = 0;
+		this.volLevel = 1.0f;
+		this.volPanning = 0.5f;
+		this.volLeft = 0.5f;
+		this.volLeftOut = 0.5f;
+		this.volRight = 0.5f;
+		this.volRightOut = 0.5f;
+		
+		// Stop playing all notes (not calling note.onFrequency())
+		Arrays.fill(this.notesOn, null);
+		for (MA3Note note : this.notesOut)
+			note.stop();
+	}
+	
 }

@@ -35,7 +35,16 @@ package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
+/**
+ * ADPCM sample data class
+ */
 @SquirrelJMEVendorApi
-public interface MLDADPCM
+class MLDADPCM
+	implements BasicSampleData
 {
+	/**
+	 * Significance not yet known
+	 */
+	@SquirrelJMEVendorApi
+	byte[] data;
 }

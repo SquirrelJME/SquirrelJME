@@ -10,8 +10,8 @@
 package cc.squirreljme.runtime.media.mld;
 
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
-import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
+import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -44,7 +44,7 @@ public class IMelodyPlayer
 	implements AudioStreamRenderer
 {
 	/** The MA-3 instance. */
-	private static Sampler _SAMPLER;
+	private static SamplerProvider _SAMPLER;
 	
 	/** The belayed media time. */
 	private volatile long _belayTime =
@@ -95,7 +95,7 @@ public class IMelodyPlayer
 		synchronized (this)
 		{
 			// Setup MLD player
-			Sampler provider = IMelodyPlayer.__sampler();
+			SamplerProvider provider = IMelodyPlayer.__sampler();
 			MLDPlayer mldPlayer = new MLDPlayer(this._mld, provider,
 				44100F);
 			
@@ -367,19 +367,19 @@ public class IMelodyPlayer
 	 * @return The sampler.
 	 * @since 2025/05/05
 	 */
-	static final Sampler __sampler()
+	static final SamplerProvider __sampler()
 	{
 		synchronized (IMelodyPlayer.class)
 		{
-			Sampler result = IMelodyPlayer._SAMPLER;
+			SamplerProvider result = IMelodyPlayer._SAMPLER;
 			if (result != null)
 				return result;
 			
 			// Setup new sampler
 			if (false)
-				result = new SineSampler();
+				result = new SineSamplerProvider();
 			else
-				result = new MA3Sampler();
+				result = new MA3SamplerProvider();
 			IMelodyPlayer._SAMPLER = result;
 			
 			// Use this one

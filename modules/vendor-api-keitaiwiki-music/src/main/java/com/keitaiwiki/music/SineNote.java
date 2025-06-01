@@ -35,7 +35,70 @@ package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
+/**
+ * Music note
+ */
 @SquirrelJMEVendorApi
-public interface SineNote
+class SineNote
+	implements BasicNote
 {
+	/**
+	 * Amount to increment phase per frame
+	 */
+	@SquirrelJMEVendorApi
+	float advance;
+	
+	/**
+	 * Encapsulating channel
+	 */
+	@SquirrelJMEVendorApi
+	SineChannel channel;
+	
+	/**
+	 * Base frequency
+	 */
+	@SquirrelJMEVendorApi
+	float freqBase;
+	
+	/**
+	 * Note is currently active on its key
+	 */
+	@SquirrelJMEVendorApi
+	boolean playing;
+	
+	/**
+	 * Base volume
+	 */
+	@SquirrelJMEVendorApi
+	float volBase;
+	
+	/**
+	 * Current left stereo volume
+	 */
+	@SquirrelJMEVendorApi
+	float volLeftLevel;
+	
+	/**
+	 * Target left stereo volume
+	 */
+	@SquirrelJMEVendorApi
+	float volLeftTarget;
+	
+	/**
+	 * Current right stereo volume
+	 */
+	@SquirrelJMEVendorApi
+	float volRightLevel;
+	
+	/**
+	 * Target right stereo volume
+	 */
+	@SquirrelJMEVendorApi
+	float volRightTarget;
+	
+	/**
+	 * Position in wave period
+	 */
+	@SquirrelJMEVendorApi
+	float wavPhase;
 }
