@@ -57,7 +57,7 @@ public class MLDPlayer {
     private float            pendingFrames; // Output frames to process
     private int              pendingTicks;  // Sequencer ticks to process
     private long             position;      // Sequencer position in frames
-    private Sampler.Instance sampler;       // Sample generator
+    public Sampler.Instance sampler;       // Sample generator
     private float            sampleRate;    // Output sampling rate
     private boolean          seeking;       // Processing setTime()
     private long             tickNow;       // Sequencer position in ticks
@@ -93,8 +93,8 @@ public class MLDPlayer {
      * Notifies of a scenario that arises during playback. When configured, the
      * {@code render()} methods will terminate early any time an event
      * condition is satisfied. Events are obtained by the caller and
-     * acknowledged via {@link getEvents()}.
-     * @see getEvents()
+     * acknowledged via {@link #getEvents()}.
+     * @see #getEvents()
      */
     public class Event {
 
@@ -184,7 +184,7 @@ public class MLDPlayer {
             throw new NullPointerException("An MLD is required.");
         if (sampler == null)
             throw new NullPointerException("A sampler is required.");
-        if (!Float.isFinite(sampleRate) || sampleRate <= 0.0f)
+        if (!__Bridge__.floatIsFinite(sampleRate) || sampleRate <= 0.0f)
             throw new IllegalArgumentException("Invalid sampling rate.");
 
         // Instance fields
@@ -227,7 +227,7 @@ public class MLDPlayer {
      * the note A<sub>4</sub>.
      * @param key A key number to register.
      * @see Event
-     * @see getEvents()
+     * @see #getEvents()
      */
     public void addEventKey(int key) {
         evtKeys.add(key);
@@ -239,7 +239,7 @@ public class MLDPlayer {
      * @param keys A list of key numbers to register.
      * @exception NullPointerException if {@code keys} is {@code null}.
      * @see Event
-     * @see getEvents()
+     * @see #getEvents()
      */
     public void addEventKeys(int[] keys) {
         if (keys == null)
@@ -271,9 +271,9 @@ public class MLDPlayer {
      * rendered.
      * @return An array of all pending events, now acknowledged.
      * @see Event
-     * @see addEventKey(int)
-     * @see addEventKeys(int[])
-     * @see setPlaybackEventsEnabled(boolean)
+     * @see #addEventKey(int)
+     * @see #addEventKeys(int[])
+     * @see #setPlaybackEventsEnabled(boolean)
      */
     public Event[] getEvents() {
         Event[] ret = events.toArray(new Event[events.size()]);
@@ -284,7 +284,7 @@ public class MLDPlayer {
     /**
      * Determine whether looping is enabled.
      * @return {@code true} if looping is enabled.
-     * @see setLoopEnabled(boolean)
+     * @see #setLoopEnabled(boolean)
      */
     public boolean getLoopEnabled() {
         return loopEnabled;
@@ -293,7 +293,7 @@ public class MLDPlayer {
     /**
      * Determine whether notes are stopped when looping.
      * @return {@code true} if all notes are stopped when looping.
-     * @see setLoopStopAll(boolean)
+     * @see #setLoopStopAll(boolean)
      */
     public boolean getLoopStopAll() {
         return loopStopAll;
@@ -314,7 +314,7 @@ public class MLDPlayer {
      * Retrieve the total number of seconds played back so far.
      * @return The number of seconds processed, relative to the start of the
      * sequence.
-     * @see setTime(double)
+     * @see #setTime(double)
      * @see MLD#getDuration(boolean)
      */
     public double getTime() {
@@ -341,7 +341,7 @@ public class MLDPlayer {
      * Unregisters a keys from raising events during rendering.
      * @param key A key number to unregister.
      * @see Event
-     * @see getEvents()
+     * @see #getEvents()
      */
     public void removeEventKey(int key) {
         evtKeys.remove(key);
@@ -352,7 +352,7 @@ public class MLDPlayer {
      * @param keys A list of key numbers to unregister.
      * @exception NullPointerException if {@code keys} is {@code null}.
      * @see Event
-     * @see getEvents()
+     * @see #getEvents()
      */
     public void removeEventKeys(int[] keys) {
         if (keys == null)
@@ -377,7 +377,7 @@ public class MLDPlayer {
      * @return The number of samples generated, or -1 if playback has finished.
      * May be less than {@code frames} if playback of the underlying sequence
      * completes before all frames have been processed.
-     * @see render(float[],int,int,float,float,boolean,boolean)
+     * @see #render(float[],int,int,float,float,boolean,boolean)
      * @see Sampler.Instance#render(float[],int,int,float,float,boolean,boolean)
      */
     public int render(float[] samples, int offset, int frames) {
@@ -404,7 +404,7 @@ public class MLDPlayer {
      * negative, or if {@code offset + frames * 2 > samples.length}.
      * @exception IllegalArgumentException if {@code frames} is negative, or if
      * {@code amplitude} is a non-number or is negative.
-     * @see render(float[],int,int,float,float,boolean,boolean)
+     * @see #render(float[],int,int,float,float,boolean,boolean)
      * @see Sampler.Instance#render(float[],int,int,float,float,boolean,boolean)
      */
     public int render(float[] samples,int offset,int frames,float amplitude) {
@@ -433,7 +433,7 @@ public class MLDPlayer {
      * negative, or if {@code offset + frames * 2 > samples.length}.
      * @exception IllegalArgumentException if {@code frames} is negative, or if
      * {@code left} or {@code right} is a non-number or is negative.
-     * @see render(float[],int,int,float,float,boolean,boolean)
+     * @see #render(float[],int,int,float,float,boolean,boolean)
      * @see Sampler.Instance#render(float[],int,int,float,float,boolean,boolean)
      */
     public int render(float[] samples, int offset, int frames,
@@ -448,7 +448,7 @@ public class MLDPlayer {
      * <br><br>
      * If an event is raised during playback, rendering will stop and return
      * before generating any more samples. When this happens, the return value
-     * may be less than {@code frames}. {@link getEvents()} should be called
+     * may be less than {@code frames}. {@link #getEvents()} should be called
      * after every call to {@code render()} while events are enabled.
      * @param samples Output sample buffer.
      * @param offset Index in {@code samples} of the first audio frame to
@@ -471,10 +471,10 @@ public class MLDPlayer {
      * @exception IllegalArgumentException if {@code frames} is negative, or if
      * {@code left} or {@code right} is a non-number or is negative.
      * @see Sampler.Instance#render(float[],int,int,float,float,boolean,boolean)
-     * @see getEvents()
-     * @see render(float[],int,int)
-     * @see render(float[],int,int,float)
-     * @see render(float[],int,int,float,float)
+     * @see #getEvents()
+     * @see #render(float[],int,int)
+     * @see #render(float[],int,int,float)
+     * @see #render(float[],int,int,float,float)
      */
     public int render(float[] samples, int offset, int frames,
         float left, float right, boolean erase, boolean clamp) {
@@ -490,9 +490,9 @@ public class MLDPlayer {
                 throw new ArrayIndexOutOfBoundsException(
                     "Invalid range in sample buffer.");
             }
-            if (!Float.isFinite(left ) || left  < 0.0f)
+            if (!__Bridge__.floatIsFinite(left ) || left  < 0.0f)
                 throw new IllegalArgumentException("Invalid left amplitude.");
-            if (!Float.isFinite(right) || right < 0.0f)
+            if (!__Bridge__.floatIsFinite(right) || right < 0.0f)
                 throw new IllegalArgumentException("Invalid right amplitude.");
         }
 
@@ -616,7 +616,7 @@ public class MLDPlayer {
      * the sequence data will not be processed.
      * @param enabled If {@code true}, looping will be enabled.
      * @return the value of {@code enabled}
-     * @see getLoopEnabled()
+     * @see #getLoopEnabled()
      */
     public boolean setLoopEnabled(boolean enabled) {
         return loopEnabled = enabled;
@@ -629,7 +629,7 @@ public class MLDPlayer {
      * it is possible for ongoing notes to be truncated in undesirable ways.
      * @param stopAll If {@code true}, all notes will be stopped when looping.
      * @return the value of {@code stopAll}
-     * @see getLoopStopAll()
+     * @see #getLoopStopAll()
      */
     public boolean setLoopStopAll(boolean stopAll) {
         return loopStopAll = stopAll;
@@ -641,7 +641,7 @@ public class MLDPlayer {
      * @param enabled Whether or not playback events can be raised during
      * rendering.
      * @see Event
-     * @see getEvents()
+     * @see #getEvents()
      */
     public void setPlaybackEventsEnabled(boolean enabled) {
         evtPlayback = enabled;
@@ -660,13 +660,13 @@ public class MLDPlayer {
      * the operation.
      * @exception IllegalArgumentException if {@code seconds} is a non-number
      * or is negative.
-     * @see getTime()
+     * @see #getTime()
      * @see MLD#getDuration(boolean)
      */
     public boolean setTime(double seconds) {
 
         // Error checking
-        if (!Double.isFinite(seconds) || seconds < 0)
+        if (!__Bridge__.doubleIsFinite(seconds) || seconds < 0)
             throw new IllegalArgumentException("Invalid seconds.");
 
         // Compute the target number of frames

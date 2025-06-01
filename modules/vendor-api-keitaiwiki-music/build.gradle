@@ -14,4 +14,8 @@ squirreljme
 dependencies
 {
 	api project(":modules:cldc-compact")
+	api project(":modules:vendor-api-squirreljme-io")
+	
+	// TODO: Remove
+	api project(":modules:cldc")
 }

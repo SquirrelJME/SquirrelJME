@@ -21,7 +21,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 @SquirrelJMEVendorApi
 public abstract class AbstractSampler
-	implements AudioStreamRenderer, Sampler
+	implements AudioStreamRenderer, Sampler.Instance
 {
 	/**
 	 * {@inheritDoc}

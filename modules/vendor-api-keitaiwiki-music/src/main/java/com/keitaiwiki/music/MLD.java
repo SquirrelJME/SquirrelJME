@@ -585,7 +585,7 @@ public class MLD {
     // Convert a volume parameter to a linear amplitude
     private float volumeToAmplitude(float param) {
         return param == 0.0f ? 0.0f :
-            (float) Math.pow(2, (1 - param) * -96 / 20);
+            (float) __Bridge__.pow(2, (1 - param) * -96 / 20);
     }
 
 

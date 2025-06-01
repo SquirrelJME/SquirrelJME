@@ -17,10 +17,13 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractPlayer;
+import com.keitaiwiki.music.MA3Sampler;
 import com.keitaiwiki.music.MA3SamplerProvider;
 import com.keitaiwiki.music.MLD;
 import com.keitaiwiki.music.MLDPlayer;
+import com.keitaiwiki.music.Sampler;
 import com.keitaiwiki.music.SamplerProvider;
+import com.keitaiwiki.music.SineSampler;
 import com.keitaiwiki.music.SineSamplerProvider;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +40,7 @@ public class IMelodyPlayer
 	extends AbstractPlayer
 {
 	/** The MA-3 instance. */
-	private static SamplerProvider _SAMPLER;
+	private static Sampler _SAMPLER;
 	
 	/** The audio connection. */
 	private volatile AudioConnectionBracket _connection;
@@ -84,7 +87,7 @@ public class IMelodyPlayer
 		synchronized (this)
 		{
 			// Setup MLD player
-			SamplerProvider provider = IMelodyPlayer.__sampler();
+			Sampler provider = IMelodyPlayer.__sampler();
 			MLDPlayer mldPlayer = new MLDPlayer(this._mld, provider,
 				44100F);
 			
@@ -302,24 +305,24 @@ public class IMelodyPlayer
 	}
 	
 	/**
-	 * Returns the MA-3 sampler.
+	 * Returns the sampler to use.
 	 *
 	 * @return The sampler.
 	 * @since 2025/05/05
 	 */
-	static final SamplerProvider __sampler()
+	static final Sampler __sampler()
 	{
 		synchronized (IMelodyPlayer.class)
 		{
-			SamplerProvider result = IMelodyPlayer._SAMPLER;
+			Sampler result = IMelodyPlayer._SAMPLER;
 			if (result != null)
 				return result;
 			
 			// Setup new sampler
 			if (false)
-				result = new SineSamplerProvider();
+				result = new SineSampler();
 			else
-				result = new MA3SamplerProvider();
+				result = new MA3Sampler();
 			IMelodyPlayer._SAMPLER = result;
 			
 			// Use this one

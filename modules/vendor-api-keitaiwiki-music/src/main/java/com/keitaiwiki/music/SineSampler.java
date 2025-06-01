@@ -79,7 +79,9 @@ public class SineSampler implements Sampler {
     }
 
     // Sampler instance
-    private class Instance implements Sampler.Instance {
+    private class Instance 
+		extends AbstractSampler
+		implements Sampler.Instance {
 
         // instance fields
         Channel[] channels;     // Channel states
@@ -153,7 +155,7 @@ public class SineSampler implements Sampler {
         public void keyOn(int channel, int key, float velocity) {
 
             // Error checking
-            if (!Float.isFinite(velocity) || velocity < 0.0f)
+            if (!__Bridge__.floatIsFinite(velocity) || velocity < 0.0f)
                 throw new IllegalArgumentException("Invalid velocity.");
             if (
                 channel  < 0 || channel  >= channels.length ||
@@ -175,28 +177,28 @@ public class SineSampler implements Sampler {
             }
 
             // Configure fields
-            note.freqBase = (float) (440 * Math.pow(2, key / 12.0));
+            note.freqBase = (float) (440 * __Bridge__.pow(2, key / 12.0));
             note.playing  = true;
             note.volBase  = velocity;
         }
 
         // Specify the global pitch bend.
         public void masterTune(float semitones) {
-            if (!Float.isFinite(semitones))
+            if (!__Bridge__.floatIsFinite(semitones))
                 throw new IllegalArgumentException("Invalid semitones.");
-            masterTune = (float) Math.pow(2, semitones);
+            masterTune = (float) __Bridge__.pow(2, semitones);
         }
 
         // Specify the global volume.
         public void masterVolume(float volume) {
-            if (!Float.isFinite(volume) || volume < 0.0f)
+            if (!__Bridge__.floatIsFinite(volume) || volume < 0.0f)
                 throw new IllegalArgumentException("Invalid volume.");
             masterVolume = volume;
         }
 
         // Specify stereo panning on a channel.
         public void panpot(int channel, float panpot) {
-            if (!Float.isFinite(panpot) || panpot < -1.0f || panpot > 1.0f)
+            if (!__Bridge__.floatIsFinite(panpot) || panpot < -1.0f || panpot > 1.0f)
                 throw new IllegalArgumentException("Invalid panpot.");
             if (channel < 0 || channel >= channels.length)
                 return;
@@ -208,24 +210,24 @@ public class SineSampler implements Sampler {
 
         // Specify a channel's pitch bend.
         public void pitchBend(int channel, float semitones) {
-            if (!Float.isFinite(semitones))
+            if (!__Bridge__.floatIsFinite(semitones))
                 throw new IllegalArgumentException("Invalid semitones.");
             if (channel < 0 || channel >= channels.length)
                 return;
             Channel chan  = channels[channel];
             chan.bendBase = semitones;
-            chan.bendOut  = (float) Math.pow(2, chan.bendBase*chan.bendRange);
+            chan.bendOut  = (float) __Bridge__.pow(2, chan.bendBase*chan.bendRange);
         }
 
         // Specify the range of a channel's pitch bend.
         public void pitchBendRange(int channel, float range) {
-            if (!Float.isFinite(range) || range < 0.0f)
+            if (!__Bridge__.floatIsFinite(range) || range < 0.0f)
                 throw new IllegalArgumentException("Invalid range.");
             if (channel < 0 || channel >= channels.length)
                 return;
             Channel chan   = channels[channel];
             chan.bendRange = range;
-            chan.bendOut   = (float) Math.pow(2, chan.bendBase*chan.bendRange);
+            chan.bendOut   = (float) __Bridge__.pow(2, chan.bendBase*chan.bendRange);
         }
 
         // Speicfy a channel's program number.
@@ -270,9 +272,9 @@ public class SineSampler implements Sampler {
                 throw new ArrayIndexOutOfBoundsException(
                     "Invalid range in sample buffer.");
             }
-            if (!Float.isFinite(left ) || left  < 0.0f)
+            if (!__Bridge__.floatIsFinite(left ) || left  < 0.0f)
                 throw new IllegalArgumentException("Invalid left." );
-            if (!Float.isFinite(right) || right < 0.0f)
+            if (!__Bridge__.floatIsFinite(right) || right < 0.0f)
                 throw new IllegalArgumentException("Invalid right.");
 
             // Erase the output buffer
@@ -342,7 +344,7 @@ public class SineSampler implements Sampler {
 
         // Specify a channel's volume
         public void volume(int channel, float volume) {
-            if (!Float.isFinite(volume) || volume < 0.0f)
+            if (!__Bridge__.floatIsFinite(volume) || volume < 0.0f)
                 throw new IllegalArgumentException("Invalid volume.");
             if (channel < 0 || channel >= channels.length)
                 return;
@@ -473,7 +475,7 @@ public class SineSampler implements Sampler {
      * non-number or is less than or equal to zero.
      */
     public Sampler.Instance instance(float sampleRate) {
-        if (!Float.isFinite(sampleRate) || sampleRate <= 0.0f)
+        if (!__Bridge__.floatIsFinite(sampleRate) || sampleRate <= 0.0f)
             throw new IllegalArgumentException("Invalid sampling rate.");
         return new Instance(sampleRate);
     }

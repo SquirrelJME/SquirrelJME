@@ -75,24 +75,24 @@ public class MA3Sampler implements Sampler {
     /**
      * Specifies the use of MA-2 algorithms for FM synthesis.
      * @see MA3Sampler(int,int,int)
-     * @see setDrumType
-     * @see setInstrumentType
+     * @see #setDrumType
+     * @see #setInstrumentType
      */
     public static final int FM_MA2 = 2;
 
     /**
      * Specifies the use of 2-operator MA-3 algorithms for FM synthesis.
      * @see MA3Sampler(int,int,int)
-     * @see setDrumType
-     * @see setInstrumentType
+     * @see #setDrumType
+     * @see #setInstrumentType
      */
     public static final int FM_MA3_2OP = 1;
 
     /**
      * Specifies the use of 4-operator MA-3 algorithms for FM synthesis.
      * @see MA3Sampler(int,int,int)
-     * @see setDrumType
-     * @see setInstrumentType
+     * @see #setDrumType
+     * @see #setInstrumentType
      */
     public static final int FM_MA3_4OP = 0;
 
@@ -100,21 +100,21 @@ public class MA3Sampler implements Sampler {
      * Nominal hardware sampling rate. When rendering samples at this rate, the
      * output will have a 1:1 correspondence with what the hardware would
      * produce.
-     * @see instance(float)
+     * @see #instance(float)
      */
     public static final float SAMPLE_RATE = 33868800.0f / 684;
 
     /**
      * Specifies the use of MA-3 waves for wave drum synthesis.
      * @see MA3Sampler(int,int,int)
-     * @see setWaveDrumType
+     * @see #setWaveDrumType
      */
     public static final int WAVE_DRUM_MA3 = 0;
 
     /**
      * Specifies that FM drum algorithms always be used in place of wave drums.
      * @see MA3Sampler(int,int,int)
-     * @see setWaveDrumType
+     * @see #setWaveDrumType
      */
     public static final int WAVE_DRUM_NONE = -1;
 
@@ -160,7 +160,7 @@ public class MA3Sampler implements Sampler {
     private static final int    A4      = 81;         // Key index bias
     private static final int    FULL    =  0;         // Wave maximum
     private static final int    NTS     =  1;
-    private static final double MAGIC_B = 12 / Math.log(2);
+    private static final double MAGIC_B = 12 / __Bridge__.log(2);
     private static final double MAGIC_F = 684 / 33868800.0;
     private static final int    MINUS   = 0x80000000; // Wave negative
     private static final int    ZERO    = 0x1000;     // Wave minimum
@@ -187,19 +187,19 @@ public class MA3Sampler implements Sampler {
 
             // Binary exponent table
             EXP[x] = 1024 | (int)
-                Math.round((Math.pow(2, (255 - x) / 256.0) - 1 ) * 1024);
+                Math.round((__Bridge__.pow(2, (255 - x) / 256.0) - 1 ) * 1024);
 
             // Sine table
-            int y = (int) Math.round(-Math.log(
+            int y = (int) Math.round(-__Bridge__.log(
                 Math.sin((x + 0.5) * Math.PI / 256 / 2)
-            ) / Math.log(2) * 256);
+            ) / __Bridge__.log(2) * 256);
             sin[      x] = sin[ 511 - x] = y;
             sin[512 + x] = sin[1023 - x] = y | MINUS;
 
             // Triangle table
-            y = (int) Math.round(-Math.log(
+            y = (int) Math.round(-__Bridge__.log(
                 (x + 0.5) / 256
-            ) / Math.log(2) * 256);
+            ) / __Bridge__.log(2) * 256);
             tri[      x] = tri[ 511 - x] = y;
             tri[512 + x] = tri[1023 - x] = y | MINUS;
         }
@@ -212,9 +212,9 @@ public class MA3Sampler implements Sampler {
 
         // Sawtooth table
         for (int x = 0; x < 512; x++) {
-            int y = (int) Math.round(-Math.log(
+            int y = (int) Math.round(-__Bridge__.log(
                 (x + 0.5) / 512
-            ) / Math.log(2) * 256);
+            ) / __Bridge__.log(2) * 256);
             saw[       x] = y;
             saw[1023 - x] = y | MINUS;
         }
@@ -266,13 +266,13 @@ public class MA3Sampler implements Sampler {
         SUSTAINS[15] = 511;
         for (int x = 1; x < 15; x++) {
             SUSTAINS[x] = (int) Math.round(16 *
-                Math.pow(2, Math.log(x) / Math.log(2)));
+                __Bridge__.pow(2, __Bridge__.log(x) / __Bridge__.log(2)));
         }
 
         // Compute wave drum envelope levels
         for (int x = 0; x < 512; x++) {
             WAVE_ENV[x] = (int) Math.round(32767 *
-                Math.pow(10, x * -96.0 / 511 / 20));
+                __Bridge__.pow(10, x * -96.0 / 511 / 20));
         }
 
     }
@@ -306,9 +306,9 @@ public class MA3Sampler implements Sampler {
      * @exception IllegalArgumentException if the value of
      * {@code instrumentType}, {@code drumType} or {@code waveDrumType} is
      * invalid.
-     * @see setDrumType(int)
-     * @see setInstrumentType(int)
-     * @see setWaveDrumType(int)
+     * @see #setDrumType(int)
+     * @see #setInstrumentType(int)
+     * @see #setWaveDrumType(int)
      */
     public MA3Sampler(int instrumentType, int drumType, int waveDrumType) {
         super();
@@ -327,7 +327,7 @@ public class MA3Sampler implements Sampler {
      * value most recently used with {@code setDrumType()}.
      * @return The current FM synthesis drum algorithm type: {@code FM_MA2},
      * {@code FM_MA3_2OP} or {@code FM_MA3_4OP}.
-     * @see setDrumType(int)
+     * @see #setDrumType(int)
      */
     public int getDrumType() {
         return prgDrumType;
@@ -338,7 +338,7 @@ public class MA3Sampler implements Sampler {
      * be the value most recently used with {@code setInstrumentType()}.
      * @return The current FM synthesis instrument algorithm type:
      * {@code FM_MA2}, {@code FM_MA3_2OP} or {@code FM_MA3_4OP}.
-     * @see setInstrumentType(int)
+     * @see #setInstrumentType(int)
      */
     public int getInstrumentType() {
         return prgInstrumentType;
@@ -349,7 +349,7 @@ public class MA3Sampler implements Sampler {
      * the value most recently used with {@code setWaveDrumType()}.
      * @return The current wave synthesis drum algorithm type:
      * {@code WAVE_DRUM_NONE} or {@code WAVE_DRUM_MA3}.
-     * @see setWaveDrumType(int)
+     * @see #setWaveDrumType(int)
      */
     public int getWaveDrumType() {
         return prgWaveDrumType;
@@ -367,7 +367,7 @@ public class MA3Sampler implements Sampler {
      * non-number or is less than or equal to zero.
      */
     public Sampler.Instance instance(float sampleRate) {
-        if (!Float.isFinite(sampleRate) || sampleRate <= 0.0f)
+        if (!__Bridge__.floatIsFinite(sampleRate) || sampleRate <= 0.0f)
             throw new IllegalArgumentException("Invalid sampling rate.");
         return new Instance(sampleRate);
     }
@@ -381,9 +381,9 @@ public class MA3Sampler implements Sampler {
      * @return The value of {@code type}.
      * @exception IllegalArgumentException if the value of {@code type} is
      * invalid.
-     * @see getDrumType()
-     * @see setInstrumentType(int)
-     * @see setWaveDrumType(int)
+     * @see #getDrumType()
+     * @see #setInstrumentType(int)
+     * @see #setWaveDrumType(int)
      */
     public int setDrumType(int type) {
         switch (type) {
@@ -407,9 +407,9 @@ public class MA3Sampler implements Sampler {
      * @return The value of {@code type}.
      * @exception IllegalArgumentException if the value of {@code type} is
      * invalid.
-     * @see getInstrumentType()
-     * @see setDrumType(int)
-     * @see setWaveDrumType(int)
+     * @see #getInstrumentType()
+     * @see #setDrumType(int)
+     * @see #setWaveDrumType(int)
      */
     public int setInstrumentType(int type) {
         switch (type) {
@@ -432,9 +432,9 @@ public class MA3Sampler implements Sampler {
      * @return The value of {@code type}.
      * @exception IllegalArgumentException if the value of {@code type} is
      * invalid.
-     * @see getWaveDrumType()
-     * @see setDrumType(int)
-     * @see setInstrumentType(int)
+     * @see #getWaveDrumType()
+     * @see #setDrumType(int)
+     * @see #setInstrumentType(int)
      */
     public int setWaveDrumType(int type) {
         switch (type) {
@@ -486,10 +486,9 @@ public class MA3Sampler implements Sampler {
 
     // Decode initial wave ROM banks
     static int[][] waveRom(String[] roms) {
-        Base64.Decoder base64 = Base64.getMimeDecoder();
         int[][]        ret    = new int[8][];
         for (int x = 0; x < roms.length; x++) {
-            byte[] adpcm = base64.decode(roms[x]);
+            byte[] adpcm = __Bridge__.base64Decode(roms[x]);
             ret[x]       = decodeAICA(adpcm, 0, adpcm.length);
         }
         return ret;
@@ -528,21 +527,20 @@ public class MA3Sampler implements Sampler {
 
         private static Algorithm[] from(String[] defs,
             boolean isDrum, boolean isWave) {
-            Base64.Decoder base64 = Base64.getMimeDecoder();
             Algorithm[]    ret    = null;
 
             // FM presets
             if (!isWave) {
                 ret = new Algorithm[defs.length];
                 for (int x = 0; x < defs.length; x++)
-                    ret[x] = new Algorithm(base64.decode(defs[x]), isDrum);
+                    ret[x] = new Algorithm(__Bridge__.base64Decode(defs[x]), isDrum);
             }
 
             // Wave drum presets
             else {
                 ret = new Algorithm[61];
                 for (int x = 0; x < defs.length; x++) {
-                    Algorithm alg = new Algorithm(base64.decode(defs[x]), 0);
+                    Algorithm alg = new Algorithm(__Bridge__.base64Decode(defs[x]), 0);
                     ret[alg.drumKey - 24] = alg;
                 }
             }
@@ -569,7 +567,7 @@ public class MA3Sampler implements Sampler {
                 operators[x] = new Operator(bytes, 3 + x * 7);
 
             // Instance fields
-            freqBase    = (float) (440 * Math.pow(2, (drumKey - 69) / 12.0));
+            freqBase    = (float) (440 * __Bridge__.pow(2, (drumKey - 69) / 12.0));
             this.isDrum = isDrum;
             isWave      = false;
             initPost();
@@ -745,7 +743,9 @@ public class MA3Sampler implements Sampler {
 
 
     //////////////////////////////// Instance /////////////////////////////////
-     class Instance implements Sampler.Instance {
+     class Instance
+		extends AbstractSampler
+		implements Sampler.Instance {
 
         // Instance fields
         int         amPhase;     // Amplitude modulator phase
@@ -837,7 +837,7 @@ public class MA3Sampler implements Sampler {
         public void keyOn(int channel, int key, float velocity) {
 
             // Error checking
-            if (!Float.isFinite(velocity) || velocity < 0.0f)
+            if (!__Bridge__.floatIsFinite(velocity) || velocity < 0.0f)
                 throw new IllegalArgumentException("Invalid velocity.");
             if (
                 channel  < 0 || channel  >= channels.length ||
@@ -854,7 +854,7 @@ public class MA3Sampler implements Sampler {
             // FM instrument algorithm
             if (!chan.isDrum) {
                 algorithm = getFMInstrument(chan.prgBank, chan.prgProgram);
-                freqBase  = (float) (440 * Math.pow(2, key / 12.0));
+                freqBase  = (float) (440 * __Bridge__.pow(2, key / 12.0));
             }
 
             // Drum algorithm
@@ -896,16 +896,16 @@ public class MA3Sampler implements Sampler {
 
         // Specify the global pitch bend.
         public void masterTune(float semitones) {
-            if (!Float.isFinite(semitones))
+            if (!__Bridge__.floatIsFinite(semitones))
                 throw new IllegalArgumentException("Invalid semitones.");
-            bendOut = (float) Math.pow(2, semitones);
+            bendOut = (float) __Bridge__.pow(2, semitones);
             for (Channel chan : channels)
                 chan.onFrequency();
         }
 
         // Specify the global volume.
         public void masterVolume(float volume) {
-            if (!Float.isFinite(volume) || volume < 0.0f)
+            if (!__Bridge__.floatIsFinite(volume) || volume < 0.0f)
                 throw new IllegalArgumentException("Invalid volume.");
             volLevel = volume;
             onVolume();
@@ -913,7 +913,7 @@ public class MA3Sampler implements Sampler {
 
         // Specify stereo panning on a channel.
         public void panpot(int channel, float panpot) {
-            if (!Float.isFinite(panpot) || panpot < -1.0f || panpot > 1.0f)
+            if (!__Bridge__.floatIsFinite(panpot) || panpot < -1.0f || panpot > 1.0f)
                 throw new IllegalArgumentException("Invalid panpot.");
             if (channel < 0 || channel >= channels.length)
                 return;
@@ -926,25 +926,25 @@ public class MA3Sampler implements Sampler {
 
         // Specify a channel's pitch bend.
         public void pitchBend(int channel, float semitones) {
-            if (!Float.isFinite(semitones))
+            if (!__Bridge__.floatIsFinite(semitones))
                 throw new IllegalArgumentException("Invalid semitones.");
             if (channel < 0 || channel >= channels.length)
                 return;
             Channel chan  = channels[channel];
             chan.bendBase = semitones;
-            chan.bendOut  = (float) Math.pow(2, chan.bendBase*chan.bendRange);
+            chan.bendOut  = (float) __Bridge__.pow(2, chan.bendBase*chan.bendRange);
             chan.onFrequency();
         }
 
         // Specify the range of a channel's pitch bend.
         public void pitchBendRange(int channel, float range) {
-            if (!Float.isFinite(range) || range < 0.0f)
+            if (!__Bridge__.floatIsFinite(range) || range < 0.0f)
                 throw new IllegalArgumentException("Invalid range.");
             if (channel < 0 || channel >= channels.length)
                 return;
             Channel chan   = channels[channel];
             chan.bendRange = range;
-            chan.bendOut   = (float) Math.pow(2, chan.bendBase*chan.bendRange);
+            chan.bendOut   = (float) __Bridge__.pow(2, chan.bendBase*chan.bendRange);
             chan.onFrequency();
         }
 
@@ -984,9 +984,9 @@ public class MA3Sampler implements Sampler {
                 throw new ArrayIndexOutOfBoundsException(
                     "Invalid range in sample buffer.");
             }
-            if (!Float.isFinite(left ) || left  < 0.0f)
+            if (!__Bridge__.floatIsFinite(left ) || left  < 0.0f)
                 throw new IllegalArgumentException("Invalid left amplitude.");
-            if (!Float.isFinite(right) || right < 0.0f)
+            if (!__Bridge__.floatIsFinite(right) || right < 0.0f)
                 throw new IllegalArgumentException("Invalid right amplitude.");
 
             // Process all output frames
@@ -1135,7 +1135,7 @@ public class MA3Sampler implements Sampler {
 
         // Specify a channel's volume.
         public void volume(int channel, float volume) {
-            if (!Float.isFinite(volume) || volume < 0.0f)
+            if (!__Bridge__.floatIsFinite(volume) || volume < 0.0f)
                 throw new IllegalArgumentException("Invalid volume.");
             if (channel < 0 || channel >= channels.length)
                 return;
@@ -1429,7 +1429,7 @@ public class MA3Sampler implements Sampler {
             // Compute BLOCK and F_NUMBER
             double freq = algorithm.isDrum ? freqBase : freqBase * bend;
             block       = Math.min(   7, Math.max(0, (int)
-                (Math.round(Math.log(freq / 440) * MAGIC_B) + 57) / 12));
+                (Math.round(__Bridge__.log(freq / 440) * MAGIC_B) + 57) / 12));
             f_number    = Math.min(1023, Math.max(0, (int)
                 Math.round(freq * (1 << 20 - block) * MAGIC_F)));
 
