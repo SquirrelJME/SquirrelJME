@@ -44,7 +44,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_f32_to_s16(
 	for (sI = 0, dI = 0; sI < lT && dI < lT; sI += sAdd, dI += dAdd)
 	{
 		/* Read in values to mix. */
-		t = (sjme_jshort)(s[sI >> SJME_FIXED_SHIFT] * 32768);
+		t = (sjme_jshort)(s[sI >> SJME_FIXED_SHIFT] * 32767);
 		v = d[dI >> SJME_FIXED_SHIFT];
 
 		/* Soft clipping? */

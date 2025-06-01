@@ -21,6 +21,7 @@ import com.keitaiwiki.music.MA3SamplerProvider;
 import com.keitaiwiki.music.MLD;
 import com.keitaiwiki.music.MLDPlayer;
 import com.keitaiwiki.music.SamplerProvider;
+import com.keitaiwiki.music.SineSamplerProvider;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.media.Control;
@@ -36,7 +37,7 @@ public class IMelodyPlayer
 	extends AbstractPlayer
 {
 	/** The MA-3 instance. */
-	private static MA3SamplerProvider _SAMPLER;
+	private static SamplerProvider _SAMPLER;
 	
 	/** The audio connection. */
 	private volatile AudioConnectionBracket _connection;
@@ -84,8 +85,15 @@ public class IMelodyPlayer
 		{
 			// Setup MLD player
 			SamplerProvider provider = IMelodyPlayer.__sampler();
-			this._mldPlayer = new MLDPlayer(this._mld, provider,
+			MLDPlayer mldPlayer = new MLDPlayer(this._mld, provider,
 				44100F);
+			
+			// Initialize it
+			mldPlayer.reset();
+			mldPlayer.setTime(0);
+			
+			// Store it now
+			this._mldPlayer = mldPlayer;
 		}
 	}
 	
@@ -295,16 +303,19 @@ public class IMelodyPlayer
 	 * @return The sampler.
 	 * @since 2025/05/05
 	 */
-	static final MA3SamplerProvider __sampler()
+	static final SamplerProvider __sampler()
 	{
 		synchronized (IMelodyPlayer.class)
 		{
-			MA3SamplerProvider result = IMelodyPlayer._SAMPLER;
+			SamplerProvider result = IMelodyPlayer._SAMPLER;
 			if (result != null)
 				return result;
 			
 			// Setup new sampler
-			result = new MA3SamplerProvider();
+			if (true)
+				result = new SineSamplerProvider();
+			else
+				result = new MA3SamplerProvider();
 			IMelodyPlayer._SAMPLER = result;
 			
 			// Use this one

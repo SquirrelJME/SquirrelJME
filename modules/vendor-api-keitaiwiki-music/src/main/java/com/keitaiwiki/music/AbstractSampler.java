@@ -9,13 +9,9 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
-import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 /**
  * Bridge between SquirrelJME's audio stream support and the library's
@@ -36,6 +32,14 @@ public abstract class AbstractSampler
 		int __off, int __len)
 	{
 		// offset + frames * 2 > samples.length
-		this.render((float[])__buf, 0, __len / __channels);
+		float[] buf = (float[])__buf;
+		this.render(buf, 0, __len / __channels,
+			1.0F, 1.0F, false, true);
+		
+		// Sum everything
+		float sum = 0.0f;
+		for (int i = 0, n = buf.length; i < n; i++)
+			sum += buf[i];
+		Debugging.debugNote("Sum: %g", sum);
 	}
 }

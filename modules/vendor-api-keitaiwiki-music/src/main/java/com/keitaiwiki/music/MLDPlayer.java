@@ -1053,7 +1053,6 @@ public class MLDPlayer
 	@SquirrelJMEVendorApi
 	public void reset()
 	{
-		
 		// Instance fields
 		this.pendingFrames = 0;
 		this.pendingTicks = 0;
