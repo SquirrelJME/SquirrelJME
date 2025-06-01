@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.media.mld;
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
+import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -29,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.media.Control;
 import javax.microedition.media.MediaException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Player for i-Melody files.
@@ -38,6 +41,7 @@ import javax.microedition.media.MediaException;
 @SquirrelJMEVendorApi
 public class IMelodyPlayer
 	extends AbstractPlayer
+	implements AudioStreamRenderer
 {
 	/** The MA-3 instance. */
 	private static Sampler _SAMPLER;
@@ -176,7 +180,7 @@ public class IMelodyPlayer
 			try
 			{
 				this._connection =
-					AudioStreamShelf.attach(stream, this._mldPlayer.sampler);
+					AudioStreamShelf.attach(stream, this);
 			}
 			catch (MLECallError __e)
 			{
@@ -288,6 +292,42 @@ public class IMelodyPlayer
 			
 			// This uses double time, in microseconds
 			return (long)(mldPlayer.getTime() * 1_000_000D);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/01
+	 */
+	@Override
+	public void render(int __format,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __rate,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __channels,
+		@NotNull Object __buf,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
+	{
+		MLDPlayer mldPlayer = this._mldPlayer;
+		if (mldPlayer == null)
+			return;
+		
+		// Keep rendering frames
+		float[] buf = (float[])__buf;
+		for (int offset = 0, left = __len / __channels; left > 0;)
+		{
+			// Render the current chunk
+			// offset + frames * 2 > samples.length
+			int rendered = mldPlayer.render(buf, offset, left,
+				1.0F, 1.0F, true, true);
+			if (rendered < 0)
+				rendered = left;
+			
+			// Shift by amount of frames rendered
+			left -= rendered;
+			offset += rendered * 2;
+			
+			// Consume all events
+			mldPlayer.getEvents();
 		}
 	}
 	
