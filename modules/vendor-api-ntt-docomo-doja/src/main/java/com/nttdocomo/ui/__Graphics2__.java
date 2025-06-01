@@ -9,35 +9,36 @@
 
 package com.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
+import cc.squirreljme.runtime.nttdocomo.ui.LockFlush;
+import com.nttdocomo.opt.ui.Graphics2;
+import javax.microedition.lcdui.Graphics;
 
 /**
- * Mutable i-mode image.
+ * Allows access to {@link Graphics2}.
  *
- * @since 2024/01/06
+ * @since 2025/06/01
  */
-class __MutableImage__
-	extends Image
+@SquirrelJMEVendorApi
+class __Graphics2__
+	extends Graphics2
 {
 	/**
-	 * Initializes the base mutable image.
+	 * Wraps the given graphics object.
 	 *
-	 * @param __midpImage The MIDP image to use.
-	 * @param __bgColor The background color used for the image.
+	 * @param __g The graphics to wrap.
+	 * @param __bgColor The background color for
+	 * {@link #clearRect(int, int, int, int)}.
+	 * @param __flush Optional flush callback to be executed when this
+	 * occurs.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/06
+	 * @since 2025/06/01
 	 */
-	__MutableImage__(javax.microedition.lcdui.Image __midpImage,
-		BGColor __bgColor)
+	@SquirrelJMEVendorApi
+	__Graphics2__(Graphics __g, BGColor __bgColor, LockFlush __flush)
 		throws NullPointerException
 	{
-		super(__midpImage, __bgColor);
-	}
-	
-	@Override
-	public void dispose()
-	{
-		throw Debugging.todo();
+		super(__g, __bgColor, __flush);
 	}
 }

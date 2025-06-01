@@ -13,6 +13,8 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
 import cc.squirreljme.runtime.nttdocomo.ui.EightBitImageStore;
+import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
+import cc.squirreljme.runtime.nttdocomo.ui.LockFlush;
 import com.nttdocomo.opt.ui.Graphics2;
 import javax.microedition.lcdui.game.Sprite;
 
@@ -24,7 +26,6 @@ import javax.microedition.lcdui.game.Sprite;
  */
 @Api
 public class Graphics
-	extends Graphics2
 {
 	/** {@code #00FF00} via {@link #getColorOfName(int)}. */
 	@Api
@@ -123,10 +124,10 @@ public class Graphics
 	public static final int YELLOW = 6;
 	
 	/** The background color for {@link #clearRect(int, int, int, int)}. */
-	private final __BGColor__ _bgColor;
+	private final BGColor _bgColor;
 	
 	/** The flush handler, which is optional. */
-	private final __LockFlush__ _lockFlush;
+	private final LockFlush _lockFlush;
 	
 	/** The base graphics to forward to. */
 	private final javax.microedition.lcdui.Graphics _graphics;
@@ -146,8 +147,8 @@ public class Graphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/14
 	 */
-	Graphics(javax.microedition.lcdui.Graphics __g, __BGColor__ __bgColor,
-		__LockFlush__ __flush)
+	protected Graphics(javax.microedition.lcdui.Graphics __g, BGColor __bgColor,
+		LockFlush __flush)
 		throws NullPointerException
 	{
 		if (__g == null)
@@ -181,7 +182,7 @@ public class Graphics
 		try
 		{
 			// Use background color of the display
-			graphics.setAlphaColor(this._bgColor._bgColor);
+			graphics.setAlphaColor(this._bgColor.bgColor);
 			
 			// Use standard rectangular draw
 			graphics.fillRect(__x, __y, __w, __h);
@@ -427,9 +428,9 @@ public class Graphics
 	@Api
 	public void lock()
 	{
-		__LockFlush__ lockFlush = this._lockFlush;
+		LockFlush lockFlush = this._lockFlush;
 		if (lockFlush != null)
-			lockFlush.__lock();
+			lockFlush.lock();
 	}
 	
 	/**
@@ -536,9 +537,9 @@ public class Graphics
 	@Api
 	public void unlock(boolean __forced)
 	{
-		__LockFlush__ lockFlush = this._lockFlush;
+		LockFlush lockFlush = this._lockFlush;
 		if (lockFlush != null)
-			lockFlush.__unlock(__forced);
+			lockFlush.unlock(__forced);
 	}
 	
 	/**

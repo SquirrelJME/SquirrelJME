@@ -11,6 +11,7 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
 
 /**
  * Represents a raster image.
@@ -26,7 +27,7 @@ public abstract class Image
 	final javax.microedition.lcdui.Image _midpImage;
 	
 	/** The background color of the image. */
-	final __BGColor__ _bgColor;
+	final BGColor _bgColor;
 	
 	@Api
 	protected Image()
@@ -44,7 +45,7 @@ public abstract class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/06
 	 */
-	Image(javax.microedition.lcdui.Image __midpImage, __BGColor__ __bgColor)
+	Image(javax.microedition.lcdui.Image __midpImage, BGColor __bgColor)
 		throws NullPointerException
 	{
 		if (__midpImage == null)
@@ -81,7 +82,7 @@ public abstract class Image
 		// Try to wrap the graphics
 		try
 		{
-			return new Graphics(midpImage.getGraphics(), this._bgColor,
+			return new __Graphics2__(midpImage.getGraphics(), this._bgColor,
 				null);
 		}
 		
@@ -184,7 +185,7 @@ public abstract class Image
 		midpGfx.fillRect(0, 0, __w, __h);
 		
 		// Setup resultant image
-		return new __MutableImage__(midpImage, new __BGColor__(bgColor));
+		return new __MutableImage__(midpImage, new BGColor(bgColor));
 	}
 	
 	@Api

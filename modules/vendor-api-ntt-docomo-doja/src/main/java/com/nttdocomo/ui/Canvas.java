@@ -11,6 +11,7 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.nttdocomo.ui.LockFlush;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
@@ -49,8 +50,8 @@ public abstract class Canvas
 		new int[Canvas._KEY_GROUPS];
 	
 	/** The flush lock for the canvas. */
-	final __LockFlush__ _lockFlush =
-		new __LockFlush__(this);
+	final LockFlush _lockFlush =
+		new LockFlush(this, this._midpCanvas._doubleBuffer);
 	
 	/**
 	 * Paints the given canvas.
@@ -83,10 +84,10 @@ public abstract class Canvas
 	public Graphics getGraphics()
 	{
 		// Use the backing double buffered graphics, but without a draw
-		return new Graphics(
+		return new __Graphics2__(
 			this._midpCanvas._doubleBuffer.getGraphics(this.getWidth(),
 				this.getHeight()), this._bgColor,
-			this._lockFlush.__checkThread());
+			this._lockFlush.checkThread());
 	}
 	
 	/**
@@ -152,13 +153,13 @@ public abstract class Canvas
 	@Api
 	public void repaint()
 	{
-		this.__displayable().repaint();
+		this.__squirreljmeDisplayable().repaint();
 	}
 	
 	@Api
 	public void repaint(int __x, int __y, int __w, int __h)
 	{
-		this.__displayable().repaint(__x, __y, __w, __h);
+		this.__squirreljmeDisplayable().repaint(__x, __y, __w, __h);
 	}
 	
 	/**
@@ -167,7 +168,7 @@ public abstract class Canvas
 	 * @since 2021/11/30
 	 */
 	@Override
-	__MIDPCanvas__ __displayable()
+	protected __MIDPCanvas__ __squirreljmeDisplayable()
 	{
 		return this._midpCanvas;
 	}
