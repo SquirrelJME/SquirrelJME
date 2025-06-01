@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
 
@@ -61,6 +62,7 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	buf = sjme_alloca(bufSize);
 	if (buf == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
+	memset(buf, 0, bufSize);
 
 	/* Render source. */
 	if (sjme_error_is(error = source->renderFunc(inState,
