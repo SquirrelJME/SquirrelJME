@@ -177,7 +177,7 @@ public class MidiControlPlayer
 	
 	@Override
 	@SquirrelJMEVendorApi
-	public long setMediaTime(long __now)
+	public long setMediaTime(long __micros)
 		throws MediaException
 	{
 		throw Debugging.todo();

@@ -91,6 +91,7 @@ public class IMelodyPlayer
 			// Initialize it
 			mldPlayer.reset();
 			mldPlayer.setTime(0);
+			mldPlayer.setPlaybackEventsEnabled(true);
 			
 			// Store it now
 			this._mldPlayer = mldPlayer;
@@ -119,6 +120,8 @@ public class IMelodyPlayer
 			}
 			catch (IOException __e)
 			{
+				__e.printStackTrace();
+				
 				MediaException toss = new MediaException(__e.getMessage());
 				toss.initCause(__e);
 				throw toss;
@@ -269,8 +272,8 @@ public class IMelodyPlayer
 			if (mldPlayer == null)
 				throw new IllegalStateException("GONE");
 			
-			// This uses double time
-			return (long)(mldPlayer.getTime() * 1_000_000_000D);
+			// This uses double time, in microseconds
+			return (long)(mldPlayer.getTime() * 1_000_000D);
 		}
 	}
 	
@@ -279,7 +282,7 @@ public class IMelodyPlayer
 	 * @since 2025/05/05
 	 */
 	@Override
-	public long setMediaTime(long __now)
+	public long setMediaTime(long __micros)
 		throws MediaException
 	{
 		synchronized (this)
@@ -290,7 +293,8 @@ public class IMelodyPlayer
 				throw new MediaException("GONE");
 			
 			// This uses double time
-			mldPlayer.setTime((double)__now / 1_000_000_000D);
+			// Media time is in microseconds
+			mldPlayer.setTime((double)__micros / 1_000_000D);
 			
 			// Use the actually set time
 			return this.getMediaTime();
@@ -312,7 +316,7 @@ public class IMelodyPlayer
 				return result;
 			
 			// Setup new sampler
-			if (true)
+			if (false)
 				result = new SineSamplerProvider();
 			else
 				result = new MA3SamplerProvider();

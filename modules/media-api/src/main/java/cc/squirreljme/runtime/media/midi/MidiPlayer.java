@@ -372,7 +372,7 @@ public class MidiPlayer
 	}
 	
 	@Override
-	public long setMediaTime(long __now)
+	public long setMediaTime(long __micros)
 		throws MediaException
 	{
 		throw Debugging.todo();

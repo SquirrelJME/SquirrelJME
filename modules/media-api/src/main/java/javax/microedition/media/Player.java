@@ -84,8 +84,16 @@ public interface Player
 	void setLoopCount(int __count)
 		throws IllegalArgumentException, IllegalStateException;
 	
+	/**
+	 * Sets the media time of playback in microseconds.
+	 *
+	 * @param __micros The microseconds to start playback at.
+	 * @return The actually set microseconds.
+	 * @throws MediaException If the media time could not be set.
+	 * @since 2025/05/31
+	 */
 	@Api
-	long setMediaTime(long __now)
+	long setMediaTime(long __micros)
 		throws MediaException;
 	
 	@Api

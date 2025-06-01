@@ -205,7 +205,7 @@ public final class NullPlayer
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public final long setMediaTime(long __now)
+	public final long setMediaTime(long __micros)
 		throws MediaException
 	{
 		synchronized (this)
