@@ -7,17 +7,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package com.nttdocomo.ui;
+package cc.squirreljme.runtime.nttdocomo.ui;
+
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Holds the background color.
  *
  * @since 2022/02/14
  */
-final class __BGColor__
+@SquirrelJMEVendorApi
+public final class BGColor
 {
 	/** The background color. */
-	volatile int _bgColor;
+	@SquirrelJMEVendorApi
+	public volatile int bgColor;
 	
 	/**
 	 * Initializes the background color with an initial color.
@@ -25,8 +29,9 @@ final class __BGColor__
 	 * @param __bgColor The background color used.
 	 * @since 2022/02/14
 	 */
-	public __BGColor__(int __bgColor)
+	@SquirrelJMEVendorApi
+	public BGColor(int __bgColor)
 	{
-		this._bgColor = __bgColor;
+		this.bgColor = __bgColor;
 	}
 }

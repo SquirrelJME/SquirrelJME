@@ -93,7 +93,7 @@ public class Dialog
 	 * @since 2024/11/28
 	 */
 	@Override
-	Displayable __displayable()
+	protected Displayable __squirreljmeDisplayable()
 	{
 		return this._alert;
 	}

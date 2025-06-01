@@ -10,6 +10,8 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
+import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
+import cc.squirreljme.runtime.nttdocomo.ui.LockFlush;
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Graphics;
 
@@ -111,9 +113,9 @@ final class __MIDPCanvas__
 		// Only draw if not being called out of thread, this is a shim of
 		// sorts for DoJa applications that either draw correctly or draw
 		// themselves in the main loop when they should not
-		__LockFlush__ lockFlush = rv._lockFlush;
+		LockFlush lockFlush = rv._lockFlush;
 		DoubleBuffer doubleBuffer = this._doubleBuffer;
-		if (!lockFlush.__outOfThread())
+		if (!lockFlush.outOfThread())
 		{
 			// Draw with this buffer size
 			int w = rv.getWidth();
@@ -121,9 +123,9 @@ final class __MIDPCanvas__
 			
 			// Perform a standard paint within i-mode using our double buffered
 			// image
-			__BGColor__ bgColor = rv._bgColor;
+			BGColor bgColor = rv._bgColor;
 			Graphics mg = doubleBuffer.getGraphics(w, h);
-			com.nttdocomo.ui.Graphics g = new com.nttdocomo.ui.Graphics(mg,
+			com.nttdocomo.ui.Graphics g = new __Graphics2__(mg,
 				bgColor, lockFlush);
 			
 			// Forward paint call
@@ -134,7 +136,7 @@ final class __MIDPCanvas__
 		// a number of DoJa software depends on the actual proper drawing to
 		// perform the actual buffer update
 		// If the buffer is locked, do not update as the view will flicker
-		if (!lockFlush.__isLocked())
+		if (!lockFlush.isLocked())
 		{
 			// Paint the buffer to the given target
 			doubleBuffer.flush();
