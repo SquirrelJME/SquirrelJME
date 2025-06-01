@@ -97,7 +97,7 @@ public class IMelodyPlayer
 			// Setup MLD player
 			SamplerProvider provider = IMelodyPlayer.__sampler();
 			MLDPlayer mldPlayer = new MLDPlayer(this._mld, provider,
-				44100F);
+				48000F);
 			
 			// Initialize it
 			mldPlayer.reset();
@@ -318,7 +318,7 @@ public class IMelodyPlayer
 			// Render the current chunk
 			// offset + frames * 2 > samples.length
 			int rendered = mldPlayer.render(buf, offset, left,
-				1.0F, 1.0F, true, true);
+				1.0F, 1.0F, false, false);
 			if (rendered < 0)
 				rendered = left;
 			
@@ -376,7 +376,7 @@ public class IMelodyPlayer
 				return result;
 			
 			// Setup new sampler
-			if (false)
+			if (true)
 				result = new SineSamplerProvider();
 			else
 				result = new MA3SamplerProvider();
