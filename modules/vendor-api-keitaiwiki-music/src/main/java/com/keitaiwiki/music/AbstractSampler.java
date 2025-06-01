@@ -34,7 +34,7 @@ public abstract class AbstractSampler
 		// offset + frames * 2 > samples.length
 		float[] buf = (float[])__buf;
 		this.render(buf, 0, __len / __channels,
-			1.0F, 1.0F, false, true);
+			1.0F, 1.0F, true, true);
 		
 		// Sum everything
 		float sumP = 0.0F;

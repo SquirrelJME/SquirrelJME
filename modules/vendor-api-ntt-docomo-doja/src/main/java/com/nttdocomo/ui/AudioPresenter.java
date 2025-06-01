@@ -194,10 +194,17 @@ public class AudioPresenter
 		{
 			try
 			{
-				this.__current().start();
+				Player player = this.__current();
+				
+				// Start playing, the current time is always implicitly at
+				// the start
+				player.setMediaTime(0);
+				player.start();
 			}
 			catch (IllegalStateException|MediaException __e)
 			{
+				__e.printStackTrace();
+				
 				UIException toss = new UIException(
 					UIException.ILLEGAL_STATE, __e.getMessage());
 				toss.initCause(__e);
@@ -352,6 +359,8 @@ public class AudioPresenter
 			}
 			catch (IllegalStateException|MediaException __e)
 			{
+				__e.printStackTrace();
+				
 				UIException toss = new UIException(
 					UIException.ILLEGAL_STATE, __e.getMessage());
 				toss.initCause(__e);

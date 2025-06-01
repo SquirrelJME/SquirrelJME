@@ -42,6 +42,10 @@ public class IMelodyPlayer
 	/** The MA-3 instance. */
 	private static Sampler _SAMPLER;
 	
+	/** The belayed media time. */
+	private volatile long _belayTime =
+		-1;
+	
 	/** The audio connection. */
 	private volatile AudioConnectionBracket _connection;
 	
@@ -93,11 +97,18 @@ public class IMelodyPlayer
 			
 			// Initialize it
 			mldPlayer.reset();
-			mldPlayer.setTime(0);
 			mldPlayer.setPlaybackEventsEnabled(true);
 			
 			// Store it now
 			this._mldPlayer = mldPlayer;
+			
+			// Set the correct time
+			long belayTime = this._belayTime;
+			if (belayTime >= 0)
+			{
+				this._belayTime = -1;
+				this.setMediaTime(belayTime);
+			}
 		}
 	}
 	
@@ -293,7 +304,13 @@ public class IMelodyPlayer
 			// Can only set the time if the player is valid
 			MLDPlayer mldPlayer = this._mldPlayer;
 			if (mldPlayer == null)
-				throw new MediaException("GONE");
+			{
+				this._belayTime = __micros;
+				return __micros;
+			}
+			
+			// Clear the belay time
+			this._belayTime = -1;
 			
 			// This uses double time
 			// Media time is in microseconds
