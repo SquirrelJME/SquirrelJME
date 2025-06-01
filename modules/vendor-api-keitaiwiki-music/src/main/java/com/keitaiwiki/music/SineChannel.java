@@ -34,72 +34,8 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import java.util.ArrayList;
 
-/**
- * Output channel
- */
 @SquirrelJMEVendorApi
-class SineChannel
-	implements BasicChannel
+public interface SineChannel
 {
-	/**
-	 * Pitch bend base ratio
-	 */
-	@SquirrelJMEVendorApi
-	float bendBase;
-	
-	/**
-	 * Effective channel frequency ratio
-	 */
-	@SquirrelJMEVendorApi
-	float bendOut;
-	
-	/**
-	 * Pitch bend magnitude
-	 */
-	@SquirrelJMEVendorApi
-	float bendRange;
-	
-	/**
-	 * Index in sampler
-	 */
-	@SquirrelJMEVendorApi
-	int index;
-	
-	/**
-	 * All notes currently on keys
-	 */
-	@SquirrelJMEVendorApi
-	SineNote[] notesOn;
-	
-	/**
-	 * All notes that are generating output
-	 */
-	@SquirrelJMEVendorApi
-	ArrayList<SineNote> notesOut;
-	
-	/**
-	 * Left stereo amplitude
-	 */
-	@SquirrelJMEVendorApi
-	float volLeft;
-	
-	/**
-	 * Channel output amplitude
-	 */
-	@SquirrelJMEVendorApi
-	float volLevel;
-	
-	/**
-	 * Stereo level
-	 */
-	@SquirrelJMEVendorApi
-	float volPanning;
-	
-	/**
-	 * Right stereo amplitude
-	 */
-	@SquirrelJMEVendorApi
-	float volRight;
 }

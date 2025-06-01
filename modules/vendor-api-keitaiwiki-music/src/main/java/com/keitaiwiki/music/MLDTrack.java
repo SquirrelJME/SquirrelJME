@@ -34,25 +34,8 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import java.util.ArrayList;
 
-/**
- * Event list
- */
 @SquirrelJMEVendorApi
-class MLDTrack
-	extends ArrayList<MLDEvent>
-	implements BasicTrack
+public interface MLDTrack
 {
-	/**
-	 * Initial event offset on reset
-	 */
-	@SquirrelJMEVendorApi
-	int cue;
-	
-	/**
-	 * Channel index base
-	 */
-	@SquirrelJMEVendorApi
-	int index;
 }
