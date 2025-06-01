@@ -249,6 +249,12 @@ struct sjme_scritchaudio_renderInfo
 
 	/** The buffer size. */
 	sjme_jint bufSize;
+
+	/** Increment from samples. */
+	sjme_fixed fromIncr;
+
+	/** Increment to samples. */
+	sjme_fixed toIncr;
 };
 
 /**

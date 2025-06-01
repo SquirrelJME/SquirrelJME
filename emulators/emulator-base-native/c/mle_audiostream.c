@@ -120,6 +120,8 @@ static sjme_errorCode sjme_jni_renderAudio(
 	sjme_attrInNotNull sjme_scritchaudio_buffer* buf)
 {
 	sjme_errorCode error;
+	jobject sourceBracket;
+	jobject byteBuffer;
 	JNIEnv* env;
 
 	if (inState == NULL || inSource == NULL || renderInfo == NULL ||
@@ -132,8 +134,29 @@ static sjme_errorCode sjme_jni_renderAudio(
 		&inSource->frontEnd)) || env == NULL)
 		return SJME_ERROR_NATIVE_ERROR;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Obtain the source bracket. */
+	sourceBracket = inSource->frontEnd.wrapper;
+	if (sourceBracket == NULL)
+		return SJME_ERROR_NATIVE_ERROR;
+
+	/* Setup byte buffer to render into. */
+	byteBuffer = (*env)->NewDirectByteBuffer(env, buf, renderInfo->bufSize);
+
+	/* Forward call to the renderer. */
+	forwardCallStaticVoid(env, FORWARD_NATIVE_CLASS,
+		"__render", "(Ljava/nio/ByteBuffer;JIIIIIII)V",
+		sourceBracket, byteBuffer, renderInfo->clock, renderInfo->samples,
+		renderInfo->totalSamples, renderInfo->bytesPerSample,
+		renderInfo->bufSize, inSource->inStream->format,
+		inSource->inStream->rate, inSource->inStream->channels);
+
+	/* Destroy the byte buffer reference. */
+	(*env)->DeleteLocalRef(env, byteBuffer);
+
+	/* Was there an error? */
+	if (sjme_jni_checkVMException(env))
+		return SJME_ERROR_NATIVE_ERROR;
+	return SJME_ERROR_NONE;
 }
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __attach)(
