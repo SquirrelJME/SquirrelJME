@@ -37,10 +37,15 @@ public abstract class AbstractSampler
 			1.0F, 1.0F, false, true);
 		
 		// Sum everything
-		float sum = 0.0F;
+		float sumP = 0.0F;
+		float sumN = 0.0F;
 		for (int i = 0, n = buf.length; i < n; i++)
-			sum += buf[i];
-		if (sum != 0.0F)
-			Debugging.debugNote("Sum: %g", sum);
+		{
+			if (buf[i] > 0)
+				sumP += buf[i];
+			else
+				sumN += buf[i];
+		}
+		Debugging.debugNote("Sums: %g %g", sumN, sumP);
 	}
 }
