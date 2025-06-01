@@ -130,6 +130,8 @@ public class VMFullSuiteTaskAction
 				
 				// Set arguments to use
 				Responsify.into(__spec, simple.getCommandLine());
+				__task.getLogger().lifecycle("Exec: {}",
+					__spec.getCommandLine());
 				
 				// Use these streams directly
 				__spec.setStandardOutput(new GradleLoggerOutputStream(

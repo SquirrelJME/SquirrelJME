@@ -12,10 +12,13 @@ package cc.squirreljme.plugin;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 import org.gradle.internal.os.OperatingSystem;
 import org.gradle.process.ExecSpec;
@@ -27,6 +30,10 @@ import org.gradle.process.ExecSpec;
  */
 public final class Responsify
 {
+	/** Cached responsify check. */
+	private static final Map<Path, Boolean> _CACHED =
+		new TreeMap<>();
+	
 	/**
 	 * Not used.
 	 *
@@ -62,7 +69,14 @@ public final class Responsify
 		if (exe == null || !OperatingSystem.current().isWindows())
 			return args;
 		
+		// Must be the Java executable
 		if (!(exe.toLowerCase().endsWith("java.exe")))
+			return args;
+		
+		// Eclipse Adoptium just randomly got rid of response file support, so
+		// check if it is supported in the target Java
+		if (!Responsify.__supported(Paths.get(exe).toAbsolutePath()
+			.normalize()))
 			return args;
 		
 		// Setup temporary file
@@ -188,5 +202,87 @@ public final class Responsify
 			throw new NullPointerException("NARG");
 		
 		return Responsify.into(new ProcessBuilder(), __args);
+	}
+	
+	/**
+	 * Checks if response files are supported because Eclipse Adoptium just
+	 * decided to get rid of them.
+	 *
+	 * @param __exe The executable to check.
+	 * @return If they are supported.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/01
+	 */
+	private static boolean __supported(Path __exe)
+		throws NullPointerException
+	{
+		if (__exe == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (Responsify.class)
+		{
+			// Do we already know the result for the given executable?
+			if (Responsify._CACHED.containsKey(__exe))
+				return Responsify._CACHED.get(__exe);
+		}
+		
+		// Need to make a fake response file
+		Path tempFile = null;
+		try
+		{
+			// Setup new temp file
+			tempFile = Files.createTempFile("response", ".txt");
+			
+			// Just put "-help" in here
+			Files.write(tempFile, Arrays.asList("-help"),
+				StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
+				StandardOpenOption.CREATE);
+			
+			// Try running the Java command
+			Process process = new ProcessBuilder(__exe.toString(),
+				"@" + tempFile.toAbsolutePath().normalize()).start();
+			
+			// Wait for this to finish
+			try
+			{
+				// Wait for a result
+				int result = process.waitFor();
+				
+				// If executing help was successful, then it is supported,
+				// otherwise it is not. Cache for later so we do not have
+				// to check this all the time
+				boolean supported = (result == 0);
+				synchronized (Responsify.class)
+				{
+					Responsify._CACHED.put(__exe, supported);
+				}
+				
+				// Use the result
+				return supported;
+			}
+			catch (InterruptedException __e)
+			{
+				// Was interrupted, so assume not supported as the user could
+				// not wait for it
+				return false;
+			}
+		}
+		catch (IOException __failed)
+		{
+			// Assume it is not supported
+			return false;
+		}
+		finally
+		{
+			// Cleanup
+			try
+			{
+				if (tempFile != null)
+					Files.deleteIfExists(tempFile);
+			}
+			catch (IOException ignored)
+			{
+			}
+		}
 	}
 }
