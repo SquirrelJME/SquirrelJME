@@ -21,22 +21,39 @@
 
 #include "lib/scritchaudio/oss/ossIntern.h"
 
+#if !defined(AFMT_FLOAT)
+	/** Floating point format. */
+	#define AFMT_FLOAT 0x4000
+#endif
+
+#if !defined(AFMT_S32_LE)
+	/** 32-bit Little Endian. */
+	#define AFMT_S32_LE 0x1000
+#endif
+
+#if !defined(AFMT_S32_BE)
+	/** 32-bit Bit Endian. */
+	#define AFMT_S32_BE 0x2000
+#endif
+
 /** OSS Audio formats. */
 static const int
 	sjme_scritchaudio_oss_format[SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS] =
 {
 	AFMT_U8,
 	AFMT_S16_NE,
-#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN) && \
-	defined(AFMT_S32_LE)
+	
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
 	AFMT_S32_LE,
-#elif defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
-	defined(AFMT_S32_BE)
+#else
 	AFMT_S32_BE,
+#endif
+	
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	AFMT_FLOAT,
 #else
 	-1,
 #endif
-	-1,
 };
 
 static sjme_errorCode sjme_scritchaudio_oss_peerNone(

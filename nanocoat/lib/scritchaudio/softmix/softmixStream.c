@@ -21,7 +21,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_renderSource(
 {
 	sjme_errorCode error;
 	sjme_jint bufSize;
-	sjme_pointer buf;
+	sjme_pointer sourceBuf;
 	sjme_scritchaudio_softmix_mixer mixer;
 	
 	if (inState == NULL || inSource == NULL || sourceInfo == NULL)
@@ -29,14 +29,14 @@ static sjme_errorCode sjme_scritchaudio_softmix_renderSource(
 
 	/* Allocate buffer to render to. */
 	bufSize = sourceInfo->bufSize;
-	buf = sjme_alloca(bufSize);
-	if (buf == NULL)
+	sourceBuf = sjme_alloca(bufSize);
+	if (sourceBuf == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
-	memset(buf, 0, bufSize);
+	memset(sourceBuf, 0, bufSize);
 
 	/* Call source render function. */
 	if (sjme_error_is(error = inSource->renderFunc(inState, inSource,
-		sourceInfo, buf)))
+		sourceInfo, sourceBuf)))
 		return sjme_error_default(error);
 
 	/* Get the mixer to use. */
@@ -50,7 +50,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_renderSource(
 	}
 	
 	/* Mix audio into the target buffer. */
-	return mixer(sourceInfo, buf, destInfo, destBuf);
+	return mixer(sourceInfo, sourceBuf, destInfo, destBuf);
 }
 
 static sjme_errorCode sjme_scritchaudio_softmix_wrappedRender(
@@ -111,10 +111,15 @@ static sjme_errorCode sjme_scritchaudio_softmix_wrappedRender(
 			goto fail_any;
 
 		/* Calculate the rate scale. */
-		sourceInfo.fromIncr = sjme_fixed_div(
-			sjme_fixed_hi(sourceInfo.rate / 100),
-			sjme_fixed_hi(destInfo->rate / 100));
+		if (sourceInfo.rate != destInfo->rate)
+			sourceInfo.fromIncr = sjme_fixed_div(
+				sjme_fixed_hi(sourceInfo.rate / 100),
+				sjme_fixed_hi(destInfo->rate / 100));
+		else
+			sourceInfo.fromIncr = SJME_FIXED_ONE;
 		destInfo->fromIncr = sourceInfo.fromIncr;
+
+		/* The destination is always one. */
 		sourceInfo.toIncr = SJME_FIXED_ONE;
 		destInfo->toIncr = sourceInfo.toIncr;
 
@@ -124,6 +129,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_wrappedRender(
 			destInfo, destBuf)))
 			goto fail_any;
 
+		/* Render and mix in the next source. */
 		continue;
 fail_any:
 		anyError = sjme_error_default(error);
