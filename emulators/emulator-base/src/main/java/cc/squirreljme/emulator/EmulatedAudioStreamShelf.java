@@ -22,6 +22,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -426,6 +427,7 @@ public class EmulatedAudioStreamShelf
 			throw new MLECallError("CAST");
 		
 		AudioStreamRenderer renderer = (AudioStreamRenderer)__conn;
+		__buf.order(ByteOrder.nativeOrder());
 		
 		// Set up a new array to render within
 		Object lowerBuf;
