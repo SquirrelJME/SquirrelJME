@@ -11,8 +11,11 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
+import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
+import cc.squirreljme.runtime.nttdocomo.ui.DoJaFrame;
 import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
@@ -26,6 +29,7 @@ import javax.microedition.lcdui.Displayable;
  */
 @Api
 public abstract class Frame
+	extends DoJaFrame
 {
 	/** The left soft key. */
 	@Api
@@ -42,7 +46,7 @@ public abstract class Frame
 	final Command[] _softKeys;
 	
 	/** The background color of the display. */
-	final __BGColor__ _bgColor;
+	final BGColor _bgColor;
 	
 	/**
 	 * Base constructor.
@@ -60,18 +64,18 @@ public abstract class Frame
 			softKeys[i] = new Command("", Command.ITEM, i);
 		
 		// Use default background color
-		this._bgColor = new __BGColor__(DisplayManager.instance().scritch()
+		this._bgColor = new BGColor(DisplayManager.instance().scritch()
 			.environment().lookAndFeel().lafElementColor(null,
 				ScritchLAFElementColor.PANEL_BACKGROUND) | 0xFF_000000);
 	}
 	
 	/**
-	 * Returns the {@link Displayable} this wraps.
-	 *
-	 * @return The MIDP {@link Displayable} used.
+	 * {@inheritDoc}
 	 * @since 2021/11/30
 	 */
-	abstract Displayable __displayable();
+	@SquirrelJMEVendorApi
+	@Override
+	protected abstract Displayable __squirreljmeDisplayable();
 	
 	/**
 	 * Returns the height of the current frame.
@@ -82,7 +86,7 @@ public abstract class Frame
 	@Api
 	public int getHeight()
 	{
-		return this.__displayable().getHeight();
+		return this.__squirreljmeDisplayable().getHeight();
 	}
 	
 	/**
@@ -94,7 +98,7 @@ public abstract class Frame
 	@Api
 	public int getWidth()
 	{
-		return this.__displayable().getWidth();
+		return this.__squirreljmeDisplayable().getWidth();
 	}
 	
 	/**
@@ -106,7 +110,7 @@ public abstract class Frame
 	@Api
 	public void setBackground(int __c)
 	{
-		this._bgColor._bgColor = __c;
+		this._bgColor.bgColor = __c;
 	}
 	
 	/**
@@ -122,7 +126,7 @@ public abstract class Frame
 		if (__key < 0 || __key >= Frame._NUM_SOFT_KEYS)
 			throw Debugging.todo("Handle soft key %d?", __key);
 		
-		Displayable displayable = this.__displayable();
+		Displayable displayable = this.__squirreljmeDisplayable();
 		Command softKey = this._softKeys[__key];
 		
 		// If a layout policy for the soft keys has not been set, set it now
@@ -153,7 +157,7 @@ public abstract class Frame
 	final void __postConstruct()
 	{
 		// Add the listener for commands
-		this.__displayable().setCommandListener(
+		this.__squirreljmeDisplayable().setCommandListener(
 			new __ShoulderButtonEmitter__(new WeakReference<>(this)));
 	}
 }

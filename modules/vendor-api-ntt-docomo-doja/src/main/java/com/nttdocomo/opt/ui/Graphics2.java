@@ -10,8 +10,57 @@
 package com.nttdocomo.opt.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
+import cc.squirreljme.runtime.nttdocomo.ui.LockFlush;
+import com.nttdocomo.ui.Graphics;
 
 @Api
 public abstract class Graphics2
+	extends Graphics
 {
+	/**
+	 * Wraps the given graphics object.
+	 *
+	 * @param __g The graphics to wrap.
+	 * @param __bgColor The background color for
+	 * {@link #clearRect(int, int, int, int)}.
+	 * @param __flush Optional flush callback to be executed when this
+	 * occurs.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/01
+	 */
+	protected Graphics2(javax.microedition.lcdui.Graphics __g,
+		BGColor __bgColor, LockFlush __flush)
+		throws NullPointerException
+	{
+		super(__g, __bgColor, __flush);
+	}
+	
+	@Api
+	public void drawNthImage(com.nttdocomo.ui.MediaImage __a, int __b,
+		int __c, int __d)
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public void drawSpriteSet(com.nttdocomo.opt.ui.SpriteSet __a)
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public void drawSpriteSet(com.nttdocomo.opt.ui.SpriteSet __a, int __b,
+		int __c)
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public void drawImageMap(com.nttdocomo.opt.ui.ImageMap __a, int __b,
+		int __c)
+	{
+		throw Debugging.todo();
+	}
 }

@@ -289,7 +289,7 @@ public class Display
 			javax.microedition.lcdui.Display display =
 				Display.__midpDisplay();
 			display.setCurrent(
-				(__frame == null ? null : __frame.__displayable()));
+				(__frame == null ? null : __frame.__squirreljmeDisplayable()));
 			
 			// Is now the current frame
 			Display._currentFrame = __frame;
