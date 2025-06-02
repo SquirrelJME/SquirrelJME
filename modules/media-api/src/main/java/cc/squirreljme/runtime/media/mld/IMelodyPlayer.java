@@ -21,12 +21,14 @@ import cc.squirreljme.runtime.media.AbstractPlayer;
 import com.keitaiwiki.music.MA3SamplerProvider;
 import com.keitaiwiki.music.MLD;
 import com.keitaiwiki.music.MLDPlayer;
+import com.keitaiwiki.music.MLDPlayerEvent;
 import com.keitaiwiki.music.SamplerProvider;
 import com.keitaiwiki.music.SineSamplerProvider;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.media.Control;
 import javax.microedition.media.MediaException;
+import javax.microedition.media.PlayerListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -323,7 +325,26 @@ public class IMelodyPlayer
 			offset += rendered * 2;
 			
 			// Consume all events
-			mldPlayer.getEvents();
+			MLDPlayerEvent[] events = mldPlayer.getEvents();
+			if (events != null)
+				for (MLDPlayerEvent event : events)
+				{
+					// Skip blank events
+					if (event == null)
+						continue;
+					
+					// Handle events
+					try
+					{
+						this.__handleEvent(mldPlayer, event);
+					}
+					
+					// Drop these
+					catch (MediaException __e)
+					{
+						__e.printStackTrace();
+					}
+				}
 		}
 	}
 	
@@ -354,6 +375,42 @@ public class IMelodyPlayer
 			
 			// Use the actually set time
 			return this.getMediaTime();
+		}
+	}
+	
+	/**
+	 * Handles an event.
+	 *
+	 * @param __mldPlayer The player handling events for.
+	 * @param __event The event to handle.
+	 * @throws MediaException On any errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/01
+	 */
+	private void __handleEvent(MLDPlayer __mldPlayer, MLDPlayerEvent __event)
+		throws MediaException, NullPointerException
+	{
+		if (__mldPlayer == null || __event == null)
+			throw new NullPointerException("NARG");
+		
+		// Treat media loops and event ends the same for MIDP
+		if (__event.type == MLDPlayer.EVENT_LOOP ||
+			__event.type == MLDPlayer.EVENT_END)
+		{
+			// When did this event happen?
+			long eventTime = (long)(__mldPlayer.getTime() * 1_000_000D);
+			
+			// Media is stopping, stop playing
+			if (super.decrementLoop())
+				this.stop();
+			
+			// Media is looping, go back to the start
+			else
+				this.setMediaTime(0);
+			
+			// Always dispatch the end event
+			super.dispatchEvent(PlayerListener.END_OF_MEDIA,
+				eventTime);
 		}
 	}
 	

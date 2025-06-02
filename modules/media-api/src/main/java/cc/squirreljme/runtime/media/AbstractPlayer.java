@@ -17,6 +17,7 @@ import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 import javax.microedition.media.TimeBase;
 import org.intellij.lang.annotations.Language;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * Common implementation of players.
@@ -46,8 +47,12 @@ public abstract class AbstractPlayer
 	
 	/** The loop counter which controls how much the audio replays. */
 	@SquirrelJMEVendorApi
-	volatile int _loopCounter =
+	protected volatile int _loopCounter =
 		1;
+	
+	@SquirrelJMEVendorApi
+	protected volatile int _loopLeft =
+		0;
 	
 	/** The state of the player. */
 	private volatile int _state =
@@ -190,7 +195,7 @@ public abstract class AbstractPlayer
 	 * @return If the loop has reached zero.
 	 * @since 2024/02/26
 	 */
-	public boolean decrementLoop()
+	public final boolean decrementLoop()
 	{
 		int count = this._loopCounter;
 		
@@ -202,6 +207,29 @@ public abstract class AbstractPlayer
 		
 		this._loopCounter = count;
 		return false;
+	}
+	
+	/**
+	 * Dispatches an event to the listener if there is one. 
+	 *
+	 * @param __key The key for the event.
+	 * @param __data The data for the event.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/01
+	 */
+	protected final void dispatchEvent(
+		@MagicConstant(valuesFromClass = PlayerListener.class) String __key,
+		Object __data)
+		throws NullPointerException
+	{
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			for (PlayerListener listener : this._listeners)
+				listener.playerUpdate(this, __key, __data);
+		}
 	}
 	
 	/**
@@ -449,6 +477,9 @@ public abstract class AbstractPlayer
 		trackPosition.timeBase = timeBase;
 		trackPosition.basisMicros = timeBase.getTime() -
 			trackPosition.stoppedMicros;
+		
+		// Reset the loop count
+		this._loopLeft = this._loopCounter;
 		
 		// Is being started now
 		this.becomingStarted();

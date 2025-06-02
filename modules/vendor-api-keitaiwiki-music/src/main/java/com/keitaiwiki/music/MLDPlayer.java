@@ -1149,7 +1149,8 @@ public class MLDPlayer
 			finished = finished && other.finished;
 		if (finished)
 			this.events.add(
-				new MLDPlayerEvent(this.getTime(), MLDPlayer.EVENT_END, 0));
+				new MLDPlayerEvent(this.getTime(), MLDPlayer.EVENT_END,
+					0));
 	}
 	
 	/**

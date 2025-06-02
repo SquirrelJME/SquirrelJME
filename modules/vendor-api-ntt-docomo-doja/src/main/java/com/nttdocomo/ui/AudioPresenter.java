@@ -153,6 +153,11 @@ public class AudioPresenter
 	volatile int _volume =
 		100;
 	
+	/** The loop count to use, note this is off by one compared to MIDP. */
+	@SquirrelJMEVendorApi
+	volatile int _loopCount =
+		0;
+	
 	/**
 	 * This cannot be instantiated by the user.
 	 *
@@ -199,6 +204,15 @@ public class AudioPresenter
 				// Start playing, the current time is always implicitly at
 				// the start
 				player.setMediaTime(0);
+				
+				// Either infinite loop, or loops a specific number of times
+				int loopCount = this._loopCount;
+				if (loopCount < 0)
+					player.setLoopCount(loopCount);
+				else
+					player.setLoopCount(loopCount + 1);
+				
+				// Start playing
 				player.start();
 			}
 			catch (IllegalStateException|MediaException __e)
