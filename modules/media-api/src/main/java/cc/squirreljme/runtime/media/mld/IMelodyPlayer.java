@@ -18,13 +18,10 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractPlayer;
-import com.keitaiwiki.music.MA3Sampler;
 import com.keitaiwiki.music.MA3SamplerProvider;
 import com.keitaiwiki.music.MLD;
 import com.keitaiwiki.music.MLDPlayer;
-import com.keitaiwiki.music.Sampler;
 import com.keitaiwiki.music.SamplerProvider;
-import com.keitaiwiki.music.SineSampler;
 import com.keitaiwiki.music.SineSamplerProvider;
 import java.io.IOException;
 import java.io.InputStream;
@@ -94,13 +91,12 @@ public class IMelodyPlayer
 	{
 		synchronized (this)
 		{
-			// Setup MLD player
+			// Which sample set is used for playback?
 			SamplerProvider provider = IMelodyPlayer.__sampler();
+			
+			// Setup MLD player
 			MLDPlayer mldPlayer = new MLDPlayer(this._mld, provider,
 				48000F);
-			
-			// Initialize it
-			mldPlayer.reset();
 			mldPlayer.setPlaybackEventsEnabled(true);
 			
 			// Store it now
@@ -376,7 +372,7 @@ public class IMelodyPlayer
 				return result;
 			
 			// Setup new sampler
-			if (true)
+			if (false)
 				result = new SineSamplerProvider();
 			else
 				result = new MA3SamplerProvider();
