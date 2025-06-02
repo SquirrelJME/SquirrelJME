@@ -130,6 +130,8 @@ static sjme_errorCode sjme_scritchaudio_softmix_wrappedRender(
 			goto fail_any;
 
 		/* Render and mix in the next source. */
+		if (1)
+			break;
 		continue;
 fail_any:
 		anyError = sjme_error_default(error);

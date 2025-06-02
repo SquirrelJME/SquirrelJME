@@ -97,7 +97,7 @@ public class IMelodyPlayer
 			// Setup MLD player
 			Sampler provider = IMelodyPlayer.__sampler();
 			MLDPlayer mldPlayer = new MLDPlayer(this._mld, provider,
-				44100F);
+				48000F);
 			
 			// Initialize it
 			mldPlayer.reset();
