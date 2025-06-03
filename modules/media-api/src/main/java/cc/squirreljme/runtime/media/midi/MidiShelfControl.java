@@ -10,7 +10,7 @@ package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.jvm.mle.MidiShelf;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.media.AbstractMidiControl;
 
 /**
  * This is a MIDI player which uses the native support of MIDI through
@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2022/04/23
  */
 public final class MidiShelfControl
-	extends SimpleMidiControl
+	extends AbstractMidiControl
 {
 	/** The port to play into. */
 	private final MidiPortBracket port;

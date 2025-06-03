@@ -6,11 +6,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.media.midi;
+package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.media.AbstractControl;
+import cc.squirreljme.runtime.media.midi.MidiUtils;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.control.MIDIControl;
 
@@ -21,7 +21,7 @@ import javax.microedition.media.control.MIDIControl;
  * @since 2022/04/23
  */
 @SquirrelJMEVendorApi
-public abstract class SimpleMidiControl
+public abstract class AbstractMidiControl
 	extends AbstractControl<MIDIControl>
 	implements MIDIControl
 {
@@ -34,7 +34,7 @@ public abstract class SimpleMidiControl
 	 *
 	 * @since 2025/06/03
 	 */
-	public SimpleMidiControl()
+	public AbstractMidiControl()
 	{
 		super(MIDIControl.class);
 	}

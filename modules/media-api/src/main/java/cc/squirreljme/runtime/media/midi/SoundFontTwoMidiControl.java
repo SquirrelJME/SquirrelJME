@@ -9,6 +9,7 @@
 package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.media.AbstractMidiControl;
 import javax.microedition.media.protocol.DataSource;
 
 /**
@@ -19,7 +20,7 @@ import javax.microedition.media.protocol.DataSource;
  * @since 2022/04/23
  */
 public final class SoundFontTwoMidiControl
-	extends SimpleMidiControl
+	extends AbstractMidiControl
 {
 	/**
 	 * Returns the data source for playing streaming audio.

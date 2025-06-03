@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
+import cc.squirreljme.runtime.media.AbstractMidiControl;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -48,7 +49,7 @@ public class MidiPlayer
 	
 	/** The control used to emit MIDI sounds. */
 	@SquirrelJMEVendorApi
-	protected final SimpleMidiControl midiControl;
+	protected final AbstractMidiControl midiControl;
 	
 	/** The un-realized input stream. */
 	@SquirrelJMEVendorApi
@@ -87,7 +88,7 @@ public class MidiPlayer
 		
 		// We need a player to emit the MIDI events to
 		Player midiPlayer = Manager.createPlayer(Manager.MIDI_DEVICE_LOCATOR);
-		this.midiControl = (SimpleMidiControl)midiPlayer.getControl(
+		this.midiControl = (AbstractMidiControl)midiPlayer.getControl(
 			MIDIControl.class.getName());
 		
 		// For later realization
