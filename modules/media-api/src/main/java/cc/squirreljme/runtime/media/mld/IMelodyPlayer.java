@@ -18,6 +18,8 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractPlayer;
+import cc.squirreljme.runtime.media.AbstractVolumeControl;
+import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import com.keitaiwiki.music.MA3SamplerProvider;
 import com.keitaiwiki.music.MLD;
 import com.keitaiwiki.music.MLDPlayer;
@@ -26,9 +28,9 @@ import com.keitaiwiki.music.SamplerProvider;
 import com.keitaiwiki.music.SineSamplerProvider;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import javax.microedition.media.Control;
 import javax.microedition.media.MediaException;
-import javax.microedition.media.PlayerListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -51,6 +53,9 @@ public class IMelodyPlayer
 	
 	/** The audio connection. */
 	private volatile AudioConnectionBracket _connection;
+	
+	/** The last end-type message. */
+	private volatile int _lastEndType;
 	
 	/** The MLD data. */
 	private volatile MLD _mld;
@@ -81,6 +86,9 @@ public class IMelodyPlayer
 		
 		// For later realization
 		this._unrealizedIn = __in;
+		
+		// Register volume control
+		this.registerControl(new AbstractVolumeControl(this));
 	}
 	
 	/**
@@ -255,22 +263,21 @@ public class IMelodyPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/05/05
+	 * @since 2025/06/03
 	 */
 	@Override
-	public Control getControl(String __control)
+	protected void useVolume(int __volume)
 	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/05/05
-	 */
-	@Override
-	public Control[] getControls()
-	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// Ignore volume set if there is no player
+			MLDPlayer mldPlayer = this._mldPlayer;
+			if (mldPlayer == null)
+				return;
+			
+			// Forward the volume
+			mldPlayer.sampler.masterVolume(__volume / 100.0F);
+		}
 	}
 	
 	/**
@@ -290,6 +297,21 @@ public class IMelodyPlayer
 			
 			// This uses double time, in microseconds
 			return (long)(mldPlayer.getTime() * 1_000_000D);
+		}
+	}
+	
+	/**
+	 * Returns the last ending type.
+	 *
+	 * @return The last ending type.
+	 * @since 2025/06/03
+	 */
+	@SquirrelJMEVendorApi
+	public final int lastEndType()
+	{
+		synchronized (this)
+		{
+			return this._lastEndType;
 		}
 	}
 	
@@ -393,24 +415,29 @@ public class IMelodyPlayer
 		if (__mldPlayer == null || __event == null)
 			throw new NullPointerException("NARG");
 		
+		// DoJa 5.0+ supports looped MLDs, so in this event just go back to
+		// the start
+		if (DoJaRuntime.versionLeast(5, 0) &&
+			__event.type == MLDPlayer.EVENT_LOOP)
+		{
+			this.setMediaTime(0);
+			return;
+		}
+		
 		// Treat media loops and event ends the same for MIDP
 		if (__event.type == MLDPlayer.EVENT_LOOP ||
 			__event.type == MLDPlayer.EVENT_END)
 		{
-			// When did this event happen?
-			long eventTime = (long)(__mldPlayer.getTime() * 1_000_000D);
+			// Record the last type, used for DoJa handling
+			this._lastEndType = __event.type;
 			
 			// Media is stopping, stop playing
 			if (super.decrementLoop())
-				this.stop();
+				this.stopViaMedia();
 			
 			// Media is looping, go back to the start
 			else
-				this.setMediaTime(0);
-			
-			// Always dispatch the end event
-			super.dispatchEvent(PlayerListener.END_OF_MEDIA,
-				eventTime);
+				this.loopViaMedia();
 		}
 	}
 	

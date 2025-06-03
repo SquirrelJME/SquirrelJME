@@ -42,7 +42,7 @@ extern "C"
  */
 typedef sjme_errorCode (*sjme_scritchaudio_softmix_mixer)(
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* sourceInfo,
-	sjme_attrInNotNull sjme_scritchaudio_buffer* sourceBuf,
+	sjme_attrInNotNull const sjme_scritchaudio_buffer* sourceBuf,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* destInfo,
 	sjme_attrInNotNull sjme_scritchaudio_buffer* destBuf);
 	

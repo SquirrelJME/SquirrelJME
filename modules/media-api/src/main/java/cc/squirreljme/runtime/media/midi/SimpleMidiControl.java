@@ -10,6 +10,7 @@ package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.media.AbstractControl;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.control.MIDIControl;
 
@@ -21,11 +22,22 @@ import javax.microedition.media.control.MIDIControl;
  */
 @SquirrelJMEVendorApi
 public abstract class SimpleMidiControl
+	extends AbstractControl<MIDIControl>
 	implements MIDIControl
 {
 	/** Short MIDI message buffer. */
 	private final byte[] _shortBuf =
 		new byte[3];
+	
+	/**
+	 * Initializes the control.
+	 *
+	 * @since 2025/06/03
+	 */
+	public SimpleMidiControl()
+	{
+		super(MIDIControl.class);
+	}
 	
 	/**
 	 * {@inheritDoc}

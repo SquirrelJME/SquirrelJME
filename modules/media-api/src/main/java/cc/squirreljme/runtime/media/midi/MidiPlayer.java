@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
@@ -49,7 +48,7 @@ public class MidiPlayer
 	
 	/** The control used to emit MIDI sounds. */
 	@SquirrelJMEVendorApi
-	protected final MIDIControl midiControl;
+	protected final SimpleMidiControl midiControl;
 	
 	/** The un-realized input stream. */
 	@SquirrelJMEVendorApi
@@ -88,11 +87,14 @@ public class MidiPlayer
 		
 		// We need a player to emit the MIDI events to
 		Player midiPlayer = Manager.createPlayer(Manager.MIDI_DEVICE_LOCATOR);
-		this.midiControl = (MIDIControl)midiPlayer.getControl(
+		this.midiControl = (SimpleMidiControl)midiPlayer.getControl(
 			MIDIControl.class.getName());
 		
 		// For later realization
 		this._unrealizedIn = __in;
+		
+		// Register the MIDI controller
+		this.registerControl(this.midiControl);
 	}
 	
 	/**
@@ -318,6 +320,12 @@ public class MidiPlayer
 	}
 	
 	@Override
+	protected void useVolume(int __volume)
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
 	public void close()
 	{
 		// Just deallocate
@@ -347,22 +355,6 @@ public class MidiPlayer
 		this._unrealizedIn = null;
 		this._data = null;
 		this._tracks = null;
-	}
-	
-	@Override
-	public Control getControl(String __control)
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2022/04/24
-	 */
-	@Override
-	public Control[] getControls()
-	{
-		return new Control[]{this.midiControl};
 	}
 	
 	@Override

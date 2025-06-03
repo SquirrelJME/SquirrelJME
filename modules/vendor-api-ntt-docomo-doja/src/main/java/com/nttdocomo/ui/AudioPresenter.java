@@ -12,11 +12,13 @@ package com.nttdocomo.ui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
+import cc.squirreljme.runtime.midlet.DoJaRuntime;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
+import javax.microedition.media.control.VolumeControl;
 
 /**
  * An audio presenter is used to play media files. 
@@ -158,6 +160,11 @@ public class AudioPresenter
 	volatile int _loopCount =
 		0;
 	
+	/** Wraps MIDP PlayerListener to DoJa MediaListener. */
+	@SquirrelJMEVendorApi
+	private final __MIDPPlayerListener__ _playerListener =
+		new __MIDPPlayerListener__(new WeakReference<>(this));
+	
 	/**
 	 * This cannot be instantiated by the user.
 	 *
@@ -279,6 +286,7 @@ public class AudioPresenter
 				synchronized (this)
 				{
 					this._volume = __value;
+					this.__volume(__value);
 				}
 				break;
 				
@@ -347,8 +355,17 @@ public class AudioPresenter
 			if (player == null)
 				throw new UIException(UIException.ILLEGAL_STATE);
 			
-			// Use the given player
+			// If there is a current player then remove its listener
+			__MIDPPlayerListener__ playerListener = this._playerListener;
+			if (current != null)
+				current.removePlayerListener(playerListener);
+			
+			// Use the given player and attach the new listener to it
 			this._current = player;
+			player.addPlayerListener(playerListener);
+			
+			// Make sure the volume is up to date
+			this.__volume(this._volume);
 		}
 	}
 	
@@ -400,6 +417,29 @@ public class AudioPresenter
 				throw new UIException(UIException.ILLEGAL_STATE);
 			
 			return current;
+		}
+	}
+	
+	/**
+	 * Sets the volume.
+	 *
+	 * @param __value The value to set.
+	 * @since 2025/06/03
+	 */
+	private void __volume(int __value)
+	{
+		synchronized (this)
+		{
+			// Nothing currently playing?
+			Player current = this._current;
+			if (current == null)
+				return;
+			
+			// If volume is supported, set it
+			VolumeControl control = (VolumeControl)current
+				.getControl("VolumeControl");
+			if (control != null)
+				control.setLevel(__value);
 		}
 	}
 	

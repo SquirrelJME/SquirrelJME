@@ -940,6 +940,14 @@ extern "C" {
 	#define SJME_CONFIG_HAS_DOUBLE_SOFT
 #endif
 
+#if defined(SJME_CONFIG_HAS_GCC)
+	/** Optimize this specific function. */
+	#define sjme_attrOptimize __attribute__((optimize("-O3")))
+#else
+	/** Optimize this specific function. */
+	#define sjme_attrOptimize
+#endif
+
 /* Missing standard C functions. */
 #include "sjme/stdGone.h"
 

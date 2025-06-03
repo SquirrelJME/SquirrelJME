@@ -71,23 +71,6 @@ public final class MidiTracker
 	}
 	
 	/**
-	 * End of track has been reached, so stop.
-	 *
-	 * @since 2024/02/26
-	 */
-	public void endOfTrack()
-	{
-		synchronized (this)
-		{
-			// Indicate to stop
-			this.stopPlayback = true;
-			
-			// We might be in a lock
-			this.notifyAll();
-		}
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2022/04/27
 	 */

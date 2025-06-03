@@ -11,9 +11,9 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.nttdocomo.media.AbstractMediaSound;
-import com.nttdocomo.io.ConnectionException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import javax.microedition.io.InputConnection;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
@@ -45,6 +45,7 @@ final class __MIDPPlayer__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2025/05/05
 	 */
 	@Override
@@ -56,10 +57,15 @@ final class __MIDPPlayer__
 			try
 			{
 				// Load in the player data
-				this._player = Manager.createPlayer(__in, null);
+				Player player = Manager.createPlayer(__in, null);
+				
+				// Store for later
+				this._player = player;
 			}
-			catch (IOException|MediaException __e)
+			catch (IOException | MediaException __e)
 			{
+				__e.printStackTrace();
+				
 				UIException toss = new UIException(
 					UIException.UNSUPPORTED_FORMAT, __e.getMessage());
 				toss.initCause(__e);
@@ -70,6 +76,7 @@ final class __MIDPPlayer__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2025/05/05
 	 */
 	@Override
@@ -80,6 +87,7 @@ final class __MIDPPlayer__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2025/05/05
 	 */
 	@Override
@@ -91,5 +99,16 @@ final class __MIDPPlayer__
 		
 		// No keys are valid currently
 		return false;
+	}
+	
+	/**
+	 * Returns the current audio presenter. 
+	 *
+	 * @return The current audio presenter.
+	 * @since 2025/06/03
+	 */
+	AudioPresenter __current()
+	{
+		throw Debugging.todo();
 	}
 }

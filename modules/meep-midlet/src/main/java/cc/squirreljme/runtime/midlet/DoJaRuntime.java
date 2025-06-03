@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.nttdocomo;
+package cc.squirreljme.runtime.midlet;
 
 import cc.squirreljme.jvm.launch.IModeProperty;
 import cc.squirreljme.jvm.suite.Profile;
@@ -30,6 +30,9 @@ public final class DoJaRuntime
 	
 	/** The cached DoJa version. */
 	private static volatile SuiteVersion _VERSION;
+	
+	/** Is this DoJa? */
+	private static volatile boolean _isDoJa;
 	
 	/**
 	 * Not used.
@@ -68,6 +71,21 @@ public final class DoJaRuntime
 	}
 	
 	/**
+	 * Is this DoJa?
+	 *
+	 * @return If this is DoJa.
+	 * @since 2025/06/03
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isDoJa()
+	{
+		synchronized (DoJaRuntime.class)
+		{
+			return DoJaRuntime._isDoJa;
+		}
+	}
+	
+	/**
 	 * Puts a property into the internal mapping.
 	 *
 	 * @param __key The key.
@@ -75,6 +93,7 @@ public final class DoJaRuntime
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/28
 	 */
+	@SquirrelJMEVendorApi
 	public static void putProperty(String __key, String __value)
 		throws NullPointerException
 	{
@@ -84,6 +103,21 @@ public final class DoJaRuntime
 		synchronized (DoJaRuntime.class)
 		{
 			DoJaRuntime._PROPERTIES.put(__key, __value);
+		}
+	}
+	
+	/**
+	 * Sets that this is DoJa.
+	 *
+	 * @param __set The value to set.
+	 * @since 2025/06/03
+	 */
+	@SquirrelJMEVendorApi
+	public static void setDoJa(boolean __set)
+	{
+		synchronized (DoJaRuntime.class)
+		{
+			DoJaRuntime._isDoJa = __set;
 		}
 	}
 	
@@ -125,7 +159,8 @@ public final class DoJaRuntime
 	@SquirrelJMEVendorApi
 	public static boolean versionBefore(int __major, int __minor)
 	{
-		return !DoJaRuntime.version().atLeast(__major, __minor);	
+		return DoJaRuntime.isDoJa() &&
+			!DoJaRuntime.version().atLeast(__major, __minor);	
 	}
 	
 	/**
@@ -139,6 +174,7 @@ public final class DoJaRuntime
 	@SquirrelJMEVendorApi
 	public static boolean versionLeast(int __major, int __minor)
 	{
-		return DoJaRuntime.version().atLeast(__major, __minor);	
+		return DoJaRuntime.isDoJa() &&
+			DoJaRuntime.version().atLeast(__major, __minor);	
 	}
 }

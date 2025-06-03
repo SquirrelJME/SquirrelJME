@@ -9,8 +9,11 @@
 package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
@@ -38,10 +41,12 @@ public abstract class AbstractPlayer
 	private final String _mime;
 	
 	/** Listeners available. */
+	@SquirrelJMEVendorApi
 	private final List<PlayerListener> _listeners =
 		new LinkedList<>();
 	
 	/** The default time base. */
+	@SquirrelJMEVendorApi
 	private final TimeBase _defaultTimeBase =
 		Manager.getSystemTimeBase();
 	
@@ -50,18 +55,26 @@ public abstract class AbstractPlayer
 	protected volatile int _loopCounter =
 		1;
 	
+	/** The number of loops left. */
 	@SquirrelJMEVendorApi
 	protected volatile int _loopLeft =
 		0;
 	
+	/** The currently available controls. */
+	@SquirrelJMEVendorApi
+	private volatile AbstractControl[] _controls;
+	
 	/** The state of the player. */
+	@SquirrelJMEVendorApi
 	private volatile int _state =
 		Player.UNREALIZED;
 	
 	/** The current timebase. */
+	@SquirrelJMEVendorApi
 	private volatile TimeBase _currentTimebase;
 	
 	/** The duration of the media. */
+	@SquirrelJMEVendorApi
 	private volatile long _cachedDurationMicros =
 		Long.MIN_VALUE;
 	
@@ -133,6 +146,15 @@ public abstract class AbstractPlayer
 		throws MediaException;
 	
 	/**
+	 * Uses the given volume.
+	 *
+	 * @param __volume The volume to use.
+	 * @since 2025/06/03
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract void useVolume(int __volume);
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/15
 	 */
@@ -158,43 +180,12 @@ public abstract class AbstractPlayer
 	}
 	
 	/**
-	 * Sends an event to all listeners.
-	 *
-	 * @param __key The key used.
-	 * @param __val The value used.
-	 * @since 2019/06/28
-	 */
-	@SquirrelJMEVendorApi
-	protected final void broadcastEvent(String __key, Object __val)
-	{
-		PlayerListener[] poke;
-		
-		// Get listeners to poke
-		List<PlayerListener> listeners = this._listeners;
-		synchronized (this)
-		{
-			poke = listeners.<PlayerListener>toArray(
-				new PlayerListener[listeners.size()]);
-		}
-		
-		// Poke them all
-		for (PlayerListener pl : poke)
-			try
-			{
-				pl.playerUpdate(this, __key, __val);
-			}
-			catch (Throwable t)
-			{
-				t.printStackTrace();
-			}
-	}
-	
-	/**
 	 * Decrement the loop count.
 	 *
 	 * @return If the loop has reached zero.
 	 * @since 2024/02/26
 	 */
+	@SquirrelJMEVendorApi
 	public final boolean decrementLoop()
 	{
 		int count = this._loopCounter;
@@ -225,11 +216,8 @@ public abstract class AbstractPlayer
 		if (__key == null)
 			throw new NullPointerException("NARG");
 		
-		synchronized (this)
-		{
-			for (PlayerListener listener : this._listeners)
-				listener.playerUpdate(this, __key, __data);
-		}
+		// Send to the dispatcher
+		ListenerDispatch.dispatch(this, __key, __data);
 	}
 	
 	/**
@@ -242,6 +230,52 @@ public abstract class AbstractPlayer
 	public final String getContentType()
 	{
 		return this._mime;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/03
+	 */
+	@Override
+	public final Control getControl(String __control)
+		throws IllegalArgumentException
+	{
+		if (__control == null)
+			throw new IllegalArgumentException("NARG");
+		
+		synchronized (this)
+		{
+			// Are there no actual controls?
+			AbstractControl[] controls = this._controls;
+			if (controls == null)
+				return null;
+			
+			// Is this the given control?
+			for (AbstractControl<?> control : controls)
+				if (control.matches(__control))
+					return control;
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/23
+	 */
+	@Override
+	public final Control[] getControls()
+	{
+		synchronized (this)
+		{
+			// Are there no actual controls?
+			AbstractControl[] controls = this._controls;
+			if (controls == null)
+				return new Control[0];
+			return Arrays.copyOf(controls, controls.length,
+				AbstractControl[].class);
+		}
 	}
 	
 	/**
@@ -276,8 +310,7 @@ public abstract class AbstractPlayer
 		}
 		
 		// Indicate the duration is available now
-		this.broadcastEvent(PlayerListener.DURATION_UPDATED,
-			newDuration);
+		this.dispatchEvent(PlayerListener.DURATION_UPDATED, newDuration);
 		
 		return newDuration;
 	}
@@ -310,6 +343,28 @@ public abstract class AbstractPlayer
 			return this._defaultTimeBase;
 		
 		return rv;
+	}
+	
+	/**
+	 * This is called when playback has been looped via media call.
+	 *
+	 * @throws MediaException If looping could not be indicated.
+	 * @since 2025/06/03
+	 */
+	@SquirrelJMEVendorApi
+	public final void loopViaMedia()
+		throws MediaException
+	{
+		// End of media
+		this.dispatchEvent(PlayerListener.END_OF_MEDIA,
+			this.getTimeBase().getTime());
+		
+		// Go back to the start
+		this.setMediaTime(0);
+		
+		// Start event gets resent
+		this.dispatchEvent(PlayerListener.STARTED,
+			this.getTimeBase().getTime());
 	}
 	
 	/**
@@ -362,6 +417,38 @@ public abstract class AbstractPlayer
 		// Now becoming realized
 		this.becomingRealized();
 		this.setState(Player.REALIZED);
+	}
+	
+	/**
+	 * Registers the given control.
+	 *
+	 * @param __control The control to register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/03
+	 */
+	@SquirrelJMEVendorApi
+	protected final void registerControl(AbstractControl<?> __control)
+		throws NullPointerException
+	{
+		if (__control == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			// Add control to the end
+			AbstractControl[] controls = this._controls;
+			if (controls == null)
+				controls = new AbstractControl[]{__control};
+			else
+			{
+				controls = Arrays.copyOf(controls,
+					controls.length + 1);
+				controls[controls.length - 1] = __control;
+			}
+			
+			// Set new controls
+			this._controls = controls;
+		}
 	}
 	
 	/**
@@ -486,8 +573,7 @@ public abstract class AbstractPlayer
 		this.setState(Player.STARTED);
 		
 		// Send event
-		this.broadcastEvent(PlayerListener.STARTED,
-			timeBase.getTime());
+		this.dispatchEvent(PlayerListener.STARTED, timeBase.getTime());
 	}
 	
 	/**
@@ -510,8 +596,19 @@ public abstract class AbstractPlayer
 			state == Player.PREFETCHED)
 			return;
 		
-		// Send stop via media
-		this.stopViaMedia();
+		// Becoming stopped
+		this.becomingStopped();
+		
+		// Make sure the state stays valid
+		if (state != Player.CLOSED &&
+			state != Player.UNREALIZED &&
+			state != Player.REALIZED &&
+			state != Player.PREFETCHED)
+			this.setState(Player.PREFETCHED);
+		
+		// Send stop event
+		this.dispatchEvent(PlayerListener.STOPPED,
+			this.getTimeBase().getTime());
 	}
 	
 	/**
@@ -520,24 +617,58 @@ public abstract class AbstractPlayer
 	 * @throws MediaException On any error.
 	 * @since 2024/02/26
 	 */
+	@SquirrelJMEVendorApi
 	public final void stopViaMedia()
 		throws MediaException
-	{	
-		// Becoming stopped
-		this.becomingStopped();
-		
-		// Make sure the state stays valid
-		int state = this.getState();
-		if (state != Player.CLOSED &&
-			state != Player.UNREALIZED &&
-			state != Player.REALIZED &&
-			state != Player.PREFETCHED)
-			this.setState(Player.PREFETCHED);
-		
-		// Send event
-		this.broadcastEvent(PlayerListener.END_OF_MEDIA,
+	{
+		// Send end of media
+		this.dispatchEvent(PlayerListener.END_OF_MEDIA,
 			this.getTimeBase().getTime());
-		this.broadcastEvent(PlayerListener.STOPPED,
-			this.getTimeBase().getTime());
+		
+		// Stop playback
+		this.stop();
+	}
+	
+	/**
+	 * Handles the given event.
+	 *
+	 * @param __eventType The type of event this is.
+	 * @param __eventValue The event value.
+	 * @param __nanoTime The time this event occurred.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/03
+	 */
+	@SquirrelJMEVendorApi
+	final void __handleEvent(String __eventType, Object __eventValue,
+		long __nanoTime)
+		throws NullPointerException
+	{
+		if (__eventType == null)
+			throw new NullPointerException("NARG");
+		
+		// Send to all listeners
+		List<PlayerListener> listeners = this._listeners;
+		synchronized (this)
+		{
+			for (PlayerListener listener : listeners)
+			{
+				// Skip blanks if they happen to be in here
+				if (listener == null)
+					continue;
+				
+				// Otherwise forward to it
+				try
+				{
+					listener.playerUpdate(this, __eventType,
+						__eventValue);
+				}
+				
+				// Ignore any normal runtime exceptions
+				catch (RuntimeException __e)
+				{
+					__e.printStackTrace(System.err);
+				}
+			}
+		}
 	}
 }

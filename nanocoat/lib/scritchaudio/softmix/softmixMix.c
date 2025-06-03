@@ -14,14 +14,14 @@
 
 #define SJME_SOFTMIX(xFrom, xTo, xFromType, xToType, xFromLet, xToLet, \
 	xFunc) \
-	static sjme_errorCode \
+	static sjme_attrOptimize sjme_errorCode \
 		sjme_scritchaudio_softmix_ ## xFrom ## _to_ ## xTo( \
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* sourceInfo, \
-	sjme_attrInNotNull sjme_scritchaudio_buffer* sourceBuf, \
+	sjme_attrInNotNull const sjme_scritchaudio_buffer* sourceBuf, \
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* destInfo, \
 	sjme_attrInNotNull sjme_scritchaudio_buffer* destBuf) \
 	{ \
-		xFromType* s; \
+		const xFromType* s; \
 		xToType* d; \
 		sjme_fixed sI, dI, sAdd, dAdd, sT, dT; \
 		xFromType a; \

@@ -12,7 +12,7 @@
 #include "lib/scritchaudio/softmix/softmixIntern.h"
 #include "sjme/fixed.h"
 
-static sjme_errorCode sjme_scritchaudio_softmix_renderSource(
+static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_renderSource(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_source inSource,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* sourceInfo,
@@ -53,7 +53,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_renderSource(
 	return mixer(sourceInfo, sourceBuf, destInfo, destBuf);
 }
 
-static sjme_errorCode sjme_scritchaudio_softmix_wrappedRender(
+static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 	sjme_attrInNotNull sjme_scritchaudio wrappedState,
 	sjme_attrInNotNull sjme_scritchaudio_source wrappedSource,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* destInfo,
@@ -349,7 +349,7 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	wrappedSource = NULL;
 	if (sjme_error_is(error = wrappedState->api->sourceAttach(wrappedState,
 		wrapped, &wrappedSource,
-		sjme_scritchaudio_softmix_wrappedRender, NULL)) || wrapped == NULL)
+		sjme_scritchaudio_softmix_render, NULL)) || wrapped == NULL)
 		goto fail_subSource;
 
 	/* Success! */
