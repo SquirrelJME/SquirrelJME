@@ -274,13 +274,21 @@ public final class Responsify
 			{
 				// Was interrupted, so assume not supported as the user could
 				// not wait for it
-				return false;
+				synchronized (Responsify.class)
+				{
+					Responsify._CACHED.put(__exe, false);
+					return false;
+				}
 			}
 		}
 		catch (IOException __failed)
 		{
 			// Assume it is not supported
-			return false;
+			synchronized (Responsify.class)
+			{
+				Responsify._CACHED.put(__exe, false);
+				return false;
+			}
 		}
 		finally
 		{
