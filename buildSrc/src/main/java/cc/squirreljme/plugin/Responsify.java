@@ -250,7 +250,7 @@ public final class Responsify
 				// Wait for a result, if it takes longer than three seconds
 				// then assume response files are not supported
 				int result;
-				if (!process.waitFor(3000, TimeUnit.SECONDS))
+				if (!process.waitFor(250, TimeUnit.SECONDS))
 					result = 1;
 				else
 					result = process.exitValue();
