@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import org.gradle.internal.os.OperatingSystem;
 import org.gradle.process.ExecSpec;
@@ -228,6 +229,7 @@ public final class Responsify
 		
 		// Need to make a fake response file
 		Path tempFile = null;
+		Process process = null;
 		try
 		{
 			// Setup new temp file
@@ -239,14 +241,22 @@ public final class Responsify
 				StandardOpenOption.CREATE);
 			
 			// Try running the Java command
-			Process process = new ProcessBuilder(__exe.toString(),
+			process = new ProcessBuilder(__exe.toString(),
 				"@" + tempFile.toAbsolutePath().normalize()).start();
 			
 			// Wait for this to finish
 			try
 			{
-				// Wait for a result
-				int result = process.waitFor();
+				// Wait for a result, if it takes longer than three seconds
+				// then assume response files are not supported
+				int result;
+				if (!process.waitFor(250, TimeUnit.SECONDS))
+					result = 1;
+				else
+					result = process.exitValue();
+				
+				// Make sure it is terminated
+				process.destroyForcibly();
 				
 				// If executing help was successful, then it is supported,
 				// otherwise it is not. Cache for later so we do not have
@@ -264,16 +274,28 @@ public final class Responsify
 			{
 				// Was interrupted, so assume not supported as the user could
 				// not wait for it
-				return false;
+				synchronized (Responsify.class)
+				{
+					Responsify._CACHED.put(__exe, false);
+					return false;
+				}
 			}
 		}
 		catch (IOException __failed)
 		{
 			// Assume it is not supported
-			return false;
+			synchronized (Responsify.class)
+			{
+				Responsify._CACHED.put(__exe, false);
+				return false;
+			}
 		}
 		finally
 		{
+			// Kill the process
+			if (process != null)
+				process.destroyForcibly();
+			
 			// Cleanup
 			try
 			{

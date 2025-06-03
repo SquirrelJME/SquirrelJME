@@ -21,6 +21,7 @@ import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.Profile;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +38,11 @@ import java.util.Objects;
 public class IModeApplication
 	extends Application
 {
+	/** The vendor for DoJa applications. */
+	@SquirrelJMEVendorApi
+	public static final String VENDOR =
+		"Keitai-DoJa";
+	
 	/** The Jar path. */
 	protected final String jarPath;
 	
@@ -315,7 +321,7 @@ public class IModeApplication
 			adfProps.get(IModeProperty._APP_CLASS));
 		rv.put(IModeProperty.NAME_PROPERTY, nameProp);
 		rv.put(IModeProperty.VENDOR_PROPERTY,
-			"Keitai-DoJa");
+			IModeApplication.VENDOR);
 		
 		// Encoding and locale override
 		rv.put(Application.OVERRIDE_ENCODING, "shift-jis");
