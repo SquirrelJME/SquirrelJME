@@ -34,3 +34,10 @@ option(SQUIRRELJME_ENABLE_AUDIO_OSS "Enable OSS Audio" ON)
 if(SQUIRRELJME_ENABLE_AUDIO_OSS)
 	squirreljme_scritchaudio_build(OSS_FOUND oss OSS)
 endif()
+
+# Windows Media System
+option(SQUIRRELJME_ENABLE_AUDIO_WINMM "Enable OSS Audio"
+	${SQUIRRELJME_IS_WINDOWS})
+if(SQUIRRELJME_ENABLE_AUDIO_WINMM)
+	squirreljme_scritchaudio_build(WINMM_FOUND winmm WINMM)
+endif()
