@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.rms;
 
+import cc.squirreljme.jvm.launch.IModeApplication;
 import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.mle.constants.StandardBucketType;
@@ -54,6 +55,11 @@ public class RecordStoreSession
 	@SquirrelJMEVendorApi
 	public static final SuiteVersion CURRENT_RMS_VERSION =
 		new SuiteVersion(1, 0, 0);
+	
+	/** The old DoJa record owner vendor. */
+	@SquirrelJMEVendorApi
+	public static final String OLD_DOJA_VENDOR =
+		"SquirrelJME-DoJa";
 	
 	/** The version of the record store format. */
 	@SquirrelJMEVendorApi
@@ -786,8 +792,17 @@ public class RecordStoreSession
 			// Make sure original JSON is loaded
 			this.__load();
 			
+			// If we are trying to write the old DoJa vendor, replace it with
+			// the new one instead to migrate any RMS records
+			if (__key.equals("ownerVendor") &&
+				RecordStoreSession.OLD_DOJA_VENDOR.equals(__val.toString()))
+				this._updates.put(__key, Json.createObjectBuilder()
+					.add("key", IModeApplication.VENDOR)
+					.build().get("key"));
+			
 			// Put in new value
-			this._updates.put(__key, __val);
+			else
+				this._updates.put(__key, __val);
 			
 			// Also update the modification count and time, if this is not that
 			// otherwise this would recurse infinitely
