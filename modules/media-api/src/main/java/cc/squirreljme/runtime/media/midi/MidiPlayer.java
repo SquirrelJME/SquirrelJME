@@ -51,6 +51,10 @@ public class MidiPlayer
 	@SquirrelJMEVendorApi
 	protected final AbstractMidiControl midiControl;
 	
+	/** The MIDI player this is using. */
+	@SquirrelJMEVendorApi
+	protected final Player midiPlayer;
+	
 	/** The un-realized input stream. */
 	@SquirrelJMEVendorApi
 	private volatile InputStreamConnection _unrealizedIn;
@@ -88,6 +92,7 @@ public class MidiPlayer
 		
 		// We need a player to emit the MIDI events to
 		Player midiPlayer = Manager.createPlayer(Manager.MIDI_DEVICE_LOCATOR);
+		this.midiPlayer = midiPlayer;
 		this.midiControl = (AbstractMidiControl)midiPlayer.getControl(
 			MIDIControl.class.getName());
 		
@@ -149,6 +154,9 @@ public class MidiPlayer
 	protected void becomingPrefetched()
 		throws MediaException
 	{
+		// Make sure the MIDI player is started
+		this.midiPlayer.start();
+		
 		// Tracks that are loaded
 		List<MTrkParser> tracks = new ArrayList<>();
 		
@@ -364,11 +372,21 @@ public class MidiPlayer
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/03
+	 */
 	@Override
 	public long setMediaTime(long __micros)
 		throws MediaException
 	{
-		throw Debugging.todo();
+		synchronized (MidiPlayer.class)
+		{
+			MidiTracker tracker = MidiPlayer._TRACKER;
+			if (tracker != null)
+				tracker.fastForward(__micros);
+			return __micros;
+		}
 	}
 	
 	/**

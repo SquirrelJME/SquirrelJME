@@ -625,6 +625,15 @@ public abstract class AbstractPlayer
 		this.dispatchEvent(PlayerListener.END_OF_MEDIA,
 			this.getTimeBase().getTime());
 		
+		// We stopped via media, so go back to the start
+		try
+		{
+			this.setMediaTime(0);
+		}
+		catch (MediaException ignored)
+		{
+		}
+		
 		// Stop playback
 		this.stop();
 	}

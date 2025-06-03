@@ -8,6 +8,8 @@
 
 package cc.squirreljme.runtime.media.midi;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.control.MIDIControl;
 
@@ -30,6 +32,7 @@ public final class MidiTracker
 	protected final MIDIControl midiControl;
 	
 	/** Stop playing? */
+	@SquirrelJMEVendorApi
 	protected volatile boolean stopPlayback;
 	
 	/** MIDI trackers. */
@@ -68,6 +71,18 @@ public final class MidiTracker
 		for (int i = 0, n = __tracks.length; i < n; i++)
 			trackers[i] = new MTrkTracker(__tracks[i]);
 		this._trackers = trackers;
+	}
+	
+	/**
+	 * Tells the tracker to fast-forward.
+	 *
+	 * @param __micros The microseconds to use.
+	 * @since 2025/06/03
+	 */
+	@SquirrelJMEVendorApi
+	public void fastForward(long __micros)
+	{
+		Debugging.todoNote("fastForward(%d)", __micros);
 	}
 	
 	/**
