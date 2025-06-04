@@ -422,9 +422,6 @@ void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
 	}
 	
 #if defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	/* Request higher resolution timing. */
-	timeBeginPeriod(1);
-
 	/* Sleep for the given number of milliseconds. */
 	if (millis > 0)
 		Sleep(millis);
@@ -433,9 +430,6 @@ void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
 	QueryPerformanceCounter(&baseTime);
 	while (nanos > 0)
 		nanos = 0; /* TODO */
-
-	/* Restore previous higher resolution timing. */
-	timeEndPeriod(1);
 	
 #elif defined(SJME_CONFIG_HAS_POSIX)
 	/* Calculate seconds. */

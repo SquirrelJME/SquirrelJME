@@ -36,8 +36,8 @@ if(SQUIRRELJME_ENABLE_AUDIO_OSS)
 endif()
 
 # Windows Media System
-option(SQUIRRELJME_ENABLE_AUDIO_WINMM "Enable OSS Audio"
+option(SQUIRRELJME_ENABLE_AUDIO_WINMM "Enable WinMM Audio"
 	${SQUIRRELJME_IS_WINDOWS})
 if(SQUIRRELJME_ENABLE_AUDIO_WINMM)
-	squirreljme_scritchaudio_build(WINMM_FOUND winmm WINMM)
+	squirreljme_scritchaudio_build(SQUIRRELJME_IS_WINDOWS winmm WinMM)
 endif()

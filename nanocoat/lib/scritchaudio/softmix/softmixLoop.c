@@ -29,7 +29,7 @@ sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Copy the clock directly. */
-	memmove(&wrappedState->clock.clock, &clock,
+	memmove(&wrappedState->clock.clock, &inState->clock.clock,
 		sizeof(inState->clock.clock));
 
 	/* Go directly to the intern handler. */

@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchaudio/softmix/softmixIntern.h"
+#include "sjme/multithread.h"
 
 /**
  * Software Mixer implementation functions.
@@ -24,7 +25,7 @@ const sjme_scritchaudio_implFunctions sjme_scritchaudio_softmixFunctions =
 	.streamCreate = sjme_scritchaudio_softmix_streamCreate,
 };
 
-static sjme_attrThreadCall sjme_thread_result sjme_scritchaudio_softmix_poll(
+static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_softmix_poll(
 	sjme_attrInNotNull sjme_thread_parameter rawState)
 {
 	sjme_errorCode error;
