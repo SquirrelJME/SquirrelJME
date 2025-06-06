@@ -30,6 +30,10 @@ target_compile_definitions(ScritchAudioWinMM PUBLIC
 target_include_directories(ScritchAudioWinMM PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
+# Windows Multimedia Library is needed here
+target_link_libraries(ScritchAudioWinMM PUBLIC
+	"winmm.lib")
+
 # ScritchAudio requires a normalized library name
 squirreljme_target_binary_name(ScritchAudioWinMM
 	"squirreljme-scritchaudio-winmm")

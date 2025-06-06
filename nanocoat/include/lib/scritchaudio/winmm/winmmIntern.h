@@ -8,13 +8,22 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Describe this.
+ * Windows MultiMedia internals.
  * 
  * @since 2025/06/03
  */
 
 #ifndef SJME_C_WINMMINTERN_H
 #define SJME_C_WINMMINTERN_H
+
+#include "lib/scritchaudio/winmm/winmm.h"
+
+#define WIN32_LEAN_AND_MEAN 1
+
+#include <windows.h>
+#include <mmsystem.h>
+
+#undef WIN32_LEAN_AND_MEAN
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -27,6 +36,36 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+sjme_errorCode sjme_scritchaudio_winmm_apiInit(
+	sjme_attrInNotNull sjme_scritchaudio inState);
+
+sjme_errorCode sjme_scritchaudio_winmm_disconnect(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn);
+
+sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
+
+sjme_errorCode sjme_scritchaudio_winmm_queryMidiPorts(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInOutNotNull sjme_list_sjme_scritchaudio_midiPort* inOutPorts,
+	sjme_attrOutNotNull sjme_jint* outNumPorts);
+
+sjme_errorCode sjme_scritchaudio_winmm_sourceAttach(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNotNull sjme_scritchaudio_source inSource);
+
+sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrOutNotNull sjme_scritchaudio_stream* outStream,
+	sjme_attrInNotNull sjme_lpcstr inName,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels);
 
 /*--------------------------------------------------------------------------*/
 

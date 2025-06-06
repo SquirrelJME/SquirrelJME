@@ -9,3 +9,64 @@
 
 #include "lib/scritchaudio/scritchaudioIntern.h"
 #include "lib/scritchaudio/winmm/winmmIntern.h"
+
+/**
+ * WinMM implementation functions.
+ *
+ * @since 2025/05/10
+ */
+static const sjme_scritchaudio_implFunctions sjme_scritchaudio_winmmFunctions =
+{
+	.apiInit = sjme_scritchaudio_winmm_apiInit,
+	.disconnect = sjme_scritchaudio_winmm_disconnect,
+	.loopIterate = sjme_scritchaudio_winmm_loopIterate,
+	.queryMidiPorts = sjme_scritchaudio_winmm_queryMidiPorts,
+	.sourceAttach = sjme_scritchaudio_winmm_sourceAttach,
+	.streamCreate = sjme_scritchaudio_winmm_streamCreate,
+};
+
+sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(winmm)(
+	sjme_attrInNotNull sjme_alloc_pool inPool,
+	sjme_attrInOutNotNull sjme_scritchaudio* outState,
+	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
+{
+	sjme_errorCode error;
+	sjme_scritchaudio result;
+
+	if (inPool == NULL || outState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Forward initialize. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_scritchaudio_core_init(inPool, &result,
+		initFrontEnd, &sjme_scritchaudio_winmmFunctions,
+		bindAudioThread)) || result == NULL)
+		return sjme_error_default(error);
+
+	/* Success! */
+	*outState = result;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchaudio_winmm_apiInit(
+	sjme_attrInNotNull sjme_scritchaudio inState)
+{
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* There needs to be at least one audio device. */
+	if (waveOutGetNumDevs() <= 0)
+		return SJME_ERROR_HEADLESS_AUDIO;
+
+	/* Success! Not much else to do here. */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchaudio_winmm_disconnect(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
