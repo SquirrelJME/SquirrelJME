@@ -8,13 +8,15 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Describe this.
+ * Windows MultiMedia header.
  * 
  * @since 2025/06/03
  */
 
 #ifndef SJME_C_WINMM_H
 #define SJME_C_WINMM_H
+
+#include "lib/scritchaudio/scritchaudio.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

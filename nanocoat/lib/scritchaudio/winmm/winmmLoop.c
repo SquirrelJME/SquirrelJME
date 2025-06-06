@@ -9,3 +9,12 @@
 
 #include "lib/scritchaudio/scritchaudioIntern.h"
 #include "lib/scritchaudio/winmm/winmmIntern.h"
+
+sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
