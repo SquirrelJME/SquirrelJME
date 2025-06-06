@@ -67,11 +67,17 @@ public final class Responsify
 		// a mini file just to hold all the command line arguments, joy!
 		// Only handle certain kinds of arguments
 		String exe = (!args.isEmpty() ? args.get(0) : null);
-		if (exe == null || !OperatingSystem.current().isWindows())
-			return args;
+		/*if (exe == null || !OperatingSystem.current().isWindows())
+			return args;*/
 		
 		// Must be the Java executable
-		if (!(exe.toLowerCase().endsWith("java.exe")))
+		String lowerExe = exe.toLowerCase();
+		if (!(lowerExe.endsWith("java.exe") || lowerExe.endsWith("java")))
+			return args;
+		
+		// It must already not be responsified
+		if (args.size() >= 2 && args.get(1) != null &&
+			args.get(1).startsWith("@"))
 			return args;
 		
 		// Eclipse Adoptium just randomly got rid of response file support, so
@@ -83,7 +89,8 @@ public final class Responsify
 		// Setup temporary file
 		try
 		{
-			Path responseFile = Files.createTempFile("sjme", "r");
+			Path responseFile = Files.createTempFile(
+				"response", ".txt");
 			Runtime.getRuntime().addShutdownHook(new Thread(() ->
 				{
 					try
@@ -120,7 +127,7 @@ public final class Responsify
 			
 			// Refer to this
 			return Arrays.asList(exe,
-				"@" + responseFile.toAbsolutePath());
+				"@" + responseFile.toAbsolutePath().normalize());
 		}
 		
 		// Fallback since the file failed to be created
@@ -247,10 +254,9 @@ public final class Responsify
 			// Wait for this to finish
 			try
 			{
-				// Wait for a result, if it takes longer than three seconds
-				// then assume response files are not supported
+				// Wait for a result
 				int result;
-				if (!process.waitFor(250, TimeUnit.SECONDS))
+				if (!process.waitFor(2500, TimeUnit.MILLISECONDS))
 					result = 1;
 				else
 					result = process.exitValue();
