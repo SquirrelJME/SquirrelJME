@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,9 +32,20 @@ import org.gradle.process.ExecSpec;
  */
 public final class Responsify
 {
+	/** {@code /dev/null}. */
+	private static final File DEV_NULL;
+	
 	/** Cached responsify check. */
 	private static final Map<Path, Boolean> _CACHED =
 		new TreeMap<>();
+	
+	static
+	{
+		if (OperatingSystem.current().isWindows())
+			DEV_NULL = new File("NUL");
+		else
+			DEV_NULL = new File("/dev/null");
+	}
 	
 	/**
 	 * Not used.
@@ -63,16 +75,13 @@ public final class Responsify
 		for (String arg : __args)
 			args.add(arg);
 		
-		// If not running on Windows, we do not have to worry about creating
-		// a mini file just to hold all the command line arguments, joy!
 		// Only handle certain kinds of arguments
 		String exe = (!args.isEmpty() ? args.get(0) : null);
-		/*if (exe == null || !OperatingSystem.current().isWindows())
-			return args;*/
+		if (exe == null)
+			return args;
 		
 		// Must be the Java executable
-		String lowerExe = exe.toLowerCase();
-		if (!(lowerExe.endsWith("java.exe") || lowerExe.endsWith("java")))
+		if (!exe.endsWith("java.exe") && !exe.endsWith("java"))
 			return args;
 		
 		// It must already not be responsified
@@ -242,16 +251,25 @@ public final class Responsify
 			// Setup new temp file
 			tempFile = Files.createTempFile("response", ".txt");
 			
-			// Just put "-help" in here
-			Files.write(tempFile, Arrays.asList("-help"),
+			// -version should be supported by everything and is valid
+			// when passed nothing
+			Files.write(tempFile, Arrays.asList("-version"),
 				StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
 				StandardOpenOption.CREATE);
 			
 			// Try running the Java command
-			process = new ProcessBuilder(__exe.toString(),
-				"@" + tempFile.toAbsolutePath().normalize()).start();
+			ProcessBuilder builder = new ProcessBuilder(
+				__exe.toString(),
+				"@" + tempFile.toAbsolutePath().normalize());
 			
-			// Wait for this to finish
+			// We do not care where this goes
+			builder.redirectError(
+				ProcessBuilder.Redirect.to(Responsify.DEV_NULL));
+			builder.redirectOutput(
+				ProcessBuilder.Redirect.to(Responsify.DEV_NULL));
+			
+			// Start the process
+			process = builder.start();
 			try
 			{
 				// Wait for a result
