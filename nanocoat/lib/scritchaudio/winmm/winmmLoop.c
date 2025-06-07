@@ -18,6 +18,7 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	sjme_errorCode error;
 	WAVEHDR header;
 	HWAVEOUT handle;
+	MMRESULT result, writeResult;
 	sjme_pointer buf;
 	sjme_jint bufSize, i, n;
 	sjme_scritchaudio_source source;
@@ -68,21 +69,34 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	header.dwBufferLength = bufSize;
 	header.dwLoops = 0;
 
-	/* Disable playback. */
-	if (waveOutPause(handle) != MMSYSERR_NOERROR)
-		return SJME_ERROR_NATIVE_ERROR;
+#if 0
+	/* Disable playback, if playback is synchronous then pausing */
+	/* does not occur. */
+	result = waveOutPause(handle);
+	if (result != MMSYSERR_NOERROR && result != MMSYSERR_NOTSUPPORTED)
+		return SJME_ERROR_AUDIO_TRIGGER_FAILED;
+#endif
 
-	/* Write to the buffer until the buffer is done. */
-	while ((header.dwFlags & WHDR_DONE) == 0)
-	{
-		if (waveOutWrite(handle, &header, sizeof(header)) !=
-			MMSYSERR_NOERROR)
-			return SJME_ERROR_NATIVE_ERROR;
-	}
+	/* Prepare to write the data. */
+	if (waveOutPrepareHeader(handle, &header,
+		sizeof(header)) != MMSYSERR_NOERROR)
+		return SJME_ERROR_AUDIO_PREPARE_FAILED;
 
-	/* Resume playback. */
-	if (waveOutRestart(handle) != MMSYSERR_NOERROR)
-		return SJME_ERROR_NATIVE_ERROR;
+	/* Write to the audio device. */
+	if (waveOutWrite(handle, &header, sizeof(header)) != MMSYSERR_NOERROR)
+		return SJME_ERROR_AUDIO_WRITE_FAILED;
+
+	/* Unprepare the header. */
+	while (waveOutUnprepareHeader(handle, &header,
+		sizeof(header)) == WAVERR_STILLPLAYING)
+		sjme_thread_yield();
+
+#if 0
+	/* Resume playback, if it was previously paused. */
+	if (result == MMSYSERR_NOERROR)
+		if (waveOutRestart(handle) != MMSYSERR_NOERROR)
+			return SJME_ERROR_AUDIO_TRIGGER_FAILED;
+#endif
 
 	/* Nothing. */
 	return SJME_ERROR_NONE;

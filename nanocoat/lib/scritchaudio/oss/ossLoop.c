@@ -74,7 +74,8 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	ioctl(fd, SNDCTL_DSP_SETTRIGGER, &trigger);
 
 	/* Write the buffer data. */
-	write(fd, buf, bufSize);
+	if (write(fd, buf, bufSize) < 0)
+		return SJME_ERROR_AUDIO_WRITE_FAILED;
 
 	/* Resume playback. */
 	trigger = PCM_ENABLE_OUTPUT;
