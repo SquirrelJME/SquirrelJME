@@ -10,6 +10,14 @@
 #include "lib/scritchaudio/softmix/softmixIntern.h"
 #include "sjme/multithread.h"
 
+#if defined(SJME_CONFIG_HAS_WINDOWS)
+	/** The minimum sleeping time. */
+	#define SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS 16
+#else
+	/** The minimum sleeping time. */
+	#define SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS 0
+#endif
+
 /**
  * Software Mixer implementation functions.
  *
@@ -30,7 +38,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_softmix_poll(
 {
 	sjme_errorCode error;
 	sjme_scritchaudio inState;
-	sjme_jint nanoSum, milliCarry;
+	sjme_jint nanoSum, milliCarry, milliTime, milliSpent, milliRemain;
+	const sjme_nal* nal;
+	sjme_jlong enterTime, exitTime;
 
 	/* Recover state. */
 	inState = rawState;
@@ -45,12 +55,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_softmix_poll(
 	sjme_atomic_sjme_jint_set(&inState->loopThreadReady, 1);
 	
 	/* Enter threading loop. */
+	nal = inState->nal;
 	for (nanoSum = 0, milliCarry = 0;;)
 	{
-		/* Call loop iteration handler. */
-		if (sjme_error_is(error = inState->api->loopIterate(inState)))
-			sjme_message("Audio error: %d", error);
-
 		/* Keep everything at millisecond accuracy. Thus round up nanos */
 		/* to millis by carrying. */
 		nanoSum += sjme_atomic_sjme_jint_get(&inState->pollDelayNanos);
@@ -59,15 +66,32 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_softmix_poll(
 			milliCarry++;
 			nanoSum -= 1000000;
 		}
-		
-		/* Use the polling delay time to sleep until more audio is ready */
-		/* or more data can be pushed to the buffer. */
+
+		/* What is the millisecond time for this cycle? */
+		milliTime = sjme_atomic_sjme_jint_get(&inState->pollDelayMillis);
+
+		/* What time did this loop enter? */
+		nal->nanoTime(&enterTime);
+
+		/* Call loop iteration handler. */
+		if (sjme_error_is(error = inState->api->loopIterate(inState)))
+			sjme_message("Audio error: %d", error);
+
+		/* What time did this loop end? */
+		nal->nanoTime(&exitTime);
+
+		/* How much time was spent in the loop? */
 		/* Use carried milliseconds. */
-		sjme_thread_sleep(
-			sjme_atomic_sjme_jint_get(&inState->pollDelayMillis) +
-			milliCarry, 0);
+		milliSpent = (sjme_jint)((exitTime.full - enterTime.full) /
+			INT64_C(1000000));
+		milliRemain = (milliTime + milliCarry) - milliSpent;
 		milliCarry = 0;
-		sjme_thread_yield();
+
+		/* The audio subsystem could be synchronous or asynchronous, however */
+		/* in either case just go for both and sleep if there is still time */
+		/* remaining in the loop. */
+		if (milliRemain > SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS)
+			sjme_thread_sleep(milliRemain, 0);
 	}
 
 	/* Finished. */
