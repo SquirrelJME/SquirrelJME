@@ -159,7 +159,11 @@ static sjme_errorCode sjme_jni_renderAudio(
 
 	/* Was there an error? */
 	if (sjme_jni_checkVMException(env))
+	{
+		(*env)->ExceptionClear(env);
 		return SJME_ERROR_NATIVE_ERROR;
+	}
+
 	return SJME_ERROR_NONE;
 }
 

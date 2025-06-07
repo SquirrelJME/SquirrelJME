@@ -467,9 +467,9 @@ public class EmulatedAudioStreamShelf
 		// Copy everything back to the main buffer
 		if (__format == AudioStreamFormat.FLOAT_F32)
 			__buf.asFloatBuffer().put((float[])lowerBuf);
-		else if (__bytesPerSample == 4)
+		else if (__format == AudioStreamFormat.INT_S32)
 			__buf.asIntBuffer().put((int[])lowerBuf);
-		else if (__bytesPerSample == 2)
+		else if (__format == AudioStreamFormat.SHORT_S16)
 			__buf.asShortBuffer().put((short[])lowerBuf);
 		else
 			__buf.put((byte[])lowerBuf);

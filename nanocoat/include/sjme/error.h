@@ -441,9 +441,18 @@ typedef enum sjme_errorCode
 
 	/** Mismatch between audio formats. */
 	SJME_ERROR_AUDIO_FORMAT_MISMATCH = -133,
+
+	/** Audio triggering failed. */
+	SJME_ERROR_AUDIO_TRIGGER_FAILED = -134,
+
+	/** Audio write failed. */
+	SJME_ERROR_AUDIO_WRITE_FAILED = -135,
+
+	/** Failed to prepare audio. */
+	SJME_ERROR_AUDIO_PREPARE_FAILED = -136,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -134,
+	SJME_NUM_ERROR_CODES = -137,
 } sjme_errorCode;
 
 /**

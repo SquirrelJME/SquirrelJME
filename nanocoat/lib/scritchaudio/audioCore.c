@@ -288,7 +288,6 @@ sjme_errorCode sjme_scritchaudio_core_init(
 
 	/* Initialize the lower level state. */
 	lower = NULL;
-	sjme_message("State Lower %p", lower);
 	if (sjme_error_is(error = sjme_scritchaudio_core_initActual(inPool,
 		&lower, NULL, inImplFunc, NULL, SJME_JNI_FALSE, NULL)) ||
 		lower == NULL)
