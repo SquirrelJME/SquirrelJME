@@ -68,10 +68,6 @@ static sjme_errorCode sjme_scritchaudio_oss_peerNone(
 		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
 	/* OSS does not care about any peers. */
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
-	sjme_message("oss_peerNone(%p, %p, %d)",
-		inState, inConn, explicit);
-#endif
 	return SJME_ERROR_NONE;
 }
 
@@ -88,10 +84,6 @@ static sjme_errorCode sjme_scritchaudio_oss_peerDisconnect(
 		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
 	/* OSS does not care about any peers. */
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
-	sjme_message("oss_peerDisconnect(%p, %p, %p, %d)",
-		inState, inConn, inPeer, explicit);
-#endif
 	return SJME_ERROR_NONE;
 }
 
@@ -124,7 +116,7 @@ sjme_errorCode sjme_scritchaudio_oss_sourceAttach(
 
 sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrOutNotNull sjme_scritchaudio_stream* outStream,
+	sjme_attrInOutNotNull sjme_scritchaudio_stream inOutStream,
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
@@ -132,7 +124,6 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 {
 	int fd;
 	volatile int ossFormat, ossChannels, ossRate, actual;
-	sjme_scritchaudio_stream result;
 	sjme_errorCode error;
 	sjme_jint single, i, n;
 	
@@ -203,30 +194,15 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 		goto fail_format;
 	}
 
-	/* Allocate result. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inState->pool,
-		sizeof(*result), (sjme_pointer*)&result)) || result == NULL)
-		goto fail_allocResult;
-
 	/* Set stream details. */
-	result->connection.lock = &result->sharedLock;
-	result->connection.inState = inState;
-	result->connection.type = SJME_SCRITCHAUDIO_CONN_STREAM;
-	result->format = inFormat;
-	result->rate = inRate;
-	result->channels = inChannels;
-	result->data.fd = fd;
-	result->connection.noPeers = sjme_scritchaudio_oss_peerNone;
-	result->connection.peerDisconnect = sjme_scritchaudio_oss_peerDisconnect;
+	inOutStream->data.fd = fd;
+	inOutStream->connection.noPeers = sjme_scritchaudio_oss_peerNone;
+	inOutStream->connection.peerDisconnect =
+		sjme_scritchaudio_oss_peerDisconnect;
 
 	/* Return the resultant stream. */
-	*outStream = result;
 	return SJME_ERROR_NONE;
 
-fail_allocResult:
-	if (result != NULL)
-		sjme_alloc_free(result);
 fail_format:
 	close(fd);
 	return sjme_error_default(error);
