@@ -16,7 +16,8 @@
 #define FORWARD_NATIVE_CLASS "cc/squirreljme/emulator/EmulatedAudioStreamShelf"
 
 #define FORWARD_DESC_attach \
-	DESC_METHOD(DESC_AUDIOCONN, DESC_AUDIOSTREAM DESC_AUDIORENDERER)
+	DESC_METHOD(DESC_AUDIOCONN, DESC_AUDIOSTREAM DESC_AUDIORENDERER \
+		DESC_INT DESC_INT DESC_INT)
 #define FORWARD_DESC_decoder \
 	DESC_METHOD(DESC_AUDIOPLAYER, DESC_STRING DESC_STRING DESC_INT \
 	DESC_INT DESC_INT DESC_ARRAY(DESC_BYTE) DESC_INT DESC_INT)
@@ -34,7 +35,8 @@
 	DESC_METHOD(DESC_AUDIOSTREAM, )
 
 #define FORWARD_DESC___attach \
-	DESC_METHOD(DESC_LONG, DESC_LONG DESC_LONG DESC_AUDIORENDERER)
+	DESC_METHOD(DESC_LONG, DESC_LONG DESC_LONG DESC_AUDIORENDERER \
+		DESC_INT DESC_INT DESC_INT)
 #define FORWARD_DESC___disconnect \
 	DESC_METHOD(DESC_VOID, DESC_LONG DESC_LONG)
 #define FORWARD_DESC___dylibLoad \
@@ -44,8 +46,9 @@
 
 FORWARD_IMPL(AudioStream, attach,
 	jobject, Object,
-	FORWARD_IMPL_args(jobject stream, jobject renderer),
-	FORWARD_IMPL_pass(stream, renderer))
+	FORWARD_IMPL_args(jobject stream, jobject renderer,
+		jint format, jint rate, jint channels),
+	FORWARD_IMPL_pass(stream, renderer, format, rate, channels))
 FORWARD_IMPL(AudioStream, decoder,
 	jobject, Object,
 	FORWARD_IMPL_args(jstring urlFile, jstring mime, jint format,
@@ -132,12 +135,12 @@ static sjme_errorCode sjme_jni_renderAudio(
 	env = NULL;
 	if (sjme_error_is(sjme_jni_recoverEnvFrontEnd(&env,
 		&inSource->frontEnd)) || env == NULL)
-		return SJME_ERROR_NATIVE_ERROR;
+		return SJME_ERROR_NO_JAVA_ENVIRONMENT;
 
 	/* Obtain the source bracket. */
 	sourceBracket = inSource->frontEnd.wrapper;
 	if (sourceBracket == NULL)
-		return SJME_ERROR_NATIVE_ERROR;
+		return SJME_ERROR_RESOURCE_NOT_FOUND;
 
 	/* Setup byte buffer to render into. */
 	byteBuffer = (*env)->NewDirectByteBuffer(env, buf, renderInfo->bufSize);
@@ -148,8 +151,8 @@ static sjme_errorCode sjme_jni_renderAudio(
 		"("DESC_AUDIORENDERER"Ljava/nio/ByteBuffer;JIIIIIII)V",
 		sourceBracket, byteBuffer, renderInfo->clock, renderInfo->samples,
 		renderInfo->totalSamples, renderInfo->bytesPerSample,
-		renderInfo->bufSize, inSource->inStream->format,
-		inSource->inStream->rate, inSource->inStream->channels);
+		renderInfo->bufSize, inSource->format,
+		inSource->rate, inSource->channels);
 
 	/* Destroy the byte buffer reference. */
 	(*env)->DeleteLocalRef(env, byteBuffer);
@@ -162,7 +165,7 @@ static sjme_errorCode sjme_jni_renderAudio(
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __attach)(
 	JNIEnv* env, jclass classy, jlong statePtr, jlong streamPtr,
-	jobject javaRenderer)
+	jobject javaRenderer, jint format, jint rate, jint channels)
 {
 	sjme_errorCode error;
 	sjme_scritchaudio inState;
@@ -191,7 +194,8 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __attach)(
 	/* Setup source. */
 	result = NULL;
 	if (sjme_error_is(error = inState->api->sourceAttach(inState, inStream,
-		&result, sjme_jni_renderAudio, &frontEnd)) || result == NULL)
+		&result, sjme_jni_renderAudio, format, rate, channels,
+		&frontEnd)) || result == NULL)
 	{
 		sjme_jni_throwMLECallError(env, error);
 		return 0;

@@ -64,6 +64,7 @@ sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
 sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNullable sjme_scritchaudio_source inSource,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
 	
 sjme_errorCode sjme_scritchaudio_core_queryMidiPorts(
@@ -93,6 +94,9 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrOutNullable sjme_scritchaudio_source* outSource,
 	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc renderFunc,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
 	
 sjme_errorCode sjme_scritchaudio_core_streamCreate(

@@ -15,6 +15,7 @@
 sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNullable sjme_scritchaudio_source inSource,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
 {
 	sjme_errorCode error;
@@ -24,6 +25,20 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 
 	if (inState == NULL || inStream == NULL || renderInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Copy everything, if a source is specified it overrides everything. */
+	if (inSource != NULL)
+	{
+		renderInfo->format = inSource->format;
+		renderInfo->rate = inSource->rate;
+		renderInfo->channels = inSource->channels;
+	}
+	else
+	{
+		renderInfo->format = inStream->format;
+		renderInfo->rate = inStream->rate;
+		renderInfo->channels = inStream->channels;
+	}
 
 	/* Set the clock. */
 	renderInfo->clock = inState->clock.clock;
@@ -38,13 +53,10 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	/* rate * latency. */
 	expected44KHzSamples = (441 * (latency / 10000)) / 1000;
 	expected48KHzSamples = (448 * (latency / 10000)) / 1000;
-
-	/* Copy the used format. */
-	renderInfo->format = inStream->format;
 	
 	/* Which base samples do we start at? */
-	renderInfo->rate = inStream->rate;
-	if ((inStream->rate % 8000) == 0)
+	renderInfo->rate = renderInfo->rate;
+	if ((renderInfo->rate % 8000) == 0)
 	{
 		freqAt = 48000;
 		renderInfo->samples = expected48KHzSamples;
@@ -56,7 +68,7 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	}
 	
 	/* Trim down sample count until we match the given set. */
-	while (freqAt > inStream->rate)
+	while (freqAt > renderInfo->rate)
 	{
 		renderInfo->samples >>= 2;
 		freqAt >>= 2;
@@ -64,10 +76,10 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 
 	/* Bytes per sample? */
 	renderInfo->bytesPerSample = sjme_scritchaudio_bytesPerSample[
-		inStream->format];
+		renderInfo->format];
 
 	/* Allocate sample buffer */
-	renderInfo->totalSamples = inStream->channels * renderInfo->samples;
+	renderInfo->totalSamples = renderInfo->channels * renderInfo->samples;
 	renderInfo->bufSize = renderInfo->bytesPerSample *
 		renderInfo->totalSamples;
 
@@ -119,7 +131,7 @@ sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
 
 	/* Calculate the render info. */
 	if (sjme_error_is(error = inState->intern->calcRenderInfo(inState,
-		inStream, renderInfo)))
+		inStream, NULL, renderInfo)))
 		return sjme_error_default(error);
 	
 	/* Lock the shared lock. */

@@ -976,6 +976,16 @@ extern "C" {
 	#endif
 #endif
 
+#if defined(SJME_CONFIG_ASSUME_FLOAT_HARD)
+	/** Assumed to have hardware floating point. */
+	#define SJME_CONFIG_HAS_FLOAT_HARD
+#endif
+
+#if defined(SJME_CONFIG_ASSUME_DOUBLE_HARD)
+	/** Assumed to have hardware double point. */
+	#define SJME_CONFIG_HAS_DOUBLE_HARD
+#endif
+
 #if !defined(SJME_CONFIG_HAS_FLOAT_HARD)
 	/** Has software single floating point. */
 	#define SJME_CONFIG_HAS_FLOAT_SOFT

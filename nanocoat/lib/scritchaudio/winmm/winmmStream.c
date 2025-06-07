@@ -46,11 +46,32 @@ sjme_errorCode sjme_scritchaudio_winmm_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrInNotNull sjme_scritchaudio_source inSource)
 {
+	sjme_list_sjme_scritchaudio_source* sources;
+	sjme_jint i, n;
+
 	if (inState == NULL || inStream == NULL || inSource == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Can only attach in the same format. */
+	if (inSource->format != inStream->format ||
+		inSource->rate != inStream->rate ||
+		inSource->channels != inStream->channels)
+		return SJME_ERROR_AUDIO_FORMAT_MISMATCH;
+
+	/* There can only be a single WinMM source at a time. */
+	sources = inStream->sources;
+	if (sources != NULL)
+		for (i = 0, n = sources->length; i < n; i++)
+			if (sources->elements[i] != NULL)
+				return SJME_ERROR_AUDIO_NO_RESOURCES;
+
+	/* Just set peer disconnection functions, despite not doing much. */
+	inSource->connection.noPeers = sjme_scritchaudio_winmm_peerNone;
+	inSource->connection.peerDisconnect =
+		sjme_scritchaudio_winmm_peerDisconnect;
+
+	/* OSS is completely manually polled, so nothing is ever registered. */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchaudio_winmm_streamCreate(

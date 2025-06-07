@@ -107,7 +107,7 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 		/* Calculate the sub-render info. */
 		memset(&sourceInfo, 0, sizeof(sourceInfo));
 		if (sjme_error_is(error = inState->intern->calcRenderInfo(
-			sourceState, sourceStream, &sourceInfo)))
+			sourceState, sourceStream, source, &sourceInfo)))
 			goto fail_any;
 
 		/* Calculate the rate scale. */
@@ -337,7 +337,8 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	wrappedSource = NULL;
 	if (sjme_error_is(error = wrappedState->api->sourceAttach(wrappedState,
 		wrapped, &wrappedSource,
-		sjme_scritchaudio_softmix_render, NULL)) || wrapped == NULL)
+		sjme_scritchaudio_softmix_render, inFormat, inRate, inChannels,
+		NULL)) || wrapped == NULL)
 		goto fail_subSource;
 
 	/* Success! */

@@ -27,6 +27,9 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrOutNullable sjme_scritchaudio_source* outSource,
 	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc renderFunc,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
 {
 #define GROW_SIZE 8
@@ -36,6 +39,14 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	if (inState == NULL || inStream == NULL || outSource == NULL ||
 		renderFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* If any are automatic, use the stream's format. */
+	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
+		inFormat = inStream->format;
+	if (inRate == SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
+		inRate = inStream->rate;
+	if (inChannels = SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
+		inChannels = inStream->channels;
 
 	/* Allocate resultant source. */
 	result = NULL;
@@ -49,6 +60,9 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	result->connection.type = SJME_SCRITCHAUDIO_CONN_SOURCE;
 	result->inStream = inStream;
 	result->renderFunc = renderFunc;
+	result->format = inFormat;
+	result->rate = inRate;
+	result->channels = inChannels;
 	if (initFrontEnd != NULL)
 		memmove(&result->frontEnd, initFrontEnd, sizeof(*initFrontEnd));
 

@@ -98,6 +98,12 @@ sjme_errorCode sjme_scritchaudio_oss_sourceAttach(
 	if (inState == NULL || inStream == NULL || inSource == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Can only attach in the same format. */
+	if (inSource->format != inStream->format ||
+		inSource->rate != inStream->rate ||
+		inSource->channels != inStream->channels)
+		return SJME_ERROR_AUDIO_FORMAT_MISMATCH;
+
 	/* There can only be a single OSS source at a time. */
 	sources = inStream->sources;
 	if (sources != NULL)

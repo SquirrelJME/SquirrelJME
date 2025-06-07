@@ -235,6 +235,9 @@ struct sjme_scritchaudio_renderInfo
 	/** The rate. */
 	sjme_scritchaudio_rate rate;
 
+	/** The channels used. */
+	sjme_scritchaudio_channels channels;
+
 	/** The number of samples. */
 	sjme_jint samples;
 
@@ -283,6 +286,22 @@ typedef union sjme_scritchaudio_buffer
  */
 typedef sjme_errorCode (*sjme_scritchaudio_apiInitFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState);
+
+/**
+ * Calculates the render information.
+ *
+ * @param inState The ScritchAudio state.
+ * @param inStream The stream to render in.
+ * @param inSource The optional source used for rendering.
+ * @param renderInfo The information needed for rendering.
+ * @return Any resultant error, if any.
+ * @since 2025/05/28
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_calcRenderInfoFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNullable sjme_scritchaudio_source inSource,
+	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
 
 /**
  * Disconnects the given connection.
@@ -413,6 +432,12 @@ typedef sjme_errorCode (*sjme_scritchaudio_sourceRenderFunc)(
  * @param inStream The stream to attach to or detach from.
  * @param outSource The resultant source.
  * @param renderFunc The render function to use.
+ * @param inFormat The audio format to use, @c -1 means to use the system
+ * preferred format.
+ * @param inRate The rate to use, @c -1 means to use the system preferred
+ * rate.
+ * @param inChannels The number of channels to use, @c -1 means to use the
+ * system preferred channels.
  * @param initFrontEnd The front end used for the renderer.
  * @return Any resultant error, if any.
  * @since 2025/05/18
@@ -422,6 +447,9 @@ typedef sjme_errorCode (*sjme_scritchaudio_sourceAttachFunc)(
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrOutNullable sjme_scritchaudio_source* outSource,
 	sjme_attrInNotNull sjme_scritchaudio_sourceRenderFunc renderFunc,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
 
 /**
@@ -539,7 +567,7 @@ typedef struct sjme_scritchaudio_implFunctions
 typedef struct sjme_scritchaudio_internFunctions
 {
 	/** Calculate the rendering information. */
-	sjme_scritchaudio_loopIterateRenderFunc calcRenderInfo;
+	sjme_scritchaudio_calcRenderInfoFunc calcRenderInfo;
 	
 	/** Determines the next fallback. */
 	sjme_scritchaudio_fallbackNextFunc fallbackNext;
@@ -759,6 +787,15 @@ struct sjme_scritchaudio_sourceBase
 
 	/** The front end data. */
 	sjme_frontEnd frontEnd;
+
+	/** The source format. */
+	sjme_scritchaudio_format format;
+
+	/** The source rate. */
+	sjme_scritchaudio_rate rate;
+
+	/** The source channels. */
+	sjme_scritchaudio_channels channels;
 
 	/** The source data. */
 	struct

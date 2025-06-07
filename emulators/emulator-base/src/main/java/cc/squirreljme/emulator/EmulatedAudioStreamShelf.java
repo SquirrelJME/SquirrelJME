@@ -59,6 +59,9 @@ public class EmulatedAudioStreamShelf
 	 *
 	 * @param __stream The stream to render to.
 	 * @param __renderer The renderer to register.
+	 * @param __format The format used.
+	 * @param __rate The rate.
+	 * @param __channels The channels.
 	 * @throws MLECallError On null arguments or if the renderer could not
 	 * be registered.
 	 * @since 2025/05/04
@@ -66,7 +69,13 @@ public class EmulatedAudioStreamShelf
 	@SquirrelJMEVendorApi
 	public static AudioConnectionBracket attach(
 		@NotNull AudioStreamBracket __stream,
-		@NotNull AudioStreamRenderer __renderer)
+		@NotNull AudioStreamRenderer __renderer,
+		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+			int __format,
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels)
 		throws MLECallError
 	{
 		if (__stream == null || __renderer == null)
@@ -79,7 +88,8 @@ public class EmulatedAudioStreamShelf
 		return new EmulatedAudioSourceBracket(statePtr, 
 			EmulatedAudioStreamShelf.__attach(statePtr,
 				((EmulatedAudioStreamBracket)__stream).streamPtr,
-				__renderer), (EmulatedAudioStreamBracket)__stream,
+				__renderer, __format, __rate, __channels),
+			(EmulatedAudioStreamBracket)__stream,
 			__renderer);
 	}
 	
@@ -282,12 +292,21 @@ public class EmulatedAudioStreamShelf
 	 * @param __statePtr The state pointer.
 	 * @param __streamPtr The stream pointer.
 	 * @param __renderer The renderer to attach.
+	 * @param __format The format used.
+	 * @param __rate The rate.
+	 * @param __channels The channels.
 	 * @return The pointer to the renderer.
 	 * @throws MLECallError If the renderer could not be attached.
 	 * @since 2025/05/18
 	 */
 	native static long __attach(long __statePtr, long __streamPtr,
-		AudioStreamRenderer __renderer)
+		AudioStreamRenderer __renderer,
+		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+			int __format,
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels)
 		throws MLECallError;
 	
 	/**
@@ -434,9 +453,9 @@ public class EmulatedAudioStreamShelf
 		int lowerBufLen = __bufSize / __bytesPerSample;
 		if (__format == AudioStreamFormat.FLOAT_F32)
 			lowerBuf = new float[lowerBufLen];
-		else if (__bytesPerSample == 4)
+		else if (__format == AudioStreamFormat.INT_S32)
 			lowerBuf = new int[lowerBufLen];
-		else if (__bytesPerSample == 2)
+		else if (__format == AudioStreamFormat.SHORT_S16)
 			lowerBuf = new short[lowerBufLen];
 		else
 			lowerBuf = new byte[lowerBufLen];

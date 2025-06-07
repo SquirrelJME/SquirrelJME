@@ -55,6 +55,9 @@ sjme_errorCode sjme_scritchaudio_winmm_apiInit(
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* WinMM is always manually polled. */
+	inState->bugs.manualPoll = SJME_JNI_TRUE;
+
 	/* There needs to be at least one audio device. */
 	if (waveOutGetNumDevs() <= 0)
 		return SJME_ERROR_HEADLESS_AUDIO;

@@ -41,14 +41,8 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_softmix_poll(
 	if (inState->bindAudioThread != NULL)
 		inState->bindAudioThread(inState);
 	
-	/* Await loop ready. */
-	sjme_atomic_barrier();
-	while (sjme_atomic_sjme_jint_get(&inState->loopThreadReady) == 0)
-	{
-		sjme_atomic_barrier();
-		sjme_thread_yield();
-		sjme_atomic_barrier();
-	}
+	/* Set the loop as ready. */
+	sjme_atomic_sjme_jint_set(&inState->loopThreadReady, 1);
 	
 	/* Enter threading loop. */
 	for (nanoSum = 0, milliCarry = 0;;)
@@ -119,6 +113,15 @@ sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 			&inState->loopThreadId,
 			sjme_scritchaudio_softmix_poll, inState)))
 			goto fail_initThread;
+
+		/* Await loop ready. */
+		sjme_atomic_barrier();
+		while (sjme_atomic_sjme_jint_get(&inState->loopThreadReady) == 0)
+		{
+			sjme_atomic_barrier();
+			sjme_thread_yield();
+			sjme_atomic_barrier();
+		}
 	}
 
 	/* Success! */
