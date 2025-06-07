@@ -133,7 +133,7 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 	sjme_errorCode error;
 	sjme_jint single, i, n;
 	
-	if (inState == NULL || outStream == NULL)
+	if (inState == NULL || inOutStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Unsupported format? */
