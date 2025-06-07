@@ -9,12 +9,16 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
+import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.vm.OverlayVMClassLibrary;
 import cc.squirreljme.vm.RawVMClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.springcoat.brackets.AudioConnectionObject;
+import cc.squirreljme.vm.springcoat.brackets.AudioStreamObject;
 import cc.squirreljme.vm.springcoat.brackets.BucketObject;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.brackets.MidiDeviceObject;
@@ -122,6 +126,42 @@ public final class MLEObjects
 				"Not a NativeArchiveEntryObject.");
 		
 		return (NativeArchiveEntryObject)__object; 
+	}
+	
+	/**
+	 * Returns the audio connection object.
+	 *
+	 * @param __object The object to get from.
+	 * @return The resultant audio connection.
+	 * @throws SpringMLECallError If this is not the given object.
+	 * @since 2025/06/07
+	 */
+	public static AudioConnectionBracket audioConnection(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof AudioConnectionObject))
+			throw new SpringMLECallError(
+				"Not a AudioConnectionObject.");
+		
+		return ((AudioConnectionObject)__object).connection;
+	}
+	
+	/**
+	 * Returns the audio stream object.
+	 *
+	 * @param __object The object to get from.
+	 * @return The resultant audio stream.
+	 * @throws SpringMLECallError If this is not the given object.
+	 * @since 2025/06/07
+	 */
+	public static AudioStreamBracket audioStream(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof AudioStreamObject))
+			throw new SpringMLECallError(
+				"Not a AudioStreamObject.");
+		
+		return ((AudioStreamObject)__object).stream;
 	}
 	
 	/**
@@ -459,5 +499,4 @@ public final class MLEObjects
 		
 		return (TypeObject)__object; 
 	}
-	
 }
