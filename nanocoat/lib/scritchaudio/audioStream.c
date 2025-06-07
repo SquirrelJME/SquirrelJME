@@ -45,7 +45,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 		inFormat = inStream->format;
 	if (inRate == SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
 		inRate = inStream->rate;
-	if (inChannels = SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
+	if (inChannels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
 		inChannels = inStream->channels;
 
 	/* Allocate resultant source. */
