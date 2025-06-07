@@ -74,7 +74,7 @@ FORWARD_IMPL(AudioStream, stream,
 	FORWARD_IMPL_none(),
 	FORWARD_IMPL_none())
 
-static sjme_thread_result sjme_jni_bindAudioThread(
+static sjme_thread_result sjme_attrThreadCall sjme_jni_bindAudioThread(
 	sjme_thread_parameter anything)
 {
 	sjme_scritchaudio inState;
