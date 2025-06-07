@@ -14,8 +14,8 @@
  * @since 2024/09/06
  */
 
-#ifndef SQUIRRELJME_LISTUTIL_H
-#define SQUIRRELJME_LISTUTIL_H
+#ifndef SJME_C_LISTUTIL_H
+#define SJME_C_LISTUTIL_H
 
 #include "sjme/list.h"
 #include "sjme/stream.h"

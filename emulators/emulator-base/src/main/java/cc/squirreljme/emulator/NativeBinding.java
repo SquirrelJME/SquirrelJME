@@ -117,7 +117,7 @@ public final class NativeBinding
 			if (Debugging.VERBOSE)
 				System.err.printf("Java Over-Layer: Methods bound!%n");
 		}
-		catch (IOException e)
+		catch (LinkageError e)
 		{
 			throw new RuntimeException("Could not load library.", e);
 		}
@@ -144,11 +144,11 @@ public final class NativeBinding
 	 * @param __libBaseName The library base name.
 	 * @param __map Should the name be mapped?
 	 * @return The loaded library.
-	 * @throws IOException On read/write errors.
+	 * @throws LinkageError On read/write errors.
 	 * @since 2020/12/01
 	 */
 	public static Path libFromResources(String __libBaseName, boolean __map)
-		throws IOException
+		throws LinkageError
 	{
 		// Find the library to load
 		String libName;
@@ -171,7 +171,7 @@ public final class NativeBinding
 			NativeBinding.nativePrefix() + "/" + libName))
 		{
 			if (in == null)
-				throw new IOException(String.format(
+				throw new LinkageError(String.format(
 					"Library %s not found in resource.", libName));
 			
 			// Place all the native libraries in the same location
@@ -240,7 +240,7 @@ public final class NativeBinding
 				e.addSuppressed(f);
 			}
 			
-			throw new IOException("Could not copy native library.", e);
+			throw new LinkageError("Could not copy native library.", e);
 		}
 		
 		// Track execution time
@@ -286,6 +286,31 @@ public final class NativeBinding
 	}
 	
 	/**
+	 * Returns the name of the native operating system.
+	 *
+	 * @return The native operating system name.
+	 * @since 2025/05/11
+	 */
+	public static String nativeOs()
+	{
+		// Normalize OS name
+		String osName = System.getProperty("os.name")
+			.toLowerCase(Locale.ROOT)
+			.replaceAll("[\\s<>:\"/\\\\|?*]", "");
+		if (osName.contains("windows"))
+			return "windows";
+		else if (osName.contains("mac os") || osName.contains("macos"))
+			return "macos";
+		else if (osName.contains("linux"))
+			return "linux";
+		else if (osName.contains("solaris"))
+			return "solaris";
+		else if (osName.contains("bsd"))
+			return "bsd";
+		return osName;
+	}
+	
+	/**
 	 * Determines the native directory.
 	 *
 	 * @return The native directory.
@@ -294,19 +319,7 @@ public final class NativeBinding
 	public static String nativePrefix()
 	{
 		// Normalize OS name
-		String osName = System.getProperty("os.name")
-			.toLowerCase(Locale.ROOT)
-			.replaceAll("[\\s<>:\"/\\\\|?*]", "");
-		if (osName.contains("windows"))
-			osName = "windows";
-		else if (osName.contains("mac os") || osName.contains("macos"))
-			osName = "macos";
-		else if (osName.contains("linux"))
-			osName = "linux";
-		else if (osName.contains("solaris"))
-			osName = "solaris";
-		else if (osName.contains("bsd"))
-			osName = "bsd";
+		String osName = NativeBinding.nativeOs();
 		
 		// Normalize OS arch
 		String osArch = System.getProperty("os.arch")

@@ -13,8 +13,8 @@
  * @since 2024/07/30
  */
 
-#ifndef SQUIRRELJME_WIN32INTERN_H
-#define SQUIRRELJME_WIN32INTERN_H
+#ifndef SJME_C_WIN32INTERN_H
+#define SJME_C_WIN32INTERN_H
 
 /* Anti-C++. */
 #ifdef __cplusplus

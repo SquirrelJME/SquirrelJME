@@ -35,6 +35,7 @@ message(STATUS "NanoCoat include is: ${nanocoatIncludePath}")
 # Declare library
 add_library(libEmulatorBase SHARED
 	c/jniHelper.c
+	c/mle_audiostream.c
 	c/mle_bucket.c
 	c/mle_debug.c
 	c/mle_jar.c
@@ -68,7 +69,7 @@ target_include_directories(libEmulatorBase PUBLIC
 
 # Libraries for the build
 get_filename_component(nanocoatLibPath
-	"${CMAKE_SOURCE_DIR}/../emulator-base/build/cmake-libsNativeNanoCoat"
+	"${CMAKE_SOURCE_DIR}/../emulator-base/build/cmake-libsNativeUI"
 	ABSOLUTE)
 message(STATUS "NanoCoat lib is: ${nanocoatLibPath}")
 target_link_directories(libEmulatorBase PUBLIC

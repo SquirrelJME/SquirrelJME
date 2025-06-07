@@ -11,7 +11,7 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
-import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
+import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -38,6 +38,9 @@ final class __AppLaunch__
 		/* {@squirreljme.error AH04 No main i-mode class specified.} */
 		if (__args == null || __args.length < 1 || __args[0] == null)
 			throw new IllegalArgumentException("AH04");
+		
+		// We are on DoJa
+		DoJaRuntime.setDoJa(true);
 		
 		// Need to forward properties?
 		Deque<String> inArgs = new ArrayDeque<>(Arrays.asList(__args));

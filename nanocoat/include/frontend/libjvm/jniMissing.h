@@ -13,8 +13,8 @@
  * @since 2024/03/18
  */
 
-#ifndef SQUIRRELJME_JNIMISSING_H
-#define SQUIRRELJME_JNIMISSING_H
+#ifndef SJME_C_JNIMISSING_H
+#define SJME_C_JNIMISSING_H
 
 #include <jni.h>
 

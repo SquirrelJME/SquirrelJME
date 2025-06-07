@@ -383,7 +383,7 @@ public class DylibScritchInterface
 				}
 				
 				// If it fails to extract, skip it
-				catch (IOException __e)
+				catch (LinkageError __e)
 				{
 					defer.add(__e);
 					continue;

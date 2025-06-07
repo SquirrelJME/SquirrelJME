@@ -51,7 +51,7 @@ final class __Native__
 					__Native__._libPath = NativeBinding.libFromResources(
 						"emulator-nanocoat", true);
 				}
-				catch (IOException e)
+				catch (LinkageError e)
 				{
 					throw new VMException("Could not load library.", e);
 				}

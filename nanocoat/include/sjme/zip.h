@@ -13,8 +13,8 @@
  * @since 2023/12/31
  */
 
-#ifndef SQUIRRELJME_ZIP_H
-#define SQUIRRELJME_ZIP_H
+#ifndef SJME_C_ZIP_H
+#define SJME_C_ZIP_H
 
 #include "sjme/stream.h"
 #include "sjme/seekable.h"

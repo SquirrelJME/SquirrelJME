@@ -9,12 +9,12 @@
 
 package com.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import com.nttdocomo.io.ConnectionException;
+import cc.squirreljme.runtime.nttdocomo.media.AbstractMediaImage;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.microedition.io.Connector;
-import org.intellij.lang.annotations.Language;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import javax.microedition.io.InputConnection;
 
 /**
  * This wraps a MIDP {@link javax.microedition.lcdui.Image} so it can be
@@ -24,68 +24,66 @@ import org.intellij.lang.annotations.Language;
  * @since 2021/12/01
  */
 final class __MIDPImage__
-	extends Image
-	implements MediaImage
+	extends AbstractMediaImage
 {
-	/** The URI of the image. */
-	@Language("http-url-reference")
-	final String _uri;
-	
-	/** Input stream data. */
-	final InputStream _in;
+	/** DoJa image reference handle. */
+	volatile Reference<Image> _dojaImage;
 	
 	/** The actual loaded image. */
 	volatile javax.microedition.lcdui.Image _image;
 	
-	/** The number of times this has been used. */
-	volatile int _useCount;
-	
 	/**
-	 * Initializes the wrapped image.
+	 * Initializes the source image.
 	 *
-	 * @param __in The image to wrap.
+	 * @param __source The image source.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2025/03/28
+	 * @since 2025/05/05
 	 */
-	__MIDPImage__(InputStream __in)
+	__MIDPImage__(InputConnection __source)
 		throws NullPointerException
 	{
-		if (__in == null)
-			throw new NullPointerException("NARG");
-		
-		this._uri = null;
-		this._in = __in;
-	}
-	
-	/**
-	 * Initializes the wrapped image.
-	 *
-	 * @param __uri The image to wrap.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/12/01
-	 */
-	__MIDPImage__(@Language("http-url-reference") String __uri)
-		throws NullPointerException
-	{
-		if (__uri == null)
-			throw new NullPointerException("NARG");
-		
-		this._uri = __uri;
-		this._in = null;
+		super(__source);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @since 2021/12/01
+	 * @since 2025/05/05
 	 */
 	@Override
-	public void dispose()
+	protected void becomingRealized(InputStream __in, MediaResource __copy)
+		throws NullPointerException, UIException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			try
+			{
+				this._image = javax.microedition.lcdui.Image.createImage(__in);
+			}
+			catch (IOException __e)
+			{
+				UIException toss = new UIException(
+					UIException.UNSUPPORTED_FORMAT);
+				
+				toss.initCause(__e);
+				
+				throw toss;
+			}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/05/05
+	 */
+	@Override
+	protected void becomingUnrealized()
 	{
 		synchronized (this)
 		{
 			this._image = null;
-			this._useCount = 0;
 		}
 	}
 	
@@ -102,14 +100,26 @@ final class __MIDPImage__
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/12/01
 	 */
 	@Override
 	public Image getImage()
 	{
-		// Always return self as this is one
-		return this;
+		synchronized (this)
+		{
+			Reference<Image> ref = this._dojaImage;
+			Image result = null;
+			
+			// Need to recreate the cache?
+			if (ref == null || (result = ref.get()) == null)
+			{
+				result = new __DoJaImage__(this.__midpImage());
+				this._dojaImage = new WeakReference<>(result);
+			}
+			
+			// Use the cached image
+			return result;
+		}
 	}
 	
 	/**
@@ -125,64 +135,13 @@ final class __MIDPImage__
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @since 2021/12/01
+	 * @since 2025/05/05
 	 */
 	@Override
-	public void unuse()
-		throws UIException
+	protected boolean validKey(String __key)
+		throws NullPointerException
 	{
-		synchronized (this)
-		{
-			int useCount = this._useCount;
-			if (useCount <= 0)
-				throw new UIException(UIException.ILLEGAL_STATE);
-			
-			// Destroy the image
-			this._useCount = (--useCount);
-			if (useCount == 0)
-				this._image = null;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @since 2021/12/01
-	 */
-	@Override
-	public void use()
-		throws ConnectionException, SecurityException, UIException
-	{
-		synchronized (this)
-		{
-			// Count up usage?
-			int useCount = this._useCount;
-			if (useCount > 0)
-			{
-				this._useCount = useCount + 1;
-				return;
-			}
-			
-			// Load in the image
-			try (InputStream in = (this._in != null ? this._in :
-				Connector.openInputStream(this._uri)))
-			{
-				this._image = javax.microedition.lcdui.Image.createImage(in);
-			}
-			catch (IOException __e)
-			{
-				UIException toss = new UIException(
-					UIException.UNSUPPORTED_FORMAT);
-				
-				toss.initCause(__e);
-				
-				throw toss;
-			}
-			
-			// Initial count as it is now loaded
-			this._useCount = 1;
-		}
+		return false;
 	}
 	
 	/**

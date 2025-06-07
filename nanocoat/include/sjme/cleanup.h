@@ -13,8 +13,8 @@
  * @since 2024/08/09
  */
 
-#ifndef SQUIRRELJME_CLEANUP_H
-#define SQUIRRELJME_CLEANUP_H
+#ifndef SJME_C_CLEANUP_H
+#define SJME_C_CLEANUP_H
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/alloc.h"

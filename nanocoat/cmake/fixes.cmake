@@ -208,12 +208,15 @@ macro(squirreljme_try_compile noun target source cdef)
 	endif()
 endmacro()
 
-# float.h available?
-squirreljme_try_compile("float.h"
-	SQUIRRELJME_FLOAT_H_TRY_VALID
-	"tryFloatH"
-	SJME_CONFIG_HAS_NO_FLOAT_H)
+# Find headers
+include(CheckIncludeFile)
 
+# float.h available?
+CHECK_INCLUDE_FILE("float.h" SJME_CONFIG_HAS_FLOAT_H)
+if(NOT SJME_CONFIG_HAS_FLOAT_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_FLOAT_H=1)
+endif()
+	
 # snprintf() available?
 squirreljme_try_compile("snprintf()"
 	SQUIRRELJME_SNPRINTF_TRY_VALID
@@ -253,4 +256,10 @@ squirreljme_try_compile("sjme_threadLocal"
 	SQUIRRELJME_C11_THREADS_TRY_THREAD_LOCAL
 	"tryThreadLocal"
 	SJME_CONFIG_HAS_NO_THREAD_LOCAL)
+
+# Is the SDK version header information available?
+CHECK_INCLUDE_FILE("sdkddkver.h" WIN32_SDKDDKVER_INCLUDE)
+if(WIN32_SDKDDKVER_INCLUDE)
+	add_compile_definitions(SJME_CONFIG_HAS_SDKDDKVER_H=1)
+endif()
 

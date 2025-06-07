@@ -13,8 +13,8 @@
  * @since 2024/08/09
  */
 
-#ifndef SQUIRRELJME_ERROR_H
-#define SQUIRRELJME_ERROR_H
+#ifndef SJME_C_ERROR_H
+#define SJME_C_ERROR_H
 
 #include "sjme/stdTypes.h"
 
@@ -423,9 +423,36 @@ typedef enum sjme_errorCode
 
 	/** Invalid instruction. */
 	SJME_ERROR_INVALID_INSTRUCTION = -127,
+
+	/** No audio system is available. */
+	SJME_ERROR_HEADLESS_AUDIO = -128,
+
+	/** Unsupported audio format. */
+	SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT = -129,
+
+	/** Audio has been destroyed. */
+	SJME_ERROR_AUDIO_DESTROYED = -130,
+
+	/** The state is mismatched. */
+	SJME_ERROR_AUDIO_STATE_MISMATCH = -131,
+
+	/** No audio resources are available. */
+	SJME_ERROR_AUDIO_NO_RESOURCES = -132,
+
+	/** Mismatch between audio formats. */
+	SJME_ERROR_AUDIO_FORMAT_MISMATCH = -133,
+
+	/** Audio triggering failed. */
+	SJME_ERROR_AUDIO_TRIGGER_FAILED = -134,
+
+	/** Audio write failed. */
+	SJME_ERROR_AUDIO_WRITE_FAILED = -135,
+
+	/** Failed to prepare audio. */
+	SJME_ERROR_AUDIO_PREPARE_FAILED = -136,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -128,
+	SJME_NUM_ERROR_CODES = -137,
 } sjme_errorCode;
 
 /**

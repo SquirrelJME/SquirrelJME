@@ -13,8 +13,8 @@
  * @since 2024/04/02
  */
 
-#ifndef SQUIRRELJME_SCRITCHUITYPES_H
-#define SQUIRRELJME_SCRITCHUITYPES_H
+#ifndef SJME_C_SCRITCHUITYPES_H
+#define SJME_C_SCRITCHUITYPES_H
 
 #include "sjme/atomic.h"
 #include "lib/scritchui/scritchui.h"

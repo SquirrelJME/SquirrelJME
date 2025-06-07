@@ -13,12 +13,9 @@ import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import javax.microedition.media.Control;
+import cc.squirreljme.runtime.media.AbstractMidiControl;
+import cc.squirreljme.runtime.media.AbstractPlayer;
 import javax.microedition.media.MediaException;
-import javax.microedition.media.Player;
-import javax.microedition.media.PlayerListener;
-import javax.microedition.media.TimeBase;
-import javax.microedition.media.control.MIDIControl;
 
 /**
  * This is a player for the usage of gaining access to MIDI controls.
@@ -27,7 +24,7 @@ import javax.microedition.media.control.MIDIControl;
  */
 @SquirrelJMEVendorApi
 public class MidiControlPlayer
-	implements Player
+	extends AbstractPlayer
 {
 	/**
 	 * {@squirreljme.property cc.squirreljme.midi.device=name/id Use the
@@ -46,7 +43,7 @@ public class MidiControlPlayer
 		"cc.squirreljme.midi.port";
 	
 	/** The MIDI control to use. */
-	private final MidiShelfControl control;
+	private final AbstractMidiControl control;
 	
 	/**
 	 * Initializes the MIDI control player.
@@ -56,22 +53,67 @@ public class MidiControlPlayer
 	 * @since 2022/04/24
 	 */
 	@SquirrelJMEVendorApi
-	public MidiControlPlayer(MidiShelfControl __control)
+	public MidiControlPlayer(AbstractMidiControl __control)
 		throws NullPointerException
 	{
+		super("audio/midi");
+		
 		if (__control == null)
 			throw new NullPointerException("NARG");
 		
 		this.control = __control;
+		
+		// The control always gets registered
+		this.registerControl(__control);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/03
+	 */
 	@Override
-	@SquirrelJMEVendorApi
-	public void addPlayerListener(PlayerListener __a)
+	protected void becomingPrefetched()
+		throws MediaException
 	{
-		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/03
+	 */
+	@Override
+	protected void becomingRealized()
+		throws MediaException
+	{
+		// Nothing needs to be done
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/03
+	 */
+	@Override
+	protected void becomingStarted()
+		throws MediaException
+	{
+		// Nothing needs to be done
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/03
+	 */
+	@Override
+	protected void becomingStopped()
+		throws MediaException
+	{
+		// Nothing needs to be done
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/03
+	 */
 	@Override
 	@SquirrelJMEVendorApi
 	public void close()
@@ -79,6 +121,10 @@ public class MidiControlPlayer
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/03
+	 */
 	@Override
 	@SquirrelJMEVendorApi
 	public void deallocate()
@@ -86,125 +132,58 @@ public class MidiControlPlayer
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/03
+	 */
 	@Override
-	@SquirrelJMEVendorApi
-	public String getContentType()
+	protected long determineDuration()
+		throws MediaException
 	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	@SquirrelJMEVendorApi
-	public Control getControl(String __control)
-		throws NullPointerException
-	{
-		if (__control == null)
-			throw new NullPointerException("NARG");
-		
-		// Is this the right control?
-		if (__control.equals(MIDIControl.class.getName()))
-			return this.control;
-		
-		// Not found
-		return null;
-	}
-	
-	@Override
-	@SquirrelJMEVendorApi
-	public Control[] getControls()
-	{
-		// There is just this control
-		return new Control[]{this.control};
-	}
-	
-	@Override
-	@SquirrelJMEVendorApi
-	public long getDuration()
-	{
-		throw Debugging.todo();
+		// The duration is always zero
+		return 0;
 	}
 	
 	@Override
 	@SquirrelJMEVendorApi
 	public long getMediaTime()
 	{
-		throw Debugging.todo();
+		// Always at zero
+		return 0;
 	}
 	
-	@Override
-	@SquirrelJMEVendorApi
-	public int getState()
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	@SquirrelJMEVendorApi
-	public TimeBase getTimeBase()
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	@SquirrelJMEVendorApi
-	public void prefetch()
-		throws MediaException
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	@SquirrelJMEVendorApi
-	public void realize()
-		throws MediaException
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	@SquirrelJMEVendorApi
-	public void removePlayerListener(PlayerListener __a)
-	{
-		throw Debugging.todo();
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/03
+	 */
 	@Override
 	@SquirrelJMEVendorApi
 	public void setLoopCount(int __count)
 	{
-		throw Debugging.todo();
+		// Does not make sense here
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/03
+	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public long setMediaTime(long __now)
+	public long setMediaTime(long __micros)
 		throws MediaException
 	{
-		throw Debugging.todo();
+		// Does not make sense here
+		return 0;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/03
+	 */
 	@Override
-	@SquirrelJMEVendorApi
-	public void setTimeBase(TimeBase __timeBase)
-		throws MediaException
+	protected void useVolume(int __volume)
 	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	@SquirrelJMEVendorApi
-	public void start()
-		throws MediaException
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	@SquirrelJMEVendorApi
-	public void stop()
-		throws MediaException
-	{
-		throw Debugging.todo();
+		// Does nothing
 	}
 	
 	/**
@@ -308,7 +287,8 @@ public class MidiControlPlayer
 		if (portId >= 0 && portId < ports.length)
 			return new MidiControlPlayer(new MidiShelfControl(ports[portId]));
 			
-		// {@squirreljme.error EA0d Found MIDI device, however (The device)}
+		/* {@squirreljme.error EA0d Found MIDI device, however the
+		device is not valid. (The device)} */
 		throw new MediaException("EA0d " +
 			MidiShelf.deviceName(selectedDevice));
 	}

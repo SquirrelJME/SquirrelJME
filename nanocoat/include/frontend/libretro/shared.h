@@ -13,8 +13,8 @@
  * @since 2023/11/22
  */
 
-#ifndef SQUIRRELJME_SHARED_H
-#define SQUIRRELJME_SHARED_H
+#ifndef SJME_C_SHARED_H
+#define SJME_C_SHARED_H
 
 #include "3rdparty/libretro/libretro.h"
 

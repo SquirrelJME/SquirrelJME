@@ -13,8 +13,8 @@
  * @since 2024/07/30
  */
 
-#ifndef SQUIRRELJME_WIN32_H
-#define SQUIRRELJME_WIN32_H
+#ifndef SJME_C_WIN32_H
+#define SJME_C_WIN32_H
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiImpl.h"

@@ -13,8 +13,8 @@
  * @since 2024/08/25
  */
 
-#ifndef SQUIRRELJME_CIRCLEBUFFER_H
-#define SQUIRRELJME_CIRCLEBUFFER_H
+#ifndef SJME_C_CIRCLEBUFFER_H
+#define SJME_C_CIRCLEBUFFER_H
 
 #include "sjme/error.h"
 #include "sjme/stdTypes.h"

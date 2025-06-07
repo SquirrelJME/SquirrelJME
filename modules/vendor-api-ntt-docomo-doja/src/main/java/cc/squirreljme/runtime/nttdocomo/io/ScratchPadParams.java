@@ -14,7 +14,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IntegerList;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
-import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
+import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 

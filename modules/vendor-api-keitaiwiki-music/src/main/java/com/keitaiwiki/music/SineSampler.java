@@ -1,0 +1,554 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Keitai Wiki Community Music Implementation
+//     Originally written and contributed by Guy Perfect
+//     Continued maintenance and upkeep by SquirrelJME/Stephanie Gawroriski
+// ---------------------------------------------------------------------------
+// This specific file is under the given license:
+// This is free and unencumbered software released into the public domain.
+// 
+// Anyone is free to copy, modify, publish, use, compile, sell, or
+// distribute this software, either in source code form or as a compiled
+// binary, for any purpose, commercial or non-commercial, and by any
+// means.
+// 
+// In jurisdictions that recognize copyright laws, the author or authors
+// of this software dedicate any and all copyright interest in the
+// software to the public domain. We make this dedication for the benefit
+// of the public at large and to the detriment of our heirs and
+// successors. We intend this dedication to be an overt act of
+// relinquishment in perpetuity of all present and future rights to this
+// software under copyright law.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+// OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+// 
+// For more information, please refer to <https://unlicense.org/>
+// ---------------------------------------------------------------------------
+
+package com.keitaiwiki.music;
+
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.util.ExtraMath;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+/**
+ * Sampler instance
+ */
+@SquirrelJMEVendorApi
+public class SineSampler
+	extends AbstractSampler
+	implements Sampler
+{
+	/**
+	 * Channel states
+	 */
+	@SquirrelJMEVendorApi
+	final SineChannel[] channels;
+	
+	/**
+	 * Global pitch bend
+	 */
+	@SquirrelJMEVendorApi
+	float masterTune;
+	
+	/**
+	 * Global volume
+	 */
+	@SquirrelJMEVendorApi
+	float masterVolume;
+	
+	/**
+	 * Output sampling rate
+	 */
+	@SquirrelJMEVendorApi
+	final float sampleRate;
+	
+	/**
+	 * Automatic volume adjustment rate
+	 */
+	@SquirrelJMEVendorApi
+	final float volRate;
+	
+	
+	/**
+	 * Constructor
+	 */
+	@SquirrelJMEVendorApi
+	public SineSampler(float sampleRate)
+	{
+		
+		
+		this.channels = new SineChannel[16];
+		this.sampleRate = sampleRate;
+		this.volRate = 1 / (sampleRate * 0.1f);
+		
+		// Channels
+		for (int x = 0; x < this.channels.length; x++)
+		{
+			SineChannel chan = this.channels[x] = new SineChannel();
+			chan.index = x;
+			//  C-2 .. G8
+			chan.notesOn = new SineNote[127];
+			chan.notesOut = new ArrayList<>();
+		}
+		
+		// Reset all state
+		this.reset();
+	}
+	
+	/**
+	 * Specify a channel's program bank.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void bankChange(int channel, int bank)
+	{
+		// Not implementing
+	}
+	
+	/**
+	 * Specify whether a channel should play drum notes.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void drumEnable(int channel, boolean enable)
+	{
+		// Not implementing
+	}
+	
+	/**
+	 * Deactivate a key that has previoulsy been activated on a channel.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void keyOff(int channel, int key)
+	{
+		if (channel < 0 || channel >= this.channels.length || SineSamplerProvider.A4 + key < 0 || SineSamplerProvider.A4 + key >= 128)
+			return;
+		SineChannel chan = this.channels[channel];
+		SineNote note = chan.notesOn[SineSamplerProvider.A4 + key];
+		if (note != null)
+		{
+			note.playing = false;
+			note.volBase = 0;
+		}
+	}
+	
+	/**
+	 * Determine whether or not any notes are producing output.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public boolean isFinished()
+	{
+		for (SineChannel chan : this.channels)
+		{
+			if (chan.notesOut.size() != 0)
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Activate a key on a channel.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void keyOn(int channel, int key, float velocity)
+	{
+		
+		// Error checking
+		if (Float.isInfinite(velocity) || velocity < 0.0f)
+			throw new IllegalArgumentException("Invalid velocity.");
+		if (channel < 0 || channel >= this.channels.length || SineSamplerProvider.A4 + key < 0 || SineSamplerProvider.A4 + key >= 128)
+			return;
+		
+		// Working variables
+		SineChannel chan = this.channels[channel];
+		SineNote note = chan.notesOn[SineSamplerProvider.A4 + key];
+		
+		// No note is currently playing on the specified key
+		if (note == null)
+		{
+			note = chan.notesOn[SineSamplerProvider.A4 + key] =
+				new SineNote();
+			chan.notesOut.add(note);
+			note.channel = chan;
+			note.volLeftLevel = 0.0f;
+			note.volRightLevel = 0.0f;
+			note.wavPhase = 0.0f;
+		}
+		
+		// Configure fields
+		note.freqBase = (float)(440 * ExtraMath.pow(2, key / 12.0));
+		note.playing = true;
+		note.volBase = velocity;
+	}
+	
+	/**
+	 * Specify the global pitch bend.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void masterTune(float semitones)
+	{
+		if (Float.isInfinite(semitones))
+			throw new IllegalArgumentException("Invalid semitones.");
+		this.masterTune = (float)ExtraMath.pow(2, semitones);
+	}
+	
+	/**
+	 * Specify the global volume.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void masterVolume(float volume)
+	{
+		if (Float.isInfinite(volume) || volume < 0.0f)
+			throw new IllegalArgumentException("Invalid volume.");
+		this.masterVolume = volume;
+	}
+	
+	/**
+	 * Specify stereo panning on a channel.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void panpot(int channel, float panpot)
+	{
+		if (Float.isInfinite(panpot) || panpot < -1.0f || panpot > 1.0f)
+			throw new IllegalArgumentException("Invalid panpot.");
+		if (channel < 0 || channel >= this.channels.length)
+			return;
+		SineChannel chan = this.channels[channel];
+		chan.volPanning = (panpot + 1) / 2;
+		chan.volLeft = (1.0f - chan.volPanning) * chan.volLevel;
+		chan.volRight = chan.volPanning * chan.volLevel;
+	}
+	
+	/**
+	 * Specify a channel's pitch bend.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void pitchBend(int channel, float semitones)
+	{
+		if (Float.isInfinite(semitones))
+			throw new IllegalArgumentException("Invalid semitones.");
+		if (channel < 0 || channel >= this.channels.length)
+			return;
+		SineChannel chan = this.channels[channel];
+		chan.bendBase = semitones;
+		chan.bendOut = (float)ExtraMath.pow(2,
+			chan.bendBase * chan.bendRange);
+	}
+	
+	/**
+	 * Specify the range of a channel's pitch bend.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void pitchBendRange(int channel, float range)
+	{
+		if (Float.isInfinite(range) || range < 0.0f)
+			throw new IllegalArgumentException("Invalid range.");
+		if (channel < 0 || channel >= this.channels.length)
+			return;
+		SineChannel chan = this.channels[channel];
+		chan.bendRange = range;
+		chan.bendOut = (float)ExtraMath.pow(2,
+			chan.bendBase * chan.bendRange);
+	}
+	
+	/**
+	 * Speicfy a channel's program number.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void programChange(int channel, int program)
+	{
+		// Not implementing
+	}
+	
+	/**
+	 * Generate output samples.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void render(float[] samples, int offset, int frames)
+	{
+		this.render(samples, offset, frames, 1.0f, 1.0f, true, true);
+	}
+	
+	/**
+	 * Generate output samples.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void render(float[] samples, int offset, int frames,
+		float amplitude)
+	{
+		this.render(samples, offset, frames, amplitude, amplitude, true,
+			true);
+	}
+	
+	@Override
+	@SquirrelJMEVendorApi
+	public void render(float[] samples, int offset, int frames, float left,
+		float right)
+	{
+		this.render(samples, offset, frames, left, right, true, true);
+	}
+	
+	/**
+	 * Generate output samples.
+	 */
+	@SquirrelJMEVendorApi
+	public void render(float[] samples, int offset, int frames, float left,
+		float right, boolean erase, boolean clamp)
+	{
+		// Error checking
+		if (samples == null)
+			throw new NullPointerException(
+				"A sample buffer is required" + ".");
+		if (frames < 0)
+			throw new IllegalArgumentException("Invalid frames.");
+		if (offset < 0 || offset + frames * 2 > samples.length)
+		{
+			throw new ArrayIndexOutOfBoundsException(
+				"Invalid range in sample buffer.");
+		}
+		
+		if (Float.isInfinite(left) || left < 0.0f)
+			throw new IllegalArgumentException("Invalid left.");
+		if (Float.isInfinite(right) || right < 0.0f)
+			throw new IllegalArgumentException("Invalid right.");
+		
+		// Erase the output buffer
+		if (erase)
+		{
+			for (int x = frames * 2 - 1; x >= 0; x--)
+				samples[offset + x] = 0.0f;
+		}
+		
+		// Render output samples
+		for (SineChannel chan : this.channels)
+			this.chanRender(chan, samples, offset, frames, left, right);
+		
+		// Clamp the output buffer
+		if (clamp)
+		{
+			for (int x = frames * 2 - 1; x >= 0; x--)
+			{
+				samples[offset + x] = Math.min(
+					Math.max(samples[offset + x], -1.0f), 1.0f);
+			}
+		}
+		
+	}
+	
+	/** Terminate all active notes. */
+	@SquirrelJMEVendorApi
+	public void stopAll()
+	{
+		for (SineChannel chan : this.channels)
+		{
+			Arrays.fill(chan.notesOn, null);
+			for (SineNote note : chan.notesOut)
+			{
+				note.playing = false;
+				note.volBase = 0.0f;
+			}
+		}
+	}
+	
+	/**
+	 * Initialize all output state.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void reset()
+	{
+		
+		// Global fields
+		this.masterTune = 1.0f;
+		this.masterVolume = 1.0f;
+		
+		// Channels
+		for (SineChannel chan : this.channels)
+		{
+			chan.bendBase = 0.0f;
+			chan.bendOut = 1.0f;
+			chan.bendRange = 2;
+			chan.volLevel = 1.0f;
+			chan.volPanning = 0.5f;
+			chan.volLeft = 0.5f;
+			chan.volRight = 0.5f;
+			
+			// Stop playing all notes
+			Arrays.fill(chan.notesOn, null);
+			for (SineNote note : chan.notesOut)
+			{
+				note.playing = false;
+				note.volBase = 0.0f;
+			}
+		}
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since 2025/05/05
+	 */
+	@Override
+	public float sampleRate()
+	{
+		return this.sampleRate;
+	}
+	
+	/**
+	 * Process a SysEx message.
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void sysEx(byte[] message)
+	{
+		// Not implementing
+	}
+	
+	/**
+	 * Specify a channel's volume
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void volume(int channel, float volume)
+	{
+		if (Float.isInfinite(volume) || volume < 0.0f)
+			throw new IllegalArgumentException("Invalid volume.");
+		if (channel < 0 || channel >= this.channels.length)
+			return;
+		SineChannel chan = this.channels[channel];
+		chan.volLevel = volume;
+		chan.volLeft = (1.0f - chan.volPanning) * chan.volLevel;
+		chan.volRight = chan.volPanning * chan.volLevel;
+	}
+	
+	
+	/**
+	 * Render samples on a channel
+	 */
+	@SquirrelJMEVendorApi
+	void chanRender(SineChannel chan, float[] samples, int offset, int frames,
+		float left, float right)
+	{
+		
+		// Working variables
+		float bend = this.masterTune * chan.bendOut;
+		left *= chan.volLeft;
+		right *= chan.volRight;
+		
+		// Process all notes
+		for (int x = 0; x < chan.notesOut.size(); x++)
+		{
+			if (this.noteRender(chan.notesOut.get(x), samples, offset, frames,
+				chan.volLeft * left, chan.volRight * right, bend))
+				chan.notesOut.remove(x--);
+		}
+		
+		// Disassociate inactive notes
+		for (int x = 0; x < chan.notesOn.length; x++)
+		{
+			SineNote note = chan.notesOn[x];
+			if (note != null && !note.playing)
+				chan.notesOn[x] = null;
+		}
+		
+	}
+	
+	/** Perform easing on an amplitude controller. */
+	@SquirrelJMEVendorApi
+	float ease(float level, float target)
+	{
+		return level < target ? Math.min(target, level + this.volRate) :
+			level > target ? Math.max(target, level - this.volRate) : level;
+	}
+	
+	/**
+	 * Render samples on a note
+	 */
+	@SquirrelJMEVendorApi
+	boolean noteRender(SineNote note, float[] samples, int offset, int frames,
+		float left, float right, float bend)
+	{
+		
+		// Working variables
+		float freq = note.freqBase * bend;
+		float advance = freq / this.sampleRate;
+		
+		// Compute desired left and right volume levels
+		note.volLeftTarget = note.volBase * left;
+		note.volRightTarget = note.volBase * right;
+		
+		// Process all samples
+		for (int x = 0; x < frames; x++)
+		{
+			
+			// Generate one sample
+			float sample = this.sample(note, advance);
+			samples[offset++] += sample * note.volLeftLevel;
+			samples[offset++] += sample * note.volRightLevel;
+			
+			// Adjust stereo levels
+			note.volLeftLevel = this.ease(note.volLeftLevel,
+				note.volLeftTarget);
+			note.volRightLevel = this.ease(note.volRightLevel,
+				note.volRightTarget);
+			
+			// Note has finished
+			if (!note.playing && note.volLeftLevel == 0 && note.volRightLevel == 0)
+				return true;
+		}
+		
+		// Note has not finished
+		return false;
+	}
+	
+	/**
+	 * Generate a sample on a note
+	 */
+	@SquirrelJMEVendorApi
+	float sample(SineNote note, float advance)
+	{
+		float ret = (float)Math.sin(note.wavPhase * Math.PI * 2);
+		note.wavPhase = (note.wavPhase + advance) % 1;
+		return ret;
+	}
+	
+	/**
+	 * Process a SysExt message
+	 */
+	@SquirrelJMEVendorApi
+	public void sysExt(byte[] message)
+	{
+		// Not implementing
+	}
+	
+	/**
+	 * Move a volume level closer to its target
+	 */
+	@SquirrelJMEVendorApi
+	float volAdjust(float level, float target)
+	{
+		return level < target ? Math.min(level + this.volRate, target) :
+			Math.max(level - this.volRate, target);
+	}
+	
+}

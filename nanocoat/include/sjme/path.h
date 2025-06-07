@@ -13,8 +13,8 @@
  * @since 2024/08/09
  */
 
-#ifndef SQUIRRELJME_PATH_H
-#define SQUIRRELJME_PATH_H
+#ifndef SJME_C_PATH_H
+#define SJME_C_PATH_H
 
 #include "sjme/config.h"
 #include "sjme/error.h"

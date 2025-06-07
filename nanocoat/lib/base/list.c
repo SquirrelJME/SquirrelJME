@@ -335,7 +335,7 @@ sjme_errorCode sjme_list_injectGrowR(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInPositive sjme_jint growSize,
 	sjme_attrInOutNotNull sjme_pointer* inOutList,
-	sjme_attrInNotNull sjme_pointer injectValue,
+	sjme_attrInNotNull sjme_pointer injectValuePtr,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
 	sjme_attrInValue sjme_jint pointerCheck
@@ -345,7 +345,7 @@ sjme_errorCode sjme_list_injectGrowR(
 	sjme_jint freeSlot, n;
 	sjme_jubyte* nothing;
 
-	if (allocPool == NULL || inOutList == NULL || injectValue == NULL)
+	if (allocPool == NULL || inOutList == NULL || injectValuePtr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (elementSize <= 0 || elementOffset < 0 || growSize <= 0)
@@ -387,7 +387,7 @@ skip_grow:
 	/* Store here. */
 skip_store:
 	memmove(SJME_POINTER_OFFSET((*inOutList),
-		elementOffset + (elementSize * freeSlot)), injectValue, elementSize);
+		elementOffset + (elementSize * freeSlot)), injectValuePtr, elementSize);
 
 	/* Success! */
 	return SJME_ERROR_NONE;

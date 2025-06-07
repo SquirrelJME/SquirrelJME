@@ -50,6 +50,8 @@ target_link_libraries(ScritchUIGTK3 PUBLIC
 # ScritchUI requires a normalized library name
 squirreljme_target_binary_name(ScritchUIGTK3
 	"squirreljme-scritchui-gtk3")
+squirreljme_target_binary_output(ScritchUIGTK3
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
 # Generate exports
 squirreljme_target_shared_library_exports(ScritchUIGTK3)

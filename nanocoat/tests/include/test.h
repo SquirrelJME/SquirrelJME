@@ -13,8 +13,8 @@
  * @since 2023/08/09
  */
 
-#ifndef SQUIRRELJME_TEST_H
-#define SQUIRRELJME_TEST_H
+#ifndef SJME_C_TEST_H
+#define SJME_C_TEST_H
 
 #include <setjmp.h>
 

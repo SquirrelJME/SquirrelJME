@@ -13,8 +13,8 @@
  * @since 2023/12/21
  */
 
-#ifndef SQUIRRELJME_EXTERNTEST_H
-#define SQUIRRELJME_EXTERNTEST_H
+#ifndef SJME_C_EXTERNTEST_H
+#define SJME_C_EXTERNTEST_H
 
 #include "sjme/nvm/nvm.h"
 

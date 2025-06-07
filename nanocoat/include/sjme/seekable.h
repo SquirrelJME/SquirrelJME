@@ -13,8 +13,8 @@
  * @since 2024/01/01
  */
 
-#ifndef SQUIRRELJME_SEEKABLE_H
-#define SQUIRRELJME_SEEKABLE_H
+#ifndef SJME_C_SEEKABLE_H
+#define SJME_C_SEEKABLE_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/alloc.h"

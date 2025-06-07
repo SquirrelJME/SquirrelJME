@@ -13,8 +13,8 @@
  * @since 2023/12/09
  */
 
-#ifndef SQUIRRELJME_REVTYPES_H
-#define SQUIRRELJME_REVTYPES_H
+#ifndef SJME_C_REVTYPES_H
+#define SJME_C_REVTYPES_H
 
 #include "sjme/stdTypes.h"
 

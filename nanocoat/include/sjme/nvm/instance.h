@@ -13,8 +13,8 @@
  * @since 2024/09/08
  */
 
-#ifndef SQUIRRELJME_INSTANCE_H
-#define SQUIRRELJME_INSTANCE_H
+#ifndef SJME_C_INSTANCE_H
+#define SJME_C_INSTANCE_H
 
 /* Anti-C++. */
 #ifdef __cplusplus

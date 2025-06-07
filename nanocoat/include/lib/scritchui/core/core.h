@@ -13,8 +13,8 @@
  * @since 2024/04/06
  */
 
-#ifndef SQUIRRELJME_CORE_H
-#define SQUIRRELJME_CORE_H
+#ifndef SJME_C_CORE_H
+#define SJME_C_CORE_H
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiTypes.h"

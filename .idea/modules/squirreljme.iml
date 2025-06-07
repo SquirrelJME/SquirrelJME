@@ -327,6 +327,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../utils-dev" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-keitaiwiki-music/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-keitaiwiki-music/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-keitaiwiki-music/out" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

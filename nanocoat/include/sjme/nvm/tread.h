@@ -13,8 +13,8 @@
  * @since 2023/11/16
  */
 
-#ifndef SQUIRRELJME_TREAD_H
-#define SQUIRRELJME_TREAD_H
+#ifndef SJME_C_TREAD_H
+#define SJME_C_TREAD_H
 
 #include "sjme/nvm/nvm.h"
 
