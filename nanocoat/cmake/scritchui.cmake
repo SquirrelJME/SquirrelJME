@@ -13,7 +13,11 @@ macro(squirreljme_scritchany_enable area capArea)
 	file(REMOVE "${CMAKE_BINARY_DIR}/libsquirreljme-scritch${area}.list")
 
 	# Make sure a blank file exists at least
-	file(TOUCH "${CMAKE_BINARY_DIR}/libsquirreljme-scritch${area}.list")
+	if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12")
+		file(TOUCH "${CMAKE_BINARY_DIR}/libsquirreljme-scritch${area}.list")
+	else()
+		file(WRITE "${CMAKE_BINARY_DIR}/libsquirreljme-scritch${area}.list" "")
+	endif()
 
 	# Add collection target
 	add_custom_target(Scritch${capArea}CollectZip
