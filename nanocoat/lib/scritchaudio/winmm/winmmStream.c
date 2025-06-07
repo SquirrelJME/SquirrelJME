@@ -10,6 +10,37 @@
 #include "lib/scritchaudio/scritchaudioIntern.h"
 #include "lib/scritchaudio/winmm/winmmIntern.h"
 
+static sjme_errorCode sjme_scritchaudio_winmm_peerNone(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
+	sjme_attrInValue sjme_jboolean explicit)
+{
+	if (inState == NULL || inConn == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inState != inConn->inState)
+		return SJME_ERROR_AUDIO_STATE_MISMATCH;
+
+	/* WinMM does not care about any peers. */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchaudio_winmm_peerDisconnect(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
+	sjme_attrInNotNull sjme_scritchaudio_connection inPeer,
+	sjme_attrInValue sjme_jboolean explicit)
+{
+	if (inState == NULL || inConn == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inState != inConn->inState)
+		return SJME_ERROR_AUDIO_STATE_MISMATCH;
+
+	/* WinMM does not care about any peers. */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchaudio_winmm_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
@@ -24,7 +55,7 @@ sjme_errorCode sjme_scritchaudio_winmm_sourceAttach(
 
 sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrOutNotNull sjme_scritchaudio_stream* outStream,
+	sjme_attrInOutNotNull sjme_scritchaudio_stream inOutStream,
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
@@ -34,7 +65,7 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	HWAVEOUT handle;
 	WAVEFORMATEX format;
 
-	if (inState == NULL || outStream == NULL || inName == NULL)
+	if (inState == NULL || inOutStream == NULL || inName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Float is not supported. */
@@ -58,6 +89,12 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	if (mmResult != MMSYSERR_NOERROR || handle == NULL)
 		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Set stream details. */
+	inOutStream->data.handle = handle;
+	inOutStream->connection.noPeers = sjme_scritchaudio_winmm_peerNone;
+	inOutStream->connection.peerDisconnect =
+		sjme_scritchaudio_winmm_peerDisconnect;
+
+	/* Return the resultant stream. */
+	return SJME_ERROR_NONE;
 }

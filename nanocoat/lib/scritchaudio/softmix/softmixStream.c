@@ -261,7 +261,7 @@ sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 
 sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrOutNotNull sjme_scritchaudio_stream* outStream,
+	sjme_attrInOutNotNull sjme_scritchaudio_stream inOutStream,
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
@@ -269,13 +269,13 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 {
 	sjme_scritchaudio wrappedState;
 	sjme_errorCode error;
-	sjme_scritchaudio_stream wrapped, result;
+	sjme_scritchaudio_stream wrapped;
 	sjme_scritchaudio_format origFormat;
 	sjme_scritchaudio_rate origRate;
 	sjme_scritchaudio_channels origChannels;
 	sjme_scritchaudio_source wrappedSource;
 	
-	if (inState == NULL || outStream == NULL || inName == NULL)
+	if (inState == NULL || inOutStream == NULL || inName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
@@ -322,27 +322,15 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 				return sjme_error_default(error);
 		}
 	}
-	
-	/* Allocate result. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inState->pool,
-		sizeof(*result), (sjme_pointer*)&result)) || wrapped == NULL)
-		goto fail_allocResult;
 
 	/* Set stream details. */
 	/* Note that if the stream needs to be wrapped with a format conversion */
 	/* that is handled in the renderer by comparing the wrapped format */
 	/* with the renderer format. If a renderer happens to have the same */
 	/* format, then we do no conversion. */
-	result->connection.lock = &result->sharedLock;
-	result->connection.inState = inState;
-	result->connection.type = SJME_SCRITCHAUDIO_CONN_STREAM;
-	result->format = origFormat;
-	result->rate = origRate;
-	result->channels = origChannels;
-	result->data.wrapped = wrapped;
-	result->connection.noPeers = sjme_scritchaudio_softmix_peerNone;
-	result->connection.peerDisconnect =
+	inOutStream->data.wrapped = wrapped;
+	inOutStream->connection.noPeers = sjme_scritchaudio_softmix_peerNone;
+	inOutStream->connection.peerDisconnect =
 		sjme_scritchaudio_softmix_peerDisconnect;
 	
 	/* Setup underlying source stream to render mixed audio. */
@@ -353,7 +341,6 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 		goto fail_subSource;
 
 	/* Success! */
-	*outStream = result;
 	return SJME_ERROR_NONE;
 	
 fail_allocResult:

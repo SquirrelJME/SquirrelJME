@@ -66,7 +66,7 @@ sjme_errorCode sjme_scritchaudio_oss_sourceAttach(
 	
 sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrOutNotNull sjme_scritchaudio_stream* outStream,
+	sjme_attrInOutNotNull sjme_scritchaudio_stream inOutStream,
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,

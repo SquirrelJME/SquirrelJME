@@ -131,10 +131,23 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	if (inState->impl->streamCreate == NULL)
 		return sjme_error_notImplemented(0);
 
-	/* Forward to implementation. */
+	/* Allocate result. */
 	result = NULL;
+	if (sjme_error_is(error = sjme_alloc(inState->pool,
+		sizeof(*result), (sjme_pointer*)&result)) || result == NULL)
+		goto fail_allocResult;
+
+	/* Set stream details. */
+	result->connection.lock = &result->sharedLock;
+	result->connection.inState = inState;
+	result->connection.type = SJME_SCRITCHAUDIO_CONN_STREAM;
+	result->format = inFormat;
+	result->rate = inRate;
+	result->channels = inChannels;
+
+	/* Forward to implementation. */
 	if (sjme_error_is(error = inState->impl->streamCreate(inState,
-		&result, inName, inFormat, inRate, inChannels)) || result == NULL)
+		result, inName, inFormat, inRate, inChannels)) || result == NULL)
 		goto fail_implCreate;
 
 	/* No stream has been set yet? */
@@ -145,12 +158,10 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	*outStream = result;
 	return SJME_ERROR_NONE;
 
-fail_releaseLock:
-fail_inject:
-	/* Release lock before failing. */
-	sjme_thread_spinLockRelease(&inState->lock, NULL);
-fail_grabLock:
 fail_implCreate:
+fail_allocResult:
+	if (result != NULL)
+		sjme_alloc_free(result);
 	return sjme_error_default(error);
 #undef GROW_SIZE
 }

@@ -461,7 +461,30 @@ typedef sjme_errorCode (*sjme_scritchaudio_streamCreateFunc)(
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels);
-	
+
+/**
+ * Creates a new audio stream.
+ *
+ * @param inState The input state.
+ * @param inOutStream The resultant audio stream.
+ * @param inName The name of the stream.
+ * @param inFormat The audio format to use, @c -1 means to use the system
+ * preferred format.
+ * @param inRate The rate to use, @c -1 means to use the system preferred
+ * rate.
+ * @param inChannels The number of channels to use, @c -1 means to use the
+ * system preferred channels.
+ * @return Any resultant error, if any.
+ * @since 2025/05/08
+ */
+typedef sjme_errorCode (*sjme_scritchaudio_streamCreateImplFunc)(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInOutNotNull sjme_scritchaudio_stream inOutStream,
+	sjme_attrInNotNull sjme_lpcstr inName,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels);
+
 /**
  * Functions for operating on ScritchAudio.
  *
@@ -505,7 +528,7 @@ typedef struct sjme_scritchaudio_implFunctions
 	sjme_scritchaudio_sourceAttachImplFunc sourceAttach;
 	
 	/** Create a new audio stream. */
-	sjme_scritchaudio_streamCreateFunc streamCreate;
+	sjme_scritchaudio_streamCreateImplFunc streamCreate;
 } sjme_scritchaudio_implFunctions;
 
 /**
@@ -708,6 +731,9 @@ struct sjme_scritchaudio_streamBase
 	{
 		/** The file descriptor, if applicable. */
 		int fd;
+
+		/** The handle to the device. */
+		void* handle;
 		
 		/** The stream this wrapped. */
 		sjme_scritchaudio_stream wrapped;
