@@ -12,6 +12,9 @@ macro(squirreljme_scritchany_enable area capArea)
 	# Delete the old list
 	file(REMOVE "${CMAKE_BINARY_DIR}/libsquirreljme-scritch${area}.list")
 
+	# Make sure a blank file exists at least
+	file(TOUCH "${CMAKE_BINARY_DIR}/libsquirreljme-scritch${area}.list")
+
 	# Add collection target
 	add_custom_target(Scritch${capArea}CollectZip
 		COMMAND "${CMAKE_COMMAND}" -E "tar" "cv"
