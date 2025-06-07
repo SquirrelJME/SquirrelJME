@@ -48,11 +48,13 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	format.wBitsPerSample = sjme_scritchaudio_bytesPerSample[inFormat] * 8;
 	format.nSamplesPerSec = inRate;
 	format.nChannels = inChannels;
+	format.nBlockAlign = format.nChannels * (format.wBitsPerSample / 8);
+	format.nAvgBytesPerSec = format.nSamplesPerSec * format.nBlockAlign;
 
 	/* Open the default device. */
 	handle = NULL;
-	mmResult = waveOutOpen(&handle, 0, &format,
-		0, 0, WAVE_FORMAT_DIRECT);
+	mmResult = waveOutOpen(&handle, WAVE_MAPPER, &format,
+		0, 0, WAVE_FORMAT_DIRECT | CALLBACK_NULL);
 	if (mmResult != MMSYSERR_NOERROR || handle == NULL)
 		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
 

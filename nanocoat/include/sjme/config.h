@@ -202,6 +202,47 @@ extern "C" {
 	/** POSIX is available. */
 	#define SJME_CONFIG_HAS_POSIX
 #endif
+
+/** Windows 8. */
+#define SJME_CONFIG_WINDOWS_8 0x0600
+
+/** Windows XP */
+#define SJME_CONFIG_WINDOWS_XP 0x0501
+
+/** Windows Vista. */
+#define SJME_CONFIG_WINDOWS_VISTA 0x0600
+
+/** Windows NT 4.0 */
+#define SJME_CONFIG_WINDOWS_NT_4 0x0400
+
+#if defined(SJME_CONFIG_HAS_WINDOWS)
+	/* Include the Windows SDK versioning information, if available. */
+	#if defined(SJME_CONFIG_HAS_SDKDDKVER_H)
+		#include <sdkddkver.h>
+	#endif
+
+	/** Windows version is at least the given version. */
+	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) (WINVER >= winVer)
+
+	#if SJME_CONFIG_WINDOWS_VERSION_LEAST(SJME_CONFIG_WINDOWS_VISTA)
+		/** Windows NT version is at least the given version. */
+		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) \
+			SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer)
+	#elif defined(_WIN32_WINNT)
+		/** Windows NT version is at least the given version. */
+		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) \
+			(_WIN32_WINNT >= winVer)
+	#else
+		/** Windows NT version is at least the given version. */
+		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
+	#endif
+#else
+	/** Windows version is at least the given version. */
+	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) 0
+
+	/** Windows NT version is at least the given version. */
+	#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
+#endif
 	
 /** Possibly detect endianess. */
 #if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
@@ -951,31 +992,6 @@ extern "C" {
 #else
 	/** Optimize this specific function. */
 	#define sjme_attrOptimize
-#endif
-
-/** Windows 8. */
-#define SJME_CONFIG_WINDOWS_VERSION_8 0x0600
-
-/** Windows NT 4.0 */
-#define SJME_CONFIG_WINDOWS_NT_VERSION_4 0x0400
-
-#if defined(SJME_CONFIG_HAS_WINDOWS)
-	/** Windows version is at least the given version. */
-	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) (WINVER >= winVer)
-	
-	#if defined(_WIN32_WINNT)
-		/** Windows NT version is at least the given version. */
-		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) (_WIN32_WINNT >= winVer)
-	#else
-		/** Windows NT version is at least the given version. */
-		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
-	#endif
-#else
-	/** Windows version is at least the given version. */
-	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) 0
-
-	/** Windows NT version is at least the given version. */
-	#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
 #endif
 
 /* Missing standard C functions. */
