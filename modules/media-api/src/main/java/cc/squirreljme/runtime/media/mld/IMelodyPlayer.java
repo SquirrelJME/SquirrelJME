@@ -13,6 +13,9 @@ import cc.squirreljme.jvm.mle.AudioStreamShelf;
 import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
+import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
+import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
+import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -186,7 +189,10 @@ public class IMelodyPlayer
 			try
 			{
 				this._connection =
-					AudioStreamShelf.attach(stream, this);
+					AudioStreamShelf.attach(stream, this,
+						AudioStreamFormat.FLOAT_F32,
+						AudioStreamRate.AUTOMATIC,
+						AudioStreamChannels.STEREO);
 			}
 			catch (MLECallError __e)
 			{

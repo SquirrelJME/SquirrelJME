@@ -47,6 +47,9 @@ public final class AudioStreamShelf
 	 *
 	 * @param __stream The stream to render to.
 	 * @param __renderer The renderer to attach.
+	 * @param __format The format used.
+	 * @param __rate The rate.
+	 * @param __channels The channels.
 	 * @return The connection state.
 	 * @throws MLECallError On null arguments or if the renderer could not
 	 * be attached.
@@ -55,7 +58,13 @@ public final class AudioStreamShelf
 	@SquirrelJMEVendorApi
 	public static native AudioConnectionBracket attach(
 		@NotNull AudioStreamBracket __stream,
-		@NotNull AudioStreamRenderer __renderer)
+		@NotNull AudioStreamRenderer __renderer,
+		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+			int __format,
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels)
 		throws MLECallError;
 	
 	/**
