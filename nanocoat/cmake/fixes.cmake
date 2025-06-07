@@ -254,3 +254,12 @@ squirreljme_try_compile("sjme_threadLocal"
 	"tryThreadLocal"
 	SJME_CONFIG_HAS_NO_THREAD_LOCAL)
 
+# Find headers
+include(CheckIncludeFile)
+
+# Is the SDK version header information available?
+CHECK_INCLUDE_FILE("sdkddkver.h" WIN32_SDKDDKVER_INCLUDE)
+if(WIN32_SDKDDKVER_INCLUDE)
+	add_compile_definitions(SJME_CONFIG_HAS_SDKDDKVER_H=1)
+endif()
+

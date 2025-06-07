@@ -23,6 +23,10 @@
 #include <windows.h>
 #include <mmsystem.h>
 
+#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_XP)
+	#include <mmreg.h>
+#endif
+
 #undef WIN32_LEAN_AND_MEAN
 
 /* Anti-C++. */
