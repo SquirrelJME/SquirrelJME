@@ -131,14 +131,51 @@ public class Font
 		return this._midpFont.getAscent();
 	}
 	
+	/**
+	 * Returns the bounding box height of the string.
+	 *
+	 * @param __s The string to get the height of, if this is a blank
+	 * string then this will return zero.
+	 * @return The height of the string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/07
+	 */
 	@Api
 	public int getBBoxHeight(String __s)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Empty strings have no height
+		if (__s.isEmpty())
+			return 0;
+		
+		// How much gets added for each line?
+		int add = this._midpFont.getHeight();
+		
+		// Add height for every newline
+		int total = add;
+		for (int i = 0, n = __s.length(); i < n;)
+		{
+			// Find the next newline
+			int nl = __s.indexOf('\n', i);
+			if (nl < 0)
+				break;
+			
+			// Add height
+			total += add;
+			
+			// Go to the next line
+			i = nl + 1;
+		}
+		
+		// Return the given height
+		return total;
 	}
 	
 	/**
-	 * Returns the width of the string.
+	 * Returns the bounding box width of the string.
 	 *
 	 * @param __s The string to get the width of.
 	 * @return The string width.
@@ -152,7 +189,29 @@ public class Font
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		return this._midpFont.stringWidth(__s);
+		// Empty strings have no width
+		if (__s.isEmpty())
+			return 0;
+		
+		// Add width for every newline
+		int max = 0;
+		for (int i = 0, n = __s.length(); i < n;)
+		{
+			// Find the next newline
+			int nl = __s.indexOf('\n', i);
+			if (nl < 0)
+				break;
+			
+			// Find the next maximum width
+			max = Math.max(max,
+				this._midpFont.substringWidth(__s, i, nl - i));
+			
+			// Go to the next line
+			i = nl + 1;
+		}
+		
+		// Return the maximum width
+		return max;
 	}
 	
 	/**
