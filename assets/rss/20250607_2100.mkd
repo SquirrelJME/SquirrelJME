@@ -1,0 +1,14 @@
+# DoJa audio support has been merged in!
+
+Back in May, _Guy Perfect_ kindly wrote and donated an MA-3 music emulator
+for DoJa! This has now been merged in! This is supported for both Windows
+and Linux. For Linux you will need Open Source System support, either
+natively, with ALSA emulation (`snd_pcm_oss` and `alsa-oss`), or with
+the PulseAudio/PipeWire daemon `osspd`.
+
+Do note that if audio is playing for DoJa in _SpringCoat_ the performance
+will be very sluggish as there is no acceleration support currently, you
+will have to run the _Hosted_ version.
+
+There may be some audio issues on Windows as that is not my main development
+system.

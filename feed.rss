@@ -17,8 +17,30 @@
 		rel="self" />
 
 	<!-- Update these accordingly! -->
-	<pubDate>Fri, 30 May 2025 12:30 EDT</pubDate>
-	<lastBuildDate>Fri, 30 May 2025 12:30 EDT</lastBuildDate>
+	<pubDate>Sat, 07 Jun 2025 21:00 EDT</pubDate>
+	<lastBuildDate>Sat, 07 Jun 2025 21:00 EDT</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">a494c4aa-8ebd-4c93-a84c-b65405866d8e</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250607_2100.mkd</link>
+		<pubDate>Sat, 07 Jun 2025 21:00 EDT</pubDate>
+
+		<title>DoJa audio support has been merged in!</title>
+		<description>Back in May, _Guy Perfect_ kindly wrote and donated an MA-3 music emulator
+for DoJa! This has now been merged in! This is supported for both Windows
+and Linux. For Linux you will need Open Source System support, either
+natively, with ALSA emulation (`snd_pcm_oss` and `alsa-oss`), or with
+the PulseAudio/PipeWire daemon `osspd`.
+
+Do note that if audio is playing for DoJa in _SpringCoat_ the performance
+will be very sluggish as there is no acceleration support currently, you
+will have to run the _Hosted_ version.
+
+There may be some audio issues on Windows as that is not my main development
+system.</description>
+	</item>
+
+	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">d4ff685b-5e4e-4ae6-aeeb-ee82bc4ede51</guid>
@@ -35,8 +57,6 @@ record data, so it is very simple and easy to implement.
 
 A specification is available at https://squirreljme.cc/doc/trunk/assets/doc/save-format.mkd.</description>
 	</item>
-
-	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">ff39f3a8-5382-4fe6-8124-dd0fca7f1f1a</guid>
