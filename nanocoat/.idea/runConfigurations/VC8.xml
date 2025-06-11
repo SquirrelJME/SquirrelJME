@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="VC8" type="CLionExternalRunConfiguration" factoryName="Application" nameIsGenerated="true" PROGRAM_PARAMS="--bottle VisualStudio2005 $ProjectFileDir$/build/vc8/Debug/squirreljme.exe" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" WORKING_DIR="file://$ProjectFileDir$/build/vc8" PASS_PARENT_ENVS_2="true" PROJECT_NAME="SquirrelJME" TARGET_NAME="VC8" CONFIG_NAME="VC8" RUN_PATH="/opt/cxoffice/bin/wine">
+    <method v="2">
+      <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+    </method>
+  </configuration>
+</component>
