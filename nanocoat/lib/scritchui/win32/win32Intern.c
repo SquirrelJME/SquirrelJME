@@ -11,6 +11,12 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
+#if defined(MK_XBUTTON1) && defined(MK_XBUTTON2) && \
+	defined(WM_XBUTTONDOWN) && defined(WM_XBUTTONUP)
+	/** Has extra buttons. */
+	#define SJME_CONFIG_HAS_XBUTTONS 1
+#endif
+
 static sjme_jint sjme_scritchui_win32_keyModifiers(void)
 {
 	sjme_jint result;
@@ -191,11 +197,13 @@ static sjme_jint sjme_scritchui_win32_mouseButtons(sjme_jint inMod)
 	if (inMod & MK_MBUTTON)
 		result |= (1 << 2);
 	
+#if defined(SJME_CONFIG_HAS_XBUTTONS)
 	/* Extra side buttons. */
 	if (inMod & MK_XBUTTON1)
 		result |= (1 << 3);
 	if (inMod & MK_XBUTTON2)
 		result |= (1 << 4);
+#endif
 	
 	return result;
 }
@@ -513,8 +521,12 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_MOUSE(
 	/* Normalize press. */
 	pressed = SJME_JNI_FALSE;
 	if (message == WM_LBUTTONDOWN || message == WM_MBUTTONDOWN ||
-		message == WM_RBUTTONDOWN || message == WM_XBUTTONDOWN)
+		message == WM_RBUTTONDOWN)
 		pressed = SJME_JNI_TRUE;
+#if defined(SJME_CONFIG_HAS_XBUTTONS)
+	else if (message == WM_XBUTTONDOWN)
+		pressed = SJME_JNI_TRUE;
+#endif
 	
 	/* Normalize button, oddly the window events here are right-handed */
 	/* mice while the modifiers in wParam are left-handed, but then also */
@@ -1031,8 +1043,10 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 		case WM_MBUTTONUP:
 		case WM_RBUTTONDOWN:
 		case WM_RBUTTONUP:
+#if defined(SJME_CONFIG_HAS_XBUTTONS)
 		case WM_XBUTTONDOWN:
 		case WM_XBUTTONUP:
+#endif
 		case WM_MOUSEMOVE:
 			error = sjme_scritchui_win32_windowProc_MOUSE(
 				inState, hWnd, message, wParam, lParam, &useResult);

@@ -928,15 +928,6 @@ extern "C" {
 	#pragma warning(disable: 4114)
 #endif
 
-#if defined(SJME_CONFIG_HAS_MSVC) && !defined(SJME_CONFIG_HAS_ARCH_AMD64)
-	/** Export as an undecorated symbol. */
-	#define SJME_DYLIB_EXPORT_UNDECORATED \
-		__pragma(comment(linker, "/EXPORT:" __FUNCTION__"=" __FUNCDNAME__))
-#else
-	/** Export as an undecorated symbol. */
-	#define SJME_DYLIB_EXPORT_UNDECORATED
-#endif
-
 /** Bitfield count for @c sjme_jboolean . */
 #define sjme_booleanBit 2
 

@@ -18,11 +18,11 @@
 
 #include "sjme/config.h"
 
-#if defined(SJME_CONFIG_HAS_NO_STDARG)
-	#if defined(SJME_CONFIG_HAS_NO_VARARGS)
-		#include <varargs.h>
-	#else
+#if defined(SJME_CONFIG_HAS_NO_STDARG_H)
+	#if defined(SJME_CONFIG_HAS_NO_VARARGS_H)
 		#error No stdarg or varargs?
+	#else
+		#include <varargs.h>
 	#endif
 #else
 	#include <stdarg.h>
@@ -101,6 +101,9 @@ extern "C"
 
 		/** Maximum unsigned 16-bit integer. */
 		#define UINT16_MAX USHRT_MAX
+
+		/** Signed 16-bit constant. */
+		#define INT16_C(x) x
 
 		/** Signed 32-bit integer. */
 		typedef signed __int32 int32_t;

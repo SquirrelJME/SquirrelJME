@@ -45,8 +45,8 @@ static const sjme_scritchaudio_rate sjme_scritchaudio_rateFallback[9] =
 static const sjme_scritchaudio_apiFunctions sjme_scritchaudio_coreFunctions =
 {
 	sjme_sm(.disconnect, sjme_scritchaudio_core_disconnect),
-	sjme_sm(.queryMidiPorts, sjme_scritchaudio_core_queryMidiPorts),
 	sjme_sm(.loopIterate, sjme_scritchaudio_core_loopIterate),
+	sjme_sm(.queryMidiPorts, sjme_scritchaudio_core_queryMidiPorts),
 	sjme_sm(.sourceAttach, sjme_scritchaudio_core_sourceAttach),
 };
 

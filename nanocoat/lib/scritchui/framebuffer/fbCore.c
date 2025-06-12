@@ -32,8 +32,8 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	sjme_sm(.componentSetInputListener, sjme_scritchui_fb_componentSetInputListener),
 	sjme_sm(.componentSetPaintListener, sjme_scritchui_fb_componentSetPaintListener),
 	sjme_sm(.componentSetSizeListener, sjme_scritchui_fb_componentSetSizeListener),
-	.componentSetVisibleListener =
-		sjme_scritchui_fb_componentSetVisibleListener,
+	sjme_sm(.componentSetVisibleListener,
+		sjme_scritchui_fb_componentSetVisibleListener),
 	sjme_sm(.componentSize, sjme_scritchui_fb_componentSize),
 	sjme_sm(.containerAdd, sjme_scritchui_fb_containerAdd),
 	sjme_sm(.containerRemove, sjme_scritchui_fb_containerRemove),

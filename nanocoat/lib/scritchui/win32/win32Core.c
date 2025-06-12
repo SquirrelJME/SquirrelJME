@@ -55,8 +55,8 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	sjme_sm(.componentRevalidate, sjme_scritchui_win32_componentRevalidate),
 	sjme_sm(.componentSetActivateListener, NULL),
 	sjme_sm(.componentSetInputListener, NULL),
-	.componentSetPaintListener =
-		sjme_scritchui_win32_componentSetPaintListener,
+	sjme_sm(.componentSetPaintListener,
+		sjme_scritchui_win32_componentSetPaintListener),
 	sjme_sm(.componentSetSizeListener, NULL),
 	sjme_sm(.componentSetVisibleListener, NULL),
 	sjme_sm(.componentSize, sjme_scritchui_win32_componentSize),
@@ -179,7 +179,6 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(win32)(
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
 {
-	SJME_DYLIB_EXPORT_UNDECORATED;
 	sjme_errorCode error;
 	sjme_scritchui state;
 
