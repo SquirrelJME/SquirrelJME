@@ -181,6 +181,12 @@ if(MSVC AND "${MSVC_VERSION}" LESS_EQUAL 1400)
 	add_definitions(-D_MBCS)
 endif()
 
+# These are very important to error for compatiblity
+if(MSVC)
+	# '<function pointer>' differs in parameter lists from '<function pointer>'
+	add_compile_options("/WX:4113")
+endif()
+
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	# Turn some warnings into errors
 	check_c_compiler_flag("-Werror=implicit-function-declaration"
