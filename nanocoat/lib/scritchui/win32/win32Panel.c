@@ -91,7 +91,11 @@ sjme_errorCode sjme_scritchui_win32_panelNew(
 	
 	/* Create window, child windows must always have a parent. */
 	SetLastError(0);
-	window = CreateWindowEx(WS_EX_TRANSPARENT | WS_EX_COMPOSITED,
+	window = CreateWindowEx(
+#if defined(WS_EX_COMPOSITED)
+		WS_EX_COMPOSITED |
+#endif
+		WS_EX_TRANSPARENT,
 		inPanel->component.strId,
 		"SquirrelJME",
 		WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,

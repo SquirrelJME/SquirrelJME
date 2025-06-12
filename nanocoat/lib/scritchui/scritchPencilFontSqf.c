@@ -103,6 +103,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricFontFace(
 	sjme_attrOutNotNull sjme_scritchui_pencilFontFace* outFace)
 {
 	const sjme_scritchui_sqfCodepage* sqf;
+	sjme_scritchui_pencilFontFace face;
 	
 	if (inFont == NULL || outFace == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -113,7 +114,6 @@ static sjme_errorCode sjme_scritchui_sqfMetricFontFace(
 		return SJME_ERROR_ILLEGAL_STATE;
 		
 	/* Give the face based on the family. */
-	sjme_scritchui_pencilFontFace face;
 	switch (sqf->codepages[0]->family)
 	{
 			/* Monospace font. */

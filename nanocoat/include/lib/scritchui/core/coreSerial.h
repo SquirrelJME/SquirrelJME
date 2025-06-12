@@ -308,7 +308,7 @@ typedef enum sjme_scritchui_serialType
 	SJME_TOKEN_PASTE4(sjme_scritch, where, _serialData_, what)
 
 #define SDX_STRUCT_DEF(where, what, items) \
-	typedef volatile struct SDX_STRUCT_NAME(where, what) \
+	typedef struct SDX_STRUCT_NAME(where, what) \
 	{ \
 		items \
 	} SDX_STRUCT_NAME(where, what)
@@ -765,7 +765,7 @@ SDP_STRUCT_DEF(translate,
  * 
  * @since 2024/04/17
  */
-typedef volatile union sjme_scritchui_serialDataUnion
+typedef union sjme_scritchui_serialDataUnion
 {
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
@@ -864,7 +864,7 @@ typedef volatile union sjme_scritchui_serialDataUnion
  * 
  * @since 2024/04/17
  */
-typedef volatile struct sjme_scritchui_serialData
+typedef struct sjme_scritchui_serialData
 {
 	/** The type of call this is. */
 	volatile sjme_scritchui_serialType type;

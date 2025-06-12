@@ -79,7 +79,7 @@
 
 /** Common shared chunk of forwarding code, to reduce duplicates. */
 #define SJME_SDU_CHUNK(what, whatType, directInvokeArgs) \
-	SJME_SDX_VARS(what); \
+	SJME_SDX_VARS(what) \
 	SJME_SDU_VARS(what); \
 	 \
 	SJME_SDU_PRE_CHECK; \
@@ -147,7 +147,7 @@
 
 /** Common shared chunk of forwarding code, to reduce duplicates. */
 #define SJME_SDP_CHUNK(what, whatType, directInvokeArgs) \
-	SJME_SDX_VARS(what); \
+	SJME_SDX_VARS(what) \
 	SJME_SDP_VARS(what); \
 	 \
 	SJME_SDP_PRE_CHECK; \

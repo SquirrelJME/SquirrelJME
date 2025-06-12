@@ -19,8 +19,8 @@
 /** Window manager information. */
 static const sjme_scritchui_wmInfo sjme_scritchUI_coreWmInfo =
 {
-	.defaultTitle = "SquirrelJME",
-	.xwsClass = "squirreljme",
+	sjme_sm(.defaultTitle, "SquirrelJME"),
+	sjme_sm(.xwsClass, "squirreljme"),
 };
 
 /** Core dispatch functions for serial calls. */
@@ -43,18 +43,18 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	sjme_sm(.componentPosition, sjme_scritchui_coreSerial_componentPosition),
 	sjme_sm(.componentRepaint, sjme_scritchui_coreSerial_componentRepaint),
 	sjme_sm(.componentRevalidate, sjme_scritchui_coreSerial_componentRevalidate),
-	.componentSetActivateListener =
-		sjme_scritchui_coreSerial_componentSetActivateListener,
-	.componentSetInputListener =
-		sjme_scritchui_coreSerial_componentSetInputListener,
-	.componentSetPaintListener =
-		sjme_scritchui_coreSerial_componentSetPaintListener,
-	.componentSetSizeListener =
-		sjme_scritchui_coreSerial_componentSetSizeListener,
-	.componentSetValueUpdateListener = 
-		sjme_scritchui_coreSerial_componentSetValueUpdateListener,
-	.componentSetVisibleListener =
-		sjme_scritchui_coreSerial_componentSetVisibleListener,
+	sjme_sm(.componentSetActivateListener,
+		sjme_scritchui_coreSerial_componentSetActivateListener),
+	sjme_sm(.componentSetInputListener,
+		sjme_scritchui_coreSerial_componentSetInputListener),
+	sjme_sm(.componentSetPaintListener,
+		sjme_scritchui_coreSerial_componentSetPaintListener),
+	sjme_sm(.componentSetSizeListener,
+		sjme_scritchui_coreSerial_componentSetSizeListener),
+	sjme_sm(.componentSetValueUpdateListener, 
+		sjme_scritchui_coreSerial_componentSetValueUpdateListener),
+	sjme_sm(.componentSetVisibleListener,
+		sjme_scritchui_coreSerial_componentSetVisibleListener),
 	sjme_sm(.componentSize, sjme_scritchui_coreSerial_componentSize),
 	sjme_sm(.containerAdd, sjme_scritchui_coreSerial_containerAdd),
 	sjme_sm(.containerRemove, sjme_scritchui_coreSerial_containerRemove),
@@ -65,9 +65,9 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	sjme_sm(.fontList, sjme_scritchui_coreSerial_fontList),
 	sjme_sm(.hardwareGraphics, sjme_scritchui_coreSerial_hardwareGraphics),
 	sjme_sm(.labelSetString, sjme_scritchui_coreSerial_labelSetString),
-	sjme_sm(.listNew, sjme_scritchui_coreSerial_listNew),
 	sjme_sm(.lafDpiProject, sjme_scritchui_coreSerial_lafDpiProject),
 	sjme_sm(.lafElementColor, sjme_scritchui_coreSerial_lafElementColor),
+	sjme_sm(.listNew, sjme_scritchui_coreSerial_listNew),
 
 	/* Loops are unchanged. */
 	sjme_sm(.loopExecute, sjme_scritchui_core_loopExecute),
@@ -91,17 +91,17 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	sjme_sm(.scrollPanelNew, sjme_scritchui_coreSerial_scrollPanelNew),
 	sjme_sm(.viewGetView, sjme_scritchui_coreSerial_viewGetView),
 	sjme_sm(.viewSetArea, sjme_scritchui_coreSerial_viewSetArea),
-	.viewSetSizeSuggestListener =
-		sjme_scritchui_coreSerial_viewSetSizeSuggestListener,
 	sjme_sm(.viewSetView, sjme_scritchui_coreSerial_viewSetView),
+	sjme_sm(.viewSetSizeSuggestListener,
+		sjme_scritchui_coreSerial_viewSetSizeSuggestListener),
 	sjme_sm(.viewSetViewListener, sjme_scritchui_coreSerial_viewSetViewListener),
-	.windowContentMinimumSize =
-		sjme_scritchui_coreSerial_windowContentMinimumSize,
+	sjme_sm(.windowContentMinimumSize,
+		sjme_scritchui_coreSerial_windowContentMinimumSize),
 	sjme_sm(.windowNew, sjme_scritchui_coreSerial_windowNew),
 	sjme_sm(.windowSetCloseListener, sjme_scritchui_coreSerial_windowSetCloseListener),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_coreSerial_windowSetMenuBar),
-	.windowSetMenuItemActivateListener =
-		sjme_scritchui_coreSerial_windowSetMenuItemActivateListener,
+	sjme_sm(.windowSetMenuItemActivateListener,
+		sjme_scritchui_coreSerial_windowSetMenuItemActivateListener),
 	sjme_sm(.windowSetVisible, sjme_scritchui_coreSerial_windowSetVisible),
 };
 
@@ -124,15 +124,15 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	sjme_sm(.componentPosition, sjme_scritchui_core_componentPosition),
 	sjme_sm(.componentRepaint, sjme_scritchui_core_componentRepaint),
 	sjme_sm(.componentRevalidate, sjme_scritchui_core_componentRevalidate),
-	.componentSetActivateListener =
-		sjme_scritchui_core_componentSetActivateListener,
+	sjme_sm(.componentSetActivateListener,
+		sjme_scritchui_core_componentSetActivateListener),
 	sjme_sm(.componentSetInputListener, sjme_scritchui_core_componentSetInputListener),
 	sjme_sm(.componentSetPaintListener, sjme_scritchui_core_componentSetPaintListener),
 	sjme_sm(.componentSetSizeListener, sjme_scritchui_core_componentSetSizeListener),
-	.componentSetValueUpdateListener = 
-		sjme_scritchui_core_componentSetValueUpdateListener,
-	.componentSetVisibleListener =
-		sjme_scritchui_core_componentSetVisibleListener,
+	sjme_sm(.componentSetValueUpdateListener, 
+		sjme_scritchui_core_componentSetValueUpdateListener),
+	sjme_sm(.componentSetVisibleListener,
+		sjme_scritchui_core_componentSetVisibleListener),
 	sjme_sm(.componentSize, sjme_scritchui_core_componentSize),
 	sjme_sm(.containerAdd, sjme_scritchui_core_containerAdd),
 	sjme_sm(.containerRemove, sjme_scritchui_core_containerRemove),
@@ -166,15 +166,15 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	sjme_sm(.viewGetView, sjme_scritchui_core_viewGetView),
 	sjme_sm(.viewSetArea, sjme_scritchui_core_viewSetArea),
 	sjme_sm(.viewSetView, sjme_scritchui_core_viewSetView),
-	.viewSetSizeSuggestListener =
-		sjme_scritchui_core_viewSetSizeSuggestListener,
+	sjme_sm(.viewSetSizeSuggestListener,
+		sjme_scritchui_core_viewSetSizeSuggestListener),
 	sjme_sm(.viewSetViewListener, sjme_scritchui_core_viewSetViewListener),
 	sjme_sm(.windowContentMinimumSize, sjme_scritchui_core_windowContentMinimumSize),
 	sjme_sm(.windowNew, sjme_scritchui_core_windowNew),
 	sjme_sm(.windowSetCloseListener, sjme_scritchui_core_windowSetCloseListener),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_core_windowSetMenuBar),
-	.windowSetMenuItemActivateListener =
-		sjme_scritchui_core_windowSetMenuItemActivateListener,
+	sjme_sm(.windowSetMenuItemActivateListener,
+		sjme_scritchui_core_windowSetMenuItemActivateListener),
 	sjme_sm(.windowSetVisible, sjme_scritchui_core_windowSetVisible),
 };
 
@@ -197,11 +197,12 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	sjme_sm(.menuItemActivate, sjme_scritchui_intern_menuItemActivate),
 	sjme_sm(.menuItemActivateById, sjme_scritchui_intern_menuItemActivateById),
 	sjme_sm(.setSimpleListener, sjme_scritchui_core_intern_setSimpleListener),
-	.updateVisibleContainer =
-		sjme_scritchui_core_intern_updateVisibleContainer,
-	.updateVisibleComponent =
-		sjme_scritchui_core_intern_updateVisibleComponent,
-	sjme_sm(.updateVisibleWindow, sjme_scritchui_core_intern_updateVisibleWindow),
+	sjme_sm(.updateVisibleContainer,
+		sjme_scritchui_core_intern_updateVisibleContainer),
+	sjme_sm(.updateVisibleComponent,
+		sjme_scritchui_core_intern_updateVisibleComponent),
+	sjme_sm(.updateVisibleWindow,
+		sjme_scritchui_core_intern_updateVisibleWindow),
 	sjme_sm(.viewSuggest, sjme_scritchui_core_intern_viewSuggest),
 };
 

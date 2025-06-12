@@ -132,7 +132,10 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_win32_loopMain(
 	else
 	{
 		voidWindow = CreateWindowEx(
-			WS_EX_NOACTIVATE | WS_EX_NOPARENTNOTIFY,
+#if defined(WS_EX_NOACTIVATE)
+			WS_EX_NOACTIVATE |
+#endif
+			WS_EX_NOPARENTNOTIFY,
 			"Static",
 			"SquirrelJME Void",
 			WS_DISABLED | WS_OVERLAPPED,

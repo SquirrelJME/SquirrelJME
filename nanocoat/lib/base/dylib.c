@@ -105,7 +105,7 @@ sjme_errorCode sjme_dylib_lookup(
 		for (attempt = 0; attempt < MAX_ATTEMPTS; attempt++)
 		{
 			/* Build a new symbol to lookup. */
-			memset(mangled, 0, sizeof(buf));
+			memset(mangled, 0, sizeof(mangled));
 			snprintf(mangled, BUF_SIZE - 1, "_%s@%d",
 				inSymbol, attempt);
 			mangled[BUF_SIZE - 1] = 0;
