@@ -1,12 +1,12 @@
 <toolSet name="Retro">
-  <tool name="VC8 Build" description="VC8 Build" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="true" showConsoleOnStdErr="true" synchronizeAfterRun="true">
+  <tool name="VC8 Build" description="VC8 Build" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
     <exec>
       <option name="COMMAND" value="/opt/cxoffice/bin/wine" />
       <option name="PARAMETERS" value="--bottle VisualStudio2005 &quot;c:/Program Files/CMake/bin/cmake.exe&quot; --build ." />
       <option name="WORKING_DIRECTORY" value="$ProjectFileDir$/build/vc8" />
     </exec>
   </tool>
-  <tool name="VC8 Clean" description="VC8 Clean" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="true" showConsoleOnStdErr="true" synchronizeAfterRun="true">
+  <tool name="VC8 Clean" description="VC8 Clean" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
     <exec>
       <option name="COMMAND" value="/opt/cxoffice/bin/wine" />
       <option name="PARAMETERS" value="--bottle VisualStudio2005 &quot;c:/Program Files/CMake/bin/cmake.exe&quot; --build . -- /Clean" />

@@ -173,6 +173,14 @@ macro(squirreljme_target_shared_library_exports target)
 	endif()
 endmacro()
 
+# VC8 and Older
+if(MSVC AND "${MSVC_VERSION}" LESS_EQUAL 1400)
+	# Make sure the multi-byte character set is used
+	remove_definitions(-D_UNICODE)
+	remove_definitions(-DUNICODE)
+	add_definitions(-D_MBCS)
+endif()
+
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	# Turn some warnings into errors
 	check_c_compiler_flag("-Werror=implicit-function-declaration"
