@@ -74,9 +74,9 @@ sjme_jboolean sjme_libretro_unitTestAbortHandler(void)
 
 static sjme_debug_handlerFunctions sjme_libretro_unitTestDebugHandlers =
 {
-	.abort = sjme_libretro_unitTestAbortHandler,
-	.exit = NULL,
-	.message = NULL,
+	sjme_sm(.abort, sjme_libretro_unitTestAbortHandler),
+	sjme_sm(.exit, NULL),
+	sjme_sm(.message, NULL),
 };
 
 /**

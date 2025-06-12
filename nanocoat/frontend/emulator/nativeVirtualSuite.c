@@ -75,10 +75,10 @@ static sjme_errorCode sjme_jni_virtualSuite_loadLibrary()
 /** Functions for JNI accessed suites. */
 static const sjme_rom_suiteFunctions sjme_jni_virtualSuite_functions =
 {
-	.init = sjme_jni_virtualSuite_init,
-	.libraryId = NULL,
-	.list = sjme_jni_virtualSuite_list,
-	.loadLibrary = NULL,
+	sjme_sm(.init, sjme_jni_virtualSuite_init),
+	sjme_sm(.libraryId, NULL),
+	sjme_sm(.list, sjme_jni_virtualSuite_list),
+	sjme_sm(.loadLibrary, NULL),
 };
 
 jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_SUITE, _1_1init)

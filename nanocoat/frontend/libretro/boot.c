@@ -67,9 +67,9 @@ static sjme_jboolean sjme_libretro_abortHandler(void)
 
 static sjme_debug_handlerFunctions sjme_libretro_debugHandlers =
 {
-	.abort = sjme_libretro_abortHandler,
-	.exit = sjme_libretro_exitHandler,
-	.message = sjme_libretro_debugMessageHandler,
+	sjme_sm(.abort, sjme_libretro_abortHandler),
+	sjme_sm(.exit, sjme_libretro_exitHandler),
+	sjme_sm(.message, sjme_libretro_debugMessageHandler),
 };
 
 sjme_attrUnused RETRO_API unsigned retro_api_version(void)

@@ -1004,6 +1004,15 @@ extern "C" {
 	#define sjme_attrOptimize
 #endif
 
+#if defined(SJME_CONFIG_HAS_C99) || \
+	SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+	/** Constant-ish struct member set. */
+	#define sjme_sm(dot, val) dot = val
+#else
+	/** Constant-ish struct member set. */
+	#define sjme_sm(dot, val) val
+#endif
+
 /* Missing standard C functions. */
 #include "sjme/stdGone.h"
 

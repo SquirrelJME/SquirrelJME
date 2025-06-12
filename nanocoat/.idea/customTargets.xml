@@ -4,7 +4,7 @@
     <target id="df9bdd6f-7127-4042-90f3-3b921dd23e3d" name="VC8" defaultType="TOOL">
       <configuration id="5541c208-6d02-40bb-99ce-edbabba13e97" name="VC8" toolchainName="mingw-w64">
         <build type="TOOL">
-          <tool actionId="Tool_Retro_VC8 Clean" />
+          <tool actionId="Tool_Retro_VC8 Build" />
         </build>
         <clean type="TOOL">
           <tool actionId="Tool_Retro_VC8 Clean" />

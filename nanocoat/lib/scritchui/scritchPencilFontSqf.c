@@ -351,18 +351,18 @@ static sjme_errorCode sjme_scritchui_sqfRenderBitmap(
 static const sjme_scritchui_pencilFontImplFunctions
 	sjme_scritchui_sqfFunctions =
 {
-	.equals = NULL,
-	.metricCharValid = sjme_scritchui_sqfMetricCharValid,
-	.metricFontFace = sjme_scritchui_sqfMetricFontFace,
-	.metricFontName = sjme_scritchui_sqfMetricFontName,
-	.metricFontStyle = NULL,
-	.metricPixelAscent = sjme_scritchui_sqfMetricPixelAscent,
-	.metricPixelBaseline = sjme_scritchui_sqfMetricPixelBaseline,
-	.metricPixelDescent = sjme_scritchui_sqfMetricPixelDescent,
-	.metricPixelLeading = sjme_scritchui_sqfMetricPixelLeading,
-	.metricPixelSize = sjme_scritchui_sqfMetricPixelSize,
-	.pixelCharWidth = sjme_scritchui_sqfMetricPixelCharWidth,
-	.renderBitmap = sjme_scritchui_sqfRenderBitmap,
+	sjme_sm(.equals, NULL),
+	sjme_sm(.metricCharValid, sjme_scritchui_sqfMetricCharValid),
+	sjme_sm(.metricFontFace, sjme_scritchui_sqfMetricFontFace),
+	sjme_sm(.metricFontName, sjme_scritchui_sqfMetricFontName),
+	sjme_sm(.metricFontStyle, NULL),
+	sjme_sm(.metricPixelAscent, sjme_scritchui_sqfMetricPixelAscent),
+	sjme_sm(.metricPixelBaseline, sjme_scritchui_sqfMetricPixelBaseline),
+	sjme_sm(.metricPixelDescent, sjme_scritchui_sqfMetricPixelDescent),
+	sjme_sm(.metricPixelLeading, sjme_scritchui_sqfMetricPixelLeading),
+	sjme_sm(.metricPixelSize, sjme_scritchui_sqfMetricPixelSize),
+	sjme_sm(.pixelCharWidth, sjme_scritchui_sqfMetricPixelCharWidth),
+	sjme_sm(.renderBitmap, sjme_scritchui_sqfRenderBitmap),
 };
 
 sjme_errorCode sjme_scritchui_core_fontBuiltin(

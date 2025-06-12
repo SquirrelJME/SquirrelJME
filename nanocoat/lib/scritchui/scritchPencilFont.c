@@ -616,22 +616,22 @@ static sjme_errorCode sjme_scritchui_fontStringWidth(
 /** Functions for basic font support. */
 static const sjme_scritchui_pencilFontFunctions sjme_scritchui_fontFunctions =
 {
-	.equals = sjme_scritchui_fontEquals,
-	.metricCharDirection = sjme_scritchui_fontMetricCharDirection,
-	.metricCharValid = sjme_scritchui_fontMetricCharValid,
-	.metricFontFace = sjme_scritchui_fontMetricFontFace,
-	.metricFontName = sjme_scritchui_fontMetricFontName,
-	.metricFontStyle = sjme_scritchui_fontMetricFontStyle,
-	.metricPixelAscent = sjme_scritchui_fontMetricPixelAscent,
-	.metricPixelBaseline = sjme_scritchui_fontMetricPixelBaseline,
-	.metricPixelDescent = sjme_scritchui_fontMetricPixelDescent,
-	.metricPixelHeight = sjme_scritchui_fontMetricPixelHeight,
-	.metricPixelLeading = sjme_scritchui_fontMetricPixelLeading,
-	.metricPixelSize = sjme_scritchui_fontMetricPixelSize,
-	.pixelCharWidth = sjme_scritchui_fontPixelCharWidth,
-	.renderBitmap = sjme_scritchui_fontRenderBitmap,
-	.renderChar = sjme_scritchui_fontRenderChar,
-	.stringWidth = sjme_scritchui_fontStringWidth,
+	sjme_sm(.equals, sjme_scritchui_fontEquals),
+	sjme_sm(.metricCharDirection, sjme_scritchui_fontMetricCharDirection),
+	sjme_sm(.metricCharValid, sjme_scritchui_fontMetricCharValid),
+	sjme_sm(.metricFontFace, sjme_scritchui_fontMetricFontFace),
+	sjme_sm(.metricFontName, sjme_scritchui_fontMetricFontName),
+	sjme_sm(.metricFontStyle, sjme_scritchui_fontMetricFontStyle),
+	sjme_sm(.metricPixelAscent, sjme_scritchui_fontMetricPixelAscent),
+	sjme_sm(.metricPixelBaseline, sjme_scritchui_fontMetricPixelBaseline),
+	sjme_sm(.metricPixelDescent, sjme_scritchui_fontMetricPixelDescent),
+	sjme_sm(.metricPixelHeight, sjme_scritchui_fontMetricPixelHeight),
+	sjme_sm(.metricPixelLeading, sjme_scritchui_fontMetricPixelLeading),
+	sjme_sm(.metricPixelSize, sjme_scritchui_fontMetricPixelSize),
+	sjme_sm(.pixelCharWidth, sjme_scritchui_fontPixelCharWidth),
+	sjme_sm(.renderBitmap, sjme_scritchui_fontRenderBitmap),
+	sjme_sm(.renderChar, sjme_scritchui_fontRenderChar),
+	sjme_sm(.stringWidth, sjme_scritchui_fontStringWidth),
 };
 
 sjme_errorCode sjme_scritchui_core_intern_fontBuiltin(

@@ -53,9 +53,9 @@ static sjme_jboolean sjme_test_exitHandler(int exitCode)
 
 static sjme_debug_handlerFunctions sjme_test_debugHandlers =
 {
-	.abort = sjme_test_abortHandler,
-	.exit = sjme_test_exitHandler,
-	.message = NULL,
+	sjme_sm(.abort, sjme_test_abortHandler),
+	sjme_sm(.exit, sjme_test_exitHandler),
+	sjme_sm(.message, NULL),
 };
 
 #if defined(SJME_CONFIG_DEBUG)

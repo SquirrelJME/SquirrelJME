@@ -21,7 +21,7 @@ static retro_proc_address_t RETRO_CALLCONV sjme_libretro_extLookup(
 
 const struct retro_get_proc_address_interface sjme_libretro_extInterfaceDef =
 {
-	.get_proc_address = sjme_libretro_extLookup,
+	sjme_sm(.get_proc_address, sjme_libretro_extLookup),
 };
 
 const struct retro_get_proc_address_interface* sjme_libretro_extInterface(void)

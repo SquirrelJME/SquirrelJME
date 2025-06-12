@@ -130,9 +130,9 @@ static sjme_errorCode sjme_rom_zipLibraryResourceStream(
 /** Library functions for Zip access. */
 static const sjme_rom_libraryFunctions sjme_rom_zipLibraryFunctions =
 {
-	.close = sjme_rom_zipLibraryClose,
-	.init = sjme_rom_zipLibraryInit,
-	.resourceStream = sjme_rom_zipLibraryResourceStream,
+	sjme_sm(.close, sjme_rom_zipLibraryClose),
+	sjme_sm(.init, sjme_rom_zipLibraryInit),
+	sjme_sm(.resourceStream, sjme_rom_zipLibraryResourceStream),
 };
 
 sjme_errorCode sjme_rom_libraryFromZip(

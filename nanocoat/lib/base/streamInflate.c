@@ -109,9 +109,9 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 /** Input deflate functions. */
 static const sjme_stream_inputFunctions sjme_stream_inputInflateFunctions =
 {
-	.close = sjme_stream_inputInflateClose,
-	.init = sjme_stream_inputInflateInit,
-	.read = sjme_stream_inputInflateRead,
+	sjme_sm(.close, sjme_stream_inputInflateClose),
+	sjme_sm(.init, sjme_stream_inputInflateInit),
+	sjme_sm(.read, sjme_stream_inputInflateRead),
 };
 
 sjme_errorCode sjme_stream_inputOpenInflate(

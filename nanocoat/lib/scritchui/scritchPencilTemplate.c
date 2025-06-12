@@ -15,8 +15,8 @@
 static const struct sjme_scritchui_pencilImplFunctions pencilFunc_NAME(_) =
 {
 #if defined(pencilRawScanCopy)
-	.rawScanGet = sjme_scritchui_basicRawScanGet,
-	.rawScanPutPure = sjme_scritchui_basicRawScanPutPure,
+	sjme_sm(.rawScanGet, sjme_scritchui_basicRawScanGet),
+	sjme_sm(.rawScanPutPure, sjme_scritchui_basicRawScanPutPure),
 #else
 	.rawScanGet = pencilFunc_NAME(RawScanGet),
 	.rawScanPutPure = pencilFunc_NAME(RawScanPutPure),

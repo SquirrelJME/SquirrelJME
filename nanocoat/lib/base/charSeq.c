@@ -54,8 +54,8 @@ static sjme_errorCode sjme_charSeq_basicUtf_length(
 
 static const sjme_charSeq_functions sjme_charSeq_basicUtfFunctions =
 {
-	.charAt = sjme_charSeq_basicUtf_charAt,
-	.length = sjme_charSeq_basicUtf_length,
+	sjme_sm(.charAt, sjme_charSeq_basicUtf_charAt),
+	sjme_sm(.length, sjme_charSeq_basicUtf_length),
 };
 
 sjme_errorCode sjme_charSeq_charAt(

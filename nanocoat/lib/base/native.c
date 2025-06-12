@@ -147,10 +147,10 @@ static sjme_errorCode sjme_nal_default_cFileSize(
 /** Functions for C File access. */
 static const sjme_seekable_functions sjme_nal_default_cFileFunctions =
 {
-	.close = sjme_nal_default_cFileClose,
-	.init = sjme_nal_default_cFileInit,
-	.read = sjme_nal_default_cFileRead,
-	.size = sjme_nal_default_cFileSize,
+	sjme_sm(.close, sjme_nal_default_cFileClose),
+	sjme_sm(.init, sjme_nal_default_cFileInit),
+	sjme_sm(.read, sjme_nal_default_cFileRead),
+	sjme_sm(.size, sjme_nal_default_cFileSize),
 };
 #endif
 
@@ -328,12 +328,12 @@ static sjme_errorCode sjme_nal_default_stdOutF(
 
 const sjme_nal sjme_nal_default =
 {
-	.currentTimeMillis = NULL,
-	.fileOpen = sjme_nal_default_fileOpen,
-	.getEnv = sjme_nal_default_getEnv,
-	.nanoTime = sjme_nal_default_nanoTime,
-	.stdErrF = sjme_nal_default_stdErrF,
-	.stdOutF = sjme_nal_default_stdOutF,
+	sjme_sm(.currentTimeMillis, NULL),
+	sjme_sm(.fileOpen, sjme_nal_default_fileOpen),
+	sjme_sm(.getEnv, sjme_nal_default_getEnv),
+	sjme_sm(.nanoTime, sjme_nal_default_nanoTime),
+	sjme_sm(.stdErrF, sjme_nal_default_stdErrF),
+	sjme_sm(.stdOutF, sjme_nal_default_stdOutF),
 };
 
 #if !defined(SJME_CONFIG_HAS_NO_ERRNO)

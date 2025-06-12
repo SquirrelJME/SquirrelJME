@@ -176,11 +176,11 @@ static sjme_errorCode sjme_jni_virtualLibrary_resourceStream(
 /** Functions for JNI accessed libraries. */
 static const sjme_rom_libraryFunctions sjme_jni_virtualLibrary_functions =
 {
-	.init = sjme_jni_virtualLibrary_init,
-	.path = NULL,
-	.rawData = sjme_jni_virtualLibrary_rawData,
-	.rawSize = sjme_jni_virtualLibrary_rawSize,
-	.resourceStream = sjme_jni_virtualLibrary_resourceStream,
+	sjme_sm(.init, sjme_jni_virtualLibrary_init),
+	sjme_sm(.path, NULL),
+	sjme_sm(.rawData, sjme_jni_virtualLibrary_rawData),
+	sjme_sm(.rawSize, sjme_jni_virtualLibrary_rawSize),
+	sjme_sm(.resourceStream, sjme_jni_virtualLibrary_resourceStream),
 };
 
 jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_LIBRARY, _1_1init)
