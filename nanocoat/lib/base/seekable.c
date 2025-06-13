@@ -64,8 +64,8 @@ sjme_errorCode sjme_seekable_open(
 	result->allocPool = allocPool;
 	result->functions = inFunctions;
 	if (copyFrontEnd != NULL)
-		memmove(&result->frontEnd,
-			copyFrontEnd, sizeof(*copyFrontEnd));
+		sjme_frontEnd_copy(&result->frontEnd,
+			copyFrontEnd);
 	
 	/* Initialize. */
 	if (sjme_error_is(error = result->functions->init(result,

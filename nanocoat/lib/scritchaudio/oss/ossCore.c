@@ -32,7 +32,7 @@ sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(oss)(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
 	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd)
 {
 	sjme_errorCode error;
 	sjme_scritchaudio result;

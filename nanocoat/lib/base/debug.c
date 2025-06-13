@@ -46,6 +46,15 @@ void sjme_debug_abort(void)
 	/* dialogs saying the program aborted, so only abort on debugging. */
 	if (!IsDebuggerPresent())
 		return;
+
+#if defined(SJME_CONFIG_DEBUG) && \
+	!(defined(__MINGW32__) || defined(__MINGW64__))
+	/* Do not pop up an annoying dialog. */
+	_set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
+
+	/* Breakpoint. */
+	__debugbreak();
+#endif
 #endif
 
 	/* Otherwise use C abort handler. */

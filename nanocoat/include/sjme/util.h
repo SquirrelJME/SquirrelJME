@@ -278,6 +278,28 @@ sjme_jchar sjme_swap_ushort(
  */
 #define sjme_swap_short(in) ((sjme_jchar)sjme_swap_ushort((sjme_jchar)(in)))
 
+#if defined(SJME_CONFIG_BIG_ENDIAN)
+	/** A big endian unsigned short value. */
+	#define sjme_big_ushort(v) ((sjme_jushort)(v))
+#else
+	/** A big endian unsigned short value. */
+	#define sjme_big_ushort(v) (sjme_swap_ushort((v)))
+#endif
+
+/** A big endian signed short value. */
+#define sjme_big_short(v) ((sjme_jshort)sjme_big_ushort((v)))
+
+#if defined(SJME_CONFIG_BIG_ENDIAN)
+	/** A big endian unsigned integer value. */
+	#define sjme_big_uint(v) ((sjme_juint)(v))
+#else
+	/** A big endian unsigned integer value. */
+	#define sjme_big_uint(v) (sjme_swap_uint((v)))
+#endif
+
+/** A big endian signed integer value. */
+#define sjme_big_int(v) ((sjme_jint)sjme_big_uint((v)))
+	
 /**
  * Performs @c memmove() followed by shifting up by 8 the destination buffer,
  * then following a byte swap.
@@ -319,6 +341,17 @@ sjme_errorCode sjme_swap_uint_memmove(
 sjme_jint sjme_tree_find(void* tree, void* what,
 	const sjme_tree_findFunc* functions);
 
+/**
+ * Aligns the given address to the given alignment.
+ * 
+ * @param addr The address to align.
+ * @param align The alignment to use.
+ * @return The resultant aligned address.
+ * @since 2025/02/10
+ */
+sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
+	sjme_intPointer align);
+	
 /**
  * Returns the number of bits in the value.
  * 
@@ -418,7 +451,7 @@ sjme_errorCode sjme_util_lpstrTrimEnd(
  * @param addr The address to access.
  * @return The address of the un-aligned address, or a pointer to a wrapper
  * which contains the value to be read.
- * @since 2025/01/011
+ * @since 2025/01/11
  */
 const sjme_jshort* sjme_util_memUnaligned16(void* addr);
 	
@@ -430,9 +463,35 @@ const sjme_jshort* sjme_util_memUnaligned16(void* addr);
  * @param addr The address to access.
  * @return The address of the un-aligned address, or a pointer to a wrapper
  * which contains the value to be read.
- * @since 2025/01/011
+ * @since 2025/01/11
  */
 #define sjme_util_memUnaligned16(addr) ((const sjme_jshort*)(addr))
+	
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_UNALIGNED32)
+	
+/**
+ * Accesses an address for reading in an unaligned way.
+ *
+ * @param addr The address to access.
+ * @return The address of the un-aligned address, or a pointer to a wrapper
+ * which contains the value to be read.
+ * @since 2025/03/02
+ */
+const sjme_jint* sjme_util_memUnaligned32(void* addr);
+	
+#else
+	
+/**
+ * Accesses an address in an unaligned way.
+ *
+ * @param addr The address to access.
+ * @return The address of the un-aligned address, or a pointer to a wrapper
+ * which contains the value to be read.
+ * @since 2025/03/02
+ */
+#define sjme_util_memUnaligned32(addr) ((const sjme_jint*)(addr))
 	
 #endif
 

@@ -24,6 +24,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 public enum MLEScritchUI
 	implements MLEFunction
 {
+	/** {@link NativeScritchInterface#nativeInterface()}. */
 	NATIVE_INTERFACE("nativeInterface:" +
 		"()Lcc/squirreljme/jvm/mle/scritchui/ScritchInterface;")
 	{

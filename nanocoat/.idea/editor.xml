@@ -317,6 +317,11 @@
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=StringLiteralTypo/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CommentTypo/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=IdentifierTypo/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
+    <option name="/Default/CodeStyle/CppSortIncludes/UnmatchedHeaderGroup/@EntryValue" value="3" type="long" />
+    <option name="/Default/CodeStyle/CppSortIncludes/MainHeaderGroup/@EntryValue" value="2" type="long" />
+    <option name="/Default/CodeStyle/CppSortIncludes/MainHeaderOrder/@EntryValue" value="2" type="long" />
+    <option name="/Default/CodeStyle/CppSortIncludes/GroupByRootDirectory/@EntryValue" value="true" type="bool" />
+    <option name="/Default/CodeStyle/CppSortIncludes/IncludeSortCategories/@EntryValue" value="&lt;CppIncludeCategories&gt;&#10;  &lt;CppIncludeCategorySetting Pattern=&quot;^&amp;lt;.*&quot; Description=&quot;#include &amp;lt;header&amp;gt;&quot; Group=&quot;1&quot; Order=&quot;1&quot; /&gt;&#10;  &lt;CppIncludeCategorySetting Pattern=&quot;^&amp;quot;.*&quot; Description=&quot;#include &amp;quot;header&amp;quot;&quot; Group=&quot;2&quot; Order=&quot;3&quot; /&gt;&#10;&lt;/CppIncludeCategories&gt;" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppSmartPointerVsMakeFunction/@EntryIndexRemoved" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppCStyleCast/@EntryIndexRemoved" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppFunctionalStyleCast/@EntryIndexRemoved" />

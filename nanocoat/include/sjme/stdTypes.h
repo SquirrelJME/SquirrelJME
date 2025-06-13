@@ -37,7 +37,7 @@ extern "C"
  *
  * @since 2023/07/25
  */
-typedef enum sjme_basicTypeId
+typedef enum sjme_attrPackedEnumByte(sjme_basicTypeId)
 {
 	/** Integer. */
 	SJME_BASIC_TYPE_ID_INTEGER = 0,
@@ -71,33 +71,33 @@ typedef enum sjme_basicTypeId
 	
 	/** The number of Java type IDs. */
 	SJME_NUM_JAVA_TYPE_IDS = 5,
-
-	/** Boolean or byte. */
-	SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE = SJME_NUM_JAVA_TYPE_IDS,
-	
-	/** Character or short type. */
-	SJME_JAVA_TYPE_ID_SHORT_OR_CHAR = 6,
 	
 	/** Void type. */
-	SJME_BASIC_TYPE_ID_VOID = 7,
+	SJME_BASIC_TYPE_ID_VOID = SJME_NUM_JAVA_TYPE_IDS,
 	
 	/** Void type. */
 	SJME_JAVA_TYPE_ID_VOID = SJME_BASIC_TYPE_ID_VOID,
+
+	/** Boolean or byte. */
+	SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE = 6,
+	
+	/** Character or short type. */
+	SJME_JAVA_TYPE_ID_SHORT_OR_CHAR = 7,
 	
 	/** End of extended Java types. */
 	SJME_NUM_EXTENDED_JAVA_TYPE_IDS = 8,
 
-	/** Short. */
-	SJME_BASIC_TYPE_ID_SHORT = SJME_NUM_EXTENDED_JAVA_TYPE_IDS,
-
-	/** Character. */
-	SJME_BASIC_TYPE_ID_CHARACTER = 9,
-
 	/** Specifically boolean. */
-	SJME_BASIC_TYPE_ID_BOOLEAN = 10,
+	SJME_BASIC_TYPE_ID_BOOLEAN = SJME_NUM_EXTENDED_JAVA_TYPE_IDS,
 
 	/** Specifically jbyte. */
-	SJME_BASIC_TYPE_ID_BYTE = 11,
+	SJME_BASIC_TYPE_ID_BYTE = 9,
+
+	/** Short. */
+	SJME_BASIC_TYPE_ID_SHORT = 10,
+
+	/** Character. */
+	SJME_BASIC_TYPE_ID_CHARACTER = 11,
 
 	/** Number of basic type IDs. */
 	SJME_NUM_BASIC_TYPE_IDS = 12
@@ -448,9 +448,15 @@ typedef union sjme_jlong
  * 
  * @sinc 2023/07/25
  */
-typedef struct sjme_jfloat
+typedef union sjme_jfloat
 {
-	sjme_jint value;
+	/** The raw integer bit value. */
+	sjme_jint bits;
+
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	/** The native float value. */
+	float native;
+#endif
 } sjme_jfloat;
 
 /** Basic @c sjme_jfloat type identifier. */
@@ -467,20 +473,28 @@ typedef struct sjme_jfloat
  * 
  * @sinc 2023/07/25
  */
-typedef struct sjme_jdouble
+typedef union sjme_jdouble
 {
+	struct sjme_packed
+	{
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
-	/** Low value. */
-	sjme_juint lo;
+		/** Low value. */
+		sjme_juint lo;
 
-	/** High value. */
-	sjme_juint hi;
+		/** High value. */
+		sjme_juint hi;
 #else
-	/** High value. */
-	sjme_juint hi;
-	
-	/** Low value. */
-	sjme_juint lo;
+		/** High value. */
+		sjme_juint hi;
+		
+		/** Low value. */
+		sjme_juint lo;
+#endif
+	} bits;
+
+#if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/** Native hardware double value. */
+	double native;
 #endif
 } sjme_jdouble;
 
@@ -544,6 +558,10 @@ typedef struct sjme_pointerLen
 
 /** The Java type ID. */
 typedef sjme_basicTypeId sjme_javaTypeId;
+
+/** Is the given type ID considered wide? */
+#define SJME_TYPEID_IS_WIDE(t) \
+	((t) == SJME_JAVA_TYPE_ID_LONG || (t) == SJME_JAVA_TYPE_ID_DOUBLE)
 
 /**
  * Represents multiple type IDs.
@@ -627,6 +645,29 @@ typedef sjme_jstringBase* sjme_jstring;
 
 /** Is a pointer for @c sjme_jstring ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jstring SJME_TYPEOF_IS_POINTER_sjme_jobject
+
+/**
+ * Array type.
+ * 
+ * @since 2025/03/16
+ */
+typedef struct sjme_jarrayBase sjme_jarrayBase;
+
+/**
+ * Array type.
+ * 
+ * @since 2025/03/16
+ */
+typedef sjme_jarrayBase* sjme_jarray;
+
+/** Basic @c sjme_jarray type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jarray SJME_TYPEOF_BASIC_sjme_jobject
+
+/** Java @c sjme_jarray type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jarray SJME_TYPEOF_JAVA_sjme_jobject
+
+/** Is a pointer for @c sjme_jarray ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jarray SJME_TYPEOF_IS_POINTER_sjme_jobject
 
 /**
  * Generic value union.

@@ -130,7 +130,7 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(gtk2)(
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;

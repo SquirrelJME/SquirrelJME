@@ -662,7 +662,7 @@ typedef struct sjme_scritchui_pencilLockFunctions
 #define SJME_SCRITCHUI_SET_LISTENER_ARGS(what) \
 	sjme_attrInNullable SJME_TOKEN_PASTE3(sjme_scritchui_, what, \
 		ListenerFunc) inListener, \
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd
+	sjme_attrInNullable sjme_frontEndBindable* copyFrontEnd
 
 /**
  * Listener that is called when an item is activated.
@@ -853,7 +853,7 @@ typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
 
 /**
  * Gets the first selected index of a choice or otherwise @c -1 .
@@ -1347,12 +1347,12 @@ typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
-	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy);
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
 
 /**
  * Sets the label of the specified component.
@@ -2019,8 +2019,10 @@ struct sjme_scritchui_uiCommonBase
 	/**
 	 * Front-end data for this, note that ScritchUI implementations must not
 	 * use this for information as this is only to be used by front-ends.
+	 *
+	 * Bindings may be used as needed.
 	 */
-	sjme_frontEnd frontEnd;
+	sjme_frontEndBindable frontEnd;
 	
 	/** Opaque native handles for this, as needed. */
 	sjme_scritchui_handle handle[SJME_SCRITCHUI_NUM_COMMON_HANDLES];
@@ -2249,7 +2251,7 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchui_dylibApiFunc)(
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
 
 /** The base name for the ScritchUI dynamic library. */
 #define SJME_SCRITCHUI_DYLIB_NAME_BASE \

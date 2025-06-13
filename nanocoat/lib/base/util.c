@@ -304,7 +304,7 @@ sjme_jint sjme_string_length(sjme_lpcstr string)
 sjme_jint sjme_string_lengthN(sjme_lpcstr string, sjme_jint limit)
 {
 	sjme_jint result;
-	sjme_jint c;
+	sjme_jint c, rawIndex;
 	sjme_lpcstr p;
 	
 	if (string == NULL || limit < 0)
@@ -312,7 +312,8 @@ sjme_jint sjme_string_lengthN(sjme_lpcstr string, sjme_jint limit)
 
 	/* Read until end of string. */
 	result = 0;
-	for (p = string; *p != 0 && result < limit;)
+	rawIndex = 0;
+	for (p = string; *p != 0 && result < limit && rawIndex < limit; rawIndex++)
 	{
 		/* Decode character. */
 		c = sjme_string_decodeChar(p, &p);
@@ -423,6 +424,22 @@ sjme_errorCode sjme_swap_uint_memmove(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
+	sjme_intPointer align)
+{
+	sjme_intPointer mod;
+	
+	/* Force alignment to be valid. */
+	if (align <= 0)
+		align = 1;
+
+	/* Perform alignment. */
+	mod = (addr % align);
+	if (mod == 0)
+		return addr;
+	return addr + (align - mod);
 }
 
 sjme_juint sjme_util_intBitCountU(
@@ -578,23 +595,60 @@ sjme_errorCode sjme_util_lpstrTrimEnd(
 
 #if defined(SJME_CONFIG_HAS_NO_UNALIGNED16)
 
+/** Filler for unaligned 16-bit access. */
+#define SJME_UTIL_UNALIGNED_16_FILL 8
+
 const sjme_jshort* sjme_util_memUnaligned16(void* addr)
 {
-	sjme_attrThreadLocal(sjme_jshort, temp);
+	sjme_threadLocal(sjme_jshort, temp[SJME_UTIL_UNALIGNED_16_FILL]);
+	sjme_threadLocal(sjme_atomic_sjme_jint, fill);
+	sjme_jshort* into;
 	sjme_jubyte* bytes;
 
 	/* Map in. */
+	into = temp[sjme_atomic_sjme_jint_getAdd(&fill, 1) &
+		(SJME_UTIL_UNALIGNED_16_FILL - 1)];
 	bytes = addr;
 #if defined(SJME_CONFIG_HAS_BIG_ENDIAN)
-	temp = ((bytes[0] & 0xFF) << 8) |
+	(*into) = ((bytes[0] & 0xFF) << 8) |
 		(bytes[1] & 0xFF);
 #else
-	temp = ((bytes[1] & 0xFF) << 8) |
+	(*into) = ((bytes[1] & 0xFF) << 8) |
 		(bytes[0] & 0xFF);
 #endif
 
 	/* Return address of temporary. */
-	return &temp;
+	return into;
+}
+
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_UNALIGNED32)
+
+/** Filler for unaligned 32-bit access. */
+#define SJME_UTIL_UNALIGNED_32_FILL 4
+
+const sjme_jint* sjme_util_memUnaligned32(void* addr)
+{
+	sjme_threadLocal(sjme_jint, temp[SJME_UTIL_UNALIGNED_32_FILL]);
+	sjme_threadLocal(sjme_atomic_sjme_jint, fill);
+	sjme_jint* into;
+	sjme_jushort* shorts;
+
+	/* Map in. */
+	into = temp[sjme_atomic_sjme_jint_getAdd(&fill, 1) &
+		(SJME_UTIL_UNALIGNED_32_FILL - 1)];
+	shorts = addr;
+#if defined(SJME_CONFIG_HAS_BIG_ENDIAN)
+	(*into) = (((*sjme_util_memUnaligned16(&shorts[0])) & 0xFFFF) << 16) |
+		((*sjme_util_memUnaligned16(&shorts[1])) & 0xFF);
+#else
+	(*into) = (((*sjme_util_memUnaligned16(&shorts[1])) & 0xFFFF) << 16) |
+		((*sjme_util_memUnaligned16(&shorts[0])) & 0xFF);
+#endif
+
+	/* Return address of temporary. */
+	return into;
 }
 
 #endif

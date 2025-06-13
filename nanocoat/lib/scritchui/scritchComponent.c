@@ -996,8 +996,7 @@ sjme_errorCode sjme_scritchui_core_intern_setSimpleListener(
 	/* Set new callback and copy any front-end data as needed. */
 	infoAny->callback = inListener;
 	if (inListener != NULL && copyFrontEnd != NULL)
-		memmove(&infoAny->frontEnd, copyFrontEnd,
-			sizeof(*copyFrontEnd));
+		sjme_frontEnd_copy(&infoAny->frontEnd, copyFrontEnd);
 	
 	/* Clear old front end data for the listener if it was cleared. */
 	if (inListener == NULL)

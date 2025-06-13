@@ -270,60 +270,60 @@ static sjme_errorCode sjme_nal_default_nanoTime(
 #endif
 }
 
-static sjme_errorCode sjme_nal_default_stdErrF(
-	sjme_attrInNotNull sjme_lpcstr format,
-	...)
+static sjme_errorCode sjme_nal_default_stdErr(
+	sjme_attrInNotNullBuf(len) sjme_cpointer buf,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositiveNonZero sjme_jint len)
 {
-#if !defined(SJME_CONFIG_HAS_NO_STDIO)
-	va_list list;
 	sjme_errorCode error;
+
+	if (buf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (off < 0 || len < 0 || (off + len) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	/* Start argument parsing. */
-	va_start(list, format);
-	
-	/* Print directly to formatted output. */
+#if !defined(SJME_CONFIG_HAS_NO_STDIO)
 	error = SJME_ERROR_NONE;
-	if (vfprintf(stderr, format, list) < 0)
+	if (fwrite(SJME_POINTER_OFFSET(buf, off), len, 1,
+		stderr) <= 0)
 		error = SJME_ERROR_IO_EXCEPTION;
 	if (EOF == fflush(stderr))
 		error = SJME_ERROR_IO_EXCEPTION;
-		
-	/* End argument parsing. */
-	va_end(list);
+	
+#else
+	error = SJME_ERROR_NONE;
+#endif
 	
 	/* Success? */
 	return error;
-#else
-	return SJME_ERROR_NONE;
-#endif
 }
 
-static sjme_errorCode sjme_nal_default_stdOutF(
-	sjme_attrInNotNull sjme_lpcstr format,
-	...)
+static sjme_errorCode sjme_nal_default_stdOut(
+	sjme_attrInNotNullBuf(len) sjme_cpointer buf,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositiveNonZero sjme_jint len)
 {
-#if !defined(SJME_CONFIG_HAS_NO_STDIO)
-	va_list list;
 	sjme_errorCode error;
+
+	if (buf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (off < 0 || len < 0 || (off + len) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	/* Start argument parsing. */
-	va_start(list, format);
-	
-	/* Print directly to formatted output. */
+#if !defined(SJME_CONFIG_HAS_NO_STDIO)
 	error = SJME_ERROR_NONE;
-	if (vfprintf(stdout, format, list) < 0)
+	if (fwrite(SJME_POINTER_OFFSET(buf, off), len,
+		1, stdout) <= 0)
 		error = SJME_ERROR_IO_EXCEPTION;
-	if (EOF == fflush(stdout))
-		error = SJME_ERROR_IO_EXCEPTION;
-		
-	/* End argument parsing. */
-	va_end(list);
+	
+#else
+	error = SJME_ERROR_NONE;
+#endif
 	
 	/* Success? */
 	return error;
-#else
-	return SJME_ERROR_NONE;
-#endif
 }
 
 const sjme_nal sjme_nal_default =
@@ -332,8 +332,26 @@ const sjme_nal sjme_nal_default =
 	sjme_sm(.fileOpen, sjme_nal_default_fileOpen),
 	sjme_sm(.getEnv, sjme_nal_default_getEnv),
 	sjme_sm(.nanoTime, sjme_nal_default_nanoTime),
-	sjme_sm(.stdErrF, sjme_nal_default_stdErrF),
-	sjme_sm(.stdOutF, sjme_nal_default_stdOutF),
+	{
+		{
+			sjme_sm(.close, NULL),
+			sjme_sm(.in, NULL),
+			sjme_sm(.out, NULL),
+			sjme_sm(.flush, NULL),
+		},
+		{
+			sjme_sm(.close, NULL),
+			sjme_sm(.in, NULL),
+			sjme_sm(.out, sjme_nal_default_stdOut),
+			sjme_sm(.flush, NULL),
+		},
+		{
+			sjme_sm(.close, NULL),
+			sjme_sm(.in, NULL),
+			sjme_sm(.out, sjme_nal_default_stdErr),
+			sjme_sm(.flush, NULL),
+		},
+	},
 };
 
 #if !defined(SJME_CONFIG_HAS_NO_ERRNO)
@@ -352,3 +370,41 @@ sjme_errorCode sjme_nal_errno(sjme_jint errNum)
 	}
 }
 #endif
+
+sjme_errorCode sjme_nal_stdF(
+	sjme_attrInNotNull sjme_nal_stdOFunc outFunc,
+	sjme_attrInNotNull sjme_lpcstr format,
+	...)
+{
+	sjme_errorCode error;
+#if !defined(SJME_CONFIG_HAS_NO_STDIO)
+#define BUF_SIZE 512
+	va_list list;
+	sjme_cchar buf[BUF_SIZE];
+#endif
+	
+	if (outFunc == NULL || format == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+#if !defined(SJME_CONFIG_HAS_NO_STDIO)
+	/* Start argument parsing. */
+	va_start(list, format);
+	
+	/* Print to buffer */
+	error = SJME_ERROR_NONE;
+	memset(buf, 0, sizeof(buf));
+	if (vsnprintf(buf, BUF_SIZE - 1, format, list) < 0)
+		error = SJME_ERROR_IO_EXCEPTION;
+	buf[BUF_SIZE - 1] = '\0';
+		
+	/* End argument parsing. */
+	va_end(list);
+#else
+	error = SJME_ERROR_NONE;
+#endif
+
+	return error;
+#if !defined(SJME_CONFIG_HAS_NO_STDIO)
+#undef BUF_SIZE
+#endif
+}

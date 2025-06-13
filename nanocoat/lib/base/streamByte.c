@@ -182,6 +182,7 @@ static sjme_errorCode sjme_stream_outputByteArrayWrite(
 static const sjme_stream_outputFunctions sjme_stream_outputByteArrayFunctions =
 {
 	sjme_sm(.close, sjme_stream_outputByteArrayClose),
+	sjme_sm(.flush, NULL),
 	sjme_sm(.init, sjme_stream_outputByteArrayInit),
 	sjme_sm(.write, sjme_stream_outputByteArrayWrite),
 };

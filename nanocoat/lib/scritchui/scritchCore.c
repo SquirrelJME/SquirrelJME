@@ -272,7 +272,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd,
 	sjme_attrInNullable sjme_scritchui wrappedState,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals)
 {
@@ -304,8 +304,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 
 	/* Use provided front end if a core interface. */
 	if (initFrontEnd != NULL)
-		memmove(&state->common.frontEnd, initFrontEnd,
-			sizeof(*initFrontEnd));
+		sjme_frontEnd_copy(&state->common.frontEnd, initFrontEnd);
 	
 	/* Common initialize. */
 	if (sjme_error_is(error = state->intern->initCommon(state,
@@ -409,7 +408,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd)
 {
 	sjme_errorCode error;
 	sjme_jboolean isFbWrapper; 

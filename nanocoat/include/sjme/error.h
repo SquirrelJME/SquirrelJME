@@ -424,35 +424,77 @@ typedef enum sjme_errorCode
 	/** Invalid instruction. */
 	SJME_ERROR_INVALID_INSTRUCTION = -127,
 
+	/** Generic linkage error. */
+	SJME_ERROR_LINKAGE_ERROR = -128,
+
+	/** The super class is not a valid class. */
+	SJME_ERROR_SUPER_CLASS_INVALID = -129,
+
+	/** The super class is not a valid class. */
+	SJME_ERROR_NO_FIELD = -130,
+
+	/** The class loader is not valid. */
+	SJME_ERROR_INVALID_CLASS_LOADER = -131,
+
+	/** Purely virtual method call. */
+	SJME_ERROR_PURE_VIRTUAL_CALL = -132,
+
+	/** Array is of negative size. */
+	SJME_ERROR_NEGATIVE_ARRAY_SIZE = -133,
+
+	/** MLE Call error. */
+	SJME_ERROR_MLE_CALL = -134,
+
+	/** Invalid MLE Shelf. */
+	SJME_ERROR_UNKNOWN_MLE_SHELF = -135,
+
+	/** Invalid MLE Function. */
+	SJME_ERROR_UNKNOWN_MLE_FUNCTION = -136,
+
+	/** MLE call is not compatible. */
+	SJME_ERROR_INCOMPATIBLE_MLE_CALL = -137,
+
+	/** Return type is incorrect. */
+	SJME_ERROR_WRONG_RETURN_TYPE = -138,
+
+	/** The code address is not valid. */
+	SJME_ERROR_INVALID_CODE_ADDRESS = -139,
+
+	/** Stack pointer is null. */
+	SJME_ERROR_NULL_STACK_POINTER = -140,
+
+	/** Array index is out of bounds. */
+	SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS = -141,
+
 	/** No audio system is available. */
-	SJME_ERROR_HEADLESS_AUDIO = -128,
+	SJME_ERROR_HEADLESS_AUDIO = -142,
 
 	/** Unsupported audio format. */
-	SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT = -129,
+	SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT = -143,
 
 	/** Audio has been destroyed. */
-	SJME_ERROR_AUDIO_DESTROYED = -130,
+	SJME_ERROR_AUDIO_DESTROYED = -144,
 
 	/** The state is mismatched. */
-	SJME_ERROR_AUDIO_STATE_MISMATCH = -131,
+	SJME_ERROR_AUDIO_STATE_MISMATCH = -145,
 
 	/** No audio resources are available. */
-	SJME_ERROR_AUDIO_NO_RESOURCES = -132,
+	SJME_ERROR_AUDIO_NO_RESOURCES = -146,
 
 	/** Mismatch between audio formats. */
-	SJME_ERROR_AUDIO_FORMAT_MISMATCH = -133,
+	SJME_ERROR_AUDIO_FORMAT_MISMATCH = -147,
 
 	/** Audio triggering failed. */
-	SJME_ERROR_AUDIO_TRIGGER_FAILED = -134,
+	SJME_ERROR_AUDIO_TRIGGER_FAILED = -148,
 
 	/** Audio write failed. */
-	SJME_ERROR_AUDIO_WRITE_FAILED = -135,
+	SJME_ERROR_AUDIO_WRITE_FAILED = -149,
 
 	/** Failed to prepare audio. */
-	SJME_ERROR_AUDIO_PREPARE_FAILED = -136,
+	SJME_ERROR_AUDIO_PREPARE_FAILED = -150,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -137,
+	SJME_NUM_ERROR_CODES = -151,
 } sjme_errorCode;
 
 /**
@@ -516,6 +558,18 @@ sjme_errorCode sjme_error_default(
  */
 sjme_errorCode sjme_error_defaultOr(
 	sjme_errorCode error, sjme_errorCode otherwise);
+
+/**
+ * Masks the given error with another.
+ *
+ * @param error The error code to be masked.
+ * @param mask The error to mask with.
+ * @return Returns @c mask .
+ * @since 2025/04/08
+ */
+sjme_errorCode sjme_error_mask(
+	sjme_attrInValue sjme_errorCode error,
+	sjme_attrInValue sjme_errorCode mask);
 
 /*--------------------------------------------------------------------------*/
 

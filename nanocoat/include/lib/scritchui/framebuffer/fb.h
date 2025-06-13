@@ -79,7 +79,7 @@ sjme_errorCode sjme_scritchui_fb_biSetListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(void),
-	sjme_attrInOutNotNull sjme_frontEnd* wrappedFrontEnd);
+	sjme_attrInOutNotNull sjme_frontEndBindable* wrappedFrontEnd);
 
 sjme_errorCode sjme_scritchui_fb_choiceItemInsert(
 	sjme_attrInNotNull sjme_scritchui inState,

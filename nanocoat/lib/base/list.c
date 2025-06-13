@@ -293,7 +293,7 @@ sjme_errorCode sjme_list_flattenArgNul(
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInNotNull sjme_lpcstr inNulString)
 {
-	sjme_jint count, i;
+	sjme_jint count, i, allocLen;
 	sjme_lpcstr at;
 	sjme_lpcstr* argV;
 	
@@ -305,13 +305,14 @@ sjme_errorCode sjme_list_flattenArgNul(
 	for (at = inNulString; *at != '\0'; at += strlen(at) + 1)
 		count++;
 	
-	/* Allocate. */	
-	argV = sjme_alloca(count * sizeof(*argV));
+	/* Allocate. */
+	allocLen = sizeof(*argV) * (count + 1);
+	argV = sjme_alloca(allocLen);
 	if (argV == NULL)
 		return sjme_error_outOfMemory(allocPool, 0);
+	memset(argV, 0, allocLen);
 	
 	/* Allocate temporary argument set. */
-	memset(argV, 0, count * sizeof(*argV));
 	i = 0;
 	for (at = inNulString; *at != '\0' && i < count;
 		at += strlen(at) + 1, i++)

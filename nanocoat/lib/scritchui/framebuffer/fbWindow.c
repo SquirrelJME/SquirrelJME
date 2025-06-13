@@ -25,8 +25,8 @@ static sjme_errorCode sjme_scritchui_fb_listenerClose(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Get owning state and component. */
-	topState = inWindow->component.common.frontEnd.data;
-	topWindow = inWindow->component.common.frontEnd.wrapper;
+	topState = inWindow->component.common.frontEnd.base.data;
+	topWindow = inWindow->component.common.frontEnd.base.wrapper;
 	
 	/* Get target listener. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(topWindow, close);
@@ -49,9 +49,9 @@ static sjme_errorCode sjme_scritchui_fb_listenerMenuItemActivate(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Get owning state and component. */
-	topState = inWindow->component.common.frontEnd.data;
-	topWindow = inWindow->component.common.frontEnd.wrapper;
-	topMenu = activatedItem->common.frontEnd.wrapper;
+	topState = inWindow->component.common.frontEnd.base.data;
+	topWindow = inWindow->component.common.frontEnd.base.wrapper;
+	topMenu = activatedItem->common.frontEnd.base.wrapper;
 	
 	/* Get target listener. */
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(topWindow, menuItemActivate);
@@ -134,7 +134,7 @@ sjme_errorCode sjme_scritchui_fb_windowSetCloseListener(
 	sjme_errorCode error;
 	sjme_scritchui wrappedState;
 	sjme_scritchui_uiWindow wrappedWindow;
-	sjme_frontEnd wrappedFrontEnd;
+	sjme_frontEndBindable wrappedFrontEnd;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

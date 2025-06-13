@@ -261,7 +261,7 @@ sjme_errorCode sjme_thread_rwLockReleaseWrite(
 		return SJME_ERROR_ILLEGAL_STATE;
 		
 	/* Release the write lock. */
-	actualWrite = writeCount;
+	actualWrite = 0;
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&inLock->write, &actualWrite)))
 		return sjme_error_default(error);

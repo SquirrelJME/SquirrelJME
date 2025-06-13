@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/core/core.h"
+#include "lib/scritchui/pure/pure.h"
 #include "lib/scritchui/scritchui.h"
 
 static const sjme_scritchui_implFunctions sjme_scritchui_pureFunctions =
@@ -67,7 +68,7 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(pure)(
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;

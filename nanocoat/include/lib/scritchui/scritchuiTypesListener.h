@@ -52,7 +52,7 @@ typedef enum sjme_scritchui_listenerClass
 	typedef struct SJME_TOKEN_PASTE(sjme_scritchui_listener_, what) \
 	{ \
 		/** Front end data. */ \
-		sjme_frontEnd frontEnd; \
+		sjme_frontEndBindable frontEnd; \
 		 \
 		/** Extra data as required. */ \
 		sjme_intPointer extra; \

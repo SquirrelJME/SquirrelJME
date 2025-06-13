@@ -121,8 +121,8 @@ sjme_errorCode sjme_stream_inputOpen(
 	
 	/* Copy front end? */
 	if (copyFrontEnd != NULL)
-		memmove(&result->frontEnd, copyFrontEnd,
-			sizeof(*copyFrontEnd));
+		sjme_frontEnd_copy(&result->frontEnd, copyFrontEnd);
+	result->frontEnd.bindType = SJME_FRONTEND_BINDLESS;
 		
 	/* Call sub-init. */
 	if (sjme_error_is(error = result->functions->init(result,
@@ -432,6 +432,21 @@ sjme_errorCode sjme_stream_inputReadValueJS(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_stream_outputFlush(
+	sjme_attrInNotNull sjme_stream_output stream)
+{
+	sjme_stream_outputFlushFunc flush;
+	
+	if (stream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Only perform the flush if it is actually supported. */
+	flush = stream->functions->flush;
+	if (flush == NULL)
+		return SJME_ERROR_NONE;
+	return flush(stream, &stream->implState);
+}
+
 sjme_errorCode sjme_stream_outputOpen(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
@@ -463,8 +478,8 @@ sjme_errorCode sjme_stream_outputOpen(
 	
 	/* Copy front end? */
 	if (copyFrontEnd != NULL)
-		memmove(&result->frontEnd, copyFrontEnd,
-			sizeof(*copyFrontEnd));
+		sjme_frontEnd_copy(&result->frontEnd, copyFrontEnd);
+	result->frontEnd.bindType = SJME_FRONTEND_BINDLESS;
 		
 	/* Call sub-init. */
 	if (sjme_error_is(error = result->functions->init(result,

@@ -197,7 +197,7 @@ class __ExecCanvasInput__
 				return '\n';
 				
 			case NonStandardKey.NUMPAD_DECIMAL:
-				return '.';
+				return '.';		
 		}
 		
 		// Untouched

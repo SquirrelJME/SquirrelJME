@@ -12,7 +12,7 @@
 
 sjme_errorCode sjme_frontEnd_bind(
 	sjme_attrInNotNull sjme_pointer owner,
-	sjme_attrInOutNotNull sjme_frontEnd* frontEnd,
+	sjme_attrInOutNotNull sjme_frontEndBindable* frontEnd,
 	sjme_attrOutNotNull sjme_pointer* resultData)
 {
 	if (owner == NULL || frontEnd == NULL)
@@ -26,9 +26,44 @@ sjme_errorCode sjme_frontEnd_bind(
 	return sjme_error_notImplemented(0);
 }
 
+sjme_errorCode sjme_frontEnd_copyR(
+	sjme_attrInNotNull void* dst,
+	sjme_attrInPositiveNonZero sjme_jint dstSize,
+	sjme_attrInNotNull void* src)
+{
+	sjme_frontEndBindable* fullDst;
+	sjme_frontEndBindable* fullSrc;
+	
+	if (dst == NULL || src == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Cast. */
+	fullDst = dst;
+	fullSrc = src;
+
+	/* If bindless or the destination is bindless only, then just */
+	/* copy the base front-end as it would not fit. */
+	if (fullSrc->base.bindType == SJME_FRONTEND_BINDLESS ||
+		dstSize == sizeof(sjme_frontEnd))
+	{
+		memmove(&fullDst->base, &fullSrc->base, /* */ sizeof(fullDst->base));
+
+		/* Clear bindable data. */
+		if (dstSize == sizeof(sjme_frontEndBindable))
+			fullDst->bindHandler = NULL;
+	}
+
+	/* Otherwise, copy the entire thing. */
+	else
+		memmove(fullDst, fullSrc, sizeof(*fullSrc));
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_frontEnd_release(
 	sjme_attrInNotNull sjme_pointer owner,
-	sjme_attrInOutNotNull sjme_frontEnd* frontEnd)
+	sjme_attrInOutNotNull sjme_frontEndBindable* frontEnd)
 {
 	sjme_errorCode error;
 	
@@ -38,23 +73,29 @@ sjme_errorCode sjme_frontEnd_release(
 	/* The front end is always in the owner structure. */
 	if ((sjme_intPointer)frontEnd < (sjme_intPointer)owner)
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* If this is bindless, we do not have to do anything. */
+	if (frontEnd->base.bindType == SJME_FRONTEND_BINDLESS)
+		return SJME_ERROR_NONE;
 	
 	/* Lock the front end*/
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(&frontEnd->bindLock)))
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&frontEnd->base.bindLock)))
 		return sjme_error_is(error);
 
 	/* Only if there is data or a wrapper, can we do an unbind. */
 	error = SJME_ERROR_NONE;
 	if (frontEnd->bindHandler != NULL)
-		if (frontEnd->data != NULL || frontEnd->wrapper != NULL)
+		if (frontEnd->base.data != NULL || frontEnd->base.wrapper != NULL)
 		{
 			/* Call handler. */
-			error = frontEnd->bindHandler(owner, frontEnd, &frontEnd->data,
+			error = frontEnd->bindHandler(owner, frontEnd,
+				&frontEnd->base.data,
 				SJME_FRONTEND_RELEASE);
 		}
 
 	/* Unlock! */
-	if (sjme_thread_spinLockRelease(&frontEnd->bindLock, NULL))
+	if (sjme_thread_spinLockRelease(&frontEnd->base.bindLock, NULL))
 		return sjme_error_default(error);
 
 	/* Failed or success? */

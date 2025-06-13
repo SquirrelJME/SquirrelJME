@@ -141,7 +141,7 @@ void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 #endif
 
 /**
- * Prints a debug message
+ * Prints a debug message.
  * 
  * @param message The @c printf style message.
  * @param ... Any @c printf style arguments.
@@ -149,6 +149,16 @@ void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  */
 #define sjme_message(...) SJME_ONLY_IN_DEBUG_EXPR( \
 	sjme_messageR(SJME_DEBUG_FILE_LINE_FUNC, SJME_JNI_FALSE, __VA_ARGS__))
+
+/**
+ * Prints a debug message without the preface.
+ * 
+ * @param message The @c printf style message.
+ * @param ... Any @c printf style arguments.
+ * @since 2025/02/16
+ */
+#define sjme_messageB(...) SJME_ONLY_IN_DEBUG_EXPR( \
+	sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE, __VA_ARGS__))
 
 /**
  * Indicates a fatal error and exits the program.
@@ -247,7 +257,7 @@ sjme_errorCode sjme_error_fatalR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  */
 #define sjme_error_fatal(error) \
 	sjme_error_fatalR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, error)
-
+	
 /**
  * Allows for optional debug abort when unimplemented code is hit.
  *

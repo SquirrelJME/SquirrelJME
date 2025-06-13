@@ -37,8 +37,8 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Get owning state and component. */
-	inState = wrappedComponent->common.frontEnd.data;
-	inComponent = wrappedComponent->common.frontEnd.wrapper;
+	inState = wrappedComponent->common.frontEnd.base.data;
+	inComponent = wrappedComponent->common.frontEnd.base.wrapper;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

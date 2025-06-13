@@ -34,7 +34,7 @@
 extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif     /* #ifdef __cplusplus */
-
+	
 /*--------------------------------------------------------------------------*/
 
 #if defined(__STDC__)
@@ -42,6 +42,16 @@ extern "C" {
 	#define SJME_CONFIG_HAS_C89
 	
 	#if defined(__STDC_VERSION__)
+		#if __STDC_VERSION__ >= 202311L
+			/** Has C23. */
+			#define SJME_CONFIG_HAS_C23
+		#endif
+		
+		#if __STDC_VERSION__ >= 201710L
+			/** Has C17. */
+			#define SJME_CONFIG_HAS_C17
+		#endif
+		
 		#if __STDC_VERSION__ >= 201112L
 			/** Has C11 support. */
 			#define SJME_CONFIG_HAS_C11
@@ -861,6 +871,17 @@ extern "C" {
 	#define sjme_alignPointer
 #endif
 
+#if defined(SJME_CONFIG_HAS_C23)
+	/** Packed enumeration. */
+	#define sjme_attrPackedEnumByte(name) name : sjme_jbyte
+#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	/** Packed enumeration. */
+	#define sjme_attrPackedEnumByte(name) __attribute__((packed)) name
+#else
+	/** Packed enumeration. */
+	#define sjme_attrPackedEnumByte(name) name
+#endif
+	
 #if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Packed structure. */
 	#define sjme_packed __attribute__((packed))
@@ -901,17 +922,22 @@ extern "C" {
 /** Disable all linting of any kind. */
 #define sjme_noLint(what) (what) /* NOLINT */ /* ReSharper disable once all */
 
-#if defined(SJME_CONFIG_HAS_MSVC)
+#if !defined(SJME_CONFIG_HAS_NO_THREAD_LOCAL)
+	#if defined(SJME_CONFIG_HAS_MSVC)
+		/** Thread local storage. */
+		#define sjme_threadLocal(type, name) \
+			static sjme_align32 type __declspec(thread) name;
+	#elif defined(SJME_CONFIG_HAS_GCC) || \
+		defined(SJME_CONFIG_HAS_CLANG)
+		/** Thread local storage. */
+		#define sjme_threadLocal(type, name) \
+			static sjme_align32 __thread type name
+	#endif
+#endif
+
+#if !defined(sjme_threadLocal)
 	/** Thread local storage. */
-	#define sjme_attrThreadLocal(type, name) \
-		static sjme_align32 type __declspec(thread) name;
-#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
-	/** Thread local storage. */
-	#define sjme_attrThreadLocal(type, name) \
-		static sjme_align32 __thread type name
-#else
-	/** Thread local storage. */
-	#define sjme_attrThreadLocal(type, name) \
+	#define sjme_threadLocal(type, name) \
 		static sjme_align32 type name
 #endif
 
@@ -919,6 +945,9 @@ extern "C" {
 	defined(SJME_CONFIG_HAS_ARCH_POWERPC)
 	/** Has no support for unaligned 16-bit access. */
 	#define SJME_CONFIG_HAS_NO_UNALIGNED16
+	
+	/** Has no support for unaligned 32-bit access. */
+	#define SJME_CONFIG_HAS_NO_UNALIGNED32
 #endif
 
 #if defined(SJME_CONFIG_HAS_ARCH_IA16)
@@ -1010,9 +1039,58 @@ extern "C" {
 	#define sjme_sm(dot, val) val
 #endif
 
-/* Missing standard C functions. */
-#include "sjme/stdGone.h"
+/** Bitfield count for @c sjme_jboolean . */
+#define sjme_booleanBit 2
 
+/* Clang is completely broken with FLT_ROUNDS. */ 
+#if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_MSVC)
+	/** Assuming floating point rounds to nearest. */
+	#define SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST
+#elif !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+	#if defined(FLT_ROUNDS) && FLT_ROUNDS == 1
+		/** Has floating point that rounds to nearest. */
+		#define SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST
+	#endif
+#endif
+	
+/* 32-bit floating point matches Java? */
+#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H) && \
+	(defined(SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST) || \
+		defined(SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST)) && \
+	defined(FLT_EVAL_METHOD) && (FLT_EVAL_METHOD == 0) && \
+	defined(FLT_RADIX) && (FLT_RADIX == 2)
+	/* Compatible single floating point? */
+	#if !defined(SJME_CONFIG_HAS_FLOAT_SOFT) && \
+		defined(FLT_MANT_DIG) && (FLT_MANT_DIG == 24) && \
+		((defined(FLT_HAS_SUBNORM) && (FLT_HAS_SUBNORM == 1)) || \
+		(defined(__FLT_HAS_DENORM__) && (__FLT_HAS_DENORM__ == 1)))
+		/** Hardware single floating point. */
+		#define SJME_CONFIG_HAS_FLOAT_HARD
+	#endif
+
+	/* Compatible double floating point? */
+	#if !defined(SJME_CONFIG_HAS_DOUBLE_SOFT) && \
+		defined(DBL_MANT_DIG) && (DBL_MANT_DIG == 53) && \
+		((defined(DBL_HAS_SUBNORM) && (DBL_HAS_SUBNORM == 1)) || \
+		(defined(__DBL_HAS_DENORM__) && (__DBL_HAS_DENORM__ == 1)))
+		/** Hardware double floating point. */
+		#define SJME_CONFIG_HAS_DOUBLE_HARD
+	#endif
+#endif
+
+#if !defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	/** Has software single floating point. */
+	#define SJME_CONFIG_HAS_FLOAT_SOFT
+#endif
+
+#if !defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/** Has software double floating point. */
+	#define SJME_CONFIG_HAS_DOUBLE_SOFT
+#endif
+		
+/* Missing standard C functions, always include these. */
+#include "sjme/stdGone.h"
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

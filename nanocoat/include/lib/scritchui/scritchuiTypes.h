@@ -49,7 +49,7 @@ typedef struct sjme_scritchui_pencilLockState
 	sjme_alignPointer sjme_atomic_sjme_jint count;
 	
 	/** The front end source for drawing. */
-	sjme_frontEnd source;
+	sjme_frontEndBindable source;
 	
 	/** The base address where drawing should occur. */
 	sjme_pointer base;
@@ -91,7 +91,7 @@ struct sjme_scritchui_pencilBase
 	sjme_scritchui_pencilPrimFunctions prim;
 	
 	/** Front end information for paint. */
-	sjme_frontEnd frontEnd;
+	sjme_frontEndBindable frontEnd;
 	
 	/** The pixel format used. */
 	sjme_gfx_pixelFormat pixelFormat;

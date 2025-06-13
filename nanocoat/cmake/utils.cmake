@@ -154,6 +154,8 @@ execute_process(
 message(STATUS "Configure: ${SJME_UTIL_CFG_STDOUT}")
 message(STATUS "Configure: ${SJME_UTIL_CFG_STDERR}")
 if(NOT SJME_UTIL_CFG_RESULT EQUAL 0)
+	message(STATUS "Configure: ${SJME_UTIL_CFG_STDOUT}")
+	message(STATUS "Configure: ${SJME_UTIL_CFG_STDERR}")
 	message(FATAL_ERROR "Configure failed with: ${SJME_UTIL_CFG_RESULT}")
 endif()
 
@@ -174,6 +176,8 @@ execute_process(
 message(STATUS "Build: ${SJME_FIRST_CMAKE_STDOUT}")
 message(STATUS "Build: ${SJME_FIRST_CMAKE_STDERR}")
 if(NOT SJME_UTIL_BLD_RESULT EQUAL 0)
+	message(STATUS "Configure: ${SJME_FIRST_CMAKE_STDOUT}")
+	message(STATUS "Configure: ${SJME_FIRST_CMAKE_STDERR}")
 	message(FATAL_ERROR "Build failed with: ${SJME_UTIL_BLD_RESULT}")
 endif()
 

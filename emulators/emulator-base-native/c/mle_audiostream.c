@@ -134,7 +134,7 @@ static sjme_errorCode sjme_jni_renderAudio(
 	/* Recover the Java environment. */
 	env = NULL;
 	if (sjme_error_is(sjme_jni_recoverEnvFrontEnd(&env,
-		&inSource->frontEnd)) || env == NULL)
+		SJME_AS_FE_BINDABLEP(&inSource->frontEnd))) || env == NULL)
 		return SJME_ERROR_NO_JAVA_ENVIRONMENT;
 
 	/* Obtain the source bracket. */
@@ -175,7 +175,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __attach)(
 	sjme_scritchaudio inState;
 	sjme_scritchaudio_stream inStream;
 	sjme_scritchaudio_source result;
-	sjme_frontEnd frontEnd;
+	sjme_frontEndBindable frontEnd;
 
 	/* Recover state. */
 	inState = (sjme_scritchaudio)statePtr;
@@ -261,7 +261,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __dylibLoad)(
 	sjme_scritchaudio_dylibApiFunc apiInit;
 	sjme_scritchaudio result;
 	sjme_alloc_pool pool;
-	sjme_frontEnd frontEnd;
+	sjme_frontEndBindable frontEnd;
 
 	if (env == NULL || classy == NULL || path == NULL)
 	{
@@ -318,7 +318,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __dylibLoad)(
 
 	/* Setup frontend data. */
 	memset(&frontEnd, 0, sizeof(frontEnd));
-	(*env)->GetJavaVM(env, (void*)&frontEnd.data);
+	(*env)->GetJavaVM(env, (void*)&frontEnd.base.data);
 
 	/* Initialize the API. */
 	result = NULL;

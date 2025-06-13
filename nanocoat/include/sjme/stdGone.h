@@ -32,6 +32,14 @@
 	#include <threads.h>
 #endif
 
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/* Needed for alloca. */
+	#include <malloc.h>
+#endif
+
+#include <stdio.h>
+#include <string.h>
+
 #if defined(SJME_CONFIG_HAS_STDINT)
 	#include <stdint.h>
 #else

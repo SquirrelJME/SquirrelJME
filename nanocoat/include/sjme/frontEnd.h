@@ -71,6 +71,9 @@ typedef enum sjme_frontEnd_bindAction
  */
 typedef enum sjme_frontEnd_bindType
 {
+	/** Cannot be bound. */
+	SJME_FRONTEND_BINDLESS,
+	
 	/**
 	 * Strong reference to the binding, this means that the data referred
 	 * to by the front end will not disappear.
@@ -117,6 +120,19 @@ typedef enum sjme_frontEnd_bindType
 typedef struct sjme_frontEnd sjme_frontEnd;
 
 /**
+ * This structure stores any front end data as needed, but may also be bound.
+ *
+ * @since 2025/03/18
+ */
+typedef struct sjme_frontEndBindable sjme_frontEndBindable;
+
+/** Casts to a normal non-bindable front-end. */
+#define SJME_AS_FE_NORMALP(x) ((sjme_frontEnd*)(x))
+
+/** Casts to a bindable front-end pointer. */
+#define SJME_AS_FE_BINDABLEP(x) ((sjme_frontEndBindable*)(x))
+	
+/**
  * This function is called when the front end binding needs to be obtained,
  * it may allocate and bind the data when this is called if applicable.
  * 
@@ -130,7 +146,7 @@ typedef struct sjme_frontEnd sjme_frontEnd;
  */
 typedef sjme_errorCode (*sjme_frontEnd_binderFunc)(
 	sjme_attrInNotNull sjme_pointer owner,
-	sjme_attrInOutNotNull sjme_frontEnd* frontEnd,
+	sjme_attrInOutNotNull sjme_frontEndBindable* frontEnd,
 	sjme_attrOutNotNull sjme_pointer* resultData,
 	sjme_attrInValue sjme_frontEnd_bindAction action);
 
@@ -147,6 +163,12 @@ struct sjme_frontEnd
 	
 	/** The binding type used. */
 	sjme_frontEnd_bindType bindType;
+};
+
+struct sjme_frontEndBindable
+{
+	/** The base front end. */
+	sjme_frontEnd base;
 	
 	/** Binder to call when the front end data is needed. */
 	sjme_frontEnd_binderFunc bindHandler;
@@ -173,9 +195,34 @@ struct sjme_frontEnd
  */
 sjme_errorCode sjme_frontEnd_bind(
 	sjme_attrInNotNull sjme_pointer owner,
-	sjme_attrInOutNotNull sjme_frontEnd* frontEnd,
+	sjme_attrInOutNotNull sjme_frontEndBindable* frontEnd,
 	sjme_attrOutNotNull sjme_pointer* resultData);
 
+/**
+ * Copies one front end to another front end.
+ * 
+ * @param dst The destination front-end.
+ * @param dstSize The destination size.
+ * @param src The source front-end.
+ * @return Any resultant error, if any.
+ * @since 2025/06/13
+ */
+sjme_errorCode sjme_frontEnd_copyR(
+	sjme_attrInNotNull void* dst,
+	sjme_attrInPositiveNonZero sjme_jint dstSize,
+	sjme_attrInNotNull void* src);
+
+/**
+ * Copies one front end to another front end.
+ * 
+ * @param dst The destination front-end.
+ * @param src The source front-end.
+ * @return Any resultant error, if any.
+ * @since 2025/06/13
+ */
+#define sjme_frontEnd_copy(dst, src) \
+	(sjme_frontEnd_copyR((dst), sizeof(*(dst)), (src)))
+	
 /**
  * This is called when a front end reference needs to be released. If there
  * is nothing to be released, then this does nothing.
@@ -187,7 +234,7 @@ sjme_errorCode sjme_frontEnd_bind(
  */
 sjme_errorCode sjme_frontEnd_release(
 	sjme_attrInNotNull sjme_pointer owner,
-	sjme_attrInOutNotNull sjme_frontEnd* frontEnd);
+	sjme_attrInOutNotNull sjme_frontEndBindable* frontEnd);
 
 /*--------------------------------------------------------------------------*/
 

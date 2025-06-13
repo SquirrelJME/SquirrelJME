@@ -1193,18 +1193,21 @@ public final class VMHelpers
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		try (ByteArrayOutputStream out = new ByteArrayOutputStream(4096))
+		byte[] buf = new byte[65536];
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream(8192))
 		{
-			byte[] buf = new byte[65536];
 			for (;;)
 			{
 				int rc = __in.read(buf);
 				
 				if (rc < 0)
-					return out.toByteArray();
+					break;
 				
 				out.write(buf, 0, rc);
 			}
+			
+			// Dump result
+			return out.toByteArray();
 		}
 	}
 	

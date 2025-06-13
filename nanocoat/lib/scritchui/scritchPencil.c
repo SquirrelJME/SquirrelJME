@@ -25,7 +25,10 @@ sjme_errorCode sjme_scritchpen_core_close(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Release the front-end. */
-	return sjme_frontEnd_release(g, &g->common.frontEnd);
+	if (g->common.frontEnd.base.bindType != SJME_FRONTEND_BINDLESS)
+		return sjme_frontEnd_release(g,
+			SJME_AS_FE_BINDABLEP(&g->common.frontEnd));
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchpen_core_lock(
@@ -177,7 +180,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInValue sjme_jint tx,
 	sjme_attrInValue sjme_jint ty,
@@ -185,7 +188,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
-	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
+	sjme_attrInNullable const sjme_frontEndBindable* copyFrontEnd)
 {
 	sjme_scritchui_pencilBase result;
 	
@@ -277,8 +280,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	
 	/* Copy lock front end source? */
 	if (inLockFuncs != NULL && inLockFrontEndCopy != NULL)
-		memmove(&result.lockState.source, inLockFrontEndCopy,
-			sizeof(result.lockState.source));
+		sjme_frontEnd_copy(&result.lockState.source, inLockFrontEndCopy);
 	
 	/* Is there an alpha channel? */
 	/* Note that alpha can only be supported if we can read the underlying */
@@ -291,8 +293,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	
 	/* Copy in front end? */
 	if (copyFrontEnd != NULL)
-		memmove(&result.frontEnd, copyFrontEnd,
-			sizeof(*copyFrontEnd));
+		sjme_frontEnd_copy(&result.frontEnd, copyFrontEnd);
 	
 	/* Raw scan put, must be implemented always. */
 	result.prim.rawScanPutPure = result.impl->rawScanPutPure;
@@ -343,12 +344,12 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
-	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy)
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil result;
