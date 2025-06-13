@@ -261,6 +261,7 @@ const sjme_scritchui_pencilImplFunctions sjme_scritchui_win32_pencilFunctions =
 	sjme_sm(.drawLineSrcOver, NULL),
 	sjme_sm(.drawPixelSrc, NULL),
 	sjme_sm(.drawPixelSrcOver, NULL),
+	sjme_sm(.mapColor, NULL),
 	sjme_sm(.rawScanGet, sjme_scritchui_win32_pencilRawScanGet),
 	sjme_sm(.rawScanPutPure, sjme_scritchui_win32_pencilRawScanPutPure),
 	sjme_sm(.setAlphaColor, sjme_scritchui_win32_pencilSetAlphaColor),

@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/stdTypes.h"
+#include "sjme/config.h"
 
 #include <stdio.h>
 #include <stdlib.h>

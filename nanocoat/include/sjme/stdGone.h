@@ -181,6 +181,14 @@ int vsnprintf(
 	sjme_attrInValue va_list args);
 #endif
 
+/* Older MSVC does not have va_copy(). */
+#if defined(SJME_CONFIG_HAS_MSVC) && \
+	!SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010) && \
+	!defined(va_copy)
+	/** Copy argument lists. */
+	#define va_copy(d, s) ((d) = (s))
+#endif
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

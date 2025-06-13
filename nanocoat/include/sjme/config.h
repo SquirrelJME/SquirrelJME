@@ -467,6 +467,9 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/** Allocate on the stack. */
 	#define sjme_alloca(size) _alloca((size))
+
+	/** Free stack allocated data. */
+	#define sjme_alloca_free(ptr) ((void)ptr)
 #endif
 
 /* Visual C SAL 2.0 Annotations. */
@@ -723,6 +726,9 @@ extern "C" {
 #if !defined(sjme_alloca)
 	/** Allocate on the stack. */
 	#define sjme_alloca(size) alloca((size))
+
+	/** Free stack allocated data. */
+	#define sjme_alloca_free(ptr) ((void)ptr)
 #endif
 
 #if !defined(sjme_inline)
