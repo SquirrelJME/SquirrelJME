@@ -132,10 +132,10 @@ static sjme_errorCode sjme_stream_inputSeekableRead(
 
 static const sjme_stream_inputFunctions sjme_stream_inputSeekableFunctions =
 {
-	.available = sjme_stream_inputSeekableAvailable,
-	.init = sjme_stream_inputSeekableInit,
-	.close = sjme_stream_inputSeekableClose,
-	.read = sjme_stream_inputSeekableRead,
+	sjme_sm(.available, sjme_stream_inputSeekableAvailable),
+	sjme_sm(.init, sjme_stream_inputSeekableInit),
+	sjme_sm(.close, sjme_stream_inputSeekableClose),
+	sjme_sm(.read, sjme_stream_inputSeekableRead),
 };
 
 sjme_errorCode sjme_stream_inputOpenSeekable(

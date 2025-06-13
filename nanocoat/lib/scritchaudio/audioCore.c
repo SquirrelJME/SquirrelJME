@@ -44,21 +44,21 @@ static const sjme_scritchaudio_rate sjme_scritchaudio_rateFallback[9] =
  */
 static const sjme_scritchaudio_apiFunctions sjme_scritchaudio_coreFunctions =
 {
-	.disconnect = sjme_scritchaudio_core_disconnect,
-	.queryMidiPorts = sjme_scritchaudio_core_queryMidiPorts,
-	.loopIterate = sjme_scritchaudio_core_loopIterate,
-	.sourceAttach = sjme_scritchaudio_core_sourceAttach,
+	sjme_sm(.disconnect, sjme_scritchaudio_core_disconnect),
+	sjme_sm(.loopIterate, sjme_scritchaudio_core_loopIterate),
+	sjme_sm(.queryMidiPorts, sjme_scritchaudio_core_queryMidiPorts),
+	sjme_sm(.sourceAttach, sjme_scritchaudio_core_sourceAttach),
 };
 
 static const sjme_scritchaudio_internFunctions sjme_scritchaudio_coreInterns =
 {
-	.calcRenderInfo = sjme_scritchaudio_core_calcRenderInfo,
-	.fallbackNext = sjme_scritchaudio_core_fallbackNext,
-	.loopIterate = sjme_scritchaudio_core_loopIterateIntern,
-	.peerConnect = sjme_scritchaudio_core_peerConnect,
-	.peerDisconnect = sjme_scritchaudio_core_peerDisconnect,
-	.peerNoneDispatch = sjme_scritchaudio_core_peerNoneDispatch,
-	.streamCreate = sjme_scritchaudio_core_streamCreate,
+	sjme_sm(.calcRenderInfo, sjme_scritchaudio_core_calcRenderInfo),
+	sjme_sm(.fallbackNext, sjme_scritchaudio_core_fallbackNext),
+	sjme_sm(.loopIterate, sjme_scritchaudio_core_loopIterateIntern),
+	sjme_sm(.peerConnect, sjme_scritchaudio_core_peerConnect),
+	sjme_sm(.peerDisconnect, sjme_scritchaudio_core_peerDisconnect),
+	sjme_sm(.peerNoneDispatch, sjme_scritchaudio_core_peerNoneDispatch),
+	sjme_sm(.streamCreate, sjme_scritchaudio_core_streamCreate),
 };
 
 static sjme_errorCode sjme_scritchaudio_core_initActual(

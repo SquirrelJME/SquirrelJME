@@ -457,7 +457,11 @@ void sjme_thread_yield(void)
 #elif defined(SJME_CONFIG_HAS_THREADS_PTHREAD_BSD)
 	pthread_yield();
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
+#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_NT_4)
 	if (!SwitchToThread())
 		SetLastError(0);
+#else
+	Sleep(0);
+#endif
 #endif
 }

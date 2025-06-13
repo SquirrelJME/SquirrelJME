@@ -1,4 +1,5 @@
 # Gradle building
+.idea/libraries
 .gradle/
 build/
 buildSrc/.gradle/
@@ -147,6 +148,7 @@ nanocoat/rom/squirreljme-slow-test.list
 nanocoat/cmake-build-*
 emulators/emulator-base/cmake-build-*
 *.jar
+nanocoat/build
 
 # Fossil files
 _FOSSIL_

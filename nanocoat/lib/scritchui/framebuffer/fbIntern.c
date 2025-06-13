@@ -42,8 +42,8 @@ static sjme_errorCode sjme_scritchui_fb_selLockRelease(
 /** Selection buffer functions. */
 static const sjme_scritchui_pencilLockFunctions sjme_scritchui_fb_selBufFuncs =
 {
-	.lock = sjme_scritchui_fb_selLock,
-	.lockRelease = sjme_scritchui_fb_selLockRelease,
+	sjme_sm(.lock, sjme_scritchui_fb_selLock),
+	sjme_sm(.lockRelease, sjme_scritchui_fb_selLockRelease),
 };
 
 static sjme_errorCode sjme_scritchui_fb_eventInput(

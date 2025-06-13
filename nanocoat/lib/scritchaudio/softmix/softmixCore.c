@@ -25,12 +25,12 @@
  */
 const sjme_scritchaudio_implFunctions sjme_scritchaudio_softmixFunctions =
 {
-	.apiInit = sjme_scritchaudio_softmix_apiInit,
-	.disconnect = sjme_scritchaudio_softmix_disconnect,
-	.loopIterate = sjme_scritchaudio_softmix_loopIterate,
-	.queryMidiPorts = sjme_scritchaudio_softmix_queryMidiPorts,
-	.sourceAttach = sjme_scritchaudio_softmix_sourceAttach,
-	.streamCreate = sjme_scritchaudio_softmix_streamCreate,
+	sjme_sm(.apiInit, sjme_scritchaudio_softmix_apiInit),
+	sjme_sm(.disconnect, sjme_scritchaudio_softmix_disconnect),
+	sjme_sm(.loopIterate, sjme_scritchaudio_softmix_loopIterate),
+	sjme_sm(.queryMidiPorts, sjme_scritchaudio_softmix_queryMidiPorts),
+	sjme_sm(.sourceAttach, sjme_scritchaudio_softmix_sourceAttach),
+	sjme_sm(.streamCreate, sjme_scritchaudio_softmix_streamCreate),
 };
 
 static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_softmix_poll(

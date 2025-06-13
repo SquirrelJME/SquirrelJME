@@ -9,9 +9,7 @@
 
 package cc.squirreljme.jvm.mle.callbacks;
 
-import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.constants.AudioRenderResult;
-import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;

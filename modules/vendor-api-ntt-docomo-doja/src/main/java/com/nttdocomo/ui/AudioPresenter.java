@@ -165,6 +165,10 @@ public class AudioPresenter
 	private final __MIDPPlayerListener__ _playerListener =
 		new __MIDPPlayerListener__(new WeakReference<>(this));
 	
+	/** The current media being played. */
+	@SquirrelJMEVendorApi
+	private volatile MediaResource _currentMedia;
+	
 	/**
 	 * This cannot be instantiated by the user.
 	 *
@@ -181,11 +185,18 @@ public class AudioPresenter
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/07
+	 */
 	@Api
 	@Override
 	public MediaResource getMediaResource()
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			return this._currentMedia;
+		}
 	}
 	
 	/**
@@ -305,6 +316,12 @@ public class AudioPresenter
 	@Api
 	public void setData(MediaData __data)
 	{
+		if (__data instanceof MediaSound)
+		{
+			this.setSound((MediaSound)__data);
+			return;
+		}
+		
 		throw Debugging.todo();
 	}
 	
@@ -361,6 +378,7 @@ public class AudioPresenter
 				current.removePlayerListener(playerListener);
 			
 			// Use the given player and attach the new listener to it
+			this._currentMedia = __data;
 			this._current = player;
 			player.addPlayerListener(playerListener);
 			

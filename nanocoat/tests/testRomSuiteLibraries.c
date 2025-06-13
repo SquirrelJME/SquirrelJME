@@ -18,7 +18,7 @@
 /** Just easily returned accordingly. */
 static sjme_list_sjme_nvm_rom_library testFakeSuiteList =
 {
-	.length = 0,
+	sjme_sm(.length, 0),
 	.elementSize = sizeof(sjme_nvm_rom_library)
 };
 

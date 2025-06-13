@@ -183,13 +183,13 @@ static sjme_errorCode sjme_nvm_rom_zipLibraryResourceStream(
 /** Library functions for Zip access. */
 static const sjme_nvm_rom_libraryFunctions sjme_nvm_rom_zipLibraryFunctions =
 {
-	.close = sjme_nvm_rom_zipLibraryClose,
-	.init = sjme_nvm_rom_zipLibraryInit,
-	.path = NULL,
-	.rawData = NULL,
-	.rawSize = NULL,
-	.resourceExists = sjme_nvm_rom_zipLibraryResourceExists,
-	.resourceStream = sjme_nvm_rom_zipLibraryResourceStream,
+	sjme_sm(.close, sjme_nvm_rom_zipLibraryClose),
+	sjme_sm(.init, sjme_nvm_rom_zipLibraryInit),
+	sjme_sm(.path, NULL),
+	sjme_sm(.rawData, NULL),
+	sjme_sm(.rawSize, NULL),
+	sjme_sm(.resourceExists, sjme_nvm_rom_zipLibraryResourceExists),
+	sjme_sm(.resourceStream, sjme_nvm_rom_zipLibraryResourceStream),
 };
 
 sjme_errorCode sjme_nvm_rom_libraryFromZip(

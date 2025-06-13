@@ -96,10 +96,10 @@ static sjme_errorCode sjme_seekable_memorySize(
 
 static const sjme_seekable_functions sjme_seekable_memoryFunctions =
 {
-	.close = sjme_seekable_memoryClose,
-	.init = sjme_seekable_memoryInit,
-	.read = sjme_seekable_memoryRead,
-	.size = sjme_seekable_memorySize,
+	sjme_sm(.close, sjme_seekable_memoryClose),
+	sjme_sm(.init, sjme_seekable_memoryInit),
+	sjme_sm(.read, sjme_seekable_memoryRead),
+	sjme_sm(.size, sjme_seekable_memorySize),
 };
 
 sjme_errorCode sjme_seekable_openMemory(

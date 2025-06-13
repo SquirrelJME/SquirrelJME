@@ -60,7 +60,7 @@ static sjme_jboolean hookGcNvmLocalPopReference(sjme_nvm_frame frame,
  
 const sjme_nvm_stateHooks hooksNvmLocalPopReference =
 {
-	.gc = hookGcNvmLocalPopReference,
+	sjme_sm(.gc, hookGcNvmLocalPopReference),
 };
 
 sjme_jboolean configNvmLocalPopReference(

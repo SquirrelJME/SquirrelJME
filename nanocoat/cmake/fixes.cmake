@@ -173,6 +173,14 @@ macro(squirreljme_target_shared_library_exports target)
 	endif()
 endmacro()
 
+# VC8 and Older
+if(MSVC AND "${MSVC_VERSION}" LESS_EQUAL 1400)
+	# Make sure the multi-byte character set is used
+	remove_definitions(-D_UNICODE)
+	remove_definitions(-DUNICODE)
+	add_definitions(-D_MBCS)
+endif()
+
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	# Turn some warnings into errors
 	check_c_compiler_flag("-Werror=implicit-function-declaration"
@@ -216,7 +224,31 @@ CHECK_INCLUDE_FILE("float.h" SJME_CONFIG_HAS_FLOAT_H)
 if(NOT SJME_CONFIG_HAS_FLOAT_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_FLOAT_H=1)
 endif()
-	
+
+# stdarg.h available?
+CHECK_INCLUDE_FILE("stdarg.h" SJME_CONFIG_HAS_STDARG_H)
+if(NOT SJME_CONFIG_HAS_STDARG_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_STDARG_H=1)
+endif()
+
+# varargs.h available?
+CHECK_INCLUDE_FILE("varargs.h" SJME_CONFIG_HAS_VARARGS_H)
+if(NOT SJME_CONFIG_HAS_VARARGS_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_VARARGS_H=1)
+endif()
+
+# threads.h available?
+CHECK_INCLUDE_FILE("threads.h" SJME_CONFIG_HAS_THREADS_H)
+if(NOT SJME_CONFIG_HAS_THREADS_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_C11_THREADS=1)
+endif()
+
+# Is the SDK version header information available?
+CHECK_INCLUDE_FILE("sdkddkver.h" WIN32_SDKDDKVER_INCLUDE)
+if(WIN32_SDKDDKVER_INCLUDE)
+	add_compile_definitions(SJME_CONFIG_HAS_SDKDDKVER_H=1)
+endif()
+
 # snprintf() available?
 squirreljme_try_compile("snprintf()"
 	SQUIRRELJME_SNPRINTF_TRY_VALID
@@ -233,33 +265,9 @@ squirreljme_try_compile("vsnprintf() with varargs.h"
 	"tryVSNPrintFV"
 	SJME_CONFIG_HAS_NO_VSNPRINTFV)
 
-# stdarg.h available?
-squirreljme_try_compile("stdarg.h"
-	SQUIRRELJME_STDARG_TRY_VALID
-	"tryStdArgH"
-	SJME_CONFIG_HAS_NO_STDARG)
-
-# varargs.h available?
-squirreljme_try_compile("varargs.h"
-	SQUIRRELJME_VARARGS_TRY_VALID
-	"tryVarArgsH"
-	SJME_CONFIG_HAS_NO_VARARGS)
-
-# threads.h available?
-squirreljme_try_compile("threads.h"
-	SQUIRRELJME_C11_THREADS_TRY_VALID
-	"tryThreadsH"
-	SJME_CONFIG_HAS_NO_C11_THREADS)
-
 # Can use thread local?
 squirreljme_try_compile("sjme_threadLocal"
 	SQUIRRELJME_C11_THREADS_TRY_THREAD_LOCAL
 	"tryThreadLocal"
 	SJME_CONFIG_HAS_NO_THREAD_LOCAL)
-
-# Is the SDK version header information available?
-CHECK_INCLUDE_FILE("sdkddkver.h" WIN32_SDKDDKVER_INCLUDE)
-if(WIN32_SDKDDKVER_INCLUDE)
-	add_compile_definitions(SJME_CONFIG_HAS_SDKDDKVER_H=1)
-endif()
 

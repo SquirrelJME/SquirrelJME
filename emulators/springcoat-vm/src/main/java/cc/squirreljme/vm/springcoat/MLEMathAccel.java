@@ -162,7 +162,7 @@ public enum MLEMathAccel
 	},
 	
 	/** {@link MathAccelShelf#pow(double, double)}. */
-	POW("pow:(DD)J")
+	POW("pow:(DD)D")
 	{
 		/**
 		 * {@inheritDoc}

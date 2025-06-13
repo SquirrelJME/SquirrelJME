@@ -68,6 +68,12 @@ sjme_errorCode sjme_dylib_lookup(
 	sjme_pointer handle;
 #elif defined(SJME_CONFIG_HAS_WINDOWS)
 	FARPROC handle;
+#if defined(SJME_CONFIG_HAS_ARCH_IA32)
+#define BUF_SIZE 128
+#define MAX_ATTEMPTS 64
+	sjme_cchar mangled[BUF_SIZE];
+	sjme_jint attempt;
+#endif
 #endif
 
 	if (inLib == NULL || inSymbol == NULL || outPtr == NULL)
@@ -93,11 +99,36 @@ sjme_errorCode sjme_dylib_lookup(
 #elif defined(SJME_CONFIG_HAS_WINDOWS)
 	handle = GetProcAddress(inLib, inSymbol);
 	if (handle == NULL)
-		return SJME_ERROR_INVALID_LIBRARY_SYMBOL;
+	{
+#if defined(SJME_CONFIG_HAS_ARCH_IA32)
+		/* Is the symbol mangled by stdcall? */
+		for (attempt = 0; attempt < MAX_ATTEMPTS; attempt++)
+		{
+			/* Build a new symbol to lookup. */
+			memset(mangled, 0, sizeof(mangled));
+			snprintf(mangled, BUF_SIZE - 1, "_%s@%d",
+				inSymbol, attempt);
+			mangled[BUF_SIZE - 1] = 0;
+
+			/* Lookup this symbol. */
+			handle = GetProcAddress(inLib, mangled);
+			if (handle != NULL)
+				break;
+		}
+
+		/* Still not valid? */
+		if (handle == NULL)
+#endif
+			return SJME_ERROR_INVALID_LIBRARY_SYMBOL;
+	}
 	
 	/* Success! */
 	*outPtr = handle;
 	return SJME_ERROR_NONE;
+#if defined(SJME_CONFIG_HAS_ARCH_IA32)
+#undef BUF_SIZE
+#undef MAX_ATTEMPTS
+#endif
 #else
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

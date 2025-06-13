@@ -13,7 +13,7 @@ squirreljme_include("scritchui.cmake")
 squirreljme_scritchany_enable(audio Audio)
 
 # Core ScritchAudio Library
-squirreljme_multilib_add_library(ScritchAudioCore
+squirreljme_multilib_add_static_library(ScritchAudioCore
 	audioConn.c
 	audioCore.c
 	audioLoop.c
@@ -21,7 +21,7 @@ squirreljme_multilib_add_library(ScritchAudioCore
 	audioStream.c)
 
 # Include main headers
-squirreljme_multilib_target_include_directories(ScritchAudioCore PUBLIC
+squirreljme_multilib_static_target_include_directories(ScritchAudioCore PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
 # Software Mixer

@@ -149,7 +149,7 @@
 		#define SJME_ATOMIC_WIN32_POINTER LONG64
 	#else
 		#define SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
-			InterlockedAdd
+			InterlockedExchangeAdd
 
 		#define SJME_ATOMIC_WIN32_S(type, numPointerStars) \
 			InterlockedExchange

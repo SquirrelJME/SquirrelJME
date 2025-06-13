@@ -14,6 +14,12 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 @Api
 public interface MediaPresenter
 {
+	/**
+	 * Returns the currently playing media.
+	 *
+	 * @return The currently playing media.
+	 * @since 2025/06/07
+	 */
 	@Api
 	MediaResource getMediaResource();
 	

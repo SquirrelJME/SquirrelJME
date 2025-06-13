@@ -20,12 +20,12 @@
  */
 static const sjme_scritchaudio_implFunctions sjme_scritchaudio_ossFunctions =
 {
-	.apiInit = sjme_scritchaudio_oss_apiInit,
-	.disconnect = sjme_scritchaudio_oss_disconnect,
-	.loopIterate = sjme_scritchaudio_oss_loopIterate,
-	.queryMidiPorts = sjme_scritchaudio_oss_queryMidiPorts,
-	.sourceAttach = sjme_scritchaudio_oss_sourceAttach,
-	.streamCreate = sjme_scritchaudio_oss_streamCreate,
+	sjme_sm(.apiInit, sjme_scritchaudio_oss_apiInit),
+	sjme_sm(.disconnect, sjme_scritchaudio_oss_disconnect),
+	sjme_sm(.loopIterate, sjme_scritchaudio_oss_loopIterate),
+	sjme_sm(.queryMidiPorts, sjme_scritchaudio_oss_queryMidiPorts),
+	sjme_sm(.sourceAttach, sjme_scritchaudio_oss_sourceAttach),
+	sjme_sm(.streamCreate, sjme_scritchaudio_oss_streamCreate),
 };
 
 sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(oss)(

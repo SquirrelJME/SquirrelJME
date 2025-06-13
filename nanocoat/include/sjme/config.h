@@ -477,6 +477,9 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/** Allocate on the stack. */
 	#define sjme_alloca(size) _alloca((size))
+
+	/** Free stack allocated data. */
+	#define sjme_alloca_free(ptr) ((void)ptr)
 #endif
 
 /* Visual C SAL 2.0 Annotations. */
@@ -733,6 +736,9 @@ extern "C" {
 #if !defined(sjme_alloca)
 	/** Allocate on the stack. */
 	#define sjme_alloca(size) alloca((size))
+
+	/** Free stack allocated data. */
+	#define sjme_alloca_free(ptr) ((void)ptr)
 #endif
 
 #if !defined(sjme_inline)
@@ -957,15 +963,6 @@ extern "C" {
 	#pragma warning(disable: 4114)
 #endif
 
-#if defined(SJME_CONFIG_HAS_MSVC) && !defined(SJME_CONFIG_HAS_ARCH_AMD64)
-	/** Export as an undecorated symbol. */
-	#define SJME_DYLIB_EXPORT_UNDECORATED \
-		__pragma(comment(linker, "/EXPORT:" __FUNCTION__"=" __FUNCDNAME__))
-#else
-	/** Export as an undecorated symbol. */
-	#define SJME_DYLIB_EXPORT_UNDECORATED
-#endif
-
 /** Bitfield count for @c sjme_jboolean . */
 #define sjme_booleanBit 2
 
@@ -1031,6 +1028,15 @@ extern "C" {
 #else
 	/** Optimize this specific function. */
 	#define sjme_attrOptimize
+#endif
+
+#if defined(SJME_CONFIG_HAS_C99) || \
+	SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+	/** Constant-ish struct member set. */
+	#define sjme_sm(dot, val) dot = val
+#else
+	/** Constant-ish struct member set. */
+	#define sjme_sm(dot, val) val
 #endif
 
 /** Bitfield count for @c sjme_jboolean . */

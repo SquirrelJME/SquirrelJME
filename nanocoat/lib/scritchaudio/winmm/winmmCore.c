@@ -17,12 +17,12 @@
  */
 static const sjme_scritchaudio_implFunctions sjme_scritchaudio_winmmFunctions =
 {
-	.apiInit = sjme_scritchaudio_winmm_apiInit,
-	.disconnect = sjme_scritchaudio_winmm_disconnect,
-	.loopIterate = sjme_scritchaudio_winmm_loopIterate,
-	.queryMidiPorts = sjme_scritchaudio_winmm_queryMidiPorts,
-	.sourceAttach = sjme_scritchaudio_winmm_sourceAttach,
-	.streamCreate = sjme_scritchaudio_winmm_streamCreate,
+	sjme_sm(.apiInit, sjme_scritchaudio_winmm_apiInit),
+	sjme_sm(.disconnect, sjme_scritchaudio_winmm_disconnect),
+	sjme_sm(.loopIterate, sjme_scritchaudio_winmm_loopIterate),
+	sjme_sm(.queryMidiPorts, sjme_scritchaudio_winmm_queryMidiPorts),
+	sjme_sm(.sourceAttach, sjme_scritchaudio_winmm_sourceAttach),
+	sjme_sm(.streamCreate, sjme_scritchaudio_winmm_streamCreate),
 };
 
 sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(winmm)(

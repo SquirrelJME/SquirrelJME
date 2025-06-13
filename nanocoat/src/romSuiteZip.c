@@ -304,11 +304,11 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteLoadLibrary()
 /** Functions for Zip based suites. */
 static sjme_nvm_rom_suiteFunctions sjme_nvm_rom_zipSuiteFunctions =
 {
-	.defaultLaunch = sjme_nvm_rom_zipSuiteDefaultLaunch,
-	.init = sjme_nvm_rom_zipSuiteInit,
-	.libraryId = sjme_nvm_rom_zipSuiteLibraryId,
-	.list = sjme_nvm_rom_zipSuiteListLibraries,
-	.loadLibrary = sjme_nvm_rom_zipSuiteLoadLibrary,
+	sjme_sm(.defaultLaunch, sjme_nvm_rom_zipSuiteDefaultLaunch),
+	sjme_sm(.init, sjme_nvm_rom_zipSuiteInit),
+	sjme_sm(.libraryId, sjme_nvm_rom_zipSuiteLibraryId),
+	sjme_sm(.list, sjme_nvm_rom_zipSuiteListLibraries),
+	sjme_sm(.loadLibrary, sjme_nvm_rom_zipSuiteLoadLibrary),
 };
 
 sjme_errorCode sjme_nvm_rom_suiteFromZipSeekable(
