@@ -30,7 +30,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd)
 {
 #define GROW_SIZE 8
 	sjme_errorCode error;
@@ -64,7 +64,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	result->rate = inRate;
 	result->channels = inChannels;
 	if (initFrontEnd != NULL)
-		memmove(&result->frontEnd, initFrontEnd, sizeof(*initFrontEnd));
+		sjme_frontEnd_copy(&result->frontEnd, initFrontEnd);
 
 	/* Forward API init. */
 	if (sjme_error_is(error = inState->impl->sourceAttach(inState,

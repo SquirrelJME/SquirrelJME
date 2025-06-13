@@ -450,7 +450,7 @@ typedef sjme_errorCode (*sjme_scritchaudio_sourceAttachFunc)(
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
 
 /**
  * Attaches a source renderer to the given stream, the renderer will use the
@@ -819,7 +819,7 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchaudio_dylibApiFunc)(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
 	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
 	
 /** The base name for the ScritchAudio dynamic library. */
 #define SJME_SCRITCHAUDIO_DYLIB_NAME_BASE \

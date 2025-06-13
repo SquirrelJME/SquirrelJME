@@ -304,8 +304,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 
 	/* Use provided front end if a core interface. */
 	if (initFrontEnd != NULL)
-		memmove(&state->common.frontEnd, initFrontEnd,
-			sizeof(*initFrontEnd));
+		sjme_frontEnd_copy(&state->common.frontEnd, initFrontEnd);
 	
 	/* Common initialize. */
 	if (sjme_error_is(error = state->intern->initCommon(state,

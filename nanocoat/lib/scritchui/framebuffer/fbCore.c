@@ -157,8 +157,7 @@ sjme_errorCode sjme_scritchui_fb_biSetListener(
 	
 	/* Make sure front end is copied or cleared as well. */
 	if (copyFrontEnd != NULL)
-		memmove(&infoCore->frontEnd, copyFrontEnd,
-			sizeof(infoCore->frontEnd));
+		sjme_frontEnd_copy(&infoCore->frontEnd, copyFrontEnd);
 	else
 		memset(&infoCore->frontEnd, 0, sizeof(infoCore->frontEnd));
 	

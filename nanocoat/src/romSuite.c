@@ -210,8 +210,7 @@ sjme_errorCode sjme_nvm_rom_suiteNew(
 	
 	/* Copy front end data? */
 	if (copyFrontEnd != NULL)
-		memmove(&result->common.frontEnd, copyFrontEnd,
-			sizeof(*copyFrontEnd));
+		sjme_frontEnd_copy(&result->common.frontEnd, copyFrontEnd);
 	result->common.frontEnd.bindType = SJME_FRONTEND_BINDLESS;
 	
 	/* Call initializer. */

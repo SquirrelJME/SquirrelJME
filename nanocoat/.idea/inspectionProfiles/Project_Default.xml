@@ -12,6 +12,29 @@
     <inspection_tool class="CppRedundantParentheses" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppReplaceMemsetWithZeroInitialization" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppTooWideScope" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="CustomRegExpInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myConfigurations">
+        <list>
+          <RegExpInspectionConfiguration>
+            <option name="description" value="SquirrelJME memmove frontEnd to copy" />
+            <option name="name" value="SquirrelJME memmove frontEnd to copy" />
+            <option name="problemDescriptor" value="squirreljme-memmove-frontend" />
+            <option name="suppressId" value="squirreljme-memmove-frontend" />
+            <option name="uuid" value="b23c1e9e-fc2e-333a-94a8-25c517e51f85" />
+            <option name="patterns">
+              <list>
+                <InspectionPattern>
+                  <option name="regExp" value="memmove\(([^,]+)frontEnd,([ \t\r\n]*)([^,]+)frontEnd,[ \t\r\n]*sizeof(.*)\);" />
+                  <option name="_fileType" value="C/C++" />
+                  <option name="searchContext" value="ANY" />
+                  <option name="replacement" value="sjme_frontEnd_copy($1frontEnd,$2$3frontEnd);" />
+                </InspectionPattern>
+              </list>
+            </option>
+          </RegExpInspectionConfiguration>
+        </list>
+      </option>
+    </inspection_tool>
     <inspection_tool class="Deprecations" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="EditorConfigEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HashLoopInspection" enabled="false" level="ERROR" enabled_by_default="false" />

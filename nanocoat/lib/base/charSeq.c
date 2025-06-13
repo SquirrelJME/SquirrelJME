@@ -421,8 +421,7 @@ sjme_errorCode sjme_charSeq_newFunctionStatic(
 	outSeq->length = length;
 	outSeq->data.function.impl = functions;
 	if (frontEnd != NULL)
-		memmove(&outSeq->data.function.frontEnd, frontEnd,
-			sizeof(*frontEnd));
+		sjme_frontEnd_copy(&outSeq->data.function.frontEnd, frontEnd);
 	outSeq->data.function.frontEnd.bindType = SJME_FRONTEND_BINDLESS;
 
 	/* Success! */

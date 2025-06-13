@@ -64,7 +64,7 @@ static const sjme_scritchaudio_internFunctions sjme_scritchaudio_coreInterns =
 static sjme_errorCode sjme_scritchaudio_core_initActual(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd,
 	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
 	sjme_attrInNotNull sjme_scritchaudio wrappedStated,
 	sjme_attrInValue sjme_jboolean isHigher,
@@ -126,7 +126,7 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 
 	/* Copy front end data. */
 	if (initFrontEnd != NULL)
-		memmove(&result->frontEnd, initFrontEnd, sizeof(result->frontEnd));
+		sjme_frontEnd_copy(&result->frontEnd, initFrontEnd);
 
 	/* Bind wrapped states together? */
 	if (wrappedStated != NULL)
@@ -265,7 +265,7 @@ sjme_errorCode sjme_scritchaudio_core_fallbackNext(
 sjme_errorCode sjme_scritchaudio_core_init(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd,
 	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread)
 {

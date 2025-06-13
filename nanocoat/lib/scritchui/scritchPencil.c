@@ -280,8 +280,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	
 	/* Copy lock front end source? */
 	if (inLockFuncs != NULL && inLockFrontEndCopy != NULL)
-		memmove(&result.lockState.source, inLockFrontEndCopy,
-			sizeof(result.lockState.source));
+		sjme_frontEnd_copy(&result.lockState.source, inLockFrontEndCopy);
 	
 	/* Is there an alpha channel? */
 	/* Note that alpha can only be supported if we can read the underlying */
@@ -294,8 +293,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	
 	/* Copy in front end? */
 	if (copyFrontEnd != NULL)
-		memmove(&result.frontEnd, copyFrontEnd,
-			sizeof(*copyFrontEnd));
+		sjme_frontEnd_copy(&result.frontEnd, copyFrontEnd);
 	
 	/* Raw scan put, must be implemented always. */
 	result.prim.rawScanPutPure = result.impl->rawScanPutPure;

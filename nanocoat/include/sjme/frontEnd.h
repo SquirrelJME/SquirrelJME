@@ -170,9 +170,6 @@ struct sjme_frontEndBindable
 	/** The base front end. */
 	sjme_frontEnd base;
 	
-	/** The lock when binding/releasing is being performed on this. */
-	sjme_thread_spinLock bindLock;
-	
 	/** Binder to call when the front end data is needed. */
 	sjme_frontEnd_binderFunc bindHandler;
 };
@@ -201,6 +198,31 @@ sjme_errorCode sjme_frontEnd_bind(
 	sjme_attrInOutNotNull sjme_frontEndBindable* frontEnd,
 	sjme_attrOutNotNull sjme_pointer* resultData);
 
+/**
+ * Copies one front end to another front end.
+ * 
+ * @param dst The destination front-end.
+ * @param dstSize The destination size.
+ * @param src The source front-end.
+ * @return Any resultant error, if any.
+ * @since 2025/06/13
+ */
+sjme_errorCode sjme_frontEnd_copyR(
+	sjme_attrInNotNull void* dst,
+	sjme_attrInPositiveNonZero sjme_jint dstSize,
+	sjme_attrInNotNull void* src);
+
+/**
+ * Copies one front end to another front end.
+ * 
+ * @param dst The destination front-end.
+ * @param src The source front-end.
+ * @return Any resultant error, if any.
+ * @since 2025/06/13
+ */
+#define sjme_frontEnd_copy(dst, src) \
+	(sjme_frontEnd_copyR((dst), sizeof(*(dst)), (src)))
+	
 /**
  * This is called when a front end reference needs to be released. If there
  * is nothing to be released, then this does nothing.

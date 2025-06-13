@@ -49,7 +49,7 @@ sjme_errorCode sjme_scritchaudio_core_fallbackNext(
 sjme_errorCode sjme_scritchaudio_core_init(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd,
 	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread);
 	
@@ -97,7 +97,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
 	
 sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	sjme_attrInNotNull sjme_scritchaudio inState,

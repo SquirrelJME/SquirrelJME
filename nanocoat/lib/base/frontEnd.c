@@ -26,6 +26,41 @@ sjme_errorCode sjme_frontEnd_bind(
 	return sjme_error_notImplemented(0);
 }
 
+sjme_errorCode sjme_frontEnd_copyR(
+	sjme_attrInNotNull void* dst,
+	sjme_attrInPositiveNonZero sjme_jint dstSize,
+	sjme_attrInNotNull void* src)
+{
+	sjme_frontEndBindable* fullDst;
+	sjme_frontEndBindable* fullSrc;
+	
+	if (dst == NULL || src == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Cast. */
+	fullDst = dst;
+	fullSrc = src;
+
+	/* If bindless or the destination is bindless only, then just */
+	/* copy the base front-end as it would not fit. */
+	if (fullSrc->base.bindType == SJME_FRONTEND_BINDLESS ||
+		dstSize == sizeof(sjme_frontEnd))
+	{
+		memmove(&fullDst->base, &fullSrc->base, /* */ sizeof(fullDst->base));
+
+		/* Clear bindable data. */
+		if (dstSize == sizeof(sjme_frontEndBindable))
+			fullDst->bindHandler = NULL;
+	}
+
+	/* Otherwise, copy the entire thing. */
+	else
+		memmove(fullDst, fullSrc, sizeof(*fullSrc));
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_frontEnd_release(
 	sjme_attrInNotNull sjme_pointer owner,
 	sjme_attrInOutNotNull sjme_frontEndBindable* frontEnd)
@@ -40,7 +75,8 @@ sjme_errorCode sjme_frontEnd_release(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Lock the front end*/
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(&frontEnd->bindLock)))
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&frontEnd->base.bindLock)))
 		return sjme_error_is(error);
 
 	/* Only if there is data or a wrapper, can we do an unbind. */
@@ -55,7 +91,7 @@ sjme_errorCode sjme_frontEnd_release(
 		}
 
 	/* Unlock! */
-	if (sjme_thread_spinLockRelease(&frontEnd->bindLock, NULL))
+	if (sjme_thread_spinLockRelease(&frontEnd->base.bindLock, NULL))
 		return sjme_error_default(error);
 
 	/* Failed or success? */
