@@ -13,8 +13,8 @@
  * @since 2024/03/27
  */
 
-#ifndef SQUIRRELJME_DYLIB_H
-#define SQUIRRELJME_DYLIB_H
+#ifndef SJME_C_DYLIB_H
+#define SJME_C_DYLIB_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"

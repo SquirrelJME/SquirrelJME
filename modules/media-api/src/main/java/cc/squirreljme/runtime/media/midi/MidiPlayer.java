@@ -9,8 +9,11 @@
 package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import cc.squirreljme.runtime.gcf.InputStreamConnection;
+import cc.squirreljme.runtime.media.AbstractMidiControl;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -19,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
@@ -30,6 +32,7 @@ import javax.microedition.media.control.MIDIControl;
  *
  * @since 2022/04/24
  */
+@SquirrelJMEVendorApi
 public class MidiPlayer
 	extends AbstractPlayer
 {
@@ -45,10 +48,16 @@ public class MidiPlayer
 		0x4D54726B;
 	
 	/** The control used to emit MIDI sounds. */
-	protected final MIDIControl midiControl;
+	@SquirrelJMEVendorApi
+	protected final AbstractMidiControl midiControl;
+	
+	/** The MIDI player this is using. */
+	@SquirrelJMEVendorApi
+	protected final Player midiPlayer;
 	
 	/** The un-realized input stream. */
-	private volatile InputStream _unrealizedIn;
+	@SquirrelJMEVendorApi
+	private volatile InputStreamConnection _unrealizedIn;
 	
 	/** The MIDI track data. */
 	private volatile byte[] _data;
@@ -73,7 +82,7 @@ public class MidiPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/24
 	 */
-	public MidiPlayer(InputStream __in)
+	public MidiPlayer(InputStreamConnection __in)
 		throws IOException, MediaException, NullPointerException
 	{
 		super("audio/midi");
@@ -83,11 +92,15 @@ public class MidiPlayer
 		
 		// We need a player to emit the MIDI events to
 		Player midiPlayer = Manager.createPlayer(Manager.MIDI_DEVICE_LOCATOR);
-		this.midiControl = (MIDIControl)midiPlayer.getControl(
+		this.midiPlayer = midiPlayer;
+		this.midiControl = (AbstractMidiControl)midiPlayer.getControl(
 			MIDIControl.class.getName());
 		
 		// For later realization
 		this._unrealizedIn = __in;
+		
+		// Register the MIDI controller
+		this.registerControl(this.midiControl);
 	}
 	
 	/**
@@ -113,9 +126,15 @@ public class MidiPlayer
 				if (data != null)
 					return;
 				
+				// Data is already destroyed?
+				if (this._unrealizedIn == null)
+					throw new MediaException("GONE");
+				
 				// Read in the data and drop the unrealized stream
-				this._data = StreamUtils.readAll(this._unrealizedIn);
-				this._unrealizedIn = null;
+				try (InputStream in = this._unrealizedIn.openInputStream())
+				{
+					this._data = StreamUtils.readAll(in);
+				}
 			}
 		}
 		catch (IOException e)
@@ -135,6 +154,9 @@ public class MidiPlayer
 	protected void becomingPrefetched()
 		throws MediaException
 	{
+		// Make sure the MIDI player is started
+		this.midiPlayer.start();
+		
 		// Tracks that are loaded
 		List<MTrkParser> tracks = new ArrayList<>();
 		
@@ -307,6 +329,12 @@ public class MidiPlayer
 	}
 	
 	@Override
+	protected void useVolume(int __volume)
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
 	public void close()
 	{
 		// Just deallocate
@@ -339,32 +367,26 @@ public class MidiPlayer
 	}
 	
 	@Override
-	public Control getControl(String __control)
+	public long getMediaTime()
 	{
 		throw Debugging.todo();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2022/04/24
+	 * @since 2025/06/03
 	 */
 	@Override
-	public Control[] getControls()
-	{
-		return new Control[]{this.midiControl};
-	}
-	
-	@Override
-	public long getMediaTime()
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public long setMediaTime(long __now)
+	public long setMediaTime(long __micros)
 		throws MediaException
 	{
-		throw Debugging.todo();
+		synchronized (MidiPlayer.class)
+		{
+			MidiTracker tracker = MidiPlayer._TRACKER;
+			if (tracker != null)
+				tracker.fastForward(__micros);
+			return __micros;
+		}
 	}
 	
 	/**

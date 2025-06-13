@@ -13,8 +13,8 @@
  * @since 2024/07/12
  */
 
-#ifndef SQUIRRELJME_CORERASTER_H
-#define SQUIRRELJME_CORERASTER_H
+#ifndef SJME_C_CORERASTER_H
+#define SJME_C_CORERASTER_H
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"

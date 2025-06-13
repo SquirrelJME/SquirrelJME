@@ -13,8 +13,8 @@
  * @since 2023/11/18
  */
 
-#ifndef SQUIRRELJME_BYTECODE_H
-#define SQUIRRELJME_BYTECODE_H
+#ifndef SJME_C_BYTECODE_H
+#define SJME_C_BYTECODE_H
 
 #include "sjme/error.h"
 #include "sjme/nvm/nvm.h"

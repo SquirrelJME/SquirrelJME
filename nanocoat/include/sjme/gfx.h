@@ -13,8 +13,8 @@
  * @since 2023/11/24
  */
 
-#ifndef SQUIRRELJME_GFX_H
-#define SQUIRRELJME_GFX_H
+#ifndef SJME_C_GFX_H
+#define SJME_C_GFX_H
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/gfxConst.h"

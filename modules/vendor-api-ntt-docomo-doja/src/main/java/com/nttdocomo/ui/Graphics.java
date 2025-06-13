@@ -11,11 +11,10 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
+import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import cc.squirreljme.runtime.nttdocomo.ui.EightBitImageStore;
 import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
 import cc.squirreljme.runtime.nttdocomo.ui.LockFlush;
-import com.nttdocomo.opt.ui.Graphics2;
 import javax.microedition.lcdui.game.Sprite;
 
 /**
@@ -682,8 +681,8 @@ public class Graphics
 	private static javax.microedition.lcdui.Image __recoverImage(Image __i)
 		throws UIException
 	{
-		if (__i instanceof __MIDPImage__)
-			return ((__MIDPImage__)__i).__midpImage();
+		if (__i != null)
+			return __i._midpImage;
 		
 		// Mutable image
 		else if (__i instanceof __MutableImage__)

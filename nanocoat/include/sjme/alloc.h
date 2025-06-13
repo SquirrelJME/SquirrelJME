@@ -13,8 +13,8 @@
  * @since 2023/11/18
  */
 
-#ifndef SQUIRRELJME_ALLOC_H
-#define SQUIRRELJME_ALLOC_H
+#ifndef SJME_C_ALLOC_H
+#define SJME_C_ALLOC_H
 
 #include "sjme/frontEnd.h"
 #include "sjme/stdTypes.h"

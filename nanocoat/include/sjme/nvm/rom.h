@@ -13,8 +13,8 @@
  * @since 2023/12/12
  */
 
-#ifndef SQUIRRELJME_ROM_H
-#define SQUIRRELJME_ROM_H
+#ifndef SJME_C_ROM_H
+#define SJME_C_ROM_H
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/list.h"

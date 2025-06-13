@@ -85,6 +85,12 @@ void sjme_jni_throwMLECallError(JNIEnv* env, sjme_errorCode code)
 		"cc/squirreljme/jvm/mle/exceptions/MLECallError");
 }
 
+void sjme_jni_throwNullPointerException(JNIEnv* env)
+{
+	sjme_jni_throwThrowable(env, SJME_ERROR_NULL_ARGUMENTS,
+		"java/lang/NullPointerException");
+}
+
 void sjme_jni_throwThrowable(JNIEnv* env, sjme_errorCode code,
 	sjme_lpcstr type)
 {

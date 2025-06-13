@@ -13,8 +13,8 @@
  * @since 2024/01/01
  */
 
-#ifndef SQUIRRELJME_CLASSY_H
-#define SQUIRRELJME_CLASSY_H
+#ifndef SJME_C_CLASSY_H
+#define SJME_C_CLASSY_H
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/stringPool.h"

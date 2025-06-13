@@ -13,8 +13,8 @@
  * @since 2024/07/30
  */
 
-#ifndef SQUIRRELJME_MOTIF_H
-#define SQUIRRELJME_MOTIF_H
+#ifndef SJME_C_MOTIF_H
+#define SJME_C_MOTIF_H
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiImpl.h"

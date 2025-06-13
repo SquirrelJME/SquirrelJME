@@ -9,15 +9,8 @@
 # Include common macros to make things easier
 squirreljme_include("scritchui.cmake")
 
-if(SQUIRRELJME_ENABLE_FPIC)
-	set(SQUIRRELJME_BASE_LIB BasePIC)
-	set(SQUIRRELJME_SCRITCHUI_CORE_LIB ScritchUICorePIC)
-	set(SQUIRRELJME_SCRITCHUI_FB_LIB ScritchUIFBPIC)
-else()
-	set(SQUIRRELJME_BASE_LIB Base)
-	set(SQUIRRELJME_SCRITCHUI_CORE_LIB ScritchUICore)
-	set(SQUIRRELJME_SCRITCHUI_FB_LIB ScritchUIFB)
-endif()
+# Reset any state
+squirreljme_scritchany_enable(ui UI)
 
 # Enable prototype developer ScritchUI implementations?
 option(SQUIRRELJME_ENABLE_GUI_DEVELOPER
@@ -121,20 +114,3 @@ if(SQUIRRELJME_ENABLE_GUI_DEVELOPER)
 		squirreljme_scritchui_build(GTK3_FOUND gtk3 GTK3)
 	endif()
 endif()
-
-# Collect all ScritchUI outputs into a single archive
-set(SQUIRRELJME_SCRITCHUI_COLLECT_ZIP
-	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}/libsquirreljme-scritchui.zip")
-set(SQUIRRELJME_SCRITCHUI_COLLECT_LIST
-	"${CMAKE_CURRENT_BINARY_DIR}/libsquirreljme-scritchui.list")
-file(WRITE "${SQUIRRELJME_SCRITCHUI_COLLECT_LIST}"
-	"${SQUIRRELJME_SCRITCHUI_COLLECT_NAMES_CONTENT}")
-add_custom_target(ScritchUICollectZip
-	COMMAND "${CMAKE_COMMAND}" -E "tar" "cv"
-		"${SQUIRRELJME_SCRITCHUI_COLLECT_ZIP}" "--format=zip" "--"
-		${SQUIRRELJME_SCRITCHUI_COLLECT_LIBS}
-		"${SQUIRRELJME_SCRITCHUI_COLLECT_LIST}"
-	DEPENDS ${SQUIRRELJME_SCRITCHUI_COLLECT_TARGETS}
-	BYPRODUCTS "${SQUIRRELJME_SCRITCHUI_COLLECT_ZIP}"
-	COMMENT "Collects all ScritchUI outputs into one single Zip."
-	COMMAND_EXPAND_LISTS)

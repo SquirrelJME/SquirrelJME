@@ -13,8 +13,8 @@
  * @since 2024/06/10
  */
 
-#ifndef SQUIRRELJME_SCRITCHUIEXTERN_H
-#define SQUIRRELJME_SCRITCHUIEXTERN_H
+#ifndef SJME_C_SCRITCHUIEXTERN_H
+#define SJME_C_SCRITCHUIEXTERN_H
 
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/dylib.h"

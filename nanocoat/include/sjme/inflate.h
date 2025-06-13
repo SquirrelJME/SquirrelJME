@@ -13,8 +13,8 @@
  * @since 2024/08/25
  */
 
-#ifndef SQUIRRELJME_INFLATE_H
-#define SQUIRRELJME_INFLATE_H
+#ifndef SJME_C_INFLATE_H
+#define SJME_C_INFLATE_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"

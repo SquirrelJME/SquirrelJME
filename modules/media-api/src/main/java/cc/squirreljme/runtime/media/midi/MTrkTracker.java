@@ -9,8 +9,10 @@
 
 package cc.squirreljme.runtime.media.midi;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
+import javax.microedition.media.MediaException;
 import javax.microedition.media.control.MIDIControl;
 
 /**
@@ -96,11 +98,18 @@ public class MTrkTracker
 		// Handle
 		if (event == 0xFF)
 		{
-			if (this.__eventMeta(__midiTracker))
-				if (__midiTracker.player.decrementLoop())
-					__midiTracker.endOfTrack();
-				else
-					this.reset();
+			try
+			{
+				if (this.__eventMeta(__midiTracker))
+					if (__midiTracker.player.decrementLoop())
+						__midiTracker.player.stopViaMedia();
+					else
+						__midiTracker.player.loopViaMedia();
+			}
+			catch (MediaException __e)
+			{
+				throw new RuntimeException(__e.getMessage(), __e);
+			}
 		}
 		else if (event == 0xF0 || event == 0xF7)
 			this.__eventSysEx(event, __control);

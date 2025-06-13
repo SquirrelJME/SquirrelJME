@@ -13,8 +13,8 @@
  * @since 2024/01/08
  */
 
-#ifndef SQUIRRELJME_ATOMIC_H
-#define SQUIRRELJME_ATOMIC_H
+#ifndef SJME_C_ATOMIC_H
+#define SJME_C_ATOMIC_H
 
 #if defined(SJME_MEMIO_ATOMIC_C11)
 	#include <stdatomic.h>

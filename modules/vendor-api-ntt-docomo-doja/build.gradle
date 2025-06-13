@@ -39,4 +39,5 @@ dependencies
 	api project(":modules:midp-lcdui")
 	api project(":modules:vendor-api-squirreljme-zip")
 	api project(":modules:vendor-api-jblend")
+	api project(":modules:media-api")
 }

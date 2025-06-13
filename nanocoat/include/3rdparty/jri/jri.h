@@ -5,8 +5,8 @@
  * Copyright (c) 1996 Netscape Communications Corporation. All rights reserved.
  ******************************************************************************/
 
-#ifndef JRI_H
-#define JRI_H
+#ifndef SJME_C_JRI_H
+#define SJME_C_JRI_H
 
 #include "jritypes.h"
 

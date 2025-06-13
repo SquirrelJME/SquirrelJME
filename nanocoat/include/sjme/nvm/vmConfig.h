@@ -13,8 +13,8 @@
  * @since 2023/12/03
  */
 
-#ifndef SQUIRRELJME_VMCONFIG_H
-#define SQUIRRELJME_VMCONFIG_H
+#ifndef SJME_C_VMCONFIG_H
+#define SJME_C_VMCONFIG_H
 
 #include "sjme/nvm/nvm.h"
 

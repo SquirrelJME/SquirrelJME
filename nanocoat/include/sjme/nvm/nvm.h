@@ -13,8 +13,8 @@
  * @since 2023/07/25
  */
 
-#ifndef SQUIRRELJME_NVM_H
-#define SQUIRRELJME_NVM_H
+#ifndef SJME_C_NVM_H
+#define SJME_C_NVM_H
 
 #include <setjmp.h>
 

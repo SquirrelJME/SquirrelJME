@@ -13,8 +13,8 @@
  * @since 2024/09/14
  */
 
-#ifndef SQUIRRELJME_STRINGPOOL_H
-#define SQUIRRELJME_STRINGPOOL_H
+#ifndef SJME_C_STRINGPOOL_H
+#define SJME_C_STRINGPOOL_H
 
 #include "sjme/charSeq.h"
 #include "sjme/list.h"

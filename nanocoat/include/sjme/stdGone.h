@@ -13,8 +13,8 @@
  * @since 2024/10/03
  */
 
-#ifndef SQUIRRELJME_STDGONE_H
-#define SQUIRRELJME_STDGONE_H
+#ifndef SJME_C_STDGONE_H
+#define SJME_C_STDGONE_H
 
 #include "sjme/config.h"
 

@@ -13,8 +13,8 @@
  * @since 2024/05/14
  */
 
-#ifndef SQUIRRELJME_GTK2INTERN_H
-#define SQUIRRELJME_GTK2INTERN_H
+#ifndef SJME_C_GTK2INTERN_H
+#define SJME_C_GTK2INTERN_H
 
 #include "lib/scritchui/gtk2/gtk2.h"
 #include "lib/scritchui/scritchui.h"

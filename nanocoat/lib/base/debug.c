@@ -18,7 +18,7 @@
 	
 	#include <windows.h>
 	
-	#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_NT_VERSION_4)
+	#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_NT_4)
 		#include <debugapi.h>
 	#endif
 
@@ -43,7 +43,7 @@ void sjme_debug_abort(void)
 		if (sjme_debug_handlers->abort())
 			return;
 
-#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_NT_VERSION_4)
+#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_NT_4)
 	/* When running tests without a debugger this will pop up about 1000 */
 	/* dialogs saying the program aborted, so only abort on debugging. */
 	if (!IsDebuggerPresent())

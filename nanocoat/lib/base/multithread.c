@@ -7,13 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <time.h>
+#include <string.h>
+
 #include "sjme/config.h"
 #include "sjme/multithread.h"
 
 #if defined(SJME_CONFIG_HAS_LINUX)
 	#include <sched.h>
 #elif defined(SJME_CONFIG_HAS_WINDOWS)
-	#if SJME_CONFIG_WINDOWS_VERSION_LEAST(SJME_CONFIG_WINDOWS_VERSION_8)
+	#if SJME_CONFIG_WINDOWS_VERSION_LEAST(SJME_CONFIG_WINDOWS_8)
 		#include <processthreadsapi.h>
 	#endif
 	
@@ -78,7 +81,7 @@ sjme_jboolean sjme_thread_equal(
 
 sjme_errorCode sjme_thread_new(
 	sjme_attrInOutNotNull sjme_thread* outThread,
-	sjme_attrInNullable sjme_intPointer* outThreadId,
+	sjme_attrInNullable sjme_thread_id* outThreadId,
 	sjme_attrInNotNull sjme_thread_mainFunc inMain,
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
@@ -86,7 +89,7 @@ sjme_errorCode sjme_thread_new(
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 #endif
 	sjme_thread result;
-	sjme_intPointer threadId;
+	sjme_thread_id threadId;
 
 	if (outThread == NULL || inMain == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -95,16 +98,21 @@ sjme_errorCode sjme_thread_new(
 	result = SJME_THREAD_NULL;
 	threadId = 0;
 
+	/* Emit barrier. */
+	sjme_atomic_barrier();
+	sjme_thread_yield();
+	sjme_atomic_barrier();
+
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	/* Setup new thread. */
 	if (0 != pthread_create(&result, NULL,
 		inMain, anything))
 		return SJME_ERROR_CANNOT_CREATE;
-	threadId = (sjme_intPointer)result;
+	threadId = (sjme_thread_id)result;
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/* Setup new thread. */
 	result = SJME_THREAD_NULL;
-	threadId = (sjme_intPointer)CreateThread(NULL, 0,
+	threadId = (sjme_thread_id)CreateThread(NULL, 0,
 		(LPTHREAD_START_ROUTINE)inMain,
 		anything, 0, &result);
 	if (threadId == 0 || result == SJME_THREAD_NULL)
@@ -397,6 +405,47 @@ sjme_errorCode sjme_thread_spinLockRelease(
 	}
 	
 	return SJME_ERROR_NONE;
+}
+
+void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
+	sjme_attrInPositive sjme_jint nanos)
+{
+#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
+	LARGE_INTEGER baseTime;
+#elif defined(SJME_CONFIG_HAS_POSIX)
+	struct timespec request;
+	sjme_jint seconds, mod;
+#endif
+	
+	/* Yield instead. */
+	if (millis <= 0 && nanos <= 0)
+	{
+		sjme_thread_yield();
+		return;
+	}
+	
+#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
+	/* Sleep for the given number of milliseconds. */
+	if (millis > 0)
+		Sleep(millis);
+
+	/* Burn the CPU to consume the nanoseconds. */
+	QueryPerformanceCounter(&baseTime);
+	while (nanos > 0)
+		nanos = 0; /* TODO */
+	
+#elif defined(SJME_CONFIG_HAS_POSIX)
+	/* Calculate seconds. */
+	seconds = millis / 1000;
+	mod = millis % 1000;
+
+	/* Sleep for the given amount of time. */
+	request.tv_sec = seconds;
+	request.tv_nsec = nanos + (mod * 1000000);
+	nanosleep(&request, NULL);
+	
+#else
+#endif
 }
 
 void sjme_thread_yield(void)

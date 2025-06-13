@@ -13,8 +13,8 @@
  * @since 2024/01/03
  */
 
-#ifndef SQUIRRELJME_COMPARATOR_H
-#define SQUIRRELJME_COMPARATOR_H
+#ifndef SJME_C_COMPARATOR_H
+#define SJME_C_COMPARATOR_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/tokenUtils.h"

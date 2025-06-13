@@ -9,18 +9,33 @@
 
 package javax.microedition.media;
 
+import cc.squirreljme.jvm.mle.AudioStreamShelf;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
+import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.NullPlayer;
 import cc.squirreljme.runtime.media.SystemNanoTimeBase;
 import cc.squirreljme.runtime.media.midi.MidiControlPlayer;
 import cc.squirreljme.runtime.media.midi.MidiPlayer;
+import cc.squirreljme.runtime.media.mld.IMelodyPlayer;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.microedition.io.Connection;
+import javax.microedition.io.Connector;
+import javax.microedition.io.InputConnection;
 import javax.microedition.media.control.MIDIControl;
 import javax.microedition.media.protocol.DataSource;
+import org.intellij.lang.annotations.Language;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
+/**
+ * This is used to create instances of {@link Player} which are then used to
+ * play back any media. 
+ *
+ * @since 2025/05/04
+ */
 @Api
 public final class Manager
 {
@@ -28,10 +43,13 @@ public final class Manager
 	 * Special player which is used to allow access to a {@link MIDIControl}.
 	 */
 	@Api
+	@Language("http-url-reference")
 	public static final String MIDI_DEVICE_LOCATOR =
 		"device://midi";
 	
+	/** Locator for the playback of simple tones. */
 	@Api
+	@Language("http-url-reference")
 	public static final String TONE_DEVICE_LOCATOR =
 		"device://tone";
 	
@@ -48,9 +66,25 @@ public final class Manager
 	{
 	}
 	
+	/**
+	 * Creates a player which is capable of playing data from the given
+	 * input stream.
+	 *
+	 * @param __in The source to play from.
+	 * @param __contentType The content type of the source.
+	 * @return The resultant player.
+	 * @throws IOException If the source could not be read.
+	 * @throws MediaException If the source and/or content type are not
+	 * supported.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If audio playback is not supported.
+	 * @since 2025/05/04
+	 */
 	@Api
-	public static Player createPlayer(InputStream __in, String __contentType)
-		throws IOException, MediaException, NullPointerException
+	public static Player createPlayer(InputStream __in,
+		@Language("mime-type-reference") String __contentType)
+		throws IOException, MediaException, NullPointerException,
+			SecurityException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
@@ -61,7 +95,26 @@ public final class Manager
 		
 		// Do we need to guess the content type for the stream?
 		if (__contentType == null)
+		{
 			__contentType = Manager.__guessContentType(__in);
+			
+			/* {@squirreljme.error EA1a Could not determine the content
+			type of the input data.} */
+			if (__contentType == null)
+				throw new MediaException(__error__(
+					"EA1a"));
+		}
+		
+		// Native audio stream support?
+		try
+		{
+			if (AudioStreamShelf.decoderSupports(__contentType))
+				throw Debugging.todo();
+		}
+		catch (MLECallError ignored)
+		{
+			// An error occurred while determining this
+		}
 		
 		// Depends on the content type
 		switch (__contentType)
@@ -72,23 +125,39 @@ public final class Manager
 			case "audio/x-mid":
 			case "audio/x-midi":
 			case "music/crescendo":
-				return new MidiPlayer(__in);
+				return new MidiPlayer(new InputStreamConnection(__in));
+				
+				// i-melody MLD
+			case "application/x-mld":
+			case "application/x-mld-music":
+			case "audio/x-mld":
+				return new IMelodyPlayer(new InputStreamConnection(__in));
 		}
 		
-		Debugging.todoNote("createPlayer(%s, %s)%n", __in, __contentType);
-		if (true)
-			return new NullPlayer(__contentType);
-		
-		if (false)
-			throw new IOException();
-		if (false)
-			throw new MediaException();
-		throw Debugging.todo();
+		/* {@squirreljme.error EA1b Unsupported content type. (The content
+		type)} */
+		throw new MediaException(__error__("EA1b %s",
+			__contentType));
 	}
 	
+	/**
+	 * Creates a player which plays from the given locator source. If a known
+	 * locator is not used, this will fall back to sourcing from GCF.
+	 *
+	 * @param __locator The source to use.
+	 * @return The resultant player.
+	 * @throws IOException If the source could not be read.
+	 * @throws MediaException If the source and/or content type are not
+	 * supported.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If audio playback is not supported.
+	 * @since 2025/05/04
+	 */
 	@Api
-	public static Player createPlayer(String __locator)
-		throws IOException, MediaException, NullPointerException
+	public static Player createPlayer(
+		@Language("http-url-reference") String __locator)
+		throws IOException, MediaException, NullPointerException,
+			SecurityException
 	{
 		if (__locator == null)
 			throw new NullPointerException("NARG");
@@ -99,32 +168,38 @@ public final class Manager
 				// MIDI devices?
 			case Manager.MIDI_DEVICE_LOCATOR:
 				return MidiControlPlayer.newMidiPlayer();
+				
+				// Tone?
+			case Manager.TONE_DEVICE_LOCATOR:
+				throw Debugging.todo(__locator);
 		}
 		
-		Debugging.todoNote("createPlayer(%s)%n", __locator);
-		if (true)
-			return new NullPlayer("application/octet-stream");
+		// Use GCF to open the data instead
+		try (Connection netSource = Connector.open(__locator))
+		{
+			/* {@squirreljme.error EA1c The specified locator does not
+			support being read from. (The locator)} */
+			if (!(netSource instanceof InputConnection))
+				throw new MediaException(__error__(
+					"EA1c %s", __locator));
 			
-		if (false)
-			throw new IOException();
-		if (false)
-			throw new MediaException();
-		throw Debugging.todo();
+			// Open source and load from it
+			try (InputStream in = ((InputConnection)netSource)
+				.openInputStream())
+			{
+				return Manager.createPlayer(in, null);
+			}
+		}
 	}
 	
 	@Api
-	public static Player createPlayer(DataSource __a)
+	public static Player createPlayer(DataSource __source)
 		throws IOException, MediaException
 	{
-		Debugging.todoNote("createPlayer(%s)%n", __a);
-		if (true)
-			return new NullPlayer(__a.getContentType());
+		if (__source == null)
+			throw new NullPointerException("NARG");
 		
-		if (false)
-			throw new IOException();
-		if (false)
-			throw new MediaException();
-		throw Debugging.todo();
+		throw Debugging.todo(__source);
 	}
 	
 	@Api
@@ -171,6 +246,7 @@ public final class Manager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/24
 	 */
+	@Language("mime-type-reference")
 	private static String __guessContentType(InputStream __in)
 		throws IOException, NullPointerException
 	{
@@ -189,6 +265,10 @@ public final class Manager
 		if ((a == 'M' && b == 'T' && c == 'h' && d == 'd') ||
 			(a == 'M' && b == 'T' && c == 'r' && d == 'k'))
 			return "audio/midi";
+		
+		// i-melody MLD
+		if ((a == 'm' && b == 'e' && c == 'l' && d == 'o'))
+			return "audio/x-mld";
 		
 		// Unknown
 		return null;

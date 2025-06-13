@@ -13,8 +13,8 @@
  * @since 2024/05/17
  */
 
-#ifndef SQUIRRELJME_SCRITCHUIPENCILFONT_H
-#define SQUIRRELJME_SCRITCHUIPENCILFONT_H
+#ifndef SJME_C_SCRITCHUIPENCILFONT_H
+#define SJME_C_SCRITCHUIPENCILFONT_H
 
 #include "lib/scritchui/scritchuiPencil.h"
 

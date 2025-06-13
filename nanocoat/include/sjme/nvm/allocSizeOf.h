@@ -13,8 +13,8 @@
  * @since 2023/12/14
  */
 
-#ifndef SQUIRRELJME_ALLOCSIZEOF_H
-#define SQUIRRELJME_ALLOCSIZEOF_H
+#ifndef SJME_C_ALLOCSIZEOF_H
+#define SJME_C_ALLOCSIZEOF_H
 
 #include "sjme/error.h"
 #include "sjme/stdTypes.h"

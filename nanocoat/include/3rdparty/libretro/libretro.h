@@ -13,8 +13,8 @@
  * @since 2023/11/18
  */
 
-#ifndef SQUIRRELJME_LIBRETRO_H
-#define SQUIRRELJME_LIBRETRO_H
+#ifndef SJME_C_LIBRETRO_H
+#define SJME_C_LIBRETRO_H
 
 #include "sjme/stdGone.h"
 

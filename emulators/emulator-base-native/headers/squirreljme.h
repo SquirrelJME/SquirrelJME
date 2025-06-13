@@ -17,6 +17,7 @@
 #include "sjme/charSeq.h"
 
 /** Initializing methods. */
+jint JNICALL mleAudioStreamInit(JNIEnv* env, jclass classy);
 jint JNICALL mleBucketInit(JNIEnv* env, jclass classy);
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
 jint JNICALL mleDylibBaseObjectInit(JNIEnv* env, jclass classy);
@@ -155,6 +156,10 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_STRING DESC_CLASS("java/lang/String")
 #define DESC_BYTE_BUFFER DESC_CLASS("java/nio/ByteBuffer")
 
+#define DESC_AUDIOSTREAM \
+	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/AudioStreamBracket")
+#define DESC_AUDIOCONN DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/brackets/AudioConnectionBracket")
 #define DESC_BUCKET \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/BucketBracket")
 #define DESC_JARPACKAGE \
@@ -163,6 +168,8 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilBracket")
 #define DESC_PENCILFONT \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilFontBracket")
+#define DESC_MIDIPORT \
+	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/MidiPortBracket")
 
 #define DESC_DYLIB_COLLECTOR \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/__Collector__")
@@ -179,6 +186,10 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_DYLIB_PENCILFONT \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilFontObject")
 
+#define DESC_AUDIOPLAYER \
+	DESC_CLASS("cc/squirreljme/jvm/mle/callbacks/AudioStreamPlayer")
+#define DESC_AUDIORENDERER \
+	DESC_CLASS("cc/squirreljme/jvm/mle/callbacks/AudioStreamRenderer")
 #define DESC_SCRITCHUI_ACTIVATE_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchActivateListener")
 #define DESC_SCRITCHUI_CLOSE_LISTENER DESC_CLASS( \
@@ -266,6 +277,15 @@ jintArray sjme_jni_mappedArrayInt(JNIEnv* env,
  * @since 2024/04/16
  */
 void sjme_jni_throwMLECallError(JNIEnv* env, sjme_errorCode code);
+
+/**
+ * Throws a @c NullPointerException .
+ *
+ * @param env The current Java environment.
+ * @param code The error code.
+ * @since 2025/05/11
+ */
+void sjme_jni_throwNullPointerException(JNIEnv* env);
 
 /**
  * Throws the given throwable type.

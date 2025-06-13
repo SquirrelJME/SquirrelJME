@@ -13,8 +13,8 @@
  * @since 2024/04/06
  */
 
-#ifndef SQUIRRELJME_GFXCONST_H
-#define SQUIRRELJME_GFXCONST_H
+#ifndef SJME_C_GFXCONST_H
+#define SJME_C_GFXCONST_H
 
 /* Anti-C++. */
 #ifdef __cplusplus

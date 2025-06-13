@@ -22,6 +22,8 @@ is used, refer to that for library bring-ins.
  * Francisco Javier Trujillo Mata
    * RatufaCoat updates related to LibRetro:
      * PS2 Toolchain updates.
+ * Guy Perfect
+   * Keitai Wiki Community Music Implementation
  * Sandy Vujaković
    * Documentation:
      * Contributing.

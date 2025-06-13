@@ -13,8 +13,8 @@
  * @since 2024/04/02
  */
 
-#ifndef SQUIRRELJME_GTK2_H
-#define SQUIRRELJME_GTK2_H
+#ifndef SJME_C_GTK2_H
+#define SJME_C_GTK2_H
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>

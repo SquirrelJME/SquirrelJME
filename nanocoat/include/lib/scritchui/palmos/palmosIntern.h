@@ -13,8 +13,8 @@
  * @since 2024/07/30
  */
 
-#ifndef SQUIRRELJME_PALMOSINTERN_H
-#define SQUIRRELJME_PALMOSINTERN_H
+#ifndef SJME_C_PALMOSINTERN_H
+#define SJME_C_PALMOSINTERN_H
 
 /* Anti-C++. */
 #ifdef __cplusplus

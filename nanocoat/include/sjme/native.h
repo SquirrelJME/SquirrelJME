@@ -13,8 +13,8 @@
  * @since 2023/07/29
  */
 
-#ifndef SQUIRRELJME_NATIVE_H
-#define SQUIRRELJME_NATIVE_H
+#ifndef SJME_C_NATIVE_H
+#define SJME_C_NATIVE_H
 
 #include "nvm/mleConst.h"
 

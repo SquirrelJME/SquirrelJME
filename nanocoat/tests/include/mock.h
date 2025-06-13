@@ -13,8 +13,8 @@
  * @since 2023/11/03
  */
 
-#ifndef SQUIRRELJME_MOCK_H
-#define SQUIRRELJME_MOCK_H
+#ifndef SJME_C_MOCK_H
+#define SJME_C_MOCK_H
 
 #include "sjme/alloc.h"
 #include "sjme/debug.h"

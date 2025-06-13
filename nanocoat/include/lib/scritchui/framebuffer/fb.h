@@ -13,8 +13,8 @@
  * @since 2024/07/16
  */
 
-#ifndef SQUIRRELJME_FB_H
-#define SQUIRRELJME_FB_H
+#ifndef SJME_C_FB_H
+#define SJME_C_FB_H
 
 #include "sjme/config.h"
 #include "sjme/debug.h"

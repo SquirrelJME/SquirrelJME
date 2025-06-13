@@ -13,8 +13,8 @@
  * @since 2024/07/30
  */
 
-#ifndef SQUIRRELJME_X11INTERN_H
-#define SQUIRRELJME_X11INTERN_H
+#ifndef SJME_C_X11INTERN_H
+#define SJME_C_X11INTERN_H
 
 /* Anti-C++. */
 #ifdef __cplusplus

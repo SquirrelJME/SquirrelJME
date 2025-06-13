@@ -13,8 +13,8 @@
  * @since 2023/07/29
  */
 
-#ifndef SQUIRRELJME_TASK_H
-#define SQUIRRELJME_TASK_H
+#ifndef SJME_C_TASK_H
+#define SJME_C_TASK_H
 
 #include "sjme/list.h"
 #include "sjme/nvm/nvm.h"

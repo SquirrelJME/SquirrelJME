@@ -16,8 +16,8 @@
  * @since 2023/07/27
  */
 
-#ifndef SQUIRRELJME_CONFIG_H
-#define SQUIRRELJME_CONFIG_H
+#ifndef SJME_C_CONFIG_H
+#define SJME_C_CONFIG_H
 
 #include <stddef.h>
 
@@ -205,6 +205,55 @@ extern "C" {
 	#define SJME_CONFIG_HAS_BEOS
 #endif
 
+#if defined(SJME_CONFIG_HAS_LINUX) || \
+	defined(SJME_CONFIG_HAS_BSD) || \
+	defined(SJME_CONFIG_HAS_MACOS) || \
+	defined(SJME_CONFIG_HAS_CYGWIN)
+	/** POSIX is available. */
+	#define SJME_CONFIG_HAS_POSIX
+#endif
+
+/** Windows 8. */
+#define SJME_CONFIG_WINDOWS_8 0x0600
+
+/** Windows XP */
+#define SJME_CONFIG_WINDOWS_XP 0x0501
+
+/** Windows Vista. */
+#define SJME_CONFIG_WINDOWS_VISTA 0x0600
+
+/** Windows NT 4.0 */
+#define SJME_CONFIG_WINDOWS_NT_4 0x0400
+
+#if defined(SJME_CONFIG_HAS_WINDOWS)
+	/* Include the Windows SDK versioning information, if available. */
+	#if defined(SJME_CONFIG_HAS_SDKDDKVER_H)
+		#include <sdkddkver.h>
+	#endif
+
+	/** Windows version is at least the given version. */
+	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) (WINVER >= winVer)
+
+	#if SJME_CONFIG_WINDOWS_VERSION_LEAST(SJME_CONFIG_WINDOWS_VISTA)
+		/** Windows NT version is at least the given version. */
+		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) \
+			SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer)
+	#elif defined(_WIN32_WINNT)
+		/** Windows NT version is at least the given version. */
+		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) \
+			(_WIN32_WINNT >= winVer)
+	#else
+		/** Windows NT version is at least the given version. */
+		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
+	#endif
+#else
+	/** Windows version is at least the given version. */
+	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) 0
+
+	/** Windows NT version is at least the given version. */
+	#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
+#endif
+	
 /** Possibly detect endianess. */
 #if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
 	!defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
@@ -917,29 +966,71 @@ extern "C" {
 	#define SJME_DYLIB_EXPORT_UNDECORATED
 #endif
 
-/** Windows 8. */
-#define SJME_CONFIG_WINDOWS_VERSION_8 0x0600
+/** Bitfield count for @c sjme_jboolean . */
+#define sjme_booleanBit 2
 
-/** Windows NT 4.0 */
-#define SJME_CONFIG_WINDOWS_NT_VERSION_4 0x0400
-
-#if defined(SJME_CONFIG_HAS_WINDOWS)
-	/** Windows version is at least the given version. */
-	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) (WINVER >= winVer)
-	
-	#if defined(_WIN32_WINNT)
-		/** Windows NT version is at least the given version. */
-		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) (_WIN32_WINNT >= winVer)
-	#else
-		/** Windows NT version is at least the given version. */
-		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
+/* Clang is completely broken with FLT_ROUNDS. */ 
+#if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_MSVC)
+	/** Assuming floating point rounds to nearest. */
+	#define SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST
+#elif !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+	#if defined(FLT_ROUNDS) && FLT_ROUNDS == 1
+		/** Has floating point that rounds to nearest. */
+		#define SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST
 	#endif
-#else
-	/** Windows version is at least the given version. */
-	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) 0
+#endif
+	
+/* 32-bit floating point matches Java? */
+#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H) && \
+	(defined(SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST) || \
+		defined(SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST)) && \
+	defined(FLT_EVAL_METHOD) && (FLT_EVAL_METHOD == 0) && \
+	defined(FLT_RADIX) && (FLT_RADIX == 2)
+	/* Compatible single floating point? */
+	#if !defined(SJME_CONFIG_HAS_FLOAT_SOFT) && \
+		defined(FLT_MANT_DIG) && (FLT_MANT_DIG == 24) && \
+		((defined(FLT_HAS_SUBNORM) && (FLT_HAS_SUBNORM == 1)) || \
+		(defined(__FLT_HAS_DENORM__) && (__FLT_HAS_DENORM__ == 1)))
+		/** Hardware single floating point. */
+		#define SJME_CONFIG_HAS_FLOAT_HARD
+	#endif
 
-	/** Windows NT version is at least the given version. */
-	#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
+	/* Compatible double floating point? */
+	#if !defined(SJME_CONFIG_HAS_DOUBLE_SOFT) && \
+		defined(DBL_MANT_DIG) && (DBL_MANT_DIG == 53) && \
+		((defined(DBL_HAS_SUBNORM) && (DBL_HAS_SUBNORM == 1)) || \
+		(defined(__DBL_HAS_DENORM__) && (__DBL_HAS_DENORM__ == 1)))
+		/** Hardware double floating point. */
+		#define SJME_CONFIG_HAS_DOUBLE_HARD
+	#endif
+#endif
+
+#if defined(SJME_CONFIG_ASSUME_FLOAT_HARD)
+	/** Assumed to have hardware floating point. */
+	#define SJME_CONFIG_HAS_FLOAT_HARD
+#endif
+
+#if defined(SJME_CONFIG_ASSUME_DOUBLE_HARD)
+	/** Assumed to have hardware double point. */
+	#define SJME_CONFIG_HAS_DOUBLE_HARD
+#endif
+
+#if !defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	/** Has software single floating point. */
+	#define SJME_CONFIG_HAS_FLOAT_SOFT
+#endif
+
+#if !defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/** Has software double floating point. */
+	#define SJME_CONFIG_HAS_DOUBLE_SOFT
+#endif
+
+#if defined(SJME_CONFIG_HAS_GCC)
+	/** Optimize this specific function. */
+	#define sjme_attrOptimize __attribute__((optimize("-O3")))
+#else
+	/** Optimize this specific function. */
+	#define sjme_attrOptimize
 #endif
 
 /** Bitfield count for @c sjme_jboolean . */

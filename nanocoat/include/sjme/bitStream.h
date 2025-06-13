@@ -13,8 +13,8 @@
  * @since 2024/08/25
  */
 
-#ifndef SQUIRRELJME_BITSTREAM_H
-#define SQUIRRELJME_BITSTREAM_H
+#ifndef SJME_C_BITSTREAM_H
+#define SJME_C_BITSTREAM_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/closeable.h"

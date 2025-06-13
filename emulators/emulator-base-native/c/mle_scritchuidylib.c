@@ -1806,9 +1806,9 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	(JNIEnv* env, jclass classy, jstring libPath, jstring name)
 {
 #define BUF_SIZE 128
+	char buf[BUF_SIZE];
 	sjme_errorCode error;
 	sjme_dylib lib;
-	char buf[BUF_SIZE];
 	sjme_scritchui_dylibApiFunc apiInitFunc;
 	const char* libPathChars;
 	jboolean libPathCharsCopy;
@@ -1915,7 +1915,7 @@ fail_dyLibOpen:
 fail_poolInit:
 	/* Delete pool. */
 	if (pool != NULL)
-		free(pool);
+		free((void*)pool);
 
 	/* Fail. */
 	sjme_jni_throwMLECallError(env, sjme_error_default(error));

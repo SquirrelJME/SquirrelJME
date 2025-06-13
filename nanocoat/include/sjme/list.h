@@ -13,8 +13,8 @@
  * @since 2023/12/17
  */
 
-#ifndef SQUIRRELJME_LIST_H
-#define SQUIRRELJME_LIST_H
+#ifndef SJME_C_LIST_H
+#define SJME_C_LIST_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/debug.h"
@@ -274,7 +274,7 @@ sjme_errorCode sjme_list_directInitR(
  * @param allocPool The pool to allocate within.
  * @param growSize The size to grow by.
  * @param inOutList The input and output list.
- * @param injectValue The value to inject.
+ * @param injectValuePtr The value to inject.
  * @param elementSize The size of the list elements.
  * @param elementOffset The offset of elements in the list.
  * @param pointerCheck A check to see if it is a valid pointer.
@@ -285,7 +285,7 @@ sjme_errorCode sjme_list_injectGrowR(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInPositive sjme_jint growSize,
 	sjme_attrInOutNotNull sjme_pointer* inOutList,
-	sjme_attrInNotNull sjme_pointer injectValue,
+	sjme_attrInNotNull sjme_pointer injectValuePtr,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
 	sjme_attrInValue sjme_jint pointerCheck
@@ -297,16 +297,16 @@ sjme_errorCode sjme_list_injectGrowR(
  * @param allocPool The pool to allocate within.
  * @param growSize The size to grow by.
  * @param inOutList The input and output list.
- * @param injectValue The value to inject.
+ * @param injectValuePtr The value to inject.
  * @param type The list type.
  * @param numPointerStars The number of pointer stars.
  * @return Any error state.
  * @since 2025/05/26
  */
 #define sjme_list_injectGrow(allocPool, growSize, inOutList, \
-	injectValue, type, numPointerStars) \
+	injectValuePtr, type, numPointerStars) \
 	sjme_list_injectGrowR((allocPool), (growSize), \
-		(sjme_pointer*)(inOutList), (sjme_pointer)(injectValue), \
+		(sjme_pointer*)(inOutList), (sjme_pointer)(injectValuePtr), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(**(inOutList)) SJME_DEBUG_ONLY_COMMA \

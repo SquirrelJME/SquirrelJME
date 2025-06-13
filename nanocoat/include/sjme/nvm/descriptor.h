@@ -13,8 +13,8 @@
  * @since 2024/02/04
  */
 
-#ifndef SQUIRRELJME_DESCRIPTOR_H
-#define SQUIRRELJME_DESCRIPTOR_H
+#ifndef SJME_C_DESCRIPTOR_H
+#define SJME_C_DESCRIPTOR_H
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/list.h"
