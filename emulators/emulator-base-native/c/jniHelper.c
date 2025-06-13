@@ -284,7 +284,7 @@ static sjme_jchar sjme_jni_jstringCharAt(
 		return 0;
 
 	/* Get string. */
-	string = inSeq->data.function.frontEnd.wrapper;
+	string = inSeq->data.function.frontEnd.base.wrapper;
 
 	/* Not within the string bounds? */
 	len = (*env)->GetStringLength(env, string);
@@ -306,7 +306,7 @@ static sjme_jchar sjme_jni_jstringCharAt(
 }
 
 static sjme_errorCode sjme_jni_jstringLength(
-	sjme_attrInNotNull const sjme_charSeq inSeq,
+	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jint* outLen)
 {
 	sjme_errorCode error;
@@ -324,7 +324,7 @@ static sjme_errorCode sjme_jni_jstringLength(
 		return sjme_error_default(error);
 
 	/* Get string. */
-	string = inSeq->data.function.frontEnd.wrapper;
+	string = inSeq->data.function.frontEnd.base.wrapper;
 
 	/* Get string length. */
 	*outLen = (*env)->GetStringLength(env, string);
@@ -335,8 +335,8 @@ static sjme_errorCode sjme_jni_jstringLength(
 
 static const sjme_charSeq_functions sjme_jni_jstringFunctions =
 {
-	.charAt = sjme_jni_jstringCharAt,
-	.length = sjme_jni_jstringLength,
+	sjme_sm(.charAt, sjme_jni_jstringCharAt),
+	sjme_sm(.length, sjme_jni_jstringLength),
 };
 
 sjme_errorCode sjme_jni_charSeq(
@@ -359,8 +359,7 @@ sjme_errorCode sjme_jni_charSeq(
 	/* Initialize via forward. */
 	memset(inOutSeq, 0, sizeof(*inOutSeq));
 	return sjme_charSeq_newFunctionStatic(
-		inOutSeq, &sjme_jni_jstringFunctions,
-		SJME_AS_FE_NORMALP(&frontEnd));
+		inOutSeq, &sjme_jni_jstringFunctions, &frontEnd);
 }
 
 jlong sjme_jni_jlong(sjme_jlong value)

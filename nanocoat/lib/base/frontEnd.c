@@ -73,6 +73,10 @@ sjme_errorCode sjme_frontEnd_release(
 	/* The front end is always in the owner structure. */
 	if ((sjme_intPointer)frontEnd < (sjme_intPointer)owner)
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* If this is bindless, we do not have to do anything. */
+	if (frontEnd->base.bindType == SJME_FRONTEND_BINDLESS)
+		return SJME_ERROR_NONE;
 	
 	/* Lock the front end*/
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(

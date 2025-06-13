@@ -145,7 +145,7 @@ struct sjme_charSeqStatic
 			const sjme_charSeq_functions* impl;
 			
 			/** Front-end data, as needed. */
-			sjme_frontEnd frontEnd;
+			sjme_frontEndBindable frontEnd;
 		} function;
 		
 		/** Reference to another sequence. */
@@ -315,6 +315,16 @@ sjme_jboolean sjme_charSeq_equalsUtfR(
 	sjme_attrInNotNull sjme_lpcstr bUtf);
 
 /**
+ * Frees and cleans up a character sequence.
+ * 
+ * @param seq The sequence to clean up.
+ * @return Any resultant error, if any.
+ * @since 2025/06/13
+ */
+sjme_errorCode sjme_charSeq_free(
+	sjme_attrInNotNull sjme_charSeq seq);
+
+/**
  * Hashes the given string in accordance to Java's @c String.hashCode() .
  * 
  * @param inSeq The sequence to hash.
@@ -364,7 +374,7 @@ sjme_errorCode sjme_charSeq_itNew(
 sjme_errorCode sjme_charSeq_newFunctionStatic(
 	sjme_attrOutNotNull sjme_charSeqStatic* outSeq,
 	sjme_attrInNotNull const sjme_charSeq_functions* functions,
-	sjme_attrInNullable sjme_frontEnd* frontEnd);
+	sjme_attrInNullable sjme_frontEndBindable* frontEnd);
 	
 /**
  * Allocates a new narrow character sequence.

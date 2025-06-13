@@ -212,6 +212,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
 	sjme_charSeqStatic seq;
 
 	/* Recover. */
+	sjme_message("XYZA");
 	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL || s == NULL)
 	{
@@ -220,6 +221,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
 	}
 
 	/* Get wrapping string sequence. */
+	sjme_message("XYZB");
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(error = sjme_jni_charSeq(env, &seq, s)))
 		goto fail_makeSeq;
@@ -229,9 +231,15 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
 		&seq, o, l, x, y, anchor)))
 		goto fail_drawOp;
 
+	/* Cleanup. */
+	if (sjme_error_is(error = sjme_charSeq_free(&seq)))
+		goto fail_cleanup;
+
 	return;
 
 fail_drawOp:
+	sjme_charSeq_free(&seq);
+fail_cleanup:
 fail_makeSeq:
 	sjme_jni_throwMLECallError(env, error);
 }

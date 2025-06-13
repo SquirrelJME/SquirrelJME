@@ -321,6 +321,51 @@ sjme_jboolean sjme_charSeq_equalsUtfR(
 	return result;
 }
 
+sjme_errorCode sjme_charSeq_free(
+	sjme_attrInNotNull sjme_charSeq seq)
+{
+	sjme_errorCode error;
+	sjme_charSeq_type type;
+	
+	if (seq == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* First stage cleanup. */
+	type = seq->type;
+	switch (type)
+	{
+			/* Cleanup function based bind. */
+		case SJME_CHAR_SEQ_TYPE_FUNCTION:
+		case SJME_CHAR_SEQ_TYPE_FUNCTION_STATIC:
+			sjme_frontEnd_release(seq, &seq->data.function.frontEnd);
+			break;
+
+		default:
+			break;
+	}
+
+	/* Erase all the data. */
+	memset(seq, 0, sizeof(*seq));
+
+	/* Free outer sequence. */
+	switch (type)
+	{
+		case SJME_CHAR_SEQ_TYPE_FUNCTION:
+		case SJME_CHAR_SEQ_TYPE_NARROW:
+		case SJME_CHAR_SEQ_TYPE_WIDE:
+		case SJME_CHAR_SEQ_TYPE_UTF:
+			if (sjme_error_is(error = sjme_alloc_free(seq)))
+				return sjme_error_default(error);
+			break;
+
+		default:
+			break;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_charSeq_hash(
 	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jint* outHash)
@@ -400,29 +445,35 @@ sjme_errorCode sjme_charSeq_itNew(
 sjme_errorCode sjme_charSeq_newFunctionStatic(
 	sjme_attrOutNotNull sjme_charSeqStatic* outSeq,
 	sjme_attrInNotNull const sjme_charSeq_functions* functions,
-	sjme_attrInNullable sjme_frontEnd* frontEnd)
+	sjme_attrInNullable sjme_frontEndBindable* frontEnd)
 {
 	sjme_errorCode error;
-	sjme_jint length;
 	
 	if (outSeq == NULL || functions == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Read in length. */
-	length = -1;
-	error = SJME_ERROR_NONE;
-	if (functions->length == NULL ||
-		sjme_error_is(error = functions->length(outSeq, &length)))
-		return sjme_error_defaultOr(error, SJME_ERROR_NOT_IMPLEMENTED);
+	/* The length function is required. */
+	if (functions->length == NULL)
+		return sjme_error_notImplemented(0);
 	
 	/* Setup target sequence. */
 	memset(outSeq, 0, sizeof(*outSeq));
 	outSeq->type = SJME_CHAR_SEQ_TYPE_FUNCTION_STATIC;
-	outSeq->length = length;
 	outSeq->data.function.impl = functions;
 	if (frontEnd != NULL)
 		sjme_frontEnd_copy(&outSeq->data.function.frontEnd, frontEnd);
-	outSeq->data.function.frontEnd.bindType = SJME_FRONTEND_BINDLESS;
+	
+	/* Read in length. */
+	outSeq->length = -1;
+	if (sjme_error_is(error = functions->length(outSeq, &outSeq->length)) ||
+		outSeq->length < 0)
+	{
+		/* Undo validity. */
+		memset(outSeq, 0, sizeof(*outSeq));
+
+		/* Fail. */
+		return sjme_error_default(error);
+	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;
