@@ -9,18 +9,17 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.jvm.launch.IModeApplication;
 import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.mle.constants.StandardBucketType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.rms.RecordSession;
+import cc.squirreljme.runtime.rms.RecordIteration;
 import cc.squirreljme.runtime.rms.RecordStoreSession;
 import cc.squirreljme.runtime.rms.RecordUtils;
-import com.oracle.json.JsonArray;
 import java.io.IOException;
 import net.multiphasicapps.io.Base64Encoder;
 
@@ -90,13 +89,40 @@ public final class RecordStoreInfo
 		this._isSelf = __self;
 		this._lock = __lock;
 		
+		// Is this a DoJa vendor record?
+		String ownerVendor = __owner.vendor().toString();
+		boolean isDoJa = IModeApplication.VENDOR.equals(ownerVendor) ||
+			RecordStoreSession.OLD_DOJA_VENDOR.equals(ownerVendor);
+		
+		// Check to see if the record store exists under a different basename
+		String otherBaseName = null;
+		for (RecordIteration iteration : RecordStoreSession.locateAll())
+		{
+			// Is the other suite also DoJa?
+			String otherVendor = iteration.owner.vendor().toString();
+			boolean otherDoJa = IModeApplication.VENDOR.equals(otherVendor) ||
+				RecordStoreSession.OLD_DOJA_VENDOR.equals(otherVendor);
+			
+			// Treat the older vendor the same so older records are not lost
+			if ((__owner.equals(iteration.owner) || (isDoJa && otherDoJa &&
+				__owner.name().equals(iteration.owner.name()))) &&
+				__name.equals(iteration.name))
+			{
+				otherBaseName = iteration.baseName;
+				break;
+			}
+		}
+		
 		// Determine the meta filename
 		try
 		{
-			this._baseName = String.format("%08x%02d%s", __owner.hashCode(),
-				__name.length(),
-				Base64Encoder.encode(__name.getBytes())
-					.toLowerCase().replace('=', '_'));
+			if (otherBaseName != null)
+				this._baseName = otherBaseName;
+			else
+				this._baseName = String.format("%08x%02d%s",
+					__owner.hashCode(), __name.length(),
+					Base64Encoder.encode(__name.getBytes("utf-8"))
+						.toLowerCase().replace('=', '_'));
 			this._metaName = this._baseName + ".rms";
 		}
 		catch (IOException __e)

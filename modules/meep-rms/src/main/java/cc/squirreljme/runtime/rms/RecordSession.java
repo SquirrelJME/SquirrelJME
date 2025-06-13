@@ -14,14 +14,8 @@ import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.mle.constants.BucketWriteMode;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import java.io.ByteArrayInputStream;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.Arrays;
 import javax.microedition.rms.RecordStoreException;
-import net.multiphasicapps.collections.ArrayUtils;
 
 /**
  * Records and keeps a session for a record store.

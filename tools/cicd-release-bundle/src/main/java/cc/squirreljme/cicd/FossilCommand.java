@@ -186,24 +186,9 @@ public class FossilCommand
 	 */
 	public static FossilCommand instance()
 	{
-		// Windows or not?
-		String exeName;
-		if (System.getProperty("os.name").toLowerCase().contains("windows"))
-			exeName = "fossil.exe";
-		else
-			exeName = "fossil";
-		
-		// Use system PATH
-		String paths = System.getenv("PATH");
-		if (paths != null)
-			for (String path : paths.split(Pattern.quote(File.pathSeparator)))
-			{
-				Path maybe = Paths.get(path, exeName);
-				if (Files.exists(maybe) && Files.isExecutable(maybe))
-					return new FossilCommand(maybe);
-			}
-		
-		// Not found
+		Path path = Utils.findExecutable("fossil");
+		if (path != null)
+			return new FossilCommand(path);
 		return null;
 	}
 }

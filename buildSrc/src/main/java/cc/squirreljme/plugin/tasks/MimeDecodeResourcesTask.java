@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.tasks;
 
+import cc.squirreljme.plugin.multivm.VMHelpers;
 import cc.squirreljme.plugin.util.MIMEFileDecoder;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -79,16 +80,7 @@ public class MimeDecodeResourcesTask
 							StandardOpenOption.TRUNCATE_EXISTING,
 							StandardOpenOption.WRITE))
 				{
-					byte[] buf = new byte[4096];
-					for (;;)
-					{
-						int rc = in.read(buf);
-						
-						if (rc < 0)
-							break;
-						
-						out.write(buf, 0, rc);
-					}
+					out.write(VMHelpers.readAll(in));
 				}
 			}
 		}

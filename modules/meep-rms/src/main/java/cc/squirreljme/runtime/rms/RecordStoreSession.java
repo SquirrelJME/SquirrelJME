@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.rms;
 
+import cc.squirreljme.jvm.launch.IModeApplication;
 import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.mle.constants.StandardBucketType;
@@ -39,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
-import javax.microedition.rms.RecordStoreNotOpenException;
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -51,6 +51,21 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 public class RecordStoreSession
 	extends RecordSession
 {
+	/** The current RMS version format. */
+	@SquirrelJMEVendorApi
+	public static final SuiteVersion CURRENT_RMS_VERSION =
+		new SuiteVersion(1, 0, 0);
+	
+	/** The old DoJa record owner vendor. */
+	@SquirrelJMEVendorApi
+	public static final String OLD_DOJA_VENDOR =
+		"SquirrelJME-DoJa";
+	
+	/** The version of the record store format. */
+	@SquirrelJMEVendorApi
+	public static final String RMS_VERSION =
+		"rmsVersion";
+	
 	/** The authentication key. */
 	@SquirrelJMEVendorApi
 	public static final String AUTHENTICATION =
@@ -70,6 +85,11 @@ public class RecordStoreSession
 	@SquirrelJMEVendorApi
 	public static final String MODIFICATION_COUNT =
 		"modificationCount";
+	
+	/** The last modification time. */
+	@SquirrelJMEVendorApi
+	public static final String LAST_MODIFIED =
+		"lastModified";
 	
 	/** The other write key. */
 	@SquirrelJMEVendorApi
@@ -105,6 +125,11 @@ public class RecordStoreSession
 	@SquirrelJMEVendorApi
 	public static final String TAG_PREFIX =
 		"tag:";
+	
+	/** Compatible last ID for older MIDP. */
+	@SquirrelJMEVendorApi
+	public static final String COMPATIBLE_LAST_ID =
+		"compatibleLastId";
 	
 	/** The base name used for records. */
 	@SquirrelJMEVendorApi
@@ -508,29 +533,48 @@ public class RecordStoreSession
 	 * Returns the next ID.
 	 *
 	 * @param __allocate Should this ID be allocated?
+	 * @param __compatible Compatibility with older software before MEEP 8
+	 * which relies on every ID to be unique.
 	 * @return The resultant ID.
 	 * @throws RecordStoreException If the record could not be allocated.
 	 * @since 2025/04/21
 	 */
-	public int nextId(boolean __allocate)
+	public int nextId(boolean __allocate, boolean __compatible)
 		throws RecordStoreException
 	{
 		if (Debugging.VERBOSE)
-			Debugging.debugNote("nextId(%b)", __allocate);
+			Debugging.debugNote("nextId(%b, %b)", __allocate,
+				__compatible);
 		
 		synchronized (this.lock)
 		{
 			// Grab all known IDs
 			int[] ids = this.ids();
 			
-			// Find the next ID which is not taken
-			int nextId = 0;
-			while (Arrays.binarySearch(ids, nextId) >= 0)
-				nextId++;
+			// Get the current last compatible ID number
+			int compatId = this.getInteger(
+				RecordStoreSession.COMPATIBLE_LAST_ID, 1);
+			
+			// Find the next ID which is not taken, always start at one
+			int freeId = 1;
+			while (Arrays.binarySearch(ids, freeId) >= 0)
+				freeId++;
+			
+			// Compatibility mode where all new IDs are always higher?
+			int useId;
+			if (__compatible)
+			{
+				// Make sure the used ID is truly not used
+				useId = Math.max(compatId, freeId);
+				while (Arrays.binarySearch(ids, useId) >= 0)
+					useId++;
+			}
+			else
+				useId = freeId;
 			
 			// If not allocating, return it now
 			if (!__allocate)
-				return nextId;
+				return useId;
 			
 			// Otherwise, build an array from it
 			JsonArrayBuilder builder = Json.createArrayBuilder();
@@ -541,22 +585,26 @@ public class RecordStoreSession
 				builder.add(ids[i]);
 				
 				// Is this the spot where the ID would be injected?
-				if (!injected && nextId > ids[i])
+				if (!injected && useId > ids[i])
 				{
-					builder.add(nextId);
+					builder.add(useId);
 					injected = true;
 				}
 			}
 			
 			// Was the ID never injected?
 			if (!injected)
-				builder.add(nextId);
+				builder.add(useId);
+			
+			// Use the highest of all the values for the compatible ID
+			this.set(RecordStoreSession.COMPATIBLE_LAST_ID,
+				Math.max(useId, Math.max(compatId, freeId)) + 1);
 			
 			// Store new IDs
 			this.set(RecordStoreSession.IDS, builder.build());
 			
 			// Return the newly allocated ID
-			return nextId;
+			return useId;
 		}
 	}
 	
@@ -614,8 +662,7 @@ public class RecordStoreSession
 				null);
 			String vendor = this.getString(RecordStoreSession.OWNER_VENDOR,
 				null);
-			String version = this.getString(RecordStoreSession.OWNER_VERSION,
-				null);
+			String version = "0.0.0";
 			
 			// If any are missing, this is not valid
 			/* {@squirreljme.error AD10 RecordStore has no identifier.} */
@@ -683,6 +730,26 @@ public class RecordStoreSession
 	 * @param __val The value to use.
 	 * @throws NullPointerException On null arguments.
 	 * @throws RecordStoreException If the key could not be set.
+	 * @since 2025/05/29
+	 */
+	@SquirrelJMEVendorApi
+	public void set(String __key, long __val)
+		throws NullPointerException, RecordStoreException
+	{
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		this.set(__key, Json.createObjectBuilder().add("key", __val)
+			.build().get("key"));
+	}
+	
+	/**
+	 * Sets the given key to the specified value.
+	 *
+	 * @param __key The key to set.
+	 * @param __val The value to use.
+	 * @throws NullPointerException On null arguments.
+	 * @throws RecordStoreException If the key could not be set.
 	 * @since 2025/04/20
 	 */
 	@SquirrelJMEVendorApi
@@ -725,15 +792,43 @@ public class RecordStoreSession
 			// Make sure original JSON is loaded
 			this.__load();
 			
-			// Put in new value
-			this._updates.put(__key, __val);
+			// If we are trying to write the old DoJa vendor, replace it with
+			// the new one instead to migrate any RMS records
+			if (__key.equals("ownerVendor") &&
+				RecordStoreSession.OLD_DOJA_VENDOR.equals(__val.toString()))
+				this._updates.put(__key, Json.createObjectBuilder()
+					.add("key", IModeApplication.VENDOR)
+					.build().get("key"));
 			
-			// Also update the modification count, if this is not that
+			// Put in new value
+			else
+				this._updates.put(__key, __val);
+			
+			// Also update the modification count and time, if this is not that
 			// otherwise this would recurse infinitely
-			if (!__key.equals(RecordStoreSession.MODIFICATION_COUNT))
+			if (!__key.equals(RecordStoreSession.MODIFICATION_COUNT) &&
+				!__key.equals(RecordStoreSession.LAST_MODIFIED) &&
+				!__key.equals(RecordStoreSession.OWNER_VERSION) &&
+				!__key.equals(RecordStoreSession.RMS_VERSION))
+			{
+				// Store the RMS record version always
+				this.set(RecordStoreSession.RMS_VERSION,
+					RecordStoreSession.CURRENT_RMS_VERSION.toString());
+				
+				// Set time accordingly
 				this.set(RecordStoreSession.MODIFICATION_COUNT,
 					this.getInteger(RecordStoreSession.MODIFICATION_COUNT,
 						0) + 1);
+				this.set(RecordStoreSession.LAST_MODIFIED,
+					System.currentTimeMillis());
+				
+				// Is there an ownerVersion already set? This is ignored by
+				// SquirrelJME due to MIDP 3
+				String ownerVersion = this.getString(
+					RecordStoreSession.OWNER_VERSION, null);
+				if (ownerVersion == null)
+					this.set(RecordStoreSession.OWNER_VERSION, "0.0.0");
+			}
 		}
 	}
 	
@@ -763,8 +858,6 @@ public class RecordStoreSession
 				owner.name().toString());
 			this.set(RecordStoreSession.OWNER_VENDOR,
 				owner.vendor().toString());
-			this.set(RecordStoreSession.OWNER_VERSION,
-				owner.version().toString());
 			
 			// Write record information
 			this.set(RecordStoreSession.RECORD_NAME,

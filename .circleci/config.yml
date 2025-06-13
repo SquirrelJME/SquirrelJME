@@ -250,19 +250,9 @@ commands:
           shell: cmd.exe
           command: choco install cmake -y
       - run:
-          name: Install CMake (Retry)
-          shell: cmd.exe
-          command: choco install cmake -y
-          when: on_fail
-      - run:
           name: Install Mingw-w64
           shell: cmd.exe
           command: choco install mingw -y
-      - run:
-          name: Install Mingw-w64 (Retry)
-          shell: cmd.exe
-          command: choco install mingw -y
-          when: on_fail
 
   # Windows JDK Install
   windows-install-jdk:
@@ -291,10 +281,6 @@ commands:
           # we do not need that... also CMake as well for native code
           name: Install Dependencies
           command: brew install openjdk@11 coreutils cmake
-      - run:
-          name: Install Dependencies (Retry)
-          command: brew install openjdk@11 coreutils cmake
-          when: on_fail
 
   # Install what is required by Flatpak
   flatpak-install-required:
@@ -337,10 +323,6 @@ commands:
           name: Construct Standalone
           command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
       - run:
-          name: Construct Standalone (Retry)
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
-          when: on_fail
-      - run:
           name: Remove distracting JAR, if any
           command: rm -f emulators/standalone/build/libs/standalone-*.jar
       - store_artifacts:
@@ -353,10 +335,6 @@ commands:
       - run:
           name: Construct Natives
           command: ./gradlew :emulators:emulator-base:archiveNatives <<pipeline.parameters.standard-gradle-options>>
-      - run:
-          name: Construct Natives (Retry)
-          command: ./gradlew :emulators:emulator-base:archiveNatives <<pipeline.parameters.standard-gradle-options>>
-          when: on_fail
       - run:
           name: Remove distracting JAR, if any
           command: rm -f emulators/emulator-base/build/libs/*.jar
@@ -450,12 +428,6 @@ jobs:
           # contention --max-workers=2
           command: gradlew clean <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
-      - run:
-          shell: cmd.exe
-          name: Gradle Build and Test (Retry)
-          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 60m
-          when: on_fail
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -526,12 +498,6 @@ jobs:
           # contention --max-workers=2
           command: gradlew clean <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
-      - run:
-          name: Gradle Build and Test (Retry)
-          shell: cmd.exe
-          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 60m
-          when: on_fail
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -581,11 +547,6 @@ jobs:
           name: Gradle Build and Test
           command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
-      - run:
-          name: Gradle Build and Test (Retry)
-          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 60m
-          when: on_fail
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -614,11 +575,6 @@ jobs:
           name: Gradle Build and Test
           command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
-      - run:
-          name: Gradle Build and Test (Retry)
-          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 60m
-          when: on_fail
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -647,11 +603,6 @@ jobs:
           name: Gradle Build and Test
           command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
-      - run:
-          name: Gradle Build and Test (Retry)
-          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 60m
-          when: on_fail
       - save-test-results:
           where: "vm-test-hosted-debug"
           os: "linux-amd64"
@@ -696,11 +647,6 @@ jobs:
           name: Gradle Build and Test
           command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 60m
-      - run:
-          name: Gradle Build and Test (Retry)
-          command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 60m
-          when: on_fail
       - save-test-results:
           where: "vm-test-hosted-debug"
           os: "linux-arm64"
@@ -736,11 +682,6 @@ jobs:
           name: Gradle Build and Test
           command: timeout --foreground 120m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 120m
-      - run:
-          name: Gradle Build and Test (Retry)
-          command: timeout --foreground 120m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-exclusion>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 120m
-          when: on_fail
       - save-test-results:
           where: "vm-test-hosted-debug"
           os: "linux-arm64"

@@ -7,10 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package com.nttdocomo.ui;
+package cc.squirreljme.runtime.nttdocomo.ui;
 
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
+import com.nttdocomo.ui.Canvas;
 import java.lang.ref.WeakReference;
 
 /**
@@ -18,8 +20,12 @@ import java.lang.ref.WeakReference;
  *
  * @since 2024/06/24
  */
-final class __LockFlush__
+@SquirrelJMEVendorApi
+public final class LockFlush
 {
+	/** The double buffer to access. */
+	private final DoubleBuffer _doubleBuffer;
+	
 	/** The target to the flush. */
 	private final WeakReference<Canvas> _target;
 	
@@ -30,19 +36,22 @@ final class __LockFlush__
 	private volatile boolean _outOfThread;
 	
 	/**
-	 * Initializes the lock flush against the given canvas. 
+	 * Initializes the lock flush against the given canvas.
 	 *
 	 * @param __canvas The canvas to target.
+	 * @param __doubleBuffer The double buffer to access.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/24
 	 */
-	__LockFlush__(Canvas __canvas)
+	@SquirrelJMEVendorApi
+	public LockFlush(Canvas __canvas, DoubleBuffer __doubleBuffer)
 		throws NullPointerException
 	{
-		if (__canvas == null)
+		if (__canvas == null || __doubleBuffer == null)
 			throw new NullPointerException("NARG");
 		
 		this._target = new WeakReference<>(__canvas);
+		this._doubleBuffer = __doubleBuffer;
 	}
 	
 	/**
@@ -53,7 +62,8 @@ final class __LockFlush__
 	 * @return {@code this}.
 	 * @since 2025/04/09
 	 */
-	__LockFlush__ __checkThread()
+	@SquirrelJMEVendorApi
+	public LockFlush checkThread()
 	{
 		// Flag if we are not in the event thread
 		if (!NativeScritchInterface.nativeInterface().eventLoop().inLoop())
@@ -71,7 +81,8 @@ final class __LockFlush__
 	 * @return Whether this is locked or not.
 	 * @since 2025/04/09
 	 */
-	boolean __isLocked()
+	@SquirrelJMEVendorApi
+	public boolean isLocked()
 	{
 		synchronized (this)
 		{
@@ -85,7 +96,8 @@ final class __LockFlush__
 	 *
 	 * @since 2024/06/24
 	 */
-	void __lock()
+	@SquirrelJMEVendorApi
+	public void lock()
 	{
 		synchronized (this)
 		{
@@ -100,7 +112,8 @@ final class __LockFlush__
 	 * @return Whether this was claimed outside the ScritchUI thread.
 	 * @since 2025/04/09
 	 */
-	boolean __outOfThread()
+	@SquirrelJMEVendorApi
+	public boolean outOfThread()
 	{
 		synchronized (this)
 		{
@@ -116,7 +129,8 @@ final class __LockFlush__
 	 * zero, otherwise this will only draw when the lock count is zero. 
 	 * @since 2024/06/24
 	 */
-	void __unlock(boolean __forced)
+	@SquirrelJMEVendorApi
+	public void unlock(boolean __forced)
 	{
 		// If we are in the event loop, do not lock
 		if (NativeScritchInterface.nativeInterface().eventLoop().inLoop())
@@ -148,9 +162,10 @@ final class __LockFlush__
 				return;
 			
 			// Tell canvas to repaint itself
-			DoubleBuffer doubleBuffer = target._midpCanvas._doubleBuffer;
+			DoubleBuffer doubleBuffer = this._doubleBuffer;
 			doubleBuffer.flush();
-			target.__displayable().repaint();
+			((javax.microedition.lcdui.Canvas)((DoJaFrame)target)
+				.__squirreljmeDisplayable()).repaint();
 		}
 	}
 }

@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
@@ -267,10 +268,14 @@ public class EmulatedBucketShelf
 					result.add(baseName);
 			}
 		}
+		catch (FileNotFoundException|NoSuchFileException ignored)
+		{
+			// RMS directory does not exist
+		}
 		catch (IOException __e)
 		{
 			throw new MLECallError(__e.getMessage(), __e);
-		}
+		}	
 		
 		// Return resultant list
 		return result.toArray(new String[result.size()]);

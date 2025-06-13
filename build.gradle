@@ -4,6 +4,7 @@ import java.nio.file.StandardOpenOption
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'cc.squirreljme.plugin.general'
+apply plugin: 'com.install4j.gradle'
 
 group = "cc.squirreljme"
 description = "SquirrelJME is a Java ME 8 Virtual Machine for embedded " +
@@ -133,4 +134,15 @@ allprojects {
 // Generic root clean task, does nothing by default and just depends on
 // others
 tasks.register('clean') {
+}
+
+install4j {
+	installDir = file("/usr/local/")
+}
+
+// Install4J Installers
+task install4jMedia(type: com.install4j.gradle.Install4jTask) {
+	projectFile = file("squirreljme.install4j")
+	destination = rootProject.buildDir
+	verbose = "true"
 }

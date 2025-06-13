@@ -13,7 +13,10 @@
 #if defined(SJME_CONFIG_HAS_LINUX)
 	#include <sched.h>
 #elif defined(SJME_CONFIG_HAS_WINDOWS)
-	#include <processthreadsapi.h>
+	#if SJME_CONFIG_WINDOWS_VERSION_LEAST(SJME_CONFIG_WINDOWS_VERSION_8)
+		#include <processthreadsapi.h>
+	#endif
+	
 	#include <windows.h>
 #endif
 

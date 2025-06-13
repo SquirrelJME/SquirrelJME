@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.jvm.launch.IModeApplication;
 import cc.squirreljme.jvm.launch.IModeProperty;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
@@ -99,7 +100,7 @@ final class __IAppliInterface__
 		String appVend = System.getProperty(IModeProperty.VENDOR_PROPERTY);
 		ApplicationHandler.setNameAndVendor(
 			Objects.toString(appName, mainClass),
-			Objects.toString(appVend, "SquirrelJME-DoJa"));
+			Objects.toString(appVend, IModeApplication.VENDOR));
 		
 		// Locate the main class before we initialize it
 		Class<?> classType;

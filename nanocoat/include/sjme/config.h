@@ -687,8 +687,13 @@ extern "C" {
 #endif
 
 #if !defined(sjme_inline)
-	/** Inline function. */
-	#define sjme_inline inline
+	#if !defined(SJME_CONFIG_HAS_MSVC) || SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+		/** Inline function. */
+		#define sjme_inline inline
+	#else
+		/** Inline function. */
+		#define sjme_inline __inline
+	#endif
 #endif
 
 #if !defined(sjme_noOptimize)
@@ -910,6 +915,31 @@ extern "C" {
 #else
 	/** Export as an undecorated symbol. */
 	#define SJME_DYLIB_EXPORT_UNDECORATED
+#endif
+
+/** Windows 8. */
+#define SJME_CONFIG_WINDOWS_VERSION_8 0x0600
+
+/** Windows NT 4.0 */
+#define SJME_CONFIG_WINDOWS_NT_VERSION_4 0x0400
+
+#if defined(SJME_CONFIG_HAS_WINDOWS)
+	/** Windows version is at least the given version. */
+	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) (WINVER >= winVer)
+	
+	#if defined(_WIN32_WINNT)
+		/** Windows NT version is at least the given version. */
+		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) (_WIN32_WINNT >= winVer)
+	#else
+		/** Windows NT version is at least the given version. */
+		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
+	#endif
+#else
+	/** Windows version is at least the given version. */
+	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) 0
+
+	/** Windows NT version is at least the given version. */
+	#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
 #endif
 
 /** Bitfield count for @c sjme_jboolean . */

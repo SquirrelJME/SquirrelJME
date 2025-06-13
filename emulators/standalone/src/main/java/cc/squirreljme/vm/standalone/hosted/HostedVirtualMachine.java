@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -242,10 +243,14 @@ public class HostedVirtualMachine
 			// machine...
 			List<String> args = new ArrayList<>();
 			
-			// We will be calling the executable directly, fallback to Java if
-			// not found
-			args.add(Objects.toString(RuntimeShelf.vmDescription(
-				VMDescriptionType.EXECUTABLE_PATH), "java"));
+			// Use the Java executable from our own Java home directory, if
+			// that is not found, then fallback to the executable itself
+			Path homeExec = HostedVirtualMachine.findJavaExe();
+			if (homeExec != null)
+				args.add(homeExec.toAbsolutePath().normalize().toString());
+			else
+				args.add(Objects.toString(RuntimeShelf.vmDescription(
+					VMDescriptionType.EXECUTABLE_PATH), "java"));
 			
 			// Needed on macOS for the GUI to properly work
 			String osName = System.getProperty("os.name");
@@ -454,5 +459,34 @@ public class HostedVirtualMachine
 				{
 				}
 		}
+	}
+	
+	/**
+	 * Finds the Java executable.
+	 * 
+	 * @return The Java executable.
+	 * @since 2020/12/27
+	 */
+	public static Path findJavaExe()
+	{
+		String javaHomeRaw = System.getProperty("java.home");
+		Path javaHome = (javaHomeRaw != null ? Paths.get(javaHomeRaw) : null);
+		
+		// Name differs per operating system
+		Path javaExeName;
+		if (System.getProperty("os.name").toLowerCase().contains("windows"))
+			javaExeName = Paths.get("java.exe");
+		else
+			javaExeName = Paths.get("java");
+		
+		// Check to see if the Java executable exists here
+		Path binPath = (javaHome != null ? javaHome.resolve("bin")
+			.resolve(javaExeName) : null);
+		if (binPath != null && Files.exists(binPath) &&
+			Files.isExecutable(binPath))
+			return binPath;
+		
+		// Not found
+		return null;
 	}
 }

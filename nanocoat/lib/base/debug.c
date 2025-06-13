@@ -17,7 +17,10 @@
 	#define WIN32_LEAN_AND_MEAN 1
 	
 	#include <windows.h>
-	#include <debugapi.h>
+	
+	#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_NT_VERSION_4)
+		#include <debugapi.h>
+	#endif
 
 	#undef WIN32_LEAN_AND_MEAN
 #endif
@@ -40,7 +43,7 @@ void sjme_debug_abort(void)
 		if (sjme_debug_handlers->abort())
 			return;
 
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_NT_VERSION_4)
 	/* When running tests without a debugger this will pop up about 1000 */
 	/* dialogs saying the program aborted, so only abort on debugging. */
 	if (!IsDebuggerPresent())
