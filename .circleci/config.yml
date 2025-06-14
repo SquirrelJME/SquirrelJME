@@ -83,7 +83,7 @@ parameters:
 
   standard-exclusion:
     type: string
-    default: -x testSpringCoat -x testSpringCoatRelease -x testSpringCoatDebug -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc
+    default: -x testSpringCoat -x testSpringCoatRelease -x testSpringCoatDebug -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc -x :emulators:nanocoat-vm:build
 
   # Standard build for systems
   standard-build-options:
