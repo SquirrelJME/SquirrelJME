@@ -689,8 +689,8 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	
 	/* Setup frontend info. */
 	memset(&frontEnd, 0, sizeof(frontEnd));
-	frontEnd.wrapper = hWnd;
-	frontEnd.data = hDc;
+	frontEnd.base.wrapper = hWnd;
+	frontEnd.base.data = hDc;
 	
 	/* Setup pencil. */
 	pencil = &paintable->pencil;

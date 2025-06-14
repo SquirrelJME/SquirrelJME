@@ -497,6 +497,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_attrInPositiveNonZero sjme_jint argc,
 	sjme_attrInNotNull sjme_lpcstr* argv)
 {
+#if defined(SJME_MERGE)
 	sjme_errorCode error;
 	sjme_jint argAt;
 	sjme_charSeq argSeq;
@@ -728,4 +729,5 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+#endif
 }

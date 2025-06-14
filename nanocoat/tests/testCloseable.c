@@ -14,21 +14,21 @@
 #include "testCloseable.h"
 
 sjme_errorCode testCloseable_new(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_closeable* outCloseable,
 	sjme_attrInNotNull sjme_closeable_closeHandlerFunc handlerFunc,
 	sjme_attrInValue sjme_jboolean isRefCounted)
 {
 	sjme_errorCode error;
 	sjme_closeable result;
-	
-	if (inPool == NULL || outCloseable == NULL || handlerFunc == NULL)
+
+	if (allocPool == NULL || outCloseable == NULL || handlerFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
 	/* Allocate. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_closeable_alloc(
-		inPool, sizeof(*result),
+		allocPool, sizeof(*result),
 		handlerFunc, isRefCounted,
 		&result)) || result == NULL)
 		return sjme_error_default(error);

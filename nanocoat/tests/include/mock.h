@@ -121,7 +121,7 @@ typedef struct sjme_mock
 
 	/** ROM libraries. */
 	sjme_rom_library romLibraries[SJME_MOCK_MAX_ROM_LIBRARIES];
-	
+
 	/** Special data, if needed. */
 	sjme_pointer special;
 } sjme_mock;

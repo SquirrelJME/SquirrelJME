@@ -30,52 +30,51 @@ static const sjme_cchar testData[TEST_LEN] =
  */
 SJME_TEST_DECLARE(testStringPoolStream)
 {
-	sjme_stringPool stringPool;
-	sjme_stringPool_string string;
+	sjme_nvm_stringPool stringPool;
+	sjme_nvm_stringPool_string string;
 	sjme_stream_input stream;
-	
+
 	/* Create string pool. */
 	stringPool = NULL;
-	if (sjme_error_is(test->error = sjme_stringPool_new(
+	if (sjme_error_is(test->error = sjme_nvm_stringPool_new(
 		test->pool, &stringPool)) ||
 		stringPool == NULL)
 		return sjme_unit_fail(test, "Could not create pool.");
-	
+
 	/* We are using this, so count it. */
 	if (sjme_error_is(test->error = sjme_alloc_weakRef(stringPool,
 		NULL)))
 		return sjme_unit_fail(test, "Could not count string pool?");
-	
+
 	/* Open stream over the data. */
 	stream = NULL;
 	if (sjme_error_is(test->error = sjme_stream_inputOpenMemory(
 		test->pool, &stream,
 		&testData[0], TEST_LEN)) || stream == NULL)
 		return sjme_unit_fail(test, "Could not open stream.");
-	
+
 	/* Locate string. */
 	string = NULL;
-	if (sjme_error_is(test->error = sjme_stringPool_locateStream(
+	if (sjme_error_is(test->error = sjme_nvm_stringPool_locateStream(
 		stringPool, stream,
 		&string)) || string == NULL)
 		return sjme_unit_fail(test, "Could not locate string?");
-	
+
 	/* We are using this, so count it. */
 	if (sjme_error_is(test->error = sjme_alloc_weakRef(string,
 		NULL)))
 		return sjme_unit_fail(test, "Could not count string?");
-	
+
 	/* Close stream. */
 	if (sjme_error_is(test->error = sjme_closeable_close(
 		SJME_AS_CLOSEABLE(stream))))
 		return sjme_unit_fail(test, "Could not close stream.");
-	
+
 	/* Check to make sure it is valid. */
-	sjme_unit_equalI(test, 10, string->length,
+	sjme_unit_equalI(test, 10, string->seq->length,
 		"Length incorrect?");
-	sjme_unit_equalI(test,
-		0, memcmp("Squirrels!", string->seq.context,
-			string->length),
+	sjme_unit_notEqualI(test,
+		0, strcmp("Squirrels!", sjme_charSeq_tempUtf(string->seq)),
 		"String not equal?");
 	
 	/* Should be first. */

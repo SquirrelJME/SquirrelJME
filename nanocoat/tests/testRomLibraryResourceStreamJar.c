@@ -48,7 +48,7 @@ static const sjme_mock_configSet configRomLibraryResourceStreamJar =
 SJME_TEST_DECLARE(testRomLibraryResourceStreamJar)
 {
 	sjme_errorCode error;
-	sjme_rom_library library;
+	sjme_nvm_rom_library library;
 	sjme_mock mock;
 	sjme_stream_input inputStream;
 	sjme_jint readCount, i;
@@ -66,7 +66,7 @@ SJME_TEST_DECLARE(testRomLibraryResourceStreamJar)
 
 	/* Try to find a resource. */
 	inputStream = NULL;
-	if (sjme_error_is(error = sjme_rom_libraryResourceAsStream(library,
+	if (sjme_error_is(error = sjme_nvm_rom_libraryResourceAsStream(library,
 		&inputStream, "hello.txt")) || inputStream == NULL)
 		return sjme_unit_fail(test, "Did not find resource? %d",
 			error);

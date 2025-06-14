@@ -1059,11 +1059,11 @@ sjme_errorCode sjme_class_parseConstantPool(
 			case SJME_CLASS_POOL_TYPE_DOUBLE:
 				if (sjme_error_is(error = sjme_stream_inputReadValueJI(
 					inStream,
-					(sjme_jint*)&entry->constDouble.value.hi)))
+					(sjme_jint*)&entry->constDouble.value.bits.hi)))
 					goto fail_readItem;
 				if (sjme_error_is(error = sjme_stream_inputReadValueJI(
 					inStream,
-					(sjme_jint*)&entry->constDouble.value.lo)))
+					(sjme_jint*)&entry->constDouble.value.bits.lo)))
 					goto fail_readItem;
 				
 				/* Skip wide index. */
@@ -1088,7 +1088,7 @@ sjme_errorCode sjme_class_parseConstantPool(
 			case SJME_CLASS_POOL_TYPE_FLOAT:
 				if (sjme_error_is(error = sjme_stream_inputReadValueJI(
 					inStream,
-					(sjme_jint*)&entry->constFloat.value.value)))
+					(sjme_jint*)&entry->constFloat.value.bits)))
 					goto fail_readItem;
 				break;
 				

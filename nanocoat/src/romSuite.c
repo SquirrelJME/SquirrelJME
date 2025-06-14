@@ -16,11 +16,11 @@
 #include "sjme/nvm/romInternal.h"
 #include "sjme/util.h"
 #include "sjme/zip.h"
-#include "sjme/cleanup.h"
+#include "sjme/nvm/cleanup.h"
 
-sjme_errorCode sjme_rom_suiteDefaultLaunch(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
-	sjme_attrInNotNull sjme_rom_suite inSuite,
+sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
 	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
@@ -28,7 +28,7 @@ sjme_errorCode sjme_rom_suiteDefaultLaunch(
 {
 	sjme_errorCode error;
 	
-	if (inPool == NULL || inSuite == NULL || outMainClass == NULL ||
+	if (allocPool == NULL || inSuite == NULL || outMainClass == NULL ||
 		outMainArgs == NULL || outById == NULL || outByName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -42,7 +42,7 @@ sjme_errorCode sjme_rom_suiteDefaultLaunch(
 		return sjme_error_default(error);
 	
 	/* Forward call. */
-	error = inSuite->functions->defaultLaunch(inPool,
+	error = inSuite->functions->defaultLaunch(allocPool,
 		inSuite, outMainClass, outMainArgs, outById, outByName);
 		
 	/* Unlock suite. */
@@ -54,10 +54,10 @@ sjme_errorCode sjme_rom_suiteDefaultLaunch(
 	return error;
 }
 
-sjme_errorCode sjme_rom_suiteFromMerge(
+sjme_errorCode sjme_nvm_rom_suiteFromMerge(
 	sjme_attrInNotNull sjme_alloc_pool pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull sjme_rom_suite* inSuites,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
+	sjme_attrInNotNull sjme_nvm_rom_suite* inSuites,
 	sjme_attrInPositive sjme_jint numInSuites)
 {
 	if (pool == NULL || outSuite == NULL || inSuites == NULL)
@@ -70,9 +70,9 @@ sjme_errorCode sjme_rom_suiteFromMerge(
 	return SJME_ERROR_UNKNOWN;
 }
 
-sjme_errorCode sjme_rom_suiteFromPayload(
+sjme_errorCode sjme_nvm_rom_suiteFromPayload(
 	sjme_attrInNotNull sjme_alloc_pool pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNotNull const sjme_payload_config* payloadConfig)
 {
 	sjme_jint i, numActive, numLibraries;
@@ -105,13 +105,12 @@ sjme_errorCode sjme_rom_suiteFromPayload(
 	return SJME_ERROR_UNKNOWN;
 }
 
-sjme_errorCode sjme_rom_suiteLibraries(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
+sjme_errorCode sjme_nvm_rom_suiteLibraries(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs)
 {
-	sjme_rom_suiteCache* cache;
-	sjme_rom_suiteListLibrariesFunc listFunc;
-	sjme_list_sjme_rom_library* result;
+	sjme_nvm_rom_suiteListLibrariesFunc listFunc;
+	sjme_list_sjme_nvm_rom_library* result;
 	sjme_errorCode error;
 	sjme_jint i, n;
 
@@ -119,17 +118,16 @@ sjme_errorCode sjme_rom_suiteLibraries(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Must be a valid cache. */
-	cache = &inSuite->cache;
-	if (cache->common.allocPool == NULL)
+	if (inSuite->allocPool == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Has this been processed already? */
-	if (cache->libraries != NULL)
+	if (inSuite->libraries != NULL)
 	{
 		/* Debug. */
-		sjme_message("Using existing cache: %p", cache->libraries);
+		sjme_message("Using existing cache: %p", inSuite->libraries);
 
-		*outLibs = cache->libraries;
+		*outLibs = inSuite->libraries;
 		return SJME_ERROR_NONE;
 	}
 
@@ -150,7 +148,7 @@ sjme_errorCode sjme_rom_suiteLibraries(
 		goto fail_list;
 
 	/* Store it within the cache. */
-	cache->libraries = result;
+	inSuite->libraries = result;
 	
 	/* All of these must be valid libraries. */
 	for (i = 0, n = result->length; i < n; i++)
@@ -179,17 +177,17 @@ fail_list:
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_rom_suiteNew(
-	sjme_attrInNotNull sjme_alloc_pool pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+sjme_errorCode sjme_nvm_rom_suiteNew(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNullable sjme_pointer data,
-	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,
+	sjme_attrInNotNull const sjme_nvm_rom_suiteFunctions* inFunctions,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
 {
-	sjme_rom_suite result;
+	sjme_nvm_rom_suite result;
 	sjme_errorCode error;
 
-	if (pool == NULL || outSuite == NULL || inFunctions == NULL)
+	if (allocPool == NULL || outSuite == NULL || inFunctions == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* These functions are required. */
@@ -201,19 +199,19 @@ sjme_errorCode sjme_rom_suiteNew(
 		
 	/* Allocate resultant suite. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(pool,
+	if (sjme_error_is(error = sjme_nvm_alloc((sjme_nvm)allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_ROM_SUITE,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_alloc;
 	
 	/* Setup result. */
-	result->cache.common.allocPool = pool;
+	result->allocPool = allocPool;
 	result->functions = inFunctions;
 	
 	/* Copy front end data? */
 	if (copyFrontEnd != NULL)
-		memmove(&result->common.frontEnd, copyFrontEnd,
-			sizeof(*copyFrontEnd));
+		sjme_frontEnd_copy(&result->common.frontEnd, copyFrontEnd);
+	result->common.frontEnd.bindType = SJME_FRONTEND_BINDLESS;
 	
 	/* Call initializer. */
 	if (sjme_error_is(error = inFunctions->init(result, data)))

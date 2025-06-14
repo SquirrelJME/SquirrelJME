@@ -23,9 +23,9 @@ typedef sjme_errorCode (*testRunFunc)(sjme_test* test,
 typedef struct testClassInfo
 {
 	sjme_lpcstr fileName;
-	
+
 	sjme_lpcstr binaryName;
-	
+
 	testRunFunc testRun;
 } testClassInfo;
 
@@ -109,12 +109,12 @@ static const testClassInfo testClassInfos[] =
 	TRY_CLASS(UnsupportedOperationException, NULL),
 	TRY_CLASS(VirtualMachineError, NULL),
 	{NULL},
-}; 
+};
 
 /**
  * Tests parsing of classes from a set of sample classes.
- *  
- * @since 2024/01/01 
+ *
+ * @since 2024/01/01
  */
 SJME_TEST_DECLARE(testClassParse)
 {
@@ -124,7 +124,7 @@ SJME_TEST_DECLARE(testClassParse)
 	sjme_stream_input in;
 	sjme_class_info info;
 	sjme_stringPool stringPool;
-	
+
 	/* Load the Zip that is full of classes. */
 	zip = NULL;
 	if (sjme_error_is(test->error = sjme_zip_openMemory(
@@ -132,39 +132,39 @@ SJME_TEST_DECLARE(testClassParse)
 		(sjme_pointer)&classes_zip__bin[0],
 		classes_zip__len)) || zip == NULL)
 		return sjme_unit_fail(test, "Could not open Zip.");
-	
+
 	/* Go through and load every single class. */
 	for (testInfo = &testClassInfos[0]; testInfo->binaryName != NULL;
 		testInfo++)
 	{
 		/* Debug. */
 		sjme_message(">>> %s", testInfo->fileName);
-		
+
 		/* Setup string pool. */
 		stringPool = NULL;
 		if (sjme_error_is(test->error = sjme_stringPool_new(
 			test->pool, &stringPool)) ||
 			stringPool == NULL)
 			return sjme_unit_fail(test, "Could not create string pool.");
-			
+
 		/* Count up class. */
 		if (sjme_error_is(test->error = sjme_alloc_weakRef(stringPool, NULL)))
 			return sjme_unit_fail(test, "Could not count string pool?");
-		
+
 		/* Locate entry. */
 		memset(&zipEntry, 0, sizeof(zipEntry));
 		if (sjme_error_is(test->error = sjme_zip_locateEntry(
 			zip, &zipEntry, testInfo->fileName)))
 			return sjme_unit_fail(test, "Could not locate %s",
 				testInfo->fileName);
-			
+
 		/* Open entry. */
 		in = NULL;
 		if (sjme_error_is(test->error = sjme_zip_entryRead(
 			&zipEntry, &in)) || in == NULL)
 			return sjme_unit_fail(test, "Could not open %s",
 				testInfo->fileName);
-		
+
 		/* Load the class. */
 		info = NULL;
 		if (sjme_error_is(test->error = sjme_class_parse(test->pool,

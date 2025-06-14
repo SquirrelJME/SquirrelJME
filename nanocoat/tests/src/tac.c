@@ -20,25 +20,25 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_nvm_bootParam bootConfig;
 	sjme_nvm state;
 	sjme_jint exitCode;
-	
+
 	/* Setup boot configuration. */
 	memset(&bootConfig, 0, sizeof(bootConfig));
 	bootConfig.payload = &sjme_payload_config_data;
-	
+
 	/* Boot the virtual machine. */
 	state = NULL;
 	if (sjme_error_is(sjme_nvm_boot(NULL, NULL, &bootConfig,
 		&state)))
 		return EXIT_FAILURE;
-		
+
 	/* Constantly ticks the virtual machine until it stops. */
 	while (sjme_nvm_tick(state, -1, NULL))
 		;
-		
+
 	/* Cleanup the virtual machine. */
 	exitCode = EXIT_FAILURE;
 	if (!sjme_nvm_destroy(state, &exitCode))
 		return EXIT_FAILURE;
-	
+
 	return exitCode;
 }
