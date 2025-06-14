@@ -81,7 +81,7 @@ SJME_TEST_DECLARE(testRomSuiteClassPathById)
 	sjme_list_sjme_jint* forwardIds;
 	sjme_list_sjme_jint* backwardIds;
 	sjme_list_sjme_nvm_rom_library* result;
-
+	
 	/* Initialize mocks. */
 	memset(&mockState, 0, sizeof(mockState));
 	if (!sjme_mock_act(test, &mockState,
