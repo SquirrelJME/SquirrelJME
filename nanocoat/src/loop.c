@@ -171,6 +171,8 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_byteCode* ev;
 	sjme_byteCode iv;
 	sjme_nvm_byteCode_pcNew pcNew;
+	const sjme_nvm_byteCode_func (*lut)[SJME_NVM_NUM_JAVA_BYTECODES];
+	sjme_nvm_byteCode_func lutFunc;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -209,11 +211,21 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		ev = &rawCode[currentFrame->pc];
 		iv = *ev;
 
+		/* Which LUT table to use? */
+		lut = sjme_nvm_byteCode_lutTable[iv];
+		if (lut == NULL)
+			return sjme_error_vmError(inThread,
+				SJME_ERROR_INVALID_INSTRUCTION);
+
+		/* The instruction should be valid for the LUT. */
+		lutFunc = (*lut)[iv];
+		if (lutFunc == NULL)
+			return sjme_error_vmError(inThread,
+				SJME_ERROR_INVALID_INSTRUCTION);
+
 		/* Execute narrow handler. */
 		memset(&pcNew, 0, sizeof(pcNew));
-		if (sjme_error_is(error =
-			sjme_nvm_byteCode_slowNarrowFunctions[iv](currentFrame,
-				iv, ev, &pcNew)))
+		if (sjme_error_is(error = lutFunc(currentFrame, iv, ev, &pcNew)))
 			return sjme_error_vmError(inThread, error);
 
 		/* Popping the current frame? */

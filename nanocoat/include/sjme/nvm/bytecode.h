@@ -761,6 +761,10 @@ typedef sjme_errorCode (*sjme_nvm_byteCode_func)(
 	sjme_attrInNotNull sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew);
 
+/** Which LUT to use. */
+extern const sjme_nvm_byteCode_func (*sjme_nvm_byteCode_lutTable
+	[SJME_NVM_NUM_JAVA_BYTECODES])[SJME_NVM_NUM_JAVA_BYTECODES];
+
 /** Narrow slow bytecode handlers. */
 extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
 	[SJME_NVM_NUM_JAVA_BYTECODES];
