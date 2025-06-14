@@ -34,29 +34,29 @@ extern "C" {
  *
  * @since 2023/12/08
  */
-typedef enum sjme_vmConfig_settingType
+typedef enum sjme_nvm_vmConfig_settingType
 {
 	/** The number of setting types. */
 	SJME_NUM_VM_CONFIG_SETTING_TYPES
-} sjme_vmConfig_settingType;
+} sjme_nvm_vmConfig_settingType;
 
 /**
  * Indicates the category a given configuration setting is in.
  *
  * @since 2023/12/08
  */
-typedef enum sjme_vmConfig_categoryType
+typedef enum sjme_nvm_vmConfig_categoryType
 {
 	/** The number of category types available. */
 	SJME_NUM_VM_CONFIG_CATEGORY_TYPES
-} sjme_vmConfig_categoryType;
+} sjme_nvm_vmConfig_categoryType;
 
 /**
  * A flag used for the configuration.
  *
  * @since 2023/12/08
  */
-typedef enum sjme_vmConfig_flag
+typedef enum sjme_nvm_vmConfig_flag
 {
 	/** Default value is defined. */
 	SJME_VM_CONFIG_FLAG_DEFAULT = 1,
@@ -66,57 +66,57 @@ typedef enum sjme_vmConfig_flag
 
 	/** Ticks are defined. */
 	SJME_VM_CONFIG_FLAG_TICKS = 4,
-} sjme_vmConfig_flag;
+} sjme_nvm_vmConfig_flag;
 
 /**
  * Represents a single value.
  *
  * @since 2023/12/08
  */
-typedef union sjme_vmConfig_value
+typedef union sjme_nvm_vmConfig_value
 {
 	/** Integer value. */
 	sjme_jint jint;
 
 	/** String value. */
 	sjme_lpcstr jstring;
-} sjme_vmConfig_value;
+} sjme_nvm_vmConfig_value;
 
 /**
  * Represents a single virtual machine configuration.
  *
  * @since 2023/12/08
  */
-typedef struct sjme_vmConfig_setting
+typedef struct sjme_nvm_vmConfig_setting
 {
 	/** The category this setting is in. */
-	sjme_vmConfig_categoryType category;
+	sjme_nvm_vmConfig_categoryType category;
 
 	/** The name of this setting. */
 	sjme_lpcstr name;
 
 	/** The type of setting this is. */
-	sjme_vmConfig_settingType type;
+	sjme_nvm_vmConfig_settingType type;
 
 	/** Flags for the configuration setting. */
-	sjme_vmConfig_flag flags;
+	sjme_nvm_vmConfig_flag flags;
 
 	/** Contains the various values within. */
 	struct
 	{
 		/** The default value, if any. */
-		const sjme_vmConfig_value initial;
+		const sjme_nvm_vmConfig_value initial;
 
 		/** The minimum value, if applicable. */
-		const sjme_vmConfig_value min;
+		const sjme_nvm_vmConfig_value min;
 
 		/** The maximum value, if applicable. */
-		const sjme_vmConfig_value max;
+		const sjme_nvm_vmConfig_value max;
 
 		/** The option tick values that are possible, if applicable. */
-		const sjme_vmConfig_value ticks[sjme_flexibleArrayCount];
+		const sjme_nvm_vmConfig_value ticks[sjme_flexibleArrayCount];
 	} value;
-} sjme_vmConfig_setting;
+} sjme_nvm_vmConfig_setting;
 
 /*--------------------------------------------------------------------------*/
 

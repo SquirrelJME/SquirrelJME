@@ -21,10 +21,10 @@ sjme_errorCode testCloseable_new(
 {
 	sjme_errorCode error;
 	sjme_closeable result;
-
+	
 	if (allocPool == NULL || outCloseable == NULL || handlerFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
+	
 	/* Allocate. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_closeable_alloc(

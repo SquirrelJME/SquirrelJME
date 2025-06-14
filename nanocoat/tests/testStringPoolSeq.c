@@ -27,36 +27,36 @@ SJME_TEST_DECLARE(testStringPoolSeq)
 	sjme_nvm_stringPool stringPool;
 	sjme_nvm_stringPool_string string;
 	sjme_charSeqStatic seq;
-
+	
 	/* Create string pool. */
 	stringPool = NULL;
 	if (sjme_error_is(test->error = sjme_nvm_stringPool_new(
 		test->pool, &stringPool)) ||
 		stringPool == NULL)
 		return sjme_unit_fail(test, "Could not create pool.");
-
+	
 	/* We are using this, so count it. */
 	if (sjme_error_is(test->error = sjme_alloc_weakRef(stringPool,
 		NULL)))
 		return sjme_unit_fail(test, "Could not count string pool?");
-
+	
 	/* Open char sequence over the data. */
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(test->error = sjme_charSeq_newUtfStatic(
 		&seq, testUtf, 0, -1)))
 		return sjme_unit_fail(test, "Could not create char sequence.");
-
+	
 	/* Locate string. */
 	string = NULL;
 	if (sjme_error_is(test->error = sjme_nvm_stringPool_locateSeq(
 		stringPool, &string, &seq, 0)) || string == NULL)
 		return sjme_unit_fail(test, "Could not locate string?");
-
+	
 	/* We are using this, so count it. */
 	if (sjme_error_is(test->error = sjme_alloc_weakRef(string,
 		NULL)))
 		return sjme_unit_fail(test, "Could not count string?");
-
+	
 	/* Check to make sure it is valid. */
 	sjme_unit_equalI(test, 10, string->seq->length,
 		"Length incorrect?");

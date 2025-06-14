@@ -1,0 +1,163 @@
+/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// -------------------------------------------------------------------------*/
+
+/**
+ * Contains references to the MLE shelves.
+ * 
+ * @since 2025/02/22
+ */
+
+#ifndef SQUIRRELJME_MLESHELVES_H
+#define SQUIRRELJME_MLESHELVES_H
+
+#include "sjme/nvm/mle.h"
+#include "sjme/nvm/mleBrackets.h"
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_MLESHELVES_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
+/*--------------------------------------------------------------------------*/
+	
+/** Integer type. */
+#define SJME_MI SJME_JAVA_TYPE_ID_INTEGER
+
+/** Object type. */
+#define SJME_ML SJME_JAVA_TYPE_ID_OBJECT
+
+/** Long type. */
+#define SJME_MJ SJME_JAVA_TYPE_ID_LONG
+	
+/** Void type. */
+#define SJME_MV SJME_JAVA_TYPE_ID_VOID
+
+/** Builds a type descriptor. */
+#define SJME_MD(rv, args) "(" args ")" rv
+
+/** Array type. */
+#define SJME_MD_A(component) "[" component
+
+/** Boolean type. */
+#define SJME_MD_Z "Z"
+	
+/** Byte type. */
+#define SJME_MD_B "B"
+
+/** Character type. */
+#define SJME_MD_C "C"
+
+/** Integer type. */
+#define SJME_MD_I "I"
+
+/** Void Type. */
+#define SJME_MD_V "V"
+
+/** Class type. */
+#define SJME_MD_L(name) "L" name ";"
+
+/** Array of characters. */
+#define SJME_MD_AC SJME_MD_A(SJME_MD_C)
+
+/** Runnable. */
+#define SJME_MD_RUNNABLE SJME_MD_L("java/lang/Runnable")
+
+/** Pipe descriptor. */
+#define SJME_MD_PIPE SJME_MD_L(SJME_NVM_BRACKET_NAME_PIPE)
+
+/** String. */
+#define SJME_MD_STRING SJME_MD_L("java/lang/String")
+
+/** Task. */
+#define SJME_MD_TASK SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TaskBracket")
+
+/** Type. */
+#define SJME_MD_TYPE SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TypeBracket")
+
+/** Thread. */
+#define SJME_MD_THREAD SJME_MD_L("java/lang/Thread")
+
+/** Trace point. */
+#define SJME_MD_TRACE_POINT \
+	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TracePointBracket")
+
+/** VM Thread. */
+#define SJME_MD_VM_THREAD \
+	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/VMThreadBracket")
+
+/** MLE Function name. */
+#define SJME_NVM_MLE_FUNCTION_NAME(name, alt) \
+	SJME_TOKEN_PASTE4(sjme_nvm_mleFunc_, name, _, alt)
+
+/** MLE Function definition. */
+#define SJME_NVM_MLE_FUNCTION_DECL_ALT(name, alt) \
+	sjme_errorCode SJME_NVM_MLE_FUNCTION_NAME(name, alt)( \
+		sjme_attrInNotNull sjme_nvm_frame inFrame, \
+		sjme_attrInNotNull sjme_jvalueTyped* argR, \
+		sjme_attrInPositive sjme_jint argC, \
+		sjme_attrInNullable sjme_jvalueTyped* argV)
+
+/** MLE Function definition. */
+#define SJME_NVM_MLE_FUNCTION_DECL(name) \
+	SJME_NVM_MLE_FUNCTION_DECL_ALT(name, none)
+
+/** Defines an MLE function. */
+#define SJME_NVM_MLE_DEFINE_ALT(name, alt, type, argX) \
+	{ \
+		#name, type, \
+		argX, \
+		SJME_NVM_MLE_FUNCTION_NAME(name, alt) \
+	}
+
+/** Defines an MLE function. */
+#define SJME_NVM_MLE_DEFINE(name, type, argX) \
+	SJME_NVM_MLE_DEFINE_ALT(name, none, type, argX)
+
+/** Stop MLE definitions. */
+#define SJME_NVM_MLE_STOP() \
+	{NULL, NULL, NULL, NULL}
+
+#define SJME_NVM_MLE_SHELF_DECLARE(what) \
+	const sjme_nvm_mleShelf SJME_TOKEN_PASTE(sjme_nvm_mle, what)[]
+
+extern SJME_NVM_MLE_SHELF_DECLARE(AtomicShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(DebugShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(JarPackageShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(MathShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(MidiShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(NativeArchiveShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(ObjectShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(PencilFontShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(PencilShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(ReferenceShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(ReflectionShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(RuntimeShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(StringShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(TaskShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(TerminalShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(ThreadShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(TypeShelf);
+	
+/*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_MLESHELVES_H
+}
+#undef SJME_CXX_MLESHELVES_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_MLESHELVES_H */
+#endif /* #ifdef __cplusplus */
+
+#endif /* SQUIRRELJME_MLESHELVES_H */

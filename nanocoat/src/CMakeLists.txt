@@ -11,6 +11,15 @@ squirreljme_multilib_add_static_library(Core
 	allocSizeOf.c
 	boot.c
 	bytecode.c
+#	bytecodeSlow.c
+#	bytecodeSlowArray.c
+#	bytecodeSlowCompare.c
+#	bytecodeSlowConst.c
+#	bytecodeSlowFlow.c
+#	bytecodeSlowLocal.c
+#	bytecodeSlowMath.c
+#	bytecodeSlowRef.c
+#	bytecodeSlowStack.c
 	classy.c
 	classyVm.c
 	cleanup.c
@@ -19,6 +28,25 @@ squirreljme_multilib_add_static_library(Core
 	instance.c
 	jdwp.c
 	loop.c
+	mle.c
+	mleAtomic.c
+	mleDebug.c
+	mleJarPackage.c
+	mleMath.c
+	mleMidi.c
+	mleNativeArchive.c
+	mleObject.c
+	mlePencil.c
+	mlePencilFont.c
+	mleReference.c
+	mleReflection.c
+	mleRuntime.c
+	mleScritchUi.c
+	mleString.c
+	mleTask.c
+	mleTerminal.c
+	mleThread.c
+	mleType.c
 	modelessStars.c
 	nvm.c
 	rom.c
@@ -26,6 +54,7 @@ squirreljme_multilib_add_static_library(Core
 	romLibraryZip.c
 	romSuite.c
 	romSuiteZip.c
+	stackMap.c
 	stringPool.c
 	task.c
 	tread.c

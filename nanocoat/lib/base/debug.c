@@ -28,6 +28,8 @@
 #include "sjme/debug.h"
 #include "sjme/alloc.h"
 #include "sjme/dylib.h"
+#include "sjme/nvm/cleanup.h"
+#include "sjme/nvm/task.h"
 
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512

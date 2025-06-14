@@ -67,10 +67,10 @@ struct sjme_nvm_bootParam
 	const sjme_payload_config* payload;
 	
 	/** The boot suite to use. */
-	sjme_rom_suite bootSuite;
+	sjme_nvm_rom_suite bootSuite;
 
 	/** The suite to use for the library set. */
-	sjme_rom_suite librarySuite;
+	sjme_nvm_rom_suite librarySuite;
 
 	/** The class path for main by library IDs. */
 	const sjme_list_sjme_jint* mainClassPathById;
@@ -82,33 +82,19 @@ struct sjme_nvm_bootParam
 	sjme_lpcstr mainClass;
 
 	/** Main arguments. */
-	sjme_list_sjme_lpcstr* mainArgs;
+	const sjme_list_sjme_lpcstr* mainArgs;
 
 	/** System properties. */
-	sjme_list_sjme_lpcstr* sysProps;
+	const sjme_list_sjme_lpcstr* sysProps;
 	
 	/** The native abstraction layer to use. */
 	const sjme_nal* nal;
 };
 
 /**
- * Allocates the reserved pool.
- *
- * @param mainPool The main pool to allocate within.
- * @param outReservedPool The output reserved pool.
- * @return If there is an error or not.
- * @since 2023/12/14
- */
-sjme_errorCode sjme_nvm_allocReservedPool(
-	sjme_attrInNotNull sjme_alloc_pool mainPool,
-	sjme_attrOutNotNull sjme_alloc_pool* outReservedPool);
-
-/**
  * Boots the virtual machine.
  *
- * @param mainPool The main pool to be allocated within.
- * @param reservedPool An optional reserved pool that can be used, if not
- * specified then one is initialized.
+ * @param allocPool The main pool to be allocated within.
  * @param param The configuration to use.
  * @param outState The output state of the virtual machine.
  * @param argc The number of arguments passed to the executable.
@@ -117,8 +103,7 @@ sjme_errorCode sjme_nvm_allocReservedPool(
  * @since 2023/07/27
  */
 sjme_errorCode sjme_nvm_boot(
-	sjme_attrInNotNull sjme_alloc_pool mainPool,
-	sjme_attrInNotNull sjme_alloc_pool reservedPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
 	sjme_attrOutNotNull sjme_nvm* outState)
 	sjme_attrCheckReturn;
@@ -126,16 +111,16 @@ sjme_errorCode sjme_nvm_boot(
 /**
  * Locates the default boot suite.
  * 
- * @param inPool The pool for allocations.
+ * @param allocPool The pool for allocations.
  * @param nal The native abstraction layer to use.
  * @param outSuite The resultant suite.
  * @return Any resultant error code, if any.
  * @since 2024/08/09
  */
 sjme_errorCode sjme_nvm_defaultBootSuite(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nal* nal,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite);
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite);
 
 /**
  * Obtains the default directory for the given type.
@@ -170,7 +155,7 @@ sjme_errorCode sjme_nvm_destroy(
 /**
  * Parses a standard command line sequence.
  * 
- * @param inPool The pool to allocate values within.
+ * @param allocPool The pool to allocate values within.
  * @param nal The native abstraction layer to use.
  * @param param The output parameters. 
  * @param argc The argument count.
@@ -180,7 +165,7 @@ sjme_errorCode sjme_nvm_destroy(
  * @since 2024/08/08
  */
 sjme_errorCode sjme_nvm_parseCommandLine(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrInOutNotNull sjme_nvm_bootParam* outParam,
 	sjme_attrInPositiveNonZero sjme_jint argc,

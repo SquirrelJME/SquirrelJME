@@ -13,12 +13,18 @@ if(LIBRETRO_REALLY_STATIC)
 	set(libRetroCore Core)
 	set(libRetroBaseObjects $<TARGET_OBJECTS:Base>)
 	set(libRetroCoreObjects $<TARGET_OBJECTS:Core>)
+	set(scritchUiCoreObjects $<TARGET_OBJECTS:ScritchUICore>)
+	set(scritchUiFramebufferObjects $<TARGET_OBJECTS:ScritchUIFB>)
+	set(scritchUiPureObjects $<TARGET_OBJECTS:ScritchUIPure>)
 else()
 	set(libRetroIsStatic OFF)
 	set(libRetroBuildType SHARED)
 	set(libRetroCore CorePIC)
 	set(libRetroBaseObjects $<TARGET_OBJECTS:BasePIC>)
 	set(libRetroCoreObjects $<TARGET_OBJECTS:CorePIC>)
+	set(scritchUiCoreObjects $<TARGET_OBJECTS:ScritchUICorePIC>)
+	set(scritchUiFramebufferObjects $<TARGET_OBJECTS:ScritchUIFBPIC>)
+	set(scritchUiPureObjects $<TARGET_OBJECTS:ScritchUIPurePIC>)
 endif()
 
 # Include tests with the build as well?
@@ -37,6 +43,9 @@ add_library(squirreljme_libretro ${libRetroBuildType}
 	${libRetroBaseObjects}
 	${libRetroCoreObjects}
 	${libRetroTestObjects}
+	${scritchUiCoreObjects}
+	${scritchUiFramebufferObjects}
+	${scritchUiPureObjects}
 	audio.c
 	boot.c
 	env.c
@@ -100,15 +109,22 @@ if(EMSCRIPTEN)
 		"${SQUIRRELJME_DYLIB_OUTPUT_DIR}/squirreljme_libretro_emscripten.bc")
 endif()
 
+# Locate the RetroArch binary
+find_program(retroArchExe "retroarch" NO_CACHE
+	PATHS "C:/RetroArch-Win64"
+		"C:/RetroArch"
+		"$ENV{APPDATA}/RetroArch")
+
 # Allow running the binary, as long as it is not static and we are on the
 # same system...
-find_program(retroArchExe "retroarch")
+find_program(gdbExe "gdbserver")
 if(retroArchExe AND NOT libRetroIsStatic AND
 	NOT EMSCRIPTEN AND
 	NOT SQUIRRELJME_IS_CROSS_COMPILE)
 	# Add target to run accordingly
-	add_custom_target(LibRetroRun
+	add_custom_target(RunSquirreljme_libretro
 		COMMAND "${retroArchExe}"
+			"-v"
 			"-L" "$<TARGET_FILE:squirreljme_libretro>"
 			"--no-patch"
 			"--appendconfig=${CMAKE_CURRENT_SOURCE_DIR}/test.config"
@@ -117,9 +133,27 @@ if(retroArchExe AND NOT libRetroIsStatic AND
 		USES_TERMINAL)
 
 	# Do not try running this
-	set_target_properties(LibRetroRun PROPERTIES
+	set_target_properties(RunSquirreljme_libretro PROPERTIES
 		EXCLUDE_FROM_ALL TRUE
 		EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+
+	# Extra target for debugging?
+	if(gdbExe)
+		# Add target to run accordingly
+		add_custom_target(GdbSquirreljme_libretro
+			COMMAND "${gdbExe}" "localhost:2345" "${retroArchExe}"
+			"-L" "$<TARGET_FILE:squirreljme_libretro>"
+			"--no-patch"
+			"--appendconfig=${CMAKE_CURRENT_SOURCE_DIR}/test.config"
+			"--log-file=${CMAKE_BINARY_DIR}/libretro.log"
+			DEPENDS squirreljme_libretro
+			USES_TERMINAL)
+
+		# Do not try running this
+		set_target_properties(GdbSquirreljme_libretro PROPERTIES
+			EXCLUDE_FROM_ALL TRUE
+			EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+	endif()
 endif()
 
 # CPack

@@ -15,6 +15,7 @@
 #include "sjme/nvm/boot.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/nvmFunc.h"
+#include "sjme/nvm/loop.h"
 
 /**
  * Main program entry point.
@@ -72,7 +73,7 @@ int main(int argc, sjme_lpcstr* argv)
 		bootParam.mainClassPathByName == NULL)
 	{
 		/* Try to find default launcher. */
-		if (sjme_error_is(error = sjme_rom_suiteDefaultLaunch(pool,
+		if (sjme_error_is(error = sjme_nvm_rom_suiteDefaultLaunch(pool,
 			bootParam.bootSuite,
 			(sjme_lpstr*)&bootParam.mainClass,
 			(sjme_list_sjme_lpstr**)&bootParam.mainArgs,
@@ -92,7 +93,7 @@ int main(int argc, sjme_lpcstr* argv)
 	/* Boot the virtual machine. */
 	inState = NULL;
 	if (sjme_error_is(error = sjme_nvm_boot(pool,
-		NULL, &bootParam, &inState)))
+		&bootParam, &inState)))
 		goto fail_boot;
 	
 	/* Iterate the virtual machine loop. */
@@ -102,8 +103,8 @@ int main(int argc, sjme_lpcstr* argv)
 		sjme_thread_yield();
 		
 		/* Tick the virtual machine. */
-		if (sjme_error_is(error = sjme_nvm_tick(inState, -1,
-			&terminated)))
+		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, -1,
+			NULL, &terminated)))
 		{
 			/* Fail unless this was interrupted. */
 			if (error == SJME_ERROR_INTERRUPTED)

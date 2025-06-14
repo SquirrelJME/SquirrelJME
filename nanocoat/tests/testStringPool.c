@@ -21,7 +21,7 @@
 SJME_TEST_DECLARE(testStringPool)
 {
 	sjme_nvm_stringPool stringPool;
-
+	
 	/* Create string pool. */
 	stringPool = NULL;
 	if (sjme_error_is(test->error = sjme_nvm_stringPool_new(

@@ -17,7 +17,7 @@
 #include "sjme/nvm/task.h"
 #include "sjme/charSeq.h"
 #include "sjme/native.h"
-#include "sjme/cleanup.h"
+#include "sjme/nvm/cleanup.h"
 #include "sjme/path.h"
 
 #if defined(SJME_PATH_SHORT)
@@ -98,81 +98,106 @@ static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
 	{NULL, NULL}
 };
 
-sjme_errorCode sjme_nvm_allocReservedPool(
-	sjme_attrInNotNull sjme_alloc_pool mainPool,
-	sjme_attrOutNotNull sjme_alloc_pool* outReservedPool)
+/** SquirrelJME ROM names. */
+static sjme_lpcstr sjme_nvm_romNames[] =
+{
+	"squirreljme-"SQUIRRELJME_VERSION"-fast.jar",
+	"squirreljme-"SQUIRRELJME_VERSION".jar",
+	"squirreljme-"SQUIRRELJME_VERSION"-slow.jar",
+	"squirreljme-"SQUIRRELJME_VERSION"-slow-test.jar",
+	"squirreljme-fast.jar",
+	"squirreljme.jar",
+	"squirreljme-slow.jar",
+	"squirreljme-slow-test.jar",
+	NULL
+};
+
+static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
+	sjme_attrInNotNull sjme_lpcstr basePath,
+	sjme_attrInNotNull sjme_lpcstr romName)
 {
 	sjme_errorCode error;
-	sjme_pointer reservedBase;
-	sjme_alloc_pool reservedPool;
-	sjme_jint reservedSize;
+	sjme_cchar dataPath[SJME_MAX_PATH];
+	sjme_seekable rom;
+	sjme_nvm_rom_suite result;
 
-	if (mainPool == NULL || outReservedPool == NULL)
+	if (allocPool == NULL || nal == NULL || outSuite == NULL ||
+		basePath == NULL || romName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Determine how big the reserved pool should be... */
-	reservedBase = NULL;
-	reservedSize = -1;
-	if (sjme_error_is(error = sjme_alloc_sizeOf(
-		SJME_ALLOC_SIZEOF_RESERVED_POOL, 0, &reservedSize)))
+	
+	/* Base path here. */
+	memset(&dataPath, 0, sizeof(dataPath));
+	if (sjme_error_is(error = sjme_path_resolveAppend(
+		dataPath, SJME_MAX_PATH - 1,
+		basePath, INT32_MAX)))
 		return sjme_error_default(error);
-	if (sjme_error_is(error = sjme_alloc(mainPool,
-		reservedSize, (sjme_pointer*)&reservedBase) ||
-		reservedBase == NULL))
+	
+	/* Use ROM from here. */
+	if (sjme_error_is(error = sjme_path_resolveAppend(
+		dataPath, SJME_MAX_PATH - 1,
+		romName, INT32_MAX)))
 		return sjme_error_default(error);
-
-	/* Initialize a reserved pool where all of our own data structures go. */
-	reservedPool = NULL;
-	if (sjme_error_is(error = sjme_alloc_poolInitStatic(
-		&reservedPool, reservedBase, reservedSize)) ||
-		reservedPool == NULL)
+	
+	/* Open main ROM file. */
+	rom = NULL;
+	if (sjme_error_is(error = nal->fileOpen(allocPool, dataPath,
+		&rom)) || rom == NULL)
 		return sjme_error_default(error);
-
-	/* Use the resultant pool. */
-	*outReservedPool = reservedPool;
+	
+	/* Load suite from the ZIP. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipSeekable(allocPool,
+		&result, rom)) || result == NULL)
+	{
+		/* Make sure to close the file. */
+		sjme_closeable_close(SJME_AS_CLOSEABLE(rom));
+		
+		/* Fail. */
+		return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	*outSuite = result;
 	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_boot(
-	sjme_attrInNotNull sjme_alloc_pool mainPool,
-	sjme_attrInNotNull sjme_alloc_pool reservedPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
 	sjme_attrOutNotNull sjme_nvm* outState)
 {
 #define FIXED_SUITE_COUNT 16
 	sjme_errorCode error;
-	sjme_exceptTrace* trace;
-	sjme_jint i, n;
 	sjme_nvm result;
-	sjme_rom_suite mergeSuites[FIXED_SUITE_COUNT];
+	sjme_nvm_rom_suite mergeSuites[FIXED_SUITE_COUNT];
 	sjme_jint numMergeSuites;
-	sjme_task_startConfig initTaskConfig;
+	sjme_nvm_task_taskNewConfig initTaskConfig;
 	sjme_nvm_task initTask;
-	sjme_list_sjme_rom_library* classPath;
+	sjme_list_sjme_nvm_rom_library* classPath;
 	
-	if (param == NULL || outState == NULL)
+	if (allocPool == NULL || param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Set up a reserved pool where all the data structures for the VM go... */
-	/* But only if one does not exist. */
-	if (reservedPool == NULL)
-		if (sjme_error_is(error = sjme_nvm_allocReservedPool(mainPool,
-			&reservedPool)) || reservedPool == NULL)
-			goto fail_reservedPoolAlloc;
-
+	/* These are required. */
+	if (param->nal == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	/* Allocate resultant state. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(reservedPool,
+	if (sjme_error_is(error = sjme_nvm_alloc((sjme_nvm)allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_STATE,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_resultAlloc;
 	
 	/* Make a defensive copy of the boot parameters. */
 	result->bootParamCopy = NULL;
-	if (sjme_error_is(error = sjme_alloc_copy(reservedPool,
+	if (sjme_error_is(error = sjme_alloc_copy(allocPool,
 		sizeof(*result->bootParamCopy),
 		(sjme_pointer*)&result->bootParamCopy,
-		(sjme_pointer)&param)) || result->bootParamCopy == NULL)
+		(sjme_pointer)param)) || result->bootParamCopy == NULL)
 		goto fail_bootParamCopy;
 
 	/* Can only use one or the other to get the class path. */
@@ -181,8 +206,8 @@ sjme_errorCode sjme_nvm_boot(
 		goto fail_bothIdAndName;
 
 	/* Set parameters accordingly. */
-	result->allocPool = mainPool;
-	result->reservedPool = reservedPool;
+	result->allocPool = allocPool;
+	result->nal = param->nal;
 
 	/* Initialize base for suite merging. */
 	memset(mergeSuites, 0, sizeof(mergeSuites));
@@ -192,7 +217,8 @@ sjme_errorCode sjme_nvm_boot(
 	if (result->bootParamCopy->payload != NULL)
 	{
 		/* Scan accordingly. */
-		if (sjme_error_is(error = sjme_rom_suiteFromPayload(reservedPool,
+		if (sjme_error_is(error = sjme_nvm_rom_suiteFromPayload(
+			allocPool,
 			&mergeSuites[numMergeSuites],
 			result->bootParamCopy->payload)))
 			goto fail_payloadRom;
@@ -206,13 +232,13 @@ sjme_errorCode sjme_nvm_boot(
 	if (result->bootParamCopy->bootSuite != NULL)
 		if (numMergeSuites < FIXED_SUITE_COUNT)
 			mergeSuites[numMergeSuites++] =
-				(sjme_rom_suite)result->bootParamCopy->bootSuite;
+				(sjme_nvm_rom_suite)result->bootParamCopy->bootSuite;
 	
 	/* Is there a library suite to use? */
 	if (result->bootParamCopy->librarySuite != NULL)
 		if (numMergeSuites < FIXED_SUITE_COUNT)
 			mergeSuites[numMergeSuites++] =
-				(sjme_rom_suite)result->bootParamCopy->librarySuite;
+				(sjme_nvm_rom_suite)result->bootParamCopy->librarySuite;
 
 	/* No suites at all? Running with absolutely nothing??? */
 	if (numMergeSuites <= 0)
@@ -231,7 +257,8 @@ sjme_errorCode sjme_nvm_boot(
 	else
 	{
 		/* Merge all the suites together into one. */
-		if (sjme_error_is(error = sjme_rom_suiteFromMerge(reservedPool,
+		if (sjme_error_is(error = sjme_nvm_rom_suiteFromMerge(
+			allocPool,
 			&result->suite, mergeSuites,
 			numMergeSuites)) || result->suite == NULL)
 			goto fail_suiteMerge;
@@ -241,11 +268,11 @@ sjme_errorCode sjme_nvm_boot(
 	classPath = NULL;
 	error = SJME_ERROR_NO_SUITES;
 	if (result->bootParamCopy->mainClassPathById != NULL)
-		error = sjme_rom_resolveClassPathById(result->suite,
+		error = sjme_nvm_rom_resolveClassPathById(result->suite,
 			result->bootParamCopy->mainClassPathById,
 			&classPath);
 	else if (result->bootParamCopy->mainClassPathByName != NULL)
-		error = sjme_rom_resolveClassPathByName(result->suite,
+		error = sjme_nvm_rom_resolveClassPathByName(result->suite,
 			result->bootParamCopy->mainClassPathByName,
 			&classPath);
 
@@ -262,8 +289,8 @@ sjme_errorCode sjme_nvm_boot(
 	}
 
 	/* Setup task details. */
-	initTaskConfig.stdOut = SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
-	initTaskConfig.stdErr = SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
+	initTaskConfig.stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
+	initTaskConfig.stdErr = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
 	initTaskConfig.classPath = classPath;
 	initTaskConfig.mainClass = result->bootParamCopy->mainClass;
 	initTaskConfig.mainArgs = result->bootParamCopy->mainArgs;
@@ -271,7 +298,7 @@ sjme_errorCode sjme_nvm_boot(
 
 	/* Spawn initial task which uses the main arguments. */
 	initTask = NULL;
-	if (sjme_error_is(error = sjme_task_start(result,
+	if (sjme_error_is(error = sjme_nvm_task_taskNew(result,
 		&initTaskConfig, &initTask)) || initTask == NULL)
 		goto fail_initTask;
 	
@@ -302,58 +329,45 @@ fail_reservedPoolAlloc:
 }
 
 sjme_errorCode sjme_nvm_defaultBootSuite(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nal* nal,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite)
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite)
 {
 	sjme_errorCode error;
 	sjme_cchar dataPath[SJME_MAX_PATH];
-	sjme_seekable rom;
-	sjme_rom_suite result;
+	sjme_jint i;
+	sjme_nvm_rom_suite result;
 	
-	if (inPool == NULL || nal == NULL || outSuite == NULL)
+	if (allocPool == NULL || nal == NULL || outSuite == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* We cannot load if filesystem access is not supported. */
 	if (nal->fileOpen == NULL)
 		return sjme_error_notImplemented(0);
 	
-	/* Initialize. */
-	memset(&dataPath, 0, sizeof(dataPath));
-	
 	/* Get default data directory. */
+	memset(&dataPath, 0, sizeof(dataPath));
 	if (sjme_error_is(error = sjme_nvm_defaultDir(
 		SJME_NVM_DEFAULT_DIRECTORY_DATA, nal,
 		dataPath, SJME_MAX_PATH - 1)))
 		return sjme_error_default(error);
-	
-	/* Use ROM from here. */
-	if (sjme_error_is(error = sjme_path_resolveAppend(
-		dataPath, SJME_MAX_PATH - 1,
-		SJME_JAR_NAME, INT32_MAX)))
-		return sjme_error_default(error);
-	
-	/* Open main ROM file. */
-	rom = NULL;
-	if (sjme_error_is(error = nal->fileOpen(inPool, dataPath,
-		&rom)) || rom == NULL)
-		return sjme_error_default(error);
-	
-	/* Load suite from the ZIP. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_rom_suiteFromZipSeekable(inPool,
-		&result, rom)) || result == NULL)
+
+	/* There are multiple possible ROM names. */
+	for (i = 0; sjme_nvm_romNames[i]; i++)
 	{
-		/* Make sure to close the file. */
-		sjme_closeable_close(SJME_AS_CLOSEABLE(rom));
-		
-		/* Fail. */
-		return sjme_error_default(error);
+		/* Attempt ROM lookup. */
+		if (sjme_error_is(error = sjme_nvm_defaultBootSuiteAttempt(
+			allocPool, nal, &result, dataPath,
+			sjme_nvm_romNames[i])))
+			continue;
+
+		/* Success! */
+		*outSuite = result;
+		return SJME_ERROR_NONE;
 	}
-	
-	/* Success! */
-	*outSuite = result;
-	return SJME_ERROR_NONE;
+
+	/* Failed. */
+	return sjme_error_defaultOr(error, SJME_ERROR_NO_SUITES);
 }
 
 sjme_errorCode sjme_nvm_defaultDir(
@@ -491,7 +505,7 @@ sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
 }
 
 sjme_errorCode sjme_nvm_parseCommandLine(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrInOutNotNull sjme_nvm_bootParam* outParam,
 	sjme_attrInPositiveNonZero sjme_jint argc,
@@ -500,12 +514,12 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 #if defined(SJME_MERGE)
 	sjme_errorCode error;
 	sjme_jint argAt;
-	sjme_charSeq argSeq;
+	sjme_charSeqStatic argSeq;
 	sjme_jboolean jarSpecified;
 	const sjme_nvm_helpParam* help;
-	sjme_nal_stdFFunc helpOut;
+	sjme_nal_stdOFunc helpOut;
 	
-	if (inPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
+	if (allocPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (argc <= 0)
@@ -518,7 +532,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		/* Setup sequence to wrap argument for parsing. */
 		memset(&argSeq, 0, sizeof(argSeq));
 		if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-			&argSeq, argv[argAt], NULL)))
+			&argSeq, argv[argAt], 0, -1)))
 			return sjme_error_default(error);
 		
 		/* -version */
@@ -528,19 +542,19 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				"--version"))
 		{
 			/* Where is this information going? */
-			helpOut = nal->stdErrF;
+			helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].out;
 			if (sjme_charSeq_equalsUtfR(&argSeq, "--version"))
-				helpOut = nal->stdOutF;
+				helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
 			
 			/* Print version information to stdout. */
 			/* https://www.oracle.com/java/technologies/javase/ */
 			/* versioning-naming.html */
-			helpOut(
+			sjme_nal_stdF(helpOut,
 				"java version \"1.8.0\"\n");
-			helpOut(
+			sjme_nal_stdF(helpOut,
 				"SquirrelJME Class Library, Micro Edition (build %s)\n",
 				SQUIRRELJME_VERSION);
-			helpOut(
+			sjme_nal_stdF(helpOut,
 				"SquirrelJME NanoCoat VM (build %s, %s)\n",
 				SQUIRRELJME_VERSION, SQUIRRELJME_VERSION_NANOCOAT);
 			
@@ -559,24 +573,24 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				"--help"))
 		{
 			/* Where is this information going? */
-			helpOut = nal->stdErrF;
+			helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].out;
 			if (sjme_charSeq_equalsUtfR(&argSeq, "--help"))
-				helpOut = nal->stdOutF;
+				helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
 			
 			/* Normal usage. */
-			helpOut(
+			sjme_nal_stdF(helpOut,
 				"Usage: %s [Options] <MainClass> [Args...]\n", argv[0]);
-			helpOut(
+			sjme_nal_stdF(helpOut,
 				"Usage: %s [Options] -jar <Jar> [Args...]\n", argv[0]);
-			helpOut("\n");
+			sjme_nal_stdF(helpOut,"\n");
 			
 			/* And all the help parameters. */
-			helpOut("Options are:\n");
+			sjme_nal_stdF(helpOut, "Options are:\n");
 			for (help = &sjme_nvm_helpParams[0]; help->arg != NULL; help++)
 			{
-				helpOut("  %s\n",
+				sjme_nal_stdF(helpOut, "  %s\n",
 					help->arg);
-				helpOut("    %s\n",
+				sjme_nal_stdF(helpOut, "    %s\n",
 					help->desc);
 			}
 			

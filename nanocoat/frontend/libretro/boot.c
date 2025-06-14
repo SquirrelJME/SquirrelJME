@@ -10,10 +10,36 @@
 #include <string.h>
 #include <libretro.h>
 
+#include "sjme/config.h"
+
+#if defined(SJME_CONFIG_DEBUG)
+	#include <signal.h>
+#endif
+
+#include "lib/scritchui/scritchui.h"
+#include "lib/scritchui/pure/pure.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
 #include "frontend/libretro/shared.h"
 #include "sjme/dylib.h"
+#include "sjme/native.h"
+
+/** The default pool size for ScritchUI on RetroArch. */
+#define SJME_LIBRETRO_SCRITCHUI_POOL_SIZE INT32_C(25165824)
+
+/** The various names that the runtime Jar can be. */
+static sjme_lpcstr sjme_libretro_romNames[] =
+{
+	"squirreljme-"SQUIRRELJME_VERSION"-fast.jar",
+	"squirreljme-"SQUIRRELJME_VERSION".jar",
+	"squirreljme-"SQUIRRELJME_VERSION"-slow.jar",
+	"squirreljme-"SQUIRRELJME_VERSION"-slow-test.jar",
+	"squirreljme-fast.jar",
+	"squirreljme.jar",
+	"squirreljme-slow.jar",
+	"squirreljme-slow-test.jar",
+	NULL,
+};
 
 static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 	sjme_lpcstr partMessage)
@@ -72,6 +98,20 @@ static sjme_debug_handlerFunctions sjme_libretro_debugHandlers =
 	sjme_sm(.message, sjme_libretro_debugMessageHandler),
 };
 
+static const sjme_nal sjme_libretro_nal =
+{
+	.currentTimeMillis = NULL,
+	.fileOpen = NULL,
+	.getEnv = NULL,
+	.nanoTime = NULL,
+	.stdIo =
+	{
+		NULL,
+		NULL,
+		NULL,
+	},
+};
+
 sjme_attrUnused RETRO_API unsigned retro_api_version(void)
 {
 	return RETRO_API_VERSION;
@@ -83,8 +123,48 @@ sjme_attrUnused RETRO_API void retro_deinit(void)
 
 sjme_attrUnused RETRO_API void retro_init(void)
 {
+	sjme_errorCode error;
+	sjme_scritchui scritchUi;
+	sjme_alloc_pool scritchPool;
+	const sjme_nal* nal;
+	sjme_seekable bootSeek;
+	
 	/* Setup handlers for debug calls. */
 	sjme_debug_handlers = &sjme_libretro_debugHandlers;
+
+	/* Use the RetroArch NAL. */
+	nal = &sjme_libretro_nal;
+
+	/* Allocate ScritchUI memory. */
+	scritchPool = NULL;
+	sjme_message("Allocating ScritchUI memory...");
+	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&scritchPool,
+		SJME_LIBRETRO_SCRITCHUI_POOL_SIZE)) || scritchPool == NULL)
+		goto fail_initMem;
+
+#if 0
+	/* Open seekable to the boot Jar. */
+	bootSeek = NULL;
+	if (sjme_error_is(error = nal->fileOpen(pool, argv[1],
+		&bootSeek)) || bootSeek == NULL)
+		goto fail_openBootJar;
+
+	/* Initialize ScritchUI. */
+	scritchUi = NULL;
+	sjme_message("Initializing ScritchUI...");
+	if (sjme_error_is(error = SJME_SCRITCHUI_DYLIB_SYMBOL(pure)(
+		scritchPool, &scritchUi, NULL, NULL, NULL)) || scritchUi == NULL)
+		goto fail_initUi;
+#endif
+
+	return;
+
+fail_openBootJar:
+fail_initUi:
+fail_initMem:
+	if (scritchPool != NULL)
+		sjme_alloc_poolDestroy(scritchPool);
+	sjme_error_fatal(error);
 }
 
 sjme_attrUnused RETRO_API bool retro_load_game(
