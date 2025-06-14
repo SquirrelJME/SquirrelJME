@@ -30,7 +30,7 @@ const sjme_mock_configSet configTaskSpawn =
 
 /**
  * Tests spawning of tasks with @c sjme_nvm_task_taskNew .
- * 
+ *
  * @since 2023/11/29
  */
 SJME_TEST_DECLARE(testTaskSpawn)
