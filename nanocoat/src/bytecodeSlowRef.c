@@ -209,9 +209,6 @@ SJME_NVM_BYTECODE_SLOW(ArrayLength)
 	sjme_jvalueTyped value, result;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
-	/* PC adjustment. */
-	pcNew->adjust = 1;
-
 	/* Pop single object value. */
 	memset(&value, 0, sizeof(value));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
@@ -248,9 +245,6 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	sjme_charSeq binaryName;
 	sjme_jvalueTyped value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
-
-	/* PC adjustment. */
-	pcNew->adjust = 3;
 
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -302,9 +296,6 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 	sjme_nvm_class_poolEntryMember* methodRef;
 	sjme_jvalueTyped depthRef;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
-
-	/* PC adjustment. */
-	pcNew->adjust = 5;
 
 	/* Always zero. */
 	if (0 != relRawCode[4])
@@ -364,9 +355,6 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	sjme_nvm_class_poolEntryMember* member;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
-	/* PC adjustment. */
-	pcNew->adjust = 3;
-
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
 	if (sjme_error_is(error = sjme_nvm_task_framePool(
@@ -395,9 +383,6 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 	sjme_nvm_class_poolEntry* entry;
 	sjme_nvm_class_poolEntryMember* member;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
-
-	/* PC adjustment. */
-	pcNew->adjust = 3;
 
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -428,9 +413,6 @@ SJME_NVM_BYTECODE_SLOW(New)
 	sjme_jvalueTyped result;
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jclass desireClass;
-
-	/* PC adjustment. */
-	pcNew->adjust = 3;
 	
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -472,9 +454,6 @@ SJME_NVM_BYTECODE_SLOW(NewArray)
 	sjme_jvalueTyped length, array;
 	sjme_basicTypeId arrayType;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
-
-	/* PC adjustment. */
-	pcNew->adjust = 2;
 
 	/* Read in array length. */
 	memset(&length, 0, sizeof(length));
@@ -551,9 +530,6 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	sjme_basicTypeId arrayType;
 	sjme_jclass componentType;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
-
-	/* PC adjustment. */
-	pcNew->adjust = 1;
 
 	/* Read in index and array. */
 	memset(&indexValue, 0, sizeof(indexValue));
@@ -664,9 +640,6 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 	sjme_javaTypeId promoteType;
 	sjme_jclass componentType;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
-
-	/* PC adjustment. */
-	pcNew->adjust = 1;
 
 	/* Determine the type to read from the stack and to store to the array. */
 	arrayType = sjme_nvm_byteCode_xArrayType[id - 79];

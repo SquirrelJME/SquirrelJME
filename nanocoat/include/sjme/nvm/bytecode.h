@@ -718,14 +718,17 @@ typedef enum sjme_nvm_byteCode_instruction
  */
 typedef enum sjme_nvm_byteCode_pcNewType
 {
+	/** Default forward. */
+	SJME_NVM_BYTECODE_PC_DEFAULT = 0,
+	
 	/** Relative address. */
-	SJME_NVM_BYTECODE_PC_RELATIVE = 0,
+	SJME_NVM_BYTECODE_PC_RELATIVE = 1,
 
 	/** Absolute address. */
-	SJME_NVM_BYTECODE_PC_ABSOLUTE = 1,
+	SJME_NVM_BYTECODE_PC_ABSOLUTE = 2,
 
 	/** The number of types. */
-	SJME_NVM_BYTECODE_NUM_PC_NEW_TYPE = 2,
+	SJME_NVM_BYTECODE_NUM_PC_NEW_TYPE = 3,
 } sjme_nvm_byteCode_pcNewType;
 
 /**
@@ -761,6 +764,44 @@ typedef sjme_errorCode (*sjme_nvm_byteCode_func)(
 	sjme_attrInNotNull sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew);
 
+/**
+ * Bytecode length interpretation.
+ *
+ * @since 2025/06/14
+ */
+typedef enum sjme_nvm_byteCode_length
+{
+	/** Invalid instruction. */
+	SJME_NVM_BYTECODE_LENGTH_INVALID = -1,
+
+	/** No default flow, length 1. */
+	SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_1 = -2,
+
+	/** No default flow, length 2. */
+	SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_2 = -3,
+
+	/** No default flow, length 3. */
+	SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_3 = -4,
+
+	/** No default flow, length 4. */
+	SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_4 = -5,
+
+	/** No default flow, length 5. */
+	SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_5 = -6,
+
+	/** @c lookupswitch . */
+	SJME_NVM_BYTECODE_LENGTH_LOOKUPSWITCH = -7,
+
+	/** @c tableswitch . */
+	SJME_NVM_BYTECODE_LENGTH_TABLESWITCH = -8,
+
+	/** @c wide . */
+	SJME_NVM_BYTECODE_LENGTH_WIDE = -9,
+} sjme_nvm_byteCode_length;
+
+/** The length of each instruction. */
+extern const sjme_jbyte sjme_nvm_byteCode_lengths[SJME_NVM_NUM_JAVA_BYTECODES];
+
 /** Which LUT to use. */
 extern const sjme_nvm_byteCode_func (*sjme_nvm_byteCode_lutTable
 	[SJME_NVM_NUM_JAVA_BYTECODES])[SJME_NVM_NUM_JAVA_BYTECODES];
@@ -773,6 +814,22 @@ extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
 extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowWideFunctions
 	[SJME_NVM_NUM_JAVA_BYTECODES];
 
+/**
+ * Calculates the instruction length.
+ *
+ * @param inFrame The thread frame.
+ * @param id The instruction ID.
+ * @param relRawCode The relative raw code at the PC address.
+ * @param pcNew New PC address.
+ * @return Any resultant error.
+ * @since 2025/06/14
+ */
+sjme_errorCode sjme_nvm_byteCode_calcLength(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, 256) sjme_byteCode id,
+	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew);
+	
 /**
  * Represents an instruction that is not legal.
  *

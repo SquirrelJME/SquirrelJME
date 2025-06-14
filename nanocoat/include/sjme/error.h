@@ -492,9 +492,12 @@ typedef enum sjme_errorCode
 
 	/** Failed to prepare audio. */
 	SJME_ERROR_AUDIO_PREPARE_FAILED = -150,
+
+	/** Invalid PC adjustment. */
+	SJME_ERROR_INVALID_PC_ADJUST = -151,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -151,
+	SJME_NUM_ERROR_CODES = -152,
 } sjme_errorCode;
 
 /**

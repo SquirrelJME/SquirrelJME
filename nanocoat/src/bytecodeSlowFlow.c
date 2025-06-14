@@ -119,11 +119,10 @@ SJME_NVM_BYTECODE_SLOW(IfAX)
 
 	/* Successful branch? */
 	if (sjme_nvm_byteCode_compareAs[id - 198](value.value.l, NULL))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 		pcNew->adjust = offset;
-
-	/* Failed branch. */
-	else
-		pcNew->adjust = 3;
+	}
 
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
@@ -145,11 +144,10 @@ SJME_NVM_BYTECODE_SLOW(IfX)
 
 	/* Successful branch? */
 	if (sjme_nvm_byteCode_compareIs[id - 153](value.value.i, 0))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 		pcNew->adjust = offset;
-
-	/* Failed branch. */
-	else
-		pcNew->adjust = 3;
+	}
 
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
@@ -175,11 +173,10 @@ SJME_NVM_BYTECODE_SLOW(IfICmpX)
 
 	/* Successful branch? */
 	if (sjme_nvm_byteCode_compareIs[id - 159](a.value.i, b.value.i))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 		pcNew->adjust = offset;
-
-	/* Failed branch. */
-	else
-		pcNew->adjust = 3;
+	}
 
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
@@ -205,11 +202,10 @@ SJME_NVM_BYTECODE_SLOW(IfACmpX)
 
 	/* Successful branch? */
 	if (sjme_nvm_byteCode_compareAs[id - 165](a.value.l, b.value.l))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 		pcNew->adjust = offset;
-
-	/* Failed branch. */
-	else
-		pcNew->adjust = 3;
+	}
 
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
@@ -223,6 +219,7 @@ SJME_NVM_BYTECODE_SLOW(Goto)
 	offset = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[1]));
 
 	/* Jumps according to the offset. */
+	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 	pcNew->adjust = offset;
 	
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -231,9 +228,6 @@ SJME_NVM_BYTECODE_SLOW(Goto)
 SJME_NVM_BYTECODE_SLOW(NoOp)
 {
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
-
-	/* Does nothing except skip the instruction. */
-	pcNew->adjust = 1;
 	
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
@@ -299,6 +293,7 @@ SJME_NVM_BYTECODE_SLOW(TableSwitch)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Would be a default jump? */
+	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 	if (value.value.i < lo || value.value.i > hi)
 		pcNew->adjust = sjme_big_int(
 			*sjme_util_memUnaligned32(&relRawCode[paramBase]));

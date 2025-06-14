@@ -170,7 +170,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_byteCode* rawCode;
 	sjme_byteCode* ev;
 	sjme_byteCode iv;
-	sjme_nvm_byteCode_pcNew pcNew;
+	sjme_nvm_byteCode_pcNew pcNew, pcDefault;
 	const sjme_nvm_byteCode_func (*lut)[SJME_NVM_NUM_JAVA_BYTECODES];
 	sjme_nvm_byteCode_func lutFunc;
 	
@@ -182,6 +182,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 
 	/* Initialized to make the linter not noisy. */
 	currentFrame = NULL;
+	currentCode = NULL;
 	rawCode = NULL;
 	
 	/* Continuous code execution. */
@@ -211,6 +212,17 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		ev = &rawCode[currentFrame->pc];
 		iv = *ev;
 
+		/* Pre-determine default instruction offset. */
+		pcDefault.type = SJME_NVM_BYTECODE_PC_DEFAULT;
+		pcDefault.adjust = sjme_nvm_byteCode_lengths[iv];
+		pcDefault.popFrame = SJME_JNI_FALSE;
+
+		/* Default PC adjustment must be calculated? */
+		if (pcDefault.adjust < SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_5)
+			if (sjme_error_is(error = sjme_nvm_byteCode_calcLength(
+				currentFrame, iv, ev, &pcNew)))
+				return sjme_error_vmError(inThread, error);
+
 		/* Which LUT table to use? */
 		lut = sjme_nvm_byteCode_lutTable[iv];
 		if (lut == NULL)
@@ -224,7 +236,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 				SJME_ERROR_INVALID_INSTRUCTION);
 
 		/* Execute narrow handler. */
-		memset(&pcNew, 0, sizeof(pcNew));
+		memmove(&pcNew, &pcDefault, sizeof(pcNew));
 		if (sjme_error_is(error = lutFunc(currentFrame, iv, ev, &pcNew)))
 			return sjme_error_vmError(inThread, error);
 
@@ -240,13 +252,24 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		}
 
 		/* Set new PC address, in non-exception cases. */
-		if (pcNew.type == SJME_NVM_BYTECODE_PC_RELATIVE)
-			currentFrame->pc += pcNew.adjust;
+		if (pcNew.type == SJME_NVM_BYTECODE_PC_DEFAULT)
+		{
+			/* Default adjust can never go negative. */
+			if (pcNew.adjust <= 0)
+				return sjme_error_vmError(inThread,
+					SJME_ERROR_INVALID_PC_ADJUST);
+
+			/* Adjustment is valid. */
+			sjme_noLint(currentFrame)->pc += pcNew.adjust;
+		}
+		else if (pcNew.type == SJME_NVM_BYTECODE_PC_RELATIVE)
+			sjme_noLint(currentFrame)->pc += pcNew.adjust;
 		else
-			currentFrame->pc = pcNew.adjust;
+			sjme_noLint(currentFrame)->pc = pcNew.adjust;
 		
 		/* PC address is not valid. */
-		if (currentFrame->pc < 0 || currentFrame->pc > currentCode->rawCodeLen)
+		if (currentFrame->pc < 0 ||
+			currentFrame->pc > sjme_noLint(currentCode)->rawCodeLen)
 			return sjme_error_vmError(inThread,
 				SJME_ERROR_INVALID_CODE_ADDRESS);
 	}

@@ -27,9 +27,6 @@ SJME_NVM_BYTECODE_SLOW(IInc)
 	sjme_jint* value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
-	/* Adjust PC. */
-	pcNew->adjust = 3;
-
 	/* Directly access value. */
 	value = NULL;
 	index = relRawCode[1] & 0xFF;
@@ -53,6 +50,7 @@ SJME_NVM_BYTECODE_SLOW(XLoad)
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* Depends on the wideness. */
+	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 	if (id == SJME_NVM_BYTECODE_JAVA_WIDE)
 	{
 		pcNew->adjust = 4;
@@ -83,9 +81,6 @@ SJME_NVM_BYTECODE_SLOW(XLoadZ)
 	sjme_javaTypeId type;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
-	/* Always a single byte. */
-	pcNew->adjust = 1;
-
 	/* Push copy of the local to the stack. */
 	index = ((id - 26) & 3);
 	type = sjme_nvm_byteCode_xLoadType[(id - 26) >> 2];
@@ -107,6 +102,7 @@ SJME_NVM_BYTECODE_SLOW(XStore)
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* Depends on the wideness. */
+	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 	if (id == SJME_NVM_BYTECODE_JAVA_WIDE)
 	{
 		pcNew->adjust = 4;
@@ -141,9 +137,6 @@ SJME_NVM_BYTECODE_SLOW(XStoreZ)
 	sjme_jint index;
 	sjme_javaTypeId type;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
-
-	/* Always a single byte. */
-	pcNew->adjust = 1;
 
 	/* Pop object from the stack. */
 	memset(&popped, 0, sizeof(popped));
