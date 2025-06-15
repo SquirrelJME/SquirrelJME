@@ -17,10 +17,12 @@ import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.runtime.cldc.PrintVersion;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
+import java.io.IOException;
 import java.io.PrintStream;
 import org.intellij.lang.annotations.PrintFormat;
 import org.jetbrains.annotations.Contract;
@@ -247,6 +249,15 @@ public final class Debugging
 			Debugging.todoNote(
 				"*****************************************");
 			Debugging.todoNote("INCOMPLETE CODE HAS BEEN REACHED: ");
+			
+			// Print version information to more easily find this
+			try
+			{
+				PrintVersion.print(System.err);
+			}
+			catch (IOException ignored)
+			{
+			}
 			
 			// If running on Java SE use its method of printing traces
 			// because the SquirrelJME trace support may be missing

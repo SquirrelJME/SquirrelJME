@@ -158,14 +158,16 @@ public class Main
 		throws IOException
 	{
 		// Needs to have something
-		if (__args == null || __args.length < 2)
+		if (__args == null || __args.length < 3)
 			throw new IllegalArgumentException(
-				"Usage: [version] [projectRoot] [task=output...]");
+				"Usage: [version] [projectRoot] [buildVersion] " +
+				"[task=output...]");
 		
 		// Get the SquirrelJME version
 		String version = __args[0];
 		String baseDir = Main.baseDir(version);
 		Path projectRoot = Paths.get(__args[1]).toAbsolutePath().normalize();
+		String buildVersion = __args[2];
 		
 		// Current date
 		Date now = new Date();
@@ -227,7 +229,7 @@ public class Main
 				}
 			
 			// Artifacts from the build
-			for (String arg : Arrays.asList(__args).subList(2,
+			for (String arg : Arrays.asList(__args).subList(3,
 				__args.length))
 			{
 				// Not a key/value pair
@@ -299,7 +301,7 @@ public class Main
 		if (Main.FOSSIL != null && standaloneBase != null)
 			Main.taskUniversal(baseDir, version, mark,
 				standaloneBase, standaloneNative, projectRoot,
-				now.toInstant().getEpochSecond());
+				now.toInstant().getEpochSecond(), buildVersion);
 	}
 	
 	/**
@@ -360,6 +362,7 @@ public class Main
 	 * @param __standaloneNative The natives to merge.
 	 * @param __projectRoot The project root.
 	 * @param __epochSecond The seconds since the epoch.
+	 * @param __buildVersion The build version used.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/03/29
@@ -367,7 +370,7 @@ public class Main
 	public static void taskUniversal(String __baseDir, String __version,
 		byte[] __mark, Artifact __standaloneBase,
 		List<Artifact> __standaloneNative, Path __projectRoot,
-		long __epochSecond)
+		long __epochSecond, String __buildVersion)
 		throws IOException, NullPointerException
 	{
 		if (__baseDir == null || __version == null || __mark == null ||
@@ -384,6 +387,23 @@ public class Main
 		Main.loadZip(merged, __standaloneBase.getData());
 		for (Artifact artifact : __standaloneNative)
 			Main.loadZip(merged, artifact.getData());
+		
+		// Find base libraries that exist
+		List<String> baseLibs = new ArrayList<>();
+		for (String check : merged.keySet())
+			if (check.contains(".SQC/") && check.startsWith("SQUIRRELJME") &&
+				check.endsWith(".SQC/cldc-compact.jar/META-INF/MANIFEST.MF"))
+			{
+				int fs = check.indexOf('/');
+				if (fs > 0)
+					baseLibs.add(check.substring(0, fs));
+			}
+		
+		// Write in version string to cldc-compact
+		for (String baseLib : baseLibs)
+			merged.put(String.format(
+				"%s/cldc-compact.jar/cc/squirreljme/runtime/cldc/version",
+				baseLib), __buildVersion.getBytes("utf-8"));
 		
 		// Build resultant Zip
 		byte[] result;

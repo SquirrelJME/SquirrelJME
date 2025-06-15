@@ -12,6 +12,7 @@
 #include "sjme/stdTypes.h"
 #include "sjme/util.h"
 #include "sjme/debug.h"
+#include "sjme/atomic.h"
 
 sjme_jint sjme_compare_null(
 	sjme_attrInNullable sjme_cpointer a,

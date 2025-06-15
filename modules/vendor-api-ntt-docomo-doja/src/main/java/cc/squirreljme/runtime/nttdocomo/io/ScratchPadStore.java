@@ -224,6 +224,10 @@ public final class ScratchPadStore
 		if (__o < 0 || __l < 0 || (__o + __l) < 0)
 			throw new IndexOutOfBoundsException("IOOB");
 		
+		// No data to actually write? This was a very pointless transaction
+		if (__o >= __b.length)
+			return;
+		
 		// Perform the copy
 		synchronized (this)
 		{

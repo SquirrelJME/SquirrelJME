@@ -54,7 +54,7 @@ public final class ScratchPadOutputTransaction
 	@SquirrelJMEVendorApi
 	ScratchPadOutputTransaction(ScratchPadStore __store, int __pos,
 		int __length)
-		throws IOException, NullPointerException
+		throws NullPointerException
 	{
 		if (__store == null)
 			throw new NullPointerException("NARG");
@@ -63,7 +63,7 @@ public final class ScratchPadOutputTransaction
 		this._pos = __pos;
 		this._length = __length;
 		
-		// Copy the input data for writing
+		// Setup buffer for bulk write
 		this._data = new byte[__length];
 	}
 	
