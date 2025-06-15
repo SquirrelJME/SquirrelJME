@@ -526,6 +526,126 @@ public class Graphics
 	}
 	
 	/**
+	 * Sets the pixel at the given coordinates with the current color.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @since 2025/06/15
+	 */
+	@Api
+	public void setPixel(int __x, int __y)
+	{
+		javax.microedition.lcdui.Graphics graphics = this._graphics;
+		graphics.drawLine(__x, __y, __x + 1, __y);
+	}
+	
+	/**
+	 * Sets the pixel at the given coordinates with the given color.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __rgb The {@link #getColorOfRGB(int, int, int)} to use.
+	 * @since 2025/06/15
+	 */
+	@Api
+	public void setPixel(int __x, int __y, int __rgb)
+	{
+		javax.microedition.lcdui.Graphics graphics = this._graphics;
+		int oldColor = graphics.getAlphaColor();
+		try
+		{
+			// There is no alpha before DoJa 4
+			if (DoJaRuntime.versionBefore(4, 0))
+				graphics.setAlphaColor(__rgb | 0xFF_000000);
+			else
+				graphics.setAlphaColor(__rgb);
+			
+			graphics.drawLine(__x, __y, __x + 1, __y);
+		}
+		finally
+		{
+			graphics.setAlphaColor(oldColor);
+		}
+	}
+	
+	/**
+	 * Draws the given buffer as RGB data.
+	 *
+	 * @param __x The destination X coordinate.
+	 * @param __y The destination Y coordinate.
+	 * @param __w The buffer width.
+	 * @param __h The buffer height.
+	 * @param __buf The buffer pixel data.
+	 * @param __off The offset into the buffer.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or calculated
+	 * length is outside the buffer bounds.
+	 * @throws IllegalArgumentException If the width and/or height are zero
+	 * or negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/15
+	 */
+	@Api
+	public void setPixels(int __x, int __y, int __w, int __h, int[] __buf,
+		int __off)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
+	{
+		if (__buf == null)
+			throw new NullPointerException("NARG");
+		if (__w <= 0 || __h <= 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		int len = __w * __h;
+		if (__off < 0 || (__off + len) > __buf.length || (__off + len) < 0)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		// Draw the RGB data, alpha is only considered valid when at least
+		// DoJa 4 since this has the same behavior as getColorOfRGB()
+		javax.microedition.lcdui.Graphics graphics = this._graphics;
+		graphics.drawRGB(__buf, __off, len, __x, __y, __w, __h,
+			DoJaRuntime.versionLeast(4, 0));
+	}
+	
+	/**
+	 * Same as {@link #setPixel(int, int, int)}.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __rgb The {@link #getColorOfRGB(int, int, int)} to use.
+	 * @since 2025/06/15
+	 */
+	@Api
+	public void setRGBPixel(int __x, int __y, int __rgb)
+	{
+		this.setPixel(__x, __y, __rgb);
+	}
+	
+	/**
+	 * Same as {@link #setPixels(int, int, int, int, int[], int)}.
+	 *
+	 * @param __x The destination X coordinate.
+	 * @param __y The destination Y coordinate.
+	 * @param __w The buffer width.
+	 * @param __h The buffer height.
+	 * @param __buf The buffer pixel data.
+	 * @param __off The offset into the buffer.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or calculated
+	 * length is outside the buffer bounds.
+	 * @throws IllegalArgumentException If the width and/or height are zero
+	 * or negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/15
+	 */
+	@Api
+	public void setRGBPixels(int __x, int __y, int __w, int __h, int[] __buf,
+		int __off)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
+	{
+		this.setPixels(__x, __y, __w, __h, __buf, __off);
+	}
+	
+	/**
 	 * Unlocks the double buffering operation.
 	 *
 	 * @param __forced If the operation is forced
