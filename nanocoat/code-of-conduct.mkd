@@ -1,5 +1,30 @@
 # Contributor Covenant Code of Conduct
 
+## Addendum to the Code of Conduct
+
+This applies to community participation:
+
+ * _Do not bring in external drama from elsewhere_:
+   * We cannot do anything about it as we have no control over it.
+ * _No politics at **all**_:
+   * This is not a forum for such discussion, this is an open source project.
+   * We do not care, it is a waste of time.
+ * _Bigotry is not permitted_:
+   * If your involvement in the community is intended to antagonize others and
+     to make them feel unwelcome, then you are not welcome.
+   * If you feel that the flags and/or color schemes on display within the
+     project, which have been in place for many multiple of years, is something
+     you feel that you should speak out against due to personal
+     gripes and/or issues: It is recommended that you _do not_.
+ * _Do not vent_:
+   * This places a burden on others, if you are trouble please do seek
+     mental health resources.
+
+This community follows a warning then permanent ban procedure, unless your
+infraction is grave enough to result in an instant permanent ban. As we are
+adults, we expect the environment to be professional, we expect you to do
+the same.
+
 ## Our Pledge
 
 We as members, contributors, and leaders pledge to make participation in our
@@ -59,7 +84,7 @@ appointed representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement atP
+reported to the community leaders responsible for enforcement at:
 
  * Via E-mail: <xerthesquirrel@gmail.com> or <xer@multiphasicapps.net>
  * Chat Channels:
@@ -94,19 +119,19 @@ of actions.
 interaction with the people involved, including unsolicited interaction with
 those enforcing the Code of Conduct, for a specified period of time. This
 includes avoiding interactions in community spaces as well as external channels
-like social media. Violating these terms may lead to a temporary or
+like social media. Violating these terms may lead to a ~~temporary or~~
 permanent ban.
 
-### 3. Temporary Ban
+### 3. ~~Temporary Ban~~
 
-**Community Impact**: A serious violation of community standards, including
-sustained inappropriate behavior.
+~~**Community Impact**: A serious violation of community standards, including
+sustained inappropriate behavior.~~
 
-**Consequence**: A temporary ban from any sort of interaction or public
+~~**Consequence**: A temporary ban from any sort of interaction or public
 communication with the community for a specified period of time. No public or
 private interaction with the people involved, including unsolicited interaction
 with those enforcing the Code of Conduct, is allowed during this period.
-Violating these terms may lead to a permanent ban.
+Violating these terms may lead to a permanent ban.~~
 
 ### 4. Permanent Ban
 
