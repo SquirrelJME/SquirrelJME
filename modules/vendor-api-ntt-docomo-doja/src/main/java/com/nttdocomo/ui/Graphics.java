@@ -135,6 +135,12 @@ public class Graphics
 	private volatile int _flipMode =
 		Graphics.FLIP_NONE;
 	
+	/** Emoji color determination. */
+	private volatile boolean _emojiColor;
+	
+	/** Is this disposed? */
+	private volatile boolean _disposed;
+	
 	/**
 	 * Wraps the given graphics object.
 	 *
@@ -146,8 +152,8 @@ public class Graphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/14
 	 */
-	protected Graphics(javax.microedition.lcdui.Graphics __g, BGColor __bgColor,
-		LockFlush __flush)
+	protected Graphics(javax.microedition.lcdui.Graphics __g,
+		BGColor __bgColor, LockFlush __flush)
 		throws NullPointerException
 	{
 		if (__g == null)
@@ -173,6 +179,8 @@ public class Graphics
 		if (__w == 0 || __h == 0)
 			return;
 		
+		this.__checkDispose();
+		
 		javax.microedition.lcdui.Graphics graphics = this._graphics;
 		
 		// The clearing is just drawing the standard background color over
@@ -197,13 +205,21 @@ public class Graphics
 	@Api
 	public Graphics copy()
 	{
+		this.__checkDispose();
+		
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Disposes the current graphics context.
+	 *
+	 * @since 2025/06/15
+	 */
 	@Api
 	public void dispose()
 	{
-		throw Debugging.todo();
+		// Set dispose flag, which is only considered on DoJa 2
+		this._disposed = true;
 	}
 	
 	/**
@@ -239,6 +255,8 @@ public class Graphics
 	public void drawArc(int __x, int __y, int __w, int __h,
 		int __startAngle, int __arcAngle)
 	{
+		this.__checkDispose();
+		
 		this._graphics.drawArc(__x, __y, __w, __h, __startAngle, __arcAngle);
 	}
 	
@@ -246,6 +264,9 @@ public class Graphics
 	public void drawChars(char[] __c, int __x, int __y, int __off, int __len)
 		throws IllegalArgumentException
 	{
+		this.__checkDispose();
+		
+		// TODO: Support default emoji color
 		throw Debugging.todo();
 	}
 	
@@ -255,6 +276,9 @@ public class Graphics
 	{
 		if (__i == null)
 			throw new NullPointerException("NARG");
+		
+		this.__checkDispose();
+		
 		
 		this.drawImage(__i, __x, __y, 0, 0,
 			__i.getWidth(), __i.getHeight());
@@ -268,6 +292,9 @@ public class Graphics
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
+		this.__checkDispose();
+		
+		
 		// Forward to other call, as it simplifies the shared logic
 		this.drawScaledImage(__i,
 			__dx, __dy, __w, __h,
@@ -277,6 +304,8 @@ public class Graphics
 	@Api
 	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
+		this.__checkDispose();
+		
 		this._graphics.drawLine(__x1, __y1, __x2, __y2);
 	}
 	
@@ -284,6 +313,8 @@ public class Graphics
 	public void drawPolyline(int[] __x, int[] __y, int __n)
 		throws IllegalArgumentException
 	{
+		this.__checkDispose();
+		
 		throw Debugging.todo();
 	}
 	
@@ -299,6 +330,8 @@ public class Graphics
 		if (__w == 0 || __h == 0)
 			return;
 		
+		this.__checkDispose();
+		
 		this._graphics.drawRect(__x, __y, __w, __h);
 	}
 	
@@ -311,6 +344,8 @@ public class Graphics
 			throw new NullPointerException("NARG");
 		if (__dw < 0 || __dh < 0 || __sw < 0 || __sh < 0)
 			throw new IllegalArgumentException("ILLA");
+		
+		this.__checkDispose();
 		
 		// Which image is being drawn?
 		javax.microedition.lcdui.Image target;
@@ -365,6 +400,9 @@ public class Graphics
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
+		this.__checkDispose();
+		
+		// TODO: Support default emoji color
 		this._graphics.drawString(__s, __x, __y,
 			javax.microedition.lcdui.Graphics.BASELINE);
 	}
@@ -393,6 +431,8 @@ public class Graphics
 	public void fillArc(int __x, int __y, int __w, int __h,
 		int __startAngle, int __arcAngle)
 	{
+		this.__checkDispose();
+		
 		this._graphics.fillArc(__x, __y, __w, __h, __startAngle, __arcAngle);
 	}
 	
@@ -400,6 +440,8 @@ public class Graphics
 	public void fillPolygon(int[] __x, int[] __y, int __n)
 		throws IllegalArgumentException
 	{
+		this.__checkDispose();
+		
 		throw Debugging.todo();
 	}
 	
@@ -415,6 +457,8 @@ public class Graphics
 		if (__w == 0 || __h == 0)
 			return;
 		
+		this.__checkDispose();
+		
 		this._graphics.fillRect(__x, __y, __w, __h);
 	}
 	
@@ -427,6 +471,8 @@ public class Graphics
 	@Api
 	public void lock()
 	{
+		this.__checkDispose();
+		
 		LockFlush lockFlush = this._lockFlush;
 		if (lockFlush != null)
 			lockFlush.lock();
@@ -445,6 +491,8 @@ public class Graphics
 	@Api
 	public void setClip(int __x, int __y, int __w, int __h)
 	{
+		this.__checkDispose();
+		
 		this._graphics.setClip(__x, __y, __w, __h);
 	}
 	
@@ -460,6 +508,8 @@ public class Graphics
 	public void setColor(int __c)
 		throws IllegalArgumentException
 	{
+		this.__checkDispose();
+		
 		// Before 4.0, alpha is completely excluded from the color
 		if (DoJaRuntime.versionBefore(4, 0))
 			this._graphics.setAlphaColor(__c | 0xFF_000000);
@@ -489,6 +539,8 @@ public class Graphics
 			__mode != Graphics.FLIP_VERTICAL)
 			throw new IllegalArgumentException("AH1f " + __mode);
 		
+		this.__checkDispose();
+		
 		// Set it
 		this._flipMode = __mode;
 	}
@@ -507,6 +559,8 @@ public class Graphics
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
+		this.__checkDispose();
+		
 		this._graphics.setFont(__f._midpFont);
 	}
 	
@@ -520,9 +574,29 @@ public class Graphics
 	@Api
 	public void setOrigin(int __x, int __y)
 	{
+		this.__checkDispose();
+		
 		javax.microedition.lcdui.Graphics graphics = this._graphics;
 		graphics.translate(__x - graphics.getTranslateX(),
 			__y - graphics.getTranslateY());
+	}
+	
+	/**
+	 * Sets whether emoji colors are determined by {@link #setColor(int)} or
+	 * by the system.
+	 *
+	 * @param __enabled If emoji color is determined by {@link #setColor(int)}.
+	 * @since 2025/06/15
+	 */
+	@Api
+	public void setPictoColorEnabled(boolean __enabled)
+	{
+		this.__checkDispose();
+		
+		this._emojiColor = __enabled;
+		
+		// TODO: Support default emoji color
+		Debugging.todoNote("Support default emoji color.");
 	}
 	
 	/**
@@ -535,6 +609,8 @@ public class Graphics
 	@Api
 	public void setPixel(int __x, int __y)
 	{
+		this.__checkDispose();
+		
 		javax.microedition.lcdui.Graphics graphics = this._graphics;
 		graphics.drawLine(__x, __y, __x + 1, __y);
 	}
@@ -550,6 +626,8 @@ public class Graphics
 	@Api
 	public void setPixel(int __x, int __y, int __rgb)
 	{
+		this.__checkDispose();
+		
 		javax.microedition.lcdui.Graphics graphics = this._graphics;
 		int oldColor = graphics.getAlphaColor();
 		try
@@ -599,6 +677,8 @@ public class Graphics
 		if (__off < 0 || (__off + len) > __buf.length || (__off + len) < 0)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
+		this.__checkDispose();
+		
 		// Draw the RGB data, alpha is only considered valid when at least
 		// DoJa 4 since this has the same behavior as getColorOfRGB()
 		javax.microedition.lcdui.Graphics graphics = this._graphics;
@@ -617,6 +697,8 @@ public class Graphics
 	@Api
 	public void setRGBPixel(int __x, int __y, int __rgb)
 	{
+		this.__checkDispose();
+		
 		this.setPixel(__x, __y, __rgb);
 	}
 	
@@ -642,6 +724,8 @@ public class Graphics
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
 	{
+		this.__checkDispose();
+		
 		this.setPixels(__x, __y, __w, __h, __buf, __off);
 	}
 	
@@ -656,9 +740,26 @@ public class Graphics
 	@Api
 	public void unlock(boolean __forced)
 	{
+		this.__checkDispose();
+		
 		LockFlush lockFlush = this._lockFlush;
 		if (lockFlush != null)
 			lockFlush.unlock(__forced);
+	}
+	
+	/**
+	 * Checks whether the current graphics is disposed, note that this fails
+	 * only on DoJa 2 and up.
+	 *
+	 * @throws UIException If this has been disposed.
+	 * @since 2025/06/15
+	 */
+	private void __checkDispose()
+		throws UIException
+	{
+		if (DoJaRuntime.versionLeast(2, 0))
+			if (this._disposed)
+				throw new UIException(UIException.ILLEGAL_STATE);
 	}
 	
 	/**
