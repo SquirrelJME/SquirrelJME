@@ -70,6 +70,7 @@ CommandLineArgumentProvider argProvider = ({ ->
 	args.add(squirreljmeVersion)
 	args.add(rootProject.projectDir.toPath().toAbsolutePath()
 		.normalize().toString())
+	args.add(VMHelpers.buildVersion(project))
 	
 	// Pass all task dependencies
 	for (Object item : internals.get().dependsOn) {

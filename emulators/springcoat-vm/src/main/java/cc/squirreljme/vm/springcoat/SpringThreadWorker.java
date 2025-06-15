@@ -3650,14 +3650,17 @@ public final class SpringThreadWorker
 		// that is the simplest action
 		catch (SpringException e)
 		{
-			// Verbose debug?
-			if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION))
+			// Verbose debug? Or always emit if method is missing
+			if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION) ||
+				(e instanceof SpringNoSuchMethodException))
 			{
 				this.verboseEmit("-------------------------------");
 				this.verboseEmit("Exception, %s: %s",
 					e.getClass().getName(), e.getMessage());
 				
-				e.printStackTrace();
+				this.thread.printStackTrace(System.err);
+				this.verboseEmit("...............................");
+				e.printStackTrace(System.err);
 				
 				this.verboseEmit("-------------------------------");
 			}
