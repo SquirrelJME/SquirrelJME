@@ -495,9 +495,15 @@ typedef enum sjme_errorCode
 
 	/** Invalid PC adjustment. */
 	SJME_ERROR_INVALID_PC_ADJUST = -151,
+
+	/** An instruction is not valid. */
+	SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION = -152,
+
+	/** An instruction has an invalid length. */
+	SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION_LENGTH = -153,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -152,
+	SJME_NUM_ERROR_CODES = -154,
 } sjme_errorCode;
 
 /**

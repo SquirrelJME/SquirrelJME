@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <sjme/util.h>
+
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/bytecode.h"
 #include "sjme/debug.h"
@@ -183,8 +185,8 @@ const sjme_jbyte sjme_nvm_byteCode_lengths[SJME_NVM_NUM_JAVA_BYTECODES] =
 	/* 167 */ SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_3, /* Control. */
 	/* 168 */ SJME_NVM_BYTECODE_LENGTH_INVALID,
 	/* 169 */ SJME_NVM_BYTECODE_LENGTH_INVALID,
-	/* 170 */ SJME_NVM_BYTECODE_LENGTH_LOOKUPSWITCH,
-	/* 171 */ SJME_NVM_BYTECODE_LENGTH_TABLESWITCH,
+	/* 170 */ SJME_NVM_BYTECODE_LENGTH_TABLESWITCH,
+	/* 171 */ SJME_NVM_BYTECODE_LENGTH_LOOKUPSWITCH,
 	/* 172 */ SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_1,
 	/* 173 */ SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_1,
 	/* 174 */ SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_1,
@@ -198,13 +200,13 @@ const sjme_jbyte sjme_nvm_byteCode_lengths[SJME_NVM_NUM_JAVA_BYTECODES] =
 	/* 182 */ 3,
 	/* 183 */ 3,
 	/* 184 */ 3,
-	/* 185 */ 5,
+	/* 185 */ 5, /* @c invokeinterface */
 	/* 186 */ SJME_NVM_BYTECODE_LENGTH_INVALID,
 	/* 187 */ 3,
 	/* 188 */ 2,
 	/* 189 */ 3,
 	/* 190 */ 1,
-	/* 191 */ SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_3,
+	/* 191 */ SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_1,
 	/* 192 */ 3,
 	/* 193 */ 3,
 	/* 194 */ 1,
@@ -533,30 +535,65 @@ const sjme_nvm_byteCode_func (*sjme_nvm_byteCode_lutTable
 };
 
 sjme_errorCode sjme_nvm_byteCode_calcLength(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNullable sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull sjme_byteCode* ev,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew)
 {
-	if (inFrame == NULL || relRawCode == NULL || pcNew == NULL)
+	sjme_jint hi, lo, pairs;
+	sjme_byteCode* evPadded;
+	
+	if (ev == NULL || pcNew == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	switch (pcNew->type)
+	switch (pcNew->adjust)
 	{
+			/* Fixed size, but no return. */
+		case SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_1:
+		case SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_2:
+		case SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_3:
+		case SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_4:
+		case SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_5:
+			pcNew->adjust = ((-pcNew->adjust) -
+				(-SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_1)) + 1;
+			break;
+		
 		case SJME_NVM_BYTECODE_LENGTH_LOOKUPSWITCH:
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			/* Skip padding. */
+			evPadded = sjme_util_alignToP(&ev[1], 4);
+
+			/* Read pair count. */
+			pairs = sjme_big_int(*sjme_util_memUnaligned32(&evPadded[4]));
+			if (pairs < 0)
+				return SJME_ERROR_INVALID_INSTRUCTION;
+
+			/* Calculate offset of default branch. */
+			pcNew->adjust = ((sjme_intPointer)evPadded -
+				(sjme_intPointer)ev) + 8 + (pairs * 8);
+			break;
 			
 		case SJME_NVM_BYTECODE_LENGTH_TABLESWITCH:
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			/* Skip padding. */
+			evPadded = sjme_util_alignToP(&ev[1], 4);
+			
+			/* Read high and low values. */
+			lo = sjme_big_int(*sjme_util_memUnaligned32(&evPadded[4]));
+			hi = sjme_big_int(*sjme_util_memUnaligned32(&evPadded[8]));
+			if (hi < lo)
+				return SJME_ERROR_INVALID_INSTRUCTION;
+			
+			/* Calculate offset of default branch. */
+			pcNew->adjust = ((sjme_intPointer)evPadded -
+				(sjme_intPointer)ev) + 12 + ((hi - lo) + 1);
+			break;
 		
 		case SJME_NVM_BYTECODE_LENGTH_WIDE:
 			sjme_todo("Impl?");
 			return sjme_error_notImplemented(0);
 		
-			/* No change needed. */
+			/* Invalid? */
 		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
 	}
 
 	/* Success! */

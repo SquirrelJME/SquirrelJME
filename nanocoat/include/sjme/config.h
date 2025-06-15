@@ -364,13 +364,24 @@ extern "C" {
 #if SJME_CONFIG_HAS_POINTER == 32
 	/** Has 32-bit pointer. */
 	#define SJME_CONFIG_HAS_POINTER32
+
+	/** Bytes per pointer. */
+	#define SJME_POINTER_BYTES 4
 #endif
 
 #if SJME_CONFIG_HAS_POINTER == 64
 	/** Has 64-bit pointer. */
 	#define SJME_CONFIG_HAS_POINTER64
+
+	/** Bytes per pointer. */
+	#define SJME_POINTER_BYTES 8
 #endif
 
+#if !defined(SJME_POINTER_BYTES)
+	/** Bytes per pointer. */
+	#define SJME_POINTER_BYTES (SJME_CONFIG_HAS_POINTER / 8)
+#endif
+	
 #if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010) || \
 	defined(SJME_CONFIG_HAS_GCC) || \
 	defined(SJME_CONFIG_HAS_CLANG) || \

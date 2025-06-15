@@ -148,10 +148,8 @@ static sjme_jint sjme_scritchui_win32_keyCode(sjme_jint inKey)
 			return SJME_SCRITCHINPUT_KEY_NUMPAD_DECIMAL;
 		case VK_DIVIDE:
 			return SJME_SCRITCHINPUT_KEY_NUMPAD_DIVIDE;
-#if 0
 		case VK_NUMPAD_ENTER:
 			return SJME_SCRITCHINPUT_KEY_NUMPAD_ENTER;
-#endif
 		case VK_SUBTRACT:
 			return SJME_SCRITCHINPUT_KEY_NUMPAD_MINUS;
 		case VK_MULTIPLY:
@@ -782,7 +780,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_SCROLL(
 		inComponent, &rect)))
 		return sjme_error_default(error);
 	
-#if 0
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("View rect: (%d, %d) [%d, %d]",
 		rect.s.x, rect.s.y, rect.d.width, rect.d.height);
@@ -989,7 +987,7 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
-#if 0 && defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("Win32 message: %p %d %p %p)",
 		hWnd, message, wParam, lParam);

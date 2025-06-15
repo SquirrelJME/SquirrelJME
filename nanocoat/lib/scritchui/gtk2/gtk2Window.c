@@ -137,7 +137,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 		gdk_window_get_origin(GTK_WIDGET(gtkWindow)->window,
 			&ox, &oy);
 
-#if 0
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		sjme_message("EXTENT %d %d %d %d -- ORIGIN %d %d",
 			extent.x, extent.y, extent.width, extent.height, ox, oy);
 #endif

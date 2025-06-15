@@ -351,6 +351,17 @@ sjme_jint sjme_tree_find(void* tree, void* what,
  */
 sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
 	sjme_intPointer align);
+
+/**
+ * Aligns the given address to the given alignment.
+ * 
+ * @param addr The address to align.
+ * @param align The alignment to use.
+ * @return The resultant aligned address.
+ * @since 2025/06/15
+ */
+#define sjme_util_alignToP(addr, align) \
+	((sjme_pointer)sjme_util_alignTo(((sjme_intPointer)(addr)), (align)))
 	
 /**
  * Returns the number of bits in the value.

@@ -432,7 +432,7 @@ sjme_errorCode sjme_scritchui_intern_menuItemActivateById(
 	if (itemMask == 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-#if 0
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("menuItemActivateById(%p, %p, %p, %d)",
 		inState, inWindow, atRover, itemActivated);

@@ -9,6 +9,8 @@
 
 #include <string.h>
 
+#include <sjme/nvm/bytecode.h>
+
 #include "sjme/nvm/classy.h"
 #include "sjme/debug.h"
 #include "sjme/util.h"
@@ -377,6 +379,62 @@ static sjme_errorCode sjme_nvm_class_fieldFlagsParse(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_class_methodAttrCodeOpLenVerify(
+	sjme_attrInNotNull sjme_byteCode* rawCode,
+	sjme_attrInPositiveNonZero sjme_jint codeLen)
+{
+	sjme_byteCode* ev;
+	sjme_byteCode* oldEv;
+	sjme_byteCode iv;
+	sjme_byteCode* endCode;
+	sjme_nvm_byteCode_pcNew pcNew;
+	
+	if (rawCode == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (codeLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Calculate the end code address. */
+	endCode = SJME_POINTER_OFFSET(rawCode, codeLen);
+
+	/* Go through and check addresses. */
+	memset(&pcNew, 0, sizeof(pcNew));
+	for (ev = oldEv = rawCode; ev < endCode; oldEv = ev)
+	{
+		/* Determine IV. */
+		iv = *ev;
+		
+		/* This must always refer to a slow instruction, as byte codes are */
+		/* always pre-JIT. */
+		if (sjme_nvm_byteCode_lutTable[iv] !=
+			&sjme_nvm_byteCode_slowNarrowFunctions)
+			return SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION;
+
+		/* Determine instruction length. */
+		pcNew.adjust = sjme_nvm_byteCode_lengths[iv];
+		if (pcNew.adjust < 0)
+		{
+			/* Calculate new length. */
+			if (sjme_error_is(sjme_nvm_byteCode_calcLength(
+				NULL, iv, ev, &pcNew)))
+				return SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION_LENGTH;
+
+			/* Still not valid? */
+			if (pcNew.adjust < 0)
+				return SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION_LENGTH;
+		}
+
+		/* Would exceed code bounds? */
+		ev = SJME_POINTER_OFFSET(ev, pcNew.adjust);
+		if (ev > endCode || ev <= oldEv)
+			return SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION_LENGTH;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
@@ -393,6 +451,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	sjme_nvm_class_methodInfo methodInfo;
 	sjme_nvm_class_codeInfo result;
 	sjme_jubyte* rawCode;
+	sjme_jubyte* rawCodeUnalign;
 	sjme_list_sjme_nvm_class_exceptionHandler* excepts;
 	sjme_nvm_class_exceptionHandler* except;
 	sjme_nvm_class_codePerType* perType;
@@ -463,13 +522,15 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 		attrStream, &codeLen)) || codeLen <= 0)
 		goto fail_readCodeLen;
 	
-	/* Allocate. */
-	rawCode = sjme_alloca(codeLen);
-	if (rawCode == NULL)
+	/* Allocate, processing requires this to be aligned so align it on */
+	/* the stack. */
+	rawCodeUnalign = sjme_alloca(codeLen + SJME_POINTER_BYTES);
+	if (rawCodeUnalign == NULL)
 	{
 		error = SJME_ERROR_OUT_OF_MEMORY;
 		goto fail_allocRawCode;
 	}
+	rawCode = sjme_util_alignToP(rawCodeUnalign, SJME_POINTER_BYTES);
 	memset(rawCode, 0, codeLen);
 	
 	/* Read in code. */
@@ -478,6 +539,11 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 		rawCode, codeLen)) ||
 		actualCodeLen != codeLen)
 		goto fail_readRawCode;
+
+	/* Perform basic length and type verification of code. */
+	if (sjme_error_is(error = sjme_nvm_class_methodAttrCodeOpLenVerify(
+		rawCode, codeLen)))
+		goto fail_opLenVerify;
 	
 	/* Read in exception table count. */
 	numExcept = -1;
@@ -562,6 +628,7 @@ fail_exceptHandles:
 fail_exceptShorts:
 fail_allocExcepts:
 fail_readNumExcept:
+fail_opLenVerify:
 fail_readRawCode:
 fail_allocRawCode:
 fail_readCodeLen:

@@ -825,7 +825,7 @@ extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowWideFunctions
  * @since 2025/06/14
  */
 sjme_errorCode sjme_nvm_byteCode_calcLength(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNullable sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
 	sjme_attrInNotNull sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew);

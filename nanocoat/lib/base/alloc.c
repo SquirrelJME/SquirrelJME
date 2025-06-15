@@ -390,8 +390,8 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitStatic(
 		(SJME_SIZEOF_ALLOC_LINK(0)));
 #endif
 
+#if defined(SJME_CONFIG_EXPERIMENT_NESTED_LINK)
 	/* If this is a valid link then we are allocating a nested pool. */
-#if 0
 	specialParent = NULL;
 	if (!sjme_error_is(sjme_alloc_getLinkOptional(baseAddr,
 		&specialParent, SJME_JNI_FALSE)))
@@ -555,7 +555,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		goto fail_noMemory;
 	}
 
-#if 0
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("Found link at %p: %d bytes, we need %d with split %d.",
 		scanLink, (int)scanLink->blockSize, (int)roundSize, (int)splitBlock);

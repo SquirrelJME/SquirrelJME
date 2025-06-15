@@ -84,7 +84,7 @@ sjme_errorCode sjme_path_getNameF(
 		len = end - at;
 		rem = stop - end;
 
-#if 0 && defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("Root look: %c", at[0]);
 #endif
@@ -176,7 +176,7 @@ sjme_errorCode sjme_path_getNameF(
 		rem = stop - end;
 		frag = -1;
 		
-#if 0 && defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("Name look: %c", end[0]);
 #endif
