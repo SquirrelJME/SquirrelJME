@@ -24,6 +24,11 @@ import java.util.Map;
 @SquirrelJMEVendorApi
 public final class DoJaRuntime
 {
+	/** Key which specifies the launch type. */
+	@SquirrelJMEVendorApi
+	public static final String LAUNCH_TYPE =
+		"X-SquirrelJME-DoJa-LaunchType";
+	
 	/** Internally set properties. */
 	private static final Map<String, String> _PROPERTIES =
 		new LinkedHashMap<>();

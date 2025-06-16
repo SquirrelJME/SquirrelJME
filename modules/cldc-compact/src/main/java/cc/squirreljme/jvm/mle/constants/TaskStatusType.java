@@ -29,8 +29,13 @@ public interface TaskStatusType
 	byte ALIVE =
 		1;
 	
+	/** The task is alive, but in the background. */
+	@SquirrelJMEVendorApi
+	byte BACKGROUND =
+		2;
+	
 	/** The number of status types. */
 	@SquirrelJMEVendorApi
 	byte NUM_TASK_STATUSES =
-		2;
+		3;
 }
