@@ -10,6 +10,8 @@
 package javax.microedition.media;
 
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -131,7 +133,34 @@ public final class Manager
 			case "application/x-mld":
 			case "application/x-mld-music":
 			case "audio/x-mld":
+				if (RuntimeShelf.vmType() == VMType.SPRINGCOAT)
+				{
+					Debugging.todoNote("Accelerated MLD support.");
+					return new NullPlayer(__contentType);
+				}
+				
+				// Setup player
 				return new IMelodyPlayer(new InputStreamConnection(__in));
+				
+				// Standardized but not yet supported by SquirrelJME
+			case "audio/vnd.wave":
+			case "audio/wav":
+			case "audio/wave":
+			case "audio/x-wav":
+				
+			case "audio/basic":
+				
+			case "audio/aiff":
+			case "audio/x-aiff":
+				
+			case "audio/x-tone-seq":
+				
+			case "audio/mpeg":
+			case "video/mpeg":
+				
+			case "application/x-smaf":
+				Debugging.todoNote("Support media: %s", __contentType);
+				return new NullPlayer(__contentType);
 		}
 		
 		/* {@squirreljme.error EA1b Unsupported content type. (The content
@@ -254,11 +283,19 @@ public final class Manager
 			throw new NullPointerException("NARG");
 		
 		// Read in header completely
-		__in.mark(4);
+		__in.mark(12);
 		int a = __in.read();
 		int b = __in.read();
 		int c = __in.read();
 		int d = __in.read();
+		int e = __in.read();
+		int f = __in.read();
+		int g = __in.read();
+		int h = __in.read();
+		int i = __in.read();
+		int j = __in.read();
+		int k = __in.read();
+		int l = __in.read();
 		__in.reset();
 		
 		// MIDI (MThd/MTrk)
@@ -266,9 +303,28 @@ public final class Manager
 			(a == 'M' && b == 'T' && c == 'r' && d == 'k'))
 			return "audio/midi";
 		
+		// WAVE
+		if (a == 'R' && b == 'I' && c == 'F' && d == 'F' &&
+			i == 'W' && j == 'A' && k == 'V' && l == 'E')
+			return "audio/wave";
+		
+		// AIFF
+		if (a == 'F' && b == 'O' && c == 'R' && d == 'M' &&
+			i == 'A' && j == 'I' && k == 'F' && l == 'F')
+			return "audio/aiff";
+		
+		// Basic sound
+		if (a == 0x2E && b == 0x73 && c == 0x6E && d == 0x64)
+			return "audio/basic";
+		
 		// i-melody MLD
 		if ((a == 'm' && b == 'e' && c == 'l' && d == 'o'))
 			return "audio/x-mld";
+		
+		// SMAF
+		if (a == 'M' && b == 'M' && c == 'M' && d == 'D' &&
+			i == 'C' && j == 'N' && k == 'T' && l == 'I')
+			return "application/x-smaf";
 		
 		// Unknown
 		return null;

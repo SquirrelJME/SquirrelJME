@@ -9,7 +9,9 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import cc.squirreljme.runtime.nttdocomo.media.AbstractMediaSound;
 import java.io.IOException;
 import java.io.InputStream;
@@ -99,16 +101,5 @@ final class __MIDPPlayer__
 		
 		// No keys are valid currently
 		return false;
-	}
-	
-	/**
-	 * Returns the current audio presenter. 
-	 *
-	 * @return The current audio presenter.
-	 * @since 2025/06/03
-	 */
-	AudioPresenter __current()
-	{
-		throw Debugging.todo();
 	}
 }

@@ -86,6 +86,19 @@ public final class MidiTracker
 	}
 	
 	/**
+	 * Returns the current microsecond clock.
+	 *
+	 * @return The current microsecond clock.
+	 * @since 2025/06/15
+	 */
+	@SquirrelJMEVendorApi
+	protected long micros()
+	{
+		Debugging.todoNote("micros()");
+		return 0;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2022/04/27
 	 */

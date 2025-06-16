@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.DoJaRuntime;
+import com.nttdocomo.io.ConnectionException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -131,11 +132,25 @@ public class AudioPresenter
 	
 	/** The maximum number of explicit ports. */
 	@SquirrelJMEVendorApi
-	private static final int _MAX_PORT_DIFF = 24;
+	private static final int _MAX_PORT_DIFF =
+		24;
+	
+	/** The ID for automatic ports. */
+	@SquirrelJMEVendorApi
+	private static final int _AUTO_PORT_START =
+		Integer.MAX_VALUE - AudioPresenter._MAX_PORT_DIFF;
 	
 	/** Port differential. */
 	@SquirrelJMEVendorApi
 	private static volatile int _portDiff;
+	
+	/** The port this presenter is on. */
+	@SquirrelJMEVendorApi
+	final int _port;
+	
+	/** Is this an automatic presenter? */
+	@SquirrelJMEVendorApi
+	final boolean _isAuto;
 	
 	/** The listener to use for media events. */
 	@SquirrelJMEVendorApi
@@ -172,11 +187,14 @@ public class AudioPresenter
 	/**
 	 * This cannot be instantiated by the user.
 	 *
+	 * @param __port The port this presenter is on.
 	 * @since 2025/05/04
 	 */
 	@Api
-	protected AudioPresenter()
+	protected AudioPresenter(int __port)
 	{
+		this._port = __port;
+		this._isAuto = (__port >= AudioPresenter._AUTO_PORT_START);
 	}
 	
 	@Api
@@ -220,8 +238,10 @@ public class AudioPresenter
 				Player player = this.__current();
 				
 				// Start playing, the current time is always implicitly at
-				// the start
-				player.setMediaTime(0);
+				// the start... assuming it was played previously
+				int state = player.getState();
+				if (state != Player.CLOSED && state != Player.UNREALIZED)
+					player.setMediaTime(0);
 				
 				// Either infinite loop, or loops a specific number of times
 				int loopCount = this._loopCount;
@@ -344,8 +364,8 @@ public class AudioPresenter
 	 *
 	 * @param __data The sound data.
 	 * @throws NullPointerException On null arguments.
-	 * @throws UIException If the sound is currently being played, the
-	 * sound is not currently used, or the sound is not supported.
+	 * @throws UIException If the sound is not currently used, or the sound is
+	 * not supported.
 	 * @since 2025/05/05
 	 */
 	@Api
@@ -362,20 +382,75 @@ public class AudioPresenter
 				throw new UIException(
 					UIException.UNSUPPORTED_FORMAT);
 			
-			// Cannot set audio if there currently is playing audio 
-			Player current = this._current;
-			if (current != null && current.getState() == Player.STARTED)
-				throw new UIException(UIException.ILLEGAL_STATE);
-			
-			// No player set?
+			// No player set? As in the player is not currently used?
 			Player player = ((__MIDPPlayer__)__data)._player;
 			if (player == null)
-				throw new UIException(UIException.ILLEGAL_STATE);
+			{
+				// use() needs to be called first in DoJa 3
+				if (DoJaRuntime.versionLeast(3, 0))
+					throw new UIException(UIException.ILLEGAL_STATE);
+				
+				// Otherwise, implicit use
+				try
+				{
+					__data.use();
+				}
+				catch (ConnectionException __e)
+				{
+					if (Debugging.VERBOSE)
+						__e.printStackTrace();
+					
+					UIException toss = new UIException(
+						UIException.ILLEGAL_STATE, __e.getMessage());
+					toss.initCause(__e);
+					throw toss;
+				}
+				
+				// Try again
+				player = ((__MIDPPlayer__)__data)._player;
+			}
+			
+			// Setting the same player? Do nothing
+			if (this._currentMedia == __data)
+				return;
+			
+			// Cannot set an actively playing player
+			if (player.getState() == Player.STARTED)
+			{
+				// Note, the DoJa documentation states that if this is called
+				// when playing this will fail with a UIException. However,
+				// other documentation for the class body contradicts this
+				// and does not really say much. I believe the exception
+				// messages were just copy and pasted as titles seem to not
+				// accept this behavior specifically. Also, elsewhere it is
+				// said that UIException being thrown here is implementation
+				// defined.
+				
+				// Stop the currently playing sound
+				try
+				{
+					player.stop();
+				}
+				catch (MediaException ignored)
+				{
+				}
+			}
 			
 			// If there is a current player then remove its listener
+			Player current = this._current;
 			__MIDPPlayerListener__ playerListener = this._playerListener;
 			if (current != null)
 				current.removePlayerListener(playerListener);
+			
+			// If this presenter is already playing audio, then replace it 
+			if (current != null && current.getState() == Player.STARTED)
+				try
+				{
+					current.stop();
+				}
+				catch (MediaException ignored)
+				{
+				}
 			
 			// Use the given player and attach the new listener to it
 			this._currentMedia = __data;
@@ -408,7 +483,8 @@ public class AudioPresenter
 			}
 			catch (IllegalStateException|MediaException __e)
 			{
-				__e.printStackTrace();
+				if (Debugging.VERBOSE)
+					__e.printStackTrace();
 				
 				UIException toss = new UIException(
 					UIException.ILLEGAL_STATE, __e.getMessage());
@@ -477,19 +553,24 @@ public class AudioPresenter
 			return AudioPresenter.getAudioPresenter(0);
 		
 		// Otherwise pick a new port to play on
+		// Before DoJa 3.5, all non-port specified sounds override each other
+		// and cannot play at the same time
 		int port;
-		synchronized (AudioPresenter.class)
-		{
-			// Get the next port to use
-			int portDiff = AudioPresenter._portDiff;
-			port = Integer.MAX_VALUE - portDiff;
-			
-			// Cycle port.
-			if (portDiff >= AudioPresenter._MAX_PORT_DIFF)
-				AudioPresenter._portDiff = 0;
-			else
-				AudioPresenter._portDiff = portDiff + 1;
-		}
+		if (DoJaRuntime.versionBefore(3, 5))
+			port = Integer.MAX_VALUE;
+		else
+			synchronized (AudioPresenter.class)
+			{
+				// Get the next port to use
+				int portDiff = AudioPresenter._portDiff;
+				port = Integer.MAX_VALUE - portDiff;
+				
+				// Cycle port.
+				if (portDiff >= AudioPresenter._MAX_PORT_DIFF)
+					AudioPresenter._portDiff = 0;
+				else
+					AudioPresenter._portDiff = portDiff + 1;
+			}
 		
 		// Use the given cycled port.
 		return AudioPresenter.getAudioPresenter(port);
@@ -522,7 +603,7 @@ public class AudioPresenter
 				return result;
 			
 			// Otherwise set up a new one
-			result = new AudioPresenter();
+			result = new AudioPresenter(__port);
 			ports.put(__port, result);
 			
 			// Use this one
