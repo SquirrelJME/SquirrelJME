@@ -90,13 +90,16 @@ public class MidiControlPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @return
 	 * @since 2025/06/03
 	 */
 	@Override
-	protected void becomingStarted()
+	protected boolean becomingStarted()
 		throws MediaException
 	{
-		// Nothing needs to be done
+		// This idles in the background, so do set the state
+		return true;
 	}
 	
 	/**
@@ -108,6 +111,27 @@ public class MidiControlPlayer
 		throws MediaException
 	{
 		// Nothing needs to be done
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/15
+	 */
+	@Override
+	protected long clockGet()
+	{
+		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/15
+	 */
+	@Override
+	protected void clockSet(long __micros)
+		throws MediaException
+	{
+		// Does nothing
 	}
 	
 	/**
@@ -144,14 +168,6 @@ public class MidiControlPlayer
 		return 0;
 	}
 	
-	@Override
-	@SquirrelJMEVendorApi
-	public long getMediaTime()
-	{
-		// Always at zero
-		return 0;
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/06/03
@@ -161,19 +177,6 @@ public class MidiControlPlayer
 	public void setLoopCount(int __count)
 	{
 		// Does not make sense here
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/06/03
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public long setMediaTime(long __micros)
-		throws MediaException
-	{
-		// Does not make sense here
-		return 0;
 	}
 	
 	/**

@@ -9,7 +9,6 @@
 package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -117,12 +116,13 @@ public abstract class AbstractPlayer
 	
 	/**
 	 * Indicates that the media is about to start.
-	 * 
+	 *
+	 * @return If the state should be set.
 	 * @throws MediaException If the player could not be started.
 	 * @since 2022/04/24
 	 */
 	@SquirrelJMEVendorApi
-	protected abstract void becomingStarted()
+	protected abstract boolean becomingStarted()
 		throws MediaException;
 	
 	/**
@@ -133,6 +133,26 @@ public abstract class AbstractPlayer
 	 */
 	@SquirrelJMEVendorApi
 	protected abstract void becomingStopped()
+		throws MediaException;
+	
+	/**
+	 * Returns the current clock in microseconds.
+	 *
+	 * @return The current clock.
+	 * @since 2025/06/15
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract long clockGet();
+	
+	/**
+	 * Sets the current clock.
+	 *
+	 * @param __micros The microseconds to set at.
+	 * @throws MediaException If the clock could not be set.
+	 * @since 2025/06/15
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract void clockSet(long __micros)
 		throws MediaException;
 	
 	/**
@@ -321,6 +341,25 @@ public abstract class AbstractPlayer
 	 */
 	@Override
 	@SquirrelJMEVendorApi
+	public final long getMediaTime()
+	{
+		synchronized (this)
+		{
+			/* {@squirreljme.error EA08 Cannot obtain the media time for a
+			closed player.} */
+			if (this.getState() == Player.CLOSED)
+				throw new IllegalStateException("EA08");
+			
+			return this.clockGet();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/15
+	 */
+	@Override
+	@SquirrelJMEVendorApi
 	public final int getState()
 	{
 		synchronized (this)
@@ -498,6 +537,28 @@ public abstract class AbstractPlayer
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/15
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public final long setMediaTime(long __micros)
+		throws MediaException
+	{
+		synchronized (this)
+		{
+			/* {@squirreljme.error EA09 Cannot set the media time on a closed
+			or unrealized player.} */
+			if (this.getState() == Player.CLOSED ||
+				this.getState() == Player.UNREALIZED)
+				throw new IllegalStateException("EA09");
+			
+			this.clockSet(__micros);
+			return this.clockGet();
+		}
+	}
+	
+	/**
 	 * Sets the state.
 	 * 
 	 * @param __state The state to set.
@@ -569,11 +630,13 @@ public abstract class AbstractPlayer
 		this._loopLeft = this._loopCounter;
 		
 		// Is being started now
-		this.becomingStarted();
-		this.setState(Player.STARTED);
+		if (this.becomingStarted())
+		{
+			this.setState(Player.STARTED);
 		
-		// Send event
-		this.dispatchEvent(PlayerListener.STARTED, timeBase.getTime());
+			// Send event
+			this.dispatchEvent(PlayerListener.STARTED, timeBase.getTime());
+		}
 	}
 	
 	/**

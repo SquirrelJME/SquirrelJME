@@ -31,8 +31,6 @@ import com.keitaiwiki.music.SamplerProvider;
 import com.keitaiwiki.music.SineSamplerProvider;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import javax.microedition.media.Control;
 import javax.microedition.media.MediaException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -158,10 +156,12 @@ public class IMelodyPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @return
 	 * @since 2025/05/05
 	 */
 	@Override
-	protected void becomingStarted()
+	protected boolean becomingStarted()
 		throws MediaException
 	{
 		synchronized (this)
@@ -203,6 +203,9 @@ public class IMelodyPlayer
 				throw toss;
 			}
 		}
+		
+		// Do set the new state
+		return true;
 	}
 	
 	/**
@@ -233,6 +236,52 @@ public class IMelodyPlayer
 				toss.initCause(__e);
 				throw toss;
 			}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/15
+	 */
+	@Override
+	protected long clockGet()
+	{
+		synchronized (this)
+		{
+			// Can only get the time if the player is valid
+			MLDPlayer mldPlayer = this._mldPlayer;
+			if (mldPlayer == null)
+				throw new IllegalStateException("GONE");
+			
+			// This uses double time, in microseconds
+			return (long)(mldPlayer.getTime() * 1_000_000D);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/15
+	 */
+	@Override
+	protected void clockSet(long __micros)
+		throws MediaException
+	{
+		synchronized (this)
+		{
+			// Can only set the time if the player is valid
+			MLDPlayer mldPlayer = this._mldPlayer;
+			if (mldPlayer == null)
+			{
+				this._belayTime = __micros;
+				return;
+			}
+			
+			// Clear the belay time
+			this._belayTime = -1;
+			
+			// This uses double time
+			// Media time is in microseconds
+			mldPlayer.setTime((double)__micros / 1_000_000D);
 		}
 	}
 	
@@ -283,26 +332,6 @@ public class IMelodyPlayer
 			
 			// Forward the volume
 			mldPlayer.sampler.masterVolume(__volume / 100.0F);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/05/05
-	 */
-	@Override
-	public long getMediaTime()
-		throws IllegalStateException
-	{
-		synchronized (this)
-		{
-			// Can only get the time if the player is valid
-			MLDPlayer mldPlayer = this._mldPlayer;
-			if (mldPlayer == null)
-				throw new IllegalStateException("GONE");
-			
-			// This uses double time, in microseconds
-			return (long)(mldPlayer.getTime() * 1_000_000D);
 		}
 	}
 	
@@ -373,36 +402,6 @@ public class IMelodyPlayer
 						__e.printStackTrace();
 					}
 				}
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/05/05
-	 */
-	@Override
-	public long setMediaTime(long __micros)
-		throws MediaException
-	{
-		synchronized (this)
-		{
-			// Can only set the time if the player is valid
-			MLDPlayer mldPlayer = this._mldPlayer;
-			if (mldPlayer == null)
-			{
-				this._belayTime = __micros;
-				return __micros;
-			}
-			
-			// Clear the belay time
-			this._belayTime = -1;
-			
-			// This uses double time
-			// Media time is in microseconds
-			mldPlayer.setTime((double)__micros / 1_000_000D);
-			
-			// Use the actually set time
-			return this.getMediaTime();
 		}
 	}
 	

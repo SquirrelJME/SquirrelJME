@@ -10,12 +10,9 @@
 package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import javax.microedition.media.Control;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
-import javax.microedition.media.control.VolumeControl;
 
 /**
  * This is a player which does nothing.
@@ -23,7 +20,6 @@ import javax.microedition.media.control.VolumeControl;
  * @since 2019/04/15
  */
 @SquirrelJMEVendorApi
-@Deprecated
 public final class NullPlayer
 	extends AbstractPlayer
 {
@@ -49,7 +45,8 @@ public final class NullPlayer
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	protected void becomingRealized()
+	protected void becomingPrefetched()
+		throws MediaException
 	{
 		// Does nothing
 	}
@@ -60,10 +57,24 @@ public final class NullPlayer
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	protected void becomingStarted()
-		throws MediaException
+	protected void becomingRealized()
 	{
 		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return
+	 * @since 2022/04/24
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	protected boolean becomingStarted()
+		throws MediaException
+	{
+		// Set the playing state
+		return true;
 	}
 	
 	/**
@@ -80,32 +91,20 @@ public final class NullPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2022/04/25
+	 * @since 2025/06/15
 	 */
 	@Override
-	@SquirrelJMEVendorApi
-	protected long determineDuration()
+	protected long clockGet()
 	{
-		// There is no duration for null media
 		return 0;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/06/03
+	 * @since 2025/06/15
 	 */
 	@Override
-	protected void useVolume(int __volume)
-	{
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2022/04/24
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	protected void becomingPrefetched()
+	protected void clockSet(long __micros)
 		throws MediaException
 	{
 		// Does nothing
@@ -159,42 +158,23 @@ public final class NullPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/04/15
+	 * @since 2022/04/25
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public final long getMediaTime()
+	protected long determineDuration()
 	{
-		synchronized (this)
-		{
-			// {@squirreljme.error EA08 Cannot obtain the media time for a
-			// closed null stream.}
-			if (this.getState() == Player.CLOSED)
-				throw new IllegalStateException("EA08");
-			
-			return Player.TIME_UNKNOWN;
-		}
+		// There is no duration for null media
+		return 0;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/04/15
+	 * @since 2025/06/03
 	 */
 	@Override
-	@SquirrelJMEVendorApi
-	public final long setMediaTime(long __micros)
-		throws MediaException
+	protected void useVolume(int __volume)
 	{
-		synchronized (this)
-		{
-			// {@squirreljme.error EA09 Cannot set the media time on a null
-			// stream.}
-			if (this.getState() == Player.CLOSED ||
-				this.getState() == Player.UNREALIZED)
-				throw new IllegalStateException("EA09");
-			
-			return Player.TIME_UNKNOWN;
-		}
 	}
 }
 
