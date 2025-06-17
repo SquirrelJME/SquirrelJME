@@ -289,6 +289,56 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
 
+SJME_NVM_BYTECODE_SLOW(InstanceOf)
+{
+	sjme_jint poolIndex;
+	sjme_nvm_class_poolEntry* entry;
+	sjme_jvalueTyped check, result;
+	sjme_jclass desireClass;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	
+	/* Read in pool reference. */
+	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
+	if (sjme_error_is(error = sjme_nvm_task_framePool(
+		inFrame, poolIndex, &entry,
+		SJME_NVM_CLASS_POOL_TYPE_CLASS,
+		0)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Read in object to check. */
+	memset(&check, 0, sizeof(check));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &check)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Locate target class. */
+	desireClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		inFrame->inTask->classLoader,
+		&desireClass,
+		inFrame->inThread,
+		entry->classRef.descriptor->seq,
+		SJME_JNI_TRUE)) || desireClass == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* Is this the given class? */
+	memset(&result, 0, sizeof(result));
+	if (check.value.l == NULL)
+		result.value.i = SJME_JNI_FALSE;
+	else
+		result.value.i = sjme_nvm_vmClass_isAssignableFrom(inFrame->inThread,
+			desireClass, check.value.l->isClass);
+
+	/* Push result to the stack. */
+	result.type = SJME_JAVA_TYPE_ID_INTEGER;
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&result)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 {
 	sjme_jmethodID methodId;

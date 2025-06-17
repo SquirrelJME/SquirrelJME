@@ -116,9 +116,6 @@ struct sjme_jobjectBase
 	
 	/** The current class that this is. */
 	sjme_jclass isClass;
-
-	/** Pointers to field offsets within this object. */
-	sjme_nvm_fieldValues* fields[SJME_NUM_JAVA_TYPE_IDS];
 };
 
 /**
