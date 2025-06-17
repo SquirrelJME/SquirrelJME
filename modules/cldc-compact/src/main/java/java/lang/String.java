@@ -45,9 +45,6 @@ public final class String
 	private static final char _MIN_TRIM_CHAR =
 		' ';
 	
-	/** The known intern state. */
-	boolean _knownIntern;
-	
 	/**
 	 * Initializes a new empty string.
 	 *
@@ -677,16 +674,9 @@ public final class String
 	@Api
 	public String intern()
 	{
-		// We already know this is an intern string?
-		if (this._knownIntern)
-			return this;
-		
-		// Set intern state if this is as such
+		// Is this already intern?
 		if (StringShelf.stringIsIntern(this))
-		{
-			this._knownIntern = true;
 			return this;
-		}
 		
 		// Not intern, so make an intern string
 		return StringShelf.stringValueOf(true, this);

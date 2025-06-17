@@ -275,6 +275,7 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 {
 	sjme_errorCode error;
 	sjme_jobject result;
+	sjme_javaTypeId javaType;
 	
 	if (contextThread == NULL || outObject == NULL || inClass == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -306,15 +307,9 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 			allocSize = sizeof(sjme_jstringBase);
 		}
 
-		/* Otherwise calculate object storage. */
+		/* Otherwise, object storage is pre-calculated. */
 		else
-		{
-			/* Base size is always the base object size. */
 			allocSize = sizeof(sjme_jobjectBase);
-			
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
 	}
 	
 	/* Setup object. */

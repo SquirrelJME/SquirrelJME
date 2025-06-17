@@ -940,6 +940,8 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_list_sjme_jclass* interfaces;
 	sjme_alloc_pool allocPool;
 	sjme_list_sjme_jmethodID* binds;
+	sjme_jint allocSize;
+	sjme_javaTypeId javaType;
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1102,7 +1104,35 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
 	}
+#endif
+
+	/* Determine base allocation size. */
+	if (superClass == NULL)
+		allocSize = sizeof(sjme_jobjectBase);
+	else
+		allocSize = superClass->allocSize;
 	
+	/* Determine offset for fields into the object, along with how much */
+	for (javaType = 0; javaType < SJME_NUM_JAVA_TYPE_IDS; javaType++)
+	{
+		/* Make sure the offset is fully aligned first. */
+		allocSize = sjme_util_alignTo(allocSize, SJME_POINTER_BYTES);
+
+		/* Place the offset here. */
+		inClass->fieldOffset[SJME_NVM_CLASS_MEMBER_INSTANCE]
+			[javaType] = allocSize;
+
+		/* Grow the allocation size by what is needed to store the fields. */
+		allocSize += sjme_nvm_fieldValueSize(javaType,
+			inClass->info->fieldCount[SJME_NVM_CLASS_MEMBER_INSTANCE]
+				[javaType]);
+	}
+
+	/* Store rounded up allocation size, always to the pointer. */
+	inClass->allocSize = sjme_util_alignTo(allocSize,
+		SJME_POINTER_BYTES);
+	
+#if 0
 	/* Call static constructor, if one exists. */
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -1305,7 +1335,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 				SJME_ERROR_SUPER_CLASS_INVALID);
 	}
 
-	/* Find the associated method. */
+	/* Find the associated field. */
 	base = atClass->fieldBase[instanceType][javaType];
 	fields = atClass->info->fields;
 	for (i = 0, n = fields->length; i < n; i++)

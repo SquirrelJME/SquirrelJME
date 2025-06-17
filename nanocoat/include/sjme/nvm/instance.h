@@ -200,6 +200,10 @@ struct sjme_jclassBase
 	/** Count for a given field. */
 	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
 		[SJME_NUM_JAVA_TYPE_IDS];
+
+	/** Field offsets into the object, for each field. */
+	sjme_intPointer fieldOffset[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
+		[SJME_NUM_JAVA_TYPE_IDS];
 	
 	/** Base index for methods. */
 	sjme_jshort methodBase[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
@@ -228,6 +232,9 @@ struct sjme_jclassBase
 
 	/** The phantom array type of this class. */
 	sjme_atomic_sjme_jclass phantomArrayType;
+
+	/** The allocation size of this class. */
+	sjme_jint allocSize;
 };
 
 struct sjme_jstringBase
