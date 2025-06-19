@@ -384,15 +384,15 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 		inFrame->inTask->classLoader,
 		&refClass,
 		inFrame->inThread,
-		entry->member.inClass->descriptor->seq,
+		SJME_P_M_C(entry)->seq,
 		SJME_JNI_TRUE)) || refClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 
 	/* The target method needs to be found dynamically. */
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
 		refClass, inFrame->inThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
-		SJME_JNI_TRUE, entry->member.nameAndType->name->seq,
-		entry->member.nameAndType->descriptor->seq, &refMethod)) ||
+		SJME_JNI_TRUE, SJME_P_M_N(entry)->seq,
+		SJME_P_M_T(entry)->seq, &refMethod)) ||
 		refMethod == NULL)
 		return sjme_error_vmError(inFrame, error);
 
@@ -429,8 +429,8 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 			sjme_atomic_sjme_jclass_get(&refClass->superClass),
 			inFrame->inThread,
 			SJME_NVM_CLASS_MEMBER_INSTANCE,
-			SJME_JNI_TRUE, entry->member.nameAndType->name->seq,
-			entry->member.nameAndType->descriptor->seq, &refMethod)) ||
+			SJME_JNI_TRUE, SJME_P_M_N(entry)->seq,
+			SJME_P_M_T(entry)->seq, &refMethod)) ||
 			refMethod == NULL)
 			return sjme_error_vmError(inFrame, error);
 	}
@@ -455,7 +455,6 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
-	sjme_nvm_class_poolEntryMember* member;
 	sjme_jmethodID target;
 	sjme_jclass refClass;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
@@ -469,12 +468,11 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Determine the referenced class. */
-	member = &entry->member;
 	refClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
 		inFrame->inTask->classLoader, &refClass,
 		inFrame->inThread,
-		member->inClass->descriptor->seq,
+		SJME_P_M_C(entry)->seq,
 		SJME_JNI_TRUE)) || refClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
@@ -483,8 +481,8 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
 		refClass, inFrame->inThread, SJME_NVM_CLASS_MEMBER_STATIC,
 		SJME_JNI_TRUE,
-		member->nameAndType->name->seq,
-		member->nameAndType->descriptor->seq, &target)) ||
+		SJME_P_M_N(entry)->seq,
+		SJME_P_M_T(entry)->seq, &target)) ||
 		target == NULL)
 		return sjme_error_vmError(inFrame, error);
 
@@ -503,7 +501,6 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
-	sjme_nvm_class_poolEntryMember* member;
 	sjme_jmethodID target;
 	sjme_jclass refClass;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
@@ -517,12 +514,11 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Determine the referenced class. */
-	member = &entry->member;
 	refClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
 		inFrame->inTask->classLoader, &refClass,
 		inFrame->inThread,
-		member->inClass->descriptor->seq,
+		SJME_P_M_C(entry)->seq,
 		SJME_JNI_TRUE)) || refClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
@@ -531,8 +527,8 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
 		refClass, inFrame->inThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_JNI_TRUE,
-		member->nameAndType->name->seq,
-		member->nameAndType->descriptor->seq, &target)) ||
+		SJME_P_M_N(entry)->seq,
+		SJME_P_M_T(entry)->seq, &target)) ||
 		target == NULL)
 		return sjme_error_vmError(inFrame, error);
 
@@ -664,7 +660,6 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
-	sjme_nvm_class_poolEntryMember* member;
 	sjme_jclass desireClass;
 	sjme_jfieldID fieldId;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
@@ -676,7 +671,6 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 		SJME_NVM_CLASS_POOL_TYPE_FIELD,
 		0)))
 		return sjme_error_vmError(inFrame, error);
-	member = &entry->member;
 	
 	/* Locate target class. */
 	desireClass = NULL;
@@ -684,7 +678,7 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 		inFrame->inTask->classLoader,
 		&desireClass,
 		inFrame->inThread,
-		entry->member.inClass->descriptor->seq,
+		SJME_P_M_C(entry)->seq,
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 
@@ -694,8 +688,8 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 	if (sjme_error_is(error = sjme_nvm_vmClass_fieldIDByNameType(
 		desireClass, inFrame->inThread, SJME_NVM_CLASS_MEMBER_STATIC,
 		SJME_JNI_TRUE,
-		member->nameAndType->name->seq,
-		member->nameAndType->descriptor->seq,
+		SJME_P_M_N(entry)->seq,
+		SJME_P_M_T(entry)->seq,
 		&fieldId)) || fieldId == NULL)
 		return sjme_error_vmError(inFrame, error);
 	

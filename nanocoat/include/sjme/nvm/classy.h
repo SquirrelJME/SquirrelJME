@@ -999,6 +999,18 @@ sjme_errorCode sjme_nvm_class_parseMethod(
  */
 sjme_errorCode sjme_nvm_class_validBinaryName(
 	sjme_attrInNotNull sjme_charSeq binaryName);
+
+/** Pool member entry class. */
+#define SJME_P_M_C(entry) \
+	((entry)->member.inClass->descriptor)
+
+/** Pool member entry name. */
+#define SJME_P_M_N(entry) \
+	((entry)->member.nameAndType->name)
+
+/** Pool member entry type. */
+#define SJME_P_M_T(entry) \
+	((entry)->member.nameAndType->descriptor)
 	
 /*--------------------------------------------------------------------------*/
 

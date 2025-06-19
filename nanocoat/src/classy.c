@@ -1962,7 +1962,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 			case SJME_NVM_CLASS_POOL_TYPE_METHOD:
 			case SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD:
 				if (sjme_error_is(error = sjme_nvm_class_descriptorMethodSlots(
-					entry->member.nameAndType->descriptor->seq,
+					SJME_P_M_T(entry)->seq,
 					&entry->member.staticArgSlots,
 					&entry->member.rvSlots)))
 					goto fail_initItem;
