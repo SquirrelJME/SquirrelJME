@@ -760,41 +760,41 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 			
 		case SJME_BASIC_TYPE_ID_BYTE:
 			pushValue.v.i =
-				((sjme_jint)array->elements.b[index]) & INT32_C(0xFF);
+				((sjme_jint)array->e.b[index]) & INT32_C(0xFF);
 			if ((pushValue.v.i & INT32_C(0x80)) != 0)
 				pushValue.v.i |= INT32_C(0xFFFFFF00);
 			break;
 			
 		case SJME_BASIC_TYPE_ID_SHORT:
 			pushValue.v.i =
-				((sjme_jint)array->elements.s[index]) & INT32_C(0xFFFF);
+				((sjme_jint)array->e.s[index]) & INT32_C(0xFFFF);
 			if ((pushValue.v.i & INT32_C(0x8000)) != 0)
 				pushValue.v.i |= INT32_C(0xFFFF0000);
 			break;
 			
 		case SJME_BASIC_TYPE_ID_CHARACTER:
 			pushValue.v.i =
-				((sjme_jint)array->elements.c[index]) & INT32_C(0xFFFF);
+				((sjme_jint)array->e.c[index]) & INT32_C(0xFFFF);
 			break;
 			
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			pushValue.v.i = array->elements.i[index];
+			pushValue.v.i = array->e.i[index];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_LONG:
-			pushValue.v.j = array->elements.j[index];
+			pushValue.v.j = array->e.j[index];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			pushValue.v.f = array->elements.f[index];
+			pushValue.v.f = array->e.f[index];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			pushValue.v.d = array->elements.d[index];
+			pushValue.v.d = array->e.d[index];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
-			pushValue.v.l = array->elements.l[index];
+			pushValue.v.l = array->e.l[index];
 
 			/* Count up if not null as it is now on the stack. */
 			if (pushValue.v.l != NULL)
@@ -875,41 +875,41 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 			return sjme_error_notImplemented(0);
 			
 		case SJME_BASIC_TYPE_ID_BYTE:
-			array->elements.b[index] = (sjme_jbyte)popValue.v.i;
+			array->e.b[index] = (sjme_jbyte)popValue.v.i;
 			break;
 			
 		case SJME_BASIC_TYPE_ID_SHORT:
-			array->elements.s[index] = (sjme_jshort)popValue.v.i;
+			array->e.s[index] = (sjme_jshort)popValue.v.i;
 			break;
 			
 		case SJME_BASIC_TYPE_ID_CHARACTER:
-			array->elements.c[index] = (sjme_jchar)popValue.v.i;
+			array->e.c[index] = (sjme_jchar)popValue.v.i;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			array->elements.i[index] = popValue.v.i;
+			array->e.i[index] = popValue.v.i;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_LONG:
-			array->elements.j[index] = popValue.v.j;
+			array->e.j[index] = popValue.v.j;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			array->elements.f[index] = popValue.v.f;
+			array->e.f[index] = popValue.v.f;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			array->elements.d[index] = popValue.v.d;
+			array->e.d[index] = popValue.v.d;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
 			/* Count down if there is an old value. */
 			if (sjme_error_is(error = sjme_nvm_instance_countDown(
-				&array->elements.l[index], popValue.v.l)))
+				&array->e.l[index], popValue.v.l)))
 				return sjme_error_vmError(inFrame, error);
 
 			/* Set new value. */
-			array->elements.l[index] = popValue.v.l;
+			array->e.l[index] = popValue.v.l;
 			break;
 
 		default:

@@ -118,7 +118,7 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 
 	/* Fill in actual arguments. */
 	for (i = 0; i < n; i++)
-		mainArgs->elements.l[i] =
+		mainArgs->e.l[i] =
 			SJME_AS_JOBJECT(task->globals.mainArgs->elements[i]);
 	
 	/* Setup arguments. */

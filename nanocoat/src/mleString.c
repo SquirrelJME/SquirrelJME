@@ -134,7 +134,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 	
 	/* Read characters into the target. */
 	for (i = 0, s = sourceOff, d = destOff; i < len; i++)
-		dest->elements.c[d++] = sjme_charSeq_charAtR(source->seq, s++);
+		dest->e.c[d++] = sjme_charSeq_charAtR(source->seq, s++);
 
 	/* Void return. */
 	return SJME_ERROR_NONE;
@@ -171,7 +171,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 	/* Wrap a wide sequence. */
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(error = sjme_charSeq_newWideStatic(&seq,
-		(sjme_jchar*)&array->elements.c[0], off, array->length)))
+		(sjme_jchar*)&array->e.c[0], off, array->length)))
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 
 	/* Obtain string value from the sequence. */
