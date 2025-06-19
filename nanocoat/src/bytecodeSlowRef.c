@@ -683,6 +683,17 @@ SJME_NVM_BYTECODE_SLOW(NewArray)
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
 
+SJME_NVM_BYTECODE_SLOW(StaticGet)
+{
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(XALoad)
 {
 	sjme_jvalueTyped arrayValue;
