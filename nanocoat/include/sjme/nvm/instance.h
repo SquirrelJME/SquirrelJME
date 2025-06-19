@@ -393,6 +393,18 @@ sjme_errorCode sjme_nvm_instance_objectNewNU(
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_jobject* outObject,
 	sjme_attrInNotNull sjme_lpcstr inClass);
+
+/** Member access flags. */
+#define SJME_M_AF(of) \
+	((of)->flags.member.access)
+
+/** Member name. */
+#define SJME_M_N(of) \
+	((of)->member.name)
+
+/** Member type. */
+#define SJME_M_T(of) \
+	((of)->member.type)
 	
 /*--------------------------------------------------------------------------*/
 

@@ -75,7 +75,7 @@ static sjme_errorCode sjme_nvm_vmClass_bindInterface(
 		if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
 			inClass, contextThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
 			SJME_JNI_TRUE,
-			target->member.name->seq, target->member.type->seq,
+			SJME_M_N(target)->seq, SJME_M_T(target)->seq,
 			&use)) || use == NULL)
 			goto fail_findMethod;
 
@@ -155,8 +155,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	result->member.idHash = thisInfo->idHash;
 	
 	/* The names always get set. */
-	result->member.name = thisInfo->name;
-	result->member.type = thisInfo->type;
+	SJME_M_N(result) = thisInfo->name;
+	SJME_M_T(result) = thisInfo->type;
 
 	/* Also copy flags. */
 	result->flags = thisInfo->flags;
@@ -2024,9 +2024,9 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 			continue;
 		
 		/* Is this the method. */
-		if (sjme_charSeq_equalsR(method->member.name->seq,
+		if (sjme_charSeq_equalsR(SJME_M_N(method)->seq,
 				forMember->nameAndType->name->seq) &&
-			sjme_charSeq_equalsR(method->member.type->seq,
+			sjme_charSeq_equalsR(SJME_M_T(method)->seq,
 				forMember->nameAndType->descriptor->seq))
 		{
 			*outID = method;
@@ -2078,8 +2078,8 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 				SJME_ERROR_NO_METHOD);
 		
 		/* Is this the method. */
-		if (sjme_charSeq_equalsR(method->member.name->seq, inName) &&
-			sjme_charSeq_equalsR(method->member.type->seq, inType))
+		if (sjme_charSeq_equalsR(SJME_M_N(method)->seq, inName) &&
+			sjme_charSeq_equalsR(SJME_M_T(method)->seq, inType))
 		{
 			*outID = method;
 			return SJME_ERROR_NONE;

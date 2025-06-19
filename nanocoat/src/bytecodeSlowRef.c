@@ -409,12 +409,12 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	inSameClass = (currentClass == refClass);
 	inSuper = sjme_nvm_vmClass_isSuperClass(currentClass,
 		refClass);
-	isInit = sjme_charSeq_equalsUtfR(refMethod->member.name->seq,
+	isInit = sjme_charSeq_equalsUtfR(SJME_M_N(refMethod)->seq,
 		"<init>");
-	isPrivate = refMethod->flags.member.access.private;
-	isPackagePrivate = (!refMethod->flags.member.access.private &&
-		!refMethod->flags.member.access.protected &&
-		!refMethod->flags.member.access.public);
+	isPrivate = SJME_M_AF(refMethod).private;
+	isPackagePrivate = (!SJME_M_AF(refMethod).private &&
+		!SJME_M_AF(refMethod).protected &&
+		!SJME_M_AF(refMethod).public);
 	
 	/* Call superclass method instead? */
 	if ((!isPrivate && !isPackagePrivate) && inSuper && !isInit)
