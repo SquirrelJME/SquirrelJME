@@ -1004,6 +1004,72 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 #undef SJME_MAX_ARGS
 }
 
+sjme_errorCode sjme_nvm_class_descriptorSlots(
+	sjme_attrInNotNull sjme_charSeq inDesc,
+	sjme_attrOutNotNull sjme_jint* outSlots)
+{
+	sjme_jint total, at;
+	sjme_jchar c;
+	
+	if (inDesc == NULL || outSlots == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Must start with parenthesis. */
+	at = 0;
+	if ('(' != sjme_charSeq_charAtR(inDesc, at++))
+		return SJME_ERROR_INVALID_METHOD_TYPE;
+
+	/* Read until ending parenthesis. */
+	total = 0;
+	for (;;)
+	{
+		/* Read in next character. */
+		c = sjme_charSeq_charAtR(inDesc, at++);
+
+		/* Invalid? */
+		if (c == 0)
+			return SJME_ERROR_INVALID_METHOD_TYPE;
+
+		/* End of arguments? */
+		if (c == ')')
+			break;
+
+		/* Skip array handlers. */
+		while (c == '[')
+			c = sjme_charSeq_charAtR(inDesc, at++);
+
+		/* Class type? */
+		if (c == 'L')
+		{
+			/* Read until ; */
+			while (c != ';')
+			{
+				c = sjme_charSeq_charAtR(inDesc, at++);
+
+				/* Not valid. */
+				if (c == ')' || c == 0)
+					return SJME_ERROR_INVALID_METHOD_TYPE;
+			}
+		}
+
+		/* Double slot? */
+		else if (c == 'J' || c == 'D')
+			total++;
+
+		/* Otherwise not a basic type? */
+		else if (c != 'Z' && c != 'B' && c != 'S' && c != 'C' && c != 'I' &&
+			c != 'F')
+			return SJME_ERROR_INVALID_METHOD_TYPE;
+		
+		/* Count up. */
+		total++;
+	}
+
+	/* Success! */
+	*outSlots = total;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_class_descriptorToType(
 	sjme_attrOutNotNull sjme_javaTypeId* outType,
 	sjme_attrInValue sjme_jboolean javaType,
@@ -1790,6 +1856,15 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				entry->nameAndType.idHash = sjme_nvm_class_idHashMember(
 					entry->nameAndType.name->seq,
 					entry->nameAndType.descriptor->seq);
+				break;
+
+				/* Method reference. */
+			case SJME_NVM_CLASS_POOL_TYPE_METHOD:
+			case SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD:
+				if (sjme_error_is(error = sjme_nvm_class_descriptorSlots(
+					entry->member.nameAndType->descriptor->seq,
+					&entry->member.staticSlots)))
+					goto fail_initItem;
 				break;
 
 				/* Not considered an error in the third stage. */

@@ -356,20 +356,6 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 	depth = (relRawCode[3] & 0xFF);
 	if (depth <= 0)
 		return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_INSTRUCTION);
-
-	/* Read in the reference. */
-	memset(&depthRef, 0, sizeof(depthRef));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame, depth - 1,
-		&depthRef, SJME_JNI_FALSE)))
-		return sjme_error_vmError(inFrame, error);
-
-	/* It must be an object type. */
-	if (depthRef.type != SJME_JAVA_TYPE_ID_OBJECT)
-		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
-
-	/* It cannot be null. */
-	if (depthRef.value.l == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
 	
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -378,6 +364,24 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 		SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD,
 		0)))
 		return sjme_error_vmError(inFrame, error);
+
+	/* Read in the reference. */
+	memset(&depthRef, 0, sizeof(depthRef));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame, depth - 1,
+		&depthRef, SJME_JNI_FALSE)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Depth must be the count as the method reference arguments. */
+	if (depth != methodRef->staticSlots + 1)
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+
+	/* It must be an object type. */
+	if (depthRef.type != SJME_JAVA_TYPE_ID_OBJECT)
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+
+	/* It cannot be null. */
+	if (depthRef.value.l == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
 	
 	/* Lookup interface method. */
 	methodId = NULL;
@@ -393,6 +397,17 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 		SJME_NVM_CALL_VIRTUAL,
 		methodId)))
 		return sjme_error_vmError(inFrame, error);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
+{
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;

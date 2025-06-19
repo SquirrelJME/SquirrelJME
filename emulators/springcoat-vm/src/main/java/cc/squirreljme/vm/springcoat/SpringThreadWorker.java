@@ -3805,7 +3805,8 @@ public final class SpringThreadWorker
 		
 		// Re-lookup the method since we need to the right one! Then invoke it
 		else
-			this.__vmEnterFrame(objClass.lookupMethod(false, ref.memberNameAndType()), args);
+			this.__vmEnterFrame(objClass.lookupMethod(false,
+				ref.memberNameAndType()), args);
 	}
 	
 	/**

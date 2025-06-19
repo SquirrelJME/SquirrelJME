@@ -429,7 +429,7 @@ typedef struct sjme_nvm_class_poolEntryDouble
 
 /**
  * A @c SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE which represents a name and type
- * of a member without the class.
+ * of member without the class.
  *
  * @since 2024/01/04
  */
@@ -460,6 +460,9 @@ typedef struct sjme_nvm_class_poolEntryMember
 
 	/** The name and type used. */
 	const sjme_nvm_class_poolEntryNameAndType* nameAndType;
+
+	/** The number of static slots. */
+	sjme_jint staticSlots;
 } sjme_nvm_class_poolEntryMember;
 
 /**
@@ -850,6 +853,18 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 	sjme_attrInNotNull sjme_jint* outArgC,
 	sjme_attrInNotNull sjme_javaTypeId** outArgT,
 	sjme_attrInNotNull sjme_javaTypeId* outArgR);
+
+/**
+ * Counts the number of slots a descriptor takes up.
+ * 
+ * @param inDesc The descriptor to count.
+ * @param outSlots The number of used slots.
+ * @return Any resultant error, if any.
+ * @since 2025/06/19
+ */
+sjme_errorCode sjme_nvm_class_descriptorSlots(
+	sjme_attrInNotNull sjme_charSeq inDesc,
+	sjme_attrOutNotNull sjme_jint* outSlots);
 	
 /**
  * Determines the @c sjme_javaTypeId or @c sjme_basicTypeId type for the
