@@ -394,17 +394,13 @@ sjme_errorCode sjme_nvm_instance_objectNewNU(
 	sjme_attrOutNotNull sjme_jobject* outObject,
 	sjme_attrInNotNull sjme_lpcstr inClass);
 
-/** Member access flags. */
-#define SJME_M_AF(of) \
-	((of)->flags.member.access)
+/** The object class. */
+#define SJME_O_C(obj) \
+	((obj)->isClass)
 
-/** Member name. */
-#define SJME_M_N(of) \
-	((of)->member.name)
-
-/** Member type. */
-#define SJME_M_T(of) \
-	((of)->member.type)
+/** The array object class. */
+#define SJME_AO_C(arr) \
+	SJME_O_C(&arr->object)
 	
 /*--------------------------------------------------------------------------*/
 

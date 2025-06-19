@@ -94,7 +94,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		if (!sjme_nvm_vmClass_isAssignableFrom(
 			SJME_F_T(inFrame),
 			methodId->member.inClass,
-			argV[0].v.l->isClass))
+			SJME_O_C(argV[0].v.l)))
 			return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 	}
 
@@ -227,9 +227,9 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	/* Not a match? */
 	/* b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b) */
 	if (value.v.l != NULL &&
-		!(value.v.l->isClass == desireClass ||
+		!(SJME_O_C(value.v.l) == desireClass ||
 		sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
-			desireClass, value.v.l->isClass)))
+			desireClass, SJME_O_C(value.v.l))))
 	{
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
@@ -277,7 +277,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceOf)
 		result.v.i = SJME_JNI_FALSE;
 	else
 		result.v.i = sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
-			desireClass, check.v.l->isClass);
+			desireClass, SJME_O_C(check.v.l));
 
 	/* Push result to the stack. */
 	result.t = SJME_JAVA_TYPE_ID_INTEGER;
@@ -854,9 +854,9 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 
 	/* Make sure the array is actually valid. */
 	componentType = sjme_atomic_sjme_jclass_get(
-		&array->object.isClass->componentType);
+		&SJME_AO_C(array)->componentType);
 	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		!array->object.isClass->info->isArray ||
+		!SJME_AO_C(array)->info->isArray ||
 		componentType == NULL || componentType->arrayTypeId != arrayType ||
 		popValue.t != componentType->typeId)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);

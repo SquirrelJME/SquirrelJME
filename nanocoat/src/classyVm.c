@@ -1953,7 +1953,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 		return sjme_error_vmError(contextThread, SJME_ERROR_CLASS_CHANGED);
 
 	/* Everything acts in relation to the object's class. */
-	forClass = forObject->isClass;
+	forClass = SJME_O_C(forObject);
 	
 	/* The interface binds list is inferred by is-classes. */
 	isClasses = NULL;

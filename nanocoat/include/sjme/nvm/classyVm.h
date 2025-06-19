@@ -478,6 +478,18 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	sjme_attrInPositive sjme_jint methodId,
 	sjme_attrOutNotNull sjme_nvm_class_methodInfo* outInfo);
 
+/** Member access flags. */
+#define SJME_M_AF(of) \
+	((of)->flags.member.access)
+
+/** Member name. */
+#define SJME_M_N(of) \
+	((of)->member.name)
+
+/** Member type. */
+#define SJME_M_T(of) \
+	((of)->member.type)
+	
 /** Get super class. */
 #define SJME_C_SU(cl) \
 	(sjme_atomic_sjme_jclass_get(&(cl)->superClass))
