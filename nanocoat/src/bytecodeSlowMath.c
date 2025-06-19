@@ -38,28 +38,28 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 	switch (SJME_NVM_BYTECODE_BINARY_MATH_TO_FUNC(id))
 	{
 		case SJME_NVM_BYTECODE_MATH_SHL:
-			result.value.i = a.value.i << (b.value.i & 0x1F);
+			result.v.i = a.v.i << (b.v.i & 0x1F);
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_SHR:
-			result.value.i = a.value.i >> (b.value.i & 0x1F);
+			result.v.i = a.v.i >> (b.v.i & 0x1F);
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_USHR:
-			result.value.i = (sjme_jint)(((sjme_juint)a.value.i) >>
-				((sjme_juint)(b.value.i & 0x1F)));
+			result.v.i = (sjme_jint)(((sjme_juint)a.v.i) >>
+				((sjme_juint)(b.v.i & 0x1F)));
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_AND:
-			result.value.i = a.value.i & b.value.i;
+			result.v.i = a.v.i & b.v.i;
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_OR:
-			result.value.i = a.value.i | b.value.i;
+			result.v.i = a.v.i | b.v.i;
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_XOR:
-			result.value.i = a.value.i ^ b.value.i;
+			result.v.i = a.v.i ^ b.v.i;
 			break;
 		
 		default:
@@ -68,7 +68,7 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 	}
 
 	/* Push the result. */
-	result.type = SJME_JAVA_TYPE_ID_INTEGER;
+	result.t = SJME_JAVA_TYPE_ID_INTEGER;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&result)))
 		return sjme_error_vmError(inFrame, error);
@@ -125,23 +125,23 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 	switch (SJME_NVM_BYTECODE_MATH_TO_FUNC(id))
 	{
 		case SJME_NVM_BYTECODE_MATH_ADD:
-			result.value.i = a.value.i + b.value.i;
+			result.v.i = a.v.i + b.v.i;
 			break;
 			
 		case SJME_NVM_BYTECODE_MATH_SUB:
-			result.value.i = a.value.i - b.value.i;
+			result.v.i = a.v.i - b.v.i;
 			break;
 		
 		case SJME_NVM_BYTECODE_MATH_MUL:
-			result.value.i = a.value.i * b.value.i;
+			result.v.i = a.v.i * b.v.i;
 			break;
 		
 		case SJME_NVM_BYTECODE_MATH_DIV:
-			result.value.i = a.value.i / b.value.i;
+			result.v.i = a.v.i / b.v.i;
 			break;
 		
 		case SJME_NVM_BYTECODE_MATH_REM:
-			result.value.i = a.value.i % b.value.i;
+			result.v.i = a.v.i % b.v.i;
 			break;
 
 		default:
@@ -150,7 +150,7 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 	}
 
 	/* Push the result. */
-	result.type = SJME_JAVA_TYPE_ID_INTEGER;
+	result.t = SJME_JAVA_TYPE_ID_INTEGER;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&result)))
 		return sjme_error_vmError(inFrame, error);

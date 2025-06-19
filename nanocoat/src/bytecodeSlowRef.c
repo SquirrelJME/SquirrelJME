@@ -86,7 +86,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			return sjme_error_vmError(inFrame, error);
 
 		/* Cannot be null. */
-		if (argV[0].value.l == NULL)
+		if (argV[0].v.l == NULL)
 			return sjme_error_vmError(inFrame,
 				SJME_ERROR_INVALID_REFERENCE_POP);
 		
@@ -94,7 +94,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		if (!sjme_nvm_vmClass_isAssignableFrom(
 			SJME_F_T(inFrame),
 			methodId->member.inClass,
-			argV[0].value.l->isClass))
+			argV[0].v.l->isClass))
 			return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 	}
 
@@ -103,7 +103,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	{
 		/* Perform the native call. */
 		memset(&mleArgR, 0, sizeof(mleArgR));
-		mleArgR.type = SJME_JAVA_TYPE_ID_VOID;
+		mleArgR.t = SJME_JAVA_TYPE_ID_VOID;
 		if (sjme_error_is(error = sjme_mle_mleCall(inFrame,
 			target->inClass->name->seq,
 			target->name->seq,
@@ -122,17 +122,17 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		}
 
 		/* Wrong type? */
-		if (mleArgR.type != target->argR)
+		if (mleArgR.t != target->argR)
 			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_METHOD_TYPE);
 
 		/* Is there a return value being pushed to the stack? */
-		if (mleArgR.type != SJME_JAVA_TYPE_ID_VOID)
+		if (mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
 		{
 			/* Count up if an object. */
-			if (mleArgR.type == SJME_JAVA_TYPE_ID_OBJECT &&
-				mleArgR.value.l != NULL)
+			if (mleArgR.t == SJME_JAVA_TYPE_ID_OBJECT &&
+				mleArgR.v.l != NULL)
 				if (sjme_error_is(error = sjme_alloc_weakRef(
-					mleArgR.value.l, NULL)))
+					mleArgR.v.l, NULL)))
 					return sjme_error_vmError(inFrame, error);
 			
 			/* Push */
@@ -172,18 +172,18 @@ SJME_NVM_BYTECODE_SLOW(ArrayLength)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Cannot be null. */
-	if (value.value.l == NULL)
+	if (value.v.l == NULL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
 
 	/* Must be an array type. */
-	array = SJME_AS_JARRAY(value.value.l);
+	array = SJME_AS_JARRAY(value.v.l);
 	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE))
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Push length onto the stack. */
 	memset(&result, 0, sizeof(result));
-	result.type = SJME_JAVA_TYPE_ID_INTEGER;
-	result.value.i = array->length;
+	result.t = SJME_JAVA_TYPE_ID_INTEGER;
+	result.v.i = array->length;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&result)))
 		return sjme_error_vmError(inFrame, error);
@@ -226,10 +226,10 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 
 	/* Not a match? */
 	/* b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b) */
-	if (value.value.l != NULL &&
-		!(value.value.l->isClass == desireClass ||
+	if (value.v.l != NULL &&
+		!(value.v.l->isClass == desireClass ||
 		sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
-			desireClass, value.value.l->isClass)))
+			desireClass, value.v.l->isClass)))
 	{
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
@@ -273,14 +273,14 @@ SJME_NVM_BYTECODE_SLOW(InstanceOf)
 
 	/* Is this the given class? */
 	memset(&result, 0, sizeof(result));
-	if (check.value.l == NULL)
-		result.value.i = SJME_JNI_FALSE;
+	if (check.v.l == NULL)
+		result.v.i = SJME_JNI_FALSE;
 	else
-		result.value.i = sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
-			desireClass, check.value.l->isClass);
+		result.v.i = sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
+			desireClass, check.v.l->isClass);
 
 	/* Push result to the stack. */
-	result.type = SJME_JAVA_TYPE_ID_INTEGER;
+	result.t = SJME_JAVA_TYPE_ID_INTEGER;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&result)))
 		return sjme_error_vmError(inFrame, error);
@@ -326,18 +326,18 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 		return sjme_error_vmError(inFrame, error);
 
 	/* It must be an object type. */
-	if (depthRef.type != SJME_JAVA_TYPE_ID_OBJECT)
+	if (depthRef.t != SJME_JAVA_TYPE_ID_OBJECT)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* It cannot be null. */
-	if (depthRef.value.l == NULL)
+	if (depthRef.v.l == NULL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
 	
 	/* Lookup interface method. */
 	methodId = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByInterface(
 		SJME_F_T(inFrame), SJME_JNI_TRUE, &methodId,
-		depthRef.value.l, methodRef)) ||
+		depthRef.v.l, methodRef)) ||
 		methodId == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
@@ -401,7 +401,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 		return sjme_error_vmError(inFrame, error);
 
 	/* The instance object to call onto, cannot be null. */
-	onThis = rawOnThis.value.l;
+	onThis = rawOnThis.v.l;
 	if (onThis == NULL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
 
@@ -566,11 +566,11 @@ SJME_NVM_BYTECODE_SLOW(New)
 	memset(&result, 0, sizeof(result));
 	if (sjme_error_is(error = sjme_nvm_instance_objectNew(
 		SJME_F_T(inFrame), -1, SJME_NVM_STRUCT_OBJECT_INSTANCE,
-		&result.value.l, desireClass)) || result.value.l == NULL)
+		&result.v.l, desireClass)) || result.v.l == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Push allocate class to the stack. */
-	result.type = SJME_JAVA_TYPE_ID_OBJECT;
+	result.t = SJME_JAVA_TYPE_ID_OBJECT;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&result)))
 		return sjme_error_vmError(inFrame, error);
@@ -592,7 +592,7 @@ SJME_NVM_BYTECODE_SLOW(NewArray)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Length is not valid. */
-	if (length.value.i < 0)
+	if (length.v.i < 0)
 		return sjme_error_vmError(inFrame, SJME_ERROR_NEGATIVE_ARRAY_SIZE);
 
 	/* Map array type. */
@@ -637,11 +637,11 @@ SJME_NVM_BYTECODE_SLOW(NewArray)
 	/* Create new array. */
 	memset(&array, 0, sizeof(array));
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNewT(
-		SJME_F_T(inFrame), &array.value.l, arrayType, length.value.i)))
+		SJME_F_T(inFrame), &array.v.l, arrayType, length.v.i)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push to the stack. */
-	array.type = SJME_JAVA_TYPE_ID_OBJECT;
+	array.t = SJME_JAVA_TYPE_ID_OBJECT;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&array)))
 		return sjme_error_vmError(inFrame, error);
@@ -730,7 +730,7 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Must not be null. */
-	array = SJME_AS_JARRAY(arrayValue.value.l);
+	array = SJME_AS_JARRAY(arrayValue.v.l);
 	if (array == NULL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
 
@@ -744,14 +744,14 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Check bounds. */
-	index = indexValue.value.i;
+	index = indexValue.v.i;
 	if (index < 0 || index >= array->length)
 		return sjme_error_vmError(inFrame,
 			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS);
 
 	/* Load value to push. */
 	memset(&pushValue, 0, sizeof(pushValue));
-	pushValue.type = componentType->typeId;
+	pushValue.t = componentType->typeId;
 	switch (componentType->arrayTypeId)
 	{
 		case SJME_BASIC_TYPE_ID_BOOLEAN:
@@ -759,47 +759,47 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 			return sjme_error_notImplemented(0);
 			
 		case SJME_BASIC_TYPE_ID_BYTE:
-			pushValue.value.i =
+			pushValue.v.i =
 				((sjme_jint)array->elements.b[index]) & INT32_C(0xFF);
-			if ((pushValue.value.i & INT32_C(0x80)) != 0)
-				pushValue.value.i |= INT32_C(0xFFFFFF00);
+			if ((pushValue.v.i & INT32_C(0x80)) != 0)
+				pushValue.v.i |= INT32_C(0xFFFFFF00);
 			break;
 			
 		case SJME_BASIC_TYPE_ID_SHORT:
-			pushValue.value.i =
+			pushValue.v.i =
 				((sjme_jint)array->elements.s[index]) & INT32_C(0xFFFF);
-			if ((pushValue.value.i & INT32_C(0x8000)) != 0)
-				pushValue.value.i |= INT32_C(0xFFFF0000);
+			if ((pushValue.v.i & INT32_C(0x8000)) != 0)
+				pushValue.v.i |= INT32_C(0xFFFF0000);
 			break;
 			
 		case SJME_BASIC_TYPE_ID_CHARACTER:
-			pushValue.value.i =
+			pushValue.v.i =
 				((sjme_jint)array->elements.c[index]) & INT32_C(0xFFFF);
 			break;
 			
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			pushValue.value.i = array->elements.i[index];
+			pushValue.v.i = array->elements.i[index];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_LONG:
-			pushValue.value.j = array->elements.j[index];
+			pushValue.v.j = array->elements.j[index];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			pushValue.value.f = array->elements.f[index];
+			pushValue.v.f = array->elements.f[index];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			pushValue.value.d = array->elements.d[index];
+			pushValue.v.d = array->elements.d[index];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
-			pushValue.value.l = array->elements.l[index];
+			pushValue.v.l = array->elements.l[index];
 
 			/* Count up if not null as it is now on the stack. */
-			if (pushValue.value.l != NULL)
+			if (pushValue.v.l != NULL)
 				if (sjme_error_is(error = sjme_alloc_weakRef(
-					pushValue.value.l, NULL)))
+					pushValue.v.l, NULL)))
 					return sjme_error_vmError(inFrame, error);
 			break;
 
@@ -848,7 +848,7 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Must not be null. */
-	array = SJME_AS_JARRAY(arrayValue.value.l);
+	array = SJME_AS_JARRAY(arrayValue.v.l);
 	if (array == NULL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
 
@@ -858,11 +858,11 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
 		!array->object.isClass->info->isArray ||
 		componentType == NULL || componentType->arrayTypeId != arrayType ||
-		popValue.type != componentType->typeId)
+		popValue.t != componentType->typeId)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Check bounds. */
-	index = indexValue.value.i;
+	index = indexValue.v.i;
 	if (index < 0 || index >= array->length)
 		return sjme_error_vmError(inFrame,
 			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS);
@@ -875,41 +875,41 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 			return sjme_error_notImplemented(0);
 			
 		case SJME_BASIC_TYPE_ID_BYTE:
-			array->elements.b[index] = (sjme_jbyte)popValue.value.i;
+			array->elements.b[index] = (sjme_jbyte)popValue.v.i;
 			break;
 			
 		case SJME_BASIC_TYPE_ID_SHORT:
-			array->elements.s[index] = (sjme_jshort)popValue.value.i;
+			array->elements.s[index] = (sjme_jshort)popValue.v.i;
 			break;
 			
 		case SJME_BASIC_TYPE_ID_CHARACTER:
-			array->elements.c[index] = (sjme_jchar)popValue.value.i;
+			array->elements.c[index] = (sjme_jchar)popValue.v.i;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			array->elements.i[index] = popValue.value.i;
+			array->elements.i[index] = popValue.v.i;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_LONG:
-			array->elements.j[index] = popValue.value.j;
+			array->elements.j[index] = popValue.v.j;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			array->elements.f[index] = popValue.value.f;
+			array->elements.f[index] = popValue.v.f;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			array->elements.d[index] = popValue.value.d;
+			array->elements.d[index] = popValue.v.d;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
 			/* Count down if there is an old value. */
 			if (sjme_error_is(error = sjme_nvm_instance_countDown(
-				&array->elements.l[index], popValue.value.l)))
+				&array->elements.l[index], popValue.v.l)))
 				return sjme_error_vmError(inFrame, error);
 
 			/* Set new value. */
-			array->elements.l[index] = popValue.value.l;
+			array->elements.l[index] = popValue.v.l;
 			break;
 
 		default:

@@ -20,12 +20,12 @@ SJME_NVM_MLE_FUNCTION_DECL(stringCharAt)
 	sjme_jchar result;
 
 	/* Must be an actual string. */
-	string = (sjme_jstring)argV[0].value.l;
+	string = (sjme_jstring)argV[0].v.l;
 	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Which index is desired? */
-	index = argV[1].value.i;
+	index = argV[1].v.i;
 	if (index < 0 || index >= string->length)
 		return SJME_ERROR_MLE_CALL;
 
@@ -36,8 +36,8 @@ SJME_NVM_MLE_FUNCTION_DECL(stringCharAt)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Give the result. */
-	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->value.i = result & 0xFFFF;
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = result & 0xFFFF;
 	return SJME_ERROR_NONE;
 }
 
@@ -52,13 +52,13 @@ SJME_NVM_MLE_FUNCTION_DECL(stringHash)
 	sjme_jstring string;
 
 	/* Must be an actual string. */
-	string = (sjme_jstring)argV[0].value.l;
+	string = (sjme_jstring)argV[0].v.l;
 	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
 	/* This is a simple value copy operation. */
-	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->value.i = string->hashCode;
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = string->hashCode;
 	return SJME_ERROR_NONE;
 }
 
@@ -91,13 +91,13 @@ SJME_NVM_MLE_FUNCTION_DECL(stringLength)
 	sjme_jstring string;
 
 	/* Must be an actual string. */
-	string = (sjme_jstring)argV[0].value.l;
+	string = (sjme_jstring)argV[0].v.l;
 	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
 	/* This is a simple value copy operation. */
-	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->value.i = string->length;
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = string->length;
 	return SJME_ERROR_NONE;
 }
 
@@ -111,11 +111,11 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 	sjme_jint i, s, d;
 
 	/* Map arguments. */
-	source = (sjme_jstring)argV[0].value.l;
-	sourceOff = argV[1].value.i;
-	dest = (sjme_jarray)argV[2].value.l;
-	destOff = argV[3].value.i;
-	len = argV[4].value.i;
+	source = (sjme_jstring)argV[0].v.l;
+	sourceOff = argV[1].v.i;
+	dest = (sjme_jarray)argV[2].v.l;
+	destOff = argV[3].v.i;
+	len = argV[4].v.i;
 
 	/* Check types. */
 	if (!sjme_nvm_isAR(source, SJME_NVM_STRUCT_STRING_INSTANCE))
@@ -149,10 +149,10 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 	sjme_charSeqStatic seq;
 
 	/* Intern the string? */
-	intern = !!argV[0].value.i;
+	intern = !!argV[0].v.i;
 
 	/* Must be an actual array. */
-	array = (sjme_jarray)argV[1].value.l;
+	array = (sjme_jarray)argV[1].v.l;
 	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
@@ -161,8 +161,8 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Read offset and length. */
-	off = argV[2].value.i;
-	len = argV[3].value.i;
+	off = argV[2].v.i;
+	len = argV[3].v.i;
 
 	/* Check bounds. */
 	if (off < 0 || len < 0 || (off + len) < 0)
@@ -175,15 +175,15 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 
 	/* Obtain string value from the sequence. */
-	argR->value.l = NULL;
+	argR->v.l = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfCS(
 		SJME_F_T(inFrame),
-		SJME_AS_NVM_JSTRINGP(&argR->value.l), intern, &seq) ||
-		argR->value.l == NULL))
+		SJME_AS_NVM_JSTRINGP(&argR->v.l), intern, &seq) ||
+		argR->v.l == NULL))
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 
 	/* Success! */
-	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
 	return SJME_ERROR_NONE;
 }
 
@@ -194,23 +194,23 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
 	sjme_jstring string;
 
 	/* Intern the string? */
-	intern = !!argV[0].value.i;
+	intern = !!argV[0].v.i;
 
 	/* Must be an actual string. */
-	string = (sjme_jstring)argV[1].value.l;
+	string = (sjme_jstring)argV[1].v.l;
 	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Obtain string value from the sequence. */
-	argR->value.l = NULL;
+	argR->v.l = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfCS(
 		SJME_F_T(inFrame),
-		SJME_AS_NVM_JSTRINGP(&argR->value.l), intern, string->seq) ||
-		argR->value.l == NULL))
+		SJME_AS_NVM_JSTRINGP(&argR->v.l), intern, string->seq) ||
+		argR->v.l == NULL))
 		return sjme_error_default(error);
 
 	/* Success! */
-	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
 	return SJME_ERROR_NONE;
 }
 

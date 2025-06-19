@@ -40,7 +40,7 @@ SJME_NVM_MLE_FUNCTION_DECL(flush)
 	sjme_nvm_mle_pipe pipe;
 
 	/* Must be an actual pipe. */
-	pipe = (sjme_nvm_mle_pipe)argV[0].value.l;
+	pipe = (sjme_nvm_mle_pipe)argV[0].v.l;
 	if (!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE))
 		return SJME_ERROR_MLE_CALL;
 
@@ -53,8 +53,8 @@ SJME_NVM_MLE_FUNCTION_DECL(flush)
 		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
 
 	/* Success! */
-	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->value.i = 0;
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = 0;
 	return SJME_ERROR_NONE;
 }
 
@@ -67,7 +67,7 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 	const sjme_nal* nal;
 
 	/* Check. */
-	type = (sjme_nvm_mle_standardPipeType)argV[0].value.i;
+	type = (sjme_nvm_mle_standardPipeType)argV[0].v.i;
 	if (type < 0 || type >= SJME_NVM_MLE_NUM_STD_PIPES)
 		return SJME_ERROR_MLE_CALL;
 	
@@ -127,8 +127,8 @@ skip_validPipe:
 	/* Is the pipe valid? */
 	if (pipe != NULL)
 	{
-		argR->type = SJME_JAVA_TYPE_ID_OBJECT;
-		argR->value.l = (sjme_jobject)pipe;
+		argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+		argR->v.l = (sjme_jobject)pipe;
 		return SJME_ERROR_NONE;
 	}
 
@@ -154,7 +154,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(write, single)
 	sjme_jbyte single;
 
 	/* Must be an actual pipe. */
-	pipe = (sjme_nvm_mle_pipe)argV[0].value.l;
+	pipe = (sjme_nvm_mle_pipe)argV[0].v.l;
 	if (!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE))
 		return SJME_ERROR_MLE_CALL;
 
@@ -163,14 +163,14 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(write, single)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Write call. */
-	single = (sjme_jbyte)argV[1].value.i;
+	single = (sjme_jbyte)argV[1].v.i;
 	if (sjme_error_is(error = sjme_stream_outputWrite(pipe->stream.out,
 		&single, 1)))
 		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
 
 	/* Success! */
-	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->value.i = 0;
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = 0;
 	return SJME_ERROR_NONE;
 }
 

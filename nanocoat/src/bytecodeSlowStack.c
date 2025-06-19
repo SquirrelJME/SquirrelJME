@@ -23,8 +23,8 @@ SJME_NVM_BYTECODE_SLOW(Dup)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Must not be a wide type. */
-	if (top.type == SJME_JAVA_TYPE_ID_LONG ||
-		top.type == SJME_JAVA_TYPE_ID_DOUBLE)
+	if (top.t == SJME_JAVA_TYPE_ID_LONG ||
+		top.t == SJME_JAVA_TYPE_ID_DOUBLE)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Push a copy of it. */
@@ -47,18 +47,18 @@ SJME_NVM_BYTECODE_SLOW(Pop)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Can only be narrow types. */
-	if (SJME_TYPEID_IS_WIDE(top.type))
+	if (SJME_TYPEID_IS_WIDE(top.t))
 		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
 
 	/* Pop value and discard. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		top.type, &top)))
+		top.t, &top)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* If an object, count it down. */
-	if (top.type == SJME_JAVA_TYPE_ID_OBJECT)
+	if (top.t == SJME_JAVA_TYPE_ID_OBJECT)
 		if (sjme_error_is(error = sjme_nvm_instance_countDown(
-			&top.value.l, NULL)))
+			&top.v.l, NULL)))
 			return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */

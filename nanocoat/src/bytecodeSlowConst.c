@@ -30,26 +30,26 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 	switch (entry->type)
 	{
 		case SJME_NVM_CLASS_POOL_TYPE_INTEGER:
-			value.type = SJME_JAVA_TYPE_ID_INTEGER;
-			value.value.i = entry->constInteger.value;
+			value.t = SJME_JAVA_TYPE_ID_INTEGER;
+			value.v.i = entry->constInteger.value;
 			return sjme_nvm_task_frameStackPush(
 				inFrame, &value);
 		
 		case SJME_NVM_CLASS_POOL_TYPE_LONG:
-			value.type = SJME_JAVA_TYPE_ID_LONG;
-			value.value.j = entry->constLong.value;
+			value.t = SJME_JAVA_TYPE_ID_LONG;
+			value.v.j = entry->constLong.value;
 			return sjme_nvm_task_frameStackPush(
 				inFrame, &value);
 		
 		case SJME_NVM_CLASS_POOL_TYPE_FLOAT:
-			value.type = SJME_JAVA_TYPE_ID_FLOAT;
-			value.value.f = entry->constFloat.value;
+			value.t = SJME_JAVA_TYPE_ID_FLOAT;
+			value.v.f = entry->constFloat.value;
 			return sjme_nvm_task_frameStackPush(
 				inFrame, &value);
 		
 		case SJME_NVM_CLASS_POOL_TYPE_DOUBLE:
-			value.type = SJME_JAVA_TYPE_ID_DOUBLE;
-			value.value.d = entry->constDouble.value;
+			value.t = SJME_JAVA_TYPE_ID_DOUBLE;
+			value.v.d = entry->constDouble.value;
 			return sjme_nvm_task_frameStackPush(
 				inFrame, &value);
 
@@ -75,8 +75,8 @@ SJME_NVM_BYTECODE_SLOW(AConstNull)
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
-	value.type = SJME_JAVA_TYPE_ID_OBJECT;
-	value.value.l = NULL;
+	value.t = SJME_JAVA_TYPE_ID_OBJECT;
+	value.v.l = NULL;
 
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
@@ -94,8 +94,8 @@ SJME_NVM_BYTECODE_SLOW(BIPush)
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
-	value.type = SJME_JAVA_TYPE_ID_INTEGER;
-	value.value.i = (sjme_jbyte)relRawCode[1];
+	value.t = SJME_JAVA_TYPE_ID_INTEGER;
+	value.v.i = (sjme_jbyte)relRawCode[1];
 
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
@@ -113,11 +113,11 @@ SJME_NVM_BYTECODE_SLOW(DConstZ)
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
-	value.type = SJME_JAVA_TYPE_ID_DOUBLE;
+	value.t = SJME_JAVA_TYPE_ID_DOUBLE;
 	if (id == 14)
-		value.value.d.bits.hi = 0;
+		value.v.d.bits.hi = 0;
 	else
-		value.value.d.bits.hi = UINT32_C(0x3FF00000);
+		value.v.d.bits.hi = UINT32_C(0x3FF00000);
 
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
@@ -135,13 +135,13 @@ SJME_NVM_BYTECODE_SLOW(FConstZ)
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
-	value.type = SJME_JAVA_TYPE_ID_FLOAT;
+	value.t = SJME_JAVA_TYPE_ID_FLOAT;
 	if (id == 11)
-		value.value.f.bits = 0;
+		value.v.f.bits = 0;
 	else if (id == 12)
-		value.value.f.bits = INT32_C(1065353216);
+		value.v.f.bits = INT32_C(1065353216);
 	else
-		value.value.f.bits = INT32_C(1073741824);
+		value.v.f.bits = INT32_C(1073741824);
 
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
@@ -159,8 +159,8 @@ SJME_NVM_BYTECODE_SLOW(IConstM)
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
-	value.type = SJME_JAVA_TYPE_ID_INTEGER;
-	value.value.i = (-1) + (id - 2);
+	value.t = SJME_JAVA_TYPE_ID_INTEGER;
+	value.v.i = (-1) + (id - 2);
 
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
@@ -178,8 +178,8 @@ SJME_NVM_BYTECODE_SLOW(LConstZ)
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
-	value.type = SJME_JAVA_TYPE_ID_LONG;
-	value.value.j.part.lo = id - 9;
+	value.t = SJME_JAVA_TYPE_ID_LONG;
+	value.v.j.part.lo = id - 9;
 
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
@@ -273,8 +273,8 @@ SJME_NVM_BYTECODE_SLOW(SIPush)
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
-	value.type = SJME_JAVA_TYPE_ID_INTEGER;
-	value.value.i = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
+	value.t = SJME_JAVA_TYPE_ID_INTEGER;
+	value.v.i = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
 
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(

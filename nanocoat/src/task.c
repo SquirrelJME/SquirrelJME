@@ -122,27 +122,27 @@ static sjme_errorCode sjme_nvm_task_valueCompose(
 		return SJME_ERROR_TREAD_INDEX_INVALID;
 
 	/* Mapping index depends on the type. */
-	inOutValue->type = valueType;
+	inOutValue->t = valueType;
 	switch (valueType)
 	{
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			inOutValue->value.i = stack->base.i[stackIndex];
+			inOutValue->v.i = stack->base.i[stackIndex];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_LONG:
-			inOutValue->value.j = stack->base.j[stackIndex];
+			inOutValue->v.j = stack->base.j[stackIndex];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			inOutValue->value.f = stack->base.f[stackIndex];
+			inOutValue->v.f = stack->base.f[stackIndex];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			inOutValue->value.d = stack->base.d[stackIndex];
+			inOutValue->v.d = stack->base.d[stackIndex];
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
-			inOutValue->value.l = stack->base.l[stackIndex];
+			inOutValue->v.l = stack->base.l[stackIndex];
 			break;
 			
 		default:
@@ -357,11 +357,11 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (inValue->type < 0 || inValue->type >= SJME_NUM_JAVA_TYPE_IDS)
+	if (inValue->t < 0 || inValue->t >= SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Is this wide? */
-	isWide = SJME_TYPEID_IS_WIDE(inValue->type);
+	isWide = SJME_TYPEID_IS_WIDE(inValue->t);
 
 	/* Check for complete out of bounds. */
 	if (localIndex < 0 ||
@@ -370,7 +370,7 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INDEX_INVALID);
 
 	/* Is the index still valid on the tread? */
-	perType = &inFrame->inCode->perType[inValue->type];
+	perType = &inFrame->inCode->perType[inValue->t];
 	mappedSlot = perType->localMap[localIndex];
 	if (mappedSlot < 0 || mappedSlot >= perType->locals)
 		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
@@ -382,7 +382,7 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 
 	/* Replace order info. */
 	stack = &inFrame->stack;
-	stack->order[localIndex] = inValue->type;
+	stack->order[localIndex] = inValue->t;
 	if (isWide)
 		stack->order[localIndex + 1] = SJME_JAVA_TYPE_ID_VOID;
 
@@ -472,7 +472,7 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
 		return sjme_error_vmError(inFrame, error);
 
 	/* Must be the same type. */
-	if (temp.type != typeId)
+	if (temp.t != typeId)
 		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
 
 	/* Success! */
@@ -628,18 +628,18 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 
 	/* Will the stack overflow? */
 	stack = &inFrame->stack;
-	isWide = SJME_TYPEID_IS_WIDE(inValue->type);
+	isWide = SJME_TYPEID_IS_WIDE(inValue->t);
 	pushCount = (isWide ? 2 : 1);
 	if (stack->orderTop + pushCount > stack->orderLength)
 		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_OVERFLOW);
 
 	/* Will the per-type stack overflow? */
-	perType = &stack->stack[inValue->type];
+	perType = &stack->stack[inValue->t];
 	if (perType->top + 1 > perType->length)
 		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_OVERFLOW);
 
 	/* Place onto the order, mark top invalid if required. */
-	stack->order[stack->orderTop++] = inValue->type;
+	stack->order[stack->orderTop++] = inValue->t;
 	if (isWide)
 		stack->order[stack->orderTop++] = SJME_JAVA_TYPE_ID_VOID;
 
@@ -674,15 +674,15 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 
 	/* Load in string. */
 	memset(&value, 0, sizeof(value));
-	value.type = SJME_JAVA_TYPE_ID_OBJECT;
+	value.t = SJME_JAVA_TYPE_ID_OBJECT;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
 		SJME_F_T(inFrame),
-		SJME_AS_NVM_JSTRINGP(&value.value.l), inString)) ||
-		value.value.l == NULL)
+		SJME_AS_NVM_JSTRINGP(&value.v.l), inString)) ||
+		value.v.l == NULL)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Count up string. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(value.value.l, NULL)))
+	if (sjme_error_is(error = sjme_alloc_weakRef(value.v.l, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push value. */
@@ -740,8 +740,8 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 	
 	/* If copied elsewhere, count object up. */
 	if (copiedElsewhere && readType == SJME_JAVA_TYPE_ID_OBJECT &&
-		temp.value.l != NULL)
-		if (sjme_error_is(error = sjme_alloc_weakRef(temp.value.l, NULL)))
+		temp.v.l != NULL)
+		if (sjme_error_is(error = sjme_alloc_weakRef(temp.v.l, NULL)))
 			return sjme_error_default(error);
 	
 	/* Success! */
@@ -827,14 +827,14 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	switch (typeId)
 	{
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			outValue->value.i = perType->base.i[typeIndex];
+			outValue->v.i = perType->base.i[typeIndex];
 		
 			if (eraseOld)
 				perType->base.i[typeIndex] = 0;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_LONG:
-			outValue->value.j = perType->base.j[typeIndex];
+			outValue->v.j = perType->base.j[typeIndex];
 		
 			if (eraseOld)
 				memset(&perType->base.j[typeIndex], 0,
@@ -842,7 +842,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 			break;
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			outValue->value.f = perType->base.f[typeIndex];
+			outValue->v.f = perType->base.f[typeIndex];
 		
 			if (eraseOld)
 				memset(&perType->base.f[typeIndex], 0,
@@ -850,7 +850,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 			break;
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			outValue->value.d = perType->base.d[typeIndex];
+			outValue->v.d = perType->base.d[typeIndex];
 		
 			if (eraseOld)
 				memset(&perType->base.d[typeIndex], 0,
@@ -871,7 +871,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 					NULL)))
 					return sjme_error_default(error);
 
-			outValue->value.l = tempObject;
+			outValue->v.l = tempObject;
 			break;
 			
 		default:
@@ -879,7 +879,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	}
 
 	/* Success! */
-	outValue->type = typeId;
+	outValue->t = typeId;
 	return SJME_ERROR_NONE;
 }
 
@@ -894,44 +894,44 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (inValue->type < 0 || inValue->type >= SJME_NUM_JAVA_TYPE_IDS)
+	if (inValue->t < 0 || inValue->t >= SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Obtain the per type. */
-	perType = &inFrame->stack.stack[inValue->type];
+	perType = &inFrame->stack.stack[inValue->t];
 
 	/* Check the tread index. */
 	if (typeIndex < 0 || typeIndex >= perType->length)
 		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
 	
 	/* Operating depends on the type. */
-	switch (inValue->type)
+	switch (inValue->t)
 	{
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			perType->base.i[typeIndex] = inValue->value.i;
+			perType->base.i[typeIndex] = inValue->v.i;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_LONG:
-			perType->base.j[typeIndex] = inValue->value.j;
+			perType->base.j[typeIndex] = inValue->v.j;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			perType->base.f[typeIndex] = inValue->value.f;
+			perType->base.f[typeIndex] = inValue->v.f;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			perType->base.d[typeIndex] = inValue->value.d;
+			perType->base.d[typeIndex] = inValue->v.d;
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
 			/* If there is an old value here, count it down. */
 			if (sjme_error_is(error = sjme_nvm_instance_countDown(
 				&perType->base.l[typeIndex],
-				inValue->value.l)))
+				inValue->v.l)))
 				return sjme_error_vmError(inFrame, error);
 
 			/* Set. */
-			perType->base.l[typeIndex] = inValue->value.l;
+			perType->base.l[typeIndex] = inValue->v.l;
 			break;
 			
 		default:
@@ -1300,14 +1300,14 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	/* Argument type mismatch? */
 	argVParam = (!isStatic ? &argV[1] : argV);
 	for (i = 0, n = targetInfo->argC; i < n; i++)
-		if (argVParam[i].type != targetInfo->argT[i])
+		if (argVParam[i].t != targetInfo->argT[i])
 			return sjme_error_vmError(inThread,
 				SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 
 	/* If non-static, first must be a valid object. */
 	if (!isStatic)
-		if (argC == 0 || argV[0].type != SJME_JAVA_TYPE_ID_OBJECT ||
-			argV[0].value.l == NULL)
+		if (argC == 0 || argV[0].t != SJME_JAVA_TYPE_ID_OBJECT ||
+			argV[0].v.l == NULL)
 			return sjme_error_vmError(inThread,
 				SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 	
@@ -1339,8 +1339,8 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	
 	/* Setup initial locals, which are copied in from arguments. */
 	for (i = 0, dx = 0, n = argC; i < n;
-		i++, (dx += (argV[i].type == SJME_JAVA_TYPE_ID_LONG ||
-			argV[i].type == SJME_JAVA_TYPE_ID_DOUBLE) ? 2 : 1))
+		i++, (dx += (argV[i].t == SJME_JAVA_TYPE_ID_LONG ||
+			argV[i].t == SJME_JAVA_TYPE_ID_DOUBLE) ? 2 : 1))
 		if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
 			result, dx, &argV[i])))
 			return sjme_error_vmError(inThread, error);

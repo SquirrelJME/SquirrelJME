@@ -39,8 +39,8 @@ SJME_NVM_MLE_FUNCTION_DECL(currentJavaThread)
 SJME_NVM_MLE_FUNCTION_DECL(currentVMThread)
 {
 	/* Native threads are VM threads. */
-	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
-	argR->value.l = (sjme_jobject)SJME_F_T(inFrame);
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)SJME_F_T(inFrame);
 	return SJME_ERROR_NONE;
 }
 
@@ -123,8 +123,8 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	
 	/* Setup arguments. */
 	memset(mainArgV, 0, sizeof(mainArgV));
-	mainArgV[0].type = SJME_JAVA_TYPE_ID_OBJECT;
-	mainArgV[0].value.l = SJME_AS_JOBJECT(mainArgs);
+	mainArgV[0].t = SJME_JAVA_TYPE_ID_OBJECT;
+	mainArgV[0].v.l = SJME_AS_JOBJECT(mainArgs);
 	
 	/* Enter the frame. */
 	ignoreFrame = NULL;
@@ -186,13 +186,13 @@ SJME_NVM_MLE_FUNCTION_DECL(vmThreadIsMain)
 	sjme_nvm_thread thread;
 	
 	/* Must be a VMThread. */
-	thread = (sjme_nvm_thread)argV[0].value.l;
+	thread = (sjme_nvm_thread)argV[0].v.l;
 	if (!sjme_nvm_isAR(thread, SJME_NVM_STRUCT_THREAD))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Is a simple flag get. */
-	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->value.i = !!thread->isMain;
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = !!thread->isMain;
 	return SJME_ERROR_NONE;
 }
 

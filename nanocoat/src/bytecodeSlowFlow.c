@@ -118,7 +118,7 @@ SJME_NVM_BYTECODE_SLOW(IfAX)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
-	if (sjme_nvm_byteCode_compareAs[id - 198](value.value.l, NULL))
+	if (sjme_nvm_byteCode_compareAs[id - 198](value.v.l, NULL))
 	{
 		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 		pcNew->adjust = offset;
@@ -143,7 +143,7 @@ SJME_NVM_BYTECODE_SLOW(IfX)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
-	if (sjme_nvm_byteCode_compareIs[id - 153](value.value.i, 0))
+	if (sjme_nvm_byteCode_compareIs[id - 153](value.v.i, 0))
 	{
 		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 		pcNew->adjust = offset;
@@ -172,7 +172,7 @@ SJME_NVM_BYTECODE_SLOW(IfICmpX)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
-	if (sjme_nvm_byteCode_compareIs[id - 159](a.value.i, b.value.i))
+	if (sjme_nvm_byteCode_compareIs[id - 159](a.v.i, b.v.i))
 	{
 		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 		pcNew->adjust = offset;
@@ -201,7 +201,7 @@ SJME_NVM_BYTECODE_SLOW(IfACmpX)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
-	if (sjme_nvm_byteCode_compareAs[id - 165](a.value.l, b.value.l))
+	if (sjme_nvm_byteCode_compareAs[id - 165](a.v.l, b.v.l))
 	{
 		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 		pcNew->adjust = offset;
@@ -294,14 +294,14 @@ SJME_NVM_BYTECODE_SLOW(TableSwitch)
 
 	/* Would be a default jump? */
 	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
-	if (value.value.i < lo || value.value.i > hi)
+	if (value.v.i < lo || value.v.i > hi)
 		pcNew->adjust = sjme_big_int(
 			*sjme_util_memUnaligned32(&relRawCode[paramBase]));
 
 	/* In the table. */
 	else
 		pcNew->adjust = sjme_big_int(*sjme_util_memUnaligned32(
-			&relRawCode[paramBase + 8 + (4 * (value.value.i - lo))]));
+			&relRawCode[paramBase + 8 + (4 * (value.v.i - lo))]));
 	
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }

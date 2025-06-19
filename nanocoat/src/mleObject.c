@@ -22,7 +22,7 @@ SJME_NVM_MLE_FUNCTION_DECL(newInstance)
 	sjme_jobject result;
 
 	/* Must be an actual class type. */
-	inType = (sjme_jclass)argV[0].value.l;
+	inType = (sjme_jclass)argV[0].v.l;
 	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
@@ -44,8 +44,8 @@ SJME_NVM_MLE_FUNCTION_DECL(newInstance)
 	
 	/* Setup call arguments. */
 	memset(&initArgV, 0, sizeof(initArgV));
-	initArgV[0].type = SJME_JAVA_TYPE_ID_OBJECT;
-	initArgV[0].value.l = result;
+	initArgV[0].t = SJME_JAVA_TYPE_ID_OBJECT;
+	initArgV[0].v.l = result;
 
 	/* Call the default constructor. */
 	subFrame = NULL;
@@ -56,8 +56,8 @@ SJME_NVM_MLE_FUNCTION_DECL(newInstance)
 			sjme_error_defaultOr(error, SJME_ERROR_MLE_CALL));
 	
 	/* Note that types in NanoCoat are just pure classes, so they are 1:1. */
-	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
-	argR->value.l = result;
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = result;
 	return SJME_ERROR_NONE;
 }
 

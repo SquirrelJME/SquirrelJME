@@ -17,13 +17,13 @@ SJME_NVM_MLE_FUNCTION_DECL(classToType)
 	sjme_jobject inType;
 
 	/* Must be an actual object type. */
-	inType = argV[0].value.l;
+	inType = argV[0].v.l;
 	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Note that types in NanoCoat are just pure classes, so they are 1:1. */
-	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
-	argR->value.l = inType;
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = inType;
 	return SJME_ERROR_NONE;
 }
 
@@ -34,7 +34,7 @@ SJME_NVM_MLE_FUNCTION_DECL(findType)
 	sjme_jclass foundClass;
 
 	/* Must be an actual string. */
-	string = (sjme_jstring)argV[0].value.l;
+	string = (sjme_jstring)argV[0].v.l;
 	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
@@ -75,8 +75,8 @@ SJME_NVM_MLE_FUNCTION_DECL(findType)
 	}
 	
 	/* Success! */
-	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
-	argR->value.l = SJME_AS_JOBJECT(foundClass);
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = SJME_AS_JOBJECT(foundClass);
 	return SJME_ERROR_NONE;
 }
 
@@ -85,13 +85,13 @@ SJME_NVM_MLE_FUNCTION_DECL(typeToClass)
 	sjme_jobject inType;
 
 	/* Must be an actual class type. */
-	inType = argV[0].value.l;
+	inType = argV[0].v.l;
 	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Note that types in NanoCoat are just pure classes, so they are 1:1. */
-	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
-	argR->value.l = inType;
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = inType;
 	return SJME_ERROR_NONE;
 }
 

@@ -44,7 +44,7 @@ SJME_NVM_MLE_FUNCTION_DECL(garbageCollect)
 
 SJME_NVM_MLE_FUNCTION_DECL(lineEnding)
 {
-	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
 	
 #if defined(SJME_CONFIG_HAS_WINDOWS) || \
 	defined(SJME_CONFIG_HAS_WINDOWS_16) || \
@@ -54,7 +54,7 @@ SJME_NVM_MLE_FUNCTION_DECL(lineEnding)
 #elif defined(SJME_CONFIG_HAS_MACOS_CLASSIC)
 	argR->value.i = SJME_NVM_MLE_LINE_ENDING_CR;
 #else
-	argR->value.i = SJME_NVM_MLE_LINE_ENDING_LF;
+	argR->v.i = SJME_NVM_MLE_LINE_ENDING_LF;
 #endif
 
 	return SJME_ERROR_NONE;
@@ -111,8 +111,8 @@ SJME_NVM_MLE_FUNCTION_DECL(vmStatistic)
 SJME_NVM_MLE_FUNCTION_DECL(vmType)
 {
 	/* Always returns this constant value of NanoCoat. */
-	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->value.i = SJME_NVM_MLE_VM_TYPE_NANOCOAT;
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = SJME_NVM_MLE_VM_TYPE_NANOCOAT;
 
 	return SJME_ERROR_NONE;
 }

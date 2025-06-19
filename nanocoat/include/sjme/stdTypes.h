@@ -712,10 +712,10 @@ typedef union sjme_jvalue
 typedef struct sjme_jvalueTyped
 {
 	/** The type of this value. */
-	sjme_javaTypeId type;
+	sjme_javaTypeId t;
 
 	/** The value of this. */
-	sjme_jvalue value;
+	sjme_jvalue v;
 } sjme_jvalueTyped;
 
 /**
