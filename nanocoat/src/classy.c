@@ -1674,7 +1674,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 			case SJME_NVM_CLASS_POOL_TYPE_CLASS:
 				if (sjme_error_is(error = sjme_stream_inputReadValueJS(
 					inStream,
-					&SJME_P_C_N(entry)Index)))
+					&entry->classRef.descriptorIndex)))
 					goto fail_readItem;
 				break;
 				
@@ -1806,15 +1806,15 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 			
 				/* Class type. */
 			case SJME_NVM_CLASS_POOL_TYPE_CLASS:
-				if (SJME_P_C_N(entry)Index <= 0 ||
-					SJME_P_C_N(entry)Index >= entries->length)
+				if (entry->classRef.descriptorIndex <= 0 ||
+					entry->classRef.descriptorIndex >= entries->length)
 				{
 					error = SJME_ERROR_INVALID_CLASS_POOL_INDEX;
 					goto fail_initItem;
 				}
 				
 				/* Needs to be a UTF string. */
-				target = &entries->elements[SJME_P_C_N(entry)Index];
+				target = &entries->elements[entry->classRef.descriptorIndex];
 				if (target->type != SJME_NVM_CLASS_POOL_TYPE_UTF)
 				{
 					error = SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
@@ -1946,7 +1946,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 		{
 				/* Class reference. */
 			case SJME_NVM_CLASS_POOL_TYPE_CLASS:
-				SJME_P_C_N(entry)Hash =
+				entry->classRef.descriptorHash =
 					sjme_charSeq_hashR(SJME_P_C_N(entry)->seq);
 				break;
 			
