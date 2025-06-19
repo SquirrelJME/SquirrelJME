@@ -103,8 +103,41 @@ SJME_NVM_MLE_FUNCTION_DECL(stringLength)
 
 SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_jstring source;
+	sjme_jint sourceOff;
+	sjme_jarray dest;
+	sjme_jint destOff;
+	sjme_jint len;
+	sjme_jint i, s, d;
+
+	/* Map arguments. */
+	source = (sjme_jstring)argV[0].value.l;
+	sourceOff = argV[1].value.i;
+	dest = (sjme_jarray)argV[2].value.l;
+	destOff = argV[3].value.i;
+	len = argV[4].value.i;
+
+	/* Check types. */
+	if (!sjme_nvm_isAR(source, SJME_NVM_STRUCT_STRING_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+	if (!sjme_nvm_isAR(dest, SJME_NVM_STRUCT_ARRAY_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+	if (dest->type != SJME_BASIC_TYPE_ID_CHARACTER)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Check bounds. */
+	if (sourceOff < 0 || destOff < 0 || len < 0 ||
+		(sourceOff + len) < 0 || (destOff + len) < 0 ||
+		(sourceOff + len) > source->seq->length ||
+		(destOff + len) > dest->length)
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Read characters into the target. */
+	for (i = 0, s = sourceOff, d = destOff; i < len; i++)
+		dest->elements.c[d++] = sjme_charSeq_charAtR(source->seq, s++);
+
+	/* Void return. */
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)

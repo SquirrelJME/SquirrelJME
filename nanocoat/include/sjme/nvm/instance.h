@@ -45,7 +45,7 @@ typedef union sjme_nvm_rawArrayValues
 	sjme_jshort s[sjme_flexibleArrayCountUnion];
 	
 	/** Char values. */
-	sjme_jshort c[sjme_flexibleArrayCountUnion];
+	sjme_jchar c[sjme_flexibleArrayCountUnion];
 	
 	/** Integer values. */
 	sjme_jint i[sjme_flexibleArrayCountUnion];
