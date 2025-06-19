@@ -132,7 +132,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		outBind == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (superClass != sjme_atomic_sjme_jclass_get(&thisClass->superClass))
+	if (superClass != SJME_C_SU(thisClass))
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
@@ -275,7 +275,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* The super class can be used as a basis for linkage. */
-	superClass = sjme_atomic_sjme_jclass_get(&inClass->superClass);
+	superClass = SJME_C_SU(inClass);
 	
 	/* Allocate result. */
 	result = NULL;
@@ -735,7 +735,7 @@ static sjme_errorCode sjme_nvm_vmClass_isClassesSub(
 				return SJME_ERROR_NONE;
 	
 	/* Handle super class. */
-	subClass = sjme_atomic_sjme_jclass_get(&pivotClass->superClass);
+	subClass = SJME_C_SU(pivotClass);
 	if (subClass != NULL)
 		if (sjme_error_is(error = sjme_nvm_vmClass_isClassesSub(
 			contextThread, rootClass, subClass, inOutClasses)))
@@ -1327,7 +1327,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 	/* If we are below the class index, drop to the super class. */
 	while (fieldId < atClass->fieldBase[instanceType][javaType])
 	{
-		atClass = sjme_atomic_sjme_jclass_get(&atClass->superClass);
+		atClass = SJME_C_SU(atClass);
 		
 		/* This should not occur. */
 		if (atClass == NULL)
@@ -1583,9 +1583,7 @@ sjme_jboolean sjme_nvm_vmClass_isSuperClass(
 		return SJME_JNI_FALSE;
 
 	/* Try to find the other class. */
-	for (rover = sjme_atomic_sjme_jclass_get(&thisClass->superClass);
-		rover != NULL;
-		rover = sjme_atomic_sjme_jclass_get(&rover->superClass))
+	for (rover = SJME_C_SU(thisClass); rover != NULL; rover = SJME_C_SU(rover))
 		if (rover == otherClass)
 			return SJME_JNI_TRUE;
 
@@ -2155,7 +2153,7 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	/* If we are below the class index, drop to the super class. */
 	while (methodId < atClass->methodBase[instanceType])
 	{
-		atClass = sjme_atomic_sjme_jclass_get(&atClass->superClass);
+		atClass = SJME_C_SU(atClass);
 		
 		/* This should not occur, but it might. */
 		if (atClass == NULL)

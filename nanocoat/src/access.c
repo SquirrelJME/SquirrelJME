@@ -53,8 +53,7 @@ sjme_errorCode sjme_nvm_access_checkMToM(
 	if (flags->protected)
 	{
 		/* Must be a superclass of this one. */
-		for (rover = fromClass; rover != NULL;
-			rover = sjme_atomic_sjme_jclass_get(&rover->superClass))
+		for (rover = fromClass; rover != NULL; rover = SJME_C_SU(rover))
 			if (rover == toClass)
 				return SJME_ERROR_NONE;
 		

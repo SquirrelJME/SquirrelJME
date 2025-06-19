@@ -420,7 +420,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	if ((!isPrivate && !isPackagePrivate) && inSuper && !isInit)
 	{
 		if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
-			sjme_atomic_sjme_jclass_get(&refClass->superClass),
+			SJME_C_SU(refClass),
 			SJME_F_T(inFrame),
 			SJME_NVM_CLASS_MEMBER_INSTANCE,
 			SJME_JNI_TRUE, SJME_P_M_N(entry)->seq,

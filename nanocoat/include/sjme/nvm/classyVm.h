@@ -478,6 +478,10 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	sjme_attrInPositive sjme_jint methodId,
 	sjme_attrOutNotNull sjme_nvm_class_methodInfo* outInfo);
 
+/** Get super class. */
+#define SJME_C_SU(cl) \
+	(sjme_atomic_sjme_jclass_get(&(cl)->superClass))
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
