@@ -196,9 +196,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
-	sjme_nvm_class_poolEntryClass* classRef;
 	sjme_jclass desireClass;
-	sjme_charSeq binaryName;
 	sjme_jvalueTyped value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
@@ -209,10 +207,6 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 		SJME_NVM_CLASS_POOL_TYPE_CLASS,
 		0)))
 		return sjme_error_vmError(inFrame, error);
-
-	/* Which class are we going for? */
-	classRef = &entry->classRef;
-	binaryName = classRef->descriptor->seq;
 	
 	/* Locate target class. */
 	desireClass = NULL;
@@ -220,7 +214,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 		SJME_F_CL(inFrame),
 		&desireClass,
 		SJME_F_T(inFrame),
-		binaryName,
+		SJME_P_C_N(entry)->seq,
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 

@@ -1004,17 +1004,21 @@ sjme_errorCode sjme_nvm_class_validBinaryName(
 #define SJME_P_C_N(entry) \
 	((entry)->classRef.descriptor)
 
+/** Pool member entry. */
+#define SJME_P_M(entry) \
+	((entry)->member)
+
 /** Pool member entry class. */
 #define SJME_P_M_C(entry) \
-	((entry)->member.inClass->descriptor)
+	(SJME_P_M(entry).inClass->descriptor)
 
 /** Pool member entry name. */
 #define SJME_P_M_N(entry) \
-	((entry)->member.nameAndType->name)
+	(SJME_P_M(entry).nameAndType->name)
 
 /** Pool member entry type. */
 #define SJME_P_M_T(entry) \
-	((entry)->member.nameAndType->descriptor)
+	(SJME_P_M(entry).nameAndType->descriptor)
 	
 /*--------------------------------------------------------------------------*/
 
