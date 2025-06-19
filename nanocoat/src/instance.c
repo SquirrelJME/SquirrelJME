@@ -154,7 +154,7 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	/* Locate array type class. */
 	arrayClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFU(
-		contextThread->inTask->classLoader,
+		SJME_F_CL(contextThread),
 		&arrayClass, contextThread, buf, SJME_JNI_TRUE)) ||
 		arrayClass == NULL)
 		return sjme_error_vmError(contextThread, error);
@@ -330,7 +330,7 @@ sjme_errorCode sjme_nvm_instance_objectNewN(
 	/* Lookup the class first. */
 	classy = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		contextThread->inTask->classLoader, &classy, contextThread,
+		SJME_F_CL(contextThread), &classy, contextThread,
 		inClass, SJME_JNI_FALSE)) || classy == NULL)
 		return sjme_error_vmError(contextThread, error);
 

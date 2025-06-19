@@ -29,14 +29,14 @@ SJME_NVM_MLE_FUNCTION_DECL(newInstance)
 	/* Locate the default constructor. */
 	defaultCon = NULL;
 	if (sjme_error_is(sjme_nvm_vmClass_methodIDByNameTypeU(
-		inType, inFrame->inThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
+		inType, SJME_F_T(inFrame), SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_JNI_TRUE, "<init>", "()V",
 		&defaultCon)) || defaultCon == NULL)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Create new object instance. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_instance_objectNew(inFrame->inThread,
+	if (sjme_error_is(error = sjme_nvm_instance_objectNew(SJME_F_T(inFrame),
 		-1, SJME_NVM_STRUCT_OBJECT_INSTANCE, &result,
 		inType)) || result == NULL)
 		return sjme_error_vmError(inFrame,
@@ -49,7 +49,7 @@ SJME_NVM_MLE_FUNCTION_DECL(newInstance)
 
 	/* Call the default constructor. */
 	subFrame = NULL;
-	if (sjme_error_is(error = sjme_nvm_task_threadEnter(inFrame->inThread,
+	if (sjme_error_is(error = sjme_nvm_task_threadEnter(SJME_F_T(inFrame),
 		&subFrame, defaultCon, SJME_NVM_CLASS_MEMBER_INSTANCE,
 		1, initArgV)) || subFrame == NULL)
 		return sjme_error_vmError(inFrame,

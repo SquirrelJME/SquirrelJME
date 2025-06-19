@@ -238,7 +238,7 @@ sjme_errorCode sjme_nvm_task_commonClass(
 	/* Load the common class. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFU(
-		contextThread->inTask->classLoader, &result, contextThread,
+		SJME_F_CL(contextThread), &result, contextThread,
 		commonName, SJME_JNI_TRUE)) || result == NULL)
 		return sjme_error_vmError(contextThread, error);
 
@@ -676,7 +676,7 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 	memset(&value, 0, sizeof(value));
 	value.type = SJME_JAVA_TYPE_ID_OBJECT;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
-		inFrame->inThread,
+		SJME_F_T(inFrame),
 		SJME_AS_NVM_JSTRINGP(&value.value.l), inString)) ||
 		value.value.l == NULL)
 		return sjme_error_vmError(inFrame, error);
@@ -1325,7 +1325,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	/* Set frame details, needed for local set. */
 	result->inClass = inMethod->member.inClass;
 	result->inMethod = inMethod;
-	result->inState = inThread->inTask->inState;
+	result->inState = SJME_F_S(inThread);
 	result->inThread = inThread;
 	result->inTask = inThread->inTask;
 	result->inCode = targetInfo->code;
@@ -1456,7 +1456,7 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 	if (inThread->frames == NULL ||
 		inThread->numFrames >= inThread->frames->length)
 		if (sjme_error_default(error = sjme_list_replace(
-			inThread->inTask->inState->allocPool,
+			SJME_F_S(inThread)->allocPool,
 			inThread->numFrames + SJME_NVM_FRAME_GROW_SIZE,
 			&inThread->frames, sjme_nvm_frame, 0)))
 			return sjme_error_default(error);
@@ -1712,7 +1712,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	
 	/* Duplicate the sequence. */
 	if (sjme_error_is(error = sjme_charSeq_dup(
-		inThread->inTask->inState->allocPool,
+		SJME_F_S(inThread)->allocPool,
 		&result->seq, inSeq)) || result->seq == NULL)
 		goto fail_dupSeq;
 	

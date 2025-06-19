@@ -87,7 +87,7 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 	if (pipe == NULL)
 	{
 		/* Allocate pipe object. */
-		if (sjme_error_is(error = sjme_nvm_instance_objectNewNU(inFrame->inThread,
+		if (sjme_error_is(error = sjme_nvm_instance_objectNewNU(SJME_F_T(inFrame),
 			sizeof(*pipe), SJME_NVM_STRUCT_BRACKET_PIPE,
 			SJME_AS_JOBJECTP(&pipe), SJME_NVM_BRACKET_NAME_PIPE)) ||
 			pipe == NULL)

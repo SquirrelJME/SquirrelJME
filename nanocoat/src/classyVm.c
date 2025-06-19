@@ -490,8 +490,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	if (inClass == NULL || contextThread == NULL || classLoader == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	inState = contextThread->inTask->inState;
-	allocPool = contextThread->inTask->inState->allocPool;
+	inState = SJME_F_S(contextThread);
+	allocPool = SJME_F_S(contextThread)->allocPool;
 	strings = classLoader->nullStrings;
 
 	/* Lookup self name. */
@@ -534,7 +534,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	/* Locate component type of the array. */
 	componentType = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFU(
-		contextThread->inTask->classLoader,
+		SJME_F_CL(contextThread),
 		&componentType, contextThread, componentTypeName,
 		SJME_JNI_FALSE)) || componentType == NULL)
 		return sjme_error_vmError(contextThread, error);
@@ -564,8 +564,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitPrimitive(
 	if (inClass == NULL || contextThread == NULL || classLoader == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	inState = contextThread->inTask->inState;
-	allocPool = contextThread->inTask->inState->allocPool;
+	inState = SJME_F_S(contextThread);
+	allocPool = SJME_F_S(contextThread)->allocPool;
 	strings = classLoader->nullStrings;
 
 	/* Lookup self name. */
@@ -983,7 +983,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	
 	/* The class info should now be valid. */
 	info = inClass->info;
-	loader = contextThread->inTask->classLoader;
+	loader = SJME_F_CL(contextThread);
 	if (info == NULL || loader == NULL)
 	{
 		error = sjme_error_vmError(contextThread,
@@ -1206,7 +1206,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 		return SJME_ERROR_NONE;
 		
 	/* Recover the class loader. */
-	classLoader = contextThread->inTask->classLoader;
+	classLoader = SJME_F_CL(contextThread);
 	if (classLoader == NULL)
 	{
 		error = sjme_error_vmError(contextThread,

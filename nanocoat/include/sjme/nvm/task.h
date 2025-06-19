@@ -888,6 +888,15 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
 	sjme_attrOutNotNull sjme_jstring* outString,
 	sjme_attrInValue sjme_jboolean isIntern,
 	sjme_attrInNotNull sjme_lpcstr inUtf);
+
+/** Frame thread. */
+#define SJME_F_T(frame) ((frame)->inThread)
+
+/** Frame classloader. */
+#define SJME_F_CL(frame) ((frame)->inTask->classLoader)
+
+/** Frame state. */
+#define SJME_F_S(frame) ((frame)->inTask->inState)
 	
 /*--------------------------------------------------------------------------*/
 

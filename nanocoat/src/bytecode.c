@@ -611,7 +611,7 @@ sjme_errorCode sjme_nvm_byteCode_illegalInstruction(
 
 	sjme_message("ILLEGAL INSTRUCTION %d at 0x%x",
 		id, relRawCode - inFrame->inCode->rawCode);
-	sjme_nvm_task_stackTrace(inFrame->inThread);
+	sjme_nvm_task_stackTrace(SJME_F_T(inFrame));
 	sjme_message_hexDump(inFrame->inCode->rawCode,
 		inFrame->inCode->rawCodeLen);
 	return SJME_ERROR_INVALID_INSTRUCTION;
@@ -626,7 +626,7 @@ sjme_errorCode sjme_nvm_byteCode_notImplemented(
 	if (inFrame == NULL || relRawCode == NULL || pcNew == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_nvm_task_stackTrace(inFrame->inThread);
+	sjme_nvm_task_stackTrace(SJME_F_T(inFrame));
 	sjme_todo("Impl? %d", relRawCode[0]);
 	return sjme_error_notImplemented(relRawCode[0]);
 }

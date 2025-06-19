@@ -177,7 +177,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 	/* Obtain string value from the sequence. */
 	argR->value.l = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfCS(
-		inFrame->inThread,
+		SJME_F_T(inFrame),
 		SJME_AS_NVM_JSTRINGP(&argR->value.l), intern, &seq) ||
 		argR->value.l == NULL))
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
@@ -204,7 +204,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
 	/* Obtain string value from the sequence. */
 	argR->value.l = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfCS(
-		inFrame->inThread,
+		SJME_F_T(inFrame),
 		SJME_AS_NVM_JSTRINGP(&argR->value.l), intern, string->seq) ||
 		argR->value.l == NULL))
 		return sjme_error_default(error);

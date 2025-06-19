@@ -55,7 +55,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 
 		case SJME_NVM_CLASS_POOL_TYPE_CLASS:
 			return sjme_nvm_task_frameStackPushClassPD(
-				inFrame, entry->classRef.descriptor);
+				inFrame, SJME_P_C_N(entry));
 		
 		case SJME_NVM_CLASS_POOL_TYPE_STRING:
 			return sjme_nvm_task_frameStackPushStringP(

@@ -40,7 +40,7 @@ SJME_NVM_MLE_FUNCTION_DECL(currentVMThread)
 {
 	/* Native threads are VM threads. */
 	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
-	argR->value.l = (sjme_jobject)inFrame->inThread;
+	argR->value.l = (sjme_jobject)SJME_F_T(inFrame);
 	return SJME_ERROR_NONE;
 }
 
@@ -93,7 +93,7 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	/* Locate the main class. */
 	mainClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(task->classLoader,
-		&mainClass, inFrame->inThread,
+		&mainClass, SJME_F_T(inFrame),
 		task->globals.mainClassName->seq, SJME_JNI_TRUE)) ||
 		mainClass == NULL)
 		return sjme_error_vmError(inFrame, error);
@@ -101,7 +101,7 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	/* Locate the main method. */
 	mainMethod = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameTypeU(
-		mainClass, inFrame->inThread,
+		mainClass, SJME_F_T(inFrame),
 		SJME_NVM_CLASS_MEMBER_STATIC, SJME_JNI_TRUE,
 		"main", "([Ljava/lang/String;)V", &mainMethod)) ||
 		mainMethod == NULL)
@@ -111,8 +111,8 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	mainArgs = NULL;
 	n = (task->globals.mainArgs == NULL ? 0 : task->globals.mainArgs->length);
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
-		inFrame->inThread, SJME_AS_JOBJECTP(&mainArgs),
-		sjme_nvm_task_commonClassR(inFrame->inThread,
+		SJME_F_T(inFrame), SJME_AS_JOBJECTP(&mainArgs),
+		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
 			SJME_NVM_TASK_COMMON_CLASS_STRING), n)))
 		return sjme_error_vmError(inFrame, error);
 
@@ -128,7 +128,7 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	
 	/* Enter the frame. */
 	ignoreFrame = NULL;
-	return sjme_nvm_task_threadEnter(inFrame->inThread,
+	return sjme_nvm_task_threadEnter(SJME_F_T(inFrame),
 		&ignoreFrame, mainMethod, SJME_NVM_CLASS_MEMBER_STATIC,
 		1, mainArgV);
 }

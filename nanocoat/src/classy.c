@@ -1305,7 +1305,7 @@ sjme_errorCode sjme_nvm_class_parse(
 		goto fail_readThisName;
 	
 	/* Reference it. */
-	result->name = thisName->classRef.descriptor;
+	result->name = SJME_P_C_N(thisName);
 	if (sjme_error_is(error = sjme_alloc_weakRef(
 		result->name, NULL)))
 		goto fail_refThisName;
@@ -1358,7 +1358,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	/* Reference it, if valid. */
 	if (superName != NULL)
 	{
-		result->superName = superName->classRef.descriptor;
+		result->superName = SJME_P_C_N(superName);
 		if (sjme_error_is(error = sjme_alloc_weakRef(
 			result->superName, NULL)))
 			goto fail_refSuperName;
@@ -1391,7 +1391,7 @@ sjme_errorCode sjme_nvm_class_parse(
 			goto fail_readThisName;
 		
 		/* Reference it. */
-		interfaceNames->elements[i] = interfaceName->classRef.descriptor;
+		interfaceNames->elements[i] = SJME_P_C_N(interfaceName);
 		if (sjme_error_is(error = sjme_alloc_weakRef(
 			interfaceNames->elements[i], NULL)))
 			goto fail_refThisName;
@@ -1674,7 +1674,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 			case SJME_NVM_CLASS_POOL_TYPE_CLASS:
 				if (sjme_error_is(error = sjme_stream_inputReadValueJS(
 					inStream,
-					&entry->classRef.descriptorIndex)))
+					&SJME_P_C_N(entry)Index)))
 					goto fail_readItem;
 				break;
 				
@@ -1806,15 +1806,15 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 			
 				/* Class type. */
 			case SJME_NVM_CLASS_POOL_TYPE_CLASS:
-				if (entry->classRef.descriptorIndex <= 0 ||
-					entry->classRef.descriptorIndex >= entries->length)
+				if (SJME_P_C_N(entry)Index <= 0 ||
+					SJME_P_C_N(entry)Index >= entries->length)
 				{
 					error = SJME_ERROR_INVALID_CLASS_POOL_INDEX;
 					goto fail_initItem;
 				}
 				
 				/* Needs to be a UTF string. */
-				target = &entries->elements[entry->classRef.descriptorIndex];
+				target = &entries->elements[SJME_P_C_N(entry)Index];
 				if (target->type != SJME_NVM_CLASS_POOL_TYPE_UTF)
 				{
 					error = SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE;
@@ -1822,9 +1822,9 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Refer to it and count up, since we are using it. */
-				entry->classRef.descriptor = target->utf.utf;
+				SJME_P_C_N(entry) = target->utf.utf;
 				if (sjme_error_is(error = sjme_alloc_weakRef(
-					entry->classRef.descriptor, NULL)))
+					SJME_P_C_N(entry), NULL)))
 					goto fail_initItem;
 				break;
 				
@@ -1946,8 +1946,8 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 		{
 				/* Class reference. */
 			case SJME_NVM_CLASS_POOL_TYPE_CLASS:
-				entry->classRef.descriptorHash =
-					sjme_charSeq_hashR(entry->classRef.descriptor->seq);
+				SJME_P_C_N(entry)Hash =
+					sjme_charSeq_hashR(SJME_P_C_N(entry)->seq);
 				break;
 			
 				/* Member reference. */

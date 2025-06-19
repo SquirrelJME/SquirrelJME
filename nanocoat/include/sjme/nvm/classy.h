@@ -1000,6 +1000,10 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 sjme_errorCode sjme_nvm_class_validBinaryName(
 	sjme_attrInNotNull sjme_charSeq binaryName);
 
+/** Pool class reference class. */
+#define SJME_P_C_N(entry) \
+	((entry)->classRef.descriptor)
+
 /** Pool member entry class. */
 #define SJME_P_M_C(entry) \
 	((entry)->member.inClass->descriptor)

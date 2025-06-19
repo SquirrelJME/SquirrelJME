@@ -53,8 +53,8 @@ SJME_NVM_MLE_FUNCTION_DECL(findType)
 	{
 		/* Can just use the field type loader here. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadF(
-			inFrame->inTask->classLoader, &foundClass,
-			inFrame->inThread, string->seq, SJME_JNI_TRUE)) ||
+			SJME_F_CL(inFrame), &foundClass,
+			SJME_F_T(inFrame), string->seq, SJME_JNI_TRUE)) ||
 			foundClass == NULL)
 			return sjme_error_vmError(inFrame, error);
 	}
@@ -64,8 +64,8 @@ SJME_NVM_MLE_FUNCTION_DECL(findType)
 	{
 		/* Otherwise this will be a binary name. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-			inFrame->inTask->classLoader, &foundClass,
-			inFrame->inThread, string->seq, SJME_JNI_TRUE)) ||
+			SJME_F_CL(inFrame), &foundClass,
+			SJME_F_T(inFrame), string->seq, SJME_JNI_TRUE)) ||
 			foundClass == NULL)
 		{
 			/* Another error other than not found? */

@@ -92,7 +92,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		
 		/* Must be the same or a compatible class as the call site. */
 		if (!sjme_nvm_vmClass_isAssignableFrom(
-			inFrame->inThread,
+			SJME_F_T(inFrame),
 			methodId->member.inClass,
 			argV[0].value.l->isClass))
 			return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
@@ -147,7 +147,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	{
 		newFrame = NULL;
 		if (sjme_error_is(error = sjme_nvm_task_threadEnter(
-			inFrame->inThread,
+			SJME_F_T(inFrame),
 			&newFrame,
 			methodId,
 			callType,
@@ -217,9 +217,9 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	/* Locate target class. */
 	desireClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		inFrame->inTask->classLoader,
+		SJME_F_CL(inFrame),
 		&desireClass,
-		inFrame->inThread,
+		SJME_F_T(inFrame),
 		binaryName,
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
@@ -234,7 +234,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	/* b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b) */
 	if (value.value.l != NULL &&
 		!(value.value.l->isClass == desireClass ||
-		sjme_nvm_vmClass_isAssignableFrom(inFrame->inThread,
+		sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
 			desireClass, value.value.l->isClass)))
 	{
 		sjme_todo("Impl?");
@@ -270,10 +270,10 @@ SJME_NVM_BYTECODE_SLOW(InstanceOf)
 	/* Locate target class. */
 	desireClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		inFrame->inTask->classLoader,
+		SJME_F_CL(inFrame),
 		&desireClass,
-		inFrame->inThread,
-		entry->classRef.descriptor->seq,
+		SJME_F_T(inFrame),
+		SJME_P_C_N(entry)->seq,
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 
@@ -282,7 +282,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceOf)
 	if (check.value.l == NULL)
 		result.value.i = SJME_JNI_FALSE;
 	else
-		result.value.i = sjme_nvm_vmClass_isAssignableFrom(inFrame->inThread,
+		result.value.i = sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
 			desireClass, check.value.l->isClass);
 
 	/* Push result to the stack. */
@@ -342,7 +342,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 	/* Lookup interface method. */
 	methodId = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByInterface(
-		inFrame->inThread, SJME_JNI_TRUE, &methodId,
+		SJME_F_T(inFrame), SJME_JNI_TRUE, &methodId,
 		depthRef.value.l, methodRef)) ||
 		methodId == NULL)
 		return sjme_error_vmError(inFrame, error);
@@ -381,16 +381,16 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	/* Determine the referenced class. */
 	refClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		inFrame->inTask->classLoader,
+		SJME_F_CL(inFrame),
 		&refClass,
-		inFrame->inThread,
+		SJME_F_T(inFrame),
 		SJME_P_M_C(entry)->seq,
 		SJME_JNI_TRUE)) || refClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 
 	/* The target method needs to be found dynamically. */
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
-		refClass, inFrame->inThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
+		refClass, SJME_F_T(inFrame), SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_JNI_TRUE, SJME_P_M_N(entry)->seq,
 		SJME_P_M_T(entry)->seq, &refMethod)) ||
 		refMethod == NULL)
@@ -427,7 +427,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	{
 		if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
 			sjme_atomic_sjme_jclass_get(&refClass->superClass),
-			inFrame->inThread,
+			SJME_F_T(inFrame),
 			SJME_NVM_CLASS_MEMBER_INSTANCE,
 			SJME_JNI_TRUE, SJME_P_M_N(entry)->seq,
 			SJME_P_M_T(entry)->seq, &refMethod)) ||
@@ -470,8 +470,8 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	/* Determine the referenced class. */
 	refClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		inFrame->inTask->classLoader, &refClass,
-		inFrame->inThread,
+		SJME_F_CL(inFrame), &refClass,
+		SJME_F_T(inFrame),
 		SJME_P_M_C(entry)->seq,
 		SJME_JNI_TRUE)) || refClass == NULL)
 		return sjme_error_vmError(inFrame, error);
@@ -479,7 +479,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	/* Lookup target method. */
 	target = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
-		refClass, inFrame->inThread, SJME_NVM_CLASS_MEMBER_STATIC,
+		refClass, SJME_F_T(inFrame), SJME_NVM_CLASS_MEMBER_STATIC,
 		SJME_JNI_TRUE,
 		SJME_P_M_N(entry)->seq,
 		SJME_P_M_T(entry)->seq, &target)) ||
@@ -516,8 +516,8 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 	/* Determine the referenced class. */
 	refClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		inFrame->inTask->classLoader, &refClass,
-		inFrame->inThread,
+		SJME_F_CL(inFrame), &refClass,
+		SJME_F_T(inFrame),
 		SJME_P_M_C(entry)->seq,
 		SJME_JNI_TRUE)) || refClass == NULL)
 		return sjme_error_vmError(inFrame, error);
@@ -525,7 +525,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 	/* Lookup target method. */
 	target = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
-		refClass, inFrame->inThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
+		refClass, SJME_F_T(inFrame), SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_JNI_TRUE,
 		SJME_P_M_N(entry)->seq,
 		SJME_P_M_T(entry)->seq, &target)) ||
@@ -561,17 +561,17 @@ SJME_NVM_BYTECODE_SLOW(New)
 	/* Locate target class. */
 	desireClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		inFrame->inTask->classLoader,
+		SJME_F_CL(inFrame),
 		&desireClass,
-		inFrame->inThread,
-		entry->classRef.descriptor->seq,
+		SJME_F_T(inFrame),
+		SJME_P_C_N(entry)->seq,
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Allocate new instance of the given object. */
 	memset(&result, 0, sizeof(result));
 	if (sjme_error_is(error = sjme_nvm_instance_objectNew(
-		inFrame->inThread, -1, SJME_NVM_STRUCT_OBJECT_INSTANCE,
+		SJME_F_T(inFrame), -1, SJME_NVM_STRUCT_OBJECT_INSTANCE,
 		&result.value.l, desireClass)) || result.value.l == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
@@ -643,7 +643,7 @@ SJME_NVM_BYTECODE_SLOW(NewArray)
 	/* Create new array. */
 	memset(&array, 0, sizeof(array));
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNewT(
-		inFrame->inThread, &array.value.l, arrayType, length.value.i)))
+		SJME_F_T(inFrame), &array.value.l, arrayType, length.value.i)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push to the stack. */
@@ -675,9 +675,9 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 	/* Locate target class. */
 	desireClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		inFrame->inTask->classLoader,
+		SJME_F_CL(inFrame),
 		&desireClass,
-		inFrame->inThread,
+		SJME_F_T(inFrame),
 		SJME_P_M_C(entry)->seq,
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
@@ -686,7 +686,7 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 	/* Lookup field in the class. */
 	fieldId = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_fieldIDByNameType(
-		desireClass, inFrame->inThread, SJME_NVM_CLASS_MEMBER_STATIC,
+		desireClass, SJME_F_T(inFrame), SJME_NVM_CLASS_MEMBER_STATIC,
 		SJME_JNI_TRUE,
 		SJME_P_M_N(entry)->seq,
 		SJME_P_M_T(entry)->seq,

@@ -107,7 +107,7 @@ static sjme_errorCode sjme_nvm_class_constantPoolClose(
 			switch (entry->type)
 			{
 				case SJME_NVM_CLASS_POOL_TYPE_CLASS:
-					SJME_CLEANUP_CLOSE(entry->classRef.descriptor);
+					SJME_CLEANUP_CLOSE(SJME_P_C_N(entry));
 					break;
 					
 				case SJME_NVM_CLASS_POOL_TYPE_STRING:
