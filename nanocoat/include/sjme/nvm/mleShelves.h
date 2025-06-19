@@ -73,6 +73,9 @@ extern "C"
 /** Runnable. */
 #define SJME_MD_RUNNABLE SJME_MD_L("java/lang/Runnable")
 
+/** Class. */
+#define SJME_MD_CLASS SJME_MD_L("java/lang/Class")
+
 /** Pipe descriptor. */
 #define SJME_MD_PIPE SJME_MD_L(SJME_NVM_BRACKET_NAME_PIPE)
 

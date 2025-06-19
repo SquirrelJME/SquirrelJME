@@ -258,6 +258,18 @@ sjme_errorCode sjme_nvm_vmClass_isClasses(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrOutNotNull sjme_list_sjme_jclass** outIsClasses);
+
+/**
+ * Is the other class a super class of the base class?
+ * 
+ * @param thisClass The base class.
+ * @param otherClass The other class to check.
+ * @return If the other class is a super class.
+ * @since 2025/06/19
+ */
+sjme_jboolean sjme_nvm_vmClass_isSuperClass(
+	sjme_attrInNotNull sjme_jclass thisClass,
+	sjme_attrInNotNull sjme_jclass otherClass);
 	
 /**
  * Generates an array class type of the specified component type.

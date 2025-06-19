@@ -706,7 +706,7 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (depth < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		return SJME_ERROR_STACK_UNDERFLOW;
 
 	/* Set initial position. */
 	stack = &inFrame->stack;

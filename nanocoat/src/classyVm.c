@@ -1569,6 +1569,30 @@ fail_badAlloc:
 	return sjme_error_default(error);
 }
 
+sjme_jboolean sjme_nvm_vmClass_isSuperClass(
+	sjme_attrInNotNull sjme_jclass thisClass,
+	sjme_attrInNotNull sjme_jclass otherClass)
+{
+	sjme_jclass rover;
+	
+	if (thisClass == NULL || otherClass == NULL)
+		return SJME_JNI_FALSE;
+
+	/* If these are the same class, this cannot be true. */
+	if (thisClass == otherClass)
+		return SJME_JNI_FALSE;
+
+	/* Try to find the other class. */
+	for (rover = sjme_atomic_sjme_jclass_get(&thisClass->superClass);
+		rover != NULL;
+		rover = sjme_atomic_sjme_jclass_get(&rover->superClass))
+		if (rover == otherClass)
+			return SJME_JNI_TRUE;
+
+	/* Not found, so is not one. */
+	return SJME_JNI_FALSE;
+}
+
 sjme_errorCode sjme_nvm_vmClass_loaderLoadArray(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,

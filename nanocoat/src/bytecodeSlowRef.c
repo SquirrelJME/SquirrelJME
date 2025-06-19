@@ -87,7 +87,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		/* Must be the same or a compatible class as the call site. */
 		if (!sjme_nvm_vmClass_isAssignableFrom(
 			inFrame->inThread,
-			methodId->member.inClass, argV[0].value.l->isClass))
+			methodId->member.inClass,
+			argV[0].value.l->isClass))
 			return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 	}
 
@@ -366,15 +367,15 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 		0)))
 		return sjme_error_vmError(inFrame, error);
 
+	/* Depth must be the count as the method reference arguments. */
+	if (depth != methodRef->staticArgSlots + 1)
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+
 	/* Read in the reference. */
 	memset(&depthRef, 0, sizeof(depthRef));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame, depth - 1,
 		&depthRef, SJME_JNI_FALSE)))
 		return sjme_error_vmError(inFrame, error);
-
-	/* Depth must be the count as the method reference arguments. */
-	if (depth != methodRef->staticArgSlots + 1)
-		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* It must be an object type. */
 	if (depthRef.type != SJME_JAVA_TYPE_ID_OBJECT)
@@ -408,7 +409,11 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jclass refClass;
+	sjme_jclass currentClass;
 	sjme_jmethodID refMethod;
+	sjme_jvalueTyped rawOnThis;
+	sjme_jobject onThis;
+	sjme_jboolean inSameClass, inSuper, isInit, isPrivate, isPackagePrivate;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 	
 	/* Read in pool reference, which refers to the referenced member. */
@@ -443,8 +448,56 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 		return sjme_error_vmError(inFrame,
 			SJME_ERROR_CLASS_CHANGED);
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Which class are we calling from? */
+	currentClass = inFrame->inClass;
+	
+	/* Read in the reference. */
+	memset(&rawOnThis, 0, sizeof(rawOnThis));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
+		entry->member.staticArgSlots,
+		&rawOnThis, SJME_JNI_FALSE)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* The instance object to call onto, cannot be null. */
+	onThis = rawOnThis.value.l;
+	if (onThis == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
+
+	/* These modify the action to be performed */
+	inSameClass = (currentClass == refClass);
+	inSuper = sjme_nvm_vmClass_isSuperClass(currentClass,
+		refClass);
+	isInit = sjme_charSeq_equalsUtfR(refMethod->member.name->seq,
+		"<init>");
+	isPrivate = refMethod->flags.member.access.private;
+	isPackagePrivate = (!refMethod->flags.member.access.private &&
+		!refMethod->flags.member.access.protected &&
+		!refMethod->flags.member.access.public);
+	
+	/* Call superclass method instead? */
+	if ((!isPrivate && !isPackagePrivate) && inSuper && !isInit)
+	{
+		if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+			sjme_atomic_sjme_jclass_get(&refClass->superClass),
+			inFrame->inThread,
+			SJME_NVM_CLASS_MEMBER_INSTANCE,
+			SJME_JNI_TRUE, entry->member.nameAndType->name->seq,
+			entry->member.nameAndType->descriptor->seq, &refMethod)) ||
+			refMethod == NULL)
+			return sjme_error_vmError(inFrame, error);
+	}
+	
+	/* Cannot call a private method that is in another class */
+	else if ((isPrivate || (isPackagePrivate && !isInit)) &&
+		!inSameClass && !inSuper)
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+	
+	/* Invoke this method */
+	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvoke(inFrame,
+		SJME_NVM_CLASS_MEMBER_INSTANCE,
+		SJME_NVM_CALL_VIRTUAL,
+		refMethod)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
