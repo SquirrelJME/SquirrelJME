@@ -105,6 +105,10 @@ SJME_NVM_BYTECODE_SLOW(MathDouble);
 SJME_NVM_BYTECODE_SLOW(MathFloat);
 SJME_NVM_BYTECODE_SLOW(MathInt);
 SJME_NVM_BYTECODE_SLOW(MathLong);
+SJME_NVM_BYTECODE_SLOW(MathNegateDouble);
+SJME_NVM_BYTECODE_SLOW(MathNegateFloat);
+SJME_NVM_BYTECODE_SLOW(MathNegateInt);
+SJME_NVM_BYTECODE_SLOW(MathNegateLong);
 
 /* Reference */
 SJME_NVM_BYTECODE_SLOW(ArrayLength);
@@ -124,6 +128,61 @@ SJME_NVM_BYTECODE_SLOW(Pop);
 
 /*--------------------------------------------------------------------------*/
 /* clang-format on */ /* @formatter:on */
+
+/**
+ * Which math binary function is being executed?
+ *
+ * @since 2025/06/19
+ */
+typedef enum sjme_nvm_byteCode_mathBinaryFunc
+{
+	/** Shift left. */
+	SJME_NVM_BYTECODE_MATH_SHL,
+
+	/** Shift right. */
+	SJME_NVM_BYTECODE_MATH_SHR,
+
+	/** Unsigned shift right. */
+	SJME_NVM_BYTECODE_MATH_USHR,
+
+	/** AND. */
+	SJME_NVM_BYTECODE_MATH_AND,
+
+	/** OR. */
+	SJME_NVM_BYTECODE_MATH_OR,
+
+	/** XOR. */
+	SJME_NVM_BYTECODE_MATH_XOR,
+
+	/** The number of binary math functions. */
+	SJME_NVM_BYTECODE_NUM_MATH_BINARY_FUNC,
+} sjme_nvm_byteCode_mathBinaryFunc;
+
+/**
+ * Which math function is being executed?
+ *
+ * @since 2025/06/19
+ */
+typedef enum sjme_nvm_byteCode_mathFunc
+{
+	/** Add. */
+	SJME_NVM_BYTECODE_MATH_ADD,
+
+	/** Subtract. */
+	SJME_NVM_BYTECODE_MATH_SUB,
+
+	/** Multiply. */
+	SJME_NVM_BYTECODE_MATH_MUL,
+
+	/** Divide. */
+	SJME_NVM_BYTECODE_MATH_DIV,
+
+	/** Remainder. */
+	SJME_NVM_BYTECODE_MATH_REM,
+
+	/** The number of math functions. */
+	SJME_NVM_BYTECODE_NUM_MATH_FUNC,
+} sjme_nvm_byteCode_mathFunc;
 
 /*--------------------------------------------------------------------------*/
 
