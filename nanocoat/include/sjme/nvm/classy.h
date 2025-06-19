@@ -461,8 +461,11 @@ typedef struct sjme_nvm_class_poolEntryMember
 	/** The name and type used. */
 	const sjme_nvm_class_poolEntryNameAndType* nameAndType;
 
-	/** The number of static slots. */
-	sjme_jint staticSlots;
+	/** The number of static arguments slots. */
+	sjme_jint staticArgSlots;
+
+	/** The return value slots. */
+	sjme_jint rvSlots;
 } sjme_nvm_class_poolEntryMember;
 
 /**
@@ -855,16 +858,33 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 	sjme_attrInNotNull sjme_javaTypeId* outArgR);
 
 /**
- * Counts the number of slots a descriptor takes up.
+ * Counts the number of slots a field descriptor takes up.
  * 
  * @param inDesc The descriptor to count.
  * @param outSlots The number of used slots.
+ * @param atP The pointer to the current character index, will be incremented
+ * after a read occurs.
  * @return Any resultant error, if any.
  * @since 2025/06/19
  */
-sjme_errorCode sjme_nvm_class_descriptorSlots(
+sjme_errorCode sjme_nvm_class_descriptorFieldSlots(
 	sjme_attrInNotNull sjme_charSeq inDesc,
-	sjme_attrOutNotNull sjme_jint* outSlots);
+	sjme_attrOutNotNull sjme_jint* outSlots,
+	sjme_attrInOutNullable sjme_jint* atP);
+
+/**
+ * Counts the number of slots a method descriptor takes up.
+ * 
+ * @param inDesc The descriptor to count.
+ * @param outArgSlots The number of argument slots.
+ * @param outRvSlots The number of return value slots.
+ * @return Any resultant error, if any.
+ * @since 2025/06/19
+ */
+sjme_errorCode sjme_nvm_class_descriptorMethodSlots(
+	sjme_attrInNotNull sjme_charSeq inDesc,
+	sjme_attrOutNotNull sjme_jint* outArgSlots,
+	sjme_attrOutNotNull sjme_jint* outRvSlots);
 	
 /**
  * Determines the @c sjme_javaTypeId or @c sjme_basicTypeId type for the

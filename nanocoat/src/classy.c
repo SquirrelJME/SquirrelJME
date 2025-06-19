@@ -1004,27 +1004,122 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 #undef SJME_MAX_ARGS
 }
 
-sjme_errorCode sjme_nvm_class_descriptorSlots(
+sjme_errorCode sjme_nvm_class_descriptorFieldSlots(
 	sjme_attrInNotNull sjme_charSeq inDesc,
-	sjme_attrOutNotNull sjme_jint* outSlots)
+	sjme_attrOutNotNull sjme_jint* outSlots,
+	sjme_attrInOutNullable sjme_jint* atP)
 {
-	sjme_jint total, at;
+	sjme_jint at, result;
 	sjme_jchar c;
+	sjme_jboolean latched, done;
 	
 	if (inDesc == NULL || outSlots == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Use base at or use new one? */
+	at = (atP != NULL ? (*atP) : 0);
+
+	/* Read in type character and process it. */
+	result = -1;
+	for (latched = done = SJME_JNI_FALSE; !done;)
+	{
+		c = sjme_charSeq_charAtR(inDesc, at++);
+		switch (c)
+		{
+			/* Array. */
+			case '[':
+				/* Arrays are always single slot. */
+				/* However for arrays, we need to skip the bracket and */
+				/* handle more of them. */
+				result = 1;
+				latched = SJME_JNI_TRUE;
+				break;
+
+				/* Object. */
+			case 'L':
+				/* Find ending ;. */
+				while (c != ';')
+				{
+					c = sjme_charSeq_charAtR(inDesc, at++);
+					if (c == 0 || c == ')')
+						return SJME_ERROR_INVALID_FIELD_TYPE;
+				}
+				
+				if (!latched)
+					result = 1;
+				done = SJME_JNI_TRUE;
+				break;
+			
+				/* Double slot. */
+			case 'J':
+			case 'D':
+				if (!latched)
+					result = 2;
+				done = SJME_JNI_TRUE;
+				break;
+			
+			/* Single slot. */
+			case 'Z':
+			case 'B':
+			case 'S':
+			case 'C':
+			case 'I':
+			case 'F':
+				if (!latched)
+					result = 1;
+				done = SJME_JNI_TRUE;
+				break;
+
+				/* Void type. */
+			case 'V':
+				/* If latched, means this was an array of void. */
+				if (latched)
+					return SJME_ERROR_INVALID_FIELD_TYPE;
+				result = 0;
+				done = SJME_JNI_TRUE;
+				break;
+
+			default:
+				return SJME_ERROR_INVALID_FIELD_TYPE;
+		}
+	}
+
+	/* Should not occur. */
+	if (result < 0)
+		return SJME_ERROR_INVALID_FIELD_TYPE;
+
+	/* Store resultant at? */
+	if (atP != NULL)
+		*atP = at;
+
+	/* Return resultant values. */
+	*outSlots = result;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_class_descriptorMethodSlots(
+	sjme_attrInNotNull sjme_charSeq inDesc,
+	sjme_attrOutNotNull sjme_jint* outArgSlots,
+	sjme_attrOutNotNull sjme_jint* outRvSlots)
+{
+	sjme_errorCode error;
+	sjme_jint total, at, sub;
+	sjme_jchar c;
+	
+	if (inDesc == NULL || outArgSlots == NULL || outRvSlots == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Must start with parenthesis. */
 	at = 0;
 	if ('(' != sjme_charSeq_charAtR(inDesc, at++))
 		return SJME_ERROR_INVALID_METHOD_TYPE;
-
+	
 	/* Read until ending parenthesis. */
 	total = 0;
 	for (;;)
 	{
 		/* Read in next character. */
-		c = sjme_charSeq_charAtR(inDesc, at++);
+		c = sjme_charSeq_charAtR(inDesc, at);
 
 		/* Invalid? */
 		if (c == 0)
@@ -1032,41 +1127,31 @@ sjme_errorCode sjme_nvm_class_descriptorSlots(
 
 		/* End of arguments? */
 		if (c == ')')
-			break;
-
-		/* Skip array handlers. */
-		while (c == '[')
-			c = sjme_charSeq_charAtR(inDesc, at++);
-
-		/* Class type? */
-		if (c == 'L')
 		{
-			/* Read until ; */
-			while (c != ';')
-			{
-				c = sjme_charSeq_charAtR(inDesc, at++);
-
-				/* Not valid. */
-				if (c == ')' || c == 0)
-					return SJME_ERROR_INVALID_METHOD_TYPE;
-			}
+			/* Bump up as reading the field descriptor increments this. */
+			at++;
+			break;
 		}
 
-		/* Double slot? */
-		else if (c == 'J' || c == 'D')
-			total++;
+		/* Count field slots. */
+		sub = -1;
+		if (sjme_error_is(error = sjme_nvm_class_descriptorFieldSlots(
+			inDesc, &sub, &at)) || sub < 0)
+			return sjme_error_defaultOr(error, SJME_ERROR_INVALID_METHOD_TYPE);
 
-		/* Otherwise not a basic type? */
-		else if (c != 'Z' && c != 'B' && c != 'S' && c != 'C' && c != 'I' &&
-			c != 'F')
-			return SJME_ERROR_INVALID_METHOD_TYPE;
-		
-		/* Count up. */
-		total++;
+		/* Add up. */
+		total += sub;
 	}
 
+	/* Count return value slots. */
+	sub = -1;
+	if (sjme_error_is(error = sjme_nvm_class_descriptorFieldSlots(
+		inDesc, &sub, &at)) || sub < 0)
+		return sjme_error_defaultOr(error, SJME_ERROR_INVALID_METHOD_TYPE);
+
 	/* Success! */
-	*outSlots = total;
+	*outArgSlots = total;
+	*outRvSlots = sub;
 	return SJME_ERROR_NONE;
 }
 
@@ -1861,9 +1946,10 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				/* Method reference. */
 			case SJME_NVM_CLASS_POOL_TYPE_METHOD:
 			case SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD:
-				if (sjme_error_is(error = sjme_nvm_class_descriptorSlots(
+				if (sjme_error_is(error = sjme_nvm_class_descriptorMethodSlots(
 					entry->member.nameAndType->descriptor->seq,
-					&entry->member.staticSlots)))
+					&entry->member.staticArgSlots,
+					&entry->member.rvSlots)))
 					goto fail_initItem;
 				break;
 

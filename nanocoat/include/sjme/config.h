@@ -686,6 +686,11 @@ extern "C" {
 	#define sjme_attrInOutNotNull sjme_attrInNotNull sjme_attrOutNotNull 
 #endif
 
+#if !defined(sjme_attrInOutNullable)
+	/** Takes input and produces output. */
+	#define sjme_attrInOutNullable sjme_attrInNullable sjme_attrOutNullable 
+#endif
+
 #if !defined(sjme_attrInNotNullBuf)
 	/** Input to buffer. */
 	#define sjme_attrInNotNullBuf(lenArg) sjme_attrInNotNull

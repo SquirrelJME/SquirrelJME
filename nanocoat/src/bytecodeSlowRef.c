@@ -372,7 +372,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Depth must be the count as the method reference arguments. */
-	if (depth != methodRef->staticSlots + 1)
+	if (depth != methodRef->staticArgSlots + 1)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* It must be an object type. */
