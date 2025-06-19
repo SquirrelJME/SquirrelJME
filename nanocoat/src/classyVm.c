@@ -2069,7 +2069,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 		
 	/* Look through all methods. */
 	methods = inClass->methodBinds[instanceType];
-	for (i = 0, n = methods->length; i < n; i++)
+	for (i = methods->length - 1; i >= 0; i--)
 	{
 		/* There must be a valid method here. */
 		method = methods->elements[i];
@@ -2166,7 +2166,7 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	/* Find the associated method. */
 	base = atClass->methodBase[instanceType];
 	methods = atClass->info->methods;
-	for (i = 0, n = methods->length; i < n; i++)
+	for (i = methods->length - 1; i >= 0; i--)
 	{
 		/* Get the method here. */
 		method = methods->elements[i];

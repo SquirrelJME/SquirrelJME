@@ -104,8 +104,16 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			target->type->seq,
 			&mleArgR,
 			argC, argV)))
+		{
+#if defined(SJME_CONFIG_DEBUG)
+			sjme_message("Missing MLE: %s.%s%s",
+				sjme_charSeq_tempUtf(target->inClass->name->seq),
+				sjme_charSeq_tempUtf(target->name->seq),
+				sjme_charSeq_tempUtf(target->type->seq));
+#endif
 			return sjme_error_vmError(inFrame,
 				sjme_error_mask(error, SJME_ERROR_MLE_CALL));
+		}
 
 		/* Wrong type? */
 		if (mleArgR.type != target->argR)

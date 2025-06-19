@@ -182,6 +182,76 @@ sjme_errorCode sjme_charSeq_dup(
 	return sjme_charSeq_newWide(allocPool, destCopy, chars, 0, n);
 }
 
+sjme_errorCode sjme_charSeq_dupToU(
+	sjme_attrInNotNull sjme_charSeq src,
+	sjme_attrInPositive sjme_jint srcOff,
+	sjme_attrOutNotNullBuf(dstLimit) sjme_lpstr dst,
+	sjme_attrInPositive sjme_jint dstOff,
+	sjme_attrInPositive sjme_jint dstLimit,
+	sjme_attrInNegativeOnePositive sjme_jint maxChars)
+{
+	sjme_jint s, i;
+	sjme_cchar* d;
+	sjme_jchar u;
+	
+	if (src == NULL || dst == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (maxChars < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (srcOff < 0 || dstOff < 0 || dstLimit < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Use the source sequence length instead? */
+	if (maxChars == -1)
+		maxChars = src->length;
+	
+	if ((srcOff + maxChars) < 0 || (dstOff + maxChars) < 0 ||
+		(srcOff + maxChars) > src->length ||
+		(dstOff + maxChars) > dstLimit)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Can we copy based on a pre-known type? */
+	switch (src->type)
+	{
+			/* Allocated UTF Data. */
+		case SJME_CHAR_SEQ_TYPE_UTF:
+			memmove(dst, &src->data.bytes[0],
+				sizeof(sjme_cchar) * maxChars);
+			break;
+		
+			/* Static UTF Data. */
+		case SJME_CHAR_SEQ_TYPE_UTF_STATIC:
+			memmove(dst, src->data.staticUtf,
+				sizeof(sjme_cchar) * maxChars);
+			break;
+		
+			/* Generic copy. */
+		default:
+			d = &dst[dstOff];
+			for (i = 0, s = srcOff; i < maxChars; i++)
+			{
+				u = sjme_charSeq_charAtR(src, s++);
+
+				/* Narrow byte sequence. */
+				if (u != 0 && u <= 127)
+					*(d++) = u;
+
+				/* UTF character sequence? */
+				else
+				{
+					sjme_todo("Impl?");
+					return sjme_error_notImplemented(0);
+				}
+			}
+			break;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_charSeq_length(
 	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jint* outLen)
@@ -725,8 +795,7 @@ sjme_lpcstr sjme_charSeq_tempUtf(
 #define TEMP_SIZE 512
 	sjme_threadLocal(sjme_cchar, buf[TEMP_SIZE]);
 	sjme_threadLocal(sjme_jint, tempAt);
-	sjme_jint baseAt, i, o, n, stage;
-	sjme_jchar c;
+	sjme_jint baseAt, n;
 	
 	if (inSeq == NULL)
 		return "null";
@@ -737,57 +806,26 @@ sjme_lpcstr sjme_charSeq_tempUtf(
 	else if (inSeq->type == SJME_CHAR_SEQ_TYPE_UTF_STATIC)
 		return inSeq->data.staticUtf;
 
-	/* Try a multi-stage write to fit as many temporary strings as needed. */
-	for (stage = 0, baseAt = tempAt; stage >= 0;)
+	/* Can we fit this sequence into the target buffer at the tempBase? */
+	n = inSeq->length;
+	baseAt = tempAt;
+	if (sjme_error_is(sjme_charSeq_dupToU(
+		inSeq, 0,
+		buf, baseAt, TEMP_SIZE - 1,
+		n)))
 	{
-		/* Translate all characters. */
-		for (i = 0, o = baseAt, n = inSeq->length; i <= n; i++)
-		{
-			/* Get character here. */
-			c = (i < n ? sjme_charSeq_charAtR(inSeq, i) : 0);
-			
-			/* Overflowing? */
-			if (o >= TEMP_SIZE - 1)
-			{
-				/* On first stage, reset everything to the start. */
-				if (stage == 0)
-				{
-					baseAt = 0;
-					tempAt = 0;
-					i = -1;
-					n = -1;
-					stage++;
-					break;
-				}
-
-				/* On second stage, just give up. */
-				else
-				{
-					stage = -1;
-					break;
-				}
-			}
-
-			/* Direct map. */
-			else if (c <= 127)
-				buf[o++] = c;
-		
-			/* Need to encode. */
-			else
-				sjme_todo("Impl?");
-		}
-
-		/* Reached end okay? Stop processing then... */
-		if (n >= inSeq->length)
-		{
-			tempAt = o + 1;
-			if (tempAt >= TEMP_SIZE - 1)
-				tempAt = 0;
-			break;
-		}
+		/* We could not, so set to the start and try again. */
+		baseAt = 0;
+		if (sjme_error_is(sjme_charSeq_dupToU(
+			inSeq, 0,
+			buf, 0, TEMP_SIZE - 1,
+			n)))
+			return "<oversized>";
 	}
-	
-	/* Use the base pointer. */
+
+	/* Store new base. */
+	tempAt = baseAt + n;
+	buf[tempAt] = 0;
 	return &buf[baseAt];
 #undef TEMP_SIZE
 }

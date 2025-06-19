@@ -70,14 +70,17 @@ extern "C"
 /** Array of characters. */
 #define SJME_MD_AC SJME_MD_A(SJME_MD_C)
 
-/** Runnable. */
-#define SJME_MD_RUNNABLE SJME_MD_L("java/lang/Runnable")
-
 /** Class. */
 #define SJME_MD_CLASS SJME_MD_L("java/lang/Class")
 
+/** Object. */
+#define SJME_MD_OBJECT SJME_MD_L("java/lang/Object")
+
 /** Pipe descriptor. */
 #define SJME_MD_PIPE SJME_MD_L(SJME_NVM_BRACKET_NAME_PIPE)
+
+/** Runnable. */
+#define SJME_MD_RUNNABLE SJME_MD_L("java/lang/Runnable")
 
 /** String. */
 #define SJME_MD_STRING SJME_MD_L("java/lang/String")

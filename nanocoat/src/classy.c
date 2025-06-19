@@ -1220,6 +1220,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_list_sjme_nvm_class_methodInfo* methods;
 	sjme_nvm_class_fieldInfo field;
 	sjme_nvm_class_methodInfo method;
+	sjme_lpstr packageName;
 	
 	if (allocPool == NULL || inStream == NULL || inStringPool == NULL ||
 		outClass == NULL)
@@ -1313,17 +1314,31 @@ sjme_errorCode sjme_nvm_class_parse(
 	lastSlash = result->name->seq->length - 1;
 	while (lastSlash > 0)
 	{
-		if (SJME_ERROR_NONE == sjme_charSeq_charAtIs(result->name->seq,
-			lastSlash, '/'))
+		if ('/' == sjme_charSeq_charAtR(result->name->seq, lastSlash))
 			break;
 		
 		lastSlash--;
 	}
+
+	/* Setup buffer for the package name. */
+	packageName = sjme_alloca(sizeof(*packageName) * (lastSlash + 1));
+	if (packageName == NULL)
+	{
+		error = SJME_ERROR_OUT_OF_MEMORY;
+		goto fail_inPackage;
+	}
+	memset(packageName, 0, lastSlash + 1);
+
+	/* Write out package name. */
+	if (sjme_error_is(error = sjme_charSeq_dupToU(
+		result->name->seq, 0,
+		packageName, 0, lastSlash, lastSlash)))
+		goto fail_inPackage;
 	
 	/* Locate string for package name. */
 	result->inPackage = NULL;
-	if (sjme_error_is(error = sjme_nvm_stringPool_locateSeq(
-		inStringPool, &result->inPackage, result->name->seq, lastSlash)) ||
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
+		inStringPool, &result->inPackage, packageName, 0, lastSlash)) ||
 		result->inPackage == NULL)
 		goto fail_inPackage;
 	

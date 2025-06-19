@@ -246,6 +246,26 @@ sjme_errorCode sjme_charSeq_dup(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_charSeq* destCopy,
 	sjme_attrInNotNull sjme_charSeq sourceFrom);
+
+/**
+ * Duplicates a character sequence to the given buffer.
+ * 
+ * @param src The source character sequence.
+ * @param srcOff The source buffer.
+ * @param dst The destination buffer.
+ * @param dstOff The destination offset.
+ * @param dstLimit The limit of the destination buffer.
+ * @param maxChars The number of characters to copy. 
+ * @return Any resultant error, if any.
+ * @since 2025/06/19
+ */
+sjme_errorCode sjme_charSeq_dupToU(
+	sjme_attrInNotNull sjme_charSeq src,
+	sjme_attrInPositive sjme_jint srcOff,
+	sjme_attrOutNotNullBuf(dstLimit) sjme_lpstr dst,
+	sjme_attrInPositive sjme_jint dstOff,
+	sjme_attrInPositive sjme_jint dstLimit,
+	sjme_attrInNegativeOnePositive sjme_jint maxChars);
 	
 /**
  * Returns the length of the character sequence.

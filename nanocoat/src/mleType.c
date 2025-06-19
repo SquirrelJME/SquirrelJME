@@ -12,6 +12,21 @@
 #include "sjme/nvm/mleShelves.h"
 #include "sjme/nvm/cleanup.h"
 
+SJME_NVM_MLE_FUNCTION_DECL(classToType)
+{
+	sjme_jobject inType;
+
+	/* Must be an actual object type. */
+	inType = argV[0].value.l;
+	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Note that types in NanoCoat are just pure classes, so they are 1:1. */
+	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->value.l = inType;
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(findType)
 {
 	sjme_errorCode error;
@@ -69,7 +84,7 @@ SJME_NVM_MLE_FUNCTION_DECL(typeToClass)
 {
 	sjme_jobject inType;
 
-	/* Must be an actual object type. */
+	/* Must be an actual class type. */
 	inType = argV[0].value.l;
 	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
@@ -89,9 +104,11 @@ SJME_NVM_MLE_SHELF_DECLARE(TypeShelf) =
 	SJME_NVM_MLE_DEFINE(binaryPackageName,
 			SJME_MD(,),
 			""),
+#endif
 	SJME_NVM_MLE_DEFINE(classToType,
-			SJME_MD(,),
-			""),
+			SJME_MD(SJME_MD_TYPE, SJME_MD_CLASS),
+			"LL"),
+#if 0
 	SJME_NVM_MLE_DEFINE(component,
 			SJME_MD(,),
 			""),
