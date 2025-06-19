@@ -501,9 +501,12 @@ typedef enum sjme_errorCode
 
 	/** An instruction has an invalid length. */
 	SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION_LENGTH = -153,
+
+	/** Class member access is denied. */
+	SJME_ERROR_MEMBER_ACCESS_DENIED = -154,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -154,
+	SJME_NUM_ERROR_CODES = -155,
 } sjme_errorCode;
 
 /**

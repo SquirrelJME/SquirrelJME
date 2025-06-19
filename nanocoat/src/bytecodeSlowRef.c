@@ -15,6 +15,7 @@
 #include "sjme/nvm/instance.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/task.h"
+#include "sjme/nvm/access.h"
 
 static const sjme_basicTypeId sjme_nvm_byteCode_xArrayType[8] =
 {
@@ -404,7 +405,43 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 
 SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 {
+	sjme_jint poolIndex;
+	sjme_nvm_class_poolEntry* entry;
+	sjme_jclass refClass;
+	sjme_jmethodID refMethod;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	
+	/* Read in pool reference, which refers to the referenced member. */
+	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
+	if (sjme_error_is(error = sjme_nvm_task_framePool(
+		inFrame, poolIndex, &entry,
+		SJME_NVM_CLASS_POOL_TYPE_METHOD,
+		0)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Determine the referenced class. */
+	refClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		inFrame->inTask->classLoader,
+		&refClass,
+		inFrame->inThread,
+		entry->member.inClass->descriptor->seq,
+		SJME_JNI_TRUE)) || refClass == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* The target method needs to be found dynamically. */
+	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+		refClass, inFrame->inThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
+		SJME_JNI_TRUE, entry->member.nameAndType->name->seq,
+		entry->member.nameAndType->descriptor->seq, &refMethod)) ||
+		refMethod == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* Check access for calling this method. */
+	if (sjme_error_is(error = sjme_nvm_access_checkFToM(
+		inFrame, refMethod)))
+		return sjme_error_vmError(inFrame,
+			SJME_ERROR_CLASS_CHANGED);
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

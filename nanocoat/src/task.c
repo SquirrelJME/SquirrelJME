@@ -1324,6 +1324,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 
 	/* Set frame details, needed for local set. */
 	result->inClass = inMethod->member.inClass;
+	result->inMethod = inMethod;
 	result->inState = inThread->inTask->inState;
 	result->inThread = inThread;
 	result->inTask = inThread->inTask;

@@ -8,6 +8,7 @@
 
 # Declare library
 squirreljme_multilib_add_static_library(Core
+	access.c
 	allocSizeOf.c
 	boot.c
 	bytecode.c

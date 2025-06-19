@@ -238,6 +238,9 @@ struct sjme_nvm_frameBase
 	
 	/** This class this is currently in. */
 	sjme_jclass inClass;
+
+	/** The method ID of the current method. */
+	sjme_jmethodID inMethod;
 	
 	/** The constant pool of this class. */
 	sjme_nvm_class_poolInfo pool;
