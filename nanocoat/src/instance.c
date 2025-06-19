@@ -65,23 +65,6 @@ sjme_jint sjme_nvm_fieldValueSize(
 		offsetof(sjme_nvm_rawFieldValues, l);
 }
 
-sjme_errorCode sjme_nvm_instance_checkPermission(
-	sjme_attrInNotNull sjme_jclass fromClass,
-	sjme_attrInNotNull sjme_jmemberID toMember,
-	sjme_attrOutNotNull sjme_jboolean* accessOkay)
-{
-	if (fromClass == NULL || toMember == NULL || accessOkay == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Members in the same class are always acceptable. */
-	if (toMember->inClass == fromClass)
-		goto skip_okay;
-
-skip_okay:
-	*accessOkay = SJME_JNI_TRUE;
-	return SJME_ERROR_NONE;
-}
-
 sjme_errorCode sjme_nvm_instance_countDown(
 	sjme_attrInNotNull sjme_jobject* oldP,
 	sjme_attrInNotNull sjme_jobject newV)
