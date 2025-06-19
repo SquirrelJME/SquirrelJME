@@ -684,7 +684,7 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 		inFrame->inTask->classLoader,
 		&desireClass,
 		inFrame->inThread,
-		entry->classRef.descriptor->seq,
+		entry->member.inClass->descriptor->seq,
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 
