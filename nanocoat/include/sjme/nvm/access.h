@@ -33,6 +33,18 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Determines whether the current frame has access to the given field.
+ * 
+ * @param fromFrame The source frame.
+ * @param toField The destination field.
+ * @return Any resultant error, if any.
+ * @since 2025/06/19
+ */
+sjme_errorCode sjme_nvm_access_checkFToF(
+	sjme_attrInNotNull sjme_nvm_frame fromFrame,
+	sjme_attrInNotNull sjme_jfieldID toField);
+
+/**
  * Determines whether the current frame has access to the given method.
  * 
  * @param fromFrame The source frame.

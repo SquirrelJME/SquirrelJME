@@ -208,6 +208,10 @@ struct sjme_jclassBase
 	/** The number of methods. */
 	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
 	
+	/** Field bindings for this class. */
+	sjme_list_sjme_jfieldID* fieldBinds[
+		SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
+	
 	/** Method bindings for this class. */
 	sjme_list_sjme_jmethodID* methodBinds[
 		SJME_NVM_CLASS_NUM_INSTANCE_TYPE];

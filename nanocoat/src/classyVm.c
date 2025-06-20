@@ -112,6 +112,22 @@ fail_allocList:
 	return sjme_error_default(error);
 }
 
+static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
+	sjme_attrOutNotNull sjme_list_sjme_jfieldID** outList)
+{
+	if (inLoader == NULL || inClass == NULL || outList == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_jclass thisClass,
@@ -939,7 +955,8 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_jclass superClass, interface, classType;
 	sjme_list_sjme_jclass* interfaces;
 	sjme_alloc_pool allocPool;
-	sjme_list_sjme_jmethodID* binds;
+	sjme_list_sjme_jmethodID* methodBinds;
+	sjme_list_sjme_jfieldID* fieldBinds;
 	sjme_jint allocSize;
 	sjme_javaTypeId javaType;
 	
@@ -1088,23 +1105,24 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	/* Bind instance and static methods. */
 	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
 	{
-		binds = NULL;
+		methodBinds = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBinds(
-			loader, inClass,
-			(sjme_nvm_class_instanceType)i,
-			&binds)) || binds == NULL)
+			loader, inClass, i,
+			&methodBinds)) || methodBinds == NULL)
 			goto fail_bindMethods;
-		inClass->methodBinds[i] = binds;
+		inClass->methodBinds[i] = methodBinds;
 	}
 
-#if 0
-	/* Initialize statics fields with constant values. */
-	for (;;)
+	/* Bind instance and static fields. */
+	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
 	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		fieldBinds = NULL;
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitFieldBinds(
+			loader, inClass, i,
+			&fieldBinds)) || fieldBinds == NULL)
+			goto fail_bindFields;
+		inClass->fieldBinds[i] = fieldBinds;
 	}
-#endif
 
 	/* Determine base allocation size. */
 	if (superClass == NULL)
@@ -1113,6 +1131,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		allocSize = superClass->allocSize;
 	
 	/* Determine offset for fields into the object, along with how much */
+	/* space they should take up. */
 	for (javaType = 0; javaType < SJME_NUM_JAVA_TYPE_IDS; javaType++)
 	{
 		/* Make sure the offset is fully aligned first. */
@@ -1161,6 +1180,7 @@ skip_doubleCalled:
 	return SJME_ERROR_NONE;
 	
 fail_markDone:
+fail_bindFields:
 fail_bindMethods:
 fail_initFieldValues:
 fail_super:
@@ -1291,6 +1311,67 @@ fail_badName:
 		SJME_ERROR_NONE, sjme_error_default(error));
 	
 	return sjme_error_vmError(contextThread, error);
+}
+
+sjme_errorCode sjme_nvm_vmClass_fieldIDByNameType(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInValue sjme_jboolean required,
+	sjme_attrInPositive sjme_charSeq inName,
+	sjme_attrInPositive sjme_charSeq inType,
+	sjme_attrOutNotNull sjme_jfieldID* outID)
+{
+	sjme_errorCode error;
+	sjme_jint i;
+	sjme_list_sjme_jfieldID* fields;
+	sjme_jfieldID field;
+	sjme_jclass pivot;
+	
+	if (inClass == NULL || contextThread == NULL || inName == NULL ||
+		inType == NULL || outID == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Needs to be initialized first. */
+	if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
+		inClass, contextThread)))
+		return sjme_error_default(error);
+	
+	/* Look through all fields. */
+	for (pivot = inClass; pivot != NULL; pivot = SJME_C_SU(pivot))
+	{
+		/* It is possible for there to be no fields in this scope. */
+		fields = pivot->fieldBinds[instanceType];
+		if (fields == NULL)
+			continue;
+		
+		/* Find matching field. */
+		for (i = fields->length - 1; i >= 0; i--)
+		{
+			/* There must be a valid method here. */
+			field = fields->elements[i];
+			if (field == NULL)
+				return sjme_error_vmError(contextThread,
+					SJME_ERROR_NO_METHOD);
+			
+			/* Is this the method. */
+			if (sjme_charSeq_equalsR(SJME_M_N(field)->seq, inName) &&
+				sjme_charSeq_equalsR(SJME_M_T(field)->seq, inType))
+			{
+				*outID = field;
+				return SJME_ERROR_NONE;
+			}
+		}
+	}
+
+	/* Not found. */
+	if (!required)
+		return SJME_ERROR_NO_FIELD;
+	return sjme_error_vmError(contextThread, SJME_ERROR_NO_FIELD);
 }
 
 sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(

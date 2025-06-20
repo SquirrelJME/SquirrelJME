@@ -9,6 +9,17 @@
 
 #include "sjme/nvm/access.h"
 
+sjme_errorCode sjme_nvm_access_checkFToF(
+	sjme_attrInNotNull sjme_nvm_frame fromFrame,
+	sjme_attrInNotNull sjme_jfieldID toField)
+{
+	if (fromFrame == NULL || toField == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_access_checkFToM(
 	sjme_attrInNotNull sjme_nvm_frame fromFrame,
 	sjme_attrInNotNull sjme_jmethodID toMethod)

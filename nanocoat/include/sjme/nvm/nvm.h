@@ -139,6 +139,9 @@ typedef struct sjme_jfieldIDBase sjme_jfieldIDBase;
  */
 typedef sjme_jfieldIDBase* sjme_jfieldID;
 
+/** List of fields. */
+SJME_LIST_DECLARE(sjme_jfieldID, 0);
+
 /**
  * The type of structure a type is.
  * 

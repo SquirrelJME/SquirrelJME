@@ -656,6 +656,8 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jclass desireClass;
 	sjme_jfieldID fieldId;
+	sjme_jvalue* direct;
+	sjme_jvalueTyped result;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* Read in pool reference. */
@@ -675,12 +677,12 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 		SJME_P_M_C(entry)->seq,
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
-
-#if 0
+	
 	/* Lookup field in the class. */
 	fieldId = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_fieldIDByNameType(
-		desireClass, SJME_F_T(inFrame), SJME_NVM_CLASS_MEMBER_STATIC,
+		desireClass, SJME_F_T(inFrame),
+		SJME_NVM_CLASS_MEMBER_STATIC,
 		SJME_JNI_TRUE,
 		SJME_P_M_N(entry)->seq,
 		SJME_P_M_T(entry)->seq,
@@ -696,13 +698,47 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 		inFrame, fieldId)))
 		return sjme_error_vmError(inFrame,
 			SJME_ERROR_CLASS_CHANGED);
-
-	/* Direct access. */
-	fieldId->accessor(fieldId, SJME_AS_JOBJECT(desireClass));
-#endif
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Direct access. */
+	direct = fieldId->accessor(fieldId, SJME_AS_JOBJECT(desireClass));
+	switch (fieldId->info->javaType)
+	{
+		case SJME_BASIC_TYPE_ID_BOOLEAN:
+			result.v.i = direct->z;
+			break;
+		
+		case SJME_BASIC_TYPE_ID_BYTE:
+			result.v.i = direct->b;
+			break;
+		
+		case SJME_BASIC_TYPE_ID_SHORT:
+		case SJME_BASIC_TYPE_ID_CHARACTER:
+			result.v.i = direct->s;
+			break;
+		
+		case SJME_JAVA_TYPE_ID_INTEGER:
+		case SJME_JAVA_TYPE_ID_FLOAT:
+			result.v.i = direct->i;
+			break;
+		
+		case SJME_JAVA_TYPE_ID_LONG:
+		case SJME_JAVA_TYPE_ID_DOUBLE:
+			result.v.j = direct->j;
+			break;
+		
+		case SJME_JAVA_TYPE_ID_OBJECT:
+			result.v.l = direct->l;
+			break;
+
+		default:
+			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_FIELD_TYPE);
+	}
+
+	/* Push result to the stack. */
+	result.t = fieldId->info->javaType;
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+		inFrame, &result)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;
