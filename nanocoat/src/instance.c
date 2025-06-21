@@ -103,8 +103,10 @@ sjme_jvalue* sjme_nvm_instance_fieldAccessor(
 		/* Cannot read/write to non-classes. */
 		if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_CLASS_INSTANCE))
 			goto fail_voidless;
-		
-		sjme_todo("Impl?");
+
+		/* Values is based on the static chunk. */
+		return SJME_POINTER_OFFSET(((sjme_jclass)instance)->staticChunk,
+			field->pointerOffset);
 	}
 
 	/* Instance field? */
@@ -113,8 +115,11 @@ sjme_jvalue* sjme_nvm_instance_fieldAccessor(
 		/* Can only read/write plain objects. */
 		if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_OBJECT_INSTANCE))
 			goto fail_voidless;
-
-		sjme_todo("Impl?");
+		
+		/* Value is based on the object itself, from the basis of */
+		/* its allocation size. */
+		return SJME_POINTER_OFFSET((sjme_pointer)instance,
+			field->pointerOffset);
 	}
 	
 	/* Fallback to read/write some kind of valid memory. */
