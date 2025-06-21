@@ -62,6 +62,24 @@ public class MediaManager
 		return new __MIDPImage__(new InputStreamConnection(__in));
 	}
 	
+	@Api
+	@SuppressWarnings("FinalStaticMethod")
+	public static final MediaImage getImage(byte[] __buf)
+		throws NullPointerException
+	{
+		if (__buf == null)
+			throw new NullPointerException("NARG");
+		
+		try (InputStream in = new ByteArrayInputStream(__buf))
+		{
+			return new __MIDPImage__(new InputStreamConnection(in));
+		}
+		catch (IOException __e)
+		{
+			throw new IllegalArgumentException(__e.getMessage() , __e);
+		}
+	}
+	
 	/**
 	 * Loads a sound from the given byte array.
 	 *

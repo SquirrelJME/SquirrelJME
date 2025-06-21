@@ -9,92 +9,80 @@
 
 package cc.squirreljme.jvm.mle;
 
-import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This provides the interface for references which are used to weakly refer
  * to them, so that they may be collected or act as a cache.
  *
- * @see RefLinkBracket
  * @since 2020/05/30
  */
 @SquirrelJMEVendorApi
 public final class ReferenceShelf
 {
 	/**
-	 * Not used.
+	 * Returns the value this weak reference points to, assuming it is still
+	 * valid.
 	 *
-	 * @since 2020/05/30
-	 */
-	private ReferenceShelf()
-	{
-	}
-	
-	/**
-	 * Deletes the reference link, freeing any associated memory.
-	 *
-	 * @param __link The link to delete.
-	 * @since 2020/05/30
-	 */
-	@SquirrelJMEVendorApi
-	public static native void deleteLink(@NotNull RefLinkBracket __link);
-	
-	/**
-	 * Chains this link into the given object atomically.
-	 * 
-	 * @param __thisLink The link to chain.
-	 * @param __forObject The object to chain into.
+	 * @param <T> The value to return.
+	 * @param __ref The reference.
+	 * @return The returned value, will be {@code null} if it has been
+	 * garbage collected.
 	 * @throws MLECallError On null arguments.
-	 * @since 2022/09/01
+	 * @since 2025/06/21
 	 */
 	@SquirrelJMEVendorApi
-	public static native void linkChain(@NotNull RefLinkBracket __thisLink,
-		@NotNull Object __forObject)
+	public native static <T> T weakGet(
+		@NotNull Reference<T> __ref)
 		throws MLECallError;
 	
 	/**
-	 * Gets the object this points to.
+	 * Initializes the weak reference.
 	 *
-	 * @param __link The link to get the object of.
-	 * @return The object that this points to, or {@code null} if there
-	 * is no pointed object.
-	 * @since 2020/05/30
+	 * @param __ref The reference to initialize.
+	 * @param __value The value to point to.
+	 * @param __queue The optional queue to reference, may be {@code null}
+	 * if no queue is desired to be pushed to.
+	 * @throws MLECallError On null arguments, or if the weak reference has
+	 * already been initialized.
+	 * @since 2025/06/21
 	 */
 	@SquirrelJMEVendorApi
-	public static native Object linkGetObject(@NotNull RefLinkBracket __link);
-	
-	/**
-	 * Sets the object that this points to.
-	 *
-	 * @param __link The link to be given the object.
-	 * @param __v The object to set to, may be {@code null}.
-	 * @since 2020/05/30
-	 */
-	@SquirrelJMEVendorApi
-	public static native void linkSetObject(@NotNull RefLinkBracket __link,
-		Object __v);
-	
-	/**
-	 * Unlinks and clears the links.
-	 * 
-	 * @param __link The link to clear.
-	 * @throws MLECallError If the link is null or could not be unchained.
-	 * @since 2022/10/08
-	 */
-	@SquirrelJMEVendorApi
-	public static native void linkUnlinkAndClear(
-		@NotNull RefLinkBracket __link)
+	public native static void weakInit(
+		@NotNull Reference<?> __ref,
+		@NotNull Object __value,
+		@Nullable ReferenceQueue<?> __queue)
 		throws MLECallError;
 	
 	/**
-	 * Creates a new reference link.
+	 * Returns whether this reference has been enqueued already.
 	 *
-	 * @return The newly created reference link.
-	 * @since 2020/05/30
+	 * @param __ref The reference to check.
+	 * @return If this was ever enqueued.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/06/21
 	 */
 	@SquirrelJMEVendorApi
-	public static native RefLinkBracket newLink();
+	public native static boolean weakIsEnqueued(
+		@NotNull Reference<?> __ref)
+		throws MLECallError;
+	
+	/**
+	 * Unlinks and clears this reference.
+	 *
+	 * @param <T> The type of reference this is.
+	 * @param __ref The reference to clear.
+	 * @return The queue this reference should enqueue to.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/06/21
+	 */
+	@SquirrelJMEVendorApi
+	public native static <T> ReferenceQueue<? super T> weakUnlinkAndClear(
+		@NotNull Reference<T> __ref)
+		throws MLECallError;
 }

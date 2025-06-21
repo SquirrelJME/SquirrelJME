@@ -10,7 +10,6 @@
 package java.lang.ref;
 
 import cc.squirreljme.jvm.mle.ReferenceShelf;
-import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
@@ -25,15 +24,6 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 @Api
 public abstract class Reference<T>
 {
-	/** The chain-link for this reference. */
-	private final RefLinkBracket _link;
-	
-	/** The reference queue which this reference will be sent to when freed. */
-	private final ReferenceQueue<? super T> _queue;
-	
-	/** Has this been enqueued? */
-	private volatile boolean _enqueued;
-	
 	/**
 	 * Initializes a reference pointing to the given object and an optionally
 	 * specified queue to place this reference into when garbage collection
@@ -47,29 +37,8 @@ public abstract class Reference<T>
 	 */
 	Reference(T __v, ReferenceQueue<? super T> __q)
 	{
-		// There is no point in reference counting the null object, so have
-		// no effect happen here
-		if (__v == null)
-		{
-			this._link = null;
-			this._queue = null;
-			this._enqueued = true;
-			
-			return;
-		}
-		
-		// It should be safe to create a new link outside of the lock
-		RefLinkBracket link = ReferenceShelf.newLink();
-		this._link = link;
-		
-		// Since nothing else knows about our link yet, we may set the object
-		ReferenceShelf.linkSetObject(link, __v);
-		
-		// Although there is an optimization
-		this._queue = __q;
-		
-		// Link into existing object, if needed
-		ReferenceShelf.linkChain(link, __v);
+		// Initialize and chain the link
+		ReferenceShelf.weakInit(this, __v, __q);
 	}
 	
 	/**
@@ -80,18 +49,9 @@ public abstract class Reference<T>
 	@Api
 	public void clear()
 	{
-		// Only unlink once
-		synchronized (this)
-		{
-			if (!this._enqueued)
-			{
-				// Un-link this link
-				ReferenceShelf.linkUnlinkAndClear(this._link);
-				
-				// Mark this reference as enqueued
-				this._enqueued = true;
-			}
-		}
+		// Unlink and clear, we do not care about the result of this
+		// as this is an unconditional clear
+		ReferenceShelf.weakUnlinkAndClear(this);
 	}
 	
 	/**
@@ -107,36 +67,17 @@ public abstract class Reference<T>
 	@Api
 	public boolean enqueue()
 	{
-		synchronized (this)
-		{
-			// If there is no queue then this has the same effect as clear
-			ReferenceQueue<? super T> queue = this._queue;
-			if (queue == null)
-			{
-				this.clear();
-				
-				// Was not actually pushed to the queue, but the reference is
-				// now invalid
-				return false;
-			}
-			
-			// Will this get pushed to the queue?
-			boolean pushToQueue;
-			
-			// Placing this in the queue invalidates it
-			pushToQueue = !this._enqueued;
-			if (pushToQueue)
-			{
-				// The reference no longer is valid
-				ReferenceShelf.linkUnlinkAndClear(this._link);
-				this._enqueued = true;
-			}
-			
-			// Only push to the queue if was requested
-			if (pushToQueue)
-				((__ReferenceQueue__<T>)((Object)queue)).__enqueue(this);
-			return pushToQueue;
-		}
+		// Clear the link, if no queue is returned either a queue was never
+		// requested or it was already enqueued
+		ReferenceQueue<? super T> queue =
+			ReferenceShelf.weakUnlinkAndClear(this);
+		if (queue == null)
+			return false;
+		
+		// Push to the queue
+		((__ReferenceQueue__<? super T>)((Object)queue))
+			.__enqueue(this);
+		return true;
 	}
 	
 	/**
@@ -146,31 +87,29 @@ public abstract class Reference<T>
 	 * @since 2018/09/23
 	 */
 	@Api
-	@SuppressWarnings({"unchecked"})
+	@SuppressWarnings({"unchecked", "DataFlowIssue"})
 	public T get()
 	{
 		// The return value, if this is null then this gets enqueued
-		Object rv;
+		T rv = ReferenceShelf.weakGet(this);
 		
-		// Lock the GC just in case this link is being used that it does not
-		// mess up anything else
-		synchronized (this)
+		// If null, enqueue this
+		if (rv == null)
 		{
-			// If this was enqueued, then just return nothing
-			if (this._enqueued)
+			// Unlink this reference, if it is already unlinked then it
+			// was enqueued in the past or there was no queue
+			ReferenceQueue<? super T> queue =
+				ReferenceShelf.weakUnlinkAndClear(this);
+			if (queue == null)
 				return null;
 			
-			// Otherwise, use what the link says our object is
-			rv = ReferenceShelf.linkGetObject(this._link);
+			// Push to the queue
+			((__ReferenceQueue__<? super T>)((Object)queue))
+				.__enqueue(this);
 		}
 		
-		// If no object was set or was cleared out (perhaps by unlink) then
-		// just inform that enqueue happened. Since this enqueue is here, it
-		// is very possible that enqueuing happens at the last moment.
-		if (rv == null)
-			this.enqueue();
-		
-		return (T)rv;
+		// Return the resultant object
+		return rv;
 	}
 	
 	/**
@@ -182,7 +121,7 @@ public abstract class Reference<T>
 	@Api
 	public boolean isEnqueued()
 	{
-		return this._enqueued;
+		return ReferenceShelf.weakIsEnqueued(this);
 	}	
 }
 

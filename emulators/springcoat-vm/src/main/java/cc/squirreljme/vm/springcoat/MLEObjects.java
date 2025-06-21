@@ -26,7 +26,6 @@ import cc.squirreljme.vm.springcoat.brackets.MidiPortObject;
 import cc.squirreljme.vm.springcoat.brackets.NativeArchiveEntryObject;
 import cc.squirreljme.vm.springcoat.brackets.NativeArchiveObject;
 import cc.squirreljme.vm.springcoat.brackets.PipeObject;
-import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
@@ -372,23 +371,6 @@ public final class MLEObjects
 	}
 	
 	/**
-	 * Checks if this is a {@link RefLinkObject}.
-	 * 
-	 * @param __object The object to check.
-	 * @return As a {@link RefLinkObject} if this is one.
-	 * @throws SpringMLECallError If this is not a {@link RefLinkObject}.
-	 * @since 2020/06/28
-	 */
-	public static RefLinkObject refLink(Object __object)
-		throws SpringMLECallError
-	{
-		if (!(__object instanceof RefLinkObject))
-			throw new SpringMLECallError("Not a RefLinkObject.");
-		
-		return (RefLinkObject)__object; 
-	}
-	
-	/**
 	 * Checks if this is a simple object.
 	 * 
 	 * @param __object The object to check.
@@ -402,6 +384,23 @@ public final class MLEObjects
 			throw new SpringMLECallError("Not a SpringSimpleObject.");
 		
 		return (SpringSimpleObject)__object; 
+	}
+	
+	/**
+	 * Checks if this is a simple object.
+	 * 
+	 * @param __object The object to check.
+	 * @return The simple object or {@code null} if this is not.
+	 * @throws SpringMLECallError If not a simple object.
+	 * @since 2025/06/21
+	 */
+	public static SpringSimpleObject simpleOptional(Object __object)
+	{
+		// Null is acceptable.
+		if (__object == null || __object == SpringNullObject.NULL)
+			return null;
+		
+		return MLEObjects.simple(__object); 
 	}
 	
 	/**

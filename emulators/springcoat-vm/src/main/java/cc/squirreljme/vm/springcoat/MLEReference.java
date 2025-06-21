@@ -10,10 +10,10 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ReferenceShelf;
-import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
-import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
-import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 
 /**
  * Functions for {@link ReferenceShelf}.
@@ -23,310 +23,85 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 public enum MLEReference
 	implements MLEFunction
 {
-	/** {@link ReferenceShelf#deleteLink(RefLinkBracket)}. */
-	DELETE_LINK("deleteLink:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"RefLinkBracket;)V")
+	/** {@link ReferenceShelf#weakGet(Reference)}. */
+	WEAK_GET(MLEDispatcher.methodKey("weakGet", Object.class,
+		Reference.class))
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2020/06/29
+		 * @since 2025/06/21
 		 */
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			synchronized (GlobalState.class)
-			{
-				// Check it, but otherwise do nothing
-				MLEObjects.refLink(__args[0]);
-			}
+			SpringWeakObject weak = MLEObjects.notNull(
+				SpringWeakObject.class, __args[0]);
 			
+			return weak.get();
+		}
+	},
+	
+	/** {@link ReferenceShelf#weakInit(Reference, Object, ReferenceQueue)}. */
+	WEAK_INIT(MLEDispatcher.methodKey("weakInit", "V",
+		Reference.class, Object.class, ReferenceQueue.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/06/21
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringWeakObject weak = MLEObjects.notNull(
+				SpringWeakObject.class, __args[0]);
+			SpringObject value = MLEObjects.notNull(__args[1]);
+			
+			SpringObject queue = MLEObjects.simpleOptional(__args[2]);
+			if (queue != null && !queue.type().isAssignableFrom(
+				__thread.loadClass("java/lang/ref/ReferenceQueue")))
+				throw new SpringMLECallError("Wrong type.");
+			
+			// Initialize the weak reference
+			weak.init(value, queue);
 			return null;
 		}
 	},
 	
-	/** {@link ReferenceShelf#linkChain(RefLinkBracket, Object)}. */
-	LINK_CHAIN("linkChain:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"RefLinkBracket;Ljava/lang/Object;)V")
+	/** {@link ReferenceShelf#weakIsEnqueued(Reference)}. */
+	WEAK_IS_ENQUEUED(MLEDispatcher.methodKey("weakIsEnqueued", "Z",
+		Reference.class))
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2022/09/01
+		 * @since 2025/06/21
 		 */
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			RefLinkObject link = MLEObjects.refLink(__args[0]);
+			SpringWeakObject weak = MLEObjects.notNull(
+				SpringWeakObject.class, __args[0]);
 			
-			if (__args[1] == null)
-				throw new SpringMLECallError("Null object.");
-			if (!(__args[1] instanceof SpringSimpleObject))
-				throw new SpringMLECallError("Invalid object");
-			
-			SpringSimpleObject object = (SpringSimpleObject)__args[1];
-			RefLinkHolder objRefLink = object.refLink();
-			
-			synchronized (GlobalState.class)
-			{
-				// If the object has an existing link, then we need to chain
-				// links
-				synchronized (objRefLink)
-				{
-					RefLinkObject oldLink = objRefLink.get();
-					if (oldLink != null)
-					{
-						// New link -> Old link
-						link.setNext(oldLink);
-						
-						// New link <- Old link
-						oldLink.setPrev(link);
-					}
-					
-					// The object uses the current link as the head now
-					objRefLink.set(link);
-				}
-			}
-			
-			return null;
+			return weak.isEnqueued() ? 1 : 0;
 		}
 	},
 	
-	/** Gone. */
-	LINK_GET_NEXT("GONE--linkGetNext")
+	/** {@link ReferenceShelf#weakUnlinkAndClear(Reference)}. */
+	WEAK_UNLINK_AND_CLEAR(MLEDispatcher.methodKey("weakUnlinkAndClear",
+		ReferenceQueue.class, Reference.class))
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2020/06/29
+		 * @since 2025/06/21
 		 */
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			synchronized (GlobalState.class)
-			{
-				return MLEObjects.refLink(__args[0]).getNext();
-			}
-		}
-	},
-	
-	/** {@link ReferenceShelf#linkGetObject(RefLinkBracket)}. */
-	LINK_GET_OBJECT("linkGetObject:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"RefLinkBracket;)Ljava/lang/Object;")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/18
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			synchronized (GlobalState.class)
-			{
-				return MLEObjects.refLink(__args[0]).getObject();
-			}
-		}
-	},
-	
-	/** Gone. */
-	LINK_GET_PREV("GONE--linkGetPrev")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/29
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			synchronized (GlobalState.class)
-			{
-				return MLEObjects.refLink(__args[0]).getPrev();
-			}
-		}
-	},
-	
-	/** Gone. */
-	LINK_SET_NEXT("GONE--linkSetNext")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/29
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			synchronized (GlobalState.class)
-			{
-				MLEObjects.refLink(__args[0]).setNext(
-					MLEObjects.refLink(__args[1]));
-			}
+			SpringWeakObject weak = MLEObjects.notNull(
+				SpringWeakObject.class, __args[0]);
 			
-			return null;
+			return weak.clear();
 		}
 	},
-	
-	/** {@link ReferenceShelf#linkSetObject(RefLinkBracket, Object)}. */
-	LINK_SET_OBJECT("linkSetObject:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"RefLinkBracket;Ljava/lang/Object;)V")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/18
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			synchronized (GlobalState.class)
-			{
-				MLEObjects.refLink(__args[0])
-					.setObject((SpringObject)__args[1]);
-			}
-			
-			return null;
-		}
-	},
-	
-	/** Gone. */
-	LINK_SET_PREV("GONE--linkSetPrev")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/29
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			synchronized (GlobalState.class)
-			{
-				MLEObjects.refLink(__args[0]).setPrev(
-					MLEObjects.refLink(__args[1]));
-			}
-			
-			return null;
-		}
-	},
-	
-	/** Gone. */
-	LINK_UNCHAIN("GONE--linkUnchain")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2022/09/01
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			RefLinkObject thisLink = MLEObjects.refLink(__args[0]);
-			
-			synchronized (GlobalState.class)
-			{
-				// Get the previous and next links to re-chain
-				RefLinkObject prev = thisLink.getPrev();
-				RefLinkObject next = thisLink.getNext();
-				
-				// Have the previous link point to our next
-				if (prev != null)
-					prev.setNext(next);
-				
-				// Have the next link point to our previous
-				if (next != null)
-					next.setPrev(prev);
-				
-				// Clear our links because they are no longer valid
-				thisLink.setPrev(null);
-				thisLink.setNext(null);
-			}
-			
-			return null;
-		}
-	},
-	
-	/** {@link ReferenceShelf#linkUnlinkAndClear(RefLinkBracket)}. */ 
-	LINK_UNLINK_AND_CLEAR("linkUnlinkAndClear:(Lcc/squirreljme/jvm/" +
-		"mle/brackets/RefLinkBracket;)V")
-	{
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			RefLinkObject thisLink = MLEObjects.refLink(__args[0]);
-			
-			synchronized (GlobalState.class)
-			{
-				synchronized (thisLink)
-				{
-					// Unchain all the connected links atomically
-					MLEReference.LINK_UNCHAIN.handle(__thread, __args[0]);
-					
-					// Clear the object this links to
-					MLEReference.LINK_SET_OBJECT.handle(__thread, __args[0],
-						SpringNullObject.NULL);
-					
-					// We can delete our link now and free any associated
-					// memory because it is dangling and serves no purpose
-					// otherwise
-					MLEReference.DELETE_LINK.handle(__thread, __args[0]);
-				}
-			}
-			
-			return null;
-		}
-	},
-	
-	/** {@link ReferenceShelf#newLink()}. */
-	NEW_LINK("newLink:()Lcc/squirreljme/jvm/mle/brackets/" +
-		"RefLinkBracket;")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/18
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			return new RefLinkObject(__thread.machine);
-		}
-	},
-	
-	/** Gone. */
-	OBJECT_GET("GONE--objectGet")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/18
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			synchronized (GlobalState.class)
-			{
-				SpringObject object = (SpringObject)__args[0];
-				if (!(object instanceof SpringSimpleObject))
-					throw new SpringMLECallError("Invalid object"); 
-				
-				return object.refLink().get();
-			}
-		}
-	},
-	
-	/** Gone. */
-	OBJECT_SET("GONE--objectSet")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/18
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			synchronized (GlobalState.class)
-			{
-				SpringObject object = (SpringObject)__args[0];
-				if (!(object instanceof SpringSimpleObject))
-					throw new SpringMLECallError("Invalid object"); 
-				
-				object.refLink().set(MLEObjects.refLink(__args[1]));
-			}
-			
-			return null;
-		}
-	}
 	
 	/* End. */
 	;

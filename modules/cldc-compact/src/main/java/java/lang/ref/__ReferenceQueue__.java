@@ -13,10 +13,9 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 /**
- * Reference queue base, this class mostly exists so that IDEs do not
- * have errors with {@link ReferenceQueue}.
+ * Base class so IDEs do not have an issue with {@link ReferenceQueue}.
  *
- * @param <T> The type to enqueue references for.
+ * @param <T> The type being queued.
  * @since 2025/06/21
  */
 abstract class __ReferenceQueue__<T>

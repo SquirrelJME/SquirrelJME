@@ -21,8 +21,9 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public enum MLEPencilFontShelf
 	implements MLEFunction
 {
-	/** {@link PencilFontShelf#equals}. */
-	EQUALS("equals")
+	/** {@link PencilFontShelf#equals(PencilFontBracket, PencilFontBracket)}. */
+	EQUALS(MLEDispatcher.methodKey("equals", "Z",
+		PencilFontBracket.class, PencilFontBracket.class))
 	{
 		/**
 		 * {@inheritDoc}
