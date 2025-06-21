@@ -1451,6 +1451,7 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 #define SJME_NVM_FRAME_GROW_SIZE 8
 	sjme_errorCode error;
 	sjme_nvm_frame result;
+	sjme_nvm_frameBase blank;
 	
 	if (inThread == NULL || outFrame == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1467,7 +1468,14 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 	/* "Pop" and init/clear frame. */
 	result = inThread->frames->elements[inThread->numFrames];
 	if (result != NULL)
-		memset(result, 0, sizeof(*result));
+	{
+		/* Initialize a blank which always keeps the common info. */
+		memset(&blank, 0, sizeof(blank));
+		memmove(&blank.common, &result->common, sizeof(blank.common));
+		
+		/* Use this resultant blank, keeping the common areas. */
+		memmove(result, &blank, sizeof(*result));
+	}
 	else
 	{
 		/* Allocate new blank frame. */

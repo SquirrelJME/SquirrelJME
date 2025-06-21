@@ -112,11 +112,19 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			argC, argV)))
 		{
 #if defined(SJME_CONFIG_DEBUG)
-			sjme_message("Missing MLE: %s.%s%s",
-				sjme_charSeq_tempUtf(target->inClass->name->seq),
-				sjme_charSeq_tempUtf(target->name->seq),
-				sjme_charSeq_tempUtf(target->type->seq));
+			if (error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
+				error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
+			{
+				sjme_message("Missing MLE: %s.%s%s",
+					sjme_charSeq_tempUtf(target->inClass->name->seq),
+					sjme_charSeq_tempUtf(target->name->seq),
+					sjme_charSeq_tempUtf(target->type->seq));
+				
+				return sjme_error_vmError(inFrame, error);
+			}
 #endif
+
+			/* Force emit MLECallError. */
 			return sjme_error_vmError(inFrame,
 				sjme_error_mask(error, SJME_ERROR_MLE_CALL));
 		}
