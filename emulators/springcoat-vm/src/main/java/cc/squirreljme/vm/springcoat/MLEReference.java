@@ -90,9 +90,8 @@ public enum MLEReference
 		}
 	},
 	
-	/** {@link ReferenceShelf#linkGetNext(RefLinkBracket)}. */
-	LINK_GET_NEXT("linkGetNext:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"RefLinkBracket;)Lcc/squirreljme/jvm/mle/brackets/RefLinkBracket;")
+	/** Gone. */
+	LINK_GET_NEXT("GONE--linkGetNext")
 	{
 		/**
 		 * {@inheritDoc}
@@ -126,9 +125,8 @@ public enum MLEReference
 		}
 	},
 	
-	/** {@link ReferenceShelf#linkGetPrev(RefLinkBracket)}. */
-	LINK_GET_PREV("linkGetPrev:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"RefLinkBracket;)Lcc/squirreljme/jvm/mle/brackets/RefLinkBracket;")
+	/** Gone. */
+	LINK_GET_PREV("GONE--linkGetPrev")
 	{
 		/**
 		 * {@inheritDoc}
@@ -144,9 +142,8 @@ public enum MLEReference
 		}
 	},
 	
-	/** {@link ReferenceShelf#linkSetNext(RefLinkBracket, RefLinkBracket)}. */
-	LINK_SET_NEXT("linkSetNext:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"RefLinkBracket;Lcc/squirreljme/jvm/mle/brackets/RefLinkBracket;)V")
+	/** Gone. */
+	LINK_SET_NEXT("GONE--linkSetNext")
 	{
 		/**
 		 * {@inheritDoc}
@@ -186,9 +183,8 @@ public enum MLEReference
 		}
 	},
 	
-	/** {@link ReferenceShelf#linkSetPrev(RefLinkBracket, RefLinkBracket)}. */
-	LINK_SET_PREV("linkSetPrev:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"RefLinkBracket;Lcc/squirreljme/jvm/mle/brackets/RefLinkBracket;)V")
+	/** Gone. */
+	LINK_SET_PREV("GONE--linkSetPrev")
 	{
 		/**
 		 * {@inheritDoc}
@@ -207,9 +203,8 @@ public enum MLEReference
 		}
 	},
 	
-	/** {@link ReferenceShelf#linkUnchain(RefLinkBracket)}. */
-	LINK_UNCHAIN("linkUnchain:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"RefLinkBracket;Lcc/squirreljme/jvm/mle/brackets/RefLinkBracket;)V")
+	/** Gone. */
+	LINK_UNCHAIN("GONE--linkUnchain")
 	{
 		/**
 		 * {@inheritDoc}
@@ -289,9 +284,8 @@ public enum MLEReference
 		}
 	},
 	
-	/** {@link ReferenceShelf#objectGet(Object)}. */
-	OBJECT_GET("objectGet:(Ljava/lang/Object;)" +
-		"Lcc/squirreljme/jvm/mle/brackets/RefLinkBracket;")
+	/** Gone. */
+	OBJECT_GET("GONE--objectGet")
 	{
 		/**
 		 * {@inheritDoc}
@@ -311,9 +305,8 @@ public enum MLEReference
 		}
 	},
 	
-	/** {@link ReferenceShelf#objectSet(Object, RefLinkBracket)}. */
-	OBJECT_SET("objectSet:(Ljava/lang/Object;" +
-		"Lcc/squirreljme/jvm/mle/brackets/RefLinkBracket;)V")
+	/** Gone. */
+	OBJECT_SET("GONE--objectSet")
 	{
 		/**
 		 * {@inheritDoc}

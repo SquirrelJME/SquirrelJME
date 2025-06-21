@@ -103,6 +103,7 @@ public abstract class Reference<T>
 	 * return false.
 	 * @since 2018/09/23
 	 */
+	@SuppressWarnings({"unchecked", "DataFlowIssue"})
 	@Api
 	public boolean enqueue()
 	{
@@ -127,14 +128,13 @@ public abstract class Reference<T>
 			if (pushToQueue)
 			{
 				// The reference no longer is valid
-				
 				ReferenceShelf.linkUnlinkAndClear(this._link);
 				this._enqueued = true;
 			}
 			
 			// Only push to the queue if was requested
 			if (pushToQueue)
-				queue.__enqueue(this);
+				((__ReferenceQueue__<T>)((Object)queue)).__enqueue(this);
 			return pushToQueue;
 		}
 	}

@@ -34,48 +34,20 @@ public class TestReferenceShelfInvalid
 				ReferenceShelf.linkGetObject(null);
 				break;
 			
-			case 1:
-				ReferenceShelf.linkGetPrev(null);
-				break;
-			
-			case 2:
-				ReferenceShelf.linkGetNext(null);
-				break;
-			
-			case 3:
-				ReferenceShelf.objectGet(null);
-				break;
-			
-			case 4:
-				ReferenceShelf.objectSet(null, null);
-				break;
-			
-			case 5:
-				ReferenceShelf.objectSet(null,
-					ReferenceShelf.newLink());
-				break;
-			
 			case 6:
 				ReferenceShelf.deleteLink(null);
 				break;
 			
+			case 3:
+			case 4:
+			case 5:
 			case 7:
-				ReferenceShelf.linkSetPrev(null, null);
-				break;
-			
 			case 8:
-				ReferenceShelf.linkSetPrev(null,
-					ReferenceShelf.newLink());
-				break;
-			
+			case 1:
+			case 2:
 			case 9:
-				ReferenceShelf.linkSetNext(null, null);
-				break;
-			
 			case 10:
-				ReferenceShelf.linkSetNext(null,
-					ReferenceShelf.newLink());
-				break;
+				throw new MLECallError("GONE");
 			
 			case 11:
 				ReferenceShelf.linkSetObject(null,
