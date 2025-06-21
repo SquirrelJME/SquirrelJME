@@ -504,9 +504,15 @@ typedef enum sjme_errorCode
 
 	/** Class member access is denied. */
 	SJME_ERROR_MEMBER_ACCESS_DENIED = -154,
+
+	/** Field is not direct. */
+	SJME_ERROR_FIELD_NOT_DIRECT = -155,
+
+	/** Could not initialize static string value. */
+	SJME_ERROR_STATIC_STRING_INIT = -156,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -155,
+	SJME_NUM_ERROR_CODES = -157,
 } sjme_errorCode;
 
 /**

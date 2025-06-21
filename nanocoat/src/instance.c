@@ -11,36 +11,6 @@
 #include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/task.h"
 
-sjme_errorCode sjme_nvm_fieldValueSet(
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
-	sjme_attrInNotNull sjme_nvm_fieldValues* into,
-	sjme_attrInPositive sjme_jint atIndex,
-	sjme_attrInNotNull sjme_jvalue* value)
-{
-	if (into == NULL || value == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (into->type != javaType)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	if (atIndex < 0 || atIndex >= into->length)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-
-	if (javaType == SJME_JAVA_TYPE_ID_INTEGER)
-		into->values.i[atIndex] = value->i;
-	else if (javaType == SJME_JAVA_TYPE_ID_LONG)
-		into->values.j[atIndex] = value->j;
-	else if (javaType == SJME_JAVA_TYPE_ID_FLOAT)
-		into->values.f[atIndex] = value->f;
-	else if (javaType == SJME_JAVA_TYPE_ID_DOUBLE)
-		into->values.d[atIndex] = value->d;
-	else
-		into->values.l[atIndex] = value->l;
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
 sjme_jint sjme_nvm_fieldValueSize(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
 	sjme_attrInPositiveNonZero sjme_jint n)
@@ -111,6 +81,129 @@ sjme_errorCode sjme_nvm_instance_countDown(
 			return sjme_error_default(error);
 	}
 
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_jvalue* sjme_nvm_instance_fieldAccessor(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field)
+{
+#define NUM_VOIDLESS 4
+	sjme_threadLocal(sjme_jvalue, voidless[NUM_VOIDLESS]);
+	sjme_threadLocal(sjme_jint, voidlessNext);
+
+	/* If neither are valid, treat this as a bad memory read/write. */
+	if (instance == NULL || field == NULL)
+		goto fail_voidless;
+
+	/* Static field? */
+	if (field->flags.member.isStatic)
+	{
+		/* Cannot read/write to non-classes. */
+		if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_CLASS_INSTANCE))
+			goto fail_voidless;
+		
+		sjme_todo("Impl?");
+	}
+
+	/* Instance field? */
+	else
+	{
+		/* Can only read/write plain objects. */
+		if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_OBJECT_INSTANCE))
+			goto fail_voidless;
+
+		sjme_todo("Impl?");
+	}
+	
+	/* Fallback to read/write some kind of valid memory. */
+fail_voidless:
+	memset(&voidless, 0, sizeof(voidless));
+	return &voidless[(voidlessNext++) & (NUM_VOIDLESS - 1)];
+#undef NUM_VOIDLESS
+}
+
+sjme_errorCode sjme_nvm_instance_initFields(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_pointer chunk,
+	sjme_attrInNotNull sjme_list_sjme_jfieldID* fields,
+	sjme_attrInNotNull sjme_nvm_jclass_fields* placements)
+{
+	sjme_errorCode error;
+	sjme_jint i, n;
+	sjme_jfieldID field;
+	sjme_nvm_jfieldAccessFunc accessor;
+	sjme_jvalue* direct;
+	sjme_nvm_class_fieldConstVal* constVal;
+
+	if (contextThread == NULL || instance == NULL || chunk == NULL ||
+		fields == NULL || placements == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Always use the default accessor to write initial field values. */
+	accessor = SJME_T_K(contextThread)->globals.accessor;
+
+	/* Since we have bound all static fields, we can just use that. */
+	for (i = 0, n = fields->length; i < n; i++)
+	{
+		/* Operate on this field. */
+		field = fields->elements[i];
+
+		/* If there is no actual constant value to set, skip. */
+		constVal = &field->info->constVal;
+		if (constVal->type >= SJME_NUM_JAVA_TYPE_IDS)
+			continue;
+		
+		/* Get direct pointer to the data. */
+		direct = accessor(instance, field);
+		if (direct == NULL)
+			return SJME_ERROR_FIELD_NOT_DIRECT;
+
+		/* If a string, it needs to be initialized as a string object. */
+		if (constVal->value.string != NULL)
+		{
+			direct->l = NULL;
+			if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
+				contextThread, SJME_AS_NVM_JSTRINGP(&direct->l),
+				constVal->value.string)) || direct->l == NULL)
+				return sjme_error_vmError(contextThread,
+					sjme_error_defaultOr(error,
+						SJME_ERROR_STATIC_STRING_INIT));
+		}
+
+		/* Copy value directly is primitive. */
+		else
+			memmove(direct, &constVal->value.java,
+				sjme_nvm_typeMul[field->info->javaType]);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_instance_initFieldsChunk(
+	sjme_attrInNotNull sjme_pointer chunk,
+	sjme_attrInNotNull sjme_nvm_jclass_fields* placements)
+{
+	sjme_javaTypeId type;
+	sjme_nvm_fieldValues* into;
+	
+	if (chunk == NULL || placements == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Placements are calculated for each type. */
+	for (type = 0; type < SJME_NUM_JAVA_TYPE_IDS; type++)
+	{
+		/* Determine the base offset to write at. */
+		into = SJME_POINTER_OFFSET(chunk, placements->offset[type]);
+
+		/* Set details for the partition. */
+		into->type = type;
+		into->length = placements->count[type];
+	}
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -305,7 +398,12 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 	
 	/* Setup object. */
 	result->isClass = inClass;
-	result->identityHash = (sjme_jint)result;
+#if defined(SJME_CONFIG_HAS_POINTER64)
+	result->identityHash = (sjme_jint)(((sjme_intPointer)result) ^
+		((((sjme_intPointer)result)) >> 31));
+#else
+	result->identityHash = ((sjme_intPointer)result);
+#endif
 	
 	/* Success! */
 	*outObject = result;

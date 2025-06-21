@@ -2066,6 +2066,10 @@ sjme_errorCode sjme_nvm_class_parseField(
 	
 	/* Initialize constant value to an invalid type. */
 	result->constVal.type = SJME_NUM_JAVA_TYPE_IDS;
+
+	/* Calculate the hash identifier. */
+	result->idHash = sjme_nvm_class_idHashMember(result->name->seq,
+		result->type->seq);
 	
 	/* Success! */
 	*outField = result;

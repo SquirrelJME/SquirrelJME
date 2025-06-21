@@ -130,13 +130,13 @@ struct sjme_jmethodIDBase
 /**
  * Returns the direct pointer to the field data pointer.
  *
+ * @param instance The object to access with.
  * @param field The field to access for.
- * @param inObject The object to access with.
- * @since 2025/06/19
+ * @since 2025/06/21
  */
-typedef sjme_jvalue* (*sjme_nvm_jfieldIDPointerFunc)(
-	sjme_attrInNotNull sjme_jfieldID field,
-	sjme_attrInNotNull sjme_jobject inObject);
+typedef sjme_jvalue* (*sjme_nvm_jfieldAccessFunc)(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field);
 
 struct sjme_jfieldIDBase
 {
@@ -149,8 +149,8 @@ struct sjme_jfieldIDBase
 	/** The field this is bound to. */
 	sjme_nvm_class_fieldInfo info;
 
-	/** Accessor function pointer. */
-	sjme_nvm_jfieldIDPointerFunc accessor;
+	/** The accessor for this field. */
+	sjme_nvm_jfieldAccessFunc accessor;
 
 	/** The direct offset to this field. */
 	sjme_jint pointerOffset;

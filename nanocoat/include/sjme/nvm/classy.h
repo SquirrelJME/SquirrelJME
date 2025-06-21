@@ -154,7 +154,7 @@ typedef struct sjme_nvm_class_fieldInfoBase sjme_nvm_class_fieldInfoBase;
  *
  * @since 2024/01/03
  */
-typedef struct sjme_nvm_class_fieldInfoBase* sjme_nvm_class_fieldInfo;
+typedef sjme_nvm_class_fieldInfoBase* sjme_nvm_class_fieldInfo;
 
 /**
  * Field list.
@@ -197,13 +197,6 @@ SJME_LIST_DECLARE(sjme_nvm_class_exceptionHandler, 0);
  * @since 2024/01/03
  */
 typedef struct sjme_nvm_class_codeInfoBase sjme_nvm_class_codeInfoBase;
-
-/**
- * Opaque method code structure.
- *
- * @since 2024/01/03
- */
-typedef sjme_nvm_class_codeInfoBase sjme_nvm_class_codeInfoBase;
 
 /**
  * Opaque method code structure.
@@ -695,6 +688,9 @@ struct sjme_nvm_class_fieldInfoBase
 	
 	/** The type of this field. */
 	sjme_nvm_stringPool_string type;
+
+	/** The identifier hash. */
+	sjme_jint idHash;
 
 	/** The constant value, if any. */
 	sjme_nvm_class_fieldConstVal constVal;

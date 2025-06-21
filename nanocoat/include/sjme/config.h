@@ -126,11 +126,18 @@ extern "C" {
 #if defined(__GNUC__) && !defined(SJME_CONFIG_HAS_CLANG)
 	/** GNU C Compiler. */
 	#define SJME_CONFIG_HAS_GCC
-	
-	/** Is the GCC version the specified version? */
-	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
-		(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
-		(defined(__GNUC_MINOR__) ? __GNUC_MINOR__ >= minor : 1)))
+
+	#if defined(__GNUC_MINOR__)
+		/** Is the GCC version the specified version? */
+		#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
+			(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
+			(__GNUC_MINOR__ >= minor)))
+	#else
+		/** Is the GCC version the specified version? */
+		#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
+			(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
+			(0 >= minor)))
+	#endif
 #else
 	/** Is the GCC version the specified version? */
 	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0

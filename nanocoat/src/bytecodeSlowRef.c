@@ -658,6 +658,7 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 	sjme_jfieldID fieldId;
 	sjme_jvalue* direct;
 	sjme_jvalueTyped result;
+	sjme_nvm_jfieldAccessFunc accessor;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* Read in pool reference. */
@@ -698,9 +699,17 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 		inFrame, fieldId)))
 		return sjme_error_vmError(inFrame,
 			SJME_ERROR_CLASS_CHANGED);
+
+	/* Obtain accessor for this field. */
+	if (fieldId->accessor != NULL)
+		accessor = fieldId->accessor;
+	else
+		accessor = SJME_F_K(inFrame)->globals.accessor;
+	if (accessor == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_FIELD_NOT_DIRECT);
 	
 	/* Direct access. */
-	direct = fieldId->accessor(fieldId, SJME_AS_JOBJECT(desireClass));
+	direct = accessor(SJME_AS_JOBJECT(desireClass), fieldId);
 	switch (fieldId->info->javaType)
 	{
 		case SJME_BASIC_TYPE_ID_BOOLEAN:

@@ -374,6 +374,9 @@ typedef struct sjme_nvm_taskGlobals
 
 	/** Common classes. */
 	sjme_atomic_sjme_jclass commonClasses[SJME_NVM_TASK_NUM_COMMON_CLASS];
+
+	/** The default accessor for fields. */
+	sjme_nvm_jfieldAccessFunc accessor;
 } sjme_nvm_taskGlobals;
 	
 struct sjme_nvm_taskBase
@@ -892,11 +895,20 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
 /** Frame thread. */
 #define SJME_F_T(frame) ((frame)->inThread)
 
+/** Frame task. */
+#define SJME_F_K(frame) ((frame)->inTask)
+
 /** Frame classloader. */
 #define SJME_F_CL(frame) ((frame)->inTask->classLoader)
 
 /** Frame state. */
 #define SJME_F_S(frame) ((frame)->inTask->inState)
+
+/** Thread state. */
+#define SJME_T_S(thread) ((thread)->inState)
+
+/** Thread task. */
+#define SJME_T_K(thread) ((thread)->inTask)
 	
 /*--------------------------------------------------------------------------*/
 

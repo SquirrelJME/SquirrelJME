@@ -195,6 +195,18 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	if(SQUIRRELJME_HAS_GCC_FVISIBILITY_HIDDEN)
 		add_compile_options("-fvisibility=hidden")
 	endif()
+
+	# Pedantic warnings?
+	check_c_compiler_flag("-Wpedantic" SQUIRRELJME_HAS_WARN_PEDANTIC)
+	if(SQUIRRELJME_HAS_WARN_PEDANTIC)
+		add_compile_options("-Wpedantic")
+	endif()
+
+	# Can we set the no execute flag for the link?
+	check_c_compiler_flag("-Wl,-z,noexecstack" SQUIRRELJME_HAS_NOEXECSTACK)
+	if(SQUIRRELJME_HAS_NOEXECSTACK)
+		add_compile_options("-Wl,-z,noexecstack")
+	endif()
 endif()
 
 # Quick compilation check

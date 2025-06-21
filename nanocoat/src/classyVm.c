@@ -142,10 +142,19 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 
 	/* Wanting statics? */
 	isStatic = (instanceType == SJME_NVM_CLASS_MEMBER_STATIC);
+
+	/* Determine the actual field count. */
+	fields = inClass->info->fields;
+	count = 0;
+	for (i = at = 0, n = fields->length; i < n; i++)
+	{
+		/* Count fields with the same staticness. */
+		field = fields->elements[i];
+		if (field->flags.member.isStatic == isStatic)
+			count++;
+	}
 	
 	/* Allocate resultant list. */
-	fields = inClass->info->fields;
-	count = fields->length;
 	result = NULL;
 	if (sjme_error_is(error = sjme_list_alloc(inState->allocPool, count,
 		&result, sjme_jfieldID, 0)) || result == NULL)
@@ -176,6 +185,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 		/* Set ID info. */
 		id->info = field;
 		id->flags = field->flags;
+		id->member.idHash = field->idHash;
+		id->member.inClass = inClass;
 		id->member.name = field->name;
 		id->member.type = field->type;
 		
@@ -201,6 +212,41 @@ fail_allocId:
 				sjme_closeable_close(SJME_AS_CLOSEABLE(result->elements[i]));
 
 	return sjme_error_default(error);
+}
+
+static sjme_errorCode sjme_nvm_vmClass_checkInitFieldStatics(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jclass inClass)
+{
+	sjme_errorCode error;
+	sjme_pointer chunk;
+	sjme_nvm_jclass_fields* placements;
+	
+	if (contextThread == NULL || inClass == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get the placements to allocate for. */
+	placements = &inClass->fields[SJME_NVM_CLASS_MEMBER_STATIC];
+
+	/* Allocate chunk of data for field storage. */
+	chunk = NULL;
+	if (sjme_error_is(error = sjme_alloc(SJME_T_S(contextThread)->allocPool,
+		placements->allocSize, &chunk)) || chunk == NULL)
+		return sjme_error_default(error);
+
+	/* Initialize each sub-chunk for each placement. */
+	if (sjme_error_is(error = sjme_nvm_instance_initFieldsChunk(
+		chunk, placements)))
+		return sjme_error_default(error);
+
+	/* Set chunk. */
+	inClass->staticChunk = chunk;
+
+	/* Forward to normal field initialization. */
+	return sjme_nvm_instance_initFields(contextThread,
+		SJME_AS_JOBJECT(inClass),
+		chunk, inClass->fields[SJME_NVM_CLASS_MEMBER_STATIC].binds,
+		placements);
 }
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
@@ -1156,8 +1202,8 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	/* Bind instance and static fields. */
 	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
 	{
-		/* Skip if there are none for this category or no fields at all. */
-		if (info->fieldCount[i] <= 0 || info->fields == NULL)
+		/* Skip if there are no fields at all. */
+		if (info->fields == NULL)
 			continue;
 		
 		/* Initialize binds. */
@@ -1168,6 +1214,12 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			goto fail_bindFields;
 		inClass->fields[i].binds = fieldBinds;
 	}
+
+	/* Allocate and set static field values. */
+	if (inClass->fields[SJME_NVM_CLASS_MEMBER_STATIC].binds != NULL)
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitFieldStatics(
+			contextThread, inClass)))
+			goto fail_initStatics;
 	
 	/* Set as initialized now. */
 	if (!sjme_atomic_sjme_jint_compareSet(&inClass->isInitialized,
@@ -1197,7 +1249,6 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 skip_doubleCalled:
 	return SJME_ERROR_NONE;
 	
-fail_markDone:
 fail_bindFields:
 fail_bindMethods:
 fail_initFieldValues:
@@ -1205,6 +1256,8 @@ fail_super:
 	sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL);
 	
+fail_markDone:
+fail_initStatics:
 fail_initClassType:
 fail_badState:
 fail_initInterface:

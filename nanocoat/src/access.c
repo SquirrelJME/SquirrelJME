@@ -9,31 +9,10 @@
 
 #include "sjme/nvm/access.h"
 
-sjme_errorCode sjme_nvm_access_checkFToF(
-	sjme_attrInNotNull sjme_nvm_frame fromFrame,
-	sjme_attrInNotNull sjme_jfieldID toField)
-{
-	if (fromFrame == NULL || toField == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-sjme_errorCode sjme_nvm_access_checkFToM(
-	sjme_attrInNotNull sjme_nvm_frame fromFrame,
-	sjme_attrInNotNull sjme_jmethodID toMethod)
-{
-	if (fromFrame == NULL || toMethod == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Unwrap to other call. */
-	return sjme_nvm_access_checkMToM(fromFrame->inMethod, toMethod);
-}
-
-sjme_errorCode sjme_nvm_access_checkMToM(
-	sjme_attrInNotNull sjme_jmethodID fromMethod,
-	sjme_attrInNotNull sjme_jmethodID toMethod)
+sjme_errorCode sjme_nvm_access_checkEToE(
+	sjme_attrInNotNull sjme_jmemberID from,
+	sjme_attrInNotNull sjme_jmemberID to,
+	sjme_attrInNotNull sjme_nvm_class_memberFlags* toFlags)
 {
 	sjme_jclass fromClass;
 	sjme_jclass toClass;
@@ -41,21 +20,21 @@ sjme_errorCode sjme_nvm_access_checkMToM(
 	sjme_nvm_class_accessFlags* flags;
 	sjme_jboolean checkPP;
 	
-	if (fromMethod == NULL || toMethod == NULL)
+	if (from == NULL || to == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Refers to the same exact method? */
-	if (fromMethod == toMethod)
+	if (from == to)
 		return SJME_ERROR_NONE;
 
 	/* In the same class? */
-	fromClass = fromMethod->member.inClass;
-	toClass = toMethod->member.inClass;
+	fromClass = from->inClass;
+	toClass = to->inClass;
 	if (fromClass == toClass)
 		return SJME_ERROR_NONE;
 
 	/* Target is public? */
-	flags = &toMethod->flags.member.access;
+	flags = &toFlags->access;
 	if (flags->public)
 		return SJME_ERROR_NONE;
 
@@ -79,6 +58,10 @@ sjme_errorCode sjme_nvm_access_checkMToM(
 	/* Must be in the same package? */
 	if (checkPP)
 	{
+		/* The target class is nowhere? */
+		if (toClass == NULL)
+			return SJME_ERROR_MEMBER_ACCESS_DENIED;
+		
 		/* Must be in the same package. */
 		if (sjme_charSeq_equalsR(fromClass->info->inPackage->seq,
 			toClass->info->inPackage->seq))
@@ -87,4 +70,43 @@ sjme_errorCode sjme_nvm_access_checkMToM(
 
 	/* Access denied. */
 	return SJME_ERROR_MEMBER_ACCESS_DENIED;
+}
+
+sjme_errorCode sjme_nvm_access_checkFToF(
+	sjme_attrInNotNull sjme_nvm_frame from,
+	sjme_attrInNotNull sjme_jfieldID to)
+{
+	if (from == NULL || to == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Unwrap to other call. */
+	return sjme_nvm_access_checkEToE(
+		(sjme_jmemberID)from->inMethod,
+		(sjme_jmemberID)to,
+		&to->flags.member);
+}
+
+sjme_errorCode sjme_nvm_access_checkFToM(
+	sjme_attrInNotNull sjme_nvm_frame from,
+	sjme_attrInNotNull sjme_jmethodID to)
+{
+	if (from == NULL || to == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Unwrap to other call. */
+	return sjme_nvm_access_checkEToE(
+		(sjme_jmemberID)from->inMethod,
+		(sjme_jmemberID)to,
+		&to->flags.member);
+}
+
+sjme_errorCode sjme_nvm_access_checkMToM(
+	sjme_attrInNotNull sjme_jmethodID from,
+	sjme_attrInNotNull sjme_jmethodID to)
+{
+	/* Cast to other call. */
+	return sjme_nvm_access_checkEToE(
+		(sjme_jmemberID)from,
+		(sjme_jmemberID)to,
+		&to->flags.member);
 }

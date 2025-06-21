@@ -250,6 +250,9 @@ struct sjme_jclassBase
 
 	/** The phantom array type of this class. */
 	sjme_atomic_sjme_jclass phantomArrayType;
+
+	/** Static field data chunk. */
+	sjme_pointer staticChunk;
 };
 
 struct sjme_jstringBase
@@ -283,22 +286,6 @@ struct sjme_jarrayBase
 };
 
 /**
- * Sets the field value.
- * 
- * @param javaType The Java type to use. 
- * @param into The field values to write into.
- * @param atIndex The index to set.
- * @param value The value to store.
- * @return Any resultant error, if any.
- * @since 2024/10/29
- */
-sjme_errorCode sjme_nvm_fieldValueSet(
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
-	sjme_attrInNotNull sjme_nvm_fieldValues* into,
-	sjme_attrInPositive sjme_jint atIndex,
-	sjme_attrInNotNull sjme_jvalue* value);
-
-/**
  * Returns the size for @c sjme_nvm_fieldValues for the given number of
  * values.
  * 
@@ -309,7 +296,7 @@ sjme_errorCode sjme_nvm_fieldValueSet(
 sjme_jint sjme_nvm_fieldValueSize(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
 	sjme_attrInPositiveNonZero sjme_jint n);
-
+	
 /**
  * Checks if the given object can be counted down if the old value changes.
  * 
@@ -322,6 +309,48 @@ sjme_errorCode sjme_nvm_instance_countDown(
 	sjme_attrInNotNull sjme_jobject* oldP,
 	sjme_attrInNotNull sjme_jobject newV);
 
+/**
+ * The default accessor for fields.
+ * 
+ * @param instance The instance to access.
+ * @param field The field to access.
+ * @return The pointer to the field data directly.
+ * @since 2025/06/21
+ */
+sjme_jvalue* sjme_nvm_instance_fieldAccessor(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field);
+
+/**
+ * Initializes the field chunk.
+ * 
+ * @param contextThread The context thread.
+ * @param instance The instance being initialized.
+ * @param chunk The chunk being written into.
+ * @param fields The field binds.
+ * @param placements The placements being used.
+ * @return Any resultant error, if any.
+ * @since 2025/06/21
+ */
+sjme_errorCode sjme_nvm_instance_initFields(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_pointer chunk,
+	sjme_attrInNotNull sjme_list_sjme_jfieldID* fields,
+	sjme_attrInNotNull sjme_nvm_jclass_fields* placements);
+
+/**
+ * Initializes the field chunk.
+ * 
+ * @param chunk The chunk to initialize.
+ * @param placements The placements to use.
+ * @return Any resultant error, if any.
+ * @since 2025/06/21
+ */
+sjme_errorCode sjme_nvm_instance_initFieldsChunk(
+	sjme_attrInNotNull sjme_pointer chunk,
+	sjme_attrInNotNull sjme_nvm_jclass_fields* placements);
+	
 /**
  * Allocates a new array object.
  * 
