@@ -151,6 +151,9 @@ struct sjme_jfieldIDBase
 
 	/** Accessor function pointer. */
 	sjme_nvm_jfieldIDPointerFunc accessor;
+
+	/** The direct offset to this field. */
+	sjme_jint pointerOffset;
 };
 
 struct sjme_nvm_vmClass_loaderBase

@@ -292,7 +292,8 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 
 		/* Otherwise, object storage is pre-calculated. */
 		else
-			allocSize = sizeof(sjme_jobjectBase);
+			allocSize =
+				inClass->fields[SJME_NVM_CLASS_MEMBER_INSTANCE].allocSize;
 	}
 	
 	/* Setup object. */

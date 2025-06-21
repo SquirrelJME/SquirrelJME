@@ -98,12 +98,9 @@ typedef struct sjme_nvm_fieldValues
 	
 	/** The number of items in this tread. */
 	sjme_jint length;
-
-	/** The internal byte size of this tread. */
-	sjme_jint size;
 	
 	/** Values within the tread. */
-	sjme_nvm_rawFieldValues values;
+	sjme_alignPointer sjme_nvm_rawFieldValues values;
 } sjme_nvm_fieldValues;
 
 struct sjme_jobjectBase
@@ -158,6 +155,49 @@ typedef enum sjme_nvm_instance_classInit
 	SJME_VM_CLASS_INIT_LOAD_DONE = 2,
 } sjme_nvm_instance_classInit;
 
+/**
+ * Class fields.
+ *
+ * @since 2025/06/21
+ */
+typedef struct sjme_nvm_jclass_fields
+{
+	/** Base index for fields. */
+	sjme_jshort base[SJME_NUM_JAVA_TYPE_IDS];
+	
+	/** Count for a given field. */
+	sjme_jshort count[SJME_NUM_JAVA_TYPE_IDS];
+
+	/** Field offsets into the object, for each field type. */
+	sjme_intPointer offset[SJME_NUM_JAVA_TYPE_IDS];
+	
+	/** Field bindings for this class. */
+	sjme_list_sjme_jfieldID* binds;
+
+	/** The allocation size of this class. */
+	sjme_jint allocSize;
+
+	/** The allocation base of this class, generally where fields start. */
+	sjme_jint allocSelfBase;
+} sjme_nvm_jclass_fields;
+
+/**
+ * Class methods.
+ *
+ * @since 2025/06/21
+ */
+typedef struct sjme_nvm_jclass_methods
+{
+	/** Base index for methods. */
+	sjme_jshort base;
+	
+	/** The number of methods. */
+	sjme_jshort count;
+	
+	/** Method bindings for this class. */
+	sjme_list_sjme_jmethodID* binds;
+} sjme_nvm_jclass_methods;
+
 struct sjme_jclassBase
 {
 	/** All classes are objects. */
@@ -186,35 +226,12 @@ struct sjme_jclassBase
 	
 	/** Interface classes for this class. */
 	sjme_list_sjme_jclass* interfaceClasses;
-	
-	/** Field value storage. */
-	sjme_nvm_fieldValues* staticFields[SJME_NUM_JAVA_TYPE_IDS];
-	
-	/** Base index for fields. */
-	sjme_jshort fieldBase[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
-		[SJME_NUM_JAVA_TYPE_IDS];
-	
-	/** Count for a given field. */
-	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
-		[SJME_NUM_JAVA_TYPE_IDS];
 
-	/** Field offsets into the object, for each field. */
-	sjme_intPointer fieldOffset[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
-		[SJME_NUM_JAVA_TYPE_IDS];
-	
-	/** Base index for methods. */
-	sjme_jshort methodBase[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
-	
-	/** The number of methods. */
-	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
-	
-	/** Field bindings for this class. */
-	sjme_list_sjme_jfieldID* fieldBinds[
-		SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
-	
-	/** Method bindings for this class. */
-	sjme_list_sjme_jmethodID* methodBinds[
-		SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
+	/** Fields. */
+	sjme_nvm_jclass_fields fields[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
+
+	/** Methods. */
+	sjme_nvm_jclass_methods methods[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
 	
 	/** Interface method binds. */
 	sjme_list_sjme_jinterfaceID* interfaceBinds;
@@ -233,9 +250,6 @@ struct sjme_jclassBase
 
 	/** The phantom array type of this class. */
 	sjme_atomic_sjme_jclass phantomArrayType;
-
-	/** The allocation size of this class. */
-	sjme_jint allocSize;
 };
 
 struct sjme_jstringBase

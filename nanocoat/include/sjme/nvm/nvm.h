@@ -166,6 +166,9 @@ typedef enum sjme_nvm_structType
 	
 	/** Method code. */
 	SJME_NVM_STRUCT_CODE,
+
+	/** Field identifier. */
+	SJME_NVM_STRUCT_FIELD_ID,
 	
 	/** Field information. */
 	SJME_NVM_STRUCT_FIELD_INFO,

@@ -59,7 +59,8 @@ squirreljme_multilib_add_static_library(Core
 	stringPool.c
 	task.c
 	tread.c
-	vmConfig.c)
+	vmConfig.c
+	walk.c)
 
 # Include main headers
 squirreljme_multilib_static_target_include_directories(Core
