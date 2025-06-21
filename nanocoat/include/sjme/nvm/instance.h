@@ -285,6 +285,12 @@ struct sjme_jarrayBase
 	sjme_alignPointer sjme_nvm_rawArrayValues e;
 };
 
+struct sjme_jweakBase
+{
+	/** Base object. */
+	sjme_jobjectBase object;
+};
+
 /**
  * Returns the size for @c sjme_nvm_fieldValues for the given number of
  * values.

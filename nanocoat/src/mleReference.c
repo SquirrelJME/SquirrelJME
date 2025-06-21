@@ -11,7 +11,18 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+SJME_NVM_MLE_FUNCTION_DECL(newLink)
+{
+	sjme_jweak result;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 SJME_NVM_MLE_SHELF_DECLARE(ReferenceShelf) =
 {
+	SJME_NVM_MLE_DEFINE(newLink,
+		SJME_MD(SJME_MD_REFLINK, ),
+		"L"),
 	SJME_NVM_MLE_STOP()
 };

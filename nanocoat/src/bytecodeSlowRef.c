@@ -115,7 +115,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			if (error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
 				error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
 			{
-				sjme_message("Missing MLE: %s.%s%s",
+				sjme_message("Missing MLE: %s.%s %s",
 					sjme_charSeq_tempUtf(target->inClass->name->seq),
 					sjme_charSeq_tempUtf(target->name->seq),
 					sjme_charSeq_tempUtf(target->type->seq));

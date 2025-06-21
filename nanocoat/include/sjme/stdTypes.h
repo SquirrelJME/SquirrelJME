@@ -670,6 +670,29 @@ typedef sjme_jarrayBase* sjme_jarray;
 #define SJME_TYPEOF_IS_POINTER_sjme_jarray SJME_TYPEOF_IS_POINTER_sjme_jobject
 
 /**
+ * Weak reference.
+ *
+ * @since 2025/06/21
+ */
+typedef struct sjme_jweakBase sjme_jweakBase;
+
+/**
+ * Weak reference.
+ *
+ * @since 2025/06/21
+ */
+typedef sjme_jweakBase* sjme_jweak;
+	
+/** Basic @c sjme_jweak type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jweak SJME_TYPEOF_BASIC_sjme_jobject
+
+/** Java @c sjme_jweak type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jweak SJME_TYPEOF_JAVA_sjme_jobject
+
+/** Is a pointer for @c sjme_jweak ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jweak SJME_TYPEOF_IS_POINTER_sjme_jobject
+	
+/**
  * Generic value union.
  *
  * @since 2024/01/05

@@ -792,7 +792,7 @@ sjme_jboolean sjme_charSeq_startsWithUtfR(
 sjme_lpcstr sjme_charSeq_tempUtf(
 	sjme_attrInNotNull sjme_charSeq inSeq)
 {
-#define TEMP_SIZE 512
+#define TEMP_SIZE 768
 	sjme_threadLocal(sjme_cchar, buf[TEMP_SIZE]);
 	sjme_threadLocal(sjme_jint, tempAt);
 	sjme_jint baseAt, n;
@@ -825,7 +825,7 @@ sjme_lpcstr sjme_charSeq_tempUtf(
 
 	/* Store new base. */
 	tempAt = baseAt + n;
-	buf[tempAt] = 0;
+	buf[tempAt] = '\0';
 	return &buf[baseAt];
 #undef TEMP_SIZE
 }

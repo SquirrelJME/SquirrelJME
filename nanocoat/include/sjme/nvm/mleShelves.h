@@ -79,6 +79,10 @@ extern "C"
 /** Pipe descriptor. */
 #define SJME_MD_PIPE SJME_MD_L(SJME_NVM_BRACKET_NAME_PIPE)
 
+/** Reference link. */
+#define SJME_MD_REFLINK \
+	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/RefLinkBracket")
+
 /** Runnable. */
 #define SJME_MD_RUNNABLE SJME_MD_L("java/lang/Runnable")
 
