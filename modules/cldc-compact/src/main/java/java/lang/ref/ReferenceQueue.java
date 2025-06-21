@@ -22,11 +22,8 @@ import java.util.LinkedList;
  */
 @Api
 public class ReferenceQueue<T>
+	extends __ReferenceQueue__<T>
 {
-	/** Internal queue of references. */
-	private final Deque<Reference<? extends T>> _queue =
-		new LinkedList<>();
-	
 	/**
 	 * Checks the queue and returns a reference immedietely if one is
 	 * available.
@@ -121,30 +118,6 @@ public class ReferenceQueue<T>
 				// on the outside
 				queue.wait();
 			}
-		}
-	}
-	
-	/**
-	 * Enqueues the reference into this queue.
-	 *
-	 * @param __ref The reference to enqueue.
-	 * @since 2018/09/23
-	 */
-	@SuppressWarnings("unused")
-	final void __enqueue(Reference<? extends T> __ref)
-	{
-		// Just ignore and do nothing
-		if (__ref == null)
-			return;
-		
-		// Lock on the queue to add it
-		Deque<Reference<? extends T>> queue = this._queue;
-		synchronized (this)
-		{
-			queue.add(__ref);
-			
-			// Signal all waiting threads, one will grab it
-			queue.notifyAll();
 		}
 	}
 }

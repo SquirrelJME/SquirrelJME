@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
@@ -80,16 +79,6 @@ public abstract class SpringProxyObject
 	 */
 	@Override
 	public final SpringMonitor monitor()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/02/25
-	 */
-	@Override
-	public final RefLinkHolder refLink()
 	{
 		throw Debugging.todo();
 	}

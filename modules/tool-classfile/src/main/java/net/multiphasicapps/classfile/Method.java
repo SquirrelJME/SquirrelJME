@@ -12,7 +12,7 @@ package net.multiphasicapps.classfile;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
@@ -151,7 +151,7 @@ public final class Method
 		ByteCode rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._bytecode = new SoftReference<>((rv = new ByteCode(
+			this._bytecode = new WeakReference<>((rv = new ByteCode(
 				new WeakReference<>(this), this._rawcodeattr,
 				this.classname, this.methodflags)));
 		
@@ -180,7 +180,7 @@ public final class Method
 		MethodHandle rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._index = new SoftReference<>(rv = new MethodHandle(
+			this._index = new WeakReference<>(rv = new MethodHandle(
 				this.classname, this.methodname, this.methodtype));
 		
 		return rv;
@@ -264,7 +264,7 @@ public final class Method
 		MethodNameAndType rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._nameandtype = new SoftReference<>(
+			this._nameandtype = new WeakReference<>(
 				rv = new MethodNameAndType(this.methodname, this.methodtype));
 		
 		return rv;

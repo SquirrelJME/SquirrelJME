@@ -9,7 +9,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -28,10 +27,6 @@ public class SpringSimpleObject
 	/** The monitor for this object, every object has one. */
 	protected final SpringMonitor monitor =
 		new SpringMonitor();
-	
-	/** The reference link holder. */
-	protected final RefLinkHolder refLink =
-		new RefLinkHolder();
 	
 	/** Field storage in the class. */
 	final SpringFieldStorage[] _fields;
@@ -130,16 +125,6 @@ public class SpringSimpleObject
 	public final SpringMonitor monitor()
 	{
 		return this.monitor;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/05/31
-	 */
-	@Override
-	public final RefLinkHolder refLink()
-	{
-		return this.refLink;
 	}
 	
 	/**

@@ -10,7 +10,7 @@
 package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 import java.lang.ref.WeakReference;
 
 /**
@@ -108,7 +108,7 @@ public final class FieldReference
 		FieldNameAndType rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._nat = new SoftReference<>(
+			this._nat = new WeakReference<>(
 				(rv = new FieldNameAndType(this.name, this.type)));
 		
 		return rv;

@@ -9,8 +9,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
-
 /**
  * This represents anything that is treated by the virtual machine as a kind
  * of object reference. This is needed for SquirrelJME since it exposes a
@@ -27,14 +25,6 @@ public interface SpringObject
 	 * @since 2018/09/15
 	 */
 	SpringMonitor monitor();
-	
-	/**
-	 * Returns the reference link holder for this object.
-	 *
-	 * @return The reference link for the object.
-	 * @since 2020/05/31
-	 */
-	RefLinkHolder refLink();
 	
 	/**
 	 * Returns the object type.
