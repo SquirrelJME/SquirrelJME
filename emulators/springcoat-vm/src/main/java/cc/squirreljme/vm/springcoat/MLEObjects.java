@@ -128,6 +128,20 @@ public final class MLEObjects
 	}
 	
 	/**
+	 * Returns the object as an array.
+	 *
+	 * @param __object The object.
+	 * @return The resultant array.
+	 * @throws SpringMLECallError If this is not an array.
+	 * @since 2025/06/22
+	 */
+	public static SpringArrayObject array(Object __object)
+		throws SpringMLECallError
+	{
+		return MLEObjects.notNull(SpringArrayObject.class, __object);
+	}
+	
+	/**
 	 * Returns the audio connection object.
 	 *
 	 * @param __object The object to get from.

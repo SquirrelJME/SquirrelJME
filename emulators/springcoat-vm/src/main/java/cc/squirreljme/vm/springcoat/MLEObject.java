@@ -72,6 +72,33 @@ public enum MLEObject
 		}
 	}, 
 	
+	/** {@link ObjectShelf#arrayClone(Object)}. */
+	ARRAY_CLONE(MLEDispatcher.methodKey("arrayClone",
+		Object.class, Object.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/06/22
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringArrayObject array = MLEObjects.array(__args[0]);
+			
+			// Setup blank clone of the array
+			int n = array.length();
+			SpringArrayObject cloned = __thread.allocateArray(
+				array.type(), n);
+			
+			// Copy everything over
+			for (int i = 0; i < n; i++)
+				cloned.set(i, array.get(Object.class, i));
+			
+			// Return the cloned array
+			return cloned;
+		}
+	},
+	
 	/** {@link ObjectShelf#arrayCopy(boolean[], int, boolean[], int, int)}. */
 	ARRAY_COPY_BOOLEAN("arrayCopy:([ZI[ZII)V")
 	{
@@ -396,7 +423,7 @@ public enum MLEObject
 	},
 	
 	/** {@link ObjectShelf#arrayNew(TypeBracket, int)}. */
-	ARRAY_NEW( "arrayNew:(Lcc/squirreljme/jvm/mle/brackets/" +
+	ARRAY_NEW("arrayNew:(Lcc/squirreljme/jvm/mle/brackets/" +
 		"TypeBracket;I)Ljava/lang/Object;")
 	{
 		/**
