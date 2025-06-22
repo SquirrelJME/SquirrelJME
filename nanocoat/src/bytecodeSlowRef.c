@@ -670,6 +670,43 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
 
+SJME_NVM_BYTECODE_SLOW(Monitor)
+{
+	sjme_jboolean isExit;
+	sjme_jvalueTyped instance;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Entry or exit? */
+	isExit = (id == 195);
+
+	/* Get the object we are accessing. */
+	memset(&instance, 0, sizeof(instance));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &instance)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Cannot be null. */
+	if (instance.v.l == NULL)
+		return SJME_ERROR_NULL_STACK_POINTER;
+
+	/* Either lock or unlock the object. */
+	if (!isExit)
+	{
+		if (sjme_error_is(error = sjme_nvm_instance_monitorEnter(
+			SJME_F_T(inFrame), instance.v.l)))
+			return sjme_error_vmError(inFrame, error);
+	}
+	else
+	{
+		if (sjme_error_is(error = sjme_nvm_instance_monitorExit(
+			SJME_F_T(inFrame), instance.v.l)))
+			return sjme_error_vmError(inFrame, error);
+	}
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(New)
 {
 	SJME_NVM_BYTECODE_SLOW_ENTRY;

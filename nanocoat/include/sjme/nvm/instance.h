@@ -113,6 +113,9 @@ struct sjme_jobjectBase
 	
 	/** The current class that this is. */
 	sjme_jclass isClass;
+
+	/** The monitor of monitor counts. */
+	sjme_atomic_sjme_jint monitorCount;
 };
 
 /**
@@ -365,6 +368,30 @@ sjme_errorCode sjme_nvm_instance_initFields(
 sjme_errorCode sjme_nvm_instance_initFieldsChunk(
 	sjme_attrInNotNull sjme_pointer chunk,
 	sjme_attrInNotNull sjme_nvm_jclass_fields* placements);
+
+/**
+ * Enters the object's monitor.
+ * 
+ * @param contextThread The context thread.
+ * @param instance The object instance.
+ * @return Any resultant error, if any.
+ * @since 2025/06/22
+ */
+sjme_errorCode sjme_nvm_instance_monitorEnter(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jobject instance);
+
+/**
+ * Exits the object's monitor.
+ * 
+ * @param contextThread The context thread.
+ * @param instance The object instance.
+ * @return Any resultant error, if any.
+ * @since 2025/06/22
+ */
+sjme_errorCode sjme_nvm_instance_monitorExit(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jobject instance);
 	
 /**
  * Allocates a new array object.
