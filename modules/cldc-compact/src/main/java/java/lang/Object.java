@@ -48,20 +48,10 @@ public class Object
 		// If this is an array, its elements must be copied
 		int len = ObjectShelf.arrayLength(this);
 		if (len >= 0)
-		{
-			// Allocate new array
-			Object dest = ObjectShelf.<Object>arrayNew(
-				TypeShelf.objectType(this), len);
-			
-			// Copy everything over
-			System.arraycopy(this, 0,
-				dest, 0, len);
-			
-			// This array was cloned
-			return dest;
-		}
+			return ObjectShelf.arrayClone(this);
 		
-		/* {@squirreljme.error ZZ1d This object does not support being cloned.} */
+		/* {@squirreljme.error ZZ1d This object does not support being
+		cloned.} */
 		if (!(this instanceof Cloneable))
 			throw new CloneNotSupportedException("ZZ1d");
 		
