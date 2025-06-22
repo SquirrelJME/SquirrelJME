@@ -380,12 +380,26 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 			SJME_NVM_TASK_COMMON_CLASS_CLASS))
 			return SJME_ERROR_INVALID_ARGUMENT;
 		
-		/* If this is string, they get remapped. */
+		/* Remap @c String . */
 		else if (inClass == sjme_nvm_task_commonClassR(contextThread,
 			SJME_NVM_TASK_COMMON_CLASS_STRING))
 		{
 			inType = SJME_NVM_TASK_COMMON_CLASS_STRING;
 			allocSize = sizeof(sjme_jstringBase);
+		}
+		
+		/* Remap @c Reference based classes, however specifically */
+		/* limit to a small selection of reference based classes. */
+		/* This is so that any aliases are treated the same regardless. */
+		else if (inClass == sjme_nvm_task_commonClassR(contextThread,
+				SJME_NVM_TASK_COMMON_CLASS_REFERENCE_PHANTOM) ||
+			inClass == sjme_nvm_task_commonClassR(contextThread,
+				SJME_NVM_TASK_COMMON_CLASS_REFERENCE_SOFT) ||
+			inClass == sjme_nvm_task_commonClassR(contextThread,
+				SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK))
+		{
+			inType = SJME_NVM_STRUCT_WEAK_INSTANCE;
+			allocSize = sizeof(sjme_jweakBase);
 		}
 
 		/* Otherwise, object storage is pre-calculated. */

@@ -230,6 +230,18 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		case SJME_NVM_TASK_COMMON_CLASS_STRING:
 			commonName = "Ljava/lang/String;";
 			break;
+
+		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_PHANTOM:
+			commonName = "Ljava/lang/ref/PhantomReference;";
+			break;
+
+		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_SOFT:
+			commonName = "Ljava/lang/ref/SoftReference;";
+			break;
+
+		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK:
+			commonName = "Ljava/lang/ref/WeakReference;";
+			break;
 		
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;

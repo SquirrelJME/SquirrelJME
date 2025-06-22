@@ -349,6 +349,15 @@ typedef enum sjme_nvm_task_commonClassId
 	/** @c java.lang.String . */
 	SJME_NVM_TASK_COMMON_CLASS_STRING,
 
+	/** @c java.lang.ref.PhantomReference . */
+	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_PHANTOM,
+
+	/** @c java.lang.ref.SoftReference . */
+	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_SOFT,
+
+	/** @c java.lang.ref.WeakReference . */
+	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK,
+
 	/** The number of common classes. */
 	SJME_NVM_TASK_NUM_COMMON_CLASS
 } sjme_nvm_task_commonClassId;

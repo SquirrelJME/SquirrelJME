@@ -226,6 +226,9 @@ typedef enum sjme_nvm_structType
 	
 	/** Class loader. */
 	SJME_NVM_STRUCT_VM_CLASS_LOADER,
+
+	/** An instance of a @c Reference . */
+	SJME_NVM_STRUCT_WEAK_INSTANCE,
 	
 	/** The number of structure types. */
 	SJME_NVM_NUM_STRUCT

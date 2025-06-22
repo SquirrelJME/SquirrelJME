@@ -111,8 +111,13 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			&mleArgR,
 			argC, argV)))
 		{
+			/* MLECallError is a valid response. */
+			if (error == SJME_ERROR_MLE_CALL)
+				return SJME_ERROR_MLE_CALL;
+			
 #if defined(SJME_CONFIG_DEBUG)
-			if (error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
+			/* Unknown/Unimplemented method. */
+			else if (error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
 				error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
 			{
 				sjme_message("Missing MLE: %s.%s %s",
@@ -124,9 +129,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			}
 #endif
 
-			/* Force emit MLECallError. */
-			return sjme_error_vmError(inFrame,
-				sjme_error_mask(error, SJME_ERROR_MLE_CALL));
+			/* Anything else is considered a failure. */
+			return sjme_error_vmError(inFrame, error);
 		}
 
 		/* Wrong type? */

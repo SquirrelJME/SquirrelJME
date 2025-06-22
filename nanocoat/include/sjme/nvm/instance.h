@@ -289,6 +289,15 @@ struct sjme_jweakBase
 {
 	/** Base object. */
 	sjme_jobjectBase object;
+
+	/** Has this been initialized? */
+	sjme_atomic_sjme_jint beenInit;
+
+	/** The object this points to. */
+	sjme_atomic_sjme_jobject pointer;
+
+	/** The reference queue. */
+	sjme_atomic_sjme_jobject queue;
 };
 
 /**

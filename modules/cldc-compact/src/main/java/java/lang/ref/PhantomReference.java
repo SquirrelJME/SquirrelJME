@@ -17,10 +17,10 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @deprecated Only in SquirrelJME, not in standard Java ME 8.
  * @param <T> The type used.
- * @since 2022/06/19
+ * @since 2025/06/21
  */
 @SquirrelJMEVendorApi
-public class SoftReference<T>
+public class PhantomReference<T>
 	extends WeakReference<T>
 {
 	/**
@@ -28,10 +28,10 @@ public class SoftReference<T>
 	 *
 	 * @param __v The object to point to, may be {@code null}.
 	 * @deprecated Only in SquirrelJME, not in standard Java ME 8.
-	 * @since 2022/06/19
+	 * @since 2025/06/21
 	 */
 	@SquirrelJMEVendorApi
-	public SoftReference(T __v)
+	public PhantomReference(T __v)
 	{
 		super(__v, null);
 	}
@@ -46,11 +46,22 @@ public class SoftReference<T>
 	 * queue will be given this reference (not {@code __v} itself}, may be
 	 * {@code null}
 	 * @deprecated Only in SquirrelJME, not in standard Java ME 8.
-	 * @since 2022/06/19
+	 * @since 2025/06/21
 	 */
 	@SquirrelJMEVendorApi
-	public SoftReference(T __v, ReferenceQueue<? super T> __q)
+	public PhantomReference(T __v, ReferenceQueue<? super T> __q)
 	{
 		super(__v, __q);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/21
+	 */
+	@Override
+	public T get()
+	{
+		// Always returns null regardless of whatever this pointed to
+		return null;
 	}
 }
