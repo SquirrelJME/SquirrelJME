@@ -704,6 +704,16 @@ struct sjme_nvm_class_fieldInfoBase
 	/** The index of this field within its basic type. */
 	sjme_jint typedIndex;
 };
+	
+/** Bits to assist in quicker method determinations. */
+typedef struct sjme_nvm_class_methodInfoBits
+{
+	/** Is this a static initializer? */
+	sjme_jboolean isStaticInit : sjme_booleanBit;
+
+	/** Is this an instance initializer? */
+	sjme_jboolean isInstanceInit : sjme_booleanBit;
+} sjme_nvm_class_methodInfoBits;
 
 struct sjme_nvm_class_methodInfoBase
 {
@@ -739,6 +749,9 @@ struct sjme_nvm_class_methodInfoBase
 	
 	/** The class this is in. */
 	sjme_nvm_class_info inClass;
+
+	/** Bits to assist in quicker method determinations. */
+	sjme_nvm_class_methodInfoBits bits;
 };
 
 /**

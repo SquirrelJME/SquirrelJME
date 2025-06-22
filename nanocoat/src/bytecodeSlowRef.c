@@ -421,8 +421,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	inSameClass = (currentClass == refClass);
 	inSuper = sjme_nvm_vmClass_isSuperClass(currentClass,
 		refClass);
-	isInit = sjme_charSeq_equalsUtfR(SJME_M_N(refMethod)->seq,
-		"<init>");
+	isInit = refMethod->bits.isInstanceInit;
 	isPrivate = SJME_M_AF(refMethod).private;
 	isPackagePrivate = (!SJME_M_AF(refMethod).private &&
 		!SJME_M_AF(refMethod).protected &&
@@ -662,7 +661,7 @@ SJME_NVM_BYTECODE_SLOW(NewArray)
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
 
-SJME_NVM_BYTECODE_SLOW(StaticGet)
+SJME_NVM_BYTECODE_SLOW(StaticAccess)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
@@ -671,7 +670,11 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 	sjme_jvalue* direct;
 	sjme_jvalueTyped result;
 	sjme_nvm_jfieldAccessFunc accessor;
+	sjme_jboolean isPut;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Is this a get or a put? */
+	isPut = (id == 179);
 
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -722,44 +725,47 @@ SJME_NVM_BYTECODE_SLOW(StaticGet)
 	
 	/* Direct access. */
 	direct = accessor(SJME_AS_JOBJECT(desireClass), fieldId);
-	switch (fieldId->info->javaType)
-	{
-		case SJME_BASIC_TYPE_ID_BOOLEAN:
-			result.v.i = direct->z;
-			break;
-		
-		case SJME_BASIC_TYPE_ID_BYTE:
-			result.v.i = direct->b;
-			break;
-		
-		case SJME_BASIC_TYPE_ID_SHORT:
-		case SJME_BASIC_TYPE_ID_CHARACTER:
-			result.v.i = direct->s;
-			break;
-		
-		case SJME_JAVA_TYPE_ID_INTEGER:
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			result.v.i = direct->i;
-			break;
-		
-		case SJME_JAVA_TYPE_ID_LONG:
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			result.v.j = direct->j;
-			break;
-		
-		case SJME_JAVA_TYPE_ID_OBJECT:
-			result.v.l = direct->l;
-			break;
+	if (direct == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_FIELD_NOT_DIRECT);
 
-		default:
-			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_FIELD_TYPE);
+	/* Read in value to put. */
+	if (isPut)
+	{
+		/* Cannot be final unless we are in a static initializer. */
+		if (fieldId->flags.member.final)
+		{
+			/* Completely different class? */
+			if (fieldId->member.inClass != inFrame->inClass)
+				return sjme_error_vmError(inFrame,
+					SJME_ERROR_MEMBER_ACCESS_DENIED);
+
+			/* We must be in a static initializer. */
+			if (!inFrame->flags.isStaticInit)
+				return sjme_error_vmError(inFrame,
+					SJME_ERROR_MEMBER_ACCESS_DENIED);
+		}
+
+		/* Read in the value to write. */
+		memset(&result, 0, sizeof(result));
+		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+			fieldId->javaType, &result)))
+			return sjme_error_vmError(inFrame, error);
 	}
 
+	/* Copy data over. */
+	if (isPut)
+		memmove(direct, &result.v, sjme_nvm_typeMul[fieldId->javaType]);
+	else
+		memmove(&result.v, direct, sjme_nvm_typeMul[fieldId->javaType]);
+	
 	/* Push result to the stack. */
-	result.t = fieldId->info->javaType;
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-		inFrame, &result)))
-		return sjme_error_vmError(inFrame, error);
+	if (!isPut)
+	{
+		result.t = fieldId->javaType;
+		if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+			inFrame, &result)))
+			return sjme_error_vmError(inFrame, error);
+	}
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;

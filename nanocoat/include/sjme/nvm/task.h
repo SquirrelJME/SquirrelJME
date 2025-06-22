@@ -259,6 +259,12 @@ struct sjme_nvm_frameBase
 
 		/** Exit synchronization was performed. */
 		sjme_jboolean synchronizedExit : sjme_booleanBit;
+
+		/** Is this a static initializer? */
+		sjme_jboolean isStaticInit : sjme_booleanBit;
+
+		/** Is this an instance initializer? */
+		sjme_jboolean isInstanceInit : sjme_booleanBit;
 	} flags;
 };
 

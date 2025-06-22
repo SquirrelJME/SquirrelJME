@@ -2161,6 +2161,12 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 	/* The identifier hash is used for lookup. */
 	result->idHash = sjme_nvm_class_idHashMember(result->name->seq,
 		result->type->seq);
+
+	/* Are these initializers? */
+	result->bits.isStaticInit = sjme_charSeq_equalsUtfR(
+		result->name->seq, "<clinit>");
+	result->bits.isInstanceInit = sjme_charSeq_equalsUtfR(
+		result->name->seq, "<init>");
 	
 	/* Success! */
 	*outMethod = result;

@@ -125,6 +125,9 @@ struct sjme_jmethodIDBase
 	
 	/** The info this is bound to, for virtual and non-virtual calls. */
 	sjme_nvm_class_methodInfo info[SJME_NVM_NUM_METHOD_CALL_TYPE];
+	
+	/** Bits to assist in quicker method determinations. */
+	sjme_nvm_class_methodInfoBits bits;
 };
 
 /**
@@ -142,6 +145,9 @@ struct sjme_jfieldIDBase
 {
 	/** Member information. */
 	sjme_jmemberIDBase member;
+
+	/** The Java type of this field. */
+	sjme_javaTypeId javaType;
 
 	/** The field flags. */
 	sjme_nvm_class_fieldFlags flags;

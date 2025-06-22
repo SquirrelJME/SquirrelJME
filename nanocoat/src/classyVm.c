@@ -184,6 +184,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 
 		/* Set ID info. */
 		id->info = field;
+		id->javaType = field->javaType;
 		id->flags = field->flags;
 		id->member.idHash = field->idHash;
 		id->member.inClass = inClass;
@@ -295,14 +296,15 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	SJME_M_N(result) = thisInfo->name;
 	SJME_M_T(result) = thisInfo->type;
 
-	/* Also copy flags. */
+	/* Also copy flags and bits. */
 	result->flags = thisInfo->flags;
+	result->bits = thisInfo->bits;
 	
 	/* Constructors always bind to self. */
 	/* Along with any private methods. */
 	/* Static as well. */
-	if (sjme_charSeq_equalsUtfR(thisInfo->name->seq, "<init>") ||
-		sjme_charSeq_equalsUtfR(thisInfo->name->seq, "<clinit>") ||
+	if (thisInfo->bits.isInstanceInit ||
+		thisInfo->bits.isStaticInit ||
 		thisInfo->flags.member.access.private ||
 		thisInfo->flags.member.isStatic)
 	{

@@ -1346,6 +1346,10 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	result->inCode = targetInfo->code;
 	result->pool = targetInfo->code->inMethod->inClass->pool;
 
+	/* Used for final field setting. */
+	result->flags.isStaticInit = targetInfo->bits.isStaticInit;
+	result->flags.isInstanceInit = targetInfo->bits.isInstanceInit;
+
 	/* Link to parent. */
 	if (inThread->numFrames == 0)
 		result->parent = NULL;
