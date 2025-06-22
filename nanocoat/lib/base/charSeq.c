@@ -826,6 +826,7 @@ sjme_lpcstr sjme_charSeq_tempUtf(
 	/* Store new base. */
 	tempAt = baseAt + n;
 	buf[tempAt] = '\0';
+	tempAt += 1;
 	return &buf[baseAt];
 #undef TEMP_SIZE
 }

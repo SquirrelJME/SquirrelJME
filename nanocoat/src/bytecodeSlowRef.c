@@ -784,6 +784,59 @@ SJME_NVM_BYTECODE_SLOW(NewArray)
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
 
+SJME_NVM_BYTECODE_SLOW(NewArrayA)
+{
+	sjme_jint poolIndex;
+	sjme_nvm_class_poolEntry* entry;
+	sjme_jclass componentType;
+	sjme_jvalueTyped length;
+	sjme_jvalueTyped array;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	
+	/* Read in pool reference. */
+	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
+	if (sjme_error_is(error = sjme_nvm_task_framePool(
+		inFrame, poolIndex, &entry,
+		SJME_NVM_CLASS_POOL_TYPE_CLASS,
+		0)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Determine the referenced class. */
+	componentType = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		SJME_F_CL(inFrame),
+		&componentType,
+		SJME_F_T(inFrame),
+		SJME_P_C_N(entry)->seq,
+		SJME_JNI_TRUE)) || componentType == NULL)
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Read in array length. */
+	memset(&length, 0, sizeof(length));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_INTEGER, &length)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Length is not valid. */
+	if (length.v.i < 0)
+		return sjme_error_vmError(inFrame, SJME_ERROR_NEGATIVE_ARRAY_SIZE);
+
+	/* Create new array. */
+	memset(&array, 0, sizeof(array));
+	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
+		SJME_F_T(inFrame), &array.v.l, componentType, length.v.i)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Push to the stack. */
+	array.t = SJME_JAVA_TYPE_ID_OBJECT;
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&array)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(StaticAccess)
 {
 	sjme_jint poolIndex;
