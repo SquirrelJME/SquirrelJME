@@ -42,7 +42,7 @@ SJME_NVM_MLE_FUNCTION_DECL(weakInit)
 			sjme_error_mask(error, SJME_ERROR_MLE_CALL));
 
 	/* Double check initialization, it can only happen once. */
-	if (sjme_atomic_sjme_jint_compareSet(&weak->beenInit,
+	if (!sjme_atomic_sjme_jint_compareSet(&weak->beenInit,
 		SJME_JNI_FALSE, SJME_JNI_TRUE))
 		goto fail_beenInit;
 
@@ -71,6 +71,6 @@ SJME_NVM_MLE_SHELF_DECLARE(ReferenceShelf) =
 	SJME_NVM_MLE_DEFINE(weakInit,
 		SJME_MD(SJME_MD_V, SJME_MD_REFERENCE SJME_MD_OBJECT
 			SJME_MD_REFERENCE_QUEUE),
-		"LLL"),
+		"L", "LLL"),
 	SJME_NVM_MLE_STOP()
 };

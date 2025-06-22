@@ -184,27 +184,27 @@ SJME_NVM_MLE_SHELF_DECLARE(TerminalShelf) =
 {
 	SJME_NVM_MLE_DEFINE(available,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE),
-		"IL"),
+		"I", "L"),
 	SJME_NVM_MLE_DEFINE(close,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE),
-		"IL"),
+		"I", "L"),
 	SJME_NVM_MLE_DEFINE(flush,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE),
-		"IL"),
+		"I", "L"),
 	SJME_NVM_MLE_DEFINE(fromStandard,
 		SJME_MD(SJME_MD_PIPE, SJME_MD_I),
-		"LI"),
+		"L", "I"),
 	SJME_NVM_MLE_DEFINE(read,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE SJME_MD_A(SJME_MD_B) SJME_MD_I
 			SJME_MD_I),
-		"ILLII"),
+		"I", "LLII"),
 	SJME_NVM_MLE_DEFINE_ALT(write, single,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE SJME_MD_I),
-		"ILI"),
+		"I", "LI"),
 	SJME_NVM_MLE_DEFINE_ALT(write, multi,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE SJME_MD_A(SJME_MD_B)
 			SJME_MD_I SJME_MD_I),
-		"ILLII"),
+		"I", "LLII"),
 	
 	SJME_NVM_MLE_STOP()
 };

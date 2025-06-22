@@ -30,6 +30,9 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/** MLE Key. */
+#define rv, args rv args
 	
 /** Integer type. */
 #define SJME_MI SJME_JAVA_TYPE_ID_INTEGER
@@ -125,16 +128,16 @@ extern "C"
 	SJME_NVM_MLE_FUNCTION_DECL_ALT(name, none)
 
 /** Defines an MLE function. */
-#define SJME_NVM_MLE_DEFINE_ALT(name, alt, type, argX) \
+#define SJME_NVM_MLE_DEFINE_ALT(name, alt, type, argXR, argXA) \
 	{ \
 		#name, type, \
-		argX, \
+		argXR argXA, \
 		SJME_NVM_MLE_FUNCTION_NAME(name, alt) \
 	}
 
 /** Defines an MLE function. */
-#define SJME_NVM_MLE_DEFINE(name, type, argX) \
-	SJME_NVM_MLE_DEFINE_ALT(name, none, type, argX)
+#define SJME_NVM_MLE_DEFINE(name, type, argXR, argXA) \
+	SJME_NVM_MLE_DEFINE_ALT(name, none, type, argXR, argXA)
 
 /** Stop MLE definitions. */
 #define SJME_NVM_MLE_STOP() \
