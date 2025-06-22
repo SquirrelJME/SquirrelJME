@@ -1358,6 +1358,12 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	result->inCode = targetInfo->code;
 	result->pool = targetInfo->code->inMethod->inClass->pool;
 
+	/* If static, refer to the class, otherwise refer to the instance. */
+	if (inMethod->flags.member.isStatic)
+		result->instance = SJME_AS_JOBJECT(result->inClass);
+	else
+		result->instance = argV[0].v.l;
+
 	/* Used for final field setting. */
 	result->flags.isStaticInit = targetInfo->bits.isStaticInit;
 	result->flags.isInstanceInit = targetInfo->bits.isInstanceInit;

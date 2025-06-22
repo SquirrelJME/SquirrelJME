@@ -251,6 +251,9 @@ struct sjme_nvm_frameBase
 	/** Stack information for the frame. */
 	sjme_frame_frameStacks stack;
 
+	/** The instance object or class. */
+	sjme_jobject instance;
+
 	/** Frame state flags. */
 	sjme_packed struct
 	{
