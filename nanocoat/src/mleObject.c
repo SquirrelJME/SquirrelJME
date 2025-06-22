@@ -12,6 +12,26 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+SJME_NVM_MLE_FUNCTION_DECL(arrayLength)
+{
+	sjme_jarray array;
+
+	/* Cannot be null. */
+	array = (sjme_jarray)argV[0].v.l;
+	if (array == NULL)
+		return SJME_ERROR_MLE_CALL;
+	
+	/* If an array, set the length. */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	if (sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE))
+		argV->v.i = array->length;
+	else
+		argV->v.i = -1;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(newInstance)
 {
 	sjme_errorCode error;
@@ -63,6 +83,9 @@ SJME_NVM_MLE_FUNCTION_DECL(newInstance)
 
 SJME_NVM_MLE_SHELF_DECLARE(ObjectShelf) =
 {
+	SJME_NVM_MLE_DEFINE(arrayLength,
+		SJME_MD(SJME_MD_I, SJME_MD_OBJECT),
+		"I", "L"),
 	SJME_NVM_MLE_DEFINE(newInstance,
 		SJME_MD(SJME_MD_OBJECT, SJME_MD_TYPE),
 		"L", "L"),
