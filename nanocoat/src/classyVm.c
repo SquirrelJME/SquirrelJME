@@ -1863,8 +1863,18 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadF(
 	/* Need to grow the class list? */
 	if (freeSlot < 0)
 	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* The free slot is at the end of the list. */
+		freeSlot = classes->length;
+		
+		/* Grow the list. */
+		if (sjme_error_is(error = sjme_list_replace(
+			inLoader->inState->allocPool,
+			classes->length + SJME_VM_CLASS_GROW_LEN,
+			&classes, sjme_jclass, 0)) || classes == NULL)
+			goto fail_growList;
+
+		/* Set new list. */
+		inLoader->classes = classes;
 	}
 	
 	/* Forward load of class. */
@@ -1899,6 +1909,7 @@ skip_foundClass:
 	
 fail_loadClass:
 fail_releaseRead:
+fail_growList:
 fail_findFree:
 	/* Release the write lock before failing. */
 	sjme_thread_rwLockReleaseWrite(&inLoader->rwLock, NULL);

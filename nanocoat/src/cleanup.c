@@ -328,9 +328,9 @@ static sjme_errorCode sjme_nvm_instanceClose(
 {
 	if (closeable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	sjme_message("TODO: sjme_nvm_instanceClose()");
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_nvm_vmClass_isClassesClose(
