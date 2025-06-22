@@ -270,10 +270,12 @@ public final class TypeShelf
 	 *
 	 * @param __o The object to get the type of.
 	 * @return The type of the given object.
+	 * @throws MLECallError On null arguments.
 	 * @since 2020/06/02
 	 */
 	@SquirrelJMEVendorApi
-	public static native TypeBracket objectType(@NotNull Object __o);
+	public static native TypeBracket objectType(@NotNull Object __o)
+		throws MLECallError;
 	
 	/**
 	 * Returns the run-time name of a type as it would be if

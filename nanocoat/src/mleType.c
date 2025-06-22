@@ -80,6 +80,45 @@ SJME_NVM_MLE_FUNCTION_DECL(findType)
 	return SJME_ERROR_NONE;
 }
 
+SJME_NVM_MLE_FUNCTION_DECL(objectType)
+{
+	sjme_jobject object;
+	
+	/* Must be a non-null object. */
+	object = argV[0].v.l;
+	if (object == NULL)
+		return SJME_ERROR_MLE_CALL;
+	
+	/* This is rather simple, just getting the class of the object. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = SJME_AS_JOBJECT(object->isClass);
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(runtimeName)
+{
+	sjme_errorCode error;
+	sjme_jclass inType;
+
+	/* Must be an actual class type. */
+	inType = (sjme_jclass)argV[0].v.l;
+	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Return the runtime string for the class. */
+	argR->v.l = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
+		SJME_F_T(inFrame), SJME_AS_JSTRINGP(&argR->v.l),
+		(inType->info->runtimeName != NULL ?
+			inType->info->runtimeName : inType->info->name))) ||
+		argR->v.l == NULL)
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Return the given string. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(typeToClass)
 {
 	sjme_jobject inType;
@@ -156,12 +195,14 @@ SJME_NVM_MLE_SHELF_DECLARE(TypeShelf) =
 	SJME_NVM_MLE_DEFINE(isPrimitive,
 		SJME_MD(,),
 		""),
+#endif
 	SJME_NVM_MLE_DEFINE(objectType,
-		SJME_MD(,),
-		""),
+		SJME_MD(SJME_MD_TYPE, SJME_MD_OBJECT),
+		"L", "L"),
 	SJME_NVM_MLE_DEFINE(runtimeName,
-		SJME_MD(,),
-		""),
+		SJME_MD(SJME_MD_STRING, SJME_MD_TYPE),
+		"L", "L"),
+#if 0
 	SJME_NVM_MLE_DEFINE(superClass,
 		SJME_MD(,),
 		""),

@@ -1206,6 +1206,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_class_info* outClass)
 {
+#define MAX_RUNTIME_NAME 256
 	sjme_errorCode error;
 	sjme_jint magic, fullVersion, i, lastSlash;
 	sjme_jshort major, minor, interfaceCount, fieldCount, methodCount;
@@ -1221,6 +1222,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_nvm_class_fieldInfo field;
 	sjme_nvm_class_methodInfo method;
 	sjme_lpstr packageName;
+	sjme_cchar runtimeName[MAX_RUNTIME_NAME];
 	
 	if (allocPool == NULL || inStream == NULL || inStringPool == NULL ||
 		outClass == NULL)
@@ -1346,6 +1348,32 @@ sjme_errorCode sjme_nvm_class_parse(
 	if (sjme_error_is(error = sjme_alloc_weakRef(
 		result->inPackage, NULL)))
 		goto fail_refPackage;
+
+	/* Translate to the name as it would appear at runtime. */
+	memset(runtimeName, 0, sizeof(runtimeName));
+	if (sjme_error_is(error = sjme_charSeq_dupToU(result->name->seq,
+		0, runtimeName, 0, MAX_RUNTIME_NAME - 1,
+		-1)))
+		goto fail_dupName;
+	runtimeName[MAX_RUNTIME_NAME - 1] = 0;
+	
+	for (i = 0; i < MAX_RUNTIME_NAME; i++)
+		if (runtimeName[i] == '/')
+			runtimeName[i] = '.';
+		else if (runtimeName[i] == '\0')
+			break;
+
+	/* Lookup the runtime string. */
+	result->runtimeName = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
+		inStringPool, &result->runtimeName, runtimeName, 0, -1)) ||
+		result->runtimeName == NULL)
+		goto fail_inRuntimeName;
+	
+	/* Reference it. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(
+		result->runtimeName, NULL)))
+		goto fail_refRuntimeName;
 	
 	/* Read in super name. */
 	superName = NULL;
@@ -1518,6 +1546,9 @@ fail_allocInterfaceNames:
 fail_readInterfaceCount:
 fail_refSuperName:
 fail_readSuperName:
+fail_refRuntimeName:
+fail_inRuntimeName:
+fail_dupName:
 fail_refPackage:
 fail_inPackage:
 fail_refThisName:
@@ -1535,6 +1566,7 @@ fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 	return sjme_error_vmError(NULL, error);
+#undef MAX_RUNTIME_NAME
 }
 
 sjme_errorCode sjme_nvm_class_parseAttributes(

@@ -667,11 +667,23 @@ sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_stringPool_string inClassName)
 {
+	sjme_errorCode error;
+	sjme_jvalueTyped value;
+	
 	if (inFrame == NULL || inClassName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Lookup class. */
+	value.v.l = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		SJME_F_CL(inFrame), SJME_AS_JCLASSP(&value.v.l),
+		SJME_F_T(inFrame),
+		inClassName->seq, SJME_JNI_TRUE)) || value.v.l == NULL)
+		return sjme_error_default(error);
+	
+	/* Push value. */
+	value.t = SJME_JAVA_TYPE_ID_OBJECT;
+	return sjme_nvm_task_frameStackPush(inFrame, &value);
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPushStringP(
@@ -689,7 +701,7 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 	value.t = SJME_JAVA_TYPE_ID_OBJECT;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
 		SJME_F_T(inFrame),
-		SJME_AS_NVM_JSTRINGP(&value.v.l), inString)) ||
+		SJME_AS_JSTRINGP(&value.v.l), inString)) ||
 		value.v.l == NULL)
 		return sjme_error_vmError(inFrame, error);
 
@@ -1718,8 +1730,14 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 				if (hash != result->hashCode || length != result->length)
 					continue;
 				
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
+				/* Release. */
+				if (sjme_error_is(error = sjme_thread_spinLockRelease(
+					&strings->common.lock, NULL)))
+					return sjme_error_default(error);
+
+				/* Already exists, so return it! */
+				*outString = result;
+				return SJME_ERROR_NONE;
 			}
 	}
 

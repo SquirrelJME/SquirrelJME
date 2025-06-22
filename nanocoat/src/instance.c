@@ -171,7 +171,7 @@ sjme_errorCode sjme_nvm_instance_initFields(
 		{
 			direct->l = NULL;
 			if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
-				contextThread, SJME_AS_NVM_JSTRINGP(&direct->l),
+				contextThread, SJME_AS_JSTRINGP(&direct->l),
 				constVal->value.string)) || direct->l == NULL)
 				return sjme_error_vmError(contextThread,
 					sjme_error_defaultOr(error,

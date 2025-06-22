@@ -634,6 +634,9 @@ struct sjme_nvm_class_infoBase
 	/** The superclass of this class. */
 	sjme_nvm_stringPool_string superName;
 
+	/** The runtime name as returned by @c Class.getName() . */
+	sjme_nvm_stringPool_string runtimeName;
+
 	/** The interfaces this class implements. */
 	sjme_list_sjme_nvm_stringPool_string* interfaceNames;
 

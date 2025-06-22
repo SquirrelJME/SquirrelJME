@@ -256,6 +256,12 @@ typedef sjme_nvm_commonBase* sjme_nvm_common;
 
 /** Cast to pointer to object. */
 #define SJME_AS_JOBJECTP(x) ((sjme_jobject*)(x))
+	
+/** Cast to class. */
+#define SJME_AS_JCLASS(x) ((sjme_jclass)(x))
+
+/** Cast to pointer to object. */
+#define SJME_AS_JCLASSP(x) ((sjme_jclass*)(x))
 
 /** As a member ID. */
 #define SJME_AS_JMEMBERID(x) ((sjme_jmemberID)(x))
@@ -491,7 +497,7 @@ extern const sjme_jint sjme_nvm_typePromote[SJME_NUM_BASIC_TYPE_IDS];
 #define SJME_NANOCOAT_END_CALL ((sjme_pcAddr)-2)
 
 /** Casts pointer to a pointer to a @c sjme_jstring . */
-#define SJME_AS_NVM_JSTRINGP(p) ((sjme_jstring*)(p))
+#define SJME_AS_JSTRINGP(p) ((sjme_jstring*)(p))
 	
 /**
  * Allows for optional debug abort when a virtual machine error occurs
