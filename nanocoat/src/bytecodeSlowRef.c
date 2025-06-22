@@ -210,6 +210,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jclass desireClass;
 	sjme_jvalueTyped value;
+	sjme_jvalueTyped instance;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* Read in pool reference. */
@@ -245,6 +246,128 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	{
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
+	}
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(InstanceAccess)
+{
+	sjme_jint poolIndex;
+	sjme_nvm_class_poolEntry* entry;
+	sjme_jclass desireClass;
+	sjme_jfieldID fieldId;
+	sjme_jvalue* direct;
+	sjme_jvalueTyped result;
+	sjme_jvalueTyped instance;
+	sjme_nvm_jfieldAccessFunc accessor;
+	sjme_jboolean isPut;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Is this a get or a put? */
+	isPut = (id == 181);
+
+	/* Read in pool reference. */
+	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
+	if (sjme_error_is(error = sjme_nvm_task_framePool(
+		inFrame, poolIndex, &entry,
+		SJME_NVM_CLASS_POOL_TYPE_FIELD,
+		0)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Locate target class. */
+	desireClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		SJME_F_CL(inFrame),
+		&desireClass,
+		SJME_F_T(inFrame),
+		SJME_P_M_C(entry)->seq,
+		SJME_JNI_TRUE)) || desireClass == NULL)
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Lookup field in the class. */
+	fieldId = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_fieldIDByNameType(
+		desireClass, SJME_F_T(inFrame),
+		SJME_NVM_CLASS_MEMBER_INSTANCE,
+		SJME_JNI_TRUE,
+		SJME_P_M_N(entry)->seq,
+		SJME_P_M_T(entry)->seq,
+		&fieldId)) || fieldId == NULL)
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Not an instance field? */
+	if (fieldId->flags.member.isStatic)
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+
+	/* Check access for calling this method. */
+	if (sjme_error_is(error = sjme_nvm_access_checkFToF(
+		inFrame, fieldId)))
+		return sjme_error_vmError(inFrame,
+			SJME_ERROR_CLASS_CHANGED);
+
+	/* Read in value to put. */
+	if (isPut)
+	{
+		/* Cannot be final unless we are in a static initializer. */
+		if (fieldId->flags.member.final)
+		{
+			/* Cannot write static final fields. */
+			if (fieldId->flags.member.isStatic)
+				return sjme_error_vmError(inFrame,
+					SJME_ERROR_MEMBER_ACCESS_DENIED);
+			
+			/* Completely different class? */
+			if (fieldId->member.inClass != inFrame->inClass)
+				return sjme_error_vmError(inFrame,
+					SJME_ERROR_MEMBER_ACCESS_DENIED);
+
+			/* We must be in an instance initializer. */
+			if (!inFrame->flags.isInstanceInit)
+				return sjme_error_vmError(inFrame,
+					SJME_ERROR_MEMBER_ACCESS_DENIED);
+		}
+
+		/* Read in the value to write. */
+		memset(&result, 0, sizeof(result));
+		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+			fieldId->javaType, &result)))
+			return sjme_error_vmError(inFrame, error);
+	}
+
+	/* Obtain accessor for this field. */
+	if (fieldId->accessor != NULL)
+		accessor = fieldId->accessor;
+	else
+		accessor = SJME_F_K(inFrame)->globals.accessor;
+	if (accessor == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_FIELD_NOT_DIRECT);
+
+	/* Read instance to act on. */
+	memset(&instance, 0, sizeof(instance));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &instance)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Direct access. */
+	direct = accessor(instance.v.l, fieldId);
+	if (direct == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_FIELD_NOT_DIRECT);
+
+	/* Copy data over. */
+	if (isPut)
+		memmove(direct, &result.v, sjme_nvm_typeMul[fieldId->javaType]);
+	else
+		memmove(&result.v, direct, sjme_nvm_typeMul[fieldId->javaType]);
+	
+	/* Push result to the stack. */
+	if (!isPut)
+	{
+		result.t = fieldId->javaType;
+		if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+			inFrame, &result)))
+			return sjme_error_vmError(inFrame, error);
 	}
 	
 	/* Success? */
@@ -734,6 +857,11 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 		/* Cannot be final unless we are in a static initializer. */
 		if (fieldId->flags.member.final)
 		{
+			/* Cannot write instance final fields. */
+			if (!fieldId->flags.member.isStatic)
+				return sjme_error_vmError(inFrame,
+					SJME_ERROR_MEMBER_ACCESS_DENIED);
+			
 			/* Completely different class? */
 			if (fieldId->member.inClass != inFrame->inClass)
 				return sjme_error_vmError(inFrame,
