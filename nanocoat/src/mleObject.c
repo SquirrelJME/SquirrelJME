@@ -12,6 +12,68 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+SJME_NVM_MLE_FUNCTION_DECL(arrayClone)
+{
+	sjme_errorCode error;
+	sjme_jarray array;
+	sjme_jarray clone;
+	sjme_jobject element;
+	sjme_jint length, i;
+
+	/* Must be an actual array. */
+	array = (sjme_jarray)argV[0].v.l;
+	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Lock the array. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&array->object.common.lock)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Remember the length, since we will be locking. */
+	length = array->length;
+
+	/* Allocate a new array which uses the same type. */
+	clone = NULL;
+	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
+		SJME_F_T(inFrame), SJME_AS_JOBJECTP(&clone),
+		sjme_atomic_sjme_jclass_get(
+			&array->object.isClass->componentType), length)) || clone == NULL)
+		goto fail_alloc;
+
+	/* Copy all values over. */
+	memmove(&clone->e, &array->e, sjme_nvm_typeMul[array->type] * length);
+
+	/* If this is an object array, everything needs to be counted. */
+	if (array->type == SJME_JAVA_TYPE_ID_OBJECT)
+		for (i = 0; i < length; i++)
+		{
+			/* Skip null elements. */
+			element = array->e.l[i];
+			if (element == NULL)
+				continue;
+
+			/* Count up. */
+			if (sjme_error_is(error = sjme_alloc_weakRef(element, NULL)))
+				goto fail_count;
+		}
+
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&array->object.common.lock, NULL)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Return the resultant clone. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = SJME_AS_JOBJECT(clone);
+	return SJME_ERROR_NONE;
+
+fail_count:
+fail_alloc:
+	sjme_thread_spinLockRelease(&array->object.common.lock, NULL);
+	return sjme_error_vmError(inFrame, error);
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(arrayLength)
 {
 	sjme_jarray array;
@@ -83,6 +145,9 @@ SJME_NVM_MLE_FUNCTION_DECL(newInstance)
 
 SJME_NVM_MLE_SHELF_DECLARE(ObjectShelf) =
 {
+	SJME_NVM_MLE_DEFINE(arrayClone,
+		SJME_MD(SJME_MD_OBJECT, SJME_MD_OBJECT),
+		"L", "L"),
 	SJME_NVM_MLE_DEFINE(arrayLength,
 		SJME_MD(SJME_MD_I, SJME_MD_OBJECT),
 		"I", "L"),

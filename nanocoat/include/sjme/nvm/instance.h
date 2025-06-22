@@ -279,7 +279,7 @@ struct sjme_jarrayBase
 	sjme_jobjectBase object;
 
 	/** The array type. */
-	sjme_javaTypeId type;
+	sjme_basicTypeId type;
 
 	/** The length of the array. */
 	sjme_jint length;
