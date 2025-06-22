@@ -117,6 +117,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_list_sjme_jfieldID** outList)
 {
 	sjme_errorCode error;
@@ -131,7 +132,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 	sjme_jint typedOffset[SJME_NUM_JAVA_TYPE_IDS];
 	
 	if (inState == NULL || inLoader == NULL || inClass == NULL ||
-		outList == NULL)
+		contextThread == NULL || outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
@@ -251,12 +252,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldStatics(
 }
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_jclass thisClass,
 	sjme_attrInNotNull sjme_jclass superClass,
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
 	sjme_attrInPositive sjme_jint index,
 	sjme_attrInNotNull sjme_nvm_class_methodInfo thisInfo,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_jmethodID* outBind)
 {
 	sjme_errorCode error;
@@ -266,8 +269,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	sjme_jint i, n;
 	sjme_jboolean wantStatic;
 
-	if (inState == NULL || thisClass == NULL || thisInfo == NULL ||
-		outBind == NULL)
+	if (inLoader == NULL || inState == NULL || thisClass == NULL ||
+		thisInfo == NULL || contextThread == NULL || outBind == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (superClass != SJME_C_SU(thisClass))
@@ -286,8 +289,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
 
-	/* Always in the current class. */
-	result->member.inClass = thisClass;
+	/* The context class is always the method which the method actually */
+	/* exists within. */
+	result->member.inClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		inLoader, &result->member.inClass, contextThread,
+		thisInfo->inClass->name->seq, SJME_JNI_FALSE)) ||
+		result->member.inClass == NULL)
+		goto fail_contextClass;
 
 	/* The identifier hash is used for lookup. */
 	result->member.idHash = thisInfo->idHash;
@@ -387,6 +396,7 @@ fail_changed:
 	
 fail_noMethod:
 fail_badFind:
+fail_contextClass:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
@@ -398,6 +408,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_list_sjme_jmethodID** outList)
 {
 	sjme_errorCode error;
@@ -407,7 +418,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	sjme_list_sjme_jmethodID* result;
 	sjme_jmethodID bind;
 	
-	if (inLoader == NULL || inClass == NULL || outList == NULL)
+	if (inLoader == NULL || inClass == NULL || contextThread == NULL ||
+		outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
@@ -451,9 +463,9 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 		/* Perform the binding. */
 		bind = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBind(
-			inLoader->inState, inClass, superClass,
+			inLoader, inLoader->inState, inClass, superClass,
 			instanceType, i, methodInfo,
-			&bind)) || bind == NULL)
+			contextThread, &bind)) || bind == NULL)
 			goto fail_initBind;
 
 		/* Stopped being consistent? */
@@ -1154,7 +1166,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	{
 		methodBinds = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBinds(
-			loader, inClass, i,
+			loader, inClass, i, contextThread,
 			&methodBinds)) || methodBinds == NULL)
 			goto fail_bindMethods;
 		inClass->methods[i].binds = methodBinds;
@@ -1211,7 +1223,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		/* Initialize binds. */
 		fieldBinds = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitFieldBinds(
-			contextThread->inState, loader, inClass, i,
+			contextThread->inState, loader, inClass, i, contextThread,
 			&fieldBinds)) || fieldBinds == NULL)
 			goto fail_bindFields;
 		inClass->fields[i].binds = fieldBinds;
@@ -1401,6 +1413,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldIDByNameType(
 	sjme_list_sjme_jfieldID* fields;
 	sjme_jfieldID field;
 	sjme_jclass pivot;
+	sjme_jint wantHash;
 	
 	if (inClass == NULL || contextThread == NULL || inName == NULL ||
 		inType == NULL || outID == NULL)
@@ -1413,6 +1426,9 @@ sjme_errorCode sjme_nvm_vmClass_fieldIDByNameType(
 	if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
 		inClass, contextThread)))
 		return sjme_error_default(error);
+
+	/* Calculate the hash to lookup. */
+	wantHash = sjme_nvm_class_idHashMember(inName, inType);
 	
 	/* Look through all fields. */
 	for (pivot = inClass; pivot != NULL; pivot = SJME_C_SU(pivot))
@@ -1430,6 +1446,10 @@ sjme_errorCode sjme_nvm_vmClass_fieldIDByNameType(
 			if (field == NULL)
 				return sjme_error_vmError(contextThread,
 					SJME_ERROR_NO_METHOD);
+			
+			/* Check against the hash, which is faster. */
+			if (field->member.idHash != wantHash)
+				continue;
 			
 			/* Is this the method. */
 			if (sjme_charSeq_equalsR(SJME_M_N(field)->seq, inName) &&
@@ -2165,7 +2185,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 
 	/* Go through methods. */
 	methods = interfaceId->methods;
-	for (i = 0, n = methods->length; i < n; i++)
+	for (i = methods->length - 1; i >= 0; i--)
 	{
 		/* Check method, NULL might be a private method in Object. */
 		method = methods->elements[i];
@@ -2207,6 +2227,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 	sjme_jint i, n;
 	sjme_list_sjme_jmethodID* methods;
 	sjme_jmethodID method;
+	sjme_jint wantHash;
 	
 	if (inClass == NULL || contextThread == NULL || inName == NULL ||
 		inType == NULL || outID == NULL)
@@ -2219,6 +2240,9 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 	if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
 		inClass, contextThread)))
 		return sjme_error_default(error);
+
+	/* Calculate the hash to lookup. */
+	wantHash = sjme_nvm_class_idHashMember(inName, inType);
 		
 	/* Look through all methods. */
 	methods = inClass->methods[instanceType].binds;
@@ -2229,6 +2253,10 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 		if (method == NULL)
 			return sjme_error_vmError(contextThread,
 				SJME_ERROR_NO_METHOD);
+			
+		/* Check against the hash, which is faster. */
+		if (method->member.idHash != wantHash)
+			continue;
 		
 		/* Is this the method. */
 		if (sjme_charSeq_equalsR(SJME_M_N(method)->seq, inName) &&

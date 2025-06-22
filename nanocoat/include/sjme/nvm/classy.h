@@ -1031,7 +1031,12 @@ sjme_errorCode sjme_nvm_class_validBinaryName(
 /** Pool member entry type. */
 #define SJME_P_M_T(entry) \
 	(SJME_P_M(entry).nameAndType->descriptor)
-	
+
+/** Calculates the identifier hash for a member. */
+#define sjme_nvm_class_idHashMember(name, type) \
+	(sjme_charSeq_hashR((name)) ^ \
+		sjme_util_intReverse(sjme_charSeq_hashR((type))))
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

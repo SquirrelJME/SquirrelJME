@@ -328,8 +328,6 @@ sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
 		
 	/* Do this just for good measure for the wierd CPUs. */
 	sjme_atomic_barrier();
-	sjme_thread_yield();
-	sjme_atomic_barrier();
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -384,8 +382,6 @@ sjme_errorCode sjme_thread_spinLockRelease(
 		current, SJME_THREAD_NULL);
 		
 	/* Do this just for good measure for the wierd CPUs. */
-	sjme_atomic_barrier();
-	sjme_thread_yield();
 	sjme_atomic_barrier();
 
 #if defined(SJME_CONFIG_DEBUG)

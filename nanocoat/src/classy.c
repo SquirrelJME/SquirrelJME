@@ -82,11 +82,6 @@
 /** Class is an enum. */
 #define SJME_NVM_CLASS_ACC_ENUM INT16_C(0x4000)
 
-/** Calculates the identifier hash for a member. */
-#define sjme_nvm_class_idHashMember(name, type) \
-	(sjme_charSeq_hashR((name)) ^ \
-		sjme_util_intReverse(sjme_charSeq_hashR((type))))
-
 static sjme_errorCode sjme_nvm_class_readPoolRefIndex(
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inClassPool,
