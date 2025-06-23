@@ -220,7 +220,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		/* Default PC adjustment must be calculated? */
 		if (pcDefault.adjust < SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_5)
 			if (sjme_error_is(error = sjme_nvm_byteCode_calcLength(
-				currentFrame, iv, ev, &pcNew)))
+				currentFrame, iv, ev, &pcDefault)))
 				return sjme_error_vmError(inThread, error);
 
 		/* Which LUT table to use? */

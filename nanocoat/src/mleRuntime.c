@@ -8,6 +8,11 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/config.h"
+
+#if defined(SJME_CONFIG_HAS_POSIX)
+	#include <locale.h>
+#endif
+
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleConst.h"
 #include "sjme/nvm/mleShelves.h"
@@ -62,8 +67,44 @@ SJME_NVM_MLE_FUNCTION_DECL(lineEnding)
 
 SJME_NVM_MLE_FUNCTION_DECL(locale)
 {
+	static sjme_atomic_sjme_jint cached;
+	sjme_nvm_mle_builtInLocaleType locale;
+#if defined(SJME_CONFIG_HAS_POSIX)
+	sjme_lpcstr set;
+#endif
+
+	/* Cached? */
+	locale = sjme_atomic_sjme_jint_get(&cached);
+	if (locale != SJME_NVM_MLE_LOCALE_UNSPECIFIED)
+		goto skip_cached;
+	
+#if defined(SJME_CONFIG_HAS_WINDOWS)
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#elif defined(SJME_CONFIG_HAS_POSIX)
+	/* Get the base global locale. */
+	set = setlocale(LC_ALL, "");
+	if (set != NULL)
+	{
+		/* US English. */
+		if (strncasecmp(set, "en_US", 5))
+			locale = SJME_NVM_MLE_LOCALE_US_ENGLISH;
+
+		/* Default English (US). */
+		else if (strncasecmp(set, "en", 2))
+			locale = SJME_NVM_MLE_LOCALE_US_ENGLISH;
+	}
+#endif
+	
+	/* Fallback to US English if unspecified. */
+	if (locale == SJME_NVM_MLE_LOCALE_UNSPECIFIED)
+		locale = SJME_NVM_MLE_LOCALE_US_ENGLISH;
+
+	/* Return the given locale. */
+skip_cached:
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = locale;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(memoryProfile)

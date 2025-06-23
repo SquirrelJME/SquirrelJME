@@ -29,6 +29,20 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * The built-in locales which are supported.
+ *
+ * @since 2025/06/22
+ */
+typedef enum sjme_nvm_mle_builtInLocaleType
+{
+	/** Unspecified. */
+	SJME_NVM_MLE_LOCALE_UNSPECIFIED = 0,
+
+	/** English, US. */
+	SJME_NVM_MLE_LOCALE_US_ENGLISH = 1,
+} sjme_nvm_mle_builtInLocaleType;
+	
+/**
  * The type of line ending the system uses.
  *
  * @since 2025/03/02
