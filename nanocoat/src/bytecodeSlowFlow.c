@@ -225,6 +225,85 @@ SJME_NVM_BYTECODE_SLOW(Goto)
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
 
+SJME_NVM_BYTECODE_SLOW(LookupSwitch)
+{
+	sjme_jint paramBase, divHi;
+	sjme_jint pivot, divLo, base;
+	sjme_jint matchKey, desire;
+	sjme_jvalueTyped value;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Determine the relative base for parameters. */
+	paramBase = ((inFrame->pc + 4) & (~3)) - inFrame->pc;
+
+	/* The initial high division is the pair count. */
+	divHi = sjme_big_int(
+		*sjme_util_memUnaligned32(&relRawCode[paramBase + 4]));
+
+	/* Cannot have a negative number of pairs. */
+	if (divHi < 0)
+		return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_INSTRUCTION);
+
+	/* Read in switch value. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_INTEGER, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Table is completely empty, skip everything. */
+	if (divHi == 0)
+		goto skip_default;
+	
+	/* Binary search within the table. */
+	desire = value.v.i;
+	for (divLo = 0; divLo <= divHi;)
+	{
+		/* Calculate the pivot to use. */
+		pivot = divLo + (((divHi - divLo) + 1) >> 1);
+		
+		/* Read the pivot value. */
+		base = (paramBase + 8) + (pivot * 8);
+		matchKey = sjme_big_int(
+			*sjme_util_memUnaligned32(&relRawCode[base]));
+
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+		/* Debug. */
+		sjme_message("LS @%d->%d (%d): %3d|%3d|%3d: %08x ?= %08x",
+			inFrame->pc, paramBase, paramBase - inFrame->pc,
+			divLo, pivot, divHi, desire, matchKey);
+#endif
+
+		/* Is this the key? */
+		if (desire == matchKey)
+		{
+			/* Jump to this address. */
+			pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
+			pcNew->adjust = sjme_big_int(
+				*sjme_util_memUnaligned32(&relRawCode[base + 4]));
+			
+			/* No more searching needed! */ 
+			goto skip_matched;
+		}
+
+		/* Left of pivot? */
+		else if (desire < matchKey)
+			divHi = pivot - 1;
+
+		/* Right of pivot? */
+		else
+			divLo = pivot + 1;
+	}
+
+	/* Unmatched, so jump is default. */
+skip_default:
+	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
+	pcNew->adjust = sjme_big_int(
+		*sjme_util_memUnaligned32(&relRawCode[paramBase]));
+	
+skip_matched:
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(NoOp)
 {
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
@@ -275,7 +354,7 @@ SJME_NVM_BYTECODE_SLOW(TableSwitch)
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
 	/* Determine the relative base for parameters. */
-	paramBase = sjme_util_alignTo((inFrame->pc + 1), 4);
+	paramBase = ((inFrame->pc + 4) & (~3)) - inFrame->pc;
 
 	/* Read low and high values. */
 	lo = sjme_big_int(*sjme_util_memUnaligned32(&relRawCode[paramBase + 4]));

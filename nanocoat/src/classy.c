@@ -596,7 +596,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 		allocPool, attrStream, inConstPool, inStringPool,
 		sjme_nvm_class_codeAttr, result)))
 		goto fail_parseAttributes;
-
+	
 	/* Allocate code. */
 	result->rawCodeLen = codeLen;
 	if (sjme_error_is(error = sjme_alloc_copy(

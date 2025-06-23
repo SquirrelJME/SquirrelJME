@@ -184,7 +184,7 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
 	/* 168 */ sjme_nvm_byteCode_illegalInstruction, /* jsr. */
 	/* 169 */ sjme_nvm_byteCode_illegalInstruction, /* ret. */
 	/* 170 */ SJME_NVM_BYTECODE_SLOW_NAME(TableSwitch),
-	/* 171 */ sjme_nvm_byteCode_notImplemented,
+	/* 171 */ SJME_NVM_BYTECODE_SLOW_NAME(LookupSwitch),
 	/* 172 */ SJME_NVM_BYTECODE_SLOW_NAME(ReturnX),
 	/* 173 */ SJME_NVM_BYTECODE_SLOW_NAME(ReturnX),
 	/* 174 */ SJME_NVM_BYTECODE_SLOW_NAME(ReturnX),

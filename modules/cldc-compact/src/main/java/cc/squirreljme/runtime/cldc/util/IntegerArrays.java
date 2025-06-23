@@ -93,8 +93,8 @@ public final class IntegerArrays
 		while (__from <= __to)
 		{
 			// Calculate the pivot and use its value
-			int p = __from + (((__to - __from) + 1) >> 1),
-				pv = __a.get(p);
+			int p = __from + (((__to - __from) + 1) >> 1);
+			int pv = __a.get(p);
 			
 			// Left of pivot?
 			if (__key < pv)
