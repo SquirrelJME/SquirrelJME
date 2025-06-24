@@ -540,8 +540,7 @@ sjme_errorCode sjme_nvm_byteCode_calcLength(
 	sjme_attrInNotNull sjme_byteCode* ev,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew)
 {
-	sjme_jint hi, lo, pairs;
-	sjme_byteCode* evPadded;
+	sjme_jint hi, lo, count, padding;
 	
 	if (ev == NULL || pcNew == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -560,31 +559,30 @@ sjme_errorCode sjme_nvm_byteCode_calcLength(
 		
 		case SJME_NVM_BYTECODE_LENGTH_LOOKUPSWITCH:
 			/* Skip padding. */
-			evPadded = sjme_util_alignToP(&ev[1], 4);
+			padding = ((inFrame->pc + 4) & (~3)) - inFrame->pc;
 
 			/* Read pair count. */
-			pairs = sjme_big_int(*sjme_util_memUnaligned32(&evPadded[4]));
-			if (pairs < 0)
+			count = sjme_big_int(*sjme_util_memUnaligned32(&ev[padding + 4]));
+			if (count < 0)
 				return SJME_ERROR_INVALID_INSTRUCTION;
 
 			/* Calculate offset of default branch. */
-			pcNew->adjust = ((sjme_intPointer)evPadded -
-				(sjme_intPointer)ev) + 8 + (pairs * 8);
+			pcNew->adjust = padding + 8 + (count * 8);
 			break;
 			
 		case SJME_NVM_BYTECODE_LENGTH_TABLESWITCH:
 			/* Skip padding. */
-			evPadded = sjme_util_alignToP(&ev[1], 4);
+			padding = ((inFrame->pc + 4) & (~3)) - inFrame->pc;
 			
 			/* Read high and low values. */
-			lo = sjme_big_int(*sjme_util_memUnaligned32(&evPadded[4]));
-			hi = sjme_big_int(*sjme_util_memUnaligned32(&evPadded[8]));
-			if (hi < lo)
+			lo = sjme_big_int(*sjme_util_memUnaligned32(&ev[padding + 4]));
+			hi = sjme_big_int(*sjme_util_memUnaligned32(&ev[padding + 8]));
+			count = ((hi - lo) + 1);
+			if (lo > hi || count <= 0)
 				return SJME_ERROR_INVALID_INSTRUCTION;
 			
 			/* Calculate offset of default branch. */
-			pcNew->adjust = ((sjme_intPointer)evPadded -
-				(sjme_intPointer)ev) + 12 + ((hi - lo) + 1);
+			pcNew->adjust = padding + 12 + (count * 4);
 			break;
 		
 		case SJME_NVM_BYTECODE_LENGTH_WIDE:

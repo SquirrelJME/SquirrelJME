@@ -9,8 +9,8 @@
 
 #include <string.h>
 
-#include <sjme/nvm/bytecode.h>
-
+#include "sjme/nvm/task.h"
+#include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/classy.h"
 #include "sjme/debug.h"
 #include "sjme/util.h"
@@ -383,6 +383,10 @@ static sjme_errorCode sjme_nvm_class_methodAttrCodeOpLenVerify(
 	sjme_byteCode iv;
 	sjme_byteCode* endCode;
 	sjme_nvm_byteCode_pcNew pcNew;
+	sjme_nvm_frameBase fakeFrame;
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_byteCode lastIv;
+#endif
 	
 	if (rawCode == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -392,6 +396,9 @@ static sjme_errorCode sjme_nvm_class_methodAttrCodeOpLenVerify(
 
 	/* Calculate the end code address. */
 	endCode = SJME_POINTER_OFFSET(rawCode, codeLen);
+
+	/* Setup fake frame for length calculation. */
+	memset(&fakeFrame, 0, sizeof(fakeFrame));
 
 	/* Go through and check addresses. */
 	memset(&pcNew, 0, sizeof(pcNew));
@@ -411,8 +418,9 @@ static sjme_errorCode sjme_nvm_class_methodAttrCodeOpLenVerify(
 		if (pcNew.adjust < 0)
 		{
 			/* Calculate new length. */
+			fakeFrame.pc = (sjme_intPointer)ev - (sjme_intPointer)rawCode;
 			if (sjme_error_is(sjme_nvm_byteCode_calcLength(
-				NULL, iv, ev, &pcNew)))
+				&fakeFrame, iv, ev, &pcNew)))
 				return SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION_LENGTH;
 
 			/* Still not valid? */
@@ -424,6 +432,11 @@ static sjme_errorCode sjme_nvm_class_methodAttrCodeOpLenVerify(
 		ev = SJME_POINTER_OFFSET(ev, pcNew.adjust);
 		if (ev > endCode || ev <= oldEv)
 			return SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION_LENGTH;
+
+#if defined(SJME_CONFIG_DEBUG)
+		/* For debugging. */
+		lastIv = iv;
+#endif
 	}
 	
 	/* Success! */
