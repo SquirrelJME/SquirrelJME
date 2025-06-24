@@ -1375,12 +1375,18 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		result->parent = inThread->frames->elements[inThread->numFrames - 1];
 	
 	/* Setup initial locals, which are copied in from arguments. */
-	for (i = 0, dx = 0, n = argC; i < n;
-		i++, (dx += (argV[i].t == SJME_JAVA_TYPE_ID_LONG ||
-			argV[i].t == SJME_JAVA_TYPE_ID_DOUBLE) ? 2 : 1))
+	for (i = 0, dx = 0, n = argC; i < n; i++, dx++)
+	{
+		/* Set local value. */
 		if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
 			result, dx, &argV[i])))
 			return sjme_error_vmError(inThread, error);
+		
+		/* Move wide values up twice. */
+		if (argV[i].t == SJME_JAVA_TYPE_ID_LONG ||
+			argV[i].t == SJME_JAVA_TYPE_ID_DOUBLE)
+			dx++;
+	}
 	
 	/* Set frame as active. */
 	inThread->numFrames++;
