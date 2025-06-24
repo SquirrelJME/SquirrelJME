@@ -309,6 +309,8 @@ SJME_ATOMIC_FUNCTION(sjme_intPointer, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_thread, 0)
 
+SJME_ATOMIC_FUNCTION(sjme_charSeq, 0)
+
 /* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */
 

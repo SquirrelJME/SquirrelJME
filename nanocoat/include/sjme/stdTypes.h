@@ -691,7 +691,24 @@ typedef sjme_jweakBase* sjme_jweak;
 
 /** Is a pointer for @c sjme_jweak ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jweak SJME_TYPEOF_IS_POINTER_sjme_jobject
-	
+
+/**
+ * A character sequence which contains a set of characters within a string.
+ * 
+ * @since 2024/06/26
+ */
+typedef struct sjme_charSeqStatic sjme_charSeqStatic;
+
+/**
+ * A character sequence which contains a set of characters within a string.
+ * 
+ * @since 2024/06/26
+ */
+typedef sjme_charSeqStatic* sjme_charSeq;
+
+/** Is a pointer for @c sjme_charSeq ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_charSeq SJME_TYPEOF_IS_POINTER_sjme_jobject
+
 /**
  * Generic value union.
  *

@@ -1695,6 +1695,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	sjme_jstring* blankIntern;
 	sjme_jstring result;
 	sjme_jint hash, length, i, n;
+	sjme_charSeq strSeq;
 	
 	if (inThread == NULL || outString == NULL || inSeq == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1762,10 +1763,15 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	result->length = length;
 	
 	/* Duplicate the sequence. */
+	strSeq = NULL;
 	if (sjme_error_is(error = sjme_charSeq_dup(
-		SJME_F_S(inThread)->allocPool,
-		&result->seq, inSeq)) || result->seq == NULL)
+		SJME_F_S(inThread)->allocPool, &strSeq, inSeq)) || strSeq == NULL)
 		goto fail_dupSeq;
+
+	/* Set sequence. */
+	if (!sjme_atomic_sjme_charSeq_compareSet(&result->seq,
+		NULL, strSeq))
+		goto fail_collided;
 	
 	/* Final intern setup. */
 	if (isIntern)
@@ -1800,12 +1806,12 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	*outString = result;
 	return SJME_ERROR_NONE;
 
+fail_collided:
 fail_dupSeq:
-	if (!isIntern && result != NULL && result->seq != NULL)
-	{
-		sjme_alloc_free(result->seq);
-		result->seq = NULL;
-	}
+	if (!isIntern && result != NULL)
+		sjme_atomic_sjme_charSeq_set(&result->seq, NULL);
+	if (strSeq != NULL)
+		sjme_alloc_free(strSeq);
 fail_replaceList:
 fail_countPoolString:
 fail_allocStringInstance:

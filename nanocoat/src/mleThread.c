@@ -94,7 +94,8 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	mainClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(task->classLoader,
 		&mainClass, SJME_F_T(inFrame),
-		task->globals.mainClassName->seq, SJME_JNI_TRUE)) ||
+		sjme_atomic_sjme_charSeq_get(
+			&task->globals.mainClassName->seq), SJME_JNI_TRUE)) ||
 		mainClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 

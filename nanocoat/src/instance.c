@@ -430,7 +430,7 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 		else if (inClass == sjme_nvm_task_commonClassR(contextThread,
 			SJME_NVM_TASK_COMMON_CLASS_STRING))
 		{
-			inType = SJME_NVM_TASK_COMMON_CLASS_STRING;
+			inType = SJME_NVM_STRUCT_STRING_INSTANCE;
 			allocSize = sizeof(sjme_jstringBase);
 		}
 		

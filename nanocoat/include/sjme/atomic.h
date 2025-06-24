@@ -213,6 +213,9 @@ SJME_ATOMIC_DECLARE(sjme_jobject, 0);
 /** Atomic @c sjme_jclass. */
 SJME_ATOMIC_DECLARE(sjme_jclass, 0);
 
+/** Atomic @c sjme_charSeq. */
+SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
+
 #if defined(SJME_CONFIG_HAS_ATOMIC_OLD)
 
 /**

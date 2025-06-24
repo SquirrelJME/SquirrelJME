@@ -18,21 +18,26 @@ SJME_NVM_MLE_FUNCTION_DECL(stringCharAt)
 	sjme_jstring string;
 	sjme_jint index;
 	sjme_jchar result;
+	sjme_charSeq seq;
 
 	/* Must be an actual string. */
 	string = (sjme_jstring)argV[0].v.l;
 	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
+	/* Has the sequence ever been initialized? */
+	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	if (seq == NULL)
+		return SJME_ERROR_MLE_CALL;
+
 	/* Which index is desired? */
 	index = argV[1].v.i;
-	if (index < 0 || index >= string->length)
+	if (index < 0 || index >= seq->length)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Read in character. */
 	result = 0;
-	if (sjme_error_is(error = sjme_charSeq_charAt(string->seq,
-		index, &result)))
+	if (sjme_error_is(error = sjme_charSeq_charAt(seq, index, &result)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Give the result. */
@@ -50,22 +55,87 @@ SJME_NVM_MLE_FUNCTION_DECL(stringEquals)
 SJME_NVM_MLE_FUNCTION_DECL(stringHash)
 {
 	sjme_jstring string;
+	sjme_charSeq seq;
 
 	/* Must be an actual string. */
 	string = (sjme_jstring)argV[0].v.l;
 	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
+	
+	/* Has the sequence ever been initialized? */
+	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	if (seq == NULL)
+		return SJME_ERROR_MLE_CALL;
 
 	/* This is a simple value copy operation. */
 	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->v.i = string->hashCode;
+	argR->v.i = sjme_charSeq_hashR(seq);
 	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, chars)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jstring string;
+	sjme_jarray array;
+	sjme_jint off, len;
+	sjme_charSeq seq;
+
+	/* Obtain all arguments. */
+	string = (sjme_jstring)argV[0].v.l;
+	array = (sjme_jarray)argV[1].v.l;
+	off = argV[2].v.i;
+	len = argV[3].v.i;
+
+	/* Check arguments. */
+	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE) ||
+		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
+		array->type != SJME_BASIC_TYPE_ID_CHARACTER ||
+		off < 0 || len < 0 || (off + len) < 0 ||
+		(off + len) > array->length)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Lock the string. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&string->object.common.lock)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* The sequence must not already be set. */
+	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	if (seq != NULL)
+		goto fail_hasSeq;
+
+	/* Setup new sequence. */
+	seq = NULL;
+	if (sjme_error_is(error = sjme_charSeq_newWide(
+		SJME_F_S(inFrame)->allocPool, &seq, &array->e.c[off],
+		0, len)) || seq == NULL)
+		goto fail_initSeq;
+
+	/* Set sequence. */
+	if (!sjme_atomic_sjme_charSeq_compareSet(&string->seq,
+		NULL, seq))
+	{
+		error = SJME_ERROR_ILLEGAL_STATE;
+		goto fail_collided;
+	}
+
+	/* Release the string. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&string->object.common.lock, NULL)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_hasSeq:
+	sjme_thread_spinLockRelease(&string->object.common.lock, NULL);
+	return SJME_ERROR_MLE_CALL;
+
+fail_initSeq:
+fail_collided:
+	sjme_thread_spinLockRelease(&string->object.common.lock, NULL);
+	return sjme_error_vmError(inFrame, error);
 }
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, emptyOrThis)
@@ -109,6 +179,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 	sjme_jint destOff;
 	sjme_jint len;
 	sjme_jint i, s, d;
+	sjme_charSeq seq;
 
 	/* Map arguments. */
 	source = (sjme_jstring)argV[0].v.l;
@@ -125,16 +196,21 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 	if (dest->type != SJME_BASIC_TYPE_ID_CHARACTER)
 		return SJME_ERROR_MLE_CALL;
 
+	/* Has the sequence ever been initialized? */
+	seq = sjme_atomic_sjme_charSeq_get(&source->seq);
+	if (seq == NULL)
+		return SJME_ERROR_MLE_CALL;
+
 	/* Check bounds. */
 	if (sourceOff < 0 || destOff < 0 || len < 0 ||
 		(sourceOff + len) < 0 || (destOff + len) < 0 ||
-		(sourceOff + len) > source->seq->length ||
+		(sourceOff + len) > seq->length ||
 		(destOff + len) > dest->length)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Read characters into the target. */
 	for (i = 0, s = sourceOff, d = destOff; i < len; i++)
-		dest->e.c[d++] = sjme_charSeq_charAtR(source->seq, s++);
+		dest->e.c[d++] = sjme_charSeq_charAtR(seq, s++);
 
 	/* Void return. */
 	return SJME_ERROR_NONE;
@@ -192,6 +268,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
 	sjme_errorCode error;
 	sjme_jboolean intern;
 	sjme_jstring string;
+	sjme_charSeq seq;
 
 	/* Intern the string? */
 	intern = !!argV[0].v.i;
@@ -200,12 +277,17 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
 	string = (sjme_jstring)argV[1].v.l;
 	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
+	
+	/* Has the sequence ever been initialized? */
+	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	if (seq == NULL)
+		return SJME_ERROR_MLE_CALL;
 
 	/* Obtain string value from the sequence. */
 	argR->v.l = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfCS(
 		SJME_F_T(inFrame),
-		SJME_AS_JSTRINGP(&argR->v.l), intern, string->seq) ||
+		SJME_AS_JSTRINGP(&argR->v.l), intern, seq) ||
 		argR->v.l == NULL))
 		return sjme_error_default(error);
 

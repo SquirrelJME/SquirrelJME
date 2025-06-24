@@ -32,29 +32,35 @@ SJME_NVM_MLE_FUNCTION_DECL(findType)
 	sjme_errorCode error;
 	sjme_jstring string;
 	sjme_jclass foundClass;
+	sjme_charSeq seq;
 
 	/* Must be an actual string. */
 	string = (sjme_jstring)argV[0].v.l;
 	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
+	/* The sequence must be valid. */
+	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	if (seq == NULL)
+		return SJME_ERROR_MLE_CALL;
+
 	/* Debug. */
 #if defined(SJME_CONFIG_DEBUG)
 	sjme_message("Looking for class %s...",
-		sjme_charSeq_tempUtf(string->seq));
+		sjme_charSeq_tempUtf(seq));
 #endif
 
 	/* Note that on class lookup this way, we always want to initialize */
 	/* the target class as it will immediately be fully available. */
 	/* Specifically an array type? */
 	foundClass = NULL;
-	if (sjme_charSeq_charAtIs(string->seq, 0, '[') ==
+	if (sjme_charSeq_charAtIs(seq, 0, '[') ==
 		SJME_ERROR_NONE)
 	{
 		/* Can just use the field type loader here. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadF(
 			SJME_F_CL(inFrame), &foundClass,
-			SJME_F_T(inFrame), string->seq, SJME_JNI_TRUE)) ||
+			SJME_F_T(inFrame), seq, SJME_JNI_TRUE)) ||
 			foundClass == NULL)
 			return sjme_error_vmError(inFrame, error);
 	}
@@ -65,7 +71,7 @@ SJME_NVM_MLE_FUNCTION_DECL(findType)
 		/* Otherwise this will be a binary name. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
 			SJME_F_CL(inFrame), &foundClass,
-			SJME_F_T(inFrame), string->seq, SJME_JNI_TRUE)) ||
+			SJME_F_T(inFrame), seq, SJME_JNI_TRUE)) ||
 			foundClass == NULL)
 		{
 			/* Another error other than not found? */

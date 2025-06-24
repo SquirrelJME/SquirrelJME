@@ -32,20 +32,6 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * A character sequence which contains a set of characters within a string.
- * 
- * @since 2024/06/26
- */
-typedef struct sjme_charSeqStatic sjme_charSeqStatic;
-
-/**
- * A character sequence which contains a set of characters within a string.
- * 
- * @since 2024/06/26
- */
-typedef sjme_charSeqStatic* sjme_charSeq;
-
-/**
  * Returns the character at the given index.
  * 
  * @param inSeq The input character sequence.
