@@ -74,6 +74,93 @@ fail_alloc:
 	return sjme_error_vmError(inFrame, error);
 }
 
+SJME_NVM_MLE_FUNCTION_DECL_ALT(arrayCopy, boolean)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL_ALT(arrayCopy, generic)
+{
+	sjme_jarray src, dst;
+	sjme_jint srcOff, dstOff, len;
+	sjme_jint mul;
+
+	/* Gather inputs. */
+	src = (sjme_jarray)argV[0].v.l;
+	srcOff = argV[1].v.i;
+	dst = (sjme_jarray)argV[2].v.l;
+	dstOff = argV[3].v.i;
+	len = argV[4].v.i;
+
+	/* Check arguments. */
+	if (src == NULL || dst == NULL ||
+		!sjme_nvm_isAR(src, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
+		!sjme_nvm_isAR(dst, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
+		src->type != dst->type ||
+		srcOff < 0 || (srcOff + len) < 0 || (srcOff + len) > src->length ||
+		dstOff < 0 || (dstOff + len) < 0 || (dstOff + len) > dst->length ||
+		len < 0)
+		return SJME_ERROR_MLE_CALL;
+
+	/* This is just a memmove, based on the actual type size. */
+	mul = sjme_nvm_typeMul[src->type];
+	memmove(SJME_POINTER_OFFSET(&dst->e, dstOff * mul),
+		SJME_POINTER_OFFSET(&src->e, srcOff * mul),
+		mul * len);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL_ALT(arrayFill, boolean)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL_ALT(arrayFill, generic)
+{
+#define MAX_BYTES 8
+	sjme_jarray into;
+	sjme_jint off, len;
+	sjme_jint mul, i, dup;
+	sjme_pointer at;
+	sjme_jubyte raw[MAX_BYTES];
+	
+	/* Gather inputs. */
+	into = (sjme_jarray)argV[0].v.l;
+	off = argV[1].v.i;
+	len = argV[2].v.i;
+
+	/* Check arguments. */
+	if (into == NULL ||
+		!sjme_nvm_isAR(into, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
+		off < 0 || len < 0 || (off + len) < 0 || (off + len) > into->length)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Determine the value being written. */
+	mul = sjme_nvm_typeMul[into->type];
+	memmove(&raw[0], &argV[3].v, mul);
+
+	/* We can optimize this more by filling more bytes at once if the value */
+	/* is smaller. */
+	dup = MAX_BYTES / mul;
+	for (i = 1, at = &raw[mul]; i < dup;
+		i++, at = SJME_POINTER_OFFSET(at, mul))
+		memmove(at, &raw[0], mul);
+
+	/* Write the buffer into the target. */
+	for (at = SJME_POINTER_OFFSET(&into->e, off * mul);
+		len > 0; len -= dup, at = SJME_POINTER_OFFSET(at, MAX_BYTES))
+		memmove(at, &raw[0],
+			(len * mul < MAX_BYTES ? len * mul : MAX_BYTES));
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+#undef MAX_BYTES
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(arrayLength)
 {
 	sjme_jarray array;
@@ -143,11 +230,41 @@ SJME_NVM_MLE_FUNCTION_DECL(newInstance)
 	return SJME_ERROR_NONE;
 }
 
+/** Duplicate defines for arrayCopy. */
+#define SJME_NVM_MLE_DEFINE_ARRAY_COPY(name, type) \
+	SJME_NVM_MLE_DEFINE_ALT(arrayCopy, name, \
+		SJME_MD(SJME_MD_V, SJME_MD_A##type SJME_MD_I SJME_MD_A##type \
+			SJME_MD_I SJME_MD_I), \
+		"V", "LILII")
+
+/** Duplicate defines for arrayFile. */
+#define SJME_NVM_MLE_DEFINE_ARRAY_FILL(name, type, promote) \
+	SJME_NVM_MLE_DEFINE_ALT(arrayFill, name, \
+		SJME_MD(SJME_MD_V, SJME_MD_A##type SJME_MD_I SJME_MD_I \
+			SJME_MD_##type), \
+		"V", "LII" #promote)
+
 SJME_NVM_MLE_SHELF_DECLARE(ObjectShelf) =
 {
 	SJME_NVM_MLE_DEFINE(arrayClone,
 		SJME_MD(SJME_MD_OBJECT, SJME_MD_OBJECT),
 		"L", "L"),
+	SJME_NVM_MLE_DEFINE_ARRAY_COPY(boolean, Z),
+	SJME_NVM_MLE_DEFINE_ARRAY_COPY(generic, B),
+	SJME_NVM_MLE_DEFINE_ARRAY_COPY(generic, S),
+	SJME_NVM_MLE_DEFINE_ARRAY_COPY(generic, C),
+	SJME_NVM_MLE_DEFINE_ARRAY_COPY(generic, I),
+	SJME_NVM_MLE_DEFINE_ARRAY_COPY(generic, J),
+	SJME_NVM_MLE_DEFINE_ARRAY_COPY(generic, F),
+	SJME_NVM_MLE_DEFINE_ARRAY_COPY(generic, D),
+	SJME_NVM_MLE_DEFINE_ARRAY_FILL(boolean, Z, I),
+	SJME_NVM_MLE_DEFINE_ARRAY_FILL(generic, B, I),
+	SJME_NVM_MLE_DEFINE_ARRAY_FILL(generic, S, I),
+	SJME_NVM_MLE_DEFINE_ARRAY_FILL(generic, C, I),
+	SJME_NVM_MLE_DEFINE_ARRAY_FILL(generic, I, I),
+	SJME_NVM_MLE_DEFINE_ARRAY_FILL(generic, J, J),
+	SJME_NVM_MLE_DEFINE_ARRAY_FILL(generic, F, F),
+	SJME_NVM_MLE_DEFINE_ARRAY_FILL(generic, D, D),
 	SJME_NVM_MLE_DEFINE(arrayLength,
 		SJME_MD(SJME_MD_I, SJME_MD_OBJECT),
 		"I", "L"),

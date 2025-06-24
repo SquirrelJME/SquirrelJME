@@ -57,6 +57,9 @@ extern "C"
 	
 /** Byte type. */
 #define SJME_MD_B "B"
+	
+/** Short type. */
+#define SJME_MD_S "S"
 
 /** Character type. */
 #define SJME_MD_C "C"
@@ -64,14 +67,44 @@ extern "C"
 /** Integer type. */
 #define SJME_MD_I "I"
 
+/** Long type. */
+#define SJME_MD_J "J"
+
+/** Float type. */
+#define SJME_MD_F "F"
+
+/** Double type. */
+#define SJME_MD_D "D"
+
 /** Void Type. */
 #define SJME_MD_V "V"
 
 /** Class type. */
 #define SJME_MD_L(name) "L" name ";"
 
+/** Array of booleans. */
+#define SJME_MD_AZ SJME_MD_A(SJME_MD_Z)
+
+/** Array of bytes. */
+#define SJME_MD_AB SJME_MD_A(SJME_MD_B)
+
+/** Array of shorts. */
+#define SJME_MD_AS SJME_MD_A(SJME_MD_S)
+
 /** Array of characters. */
 #define SJME_MD_AC SJME_MD_A(SJME_MD_C)
+
+/** Array of integers. */
+#define SJME_MD_AI SJME_MD_A(SJME_MD_I)
+
+/** Array of longs. */
+#define SJME_MD_AJ SJME_MD_A(SJME_MD_J)
+
+/** Array of floats. */
+#define SJME_MD_AF SJME_MD_A(SJME_MD_F)
+
+/** Array of doubles. */
+#define SJME_MD_AD SJME_MD_A(SJME_MD_D)
 
 /** Class. */
 #define SJME_MD_CLASS SJME_MD_L("java/lang/Class")
