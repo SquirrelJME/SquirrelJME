@@ -1539,6 +1539,7 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 {
 	sjme_nvm_frame topFrame;
 	sjme_jint topIndex;
+	sjme_nvm_frameBase blank;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1554,6 +1555,13 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 
 	/* Reduce the storage claim to free it up. */
 	inThread->stack.storageTop -= topFrame->stack.storageClaim;
+	
+	/* Clear the frame to a blank state. */
+	memset(&blank, 0, sizeof(blank));
+	memmove(&blank.common, &topFrame->common, sizeof(blank.common));
+	
+	/* Use this resultant blank, keeping the common areas. */
+	memmove(topFrame, &blank, sizeof(*topFrame));
 
 	/* Success! */
 	return SJME_ERROR_NONE;
