@@ -285,7 +285,7 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	/* Determine the allocation size. */
 	allocSize = sizeof(*result);
 	if (componentType->arrayTypeId == SJME_BASIC_TYPE_ID_BOOLEAN)
-		allocSize = (arrayLength / 8) + 1;
+		allocSize += (arrayLength / 8) + 1;
 	else
 		allocSize += (sjme_nvm_typeMul[componentType->arrayTypeId] *
 			arrayLength);

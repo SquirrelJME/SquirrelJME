@@ -109,8 +109,13 @@ skip_cached:
 
 SJME_NVM_MLE_FUNCTION_DECL(memoryProfile)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+#if defined(SJME_CONFIG_HAS_LOW_MEMORY)
+	argR->v.i = SJME_NVM_MLE_MEMORY_PROFILE_MINIMAL;
+#else
+	argR->v.i = SJME_NVM_MLE_MEMORY_PROFILE_NORMAL;
+#endif
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(nanoTime)

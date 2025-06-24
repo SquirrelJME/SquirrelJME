@@ -289,8 +289,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
 
-	/* The context class is always the method which the method actually */
-	/* exists within. */
+	/* The context class is always the one which the method exists within. */
 	result->member.inClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
 		inLoader, &result->member.inClass, contextThread,
@@ -477,14 +476,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 			
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
-		sjme_message("Bound `%s` %s %s%s -> %s %s%s",
-			inClass->binaryName,
-			&methodInfo->inClass->name->chars[0],
-			&methodInfo->name->chars[0],
-			&methodInfo->type->chars[0],
-			&bind->info[1]->inClass->name->chars[0],
-			&bind->info[1]->name->chars[0],
-			&bind->info[1]->type->chars[0]);
+		sjme_message("Bound `%s` %s.%s:%s -> %s.%s:%s",
+			sjme_charSeq_tempUtf(inClass->binaryName),
+			sjme_charSeq_tempUtf(methodInfo->inClass->name->seq),
+			sjme_charSeq_tempUtf(methodInfo->name->seq),
+			sjme_charSeq_tempUtf(methodInfo->type->seq),
+			sjme_charSeq_tempUtf(bind->info[1]->inClass->name->seq),
+			sjme_charSeq_tempUtf(bind->info[1]->name->seq),
+			sjme_charSeq_tempUtf(bind->info[1]->type->seq));
 #endif
 	}
 	

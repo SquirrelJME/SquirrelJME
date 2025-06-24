@@ -1110,7 +1110,16 @@ extern "C" {
 	/** Has software double floating point. */
 	#define SJME_CONFIG_HAS_DOUBLE_SOFT
 #endif
-		
+
+#if defined(SJME_CONFIG_HAS_AMIGA) || \
+	defined(SJME_CONFIG_HAS_WINDOWS_16) || \
+	defined(SJME_CONFIG_HAS_WINDOWS_CE) || \
+	defined(SJME_CONFIG_HAS_PALMOS) || \
+	defined(SJME_CONFIG_HAS_SDCC)
+	/** Use a minimal amount of memory. */
+	#define SJME_CONFIG_HAS_LOW_MEMORY
+#endif
+
 /* Missing standard C functions, always include these. */
 #include "sjme/stdGone.h"
 	

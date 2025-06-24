@@ -64,6 +64,20 @@ typedef enum sjme_nvm_mle_lineEndingType
 	/** Number of line ending types. */
 	SJME_NVM_MLE_NUM_LINE_ENDINGS = 4,
 } sjme_nvm_mle_lineEndingType;
+
+/**
+ * The memory profiles available.
+ *
+ * @since 2025/06/24
+ */
+typedef enum sjme_nvm_mle_memoryProfileType
+{
+	/** Minimal memory usage. */
+	SJME_NVM_MLE_MEMORY_PROFILE_MINIMAL = -1,
+
+	/** Normal memory usage. */
+	SJME_NVM_MLE_MEMORY_PROFILE_NORMAL = 0,
+} sjme_nvm_mle_memoryProfileType;
 	
 /**
  * Standard pipe descriptor IDs.

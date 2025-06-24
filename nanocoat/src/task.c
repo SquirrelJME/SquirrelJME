@@ -25,8 +25,13 @@
 /** The number of threads to grow by. */
 #define SJME_NVM_THREAD_GROW 8
 
-/** The size of the thread stack. */
-#define SJME_NVM_THREAD_STACK_SIZE 32768
+#if defined(SJME_CONFIG_HAS_LOW_MEMORY)
+	/** The size of the thread stack. */
+	#define SJME_NVM_THREAD_STACK_SIZE 8192
+#else
+	/** The size of the thread stack. */
+	#define SJME_NVM_THREAD_STACK_SIZE 65536
+#endif
 
 static sjme_errorCode sjme_nvm_task_stackReframe(
 	sjme_attrInNotNull sjme_nvm inState,

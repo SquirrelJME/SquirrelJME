@@ -44,7 +44,9 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	sjme_jvalueTyped* argVParam;
 	sjme_jvalueTyped mleArgR;
 	sjme_jboolean isStatic;
+	sjme_jobject instance;
 	sjme_nvm_class_methodInfo target;
+	sjme_jmethodID virtualId;
 
 	if (inFrame == NULL || methodId == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -78,6 +80,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			return sjme_error_vmError(inFrame, error);
 
 	/* Pop instance. */
+	instance = NULL;
 	if (!isStatic)
 	{
 		/* Pop. */
@@ -86,7 +89,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			return sjme_error_vmError(inFrame, error);
 
 		/* Cannot be null. */
-		if (argV[0].v.l == NULL)
+		instance = argV[0].v.l;
+		if (instance == NULL)
 			return sjme_error_vmError(inFrame,
 				SJME_ERROR_INVALID_REFERENCE_POP);
 		
@@ -94,8 +98,34 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		if (!sjme_nvm_vmClass_isAssignableFrom(
 			SJME_F_T(inFrame),
 			methodId->member.inClass,
-			SJME_O_C(argV[0].v.l)))
+			SJME_O_C(instance)))
 			return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+		
+		/* Need to relookup the method if virtual, to call the right one. */
+		if (callType == SJME_NVM_CALL_VIRTUAL)
+		{
+			/* Lookup again. */
+			virtualId = NULL;
+			if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+				instance->isClass, SJME_F_T(inFrame),
+				SJME_NVM_CLASS_MEMBER_INSTANCE,
+				SJME_JNI_TRUE,
+				methodId->member.name->seq,
+				methodId->member.type->seq, &virtualId)) ||
+				virtualId == NULL)
+				return sjme_error_vmError(inFrame, error);
+
+			/* Use this one instead. */
+			methodId = virtualId;
+			
+			/* Since the method has changed, we need to check again that */
+			/* the target is still valid. This is mostly for sanity. */
+			if (!sjme_nvm_vmClass_isAssignableFrom(
+				SJME_F_T(inFrame),
+				methodId->member.inClass,
+				SJME_O_C(instance)))
+				return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+		}
 	}
 
 	/* If native, perform an MLE call. */
@@ -157,6 +187,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	/* Enter new stack frame for the target method, or at least try. */
 	else
 	{
+		/* Enter the frame. */
 		newFrame = NULL;
 		if (sjme_error_is(error = sjme_nvm_task_threadEnter(
 			SJME_F_T(inFrame),
@@ -571,7 +602,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	/* Invoke this method */
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvoke(inFrame,
 		SJME_NVM_CLASS_MEMBER_INSTANCE,
-		SJME_NVM_CALL_VIRTUAL,
+		SJME_NVM_CALL_NON_VIRTUAL,
 		refMethod)))
 		return sjme_error_vmError(inFrame, error);
 	
