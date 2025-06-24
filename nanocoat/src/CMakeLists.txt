@@ -13,8 +13,6 @@ squirreljme_multilib_add_static_library(Core
 	boot.c
 	bytecode.c
 	bytecodeSlow.c
-	bytecodeSlowArray.c
-	bytecodeSlowCompare.c
 	bytecodeSlowConst.c
 	bytecodeSlowFlow.c
 	bytecodeSlowLocal.c

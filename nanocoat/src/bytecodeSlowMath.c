@@ -19,6 +19,110 @@
 #define SJME_NVM_BYTECODE_MATH_TO_FUNC(x) \
 	((sjme_nvm_byteCode_mathFunc)(((x) - 96) >> 2))
 
+SJME_NVM_BYTECODE_SLOW(CastDoubleToX)
+{
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(CastFloatToX)
+{
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(CastIntToX)
+{
+	sjme_jvalueTyped in, out;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Read input value. */
+	memset(&in, 0, sizeof(in));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_INTEGER, &in)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Determine output value. */
+	memset(&out, 0, sizeof(out));
+	switch (id)
+	{
+		case 133:
+			out.t = SJME_JAVA_TYPE_ID_LONG;
+			out.v.j.part.lo = in.v.i;
+			if ((in.v.i & INT32_C(0x80000000)) != 0)
+				out.v.j.part.hi = INT32_C(0xFFFFFFFF);
+			break;
+
+		case 134:
+			out.t = SJME_JAVA_TYPE_ID_FLOAT;
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+			out.v.f.native = (float)in.v.i;
+#else
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+#endif
+		break;
+
+		case 135:
+			out.t = SJME_JAVA_TYPE_ID_DOUBLE;
+#if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+			out.v.d.native = (double)in.v.i;
+#else
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+#endif
+			break;
+
+		case 145:
+			out.t = SJME_JAVA_TYPE_ID_INTEGER;
+			out.v.i = in.v.i & INT32_C(0xFF);
+			if ((in.v.i & INT32_C(0x80)) != 0)
+				out.v.i |= INT32_C(0xFFFFFF00);
+			break;
+
+		case 146:
+			out.t = SJME_JAVA_TYPE_ID_INTEGER;
+			out.v.i = in.v.i & INT32_C(0xFFFF);
+			break;
+
+		case 147:
+			out.t = SJME_JAVA_TYPE_ID_INTEGER;
+			out.v.i = in.v.i & INT32_C(0xFFFF);
+			if ((in.v.i & INT32_C(0x8000)) != 0)
+				out.v.i |= INT32_C(0xFFFF0000);
+			break;
+		
+		default:
+			return sjme_error_vmError(inFrame,
+				SJME_ERROR_INVALID_INSTRUCTION);
+	}
+
+	/* Write it out. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&out)))
+		return sjme_error_vmError(inFrame, error);
+	
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(CastLongToX)
+{
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 {
 	sjme_jvalueTyped a, b, result;
