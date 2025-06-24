@@ -161,7 +161,7 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
 	/* 145 */ SJME_NVM_BYTECODE_SLOW_NAME(CastIntToX),
 	/* 146 */ SJME_NVM_BYTECODE_SLOW_NAME(CastIntToX),
 	/* 147 */ SJME_NVM_BYTECODE_SLOW_NAME(CastIntToX),
-	/* 148 */ sjme_nvm_byteCode_notImplemented,
+	/* 148 */ SJME_NVM_BYTECODE_SLOW_NAME(CompareLong),
 	/* 149 */ sjme_nvm_byteCode_notImplemented,
 	/* 150 */ sjme_nvm_byteCode_notImplemented,
 	/* 151 */ sjme_nvm_byteCode_notImplemented,

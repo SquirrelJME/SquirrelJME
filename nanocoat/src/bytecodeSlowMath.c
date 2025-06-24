@@ -105,7 +105,7 @@ SJME_NVM_BYTECODE_SLOW(CastIntToX)
 				SJME_ERROR_INVALID_INSTRUCTION);
 	}
 
-	/* Write it out. */
+	/* Push to the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&out)))
 		return sjme_error_vmError(inFrame, error);
@@ -115,10 +115,85 @@ SJME_NVM_BYTECODE_SLOW(CastIntToX)
 
 SJME_NVM_BYTECODE_SLOW(CastLongToX)
 {
+	sjme_jvalueTyped in, out;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Read input value. */
+	memset(&in, 0, sizeof(in));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_LONG, &in)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Determine output value. */
+	memset(&out, 0, sizeof(out));
+	switch (id)
+	{
+		case 136:
+			out.t = SJME_JAVA_TYPE_ID_INTEGER;
+			out.v.i = in.v.j.part.lo;
+			break;
+
+		case 137:
+			out.t = SJME_JAVA_TYPE_ID_FLOAT;
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+			out.v.f.native = (float)in.v.j.full;
+#else
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+#endif
+		break;
+
+		case 138:
+			out.t = SJME_JAVA_TYPE_ID_DOUBLE;
+#if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+			out.v.d.native = (double)in.v.j.full;
+#else
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+#endif
+			break;
+		
+		default:
+			return sjme_error_vmError(inFrame,
+				SJME_ERROR_INVALID_INSTRUCTION);
+	}
+
+	/* Push to the stack. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&out)))
+		return sjme_error_vmError(inFrame, error);
+	
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(CompareLong)
+{
+	sjme_jvalueTyped a, b, result;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	
+	/* Read in both values. */
+	memset(&b, 0, sizeof(b));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_LONG, &b)))
+		return sjme_error_vmError(inFrame, error);
+	memset(&a, 0, sizeof(a));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_LONG, &a)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Compare the values. */
+	if (a.v.j.full > b.v.j.full)
+		result.v.i = 1;
+	else if (a.v.j.full < b.v.j.full)
+		result.v.i = -1;
+	else
+		result.v.i = 0;
+
+	/* Push the result. */
+	result.t = SJME_JAVA_TYPE_ID_INTEGER;
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&result)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
@@ -182,10 +257,57 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 
 SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 {
+	sjme_jvalueTyped a, b, result;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Read in both values. */
+	memset(&b, 0, sizeof(b));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_LONG, &b)))
+		return sjme_error_vmError(inFrame, error);
+	memset(&a, 0, sizeof(a));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_LONG, &a)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Perform the math. */
+	switch (SJME_NVM_BYTECODE_BINARY_MATH_TO_FUNC(id))
+	{
+		case SJME_NVM_BYTECODE_MATH_SHL:
+			result.v.j.full = a.v.j.full << (b.v.j.full & 0x3FL);
+			break;
+
+		case SJME_NVM_BYTECODE_MATH_SHR:
+			result.v.j.full = a.v.j.full >> (b.v.j.full & 0x3FL);
+			break;
+
+		case SJME_NVM_BYTECODE_MATH_USHR:
+			result.v.j.full = (int64_t)(((uint64_t)a.v.j.full) >>
+				((uint64_t)(b.v.j.full & 0x3FL)));
+			break;
+
+		case SJME_NVM_BYTECODE_MATH_AND:
+			result.v.j.full = a.v.j.full & b.v.j.full;
+			break;
+
+		case SJME_NVM_BYTECODE_MATH_OR:
+			result.v.j.full = a.v.j.full | b.v.j.full;
+			break;
+
+		case SJME_NVM_BYTECODE_MATH_XOR:
+			result.v.j.full = a.v.j.full ^ b.v.j.full;
+			break;
+		
+		default:
+			return sjme_error_vmError(inFrame,
+				SJME_ERROR_INVALID_INSTRUCTION);
+	}
+
+	/* Push the result. */
+	result.t = SJME_JAVA_TYPE_ID_LONG;
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&result)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
@@ -264,10 +386,52 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 
 SJME_NVM_BYTECODE_SLOW(MathLong)
 {
+	sjme_jvalueTyped a, b, result;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Read in both values. */
+	memset(&b, 0, sizeof(b));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_LONG, &b)))
+		return sjme_error_vmError(inFrame, error);
+	memset(&a, 0, sizeof(a));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_LONG, &a)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Perform the math. */
+	switch (SJME_NVM_BYTECODE_MATH_TO_FUNC(id))
+	{
+		case SJME_NVM_BYTECODE_MATH_ADD:
+			result.v.j.full = a.v.j.full + b.v.j.full;
+			break;
+			
+		case SJME_NVM_BYTECODE_MATH_SUB:
+			result.v.j.full = a.v.j.full - b.v.j.full;
+			break;
+		
+		case SJME_NVM_BYTECODE_MATH_MUL:
+			result.v.j.full = a.v.j.full * b.v.j.full;
+			break;
+		
+		case SJME_NVM_BYTECODE_MATH_DIV:
+			result.v.j.full = a.v.j.full / b.v.j.full;
+			break;
+		
+		case SJME_NVM_BYTECODE_MATH_REM:
+			result.v.j.full = a.v.j.full % b.v.j.full;
+			break;
+
+		default:
+			return sjme_error_vmError(inFrame,
+				SJME_ERROR_INVALID_INSTRUCTION);
+	}
+
+	/* Push the result. */
+	result.t = SJME_JAVA_TYPE_ID_LONG;
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&result)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
@@ -294,20 +458,42 @@ SJME_NVM_BYTECODE_SLOW(MathNegateFloat)
 
 SJME_NVM_BYTECODE_SLOW(MathNegateInt)
 {
+	sjme_jvalueTyped value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Read in value to negate. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_INTEGER, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Negate it. */
+	value.v.i = -value.v.i;
+
+	/* Push it back to the stack. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame, &value)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(MathNegateLong)
 {
+	sjme_jvalueTyped value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Read in value to negate. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_LONG, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Negate it. */
+	value.v.j.full = -value.v.j.full;
+
+	/* Push it back to the stack. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame, &value)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }

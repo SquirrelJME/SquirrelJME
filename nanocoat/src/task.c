@@ -87,7 +87,7 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 
 	/* Is there enough memory to even allocate this big of a stack? */
 	if (store->storageTop + typeOff[SJME_JAVA_TYPE_ID_ALL] > store->storageLen)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_vmError(inThread, SJME_ERROR_STACK_OVERFLOW);
 
 	/* Grab a chunk of the stack. */
 	storeBase = SJME_POINTER_OFFSET(store->storage, store->storageTop);
