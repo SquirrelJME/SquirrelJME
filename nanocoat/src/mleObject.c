@@ -181,6 +181,23 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayLength)
 	return SJME_ERROR_NONE;
 }
 
+SJME_NVM_MLE_FUNCTION_DECL(identityHashCode)
+{
+	sjme_jobject object;
+
+	/* Grab arguments. */
+	object = argV[0].v.l;
+
+	/* Cannot be null. */
+	if (object == NULL)
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Use the hash that is stored in the object. */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = argV->v.l->identityHash;
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(newInstance)
 {
 	sjme_errorCode error;
@@ -271,6 +288,9 @@ SJME_NVM_MLE_SHELF_DECLARE(ObjectShelf) =
 	SJME_NVM_MLE_DEFINE(newInstance,
 		SJME_MD(SJME_MD_OBJECT, SJME_MD_TYPE),
 		"L", "L"),
+	SJME_NVM_MLE_DEFINE(identityHashCode,
+		SJME_MD(SJME_MD_I, SJME_MD_OBJECT),
+		"I", "L"),
 	
 	SJME_NVM_MLE_STOP()
 };
