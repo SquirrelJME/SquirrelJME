@@ -10,8 +10,11 @@
 package javax.microedition.rms;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
+import cc.squirreljme.runtime.cldc.util.IntegerArrays;
 import cc.squirreljme.runtime.rms.RecordStoreSession;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Manages enumeration over records.
@@ -438,7 +441,16 @@ final class __Enumerator__
 				// Changed sort order?
 				RecordComparator comparator = this.comparator;
 				if (comparator != null)
-					throw Debugging.todo();
+					try
+					{
+						Collections.sort(IntegerArrayList.asList(baseIds),
+							new __ComparatorAdapter__(store, comparator));
+					}
+					catch (__FailedCompare__ __e)
+					{
+						if (Debugging.VERBOSE)
+							__e.printStackTrace(System.err);
+					}
 				
 				// Use these records
 				this._records = baseIds;
