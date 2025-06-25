@@ -54,14 +54,14 @@ SJME_NVM_BYTECODE_SLOW(CastIntToX)
 	memset(&out, 0, sizeof(out));
 	switch (id)
 	{
-		case 133:
+		case SJME_NVM_BYTECODE_JAVA_I2L:
 			out.t = SJME_JAVA_TYPE_ID_LONG;
 			out.v.j.part.lo = in.v.i;
 			if ((in.v.i & INT32_C(0x80000000)) != 0)
 				out.v.j.part.hi = INT32_C(0xFFFFFFFF);
 			break;
 
-		case 134:
+		case SJME_NVM_BYTECODE_JAVA_I2F:
 			out.t = SJME_JAVA_TYPE_ID_FLOAT;
 #if defined(SJME_CONFIG_HAS_FLOAT_HARD)
 			out.v.f.native = (float)in.v.i;
@@ -71,7 +71,7 @@ SJME_NVM_BYTECODE_SLOW(CastIntToX)
 #endif
 		break;
 
-		case 135:
+		case SJME_NVM_BYTECODE_JAVA_I2D:
 			out.t = SJME_JAVA_TYPE_ID_DOUBLE;
 #if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
 			out.v.d.native = (double)in.v.i;
@@ -81,19 +81,19 @@ SJME_NVM_BYTECODE_SLOW(CastIntToX)
 #endif
 			break;
 
-		case 145:
+		case SJME_NVM_BYTECODE_JAVA_I2B:
 			out.t = SJME_JAVA_TYPE_ID_INTEGER;
 			out.v.i = in.v.i & INT32_C(0xFF);
 			if ((in.v.i & INT32_C(0x80)) != 0)
 				out.v.i |= INT32_C(0xFFFFFF00);
 			break;
 
-		case 146:
+		case SJME_NVM_BYTECODE_JAVA_I2C:
 			out.t = SJME_JAVA_TYPE_ID_INTEGER;
 			out.v.i = in.v.i & INT32_C(0xFFFF);
 			break;
 
-		case 147:
+		case SJME_NVM_BYTECODE_JAVA_I2S:
 			out.t = SJME_JAVA_TYPE_ID_INTEGER;
 			out.v.i = in.v.i & INT32_C(0xFFFF);
 			if ((in.v.i & INT32_C(0x8000)) != 0)
@@ -128,12 +128,12 @@ SJME_NVM_BYTECODE_SLOW(CastLongToX)
 	memset(&out, 0, sizeof(out));
 	switch (id)
 	{
-		case 136:
+		case SJME_NVM_BYTECODE_JAVA_L2I:
 			out.t = SJME_JAVA_TYPE_ID_INTEGER;
 			out.v.i = in.v.j.part.lo;
 			break;
 
-		case 137:
+		case SJME_NVM_BYTECODE_JAVA_L2F:
 			out.t = SJME_JAVA_TYPE_ID_FLOAT;
 #if defined(SJME_CONFIG_HAS_FLOAT_HARD)
 			out.v.f.native = (float)in.v.j.full;
@@ -143,7 +143,7 @@ SJME_NVM_BYTECODE_SLOW(CastLongToX)
 #endif
 		break;
 
-		case 138:
+		case SJME_NVM_BYTECODE_JAVA_L2D:
 			out.t = SJME_JAVA_TYPE_ID_DOUBLE;
 #if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
 			out.v.d.native = (double)in.v.j.full;

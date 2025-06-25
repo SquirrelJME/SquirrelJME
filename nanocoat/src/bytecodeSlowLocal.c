@@ -29,15 +29,35 @@ SJME_NVM_BYTECODE_SLOW(IInc)
 
 	/* Directly access value. */
 	value = NULL;
-	index = relRawCode[1] & 0xFF;
+	index = (relRawCode[1] & 0xFF);
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalAddr(
 		inFrame, SJME_JAVA_TYPE_ID_INTEGER, index,
 		(sjme_pointer*)&value)) || value == NULL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INVALID_READ);
 
 	/* Increment directly. */
-	increment = (sjme_jbyte)relRawCode[2];
-	(*value) += increment;
+	(*value) += (sjme_jbyte)relRawCode[2];
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(IIncWide)
+{
+	sjme_jint index, increment;
+	sjme_jint* value;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* Directly access value. */
+	value = NULL;
+	index = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[2]));
+	if (sjme_error_is(error = sjme_nvm_task_frameLocalAddr(
+		inFrame, SJME_JAVA_TYPE_ID_INTEGER, index,
+		(sjme_pointer*)&value)) || value == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INVALID_READ);
+
+	/* Increment directly. */
+	(*value) += sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[4]));
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_SLOW_EXIT;

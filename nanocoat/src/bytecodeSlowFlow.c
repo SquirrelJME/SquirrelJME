@@ -210,6 +210,17 @@ SJME_NVM_BYTECODE_SLOW(Goto)
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
 
+SJME_NVM_BYTECODE_SLOW(GotoWide)
+{
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	
+	/* Jumps according to the offset. */
+	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
+	pcNew->adjust = sjme_big_int(*sjme_util_memUnaligned32(&relRawCode[1]));
+	
+	SJME_NVM_BYTECODE_SLOW_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(LookupSwitch)
 {
 	sjme_jint paramBase, divHi;

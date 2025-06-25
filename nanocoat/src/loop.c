@@ -223,6 +223,12 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 				currentFrame, iv, ev, &pcDefault)))
 				return sjme_error_vmError(inThread, error);
 
+		/* The instruction length cannot run past the end of the code. */
+		if (sjme_noLint(currentFrame)->pc + pcDefault.adjust >
+			currentFrame->inCode->rawCodeLen)
+			return sjme_error_vmError(currentFrame,
+				SJME_ERROR_INVALID_INSTRUCTION);
+
 		/* Which LUT table to use? */
 		lut = sjme_nvm_byteCode_lutTable[iv];
 		if (lut == NULL)

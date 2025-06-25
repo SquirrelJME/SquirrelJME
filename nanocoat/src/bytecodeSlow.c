@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <sjme/nvm/task.h>
+
 #include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/bytecodeSlow.h"
 
@@ -209,11 +211,11 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
 	/* 193 */ SJME_NVM_BYTECODE_SLOW_NAME(InstanceOf),
 	/* 194 */ SJME_NVM_BYTECODE_SLOW_NAME(Monitor),
 	/* 195 */ SJME_NVM_BYTECODE_SLOW_NAME(Monitor),
-	/* 196 */ sjme_nvm_byteCode_notImplemented,
+	/* 196 */ SJME_NVM_BYTECODE_SLOW_NAME(Wide),
 	/* 197 */ sjme_nvm_byteCode_notImplemented,
 	/* 198 */ SJME_NVM_BYTECODE_SLOW_NAME(IfAX),
 	/* 199 */ SJME_NVM_BYTECODE_SLOW_NAME(IfAX),
-	/* 200 */ sjme_nvm_byteCode_notImplemented,
+	/* 200 */ SJME_NVM_BYTECODE_SLOW_NAME(GotoWide),
 	/* 201 */ sjme_nvm_byteCode_illegalInstruction, /* jsr_w. */
 	/* 202 */ sjme_nvm_byteCode_illegalInstruction,
 	/* 203 */ sjme_nvm_byteCode_illegalInstruction,
@@ -292,14 +294,14 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowWideFunctions
 	/* .15 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .16 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .17 */ sjme_nvm_byteCode_illegalInstruction,
-	/* .18 */ sjme_nvm_byteCode_notImplemented,
+	/* .18 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .19 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .20 */ sjme_nvm_byteCode_illegalInstruction,
-	/* .21 */ sjme_nvm_byteCode_notImplemented,
-	/* .22 */ sjme_nvm_byteCode_notImplemented,
-	/* .23 */ sjme_nvm_byteCode_notImplemented,
-	/* .24 */ sjme_nvm_byteCode_notImplemented,
-	/* .25 */ sjme_nvm_byteCode_notImplemented,
+	/* .21 */ SJME_NVM_BYTECODE_SLOW_NAME(XLoad),
+	/* .22 */ SJME_NVM_BYTECODE_SLOW_NAME(XLoad),
+	/* .23 */ SJME_NVM_BYTECODE_SLOW_NAME(XLoad),
+	/* .24 */ SJME_NVM_BYTECODE_SLOW_NAME(XLoad),
+	/* .25 */ SJME_NVM_BYTECODE_SLOW_NAME(XLoad),
 	/* .26 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .27 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .28 */ sjme_nvm_byteCode_illegalInstruction,
@@ -328,11 +330,11 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowWideFunctions
 	/* .51 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .52 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .53 */ sjme_nvm_byteCode_illegalInstruction,
-	/* .54 */ sjme_nvm_byteCode_notImplemented,
-	/* .55 */ sjme_nvm_byteCode_notImplemented,
-	/* .56 */ sjme_nvm_byteCode_notImplemented,
-	/* .57 */ sjme_nvm_byteCode_notImplemented,
-	/* .58 */ sjme_nvm_byteCode_notImplemented,
+	/* .54 */ SJME_NVM_BYTECODE_SLOW_NAME(XStore),
+	/* .55 */ SJME_NVM_BYTECODE_SLOW_NAME(XStore),
+	/* .56 */ SJME_NVM_BYTECODE_SLOW_NAME(XStore),
+	/* .57 */ SJME_NVM_BYTECODE_SLOW_NAME(XStore),
+	/* .58 */ SJME_NVM_BYTECODE_SLOW_NAME(XStore),
 	/* .59 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .60 */ sjme_nvm_byteCode_illegalInstruction,
 	/* .61 */ sjme_nvm_byteCode_illegalInstruction,
@@ -406,7 +408,7 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowWideFunctions
 	/* 129 */ sjme_nvm_byteCode_illegalInstruction,
 	/* 130 */ sjme_nvm_byteCode_illegalInstruction,
 	/* 131 */ sjme_nvm_byteCode_illegalInstruction,
-	/* 132 */ sjme_nvm_byteCode_illegalInstruction,
+	/* 132 */ SJME_NVM_BYTECODE_SLOW_NAME(IIncWide),
 	/* 133 */ sjme_nvm_byteCode_illegalInstruction,
 	/* 134 */ sjme_nvm_byteCode_illegalInstruction,
 	/* 135 */ sjme_nvm_byteCode_illegalInstruction,
@@ -531,3 +533,25 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowWideFunctions
 	/* 254 */ sjme_nvm_byteCode_illegalInstruction,
 	/* 255 */ sjme_nvm_byteCode_illegalInstruction,
 };
+
+SJME_NVM_BYTECODE_SLOW(Wide)
+{
+	sjme_byteCode wideIv;
+	sjme_nvm_byteCode_func lutFunc;
+	SJME_NVM_BYTECODE_SLOW_ENTRY;
+
+	/* The wide instruction IV cannot go off the end. */
+	if (inFrame->pc + 1 >= inFrame->inCode->rawCodeLen)
+		return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_INSTRUCTION);
+	
+	/* Lookup wide instruction IV. */
+	wideIv = relRawCode[1];
+
+	/* Lookup handler. */
+	lutFunc = sjme_nvm_byteCode_slowWideFunctions[wideIv];
+	if (lutFunc == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_INSTRUCTION);
+
+	/* Forward to wide handler. */
+	return lutFunc(inFrame, id, relRawCode, pcNew);
+}

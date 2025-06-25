@@ -586,8 +586,29 @@ sjme_errorCode sjme_nvm_byteCode_calcLength(
 			break;
 		
 		case SJME_NVM_BYTECODE_LENGTH_WIDE:
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			switch (ev[1])
+			{
+				case SJME_NVM_BYTECODE_JAVA_ILOAD:
+				case SJME_NVM_BYTECODE_JAVA_LLOAD:
+				case SJME_NVM_BYTECODE_JAVA_FLOAD:
+				case SJME_NVM_BYTECODE_JAVA_DLOAD:
+				case SJME_NVM_BYTECODE_JAVA_ALOAD:
+				case SJME_NVM_BYTECODE_JAVA_ISTORE:
+				case SJME_NVM_BYTECODE_JAVA_LSTORE:
+				case SJME_NVM_BYTECODE_JAVA_FSTORE:
+				case SJME_NVM_BYTECODE_JAVA_DSTORE:
+				case SJME_NVM_BYTECODE_JAVA_ASTORE:
+					pcNew->adjust = 4;
+					break;
+				
+				case SJME_NVM_BYTECODE_JAVA_WIDE:
+					pcNew->adjust = 6;
+					break;
+
+				default:
+					return SJME_ERROR_INVALID_ARGUMENT;
+			}
+			break;
 		
 			/* Invalid? */
 		default:
