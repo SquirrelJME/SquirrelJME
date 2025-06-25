@@ -780,16 +780,18 @@ public class RecordStore
 		throws IllegalArgumentException, IllegalStateException,
 			RecordStoreException, SecurityException
 	{
-		throw Debugging.todo();
-		/*
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
-			throw Debugging.todo();
+			// Check open
+			this.__checkOpen();
+			
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				session.setAccess(__auth, __write,
+					session.getString(RecordStoreSession.PASSWORD,
+						""));
+			}
 		}
-		
-		 */
 	}
 	
 	/**
