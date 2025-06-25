@@ -7,15 +7,15 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#ifndef __SQUIRRELJME_JNI_MD_H__
-#define __SQUIRRELJME_JNI_MD_H__
+#ifndef SJME_C_JVM_MD_H
+#define SJME_C_JVM_MD_H
 
 #if defined(_WIN32) || defined(SJME_CONFIG_HAS_WINDOWS)
-	#include "jni_win.h"
+	#include "jvm_win.h"
 #elif defined(__APPLE__) || defined(SJME_CONFIG_HAS_MACOS)
-	#include "jni_mac.h"
+	#include "jvm_mac.h"
 #else
-	#include "jni_unix.h"
+	#include "jvm_unix.h"
 #endif
 
-#endif /* __SQUIRRELJME_JNI_MD_H__ */
+#endif /* SJME_C_JVM_MD_H */

@@ -8,7 +8,9 @@
 // -------------------------------------------------------------------------*/
 
 #include <jni.h>
+#include <jvm.h>
 
+#include "frontend/libjvm/internals.h"
 #include "sjme/alloc.h"
 #include "sjme/nvm/boot.h"
 #include "sjme/debug.h"
@@ -19,88 +21,90 @@
 /**
  * Creates a new Java Virtual Machine.
  * 
- * @param outVm The resultant virtual machine.
- * @param outEnv The output environment.
- * @param vmArgs The arguments to the virtual machine creation.
- * @return 
+ * @param pvm The resultant virtual machine.
+ * @param penv The output environment.
+ * @param args The arguments to the virtual machine creation.
+ * @return If successful, @c JNI_OK .
+ * @since 2025/06/25
  */
-sjme_attrUnused jint JNICALL JNI_CreateJavaVM(
-	sjme_attrOutNotNull JavaVM** outVm,
-	sjme_attrOutNotNull void** outEnv,
-	sjme_attrInNotNull void* vmArgs)
+jint JNICALL JNI_CreateJavaVM(
+	sjme_attrOutNotNull JavaVM** pvm,
+	sjme_attrOutNotNull void** penv,
+	sjme_attrInNotNull void* args)
 {
 	struct JNIInvokeInterface_* resultVm;
 	struct JNINativeInterface_* resultEnv;
 	sjme_alloc_pool pool;
 	sjme_nvm nvmState;
-	JavaVMInitArgs* args;
+	JavaVMInitArgs* initArgs;
 	jint i;
-	
-	if (outVm == NULL || outEnv == NULL || vmArgs == NULL)
+
+	if (pvm == NULL || penv == NULL || args == NULL)
 		return JNI_EINVAL;
-		
+
 	/* Aliased. */
-	args = vmArgs;
-	
+	initArgs = args;
+
 	/* Negative number of options?. */
-	if (args->nOptions < 0)
+	if (initArgs->nOptions < 0)
 		return JNI_EINVAL;
-		
+
 	/* Either too old or too new. */
-	if (args->version < JNI_VERSION_1_1 || args->version > JNI_VERSION_1_8)
-		return JNI_EVERSION; 
-	
+	if (initArgs->version < JNI_VERSION_1_1 ||
+		initArgs->version > JNI_VERSION_1_8)
+		return JNI_EVERSION;
+
 #if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
 	/* OpenJDK sends these: */
 	/* -Djava.class.path=. */
 	/* -Dsun.java.launcher=SUN_STANDARD */
 	/* -Dsun.java.launcher.pid=30954 */
-	for (i = 0; i < args->nOptions; i++)
-		sjme_message("Arg %d: %s", i, args->options[i].optionString);
+	for (i = 0; i < initArgs->nOptions; i++)
+		sjme_message("Arg %d: %s", i, initArgs->options[i].optionString);
 #endif
-	
+
 	/* Allocate the memory needed for SquirrelJME. */
 	pool = NULL;
 	if (sjme_error_is(sjme_alloc_poolInitMalloc(&pool,
 		SJME_JVM_INIT_MEMORY)) || pool == NULL)
 		return JNI_ENOMEM;
-		
+
 	/* Allocate resultant function structure. */
 	resultVm = NULL;
 	if (sjme_error_is(sjme_alloc(pool, sizeof(*resultVm),
-		(void**)&resultVm)) ||
+			(void**)&resultVm)) ||
 		resultVm == NULL)
 		goto fail_allocResultVm;
-	
+
 	/* Allocate environment based functions. */
 	resultEnv = NULL;
 	if (sjme_error_is(sjme_alloc(pool, sizeof(*resultEnv),
-		(void**)&resultEnv)) ||
+			(void**)&resultEnv)) ||
 		resultEnv == NULL)
 		goto fail_allocResultEnv;
-	
+
 	/* Boot the virtual machine. */
 	nvmState = NULL;
 	if (sjme_error_is(sjme_nvm_boot(pool,
 		NULL, &nvmState)) || nvmState == NULL)
 		goto fail_nvmBoot;
-	
+
 	/* Store the environment and VM state into both structures the same. */
-	resultVm->reserved0 = resultVm;
-	resultVm->reserved1 = resultEnv;
-	resultVm->reserved2 = nvmState;
-	resultEnv->reserved0 = resultVm;
-	resultEnv->reserved1 = resultEnv;
-	resultEnv->reserved2 = nvmState;
-	
+	SJME_RESERVED_JVM(resultVm) = resultVm;
+	SJME_RESERVED_ENV(resultVm) = resultEnv;
+	SJME_RESERVED_NVM(resultVm) = nvmState;
+	SJME_RESERVED_JVM(resultEnv) = resultVm;
+	SJME_RESERVED_ENV(resultEnv) = resultEnv;
+	SJME_RESERVED_NVM(resultEnv) = nvmState;
+
 	/* Then link back to both. */
 	nvmState->common.frontEnd.wrapper = resultVm;
 	nvmState->common.frontEnd.data = resultEnv;
-	
+
 	/* Success! */
-	**outVm = resultVm;
-	*outEnv = resultEnv;
+	**pvm = resultVm;
+	*penv = resultEnv;
 	return JNI_OK;
 
 fail_nvmBoot:
@@ -110,41 +114,42 @@ fail_allocResultEnv:
 fail_allocResultVm:
 	if (resultVm != NULL)
 		sjme_alloc_free(resultVm);
-	
+
 	return JNI_ERR;
 }
 
 /**
  * Obtains the default virtual machine configuration.
  * 
- * @param vmArgs A @c JavaVMInitArgs , the @c version field must be set before
+ * @param args A @c JavaVMInitArgs , the @c version field must be set before
  * this is called.
  * @return Either @c JNI_OK or an error such as if the Java version is not
  * supported.
  * @since 2024/03/18
  */
-sjme_attrUnused jint JNICALL JNI_GetDefaultJavaVMInitArgs(
-	sjme_attrInOutNotNull void* vmArgs)
+jint JNICALL JNI_GetDefaultJavaVMInitArgs(
+	sjme_attrInOutNotNull void* args)
 {
-	JavaVMInitArgs* args;
-	
-	if (vmArgs == NULL)
+	JavaVMInitArgs* initArgs;
+
+	if (args == NULL)
 		return JNI_EINVAL;
-	
+
 	/* This is aliased under void. */
-	args = vmArgs;
-	
+	initArgs = args;
+
 	/* Either too old or too new. */
-	if (args->version < JNI_VERSION_1_1 || args->version > JNI_VERSION_1_8)
-		return JNI_EVERSION; 
-	
+	if (initArgs->version < JNI_VERSION_1_1 ||
+		initArgs->version > JNI_VERSION_1_8)
+		return JNI_EVERSION;
+
 	/* Indicate that we support this version. */
-	args->version = JNI_VERSION_1_8;
-	
+	initArgs->version = JNI_VERSION_1_8;
+
 	/* Clear these. */
-	args->nOptions = 0;
-	args->options = NULL;
-	
+	initArgs->nOptions = 0;
+	initArgs->options = NULL;
+
 	/* Success! */
 	return JNI_OK;
 }

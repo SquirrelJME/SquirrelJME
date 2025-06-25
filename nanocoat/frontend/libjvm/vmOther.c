@@ -7,15 +7,17 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#ifndef __SQUIRRELJME_JNI_MD_H__
-#define __SQUIRRELJME_JNI_MD_H__
+#include <jni.h>
+#include <jvm.h>
 
-#if defined(_WIN32) || defined(SJME_CONFIG_HAS_WINDOWS)
-	#include "jni_win.h"
-#elif defined(__APPLE__) || defined(SJME_CONFIG_HAS_MACOS)
-	#include "jni_mac.h"
-#else
-	#include "jni_unix.h"
-#endif
+#include "sjme/debug.h"
 
-#endif /* __SQUIRRELJME_JNI_MD_H__ */
+jboolean JNICALL JVM_SupportsCX8(void)
+{
+	sjme_todo("Impl?");
+}
+
+void* JNICALL JVM_GetManagement(jint version)
+{
+	sjme_todo("Impl?");
+}

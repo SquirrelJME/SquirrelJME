@@ -13,9 +13,25 @@ squirreljme_include("docker.cmake")
 add_library(libJvm SHARED
 	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:CorePIC>
-	revProto.c
-	vmInit.c
-	vmNativeLib.c)
+	niInit.c
+	vmArray.c
+	vmCompiler.c
+	vmCore.c
+	vmDebug.c
+	vmFile.c
+	vmFloat.c
+	vmIoNet.c
+	vmObject.c
+	vmObjectInput.c
+	vmOther.c
+	vmPackage.c
+	vmReflect.c
+	vmRuntime.c
+	vmSecurity.c
+	vmString.c
+	vmSystem.c
+	vmThread.c
+	vmThrowable.c)
 
 # Always make this position independent
 if(SQUIRRELJME_ENABLE_FPIC)
@@ -27,13 +43,18 @@ endif()
 add_dependencies(libJvm
 	CorePIC)
 
+# If using official JNI/JVM headers we need this definition to be set
+target_compile_definitions(libJvm PRIVATE _JNI_IMPLEMENTATION_=1)
+target_compile_definitions(libJvm PRIVATE SJME_JNI_IMPLEMENTATION=1)
+
 # We need to find all of the includes and such
 target_include_directories(libJvm PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 target_include_directories(libJvm SYSTEM PRIVATE
 	${JNI_INCLUDE_DIRS}
 	${JAVA_INCLUDE_PATH}
-	${JAVA_INCLUDE_PATH2})
+	${JAVA_INCLUDE_PATH2}
+	${JVM_INCLUDE_DIRS})
 
 # Libraries needed to be linked with for the DyLib to function
 target_link_libraries(libJvm PUBLIC

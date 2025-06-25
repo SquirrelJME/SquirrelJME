@@ -7,15 +7,33 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#ifndef __SQUIRRELJME_JNI_MD_H__
-#define __SQUIRRELJME_JNI_MD_H__
+#include <jni.h>
+#include <jvm.h>
 
-#if defined(_WIN32) || defined(SJME_CONFIG_HAS_WINDOWS)
-	#include "jni_win.h"
-#elif defined(__APPLE__) || defined(SJME_CONFIG_HAS_MACOS)
-	#include "jni_mac.h"
-#else
-	#include "jni_unix.h"
-#endif
+#include "sjme/debug.h"
 
-#endif /* __SQUIRRELJME_JNI_MD_H__ */
+jlong JNICALL JVM_CurrentTimeMillis(JNIEnv* env, jclass ignored)
+{
+	sjme_todo("Impl?");
+}
+
+jlong JNICALL JVM_NanoTime(JNIEnv* env, jclass ignored)
+{
+	sjme_todo("Impl?");
+}
+
+void JNICALL JVM_ArrayCopy(JNIEnv* env,
+	jclass ignored,
+	jobject src,
+	jint src_pos,
+	jobject dst,
+	jint dst_pos,
+	jint length)
+{
+	sjme_todo("Impl?");
+}
+
+jobject JNICALL JVM_InitProperties(JNIEnv* env, jobject p)
+{
+	sjme_todo("Impl?");
+}

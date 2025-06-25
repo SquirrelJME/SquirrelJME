@@ -7,15 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#ifndef __SQUIRRELJME_JNI_MD_H__
-#define __SQUIRRELJME_JNI_MD_H__
+#include <jni.h>
+#include <jvm.h>
 
-#if defined(_WIN32) || defined(SJME_CONFIG_HAS_WINDOWS)
-	#include "jni_win.h"
-#elif defined(__APPLE__) || defined(SJME_CONFIG_HAS_MACOS)
-	#include "jni_mac.h"
-#else
-	#include "jni_unix.h"
-#endif
+#include "sjme/debug.h"
 
-#endif /* __SQUIRRELJME_JNI_MD_H__ */
+void JNICALL JVM_FillInStackTrace(JNIEnv* env, jobject throwable)
+{
+	sjme_todo("Impl?");
+}
+
+jint JNICALL JVM_GetStackTraceDepth(JNIEnv* env, jobject throwable)
+{
+	sjme_todo("Impl?");
+}
+
+jobject JNICALL JVM_GetStackTraceElement(JNIEnv* env,
+	jobject throwable,
+	jint index)
+{
+	sjme_todo("Impl?");
+}
