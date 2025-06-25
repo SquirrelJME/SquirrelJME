@@ -251,6 +251,12 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 			continue;
 		}
 
+#if defined(SJME_CONFIG_DEBUG)
+		/* Store last PC and IV, for debugging purposes. */
+		currentFrame->lastPc = sjme_noLint(currentFrame)->pc;
+		currentFrame->lastIv = iv;
+#endif
+
 		/* Set new PC address, in non-exception cases. */
 		if (pcNew.type == SJME_NVM_BYTECODE_PC_DEFAULT)
 		{

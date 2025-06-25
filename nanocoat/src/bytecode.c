@@ -31,8 +31,8 @@ const sjme_jbyte sjme_nvm_byteCode_lengths[SJME_NVM_NUM_JAVA_BYTECODES] =
 	/* .13 */ 1,
 	/* .14 */ 1,
 	/* .15 */ 1,
-	/* .16 */ 2,
-	/* .17 */ 3,
+	/* .16 */ 2, /* bipush */
+	/* .17 */ 3, /* sipush */
 	/* .18 */ 2,
 	/* .19 */ 3,
 	/* .20 */ 3,
@@ -168,13 +168,13 @@ const sjme_jbyte sjme_nvm_byteCode_lengths[SJME_NVM_NUM_JAVA_BYTECODES] =
 	/* 150 */ 1,
 	/* 151 */ 1,
 	/* 152 */ 1,
-	/* 153 */ 3,
+	/* 153 */ 3, /* if.. */
 	/* 154 */ 3,
 	/* 155 */ 3,
 	/* 156 */ 3,
 	/* 157 */ 3,
 	/* 158 */ 3,
-	/* 159 */ 3,
+	/* 159 */ 3, /* if_icmp.. */
 	/* 160 */ 3,
 	/* 161 */ 3,
 	/* 162 */ 3,

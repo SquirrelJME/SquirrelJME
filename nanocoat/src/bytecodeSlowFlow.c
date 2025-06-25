@@ -108,9 +108,6 @@ SJME_NVM_BYTECODE_SLOW(IfAX)
 	sjme_jvalueTyped value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 	
-	/* Read the branch value. */
-	offset = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[1]));
-	
 	/* Pop single object value. */
 	memset(&value, 0, sizeof(value));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
@@ -121,7 +118,8 @@ SJME_NVM_BYTECODE_SLOW(IfAX)
 	if (sjme_nvm_byteCode_compareAs[id - 198](value.v.l, NULL))
 	{
 		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
-		pcNew->adjust = offset;
+		pcNew->adjust = sjme_big_short(
+			*sjme_util_memUnaligned16(&relRawCode[1]));
 	}
 
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -129,12 +127,8 @@ SJME_NVM_BYTECODE_SLOW(IfAX)
 
 SJME_NVM_BYTECODE_SLOW(IfX)
 {
-	sjme_jint offset;
 	sjme_jvalueTyped value;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
-	
-	/* Read the branch value. */
-	offset = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[1]));
 	
 	/* Pop single integer value. */
 	memset(&value, 0, sizeof(value));
@@ -146,7 +140,8 @@ SJME_NVM_BYTECODE_SLOW(IfX)
 	if (sjme_nvm_byteCode_compareIs[id - 153](value.v.i, 0))
 	{
 		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
-		pcNew->adjust = offset;
+		pcNew->adjust = sjme_big_short(
+			*sjme_util_memUnaligned16(&relRawCode[1]));
 	}
 
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -154,12 +149,8 @@ SJME_NVM_BYTECODE_SLOW(IfX)
 
 SJME_NVM_BYTECODE_SLOW(IfICmpX)
 {
-	sjme_jint offset;
 	sjme_jvalueTyped a, b;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
-	
-	/* Read the branch value. */
-	offset = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[1]));
 	
 	/* Pop both integer values. */
 	memset(&b, 0, sizeof(b));
@@ -175,7 +166,8 @@ SJME_NVM_BYTECODE_SLOW(IfICmpX)
 	if (sjme_nvm_byteCode_compareIs[id - 159](a.v.i, b.v.i))
 	{
 		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
-		pcNew->adjust = offset;
+		pcNew->adjust = sjme_big_short(
+			*sjme_util_memUnaligned16(&relRawCode[1]));
 	}
 
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -183,12 +175,8 @@ SJME_NVM_BYTECODE_SLOW(IfICmpX)
 
 SJME_NVM_BYTECODE_SLOW(IfACmpX)
 {
-	sjme_jint offset;
 	sjme_jvalueTyped a, b;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
-	
-	/* Read the branch value. */
-	offset = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[1]));
 	
 	/* Pop both integer values. */
 	memset(&b, 0, sizeof(b));
@@ -204,7 +192,8 @@ SJME_NVM_BYTECODE_SLOW(IfACmpX)
 	if (sjme_nvm_byteCode_compareAs[id - 165](a.v.l, b.v.l))
 	{
 		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
-		pcNew->adjust = offset;
+		pcNew->adjust = sjme_big_short(
+			*sjme_util_memUnaligned16(&relRawCode[1]));
 	}
 
 	SJME_NVM_BYTECODE_SLOW_EXIT;
@@ -212,15 +201,11 @@ SJME_NVM_BYTECODE_SLOW(IfACmpX)
 
 SJME_NVM_BYTECODE_SLOW(Goto)
 {
-	sjme_jint offset;
 	SJME_NVM_BYTECODE_SLOW_ENTRY;
 	
-	/* Read the branch value. */
-	offset = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[1]));
-
 	/* Jumps according to the offset. */
 	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
-	pcNew->adjust = offset;
+	pcNew->adjust = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[1]));
 	
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }
@@ -380,7 +365,7 @@ SJME_NVM_BYTECODE_SLOW(TableSwitch)
 	/* In the table. */
 	else
 		pcNew->adjust = sjme_big_int(*sjme_util_memUnaligned32(
-			&relRawCode[paramBase + 8 + (4 * (value.v.i - lo))]));
+			&relRawCode[paramBase + 12 + (4 * (value.v.i - lo))]));
 	
 	SJME_NVM_BYTECODE_SLOW_EXIT;
 }

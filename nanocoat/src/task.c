@@ -975,7 +975,7 @@ sjme_errorCode sjme_nvm_task_stackTrace(
 	sjme_attrInNotNull sjme_nvm_thread inThread)
 {
 	sjme_nvm_frame frame;
-	sjme_jint i, instructionId;
+	sjme_jint i, instructionId, pc;
 	sjme_jclass lastClass, nowClass;
 	sjme_nvm_class_codeInfo nowCode;
 	sjme_nvm_class_methodInfo nowMethod;
