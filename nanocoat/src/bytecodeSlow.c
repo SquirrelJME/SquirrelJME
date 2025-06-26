@@ -7,8 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <sjme/nvm/task.h>
-
+#include "sjme/nvm/task.h"
 #include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/bytecodeSlow.h"
 
@@ -103,7 +102,7 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
 	/* .85 */ SJME_NVM_BYTECODE_SLOW_NAME(XAStore),
 	/* .86 */ SJME_NVM_BYTECODE_SLOW_NAME(XAStore),
 	/* .87 */ SJME_NVM_BYTECODE_SLOW_NAME(Pop),
-	/* .88 */ sjme_nvm_byteCode_notImplemented,
+	/* .88 */ SJME_NVM_BYTECODE_SLOW_NAME(PopTwo),
 	/* .89 */ SJME_NVM_BYTECODE_SLOW_NAME(Dup),
 	/* .90 */ sjme_nvm_byteCode_notImplemented,
 	/* .91 */ sjme_nvm_byteCode_notImplemented,
@@ -538,7 +537,7 @@ SJME_NVM_BYTECODE_SLOW(Wide)
 {
 	sjme_byteCode wideIv;
 	sjme_nvm_byteCode_func lutFunc;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* The wide instruction IV cannot go off the end. */
 	if (inFrame->pc + 1 >= inFrame->inCode->rawCodeLen)

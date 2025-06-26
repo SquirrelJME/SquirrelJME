@@ -106,7 +106,7 @@ SJME_NVM_BYTECODE_SLOW(IfAX)
 {
 	sjme_jint offset;
 	sjme_jvalueTyped value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Pop single object value. */
 	memset(&value, 0, sizeof(value));
@@ -122,13 +122,13 @@ SJME_NVM_BYTECODE_SLOW(IfAX)
 			*sjme_util_memUnaligned16(&relRawCode[1]));
 	}
 
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(IfX)
 {
 	sjme_jvalueTyped value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Pop single integer value. */
 	memset(&value, 0, sizeof(value));
@@ -144,13 +144,13 @@ SJME_NVM_BYTECODE_SLOW(IfX)
 			*sjme_util_memUnaligned16(&relRawCode[1]));
 	}
 
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(IfICmpX)
 {
 	sjme_jvalueTyped a, b;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Pop both integer values. */
 	memset(&b, 0, sizeof(b));
@@ -170,13 +170,13 @@ SJME_NVM_BYTECODE_SLOW(IfICmpX)
 			*sjme_util_memUnaligned16(&relRawCode[1]));
 	}
 
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(IfACmpX)
 {
 	sjme_jvalueTyped a, b;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Pop both integer values. */
 	memset(&b, 0, sizeof(b));
@@ -196,29 +196,29 @@ SJME_NVM_BYTECODE_SLOW(IfACmpX)
 			*sjme_util_memUnaligned16(&relRawCode[1]));
 	}
 
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(Goto)
 {
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Jumps according to the offset. */
 	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 	pcNew->adjust = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[1]));
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(GotoWide)
 {
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Jumps according to the offset. */
 	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 	pcNew->adjust = sjme_big_int(*sjme_util_memUnaligned32(&relRawCode[1]));
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(LookupSwitch)
@@ -227,7 +227,7 @@ SJME_NVM_BYTECODE_SLOW(LookupSwitch)
 	sjme_jint pivot, divLo, base;
 	sjme_jint matchKey, desire;
 	sjme_jvalueTyped value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Determine the relative base for parameters. */
 	paramBase = ((inFrame->pc + 4) & (~3)) - inFrame->pc;
@@ -297,21 +297,21 @@ skip_default:
 		*sjme_util_memUnaligned32(&relRawCode[paramBase]));
 	
 skip_matched:
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(NoOp)
 {
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(ReturnX)
 {
 	sjme_javaTypeId desire;
 	sjme_jvalueTyped result;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Must be returning the same type. */
 	desire = sjme_nvm_byteCode_returnTypes[id - 172];
@@ -340,14 +340,14 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 	/* Pop the current frame. */
 	pcNew->popFrame = SJME_JNI_TRUE;
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(TableSwitch)
 {
 	sjme_jint paramBase, lo, hi, tableCount;
 	sjme_jvalueTyped value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Determine the relative base for parameters. */
 	paramBase = ((inFrame->pc + 4) & (~3)) - inFrame->pc;
@@ -378,5 +378,5 @@ SJME_NVM_BYTECODE_SLOW(TableSwitch)
 		pcNew->adjust = sjme_big_int(*sjme_util_memUnaligned32(
 			&relRawCode[paramBase + 12 + (4 * (value.v.i - lo))]));
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }

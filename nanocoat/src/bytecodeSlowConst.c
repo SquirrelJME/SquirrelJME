@@ -71,7 +71,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 SJME_NVM_BYTECODE_SLOW(AConstNull)
 {
 	sjme_jvalueTyped value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
@@ -84,13 +84,13 @@ SJME_NVM_BYTECODE_SLOW(AConstNull)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(BIPush)
 {
 	sjme_jvalueTyped value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
@@ -103,13 +103,13 @@ SJME_NVM_BYTECODE_SLOW(BIPush)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(DConstZ)
 {
 	sjme_jvalueTyped value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
@@ -125,13 +125,13 @@ SJME_NVM_BYTECODE_SLOW(DConstZ)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(FConstZ)
 {
 	sjme_jvalueTyped value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
@@ -149,13 +149,13 @@ SJME_NVM_BYTECODE_SLOW(FConstZ)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(IConstM)
 {
 	sjme_jvalueTyped value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
@@ -168,13 +168,13 @@ SJME_NVM_BYTECODE_SLOW(IConstM)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(LConstZ)
 {
 	sjme_jvalueTyped value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
@@ -187,14 +187,14 @@ SJME_NVM_BYTECODE_SLOW(LConstZ)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(Ldc)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in pool value. */
 	poolIndex = relRawCode[1];
@@ -213,14 +213,14 @@ SJME_NVM_BYTECODE_SLOW(Ldc)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(LdcW)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in pool value. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -239,14 +239,14 @@ SJME_NVM_BYTECODE_SLOW(LdcW)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(LdcWTwo)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in pool value. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -263,13 +263,13 @@ SJME_NVM_BYTECODE_SLOW(LdcWTwo)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(SIPush)
 {
 	sjme_jvalueTyped value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
@@ -282,5 +282,5 @@ SJME_NVM_BYTECODE_SLOW(SIPush)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }

@@ -797,6 +797,21 @@ typedef enum sjme_nvm_byteCode_length
 
 	/** @c wide . */
 	SJME_NVM_BYTECODE_LENGTH_WIDE = -9,
+
+	/** Fast bytecode, length 1. */
+	SJME_NVM_BYTECODE_LENGTH_FAST_1 = -10,
+
+	/** Fast bytecode, length 2. */
+	SJME_NVM_BYTECODE_LENGTH_FAST_2 = -11,
+
+	/** Fast bytecode, length 3. */
+	SJME_NVM_BYTECODE_LENGTH_FAST_3 = -12,
+
+	/** Fast bytecode, length 4. */
+	SJME_NVM_BYTECODE_LENGTH_FAST_4 = -13,
+
+	/** Fast bytecode, length 5. */
+	SJME_NVM_BYTECODE_LENGTH_FAST_5 = -14,
 } sjme_nvm_byteCode_length;
 
 /** The length of each instruction. */
@@ -805,14 +820,6 @@ extern const sjme_jbyte sjme_nvm_byteCode_lengths[SJME_NVM_NUM_JAVA_BYTECODES];
 /** Which LUT to use. */
 extern const sjme_nvm_byteCode_func (*sjme_nvm_byteCode_lutTable
 	[SJME_NVM_NUM_JAVA_BYTECODES])[SJME_NVM_NUM_JAVA_BYTECODES];
-
-/** Narrow slow bytecode handlers. */
-extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
-	[SJME_NVM_NUM_JAVA_BYTECODES];
-
-/** Wide slow bytecode handlers. */
-extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowWideFunctions
-	[SJME_NVM_NUM_JAVA_BYTECODES];
 
 /**
  * Calculates the instruction length.
@@ -862,6 +869,40 @@ sjme_errorCode sjme_nvm_byteCode_notImplemented(
 	sjme_attrInNotNull sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew);
 	
+/**
+ * The name of a byte code.
+ *
+ * @param category The category this is in.
+ * @param which The name of the byte code.
+ * @since 2025/06/26
+ */
+#define SJME_NVM_BYTECODE_NAME(category, which) \
+	SJME_TOKEN_PASTE3(sjme_nvm_byteCode_, category, which)
+	
+/**
+ * Declares a bytecode.
+ *
+ * @param category The category this is in.
+ * @param which Which byte code is declared?
+ * @since 2025/06/26
+ */
+#define SJME_NVM_BYTECODE(category, which) \
+	sjme_errorCode SJME_NVM_BYTECODE_NAME(category, which) ( \
+		sjme_attrInNotNull sjme_nvm_frame inFrame, \
+		sjme_attrInRange(0, 256) sjme_byteCode id, \
+		sjme_attrInNotNull sjme_byteCode* relRawCode, \
+		sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew)
+
+/** Common entry for byte code. */
+#define SJME_NVM_BYTECODE_ENTRY \
+	sjme_errorCode error; \
+	if (inFrame == NULL || relRawCode == NULL || pcNew == NULL) \
+		return SJME_ERROR_NULL_ARGUMENTS
+
+/** Common exit for byte code. */
+#define SJME_NVM_BYTECODE_EXIT \
+	return SJME_ERROR_NONE;
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

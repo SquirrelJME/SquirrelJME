@@ -8,13 +8,14 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/nvm/bytecode.h"
+#include "sjme/nvm/bytecodeFast.h"
 #include "sjme/nvm/bytecodeSlow.h"
 #include "sjme/nvm/task.h"
 
 SJME_NVM_BYTECODE_SLOW(Dup)
 {
 	sjme_jvalueTyped top;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* What is at the top of the stack? */
 	memset(&top, 0, sizeof(top));
@@ -32,13 +33,13 @@ SJME_NVM_BYTECODE_SLOW(Dup)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(Pop)
 {
 	sjme_jvalueTyped top;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* What is at the top of the stack? */
 	memset(&top, 0, sizeof(top));
@@ -62,5 +63,35 @@ SJME_NVM_BYTECODE_SLOW(Pop)
 			return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(PopTwo)
+{
+	sjme_jvalueTyped top;
+	sjme_nvm_byteCode_func fastFunc;
+	SJME_NVM_BYTECODE_ENTRY;
+
+	/* What is the topmost item on the stack? */
+	memset(&top, 0, sizeof(top));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
+		1, &top, SJME_JNI_FALSE)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* If a wide type, rewrite to pop wide. */
+	if (top.t == SJME_JAVA_TYPE_ID_LONG || top.t == SJME_JAVA_TYPE_ID_DOUBLE)
+	{
+		relRawCode[0] = SJME_NVM_BYTECODE_FAST_POP_WIDE;
+		fastFunc = SJME_NVM_BYTECODE_FAST_NAME(PopWide);
+	}
+
+	/* Otherwise, rewrite to pop narrow. */
+	else
+	{
+		relRawCode[0] = SJME_NVM_BYTECODE_FAST_POP_TWO_NARROW;
+		fastFunc = SJME_NVM_BYTECODE_FAST_NAME(PopTwoNarrow);
+	}
+
+	/* Forward to the new fast function. */
+	return fastFunc(inFrame, id, relRawCode, pcNew);
 }

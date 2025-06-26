@@ -12,6 +12,8 @@ squirreljme_multilib_add_static_library(Core
 	allocSizeOf.c
 	boot.c
 	bytecode.c
+	bytecodeFast.c
+	bytecodeFastStack.c
 	bytecodeSlow.c
 	bytecodeSlowConst.c
 	bytecodeSlowFlow.c

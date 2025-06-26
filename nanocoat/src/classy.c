@@ -14,6 +14,7 @@
 #include "sjme/nvm/classy.h"
 #include "sjme/debug.h"
 #include "sjme/util.h"
+#include "sjme/nvm/bytecodeSlow.h"
 #include "sjme/nvm/cleanup.h"
 
 /** The magic number for classes. */

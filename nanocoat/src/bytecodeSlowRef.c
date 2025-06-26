@@ -206,7 +206,7 @@ SJME_NVM_BYTECODE_SLOW(ArrayLength)
 {
 	sjme_jarray array;
 	sjme_jvalueTyped value, result;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Pop single object value. */
 	memset(&value, 0, sizeof(value));
@@ -232,7 +232,7 @@ SJME_NVM_BYTECODE_SLOW(ArrayLength)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(CheckCast)
@@ -242,7 +242,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	sjme_jclass desireClass;
 	sjme_jvalueTyped value;
 	sjme_jvalueTyped instance;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -280,7 +280,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	}
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(InstanceAccess)
@@ -294,7 +294,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	sjme_jvalueTyped instance;
 	sjme_nvm_jfieldAccessFunc accessor;
 	sjme_jboolean isPut;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Is this a get or a put? */
 	isPut = (id == 181);
@@ -402,7 +402,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	}
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(InstanceOf)
@@ -411,7 +411,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceOf)
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jvalueTyped check, result;
 	sjme_jclass desireClass;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -452,7 +452,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceOf)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(InvokeInterface)
@@ -461,7 +461,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 	sjme_jint poolIndex, depth;
 	sjme_nvm_class_poolEntryMember* methodRef;
 	sjme_jvalueTyped depthRef;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Always zero. */
 	if (0 != relRawCode[4])
@@ -515,7 +515,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
@@ -528,7 +528,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	sjme_jvalueTyped rawOnThis;
 	sjme_jobject onThis;
 	sjme_jboolean inSameClass, inSuper, isInit, isPrivate, isPackagePrivate;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Read in pool reference, which refers to the referenced member. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -607,7 +607,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(InvokeStatic)
@@ -616,7 +616,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jmethodID target;
 	sjme_jclass refClass;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -653,7 +653,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
@@ -662,7 +662,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jmethodID target;
 	sjme_jclass refClass;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -698,14 +698,14 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(Monitor)
 {
 	sjme_jboolean isExit;
 	sjme_jvalueTyped instance;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Entry or exit? */
 	isExit = (id == 195);
@@ -735,12 +735,12 @@ SJME_NVM_BYTECODE_SLOW(Monitor)
 	}
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(New)
 {
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 	sjme_jint poolIndex;
 	sjme_jvalueTyped result;
 	sjme_nvm_class_poolEntry* entry;
@@ -778,14 +778,14 @@ SJME_NVM_BYTECODE_SLOW(New)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(NewArray)
 {
 	sjme_jvalueTyped length, array;
 	sjme_basicTypeId arrayType;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in array length. */
 	memset(&length, 0, sizeof(length));
@@ -849,7 +849,7 @@ SJME_NVM_BYTECODE_SLOW(NewArray)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(NewArrayA)
@@ -859,7 +859,7 @@ SJME_NVM_BYTECODE_SLOW(NewArrayA)
 	sjme_jclass componentType;
 	sjme_jvalueTyped length;
 	sjme_jvalueTyped array;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -902,7 +902,7 @@ SJME_NVM_BYTECODE_SLOW(NewArrayA)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(StaticAccess)
@@ -915,7 +915,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	sjme_jvalueTyped result;
 	sjme_nvm_jfieldAccessFunc accessor;
 	sjme_jboolean isPut;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Is this a get or a put? */
 	isPut = (id == 179);
@@ -1017,7 +1017,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	}
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(XALoad)
@@ -1029,7 +1029,7 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	sjme_jint index;
 	sjme_basicTypeId arrayType;
 	sjme_jclass componentType;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in index and array. */
 	memset(&indexValue, 0, sizeof(indexValue));
@@ -1126,7 +1126,7 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(XAStore)
@@ -1139,7 +1139,7 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 	sjme_basicTypeId arrayType;
 	sjme_javaTypeId promoteType;
 	sjme_jclass componentType;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Determine the type to read from the stack and to store to the array. */
 	arrayType = sjme_nvm_byteCode_xArrayType[id - 79];
@@ -1230,5 +1230,5 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 	}
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }

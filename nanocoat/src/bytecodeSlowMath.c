@@ -21,28 +21,28 @@
 
 SJME_NVM_BYTECODE_SLOW(CastDoubleToX)
 {
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(CastFloatToX)
 {
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(CastIntToX)
 {
 	sjme_jvalueTyped in, out;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read input value. */
 	memset(&in, 0, sizeof(in));
@@ -110,13 +110,13 @@ SJME_NVM_BYTECODE_SLOW(CastIntToX)
 		&out)))
 		return sjme_error_vmError(inFrame, error);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(CastLongToX)
 {
 	sjme_jvalueTyped in, out;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read input value. */
 	memset(&in, 0, sizeof(in));
@@ -163,13 +163,13 @@ SJME_NVM_BYTECODE_SLOW(CastLongToX)
 		&out)))
 		return sjme_error_vmError(inFrame, error);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(CompareLong)
 {
 	sjme_jvalueTyped a, b, result;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
@@ -195,13 +195,13 @@ SJME_NVM_BYTECODE_SLOW(CompareLong)
 		&result)))
 		return sjme_error_vmError(inFrame, error);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 {
 	sjme_jvalueTyped a, b, result;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
@@ -252,13 +252,13 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 		&result)))
 		return sjme_error_vmError(inFrame, error);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 {
 	sjme_jvalueTyped a, b, result;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
@@ -309,33 +309,33 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 		&result)))
 		return sjme_error_vmError(inFrame, error);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(MathDouble)
 {
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(MathFloat)
 {
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(MathInt)
 {
 	sjme_jvalueTyped a, b, result;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
@@ -381,13 +381,13 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 		&result)))
 		return sjme_error_vmError(inFrame, error);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(MathLong)
 {
 	sjme_jvalueTyped a, b, result;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
@@ -433,33 +433,33 @@ SJME_NVM_BYTECODE_SLOW(MathLong)
 		&result)))
 		return sjme_error_vmError(inFrame, error);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(MathNegateDouble)
 {
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(MathNegateFloat)
 {
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(MathNegateInt)
 {
 	sjme_jvalueTyped value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in value to negate. */
 	memset(&value, 0, sizeof(value));
@@ -474,13 +474,13 @@ SJME_NVM_BYTECODE_SLOW(MathNegateInt)
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame, &value)))
 		return sjme_error_vmError(inFrame, error);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(MathNegateLong)
 {
 	sjme_jvalueTyped value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in value to negate. */
 	memset(&value, 0, sizeof(value));
@@ -495,5 +495,5 @@ SJME_NVM_BYTECODE_SLOW(MathNegateLong)
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame, &value)))
 		return sjme_error_vmError(inFrame, error);
 	
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }

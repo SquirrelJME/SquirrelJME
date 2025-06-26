@@ -25,7 +25,7 @@ SJME_NVM_BYTECODE_SLOW(IInc)
 {
 	sjme_jint index, increment;
 	sjme_jint* value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Directly access value. */
 	value = NULL;
@@ -39,14 +39,14 @@ SJME_NVM_BYTECODE_SLOW(IInc)
 	(*value) += (sjme_jbyte)relRawCode[2];
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(IIncWide)
 {
 	sjme_jint index, increment;
 	sjme_jint* value;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Directly access value. */
 	value = NULL;
@@ -60,14 +60,14 @@ SJME_NVM_BYTECODE_SLOW(IIncWide)
 	(*value) += sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[4]));
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(XLoad)
 {
 	sjme_jint index;
 	sjme_javaTypeId type;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Depends on the wideness. */
 	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
@@ -92,14 +92,14 @@ SJME_NVM_BYTECODE_SLOW(XLoad)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(XLoadZ)
 {
 	sjme_jint index;
 	sjme_javaTypeId type;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Push copy of the local to the stack. */
 	index = ((id - 26) & 3);
@@ -111,7 +111,7 @@ SJME_NVM_BYTECODE_SLOW(XLoadZ)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(XStore)
@@ -119,7 +119,7 @@ SJME_NVM_BYTECODE_SLOW(XStore)
 	sjme_jvalueTyped popped;
 	sjme_jint index;
 	sjme_javaTypeId type;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Depends on the wideness. */
 	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
@@ -148,7 +148,7 @@ SJME_NVM_BYTECODE_SLOW(XStore)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(XStoreZ)
@@ -156,7 +156,7 @@ SJME_NVM_BYTECODE_SLOW(XStoreZ)
 	sjme_jvalueTyped popped;
 	sjme_jint index;
 	sjme_javaTypeId type;
-	SJME_NVM_BYTECODE_SLOW_ENTRY;
+	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Pop object from the stack. */
 	memset(&popped, 0, sizeof(popped));
@@ -172,5 +172,5 @@ SJME_NVM_BYTECODE_SLOW(XStoreZ)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
-	SJME_NVM_BYTECODE_SLOW_EXIT;
+	SJME_NVM_BYTECODE_EXIT;
 }

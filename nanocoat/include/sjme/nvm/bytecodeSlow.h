@@ -37,7 +37,7 @@ extern "C"
  * @since 2025/01/08
  */
 #define SJME_NVM_BYTECODE_SLOW_NAME(which) \
-	SJME_TOKEN_PASTE(sjme_nvm_byteCode_slow, which)
+	SJME_NVM_BYTECODE_NAME(slow, which)
 	
 /**
  * Declares a slow bytecode.
@@ -46,24 +46,10 @@ extern "C"
  * @since 2025/01/08
  */
 #define SJME_NVM_BYTECODE_SLOW(which) \
-	sjme_errorCode SJME_NVM_BYTECODE_SLOW_NAME(which) ( \
-		sjme_attrInNotNull sjme_nvm_frame inFrame, \
-		sjme_attrInRange(0, 256) sjme_byteCode id, \
-		sjme_attrInNotNull sjme_byteCode* relRawCode, \
-		sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew)
+	SJME_NVM_BYTECODE(slow, which)
 
 /* clang-format off */ /* @formatter:off */
 /*--------------------------------------------------------------------------*/
-
-/** Common entry for slow byte code. */
-#define SJME_NVM_BYTECODE_SLOW_ENTRY \
-	sjme_errorCode error; \
-	if (inFrame == NULL || relRawCode == NULL || pcNew == NULL) \
-		return SJME_ERROR_NULL_ARGUMENTS
-
-/** Common exit for slow byte code. */
-#define SJME_NVM_BYTECODE_SLOW_EXIT \
-	return SJME_ERROR_NONE;
 	
 /* Constant */
 SJME_NVM_BYTECODE_SLOW(AConstNull);
@@ -137,6 +123,7 @@ SJME_NVM_BYTECODE_SLOW(XAStore);
 /* Stack */
 SJME_NVM_BYTECODE_SLOW(Dup);
 SJME_NVM_BYTECODE_SLOW(Pop);
+SJME_NVM_BYTECODE_SLOW(PopTwo);
 
 /*--------------------------------------------------------------------------*/
 /* clang-format on */ /* @formatter:on */
@@ -195,6 +182,14 @@ typedef enum sjme_nvm_byteCode_mathFunc
 	/** The number of math functions. */
 	SJME_NVM_BYTECODE_NUM_MATH_FUNC,
 } sjme_nvm_byteCode_mathFunc;
+	
+/** Narrow slow bytecode handlers. */
+extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
+	[SJME_NVM_NUM_JAVA_BYTECODES];
+
+/** Wide slow bytecode handlers. */
+extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowWideFunctions
+	[SJME_NVM_NUM_JAVA_BYTECODES];
 
 /*--------------------------------------------------------------------------*/
 

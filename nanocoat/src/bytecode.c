@@ -7,11 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <sjme/util.h>
-
+#include "sjme/util.h"
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/bytecode.h"
 #include "sjme/debug.h"
+#include "sjme/nvm/bytecodeSlow.h"
+#include "sjme/nvm/bytecodeFast.h"
 
 const sjme_jbyte sjme_nvm_byteCode_lengths[SJME_NVM_NUM_JAVA_BYTECODES] =
 {
@@ -269,8 +270,8 @@ const sjme_jbyte sjme_nvm_byteCode_lengths[SJME_NVM_NUM_JAVA_BYTECODES] =
 	/* 251 */ SJME_NVM_BYTECODE_LENGTH_INVALID,
 	/* 252 */ SJME_NVM_BYTECODE_LENGTH_INVALID,
 	/* 253 */ SJME_NVM_BYTECODE_LENGTH_INVALID,
-	/* 254 */ SJME_NVM_BYTECODE_LENGTH_INVALID,
-	/* 255 */ SJME_NVM_BYTECODE_LENGTH_INVALID,
+	/* 254 */ SJME_NVM_BYTECODE_LENGTH_FAST_1,
+	/* 255 */ SJME_NVM_BYTECODE_LENGTH_FAST_1,
 };
 
 const sjme_nvm_byteCode_func (*sjme_nvm_byteCode_lutTable
@@ -444,8 +445,8 @@ const sjme_nvm_byteCode_func (*sjme_nvm_byteCode_lutTable
 	/* 165 */ &sjme_nvm_byteCode_slowNarrowFunctions,
 	/* 166 */ &sjme_nvm_byteCode_slowNarrowFunctions,
 	/* 167 */ &sjme_nvm_byteCode_slowNarrowFunctions,
-	/* 168 */ NULL,
-	/* 169 */ NULL,
+	/* 168 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 169 */ &sjme_nvm_byteCode_fastFunctions,
 	/* 170 */ &sjme_nvm_byteCode_slowNarrowFunctions,
 	/* 171 */ &sjme_nvm_byteCode_slowNarrowFunctions,
 	/* 172 */ &sjme_nvm_byteCode_slowNarrowFunctions,
@@ -462,7 +463,7 @@ const sjme_nvm_byteCode_func (*sjme_nvm_byteCode_lutTable
 	/* 183 */ &sjme_nvm_byteCode_slowNarrowFunctions,
 	/* 184 */ &sjme_nvm_byteCode_slowNarrowFunctions,
 	/* 185 */ &sjme_nvm_byteCode_slowNarrowFunctions,
-	/* 186 */ NULL,
+	/* 186 */ &sjme_nvm_byteCode_fastFunctions,
 	/* 187 */ &sjme_nvm_byteCode_slowNarrowFunctions,
 	/* 188 */ &sjme_nvm_byteCode_slowNarrowFunctions,
 	/* 189 */ &sjme_nvm_byteCode_slowNarrowFunctions,
@@ -477,61 +478,61 @@ const sjme_nvm_byteCode_func (*sjme_nvm_byteCode_lutTable
 	/* 198 */ &sjme_nvm_byteCode_slowNarrowFunctions,
 	/* 199 */ &sjme_nvm_byteCode_slowNarrowFunctions,
 	/* 200 */ &sjme_nvm_byteCode_slowNarrowFunctions,
-	/* 201 */ NULL,
-	/* 202 */ NULL,
-	/* 203 */ NULL,
-	/* 204 */ NULL,
-	/* 205 */ NULL,
-	/* 206 */ NULL,
-	/* 207 */ NULL,
-	/* 208 */ NULL,
-	/* 209 */ NULL,
-	/* 210 */ NULL,
-	/* 211 */ NULL,
-	/* 212 */ NULL,
-	/* 213 */ NULL,
-	/* 214 */ NULL,
-	/* 215 */ NULL,
-	/* 216 */ NULL,
-	/* 217 */ NULL,
-	/* 218 */ NULL,
-	/* 219 */ NULL,
-	/* 220 */ NULL,
-	/* 221 */ NULL,
-	/* 222 */ NULL,
-	/* 223 */ NULL,
-	/* 224 */ NULL,
-	/* 225 */ NULL,
-	/* 226 */ NULL,
-	/* 227 */ NULL,
-	/* 228 */ NULL,
-	/* 229 */ NULL,
-	/* 230 */ NULL,
-	/* 231 */ NULL,
-	/* 232 */ NULL,
-	/* 233 */ NULL,
-	/* 234 */ NULL,
-	/* 235 */ NULL,
-	/* 236 */ NULL,
-	/* 237 */ NULL,
-	/* 238 */ NULL,
-	/* 239 */ NULL,
-	/* 240 */ NULL,
-	/* 241 */ NULL,
-	/* 242 */ NULL,
-	/* 243 */ NULL,
-	/* 244 */ NULL,
-	/* 245 */ NULL,
-	/* 246 */ NULL,
-	/* 247 */ NULL,
-	/* 248 */ NULL,
-	/* 249 */ NULL,
-	/* 250 */ NULL,
-	/* 251 */ NULL,
-	/* 252 */ NULL,
-	/* 253 */ NULL,
-	/* 254 */ NULL,
-	/* 255 */ NULL,
+	/* 201 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 202 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 203 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 204 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 205 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 206 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 207 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 208 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 209 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 210 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 211 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 212 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 213 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 214 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 215 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 216 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 217 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 218 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 219 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 220 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 221 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 222 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 223 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 224 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 225 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 226 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 227 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 228 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 229 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 230 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 231 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 232 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 233 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 234 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 235 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 236 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 237 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 238 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 239 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 240 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 241 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 242 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 243 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 244 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 245 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 246 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 247 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 248 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 249 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 250 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 251 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 252 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 253 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 254 */ &sjme_nvm_byteCode_fastFunctions,
+	/* 255 */ &sjme_nvm_byteCode_fastFunctions,
 };
 
 sjme_errorCode sjme_nvm_byteCode_calcLength(
@@ -555,6 +556,16 @@ sjme_errorCode sjme_nvm_byteCode_calcLength(
 		case SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_5:
 			pcNew->adjust = ((-pcNew->adjust) -
 				(-SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_1)) + 1;
+			break;
+
+			/* Fixed size, but fast. */
+		case SJME_NVM_BYTECODE_LENGTH_FAST_1:
+		case SJME_NVM_BYTECODE_LENGTH_FAST_2:
+		case SJME_NVM_BYTECODE_LENGTH_FAST_3:
+		case SJME_NVM_BYTECODE_LENGTH_FAST_4:
+		case SJME_NVM_BYTECODE_LENGTH_FAST_5:
+			pcNew->adjust = ((-pcNew->adjust) -
+				(-SJME_NVM_BYTECODE_LENGTH_FAST_1)) + 1;
 			break;
 		
 		case SJME_NVM_BYTECODE_LENGTH_LOOKUPSWITCH:
