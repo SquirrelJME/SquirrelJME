@@ -103,10 +103,12 @@ static sjme_lpcstr sjme_nvm_romNames[] =
 {
 	"squirreljme-"SQUIRRELJME_VERSION"-fast.jar",
 	"squirreljme-"SQUIRRELJME_VERSION".jar",
+	"squirreljme-"SQUIRRELJME_VERSION"-test.jar",
 	"squirreljme-"SQUIRRELJME_VERSION"-slow.jar",
 	"squirreljme-"SQUIRRELJME_VERSION"-slow-test.jar",
 	"squirreljme-fast.jar",
 	"squirreljme.jar",
+	"squirreljme-test.jar",
 	"squirreljme-slow.jar",
 	"squirreljme-slow-test.jar",
 	NULL

@@ -32,13 +32,15 @@ static sjme_lpcstr sjme_libretro_romNames[] =
 {
 	"squirreljme-"SQUIRRELJME_VERSION"-fast.jar",
 	"squirreljme-"SQUIRRELJME_VERSION".jar",
+	"squirreljme-"SQUIRRELJME_VERSION"-test.jar",
 	"squirreljme-"SQUIRRELJME_VERSION"-slow.jar",
 	"squirreljme-"SQUIRRELJME_VERSION"-slow-test.jar",
 	"squirreljme-fast.jar",
 	"squirreljme.jar",
+	"squirreljme-test.jar",
 	"squirreljme-slow.jar",
 	"squirreljme-slow-test.jar",
-	NULL,
+	NULL
 };
 
 static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
