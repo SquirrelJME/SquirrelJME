@@ -14,9 +14,13 @@
 #include "sjme/alloc.h"
 #include "sjme/nvm/boot.h"
 #include "sjme/debug.h"
+#include "sjme/nvm/task.h"
 
 /** Default amount of memory. */
-#define SJME_JVM_INIT_MEMORY 67108864
+#define SJME_JVM_INIT_MEMORY (32 * 1048576)
+
+/** The global NVM state for the JNI wrapper. */
+static sjme_atomic_sjme_pointer sjme_jni_nvm_state;
 
 /**
  * Creates a new Java Virtual Machine.
@@ -37,7 +41,12 @@ jint JNICALL JNI_CreateJavaVM(
 	sjme_alloc_pool pool;
 	sjme_nvm nvmState;
 	JavaVMInitArgs* initArgs;
-	jint i;
+	sjme_nvm_task initTask;
+	sjme_nvm_bootParam bootParam;
+	sjme_jint argc, i;
+	sjme_lpcstr* argv;
+	sjme_nvm_task_taskNewConfig taskConfig;
+	sjme_list_sjme_nvm_rom_library* classPath;
 
 	if (pvm == NULL || penv == NULL || args == NULL)
 		return JNI_EINVAL;
@@ -46,7 +55,8 @@ jint JNICALL JNI_CreateJavaVM(
 	initArgs = args;
 
 	/* Negative number of options?. */
-	if (initArgs->nOptions < 0)
+	argc = initArgs->nOptions;
+	if (argc < 0)
 		return JNI_EINVAL;
 
 	/* Either too old or too new. */
@@ -54,21 +64,43 @@ jint JNICALL JNI_CreateJavaVM(
 		initArgs->version > JNI_VERSION_1_8)
 		return JNI_EVERSION;
 
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
+	/* Setup target argv container. */
+	argv = sjme_alloca(sizeof(*argv) * (argc + 1));
+	if (argv == NULL)
+		return JNI_ENOMEM;
+	memset(argv, 0, sizeof(*argv) * (argc + 1));
+
+	/* Decompose arguments. */
 	/* OpenJDK sends these: */
 	/* -Djava.class.path=. */
 	/* -Dsun.java.launcher=SUN_STANDARD */
 	/* -Dsun.java.launcher.pid=30954 */
-	for (i = 0; i < initArgs->nOptions; i++)
-		sjme_message("Arg %d: %s", i, initArgs->options[i].optionString);
-#endif
+	for (i = 0; i < argc; i++)
+		argv[i] = initArgs->options[i].optionString;
 
-	/* Allocate the memory needed for SquirrelJME. */
-	pool = NULL;
-	if (sjme_error_is(sjme_alloc_poolInitMalloc(&pool,
-		SJME_JVM_INIT_MEMORY)) || pool == NULL)
-		return JNI_ENOMEM;
+	/* Check to see if an existing state exists to create a new task under. */
+	nvmState = sjme_atomic_sjme_pointer_get(&sjme_jni_nvm_state);
+	if (nvmState != NULL)
+	{
+		/* Use the pre-existing pool. */
+		pool = nvmState->allocPool;
+	}
+
+	/* Creating a fresh VM */
+	else
+	{
+		/* Allocate the memory needed for SquirrelJME. */
+		pool = NULL;
+		if (sjme_error_is(sjme_alloc_poolInitMalloc(&pool,
+			SJME_JVM_INIT_MEMORY)) || pool == NULL)
+			return JNI_ENOMEM;
+	}
+
+	/* Parse the command line. */
+	memset(&bootParam, 0, sizeof(bootParam));
+	if (sjme_error_is(sjme_nvm_parseCommandLine(pool,
+		&sjme_nal_default, &bootParam, argc, argv)))
+		goto fail_nvmParseArgs;
 
 	/* Allocate resultant function structure. */
 	resultVm = NULL;
@@ -84,19 +116,63 @@ jint JNICALL JNI_CreateJavaVM(
 		resultEnv == NULL)
 		goto fail_allocResultEnv;
 
-	/* Boot the virtual machine. */
-	nvmState = NULL;
-	if (sjme_error_is(sjme_nvm_boot(pool,
-		NULL, &nvmState)) || nvmState == NULL)
-		goto fail_nvmBoot;
+	/* Creating a fresh virtual machine? */
+	if (nvmState == NULL)
+	{
+		/* Boot the virtual machine. */
+		initTask = NULL;
+		if (sjme_error_is(sjme_nvm_boot(pool,
+			&bootParam, &nvmState, &initTask)) ||
+			nvmState == NULL || initTask == NULL)
+			goto fail_nvmBoot;
 
+		/* Store global state. */
+		sjme_atomic_sjme_pointer_compareSet(&sjme_jni_nvm_state,
+			NULL, nvmState);
+	}
+
+	/* Adding a task to an existing one. */
+	else
+	{
+		/* The boot parameters need to be translated to tasks. */
+		memset(&taskConfig, 0, sizeof(taskConfig));
+		
+		/* Search the classpath for the libraries specified. */
+		classPath = NULL;
+		if (sjme_error_is(sjme_nvm_rom_resolveClassPathByName(nvmState->suite,
+			bootParam.mainClassPathByName, &classPath)))
+			goto fail_searchClasspath;
+		
+		/* Setup class loader for the task. */
+		taskConfig.classLoader = NULL;
+		if (sjme_error_is(sjme_nvm_vmClass_loaderNew(nvmState,
+			&taskConfig.classLoader, classPath)) ||
+			taskConfig.classLoader == NULL)
+			goto fail_initClassLoader;
+
+		/* Arguments. */
+		taskConfig.mainClass = bootParam.mainClass;
+		taskConfig.mainArgs = bootParam.mainArgs;
+		taskConfig.sysProps = bootParam.sysProps;
+
+		/* Terminal configuration. */
+		taskConfig.stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
+		taskConfig.stdErr = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
+		
+		/* Start the task. */
+		initTask = NULL;
+		if (sjme_error_is(sjme_nvm_task_taskNew(nvmState,
+			&taskConfig, &initTask)) || initTask == NULL)
+			goto fail_initTask;
+	}
+	
 	/* Store the environment and VM state into both structures the same. */
 	SJME_RESERVED_JVM(resultVm) = resultVm;
 	SJME_RESERVED_ENV(resultVm) = resultEnv;
-	SJME_RESERVED_NVM(resultVm) = nvmState;
+	SJME_RESERVED_TASK(resultVm) = initTask;
 	SJME_RESERVED_JVM(resultEnv) = resultVm;
 	SJME_RESERVED_ENV(resultEnv) = resultEnv;
-	SJME_RESERVED_NVM(resultEnv) = nvmState;
+	SJME_RESERVED_TASK(resultEnv) = initTask;
 
 	/* Then link back to both. */
 	nvmState->common.frontEnd.wrapper = resultVm;
@@ -108,14 +184,23 @@ jint JNICALL JNI_CreateJavaVM(
 	return JNI_OK;
 
 fail_nvmBoot:
+fail_initTask:
+fail_initClassLoader:
+fail_searchClasspath:
 fail_allocResultEnv:
 	if (resultEnv != NULL)
 		sjme_alloc_free(resultEnv);
 fail_allocResultVm:
 	if (resultVm != NULL)
 		sjme_alloc_free(resultVm);
+fail_nvmParseArgs:
 
 	return JNI_ERR;
+}
+
+jint JNICALL JNI_GetCreatedJavaVMs(JavaVM** vmBuf, jsize bufLen, jsize* nVMs)
+{
+	sjme_todo("Impl?");
 }
 
 /**

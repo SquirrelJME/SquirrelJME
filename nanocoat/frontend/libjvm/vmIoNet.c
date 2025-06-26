@@ -17,7 +17,7 @@ jint JNICALL JVM_GetLastErrorString(char* buf, int len)
 	sjme_todo("Impl?");
 }
 
-char* JNICALL JVM_NativePath(char*)
+char* JNICALL JVM_NativePath(char* path)
 {
 	sjme_todo("Impl?");
 }

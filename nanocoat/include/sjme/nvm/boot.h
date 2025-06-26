@@ -97,15 +97,15 @@ struct sjme_nvm_bootParam
  * @param allocPool The main pool to be allocated within.
  * @param param The configuration to use.
  * @param outState The output state of the virtual machine.
- * @param argc The number of arguments passed to the executable.
- * @param argv The command line arguments passed to the executable.
+ * @param outInitTask The initial task that was created.
  * @return The error code, if any.
  * @since 2023/07/27
  */
 sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
-	sjme_attrOutNotNull sjme_nvm* outState)
+	sjme_attrOutNotNull sjme_nvm* outState,
+	sjme_attrOutNullable sjme_nvm_task* outInitTask)
 	sjme_attrCheckReturn;
 
 /**

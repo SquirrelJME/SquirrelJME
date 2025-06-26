@@ -93,7 +93,7 @@ int main(int argc, sjme_lpcstr* argv)
 	/* Boot the virtual machine. */
 	inState = NULL;
 	if (sjme_error_is(error = sjme_nvm_boot(pool,
-		&bootParam, &inState)))
+		&bootParam, &inState, NULL)))
 		goto fail_boot;
 	
 	/* Iterate the virtual machine loop. */

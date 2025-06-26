@@ -302,10 +302,10 @@ typedef struct sjme_nvm_task_taskNewConfig
 	sjme_lpcstr mainClass;
 
 	/** Main arguments. */
-	sjme_list_sjme_lpcstr* mainArgs;
+	const sjme_list_sjme_lpcstr* mainArgs;
 
 	/** System properties. */
-	sjme_list_sjme_lpcstr* sysProps;
+	const sjme_list_sjme_lpcstr* sysProps;
 	
 	/** The class loader for this task. */
 	sjme_nvm_vmClass_loader classLoader;

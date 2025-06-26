@@ -34,8 +34,8 @@ extern "C"
 /** Accesses the JNI Environment in the reserved space. */
 #define SJME_RESERVED_ENV(vmOrEnv) ((vmOrEnv)->reserved1)
 
-/** Accesses the NanoCoat VM State in the reserved state. */
-#define SJME_RESERVED_NVM(vmOrEnv) ((vmOrEnv)->reserved2)
+/** Accesses the NanoCoat VM Task in the reserved space. */
+#define SJME_RESERVED_TASK(vmOrEnv) ((vmOrEnv)->reserved2)
 
 /*--------------------------------------------------------------------------*/
 

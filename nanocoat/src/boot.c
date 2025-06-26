@@ -167,7 +167,8 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
-	sjme_attrOutNotNull sjme_nvm* outState)
+	sjme_attrOutNotNull sjme_nvm* outState,
+	sjme_attrOutNullable sjme_nvm_task* outInitTask)
 {
 #define FIXED_SUITE_COUNT 16
 	sjme_errorCode error;
@@ -289,6 +290,7 @@ sjme_errorCode sjme_nvm_boot(
 	}
 
 	/* Setup task details. */
+	memset(&initTaskConfig, 0, sizeof(initTaskConfig));
 	initTaskConfig.stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
 	initTaskConfig.stdErr = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
 	initTaskConfig.classPath = classPath;
@@ -304,6 +306,8 @@ sjme_errorCode sjme_nvm_boot(
 	
 	/* Return newly created VM. */
 	*outState = result;
+	if (outInitTask != NULL)
+		*outInitTask = initTask;
 	return SJME_ERROR_NONE;
 
 	/* Failed at specific points... */
