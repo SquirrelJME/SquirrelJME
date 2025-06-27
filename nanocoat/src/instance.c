@@ -192,15 +192,19 @@ sjme_errorCode sjme_nvm_instance_initFieldsChunk(
 	sjme_attrInNotNull sjme_pointer chunk,
 	sjme_attrInNotNull sjme_nvm_jclass_fields* placements)
 {
-	sjme_javaTypeId type;
+	sjme_extendedTypeId type;
 	sjme_nvm_fieldValues* into;
 	
 	if (chunk == NULL || placements == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Placements are calculated for each type. */
-	for (type = 0; type < SJME_NUM_JAVA_TYPE_IDS; type++)
+	for (type = 0; type < SJME_NUM_EXTENDED_JAVA_TYPE_IDS; type++)
 	{
+		/* If there are no fields, ignore. */
+		if (placements->count[type] == 0)
+			continue;
+		
 		/* Determine the base offset to write at. */
 		into = SJME_POINTER_OFFSET(chunk, placements->offset[type]);
 
@@ -209,6 +213,87 @@ sjme_errorCode sjme_nvm_instance_initFieldsChunk(
 		into->length = placements->count[type];
 	}
 	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_instance_fieldAccessStack(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jfieldID fieldId,
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jvalueTyped* stackType,
+	sjme_attrInValue sjme_jboolean isPut)
+{
+	sjme_jvalue* direct;
+	sjme_nvm_jfieldAccessFunc accessor;
+
+	if (contextThread == NULL || fieldId == NULL || stackType == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (instance == NULL)
+		return SJME_ERROR_NULL_STACK_POINTER;
+	
+	/* Obtain accessor for this field. */
+	if (fieldId->accessor != NULL)
+		accessor = fieldId->accessor;
+	else
+		accessor = SJME_T_K(contextThread)->globals.accessor;
+
+	/* There must be an accessor. */
+	if (accessor == NULL)
+		return SJME_ERROR_FIELD_NOT_DIRECT;
+
+	/* Direct access. */
+	direct = accessor(instance, fieldId);
+	if (direct == NULL)
+		return SJME_ERROR_FIELD_NOT_DIRECT;
+
+	/* No promotion/demotion needed. */
+	if (fieldId->extendedType < SJME_NUM_JAVA_TYPE_IDS)
+	{
+		if (isPut)
+			memmove(direct, &stackType->v,
+				sjme_nvm_typeMul[fieldId->extendedType]);
+		else
+			memmove(&stackType->v, direct,
+				sjme_nvm_typeMul[fieldId->extendedType]);
+	}
+
+	/* Translation is needed. */
+	else
+	{
+		/* Determine where to move to/from. */
+		switch (fieldId->basicType)
+		{
+				/* These are considered the same. */
+			case SJME_BASIC_TYPE_ID_BOOLEAN:
+			case SJME_BASIC_TYPE_ID_BYTE:
+			case SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE:
+				if (isPut)
+					direct->b = (stackType->v.i ? 1 : 0);
+				else
+					stackType->v.i = (direct->b ? 1 : 0);
+				break;
+				
+			case SJME_BASIC_TYPE_ID_SHORT:
+				if (isPut)
+					direct->s = (sjme_jshort)stackType->v.i;
+				else
+					stackType->v.i = direct->s;
+				break;
+				
+			case SJME_BASIC_TYPE_ID_CHARACTER:
+				if (isPut)
+					direct->c = (sjme_jchar)stackType->v.i;
+				else
+					stackType->v.i = (direct->c & INT32_C(0xFFFF));
+				break;
+
+			default:
+				return SJME_ERROR_INVALID_FIELD_TYPE;
+		}
+	}
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }

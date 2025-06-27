@@ -166,13 +166,13 @@ typedef enum sjme_nvm_instance_classInit
 typedef struct sjme_nvm_jclass_fields
 {
 	/** Base index for fields. */
-	sjme_jshort base[SJME_NUM_JAVA_TYPE_IDS];
+	sjme_jshort base[SJME_NUM_EXTENDED_JAVA_TYPE_IDS];
 	
 	/** Count for a given field. */
-	sjme_jshort count[SJME_NUM_JAVA_TYPE_IDS];
+	sjme_jshort count[SJME_NUM_EXTENDED_JAVA_TYPE_IDS];
 
 	/** Field offsets into the object, for each field type. */
-	sjme_intPointer offset[SJME_NUM_JAVA_TYPE_IDS];
+	sjme_intPointer offset[SJME_NUM_EXTENDED_JAVA_TYPE_IDS];
 	
 	/** Field bindings for this class. */
 	sjme_list_sjme_jfieldID* binds;
@@ -369,6 +369,25 @@ sjme_errorCode sjme_nvm_instance_initFieldsChunk(
 	sjme_attrInNotNull sjme_pointer chunk,
 	sjme_attrInNotNull sjme_nvm_jclass_fields* placements);
 
+/**
+ * Reads or writes a field based on a stack based value.
+ * 
+ * @param contextThread The context thread.
+ * @param fieldId The field ID.
+ * @param instance The instance to access.
+ * @param stackType The stack type.
+ * @param isPut If a put operation, @c fieldId is set to @c stackType ,
+ * otherwise @c stackType is written with the field value.
+ * @return Any resultant error, if any.
+ * @since 2025/06/26
+ */
+sjme_errorCode sjme_nvm_instance_fieldAccessStack(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jfieldID fieldId,
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jvalueTyped* stackType,
+	sjme_attrInValue sjme_jboolean isPut);
+	
 /**
  * Enters the object's monitor.
  * 

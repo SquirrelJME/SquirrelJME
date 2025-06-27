@@ -31,9 +31,6 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/** MLE Key. */
-#define rv, args rv args
-	
 /** Integer type. */
 #define SJME_MI SJME_JAVA_TYPE_ID_INTEGER
 

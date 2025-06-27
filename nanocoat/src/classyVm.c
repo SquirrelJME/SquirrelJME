@@ -128,7 +128,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 	sjme_list_sjme_nvm_class_fieldInfo* fields;
 	sjme_jboolean isStatic;
 	sjme_nvm_jclass_fields* placements;
-	sjme_javaTypeId javaType;
+	sjme_javaTypeId extendedType;
 	sjme_jint typedOffset[SJME_NUM_JAVA_TYPE_IDS];
 	
 	if (inState == NULL || inLoader == NULL || inClass == NULL ||
@@ -186,6 +186,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 		/* Set ID info. */
 		id->info = field;
 		id->javaType = field->javaType;
+		id->basicType = field->basicType;
+		id->extendedType = field->extendedType;
 		id->flags = field->flags;
 		id->member.idHash = field->idHash;
 		id->member.inClass = inClass;
@@ -193,10 +195,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 		id->member.type = field->type;
 		
 		/* Determine the pointer offset for this field into the object */
-		javaType = field->javaType;
-		id->pointerOffset = placements->offset[javaType] +
+		extendedType = field->extendedType;
+		id->pointerOffset = placements->offset[extendedType] +
 			offsetof(sjme_nvm_fieldValues, values) +
-			((sjme_nvm_typeMul[javaType]) * (typedOffset[javaType]++));
+			((sjme_nvm_typeMul[extendedType]) * (typedOffset[extendedType]++));
 		
 		/* Count up references. */
 		sjme_alloc_weakRef(field, NULL);
@@ -520,7 +522,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 	{
 		/* The field bases vary per type, however this is derived from */
 		/* the parent class for storage sizes. */
-		for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
+		for (i = 0; i < SJME_NUM_EXTENDED_JAVA_TYPE_IDS; i++)
 		{
 			/* This is just a copy of the field count. */
 			inClass->fields[index].base[i] =
@@ -1471,7 +1473,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS)
-		sjme_javaTypeId javaType,
+		sjme_extendedTypeId extendedType,
 	sjme_attrInPositive sjme_jint fieldId,
 	sjme_attrOutNotNull sjme_nvm_class_fieldInfo* outInfo)
 {
@@ -1485,11 +1487,12 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE ||
-		javaType < 0 || javaType >= SJME_NUM_JAVA_TYPE_IDS)
+		extendedType < 0 || extendedType >= SJME_NUM_EXTENDED_JAVA_TYPE_IDS ||
+		extendedType == SJME_BASIC_TYPE_ID_VOID)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	if (fieldId < 0 ||
-		fieldId >= inClass->fields[instanceType].count[javaType])
+		fieldId >= inClass->fields[instanceType].count[extendedType])
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 		
 	/* Do we want static? */
@@ -1499,7 +1502,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 	atClass = inClass;
 	
 	/* If we are below the class index, drop to the super class. */
-	while (fieldId < atClass->fields[instanceType].base[javaType])
+	while (fieldId < atClass->fields[instanceType].base[extendedType])
 	{
 		atClass = SJME_C_SU(atClass);
 		
@@ -1510,7 +1513,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 	}
 
 	/* Find the associated field. */
-	base = atClass->fields[instanceType].base[javaType];
+	base = atClass->fields[instanceType].base[extendedType];
 	fields = atClass->info->fields;
 	for (i = 0, n = fields->length; i < n; i++)
 	{
@@ -1522,7 +1525,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 		/* If the static flag, index, and type matches, this is the one! */
 		if (field->flags.member.isStatic == wantStatic &&
 			field->typedIndex == (fieldId - base) &&
-			field->javaType == javaType)
+			field->javaType == extendedType)
 		{
 			*outInfo = field;
 			return SJME_ERROR_NONE;

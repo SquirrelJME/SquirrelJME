@@ -1165,47 +1165,87 @@ sjme_errorCode sjme_nvm_class_descriptorMethodSlots(
 }
 
 sjme_errorCode sjme_nvm_class_descriptorToType(
-	sjme_attrOutNotNull sjme_javaTypeId* outType,
-	sjme_attrInValue sjme_jboolean javaType,
-	sjme_attrInNotNull sjme_charSeq desc)
+	sjme_attrInNotNull sjme_charSeq desc,
+	sjme_attrOutNullable sjme_javaTypeId* outJavaType,
+	sjme_attrOutNullable sjme_basicTypeId* outBasicType,
+	sjme_attrOutNullable sjme_extendedTypeId* outExtendedType)
 {
-	sjme_javaTypeId result;
+	sjme_javaTypeId javaType;
+	sjme_basicTypeId basicType;
+	sjme_extendedTypeId extendedType;
 	
-	if (outType == NULL || desc == NULL)
+	if (outJavaType == NULL || desc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (sjme_charSeq_equalsUtfR(desc, "Z"))
-		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
-			SJME_BASIC_TYPE_ID_BOOLEAN);
+	{
+		javaType = SJME_JAVA_TYPE_ID_INTEGER;
+		basicType = SJME_BASIC_TYPE_ID_BOOLEAN;
+		extendedType = SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "B"))
-		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
-			SJME_BASIC_TYPE_ID_BYTE);
+	{
+		javaType = SJME_JAVA_TYPE_ID_INTEGER;
+		basicType = SJME_BASIC_TYPE_ID_BYTE;
+		extendedType = SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "S"))
-		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
-			SJME_BASIC_TYPE_ID_SHORT);
+	{
+		javaType = SJME_JAVA_TYPE_ID_INTEGER;
+		basicType = SJME_BASIC_TYPE_ID_SHORT;
+		extendedType = SJME_JAVA_TYPE_ID_SHORT_OR_CHAR;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "C"))
-		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
-			SJME_BASIC_TYPE_ID_CHARACTER);
+	{
+		javaType = SJME_JAVA_TYPE_ID_INTEGER;
+		basicType = SJME_BASIC_TYPE_ID_CHARACTER;
+		extendedType = SJME_JAVA_TYPE_ID_SHORT_OR_CHAR;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "I"))
-		result = SJME_JAVA_TYPE_ID_INTEGER;
+	{
+		javaType = SJME_JAVA_TYPE_ID_INTEGER;
+		basicType = SJME_JAVA_TYPE_ID_INTEGER;
+		extendedType = SJME_JAVA_TYPE_ID_INTEGER;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "J"))
-		result = SJME_JAVA_TYPE_ID_LONG;
+	{
+		javaType = SJME_JAVA_TYPE_ID_LONG;
+		basicType = SJME_JAVA_TYPE_ID_LONG;
+		extendedType = SJME_JAVA_TYPE_ID_LONG;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "F"))
-		result = SJME_JAVA_TYPE_ID_FLOAT;
+	{
+		javaType = SJME_JAVA_TYPE_ID_FLOAT;
+		basicType = SJME_JAVA_TYPE_ID_FLOAT;
+		extendedType = SJME_JAVA_TYPE_ID_FLOAT;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "D"))
-		result = SJME_JAVA_TYPE_ID_DOUBLE;
-	else if (sjme_charSeq_charAtIs(desc, 0, '['))
-		result = SJME_JAVA_TYPE_ID_OBJECT;
-	else if (sjme_charSeq_charAtIs(desc, 0, 'L') &&
-		sjme_charSeq_charAtIs(desc, desc->length - 1, ';'))
-		result = SJME_JAVA_TYPE_ID_OBJECT;
+	{
+		javaType = SJME_JAVA_TYPE_ID_DOUBLE;
+		basicType = SJME_JAVA_TYPE_ID_DOUBLE;
+		extendedType = SJME_JAVA_TYPE_ID_DOUBLE;
+	}
+	else if (sjme_charSeq_charAtIs(desc, 0, '[') ||
+		(sjme_charSeq_charAtIs(desc, 0, 'L') &&
+			sjme_charSeq_charAtIs(desc, desc->length - 1,
+				';')))
+	{
+		javaType = SJME_JAVA_TYPE_ID_OBJECT;
+		basicType = SJME_JAVA_TYPE_ID_OBJECT;
+		extendedType = SJME_JAVA_TYPE_ID_OBJECT;
+	}
 	
 	/* Not valid. */
 	else
 		return sjme_error_vmError(NULL, SJME_ERROR_INVALID_METHOD_TYPE);
 	
 	/* Success! */
-	*outType = result;
+	if (outJavaType != NULL)
+		*outJavaType = javaType;
+	if (outBasicType != NULL)
+		*outBasicType = basicType;
+	if (outExtendedType != NULL)
+		*outExtendedType = extendedType;
 	return SJME_ERROR_NONE;
 }
 
@@ -1470,7 +1510,7 @@ sjme_errorCode sjme_nvm_class_parse(
 		field = fields->elements[i];
 		field->typedIndex = result->fieldCount[(field->flags.member.isStatic ? 
 			SJME_NVM_CLASS_MEMBER_STATIC : SJME_NVM_CLASS_MEMBER_INSTANCE)]
-			[field->javaType]++;
+			[field->extendedType]++;
 		
 		/* Overflowed? */
 		if (field->typedIndex < 0)
@@ -1814,8 +1854,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				
 				/* Store and count up entry as we are using it now. */
 				entry->utf.utf = utf;
-				if (sjme_error_is(error = sjme_alloc_weakRef(
-					utf, NULL)))
+				if (sjme_error_is(error = sjme_alloc_weakRef(utf, NULL)))
 					goto fail_readItem;
 				break;
 			
@@ -2099,10 +2138,8 @@ sjme_errorCode sjme_nvm_class_parseField(
 	
 	/* Determine type. */
 	if (sjme_error_is(error = sjme_nvm_class_descriptorToType(
-		&result->javaType, SJME_JNI_TRUE, result->type->seq)))
-		goto fail_determineType;
-	if (sjme_error_is(error = sjme_nvm_class_descriptorToType(
-		&result->basicType, SJME_JNI_FALSE, result->type->seq)))
+		result->type->seq,
+		&result->javaType, &result->basicType, &result->extendedType)))
 		goto fail_determineType;
 	
 	/* Initialize constant value to an invalid type. */

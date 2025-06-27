@@ -148,6 +148,12 @@ struct sjme_jfieldIDBase
 
 	/** The Java type of this field. */
 	sjme_javaTypeId javaType;
+	
+	/** The basic type of this field. */
+	sjme_basicTypeId basicType;
+
+	/** The extended type of this field. */
+	sjme_extendedTypeId extendedType;
 
 	/** The field flags. */
 	sjme_nvm_class_fieldFlags flags;
@@ -238,7 +244,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldIDByNameType(
  * @param inClass The class tree to look within. 
  * @param instanceType The type of instance this is.
  * @param fieldId The field identifier.
- * @param javaType The Java type used.
+ * @param extendedType The Java type used.
  * @param outInfo The output info.
  * @return Any resultant error.
  * @since 2024/11/03
@@ -248,7 +254,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS)
-		sjme_javaTypeId javaType,
+		sjme_extendedTypeId extendedType,
 	sjme_attrInPositive sjme_jint fieldId,
 	sjme_attrOutNotNull sjme_nvm_class_fieldInfo* outInfo);
 

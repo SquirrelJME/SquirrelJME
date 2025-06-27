@@ -645,7 +645,7 @@ struct sjme_nvm_class_infoBase
 	
 	/** The field count per type. */
 	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
-		[SJME_NUM_JAVA_TYPE_IDS];
+		[SJME_NUM_EXTENDED_JAVA_TYPE_IDS];
 	
 	/** The method count per type. */
 	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
@@ -703,6 +703,9 @@ struct sjme_nvm_class_fieldInfoBase
 	
 	/** The basic type of this field. */
 	sjme_basicTypeId basicType;
+	
+	/** The extended type of this field. */
+	sjme_extendedTypeId extendedType;
 	
 	/** The index of this field within its basic type. */
 	sjme_jint typedIndex;
@@ -902,17 +905,18 @@ sjme_errorCode sjme_nvm_class_descriptorMethodSlots(
  * Determines the @c sjme_javaTypeId or @c sjme_basicTypeId type for the
  * given descriptor.
  * 
- * @param outType The resultant type. 
- * @param javaType If @c SJME_JNI_TRUE then this will calculate the Java
- * type.
- * @param desc The input descriptor.
+ * @param desc The input descriptor. 
+ * @param outJavaType The resultant Java type.
+ * @param outBasicType The resultant basic type.
+ * @param outExtendedType The resultant extended type.
  * @return Any resultant error, if any.
  * @since 2024/10/28
  */
 sjme_errorCode sjme_nvm_class_descriptorToType(
-	sjme_attrOutNotNull sjme_javaTypeId* outType,
-	sjme_attrInValue sjme_jboolean javaType,
-	sjme_attrInNotNull sjme_charSeq desc);
+	sjme_attrInNotNull sjme_charSeq desc,
+	sjme_attrOutNotNull sjme_javaTypeId* outJavaType,
+	sjme_attrOutNullable sjme_basicTypeId* outBasicType,
+	sjme_attrOutNullable sjme_extendedTypeId* outExtendedType);
 
 /**
  * Parses a single class and loads its class information.

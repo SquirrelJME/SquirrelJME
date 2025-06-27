@@ -289,10 +289,8 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jclass desireClass;
 	sjme_jfieldID fieldId;
-	sjme_jvalue* direct;
 	sjme_jvalueTyped result;
 	sjme_jvalueTyped instance;
-	sjme_nvm_jfieldAccessFunc accessor;
 	sjme_jboolean isPut;
 	SJME_NVM_BYTECODE_ENTRY;
 
@@ -366,32 +364,19 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 			fieldId->javaType, &result)))
 			return sjme_error_vmError(inFrame, error);
 	}
-
-	/* Obtain accessor for this field. */
-	if (fieldId->accessor != NULL)
-		accessor = fieldId->accessor;
-	else
-		accessor = SJME_F_K(inFrame)->globals.accessor;
-	if (accessor == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_FIELD_NOT_DIRECT);
-
+	
 	/* Read instance to act on. */
 	memset(&instance, 0, sizeof(instance));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		SJME_JAVA_TYPE_ID_OBJECT, &instance)))
 		return sjme_error_vmError(inFrame, error);
-	
-	/* Direct access. */
-	direct = accessor(instance.v.l, fieldId);
-	if (direct == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_FIELD_NOT_DIRECT);
 
-	/* Copy data over. */
-	if (isPut)
-		memmove(direct, &result.v, sjme_nvm_typeMul[fieldId->javaType]);
-	else
-		memmove(&result.v, direct, sjme_nvm_typeMul[fieldId->javaType]);
-	
+	/* Read/write promotion. */
+	if (sjme_error_is(error = sjme_nvm_instance_fieldAccessStack(
+		SJME_F_T(inFrame),
+		fieldId, instance.v.l, &result, isPut)))
+		return sjme_error_vmError(inFrame, error);
+
 	/* Push result to the stack. */
 	if (!isPut)
 	{
@@ -911,9 +896,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jclass desireClass;
 	sjme_jfieldID fieldId;
-	sjme_jvalue* direct;
 	sjme_jvalueTyped result;
-	sjme_nvm_jfieldAccessFunc accessor;
 	sjme_jboolean isPut;
 	SJME_NVM_BYTECODE_ENTRY;
 
@@ -958,20 +941,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 		inFrame, fieldId)))
 		return sjme_error_vmError(inFrame,
 			SJME_ERROR_CLASS_CHANGED);
-
-	/* Obtain accessor for this field. */
-	if (fieldId->accessor != NULL)
-		accessor = fieldId->accessor;
-	else
-		accessor = SJME_F_K(inFrame)->globals.accessor;
-	if (accessor == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_FIELD_NOT_DIRECT);
 	
-	/* Direct access. */
-	direct = accessor(SJME_AS_JOBJECT(desireClass), fieldId);
-	if (direct == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_FIELD_NOT_DIRECT);
-
 	/* Read in value to put. */
 	if (isPut)
 	{
@@ -1000,12 +970,12 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 			fieldId->javaType, &result)))
 			return sjme_error_vmError(inFrame, error);
 	}
-
-	/* Copy data over. */
-	if (isPut)
-		memmove(direct, &result.v, sjme_nvm_typeMul[fieldId->javaType]);
-	else
-		memmove(&result.v, direct, sjme_nvm_typeMul[fieldId->javaType]);
+	
+	/* Read/write promotion. */
+	if (sjme_error_is(error = sjme_nvm_instance_fieldAccessStack(
+		SJME_F_T(inFrame),
+		fieldId, SJME_AS_JOBJECT(desireClass), &result, isPut)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Push result to the stack. */
 	if (!isPut)
