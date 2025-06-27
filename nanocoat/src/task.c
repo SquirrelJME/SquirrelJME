@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+#include "sjme/nvm/bytecode.h"
 #include "sjme/util.h"
 #include "sjme/nvm/instance.h"
 #include "sjme/stdGone.h"
@@ -1009,19 +1010,21 @@ sjme_errorCode sjme_nvm_task_stackTrace(
 		/*  |- .whatever:(Lboop;)V @0h (:181 INVOKEINTERFACE@15) */
 		nowCode = frame->inCode;
 		nowMethod = (nowCode != NULL ? frame->inCode->inMethod : NULL);
-		instructionId = (nowCode != NULL && frame->pc >= 0 &&
-			frame->pc < nowCode->rawCodeLen ?
-			nowCode->rawCode[frame->pc] & 0xFF : -1);
+		pc = frame->lastPc;
+		instructionId = (frame->lastIv != 0 ? frame->lastIv :
+			(nowCode != NULL && pc >= 0 &&
+				pc < nowCode->rawCodeLen ?
+				nowCode->rawCode[pc] & 0xFF : -1));
 		if (nowCode == NULL || nowMethod == NULL)
 			sjme_messageB(" | PURE VIRTUAL");
 		else
-			sjme_messageB(" | .%s:%s @%xh (:%d #%02x@%d)",
+			sjme_messageB(" | .%s:%s @%xh (:%d #%s@%d)",
 				sjme_charSeq_tempUtf(nowMethod->name->seq),
 				sjme_charSeq_tempUtf(nowMethod->type->seq),
-				frame->pc,
+				pc,
 				-1,
-				instructionId,
-				frame->pc);
+				sjme_nvm_byteCode_names[instructionId & 0xFF],
+				pc);
 
 		/* Set for next run. */
 		lastClass = nowClass;

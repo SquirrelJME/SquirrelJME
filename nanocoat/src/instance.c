@@ -265,23 +265,40 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 		/* Determine where to move to/from. */
 		switch (fieldId->basicType)
 		{
-				/* These are considered the same. */
+				/* Force to boolean based value. */
 			case SJME_BASIC_TYPE_ID_BOOLEAN:
-			case SJME_BASIC_TYPE_ID_BYTE:
-			case SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE:
 				if (isPut)
 					direct->b = (stackType->v.i ? 1 : 0);
 				else
 					stackType->v.i = (direct->b ? 1 : 0);
 				break;
-				
+
+				/* Expand to byte. */
+			case SJME_BASIC_TYPE_ID_BYTE:
+			case SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE:
+				if (isPut)
+					direct->b = (sjme_jbyte)stackType->v.i;
+				else
+				{
+					stackType->v.i = direct->b;
+					if ((direct->b & INT8_C(0x80)) != 0)
+						stackType->v.i |= INT32_C(0xFFFFFF00);
+				}
+				break;
+
+				/* Expand to short. */
 			case SJME_BASIC_TYPE_ID_SHORT:
 				if (isPut)
 					direct->s = (sjme_jshort)stackType->v.i;
 				else
+				{
 					stackType->v.i = direct->s;
+					if ((direct->s & INT16_C(0x8000)) != 0)
+						stackType->v.i |= INT32_C(0xFFFF0000);
+				}
 				break;
-				
+
+				/* Limit to char. */
 			case SJME_BASIC_TYPE_ID_CHARACTER:
 				if (isPut)
 					direct->c = (sjme_jchar)stackType->v.i;

@@ -94,6 +94,9 @@ typedef sjme_intPointer sjme_thread_id;
 	
 	/** Null thread handle. */
 	#define SJME_THREAD_NULL ((unsigned long)0)
+
+	/** Thread parameter as a pointer. */
+	#define SJME_THREAD_PARAM_POINTER(p) ((sjme_pointer)(p))
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((sjme_pointer)(err))
@@ -122,6 +125,9 @@ typedef sjme_intPointer sjme_thread_id;
 	
 	/** Null thread handle. */
 	#define SJME_THREAD_NULL 0
+
+	/** Thread parameter as a pointer. */
+	#define SJME_THREAD_PARAM_POINTER(p) ((sjme_pointer)(p))
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((DWORD)(err))
@@ -161,6 +167,9 @@ typedef sjme_intPointer sjme_thread_id;
 	
 	/** Null thread handle. */
 	#define SJME_THREAD_NULL NULL
+
+	/** Thread parameter as a pointer. */
+	#define SJME_THREAD_PARAM_POINTER(p) ((sjme_pointer)(p))
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((int)(err))

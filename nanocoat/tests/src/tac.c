@@ -37,6 +37,9 @@ int main(int argc, sjme_lpstr* argv)
 		sjme_message("Not enough arguments to TAC executable.");
 		return EXIT_FAILURE;
 	}
+
+	/* Register the crash handler. */
+	sjme_debug_crashRegister();
 	
 	/* Debug. */
 	for (i = 0; i < argc; i++)

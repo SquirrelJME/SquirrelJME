@@ -817,6 +817,9 @@ typedef enum sjme_nvm_byteCode_length
 /** The length of each instruction. */
 extern const sjme_jbyte sjme_nvm_byteCode_lengths[SJME_NVM_NUM_JAVA_BYTECODES];
 
+/** The name of each instruction. */
+extern const sjme_lpcstr sjme_nvm_byteCode_names[SJME_NVM_NUM_JAVA_BYTECODES];
+
 /** Which LUT to use. */
 extern const sjme_nvm_byteCode_func (*sjme_nvm_byteCode_lutTable
 	[SJME_NVM_NUM_JAVA_BYTECODES])[SJME_NVM_NUM_JAVA_BYTECODES];

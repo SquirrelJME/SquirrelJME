@@ -253,14 +253,12 @@ struct sjme_nvm_frameBase
 
 	/** The instance object or class. */
 	sjme_jobject instance;
-
-#if defined(SJME_CONFIG_DEBUG)
+	
 	/** The last PC address. */
 	sjme_jint lastPc;
 
 	/** The last IV. */
 	sjme_byteCode lastIv;
-#endif
 
 	/** Frame state flags. */
 	sjme_packed struct

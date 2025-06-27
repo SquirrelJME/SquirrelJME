@@ -337,6 +337,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 			SJME_ERROR_CLASS_CHANGED);
 
 	/* Read in value to put. */
+	memset(&result, 0, sizeof(result));
 	if (isPut)
 	{
 		/* Cannot be final unless we are in a static initializer. */
@@ -359,7 +360,6 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 		}
 
 		/* Read in the value to write. */
-		memset(&result, 0, sizeof(result));
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 			fieldId->javaType, &result)))
 			return sjme_error_vmError(inFrame, error);
@@ -943,6 +943,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 			SJME_ERROR_CLASS_CHANGED);
 	
 	/* Read in value to put. */
+	memset(&result, 0, sizeof(result));
 	if (isPut)
 	{
 		/* Cannot be final unless we are in a static initializer. */
@@ -965,7 +966,6 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 		}
 
 		/* Read in the value to write. */
-		memset(&result, 0, sizeof(result));
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 			fieldId->javaType, &result)))
 			return sjme_error_vmError(inFrame, error);

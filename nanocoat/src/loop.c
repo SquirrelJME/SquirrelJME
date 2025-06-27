@@ -15,6 +15,23 @@
 #include "sjme/nvm/loop.h"
 #include "sjme/debug.h"
 
+static sjme_thread_result sjme_attrThreadCall sjme_nvm_loop_tickCrash(
+	sjme_thread_parameter rawThread)
+{
+	sjme_nvm_thread inThread;
+
+	/* Recover thread. */
+	inThread = SJME_THREAD_PARAM_POINTER(rawThread);
+	if (inThread == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+
+	/* Print stack trace. */
+	sjme_nvm_task_stackTrace(inThread);
+	
+	/* No error generally. */
+	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+}
+
 static sjme_errorCode sjme_nvm_loop_subSchedule(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
@@ -180,6 +197,9 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	if (maxTics < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
+	/* Set crash context thread. */
+	sjme_debug_crashContext(sjme_nvm_loop_tickCrash, inThread);
+
 	/* Initialized to make the linter not noisy. */
 	currentFrame = NULL;
 	currentCode = NULL;
@@ -221,55 +241,61 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		if (pcDefault.adjust < SJME_NVM_BYTECODE_LENGTH_NO_DEFAULT_5)
 			if (sjme_error_is(error = sjme_nvm_byteCode_calcLength(
 				currentFrame, iv, ev, &pcDefault)))
-				return sjme_error_vmError(inThread, error);
+				goto fail_any;
 
 		/* The instruction length cannot run past the end of the code. */
 		if (sjme_noLint(currentFrame)->pc + pcDefault.adjust >
 			currentFrame->inCode->rawCodeLen)
-			return sjme_error_vmError(currentFrame,
-				SJME_ERROR_INVALID_INSTRUCTION);
+		{
+			error = SJME_ERROR_INVALID_INSTRUCTION;
+			goto fail_any;
+		}
 
 		/* Which LUT table to use? */
 		lut = sjme_nvm_byteCode_lutTable[iv];
 		if (lut == NULL)
-			return sjme_error_vmError(inThread,
-				SJME_ERROR_INVALID_INSTRUCTION);
+		{
+			error = SJME_ERROR_INVALID_INSTRUCTION;
+			goto fail_any;
+		}
 
 		/* The instruction should be valid for the LUT. */
 		lutFunc = (*lut)[iv];
 		if (lutFunc == NULL)
-			return sjme_error_vmError(inThread,
-				SJME_ERROR_INVALID_INSTRUCTION);
+		{
+			error = SJME_ERROR_INVALID_INSTRUCTION;
+			goto fail_any;
+		}
+		
+		/* Store last PC and IV, for trace purposes. */
+		currentFrame->lastPc = sjme_noLint(currentFrame)->pc;
+		currentFrame->lastIv = iv;
 
-		/* Execute narrow handler. */
+		/* Execute handler. */
 		memmove(&pcNew, &pcDefault, sizeof(pcNew));
 		if (sjme_error_is(error = lutFunc(currentFrame, iv, ev, &pcNew)))
-			return sjme_error_vmError(inThread, error);
+			goto fail_any;
 
 		/* Popping the current frame? */
 		if (pcNew.popFrame)
 		{
 			/* Pop the stack frame. */
 			if (sjme_error_is(error = sjme_nvm_task_threadLeave(inThread)))
-				return sjme_error_vmError(inThread, error);
+				goto fail_any;
 
 			/* On the next one the frame index will be invalid. */
 			continue;
 		}
-
-#if defined(SJME_CONFIG_DEBUG)
-		/* Store last PC and IV, for debugging purposes. */
-		currentFrame->lastPc = sjme_noLint(currentFrame)->pc;
-		currentFrame->lastIv = iv;
-#endif
 
 		/* Set new PC address, in non-exception cases. */
 		if (pcNew.type == SJME_NVM_BYTECODE_PC_DEFAULT)
 		{
 			/* Default adjust can never go negative. */
 			if (pcNew.adjust <= 0)
-				return sjme_error_vmError(inThread,
-					SJME_ERROR_INVALID_PC_ADJUST);
+			{
+				error = SJME_ERROR_INVALID_PC_ADJUST;
+				goto fail_any;
+			}
 
 			/* Adjustment is valid. */
 			sjme_noLint(currentFrame)->pc += pcNew.adjust;
@@ -282,12 +308,24 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		/* PC address is not valid. */
 		if (currentFrame->pc < 0 ||
 			currentFrame->pc > sjme_noLint(currentCode)->rawCodeLen)
-			return sjme_error_vmError(inThread,
-				SJME_ERROR_INVALID_CODE_ADDRESS);
+		{
+			error = SJME_ERROR_INVALID_CODE_ADDRESS;
+			goto fail_any;
+		}
 	}
+	
+	/* Clear crash context. */
+	sjme_debug_crashContext(NULL, NULL);
 	
 	/* Give remaining, if requested. */
 	if (ticRemainder != NULL)
 		*ticRemainder = remaining;
 	return SJME_ERROR_NONE;
+	
+fail_any:
+	/* Clear crash context. */
+	sjme_debug_crashContext(NULL, NULL);
+
+	/* Fail. */
+	return sjme_error_vmError(inThread, sjme_error_default(error));
 }
