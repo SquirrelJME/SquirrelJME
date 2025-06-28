@@ -260,6 +260,9 @@ struct sjme_nvm_frameBase
 	/** The last IV. */
 	sjme_byteCode lastIv;
 
+	/** The ID of this frame, used for JDWP and tracing. */
+	sjme_jint id;
+
 	/** Frame state flags. */
 	sjme_packed struct
 	{
@@ -431,6 +434,9 @@ struct sjme_nvm_taskBase
 
 	/** Globals for the task. */
 	sjme_nvm_taskGlobals globals;
+
+	/** The next frame ID for this task, used for JDWP and debugging. */
+	sjme_atomic_sjme_jint nextFrameId;
 };
 
 struct sjme_nvm_threadBase

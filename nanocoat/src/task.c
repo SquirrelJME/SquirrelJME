@@ -1359,10 +1359,12 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 
 	/* Set frame details, needed for local set. */
 	result->inClass = inMethod->member.inClass;
+	result->id = sjme_atomic_sjme_jint_getAdd(
+		&SJME_T_K(inThread)->nextFrameId, 1);
 	result->inMethod = inMethod;
 	result->inState = SJME_F_S(inThread);
 	result->inThread = inThread;
-	result->inTask = inThread->inTask;
+	result->inTask = SJME_T_K(inThread);
 	result->inCode = targetInfo->code;
 	result->pool = targetInfo->code->inMethod->inClass->pool;
 
