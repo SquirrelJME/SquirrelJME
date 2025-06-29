@@ -112,6 +112,9 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	/* Set crash context thread. */
 	sjme_debug_crashContext(sjme_nvm_loop_tickCrash, inThread);
 
+	/* The remaining execution count is always at the max tic count. */
+	remaining = maxTics;
+
 	/* Initialized to make the linter not noisy. */
 	currentFrame = NULL;
 	currentCode = NULL;
@@ -119,10 +122,26 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	
 	/* Continuous code execution. */
 	frameIndex = -2;
-	remaining = maxTics;
 	memset(&pcNew, 0, sizeof(pcNew));
 	while sjme_noLint(remaining == -1 || remaining > 0)
 	{
+		/* If this task is terminating, unwind everything. */
+		if (sjme_atomic_sjme_jint_get(&SJME_T_K(inThread)->terminate) !=
+			SJME_NVM_TERMINATE_NOT)
+		{
+			/* Leave all thread frames. */
+			while (inThread->numFrames > 0)
+				if (sjme_error_is(error = sjme_nvm_task_threadLeave(inThread)))
+					goto fail_any;
+
+			/* Mark task as terminated to the caller. */
+			if (isTerminated)
+				*isTerminated = SJME_JNI_TRUE;
+			
+			/* Do not execute actual byte code. */
+			goto skip_done;
+		}
+		
 		/* Thread has entered a sleeping state? */
 		if (inThread->status != SJME_NVM_THREAD_STATUS_RUNNING)
 			break;
@@ -137,14 +156,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 			/* Are there any actual frames left? */
 			frameIndex = (inThread->numFrames - 1);
 			if (frameIndex < 0)
-			{
-				/* Mark the thread as finishing, if standard. */
-				if (inThread->start == SJME_NVM_THREAD_START_STANDARD)
-					inThread->start = SJME_NVM_THREAD_START_FINISHING;
-
-				/* Do not execute any code. */
 				break;
-			}
 			
 			currentFrame = inThread->frames->elements[frameIndex];
 			currentCode = currentFrame->inCode;
@@ -275,20 +287,9 @@ skip_thrown:
 			goto fail_any;
 		}
 	}
-
-	/* Un-scheduling this as this is finished? */
-	if (inThread->start == SJME_NVM_THREAD_START_FINISHING)
-	{
-		/* Set as finished. */
-		inThread->start = SJME_NVM_THREAD_START_FINISHED;
-		
-		/* Remove from the schedule. */
-		if (sjme_error_is(error = sjme_nvm_task_taskScheduleDelete(
-			SJME_T_S(inThread), inThread)))
-			goto fail_any;
-	}
 	
 	/* Clear crash context. */
+skip_done:
 	sjme_debug_crashContext(NULL, NULL);
 	
 	/* Give remaining, if requested. */

@@ -129,6 +129,11 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	if (callType < 0 || callType >= SJME_NVM_NUM_METHOD_CALL_TYPE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
+	/* Cannot a new frame if terminating. */
+	if (sjme_atomic_sjme_jint_get(&SJME_T_K(inThread)->terminate) !=
+		SJME_NVM_TERMINATE_NOT)
+		return SJME_ERROR_INVALID_THREAD_STATE;
+	
 	/* Recover target info. */
 	targetInfo = inMethod->info[callType];
 	if (targetInfo == NULL)
@@ -394,6 +399,21 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	
 	/* Use this resultant blank, keeping the common areas. */
 	memmove(topFrame, &blank, sizeof(*topFrame));
+	
+	/* If this is the last frame, the thread will be terminating unless */
+	/* it is considered a callback thread. */
+	if (topIndex == 0)
+	{
+		/* Set as finishing. */
+		sjme_atomic_sjme_jint_compareSet(&inThread->start,
+			SJME_NVM_THREAD_START_STANDARD,
+			SJME_NVM_THREAD_START_FINISHING);
+
+		/* Force schedule the thread, so cleanup is called. */
+		if (sjme_error_is(error = sjme_nvm_task_taskScheduleIn(
+			SJME_T_S(inThread), inThread)))
+			return sjme_error_vmError(inThread, error);
+	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -413,6 +433,11 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	
 	if (inTask == NULL || outThread == NULL || threadName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Cannot start a new thread if terminating. */
+	if (sjme_atomic_sjme_jint_get(&inTask->terminate) !=
+		SJME_NVM_TERMINATE_NOT)
+		return SJME_ERROR_INVALID_THREAD_STATE;
 
 	/* Allocate stack storage. */
 	storage = NULL;
@@ -471,6 +496,13 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	
 	/* Store thread for future referencing. */
 	inTask->threads->elements[freeSlot] = result;
+
+	/* Increase task thread count, for both all and normal. Normal gets */
+	/* an add because a thread gets daemon being set later. */
+	sjme_atomic_sjme_jint_getAdd(
+		&inTask->numThreads[SJME_NVM_THREAD_COUNT_ALL], 1);
+	sjme_atomic_sjme_jint_getAdd(
+		&inTask->numThreads[SJME_NVM_THREAD_COUNT_NORMAL], 1);
 	
 	/* Release task specific lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -506,16 +538,17 @@ sjme_errorCode sjme_nvm_task_threadStart(
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Threads can only be started once! */
-	if (inThread->start != SJME_NVM_THREAD_START_NEVER)
-		return SJME_ERROR_INVALID_THREAD_STATE;
-
 	/* There must be frames. */
 	if (inThread->numFrames <= 0)
 		return SJME_ERROR_INVALID_THREAD_STATE;
 
-	/* Set thread as started and in the run state. */
-	inThread->start = SJME_NVM_THREAD_START_STANDARD;
+	/* Threads can only be started once! */
+	if (!sjme_atomic_sjme_jint_compareSet(&inThread->start,
+		SJME_NVM_THREAD_START_NEVER,
+		SJME_NVM_THREAD_START_STANDARD))
+		return SJME_ERROR_INVALID_THREAD_STATE;
+
+	/* Set to be in the run state. */
 	inThread->status = SJME_NVM_THREAD_STATUS_RUNNING;
 
 	/* Schedule the thread for execution. */

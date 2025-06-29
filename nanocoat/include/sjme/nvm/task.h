@@ -84,11 +84,11 @@ typedef enum sjme_nvm_thread_startType
 	/** Standard thread start. */
 	SJME_NVM_THREAD_START_STANDARD = 1,
 
-	/** Thread finished execution. */
-	SJME_NVM_THREAD_START_FINISHED = 2,
-
 	/** Thread is in the finishing state, it is stopping execution. */
-	SJME_NVM_THREAD_START_FINISHING = 3,
+	SJME_NVM_THREAD_START_FINISHING = 2,
+
+	/** Thread finished execution. */
+	SJME_NVM_THREAD_START_FINISHED = 3,
 
 	/** Callback thread which can reach zero frames and not be finished. */
 	SJME_NVM_THREAD_START_CALLBACK = 4,
@@ -414,6 +414,21 @@ typedef struct sjme_nvm_taskGlobals
 	/** The default accessor for fields. */
 	sjme_nvm_jfieldAccessFunc accessor;
 } sjme_nvm_taskGlobals;
+
+typedef enum sjme_nvm_task_threadCountType
+{
+	/** All. */
+	SJME_NVM_THREAD_COUNT_ALL = 0,
+	
+	/** Non-daemon. */
+	SJME_NVM_THREAD_COUNT_NORMAL = 1,
+	
+	/** Daemon. */
+	SJME_NVM_THREAD_COUNT_DAEMON = 2,
+
+	/** The number of thread counts. */
+	SJME_NVM_THREAD_NUM_COUNT_TYPE = 3,
+} sjme_nvm_task_threadCountType;
 	
 struct sjme_nvm_taskBase
 {
@@ -431,6 +446,12 @@ struct sjme_nvm_taskBase
 	
 	/** The current task status. */
 	sjme_nvm_task_statusType status;
+
+	/** Task @c sjme_nvm_task_terminateLevel level. */
+	sjme_atomic_sjme_jint terminate;
+
+	/** The number of threads based on the count. */
+	sjme_atomic_sjme_jint numThreads[SJME_NVM_THREAD_NUM_COUNT_TYPE];
 	
 	/** The threads within the current task. */
 	sjme_list_sjme_nvm_thread* threads;
@@ -459,8 +480,8 @@ struct sjme_nvm_threadBase
 	/** The owning task. */
 	sjme_nvm_task inTask;
 
-	/** The start type of the thread. */
-	sjme_nvm_thread_startType start;
+	/** The @c sjme_nvm_thread_startType of the thread. */
+	sjme_atomic_sjme_jint start;
 	
 	/** The current thread status. */
 	sjme_nvm_thread_statusType status;
@@ -491,6 +512,13 @@ struct sjme_nvm_threadBase
 
 	/** A @c Throwable which has been thrown. */
 	sjme_atomic_sjme_jobject tossed;
+
+	/** Thread specific flags. */
+	struct
+	{
+		/** Is this a daemon thread? */
+		sjme_jboolean isDaemon : sjme_booleanBit;
+	} flags;
 };
 
 /**
@@ -848,12 +876,14 @@ sjme_errorCode sjme_nvm_task_taskScheduleOut(
  * 
  * @param inState The input state.
  * @param inThread If the thread can be scheduled.
+ * @param isRunning Is this running?
  * @return Any resultant error, if any.
  * @since 2025/06/29
  */
-sjme_jboolean sjme_nvm_task_taskScheduleYesR(
+sjme_jboolean sjme_nvm_task_taskScheduleYes(
 	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull sjme_nvm_thread inThread);
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_jboolean* isRunning);
 
 /**
  * Enters a frame for the given exact method within the thread.

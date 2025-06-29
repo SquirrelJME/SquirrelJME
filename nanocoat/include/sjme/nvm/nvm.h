@@ -455,6 +455,23 @@ typedef struct sjme_nvm_threadSchedule
 	sjme_nvm_threadSubSchedule mode[SJME_NVM_THREAD_NUM_SCHEDULE_MODE];
 } sjme_nvm_threadSchedule;
 
+/**
+ * The state and/or task termination level.
+ *
+ * @since 2025/06/29
+ */
+typedef enum sjme_nvm_terminateLevel
+{
+	/** Not terminating. */
+	SJME_NVM_TERMINATE_NOT = 0,
+
+	/** Entering the cleanup phase. */
+	SJME_NVM_TERMINATE_CLEANUP = 1,
+
+	/** Done terminating. */
+	SJME_NVM_TERMINATE_COMPLETE = 2,
+} sjme_nvm_terminateLevel;
+	
 struct sjme_nvm_stateBase
 {
 	/** Common data. */
@@ -489,8 +506,8 @@ struct sjme_nvm_stateBase
 
 	/** The thread schedule. */
 	sjme_nvm_threadSchedule* schedule;
-
-	/** Is the VM terminating? */
+	
+	/** The state @c sjme_nvm_terminateLevel ? */
 	sjme_atomic_sjme_jint terminating;
 };
 

@@ -96,7 +96,7 @@ static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 
 	/* Place into free slot, growing the list if needed. */
 	if (sjme_error_is(error = sjme_list_injectGrow(inState->allocPool,
-		SJME_NVM_THREAD_GROW, &toOrder, inThread, sjme_nvm_thread, 0)) ||
+		SJME_NVM_THREAD_GROW, &toOrder, &inThread, sjme_nvm_thread, 0)) ||
 		toOrder == NULL)
 		return sjme_error_default(error);
 
@@ -633,7 +633,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleIn(
 
 	/* Ignore if already scheduled. */
 	if (sjme_atomic_sjme_jint_get(&inThread->scheduleMode) ==
-		SJME_NVM_THREAD_SCHEDULED)
+			SJME_NVM_THREAD_SCHEDULED)
 		return SJME_ERROR_NONE;
 
 	/* Lock schedule. */
@@ -670,8 +670,10 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 	sjme_nvm_threadSchedule* schedule;
 	sjme_list_sjme_nvm_thread* order;
 	sjme_nvm_thread nextThread, checkThread;
-	sjme_jboolean terminated;
+	sjme_jboolean terminated, isRunning;
 	sjme_jint i, n, mode;
+	sjme_list_sjme_nvm_task* tasks;
+	sjme_nvm_task checkTask;
 	
 	if (inState == NULL || runThread == NULL || isTerminated == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -699,7 +701,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 	/* Find next running, then waiting, thread that is scheduled. */
 	for (mode = SJME_NVM_THREAD_SCHEDULED;
 		mode > SJME_NVM_THREAD_UNDEFINED_SCHEDULE &&
-		mode < SJME_NVM_THREAD_NUM_SCHEDULE_MODE; mode--)
+		mode < SJME_NVM_THREAD_NUM_SCHEDULE_MODE; mode++)
 	{
 		/* Scan through the running or waiting set. */
 		order = schedule->mode[mode].order;
@@ -712,7 +714,13 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 					continue;
 
 				/* Can this thread even be run (not sleeping)? */
-				if (!sjme_nvm_task_taskScheduleYesR(inState, checkThread))
+				isRunning = SJME_JNI_FALSE;
+				if (sjme_error_is(error = sjme_nvm_task_taskScheduleYes(
+					inState, checkThread, &isRunning)))
+					goto fail_checkRunning;
+
+				/* Thread is not actually running. */
+				if (!isRunning)
 				{
 					/* If this thread is scheduled, move it into */
 					/* unscheduled. */
@@ -753,8 +761,11 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 	*runThread = nextThread;
 	*isTerminated = terminated;
 	return SJME_ERROR_NONE;
-	
+
+fail_unlockState:
+fail_lockState:
 fail_move:
+fail_checkRunning:
 	sjme_thread_spinLockRelease(&schedule->lock, NULL);
 	return sjme_error_default(error);
 }
@@ -803,13 +814,70 @@ fail_move:
 	return sjme_error_default(error);
 }
 
-sjme_jboolean sjme_nvm_task_taskScheduleYesR(
+sjme_jboolean sjme_nvm_task_taskScheduleYes(
 	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull sjme_nvm_thread inThread)
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_jboolean* isRunning)
 {
-	if (inState == NULL || inThread == NULL)
+	sjme_nvm_thread_startType start;
+	sjme_nvm_task inTask;
+	sjme_jint left;
+	
+	if (inState == NULL || inThread == NULL || isRunning == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* If this is a callback thread, only consider if it has at least */
+	/* one actively running frame. */
+	start = sjme_atomic_sjme_jint_get(&inThread->start);
+	if (start == SJME_NVM_THREAD_START_CALLBACK)
+	{
+		if (inThread->numFrames > 0)
+			goto skip_yes;
+	}
+
+	/* If the thread is running, continue. */
+	else if (start == SJME_NVM_THREAD_START_STANDARD)
+		goto skip_yes;
+
+	/* Thread is entering the finishing state, so it is stopping. */
+	else if (start == SJME_NVM_THREAD_START_FINISHING)
+	{
+		/* Mark as finished. */
+		sjme_atomic_sjme_jint_compareSet(&inThread->start,
+			SJME_NVM_THREAD_START_FINISHING,
+			SJME_NVM_THREAD_START_FINISHED);
+
+		/* Reduce total thread count. */
+		inTask = SJME_T_K(inThread);
+		sjme_atomic_sjme_jint_getAdd(
+			&inTask->numThreads[SJME_NVM_THREAD_COUNT_ALL], -1);
+
+		/* Non-daemon or daemon thread? */
+		if (inThread->flags.isDaemon)
+			sjme_atomic_sjme_jint_getAdd(
+				&inTask->numThreads[SJME_NVM_THREAD_COUNT_DAEMON], -1);
+		else
+		{
+			/* How many threads are left? */
+			left = sjme_atomic_sjme_jint_getAdd(
+				&inTask->numThreads[SJME_NVM_THREAD_COUNT_NORMAL], -1) - 1;
+
+			/* If there are no threads left, then start termination. */
+			if (left <= 0)
+				sjme_atomic_sjme_jint_compareSet(&inTask->terminate,
+					SJME_NVM_TERMINATE_NOT,
+					SJME_NVM_TERMINATE_CLEANUP);
+		}
+
+		/* Cleanup must be called! */
+		goto skip_yes;
+	}
+
+skip_not:
+	*isRunning = SJME_JNI_FALSE;
+	return SJME_ERROR_NONE;
+	
+skip_yes:
+	*isRunning = SJME_JNI_TRUE;
+	return SJME_ERROR_NONE;
 }
