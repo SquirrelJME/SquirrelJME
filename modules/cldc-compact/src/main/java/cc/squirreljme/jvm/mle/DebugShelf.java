@@ -157,8 +157,8 @@ public final class DebugShelf
 		@NotNull TracePointBracket __point);
 	
 	/**
-	 * Traces the entire stack, the top-most trace point in the stack is always
-	 * first.
+	 * Traces the entire stack, the top-most trace point (frame) in the stack
+	 * is always first element.
 	 *
 	 * @return The stack trace.
 	 * @since 2020/06/11

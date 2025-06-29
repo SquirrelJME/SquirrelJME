@@ -223,6 +223,9 @@ typedef enum sjme_nvm_structType
 	
 	/** A single thread. */
 	SJME_NVM_STRUCT_THREAD,
+
+	/** A trace point instance pointer object. */
+	SJME_NVM_STRUCT_CLASS_TRACE_POINT_INSTANCE,
 	
 	/** Class loader. */
 	SJME_NVM_STRUCT_VM_CLASS_LOADER,
@@ -250,6 +253,9 @@ typedef sjme_nvm_commonBase* sjme_nvm_common;
 
 /** Cast to array. */
 #define SJME_AS_JARRAY(x) ((sjme_jarray)(x))
+
+/** Cast to array pointer. */
+#define SJME_AS_JARRAYP(x) ((sjme_jarray*)(x))
 	
 /** Cast to object. */
 #define SJME_AS_JOBJECT(x) ((sjme_jobject)(x))

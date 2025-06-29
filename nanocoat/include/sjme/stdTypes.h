@@ -696,6 +696,30 @@ typedef sjme_jweakBase* sjme_jweak;
 #define SJME_TYPEOF_IS_POINTER_sjme_jweak SJME_TYPEOF_IS_POINTER_sjme_jobject
 
 /**
+ * Trace point bracket.
+ *
+ * @since 2025/06/28
+ */
+typedef struct sjme_jbracketTraceBase sjme_jbracketTraceBase;
+	
+/**
+ * Trace point bracket.
+ *
+ * @since 2025/06/28
+ */
+typedef sjme_jbracketTraceBase* sjme_jbracketTrace;
+	
+/** Basic @c sjme_jbracketTrace type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jbracketTrace SJME_TYPEOF_BASIC_sjme_jobject
+
+/** Java @c sjme_jbracketTrace type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jbracketTrace SJME_TYPEOF_JAVA_sjme_jobject
+
+/** Is a pointer for @c sjme_jbracketTrace ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jbracketTrace \
+	SJME_TYPEOF_IS_POINTER_sjme_jobject
+
+/**
  * A character sequence which contains a set of characters within a string.
  * 
  * @since 2024/06/26

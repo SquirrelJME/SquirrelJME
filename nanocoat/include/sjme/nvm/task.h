@@ -263,6 +263,9 @@ struct sjme_nvm_frameBase
 	/** The ID of this frame, used for JDWP and tracing. */
 	sjme_jint id;
 
+	/** Phantom tracepoint reference, for recycling. */
+	sjme_atomic_sjme_jobject phantomTracePoint;
+
 	/** Frame state flags. */
 	sjme_packed struct
 	{
@@ -363,9 +366,6 @@ typedef enum sjme_nvm_task_commonClassId
 	
 	/** @c void . */
 	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_VOID,
-	
-	/** @c java.lang.String . */
-	SJME_NVM_TASK_COMMON_CLASS_STRING,
 
 	/** @c java.lang.ref.PhantomReference . */
 	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_PHANTOM,
@@ -375,6 +375,12 @@ typedef enum sjme_nvm_task_commonClassId
 
 	/** @c java.lang.ref.WeakReference . */
 	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK,
+	
+	/** @c java.lang.String . */
+	SJME_NVM_TASK_COMMON_CLASS_STRING,
+
+	/** @c cc.squirreljme.jvm.mle.brackets.TracePointBracket . */
+	SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT,
 
 	/** The number of common classes. */
 	SJME_NVM_TASK_NUM_COMMON_CLASS

@@ -112,7 +112,7 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	mainArgs = NULL;
 	n = (task->globals.mainArgs == NULL ? 0 : task->globals.mainArgs->length);
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
-		SJME_F_T(inFrame), SJME_AS_JOBJECTP(&mainArgs),
+		SJME_F_T(inFrame), SJME_AS_JARRAYP(&mainArgs),
 		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
 			SJME_NVM_TASK_COMMON_CLASS_STRING), n)))
 		return sjme_error_vmError(inFrame, error);

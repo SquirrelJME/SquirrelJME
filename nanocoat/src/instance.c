@@ -363,7 +363,7 @@ sjme_errorCode sjme_nvm_instance_monitorExit(
 
 sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrOutNotNull sjme_jarray* outObject,
 	sjme_attrInNotNull sjme_jclass componentType,
 	sjme_attrInPositive sjme_jint arrayLength)
 {
@@ -417,13 +417,13 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	result->length = arrayLength;
 
 	/* Success! */
-	*outObject = SJME_AS_JOBJECT(result);
+	*outObject = result;
 	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_instance_objectArrayNewT(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrOutNotNull sjme_jarray* outObject,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_basicTypeId componentType,
 	sjme_attrInPositive sjme_jint arrayLength)
 {
@@ -575,6 +575,24 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 	/* Success! */
 	*outObject = result;
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_instance_objectNewBracket(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jobject* outObject)
+{
+	if (contextThread == NULL || outObject == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	switch (inType)
+	{
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_instance_objectNewN(

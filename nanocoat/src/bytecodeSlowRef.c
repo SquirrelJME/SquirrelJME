@@ -824,7 +824,8 @@ SJME_NVM_BYTECODE_SLOW(NewArray)
 	/* Create new array. */
 	memset(&array, 0, sizeof(array));
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNewT(
-		SJME_F_T(inFrame), &array.v.l, arrayType, length.v.i)))
+		SJME_F_T(inFrame), SJME_AS_JARRAYP(&array.v.l), arrayType,
+		length.v.i)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push to the stack. */
@@ -877,7 +878,8 @@ SJME_NVM_BYTECODE_SLOW(NewArrayA)
 	/* Create new array. */
 	memset(&array, 0, sizeof(array));
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
-		SJME_F_T(inFrame), &array.v.l, componentType, length.v.i)))
+		SJME_F_T(inFrame), SJME_AS_JARRAYP(&array.v.l), componentType,
+		length.v.i)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push to the stack. */

@@ -36,7 +36,7 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayClone)
 	/* Allocate a new array which uses the same type. */
 	clone = NULL;
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
-		SJME_F_T(inFrame), SJME_AS_JOBJECTP(&clone),
+		SJME_F_T(inFrame), SJME_AS_JARRAYP(&clone),
 		sjme_atomic_sjme_jclass_get(
 			&array->object.isClass->componentType), length)) || clone == NULL)
 		goto fail_alloc;

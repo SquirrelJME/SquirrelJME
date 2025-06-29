@@ -118,6 +118,24 @@ struct sjme_jobjectBase
 	sjme_atomic_sjme_jint monitorCount;
 };
 
+typedef struct sjme_jbracketTraceBase
+{
+	/** Common base for all objects. */
+	sjme_nvm_commonBase common;
+
+	/** The pointer to the frame. */
+	sjme_nvm_frame frame;
+
+	/** The ID of the frame, used to identify if it has chnaged. */
+	sjme_jint id;
+
+	/**
+	 * The index from the base of the stack, the bottom of the stack will
+	 * have index zero.
+	 */
+	sjme_jint baseIndex;
+} sjme_jbracketTraceBase;
+
 /**
  * Stores the classes that this class @c implements or @c extends .
  * 
@@ -424,7 +442,7 @@ sjme_errorCode sjme_nvm_instance_monitorExit(
  */
 sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrOutNotNull sjme_jarray* outObject,
 	sjme_attrInNotNull sjme_jclass componentType,
 	sjme_attrInPositive sjme_jint arrayLength);
 
@@ -440,9 +458,9 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
  */
 sjme_errorCode sjme_nvm_instance_objectArrayNewT(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrOutNotNull sjme_jarray* outObject,
 	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS)
-		sjme_basicTypeId componentType,
+	sjme_basicTypeId componentType,
 	sjme_attrInPositive sjme_jint arrayLength);
 	
 /**
@@ -464,6 +482,20 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 	sjme_attrOutNotNull sjme_jobject* outObject,
 	sjme_attrInNotNull sjme_jclass inClass);
 
+/**
+ * Allocates a bracket based type.
+ * 
+ * @param contextThread The thread this is allocating within.
+ * @param inType The structure type being allocated.
+ * @param outObject The resultant bracket object.
+ * @return Any resultant error, if any.
+ * @since 2025/06/28
+ */
+sjme_errorCode sjme_nvm_instance_objectNewBracket(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jobject* outObject);
+	
 /**
  * Allocates a new object.
  * 

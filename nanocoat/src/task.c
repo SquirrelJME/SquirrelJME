@@ -232,10 +232,6 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_VOID:
 			commonName = "F";
 			break;
-		
-		case SJME_NVM_TASK_COMMON_CLASS_STRING:
-			commonName = "Ljava/lang/String;";
-			break;
 
 		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_PHANTOM:
 			commonName = "Ljava/lang/ref/PhantomReference;";
@@ -247,6 +243,14 @@ sjme_errorCode sjme_nvm_task_commonClass(
 
 		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK:
 			commonName = "Ljava/lang/ref/WeakReference;";
+			break;
+		
+		case SJME_NVM_TASK_COMMON_CLASS_STRING:
+			commonName = "Ljava/lang/String;";
+			break;
+
+		case SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT:
+			commonName = "Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;";
 			break;
 		
 		default:
@@ -1360,7 +1364,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	/* Set frame details, needed for local set. */
 	result->inClass = inMethod->member.inClass;
 	result->id = sjme_atomic_sjme_jint_getAdd(
-		&SJME_T_K(inThread)->nextFrameId, 1);
+		&SJME_T_K(inThread)->nextFrameId, 1) + 1;
 	result->inMethod = inMethod;
 	result->inState = SJME_F_S(inThread);
 	result->inThread = inThread;
