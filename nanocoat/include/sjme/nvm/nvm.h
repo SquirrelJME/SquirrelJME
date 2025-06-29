@@ -482,6 +482,13 @@ struct sjme_nvm_stateBase
 	sjme_nvm_threadSchedule schedule;
 };
 
+/**
+ * Specifies how the PC address should be adjusted.
+ *
+ * @since 2025/01/11
+ */
+typedef struct sjme_nvm_byteCode_pcNew sjme_nvm_byteCode_pcNew;
+
 /** Type size multiplier. */
 extern const sjme_jint sjme_nvm_typeMul[SJME_NUM_BASIC_TYPE_IDS];
 

@@ -298,6 +298,19 @@ sjme_jclass sjme_nvm_task_commonClassR(
 	return result;
 }
 
+sjme_errorCode sjme_nvm_task_frameHandler(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_jobject tossed,
+	sjme_attrInOutNotNull sjme_jboolean* handled,
+	sjme_attrInOutNotNull sjme_nvm_byteCode_pcNew* pcNew)
+{
+	if (inFrame == NULL || tossed == NULL || handled == NULL || pcNew == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_task_frameLocalAddr(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId localType,

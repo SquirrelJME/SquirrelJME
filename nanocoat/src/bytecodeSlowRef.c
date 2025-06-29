@@ -1008,9 +1008,12 @@ SJME_NVM_BYTECODE_SLOW(Throw)
 		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
 
 	/* Set thrown exception. */
-	if (!sjme_atomic_sjme_jobject_compareSet(&SJME_F_T(inFrame)->thrown,
+	if (!sjme_atomic_sjme_jobject_compareSet(&SJME_F_T(inFrame)->tossed,
 		NULL, toss.v.l))
 		return sjme_error_vmError(inFrame, SJME_ERROR_DOUBLE_TOSS);
+
+	/* Always pop the frame. */
+	pcNew->popFrame = SJME_JNI_TRUE;
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;

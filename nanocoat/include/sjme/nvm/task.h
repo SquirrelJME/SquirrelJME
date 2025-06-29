@@ -487,7 +487,7 @@ struct sjme_nvm_threadBase
 	sjme_nvm_threadScheduleMode schedule;
 
 	/** A @c Throwable which has been thrown. */
-	sjme_atomic_sjme_jobject thrown;
+	sjme_atomic_sjme_jobject tossed;
 };
 
 /**
@@ -517,6 +517,22 @@ sjme_jclass sjme_nvm_task_commonClassR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInRange(0, SJME_NVM_TASK_NUM_COMMON_CLASS)
 		sjme_nvm_task_commonClassId commonId);
+	
+/**
+ * Locates the exception handler to use for exceptions.
+ * 
+ * @param inFrame The frame to find the handler for.
+ * @param tossed The tossed throwable.
+ * @param handled If this is handled.
+ * @param pcNew The PC handler.
+ * @return Any resultant error, if any.
+ * @since 2025/06/29
+ */
+sjme_errorCode sjme_nvm_task_frameHandler(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_jobject tossed,
+	sjme_attrInOutNotNull sjme_jboolean* handled,
+	sjme_attrInOutNotNull sjme_nvm_byteCode_pcNew* pcNew);
 
 /**
  * Returns the direct address to the local variable.
@@ -844,7 +860,7 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 sjme_errorCode sjme_nvm_task_threadFrameNext(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame);
-
+	
 /**
  * Leaves a frame of execution.
  * 

@@ -731,12 +731,7 @@ typedef enum sjme_nvm_byteCode_pcNewType
 	SJME_NVM_BYTECODE_NUM_PC_NEW_TYPE = 3,
 } sjme_nvm_byteCode_pcNewType;
 
-/**
- * Specifies how the PC address should be adjusted.
- *
- * @since 2025/01/11
- */
-typedef struct sjme_nvm_byteCode_pcNew
+struct sjme_nvm_byteCode_pcNew
 {
 	/** The type of adjustment to make. */
 	sjme_nvm_byteCode_pcNewType type;
@@ -746,7 +741,7 @@ typedef struct sjme_nvm_byteCode_pcNew
 
 	/** Should the current frame be popped? */
 	sjme_jboolean popFrame;
-} sjme_nvm_byteCode_pcNew;
+};
 
 /**
  * Function type for byte code execution.

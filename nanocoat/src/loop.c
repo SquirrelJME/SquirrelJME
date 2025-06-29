@@ -190,7 +190,8 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_nvm_byteCode_pcNew pcNew, pcDefault;
 	const sjme_nvm_byteCode_func (*lut)[SJME_NVM_NUM_JAVA_BYTECODES];
 	sjme_nvm_byteCode_func lutFunc;
-	sjme_jobject thrown;
+	sjme_jobject tossed;
+	sjme_jboolean handled;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -273,8 +274,8 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		currentFrame->lastIv = iv;
 
 		/* Do not handle the instruction if there is an exception waiting. */
-		thrown = sjme_atomic_sjme_jobject_get(&inThread->thrown);
-		if (thrown != NULL)
+		tossed = sjme_atomic_sjme_jobject_get(&inThread->tossed);
+		if (tossed != NULL)
 			goto skip_thrown;
 
 		/* Execute handler. */
@@ -283,12 +284,23 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 			goto fail_any;
 
 		/* Has an exception been thrown? */
-		thrown = sjme_atomic_sjme_jobject_get(&inThread->thrown);
+		tossed = sjme_atomic_sjme_jobject_get(&inThread->tossed);
 skip_thrown:
-		if (thrown != NULL)
+		if (tossed != NULL)
 		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			/* Find exception handler to jump to. */
+			handled = SJME_JNI_FALSE;
+			if (sjme_error_is(error = sjme_nvm_task_frameHandler(
+				currentFrame, tossed, &handled, &pcNew)))
+				goto fail_any;
+
+			/* If handled, clear the exception. */
+			if (handled)
+			{
+				if (!sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
+					tossed, NULL))
+					goto fail_any;
+			}
 		}
 
 		/* Popping the current frame? */
