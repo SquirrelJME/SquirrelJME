@@ -114,6 +114,7 @@ int main(int argc, sjme_lpstr* argv)
 		goto fail_boot;
 	
 	/* Iterate the virtual machine loop. */
+	sjme_messageB("--------------------------------------------------------");
 	for (terminated = SJME_JNI_FALSE; !terminated;)
 	{
 		/* Let other threads run. */
@@ -130,6 +131,7 @@ int main(int argc, sjme_lpstr* argv)
 			goto fail_loop;
 		}
 	}
+	sjme_messageB("--------------------------------------------------------");
 	
 	/* Destroy the VM before exit. */
 	exitCode = -1;

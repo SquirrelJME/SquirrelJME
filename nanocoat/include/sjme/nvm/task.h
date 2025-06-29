@@ -425,9 +425,12 @@ typedef enum sjme_nvm_task_threadCountType
 	
 	/** Daemon. */
 	SJME_NVM_THREAD_COUNT_DAEMON = 2,
+	
+	/** Await terminate. */
+	SJME_NVM_THREAD_COUNT_AWAIT_CLEANUP = 3,
 
 	/** The number of thread counts. */
-	SJME_NVM_THREAD_NUM_COUNT_TYPE = 3,
+	SJME_NVM_THREAD_NUM_COUNT_TYPE = 4,
 } sjme_nvm_task_threadCountType;
 	
 struct sjme_nvm_taskBase

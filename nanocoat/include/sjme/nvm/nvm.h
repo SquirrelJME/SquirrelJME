@@ -494,6 +494,9 @@ struct sjme_nvm_stateBase
 	
 	/** The tasks that are currently existing. */
 	sjme_list_sjme_nvm_task* tasks;
+
+	/** The number of running tasks. */
+	sjme_atomic_sjme_jint numRunningTasks;
 	
 	/** The next identifier for tasks. */
 	sjme_atomic_sjme_jint nextTaskId;

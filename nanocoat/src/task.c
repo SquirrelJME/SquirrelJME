@@ -505,6 +505,9 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	
 	/* Set argument strings. */
 	result->globals.mainArgs = argStrings;
+
+	/* Add to the running task count. */
+	sjme_atomic_sjme_jint_getAdd(&inState->numRunningTasks, 1);
 	
 	/* The main thread of any task is always implicitly started. */
 	if (sjme_error_is(error = sjme_nvm_task_threadStart(mainThread)))
@@ -689,6 +692,14 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 		*isTerminated = terminated;
 		return SJME_ERROR_NONE;
 	}
+	
+	/* If no tasks are left alive, stop VM execution. */
+	if (sjme_atomic_sjme_jint_get(&inState->numRunningTasks) <= 0)
+	{
+		*runThread = NULL;
+		*isTerminated = SJME_JNI_TRUE;
+		return SJME_ERROR_NONE;
+	}
 
 	/* This is used to determine what to get. */
 	schedule = inState->schedule;
@@ -847,8 +858,13 @@ sjme_jboolean sjme_nvm_task_taskScheduleYes(
 			SJME_NVM_THREAD_START_FINISHING,
 			SJME_NVM_THREAD_START_FINISHED);
 
-		/* Reduce total thread count. */
+		/* This thread is awaiting termination. */
 		inTask = SJME_T_K(inThread);
+		sjme_atomic_sjme_jint_getAdd(
+			&inTask->numThreads[SJME_NVM_THREAD_COUNT_AWAIT_CLEANUP],
+			1);
+
+		/* Reduce total thread count. */
 		sjme_atomic_sjme_jint_getAdd(
 			&inTask->numThreads[SJME_NVM_THREAD_COUNT_ALL], -1);
 

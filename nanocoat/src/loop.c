@@ -102,6 +102,8 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_jobject tossed;
 	sjme_jboolean handled;
 	sjme_jvalueTyped push;
+	sjme_nvm_task inTask;
+	sjme_nvm inState;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -121,12 +123,14 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	rawCode = NULL;
 	
 	/* Continuous code execution. */
+	inTask = SJME_T_K(inThread);
+	inState = SJME_T_S(inThread);
 	frameIndex = -2;
 	memset(&pcNew, 0, sizeof(pcNew));
 	while sjme_noLint(remaining == -1 || remaining > 0)
 	{
 		/* If this task is terminating, unwind everything. */
-		if (sjme_atomic_sjme_jint_get(&SJME_T_K(inThread)->terminate) !=
+		if (sjme_atomic_sjme_jint_get(&inTask->terminate) !=
 			SJME_NVM_TERMINATE_NOT)
 		{
 			/* Leave all thread frames. */
@@ -134,9 +138,29 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 				if (sjme_error_is(error = sjme_nvm_task_threadLeave(inThread)))
 					goto fail_any;
 
-			/* Mark task as terminated to the caller. */
-			if (isTerminated)
-				*isTerminated = SJME_JNI_TRUE;
+			/* All threads have been cleaned up? */
+			if ((sjme_atomic_sjme_jint_getAdd(
+				&inTask->numThreads[SJME_NVM_THREAD_COUNT_AWAIT_CLEANUP],
+				-1) - 1) <= 0)
+			{
+				/* Mark task as terminated to the caller. */
+				if (isTerminated)
+					*isTerminated = SJME_JNI_TRUE;
+
+				/* Flag task as cleaned up. */
+				sjme_atomic_sjme_jint_compareSet(&inTask->terminate,
+					SJME_NVM_TERMINATE_CLEANUP,
+					SJME_NVM_TERMINATE_COMPLETE);
+
+				/* Reduce the running task count. */
+				/* This might be the final thread to reduce this to zero. */
+				if ((sjme_atomic_sjme_jint_getAdd(&inState->numRunningTasks,
+					-1) - 1) <= 0)
+				{
+					if (isTerminated)
+						*isTerminated = SJME_JNI_TRUE;
+				}
+			}
 			
 			/* Do not execute actual byte code. */
 			goto skip_done;
