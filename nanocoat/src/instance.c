@@ -582,17 +582,30 @@ sjme_errorCode sjme_nvm_instance_objectNewBracket(
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_jobject* outObject)
 {
+	sjme_nvm_task_commonClassId commonId;
+	sjme_jint allocSize;
+	
 	if (contextThread == NULL || outObject == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Determine size and type. */
+	commonId = SJME_NVM_TASK_NUM_COMMON_CLASS;
+	allocSize = -1;
 	switch (inType)
 	{
+		case SJME_NVM_STRUCT_TRACE_POINT_INSTANCE:
+			commonId = SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT;
+			allocSize = sizeof(sjme_jbracketTraceBase);
+			break;
+			
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Allocate. */
+	return sjme_nvm_instance_objectNew(contextThread, allocSize,
+		inType, outObject, sjme_nvm_task_commonClassR(contextThread,
+			commonId));
 }
 
 sjme_errorCode sjme_nvm_instance_objectNewN(

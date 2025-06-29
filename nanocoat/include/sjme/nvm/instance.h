@@ -120,8 +120,8 @@ struct sjme_jobjectBase
 
 typedef struct sjme_jbracketTraceBase
 {
-	/** Common base for all objects. */
-	sjme_nvm_commonBase common;
+	/** Object base. */
+	sjme_jobjectBase object;
 
 	/** The pointer to the frame. */
 	sjme_nvm_frame frame;

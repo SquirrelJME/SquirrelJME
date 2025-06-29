@@ -225,7 +225,7 @@ typedef enum sjme_nvm_structType
 	SJME_NVM_STRUCT_THREAD,
 
 	/** A trace point instance pointer object. */
-	SJME_NVM_STRUCT_CLASS_TRACE_POINT_INSTANCE,
+	SJME_NVM_STRUCT_TRACE_POINT_INSTANCE,
 	
 	/** Class loader. */
 	SJME_NVM_STRUCT_VM_CLASS_LOADER,
