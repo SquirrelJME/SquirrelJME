@@ -87,11 +87,14 @@ typedef enum sjme_nvm_thread_startType
 	/** Thread finished execution. */
 	SJME_NVM_THREAD_START_FINISHED = 2,
 
+	/** Thread is in the finishing state, it is stopping execution. */
+	SJME_NVM_THREAD_START_FINISHING = 3,
+
 	/** Callback thread which can reach zero frames and not be finished. */
-	SJME_NVM_THREAD_START_CALLBACK = 3,
+	SJME_NVM_THREAD_START_CALLBACK = 4,
 
 	/** The number of thread start types. */
-	SJME_NVM_NUM_THREAD_START_TYPES = 4,
+	SJME_NVM_NUM_THREAD_START_TYPES = 5,
 } sjme_nvm_thread_startType;
 	
 /**
@@ -602,10 +605,21 @@ sjme_errorCode sjme_nvm_task_framePool(
 	...);
 
 /**
+ * Clears the entire stack for a frame.
+ * 
+ * @param inFrame The frame to clear.
+ * @return Any resultant error, if any.
+ * @since 2025/06/29
+ */
+sjme_errorCode sjme_nvm_task_frameStackClear(
+	sjme_attrInNotNull sjme_nvm_frame inFrame);
+	
+/**
  * Peeks a single value from the top of the stack.
  * 
  * @param inFrame The frame to pop from.
- * @param typeId The type ID to pop.
+ * @param typeId The type ID to pop, if this is @c SJME_NUM_JAVA_TYPE_IDS
+ * then this will disregard the type.
  * @param outValue The resultant value.
  * @param copiedElsewhere Is this value copied elsewhere? That is if this is
  * true, then this will be reference counted.
@@ -777,6 +791,30 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_attrInNotNull const sjme_nvm_task_taskNewConfig* startConfig,
 	sjme_attrOutNullable sjme_nvm_task* outTask);
 
+/**
+ * Deletes the given thread from the schedule.
+ * 
+ * @param inState The task to delete from.
+ * @param inThread The thread to delete from the schedule.
+ * @return Any resultant error, if any.
+ * @since 2025/06/29
+ */
+sjme_errorCode sjme_nvm_task_taskScheduleDelete(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread);
+	
+/**
+ * Schedules the given thread for execution.
+ * 
+ * @param inState The virtual machine state.
+ * @param inThread The thread to schedule.
+ * @return Any resultant error.
+ * @since 2025/01/06
+ */
+sjme_errorCode sjme_nvm_task_taskScheduleIn(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread);
+	
 /**
  * Enters a frame for the given exact method within the thread.
  * 

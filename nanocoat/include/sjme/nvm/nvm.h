@@ -445,6 +445,9 @@ typedef struct sjme_nvm_threadSubSchedule
  */
 typedef struct sjme_nvm_threadSchedule
 {
+	/** The thread model in use. */
+	sjme_nvm_mle_threadModel model;
+	
 	/** The schedules for each mode. */
 	sjme_nvm_threadSubSchedule mode[SJME_NVM_THREAD_NUM_SCHEDULE_MODE];
 } sjme_nvm_threadSchedule;
@@ -477,9 +480,12 @@ struct sjme_nvm_stateBase
 	
 	/** The next identifier for tasks. */
 	sjme_atomic_sjme_jint nextThreadId;
+	
+	/** The thread model in use. */
+	sjme_nvm_mle_threadModel threadModel;
 
 	/** The thread schedule. */
-	sjme_nvm_threadSchedule schedule;
+	sjme_nvm_threadSchedule* schedule;
 };
 
 /**

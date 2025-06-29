@@ -19,19 +19,19 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 @SquirrelJMEVendorApi
 public interface ThreadModelType
 {
-	/** Invalid model. */
-	@SquirrelJMEVendorApi
-	byte INVALID =
-		0;
-	
 	/** Single cooperatively threaded. */
 	@SquirrelJMEVendorApi
-	byte SINGLE_COOP_THREAD =
+	byte SINGLE_THREAD_COOP =
+		0;
+	
+	/** Single threaded, with preemption. */
+	@SquirrelJMEVendorApi
+	byte SINGLE_THREAD_PREEMPT =
 		1;
 	
 	/** Simultaneous Multi-threaded. */
 	@SquirrelJMEVendorApi
-	byte SIMULTANEOUS_MULTI_THREAD =
+	byte MULTI_THREAD =
 		2;
 	
 	/** The number of threading models. */

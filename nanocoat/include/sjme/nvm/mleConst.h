@@ -98,6 +98,26 @@ typedef enum sjme_nvm_mle_standardPipeType
 	/** The number of standard pipes. */
 	SJME_NVM_MLE_NUM_STD_PIPES = 3,
 } sjme_nvm_mle_standardPipeType;
+
+/**
+ * The thread model in use.
+ *
+ * @since 2025/06/29
+ */
+typedef enum sjme_nvm_mle_threadModel
+{
+	/** Single cooperatively threaded. */
+	SJME_NVM_MLE_THREAD_SINGLE_COOP = 0,
+	
+	/** Single threaded, with preemption. */
+	SJME_NVM_MLE_THREAD_SINGLE_PREEMPT = 1,
+	
+	/** Simultaneous Multi-threaded. */
+	SJME_NVM_MLE_THREAD_MULTI = 2,
+	
+	/** The number of threading models. */
+	SJME_NVM_MLE_THREAD_NUM_MODELS = 3,
+} sjme_nvm_mle_threadModel;
 	
 /**
  * The virtual machine type.

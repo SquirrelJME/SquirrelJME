@@ -211,7 +211,7 @@ sjme_errorCode sjme_nvm_boot(
 	/* Set parameters accordingly. */
 	result->allocPool = allocPool;
 	result->nal = param->nal;
-
+	
 	/* Initialize base for suite merging. */
 	memset(mergeSuites, 0, sizeof(mergeSuites));
 	numMergeSuites = 0;
@@ -291,6 +291,13 @@ sjme_errorCode sjme_nvm_boot(
 		goto fail_badClassPath;
 	}
 
+	/* Allocate the task scheduler, if applicable. */
+	if (result->threadModel != SJME_NVM_MLE_THREAD_MULTI)
+		if (sjme_error_is(error = sjme_alloc(allocPool,
+			sizeof(*result->schedule), (sjme_pointer*)&result->schedule)) ||
+			result->schedule == NULL)
+			goto fail_allocSchedule;
+
 	/* Setup task details. */
 	memset(&initTaskConfig, 0, sizeof(initTaskConfig));
 	initTaskConfig.stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
@@ -314,6 +321,7 @@ sjme_errorCode sjme_nvm_boot(
 
 	/* Failed at specific points... */
 fail_initTask:
+fail_allocSchedule:
 fail_badClassPath:
 fail_suiteMerge:
 fail_noSuites:

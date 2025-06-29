@@ -31,90 +31,6 @@ static sjme_thread_result sjme_attrThreadCall sjme_nvm_loop_tickCrash(
 	/* No error generally. */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
-
-static sjme_errorCode sjme_nvm_loop_subSchedule(
-	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrInRange(0, SJME_NVM_THREAD_SCHEDULED)
-		sjme_nvm_threadScheduleMode inMode)
-{
-#define SJME_NVM_SUB_GROW 8
-	sjme_errorCode error;
-	sjme_nvm_threadSubSchedule* sub;
-	
-	if (inState == NULL || inThread == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (inMode < 0 || inMode >= SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	/* Get sub-schedule. */
-	sub = &inState->schedule.mode[inMode];
-	
-	/* Lock thread. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&inThread->object.common.lock)))
-		return sjme_error_default(error);
-
-	/* Ignore if already scheduled in this group. */
-	if (inThread->schedule == inMode)
-		goto skip_alreadyScheduled;
-
-	/* Lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&sub->lock)))
-		goto fail_lockSub;
-
-	/* Need to grow the schedule list? */
-	if (sub->order == NULL || (sub->count + 1) >= sub->order->length)
-		if (sjme_error_is(error = sjme_list_replace(inState->allocPool,
-			sub->count + SJME_NVM_SUB_GROW, &sub->order,
-			sjme_nvm_thread, 0)))
-			goto fail_growList;
-
-	/* Place it at the end of the schedule queue. */
-	sub->order->elements[sub->count] = inThread;
-	sub->count++;
-
-	/* Set new thread scheduling mode. */
-	inThread->schedule = inMode;
-	
-	/* Release schedule lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockRelease(&sub->lock, NULL)))
-		goto fail_releaseSub;
-	
-	/* Release thread lock. */
-skip_alreadyScheduled:
-	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&inThread->object.common.lock, NULL)))
-		return sjme_error_default(error);
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-
-fail_growList:
-	sjme_thread_spinLockRelease(&sub->lock, NULL);
-	
-fail_releaseSub:
-fail_lockSub:
-	sjme_thread_spinLockRelease(&inThread->object.common.lock, NULL);
-
-	return sjme_error_default(error);
-#undef SJME_NVM_SUB_GROW
-}
-
-sjme_errorCode sjme_nvm_loop_schedule(
-	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull sjme_nvm_thread inThread)
-{
-	if (inState == NULL || inThread == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Forward. */
-	return sjme_nvm_loop_subSchedule(inState,
-		inThread,
-		SJME_NVM_THREAD_SCHEDULED);
-}
 	
 sjme_errorCode sjme_nvm_loop_tick(
 	sjme_attrInNotNull sjme_nvm inState,
@@ -137,7 +53,7 @@ sjme_errorCode sjme_nvm_loop_tick(
 	remaining = (maxTics < 0 ? -1 : maxTics);
 
 	/* Get threads scheduled to be run. */
-	sub = &inState->schedule.mode[SJME_NVM_THREAD_SCHEDULED];
+	sub = &inState->schedule->mode[SJME_NVM_THREAD_SCHEDULED];
 
 	/* Keep ticking until nothing left is to be done. */
 	while (remaining == -1 || remaining > 0)
@@ -192,6 +108,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_nvm_byteCode_func lutFunc;
 	sjme_jobject tossed;
 	sjme_jboolean handled;
+	sjme_jvalueTyped push;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -224,7 +141,18 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		/* Get current top-most frame, if it changed. */
 		if (frameIndex != (inThread->numFrames - 1))
 		{
+			/* Are there any actual frames left? */
 			frameIndex = (inThread->numFrames - 1);
+			if (frameIndex < 0)
+			{
+				/* Mark the thread as finishing, if standard. */
+				if (inThread->start == SJME_NVM_THREAD_START_STANDARD)
+					inThread->start = SJME_NVM_THREAD_START_FINISHING;
+
+				/* Do not execute any code. */
+				break;
+			}
+			
 			currentFrame = inThread->frames->elements[frameIndex];
 			currentCode = currentFrame->inCode;
 			rawCode = currentCode->rawCode;
@@ -294,11 +222,25 @@ skip_thrown:
 				currentFrame, tossed, &handled, &pcNew)))
 				goto fail_any;
 
-			/* If handled, clear the exception. */
+			/* If handled, we need to prepare for the handler. */
 			if (handled)
 			{
+				/* No longer handle the exception. */
 				if (!sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
 					tossed, NULL))
+					goto fail_any;
+
+				/* Clear the stack. */
+				if (sjme_error_is(error = sjme_nvm_task_frameStackClear(
+					currentFrame)))
+					goto fail_any;
+
+				/* Push the exception to the stack. */
+				memset(&push, 0, sizeof(push));
+				push.t = SJME_JAVA_TYPE_ID_OBJECT;
+				push.v.l = tossed;
+				if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+					currentFrame, &push)))
 					goto fail_any;
 			}
 		}
@@ -339,6 +281,18 @@ skip_thrown:
 			error = SJME_ERROR_INVALID_CODE_ADDRESS;
 			goto fail_any;
 		}
+	}
+
+	/* Un-scheduling this as this is finished? */
+	if (inThread->start == SJME_NVM_THREAD_START_FINISHING)
+	{
+		/* Set as finished. */
+		inThread->start = SJME_NVM_THREAD_START_FINISHED;
+		
+		/* Remove from the schedule. */
+		if (sjme_error_is(error = sjme_nvm_task_taskScheduleDelete(
+			SJME_T_S(inThread), inThread)))
+			goto fail_any;
 	}
 	
 	/* Clear crash context. */
