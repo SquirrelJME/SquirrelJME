@@ -482,12 +482,12 @@ struct sjme_nvm_threadBase
 
 	/** The stack information for the entire thread. */
 	sjme_frame_threadStacks stack;
-	
-	/** Throwable which has been tossed in the thread. */
-	sjme_jobject tossed;
 
 	/** What is the current schedule state of this thread? */
 	sjme_nvm_threadScheduleMode schedule;
+
+	/** A @c Throwable which has been thrown. */
+	sjme_atomic_sjme_jobject thrown;
 };
 
 /**

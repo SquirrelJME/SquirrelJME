@@ -992,6 +992,30 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	SJME_NVM_BYTECODE_EXIT;
 }
 
+SJME_NVM_BYTECODE_SLOW(Throw)
+{
+	sjme_jvalueTyped toss;
+	SJME_NVM_BYTECODE_ENTRY;
+
+	/* Read in object to toss. */
+	memset(&toss, 0, sizeof(toss));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &toss)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Cannot be null. */
+	if (toss.v.l == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
+
+	/* Set thrown exception. */
+	if (!sjme_atomic_sjme_jobject_compareSet(&SJME_F_T(inFrame)->thrown,
+		NULL, toss.v.l))
+		return sjme_error_vmError(inFrame, SJME_ERROR_DOUBLE_TOSS);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(XALoad)
 {
 	sjme_jvalueTyped arrayValue;

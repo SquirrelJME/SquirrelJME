@@ -510,9 +510,12 @@ typedef enum sjme_errorCode
 
 	/** Could not initialize static string value. */
 	SJME_ERROR_STATIC_STRING_INIT = -156,
+
+	/** Doubly tossed exception. */
+	SJME_ERROR_DOUBLE_TOSS = -157,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -157,
+	SJME_NUM_ERROR_CODES = -158,
 } sjme_errorCode;
 
 /**

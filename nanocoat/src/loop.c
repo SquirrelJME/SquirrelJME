@@ -190,6 +190,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_nvm_byteCode_pcNew pcNew, pcDefault;
 	const sjme_nvm_byteCode_func (*lut)[SJME_NVM_NUM_JAVA_BYTECODES];
 	sjme_nvm_byteCode_func lutFunc;
+	sjme_jobject thrown;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -271,10 +272,24 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		currentFrame->lastPc = sjme_noLint(currentFrame)->pc;
 		currentFrame->lastIv = iv;
 
+		/* Do not handle the instruction if there is an exception waiting. */
+		thrown = sjme_atomic_sjme_jobject_get(&inThread->thrown);
+		if (thrown != NULL)
+			goto skip_thrown;
+
 		/* Execute handler. */
 		memmove(&pcNew, &pcDefault, sizeof(pcNew));
 		if (sjme_error_is(error = lutFunc(currentFrame, iv, ev, &pcNew)))
 			goto fail_any;
+
+		/* Has an exception been thrown? */
+		thrown = sjme_atomic_sjme_jobject_get(&inThread->thrown);
+skip_thrown:
+		if (thrown != NULL)
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
 
 		/* Popping the current frame? */
 		if (pcNew.popFrame)

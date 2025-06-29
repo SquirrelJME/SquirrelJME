@@ -205,7 +205,7 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
 	/* 188 */ SJME_NVM_BYTECODE_SLOW_NAME(NewArray),
 	/* 189 */ SJME_NVM_BYTECODE_SLOW_NAME(NewArrayA),
 	/* 190 */ SJME_NVM_BYTECODE_SLOW_NAME(ArrayLength),
-	/* 191 */ sjme_nvm_byteCode_notImplemented,
+	/* 191 */ SJME_NVM_BYTECODE_SLOW_NAME(Throw),
 	/* 192 */ SJME_NVM_BYTECODE_SLOW_NAME(CheckCast),
 	/* 193 */ SJME_NVM_BYTECODE_SLOW_NAME(InstanceOf),
 	/* 194 */ SJME_NVM_BYTECODE_SLOW_NAME(Monitor),
