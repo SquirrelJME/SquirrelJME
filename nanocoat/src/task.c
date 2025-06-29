@@ -26,75 +26,90 @@
 /** The number of threads to grow by. */
 #define SJME_NVM_THREAD_GROW 8
 
-static sjme_errorCode sjme_nvm_loop_subSchedule(
+static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrInRange(0, SJME_NVM_THREAD_SCHEDULED)
-		sjme_nvm_threadScheduleMode inMode)
+	sjme_attrInRange(0, SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
+		sjme_nvm_threadScheduleMode modeFrom,
+	sjme_attrInRange(0, SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
+		sjme_nvm_threadScheduleMode modeTo,
+	sjme_attrInValue sjme_jboolean inject)
 {
-#define SJME_NVM_SUB_GROW 8
 	sjme_errorCode error;
-	sjme_nvm_threadSubSchedule* sub;
+	sjme_nvm_threadSchedule* schedule;
+	sjme_nvm_threadSubSchedule* fromSub;
+	sjme_nvm_threadSubSchedule* toSub;
+	sjme_list_sjme_nvm_thread* fromOrder;
+	sjme_list_sjme_nvm_thread* toOrder;
+	sjme_nvm_threadScheduleMode wasMode;
+	sjme_jint i, n, freeSlot;
 	
 	if (inState == NULL || inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (inMode < 0 || inMode >= SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
+	if (modeFrom < 0 || modeTo < 0 ||
+		modeFrom >= SJME_NVM_THREAD_NUM_SCHEDULE_MODE ||
+		modeTo >= SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	/* Get sub-schedule. */
-	sub = &inState->schedule->mode[inMode];
-	
-	/* Lock thread. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&inThread->object.common.lock)))
+	/* No change in schedule state? */
+	wasMode = sjme_atomic_sjme_jint_get(&inThread->scheduleMode);
+	if (wasMode == modeTo)
+		return SJME_ERROR_NONE;
+
+	/* We will be operating on this schedule. */
+	schedule = inState->schedule;
+
+	/* Is there an order to actually remove from? */
+	fromSub = &schedule->mode[modeFrom];
+	fromOrder = fromSub->order;
+	if (modeFrom == SJME_NVM_THREAD_UNDEFINED_SCHEDULE ||
+		modeFrom == SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
+		fromOrder = NULL;
+
+	/* Remove from the old schedule first. */
+	if (fromOrder != NULL && fromOrder->length > 0)
+		for (i = 0, n = fromOrder->length; i < n; i++)
+			if (fromOrder->elements[i] == inThread)
+			{
+				/* Set the schedule to undefined as it is not in one. */
+				sjme_atomic_sjme_jint_set(&inThread->scheduleMode,
+					SJME_NVM_THREAD_UNDEFINED_SCHEDULE);
+				fromOrder->elements[i] = NULL;
+
+				/* Move everything down so there are no gaps. */
+				memmove(&fromOrder->elements[i],
+					&fromOrder->elements[i + 1],
+					sizeof(sjme_nvm_thread) * (n - i - 1));
+				fromOrder->elements[n - 1] = NULL;
+
+				/* Since we moved down, try this slot again. */
+				i--;
+			}
+
+	/* Which schedule is this going into? */
+	toSub = &schedule->mode[modeTo];
+	toOrder = toSub->order;
+	if (modeTo == SJME_NVM_THREAD_UNDEFINED_SCHEDULE ||
+		modeTo == SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
+		goto skip_noPlace;
+
+	/* Place into free slot, growing the list if needed. */
+	if (sjme_error_is(error = sjme_list_injectGrow(inState->allocPool,
+		SJME_NVM_THREAD_GROW, &toOrder, inThread, sjme_nvm_thread, 0)) ||
+		toOrder == NULL)
 		return sjme_error_default(error);
 
-	/* Ignore if already scheduled in this group. */
-	if (inThread->schedule == inMode)
-		goto skip_alreadyScheduled;
+	/* If the list changed, update it. */
+	if (toSub->order != toOrder)
+		toSub->order = toOrder;
 
-	/* Lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&sub->lock)))
-		goto fail_lockSub;
-
-	/* Need to grow the schedule list? */
-	if (sub->order == NULL || (sub->count + 1) >= sub->order->length)
-		if (sjme_error_is(error = sjme_list_replace(inState->allocPool,
-			sub->count + SJME_NVM_SUB_GROW, &sub->order,
-			sjme_nvm_thread, 0)))
-			goto fail_growList;
-
-	/* Place it at the end of the schedule queue. */
-	sub->order->elements[sub->count] = inThread;
-	sub->count++;
-
-	/* Set new thread scheduling mode. */
-	inThread->schedule = inMode;
-	
-	/* Release schedule lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockRelease(&sub->lock, NULL)))
-		goto fail_releaseSub;
-	
-	/* Release thread lock. */
-skip_alreadyScheduled:
-	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&inThread->object.common.lock, NULL)))
-		return sjme_error_default(error);
+	/* Mark the thread as being scheduled in the given target. */
+	sjme_atomic_sjme_jint_set(&inThread->scheduleMode, modeTo);
 
 	/* Success! */
+skip_noPlace:
 	return SJME_ERROR_NONE;
-
-fail_growList:
-	sjme_thread_spinLockRelease(&sub->lock, NULL);
-	
-fail_releaseSub:
-fail_lockSub:
-	sjme_thread_spinLockRelease(&inThread->object.common.lock, NULL);
-
-	return sjme_error_default(error);
-#undef SJME_NVM_SUB_GROW
 }
 
 sjme_errorCode sjme_nvm_task_commonClass(
@@ -557,6 +572,9 @@ sjme_errorCode sjme_nvm_task_taskScheduleDelete(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread)
 {
+	sjme_errorCode error;
+	sjme_nvm_threadSchedule* schedule;
+	
 	if (inState == NULL || inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -564,22 +582,234 @@ sjme_errorCode sjme_nvm_task_taskScheduleDelete(
 	if (SJME_T_S(inThread)->threadModel == SJME_NVM_MLE_THREAD_MULTI)
 		return SJME_ERROR_NONE;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Ignore if already deleted. */
+	if (sjme_atomic_sjme_jint_get(&inThread->scheduleMode) ==
+		SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
+		return SJME_ERROR_NONE;
+
+	/* Lock schedule. */
+	schedule = inState->schedule;
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&schedule->lock)))
+		return sjme_error_default(error);
+	
+	/* Remove from both schedule states. */
+	if (sjme_error_is(error = sjme_nvm_task_taskScheduleMove(inState,
+		inThread, SJME_NVM_THREAD_SCHEDULED,
+		SJME_NVM_THREAD_UNDEFINED_SCHEDULE,
+		SJME_JNI_FALSE)))
+		goto fail_remove;
+	if (sjme_error_is(error = sjme_nvm_task_taskScheduleMove(inState,
+		inThread, SJME_NVM_THREAD_UNSCHEDULED,
+		SJME_NVM_THREAD_UNDEFINED_SCHEDULE,
+		SJME_JNI_FALSE)))
+		goto fail_remove;
+
+	/* Unlock schedule. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&schedule->lock, NULL)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_remove:
+	sjme_thread_spinLockRelease(&schedule->lock, NULL);
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_nvm_task_taskScheduleIn(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread)
 {
+	sjme_errorCode error;
+	sjme_nvm_threadSchedule* schedule;
+	
 	if (inState == NULL || inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
 	/* No effect in multi-threading. */
 	if (SJME_T_S(inThread)->threadModel == SJME_NVM_MLE_THREAD_MULTI)
 		return SJME_ERROR_NONE;
+
+	/* Ignore if already scheduled. */
+	if (sjme_atomic_sjme_jint_get(&inThread->scheduleMode) ==
+		SJME_NVM_THREAD_SCHEDULED)
+		return SJME_ERROR_NONE;
+
+	/* Lock schedule. */
+	schedule = inState->schedule;
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&schedule->lock)))
+		return sjme_error_default(error);
 	
-	/* Forward. */
-	return sjme_nvm_loop_subSchedule(inState, inThread,
-		SJME_NVM_THREAD_SCHEDULED);
+	/* Move to scheduled. */
+	if (sjme_error_is(error = sjme_nvm_task_taskScheduleMove(inState,
+		inThread, SJME_NVM_THREAD_UNSCHEDULED,
+		SJME_NVM_THREAD_SCHEDULED,
+		SJME_JNI_TRUE)))
+		goto fail_move;
+
+	/* Unlock schedule. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&schedule->lock, NULL)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_move:
+	sjme_thread_spinLockRelease(&schedule->lock, NULL);
+	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_task_taskScheduleNext(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrOutNotNull sjme_nvm_thread* runThread,
+	sjme_attrOutNotNull sjme_jboolean* isTerminated)
+{
+	sjme_errorCode error;
+	sjme_nvm_threadSchedule* schedule;
+	sjme_list_sjme_nvm_thread* order;
+	sjme_nvm_thread nextThread, checkThread;
+	sjme_jboolean terminated;
+	sjme_jint i, n, mode;
+	
+	if (inState == NULL || runThread == NULL || isTerminated == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Default state. */
+	nextThread = NULL;
+	terminated = sjme_atomic_sjme_jint_get(&inState->terminating);
+
+	/* Terminating already? Or no-effect when multithreaded. */
+	if (terminated || inState->threadModel == SJME_NVM_MLE_THREAD_MULTI)
+	{
+		*runThread = NULL;
+		*isTerminated = terminated;
+		return SJME_ERROR_NONE;
+	}
+
+	/* This is used to determine what to get. */
+	schedule = inState->schedule;
+	
+	/* Lock schedule. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&schedule->lock)))
+		return sjme_error_default(error);
+
+	/* Find next running, then waiting, thread that is scheduled. */
+	for (mode = SJME_NVM_THREAD_SCHEDULED;
+		mode > SJME_NVM_THREAD_UNDEFINED_SCHEDULE &&
+		mode < SJME_NVM_THREAD_NUM_SCHEDULE_MODE; mode--)
+	{
+		/* Scan through the running or waiting set. */
+		order = schedule->mode[mode].order;
+		if (order != NULL && order->length > 0)
+			for (i = 0, n = order->length; i < n; i++)
+			{
+				/* There must be a thread here to check. */
+				checkThread = order->elements[i];
+				if (checkThread == NULL)
+					continue;
+
+				/* Can this thread even be run (not sleeping)? */
+				if (!sjme_nvm_task_taskScheduleYesR(inState, checkThread))
+				{
+					/* If this thread is scheduled, move it into */
+					/* unscheduled. */
+					if (mode == SJME_NVM_THREAD_SCHEDULED)
+						if (sjme_error_is(error =
+							sjme_nvm_task_taskScheduleMove(inState,
+							checkThread,
+							SJME_NVM_THREAD_SCHEDULED,
+							SJME_NVM_THREAD_UNSCHEDULED,
+							SJME_JNI_FALSE)))
+							goto fail_move;
+
+					/* Try another thread. */
+					continue;
+				}
+
+				/* Accept this thread! */
+				nextThread = checkThread;
+				break;
+			}
+	}
+
+	/* If we selected a thread, then move it to be scheduled. */
+	if (nextThread != NULL)
+		if (sjme_error_is(error = sjme_nvm_task_taskScheduleMove(inState,
+			nextThread,
+			SJME_NVM_THREAD_UNSCHEDULED,
+			SJME_NVM_THREAD_SCHEDULED,
+			SJME_JNI_TRUE)))
+			goto fail_move;
+	
+	/* Release the schedule lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&schedule->lock, NULL)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	*runThread = nextThread;
+	*isTerminated = terminated;
+	return SJME_ERROR_NONE;
+	
+fail_move:
+	sjme_thread_spinLockRelease(&schedule->lock, NULL);
+	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_task_taskScheduleOut(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread)
+{
+	sjme_errorCode error;
+	sjme_nvm_threadSchedule* schedule;
+	
+	if (inState == NULL || inThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* No effect in multi-threading. */
+	if (SJME_T_S(inThread)->threadModel == SJME_NVM_MLE_THREAD_MULTI)
+		return SJME_ERROR_NONE;
+
+	/* Ignore if already unscheduled. */
+	if (sjme_atomic_sjme_jint_get(&inThread->scheduleMode) ==
+		SJME_NVM_THREAD_UNSCHEDULED)
+		return SJME_ERROR_NONE;
+
+	/* Lock schedule. */
+	schedule = inState->schedule;
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&schedule->lock)))
+		return sjme_error_default(error);
+	
+	/* Move to unscheduled. */
+	if (sjme_error_is(error = sjme_nvm_task_taskScheduleMove(inState,
+		inThread, SJME_NVM_THREAD_SCHEDULED,
+		SJME_NVM_THREAD_UNSCHEDULED,
+		SJME_JNI_TRUE)))
+		goto fail_move;
+
+	/* Unlock schedule. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&schedule->lock, NULL)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_move:
+	sjme_thread_spinLockRelease(&schedule->lock, NULL);
+	return sjme_error_default(error);
+}
+
+sjme_jboolean sjme_nvm_task_taskScheduleYesR(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread)
+{
+	if (inState == NULL || inThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }

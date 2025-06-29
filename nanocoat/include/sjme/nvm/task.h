@@ -486,8 +486,8 @@ struct sjme_nvm_threadBase
 	/** The stack information for the entire thread. */
 	sjme_frame_threadStacks stack;
 
-	/** What is the current schedule state of this thread? */
-	sjme_nvm_threadScheduleMode schedule;
+	/** What is the @c sjme_nvm_threadScheduleMode of this thread? */
+	sjme_atomic_sjme_jint scheduleMode;
 
 	/** A @c Throwable which has been thrown. */
 	sjme_atomic_sjme_jobject tossed;
@@ -792,7 +792,8 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_attrOutNullable sjme_nvm_task* outTask);
 
 /**
- * Deletes the given thread from the schedule.
+ * Deletes the given thread from the schedule, this does not place it in
+ * unscheduled.
  * 
  * @param inState The task to delete from.
  * @param inThread The thread to delete from the schedule.
@@ -814,7 +815,46 @@ sjme_errorCode sjme_nvm_task_taskScheduleDelete(
 sjme_errorCode sjme_nvm_task_taskScheduleIn(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread);
+
+/**
+ * Returns the next scheduled thread.
+ * 
+ * @param inState The input state.
+ * @param runThread The resultant thread.
+ * @param isTerminated Is the virtual machine terminated?
+ * @return Any resultant error, if any.
+ * @since 2025/06/29
+ */
+sjme_errorCode sjme_nvm_task_taskScheduleNext(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrOutNotNull sjme_nvm_thread* runThread,
+	sjme_attrOutNotNull sjme_jboolean* isTerminated);
 	
+/**
+ * Un-schedules the given thread so that it does not execute but enters
+ * a resting mode.
+ * 
+ * @param inState The virtual machine state.
+ * @param inThread The thread to un-schedule.
+ * @return Any resultant error, if any.
+ * @since 2025/06/29
+ */
+sjme_errorCode sjme_nvm_task_taskScheduleOut(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread);
+
+/**
+ * Determines if the given thread can be scheduled.
+ * 
+ * @param inState The input state.
+ * @param inThread If the thread can be scheduled.
+ * @return Any resultant error, if any.
+ * @since 2025/06/29
+ */
+sjme_jboolean sjme_nvm_task_taskScheduleYesR(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread);
+
 /**
  * Enters a frame for the given exact method within the thread.
  * 

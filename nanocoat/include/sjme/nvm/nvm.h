@@ -411,14 +411,17 @@ struct sjme_nvm_commonBase
  */
 typedef enum sjme_nvm_threadScheduleMode
 {
+	/** Thread is undefined schedule. */
+	SJME_NVM_THREAD_UNDEFINED_SCHEDULE = 0,
+	
 	/** Thread is scheduled. */
-	SJME_NVM_THREAD_SCHEDULED = 0,
+	SJME_NVM_THREAD_SCHEDULED = 1,
 
 	/** Thread is unscheduled. */
-	SJME_NVM_THREAD_UNSCHEDULED = 1,
+	SJME_NVM_THREAD_UNSCHEDULED = 2,
 
 	/** The number of scheduled modes. */
-	SJME_NVM_THREAD_NUM_SCHEDULE_MODE = 2,
+	SJME_NVM_THREAD_NUM_SCHEDULE_MODE = 3,
 } sjme_nvm_threadScheduleMode;
 
 /**
@@ -428,9 +431,6 @@ typedef enum sjme_nvm_threadScheduleMode
  */
 typedef struct sjme_nvm_threadSubSchedule
 {
-	/** The lock for scheduling. */
-	sjme_thread_spinLock lock;
-
 	/** The number of scheduled threads. */
 	sjme_jint count;
 		
@@ -447,6 +447,9 @@ typedef struct sjme_nvm_threadSchedule
 {
 	/** The thread model in use. */
 	sjme_nvm_mle_threadModel model;
+	
+	/** The lock for scheduling. */
+	sjme_thread_spinLock lock;
 	
 	/** The schedules for each mode. */
 	sjme_nvm_threadSubSchedule mode[SJME_NVM_THREAD_NUM_SCHEDULE_MODE];
@@ -486,6 +489,9 @@ struct sjme_nvm_stateBase
 
 	/** The thread schedule. */
 	sjme_nvm_threadSchedule* schedule;
+
+	/** Is the VM terminating? */
+	sjme_atomic_sjme_jint terminating;
 };
 
 /**

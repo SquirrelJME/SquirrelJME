@@ -31,7 +31,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_nvm_loop_tickCrash(
 	/* No error generally. */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
-	
+
 sjme_errorCode sjme_nvm_loop_tick(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInValue sjme_attrInNegativeOnePositive sjme_jint maxTics,
@@ -40,8 +40,8 @@ sjme_errorCode sjme_nvm_loop_tick(
 {
 	sjme_errorCode error;
 	sjme_jint remaining;
-	sjme_nvm_threadSubSchedule* sub;
 	sjme_nvm_thread runThread;
+	sjme_jboolean terminated;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -52,32 +52,25 @@ sjme_errorCode sjme_nvm_loop_tick(
 	/* Calculate initial remaining tics. */
 	remaining = (maxTics < 0 ? -1 : maxTics);
 
-	/* Get threads scheduled to be run. */
-	sub = &inState->schedule->mode[SJME_NVM_THREAD_SCHEDULED];
-
 	/* Keep ticking until nothing left is to be done. */
 	while (remaining == -1 || remaining > 0)
 	{
-		/* Lock schedule. */
-		if (sjme_error_is(error = sjme_thread_spinLockGrab(
-			&sub->lock)))
-			return sjme_error_default(error);
-
-		/* Get the first thread to run. */
+		/* Grab next thread to run. */
 		runThread = NULL;
-		if (sub->count > 0)
-			runThread = sub->order->elements[0];
-		
-		/* Release schedule. */
-		if (sjme_error_is(error = sjme_thread_spinLockRelease(&sub->lock,
-			NULL)))
+		terminated = SJME_JNI_FALSE;
+		if (sjme_error_is(error = sjme_nvm_task_taskScheduleNext(
+			inState, &runThread, &terminated)))
 			return sjme_error_default(error);
 
-		/* Nothing to run? Grab something from unscheduled. */
+		/* Terminated? */
+		if (terminated)
+			break;
+
+		/* Nothing to run? Give up CPU slice and re-run. */
 		if (runThread == NULL)
 		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			sjme_thread_yield();
+			continue;
 		}
 
 		/* Otherwise execute the single thread. */

@@ -450,7 +450,6 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	
 	/* Fill out basic details. */
 	result->inState = inState;
-	result->schedule = SJME_NVM_THREAD_NUM_SCHEDULE_MODE;
 	result->inTask = inTask;
 	result->threadId = 1 + sjme_atomic_sjme_jint_getAdd(
 		&inState->nextThreadId, 1);
