@@ -127,15 +127,15 @@ extern "C"
 /** Task. */
 #define SJME_MD_TASK SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TaskBracket")
 
-/** Type. */
-#define SJME_MD_TYPE SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TypeBracket")
-
 /** Thread. */
 #define SJME_MD_THREAD SJME_MD_L("java/lang/Thread")
 
 /** Trace point. */
-#define SJME_MD_TRACE_POINT \
+#define SJME_MD_TRACE \
 	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TracePointBracket")
+
+/** Type. */
+#define SJME_MD_TYPE SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TypeBracket")
 
 /** VM Thread. */
 #define SJME_MD_VM_THREAD \
