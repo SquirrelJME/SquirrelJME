@@ -126,8 +126,14 @@ SJME_NVM_BYTECODE_SLOW(XAStore);
 
 /* Stack */
 SJME_NVM_BYTECODE_SLOW(Dup);
+SJME_NVM_BYTECODE_SLOW(DupX1);
+SJME_NVM_BYTECODE_SLOW(DupX2);
+SJME_NVM_BYTECODE_SLOW(DupTwo);
+SJME_NVM_BYTECODE_SLOW(DupTwoX1);
+SJME_NVM_BYTECODE_SLOW(DupTwoX2);
 SJME_NVM_BYTECODE_SLOW(Pop);
 SJME_NVM_BYTECODE_SLOW(PopTwo);
+SJME_NVM_BYTECODE_SLOW(Swap);
 
 /*--------------------------------------------------------------------------*/
 /* clang-format on */ /* @formatter:on */

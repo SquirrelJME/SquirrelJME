@@ -36,6 +36,61 @@ SJME_NVM_BYTECODE_SLOW(Dup)
 	SJME_NVM_BYTECODE_EXIT;
 }
 
+SJME_NVM_BYTECODE_SLOW(DupX1)
+{
+	SJME_NVM_BYTECODE_ENTRY;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(DupX2)
+{
+	SJME_NVM_BYTECODE_ENTRY;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(DupTwo)
+{
+	SJME_NVM_BYTECODE_ENTRY;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(DupTwoX1)
+{
+	SJME_NVM_BYTECODE_ENTRY;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(DupTwoX2)
+{
+	SJME_NVM_BYTECODE_ENTRY;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_EXIT;
+}
+
 SJME_NVM_BYTECODE_SLOW(Pop)
 {
 	sjme_jvalueTyped top;
@@ -94,4 +149,15 @@ SJME_NVM_BYTECODE_SLOW(PopTwo)
 
 	/* Forward to the new fast function. */
 	return fastFunc(inFrame, id, relRawCode, pcNew);
+}
+
+SJME_NVM_BYTECODE_SLOW(Swap)
+{
+	SJME_NVM_BYTECODE_ENTRY;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_EXIT;
 }
