@@ -19,6 +19,12 @@
 #define SJME_NVM_BYTECODE_MATH_TO_FUNC(x) \
 	((sjme_nvm_byteCode_mathFunc)(((x) - 96) >> 2))
 
+/** Double NaN mask. */
+#define SJME_NVM_NAN_DOUBLE INT64_C(0x7FF8000000000000)
+
+/** Float NaN mask. */
+#define SJME_NVM_NAN_FLOAT INT32_C(0x7F800000)
+
 SJME_NVM_BYTECODE_SLOW(CastDoubleToX)
 {
 	SJME_NVM_BYTECODE_ENTRY;
@@ -161,6 +167,90 @@ SJME_NVM_BYTECODE_SLOW(CastLongToX)
 	/* Push to the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&out)))
+		return sjme_error_vmError(inFrame, error);
+	
+	SJME_NVM_BYTECODE_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(CompareDouble)
+{
+	sjme_jvalueTyped a, b, result;
+	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Read in both values. */
+	memset(&b, 0, sizeof(b));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_DOUBLE, &b)))
+		return sjme_error_vmError(inFrame, error);
+	memset(&a, 0, sizeof(a));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_DOUBLE, &a)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Is NaN? */
+	if (((a.v.d.longBits & SJME_NVM_NAN_DOUBLE) == SJME_NVM_NAN_DOUBLE) ||
+		((b.v.d.longBits & SJME_NVM_NAN_DOUBLE) == SJME_NVM_NAN_DOUBLE))
+		result.v.i = (id == SJME_NVM_BYTECODE_JAVA_DCMPL ? -1 : 1);
+	
+#if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/* Compare the values. */
+	else if (a.v.d.native > b.v.d.native)
+		result.v.i = 1;
+	else if (a.v.d.native < b.v.d.native)
+		result.v.i = -1;
+	else
+		result.v.i = 0;
+#else
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#endif
+
+	/* Push the result. */
+	result.t = SJME_JAVA_TYPE_ID_INTEGER;
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&result)))
+		return sjme_error_vmError(inFrame, error);
+	
+	SJME_NVM_BYTECODE_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(CompareFloat)
+{
+	sjme_jvalueTyped a, b, result;
+	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Read in both values. */
+	memset(&b, 0, sizeof(b));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_FLOAT, &b)))
+		return sjme_error_vmError(inFrame, error);
+	memset(&a, 0, sizeof(a));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_FLOAT, &a)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Is NaN? */
+	if (((a.v.f.bits & SJME_NVM_NAN_FLOAT) == SJME_NVM_NAN_FLOAT) ||
+		((b.v.f.bits & SJME_NVM_NAN_FLOAT) == SJME_NVM_NAN_FLOAT))
+		result.v.i = (id == SJME_NVM_BYTECODE_JAVA_FCMPL ? -1 : 1);
+	
+#if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/* Compare the values. */
+	else if (a.v.f.native > b.v.f.native)
+		result.v.i = 1;
+	else if (a.v.f.native < b.v.f.native)
+		result.v.i = -1;
+	else
+		result.v.i = 0;
+#else
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#endif
+
+	/* Push the result. */
+	result.t = SJME_JAVA_TYPE_ID_INTEGER;
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&result)))
 		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;

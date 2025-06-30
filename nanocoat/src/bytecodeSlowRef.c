@@ -202,6 +202,72 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_byteCode_slowNewArrayMultiSub(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_jclass rootComponentType,
+	sjme_attrInValue sjme_jint dims,
+	sjme_attrInValue sjme_jint skip,
+	sjme_attrInNotNull sjme_jvalueTyped* argV,
+	sjme_attrInNotNull sjme_jvalueTyped* result)
+{
+	sjme_errorCode error;
+	sjme_jint nextSkip, i, numElem, left;
+	sjme_jarray baseArray;
+	sjme_jclass componentType;
+	sjme_jvalueTyped sub;
+	
+	if (inFrame == NULL || rootComponentType == NULL ||
+		argV == NULL || result == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (dims < 0 || skip < 0 || dims - skip < 0)
+		return SJME_ERROR_INVALID_INSTRUCTION;
+
+	/* How many elements are here? */
+	numElem = argV[skip].v.i;
+	if (numElem < 0)
+		return sjme_error_vmError(inFrame, SJME_ERROR_NEGATIVE_ARRAY_SIZE);
+
+	/* How many dimensions are left? */
+	left = dims - skip;
+	
+	/* Determine component type. */
+	componentType = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadArray(
+		SJME_F_CL(inFrame), &componentType, SJME_F_T(inFrame),
+		rootComponentType, left)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Allocate base array. */
+	baseArray = NULL;
+	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
+		SJME_F_T(inFrame), &baseArray, componentType, numElem)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Need to allocate a sub-array? */
+	if (left > 1)
+	{
+		/* Allocate sub arrays for each element slot. */
+		nextSkip = skip + 1;
+		for (i = 0; i < numElem; i++)
+		{
+			/* Perform sub-allocation logic. */
+			memset(&sub, 0, sizeof(sub));
+			if (sjme_error_is(error = sjme_nvm_byteCode_slowNewArrayMultiSub(
+				inFrame, rootComponentType, dims, nextSkip, argV, &sub)))
+				return sjme_error_vmError(inFrame, error);
+
+			/* Store into this array. */
+			baseArray->e.l[i] = SJME_AS_JOBJECT(sub.v.l);
+		}
+	}
+
+	/* The result gets the base array. */
+	result->t = SJME_JAVA_TYPE_ID_OBJECT;
+	result->v.l = SJME_AS_JOBJECT(baseArray);
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_BYTECODE_SLOW(ArrayLength)
 {
 	sjme_jarray array;
@@ -886,6 +952,69 @@ SJME_NVM_BYTECODE_SLOW(NewArrayA)
 	array.t = SJME_JAVA_TYPE_ID_OBJECT;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&array)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Success? */
+	SJME_NVM_BYTECODE_EXIT;
+}
+
+SJME_NVM_BYTECODE_SLOW(NewArrayMulti)
+{
+	sjme_nvm_class_poolEntry* entry;
+	sjme_javaTypeId* argT;
+	sjme_jvalueTyped* argV;
+	sjme_jint poolIndex, i, dims;
+	sjme_jvalueTyped result;
+	sjme_jclass rootComponentType;
+	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Read in pool reference. */
+	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
+	if (sjme_error_is(error = sjme_nvm_task_framePool(
+		inFrame, poolIndex, &entry,
+		SJME_NVM_CLASS_POOL_TYPE_CLASS,
+		0)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Lookup the root component type. */
+	rootComponentType = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		SJME_F_CL(inFrame), &rootComponentType, SJME_F_T(inFrame),
+		SJME_P_C_N(entry)->seq, SJME_JNI_TRUE)) ||
+		rootComponentType == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* How many dimensions to read? */
+	dims = relRawCode[3] & 0xFF;
+	if (dims <= 0)
+		return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_INSTRUCTION);
+
+	/* Allocate argument storage. */
+	argT = sjme_alloca(sizeof(*argT) * dims);
+	argV = sjme_alloca(sizeof(*argV) * dims);
+	if (argT == NULL || argV == NULL)
+		return sjme_error_outOfMemory(NULL, 0);
+	memset(argT, 0, sizeof(*argT) * dims);
+	memset(argV, 0, sizeof(*argV) * dims);
+
+	/* Set all types to integer. */
+	for (i = 0; i < dims; i++)
+		argT[i] = SJME_JAVA_TYPE_ID_INTEGER;
+
+	/* Pop all dimensions at once. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(inFrame,
+		dims, argT, argV)))
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+
+	/* Recursively allocate sub-dimensions. */
+	memset(&result, 0, sizeof(result));
+	if (sjme_error_is(error = sjme_nvm_byteCode_slowNewArrayMultiSub(
+		inFrame, rootComponentType, dims, 0, argV, &result)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Push final result to the stack. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+		inFrame, &result)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */

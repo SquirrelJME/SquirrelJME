@@ -492,6 +492,9 @@ typedef union sjme_jdouble
 #endif
 	} bits;
 
+	/** Long bits. */
+	int64_t longBits;
+
 #if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
 	/** Native hardware double value. */
 	double native;
