@@ -30,7 +30,7 @@ dependencies {
 	
 	// CSV parsing, for NanoCoat generation
 	implementation 'org.apache.commons:commons-collections4:4.5.0-M3'
-	implementation 'com.opencsv:opencsv:5.10'
+	implementation 'com.opencsv:opencsv:5.11.2'
 	
 	// Shadow Jar, for single Jars
 	implementation 'gradle.plugin.com.github.johnrengelman:shadow:7.1.2'
