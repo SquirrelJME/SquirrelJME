@@ -118,7 +118,7 @@ struct sjme_jobjectBase
 	sjme_atomic_sjme_jint monitorCount;
 };
 
-typedef struct sjme_jbracketTraceBase
+struct sjme_jbracketTraceBase
 {
 	/** Object base. */
 	sjme_jobjectBase object;
@@ -134,7 +134,7 @@ typedef struct sjme_jbracketTraceBase
 	 * have index zero.
 	 */
 	sjme_jint baseIndex;
-} sjme_jbracketTraceBase;
+};
 
 /**
  * Stores the classes that this class @c implements or @c extends .

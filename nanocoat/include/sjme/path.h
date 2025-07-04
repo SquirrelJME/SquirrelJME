@@ -38,7 +38,7 @@ extern "C"
 /** The maximum path length in SquirrelJME. */
 #define SJME_MAX_PATH 1024
 
-#if defined(SJME_CONFIG_HAS_DOS)
+#if defined(SJME_CONFIG_HAS_PC_DOS)
 	/** Short paths. */
 	#defne SJME_PATH_SHORT
 #endif
@@ -60,7 +60,7 @@ extern "C"
 /** UNIX path style. */
 #define SJME_CONFIG_PATH_STYLE_UNIX 3
 
-#if defined(SJME_CONFIG_HAS_WINDOWS) || defined(SJME_CONFIG_HAS_DOS)
+#if defined(SJME_CONFIG_HAS_WINDOWS) || defined(SJME_CONFIG_HAS_PC_DOS)
 	/** Path style in use. */
 	#define SJME_CONFIG_PATH_STYLE SJME_CONFIG_PATH_STYLE_DOS
 #elif defined(SJME_CONFIG_HAS_MACOS_CLASSIC)

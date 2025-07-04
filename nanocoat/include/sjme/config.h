@@ -210,6 +210,10 @@ extern "C" {
 #elif defined(__BEOS__) || defined(__HAIKU__)
 	/** BeOS/Haiku is available. */
 	#define SJME_CONFIG_HAS_BEOS
+#elif defined(MSDOS) || defined(__MSDOS__) || defined(_MSDOS) || \
+	defined(__DOS__)
+	/** Is Microsoft Dos. */
+	#define SJME_CONFIG_HAS_PC_DOS
 #endif
 
 #if defined(SJME_CONFIG_HAS_LINUX) || \
@@ -843,10 +847,12 @@ extern "C" {
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) NULL
 #endif
 
+/* DOS: Threading not supported. */
 /* Nintendo 3DS: devkitPro has broken/unimplemented pthreads. */
-#if defined(SJME_CONFIG_HAS_NINTENDO_3DS)
-	/** Use fallback threading regardless of the system. */
-	#define SJME_CONFIG_HAS_THREADS_FALLBACK
+#if defined(SJME_CONFIG_HAS_PC_DOS) || \
+	defined(SJME_CONFIG_HAS_NINTENDO_3DS)
+	/** Single threaded only. */
+	#define SJME_CONFIG_ONLY_THREAD_SINGLE
 #endif
 
 #if defined(SJME_CONFIG_HAS_WINDOWS_16)
@@ -1120,6 +1126,25 @@ extern "C" {
 	#define SJME_CONFIG_HAS_LOW_MEMORY
 #endif
 
+/* Multi-threading is not possible if this is set. */
+#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	#if defined(SJME_CONFIG_HAS_THREADS_FALLBACK)
+		#undef SJME_CONFIG_HAS_THREADS_FALLBACK
+	#endif
+
+	#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+		#undef SJME_CONFIG_HAS_THREADS_PTHREAD
+	#endif
+
+	#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
+		#undef SJME_CONFIG_HAS_THREADS_WIN32
+	#endif
+
+	#if defined(SJME_CONFIG_HAS_THREADS_ATOMIC)
+		#undef SJME_CONFIG_HAS_THREADS_ATOMIC
+	#endif
+#endif
+	
 /* Missing standard C functions, always include these. */
 #include "sjme/stdGone.h"
 	

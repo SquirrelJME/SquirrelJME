@@ -33,8 +33,8 @@ int main(int argc, char** argv)
 		platform = "beos";
 #elif defined(SJME_CONFIG_HAS_BSD)
 		platform = "bsd";
-#elif defined(SJME_CONFIG_HAS_DOS)
-		platform = "dos";
+#elif defined(SJME_CONFIG_HAS_PC_DOS)
+		platform = "pcdos";
 #elif defined(SJME_CONFIG_HAS_CYGWIN)
 		platform = "cygwin";
 #elif defined(SJME_CONFIG_HAS_LINUX)

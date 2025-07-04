@@ -418,7 +418,7 @@ sjme_errorCode sjme_nvm_defaultDir(
 #if defined(SJME_CONFIG_HAS_WINDOWS)
 	if (1)
 		sjme_todo("Impl?");
-#elif defined(SJME_CONFIG_HAS_DOS)
+#elif defined(SJME_CONFIG_HAS_PC_DOS)
 	if (1)
 		sjme_todo("Impl?");
 		

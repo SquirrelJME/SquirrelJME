@@ -25,6 +25,11 @@
 
 #include "sjme/debug.h"
 
+#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+/** The only available thread. */
+static const sjme_thread sjme_singleCurrent;
+#endif
+
 sjme_errorCode sjme_thread_current(
 	sjme_attrInOutNotNull sjme_thread* outThread)
 {
@@ -44,6 +49,9 @@ sjme_errorCode sjme_thread_current(
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/* Query the current thread ID, the main thread might be zero. */
 	result = SJME_THREAD_BUMP(GetCurrentThreadId());
+#elif defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	/* Threading is not supported, so always refer to a virtual ID. */
+	result = sjme_singleCurrent;
 #else
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -123,6 +131,9 @@ sjme_errorCode sjme_thread_new(
 
 	/* Windows requires thread bumping. */
 	result = SJME_THREAD_BUMP(result);
+#elif defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	/* Threading not supported. */
+	return SJME_ERROR_CANNOT_CREATE;
 #else
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
