@@ -202,6 +202,29 @@ typedef int16_t sjme_jshort;
 typedef int sjme_jshort_promoted;
 
 /**
+ * Unsigned Short type.
+ * 
+ * @since 2025/07/04
+ */
+typedef uint16_t sjme_jushort;
+
+/** Basic @c sjme_jushort type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jushort SJME_BASIC_TYPE_ID_CHARACTER
+
+/** Java @c sjme_jushort type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jushort SJME_JAVA_TYPE_ID_INTEGER
+
+/** Is a pointer for @c sjme_jushort ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jushort 0
+
+/**
+ * Promoted @c sjme_jushort .
+ * 
+ * @since 2025/07/04
+ */
+typedef int sjme_jushort_promoted;
+
+/**
  * Character type.
  * 
  * @since 2023/07/25
