@@ -241,12 +241,16 @@ endif()
 CHECK_INCLUDE_FILE("stdarg.h" SJME_CONFIG_HAS_STDARG_H)
 if(NOT SJME_CONFIG_HAS_STDARG_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_STDARG_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_STDARG_H=1)
 endif()
 
 # varargs.h available?
 CHECK_INCLUDE_FILE("varargs.h" SJME_CONFIG_HAS_VARARGS_H)
 if(NOT SJME_CONFIG_HAS_VARARGS_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_VARARGS_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_VARARGS_H=1)
 endif()
 
 # threads.h available?

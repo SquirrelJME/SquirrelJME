@@ -40,7 +40,7 @@ extern "C"
 
 #if defined(SJME_CONFIG_HAS_PC_DOS)
 	/** Short paths. */
-	#defne SJME_PATH_SHORT
+	#define SJME_PATH_SHORT
 #endif
 
 #if defined(SJME_CONFIG_HAS_WINDOWS) || defined(SJME_CONFIG_HAS_MACOS_CLASSIC)

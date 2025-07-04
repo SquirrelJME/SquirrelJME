@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_PURE_H
 #define SQUIRRELJME_PURE_H
 
-#include "lib/scritchany/scritchany.h"
+#include "lib/scritchui/scritchui.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
