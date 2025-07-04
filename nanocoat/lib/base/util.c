@@ -542,7 +542,7 @@ sjme_errorCode sjme_util_intToBinary(
 		*(wp++) = ((inVal & sh) != 0 ? '1' : '0');
 	
 	/* End with NUL. */
-	*(wp++) = '\0';
+	*(wp) = '\0';
 	return SJME_ERROR_NONE;
 }
 
@@ -607,7 +607,7 @@ const sjme_jshort* sjme_util_memUnaligned16(void* addr)
 	sjme_jubyte* bytes;
 
 	/* Map in. */
-	into = temp[sjme_atomic_sjme_jint_getAdd(&fill, 1) &
+	into = &temp[sjme_atomic_sjme_jint_getAdd(&fill, 1) &
 		(SJME_UTIL_UNALIGNED_16_FILL - 1)];
 	bytes = addr;
 #if defined(SJME_CONFIG_HAS_BIG_ENDIAN)
@@ -637,7 +637,7 @@ const sjme_jint* sjme_util_memUnaligned32(void* addr)
 	sjme_jushort* shorts;
 
 	/* Map in. */
-	into = temp[sjme_atomic_sjme_jint_getAdd(&fill, 1) &
+	into = &temp[sjme_atomic_sjme_jint_getAdd(&fill, 1) &
 		(SJME_UTIL_UNALIGNED_32_FILL - 1)];
 	shorts = addr;
 #if defined(SJME_CONFIG_HAS_BIG_ENDIAN)
