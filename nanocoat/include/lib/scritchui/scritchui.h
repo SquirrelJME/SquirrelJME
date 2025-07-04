@@ -2230,9 +2230,6 @@ struct sjme_scritchui_stateBase
 	sjme_jint platformFlags;
 };
 
-/* If dynamic libraries are not supported, we cannot do this. */
-#if !defined(SJME_CONFIG_SCRITCHUI_NO_DYLIB)
-
 /**
  * Initializes the API through the dynamic library.
  * 
@@ -2276,8 +2273,6 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchui_dylibApiFunc)(
 /** Declares the API export . */
 #define SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(x) \
 	SJME_SCRITCHANY_DYLIB_SYMBOL_DECLARE(ui, x)
-		
-#endif
 
 /**
  * Check cast of a given type.
