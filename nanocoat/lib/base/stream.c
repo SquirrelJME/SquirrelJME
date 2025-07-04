@@ -411,6 +411,27 @@ sjme_errorCode sjme_stream_inputReadValueJI(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_stream_inputReadValueJJ(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_jlong* outValue)
+{
+	sjme_errorCode error;
+	sjme_jvalue value;
+	
+	if (stream == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Read in value. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_stream_inputReadValueJ(
+		stream, SJME_BASIC_TYPE_ID_LONG, &value)))
+		return sjme_error_default(error);
+	
+	/* Give the value! */
+	*outValue = value.j;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_stream_inputReadValueJS(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_jshort* outValue)

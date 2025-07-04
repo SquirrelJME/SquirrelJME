@@ -42,8 +42,7 @@ extern "C" {
  * @since 2023/05/23
  */
 typedef sjme_errorCode (*sjme_nal_currentTimeMillisFunc)(
-	sjme_attrOutNotNull sjme_jlong* result)
-	sjme_attrCheckReturn;
+	sjme_attrOutNotNull sjme_jlong* result);
 
 /**
  * Opens the given file natively.
@@ -72,8 +71,7 @@ typedef sjme_errorCode (*sjme_nal_fileOpenFunc)(
 typedef sjme_errorCode (*sjme_nal_getEnvFunc)(
 	sjme_attrInNotNull sjme_attrOutNotNullBuf(len) sjme_lpstr buf,
 	sjme_attrInPositiveNonZero sjme_jint bufLen,
-	sjme_attrInNotNull sjme_lpcstr env)
-	sjme_attrCheckReturn; 
+	sjme_attrInNotNull sjme_lpcstr env); 
 
 /**
  * Returns the current nanosecond monotonic class as per the Java
@@ -84,8 +82,7 @@ typedef sjme_errorCode (*sjme_nal_getEnvFunc)(
  * @since 2023/05/23
  */
 typedef sjme_errorCode (*sjme_nal_nanoTimeFunc)(
-	sjme_attrOutNotNull sjme_jlong* result)
-	sjme_attrCheckReturn;
+	sjme_attrOutNotNull sjme_jlong* result);
 
 /**
  * Flushes the given output stream.

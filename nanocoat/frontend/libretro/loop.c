@@ -102,7 +102,7 @@ static sjme_jboolean sjme_libretro_runUnitTests(void)
 
 	/* Run unit tests. */
 	argv[0] = "libretro";
-	argv[1] = sjme_libretro_nextTest;
+	argv[1] = (void*)sjme_libretro_nextTest;
 	sjme_test_main(2, argv, &sjme_libretro_nextTest);
 
 	/* We ran something. */

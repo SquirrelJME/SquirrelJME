@@ -421,14 +421,14 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 	}
 
 	/* Determine per type slot to remove. */
-	perType = &stack->stack[typeId];
+	perType = &stack->stack[topType];
 	newPerTop = perType->top - 1;
 	if (newPerTop < perType->front)
 		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
 
 	/* Read in value. */
 	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(
-		inFrame, typeId, newPerTop, outValue, SJME_JNI_TRUE)))
+		inFrame, topType, newPerTop, outValue, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
 			SJME_ERROR_STACK_INVALID_READ));
 

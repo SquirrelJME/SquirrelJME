@@ -254,7 +254,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
 		GTK_WIDGET(gtkWindow),
 		inWindow,
 		(sjme_scritchui_listener_void*)infoCore,
-		inListener,
+		(sjme_undefinedFunction)inListener,
 		copyFrontEnd,
 		G_CALLBACK(sjme_scritchui_gtk2_eventDelete),
 		SJME_JNI_FALSE,

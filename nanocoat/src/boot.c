@@ -329,7 +329,7 @@ fail_payloadRom:
 fail_bothIdAndName:
 fail_bootParamCopy:
 	if (result != NULL && result->bootParamCopy != NULL)
-		sjme_alloc_free(result->bootParamCopy);
+		sjme_alloc_free((void*)result->bootParamCopy);
 
 fail_resultInit:
 fail_resultAlloc:

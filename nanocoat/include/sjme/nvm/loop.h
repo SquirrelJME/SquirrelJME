@@ -46,8 +46,7 @@ sjme_errorCode sjme_nvm_loop_tick(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInValue sjme_attrInNegativeOnePositive sjme_jint maxTics,
 	sjme_attrOutNullable sjme_jint* ticRemainder,
-	sjme_attrOutNullable sjme_jboolean* isTerminated)
-	sjme_attrCheckReturn;
+	sjme_attrOutNullable sjme_jboolean* isTerminated);
 	
 /**
  * Ticks the given virtual machine thread.
@@ -64,8 +63,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrInValue sjme_attrInNegativeOnePositive sjme_jint maxTics,
 	sjme_attrOutNullable sjme_jint* ticRemainder,
-	sjme_attrOutNullable sjme_jboolean* isTerminated)
-	sjme_attrCheckReturn;
+	sjme_attrOutNullable sjme_jboolean* isTerminated);
 	
 /*--------------------------------------------------------------------------*/
 

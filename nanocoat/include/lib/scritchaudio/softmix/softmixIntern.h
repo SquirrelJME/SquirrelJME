@@ -60,7 +60,7 @@ sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 	
 sjme_errorCode sjme_scritchaudio_softmix_disconnect(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConn);;
+	sjme_attrInNotNull sjme_scritchaudio_connection inConn);
 
 sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,

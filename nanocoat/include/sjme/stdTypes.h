@@ -446,16 +446,16 @@ typedef union sjme_jlong
 	{
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
 		/** Low value. */
-		sjme_juint lo;
+		sjme_juint lo : 32;
 	
 		/** High value. */
-		sjme_jint hi;
+		sjme_jint hi : 32;
 #else
 		/** High value. */
-		sjme_jint hi;
+		sjme_jint hi : 32;
 		
 		/** Low value. */
-		sjme_juint lo;
+		sjme_juint lo : 32;
 #endif
 	} part;
 	
@@ -508,16 +508,16 @@ typedef union sjme_jdouble
 	{
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
 		/** Low value. */
-		sjme_juint lo;
+		sjme_juint lo : 32;
 
 		/** High value. */
-		sjme_juint hi;
+		sjme_juint hi : 32;
 #else
 		/** High value. */
-		sjme_juint hi;
+		sjme_juint hi : 32;
 		
 		/** Low value. */
-		sjme_juint lo;
+		sjme_juint lo : 32;
 #endif
 	} bits;
 
@@ -831,6 +831,13 @@ typedef struct sjme_alloc_poolBase sjme_alloc_poolBase;
  * @since 2023/11/18
  */
 typedef volatile sjme_alloc_poolBase* sjme_alloc_pool;
+
+/**
+ * An unresolved function.
+ *
+ * @since 2025/07/04
+ */
+typedef int (*sjme_undefinedFunction)();
 
 /*--------------------------------------------------------------------------*/
 

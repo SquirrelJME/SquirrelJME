@@ -149,18 +149,18 @@ sjme_errorCode sjme_scritchui_gtk2_intern_accelUpdate(
 	key = &inCommon->intVals[SJME_SUI_GTK2_V_ACCELKEY];
 	mod = &inCommon->intVals[SJME_SUI_GTK2_V_ACCELMOD];
 	
+	/* Determine key set to use. */
+	gtkKey = inState->implIntern->mapScritchToGtkKey(
+		menuItem->accelKey);
+	gtkMod = inState->implIntern->mapScritchToGtkMod(
+		menuItem->accelMod);
+	
 	/* Add accelerator. */
 	if (addAccel)
 	{
 		/* Are we not adding anything? */
 		if (menuItem->accelKey == 0)
 			return SJME_ERROR_NONE;
-		
-		/* Determine key set to use. */
-		gtkKey = inState->implIntern->mapScritchToGtkKey(
-			menuItem->accelKey);
-		gtkMod = inState->implIntern->mapScritchToGtkMod(
-			menuItem->accelMod);
 		
 		/* Associate. */
 		gtk_widget_add_accelerator(gtkWidget,
@@ -180,7 +180,8 @@ sjme_errorCode sjme_scritchui_gtk2_intern_accelUpdate(
 		/* Perform the remove. */
 		gtk_widget_remove_accelerator(gtkWidget,
 			gtkAccel,
-			gtkKey, gtkMod);
+			gtkKey,
+			gtkMod);
 		
 		/* Clear old values. */
 		*key = 0;
@@ -343,7 +344,7 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 	sjme_attrInNotNull GtkWidget* inWidget,
 	sjme_attrInNotNull sjme_pointer inOnWhat,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore,
-	sjme_attrInNotNull sjme_pointer inListener,
+	sjme_attrInNotNull sjme_undefinedFunction inListener,
 	sjme_attrInNullable sjme_frontEndBindable* copyFrontEnd,
 	sjme_attrInNotNull GCallback inGtkCallback,
 	sjme_attrInValue sjme_jboolean isAfter,
@@ -376,7 +377,8 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 		/* Fill in. */
 		infoCore->extra = (sjme_intPointer)idList;
 		if (sjme_error_is(error = inState->intern->setSimpleListener(inState,
-			infoCore, inListener, copyFrontEnd)))
+			infoCore, (sjme_scritchui_voidListenerFunc)inListener,
+			copyFrontEnd)))
 			return sjme_error_default(error);
 		
 		/* Start argument handling. */

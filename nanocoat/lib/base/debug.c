@@ -9,10 +9,6 @@
 
 #include "sjme/config.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #if defined(SJME_CONFIG_HAS_WINDOWS)
 	#define WIN32_LEAN_AND_MEAN 1
 	
@@ -30,8 +26,6 @@
 #include "sjme/debug.h"
 #include "sjme/alloc.h"
 #include "sjme/dylib.h"
-#include "sjme/nvm/cleanup.h"
-#include "sjme/nvm/task.h"
 
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512

@@ -16,7 +16,8 @@
 #ifndef SJME_C_VMCONFIG_H
 #define SJME_C_VMCONFIG_H
 
-#include "sjme/nvm/nvm.h"
+#include "sjme/config.h"
+#include "sjme/stdTypes.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -114,7 +115,7 @@ typedef struct sjme_nvm_vmConfig_setting
 		const sjme_nvm_vmConfig_value max;
 
 		/** The option tick values that are possible, if applicable. */
-		const sjme_nvm_vmConfig_value ticks[sjme_flexibleArrayCount];
+		const sjme_nvm_vmConfig_value ticks[sjme_flexibleArrayCountUnion];
 	} value;
 } sjme_nvm_vmConfig_setting;
 

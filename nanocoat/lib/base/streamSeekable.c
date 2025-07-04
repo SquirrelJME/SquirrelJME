@@ -50,7 +50,7 @@ static sjme_errorCode sjme_stream_inputSeekableClose(
 	/* Only forward close if it was requested. */
 	if (inImplState->forwardClose)
 		if (sjme_error_is(error = sjme_closeable_close(
-			SJME_AS_CLOSEABLE(inImplState->handle))))
+			SJME_AS_CLOSEABLE(inImplState->handle.p))))
 			return sjme_error_default(error);
 	
 	/* Success! */
@@ -69,7 +69,7 @@ static sjme_errorCode sjme_stream_inputSeekableInit(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Set parameters. */
-	inImplState->handle = init->seekable;
+	inImplState->handle.p = init->seekable;
 	inImplState->offset = init->base;
 	inImplState->index = 0;
 	inImplState->length = init->length;
@@ -98,7 +98,7 @@ static sjme_errorCode sjme_stream_inputSeekableRead(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Recover seekable. */
-	seekable = inImplState->handle;
+	seekable = inImplState->handle.p;
 	if (seekable == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
