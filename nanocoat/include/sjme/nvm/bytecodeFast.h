@@ -45,6 +45,24 @@ extern "C"
  */
 typedef enum sjme_nvm_byteCode_fastInstruction
 {
+	/** Dup2_x1 on narrow. */
+	SJME_NVM_BYTECODE_FAST_DUP_TWO_X1_NARROW = 248,
+	
+	/** Dup2_x1 on wide. */
+	SJME_NVM_BYTECODE_FAST_DUP_TWO_X1_WIDE = 249,
+	
+	/** Dup2 on narrow. */
+	SJME_NVM_BYTECODE_FAST_DUP_TWO_NARROW = 250,
+
+	/** Dup on wide. */
+	SJME_NVM_BYTECODE_FAST_DUP_WIDE = 251,
+	
+	/** DupX2 on narrow. */
+	SJME_NVM_BYTECODE_FAST_DUP_X2_NARROW = 252,
+
+	/** DupX1 on wide. */
+	SJME_NVM_BYTECODE_FAST_DUP_X1_WIDE = 253,
+	
 	/** Pop two narrows. */
 	SJME_NVM_BYTECODE_FAST_POP_TWO_NARROW = 254,
 	
@@ -68,6 +86,12 @@ typedef enum sjme_nvm_byteCode_fastInstruction
 /* Reference */
 
 /* Stack */
+SJME_NVM_BYTECODE_FAST(DupTwoNarrow);
+SJME_NVM_BYTECODE_FAST(DupWide);
+SJME_NVM_BYTECODE_FAST(DupTwoX1Narrow);
+SJME_NVM_BYTECODE_FAST(DupTwoX1Wide);
+SJME_NVM_BYTECODE_FAST(DupX1Wide);
+SJME_NVM_BYTECODE_FAST(DupX2Narrow);
 SJME_NVM_BYTECODE_FAST(PopTwoNarrow);
 SJME_NVM_BYTECODE_FAST(PopWide);
 
