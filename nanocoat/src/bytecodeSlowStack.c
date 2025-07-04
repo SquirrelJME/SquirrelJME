@@ -153,10 +153,26 @@ SJME_NVM_BYTECODE_SLOW(PopTwo)
 
 SJME_NVM_BYTECODE_SLOW(Swap)
 {
+	sjme_jvalueTyped a, b;
 	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Pop the top two items on the stack. */
+	memset(&b, 0, sizeof(b));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_STACK_TYPE_NARROW, &b)))
+		return sjme_error_vmError(inFrame, error);
+	memset(&a, 0, sizeof(a));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_STACK_TYPE_NARROW, &a)))
+		return sjme_error_vmError(inFrame, error);
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Push them back, but in swapped order. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&b)))
+		return sjme_error_vmError(inFrame, error);
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&a)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;

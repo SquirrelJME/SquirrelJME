@@ -377,11 +377,14 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 	sjme_jboolean isWide;
 	sjme_jint newTop, newPerTop;
 	sjme_frame_frameStack* perType;
+	sjme_javaTypeId topType;
 	
 	if (inFrame == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
+	if ((typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS) &&
+		typeId != SJME_STACK_TYPE_NARROW &&
+		typeId != SJME_STACK_TYPE_WIDE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Is this wide? */
@@ -398,8 +401,24 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
 
 	/* Top of the stack is the wrong type? */
-	if (stack->order[newTop] != typeId)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
+	topType = stack->order[newTop];
+	if (topType != typeId)
+	{
+		/* Wanting neither wide nor narrow. */
+		if (typeId != SJME_STACK_TYPE_NARROW &&
+			typeId != SJME_STACK_TYPE_WIDE)
+			return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
+
+		/* Wanting the incorrect type. */
+		if (((typeId == SJME_JAVA_TYPE_ID_INTEGER ||
+				typeId == SJME_JAVA_TYPE_ID_FLOAT ||
+				typeId == SJME_JAVA_TYPE_ID_OBJECT) !=
+					(typeId == SJME_STACK_TYPE_NARROW)) &&
+			((typeId == SJME_JAVA_TYPE_ID_LONG ||
+				typeId == SJME_JAVA_TYPE_ID_DOUBLE) !=
+					(typeId == SJME_STACK_TYPE_WIDE)))
+			return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
+	}
 
 	/* Determine per type slot to remove. */
 	perType = &stack->stack[typeId];

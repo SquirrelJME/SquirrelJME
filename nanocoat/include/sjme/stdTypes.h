@@ -100,7 +100,13 @@ typedef enum sjme_attrPackedEnumByte(sjme_basicTypeId)
 	SJME_BASIC_TYPE_ID_CHARACTER = 11,
 
 	/** Number of basic type IDs. */
-	SJME_NUM_BASIC_TYPE_IDS = 12
+	SJME_NUM_BASIC_TYPE_IDS = 12,
+
+	/** Narrow type. */
+	SJME_STACK_TYPE_NARROW = 24,
+
+	/** Wide type. */
+	SJME_STACK_TYPE_WIDE = 48,
 } sjme_basicTypeId;
 
 /**
@@ -567,7 +573,8 @@ typedef sjme_basicTypeId sjme_extendedTypeId;
 
 /** Is the given type ID considered wide? */
 #define SJME_TYPEID_IS_WIDE(t) \
-	((t) == SJME_JAVA_TYPE_ID_LONG || (t) == SJME_JAVA_TYPE_ID_DOUBLE)
+	((t) == SJME_JAVA_TYPE_ID_LONG || (t) == SJME_JAVA_TYPE_ID_DOUBLE || \
+	(t) == SJME_STACK_TYPE_WIDE)
 
 /**
  * Represents multiple type IDs.
