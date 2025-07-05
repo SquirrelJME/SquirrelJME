@@ -16,7 +16,7 @@
 #include "squirreljme.h"
 #include "sjme/dylib.h"
 
-static sjme_jboolean sjme_jni_abortHandler(void)
+static sjme_jboolean sjme_jni_abortHandler(sjme_errorCode error)
 {
 	jsize resultLen;
 	JavaVM* vm;
@@ -38,7 +38,7 @@ static sjme_jboolean sjme_jni_abortHandler(void)
 
 	/* Print stack trace, would use FatalError, however that prints to */
 	/* stdout for some reason. */
-	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
+	sjme_jni_throwVMException(env, sjme_error_default(error));
 	(*env)->ExceptionDescribe(env);
 
 	/* Call abort! */
