@@ -611,7 +611,7 @@ sjme_pointer sjme_scritchui_checkCast(sjme_scritchui_uiType inType,
 	common = inPtr;
 	if (common->type != inType)
 	{
-		sjme_debug_abort();
+		sjme_debug_abort(SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 		return NULL;
 	}
 	
@@ -631,7 +631,7 @@ sjme_pointer sjme_scritchui_checkCast_component(sjme_pointer inPtr)
 	if (common->type < SJME_SCRITCHUI_TYPE_FONT ||
 		common->type >= SJME_NUM_SCRITCHUI_UI_TYPES)
 	{
-		sjme_debug_abort();
+		sjme_debug_abort(SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 		return NULL;
 	}
 	
@@ -652,7 +652,7 @@ sjme_pointer sjme_scritchui_checkCast_container(sjme_pointer inPtr)
 		common->type != SJME_SCRITCHUI_TYPE_SCROLL_PANEL &&
 		common->type != SJME_SCRITCHUI_TYPE_WINDOW)
 	{
-		sjme_debug_abort();
+		sjme_debug_abort(SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 		return NULL;
 	}
 
@@ -673,7 +673,7 @@ sjme_pointer sjme_scritchui_checkCast_menuKind(sjme_pointer inPtr)
 		common->type != SJME_SCRITCHUI_TYPE_MENU_BAR &&
 		common->type != SJME_SCRITCHUI_TYPE_MENU_ITEM)
 	{
-		sjme_debug_abort();
+		sjme_debug_abort(SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 		return NULL;
 	}
 	

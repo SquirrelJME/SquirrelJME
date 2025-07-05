@@ -182,7 +182,7 @@ static sjme_jboolean sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 #endif
 	
 	/* Hit abort for debugging. */
-	sjme_debug_abort();
+	sjme_debug_abort(test->error);
 
 	/* Jump back to the outer code. */
 	longjmp(test->jumpPoint, type);

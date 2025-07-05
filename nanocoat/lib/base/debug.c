@@ -58,11 +58,11 @@ static void sjme_debug_crashPosix(int signalId)
 }
 #endif
 
-void sjme_debug_abort(void)
+void sjme_debug_abort(sjme_errorCode error)
 {
 	/* Use specific abort handler? */
 	if (sjme_debug_handlers != NULL && sjme_debug_handlers->abort != NULL)
-		if (sjme_debug_handlers->abort())
+		if (sjme_debug_handlers->abort(error))
 			return;
 
 #if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_NT_4)
@@ -283,7 +283,7 @@ sjme_errorCode sjme_dieR(sjme_lpcstr file, int line,
 	va_end(list);
 	
 	/* Exit and stop. */
-	sjme_debug_abort();
+	sjme_debug_abort(SJME_ERROR_UNKNOWN_NEGATIVE);
 	
 	/* Exit after abort happens, it can be ignored in debugging. */
 	sjme_debug_exit(EXIT_FAILURE);
@@ -381,7 +381,7 @@ void sjme_todoR(sjme_lpcstr file, int line,
 	va_end(list);
 	
 	/* Exit and stop. */
-	sjme_debug_abort();
+	sjme_debug_abort(SJME_ERROR_UNKNOWN_NEGATIVE);
 	
 	/* Exit after abort happens, it can be ignored in debugging. */
 	sjme_debug_exit(EXIT_FAILURE);

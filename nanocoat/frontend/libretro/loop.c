@@ -10,6 +10,7 @@
 #include <string.h>
 #include <libretro.h>
 
+#include "sjme/nvm/loop.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
 #include "sjme/nvm/modelessStars.h"
@@ -67,7 +68,7 @@ static void sjme_libretro_checkUnitTests(void)
 	}
 }
 
-sjme_jboolean sjme_libretro_unitTestAbortHandler(void)
+sjme_jboolean sjme_libretro_unitTestAbortHandler(sjme_errorCode error)
 {
 	return SJME_JNI_TRUE;
 }
@@ -113,17 +114,41 @@ static sjme_jboolean sjme_libretro_runUnitTests(void)
 
 sjme_attrUnused RETRO_API void retro_run(void)
 {
-	static sjme_modelessStarState modelessStarState;
 	static sjme_jint tick;
+	sjme_errorCode error;
+	sjme_jboolean terminated;
+	sjme_nvm inState;
 	uint32_t buf[240*320];
-	int i;
 
-	/* Do a basic animation. */
-	sjme_modelessStars(&modelessStarState, buf,
-		240, 320, 240, tick++);
+	/* Recover the VM state, is there an actually running VM? */
+	inState = sjme_libretro_globals.inState;
+	
+	/* Performing things within the actual machine. */
+	terminated = SJME_JNI_FALSE;
+	if (inState != NULL &&
+		sjme_atomic_sjme_jint_get(&inState->numRunningTasks) > 0)
+	{
+		/* Tick. */
+		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, -1,
+			NULL, &terminated)))
+		{
+			/* Fail unless this was interrupted. */
+			if (error != SJME_ERROR_INTERRUPTED)
+				sjme_error_fatal(error);
+		}
+	}
+
+	/* Update the video subsystem. */
 	if (sjme_libretro_globals.videoRefreshCallback != NULL)
+	{
+		/* Only tick the stars if there is video. */
+		sjme_modelessStars(&sjme_libretro_globals.modelessStars, buf,
+			240, 320, 240, tick++);
+
+		/* Perform video update. */
 		sjme_libretro_globals.videoRefreshCallback(
 			buf, 240, 320, 240 * 4);
+	}
 
 #if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_UNIT_TEST)
 	/* Running unit tests? */

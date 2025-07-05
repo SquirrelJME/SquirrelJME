@@ -16,6 +16,7 @@ sjme_errorCode sjme_libretro_vfsClose(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState)
 {
+	struct retro_vfs_interface* iface;
 	struct retro_vfs_file_handle* handle;
 	
 	if (inSeekable == NULL || inImplState == NULL)
@@ -23,9 +24,10 @@ sjme_errorCode sjme_libretro_vfsClose(
 	
 	/* Recover VFS handle. */
 	handle = inSeekable->implState.handle;
+	iface = inImplState->handleTwo;
 
 	/* Close it. */
-	if (sjme_libretro_globals.vfs.iface->close(handle) != 0)
+	if (iface->close(handle) != 0)
 		return SJME_ERROR_IO_EXCEPTION;
 
 	/* Success! */
@@ -40,8 +42,10 @@ sjme_errorCode sjme_libretro_vfsInit(
 	if (inSeekable == NULL || inImplState == NULL || data == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* We can just set the VFS handle here. */
+	/* Store both the handle and the VFS interface as there could be some */
+	/* weird global state where memory goes missing. */
 	inImplState->handle = data;
+	inImplState->handleTwo = sjme_libretro_globals.vfs.iface;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -63,7 +67,7 @@ sjme_errorCode sjme_libretro_vfsRead(
 	
 	/* Recover VFS handle. */
 	handle = inSeekable->implState.handle;
-	iface = sjme_libretro_globals.vfs.iface;
+	iface = inImplState->handleTwo;
 
 	/* Seek to the position. */
 	/* Note that we just check for a seek error here as before */
@@ -96,7 +100,7 @@ sjme_errorCode sjme_libretro_vfsSize(
 	
 	/* Recover VFS handle. */
 	handle = inSeekable->implState.handle;
-	iface = sjme_libretro_globals.vfs.iface;
+	iface = inImplState->handleTwo;
 
 	/* Get size from the handle. */
 	/* If zero/negative  then the size of the file is unknown, */

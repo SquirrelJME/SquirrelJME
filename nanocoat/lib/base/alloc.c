@@ -79,7 +79,7 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
 	
 	/* Abort. */
 	if (sjme_debug_handlers != NULL && sjme_debug_handlers->abort != NULL)
-		sjme_debug_handlers->abort();
+		sjme_debug_handlers->abort(SJME_ERROR_MEMORY_CORRUPTION);
 
 	/* Always indicate failure here. */
 	return SJME_JNI_TRUE;

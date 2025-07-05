@@ -111,6 +111,9 @@ typedef struct sjme_seekable_implState
 	
 	/** Internal handle. */
 	sjme_pointer handle;
+
+	/** Second internal handle. */
+	sjme_pointer handleTwo;
 	
 	/** Internal index. */
 	sjme_jint index;

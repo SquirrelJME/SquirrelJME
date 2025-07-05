@@ -17,7 +17,6 @@
 #define SJME_C_NATIVE_H
 
 #include "nvm/mleConst.h"
-
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
 #include "sjme/seekable.h"

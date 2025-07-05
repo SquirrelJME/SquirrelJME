@@ -47,6 +47,9 @@ typedef struct sjme_modelessStar
 	/** Is this star shining? */
 	sjme_jboolean shining : sjme_booleanBit;
 	
+	/** Is this star corrupt? */
+	sjme_jboolean corrupt : sjme_booleanBit;
+	
 	/** The X coordinate. */
 	sjme_jint x;
 	
@@ -100,6 +103,9 @@ typedef struct sjme_modelessStarState
 	
 	/** First go latched? */
 	sjme_jboolean latchedFirstGo : sjme_booleanBit;
+
+	/** The emitted error code. */
+	sjme_atomic_sjme_jint errorCode;
 } sjme_modelessStarState;
 
 /**

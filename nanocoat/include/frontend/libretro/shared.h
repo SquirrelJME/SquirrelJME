@@ -16,6 +16,7 @@
 #ifndef SJME_C_SHARED_H
 #define SJME_C_SHARED_H
 
+#include "sjme/nvm/modelessStars.h"
 #include "3rdparty/libretro/libretro.h"
 #include "sjme/native.h"
 #include "sjme/nvm/nvm.h"
@@ -92,6 +93,9 @@ typedef struct sjme_libretro_globalStruct
 
 	/** The global VM state. */
 	sjme_nvm inState;
+
+	/** Modeless stars. */
+	sjme_modelessStarState modelessStars;
 } sjme_libretro_globalStruct;
 
 /** RetroArch native abstraction layer. */

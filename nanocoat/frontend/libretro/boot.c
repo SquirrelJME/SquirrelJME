@@ -25,11 +25,11 @@
 #include "sjme/dylib.h"
 #include "sjme/native.h"
 
-/** The default pool size on RetroArch. */
-#define SJME_LIBRETRO_DEFAULT_POOL_SIZE INT32_C(33554432)
-
 /** A single MiB. */
 #define SJME_LIBRETRO_ONE_MIB INT32_C(1048576)
+
+/** The default pool size on RetroArch. */
+#define SJME_LIBRETRO_DEFAULT_POOL_SIZE (SJME_LIBRETRO_ONE_MIB * 64)
 
 sjme_libretro_globalStruct sjme_libretro_globals =
 {
@@ -38,6 +38,7 @@ sjme_libretro_globalStruct sjme_libretro_globals =
 	sjme_sm(.vfs, {0}),
 	sjme_sm(.allocPool, NULL),
 	sjme_sm(.inState, NULL),
+	sjme_sm(.modelessStars, {0})
 };
 
 static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
@@ -80,12 +81,18 @@ static sjme_jboolean sjme_libretro_exitHandler(int exitCode)
 		return SJME_JNI_FALSE;
 
 	/* Tell the front end to stop the core. */
+#if 0
 	sjme_libretro_globals.envCallback(RETRO_ENVIRONMENT_SHUTDOWN, NULL);
+#endif
 	return SJME_JNI_TRUE;
 }
 
-static sjme_jboolean sjme_libretro_abortHandler(void)
+static sjme_jboolean sjme_libretro_abortHandler(sjme_errorCode error)
 {
+	/* Set modeless stars error. */
+	sjme_atomic_sjme_jint_set(&sjme_libretro_globals.modelessStars.errorCode,
+		error);
+	
 	/* Forward to the exit handler. */
 	return sjme_libretro_exitHandler(1);
 }
@@ -130,6 +137,9 @@ sjme_attrUnused RETRO_API void retro_init(void)
 		if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&allocPool,
 			SJME_LIBRETRO_DEFAULT_POOL_SIZE)) || allocPool == NULL)
 			continue;
+
+		/* Was successful, so do not try again. */
+		break;
 	}
 
 	/* Failed to allocate? */

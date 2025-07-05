@@ -226,9 +226,10 @@ void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 /**
  * Potentially debug aborts.
  *
+ * @param error The emitted error.
  * @since 2023/12/21
  */
-void sjme_debug_abort(void);
+void sjme_debug_abort(sjme_errorCode error);
 
 /**
  * Set the context thread for the crash handler.
@@ -326,11 +327,12 @@ sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 /**
  * Handles specific debug abort scenarios.
  *
+ * @param error The emitted error code.
  * @return Return @c SJME_JNI_TRUE if it was handled and abort should be
  * cancelled, otherwise @c SJME_JNI_FALSE will continue aborting.
  * @since 2023/12/21
  */
-typedef sjme_jboolean (*sjme_debug_abortHandlerFunc)(void);
+typedef sjme_jboolean (*sjme_debug_abortHandlerFunc)(sjme_errorCode error);
 
 /**
  * Handler for specific debug exit scenarios.

@@ -26,7 +26,7 @@ const sjme_availableTest sjme_availableTests[] =
 /** The current test being executed. */
 static sjme_test* sjme_test_currentTest;
 
-static sjme_jboolean sjme_test_abortHandler(void)
+static sjme_jboolean sjme_test_abortHandler(sjme_errorCode error)
 {
 	return SJME_JNI_FALSE;
 }
