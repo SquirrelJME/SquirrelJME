@@ -25,7 +25,7 @@ public class ReferenceQueue<T>
 	extends __ReferenceQueue__<T>
 {
 	/**
-	 * Checks the queue and returns a reference immedietely if one is
+	 * Checks the queue and returns a reference immediately if one is
 	 * available.
 	 *
 	 * @return The next removed reference or {@code null} if there is none.

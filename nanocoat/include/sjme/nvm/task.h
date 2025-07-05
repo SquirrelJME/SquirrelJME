@@ -84,14 +84,17 @@ typedef enum sjme_nvm_thread_startType
 	/** Standard thread start. */
 	SJME_NVM_THREAD_START_STANDARD = 1,
 
+	/** Thread is in the finishing state, it is stopping execution. */
+	SJME_NVM_THREAD_START_FINISHING = 2,
+
 	/** Thread finished execution. */
-	SJME_NVM_THREAD_START_FINISHED = 2,
+	SJME_NVM_THREAD_START_FINISHED = 3,
 
 	/** Callback thread which can reach zero frames and not be finished. */
-	SJME_NVM_THREAD_START_CALLBACK = 3,
+	SJME_NVM_THREAD_START_CALLBACK = 4,
 
 	/** The number of thread start types. */
-	SJME_NVM_NUM_THREAD_START_TYPES = 4,
+	SJME_NVM_NUM_THREAD_START_TYPES = 5,
 } sjme_nvm_thread_startType;
 	
 /**
@@ -238,6 +241,9 @@ struct sjme_nvm_frameBase
 	
 	/** This class this is currently in. */
 	sjme_jclass inClass;
+
+	/** The method ID of the current method. */
+	sjme_jmethodID inMethod;
 	
 	/** The constant pool of this class. */
 	sjme_nvm_class_poolInfo pool;
@@ -248,6 +254,21 @@ struct sjme_nvm_frameBase
 	/** Stack information for the frame. */
 	sjme_frame_frameStacks stack;
 
+	/** The instance object or class. */
+	sjme_jobject instance;
+	
+	/** The last PC address. */
+	sjme_jint lastPc;
+
+	/** The last IV. */
+	sjme_byteCode lastIv;
+
+	/** The ID of this frame, used for JDWP and tracing. */
+	sjme_jint id;
+
+	/** Phantom tracepoint reference, for recycling. */
+	sjme_atomic_sjme_jobject phantomTracePoint;
+
 	/** Frame state flags. */
 	sjme_packed struct
 	{
@@ -256,6 +277,12 @@ struct sjme_nvm_frameBase
 
 		/** Exit synchronization was performed. */
 		sjme_jboolean synchronizedExit : sjme_booleanBit;
+
+		/** Is this a static initializer? */
+		sjme_jboolean isStaticInit : sjme_booleanBit;
+
+		/** Is this an instance initializer? */
+		sjme_jboolean isInstanceInit : sjme_booleanBit;
 	} flags;
 };
 
@@ -282,10 +309,10 @@ typedef struct sjme_nvm_task_taskNewConfig
 	sjme_lpcstr mainClass;
 
 	/** Main arguments. */
-	sjme_list_sjme_lpcstr* mainArgs;
+	const sjme_list_sjme_lpcstr* mainArgs;
 
 	/** System properties. */
-	sjme_list_sjme_lpcstr* sysProps;
+	const sjme_list_sjme_lpcstr* sysProps;
 	
 	/** The class loader for this task. */
 	sjme_nvm_vmClass_loader classLoader;
@@ -342,9 +369,21 @@ typedef enum sjme_nvm_task_commonClassId
 	
 	/** @c void . */
 	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_VOID,
+
+	/** @c java.lang.ref.PhantomReference . */
+	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_PHANTOM,
+
+	/** @c java.lang.ref.SoftReference . */
+	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_SOFT,
+
+	/** @c java.lang.ref.WeakReference . */
+	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK,
 	
 	/** @c java.lang.String . */
 	SJME_NVM_TASK_COMMON_CLASS_STRING,
+
+	/** @c cc.squirreljme.jvm.mle.brackets.TracePointBracket . */
+	SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT,
 
 	/** The number of common classes. */
 	SJME_NVM_TASK_NUM_COMMON_CLASS
@@ -371,7 +410,28 @@ typedef struct sjme_nvm_taskGlobals
 
 	/** Common classes. */
 	sjme_atomic_sjme_jclass commonClasses[SJME_NVM_TASK_NUM_COMMON_CLASS];
+
+	/** The default accessor for fields. */
+	sjme_nvm_jfieldAccessFunc accessor;
 } sjme_nvm_taskGlobals;
+
+typedef enum sjme_nvm_task_threadCountType
+{
+	/** All. */
+	SJME_NVM_THREAD_COUNT_ALL = 0,
+	
+	/** Non-daemon. */
+	SJME_NVM_THREAD_COUNT_NORMAL = 1,
+	
+	/** Daemon. */
+	SJME_NVM_THREAD_COUNT_DAEMON = 2,
+	
+	/** Await terminate. */
+	SJME_NVM_THREAD_COUNT_AWAIT_CLEANUP = 3,
+
+	/** The number of thread counts. */
+	SJME_NVM_THREAD_NUM_COUNT_TYPE = 4,
+} sjme_nvm_task_threadCountType;
 	
 struct sjme_nvm_taskBase
 {
@@ -389,6 +449,12 @@ struct sjme_nvm_taskBase
 	
 	/** The current task status. */
 	sjme_nvm_task_statusType status;
+
+	/** Task @c sjme_nvm_task_terminateLevel level. */
+	sjme_atomic_sjme_jint terminate;
+
+	/** The number of threads based on the count. */
+	sjme_atomic_sjme_jint numThreads[SJME_NVM_THREAD_NUM_COUNT_TYPE];
 	
 	/** The threads within the current task. */
 	sjme_list_sjme_nvm_thread* threads;
@@ -401,6 +467,9 @@ struct sjme_nvm_taskBase
 
 	/** Globals for the task. */
 	sjme_nvm_taskGlobals globals;
+
+	/** The next frame ID for this task, used for JDWP and debugging. */
+	sjme_atomic_sjme_jint nextFrameId;
 };
 
 struct sjme_nvm_threadBase
@@ -414,8 +483,8 @@ struct sjme_nvm_threadBase
 	/** The owning task. */
 	sjme_nvm_task inTask;
 
-	/** The start type of the thread. */
-	sjme_nvm_thread_startType start;
+	/** The @c sjme_nvm_thread_startType of the thread. */
+	sjme_atomic_sjme_jint start;
 	
 	/** The current thread status. */
 	sjme_nvm_thread_statusType status;
@@ -440,12 +509,19 @@ struct sjme_nvm_threadBase
 
 	/** The stack information for the entire thread. */
 	sjme_frame_threadStacks stack;
-	
-	/** Throwable which has been tossed in the thread. */
-	sjme_jobject tossed;
 
-	/** What is the current schedule state of this thread? */
-	sjme_nvm_threadScheduleMode schedule;
+	/** What is the @c sjme_nvm_threadScheduleMode of this thread? */
+	sjme_atomic_sjme_jint scheduleMode;
+
+	/** A @c Throwable which has been thrown. */
+	sjme_atomic_sjme_jobject tossed;
+
+	/** Thread specific flags. */
+	struct
+	{
+		/** Is this a daemon thread? */
+		sjme_jboolean isDaemon : sjme_booleanBit;
+	} flags;
 };
 
 /**
@@ -475,6 +551,22 @@ sjme_jclass sjme_nvm_task_commonClassR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInRange(0, SJME_NVM_TASK_NUM_COMMON_CLASS)
 		sjme_nvm_task_commonClassId commonId);
+	
+/**
+ * Locates the exception handler to use for exceptions.
+ * 
+ * @param inFrame The frame to find the handler for.
+ * @param tossed The tossed throwable.
+ * @param handled If this is handled.
+ * @param pcNew The PC handler.
+ * @return Any resultant error, if any.
+ * @since 2025/06/29
+ */
+sjme_errorCode sjme_nvm_task_frameHandler(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_jobject tossed,
+	sjme_attrInOutNotNull sjme_jboolean* handled,
+	sjme_attrInOutNotNull sjme_nvm_byteCode_pcNew* pcNew);
 
 /**
  * Returns the direct address to the local variable.
@@ -544,10 +636,21 @@ sjme_errorCode sjme_nvm_task_framePool(
 	...);
 
 /**
+ * Clears the entire stack for a frame.
+ * 
+ * @param inFrame The frame to clear.
+ * @return Any resultant error, if any.
+ * @since 2025/06/29
+ */
+sjme_errorCode sjme_nvm_task_frameStackClear(
+	sjme_attrInNotNull sjme_nvm_frame inFrame);
+	
+/**
  * Peeks a single value from the top of the stack.
  * 
  * @param inFrame The frame to pop from.
- * @param typeId The type ID to pop.
+ * @param typeId The type ID to pop, if this is @c SJME_NUM_JAVA_TYPE_IDS
+ * then this will disregard the type.
  * @param outValue The resultant value.
  * @param copiedElsewhere Is this value copied elsewhere? That is if this is
  * true, then this will be reference counted.
@@ -720,6 +823,72 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_attrOutNullable sjme_nvm_task* outTask);
 
 /**
+ * Deletes the given thread from the schedule, this does not place it in
+ * unscheduled.
+ * 
+ * @param inState The task to delete from.
+ * @param inThread The thread to delete from the schedule.
+ * @return Any resultant error, if any.
+ * @since 2025/06/29
+ */
+sjme_errorCode sjme_nvm_task_taskScheduleDelete(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread);
+	
+/**
+ * Schedules the given thread for execution.
+ * 
+ * @param inState The virtual machine state.
+ * @param inThread The thread to schedule.
+ * @return Any resultant error.
+ * @since 2025/01/06
+ */
+sjme_errorCode sjme_nvm_task_taskScheduleIn(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread);
+
+/**
+ * Returns the next scheduled thread.
+ * 
+ * @param inState The input state.
+ * @param runThread The resultant thread.
+ * @param isTerminated Is the virtual machine terminated?
+ * @return Any resultant error, if any.
+ * @since 2025/06/29
+ */
+sjme_errorCode sjme_nvm_task_taskScheduleNext(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrOutNotNull sjme_nvm_thread* runThread,
+	sjme_attrOutNotNull sjme_jboolean* isTerminated);
+	
+/**
+ * Un-schedules the given thread so that it does not execute but enters
+ * a resting mode.
+ * 
+ * @param inState The virtual machine state.
+ * @param inThread The thread to un-schedule.
+ * @return Any resultant error, if any.
+ * @since 2025/06/29
+ */
+sjme_errorCode sjme_nvm_task_taskScheduleOut(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread);
+
+/**
+ * Determines if the given thread can be scheduled.
+ * 
+ * @param inState The input state.
+ * @param inThread If the thread can be scheduled.
+ * @param isRunning Is this running?
+ * @return Any resultant error, if any.
+ * @since 2025/06/29
+ */
+sjme_jboolean sjme_nvm_task_taskScheduleYes(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_jboolean* isRunning);
+
+/**
  * Enters a frame for the given exact method within the thread.
  * 
  * @param inThread The thread to enter within.
@@ -802,7 +971,7 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 sjme_errorCode sjme_nvm_task_threadFrameNext(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame);
-
+	
 /**
  * Leaves a frame of execution.
  * 
@@ -885,6 +1054,24 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
 	sjme_attrOutNotNull sjme_jstring* outString,
 	sjme_attrInValue sjme_jboolean isIntern,
 	sjme_attrInNotNull sjme_lpcstr inUtf);
+
+/** Frame thread. */
+#define SJME_F_T(frame) ((frame)->inThread)
+
+/** Frame task. */
+#define SJME_F_K(frame) ((frame)->inTask)
+
+/** Frame classloader. */
+#define SJME_F_CL(frame) ((frame)->inTask->classLoader)
+
+/** Frame state. */
+#define SJME_F_S(frame) ((frame)->inTask->inState)
+
+/** Thread state. */
+#define SJME_T_S(thread) ((thread)->inState)
+
+/** Thread task. */
+#define SJME_T_K(thread) ((thread)->inTask)
 	
 /*--------------------------------------------------------------------------*/
 

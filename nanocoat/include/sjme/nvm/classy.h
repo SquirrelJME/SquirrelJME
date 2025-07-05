@@ -154,7 +154,7 @@ typedef struct sjme_nvm_class_fieldInfoBase sjme_nvm_class_fieldInfoBase;
  *
  * @since 2024/01/03
  */
-typedef struct sjme_nvm_class_fieldInfoBase* sjme_nvm_class_fieldInfo;
+typedef sjme_nvm_class_fieldInfoBase* sjme_nvm_class_fieldInfo;
 
 /**
  * Field list.
@@ -197,13 +197,6 @@ SJME_LIST_DECLARE(sjme_nvm_class_exceptionHandler, 0);
  * @since 2024/01/03
  */
 typedef struct sjme_nvm_class_codeInfoBase sjme_nvm_class_codeInfoBase;
-
-/**
- * Opaque method code structure.
- *
- * @since 2024/01/03
- */
-typedef sjme_nvm_class_codeInfoBase sjme_nvm_class_codeInfoBase;
 
 /**
  * Opaque method code structure.
@@ -429,7 +422,7 @@ typedef struct sjme_nvm_class_poolEntryDouble
 
 /**
  * A @c SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE which represents a name and type
- * of a member without the class.
+ * of member without the class.
  *
  * @since 2024/01/04
  */
@@ -460,6 +453,12 @@ typedef struct sjme_nvm_class_poolEntryMember
 
 	/** The name and type used. */
 	const sjme_nvm_class_poolEntryNameAndType* nameAndType;
+
+	/** The number of static arguments slots. */
+	sjme_jint staticArgSlots;
+
+	/** The return value slots. */
+	sjme_jint rvSlots;
 } sjme_nvm_class_poolEntryMember;
 
 /**
@@ -635,6 +634,9 @@ struct sjme_nvm_class_infoBase
 	/** The superclass of this class. */
 	sjme_nvm_stringPool_string superName;
 
+	/** The runtime name as returned by @c Class.getName() . */
+	sjme_nvm_stringPool_string runtimeName;
+
 	/** The interfaces this class implements. */
 	sjme_list_sjme_nvm_stringPool_string* interfaceNames;
 
@@ -643,7 +645,7 @@ struct sjme_nvm_class_infoBase
 	
 	/** The field count per type. */
 	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
-		[SJME_NUM_JAVA_TYPE_IDS];
+		[SJME_NUM_EXTENDED_JAVA_TYPE_IDS];
 	
 	/** The method count per type. */
 	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
@@ -690,6 +692,9 @@ struct sjme_nvm_class_fieldInfoBase
 	/** The type of this field. */
 	sjme_nvm_stringPool_string type;
 
+	/** The identifier hash. */
+	sjme_jint idHash;
+
 	/** The constant value, if any. */
 	sjme_nvm_class_fieldConstVal constVal;
 	
@@ -699,9 +704,22 @@ struct sjme_nvm_class_fieldInfoBase
 	/** The basic type of this field. */
 	sjme_basicTypeId basicType;
 	
+	/** The extended type of this field. */
+	sjme_extendedTypeId extendedType;
+	
 	/** The index of this field within its basic type. */
 	sjme_jint typedIndex;
 };
+	
+/** Bits to assist in quicker method determinations. */
+typedef struct sjme_nvm_class_methodInfoBits
+{
+	/** Is this a static initializer? */
+	sjme_jboolean isStaticInit : sjme_booleanBit;
+
+	/** Is this an instance initializer? */
+	sjme_jboolean isInstanceInit : sjme_booleanBit;
+} sjme_nvm_class_methodInfoBits;
 
 struct sjme_nvm_class_methodInfoBase
 {
@@ -737,6 +755,9 @@ struct sjme_nvm_class_methodInfoBase
 	
 	/** The class this is in. */
 	sjme_nvm_class_info inClass;
+
+	/** Bits to assist in quicker method determinations. */
+	sjme_nvm_class_methodInfoBits bits;
 };
 
 /**
@@ -850,22 +871,52 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 	sjme_attrInNotNull sjme_jint* outArgC,
 	sjme_attrInNotNull sjme_javaTypeId** outArgT,
 	sjme_attrInNotNull sjme_javaTypeId* outArgR);
+
+/**
+ * Counts the number of slots a field descriptor takes up.
+ * 
+ * @param inDesc The descriptor to count.
+ * @param outSlots The number of used slots.
+ * @param atP The pointer to the current character index, will be incremented
+ * after a read occurs.
+ * @return Any resultant error, if any.
+ * @since 2025/06/19
+ */
+sjme_errorCode sjme_nvm_class_descriptorFieldSlots(
+	sjme_attrInNotNull sjme_charSeq inDesc,
+	sjme_attrOutNotNull sjme_jint* outSlots,
+	sjme_attrInOutNullable sjme_jint* atP);
+
+/**
+ * Counts the number of slots a method descriptor takes up.
+ * 
+ * @param inDesc The descriptor to count.
+ * @param outArgSlots The number of argument slots.
+ * @param outRvSlots The number of return value slots.
+ * @return Any resultant error, if any.
+ * @since 2025/06/19
+ */
+sjme_errorCode sjme_nvm_class_descriptorMethodSlots(
+	sjme_attrInNotNull sjme_charSeq inDesc,
+	sjme_attrOutNotNull sjme_jint* outArgSlots,
+	sjme_attrOutNotNull sjme_jint* outRvSlots);
 	
 /**
  * Determines the @c sjme_javaTypeId or @c sjme_basicTypeId type for the
  * given descriptor.
  * 
- * @param outType The resultant type. 
- * @param javaType If @c SJME_JNI_TRUE then this will calculate the Java
- * type.
- * @param desc The input descriptor.
+ * @param desc The input descriptor. 
+ * @param outJavaType The resultant Java type.
+ * @param outBasicType The resultant basic type.
+ * @param outExtendedType The resultant extended type.
  * @return Any resultant error, if any.
  * @since 2024/10/28
  */
 sjme_errorCode sjme_nvm_class_descriptorToType(
-	sjme_attrOutNotNull sjme_javaTypeId* outType,
-	sjme_attrInValue sjme_jboolean javaType,
-	sjme_attrInNotNull sjme_charSeq desc);
+	sjme_attrInNotNull sjme_charSeq desc,
+	sjme_attrOutNotNull sjme_javaTypeId* outJavaType,
+	sjme_attrOutNullable sjme_basicTypeId* outBasicType,
+	sjme_attrOutNullable sjme_extendedTypeId* outExtendedType);
 
 /**
  * Parses a single class and loads its class information.
@@ -964,7 +1015,32 @@ sjme_errorCode sjme_nvm_class_parseMethod(
  */
 sjme_errorCode sjme_nvm_class_validBinaryName(
 	sjme_attrInNotNull sjme_charSeq binaryName);
-	
+
+/** Pool class reference class. */
+#define SJME_P_C_N(entry) \
+	((entry)->classRef.descriptor)
+
+/** Pool member entry. */
+#define SJME_P_M(entry) \
+	((entry)->member)
+
+/** Pool member entry class. */
+#define SJME_P_M_C(entry) \
+	(SJME_P_M(entry).inClass->descriptor)
+
+/** Pool member entry name. */
+#define SJME_P_M_N(entry) \
+	(SJME_P_M(entry).nameAndType->name)
+
+/** Pool member entry type. */
+#define SJME_P_M_T(entry) \
+	(SJME_P_M(entry).nameAndType->descriptor)
+
+/** Calculates the identifier hash for a member. */
+#define sjme_nvm_class_idHashMember(name, type) \
+	(sjme_charSeq_hashR((name)) ^ \
+		sjme_util_intReverse(sjme_charSeq_hashR((type))))
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

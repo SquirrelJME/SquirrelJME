@@ -247,7 +247,7 @@ sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-#if 0
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("line(%d, %d, %d, %d)? alpha=%d src=%p srcOver=%p",
 		x1, y1, x2, y2, g->state.applyAlpha,

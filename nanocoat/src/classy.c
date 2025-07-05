@@ -9,9 +9,12 @@
 
 #include <string.h>
 
+#include "sjme/nvm/task.h"
+#include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/classy.h"
 #include "sjme/debug.h"
 #include "sjme/util.h"
+#include "sjme/nvm/bytecodeSlow.h"
 #include "sjme/nvm/cleanup.h"
 
 /** The magic number for classes. */
@@ -79,11 +82,6 @@
 
 /** Class is an enum. */
 #define SJME_NVM_CLASS_ACC_ENUM INT16_C(0x4000)
-
-/** Calculates the identifier hash for a member. */
-#define sjme_nvm_class_idHashMember(name, type) \
-	(sjme_charSeq_hashR((name)) ^ \
-		sjme_util_intReverse(sjme_charSeq_hashR((type))))
 
 static sjme_errorCode sjme_nvm_class_readPoolRefIndex(
 	sjme_attrInNotNull sjme_stream_input inStream,
@@ -377,6 +375,75 @@ static sjme_errorCode sjme_nvm_class_fieldFlagsParse(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_class_methodAttrCodeOpLenVerify(
+	sjme_attrInNotNull sjme_byteCode* rawCode,
+	sjme_attrInPositiveNonZero sjme_jint codeLen)
+{
+	sjme_byteCode* ev;
+	sjme_byteCode* oldEv;
+	sjme_byteCode iv;
+	sjme_byteCode* endCode;
+	sjme_nvm_byteCode_pcNew pcNew;
+	sjme_nvm_frameBase fakeFrame;
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_byteCode lastIv;
+#endif
+	
+	if (rawCode == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (codeLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Calculate the end code address. */
+	endCode = SJME_POINTER_OFFSET(rawCode, codeLen);
+
+	/* Setup fake frame for length calculation. */
+	memset(&fakeFrame, 0, sizeof(fakeFrame));
+
+	/* Go through and check addresses. */
+	memset(&pcNew, 0, sizeof(pcNew));
+	for (ev = oldEv = rawCode; ev < endCode; oldEv = ev)
+	{
+		/* Determine IV. */
+		iv = *ev;
+		
+		/* This must always refer to a slow instruction, as byte codes are */
+		/* always pre-JIT. */
+		if (sjme_nvm_byteCode_lutTable[iv] !=
+			&sjme_nvm_byteCode_slowNarrowFunctions)
+			return SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION;
+
+		/* Determine instruction length. */
+		pcNew.adjust = sjme_nvm_byteCode_lengths[iv];
+		if (pcNew.adjust < 0)
+		{
+			/* Calculate new length. */
+			fakeFrame.pc = (sjme_intPointer)ev - (sjme_intPointer)rawCode;
+			if (sjme_error_is(sjme_nvm_byteCode_calcLength(
+				&fakeFrame, iv, ev, &pcNew)))
+				return SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION_LENGTH;
+
+			/* Still not valid? */
+			if (pcNew.adjust < 0)
+				return SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION_LENGTH;
+		}
+
+		/* Would exceed code bounds? */
+		ev = SJME_POINTER_OFFSET(ev, pcNew.adjust);
+		if (ev > endCode || ev <= oldEv)
+			return SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION_LENGTH;
+
+#if defined(SJME_CONFIG_DEBUG)
+		/* For debugging. */
+		lastIv = iv;
+#endif
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
@@ -393,6 +460,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	sjme_nvm_class_methodInfo methodInfo;
 	sjme_nvm_class_codeInfo result;
 	sjme_jubyte* rawCode;
+	sjme_jubyte* rawCodeUnalign;
 	sjme_list_sjme_nvm_class_exceptionHandler* excepts;
 	sjme_nvm_class_exceptionHandler* except;
 	sjme_nvm_class_codePerType* perType;
@@ -463,13 +531,15 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 		attrStream, &codeLen)) || codeLen <= 0)
 		goto fail_readCodeLen;
 	
-	/* Allocate. */
-	rawCode = sjme_alloca(codeLen);
-	if (rawCode == NULL)
+	/* Allocate, processing requires this to be aligned so align it on */
+	/* the stack. */
+	rawCodeUnalign = sjme_alloca(codeLen + SJME_POINTER_BYTES);
+	if (rawCodeUnalign == NULL)
 	{
 		error = SJME_ERROR_OUT_OF_MEMORY;
 		goto fail_allocRawCode;
 	}
+	rawCode = sjme_util_alignToP(rawCodeUnalign, SJME_POINTER_BYTES);
 	memset(rawCode, 0, codeLen);
 	
 	/* Read in code. */
@@ -478,6 +548,11 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 		rawCode, codeLen)) ||
 		actualCodeLen != codeLen)
 		goto fail_readRawCode;
+
+	/* Perform basic length and type verification of code. */
+	if (sjme_error_is(error = sjme_nvm_class_methodAttrCodeOpLenVerify(
+		rawCode, codeLen)))
+		goto fail_opLenVerify;
 	
 	/* Read in exception table count. */
 	numExcept = -1;
@@ -535,7 +610,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 		allocPool, attrStream, inConstPool, inStringPool,
 		sjme_nvm_class_codeAttr, result)))
 		goto fail_parseAttributes;
-
+	
 	/* Allocate code. */
 	result->rawCodeLen = codeLen;
 	if (sjme_error_is(error = sjme_alloc_copy(
@@ -562,6 +637,7 @@ fail_exceptHandles:
 fail_exceptShorts:
 fail_allocExcepts:
 fail_readNumExcept:
+fail_opLenVerify:
 fail_readRawCode:
 fail_allocRawCode:
 fail_readCodeLen:
@@ -937,48 +1013,239 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
 #undef SJME_MAX_ARGS
 }
 
-sjme_errorCode sjme_nvm_class_descriptorToType(
-	sjme_attrOutNotNull sjme_javaTypeId* outType,
-	sjme_attrInValue sjme_jboolean javaType,
-	sjme_attrInNotNull sjme_charSeq desc)
+sjme_errorCode sjme_nvm_class_descriptorFieldSlots(
+	sjme_attrInNotNull sjme_charSeq inDesc,
+	sjme_attrOutNotNull sjme_jint* outSlots,
+	sjme_attrInOutNullable sjme_jint* atP)
 {
-	sjme_javaTypeId result;
+	sjme_jint at, result;
+	sjme_jchar c;
+	sjme_jboolean latched, done;
 	
-	if (outType == NULL || desc == NULL)
+	if (inDesc == NULL || outSlots == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Use base at or use new one? */
+	at = (atP != NULL ? (*atP) : 0);
+
+	/* Read in type character and process it. */
+	result = -1;
+	for (latched = done = SJME_JNI_FALSE; !done;)
+	{
+		c = sjme_charSeq_charAtR(inDesc, at++);
+		switch (c)
+		{
+			/* Array. */
+			case '[':
+				/* Arrays are always single slot. */
+				/* However for arrays, we need to skip the bracket and */
+				/* handle more of them. */
+				result = 1;
+				latched = SJME_JNI_TRUE;
+				break;
+
+				/* Object. */
+			case 'L':
+				/* Find ending ;. */
+				while (c != ';')
+				{
+					c = sjme_charSeq_charAtR(inDesc, at++);
+					if (c == 0 || c == ')')
+						return SJME_ERROR_INVALID_FIELD_TYPE;
+				}
+				
+				if (!latched)
+					result = 1;
+				done = SJME_JNI_TRUE;
+				break;
+			
+				/* Double slot. */
+			case 'J':
+			case 'D':
+				if (!latched)
+					result = 2;
+				done = SJME_JNI_TRUE;
+				break;
+			
+			/* Single slot. */
+			case 'Z':
+			case 'B':
+			case 'S':
+			case 'C':
+			case 'I':
+			case 'F':
+				if (!latched)
+					result = 1;
+				done = SJME_JNI_TRUE;
+				break;
+
+				/* Void type. */
+			case 'V':
+				/* If latched, means this was an array of void. */
+				if (latched)
+					return SJME_ERROR_INVALID_FIELD_TYPE;
+				result = 0;
+				done = SJME_JNI_TRUE;
+				break;
+
+			default:
+				return SJME_ERROR_INVALID_FIELD_TYPE;
+		}
+	}
+
+	/* Should not occur. */
+	if (result < 0)
+		return SJME_ERROR_INVALID_FIELD_TYPE;
+
+	/* Store resultant at? */
+	if (atP != NULL)
+		*atP = at;
+
+	/* Return resultant values. */
+	*outSlots = result;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_class_descriptorMethodSlots(
+	sjme_attrInNotNull sjme_charSeq inDesc,
+	sjme_attrOutNotNull sjme_jint* outArgSlots,
+	sjme_attrOutNotNull sjme_jint* outRvSlots)
+{
+	sjme_errorCode error;
+	sjme_jint total, at, sub;
+	sjme_jchar c;
+	
+	if (inDesc == NULL || outArgSlots == NULL || outRvSlots == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Must start with parenthesis. */
+	at = 0;
+	if ('(' != sjme_charSeq_charAtR(inDesc, at++))
+		return SJME_ERROR_INVALID_METHOD_TYPE;
+	
+	/* Read until ending parenthesis. */
+	total = 0;
+	for (;;)
+	{
+		/* Read in next character. */
+		c = sjme_charSeq_charAtR(inDesc, at);
+
+		/* Invalid? */
+		if (c == 0)
+			return SJME_ERROR_INVALID_METHOD_TYPE;
+
+		/* End of arguments? */
+		if (c == ')')
+		{
+			/* Bump up as reading the field descriptor increments this. */
+			at++;
+			break;
+		}
+
+		/* Count field slots. */
+		sub = -1;
+		if (sjme_error_is(error = sjme_nvm_class_descriptorFieldSlots(
+			inDesc, &sub, &at)) || sub < 0)
+			return sjme_error_defaultOr(error, SJME_ERROR_INVALID_METHOD_TYPE);
+
+		/* Add up. */
+		total += sub;
+	}
+
+	/* Count return value slots. */
+	sub = -1;
+	if (sjme_error_is(error = sjme_nvm_class_descriptorFieldSlots(
+		inDesc, &sub, &at)) || sub < 0)
+		return sjme_error_defaultOr(error, SJME_ERROR_INVALID_METHOD_TYPE);
+
+	/* Success! */
+	*outArgSlots = total;
+	*outRvSlots = sub;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_class_descriptorToType(
+	sjme_attrInNotNull sjme_charSeq desc,
+	sjme_attrOutNullable sjme_javaTypeId* outJavaType,
+	sjme_attrOutNullable sjme_basicTypeId* outBasicType,
+	sjme_attrOutNullable sjme_extendedTypeId* outExtendedType)
+{
+	sjme_javaTypeId javaType;
+	sjme_basicTypeId basicType;
+	sjme_extendedTypeId extendedType;
+	
+	if (outJavaType == NULL || desc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (sjme_charSeq_equalsUtfR(desc, "Z"))
-		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
-			SJME_BASIC_TYPE_ID_BOOLEAN);
+	{
+		javaType = SJME_JAVA_TYPE_ID_INTEGER;
+		basicType = SJME_BASIC_TYPE_ID_BOOLEAN;
+		extendedType = SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "B"))
-		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
-			SJME_BASIC_TYPE_ID_BYTE);
+	{
+		javaType = SJME_JAVA_TYPE_ID_INTEGER;
+		basicType = SJME_BASIC_TYPE_ID_BYTE;
+		extendedType = SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "S"))
-		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
-			SJME_BASIC_TYPE_ID_SHORT);
+	{
+		javaType = SJME_JAVA_TYPE_ID_INTEGER;
+		basicType = SJME_BASIC_TYPE_ID_SHORT;
+		extendedType = SJME_JAVA_TYPE_ID_SHORT_OR_CHAR;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "C"))
-		result = (javaType ? SJME_JAVA_TYPE_ID_INTEGER :
-			SJME_BASIC_TYPE_ID_CHARACTER);
+	{
+		javaType = SJME_JAVA_TYPE_ID_INTEGER;
+		basicType = SJME_BASIC_TYPE_ID_CHARACTER;
+		extendedType = SJME_JAVA_TYPE_ID_SHORT_OR_CHAR;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "I"))
-		result = SJME_JAVA_TYPE_ID_INTEGER;
+	{
+		javaType = SJME_JAVA_TYPE_ID_INTEGER;
+		basicType = SJME_JAVA_TYPE_ID_INTEGER;
+		extendedType = SJME_JAVA_TYPE_ID_INTEGER;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "J"))
-		result = SJME_JAVA_TYPE_ID_LONG;
+	{
+		javaType = SJME_JAVA_TYPE_ID_LONG;
+		basicType = SJME_JAVA_TYPE_ID_LONG;
+		extendedType = SJME_JAVA_TYPE_ID_LONG;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "F"))
-		result = SJME_JAVA_TYPE_ID_FLOAT;
+	{
+		javaType = SJME_JAVA_TYPE_ID_FLOAT;
+		basicType = SJME_JAVA_TYPE_ID_FLOAT;
+		extendedType = SJME_JAVA_TYPE_ID_FLOAT;
+	}
 	else if (sjme_charSeq_equalsUtfR(desc, "D"))
-		result = SJME_JAVA_TYPE_ID_DOUBLE;
-	else if (sjme_charSeq_charAtIs(desc, 0, '['))
-		result = SJME_JAVA_TYPE_ID_OBJECT;
-	else if (sjme_charSeq_charAtIs(desc, 0, 'L') &&
-		sjme_charSeq_charAtIs(desc, desc->length - 1, ';'))
-		result = SJME_JAVA_TYPE_ID_OBJECT;
+	{
+		javaType = SJME_JAVA_TYPE_ID_DOUBLE;
+		basicType = SJME_JAVA_TYPE_ID_DOUBLE;
+		extendedType = SJME_JAVA_TYPE_ID_DOUBLE;
+	}
+	else if (sjme_charSeq_charAtIs(desc, 0, '[') ||
+		(sjme_charSeq_charAtIs(desc, 0, 'L') &&
+			sjme_charSeq_charAtIs(desc, desc->length - 1,
+				';')))
+	{
+		javaType = SJME_JAVA_TYPE_ID_OBJECT;
+		basicType = SJME_JAVA_TYPE_ID_OBJECT;
+		extendedType = SJME_JAVA_TYPE_ID_OBJECT;
+	}
 	
 	/* Not valid. */
 	else
 		return sjme_error_vmError(NULL, SJME_ERROR_INVALID_METHOD_TYPE);
 	
 	/* Success! */
-	*outType = result;
+	if (outJavaType != NULL)
+		*outJavaType = javaType;
+	if (outBasicType != NULL)
+		*outBasicType = basicType;
+	if (outExtendedType != NULL)
+		*outExtendedType = extendedType;
 	return SJME_ERROR_NONE;
 }
 
@@ -988,6 +1255,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrOutNotNull sjme_nvm_class_info* outClass)
 {
+#define MAX_RUNTIME_NAME 256
 	sjme_errorCode error;
 	sjme_jint magic, fullVersion, i, lastSlash;
 	sjme_jshort major, minor, interfaceCount, fieldCount, methodCount;
@@ -1002,6 +1270,8 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_list_sjme_nvm_class_methodInfo* methods;
 	sjme_nvm_class_fieldInfo field;
 	sjme_nvm_class_methodInfo method;
+	sjme_lpstr packageName;
+	sjme_cchar runtimeName[MAX_RUNTIME_NAME];
 	
 	if (allocPool == NULL || inStream == NULL || inStringPool == NULL ||
 		outClass == NULL)
@@ -1086,7 +1356,7 @@ sjme_errorCode sjme_nvm_class_parse(
 		goto fail_readThisName;
 	
 	/* Reference it. */
-	result->name = thisName->classRef.descriptor;
+	result->name = SJME_P_C_N(thisName);
 	if (sjme_error_is(error = sjme_alloc_weakRef(
 		result->name, NULL)))
 		goto fail_refThisName;
@@ -1095,17 +1365,31 @@ sjme_errorCode sjme_nvm_class_parse(
 	lastSlash = result->name->seq->length - 1;
 	while (lastSlash > 0)
 	{
-		if (SJME_ERROR_NONE == sjme_charSeq_charAtIs(result->name->seq,
-			lastSlash, '/'))
+		if ('/' == sjme_charSeq_charAtR(result->name->seq, lastSlash))
 			break;
 		
 		lastSlash--;
 	}
+
+	/* Setup buffer for the package name. */
+	packageName = sjme_alloca(sizeof(*packageName) * (lastSlash + 1));
+	if (packageName == NULL)
+	{
+		error = SJME_ERROR_OUT_OF_MEMORY;
+		goto fail_inPackage;
+	}
+	memset(packageName, 0, lastSlash + 1);
+
+	/* Write out package name. */
+	if (sjme_error_is(error = sjme_charSeq_dupToU(
+		result->name->seq, 0,
+		packageName, 0, lastSlash, lastSlash)))
+		goto fail_inPackage;
 	
 	/* Locate string for package name. */
 	result->inPackage = NULL;
-	if (sjme_error_is(error = sjme_nvm_stringPool_locateSeq(
-		inStringPool, &result->inPackage, result->name->seq, lastSlash)) ||
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
+		inStringPool, &result->inPackage, packageName, 0, lastSlash)) ||
 		result->inPackage == NULL)
 		goto fail_inPackage;
 	
@@ -1113,6 +1397,32 @@ sjme_errorCode sjme_nvm_class_parse(
 	if (sjme_error_is(error = sjme_alloc_weakRef(
 		result->inPackage, NULL)))
 		goto fail_refPackage;
+
+	/* Translate to the name as it would appear at runtime. */
+	memset(runtimeName, 0, sizeof(runtimeName));
+	if (sjme_error_is(error = sjme_charSeq_dupToU(result->name->seq,
+		0, runtimeName, 0, MAX_RUNTIME_NAME - 1,
+		-1)))
+		goto fail_dupName;
+	runtimeName[MAX_RUNTIME_NAME - 1] = 0;
+	
+	for (i = 0; i < MAX_RUNTIME_NAME; i++)
+		if (runtimeName[i] == '/')
+			runtimeName[i] = '.';
+		else if (runtimeName[i] == '\0')
+			break;
+
+	/* Lookup the runtime string. */
+	result->runtimeName = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
+		inStringPool, &result->runtimeName, runtimeName, 0, -1)) ||
+		result->runtimeName == NULL)
+		goto fail_inRuntimeName;
+	
+	/* Reference it. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(
+		result->runtimeName, NULL)))
+		goto fail_refRuntimeName;
 	
 	/* Read in super name. */
 	superName = NULL;
@@ -1125,7 +1435,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	/* Reference it, if valid. */
 	if (superName != NULL)
 	{
-		result->superName = superName->classRef.descriptor;
+		result->superName = SJME_P_C_N(superName);
 		if (sjme_error_is(error = sjme_alloc_weakRef(
 			result->superName, NULL)))
 			goto fail_refSuperName;
@@ -1158,7 +1468,7 @@ sjme_errorCode sjme_nvm_class_parse(
 			goto fail_readThisName;
 		
 		/* Reference it. */
-		interfaceNames->elements[i] = interfaceName->classRef.descriptor;
+		interfaceNames->elements[i] = SJME_P_C_N(interfaceName);
 		if (sjme_error_is(error = sjme_alloc_weakRef(
 			interfaceNames->elements[i], NULL)))
 			goto fail_refThisName;
@@ -1200,7 +1510,7 @@ sjme_errorCode sjme_nvm_class_parse(
 		field = fields->elements[i];
 		field->typedIndex = result->fieldCount[(field->flags.member.isStatic ? 
 			SJME_NVM_CLASS_MEMBER_STATIC : SJME_NVM_CLASS_MEMBER_INSTANCE)]
-			[field->javaType]++;
+			[field->extendedType]++;
 		
 		/* Overflowed? */
 		if (field->typedIndex < 0)
@@ -1285,6 +1595,9 @@ fail_allocInterfaceNames:
 fail_readInterfaceCount:
 fail_refSuperName:
 fail_readSuperName:
+fail_refRuntimeName:
+fail_inRuntimeName:
+fail_dupName:
 fail_refPackage:
 fail_inPackage:
 fail_refThisName:
@@ -1302,6 +1615,7 @@ fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 	return sjme_error_vmError(NULL, error);
+#undef MAX_RUNTIME_NAME
 }
 
 sjme_errorCode sjme_nvm_class_parseAttributes(
@@ -1447,13 +1761,9 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				
 				/* Double value. */
 			case SJME_NVM_CLASS_POOL_TYPE_DOUBLE:
-				if (sjme_error_is(error = sjme_stream_inputReadValueJI(
+				if (sjme_error_is(error = sjme_stream_inputReadValueJJ(
 					inStream,
-					(sjme_jint*)&entry->constDouble.value.bits.hi)))
-					goto fail_readItem;
-				if (sjme_error_is(error = sjme_stream_inputReadValueJI(
-					inStream,
-					(sjme_jint*)&entry->constDouble.value.bits.lo)))
+					(sjme_jlong*)&entry->constDouble.value)))
 					goto fail_readItem;
 				
 				/* Skip wide index. */
@@ -1492,13 +1802,9 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				
 				/* Long value. */
 			case SJME_NVM_CLASS_POOL_TYPE_LONG:
-				if (sjme_error_is(error = sjme_stream_inputReadValueJI(
+				if (sjme_error_is(error = sjme_stream_inputReadValueJJ(
 					inStream,
-					(sjme_jint*)&entry->constLong.value.part.hi)))
-					goto fail_readItem;
-				if (sjme_error_is(error = sjme_stream_inputReadValueJI(
-					inStream,
-					(sjme_jint*)&entry->constLong.value.part.lo)))
+					(sjme_jlong*)&entry->constLong.value)))
 					goto fail_readItem;
 				
 				/* Skip wide index. */
@@ -1540,8 +1846,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				
 				/* Store and count up entry as we are using it now. */
 				entry->utf.utf = utf;
-				if (sjme_error_is(error = sjme_alloc_weakRef(
-					utf, NULL)))
+				if (sjme_error_is(error = sjme_alloc_weakRef(utf, NULL)))
 					goto fail_readItem;
 				break;
 			
@@ -1589,9 +1894,9 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Refer to it and count up, since we are using it. */
-				entry->classRef.descriptor = target->utf.utf;
+				SJME_P_C_N(entry) = target->utf.utf;
 				if (sjme_error_is(error = sjme_alloc_weakRef(
-					entry->classRef.descriptor, NULL)))
+					SJME_P_C_N(entry), NULL)))
 					goto fail_initItem;
 				break;
 				
@@ -1714,7 +2019,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				/* Class reference. */
 			case SJME_NVM_CLASS_POOL_TYPE_CLASS:
 				entry->classRef.descriptorHash =
-					sjme_charSeq_hashR(entry->classRef.descriptor->seq);
+					sjme_charSeq_hashR(SJME_P_C_N(entry)->seq);
 				break;
 			
 				/* Member reference. */
@@ -1723,6 +2028,16 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				entry->nameAndType.idHash = sjme_nvm_class_idHashMember(
 					entry->nameAndType.name->seq,
 					entry->nameAndType.descriptor->seq);
+				break;
+
+				/* Method reference. */
+			case SJME_NVM_CLASS_POOL_TYPE_METHOD:
+			case SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD:
+				if (sjme_error_is(error = sjme_nvm_class_descriptorMethodSlots(
+					SJME_P_M_T(entry)->seq,
+					&entry->member.staticArgSlots,
+					&entry->member.rvSlots)))
+					goto fail_initItem;
 				break;
 
 				/* Not considered an error in the third stage. */
@@ -1815,14 +2130,16 @@ sjme_errorCode sjme_nvm_class_parseField(
 	
 	/* Determine type. */
 	if (sjme_error_is(error = sjme_nvm_class_descriptorToType(
-		&result->javaType, SJME_JNI_TRUE, result->type->seq)))
-		goto fail_determineType;
-	if (sjme_error_is(error = sjme_nvm_class_descriptorToType(
-		&result->basicType, SJME_JNI_FALSE, result->type->seq)))
+		result->type->seq,
+		&result->javaType, &result->basicType, &result->extendedType)))
 		goto fail_determineType;
 	
 	/* Initialize constant value to an invalid type. */
 	result->constVal.type = SJME_NUM_JAVA_TYPE_IDS;
+
+	/* Calculate the hash identifier. */
+	result->idHash = sjme_nvm_class_idHashMember(result->name->seq,
+		result->type->seq);
 	
 	/* Success! */
 	*outField = result;
@@ -1914,6 +2231,12 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 	/* The identifier hash is used for lookup. */
 	result->idHash = sjme_nvm_class_idHashMember(result->name->seq,
 		result->type->seq);
+
+	/* Are these initializers? */
+	result->bits.isStaticInit = sjme_charSeq_equalsUtfR(
+		result->name->seq, "<clinit>");
+	result->bits.isInstanceInit = sjme_charSeq_equalsUtfR(
+		result->name->seq, "<init>");
 	
 	/* Success! */
 	*outMethod = result;

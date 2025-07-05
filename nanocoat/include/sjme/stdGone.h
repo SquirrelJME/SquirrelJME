@@ -48,7 +48,7 @@
 	#endif
 #endif
 
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/* Needed for alloca(). */
 	#include <malloc.h>
 #endif

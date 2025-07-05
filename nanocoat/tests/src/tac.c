@@ -37,6 +37,9 @@ int main(int argc, sjme_lpstr* argv)
 		sjme_message("Not enough arguments to TAC executable.");
 		return EXIT_FAILURE;
 	}
+
+	/* Register the crash handler. */
+	sjme_debug_crashRegister();
 	
 	/* Debug. */
 	for (i = 0; i < argc; i++)
@@ -48,7 +51,7 @@ int main(int argc, sjme_lpstr* argv)
 	/* Allocate main pool. */
 	pool = NULL;
 	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&pool,
-		16777216)) || pool == NULL)
+		1048576 * 16)) || pool == NULL)
 		goto fail_poolInit;
 	
 	/* Open seekable to the boot Jar. */
@@ -107,10 +110,11 @@ int main(int argc, sjme_lpstr* argv)
 	/* Boot the virtual machine. */
 	inState = NULL;
 	if (sjme_error_is(error = sjme_nvm_boot(pool,
-		&bootParam, &inState)))
+		&bootParam, &inState, NULL)))
 		goto fail_boot;
 	
 	/* Iterate the virtual machine loop. */
+	sjme_messageB("--------------------------------------------------------");
 	for (terminated = SJME_JNI_FALSE; !terminated;)
 	{
 		/* Let other threads run. */
@@ -127,6 +131,7 @@ int main(int argc, sjme_lpstr* argv)
 			goto fail_loop;
 		}
 	}
+	sjme_messageB("--------------------------------------------------------");
 	
 	/* Destroy the VM before exit. */
 	exitCode = -1;

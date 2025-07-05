@@ -64,6 +64,20 @@ typedef struct sjme_stream_outputBase sjme_stream_outputBase;
 typedef sjme_stream_outputBase* sjme_stream_output;
 
 /**
+ * Stream handle.
+ *
+ * @since 2025/07/04
+ */
+typedef struct sjme_stream_handle
+{
+	/** Pointer. */
+	sjme_pointer p;
+
+	/** Function handle. */
+	sjme_undefinedFunction f;
+} sjme_stream_handle;
+	
+/**
  * Implementation state within streams.
  * 
  * @since 2024/08/11
@@ -74,10 +88,10 @@ typedef struct sjme_stream_implState
 	sjme_alloc_pool allocPool;
 	
 	/** Internal handle. */
-	sjme_pointer handle;
+	sjme_stream_handle handle;
 	
 	/** Second internal handle. */
-	sjme_pointer handleTwo;
+	sjme_stream_handle handleTwo;
 	
 	/** Internal buffer. */
 	sjme_jubyte* buffer;
@@ -481,6 +495,18 @@ sjme_errorCode sjme_stream_inputReadValueJB(
 sjme_errorCode sjme_stream_inputReadValueJI(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_jint* outValue);
+
+/**
+ * Reads a Java long from the given stream.
+ *
+ * @param stream The stream to read from.
+ * @param outValue The resultant value.
+ * @return On any error, if any.
+ * @since 2025/07/04
+ */
+sjme_errorCode sjme_stream_inputReadValueJJ(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_jlong* outValue);
 
 /**
  * Reads a Java short from the given stream.

@@ -19,6 +19,8 @@
 	#undef WIN32_LEAN_AND_MEAN
 #endif
 
+#include "sjme/debug.h"
+
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 
@@ -208,7 +210,7 @@
 					(SJME_ATOMIC_WIN32_TYPE(type, numPointerStars))value); \
 		}
 
-#elif defined(SJME_CONFIG_HAS_ATOMIC_OLD)
+#elif defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
 
 	#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
 		SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
@@ -309,6 +311,19 @@ SJME_ATOMIC_FUNCTION(sjme_intPointer, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_thread, 0)
 
+SJME_ATOMIC_FUNCTION(sjme_charSeq, 0)
+
 /* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */
 
+#if defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
+void sjme_atomic_interruptsDisable(void)
+{
+	sjme_todo("Impl?");
+}
+
+void sjme_atomic_interruptsEnable(void)
+{
+	sjme_todo("Impl?");
+}
+#endif

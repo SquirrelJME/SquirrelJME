@@ -327,7 +327,7 @@ public enum MLEThread
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			// SpringCoat is always multi-threaded
-			return ThreadModelType.SIMULTANEOUS_MULTI_THREAD;
+			return ThreadModelType.MULTI_THREAD;
 		}
 	},
 	

@@ -137,7 +137,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 		gdk_window_get_origin(GTK_WIDGET(gtkWindow)->window,
 			&ox, &oy);
 
-#if 0
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		sjme_message("EXTENT %d %d %d %d -- ORIGIN %d %d",
 			extent.x, extent.y, extent.width, extent.height, ox, oy);
 #endif
@@ -254,7 +254,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
 		GTK_WIDGET(gtkWindow),
 		inWindow,
 		(sjme_scritchui_listener_void*)infoCore,
-		inListener,
+		(sjme_undefinedFunction)inListener,
 		copyFrontEnd,
 		G_CALLBACK(sjme_scritchui_gtk2_eventDelete),
 		SJME_JNI_FALSE,

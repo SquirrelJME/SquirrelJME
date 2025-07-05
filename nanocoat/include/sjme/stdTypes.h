@@ -100,7 +100,13 @@ typedef enum sjme_attrPackedEnumByte(sjme_basicTypeId)
 	SJME_BASIC_TYPE_ID_CHARACTER = 11,
 
 	/** Number of basic type IDs. */
-	SJME_NUM_BASIC_TYPE_IDS = 12
+	SJME_NUM_BASIC_TYPE_IDS = 12,
+
+	/** Narrow type. */
+	SJME_STACK_TYPE_NARROW = 24,
+
+	/** Wide type. */
+	SJME_STACK_TYPE_WIDE = 48,
 } sjme_basicTypeId;
 
 /**
@@ -194,6 +200,29 @@ typedef int16_t sjme_jshort;
  * @since 2024/06/20
  */
 typedef int sjme_jshort_promoted;
+
+/**
+ * Unsigned Short type.
+ * 
+ * @since 2025/07/04
+ */
+typedef uint16_t sjme_jushort;
+
+/** Basic @c sjme_jushort type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jushort SJME_BASIC_TYPE_ID_CHARACTER
+
+/** Java @c sjme_jushort type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jushort SJME_JAVA_TYPE_ID_INTEGER
+
+/** Is a pointer for @c sjme_jushort ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jushort 0
+
+/**
+ * Promoted @c sjme_jushort .
+ * 
+ * @since 2025/07/04
+ */
+typedef int sjme_jushort_promoted;
 
 /**
  * Character type.
@@ -417,16 +446,16 @@ typedef union sjme_jlong
 	{
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
 		/** Low value. */
-		sjme_juint lo;
+		sjme_juint lo : 32;
 	
 		/** High value. */
-		sjme_jint hi;
+		sjme_jint hi : 32;
 #else
 		/** High value. */
-		sjme_jint hi;
+		sjme_jint hi : 32;
 		
 		/** Low value. */
-		sjme_juint lo;
+		sjme_juint lo : 32;
 #endif
 	} part;
 	
@@ -479,18 +508,21 @@ typedef union sjme_jdouble
 	{
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
 		/** Low value. */
-		sjme_juint lo;
+		sjme_juint lo : 32;
 
 		/** High value. */
-		sjme_juint hi;
+		sjme_juint hi : 32;
 #else
 		/** High value. */
-		sjme_juint hi;
+		sjme_juint hi : 32;
 		
 		/** Low value. */
-		sjme_juint lo;
+		sjme_juint lo : 32;
 #endif
 	} bits;
+
+	/** Long bits. */
+	int64_t longBits;
 
 #if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
 	/** Native hardware double value. */
@@ -559,9 +591,13 @@ typedef struct sjme_pointerLen
 /** The Java type ID. */
 typedef sjme_basicTypeId sjme_javaTypeId;
 
+/** The Extended type ID. */
+typedef sjme_basicTypeId sjme_extendedTypeId;
+
 /** Is the given type ID considered wide? */
 #define SJME_TYPEID_IS_WIDE(t) \
-	((t) == SJME_JAVA_TYPE_ID_LONG || (t) == SJME_JAVA_TYPE_ID_DOUBLE)
+	((t) == SJME_JAVA_TYPE_ID_LONG || (t) == SJME_JAVA_TYPE_ID_DOUBLE || \
+	(t) == SJME_STACK_TYPE_WIDE)
 
 /**
  * Represents multiple type IDs.
@@ -670,6 +706,70 @@ typedef sjme_jarrayBase* sjme_jarray;
 #define SJME_TYPEOF_IS_POINTER_sjme_jarray SJME_TYPEOF_IS_POINTER_sjme_jobject
 
 /**
+ * Weak reference.
+ *
+ * @since 2025/06/21
+ */
+typedef struct sjme_jweakBase sjme_jweakBase;
+
+/**
+ * Weak reference.
+ *
+ * @since 2025/06/21
+ */
+typedef sjme_jweakBase* sjme_jweak;
+	
+/** Basic @c sjme_jweak type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jweak SJME_TYPEOF_BASIC_sjme_jobject
+
+/** Java @c sjme_jweak type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jweak SJME_TYPEOF_JAVA_sjme_jobject
+
+/** Is a pointer for @c sjme_jweak ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jweak SJME_TYPEOF_IS_POINTER_sjme_jobject
+
+/**
+ * Trace point bracket.
+ *
+ * @since 2025/06/28
+ */
+typedef struct sjme_jbracketTraceBase sjme_jbracketTraceBase;
+	
+/**
+ * Trace point bracket.
+ *
+ * @since 2025/06/28
+ */
+typedef sjme_jbracketTraceBase* sjme_jbracketTrace;
+	
+/** Basic @c sjme_jbracketTrace type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jbracketTrace SJME_TYPEOF_BASIC_sjme_jobject
+
+/** Java @c sjme_jbracketTrace type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jbracketTrace SJME_TYPEOF_JAVA_sjme_jobject
+
+/** Is a pointer for @c sjme_jbracketTrace ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jbracketTrace \
+	SJME_TYPEOF_IS_POINTER_sjme_jobject
+
+/**
+ * A character sequence which contains a set of characters within a string.
+ * 
+ * @since 2024/06/26
+ */
+typedef struct sjme_charSeqStatic sjme_charSeqStatic;
+
+/**
+ * A character sequence which contains a set of characters within a string.
+ * 
+ * @since 2024/06/26
+ */
+typedef sjme_charSeqStatic* sjme_charSeq;
+
+/** Is a pointer for @c sjme_charSeq ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_charSeq SJME_TYPEOF_IS_POINTER_sjme_jobject
+
+/**
  * Generic value union.
  *
  * @since 2024/01/05
@@ -712,10 +812,10 @@ typedef union sjme_jvalue
 typedef struct sjme_jvalueTyped
 {
 	/** The type of this value. */
-	sjme_javaTypeId type;
+	sjme_javaTypeId t;
 
 	/** The value of this. */
-	sjme_jvalue value;
+	sjme_jvalue v;
 } sjme_jvalueTyped;
 
 /**
@@ -731,6 +831,13 @@ typedef struct sjme_alloc_poolBase sjme_alloc_poolBase;
  * @since 2023/11/18
  */
 typedef volatile sjme_alloc_poolBase* sjme_alloc_pool;
+
+/**
+ * An unresolved function.
+ *
+ * @since 2025/07/04
+ */
+typedef int (*sjme_undefinedFunction)();
 
 /*--------------------------------------------------------------------------*/
 

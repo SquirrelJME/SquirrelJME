@@ -30,7 +30,7 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
-	
+
 /** Integer type. */
 #define SJME_MI SJME_JAVA_TYPE_ID_INTEGER
 
@@ -54,6 +54,9 @@ extern "C"
 	
 /** Byte type. */
 #define SJME_MD_B "B"
+	
+/** Short type. */
+#define SJME_MD_S "S"
 
 /** Character type. */
 #define SJME_MD_C "C"
@@ -61,20 +64,62 @@ extern "C"
 /** Integer type. */
 #define SJME_MD_I "I"
 
+/** Long type. */
+#define SJME_MD_J "J"
+
+/** Float type. */
+#define SJME_MD_F "F"
+
+/** Double type. */
+#define SJME_MD_D "D"
+
 /** Void Type. */
 #define SJME_MD_V "V"
 
 /** Class type. */
 #define SJME_MD_L(name) "L" name ";"
 
+/** Array of booleans. */
+#define SJME_MD_AZ SJME_MD_A(SJME_MD_Z)
+
+/** Array of bytes. */
+#define SJME_MD_AB SJME_MD_A(SJME_MD_B)
+
+/** Array of shorts. */
+#define SJME_MD_AS SJME_MD_A(SJME_MD_S)
+
 /** Array of characters. */
 #define SJME_MD_AC SJME_MD_A(SJME_MD_C)
 
-/** Runnable. */
-#define SJME_MD_RUNNABLE SJME_MD_L("java/lang/Runnable")
+/** Array of integers. */
+#define SJME_MD_AI SJME_MD_A(SJME_MD_I)
+
+/** Array of longs. */
+#define SJME_MD_AJ SJME_MD_A(SJME_MD_J)
+
+/** Array of floats. */
+#define SJME_MD_AF SJME_MD_A(SJME_MD_F)
+
+/** Array of doubles. */
+#define SJME_MD_AD SJME_MD_A(SJME_MD_D)
+
+/** Class. */
+#define SJME_MD_CLASS SJME_MD_L("java/lang/Class")
+
+/** Object. */
+#define SJME_MD_OBJECT SJME_MD_L("java/lang/Object")
 
 /** Pipe descriptor. */
 #define SJME_MD_PIPE SJME_MD_L(SJME_NVM_BRACKET_NAME_PIPE)
+
+/** Reference. */
+#define SJME_MD_REFERENCE SJME_MD_L("java/lang/ref/Reference")
+
+/** Reference Queue. */
+#define SJME_MD_REFERENCE_QUEUE SJME_MD_L("java/lang/ref/ReferenceQueue")
+
+/** Runnable. */
+#define SJME_MD_RUNNABLE SJME_MD_L("java/lang/Runnable")
 
 /** String. */
 #define SJME_MD_STRING SJME_MD_L("java/lang/String")
@@ -82,15 +127,15 @@ extern "C"
 /** Task. */
 #define SJME_MD_TASK SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TaskBracket")
 
-/** Type. */
-#define SJME_MD_TYPE SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TypeBracket")
-
 /** Thread. */
 #define SJME_MD_THREAD SJME_MD_L("java/lang/Thread")
 
 /** Trace point. */
-#define SJME_MD_TRACE_POINT \
+#define SJME_MD_TRACE \
 	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TracePointBracket")
+
+/** Type. */
+#define SJME_MD_TYPE SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TypeBracket")
 
 /** VM Thread. */
 #define SJME_MD_VM_THREAD \
@@ -113,16 +158,16 @@ extern "C"
 	SJME_NVM_MLE_FUNCTION_DECL_ALT(name, none)
 
 /** Defines an MLE function. */
-#define SJME_NVM_MLE_DEFINE_ALT(name, alt, type, argX) \
+#define SJME_NVM_MLE_DEFINE_ALT(name, alt, type, argXR, argXA) \
 	{ \
 		#name, type, \
-		argX, \
+		argXR argXA, \
 		SJME_NVM_MLE_FUNCTION_NAME(name, alt) \
 	}
 
 /** Defines an MLE function. */
-#define SJME_NVM_MLE_DEFINE(name, type, argX) \
-	SJME_NVM_MLE_DEFINE_ALT(name, none, type, argX)
+#define SJME_NVM_MLE_DEFINE(name, type, argXR, argXA) \
+	SJME_NVM_MLE_DEFINE_ALT(name, none, type, argXR, argXA)
 
 /** Stop MLE definitions. */
 #define SJME_NVM_MLE_STOP() \

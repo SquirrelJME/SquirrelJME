@@ -50,7 +50,7 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
 	sjme_alloc_link atLink,
 	const char* trigger)
 {
-	sjme_message("Corrupted Link %p: %s", atLink, trigger);
+	sjme_message("Corrupted Link %p: %s", (void*)atLink, trigger);
 
 	/* Ignore if null. */
 	if (atLink == NULL)
@@ -58,9 +58,10 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
 
 	/* Dump everything about the link. */
 	sjme_message("link->guardFront: %08x", atLink->guardFront);
-	sjme_message("link->pool: %p (should be %p)", atLink->pool, pool);
-	sjme_message("link->prev: %p", atLink->prev);
-	sjme_message("link->next: %p", atLink->next);
+	sjme_message("link->pool: %p (should be %p)",
+		(void*)atLink->pool, (void*)pool);
+	sjme_message("link->prev: %p", (void*)atLink->prev);
+	sjme_message("link->next: %p", (void*)atLink->next);
 	if (atLink->space == SJME_ALLOC_POOL_SPACE_USED)
 		sjme_message("link->space: USED");
 	else if (atLink->space == SJME_ALLOC_POOL_SPACE_FREE)
@@ -69,9 +70,9 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
 		sjme_message("link->space: NUM");
 	else
 		sjme_message("link->space: %d", (int)atLink->space);
-	sjme_message("link->weak: %p", atLink->weak);
-	sjme_message("link->freePrev: %p", atLink->freePrev);
-	sjme_message("link->freeNext: %p", atLink->freeNext);
+	sjme_message("link->weak: %p", (void*)atLink->weak);
+	sjme_message("link->freePrev: %p", (void*)atLink->freePrev);
+	sjme_message("link->freeNext: %p", (void*)atLink->freeNext);
 	sjme_message("link->allocSize: %d", (int)atLink->allocSize);
 	sjme_message("link->blockSize: %d", (int)atLink->blockSize);
 	sjme_message("link->guardBack: %08x", atLink->guardBack);
@@ -390,8 +391,8 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitStatic(
 		(SJME_SIZEOF_ALLOC_LINK(0)));
 #endif
 
+#if defined(SJME_CONFIG_EXPERIMENT_NESTED_LINK)
 	/* If this is a valid link then we are allocating a nested pool. */
-#if 0
 	specialParent = NULL;
 	if (!sjme_error_is(sjme_alloc_getLinkOptional(baseAddr,
 		&specialParent, SJME_JNI_FALSE)))
@@ -555,7 +556,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		goto fail_noMemory;
 	}
 
-#if 0
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("Found link at %p: %d bytes, we need %d with split %d.",
 		scanLink, (int)scanLink->blockSize, (int)roundSize, (int)splitBlock);

@@ -17,7 +17,7 @@
 #include "sjme/nvm/rom.h"
 
 sjme_errorCode sjme_jni_virtualLibrary_init(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrInNullable sjme_pointer data)
 {
 	JNIEnv* env;
@@ -30,8 +30,8 @@ sjme_errorCode sjme_jni_virtualLibrary_init(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Get env and object back. */
-	env = inLibrary->cache.common.frontEnd.data;
-	self = inLibrary->cache.common.frontEnd.wrapper;
+	env = inLibrary->common.frontEnd.data;
+	self = inLibrary->common.frontEnd.wrapper;
 	classy = (*env)->GetObjectClass(env, self);
 
 	/* Find the ID and name functions. */
@@ -59,7 +59,7 @@ sjme_errorCode sjme_jni_virtualLibrary_init(
 }
 
 sjme_errorCode sjme_jni_virtualLibrary_rawData(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNullBuf(length) void* dest,
 	sjme_attrInPositive sjme_jint srcPos,
 	sjme_attrInPositive sjme_jint length)
@@ -83,8 +83,8 @@ sjme_errorCode sjme_jni_virtualLibrary_rawData(
 	error = SJME_ERROR_UNKNOWN;
 
 	/* Get env and object back. */
-	env = inLibrary->cache.common.frontEnd.data;
-	self = inLibrary->cache.common.frontEnd.wrapper;
+	env = inLibrary->common.frontEnd.data;
+	self = inLibrary->common.frontEnd.wrapper;
 	classy = (*env)->GetObjectClass(env, self);
 
 	/* It is much faster to use NIO for this! */
@@ -129,7 +129,7 @@ fail_cleanupNioBuf:
 }
 
 sjme_errorCode sjme_jni_virtualLibrary_rawSize(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_jint* outSize)
 {
 	JNIEnv* env;
@@ -142,8 +142,8 @@ sjme_errorCode sjme_jni_virtualLibrary_rawSize(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Get env and object back. */
-	env = inLibrary->cache.common.frontEnd.data;
-	self = inLibrary->cache.common.frontEnd.wrapper;
+	env = inLibrary->common.frontEnd.data;
+	self = inLibrary->common.frontEnd.wrapper;
 	classy = (*env)->GetObjectClass(env, self);
 
 	/* Find the raw size function. */
@@ -162,7 +162,7 @@ sjme_errorCode sjme_jni_virtualLibrary_rawSize(
 }
 
 static sjme_errorCode sjme_jni_virtualLibrary_resourceStream(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr resourceName)
 {
@@ -174,29 +174,30 @@ static sjme_errorCode sjme_jni_virtualLibrary_resourceStream(
 }
 
 /** Functions for JNI accessed libraries. */
-static const sjme_rom_libraryFunctions sjme_jni_virtualLibrary_functions =
+static const sjme_nvm_rom_libraryFunctions sjme_jni_virtualLibrary_functions =
 {
 	sjme_sm(.init, sjme_jni_virtualLibrary_init),
 	sjme_sm(.path, NULL),
 	sjme_sm(.rawData, sjme_jni_virtualLibrary_rawData),
 	sjme_sm(.rawSize, sjme_jni_virtualLibrary_rawSize),
+	sjme_sm(.resourceExists, NULL),
 	sjme_sm(.resourceStream, sjme_jni_virtualLibrary_resourceStream),
 };
 
 jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_LIBRARY, _1_1init)
 	(JNIEnv* env, jclass classy, jobject self, jlong suitePtr, jstring libName)
 {
-	sjme_rom_suite suite;
+	sjme_nvm_rom_suite suite;
 	sjme_alloc_pool pool;
-	sjme_rom_library result;
+	sjme_nvm_rom_library result;
 	sjme_errorCode error;
 	sjme_frontEnd frontEnd;
 	sjme_lpcstr libNameChars;
 	jboolean libNameCopy;
 
 	/* Get the original owning suite among other details. */
-	suite = SJME_JLONG_TO_POINTER(sjme_rom_suite, suitePtr);
-	pool = suite->cache.common.allocPool;
+	suite = SJME_JLONG_TO_POINTER(sjme_nvm_rom_suite, suitePtr);
+	pool = suite->allocPool;
 
 	/* Seed front end data. */
 	memset(&frontEnd, 0, sizeof(frontEnd));
@@ -210,7 +211,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_LIBRARY, _1_1init)
 
 	/* Setup resultant library. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_rom_libraryNew(pool,
+	if (sjme_error_is(error = sjme_nvm_rom_libraryNew(pool,
 		&result, libNameChars, NULL,
 		&sjme_jni_virtualLibrary_functions, 
 		&frontEnd)) || result == NULL)

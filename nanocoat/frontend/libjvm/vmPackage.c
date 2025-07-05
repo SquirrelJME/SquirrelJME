@@ -1,0 +1,23 @@
+/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// -------------------------------------------------------------------------*/
+
+#include <jni.h>
+#include <jvm.h>
+
+#include "sjme/debug.h"
+
+jstring JNICALL JVM_GetSystemPackage(JNIEnv* env, jstring name)
+{
+	sjme_todo("Impl?");
+}
+
+jobjectArray JNICALL JVM_GetSystemPackages(JNIEnv* env)
+{
+	sjme_todo("Impl?");
+}

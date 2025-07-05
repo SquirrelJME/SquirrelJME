@@ -52,7 +52,7 @@ static sjme_errorCode sjme_nvm_vmClass_bindInterface(
 	/* CharSequence with getClass() from Object. */
 
 	/* Setup target list. */
-	fromMethods = isInterface->methodBinds[SJME_NVM_CLASS_MEMBER_INSTANCE];
+	fromMethods = isInterface->methods[SJME_NVM_CLASS_MEMBER_INSTANCE].binds;
 	n = fromMethods->length;
 	methods = NULL;
 	if (sjme_error_is(error = sjme_list_alloc(
@@ -75,7 +75,7 @@ static sjme_errorCode sjme_nvm_vmClass_bindInterface(
 		if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
 			inClass, contextThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
 			SJME_JNI_TRUE,
-			target->member.name->seq, target->member.type->seq,
+			SJME_M_N(target)->seq, SJME_M_T(target)->seq,
 			&use)) || use == NULL)
 			goto fail_findMethod;
 
@@ -112,13 +112,156 @@ fail_allocList:
 	return sjme_error_default(error);
 }
 
+static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrOutNotNull sjme_list_sjme_jfieldID** outList)
+{
+	sjme_errorCode error;
+	sjme_jfieldID id;
+	sjme_list_sjme_jfieldID* result;
+	sjme_jint at, count, i, n;
+	sjme_nvm_class_fieldInfo field;
+	sjme_list_sjme_nvm_class_fieldInfo* fields;
+	sjme_jboolean isStatic;
+	sjme_nvm_jclass_fields* placements;
+	sjme_javaTypeId extendedType;
+	sjme_jint typedOffset[SJME_NUM_JAVA_TYPE_IDS];
+	
+	if (inState == NULL || inLoader == NULL || inClass == NULL ||
+		contextThread == NULL || outList == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* What are the base placements? */
+	placements = &inClass->fields[instanceType];
+
+	/* Wanting statics? */
+	isStatic = (instanceType == SJME_NVM_CLASS_MEMBER_STATIC);
+
+	/* Determine the actual field count. */
+	fields = inClass->info->fields;
+	count = 0;
+	for (i = at = 0, n = fields->length; i < n; i++)
+	{
+		/* Count fields with the same staticness. */
+		field = fields->elements[i];
+		if (field->flags.member.isStatic == isStatic)
+			count++;
+	}
+	
+	/* Allocate resultant list. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_list_alloc(inState->allocPool, count,
+		&result, sjme_jfieldID, 0)) || result == NULL)
+		return sjme_error_default(error);
+
+	/* Zero out base offsets, this is used as multipliers to calculate */
+	/* field offsets into objects. */
+	memset(&typedOffset, 0, sizeof(typedOffset));
+
+	/* Go through all items, as fields are in a single tread. */
+	for (i = at = 0, n = fields->length; i < n; i++)
+	{
+		/* Skip fields that have the wrong staticness. */
+		field = fields->elements[i];
+		if (field->flags.member.isStatic != isStatic)
+			continue;
+
+		/* Allocate resultant ID. */
+		id = NULL;
+		if (sjme_error_is(error = sjme_nvm_alloc(inState,
+			sizeof(*id), SJME_NVM_STRUCT_FIELD_ID,
+			SJME_AS_NVM_COMMONP(&id))) || id == NULL)
+			goto fail_allocId;
+
+		/* Store into the result. */
+		result->elements[at++] = id;
+
+		/* Set ID info. */
+		id->info = field;
+		id->javaType = field->javaType;
+		id->basicType = field->basicType;
+		id->extendedType = field->extendedType;
+		id->flags = field->flags;
+		id->member.idHash = field->idHash;
+		id->member.inClass = inClass;
+		id->member.name = field->name;
+		id->member.type = field->type;
+		
+		/* Determine the pointer offset for this field into the object */
+		extendedType = field->extendedType;
+		id->pointerOffset = placements->offset[extendedType] +
+			offsetof(sjme_nvm_fieldValues, values) +
+			((sjme_nvm_typeMul[extendedType]) * (typedOffset[extendedType]++));
+		
+		/* Count up references. */
+		sjme_alloc_weakRef(field, NULL);
+		sjme_alloc_weakRef(id->member.name, NULL);
+		sjme_alloc_weakRef(id->member.type, NULL);
+	}
+
+	/* Success! */
+	*outList = result;
+	return SJME_ERROR_NONE;
+fail_allocId:
+	if (result != NULL)
+		for (i = 0, n = result->length; i < n; i++)
+			if (result->elements[i] != NULL)
+				sjme_closeable_close(SJME_AS_CLOSEABLE(result->elements[i]));
+
+	return sjme_error_default(error);
+}
+
+static sjme_errorCode sjme_nvm_vmClass_checkInitFieldStatics(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jclass inClass)
+{
+	sjme_errorCode error;
+	sjme_pointer chunk;
+	sjme_nvm_jclass_fields* placements;
+	
+	if (contextThread == NULL || inClass == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get the placements to allocate for. */
+	placements = &inClass->fields[SJME_NVM_CLASS_MEMBER_STATIC];
+
+	/* Allocate chunk of data for field storage. */
+	chunk = NULL;
+	if (sjme_error_is(error = sjme_alloc(SJME_T_S(contextThread)->allocPool,
+		placements->allocSize, &chunk)) || chunk == NULL)
+		return sjme_error_default(error);
+
+	/* Initialize each sub-chunk for each placement. */
+	if (sjme_error_is(error = sjme_nvm_instance_initFieldsChunk(
+		chunk, placements)))
+		return sjme_error_default(error);
+
+	/* Set chunk. */
+	inClass->staticChunk = chunk;
+
+	/* Forward to normal field initialization. */
+	return sjme_nvm_instance_initFields(contextThread,
+		SJME_AS_JOBJECT(inClass),
+		chunk, inClass->fields[SJME_NVM_CLASS_MEMBER_STATIC].binds,
+		placements);
+}
+
 static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_jclass thisClass,
 	sjme_attrInNotNull sjme_jclass superClass,
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
 	sjme_attrInPositive sjme_jint index,
 	sjme_attrInNotNull sjme_nvm_class_methodInfo thisInfo,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_jmethodID* outBind)
 {
 	sjme_errorCode error;
@@ -128,11 +271,11 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	sjme_jint i, n;
 	sjme_jboolean wantStatic;
 
-	if (inState == NULL || thisClass == NULL || thisInfo == NULL ||
-		outBind == NULL)
+	if (inLoader == NULL || inState == NULL || thisClass == NULL ||
+		thisInfo == NULL || contextThread == NULL || outBind == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (superClass != sjme_atomic_sjme_jclass_get(&thisClass->superClass))
+	if (superClass != SJME_C_SU(thisClass))
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
@@ -148,24 +291,30 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
 
-	/* Always in the current class. */
-	result->member.inClass = thisClass;
+	/* The context class is always the one which the method exists within. */
+	result->member.inClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		inLoader, &result->member.inClass, contextThread,
+		thisInfo->inClass->name->seq, SJME_JNI_FALSE)) ||
+		result->member.inClass == NULL)
+		goto fail_contextClass;
 
 	/* The identifier hash is used for lookup. */
 	result->member.idHash = thisInfo->idHash;
 	
 	/* The names always get set. */
-	result->member.name = thisInfo->name;
-	result->member.type = thisInfo->type;
+	SJME_M_N(result) = thisInfo->name;
+	SJME_M_T(result) = thisInfo->type;
 
-	/* Also copy flags. */
+	/* Also copy flags and bits. */
 	result->flags = thisInfo->flags;
+	result->bits = thisInfo->bits;
 	
 	/* Constructors always bind to self. */
 	/* Along with any private methods. */
 	/* Static as well. */
-	if (sjme_charSeq_equalsUtfR(thisInfo->name->seq, "<init>") ||
-		sjme_charSeq_equalsUtfR(thisInfo->name->seq, "<clinit>") ||
+	if (thisInfo->bits.isInstanceInit ||
+		thisInfo->bits.isStaticInit ||
 		thisInfo->flags.member.access.private ||
 		thisInfo->flags.member.isStatic)
 	{
@@ -186,7 +335,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	/* Start off with nothing set at all. */
 	lastScan = NULL;
 	thisScan = 0;
-	for (i = 0, n = thisClass->methodCount[instanceType]; i < n; i++)
+	for (i = 0, n = thisClass->methods[instanceType].count; i < n; i++)
 	{
 		/* Lookup this index. */
 		found = NULL;
@@ -248,6 +397,7 @@ fail_changed:
 	
 fail_noMethod:
 fail_badFind:
+fail_contextClass:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
@@ -259,6 +409,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_list_sjme_jmethodID** outList)
 {
 	sjme_errorCode error;
@@ -268,18 +419,19 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	sjme_list_sjme_jmethodID* result;
 	sjme_jmethodID bind;
 	
-	if (inLoader == NULL || inClass == NULL || outList == NULL)
+	if (inLoader == NULL || inClass == NULL || contextThread == NULL ||
+		outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* The super class can be used as a basis for linkage. */
-	superClass = sjme_atomic_sjme_jclass_get(&inClass->superClass);
+	superClass = SJME_C_SU(inClass);
 	
 	/* Allocate result. */
 	result = NULL;
-	n = inClass->methodCount[instanceType];
+	n = inClass->methods[instanceType].count;
 	if (sjme_error_is(error = sjme_list_alloc(inLoader->inState->allocPool,
 		n, &result, sjme_jmethodID, 0)) || result == NULL)
 		goto fail_allocResult;
@@ -312,9 +464,9 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 		/* Perform the binding. */
 		bind = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBind(
-			inLoader->inState, inClass, superClass,
+			inLoader, inLoader->inState, inClass, superClass,
 			instanceType, i, methodInfo,
-			&bind)) || bind == NULL)
+			contextThread, &bind)) || bind == NULL)
 			goto fail_initBind;
 
 		/* Stopped being consistent? */
@@ -326,14 +478,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 			
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
-		sjme_message("Bound `%s` %s %s%s -> %s %s%s",
-			inClass->binaryName,
-			&methodInfo->inClass->name->chars[0],
-			&methodInfo->name->chars[0],
-			&methodInfo->type->chars[0],
-			&bind->info[1]->inClass->name->chars[0],
-			&bind->info[1]->name->chars[0],
-			&bind->info[1]->type->chars[0]);
+		sjme_message("Bound `%s` %s.%s:%s -> %s.%s:%s",
+			sjme_charSeq_tempUtf(inClass->binaryName),
+			sjme_charSeq_tempUtf(methodInfo->inClass->name->seq),
+			sjme_charSeq_tempUtf(methodInfo->name->seq),
+			sjme_charSeq_tempUtf(methodInfo->type->seq),
+			sjme_charSeq_tempUtf(bind->info[1]->inClass->name->seq),
+			sjme_charSeq_tempUtf(bind->info[1]->name->seq),
+			sjme_charSeq_tempUtf(bind->info[1]->type->seq));
 #endif
 	}
 	
@@ -347,76 +499,6 @@ fail_allocResult:
 	if (result != NULL)
 		sjme_alloc_free(result);
 	return sjme_error_vmError(NULL, error);
-}
-
-static sjme_errorCode sjme_nvm_vmClass_checkInitStaticFields(
-	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrInNotNull sjme_jclass inClass,
-	sjme_attrInValue sjme_javaTypeId typeId)
-{
-	sjme_errorCode error;
-	sjme_nvm_fieldValues* fieldValues;
-	sjme_nvm_class_info info;
-	sjme_jint i, n;
-	sjme_nvm_class_fieldInfo fieldInfo;
-	
-	if (allocPool == NULL || inClass == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* No static fields for this kind, ignore. */
-	info = inClass->info;
-	n = info->fieldCount[SJME_NVM_CLASS_MEMBER_STATIC][typeId];
-	if (n == 0)
-		return SJME_ERROR_NONE;
-	
-	/* Allocate field values. */
-	fieldValues = NULL;
-	if (sjme_error_is(error = sjme_alloc(allocPool,
-		sjme_nvm_fieldValueSize(typeId, n),
-		(sjme_pointer)&fieldValues)) || fieldValues == NULL)
-		return sjme_error_default(error);
-	
-	/* Store type and count for this tread. */
-	fieldValues->type = typeId;
-	fieldValues->length = n;
-	fieldValues->size = (n * sjme_nvm_typeMul[typeId]);
-	
-	/* Setup individual static fields with non-object constants. */
-	if (typeId != SJME_JAVA_TYPE_ID_OBJECT)
-		for (i = 0; i < n; i++)
-		{
-			/* Locate field information. */
-			fieldInfo = NULL;
-			if (sjme_error_is(error = sjme_nvm_vmClass_fieldSourceByIndex(
-				inClass, SJME_NVM_CLASS_MEMBER_STATIC,
-				typeId, i,
-				&fieldInfo)) || fieldInfo == NULL)
-				return sjme_error_vmError(NULL,
-					sjme_error_defaultOr(error, SJME_ERROR_CLASS_CHANGED));
-			
-			/* Is there a static value to copy? */
-			if (fieldInfo->constVal.type == typeId)
-			{
-				if (typeId == SJME_JAVA_TYPE_ID_LONG)
-					fieldValues->values.j[i] =
-						fieldInfo->constVal.value.java.j;
-				else if (typeId == SJME_JAVA_TYPE_ID_FLOAT)
-					fieldValues->values.f[i] =
-						fieldInfo->constVal.value.java.f;
-				else if (typeId == SJME_JAVA_TYPE_ID_DOUBLE)
-					fieldValues->values.d[i] =
-						fieldInfo->constVal.value.java.d;
-				else
-					fieldValues->values.i[i] =
-						fieldInfo->constVal.value.java.i;
-			}
-		}
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
@@ -440,31 +522,32 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 	{
 		/* The field bases vary per type, however this is derived from */
 		/* the parent class for storage sizes. */
-		for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
+		for (i = 0; i < SJME_NUM_EXTENDED_JAVA_TYPE_IDS; i++)
 		{
 			/* This is just a copy of the field count. */
-			inClass->fieldBase[index][i] = inSuperClass->fieldCount[index][i];
+			inClass->fields[index].base[i] =
+				inSuperClass->fields[index].count[i];
 			
 			/* However, we add the info to get our current field count. */
-			inClass->fieldCount[index][i] = inClass->fieldBase[index][i] +
+			inClass->fields[index].count[i] = inClass->fields[index].base[i] +
 				inClass->info->fieldCount[index][i];
 			
 			/* Overflowed? */
-			if (inClass->fieldBase[index][i] < 0 ||
-				inClass->fieldCount[index][i] < 0)
+			if (inClass->fields[index].base[i] < 0 ||
+				inClass->fields[index].count[i] < 0)
 				return sjme_error_vmError(NULL,
 					SJME_ERROR_CLASS_TOO_MANY_MEMBERS);
 		}
 		
 		/* Methods are simpler as they are based on static/instance and not */
 		/* from any of their type information. */
-		inClass->methodBase[index] = inSuperClass->methodCount[index];
-		inClass->methodCount[index] = inClass->methodBase[index] +
+		inClass->methods[index].base = inSuperClass->methods[index].count;
+		inClass->methods[index].count = inClass->methods[index].base +
 			inClass->info->methodCount[index];
 		
 		/* Overflowed? */
-		if (inClass->methodBase[index] < 0 ||
-			inClass->methodCount[index] < 0)
+		if (inClass->methods[index].base < 0 ||
+			inClass->methods[index].count < 0)
 			return sjme_error_vmError(NULL,
 				SJME_ERROR_CLASS_TOO_MANY_MEMBERS);
 	}
@@ -490,8 +573,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	if (inClass == NULL || contextThread == NULL || classLoader == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	inState = contextThread->inTask->inState;
-	allocPool = contextThread->inTask->inState->allocPool;
+	inState = SJME_F_S(contextThread);
+	allocPool = SJME_F_S(contextThread)->allocPool;
 	strings = classLoader->nullStrings;
 
 	/* Lookup self name. */
@@ -534,7 +617,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	/* Locate component type of the array. */
 	componentType = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFU(
-		contextThread->inTask->classLoader,
+		SJME_F_CL(contextThread),
 		&componentType, contextThread, componentTypeName,
 		SJME_JNI_FALSE)) || componentType == NULL)
 		return sjme_error_vmError(contextThread, error);
@@ -564,8 +647,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitPrimitive(
 	if (inClass == NULL || contextThread == NULL || classLoader == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	inState = contextThread->inTask->inState;
-	allocPool = contextThread->inTask->inState->allocPool;
+	inState = SJME_F_S(contextThread);
+	allocPool = SJME_F_S(contextThread)->allocPool;
 	strings = classLoader->nullStrings;
 
 	/* Lookup self name. */
@@ -735,7 +818,7 @@ static sjme_errorCode sjme_nvm_vmClass_isClassesSub(
 				return SJME_ERROR_NONE;
 	
 	/* Handle super class. */
-	subClass = sjme_atomic_sjme_jclass_get(&pivotClass->superClass);
+	subClass = SJME_C_SU(pivotClass);
 	if (subClass != NULL)
 		if (sjme_error_is(error = sjme_nvm_vmClass_isClassesSub(
 			contextThread, rootClass, subClass, inOutClasses)))
@@ -939,7 +1022,10 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_jclass superClass, interface, classType;
 	sjme_list_sjme_jclass* interfaces;
 	sjme_alloc_pool allocPool;
-	sjme_list_sjme_jmethodID* binds;
+	sjme_list_sjme_jmethodID* methodBinds;
+	sjme_list_sjme_jfieldID* fieldBinds;
+	sjme_jint allocSize;
+	sjme_javaTypeId javaType;
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -981,7 +1067,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	
 	/* The class info should now be valid. */
 	info = inClass->info;
-	loader = contextThread->inTask->classLoader;
+	loader = SJME_F_CL(contextThread);
 	if (info == NULL || loader == NULL)
 	{
 		error = sjme_error_vmError(contextThread,
@@ -1072,41 +1158,83 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	
 	/* The number of methods in this class for each type. */
 	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
-		inClass->methodCount[i] = info->methodCount[i] +
+		inClass->methods[i].count = info->methodCount[i] +
 			(superClass != NULL && i != SJME_NVM_CLASS_MEMBER_STATIC ?
-				superClass->methodCount[i] : 0);
-	
-	/* Setup static field storage. */
-	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
-		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitStaticFields(
-			allocPool, inClass,
-			(sjme_javaTypeId)i)))
-			goto fail_initFieldValues;
+				superClass->methods[i].count : 0);
 	
 	/* Bind instance and static methods. */
 	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
 	{
-		binds = NULL;
+		methodBinds = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBinds(
-			loader, inClass,
-			(sjme_nvm_class_instanceType)i,
-			&binds)) || binds == NULL)
+			loader, inClass, i, contextThread,
+			&methodBinds)) || methodBinds == NULL)
 			goto fail_bindMethods;
-		inClass->methodBinds[i] = binds;
+		inClass->methods[i].binds = methodBinds;
 	}
 
-#if 0
-	/* Initialize statics fields with constant values. */
-	for (;;)
+	/* Setup allocation sizes for static and instance fields. */
+	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
 	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
+		/* Determine base allocation size, and extra base. */
+		/* Static field storage always has zero base. */
+		if (i == SJME_NVM_CLASS_MEMBER_STATIC)
+			allocSize = 0;
+		else if (superClass == NULL)
+			allocSize = sizeof(sjme_jobjectBase);
+		else
+			allocSize = superClass->fields[i].allocSize;
 	
-	/* Call static constructor, if one exists. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
+		/* Make sure the offset is fully aligned first. */
+		allocSize = sjme_util_alignTo(allocSize, SJME_POINTER_BYTES);
+
+		/* The self allocation base is where fields should be stored for */
+		/* the fields in this specific class. */
+		inClass->fields[i].allocSelfBase = allocSize;
+	
+		/* Determine offset for fields into the object, along with how much */
+		/* space they should take up. */
+		for (javaType = 0; javaType < SJME_NUM_JAVA_TYPE_IDS; javaType++)
+		{
+			/* Make sure the offset is fully aligned first. */
+			allocSize = sjme_util_alignTo(allocSize,
+				SJME_POINTER_BYTES);
+
+			/* Place the offset here. */
+			inClass->fields[i].offset[javaType] = allocSize;
+
+			/* Grow the allocation size by what is needed to store the fields. */
+			allocSize += sjme_nvm_fieldValueSize(javaType,
+				inClass->info->fieldCount[i]
+					[javaType]);
+		}
+
+		/* Store rounded up allocation size, always to the pointer. */
+		inClass->fields[i].allocSize = sjme_util_alignTo(allocSize,
+			SJME_POINTER_BYTES);
+	}
+
+	/* Bind instance and static fields. */
+	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
+	{
+		/* Skip if there are no fields at all. */
+		if (info->fields == NULL)
+			continue;
+		
+		/* Initialize binds. */
+		fieldBinds = NULL;
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitFieldBinds(
+			contextThread->inState, loader, inClass, i, contextThread,
+			&fieldBinds)) || fieldBinds == NULL)
+			goto fail_bindFields;
+		inClass->fields[i].binds = fieldBinds;
+	}
+
+	/* Allocate and set static field values. */
+	if (inClass->fields[SJME_NVM_CLASS_MEMBER_STATIC].binds != NULL)
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitFieldStatics(
+			contextThread, inClass)))
+			goto fail_initStatics;
 	
 	/* Set as initialized now. */
 	if (!sjme_atomic_sjme_jint_compareSet(&inClass->isInitialized,
@@ -1125,18 +1253,26 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
 			classType, contextThread)))
 			goto fail_initClassType;
+	
+#if 0
+	/* Call static constructor, if one exists. */
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#endif
 
 	/* Success! */
 skip_doubleCalled:
 	return SJME_ERROR_NONE;
 	
-fail_markDone:
+fail_bindFields:
 fail_bindMethods:
 fail_initFieldValues:
 fail_super:
 	sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL);
 	
+fail_markDone:
+fail_initStatics:
 fail_initClassType:
 fail_badState:
 fail_initInterface:
@@ -1176,7 +1312,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 		return SJME_ERROR_NONE;
 		
 	/* Recover the class loader. */
-	classLoader = contextThread->inTask->classLoader;
+	classLoader = SJME_F_CL(contextThread);
 	if (classLoader == NULL)
 	{
 		error = sjme_error_vmError(contextThread,
@@ -1263,12 +1399,81 @@ fail_badName:
 	return sjme_error_vmError(contextThread, error);
 }
 
+sjme_errorCode sjme_nvm_vmClass_fieldIDByNameType(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInValue sjme_jboolean required,
+	sjme_attrInPositive sjme_charSeq inName,
+	sjme_attrInPositive sjme_charSeq inType,
+	sjme_attrOutNotNull sjme_jfieldID* outID)
+{
+	sjme_errorCode error;
+	sjme_jint i;
+	sjme_list_sjme_jfieldID* fields;
+	sjme_jfieldID field;
+	sjme_jclass pivot;
+	sjme_jint wantHash;
+	
+	if (inClass == NULL || contextThread == NULL || inName == NULL ||
+		inType == NULL || outID == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Needs to be initialized first. */
+	if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
+		inClass, contextThread)))
+		return sjme_error_default(error);
+
+	/* Calculate the hash to lookup. */
+	wantHash = sjme_nvm_class_idHashMember(inName, inType);
+	
+	/* Look through all fields. */
+	for (pivot = inClass; pivot != NULL; pivot = SJME_C_SU(pivot))
+	{
+		/* It is possible for there to be no fields in this scope. */
+		fields = pivot->fields[instanceType].binds;
+		if (fields == NULL)
+			continue;
+		
+		/* Find matching field. */
+		for (i = fields->length - 1; i >= 0; i--)
+		{
+			/* There must be a valid method here. */
+			field = fields->elements[i];
+			if (field == NULL)
+				return sjme_error_vmError(contextThread,
+					SJME_ERROR_NO_METHOD);
+			
+			/* Check against the hash, which is faster. */
+			if (field->member.idHash != wantHash)
+				continue;
+			
+			/* Is this the method. */
+			if (sjme_charSeq_equalsR(SJME_M_N(field)->seq, inName) &&
+				sjme_charSeq_equalsR(SJME_M_T(field)->seq, inType))
+			{
+				*outID = field;
+				return SJME_ERROR_NONE;
+			}
+		}
+	}
+
+	/* Not found. */
+	if (!required)
+		return SJME_ERROR_NO_FIELD;
+	return sjme_error_vmError(contextThread, SJME_ERROR_NO_FIELD);
+}
+
 sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS)
-		sjme_javaTypeId javaType,
+		sjme_extendedTypeId extendedType,
 	sjme_attrInPositive sjme_jint fieldId,
 	sjme_attrOutNotNull sjme_nvm_class_fieldInfo* outInfo)
 {
@@ -1282,10 +1487,12 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE ||
-		javaType < 0 || javaType >= SJME_NUM_JAVA_TYPE_IDS)
+		extendedType < 0 || extendedType >= SJME_NUM_EXTENDED_JAVA_TYPE_IDS ||
+		extendedType == SJME_BASIC_TYPE_ID_VOID)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	if (fieldId < 0 || fieldId >= inClass->fieldCount[instanceType][javaType])
+	if (fieldId < 0 ||
+		fieldId >= inClass->fields[instanceType].count[extendedType])
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 		
 	/* Do we want static? */
@@ -1295,9 +1502,9 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 	atClass = inClass;
 	
 	/* If we are below the class index, drop to the super class. */
-	while (fieldId < atClass->fieldBase[instanceType][javaType])
+	while (fieldId < atClass->fields[instanceType].base[extendedType])
 	{
-		atClass = sjme_atomic_sjme_jclass_get(&atClass->superClass);
+		atClass = SJME_C_SU(atClass);
 		
 		/* This should not occur. */
 		if (atClass == NULL)
@@ -1305,8 +1512,8 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 				SJME_ERROR_SUPER_CLASS_INVALID);
 	}
 
-	/* Find the associated method. */
-	base = atClass->fieldBase[instanceType][javaType];
+	/* Find the associated field. */
+	base = atClass->fields[instanceType].base[extendedType];
 	fields = atClass->info->fields;
 	for (i = 0, n = fields->length; i < n; i++)
 	{
@@ -1318,7 +1525,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 		/* If the static flag, index, and type matches, this is the one! */
 		if (field->flags.member.isStatic == wantStatic &&
 			field->typedIndex == (fieldId - base) &&
-			field->javaType == javaType)
+			field->javaType == extendedType)
 		{
 			*outInfo = field;
 			return SJME_ERROR_NONE;
@@ -1539,6 +1746,28 @@ fail_badAlloc:
 	return sjme_error_default(error);
 }
 
+sjme_jboolean sjme_nvm_vmClass_isSuperClass(
+	sjme_attrInNotNull sjme_jclass thisClass,
+	sjme_attrInNotNull sjme_jclass otherClass)
+{
+	sjme_jclass rover;
+	
+	if (thisClass == NULL || otherClass == NULL)
+		return SJME_JNI_FALSE;
+
+	/* If these are the same class, this cannot be true. */
+	if (thisClass == otherClass)
+		return SJME_JNI_FALSE;
+
+	/* Try to find the other class. */
+	for (rover = SJME_C_SU(thisClass); rover != NULL; rover = SJME_C_SU(rover))
+		if (rover == otherClass)
+			return SJME_JNI_TRUE;
+
+	/* Not found, so is not one. */
+	return SJME_JNI_FALSE;
+}
+
 sjme_errorCode sjme_nvm_vmClass_loaderLoadArray(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
 	sjme_attrOutNotNull sjme_jclass* outClass,
@@ -1636,8 +1865,18 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadF(
 	/* Need to grow the class list? */
 	if (freeSlot < 0)
 	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* The free slot is at the end of the list. */
+		freeSlot = classes->length;
+		
+		/* Grow the list. */
+		if (sjme_error_is(error = sjme_list_replace(
+			inLoader->inState->allocPool,
+			classes->length + SJME_VM_CLASS_GROW_LEN,
+			&classes, sjme_jclass, 0)) || classes == NULL)
+			goto fail_growList;
+
+		/* Set new list. */
+		inLoader->classes = classes;
 	}
 	
 	/* Forward load of class. */
@@ -1672,6 +1911,7 @@ skip_foundClass:
 	
 fail_loadClass:
 fail_releaseRead:
+fail_growList:
 fail_findFree:
 	/* Release the write lock before failing. */
 	sjme_thread_rwLockReleaseWrite(&inLoader->rwLock, NULL);
@@ -1901,7 +2141,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 		return sjme_error_vmError(contextThread, SJME_ERROR_CLASS_CHANGED);
 
 	/* Everything acts in relation to the object's class. */
-	forClass = forObject->isClass;
+	forClass = SJME_O_C(forObject);
 	
 	/* The interface binds list is inferred by is-classes. */
 	isClasses = NULL;
@@ -1958,7 +2198,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 
 	/* Go through methods. */
 	methods = interfaceId->methods;
-	for (i = 0, n = methods->length; i < n; i++)
+	for (i = methods->length - 1; i >= 0; i--)
 	{
 		/* Check method, NULL might be a private method in Object. */
 		method = methods->elements[i];
@@ -1970,9 +2210,9 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 			continue;
 		
 		/* Is this the method. */
-		if (sjme_charSeq_equalsR(method->member.name->seq,
+		if (sjme_charSeq_equalsR(SJME_M_N(method)->seq,
 				forMember->nameAndType->name->seq) &&
-			sjme_charSeq_equalsR(method->member.type->seq,
+			sjme_charSeq_equalsR(SJME_M_T(method)->seq,
 				forMember->nameAndType->descriptor->seq))
 		{
 			*outID = method;
@@ -2000,6 +2240,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 	sjme_jint i, n;
 	sjme_list_sjme_jmethodID* methods;
 	sjme_jmethodID method;
+	sjme_jint wantHash;
 	
 	if (inClass == NULL || contextThread == NULL || inName == NULL ||
 		inType == NULL || outID == NULL)
@@ -2012,20 +2253,27 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 	if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
 		inClass, contextThread)))
 		return sjme_error_default(error);
+
+	/* Calculate the hash to lookup. */
+	wantHash = sjme_nvm_class_idHashMember(inName, inType);
 		
 	/* Look through all methods. */
-	methods = inClass->methodBinds[instanceType];
-	for (i = 0, n = methods->length; i < n; i++)
+	methods = inClass->methods[instanceType].binds;
+	for (i = methods->length - 1; i >= 0; i--)
 	{
 		/* There must be a valid method here. */
 		method = methods->elements[i];
 		if (method == NULL)
 			return sjme_error_vmError(contextThread,
 				SJME_ERROR_NO_METHOD);
+			
+		/* Check against the hash, which is faster. */
+		if (method->member.idHash != wantHash)
+			continue;
 		
 		/* Is this the method. */
-		if (sjme_charSeq_equalsR(method->member.name->seq, inName) &&
-			sjme_charSeq_equalsR(method->member.type->seq, inType))
+		if (sjme_charSeq_equalsR(SJME_M_N(method)->seq, inName) &&
+			sjme_charSeq_equalsR(SJME_M_T(method)->seq, inType))
 		{
 			*outID = method;
 			return SJME_ERROR_NONE;
@@ -2089,7 +2337,7 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	if (methodId < 0 || methodId >= inClass->methodCount[instanceType])
+	if (methodId < 0 || methodId >= inClass->methods[instanceType].count)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Do we want static? */
@@ -2099,9 +2347,9 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	atClass = inClass;
 	
 	/* If we are below the class index, drop to the super class. */
-	while (methodId < atClass->methodBase[instanceType])
+	while (methodId < atClass->methods[instanceType].base)
 	{
-		atClass = sjme_atomic_sjme_jclass_get(&atClass->superClass);
+		atClass = SJME_C_SU(atClass);
 		
 		/* This should not occur, but it might. */
 		if (atClass == NULL)
@@ -2110,9 +2358,9 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	}
 
 	/* Find the associated method. */
-	base = atClass->methodBase[instanceType];
+	base = atClass->methods[instanceType].base;
 	methods = atClass->info->methods;
-	for (i = 0, n = methods->length; i < n; i++)
+	for (i = methods->length - 1; i >= 0; i--)
 	{
 		/* Get the method here. */
 		method = methods->elements[i];

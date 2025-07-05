@@ -29,6 +29,20 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * The built-in locales which are supported.
+ *
+ * @since 2025/06/22
+ */
+typedef enum sjme_nvm_mle_builtInLocaleType
+{
+	/** Unspecified. */
+	SJME_NVM_MLE_LOCALE_UNSPECIFIED = 0,
+
+	/** English, US. */
+	SJME_NVM_MLE_LOCALE_US_ENGLISH = 1,
+} sjme_nvm_mle_builtInLocaleType;
+	
+/**
  * The type of line ending the system uses.
  *
  * @since 2025/03/02
@@ -50,6 +64,20 @@ typedef enum sjme_nvm_mle_lineEndingType
 	/** Number of line ending types. */
 	SJME_NVM_MLE_NUM_LINE_ENDINGS = 4,
 } sjme_nvm_mle_lineEndingType;
+
+/**
+ * The memory profiles available.
+ *
+ * @since 2025/06/24
+ */
+typedef enum sjme_nvm_mle_memoryProfileType
+{
+	/** Minimal memory usage. */
+	SJME_NVM_MLE_MEMORY_PROFILE_MINIMAL = -1,
+
+	/** Normal memory usage. */
+	SJME_NVM_MLE_MEMORY_PROFILE_NORMAL = 0,
+} sjme_nvm_mle_memoryProfileType;
 	
 /**
  * Standard pipe descriptor IDs.
@@ -70,6 +98,26 @@ typedef enum sjme_nvm_mle_standardPipeType
 	/** The number of standard pipes. */
 	SJME_NVM_MLE_NUM_STD_PIPES = 3,
 } sjme_nvm_mle_standardPipeType;
+
+/**
+ * The thread model in use.
+ *
+ * @since 2025/06/29
+ */
+typedef enum sjme_nvm_mle_threadModel
+{
+	/** Single cooperatively threaded. */
+	SJME_NVM_MLE_THREAD_SINGLE_COOP = 0,
+	
+	/** Single threaded, with preemption. */
+	SJME_NVM_MLE_THREAD_SINGLE_PREEMPT = 1,
+	
+	/** Simultaneous Multi-threaded. */
+	SJME_NVM_MLE_THREAD_MULTI = 2,
+	
+	/** The number of threading models. */
+	SJME_NVM_MLE_THREAD_NUM_MODELS = 3,
+} sjme_nvm_mle_threadModel;
 	
 /**
  * The virtual machine type.

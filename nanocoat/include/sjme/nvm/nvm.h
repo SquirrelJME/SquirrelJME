@@ -139,6 +139,9 @@ typedef struct sjme_jfieldIDBase sjme_jfieldIDBase;
  */
 typedef sjme_jfieldIDBase* sjme_jfieldID;
 
+/** List of fields. */
+SJME_LIST_DECLARE(sjme_jfieldID, 0);
+
 /**
  * The type of structure a type is.
  * 
@@ -163,6 +166,9 @@ typedef enum sjme_nvm_structType
 	
 	/** Method code. */
 	SJME_NVM_STRUCT_CODE,
+
+	/** Field identifier. */
+	SJME_NVM_STRUCT_FIELD_ID,
 	
 	/** Field information. */
 	SJME_NVM_STRUCT_FIELD_INFO,
@@ -217,9 +223,15 @@ typedef enum sjme_nvm_structType
 	
 	/** A single thread. */
 	SJME_NVM_STRUCT_THREAD,
+
+	/** A trace point instance pointer object. */
+	SJME_NVM_STRUCT_TRACE_POINT_INSTANCE,
 	
 	/** Class loader. */
 	SJME_NVM_STRUCT_VM_CLASS_LOADER,
+
+	/** An instance of a @c Reference . */
+	SJME_NVM_STRUCT_WEAK_INSTANCE,
 	
 	/** The number of structure types. */
 	SJME_NVM_NUM_STRUCT
@@ -241,12 +253,21 @@ typedef sjme_nvm_commonBase* sjme_nvm_common;
 
 /** Cast to array. */
 #define SJME_AS_JARRAY(x) ((sjme_jarray)(x))
+
+/** Cast to array pointer. */
+#define SJME_AS_JARRAYP(x) ((sjme_jarray*)(x))
 	
 /** Cast to object. */
 #define SJME_AS_JOBJECT(x) ((sjme_jobject)(x))
 
 /** Cast to pointer to object. */
 #define SJME_AS_JOBJECTP(x) ((sjme_jobject*)(x))
+	
+/** Cast to class. */
+#define SJME_AS_JCLASS(x) ((sjme_jclass)(x))
+
+/** Cast to pointer to object. */
+#define SJME_AS_JCLASSP(x) ((sjme_jclass*)(x))
 
 /** As a member ID. */
 #define SJME_AS_JMEMBERID(x) ((sjme_jmemberID)(x))
@@ -390,14 +411,17 @@ struct sjme_nvm_commonBase
  */
 typedef enum sjme_nvm_threadScheduleMode
 {
+	/** Thread is undefined schedule. */
+	SJME_NVM_THREAD_UNDEFINED_SCHEDULE = 0,
+	
 	/** Thread is scheduled. */
-	SJME_NVM_THREAD_SCHEDULED = 0,
+	SJME_NVM_THREAD_SCHEDULED = 1,
 
 	/** Thread is unscheduled. */
-	SJME_NVM_THREAD_UNSCHEDULED = 1,
+	SJME_NVM_THREAD_UNSCHEDULED = 2,
 
 	/** The number of scheduled modes. */
-	SJME_NVM_THREAD_NUM_SCHEDULE_MODE = 2,
+	SJME_NVM_THREAD_NUM_SCHEDULE_MODE = 3,
 } sjme_nvm_threadScheduleMode;
 
 /**
@@ -407,9 +431,6 @@ typedef enum sjme_nvm_threadScheduleMode
  */
 typedef struct sjme_nvm_threadSubSchedule
 {
-	/** The lock for scheduling. */
-	sjme_thread_spinLock lock;
-
 	/** The number of scheduled threads. */
 	sjme_jint count;
 		
@@ -424,10 +445,33 @@ typedef struct sjme_nvm_threadSubSchedule
  */
 typedef struct sjme_nvm_threadSchedule
 {
+	/** The thread model in use. */
+	sjme_nvm_mle_threadModel model;
+	
+	/** The lock for scheduling. */
+	sjme_thread_spinLock lock;
+	
 	/** The schedules for each mode. */
 	sjme_nvm_threadSubSchedule mode[SJME_NVM_THREAD_NUM_SCHEDULE_MODE];
 } sjme_nvm_threadSchedule;
 
+/**
+ * The state and/or task termination level.
+ *
+ * @since 2025/06/29
+ */
+typedef enum sjme_nvm_terminateLevel
+{
+	/** Not terminating. */
+	SJME_NVM_TERMINATE_NOT = 0,
+
+	/** Entering the cleanup phase. */
+	SJME_NVM_TERMINATE_CLEANUP = 1,
+
+	/** Done terminating. */
+	SJME_NVM_TERMINATE_COMPLETE = 2,
+} sjme_nvm_terminateLevel;
+	
 struct sjme_nvm_stateBase
 {
 	/** Common data. */
@@ -450,16 +494,32 @@ struct sjme_nvm_stateBase
 	
 	/** The tasks that are currently existing. */
 	sjme_list_sjme_nvm_task* tasks;
+
+	/** The number of running tasks. */
+	sjme_atomic_sjme_jint numRunningTasks;
 	
 	/** The next identifier for tasks. */
 	sjme_atomic_sjme_jint nextTaskId;
 	
 	/** The next identifier for tasks. */
 	sjme_atomic_sjme_jint nextThreadId;
+	
+	/** The thread model in use. */
+	sjme_nvm_mle_threadModel threadModel;
 
 	/** The thread schedule. */
-	sjme_nvm_threadSchedule schedule;
+	sjme_nvm_threadSchedule* schedule;
+	
+	/** The state @c sjme_nvm_terminateLevel ? */
+	sjme_atomic_sjme_jint terminating;
 };
+
+/**
+ * Specifies how the PC address should be adjusted.
+ *
+ * @since 2025/01/11
+ */
+typedef struct sjme_nvm_byteCode_pcNew sjme_nvm_byteCode_pcNew;
 
 /** Type size multiplier. */
 extern const sjme_jint sjme_nvm_typeMul[SJME_NUM_BASIC_TYPE_IDS];
@@ -482,7 +542,7 @@ extern const sjme_jint sjme_nvm_typePromote[SJME_NUM_BASIC_TYPE_IDS];
 #define SJME_NANOCOAT_END_CALL ((sjme_pcAddr)-2)
 
 /** Casts pointer to a pointer to a @c sjme_jstring . */
-#define SJME_AS_NVM_JSTRINGP(p) ((sjme_jstring*)(p))
+#define SJME_AS_JSTRINGP(p) ((sjme_jstring*)(p))
 	
 /**
  * Allows for optional debug abort when a virtual machine error occurs

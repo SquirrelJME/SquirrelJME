@@ -103,10 +103,12 @@ static sjme_lpcstr sjme_nvm_romNames[] =
 {
 	"squirreljme-"SQUIRRELJME_VERSION"-fast.jar",
 	"squirreljme-"SQUIRRELJME_VERSION".jar",
+	"squirreljme-"SQUIRRELJME_VERSION"-test.jar",
 	"squirreljme-"SQUIRRELJME_VERSION"-slow.jar",
 	"squirreljme-"SQUIRRELJME_VERSION"-slow-test.jar",
 	"squirreljme-fast.jar",
 	"squirreljme.jar",
+	"squirreljme-test.jar",
 	"squirreljme-slow.jar",
 	"squirreljme-slow-test.jar",
 	NULL
@@ -167,7 +169,8 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
-	sjme_attrOutNotNull sjme_nvm* outState)
+	sjme_attrOutNotNull sjme_nvm* outState,
+	sjme_attrOutNullable sjme_nvm_task* outInitTask)
 {
 #define FIXED_SUITE_COUNT 16
 	sjme_errorCode error;
@@ -208,7 +211,7 @@ sjme_errorCode sjme_nvm_boot(
 	/* Set parameters accordingly. */
 	result->allocPool = allocPool;
 	result->nal = param->nal;
-
+	
 	/* Initialize base for suite merging. */
 	memset(mergeSuites, 0, sizeof(mergeSuites));
 	numMergeSuites = 0;
@@ -288,7 +291,15 @@ sjme_errorCode sjme_nvm_boot(
 		goto fail_badClassPath;
 	}
 
+	/* Allocate the task scheduler, if applicable. */
+	if (result->threadModel != SJME_NVM_MLE_THREAD_MULTI)
+		if (sjme_error_is(error = sjme_alloc(allocPool,
+			sizeof(*result->schedule), (sjme_pointer*)&result->schedule)) ||
+			result->schedule == NULL)
+			goto fail_allocSchedule;
+
 	/* Setup task details. */
+	memset(&initTaskConfig, 0, sizeof(initTaskConfig));
 	initTaskConfig.stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
 	initTaskConfig.stdErr = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
 	initTaskConfig.classPath = classPath;
@@ -304,10 +315,13 @@ sjme_errorCode sjme_nvm_boot(
 	
 	/* Return newly created VM. */
 	*outState = result;
+	if (outInitTask != NULL)
+		*outInitTask = initTask;
 	return SJME_ERROR_NONE;
 
 	/* Failed at specific points... */
 fail_initTask:
+fail_allocSchedule:
 fail_badClassPath:
 fail_suiteMerge:
 fail_noSuites:
@@ -315,7 +329,7 @@ fail_payloadRom:
 fail_bothIdAndName:
 fail_bootParamCopy:
 	if (result != NULL && result->bootParamCopy != NULL)
-		sjme_alloc_free(result->bootParamCopy);
+		sjme_alloc_free((void*)result->bootParamCopy);
 
 fail_resultInit:
 fail_resultAlloc:
@@ -401,17 +415,17 @@ sjme_errorCode sjme_nvm_defaultDir(
 		return SJME_ERROR_OUT_OF_MEMORY;
 	memset(work, 0, sizeof(*work) * limit);
 	
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	if (1)
 		sjme_todo("Impl?");
-#elif defined(SJME_CONFIG_HAS_DOS)
+#elif defined(SJME_CONFIG_HAS_OS_PC_DOS)
 	if (1)
 		sjme_todo("Impl?");
 		
-#elif defined(SJME_CONFIG_HAS_LINUX) || \
-	defined(SJME_CONFIG_HAS_BSD) || \
-	defined(SJME_CONFIG_HAS_MACOS) || \
-	defined(SJME_CONFIG_HAS_CYGWIN)
+#elif defined(SJME_CONFIG_HAS_OS_LINUX) || \
+	defined(SJME_CONFIG_HAS_OS_BSD) || \
+	defined(SJME_CONFIG_HAS_OS_MACOS) || \
+	defined(SJME_CONFIG_HAS_OS_CYGWIN)
 	
 	/* Which are we interested in? */
 	useEnv = NULL;
@@ -511,7 +525,6 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_attrInPositiveNonZero sjme_jint argc,
 	sjme_attrInNotNull sjme_lpcstr* argv)
 {
-#if defined(SJME_MERGE)
 	sjme_errorCode error;
 	sjme_jint argAt;
 	sjme_charSeqStatic argSeq;
@@ -743,5 +756,4 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
-#endif
 }

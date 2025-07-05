@@ -11,36 +11,6 @@
 #include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/task.h"
 
-sjme_errorCode sjme_nvm_fieldValueSet(
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
-	sjme_attrInNotNull sjme_nvm_fieldValues* into,
-	sjme_attrInPositive sjme_jint atIndex,
-	sjme_attrInNotNull sjme_jvalue* value)
-{
-	if (into == NULL || value == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (into->type != javaType)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	if (atIndex < 0 || atIndex >= into->length)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-
-	if (javaType == SJME_JAVA_TYPE_ID_INTEGER)
-		into->values.i[atIndex] = value->i;
-	else if (javaType == SJME_JAVA_TYPE_ID_LONG)
-		into->values.j[atIndex] = value->j;
-	else if (javaType == SJME_JAVA_TYPE_ID_FLOAT)
-		into->values.f[atIndex] = value->f;
-	else if (javaType == SJME_JAVA_TYPE_ID_DOUBLE)
-		into->values.d[atIndex] = value->d;
-	else
-		into->values.l[atIndex] = value->l;
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
 sjme_jint sjme_nvm_fieldValueSize(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
 	sjme_attrInPositiveNonZero sjme_jint n)
@@ -63,23 +33,6 @@ sjme_jint sjme_nvm_fieldValueSize(
 	return (baseSize * n) +
 		offsetof(sjme_nvm_fieldValues, values) +
 		offsetof(sjme_nvm_rawFieldValues, l);
-}
-
-sjme_errorCode sjme_nvm_instance_checkPermission(
-	sjme_attrInNotNull sjme_jclass fromClass,
-	sjme_attrInNotNull sjme_jmemberID toMember,
-	sjme_attrOutNotNull sjme_jboolean* accessOkay)
-{
-	if (fromClass == NULL || toMember == NULL || accessOkay == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Members in the same class are always acceptable. */
-	if (toMember->inClass == fromClass)
-		goto skip_okay;
-
-skip_okay:
-	*accessOkay = SJME_JNI_TRUE;
-	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_instance_countDown(
@@ -132,9 +85,285 @@ sjme_errorCode sjme_nvm_instance_countDown(
 	return SJME_ERROR_NONE;
 }
 
+sjme_jvalue* sjme_nvm_instance_fieldAccessor(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field)
+{
+#define NUM_VOIDLESS 4
+	sjme_threadLocal(sjme_jvalue, voidless[NUM_VOIDLESS]);
+	sjme_threadLocal(sjme_jint, voidlessNext);
+
+	/* If neither are valid, treat this as a bad memory read/write. */
+	if (instance == NULL || field == NULL)
+		goto fail_voidless;
+
+	/* Static field? */
+	if (field->flags.member.isStatic)
+	{
+		/* Cannot read/write to non-classes. */
+		if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_CLASS_INSTANCE))
+			goto fail_voidless;
+
+		/* Values is based on the static chunk. */
+		return SJME_POINTER_OFFSET(((sjme_jclass)instance)->staticChunk,
+			field->pointerOffset);
+	}
+
+	/* Instance field? */
+	else
+	{
+		/* Can only read/write plain objects. */
+		if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_OBJECT_INSTANCE))
+			goto fail_voidless;
+		
+		/* Value is based on the object itself, from the basis of */
+		/* its allocation size. */
+		return SJME_POINTER_OFFSET((sjme_pointer)instance,
+			field->pointerOffset);
+	}
+	
+	/* Fallback to read/write some kind of valid memory. */
+fail_voidless:
+	memset(&voidless, 0, sizeof(voidless));
+	return &voidless[(voidlessNext++) & (NUM_VOIDLESS - 1)];
+#undef NUM_VOIDLESS
+}
+
+sjme_errorCode sjme_nvm_instance_initFields(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_pointer chunk,
+	sjme_attrInNotNull sjme_list_sjme_jfieldID* fields,
+	sjme_attrInNotNull sjme_nvm_jclass_fields* placements)
+{
+	sjme_errorCode error;
+	sjme_jint i, n;
+	sjme_jfieldID field;
+	sjme_nvm_jfieldAccessFunc accessor;
+	sjme_jvalue* direct;
+	sjme_nvm_class_fieldConstVal* constVal;
+
+	if (contextThread == NULL || instance == NULL || chunk == NULL ||
+		fields == NULL || placements == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Always use the default accessor to write initial field values. */
+	accessor = SJME_T_K(contextThread)->globals.accessor;
+
+	/* Since we have bound all static fields, we can just use that. */
+	for (i = 0, n = fields->length; i < n; i++)
+	{
+		/* Operate on this field. */
+		field = fields->elements[i];
+
+		/* If there is no actual constant value to set, skip. */
+		constVal = &field->info->constVal;
+		if (constVal->type >= SJME_NUM_JAVA_TYPE_IDS)
+			continue;
+		
+		/* Get direct pointer to the data. */
+		direct = accessor(instance, field);
+		if (direct == NULL)
+			return SJME_ERROR_FIELD_NOT_DIRECT;
+
+		/* If a string, it needs to be initialized as a string object. */
+		if (constVal->value.string != NULL)
+		{
+			direct->l = NULL;
+			if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
+				contextThread, SJME_AS_JSTRINGP(&direct->l),
+				constVal->value.string)) || direct->l == NULL)
+				return sjme_error_vmError(contextThread,
+					sjme_error_defaultOr(error,
+						SJME_ERROR_STATIC_STRING_INIT));
+		}
+
+		/* Copy value directly is primitive. */
+		else
+			memmove(direct, &constVal->value.java,
+				sjme_nvm_typeMul[field->info->javaType]);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_instance_initFieldsChunk(
+	sjme_attrInNotNull sjme_pointer chunk,
+	sjme_attrInNotNull sjme_nvm_jclass_fields* placements)
+{
+	sjme_extendedTypeId type;
+	sjme_nvm_fieldValues* into;
+	
+	if (chunk == NULL || placements == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Placements are calculated for each type. */
+	for (type = 0; type < SJME_NUM_EXTENDED_JAVA_TYPE_IDS; type++)
+	{
+		/* If there are no fields, ignore. */
+		if (placements->count[type] == 0)
+			continue;
+		
+		/* Determine the base offset to write at. */
+		into = SJME_POINTER_OFFSET(chunk, placements->offset[type]);
+
+		/* Set details for the partition. */
+		into->type = type;
+		into->length = placements->count[type];
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_instance_fieldAccessStack(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jfieldID fieldId,
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jvalueTyped* stackType,
+	sjme_attrInValue sjme_jboolean isPut)
+{
+	sjme_jvalue* direct;
+	sjme_nvm_jfieldAccessFunc accessor;
+
+	if (contextThread == NULL || fieldId == NULL || stackType == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (instance == NULL)
+		return SJME_ERROR_NULL_STACK_POINTER;
+	
+	/* Obtain accessor for this field. */
+	if (fieldId->accessor != NULL)
+		accessor = fieldId->accessor;
+	else
+		accessor = SJME_T_K(contextThread)->globals.accessor;
+
+	/* There must be an accessor. */
+	if (accessor == NULL)
+		return SJME_ERROR_FIELD_NOT_DIRECT;
+
+	/* Direct access. */
+	direct = accessor(instance, fieldId);
+	if (direct == NULL)
+		return SJME_ERROR_FIELD_NOT_DIRECT;
+
+	/* No promotion/demotion needed. */
+	if (fieldId->extendedType < SJME_NUM_JAVA_TYPE_IDS)
+	{
+		if (isPut)
+			memmove(direct, &stackType->v,
+				sjme_nvm_typeMul[fieldId->extendedType]);
+		else
+			memmove(&stackType->v, direct,
+				sjme_nvm_typeMul[fieldId->extendedType]);
+	}
+
+	/* Translation is needed. */
+	else
+	{
+		/* Determine where to move to/from. */
+		switch (fieldId->basicType)
+		{
+				/* Force to boolean based value. */
+			case SJME_BASIC_TYPE_ID_BOOLEAN:
+				if (isPut)
+					direct->b = (stackType->v.i ? 1 : 0);
+				else
+					stackType->v.i = (direct->b ? 1 : 0);
+				break;
+
+				/* Expand to byte. */
+			case SJME_BASIC_TYPE_ID_BYTE:
+			case SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE:
+				if (isPut)
+					direct->b = (sjme_jbyte)stackType->v.i;
+				else
+				{
+					stackType->v.i = direct->b;
+					if ((direct->b & INT8_C(0x80)) != 0)
+						stackType->v.i |= INT32_C(0xFFFFFF00);
+				}
+				break;
+
+				/* Expand to short. */
+			case SJME_BASIC_TYPE_ID_SHORT:
+				if (isPut)
+					direct->s = (sjme_jshort)stackType->v.i;
+				else
+				{
+					stackType->v.i = direct->s;
+					if ((direct->s & INT16_C(0x8000)) != 0)
+						stackType->v.i |= INT32_C(0xFFFF0000);
+				}
+				break;
+
+				/* Limit to char. */
+			case SJME_BASIC_TYPE_ID_CHARACTER:
+				if (isPut)
+					direct->c = (sjme_jchar)stackType->v.i;
+				else
+					stackType->v.i = (direct->c & INT32_C(0xFFFF));
+				break;
+
+			default:
+				return SJME_ERROR_INVALID_FIELD_TYPE;
+		}
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_instance_monitorEnter(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jobject instance)
+{
+	sjme_errorCode error;
+	
+	if (contextThread == NULL || instance == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Grab the lock on the object. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&instance->common.lock)))
+		return sjme_error_vmError(contextThread, error);
+
+	/* Count up the monitor since we do have the lock. */
+	sjme_atomic_sjme_jint_getAdd(&instance->monitorCount, 1);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_instance_monitorExit(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jobject instance)
+{
+	sjme_errorCode error;
+	
+	if (contextThread == NULL || instance == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* There are no monitor locks on this instance? */
+	if (sjme_atomic_sjme_jint_get(&instance->monitorCount) < 0)
+		return SJME_ERROR_NOT_LOCK_OWNER;
+	
+	/* Release the lock on the object. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&instance->common.lock, NULL)))
+		return sjme_error_vmError(contextThread, error);
+
+	/* We did a successful release, so count the locks down. */
+	sjme_atomic_sjme_jint_getAdd(&instance->monitorCount, -1);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrOutNotNull sjme_jarray* outObject,
 	sjme_attrInNotNull sjme_jclass componentType,
 	sjme_attrInPositive sjme_jint arrayLength)
 {
@@ -158,7 +387,7 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	/* Determine the allocation size. */
 	allocSize = sizeof(*result);
 	if (componentType->arrayTypeId == SJME_BASIC_TYPE_ID_BOOLEAN)
-		allocSize = (arrayLength / 8) + 1;
+		allocSize += (arrayLength / 8) + 1;
 	else
 		allocSize += (sjme_nvm_typeMul[componentType->arrayTypeId] *
 			arrayLength);
@@ -171,7 +400,7 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	/* Locate array type class. */
 	arrayClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFU(
-		contextThread->inTask->classLoader,
+		SJME_F_CL(contextThread),
 		&arrayClass, contextThread, buf, SJME_JNI_TRUE)) ||
 		arrayClass == NULL)
 		return sjme_error_vmError(contextThread, error);
@@ -188,13 +417,13 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	result->length = arrayLength;
 
 	/* Success! */
-	*outObject = SJME_AS_JOBJECT(result);
+	*outObject = result;
 	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_instance_objectArrayNewT(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrOutNotNull sjme_jobject* outObject,
+	sjme_attrOutNotNull sjme_jarray* outObject,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_basicTypeId componentType,
 	sjme_attrInPositive sjme_jint arrayLength)
 {
@@ -275,6 +504,7 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 {
 	sjme_errorCode error;
 	sjme_jobject result;
+	sjme_javaTypeId javaType;
 	
 	if (contextThread == NULL || outObject == NULL || inClass == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -298,23 +528,32 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 			SJME_NVM_TASK_COMMON_CLASS_CLASS))
 			return SJME_ERROR_INVALID_ARGUMENT;
 		
-		/* If this is string, they get remapped. */
+		/* Remap @c String . */
 		else if (inClass == sjme_nvm_task_commonClassR(contextThread,
 			SJME_NVM_TASK_COMMON_CLASS_STRING))
 		{
-			inType = SJME_NVM_TASK_COMMON_CLASS_STRING;
+			inType = SJME_NVM_STRUCT_STRING_INSTANCE;
 			allocSize = sizeof(sjme_jstringBase);
 		}
-
-		/* Otherwise calculate object storage. */
-		else
+		
+		/* Remap @c Reference based classes, however specifically */
+		/* limit to a small selection of reference based classes. */
+		/* This is so that any aliases are treated the same regardless. */
+		else if (inClass == sjme_nvm_task_commonClassR(contextThread,
+				SJME_NVM_TASK_COMMON_CLASS_REFERENCE_PHANTOM) ||
+			inClass == sjme_nvm_task_commonClassR(contextThread,
+				SJME_NVM_TASK_COMMON_CLASS_REFERENCE_SOFT) ||
+			inClass == sjme_nvm_task_commonClassR(contextThread,
+				SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK))
 		{
-			/* Base size is always the base object size. */
-			allocSize = sizeof(sjme_jobjectBase);
-			
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			inType = SJME_NVM_STRUCT_WEAK_INSTANCE;
+			allocSize = sizeof(sjme_jweakBase);
 		}
+
+		/* Otherwise, object storage is pre-calculated. */
+		else
+			allocSize =
+				inClass->fields[SJME_NVM_CLASS_MEMBER_INSTANCE].allocSize;
 	}
 	
 	/* Setup object. */
@@ -326,11 +565,47 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 	
 	/* Setup object. */
 	result->isClass = inClass;
-	result->identityHash = (sjme_jint)result;
+#if defined(SJME_CONFIG_HAS_POINTER64)
+	result->identityHash = (sjme_jint)(((sjme_intPointer)result) ^
+		((((sjme_intPointer)result)) >> 31));
+#else
+	result->identityHash = ((sjme_intPointer)result);
+#endif
 	
 	/* Success! */
 	*outObject = result;
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_instance_objectNewBracket(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrOutNotNull sjme_jobject* outObject)
+{
+	sjme_nvm_task_commonClassId commonId;
+	sjme_jint allocSize;
+	
+	if (contextThread == NULL || outObject == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Determine size and type. */
+	commonId = SJME_NVM_TASK_NUM_COMMON_CLASS;
+	allocSize = -1;
+	switch (inType)
+	{
+		case SJME_NVM_STRUCT_TRACE_POINT_INSTANCE:
+			commonId = SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT;
+			allocSize = sizeof(sjme_jbracketTraceBase);
+			break;
+			
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+
+	/* Allocate. */
+	return sjme_nvm_instance_objectNew(contextThread, allocSize,
+		inType, outObject, sjme_nvm_task_commonClassR(contextThread,
+			commonId));
 }
 
 sjme_errorCode sjme_nvm_instance_objectNewN(
@@ -352,7 +627,7 @@ sjme_errorCode sjme_nvm_instance_objectNewN(
 	/* Lookup the class first. */
 	classy = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		contextThread->inTask->classLoader, &classy, contextThread,
+		SJME_F_CL(contextThread), &classy, contextThread,
 		inClass, SJME_JNI_FALSE)) || classy == NULL)
 		return sjme_error_vmError(contextThread, error);
 

@@ -195,6 +195,18 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	if(SQUIRRELJME_HAS_GCC_FVISIBILITY_HIDDEN)
 		add_compile_options("-fvisibility=hidden")
 	endif()
+
+	# Pedantic warnings?
+	check_c_compiler_flag("-Wpedantic" SQUIRRELJME_HAS_WARN_PEDANTIC)
+	if(SQUIRRELJME_HAS_WARN_PEDANTIC)
+		add_compile_options("-Wpedantic")
+	endif()
+
+	# Can we set the no execute flag for the link?
+	check_c_compiler_flag("-Wl,-z,noexecstack" SQUIRRELJME_HAS_NOEXECSTACK)
+	if(SQUIRRELJME_HAS_NOEXECSTACK)
+		add_compile_options("-Wl,-z,noexecstack")
+	endif()
 endif()
 
 # Quick compilation check
@@ -225,16 +237,28 @@ if(NOT SJME_CONFIG_HAS_FLOAT_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_FLOAT_H=1)
 endif()
 
+# dlfcn.h available?
+CHECK_INCLUDE_FILE("dlfcn.h" SJME_CONFIG_HAS_DLFCN_H)
+if(NOT SJME_CONFIG_HAS_DLFCN_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_DLFCN_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_DLFCN_H=1)
+endif()
+
 # stdarg.h available?
 CHECK_INCLUDE_FILE("stdarg.h" SJME_CONFIG_HAS_STDARG_H)
 if(NOT SJME_CONFIG_HAS_STDARG_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_STDARG_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_STDARG_H=1)
 endif()
 
 # varargs.h available?
 CHECK_INCLUDE_FILE("varargs.h" SJME_CONFIG_HAS_VARARGS_H)
 if(NOT SJME_CONFIG_HAS_VARARGS_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_VARARGS_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_VARARGS_H=1)
 endif()
 
 # threads.h available?

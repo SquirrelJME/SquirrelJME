@@ -20,7 +20,7 @@ static sjme_errorCode sjme_stream_outputStdIoClose(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Recover NAL. */
-	nal = inImplState->handle;
+	nal = inImplState->handle.p;
 	if (nal == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
@@ -40,7 +40,7 @@ static sjme_errorCode sjme_stream_outputStdIoFlush(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Recover NAL. */
-	nal = inImplState->handle;
+	nal = inImplState->handle.p;
 	if (nal == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
@@ -62,7 +62,7 @@ static sjme_errorCode sjme_stream_outputStdIoInit(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Store handle. */
-	inImplState->handle = nal;
+	inImplState->handle.p = nal;
 	return SJME_ERROR_NONE;
 }
 
@@ -81,7 +81,7 @@ static sjme_errorCode sjme_stream_outputStdIoWrite(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	/* Recover NAL. */
-	nal = inImplState->handle;
+	nal = inImplState->handle.p;
 	if (nal == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 

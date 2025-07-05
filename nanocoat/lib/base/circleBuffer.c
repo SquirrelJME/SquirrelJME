@@ -99,7 +99,7 @@ static sjme_errorCode sjme_circleBuffer_splice(
 	externBase = externSl->base;
 	len = circleSl->len;
 
-#if 0
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("len: %d", len);
 #endif
@@ -379,7 +379,7 @@ static sjme_errorCode sjme_circleBuffer_operate(
 		if (src->len != dest->len)
 			return SJME_ERROR_ILLEGAL_STATE;
 
-#if 0
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("Slice %d [%p %d %d] <- [%p %d %d]",
 			i, dest->externalBuf, dest->base, dest->len,

@@ -13,9 +13,9 @@
 #include "sjme/config.h"
 #include "sjme/multithread.h"
 
-#if defined(SJME_CONFIG_HAS_LINUX)
+#if defined(SJME_CONFIG_HAS_OS_LINUX)
 	#include <sched.h>
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	#if SJME_CONFIG_WINDOWS_VERSION_LEAST(SJME_CONFIG_WINDOWS_8)
 		#include <processthreadsapi.h>
 	#endif
@@ -24,6 +24,11 @@
 #endif
 
 #include "sjme/debug.h"
+
+#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+/** The only available thread. */
+static const sjme_thread sjme_singleCurrent;
+#endif
 
 sjme_errorCode sjme_thread_current(
 	sjme_attrInOutNotNull sjme_thread* outThread)
@@ -44,6 +49,9 @@ sjme_errorCode sjme_thread_current(
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/* Query the current thread ID, the main thread might be zero. */
 	result = SJME_THREAD_BUMP(GetCurrentThreadId());
+#elif defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	/* Threading is not supported, so always refer to a virtual ID. */
+	result = sjme_singleCurrent;
 #else
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -123,6 +131,9 @@ sjme_errorCode sjme_thread_new(
 
 	/* Windows requires thread bumping. */
 	result = SJME_THREAD_BUMP(result);
+#elif defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	/* Threading not supported. */
+	return SJME_ERROR_CANNOT_CREATE;
 #else
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -328,8 +339,6 @@ sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
 		
 	/* Do this just for good measure for the wierd CPUs. */
 	sjme_atomic_barrier();
-	sjme_thread_yield();
-	sjme_atomic_barrier();
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -385,8 +394,6 @@ sjme_errorCode sjme_thread_spinLockRelease(
 		
 	/* Do this just for good measure for the wierd CPUs. */
 	sjme_atomic_barrier();
-	sjme_thread_yield();
-	sjme_atomic_barrier();
 
 #if defined(SJME_CONFIG_DEBUG)
 	/* Do we not own the lock? */
@@ -412,7 +419,7 @@ void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
 {
 #if defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	LARGE_INTEGER baseTime;
-#elif defined(SJME_CONFIG_HAS_POSIX)
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	struct timespec request;
 	sjme_jint seconds, mod;
 #endif
@@ -434,7 +441,7 @@ void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
 	while (nanos > 0)
 		nanos = 0; /* TODO */
 	
-#elif defined(SJME_CONFIG_HAS_POSIX)
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	/* Calculate seconds. */
 	seconds = millis / 1000;
 	mod = millis % 1000;
@@ -450,7 +457,7 @@ void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
 
 void sjme_thread_yield(void)
 {
-#if defined(SJME_CONFIG_HAS_LINUX)
+#if defined(SJME_CONFIG_HAS_OS_LINUX)
 	sched_yield();
 #elif defined(SJME_CONFIG_HAS_THREADS_PTHREAD_MACOS)
 	/* macOS has none. */

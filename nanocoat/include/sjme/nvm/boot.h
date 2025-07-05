@@ -97,16 +97,15 @@ struct sjme_nvm_bootParam
  * @param allocPool The main pool to be allocated within.
  * @param param The configuration to use.
  * @param outState The output state of the virtual machine.
- * @param argc The number of arguments passed to the executable.
- * @param argv The command line arguments passed to the executable.
+ * @param outInitTask The initial task that was created.
  * @return The error code, if any.
  * @since 2023/07/27
  */
 sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
-	sjme_attrOutNotNull sjme_nvm* outState)
-	sjme_attrCheckReturn;
+	sjme_attrOutNotNull sjme_nvm* outState,
+	sjme_attrOutNullable sjme_nvm_task* outInitTask);
 
 /**
  * Locates the default boot suite.
@@ -144,13 +143,14 @@ sjme_errorCode sjme_nvm_defaultDir(
  * Destroys the virtual machine.
  * 
  * @param state The state to destroy.
+ * @param exitCode The exit code of the virtual machine as a whole, this
+ * generally is the exit code of the main task.
  * @return If destruction was successful.
  * @since 2023/07/27
  */
 sjme_errorCode sjme_nvm_destroy(
 	sjme_attrInNotNull sjme_nvm state,
-	sjme_attrOutNullable sjme_jint* exitCode)
-	sjme_attrCheckReturn;
+	sjme_attrOutNullable sjme_jint* exitCode);
 
 /**
  * Parses a standard command line sequence.

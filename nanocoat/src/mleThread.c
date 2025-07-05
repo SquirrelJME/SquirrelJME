@@ -39,8 +39,8 @@ SJME_NVM_MLE_FUNCTION_DECL(currentJavaThread)
 SJME_NVM_MLE_FUNCTION_DECL(currentVMThread)
 {
 	/* Native threads are VM threads. */
-	argR->type = SJME_JAVA_TYPE_ID_OBJECT;
-	argR->value.l = (sjme_jobject)inFrame->inThread;
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)SJME_F_T(inFrame);
 	return SJME_ERROR_NONE;
 }
 
@@ -93,15 +93,16 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	/* Locate the main class. */
 	mainClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(task->classLoader,
-		&mainClass, inFrame->inThread,
-		task->globals.mainClassName->seq, SJME_JNI_TRUE)) ||
+		&mainClass, SJME_F_T(inFrame),
+		sjme_atomic_sjme_charSeq_get(
+			&task->globals.mainClassName->seq), SJME_JNI_TRUE)) ||
 		mainClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Locate the main method. */
 	mainMethod = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameTypeU(
-		mainClass, inFrame->inThread,
+		mainClass, SJME_F_T(inFrame),
 		SJME_NVM_CLASS_MEMBER_STATIC, SJME_JNI_TRUE,
 		"main", "([Ljava/lang/String;)V", &mainMethod)) ||
 		mainMethod == NULL)
@@ -111,24 +112,24 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	mainArgs = NULL;
 	n = (task->globals.mainArgs == NULL ? 0 : task->globals.mainArgs->length);
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
-		inFrame->inThread, SJME_AS_JOBJECTP(&mainArgs),
-		sjme_nvm_task_commonClassR(inFrame->inThread,
+		SJME_F_T(inFrame), SJME_AS_JARRAYP(&mainArgs),
+		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
 			SJME_NVM_TASK_COMMON_CLASS_STRING), n)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Fill in actual arguments. */
 	for (i = 0; i < n; i++)
-		mainArgs->elements.l[i] =
+		mainArgs->e.l[i] =
 			SJME_AS_JOBJECT(task->globals.mainArgs->elements[i]);
 	
 	/* Setup arguments. */
 	memset(mainArgV, 0, sizeof(mainArgV));
-	mainArgV[0].type = SJME_JAVA_TYPE_ID_OBJECT;
-	mainArgV[0].value.l = SJME_AS_JOBJECT(mainArgs);
+	mainArgV[0].t = SJME_JAVA_TYPE_ID_OBJECT;
+	mainArgV[0].v.l = SJME_AS_JOBJECT(mainArgs);
 	
 	/* Enter the frame. */
 	ignoreFrame = NULL;
-	return sjme_nvm_task_threadEnter(inFrame->inThread,
+	return sjme_nvm_task_threadEnter(SJME_F_T(inFrame),
 		&ignoreFrame, mainMethod, SJME_NVM_CLASS_MEMBER_STATIC,
 		1, mainArgV);
 }
@@ -186,13 +187,13 @@ SJME_NVM_MLE_FUNCTION_DECL(vmThreadIsMain)
 	sjme_nvm_thread thread;
 	
 	/* Must be a VMThread. */
-	thread = (sjme_nvm_thread)argV[0].value.l;
+	thread = (sjme_nvm_thread)argV[0].v.l;
 	if (!sjme_nvm_isAR(thread, SJME_NVM_STRUCT_THREAD))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Is a simple flag get. */
-	argR->type = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->value.i = !!thread->isMain;
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = !!thread->isMain;
 	return SJME_ERROR_NONE;
 }
 
@@ -230,79 +231,79 @@ SJME_NVM_MLE_SHELF_DECLARE(ThreadShelf) =
 {
 	SJME_NVM_MLE_DEFINE(aliveThreadCount,
 		SJME_MD(SJME_MD_I, SJME_MD_Z SJME_MD_Z),
-		"III"),
+		"I", "II"),
 	SJME_NVM_MLE_DEFINE(createVMThread,
 		SJME_MD(SJME_MD_VM_THREAD, SJME_MD_THREAD),
-		"LL"),
+		"L", "L"),
 	SJME_NVM_MLE_DEFINE(currentExitCode,
 		SJME_MD(SJME_MD_I, ),
-		"I"),
+		"I", ),
 	SJME_NVM_MLE_DEFINE(currentJavaThread,
 		SJME_MD(SJME_MD_THREAD, ),
-		"L"),
+		"L", ),
 	SJME_NVM_MLE_DEFINE(currentVMThread,
 		SJME_MD(SJME_MD_VM_THREAD, ),
-		"L"),
+		"L", ),
 	SJME_NVM_MLE_DEFINE(equals,
 		SJME_MD(SJME_MD_Z, SJME_MD_VM_THREAD SJME_MD_VM_THREAD),
-		"ILL"),
+		"I", "LL"),
 	SJME_NVM_MLE_DEFINE(javaThreadClearInterrupt,
 		SJME_MD(SJME_MD_Z, SJME_MD_THREAD),
-		"IL"),
+		"I", "L"),
 	SJME_NVM_MLE_DEFINE(javaThreadRunnable,
 		SJME_MD(SJME_MD_RUNNABLE, SJME_MD_THREAD),
-		"LL"),
+		"L", "L"),
 	SJME_NVM_MLE_DEFINE(javaThreadSetDaemon,
 		SJME_MD(SJME_MD_V, SJME_MD_THREAD),
-		"VL"),
+		"V", "L"),
 	SJME_NVM_MLE_DEFINE(model,
 		SJME_MD(SJME_MD_I, ),
-		"I"),
+		"I", ),
 	SJME_NVM_MLE_DEFINE(runProcessMain,
 		SJME_MD(SJME_MD_V, ),
-		"V"),
+		"V", ),
 	SJME_NVM_MLE_DEFINE(setCurrentExitCode,
 		SJME_MD(SJME_MD_V, SJME_MD_I),
-		"VI"),
+		"V", "I"),
 	SJME_NVM_MLE_DEFINE(setTrace,
-		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_A(SJME_MD_TRACE_POINT)),
-		"VLL"),
+		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_A(SJME_MD_TRACE)),
+		"V", "LL"),
 	SJME_NVM_MLE_DEFINE(sleep,
 		SJME_MD(SJME_MD_V, SJME_MD_I SJME_MD_I),
-		"VII"),
+		"V", "II"),
 	SJME_NVM_MLE_DEFINE(toJavaThread,
 		SJME_MD(SJME_MD_THREAD, SJME_MD_VM_THREAD),
-		"LL"),
+		"L", "L"),
 	SJME_NVM_MLE_DEFINE(toVMThread,
 		SJME_MD(SJME_MD_VM_THREAD, SJME_MD_THREAD),
-		"LL"),
+		"L", "L"),
 	SJME_NVM_MLE_DEFINE(vmThreadId,
 		SJME_MD(SJME_MD_I, SJME_MD_VM_THREAD),
-		"IL"),
+		"I", "L"),
 	SJME_NVM_MLE_DEFINE(vmThreadInterrupt,
 		SJME_MD(SJME_MD_V, SJME_MD_VM_THREAD),
-		"VL"),
+		"V", "L"),
 	SJME_NVM_MLE_DEFINE(vmThreadIsAlive,
 		SJME_MD(SJME_MD_Z, SJME_MD_VM_THREAD),
-		"IL"),
+		"I", "L"),
 	SJME_NVM_MLE_DEFINE(vmThreadIsMain,
 		SJME_MD(SJME_MD_Z, SJME_MD_VM_THREAD),
-		"IL"),
+		"I", "L"),
 	SJME_NVM_MLE_DEFINE(vmThreadIsStarted,
 		SJME_MD(SJME_MD_Z, SJME_MD_VM_THREAD),
-		"IL"),
+		"I", "L"),
 	SJME_NVM_MLE_DEFINE(vmThreadSetPriority,
 		SJME_MD(SJME_MD_V, SJME_MD_VM_THREAD SJME_MD_I),
-		"VLI"),
+		"V", "LI"),
 	SJME_NVM_MLE_DEFINE(vmThreadStart,
 		SJME_MD(SJME_MD_Z, SJME_MD_VM_THREAD),
-		"IL"),
+		"I", "L"),
 	SJME_NVM_MLE_DEFINE(vmThreadTask,
 		SJME_MD(SJME_MD_TASK, SJME_MD_VM_THREAD),
-		"LL"),
+		"L", "L"),
 	SJME_NVM_MLE_DEFINE(waitForUpdate,
 		SJME_MD(SJME_MD_Z, SJME_MD_I),
-		"II"),
+		"I", "I"),
 	
 	SJME_NVM_MLE_STOP()
 };

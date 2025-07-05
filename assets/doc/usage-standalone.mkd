@@ -87,9 +87,10 @@ The available options are:
      given VisualVM snapshot file.
  * `-XstartOnFirstThread`
    * Ignored.
- * `-Xthread:(single|coop|multi|smt)`
+ * `-Xthread:(single|coop|shared|multi|smt)`
    * Sets the threading mode of the virtual machine.
    * `single`/`coop` -- Single threaded using cooperative multitasking.
+   * `shared` -- Single threaded using preemptive multitasking.
    * `multi`/`smt` -- Multi threaded using asynchronous multitasking.
  * `-Xtrace:option[,option[,...]]` -- Trace options
    * `all` -- Enable all.

@@ -107,7 +107,7 @@ static sjme_errorCode sjme_nvm_class_constantPoolClose(
 			switch (entry->type)
 			{
 				case SJME_NVM_CLASS_POOL_TYPE_CLASS:
-					SJME_CLEANUP_CLOSE(entry->classRef.descriptor);
+					SJME_CLEANUP_CLOSE(SJME_P_C_N(entry));
 					break;
 					
 				case SJME_NVM_CLASS_POOL_TYPE_STRING:
@@ -133,6 +133,16 @@ static sjme_errorCode sjme_nvm_class_constantPoolClose(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_class_fieldIdClose(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	if (closeable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 static sjme_errorCode sjme_nvm_class_fieldInfoClose(
@@ -318,9 +328,9 @@ static sjme_errorCode sjme_nvm_instanceClose(
 {
 	if (closeable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	sjme_message("TODO: sjme_nvm_instanceClose()");
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_nvm_vmClass_isClassesClose(
@@ -428,11 +438,17 @@ sjme_errorCode sjme_nvm_allocR(
 		case SJME_NVM_STRUCT_CLASS_INSTANCE:
 		case SJME_NVM_STRUCT_OBJECT_INSTANCE:
 		case SJME_NVM_STRUCT_STRING_INSTANCE:
+		case SJME_NVM_STRUCT_TRACE_POINT_INSTANCE:
+		case SJME_NVM_STRUCT_WEAK_INSTANCE:
 			handler = sjme_nvm_instanceClose;
 			break;
 			
 		case SJME_NVM_STRUCT_CODE:
 			handler = sjme_nvm_class_codeInfoClose;
+			break;
+
+		case SJME_NVM_STRUCT_FIELD_ID:
+			handler = sjme_nvm_class_fieldIdClose;
 			break;
 		
 		case SJME_NVM_STRUCT_FIELD_INFO:

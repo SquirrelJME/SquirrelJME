@@ -126,11 +126,18 @@ extern "C" {
 #if defined(__GNUC__) && !defined(SJME_CONFIG_HAS_CLANG)
 	/** GNU C Compiler. */
 	#define SJME_CONFIG_HAS_GCC
-	
-	/** Is the GCC version the specified version? */
-	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
-		(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
-		(defined(__GNUC_MINOR__) ? __GNUC_MINOR__ >= minor : 1)))
+
+	#if defined(__GNUC_MINOR__)
+		/** Is the GCC version the specified version? */
+		#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
+			(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
+			(__GNUC_MINOR__ >= minor)))
+	#else
+		/** Is the GCC version the specified version? */
+		#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
+			(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
+			(0 >= minor)))
+	#endif
 #else
 	/** Is the GCC version the specified version? */
 	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
@@ -152,65 +159,88 @@ extern "C" {
 /* The current operating system. */
 #if defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN)
 	/** Emscripten (WASM). */
-	#define SJME_CONFIG_HAS_EMSCRIPTEN
+	#define SJME_CONFIG_HAS_OS_EMSCRIPTEN
 #elif defined(GEKKO)
 	#if defined(WIIU)
 		/** Nintendo Wii U is available. */
-		#define SJME_CONFIG_HAS_NINTENDO_WIIU
+		#define SJME_CONFIG_HAS_OS_NINTENDO_WIIU
 	#else
 		/** Nintendo Wii is available. */
-		#define SJME_CONFIG_HAS_NINTENDO_WII
+		#define SJME_CONFIG_HAS_OS_NINTENDO_WII
 	#endif
 #elif defined(__3DS__) || defined(_3DS)
 	/** Nintendo 3DS is available. */
-	#define SJME_CONFIG_HAS_NINTENDO_3DS
+	#define SJME_CONFIG_HAS_OS_NINTENDO_3DS
+#elif defined(PS2) || defined(_EE) || defined(_IOP) || defined(__PS2__)
+	/** Sony PlayStation 2. */
+	#define SJME_CONFIG_HAS_OS_SONY_PS2
 #elif defined(SDCC) || defined(__SDCC)
-	/** SDCC is available. */
-	#define SJME_CONFIG_HAS_SDCC
+	/** Baremetal system. */
+	#define SJME_CONFIG_HAS_OS_BAREMETAL
 #elif defined(__linux__) || defined(linux) || defined(__linux)
 	/** Linux is available. */
-	#define SJME_CONFIG_HAS_LINUX
+	#define SJME_CONFIG_HAS_OS_LINUX
 #elif defined(__CYGWIN__)
 	/** Cygwin is available. */
-	#define SJME_CONFIG_HAS_CYGWIN
+	#define SJME_CONFIG_HAS_OS_CYGWIN
 #elif defined(_WIN16) || defined(__WIN16__) || defined(__WIN16)
 	/** Using Windows 16-bit. */
-	#define SJME_CONFIG_HAS_WINDOWS_16
+	#define SJME_CONFIG_HAS_OS_WINDOWS_16
 
 	/** Windows is available however. */
-	#define SJME_CONFIG_HAS_WINDOWS 16
+	#define SJME_CONFIG_HAS_OS_WINDOWS 16
 #elif defined(_WIN32) || defined(__WIN32__) || \
 	defined(__WIN32) || defined(_WINDOWS)
 	/** Using Windows 32-bit. */
-	#define SJME_CONFIG_HAS_WINDOWS_32
+	#define SJME_CONFIG_HAS_OS_WINDOWS_32
 	
 	/** Windows is available. */
-	#define SJME_CONFIG_HAS_WINDOWS 32
+	#define SJME_CONFIG_HAS_OS_WINDOWS 32
 #elif defined(__APPLE__) && defined(__MACH__)
 	/** macOS 10+ is available. */
-	#define SJME_CONFIG_HAS_MACOS
+	#define SJME_CONFIG_HAS_OS_MACOS
 #elif defined(macintosh)
 	/** macOS Classic is available. */
-	#define SJME_CONFIG_HAS_MACOS_CLASSIC
+	#define SJME_CONFIG_HAS_OS_MACOS_CLASSIC
 #elif defined(__palmos__)
 	/** PalmOS is available. */
-	#define SJME_CONFIG_HAS_PALMOS
+	#define SJME_CONFIG_HAS_OS_PALMOS
+#elif defined(__SYMBIAN32__)
+	/** Is Symbian. */
+	#define SJME_CONFIG_HAS_OS_SYMBIAN
+#elif defined(__sun) || defined(__illumos__)
+	#if defined(__illumos__)
+		/** Is Illumos. */
+		#define SJME_CONFIG_HAS_OS_ILLUMOS
+	#endif
+	
+	/** Is Solaris. */
+	#define SJME_CONFIG_HAS_OS_SOLARIS
+#elif defined(NeXT)
+	/** Is NeXTStep. */
+	#define SJME_CONFIG_HAS_OS_NEXTSTEP
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || \
 	defined(__OpenBSD__) || defined(__bsdi__) || \
 	defined(__DragonFly__) || defined(__MidnightBSD__)
 	/** BSD is available. */
-	#define SJME_CONFIG_HAS_BSD
+	#define SJME_CONFIG_HAS_OS_BSD
 #elif defined(__BEOS__) || defined(__HAIKU__)
 	/** BeOS/Haiku is available. */
-	#define SJME_CONFIG_HAS_BEOS
+	#define SJME_CONFIG_HAS_OS_BEOS
+#elif defined(MSDOS) || defined(__MSDOS__) || defined(_MSDOS) || \
+	defined(__DOS__)
+	/** Is Microsoft Dos. */
+	#define SJME_CONFIG_HAS_OS_PC_DOS
 #endif
 
-#if defined(SJME_CONFIG_HAS_LINUX) || \
-	defined(SJME_CONFIG_HAS_BSD) || \
-	defined(SJME_CONFIG_HAS_MACOS) || \
-	defined(SJME_CONFIG_HAS_CYGWIN)
+#if defined(SJME_CONFIG_HAS_OS_BSD) || \
+	defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
+	defined(SJME_CONFIG_HAS_OS_LINUX) || \
+	defined(SJME_CONFIG_HAS_OS_MACOS) || \
+	defined(SJME_CONFIG_HAS_OS_NEXTSTEP) || \
+	defined(SJME_CONFIG_HAS_OS_SOLARIS)
 	/** POSIX is available. */
-	#define SJME_CONFIG_HAS_POSIX
+	#define SJME_CONFIG_HAS_OS_POSIX
 #endif
 
 /** Windows 8. */
@@ -225,7 +255,7 @@ extern "C" {
 /** Windows NT 4.0 */
 #define SJME_CONFIG_WINDOWS_NT_4 0x0400
 
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/* Include the Windows SDK versioning information, if available. */
 	#if defined(SJME_CONFIG_HAS_SDKDDKVER_H)
 		#include <sdkddkver.h>
@@ -364,13 +394,24 @@ extern "C" {
 #if SJME_CONFIG_HAS_POINTER == 32
 	/** Has 32-bit pointer. */
 	#define SJME_CONFIG_HAS_POINTER32
+
+	/** Bytes per pointer. */
+	#define SJME_POINTER_BYTES 4
 #endif
 
 #if SJME_CONFIG_HAS_POINTER == 64
 	/** Has 64-bit pointer. */
 	#define SJME_CONFIG_HAS_POINTER64
+
+	/** Bytes per pointer. */
+	#define SJME_POINTER_BYTES 8
 #endif
 
+#if !defined(SJME_POINTER_BYTES)
+	/** Bytes per pointer. */
+	#define SJME_POINTER_BYTES (SJME_CONFIG_HAS_POINTER / 8)
+#endif
+	
 #if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010) || \
 	defined(SJME_CONFIG_HAS_GCC) || \
 	defined(SJME_CONFIG_HAS_CLANG) || \
@@ -675,6 +716,11 @@ extern "C" {
 	#define sjme_attrInOutNotNull sjme_attrInNotNull sjme_attrOutNotNull 
 #endif
 
+#if !defined(sjme_attrInOutNullable)
+	/** Takes input and produces output. */
+	#define sjme_attrInOutNullable sjme_attrInNullable sjme_attrOutNullable 
+#endif
+
 #if !defined(sjme_attrInNotNullBuf)
 	/** Input to buffer. */
 	#define sjme_attrInNotNullBuf(lenArg) sjme_attrInNotNull
@@ -756,13 +802,16 @@ extern "C" {
 	#define sjme_noOptimize
 #endif
 
-#if defined(SJME_CONFIG_HAS_MACOS) && (defined(SJME_CONFIG_HAS_ARCH_IA32) || \
+#if defined(SJME_CONFIG_HAS_OS_MACOS) && (defined(SJME_CONFIG_HAS_ARCH_IA32) || \
 	defined(SJME_CONFIG_HAS_ARCH_POWERPC))
 	/** Supports macOS Darwin kernel Atomic Access */
 	#define SJME_CONFIG_HAS_ATOMIC_DARWIN
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/** Supports Windows Atomic Access. */
 	#define SJME_CONFIG_HAS_ATOMIC_WIN32
+#elif defined(SJME_CONFIG_HAS_OS_SONY_PS2)
+	/** Use volatile atomics. */
+	#define SJME_CONFIG_HAS_ATOMIC_VOLATILE
 #elif defined(SJME_CONFIG_HAS_C11) && !defined(__STDC_NO_ATOMICS__)
 	/** Supports C11 atomics. */
 	#define SJME_CONFIG_HAS_ATOMIC_C11
@@ -785,33 +834,34 @@ extern "C" {
 		defined(SJME_CONFIG_HAS_ATOMIC_DARWIN) || \
 		defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
 		defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY) || \
-		defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
+		defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
+		defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
 		/** Atomics are supported. */
 		#define SJME_CONFIG_HAS_ATOMIC
 	#else
 		/** Use old atomic handling. */
-		#define SJME_CONFIG_HAS_ATOMIC_OLD
-
+		#define SJME_CONFIG_HAS_ATOMIC_VOLATILE
+		
 		/** Atomics are supported. */
 		#define SJME_CONFIG_HAS_ATOMIC
 	#endif
 #endif
 
-#if defined(SJME_CONFIG_HAS_LINUX) || \
-	defined(SJME_CONFIG_HAS_BSD) || \
-    defined(SJME_CONFIG_HAS_BEOS)
+#if defined(SJME_CONFIG_HAS_OS_LINUX) || \
+	defined(SJME_CONFIG_HAS_OS_BSD) || \
+    defined(SJME_CONFIG_HAS_OS_BEOS)
 	/** Dynamic library path name as static define. */
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
 		"lib" x ".so"
-#elif defined(SJME_CONFIG_HAS_CYGWIN)
+#elif defined(SJME_CONFIG_HAS_OS_CYGWIN)
 	/** Dynamic library path name as static define. */
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
 		"lib" x ".dll"
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/** Dynamic library path name as static define. */
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
 		"" x ".dll"
-#elif defined(SJME_CONFIG_HAS_MACOS)
+#elif defined(SJME_CONFIG_HAS_OS_MACOS)
 	/** Dynamic library path name as static define. */
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
 		"lib" x ".dylib"
@@ -820,17 +870,21 @@ extern "C" {
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) NULL
 #endif
 
+/* DOS: Threading not supported. */
 /* Nintendo 3DS: devkitPro has broken/unimplemented pthreads. */
-#if defined(SJME_CONFIG_HAS_NINTENDO_3DS)
-	/** Use fallback threading regardless of the system. */
-	#define SJME_CONFIG_HAS_THREADS_FALLBACK
+/* Or if proper multithreaded volatiles are not supported. */
+#if defined(SJME_CONFIG_HAS_OS_PC_DOS) || \
+	defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
+	defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
+	/** Single threaded only. */
+	#define SJME_CONFIG_ONLY_THREAD_SINGLE
 #endif
 
-#if defined(SJME_CONFIG_HAS_WINDOWS_16)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS_16)
 	/** SquirrelJME exported calling convention. */
 	#define sjme_attrExportCall FAR PASCAL
-#elif defined(SJME_CONFIG_HAS_WINDOWS) || \
-	defined(SJME_CONFIG_HAS_WINDOWS_32)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_32)
 	/** SquirrelJME exported calling convention. */
 	#define sjme_attrExportCall __stdcall
 #else
@@ -890,25 +944,25 @@ extern "C" {
 	#define sjme_packed
 #endif
 	
-#if defined(SJME_CONFIG_HAS_NINTENDO_3DS) || \
-	defined(SJME_CONFIG_HAS_NINTENDO_WIIU) || \
-    defined(SJME_CONFIG_HAS_NINTENDO_WII) || \
-    defined(SJME_CONFIG_HAS_SDCC)
+#if defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
+	defined(SJME_CONFIG_HAS_OS_NINTENDO_WIIU) || \
+    defined(SJME_CONFIG_HAS_OS_NINTENDO_WII) || \
+    defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	/* Disable errno support. */
 	#define SJME_CONFIG_HAS_NO_ERRNO 1
 #endif
 
-#if defined(SJME_CONFIG_HAS_SDCC)
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	/** Has no standard C I/O support. */
 	#define SJME_CONFIG_HAS_NO_STDIO 1
 #endif
 
-#if defined(SJME_CONFIG_HAS_SDCC)
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	/** Has no abort() call. */
 	#define SJME_CONFIG_HAS_NO_ABORT 1
 #endif
 
-#if defined(SJME_CONFIG_HAS_SDCC)
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	/** Has no exit() call. */
 	#define SJME_CONFIG_HAS_NO_EXIT 1
 #endif
@@ -1087,7 +1141,35 @@ extern "C" {
 	/** Has software double floating point. */
 	#define SJME_CONFIG_HAS_DOUBLE_SOFT
 #endif
-		
+
+#if defined(SJME_CONFIG_HAS_AMIGA) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_16) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE) || \
+	defined(SJME_CONFIG_HAS_OS_PALMOS) || \
+	defined(SJME_CONFIG_HAS_OS_BAREMETAL)
+	/** Use a minimal amount of memory. */
+	#define SJME_CONFIG_HAS_LOW_MEMORY
+#endif
+
+/* Multi-threading is not possible if this is set. */
+#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	#if defined(SJME_CONFIG_HAS_THREADS_FALLBACK)
+		#undef SJME_CONFIG_HAS_THREADS_FALLBACK
+	#endif
+
+	#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+		#undef SJME_CONFIG_HAS_THREADS_PTHREAD
+	#endif
+
+	#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
+		#undef SJME_CONFIG_HAS_THREADS_WIN32
+	#endif
+
+	#if defined(SJME_CONFIG_HAS_THREADS_ATOMIC)
+		#undef SJME_CONFIG_HAS_THREADS_ATOMIC
+	#endif
+#endif
+	
 /* Missing standard C functions, always include these. */
 #include "sjme/stdGone.h"
 	

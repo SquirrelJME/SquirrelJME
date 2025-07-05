@@ -125,18 +125,47 @@ struct sjme_jmethodIDBase
 	
 	/** The info this is bound to, for virtual and non-virtual calls. */
 	sjme_nvm_class_methodInfo info[SJME_NVM_NUM_METHOD_CALL_TYPE];
+	
+	/** Bits to assist in quicker method determinations. */
+	sjme_nvm_class_methodInfoBits bits;
 };
+
+/**
+ * Returns the direct pointer to the field data pointer.
+ *
+ * @param instance The object to access with.
+ * @param field The field to access for.
+ * @since 2025/06/21
+ */
+typedef sjme_jvalue* (*sjme_nvm_jfieldAccessFunc)(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field);
 
 struct sjme_jfieldIDBase
 {
 	/** Member information. */
 	sjme_jmemberIDBase member;
 
+	/** The Java type of this field. */
+	sjme_javaTypeId javaType;
+	
+	/** The basic type of this field. */
+	sjme_basicTypeId basicType;
+
+	/** The extended type of this field. */
+	sjme_extendedTypeId extendedType;
+
 	/** The field flags. */
 	sjme_nvm_class_fieldFlags flags;
 	
 	/** The field this is bound to. */
 	sjme_nvm_class_fieldInfo info;
+
+	/** The accessor for this field. */
+	sjme_nvm_jfieldAccessFunc accessor;
+
+	/** The direct offset to this field. */
+	sjme_jint pointerOffset;
 };
 
 struct sjme_nvm_vmClass_loaderBase
@@ -185,6 +214,29 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	sjme_attrInNotNull sjme_nvm_thread contextThread);
 
 /**
+ * Locates a field in the given class by name and type.
+ * 
+ * @param inClass The class to look within.
+ * @param contextThread The context thread.
+ * @param instanceType The type of field instance to locate.
+ * @param required Is this a required lookup?
+ * @param inName The name of the field to resolve.
+ * @param inType The type of the field to resolve.
+ * @param outID The resultant field.
+ * @return Any resultant error, if any.
+ * @since 2025/06/19
+ */
+sjme_errorCode sjme_nvm_vmClass_fieldIDByNameType(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInValue sjme_jboolean required,
+	sjme_attrInPositive sjme_charSeq inName,
+	sjme_attrInPositive sjme_charSeq inType,
+	sjme_attrOutNotNull sjme_jfieldID* outID);
+	
+/**
  * Locates the source field in the given class chain for the given static
  * or instance field ID, which would be the source target field for the given
  * field slot.
@@ -192,7 +244,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
  * @param inClass The class tree to look within. 
  * @param instanceType The type of instance this is.
  * @param fieldId The field identifier.
- * @param javaType The Java type used.
+ * @param extendedType The Java type used.
  * @param outInfo The output info.
  * @return Any resultant error.
  * @since 2024/11/03
@@ -202,7 +254,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS)
-		sjme_javaTypeId javaType,
+		sjme_extendedTypeId extendedType,
 	sjme_attrInPositive sjme_jint fieldId,
 	sjme_attrOutNotNull sjme_nvm_class_fieldInfo* outInfo);
 
@@ -258,6 +310,18 @@ sjme_errorCode sjme_nvm_vmClass_isClasses(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrOutNotNull sjme_list_sjme_jclass** outIsClasses);
+
+/**
+ * Is the other class a super class of the base class?
+ * 
+ * @param thisClass The base class.
+ * @param otherClass The other class to check.
+ * @return If the other class is a super class.
+ * @since 2025/06/19
+ */
+sjme_jboolean sjme_nvm_vmClass_isSuperClass(
+	sjme_attrInNotNull sjme_jclass thisClass,
+	sjme_attrInNotNull sjme_jclass otherClass);
 	
 /**
  * Generates an array class type of the specified component type.
@@ -452,6 +516,22 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	sjme_attrInPositive sjme_jint methodId,
 	sjme_attrOutNotNull sjme_nvm_class_methodInfo* outInfo);
 
+/** Member access flags. */
+#define SJME_M_AF(of) \
+	((of)->flags.member.access)
+
+/** Member name. */
+#define SJME_M_N(of) \
+	((of)->member.name)
+
+/** Member type. */
+#define SJME_M_T(of) \
+	((of)->member.type)
+	
+/** Get super class. */
+#define SJME_C_SU(cl) \
+	(sjme_atomic_sjme_jclass_get(&(cl)->superClass))
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

@@ -69,7 +69,7 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	header.dwBufferLength = bufSize;
 	header.dwLoops = 0;
 
-#if 0
+#if defined(SJME_CONFIG_EXPERIMENT_WINMM_PAUSE)
 	/* Disable playback, if playback is synchronous then pausing */
 	/* does not occur. */
 	result = waveOutPause(handle);
@@ -91,7 +91,7 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 		sizeof(header)) == WAVERR_STILLPLAYING)
 		sjme_thread_yield();
 
-#if 0
+#if defined(SJME_CONFIG_EXPERIMENT_WINMM_PAUSE)
 	/* Resume playback, if it was previously paused. */
 	if (result == MMSYSERR_NOERROR)
 		if (waveOutRestart(handle) != MMSYSERR_NOERROR)

@@ -18,6 +18,7 @@
 
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
+#include "sjme/multithread.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -230,6 +231,25 @@ void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 void sjme_debug_abort(void);
 
 /**
+ * Set the context thread for the crash handler.
+ * 
+ * @param crashFunc The crash function to call.
+ * @param crashParam The crash parameter to pass.
+ * @since 2025/06/27
+ */
+void sjme_debug_crashContext(
+	sjme_attrInNullable sjme_thread_mainFunc crashFunc,
+	sjme_attrInNullable sjme_thread_parameter crashParam);
+
+/**
+ * Registers the crash handler.
+ * 
+ * @return Any resultant error, if any.
+ * @since 2025/06/27
+ */
+sjme_errorCode sjme_debug_crashRegister(void);
+
+/**
  * Shorted the path of the specified file for debug printing purposes.
  * 
  * @param file The file to shorten. 
@@ -361,4 +381,4 @@ typedef struct sjme_debug_handlerFunctions
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_DEBUG_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_DEBUG_H */
+#endif /* SJME_C_DEBUG_H */

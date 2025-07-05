@@ -8,18 +8,19 @@
 
 # Declare library
 squirreljme_multilib_add_static_library(Core
+	access.c
 	allocSizeOf.c
 	boot.c
 	bytecode.c
-#	bytecodeSlow.c
-#	bytecodeSlowArray.c
-#	bytecodeSlowCompare.c
-#	bytecodeSlowConst.c
-#	bytecodeSlowFlow.c
-#	bytecodeSlowLocal.c
-#	bytecodeSlowMath.c
-#	bytecodeSlowRef.c
-#	bytecodeSlowStack.c
+	bytecodeFast.c
+	bytecodeFastStack.c
+	bytecodeSlow.c
+	bytecodeSlowConst.c
+	bytecodeSlowFlow.c
+	bytecodeSlowLocal.c
+	bytecodeSlowMath.c
+	bytecodeSlowRef.c
+	bytecodeSlowStack.c
 	classy.c
 	classyVm.c
 	cleanup.c
@@ -57,8 +58,11 @@ squirreljme_multilib_add_static_library(Core
 	stackMap.c
 	stringPool.c
 	task.c
+	taskFrame.c
+	taskThread.c
 	tread.c
-	vmConfig.c)
+	vmConfig.c
+	walk.c)
 
 # Include main headers
 squirreljme_multilib_static_target_include_directories(Core

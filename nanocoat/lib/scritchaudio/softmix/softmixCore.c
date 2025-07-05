@@ -10,7 +10,7 @@
 #include "lib/scritchaudio/softmix/softmixIntern.h"
 #include "sjme/multithread.h"
 
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/** The minimum sleeping time. */
 	#define SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS 16
 #else

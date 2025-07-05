@@ -116,7 +116,7 @@ sjme_errorCode sjme_scritchui_win32_viewSetView(
 	/* Recover window. */
 	window = inComponent->common.handle[SJME_SUI_WIN32_H_HWND];
 
-#if 0
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("setView(%p, %p, (%d, %d))",
 		inState, inComponent, inViewPos->x, inViewPos->y);

@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_PURE_H
 #define SQUIRRELJME_PURE_H
 
+#include "lib/scritchui/scritchui.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED

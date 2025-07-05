@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+#include "sjme/nvm/bytecode.h"
 #include "sjme/util.h"
 #include "sjme/nvm/instance.h"
 #include "sjme/stdGone.h"
@@ -25,131 +26,89 @@
 /** The number of threads to grow by. */
 #define SJME_NVM_THREAD_GROW 8
 
-/** The size of the thread stack. */
-#define SJME_NVM_THREAD_STACK_SIZE 32768
-
-static sjme_errorCode sjme_nvm_task_stackReframe(
+static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_nvm_class_methodInfo targetInfo)
+	sjme_attrInRange(0, SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
+		sjme_nvm_threadScheduleMode modeFrom,
+	sjme_attrInRange(0, SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
+		sjme_nvm_threadScheduleMode modeTo,
+	sjme_attrInValue sjme_jboolean inject)
 {
 	sjme_errorCode error;
-	sjme_nvm_class_codeInfo code;
-	sjme_frame_threadStacks* store;
-	sjme_frame_frameStacks* stack;
-	sjme_nvm_class_codePerType* perType;
-	sjme_frame_frameStack* typeStack;
-	sjme_jint i;
-	sjme_intPointer typeOff[SJME_NUM_CODE_TYPE_IDS];
-	sjme_pointer storeBase;
+	sjme_nvm_threadSchedule* schedule;
+	sjme_nvm_threadSubSchedule* fromSub;
+	sjme_nvm_threadSubSchedule* toSub;
+	sjme_list_sjme_nvm_thread* fromOrder;
+	sjme_list_sjme_nvm_thread* toOrder;
+	sjme_nvm_threadScheduleMode wasMode;
+	sjme_jint i, n, freeSlot;
 	
-	if (inState == NULL || inThread == NULL || inFrame == NULL ||
-		targetInfo == NULL)
+	if (inState == NULL || inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Get source and target framing information. */
-	store = &inThread->stack;
-	stack = &inFrame->stack;
-
-	/* Make sure it is cleared beforehand. */
-	memset(stack, 0, sizeof(*stack));
-
-	/* The ordering information can be taken directly from the code info. */
-	code = targetInfo->code;
-	stack->orderFront = code->perType[SJME_JAVA_TYPE_ID_ALL].locals;
-	stack->orderTop = stack->orderFront;
-	stack->orderLength = stack->orderFront +
-		code->perType[SJME_JAVA_TYPE_ID_ALL].stack;
-
-	/* Determine initial offset to store ordering information. */
-	typeOff[0] = sjme_util_alignTo(
-		sizeof(*stack->order) * stack->orderLength,
-		sizeof(sjme_pointer));
-
-	/* Determine the totals for each type. */
-	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
-	{
-		perType = &code->perType[i];
-		typeStack = &stack->stack[i];
-
-		/* Determine totals for per types. */
-		typeStack->front = perType->locals;
-		typeStack->top = typeStack->front;
-		typeStack->length = typeStack->front + perType->stack;
-
-		/* The offset for the next type is the total storage for this type. */
-		typeOff[i + 1] = sjme_util_alignTo(
-			sjme_util_alignTo(typeOff[i], sjme_nvm_typeMul[i]) +
-			(sjme_nvm_typeMul[i] * typeStack->length),
-			sizeof(sjme_pointer));
-	}
-
-	/* Is there enough memory to even allocate this big of a stack? */
-	if (store->storageTop + typeOff[SJME_JAVA_TYPE_ID_ALL] > store->storageLen)
-		return SJME_ERROR_OUT_OF_MEMORY;
-
-	/* Grab a chunk of the stack. */
-	storeBase = SJME_POINTER_OFFSET(store->storage, store->storageTop);
-	stack->storageClaim = typeOff[SJME_JAVA_TYPE_ID_ALL];
-	store->storageTop += typeOff[SJME_JAVA_TYPE_ID_ALL];
-
-	/* Clear any data which used to be here. */
-	memset(storeBase, 0, typeOff[SJME_JAVA_TYPE_ID_ALL]);
-
-	/* Setup pointers. */
-	stack->order = SJME_POINTER_OFFSET(storeBase, 0);
-	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
-		stack->stack[i].base.base = SJME_POINTER_OFFSET(storeBase, typeOff[i]);
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-static sjme_errorCode sjme_nvm_task_valueCompose(
-	sjme_attrInOutNotNull sjme_jvalueTyped* inOutValue,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId valueType,
-	sjme_attrInPositive sjme_jint stackIndex,
-	sjme_attrInNotNull sjme_frame_frameStack* stack)
-{
-	if (inOutValue == NULL || stack == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (valueType < 0 || valueType >= SJME_NUM_JAVA_TYPE_IDS)
+	if (modeFrom < 0 || modeTo < 0 ||
+		modeFrom >= SJME_NVM_THREAD_NUM_SCHEDULE_MODE ||
+		modeTo >= SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	if (stackIndex < 0 || stackIndex >= stack->length)
-		return SJME_ERROR_TREAD_INDEX_INVALID;
+	/* No change in schedule state? */
+	wasMode = sjme_atomic_sjme_jint_get(&inThread->scheduleMode);
+	if (wasMode == modeTo)
+		return SJME_ERROR_NONE;
 
-	/* Mapping index depends on the type. */
-	inOutValue->type = valueType;
-	switch (valueType)
-	{
-		case SJME_JAVA_TYPE_ID_INTEGER:
-			inOutValue->value.i = stack->base.i[stackIndex];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_LONG:
-			inOutValue->value.j = stack->base.j[stackIndex];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			inOutValue->value.f = stack->base.f[stackIndex];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			inOutValue->value.d = stack->base.d[stackIndex];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_OBJECT:
-			inOutValue->value.l = stack->base.l[stackIndex];
-			break;
-			
-		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
-	}
+	/* We will be operating on this schedule. */
+	schedule = inState->schedule;
+
+	/* Is there an order to actually remove from? */
+	fromSub = &schedule->mode[modeFrom];
+	fromOrder = fromSub->order;
+	if (modeFrom == SJME_NVM_THREAD_UNDEFINED_SCHEDULE ||
+		modeFrom == SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
+		fromOrder = NULL;
+
+	/* Remove from the old schedule first. */
+	if (fromOrder != NULL && fromOrder->length > 0)
+		for (i = 0, n = fromOrder->length; i < n; i++)
+			if (fromOrder->elements[i] == inThread)
+			{
+				/* Set the schedule to undefined as it is not in one. */
+				sjme_atomic_sjme_jint_set(&inThread->scheduleMode,
+					SJME_NVM_THREAD_UNDEFINED_SCHEDULE);
+				fromOrder->elements[i] = NULL;
+
+				/* Move everything down so there are no gaps. */
+				memmove(&fromOrder->elements[i],
+					&fromOrder->elements[i + 1],
+					sizeof(sjme_nvm_thread) * (n - i - 1));
+				fromOrder->elements[n - 1] = NULL;
+
+				/* Since we moved down, try this slot again. */
+				i--;
+			}
+
+	/* Which schedule is this going into? */
+	toSub = &schedule->mode[modeTo];
+	toOrder = toSub->order;
+	if (modeTo == SJME_NVM_THREAD_UNDEFINED_SCHEDULE ||
+		modeTo == SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
+		goto skip_noPlace;
+
+	/* Place into free slot, growing the list if needed. */
+	if (sjme_error_is(error = sjme_list_injectGrow(inState->allocPool,
+		SJME_NVM_THREAD_GROW, &toOrder, &inThread, sjme_nvm_thread, 0)) ||
+		toOrder == NULL)
+		return sjme_error_default(error);
+
+	/* If the list changed, update it. */
+	if (toSub->order != toOrder)
+		toSub->order = toOrder;
+
+	/* Mark the thread as being scheduled in the given target. */
+	sjme_atomic_sjme_jint_set(&inThread->scheduleMode, modeTo);
 
 	/* Success! */
+skip_noPlace:
 	return SJME_ERROR_NONE;
 }
 
@@ -226,9 +185,25 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_VOID:
 			commonName = "F";
 			break;
+
+		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_PHANTOM:
+			commonName = "Ljava/lang/ref/PhantomReference;";
+			break;
+
+		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_SOFT:
+			commonName = "Ljava/lang/ref/SoftReference;";
+			break;
+
+		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK:
+			commonName = "Ljava/lang/ref/WeakReference;";
+			break;
 		
 		case SJME_NVM_TASK_COMMON_CLASS_STRING:
 			commonName = "Ljava/lang/String;";
+			break;
+
+		case SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT:
+			commonName = "Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;";
 			break;
 		
 		default:
@@ -238,7 +213,7 @@ sjme_errorCode sjme_nvm_task_commonClass(
 	/* Load the common class. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFU(
-		contextThread->inTask->classLoader, &result, contextThread,
+		SJME_F_CL(contextThread), &result, contextThread,
 		commonName, SJME_JNI_TRUE)) || result == NULL)
 		return sjme_error_vmError(contextThread, error);
 
@@ -276,677 +251,11 @@ sjme_jclass sjme_nvm_task_commonClassR(
 	return result;
 }
 
-sjme_errorCode sjme_nvm_task_frameLocalAddr(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId localType,
-	sjme_attrInPositive sjme_jint localIndex,
-	sjme_attrOutNotNull sjme_pointer* outAddr)
-{
-	sjme_nvm_class_codePerType* perType;
-	sjme_jint mappedSlot;
-	
-	if (inFrame == NULL || outAddr == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (localType < 0 || localType >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	if (localIndex < 0 ||
-		localIndex >= inFrame->inCode->perType[SJME_JAVA_TYPE_ID_ALL].locals)
-		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INDEX_INVALID);
-	
-	/* Determine where this maps from for the read. */
-	perType = &inFrame->inCode->perType[localType];
-	mappedSlot = perType->localMap[localIndex];
-	if (mappedSlot < 0 || mappedSlot > perType->locals)
-		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
-
-	/* Directly access tread address. */
-	return sjme_nvm_task_frameTreadAddr(inFrame,
-		localType, mappedSlot, outAddr);
-}
-
-sjme_errorCode sjme_nvm_task_frameLocalPush(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInValue sjme_javaTypeId localType,
-	sjme_attrInPositive sjme_jint localIndex)
-{
-	sjme_errorCode error;
-	sjme_nvm_class_codePerType* perType;
-	sjme_jint mappedSlot;
-	sjme_jvalueTyped value;
-	
-	if (inFrame == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (localType < 0 || localType >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	if (localIndex < 0 ||
-		localIndex >= inFrame->inCode->perType[SJME_JAVA_TYPE_ID_ALL].locals)
-		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INDEX_INVALID);
-
-	/* The local variable is of the wrong type. */
-	if (inFrame->stack.order[localIndex] != localType)
-		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INVALID_READ);
-
-	/* Determine where this maps from for the read. */
-	perType = &inFrame->inCode->perType[localType];
-	mappedSlot = perType->localMap[localIndex];
-	if (mappedSlot < 0 || mappedSlot > perType->locals)
-		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
-
-	/* Forward to stack push. */
-	if (sjme_error_is(error = sjme_nvm_task_valueCompose(&value,
-		localType, mappedSlot, &inFrame->stack.stack[localType])))
-		return sjme_error_vmError(inFrame, error);
-	return sjme_nvm_task_frameStackPush(inFrame, &value);
-}
-
-sjme_errorCode sjme_nvm_task_frameLocalSetL(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInPositive sjme_jint localIndex,
-	sjme_attrInNotNull const sjme_jvalueTyped* inValue)
-{
-	sjme_errorCode error;
-	sjme_jboolean isWide;
-	sjme_nvm_class_codePerType* perType;
-	sjme_jint mappedSlot;
-	sjme_frame_frameStacks* stack;
-	
-	if (inFrame == NULL || inValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (inValue->type < 0 || inValue->type >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	/* Is this wide? */
-	isWide = SJME_TYPEID_IS_WIDE(inValue->type);
-
-	/* Check for complete out of bounds. */
-	if (localIndex < 0 ||
-		((localIndex + (isWide ? 1 : 0)) >=
-			inFrame->inCode->perType[SJME_JAVA_TYPE_ID_ALL].locals))
-		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INDEX_INVALID);
-
-	/* Is the index still valid on the tread? */
-	perType = &inFrame->inCode->perType[inValue->type];
-	mappedSlot = perType->localMap[localIndex];
-	if (mappedSlot < 0 || mappedSlot >= perType->locals)
-		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
-
-	/* Set tread value. */
-	if (sjme_error_is(error = sjme_nvm_task_frameTreadSetT(inFrame,
-		mappedSlot, inValue)))
-		return sjme_error_vmError(inFrame, error);
-
-	/* Replace order info. */
-	stack = &inFrame->stack;
-	stack->order[localIndex] = inValue->type;
-	if (isWide)
-		stack->order[localIndex + 1] = SJME_JAVA_TYPE_ID_VOID;
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_nvm_task_framePool(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInPositiveNonZero sjme_jint poolIndex,
-	sjme_attrOutNotNull sjme_nvm_class_poolEntry** outEntry,
-	sjme_attrInRange(0, SJME_NUM_CLASS_POOL_TYPE)
-		sjme_nvm_class_poolType inType,
-	sjme_attrInRange(0, SJME_NUM_CLASS_POOL_TYPE)
-		sjme_nvm_class_poolType inTypeB,
-	...)
-{
-	sjme_list_sjme_nvm_class_poolEntry* pool;
-	sjme_nvm_class_poolEntry* result;
-	sjme_jint argType;
-	va_list arg;
-	
-	if (inFrame == NULL || outEntry == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Is the index valid? */
-	pool = inFrame->pool->pool;
-	if (poolIndex <= 0 || poolIndex >= pool->length)
-		return sjme_error_vmError(inFrame,
-			SJME_ERROR_INVALID_CLASS_POOL_INDEX);
-
-	/* Get entry here, check for base validity. */
-	result = &pool->elements[poolIndex];
-	if (result->type == inType)
-		goto skip_success;
-
-	/* Check second validity, if not zero. */
-	if (inTypeB == 0)
-		goto fail_notMatched;
-	else if (result->type == inTypeB)
-		goto skip_success;
-
-	/* Check continual multi-type checks, until zero */
-	for (va_start(arg, inTypeB);;)
-	{
-		/* Read in. */
-		argType = va_arg(arg, int);
-
-		/* Not matched? */
-		if (argType == 0)
-		{
-			va_end(arg);
-			goto fail_notMatched;
-		}
-
-		/* Matched? */
-		if (result->type == argType)
-		{
-			va_end(arg);
-			break;
-		}
-	}
-	
-skip_success:
-	*outEntry = result;
-	return SJME_ERROR_NONE;
-
-fail_notMatched:
-	return sjme_error_vmError(inFrame,
-		SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE);
-}
-
-sjme_errorCode sjme_nvm_task_frameStackPeek(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere)
-{
-	sjme_errorCode error;
-#if 1
-	sjme_jvalueTyped temp;
-
-	/* Peek top value. */
-	memset(&temp, 0, sizeof(temp));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
-		0, &temp, copiedElsewhere)))
-		return sjme_error_vmError(inFrame, error);
-
-	/* Must be the same type. */
-	if (temp.type != typeId)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
-
-	/* Success! */
-	memmove(outValue, &temp, sizeof(*outValue));
-	return SJME_ERROR_NONE;
-#else
-	sjme_frame_frameStacks* stack;
-	sjme_jboolean isWide;
-	sjme_jint peekTop, peekPerTop;
-	sjme_frame_frameStack* perType;
-	sjme_jvalueTyped tempValue;
-	
-	if (inFrame == NULL || outValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* Is this wide? */
-	isWide = SJME_TYPEID_IS_WIDE(typeId);
-
-	/* Determine top of the stack, check for underflow. */
-	stack = &inFrame->stack;
-	peekTop = stack->orderTop - (isWide ? 2 : 1);
-	if (peekTop < stack->orderFront)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
-
-	/* Is wide and very top is wrong. */
-	if (isWide && stack->order[peekTop + 1] != SJME_JAVA_TYPE_ID_VOID)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
-
-	/* Top of the stack is the wrong type? */
-	if (stack->order[peekTop] != typeId)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
-
-	/* Determine per type slot to peek. */
-	perType = &stack->stack[typeId];
-	peekPerTop = perType->top - 1;
-	if (peekPerTop < perType->front)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
-
-	/* Read in value. */
-	memset(&tempValue, 0, sizeof(tempValue));
-	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(
-		inFrame, typeId, peekPerTop, &tempValue, SJME_JNI_FALSE)))
-		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
-			SJME_ERROR_STACK_INVALID_READ));
-
-	/* If copied elsewhere, count object up. */
-	if (copiedElsewhere && typeId == SJME_JAVA_TYPE_ID_OBJECT &&
-		tempValue.value.l != NULL)
-		if (sjme_error_is(error = sjme_alloc_weakRef(tempValue.value.l, NULL)))
-			return sjme_error_default(error);
-
-	/* Success! */
-	memmove(outValue, &tempValue, sizeof(*outValue));
-	return SJME_ERROR_NONE;
-#endif
-}
-
-sjme_errorCode sjme_nvm_task_frameStackPop(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue)
-{
-	sjme_errorCode error;
-	sjme_frame_frameStacks* stack;
-	sjme_jboolean isWide;
-	sjme_jint newTop, newPerTop;
-	sjme_frame_frameStack* perType;
-	
-	if (inFrame == NULL || outValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	/* Is this wide? */
-	isWide = SJME_TYPEID_IS_WIDE(typeId);
-
-	/* Determine new top of the stack, check for underflow. */
-	stack = &inFrame->stack;
-	newTop = stack->orderTop - (isWide ? 2 : 1);
-	if (newTop < stack->orderFront)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
-
-	/* Is wide and very top is wrong. */
-	if (isWide && stack->order[newTop + 1] != SJME_JAVA_TYPE_ID_VOID)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
-
-	/* Top of the stack is the wrong type? */
-	if (stack->order[newTop] != typeId)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
-
-	/* Determine per type slot to remove. */
-	perType = &stack->stack[typeId];
-	newPerTop = perType->top - 1;
-	if (newPerTop < perType->front)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
-
-	/* Read in value. */
-	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(
-		inFrame, typeId, newPerTop, outValue, SJME_JNI_TRUE)))
-		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
-			SJME_ERROR_STACK_INVALID_READ));
-
-	/* Remove from stack, from the main and on the per-type. */
-	/* Cleanup any values as well. */
-	stack->order[newTop] = SJME_JAVA_TYPE_ID_VOID;
-	stack->orderTop = newTop;
-	perType->top = newPerTop;
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_nvm_task_frameStackPopA(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInPositive sjme_jint argC,
-	sjme_attrInNotNullBuf(argC) sjme_javaTypeId* argT,
-	sjme_attrInNotNullBuf(argC) sjme_jvalueTyped* argV)
-{
-	sjme_errorCode error;
-	sjme_jint i;
-	
-	if (inFrame == NULL || argT == NULL || argV == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (argC < 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	/* Always pop from the end first. */
-	for (i = argC - 1; i >= 0; i--)
-		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			argT[i], &argV[i])))
-			return sjme_error_vmError(inFrame, error);
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_nvm_task_frameStackPush(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_jvalueTyped* inValue)
-{
-	sjme_frame_frameStacks* stack;
-	sjme_frame_frameStack* perType;
-	sjme_jint pushCount, at;
-	sjme_jboolean isWide;
-	
-	if (inFrame == NULL || inValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Will the stack overflow? */
-	stack = &inFrame->stack;
-	isWide = SJME_TYPEID_IS_WIDE(inValue->type);
-	pushCount = (isWide ? 2 : 1);
-	if (stack->orderTop + pushCount > stack->orderLength)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_OVERFLOW);
-
-	/* Will the per-type stack overflow? */
-	perType = &stack->stack[inValue->type];
-	if (perType->top + 1 > perType->length)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_OVERFLOW);
-
-	/* Place onto the order, mark top invalid if required. */
-	stack->order[stack->orderTop++] = inValue->type;
-	if (isWide)
-		stack->order[stack->orderTop++] = SJME_JAVA_TYPE_ID_VOID;
-
-	/* Take slot in the per-type stack. */
-	at = perType->top++;
-	
-	/* Forward call. */
-	return sjme_nvm_task_frameTreadSetT(inFrame,
-		at, inValue);
-}
-
-sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_nvm_stringPool_string inClassName)
-{
-	if (inFrame == NULL || inClassName == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-sjme_errorCode sjme_nvm_task_frameStackPushStringP(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_nvm_stringPool_string inString)
-{
-	sjme_errorCode error;
-	sjme_jvalueTyped value;
-	
-	if (inFrame == NULL || inString == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Load in string. */
-	memset(&value, 0, sizeof(value));
-	value.type = SJME_JAVA_TYPE_ID_OBJECT;
-	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
-		inFrame->inThread,
-		SJME_AS_NVM_JSTRINGP(&value.value.l), inString)) ||
-		value.value.l == NULL)
-		return sjme_error_vmError(inFrame, error);
-
-	/* Count up string. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(value.value.l, NULL)))
-		return sjme_error_vmError(inFrame, error);
-
-	/* Push value. */
-	return sjme_nvm_task_frameStackPush(inFrame, &value);
-}
-
-sjme_errorCode sjme_nvm_task_frameStackTop(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInPositive sjme_jint depth,
-	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere)
-{
-	sjme_errorCode error;
-	sjme_frame_frameStacks* stack;
-	sjme_jint newTop;
-	sjme_javaTypeId readType;
-	sjme_jvalueTyped temp;
-	sjme_jint sub[SJME_NUM_JAVA_TYPE_IDS];
-	
-	if (inFrame == NULL || outValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (depth < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-
-	/* Set initial position. */
-	stack = &inFrame->stack;
-	newTop = stack->orderTop;
-
-	/* Keep eating depth. */
-	memset(&sub, 0, sizeof(sub));
-	while ((depth--) >= 0)
-	{
-		/* Bump down and check overflow */
-		newTop--;
-		if (newTop < stack->orderFront)
-			return SJME_ERROR_STACK_UNDERFLOW;
-
-		/* Wide? */
-		if (stack->order[newTop] == SJME_JAVA_TYPE_ID_VOID)
-			newTop--;
-
-		/* Increase subtraction count for the given type, this is used */
-		/* to locate the slot on the stack. */
-		sub[stack->order[newTop]]++;
-	}
-
-	/* Copy out value. */
-	readType = stack->order[newTop];
-	memset(&temp, 0, sizeof(temp));
-	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(inFrame, readType,
-		stack->stack[readType].top - sub[readType],
-		&temp, SJME_JNI_FALSE)))
-		return sjme_error_vmError(inFrame, error);
-	
-	/* If copied elsewhere, count object up. */
-	if (copiedElsewhere && readType == SJME_JAVA_TYPE_ID_OBJECT &&
-		temp.value.l != NULL)
-		if (sjme_error_is(error = sjme_alloc_weakRef(temp.value.l, NULL)))
-			return sjme_error_default(error);
-	
-	/* Success! */
-	memmove(outValue, &temp, sizeof(*outValue));
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_nvm_task_frameTreadAddr(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrOutNotNull sjme_pointer* outAddr)
-{
-	sjme_frame_frameStack* perType;
-	
-	if (inFrame == NULL || outAddr == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* Check the tread index. */
-	perType = &inFrame->stack.stack[typeId];
-	if (typeIndex < 0 || typeIndex >= perType->length)
-		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
-	
-	/* Operating depends on the type. */
-	switch (typeId)
-	{
-		case SJME_JAVA_TYPE_ID_INTEGER:
-			(*outAddr) = &perType->base.i[typeIndex];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_LONG:
-			(*outAddr) = &perType->base.j[typeIndex];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			(*outAddr) = &perType->base.f[typeIndex];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			(*outAddr) = &perType->base.d[typeIndex];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_OBJECT:
-			(*outAddr) = &perType->base.l[typeIndex];
-			break;
-			
-		default:
-			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_FIELD_TYPE);
-	}
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_nvm_task_frameTreadGetT(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean eraseOld)
-{
-	sjme_errorCode error;
-	sjme_frame_frameStack* perType;
-	sjme_jobject tempObject;
-	
-	if (inFrame == NULL || outValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	/* Obtain the per type. */
-	perType = &inFrame->stack.stack[typeId];
-
-	/* Check the tread index. */
-	if (typeIndex < 0 || typeIndex >= perType->length)
-		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
-	
-	/* Operating depends on the type. */
-	switch (typeId)
-	{
-		case SJME_JAVA_TYPE_ID_INTEGER:
-			outValue->value.i = perType->base.i[typeIndex];
-		
-			if (eraseOld)
-				perType->base.i[typeIndex] = 0;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_LONG:
-			outValue->value.j = perType->base.j[typeIndex];
-		
-			if (eraseOld)
-				memset(&perType->base.j[typeIndex], 0,
-					sizeof(sjme_jlong));
-			break;
-			
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			outValue->value.f = perType->base.f[typeIndex];
-		
-			if (eraseOld)
-				memset(&perType->base.f[typeIndex], 0,
-					sizeof(sjme_jfloat));
-			break;
-			
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			outValue->value.d = perType->base.d[typeIndex];
-		
-			if (eraseOld)
-				memset(&perType->base.d[typeIndex], 0,
-					sizeof(sjme_jdouble));
-			break;
-			
-		case SJME_JAVA_TYPE_ID_OBJECT:
-			/* Load into temporary as we may be erasing the value here. */
-			tempObject = perType->base.l[typeIndex];
-
-			/* Is the value in the tread being cleared? */
-			if (eraseOld)
-				perType->base.l[typeIndex] = NULL;
-
-			/* Otherwise, we technically have a copy so count up. */
-			else if (tempObject != NULL)
-				if (sjme_error_is(error = sjme_alloc_weakRef(tempObject,
-					NULL)))
-					return sjme_error_default(error);
-
-			outValue->value.l = tempObject;
-			break;
-			
-		default:
-			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_FIELD_TYPE);
-	}
-
-	/* Success! */
-	outValue->type = typeId;
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_nvm_task_frameTreadSetT(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrInNotNull const sjme_jvalueTyped* inValue)
-{
-	sjme_errorCode error;
-	sjme_frame_frameStack* perType;
-	
-	if (inFrame == NULL || inValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (inValue->type < 0 || inValue->type >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	/* Obtain the per type. */
-	perType = &inFrame->stack.stack[inValue->type];
-
-	/* Check the tread index. */
-	if (typeIndex < 0 || typeIndex >= perType->length)
-		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
-	
-	/* Operating depends on the type. */
-	switch (inValue->type)
-	{
-		case SJME_JAVA_TYPE_ID_INTEGER:
-			perType->base.i[typeIndex] = inValue->value.i;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_LONG:
-			perType->base.j[typeIndex] = inValue->value.j;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			perType->base.f[typeIndex] = inValue->value.f;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			perType->base.d[typeIndex] = inValue->value.d;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_OBJECT:
-			/* If there is an old value here, count it down. */
-			if (sjme_error_is(error = sjme_nvm_instance_countDown(
-				&perType->base.l[typeIndex],
-				inValue->value.l)))
-				return sjme_error_vmError(inFrame, error);
-
-			/* Set. */
-			perType->base.l[typeIndex] = inValue->value.l;
-			break;
-			
-		default:
-			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_FIELD_TYPE);
-	}
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
 sjme_errorCode sjme_nvm_task_stackTrace(
 	sjme_attrInNotNull sjme_nvm_thread inThread)
 {
 	sjme_nvm_frame frame;
-	sjme_jint i, instructionId;
+	sjme_jint i, instructionId, pc;
 	sjme_jclass lastClass, nowClass;
 	sjme_nvm_class_codeInfo nowCode;
 	sjme_nvm_class_methodInfo nowMethod;
@@ -980,19 +289,21 @@ sjme_errorCode sjme_nvm_task_stackTrace(
 		/*  |- .whatever:(Lboop;)V @0h (:181 INVOKEINTERFACE@15) */
 		nowCode = frame->inCode;
 		nowMethod = (nowCode != NULL ? frame->inCode->inMethod : NULL);
-		instructionId = (nowCode != NULL && frame->pc >= 0 &&
-			frame->pc < nowCode->rawCodeLen ?
-			nowCode->rawCode[frame->pc] & 0xFF : -1);
+		pc = frame->lastPc;
+		instructionId = (frame->lastIv != 0 ? frame->lastIv :
+			(nowCode != NULL && pc >= 0 &&
+				pc < nowCode->rawCodeLen ?
+				nowCode->rawCode[pc] & 0xFF : -1));
 		if (nowCode == NULL || nowMethod == NULL)
 			sjme_messageB(" | PURE VIRTUAL");
 		else
-			sjme_messageB(" | .%s:%s @%xh (:%d #%02x@%d)",
+			sjme_messageB(" | .%s:%s @%xh (:%d #%s@%d)",
 				sjme_charSeq_tempUtf(nowMethod->name->seq),
 				sjme_charSeq_tempUtf(nowMethod->type->seq),
-				frame->pc,
+				pc,
 				-1,
-				instructionId,
-				frame->pc);
+				sjme_nvm_byteCode_names[instructionId & 0xFF],
+				pc);
 
 		/* Set for next run. */
 		lastClass = nowClass;
@@ -1119,6 +430,9 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	result->id = 1 + sjme_atomic_sjme_jint_getAdd(
 		&inState->nextTaskId, 1);
 	result->strings = strings;
+
+	/* Use the default field accessor for this task by default. */
+	result->globals.accessor = sjme_nvm_instance_fieldAccessor;
 	
 	/* All new tasks are considered alive. */
 	result->status = SJME_NVM_TASK_STATUS_ALIVE;
@@ -1191,6 +505,9 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	
 	/* Set argument strings. */
 	result->globals.mainArgs = argStrings;
+
+	/* Add to the running task count. */
+	sjme_atomic_sjme_jint_getAdd(&inState->numRunningTasks, 1);
 	
 	/* The main thread of any task is always implicitly started. */
 	if (sjme_error_is(error = sjme_nvm_task_threadStart(mainThread)))
@@ -1254,549 +571,329 @@ fail_other:
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_nvm_task_threadEnter(
-	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
-	sjme_attrInNotNull sjme_jmethodID inMethod,
-	sjme_attrInRange(0, SJME_NVM_NUM_METHOD_CALL_TYPE)
-		sjme_nvm_methodCallType callType,
-	sjme_attrInPositive sjme_jint argC,
-	sjme_attrInNullable sjme_jvalueTyped* argV)
-{
-	sjme_errorCode error;
-	sjme_nvm_class_methodInfo targetInfo;
-	sjme_jint i, n, dx;
-	sjme_nvm_frame result;
-	sjme_jboolean isStatic;
-	sjme_jvalueTyped* argVParam;
-	
-	if (inThread == NULL || outFrame == NULL || inMethod == NULL ||
-		(argC != 0 && argV == NULL))
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (callType < 0 || callType >= SJME_NVM_NUM_METHOD_CALL_TYPE)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* Recover target info. */
-	targetInfo = inMethod->info[callType];
-	if (targetInfo == NULL)
-		return sjme_error_vmError(inThread, SJME_ERROR_UNBOUND_METHOD);
-
-	/* No code loaded? */
-	if (targetInfo->code == NULL)
-		return sjme_error_vmError(inThread, SJME_ERROR_PURE_VIRTUAL_CALL);
-
-	/* Is the target static? */
-	isStatic = targetInfo->flags.member.isStatic;
-	if (isStatic && callType != SJME_NVM_CALL_NON_VIRTUAL)
-		return sjme_error_vmError(inThread,
-			SJME_ERROR_CLASS_CHANGED);
-	
-	/* Argument count mismatch? */
-	if (argC != targetInfo->argC + (!isStatic ? 1 : 0))
-		return sjme_error_vmError(inThread,
-			SJME_ERROR_ARGUMENT_COUNT_MISMATCH);
-
-	/* Argument type mismatch? */
-	argVParam = (!isStatic ? &argV[1] : argV);
-	for (i = 0, n = targetInfo->argC; i < n; i++)
-		if (argVParam[i].type != targetInfo->argT[i])
-			return sjme_error_vmError(inThread,
-				SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
-
-	/* If non-static, first must be a valid object. */
-	if (!isStatic)
-		if (argC == 0 || argV[0].type != SJME_JAVA_TYPE_ID_OBJECT ||
-			argV[0].value.l == NULL)
-			return sjme_error_vmError(inThread,
-				SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
-	
-	/* Grab a frame from the thread's frame pool. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_task_threadFrameNext(
-		inThread, &result)) || result == NULL)
-		return sjme_error_vmError(inThread, error);
-
-	/* Perform stack and thread re-framing. */
-	if (sjme_error_is(error = sjme_nvm_task_stackReframe(
-		inThread->inState, inThread, result, targetInfo)))
-		return sjme_error_vmError(inThread, error);
-
-	/* Set frame details, needed for local set. */
-	result->inClass = inMethod->member.inClass;
-	result->inState = inThread->inTask->inState;
-	result->inThread = inThread;
-	result->inTask = inThread->inTask;
-	result->inCode = targetInfo->code;
-	result->pool = targetInfo->code->inMethod->inClass->pool;
-
-	/* Link to parent. */
-	if (inThread->numFrames == 0)
-		result->parent = NULL;
-	else
-		result->parent = inThread->frames->elements[inThread->numFrames - 1];
-	
-	/* Setup initial locals, which are copied in from arguments. */
-	for (i = 0, dx = 0, n = argC; i < n;
-		i++, (dx += (argV[i].type == SJME_JAVA_TYPE_ID_LONG ||
-			argV[i].type == SJME_JAVA_TYPE_ID_DOUBLE) ? 2 : 1))
-		if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
-			result, dx, &argV[i])))
-			return sjme_error_vmError(inThread, error);
-	
-	/* Set frame as active. */
-	inThread->numFrames++;
-
-	/* Success! */
-	*outFrame = result;
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_nvm_task_threadEnterA(
-	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
-	sjme_attrInNotNull sjme_lpcstr inClass,
-	sjme_attrInRange(0, SJME_ERROR_INVALID_ARGUMENT)
-		sjme_nvm_class_instanceType instanceType,
-	sjme_attrInNotNull sjme_lpcstr inName,
-	sjme_attrInNotNull sjme_lpcstr inType,
-	sjme_attrInPositive sjme_jint argC,
-	sjme_attrInNullable sjme_jvalueTyped* argV)
-{
-	sjme_errorCode error;
-	sjme_nvm_task inTask;
-	sjme_jclass foundClass;
-	sjme_charSeqStatic classSeq, nameSeq, typeSeq;
-	
-	if (inThread == NULL || outFrame == NULL || inClass == NULL ||
-		inName == NULL || inType == NULL || (argC != 0 && argV == NULL))
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* There must be a task. */
-	inTask = inThread->inTask;
-	if (inTask == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-
-	/* Wrap in sequences. */
-	memset(&classSeq, 0, sizeof(classSeq));
-	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&classSeq,
-		inClass, 0, -1)))
-		return sjme_error_default(error);
-	memset(&nameSeq, 0, sizeof(classSeq));
-	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&nameSeq,
-		inName, 0, -1)))
-		return sjme_error_default(error);
-	memset(&typeSeq, 0, sizeof(classSeq));
-	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&typeSeq,
-		inType, 0, -1)))
-		return sjme_error_default(error);
-
-	/* Need to find the class first. */
-	foundClass = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		inTask->classLoader, &foundClass,
-		inThread, &classSeq, SJME_JNI_TRUE)))
-		return sjme_error_vmError(inThread, error);
-	
-	/* Forward to other call. */
-	return sjme_nvm_task_threadEnterC(
-		inThread, outFrame, foundClass, instanceType,
-		&nameSeq, &typeSeq, argC, argV);
-}
-
-sjme_errorCode sjme_nvm_task_threadEnterC(
-	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
-	sjme_attrInNotNull sjme_jclass inClass,
-	sjme_attrInRange(0, SJME_ERROR_INVALID_ARGUMENT)
-		sjme_nvm_class_instanceType instanceType,
-	sjme_attrInNotNull sjme_charSeq inName,
-	sjme_attrInNotNull sjme_charSeq inType,
-	sjme_attrInPositive sjme_jint argC,
-	sjme_attrInNullable sjme_jvalueTyped* argV)
-{
-	sjme_errorCode error;
-	sjme_jmethodID id;
-	
-	if (inThread == NULL || outFrame == NULL || inClass == NULL ||
-		inName == NULL || inType == NULL || (argC != 0 && argV == NULL))
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (instanceType < 0 || instanceType >= SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	/* Locate method to execute, since we are calling it, it is required. */
-	id = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
-		inClass, inThread, instanceType, SJME_JNI_TRUE, inName,
-		inType, &id)) || id == NULL)
-		return sjme_error_vmError(inThread, error);
-	
-	/* Forward to implementation. */
-	return sjme_nvm_task_threadEnter(inThread, outFrame,
-		id, SJME_NVM_CALL_NON_VIRTUAL, argC, argV);
-}
-
-sjme_errorCode sjme_nvm_task_threadFrameNext(
-	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrOutNotNull sjme_nvm_frame* outFrame)
-{
-#define SJME_NVM_FRAME_GROW_SIZE 8
-	sjme_errorCode error;
-	sjme_nvm_frame result;
-	
-	if (inThread == NULL || outFrame == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Need to allocate more frames? */
-	if (inThread->frames == NULL ||
-		inThread->numFrames >= inThread->frames->length)
-		if (sjme_error_default(error = sjme_list_replace(
-			inThread->inTask->inState->allocPool,
-			inThread->numFrames + SJME_NVM_FRAME_GROW_SIZE,
-			&inThread->frames, sjme_nvm_frame, 0)))
-			return sjme_error_default(error);
-	
-	/* "Pop" and init/clear frame. */
-	result = inThread->frames->elements[inThread->numFrames];
-	if (result != NULL)
-		memset(result, 0, sizeof(*result));
-	else
-	{
-		/* Allocate new blank frame. */
-		if (sjme_error_is(error = sjme_nvm_alloc(inThread->inState,
-			sizeof(*result), SJME_NVM_STRUCT_FRAME,
-			SJME_AS_NVM_COMMONP(&result))) || result == NULL)
-			return sjme_error_default(error);
-
-		/* Store in this slot, forever. */
-		inThread->frames->elements[inThread->numFrames] = result;
-	}
-
-	/* Success! */
-	*outFrame = result;
-	return SJME_ERROR_NONE;
-#undef SJME_NVM_FRAME_GROW_SIZE
-}
-
-sjme_errorCode sjme_nvm_task_threadLeave(
+sjme_errorCode sjme_nvm_task_taskScheduleDelete(
+	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread)
 {
-	sjme_nvm_frame topFrame;
-	sjme_jint topIndex;
-	
-	if (inThread == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Cannot pop a frame when there is nothing. */
-	topIndex = inThread->numFrames - 1;
-	if (topIndex <= -1)
-		return SJME_ERROR_INVALID_THREAD_STATE;
-
-	/* Get the top-most frame and make it not exist. */
-	topFrame = inThread->frames->elements[topIndex];
-	inThread->numFrames = topIndex;
-
-	/* Reduce the storage claim to free it up. */
-	inThread->stack.storageTop -= topFrame->stack.storageClaim;
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_nvm_task_threadNew(
-	sjme_attrInNotNull sjme_nvm_task inTask,
-	sjme_attrOutNotNull sjme_nvm_thread* outThread,
-	sjme_attrInNotNull sjme_lpcstr threadName)
-{
 	sjme_errorCode error;
-	sjme_nvm_thread result;
-	sjme_nvm_frame firstFrame;
-	sjme_nvm inState;
-	sjme_jint freeSlot, i, n;
-	sjme_pointer storage;
+	sjme_nvm_threadSchedule* schedule;
 	
-	if (inTask == NULL || outThread == NULL || threadName == NULL)
+	if (inState == NULL || inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Allocate stack storage. */
-	storage = NULL;
-	inState = inTask->inState;
-	if (sjme_error_is(error = sjme_alloc(inState->allocPool,
-		SJME_NVM_THREAD_STACK_SIZE, &storage)) || storage == NULL)
-		goto fail_allocStorage;
-	
-	/* Allocate thread structure. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inState, sizeof(*result),
-		SJME_NVM_STRUCT_THREAD, SJME_AS_NVM_COMMONP(&result))))
-		goto fail_allocResult;
-	
-	/* Lock state on the task. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&inTask->object.common.lock)))
-		goto fail_lock;
-	
-	/* Find free slot in the thread list. */
-	freeSlot = -1;
-	for (i = 0, n = inTask->threads->length; i < n; i++)
-		if (inTask->threads->elements[i] == NULL)
-		{
-			freeSlot = i;
-			break;
-		}
-	
-	/* Need to grow the list? */
-	if (freeSlot < 0)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-	
-	/* Fill out basic details. */
-	result->inState = inState;
-	result->schedule = SJME_NVM_THREAD_NUM_SCHEDULE_MODE;
-	result->inTask = inTask;
-	result->threadId = 1 + sjme_atomic_sjme_jint_getAdd(
-		&inState->nextThreadId, 1);
-	result->stack.storage = storage;
-	result->stack.storageLen = SJME_NVM_THREAD_STACK_SIZE;
-	
-	/* All new threads are considered initially sleeping. */
-	result->status = SJME_NVM_THREAD_STATUS_SLEEPING;
-	
-	/* All threads have an initial frame within java.lang.__Start__. */
-	firstFrame = NULL;
-	if (sjme_error_is(error = sjme_nvm_task_threadEnterA(
-		result, &firstFrame,
-		"java/lang/__Start__",
-		SJME_NVM_CLASS_MEMBER_STATIC,
-		"__main", "()V",
-		0, NULL)))
-		goto fail_enterFrame;
-	
-	/* Store thread for future referencing. */
-	inTask->threads->elements[freeSlot] = result;
-	
-	/* Release task specific lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&inTask->object.common.lock, NULL)))
+	/* No effect in multi-threading. */
+	if (SJME_T_S(inThread)->threadModel == SJME_NVM_MLE_THREAD_MULTI)
+		return SJME_ERROR_NONE;
+
+	/* Ignore if already deleted. */
+	if (sjme_atomic_sjme_jint_get(&inThread->scheduleMode) ==
+		SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
+		return SJME_ERROR_NONE;
+
+	/* Lock schedule. */
+	schedule = inState->schedule;
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&schedule->lock)))
 		return sjme_error_default(error);
 	
+	/* Remove from both schedule states. */
+	if (sjme_error_is(error = sjme_nvm_task_taskScheduleMove(inState,
+		inThread, SJME_NVM_THREAD_SCHEDULED,
+		SJME_NVM_THREAD_UNDEFINED_SCHEDULE,
+		SJME_JNI_FALSE)))
+		goto fail_remove;
+	if (sjme_error_is(error = sjme_nvm_task_taskScheduleMove(inState,
+		inThread, SJME_NVM_THREAD_UNSCHEDULED,
+		SJME_NVM_THREAD_UNDEFINED_SCHEDULE,
+		SJME_JNI_FALSE)))
+		goto fail_remove;
+
+	/* Unlock schedule. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&schedule->lock, NULL)))
+		return sjme_error_default(error);
+
 	/* Success! */
-	*outThread = result;
 	return SJME_ERROR_NONE;
 	
-fail_enterFrame:
-	if (firstFrame != NULL)
-		sjme_closeable_close(SJME_AS_CLOSEABLE(firstFrame));
-	
-	/* Unlock before fail. */
-	sjme_error_is(sjme_thread_spinLockRelease(
-		&inTask->object.common.lock, NULL));
-fail_lock:
-fail_allocResult:
-	if (result != NULL)
-		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
-fail_allocStorage:
-	sjme_alloc_free(storage);
-	
+fail_remove:
+	sjme_thread_spinLockRelease(&schedule->lock, NULL);
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_nvm_task_threadStart(
+sjme_errorCode sjme_nvm_task_taskScheduleIn(
+	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread)
 {
 	sjme_errorCode error;
+	sjme_nvm_threadSchedule* schedule;
 	
-	if (inThread == NULL)
+	if (inState == NULL || inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Threads can only be started once! */
-	if (inThread->start != SJME_NVM_THREAD_START_NEVER)
-		return SJME_ERROR_INVALID_THREAD_STATE;
+	/* No effect in multi-threading. */
+	if (SJME_T_S(inThread)->threadModel == SJME_NVM_MLE_THREAD_MULTI)
+		return SJME_ERROR_NONE;
 
-	/* There must be frames. */
-	if (inThread->numFrames <= 0)
-		return SJME_ERROR_INVALID_THREAD_STATE;
+	/* Ignore if already scheduled. */
+	if (sjme_atomic_sjme_jint_get(&inThread->scheduleMode) ==
+			SJME_NVM_THREAD_SCHEDULED)
+		return SJME_ERROR_NONE;
 
-	/* Set thread as started and in the run state. */
-	inThread->start = SJME_NVM_THREAD_START_STANDARD;
-	inThread->status = SJME_NVM_THREAD_STATUS_RUNNING;
+	/* Lock schedule. */
+	schedule = inState->schedule;
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&schedule->lock)))
+		return sjme_error_default(error);
+	
+	/* Move to scheduled. */
+	if (sjme_error_is(error = sjme_nvm_task_taskScheduleMove(inState,
+		inThread, SJME_NVM_THREAD_UNSCHEDULED,
+		SJME_NVM_THREAD_SCHEDULED,
+		SJME_JNI_TRUE)))
+		goto fail_move;
 
-	/* Schedule the thread for execution. */
-	if (sjme_error_is(error = sjme_nvm_loop_schedule(inThread->inState,
-		inThread)))
+	/* Unlock schedule. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&schedule->lock, NULL)))
 		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+	
+fail_move:
+	sjme_thread_spinLockRelease(&schedule->lock, NULL);
+	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
-	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrOutNotNull sjme_jstring* outString,
-	sjme_attrInValue sjme_jboolean isIntern,
-	sjme_attrInNotNull sjme_charSeq inSeq)
+sjme_errorCode sjme_nvm_task_taskScheduleNext(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrOutNotNull sjme_nvm_thread* runThread,
+	sjme_attrOutNotNull sjme_jboolean* isTerminated)
 {
-#define SJME_INTERN_GROW 32
 	sjme_errorCode error;
-	sjme_nvm_taskStrings strings;
-	sjme_list_sjme_jstring* interns;
-	sjme_jstring* blankIntern;
-	sjme_jstring result;
-	sjme_jint hash, length, i, n;
+	sjme_nvm_threadSchedule* schedule;
+	sjme_list_sjme_nvm_thread* order;
+	sjme_nvm_thread nextThread, checkThread;
+	sjme_jboolean terminated, isRunning;
+	sjme_jint i, n, mode;
+	sjme_list_sjme_nvm_task* tasks;
+	sjme_nvm_task checkTask;
 	
-	if (inThread == NULL || outString == NULL || inSeq == NULL)
+	if (inState == NULL || runThread == NULL || isTerminated == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Calculate the hash/length of the string. */
-	hash = 0;
-	if (sjme_error_is(error = sjme_charSeq_hash(inSeq, &hash)))
-		return sjme_error_default(error);
+	/* Default state. */
+	nextThread = NULL;
+	terminated = sjme_atomic_sjme_jint_get(&inState->terminating);
 
-	length = 0;
-	if (sjme_error_is(error = sjme_charSeq_length(inSeq, &length)))
-		return sjme_error_default(error);
-
-	/* If interned, we need to lock on all the strings. */
-	strings = inThread->inTask->strings;
-	interns = strings->interns;
-	blankIntern = NULL;
-	if (isIntern)
+	/* Terminating already? Or no-effect when multithreaded. */
+	if (terminated || inState->threadModel == SJME_NVM_MLE_THREAD_MULTI)
 	{
-		/* Lock on the interned strings. */
-		if (sjme_error_is(error = sjme_thread_spinLockGrab(
-			&strings->common.lock)))
-			return sjme_error_default(error);
+		*runThread = NULL;
+		*isTerminated = terminated;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* If no tasks are left alive, stop VM execution. */
+	if (sjme_atomic_sjme_jint_get(&inState->numRunningTasks) <= 0)
+	{
+		*runThread = NULL;
+		*isTerminated = SJME_JNI_TRUE;
+		return SJME_ERROR_NONE;
+	}
 
-		/* See if there are any potential string matches. */
-		if (interns != NULL)
-			for (i = 0, n = interns->length; i < n; i++)
+	/* This is used to determine what to get. */
+	schedule = inState->schedule;
+	
+	/* Lock schedule. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&schedule->lock)))
+		return sjme_error_default(error);
+
+	/* Find next running, then waiting, thread that is scheduled. */
+	for (mode = SJME_NVM_THREAD_SCHEDULED;
+		mode > SJME_NVM_THREAD_UNDEFINED_SCHEDULE &&
+		mode < SJME_NVM_THREAD_NUM_SCHEDULE_MODE; mode++)
+	{
+		/* Scan through the running or waiting set. */
+		order = schedule->mode[mode].order;
+		if (order != NULL && order->length > 0)
+			for (i = 0, n = order->length; i < n; i++)
 			{
-				/* Ignore blank strings. */
-				result = interns->elements[i];
-				if (result == NULL)
+				/* There must be a thread here to check. */
+				checkThread = order->elements[i];
+				if (checkThread == NULL)
+					continue;
+
+				/* Can this thread even be run (not sleeping)? */
+				isRunning = SJME_JNI_FALSE;
+				if (sjme_error_is(error = sjme_nvm_task_taskScheduleYes(
+					inState, checkThread, &isRunning)))
+					goto fail_checkRunning;
+
+				/* Thread is not actually running. */
+				if (!isRunning)
 				{
-					if (blankIntern == NULL)
-						blankIntern = &interns->elements[i];
+					/* If this thread is scheduled, move it into */
+					/* unscheduled. */
+					if (mode == SJME_NVM_THREAD_SCHEDULED)
+						if (sjme_error_is(error =
+							sjme_nvm_task_taskScheduleMove(inState,
+							checkThread,
+							SJME_NVM_THREAD_SCHEDULED,
+							SJME_NVM_THREAD_UNSCHEDULED,
+							SJME_JNI_FALSE)))
+							goto fail_move;
+
+					/* Try another thread. */
 					continue;
 				}
 
-				/* Different hash/length? Ignore. */
-				if (hash != result->hashCode || length != result->length)
-					continue;
-				
-				sjme_todo("Impl?");
-				return sjme_error_notImplemented(0);
+				/* Accept this thread! */
+				nextThread = checkThread;
+				break;
 			}
 	}
 
-	/* Setup string object. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_instance_objectNew(inThread,
-		sizeof(*result), SJME_NVM_STRUCT_STRING_INSTANCE,
-		SJME_AS_JOBJECTP(&result),
-		sjme_nvm_task_commonClassR(inThread,
-			SJME_NVM_TASK_COMMON_CLASS_STRING))) ||
-		result == NULL)
-		goto fail_allocStringInstance;
-
-	/* Set string properties. */
-	result->hashCode = hash;
-	result->length = length;
+	/* If we selected a thread, then move it to be scheduled. */
+	if (nextThread != NULL)
+		if (sjme_error_is(error = sjme_nvm_task_taskScheduleMove(inState,
+			nextThread,
+			SJME_NVM_THREAD_UNSCHEDULED,
+			SJME_NVM_THREAD_SCHEDULED,
+			SJME_JNI_TRUE)))
+			goto fail_move;
 	
-	/* Duplicate the sequence. */
-	if (sjme_error_is(error = sjme_charSeq_dup(
-		inThread->inTask->inState->allocPool,
-		&result->seq, inSeq)) || result->seq == NULL)
-		goto fail_dupSeq;
-	
-	/* Final intern setup. */
-	if (isIntern)
-	{
-		/* Need to grow the intern list? */
-		if (blankIntern == NULL)
-		{
-			/* Reallocate list. */
-			n = (interns == NULL ? 0 : interns->length);
-			if (sjme_error_is(error = sjme_list_replace(
-				inThread->inState->allocPool,
-				n + SJME_INTERN_GROW,
-				&strings->interns,
-				sjme_jstring, 0)) || strings->interns == NULL)
-				goto fail_replaceList;
-
-			/* Place at end. */
-			interns = strings->interns;
-			blankIntern = &interns->elements[n];
-		}
-		
-		/* Set slot here. */
-		*blankIntern = result;
-		
-		/* Release. */
-		if (sjme_error_is(error = sjme_thread_spinLockRelease(
-			&strings->common.lock, NULL)))
-			return sjme_error_default(error);
-	}
-
-	/* Success! */
-	*outString = result;
-	return SJME_ERROR_NONE;
-
-fail_dupSeq:
-	if (!isIntern && result != NULL && result->seq != NULL)
-	{
-		sjme_alloc_free(result->seq);
-		result->seq = NULL;
-	}
-fail_replaceList:
-fail_countPoolString:
-fail_allocStringInstance:
-	/* Do not destroy loaded intern strings. */
-	if (!isIntern && result != NULL)
-		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
-
-	return sjme_error_default(error);
-#undef SJME_INTERN_GROW
-}
-
-sjme_errorCode sjme_nvm_task_threadStringValueOfP(
-	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrOutNotNull sjme_jstring* outString,
-	sjme_attrInNotNull sjme_nvm_stringPool_string inPool)
-{
-	if (inThread == NULL || outString == NULL || inPool == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Forward implementation. */
-	return sjme_nvm_task_threadStringValueOfCS(inThread,
-		outString, SJME_JNI_TRUE, inPool->seq);
-}
-
-sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
-	sjme_attrInNotNull sjme_nvm_thread inThread,
-	sjme_attrOutNotNull sjme_jstring* outString,
-	sjme_attrInValue sjme_jboolean isIntern,
-	sjme_attrInNotNull sjme_lpcstr inUtf)
-{
-	sjme_errorCode error;
-	sjme_charSeqStatic tempSeq;
-	
-	if (inThread == NULL || outString == NULL || inUtf == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Setup static sequence. */
-	memset(&tempSeq, 0, sizeof(tempSeq));
-	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&tempSeq,
-		inUtf, 0, -1)))
+	/* Release the schedule lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&schedule->lock, NULL)))
 		return sjme_error_default(error);
 
-	/* Forward implementation. */
-	return sjme_nvm_task_threadStringValueOfCS(inThread,
-		outString, isIntern, &tempSeq);
+	/* Success! */
+	*runThread = nextThread;
+	*isTerminated = terminated;
+	return SJME_ERROR_NONE;
+
+fail_unlockState:
+fail_lockState:
+fail_move:
+fail_checkRunning:
+	sjme_thread_spinLockRelease(&schedule->lock, NULL);
+	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_task_taskScheduleOut(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread)
+{
+	sjme_errorCode error;
+	sjme_nvm_threadSchedule* schedule;
+	
+	if (inState == NULL || inThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* No effect in multi-threading. */
+	if (SJME_T_S(inThread)->threadModel == SJME_NVM_MLE_THREAD_MULTI)
+		return SJME_ERROR_NONE;
+
+	/* Ignore if already unscheduled. */
+	if (sjme_atomic_sjme_jint_get(&inThread->scheduleMode) ==
+		SJME_NVM_THREAD_UNSCHEDULED)
+		return SJME_ERROR_NONE;
+
+	/* Lock schedule. */
+	schedule = inState->schedule;
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&schedule->lock)))
+		return sjme_error_default(error);
+	
+	/* Move to unscheduled. */
+	if (sjme_error_is(error = sjme_nvm_task_taskScheduleMove(inState,
+		inThread, SJME_NVM_THREAD_SCHEDULED,
+		SJME_NVM_THREAD_UNSCHEDULED,
+		SJME_JNI_TRUE)))
+		goto fail_move;
+
+	/* Unlock schedule. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&schedule->lock, NULL)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_move:
+	sjme_thread_spinLockRelease(&schedule->lock, NULL);
+	return sjme_error_default(error);
+}
+
+sjme_jboolean sjme_nvm_task_taskScheduleYes(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrOutNotNull sjme_jboolean* isRunning)
+{
+	sjme_nvm_thread_startType start;
+	sjme_nvm_task inTask;
+	sjme_jint left;
+	
+	if (inState == NULL || inThread == NULL || isRunning == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If this is a callback thread, only consider if it has at least */
+	/* one actively running frame. */
+	start = sjme_atomic_sjme_jint_get(&inThread->start);
+	if (start == SJME_NVM_THREAD_START_CALLBACK)
+	{
+		if (inThread->numFrames > 0)
+			goto skip_yes;
+	}
+
+	/* If the thread is running, continue. */
+	else if (start == SJME_NVM_THREAD_START_STANDARD)
+		goto skip_yes;
+
+	/* Thread is entering the finishing state, so it is stopping. */
+	else if (start == SJME_NVM_THREAD_START_FINISHING)
+	{
+		/* Mark as finished. */
+		sjme_atomic_sjme_jint_compareSet(&inThread->start,
+			SJME_NVM_THREAD_START_FINISHING,
+			SJME_NVM_THREAD_START_FINISHED);
+
+		/* This thread is awaiting termination. */
+		inTask = SJME_T_K(inThread);
+		sjme_atomic_sjme_jint_getAdd(
+			&inTask->numThreads[SJME_NVM_THREAD_COUNT_AWAIT_CLEANUP],
+			1);
+
+		/* Reduce total thread count. */
+		sjme_atomic_sjme_jint_getAdd(
+			&inTask->numThreads[SJME_NVM_THREAD_COUNT_ALL], -1);
+
+		/* Non-daemon or daemon thread? */
+		if (inThread->flags.isDaemon)
+			sjme_atomic_sjme_jint_getAdd(
+				&inTask->numThreads[SJME_NVM_THREAD_COUNT_DAEMON], -1);
+		else
+		{
+			/* How many threads are left? */
+			left = sjme_atomic_sjme_jint_getAdd(
+				&inTask->numThreads[SJME_NVM_THREAD_COUNT_NORMAL], -1) - 1;
+
+			/* If there are no threads left, then start termination. */
+			if (left <= 0)
+				sjme_atomic_sjme_jint_compareSet(&inTask->terminate,
+					SJME_NVM_TERMINATE_NOT,
+					SJME_NVM_TERMINATE_CLEANUP);
+		}
+
+		/* Cleanup must be called! */
+		goto skip_yes;
+	}
+
+skip_not:
+	*isRunning = SJME_JNI_FALSE;
+	return SJME_ERROR_NONE;
+	
+skip_yes:
+	*isRunning = SJME_JNI_TRUE;
+	return SJME_ERROR_NONE;
 }

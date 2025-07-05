@@ -264,6 +264,13 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 	if (inStringPool == NULL || outString == NULL || inUtf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	if (inUtfLen < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Determine length? */
+	if (inUtfLen == -1)
+		inUtfLen = strlen(inUtf);
+
 	/* Setup sequence. */
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&seq,

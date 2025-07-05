@@ -9,11 +9,7 @@
 
 #include "sjme/config.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	#define WIN32_LEAN_AND_MEAN 1
 	
 	#include <windows.h>
@@ -23,18 +19,44 @@
 	#endif
 
 	#undef WIN32_LEAN_AND_MEAN
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
+	#include <signal.h>
 #endif
 
 #include "sjme/debug.h"
 #include "sjme/alloc.h"
 #include "sjme/dylib.h"
-#include "sjme/nvm/cleanup.h"
-#include "sjme/nvm/task.h"
 
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
 
+/** The crash function to call. */
+sjme_threadLocal(sjme_thread_mainFunc, sjme_debug_crashFunc);
+
+/** The parameter to pass to the crash function. */
+sjme_threadLocal(sjme_thread_parameter, sjme_debug_crashFuncParam);
+
 sjme_attrExport sjme_debug_handlerFunctions* sjme_debug_handlers = NULL;
+
+#if defined(SJME_CONFIG_HAS_OS_POSIX)
+static void sjme_debug_crashPosix(int signalId)
+{
+	sjme_thread_mainFunc crashFunc;
+	sjme_thread_parameter crashParam;
+
+	/* No longer handle the signal, otherwise an infinite loop occurs. */
+	signal(signalId, SIG_DFL);
+	
+	/* Call the crash function, if it was set. */
+	crashFunc = sjme_debug_crashFunc;
+	crashParam = sjme_debug_crashFuncParam;
+	if (crashFunc != NULL)
+		crashFunc(crashParam);
+	
+	/* Raise the signal in this process, so that it actually crashes. */
+	raise(signalId);
+}
+#endif
 
 void sjme_debug_abort(void)
 {
@@ -61,6 +83,37 @@ void sjme_debug_abort(void)
 
 	/* Otherwise use C abort handler. */
 	abort();
+}
+
+void sjme_debug_crashContext(
+	sjme_attrInNullable sjme_thread_mainFunc crashFunc,
+	sjme_attrInNullable sjme_thread_parameter crashParam)
+{
+	/* Just replaces the other. */
+	sjme_debug_crashFunc = crashFunc;
+	sjme_debug_crashFuncParam = crashParam;
+}
+
+sjme_errorCode sjme_debug_crashRegister(void)
+{
+#if defined(SJME_CONFIG_HAS_OS_POSIX)
+	sjme_errorCode error;
+
+	/* These are the general memory and computation related signals. */
+	error = SJME_ERROR_NONE;
+	if (signal(SIGSEGV, sjme_debug_crashPosix) == SIG_ERR)
+		error = SJME_ERROR_INVALID_ARGUMENT;
+	if (signal(SIGBUS, sjme_debug_crashPosix) == SIG_ERR)
+		error = SJME_ERROR_INVALID_ARGUMENT;
+	if (signal(SIGILL, sjme_debug_crashPosix) == SIG_ERR)
+		error = SJME_ERROR_INVALID_ARGUMENT;
+	if (signal(SIGFPE, sjme_debug_crashPosix) == SIG_ERR)
+		error = SJME_ERROR_INVALID_ARGUMENT;
+	
+	return error;
+#else
+	return SJME_ERROR_NOT_IMPLEMENTED;
+#endif
 }
 
 /**

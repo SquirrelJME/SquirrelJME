@@ -16,12 +16,12 @@
 
 #include "sjme/config.h"
 
-#if defined(SJME_CONFIG_HAS_LINUX) || \
-	defined(SJME_CONFIG_HAS_BSD)
+#if defined(SJME_CONFIG_HAS_OS_LINUX) || \
+	defined(SJME_CONFIG_HAS_OS_BSD)
 	#define SJME_CONFIG_POSIX_CLOCK_GET_TIME
 #endif
 
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	#define WIN32_LEAN_AND_MEAN 1
 
 	#include <windows.h>
@@ -229,7 +229,7 @@ static sjme_errorCode sjme_nal_default_getEnv(
 static sjme_errorCode sjme_nal_default_nanoTime(
 	sjme_attrOutNotNull sjme_jlong* result)
 {
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	LARGE_INTEGER freq;
 	LARGE_INTEGER ticks;
 #elif defined(SJME_CONFIG_POSIX_CLOCK_GET_TIME)
@@ -239,7 +239,7 @@ static sjme_errorCode sjme_nal_default_nanoTime(
 	if (result == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/* Get frequency of the clock. */
 	memset(&freq, 0, sizeof(freq));
 	if (!QueryPerformanceFrequency(&freq))

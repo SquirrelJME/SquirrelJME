@@ -43,7 +43,7 @@
 	sdData.type = (key); \
 	sdData.error = SJME_ERROR_UNKNOWN; \
 	sdData.state = inState; \
-	serial = &sdData.data.what; } while (0)
+	serial = (void*)&sdData.data.what; } while (0)
 
 /** The name for serial data. */
 #define SDX_STRUCT_NAME(where, what) \
@@ -199,7 +199,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	
 	/* Restore info. */
 	state = sdData->state;
-	as = &sdData->data;
+	as = (void*)&sdData->data;
 	
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */

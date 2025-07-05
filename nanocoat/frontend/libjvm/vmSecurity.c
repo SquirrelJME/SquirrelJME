@@ -8,28 +8,25 @@
 // -------------------------------------------------------------------------*/
 
 #include <jni.h>
+#include <jvm.h>
 
 #include "sjme/debug.h"
-#include "sjme/nvm/nvm.h"
-#include "frontend/libjvm/jniMissing.h"
 
-sjme_attrUnused void* JNICALL JVM_FindLibraryEntry(
-	sjme_attrInNotNull void* libHandle,
-	sjme_attrInNotNull sjme_lpcstr inName)
+jobject JNICALL JVM_DoPrivileged(JNIEnv* env,
+	jclass cls,
+	jobject action,
+	jobject context,
+	jboolean wrapException)
 {
-	/* Idea: Emulated libraries? Would require a NOEXEC trap. */
 	sjme_todo("Impl?");
 }
 
-sjme_attrUnused void* JNICALL JVM_LoadLibrary(
-	sjme_attrInNotNull sjme_lpcstr inName)
+jobject JNICALL JVM_GetInheritedAccessControlContext(JNIEnv* env, jclass cls)
 {
-	/* Idea: Emulated libraries? Could be used for bootstrapping? */
 	sjme_todo("Impl?");
 }
 
-sjme_attrUnused void JNICALL JVM_UnloadLibrary(
-	sjme_attrInNotNull void* libHandle)
+jobject JNICALL JVM_GetStackAccessControlContext(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
 }

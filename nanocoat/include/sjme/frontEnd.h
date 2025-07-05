@@ -221,7 +221,7 @@ sjme_errorCode sjme_frontEnd_copyR(
  * @since 2025/06/13
  */
 #define sjme_frontEnd_copy(dst, src) \
-	(sjme_frontEnd_copyR((dst), sizeof(*(dst)), (src)))
+	(sjme_frontEnd_copyR((void*)(dst), sizeof(*(dst)), (void*)(src)))
 	
 /**
  * This is called when a front end reference needs to be released. If there
