@@ -10,24 +10,15 @@
 #include "sjme/config.h"
 
 #if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
-	#if defined(SJME_CONFIG_HAS_LINUX) || \
-        defined(SJME_CONFIG_HAS_BSD) || \
-		defined(SJME_CONFIG_HAS_MACOS)
-		/** Uses dlfcn.h. */
-		#define SJME_CONFIG_DYLIB_HAS_DLFCN
+	#if defined(SJME_CONFIG_HAS_DLFCN_H)
+		#include <dlfcn.h>
+	#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
+		#define WIN32_LEAN_AND_MEAN 1
+
+		#include <windows.h>
+
+		#undef WIN32_LEAN_AND_MEAN
 	#endif
-#endif
-
-#include <stdio.h>
-
-#if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
-	#include <dlfcn.h>
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
-	#define WIN32_LEAN_AND_MEAN 1
-
-	#include <windows.h>
-
-	#undef WIN32_LEAN_AND_MEAN
 #endif
 
 #include "sjme/dylib.h"
@@ -47,7 +38,7 @@ sjme_errorCode sjme_dylib_close(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	if (FreeLibrary(inLib) == 0)
 		return SJME_ERROR_COULD_NOT_UNLOAD_LIBRARY;
 		
@@ -66,7 +57,7 @@ sjme_errorCode sjme_dylib_lookup(
 {
 #if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
 	sjme_pointer handle;
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	FARPROC handle;
 #if defined(SJME_CONFIG_HAS_ARCH_IA32)
 #define BUF_SIZE 128
@@ -96,7 +87,7 @@ sjme_errorCode sjme_dylib_lookup(
 	/* Success! */
 	*outPtr = handle;
 	return SJME_ERROR_NONE;
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	handle = GetProcAddress(inLib, inSymbol);
 	if (handle == NULL)
 	{
@@ -157,15 +148,15 @@ sjme_errorCode sjme_dylib_name(
 		return SJME_ERROR_NONE;
 	
 	/* Print what? */
-#if defined(SJME_CONFIG_HAS_LINUX) || \
-	defined(SJME_CONFIG_HAS_BSD) || \
-    defined(SJME_CONFIG_HAS_BEOS)
+#if defined(SJME_CONFIG_HAS_OS_LINUX) || \
+	defined(SJME_CONFIG_HAS_OS_BSD) || \
+    defined(SJME_CONFIG_HAS_OS_BEOS)
 	snprintf(outName, outLen - 1, "lib%s.so", inLibName);
-#elif defined(SJME_CONFIG_HAS_CYGWIN)
+#elif defined(SJME_CONFIG_HAS_OS_CYGWIN)
 	snprintf(outName, outLen - 1, "lib%s.dll", inLibName);
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	snprintf(outName, outLen - 1, "%s.dll", inLibName);
-#elif defined(SJME_CONFIG_HAS_MACOS)
+#elif defined(SJME_CONFIG_HAS_OS_MACOS)
 	snprintf(outName, outLen - 1, "lib%s.dylib", inLibName);
 #else
 	return sjme_error_notImplemented(0);
@@ -187,7 +178,7 @@ sjme_errorCode sjme_dylib_open(
 {
 #if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
 	sjme_pointer handle;
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	HMODULE handle;
 #endif
 	
@@ -211,7 +202,7 @@ sjme_errorCode sjme_dylib_open(
 	/* Success! */
 	*outLib = handle;
 	return SJME_ERROR_NONE;
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	handle = LoadLibraryExA(libPath, NULL, 0);
 	if (handle == NULL)
 		return SJME_ERROR_COULD_NOT_LOAD_LIBRARY;
@@ -230,7 +221,7 @@ sjme_errorCode sjme_dylib_self(
 {
 #if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
 	sjme_pointer handle;
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	HMODULE handle;
 #endif
 	
@@ -248,7 +239,7 @@ sjme_errorCode sjme_dylib_self(
 	/* Success! */
 	*outLib = handle;
 	return SJME_ERROR_NONE;
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	handle = GetModuleHandle(NULL);
 	if (handle == NULL)
 		return SJME_ERROR_COULD_NOT_LOAD_LIBRARY;

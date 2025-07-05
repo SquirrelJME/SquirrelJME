@@ -9,7 +9,7 @@
 
 #include "sjme/config.h"
 
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	#define WIN32_LEAN_AND_MEAN 1
 	
 	#include <windows.h>
@@ -19,7 +19,7 @@
 	#endif
 
 	#undef WIN32_LEAN_AND_MEAN
-#elif defined(SJME_CONFIG_HAS_POSIX)
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	#include <signal.h>
 #endif
 
@@ -38,7 +38,7 @@ sjme_threadLocal(sjme_thread_parameter, sjme_debug_crashFuncParam);
 
 sjme_attrExport sjme_debug_handlerFunctions* sjme_debug_handlers = NULL;
 
-#if defined(SJME_CONFIG_HAS_POSIX)
+#if defined(SJME_CONFIG_HAS_OS_POSIX)
 static void sjme_debug_crashPosix(int signalId)
 {
 	sjme_thread_mainFunc crashFunc;
@@ -96,7 +96,7 @@ void sjme_debug_crashContext(
 
 sjme_errorCode sjme_debug_crashRegister(void)
 {
-#if defined(SJME_CONFIG_HAS_POSIX)
+#if defined(SJME_CONFIG_HAS_OS_POSIX)
 	sjme_errorCode error;
 
 	/* These are the general memory and computation related signals. */

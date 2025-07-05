@@ -9,7 +9,7 @@
 
 #include "sjme/config.h"
 
-#if defined(SJME_CONFIG_HAS_POSIX)
+#if defined(SJME_CONFIG_HAS_OS_POSIX)
 	#include <locale.h>
 #endif
 
@@ -51,13 +51,13 @@ SJME_NVM_MLE_FUNCTION_DECL(lineEnding)
 {
 	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
 	
-#if defined(SJME_CONFIG_HAS_WINDOWS) || \
-	defined(SJME_CONFIG_HAS_WINDOWS_16) || \
-	defined(SJME_CONFIG_HAS_WINDOWS_32) || \
-	defined(SJME_CONFIG_HAS_PALMOS) || \
-	defined(SJME_CONFIG_HAS_PC_DOS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_16) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_32) || \
+	defined(SJME_CONFIG_HAS_OS_PALMOS) || \
+	defined(SJME_CONFIG_HAS_OS_PC_DOS)
 	argR->v.i = SJME_NVM_MLE_LINE_ENDING_CRLF;
-#elif defined(SJME_CONFIG_HAS_MACOS_CLASSIC)
+#elif defined(SJME_CONFIG_HAS_OS_MACOS_CLASSIC)
 	argR->v.i = SJME_NVM_MLE_LINE_ENDING_CR;
 #else
 	argR->v.i = SJME_NVM_MLE_LINE_ENDING_LF;
@@ -70,7 +70,7 @@ SJME_NVM_MLE_FUNCTION_DECL(locale)
 {
 	static sjme_atomic_sjme_jint cached;
 	sjme_nvm_mle_builtInLocaleType locale;
-#if defined(SJME_CONFIG_HAS_POSIX)
+#if defined(SJME_CONFIG_HAS_OS_POSIX)
 	sjme_lpcstr set;
 #endif
 
@@ -79,10 +79,10 @@ SJME_NVM_MLE_FUNCTION_DECL(locale)
 	if (locale != SJME_NVM_MLE_LOCALE_UNSPECIFIED)
 		goto skip_cached;
 	
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
-#elif defined(SJME_CONFIG_HAS_POSIX)
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	/* Get the base global locale. */
 	set = setlocale(LC_ALL, "");
 	if (set != NULL)

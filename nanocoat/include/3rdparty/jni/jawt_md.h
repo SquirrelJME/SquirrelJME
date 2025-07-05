@@ -10,11 +10,11 @@
 #ifndef __SQUIRRELJME_JAWT_MD_H__
 #define __SQUIRRELJME_JAWT_MD_H__
 
-#if defined(__linux__) || defined(SJME_CONFIG_HAS_LINUX)
+#if defined(__linux__) || defined(SJME_CONFIG_HAS_OS_LINUX)
 	#include "jawt_linux_x11.h"
-#elif defined(_WIN32) || defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(_WIN32) || defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	#include "jawt_win.h"
-#elif defined(__APPLE__) || defined(SJME_CONFIG_HAS_MACOS)
+#elif defined(__APPLE__) || defined(SJME_CONFIG_HAS_OS_MACOS)
 	#include "jawt_mac.h"
 #endif
 

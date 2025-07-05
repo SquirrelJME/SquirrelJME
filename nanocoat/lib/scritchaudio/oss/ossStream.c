@@ -9,7 +9,7 @@
 
 #include "sjme/config.h"
 
-#if defined(SJME_CONFIG_HAS_LINUX)
+#if defined(SJME_CONFIG_HAS_OS_LINUX)
 	#include <sys/ioctl.h>
 #else
 	#include <stropts.h>

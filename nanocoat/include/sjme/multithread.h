@@ -55,8 +55,8 @@ typedef sjme_intPointer sjme_thread_id;
 	typedef pthread_t sjme_alignPointer sjme_thread;
 
 	/* On these systems pthread_t is a pointer. */
-	#if defined(SJME_CONFIG_HAS_MACOS) || \
-		defined(SJME_CONFIG_HAS_EMSCRIPTEN)
+	#if defined(SJME_CONFIG_HAS_OS_MACOS) || \
+		defined(SJME_CONFIG_HAS_OS_EMSCRIPTEN)
 		/** The thread type. */
 		#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
 	

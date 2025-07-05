@@ -13,9 +13,9 @@
 #include "sjme/config.h"
 #include "sjme/multithread.h"
 
-#if defined(SJME_CONFIG_HAS_LINUX)
+#if defined(SJME_CONFIG_HAS_OS_LINUX)
 	#include <sched.h>
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	#if SJME_CONFIG_WINDOWS_VERSION_LEAST(SJME_CONFIG_WINDOWS_8)
 		#include <processthreadsapi.h>
 	#endif
@@ -419,7 +419,7 @@ void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
 {
 #if defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	LARGE_INTEGER baseTime;
-#elif defined(SJME_CONFIG_HAS_POSIX)
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	struct timespec request;
 	sjme_jint seconds, mod;
 #endif
@@ -441,7 +441,7 @@ void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
 	while (nanos > 0)
 		nanos = 0; /* TODO */
 	
-#elif defined(SJME_CONFIG_HAS_POSIX)
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	/* Calculate seconds. */
 	seconds = millis / 1000;
 	mod = millis % 1000;
@@ -457,7 +457,7 @@ void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
 
 void sjme_thread_yield(void)
 {
-#if defined(SJME_CONFIG_HAS_LINUX)
+#if defined(SJME_CONFIG_HAS_OS_LINUX)
 	sched_yield();
 #elif defined(SJME_CONFIG_HAS_THREADS_PTHREAD_MACOS)
 	/* macOS has none. */

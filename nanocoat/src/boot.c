@@ -415,17 +415,17 @@ sjme_errorCode sjme_nvm_defaultDir(
 		return SJME_ERROR_OUT_OF_MEMORY;
 	memset(work, 0, sizeof(*work) * limit);
 	
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	if (1)
 		sjme_todo("Impl?");
-#elif defined(SJME_CONFIG_HAS_PC_DOS)
+#elif defined(SJME_CONFIG_HAS_OS_PC_DOS)
 	if (1)
 		sjme_todo("Impl?");
 		
-#elif defined(SJME_CONFIG_HAS_LINUX) || \
-	defined(SJME_CONFIG_HAS_BSD) || \
-	defined(SJME_CONFIG_HAS_MACOS) || \
-	defined(SJME_CONFIG_HAS_CYGWIN)
+#elif defined(SJME_CONFIG_HAS_OS_LINUX) || \
+	defined(SJME_CONFIG_HAS_OS_BSD) || \
+	defined(SJME_CONFIG_HAS_OS_MACOS) || \
+	defined(SJME_CONFIG_HAS_OS_CYGWIN)
 	
 	/* Which are we interested in? */
 	useEnv = NULL;

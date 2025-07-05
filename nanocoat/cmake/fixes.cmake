@@ -237,6 +237,14 @@ if(NOT SJME_CONFIG_HAS_FLOAT_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_FLOAT_H=1)
 endif()
 
+# dlfcn.h available?
+CHECK_INCLUDE_FILE("dlfcn.h" SJME_CONFIG_HAS_DLFCN_H)
+if(NOT SJME_CONFIG_HAS_DLFCN_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_DLFCN_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_DLFCN_H=1)
+endif()
+
 # stdarg.h available?
 CHECK_INCLUDE_FILE("stdarg.h" SJME_CONFIG_HAS_STDARG_H)
 if(NOT SJME_CONFIG_HAS_STDARG_H)
