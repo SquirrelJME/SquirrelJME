@@ -10,14 +10,19 @@
 #include "sjme/config.h"
 
 #if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
-	#if defined(SJME_CONFIG_HAS_DLFCN_H)
-		#include <dlfcn.h>
-	#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 		#define WIN32_LEAN_AND_MEAN 1
 
 		#include <windows.h>
 
 		#undef WIN32_LEAN_AND_MEAN
+
+		/* Make sure this is not included, on say mingw32. */
+		#if defined(SJME_CONFIG_HAS_DLFCN_H)
+			#undef SJME_CONFIG_HAS_DLFCN_H
+		#endif
+	#elif defined(SJME_CONFIG_HAS_DLFCN_H)
+		#include <dlfcn.h>
 	#endif
 #endif
 
