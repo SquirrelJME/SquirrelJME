@@ -314,3 +314,14 @@ SJME_ATOMIC_FUNCTION(sjme_charSeq, 0)
 /* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */
 
+#if defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
+void sjme_atomic_interruptsDisable(void)
+{
+	sjme_todo("Impl?");
+}
+
+void sjme_atomic_interruptsEnable(void)
+{
+	sjme_todo("Impl?");
+}
+#endif
