@@ -48,7 +48,7 @@ static sjme_errorCode sjme_stream_inputSeekableClose(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Only forward close if it was requested. */
-	if (inImplState->forwardClose)
+	if (inImplState->flags.forwardClose)
 		if (sjme_error_is(error = sjme_closeable_close(
 			SJME_AS_CLOSEABLE(inImplState->handle.p))))
 			return sjme_error_default(error);
@@ -73,7 +73,7 @@ static sjme_errorCode sjme_stream_inputSeekableInit(
 	inImplState->offset = init->base;
 	inImplState->index = 0;
 	inImplState->length = init->length;
-	inImplState->forwardClose = init->forwardClose;
+	inImplState->flags.forwardClose = init->forwardClose;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

@@ -16,6 +16,7 @@
 	#include <signal.h>
 #endif
 
+#include "sjme/nvm/boot.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/pure/pure.h"
 #include "sjme/nvm/nvm.h"
@@ -24,23 +25,19 @@
 #include "sjme/dylib.h"
 #include "sjme/native.h"
 
-/** The default pool size for ScritchUI on RetroArch. */
-#define SJME_LIBRETRO_SCRITCHUI_POOL_SIZE INT32_C(25165824)
+/** The default pool size on RetroArch. */
+#define SJME_LIBRETRO_DEFAULT_POOL_SIZE INT32_C(33554432)
 
-/** The various names that the runtime Jar can be. */
-static sjme_lpcstr sjme_libretro_romNames[] =
+/** A single MiB. */
+#define SJME_LIBRETRO_ONE_MIB INT32_C(1048576)
+
+sjme_libretro_globalStruct sjme_libretro_globals =
 {
-	"squirreljme-"SQUIRRELJME_VERSION"-fast.jar",
-	"squirreljme-"SQUIRRELJME_VERSION".jar",
-	"squirreljme-"SQUIRRELJME_VERSION"-test.jar",
-	"squirreljme-"SQUIRRELJME_VERSION"-slow.jar",
-	"squirreljme-"SQUIRRELJME_VERSION"-slow-test.jar",
-	"squirreljme-fast.jar",
-	"squirreljme.jar",
-	"squirreljme-test.jar",
-	"squirreljme-slow.jar",
-	"squirreljme-slow-test.jar",
-	NULL
+	sjme_sm(.envCallback, NULL),
+	sjme_sm(.videoRefreshCallback, NULL),
+	sjme_sm(.vfs, {0}),
+	sjme_sm(.allocPool, NULL),
+	sjme_sm(.inState, NULL),
 };
 
 static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
@@ -49,19 +46,19 @@ static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 	struct retro_message retroMessage;
 	struct retro_log_callback retroLogCallback;
 	
-	if (sjme_libretro_envCallback != NULL)
+	if (sjme_libretro_globals.envCallback != NULL)
 	{
 		/* Setup details. */
 		retroMessage.frames = 240;
 		retroMessage.msg = partMessage;
 	
 		/* Emit message. */
-		sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_MESSAGE,
+		sjme_libretro_globals.envCallback(RETRO_ENVIRONMENT_SET_MESSAGE,
 			&retroMessage);
 		
 		/* Is logging also available? */
 		memset(&retroLogCallback, 0, sizeof(retroLogCallback));
-		if (true == sjme_libretro_envCallback(
+		if (true == sjme_libretro_globals.envCallback(
 			RETRO_ENVIRONMENT_GET_LOG_INTERFACE,
 				&retroLogCallback) &&
 			retroLogCallback.log != NULL)
@@ -79,11 +76,11 @@ static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 static sjme_jboolean sjme_libretro_exitHandler(int exitCode)
 {
 	/* If there is no environment callback, then do nothing here. */
-	if (sjme_libretro_envCallback == NULL)
+	if (sjme_libretro_globals.envCallback == NULL)
 		return SJME_JNI_FALSE;
 
 	/* Tell the front end to stop the core. */
-	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SHUTDOWN, NULL);
+	sjme_libretro_globals.envCallback(RETRO_ENVIRONMENT_SHUTDOWN, NULL);
 	return SJME_JNI_TRUE;
 }
 
@@ -100,20 +97,6 @@ static sjme_debug_handlerFunctions sjme_libretro_debugHandlers =
 	sjme_sm(.message, sjme_libretro_debugMessageHandler),
 };
 
-static const sjme_nal sjme_libretro_nal =
-{
-	.currentTimeMillis = NULL,
-	.fileOpen = NULL,
-	.getEnv = NULL,
-	.nanoTime = NULL,
-	.stdIo =
-	{
-		NULL,
-		NULL,
-		NULL,
-	},
-};
-
 sjme_attrUnused RETRO_API unsigned retro_api_version(void)
 {
 	return RETRO_API_VERSION;
@@ -126,71 +109,200 @@ sjme_attrUnused RETRO_API void retro_deinit(void)
 sjme_attrUnused RETRO_API void retro_init(void)
 {
 	sjme_errorCode error;
-	sjme_scritchui scritchUi;
-	sjme_alloc_pool scritchPool;
-	const sjme_nal* nal;
-	sjme_seekable bootSeek;
+	sjme_alloc_pool allocPool;
+	sjme_jint tryAlloc;
 	
 	/* Setup handlers for debug calls. */
 	sjme_debug_handlers = &sjme_libretro_debugHandlers;
+	
+	/* Reset error. */
+	error = SJME_ERROR_UNKNOWN;
 
-	/* Use the RetroArch NAL. */
-	nal = &sjme_libretro_nal;
+	/* Allocate memory. */
+	allocPool = NULL;
+	sjme_message("Allocating memory...");
+	for (tryAlloc = SJME_LIBRETRO_DEFAULT_POOL_SIZE;
+		tryAlloc >= SJME_LIBRETRO_ONE_MIB;
+		tryAlloc -= SJME_LIBRETRO_ONE_MIB)
+	{
+		/* Attempt allocation. */
+		allocPool = NULL;
+		if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&allocPool,
+			SJME_LIBRETRO_DEFAULT_POOL_SIZE)) || allocPool == NULL)
+			continue;
+	}
 
-	/* Allocate ScritchUI memory. */
-	scritchPool = NULL;
-	sjme_message("Allocating ScritchUI memory...");
-	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&scritchPool,
-		SJME_LIBRETRO_SCRITCHUI_POOL_SIZE)) || scritchPool == NULL)
+	/* Failed to allocate? */
+	if (allocPool == NULL)
 		goto fail_initMem;
 
-#if 0
-	/* Open seekable to the boot Jar. */
-	bootSeek = NULL;
-	if (sjme_error_is(error = nal->fileOpen(pool, argv[1],
-		&bootSeek)) || bootSeek == NULL)
-		goto fail_openBootJar;
+	/* Set global memory. */
+	sjme_libretro_globals.allocPool = allocPool;
 
-	/* Initialize ScritchUI. */
-	scritchUi = NULL;
-	sjme_message("Initializing ScritchUI...");
-	if (sjme_error_is(error = SJME_SCRITCHUI_DYLIB_SYMBOL(pure)(
-		scritchPool, &scritchUi, NULL, NULL, NULL)) || scritchUi == NULL)
-		goto fail_initUi;
-#endif
-
+	/* Success! */
 	return;
 
-fail_openBootJar:
-fail_initUi:
 fail_initMem:
-	if (scritchPool != NULL)
-		sjme_alloc_poolDestroy(scritchPool);
+	if (allocPool != NULL)
+		sjme_alloc_poolDestroy(allocPool);
 	sjme_error_fatal(error);
 }
 
 sjme_attrUnused RETRO_API bool retro_load_game(
 	const struct retro_game_info* game)
 {
-	static sjme_jint trigger;
-	
-	/* If we requested no game then we do not really care, do we? */
+	/* Share everything with platform-specific loading. */
 	if (game == NULL)
-		return true;
-		
-	if (!(trigger++))
-		sjme_message("Impl. %s?", __func__);
-		
-	return false;
+		return retro_load_game_special(0, NULL, 0);
+	return retro_load_game_special(0, game, 1);
 }
 
 sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
-	const struct retro_game_info *info, size_t num_info)
+	const struct retro_game_info* info, size_t num_info)
 {
-	static sjme_jint trigger;
-	if (!(trigger++))
-		sjme_message("Impl. %s?", __func__);
-	return false;
+#define MAX_ARGC 32
+	sjme_errorCode error;
+	sjme_jint i, argC, libStrSize;
+	sjme_lpcstr* argV;
+	sjme_nvm_bootParam bootParam;
+	sjme_lpcstr systemDir;
+	const struct retro_game_info* jarInfo;
+
+	/* Default to out of memory. */
+	error = SJME_ERROR_OUT_OF_MEMORY;
+	
+	/* Allocate arguments to pass in. */
+	argC = 0;
+	argV = sjme_alloca(sizeof(*argV) * (MAX_ARGC + 1));
+	if (argV == NULL)
+		goto fail_allocArgV;
+	memset(argV, 0, sizeof(*argV) * (MAX_ARGC + 1));
+
+	/* -Xlibraries? */
+	if (num_info > 1)
+	{
+		/* Determine size of everything. */
+		libStrSize = strlen("-Xlibraries:") + 1;
+		for (i = 1; i < num_info; i++)
+		{
+			/* Which info are we operating on? */
+			jarInfo = &info[i];
+			if (jarInfo->path == NULL)
+				continue;
+
+			/* Add in. */
+			libStrSize = strlen(jarInfo->path) + 2;
+		}
+
+		/* Allocate. */
+		argV[argC] = sjme_alloca(sizeof(*argV[argC]) * libStrSize);
+		if (argV[argC] == NULL)
+			goto fail_allocArgV;
+		memset((void*)argV[argC], 0, sizeof(*argV[argC]) * libStrSize);
+
+		/* Concat everything. */
+		strncpy((char*)argV[argC], "-Xlibraries:", libStrSize);
+		for (i = 1; i < num_info; i++)
+		{
+			/* Which info are we operating on? */
+			jarInfo = &info[i];
+			if (jarInfo->path == NULL)
+				continue;
+
+			/* Pass it through. */
+			strncat((char*)argV[argC], jarInfo->path, libStrSize);
+			if ((i + 1) < num_info)
+				strncat((char*)argV[argC],
+					SJME_CONFIG_PATH_SEPARATOR, libStrSize);
+		}
+
+		/* Consume it now. */
+		argC++;
+	}
+
+	/* -jar? */
+	if (num_info >= 1)
+	{
+		/* Which Jar are we operating on? */
+		jarInfo = &info[0];
+
+		/* Pass it through. */
+		argV[argC++] = "-jar";
+		argV[argC++] = jarInfo->path;
+	}
+	
+	/* Setup base boot parameters. */
+	memset(&bootParam, 0, sizeof(bootParam));
+	bootParam.nal = &sjme_libretro_nal;
+
+	/* Parse main arguments. */
+	if (sjme_error_is(error = sjme_nvm_parseCommandLine(
+		sjme_libretro_globals.allocPool,
+		bootParam.nal, &bootParam, argC, argV)))
+		goto fail_parseCommandLine;
+	
+	/* If there was no boot suite specified, load a default one. */
+	if (bootParam.bootSuite == NULL)
+	{
+		/* Obtain the system directory. */
+		error = SJME_ERROR_NATIVE_ERROR;
+		systemDir = NULL;
+		if (!sjme_libretro_globals.envCallback(
+			RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &systemDir) ||
+			systemDir == NULL)
+			goto fail_getSystemDir;
+		
+		/* Look it up. */
+		if (sjme_error_is(error = sjme_nvm_defaultBootSuiteInDirectory(
+			sjme_libretro_globals.allocPool,
+			bootParam.nal,
+			systemDir,
+			&bootParam.bootSuite)) ||
+			bootParam.bootSuite == NULL)
+			goto fail_bootSuiteBackup;
+	}
+
+	/* If no classpath was specified, load the launcher instead. */
+	if (bootParam.mainClassPathById == NULL &&
+		bootParam.mainClassPathByName == NULL)
+	{
+		/* Try to find default launcher. */
+		if (sjme_error_is(error = sjme_nvm_rom_suiteDefaultLaunch(
+			sjme_libretro_globals.allocPool,
+			bootParam.bootSuite,
+			(sjme_lpstr*)&bootParam.mainClass,
+			(sjme_list_sjme_lpstr**)&bootParam.mainArgs,
+			(sjme_list_sjme_jint**)&bootParam.mainClassPathById,
+			(sjme_list_sjme_lpstr**)&bootParam.mainClassPathByName)))
+			goto fail_defaultLaunch;
+		
+		/* Still failed? */
+		if (bootParam.mainClassPathById == NULL &&
+			bootParam.mainClassPathByName == NULL)
+		{
+			error = SJME_ERROR_NO_CLASS;
+			goto fail_defaultLaunch;
+		}
+	}
+	
+	/* Boot the virtual machine. */
+	sjme_libretro_globals.inState = NULL;
+	if (sjme_error_is(error = sjme_nvm_boot(
+		sjme_libretro_globals.allocPool,
+		&bootParam, &sjme_libretro_globals.inState, NULL)))
+		goto fail_boot;
+	
+	/* Success! */
+	return true;
+#undef MAX_ARGC
+
+fail_defaultLaunch:
+fail_boot:
+fail_bootSuiteBackup:
+fail_parseCommandLine:
+fail_getSystemDir:
+fail_allocArgV:
+	return sjme_error_fatal(error) & 0;
 }
 
 sjme_attrUnused RETRO_API void retro_reset(void)

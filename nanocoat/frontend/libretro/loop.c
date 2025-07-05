@@ -52,7 +52,7 @@ static void sjme_libretro_checkUnitTests(void)
 		/* Ask the front end if we should run unit tests. */
 		memset(&var, 0, sizeof(var));
 		var.key = SJME_LIBRETRO_CONFIG_UNIT_TESTS;
-		sjme_libretro_envCallback(RETRO_ENVIRONMENT_GET_VARIABLE,
+		sjme_libretro_globals.envCallback(RETRO_ENVIRONMENT_GET_VARIABLE,
 			&var);
 
 		/* Are we running unit tests? */
@@ -117,16 +117,13 @@ sjme_attrUnused RETRO_API void retro_run(void)
 	static sjme_jint tick;
 	uint32_t buf[240*320];
 	int i;
-	
-	static sjme_jint trigger;
-	if (!(trigger++))
-		sjme_message("Impl. %s?", __func__);
 
 	/* Do a basic animation. */
 	sjme_modelessStars(&modelessStarState, buf,
 		240, 320, 240, tick++);
-	sjme_libretro_videoRefreshCallback(
-		buf, 240, 320, 240 * 4);
+	if (sjme_libretro_globals.videoRefreshCallback != NULL)
+		sjme_libretro_globals.videoRefreshCallback(
+			buf, 240, 320, 240 * 4);
 
 #if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_UNIT_TEST)
 	/* Running unit tests? */

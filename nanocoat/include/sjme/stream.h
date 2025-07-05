@@ -107,12 +107,16 @@ typedef struct sjme_stream_implState
 	
 	/** Internal length. */
 	sjme_jint length;
+
+	/** Flags. */
+	struct sjme_packed
+	{
+		/** Forward close? */
+		sjme_jboolean forwardClose : sjme_booleanBit;
 	
-	/** Forward close? */
-	sjme_jboolean forwardClose;
-	
-	/** EOF hit? */
-	sjme_jboolean hitEof;
+		/** EOF hit? */
+		sjme_jboolean hitEof : sjme_booleanBit;
+	} flags;
 } sjme_stream_implState;
 
 /**

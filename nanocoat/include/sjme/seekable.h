@@ -117,9 +117,16 @@ typedef struct sjme_seekable_implState
 	
 	/** Internal length. */
 	sjme_jint length;
-	
-	/** Forward close? */
-	sjme_jboolean forwardClose;
+
+	/** Seekable flags. */
+	struct sjme_packed
+	{
+		/** Forward close? */
+		sjme_jboolean forwardClose : sjme_booleanBit;
+
+		/** Size is volatile. */
+		sjme_jboolean volatileSize : sjme_booleanBit;
+	} flags;
 } sjme_seekable_implState;
 
 /**
@@ -219,6 +226,9 @@ struct sjme_seekableBase
 	
 	/** The pool this is in. */
 	sjme_alloc_pool allocPool;
+
+	/** The cached seekable size. */
+	sjme_atomic_sjme_jint cachedSize;
 };
 
 /**

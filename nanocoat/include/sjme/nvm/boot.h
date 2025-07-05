@@ -122,6 +122,22 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite);
 
 /**
+ * Locates the default boot suite in the given directory.
+ * 
+ * @param allocPool The pool for allocations.
+ * @param nal The native abstraction layer to use.
+ * @param inDirectory The directory to look within.
+ * @param outSuite The resultant suite.
+ * @return Any resultant error code, if any.
+ * @since 2024/08/09
+ */
+sjme_errorCode sjme_nvm_defaultBootSuiteInDirectory(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrInNotNull sjme_lpcstr inDirectory,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite);
+
+/**
  * Obtains the default directory for the given type.
  * 
  * This is the same as @c cc.squirreljme.runtime.cldc.full.SystemPathProvider .

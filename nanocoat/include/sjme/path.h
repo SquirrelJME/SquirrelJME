@@ -94,6 +94,7 @@ extern "C"
  * root component if there is one.
  * @param outBase The pointer to the path base.
  * @param outLen The length of the path name.
+ * @param outIsRoot Is this the root directory?
  * @return Any resultant error, if any. Returns @c SJME_ERROR_NO_SUCH_ELEMENT
  * if the root component was requested and there was none.
  * @since 2024/08/10
@@ -103,7 +104,8 @@ sjme_errorCode sjme_path_getName(
 	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrInNegativeOnePositive sjme_jint inName,
 	sjme_attrOutNullable sjme_lpcstr* outBase,
-	sjme_attrOutNullable sjme_jint* outLen);
+	sjme_attrOutNullable sjme_jint* outLen,
+	sjme_jboolean* outIsRoot);
 
 /**
  * Gets the given name at the given index.
@@ -119,6 +121,7 @@ sjme_errorCode sjme_path_getName(
  * @param outLen The length of the path name.
  * @param outCount The number of name components, exclusive to all the
  * other arguments.
+ * @param outIsRoot Is this the root directory?
  * @return Any resultant error, if any. Returns @c SJME_ERROR_NO_SUCH_ELEMENT
  * if the root component was requested and there was none.
  * @since 2024/08/10
@@ -132,7 +135,8 @@ sjme_errorCode sjme_path_getNameF(
 	sjme_attrOutNullable sjme_lpcstr* outEnd,
 	sjme_attrOutNullable sjme_jint* outEndDx,
 	sjme_attrOutNullable sjme_jint* outLen,
-	sjme_attrOutNullable sjme_jint* outCount);
+	sjme_attrOutNullable sjme_jint* outCount,
+	sjme_jboolean* outIsRoot);
 
 /**
  * Gets the number of names that appear in the given path.

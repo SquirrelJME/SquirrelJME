@@ -247,10 +247,12 @@ sjme_attrUnused RETRO_API void retro_set_controller_port_device(
 #endif
 
 	/* Set standard controls. */
-	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS,
+	sjme_libretro_globals.envCallback(
+		RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS,
 		(void*)baseDesc);
 
 	/* Set input controllers. */
-	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_CONTROLLER_INFO,
+	sjme_libretro_globals.envCallback(
+		RETRO_ENVIRONMENT_SET_CONTROLLER_INFO,
 		(void*)&sjme_libretro_inputControllers);
 }

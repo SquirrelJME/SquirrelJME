@@ -349,8 +349,6 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 {
 	sjme_errorCode error;
 	sjme_cchar dataPath[SJME_MAX_PATH];
-	sjme_jint i;
-	sjme_nvm_rom_suite result;
 	
 	if (allocPool == NULL || nal == NULL || outSuite == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -366,12 +364,36 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 		dataPath, SJME_MAX_PATH - 1)))
 		return sjme_error_default(error);
 
+	/* Look in this directory. */
+	return sjme_nvm_defaultBootSuiteInDirectory(allocPool, nal,
+		dataPath, outSuite);
+}
+
+sjme_errorCode sjme_nvm_defaultBootSuiteInDirectory(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrInNotNull sjme_lpcstr inDirectory,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite)
+{
+	sjme_errorCode error;
+	sjme_jint i;
+	sjme_nvm_rom_suite result;
+	
+	if (allocPool == NULL || nal == NULL || inDirectory == NULL ||
+		outSuite == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* We cannot load if filesystem access is not supported. */
+	if (nal->fileOpen == NULL)
+		return sjme_error_notImplemented(0);
+	
 	/* There are multiple possible ROM names. */
+	error = SJME_ERROR_UNKNOWN;
 	for (i = 0; sjme_nvm_romNames[i]; i++)
 	{
 		/* Attempt ROM lookup. */
 		if (sjme_error_is(error = sjme_nvm_defaultBootSuiteAttempt(
-			allocPool, nal, &result, dataPath,
+			allocPool, nal, &result, inDirectory,
 			sjme_nvm_romNames[i])))
 			continue;
 
@@ -535,7 +557,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	if (allocPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (argc <= 0)
+	if (argc < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Command line format is: */
