@@ -164,7 +164,7 @@ extern "C" {
 	defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
 	defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
 	defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY) || \
-	defined(SJME_CONFIG_HAS_ATOMIC_OLD)
+	defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
 
 /**
  * Declares an atomic type.
@@ -216,7 +216,7 @@ SJME_ATOMIC_DECLARE(sjme_jclass, 0);
 /** Atomic @c sjme_charSeq. */
 SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
 
-#if defined(SJME_CONFIG_HAS_ATOMIC_OLD)
+#if defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
 
 /**
  * Disable interrupts.

@@ -208,7 +208,7 @@
 					(SJME_ATOMIC_WIN32_TYPE(type, numPointerStars))value); \
 		}
 
-#elif defined(SJME_CONFIG_HAS_ATOMIC_OLD)
+#elif defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
 
 	#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
 		SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \

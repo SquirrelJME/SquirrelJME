@@ -171,6 +171,9 @@ extern "C" {
 #elif defined(__3DS__) || defined(_3DS)
 	/** Nintendo 3DS is available. */
 	#define SJME_CONFIG_HAS_NINTENDO_3DS
+#elif defined(PS2)
+	/** Sony PlayStation 2. */
+	#define SJME_CONFIG_HAS_SONY_PS2
 #elif defined(SDCC) || defined(__SDCC)
 	/** SDCC is available. */
 	#define SJME_CONFIG_HAS_SDCC
@@ -790,6 +793,9 @@ extern "C" {
 #elif defined(SJME_CONFIG_HAS_WINDOWS)
 	/** Supports Windows Atomic Access. */
 	#define SJME_CONFIG_HAS_ATOMIC_WIN32
+#elif defined(SJME_CONFIG_HAS_SONY_PS2)
+	/** Use volatile atomics. */
+	#define SJME_CONFIG_HAS_ATOMIC_VOLATILE
 #elif defined(SJME_CONFIG_HAS_C11) && !defined(__STDC_NO_ATOMICS__)
 	/** Supports C11 atomics. */
 	#define SJME_CONFIG_HAS_ATOMIC_C11
@@ -812,13 +818,14 @@ extern "C" {
 		defined(SJME_CONFIG_HAS_ATOMIC_DARWIN) || \
 		defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
 		defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY) || \
-		defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
+		defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
+		defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
 		/** Atomics are supported. */
 		#define SJME_CONFIG_HAS_ATOMIC
 	#else
 		/** Use old atomic handling. */
-		#define SJME_CONFIG_HAS_ATOMIC_OLD
-
+		#define SJME_CONFIG_HAS_ATOMIC_VOLATILE
+		
 		/** Atomics are supported. */
 		#define SJME_CONFIG_HAS_ATOMIC
 	#endif
@@ -849,8 +856,10 @@ extern "C" {
 
 /* DOS: Threading not supported. */
 /* Nintendo 3DS: devkitPro has broken/unimplemented pthreads. */
+/* Or if proper multithreaded volatiles are not supported. */
 #if defined(SJME_CONFIG_HAS_PC_DOS) || \
-	defined(SJME_CONFIG_HAS_NINTENDO_3DS)
+	defined(SJME_CONFIG_HAS_NINTENDO_3DS) || \
+	defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
 	/** Single threaded only. */
 	#define SJME_CONFIG_ONLY_THREAD_SINGLE
 #endif
