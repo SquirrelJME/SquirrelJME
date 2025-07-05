@@ -39,9 +39,6 @@ public class TestTypeShelfInvalid
 				TypeShelf.binaryPackageName(null);
 				break;
 			
-			case 2:
-				break;
-			
 			case 3:
 				TypeShelf.isArray(null);
 				break;
@@ -54,8 +51,9 @@ public class TestTypeShelfInvalid
 				TypeShelf.inJar(null);
 				break;
 			
+			case 2:
 			case 6:
-				break;
+				throw new MLECallError();
 			
 			case 7:
 				TypeShelf.component(null);
