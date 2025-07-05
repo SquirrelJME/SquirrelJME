@@ -522,7 +522,10 @@ sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
 {
 	if (state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
+	sjme_message("Implement NVM destroy");
+	return SJME_ERROR_NONE;
+#if 0
 	/* Free sub-structures. */
 	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_destroy()");
@@ -538,6 +541,7 @@ sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
 	/* Finished. */
 	sjme_todo("sjme_nvm_destroy()");
 	return sjme_error_notImplemented(0);
+#endif
 }
 
 sjme_errorCode sjme_nvm_parseCommandLine(

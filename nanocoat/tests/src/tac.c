@@ -137,8 +137,6 @@ int main(int argc, sjme_lpstr* argv)
 	exitCode = -1;
 	if (sjme_error_is(error = sjme_nvm_destroy(inState, &exitCode)))
 		goto fail_destroy;
-		
-	sjme_todo("Impl?");
 	
 	/* Return with the exit code. */
 	return exitCode;

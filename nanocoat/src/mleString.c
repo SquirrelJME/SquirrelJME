@@ -48,8 +48,27 @@ SJME_NVM_MLE_FUNCTION_DECL(stringCharAt)
 
 SJME_NVM_MLE_FUNCTION_DECL(stringEquals)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_jstring a, b;
+	sjme_charSeq seqA, seqB;
+
+	/* Must be an actual strings. */
+	a = (sjme_jstring)argV[0].v.l;
+	b = (sjme_jstring)argV[0].v.l;
+	if (a == NULL || b == NULL ||
+		!sjme_nvm_isAR(a, SJME_NVM_STRUCT_STRING_INSTANCE) ||
+		!sjme_nvm_isAR(b, SJME_NVM_STRUCT_STRING_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Both sequences must be initialized. */
+	seqA = sjme_atomic_sjme_charSeq_get(&a->seq);
+	seqB = sjme_atomic_sjme_charSeq_get(&b->seq);
+	if (seqA == NULL || seqB == NULL)
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Compare the two. */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = sjme_charSeq_equalsR(seqA, seqB);
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(stringHash)
