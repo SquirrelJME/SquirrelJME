@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.ClassAssertion;
@@ -36,7 +35,7 @@ public final class Class<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/07
 	 */
-	private Class(TypeBracket __type)
+	private Class(Class<?> __type)
 		throws NullPointerException
 	{
 		if (__type == null)
@@ -131,7 +130,7 @@ public final class Class<T>
 	@Api
 	public String getName()
 	{
-		return TypeShelf.runtimeName(TypeShelf.classToType(this));
+		return TypeShelf.runtimeName(this);
 	}
 	
 	/**
@@ -181,7 +180,7 @@ public final class Class<T>
 		else
 		{
 			String binName = TypeShelf.binaryPackageName(
-				TypeShelf.classToType(this));
+				this);
 			
 			if (binName.isEmpty())
 				want = __name;
@@ -191,7 +190,7 @@ public final class Class<T>
 		
 		// If our class is within a JAR try to search our own JAR first
 		JarPackageBracket inJar = TypeShelf.inJar(
-			TypeShelf.classToType(this));
+			this);
 		if (inJar != null)
 		{
 			InputStream rv = JarPackageShelf.openResource(inJar, want);
@@ -218,10 +217,10 @@ public final class Class<T>
 	 * @since 2017/03/29
 	 */
 	@Api
+	@SuppressWarnings("unchecked")
 	public Class<? super T> getSuperclass()
 	{
-		TypeBracket rv = TypeShelf.superClass(TypeShelf.classToType(this));
-		return (rv == null ? null : TypeShelf.typeToClass(rv));
+		return (Class<? super T>)TypeShelf.superClass(this);
 	}
 	
 	/**
@@ -233,7 +232,7 @@ public final class Class<T>
 	@Api
 	public boolean isArray()
 	{
-		return TypeShelf.isArray(TypeShelf.classToType(this));
+		return TypeShelf.isArray(this);
 	}
 	
 	/**
@@ -259,8 +258,7 @@ public final class Class<T>
 		if (this == __cl)
 			return true;
 			
-		return TypeShelf.isAssignableFrom(TypeShelf.classToType(this),
-			TypeShelf.classToType(__cl));
+		return TypeShelf.isAssignableFrom(this, __cl);
 	}
 	
 	/**
@@ -272,7 +270,7 @@ public final class Class<T>
 	@Api
 	public boolean isInterface()
 	{
-		return TypeShelf.isInterface(TypeShelf.classToType(this));
+		return TypeShelf.isInterface(this);
 	}
 	
 	/**
@@ -310,7 +308,7 @@ public final class Class<T>
 	{
 		Debugging.todoNote("Implement newInstance() access checks.");
 		
-		Object rv = ObjectShelf.newInstance(TypeShelf.classToType(this));
+		Object rv = ObjectShelf.newInstance(this);
 		if (rv == null)
 			throw new OutOfMemoryError("OOME");
 		
@@ -325,9 +323,8 @@ public final class Class<T>
 	public String toString()
 	{
 		// Arrays and primitive types essentially just use the binary name
-		TypeBracket type = TypeShelf.classToType(this);
-		if (TypeShelf.isArray(type) || TypeShelf.isPrimitive(type))
-			return TypeShelf.binaryName(type);
+		if (TypeShelf.isArray(this) || TypeShelf.isPrimitive(this))
+			return TypeShelf.binaryName(this);
 		
 		return (this.isInterface() ? "interface " : "class ") + this.getName();
 	}
@@ -361,14 +358,14 @@ public final class Class<T>
 		
 		/* {@squirreljme.error ZZ0z Could not find the specified class. (The
 		name of the class)} */
-		TypeBracket found = TypeShelf.findType(
+		Class<?> found = TypeShelf.findType(
 			__n.replace('.', '/'));
 		if (found == null)
 			throw new ClassNotFoundException("ZZ0z " + __n);
 		
 		// The name will have to be converted to binary form since that is
 		// what is internally used
-		return TypeShelf.typeToClass(found);
+		return found;
 	}
 }
 

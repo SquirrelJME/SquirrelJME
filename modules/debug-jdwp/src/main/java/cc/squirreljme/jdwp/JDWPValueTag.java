@@ -175,7 +175,6 @@ public enum JDWPValueTag
 						return JDWPValueTag.THREAD;
 						
 					case "Ljava/lang/Class;":
-					case "Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
 						return JDWPValueTag.CLASS_OBJECT;
 				}
 				

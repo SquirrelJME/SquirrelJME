@@ -28,7 +28,6 @@ import cc.squirreljme.vm.springcoat.brackets.NativeArchiveObject;
 import cc.squirreljme.vm.springcoat.brackets.PipeObject;
 import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
-import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.callbacks.NativeImageLoadCallbackAdapter;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -497,19 +496,17 @@ public final class MLEObjects
 	}
 	
 	/**
-	 * Checks if this is a {@link TypeObject}.
-	 * 
-	 * @param __object The object to check.
-	 * @return As a {@link TypeObject} if this is one.
-	 * @throws SpringMLECallError If this is not a {@link TypeObject}.
-	 * @since 2020/06/22
+	 * Casts this to a class type.
+	 *
+	 * @param __object The input object.
+	 * @return The resultant class.
+	 * @since 2025/07/05
 	 */
-	public static TypeObject type(Object __object)
-		throws SpringMLECallError
+	public static SpringClass type(Object __object)
 	{
-		if (!(__object instanceof TypeObject))
-			throw new SpringMLECallError("Not a TypeObject.");
+		if (!(__object instanceof SpringClass))
+			throw new SpringMLECallError("Not a SpringClass.");
 		
-		return (TypeObject)__object; 
+		return (SpringClass)__object; 
 	}
 }

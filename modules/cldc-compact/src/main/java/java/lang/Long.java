@@ -41,8 +41,7 @@ public final class Long
 	
 	/** The class representing the primitive long type. */
 	@Api
-	public static final Class<Long> TYPE =
-		TypeShelf.<Long>typeToClass(TypeShelf.typeOfLong());
+	public static final Class<Long> TYPE = (Class<Long>)TypeShelf.typeOfLong();
 	
 	/** The value of this long. */
 	private final long _value;

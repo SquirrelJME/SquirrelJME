@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -422,9 +421,8 @@ public enum MLEObject
 		}
 	},
 	
-	/** {@link ObjectShelf#arrayNew(TypeBracket, int)}. */
-	ARRAY_NEW("arrayNew:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;I)Ljava/lang/Object;")
+	/** {@link ObjectShelf#arrayNew(Class, int)}. */
+	ARRAY_NEW("arrayNew:(Ljava/lang/Class;I)Ljava/lang/Object;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -437,7 +435,7 @@ public enum MLEObject
 			if (len < 0)
 				throw new SpringMLECallError("Negative array size.");
 			
-			SpringClass type = MLEObjects.type(__args[0]).getSpringClass();
+			SpringClass type = MLEObjects.type(__args[0]);
 			if (!type.isArray())
 				throw new SpringMLECallError("Type not an array.");
 			
@@ -502,9 +500,8 @@ public enum MLEObject
 		}
 	},
 	
-	/** {@link ObjectShelf#isInstance(Object, TypeBracket)}. */
-	IS_INSTANCE("isInstance:(Ljava/lang/Object;Lcc/squirreljme/" +
-		"jvm/mle/brackets/TypeBracket;)Z")
+	/** {@link ObjectShelf#isInstance(Object, Class)}. */
+	IS_INSTANCE("isInstance:(Ljava/lang/Object;Ljava/lang/Class;)Z")
 	{
 		/**
 		 * {@inheritDoc}
@@ -517,9 +514,8 @@ public enum MLEObject
 		}
 	},
 	
-	/** {@link ObjectShelf#newInstance(TypeBracket)}. */
-	NEW_INSTANCE("newInstance:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;)Ljava/lang/Object;")
+	/** {@link ObjectShelf#newInstance(Class)}. */
+	NEW_INSTANCE("newInstance:(Ljava/lang/Class;)Ljava/lang/Object;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -528,7 +524,7 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringClass type = MLEObjects.type(__args[0]).getSpringClass();
+			SpringClass type = MLEObjects.type(__args[0]);
 			
 			if (type.isArray())
 				throw new SpringMLECallError("Cannot newInstance array");

@@ -61,7 +61,7 @@ public final class Float
 	/** The class representing the primitive type. */
 	@Api
 	public static final Class<Float> TYPE =
-		TypeShelf.<Float>typeToClass(TypeShelf.typeOfFloat());
+		(Class<Float>)TypeShelf.typeOfFloat();
 	
 	/** The stored value. */
 	private final float _value;

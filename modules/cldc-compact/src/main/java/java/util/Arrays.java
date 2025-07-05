@@ -10,7 +10,6 @@
 package java.util;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
-import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ByteIntegerArray;
@@ -360,7 +359,7 @@ public class Arrays
 			throw new NegativeArraySizeException("NASE");
 		
 		// Allocate array in the target type
-		T[] rv = ObjectShelf.<T[]>arrayNew(TypeShelf.classToType(__newType),
+		T[] rv = ObjectShelf.<T[]>arrayNew(__newType,
 			__newLen);
 		
 		System.arraycopy(__src, 0,

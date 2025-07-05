@@ -11,14 +11,14 @@
 
 #define TYPE_CLASSNAME "cc/squirreljme/emulator/EmulatedTypeShelf"
 
-#define BINARYNAME_DESC "(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Ljava/lang/String;"
-#define CLASSTOTYPE_DESC "(Ljava/lang/Class;)Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"
-#define COMPONENTROOT_DESC "(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"
-#define FINDTYPE_DESC "(Ljava/lang/String;)Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"
-#define INJAR_DESC "(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"
-#define INTERFACES_DESC "(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)[Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"
-#define ISARRAY_DESC "(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z"
-#define TYPETOCLASS_DESC "(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Ljava/lang/Class;"
+#define BINARYNAME_DESC "(Ljava/lang/Class;)Ljava/lang/String;"
+#define CLASSTOTYPE_DESC "(Ljava/lang/Class;)Ljava/lang/Class;"
+#define COMPONENTROOT_DESC "(Ljava/lang/Class;)Ljava/lang/Class;"
+#define FINDTYPE_DESC "(Ljava/lang/String;)Ljava/lang/Class;"
+#define INJAR_DESC "(Ljava/lang/Class;)Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"
+#define INTERFACES_DESC "(Ljava/lang/Class;)[Ljava/lang/Class;"
+#define ISARRAY_DESC "(Ljava/lang/Class;)Z"
+#define TYPETOCLASS_DESC "(Ljava/lang/Class;)Ljava/lang/Class;"
 
 JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_binaryName(JNIEnv* env,
 	jclass classy, jobject mleType)
@@ -87,13 +87,11 @@ JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_typeToClass(JNIEnv* env,
 static const JNINativeMethod mleTypeMethods[] =
 {
 	{"binaryName", BINARYNAME_DESC, (void*)Impl_mle_TypeShelf_binaryName},
-	{"classToType", CLASSTOTYPE_DESC, (void*)Impl_mle_TypeShelf_classToType},
 	{"componentRoot", COMPONENTROOT_DESC, (void*)Impl_mle_TypeShelf_componentRoot},
 	{"findType", FINDTYPE_DESC, (void*)Impl_mle_TypeShelf_findType},
 	{"inJar", INJAR_DESC, (void*)Impl_mle_TypeShelf_inJar},
 	{"interfaces", INTERFACES_DESC, (void*)Impl_mle_TypeShelf_interfaces},
 	{"isArray", ISARRAY_DESC, (void*)Impl_mle_TypeShelf_isArray},
-	{"typeToClass", TYPETOCLASS_DESC, (void*)Impl_mle_TypeShelf_typeToClass},
 };
 
 jint JNICALL mleTypeInit(JNIEnv* env, jclass classy)

@@ -43,7 +43,8 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/07/21
  */
 public final class SpringVMClass
-	implements HasAccessibleFlags, SpringClass
+	extends SpringBaseClass
+	implements HasAccessibleFlags
 {
 	/** The name of this class. */
 	protected final ClassName name;

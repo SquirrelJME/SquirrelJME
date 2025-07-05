@@ -25,7 +25,6 @@ import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
-import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
@@ -455,7 +454,7 @@ public final class SpringThreadWorker
 				// information
 				rv = this.newInstance(classClass.name(), new MethodDescriptor(
 					"(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)V"),
-					new TypeObject(machine, resClass));
+					resClass);
 				
 				// Store it
 				classClass.setClassObject(rv);

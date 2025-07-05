@@ -135,7 +135,7 @@ extern "C"
 	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TracePointBracket")
 
 /** Type. */
-#define SJME_MD_TYPE SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TypeBracket")
+#define SJME_MD_TYPE SJME_MD_CLASS
 
 /** VM Thread. */
 #define SJME_MD_VM_THREAD \

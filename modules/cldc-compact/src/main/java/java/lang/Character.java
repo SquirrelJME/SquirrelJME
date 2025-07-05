@@ -54,7 +54,7 @@ public final class Character
 	/** The class representing the primitive type. */
 	@Api
 	public static final Class<Character> TYPE =
-		TypeShelf.<Character>typeToClass(TypeShelf.typeOfCharacter());
+		(Class<Character>)TypeShelf.typeOfCharacter();
 	
 	/** Maximum cache count. */
 	private static final char _MAX_CACHE =

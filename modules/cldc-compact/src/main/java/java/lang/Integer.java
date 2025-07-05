@@ -46,7 +46,7 @@ public final class Integer
 	/** The class type representing the primitive type. */
 	@Api
 	public static final Class<Integer> TYPE =
-		TypeShelf.<Integer>typeToClass(TypeShelf.typeOfInteger());
+		(Class<Integer>)TypeShelf.typeOfInteger();
 	
 	/** The value of this integer. */
 	private final int _value;

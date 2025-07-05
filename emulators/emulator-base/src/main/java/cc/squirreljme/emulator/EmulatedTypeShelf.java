@@ -11,14 +11,11 @@ package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Emulation for {@link TypeShelf}.
@@ -37,16 +34,15 @@ public class EmulatedTypeShelf
 	 * @throws MLECallError If the type is not valid.
 	 * @since 2023/07/19
 	 */
-	public static String binaryName(TypeBracket __type)
+	public static String binaryName(Class<?> __type)
 		throws MLECallError
 	{
 		if (__type == null)
 			throw new MLECallError("Null arguments.");
 		
-		Class<?> javaClass = ((EmulatedTypeBracket)__type).javaClass;
-		if (javaClass.isArray())
-			return javaClass.getName();
-		return javaClass.getName().replace('.', '/');
+		if (__type.isArray())
+			return __type.getName();
+		return __type.getName().replace('.', '/');
 	}
 	
 	/**
@@ -56,17 +52,17 @@ public class EmulatedTypeShelf
 	 * @return The type of the given class.
 	 * @since 2020/06/07
 	 */
-	public static TypeBracket classToType(Class<?> __cl)
+	public static Class<?> classToType(Class<?> __cl)
 	{
 		if (__cl == null)
 			throw new MLECallError("Null arguments.");
 		
-		return new EmulatedTypeBracket(__cl);
+		return __cl;
 	}
 	
 	/**
 	 * Returns the root component of this type, this is essentially calling
-	 * {@code #component(TypeBracket)} over until the type is no longer an
+	 * {@code #component(Class<?>)} over until the type is no longer an
 	 * array type.
 	 *
 	 * @param __type The type to get the root component of.
@@ -74,17 +70,17 @@ public class EmulatedTypeShelf
 	 * @since 2023/07/19
 	 */
 	@SquirrelJMEVendorApi
-	public static TypeBracket componentRoot(
-		@NotNull TypeBracket __type)
+	public static Class<?> componentRoot(
+		@NotNull Class<?> __type)
 	{
 		if (__type == null)
 			throw new MLECallError("No type specified.");
 		
-		Class<?> javaClass = ((EmulatedTypeBracket)__type).javaClass;
+		Class<?> javaClass = __type;
 		while (javaClass.isArray())
 			javaClass = javaClass.getComponentType();
 		
-		return new EmulatedTypeBracket(javaClass);
+		return javaClass;
 	}
 	
 	/**
@@ -95,7 +91,7 @@ public class EmulatedTypeShelf
 	 * found.
 	 * @since 2020/06/02
 	 */
-	public static TypeBracket findType(String __name)
+	public static Class<?> findType(String __name)
 		throws MLECallError
 	{
 		if (__name == null)
@@ -103,8 +99,7 @@ public class EmulatedTypeShelf
 		
 		try
 		{
-			return new EmulatedTypeBracket(
-				Class.forName(__name.replace('/', '.')));
+			return Class.forName(__name.replace('/', '.'));
 		}
 		catch (ClassNotFoundException __e)
 		{
@@ -121,7 +116,7 @@ public class EmulatedTypeShelf
 	 * @since 2023/07/19
 	 */
 	@SquirrelJMEVendorApi
-	public static JarPackageBracket inJar(TypeBracket __type)
+	public static JarPackageBracket inJar(Class<?> __type)
 	{
 		if (__type == null)
 			throw new MLECallError("Null arguments.");
@@ -166,7 +161,7 @@ public class EmulatedTypeShelf
 	 * @throws MLECallError If {@code __type} is null. 
 	 * @since 2020/06/07
 	 */
-	public static TypeBracket[] interfaces(TypeBracket __type)
+	public static Class<?>[] interfaces(Class<?> __type)
 		throws MLECallError
 	{
 		if (__type == null)
@@ -178,7 +173,7 @@ public class EmulatedTypeShelf
 		int count = interfaces.length;
 		
 		// Build result
-		TypeBracket[] result = new TypeBracket[count];
+		Class<?>[] result = new Class<?>[count];
 		for (int i = 0; i < count; i++)
 			result[i] = EmulatedTypeShelf.classToType(interfaces[i]);
 		
@@ -194,13 +189,13 @@ public class EmulatedTypeShelf
 	 * @since 2023/07/19
 	 */
 	@SquirrelJMEVendorApi
-	public static boolean isArray(TypeBracket __type)
+	public static boolean isArray(Class<?> __type)
 		throws MLECallError
 	{
 		if (__type == null)
 			throw new MLECallError("Null arguments.");
 		
-		return ((EmulatedTypeBracket)__type).javaClass.isArray();
+		return __type.isArray();
 	}
 	
 	/**
@@ -212,14 +207,14 @@ public class EmulatedTypeShelf
 	 * @since 2020/05/30
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> Class<T> typeToClass(TypeBracket __type)
+	public static <T> Class<T> typeToClass(Class<?> __type)
 	{
 		if (__type == null)
 			throw new MLECallError("Null arguments.");
 		
 		try
 		{
-			return (Class<T>)((EmulatedTypeBracket)__type).javaClass;
+			return (Class<T>)__type;
 		}
 		catch (ClassCastException e)
 		{

@@ -32,7 +32,7 @@ sjme_errorCode sjme_dylib_close(
 
 #if defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
 	return SJME_ERROR_UNSUPPORTED_OPERATION;
-#elif defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
+#elif defined(SJME_CONFIG_HAS_DLFCN_H)
 	if (dlclose(inLib) == 0)
 		return SJME_ERROR_COULD_NOT_UNLOAD_LIBRARY;
 	
@@ -55,7 +55,7 @@ sjme_errorCode sjme_dylib_lookup(
 	sjme_attrInNotNull sjme_lpcstr inSymbol,
 	sjme_pointer* outPtr)
 {
-#if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
+#if defined(SJME_CONFIG_HAS_DLFCN_H)
 	sjme_pointer handle;
 #elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	FARPROC handle;
@@ -72,7 +72,7 @@ sjme_errorCode sjme_dylib_lookup(
 	
 #if defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
 	return SJME_ERROR_UNSUPPORTED_OPERATION;
-#elif defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
+#elif defined(SJME_CONFIG_HAS_DLFCN_H)
 	/* Attempt symbol lookup. */
 	handle = dlsym(inLib, inSymbol);
 	if (handle == NULL)
@@ -176,7 +176,7 @@ sjme_errorCode sjme_dylib_open(
 	sjme_attrInNotNull sjme_lpcstr libPath,
 	sjme_attrInOutNotNull sjme_dylib* outLib)
 {
-#if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
+#if defined(SJME_CONFIG_HAS_DLFCN_H)
 	sjme_pointer handle;
 #elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	HMODULE handle;
@@ -187,7 +187,7 @@ sjme_errorCode sjme_dylib_open(
 	
 #if defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
 	return SJME_ERROR_UNSUPPORTED_OPERATION;
-#elif defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
+#elif defined(SJME_CONFIG_HAS_DLFCN_H)
 	/* Attempt loading the library. */
 	handle = dlopen(libPath, RTLD_NOW | RTLD_LOCAL);
 	if (handle == NULL)
@@ -219,7 +219,7 @@ sjme_errorCode sjme_dylib_open(
 sjme_errorCode sjme_dylib_self(
 	sjme_attrInOutNotNull sjme_dylib* outLib)
 {
-#if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
+#if defined(SJME_CONFIG_HAS_DLFCN_H)
 	sjme_pointer handle;
 #elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	HMODULE handle;
@@ -230,7 +230,7 @@ sjme_errorCode sjme_dylib_self(
 	
 #if defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
 	return SJME_ERROR_UNSUPPORTED_OPERATION;
-#elif defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
+#elif defined(SJME_CONFIG_HAS_DLFCN_H)
 	/* Attempt loading the library. */
 	handle = dlopen(NULL, RTLD_NOW | RTLD_LOCAL);
 	if (handle == NULL)

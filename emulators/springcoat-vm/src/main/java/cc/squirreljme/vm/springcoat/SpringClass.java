@@ -43,7 +43,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/07/21
  */
 public interface SpringClass
-	extends HasAccessibleFlags
+	extends HasAccessibleFlags, SpringObject
 {
 	/**
 	 * Returns the class loader which loaded this class.

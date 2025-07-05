@@ -15,7 +15,6 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
@@ -137,8 +136,8 @@ public final class System
 		
 		// We can use the native type system within MLE to knock off a few
 		// branch possibilities
-		TypeBracket srcType = TypeShelf.classToType(srcClass);
-		TypeBracket component = TypeShelf.component(srcType);
+		Class<?> srcType = srcClass;
+		Class<?> component = TypeShelf.component(srcType);
 		
 		// Primitive types can be copied at full speed as they do not require
 		// any references are otherwise to be counted or garbage collection to

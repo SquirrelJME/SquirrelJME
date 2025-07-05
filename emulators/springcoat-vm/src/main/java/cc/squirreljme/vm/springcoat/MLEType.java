@@ -10,9 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
-import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.util.Objects;
@@ -28,9 +26,9 @@ import net.multiphasicapps.classfile.PrimitiveType;
 public enum MLEType
 	implements MLEFunction
 {
-	/** {@link TypeShelf#binaryName(TypeBracket)}. */
-	BINARY_NAME("binaryName:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;)Ljava/lang/String;")
+	/** {@link TypeShelf#binaryName(Class)}. */
+	BINARY_NAME("binaryName:(Ljava/lang/" +
+		"Class;)Ljava/lang/String;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -40,13 +38,13 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return __thread.asVMObject(MLEObjects.type(__args[0])
-				.getSpringClass().name().binaryName().toString());
+				.name().binaryName().toString());
 		}
 	}, 
 	
-	/** {@link TypeShelf#binaryPackageName(TypeBracket)}. */
-	BINARY_PACKAGE_NAME("binaryPackageName:(Lcc/squirreljme/jvm/" +
-		"mle/brackets/TypeBracket;)Ljava/lang/String;")
+	/** {@link TypeShelf#binaryPackageName(Class)}. */
+	BINARY_PACKAGE_NAME("binaryPackageName:" +
+		"(Ljava/lang/Class;)Ljava/lang/String;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -56,32 +54,14 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return __thread.asVMObject(MLEObjects.type(__args[0])
-				.getSpringClass().name().binaryName().inPackage()
+				.name().binaryName().inPackage()
 				.toString());
 		}
 	},
 	
-	/** {@link TypeShelf#classToType(Class)}. */
-	CLASS_TO_TYPE("classToType:(Ljava/lang/Class;)" +
-		"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/18
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			return MLEObjects.simple(__args[0]).fieldByField(
-				__thread.resolveClass(new ClassName("java/lang/Class"))
-				.lookupField(false, "_type",
-				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")).get();
-		}
-	},
-	
-	/** {@link TypeShelf#component(TypeBracket)}. */
-	COMPONENT("component:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;)Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")
+	/** {@link TypeShelf#component(Class)}. */
+	COMPONENT("component:(Ljava/lang/" +
+		"Class;)Ljava/lang/Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -90,18 +70,17 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringClass type = MLEObjects.type(__args[0]).getSpringClass();
+			SpringClass type = MLEObjects.type(__args[0]);
 			
 			if (!type.isArray())
 				throw new SpringMLECallError("Not an array type.");
 			
-			return new TypeObject(__thread.machine, type.componentType());
+			return type.componentType();
 		}
 	},
 	
-	/** {@link TypeShelf#componentRoot(TypeBracket)}. */
-	COMPONENT_ROOT("componentRoot:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/TypeBracket;)Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")
+	/** {@link TypeShelf#componentRoot(Class)}. */
+	COMPONENT_ROOT("componentRoot:(Ljava/lang/Class;)Ljava/lang/Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -110,7 +89,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringClass type = MLEObjects.type(__args[0]).getSpringClass();
+			SpringClass type = MLEObjects.type(__args[0]);
 			
 			if (!type.isArray())
 				throw new SpringMLECallError("Not an array type.");
@@ -118,13 +97,12 @@ public enum MLEType
 			// Find the root component
 			while (type.isArray())
 				type = type.componentType();
-			return new TypeObject(__thread.machine, type);
+			return type;
 		}
 	},
 	
-	/** {@link TypeShelf#enumValues(TypeBracket)}. */
-	ENUM_VALUES("enumValues:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/TypeBracket;)[Ljava/lang/Enum;")
+	/** {@link TypeShelf#enumValues(Class)}. */
+	ENUM_VALUES("enumValues:(Ljava/lang/Class;)[Ljava/lang/Enum;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -133,7 +111,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringClass type = MLEObjects.type(__args[0]).getSpringClass();
+			SpringClass type = MLEObjects.type(__args[0]);
 			
 			// Must be an enumeration
 			if (!type.isEnum())
@@ -147,9 +125,9 @@ public enum MLEType
 		}
 	}, 
 	
-	/** {@link TypeShelf#equals(TypeBracket, TypeBracket)}. */
-	EQUALS("equals:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;" +
-		"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z")
+	/** {@link TypeShelf#equals(Class, Class)}. */
+	EQUALS("equals:(Ljava/lang/Class;" +
+		"Ljava/lang/Class;)Z")
 	{
 		/**
 		 * {@inheritDoc}
@@ -159,14 +137,14 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return Objects.equals(
-				MLEObjects.type(__args[0]).getSpringClass(),
-				MLEObjects.type(__args[1]).getSpringClass());
+				MLEObjects.type(__args[0]),
+				MLEObjects.type(__args[1]));
 		}
 	},
 	
 	/** {@link TypeShelf#findType(String)}. */
 	FIND_TYPE("findType:(Ljava/lang/String;)" +
-		"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")
+		"Ljava/lang/Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -179,8 +157,8 @@ public enum MLEType
 			
 			try
 			{
-				return new TypeObject(__thread.machine, __thread.loadClass(
-					__thread.<String>asNativeObject(String.class, name)));
+				return __thread.loadClass(
+					__thread.<String>asNativeObject(String.class, name));
 			}
 			
 			// Since the method returns null when not found, we want to return
@@ -192,9 +170,9 @@ public enum MLEType
 		}
 	},
 	
-	/** {@link TypeShelf#inJar(TypeBracket)}. */
-	IN_JAR("inJar:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)" +
-		"Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;")
+	/** {@link TypeShelf#inJar(Class)}. */
+	IN_JAR("inJar:(Ljava/lang/Class;)" +
+		"Ljava/lang/JarPackageBracket;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -204,13 +182,13 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new JarPackageObject(__thread.machine,
-				MLEObjects.type(__args[0]).getSpringClass().inJar());
+				MLEObjects.type(__args[0]).inJar());
 		}
 	},
 	
-	/** {@link TypeShelf#interfaces(TypeBracket)}. */
-	INTERFACES("interfaces:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;)[Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")
+	/** {@link TypeShelf#interfaces(Class)}. */
+	INTERFACES("interfaces:(Ljava/lang/" +
+		"Class;)[Ljava/lang/Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -219,22 +197,22 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringClass type = MLEObjects.type(__args[0]).getSpringClass();
+			SpringClass type = MLEObjects.type(__args[0]);
 			
 			SpringClass[] interfaces = type.interfaceClasses();
 			int n = interfaces.length;
 			
 			SpringObject[] rv = new SpringObject[n];
 			for (int i = 0; i < n; i++)
-				rv[i] = new TypeObject(__thread.machine, interfaces[i]);
+				rv[i] = interfaces[i];
 			
 			return __thread.asVMObjectArray(__thread.resolveClass(
-				"[Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"), rv);
+				"[Ljava/lang/Class;"), rv);
 		}
 	}, 
 	
-	/** {@link TypeShelf#isArray(TypeBracket)}. */
-	IS_ARRAY("isArray:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z")
+	/** {@link TypeShelf#isArray(Class)}. */
+	IS_ARRAY("isArray:(Ljava/lang/Class;)Z")
 	{
 		/**
 		 * {@inheritDoc}
@@ -243,13 +221,13 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEObjects.type(__args[0]).getSpringClass().isArray();
+			return MLEObjects.type(__args[0]).isArray();
 		}
 	},
 	
-	/** {@link TypeShelf#isAssignableFrom(TypeBracket, TypeBracket)}. */
-	IS_ASSIGNABLE_FROM("isAssignableFrom:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/TypeBracket;Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z")
+	/** {@link TypeShelf#isAssignableFrom(Class, Class)}. */
+	IS_ASSIGNABLE_FROM("isAssignableFrom:(Ljava/lang/Class;" +
+		"Ljava/lang/Class;)Z")
 	{
 		/**
 		 * {@inheritDoc}
@@ -258,15 +236,15 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			if (MLEObjects.type(__args[0]).getSpringClass().isAssignableFrom(
-				MLEObjects.type(__args[1]).getSpringClass()))
+			if (MLEObjects.type(__args[0]).isAssignableFrom(
+				MLEObjects.type(__args[1])))
 				return 1;
 			return 0;
 		}
 	},
 	
-	/** {@link TypeShelf#isEnum(TypeBracket)}. */
-	IS_ENUM("isEnum:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z")
+	/** {@link TypeShelf#isEnum(Class)}. */
+	IS_ENUM("isEnum:(Ljava/lang/Class;)Z")
 	{
 		/**
 		 * {@inheritDoc}
@@ -275,13 +253,13 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEObjects.type(__args[0]).getSpringClass().isEnum();
+			return MLEObjects.type(__args[0]).isEnum();
 		}
 	},
 	
-	/** {@link TypeShelf#isInterface(TypeBracket)}. */
-	IS_INTERFACE("isInterface:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;)Z")
+	/** {@link TypeShelf#isInterface(Class)}. */
+	IS_INTERFACE("isInterface:(Ljava/lang/" +
+		"Class;)Z")
 	{
 		/**
 		 * {@inheritDoc}
@@ -290,14 +268,14 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEObjects.type(__args[0]).getSpringClass().flags()
+			return MLEObjects.type(__args[0]).flags()
 				.isInterface();
 		}
 	},
 	
-	/** {@link TypeShelf#isPrimitive(TypeBracket)}. */
-	IS_PRIMITIVE("isPrimitive:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;)Z")
+	/** {@link TypeShelf#isPrimitive(Class)}. */
+	IS_PRIMITIVE("isPrimitive:(Ljava/lang/" +
+		"Class;)Z")
 	{
 		/**
 		 * {@inheritDoc}
@@ -306,14 +284,14 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEObjects.type(__args[0]).getSpringClass().name()
+			return MLEObjects.type(__args[0]).name()
 				.isPrimitive();
 		}
 	},
 	
 	/** {@link TypeShelf#objectType(Object)}. */
 	OBJECT_TYPE("objectType:(Ljava/lang/Object;)" +
-		"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")
+		"Ljava/lang/Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -322,14 +300,14 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.machine, __thread.loadClass(
-				MLEObjects.notNull(__args[0]).type().name().toString()));
+			return __thread.loadClass(
+				MLEObjects.notNull(__args[0]).type().name().toString());
 		}
 	},
 	
-	/** {@link TypeShelf#runtimeName(TypeBracket)}. */
-	RUNTIME_NAME("runtimeName:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;)Ljava/lang/String;")
+	/** {@link TypeShelf#runtimeName(Class)}. */
+	RUNTIME_NAME("runtimeName:(Ljava/lang/" +
+		"Class;)Ljava/lang/String;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -338,14 +316,14 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEObjects.type(__args[0]).getSpringClass()
+			return MLEObjects.type(__args[0])
 				.name().toRuntimeString();
 		}
 	},
 	
-	/** {@link TypeShelf#superClass(TypeBracket)}. */
-	SUPER_CLASS("superClass:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;)Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")
+	/** {@link TypeShelf#superClass(Class)}. */
+	SUPER_CLASS("superClass:(Ljava/lang/" +
+		"Class;)Ljava/lang/Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -354,18 +332,18 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringClass superClass = MLEObjects.type(__args[0]).getSpringClass()
+			SpringClass superClass = MLEObjects.type(__args[0])
 				.superClass();
 			
 			if (superClass == null)
 				return SpringNullObject.NULL;
-			return new TypeObject(__thread.machine, superClass);
+			return superClass;
 		}
 	},
 	
 	/** {@link TypeShelf#typeOfBoolean()}. */
-	TYPE_OF_BOOLEAN("typeOfBoolean:()Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;")
+	TYPE_OF_BOOLEAN("typeOfBoolean:()Ljava/lang/" +
+		"Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -374,14 +352,14 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.machine, __thread.loadClass(
+			return (__thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.BOOLEAN)));
 		}
 	},
 	
 	/** {@link TypeShelf#typeOfByte()}. */
-	TYPE_OF_BYTE("typeOfByte:()Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;")
+	TYPE_OF_BYTE("typeOfByte:()Ljava/lang/" +
+		"Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -390,14 +368,13 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.machine, __thread.loadClass(
+			return (__thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.BYTE)));
 		}
 	},
 	
 	/** {@link TypeShelf#typeOfCharacter()}. */
-	TYPE_OF_CHARACTER("typeOfCharacter:()Lcc/squirreljme/jvm/mle/" +
-		"brackets/TypeBracket;")
+	TYPE_OF_CHARACTER("typeOfCharacter:()Ljava/lang/Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -406,14 +383,14 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.machine, __thread.loadClass(
+			return (__thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.CHARACTER)));
 		}
 	},
 	
 	/** {@link TypeShelf#typeOfDouble()}. */
-	TYPE_OF_DOUBLE("typeOfDouble:()Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;")
+	TYPE_OF_DOUBLE("typeOfDouble:()Ljava/lang/" +
+		"Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -422,14 +399,14 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.machine, __thread.loadClass(
+			return (__thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.DOUBLE)));
 		}
 	},
 	
 	/** {@link TypeShelf#typeOfFloat()}. */
-	TYPE_OF_FLOAT("typeOfFloat:()Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;")
+	TYPE_OF_FLOAT("typeOfFloat:()Ljava/lang/" +
+		"Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -438,14 +415,14 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.machine, __thread.loadClass(
+			return (__thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.FLOAT)));
 		}
 	},
 	
 	/** {@link TypeShelf#typeOfInteger()}. */
-	TYPE_OF_INTEGER("typeOfInteger:()Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;")
+	TYPE_OF_INTEGER("typeOfInteger:()Ljava/lang/" +
+		"Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -454,14 +431,14 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.machine, __thread.loadClass(
+			return (__thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.INTEGER)));
 		}
 	},
 	
 	/** {@link TypeShelf#typeOfLong()}. */
-	TYPE_OF_LONG("typeOfLong:()Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;")
+	TYPE_OF_LONG("typeOfLong:()Ljava/lang/" +
+		"Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -470,14 +447,14 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.machine, __thread.loadClass(
+			return (__thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.LONG)));
 		}
 	},
 	
 	/** {@link TypeShelf#typeOfShort()}. */
-	TYPE_OF_SHORT("typeOfShort:()Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;")
+	TYPE_OF_SHORT("typeOfShort:()Ljava/lang/" +
+		"Class;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -486,24 +463,8 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.machine, __thread.loadClass(
+			return (__thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.SHORT)));
-		}
-	},
-	
-	/** {@link TypeShelf#typeToClass(TypeBracket)}. */
-	TYPE_TO_CLASS("typeToClass:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;)Ljava/lang/Class;")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/18
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			return __thread.asVMObject(MLEObjects.type(__args[0])
-				.getSpringClass());
 		}
 	},
 	

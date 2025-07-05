@@ -40,7 +40,6 @@ public class TestTypeShelfInvalid
 				break;
 			
 			case 2:
-				TypeShelf.typeToClass(null);
 				break;
 			
 			case 3:
@@ -56,7 +55,6 @@ public class TestTypeShelfInvalid
 				break;
 			
 			case 6:
-				TypeShelf.classToType(null);
 				break;
 			
 			case 7:

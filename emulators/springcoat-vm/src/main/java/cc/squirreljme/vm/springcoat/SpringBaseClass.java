@@ -7,36 +7,39 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.pack;
+package cc.squirreljme.vm.springcoat;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * This is thrown when the ROM is not valid.
+ * Not Described.
  *
- * @since 2021/04/03
+ * @since 2025/07/05
  */
-public class InvalidRomException
-	extends RuntimeException
+public abstract class SpringBaseClass
+	implements SpringClass
 {
+	/** The monitor for this class object instance. */
+	protected final SpringMonitor monitor =
+		new SpringMonitor();
+	
 	/**
-	 * Initializes the exception with the given message and no cause.
-	 *
-	 * @param __m The message.
-	 * @since 2021/04/03
+	 * {@inheritDoc}
+	 * @since 2025/07/05
 	 */
-	public InvalidRomException(String __m)
+	@Override
+	public final SpringMonitor monitor()
 	{
-		super(__m);
+		return this.monitor;
 	}
 	
 	/**
-	 * Initializes the exception with the given message and cause.
-	 *
-	 * @param __m The message.
-	 * @param __t The cause.
-	 * @since 2021/04/03
+	 * {@inheritDoc}
+	 * @since 2025/07/05
 	 */
-	public InvalidRomException(String __m, Throwable __t)
+	@Override
+	public final SpringClass type()
 	{
-		super(__m, __t);
+		throw Debugging.todo();
 	}
 }

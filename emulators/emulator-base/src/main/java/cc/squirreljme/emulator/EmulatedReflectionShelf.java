@@ -10,7 +10,6 @@
 package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.ReflectionShelf;
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -21,6 +20,7 @@ import java.lang.reflect.Modifier;
  *
  * @since 2022/09/07
  */
+@SuppressWarnings("unused")
 public class EmulatedReflectionShelf
 {
 	/**
@@ -32,7 +32,8 @@ public class EmulatedReflectionShelf
 	 * @throws Throwable Any exception thrown by the target.
 	 * @since 2022/09/07
 	 */
-	public static void invokeMain(TypeBracket __type,
+	@SuppressWarnings("unused")
+	public static void invokeMain(Class<?> __type,
 		String... __args)
 		throws MLECallError, Throwable
 	{
@@ -43,11 +44,8 @@ public class EmulatedReflectionShelf
 		Method mainMethod = null;
 		try
 		{
-			// Find class
-			Class<?> mainClass = ((EmulatedTypeBracket)__type).javaClass;
-			
 			// Find main method
-			Method[] methods = mainClass.getMethods();
+			Method[] methods = __type.getMethods();
 			for (int i = methods.length - 1; i >= 0; i--)
 			{
 				Method maybe = methods[i];
@@ -69,7 +67,7 @@ public class EmulatedReflectionShelf
 			// Not found?
 			if (mainMethod == null)
 				throw new MLECallError("No public static void " +
-					"main(String[]) in " + mainClass);
+					"main(String[]) in " + __type);
 			
 			// Invoke call
 			mainMethod.setAccessible(true);

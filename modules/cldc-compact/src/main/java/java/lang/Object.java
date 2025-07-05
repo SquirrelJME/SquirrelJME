@@ -87,7 +87,7 @@ public class Object
 	@Api
 	public final Class<?> getClass()
 	{
-		return TypeShelf.typeToClass(TypeShelf.objectType(this));
+		return (Class<Object>)TypeShelf.objectType(this);
 	}
 	
 	/**

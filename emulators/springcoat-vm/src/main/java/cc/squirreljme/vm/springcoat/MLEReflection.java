@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ReflectionShelf;
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -21,9 +20,8 @@ import net.multiphasicapps.classfile.MethodNameAndType;
 public enum MLEReflection
 	implements MLEFunction
 {
-	/** {@link ReflectionShelf#invokeMain(TypeBracket, String...)}. */ 
-	INVOKE_MAIN("invokeMain:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"TypeBracket;[Ljava/lang/String;)V")
+	/** {@link ReflectionShelf#invokeMain(Class, String...)}. */ 
+	INVOKE_MAIN("invokeMain:(Ljava/lang/Class;[Ljava/lang/String;)V")
 	{
 		/**
 		 * {@inheritDoc}
@@ -33,7 +31,7 @@ public enum MLEReflection
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			// Get parameters
-			SpringClass type = MLEObjects.type(__args[0]).getSpringClass();
+			SpringClass type = MLEObjects.type(__args[0]);
 			SpringArrayObject args =
 				(SpringArrayObject)MLEObjects.notNull(__args[1]);
 			

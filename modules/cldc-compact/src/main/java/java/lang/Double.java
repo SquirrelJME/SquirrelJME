@@ -60,7 +60,7 @@ public final class Double
 	/** The class representing the primitive type. */
 	@Api
 	public static final Class<Double> TYPE =
-		TypeShelf.<Double>typeToClass(TypeShelf.typeOfDouble());
+		(Class<Double>)TypeShelf.typeOfDouble();
 	
 	/** The value for this double. */
 	private final double _value;

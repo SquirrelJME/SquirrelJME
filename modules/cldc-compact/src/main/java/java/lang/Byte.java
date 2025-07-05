@@ -41,8 +41,7 @@ public final class Byte
 	
 	/** The class representing the primitive type. */
 	@Api
-	public static final Class<Byte> TYPE =
-		TypeShelf.<Byte>typeToClass(TypeShelf.typeOfByte());
+	public static final Class<Byte> TYPE = (Class<Byte>)TypeShelf.typeOfByte();
 	
 	/** The value of the byte. */
 	private final byte _value;

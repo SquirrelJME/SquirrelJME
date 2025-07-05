@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.mle;
 
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -424,7 +423,7 @@ public final class ObjectShelf
 	 * @since 2020/06/09
 	 */
 	@SquirrelJMEVendorApi
-	public static native <T> T arrayNew(@NotNull TypeBracket __type,
+	public static native <T> T arrayNew(@NotNull Class<?> __type,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __len);
 	
 	/**
@@ -470,7 +469,7 @@ public final class ObjectShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native boolean isInstance(@NotNull Object __o,
-		@NotNull TypeBracket __type)
+		@NotNull Class<?> __type)
 		throws MLECallError;
 	
 	/**
@@ -482,7 +481,7 @@ public final class ObjectShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native Object newInstance(@NotNull TypeBracket __type);
+	public static native Object newInstance(@NotNull Class<?> __type);
 	
 	/**
 	 * Notifies the monitors holding onto this object.

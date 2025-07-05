@@ -41,8 +41,7 @@ public class TestObjectShelfInvalid
 				break;
 			
 			case 2:
-				ObjectShelf.arrayNew(
-					TypeShelf.classToType(byte[].class), -1234);
+				ObjectShelf.arrayNew(byte[].class, -1234);
 				break;
 			
 			case 3:
@@ -70,7 +69,7 @@ public class TestObjectShelfInvalid
 				break;
 			
 			case 9:
-				ObjectShelf.newInstance(TypeShelf.classToType(byte[].class));
+				ObjectShelf.newInstance(byte[].class);
 				break;
 			
 			case 10:
