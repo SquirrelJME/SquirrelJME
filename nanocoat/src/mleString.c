@@ -53,7 +53,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringEquals)
 
 	/* Must be an actual strings. */
 	a = (sjme_jstring)argV[0].v.l;
-	b = (sjme_jstring)argV[0].v.l;
+	b = (sjme_jstring)argV[1].v.l;
 	if (a == NULL || b == NULL ||
 		!sjme_nvm_isAR(a, SJME_NVM_STRUCT_STRING_INSTANCE) ||
 		!sjme_nvm_isAR(b, SJME_NVM_STRUCT_STRING_INSTANCE))
@@ -67,7 +67,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringEquals)
 	
 	/* Compare the two. */
 	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->v.i = sjme_charSeq_equalsR(seqA, seqB);
+	argR->v.i = (sjme_charSeq_equalsR(seqA, seqB) ? 1 : 0);
 	return SJME_ERROR_NONE;
 }
 
