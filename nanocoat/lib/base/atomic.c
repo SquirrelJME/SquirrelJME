@@ -19,6 +19,8 @@
 	#undef WIN32_LEAN_AND_MEAN
 #endif
 
+#include "sjme/debug.h"
+
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 
