@@ -115,6 +115,15 @@ find_program(retroArchExe "retroarch" NO_CACHE
 		"C:/RetroArch"
 		"$ENV{APPDATA}/RetroArch")
 
+# Set system directoy for RetroArch
+file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/run.config")
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/test.config"
+	DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/")
+file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/test.config"
+	"\n")
+file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/test.config"
+	"system_directory = \"${CMAKE_SOURCE_DIR}/rom\"\n")
+
 # Allow running the binary, as long as it is not static and we are on the
 # same system...
 find_program(gdbExe "gdbserver")
@@ -127,7 +136,7 @@ if(retroArchExe AND NOT libRetroIsStatic AND
 			"-v"
 			"-L" "$<TARGET_FILE:squirreljme_libretro>"
 			"--no-patch"
-			"--appendconfig=${CMAKE_CURRENT_SOURCE_DIR}/test.config"
+			"--appendconfig=${CMAKE_CURRENT_BINARY_DIR}/test.config"
 			"--log-file=${CMAKE_BINARY_DIR}/libretro.log"
 		DEPENDS squirreljme_libretro
 		USES_TERMINAL)
@@ -144,7 +153,7 @@ if(retroArchExe AND NOT libRetroIsStatic AND
 			COMMAND "${gdbExe}" "localhost:2345" "${retroArchExe}"
 			"-L" "$<TARGET_FILE:squirreljme_libretro>"
 			"--no-patch"
-			"--appendconfig=${CMAKE_CURRENT_SOURCE_DIR}/test.config"
+			"--appendconfig=${CMAKE_CURRENT_BINARY_DIR}/test.config"
 			"--log-file=${CMAKE_BINARY_DIR}/libretro.log"
 			DEPENDS squirreljme_libretro
 			USES_TERMINAL)
