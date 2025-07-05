@@ -116,6 +116,15 @@ struct sjme_jobjectBase
 
 	/** The monitor of monitor counts. */
 	sjme_atomic_sjme_jint monitorCount;
+	
+	/** Special value, if needed. */
+	sjme_atomic_sjme_intPointer special;
+};
+
+struct sjme_jthrowableBase
+{
+	/** Object base. */
+	sjme_jobjectBase object;
 };
 
 struct sjme_jbracketTraceBase
@@ -126,7 +135,7 @@ struct sjme_jbracketTraceBase
 	/** The pointer to the frame. */
 	sjme_nvm_frame frame;
 
-	/** The ID of the frame, used to identify if it has chnaged. */
+	/** The ID of the frame, used to identify if it has changed. */
 	sjme_jint id;
 
 	/**
@@ -134,6 +143,22 @@ struct sjme_jbracketTraceBase
 	 * have index zero.
 	 */
 	sjme_jint baseIndex;
+
+	/** The captured frame data. */
+	struct
+	{
+		/** The class this came from. */
+		sjme_jclass inClass;
+
+		/** The code this is in. */
+		sjme_nvm_class_codeInfo inCode;
+
+		/** The last executed PC address. */
+		sjme_jint lastPc;
+
+		/** The last instruction vector. */
+		sjme_byteCode lastIv;
+	} capture;
 };
 
 /**

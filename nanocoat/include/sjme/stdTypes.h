@@ -729,6 +729,29 @@ typedef sjme_jweakBase* sjme_jweak;
 #define SJME_TYPEOF_IS_POINTER_sjme_jweak SJME_TYPEOF_IS_POINTER_sjme_jobject
 
 /**
+ * Throwable object.
+ * 
+ * @since 2025/07/05
+ */
+typedef struct sjme_jthrowableBase sjme_jthrowableBase;
+
+/**
+ * Throwable object.
+ * 
+ * @since 2025/07/05
+ */
+typedef sjme_jthrowableBase* sjme_jthrowable;
+
+/** Basic @c sjme_jthrowable type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jthrowable SJME_BASIC_TYPE_ID_OBJECT
+
+/** Java @c sjme_jthrowable type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jthrowable SJME_BASIC_TYPE_ID_OBJECT
+
+/** Is a pointer for @c sjme_jthrowable ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jthrowable 1
+	
+/**
  * Trace point bracket.
  *
  * @since 2025/06/28
@@ -751,7 +774,7 @@ typedef sjme_jbracketTraceBase* sjme_jbracketTrace;
 /** Is a pointer for @c sjme_jbracketTrace ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jbracketTrace \
 	SJME_TYPEOF_IS_POINTER_sjme_jobject
-
+	
 /**
  * A character sequence which contains a set of characters within a string.
  * 

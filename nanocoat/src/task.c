@@ -201,6 +201,10 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		case SJME_NVM_TASK_COMMON_CLASS_STRING:
 			commonName = "Ljava/lang/String;";
 			break;
+		
+		case SJME_NVM_TASK_COMMON_CLASS_THROWABLE:
+			commonName = "Ljava/lang/Throwable;";
+			break;
 
 		case SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT:
 			commonName = "Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;";
@@ -251,14 +255,63 @@ sjme_jclass sjme_nvm_task_commonClassR(
 	return result;
 }
 
-sjme_errorCode sjme_nvm_task_stackTrace(
+sjme_errorCode sjme_nvm_task_stackTraceStep(
+	sjme_attrInNotNull sjme_nvm_task_stackTraceState* traceState,
+	sjme_attrInNotNull sjme_jclass atClass,
+	sjme_attrInNotNull sjme_nvm_class_codeInfo atCode,
+	sjme_attrInValue sjme_jint atPc,
+	sjme_attrInValue sjme_byteCode atIv)
+{
+	if (traceState == NULL || atClass == NULL || atCode == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* The compact SquirrelJME format is in the following form: */
+ 	/*  | IN java.lang.Class (Class.java) */
+  	/*  |- .whatever:(Lboop;)V @0h (:181 INVOKEINTERFACE@15) */
+	
+	/* Did the class change? */
+	/* | IN java.lang.Class (Class.java) */
+	traceState->nowClass = atClass;
+	if (traceState->nowClass != traceState->lastClass)
+		sjme_messageB(" | IN %s (%s)",
+			sjme_charSeq_tempUtf(traceState->nowClass->binaryName),
+				"<UNKNOWN>");
+
+	/* Print method trace. */
+	/*  |- .whatever:(Lboop;)V @0h (:181 INVOKEINTERFACE@15) */
+	traceState->nowCode = atCode;
+	traceState->nowMethod = (traceState->nowCode != NULL ?
+		atCode->inMethod : NULL);
+	traceState->pc = atPc;
+	traceState->instructionId = (atIv != 0 ? atIv :
+		(traceState->nowCode != NULL && traceState->pc >= 0 &&
+			traceState->pc < traceState->nowCode->rawCodeLen ?
+			traceState->nowCode->rawCode[traceState->pc] & 0xFF : -1));
+	if (traceState->nowCode == NULL || traceState->nowMethod == NULL)
+		sjme_messageB(" | PURE VIRTUAL");
+	else
+		sjme_messageB(" | .%s:%s @%xh (:%d #%s@%d)",
+			sjme_charSeq_tempUtf(traceState->nowMethod->name->seq),
+			sjme_charSeq_tempUtf(traceState->nowMethod->type->seq),
+			traceState->pc,
+			-1,
+			sjme_nvm_byteCode_names[traceState->instructionId & 0xFF],
+			traceState->pc);
+
+	/* Set for next run. */
+	traceState->lastClass = traceState->nowClass;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_task_stackTraceThread(
 	sjme_attrInNotNull sjme_nvm_thread inThread)
 {
+	sjme_errorCode error;
 	sjme_nvm_frame frame;
-	sjme_jint i, instructionId, pc;
-	sjme_jclass lastClass, nowClass;
-	sjme_nvm_class_codeInfo nowCode;
-	sjme_nvm_class_methodInfo nowMethod;
+	sjme_nvm_task_stackTraceState traceState;
+	sjme_jint i;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -266,47 +319,66 @@ sjme_errorCode sjme_nvm_task_stackTrace(
 	/* Empty? Do nothing. */
 	if (inThread->numFrames == 0)
 		return SJME_ERROR_NONE;
-
-	/* The compact SquirrelJME format is in the following form: */
- 	/*  | IN java.lang.Class (Class.java) */
-  	/*  |- .whatever:(Lboop;)V @0h (:181 INVOKEINTERFACE@15) */
-
+	
 	/* Start from the top of the stack. */
-	lastClass = NULL;
-	for (i = inThread->numFrames - 1; i >=0; i--)
+	memset(&traceState, 0, sizeof(traceState));
+	for (i = inThread->numFrames - 1; i >= 0; i--)
 	{
 		/* Which frame is this? */
 		frame = inThread->frames->elements[i];
 
-		/* Did the class change? */
-		/* | IN java.lang.Class (Class.java) */
-		nowClass = frame->inClass;
-		if (nowClass != lastClass)
-			sjme_messageB(" | IN %s (%s)",
-				sjme_charSeq_tempUtf(nowClass->binaryName), "<UNKNOWN>");
+		/* Step trace. */
+		if (sjme_error_is(error = sjme_nvm_task_stackTraceStep(
+			&traceState, frame->inClass, frame->inCode,
+			frame->lastPc, frame->lastIv)))
+			return sjme_error_default(error);
+	}
 
-		/* Print method trace. */
-		/*  |- .whatever:(Lboop;)V @0h (:181 INVOKEINTERFACE@15) */
-		nowCode = frame->inCode;
-		nowMethod = (nowCode != NULL ? frame->inCode->inMethod : NULL);
-		pc = frame->lastPc;
-		instructionId = (frame->lastIv != 0 ? frame->lastIv :
-			(nowCode != NULL && pc >= 0 &&
-				pc < nowCode->rawCodeLen ?
-				nowCode->rawCode[pc] & 0xFF : -1));
-		if (nowCode == NULL || nowMethod == NULL)
-			sjme_messageB(" | PURE VIRTUAL");
-		else
-			sjme_messageB(" | .%s:%s @%xh (:%d #%s@%d)",
-				sjme_charSeq_tempUtf(nowMethod->name->seq),
-				sjme_charSeq_tempUtf(nowMethod->type->seq),
-				pc,
-				-1,
-				sjme_nvm_byteCode_names[instructionId & 0xFF],
-				pc);
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
 
-		/* Set for next run. */
-		lastClass = nowClass;
+sjme_errorCode sjme_nvm_task_stackTraceThrowable(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jthrowable inThrowable)
+{
+	sjme_errorCode error;
+	sjme_jarray pointArray;
+	sjme_jbracketTrace point;
+	sjme_nvm_task_stackTraceState traceState;
+	sjme_jint i;
+	
+	if (inThrowable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Must be Throwable. */
+	if (!sjme_nvm_vmClass_isAssignableFrom(contextThread,
+		sjme_nvm_task_commonClassR(contextThread,
+			SJME_NVM_TASK_COMMON_CLASS_THROWABLE),
+			inThrowable->object.isClass))
+		return SJME_ERROR_CLASS_CAST;
+
+	/* Must be an array type. */
+	pointArray = (sjme_jarray)sjme_atomic_sjme_intPointer_get(
+		&inThrowable->object.special);
+	if (!sjme_nvm_isAR(pointArray, SJME_NVM_STRUCT_ARRAY_INSTANCE))
+		return SJME_ERROR_CLASS_CAST;
+
+	/* Go through and extract points per each. */
+	memset(&traceState, 0, sizeof(traceState));
+	for (i = 0; i < pointArray->length; i++)
+	{
+		/* Must be a trace point. */
+		point = (sjme_jbracketTrace)pointArray->e.l[i];
+		if (!sjme_nvm_isAR(point,
+			SJME_NVM_STRUCT_TRACE_POINT_INSTANCE))
+			return SJME_ERROR_CLASS_CAST;
+
+		/* Step trace. */
+		if (sjme_error_is(error = sjme_nvm_task_stackTraceStep(
+			&traceState, point->capture.inClass, point->capture.inCode,
+			point->capture.lastPc, point->capture.lastIv)))
+			return sjme_error_default(error);
 	}
 
 	/* Success! */

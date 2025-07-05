@@ -135,9 +135,9 @@ sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	{
 		/* Emit stack trace, if acceptable. */
 		if (sjme_nvm_isAR(vmContext, SJME_NVM_STRUCT_FRAME))
-			sjme_nvm_task_stackTrace(((sjme_nvm_frame)vmContext)->inThread);
+			sjme_nvm_task_stackTraceThread(((sjme_nvm_frame)vmContext)->inThread);
 		else if (sjme_nvm_isAR(vmContext, SJME_NVM_STRUCT_THREAD))
-			sjme_nvm_task_stackTrace(vmContext);
+			sjme_nvm_task_stackTraceThread(vmContext);
 
 #if defined(SJME_CONFIG_DEBUG)
 		/* Fail with a TO-DO. */

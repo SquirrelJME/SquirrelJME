@@ -382,6 +382,9 @@ typedef enum sjme_nvm_task_commonClassId
 	/** @c java.lang.String . */
 	SJME_NVM_TASK_COMMON_CLASS_STRING,
 
+	/** @c java.lang.Throwable . */
+	SJME_NVM_TASK_COMMON_CLASS_THROWABLE,
+
 	/** @c cc.squirreljme.jvm.mle.brackets.TracePointBracket . */
 	SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT,
 
@@ -524,6 +527,35 @@ struct sjme_nvm_threadBase
 	} flags;
 };
 
+/**
+ * Stores the state for printing stack traces.
+ *
+ * @since 2025/07/05
+ */
+typedef struct sjme_nvm_task_stackTraceState
+{
+	/** The current index. */
+	sjme_jint i;
+
+	/** The instruction ID. */
+	sjme_jint instructionId;
+
+	/** The PC index. */
+	sjme_jint pc;
+
+	/** The last class. */
+	sjme_jclass lastClass;
+
+	/** The current class. */
+	sjme_jclass nowClass;
+
+	/** The current code. */
+	sjme_nvm_class_codeInfo nowCode;
+
+	/** The current method. */
+	sjme_nvm_class_methodInfo nowMethod;
+} sjme_nvm_task_stackTraceState;
+	
 /**
  * Loads a cached common class.
  * 
@@ -805,8 +837,21 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
  * @return Any resultant error, if any.
  * @since 2025/02/16
  */
-sjme_errorCode sjme_nvm_task_stackTrace(
+sjme_errorCode sjme_nvm_task_stackTraceThread(
 	sjme_attrInNotNull sjme_nvm_thread inThread);
+
+/**
+ * Prints the stack trace for a throwable using the standard compact
+ * SquirrelJME style stack traces.
+ *
+ * @param contextThread The context thread.
+ * @param inThrowable The throwable to print the trace for.
+ * @return Any resultant error, if any.
+ * @since 2025/07/05
+ */
+sjme_errorCode sjme_nvm_task_stackTraceThrowable(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jthrowable inThrowable);
 	
 /**
  * Starts the task.

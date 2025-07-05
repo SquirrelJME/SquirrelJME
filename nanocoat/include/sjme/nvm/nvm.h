@@ -52,13 +52,6 @@ typedef sjme_jint sjme_pcAddr;
  */
 typedef sjme_jint sjme_staticLinkageType;
 
-/**
- * Throwable type.
- * 
- * @since 2023/07/25
- */
-typedef sjme_jobject sjme_jthrowable;
-
 /** Single byte code storage type. */
 typedef sjme_jubyte sjme_byteCode;
 

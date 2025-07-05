@@ -67,7 +67,7 @@ public enum MLEDebug
 				throw new SpringMLECallError("Not a Throwable.");
 			
 			return ((SpringSimpleObject)object).fieldByNameAndType(
-				false, "_stack",
+				false, "_stackTrace",
 				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;")
 				.get();
 		}

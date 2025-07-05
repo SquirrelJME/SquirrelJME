@@ -75,6 +75,12 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 		point->frame = atFrame;
 		point->id = atFrame->id;
 		point->baseIndex = i;
+
+		/* Capture a copy of the frame information as it will go away. */
+		point->capture.inClass = atFrame->inClass;
+		point->capture.inCode = atFrame->inCode;
+		point->capture.lastPc = atFrame->lastPc;
+		point->capture.lastIv = atFrame->lastIv;
 		
 		/* Store into the array. */
 		result->e.l[into] = SJME_AS_JOBJECT(point);
@@ -82,7 +88,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 
 	/* Return the trace point array. */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
-	argV->v.l = SJME_AS_JOBJECT(result);
+	argR->v.l = SJME_AS_JOBJECT(result);
 	return SJME_ERROR_NONE;
 
 fail_allocBracket:
@@ -93,10 +99,46 @@ fail_allocBracket:
 	return sjme_error_vmError(inFrame, error);
 }
 
+SJME_NVM_MLE_FUNCTION_DECL(traceThrowable)
+{
+	sjme_errorCode error;
+	sjme_jthrowable throwable;
+	sjme_jvalueTyped result;
+
+	/* Must be a basic object. */
+	throwable = (sjme_jthrowable)argV[0].v.l;
+	if (!sjme_nvm_isAR(throwable, SJME_NVM_STRUCT_OBJECT_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Must be of the throwable class! */
+	if (!sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
+		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
+			SJME_NVM_TASK_COMMON_CLASS_THROWABLE), throwable->object.isClass))
+		return SJME_ERROR_MLE_CALL;
+
+	/* We can just call the above. */
+	memset(&result, 0, sizeof(result));
+	if (sjme_error_is(error = sjme_nvm_mleFunc_traceStack_none(inFrame,
+		&result, 0, NULL)))
+		return sjme_error_default(error);
+
+	/* Set the throwable special. */
+	sjme_atomic_sjme_intPointer_set(&throwable->object.special,
+		(sjme_intPointer)result.v.l);
+
+	/* Set the return value. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = result.v.l;
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_SHELF_DECLARE(DebugShelf) =
 {
 	SJME_NVM_MLE_DEFINE(traceStack,
 		SJME_MD(SJME_MD_A(SJME_MD_TRACE), ),
 		"L", ),
+	SJME_NVM_MLE_DEFINE(traceThrowable,
+		SJME_MD(SJME_MD_A(SJME_MD_TRACE), SJME_MD_THROWABLE),
+		"L", "L"),
 	SJME_NVM_MLE_STOP()
 };

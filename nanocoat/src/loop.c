@@ -26,7 +26,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_nvm_loop_tickCrash(
 		return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 
 	/* Print stack trace. */
-	sjme_nvm_task_stackTrace(inThread);
+	sjme_nvm_task_stackTraceThread(inThread);
 	
 	/* No error generally. */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);

@@ -373,6 +373,7 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	sjme_nvm_frame topFrame;
 	sjme_jint topIndex;
 	sjme_nvm_frameBase blank;
+	sjme_jobject uncaught;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -413,6 +414,21 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 		if (sjme_error_is(error = sjme_nvm_task_taskScheduleIn(
 			SJME_T_S(inThread), inThread)))
 			return sjme_error_vmError(inThread, error);
+		
+		/* There is still an uncaught exception? */
+		uncaught = sjme_atomic_sjme_jobject_get(&inThread->tossed);
+		if (uncaught != NULL)
+		{
+			/* Print it out. */
+			if (sjme_error_is(error = sjme_nvm_task_stackTraceThrowable(
+				inThread, (sjme_jthrowable)uncaught)))
+				sjme_message("Uncaught throwable, print error %d",
+					error);
+			
+			/* Fail. */
+			return sjme_error_vmError(inThread,
+				SJME_ERROR_UNCAUGHT_EXCEPTION);
+		}
 	}
 
 	/* Success! */

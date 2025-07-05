@@ -1203,7 +1203,8 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			/* Place the offset here. */
 			inClass->fields[i].offset[javaType] = allocSize;
 
-			/* Grow the allocation size by what is needed to store the fields. */
+			/* Grow the allocation size by what is needed to store */
+			/* the fields. */
 			allocSize += sjme_nvm_fieldValueSize(javaType,
 				inClass->info->fieldCount[i]
 					[javaType]);

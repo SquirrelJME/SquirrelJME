@@ -130,6 +130,9 @@ extern "C"
 /** Thread. */
 #define SJME_MD_THREAD SJME_MD_L("java/lang/Thread")
 
+/** Throwable. */
+#define SJME_MD_THROWABLE SJME_MD_L("java/lang/Throwable")
+
 /** Trace point. */
 #define SJME_MD_TRACE \
 	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/TracePointBracket")
