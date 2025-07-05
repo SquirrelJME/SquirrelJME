@@ -9,6 +9,7 @@
 
 package java.io;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
@@ -169,7 +170,7 @@ public class ByteArrayInputStream
 				read = len;
 			
 			// Copy bytes
-			System.arraycopy(buf, pos, __b, 0, read);
+			ObjectShelf.arrayCopy(buf, pos, __b, 0, read);
 			pos += read;
 			
 			// Store new position
@@ -207,7 +208,7 @@ public class ByteArrayInputStream
 				read = __l;
 			
 			// Copy bytes
-			System.arraycopy(buf, pos, __b, __o, read);
+			ObjectShelf.arrayCopy(buf, pos, __b, __o, read);
 			pos += read;
 			
 			// Store new position

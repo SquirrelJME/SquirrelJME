@@ -9,6 +9,7 @@
 package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.MidiShelf;
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -90,7 +91,7 @@ public class EmulatedMidiShelf
 			
 		// Copy data into a new buffer
 		byte[] data = new byte[__l];
-		System.arraycopy(__b, __o,
+		ObjectShelf.arrayCopy(__b, __o,
 			data, 0, __l);
 		
 		// Send the data

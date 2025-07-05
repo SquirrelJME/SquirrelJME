@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -102,7 +103,7 @@ public final class IntegerIntegerArray
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Forward to system copy method
-		System.arraycopy(this.array, this.offset + __srcOff,
+		ObjectShelf.arrayCopy(this.array, this.offset + __srcOff,
 			__dest, __destOff, __len);
 	}
 	

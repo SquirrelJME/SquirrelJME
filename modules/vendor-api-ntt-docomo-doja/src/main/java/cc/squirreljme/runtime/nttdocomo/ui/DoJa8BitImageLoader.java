@@ -112,7 +112,7 @@ public class DoJa8BitImageLoader
 	{
 		// Copy palette
 		int[] palette = new int[__len];
-		System.arraycopy(__colors, __off,
+		ObjectShelf.arrayCopy(__colors, __off,
 			palette, 0, __len);
 		
 		// Store within

@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -73,7 +74,7 @@ public class Palette
 		
 		// Copy colors
 		int[] colors = new int[numColors];
-		System.arraycopy(__colors, 0,
+		ObjectShelf.arrayCopy(__colors, 0,
 			colors, 0, numColors);
 		
 		// Store colors

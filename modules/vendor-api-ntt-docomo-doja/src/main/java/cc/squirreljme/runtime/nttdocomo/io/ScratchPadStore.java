@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.nttdocomo.io;
 
 import cc.squirreljme.jvm.launch.IModeProperty;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -233,10 +234,10 @@ public final class ScratchPadStore
 		{
 			// Do not write past the end
 			if ((__o + __l) > __b.length)
-				System.arraycopy(__b, 0,
+				ObjectShelf.arrayCopy(__b, 0,
 					this._data, __o, __b.length - __o);
 			else
-				System.arraycopy(__b, 0,
+				ObjectShelf.arrayCopy(__b, 0,
 					this._data, __o, __l);
 		}
 	}

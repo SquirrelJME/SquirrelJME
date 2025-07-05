@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractList;
@@ -414,7 +415,7 @@ public final class IntegerList
 		
 		// Copy values
 		int[] rv = new int[size];
-		System.arraycopy(values, 0, rv, 0, size);
+		ObjectShelf.arrayCopy(values, 0, rv, 0, size);
 		return rv;
 	}
 }

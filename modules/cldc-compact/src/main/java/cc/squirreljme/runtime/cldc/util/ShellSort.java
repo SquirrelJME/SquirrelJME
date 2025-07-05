@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -73,7 +74,7 @@ public class ShellSort
 				int[] rv = new int[subLen];
 				
 				// Take the final elements and use those
-				System.arraycopy(gaps, i,
+				ObjectShelf.arrayCopy(gaps, i,
 					rv, 0, subLen);
 				
 				return rv;

@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -361,7 +362,7 @@ public class HuffmanTreeInt
 		
 		// Copy the old array over
 		if (table != null)
-			System.arraycopy(table, 0,
+			ObjectShelf.arrayCopy(table, 0,
 				becomes, 0, rv);
 		
 		// The end bits become invalidated
@@ -392,7 +393,7 @@ public class HuffmanTreeInt
 		
 		// Copy the old array over
 		if (values != null)
-			System.arraycopy(values, 0,
+			ObjectShelf.arrayCopy(values, 0,
 				becomes, 0, rv);
 		
 		// Set new table

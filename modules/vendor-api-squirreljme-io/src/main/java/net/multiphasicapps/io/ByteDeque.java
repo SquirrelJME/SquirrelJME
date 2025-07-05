@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -292,7 +293,7 @@ public class ByteDeque
 				limit = left;
 			
 			// Write data
-			System.arraycopy(__b, at,
+			ObjectShelf.arrayCopy(__b, at,
 				bl, tail, limit);
 			tail += limit;
 			at += limit;
@@ -1207,7 +1208,7 @@ public class ByteDeque
 			// Write the data
 			if (__set)
 			{
-				System.arraycopy(__b, at,
+				ObjectShelf.arrayCopy(__b, at,
 					bl, rhead, rc);
 				/*for (int i = 0; i < rc; i++)
 					bl[rhead++] = __b[at++];*/
@@ -1216,7 +1217,7 @@ public class ByteDeque
 			// Read the data
 			else
 			{
-				System.arraycopy(bl, rhead,
+				ObjectShelf.arrayCopy(bl, rhead,
 					__b, at, rc);
 				/*for (int i = 0; i < rc; i++)
 					__b[at++] = bl[rhead++];*/

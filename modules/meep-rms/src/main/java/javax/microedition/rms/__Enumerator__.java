@@ -9,6 +9,7 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import cc.squirreljme.runtime.cldc.util.IntegerArrays;
@@ -433,7 +434,7 @@ final class __Enumerator__
 				if (newBase > 0)
 				{
 					int[] replaced = new int[baseIds.length - newBase];
-					System.arraycopy(baseIds, newBase,
+					ObjectShelf.arrayCopy(baseIds, newBase,
 						replaced, 0, baseIds.length - newBase);
 					baseIds = replaced;
 				}

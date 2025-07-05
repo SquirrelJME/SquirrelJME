@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
@@ -689,7 +690,7 @@ public final class ByteCode
 		int len = Math.min(rawLen - ByteCode.CODE_OFFSET,
 			this.codelen);
 		byte[] result = new byte[len];
-		System.arraycopy(rawCode, ByteCode.CODE_OFFSET,
+		ObjectShelf.arrayCopy(rawCode, ByteCode.CODE_OFFSET,
 			result, 0, len);
 		
 		return result;

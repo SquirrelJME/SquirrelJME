@@ -33,6 +33,7 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -86,7 +87,7 @@ class MLDBinaryReader
 		if (this.offset + length > this.start + this.length)
 			throw new RuntimeException("Unexpected EOF.");
 		byte[] ret = new byte[length];
-		System.arraycopy(this.data, this.offset, ret, 0, length);
+		ObjectShelf.arrayCopy(this.data, this.offset, ret, 0, length);
 		this.offset += length;
 		return ret;
 	}
