@@ -443,21 +443,8 @@ public final class SpringThreadWorker
 					return rv;
 				
 				// Resolve the input class, so it is initialized
-				SpringClass resClass = (__noclassres ? this.loadClass(name) :
+				rv = (__noclassres ? this.loadClass(name) :
 					this.resolveClass(name));
-				
-				// Resolve the class object
-				SpringClass classClass = this.resolveClass(
-					new ClassName("java/lang/Class"));
-				
-				// Initialize class with special class index and some class
-				// information
-				rv = this.newInstance(classClass.name(), new MethodDescriptor(
-					"(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)V"),
-					resClass);
-				
-				// Store it
-				classClass.setClassObject(rv);
 				
 				// Cache and use it
 				com.put(name, rv);

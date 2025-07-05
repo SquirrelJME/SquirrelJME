@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import net.multiphasicapps.classfile.ClassName;
 
 /**
  * Not Described.
@@ -40,6 +41,7 @@ public abstract class SpringBaseClass
 	@Override
 	public final SpringClass type()
 	{
-		throw Debugging.todo();
+		return this.classLoader().loadClass(
+			new ClassName("java/lang/Class"));
 	}
 }

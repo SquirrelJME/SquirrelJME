@@ -103,7 +103,7 @@ public class SpringVisClass
 	@Override
 	public SpringObject classObject()
 	{
-		throw Debugging.todo();
+		return this;
 	}
 	
 	/**
@@ -524,7 +524,6 @@ public class SpringVisClass
 	@Override
 	public void setClassObject(SpringObject __rv)
 	{
-		throw Debugging.todo();
 	}
 	
 	/**

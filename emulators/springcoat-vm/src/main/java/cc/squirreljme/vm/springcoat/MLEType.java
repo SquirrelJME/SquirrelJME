@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -171,8 +172,8 @@ public enum MLEType
 	},
 	
 	/** {@link TypeShelf#inJar(Class)}. */
-	IN_JAR("inJar:(Ljava/lang/Class;)" +
-		"Ljava/lang/JarPackageBracket;")
+	IN_JAR(MLEDispatcher.methodKey("inJar", JarPackageBracket.class,
+		Class.class))
 	{
 		/**
 		 * {@inheritDoc}

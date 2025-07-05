@@ -134,15 +134,10 @@ public final class System
 		if (__src == __dest && __srcOff == __destOff)
 			return;
 		
-		// We can use the native type system within MLE to knock off a few
-		// branch possibilities
-		Class<?> srcType = srcClass;
-		Class<?> component = TypeShelf.component(srcType);
-		
 		// Primitive types can be copied at full speed as they do not require
 		// any references are otherwise to be counted or garbage collection to
 		// be managed
-		if (TypeShelf.isPrimitive(component))
+		if (TypeShelf.isPrimitive(TypeShelf.component(srcClass)))
 		{
 			// More common primitives
 			if (srcClass == byte[].class)
@@ -174,7 +169,7 @@ public final class System
 			
 			/* {@squirreljme.error ZZ1h Not a primitive array type.} */
 			else
-				throw new Error("ZZ1h");
+				throw Debugging.oops("ZZ1h");
 		}
 		
 		// There is no native handler for manual object array copies due to
