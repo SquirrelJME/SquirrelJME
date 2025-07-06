@@ -148,8 +148,10 @@ static sjme_jint sjme_scritchui_win32_keyCode(sjme_jint inKey)
 			return SJME_SCRITCHINPUT_KEY_NUMPAD_DECIMAL;
 		case VK_DIVIDE:
 			return SJME_SCRITCHINPUT_KEY_NUMPAD_DIVIDE;
+#if defined(VK_NUMPAD_ENTER)
 		case VK_NUMPAD_ENTER:
 			return SJME_SCRITCHINPUT_KEY_NUMPAD_ENTER;
+#endif
 		case VK_SUBTRACT:
 			return SJME_SCRITCHINPUT_KEY_NUMPAD_MINUS;
 		case VK_MULTIPLY:
