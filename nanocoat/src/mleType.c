@@ -125,6 +125,78 @@ SJME_NVM_MLE_FUNCTION_DECL(runtimeName)
 	return SJME_ERROR_NONE;
 }
 
+SJME_NVM_MLE_FUNCTION_DECL(typeOfBoolean)
+{
+	/* Direct get of class type. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
+		SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BOOLEAN);
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(typeOfByte)
+{
+	/* Direct get of class type. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
+		SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BYTE);
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(typeOfCharacter)
+{
+	/* Direct get of class type. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
+		SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_CHARACTER);
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(typeOfFloat)
+{
+	/* Direct get of class type. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
+		SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_FLOAT);
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(typeOfDouble)
+{
+	/* Direct get of class type. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
+		SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_DOUBLE);
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(typeOfInteger)
+{
+	/* Direct get of class type. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
+		SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_INTEGER);
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(typeOfLong)
+{
+	/* Direct get of class type. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
+		SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_LONG);
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(typeOfShort)
+{
+	/* Direct get of class type. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
+		SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_SHORT);
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(typeToClass)
 {
 	sjme_jobject inType;
@@ -212,31 +284,31 @@ SJME_NVM_MLE_SHELF_DECLARE(TypeShelf) =
 	SJME_NVM_MLE_DEFINE(superClass,
 		SJME_MD(,),
 		""),
-	SJME_NVM_MLE_DEFINE(typeOfBoolean,
-		SJME_MD(,),
-		""),
-	SJME_NVM_MLE_DEFINE(typeOfByte,
-		SJME_MD(,),
-		""),
-	SJME_NVM_MLE_DEFINE(typeOfShort,
-		SJME_MD(,),
-		""),
-	SJME_NVM_MLE_DEFINE(typeOfCharacter,
-		SJME_MD(,),
-		""),
-	SJME_NVM_MLE_DEFINE(typeOfInteger,
-		SJME_MD(,),
-		""),
-	SJME_NVM_MLE_DEFINE(typeOfLong,
-		SJME_MD(,),
-		""),
-	SJME_NVM_MLE_DEFINE(typeOfFloat,
-		SJME_MD(,),
-		""),
-	SJME_NVM_MLE_DEFINE(typeOfDouble,
-		SJME_MD(,),
-		""),
 #endif
+	SJME_NVM_MLE_DEFINE(typeOfBoolean,
+		SJME_MD(SJME_MD_CLASS,),
+		"L", ),
+	SJME_NVM_MLE_DEFINE(typeOfByte,
+		SJME_MD(SJME_MD_CLASS,),
+		"L", ),
+	SJME_NVM_MLE_DEFINE(typeOfCharacter,
+		SJME_MD(SJME_MD_CLASS,),
+		"L", ),
+	SJME_NVM_MLE_DEFINE(typeOfFloat,
+		SJME_MD(SJME_MD_CLASS,),
+		"L", ),
+	SJME_NVM_MLE_DEFINE(typeOfDouble,
+		SJME_MD(SJME_MD_CLASS,),
+		"L", ),
+	SJME_NVM_MLE_DEFINE(typeOfInteger,
+		SJME_MD(SJME_MD_CLASS,),
+		"L", ),
+	SJME_NVM_MLE_DEFINE(typeOfLong,
+		SJME_MD(SJME_MD_CLASS,),
+		"L", ),
+	SJME_NVM_MLE_DEFINE(typeOfShort,
+		SJME_MD(SJME_MD_CLASS,),
+		"L", ),
 	SJME_NVM_MLE_DEFINE(typeToClass,
 		SJME_MD(SJME_MD_CLASS, SJME_MD_CLASS),
 		"L", "L"),

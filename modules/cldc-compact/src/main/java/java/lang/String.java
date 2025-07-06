@@ -689,6 +689,7 @@ public final class String
 	 * @since 2017/08/15
 	 */
 	@Api
+	@SuppressWarnings("Since15")
 	public boolean isEmpty()
 	{
 		return StringShelf.stringLength(this) == 0;

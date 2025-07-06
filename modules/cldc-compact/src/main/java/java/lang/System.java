@@ -337,7 +337,7 @@ public final class System
 		
 		/* {@squirreljme.error ZZ1z Cannot request a system property which has
 		a blank key.} */
-		if (__k.equals(""))
+		if (__k.isEmpty())
 			throw new IllegalArgumentException("ZZ1z");
 		
 		// Not allowed to do this?

@@ -177,16 +177,29 @@ SJME_NVM_MLE_FUNCTION_DECL(stringIsIntern)
 
 SJME_NVM_MLE_FUNCTION_DECL(stringLength)
 {
+	sjme_errorCode error;
 	sjme_jstring string;
+	sjme_charSeq seq;
+	sjme_jint result;
 
 	/* Must be an actual string. */
 	string = (sjme_jstring)argV[0].v.l;
 	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
+	/* Has the sequence ever been initialized? */
+	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	if (seq == NULL)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Obtain the string length. */
+	result = -1;
+	if (sjme_error_is(error = sjme_charSeq_length(seq, &result)) || result < 0)
+		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
+	
 	/* This is a simple value copy operation. */
 	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->v.i = string->length;
+	argR->v.i = result;
 	return SJME_ERROR_NONE;
 }
 

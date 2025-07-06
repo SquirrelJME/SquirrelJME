@@ -306,14 +306,18 @@ struct sjme_jstringBase
 	/** All strings are objects. */
 	sjme_jobjectBase object;
 
-	/** The hash of this string. */
-	sjme_jint hashCode;
-
-	/** The length of this string. */
-	sjme_jint length;
-
 	/** The sequence of characters which make up the string. */
 	sjme_atomic_sjme_charSeq seq;
+
+	/** Intern based information. */
+	struct
+	{
+		/** The hash of this string. */
+		sjme_jint hashCode;
+
+		/** The length of this string. */
+		sjme_jint length;
+	} intern;
 };
 
 struct sjme_jarrayBase

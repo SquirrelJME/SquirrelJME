@@ -11,6 +11,7 @@
 
 #if defined(SJME_CONFIG_HAS_OS_POSIX)
 	#include <locale.h>
+	#include <langinfo.h>
 #endif
 
 #include "sjme/nvm/mle.h"
@@ -31,8 +32,63 @@ SJME_NVM_MLE_FUNCTION_DECL(currentTimeMillis)
 
 SJME_NVM_MLE_FUNCTION_DECL(encoding)
 {
+	static sjme_atomic_sjme_jint cached;
+	sjme_nvm_mle_builtInEncodingType encoding;
+	const char* codeType;
+#if defined(SJME_CONFIG_HAS_OS_POSIX)
+	sjme_lpcstr set;
+#endif
+
+	/* Cached? */
+	encoding = sjme_atomic_sjme_jint_get(&cached);
+	if (encoding != SJME_NVM_MLE_ENCODING_UNSPECIFIED)
+		goto skip_cached;
+
+	/* Reset codetype based string. */
+	codeType = NULL;
+	
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
+	/* Get the base global locale. */
+	set = setlocale(LC_ALL, "");
+	if (set != NULL)
+		codeType = nl_langinfo(CODESET);
+#endif
+
+	/* Base on the code type string? */
+	if (encoding == SJME_NVM_MLE_ENCODING_UNSPECIFIED && codeType != NULL)
+	{
+		if (strcasecmp(codeType, "UTF-8") == 0)
+			encoding = SJME_NVM_MLE_ENCODING_UTF8;
+		else if (strcasecmp(codeType, "ASCII") == 0 ||
+			strcasecmp(codeType, "ANSI_X3.4-1968") == 0)
+			encoding = SJME_NVM_MLE_ENCODING_ASCII;
+		else if (strcasecmp(codeType, "IBM037") == 0 ||
+			strcasecmp(codeType, "EBCDIC-US") == 0)
+			encoding = SJME_NVM_MLE_ENCODING_IBM037;
+		else if (strcasecmp(codeType, "ISO-8859-1") == 0)
+			encoding = SJME_NVM_MLE_ENCODING_ISO_8859_1;
+		else if (strcasecmp(codeType, "ISO-8859-15") == 0)
+			encoding = SJME_NVM_MLE_ENCODING_ISO_8859_15;
+		else if (strcasecmp(codeType, "SHIFT_JIS") == 0 ||
+			strcasecmp(codeType, "SHIFT_JISX0213") == 0)
+			encoding = SJME_NVM_MLE_ENCODING_SHIFT_JIS;
+		else if (strcasecmp(codeType, "IBM437") == 0)
+			encoding = SJME_NVM_MLE_ENCODING_IBM437;
+	}
+	
+	/* Fallback to UTF-8 if unspecified. */
+	if (encoding == SJME_NVM_MLE_ENCODING_UNSPECIFIED)
+		encoding = SJME_NVM_MLE_ENCODING_UTF8;
+	sjme_atomic_sjme_jint_set(&cached, encoding);
+
+	/* Return the given encoding. */
+skip_cached:
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = encoding;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(exit)
@@ -100,6 +156,7 @@ SJME_NVM_MLE_FUNCTION_DECL(locale)
 	/* Fallback to US English if unspecified. */
 	if (locale == SJME_NVM_MLE_LOCALE_UNSPECIFIED)
 		locale = SJME_NVM_MLE_LOCALE_US_ENGLISH;
+	sjme_atomic_sjme_jint_set(&cached, locale);
 
 	/* Return the given locale. */
 skip_cached:

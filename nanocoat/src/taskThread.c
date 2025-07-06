@@ -632,7 +632,8 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 				}
 
 				/* Different hash/length? Ignore. */
-				if (hash != result->hashCode || length != result->length)
+				if (hash != result->intern.hashCode ||
+					length != result->intern.length)
 					continue;
 				
 				/* Release. */
@@ -657,8 +658,8 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 		goto fail_allocStringInstance;
 
 	/* Set string properties. */
-	result->hashCode = hash;
-	result->length = length;
+	result->intern.hashCode = hash;
+	result->intern.length = length;
 	
 	/* Duplicate the sequence. */
 	strSeq = NULL;
