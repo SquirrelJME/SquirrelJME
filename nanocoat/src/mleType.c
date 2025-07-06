@@ -12,6 +12,50 @@
 #include "sjme/nvm/mleShelves.h"
 #include "sjme/nvm/cleanup.h"
 
+SJME_NVM_MLE_FUNCTION_DECL(binaryName)
+{
+	sjme_errorCode error;
+	sjme_jclass inType;
+
+	/* Must be an actual object type. */
+	inType = (sjme_jclass)argV[0].v.l;
+	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Return the name string for the class. */
+	argR->v.l = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
+		SJME_F_T(inFrame), SJME_AS_JSTRINGP(&argR->v.l),
+		inType->info->name) || argR->v.l == NULL))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Return the given string. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(binaryPackageName)
+{
+	sjme_errorCode error;
+	sjme_jclass inType;
+
+	/* Must be an actual object type. */
+	inType = (sjme_jclass)argV[0].v.l;
+	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Return the name string for the class. */
+	argR->v.l = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
+		SJME_F_T(inFrame), SJME_AS_JSTRINGP(&argR->v.l),
+		inType->info->inPackage) || argR->v.l == NULL))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Return the given string. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(classToType)
 {
 	sjme_jobject inType;
@@ -214,14 +258,12 @@ SJME_NVM_MLE_FUNCTION_DECL(typeToClass)
 
 SJME_NVM_MLE_SHELF_DECLARE(TypeShelf) =
 {
-#if 0
 	SJME_NVM_MLE_DEFINE(binaryName,
-		SJME_MD(,),
-		""),
+		SJME_MD(SJME_MD_STRING, SJME_MD_CLASS),
+		"L", "L"),
 	SJME_NVM_MLE_DEFINE(binaryPackageName,
-		SJME_MD(,),
-		""),
-#endif
+		SJME_MD(SJME_MD_STRING, SJME_MD_CLASS),
+		"L", "L"),
 	SJME_NVM_MLE_DEFINE(classToType,
 		SJME_MD(SJME_MD_CLASS, SJME_MD_CLASS),
 		"L", "L"),
