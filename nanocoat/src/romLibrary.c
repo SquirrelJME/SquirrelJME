@@ -129,6 +129,9 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 	/* Reference for keeping. */
 	if (sjme_error_is(error = sjme_alloc_weakRef(maybe, NULL)))
 		goto fail_countUp;
+
+	/* The library this came from. */
+	maybe->library = inLibrary;
 	
 	/* File name is needed for caching. */
 	maybe->fileName = dupFileName;

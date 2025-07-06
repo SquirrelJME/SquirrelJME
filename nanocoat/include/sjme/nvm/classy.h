@@ -18,9 +18,7 @@
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/stringPool.h"
-#include "sjme/seekable.h"
 #include "sjme/list.h"
-#include "sjme/nvm/descriptor.h"
 #include "sjme/stream.h"
 
 /* Anti-C++. */
@@ -655,6 +653,9 @@ struct sjme_nvm_class_infoBase
 
 	/** Is this an array? */
 	sjme_jboolean isArray;
+
+	/** The library this came from. */
+	sjme_nvm_rom_library library;
 };
 
 /**

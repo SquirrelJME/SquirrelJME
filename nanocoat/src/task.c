@@ -23,6 +23,9 @@
 /** The number of tasks to grow by. */
 #define SJME_NVM_TASK_GROW 4
 
+/** The size to grow the Jar package list by. */
+#define SJME_NVM_TASK_JAR_GROW 32
+
 /** The number of threads to grow by. */
 #define SJME_NVM_THREAD_GROW 8
 
@@ -112,6 +115,81 @@ skip_noPlace:
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_nvm_task_bracketJarPackage(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_jbracketJarPackage* outBracket)
+{
+	sjme_errorCode error;
+	sjme_nvm_task_globals* globals;
+	sjme_list_sjme_jbracketJarPackage* brackets;
+	sjme_jbracketJarPackage result;
+	sjme_jint i, n;
+	
+	if (contextThread == NULL || inLibrary == NULL || outBracket == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* We need the task globals. */
+	globals = &SJME_T_K(contextThread)->globals;
+
+	/* Grab the lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&globals->lock)))
+		return sjme_error_default(error);
+
+	/* Check pre-existing brackets. */
+	result = NULL;
+	brackets = globals->jarBrackets;
+	if (brackets != NULL)
+		for (i = 0, n = brackets->length; i < n; i++)
+			if (inLibrary == brackets->elements[i]->library)
+			{
+				result = brackets->elements[i];
+				break;
+			}
+
+	/* Need to create a new bracket for this library. */
+	if (result == NULL)
+	{
+		/* Initialize bracket. */
+		if (sjme_error_is(error = sjme_nvm_instance_objectNewBracket(
+			contextThread, SJME_NVM_STRUCT_BRACKET_JAR_PACKAGE_INSTANCE,
+			SJME_AS_JOBJECTP(&result))) || result == NULL)
+			goto fail_newBracket;
+
+		/* Set details. */
+		result->library = inLibrary;
+
+		/* Count up library. */
+		if (sjme_error_is(error = sjme_alloc_weakRef(inLibrary, NULL)))
+			goto fail_countUp;
+		
+		/* Cache it into the list. */
+		if (sjme_error_is(error = sjme_list_injectGrow(
+			SJME_T_S(contextThread)->allocPool, SJME_NVM_TASK_JAR_GROW,
+			&brackets, result,
+			sjme_jbracketJarPackage, 0)) || brackets == NULL)
+			goto fail_growList;
+		
+		/* Store new list. */
+		globals->jarBrackets = brackets;
+	}
+	
+	/* Release the lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&globals->lock, NULL)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	*outBracket = result;
+	return SJME_ERROR_NONE;
+
+fail_newBracket:
+fail_countUp:
+fail_growList:
+	sjme_thread_spinLockRelease(&globals->lock, NULL);
+	return sjme_error_default(error);
+}
+
 sjme_errorCode sjme_nvm_task_commonClass(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInRange(0, SJME_NVM_TASK_NUM_COMMON_CLASS)
@@ -144,6 +222,10 @@ sjme_errorCode sjme_nvm_task_commonClass(
 	{
 		case SJME_NVM_TASK_COMMON_CLASS_CLASS:
 			commonName = "Ljava/lang/Class;";
+			break;
+
+		case SJME_NVM_TASK_COMMON_CLASS_JAR_PACKAGE:
+			commonName = "Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;";
 			break;
 		
 		case SJME_NVM_TASK_COMMON_CLASS_OBJECT:
@@ -371,7 +453,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 		/* Must be a trace point. */
 		point = (sjme_jbracketTrace)pointArray->e.l[i];
 		if (!sjme_nvm_isAR(point,
-			SJME_NVM_STRUCT_TRACE_POINT_INSTANCE))
+			SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE))
 			return SJME_ERROR_CLASS_CAST;
 
 		/* Step trace. */

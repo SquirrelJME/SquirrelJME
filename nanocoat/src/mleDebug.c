@@ -47,7 +47,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 		point = (sjme_jbracketTrace)sjme_atomic_sjme_jobject_get(
 			&atFrame->phantomTracePoint);
 		if (point != NULL && sjme_nvm_isAR(point,
-			SJME_NVM_STRUCT_TRACE_POINT_INSTANCE))
+			SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE))
 		{
 			/* If the point's ID is valid for the frame, we do not need */
 			/* to actually recreate it as it still points to the same frame. */
@@ -67,7 +67,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 		/* It needs to be created. */
 		point = NULL;
 		if (sjme_error_is(error = sjme_nvm_instance_objectNewBracket(inThread,
-			SJME_NVM_STRUCT_TRACE_POINT_INSTANCE,
+			SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE,
 			SJME_AS_JOBJECTP(&point))) || point == NULL)
 			goto fail_allocBracket;
 

@@ -106,6 +106,10 @@ extern "C"
 /** Class. */
 #define SJME_MD_CLASS SJME_MD_L("java/lang/Class")
 
+/** Jar package. */
+#define SJME_MD_JAR_PACKAGE \
+	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/JarPackageBracket")
+
 /** Object. */
 #define SJME_MD_OBJECT SJME_MD_L("java/lang/Object")
 

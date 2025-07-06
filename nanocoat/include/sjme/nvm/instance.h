@@ -127,6 +127,15 @@ struct sjme_jthrowableBase
 	sjme_jobjectBase object;
 };
 
+struct sjme_jbracketJarPackageBase
+{
+	/** Object base. */
+	sjme_jobjectBase object;
+
+	/** The library this refers to. */
+	sjme_nvm_rom_library library;
+};
+
 struct sjme_jbracketTraceBase
 {
 	/** Object base. */

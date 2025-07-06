@@ -339,6 +339,9 @@ typedef enum sjme_nvm_task_commonClassId
 	
 	/** @c java.lang.Class . */
 	SJME_NVM_TASK_COMMON_CLASS_CLASS,
+
+	/** @c cc.squirreljme.jvm.mle.brackets.JarPackageBracket . */
+	SJME_NVM_TASK_COMMON_CLASS_JAR_PACKAGE,
 	
 	/** @c java.lang.Object . */
 	SJME_NVM_TASK_COMMON_CLASS_OBJECT,
@@ -392,12 +395,15 @@ typedef enum sjme_nvm_task_commonClassId
 	SJME_NVM_TASK_NUM_COMMON_CLASS
 } sjme_nvm_task_commonClassId;
 
+/** A list of Jar package brackets. */ 
+SJME_LIST_DECLARE(sjme_jbracketJarPackage, 0);
+	
 /**
  * Globals for the task.
  *
  * @since 2025/02/23
  */
-typedef struct sjme_nvm_taskGlobals
+typedef struct sjme_nvm_task_globals
 {
 	/** The lock for global access. */
 	sjme_thread_spinLock lock;
@@ -416,7 +422,10 @@ typedef struct sjme_nvm_taskGlobals
 
 	/** The default accessor for fields. */
 	sjme_nvm_jfieldAccessFunc accessor;
-} sjme_nvm_taskGlobals;
+
+	/** Cached @c sjme_jbracketJarPackage for libraries. */
+	sjme_list_sjme_jbracketJarPackage* jarBrackets;
+} sjme_nvm_task_globals;
 
 typedef enum sjme_nvm_task_threadCountType
 {
@@ -469,7 +478,7 @@ struct sjme_nvm_taskBase
 	sjme_nvm_taskStrings strings;
 
 	/** Globals for the task. */
-	sjme_nvm_taskGlobals globals;
+	sjme_nvm_task_globals globals;
 
 	/** The next frame ID for this task, used for JDWP and debugging. */
 	sjme_atomic_sjme_jint nextFrameId;
@@ -555,6 +564,20 @@ typedef struct sjme_nvm_task_stackTraceState
 	/** The current method. */
 	sjme_nvm_class_methodInfo nowMethod;
 } sjme_nvm_task_stackTraceState;
+
+/**
+ * Returns the @c JarPackageBracket for the given library.
+ * 
+ * @param contextThread The context thread.
+ * @param inLibrary The library to map.
+ * @param outBracket The resultant bracket.
+ * @return Any resultant error, if any.
+ * @since 2025/07/06
+ */
+sjme_errorCode sjme_nvm_task_bracketJarPackage(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_jbracketJarPackage* outBracket);
 	
 /**
  * Loads a cached common class.

@@ -130,6 +130,37 @@ SJME_NVM_MLE_FUNCTION_DECL(findType)
 	return SJME_ERROR_NONE;
 }
 
+SJME_NVM_MLE_FUNCTION_DECL(inJar)
+{
+	sjme_errorCode error;
+	sjme_jclass inType;
+	sjme_nvm_rom_library library;
+
+	/* Must be an actual class type. */
+	inType = (sjme_jclass)argV[0].v.l;
+	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Is there no actual library here? */
+	library = inType->info->library;
+	if (library == NULL)
+	{
+		argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+		argR->v.l = NULL;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Lookup the pre-cached bracket for this library. */
+	if (sjme_error_is(error = sjme_nvm_task_bracketJarPackage(
+		SJME_F_T(inFrame), library, (sjme_jbracketJarPackage*)&argR->v.l)) ||
+		argR->v.l == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* Success! */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(objectType)
 {
 	sjme_jobject object;
@@ -291,9 +322,11 @@ SJME_NVM_MLE_SHELF_DECLARE(TypeShelf) =
 	SJME_NVM_MLE_DEFINE(initClass,
 		SJME_MD(,),
 		""),
+#endif
 	SJME_NVM_MLE_DEFINE(inJar,
-		SJME_MD(,),
-		""),
+		SJME_MD(SJME_MD_JAR_PACKAGE, SJME_MD_CLASS),
+		"L", "L"),
+#if 0
 	SJME_NVM_MLE_DEFINE(interfaces,
 		SJME_MD(,),
 		""),

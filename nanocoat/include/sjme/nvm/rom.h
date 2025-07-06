@@ -36,22 +36,6 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * Standard ROM library structure.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_nvm_rom_libraryBase sjme_nvm_rom_libraryBase;
-
-/** Synthetic library structure. */
-typedef sjme_nvm_rom_libraryBase* sjme_nvm_rom_library;
-
-/** List of ROM libraries. */
-SJME_LIST_DECLARE(sjme_nvm_rom_library, 0);
-
-/** The type ID of ROM libraries. */
-#define SJME_TYPEOF_BASIC_sjme_nvm_rom_library SJME_BASIC_TYPE_ID_OBJECT
-
-/**
  * Functions used to access a single library.
  *
  * @since 2023/12/12

@@ -149,7 +149,13 @@ typedef enum sjme_nvm_structType
 	SJME_NVM_STRUCT_ARRAY_INSTANCE,
 
 	/** Pipe bracket. */
-	SJME_NVM_STRUCT_BRACKET_PIPE,
+	SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE,
+
+	/** A Jar package instance pointer object. */
+	SJME_NVM_STRUCT_BRACKET_JAR_PACKAGE_INSTANCE,
+
+	/** A trace point instance pointer object. */
+	SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE,
 	
 	/** Class information. */
 	SJME_NVM_STRUCT_CLASS_INFO,
@@ -216,9 +222,6 @@ typedef enum sjme_nvm_structType
 	
 	/** A single thread. */
 	SJME_NVM_STRUCT_THREAD,
-
-	/** A trace point instance pointer object. */
-	SJME_NVM_STRUCT_TRACE_POINT_INSTANCE,
 	
 	/** Class loader. */
 	SJME_NVM_STRUCT_VM_CLASS_LOADER,
@@ -513,6 +516,26 @@ struct sjme_nvm_stateBase
  * @since 2025/01/11
  */
 typedef struct sjme_nvm_byteCode_pcNew sjme_nvm_byteCode_pcNew;
+
+/**
+ * Standard ROM library structure.
+ *
+ * @since 2023/12/12
+ */
+typedef struct sjme_nvm_rom_libraryBase sjme_nvm_rom_libraryBase;
+
+/**
+ * Standard ROM library structure.
+ *
+ * @since 2023/12/12
+ */
+typedef sjme_nvm_rom_libraryBase* sjme_nvm_rom_library;
+
+/** List of ROM libraries. */
+SJME_LIST_DECLARE(sjme_nvm_rom_library, 0);
+
+/** The type ID of ROM libraries. */
+#define SJME_TYPEOF_BASIC_sjme_nvm_rom_library SJME_BASIC_TYPE_ID_OBJECT
 
 /** Type size multiplier. */
 extern const sjme_jint sjme_nvm_typeMul[SJME_NUM_BASIC_TYPE_IDS];

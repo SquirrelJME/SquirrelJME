@@ -49,7 +49,8 @@ public final class JarPackageShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native boolean equals(
-		JarPackageBracket __a, JarPackageBracket __b)
+		@NotNull JarPackageBracket __a,
+		@NotNull JarPackageBracket __b)
 		throws MLECallError;
 	
 	/**
