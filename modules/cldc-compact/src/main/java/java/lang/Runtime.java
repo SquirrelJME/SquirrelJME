@@ -17,7 +17,7 @@ import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
+import cc.squirreljme.runtime.cldc.io.PipeOutputStream;
 import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
 import java.io.PrintStream;
 import org.jetbrains.annotations.Contract;
@@ -82,8 +82,7 @@ public class Runtime
 				TracePointBracket[] trace = DebugShelf.traceStack();
 				CallTraceUtils.printStackTrace(new PrintStream(
 						new NonClosedOutputStream(
-							new ConsoleOutputStream(StandardPipeType.STDERR,
-								true))),
+							PipeOutputStream.stdErr())),
 					"EXIT", trace,
 					null, null, 0);
 			}

@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator.terminal;
 
 import cc.squirreljme.emulator.MLECallWouldFail;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.io.ByteDeque;
 
@@ -56,6 +57,17 @@ public final class BufferTerminalPipe
 			if (this._closed)
 				throw new IOException("Cannot flush closed buffer pipe.");
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/07/06
+	 */
+	@Override
+	public int read()
+		throws IOException, MLECallWouldFail
+	{
+		throw new MLECallWouldFail("WOWO");
 	}
 	
 	/**

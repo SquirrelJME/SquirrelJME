@@ -41,6 +41,20 @@ public interface TerminalPipe
 		throws IOException;
 	
 	/**
+	 * Reads a single byte from the given pipe.
+	 * 
+	 * @return The value of the given byte or EOF.
+	 * @throws IOException On read errors.
+	 * @throws MLECallWouldFail If the offset and/or length are
+	 * negative or exceed the array bounds or on null arguments.
+	 * @since 2020/07/06
+	 */
+	int read()
+		throws IOException, MLECallWouldFail;
+	
+	/**
+	 * Reads from the given pipe.
+	 * 
 	 * @param __b The buffer.
 	 * @param __o The offset into the buffer.
 	 * @param __l The length.

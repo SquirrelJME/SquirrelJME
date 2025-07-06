@@ -168,6 +168,8 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilBracket")
 #define DESC_PENCILFONT \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilFontBracket")
+#define DESC_PIPE \
+	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PipeBracket")
 #define DESC_MIDIPORT \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/MidiPortBracket")
 

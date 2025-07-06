@@ -21,7 +21,7 @@
 #define JARSHELF_LIBRARIES_DESC "()[Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"
 #define JARSHELF_LIBRARYID_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)I"
 #define JARSHELF_LIBRARYPATH_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)Ljava/lang/String;"
-#define JARSHELF_OPENRESOURCE_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;Ljava/lang/String;)Ljava/io/InputStream;"
+#define JARSHELF_OPENRESOURCE_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;Ljava/lang/String;)Lcc/squirreljme/jvm/mle/brackets/PipeBracket;"
 #define JARSHELF_PREFIXCODE_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)I"
 #define JARSHELF_RAWDATA_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;I[BII)I"
 #define JARSHELF_RAWSIZE_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)I"
@@ -60,11 +60,11 @@ JNIEXPORT jobject JNICALL Impl_mle_JarShelf_libraryPath(JNIEnv* env,
 		jar);
 }
 
-JNIEXPORT jobject JNICALL Impl_mle_JarShelf_openResource(JNIEnv* env,
+JNIEXPORT jobject JNICALL Impl_mle_JarShelf_openResourcePipe(JNIEnv* env,
 	jclass classy, jobject jar, jobject rcName)
 {
 	return forwardCallStaticObject(env, JARSHELF_CLASSNAME,
-		"openResource", JARSHELF_OPENRESOURCE_DESC,
+		"openResourcePipe", JARSHELF_OPENRESOURCE_DESC,
 		jar, rcName);
 }
 
@@ -100,7 +100,7 @@ static const JNINativeMethod mleJarMethods[] =
 	{"libraries", JARSHELF_LIBRARIES_DESC, (void*)Impl_mle_JarShelf_libraries},
 	{"libraryId", JARSHELF_LIBRARYID_DESC, (void*)Impl_mle_JarShelf_libraryId},
 	{"libraryPath", JARSHELF_LIBRARYPATH_DESC, (void*)Impl_mle_JarShelf_libraryPath},
-	{"openResource", JARSHELF_OPENRESOURCE_DESC, (void*)Impl_mle_JarShelf_openResource},
+	{"openResourcePipe", JARSHELF_OPENRESOURCE_DESC, (void*)Impl_mle_JarShelf_openResourcePipe},
 	{"prefixCode", JARSHELF_PREFIXCODE_DESC, (void*)Impl_mle_JarShelf_prefixCode},
 	{"rawData", JARSHELF_RAWDATA_DESC, (void*)Impl_mle_JarShelf_rawData},
 	{"rawSize", JARSHELF_RAWSIZE_DESC, (void*)Impl_mle_JarShelf_rawSize},

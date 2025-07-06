@@ -23,7 +23,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
-import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
+import cc.squirreljme.runtime.cldc.io.PipeOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -47,15 +47,13 @@ public final class System
 	@Api
 	public static final PrintStream err =
 		new __CanSetPrintStream__(new PrintStream(
-			new ConsoleOutputStream(StandardPipeType.STDERR,
-				true), true));
+			PipeOutputStream.stdErr(), true));
 	
 	/** Standard output stream (stdout). */
 	@Api
 	public static final PrintStream out =
 		new __CanSetPrintStream__(new PrintStream(
-			new ConsoleOutputStream(StandardPipeType.STDOUT,
-				false), true));
+			PipeOutputStream.stdOut(), true));
 	
 	/**
 	 * Not used.

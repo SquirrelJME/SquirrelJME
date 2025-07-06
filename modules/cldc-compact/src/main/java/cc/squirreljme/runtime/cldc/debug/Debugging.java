@@ -19,7 +19,7 @@ import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.PrintVersion;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
+import cc.squirreljme.runtime.cldc.io.PipeOutputStream;
 import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.IOException;
@@ -274,9 +274,7 @@ public final class Debugging
 				// possibly get trashed
 				TracePointBracket[] trace = DebugShelf.traceStack();
 				CallTraceUtils.printStackTrace(new PrintStream(
-					new NonClosedOutputStream(
-					new ConsoleOutputStream(StandardPipeType.STDERR,
-						true))),
+					new NonClosedOutputStream(PipeOutputStream.stdErr())),
 					"INCOMPLETE CODE", trace,
 					null, null, 0);
 					
@@ -327,8 +325,7 @@ public final class Debugging
 				
 				// Try to print the trace
 				CallTraceUtils.printStackTrace(
-					new ConsoleOutputStream(StandardPipeType.STDERR,
-						true),
+					PipeOutputStream.stdErr(),
 					t, 0);
 			}
 			

@@ -287,8 +287,14 @@ public enum MLEDispatcher
 		
 		// Use the class name
 		if (__arg instanceof Class)
-			return "L" + ((Class)__arg).getName()
+		{
+			Class<?> classy = (Class<?>)__arg;
+			if (classy.isArray())
+				return "[" + MLEDispatcher.__methodArg(
+					classy.getComponentType());
+			return "L" + (classy).getName()
 				.replace('.', '/') + ";";
+		}
 		
 		// Otherwise treat as a string
 		return (String)__arg;

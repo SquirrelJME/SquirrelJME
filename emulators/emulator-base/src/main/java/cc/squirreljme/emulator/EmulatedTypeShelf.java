@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator;
 
+import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -137,8 +138,8 @@ public class EmulatedTypeShelf
 		// which Jar a class is in... at least via resource
 		for (JarPackageBracket library : EmulatedJarPackageShelf.libraries())
 		{
-			try (InputStream in = EmulatedJarPackageShelf
-				.openResource(library, fileName))
+			try (InputStream in = JarPackageShelf.openResource(
+				library, fileName))
 			{
 				// If the resource was opened, then we have this
 				if (in != null)

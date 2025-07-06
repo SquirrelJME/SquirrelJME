@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
@@ -51,12 +52,18 @@ public class EmulatedJarPackageBracket
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/31
 	 */
-	public InputStream openResource(String __rc)
+	public PipeBracket openResource(String __rc)
 		throws NullPointerException
 	{
 		try
 		{
-			return this.vmLib.resourceAsStream(__rc);
+			// The resource might not actually exist
+			InputStream stream = this.vmLib.resourceAsStream(__rc);
+			if (stream == null)
+				return null;
+			
+			// This just gets wrapped in a pipe
+			return new EmulatedPipeBracket(stream);
 		}
 		catch (IOException e)
 		{

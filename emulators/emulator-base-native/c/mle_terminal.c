@@ -18,6 +18,7 @@
 #define TERMINAL_CLOSE_DESC "(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;)I"
 #define TERMINAL_FLUSH_DESC "(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;)I"
 #define TERMINAL_FROMSTANDARD_DESC "(I)Lcc/squirreljme/jvm/mle/brackets/PipeBracket;"
+#define TERMINAL_READ_SINGLE_DESC DESC_METHOD(DESC_INT, DESC_PIPE)
 #define TERMINAL_READIABIII_DESC "(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;[BII)I"
 #define TERMINAL_WRITEIII_DESC "(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;I)I"
 #define TERMINAL_WRITEIABIII_DESC "(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;[BII)I"
@@ -54,6 +55,14 @@ JNIEXPORT jobject JNICALL Impl_mle_TerminalShelf_fromStandard(JNIEnv* env,
 		fd);
 }
 
+JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_readSingle(
+	JNIEnv* env, jclass classy, jobject fd)
+{
+	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
+		"read", TERMINAL_READ_SINGLE_DESC,
+		fd);
+}
+
 JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_readIABIII(
 	JNIEnv* env, jclass classy, jobject fd, jbyteArray buf, jint off, jint len)
 {
@@ -84,6 +93,8 @@ static const JNINativeMethod mleTerminalMethods[] =
 	{"close", TERMINAL_CLOSE_DESC, (void*)Impl_mle_TerminalShelf_close},
 	{"flush", TERMINAL_FLUSH_DESC, (void*)Impl_mle_TerminalShelf_flush},
 	{"fromStandard", TERMINAL_FROMSTANDARD_DESC, (void*)Impl_mle_TerminalShelf_fromStandard},
+	{"read", TERMINAL_READ_SINGLE_DESC,
+		(void*)Impl_mle_TerminalShelf_readSingle},
 	{"read", TERMINAL_READIABIII_DESC, (void*)Impl_mle_TerminalShelf_readIABIII},
 	{"write", TERMINAL_WRITEIII_DESC, (void*)Impl_mle_TerminalShelf_writeII},
 	{"write", TERMINAL_WRITEIABIII_DESC, (void*)Impl_mle_TerminalShelf_writeIABIII},

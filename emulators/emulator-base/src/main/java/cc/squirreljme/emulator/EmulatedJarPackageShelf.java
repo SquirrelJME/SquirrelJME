@@ -12,6 +12,7 @@ package cc.squirreljme.emulator;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -169,7 +170,7 @@ public final class EmulatedJarPackageShelf
 	 * specified.
 	 * @since 2020/10/31
 	 */
-	public static InputStream openResource(JarPackageBracket __jar,
+	public static PipeBracket openResourcePipe(JarPackageBracket __jar,
 		String __rc)
 		throws MLECallError
 	{
@@ -195,8 +196,8 @@ public final class EmulatedJarPackageShelf
 			throw new MLECallError("Null Jar");
 		
 		// Open manifest
-		try (InputStream in = ((EmulatedJarPackageBracket)__jar)
-			.openResource("META-INF/MANIFEST.MF"))
+		try (InputStream in = JarPackageShelf.openResource(__jar,
+			"META-INF/MANIFEST.MF"))
 		{
 			if (in == null)
 				return -1;

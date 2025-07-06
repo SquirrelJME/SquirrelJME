@@ -13,50 +13,27 @@ import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * This provides an output stream which writes to a console file descriptor.
+ * This is an output stream which can write to a {@link PipeBracket}.
  *
- * @see StandardPipeType
- * @see TerminalShelf
  * @since 2018/12/08
  */
-public final class ConsoleOutputStream
+@SquirrelJMEVendorApi
+public class PipeOutputStream
 	extends OutputStream
 	implements Appendable
 {
 	/** the file descriptor to write to. */
+	@SquirrelJMEVendorApi
 	protected final PipeBracket pipe;
 	
 	/** Is the output always flushed? */
+	@SquirrelJMEVendorApi
 	protected final boolean alwaysFlush;
-	
-	/**
-	 * Initializes the output stream.
-	 *
-	 * @param __fd The {@link StandardPipeType} to write to.
-	 * @param __alwaysFlush Is the pipe to be always flushed?
-	 * @throws IllegalArgumentException If the pipe is not valid.
-	 * @deprecated Use {@link PipeBracket} and otherwise.
-	 * @since 2018/12/08
-	 */
-	@Deprecated
-	public ConsoleOutputStream(int __fd, boolean __alwaysFlush)
-		throws IllegalArgumentException
-	{
-		try
-		{
-			this.pipe = TerminalShelf.fromStandard(__fd);
-			this.alwaysFlush = __alwaysFlush;
-		}
-		catch (MLECallError e)
-		{
-			/* {@squirreljme.error ZZ5g The standard pipe is not valid.} */
-			throw new IllegalArgumentException("ZZ5g", e);
-		}
-	}
 	
 	/**
 	 * Writes to the given output pipe.
@@ -66,7 +43,8 @@ public final class ConsoleOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/03/19
 	 */
-	public ConsoleOutputStream(PipeBracket __pipe, boolean __alwaysFlush)
+	@SquirrelJMEVendorApi
+	public PipeOutputStream(PipeBracket __pipe, boolean __alwaysFlush)
 		throws NullPointerException
 	{
 		if (__pipe == null)
@@ -208,6 +186,32 @@ public final class ConsoleOutputStream
 		// Always flush to force printing
 		if (this.alwaysFlush)
 			this.flush();
+	}
+	
+	/**
+	 * Returns the piped output to standard error. 
+	 *
+	 * @return The output stream for standard error.
+	 * @since 2025/07/06
+	 */
+	@SquirrelJMEVendorApi
+	public static PipeOutputStream stdErr()
+	{
+		return new PipeOutputStream(TerminalShelf.fromStandard(
+			StandardPipeType.STDERR), true);
+	}
+	
+	/**
+	 * Returns the piped output to standard output. 
+	 *
+	 * @return The output stream for standard output.
+	 * @since 2025/07/06
+	 */
+	@SquirrelJMEVendorApi
+	public static PipeOutputStream stdOut()
+	{
+		return new PipeOutputStream(TerminalShelf.fromStandard(
+			StandardPipeType.STDOUT), true);
 	}
 }
 

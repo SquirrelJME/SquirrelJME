@@ -7,29 +7,48 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot;
+package cc.squirreljme.runtime.cldc.io;
 
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * This is an input stream which handles standard input in SquirrelJME.
+ * This is an input stream which reads from a {@link PipeBracket}.
  * 
  * This class is specific to SquirrelJME as Java ME lacks standard input of
  * any kind.
  *
  * @since 2020/11/22
  */
-public final class StandardInputStream
+@SquirrelJMEVendorApi
+public class PipeInputStream
 	extends InputStream
 {
-	/** Standard input pipe bracket. */
-	final PipeBracket _in =
-		TerminalShelf.fromStandard(StandardPipeType.STDIN);
+	/** The pipe to read from. */
+	@SquirrelJMEVendorApi
+	protected final PipeBracket pipe;
+	
+	/**
+	 * Initializes the pipe reader.
+	 *
+	 * @param __pipe The pipe to read from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/07/06
+	 */
+	@SquirrelJMEVendorApi
+	public PipeInputStream(PipeBracket __pipe)
+		throws NullPointerException
+	{
+		if (__pipe == null)
+			throw new NullPointerException("NARG");
+		
+		this.pipe = __pipe;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -39,21 +58,20 @@ public final class StandardInputStream
 	public int available()
 		throws IOException
 	{
-		return StandardInputStream.__checkError(
-			TerminalShelf.available(this._in), false);
+		return PipeInputStream.__checkError(
+			TerminalShelf.available(this.pipe), false);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/11/22
 	 */
-	@SuppressWarnings("ResultOfMethodCallIgnored")
 	@Override
 	public void close()
 		throws IOException
 	{
-		StandardInputStream.__checkError(
-			TerminalShelf.close(this._in), false);
+		PipeInputStream.__checkError(
+			TerminalShelf.close(this.pipe), false);
 	}
 	
 	/**
@@ -64,23 +82,9 @@ public final class StandardInputStream
 	public int read()
 		throws IOException
 	{
-		for (byte[] buf = new byte[1];;)
-		{
-			// Read single byte
-			int code = StandardInputStream.__checkError(
-				TerminalShelf.read(this._in, buf, 0, 1),
-				true);
-			
-			// Read nothing?
-			if (code == 0)
-				continue;
-			
-			// EOF?
-			if (code == PipeErrorType.END_OF_FILE)
-				return -1;
-			
-			return buf[0] & 0xFF;
-		}
+		// Read single byte
+		return PipeInputStream.__checkError(
+			TerminalShelf.read(this.pipe), true);
 	}
 	
 	/**
@@ -91,6 +95,9 @@ public final class StandardInputStream
 	public int read(byte[] __b)
 		throws IOException
 	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
 		return this.read(__b, 0, __b.length);
 	}
 	
@@ -107,8 +114,8 @@ public final class StandardInputStream
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 	
-		return StandardInputStream.__checkError(
-			TerminalShelf.read(this._in, __b, __o,
+		return PipeInputStream.__checkError(
+			TerminalShelf.read(this.pipe, __b, __o,
 				__l), true);
 	}
 	
@@ -135,5 +142,18 @@ public final class StandardInputStream
 		}
 		
 		return __code;
+	}
+	
+	/**
+	 * Opens a pipe stream from standard input.
+	 *
+	 * @return The resultant pipe.
+	 * @since 2025/07/06
+	 */
+	@SquirrelJMEVendorApi
+	public static PipeInputStream stdIn()
+	{
+		return new PipeInputStream(
+			TerminalShelf.fromStandard(StandardPipeType.STDIN));
 	}
 }

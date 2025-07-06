@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator.terminal;
 
 import cc.squirreljme.emulator.MLECallWouldFail;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -83,6 +84,17 @@ public final class RealTerminalPipe
 			
 			this.out.flush();
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/07/06
+	 */
+	@Override
+	public int read()
+		throws IOException, MLECallWouldFail
+	{
+		throw new MLECallWouldFail("Cannot read a real pipe.");
 	}
 	
 	/**

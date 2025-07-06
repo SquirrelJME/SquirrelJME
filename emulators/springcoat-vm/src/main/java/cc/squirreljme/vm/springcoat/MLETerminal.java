@@ -13,6 +13,7 @@ import cc.squirreljme.emulator.MLECallWouldFail;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.PipeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.io.IOException;
@@ -39,9 +40,15 @@ public enum MLETerminal
 			{
 				MLEObjects.pipe(__args[0]).pipe.close();
 				
-				return null;
+				return PipeErrorType.NO_ERROR;
 			}
-			catch (IOException|MLECallWouldFail e)
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				
+				return PipeErrorType.IO_EXCEPTION;
+			}
+			catch (MLECallWouldFail e)
 			{
 				throw new SpringMLECallError(e.getMessage(), e);
 			}
@@ -64,7 +71,13 @@ public enum MLETerminal
 				
 				return PipeErrorType.NO_ERROR;
 			}
-			catch (IOException|MLECallWouldFail e)
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				
+				return PipeErrorType.IO_EXCEPTION;
+			}
+			catch (MLECallWouldFail e)
 			{
 				throw new SpringMLECallError(e.getMessage(), e);
 			}
@@ -94,6 +107,65 @@ public enum MLETerminal
 		}
 	}, 
 	
+	/** {@link TerminalShelf#read(PipeBracket)}. */
+	READ_SINGLE(MLEDispatcher.methodKey("read", "I",
+		PipeBracket.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/07/06
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				return MLEObjects.pipe(__args[0]).pipe.read();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				
+				return PipeErrorType.IO_EXCEPTION;
+			}
+			catch (MLECallWouldFail e)
+			{
+				throw new SpringMLECallError(e.getMessage(), e);
+			}
+		}
+	},
+	
+	/** {@link TerminalShelf#read(PipeBracket, byte[], int, int)}. */
+	READ_MULTIPLE(MLEDispatcher.methodKey("read", "I",
+		PipeBracket.class, "[B", "I", "I"))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/07/06
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				return MLEObjects.pipe(__args[0]).pipe
+					.read(MLEObjects.byteArray(__args[1]),
+					(int)__args[2],
+					(int)__args[3]);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				
+				return PipeErrorType.IO_EXCEPTION;
+			}
+			catch (MLECallWouldFail e)
+			{
+				throw new SpringMLECallError(e.getMessage(), e);
+			}
+		}
+	},
+	
 	/** {@link TerminalShelf#write(PipeBracket, int)}. */
 	WRITE_BYTE("write:(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;I)I")
 	{
@@ -111,7 +183,13 @@ public enum MLETerminal
 				
 				return 1;
 			}
-			catch (IOException|MLECallWouldFail e)
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				
+				return PipeErrorType.IO_EXCEPTION;
+			}
+			catch (MLECallWouldFail e)
 			{
 				throw new SpringMLECallError(e.getMessage(), e);
 			}
@@ -142,7 +220,13 @@ public enum MLETerminal
 					.write(buf.array(), off, len);
 				return len;
 			}
-			catch (IOException|MLECallWouldFail e)
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				
+				return PipeErrorType.IO_EXCEPTION;
+			}
+			catch (MLECallWouldFail e)
 			{
 				throw new SpringMLECallError(e.getMessage(), e);
 			}
