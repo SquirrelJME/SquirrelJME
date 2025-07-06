@@ -11,7 +11,11 @@
 
 #if defined(SJME_CONFIG_HAS_OS_POSIX)
 	#include <locale.h>
-	#include <langinfo.h>
+
+	/* Android does not have langinfo. */
+	#if !defined(SJME_CONFIG_HAS_OS_ANDROID)
+		#include <langinfo.h>
+	#endif
 #endif
 
 #include "sjme/nvm/mle.h"
@@ -50,6 +54,9 @@ SJME_NVM_MLE_FUNCTION_DECL(encoding)
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#elif defined(SJME_CONFIG_HAS_OS_ANDROID)
+	/* Android only does UTF-8. */
+	encoding = SJME_NVM_MLE_ENCODING_UTF8;
 #elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	/* Get the base global locale. */
 	set = setlocale(LC_ALL, "");

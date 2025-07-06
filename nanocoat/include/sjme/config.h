@@ -177,6 +177,9 @@ extern "C" {
 #elif defined(SDCC) || defined(__SDCC)
 	/** Baremetal system. */
 	#define SJME_CONFIG_HAS_OS_BAREMETAL
+#elif defined(__ANDROID__) || defined(__ANDROID_API__)
+	/** Android is available. */
+	#define SJME_CONFIG_HAS_OS_ANDROID
 #elif defined(__linux__) || defined(linux) || defined(__linux)
 	/** Linux is available. */
 	#define SJME_CONFIG_HAS_OS_LINUX
@@ -233,7 +236,8 @@ extern "C" {
 	#define SJME_CONFIG_HAS_OS_PC_DOS
 #endif
 
-#if defined(SJME_CONFIG_HAS_OS_BSD) || \
+#if defined(SJME_CONFIG_HAS_OS_ANDROID) || \
+	defined(SJME_CONFIG_HAS_OS_BSD) || \
 	defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
 	defined(SJME_CONFIG_HAS_OS_LINUX) || \
 	defined(SJME_CONFIG_HAS_OS_MACOS) || \
