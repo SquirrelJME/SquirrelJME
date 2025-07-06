@@ -495,7 +495,7 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	stack->order[stack->orderTop++] = inValue->t;
 	if (isWide)
 		stack->order[stack->orderTop++] = SJME_JAVA_TYPE_ID_VOID;
-
+	
 	/* Take slot in the per-type stack. */
 	at = perType->top++;
 	

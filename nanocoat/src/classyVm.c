@@ -1026,6 +1026,8 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_list_sjme_jfieldID* fieldBinds;
 	sjme_jint allocSize;
 	sjme_javaTypeId javaType;
+	sjme_jmethodID staticInit;
+	sjme_nvm_frame ignoreFrame;
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1254,12 +1256,21 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
 			classType, contextThread)))
 			goto fail_initClassType;
-	
-#if 0
+
 	/* Call static constructor, if one exists. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
+	staticInit = NULL;
+	if (!sjme_error_is(sjme_nvm_vmClass_methodIDByNameTypeU(
+		inClass, contextThread, SJME_NVM_CLASS_MEMBER_STATIC,
+		SJME_JNI_FALSE, "<clinit>", "()V",
+		&staticInit)) && staticInit != NULL)
+	{
+		/* Enter the initializer and let it run. */
+		ignoreFrame = NULL;
+		if (sjme_error_is(error = sjme_nvm_task_threadEnter(contextThread,
+			&ignoreFrame, staticInit, SJME_NVM_CLASS_MEMBER_STATIC,
+			0, NULL)))
+			goto fail_runStaticInit;
+	}
 
 	/* Success! */
 skip_doubleCalled:
@@ -1284,6 +1295,7 @@ fail_findSuper:
 fail_findClassType:
 fail_releaseLock:
 fail_checkLoad:
+fail_runStaticInit:
 	/* Cache load error. */
 	sjme_atomic_sjme_jint_compareSet(&inClass->error,
 		SJME_ERROR_NONE, sjme_error_default(error));

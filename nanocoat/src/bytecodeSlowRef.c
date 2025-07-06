@@ -92,7 +92,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		instance = argV[0].v.l;
 		if (instance == NULL)
 			return sjme_error_vmError(inFrame,
-				SJME_ERROR_INVALID_REFERENCE_POP);
+				SJME_ERROR_NULL_STACK_POINTER);
 		
 		/* Must be the same or a compatible class as the call site. */
 		if (!sjme_nvm_vmClass_isAssignableFrom(
