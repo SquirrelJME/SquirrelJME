@@ -371,6 +371,12 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		if (thisInfo->flags.member.isStatic != wantStatic)
 			continue;
 		
+		/* Instance initializers never get copied. */
+		if (wantStatic && thisInfo->bits.isStaticInit &&
+			!sjme_charSeq_equalsR(thisClass->info->name->seq,
+				found->name->seq))
+			continue;
+		
 		/* If the current scan is final, then oops! */
 		if (thisScan != NULL && thisScan->flags.member.final)
 			goto fail_changed;
@@ -1267,7 +1273,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		/* Enter the initializer and let it run. */
 		ignoreFrame = NULL;
 		if (sjme_error_is(error = sjme_nvm_task_threadEnter(contextThread,
-			&ignoreFrame, staticInit, SJME_NVM_CLASS_MEMBER_STATIC,
+			&ignoreFrame, staticInit, SJME_NVM_CALL_NON_VIRTUAL,
 			0, NULL)))
 			goto fail_runStaticInit;
 	}
@@ -2277,8 +2283,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 		/* There must be a valid method here. */
 		method = methods->elements[i];
 		if (method == NULL)
-			return sjme_error_vmError(contextThread,
-				SJME_ERROR_NO_METHOD);
+			continue;
 			
 		/* Check against the hash, which is faster. */
 		if (method->member.idHash != wantHash)
@@ -2288,6 +2293,11 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 		if (sjme_charSeq_equalsR(SJME_M_N(method)->seq, inName) &&
 			sjme_charSeq_equalsR(SJME_M_T(method)->seq, inType))
 		{
+			/* Do not grab a static initializer for another class. */
+			if (method->bits.isStaticInit &&
+				method->member.inClass != inClass)
+				continue;
+			
 			*outID = method;
 			return SJME_ERROR_NONE;
 		}

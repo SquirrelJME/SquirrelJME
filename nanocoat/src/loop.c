@@ -240,6 +240,10 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		if (sjme_error_is(error = lutFunc(currentFrame, iv, ev, &pcNew)))
 			goto fail_any;
 
+		/* If recycling, do not actually make any progress, just re-run. */
+		if (pcNew.type == SJME_NVM_BYTECODE_PC_RECYCLE)
+			continue;
+
 		/* Has an exception been thrown? */
 		tossed = sjme_atomic_sjme_jobject_get(&inThread->tossed);
 skip_thrown:

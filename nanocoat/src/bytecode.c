@@ -890,6 +890,20 @@ sjme_errorCode sjme_nvm_byteCode_calcLength(
 	return SJME_ERROR_NONE;
 }
 
+sjme_jboolean sjme_nvm_byteCode_checkRecycleR(
+	sjme_attrInNullable sjme_nvm_frame basisFrame)
+{
+	sjme_nvm_thread inThread;
+	
+	if (basisFrame == NULL)
+		return SJME_JNI_FALSE;
+
+	/* This occurs if this is no longer the top-most frame, this will */
+	/* happen for example if a static constructor was called. */
+	inThread = SJME_F_T(basisFrame);
+	return basisFrame != inThread->frames->elements[inThread->numFrames - 1];
+}
+
 sjme_errorCode sjme_nvm_byteCode_illegalInstruction(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, 256) sjme_byteCode id,

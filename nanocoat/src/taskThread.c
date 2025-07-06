@@ -155,11 +155,14 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 			SJME_ERROR_ARGUMENT_COUNT_MISMATCH);
 
 	/* Argument type mismatch? */
-	argVParam = (!isStatic ? &argV[1] : argV);
-	for (i = 0, n = targetInfo->argC; i < n; i++)
-		if (argVParam[i].t != targetInfo->argT[i])
-			return sjme_error_vmError(inThread,
-				SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
+	if (argV != NULL)
+	{
+		argVParam = (!isStatic ? &argV[1] : argV);
+		for (i = 0, n = targetInfo->argC; i < n; i++)
+			if (argVParam[i].t != targetInfo->argT[i])
+				return sjme_error_vmError(inThread,
+					SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
+	}
 
 	/* If non-static, first must be a valid object. */
 	if (!isStatic)
@@ -193,7 +196,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	/* If static, refer to the class, otherwise refer to the instance. */
 	if (inMethod->flags.member.isStatic)
 		result->instance = SJME_AS_JOBJECT(result->inClass);
-	else
+	else if (argV != NULL)
 		result->instance = argV[0].v.l;
 
 	/* Used for final field setting. */
@@ -207,18 +210,19 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		result->parent = inThread->frames->elements[inThread->numFrames - 1];
 	
 	/* Setup initial locals, which are copied in from arguments. */
-	for (i = 0, dx = 0, n = argC; i < n; i++, dx++)
-	{
-		/* Set local value. */
-		if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
-			result, dx, &argV[i])))
-			return sjme_error_vmError(inThread, error);
-		
-		/* Move wide values up twice. */
-		if (argV[i].t == SJME_JAVA_TYPE_ID_LONG ||
-			argV[i].t == SJME_JAVA_TYPE_ID_DOUBLE)
-			dx++;
-	}
+	if (argV != NULL)
+		for (i = 0, dx = 0, n = argC; i < n; i++, dx++)
+		{
+			/* Set local value. */
+			if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
+				result, dx, &argV[i])))
+				return sjme_error_vmError(inThread, error);
+			
+			/* Move wide values up twice. */
+			if (argV[i].t == SJME_JAVA_TYPE_ID_LONG ||
+				argV[i].t == SJME_JAVA_TYPE_ID_DOUBLE)
+				dx++;
+		}
 	
 	/* Set frame as active. */
 	inThread->numFrames++;

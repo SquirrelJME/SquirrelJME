@@ -685,6 +685,13 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		SJME_P_M_C(entry)->seq,
 		SJME_JNI_TRUE)) || refClass == NULL)
 		return sjme_error_vmError(inFrame, error);
+
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
 	
 	/* Lookup target method. */
 	target = NULL;
@@ -1027,7 +1034,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jclass desireClass;
 	sjme_jfieldID fieldId;
-	sjme_jvalueTyped result;
+	sjme_jvalueTyped value;
 	sjme_jboolean isPut;
 	SJME_NVM_BYTECODE_ENTRY;
 
@@ -1074,7 +1081,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 			SJME_ERROR_CLASS_CHANGED);
 	
 	/* Read in value to put. */
-	memset(&result, 0, sizeof(result));
+	memset(&value, 0, sizeof(value));
 	if (isPut)
 	{
 		/* Cannot be final unless we are in a static initializer. */
@@ -1098,22 +1105,22 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 
 		/* Read in the value to write. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			fieldId->javaType, &result)))
+			fieldId->javaType, &value)))
 			return sjme_error_vmError(inFrame, error);
 	}
 	
 	/* Read/write promotion. */
 	if (sjme_error_is(error = sjme_nvm_instance_fieldAccessStack(
 		SJME_F_T(inFrame),
-		fieldId, SJME_AS_JOBJECT(desireClass), &result, isPut)))
+		fieldId, SJME_AS_JOBJECT(desireClass), &value, isPut)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Push result to the stack. */
 	if (!isPut)
 	{
-		result.t = fieldId->javaType;
+		value.t = fieldId->javaType;
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-			inFrame, &result)))
+			inFrame, &value)))
 			return sjme_error_vmError(inFrame, error);
 	}
 	

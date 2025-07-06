@@ -727,8 +727,11 @@ typedef enum sjme_nvm_byteCode_pcNewType
 	/** Absolute address. */
 	SJME_NVM_BYTECODE_PC_ABSOLUTE = 2,
 
+	/** Recycle the current operation, do nothing yet! */
+	SJME_NVM_BYTECODE_PC_RECYCLE = 3,
+
 	/** The number of types. */
-	SJME_NVM_BYTECODE_NUM_PC_NEW_TYPE = 3,
+	SJME_NVM_BYTECODE_NUM_PC_NEW_TYPE = 4,
 } sjme_nvm_byteCode_pcNewType;
 
 struct sjme_nvm_byteCode_pcNew
@@ -834,6 +837,19 @@ sjme_errorCode sjme_nvm_byteCode_calcLength(
 	sjme_attrInRange(0, 256) sjme_byteCode id,
 	sjme_attrInNotNull sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew);
+
+/**
+ * Checks if a recycle eligible event has occurred, a recycle is when the
+ * byte code should be re-executed and no progression is made. This would be
+ * the case if a method frame should be entered but another method such
+ * as a static initializer must complete first.
+ * 
+ * @param basisFrame The basis frame to check from.
+ * @return The resultant value.
+ * @since 2025/07/05
+ */
+sjme_jboolean sjme_nvm_byteCode_checkRecycleR(
+	sjme_attrInNullable sjme_nvm_frame basisFrame);
 	
 /**
  * Represents an instruction that is not legal.
