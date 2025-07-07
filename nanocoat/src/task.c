@@ -231,6 +231,10 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		case SJME_NVM_TASK_COMMON_CLASS_OBJECT:
 			commonName = "Ljava/lang/Object;";
 			break;
+
+		case SJME_NVM_TASK_COMMON_CLASS_PIPE:
+			commonName = "Lcc/squirreljme/jvm/mle/brackets/PipeBracket;";
+			break;
 	
 		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BOOLEAN:
 			commonName = "Z";

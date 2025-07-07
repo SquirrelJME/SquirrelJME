@@ -597,6 +597,11 @@ sjme_errorCode sjme_nvm_instance_objectNewBracket(
 			commonId = SJME_NVM_TASK_COMMON_CLASS_JAR_PACKAGE;
 			allocSize = sizeof(sjme_jbracketJarPackageBase);
 			break;
+
+		case SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE:
+			commonId = SJME_NVM_TASK_COMMON_CLASS_PIPE;
+			allocSize = sizeof(sjme_jbracketPipeBase);
+			break;
 		
 		case SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE:
 			commonId = SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT;

@@ -345,6 +345,9 @@ typedef enum sjme_nvm_task_commonClassId
 	
 	/** @c java.lang.Object . */
 	SJME_NVM_TASK_COMMON_CLASS_OBJECT,
+
+	/** @c cc.squirreljme.jvm.mle.brackets.PipeBracket . */
+	SJME_NVM_TASK_COMMON_CLASS_PIPE,
 	
 	/** @c boolean . */
 	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BOOLEAN,
@@ -409,7 +412,7 @@ typedef struct sjme_nvm_task_globals
 	sjme_thread_spinLock lock;
 
 	/** The standard pipes for standard IO. */
-	sjme_nvm_mle_pipe stdPipes[SJME_NVM_MLE_NUM_STD_PIPES];
+	sjme_jbracketPipe stdPipes[SJME_NVM_MLE_NUM_STD_PIPES];
 
 	/** Main class name to start in. */
 	sjme_jstring mainClassName;

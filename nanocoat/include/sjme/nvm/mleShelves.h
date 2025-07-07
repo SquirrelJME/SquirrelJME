@@ -114,7 +114,8 @@ extern "C"
 #define SJME_MD_OBJECT SJME_MD_L("java/lang/Object")
 
 /** Pipe descriptor. */
-#define SJME_MD_PIPE SJME_MD_L(SJME_NVM_BRACKET_NAME_PIPE)
+#define SJME_MD_PIPE \
+	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/PipeBracket")
 
 /** Reference. */
 #define SJME_MD_REFERENCE SJME_MD_L("java/lang/ref/Reference")

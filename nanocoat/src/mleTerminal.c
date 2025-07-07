@@ -37,10 +37,10 @@ SJME_NVM_MLE_FUNCTION_DECL(close)
 SJME_NVM_MLE_FUNCTION_DECL(flush)
 {
 	sjme_errorCode error;
-	sjme_nvm_mle_pipe pipe;
+	sjme_jbracketPipe pipe;
 
 	/* Must be an actual pipe. */
-	pipe = (sjme_nvm_mle_pipe)argV[0].v.l;
+	pipe = (sjme_jbracketPipe)argV[0].v.l;
 	if (!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
@@ -63,7 +63,7 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 	sjme_errorCode error;
 	sjme_nvm_task_globals* globals;
 	sjme_nvm_mle_standardPipeType type;
-	sjme_nvm_mle_pipe pipe;
+	sjme_jbracketPipe pipe;
 	const sjme_nal* nal;
 
 	/* Check. */
@@ -87,10 +87,9 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 	if (pipe == NULL)
 	{
 		/* Allocate pipe object. */
-		if (sjme_error_is(error = sjme_nvm_instance_objectNewNU(SJME_F_T(inFrame),
-			sizeof(*pipe), SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE,
-			SJME_AS_JOBJECTP(&pipe), SJME_NVM_BRACKET_NAME_PIPE)) ||
-			pipe == NULL)
+		if (sjme_error_is(error = sjme_nvm_instance_objectNewBracket(
+			SJME_F_T(inFrame), SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE,
+			SJME_AS_JOBJECTP(&pipe))) || pipe == NULL)
 			goto fail_badAlloc;
 
 		/* Is this an output pipe? */
@@ -150,11 +149,11 @@ SJME_NVM_MLE_FUNCTION_DECL(read)
 SJME_NVM_MLE_FUNCTION_DECL_ALT(write, single)
 {
 	sjme_errorCode error;
-	sjme_nvm_mle_pipe pipe;
+	sjme_jbracketPipe pipe;
 	sjme_jbyte single;
 
 	/* Must be an actual pipe. */
-	pipe = (sjme_nvm_mle_pipe)argV[0].v.l;
+	pipe = (sjme_jbracketPipe)argV[0].v.l;
 	if (!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 

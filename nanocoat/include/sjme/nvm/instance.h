@@ -135,6 +135,28 @@ struct sjme_jbracketJarPackageBase
 	/** The library this refers to. */
 	sjme_nvm_rom_library library;
 };
+	
+struct sjme_jbracketPipeBase
+{
+	/** Base object. */
+	sjme_jobjectBase object;
+
+	/** Is output stream? */
+	sjme_jboolean isOutput;
+	
+	/** The wrapped stream. */
+	union
+	{
+		/** Base closeable. */
+		sjme_closeable closeable;
+		
+		/** Input stream. */
+		sjme_stream_input in;
+
+		/** Output stream. */
+		sjme_stream_output out;
+	} stream;
+};
 
 struct sjme_jbracketTraceBase
 {

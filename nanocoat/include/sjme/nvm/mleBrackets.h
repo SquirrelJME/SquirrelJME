@@ -30,45 +30,79 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/** The name of the pipe bracket. */
-#define SJME_NVM_BRACKET_NAME_PIPE \
-	"cc/squirreljme/jvm/mle/brackets/PipeBracket"
+/**
+ * Jar package bracket.
+ *
+ * @since 2025/07/06
+ */
+typedef struct sjme_jbracketJarPackageBase sjme_jbracketJarPackageBase;
+	
+/**
+ * Jar package bracket.
+ *
+ * @since 2025/07/06
+ */
+typedef sjme_jbracketJarPackageBase* sjme_jbracketJarPackage;
+	
+/** Basic @c sjme_jbracketJarPackage type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jbracketJarPackage \
+	SJME_TYPEOF_BASIC_sjme_jobject
+
+/** Java @c sjme_jbracketJarPackage type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jbracketJarPackage \
+	SJME_TYPEOF_JAVA_sjme_jobject
+
+/** Is a pointer for @c sjme_jbracketJarPackage ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jbracketJarPackage \
+	SJME_TYPEOF_IS_POINTER_sjme_jobject
+
+/**
+ * Trace point bracket.
+ *
+ * @since 2025/06/28
+ */
+typedef struct sjme_jbracketTraceBase sjme_jbracketTraceBase;
+	
+/**
+ * Trace point bracket.
+ *
+ * @since 2025/06/28
+ */
+typedef sjme_jbracketTraceBase* sjme_jbracketTrace;
+	
+/** Basic @c sjme_jbracketTrace type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jbracketTrace SJME_TYPEOF_BASIC_sjme_jobject
+
+/** Java @c sjme_jbracketTrace type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jbracketTrace SJME_TYPEOF_JAVA_sjme_jobject
+
+/** Is a pointer for @c sjme_jbracketTrace ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jbracketTrace \
+	SJME_TYPEOF_IS_POINTER_sjme_jobject
 	
 /**
  * Pipe bracket.
  *
  * @since 2025/02/23
  */
-typedef struct sjme_nvm_mle_pipeBase sjme_nvm_mle_pipeBase;
+typedef struct sjme_jbracketPipeBase sjme_jbracketPipeBase;
 
 /**
  * Pipe bracket.
  *
  * @since 2025/02/23
  */
-typedef sjme_nvm_mle_pipeBase* sjme_nvm_mle_pipe;
-
-struct sjme_nvm_mle_pipeBase
-{
-	/** Base object. */
-	sjme_jobjectBase object;
-
-	/** Is output stream? */
-	sjme_jboolean isOutput;
+typedef sjme_jbracketPipeBase* sjme_jbracketPipe;
 	
-	/** The wrapped stream. */
-	union
-	{
-		/** Base closeable. */
-		sjme_closeable closeable;
-		
-		/** Input stream. */
-		sjme_stream_input in;
+/** Basic @c sjme_jbracketPipe type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jbracketPipe SJME_TYPEOF_BASIC_sjme_jobject
 
-		/** Output stream. */
-		sjme_stream_output out;
-	} stream;
-};
+/** Java @c sjme_jbracketPipe type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jbracketPipe SJME_TYPEOF_JAVA_sjme_jobject
+
+/** Is a pointer for @c sjme_jbracketPipe ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jbracketPipe \
+	SJME_TYPEOF_IS_POINTER_sjme_jobject
 	
 /*--------------------------------------------------------------------------*/
 

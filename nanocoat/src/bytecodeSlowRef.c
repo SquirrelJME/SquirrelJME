@@ -286,7 +286,8 @@ SJME_NVM_BYTECODE_SLOW(ArrayLength)
 
 	/* Must be an array type. */
 	array = SJME_AS_JARRAY(value.v.l);
-	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE))
+	if (array == NULL ||
+		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE))
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Push length onto the stack. */
@@ -307,7 +308,6 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jclass desireClass;
 	sjme_jvalueTyped value;
-	sjme_jvalueTyped instance;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in pool reference. */
@@ -1185,7 +1185,8 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	arrayType = sjme_nvm_byteCode_xArrayType[id - 46];
 	componentType = sjme_atomic_sjme_jclass_get(
 		&array->object.isClass->componentType);
-	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
+	if (array == NULL || componentType == NULL ||
+		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
 		!array->object.isClass->info->isArray ||
 		componentType == NULL || componentType->arrayTypeId != arrayType)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);

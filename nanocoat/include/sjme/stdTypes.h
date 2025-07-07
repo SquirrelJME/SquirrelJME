@@ -752,56 +752,6 @@ typedef sjme_jthrowableBase* sjme_jthrowable;
 #define SJME_TYPEOF_IS_POINTER_sjme_jthrowable 1
 	
 /**
- * Trace point bracket.
- *
- * @since 2025/06/28
- */
-typedef struct sjme_jbracketTraceBase sjme_jbracketTraceBase;
-	
-/**
- * Trace point bracket.
- *
- * @since 2025/06/28
- */
-typedef sjme_jbracketTraceBase* sjme_jbracketTrace;
-	
-/** Basic @c sjme_jbracketTrace type identifier. */
-#define SJME_TYPEOF_BASIC_sjme_jbracketTrace SJME_TYPEOF_BASIC_sjme_jobject
-
-/** Java @c sjme_jbracketTrace type identifier. */
-#define SJME_TYPEOF_JAVA_sjme_jbracketTrace SJME_TYPEOF_JAVA_sjme_jobject
-
-/** Is a pointer for @c sjme_jbracketTrace ? */
-#define SJME_TYPEOF_IS_POINTER_sjme_jbracketTrace \
-	SJME_TYPEOF_IS_POINTER_sjme_jobject
-	
-/**
- * Jar package bracket.
- *
- * @since 2025/07/06
- */
-typedef struct sjme_jbracketJarPackageBase sjme_jbracketJarPackageBase;
-	
-/**
- * Jar package bracket.
- *
- * @since 2025/07/06
- */
-typedef sjme_jbracketJarPackageBase* sjme_jbracketJarPackage;
-	
-/** Basic @c sjme_jbracketJarPackage type identifier. */
-#define SJME_TYPEOF_BASIC_sjme_jbracketJarPackage \
-	SJME_TYPEOF_BASIC_sjme_jobject
-
-/** Java @c sjme_jbracketJarPackage type identifier. */
-#define SJME_TYPEOF_JAVA_sjme_jbracketJarPackage \
-	SJME_TYPEOF_JAVA_sjme_jobject
-
-/** Is a pointer for @c sjme_jbracketJarPackage ? */
-#define SJME_TYPEOF_IS_POINTER_sjme_jbracketJarPackage \
-	SJME_TYPEOF_IS_POINTER_sjme_jobject
-	
-/**
  * A character sequence which contains a set of characters within a string.
  * 
  * @since 2024/06/26

@@ -22,7 +22,8 @@ SJME_NVM_MLE_FUNCTION_DECL(stringCharAt)
 
 	/* Must be an actual string. */
 	string = (sjme_jstring)argV[0].v.l;
-	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
+	if (string == NULL ||
+		!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has the sequence ever been initialized? */
@@ -78,7 +79,8 @@ SJME_NVM_MLE_FUNCTION_DECL(stringHash)
 
 	/* Must be an actual string. */
 	string = (sjme_jstring)argV[0].v.l;
-	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
+	if (string == NULL ||
+		!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Has the sequence ever been initialized? */
@@ -107,7 +109,8 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, chars)
 	len = argV[3].v.i;
 
 	/* Check arguments. */
-	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE) ||
+	if (string == NULL || array == NULL ||
+		!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE) ||
 		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
 		array->type != SJME_BASIC_TYPE_ID_CHARACTER ||
 		off < 0 || len < 0 || (off + len) < 0 ||
@@ -184,7 +187,8 @@ SJME_NVM_MLE_FUNCTION_DECL(stringLength)
 
 	/* Must be an actual string. */
 	string = (sjme_jstring)argV[0].v.l;
-	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
+	if (string == NULL ||
+		!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has the sequence ever been initialized? */
@@ -221,11 +225,10 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 	len = argV[4].v.i;
 
 	/* Check types. */
-	if (!sjme_nvm_isAR(source, SJME_NVM_STRUCT_STRING_INSTANCE))
-		return SJME_ERROR_MLE_CALL;
-	if (!sjme_nvm_isAR(dest, SJME_NVM_STRUCT_ARRAY_INSTANCE))
-		return SJME_ERROR_MLE_CALL;
-	if (dest->type != SJME_BASIC_TYPE_ID_CHARACTER)
+	if (source == NULL || dest == NULL ||
+		!sjme_nvm_isAR(source, SJME_NVM_STRUCT_STRING_INSTANCE) ||
+		!sjme_nvm_isAR(dest, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
+		dest->type != SJME_BASIC_TYPE_ID_CHARACTER)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has the sequence ever been initialized? */
@@ -261,7 +264,8 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 
 	/* Must be an actual array. */
 	array = (sjme_jarray)argV[1].v.l;
-	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE))
+	if (array == NULL ||
+		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Must be a char array. */
@@ -307,7 +311,8 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
 
 	/* Must be an actual string. */
 	string = (sjme_jstring)argV[1].v.l;
-	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
+	if (string == NULL ||
+		!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Has the sequence ever been initialized? */

@@ -148,11 +148,11 @@ typedef enum sjme_nvm_structType
 	/** Array instance. */
 	SJME_NVM_STRUCT_ARRAY_INSTANCE,
 
-	/** Pipe bracket. */
-	SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE,
-
 	/** A Jar package instance pointer object. */
 	SJME_NVM_STRUCT_BRACKET_JAR_PACKAGE_INSTANCE,
+
+	/** Pipe bracket. */
+	SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE,
 
 	/** A trace point instance pointer object. */
 	SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE,

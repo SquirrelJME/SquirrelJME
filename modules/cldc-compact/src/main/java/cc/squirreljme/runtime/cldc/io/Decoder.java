@@ -9,12 +9,15 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This is a decoder which is able to decode input characters and return
  * characters for the input sequence.
  *
  * @since 2018/10/13
  */
+@SquirrelJMEVendorApi
 public interface Decoder
 	extends NamedCodec
 {
@@ -38,6 +41,7 @@ public interface Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/13
 	 */
+	@SquirrelJMEVendorApi
 	int decode(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException;
 }
