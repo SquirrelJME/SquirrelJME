@@ -2142,14 +2142,10 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 	sjme_attrInNotNull sjme_nvm_class_poolEntryMember* forMember)
 {
 	sjme_errorCode error;
-	sjme_jclass forClass;
-	sjme_list_sjme_jclass* isClasses;
-	sjme_list_sjme_jmethodID* methods;
-	sjme_jmethodID method;
-	sjme_list_sjme_jinterfaceID* binds;
-	sjme_jint i, n, start, wantHash;
-	sjme_jinterfaceID interfaceId, maybeId;
-	sjme_jboolean cycled;
+	sjme_jclass objectClass, interfaceClass, check;
+	sjme_list_sjme_jclass* interfaceIsClasses;
+	sjme_jint wantHash, i, n;
+	sjme_jmethodID interfaceMethod, selfFound;
 	
 	if (contextThread == NULL || outID == NULL || forObject == NULL ||
 		forMember == NULL)
@@ -2160,86 +2156,90 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 		return sjme_error_vmError(contextThread, SJME_ERROR_CLASS_CHANGED);
 
 	/* Everything acts in relation to the object's class. */
-	forClass = SJME_O_C(forObject);
+	objectClass = SJME_O_C(forObject);
+
+	/* Lookup the target interface. */
+	interfaceClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+		SJME_T_CL(contextThread), &interfaceClass, contextThread,
+		forMember->inClass->descriptor->seq, SJME_JNI_TRUE)))
+		return sjme_error_vmError(contextThread,
+			sjme_error_defaultOr(error, SJME_ERROR_CLASS_CHANGED));
+
+	/* The object's class must be assignable to the interface class. */
+	if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+		contextThread, interfaceClass, objectClass)))
+		return sjme_error_vmError(contextThread,
+			sjme_error_defaultOr(error, SJME_ERROR_CLASS_CAST));
 	
-	/* The interface binds list is inferred by is-classes. */
-	isClasses = NULL;
+	/* We need to find the target method in all the classes that the */
+	/* target interface is first, this is to be precise so that we actually */
+	/* call a properly defined interface reference and not whatever. */
+	interfaceIsClasses = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_isClasses(
-		contextThread,
-		forClass, &isClasses)) || isClasses == NULL)
+		contextThread, interfaceClass, &interfaceIsClasses)) ||
+		interfaceIsClasses == NULL)
 		return sjme_error_vmError(contextThread, error);
 
-	/* Recover binds. */
-	binds = forClass->interfaceBinds;
-	if (binds == NULL)
+	/* Look through interfaces for the target method. */
+	interfaceMethod = NULL;
+	for (i = 0, n = interfaceIsClasses->length; i < n; i++)
 	{
-		/* No binds mean that the class implements no interfaces. */
-		if (!required)
-			return SJME_ERROR_NO_METHOD;
-		return sjme_error_vmError(contextThread, SJME_ERROR_NO_METHOD);
-	}
-
-	/* Locate the interface by its ID. */
-	interfaceId = NULL;
-	n = binds->length;
-	wantHash = forMember->inClass->descriptorHash;
-	start = wantHash % n;
-	for (i = start, cycled = SJME_JNI_FALSE; !cycled || (cycled && i != start);
-		i = (i + 1) % n, cycled = SJME_JNI_TRUE)
-	{
-		/* If the hash is wrong, it cannot be this one. */
-		maybeId = binds->elements[i];
-		if (maybeId->descriptorHash != wantHash)
+		/* Skip any blank slots. */
+		check = interfaceIsClasses->elements[i];
+		if (check == NULL)
 			continue;
 
-		/* Is this the same interface? */
-		if (!sjme_charSeq_equalsR(maybeId->isInterface->info->name->seq,
-			forMember->inClass->descriptor->seq))
-			continue;
-
-		/* Need to initialize method binds? */
-		if (maybeId->methods == NULL)
-			if (sjme_error_is(error = sjme_nvm_vmClass_bindInterface(
-				contextThread, forClass, maybeId)) ||
-				maybeId->methods == NULL)
-				return sjme_error_vmError(contextThread, error);
-
-		/* This is the one! */
-		interfaceId = maybeId;
-	}
-
-	/* Not found. */
-	if (interfaceId == NULL)
-		return sjme_error_vmError(contextThread, SJME_ERROR_CLASS_CAST);
-
-	/* Calculate hash for the name and type. */
-	wantHash = forMember->nameAndType->idHash;
-
-	/* Go through methods. */
-	methods = interfaceId->methods;
-	for (i = methods->length - 1; i >= 0; i--)
-	{
-		/* Check method, NULL might be a private method in Object. */
-		method = methods->elements[i];
-		if (method == NULL)
-			continue;
-
-		/* If not the hash, it cannot be this. */
-		if (method->member.idHash != wantHash)
-			continue;
-		
-		/* Is this the method. */
-		if (sjme_charSeq_equalsR(SJME_M_N(method)->seq,
-				forMember->nameAndType->name->seq) &&
-			sjme_charSeq_equalsR(SJME_M_T(method)->seq,
-				forMember->nameAndType->descriptor->seq))
+		/* Lookup method. */
+		if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+			check, contextThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
+			SJME_JNI_FALSE, forMember->nameAndType->name->seq,
+			forMember->nameAndType->descriptor->seq,
+			&interfaceMethod)))
 		{
-			*outID = method;
-			return SJME_ERROR_NONE;
+			/* This is considered valid. */
+			if (error == SJME_ERROR_NO_METHOD)
+				continue;
+			
+			return sjme_error_vmError(contextThread, error);
 		}
+
+		/* Target method was found somewhere. */
+		if (interfaceMethod != NULL)
+			break;
 	}
 
+	/* The interface does not have this method? The class changed or */
+	/* otherwise. */
+	if (interfaceMethod == NULL)
+		return sjme_error_vmError(contextThread, SJME_ERROR_CLASS_CHANGED);
+
+	/* Since we know the method exists, now we can look for this method */
+	/* in the current class using more normal means. */
+	selfFound = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+		objectClass, contextThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
+		SJME_JNI_FALSE, forMember->nameAndType->name->seq,
+		forMember->nameAndType->descriptor->seq,
+		&selfFound)))
+	{
+		/* No method is considered valid enough. */
+		if (error == SJME_ERROR_NO_METHOD)
+			goto skip_noMethod;
+			
+		return sjme_error_vmError(contextThread, error);
+	}
+
+	/* Properly found method? */
+	if (selfFound != NULL && selfFound->flags.member.access.public &&
+		!selfFound->flags.abstract)
+	{
+		*outID = selfFound;
+		return SJME_ERROR_NONE;
+	}
+	
 	/* Not found. */
+skip_noMethod:
 	if (!required)
 		return SJME_ERROR_NO_METHOD;
 	return sjme_error_vmError(contextThread, SJME_ERROR_NO_METHOD);

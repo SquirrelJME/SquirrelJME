@@ -1143,6 +1143,9 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
 
 /** Thread task. */
 #define SJME_T_K(thread) ((thread)->inTask)
+
+/** Thread classloader. */
+#define SJME_T_CL(thread) ((thread)->inTask->classLoader)
 	
 /*--------------------------------------------------------------------------*/
 
