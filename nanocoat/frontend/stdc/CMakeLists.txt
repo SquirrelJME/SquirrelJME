@@ -27,5 +27,8 @@ squirreljme_target_binary_name(StdC
 target_include_directories(StdC PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
+# Link required libraries
+squirreljme_target_link_libraries_required(StdC)
+
 # Strip on release
 squirreljme_executable_strip(StdC)

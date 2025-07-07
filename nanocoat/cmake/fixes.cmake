@@ -295,3 +295,15 @@ squirreljme_try_compile("sjme_threadLocal"
 	"tryThreadLocal"
 	SJME_CONFIG_HAS_NO_THREAD_LOCAL)
 
+# Locate the math library, if applicable
+find_library(SQUIRRELJME_LIBM m)
+message(STATUS "libm: ${SQUIRRELJME_LIBM}")
+
+# Link against required libraries
+macro(squirreljme_target_link_libraries_required target)
+	# Math library?
+	if(SQUIRRELJME_LIBM)
+		target_link_libraries(${target} PUBLIC
+			"${SQUIRRELJME_LIBM}")
+	endif()
+endmacro()

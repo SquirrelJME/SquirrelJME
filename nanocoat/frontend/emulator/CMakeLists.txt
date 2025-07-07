@@ -47,6 +47,9 @@ target_link_libraries(libEmulator PUBLIC
 	${SQUIRRELJME_LINK_LIBRARIES_Base}
 	${SQUIRRELJME_LINK_LIBRARIES_Core})
 
+# Link required libraries
+squirreljme_target_link_libraries_required(libEmulator)
+
 # It is easier to find this when it is in the build root
 squirreljme_target_binary_output(libEmulator
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")

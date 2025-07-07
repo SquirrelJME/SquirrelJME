@@ -99,6 +99,9 @@ if(NOT libRetroIsStatic)
 	squirreljme_target_shared_library_exports(squirreljme_libretro)
 endif()
 
+# Link required libraries
+squirreljme_target_link_libraries_required(squirreljme_libretro)
+
 # Duplicate binary
 if(EMSCRIPTEN)
 	add_custom_command(TARGET squirreljme_libretro POST_BUILD

@@ -56,6 +56,9 @@ squirreljme_multilib_target_link_libraries(libJvm PUBLIC
 	${SQUIRRELJME_LINK_LIBRARIES_Base}
 	${SQUIRRELJME_LINK_LIBRARIES_Core})
 
+# Link required libraries
+squirreljme_target_link_libraries_required(libJvm)
+
 # Where should this library be output?
 squirreljme_multilib_target_binary_output(libJvm
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")

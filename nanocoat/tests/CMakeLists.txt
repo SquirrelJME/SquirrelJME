@@ -136,6 +136,10 @@ add_dependencies(TACTest Core)
 target_link_libraries(TACTest PUBLIC
 	Core)
 
+# Link required libraries
+squirreljme_target_link_libraries_required(BasicTest)
+squirreljme_target_link_libraries_required(TACTest)
+
 # Include debugging info for tests
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)

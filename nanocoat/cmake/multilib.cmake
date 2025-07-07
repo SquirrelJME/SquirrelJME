@@ -211,6 +211,14 @@ macro(squirreljme_multilib_target_link_libraries libBase)
 		${libBaseLibs})
 endmacro()
 
+# Link multilib against required core libraries
+macro(squirreljme_multilib_target_link_libraries_required libBase)
+	# Dynamic library output
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		squirreljme_target_link_libraries_required(${libBase}DyLib)
+	endif()
+endmacro()
+
 # Output locations for binaries
 macro(squirreljme_multilib_target_binary_output libBase where)
 	# Static library output

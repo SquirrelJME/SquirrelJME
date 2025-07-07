@@ -40,3 +40,7 @@ squirreljme_target_binary_name(GuiCmd
 set_target_properties(GuiCmd PROPERTIES
 	EXCLUDE_FROM_ALL TRUE
 	EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+
+# Link required libraries
+squirreljme_target_link_libraries_required(GuiCmd)
+

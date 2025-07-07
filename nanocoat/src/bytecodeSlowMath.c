@@ -7,6 +7,13 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/config.h"
+
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD) || \
+	defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	#include <math.h>
+#endif
+
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/bytecodeSlow.h"
@@ -404,20 +411,112 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 
 SJME_NVM_BYTECODE_SLOW(MathDouble)
 {
+	sjme_jvalueTyped a, b, result;
 	SJME_NVM_BYTECODE_ENTRY;
 
+	/* Read in both values. */
+	memset(&b, 0, sizeof(b));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_DOUBLE, &b)))
+		return sjme_error_vmError(inFrame, error);
+	memset(&a, 0, sizeof(a));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_DOUBLE, &a)))
+		return sjme_error_vmError(inFrame, error);
+
+#if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	switch (SJME_NVM_BYTECODE_MATH_TO_FUNC(id))
+	{
+		case SJME_NVM_BYTECODE_MATH_ADD:
+			result.v.d.native = a.v.d.native + b.v.d.native;
+			break;
+			
+		case SJME_NVM_BYTECODE_MATH_SUB:
+			result.v.d.native = a.v.d.native - b.v.d.native;
+			break;
+		
+		case SJME_NVM_BYTECODE_MATH_MUL:
+			result.v.d.native = a.v.d.native * b.v.d.native;
+			break;
+		
+		case SJME_NVM_BYTECODE_MATH_DIV:
+			result.v.d.native = a.v.d.native / b.v.d.native;
+			break;
+		
+		case SJME_NVM_BYTECODE_MATH_REM:
+			result.v.d.native = fmod(a.v.d.native, b.v.d.native);
+			break;
+
+		default:
+			return sjme_error_vmError(inFrame,
+				SJME_ERROR_INVALID_INSTRUCTION);
+	}
+#else
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#endif
+
+	/* Push the result. */
+	result.t = SJME_JAVA_TYPE_ID_DOUBLE;
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&result)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(MathFloat)
 {
+	sjme_jvalueTyped a, b, result;
 	SJME_NVM_BYTECODE_ENTRY;
 
+	/* Read in both values. */
+	memset(&b, 0, sizeof(b));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_FLOAT, &b)))
+		return sjme_error_vmError(inFrame, error);
+	memset(&a, 0, sizeof(a));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_FLOAT, &a)))
+		return sjme_error_vmError(inFrame, error);
+
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	switch (SJME_NVM_BYTECODE_MATH_TO_FUNC(id))
+	{
+		case SJME_NVM_BYTECODE_MATH_ADD:
+			result.v.f.native = a.v.f.native + b.v.f.native;
+			break;
+			
+		case SJME_NVM_BYTECODE_MATH_SUB:
+			result.v.f.native = a.v.f.native - b.v.f.native;
+			break;
+		
+		case SJME_NVM_BYTECODE_MATH_MUL:
+			result.v.f.native = a.v.f.native * b.v.f.native;
+			break;
+		
+		case SJME_NVM_BYTECODE_MATH_DIV:
+			result.v.f.native = a.v.f.native / b.v.f.native;
+			break;
+		
+		case SJME_NVM_BYTECODE_MATH_REM:
+			result.v.f.native = fmodf(a.v.f.native, b.v.f.native);
+			break;
+
+		default:
+			return sjme_error_vmError(inFrame,
+				SJME_ERROR_INVALID_INSTRUCTION);
+	}
+#else
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#endif
+
+	/* Push the result. */
+	result.t = SJME_JAVA_TYPE_ID_FLOAT;
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&result)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
