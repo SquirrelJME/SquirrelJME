@@ -16,10 +16,32 @@
 
 static sjme_jint sjme_nvm_mleFunc_mleTerminal_mapIoException(
 	sjme_attrInValue sjme_errorCode error,
-	sjme_attrOutNotNull sjme_jvalueTyped* result)
+	sjme_attrOutNotNull sjme_jvalueTyped* argR)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_jint mapped;
+
+	/* Map error. */
+	switch (error)
+	{
+			/* EOF. */
+		case SJME_ERROR_END_OF_FILE:
+			mapped = -1;
+			break;
+		
+			/* Read error. */
+		case SJME_ERROR_IO_EXCEPTION:
+			mapped = -2;
+			break;
+
+			/* Did not map. */
+		default:
+			return sjme_error_default(error);
+	}
+	
+	/* Successfully mapped! */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = mapped;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(available)
@@ -167,8 +189,40 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(read, single)
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(read, multi)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jbracketPipe pipe;
+	sjme_jarray buf;
+	sjme_jint off, len;
+	sjme_jint readCount;
+
+	/* Read in arguments. */
+	pipe = (sjme_jbracketPipe)argV[0].v.l;
+	buf = (sjme_jarray)argV[1].v.l;
+	off = argV[2].v.i;
+	len = argV[3].v.i;
+	
+	/* Arguments must be valid. */
+	if (pipe == NULL || buf == NULL ||
+		!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE) ||
+		!sjme_nvm_isAR(buf, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
+		buf->type != SJME_BASIC_TYPE_ID_BYTE ||
+		off < 0 || len < 0 || (off + len) < 0 || (off + len) > buf->length)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Not an input pipe? */
+	if (pipe->isOutput)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Read call. */
+	readCount = INT32_MIN;
+	if (sjme_error_is(error = sjme_stream_inputRead(pipe->stream.in,
+		&readCount, &buf->e.b[off], len)) || readCount < 0)
+		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
+
+	/* Success! */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = readCount;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(write, single)
@@ -195,14 +249,44 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(write, single)
 
 	/* Success! */
 	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->v.i = 0;
+	argR->v.i = 1;
 	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(write, multi)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jbracketPipe pipe;
+	sjme_jarray buf;
+	sjme_jint off, len;
+
+	/* Read in arguments. */
+	pipe = (sjme_jbracketPipe)argV[0].v.l;
+	buf = (sjme_jarray)argV[1].v.l;
+	off = argV[2].v.i;
+	len = argV[3].v.i;
+	
+	/* Arguments must be valid. */
+	if (pipe == NULL || buf == NULL ||
+		!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE) ||
+		!sjme_nvm_isAR(buf, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
+		buf->type != SJME_BASIC_TYPE_ID_BYTE ||
+		off < 0 || len < 0 || (off + len) < 0 || (off + len) > buf->length)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Not an output pipe? */
+	if (!pipe->isOutput)
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Write call. */
+	if (sjme_error_is(error = sjme_stream_outputWrite(pipe->stream.out,
+		&buf->e.b[off], len)))
+		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
+
+	/* Success! */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = len;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_SHELF_DECLARE(TerminalShelf) =
