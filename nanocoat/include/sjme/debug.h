@@ -227,9 +227,10 @@ void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * Potentially debug aborts.
  *
  * @param error The emitted error.
+ * @return If an abort was triggered, then @c SJME_JNI_TRUE is called.
  * @since 2023/12/21
  */
-void sjme_debug_abort(sjme_errorCode error);
+sjme_jboolean sjme_debug_abort(sjme_errorCode error);
 
 /**
  * Set the context thread for the crash handler.

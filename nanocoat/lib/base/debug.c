@@ -58,31 +58,46 @@ static void sjme_debug_crashPosix(int signalId)
 }
 #endif
 
-void sjme_debug_abort(sjme_errorCode error)
+sjme_jboolean sjme_debug_abort(sjme_errorCode error)
 {
-	/* Use specific abort handler? */
-	if (sjme_debug_handlers != NULL && sjme_debug_handlers->abort != NULL)
-		if (sjme_debug_handlers->abort(error))
-			return;
+	static sjme_atomic_sjme_jint didAbort;
+
+	/* Only trigger abort once. */
+	if (sjme_atomic_sjme_jint_compareSet(&didAbort, 0, 1))
+	{
+		/* Use specific abort handler? */
+		if (sjme_debug_handlers != NULL && sjme_debug_handlers->abort != NULL)
+			if (sjme_debug_handlers->abort(error))
+				return SJME_JNI_TRUE;
 
 #if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_NT_4)
-	/* When running tests without a debugger this will pop up about 1000 */
-	/* dialogs saying the program aborted, so only abort on debugging. */
-	if (!IsDebuggerPresent())
-		return;
+		/* When running tests without a debugger this will pop up about 1000 */
+		/* dialogs saying the program aborted, so only abort on debugging. */
+		if (!IsDebuggerPresent())
+			return;
 
 #if defined(SJME_CONFIG_DEBUG) && \
 	!(defined(__MINGW32__) || defined(__MINGW64__))
-	/* Do not pop up an annoying dialog. */
-	_set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
+		/* Do not pop up an annoying dialog. */
+		_set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
 
-	/* Breakpoint. */
-	__debugbreak();
+		/* Breakpoint. */
+		__debugbreak();
 #endif
 #endif
+		
+		/* Use C abort handler. */
+		abort();
 
-	/* Otherwise use C abort handler. */
-	abort();
+		/* We skipped abort, so clear it. */
+		sjme_atomic_sjme_jint_compareSet(&didAbort, 1, 0);
+
+		/* Triggered abort. */
+		return SJME_JNI_TRUE;
+	}
+
+	/* Did not trigger. */
+	return SJME_JNI_FALSE;
 }
 
 void sjme_debug_crashContext(
@@ -283,10 +298,8 @@ sjme_errorCode sjme_dieR(sjme_lpcstr file, int line,
 	va_end(list);
 	
 	/* Exit and stop. */
-	sjme_debug_abort(SJME_ERROR_UNKNOWN_NEGATIVE);
-	
-	/* Exit after abort happens, it can be ignored in debugging. */
-	sjme_debug_exit(EXIT_FAILURE);
+	if (sjme_debug_abort(SJME_ERROR_UNKNOWN_NEGATIVE))
+		sjme_debug_exit(EXIT_FAILURE);
 	
 	/* Never reaches, but returns false naturally. */
 	return SJME_ERROR_UNKNOWN;
@@ -381,9 +394,7 @@ void sjme_todoR(sjme_lpcstr file, int line,
 	va_end(list);
 	
 	/* Exit and stop. */
-	sjme_debug_abort(SJME_ERROR_UNKNOWN_NEGATIVE);
-	
-	/* Exit after abort happens, it can be ignored in debugging. */
-	sjme_debug_exit(EXIT_FAILURE);
+	if (sjme_debug_abort(SJME_ERROR_UNKNOWN_NEGATIVE))
+		sjme_debug_exit(EXIT_FAILURE);
 }
 
