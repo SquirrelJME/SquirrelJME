@@ -1188,9 +1188,17 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	if (array == NULL || componentType == NULL ||
 		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
 		!array->object.isClass->info->isArray ||
-		componentType == NULL || componentType->arrayTypeId != arrayType)
+		componentType == NULL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
+	/* Boolean and byte reads are considered the same. */
+	if ((arrayType == SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE &&
+		(componentType->arrayTypeId != SJME_BASIC_TYPE_ID_BOOLEAN &&
+		componentType->arrayTypeId != SJME_BASIC_TYPE_ID_BYTE)) ||
+		(arrayType != SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE &&
+		componentType->arrayTypeId != arrayType))
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+	
 	/* Check bounds. */
 	index = indexValue.v.i;
 	if (index < 0 || index >= array->length)
