@@ -140,7 +140,32 @@ fail_badAlloc:
 	return sjme_error_vmError(inFrame, error);
 }
 
-SJME_NVM_MLE_FUNCTION_DECL(read)
+SJME_NVM_MLE_FUNCTION_DECL_ALT(read, single)
+{
+	sjme_errorCode error;
+	sjme_jbracketPipe pipe;
+
+	/* Must be an actual pipe. */
+	pipe = (sjme_jbracketPipe)argV[0].v.l;
+	if (pipe == NULL ||
+		!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Not an input pipe? */
+	if (pipe->isOutput)
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Read call. */
+	if (sjme_error_is(error = sjme_stream_inputReadSingle(pipe->stream.in,
+		&argR->v.i)))
+		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
+
+	/* Success! */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL_ALT(read, multi)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -154,7 +179,8 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(write, single)
 
 	/* Must be an actual pipe. */
 	pipe = (sjme_jbracketPipe)argV[0].v.l;
-	if (!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE))
+	if (pipe == NULL ||
+		!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Not an output pipe? */
@@ -193,7 +219,10 @@ SJME_NVM_MLE_SHELF_DECLARE(TerminalShelf) =
 	SJME_NVM_MLE_DEFINE(fromStandard,
 		SJME_MD(SJME_MD_PIPE, SJME_MD_I),
 		"L", "I"),
-	SJME_NVM_MLE_DEFINE(read,
+	SJME_NVM_MLE_DEFINE_ALT(read, single,
+		SJME_MD(SJME_MD_I, SJME_MD_PIPE),
+		"I", "L"),
+	SJME_NVM_MLE_DEFINE_ALT(read, multi,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE SJME_MD_A(SJME_MD_B) SJME_MD_I
 			SJME_MD_I),
 		"I", "LLII"),

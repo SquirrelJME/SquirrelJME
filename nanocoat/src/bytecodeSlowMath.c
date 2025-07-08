@@ -34,20 +34,106 @@
 
 SJME_NVM_BYTECODE_SLOW(CastDoubleToX)
 {
+	sjme_jvalueTyped in, out;
 	SJME_NVM_BYTECODE_ENTRY;
 
+	/* Read input value. */
+	memset(&in, 0, sizeof(in));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_DOUBLE, &in)))
+		return sjme_error_vmError(inFrame, error);
+
+#if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/* Determine output value. */
+	memset(&out, 0, sizeof(out));
+	switch (id)
+	{
+		case SJME_NVM_BYTECODE_JAVA_D2F:
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+			out.t = SJME_JAVA_TYPE_ID_FLOAT;
+			out.v.f.native = (float)in.v.d.native;
+#else
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+#endif
+			break;
+		
+		case SJME_NVM_BYTECODE_JAVA_D2I:
+			out.t = SJME_JAVA_TYPE_ID_INTEGER;
+			out.v.i = (sjme_jint)in.v.d.native;
+			break;
+		
+		case SJME_NVM_BYTECODE_JAVA_D2L:
+			out.t = SJME_JAVA_TYPE_ID_LONG;
+			out.v.j.full = (int64_t)in.v.d.native;
+			break;
+		
+		default:
+			return sjme_error_vmError(inFrame,
+				SJME_ERROR_INVALID_INSTRUCTION);
+	}
+#else
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#endif
+
+	/* Push to the stack. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&out)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(CastFloatToX)
 {
+	sjme_jvalueTyped in, out;
 	SJME_NVM_BYTECODE_ENTRY;
 
+	/* Read input value. */
+	memset(&in, 0, sizeof(in));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_FLOAT, &in)))
+		return sjme_error_vmError(inFrame, error);
+
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	/* Determine output value. */
+	memset(&out, 0, sizeof(out));
+	switch (id)
+	{
+		case SJME_NVM_BYTECODE_JAVA_F2D:
+#if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+			out.t = SJME_JAVA_TYPE_ID_DOUBLE;
+			out.v.d.native = (double)in.v.f.native;
+#else
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+#endif
+			break;
+		
+		case SJME_NVM_BYTECODE_JAVA_F2I:
+			out.t = SJME_JAVA_TYPE_ID_INTEGER;
+			out.v.i = (sjme_jint)in.v.f.native;
+			break;
+		
+		case SJME_NVM_BYTECODE_JAVA_F2L:
+			out.t = SJME_JAVA_TYPE_ID_LONG;
+			out.v.j.full = (int64_t)in.v.f.native;
+			break;
+		
+		default:
+			return sjme_error_vmError(inFrame,
+				SJME_ERROR_INVALID_INSTRUCTION);
+	}
+#else
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#endif
+
+	/* Push to the stack. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&out)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
