@@ -9,6 +9,35 @@
 
 #include "sjme/nvm/access.h"
 
+sjme_errorCode sjme_nvm_access_checkCompatibleField(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jfieldID fieldId,
+	sjme_attrInNotNull sjme_jvalueTyped* checkValue)
+{
+	if (contextThread == NULL || fieldId == NULL || checkValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Promoted type does not match at all? */
+	if (fieldId->javaType != checkValue->t)
+		return SJME_ERROR_CLASS_CHANGED;
+
+	/* If an object, must be able to be assigned there. */
+	if (fieldId->javaType == SJME_JAVA_TYPE_ID_OBJECT)
+	{
+		/* Null can be assigned to anything. */
+		if (checkValue->v.l == NULL)
+			return SJME_ERROR_NONE;
+		
+		/* If this is not assignable, then something is wrong. */
+		if (!sjme_nvm_vmClass_isAssignableFrom(contextThread,
+			fieldId->objectType, checkValue->v.l->isClass))
+			return SJME_ERROR_CLASS_CHANGED;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_access_checkEToE(
 	sjme_attrInNotNull sjme_jmemberID from,
 	sjme_attrInNotNull sjme_jmemberID to,

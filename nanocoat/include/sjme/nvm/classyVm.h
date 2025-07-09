@@ -155,6 +155,9 @@ struct sjme_jfieldIDBase
 	/** The extended type of this field. */
 	sjme_extendedTypeId extendedType;
 
+	/** The class type of this field. */
+	sjme_jclass objectType;
+
 	/** The field flags. */
 	sjme_nvm_class_fieldFlags flags;
 	

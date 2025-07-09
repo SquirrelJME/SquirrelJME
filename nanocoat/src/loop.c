@@ -235,6 +235,12 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		if (tossed != NULL)
 			goto skip_thrown;
 
+#if defined(SJME_CONFIG_DEBUG)
+		/* Debug. */
+		sjme_messageB("%2d@%3d: %s", 
+			frameIndex, currentFrame->pc, sjme_nvm_byteCode_names[iv]);
+#endif
+
 		/* Execute handler. */
 		memmove(&pcNew, &pcDefault, sizeof(pcNew));
 		if (sjme_error_is(error = lutFunc(currentFrame, iv, ev, &pcNew)))

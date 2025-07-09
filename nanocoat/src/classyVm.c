@@ -199,6 +199,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 		id->pointerOffset = placements->offset[extendedType] +
 			offsetof(sjme_nvm_fieldValues, values) +
 			((sjme_nvm_typeMul[extendedType]) * (typedOffset[extendedType]++));
+
+		/* Lookup class this stores if an object, but do not initialize. */
+		if (id->javaType == SJME_JAVA_TYPE_ID_OBJECT)
+			if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadF(
+				inLoader, &id->objectType, contextThread,
+				field->type->seq, SJME_JNI_FALSE)) ||
+				id->objectType == NULL)
+				goto fail_findFieldClass;
 		
 		/* Count up references. */
 		sjme_alloc_weakRef(field, NULL);
@@ -209,6 +217,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 	/* Success! */
 	*outList = result;
 	return SJME_ERROR_NONE;
+fail_findFieldClass:
 fail_allocId:
 	if (result != NULL)
 		for (i = 0, n = result->length; i < n; i++)

@@ -33,6 +33,20 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Checks if the given object is compatible with the given field.
+ * 
+ * @param contextThread The context thread. 
+ * @param fieldId The field identifier.
+ * @param checkValue The value to check.
+ * @return On any resultant error, if any.
+ * @since 2025/07/09
+ */
+sjme_errorCode sjme_nvm_access_checkCompatibleField(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jfieldID fieldId,
+	sjme_attrInNotNull sjme_jvalueTyped* checkValue);
+	
+/**
  * Determines whether the current member has access to the given member.
  * 
  * @param from The source member.
