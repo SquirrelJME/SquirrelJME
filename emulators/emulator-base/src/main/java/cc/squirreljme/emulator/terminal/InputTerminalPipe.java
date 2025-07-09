@@ -43,6 +43,17 @@ public class InputTerminalPipe
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2025/07/09
+	 */
+	@Override
+	public int available()
+		throws IOException, MLECallWouldFail
+	{
+		return this.in.available();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2025/07/06
 	 */
 	@Override

@@ -10,8 +10,10 @@
 package cc.squirreljme.emulator.terminal;
 
 import cc.squirreljme.emulator.MLECallWouldFail;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.io.ByteDeque;
 
 /**
@@ -29,6 +31,20 @@ public final class BufferTerminalPipe
 	
 	/** Has this been closed? */
 	private boolean _closed;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/07/09
+	 */
+	@Override
+	public int available()
+		throws IOException, MLECallWouldFail
+	{
+		synchronized (this)
+		{
+			return this.deque.available();
+		}
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -67,7 +83,17 @@ public final class BufferTerminalPipe
 	public int read()
 		throws IOException, MLECallWouldFail
 	{
-		throw new MLECallWouldFail("WOWO");
+		try
+		{
+			synchronized (this)
+			{
+				return this.deque.removeFirst();
+			}
+		}
+		catch (NoSuchElementException __e)
+		{
+			throw new IOException(__e.getMessage(), __e);
+		}
 	}
 	
 	/**

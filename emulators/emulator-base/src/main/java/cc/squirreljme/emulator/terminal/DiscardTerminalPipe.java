@@ -26,6 +26,17 @@ public final class DiscardTerminalPipe
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2025/07/09
+	 */
+	@Override
+	public int available()
+		throws IOException, MLECallWouldFail
+	{
+		throw new MLECallWouldFail("Cannot read a discard pipe.");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/07/06
 	 */
 	@Override

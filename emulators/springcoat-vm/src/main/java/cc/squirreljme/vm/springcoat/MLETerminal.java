@@ -26,6 +26,34 @@ import java.io.IOException;
 public enum MLETerminal
 	implements MLEFunction
 {
+	/** {@link TerminalShelf#available(PipeBracket)}. */
+	AVAILABLE(MLEDispatcher.methodKey("available", "I",
+		PipeBracket.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/07/09
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				return MLEObjects.pipe(__args[0]).pipe.available();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				
+				return PipeErrorType.IO_EXCEPTION;
+			}
+			catch (MLECallWouldFail e)
+			{
+				throw new SpringMLECallError(e.getMessage(), e);
+			}
+		}
+	},
+	
 	/** {@link TerminalShelf#close(PipeBracket)}. */
 	CLOSE("close:(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;)I")
 	{

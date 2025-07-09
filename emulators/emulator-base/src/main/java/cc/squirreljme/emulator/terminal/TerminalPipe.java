@@ -22,6 +22,17 @@ public interface TerminalPipe
 	extends Closeable
 {
 	/**
+	 * Returns the number of bytes that are available for read.
+	 *
+	 * @return The number of bytes available for read.
+	 * @throws IOException If this failed to be determined.
+	 * @throws MLECallWouldFail If this is not an input pipe.
+	 * @since 2025/07/09
+	 */
+	int available()
+		throws IOException, MLECallWouldFail;
+	
+	/**
 	 * Closes the output.
 	 * 
 	 * @throws IOException On close errors.
