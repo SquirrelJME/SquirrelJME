@@ -430,7 +430,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 			fieldId->javaType, &result)))
 			return sjme_error_vmError(inFrame, error);
 		
-		/* If an object, make sure the object can be placed there. */
+		/* Make sure this can actually be stored there. */
 		if (sjme_error_is(error = sjme_nvm_access_checkCompatibleField(
 			SJME_F_T(inFrame), fieldId, &result)))
 			return sjme_error_vmError(inFrame,
@@ -1114,11 +1114,10 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 			fieldId->javaType, &value)))
 			return sjme_error_vmError(inFrame, error);
 		
-		/* Make sure the field is actually compatible. */
+		/* Make sure this can actually be stored there. */
 		if (sjme_error_is(error = sjme_nvm_access_checkCompatibleField(
 			SJME_F_T(inFrame), fieldId, &value)))
-			return sjme_error_vmError(inFrame,
-				SJME_ERROR_CLASS_CHANGED);
+			return sjme_error_vmError(inFrame, error);
 	}
 	
 	/* Read/write promotion. */
