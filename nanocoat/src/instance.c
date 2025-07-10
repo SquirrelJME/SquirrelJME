@@ -105,6 +105,9 @@ sjme_jvalue* sjme_nvm_instance_fieldAccessor(
 			goto fail_voidless;
 
 		/* Values is based on the static chunk. */
+		sjme_message("STATIC %p->%p + %d",
+			instance, ((sjme_jclass)instance)->staticChunk,
+			field->pointerOffset);
 		return SJME_POINTER_OFFSET(((sjme_jclass)instance)->staticChunk,
 			field->pointerOffset);
 	}
@@ -118,6 +121,8 @@ sjme_jvalue* sjme_nvm_instance_fieldAccessor(
 		
 		/* Value is based on the object itself, from the basis of */
 		/* its allocation size. */
+		sjme_message("INSTANCE %p + %d",
+			instance, field->pointerOffset);
 		return SJME_POINTER_OFFSET((sjme_pointer)instance,
 			field->pointerOffset);
 	}

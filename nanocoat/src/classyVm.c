@@ -129,7 +129,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 	sjme_jboolean isStatic;
 	sjme_nvm_jclass_fields* placements;
 	sjme_javaTypeId extendedType;
-	sjme_jint typedOffset[SJME_NUM_JAVA_TYPE_IDS];
+	sjme_jint typedOffset[SJME_NUM_EXTENDED_JAVA_TYPE_IDS];
 	
 	if (inState == NULL || inLoader == NULL || inClass == NULL ||
 		contextThread == NULL || outList == NULL)

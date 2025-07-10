@@ -374,11 +374,8 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	/* Locate target class. */
 	desireClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		SJME_F_CL(inFrame),
-		&desireClass,
-		SJME_F_T(inFrame),
-		SJME_P_M_C(entry)->seq,
-		SJME_JNI_TRUE)) || desireClass == NULL)
+		SJME_F_CL(inFrame), &desireClass, SJME_F_T(inFrame),
+		SJME_P_M_C(entry)->seq, SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Lookup field in the class. */
@@ -442,6 +439,10 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		SJME_JAVA_TYPE_ID_OBJECT, &instance)))
 		return sjme_error_vmError(inFrame, error);
+
+	/* Cannot be null. */
+	if (instance.v.l == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
 
 	/* Read/write promotion. */
 	if (sjme_error_is(error = sjme_nvm_instance_fieldAccessStack(
