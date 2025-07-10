@@ -392,6 +392,10 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	if (sjme_error_is(error = sjme_nvm_task_frameStackClear(topFrame)))
 		return sjme_error_vmError(inThread, error);
 
+	/* Clear locals as well. */
+	if (sjme_error_is(error = sjme_nvm_task_frameLocalClear(topFrame)))
+		return sjme_error_vmError(inThread, error);
+
 	/* Make the top-most frame  not exist. */
 	inThread->numFrames = topIndex;
 
@@ -469,7 +473,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	/* Allocate thread structure. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(inState, sizeof(*result),
-		SJME_NVM_STRUCT_THREAD, SJME_AS_NVM_COMMONP(&result))))
+		SJME_NVM_STRUCT_THREAD_INSTANCE, SJME_AS_NVM_COMMONP(&result))))
 		goto fail_allocResult;
 	
 	/* Lock state on the task. */

@@ -32,14 +32,67 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * The current type being walked.
- * 
- * @since 2025/06/21
+ * Pseudo type structure.
+ *
+ * @since 2025/07/10
  */
-typedef enum sjme_nvm_walk_type
+typedef enum sjme_nvm_walk_pseudoType
 {
-	SJME_TODO_WALK_TYPE,
-} sjme_nvm_walk_type;
+	/** NVM Common type. */
+	SJME_NVM_WALK_PSEUDO_COMMON = -1,
+
+	/** Allocation pool. */
+	SJME_NVM_WALK_ALLOC_POOL = -2,
+
+	/** @c sjme_nvm_bootParam . */
+	SJME_NVM_WALK_BOOT_PARAM = -3,
+
+	/** @c sjme_nvm_stateHooks . */
+	SJME_NVM_WALK_STATE_HOOKS = -4,
+
+	/** @c sjme_nal . */
+	SJME_NVM_WALK_NAL = -5,
+
+	/** @c sjme_atomic_sjme_jint . */
+	SJME_NVM_WALK_ATOMIC_JINT = -6,
+
+	/** @c sjme_nvm_mle_threadModel . */
+	SJME_NVM_WALK_MLE_THREAD_MODEL = -7,
+
+	/** @c sjme_nvm_threadSchedule . */
+	SJME_NVM_WALK_THREAD_SCHEDULE = -8,
+} sjme_nvm_walk_pseudoType;
+
+/**
+ * The current walking stage.
+ *
+ * @since 2025/07/10
+ */
+typedef enum sjme_nvm_walk_stageType
+{
+	/** Pre-walk phase. */
+	SJME_NVM_WALK_STAGE_PRE,
+
+	/** Steps phase. */
+	SJME_NVM_WALK_STAGE_STEPS,
+
+	/** The number of walk stages. */
+	SJME_NVM_WALK_NUM_STAGES,
+} sjme_nvm_walk_stageType;
+
+/**
+ * Walk step definition.
+ *
+ * @since 2025/07/10
+ */
+typedef struct sjme_nvm_walk_step sjme_nvm_walk_step;
+
+/**
+ * Walk step selection definition.
+ *
+ * @since 2025/07/10
+ */
+typedef struct sjme_nvm_walk_stepSelect sjme_nvm_walk_stepSelect;
 
 /**
  * The current state for walking.
@@ -47,6 +100,20 @@ typedef enum sjme_nvm_walk_type
  * @since 2025/06/21
  */
 typedef struct sjme_nvm_walk_state sjme_nvm_walk_state;
+	
+/**
+ * Handles walk stepping.
+ * 
+ * @param root The root walking state.
+ * @param parent The parent of this state.
+ * @param at The current item this is walking over.
+ * @return Any resultant error, if any.
+ * @since 2025/07/10
+ */
+typedef sjme_errorCode (*sjme_nvm_walk_stepHandlerFunc)(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at);
 
 /**
  * Functions to handle walking.
@@ -55,28 +122,110 @@ typedef struct sjme_nvm_walk_state sjme_nvm_walk_state;
  */
 typedef struct sjme_nvm_walk_functions
 {
-	int todo;
+	/** Handles pre-step through everything, if applicable. */
+	sjme_nvm_walk_stepHandlerFunc pre;
+	
+	/** Handles actual stepping through. */
+	sjme_nvm_walk_stepHandlerFunc step;
 } sjme_nvm_walk_functions;
+
+typedef union sjme_nvm_walk_pointer
+{
+	/** The raw pointer. */
+	sjme_pointer raw;
+} sjme_nvm_walk_pointer;
 
 struct sjme_nvm_walk_state
 {
+	/** The root state. */
+	sjme_nvm_walk_state* root;
+	
+	/** The parent state. */
+	sjme_nvm_walk_state* parent;
+	
 	/** The functions to use for walking. */
-	sjme_nvm_walk_functions functions;
+	const sjme_nvm_walk_functions* functions;
+
+	/** The base object pointer. */
+	sjme_nvm_walk_pointer base;
+
+	/** The pointer this is at. */
+	sjme_nvm_walk_pointer at;
+
+	/** The current type being walked. */
+	sjme_jint typeId;
+
+	/** What is the current walk stage? */
+	sjme_nvm_walk_stageType stage;
+
+	/** The current walking index. */
+	sjme_jint index;
+
+	/** The current depth. */
+	sjme_jint depth;
+
+	/** The select this is in. */
+	const sjme_nvm_walk_stepSelect* inSelect;
+
+	/** The step this is in. */
+	const sjme_nvm_walk_step* inStep;
+};
+
+struct sjme_nvm_walk_step
+{
+	/** The offset to the member. */
+	sjme_intPointer offset;
+
+	/** The name of the member. */
+	sjme_lpcstr memberName;
+
+	/** Is this a pointer? */
+	sjme_jboolean isPointer;
+
+	/** Is this a list? */
+	sjme_jboolean isList;
+
+	/** The size of the type. */
+	sjme_jint size;
+
+	/** The Java type. */
+	sjme_javaTypeId javaType;
+
+	/** The structure type. */
+	sjme_nvm_structType structType;
+};
+
+struct sjme_nvm_walk_stepSelect
+{
+	/** The name of this type. */
+	sjme_lpcstr typeName;
+
+	/** The ID of this type. */
+	sjme_jint typeId;
+
+	/** The size of the type. */
+	sjme_jint size;
+
+	/** The steps for walking. */
+	const sjme_nvm_walk_step* steps;
 };
 
 /**
- * Performs serialized walking.
+ * Starts a walk.
  * 
- * @param at The current at item.
- * @param parent The parent item this case from.
- * @param walkState The global walking state.
- * @return Any resultant error, if any.
- * @since 2025/06/21
+ * @param startAt The pointer to start at.
+ * @param typeId The type ID of this pointer.
+ * @param functions The functions for the walk.
+ * @return On any resultant error, if any.
+ * @since 2025/07/10
  */
-sjme_errorCode sjme_nvm_walk(
-	sjme_attrInNotNull sjme_nvm_common at,
-	sjme_attrInNotNull sjme_nvm_common parent,
-	sjme_attrInNotNull sjme_nvm_walk_state* walkState);
+sjme_errorCode sjme_nvm_walkStart(
+	sjme_attrInNotNull sjme_pointer startAt,
+	sjme_attrInValue sjme_jint typeId,
+	sjme_attrInNotNull const sjme_nvm_walk_functions* functions);
+
+/** Print structures to message output. */
+extern const sjme_nvm_walk_functions sjme_nvm_walk_printDump;
 
 /*--------------------------------------------------------------------------*/
 

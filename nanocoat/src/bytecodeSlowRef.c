@@ -173,8 +173,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			/* Count up if an object. */
 			if (mleArgR.t == SJME_JAVA_TYPE_ID_OBJECT &&
 				mleArgR.v.l != NULL)
-				if (sjme_error_is(error = sjme_alloc_weakRef(
-					mleArgR.v.l, NULL)))
+				if (sjme_error_is(error = sjme_nvm_instance_countUp(
+					mleArgR.v.l)))
 					return sjme_error_vmError(inFrame, error);
 			
 			/* Push */
@@ -1266,8 +1266,8 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 
 			/* Count up if not null as it is now on the stack. */
 			if (pushValue.v.l != NULL)
-				if (sjme_error_is(error = sjme_alloc_weakRef(
-					pushValue.v.l, NULL)))
+				if (sjme_error_is(error = sjme_nvm_instance_countUp(
+					pushValue.v.l)))
 					return sjme_error_vmError(inFrame, error);
 			break;
 

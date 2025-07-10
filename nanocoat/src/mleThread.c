@@ -188,7 +188,8 @@ SJME_NVM_MLE_FUNCTION_DECL(vmThreadIsMain)
 	
 	/* Must be a VMThread. */
 	thread = (sjme_nvm_thread)argV[0].v.l;
-	if (!sjme_nvm_isAR(thread, SJME_NVM_STRUCT_THREAD))
+	if (thread == NULL ||
+		!sjme_nvm_isAR(thread, SJME_NVM_STRUCT_THREAD_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Is a simple flag get. */

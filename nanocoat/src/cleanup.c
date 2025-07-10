@@ -508,7 +508,7 @@ sjme_errorCode sjme_nvm_allocR(
 			handler = sjme_nvm_taskStringsClose;
 			break;
 		
-		case SJME_NVM_STRUCT_THREAD:
+		case SJME_NVM_STRUCT_THREAD_INSTANCE:
 			handler = sjme_nvm_threadClose;
 			break;
 		
@@ -563,7 +563,8 @@ sjme_errorCode sjme_nvm_isA(
 	if (outResult == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (inType <= SJME_NVM_STRUCT_UNKNOWN || inType >= SJME_NVM_NUM_STRUCT)
+	if (inType != SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE &&
+		(inType <= SJME_NVM_STRUCT_UNKNOWN || inType >= SJME_NVM_NUM_STRUCT))
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Null input is always nothing. */
@@ -587,9 +588,16 @@ sjme_errorCode sjme_nvm_isA(
 	if (common->magic != SJME_NVM_OBJECT_MAGIC)
 		*outResult = SJME_JNI_FALSE;
 	else if (common->type == inType ||
-		(inType == SJME_NVM_STRUCT_OBJECT_INSTANCE &&
-			(common->type == SJME_NVM_STRUCT_STRING_INSTANCE ||
-			common->type == SJME_NVM_STRUCT_CLASS_INSTANCE)))
+		(inType == SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE &&
+			(common->type == SJME_NVM_STRUCT_ARRAY_INSTANCE ||
+			common->type == SJME_NVM_STRUCT_BRACKET_JAR_PACKAGE_INSTANCE ||
+			common->type == SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE ||
+			common->type == SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE ||
+			common->type == SJME_NVM_STRUCT_CLASS_INSTANCE ||
+			common->type == SJME_NVM_STRUCT_OBJECT_INSTANCE ||
+			common->type == SJME_NVM_STRUCT_STRING_INSTANCE ||
+			common->type == SJME_NVM_STRUCT_THREAD_INSTANCE ||
+			common->type == SJME_NVM_STRUCT_WEAK_INSTANCE)))
 		*outResult = SJME_JNI_TRUE;
 	else
 		*outResult = SJME_JNI_FALSE;

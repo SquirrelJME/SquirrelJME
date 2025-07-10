@@ -516,9 +516,15 @@ typedef enum sjme_errorCode
 
 	/** Uncaught exception. */
 	SJME_ERROR_UNCAUGHT_EXCEPTION = -158,
+
+	/** Object is not valid. */
+	SJME_ERROR_INVALID_OBJECT = -159,
+
+	/** Walk encountered an unknown type. */
+	SJME_ERROR_WALK_UNKNOWN_TYPE = -160,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -159,
+	SJME_NUM_ERROR_CODES = -161,
 } sjme_errorCode;
 
 /**

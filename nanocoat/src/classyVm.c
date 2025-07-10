@@ -932,7 +932,8 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	result->isClasses = isClasses;
 	
 	/* Is now being used, so count up. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(
+		SJME_AS_JOBJECT(result))))
 		goto fail_countUp;
 	
 	/* Set class type ID. */

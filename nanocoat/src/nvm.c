@@ -9,6 +9,8 @@
 
 #include <string.h>
 
+#include <sjme/nvm/walk.h>
+
 #include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
 #include "sjme/nvm/cleanup.h"
@@ -118,6 +120,7 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_NULL_STACK_POINTER:
 		case SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS:
 		case SJME_ERROR_MEMBER_ACCESS_DENIED:
+		case SJME_ERROR_INVALID_OBJECT:
 			return SJME_JNI_TRUE;
 
 		default:
@@ -129,15 +132,31 @@ sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull void* vmContext,
 	sjme_attrInValue sjme_errorCode error)
 {
+	sjme_nvm stateContext;
+	
 	/* Emit trace? */
 	if (sjme_debug_vmTraceErrorIs(error) ||
 		error == SJME_ERROR_NOT_IMPLEMENTED)
 	{
 		/* Emit stack trace, if acceptable. */
+		stateContext = NULL;
 		if (sjme_nvm_isAR(vmContext, SJME_NVM_STRUCT_FRAME))
-			sjme_nvm_task_stackTraceThread(((sjme_nvm_frame)vmContext)->inThread);
-		else if (sjme_nvm_isAR(vmContext, SJME_NVM_STRUCT_THREAD))
+		{
+			stateContext = ((sjme_nvm_frame)vmContext)->inState;
+			sjme_nvm_task_stackTraceThread(
+				((sjme_nvm_frame)vmContext)->inThread);
+		}
+		else if (sjme_nvm_isAR(vmContext,
+			SJME_NVM_STRUCT_THREAD_INSTANCE))
+		{
+			stateContext = ((sjme_nvm_thread)vmContext)->inState;
 			sjme_nvm_task_stackTraceThread(vmContext);
+		}
+
+		/* Dump the entire NVM state. */
+		if (stateContext != NULL)
+			sjme_nvm_walkStart(stateContext, SJME_NVM_STRUCT_STATE,
+				&sjme_nvm_walk_printDump);
 
 #if defined(SJME_CONFIG_DEBUG)
 		/* Fail with a TO-DO. */

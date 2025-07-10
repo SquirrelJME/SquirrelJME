@@ -62,7 +62,8 @@ squirreljme_multilib_add_static_library(Core
 	taskThread.c
 	tread.c
 	vmConfig.c
-	walk.c)
+	walk.c
+	walkDebug.c)
 
 # Include main headers
 squirreljme_multilib_static_target_include_directories(Core

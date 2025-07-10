@@ -406,6 +406,16 @@ sjme_errorCode sjme_nvm_instance_countDown(
 	sjme_attrInNotNull sjme_jobject newV);
 
 /**
+ * Counts the given object up.
+ * 
+ * @param object The object to count up.
+ * @return Any resultant error, if any.
+ * @since 2025/07/10
+ */
+sjme_errorCode sjme_nvm_instance_countUp(
+	sjme_attrInNotNull sjme_jobject object);
+
+/**
  * The default accessor for fields.
  * 
  * @param instance The instance to access.

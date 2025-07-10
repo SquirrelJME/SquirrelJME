@@ -80,20 +80,48 @@ sjme_errorCode sjme_mle_mleCallFunction(
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV)
 {
+	sjme_errorCode error;
 	sjme_jint i;
+	sjme_jvalueTyped result;
+	sjme_cchar charR;
 	
 	if (inFrame == NULL || function == NULL ||
 		argR == NULL || (argC > 0 && argV == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Debug. */
+	sjme_message("MLE.%s %s",
+		function->name, function->type);
 	
 	/* Check arguments. */
 	for (i = 0; i < argC; i++)
 		if (function->argX[i + 1] == '\0' ||
 			sjme_nvm_mleTToA[argV[i].t] != function->argX[i + 1])
 			return SJME_ERROR_INCOMPATIBLE_MLE_CALL;
-					
+	
 	/* Forward call. */
-	return function->function(inFrame, argR, argC, argV);
+	memset(&result, 0, sizeof(result));
+	result.t = SJME_NUM_BASIC_TYPE_IDS + SJME_NUM_JAVA_TYPE_IDS;
+	if (sjme_error_is(error = function->function(inFrame, &result,
+		argC, argV)))
+		return sjme_error_default(error);
+
+	/* Return type character code. */
+	charR = function->argX[0];
+	
+	/* Did not write the correct return value? */
+	if ((charR == 'V' &&
+			result.t != SJME_NUM_BASIC_TYPE_IDS + SJME_NUM_JAVA_TYPE_IDS) ||
+		(charR != 'V' && charR != sjme_nvm_mleTToA[result.t]))
+		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_WRITE);
+
+	/* Set to void? */
+	if (charR == 'V')
+		result.t = SJME_JAVA_TYPE_ID_VOID;
+
+	/* Success! */
+	memmove(argR, &result, sizeof(result));
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_mle_mleCallShelf(

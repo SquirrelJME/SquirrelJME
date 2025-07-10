@@ -54,7 +54,7 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayClone)
 				continue;
 
 			/* Count up. */
-			if (sjme_error_is(error = sjme_alloc_weakRef(element, NULL)))
+			if (sjme_error_is(error = sjme_nvm_instance_countUp(element)))
 				goto fail_count;
 		}
 

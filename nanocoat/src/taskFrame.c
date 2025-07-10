@@ -164,6 +164,38 @@ sjme_errorCode sjme_nvm_task_frameLocalAddr(
 		localType, mappedSlot, outAddr);
 }
 
+sjme_errorCode sjme_nvm_task_frameLocalClear(
+	sjme_attrInNotNull sjme_nvm_frame inFrame)
+{
+	sjme_errorCode error;
+	sjme_jvalueTyped temp;
+	sjme_frame_frameStack* stack;
+	sjme_jint index;
+	
+	if (inFrame == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Go through and clear out all object locals. */
+	stack = &inFrame->stack.stack[SJME_JAVA_TYPE_ID_OBJECT];
+	for (index = 0; index < stack->front; index++)
+	{
+		/* Skip nulls. */
+		if (stack->base.l[index] == NULL)
+			continue;
+
+		/* Count down. */
+		if (sjme_error_is(error = sjme_nvm_instance_countDown(
+			&stack->base.l[index], NULL)))
+			return sjme_error_vmError(inFrame, error);
+
+		/* Clear. */
+		stack->base.l[index] = NULL;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_task_frameLocalPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInValue sjme_javaTypeId localType,
@@ -337,6 +369,12 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 			temp.t, &temp)))
 			return sjme_error_vmError(inFrame, error);
+
+		/* If an object, count it down. */
+		if (temp.t == SJME_JAVA_TYPE_ID_OBJECT && temp.v.l != NULL)
+			if (sjme_error_is(error = sjme_nvm_instance_countDown(
+				&temp.v.l, NULL)))
+				return sjme_error_vmError(inFrame, error);
 	}
 
 	/* Success! */
@@ -547,7 +585,7 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 		return sjme_error_vmError(inFrame, error);
 
 	/* Count up string. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(value.v.l, NULL)))
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(value.v.l)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push value. */
@@ -606,7 +644,7 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 	/* If copied elsewhere, count object up. */
 	if (copiedElsewhere && readType == SJME_JAVA_TYPE_ID_OBJECT &&
 		temp.v.l != NULL)
-		if (sjme_error_is(error = sjme_alloc_weakRef(temp.v.l, NULL)))
+		if (sjme_error_is(error = sjme_nvm_instance_countUp(temp.v.l)))
 			return sjme_error_default(error);
 	
 	/* Success! */
@@ -732,8 +770,8 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 
 			/* Otherwise, we technically have a copy so count up. */
 			else if (tempObject != NULL)
-				if (sjme_error_is(error = sjme_alloc_weakRef(tempObject,
-					NULL)))
+				if (sjme_error_is(error = sjme_nvm_instance_countUp(
+					tempObject)))
 					return sjme_error_default(error);
 
 			outValue->v.l = tempObject;

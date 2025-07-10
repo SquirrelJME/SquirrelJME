@@ -221,7 +221,7 @@ typedef enum sjme_nvm_structType
 	SJME_NVM_STRUCT_TASK_STRINGS,
 	
 	/** A single thread. */
-	SJME_NVM_STRUCT_THREAD,
+	SJME_NVM_STRUCT_THREAD_INSTANCE,
 	
 	/** Class loader. */
 	SJME_NVM_STRUCT_VM_CLASS_LOADER,
@@ -230,7 +230,10 @@ typedef enum sjme_nvm_structType
 	SJME_NVM_STRUCT_WEAK_INSTANCE,
 	
 	/** The number of structure types. */
-	SJME_NVM_NUM_STRUCT
+	SJME_NVM_NUM_STRUCT,
+
+	/** Any object instance. */
+	SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE = SJME_NVM_NUM_STRUCT + 3
 } sjme_nvm_structType;
 
 /**

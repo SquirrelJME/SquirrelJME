@@ -20,7 +20,7 @@ SJME_NVM_BYTECODE_SLOW(Dup)
 	/* What is at the top of the stack? */
 	memset(&top, 0, sizeof(top));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
-		0, &top, SJME_JNI_FALSE)))
+		0, &top, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Must not be a wide type. */

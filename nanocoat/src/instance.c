@@ -72,7 +72,7 @@ sjme_errorCode sjme_nvm_instance_countDown(
 		/* Is this object actually valid? */
 		validObject = SJME_JNI_FALSE;
 		if (sjme_error_is(error = sjme_nvm_isA(oldObject,
-			SJME_NVM_STRUCT_OBJECT_INSTANCE,
+			SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE,
 			&validObject)))
 			return sjme_error_default(error);
 
@@ -80,6 +80,29 @@ sjme_errorCode sjme_nvm_instance_countDown(
 		if (sjme_error_is(error = sjme_alloc_weakUnRef(oldObject)))
 			return sjme_error_default(error);
 	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_instance_countUp(
+	sjme_attrInNotNull sjme_jobject object)
+{
+	sjme_alloc_weak weak;
+	sjme_errorCode error;
+	
+	if (object == NULL)
+		return SJME_ERROR_NULL_STACK_POINTER;
+
+	/* Must be a valid object type. */
+	if (!sjme_nvm_isAR(object, SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
+		return SJME_ERROR_INVALID_OBJECT;
+
+	/* This must be a valid weak as well! */
+	weak = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakRef(object, &weak)) ||
+		weak == NULL)
+		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -229,6 +252,7 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 	sjme_attrInNotNull sjme_jvalueTyped* stackType,
 	sjme_attrInValue sjme_jboolean isPut)
 {
+	sjme_errorCode error;
 	sjme_jvalue* direct;
 	sjme_nvm_jfieldAccessFunc accessor;
 
@@ -257,8 +281,18 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 	if (fieldId->extendedType < SJME_NUM_JAVA_TYPE_IDS)
 	{
 		if (isPut)
+		{
+			/* Count down the old value? */
+			if (fieldId->javaType == SJME_JAVA_TYPE_ID_OBJECT)
+				if (sjme_error_is(error = sjme_nvm_instance_countDown(
+					&direct->l,
+					stackType->v.l)))
+						return sjme_error_default(error);
+			
+			/* Put in the new value. */
 			memmove(direct, &stackType->v,
 				sjme_nvm_typeMul[fieldId->extendedType]);
+		}
 		else
 			memmove(&stackType->v, direct,
 				sjme_nvm_typeMul[fieldId->extendedType]);

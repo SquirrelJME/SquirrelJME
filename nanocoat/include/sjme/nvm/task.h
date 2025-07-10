@@ -643,6 +643,16 @@ sjme_errorCode sjme_nvm_task_frameLocalAddr(
 	sjme_attrOutNotNull sjme_pointer* outAddr);
 
 /**
+ * Clears the entire set of locals for a frame.
+ * 
+ * @param inFrame The frame to clear.
+ * @return Any resultant error, if any.
+ * @since 2025/07/10
+ */
+sjme_errorCode sjme_nvm_task_frameLocalClear(
+	sjme_attrInNotNull sjme_nvm_frame inFrame);
+
+/**
  * Pushes the specified local to the stack.
  * 
  * @param inFrame The frame to push the local to the stack from.
