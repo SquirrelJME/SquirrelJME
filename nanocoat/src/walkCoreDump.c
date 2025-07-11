@@ -42,6 +42,25 @@ static sjme_errorCode sjme_nvm_walk_coreArrayClose(
 #endif
 }
 
+static sjme_errorCode sjme_nvm_walk_coreArrayOpen(
+	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState)
+{
+	if (coreState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_messageB("JSON: [");
+#endif
+
+#if defined(SJME_SOFT_OKAY)
+	return SJME_ERROR_NONE;
+#else
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#endif
+}
+
 static sjme_errorCode sjme_nvm_walk_coreMapClose(
 	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState)
 {
@@ -111,7 +130,8 @@ static sjme_errorCode sjme_nvm_walk_coreKeyPutP(
 
 #if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
-	sjme_messageB("JSON: \"%s\": %p,", inKey, (void*)inValue);
+	sjme_messageB("JSON: \"%s\": %jd,", inKey,
+		(intmax_t)inValue);
 #endif
 	
 #if defined(SJME_SOFT_OKAY)
@@ -169,6 +189,11 @@ static sjme_errorCode sjme_nvm_walk_coreKeyPutS(
 /** Close array. */
 #define sjme_nvm_walk_coreArrayCloseR() \
 	if (sjme_error_is(error = sjme_nvm_walk_coreArrayClose(coreState))) \
+		return sjme_error_default(error)
+
+/** Open array. */
+#define sjme_nvm_walk_coreArrayOpenR() \
+	if (sjme_error_is(error = sjme_nvm_walk_coreArrayOpen(coreState))) \
 		return sjme_error_default(error)
 
 /** Close map. */
@@ -275,7 +300,8 @@ static const sjme_nvm_walk_coreHandler sjme_nvm_walk_coreHandlers[] =
 
 static sjme_errorCode sjme_nvm_walk_coreRecordP(
 	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState,
-	sjme_attrInNotNull sjme_pointer pointer,
+	sjme_attrInNotNull sjme_pointer base,
+	sjme_attrInNotNull sjme_pointer baseStruct,
 	sjme_attrInValue sjme_jint typeId)
 {
 	sjme_errorCode error;
@@ -285,7 +311,7 @@ static sjme_errorCode sjme_nvm_walk_coreRecordP(
 	sjme_nvm_walk_pointerLink* link;
 	sjme_jint i, lastFree;
 	
-	if (coreState == NULL || pointer == NULL)
+	if (coreState == NULL || base == NULL || baseStruct == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Used to quickly place in a free link slot. */
@@ -301,7 +327,8 @@ static sjme_errorCode sjme_nvm_walk_coreRecordP(
 		for (i = 0; i < SJME_NVM_WALK_CHAIN_SIZE; i++)
 		{
 			/* Is this the one? */
-			if (chain->links[i].pointer == pointer)
+			if (chain->links[i].base == base &&
+				chain->links[i].baseStruct == baseStruct)
 			{
 				/* If this is the same type then we processed it already. */
 				if (chain->links[i].typeId == typeId)
@@ -312,7 +339,7 @@ static sjme_errorCode sjme_nvm_walk_coreRecordP(
 			}
 
 			/* Record free slot for quicker placement. */
-			if (chain->links[i].pointer == NULL && freeChain == NULL)
+			if (chain->links[i].base == NULL && freeChain == NULL)
 			{
 				freeChain = chain;
 				lastFree = i;
@@ -351,7 +378,8 @@ static sjme_errorCode sjme_nvm_walk_coreRecordP(
 
 	/* Store item here. */
 	link = &freeChain->links[lastFree];
-	link->pointer = pointer;
+	link->base = base;
+	link->baseStruct = baseStruct;
 	link->typeId = typeId;
 
 	/* Success! */
@@ -380,6 +408,12 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 	coreState = at->data;
 	if (coreState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
+
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+	/* Debug. */
+	sjme_messageB("step(%p, %d, %d, %d)",
+		at->base.raw, at->typeId, at->index, at->breadth);
+#endif
 
 	/* End of current structure? */
 	if (at->index == INT32_MIN || at->index == INT32_MAX)
@@ -438,7 +472,7 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		/* Record a new pointer, or use pre-existing one. */
 		shallowOpen = SJME_JNI_FALSE;
 		if (sjme_error_is(error = sjme_nvm_walk_coreRecordP(
-			coreState, at->base.raw, at->typeId)))
+			coreState, at->base.raw, at->baseStruct.raw, at->typeId)))
 		{
 			/* If this was already recorded, then we shallow open it. */
 			/* We always want to process this at the level point. */
@@ -481,7 +515,17 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 			/* Recall this pointer specifically. */
 			sjme_nvm_walk_coreKeyPutPR("recall",
 				at->base.raw);
+
+			/* If this is recalling to store data into a known structure */
+			/* member's data, then recall it. This is a hint */
+			if (at->inStep != NULL)
+				sjme_nvm_walk_coreKeyPutSR("basis",
+					at->inStep->memberName);
 		}
+
+		/* Which sub-structure is this for? */
+		sjme_nvm_walk_coreKeyPutPR("struct",
+			at->baseStruct.raw);
 
 		/* Regardless of the mode, we need to store data on the structure. */
 		sjme_nvm_walk_coreKeyPutArrayR("data");
@@ -575,23 +619,31 @@ sjme_errorCode sjme_nvm_walk_coreDumpStream(
 	sjme_attrInNotNull sjme_stream_output outStream)
 {
 	sjme_errorCode error;
-	sjme_nvm_walk_coreState coreState;
+	sjme_nvm_walk_coreState initState;
+	sjme_nvm_walk_coreState* coreState;
 	
 	if (allocPool == NULL || inState == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Initialize state. */
-	memset(&coreState, 0, sizeof(coreState));
-	coreState.allocPool = allocPool;
-	coreState.out = outStream;
-	coreState.currentBase = 0;
-	coreState.currentDepth = -1;
+	memset(&initState, 0, sizeof(initState));
+	coreState = &initState;
+	initState.allocPool = allocPool;
+	initState.out = outStream;
+	initState.currentBase = 0;
+	initState.currentDepth = -1;
+
+	/* Open an array to store all wound data. */
+	sjme_nvm_walk_coreArrayOpenR();
 
 	/* Perform the core dump. */
 	if (sjme_error_is(error = sjme_nvm_walk_start(inState,
 		SJME_NVM_STRUCT_STATE,
-		&sjme_nvm_walk_coreDumpFunctions, &coreState)))
+		&sjme_nvm_walk_coreDumpFunctions, &initState)))
 		return sjme_error_default(error);
+
+	/* Close data winding. */
+	sjme_nvm_walk_coreArrayCloseR();
 
 	/* Success! */
 	return SJME_ERROR_NONE;

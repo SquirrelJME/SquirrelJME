@@ -38,7 +38,10 @@ extern "C"
 typedef struct sjme_nvm_walk_pointerLink
 {
 	/** The actual pointer for this item. */
-	sjme_pointer pointer;
+	sjme_pointer base;
+	
+	/** The sub-structure pointer. */
+	sjme_pointer baseStruct;
 	
 	/** The item ID of this pointer. */
 	sjme_jint itemId;

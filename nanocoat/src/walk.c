@@ -190,10 +190,7 @@ static sjme_errorCode sjme_nvm_walk(
 	/* Mismatched parent or in some other bad state? */
 	if (at->parent != parent || at->inSelect == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-
-	/* Set base step. */
-	currentStep = at->inSelect->steps;
-
+	
 	/* Start of structure step? */
 	skipElements = SJME_JNI_FALSE;
 	if (at->index <= -1)
@@ -212,9 +209,10 @@ static sjme_errorCode sjme_nvm_walk(
 		at->index = 0;
 	}
 
-	/* Stepping over individual members? Walk in two breadths */
+	/* Stepping over individual members? Walk in two breadths... */
 	for (breadth = 0; breadth < SJME_NVM_WALK_NUM_BREADTH; breadth++)
-		for (atIndex = 0; !skipElements; currentStep++, atIndex++)
+		for (currentStep = at->inSelect->steps, atIndex = 0;
+			!skipElements; currentStep++, atIndex++)
 		{
 			/* Stop at the end. */
 			if (currentStep->memberName == NULL ||
@@ -231,6 +229,7 @@ static sjme_errorCode sjme_nvm_walk(
 			memset(&subStep, 0, sizeof(subStep));
 			subStep.root = root;
 			subStep.base.raw = at->base.raw;
+			subStep.baseStruct.raw = at->baseStruct.raw;
 			subStep.parent = at;
 			subStep.typeId = currentStep->structType;
 			subStep.inSelect = subSelect;
@@ -251,6 +250,7 @@ static sjme_errorCode sjme_nvm_walk(
 			if (subSelect != NULL && breadth == SJME_NVM_WALK_BREADTH_DIVE)
 			{
 				/* Start at the base of the structure. */
+				subStep.baseStruct.raw = subStep.at.raw;
 				subStep.index = -1;
 				
 				/* Do a structured walk. */
@@ -269,6 +269,7 @@ static sjme_errorCode sjme_nvm_walk(
 			if (breadth == SJME_NVM_WALK_BREADTH_LEVEL)
 			{
 				/* This is just the current index. */
+				subStep.baseStruct.raw = subStep.base.raw;
 				subStep.index = atIndex;
 
 				/* Perform the stepped walk. */
@@ -333,6 +334,7 @@ sjme_errorCode sjme_nvm_walk_start(
 		/* Initialize root state. */
 		memset(&rootState, 0, sizeof(rootState));
 		rootState.base.raw = startAt;
+		rootState.baseStruct.raw = startAt;
 		rootState.at.raw = startAt;
 		rootState.typeId = typeId;
 		rootState.inSelect = select;

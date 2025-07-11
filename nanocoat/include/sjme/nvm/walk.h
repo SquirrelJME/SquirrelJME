@@ -212,6 +212,9 @@ struct sjme_nvm_walk_state
 	/** The base object pointer. */
 	sjme_nvm_walk_pointer base;
 
+	/** The base structure pointer within the base. */
+	sjme_nvm_walk_pointer baseStruct;
+
 	/** The pointer this is at. */
 	sjme_nvm_walk_pointer at;
 
