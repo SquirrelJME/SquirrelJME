@@ -42,25 +42,43 @@ typedef enum sjme_nvm_walk_pseudoType
 	SJME_NVM_WALK_PSEUDO_COMMON = -1,
 
 	/** Allocation pool. */
-	SJME_NVM_WALK_ALLOC_POOL = -2,
+	SJME_NVM_WALK_PSEUDO_ALLOC_POOL = -2,
 
 	/** @c sjme_nvm_bootParam . */
-	SJME_NVM_WALK_BOOT_PARAM = -3,
+	SJME_NVM_WALK_PSEUDO_BOOT_PARAM = -3,
 
 	/** @c sjme_nvm_stateHooks . */
-	SJME_NVM_WALK_STATE_HOOKS = -4,
+	SJME_NVM_WALK_PSEUDO_STATE_HOOKS = -4,
 
 	/** @c sjme_nal . */
-	SJME_NVM_WALK_NAL = -5,
+	SJME_NVM_WALK_PSEUDO_NAL = -5,
 
 	/** @c sjme_atomic_sjme_jint . */
-	SJME_NVM_WALK_ATOMIC_JINT = -6,
+	SJME_NVM_WALK_PSEUDO_ATOMIC_JINT = -6,
 
 	/** @c sjme_nvm_mle_threadModel . */
-	SJME_NVM_WALK_MLE_THREAD_MODEL = -7,
+	SJME_NVM_WALK_PSEUDO_MLE_THREAD_MODEL = -7,
 
 	/** @c sjme_nvm_threadSchedule . */
-	SJME_NVM_WALK_THREAD_SCHEDULE = -8,
+	SJME_NVM_WALK_PSEUDO_THREAD_SCHEDULE = -8,
+
+	/** @c sjme_closeableBase . */
+	SJME_NVM_WALK_PSEUDO_CLOSEABLE = -9,
+
+	/** @c sjme_nvm_structType . */
+	SJME_NVM_WALK_PSEUDO_NVM_STRUCT_TYPE = -10,
+
+	/** A Primitive type. */
+	SJME_NVM_WALK_PSEUDO_PRIMITIVE = -11,
+
+	/** @c sjme_frontEnd . */
+	SJME_NVM_WALK_PSEUDO_FRONT_END = -12,
+
+	/** @c sjme_thread_spinLock . */
+	SJME_NVM_WALK_PSEUDO_SPIN_LOCK = -13,
+
+	/** @c sjme_closeable_closeHandlerFunc . */
+	SJME_NVM_WALK_PSEUDO_CLOSE_HANDLER = -14,
 } sjme_nvm_walk_pseudoType;
 
 /**
@@ -133,6 +151,21 @@ typedef union sjme_nvm_walk_pointer
 {
 	/** The raw pointer. */
 	sjme_pointer raw;
+
+	/** Pointer sized integer. */
+	sjme_intPointer* intPointer;
+
+	/** Spin lock. */
+	sjme_thread_spinLock* spinLock;
+
+	/** The structure type. */
+	sjme_nvm_structType* nvmStructType;
+
+	/** Atomic integer. */
+	sjme_atomic_sjme_jint* atomicInt;
+
+	/** Closeable. */
+	sjme_closeableBase* closeable;
 } sjme_nvm_walk_pointer;
 
 struct sjme_nvm_walk_state

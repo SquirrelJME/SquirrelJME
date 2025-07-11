@@ -49,22 +49,26 @@
 /** Walk step a primitive value (pointer). */
 #define SJME_WS_PRIM_P(memberName, javaType) \
 	SJME_WS_FULL(memberName, \
-		SJME_JNI_TRUE, javaType, SJME_NVM_NUM_STRUCT, SJME_JNI_FALSE)
+		SJME_JNI_TRUE, javaType, SJME_NVM_WALK_PSEUDO_PRIMITIVE, \
+		SJME_JNI_FALSE)
 
 /** Walk step a primitive list of pointer values (pointer). */
 #define SJME_WS_PRIM_PL(memberName, javaType) \
 	SJME_WS_FULL(memberName, \
-		SJME_JNI_TRUE, javaType, SJME_NVM_NUM_STRUCT, SJME_JNI_TRUE)
+		SJME_JNI_TRUE, javaType, SJME_NVM_WALK_PSEUDO_PRIMITIVE, \
+		SJME_JNI_TRUE)
 
 /** Walk step a primitive value (value). */
 #define SJME_WS_PRIM_V(memberName, javaType) \
 	SJME_WS_FULL(memberName, \
-		SJME_JNI_FALSE, javaType, SJME_NVM_NUM_STRUCT, SJME_JNI_FALSE)
+		SJME_JNI_FALSE, javaType, SJME_NVM_WALK_PSEUDO_PRIMITIVE, \
+		SJME_JNI_FALSE)
 
 /** Walk step a primitive list values (value). */
 #define SJME_WS_PRIM_VL(memberName, javaType) \
 	SJME_WS_FULL(memberName, \
-		SJME_JNI_FALSE, javaType, SJME_NVM_NUM_STRUCT, SJME_JNI_TRUE)
+		SJME_JNI_FALSE, javaType, SJME_NVM_WALK_PSEUDO_PRIMITIVE, \
+		SJME_JNI_TRUE)
 
 /** Walk step another structure type (pointer). */
 #define SJME_WS_STRUCT_P(memberName, structType) \
@@ -102,26 +106,42 @@
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 
+#define SJME_WALK_CURRENT sjme_nvm_commonBase
+SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_COMMON)
+	SJME_WS_STRUCT_V(closeable, SJME_NVM_WALK_PSEUDO_CLOSEABLE),
+	SJME_WS_STRUCT_V(type, SJME_NVM_WALK_PSEUDO_NVM_STRUCT_TYPE),
+	SJME_WS_PRIM_V(magic, SJME_BASIC_TYPE_ID_INTEGER),
+	SJME_WS_STRUCT_V(frontEnd, SJME_NVM_WALK_PSEUDO_FRONT_END),
+	SJME_WS_STRUCT_V(lock, SJME_NVM_WALK_PSEUDO_SPIN_LOCK),
+	SJME_WS_STRUCT_V(specificClose,
+		SJME_NVM_WALK_PSEUDO_CLOSE_HANDLER),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
 #define SJME_WALK_CURRENT sjme_nvm_stateBase
 SJME_WALK_BEGIN(SJME_NVM_STRUCT_STATE)
 	SJME_WS_STRUCT_V(common, SJME_NVM_WALK_PSEUDO_COMMON),
-	SJME_WS_STRUCT_V(allocPool, SJME_NVM_WALK_ALLOC_POOL),
-	SJME_WS_STRUCT_P(bootParamCopy, SJME_NVM_WALK_BOOT_PARAM),
-	SJME_WS_STRUCT_P(hooks, SJME_NVM_WALK_STATE_HOOKS),
-	SJME_WS_STRUCT_P(nal, SJME_NVM_WALK_NAL),
+	SJME_WS_STRUCT_V(allocPool, SJME_NVM_WALK_PSEUDO_ALLOC_POOL),
+	SJME_WS_STRUCT_P(bootParamCopy, SJME_NVM_WALK_PSEUDO_BOOT_PARAM),
+	SJME_WS_STRUCT_P(hooks, SJME_NVM_WALK_PSEUDO_STATE_HOOKS),
+	SJME_WS_STRUCT_P(nal, SJME_NVM_WALK_PSEUDO_NAL),
 	SJME_WS_STRUCT_V(suite, SJME_NVM_STRUCT_ROM_SUITE),
 	SJME_WS_STRUCT_VL(tasks, SJME_NVM_STRUCT_TASK),
-	SJME_WS_STRUCT_V(numRunningTasks, SJME_NVM_WALK_ATOMIC_JINT),
-	SJME_WS_STRUCT_V(nextTaskId, SJME_NVM_WALK_ATOMIC_JINT),
-	SJME_WS_STRUCT_V(nextThreadId, SJME_NVM_WALK_ATOMIC_JINT),
-	SJME_WS_STRUCT_V(threadModel, SJME_NVM_WALK_MLE_THREAD_MODEL),
-	SJME_WS_STRUCT_V(schedule, SJME_NVM_WALK_THREAD_SCHEDULE),
-	SJME_WS_STRUCT_V(terminating, SJME_NVM_WALK_ATOMIC_JINT),
+	SJME_WS_STRUCT_V(numRunningTasks, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
+	SJME_WS_STRUCT_V(nextTaskId, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
+	SJME_WS_STRUCT_V(nextThreadId, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
+	SJME_WS_STRUCT_V(threadModel, SJME_NVM_WALK_PSEUDO_MLE_THREAD_MODEL),
+	SJME_WS_STRUCT_V(schedule, SJME_NVM_WALK_PSEUDO_THREAD_SCHEDULE),
+	SJME_WS_STRUCT_V(terminating, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
 const sjme_nvm_walk_stepSelect sjme_nvm_walk_select[] =
 {
+	/* Pseudo Structures. */
+	SJME_WALK_SELECT(sjme_nvm_commonBase, SJME_NVM_WALK_PSEUDO_COMMON),
+
+	/* NVM Structures. */
 	SJME_WALK_SELECT(sjme_nvm_stateBase, SJME_NVM_STRUCT_STATE),
 	SJME_WALK_SELECT_END()
 };
@@ -197,6 +217,7 @@ static sjme_errorCode sjme_nvm_walk(
 		subStep.parent = at;
 		subStep.typeId = currentStep->structType;
 		subStep.inSelect = subSelect;
+		subStep.inStep = currentStep;
 		subStep.functions = at->functions;
 		subStep.depth = at->depth + 1;
 		subStep.stage = at->stage;

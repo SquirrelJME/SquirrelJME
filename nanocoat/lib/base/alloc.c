@@ -1577,6 +1577,24 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakUnRef)(
 	return SJME_ERROR_NONE;
 }
 
+sjme_jint sjme_alloc_weakRefLeftR(
+	sjme_attrInNotNull sjme_pointer addr)
+{
+	sjme_alloc_weak weak;
+	
+	/* Null is an implicit negative count. */
+	if (addr == NULL)
+		return -1;
+
+	/* Get the actual weak information here. */
+	weak = NULL;
+	if (sjme_error_is(sjme_alloc_weakRefGet(addr, &weak)) || weak == NULL)
+		return -1;
+
+	/* Return the count. */
+	return sjme_atomic_sjme_jint_get(&weak->count);
+}
+
 #if defined(SJME_CONFIG_DEBUG)
 
 sjme_errorCode sjme_alloc_poolDump(
