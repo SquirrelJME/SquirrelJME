@@ -198,6 +198,12 @@ struct sjme_nvm_walk_state
 	/** The current depth. */
 	sjme_jint depth;
 
+	/** The unique step ID. */
+	sjme_jint uniqueId;
+
+	/** The next unique step ID. */
+	sjme_jint nextUniqueId;
+
 	/** The select this is in. */
 	const sjme_nvm_walk_stepSelect* inSelect;
 
@@ -287,12 +293,14 @@ sjme_errorCode sjme_nvm_walk_coreDumpFile(
 /**
  * Core dumps to a stream.
  * 
+ * @param allocPool The allocation pool to use.
  * @param inState The state to core dump.
  * @param outStream The resultant stream.
  * @return Any resultant error, if any.
  * @since 2025/07/10
  */
 sjme_errorCode sjme_nvm_walk_coreDumpStream(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_stream_output outStream);
 	

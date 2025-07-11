@@ -522,9 +522,12 @@ typedef enum sjme_errorCode
 
 	/** Walk encountered an unknown type. */
 	SJME_ERROR_WALK_UNKNOWN_TYPE = -160,
+
+	/** Skip the elements of items. */
+	SJME_ERROR_WALK_SKIP_ELEMENTS = -161,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -161,
+	SJME_NUM_ERROR_CODES = -162,
 } sjme_errorCode;
 
 /**

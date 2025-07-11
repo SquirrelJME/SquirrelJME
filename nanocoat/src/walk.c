@@ -106,6 +106,15 @@
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 
+#define SJME_WALK_CURRENT sjme_closeableBase
+SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_CLOSEABLE)
+	SJME_WS_STRUCT_V(isClosed, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
+	SJME_WS_PRIM_V(refCounting, SJME_BASIC_TYPE_ID_BOOLEAN),
+	SJME_WS_STRUCT_V(closeHandler,
+		SJME_NVM_WALK_PSEUDO_CLOSE_HANDLER),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
 #define SJME_WALK_CURRENT sjme_nvm_commonBase
 SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_COMMON)
 	SJME_WS_STRUCT_V(closeable, SJME_NVM_WALK_PSEUDO_CLOSEABLE),
@@ -139,6 +148,7 @@ SJME_WALK_END();
 const sjme_nvm_walk_stepSelect sjme_nvm_walk_select[] =
 {
 	/* Pseudo Structures. */
+	SJME_WALK_SELECT(sjme_closeableBase, SJME_NVM_WALK_PSEUDO_CLOSEABLE),
 	SJME_WALK_SELECT(sjme_nvm_commonBase, SJME_NVM_WALK_PSEUDO_COMMON),
 
 	/* NVM Structures. */
@@ -174,30 +184,38 @@ static sjme_errorCode sjme_nvm_walk(
 	const sjme_nvm_walk_stepSelect* subSelect;
 	const sjme_nvm_walk_step* currentStep;
 	sjme_jint atIndex;
+	sjme_jboolean skipElements, stepOn;
 	
 	if (root == NULL || at == NULL || function == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Mismatched parent? */
-	if (at->parent != parent)
+	/* Mismatched parent or in some other bad state? */
+	if (at->parent != parent || at->inSelect == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Set base step. */
 	currentStep = at->inSelect->steps;
 
 	/* Start of structure step? */
+	skipElements = SJME_JNI_FALSE;
 	if (at->index <= -1)
 	{
 		/* This is just the current information. */
 		if (sjme_error_is(error = function(root, parent, at)))
-			return sjme_error_default(error);
+		{
+			/* Skip element walk. */
+			if (error == SJME_ERROR_WALK_SKIP_ELEMENTS)
+				skipElements = SJME_JNI_TRUE;
+			else
+				return sjme_error_default(error);
+		}
 
 		/* Move onto the current index. */
 		at->index = 0;
 	}
 
 	/* Stepping over individual members? */
-	for (atIndex = 0;; currentStep++, atIndex++)
+	for (atIndex = 0; !skipElements; currentStep++, atIndex++)
 	{
 		/* Stop at the end. */
 		if (currentStep->memberName == NULL ||
@@ -222,13 +240,15 @@ static sjme_errorCode sjme_nvm_walk(
 		subStep.depth = at->depth + 1;
 		subStep.stage = at->stage;
 		subStep.data = at->data;
+		subStep.uniqueId = ++at->nextUniqueId;
 
 		/* Determine the pointer for this value. */
 		subStep.at.raw = SJME_POINTER_OFFSET(at->base.raw,
 			currentStep->offset);
 
 		/* If there is a sub-select, recursive walk into it. */
-		if (subSelect != NULL)
+		stepOn = (subSelect == NULL); 
+		if (!stepOn)
 		{
 			/* Start at the base of the structure. */
 			subStep.index = -1;
@@ -236,11 +256,17 @@ static sjme_errorCode sjme_nvm_walk(
 			/* Do a structured walk. */
 			if (sjme_error_is(error = sjme_nvm_walk(root, at,
 				&subStep, function)))
-				return sjme_error_default(error);
+			{
+				/* This indicates we do not want to walk inside this. */
+				if (error == SJME_ERROR_WALK_SKIP_ELEMENTS)
+					stepOn = SJME_JNI_TRUE;
+				else
+					return sjme_error_default(error);
+			}
 		}
 
 		/* Otherwise, just step on it. */
-		else
+		if (stepOn)
 		{
 			/* This is just the current index. */
 			subStep.index = atIndex;
@@ -252,7 +278,7 @@ static sjme_errorCode sjme_nvm_walk(
 	}
 	
 	/* We stepped over everything, so set a very high index. */
-	at->index = INT32_MAX;
+	at->index = (skipElements ? INT32_MIN : INT32_MAX);
 	if (sjme_error_is(error = function(root, parent, at)))
 		return sjme_error_default(error);
 	
@@ -304,6 +330,7 @@ sjme_errorCode sjme_nvm_walk_start(
 		rootState.depth = 0;
 		rootState.stage = stage;
 		rootState.data = anyData;
+		rootState.uniqueId = ++rootState.nextUniqueId;
 		
 		/* Perform the recursive walk. */
 		if (sjme_error_is(error = sjme_nvm_walk(&rootState, NULL,
