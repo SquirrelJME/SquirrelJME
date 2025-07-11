@@ -54,8 +54,88 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 	return sjme_error_notImplemented(0);
 }
 
-const sjme_nvm_walk_functions sjme_nvm_walk_coreDump =
+const sjme_nvm_walk_functions sjme_nvm_walk_coreDumpFunctions =
 {
 	sjme_sm(.pre, NULL),
 	sjme_sm(.step, sjme_nvm_walk_coreStart),
 };
+
+sjme_errorCode sjme_nvm_walk_coreDumpFile(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNullable const sjme_nal* nal,
+	sjme_attrInNotNull sjme_lpcstr filePath)
+{
+#define MINI_SIZE 8192
+	sjme_errorCode error;
+	sjme_jubyte mini[MINI_SIZE];
+	sjme_alloc_pool miniPool;
+	sjme_seekable seekable;
+	sjme_stream_output outStream;
+	
+	if (inState == NULL || filePath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Use the state NAL? */
+	if (nal == NULL)
+		nal = inState->nal;
+
+	if (nal == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Not supported? */
+	if (nal->fileOpen == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+
+	/* Allocate mini allocation pool. */
+	memset(mini, 0, sizeof(mini));
+	miniPool = NULL;
+	if (sjme_error_is(error = sjme_alloc_poolInitStatic(&miniPool,
+		mini, MINI_SIZE)) || miniPool == NULL)
+		return sjme_error_default(error);
+
+	/* Open native file. */
+	seekable = NULL;
+	if (sjme_error_is(error = nal->fileOpen(miniPool, filePath,
+		&seekable, SJME_NAL_OPEN_WRITE_TRUNCATE)) || seekable == NULL)
+		return sjme_error_default(error);
+
+	/* Open output stream over the seekable. */
+	outStream = NULL;
+	if (sjme_error_is(error = sjme_stream_outputOpenSeekable(
+		seekable, &outStream, 0, -1, SJME_JNI_TRUE)) ||
+		outStream == NULL)
+		goto fail_openSub;
+
+	/* Perform the dump. */
+	if (sjme_error_is(error = sjme_nvm_walk_coreDumpStream(inState,
+		outStream)))
+		goto fail_dump;
+
+	/* Close the seekable. */
+	if (sjme_error_is(error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(seekable))))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_dump:
+fail_openSub:
+	if (seekable != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(seekable));
+	
+	return sjme_error_default(error);
+#undef MINI_SIZE
+}
+
+sjme_errorCode sjme_nvm_walk_coreDumpStream(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_stream_output outStream)
+{
+	if (inState == NULL || outStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Perform the core dump. */
+	return sjme_nvm_walk_start(inState, SJME_NVM_STRUCT_STATE,
+		&sjme_nvm_walk_coreDumpFunctions, outStream);
+}

@@ -152,7 +152,7 @@ static sjme_errorCode sjme_nvm_walk_debugStep(
 #undef NAME_SIZE
 }
 
-const sjme_nvm_walk_functions sjme_nvm_walk_printDump =
+const sjme_nvm_walk_functions sjme_nvm_walk_printDumpFunctions =
 {
 	sjme_sm(.pre, NULL),
 	sjme_sm(.step, sjme_nvm_walk_debugStep),

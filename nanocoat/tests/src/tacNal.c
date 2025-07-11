@@ -35,7 +35,8 @@ sjme_errorCode sjme_nal_test_currentTimeMillis(
 sjme_errorCode sjme_nal_test_fileOpen(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
-	sjme_attrOutNotNull sjme_seekable* outSeekable)
+	sjme_attrOutNotNull sjme_seekable* outSeekable,
+	sjme_attrInValue sjme_nal_openMode openMode)
 {
 	if (allocPool == NULL || inPath == NULL || outSeekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

@@ -184,21 +184,37 @@ static const sjme_seekable_functions sjme_libretro_vfsFunctions =
 sjme_errorCode sjme_libretro_fileOpen(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
-	sjme_attrOutNotNull sjme_seekable* outSeekable)
+	sjme_attrOutNotNull sjme_seekable* outSeekable,
+	sjme_attrInValue sjme_nal_openMode openMode)
 {
 	struct retro_vfs_interface* vfs;
 	struct retro_vfs_file_handle* handle;
+	sjme_jint mode;
 		
 	if (allocPool == NULL || inPath == NULL || outSeekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (openMode < SJME_NAL_OPEN_READ || openMode > SJME_NAL_OPEN_WRITE_TRUNCATE)
+		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* VFS is not supported? */
 	vfs = sjme_libretro_globals.vfs.iface;
 	if (vfs == NULL)
 		return SJME_ERROR_NATIVE_ERROR;
 
+	/* Which mode? */
+	if (openMode == SJME_NAL_OPEN_WRITE_TRUNCATE)
+		mode = RETRO_VFS_FILE_ACCESS_READ |
+			RETRO_VFS_FILE_ACCESS_WRITE;
+	else if (openMode == SJME_NAL_OPEN_WRITE_EXIST)
+		mode = RETRO_VFS_FILE_ACCESS_READ |
+			RETRO_VFS_FILE_ACCESS_WRITE |
+			RETRO_VFS_FILE_ACCESS_UPDATE_EXISTING;
+	else
+		mode = RETRO_VFS_FILE_ACCESS_READ;
+
 	/* Attempt opening. */
-	handle = vfs->open(inPath, RETRO_VFS_FILE_ACCESS_READ,
+	handle = vfs->open(inPath, mode,
 		RETRO_VFS_FILE_ACCESS_HINT_FREQUENT_ACCESS);
 	if (handle == NULL)
 		return SJME_ERROR_FILE_NOT_FOUND;

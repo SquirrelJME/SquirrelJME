@@ -132,6 +132,7 @@ sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull void* vmContext,
 	sjme_attrInValue sjme_errorCode error)
 {
+	sjme_errorCode dumpError;
 	sjme_nvm stateContext;
 	
 	/* Emit trace? */
@@ -155,8 +156,9 @@ sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 
 		/* Dump the entire NVM state. */
 		if (stateContext != NULL)
-			sjme_nvm_walkStart(stateContext, SJME_NVM_STRUCT_STATE,
-				&sjme_nvm_walk_printDump);
+			if (sjme_error_is(dumpError = sjme_nvm_walk_coreDumpFile(
+				stateContext, &sjme_nal_default, "squirreljme.mem")))
+				sjme_message("NVM DUMP ERROR: %d!", (int)dumpError);
 
 #if defined(SJME_CONFIG_DEBUG)
 		/* Fail with a TO-DO. */

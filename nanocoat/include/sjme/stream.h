@@ -374,7 +374,7 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 
 /**
  * Provides an input stream to read data from a seekable, note that
- * unlike @c sjme_seekable_regionLockAsInputStream there is no locking
+ * unlike @c sjme_seekable_regionLock there is no locking
  * involved and as such there may be a performance penalty or otherwise.
  *
  * @param seekable The seekable to access.
@@ -726,6 +726,27 @@ sjme_errorCode sjme_stream_outputOpenMemory(
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Provides an output stream to write data to a seekable, note that
+ * unlike @c sjme_seekable_regionLock there is no locking
+ * involved and as such there may be a performance penalty or otherwise.
+ *
+ * @param seekable The seekable to access.
+ * @param outStream The resultant stream.
+ * @param base The base address within the seekable.
+ * @param length The number of bytes to stream.
+ * @param forwardClose If the input stream is closed, should the seekable
+ * also be closed?
+ * @return Any resultant error, if any.
+ * @since 2025/07/10
+ */
+sjme_errorCode sjme_stream_outputOpenSeekable(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_stream_output* outStream,
+	sjme_attrInPositive sjme_jint base,
+	sjme_attrInNegativeOnePositive sjme_jint length,
+	sjme_attrInValue sjme_jboolean forwardClose);
 
 /**
  * Opens a stream to a NAL output.

@@ -33,6 +33,23 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * The native file open mode.
+ *
+ * @since 2025/07/10
+ */
+typedef enum sjme_nal_openMode
+{
+	/** Read. */
+	SJME_NAL_OPEN_READ = 1,
+
+	/** Write existing file. */
+	SJME_NAL_OPEN_WRITE_EXIST = 2,
+
+	/** Write and truncate file. */
+	SJME_NAL_OPEN_WRITE_TRUNCATE = 3,
+} sjme_nal_openMode;
+	
+/**
  * Returns the current time in milliseconds as per the Java
  * method @c System::currentTimeMillis() .
  * 
@@ -49,13 +66,15 @@ typedef sjme_errorCode (*sjme_nal_currentTimeMillisFunc)(
  * @param allocPool The pool for allocations.
  * @param inPath The path to open.
  * @param outSeekable The seekable to open within.
+ * @param openMode The open mode for the file.
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
 typedef sjme_errorCode (*sjme_nal_fileOpenFunc)(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
-	sjme_attrOutNotNull sjme_seekable* outSeekable);
+	sjme_attrOutNotNull sjme_seekable* outSeekable,
+	sjme_attrInValue sjme_nal_openMode openMode);
 
 /**
  * Reads from the system environment a variable.

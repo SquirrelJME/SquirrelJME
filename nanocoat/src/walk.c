@@ -221,6 +221,7 @@ static sjme_errorCode sjme_nvm_walk(
 		subStep.functions = at->functions;
 		subStep.depth = at->depth + 1;
 		subStep.stage = at->stage;
+		subStep.data = at->data;
 
 		/* Determine the pointer for this value. */
 		subStep.at.raw = SJME_POINTER_OFFSET(at->base.raw,
@@ -259,10 +260,11 @@ static sjme_errorCode sjme_nvm_walk(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nvm_walkStart(
+sjme_errorCode sjme_nvm_walk_start(
 	sjme_attrInNotNull sjme_pointer startAt,
 	sjme_attrInValue sjme_jint typeId,
-	sjme_attrInNotNull const sjme_nvm_walk_functions* functions)
+	sjme_attrInNotNull const sjme_nvm_walk_functions* functions,
+	sjme_attrInNullable sjme_pointer anyData)
 {
 	sjme_errorCode error;
 	const sjme_nvm_walk_stepSelect* select;
@@ -301,6 +303,7 @@ sjme_errorCode sjme_nvm_walkStart(
 		rootState.index = -1;
 		rootState.depth = 0;
 		rootState.stage = stage;
+		rootState.data = anyData;
 		
 		/* Perform the recursive walk. */
 		if (sjme_error_is(error = sjme_nvm_walk(&rootState, NULL,

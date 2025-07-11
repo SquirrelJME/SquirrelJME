@@ -157,22 +157,39 @@ static const sjme_seekable_functions sjme_nal_default_cFileFunctions =
 static sjme_errorCode sjme_nal_default_fileOpen(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
-	sjme_attrOutNotNull sjme_seekable* outSeekable)
+	sjme_attrOutNotNull sjme_seekable* outSeekable,
+	sjme_attrInValue sjme_nal_openMode openMode)
 {
 #if !defined(SJME_CONFIG_HAS_NO_STDIO)
 	sjme_errorCode error;
 	FILE* cFile;
 	sjme_seekable result;
+	sjme_lpcstr mode;
 #endif
 	
 	if (allocPool == NULL || inPath == NULL || outSeekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (openMode < SJME_NAL_OPEN_READ ||
+		openMode > SJME_NAL_OPEN_WRITE_TRUNCATE)
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 #if !defined(SJME_CONFIG_HAS_NO_STDIO)
+	/* Which mode? */
+	if (openMode == SJME_NAL_OPEN_WRITE_TRUNCATE)
+		mode = "wb";
+	else if (openMode == SJME_NAL_OPEN_WRITE_EXIST)
+		mode = "r+b";
+	else
+		mode = "rb";
+	
 	/* Open file. */
-	cFile = fopen(inPath, "rb");
+	cFile = fopen(inPath, mode);
 	if (cFile == NULL)
 		return sjme_nal_errno(errno);
+
+	/* Always seek to the start. */
+	fseek(cFile, 0, SEEK_SET);
 	
 	/* Setup stream. */
 	result = NULL;

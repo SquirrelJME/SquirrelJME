@@ -57,7 +57,7 @@ typedef struct sjme_seekable_lockBase sjme_seekable_lockBase;
  *
  * @since 2024/01/01
  */
-typedef struct sjme_seekable_lockBase* sjme_seekable_lock;
+typedef sjme_seekable_lockBase* sjme_seekable_lock;
 
 struct sjme_seekable_lockBase
 {

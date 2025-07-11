@@ -17,6 +17,7 @@
 #define SJME_C_WALK_H
 
 #include "sjme/config.h"
+#include "sjme/stream.h"
 #include "sjme/nvm/nvm.h"
 
 /* Anti-C++. */
@@ -202,6 +203,9 @@ struct sjme_nvm_walk_state
 
 	/** The step this is in. */
 	const sjme_nvm_walk_step* inStep;
+
+	/** Data pointer. */
+	sjme_pointer data;
 };
 
 struct sjme_nvm_walk_step
@@ -249,20 +253,49 @@ struct sjme_nvm_walk_stepSelect
  * @param startAt The pointer to start at.
  * @param typeId The type ID of this pointer.
  * @param functions The functions for the walk.
+ * @param anyData Any data state, optional.
  * @return On any resultant error, if any.
  * @since 2025/07/10
  */
-sjme_errorCode sjme_nvm_walkStart(
+sjme_errorCode sjme_nvm_walk_start(
 	sjme_attrInNotNull sjme_pointer startAt,
 	sjme_attrInValue sjme_jint typeId,
-	sjme_attrInNotNull const sjme_nvm_walk_functions* functions);
+	sjme_attrInNotNull const sjme_nvm_walk_functions* functions,
+	sjme_attrInNullable sjme_pointer anyData);
 
 /** Core dump of state. */
-extern const sjme_nvm_walk_functions sjme_nvm_walk_coreDump;
+extern const sjme_nvm_walk_functions sjme_nvm_walk_coreDumpFunctions;
 	
 /** Print structures to message output. */
-extern const sjme_nvm_walk_functions sjme_nvm_walk_printDump;
+extern const sjme_nvm_walk_functions sjme_nvm_walk_printDumpFunctions;
 
+/**
+ * Core dumps to a NAL file.
+ * 
+ * @param inState The state to core dump.
+ * @param nal The NAL to access for file output, if @c NULL then the NAL
+ * used in @c inState is selected.
+ * @param filePath The path to the file to open.
+ * @return Any resultant error, if any.
+ * @since 2025/07/10
+ */
+sjme_errorCode sjme_nvm_walk_coreDumpFile(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNullable const sjme_nal* nal,
+	sjme_attrInNotNull sjme_lpcstr filePath);
+
+/**
+ * Core dumps to a stream.
+ * 
+ * @param inState The state to core dump.
+ * @param outStream The resultant stream.
+ * @return Any resultant error, if any.
+ * @since 2025/07/10
+ */
+sjme_errorCode sjme_nvm_walk_coreDumpStream(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_stream_output outStream);
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

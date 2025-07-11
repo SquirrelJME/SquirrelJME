@@ -57,7 +57,7 @@ int main(int argc, sjme_lpstr* argv)
 	/* Open seekable to the boot Jar. */
 	bootSeek = NULL;
 	if (sjme_error_is(error = nal->fileOpen(pool, argv[1],
-		&bootSeek)) || bootSeek == NULL)
+		&bootSeek, SJME_NAL_OPEN_READ)) || bootSeek == NULL)
 		goto fail_openBootJar;
 	
 	/* Load boot suite. */
