@@ -257,6 +257,9 @@ sjme_errorCode sjme_nvm_walkStart(
 	sjme_attrInValue sjme_jint typeId,
 	sjme_attrInNotNull const sjme_nvm_walk_functions* functions);
 
+/** Core dump of state. */
+extern const sjme_nvm_walk_functions sjme_nvm_walk_coreDump;
+	
 /** Print structures to message output. */
 extern const sjme_nvm_walk_functions sjme_nvm_walk_printDump;
 

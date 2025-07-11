@@ -63,6 +63,7 @@ squirreljme_multilib_add_static_library(Core
 	tread.c
 	vmConfig.c
 	walk.c
+	walkCoreDump.c
 	walkDebug.c)
 
 # Include main headers
