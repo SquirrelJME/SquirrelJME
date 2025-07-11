@@ -205,6 +205,54 @@ static sjme_errorCode sjme_nvm_walk_coreKeyPutS(
 		(name), (value)))) \
 		return sjme_error_default(error)
 
+static sjme_errorCode sjme_nvm_walk_coreDoGeneric(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at)
+{
+	sjme_errorCode error;
+	sjme_nvm_walk_coreState* coreState;
+	const sjme_nvm_walk_step* inStep;
+	
+	if (root == NULL || at == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover state. */
+	coreState = at->data;
+	if (coreState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Not a stepped member? */
+	inStep = at->inStep;
+	if (inStep == NULL)
+		return SJME_ERROR_NONE;
+
+	/* Open map for generic value. */
+	sjme_nvm_walk_coreMapOpenR();
+
+	/* Set stored values. */
+	sjme_nvm_walk_coreKeyPutSR("memberName", inStep->memberName);
+
+	/* If this is a pointer value, dereference and store that. */
+	if (inStep->isPointer)
+		sjme_nvm_walk_coreKeyPutPR("pointer", *at->at.intPointer);
+
+	/* Which type value is this? */
+	if (inStep->structType == SJME_NVM_WALK_PSEUDO_PRIMITIVE)
+	{
+		sjme_nvm_walk_coreKeyPutIR("javaType", inStep->javaType);
+	}
+	else
+	{
+		sjme_nvm_walk_coreKeyPutIR("structType", inStep->structType);
+	}
+
+	/* Close map. */
+	sjme_nvm_walk_coreMapCloseR();
+
+	return SJME_ERROR_NONE;
+}
+
 typedef struct sjme_nvm_walk_coreHandler
 {
 	/** The handler type ID. */
@@ -255,7 +303,7 @@ static sjme_errorCode sjme_nvm_walk_coreRecordP(
 			/* Is this the one? */
 			if (chain->links[i].pointer == pointer)
 			{
-				/* If this is the same type then we added it. */
+				/* If this is the same type then we processed it already. */
 				if (chain->links[i].typeId == typeId)
 					return SJME_ERROR_WALK_SKIP_ELEMENTS;
 
@@ -319,6 +367,7 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 	sjme_nvm_walk_coreState* coreState;
 	const sjme_nvm_walk_coreHandler* handler;
 	sjme_jboolean shallowOpen;
+	sjme_nvm_walk_stepHandlerFunc handlerFunc;
 	
 	if (root == NULL || at == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -331,144 +380,117 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 	coreState = at->data;
 	if (coreState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-	
-	/* Did we fall out of a substructure? */
-	if (at->depth < coreState->lastDepth)
+
+	/* End of current structure? */
+	if (at->index == INT32_MIN || at->index == INT32_MAX)
 	{
-		/* Closing element list? */
-		if (coreState->openElements)
-		{
-			/* Close the array. */
-			sjme_nvm_walk_coreArrayCloseR();
-
-			/* Elements no longer open. */
-			coreState->openElements = SJME_JNI_FALSE;
-		}
-		
-		/* Continue at parent. */
-		sjme_nvm_walk_coreKeyPutIR("up",
-			at->depth);
-
-		/* Record new parent's depth. */
-		coreState->lastDepth = at->depth;
+		coreState->currentBase = NULL;
+		coreState->currentDepth = -1;
 	}
 
-	/* Writing start of structure? */
-	if (at->index < 0)
+	/* Handling individual element? */
+	if (at->index >= 0 && at->index < INT32_MAX)
 	{
-		/* Writing end of skipped. */
-		if (at->index == INT32_MIN)
-		{
-			/* Nothing is written here as the pointer record indicated a */
-			/* skip, hence no new structure was ever declared. */
-			
-			/* Success! */
+		/* Do nothing at the dive level here. */
+		if (at->breadth == SJME_NVM_WALK_BREADTH_DIVE)
 			return SJME_ERROR_NONE;
+		
+		/* Find handler for the item. */
+		handler = &sjme_nvm_walk_coreHandlers[0];
+		while (handler->function != NULL)
+			if (handler->typeId == at->typeId)
+				break;
+
+		/* Not found? Use a generic handler which keeps the data opaque. */
+		if (handler == NULL || handler->function == NULL)
+			handlerFunc = sjme_nvm_walk_coreDoGeneric;
+		else
+			handlerFunc = handler->function;
+		
+		/* Call handler. */
+		if (sjme_error_is(error = handlerFunc(root, parent, at)))
+			return sjme_error_default(error);
+
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+
+	/* Did the current base change? We need to wind a new tape head */
+	/* so that we can write information on this structure. */
+	if (at->base.raw != coreState->currentBase ||
+		at->depth != coreState->currentDepth)
+	{
+		/* Close the elements and map of the previous item. */
+		if (coreState->inStructure)
+		{
+			/* Close structure. */
+			sjme_nvm_walk_coreArrayCloseR();
+			sjme_nvm_walk_coreMapCloseR();
+
+			/* No longer in a structure. */
+			coreState->inStructure = SJME_JNI_FALSE;
 		}
 
-		/* Record a new pointer. */
+		/* We ended at a structure, do not new/recall an existing one. */
+		if (at->index == INT32_MIN || at->index == INT32_MAX)
+			return SJME_ERROR_NONE;
+		
+		/* Record a new pointer, or use pre-existing one. */
 		shallowOpen = SJME_JNI_FALSE;
 		if (sjme_error_is(error = sjme_nvm_walk_coreRecordP(
 			coreState, at->base.raw, at->typeId)))
 		{
 			/* If this was already recorded, then we shallow open it. */
-			if (error == SJME_ERROR_ELEMENT_EXISTS)
+			/* We always want to process this at the level point. */
+			if (error == SJME_ERROR_ELEMENT_EXISTS ||
+				at->breadth == SJME_NVM_WALK_BREADTH_LEVEL)
 				shallowOpen = SJME_JNI_TRUE;
 			else
 				return sjme_error_default(error);
 		}
 
-		/* If the elements are open, we jumped into a sub-structure. */
-		if (coreState->openElements)
-		{
-			/* Open map. */
-			sjme_nvm_walk_coreMapOpenR();
-			
-			/* Write structure details. */
-			sjme_nvm_walk_coreKeyPutIR("typeId",
-				at->typeId);
-			sjme_nvm_walk_coreKeyPutIR("down",
-				at->uniqueId);
-			
-			/* Close map. */
-			sjme_nvm_walk_coreMapCloseR();
-			
-			/* Close the array. */
-			sjme_nvm_walk_coreArrayCloseR();
-		
-			/* Close map. */
-			sjme_nvm_walk_coreMapCloseR();
+		/* We are in a structure now. */
+		coreState->inStructure = SJME_JNI_TRUE;
 
-			/* Elements no longer open. */
-			coreState->openElements = SJME_JNI_FALSE;
-		}
-		
-		/* Open map. */
+		/* Regardless of the mode, a new map is opened. */
 		sjme_nvm_walk_coreMapOpenR();
 
-		/* Write structure details. */
+		/* This is always recorded in either mode, since this determines */
+		/* how the data is to be interpreted, that is what structure it */
+		/* goes into ultimately. */
 		sjme_nvm_walk_coreKeyPutIR("typeId",
 			at->typeId);
 
-		/* This is extra pointless information that we do not need. */
+		/* We are defining a shiny new structure that we have not seen */
+		/* before. */
 		if (!shallowOpen)
 		{
-			sjme_nvm_walk_coreKeyPutPR("pointer",
+			/* Need to be more descriptive about what this is. */
+			sjme_nvm_walk_coreKeyPutPR("new",
 				at->base.raw);
 			sjme_nvm_walk_coreKeyPutSR("typeName",
 				at->inSelect->typeName);
 			sjme_nvm_walk_coreKeyPutIR("itemId",
 				++coreState->itemId);
 		}
-		
-		/* Open array for entries. */
-		sjme_nvm_walk_coreKeyPutArrayR("elements");
-		coreState->openElements = SJME_JNI_TRUE;
 
-		/* Detect depth changes. */
-		coreState->lastDepth = at->depth;
-		
-		/* Success! */
-		return SJME_ERROR_NONE;
-	}
-
-	/* Writing end of structure? */
-	else if (at->index == INT32_MAX)
-	{
-		/* Close the elements array. */
-		if (coreState->openElements)
+		/* Otherwise, a shallow open means we are working on a structure */
+		/* we already know about. */
+		else
 		{
-			/* Close the array. */
-			sjme_nvm_walk_coreArrayCloseR();
-
-			/* Elements no longer open. */
-			coreState->openElements = SJME_JNI_FALSE;
+			/* Recall this pointer specifically. */
+			sjme_nvm_walk_coreKeyPutPR("recall",
+				at->base.raw);
 		}
+
+		/* Regardless of the mode, we need to store data on the structure. */
+		sjme_nvm_walk_coreKeyPutArrayR("data");
 		
-		/* Close map. */
-		sjme_nvm_walk_coreMapCloseR();
-		
-		/* Success! */
-		return SJME_ERROR_NONE;
+		/* Store current info. */
+		coreState->currentBase = at->base.raw;
+		coreState->currentDepth = at->depth;
 	}
 	
-	/* Find handler for the item. */
-	handler = &sjme_nvm_walk_coreHandlers[0];
-	while (handler->function != NULL)
-		if (handler->typeId == at->typeId)
-			break;
-
-	/* Not found? */
-	if (handler == NULL || handler->function == NULL)
-	{
-		sjme_todo("Impl? %d", at->typeId);
-		return sjme_error_notImplemented(0);
-	}
-
-	/* Call handler. */
-	if (sjme_error_is(error = handler->function(root, parent, at)))
-		return sjme_error_default(error);
-
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -562,6 +584,8 @@ sjme_errorCode sjme_nvm_walk_coreDumpStream(
 	memset(&coreState, 0, sizeof(coreState));
 	coreState.allocPool = allocPool;
 	coreState.out = outStream;
+	coreState.currentBase = 0;
+	coreState.currentDepth = -1;
 
 	/* Perform the core dump. */
 	if (sjme_error_is(error = sjme_nvm_walk_start(inState,

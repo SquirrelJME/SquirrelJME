@@ -80,6 +80,18 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_closeable_closeHandlerFunc . */
 	SJME_NVM_WALK_PSEUDO_CLOSE_HANDLER = -14,
+
+	/** @c sjme_list_... . */
+	SJME_NVM_WALK_PSEUDO_LIST = -15,
+
+	/** @c sjme_frontEndWrapper . */
+	SJME_NVM_WALK_PSEUDO_FRONT_END_WRAPPER = -16,
+
+	/** @c sjme_frontEndData . */
+	SJME_NVM_WALK_PSEUDO_FRONT_END_DATA = -17,
+
+	/** @c sjme_frontEnd_bindType . */
+	SJME_NVM_WALK_PSEUDO_BIND_TYPE = -18,
 } sjme_nvm_walk_pseudoType;
 
 /**
@@ -98,6 +110,23 @@ typedef enum sjme_nvm_walk_stageType
 	/** The number of walk stages. */
 	SJME_NVM_WALK_NUM_STAGES,
 } sjme_nvm_walk_stageType;
+
+/**
+ * The current breadth type when walking through steps.
+ *
+ * @since 2025/07/11
+ */
+typedef enum sjme_nvm_walk_breadthType
+{
+	/** Staying at the current level. */
+	SJME_NVM_WALK_BREADTH_LEVEL,
+
+	/** Diving into sub-structures. */
+	SJME_NVM_WALK_BREADTH_DIVE,
+	
+	/** The number of breadth steps. */
+	SJME_NVM_WALK_NUM_BREADTH,
+} sjme_nvm_walk_breadthType;
 
 /**
  * Walk step definition.
@@ -212,6 +241,9 @@ struct sjme_nvm_walk_state
 
 	/** Data pointer. */
 	sjme_pointer data;
+
+	/** The current breadth of this step. */
+	sjme_nvm_walk_breadthType breadth;
 };
 
 struct sjme_nvm_walk_step
@@ -223,10 +255,7 @@ struct sjme_nvm_walk_step
 	sjme_lpcstr memberName;
 
 	/** Is this a pointer? */
-	sjme_jboolean isPointer;
-
-	/** Is this a list? */
-	sjme_jboolean isList;
+	sjme_jboolean isPointer : sjme_booleanBit;
 
 	/** The size of the type. */
 	sjme_jint size;

@@ -88,11 +88,14 @@ typedef struct sjme_nvm_walk_coreState
 	/** The first link of the pointer chain. */
 	sjme_nvm_walk_pointerChain* chain;
 
-	/** Was the elements array opened? */
-	sjme_jboolean openElements;
+	/** The current base pointer being wound. */
+	sjme_pointer currentBase;
 
-	/** The last depth, to detect structure fallouts. */
-	sjme_jint lastDepth;
+	/** The current depth being wound. */
+	sjme_jint currentDepth;
+
+	/** Is a structure being wound? */
+	sjme_jboolean inStructure;
 } sjme_nvm_walk_coreState;
 
 /*--------------------------------------------------------------------------*/
