@@ -130,8 +130,8 @@ static sjme_errorCode sjme_nvm_walk_coreKeyPutP(
 
 #if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
-	sjme_messageB("JSON: \"%s\": %jd,", inKey,
-		(intmax_t)inValue);
+	sjme_messageB("JSON: \"%s\": %lld,", inKey,
+		(long long)inValue);
 #endif
 	
 #if defined(SJME_SOFT_OKAY)
@@ -258,9 +258,9 @@ static sjme_errorCode sjme_nvm_walk_coreDoGeneric(
 	/* Set stored values. */
 	sjme_nvm_walk_coreKeyPutSR("memberName", inStep->memberName);
 
-	/* If this is a pointer value, dereference and store that. */
+	/* If this is a pointer value, store the pointer value. */
 	if (inStep->isPointer)
-		sjme_nvm_walk_coreKeyPutPR("pointer", *at->at.intPointer);
+		sjme_nvm_walk_coreKeyPutPR("pointer", at->valueP.intPointer[0]);
 
 	/* Which type value is this? */
 	if (inStep->structType == SJME_NVM_WALK_PSEUDO_PRIMITIVE)
@@ -400,19 +400,15 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 	if (root == NULL || at == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Parent got unbound somehow? */
-	if (at->parent != parent)
-		return SJME_ERROR_ILLEGAL_STATE;
-
 	/* Recover state. */
 	coreState = at->data;
 	if (coreState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
-	sjme_messageB("step(%p, %d, %d, %d)",
-		at->base.raw, at->typeId, at->index, at->breadth);
+	sjme_message("step(%p, %d, %d, %d)",
+		at->base.pointer, at->typeId, at->index, at->breadth);
 #endif
 
 	/* End of current structure? */
@@ -451,7 +447,7 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 
 	/* Did the current base change? We need to wind a new tape head */
 	/* so that we can write information on this structure. */
-	if (at->base.raw != coreState->currentBase ||
+	if (at->base.pointer != coreState->currentBase ||
 		at->depth != coreState->currentDepth)
 	{
 		/* Close the elements and map of the previous item. */
@@ -470,9 +466,11 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 			return SJME_ERROR_NONE;
 		
 		/* Record a new pointer, or use pre-existing one. */
+		/* Note that we are _IN_ this structure! */
 		shallowOpen = SJME_JNI_FALSE;
 		if (sjme_error_is(error = sjme_nvm_walk_coreRecordP(
-			coreState, at->base.raw, at->baseStruct.raw, at->typeId)))
+			coreState, at->base.pointer,
+			at->baseStruct.pointer, at->typeId)))
 		{
 			/* If this was already recorded, then we shallow open it. */
 			/* We always want to process this at the level point. */
@@ -501,11 +499,14 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		{
 			/* Need to be more descriptive about what this is. */
 			sjme_nvm_walk_coreKeyPutPR("new",
-				at->base.raw);
-			sjme_nvm_walk_coreKeyPutSR("typeName",
-				at->inSelect->typeName);
+				at->base.pointer);
 			sjme_nvm_walk_coreKeyPutIR("itemId",
 				++coreState->itemId);
+
+			/* If we are in a list/array, this is a variant. */
+			if (at->inSelect != NULL)
+				sjme_nvm_walk_coreKeyPutSR("typeName",
+					at->inSelect->typeName);
 		}
 
 		/* Otherwise, a shallow open means we are working on a structure */
@@ -514,7 +515,7 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		{
 			/* Recall this pointer specifically. */
 			sjme_nvm_walk_coreKeyPutPR("recall",
-				at->base.raw);
+				at->base.pointer);
 
 			/* If this is recalling to store data into a known structure */
 			/* member's data, then recall it. This is a hint */
@@ -525,13 +526,13 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 
 		/* Which sub-structure is this for? */
 		sjme_nvm_walk_coreKeyPutPR("struct",
-			at->baseStruct.raw);
+			at->baseStruct.pointer);
 
 		/* Regardless of the mode, we need to store data on the structure. */
 		sjme_nvm_walk_coreKeyPutArrayR("data");
 		
 		/* Store current info. */
-		coreState->currentBase = at->base.raw;
+		coreState->currentBase = at->base.pointer;
 		coreState->currentDepth = at->depth;
 	}
 	

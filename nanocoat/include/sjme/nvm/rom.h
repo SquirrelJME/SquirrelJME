@@ -539,21 +539,6 @@ sjme_errorCode sjme_nvm_rom_suiteFromMerge(
 	sjme_attrInPositive sjme_jint numInSuites);
 
 /**
- * Scans the payload for suites
- *
- * @param pool The pool to allocate within.
- * @param outSuite The output resultant suite, if there would be nothing in
- * here then this outputs @c NULL .
- * @param payloadConfig The payload configuration used.
- * @return Any error status.
- * @since 2023/12/15
- */
-sjme_errorCode sjme_nvm_rom_suiteFromPayload(
-	sjme_attrInNotNull sjme_alloc_pool pool,
-	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
-	sjme_attrInNotNull const sjme_payload_config* payloadConfig);
-
-/**
  * Initializes a suite from a Zip.
  *
  * @param pool The pool to use for allocations.

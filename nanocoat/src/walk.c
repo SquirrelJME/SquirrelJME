@@ -7,8 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/nvm/boot.h"
 #include "sjme/nvm/walk.h"
 #include "sjme/nvm/nvm.h"
+#include "sjme/nvm/task.h"
 
 #define SJME_WALK_SELECT(cType, inStructType) \
 	{ \
@@ -35,12 +37,13 @@
 
 /** Walk step, full definition. */
 #define SJME_WS_FULL(inMemberName, inIsPointer, \
-	inJavaType, inNvmId) \
+	inJavaType, inNvmId, inMemberSize) \
 	{ \
 		sjme_sm(.offset, offsetof(SJME_WALK_CURRENT, inMemberName)), \
 		sjme_sm(.memberName, #inMemberName), \
 		sjme_sm(.isPointer, inIsPointer), \
 		sjme_sm(.size, sizeof(((SJME_WALK_CURRENT*)(0))->inMemberName)), \
+		sjme_sm(.memberSize, inMemberSize), \
 		sjme_sm(.javaType, inJavaType), \
 		sjme_sm(.structType, inNvmId), \
 	}
@@ -48,33 +51,43 @@
 /** Walk step a primitive value (pointer). */
 #define SJME_WS_JAVA_P(memberName, javaType) \
 	SJME_WS_FULL(memberName, \
-		SJME_JNI_TRUE, javaType, SJME_NVM_WALK_PSEUDO_PRIMITIVE)
+		SJME_JNI_TRUE, javaType, SJME_NVM_WALK_PSEUDO_PRIMITIVE, -1)
 
 /** Walk step a primitive value (value). */
 #define SJME_WS_JAVA_V(memberName, javaType) \
 	SJME_WS_FULL(memberName, \
-		SJME_JNI_FALSE, javaType, SJME_NVM_WALK_PSEUDO_PRIMITIVE)
+		SJME_JNI_FALSE, javaType, SJME_NVM_WALK_PSEUDO_PRIMITIVE, -1)
 
 /** Walk step another structure type (pointer). */
 #define SJME_WS_NORM_P(memberName, structType) \
 	SJME_WS_FULL(memberName, \
-		SJME_JNI_TRUE, SJME_NUM_JAVA_TYPE_IDS, structType)
+		SJME_JNI_TRUE, SJME_NUM_JAVA_TYPE_IDS, structType, -1)
 
 /** Walk step another structure type (value). */
 #define SJME_WS_NORM_V(memberName, structType) \
 	SJME_WS_FULL(memberName, \
-		SJME_JNI_FALSE, SJME_NUM_JAVA_TYPE_IDS, structType)
+		SJME_JNI_FALSE, SJME_NUM_JAVA_TYPE_IDS, structType, -1)
+
+/** Walk step an array value (value). */
+#define SJME_WS_ARRY_V(memberName, subDef) \
+	SJME_WS_FULL(memberName, \
+		SJME_JNI_FALSE, SJME_NUM_JAVA_TYPE_IDS, \
+		SJME_NVM_WALK_PSEUDO_FIXED_ARRAY, \
+		sizeof(*((SJME_WALK_CURRENT*)(0))->memberName)), \
+	subDef
 
 /** Walk step a list value (pointer). */
 #define SJME_WS_LIST_P(memberName, subDef) \
 	SJME_WS_FULL(memberName, \
-		SJME_JNI_TRUE, SJME_NUM_JAVA_TYPE_IDS, SJME_NVM_WALK_PSEUDO_LIST), \
+		SJME_JNI_TRUE, SJME_NUM_JAVA_TYPE_IDS, \
+		SJME_NVM_WALK_PSEUDO_LIST, -1), \
 	subDef
 
 /** Walk step a list value (value). */
 #define SJME_WS_LIST_V(memberName, subDef) \
 	SJME_WS_FULL(memberName, \
-		SJME_JNI_TRUE, SJME_NUM_JAVA_TYPE_IDS, SJME_NVM_WALK_PSEUDO_LIST), \
+		SJME_JNI_FALSE, SJME_NUM_JAVA_TYPE_IDS, \
+		SJME_NVM_WALK_PSEUDO_LIST, -1), \
 	subDef
 
 /** End walk structure. */
@@ -84,6 +97,7 @@
 			sjme_sm(.memberName, NULL), \
 			sjme_sm(.isPointer, SJME_JNI_FALSE), \
 			sjme_sm(.size, -1), \
+			sjme_sm(.memberSize, -1), \
 			sjme_sm(.javaType, 0), \
 			sjme_sm(.structType, 0), \
 		} \
@@ -92,11 +106,28 @@
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 
+#define SJME_WALK_CURRENT sjme_nvm_bootParam
+SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_BOOT_PARAM)
+	SJME_WS_NORM_P(bootSuite, SJME_NVM_STRUCT_ROM_SUITE),
+	SJME_WS_NORM_P(librarySuite, SJME_NVM_STRUCT_ROM_SUITE),
+	SJME_WS_LIST_P(mainClassPathById,
+		SJME_WS_JAVA_V(mainClassPathById, SJME_JAVA_TYPE_ID_INTEGER)),
+	SJME_WS_LIST_P(mainClassPathByName,
+		SJME_WS_NORM_V(mainClassPathByName, SJME_NVM_WALK_PSEUDO_LPSTR)),
+	SJME_WS_NORM_P(mainClass, SJME_NVM_WALK_PSEUDO_LPSTR),
+	SJME_WS_LIST_P(mainArgs,
+		SJME_WS_NORM_V(mainArgs, SJME_NVM_WALK_PSEUDO_LPSTR)),
+	SJME_WS_LIST_P(sysProps,
+		SJME_WS_NORM_V(sysProps, SJME_NVM_WALK_PSEUDO_LPSTR)),
+	SJME_WS_NORM_P(nal, SJME_NVM_WALK_PSEUDO_NAL),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
 #define SJME_WALK_CURRENT sjme_closeableBase
 SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_CLOSEABLE)
 	SJME_WS_NORM_V(isClosed, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
 	SJME_WS_JAVA_V(refCounting, SJME_BASIC_TYPE_ID_BOOLEAN),
-	SJME_WS_NORM_V(closeHandler,
+	SJME_WS_NORM_P(closeHandler,
 		SJME_NVM_WALK_PSEUDO_CLOSE_HANDLER),
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
@@ -108,15 +139,15 @@ SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_COMMON)
 	SJME_WS_JAVA_V(magic, SJME_BASIC_TYPE_ID_INTEGER),
 	SJME_WS_NORM_V(frontEnd, SJME_NVM_WALK_PSEUDO_FRONT_END),
 	SJME_WS_NORM_V(lock, SJME_NVM_WALK_PSEUDO_SPIN_LOCK),
-	SJME_WS_NORM_V(specificClose,
+	SJME_WS_NORM_P(specificClose,
 		SJME_NVM_WALK_PSEUDO_CLOSE_HANDLER),
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
 #define SJME_WALK_CURRENT sjme_frontEnd
 SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_FRONT_END)
-	SJME_WS_NORM_V(wrapper, SJME_NVM_WALK_PSEUDO_FRONT_END_WRAPPER),
-	SJME_WS_NORM_V(data, SJME_NVM_WALK_PSEUDO_FRONT_END_DATA),
+	SJME_WS_NORM_P(wrapper, SJME_NVM_WALK_PSEUDO_FRONT_END_WRAPPER),
+	SJME_WS_NORM_P(data, SJME_NVM_WALK_PSEUDO_FRONT_END_DATA),
 	SJME_WS_NORM_V(bindLock, SJME_NVM_WALK_PSEUDO_SPIN_LOCK),
 	SJME_WS_NORM_V(bindType, SJME_NVM_WALK_PSEUDO_BIND_TYPE),
 SJME_WALK_END();
@@ -125,31 +156,52 @@ SJME_WALK_END();
 #define SJME_WALK_CURRENT sjme_nvm_stateBase
 SJME_WALK_BEGIN(SJME_NVM_STRUCT_STATE)
 	SJME_WS_NORM_V(common, SJME_NVM_WALK_PSEUDO_COMMON),
-	SJME_WS_NORM_V(allocPool, SJME_NVM_WALK_PSEUDO_ALLOC_POOL),
+	SJME_WS_NORM_P(allocPool, SJME_NVM_WALK_PSEUDO_ALLOC_POOL),
 	SJME_WS_NORM_P(bootParamCopy, SJME_NVM_WALK_PSEUDO_BOOT_PARAM),
 	SJME_WS_NORM_P(hooks, SJME_NVM_WALK_PSEUDO_STATE_HOOKS),
 	SJME_WS_NORM_P(nal, SJME_NVM_WALK_PSEUDO_NAL),
-	SJME_WS_NORM_V(suite, SJME_NVM_STRUCT_ROM_SUITE),
+	SJME_WS_NORM_P(suite, SJME_NVM_STRUCT_ROM_SUITE),
 	SJME_WS_LIST_P(tasks,
 		SJME_WS_NORM_P(tasks, SJME_NVM_STRUCT_TASK)),
 	SJME_WS_NORM_V(numRunningTasks, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
 	SJME_WS_NORM_V(nextTaskId, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
 	SJME_WS_NORM_V(nextThreadId, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
 	SJME_WS_NORM_V(threadModel, SJME_NVM_WALK_PSEUDO_MLE_THREAD_MODEL),
-	SJME_WS_NORM_V(schedule, SJME_NVM_WALK_PSEUDO_THREAD_SCHEDULE),
+	SJME_WS_NORM_P(schedule, SJME_NVM_WALK_PSEUDO_THREAD_SCHEDULE),
 	SJME_WS_NORM_V(terminating, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
+#define SJME_WALK_CURRENT sjme_nvm_taskBase
+SJME_WALK_BEGIN(SJME_NVM_STRUCT_TASK)
+	SJME_WS_NORM_V(object, SJME_NVM_STRUCT_OBJECT_INSTANCE),
+	SJME_WS_JAVA_V(id, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_NORM_P(inState, SJME_NVM_STRUCT_STATE),
+	SJME_WS_JAVA_V(exitCode, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_NORM_V(status, SJME_NVM_WALK_PSEUDO_TASK_STATUS_TYPE),
+	SJME_WS_NORM_V(terminate, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
+	SJME_WS_ARRY_V(numThreads,
+		SJME_WS_NORM_V(numThreads, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT)),
+	SJME_WS_LIST_P(threads,
+		SJME_WS_NORM_P(threads, SJME_NVM_STRUCT_THREAD_INSTANCE)),
+	SJME_WS_NORM_P(classLoader, SJME_NVM_WALK_PSEUDO_CLASS_LOADER),
+	SJME_WS_NORM_P(strings, SJME_NVM_WALK_PSEUDO_TASK_STRINGS),
+	SJME_WS_NORM_V(globals, SJME_NVM_WALK_PSEUDO_TASK_GLOBALS),
+	SJME_WS_NORM_V(nextFrameId, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
 const sjme_nvm_walk_stepSelect sjme_nvm_walk_select[] =
 {
 	/* Pseudo Structures. */
+	SJME_WALK_SELECT(sjme_nvm_bootParam, SJME_NVM_WALK_PSEUDO_BOOT_PARAM),
 	SJME_WALK_SELECT(sjme_closeableBase, SJME_NVM_WALK_PSEUDO_CLOSEABLE),
 	SJME_WALK_SELECT(sjme_nvm_commonBase, SJME_NVM_WALK_PSEUDO_COMMON),
 	SJME_WALK_SELECT(sjme_frontEnd, SJME_NVM_WALK_PSEUDO_FRONT_END),
 
 	/* NVM Structures. */
 	SJME_WALK_SELECT(sjme_nvm_stateBase, SJME_NVM_STRUCT_STATE),
+	SJME_WALK_SELECT(sjme_nvm_taskBase, SJME_NVM_STRUCT_TASK),
 	SJME_WALK_SELECT_END()
 };
 
@@ -179,16 +231,18 @@ static sjme_errorCode sjme_nvm_walk(
 	sjme_errorCode error;
 	sjme_nvm_walk_state subStep;
 	const sjme_nvm_walk_stepSelect* subSelect;
+	const sjme_nvm_walk_step* startStep;
 	const sjme_nvm_walk_step* currentStep;
 	sjme_nvm_walk_breadthType breadth;
-	sjme_jint atIndex;
+	sjme_jint atIndex, stepAdd, limitIndex;
 	sjme_jboolean skipElements;
+	sjme_list_void* voidList;
 	
 	if (root == NULL || at == NULL || function == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Mismatched parent or in some other bad state? */
-	if (at->parent != parent || at->inSelect == NULL)
+	if (at->parent != parent)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Start of structure step? */
@@ -209,14 +263,61 @@ static sjme_errorCode sjme_nvm_walk(
 		at->index = 0;
 	}
 
+	/* Is this a variant? We can derive the info from the source step */
+	if (at->variantStep != NULL)
+	{
+		/* Step with the variant's information. */
+		startStep = at->variantStep;
+
+		/* Fixed array. */
+		if (at->inStep->structType == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY)
+		{
+			limitIndex = at->inStep->size / at->inStep->memberSize;
+			
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+		/* List. */
+		else if (at->inStep->structType == SJME_NVM_WALK_PSEUDO_LIST)
+		{
+			voidList = (at->inStep->isPointer ?
+				*((((sjme_list_void**)at->base.walkLayer))) :
+				((sjme_list_void*)at->base.walkLayer));
+			limitIndex = voidList->length;
+			
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+		/* Unknown variant, so it gets an unknown size. */
+		else
+			limitIndex = 0;
+	}
+
+	/* Otherwise select normally. */
+	else
+	{
+		startStep = at->inSelect->steps;
+		limitIndex = INT32_MAX;
+	}
+	
 	/* Stepping over individual members? Walk in two breadths... */
 	for (breadth = 0; breadth < SJME_NVM_WALK_NUM_BREADTH; breadth++)
-		for (currentStep = at->inSelect->steps, atIndex = 0;
-			!skipElements; currentStep++, atIndex++)
+		for (currentStep = startStep, atIndex = 0;
+			!skipElements && atIndex < limitIndex;
+			currentStep += stepAdd, atIndex++)
 		{
-			/* Stop at the end. */
-			if (currentStep->memberName == NULL ||
-				currentStep->size <= 0)
+			/* Use the default add of one, since we scan single entries */
+			/* at a time. */
+			/* Note that while in a variant, there is never a step */
+			/* addition. */
+			stepAdd = (at->variantStep == NULL ? 1 : 0);
+			
+			/* Stop when the step is invalid. */
+			sjme_message("step(%p->%s)",
+				currentStep, currentStep->memberName);
+			if (currentStep->memberName == NULL)
 				break;
 
 			/* Locate the selection for this structure type, for recursion. */
@@ -228,12 +329,14 @@ static sjme_errorCode sjme_nvm_walk(
 			/* Fill in sub-step. */
 			memset(&subStep, 0, sizeof(subStep));
 			subStep.root = root;
-			subStep.base.raw = at->base.raw;
-			subStep.baseStruct.raw = at->baseStruct.raw;
+			subStep.base.walkLayer = at->base.walkLayer;
+			subStep.baseStruct.walkLayer = at->baseStruct.walkLayer;
+			subStep.valueP.walkLayer = 0;
 			subStep.parent = at;
 			subStep.typeId = currentStep->structType;
 			subStep.inSelect = subSelect;
 			subStep.inStep = currentStep;
+			subStep.variantStep = NULL;
 			subStep.functions = at->functions;
 			subStep.depth = at->depth + 1;
 			subStep.stage = at->stage;
@@ -241,16 +344,62 @@ static sjme_errorCode sjme_nvm_walk(
 			subStep.uniqueId = ++at->nextUniqueId;
 			subStep.breadth = breadth;
 
-			/* Determine the pointer for this value. */
-			subStep.at.raw = SJME_POINTER_OFFSET(at->base.raw,
-				currentStep->offset);
+			/* Does this item have a variant? */
+			if (currentStep->structType == SJME_NVM_WALK_PSEUDO_LIST ||
+				currentStep->structType == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY)
+			{
+				/* The following step is the variant information. */
+				subStep.variantStep = (currentStep + 1);
+
+				/* We never walk into a variant. */
+				if (at->variantStep == NULL)
+					stepAdd = 2;
+			}
+			
+			/* Base pointer to the value is here. */
+			subStep.valueP.walkLayer = at->base.walkLayer +
+				currentStep->offset;
+			
+			/* Fixed array element, and we are walking a variant. */
+			if (at->variantStep != NULL &&
+				currentStep->structType == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY)
+			{
+				subStep.valueP.walkLayer = subStep.valueP.walkLayer +
+					(currentStep->memberSize * atIndex);
+			}
+
+			/* List element, and we are walking a variant. */
+			else if (at->variantStep != NULL &&
+				currentStep->structType == SJME_NVM_WALK_PSEUDO_LIST)
+			{
+				voidList = ((sjme_list_void*)subStep.valueP.walkLayer);
+				subStep.valueP.walkLayer = (sjme_intPointer)voidList +
+					(voidList->elementOffset + (voidList->elementSize *
+						atIndex));
+			}
 
 			/* If there is a sub-select, recursive walk into it if we */
 			/* are doing a diving walk. */
-			if (subSelect != NULL && breadth == SJME_NVM_WALK_BREADTH_DIVE)
+			/* For anything that is a variant, we always dive into it */
+			/* since we do want to encode list/array elements. */
+			if (breadth == SJME_NVM_WALK_BREADTH_DIVE &&
+				(subSelect != NULL || subStep.variantStep != NULL))
 			{
-				/* Start at the base of the structure. */
-				subStep.baseStruct.raw = subStep.at.raw;
+				/* Since we are diving into a structure, we always want */
+				/* to be at the structure's actual pointer position. */
+				if (currentStep->isPointer)
+				{
+					/* Never dive into null pointers. */
+					if (subStep.valueP.intPointer == 0 ||
+						subStep.valueP.intPointer[0] == 0)
+						continue;
+
+					/* Remap pointer base. */
+					subStep.base.walkLayer = subStep.valueP.walkLayer;
+					subStep.baseStruct.walkLayer = subStep.valueP.walkLayer;
+				}
+
+				/* Always start at the open of a structure. */
 				subStep.index = -1;
 				
 				/* Do a structured walk. */
@@ -268,8 +417,7 @@ static sjme_errorCode sjme_nvm_walk(
 			/* Looking at this with a level walk. */
 			if (breadth == SJME_NVM_WALK_BREADTH_LEVEL)
 			{
-				/* This is just the current index. */
-				subStep.baseStruct.raw = subStep.base.raw;
+				/* This is just the current index in the struct. */
 				subStep.index = atIndex;
 
 				/* Perform the stepped walk. */
@@ -286,6 +434,7 @@ static sjme_errorCode sjme_nvm_walk(
 		}
 	
 	/* We stepped over everything, so set a very high index. */
+skip_endStruct:
 	at->index = (skipElements ? INT32_MIN : INT32_MAX);
 	if (sjme_error_is(error = function(root, parent, at)))
 	{
@@ -333,9 +482,9 @@ sjme_errorCode sjme_nvm_walk_start(
 		
 		/* Initialize root state. */
 		memset(&rootState, 0, sizeof(rootState));
-		rootState.base.raw = startAt;
-		rootState.baseStruct.raw = startAt;
-		rootState.at.raw = startAt;
+		rootState.base.walkLayer = (sjme_intPointer)startAt;
+		rootState.baseStruct.walkLayer = (sjme_intPointer)startAt;
+		rootState.valueP.walkLayer = (sjme_intPointer)startAt;
 		rootState.typeId = typeId;
 		rootState.inSelect = select;
 		rootState.functions = functions;

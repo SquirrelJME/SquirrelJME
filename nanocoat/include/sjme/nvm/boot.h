@@ -63,9 +63,6 @@ typedef enum sjme_nvm_defaultDirectoryType
 
 struct sjme_nvm_bootParam
 {
-	/** The payload to use for booting the virtual machine. */
-	const sjme_payload_config* payload;
-	
 	/** The boot suite to use. */
 	sjme_nvm_rom_suite bootSuite;
 

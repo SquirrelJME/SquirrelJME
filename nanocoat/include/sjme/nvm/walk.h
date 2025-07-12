@@ -92,6 +92,24 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_frontEnd_bindType . */
 	SJME_NVM_WALK_PSEUDO_BIND_TYPE = -18,
+
+	/** @c sjme_lpstr . */
+	SJME_NVM_WALK_PSEUDO_LPSTR = -19,
+
+	/** @c sjme_nvm_task_statusType . */
+	SJME_NVM_WALK_PSEUDO_TASK_STATUS_TYPE = -20,
+
+	/** Fixed size array . */
+	SJME_NVM_WALK_PSEUDO_FIXED_ARRAY = -21,
+
+	/** @c sjme_nvm_vmClass_loader . */
+	SJME_NVM_WALK_PSEUDO_CLASS_LOADER = -22,
+
+	/** @c sjme_nvm_taskStrings . */
+	SJME_NVM_WALK_PSEUDO_TASK_STRINGS = -23,
+
+	/** @c sjme_nvm_task_globals . */ 
+	SJME_NVM_WALK_PSEUDO_TASK_GLOBALS = -24,
 } sjme_nvm_walk_pseudoType;
 
 /**
@@ -179,8 +197,11 @@ typedef struct sjme_nvm_walk_functions
 
 typedef union sjme_nvm_walk_pointer
 {
+	/** Pointer used by the walking layer. */
+	sjme_intPointer walkLayer;
+	
 	/** The raw pointer. */
-	sjme_pointer raw;
+	sjme_pointer* pointer;
 
 	/** Pointer sized integer. */
 	sjme_intPointer* intPointer;
@@ -215,8 +236,8 @@ struct sjme_nvm_walk_state
 	/** The base structure pointer within the base. */
 	sjme_nvm_walk_pointer baseStruct;
 
-	/** The pointer this is at. */
-	sjme_nvm_walk_pointer at;
+	/** The pointer to the value. */
+	sjme_nvm_walk_pointer valueP;
 
 	/** The current type being walked. */
 	sjme_jint typeId;
@@ -242,6 +263,9 @@ struct sjme_nvm_walk_state
 	/** The step this is in. */
 	const sjme_nvm_walk_step* inStep;
 
+	/** Step that refers to an array, list, or multi-variant type. */
+	const sjme_nvm_walk_step* variantStep;
+
 	/** Data pointer. */
 	sjme_pointer data;
 
@@ -262,6 +286,9 @@ struct sjme_nvm_walk_step
 
 	/** The size of the type. */
 	sjme_jint size;
+
+	/** The member size for this item. */
+	sjme_jint memberSize;
 
 	/** The Java type. */
 	sjme_javaTypeId javaType;

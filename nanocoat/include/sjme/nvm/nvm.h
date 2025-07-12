@@ -323,13 +323,6 @@ typedef sjme_nvm_threadBase* sjme_nvm_thread;
 SJME_LIST_DECLARE(sjme_nvm_thread, 0);
 
 /**
- * Contains the payload information.
- * 
- * @since 2023/07/27
- */
-typedef struct sjme_payload_config sjme_payload_config;
-
-/**
  * Hook for garbage collection detection and/or cancel capability.
  * 
  * @param frame The frame this is garbage collecting in.
@@ -377,7 +370,13 @@ typedef struct sjme_nvm_rom_suiteBase* sjme_nvm_rom_suite;
  *
  * @since 2023/12/17
  */
-typedef struct sjme_nvm_taskBase* sjme_nvm_task;
+typedef struct sjme_nvm_taskBase sjme_nvm_taskBase;
+/**
+ * Structure for a single task.
+ *
+ * @since 2023/12/17
+ */
+typedef sjme_nvm_taskBase* sjme_nvm_task;
 	
 /** List of tasks. */
 SJME_LIST_DECLARE(sjme_nvm_task, 0);

@@ -216,6 +216,7 @@ sjme_errorCode sjme_nvm_boot(
 	memset(mergeSuites, 0, sizeof(mergeSuites));
 	numMergeSuites = 0;
 
+#if defined(SJME_CONFIG_DEPRECATED)
 	/* Process payload suites. */
 	if (result->bootParamCopy->payload != NULL)
 	{
@@ -230,6 +231,7 @@ sjme_errorCode sjme_nvm_boot(
 		if (mergeSuites[numMergeSuites] != NULL)
 			numMergeSuites++;
 	}
+#endif
 
 	/* Is there a pre-existing boot suite to use? */
 	if (result->bootParamCopy->bootSuite != NULL)
