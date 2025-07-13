@@ -253,6 +253,14 @@ else()
 	add_compile_definitions(SJME_CONFIG_HAS_STDARG_H=1)
 endif()
 
+# inttypes.h available?
+CHECK_INCLUDE_FILE("inttypes.h" SJME_CONFIG_HAS_INTTYPES_H)
+if(NOT SJME_CONFIG_HAS_INTTYPES_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_INTTYPES_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_INTTYPES_H=1)
+endif()
+
 # varargs.h available?
 CHECK_INCLUDE_FILE("varargs.h" SJME_CONFIG_HAS_VARARGS_H)
 if(NOT SJME_CONFIG_HAS_VARARGS_H)

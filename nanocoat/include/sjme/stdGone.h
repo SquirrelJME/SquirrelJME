@@ -48,6 +48,10 @@
 	#endif
 #endif
 
+#if defined(SJME_CONFIG_HAS_INTTYPES_H)
+	#include <inttypes.h>
+#endif
+
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/* Needed for alloca(). */
 	#include <malloc.h>
@@ -162,6 +166,13 @@ extern "C"
 		#define UINT64_C(x) x##UI64
 	#else
 		#error No stdint types
+	#endif
+#endif
+
+#if !defined(SJME_CONFIG_HAS_INTTYPES_H)
+	#if defined(SJME_CONFIG_HAS_MSVC)
+		/** @c printf() 64-bit decimal specifier. */
+		#define PRId64 "I64"
 	#endif
 #endif
 

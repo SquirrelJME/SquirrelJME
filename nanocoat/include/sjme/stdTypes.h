@@ -435,6 +435,29 @@ typedef intptr_t sjme_intPointer;
 #define SJME_TYPEOF_IS_POINTER_sjme_intPointer 0
 
 /**
+ * Native long value.
+ *
+ * @since 2025/07/13
+ */
+typedef int64_t sjme_jlongNative;
+
+/** Basic @c sjme_jlongNative type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jlongNative SJME_BASIC_TYPE_ID_LONG
+
+/** Java @c sjme_jlongNative type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jlongNative SJME_JAVA_TYPE_ID_LONG
+
+/** Is a pointer for @c sjme_jlongNative ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jlongNative 0
+
+/**
+ * Max size integer.
+ *
+ * @since 2025/07/13
+ */
+typedef sjme_jlongNative sjme_intMax;
+	
+/**
  * Long value.
  * 
  * @since 2023/07/25
@@ -460,7 +483,7 @@ typedef union sjme_jlong
 	} part;
 	
 	/** The full long. */
-	int64_t full;
+	sjme_jlongNative full;
 } sjme_jlong;
 
 /** Basic @c sjme_jlong type identifier. */

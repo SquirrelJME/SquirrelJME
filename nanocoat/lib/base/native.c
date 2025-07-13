@@ -144,6 +144,41 @@ static sjme_errorCode sjme_nal_default_cFileSize(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nal_default_cFileWrite(
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState,
+	sjme_attrOutNotNullBuf(length) sjme_buffer inBuf,
+	sjme_attrInPositive sjme_jint base,
+	sjme_attrInPositiveNonZero sjme_jint length)
+{
+	FILE* file;
+	sjme_jint left, destAt, rc;
+	
+	if (inSeekable == NULL || inImplState == NULL || inBuf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover file handle. */
+	file = inSeekable->implState.handle;
+	
+	/* Seek to write position. */
+	if (fseek(file, base, SEEK_SET))
+		return sjme_nal_errno(errno);
+	
+	/* Make sure it is a valid position. */
+	if (ftell(file) < 0)
+		return sjme_nal_errno(errno);
+
+	/* Write data. */
+	rc = fwrite(inBuf, 1, length, file);
+	
+	/* These should never happen. */
+	if (feof(file) || ferror(file) || rc != length)
+		return sjme_nal_errno(errno);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 /** Functions for C File access. */
 static const sjme_seekable_functions sjme_nal_default_cFileFunctions =
 {
@@ -151,6 +186,7 @@ static const sjme_seekable_functions sjme_nal_default_cFileFunctions =
 	sjme_sm(.init, sjme_nal_default_cFileInit),
 	sjme_sm(.read, sjme_nal_default_cFileRead),
 	sjme_sm(.size, sjme_nal_default_cFileSize),
+	sjme_sm(.write, sjme_nal_default_cFileWrite),
 };
 #endif
 

@@ -208,11 +208,35 @@ static sjme_errorCode sjme_stream_outputSeekableInit(
 static sjme_errorCode sjme_stream_outputSeekableWrite(
 	sjme_attrInNotNull sjme_stream_output stream,
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
-	sjme_attrInNotNull sjme_cpointer buf,
+	sjme_attrInNotNull sjme_buffer buf,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_seekable seekable;
+	
+	if (stream == NULL || inImplState == NULL || buf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (length < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Do not bother if writing nothing. */
+	if (length == 0)
+		return SJME_ERROR_NONE;
+
+	/* Recover the seekable. */
+	seekable = inImplState->handle.p;
+
+	/* Forward to the output seekable. */
+	if (sjme_error_is(error = sjme_seekable_write(seekable,
+		buf, inImplState->offset, length)))
+		return sjme_error_default(error);
+
+	/* Shift offset forward. */
+	inImplState->offset += length;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static const sjme_stream_outputFunctions sjme_stream_outputSeekableFunctions =

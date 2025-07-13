@@ -191,6 +191,24 @@ typedef sjme_errorCode (*sjme_seekable_sizeFunc)(
 	sjme_attrOutNotNull sjme_jint* outSize);
 
 /**
+ * Write to the given seekable.
+ * 
+ * @param inSeekable The current seekable.
+ * @param inImplState The implementation state.
+ * @param inBuf The buffer to read from.
+ * @param base The base address to write to.
+ * @param length The number of bytes to write.
+ * @return Any resultant error, if any.
+ * @since 2025/07/13
+ */
+typedef sjme_errorCode (*sjme_seekable_writeFunc)(
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrInNotNull sjme_seekable_implState* inImplState,
+	sjme_attrOutNotNullBuf(length) sjme_buffer inBuf,
+	sjme_attrInPositive sjme_jint base,
+	sjme_attrInPositiveNonZero sjme_jint length);
+	
+/**
  * Functions for seekable implementations.
  * 
  * @since 2024/08/11
@@ -208,6 +226,9 @@ typedef struct sjme_seekable_functions
 	
 	/** Return the size of the stream. */
 	sjme_seekable_sizeFunc size;
+	
+	/** Writes to the given seekable. */
+	sjme_seekable_writeFunc write;
 } sjme_seekable_functions;
 
 struct sjme_seekableBase
@@ -444,6 +465,22 @@ sjme_errorCode sjme_seekable_size(
 	sjme_attrInNotNull sjme_seekable seekable,
 	sjme_attrOutNotNull sjme_jint* outSize);
 
+/**
+ * Writes to the given seekable.
+ * 
+ * @param seekable The seekable to write to. 
+ * @param inBuf The input buffer.
+ * @param seekBase The base of the seekable to write to.
+ * @param length The number of bytes to write.
+ * @return Any resultant error, if any.
+ * @since 2025/07/13
+ */
+sjme_errorCode sjme_seekable_write(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_buffer inBuf,
+	sjme_attrInPositive sjme_jint seekBase,
+	sjme_attrInPositive sjme_jint length);
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

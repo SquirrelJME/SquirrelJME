@@ -21,215 +21,6 @@
 #include "sjme/nvm/walk.h"
 #include "sjme/nvm/walkCoreDump.h"
 
-#define SJME_SOFT_OKAY
-
-static sjme_errorCode sjme_nvm_walk_coreArrayClose(
-	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState)
-{
-	if (coreState == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_messageB("JSON: ],");
-#endif
-
-#if defined(SJME_SOFT_OKAY)
-	return SJME_ERROR_NONE;
-#else
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
-}
-
-static sjme_errorCode sjme_nvm_walk_coreArrayOpen(
-	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState)
-{
-	if (coreState == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_messageB("JSON: [");
-#endif
-
-#if defined(SJME_SOFT_OKAY)
-	return SJME_ERROR_NONE;
-#else
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
-}
-
-static sjme_errorCode sjme_nvm_walk_coreMapClose(
-	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState)
-{
-	if (coreState == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_messageB("JSON: },");
-#endif
-	
-#if defined(SJME_SOFT_OKAY)
-	return SJME_ERROR_NONE;
-#else
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
-}
-
-static sjme_errorCode sjme_nvm_walk_coreMapOpen(
-	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState)
-{
-	if (coreState == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_messageB("JSON: {");
-#endif
-	
-#if defined(SJME_SOFT_OKAY)
-	return SJME_ERROR_NONE;
-#else
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
-}
-
-static sjme_errorCode sjme_nvm_walk_coreKeyPutI(
-	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState,
-	sjme_attrInNotNull sjme_lpcstr inKey,
-	sjme_attrInValue sjme_jint inValue)
-{
-	if (coreState == NULL || inKey == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_messageB("JSON: \"%s\": %d,", inKey, inValue);
-#endif
-	
-#if defined(SJME_SOFT_OKAY)
-	return SJME_ERROR_NONE;
-#else
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
-}
-
-static sjme_errorCode sjme_nvm_walk_coreKeyPutP(
-	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState,
-	sjme_attrInNotNull sjme_lpcstr inKey,
-	sjme_attrInValue sjme_intPointer inValue)
-{
-	if (coreState == NULL || inKey == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_messageB("JSON: \"%s\": %lld,", inKey,
-		(long long)inValue);
-#endif
-	
-#if defined(SJME_SOFT_OKAY)
-	return SJME_ERROR_NONE;
-#else
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
-}
-
-static sjme_errorCode sjme_nvm_walk_coreKeyPutArray(
-	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState,
-	sjme_attrInNotNull sjme_lpcstr inKey)
-{
-	if (coreState == NULL || inKey == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_messageB("JSON: \"%s\": [", inKey);
-#endif
-	
-#if defined(SJME_SOFT_OKAY)
-	return SJME_ERROR_NONE;
-#else
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
-}
-
-static sjme_errorCode sjme_nvm_walk_coreKeyPutS(
-	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState,
-	sjme_attrInNotNull sjme_lpcstr inKey,
-	sjme_attrInNullable sjme_lpcstr inValue)
-{
-	if (coreState == NULL || inKey == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_messageB("JSON: \"%s\": %s%s%s,", inKey,
-		(inValue == NULL ? "" : "\""),
-		(inValue == NULL ? "null" : inValue),
-		(inValue == NULL ? "" : "\""));
-#endif
-	
-#if defined(SJME_SOFT_OKAY)
-	return SJME_ERROR_NONE;
-#else
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
-}
-
-/** Close array. */
-#define sjme_nvm_walk_coreArrayCloseR() \
-	if (sjme_error_is(error = sjme_nvm_walk_coreArrayClose(coreState))) \
-		return sjme_error_default(error)
-
-/** Open array. */
-#define sjme_nvm_walk_coreArrayOpenR() \
-	if (sjme_error_is(error = sjme_nvm_walk_coreArrayOpen(coreState))) \
-		return sjme_error_default(error)
-
-/** Close map. */
-#define sjme_nvm_walk_coreMapCloseR() \
-	if (sjme_error_is(error = sjme_nvm_walk_coreMapClose(coreState))) \
-		return sjme_error_default(error)
-
-/** Open map. */
-#define sjme_nvm_walk_coreMapOpenR() \
-	if (sjme_error_is(error = sjme_nvm_walk_coreMapOpen(coreState))) \
-		return sjme_error_default(error)
-
-/** Put key array value. */
-#define sjme_nvm_walk_coreKeyPutArrayR(name) \
-	if (sjme_error_is(error = sjme_nvm_walk_coreKeyPutArray(coreState, \
-		(name)))) \
-		return sjme_error_default(error)
-
-/** Put key value. */
-#define sjme_nvm_walk_coreKeyPutIR(name, value) \
-	if (sjme_error_is(error = sjme_nvm_walk_coreKeyPutI(coreState, \
-		(name), (value)))) \
-		return sjme_error_default(error)
-
-/** Put key value. */
-#define sjme_nvm_walk_coreKeyPutPR(name, value) \
-	if (sjme_error_is(error = sjme_nvm_walk_coreKeyPutP(coreState, \
-		(name), (sjme_intPointer)(value)))) \
-		return sjme_error_default(error)
-
-/** Put key value. */
-#define sjme_nvm_walk_coreKeyPutSR(name, value) \
-	if (sjme_error_is(error = sjme_nvm_walk_coreKeyPutS(coreState, \
-		(name), (value)))) \
-		return sjme_error_default(error)
-
 static sjme_errorCode sjme_nvm_walk_coreMetaType(
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
 	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState)
@@ -256,14 +47,16 @@ static sjme_errorCode sjme_nvm_walk_coreMetaType(
 		/* Record the type change always, since this determines */
 		/* how the data is to be interpreted, that is what structure it */
 		/* goes into ultimately. Order wise, this should always be last! */
-		sjme_nvm_walk_coreKeyPutIR("~typeId",
-			at->typeId);
+		if (sjme_error_is(error = sjme_cbor_putMapEntryI(coreState->out,
+			"~typeId", at->typeId)))
+			return sjme_error_default(error);
 
 		/* Record the Java type as well, if needed. */
 		if (at->typeId == SJME_NVM_WALK_PSEUDO_PRIMITIVE)
 		{
-			sjme_nvm_walk_coreKeyPutIR("~typeIdJava",
-				at->inStep->javaType);
+			if (sjme_error_is(error = sjme_cbor_putMapEntryI(coreState->out,
+				"~typeIdJava", stepJavaType)))
+				return sjme_error_default(error);
 		}
 		
 		/* Now set it, since we are at that type. */
@@ -297,18 +90,18 @@ static sjme_errorCode sjme_nvm_walk_coreDoGeneric(
 	if (inStep == NULL)
 		return SJME_ERROR_NONE;
 
-	/* Set stored values. */
-	sjme_nvm_walk_coreKeyPutSR("memberName", inStep->memberName);
-
 	/* If this is a pointer value, store the pointer value. */
 	if (inStep->typeId == SJME_NVM_WALK_PSEUDO_LPSTR)
 	{
-		sjme_nvm_walk_coreKeyPutSR("string",
-			(sjme_lpcstr)at->valueP.intPointer[0]);
+		if (sjme_error_is(error = sjme_cbor_putMapEntryS(coreState->out,
+			"s", (sjme_lpcstr)at->valueP.intPointer[0])))
+			return sjme_error_default(error);
 	}
 	else if (inStep->isPointer)
 	{
-		sjme_nvm_walk_coreKeyPutPR("pointer", at->valueP.intPointer[0]);
+		if (sjme_error_is(error = sjme_cbor_putMapEntryI(coreState->out,
+			"p", at->valueP.intPointer[0])))
+			return sjme_error_default(error);
 	}
 
 	return SJME_ERROR_NONE;
@@ -432,6 +225,7 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 	const sjme_nvm_walk_coreHandler* handler;
 	sjme_jboolean shallowOpen;
 	sjme_nvm_walk_stepHandlerFunc handlerFunc;
+		sjme_lpcstr thisBasis;
 	
 	if (root == NULL || at == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -468,7 +262,8 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 				break;
 
 		/* Open map for value. */
-		sjme_nvm_walk_coreMapOpenR();
+		if (sjme_error_is(error = sjme_cbor_putMapOpen(coreState->out)))
+			return sjme_error_default(error);
 		
 		/* Did the structure type change? */
 		if (sjme_error_is(error = sjme_nvm_walk_coreMetaType(at, coreState)))
@@ -485,7 +280,8 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 			return sjme_error_default(error);
 		
 		/* Close map. */
-		sjme_nvm_walk_coreMapCloseR();
+		if (sjme_error_is(error = sjme_cbor_putMapClose(coreState->out)))
+			return sjme_error_default(error);
 
 		/* Success! */
 		return SJME_ERROR_NONE;
@@ -500,8 +296,11 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		if (coreState->inStructure)
 		{
 			/* Close structure. */
-			sjme_nvm_walk_coreArrayCloseR();
-			sjme_nvm_walk_coreMapCloseR();
+			if (sjme_error_is(error = sjme_cbor_putArrayClose(coreState->out)))
+				return sjme_error_default(error);
+			
+			if (sjme_error_is(error = sjme_cbor_putMapClose(coreState->out)))
+				return sjme_error_default(error);
 
 			/* No longer in a structure. */
 			coreState->inStructure = SJME_JNI_FALSE;
@@ -531,22 +330,21 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		coreState->inStructure = SJME_JNI_TRUE;
 
 		/* Regardless of the mode, a new map is opened. */
-		sjme_nvm_walk_coreMapOpenR();
+		if (sjme_error_is(error = sjme_cbor_putMapOpen(coreState->out)))
+			return sjme_error_default(error);
 
 		/* We are defining a shiny new structure that we have not seen */
 		/* before. */
 		if (!shallowOpen)
 		{
 			/* Need to be more descriptive about what this is. */
-			sjme_nvm_walk_coreKeyPutPR("new",
-				at->base.pointer);
-			sjme_nvm_walk_coreKeyPutIR("itemId",
-				++coreState->itemId);
-
-			/* If we are in a list/array, this is a variant. */
-			if (at->inSelect != NULL)
-				sjme_nvm_walk_coreKeyPutSR("typeName",
-					at->inSelect->typeName);
+			if (sjme_error_is(error = sjme_cbor_putMapEntryI(coreState->out,
+				"new", at->base.walkLayer)))
+				return sjme_error_default(error);
+			
+			if (sjme_error_is(error = sjme_cbor_putMapEntryI(coreState->out,
+				"id", at->uniqueId)))
+				return sjme_error_default(error);
 		}
 
 		/* Otherwise, a shallow open means we are working on a structure */
@@ -554,26 +352,43 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		else
 		{
 			/* Recall this pointer specifically. */
-			sjme_nvm_walk_coreKeyPutPR("recall",
-				at->base.pointer);
-
-			/* If this is recalling to store data into a known structure */
-			/* member's data, then recall it. This is a hint */
-			if (at->inStep != NULL)
-				sjme_nvm_walk_coreKeyPutSR("basis",
-					at->inStep->memberName);
+			if (sjme_error_is(error = sjme_cbor_putMapEntryI(coreState->out,
+				"recall", at->base.walkLayer)))
+				return sjme_error_default(error);
 		}
 
-		/* Which sub-structure is this for? */
-		sjme_nvm_walk_coreKeyPutPR("struct",
-			at->baseStruct.pointer);
+		/* Which basis is this? */
+		thisBasis = (at->inStep != NULL ? at->inStep->memberName : "");
+
+		/* Did the member basis change? */
+		if (strcmp(coreState->currentBasis, thisBasis))
+		{
+			/* Record the member name we are setting. */
+			if (sjme_error_is(error = sjme_cbor_putMapEntryS(coreState->out,
+				"~member", thisBasis)))
+				return sjme_error_default(error);
+
+			/* Set the new basis. */
+			coreState->currentBasis = thisBasis;
+		}
+
+		/* Which sub-structure is this for? Assuming it differs from the */
+		/* base. */
+		if (at->base.walkLayer != at->baseStruct.walkLayer)
+		{
+			if (sjme_error_is(error = sjme_cbor_putMapEntryI(coreState->out,
+				"struct", at->baseStruct.walkLayer)))
+				return sjme_error_default(error);
+		}
 		
 		/* Did the structure type change? */
 		if (sjme_error_is(error = sjme_nvm_walk_coreMetaType(at, coreState)))
 			return sjme_error_default(error);
 
 		/* Regardless of the mode, we need to store data on the structure. */
-		sjme_nvm_walk_coreKeyPutArrayR("data");
+		if (sjme_error_is(error = sjme_cbor_putMapEntryA(coreState->out,
+			"tape")))
+			return sjme_error_default(error);
 		
 		/* Store current info. */
 		coreState->currentBase = at->base.pointer;
@@ -666,20 +481,29 @@ sjme_errorCode sjme_nvm_walk_coreDumpStream(
 	sjme_errorCode error;
 	sjme_nvm_walk_coreState initState;
 	sjme_nvm_walk_coreState* coreState;
+	sjme_cborBase cbor;
 	
 	if (allocPool == NULL || inState == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Initialize the CBOR output. */
+	memset(&cbor, 0, sizeof(cbor));
+	cbor.out = outStream;
+	cbor.isJson = SJME_JNI_TRUE;
 
 	/* Initialize state. */
 	memset(&initState, 0, sizeof(initState));
 	coreState = &initState;
 	initState.allocPool = allocPool;
-	initState.out = outStream;
+	initState.out = &cbor;
 	initState.currentBase = 0;
 	initState.currentDepth = -1;
+	initState.currentJavaType = SJME_NUM_JAVA_TYPE_IDS;
+	initState.currentBasis = "";
 
 	/* Open an array to store all wound data. */
-	sjme_nvm_walk_coreArrayOpenR();
+	if (sjme_error_is(error = sjme_cbor_putArrayOpen(coreState->out)))
+		return sjme_error_default(error);
 
 	/* Perform the core dump. */
 	if (sjme_error_is(error = sjme_nvm_walk_start(inState,
@@ -688,7 +512,8 @@ sjme_errorCode sjme_nvm_walk_coreDumpStream(
 		return sjme_error_default(error);
 
 	/* Close data winding. */
-	sjme_nvm_walk_coreArrayCloseR();
+	if (sjme_error_is(error = sjme_cbor_putArrayClose(coreState->out)))
+		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;

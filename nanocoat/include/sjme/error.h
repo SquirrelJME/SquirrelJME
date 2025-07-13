@@ -525,9 +525,12 @@ typedef enum sjme_errorCode
 
 	/** Skip the elements of items. */
 	SJME_ERROR_WALK_SKIP_ELEMENTS = -161,
+
+	/** Invalid preceding type. */
+	SJME_ERROR_CBOR_INVALID_PRECEDE = -162,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -162,
+	SJME_NUM_ERROR_CODES = -163,
 } sjme_errorCode;
 
 /**

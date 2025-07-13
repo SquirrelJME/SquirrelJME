@@ -268,7 +268,7 @@ typedef sjme_errorCode (*sjme_stream_outputInitFunc)(
 typedef sjme_errorCode (*sjme_stream_outputWriteFunc)(
 	sjme_attrInNotNull sjme_stream_output stream,
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
-	sjme_attrInNotNull sjme_cpointer buf,
+	sjme_attrInNotNull sjme_buffer buf,
 	sjme_attrInPositiveNonZero sjme_jint length);
 
 /**
@@ -407,7 +407,7 @@ sjme_errorCode sjme_stream_inputOpenSeekable(
 sjme_errorCode sjme_stream_inputRead(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
-	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
+	sjme_attrOutNotNullBuf(length) sjme_buffer dest,
 	sjme_attrInPositive sjme_jint length);
 
 /**

@@ -153,7 +153,7 @@ static sjme_errorCode sjme_stream_outputMemoryInit(
 static sjme_errorCode sjme_stream_outputMemoryWrite(
 	sjme_attrInNotNull sjme_stream_output stream,
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
-	sjme_attrInNotNull sjme_cpointer buf,
+	sjme_attrInNotNull sjme_buffer buf,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
 	uintptr_t realBuf;

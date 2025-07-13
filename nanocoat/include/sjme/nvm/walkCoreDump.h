@@ -17,6 +17,7 @@
 #define SJME_C_WALKCOREDUMP_H
 
 #include "sjme/nvm/walk.h"
+#include "sjme/cbor.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -80,13 +81,10 @@ struct sjme_nvm_walk_pointerChain
 typedef struct sjme_nvm_walk_coreState
 {
 	/** The stream to write to. */
-	sjme_stream_output out;
+	sjme_cbor out;
 
 	/** Allocation pool to use for allocations. */
 	sjme_alloc_pool allocPool;
-
-	/** The current item id. */
-	sjme_jint itemId;
 
 	/** The first link of the pointer chain. */
 	sjme_nvm_walk_pointerChain* chain;
@@ -105,6 +103,9 @@ typedef struct sjme_nvm_walk_coreState
 
 	/** The current Java type. */
 	sjme_javaTypeId currentJavaType;
+
+	/** The current member basis. */
+	sjme_lpcstr currentBasis;
 } sjme_nvm_walk_coreState;
 
 /*--------------------------------------------------------------------------*/

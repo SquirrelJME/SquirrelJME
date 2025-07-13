@@ -135,7 +135,7 @@ fail_initBufAlloc:
 static sjme_errorCode sjme_stream_outputByteArrayWrite(
 	sjme_attrInNotNull sjme_stream_output stream,
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
-	sjme_attrInNotNull sjme_cpointer buf,
+	sjme_attrInNotNull sjme_buffer buf,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
 #define GROW_SIZE 32
