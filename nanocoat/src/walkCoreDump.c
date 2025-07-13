@@ -39,7 +39,7 @@ static sjme_errorCode sjme_nvm_walk_coreMetaMember(
 	{
 		/* Record the member name we are setting. */
 		if (sjme_error_is(error = sjme_cbor_putMapEntryS(coreState->out,
-			"~member", thisBasis)))
+			"~m", thisBasis)))
 			return sjme_error_default(error);
 
 		/* Set the new basis. */
@@ -62,7 +62,7 @@ static sjme_errorCode sjme_nvm_walk_coreMetaType(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Both primitive? */
-	stepJavaType = (at->inStep != NULL ? at->inStep->javaType :
+	stepJavaType = (at->inStep != NULL ? at->javaType :
 		SJME_NUM_JAVA_TYPE_IDS);
 	bothPrimitive = ((at->typeId == SJME_NVM_WALK_PSEUDO_PRIMITIVE) &&
 		(coreState->currentType == SJME_NVM_WALK_PSEUDO_PRIMITIVE));
@@ -77,14 +77,14 @@ static sjme_errorCode sjme_nvm_walk_coreMetaType(
 		/* how the data is to be interpreted, that is what structure it */
 		/* goes into ultimately. Order wise, this should always be last! */
 		if (sjme_error_is(error = sjme_cbor_putMapEntryI(coreState->out,
-			"~typeId", at->typeId)))
+			"~t", at->typeId)))
 			return sjme_error_default(error);
 
 		/* Record the Java type as well, if needed. */
 		if (at->typeId == SJME_NVM_WALK_PSEUDO_PRIMITIVE)
 		{
 			if (sjme_error_is(error = sjme_cbor_putMapEntryI(coreState->out,
-				"~typeIdJava", stepJavaType)))
+				"~tJ", stepJavaType)))
 				return sjme_error_default(error);
 		}
 		
@@ -104,7 +104,6 @@ static sjme_errorCode sjme_nvm_walk_coreDoAny(
 {
 	sjme_errorCode error;
 	sjme_nvm_walk_coreState* coreState;
-	const sjme_nvm_walk_step* inStep;
 	
 	if (root == NULL || at == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -113,36 +112,32 @@ static sjme_errorCode sjme_nvm_walk_coreDoAny(
 	coreState = at->data;
 	if (coreState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-
-	/* Not a stepped member? */
-	inStep = at->inStep;
-	if (inStep == NULL)
-		return SJME_ERROR_NONE;
-
+	
 	/* If this is a pointer value, store the pointer value. */
-	if (inStep->typeId == SJME_NVM_WALK_PSEUDO_LPSTR)
+	if (at->typeId == SJME_NVM_WALK_PSEUDO_LPSTR)
 	{
 		if (sjme_error_is(error = sjme_cbor_putMapEntryS(coreState->out,
 			"s", (sjme_lpcstr)at->valueP.intPointer[0])))
 			return sjme_error_default(error);
 	}
-	else if (inStep->isPointer)
+	else if (at->isPointer)
 	{
 		if (sjme_error_is(error = sjme_cbor_putMapEntryI(coreState->out,
 			"p", at->valueP.intPointer[0])))
 			return sjme_error_default(error);
 	}
 
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
-static sjme_errorCode sjme_nvm_walk_coreDoPrimitive(
+
+static sjme_errorCode sjme_nvm_walk_coreDoAtomicInt(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
 	sjme_attrInNotNull sjme_nvm_walk_state* at)
 {
 	sjme_errorCode error;
 	sjme_nvm_walk_coreState* coreState;
-	const sjme_nvm_walk_step* inStep;
 	sjme_jvalueTyped value;
 	
 	if (root == NULL || at == NULL)
@@ -152,25 +147,55 @@ static sjme_errorCode sjme_nvm_walk_coreDoPrimitive(
 	coreState = at->data;
 	if (coreState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-
-	/* Not a stepped member? */
-	inStep = at->inStep;
-	if (inStep == NULL)
-		return SJME_ERROR_NONE;
-
+	
 	/* Recover the value. */
 	memset(&value, 0, sizeof(value));
-	if (inStep->isPointer)
+	if (at->isPointer)
+		value.v.i = sjme_atomic_sjme_jint_get(*at->valueP.pointer);
+	else
+		value.v.i = sjme_atomic_sjme_jint_get(at->valueP.atomicInt);
+
+	/* Set type and write value. */
+	value.t = SJME_JAVA_TYPE_ID_INTEGER;
+	if (sjme_error_is(error = sjme_cbor_putMapEntryJ(coreState->out,
+		"v", &value)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_walk_coreDoPrimitive(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at)
+{
+	sjme_errorCode error;
+	sjme_nvm_walk_coreState* coreState;
+	sjme_jvalueTyped value;
+	
+	if (root == NULL || at == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover state. */
+	coreState = at->data;
+	if (coreState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Recover the value. */
+	memset(&value, 0, sizeof(value));
+	if (at->isPointer)
 		memmove(&value.v, *at->valueP.pointer, sizeof(value.v));
 	else
 		memmove(&value.v, at->valueP.value, sizeof(value.v));
 
 	/* Set type and write value. */
-	value.t = inStep->javaType;
+	value.t = at->javaType;
 	if (sjme_error_is(error = sjme_cbor_putMapEntryJ(coreState->out,
-		(inStep->isPointer ? "v*" : "v"), &value)))
+		(at->isPointer ? "v*" : "v"), &value)))
 		return sjme_error_default(error);
-	
+
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -199,6 +224,8 @@ typedef struct sjme_nvm_walk_coreHandler
 
 static const sjme_nvm_walk_coreHandler sjme_nvm_walk_coreHandlers[] =
 {
+	SJME_WALK_CORE_HANDLE(SJME_NVM_WALK_PSEUDO_ATOMIC_JINT,
+		sjme_nvm_walk_coreDoAtomicInt),
 	SJME_WALK_CORE_HANDLE(SJME_NVM_WALK_PSEUDO_PRIMITIVE,
 		sjme_nvm_walk_coreDoPrimitive),
 	SJME_WALK_CORE_END()
@@ -439,11 +466,7 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 				"recall", at->base.walkLayer)))
 				return sjme_error_default(error);
 		}
-
-		/* Basis changed? */
-		if (sjme_error_is(error = sjme_nvm_walk_coreMetaMember(at, coreState)))
-			return sjme_error_default(error);
-
+		
 		/* Which sub-structure is this for? Assuming it differs from the */
 		/* base. */
 		if (at->base.walkLayer != at->baseStruct.walkLayer)
@@ -455,6 +478,10 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		
 		/* Did the structure type change? */
 		if (sjme_error_is(error = sjme_nvm_walk_coreMetaType(at, coreState)))
+			return sjme_error_default(error);
+
+		/* Basis changed? */
+		if (sjme_error_is(error = sjme_nvm_walk_coreMetaMember(at, coreState)))
 			return sjme_error_default(error);
 
 		/* Regardless of the mode, we need to store data on the structure. */

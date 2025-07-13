@@ -230,6 +230,9 @@ static sjme_errorCode sjme_nvm_walkItem(
 {
 	sjme_errorCode error;
 	const sjme_nvm_walk_stepSelect* select;
+	const sjme_nvm_walk_step* inStep;
+	sjme_jint oldTypeId;
+	sjme_javaTypeId oldJavaType;
 	
 	if (root == NULL || at == NULL || function == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -241,9 +244,48 @@ static sjme_errorCode sjme_nvm_walkItem(
 	/* Walk on this item. */
 	if (at->breadth == SJME_NVM_WALK_BREADTH_LEVEL)
 	{
+		/* Store old type IDs. */
+		oldTypeId = at->typeId;
+		oldJavaType = at->javaType;
+
+		/* Aliased type? */
+		inStep = (at->variantStep != NULL ? at->variantStep : at->inStep);
+		if (inStep != NULL)
+			switch (oldTypeId)
+			{
+					/* Enum type, can be differently sized by the compiler. */
+				case SJME_NVM_WALK_PSEUDO_MLE_THREAD_MODEL:
+				case SJME_NVM_WALK_PSEUDO_NVM_STRUCT_TYPE:
+				case SJME_NVM_WALK_PSEUDO_BIND_TYPE:
+				case SJME_NVM_WALK_PSEUDO_TASK_STATUS_TYPE:
+				case SJME_NVM_WALK_PSEUDO_FIXED_ARRAY:
+					at->typeId = SJME_NVM_WALK_PSEUDO_PRIMITIVE;
+					if (inStep->size == 1)
+						at->javaType = SJME_BASIC_TYPE_ID_BYTE;
+					else if (inStep->size == 2)
+						at->javaType = SJME_BASIC_TYPE_ID_SHORT;
+					else if (inStep->size == 4)
+						at->javaType = SJME_BASIC_TYPE_ID_INTEGER;
+					else if (inStep->size == 8)
+						at->javaType = SJME_BASIC_TYPE_ID_LONG;
+
+					/* Some other weird size? */
+					else
+						at->typeId = oldTypeId;
+					break;
+
+					/* Not aliased. */
+				default:
+					break;
+			}
+		
 		/* Execute item handler. */
 		if (sjme_error_is(error = function(root, parent, at)))
 			return sjme_error_default(error);
+
+		/* Restore old types. */
+		at->typeId = oldTypeId;
+		at->javaType = oldJavaType;
 	}
 
 	/* Dive into this specific item. */
@@ -325,6 +367,8 @@ static sjme_errorCode sjme_nvm_walkArray(
 		subStep.index = i;
 		subStep.inStep = variantStep;
 		subStep.typeId = variantStep->typeId;
+		subStep.javaType = variantStep->javaType;
+		subStep.isPointer = variantStep->isPointer;
 
 		/* Walk on this item. */
 		if (sjme_error_is(error = sjme_nvm_walkItem(root, at,
@@ -390,6 +434,8 @@ static sjme_errorCode sjme_nvm_walkList(
 		subStep.index = i;
 		subStep.inStep = variantStep;
 		subStep.typeId = variantStep->typeId;
+		subStep.javaType = variantStep->javaType;
+		subStep.isPointer = variantStep->isPointer;
 
 		/* Walk on this item. */
 		if (sjme_error_is(error = sjme_nvm_walkItem(root, at,
@@ -443,11 +489,13 @@ static sjme_errorCode sjme_nvm_walkStruct(
 		subStep.inSelect = sjme_nvm_select(currentStep->typeId);
 		subStep.index = atIndex;
 		subStep.typeId = currentStep->typeId;
+		subStep.javaType = currentStep->javaType;
+		subStep.isPointer = currentStep->isPointer;
 		subStep.inStep = currentStep;
 		
 		/* Is this a variant? That is an array or list. */
-		if (currentStep->typeId == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY ||
-			currentStep->typeId == SJME_NVM_WALK_PSEUDO_LIST)
+		if (subStep.typeId == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY ||
+			subStep.typeId == SJME_NVM_WALK_PSEUDO_LIST)
 		{
 			stepAdd = 2;
 			subStep.variantStep = (currentStep + 1);
@@ -595,6 +643,8 @@ sjme_errorCode sjme_nvm_walk_start(
 		rootState.baseStruct.walkLayer = (sjme_intPointer)startAt;
 		rootState.valueP.walkLayer = (sjme_intPointer)startAt;
 		rootState.typeId = typeId;
+		rootState.javaType = SJME_NUM_JAVA_TYPE_IDS;
+		rootState.isPointer = SJME_JNI_TRUE;
 		rootState.inSelect = select;
 		rootState.functions = functions;
 		rootState.index = -1;

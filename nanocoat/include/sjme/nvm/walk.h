@@ -110,6 +110,9 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_nvm_task_globals . */ 
 	SJME_NVM_WALK_PSEUDO_TASK_GLOBALS = -24,
+
+	/** Plain pointer. */
+	SJME_NVM_WALK_PSEUDO_POINTER = -25,
 } sjme_nvm_walk_pseudoType;
 
 /**
@@ -260,6 +263,12 @@ struct sjme_nvm_walk_state
 
 	/** The current type being walked. */
 	sjme_jint typeId;
+
+	/** The Java type being walked. */
+	sjme_javaTypeId javaType;
+
+	/** Is this a pointer? */
+	sjme_jboolean isPointer;
 
 	/** What is the current walk stage? */
 	sjme_nvm_walk_stageType stage;
