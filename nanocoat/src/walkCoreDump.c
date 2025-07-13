@@ -442,6 +442,14 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		/* Regardless of the mode, a new map is opened. */
 		if (sjme_error_is(error = sjme_cbor_putMapOpen(coreState->out)))
 			return sjme_error_default(error);
+		
+		/* Did the structure type change? */
+		if (sjme_error_is(error = sjme_nvm_walk_coreMetaType(at, coreState)))
+			return sjme_error_default(error);
+
+		/* Basis changed? */
+		if (sjme_error_is(error = sjme_nvm_walk_coreMetaMember(at, coreState)))
+			return sjme_error_default(error);
 
 		/* We are defining a shiny new structure that we have not seen */
 		/* before. */
@@ -475,14 +483,6 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 				"struct", at->baseStruct.walkLayer)))
 				return sjme_error_default(error);
 		}
-		
-		/* Did the structure type change? */
-		if (sjme_error_is(error = sjme_nvm_walk_coreMetaType(at, coreState)))
-			return sjme_error_default(error);
-
-		/* Basis changed? */
-		if (sjme_error_is(error = sjme_nvm_walk_coreMetaMember(at, coreState)))
-			return sjme_error_default(error);
 
 		/* Regardless of the mode, we need to store data on the structure. */
 		if (sjme_error_is(error = sjme_cbor_putMapEntryA(coreState->out,
