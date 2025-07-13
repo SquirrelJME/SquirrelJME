@@ -45,7 +45,7 @@
 		sjme_sm(.size, sizeof(((SJME_WALK_CURRENT*)(0))->inMemberName)), \
 		sjme_sm(.memberSize, inMemberSize), \
 		sjme_sm(.javaType, inJavaType), \
-		sjme_sm(.structType, inNvmId), \
+		sjme_sm(.typeId, inNvmId), \
 	}
 
 /** Walk step a primitive value (pointer). */
@@ -99,7 +99,7 @@
 			sjme_sm(.size, -1), \
 			sjme_sm(.memberSize, -1), \
 			sjme_sm(.javaType, 0), \
-			sjme_sm(.structType, 0), \
+			sjme_sm(.typeId, 0), \
 		} \
 	}
 
@@ -113,7 +113,7 @@ SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_BOOT_PARAM)
 	SJME_WS_LIST_P(mainClassPathById,
 		SJME_WS_JAVA_V(mainClassPathById, SJME_JAVA_TYPE_ID_INTEGER)),
 	SJME_WS_LIST_P(mainClassPathByName,
-		SJME_WS_NORM_V(mainClassPathByName, SJME_NVM_WALK_PSEUDO_LPSTR)),
+		SJME_WS_NORM_P(mainClassPathByName, SJME_NVM_WALK_PSEUDO_LPSTR)),
 	SJME_WS_NORM_P(mainClass, SJME_NVM_WALK_PSEUDO_LPSTR),
 	SJME_WS_LIST_P(mainArgs,
 		SJME_WS_NORM_V(mainArgs, SJME_NVM_WALK_PSEUDO_LPSTR)),
@@ -229,6 +229,7 @@ static sjme_errorCode sjme_nvm_walkItem(
 	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
 {
 	sjme_errorCode error;
+	const sjme_nvm_walk_stepSelect* select;
 	
 	if (root == NULL || at == NULL || function == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -236,10 +237,44 @@ static sjme_errorCode sjme_nvm_walkItem(
 	/* Mismatched parent or in some other bad state? */
 	if (at->parent != parent)
 		return SJME_ERROR_ILLEGAL_STATE;
-	
-	/* Execute item handler. */
-	if (sjme_error_is(error = function(root, parent, at)))
-		return sjme_error_default(error);
+
+	/* Walk on this item. */
+	if (at->breadth == SJME_NVM_WALK_BREADTH_LEVEL)
+	{
+		/* Execute item handler. */
+		if (sjme_error_is(error = function(root, parent, at)))
+			return sjme_error_default(error);
+	}
+
+	/* Dive into this specific item. */
+	else if (at->breadth == SJME_NVM_WALK_BREADTH_DIVE)
+	{
+		/* Diving into a normal structure? */
+		if (at->typeId != SJME_NVM_WALK_PSEUDO_LIST &&
+			at->typeId != SJME_NVM_WALK_PSEUDO_FIXED_ARRAY)
+		{
+			/* We can only dive into known types. */
+			select = sjme_nvm_select(at->typeId);
+			if (select == NULL)
+				return SJME_ERROR_NONE;
+		}
+		
+		/* If this is a pointer, we need to dereference it. */
+		if (at->inStep->isPointer)
+		{
+			/* Dereference. */
+			at->valueP.value = *at->valueP.pointer;
+
+			/* Set new structure base. */
+			at->base.walkLayer = at->valueP.walkLayer; 
+			at->baseStruct.walkLayer = at->base.walkLayer; 
+		}
+		
+		/* Go back to the root item walking for this. */
+		if (sjme_error_is(error = sjme_nvm_walk(root, parent,
+			at, function)))
+			return sjme_error_default(error);
+	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -251,13 +286,54 @@ static sjme_errorCode sjme_nvm_walkArray(
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
 	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
 {
+	sjme_errorCode error;
+	sjme_nvm_walk_state subStep;
+	const sjme_nvm_walk_step* variantStep;
+	const sjme_nvm_walk_step* currentStep;
+	sjme_jint i, n;
+	
 	if (root == NULL || at == NULL || function == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Mismatched parent or in some other bad state? */
 	if (at->parent != parent)
 		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* We do not know enough to walk through this array. */
+	currentStep = at->inStep;
+	if (currentStep == NULL)
+		return SJME_ERROR_NONE;
 	
+	/* Determine the fixed array length. */
+	n = currentStep->size / currentStep->memberSize;
+	
+	/* Go through the entire list. */
+	variantStep = at->variantStep;
+	for (i = 0; i < n; i++)
+	{
+		/* Setup base step information. */
+		memmove(&subStep, at, sizeof(subStep));
+		subStep.uniqueId = ++at->nextUniqueId;
+		subStep.depth = at->depth + 1;
+		subStep.parent = at;
+		
+		/* The value is directly where the array element is */
+		subStep.valueP.walkLayer = at->baseStruct.walkLayer +
+			(i * currentStep->memberSize);
+		
+		/* Set item specific data. */
+		subStep.index = i;
+		subStep.inStep = variantStep;
+		subStep.typeId = variantStep->typeId;
+
+		/* Walk on this item. */
+		if (sjme_error_is(error = sjme_nvm_walkItem(root, at,
+			&subStep, function)))
+			return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -268,15 +344,61 @@ static sjme_errorCode sjme_nvm_walkList(
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
 	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
 {
+	sjme_errorCode error;
+	sjme_nvm_walk_state subStep;
+	sjme_list_void* voidList;
+	const sjme_nvm_walk_step* variantStep;
+	sjme_jint i, n;
+	
 	if (root == NULL || at == NULL || function == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Mismatched parent or in some other bad state? */
 	if (at->parent != parent)
 		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Recover the associated void list. */
+	voidList = at->valueP.value;
+
+	/* Skip null pointers. */
+	if (voidList == NULL)
+		return SJME_ERROR_NONE;
+
+	/* Go through the entire list. */
+	variantStep = at->variantStep;
+	for (i = 0, n = voidList->length; i < n; i++)
+	{
+		/* Setup base step information. */
+		memmove(&subStep, at, sizeof(subStep));
+		subStep.uniqueId = ++at->nextUniqueId;
+		subStep.depth = at->depth + 1;
+		subStep.parent = at;
+
+		/* The structure base is the pointer of the list. */
+		subStep.baseStruct.walkLayer = (sjme_intPointer)voidList;
+
+		/* If the list itself is a pointer, then the base structure is also */
+		/* the list because it is another allocated structure. */
+		if (at->inStep->isPointer)
+			subStep.base.walkLayer = subStep.baseStruct.walkLayer;
+		
+		/* Where is the actual pointer directly to this item? */
+		subStep.valueP.walkLayer = (sjme_intPointer)voidList +
+			voidList->elementOffset + (voidList->elementSize * i);
+		
+		/* Set item specific data. */
+		subStep.index = i;
+		subStep.inStep = variantStep;
+		subStep.typeId = variantStep->typeId;
+
+		/* Walk on this item. */
+		if (sjme_error_is(error = sjme_nvm_walkItem(root, at,
+			&subStep, function)))
+			return sjme_error_default(error);
+	}
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_nvm_walkStruct(
@@ -286,7 +408,7 @@ static sjme_errorCode sjme_nvm_walkStruct(
 	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
 {
 	sjme_errorCode error;
-	sjme_jint atIndex;
+	sjme_jint atIndex, stepAdd;
 	const sjme_nvm_walk_stepSelect* inSelect;
 	const sjme_nvm_walk_step* currentStep;
 	sjme_nvm_walk_state subStep;
@@ -304,8 +426,8 @@ static sjme_errorCode sjme_nvm_walkStruct(
 		return SJME_ERROR_NONE;
 
 	/* Go through all steps. */
-	for (atIndex = 0, currentStep = inSelect->steps;
-		currentStep->memberName != NULL; currentStep++, atIndex++)
+	for (atIndex = 0, currentStep = inSelect->steps, stepAdd = 1;
+		currentStep->memberName != NULL; currentStep += stepAdd, atIndex++)
 	{
 		/* Setup base step information. */
 		memmove(&subStep, at, sizeof(subStep));
@@ -318,29 +440,30 @@ static sjme_errorCode sjme_nvm_walkStruct(
 			currentStep->offset;
 		
 		/* Set item specific data. */
-		subStep.inSelect = sjme_nvm_select(currentStep->structType);
+		subStep.inSelect = sjme_nvm_select(currentStep->typeId);
 		subStep.index = atIndex;
-		subStep.typeId = currentStep->structType;
+		subStep.typeId = currentStep->typeId;
 		subStep.inStep = currentStep;
-		subStep.variantStep = NULL;
 		
-		/* When going through when level, handle each specific item. */
-		if (at->breadth == SJME_NVM_WALK_BREADTH_LEVEL)
+		/* Is this a variant? That is an array or list. */
+		if (currentStep->typeId == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY ||
+			currentStep->typeId == SJME_NVM_WALK_PSEUDO_LIST)
 		{
-			/* Walk on this item. */
-			if (sjme_error_is(error = sjme_nvm_walkItem(root, at,
-				&subStep, function)))
-				return sjme_error_default(error);
+			stepAdd = 2;
+			subStep.variantStep = (currentStep + 1);
 		}
 
-		/* Dive into this specific item. */
-		else if (at->breadth == SJME_NVM_WALK_BREADTH_DIVE)
+		/* Not a variant. */
+		else
 		{
-			/* Go back to the root item walking for this. */
-			if (sjme_error_is(error = sjme_nvm_walk(root, at,
-				&subStep, function)))
-				return sjme_error_default(error);
+			stepAdd = 1;
+			subStep.variantStep = NULL;
 		}
+		
+		/* Walk on this item. */
+		if (sjme_error_is(error = sjme_nvm_walkItem(root, at,
+			&subStep, function)))
+			return sjme_error_default(error);
 	}
 	
 	/* Success! */
@@ -365,6 +488,10 @@ sjme_errorCode sjme_nvm_walk(
 	/* Mismatched parent or in some other bad state? */
 	if (at->parent != parent)
 		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Skip walking null pointers. */
+	if (at->base.walkLayer == 0 || at->baseStruct.walkLayer == 0)
+		return SJME_ERROR_NONE;
 
 	/* Try to get a selection for the current item where applicable. */
 	at->inSelect = sjme_nvm_select(at->typeId);
@@ -395,6 +522,7 @@ sjme_errorCode sjme_nvm_walk(
 
 		/* Setup basic step. */
 		memmove(&subStep, at, sizeof(subStep));
+		subStep.root = at->root;
 		subStep.uniqueId = ++at->nextUniqueId;
 		subStep.breadth = breadth;
 		subStep.depth = at->depth + 1;
@@ -406,12 +534,6 @@ sjme_errorCode sjme_nvm_walk(
 			subStep.baseStruct.walkLayer = subStep.valueP.walkLayer;
 		else
 			subStep.baseStruct.walkLayer = subStep.base.walkLayer;
-
-		/* Clear anything related to the current step. */
-		subStep.index = INT32_MIN;
-		subStep.valueP.walkLayer = 0;
-		subStep.inStep = NULL;
-		subStep.variantStep = NULL;
 
 		/* Perform stepping. */
 		if (sjme_error_is(error = outer(root, at, &subStep,
@@ -431,196 +553,6 @@ sjme_errorCode sjme_nvm_walk(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
-	
-#if 0
-	/* Start of structure step? */
-	if (at->index <= -1)
-	{
-	}
-
-	/* Is this a variant? We can derive the info from the source step */
-	if (at->variantStep != NULL)
-	{
-		/* Step with the variant's information. */
-		startStep = at->variantStep;
-
-		/* Fixed array. */
-		if (at->inStep->structType == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY)
-		{
-			limitIndex = at->inStep->size / at->inStep->memberSize;
-			
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
-
-		/* List. */
-		else if (at->inStep->structType == SJME_NVM_WALK_PSEUDO_LIST)
-		{
-			voidList = (at->inStep->isPointer ?
-				*((((sjme_list_void**)at->base.walkLayer))) :
-				((sjme_list_void*)at->base.walkLayer));
-			limitIndex = voidList->length;
-			
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
-
-		/* Unknown variant, so it gets an unknown size. */
-		else
-			limitIndex = 0;
-	}
-
-	/* Otherwise select normally. */
-	else
-	{
-		startStep = at->inSelect->steps;
-		limitIndex = INT32_MAX;
-	}
-	
-	/* Stepping over individual members? Walk in two breadths... */
-	for (breadth = 0; breadth < SJME_NVM_WALK_NUM_BREADTH; breadth++)
-		for (currentStep = startStep, atIndex = 0;
-			!skipElements && atIndex < limitIndex;
-			currentStep += stepAdd, atIndex++)
-		{
-			/* Use the default add of one, since we scan single entries */
-			/* at a time. */
-			/* Note that while in a variant, there is never a step */
-			/* addition. */
-			stepAdd = (at->variantStep == NULL ? 1 : 0);
-			
-			/* Stop when the step is invalid. */
-			sjme_message("step(%p->%s)",
-				currentStep, currentStep->memberName);
-			if (currentStep->memberName == NULL)
-				break;
-
-			/* Locate the selection for this structure type, for recursion. */
-			if (currentStep->structType != 0)
-				subSelect = sjme_nvm_select(currentStep->structType);
-			else
-				subSelect = NULL;
-			
-			/* Fill in sub-step. */
-			memset(&subStep, 0, sizeof(subStep));
-			subStep.root = root;
-			subStep.base.walkLayer = at->base.walkLayer;
-			subStep.baseStruct.walkLayer = at->baseStruct.walkLayer;
-			subStep.valueP.walkLayer = 0;
-			subStep.parent = at;
-			subStep.typeId = currentStep->structType;
-			subStep.inSelect = subSelect;
-			subStep.inStep = currentStep;
-			subStep.variantStep = NULL;
-			subStep.functions = at->functions;
-			subStep.depth = at->depth + 1;
-			subStep.stage = at->stage;
-			subStep.data = at->data;
-			subStep.uniqueId = ++at->nextUniqueId;
-			subStep.breadth = breadth;
-
-			/* Does this item have a variant? */
-			if (currentStep->structType == SJME_NVM_WALK_PSEUDO_LIST ||
-				currentStep->structType == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY)
-			{
-				/* The following step is the variant information. */
-				subStep.variantStep = (currentStep + 1);
-
-				/* We never walk into a variant. */
-				if (at->variantStep == NULL)
-					stepAdd = 2;
-			}
-			
-			/* Base pointer to the value is here. */
-			subStep.valueP.walkLayer = at->base.walkLayer +
-				currentStep->offset;
-			
-			/* Fixed array element, and we are walking a variant. */
-			if (at->variantStep != NULL &&
-				currentStep->structType == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY)
-			{
-				subStep.valueP.walkLayer = subStep.valueP.walkLayer +
-					(currentStep->memberSize * atIndex);
-			}
-
-			/* List element, and we are walking a variant. */
-			else if (at->variantStep != NULL &&
-				currentStep->structType == SJME_NVM_WALK_PSEUDO_LIST)
-			{
-				voidList = ((sjme_list_void*)subStep.valueP.walkLayer);
-				subStep.valueP.walkLayer = (sjme_intPointer)voidList +
-					(voidList->elementOffset + (voidList->elementSize *
-						atIndex));
-			}
-
-			/* If there is a sub-select, recursive walk into it if we */
-			/* are doing a diving walk. */
-			/* For anything that is a variant, we always dive into it */
-			/* since we do want to encode list/array elements. */
-			if (breadth == SJME_NVM_WALK_BREADTH_DIVE &&
-				(subSelect != NULL || subStep.variantStep != NULL))
-			{
-				/* Since we are diving into a structure, we always want */
-				/* to be at the structure's actual pointer position. */
-				if (currentStep->isPointer)
-				{
-					/* Never dive into null pointers. */
-					if (subStep.valueP.intPointer == 0 ||
-						subStep.valueP.intPointer[0] == 0)
-						continue;
-
-					/* Remap pointer base. */
-					subStep.base.walkLayer = subStep.valueP.walkLayer;
-					subStep.baseStruct.walkLayer = subStep.valueP.walkLayer;
-				}
-
-				/* Always start at the open of a structure. */
-				subStep.index = -1;
-				
-				/* Do a structured walk. */
-				if (sjme_error_is(error = sjme_nvm_walk(root, at,
-					&subStep, function)))
-				{
-					/* This indicates we do not want to walk inside this. */
-					if (error == SJME_ERROR_WALK_SKIP_ELEMENTS)
-						continue;
-					
-					return sjme_error_default(error);
-				}
-			}
-
-			/* Looking at this with a level walk. */
-			if (breadth == SJME_NVM_WALK_BREADTH_LEVEL)
-			{
-				/* This is just the current index in the struct. */
-				subStep.index = atIndex;
-
-				/* Perform the stepped walk. */
-				if (sjme_error_is(error = function(root, at,
-					&subStep)))
-				{
-					/* Ignore this. */
-					if (error == SJME_ERROR_WALK_SKIP_ELEMENTS)
-						continue;
-					
-					return sjme_error_default(error);
-				}
-			}
-		}
-	
-	/* We stepped over everything, so set a very high index. */
-skip_endStruct:
-	at->index = (skipElements ? INT32_MIN : INT32_MAX);
-	if (sjme_error_is(error = function(root, parent, at)))
-	{
-		/* Ignore this. */
-		if (error != SJME_ERROR_WALK_SKIP_ELEMENTS)
-			return sjme_error_default(error);
-	}
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
-#endif
 }
 
 sjme_errorCode sjme_nvm_walk_start(
@@ -658,6 +590,7 @@ sjme_errorCode sjme_nvm_walk_start(
 		
 		/* Initialize root state. */
 		memset(&rootState, 0, sizeof(rootState));
+		rootState.root = &rootState;
 		rootState.base.walkLayer = (sjme_intPointer)startAt;
 		rootState.baseStruct.walkLayer = (sjme_intPointer)startAt;
 		rootState.valueP.walkLayer = (sjme_intPointer)startAt;

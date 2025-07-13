@@ -216,8 +216,11 @@ typedef union sjme_nvm_walk_pointer
 	/** Pointer used by the walking layer. */
 	sjme_intPointer walkLayer;
 	
-	/** The raw pointer. */
+	/** A pointer type. */
 	sjme_pointer* pointer;
+	
+	/** A value type. */
+	sjme_pointer value;
 
 	/** Pointer sized integer. */
 	sjme_intPointer* intPointer;
@@ -310,7 +313,7 @@ struct sjme_nvm_walk_step
 	sjme_javaTypeId javaType;
 
 	/** The structure type. */
-	sjme_nvm_structType structType;
+	sjme_jint typeId;
 };
 
 struct sjme_nvm_walk_stepSelect

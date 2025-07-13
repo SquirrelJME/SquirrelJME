@@ -259,17 +259,24 @@ static sjme_errorCode sjme_nvm_walk_coreDoGeneric(
 	sjme_nvm_walk_coreKeyPutSR("memberName", inStep->memberName);
 
 	/* If this is a pointer value, store the pointer value. */
-	if (inStep->isPointer)
+	if (inStep->typeId == SJME_NVM_WALK_PSEUDO_LPSTR)
+	{
+		sjme_nvm_walk_coreKeyPutSR("string",
+			(sjme_lpcstr)at->valueP.intPointer[0]);
+	}
+	else if (inStep->isPointer)
+	{
 		sjme_nvm_walk_coreKeyPutPR("pointer", at->valueP.intPointer[0]);
+	}
 
 	/* Which type value is this? */
-	if (inStep->structType == SJME_NVM_WALK_PSEUDO_PRIMITIVE)
+	if (inStep->typeId == SJME_NVM_WALK_PSEUDO_PRIMITIVE)
 	{
 		sjme_nvm_walk_coreKeyPutIR("javaType", inStep->javaType);
 	}
 	else
 	{
-		sjme_nvm_walk_coreKeyPutIR("structType", inStep->structType);
+		sjme_nvm_walk_coreKeyPutIR("structType", inStep->typeId);
 	}
 
 	/* Close map. */
