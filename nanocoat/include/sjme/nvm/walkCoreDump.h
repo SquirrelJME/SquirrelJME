@@ -106,6 +106,9 @@ typedef struct sjme_nvm_walk_coreState
 
 	/** The current member basis. */
 	sjme_lpcstr currentBasis;
+
+	/** The last written index. */
+	sjme_jint lastIndex;
 } sjme_nvm_walk_coreState;
 
 /*--------------------------------------------------------------------------*/

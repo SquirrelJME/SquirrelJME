@@ -49,6 +49,30 @@ static sjme_errorCode sjme_nvm_walk_coreMetaMember(
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
+static sjme_errorCode sjme_nvm_walk_coreMetaIndex(
+	sjme_attrInNotNull sjme_nvm_walk_state* at,
+	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState)
+{
+	sjme_errorCode error;
+	
+	if (at == NULL || coreState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Did the index change? */
+	if (at->index != coreState->lastIndex)
+	{
+		/* Record the new index. */
+		if (sjme_error_is(error = sjme_cbor_putMapEntryI(coreState->out,
+			"~i", at->index)))
+			return sjme_error_default(error);
+
+		/* Set the new basis. */
+		coreState->lastIndex = at->index;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
 
 static sjme_errorCode sjme_nvm_walk_coreMetaType(
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
@@ -379,6 +403,10 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		if (sjme_error_is(error = sjme_nvm_walk_coreMetaMember(at, coreState)))
 			return sjme_error_default(error);
 
+		/* Index changed? */
+		if (sjme_error_is(error = sjme_nvm_walk_coreMetaIndex(at, coreState)))
+			return sjme_error_default(error);
+
 		/* Not found? Use a generic handler which keeps the data opaque. */
 		if (handler == NULL || handler->function == NULL)
 			handlerFunc = sjme_nvm_walk_coreDoAny;
@@ -449,6 +477,10 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 
 		/* Basis changed? */
 		if (sjme_error_is(error = sjme_nvm_walk_coreMetaMember(at, coreState)))
+			return sjme_error_default(error);
+
+		/* Index changed? */
+		if (sjme_error_is(error = sjme_nvm_walk_coreMetaIndex(at, coreState)))
 			return sjme_error_default(error);
 
 		/* We are defining a shiny new structure that we have not seen */
