@@ -193,7 +193,7 @@ sjme_errorCode sjme_cbor_putMapEntryA(
 sjme_errorCode sjme_cbor_putMapEntryI(
 	sjme_attrInNotNull sjme_cbor cbor,
 	sjme_attrInNotNull sjme_lpcstr inKey,
-	sjme_attrInNotNull sjme_intMax inValue);
+	sjme_attrInValue sjme_intMax inValue);
 
 /**
  * Puts in a map value.
@@ -236,6 +236,20 @@ sjme_errorCode sjme_cbor_putMapEntryS(
 	sjme_attrInNotNull sjme_lpcstr inValue);
 
 /**
+ * Puts in a map value.
+ * 
+ * @param cbor The CBOR state.
+ * @param inKey The map key.
+ * @param inValue The value to write.
+ * @return Any resultant error, if any.
+ * @since 2025/07/13
+ */
+sjme_errorCode sjme_cbor_putMapEntryZ(
+	sjme_attrInNotNull sjme_cbor cbor,
+	sjme_attrInNotNull sjme_lpcstr inKey,
+	sjme_attrInValue sjme_jboolean inValue);
+
+/**
  * Puts in a map open.
  * 
  * @param cbor The CBOR state.
@@ -255,7 +269,7 @@ sjme_errorCode sjme_cbor_putMapOpen(
  */
 sjme_errorCode sjme_cbor_putValueI(
 	sjme_attrInNotNull sjme_cbor cbor,
-	sjme_attrInNotNull sjme_intMax inValue);
+	sjme_attrInValue sjme_intMax inValue);
 
 /**
  * Puts in a value only.
@@ -280,6 +294,18 @@ sjme_errorCode sjme_cbor_putValueJ(
 sjme_errorCode sjme_cbor_putValueS(
 	sjme_attrInNotNull sjme_cbor cbor,
 	sjme_attrInNotNull sjme_lpcstr inValue);
+
+/**
+ * Puts in a value only.
+ * 
+ * @param cbor The CBOR state.
+ * @param inValue The value to write.
+ * @return Any resultant error, if any.
+ * @since 2025/07/13
+ */
+sjme_errorCode sjme_cbor_putValueZ(
+	sjme_attrInNotNull sjme_cbor cbor,
+	sjme_attrInValue sjme_jboolean inValue);
 
 /*--------------------------------------------------------------------------*/
 

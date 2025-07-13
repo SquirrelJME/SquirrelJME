@@ -280,7 +280,7 @@ sjme_errorCode sjme_cbor_putMapEntryA(
 sjme_errorCode sjme_cbor_putMapEntryI(
 	sjme_attrInNotNull sjme_cbor cbor,
 	sjme_attrInNotNull sjme_lpcstr inKey,
-	sjme_attrInNotNull sjme_intMax inValue)
+	sjme_attrInValue sjme_intMax inValue)
 {
 	sjme_errorCode error;
 	
@@ -372,6 +372,30 @@ sjme_errorCode sjme_cbor_putMapEntryS(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_cbor_putMapEntryZ(
+	sjme_attrInNotNull sjme_cbor cbor,
+	sjme_attrInNotNull sjme_lpcstr inKey,
+	sjme_attrInValue sjme_jboolean inValue)
+{
+	sjme_errorCode error;
+	
+	if (cbor == NULL || inKey == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Entries are pseudo types. */
+	if (sjme_error_is(error = sjme_cbor_putKey(cbor, inKey)))
+		return sjme_error_default(error);
+	
+	if (sjme_error_is(error = sjme_cbor_putColon(cbor)))
+		return sjme_error_default(error);
+	
+	if (sjme_error_is(error = sjme_cbor_putValueZ(cbor, inValue)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_cbor_putMapOpen(
 sjme_attrInNotNull sjme_cbor cbor)
 {
@@ -426,35 +450,33 @@ sjme_errorCode sjme_cbor_putValueJ(
 	if (cbor == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Preface. */
+	/* Write integer instead? */
+	if (inValue->t == SJME_JAVA_TYPE_ID_INTEGER)
+		return sjme_cbor_putValueI(cbor, inValue->v.i);
+	
+	/* Write long instead? */
+	if (inValue->t == SJME_JAVA_TYPE_ID_LONG)
+		return sjme_cbor_putValueI(cbor, inValue->v.j.full);
+	
+	/* Write boolean instead? */
+	if (inValue->t == SJME_BASIC_TYPE_ID_BOOLEAN)
+		return sjme_cbor_putValueZ(cbor, inValue->v.z);
+	
+	/* Write byte instead? */
+	if (inValue->t == SJME_BASIC_TYPE_ID_BYTE)
+		return sjme_cbor_putValueI(cbor, inValue->v.b);
+	
+	/* Write short instead? */
+	if (inValue->t == SJME_BASIC_TYPE_ID_SHORT)
+		return sjme_cbor_putValueI(cbor, inValue->v.s);
+
 	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-
-	/* Write text. */
-	if (cbor->isJson)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-
-	/* Write binary. */
-	else
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-
-	/* Set new type. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-
-	/* Success! */
-	return SJME_ERROR_NONE;
+	return sjme_error_notImplemented(inValue->t);
 }
 
 sjme_errorCode sjme_cbor_putValueI(
 	sjme_attrInNotNull sjme_cbor cbor,
-	sjme_attrInNotNull sjme_intMax inValue)
+	sjme_attrInValue sjme_intMax inValue)
 {
 	/* -18446744073709551616 */
 #define BUF_SIZE 24
@@ -536,6 +558,51 @@ sjme_errorCode sjme_cbor_putValueS(
 		/* Write token. */
 		if (sjme_error_is(error = sjme_stream_outputWrite(cbor->out,
 			"\"", strlen("\""))))
+			return sjme_error_default(error);
+	}
+
+	/* Write binary. */
+	else
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Set new type, depends on if an array or not. */
+	/* If a comma precedes this, then we know we are in an array. */
+	if (cbor->lastToken == SJME_CBOR_MAP_COLON)
+		cbor->lastToken = SJME_CBOR_MAP_VALUE;
+	else
+		cbor->lastToken = SJME_CBOR_ARRAY_VALUE;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_cbor_putValueZ(
+	sjme_attrInNotNull sjme_cbor cbor,
+	sjme_attrInValue sjme_jboolean inValue)
+{
+	sjme_errorCode error;
+	sjme_lpcstr token;
+	
+	if (cbor == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Can only occur after these types. */
+	if (cbor->lastToken != SJME_CBOR_ARRAY_OPEN &&
+		cbor->lastToken != SJME_CBOR_ARRAY_COMMA &&
+		cbor->lastToken != SJME_CBOR_MAP_COLON &&
+		cbor->lastToken != SJME_CBOR_UNKNOWN_COMMA)
+		return SJME_ERROR_CBOR_INVALID_PRECEDE;
+
+	/* Write text. */
+	if (cbor->isJson)
+	{
+		/* Write token. */
+		token = (inValue ? "true" : "false");
+		if (sjme_error_is(error = sjme_stream_outputWrite(cbor->out,
+			(sjme_buffer)token, strlen(token))))
 			return sjme_error_default(error);
 	}
 

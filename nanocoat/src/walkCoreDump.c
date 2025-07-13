@@ -21,6 +21,35 @@
 #include "sjme/nvm/walk.h"
 #include "sjme/nvm/walkCoreDump.h"
 
+static sjme_errorCode sjme_nvm_walk_coreMetaMember(
+	sjme_attrInNotNull sjme_nvm_walk_state* at,
+	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState)
+{
+	sjme_errorCode error;
+	sjme_lpcstr thisBasis;
+	
+	if (at == NULL || coreState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Which basis is this? */
+	thisBasis = (at->inStep != NULL ? at->inStep->memberName : "");
+
+	/* Did the member basis change? */
+	if (strcmp(coreState->currentBasis, thisBasis))
+	{
+		/* Record the member name we are setting. */
+		if (sjme_error_is(error = sjme_cbor_putMapEntryS(coreState->out,
+			"~member", thisBasis)))
+			return sjme_error_default(error);
+
+		/* Set the new basis. */
+		coreState->currentBasis = thisBasis;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_walk_coreMetaType(
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
 	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState)
@@ -68,7 +97,7 @@ static sjme_errorCode sjme_nvm_walk_coreMetaType(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_nvm_walk_coreDoGeneric(
+static sjme_errorCode sjme_nvm_walk_coreDoAny(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
 	sjme_attrInNotNull sjme_nvm_walk_state* at)
@@ -106,6 +135,44 @@ static sjme_errorCode sjme_nvm_walk_coreDoGeneric(
 
 	return SJME_ERROR_NONE;
 }
+static sjme_errorCode sjme_nvm_walk_coreDoPrimitive(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at)
+{
+	sjme_errorCode error;
+	sjme_nvm_walk_coreState* coreState;
+	const sjme_nvm_walk_step* inStep;
+	sjme_jvalueTyped value;
+	
+	if (root == NULL || at == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover state. */
+	coreState = at->data;
+	if (coreState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Not a stepped member? */
+	inStep = at->inStep;
+	if (inStep == NULL)
+		return SJME_ERROR_NONE;
+
+	/* Recover the value. */
+	memset(&value, 0, sizeof(value));
+	if (inStep->isPointer)
+		memmove(&value.v, *at->valueP.pointer, sizeof(value.v));
+	else
+		memmove(&value.v, at->valueP.value, sizeof(value.v));
+
+	/* Set type and write value. */
+	value.t = inStep->javaType;
+	if (sjme_error_is(error = sjme_cbor_putMapEntryJ(coreState->out,
+		(inStep->isPointer ? "v*" : "v"), &value)))
+		return sjme_error_default(error);
+	
+	return SJME_ERROR_NONE;
+}
 
 typedef struct sjme_nvm_walk_coreHandler
 {
@@ -116,6 +183,14 @@ typedef struct sjme_nvm_walk_coreHandler
 	sjme_nvm_walk_stepHandlerFunc function;
 } sjme_nvm_walk_coreHandler;
 
+/** Handle the given type. */
+#define SJME_WALK_CORE_HANDLE(inTypeId, useFunction) \
+	{ \
+		sjme_sm(.typeId, inTypeId), \
+		sjme_sm(.function, useFunction), \
+	}
+
+/** End of walk handlers. */
 #define SJME_WALK_CORE_END() \
 	{ \
 		sjme_sm(.typeId, 0), \
@@ -124,6 +199,8 @@ typedef struct sjme_nvm_walk_coreHandler
 
 static const sjme_nvm_walk_coreHandler sjme_nvm_walk_coreHandlers[] =
 {
+	SJME_WALK_CORE_HANDLE(SJME_NVM_WALK_PSEUDO_PRIMITIVE,
+		sjme_nvm_walk_coreDoPrimitive),
 	SJME_WALK_CORE_END()
 };
 
@@ -225,7 +302,6 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 	const sjme_nvm_walk_coreHandler* handler;
 	sjme_jboolean shallowOpen;
 	sjme_nvm_walk_stepHandlerFunc handlerFunc;
-		sjme_lpcstr thisBasis;
 	
 	if (root == NULL || at == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -258,8 +334,11 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		/* Find handler for the item. */
 		handler = &sjme_nvm_walk_coreHandlers[0];
 		while (handler->function != NULL)
+		{
 			if (handler->typeId == at->typeId)
 				break;
+			handler++;
+		}
 
 		/* Open map for value. */
 		if (sjme_error_is(error = sjme_cbor_putMapOpen(coreState->out)))
@@ -269,9 +348,13 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		if (sjme_error_is(error = sjme_nvm_walk_coreMetaType(at, coreState)))
 			return sjme_error_default(error);
 
+		/* Basis changed? */
+		if (sjme_error_is(error = sjme_nvm_walk_coreMetaMember(at, coreState)))
+			return sjme_error_default(error);
+
 		/* Not found? Use a generic handler which keeps the data opaque. */
 		if (handler == NULL || handler->function == NULL)
-			handlerFunc = sjme_nvm_walk_coreDoGeneric;
+			handlerFunc = sjme_nvm_walk_coreDoAny;
 		else
 			handlerFunc = handler->function;
 		
@@ -357,20 +440,9 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 				return sjme_error_default(error);
 		}
 
-		/* Which basis is this? */
-		thisBasis = (at->inStep != NULL ? at->inStep->memberName : "");
-
-		/* Did the member basis change? */
-		if (strcmp(coreState->currentBasis, thisBasis))
-		{
-			/* Record the member name we are setting. */
-			if (sjme_error_is(error = sjme_cbor_putMapEntryS(coreState->out,
-				"~member", thisBasis)))
-				return sjme_error_default(error);
-
-			/* Set the new basis. */
-			coreState->currentBasis = thisBasis;
-		}
+		/* Basis changed? */
+		if (sjme_error_is(error = sjme_nvm_walk_coreMetaMember(at, coreState)))
+			return sjme_error_default(error);
 
 		/* Which sub-structure is this for? Assuming it differs from the */
 		/* base. */
