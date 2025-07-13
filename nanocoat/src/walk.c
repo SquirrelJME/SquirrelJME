@@ -222,21 +222,13 @@ static const sjme_nvm_walk_stepSelect* sjme_nvm_select(
 	return NULL;
 }
 
-static sjme_errorCode sjme_nvm_walk(
+static sjme_errorCode sjme_nvm_walkItem(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
 	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
 {
 	sjme_errorCode error;
-	sjme_nvm_walk_state subStep;
-	const sjme_nvm_walk_stepSelect* subSelect;
-	const sjme_nvm_walk_step* startStep;
-	const sjme_nvm_walk_step* currentStep;
-	sjme_nvm_walk_breadthType breadth;
-	sjme_jint atIndex, stepAdd, limitIndex;
-	sjme_jboolean skipElements;
-	sjme_list_void* voidList;
 	
 	if (root == NULL || at == NULL || function == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -245,22 +237,205 @@ static sjme_errorCode sjme_nvm_walk(
 	if (at->parent != parent)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* Start of structure step? */
-	skipElements = SJME_JNI_FALSE;
-	if (at->index <= -1)
+	/* Execute item handler. */
+	if (sjme_error_is(error = function(root, parent, at)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_walkArray(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at,
+	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
+{
+	if (root == NULL || at == NULL || function == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Mismatched parent or in some other bad state? */
+	if (at->parent != parent)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nvm_walkList(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at,
+	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
+{
+	if (root == NULL || at == NULL || function == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Mismatched parent or in some other bad state? */
+	if (at->parent != parent)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nvm_walkStruct(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at,
+	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
+{
+	sjme_errorCode error;
+	sjme_jint atIndex;
+	const sjme_nvm_walk_stepSelect* inSelect;
+	const sjme_nvm_walk_step* currentStep;
+	sjme_nvm_walk_state subStep;
+	
+	if (root == NULL || at == NULL || function == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Mismatched parent or in some other bad state? */
+	if (at->parent != parent)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* If there is no selection data, then we cannot walk this structure. */
+	inSelect = at->inSelect;
+	if (at->inSelect == NULL)
+		return SJME_ERROR_NONE;
+
+	/* Go through all steps. */
+	for (atIndex = 0, currentStep = inSelect->steps;
+		currentStep->memberName != NULL; currentStep++, atIndex++)
 	{
-		/* This is just the current information. */
-		if (sjme_error_is(error = function(root, parent, at)))
+		/* Setup base step information. */
+		memmove(&subStep, at, sizeof(subStep));
+		subStep.uniqueId = ++at->nextUniqueId;
+		subStep.depth = at->depth + 1;
+		subStep.parent = at;
+		
+		/* Where is the actual pointer directly to this item? */
+		subStep.valueP.walkLayer = at->baseStruct.walkLayer +
+			currentStep->offset;
+		
+		/* Set item specific data. */
+		subStep.inSelect = sjme_nvm_select(currentStep->structType);
+		subStep.index = atIndex;
+		subStep.typeId = currentStep->structType;
+		subStep.inStep = currentStep;
+		subStep.variantStep = NULL;
+		
+		/* When going through when level, handle each specific item. */
+		if (at->breadth == SJME_NVM_WALK_BREADTH_LEVEL)
 		{
-			/* Skip element walk. */
-			if (error == SJME_ERROR_WALK_SKIP_ELEMENTS)
-				skipElements = SJME_JNI_TRUE;
-			else
+			/* Walk on this item. */
+			if (sjme_error_is(error = sjme_nvm_walkItem(root, at,
+				&subStep, function)))
 				return sjme_error_default(error);
 		}
 
-		/* Move onto the current index. */
-		at->index = 0;
+		/* Dive into this specific item. */
+		else if (at->breadth == SJME_NVM_WALK_BREADTH_DIVE)
+		{
+			/* Go back to the root item walking for this. */
+			if (sjme_error_is(error = sjme_nvm_walk(root, at,
+				&subStep, function)))
+				return sjme_error_default(error);
+		}
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_walk(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at,
+	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
+{
+	sjme_errorCode error;
+	sjme_nvm_walk_state subStep;
+	sjme_nvm_walk_breadthType breadth;
+	sjme_jboolean skipElements;
+	sjme_nvm_walk_stepOuterFunc outer;
+	
+	if (root == NULL || at == NULL || function == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Mismatched parent or in some other bad state? */
+	if (at->parent != parent)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Try to get a selection for the current item where applicable. */
+	at->inSelect = sjme_nvm_select(at->typeId);
+	
+	/* Start a walk into the structure. */
+	skipElements = SJME_JNI_FALSE;
+	at->index = -1;
+	if (sjme_error_is(error = function(root, parent, at)))
+	{
+		/* Skip element walk. */
+		if (error == SJME_ERROR_WALK_SKIP_ELEMENTS)
+			skipElements = SJME_JNI_TRUE;
+		else
+			return sjme_error_default(error);
+	}
+	
+	/* Stepping over individual members? Walk in two breadths... */
+	for (breadth = 0; breadth < SJME_NVM_WALK_NUM_BREADTH &&
+		!skipElements; breadth++)
+	{
+		/* Determine the function used for outer stepping. */
+		if (at->typeId == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY)
+			outer = sjme_nvm_walkArray;
+		else if (at->typeId == SJME_NVM_WALK_PSEUDO_LIST)
+			outer = sjme_nvm_walkList;
+		else
+			outer = sjme_nvm_walkStruct;
+
+		/* Setup basic step. */
+		memmove(&subStep, at, sizeof(subStep));
+		subStep.uniqueId = ++at->nextUniqueId;
+		subStep.breadth = breadth;
+		subStep.depth = at->depth + 1;
+		subStep.parent = at;
+
+		/* The base structure is the value pointer if it is set. */
+		/* Otherwise it just becomes the base of the object. */
+		if (subStep.valueP.walkLayer != 0)
+			subStep.baseStruct.walkLayer = subStep.valueP.walkLayer;
+		else
+			subStep.baseStruct.walkLayer = subStep.base.walkLayer;
+
+		/* Clear anything related to the current step. */
+		subStep.index = INT32_MIN;
+		subStep.valueP.walkLayer = 0;
+		subStep.inStep = NULL;
+		subStep.variantStep = NULL;
+
+		/* Perform stepping. */
+		if (sjme_error_is(error = outer(root, at, &subStep,
+			function)))
+			return sjme_error_default(error);
+	}
+	
+	/* End walk of structure. */
+	/* If elements were skipped, then set a low index to indicate that. */
+	at->index = (skipElements ? INT32_MIN : INT32_MAX);
+	if (sjme_error_is(error = function(root, parent, at)))
+	{
+		/* Ignore this. */
+		if (error != SJME_ERROR_WALK_SKIP_ELEMENTS)
+			return sjme_error_default(error);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+#if 0
+	/* Start of structure step? */
+	if (at->index <= -1)
+	{
 	}
 
 	/* Is this a variant? We can derive the info from the source step */
@@ -445,6 +620,7 @@ skip_endStruct:
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_errorCode sjme_nvm_walk_start(

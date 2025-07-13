@@ -180,6 +180,22 @@ typedef sjme_errorCode (*sjme_nvm_walk_stepHandlerFunc)(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
 	sjme_attrInNotNull sjme_nvm_walk_state* at);
+	
+/**
+ * Handles walk stepping at the outer level.
+ * 
+ * @param root The root walking state.
+ * @param parent The parent of this state.
+ * @param at The current item this is walking over.
+ * @param function The function for handling of steps.
+ * @return Any resultant error, if any.
+ * @since 2025/07/10
+ */
+typedef sjme_errorCode (*sjme_nvm_walk_stepOuterFunc)(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at,
+	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function);
 
 /**
  * Functions to handle walking.
@@ -312,6 +328,22 @@ struct sjme_nvm_walk_stepSelect
 	const sjme_nvm_walk_step* steps;
 };
 
+/**
+ * Performs a walking step.
+ * 
+ * @param root The root state.
+ * @param parent The parent state.
+ * @param at The current step state.
+ * @param function The function used for state.
+ * @return Any resultant error, if any.
+ * @since 2025/07/12
+ */
+sjme_errorCode sjme_nvm_walk(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at,
+	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function);
+	
 /**
  * Starts a walk.
  * 
