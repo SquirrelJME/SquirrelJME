@@ -230,6 +230,51 @@ static sjme_errorCode sjme_nvm_walk_coreKeyPutS(
 		(name), (value)))) \
 		return sjme_error_default(error)
 
+static sjme_errorCode sjme_nvm_walk_coreMetaType(
+	sjme_attrInNotNull sjme_nvm_walk_state* at,
+	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState)
+{
+	sjme_errorCode error;
+	sjme_jboolean bothPrimitive;
+	sjme_javaTypeId stepJavaType;
+	
+	if (at == NULL || coreState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Both primitive? */
+	stepJavaType = (at->inStep != NULL ? at->inStep->javaType :
+		SJME_NUM_JAVA_TYPE_IDS);
+	bothPrimitive = ((at->typeId == SJME_NVM_WALK_PSEUDO_PRIMITIVE) &&
+		(coreState->currentType == SJME_NVM_WALK_PSEUDO_PRIMITIVE));
+	
+	/* Changing of the structure type? */
+	/* Can only switch while in a map state. */
+	if ((at->typeId != coreState->currentType ||
+		(bothPrimitive && stepJavaType !=
+			coreState->currentJavaType)) && coreState->inStructure)
+	{
+		/* Record the type change always, since this determines */
+		/* how the data is to be interpreted, that is what structure it */
+		/* goes into ultimately. Order wise, this should always be last! */
+		sjme_nvm_walk_coreKeyPutIR("~typeId",
+			at->typeId);
+
+		/* Record the Java type as well, if needed. */
+		if (at->typeId == SJME_NVM_WALK_PSEUDO_PRIMITIVE)
+		{
+			sjme_nvm_walk_coreKeyPutIR("~typeIdJava",
+				at->inStep->javaType);
+		}
+		
+		/* Now set it, since we are at that type. */
+		coreState->currentType = at->typeId;
+		coreState->currentJavaType = stepJavaType;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_walk_coreDoGeneric(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
@@ -252,9 +297,6 @@ static sjme_errorCode sjme_nvm_walk_coreDoGeneric(
 	if (inStep == NULL)
 		return SJME_ERROR_NONE;
 
-	/* Open map for generic value. */
-	sjme_nvm_walk_coreMapOpenR();
-
 	/* Set stored values. */
 	sjme_nvm_walk_coreKeyPutSR("memberName", inStep->memberName);
 
@@ -268,19 +310,6 @@ static sjme_errorCode sjme_nvm_walk_coreDoGeneric(
 	{
 		sjme_nvm_walk_coreKeyPutPR("pointer", at->valueP.intPointer[0]);
 	}
-
-	/* Which type value is this? */
-	if (inStep->typeId == SJME_NVM_WALK_PSEUDO_PRIMITIVE)
-	{
-		sjme_nvm_walk_coreKeyPutIR("javaType", inStep->javaType);
-	}
-	else
-	{
-		sjme_nvm_walk_coreKeyPutIR("structType", inStep->typeId);
-	}
-
-	/* Close map. */
-	sjme_nvm_walk_coreMapCloseR();
 
 	return SJME_ERROR_NONE;
 }
@@ -438,6 +467,13 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 			if (handler->typeId == at->typeId)
 				break;
 
+		/* Open map for value. */
+		sjme_nvm_walk_coreMapOpenR();
+		
+		/* Did the structure type change? */
+		if (sjme_error_is(error = sjme_nvm_walk_coreMetaType(at, coreState)))
+			return sjme_error_default(error);
+
 		/* Not found? Use a generic handler which keeps the data opaque. */
 		if (handler == NULL || handler->function == NULL)
 			handlerFunc = sjme_nvm_walk_coreDoGeneric;
@@ -447,6 +483,9 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		/* Call handler. */
 		if (sjme_error_is(error = handlerFunc(root, parent, at)))
 			return sjme_error_default(error);
+		
+		/* Close map. */
+		sjme_nvm_walk_coreMapCloseR();
 
 		/* Success! */
 		return SJME_ERROR_NONE;
@@ -494,12 +533,6 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		/* Regardless of the mode, a new map is opened. */
 		sjme_nvm_walk_coreMapOpenR();
 
-		/* This is always recorded in either mode, since this determines */
-		/* how the data is to be interpreted, that is what structure it */
-		/* goes into ultimately. */
-		sjme_nvm_walk_coreKeyPutIR("typeId",
-			at->typeId);
-
 		/* We are defining a shiny new structure that we have not seen */
 		/* before. */
 		if (!shallowOpen)
@@ -534,6 +567,10 @@ static sjme_errorCode sjme_nvm_walk_coreStart(
 		/* Which sub-structure is this for? */
 		sjme_nvm_walk_coreKeyPutPR("struct",
 			at->baseStruct.pointer);
+		
+		/* Did the structure type change? */
+		if (sjme_error_is(error = sjme_nvm_walk_coreMetaType(at, coreState)))
+			return sjme_error_default(error);
 
 		/* Regardless of the mode, we need to store data on the structure. */
 		sjme_nvm_walk_coreKeyPutArrayR("data");

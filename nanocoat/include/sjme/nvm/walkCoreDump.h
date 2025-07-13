@@ -99,6 +99,12 @@ typedef struct sjme_nvm_walk_coreState
 
 	/** Is a structure being wound? */
 	sjme_jboolean inStructure;
+
+	/** The current structure type being written. */
+	sjme_jint currentType;
+
+	/** The current Java type. */
+	sjme_javaTypeId currentJavaType;
 } sjme_nvm_walk_coreState;
 
 /*--------------------------------------------------------------------------*/
