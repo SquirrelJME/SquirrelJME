@@ -113,6 +113,15 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** Plain pointer. */
 	SJME_NVM_WALK_PSEUDO_POINTER = -25,
+
+	/** @c sjme_nvm_rom_suiteFunctions . */
+	SJME_NVM_WALK_PSEUDO_SUITE_FUNCTIONS = -26,
+
+	/** @c sjme_nvm_rom_libraryFunctions . */
+	SJME_NVM_WALK_PSEUDO_LIBRARY_FUNCTIONS = -27,
+
+	/** @c sjme_thread_rwLock . */
+	SJME_NVM_WALK_PSEUDO_RW_LOCK = -28,
 } sjme_nvm_walk_pseudoType;
 
 /**

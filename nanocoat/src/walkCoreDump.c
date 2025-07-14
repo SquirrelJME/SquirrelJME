@@ -541,7 +541,7 @@ sjme_errorCode sjme_nvm_walk_coreDumpFile(
 	sjme_attrInNullable const sjme_nal* nal,
 	sjme_attrInNotNull sjme_lpcstr filePath)
 {
-#define MINI_SIZE 8192
+#define MINI_SIZE 32768
 	sjme_errorCode error;
 	sjme_jubyte mini[MINI_SIZE];
 	sjme_alloc_pool miniPool;

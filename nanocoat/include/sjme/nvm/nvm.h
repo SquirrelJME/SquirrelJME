@@ -363,7 +363,7 @@ typedef struct sjme_nvm_rom_suiteBase sjme_nvm_rom_suiteBase;
  *
  * @since 2023/12/22
  */
-typedef struct sjme_nvm_rom_suiteBase* sjme_nvm_rom_suite;
+typedef sjme_nvm_rom_suiteBase* sjme_nvm_rom_suite;
 
 /**
  * Structure for a single task.

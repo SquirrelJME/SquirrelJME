@@ -153,6 +153,45 @@ SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_FRONT_END)
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
+#define SJME_WALK_CURRENT sjme_thread_rwLock
+SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_RW_LOCK)
+	SJME_WS_NORM_P(read, SJME_NVM_WALK_PSEUDO_SPIN_LOCK),
+	SJME_WS_NORM_V(writeCount, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
+	SJME_WS_NORM_V(write, SJME_NVM_WALK_PSEUDO_SPIN_LOCK),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
+#define SJME_WALK_CURRENT sjme_nvm_rom_libraryBase
+SJME_WALK_BEGIN(SJME_NVM_STRUCT_ROM_LIBRARY)
+	SJME_WS_NORM_V(common, SJME_NVM_WALK_PSEUDO_COMMON),
+	SJME_WS_NORM_P(functions, SJME_NVM_WALK_PSEUDO_LIBRARY_FUNCTIONS),
+	SJME_WS_NORM_P(allocPool, SJME_NVM_WALK_PSEUDO_ALLOC_POOL),
+	SJME_WS_NORM_P(handle, SJME_NVM_WALK_PSEUDO_POINTER),
+	SJME_WS_NORM_P(prefix, SJME_NVM_WALK_PSEUDO_LPSTR),
+	SJME_WS_JAVA_V(id, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_NORM_P(name, SJME_NVM_WALK_PSEUDO_LPSTR),
+	SJME_WS_JAVA_V(nameHash, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_JAVA_V(rawSize, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_JAVA_V(checkedRawAccess, SJME_BASIC_TYPE_ID_BOOLEAN),
+	SJME_WS_JAVA_V(validRawAccess, SJME_BASIC_TYPE_ID_BOOLEAN),
+	SJME_WS_NORM_V(rwLock, SJME_NVM_WALK_PSEUDO_RW_LOCK),
+	SJME_WS_LIST_P(classInfos,
+		SJME_WS_NORM_P(classInfos, SJME_NVM_STRUCT_CLASS_INFO)),
+	SJME_WS_NORM_P(stringPool, SJME_NVM_STRUCT_STRING_POOL),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
+#define SJME_WALK_CURRENT sjme_nvm_rom_suiteBase
+SJME_WALK_BEGIN(SJME_NVM_STRUCT_ROM_SUITE)
+	SJME_WS_NORM_V(common, SJME_NVM_WALK_PSEUDO_COMMON),
+	SJME_WS_NORM_P(functions, SJME_NVM_WALK_PSEUDO_SUITE_FUNCTIONS),
+	SJME_WS_NORM_P(allocPool, SJME_NVM_WALK_PSEUDO_ALLOC_POOL),
+	SJME_WS_NORM_P(handle, SJME_NVM_WALK_PSEUDO_POINTER),
+	SJME_WS_LIST_P(libraries,
+		SJME_WS_NORM_P(libraries, SJME_NVM_STRUCT_ROM_LIBRARY)),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
 #define SJME_WALK_CURRENT sjme_nvm_stateBase
 SJME_WALK_BEGIN(SJME_NVM_STRUCT_STATE)
 	SJME_WS_NORM_V(common, SJME_NVM_WALK_PSEUDO_COMMON),
@@ -191,6 +230,30 @@ SJME_WALK_BEGIN(SJME_NVM_STRUCT_TASK)
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
+/** Pseudo only structureless types. */
+static const sjme_nvm_walk_pseudoType sjme_nvm_walk_pseudoOnly[] =
+{
+	SJME_NVM_WALK_PSEUDO_ALLOC_POOL,
+	SJME_NVM_WALK_PSEUDO_STATE_HOOKS,
+	SJME_NVM_WALK_PSEUDO_NAL,
+	SJME_NVM_WALK_PSEUDO_ATOMIC_JINT,
+	SJME_NVM_WALK_PSEUDO_MLE_THREAD_MODEL,
+	SJME_NVM_WALK_PSEUDO_NVM_STRUCT_TYPE,
+	SJME_NVM_WALK_PSEUDO_PRIMITIVE,
+	SJME_NVM_WALK_PSEUDO_CLOSE_HANDLER,
+	SJME_NVM_WALK_PSEUDO_LIST,
+	SJME_NVM_WALK_PSEUDO_BIND_TYPE,
+	SJME_NVM_WALK_PSEUDO_LPSTR,
+	SJME_NVM_WALK_PSEUDO_TASK_STATUS_TYPE,
+	SJME_NVM_WALK_PSEUDO_FIXED_ARRAY,
+	SJME_NVM_WALK_PSEUDO_POINTER,
+	SJME_NVM_WALK_PSEUDO_SUITE_FUNCTIONS,
+	SJME_NVM_WALK_PSEUDO_LIBRARY_FUNCTIONS,
+
+	/* End. */
+	0,
+};
+
 const sjme_nvm_walk_stepSelect sjme_nvm_walk_select[] =
 {
 	/* Pseudo Structures. */
@@ -198,8 +261,11 @@ const sjme_nvm_walk_stepSelect sjme_nvm_walk_select[] =
 	SJME_WALK_SELECT(sjme_closeableBase, SJME_NVM_WALK_PSEUDO_CLOSEABLE),
 	SJME_WALK_SELECT(sjme_nvm_commonBase, SJME_NVM_WALK_PSEUDO_COMMON),
 	SJME_WALK_SELECT(sjme_frontEnd, SJME_NVM_WALK_PSEUDO_FRONT_END),
+	SJME_WALK_SELECT(sjme_thread_rwLock, SJME_NVM_WALK_PSEUDO_RW_LOCK),
 
 	/* NVM Structures. */
+	SJME_WALK_SELECT(sjme_nvm_rom_libraryBase, SJME_NVM_STRUCT_ROM_LIBRARY),
+	SJME_WALK_SELECT(sjme_nvm_rom_suiteBase, SJME_NVM_STRUCT_ROM_SUITE),
 	SJME_WALK_SELECT(sjme_nvm_stateBase, SJME_NVM_STRUCT_STATE),
 	SJME_WALK_SELECT(sjme_nvm_taskBase, SJME_NVM_STRUCT_TASK),
 	SJME_WALK_SELECT_END()
@@ -211,12 +277,22 @@ const sjme_nvm_walk_stepSelect sjme_nvm_walk_select[] =
 static const sjme_nvm_walk_stepSelect* sjme_nvm_select(
 	sjme_attrInValue sjme_jint typeId)
 {
+	const sjme_nvm_walk_pseudoType* pseudo;
 	const sjme_nvm_walk_stepSelect* select;
+
+	/* Ignore purely pseudo items. */
+	for (pseudo = &sjme_nvm_walk_pseudoOnly[0]; *pseudo != 0; pseudo++)
+		if (typeId == *pseudo)
+			return NULL;
 
 	/* Locate the walk stepper. */
 	for (select = &sjme_nvm_walk_select[0]; select->typeName != NULL; select++)
 		if (typeId == select->typeId)
 			return select;
+
+	/* Should fail here. */
+	sjme_todo("Impl? %d", typeId);
+	sjme_error_notImplemented(0);
 
 	/* Not found. */
 	return NULL;
@@ -472,7 +548,7 @@ static sjme_errorCode sjme_nvm_walkStruct(
 		return SJME_ERROR_NONE;
 
 	/* Go through all steps. */
-	for (atIndex = 0, currentStep = inSelect->steps, stepAdd = 1;
+	for (atIndex = 0, currentStep = inSelect->steps;
 		currentStep->memberName != NULL; currentStep += stepAdd, atIndex++)
 	{
 		/* Setup base step information. */
