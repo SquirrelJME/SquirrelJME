@@ -274,28 +274,35 @@ const sjme_nvm_walk_stepSelect sjme_nvm_walk_select[] =
 /* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */
 
-static const sjme_nvm_walk_stepSelect* sjme_nvm_select(
-	sjme_attrInValue sjme_jint typeId)
+static sjme_errorCode sjme_nvm_select(
+	sjme_attrInValue sjme_jint typeId,
+	sjme_attrOutNotNull const sjme_nvm_walk_stepSelect** outSelect)
 {
 	const sjme_nvm_walk_pseudoType* pseudo;
 	const sjme_nvm_walk_stepSelect* select;
 
+	if (outSelect == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
 	/* Ignore purely pseudo items. */
 	for (pseudo = &sjme_nvm_walk_pseudoOnly[0]; *pseudo != 0; pseudo++)
 		if (typeId == *pseudo)
-			return NULL;
+		{
+			*outSelect = NULL;
+			return SJME_ERROR_NONE;
+		}
 
 	/* Locate the walk stepper. */
 	for (select = &sjme_nvm_walk_select[0]; select->typeName != NULL; select++)
 		if (typeId == select->typeId)
-			return select;
+		{
+			*outSelect = select;
+			return SJME_ERROR_NONE;
+		}
 
-	/* Should fail here. */
+	/* Not implemented. */
 	sjme_todo("Impl? %d", typeId);
-	sjme_error_notImplemented(0);
-
-	/* Not found. */
-	return NULL;
+	return sjme_error_notImplemented(0);
 }
 
 static sjme_errorCode sjme_nvm_walkItem(
@@ -372,9 +379,8 @@ static sjme_errorCode sjme_nvm_walkItem(
 			at->typeId != SJME_NVM_WALK_PSEUDO_FIXED_ARRAY)
 		{
 			/* We can only dive into known types. */
-			select = sjme_nvm_select(at->typeId);
-			if (select == NULL)
-				return SJME_ERROR_NONE;
+			if (sjme_error_is(error = sjme_nvm_select(at->typeId, &select)))
+				return sjme_error_default(error);
 		}
 		
 		/* If this is a pointer, we need to dereference it. */
@@ -562,7 +568,9 @@ static sjme_errorCode sjme_nvm_walkStruct(
 			currentStep->offset;
 		
 		/* Set item specific data. */
-		subStep.inSelect = sjme_nvm_select(currentStep->typeId);
+		if (sjme_error_is(error = sjme_nvm_select(currentStep->typeId,
+			&subStep.inSelect)))
+			return sjme_error_default(error);
 		subStep.index = atIndex;
 		subStep.typeId = currentStep->typeId;
 		subStep.javaType = currentStep->javaType;
@@ -618,7 +626,8 @@ sjme_errorCode sjme_nvm_walk(
 		return SJME_ERROR_NONE;
 
 	/* Try to get a selection for the current item where applicable. */
-	at->inSelect = sjme_nvm_select(at->typeId);
+	if (sjme_error_is(error = sjme_nvm_select(at->typeId, &at->inSelect)))
+		return sjme_error_default(error);
 	
 	/* Start a walk into the structure. */
 	skipElements = SJME_JNI_FALSE;
@@ -699,7 +708,10 @@ sjme_errorCode sjme_nvm_walk_start(
 		return sjme_error_notImplemented(0);
 
 	/* Find the selector for this. */
-	select = sjme_nvm_select(typeId);
+	if (sjme_error_is(error = sjme_nvm_select(typeId, &select)))
+		return sjme_error_default(error);
+
+	/* Not a structured type? */
 	if (select == NULL)
 		return SJME_ERROR_WALK_UNKNOWN_TYPE;
 
