@@ -8,7 +8,7 @@
 // ---------------------------------------------------------------------------
 
 /**
- * Contains the NanoCoat VM related classes.
+ * Contains the NanoCoat VM related classes for booting this VM.
  *
  * @since 2023/12/03
  */

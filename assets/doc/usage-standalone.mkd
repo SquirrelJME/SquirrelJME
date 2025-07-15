@@ -79,6 +79,9 @@ The available options are:
      * `/path/to/directory/**`
      * `/path/to/directory/*.*`
      * `wildcard=/path/to/directory`
+ * `-Xroms:(class:path:...)`
+   * Specifies the SpringCoat ROMs that should be used by the virtual
+     machine.
  * `-Xscritchui:(ui)`
    * Rather than the default, use a specific user interface library.
    * This may also be set by using `cc.squirreljme.scritchui`.

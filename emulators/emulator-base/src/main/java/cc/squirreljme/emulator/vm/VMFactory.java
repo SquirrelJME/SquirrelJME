@@ -769,8 +769,8 @@ public abstract class VMFactory
 	 * @since 2018/11/17
 	 */
 	public static VirtualMachine mainVm(String __vm, ProfilerSnapshot __ps,
-		JDWPHostFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __sm,
-		String[] __cp,
+		JDWPHostFactory __jdwp, VMThreadModel __threadModel,
+		VMSuiteManager __sm, String[] __cp,
 		String __bootcl, Map<String, String> __sprops, String... __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{

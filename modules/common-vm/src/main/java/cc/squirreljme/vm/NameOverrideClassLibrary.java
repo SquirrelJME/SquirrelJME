@@ -23,10 +23,10 @@ public class NameOverrideClassLibrary
 	implements VMClassLibrary, OverlayVMClassLibrary
 {
 	/** The base library. */
-	protected final VMClassLibrary base;
+	public final VMClassLibrary base;
 	
 	/** The new name of the library. */
-	protected final String name;
+	public final String name;
 	
 	/**
 	 * Initializes the name overriding class library.

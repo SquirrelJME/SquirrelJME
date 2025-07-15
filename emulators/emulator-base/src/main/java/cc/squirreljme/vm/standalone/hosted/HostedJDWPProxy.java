@@ -9,7 +9,9 @@
 
 package cc.squirreljme.vm.standalone.hosted;
 
+import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.jdwp.host.JDWPHostFactory;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -47,12 +49,12 @@ public class HostedJDWPProxy
 	 * Initializes the hosted JDWP proxy.
 	 *
 	 * @param __jdwpFactory The pipes to proxy to.
-	 * @throws IOException If the socket could not be opened.
+	 * @throws VMException If the socket could not be opened.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/30
 	 */
 	public HostedJDWPProxy(JDWPHostFactory __jdwpFactory)
-		throws IOException, NullPointerException
+		throws VMException, NullPointerException
 	{
 		if (__jdwpFactory == null)
 			throw new NullPointerException("NARG");
@@ -65,13 +67,24 @@ public class HostedJDWPProxy
 			"JDWPProxyKiller"));
 		
 		// Setup acceptor for connections from the JVM itself
-		ServerSocket server = new ServerSocket(0);
+		ServerSocket server;
+		try
+		{
+			server = new ServerSocket(0);
+		}
+		catch (IOException __e)
+		{
+			throw new VMException(__e.getMessage(), __e);
+		}
+		
+		// Store for later
 		this.server = server;
 		this.port = server.getLocalPort();
 		
 		// Setup acceptor for when the debugger connects
 		Thread threadAccept = new Thread(this::proxyAccept,
 			"JDWPAccept");
+		threadAccept.setDaemon(true);
 		this.threadAccept = threadAccept;
 		
 		// Run the acceptor

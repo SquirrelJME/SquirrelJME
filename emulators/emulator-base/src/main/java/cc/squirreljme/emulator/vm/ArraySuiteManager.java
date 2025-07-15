@@ -10,10 +10,14 @@
 package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This is a suite manager which is just a group of already specified
@@ -22,7 +26,7 @@ import java.util.LinkedList;
  * @since 2020/02/29
  */
 public final class ArraySuiteManager
-	implements VMSuiteManager
+	implements Iterable<VMClassLibrary>, VMSuiteManager
 {
 	/** Local libraries. */
 	private final VMClassLibrary[] _libraries;
@@ -61,6 +65,17 @@ public final class ArraySuiteManager
 		for (VMClassLibrary lib : this._libraries)
 			if (lib == null)
 				throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/07/14
+	 */
+	@Override
+	public Iterator<VMClassLibrary> iterator()
+	{
+		return UnmodifiableIterator.of(
+			Arrays.asList(this._libraries).iterator());
 	}
 	
 	/**

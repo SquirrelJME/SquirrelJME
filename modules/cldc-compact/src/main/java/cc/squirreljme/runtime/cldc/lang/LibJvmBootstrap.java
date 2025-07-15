@@ -7,30 +7,27 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.nanocoat;
+package cc.squirreljme.runtime.cldc.lang;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Virtual machine frame.
+ * Bootstrap main for the JVM library.
  *
- * @since 2023/12/05
+ * @since 2025/07/14
  */
-public final class NvmFrame
-	implements Pointer
+@SquirrelJMEVendorApi
+public final class LibJvmBootstrap
 {
-	static
-	{
-		__Native__.__loadLibrary();
-	}
-	
 	/**
-	 * {@inheritDoc}
-	 * @since 2023/12/05
+	 * Main entry point for the bootstrap library.
+	 *
+	 * @param __ignored The arguments passed to the bootstrap, these options
+	 * are not considered nor processed.
+	 * @throws Throwable Any thrown throwable.
+	 * @since 2025/07/14
 	 */
-	@Override
-	public long pointerAddress()
-	{
-		throw Debugging.todo();
-	}
+	@SquirrelJMEVendorApi
+	public static native void main(String... __ignored)
+		throws Throwable;
 }

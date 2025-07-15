@@ -352,6 +352,20 @@ static sjme_errorCode sjme_nal_default_stdErr(
 	return error;
 }
 
+static sjme_errorCode sjme_nal_default_stdErrFlush(void)
+{
+	if (EOF == fflush(stderr))
+		return SJME_ERROR_IO_EXCEPTION;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nal_default_stdOutFlush(void)
+{
+	if (EOF == fflush(stdout))
+		return SJME_ERROR_IO_EXCEPTION;
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nal_default_stdOut(
 	sjme_attrInNotNullBuf(len) sjme_cpointer buf,
 	sjme_attrInPositive sjme_jint off,
@@ -396,13 +410,13 @@ const sjme_nal sjme_nal_default =
 			sjme_sm(.close, NULL),
 			sjme_sm(.in, NULL),
 			sjme_sm(.out, sjme_nal_default_stdOut),
-			sjme_sm(.flush, NULL),
+			sjme_sm(.flush, sjme_nal_default_stdOutFlush),
 		},
 		{
 			sjme_sm(.close, NULL),
 			sjme_sm(.in, NULL),
 			sjme_sm(.out, sjme_nal_default_stdErr),
-			sjme_sm(.flush, NULL),
+			sjme_sm(.flush, sjme_nal_default_stdErrFlush),
 		},
 	},
 };
@@ -456,7 +470,8 @@ sjme_errorCode sjme_nal_stdF(
 	error = SJME_ERROR_NONE;
 #endif
 
-	return error;
+	/* Send to the output. */
+	return outFunc(buf, 0, strlen(buf));
 #if !defined(SJME_CONFIG_HAS_NO_STDIO)
 #undef BUF_SIZE
 #endif

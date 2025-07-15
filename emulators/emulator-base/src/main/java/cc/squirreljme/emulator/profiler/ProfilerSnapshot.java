@@ -118,7 +118,8 @@ public final class ProfilerSnapshot
 				__ps.println(':');
 				
 				// Dump frame info
-				ProfilerSnapshot.__dumpFrames(__ps, 4, t._frames.values());
+				ProfilerSnapshot.__dumpFrames(__ps, 4,
+					t._frames.values());
 			}
 		}
 	}

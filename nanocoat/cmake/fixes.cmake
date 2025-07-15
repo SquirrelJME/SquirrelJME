@@ -311,7 +311,7 @@ message(STATUS "libm: ${SQUIRRELJME_LIBM}")
 macro(squirreljme_target_link_libraries_required target)
 	# Math library?
 	if(SQUIRRELJME_LIBM)
-		target_link_libraries(${target} PUBLIC
+		target_link_libraries(${target} PRIVATE
 			"${SQUIRRELJME_LIBM}")
 	endif()
 endmacro()

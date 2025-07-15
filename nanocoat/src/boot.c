@@ -62,6 +62,8 @@ static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
 		"Force pure interpreter, do not JIT/AOT compilation."},
 	{"-Xjdwp:[hostname]:port",
 		"Listens or connects to a JDWP debugger."},
+	{"-Xroms:<class:path:...>",
+		"The ROMs to use."},
 	{"-Xlibraries:<class:path:...>",
 		"Libraries to include in the library path, not the classpath."},
 	{"-Xscritchui:<ui>",
@@ -70,7 +72,7 @@ static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
 		"Write a VisualVM snapshot (.nps) to the given path."},
 	{"-XstartOnFirstThread",
 		"Ignored."},
-	{"-Xthread:<single|coop|multi|smt>",
+	{"-Xthread:<single|coop|shared|multi|smt>",
 		"The threading model to use."},
 	{"-Xtrace:<flag|...>",
 		"Trace flags to permanently set on by default."},
@@ -559,12 +561,17 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_jboolean jarSpecified;
 	const sjme_nvm_helpParam* help;
 	sjme_nal_stdOFunc helpOut;
+	sjme_nal_stdIoFlush helpFlush;
 	
 	if (allocPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (argc < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Help defaults to standard error. */
+	helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].out;
+	helpFlush = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].flush;
 	
 	/* Command line format is: */
 	jarSpecified = SJME_JNI_FALSE;
@@ -583,9 +590,11 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				"--version"))
 		{
 			/* Where is this information going? */
-			helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].out;
 			if (sjme_charSeq_equalsUtfR(&argSeq, "--version"))
+			{
 				helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
+				helpFlush = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].flush;
+			}
 			
 			/* Print version information to stdout. */
 			/* https://www.oracle.com/java/technologies/javase/ */
@@ -598,6 +607,10 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			sjme_nal_stdF(helpOut,
 				"SquirrelJME NanoCoat VM (build %s, %s)\n",
 				SQUIRRELJME_VERSION, SQUIRRELJME_VERSION_NANOCOAT);
+
+			/* Flush if possible. */
+			if (helpFlush != NULL)
+				helpFlush();
 			
 			/* Exit. */
 			return SJME_ERROR_EXIT;
@@ -614,9 +627,11 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				"--help"))
 		{
 			/* Where is this information going? */
-			helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].out;
 			if (sjme_charSeq_equalsUtfR(&argSeq, "--help"))
+			{
 				helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
+				helpFlush = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].flush;
+			}
 			
 			/* Normal usage. */
 			sjme_nal_stdF(helpOut,
@@ -634,6 +649,10 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				sjme_nal_stdF(helpOut, "    %s\n",
 					help->desc);
 			}
+
+			/* Flush if possible. */
+			if (helpFlush != NULL)
+				helpFlush();
 			
 			/* Exit. */
 			return SJME_ERROR_EXIT;
@@ -670,6 +689,13 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		/* -Xjdwp:[hostname]:port */
 		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xjdwp:"))
+		{
+			sjme_todo("Impl? %s", argv[argAt]);
+		}
+		
+		/* -Xroms:(class:path:...) */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xroms:"))
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}

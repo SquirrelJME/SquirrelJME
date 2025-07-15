@@ -178,7 +178,7 @@ public class HostedVirtualMachine
 				// -Xlibraries and used with for example i-mode software it
 				// will not be able to find the JAM because it technically
 				// is in the wrong location
-				path = HostedVirtualMachine.implodeJar(tempJars,
+				path = HostedUtils.implodeJar(tempJars,
 					lib, actualName);
 				
 				// Map between the two
@@ -264,22 +264,17 @@ public class HostedVirtualMachine
 			// between the new JVM and this current one through TCP
 			JDWPHostFactory jdwpFactory = this.jdwpFactory;
 			if (jdwpFactory != null)
-				try
-				{
-					// Setup proxy
-					HostedJDWPProxy proxy = new HostedJDWPProxy(jdwpFactory);
-					
-					// We need to connect to the VM through our own internal
-					// proxy
-					args.add(String.format("-agentlib:jdwp=" +
-						"transport=dt_socket,server=n," +
-						"address=localhost:%d,suspend=y",
-						proxy.port));
-				}
-				catch (IOException __e)
-				{
-					__e.printStackTrace();
-				}
+			{
+				// Setup proxy
+				HostedJDWPProxy proxy = new HostedJDWPProxy(jdwpFactory);
+				
+				// We need to connect to the VM through our own internal
+				// proxy
+				args.add(String.format("-agentlib:jdwp=" +
+					"transport=dt_socket,server=n," +
+					"address=localhost:%d,suspend=y",
+					proxy.port));
+			}
 			
 			// Any system properties
 			for (Map.Entry<String, String> prop : actualSysProps.entrySet())
@@ -359,106 +354,6 @@ public class HostedVirtualMachine
 	public void setTraceBits(boolean __or, int __bits)
 	{
 		// No effect.
-	}
-	
-	/**
-	 * Transforms a resource based class library into an actual Jar that
-	 * standard virtual machines can use.
-	 *
-	 * @param __tempJars The path where the JAR should be created.
-	 * @param __lib The library to transform.
-	 * @param __libName The library name.
-	 * @return The resultant path of the library.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/12/03
-	 */
-	public static Path implodeJar(Path __tempJars,
-		VMClassLibrary __lib, String __libName)
-		throws IOException, NullPointerException
-	{
-		if (__tempJars == null || __lib == null || __libName == null)
-			throw new NullPointerException("NARG");
-		
-		// The target path of the output Jar, always end in JAR
-		Path resultPath = __tempJars.resolve(
-			((SuiteUtils.isAny(__libName) ?
-				__libName : __libName + ".jar")));
-		
-		// Buffer to use for copying data
-		byte[] tempBuf = new byte[1048576];
-		
-		// Extract library
-		Path temp = null;
-		try
-		{
-			// Setup new file to write to
-			temp = Files.createTempFile("implode", ".jar");
-			
-			// Copy all the Zip entries accordingly
-			try (OutputStream out = Files.newOutputStream(temp,
-					StandardOpenOption.CREATE, StandardOpenOption.WRITE,
-					StandardOpenOption.TRUNCATE_EXISTING))
-			{
-				// Just a resource file?
-				String[] rcList = __lib.listResources();
-				if (rcList.length == 1 &&
-					DataContainerLibrary.RESOURCE_NAME.equals(rcList[0]))
-				{
-					try (InputStream in = __lib.resourceAsStream(rcList[0]))
-					{
-						StreamUtils.copy(in, out, tempBuf);
-					}
-				}
-				
-				// From a Zip
-				else
-				{
-					try (ZipOutputStream zip = new ZipOutputStream(out))
-					{
-						// Copy all resource data
-						for (String rcName : rcList)
-						{
-							// Setup ZIP entry
-							ZipEntry entry = new ZipEntry(rcName);
-							zip.putNextEntry(entry);
-							
-							// Write to it all
-							try (InputStream in = __lib.resourceAsStream(
-								rcName))
-							{
-								StreamUtils.copy(in, zip, tempBuf);
-							}
-							
-							// Finish it
-							zip.closeEntry();
-						}
-						
-						// Finish the Zip
-						zip.finish();
-						zip.flush();
-					}
-				}
-			}
-			
-			// Replace the target file
-			Files.move(temp, resultPath,
-				StandardCopyOption.REPLACE_EXISTING);
-			
-			// Use this path
-			return resultPath;
-		}
-		finally
-		{
-			if (temp != null)
-				try
-				{
-					Files.delete(temp);
-				}
-				catch (IOException ignored)
-				{
-				}
-		}
 	}
 	
 	/**

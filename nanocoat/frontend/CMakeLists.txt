@@ -7,25 +7,14 @@
 # ---------------------------------------------------------------------------
 
 # SquirrelJME Java SE Emulator Front-End
-if(NOT EMSCRIPTEN AND
-	NOT SQUIRRELJME_IS_CROSS_COMPILE AND
-	SQUIRRELJME_ENABLE_DYLIB)
+if(NOT EMSCRIPTEN)
 	squirreljme_include("jni.cmake")
 
 	if(JNI_FOUND)
 		# Native JVM library to use with OpenJDK?
+		# Or with the native SquirrelJME libjvm launcher?
 		add_subdirectory(libjvm)
 	endif()
-
-	# Standard C front-end
-	add_subdirectory(stdc)
-endif()
-
-# Emulator front end used by the Java base emulator
-if(NOT "${SQUIRRELJME_GRADLE}" STREQUAL "" OR
-	SQUIRRELJME_GRADLE OR
-	NOT "$ENV{SQUIRRELJME_GRADLE}" STREQUAL "")
-	add_subdirectory(emulator)
 endif()
 
 # Netscape JRI (Usually for retro systems such as MacOS Classic)
@@ -42,9 +31,4 @@ endif()
 # RetroArch/LibRetro
 if(SQUIRRELJME_ENABLE_FRONTEND_LIBRETRO)
 	add_subdirectory(libretro)
-endif()
-
-# GUI Command Line Launcher
-if(SQUIRRELJME_ENABLE_DYLIB)
-	add_subdirectory(gui-cmd)
 endif()
