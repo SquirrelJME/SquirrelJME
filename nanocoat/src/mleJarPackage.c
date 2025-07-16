@@ -7,11 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <unistd.h>
-
-#include <sjme/nvm/cleanup.h>
-
 #include "sjme/config.h"
+#include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 

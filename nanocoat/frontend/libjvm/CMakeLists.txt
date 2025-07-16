@@ -96,7 +96,9 @@ squirreljme_target_binary_name(SquirrelJME
 	"squirreljme")
 
 # Exports for Windows, etc.
-squirreljme_target_shared_library_exports(libJvmDyLib)
+if(SQUIRRELJME_ENABLE_DYLIB)
+	squirreljme_target_shared_library_exports(libJvmDyLib)
+endif()
 
 
 
