@@ -1,13 +1,10 @@
 import cc.squirreljme.plugin.general.CollateResourceJarsTask
 import cc.squirreljme.plugin.multivm.*
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier
-import org.apache.tools.ant.util.StreamUtils
-import org.gradle.api.internal.file.archive.ZipFileTree
 
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.nio.file.StandardOpenOption
-import java.util.regex.Pattern
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
@@ -73,17 +70,20 @@ static String flatClasspath(Project project) {
 String MERGED_PREFIX = "SQUIRRELJME.SQC"
 String MERGED_PREFIX_DEBUG = "SQUIRRELJME-DEBUG.SQC"
 
-tasks.register("collateResourceJars",
+/*tasks.register("collateResourceJars",
 	CollateResourceJarsTask.class,
 	processResources, ClutterLevel.RELEASE, MERGED_PREFIX)
 tasks.register("collateResourceJarsDebug",
 	CollateResourceJarsTask.class,
-	processResources, ClutterLevel.DEBUG, MERGED_PREFIX_DEBUG)
+	processResources, ClutterLevel.DEBUG, MERGED_PREFIX_DEBUG)*/
+
+TaskProvider<Task> romRelease = rootProject.tasks.named("romSpringCoatRelease")
+TaskProvider<Task> romDebug = rootProject.tasks.named("romSpringCoatDebug")
 
 // Jar Configuration
 jar {
-	dependsOn processResources, collateResourceJars, collateResourceJarsDebug
-	mustRunAfter collateResourceJars, collateResourceJarsDebug
+	dependsOn processResources, romRelease, romDebug
+	mustRunAfter romRelease, romDebug
 	
 	// We need to set specific manifest properties
 	manifest {
@@ -189,8 +189,8 @@ def finalizeShadowJar = tasks.register("finalizeShadowJar", {
 
 // Configuration for ShadowJar
 shadowJar {
-	dependsOn collateResourceJars, collateResourceJarsDebug
-	mustRunAfter collateResourceJars, collateResourceJarsDebug
+	dependsOn romRelease, romDebug
+	mustRunAfter romRelease, romDebug
 	finalizedBy finalizeShadowJar
 	
 	// Always SquirrelJME
@@ -207,6 +207,10 @@ shadowJar {
 	archiveClassifier.set(project.provider({ ->
 			return (String)rootProject.squirreljmeSystemDash
 		}))
+	
+	// Include the SpringCoat ROMs
+	from zipTree(romRelease.get().outputs.files.singleFile).getAsFileTree()
+	from zipTree(romDebug.get().outputs.files.singleFile).getAsFileTree()
 	
 	// Exclude IntelliJ Annotations, they are not needed
 	exclude "org/jetbrains/annotations/*.class"

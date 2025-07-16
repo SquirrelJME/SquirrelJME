@@ -393,7 +393,7 @@ sjme_errorCode sjme_path_resolveAppend(
 		return SJME_ERROR_NONE;
 	
 	/* Setup result for no-overwrite operation. */
-	resultBytes = sizeof(*result) * outPathLen;
+	resultBytes = sizeof(*result) * (outPathLen + 2);
 	result = sjme_alloca(resultBytes);
 	if (result == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
@@ -447,14 +447,17 @@ sjme_errorCode sjme_path_resolveAppend(
 			/* Recalculate output length. */
 			outLen = strlen(result);
 			
-			/* Add directory separator. */
-			sepLen = strlen(SJME_CONFIG_FILE_SEPARATOR) + 1; 
-			memmove(&result[outLen], SJME_CONFIG_FILE_SEPARATOR,
-				sizeof(*result) * sepLen);
+			/* Add directory separator, if needed. */
+			if (outLen > 0 && subName < subNames - 1)
+			{
+				sepLen = strlen(SJME_CONFIG_FILE_SEPARATOR) + 1; 
+				memmove(&result[outLen], SJME_CONFIG_FILE_SEPARATOR,
+					sizeof(*result) * sepLen);
+			}
 		}
 	}
 	
-	/* Single path only. */
+	/* Single path only, cannot be blank. */
 	else
 	{
 		/* Gets single subcomponent details. */

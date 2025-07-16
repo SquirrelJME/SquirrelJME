@@ -32,6 +32,44 @@ static sjme_thread_result sjme_attrThreadCall sjme_nvm_loop_tickCrash(
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
+sjme_errorCode sjme_nvm_loop_main(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrOutNullable sjme_jint* exitCode)
+{
+	sjme_errorCode error;
+	sjme_jboolean terminated;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Iterate the virtual machine loop. */
+	for (terminated = SJME_JNI_FALSE; !terminated;)
+	{
+		/* Let other threads run. */
+		sjme_thread_yield();
+		
+		/* Tick the virtual machine. */
+		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, -1,
+			NULL, &terminated)))
+		{
+			/* Fail unless this was interrupted. */
+			if (error == SJME_ERROR_INTERRUPTED)
+				continue;
+			goto fail_loop;
+		}
+	}
+
+	/* Success! */
+	if (exitCode != NULL)
+		*exitCode = sjme_atomic_sjme_jint_get(&inState->lastExitCode);
+	return SJME_ERROR_NONE;
+	
+fail_loop:
+	if (exitCode != NULL)
+		*exitCode = sjme_atomic_sjme_jint_get(&inState->lastExitCode);
+	return sjme_error_default(error);
+}
+
 sjme_errorCode sjme_nvm_loop_tick(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInValue sjme_attrInNegativeOnePositive sjme_jint maxTics,

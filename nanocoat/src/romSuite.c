@@ -51,7 +51,9 @@ sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
 		return sjme_error_default(error);
 	
 	/* Success? */
-	return error;
+	if (sjme_error_is(error))
+		return sjme_error_default(error);
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_rom_suiteFromMerge(
@@ -147,6 +149,7 @@ sjme_errorCode sjme_nvm_rom_suiteNew(
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNotNull const sjme_nvm_rom_suiteFunctions* inFunctions,
+	sjme_attrInValue sjme_nvm_bootClutterLevel clutterLevel,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
 {
 	sjme_nvm_rom_suite result;
@@ -172,6 +175,7 @@ sjme_errorCode sjme_nvm_rom_suiteNew(
 	/* Setup result. */
 	result->allocPool = allocPool;
 	result->functions = inFunctions;
+	result->clutterLevel = clutterLevel;
 	
 	/* Copy front end data? */
 	if (copyFrontEnd != NULL)

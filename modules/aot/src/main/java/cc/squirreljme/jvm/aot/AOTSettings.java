@@ -66,4 +66,15 @@ public final class AOTSettings
 		this.commitFossil = __commitFossil;
 		this.commitGit = __commitGit;
 	}
+	
+	/**
+	 * Is this a debug build?
+	 *
+	 * @return If this is a debug build.
+	 * @since 2025/07/15
+	 */
+	public boolean isDebug()
+	{
+		return "debug".equalsIgnoreCase(this.clutterLevel);
+	}
 }

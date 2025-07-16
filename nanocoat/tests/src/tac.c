@@ -63,7 +63,7 @@ int main(int argc, sjme_lpstr* argv)
 	/* Load boot suite. */
 	bootSuite = NULL;
 	if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipSeekable(
-		pool, &bootSuite, bootSeek)) ||
+		pool, &bootSuite, bootSeek, SJME_NVM_BOOT_CLUTTER_RELEASE)) ||
 		bootSuite == NULL)
 		goto fail_loadBootJar;
 	

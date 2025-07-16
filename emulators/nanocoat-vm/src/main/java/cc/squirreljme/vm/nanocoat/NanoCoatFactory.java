@@ -128,17 +128,21 @@ public class NanoCoatFactory
 		Set<Path> roms = new LinkedHashSet<>();
 		Set<String> libraries = new LinkedHashSet<>();
 		if (__suiteManager != null)
-			NanoCoatFactory.unblend(roms, libraries, "", __suiteManager);
+			NanoCoatFactory.unblend(roms, libraries, "",
+				__suiteManager);
 		
 		// Any roms to add?
 		if (!roms.isEmpty())
 		{
 			// Build the classpath
-			StringBuilder cp = new StringBuilder("-Xroms");
+			StringBuilder cp = new StringBuilder("-Xrom");
 			for (Path rom : roms)
 			{
 				cp.append(File.pathSeparator);
 				cp.append(rom.toAbsolutePath().normalize());
+				
+				/* Only consider the first ROM. */
+				break;
 			}
 			
 			// Add final path

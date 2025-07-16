@@ -60,12 +60,13 @@ public class CollateResourceJarsTask
 		this.mustRunAfter(__processResources);
 		
 		// Dependencies
-		Task fullTask = this.getProject().getRootProject().getTasks()
-			.getByName(this.fullSourceTaskName());
-		this.dependsOn(VMHelpers.fullSuiteLibrariesTasks(fullTask));
+		Task romTask = this.getProject().getRootProject().getTasks()
+			.getByName(this.fullRomTaskName());
+		this.dependsOn(VMHelpers.fullSuiteLibrariesTasks(romTask),
+			romTask);
 		
 		// Inputs
-		this.getInputs().files(VMHelpers.fullSuiteLibraries(fullTask));
+		this.getInputs().files(romTask);
 		
 		// Outputs
 		this.getOutputs().files(new CollateResourceJarsTaskOutputs(
@@ -82,13 +83,13 @@ public class CollateResourceJarsTask
 	}
 	
 	/**
-	 * The name of the full task to source from.
+	 * The name of the ROM task to source from.
 	 *
-	 * @return The name of the full task to source from.
-	 * @since 2024/03/04
+	 * @return The name of the ROM task to source from.
+	 * @since 2025/07/15
 	 */
-	public final String fullSourceTaskName()
+	public final String fullRomTaskName()
 	{
-		return "fullSpringCoat" + this.clutterLevel.properNoun();
+		return "romSpringCoat" + this.clutterLevel.properNoun();
 	}
 }

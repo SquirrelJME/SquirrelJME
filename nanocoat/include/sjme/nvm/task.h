@@ -289,12 +289,7 @@ struct sjme_nvm_frameBase
 /** List of stack frames. */
 SJME_LIST_DECLARE(sjme_nvm_frame, 0);
 
-/**
- * The configuration that stores the information needed for starting the task.
- *
- * @since 2023/12/17
- */
-typedef struct sjme_nvm_task_taskNewConfig
+struct sjme_nvm_task_taskNewConfig
 {
 	/** Redirection for standard output. */
 	sjme_nvm_task_pipeRedirectType stdOut;
@@ -316,7 +311,10 @@ typedef struct sjme_nvm_task_taskNewConfig
 	
 	/** The class loader for this task. */
 	sjme_nvm_vmClass_loader classLoader;
-} sjme_nvm_task_taskNewConfig;
+
+	/** The belay for the task. */
+	sjme_nvm_bootBelayType belay;
+};
 
 struct sjme_nvm_taskStringsBase
 {
@@ -428,6 +426,9 @@ typedef struct sjme_nvm_task_globals
 
 	/** Cached @c sjme_jbracketJarPackage for libraries. */
 	sjme_list_sjme_jbracketJarPackage* jarBrackets;
+	
+	/** The main thread. */
+	sjme_nvm_thread mainThread;
 } sjme_nvm_task_globals;
 
 typedef enum sjme_nvm_task_threadCountType
@@ -485,6 +486,9 @@ struct sjme_nvm_taskBase
 
 	/** The next frame ID for this task, used for JDWP and debugging. */
 	sjme_atomic_sjme_jint nextFrameId;
+
+	/** The task initialization configuration. */
+	const sjme_nvm_task_taskNewConfig* initConfig;
 };
 
 struct sjme_nvm_threadBase
@@ -888,19 +892,31 @@ sjme_errorCode sjme_nvm_task_stackTraceThread(
 sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jthrowable inThrowable);
+
+/**
+ * Enters the actual main for this task.
+ * 
+ * @param inTask The task to enter main for.
+ * @param outThread The optional output thread.
+ * @return Any resultant error, if any.
+ * @since 2025/07/15
+ */
+sjme_errorCode sjme_nvm_task_taskEnterMain(
+	sjme_attrInNotNull sjme_nvm_task inTask,
+	sjme_attrOutNullable sjme_nvm_thread* outThread);
 	
 /**
  * Starts the task.
  *
  * @param inState The input state.
- * @param startConfig The start configuration for this task.
+ * @param initConfig The start configuration for this task.
  * @param outTask The resultant task.
  * @return Any error state.
  * @since 2023/12/17
  */
 sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull const sjme_nvm_task_taskNewConfig* startConfig,
+	sjme_attrInNotNull const sjme_nvm_task_taskNewConfig* initConfig,
 	sjme_attrOutNullable sjme_nvm_task* outTask);
 
 /**

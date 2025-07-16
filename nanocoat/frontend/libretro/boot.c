@@ -272,28 +272,8 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 			goto fail_bootSuiteBackup;
 	}
 
-	/* If no classpath was specified, load the launcher instead. */
-	if (bootParam.mainClassPathById == NULL &&
-		bootParam.mainClassPathByName == NULL)
-	{
-		/* Try to find default launcher. */
-		if (sjme_error_is(error = sjme_nvm_rom_suiteDefaultLaunch(
-			sjme_libretro_globals.allocPool,
-			bootParam.bootSuite,
-			(sjme_lpstr*)&bootParam.mainClass,
-			(sjme_list_sjme_lpstr**)&bootParam.mainArgs,
-			(sjme_list_sjme_jint**)&bootParam.mainClassPathById,
-			(sjme_list_sjme_lpstr**)&bootParam.mainClassPathByName)))
-			goto fail_defaultLaunch;
-		
-		/* Still failed? */
-		if (bootParam.mainClassPathById == NULL &&
-			bootParam.mainClassPathByName == NULL)
-		{
-			error = SJME_ERROR_NO_CLASS;
-			goto fail_defaultLaunch;
-		}
-	}
+	/* Allow launcher fallback. */
+	bootParam.launcherFallback = SJME_JNI_TRUE;
 	
 	/* Boot the virtual machine. */
 	sjme_libretro_globals.inState = NULL;

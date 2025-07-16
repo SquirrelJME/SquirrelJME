@@ -60,7 +60,7 @@ typedef enum sjme_nvm_defaultDirectoryType
 	/** The number of default directory types. */
 	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE
 } sjme_nvm_defaultDirectoryType;
-
+	
 struct sjme_nvm_bootParam
 {
 	/** The boot suite to use. */
@@ -86,6 +86,15 @@ struct sjme_nvm_bootParam
 	
 	/** The native abstraction layer to use. */
 	const sjme_nal* nal;
+
+	/** Do not start the main task when booting, handle it later. */
+	sjme_nvm_bootBelayType belay;
+
+	/** Allow launcher fallback? */
+	sjme_jboolean launcherFallback;
+
+	/** The clutter level to use. */
+	sjme_nvm_bootClutterLevel clutterLevel;
 };
 
 /**

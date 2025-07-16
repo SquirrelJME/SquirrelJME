@@ -30,6 +30,17 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * Never ending main loop.
+ * 
+ * @param inState The state to loop.
+ * @param exitCode The exit code from the loop.
+ * @return Any resultant error, if any.
+ * @since 2025/07/15
+ */
+sjme_errorCode sjme_nvm_loop_main(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrOutNullable sjme_jint* exitCode);
 	
 /**
  * Ticks the virtual machine.

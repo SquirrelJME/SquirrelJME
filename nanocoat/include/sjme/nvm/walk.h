@@ -122,6 +122,9 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_thread_rwLock . */
 	SJME_NVM_WALK_PSEUDO_RW_LOCK = -28,
+
+	/** @c sjme_nvm_task_taskNewConfig . */
+	SJME_NVM_WALK_PSEUDO_INIT_TASK_CONFIG = -29,
 } sjme_nvm_walk_pseudoType;
 
 /**

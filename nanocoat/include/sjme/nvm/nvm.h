@@ -380,6 +380,13 @@ typedef sjme_nvm_taskBase* sjme_nvm_task;
 	
 /** List of tasks. */
 SJME_LIST_DECLARE(sjme_nvm_task, 0);
+	
+/**
+ * The configuration that stores the information needed for starting the task.
+ *
+ * @since 2023/12/17
+ */
+typedef struct sjme_nvm_task_taskNewConfig sjme_nvm_task_taskNewConfig;
 
 struct sjme_nvm_commonBase
 {
@@ -470,6 +477,40 @@ typedef enum sjme_nvm_terminateLevel
 	SJME_NVM_TERMINATE_COMPLETE = 2,
 } sjme_nvm_terminateLevel;
 	
+/**
+ * Determines how initial boot is belayed.
+ *
+ * @since 2025/07/15
+ */
+typedef enum sjme_nvm_bootBelayType
+{
+	/** No belay on boot. */
+	SJME_NVM_BOOT_BELAY_NONE = 0,
+
+	/** Belay enter of main entry point. */
+	SJME_NVM_BOOT_BELAY_MAIN = 1,
+
+	/** Belay creation of task. */
+	SJME_NVM_BOOT_BELAY_TASK = 2,
+
+	/** Belay creation of task and main. */
+	SJME_NVM_BOOT_BELAY_TASK_MAIN = 3,
+} sjme_nvm_bootBelayType;
+
+/**
+ * The clutter level to use.
+ *
+ * @since 2025/07/15
+ */
+typedef enum sjme_nvm_bootClutterLevel
+{
+	/** Release clutter level. */
+	SJME_NVM_BOOT_CLUTTER_RELEASE = 0,
+	
+	/** Debug clutter level. */
+	SJME_NVM_BOOT_CLUTTER_DEBUG = 1,
+} sjme_nvm_bootClutterLevel;
+	
 struct sjme_nvm_stateBase
 {
 	/** Common data. */
@@ -510,6 +551,12 @@ struct sjme_nvm_stateBase
 	
 	/** The state @c sjme_nvm_terminateLevel ? */
 	sjme_atomic_sjme_jint terminating;
+
+	/** The initial task configuration. */
+	sjme_nvm_task_taskNewConfig* initTaskConfig;
+
+	/** The last emitted exit code. */
+	sjme_atomic_sjme_jint lastExitCode;
 };
 
 /**

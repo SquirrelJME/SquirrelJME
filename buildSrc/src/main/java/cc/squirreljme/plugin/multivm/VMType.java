@@ -818,27 +818,8 @@ public enum VMType
 		for (int i = 0, n = __libs.size(); i < n; i++)
 			libIndex.put(__libs.get(i), i);
 		
-		// Is this a single source set ROM?
-		boolean isSingleSourceSet = this.isSingleSourceSetRom(__variant);
-		boolean bootLoaderEnabled = !isSingleSourceSet ||
-			(isSingleSourceSet &&
-				SourceSet.MAIN_SOURCE_SET_NAME.equals(__task.getSourceSet()));
-		
 		// Setup arguments for packing the ROM
 		List<String> args = new ArrayList<>();
-		
-		// Boot loader
-		if (__build.bootLoaderMainClass != null)
-			args.add("-XbootLoaderMainClass:" + __build.bootLoaderMainClass);
-		
-		// Boot loader class path
-		if (bootLoaderEnabled)
-		{
-			if (__build.bootLoaderClassPath != null)
-				args.add("-XbootLoaderClassPath:" +
-					VMType.__pathIndexList(libIndex,
-					__build.bootLoaderClassPath));
-		}
 		
 		// Launcher main class
 		if (__build.launcherMainClass != null)
@@ -862,7 +843,7 @@ public enum VMType
 		// Put down paths to libraries to link together
 		for (Path path : __libs)
 			args.add(path.toString());
-			
+		
 		// Run the specified command
 		this.__aotCommand(__task, null, __out,
 			null, "rom", args);

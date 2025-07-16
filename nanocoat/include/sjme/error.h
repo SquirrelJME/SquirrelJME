@@ -528,9 +528,12 @@ typedef enum sjme_errorCode
 
 	/** Invalid preceding type. */
 	SJME_ERROR_CBOR_INVALID_PRECEDE = -162,
+
+	/** ROM is not valid. */
+	SJME_ERROR_INVALID_ROM = -163,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -163,
+	SJME_NUM_ERROR_CODES = -164,
 } sjme_errorCode;
 
 /**

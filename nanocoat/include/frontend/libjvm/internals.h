@@ -29,13 +29,22 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /** Accesses the JVM in the reserved space. */
-#define SJME_RESERVED_JVM(vmOrEnv) ((vmOrEnv)->reserved0)
+#define SJME_JNI_JVM_JVM(vm) ((vm)->reserved0)
 
 /** Accesses the JNI Environment in the reserved space. */
-#define SJME_RESERVED_ENV(vmOrEnv) ((vmOrEnv)->reserved1)
+#define SJME_JNI_JVM_ENV(vm) ((vm)->reserved1)
 
 /** Accesses the NanoCoat VM Task in the reserved space. */
-#define SJME_RESERVED_TASK(vmOrEnv) ((vmOrEnv)->reserved2)
+#define SJME_JNI_JVM_TASK(vm) ((vm)->reserved2)
+	
+/** Accesses the JVM in the reserved space. */
+#define SJME_JNI_ENV_JVM(env) ((env)->reserved1)
+
+/** Accesses the JNI Environment in the reserved space. */
+#define SJME_JNI_ENV_ENV(env) ((env)->reserved0)
+
+/** Accesses the NanoCoat VM Task in the reserved space. */
+#define SJME_JNI_ENV_TASK(env) ((env)->reserved2)
 
 /*--------------------------------------------------------------------------*/
 

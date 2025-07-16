@@ -107,6 +107,10 @@ public class SpringCoatBackend
 		if (__settings == null || __out == null || __libs == null)
 			throw new NullPointerException("NARG");
 		
+		// Which prefix is used?
+		String prefix = (__aotSettings.isDebug() ?
+			"SQUIRRELJME-DEBUG.SQC" : "SQUIRRELJME.SQC");
+		
 		// Just use a special ZIP file
 		byte[] buf = StreamUtils.buffer(null);
 		try (ZipStreamWriter zip = new ZipStreamWriter(__out);
@@ -116,7 +120,7 @@ public class SpringCoatBackend
 			if (__aotSettings.commitFossil != null &&
 				!__aotSettings.commitFossil.isEmpty())
 				try (OutputStream commitRaw = queue.nextEntry(
-					"SQUIRRELJME.SQC/commit.fossil");
+					prefix + "/commit.fossil");
 					DataOutputStream commit = new DataOutputStream(
 						commitRaw))
 				{
@@ -127,7 +131,7 @@ public class SpringCoatBackend
 			if (__aotSettings.commitGit != null &&
 				!__aotSettings.commitGit.isEmpty())
 				try (OutputStream commitRaw = queue.nextEntry(
-					"SQUIRRELJME.SQC/commit.git");
+					prefix + "/commit.git");
 					DataOutputStream commit = new DataOutputStream(
 						commitRaw))
 				{
@@ -138,7 +142,7 @@ public class SpringCoatBackend
 			if (__settings.launcherMainClass != null &&
 				!__settings.launcherMainClass.isEmpty())
 				try (OutputStream launcherRaw = queue.nextEntry(
-					"SQUIRRELJME.SQC/launcher.main");
+					prefix + "/launcher.main");
 					DataOutputStream launcher = new DataOutputStream(
 						launcherRaw))
 				{
@@ -148,7 +152,7 @@ public class SpringCoatBackend
 			if (__settings.launcherArgs != null &&
 				!__settings.launcherArgs.isEmpty())
 				try (OutputStream launcherRaw = queue.nextEntry(
-					"SQUIRRELJME.SQC/launcher.args");
+					prefix + "/launcher.args");
 					DataOutputStream launcher = new DataOutputStream(
 						launcherRaw))
 				{
@@ -160,7 +164,7 @@ public class SpringCoatBackend
 			if (__settings.launcherClassPath != null &&
 				!__settings.launcherClassPath.isEmpty())
 				try (OutputStream launcherRaw = queue.nextEntry(
-					"SQUIRRELJME.SQC/launcher.path");
+					prefix + "/launcher.path");
 					DataOutputStream launcher = new DataOutputStream(
 						launcherRaw))
 				{
@@ -193,7 +197,7 @@ public class SpringCoatBackend
 				suites.add(libName);
 				
 				// Base name for everything within
-				String outBase = "SQUIRRELJME.SQC/" + libName + "/";
+				String outBase = prefix + "/" + libName + "/";
 				
 				// Setup resource list
 				List<String> rcList = new ArrayList<>();
@@ -232,7 +236,7 @@ public class SpringCoatBackend
 			
 			// Finish the suite list
 			try (OutputStream launcherRaw = queue.nextEntry(
-				"SQUIRRELJME.SQC/suites.list");
+				prefix + "/suites.list");
 				DataOutputStream launcher = new DataOutputStream(launcherRaw))
 			{
 				launcher.writeInt(suites.size());

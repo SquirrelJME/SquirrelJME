@@ -110,6 +110,16 @@ jint JNICALL JNI_CreateJavaVM(
 		goto fail_nvmParseArgs;
 	}
 
+	/* Setup boot parameters. */
+	bootParam.nal = &sjme_nal_default;
+
+	/* Always belay main since we are doing this in compatibility with */
+	/* the JVM library. */
+	bootParam.belay = SJME_NVM_BOOT_BELAY_MAIN;
+	
+	/* Allow launcher fallback. */
+	bootParam.launcherFallback = SJME_JNI_TRUE;
+
 	/* Allocate resultant function structure. */
 	resultVm = NULL;
 	if (sjme_error_is(error = sjme_alloc(pool, sizeof(*resultVm),
@@ -159,6 +169,9 @@ jint JNICALL JNI_CreateJavaVM(
 			taskConfig.classLoader == NULL)
 			goto fail_initClassLoader;
 
+		/* Belay from. */
+		taskConfig.belay = bootParam.belay;
+
 		/* Arguments. */
 		taskConfig.mainClass = bootParam.mainClass;
 		taskConfig.mainArgs = bootParam.mainArgs;
@@ -176,19 +189,21 @@ jint JNICALL JNI_CreateJavaVM(
 	}
 	
 	/* Store the environment and VM state into both structures the same. */
-	SJME_RESERVED_JVM(resultVm) = resultVm;
-	SJME_RESERVED_ENV(resultVm) = resultEnv;
-	SJME_RESERVED_TASK(resultVm) = initTask;
-	SJME_RESERVED_JVM(resultEnv) = resultVm;
-	SJME_RESERVED_ENV(resultEnv) = resultEnv;
-	SJME_RESERVED_TASK(resultEnv) = initTask;
+	/* Note that the first pointer always points to self so that double */
+	/* dereference still works without going sane! */
+	SJME_JNI_JVM_JVM(resultVm) = resultVm;
+	SJME_JNI_JVM_ENV(resultVm) = resultEnv;
+	SJME_JNI_JVM_TASK(resultVm) = initTask;
+	SJME_JNI_ENV_JVM(resultEnv) = resultVm;
+	SJME_JNI_ENV_ENV(resultEnv) = resultEnv;
+	SJME_JNI_ENV_TASK(resultEnv) = initTask;
 
 	/* Then link back to both. */
 	nvmState->common.frontEnd.wrapper = resultVm;
 	nvmState->common.frontEnd.data = resultEnv;
 
 	/* Success! */
-	**pvm = resultVm;
+	*pvm = (JavaVM*)resultVm;
 	*penv = resultEnv;
 	return JNI_OK;
 

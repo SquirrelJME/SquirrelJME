@@ -471,48 +471,164 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_nvm_task_taskEnterMain(
+	sjme_attrInNotNull sjme_nvm_task inTask,
+	sjme_attrOutNullable sjme_nvm_thread* outThread)
+{
+	sjme_errorCode error;
+	sjme_nvm inState;
+	sjme_cchar adjustMain[SJME_NVM_CLASS_NAME_LIMIT];
+	sjme_nvm_thread mainThread;
+	sjme_jint i, n;
+	const sjme_nvm_task_taskNewConfig* initConfigCopy;
+	sjme_list_sjme_jstring* argStrings;
+	
+	if (inTask == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Lock task. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&inTask->object.common.lock)))
+		return sjme_error_default(error);
+
+	/* Main thread already set? */
+	if (inTask->globals.mainThread != NULL)
+		goto fail_mainExists;
+
+	/* Quicker to reference this way. */
+	inState = inTask->inState;
+
+	/* Recover the initial config. */
+	initConfigCopy = inTask->initConfig;
+	
+	/* Setup main thread, all threads start in java.lang.__Start__! */
+	mainThread = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadNew(inTask,
+		&mainThread, "main")) || mainThread == NULL)
+		goto fail_taskNewThread;
+
+	/* The main thread gets flagged as the main thread. */
+	inTask->globals.mainThread = mainThread;
+	mainThread->isMain = SJME_JNI_TRUE;
+
+	/* Adjust the main class name, turn periods into slashes. */
+	memset(adjustMain, 0, sizeof(adjustMain));
+	snprintf(adjustMain, SJME_NVM_CLASS_NAME_LIMIT - 1,
+		"%s", initConfigCopy->mainClass);
+	for (i = 0, n = strlen(adjustMain); i < n; i++)
+		if (adjustMain[i] == '.')
+			adjustMain[i] = '/';
+
+	/* Setup string for main class. */
+	inTask->globals.mainClassName = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
+		mainThread, &inTask->globals.mainClassName, SJME_JNI_TRUE,
+		adjustMain)) ||
+		inTask->globals.mainClassName == NULL)
+		goto fail_mainClassString;
+
+	/* Setup strings for main arguments. */
+	argStrings = NULL;
+	if (initConfigCopy->mainArgs != NULL &&
+		initConfigCopy->mainArgs->length > 0)
+	{
+		/* Setup string list. */
+		n = initConfigCopy->mainArgs->length;
+		if (sjme_error_is(error = sjme_list_alloc(inState->allocPool,
+			n, &argStrings, sjme_jstring, 0)) || argStrings == NULL)
+			goto fail_mainArgsStrings;
+
+		/* Setup strings for each argument. */
+		for (i = 0; i < n; i++)
+			if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
+				mainThread, &argStrings->elements[i], SJME_JNI_TRUE,
+				initConfigCopy->mainArgs->elements[i])) ||
+				argStrings->elements[i] == NULL)
+				goto fail_mainArgsString;
+	}
+		
+	/* Set argument strings. */
+	inTask->globals.mainArgs = argStrings;
+	
+	/* The main thread of any task is always implicitly started. */
+	if (sjme_error_is(error = sjme_nvm_task_threadStart(mainThread)))
+		goto fail_startMain;
+	
+	/* Unlock task. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&inTask->object.common.lock, NULL)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	if (outThread != NULL)
+		*outThread = mainThread;
+	return SJME_ERROR_NONE;
+
+fail_startMain:
+fail_mainArgsString:
+fail_mainArgsStrings:
+	if (argStrings != NULL)
+	{
+		sjme_alloc_free(argStrings);
+		argStrings = NULL;
+	}
+fail_mainClassString:
+fail_taskNewThread:
+fail_mainExists:
+	/* Release lock before failing. */
+	sjme_thread_spinLockRelease(&inTask->object.common.lock, NULL);
+
+	return sjme_error_default(error);
+}
+
 sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull const sjme_nvm_task_taskNewConfig* startConfig,
+	sjme_attrInNotNull const sjme_nvm_task_taskNewConfig* initConfig,
 	sjme_attrOutNullable sjme_nvm_task* outTask)
 {
-	sjme_cchar adjustMain[SJME_NVM_CLASS_NAME_LIMIT];
 	sjme_errorCode error;
 	sjme_list_sjme_nvm_task* tasks;
 	sjme_list_sjme_nvm_thread* threads;
 	sjme_jint i, n, freeSlot;
 	sjme_nvm_task result;
-	sjme_nvm_thread mainThread;
 	sjme_nvm_vmClass_loader classLoader;
 	sjme_nvm_taskStrings strings;
-	sjme_list_sjme_jstring* argStrings;
+	const sjme_nvm_task_taskNewConfig* initConfigCopy;
 
-	if (inState == NULL || startConfig == NULL || outTask == NULL)
+	if (inState == NULL || initConfig == NULL || outTask == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (startConfig->mainClass == NULL || startConfig->classPath == NULL ||
-		startConfig->classPath->length <= 0)
+	if (initConfig->mainClass == NULL || initConfig->classPath == NULL ||
+		initConfig->classPath->length <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Debug. */
 #if defined(SJME_CONFIG_DEBUG)
-	sjme_message("Start Main: %s", startConfig->mainClass);
+	sjme_message("Start Main: %s", initConfig->mainClass);
 
-	if (startConfig->mainArgs != NULL)
-		for (i = 0; i < startConfig->mainArgs->length; i++)
+	if (initConfig->mainArgs != NULL)
+		for (i = 0; i < initConfig->mainArgs->length; i++)
 			sjme_message("Start Arg[%d]: %s",
-				i, startConfig->mainArgs->elements[i]);
+				i, initConfig->mainArgs->elements[i]);
 
-	if (startConfig->sysProps != NULL)
-		for (i = 0; i < startConfig->sysProps->length; i++)
+	if (initConfig->sysProps != NULL)
+		for (i = 0; i < initConfig->sysProps->length; i++)
 			sjme_message("Start SysProp[%d]: %s",
-				i, startConfig->sysProps->elements[i]);
+				i, initConfig->sysProps->elements[i]);
 #endif
 	
 	/* Lock state for task access. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
 		&inState->common.lock)))
 		return sjme_error_default(error);
+
+	/* Make a copy of the initialization config. */
+	initConfigCopy = NULL;
+	if (sjme_error_is(error = sjme_alloc_copy(inState->allocPool,
+		sizeof(*initConfigCopy), (sjme_pointer*)&initConfigCopy,
+		(sjme_pointer)initConfig)) ||
+		initConfigCopy == NULL)
+		goto fail_copyInitConfig;
 	
 	/* Find a free slot to claim for a new task. */
 	freeSlot = -1;
@@ -579,7 +695,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	classLoader = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderNew(
 		inState, &classLoader,
-		startConfig->classPath)) || classLoader == NULL)
+		initConfigCopy->classPath)) || classLoader == NULL)
 		goto fail_initClassLoader;
 	
 	/* Refer to owning state and set identifier. */
@@ -588,6 +704,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	result->id = 1 + sjme_atomic_sjme_jint_getAdd(
 		&inState->nextTaskId, 1);
 	result->strings = strings;
+	result->initConfig = initConfigCopy;
 
 	/* Use the default field accessor for this task by default. */
 	result->globals.accessor = sjme_nvm_instance_fieldAccessor;
@@ -617,59 +734,13 @@ sjme_errorCode sjme_nvm_task_taskNew(
 		&inState->common.lock, NULL)))
 		goto fail_stateLockRelease;
 	
-	/* Setup main thread, all threads start in java.lang.__Start__! */
-	mainThread = NULL;
-	if (sjme_error_is(error = sjme_nvm_task_threadNew(result,
-		&mainThread, "main")) || mainThread == NULL)
-		goto fail_taskNewThread;
-
-	/* The main thread gets flagged as the main thread. */
-	mainThread->isMain = SJME_JNI_TRUE;
-
-	/* Adjust the main class name, turn periods into slashes. */
-	memset(adjustMain, 0, sizeof(adjustMain));
-	snprintf(adjustMain, SJME_NVM_CLASS_NAME_LIMIT - 1,
-		"%s", startConfig->mainClass);
-	for (i = 0, n = strlen(adjustMain); i < n; i++)
-		if (adjustMain[i] == '.')
-			adjustMain[i] = '/';
-
-	/* Setup string for main class. */
-	result->globals.mainClassName = NULL;
-	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
-		mainThread, &result->globals.mainClassName, SJME_JNI_TRUE,
-		adjustMain)) ||
-		result->globals.mainClassName == NULL)
-		goto fail_mainClassString;
-
-	/* Setup strings for main arguments. */
-	argStrings = NULL;
-	if (startConfig->mainArgs != NULL && startConfig->mainArgs->length > 0)
-	{
-		/* Setup string list. */
-		n = startConfig->mainArgs->length;
-		if (sjme_error_is(error = sjme_list_alloc(inState->allocPool,
-			n, &argStrings, sjme_jstring, 0)) || argStrings == NULL)
-			goto fail_mainArgsStrings;
-
-		/* Setup strings for each argument. */
-		for (i = 0; i < n; i++)
-			if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
-				mainThread, &argStrings->elements[i], SJME_JNI_TRUE,
-				startConfig->mainArgs->elements[i])) ||
-				argStrings->elements[i] == NULL)
-				goto fail_mainArgsString;
-	}
-	
-	/* Set argument strings. */
-	result->globals.mainArgs = argStrings;
-
 	/* Add to the running task count. */
 	sjme_atomic_sjme_jint_getAdd(&inState->numRunningTasks, 1);
-	
-	/* The main thread of any task is always implicitly started. */
-	if (sjme_error_is(error = sjme_nvm_task_threadStart(mainThread)))
-		goto fail_startMain;
+
+	/* Not belaying main start? Then start the main thread. */
+	if ((initConfigCopy->belay & SJME_NVM_BOOT_BELAY_MAIN) == 0)
+		if (sjme_error_is(error = sjme_nvm_task_taskEnterMain(result, NULL)))
+			goto fail_enterMain;
 	
 	/* Release task specific lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -697,6 +768,10 @@ fail_allocResult:
 		result = NULL;
 	}
 fail_allocTasks:
+fail_copyInitConfig:
+	if (initConfigCopy != NULL)
+		sjme_alloc_free((sjme_pointer)initConfigCopy);
+	
 	/* Unlock before fail. */
 	sjme_error_is(sjme_thread_spinLockRelease(
 		&inState->common.lock, NULL));
@@ -704,16 +779,7 @@ fail_allocTasks:
 	return sjme_error_default(error);
 
 	/* Post state lock, when accessing state is no longer needed. */
-fail_mainArgsString:
-fail_mainArgsStrings:
-	if (argStrings != NULL)
-	{
-		sjme_alloc_free(argStrings);
-		argStrings = NULL;
-	}
-fail_mainClassString:
-fail_startMain:
-fail_taskNewThread:
+fail_enterMain:
 fail_stateLockRelease:
 	/* Unlock task before fail. */
 	sjme_error_is(sjme_thread_spinLockRelease(

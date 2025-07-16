@@ -20,6 +20,32 @@
 #include "sjme/nvm/cleanup.h"
 #include "sjme/listUtil.h"
 
+/** The prefix for release ROMs. */
+#define SJME_NVM_ROM_PREFIX_RELEASE "SQUIRRELJME.SQC"
+
+/** The prefix for debug ROMs. */
+#define SJME_NVM_ROM_PREFIX_DEBUG "SQUIRRELJME-DEBUG.SQC"
+
+/** The entry name for the suites list. */
+#define SJME_NVM_ROM_SUITES_LIST "suites.list"
+
+/** Launcher main class. */
+#define SJME_NVM_ROM_LAUNCHER_MAIN "launcher.main"
+
+/** Launcher main arguments. */
+#define SJME_NVM_ROM_LAUNCHER_ARGS "launcher.args"
+
+/** Launcher classpath. */
+#define SJME_NVM_ROM_LAUNCHER_PATH "launcher.path"
+
+/** The release name. */
+#define SJME_NVM_ROM_SUITES_LIST_RELEASE \
+	SJME_NVM_ROM_PREFIX_RELEASE "/" SJME_NVM_ROM_SUITES_LIST
+
+/** The debug name. */
+#define SJME_NVM_ROM_SUITES_LIST_DEBUG \
+	SJME_NVM_ROM_PREFIX_DEBUG "/" SJME_NVM_ROM_SUITES_LIST
+
 static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
@@ -29,6 +55,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outByName)
 {
 #define BUF_SIZE 256
+#define LOCATE_SIZE 128
 	sjme_errorCode error;
 	sjme_zip zip;
 	sjme_zip_entry zipEntry;
@@ -38,6 +65,8 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	sjme_lpstr str;
 	sjme_list_sjme_lpstr* strings;
 	sjme_list_sjme_jint* ints;
+	sjme_lpcstr clutterPrefix;
+	sjme_cchar locate[LOCATE_SIZE];
 	
 	if (allocPool == NULL || inSuite == NULL || outMainClass == NULL ||
 		outMainArgs == NULL || outById == NULL || outByName == NULL)
@@ -45,12 +74,20 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	
 	/* Recover Zip. */
 	zip = inSuite->handle;
+
+	/* Which prefix is used? */
+	clutterPrefix = (inSuite->clutterLevel == SJME_NVM_BOOT_CLUTTER_RELEASE ?
+		SJME_NVM_ROM_PREFIX_RELEASE : SJME_NVM_ROM_PREFIX_DEBUG);
+	
+	/* launcher.main */
+	memset(locate, 0, sizeof(locate));
+	snprintf(locate, LOCATE_SIZE - 1, "%s/%s",
+		clutterPrefix, SJME_NVM_ROM_LAUNCHER_MAIN);
 	
 	/* These are available from three entries essentially */
-	/* launcher.main */
 	memset(&zipEntry, 0, sizeof(zipEntry));
 	if (!sjme_error_is(sjme_zip_locateEntry(zip,
-		&zipEntry, "SQUIRRELJME.SQC/launcher.main")))
+		&zipEntry, locate)))
 	{
 		/* Open entry. */
 		inputStream = NULL;
@@ -82,9 +119,14 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	}
 	
 	/* launcher.args */
+	memset(locate, 0, sizeof(locate));
+	snprintf(locate, LOCATE_SIZE - 1, "%s/%s",
+		clutterPrefix, SJME_NVM_ROM_LAUNCHER_ARGS);
+	
+	/* Locate the launcher arguments. */
 	memset(&zipEntry, 0, sizeof(zipEntry));
 	if (!sjme_error_is(sjme_zip_locateEntry(zip,
-		&zipEntry, "SQUIRRELJME.SQC/launcher.args")))
+		&zipEntry, locate)))
 	{
 		/* Open entry. */
 		inputStream = NULL;
@@ -109,9 +151,14 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	}
 	
 	/* launcher.path */
+	memset(locate, 0, sizeof(locate));
+	snprintf(locate, LOCATE_SIZE - 1, "%s/%s",
+		clutterPrefix, SJME_NVM_ROM_LAUNCHER_PATH);
+
+	/* Locate the launcher classpath. */
 	memset(&zipEntry, 0, sizeof(zipEntry));
 	if (!sjme_error_is(sjme_zip_locateEntry(zip,
-		&zipEntry, "SQUIRRELJME.SQC/launcher.path")))
+		&zipEntry, locate)))
 	{
 		/* Open entry. */
 		inputStream = NULL;
@@ -138,17 +185,68 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	/* Success! */
 	return SJME_ERROR_NONE;
 #undef BUF_SIZE
+#undef LOCATE_SIZE
 }
 
 static sjme_errorCode sjme_nvm_rom_zipSuiteInit(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrInNullable sjme_pointer data)
 {
+	sjme_errorCode error;
+	sjme_zip zip;
+	sjme_zip_entry entry;
+	sjme_jboolean noRelease, noDebug;
+	
 	if (inSuite == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Set handle, which is the Zip itself. */
-	inSuite->handle = data;
+	zip = data;
+	inSuite->handle = zip;
+
+	/* By default, assume both exist unless otherwise determined. */
+	noRelease = SJME_JNI_FALSE;
+	noDebug = SJME_JNI_FALSE;
+
+	/* Check to see which clutter levels are available in the ROM, then */
+	/* we can more easily determine if we have to switch. */
+	/* Release. */
+	memset(&entry, 0, sizeof(entry));
+	if (sjme_error_is(error = sjme_zip_locateEntry(zip, &entry,
+		SJME_NVM_ROM_SUITES_LIST_RELEASE)))
+	{
+		if (error != SJME_ERROR_FILE_NOT_FOUND)
+			return sjme_error_default(error);
+
+		/* Does not exist. */
+		noRelease = SJME_JNI_TRUE;
+	}
+
+	/* Debug. */
+	memset(&entry, 0, sizeof(entry));
+	if (sjme_error_is(error = sjme_zip_locateEntry(zip, &entry,
+		SJME_NVM_ROM_SUITES_LIST_DEBUG)))
+	{
+		if (error != SJME_ERROR_FILE_NOT_FOUND)
+			return sjme_error_default(error);
+
+		/* Does not exist. */
+		noDebug = SJME_JNI_TRUE;
+	}
+
+	/* Both cannot be true, this is not a valid ROM! */
+	if (noDebug && noRelease)
+		return SJME_ERROR_INVALID_ROM;
+
+	/* We want debug but there is no debug? */
+	else if (inSuite->clutterLevel == SJME_NVM_BOOT_CLUTTER_DEBUG &&
+		noDebug)
+		inSuite->clutterLevel = SJME_NVM_BOOT_CLUTTER_RELEASE;
+
+	/* We want release but there is no release? */
+	else if (inSuite->clutterLevel == SJME_NVM_BOOT_CLUTTER_RELEASE &&
+		noRelease)
+		inSuite->clutterLevel = SJME_NVM_BOOT_CLUTTER_DEBUG;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -186,6 +284,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteListLibraries(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibraries)
 {
+#define LOCATE_SIZE 128
 	sjme_errorCode error;
 	sjme_zip zip;
 	sjme_zip_entry zipEntry;
@@ -196,6 +295,8 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteListLibraries(
 	sjme_nvm_rom_library lib;
 	sjme_jint n, i;
 	sjme_cchar prefix[SJME_MAX_PATH];
+	sjme_lpcstr clutterPrefix;
+	sjme_cchar locate[LOCATE_SIZE];
 	
 	if (inSuite == NULL || outLibraries == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -208,11 +309,20 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteListLibraries(
 	inputStream = NULL;
 	suiteNames = NULL;
 	result = NULL;
+
+	/* Which prefix is used? */
+	clutterPrefix = (inSuite->clutterLevel == SJME_NVM_BOOT_CLUTTER_RELEASE ?
+		SJME_NVM_ROM_PREFIX_RELEASE : SJME_NVM_ROM_PREFIX_DEBUG);
 	
-	/* launcher.args */
+	/* suites.list */
+	memset(locate, 0, sizeof(locate));
+	snprintf(locate, LOCATE_SIZE - 1, "%s/%s",
+		clutterPrefix, SJME_NVM_ROM_SUITES_LIST);
+
+	/* Locate it. */
 	memset(&zipEntry, 0, sizeof(zipEntry));
 	if (sjme_error_is(error = sjme_zip_locateEntry(zip,
-		&zipEntry, "SQUIRRELJME.SQC/suites.list")))
+		&zipEntry, locate)))
 		return sjme_error_default(error);
 	
 	/* Open entry. */
@@ -243,7 +353,8 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteListLibraries(
 		/* Determine prefix to be used. */
 		memset(prefix, 0, sizeof(prefix));
 		snprintf(prefix, SJME_MAX_PATH - 1,
-			"SQUIRRELJME.SQC/%s",
+			"%s/%s",
+			clutterPrefix,
 			suiteNames->elements[i]);
 		
 		/* Load in single library with the specified prefix. */
@@ -293,6 +404,7 @@ fail_openEntry:
 	inputStream = NULL;
 	
 	return sjme_error_default(error);
+#undef LOCATE_SIZE
 }
 
 static sjme_errorCode sjme_nvm_rom_zipSuiteLoadLibrary()
@@ -314,7 +426,8 @@ static sjme_nvm_rom_suiteFunctions sjme_nvm_rom_zipSuiteFunctions =
 sjme_errorCode sjme_nvm_rom_suiteFromZipSeekable(
 	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
-	sjme_attrInNotNull sjme_seekable seekable)
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrInValue sjme_nvm_bootClutterLevel clutterLevel)
 {
 	sjme_errorCode error;
 	sjme_zip zip;
@@ -333,7 +446,8 @@ sjme_errorCode sjme_nvm_rom_suiteFromZipSeekable(
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_rom_suiteNew(pool,
 		&result, zip,
-		&sjme_nvm_rom_zipSuiteFunctions, NULL)) ||
+		&sjme_nvm_rom_zipSuiteFunctions, clutterLevel,
+		NULL)) ||
 		result == NULL)
 		goto fail_suiteNew;
 	

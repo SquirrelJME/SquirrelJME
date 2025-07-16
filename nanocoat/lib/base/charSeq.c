@@ -766,10 +766,50 @@ sjme_errorCode sjme_charSeq_newWideStatic(
 sjme_errorCode sjme_charSeq_startsWithCharSeq(
 	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,
-	sjme_attrInNotNull sjme_charSeq startsWithSeq)
+	sjme_attrInNotNull sjme_charSeq otherSeq)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jint i, inLen, otherLen;
+	
+	if (inSeq == NULL || outResult == NULL || otherSeq == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get length of both sequences. */
+	inLen = -1;
+	otherLen = -1;
+	if (sjme_error_is(error = sjme_charSeq_length(inSeq, &inLen)) ||
+		inLen < 0)
+		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_charSeq_length(otherSeq, &otherLen)) ||
+		otherLen < 0)
+		return sjme_error_default(error);
+
+	/* If the other string is empty... then this will always succeed. */
+	if (otherLen == 0)
+	{
+		*outResult = SJME_JNI_TRUE;
+		return SJME_ERROR_NONE;
+	}
+
+	/* If the other sequence is longer, than this will never be true. */
+	if (otherLen > inLen)
+	{
+		*outResult = SJME_JNI_FALSE;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Go through and check each character for mismatches. */
+	for (i = 0; i < otherLen; i++)
+		if (sjme_charSeq_charAtR(inSeq, i) !=
+			sjme_charSeq_charAtR(otherSeq, i))
+		{
+			*outResult = SJME_JNI_FALSE;
+			return SJME_ERROR_NONE;
+		}
+
+	/* No mismatches, so success! */
+	*outResult = SJME_JNI_TRUE;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_charSeq_startsWithUtf(
@@ -777,16 +817,39 @@ sjme_errorCode sjme_charSeq_startsWithUtf(
 	sjme_attrOutNotNull sjme_jboolean* outResult,
 	sjme_attrInNotNull sjme_lpcstr startsWithUtf)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_charSeqStatic otherSeq;
+	sjme_errorCode error;
+	
+	if (inSeq == NULL || outResult == NULL || startsWithUtf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Setup static sequence. */
+	memset(&otherSeq, 0, sizeof(otherSeq));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&otherSeq,
+		startsWithUtf, 0, -1)))
+		return sjme_error_default(error);
+
+	/* Forward. */
+	return sjme_charSeq_startsWithCharSeq(inSeq, outResult,
+		&otherSeq);
 }
 
 sjme_jboolean sjme_charSeq_startsWithUtfR(
 	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrInNotNull sjme_lpcstr startsWithUtf)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_jboolean result;
+	
+	if (inSeq == NULL || startsWithUtf == NULL)
+		return SJME_JNI_FALSE;
+
+	/* Forward. */
+	result = SJME_JNI_FALSE;
+	if (sjme_error_is(sjme_charSeq_startsWithUtf(inSeq, &result,
+		startsWithUtf)))
+		return SJME_JNI_FALSE;
+
+	return result;
 }
 
 sjme_lpcstr sjme_charSeq_tempUtf(

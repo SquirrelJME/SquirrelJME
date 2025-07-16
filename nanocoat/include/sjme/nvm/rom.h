@@ -296,6 +296,9 @@ struct sjme_nvm_rom_suiteBase
 	
 	/** Libraries that exist within the suite. */
 	sjme_list_sjme_nvm_rom_library* libraries;
+
+	/** The clutter level to use. */
+	sjme_nvm_bootClutterLevel clutterLevel;
 };
 
 /**
@@ -544,13 +547,15 @@ sjme_errorCode sjme_nvm_rom_suiteFromMerge(
  * @param pool The pool to use for allocations.
  * @param outSuite The resultant suite.
  * @param seekable The seekable to access the Zip through.
+ * @param clutterLevel The clutter level to use for the ROM by default.
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
 sjme_errorCode sjme_nvm_rom_suiteFromZipSeekable(
 	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
-	sjme_attrInNotNull sjme_seekable seekable);
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrInValue sjme_nvm_bootClutterLevel clutterLevel);
 
 /**
  * Returns all of the libraries which are available within this suite.
@@ -571,6 +576,7 @@ sjme_errorCode sjme_nvm_rom_suiteLibraries(
  * @param outSuite The output suite.
  * @param data Any data to pass to the initializer.
  * @param inFunctions The functions which define how to access the suite.
+ * @param clutterLevel The clutter level to use.
  * @param copyFrontEnd Input front end initialization, is optional.
  * @return Any error code.
  * @since 2023/12/15
@@ -580,6 +586,7 @@ sjme_errorCode sjme_nvm_rom_suiteNew(
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInNotNull const sjme_nvm_rom_suiteFunctions* inFunctions,
+	sjme_attrInValue sjme_nvm_bootClutterLevel clutterLevel,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
 /*--------------------------------------------------------------------------*/

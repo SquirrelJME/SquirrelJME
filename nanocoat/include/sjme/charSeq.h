@@ -493,14 +493,14 @@ sjme_errorCode sjme_charSeq_newWideStatic(
  * 
  * @param inSeq The sequence to check.
  * @param outResult The result of the check.
- * @param startsWithSeq The char sequence to check the start for.
+ * @param otherSeq The char sequence to check the start for.
  * @return Any resultant error, if any.
  * @since 2024/08/08 
  */
 sjme_errorCode sjme_charSeq_startsWithCharSeq(
 	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jboolean* outResult,
-	sjme_attrInNotNull sjme_charSeq startsWithSeq);
+	sjme_attrInNotNull sjme_charSeq otherSeq);
 
 /**
  * Checks if the given character sequence starts with the given UTF string.

@@ -62,8 +62,8 @@ static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
 		"Force pure interpreter, do not JIT/AOT compilation."},
 	{"-Xjdwp:[hostname]:port",
 		"Listens or connects to a JDWP debugger."},
-	{"-Xroms:<class:path:...>",
-		"The ROMs to use."},
+	{"-Xrom:<path>",
+		"The ROM to use."},
 	{"-Xlibraries:<class:path:...>",
 		"Libraries to include in the library path, not the classpath."},
 	{"-Xscritchui:<ui>",
@@ -121,7 +121,8 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNotNull sjme_lpcstr basePath,
-	sjme_attrInNotNull sjme_lpcstr romName)
+	sjme_attrInNotNull sjme_lpcstr romName,
+	sjme_attrInValue sjme_nvm_bootClutterLevel clutterLevel)
 {
 	sjme_errorCode error;
 	sjme_cchar dataPath[SJME_MAX_PATH];
@@ -134,16 +135,18 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 	
 	/* Base path here. */
 	memset(&dataPath, 0, sizeof(dataPath));
-	if (sjme_error_is(error = sjme_path_resolveAppend(
-		dataPath, SJME_MAX_PATH - 1,
-		basePath, INT32_MAX)))
-		return sjme_error_default(error);
+	if (strlen(basePath) > 0)
+		if (sjme_error_is(error = sjme_path_resolveAppend(
+			dataPath, SJME_MAX_PATH - 1,
+			basePath, INT32_MAX)))
+			return sjme_error_default(error);
 	
 	/* Use ROM from here. */
-	if (sjme_error_is(error = sjme_path_resolveAppend(
-		dataPath, SJME_MAX_PATH - 1,
-		romName, INT32_MAX)))
-		return sjme_error_default(error);
+	if (strlen(romName) > 0)
+		if (sjme_error_is(error = sjme_path_resolveAppend(
+			dataPath, SJME_MAX_PATH - 1,
+			romName, INT32_MAX)))
+			return sjme_error_default(error);
 	
 	/* Open main ROM file. */
 	rom = NULL;
@@ -154,7 +157,7 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 	/* Load suite from the ZIP. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipSeekable(allocPool,
-		&result, rom)) || result == NULL)
+		&result, rom, clutterLevel)) || result == NULL)
 	{
 		/* Make sure to close the file. */
 		sjme_closeable_close(SJME_AS_CLOSEABLE(rom));
@@ -179,7 +182,8 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_nvm result;
 	sjme_nvm_rom_suite mergeSuites[FIXED_SUITE_COUNT];
 	sjme_jint numMergeSuites;
-	sjme_nvm_task_taskNewConfig initTaskConfig;
+	sjme_nvm_task_taskNewConfig* initTaskConfig;
+	const sjme_nvm_bootParam* bootParamCopy;
 	sjme_nvm_task initTask;
 	sjme_list_sjme_nvm_rom_library* classPath;
 	
@@ -204,6 +208,15 @@ sjme_errorCode sjme_nvm_boot(
 		(sjme_pointer*)&result->bootParamCopy,
 		(sjme_pointer)param)) || result->bootParamCopy == NULL)
 		goto fail_bootParamCopy;
+	bootParamCopy = result->bootParamCopy;
+
+	/* Make defensive init of the initial task configuration. */
+	result->initTaskConfig = NULL;
+	if (sjme_error_is(error = sjme_alloc(allocPool,
+		sizeof(*result->initTaskConfig),
+		(sjme_pointer*)&result->initTaskConfig)) ||
+		result->initTaskConfig == NULL)
+		goto fail_allocInitTaskConfig;
 
 	/* Can only use one or the other to get the class path. */
 	if (result->bootParamCopy->mainClassPathById != NULL &&
@@ -252,7 +265,9 @@ sjme_errorCode sjme_nvm_boot(
 	{
 		/* Debug. */
 		sjme_message("No suites are available, cannot run.");
-		
+
+		/* Fail. */
+		error = SJME_ERROR_NO_SUITES;
 		goto fail_noSuites;
 	}
 
@@ -269,6 +284,30 @@ sjme_errorCode sjme_nvm_boot(
 			&result->suite, mergeSuites,
 			numMergeSuites)) || result->suite == NULL)
 			goto fail_suiteMerge;
+	}
+
+	/* Use the classpath of the launcher? If enabled. */
+	if (bootParamCopy->launcherFallback &&
+		(bootParamCopy->mainClassPathById == NULL &&
+		bootParamCopy->mainClassPathByName == NULL))
+	{
+		/* Determine the default boot suite. */
+		if (sjme_error_is(error = sjme_nvm_rom_suiteDefaultLaunch(allocPool,
+			result->suite,
+			(sjme_lpstr*)&bootParamCopy->mainClass,
+			(sjme_list_sjme_lpstr**)&bootParamCopy->mainArgs,
+			(sjme_list_sjme_jint**)&bootParamCopy->mainClassPathById,
+			(sjme_list_sjme_lpstr**)
+				&bootParamCopy->mainClassPathByName)))
+			goto fail_defaultLaunch;
+
+		/* No default launcher found? */
+		if (bootParamCopy->mainClassPathById == NULL &&
+			bootParamCopy->mainClassPathByName == NULL)
+		{
+			error = SJME_ERROR_NO_SUITES;
+			goto fail_defaultLaunch;
+		}
 	}
 
 	/* Resolve class path libraries. */
@@ -303,19 +342,24 @@ sjme_errorCode sjme_nvm_boot(
 			goto fail_allocSchedule;
 
 	/* Setup task details. */
-	memset(&initTaskConfig, 0, sizeof(initTaskConfig));
-	initTaskConfig.stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
-	initTaskConfig.stdErr = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
-	initTaskConfig.classPath = classPath;
-	initTaskConfig.mainClass = result->bootParamCopy->mainClass;
-	initTaskConfig.mainArgs = result->bootParamCopy->mainArgs;
-	initTaskConfig.sysProps = result->bootParamCopy->sysProps;
+	initTaskConfig = result->initTaskConfig;
+	initTaskConfig->stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
+	initTaskConfig->stdErr = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
+	initTaskConfig->classPath = classPath;
+	initTaskConfig->mainClass = result->bootParamCopy->mainClass;
+	initTaskConfig->mainArgs = result->bootParamCopy->mainArgs;
+	initTaskConfig->sysProps = result->bootParamCopy->sysProps;
+	initTaskConfig->belay = result->bootParamCopy->belay;
 
-	/* Spawn initial task which uses the main arguments. */
+	/* Only create the task if not belaying it. */
 	initTask = NULL;
-	if (sjme_error_is(error = sjme_nvm_task_taskNew(result,
-		&initTaskConfig, &initTask)) || initTask == NULL)
-		goto fail_initTask;
+	if ((result->bootParamCopy->belay & SJME_NVM_BOOT_BELAY_TASK) == 0)
+	{
+		/* Spawn initial task which uses the main arguments. */
+		if (sjme_error_is(error = sjme_nvm_task_taskNew(result,
+			initTaskConfig, &initTask)) || initTask == NULL)
+			goto fail_initTask;
+	}
 	
 	/* Return newly created VM. */
 	*outState = result;
@@ -327,6 +371,7 @@ sjme_errorCode sjme_nvm_boot(
 fail_initTask:
 fail_allocSchedule:
 fail_badClassPath:
+fail_defaultLaunch:
 fail_suiteMerge:
 fail_noSuites:
 fail_payloadRom:
@@ -334,6 +379,9 @@ fail_bothIdAndName:
 fail_bootParamCopy:
 	if (result != NULL && result->bootParamCopy != NULL)
 		sjme_alloc_free((void*)result->bootParamCopy);
+fail_allocInitTaskConfig:
+	if (result != NULL && result->initTaskConfig != NULL)
+		sjme_alloc_free((void*)result->initTaskConfig);
 
 fail_resultInit:
 fail_resultAlloc:
@@ -398,7 +446,8 @@ sjme_errorCode sjme_nvm_defaultBootSuiteInDirectory(
 		/* Attempt ROM lookup. */
 		if (sjme_error_is(error = sjme_nvm_defaultBootSuiteAttempt(
 			allocPool, nal, &result, inDirectory,
-			sjme_nvm_romNames[i])))
+			sjme_nvm_romNames[i],
+			SJME_NVM_BOOT_CLUTTER_RELEASE)))
 			continue;
 
 		/* Success! */
@@ -562,6 +611,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	const sjme_nvm_helpParam* help;
 	sjme_nal_stdOFunc helpOut;
 	sjme_nal_stdIoFlush helpFlush;
+	sjme_lpcstr bootRom;
 	
 	if (allocPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -572,6 +622,9 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	/* Help defaults to standard error. */
 	helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].out;
 	helpFlush = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].flush;
+
+	/* These arguments get filled in. */
+	bootRom = NULL;
 	
 	/* Command line format is: */
 	jarSpecified = SJME_JNI_FALSE;
@@ -662,7 +715,13 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xclutter:"))
 		{
-			sjme_todo("Impl? %s", argv[argAt]);
+			/* Debugging? */
+			if (!strcasecmp("debug", &argv[argAt][10]))
+				outParam->clutterLevel = SJME_NVM_BOOT_CLUTTER_DEBUG;
+
+			/* Otherwise, consider everything else release. */
+			else
+				outParam->clutterLevel = SJME_NVM_BOOT_CLUTTER_RELEASE;
 		}
 		
 		/* -Xdebug */
@@ -693,11 +752,16 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
-		/* -Xroms:(class:path:...) */
+		/* -Xrom:(path) */
 		else if (sjme_charSeq_startsWithUtfR(&argSeq,
-			"-Xroms:"))
+			"-Xrom:"))
 		{
-			sjme_todo("Impl? %s", argv[argAt]);
+			/* Can only be set once! */
+			if (bootRom != NULL)
+				return SJME_ERROR_INVALID_ARGUMENT;
+
+			/* Set the boot ROM. */
+			bootRom = &argv[argAt][6];
 		}
 		
 		/* -Xlibraries:(class:path:...) */
@@ -781,8 +845,6 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			
 			return SJME_ERROR_INVALID_ARGUMENT;
 		}
-		
-		sjme_todo("impl?");
 	}
 	
 	/* Launching a specific Jar? */
@@ -807,6 +869,14 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		outParam->mainArgs = NULL;
 		outParam->mainClass = NULL;
 	}
+
+	/* Load boot ROM? */
+	if (bootRom != NULL)
+		if (sjme_error_is(error = sjme_nvm_defaultBootSuiteAttempt(
+			allocPool, nal, &outParam->bootSuite,
+			"", bootRom, outParam->clutterLevel)) ||
+			outParam->bootSuite == NULL)
+			return sjme_error_default(error);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
