@@ -83,9 +83,7 @@ target_link_libraries(SquirrelJME PRIVATE
 squirreljme_target_link_libraries_required(libJvm)
 squirreljme_target_link_libraries_required(SquirrelJME)
 
-# Where should this library be output?
-squirreljme_multilib_target_binary_output(libJvm
-	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+# Where should the executable be output?
 squirreljme_target_binary_output(SquirrelJME
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
