@@ -7,10 +7,17 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/config.h"
+
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	#define WIN32_LEAN_AND_MEAN 1
+	
+	#include <windows.h>
+#endif
+
 #include <jni.h>
 #include <jvm.h>
 
-#include "sjme/config.h"
 #include "sjme/stdTypes.h"
 #include "frontend/libjvm/internals.h"
 #include "sjme/nvm/cleanup.h"
