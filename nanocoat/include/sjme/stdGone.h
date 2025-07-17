@@ -207,6 +207,11 @@ int vsnprintf(
 	/** Copy argument lists. */
 	#define va_copy(d, s) ((d) = (s))
 #endif
+
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/** Compare two strings without regarding case. */
+	#define strcasecmp stricmp
+#endif
 	
 /*--------------------------------------------------------------------------*/
 

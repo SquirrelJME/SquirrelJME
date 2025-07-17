@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # SquirrelJME Java SE Emulator Front-End
-if(NOT EMSCRIPTEN)
+if(NOT EMSCRIPTEN AND NOT LIBRETRO_REALLY_STATIC)
 	squirreljme_include("jni.cmake")
 
 	if(JNI_FOUND)
