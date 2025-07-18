@@ -95,6 +95,9 @@ struct sjme_nvm_bootParam
 
 	/** The clutter level to use. */
 	sjme_nvm_bootClutterLevel clutterLevel;
+
+	/** Do not optimize. */
+	sjme_jboolean noOptimize;
 };
 
 /**

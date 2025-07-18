@@ -82,14 +82,16 @@ SJME_NVM_BYTECODE_SLOW(DupX2)
 	if (check.t == SJME_JAVA_TYPE_ID_LONG ||
 		check.t == SJME_JAVA_TYPE_ID_DOUBLE)
 	{
-		relRawCode[0] = SJME_NVM_BYTECODE_FAST_DUP_X1_WIDE;
+		if (!SJME_F_K(inFrame)->globals.noOptimize)
+			relRawCode[0] = SJME_NVM_BYTECODE_FAST_DUP_X1_WIDE;
 		fastFunc = SJME_NVM_BYTECODE_FAST_NAME(DupX1Wide);
 	}
 
 	/* Otherwise, rewrite to pop narrow. */
 	else
 	{
-		relRawCode[0] = SJME_NVM_BYTECODE_FAST_DUP_X2_NARROW;
+		if (!SJME_F_K(inFrame)->globals.noOptimize)
+			relRawCode[0] = SJME_NVM_BYTECODE_FAST_DUP_X2_NARROW;
 		fastFunc = SJME_NVM_BYTECODE_FAST_NAME(DupX2Narrow);
 	}
 
@@ -113,14 +115,16 @@ SJME_NVM_BYTECODE_SLOW(DupTwo)
 	if (check.t == SJME_JAVA_TYPE_ID_LONG ||
 		check.t == SJME_JAVA_TYPE_ID_DOUBLE)
 	{
-		relRawCode[0] = SJME_NVM_BYTECODE_FAST_DUP_WIDE;
+		if (!SJME_F_K(inFrame)->globals.noOptimize)
+			relRawCode[0] = SJME_NVM_BYTECODE_FAST_DUP_WIDE;
 		fastFunc = SJME_NVM_BYTECODE_FAST_NAME(DupWide);
 	}
 
 	/* Otherwise, rewrite to pop narrow. */
 	else
 	{
-		relRawCode[0] = SJME_NVM_BYTECODE_FAST_DUP_TWO_NARROW;
+		if (!SJME_F_K(inFrame)->globals.noOptimize)
+			relRawCode[0] = SJME_NVM_BYTECODE_FAST_DUP_TWO_NARROW;
 		fastFunc = SJME_NVM_BYTECODE_FAST_NAME(DupTwoNarrow);
 	}
 
@@ -144,14 +148,16 @@ SJME_NVM_BYTECODE_SLOW(DupTwoX1)
 	if (check.t == SJME_JAVA_TYPE_ID_LONG ||
 		check.t == SJME_JAVA_TYPE_ID_DOUBLE)
 	{
-		relRawCode[0] = SJME_NVM_BYTECODE_FAST_DUP_TWO_X1_WIDE;
+		if (!SJME_F_K(inFrame)->globals.noOptimize)
+			relRawCode[0] = SJME_NVM_BYTECODE_FAST_DUP_TWO_X1_WIDE;
 		fastFunc = SJME_NVM_BYTECODE_FAST_NAME(DupTwoX1Wide);
 	}
 
 	/* Otherwise, rewrite to pop narrow. */
 	else
 	{
-		relRawCode[0] = SJME_NVM_BYTECODE_FAST_DUP_TWO_X1_NARROW;
+		if (!SJME_F_K(inFrame)->globals.noOptimize)
+			relRawCode[0] = SJME_NVM_BYTECODE_FAST_DUP_TWO_X1_NARROW;
 		fastFunc = SJME_NVM_BYTECODE_FAST_NAME(DupTwoX1Narrow);
 	}
 
@@ -206,14 +212,16 @@ SJME_NVM_BYTECODE_SLOW(PopTwo)
 	/* If a wide type, rewrite to pop wide. */
 	if (top.t == SJME_JAVA_TYPE_ID_LONG || top.t == SJME_JAVA_TYPE_ID_DOUBLE)
 	{
-		relRawCode[0] = SJME_NVM_BYTECODE_FAST_POP_WIDE;
+		if (!SJME_F_K(inFrame)->globals.noOptimize)
+			relRawCode[0] = SJME_NVM_BYTECODE_FAST_POP_WIDE;
 		fastFunc = SJME_NVM_BYTECODE_FAST_NAME(PopWide);
 	}
 
 	/* Otherwise, rewrite to pop narrow. */
 	else
 	{
-		relRawCode[0] = SJME_NVM_BYTECODE_FAST_POP_TWO_NARROW;
+		if (!SJME_F_K(inFrame)->globals.noOptimize)
+			relRawCode[0] = SJME_NVM_BYTECODE_FAST_POP_TWO_NARROW;
 		fastFunc = SJME_NVM_BYTECODE_FAST_NAME(PopTwoNarrow);
 	}
 

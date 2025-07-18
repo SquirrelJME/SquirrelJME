@@ -708,6 +708,9 @@ sjme_errorCode sjme_nvm_task_taskNew(
 
 	/* Use the default field accessor for this task by default. */
 	result->globals.accessor = sjme_nvm_instance_fieldAccessor;
+
+	/* Do not perform optimizations? */
+	result->globals.noOptimize = initConfigCopy->noOptimize;
 	
 	/* All new tasks are considered alive. */
 	result->status = SJME_NVM_TASK_STATUS_ALIVE;

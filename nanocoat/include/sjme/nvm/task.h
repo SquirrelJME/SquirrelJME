@@ -320,6 +320,9 @@ struct sjme_nvm_task_taskNewConfig
 
 	/** The belay for the task. */
 	sjme_nvm_bootBelayType belay;
+
+	/** Do not optimize. */
+	sjme_jboolean noOptimize;
 };
 
 struct sjme_nvm_taskStringsBase
@@ -435,6 +438,9 @@ typedef struct sjme_nvm_task_globals
 	
 	/** The main thread. */
 	sjme_nvm_thread mainThread;
+
+	/** No optimization? */
+	sjme_jboolean noOptimize;
 } sjme_nvm_task_globals;
 
 typedef enum sjme_nvm_task_threadCountType

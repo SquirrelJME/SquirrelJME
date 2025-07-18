@@ -125,6 +125,12 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_nvm_task_taskNewConfig . */
 	SJME_NVM_WALK_PSEUDO_INIT_TASK_CONFIG = -29,
+
+	/** @c sjme_nvm_bootBelayType . */
+	SJME_NVM_WALK_PSEUDO_BOOT_BELAY_TYPE = -30,
+
+	/** @c sjme_nvm_bootClutterLevel . */
+	SJME_NVM_WALK_PSEUDO_CLUTTER_LEVEL = -31,
 } sjme_nvm_walk_pseudoType;
 
 /**

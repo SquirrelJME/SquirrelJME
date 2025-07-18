@@ -55,7 +55,7 @@ static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
 	{"-Xdebug", 
 		"Starts debugging with the built-in debugger."},
 	{"-Xemulator:<vm>",
-		"Ignored, this will always be \"nanocoat\"."},
+		"Always \"nanocoat\", if \"springcoat\" implies -Xint."},
 	{"-Xentry:id",
 		"If launching a MIDlet, choose a MIDlet entry."},
 	{"-Xint",
@@ -350,6 +350,7 @@ sjme_errorCode sjme_nvm_boot(
 	initTaskConfig->mainArgs = result->bootParamCopy->mainArgs;
 	initTaskConfig->sysProps = result->bootParamCopy->sysProps;
 	initTaskConfig->belay = result->bootParamCopy->belay;
+	initTaskConfig->noOptimize = result->bootParamCopy->noOptimize;
 
 	/* Only create the task if not belaying it. */
 	initTask = NULL;
@@ -735,7 +736,9 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xemulator:"))
 		{
-			sjme_todo("Impl? %s", argv[argAt]);
+			/* If SpringCoat is specified, assume no optimizations. */
+			if (!strcasecmp("springcoat", &argv[argAt][11]))
+				outParam->noOptimize = SJME_JNI_TRUE;
 		}
 		
 		/* -Xentry:id */
@@ -817,7 +820,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		else if (sjme_charSeq_equalsUtfR(&argSeq, "-zero") ||
 			sjme_charSeq_equalsUtfR(&argSeq, "-Xint"))
 		{
-			sjme_todo("Impl? %s", argv[argAt]);
+			outParam->noOptimize = SJME_JNI_TRUE;
 		}
 		
 		/* Ignored options. */

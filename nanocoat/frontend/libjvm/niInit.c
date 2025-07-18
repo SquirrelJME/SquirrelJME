@@ -177,6 +177,9 @@ jint JNICALL JNI_CreateJavaVM(
 			taskConfig.classLoader == NULL)
 			goto fail_initClassLoader;
 
+		/* General. */
+		taskConfig.noOptimize = bootParam.noOptimize;
+
 		/* Belay from. */
 		taskConfig.belay = bootParam.belay;
 
