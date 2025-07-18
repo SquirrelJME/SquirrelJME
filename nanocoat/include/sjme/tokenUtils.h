@@ -248,6 +248,10 @@ extern "C"
 #define SQUIRRELJME_VERSION_NANOCOAT \
 	"Stack caching interpreter"
 
+/** Description of NanoCoat, without optimization. */
+#define SQUIRRELJME_VERSION_SPRINGCOAT \
+	"Non-optimizing SpringCoat compatibly mode"
+
 /**
  * Calculates the size of a struct member.
  * 

@@ -660,7 +660,9 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				SQUIRRELJME_VERSION);
 			sjme_nal_stdF(helpOut,
 				"SquirrelJME NanoCoat VM (build %s, %s)\n",
-				SQUIRRELJME_VERSION, SQUIRRELJME_VERSION_NANOCOAT);
+				SQUIRRELJME_VERSION,
+				(outParam->noOptimize ? SQUIRRELJME_VERSION_SPRINGCOAT :
+					SQUIRRELJME_VERSION_NANOCOAT));
 
 			/* Flush if possible. */
 			if (helpFlush != NULL)
