@@ -59,7 +59,7 @@ static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
 	{"-Xentry:id",
 		"If launching a MIDlet, choose a MIDlet entry."},
 	{"-Xint",
-		"Force pure interpreter, do not JIT/AOT compilation."},
+		"Force pure interpreter, do not perform optimizations (slow)."},
 	{"-Xjdwp:[hostname]:port",
 		"Listens or connects to a JDWP debugger."},
 	{"-Xrom:<path>",

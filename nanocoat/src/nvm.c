@@ -121,6 +121,7 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS:
 		case SJME_ERROR_MEMBER_ACCESS_DENIED:
 		case SJME_ERROR_INVALID_OBJECT:
+		case SJME_ERROR_OBJECT_MISMATCHED:
 			return SJME_JNI_TRUE;
 
 		default:

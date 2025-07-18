@@ -531,9 +531,12 @@ typedef enum sjme_errorCode
 
 	/** ROM is not valid. */
 	SJME_ERROR_INVALID_ROM = -163,
+
+	/** An unexpected object was matched, it should be another object. */
+	SJME_ERROR_OBJECT_MISMATCHED = -164,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -164,
+	SJME_NUM_ERROR_CODES = -165,
 } sjme_errorCode;
 
 /**

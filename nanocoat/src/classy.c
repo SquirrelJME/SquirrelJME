@@ -505,19 +505,19 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 		goto fail_allocLocalMap;
 	
 	/* Set. */
-	result->perType[SJME_JAVA_TYPE_ID_ALL].stack = maxStack;
-	result->perType[SJME_JAVA_TYPE_ID_ALL].locals = maxLocals;
+	result->perType[SJME_NVM_CODE_INFO_ALL_TYPES].stack = maxStack;
+	result->perType[SJME_NVM_CODE_INFO_ALL_TYPES].locals = maxLocals;
 
 	/* Build local and stack counts. */
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("TODO: Use proper per-type counts.");
 #endif
-	for (i = 0; i < SJME_JAVA_TYPE_ID_ALL; i++)
+	for (i = 0; i < SJME_NVM_CODE_INFO_ALL_TYPES; i++)
 	{
 		perType = &result->perType[i];
 		
 		/* TODO: For now just set all types to the same. */
-		*perType = result->perType[SJME_JAVA_TYPE_ID_ALL];
+		*perType = result->perType[SJME_NVM_CODE_INFO_ALL_TYPES];
 
 		/* Local map is always set to specific local indexes per type. */
 		perType->localMap = &localMap[maxLocals * i];

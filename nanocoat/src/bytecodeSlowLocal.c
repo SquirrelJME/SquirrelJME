@@ -24,7 +24,7 @@ static const sjme_javaTypeId sjme_nvm_byteCode_xLoadType[5] =
 SJME_NVM_BYTECODE_SLOW(IInc)
 {
 	sjme_jint index, increment;
-	sjme_jint* value;
+	sjme_jvalue* value;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Directly access value. */
@@ -32,11 +32,11 @@ SJME_NVM_BYTECODE_SLOW(IInc)
 	index = (relRawCode[1] & 0xFF);
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalAddr(
 		inFrame, SJME_JAVA_TYPE_ID_INTEGER, index,
-		(sjme_pointer*)&value)) || value == NULL)
+		&value)) || value == NULL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INVALID_READ);
 
 	/* Increment directly. */
-	(*value) += (sjme_jbyte)relRawCode[2];
+	value->i += (sjme_jbyte)relRawCode[2];
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
@@ -44,8 +44,8 @@ SJME_NVM_BYTECODE_SLOW(IInc)
 
 SJME_NVM_BYTECODE_SLOW(IIncWide)
 {
-	sjme_jint index, increment;
-	sjme_jint* value;
+	sjme_jint index;
+	sjme_jvalue* value;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Directly access value. */
@@ -53,11 +53,11 @@ SJME_NVM_BYTECODE_SLOW(IIncWide)
 	index = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[2]));
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalAddr(
 		inFrame, SJME_JAVA_TYPE_ID_INTEGER, index,
-		(sjme_pointer*)&value)) || value == NULL)
+		&value)) || value == NULL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INVALID_READ);
 
 	/* Increment directly. */
-	(*value) += sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[4]));
+	value->i += sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[4]));
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;

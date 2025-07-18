@@ -198,13 +198,19 @@ struct sjme_frame_frameStack
 	} base;
 };
 
+/** The object check stack type. */
+#define SJME_NVM_STACK_OBJECT_CHECK_ID SJME_NUM_JAVA_TYPE_IDS
+
+/** Final stack indicator. */
+#define SJME_NVM_STACK_FINAL_ID (SJME_NVM_STACK_OBJECT_CHECK_ID + 1)
+
 struct sjme_frame_frameStacks
 {
 	/** The number of bytes claimed for this frame. */
 	sjme_jint storageClaim;
 	
 	/** Stack framing information. */
-	sjme_frame_frameStack stack[SJME_NUM_JAVA_TYPE_IDS];
+	sjme_frame_frameStack stack[SJME_NVM_STACK_FINAL_ID];
 
 	/** The order of the stack. */
 	sjme_javaTypeId* order;
@@ -644,7 +650,7 @@ sjme_errorCode sjme_nvm_task_frameLocalAddr(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId localType,
 	sjme_attrInPositive sjme_jint localIndex,
-	sjme_attrOutNotNull sjme_pointer* outAddr);
+	sjme_attrOutNotNull sjme_jvalue** outAddr);
 
 /**
  * Clears the entire set of locals for a frame.
@@ -657,17 +663,36 @@ sjme_errorCode sjme_nvm_task_frameLocalClear(
 	sjme_attrInNotNull sjme_nvm_frame inFrame);
 
 /**
+ * Returns the value of a local variable.
+ * 
+ * @param inFrame The frame to read the local from.
+ * @param typeId The type to read.
+ * @param localIndex The index of the local.
+ * @param outValue The output value.
+ * @param copiedElsewhere Is this value copied elsewhere? This affects
+ * reference counting and garbage collection.
+ * @return Any resultant error, if any.
+ * @since 2025/07/18
+ */
+sjme_errorCode sjme_nvm_task_frameLocalGet(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
+	sjme_attrInPositive sjme_jint localIndex,
+	sjme_attrInNotNull sjme_jvalueTyped* outValue,
+	sjme_attrInValue sjme_jboolean copiedElsewhere);
+
+/**
  * Pushes the specified local to the stack.
  * 
  * @param inFrame The frame to push the local to the stack from.
- * @param localType The type of local to push.
+ * @param typeId The type of local to push.
  * @param localIndex The index of the local.
  * @return Any resultant error, if any.
  * @since 2025/02/12
  */
 sjme_errorCode sjme_nvm_task_frameLocalPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInValue sjme_javaTypeId localType,
+	sjme_attrInValue sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint localIndex);
 	
 /**
@@ -826,6 +851,7 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
  * @param typeId The type.
  * @param typeIndex The index into the tread.
  * @param outAddr The resultant address of the value.
+ * @param outCheck The output check value if an object.
  * @return Any resultant value, if any.
  * @since 2025/03/02
  */
@@ -833,7 +859,8 @@ sjme_errorCode sjme_nvm_task_frameTreadAddr(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrOutNotNull sjme_pointer* outAddr);
+	sjme_attrOutNotNull sjme_jvalue** outAddr,
+	sjme_attrOutNotNull sjme_jint** outCheck);
 
 /**
  * Gets the value of a variable within a frame using the typed index
@@ -843,6 +870,7 @@ sjme_errorCode sjme_nvm_task_frameTreadAddr(
  * @param typeId The type to read.
  * @param typeIndex The type index to set.
  * @param outValue The resultant value.
+ * @param copiedElsewhere Valued is copied elsewhere?
  * @param eraseOld Erase the old value in the slot?
  * @return Any resultant error, if any.
  * @since 2025/02/16
@@ -852,6 +880,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
+	sjme_attrInValue sjme_jboolean copiedElsewhere,
 	sjme_attrInValue sjme_jboolean eraseOld);
 	
 /**
@@ -861,13 +890,15 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
  * @param inFrame The frame to set the value in.
  * @param typeIndex The type index to set.
  * @param inValue The value to set.
+ * @param oldValue The old value that was in this tread slot.
  * @return Any resultant error, if any.
  * @since 2025/01/04
  */
 sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrInNotNull const sjme_jvalueTyped* inValue);
+	sjme_attrInNotNull const sjme_jvalueTyped* inValue,
+	sjme_attrOutNotNull sjme_jvalueTyped* oldValue);
 
 /**
  * Prints the stack trace for a thread using the standard compact SquirrelJME

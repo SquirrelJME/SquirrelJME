@@ -41,8 +41,9 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	sjme_nvm_class_codePerType* perType;
 	sjme_frame_frameStack* typeStack;
 	sjme_jint i;
-	sjme_intPointer typeOff[SJME_NUM_CODE_TYPE_IDS];
+	sjme_intPointer typeOff[SJME_NVM_STACK_FINAL_ID + 1];
 	sjme_pointer storeBase;
+	sjme_javaTypeId sizeAlias;
 	
 	if (inState == NULL || inThread == NULL || inFrame == NULL ||
 		targetInfo == NULL)
@@ -56,21 +57,37 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	memset(stack, 0, sizeof(*stack));
 
 	/* The ordering information can be taken directly from the code info. */
+	/* Allocate extra space for object check values. */
 	code = targetInfo->code;
-	stack->orderFront = code->perType[SJME_JAVA_TYPE_ID_ALL].locals;
+	stack->orderFront = code->perType[SJME_NVM_CODE_INFO_ALL_TYPES].locals;
 	stack->orderTop = stack->orderFront;
 	stack->orderLength = stack->orderFront +
-		code->perType[SJME_JAVA_TYPE_ID_ALL].stack;
+		code->perType[SJME_NVM_CODE_INFO_ALL_TYPES].stack;
 
 	/* Determine initial offset to store ordering information. */
+	memset(typeOff, 0, sizeof(typeOff));
 	typeOff[0] = sjme_util_alignTo(
 		sizeof(*stack->order) * stack->orderLength,
 		sizeof(sjme_pointer));
 
 	/* Determine the totals for each type. */
-	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
+	for (i = 0; i < SJME_NVM_STACK_FINAL_ID; i++)
 	{
-		perType = &code->perType[i];
+		/* Fill in the object check stack. */
+		if (i == SJME_NVM_STACK_OBJECT_CHECK_ID)
+		{
+			perType = &code->perType[SJME_JAVA_TYPE_ID_OBJECT];
+			sizeAlias = SJME_JAVA_TYPE_ID_INTEGER;
+		}
+
+		/* Normal type set. */
+		else
+		{
+			perType = &code->perType[i];
+			sizeAlias = i;
+		}
+
+		/* Obtain this stack. */
 		typeStack = &stack->stack[i];
 
 		/* Determine totals for per types. */
@@ -80,26 +97,28 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 
 		/* The offset for the next type is the total storage for this type. */
 		typeOff[i + 1] = sjme_util_alignTo(
-			sjme_util_alignTo(typeOff[i], sjme_nvm_typeMul[i]) +
-			(sjme_nvm_typeMul[i] * typeStack->length),
+			sjme_util_alignTo(typeOff[i],
+				sjme_nvm_typeMul[sizeAlias]) +
+			(sjme_nvm_typeMul[sizeAlias] * typeStack->length),
 			sizeof(sjme_pointer));
 	}
 
 	/* Is there enough memory to even allocate this big of a stack? */
-	if (store->storageTop + typeOff[SJME_JAVA_TYPE_ID_ALL] > store->storageLen)
+	if (store->storageTop +
+		typeOff[SJME_NVM_STACK_FINAL_ID] > store->storageLen)
 		return sjme_error_vmError(inThread, SJME_ERROR_STACK_OVERFLOW);
 
 	/* Grab a chunk of the stack. */
 	storeBase = SJME_POINTER_OFFSET(store->storage, store->storageTop);
-	stack->storageClaim = typeOff[SJME_JAVA_TYPE_ID_ALL];
-	store->storageTop += typeOff[SJME_JAVA_TYPE_ID_ALL];
+	stack->storageClaim = typeOff[SJME_NVM_STACK_FINAL_ID];
+	store->storageTop += typeOff[SJME_NVM_STACK_FINAL_ID];
 
 	/* Clear any data which used to be here. */
-	memset(storeBase, 0, typeOff[SJME_JAVA_TYPE_ID_ALL]);
+	memset(storeBase, 0, typeOff[SJME_NVM_STACK_FINAL_ID]);
 
 	/* Setup pointers. */
 	stack->order = SJME_POINTER_OFFSET(storeBase, 0);
-	for (i = 0; i < SJME_NUM_JAVA_TYPE_IDS; i++)
+	for (i = 0; i < SJME_NVM_STACK_FINAL_ID; i++)
 		stack->stack[i].base.base = SJME_POINTER_OFFSET(storeBase, typeOff[i]);
 
 	/* Success! */

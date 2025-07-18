@@ -779,11 +779,11 @@ typedef struct sjme_nvm_class_codePerType
 } sjme_nvm_class_codePerType;
 
 /** The ID for all types. */
-#define SJME_JAVA_TYPE_ID_ALL SJME_NUM_JAVA_TYPE_IDS
+#define SJME_NVM_CODE_INFO_ALL_TYPES SJME_NUM_JAVA_TYPE_IDS
 
 /** The number of per types. */
-#define SJME_NUM_CODE_TYPE_IDS \
-	(SJME_JAVA_TYPE_ID_ALL + 1)
+#define SJME_NVM_CODE_INFO_NUM_TYPE_IDS \
+	(SJME_NVM_CODE_INFO_ALL_TYPES + 1)
 
 struct sjme_nvm_class_codeInfoBase
 {
@@ -794,7 +794,7 @@ struct sjme_nvm_class_codeInfoBase
 	sjme_nvm_class_methodInfo inMethod;
 	
 	/** Maximum per specific type. */
-	sjme_nvm_class_codePerType perType[SJME_NUM_CODE_TYPE_IDS];
+	sjme_nvm_class_codePerType perType[SJME_NVM_CODE_INFO_NUM_TYPE_IDS];
 
 	/** Exception table. */
 	sjme_list_sjme_nvm_class_exceptionHandler* exceptions;
