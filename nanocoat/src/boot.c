@@ -171,6 +171,91 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_printHelp(
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrInNotNull sjme_nal_stdOFunc helpOut,
+	sjme_attrInNotNull sjme_nal_stdIoFlush helpFlush,
+	sjme_attrInNotNull sjme_lpcstr argSeq,
+	sjme_attrInNotNull sjme_lpcstr programName)
+{
+	const sjme_nvm_helpParam* help;
+
+	if (nal == NULL || helpOut == NULL || helpFlush == NULL ||
+		argSeq == NULL || programName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Where is this information going? */
+	if (!strcmp(argSeq, "--help"))
+	{
+		helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
+		helpFlush = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].flush;
+	}
+	
+	/* Normal usage. */
+	sjme_nal_stdF(helpOut,
+		"Usage: %s [Options] <MainClass> [Args...]\n", programName);
+	sjme_nal_stdF(helpOut,
+		"Usage: %s [Options] -jar <Jar> [Args...]\n", programName);
+	sjme_nal_stdF(helpOut,"\n");
+	
+	/* And all the help parameters. */
+	sjme_nal_stdF(helpOut, "Options are:\n");
+	for (help = &sjme_nvm_helpParams[0]; help->arg != NULL; help++)
+	{
+		sjme_nal_stdF(helpOut, "  %s\n",
+			help->arg);
+		sjme_nal_stdF(helpOut, "    %s\n",
+			help->desc);
+	}
+
+	/* Flush if possible. */
+	if (helpFlush != NULL)
+		helpFlush();
+	
+	/* Exit. */
+	return SJME_ERROR_EXIT;
+}
+
+static sjme_errorCode sjme_nvm_printVersion(
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrInNotNull sjme_nal_stdOFunc helpOut,
+	sjme_attrInNotNull sjme_nal_stdIoFlush helpFlush,
+	sjme_attrInNotNull sjme_lpcstr argSeq,
+	sjme_attrInNotNull sjme_nvm_bootParam* outParam)
+{
+	if (nal == NULL || helpOut == NULL || helpFlush == NULL ||
+		argSeq == NULL || outParam == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Where is this information going? */
+	if (!strcmp(argSeq, "--version"))
+	{
+		helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
+		helpFlush = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].flush;
+	}
+	
+	/* Print version information to stdout. */
+	/* https://www.oracle.com/java/technologies/javase/ */
+	/* versioning-naming.html */
+	sjme_nal_stdF(helpOut,
+		"java version \"1.8.0\"\n");
+	sjme_nal_stdF(helpOut,
+		"SquirrelJME Class Library, Micro Edition (build %s)\n",
+		SQUIRRELJME_VERSION);
+	sjme_nal_stdF(helpOut,
+		"SquirrelJME NanoCoat VM (build %s, %s)\n",
+		SQUIRRELJME_VERSION,
+		(outParam->noOptimize ? SQUIRRELJME_VERSION_SPRINGCOAT :
+			SQUIRRELJME_VERSION_NANOCOAT));
+
+	/* Flush if possible. */
+	if (helpFlush != NULL)
+		helpFlush();
+	
+	/* Exit. */
+	return SJME_ERROR_EXIT;
+}
+
 sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
@@ -609,10 +694,9 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_jint argAt;
 	sjme_charSeqStatic argSeq;
 	sjme_jboolean jarSpecified;
-	const sjme_nvm_helpParam* help;
 	sjme_nal_stdOFunc helpOut;
 	sjme_nal_stdIoFlush helpFlush;
-	sjme_lpcstr bootRom;
+	sjme_lpcstr bootRom, helpOpt, versionOpt;
 	
 	if (allocPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -623,6 +707,10 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	/* Help defaults to standard error. */
 	helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].out;
 	helpFlush = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDERR].flush;
+
+	/* By default, no help or version is printed. */
+	helpOpt = NULL;
+	versionOpt = NULL;
 
 	/* These arguments get filled in. */
 	bootRom = NULL;
@@ -643,33 +731,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			sjme_charSeq_equalsUtfR(&argSeq,
 				"--version"))
 		{
-			/* Where is this information going? */
-			if (sjme_charSeq_equalsUtfR(&argSeq, "--version"))
-			{
-				helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
-				helpFlush = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].flush;
-			}
-			
-			/* Print version information to stdout. */
-			/* https://www.oracle.com/java/technologies/javase/ */
-			/* versioning-naming.html */
-			sjme_nal_stdF(helpOut,
-				"java version \"1.8.0\"\n");
-			sjme_nal_stdF(helpOut,
-				"SquirrelJME Class Library, Micro Edition (build %s)\n",
-				SQUIRRELJME_VERSION);
-			sjme_nal_stdF(helpOut,
-				"SquirrelJME NanoCoat VM (build %s, %s)\n",
-				SQUIRRELJME_VERSION,
-				(outParam->noOptimize ? SQUIRRELJME_VERSION_SPRINGCOAT :
-					SQUIRRELJME_VERSION_NANOCOAT));
-
-			/* Flush if possible. */
-			if (helpFlush != NULL)
-				helpFlush();
-			
-			/* Exit. */
-			return SJME_ERROR_EXIT;
+			versionOpt = argv[argAt];
 		}
 		
 		/* -help */
@@ -682,36 +744,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			sjme_charSeq_equalsUtfR(&argSeq,
 				"--help"))
 		{
-			/* Where is this information going? */
-			if (sjme_charSeq_equalsUtfR(&argSeq, "--help"))
-			{
-				helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
-				helpFlush = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].flush;
-			}
-			
-			/* Normal usage. */
-			sjme_nal_stdF(helpOut,
-				"Usage: %s [Options] <MainClass> [Args...]\n", argv[0]);
-			sjme_nal_stdF(helpOut,
-				"Usage: %s [Options] -jar <Jar> [Args...]\n", argv[0]);
-			sjme_nal_stdF(helpOut,"\n");
-			
-			/* And all the help parameters. */
-			sjme_nal_stdF(helpOut, "Options are:\n");
-			for (help = &sjme_nvm_helpParams[0]; help->arg != NULL; help++)
-			{
-				sjme_nal_stdF(helpOut, "  %s\n",
-					help->arg);
-				sjme_nal_stdF(helpOut, "    %s\n",
-					help->desc);
-			}
-
-			/* Flush if possible. */
-			if (helpFlush != NULL)
-				helpFlush();
-			
-			/* Exit. */
-			return SJME_ERROR_EXIT;
+			helpOpt = argv[argAt];
 		}
 		
 		/* -Xclutter:(release|debug) */
@@ -875,6 +908,14 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		outParam->mainClass = NULL;
 	}
 
+	/* Print help options or version? */
+	if (helpOpt != NULL)
+		return sjme_nvm_printHelp(nal, helpOut, helpFlush,
+			helpOpt, argv[0]);
+	else if (versionOpt != NULL)
+		return sjme_nvm_printVersion(nal, helpOut, helpFlush,
+			versionOpt, outParam);
+	
 	/* Load boot ROM? */
 	if (bootRom != NULL)
 		if (sjme_error_is(error = sjme_nvm_defaultBootSuiteAttempt(

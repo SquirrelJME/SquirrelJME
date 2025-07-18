@@ -85,6 +85,8 @@ int main(int argc, sjme_lpcstr* argv)
 	initArgs.nOptions = vmArgC;
 
 	/* Create JVM. */
+	jvm = NULL;
+	env = NULL;
 	if (JNI_CreateJavaVM(&jvm, (void**)&env, &initArgs) != JNI_OK)
 		return EXIT_FAILURE;
 	
@@ -105,6 +107,7 @@ int main(int argc, sjme_lpcstr* argv)
 			/* Okay options? */
 			if (!strcmp("-version", argv[i]) ||
 				!strcmp("--version", argv[i]) ||
+				!strcmp("-?", argv[i]) ||
 				!strcmp("-help", argv[i]) ||
 				!strcmp("--help", argv[i]))
 				return EXIT_SUCCESS;

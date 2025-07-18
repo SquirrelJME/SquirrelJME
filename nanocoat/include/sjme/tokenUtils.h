@@ -250,7 +250,7 @@ extern "C"
 
 /** Description of NanoCoat, without optimization. */
 #define SQUIRRELJME_VERSION_SPRINGCOAT \
-	"Non-optimizing SpringCoat compatibly mode"
+	"Non-optimizing SpringCoat compatibility mode"
 
 /**
  * Calculates the size of a struct member.
