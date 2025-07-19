@@ -193,6 +193,10 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	/* Enter new stack frame for the target method, or at least try. */
 	else
 	{
+		/* Cannot be native. */
+		if (target->flags.native)
+			return sjme_error_vmError(inFrame, SJME_ERROR_PURE_VIRTUAL_CALL);
+		
 		/* Enter the frame. */
 		newFrame = NULL;
 		if (sjme_error_is(error = sjme_nvm_task_threadEnter(
