@@ -531,6 +531,11 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 		inTask->globals.mainClassName == NULL)
 		goto fail_mainClassString;
 
+	/* Count up main class string. */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(
+		SJME_AS_JOBJECT(inTask->globals.mainClassName))))
+		goto fail_countMainClassString;
+
 	/* Setup strings for main arguments. */
 	argStrings = NULL;
 	if (initConfigCopy->mainArgs != NULL &&
@@ -544,11 +549,19 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 
 		/* Setup strings for each argument. */
 		for (i = 0; i < n; i++)
+		{
+			/* Create string. */
 			if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
 				mainThread, &argStrings->elements[i], SJME_JNI_TRUE,
 				initConfigCopy->mainArgs->elements[i])) ||
 				argStrings->elements[i] == NULL)
 				goto fail_mainArgsString;
+			
+			/* Count up string. */
+			if (sjme_error_is(error = sjme_nvm_instance_countUp(
+				SJME_AS_JOBJECT(argStrings->elements[i]))))
+				goto fail_countMainArgString;
+		}
 	}
 		
 	/* Set argument strings. */
@@ -569,6 +582,7 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	return SJME_ERROR_NONE;
 
 fail_startMain:
+fail_countMainArgString:
 fail_mainArgsString:
 fail_mainArgsStrings:
 	if (argStrings != NULL)
@@ -576,6 +590,7 @@ fail_mainArgsStrings:
 		sjme_alloc_free(argStrings);
 		argStrings = NULL;
 	}
+fail_countMainClassString:
 fail_mainClassString:
 fail_taskNewThread:
 fail_mainExists:
@@ -710,6 +725,11 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	result->strings = strings;
 	result->initConfig = initConfigCopy;
 
+	/* Initialize identity hashcode generator. */
+	if (sjme_error_is(error = sjme_random_init(&result->idHash,
+		INT32_C(0x43757465), INT32_C(0x53716B21))))
+		goto fail_initIdHash;
+
 	/* Use the default field accessor for this task by default. */
 	result->globals.accessor = sjme_nvm_instance_fieldAccessor;
 
@@ -761,6 +781,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	/* In-state locks. */
 fail_preLockBeforeRelease:
 fail_allocThreads:
+fail_initIdHash:
 fail_initClassLoader:
 fail_allocStrings:
 	if (strings != NULL)

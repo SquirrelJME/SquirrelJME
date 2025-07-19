@@ -113,7 +113,7 @@ sjme_jint sjme_compare_null(
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
-sjme_errorCode sjme_randomInit(
+sjme_errorCode sjme_random_init(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue sjme_jint seedHi,
 	sjme_attrInValue sjme_jint seedLo);
@@ -126,7 +126,7 @@ sjme_errorCode sjme_randomInit(
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
-sjme_errorCode sjme_randomInitL(
+sjme_errorCode sjme_random_initL(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue sjme_jlong seed);
 	
@@ -138,9 +138,19 @@ sjme_errorCode sjme_randomInitL(
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
-sjme_errorCode sjme_randomNextInt(
+sjme_errorCode sjme_random_nextInt(
 	sjme_attrInOutNotNull sjme_random* random,
 	sjme_attrOutNotNull sjme_jint* outValue);
+	
+/**
+ * Returns the next random value.
+ * 
+ * @param random The random state.
+ * @return The next random value.
+ * @since 2025/07/19
+ */
+sjme_jint sjme_random_nextIntR(
+	sjme_attrInOutNotNull sjme_random* random);
 	
 /**
  * Returns the next random value within the given range.
@@ -151,7 +161,7 @@ sjme_errorCode sjme_randomNextInt(
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
-sjme_errorCode sjme_randomNextIntMax(
+sjme_errorCode sjme_random_nextIntMax(
 	sjme_attrInOutNotNull sjme_random* random,
 	sjme_attrOutNotNull sjme_jint* outValue,
 	sjme_attrInPositiveNonZero sjme_jint maxValue);

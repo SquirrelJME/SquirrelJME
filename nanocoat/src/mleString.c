@@ -294,6 +294,10 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 		argR->v.l == NULL))
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 
+	/* Count up. */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(argR->v.l)))
+		return sjme_error_vmError(inFrame, error);
+
 	/* Success! */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
 	return SJME_ERROR_NONE;
@@ -327,6 +331,10 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
 		SJME_AS_JSTRINGP(&argR->v.l), intern, seq) ||
 		argR->v.l == NULL))
 		return sjme_error_default(error);
+
+	/* Count up. */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(argR->v.l)))
+		return sjme_error_vmError(inFrame, error);
 
 	/* Success! */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;

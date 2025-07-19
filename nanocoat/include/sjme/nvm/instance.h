@@ -396,11 +396,13 @@ sjme_jint sjme_nvm_fieldValueSize(
 /**
  * Calculates the identity hash for the given pointer.
  * 
+ * @param inTask The context task.
  * @param pointer The pointer to calculate for.
  * @return The resultant identity hash.
  * @since 2025/07/18
  */
 sjme_jint sjme_nvm_instance_calcIdentityHash(
+	sjme_attrInNotNull sjme_nvm_task inTask,
 	sjme_attrInValue void* pointer);
 	
 /**
@@ -411,9 +413,22 @@ sjme_jint sjme_nvm_instance_calcIdentityHash(
  * @return Any resultant error, if any.
  * @since 2025/02/24
  */
-sjme_errorCode sjme_nvm_instance_countDown(
+sjme_errorCode sjme_nvm_instance_countDownR(
 	sjme_attrInNotNull sjme_jobject* oldP,
-	sjme_attrInNotNull sjme_jobject newV);
+	sjme_attrInNotNull sjme_jobject newV
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+	
+/**
+ * Checks if the given object can be counted down if the old value changes.
+ * 
+ * @param oldP The old pointer value.
+ * @param newV The new value.
+ * @return Any resultant error, if any.
+ * @since 2025/02/24
+ */
+#define sjme_nvm_instance_countDown(oldP, newV) \
+	(sjme_nvm_instance_countDownR((oldP), (newV) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**
  * Counts the given object up.
@@ -422,8 +437,20 @@ sjme_errorCode sjme_nvm_instance_countDown(
  * @return Any resultant error, if any.
  * @since 2025/07/10
  */
-sjme_errorCode sjme_nvm_instance_countUp(
-	sjme_attrInNotNull sjme_jobject object);
+sjme_errorCode sjme_nvm_instance_countUpR(
+	sjme_attrInNotNull sjme_jobject object
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+	
+/**
+ * Counts the given object up.
+ * 
+ * @param object The object to count up.
+ * @return Any resultant error, if any.
+ * @since 2025/07/10
+ */
+#define sjme_nvm_instance_countUp(object) \
+	(sjme_nvm_instance_countUpR((object) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**
  * The default accessor for fields.

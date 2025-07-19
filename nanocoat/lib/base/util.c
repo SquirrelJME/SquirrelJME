@@ -14,6 +14,40 @@
 #include "sjme/debug.h"
 #include "sjme/atomic.h"
 
+static sjme_errorCode sjme_random_generate(
+	sjme_attrInOutNotNull sjme_random* random,
+	sjme_attrOutNotNull sjme_jint* outValue,
+	sjme_attrInRange(0, 32) sjme_jint bits)
+{
+	sjme_jint result;
+	sjme_jlong seed;
+	
+	if (random == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (bits < 0 || bits > 32)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Emit barrier. */
+	sjme_atomic_barrier();
+	
+	/* Update the seed */
+	seed.full = (random->seed.full * INT64_C(0x5DEECE66D) + INT64_C(0xB)) &
+		((INT64_C(1) << INT64_C(48)) - INT64_C(1));
+	random->seed.full = seed.full;
+
+	/* Calculate resultant value. */
+	result = (sjme_jint)((sjme_julongNative)seed.full >>
+		(UINT64_C(48) - bits));
+	
+	/* Emit barrier. */
+	sjme_atomic_barrier();
+
+	/* Success! */
+	*outValue = result;
+	return SJME_ERROR_NONE;
+}
+
 sjme_jint sjme_compare_null(
 	sjme_attrInNullable sjme_cpointer a,
 	sjme_attrInNullable sjme_cpointer b)
@@ -30,41 +64,66 @@ sjme_jint sjme_compare_null(
 	return 1;
 }
 
-/**
- * Initializes the random number generator.
- * 
- * @param outRandom The random state to initialize. 
- * @param seedHi The high seed value.
- * @param seedLo The low seed value.
- * @return Returns @c SJME_JNI_TRUE on success.
- * @since 2023/12/02
- */
-sjme_errorCode sjme_randomInit(
+sjme_errorCode sjme_random_init(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue sjme_jint seedHi,
 	sjme_attrInValue sjme_jint seedLo)
 {
-	sjme_todo("Implement this?");
-	return sjme_error_notImplemented(0);
+	sjme_jlong seed;
+
+	/* Unwrap seed. */
+	seed.part.lo = seedLo;
+	seed.part.hi = seedHi;
+	return sjme_random_initL(outRandom, seed);
 }
 
-sjme_errorCode sjme_randomInitL(
+sjme_errorCode sjme_random_initL(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue sjme_jlong seed)
 {
-	sjme_todo("Implement this?");
-	return sjme_error_notImplemented(0);
+	if (outRandom == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Emit barrier. */
+	sjme_atomic_barrier();
+
+	/* Set seed value. */
+	outRandom->seed.full = (seed.full ^ INT64_C(0x5DEECE66D)) &
+		((INT64_C(1) << INT64_C(48)) - INT64_C(1));
+	
+	/* Emit barrier. */
+	sjme_atomic_barrier();
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_randomNextInt(
+sjme_errorCode sjme_random_nextInt(
 	sjme_attrInOutNotNull sjme_random* random,
 	sjme_attrOutNotNull sjme_jint* outValue)
 {
-	sjme_todo("Implement this?");
-	return sjme_error_notImplemented(0);
+	/* Forward to the generator. */
+	return sjme_random_generate(random, outValue, 32);
+}
+
+sjme_jint sjme_random_nextIntR(
+	sjme_attrInOutNotNull sjme_random* random)
+{
+	sjme_jint result;
+	
+	if (random == NULL)
+		return 0;
+
+	/* Load next random. */
+	result = 0;
+	if (sjme_error_is(sjme_random_generate(random, &result, 32)))
+		return 0;
+
+	/* Return it. */
+	return result;
 }
 	
-sjme_errorCode sjme_randomNextIntMax(
+sjme_errorCode sjme_random_nextIntMax(
 	sjme_attrInOutNotNull sjme_random* random,
 	sjme_attrOutNotNull sjme_jint* outValue,
 	sjme_attrInPositiveNonZero sjme_jint maxValue)

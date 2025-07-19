@@ -522,7 +522,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	result->threadId = 1 + sjme_atomic_sjme_jint_getAdd(
 		&inState->nextThreadId, 1);
 	result->object.identityHash =
-		sjme_nvm_instance_calcIdentityHash(result);
+		sjme_nvm_instance_calcIdentityHash(inTask, result);
 	result->stack.storage = storage;
 	result->stack.storageLen = SJME_NVM_THREAD_STACK_SIZE;
 	
@@ -728,6 +728,11 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 		
 		/* Set slot here. */
 		*blankIntern = result;
+
+		/* Count it up since it is in the intern list. */
+		if (sjme_error_is(error = sjme_nvm_instance_countUp(
+			SJME_AS_JOBJECT(result))))
+			goto fail_countInIntern;
 		
 		/* Release. */
 		if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -738,6 +743,11 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	/* Success! */
 	*outString = result;
 	return SJME_ERROR_NONE;
+	
+fail_countInIntern:
+	sjme_thread_spinLockRelease(&strings->common.lock, NULL);
+
+	return sjme_error_default(error);
 
 fail_collided:
 fail_dupSeq:

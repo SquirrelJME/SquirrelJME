@@ -335,6 +335,12 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 			inFrame->parent, &result)))
 			return sjme_error_vmError(inFrame, error);
+
+		/* If this is an object, we need to count it up as when the frame */
+		/* is cleared it will be uncounted. */
+		if (desire == SJME_JAVA_TYPE_ID_OBJECT && result.v.l != NULL)
+			if (sjme_error_is(error = sjme_nvm_instance_countUp(result.v.l)))
+				return sjme_error_vmError(inFrame, error);
 	}
 
 	/* Pop the current frame. */

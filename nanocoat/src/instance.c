@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/util.h"
 #include "sjme/nvm/instance.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/task.h"
@@ -33,18 +34,29 @@ sjme_jint sjme_nvm_fieldValueSize(
 }
 
 sjme_jint sjme_nvm_instance_calcIdentityHash(
+	sjme_attrInNotNull sjme_nvm_task inTask,
 	sjme_attrInValue void* pointer)
 {
-	#if defined(SJME_CONFIG_HAS_POINTER64)
-	return (((sjme_intPointer)pointer) ^ ((((sjme_intPointer)pointer)) >> 31));
+	sjme_jint base;
+	
+	/* Use random base PRNG from task. */
+	base = 0;
+	if (inTask != NULL)
+		base = sjme_random_nextIntR(&inTask->idHash);
+	
+	/* Then based on the pointer. */
+#if defined(SJME_CONFIG_HAS_POINTER64)
+	return base + (((sjme_intPointer)pointer) ^
+		((((sjme_intPointer)pointer)) >> 31));
 #else
-	return (sjme_intPointer)pointer;
+	return base + (sjme_jint)((sjme_intPointer)pointer);
 #endif
 }
 
-sjme_errorCode sjme_nvm_instance_countDown(
+sjme_errorCode sjme_nvm_instance_countDownR(
 	sjme_attrInNotNull sjme_jobject* oldP,
-	sjme_attrInNotNull sjme_jobject newV)
+	sjme_attrInNotNull sjme_jobject newV
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
 	sjme_jobject oldObject;
@@ -53,15 +65,23 @@ sjme_errorCode sjme_nvm_instance_countDown(
 
 	if (oldP == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover the weak reference for the old object. */
+	oldObject = *oldP;
+	weak = NULL;
+	if (oldObject != NULL)
+		if (sjme_error_is(error = sjme_alloc_weakRefGet(oldObject, &weak)))
+		{
+			if (error != SJME_ERROR_NOT_WEAK_REFERENCE)
+				return sjme_error_default(error);
+		}
 	
 	/* If the old is the same as new, then do not count if the count would */
 	/* result in the object being GCed before it was set. */
-	oldObject = *oldP;
 	noSelfGc = SJME_JNI_FALSE;
 	if (oldObject != NULL && newV != NULL && oldObject == newV)
 	{
 		/* Only consider valid weak reference. */
-		weak = NULL;
 		if (sjme_error_is(error = sjme_alloc_weakRefGet(oldObject, &weak)))
 		{
 			if (error != SJME_ERROR_NOT_WEAK_REFERENCE)
@@ -72,7 +92,7 @@ sjme_errorCode sjme_nvm_instance_countDown(
 		/* could be set. */
 		noSelfGc = (sjme_atomic_sjme_jint_get(&weak->count) <= 1);
 	}
-
+	
 	/* Count down if the old object exists, or in the case as above. */
 	if (oldObject != NULL && !noSelfGc)
 	{
@@ -83,6 +103,14 @@ sjme_errorCode sjme_nvm_instance_countDown(
 			&validObject)))
 			return sjme_error_default(error);
 
+#if defined(SJME_CONFIG_DEBUG)
+		/* Debug. */
+		sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
+			"GC DN-1: %p %d -> %d",
+			oldObject, sjme_atomic_sjme_jint_get(&weak->count) + 1,
+			sjme_atomic_sjme_jint_get(&weak->count));
+#endif
+
 		/* Count it down. */
 		if (sjme_error_is(error = sjme_alloc_weakUnRef(oldObject)))
 			return sjme_error_default(error);
@@ -92,8 +120,9 @@ sjme_errorCode sjme_nvm_instance_countDown(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nvm_instance_countUp(
-	sjme_attrInNotNull sjme_jobject object)
+sjme_errorCode sjme_nvm_instance_countUpR(
+	sjme_attrInNotNull sjme_jobject object
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_alloc_weak weak;
 	sjme_errorCode error;
@@ -110,6 +139,14 @@ sjme_errorCode sjme_nvm_instance_countUp(
 	if (sjme_error_is(error = sjme_alloc_weakRef(object, &weak)) ||
 		weak == NULL)
 		return sjme_error_default(error);
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
+		"GC UP+1: %p %d -> %d",
+		object, sjme_atomic_sjme_jint_get(&weak->count) - 1,
+		sjme_atomic_sjme_jint_get(&weak->count));
+#endif
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -217,6 +254,11 @@ sjme_errorCode sjme_nvm_instance_initFields(
 				return sjme_error_vmError(contextThread,
 					sjme_error_defaultOr(error,
 						SJME_ERROR_STATIC_STRING_INIT));
+
+				/* Count up as this exists in a field. */
+				if (sjme_error_is(error = sjme_nvm_instance_countUp(
+					direct->l.p)))
+					return sjme_error_vmError(contextThread, error);
 
 			/* Set check value. */
 			direct->l.check = direct->l.p->identityHash;
@@ -640,7 +682,8 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 	
 	/* Setup object. */
 	result->isClass = inClass;
-	result->identityHash = sjme_nvm_instance_calcIdentityHash(result);
+	result->identityHash = sjme_nvm_instance_calcIdentityHash(
+		SJME_T_K(contextThread), result);
 	
 	/* Success! */
 	*outObject = result;

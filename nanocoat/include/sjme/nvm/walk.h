@@ -131,6 +131,9 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_nvm_bootClutterLevel . */
 	SJME_NVM_WALK_PSEUDO_CLUTTER_LEVEL = -31,
+
+	/** @c sjme_random . */
+	SJME_NVM_WALK_PSEUDO_RANDOM = -32,
 } sjme_nvm_walk_pseudoType;
 
 /**

@@ -17,6 +17,7 @@
 #define SJME_C_TASK_H
 
 #include "sjme/list.h"
+#include "sjme/util.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/rom.h"
 #include "sjme/nvm/classyVm.h"
@@ -504,6 +505,9 @@ struct sjme_nvm_taskBase
 
 	/** The task initialization configuration. */
 	const sjme_nvm_task_taskNewConfig* initConfig;
+
+	/** The identity hashcode generator. */
+	sjme_random idHash;
 };
 
 struct sjme_nvm_threadBase
