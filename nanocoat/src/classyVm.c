@@ -20,6 +20,7 @@
 /** The amount the class list grows by. */
 #define SJME_VM_CLASS_GROW_LEN 32
 
+#if 0
 static sjme_errorCode sjme_nvm_vmClass_bindInterface(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jclass inClass,
@@ -111,6 +112,7 @@ fail_allocList:
 	sjme_thread_spinLockRelease(&interfaceBind->common.lock, NULL);
 	return sjme_error_default(error);
 }
+#endif
 
 static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 	sjme_attrInNotNull sjme_nvm inState,
@@ -123,7 +125,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 	sjme_errorCode error;
 	sjme_jfieldID id;
 	sjme_list_sjme_jfieldID* result;
-	sjme_jint at, count, i, n;
+	sjme_jint at, count, i, n, typeMul;
 	sjme_nvm_class_fieldInfo field;
 	sjme_list_sjme_nvm_class_fieldInfo* fields;
 	sjme_jboolean isStatic;
@@ -193,12 +195,17 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 		id->member.inClass = inClass;
 		id->member.name = field->name;
 		id->member.type = field->type;
+
+		/* Objects get a wider type multiplier for their check value. */
+		extendedType = field->extendedType;
+		typeMul = sjme_nvm_typeMul[extendedType];
+		if (extendedType == SJME_JAVA_TYPE_ID_OBJECT)
+			typeMul = sizeof(sjme_nvm_fieldObject);
 		
 		/* Determine the pointer offset for this field into the object */
-		extendedType = field->extendedType;
 		id->pointerOffset = placements->offset[extendedType] +
 			offsetof(sjme_nvm_fieldValues, values) +
-			((sjme_nvm_typeMul[extendedType]) * (typedOffset[extendedType]++));
+			((typeMul) * (typedOffset[extendedType]++));
 
 		/* Lookup class this stores if an object, but do not initialize. */
 		if (id->javaType == SJME_JAVA_TYPE_ID_OBJECT)
@@ -1041,7 +1048,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_list_sjme_jmethodID* methodBinds;
 	sjme_list_sjme_jfieldID* fieldBinds;
 	sjme_jint allocSize;
-	sjme_javaTypeId javaType;
+	sjme_extendedTypeId extendedType;
 	sjme_jmethodID staticInit;
 	sjme_nvm_frame ignoreFrame;
 	
@@ -1212,20 +1219,20 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	
 		/* Determine offset for fields into the object, along with how much */
 		/* space they should take up. */
-		for (javaType = 0; javaType < SJME_NUM_JAVA_TYPE_IDS; javaType++)
+		for (extendedType = 0; extendedType < SJME_NUM_EXTENDED_JAVA_TYPE_IDS;
+			extendedType++)
 		{
 			/* Make sure the offset is fully aligned first. */
 			allocSize = sjme_util_alignTo(allocSize,
 				SJME_POINTER_BYTES);
 
 			/* Place the offset here. */
-			inClass->fields[i].offset[javaType] = allocSize;
+			inClass->fields[i].offset[extendedType] = allocSize;
 
 			/* Grow the allocation size by what is needed to store */
 			/* the fields. */
-			allocSize += sjme_nvm_fieldValueSize(javaType,
-				inClass->info->fieldCount[i]
-					[javaType]);
+			allocSize += sjme_nvm_fieldValueSize(extendedType,
+				inClass->info->fieldCount[i][extendedType]);
 		}
 
 		/* Store rounded up allocation size, always to the pointer. */

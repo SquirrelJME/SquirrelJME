@@ -313,4 +313,4 @@ def sjme_printer_types(value):
         return sjme_jlist(value)
     return None
 
-gdb.pretty_printers.append(sjme_printer_types)
+#gdb.pretty_printers.append(sjme_printer_types)

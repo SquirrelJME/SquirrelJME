@@ -62,7 +62,7 @@ typedef union sjme_nvm_rawArrayValues
 	/** Object reference values. */
 	sjme_jobject l[sjme_flexibleArrayCountUnion];
 } sjme_nvm_rawArrayValues;
-
+	
 /**
  * Raw field values.
  *
@@ -83,7 +83,7 @@ typedef union sjme_nvm_rawFieldValues
 	sjme_jdouble d[sjme_flexibleArrayCountUnion];
 		
 	/** Object reference values. */
-	sjme_jobject l[sjme_flexibleArrayCountUnion];
+	sjme_nvm_fieldObject l[sjme_flexibleArrayCountUnion];
 } sjme_nvm_rawFieldValues;
 
 /**
@@ -385,13 +385,23 @@ struct sjme_jweakBase
  * Returns the size for @c sjme_nvm_fieldValues for the given number of
  * values.
  * 
- * @param javaType The Java type to use.
+ * @param extendedType The Java type to use.
  * @param n The number of values.
  * @return The size of the structure.
  */
 sjme_jint sjme_nvm_fieldValueSize(
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
+	sjme_attrInValue sjme_extendedTypeId extendedType,
 	sjme_attrInPositiveNonZero sjme_jint n);
+
+/**
+ * Calculates the identity hash for the given pointer.
+ * 
+ * @param pointer The pointer to calculate for.
+ * @return The resultant identity hash.
+ * @since 2025/07/18
+ */
+sjme_jint sjme_nvm_instance_calcIdentityHash(
+	sjme_attrInValue void* pointer);
 	
 /**
  * Checks if the given object can be counted down if the old value changes.
@@ -423,7 +433,7 @@ sjme_errorCode sjme_nvm_instance_countUp(
  * @return The pointer to the field data directly.
  * @since 2025/06/21
  */
-sjme_jvalue* sjme_nvm_instance_fieldAccessor(
+sjme_nvm_rawFieldValue* sjme_nvm_instance_fieldAccessor(
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_jfieldID field);
 

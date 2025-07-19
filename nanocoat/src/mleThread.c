@@ -38,9 +38,17 @@ SJME_NVM_MLE_FUNCTION_DECL(currentJavaThread)
 
 SJME_NVM_MLE_FUNCTION_DECL(currentVMThread)
 {
+	sjme_errorCode error;
+	
 	/* Native threads are VM threads. */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
 	argR->v.l = (sjme_jobject)SJME_F_T(inFrame);
+
+	/* We want to count up the thread, so it does not get GCed! */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(argR->v.l)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 

@@ -521,11 +521,20 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	result->inTask = inTask;
 	result->threadId = 1 + sjme_atomic_sjme_jint_getAdd(
 		&inState->nextThreadId, 1);
+	result->object.identityHash =
+		sjme_nvm_instance_calcIdentityHash(result);
 	result->stack.storage = storage;
 	result->stack.storageLen = SJME_NVM_THREAD_STACK_SIZE;
 	
 	/* All new threads are considered initially sleeping. */
 	result->status = SJME_NVM_THREAD_STATUS_SLEEPING;
+	
+	/* Soft load the thread class. */
+	if (sjme_error_is(error = sjme_nvm_task_commonClass(result,
+		SJME_NVM_TASK_COMMON_CLASS_THREAD, &inTask->object.isClass,
+		SJME_JNI_FALSE)) ||
+		inTask->object.isClass == NULL)
+		goto fail_loadThreadClass;
 	
 	/* All threads have an initial frame within java.lang.__Start__. */
 	firstFrame = NULL;
@@ -569,7 +578,8 @@ fail_allocResult:
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 fail_allocStorage:
 	sjme_alloc_free(storage);
-	
+
+fail_loadThreadClass:
 	return sjme_error_default(error);
 }
 
@@ -681,6 +691,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 		goto fail_allocStringInstance;
 
 	/* Set string properties. */
+	result->object.identityHash = hash;
 	result->intern.hashCode = hash;
 	result->intern.length = length;
 	

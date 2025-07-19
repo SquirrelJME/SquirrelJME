@@ -395,6 +395,9 @@ typedef enum sjme_nvm_task_commonClassId
 	/** @c java.lang.String . */
 	SJME_NVM_TASK_COMMON_CLASS_STRING,
 
+	/** @c java.lang.Thread . */
+	SJME_NVM_TASK_COMMON_CLASS_THREAD,
+
 	/** @c java.lang.Throwable . */
 	SJME_NVM_TASK_COMMON_CLASS_THROWABLE,
 
@@ -604,14 +607,15 @@ sjme_errorCode sjme_nvm_task_bracketJarPackage(
  * @param contextThread The context thread.
  * @param commonId The common class ID.
  * @param outClass The resultant class.
+ * @param doInit Initialize the target class?
  * @return Any resultant error, if any.
  * @since 2025/03/20
  */
 sjme_errorCode sjme_nvm_task_commonClass(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInRange(0, SJME_NVM_TASK_NUM_COMMON_CLASS)
-		sjme_nvm_task_commonClassId commonId,
-	sjme_attrOutNotNull sjme_jclass* outClass);
+	sjme_attrInValue sjme_nvm_task_commonClassId commonId,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrInValue sjme_jboolean doInit);
 
 /**
  * Loads a cached common class.

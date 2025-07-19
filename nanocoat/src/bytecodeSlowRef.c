@@ -1122,9 +1122,12 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	}
 	
 	/* Read/write promotion. */
+	/* Note that the class referred to by the field is used directly as */
+	/* static fields can be "inherited" by subclasses. So we want to use */
+	/* the class this field truly exists in. */
 	if (sjme_error_is(error = sjme_nvm_instance_fieldAccessStack(
 		SJME_F_T(inFrame),
-		fieldId, SJME_AS_JOBJECT(desireClass), &value, isPut)))
+		fieldId, SJME_AS_JOBJECT(fieldId->member.inClass), &value, isPut)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Push result to the stack. */

@@ -747,6 +747,11 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 			/* Load into temporary as we may be erasing the value here. */
 			tempObject = treadValue->l;
 
+			/* Object is gone? */
+			if (tempObject != NULL && (tempObject->isClass == NULL))
+				return sjme_error_vmError(inFrame,
+					SJME_ERROR_OBJECT_GONE);
+			
 			/* Object check mismatch? */
 			if ((tempObject == NULL && *treadCheck != 0) ||
 				(tempObject != NULL &&

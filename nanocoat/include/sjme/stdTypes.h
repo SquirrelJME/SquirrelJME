@@ -792,6 +792,38 @@ typedef sjme_charSeqStatic* sjme_charSeq;
 #define SJME_TYPEOF_IS_POINTER_sjme_charSeq SJME_TYPEOF_IS_POINTER_sjme_jobject
 
 /**
+ * Generic value union, primitives only without @c sjme_jobject .
+ *
+ * @since 2025/07/18
+ */
+typedef union sjme_jvaluePrimitive
+{
+	/** Boolean. */
+	sjme_jboolean z;
+
+	/** Byte. */
+	sjme_jbyte b;
+
+	/** Character. */
+	sjme_jchar c;
+
+	/** Short. */
+	sjme_jshort s;
+
+	/** Integer. */
+	sjme_jint i;
+
+	/** Long. */
+	sjme_jlong j;
+
+	/** Float. */
+	sjme_jfloat f;
+
+	/** Double. */
+	sjme_jdouble d;
+} sjme_jvaluePrimitive;
+
+/**
  * Generic value union.
  *
  * @since 2024/01/05

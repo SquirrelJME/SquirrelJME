@@ -12,27 +12,34 @@
 #include "sjme/nvm/task.h"
 
 sjme_jint sjme_nvm_fieldValueSize(
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
+	sjme_attrInValue sjme_extendedTypeId extendedType,
 	sjme_attrInPositiveNonZero sjme_jint n)
 {
 	sjme_jint baseSize;
 
-	if (javaType < 0 || javaType >= SJME_NUM_JAVA_TYPE_IDS ||
-		n <= 0)
+	if (extendedType < 0 || extendedType >= SJME_NUM_EXTENDED_JAVA_TYPE_IDS ||
+		n < 0)
 		return -1;
-
-	if (javaType == SJME_JAVA_TYPE_ID_OBJECT)
-		baseSize = (SJME_CONFIG_HAS_POINTER >> 3);
-	else if (javaType == SJME_JAVA_TYPE_ID_INTEGER ||
-		javaType == SJME_JAVA_TYPE_ID_FLOAT)
-		baseSize = 4;
+	
+	if (extendedType == SJME_JAVA_TYPE_ID_OBJECT)
+		baseSize = sizeof(sjme_nvm_fieldObject);
 	else
-		baseSize = 8;
+		baseSize = sjme_nvm_typeMul[extendedType];
 	
 	/* Base size is the offset of where values start */
 	return (baseSize * n) +
 		offsetof(sjme_nvm_fieldValues, values) +
 		offsetof(sjme_nvm_rawFieldValues, l);
+}
+
+sjme_jint sjme_nvm_instance_calcIdentityHash(
+	sjme_attrInValue void* pointer)
+{
+	#if defined(SJME_CONFIG_HAS_POINTER64)
+	return (((sjme_intPointer)pointer) ^ ((((sjme_intPointer)pointer)) >> 31));
+#else
+	return (sjme_intPointer)pointer;
+#endif
 }
 
 sjme_errorCode sjme_nvm_instance_countDown(
@@ -108,12 +115,12 @@ sjme_errorCode sjme_nvm_instance_countUp(
 	return SJME_ERROR_NONE;
 }
 
-sjme_jvalue* sjme_nvm_instance_fieldAccessor(
+sjme_nvm_rawFieldValue* sjme_nvm_instance_fieldAccessor(
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_jfieldID field)
 {
 #define NUM_VOIDLESS 4
-	sjme_threadLocal(sjme_jvalue, voidless[NUM_VOIDLESS]);
+	sjme_threadLocal(sjme_nvm_rawFieldValue, voidless[NUM_VOIDLESS]);
 	sjme_threadLocal(sjme_jint, voidlessNext);
 
 	/* If neither are valid, treat this as a bad memory read/write. */
@@ -125,6 +132,10 @@ sjme_jvalue* sjme_nvm_instance_fieldAccessor(
 	{
 		/* Cannot read/write to non-classes. */
 		if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_CLASS_INSTANCE))
+			goto fail_voidless;
+
+		/* Wrong class? */
+		if (instance != (sjme_jobject)field->member.inClass)
 			goto fail_voidless;
 
 		/* Values is based on the static chunk. */
@@ -168,7 +179,7 @@ sjme_errorCode sjme_nvm_instance_initFields(
 	sjme_jint i, n;
 	sjme_jfieldID field;
 	sjme_nvm_jfieldAccessFunc accessor;
-	sjme_jvalue* direct;
+	sjme_nvm_rawFieldValue* direct;
 	sjme_nvm_class_fieldConstVal* constVal;
 
 	if (contextThread == NULL || instance == NULL || chunk == NULL ||
@@ -195,19 +206,24 @@ sjme_errorCode sjme_nvm_instance_initFields(
 			return SJME_ERROR_FIELD_NOT_DIRECT;
 
 		/* If a string, it needs to be initialized as a string object. */
-		if (constVal->value.string != NULL)
+		if (constVal->value.string != NULL &&
+			field->info->javaType == SJME_JAVA_TYPE_ID_OBJECT)
 		{
-			direct->l = NULL;
+			/* Initialize. */
+			direct->l.p = NULL;
 			if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
 				contextThread, SJME_AS_JSTRINGP(&direct->l),
-				constVal->value.string)) || direct->l == NULL)
+				constVal->value.string)) || direct->l.p == NULL)
 				return sjme_error_vmError(contextThread,
 					sjme_error_defaultOr(error,
 						SJME_ERROR_STATIC_STRING_INIT));
+
+			/* Set check value. */
+			direct->l.check = direct->l.p->identityHash;
 		}
 
 		/* Copy value directly is primitive. */
-		else
+		else if (field->info->javaType != SJME_JAVA_TYPE_ID_OBJECT)
 			memmove(direct, &constVal->value.java,
 				sjme_nvm_typeMul[field->info->javaType]);
 	}
@@ -253,7 +269,7 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 	sjme_attrInValue sjme_jboolean isPut)
 {
 	sjme_errorCode error;
-	sjme_jvalue* direct;
+	sjme_nvm_rawFieldValue* direct;
 	sjme_nvm_jfieldAccessFunc accessor;
 
 	if (contextThread == NULL || fieldId == NULL || stackType == NULL)
@@ -277,24 +293,44 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 	if (direct == NULL)
 		return SJME_ERROR_FIELD_NOT_DIRECT;
 
-	/* No promotion/demotion needed. */
-	if (fieldId->extendedType < SJME_NUM_JAVA_TYPE_IDS)
+	/* Handling an object. */
+	if (fieldId->javaType == SJME_JAVA_TYPE_ID_OBJECT)
 	{
+		/* Did the object suddenly change in the field? */
+		if (direct->l.check != (direct->l.p == NULL ? 0 :
+			direct->l.p->identityHash))
+			return sjme_error_vmError(contextThread,
+				SJME_ERROR_OBJECT_MISMATCHED);
+		
 		if (isPut)
 		{
-			/* Count down the old value? */
-			if (fieldId->javaType == SJME_JAVA_TYPE_ID_OBJECT)
-				if (sjme_error_is(error = sjme_nvm_instance_countDown(
-					&direct->l,
-					stackType->v.l)))
-						return sjme_error_default(error);
+			/* Garbage collect the old value, if applicable. */
+			if (sjme_error_is(error = sjme_nvm_instance_countDown(
+				&direct->l.p,
+				stackType->v.l)))
+				return sjme_error_default(error);
 			
 			/* Put in the new value. */
-			memmove(direct, &stackType->v,
-				sjme_nvm_typeMul[fieldId->extendedType]);
+			direct->l.p = stackType->v.l;
+
+			/* Set new check value. */
+			if (stackType->v.l == NULL)
+				direct->l.check = 0;
+			else
+				direct->l.check = stackType->v.l->identityHash;
 		}
 		else
-			memmove(&stackType->v, direct,
+			stackType->v.l = direct->l.p;
+	}
+	
+	/* No promotion/demotion needed. */
+	else if (fieldId->extendedType < SJME_NUM_JAVA_TYPE_IDS)
+	{
+		if (isPut)
+			memmove(&direct->v, &stackType->v,
+				sjme_nvm_typeMul[fieldId->extendedType]);
+		else
+			memmove(&stackType->v, &direct->v,
 				sjme_nvm_typeMul[fieldId->extendedType]);
 	}
 
@@ -307,20 +343,20 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 				/* Force to boolean based value. */
 			case SJME_BASIC_TYPE_ID_BOOLEAN:
 				if (isPut)
-					direct->b = (stackType->v.i ? 1 : 0);
+					direct->v.b = (stackType->v.i ? 1 : 0);
 				else
-					stackType->v.i = (direct->b ? 1 : 0);
+					stackType->v.i = (direct->v.b ? 1 : 0);
 				break;
 
 				/* Expand to byte. */
 			case SJME_BASIC_TYPE_ID_BYTE:
 			case SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE:
 				if (isPut)
-					direct->b = (sjme_jbyte)stackType->v.i;
+					direct->v.b = (sjme_jbyte)stackType->v.i;
 				else
 				{
-					stackType->v.i = direct->b;
-					if ((direct->b & INT8_C(0x80)) != 0)
+					stackType->v.i = direct->v.b;
+					if ((direct->v.b & INT8_C(0x80)) != 0)
 						stackType->v.i |= INT32_C(0xFFFFFF00);
 				}
 				break;
@@ -328,11 +364,11 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 				/* Expand to short. */
 			case SJME_BASIC_TYPE_ID_SHORT:
 				if (isPut)
-					direct->s = (sjme_jshort)stackType->v.i;
+					direct->v.s = (sjme_jshort)stackType->v.i;
 				else
 				{
-					stackType->v.i = direct->s;
-					if ((direct->s & INT16_C(0x8000)) != 0)
+					stackType->v.i = direct->v.s;
+					if ((direct->v.s & INT16_C(0x8000)) != 0)
 						stackType->v.i |= INT32_C(0xFFFF0000);
 				}
 				break;
@@ -340,9 +376,10 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 				/* Limit to char. */
 			case SJME_BASIC_TYPE_ID_CHARACTER:
 				if (isPut)
-					direct->c = (sjme_jchar)stackType->v.i;
+					direct->v.c = (sjme_jchar)stackType->v.i;
 				else
-					stackType->v.i = (direct->c & INT32_C(0xFFFF));
+					stackType->v.i = ((sjme_jint)direct->v.c) &
+						INT32_C(0xFFFF);
 				break;
 
 			default:
@@ -526,7 +563,7 @@ sjme_errorCode sjme_nvm_instance_objectArrayNewT(
 	/* Load the component class. */
 	componentClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_commonClass(
-		contextThread, commonId, &componentClass)) || componentClass == NULL)
+		contextThread, commonId, &componentClass, SJME_JNI_TRUE)) || componentClass == NULL)
 		return sjme_error_vmError(contextThread, error);
 
 	/* Forward initialize. */
@@ -543,7 +580,6 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 {
 	sjme_errorCode error;
 	sjme_jobject result;
-	sjme_javaTypeId javaType;
 	
 	if (contextThread == NULL || outObject == NULL || inClass == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -604,12 +640,7 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 	
 	/* Setup object. */
 	result->isClass = inClass;
-#if defined(SJME_CONFIG_HAS_POINTER64)
-	result->identityHash = (sjme_jint)(((sjme_intPointer)result) ^
-		((((sjme_intPointer)result)) >> 31));
-#else
-	result->identityHash = ((sjme_intPointer)result);
-#endif
+	result->identityHash = sjme_nvm_instance_calcIdentityHash(result);
 	
 	/* Success! */
 	*outObject = result;
@@ -628,8 +659,6 @@ sjme_errorCode sjme_nvm_instance_objectNewBracket(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Determine size and type. */
-	commonId = SJME_NVM_TASK_NUM_COMMON_CLASS;
-	allocSize = -1;
 	switch (inType)
 	{
 		case SJME_NVM_STRUCT_BRACKET_JAR_PACKAGE_INSTANCE:

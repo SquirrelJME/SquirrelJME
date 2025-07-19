@@ -192,9 +192,9 @@ fail_growList:
 
 sjme_errorCode sjme_nvm_task_commonClass(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInRange(0, SJME_NVM_TASK_NUM_COMMON_CLASS)
-		sjme_nvm_task_commonClassId commonId,
-	sjme_attrOutNotNull sjme_jclass* outClass)
+	sjme_attrInValue sjme_nvm_task_commonClassId commonId,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrInValue sjme_jboolean doInit)
 {
 	sjme_errorCode error;
 	sjme_lpcstr commonName;
@@ -287,6 +287,10 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		case SJME_NVM_TASK_COMMON_CLASS_STRING:
 			commonName = "Ljava/lang/String;";
 			break;
+
+		case SJME_NVM_TASK_COMMON_CLASS_THREAD:
+			commonName = "Ljava/lang/Thread;";
+			break;
 		
 		case SJME_NVM_TASK_COMMON_CLASS_THROWABLE:
 			commonName = "Ljava/lang/Throwable;";
@@ -304,7 +308,7 @@ sjme_errorCode sjme_nvm_task_commonClass(
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFU(
 		SJME_F_CL(contextThread), &result, contextThread,
-		commonName, SJME_JNI_TRUE)) || result == NULL)
+		commonName, doInit)) || result == NULL)
 		return sjme_error_vmError(contextThread, error);
 
 	/* Cache for later. */
@@ -334,7 +338,7 @@ sjme_jclass sjme_nvm_task_commonClassR(
 	/* Load the class. */
 	result = NULL;
 	if (sjme_error_is(sjme_nvm_task_commonClass(contextThread, commonId,
-		&result)) || result == NULL)
+		&result, SJME_JNI_TRUE)) || result == NULL)
 		return NULL;
 
 	/* Success! */

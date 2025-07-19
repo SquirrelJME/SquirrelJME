@@ -131,13 +131,41 @@ struct sjme_jmethodIDBase
 };
 
 /**
+ * Stores field object values.
+ *
+ * @since 2025/07/18
+ */
+typedef struct sjme_nvm_fieldObject
+{
+	/** The check for the object. */
+	sjme_jint check;
+	
+	/** The pointer to the object. */
+	sjme_alignPointer sjme_jobject p;
+} sjme_nvm_fieldObject;
+
+/**
+ * Raw field value.
+ *
+ * @since 2025/07/18
+ */
+typedef union sjme_nvm_rawFieldValue
+{
+	/** Normal non-object values. */
+	sjme_jvaluePrimitive v;
+		
+	/** Object reference values. */
+	sjme_nvm_fieldObject l;
+} sjme_nvm_rawFieldValue;
+
+/**
  * Returns the direct pointer to the field data pointer.
  *
  * @param instance The object to access with.
  * @param field The field to access for.
  * @since 2025/06/21
  */
-typedef sjme_jvalue* (*sjme_nvm_jfieldAccessFunc)(
+typedef sjme_nvm_rawFieldValue* (*sjme_nvm_jfieldAccessFunc)(
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_jfieldID field);
 

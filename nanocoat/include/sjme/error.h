@@ -534,9 +534,12 @@ typedef enum sjme_errorCode
 
 	/** An unexpected object was matched, it should be another object. */
 	SJME_ERROR_OBJECT_MISMATCHED = -164,
+
+	/** An object was garbage collected when it should not have been. */
+	SJME_ERROR_OBJECT_GONE = -165,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -165,
+	SJME_NUM_ERROR_CODES = -166,
 } sjme_errorCode;
 
 /**
