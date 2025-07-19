@@ -531,9 +531,9 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	
 	/* Soft load the thread class. */
 	if (sjme_error_is(error = sjme_nvm_task_commonClass(result,
-		SJME_NVM_TASK_COMMON_CLASS_THREAD, &inTask->object.isClass,
+		SJME_NVM_TASK_COMMON_CLASS_THREAD, &result->object.isClass,
 		SJME_JNI_FALSE)) ||
-		inTask->object.isClass == NULL)
+		result->object.isClass == NULL)
 		goto fail_loadThreadClass;
 	
 	/* All threads have an initial frame within java.lang.__Start__. */
