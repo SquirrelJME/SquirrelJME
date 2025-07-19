@@ -205,6 +205,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	result->inClass = inMethod->member.inClass;
 	result->id = sjme_atomic_sjme_jint_getAdd(
 		&SJME_T_K(inThread)->nextFrameId, 1) + 1;
+	result->index = inThread->numFrames;
 	result->inMethod = inMethod;
 	result->inState = SJME_F_S(inThread);
 	result->inThread = inThread;
@@ -548,6 +549,11 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	
 	/* Store thread for future referencing. */
 	inTask->threads->elements[freeSlot] = result;
+	
+	/* We want to count up the thread, so it does not get GCed! */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(
+		SJME_AS_JOBJECT(result))))
+		return sjme_error_vmError(inTask, error);
 
 	/* Increase task thread count, for both all and normal. Normal gets */
 	/* an add because a thread gets daemon being set later. */

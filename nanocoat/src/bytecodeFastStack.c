@@ -89,16 +89,6 @@ SJME_NVM_BYTECODE_FAST(PopTwoNarrow)
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		SJME_STACK_TYPE_NARROW, &b, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
-
-	/* If an object, count it down. */
-	if (a.t == SJME_JAVA_TYPE_ID_OBJECT)
-		if (sjme_error_is(error = sjme_nvm_instance_countDown(
-			&a.v.l, NULL)))
-			return sjme_error_vmError(inFrame, error);
-	if (b.t == SJME_JAVA_TYPE_ID_OBJECT)
-		if (sjme_error_is(error = sjme_nvm_instance_countDown(
-			&b.v.l, NULL)))
-			return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
 }

@@ -53,80 +53,91 @@ sjme_jint sjme_nvm_instance_calcIdentityHash(
 #endif
 }
 
-sjme_errorCode sjme_nvm_instance_countDownR(
-	sjme_attrInNotNull sjme_jobject* oldP,
-	sjme_attrInNotNull sjme_jobject newV
+sjme_errorCode sjme_nvm_instance_countBalanceR(
+	sjme_attrInNullable sjme_jobject oldV,
+	sjme_attrInNullable sjme_jobject newV
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
-	sjme_jobject oldObject;
-	sjme_jboolean validObject, noSelfGc;
+#if defined(SJME_CONFIG_DEBUG)
 	sjme_alloc_weak weak;
+#endif
 
-	if (oldP == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
+	/* If these are the same, do nothing. */
+	if (oldV == newV)
+	{
+		/* Must be a valid object. */
+		if (oldV != NULL)
+			if (!sjme_nvm_isAR(oldV,
+				SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
+				return SJME_ERROR_INVALID_OBJECT;
+		
+#if defined(SJME_CONFIG_DEBUG)
+		if (oldV != NULL)
+		{
+			/* Recover the weak reference to get the count. */
+			if (sjme_error_is(error = sjme_alloc_weakRefGet(oldV, &weak)))
+				return sjme_error_default(error);
+				
+			/* Debug. */
+			sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
+				"GC LV~0: %p %d == %d",
+				oldV, sjme_atomic_sjme_jint_get(&weak->count),
+				sjme_atomic_sjme_jint_get(&weak->count));
+		}
+#endif
 
-	/* Recover the weak reference for the old object. */
-	oldObject = *oldP;
+		/* Nothing to be done! */
+		return SJME_ERROR_NONE;
+	}
+
+	/* Count down old value? */
+	if (oldV != NULL)
+		if (sjme_error_is(error = sjme_nvm_instance_countDownR(oldV
+			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)))
+			return sjme_error_default(error);
+
+	/* Count up new value? */
+	if (newV != NULL)
+		if (sjme_error_is(error = sjme_nvm_instance_countUpR(oldV
+			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)))
+			return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_instance_countDownR(
+	sjme_attrInNotNull sjme_jobject object
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
+{
+	sjme_alloc_weak weak;
+	sjme_errorCode error;
+	
+	if (object == NULL)
+		return SJME_ERROR_NULL_STACK_POINTER;
+
+	/* Must be a valid object type. */
+	if (!sjme_nvm_isAR(object, SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
+		return SJME_ERROR_INVALID_OBJECT;
+	
+	/* This must be a valid weak as well! */
 	weak = NULL;
-	if (oldObject != NULL)
-		if (sjme_error_is(error = sjme_alloc_weakRefGet(oldObject, &weak)))
-		{
-			if (error != SJME_ERROR_NOT_WEAK_REFERENCE)
-				return sjme_error_default(error);
-		}
-	
-	/* If the old is the same as new, then do not count if the count would */
-	/* result in the object being GCed before it was set. */
-	noSelfGc = SJME_JNI_FALSE;
-	if (oldObject != NULL && newV != NULL && oldObject == newV)
-	{
-		/* Only consider valid weak reference. */
-		if (sjme_error_is(error = sjme_alloc_weakRefGet(oldObject, &weak)))
-		{
-			if (error != SJME_ERROR_NOT_WEAK_REFERENCE)
-				return sjme_error_default(error);
-		}
-
-		/* Do not self GC if it would end up freeing the object before it */
-		/* could be set. */
-		noSelfGc = (sjme_atomic_sjme_jint_get(&weak->count) <= 1);
-	}
-	
-	/* Count down if the old object exists, or in the case as above. */
-	if (oldObject != NULL && !noSelfGc)
-	{
-		/* Is this object actually valid? */
-		validObject = SJME_JNI_FALSE;
-		if (sjme_error_is(error = sjme_nvm_isA(oldObject,
-			SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE,
-			&validObject)))
-			return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_alloc_weakRefGet(object, &weak)))
+		return sjme_error_default(error);
 
 #if defined(SJME_CONFIG_DEBUG)
-		/* Debug. */
-		sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
-			"GC DN-1: %p %d -> %d",
-			oldObject, sjme_atomic_sjme_jint_get(&weak->count) + 1,
-			sjme_atomic_sjme_jint_get(&weak->count));
+	/* Debug. */
+	sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
+		"GC DN-1: %p %d -> %d",
+		object, sjme_atomic_sjme_jint_get(&weak->count) + 1,
+		sjme_atomic_sjme_jint_get(&weak->count));
 #endif
 
-		/* Count it down. */
-		if (sjme_error_is(error = sjme_alloc_weakUnRef(oldObject)))
-			return sjme_error_default(error);
-	}
-
-	/* Not self garbage collecting. */
-	else if (noSelfGc)
-	{
-#if defined(SJME_CONFIG_DEBUG)
-		/* Debug. */
-		sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
-			"GC LV~0: %p %d == %d",
-			oldObject, sjme_atomic_sjme_jint_get(&weak->count),
-			sjme_atomic_sjme_jint_get(&weak->count));
-#endif
-	}
+	/* Reduce the count on this. */
+	if (sjme_error_is(error = sjme_alloc_weakUnRef(object)) ||
+		weak == NULL)
+		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -358,10 +369,9 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 		
 		if (isPut)
 		{
-			/* Garbage collect the old value, if applicable. */
-			if (sjme_error_is(error = sjme_nvm_instance_countDown(
-				&direct->l.p,
-				stackType->v.l)))
+			/* Balance garbage count. */
+			if (sjme_error_is(error = sjme_nvm_instance_countBalance(
+				direct->l.p, stackType->v.l)))
 				return sjme_error_default(error);
 			
 			/* Put in the new value. */

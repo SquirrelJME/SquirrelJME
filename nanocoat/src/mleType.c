@@ -28,10 +28,6 @@ SJME_NVM_MLE_FUNCTION_DECL(binaryName)
 		SJME_F_T(inFrame), SJME_AS_JSTRINGP(&argR->v.l),
 		inType->info->name) || argR->v.l == NULL))
 		return sjme_error_vmError(inFrame, error);
-
-	/* Count the string. */
-	if (sjme_error_is(error = sjme_nvm_instance_countUp(argR->v.l)))
-		return sjme_error_vmError(inFrame, error);
 	
 	/* Return the given string. */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
@@ -53,10 +49,6 @@ SJME_NVM_MLE_FUNCTION_DECL(binaryPackageName)
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
 		SJME_F_T(inFrame), SJME_AS_JSTRINGP(&argR->v.l),
 		inType->info->inPackage) || argR->v.l == NULL))
-		return sjme_error_vmError(inFrame, error);
-
-	/* Count the string. */
-	if (sjme_error_is(error = sjme_nvm_instance_countUp(argR->v.l)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Return the given string. */
@@ -201,10 +193,6 @@ SJME_NVM_MLE_FUNCTION_DECL(runtimeName)
 		(inType->info->runtimeName != NULL ?
 			inType->info->runtimeName : inType->info->name))) ||
 		argR->v.l == NULL)
-		return sjme_error_vmError(inFrame, error);
-
-	/* Count up. */
-	if (sjme_error_is(error = sjme_nvm_instance_countUp(argR->v.l)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Return the given string. */

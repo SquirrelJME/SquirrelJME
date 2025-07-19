@@ -184,14 +184,8 @@ SJME_NVM_BYTECODE_SLOW(Pop)
 	/* Pop value and discard. */
 	memset(&top, 0, sizeof(top));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_NARROW, &top, SJME_JNI_TRUE)))
+		SJME_STACK_TYPE_NARROW, &top, SJME_JNI_FALSE)))
 		return sjme_error_vmError(inFrame, error);
-
-	/* If an object, count it down. */
-	if (top.t == SJME_JAVA_TYPE_ID_OBJECT)
-		if (sjme_error_is(error = sjme_nvm_instance_countDown(
-			&top.v.l, NULL)))
-			return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;

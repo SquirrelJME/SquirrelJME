@@ -276,6 +276,9 @@ struct sjme_nvm_frameBase
 	/** Phantom tracepoint reference, for recycling. */
 	sjme_atomic_sjme_jobject phantomTracePoint;
 
+	/** The index of this frame. */
+	sjme_jint index;
+
 	/** Frame state flags. */
 	sjme_packed struct
 	{

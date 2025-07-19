@@ -406,16 +406,17 @@ sjme_jint sjme_nvm_instance_calcIdentityHash(
 	sjme_attrInValue void* pointer);
 	
 /**
- * Checks if the given object can be counted down if the old value changes.
+ * Balances the counting between @c oldV and @c newV , so that if the values
+ * are different they are counted down and up accordingly.
  * 
- * @param oldP The old pointer value.
+ * @param oldV The old value.
  * @param newV The new value.
  * @return Any resultant error, if any.
- * @since 2025/02/24
+ * @since 2025/07/19
  */
-sjme_errorCode sjme_nvm_instance_countDownR(
-	sjme_attrInNotNull sjme_jobject* oldP,
-	sjme_attrInNotNull sjme_jobject newV
+sjme_errorCode sjme_nvm_instance_countBalanceR(
+	sjme_attrInNullable sjme_jobject oldV,
+	sjme_attrInNullable sjme_jobject newV
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 	
 /**
@@ -426,8 +427,30 @@ sjme_errorCode sjme_nvm_instance_countDownR(
  * @return Any resultant error, if any.
  * @since 2025/02/24
  */
-#define sjme_nvm_instance_countDown(oldP, newV) \
-	(sjme_nvm_instance_countDownR((oldP), (newV) \
+#define sjme_nvm_instance_countBalance(oldP, newV) \
+	(sjme_nvm_instance_countBalanceR((oldP), (newV) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
+
+/**
+ * Counts the given object down.
+ * 
+ * @param object The object to count down.
+ * @return Any resultant error, if any.
+ * @since 2025/07/19
+ */
+sjme_errorCode sjme_nvm_instance_countDownR(
+	sjme_attrInNotNull sjme_jobject object
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+	
+/**
+ * Counts the given object down.
+ * 
+ * @param object The object to count down.
+ * @return Any resultant error, if any.
+ * @since 2025/07/19
+ */
+#define sjme_nvm_instance_countDown(object) \
+	(sjme_nvm_instance_countDownR((object) \
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**

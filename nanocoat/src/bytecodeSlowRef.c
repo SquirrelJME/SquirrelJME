@@ -169,19 +169,9 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 
 		/* Is there a return value being pushed to the stack? */
 		if (mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
-		{
-			/* Count up if an object. */
-			if (mleArgR.t == SJME_JAVA_TYPE_ID_OBJECT &&
-				mleArgR.v.l != NULL)
-				if (sjme_error_is(error = sjme_nvm_instance_countUp(
-					mleArgR.v.l)))
-					return sjme_error_vmError(inFrame, error);
-			
-			/* Push */
 			if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 				inFrame, &mleArgR)))
 				return sjme_error_vmError(inFrame, error);
-		}
 	}
 
 	/* Enter new stack frame for the target method, or at least try. */
@@ -1266,12 +1256,6 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
 			pushValue.v.l = array->e.l[index];
-
-			/* Count up if not null as it is now on the stack. */
-			if (pushValue.v.l != NULL)
-				if (sjme_error_is(error = sjme_nvm_instance_countUp(
-					pushValue.v.l)))
-					return sjme_error_vmError(inFrame, error);
 			break;
 
 		default:
@@ -1374,9 +1358,9 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
-			/* Count down if there is an old value. */
-			if (sjme_error_is(error = sjme_nvm_instance_countDown(
-				&array->e.l[index], popValue.v.l)))
+			/* Balance the reference count. */
+			if (sjme_error_is(error = sjme_nvm_instance_countBalance(
+				array->e.l[index], popValue.v.l)))
 				return sjme_error_vmError(inFrame, error);
 
 			/* Set new value. */

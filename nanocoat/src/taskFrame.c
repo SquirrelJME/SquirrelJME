@@ -144,8 +144,7 @@ sjme_errorCode sjme_nvm_task_frameLocalClear(
 			continue;
 		
 		/* Count down. */
-		if (sjme_error_is(error = sjme_nvm_instance_countDown(
-			&temp.v.l, NULL)))
+		if (sjme_error_is(error = sjme_nvm_instance_countDown(temp.v.l)))
 			return sjme_error_vmError(inFrame, error);
 	}
 
@@ -343,14 +342,8 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 
 		/* Pop it. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			temp.t, &temp, SJME_JNI_TRUE)))
+			temp.t, &temp, SJME_JNI_FALSE)))
 			return sjme_error_vmError(inFrame, error);
-
-		/* If an object, count it down. */
-		if (temp.t == SJME_JAVA_TYPE_ID_OBJECT && temp.v.l != NULL)
-			if (sjme_error_is(error = sjme_nvm_instance_countDown(
-				&temp.v.l, NULL)))
-				return sjme_error_vmError(inFrame, error);
 	}
 
 	/* Success! */
@@ -654,7 +647,7 @@ sjme_errorCode sjme_nvm_task_frameTreadAddr(
 
 	/* Consider garbage collection? */
 	if (outConsiderGc)
-		*outConsiderGc = (typeIndex < perType->front);
+		*outConsiderGc = SJME_JNI_TRUE | (typeIndex < perType->front);
 	
 	/* Operating depends on the type. */
 	switch (typeId)
@@ -753,6 +746,13 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
+#if defined(SJME_CONFIG_DEBUG)
+			/* Debug. */
+			sjme_messageB("%2d@%3d: [%d] %p ->",
+				inFrame->index, inFrame->pc, typeIndex,
+				treadValue->l);
+#endif
+		
 			/* Load into temporary as we may be erasing the value here. */
 			tempObject = treadValue->l;
 
@@ -849,6 +849,13 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
+#if defined(SJME_CONFIG_DEBUG)
+			/* Debug. */
+			sjme_messageB("%2d@%3d: [%d] %p <- %p",
+				inFrame->index, inFrame->pc, typeIndex,
+				treadValue->l, inValue->v.l);
+#endif
+			
 			/* Object check mismatch? */
 			if ((treadValue->l == NULL && *treadCheck != 0) ||
 				(treadValue->l != NULL &&
@@ -857,11 +864,11 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 					SJME_ERROR_OBJECT_MISMATCHED);
 			
 			/* If there is an old value here, count it down. */
-			if (considerGc)
+			if (considerGc && treadValue->l != NULL)
 				if (sjme_error_is(error = sjme_nvm_instance_countDown(
-					&treadValue->l, inValue->v.l)))
+					treadValue->l)))
 					return sjme_error_vmError(inFrame, error);
-
+			
 			/* Set. */
 			treadValue->l = inValue->v.l;
 			if (inValue->v.l == NULL)
