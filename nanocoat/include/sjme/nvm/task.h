@@ -780,13 +780,15 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
  * @param inFrame The frame to pop from.
  * @param typeId The type ID to pop.
  * @param outValue The resultant value.
+ * @param copiedElsewhere Is this value copied elsewhere?
  * @return Any resultant error, if any.
  * @since 2025/02/16
  */
 sjme_errorCode sjme_nvm_task_frameStackPop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue);
+	sjme_attrInNotNull sjme_jvalueTyped* outValue,
+	sjme_attrInValue sjme_jboolean copiedElsewhere);
 
 /**
  * Pops multiple values from the stack and places their values into the given
@@ -866,6 +868,7 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
  * @param typeIndex The index into the tread.
  * @param outAddr The resultant address of the value.
  * @param outCheck The output check value if an object.
+ * @param outConsiderGc
  * @return Any resultant value, if any.
  * @since 2025/03/02
  */
@@ -874,7 +877,8 @@ sjme_errorCode sjme_nvm_task_frameTreadAddr(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrOutNotNull sjme_jvalue** outAddr,
-	sjme_attrOutNotNull sjme_jint** outCheck);
+	sjme_attrOutNotNull sjme_jint** outCheck,
+	sjme_attrOutNullable sjme_jboolean* outConsiderGc);
 
 /**
  * Gets the value of a variable within a frame using the typed index

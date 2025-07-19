@@ -116,6 +116,18 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 			return sjme_error_default(error);
 	}
 
+	/* Not self garbage collecting. */
+	else if (noSelfGc)
+	{
+#if defined(SJME_CONFIG_DEBUG)
+		/* Debug. */
+		sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
+			"GC LV~0: %p %d == %d",
+			oldObject, sjme_atomic_sjme_jint_get(&weak->count),
+			sjme_atomic_sjme_jint_get(&weak->count));
+#endif
+	}
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }

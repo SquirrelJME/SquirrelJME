@@ -40,7 +40,7 @@ SJME_NVM_BYTECODE_SLOW(CastDoubleToX)
 	/* Read input value. */
 	memset(&in, 0, sizeof(in));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_DOUBLE, &in)))
+		SJME_JAVA_TYPE_ID_DOUBLE, &in, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 #if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
@@ -93,7 +93,7 @@ SJME_NVM_BYTECODE_SLOW(CastFloatToX)
 	/* Read input value. */
 	memset(&in, 0, sizeof(in));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_FLOAT, &in)))
+		SJME_JAVA_TYPE_ID_FLOAT, &in, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 #if defined(SJME_CONFIG_HAS_FLOAT_HARD)
@@ -146,7 +146,7 @@ SJME_NVM_BYTECODE_SLOW(CastIntToX)
 	/* Read input value. */
 	memset(&in, 0, sizeof(in));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, &in)))
+		SJME_JAVA_TYPE_ID_INTEGER, &in, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Determine output value. */
@@ -220,7 +220,7 @@ SJME_NVM_BYTECODE_SLOW(CastLongToX)
 	/* Read input value. */
 	memset(&in, 0, sizeof(in));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, &in)))
+		SJME_JAVA_TYPE_ID_LONG, &in, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Determine output value. */
@@ -273,11 +273,11 @@ SJME_NVM_BYTECODE_SLOW(CompareDouble)
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_DOUBLE, &b)))
+		SJME_JAVA_TYPE_ID_DOUBLE, &b, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_DOUBLE, &a)))
+		SJME_JAVA_TYPE_ID_DOUBLE, &a, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Is NaN? */
@@ -315,11 +315,11 @@ SJME_NVM_BYTECODE_SLOW(CompareFloat)
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_FLOAT, &b)))
+		SJME_JAVA_TYPE_ID_FLOAT, &b, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_FLOAT, &a)))
+		SJME_JAVA_TYPE_ID_FLOAT, &a, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Is NaN? */
@@ -357,11 +357,11 @@ SJME_NVM_BYTECODE_SLOW(CompareLong)
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, &b)))
+		SJME_JAVA_TYPE_ID_LONG, &b, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, &a)))
+		SJME_JAVA_TYPE_ID_LONG, &a, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Compare the values. */
@@ -389,11 +389,11 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, &b)))
+		SJME_JAVA_TYPE_ID_INTEGER, &b, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, &a)))
+		SJME_JAVA_TYPE_ID_INTEGER, &a, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Perform the math. */
@@ -446,11 +446,11 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, &b)))
+		SJME_JAVA_TYPE_ID_LONG, &b, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, &a)))
+		SJME_JAVA_TYPE_ID_LONG, &a, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Perform the math. */
@@ -503,11 +503,11 @@ SJME_NVM_BYTECODE_SLOW(MathDouble)
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_DOUBLE, &b)))
+		SJME_JAVA_TYPE_ID_DOUBLE, &b, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_DOUBLE, &a)))
+		SJME_JAVA_TYPE_ID_DOUBLE, &a, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 #if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
@@ -559,11 +559,11 @@ SJME_NVM_BYTECODE_SLOW(MathFloat)
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_FLOAT, &b)))
+		SJME_JAVA_TYPE_ID_FLOAT, &b, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_FLOAT, &a)))
+		SJME_JAVA_TYPE_ID_FLOAT, &a, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 #if defined(SJME_CONFIG_HAS_FLOAT_HARD)
@@ -615,11 +615,11 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, &b)))
+		SJME_JAVA_TYPE_ID_INTEGER, &b, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, &a)))
+		SJME_JAVA_TYPE_ID_INTEGER, &a, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Perform the math. */
@@ -667,11 +667,11 @@ SJME_NVM_BYTECODE_SLOW(MathLong)
 	/* Read in both values. */
 	memset(&b, 0, sizeof(b));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, &b)))
+		SJME_JAVA_TYPE_ID_LONG, &b, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, &a)))
+		SJME_JAVA_TYPE_ID_LONG, &a, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Perform the math. */
@@ -739,7 +739,7 @@ SJME_NVM_BYTECODE_SLOW(MathNegateInt)
 	/* Read in value to negate. */
 	memset(&value, 0, sizeof(value));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, &value)))
+		SJME_JAVA_TYPE_ID_INTEGER, &value, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Negate it. */
@@ -760,7 +760,7 @@ SJME_NVM_BYTECODE_SLOW(MathNegateLong)
 	/* Read in value to negate. */
 	memset(&value, 0, sizeof(value));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, &value)))
+		SJME_JAVA_TYPE_ID_LONG, &value, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Negate it. */

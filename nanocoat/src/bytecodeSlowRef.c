@@ -85,7 +85,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	{
 		/* Pop. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(
-			inFrame, SJME_JAVA_TYPE_ID_OBJECT, &argV[0])))
+			inFrame, SJME_JAVA_TYPE_ID_OBJECT, &argV[0], SJME_JNI_TRUE)))
 			return sjme_error_vmError(inFrame, error);
 
 		/* Cannot be null. */
@@ -277,7 +277,7 @@ SJME_NVM_BYTECODE_SLOW(ArrayLength)
 	/* Pop single object value. */
 	memset(&value, 0, sizeof(value));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, &value)))
+		SJME_JAVA_TYPE_ID_OBJECT, &value, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Cannot be null. */
@@ -424,7 +424,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 
 		/* Read in the value to write. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			fieldId->javaType, &result)))
+			fieldId->javaType, &result, SJME_JNI_TRUE)))
 			return sjme_error_vmError(inFrame, error);
 		
 		/* Make sure this can actually be stored there. */
@@ -437,7 +437,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	/* Read instance to act on. */
 	memset(&instance, 0, sizeof(instance));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, &instance)))
+		SJME_JAVA_TYPE_ID_OBJECT, &instance, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Cannot be null. */
@@ -482,7 +482,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceOf)
 	/* Read in object to check. */
 	memset(&check, 0, sizeof(check));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, &check)))
+		SJME_JAVA_TYPE_ID_OBJECT, &check, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Locate target class. */
@@ -778,7 +778,7 @@ SJME_NVM_BYTECODE_SLOW(Monitor)
 	/* Get the object we are accessing. */
 	memset(&instance, 0, sizeof(instance));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, &instance)))
+		SJME_JAVA_TYPE_ID_OBJECT, &instance, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Cannot be null. */
@@ -855,7 +855,7 @@ SJME_NVM_BYTECODE_SLOW(NewArray)
 	/* Read in array length. */
 	memset(&length, 0, sizeof(length));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, &length)))
+		SJME_JAVA_TYPE_ID_INTEGER, &length, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Length is not valid. */
@@ -948,7 +948,7 @@ SJME_NVM_BYTECODE_SLOW(NewArrayA)
 	/* Read in array length. */
 	memset(&length, 0, sizeof(length));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, &length)))
+		SJME_JAVA_TYPE_ID_INTEGER, &length, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Length is not valid. */
@@ -1112,7 +1112,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 
 		/* Read in the value to write. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			fieldId->javaType, &value)))
+			fieldId->javaType, &value, SJME_JNI_TRUE)))
 			return sjme_error_vmError(inFrame, error);
 		
 		/* Make sure this can actually be stored there. */
@@ -1151,7 +1151,7 @@ SJME_NVM_BYTECODE_SLOW(Throw)
 	/* Read in object to toss. */
 	memset(&toss, 0, sizeof(toss));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, &toss)))
+		SJME_JAVA_TYPE_ID_OBJECT, &toss, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Cannot be null. */
@@ -1184,11 +1184,11 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	/* Read in index and array. */
 	memset(&indexValue, 0, sizeof(indexValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, &indexValue)))
+		SJME_JAVA_TYPE_ID_INTEGER, &indexValue, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&arrayValue, 0, sizeof(arrayValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, &arrayValue)))
+		SJME_JAVA_TYPE_ID_OBJECT, &arrayValue, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Must not be null. */
@@ -1307,15 +1307,15 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 	/* Read in value, index, and array. */
 	memset(&popValue, 0, sizeof(popValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		promoteType, &popValue)))
+		promoteType, &popValue, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&indexValue, 0, sizeof(indexValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, &indexValue)))
+		SJME_JAVA_TYPE_ID_INTEGER, &indexValue, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&arrayValue, 0, sizeof(arrayValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, &arrayValue)))
+		SJME_JAVA_TYPE_ID_OBJECT, &arrayValue, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Must not be null. */

@@ -114,7 +114,7 @@ sjme_errorCode sjme_nvm_task_frameLocalAddr(
 
 	/* Directly access tread address. */
 	return sjme_nvm_task_frameTreadAddr(inFrame,
-		localType, mappedSlot, outAddr, NULL);
+		localType, mappedSlot, outAddr, NULL, NULL);
 }
 
 sjme_errorCode sjme_nvm_task_frameLocalClear(
@@ -136,7 +136,7 @@ sjme_errorCode sjme_nvm_task_frameLocalClear(
 		memset(&temp, 0, sizeof(temp));
 		if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(
 			inFrame, SJME_JAVA_TYPE_ID_OBJECT, index, &temp,
-			SJME_JNI_TRUE, SJME_JNI_TRUE)))
+			SJME_JNI_FALSE, SJME_JNI_TRUE)))
 			return sjme_error_vmError(inFrame, error);
 		
 		/* Skip nulls. */
@@ -202,7 +202,7 @@ sjme_errorCode sjme_nvm_task_frameLocalPush(
 	/* Read local index. */
 	memset(&tempValue, 0, sizeof(tempValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalGet(inFrame,
-		typeId, localIndex, &tempValue, SJME_JNI_TRUE)))
+		typeId, localIndex, &tempValue, SJME_JNI_FALSE)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Forward to stack. */
@@ -343,7 +343,7 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 
 		/* Pop it. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			temp.t, &temp)))
+			temp.t, &temp, SJME_JNI_TRUE)))
 			return sjme_error_vmError(inFrame, error);
 
 		/* If an object, count it down. */
@@ -384,7 +384,8 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
 sjme_errorCode sjme_nvm_task_frameStackPop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue)
+	sjme_attrInNotNull sjme_jvalueTyped* outValue,
+	sjme_attrInValue sjme_jboolean copiedElsewhere)
 {
 	sjme_errorCode error;
 	sjme_frame_frameStacks* stack;
@@ -442,7 +443,8 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 
 	/* Read in value. */
 	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(
-		inFrame, topType, newPerTop, outValue, SJME_JNI_TRUE, SJME_JNI_TRUE)))
+		inFrame, topType, newPerTop, outValue,
+		copiedElsewhere, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
 			SJME_ERROR_STACK_INVALID_READ));
 
@@ -474,7 +476,7 @@ sjme_errorCode sjme_nvm_task_frameStackPopA(
 	/* Always pop from the end first. */
 	for (i = argC - 1; i >= 0; i--)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			argT[i], &argV[i])))
+			argT[i], &argV[i], SJME_JNI_TRUE)))
 			return sjme_error_vmError(inFrame, error);
 
 	/* Success! */
@@ -633,7 +635,8 @@ sjme_errorCode sjme_nvm_task_frameTreadAddr(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrOutNotNull sjme_jvalue** outAddr,
-	sjme_attrOutNotNull sjme_jint** outCheck)
+	sjme_attrOutNotNull sjme_jint** outCheck,
+	sjme_attrOutNullable sjme_jboolean* outConsiderGc)
 {
 	sjme_frame_frameStack* perType;
 	
@@ -648,6 +651,10 @@ sjme_errorCode sjme_nvm_task_frameTreadAddr(
 	perType = &inFrame->stack.stack[typeId];
 	if (typeIndex < 0 || typeIndex >= perType->length)
 		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
+
+	/* Consider garbage collection? */
+	if (outConsiderGc)
+		*outConsiderGc = (typeIndex < perType->front);
 	
 	/* Operating depends on the type. */
 	switch (typeId)
@@ -694,6 +701,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	sjme_jvalue* treadValue;
 	sjme_jint* treadCheck;
 	sjme_jobject tempObject;
+	sjme_jboolean considerGc;
 	
 	if (inFrame == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -704,8 +712,9 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	/* Obtain direct pointer to the value. */
 	treadValue = NULL;
 	treadCheck = NULL;
+	considerGc = SJME_JNI_FALSE;
 	if (sjme_error_is(error = sjme_nvm_task_frameTreadAddr(inFrame,
-		typeId, typeIndex, &treadValue, &treadCheck)) ||
+			typeId, typeIndex, &treadValue, &treadCheck, &considerGc)) ||
 		treadValue == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
@@ -768,7 +777,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 
 			/* Otherwise, we technically have a copy so count up. */
 			/* But only if we copied it elsewhere. */
-			else if (tempObject != NULL && copiedElsewhere)
+			else if (tempObject != NULL && copiedElsewhere && considerGc)
 				if (sjme_error_is(error = sjme_nvm_instance_countUp(
 					tempObject)))
 					return sjme_error_default(error);
@@ -795,6 +804,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_jvalue* treadValue;
 	sjme_jint* treadCheck;
 	sjme_javaTypeId typeId;
+	sjme_jboolean considerGc;
 	
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -806,8 +816,9 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	/* Obtain direct pointer to the value. */
 	treadValue = NULL;
 	treadCheck = NULL;
+	considerGc = SJME_JNI_FALSE;
 	if (sjme_error_is(error = sjme_nvm_task_frameTreadAddr(inFrame,
-		typeId, typeIndex, &treadValue, &treadCheck)) ||
+			typeId, typeIndex, &treadValue, &treadCheck, &considerGc)) ||
 		treadValue == NULL)
 		return sjme_error_vmError(inFrame, error);
 
@@ -846,9 +857,10 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 					SJME_ERROR_OBJECT_MISMATCHED);
 			
 			/* If there is an old value here, count it down. */
-			if (sjme_error_is(error = sjme_nvm_instance_countDown(
-				&treadValue->l, inValue->v.l)))
-				return sjme_error_vmError(inFrame, error);
+			if (considerGc)
+				if (sjme_error_is(error = sjme_nvm_instance_countDown(
+					&treadValue->l, inValue->v.l)))
+					return sjme_error_vmError(inFrame, error);
 
 			/* Set. */
 			treadValue->l = inValue->v.l;
