@@ -453,6 +453,7 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 
 sjme_errorCode sjme_nvm_task_frameStackPopA(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInValue sjme_jboolean copiedElsewhere,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNullBuf(argC) sjme_javaTypeId* argT,
 	sjme_attrInNotNullBuf(argC) sjme_jvalueTyped* argV)
@@ -469,7 +470,7 @@ sjme_errorCode sjme_nvm_task_frameStackPopA(
 	/* Always pop from the end first. */
 	for (i = argC - 1; i >= 0; i--)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			argT[i], &argV[i], SJME_JNI_TRUE)))
+			argT[i], &argV[i], copiedElsewhere)))
 			return sjme_error_vmError(inFrame, error);
 
 	/* Success! */
@@ -863,10 +864,10 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_OBJECT_MISMATCHED);
 			
-			/* If there is an old value here, count it down. */
-			if (considerGc && treadValue->l != NULL)
-				if (sjme_error_is(error = sjme_nvm_instance_countDown(
-					treadValue->l)))
+			/* Balance counts. */
+			if (considerGc)
+				if (sjme_error_is(error = sjme_nvm_instance_countBalance(
+					treadValue->l, inValue->v.l)))
 					return sjme_error_vmError(inFrame, error);
 			
 			/* Set. */

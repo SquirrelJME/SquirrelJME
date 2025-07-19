@@ -76,7 +76,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	argVParam = (!isStatic ? &argV[1] : argV);
 	if (target->argC != 0)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(
-			inFrame, target->argC, target->argT, argVParam)))
+			inFrame, SJME_JNI_FALSE,
+			target->argC, target->argT, argVParam)))
 			return sjme_error_vmError(inFrame, error);
 
 	/* Pop instance. */
@@ -85,7 +86,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	{
 		/* Pop. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(
-			inFrame, SJME_JAVA_TYPE_ID_OBJECT, &argV[0], SJME_JNI_TRUE)))
+			inFrame, SJME_JAVA_TYPE_ID_OBJECT, &argV[0],
+			SJME_JNI_FALSE)))
 			return sjme_error_vmError(inFrame, error);
 
 		/* Cannot be null. */
@@ -1007,7 +1009,7 @@ SJME_NVM_BYTECODE_SLOW(NewArrayMulti)
 
 	/* Pop all dimensions at once. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(inFrame,
-		dims, argT, argV)))
+		SJME_JNI_TRUE, dims, argT, argV)))
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Recursively allocate sub-dimensions. */

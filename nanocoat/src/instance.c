@@ -99,7 +99,7 @@ sjme_errorCode sjme_nvm_instance_countBalanceR(
 
 	/* Count up new value? */
 	if (newV != NULL)
-		if (sjme_error_is(error = sjme_nvm_instance_countUpR(oldV
+		if (sjme_error_is(error = sjme_nvm_instance_countUpR(newV
 			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)))
 			return sjme_error_default(error);
 
