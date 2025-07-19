@@ -37,9 +37,9 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		sjme_nvm_methodCallType callType,
 	sjme_attrInNotNull sjme_jmethodID methodId)
 {
-	sjme_errorCode error;
+	sjme_errorCode error, mleError;
 	sjme_nvm_frame newFrame;
-	sjme_jint argC;
+	sjme_jint argC, i;
 	sjme_jvalueTyped* argV;
 	sjme_jvalueTyped* argVParam;
 	sjme_jvalueTyped mleArgR;
@@ -136,12 +136,26 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		/* Perform the native call. */
 		memset(&mleArgR, 0, sizeof(mleArgR));
 		mleArgR.t = SJME_JAVA_TYPE_ID_VOID;
-		if (sjme_error_is(error = sjme_mle_mleCall(inFrame,
+
+		/* Invoke MLE call. */
+		mleError = sjme_mle_mleCall(inFrame,
 			target->inClass->name->seq,
 			target->name->seq,
 			target->type->seq,
 			&mleArgR,
-			argC, argV)))
+			argC, argV);
+
+		/* GC any arguments that are objects, since they are no longer */
+		/* referenced. */
+		for (i = 0; i < argC; i++)
+			if (argV[i].t == SJME_JAVA_TYPE_ID_OBJECT &&
+				argV[i].v.l != NULL)
+				if (sjme_error_is(error = sjme_nvm_instance_countDown(
+					argV[i].v.l)))
+					return sjme_error_vmError(inFrame, error);
+
+		/* Recover and check MLE error. */
+		if (sjme_error_is(error = mleError))
 		{
 			/* MLECallError is a valid response. */
 			if (error == SJME_ERROR_MLE_CALL)
