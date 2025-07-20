@@ -58,6 +58,7 @@ squirreljme_multilib_add_static_library(Core
 	stackMap.c
 	stringPool.c
 	task.c
+	taskCache.c
 	taskFrame.c
 	taskThread.c
 	tread.c
