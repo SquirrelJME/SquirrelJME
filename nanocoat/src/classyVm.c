@@ -717,7 +717,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 	if (inClass == NULL || contextThread == NULL || classLoader == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* And the class path. */	
+	/* And the class path. */
 	classPath = classLoader->classPath;
 	if (classPath == NULL)
 		return sjme_error_vmError(contextThread,
@@ -1042,7 +1042,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_nvm_class_info info;
 	sjme_nvm_vmClass_loader loader;
 	sjme_jint i, n;
-	sjme_jclass superClass, interface, classType;
+	sjme_jclass superClass, interface;
 	sjme_list_sjme_jclass* interfaces;
 	sjme_alloc_pool allocPool;
 	sjme_list_sjme_jmethodID* methodBinds;
@@ -1084,6 +1084,22 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		goto skip_doubleCalled;
 	}
 	
+	/* This is always set to the @c Class type. */
+	if (sjme_charSeq_equalsUtfR(inClass->binaryName, "Ljava/lang/Class;"))
+		inClass->object.isClass = inClass;
+	else
+	{
+		if (sjme_error_is(error = sjme_nvm_task_commonClass(contextThread,
+			SJME_NVM_TASK_COMMON_CLASS_CLASS, &inClass->object.isClass,
+			SJME_JNI_FALSE)) ||
+			inClass->object.isClass == NULL)
+			goto fail_findClassType;
+	}
+
+	/* Set the identity hash. */
+	inClass->object.identityHash = sjme_nvm_instance_calcIdentityHash(
+		SJME_T_K(contextThread), inClass);
+	
 	/* Debug. */
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("Initializing class: %s",
@@ -1099,17 +1115,6 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			SJME_ERROR_INVALID_CLASS_LOADER);
 		goto fail_badState;
 	}
-	
-	/* This is always set to the @c Class type. */
-	classType = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFU(
-		loader, &classType, contextThread,
-		"Ljava/lang/Class;", SJME_JNI_FALSE)) ||
-		classType == NULL)
-		goto fail_findClassType;
-	
-	/* Set the instance type, as all classes are this type. */
-	inClass->object.isClass = classType;
 	
 	/* The super class needs to be found first. */
 	superClass = NULL;
@@ -1277,7 +1282,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	if (sjme_charSeq_equalsUtfR(inClass->binaryName,
 		"Ljava/lang/Object;"))
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
-			classType, contextThread)))
+			inClass->object.isClass, contextThread)))
 			goto fail_initClassType;
 
 	/* Call static constructor, if one exists. */
@@ -1422,6 +1427,7 @@ fail_noClassFound:
 fail_badTryLib:
 fail_allocIsClasses:
 fail_initSpecific:
+fail_findClassType:
 	sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL);
 	

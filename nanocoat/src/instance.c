@@ -81,8 +81,12 @@ sjme_errorCode sjme_nvm_instance_countBalanceR(
 				
 			/* Debug. */
 			sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
-				"GC LV~0: %p %d == %d",
-				oldV, sjme_atomic_sjme_jint_get(&weak->count),
+				"GC LV~0: %p (%s) %d == %d",
+				oldV, 
+				(oldV->isClass != NULL ?
+					sjme_charSeq_tempUtf(oldV->isClass->binaryName) :
+					"?"),
+				sjme_atomic_sjme_jint_get(&weak->count),
 				sjme_atomic_sjme_jint_get(&weak->count));
 		}
 #endif
@@ -129,8 +133,11 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 #if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
 	sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
-		"GC DN-1: %p %d -> %d",
-		object, sjme_atomic_sjme_jint_get(&weak->count) + 1,
+		"GC DN-1: %p (%s) %d -> %d",
+		object, 
+		(object->isClass != NULL ?
+			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),
+		sjme_atomic_sjme_jint_get(&weak->count) + 1,
 		sjme_atomic_sjme_jint_get(&weak->count));
 #endif
 
@@ -166,8 +173,11 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 #if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
 	sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
-		"GC UP+1: %p %d -> %d",
-		object, sjme_atomic_sjme_jint_get(&weak->count) - 1,
+		"GC UP+1: %p (%s) %d -> %d",
+		object,
+		(object->isClass != NULL ?
+			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),
+		sjme_atomic_sjme_jint_get(&weak->count) - 1,
 		sjme_atomic_sjme_jint_get(&weak->count));
 #endif
 
