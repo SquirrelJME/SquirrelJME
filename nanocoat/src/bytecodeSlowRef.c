@@ -71,6 +71,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	argV = sjme_alloca(sizeof(*argV) * (argC + 2));
 	if (argV == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
+	memset(argV, 0, sizeof(*argV) * (argC + 2));
 	
 	/* Pull in stack arguments for the call. */
 	argVParam = (!isStatic ? &argV[1] : argV);
