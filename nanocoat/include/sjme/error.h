@@ -537,9 +537,12 @@ typedef enum sjme_errorCode
 
 	/** An object was garbage collected when it should not have been. */
 	SJME_ERROR_OBJECT_GONE = -165,
+
+	/** There is still an active GC commit. */
+	SJME_ERROR_ACTIVE_GC_COMMIT = -166,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -166,
+	SJME_NUM_ERROR_CODES = -167,
 } sjme_errorCode;
 
 /**

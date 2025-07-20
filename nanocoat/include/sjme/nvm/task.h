@@ -226,6 +226,33 @@ struct sjme_frame_frameStacks
 	sjme_jint orderLength;
 };
 
+/**
+ * Garbage collection commit for stack popping and otherwise.
+ *
+ * @since 2025/07/20
+ */
+typedef struct sjme_nvm_frame_gcCommit
+{
+	int todo;
+} sjme_nvm_frame_gcCommit;
+
+/**
+ * The type of GC consideration to make.
+ *
+ * @since 2025/07/20
+ */
+typedef enum sjme_nvm_frame_considerGc
+{
+	/** Do not garbage collect. */
+	SJME_NVM_FRAME_CONSIDER_GC_NONE,
+
+	/** Always GC. */
+	SJME_NVM_FRAME_CONSIDER_GC_ALWAYS,
+
+	/** Use commit based GC. */
+	SJME_NVM_FRAME_CONSIDER_GC_COMMIT,
+} sjme_nvm_frame_considerGc;
+
 struct sjme_nvm_frameBase
 {
 	/** Common virtual machine structure. */
@@ -278,6 +305,9 @@ struct sjme_nvm_frameBase
 
 	/** The index of this frame. */
 	sjme_jint index;
+
+	/** The currrent commit on the frame. */
+	sjme_nvm_frame_gcCommit* commit;
 
 	/** Frame state flags. */
 	sjme_packed struct
@@ -782,16 +812,18 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
  * 
  * @param inFrame The frame to pop from.
  * @param typeId The type ID to pop.
- * @param outValue The resultant value.
  * @param copiedElsewhere Is this value copied elsewhere?
+ * @param commit
+ * @param outValue The resultant value.
  * @return Any resultant error, if any.
  * @since 2025/02/16
  */
 sjme_errorCode sjme_nvm_task_frameStackPop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere);
+	sjme_attrInValue sjme_jboolean copiedElsewhere,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNotNull sjme_jvalueTyped* outValue);
 
 /**
  * Pops multiple values from the stack and places their values into the given
@@ -799,6 +831,7 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
  * 
  * @param inFrame The frame to pop from.
  * @param copiedElsewhere Are these values copied elsewhere?
+ * @param commit
  * @param argC The number of values to pop.
  * @param argT The types of values to pop.
  * @param argV The resultant values which were popped.
@@ -808,6 +841,7 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 sjme_errorCode sjme_nvm_task_frameStackPopA(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInValue sjme_jboolean copiedElsewhere,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNullBuf(argC) sjme_javaTypeId* argT,
 	sjme_attrInNotNullBuf(argC) sjme_jvalueTyped* argV);
@@ -873,7 +907,7 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
  * @param typeIndex The index into the tread.
  * @param outAddr The resultant address of the value.
  * @param outCheck The output check value if an object.
- * @param outConsiderGc
+ * @param outConsiderGc How to consider garbage collection.
  * @return Any resultant value, if any.
  * @since 2025/03/02
  */
@@ -883,7 +917,7 @@ sjme_errorCode sjme_nvm_task_frameTreadAddr(
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrOutNotNull sjme_jvalue** outAddr,
 	sjme_attrOutNotNull sjme_jint** outCheck,
-	sjme_attrOutNullable sjme_jboolean* outConsiderGc);
+	sjme_attrOutNullable sjme_nvm_frame_considerGc* outConsiderGc);
 
 /**
  * Gets the value of a variable within a frame using the typed index

@@ -287,6 +287,10 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		/* If recycling, do not actually make any progress, just re-run. */
 		if (pcNew.type == SJME_NVM_BYTECODE_PC_RECYCLE)
 			continue;
+		
+		/* Every instruction is required to fully GC commit! */
+		if (currentFrame->commit != NULL)
+			return sjme_error_vmError(inThread, SJME_ERROR_ACTIVE_GC_COMMIT);
 
 		/* Has an exception been thrown? */
 		tossed = sjme_atomic_sjme_jobject_get(&inThread->tossed);

@@ -407,8 +407,12 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	if (topIndex <= -1)
 		return SJME_ERROR_INVALID_THREAD_STATE;
 
-	/* Clear the stack. */
+	/* Cannot pop if anything is still committed. */
 	topFrame = inThread->frames->elements[topIndex];
+	if (topFrame->commit != NULL)
+		return sjme_error_vmError(inThread, SJME_ERROR_ACTIVE_GC_COMMIT);
+
+	/* Clear the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackClear(topFrame)))
 		return sjme_error_vmError(inThread, error);
 

@@ -137,7 +137,7 @@ SJME_NVM_BYTECODE_SLOW(XStore)
 	memset(&popped, 0, sizeof(popped));
 	type = sjme_nvm_byteCode_xLoadType[id - 54];
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		type, &popped, SJME_JNI_TRUE)))
+		type, SJME_JNI_TRUE, NULL, &popped)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Set local. */
@@ -160,7 +160,7 @@ SJME_NVM_BYTECODE_SLOW(XStoreZ)
 	memset(&popped, 0, sizeof(popped));
 	type = sjme_nvm_byteCode_xLoadType[(id - 59) >> 2];
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		type, &popped, SJME_JNI_TRUE)))
+		type, SJME_JNI_TRUE, NULL, &popped)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Set local. */

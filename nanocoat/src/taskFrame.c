@@ -342,7 +342,7 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 
 		/* Pop it. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			temp.t, &temp, SJME_JNI_FALSE)))
+			temp.t, SJME_JNI_FALSE, NULL, &temp)))
 			return sjme_error_vmError(inFrame, error);
 	}
 
@@ -377,8 +377,9 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
 sjme_errorCode sjme_nvm_task_frameStackPop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere)
+	sjme_attrInValue sjme_jboolean copiedElsewhere,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNotNull sjme_jvalueTyped* outValue)
 {
 	sjme_errorCode error;
 	sjme_frame_frameStacks* stack;
@@ -387,7 +388,7 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 	sjme_frame_frameStack* perType;
 	sjme_javaTypeId topType;
 	
-	if (inFrame == NULL || outValue == NULL)
+	if (inFrame == NULL || commit == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if ((typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS) &&
@@ -454,6 +455,7 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 sjme_errorCode sjme_nvm_task_frameStackPopA(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInValue sjme_jboolean copiedElsewhere,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNullBuf(argC) sjme_javaTypeId* argT,
 	sjme_attrInNotNullBuf(argC) sjme_jvalueTyped* argV)
@@ -461,7 +463,7 @@ sjme_errorCode sjme_nvm_task_frameStackPopA(
 	sjme_errorCode error;
 	sjme_jint i;
 	
-	if (inFrame == NULL || argT == NULL || argV == NULL)
+	if (inFrame == NULL || commit == NULL || argT == NULL || argV == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (argC < 0)
@@ -470,7 +472,7 @@ sjme_errorCode sjme_nvm_task_frameStackPopA(
 	/* Always pop from the end first. */
 	for (i = argC - 1; i >= 0; i--)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			argT[i], &argV[i], copiedElsewhere)))
+			argT[i], copiedElsewhere, NULL, &argV[i])))
 			return sjme_error_vmError(inFrame, error);
 
 	/* Success! */
@@ -630,7 +632,7 @@ sjme_errorCode sjme_nvm_task_frameTreadAddr(
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrOutNotNull sjme_jvalue** outAddr,
 	sjme_attrOutNotNull sjme_jint** outCheck,
-	sjme_attrOutNullable sjme_jboolean* outConsiderGc)
+	sjme_attrOutNullable sjme_nvm_frame_considerGc* outConsiderGc)
 {
 	sjme_frame_frameStack* perType;
 	
@@ -648,7 +650,12 @@ sjme_errorCode sjme_nvm_task_frameTreadAddr(
 
 	/* Consider garbage collection? */
 	if (outConsiderGc)
-		*outConsiderGc = SJME_JNI_TRUE | (typeIndex < perType->front);
+	{
+		if (typeIndex < perType->front)
+			*outConsiderGc = SJME_NVM_FRAME_CONSIDER_GC_ALWAYS;
+		else
+			*outConsiderGc = SJME_NVM_FRAME_CONSIDER_GC_COMMIT;
+	}
 	
 	/* Operating depends on the type. */
 	switch (typeId)
@@ -695,7 +702,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	sjme_jvalue* treadValue;
 	sjme_jint* treadCheck;
 	sjme_jobject tempObject;
-	sjme_jboolean considerGc;
+	sjme_nvm_frame_considerGc considerGc;
 	
 	if (inFrame == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -706,7 +713,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	/* Obtain direct pointer to the value. */
 	treadValue = NULL;
 	treadCheck = NULL;
-	considerGc = SJME_JNI_FALSE;
+	considerGc = SJME_NVM_FRAME_CONSIDER_GC_NONE;
 	if (sjme_error_is(error = sjme_nvm_task_frameTreadAddr(inFrame,
 			typeId, typeIndex, &treadValue, &treadCheck, &considerGc)) ||
 		treadValue == NULL)
@@ -805,7 +812,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_jvalue* treadValue;
 	sjme_jint* treadCheck;
 	sjme_javaTypeId typeId;
-	sjme_jboolean considerGc;
+	sjme_nvm_frame_considerGc considerGc;
 	
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -817,7 +824,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	/* Obtain direct pointer to the value. */
 	treadValue = NULL;
 	treadCheck = NULL;
-	considerGc = SJME_JNI_FALSE;
+	considerGc = SJME_NVM_FRAME_CONSIDER_GC_NONE;
 	if (sjme_error_is(error = sjme_nvm_task_frameTreadAddr(inFrame,
 			typeId, typeIndex, &treadValue, &treadCheck, &considerGc)) ||
 		treadValue == NULL)

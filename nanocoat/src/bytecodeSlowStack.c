@@ -44,11 +44,11 @@ SJME_NVM_BYTECODE_SLOW(DupX1)
 	/* Pop the top two items on the stack. */
 	memset(&b, 0, sizeof(b));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_NARROW, &b, SJME_JNI_TRUE)))
+		SJME_STACK_TYPE_NARROW, SJME_JNI_TRUE, NULL, &b)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_NARROW, &a, SJME_JNI_TRUE)))
+		SJME_STACK_TYPE_NARROW, SJME_JNI_TRUE, NULL, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push them back, duplicate the first popped item. */
@@ -184,7 +184,7 @@ SJME_NVM_BYTECODE_SLOW(Pop)
 	/* Pop value and discard. */
 	memset(&top, 0, sizeof(top));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_NARROW, &top, SJME_JNI_FALSE)))
+		SJME_STACK_TYPE_NARROW, SJME_JNI_FALSE, NULL, &top)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
@@ -231,11 +231,11 @@ SJME_NVM_BYTECODE_SLOW(Swap)
 	/* Pop the top two items on the stack. */
 	memset(&b, 0, sizeof(b));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_NARROW, &b, SJME_JNI_TRUE)))
+		SJME_STACK_TYPE_NARROW, SJME_JNI_TRUE, NULL, &b)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_NARROW, &a, SJME_JNI_TRUE)))
+		SJME_STACK_TYPE_NARROW, SJME_JNI_TRUE, NULL, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push them back, but in swapped order. */
