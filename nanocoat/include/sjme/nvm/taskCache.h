@@ -37,6 +37,13 @@ extern "C"
  */
 typedef struct sjme_nvm_cache_slot sjme_nvm_cache_slot;
 
+/**
+ * A tread which contains every @c sjme_nvm_cache_slot within a frame.
+ *
+ * @since 2025/07/21
+ */
+typedef struct sjme_nvm_cache_tread sjme_nvm_cache_tread;
+
 typedef union sjme_nvm_cache_value
 {
 	/** Reference to another slot, this caches another value. */
@@ -86,74 +93,79 @@ typedef struct sjme_nvm_cache_flood
 	sjme_nvm_cache_floodArg a[sjme_flexibleArrayCount];
 } sjme_nvm_cache_flood;
 
+struct sjme_nvm_cache_tread
+{
+	int todo;
+};
+
 /**
  * Copies the value of one slot to another.
  * 
- * @param inFrame The context frame of execution.
+ * @param inTread The context tread of execution.
  * @param opIn The input slot.
  * @param opOut The output slot.
  * @return Any resultant error, if any.
  * @since 2025/07/21
  */
 sjme_errorCode sjme_nvm_cache_opCopy(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrInOutNotNull sjme_nvm_cache_slot** opIn,
 	sjme_attrInOutNotNull sjme_nvm_cache_slot** opOut);
 	
 /**
  * Deletes the given slot.
  * 
- * @param inFrame The context frame of execution.
+ * @param inTread The context tread of execution.
  * @param opInOut The slot to delete, this will be cleared on output.
  * @return Any resultant error, if any.
  * @since 2025/07/21
  */
 sjme_errorCode sjme_nvm_cache_opDelete(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrInOutNotNull sjme_nvm_cache_slot** opInOut);
 
 /**
  * Deletes the given flood, this should be called when the flood from
  * a @c sjme_nvm_cache_opStackPop() is no longer needed.
  * 
- * @param inFrame The context frame of execution.
+ * @param inTread The context tread of execution.
  * @param opInOut The flood to delete, all slots within will be deleted.
  * @return Any resultant error, if any.
  * @since 2025/07/21
  */
 sjme_errorCode sjme_nvm_cache_opDeleteFlood(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrInNotNull sjme_nvm_cache_flood* opInOut);
 
 /**
  * Evicts the given slot from the cache and forces it to be an isolate.
  * 
- * @param inFrame The context frame of execution.
+ * @param inTread The context tread of execution.
  * @param opInOut The slot to evict and become an isolate.
  * @return Any resultant error, if any.
  * @since 2025/07/21
  */
 sjme_errorCode sjme_nvm_cache_opEvict(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrInOutNotNull sjme_nvm_cache_slot** opInOut);
 
 /**
  * Evicts all slots within the given flood from the cache and forces all of
  * them isolates.
  * 
- * @param inFrame The context frame of execution.
+ * @param inTread The context tread of execution.
  * @param opInOut The flood to turn all slots into isolates for.
  * @return Any resultant error, if any.
  * @since 2025/07/21
  */
 sjme_errorCode sjme_nvm_cache_opEvictFlood(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrInOutNotNull sjme_nvm_cache_flood** opInOut);
 
 /**
  * Sets a local variable to an isolate value.
  * 
- * @param inFrame The context frame of execution.
+ * @param inTread The context tread of execution.
  * @param opOut The resultant cached slot.
  * @param localIndex The local index to set.
  * @param inValue The value to set.
@@ -161,7 +173,7 @@ sjme_errorCode sjme_nvm_cache_opEvictFlood(
  * @since 2025/07/21
  */
 sjme_errorCode sjme_nvm_cache_opIsoLocal(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrOutNotNull sjme_nvm_cache_slot** opOut,
 	sjme_attrInRange(0, INT32_MAX) sjme_jint localIndex,
 	sjme_attrInNotNull sjme_jvalueTyped* inValue);
@@ -169,21 +181,21 @@ sjme_errorCode sjme_nvm_cache_opIsoLocal(
 /**
  * Pushes a stack value as an isolate value.
  * 
- * @param inFrame The context frame of execution.
+ * @param inTread The context tread of execution.
  * @param opOut The resultant cached slot.
  * @param inValue The value to set.
  * @return Any resultant error, if any.
  * @since 2025/07/21
  */
 sjme_errorCode sjme_nvm_cache_opIsoStackPush(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrOutNotNull sjme_nvm_cache_slot** opOut,
 	sjme_attrInNotNull sjme_jvalueTyped* inValue);
 
 /**
  * Pushes a value from a local variable to the stack.
  * 
- * @param inFrame The context frame of execution.
+ * @param inTread The context tread of execution.
  * @param opIn The input slot.
  * @param opOut The output slot. 
  * @param localIndex The index being pushed.
@@ -191,7 +203,7 @@ sjme_errorCode sjme_nvm_cache_opIsoStackPush(
  * @since 2025/07/21
  */
 sjme_errorCode sjme_nvm_cache_opLocalPush(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrOutNullable sjme_nvm_cache_slot** opIn,
 	sjme_attrOutNullable sjme_nvm_cache_slot** opOut,
 	sjme_attrInRange(0, INT32_MAX) sjme_jint localIndex);
@@ -201,13 +213,13 @@ sjme_errorCode sjme_nvm_cache_opLocalPush(
  * to process an instruction or forward to another method. This does not
  * remove any slots from the stack.
  * 
- * @param inFrame The context frame of execution.
+ * @param inTread The context tread of execution.
  * @param opInOut The flood to read values into.
  * @return Any resultant error, if any.
  * @since 2025/07/21
  */
 sjme_errorCode sjme_nvm_cache_opStackPeek(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrInOutNotNull sjme_nvm_cache_flood* opInOut);
 
 /**
@@ -216,13 +228,13 @@ sjme_errorCode sjme_nvm_cache_opStackPeek(
  * slots from the stack and should be followed
  * by @c sjme_nvm_cache_opDeleteFlood() when no longer needed.
  * 
- * @param inFrame The context frame of execution.
+ * @param inTread The context tread of execution.
  * @param opInOut The flood to read values into.
  * @return Any resultant error, if any.
  * @since 2025/07/21
  */
 sjme_errorCode sjme_nvm_cache_opStackPop(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrInOutNotNull sjme_nvm_cache_flood* opInOut);
 
 /**
