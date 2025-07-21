@@ -137,11 +137,11 @@ struct sjme_jmethodIDBase
  */
 typedef struct sjme_nvm_fieldObject
 {
-	/** The check for the object. */
-	sjme_jint check;
-	
 	/** The pointer to the object. */
 	sjme_alignPointer sjme_jobject p;
+	
+	/** The check for the object. */
+	sjme_jint check;
 } sjme_nvm_fieldObject;
 
 /**

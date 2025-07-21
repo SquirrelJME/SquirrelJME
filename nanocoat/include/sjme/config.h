@@ -504,18 +504,16 @@ extern "C" {
 #endif
 
 /* C99 supports flexible array members. */
-#if defined(SJME_CONFIG_HAS_C99)
-	/** Flexible array members. */
+#if defined(SJME_CONFIG_HAS_C99) || defined(SJME_CONFIG_HAS_WATCOM) || \
+	defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
+	/** Flexible array members, as per C99 standard. */
 	#define sjme_flexibleArrayCount
+
+	/** Minimum value for flexible array members. */
+	#define sjme_flexibleArrayMin(count) ((count) <= 0 ? 0 : (count))
 #elif defined(SJME_CONFIG_HAS_MSVC)
 	/** Flexible array count, MSVC requires 1 because C2233. */
 	#define sjme_flexibleArrayCount 1
-#elif defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
-	/** Flexible array size count, GCC is fine with blank. */
-	#define sjme_flexibleArrayCount
-#elif defined(SJME_CONFIG_HAS_WATCOM)
-	/** Flexible array size count. */
-	#define sjme_flexibleArrayCount
 #endif
 
 /* Visual C++ has a differently named alloca. */
@@ -766,6 +764,13 @@ extern "C" {
 #if !defined(sjme_flexibleArrayCountUnion)
 	/** Flexible array count but for unions. */
 	#define sjme_flexibleArrayCountUnion 1
+#endif
+
+#if !defined(sjme_flexibleArrayMin)
+	/** Minimum value for flexible array members. */
+	#define sjme_flexibleArrayMin(count) \
+		((count) <= sjme_flexibleArrayCount ? \
+			sjme_flexibleArrayCount : (count))
 #endif
 
 #if !defined(sjme_attrUnused)
