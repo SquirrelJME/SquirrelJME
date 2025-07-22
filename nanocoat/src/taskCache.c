@@ -14,6 +14,9 @@ sjme_errorCode sjme_nvm_cache_opCopy(
 	sjme_attrInOutNotNull sjme_nvm_cache_slot** opIn,
 	sjme_attrInOutNotNull sjme_nvm_cache_slot** opOut)
 {
+	if (inTread == NULL || opIn == NULL || opOut == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -22,6 +25,9 @@ sjme_errorCode sjme_nvm_cache_opDelete(
 	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrInOutNotNull sjme_nvm_cache_slot** opInOut)
 {
+	if (inTread == NULL || opInOut == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -30,6 +36,9 @@ sjme_errorCode sjme_nvm_cache_opDeleteFlood(
 	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrInNotNull sjme_nvm_cache_flood* opInOut)
 {
+	if (inTread == NULL || opInOut == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -38,6 +47,9 @@ sjme_errorCode sjme_nvm_cache_opEvict(
 	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrInOutNotNull sjme_nvm_cache_slot** opInOut)
 {
+	if (inTread == NULL || opInOut == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -46,6 +58,9 @@ sjme_errorCode sjme_nvm_cache_opEvictFlood(
 	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrInOutNotNull sjme_nvm_cache_flood** opInOut)
 {
+	if (inTread == NULL || opInOut == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -56,6 +71,12 @@ sjme_errorCode sjme_nvm_cache_opIsoLocal(
 	sjme_attrInRange(0, INT32_MAX) sjme_jint localIndex,
 	sjme_attrInNotNull sjme_jvalueTyped* inValue)
 {
+	if (inTread == NULL || opOut == NULL || inValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (localIndex < 0)
+		return SJME_ERROR_LOCAL_INDEX_INVALID;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -65,6 +86,9 @@ sjme_errorCode sjme_nvm_cache_opIsoStackPush(
 	sjme_attrOutNotNull sjme_nvm_cache_slot** opOut,
 	sjme_attrInNotNull sjme_jvalueTyped* inValue)
 {
+	if (inTread == NULL || opOut == NULL || inValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -75,6 +99,12 @@ sjme_errorCode sjme_nvm_cache_opLocalPush(
 	sjme_attrOutNullable sjme_nvm_cache_slot** opOut,
 	sjme_attrInRange(0, INT32_MAX) sjme_jint localIndex)
 {
+	if (inTread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (localIndex < 0)
+		return SJME_ERROR_LOCAL_INDEX_INVALID;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -83,6 +113,9 @@ sjme_errorCode sjme_nvm_cache_opStackPeek(
 	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrInOutNotNull sjme_nvm_cache_flood* opInOut)
 {
+	if (inTread == NULL || opInOut == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -91,6 +124,9 @@ sjme_errorCode sjme_nvm_cache_opStackPop(
 	sjme_attrInNotNull sjme_nvm_cache_tread* inTread,
 	sjme_attrInOutNotNull sjme_nvm_cache_flood* opInOut)
 {
+	if (inTread == NULL || opInOut == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
