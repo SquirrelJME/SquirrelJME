@@ -101,6 +101,22 @@ struct sjme_nvm_cache_tread
 /**
  * Copies the value of one slot to another.
  * 
+ * From:
+ *
+ * @verbatim
+ * +-Si-+
+ * | ?  |
+ * +----+
+ * @endverbatim
+ *
+ * Into:
+ * 
+ * @verbatim
+ * +-Si-+     +-So*+
+ * | ?  | <-- |  ? |
+ * +----+     +----+
+ * @endverbatim
+ * 
  * @param inTread The context tread of execution.
  * @param opIn The input slot.
  * @param opOut The output slot.
@@ -114,6 +130,22 @@ sjme_errorCode sjme_nvm_cache_opCopy(
 	
 /**
  * Deletes the given slot.
+ * 
+ * From:
+ *
+ * @verbatim
+ * +-Si-+
+ * | ?  |
+ * +----+
+ * @endverbatim
+ *
+ * Into:
+ * 
+ * @verbatim
+ * +-Si-+
+ * |~~~~|
+ * +----+
+ * @endverbatim
  * 
  * @param inTread The context tread of execution.
  * @param opInOut The slot to delete, this will be cleared on output.
@@ -139,6 +171,22 @@ sjme_errorCode sjme_nvm_cache_opDeleteFlood(
 
 /**
  * Evicts the given slot from the cache and forces it to be an isolate.
+ *
+ * From:
+ *
+ * @verbatim
+ * +-S1-+-S2*+
+ * | ?  | ?  |
+ * +----+----|
+ * @endverbatim
+ *
+ * Into:
+ * 
+ * @verbatim
+ * +-S1-+-S2-+
+ * | ?  | V  |
+ * +----+----|
+ * @endverbatim
  * 
  * @param inTread The context tread of execution.
  * @param opInOut The slot to evict and become an isolate.
@@ -164,6 +212,22 @@ sjme_errorCode sjme_nvm_cache_opEvictFlood(
 
 /**
  * Sets a local variable to an isolate value.
+ *
+ * From:
+ *
+ * @verbatim
+ * +-Li-+
+ * | ?  |
+ * +----+
+ * @endverbatim
+ *
+ * Into:
+ * 
+ * @verbatim
+ * +-Li-+
+ * | V  |
+ * +----+
+ * @endverbatim
  * 
  * @param inTread The context tread of execution.
  * @param opOut The resultant cached slot.
@@ -180,6 +244,22 @@ sjme_errorCode sjme_nvm_cache_opIsoLocal(
 
 /**
  * Pushes a stack value as an isolate value.
+ *
+ * From:
+ *
+ * @verbatim
+ * +-??-+
+ * |....|
+ * +----+
+ * @endverbatim
+ *
+ * Into:
+ * 
+ * @verbatim
+ * +-??-+-St-+
+ * +....| V  |
+ * +----+----+
+ * @endverbatim
  * 
  * @param inTread The context tread of execution.
  * @param opOut The resultant cached slot.
@@ -194,6 +274,30 @@ sjme_errorCode sjme_nvm_cache_opIsoStackPush(
 
 /**
  * Pushes a value from a local variable to the stack.
+ *
+ * From:
+ *
+ * @verbatim
+ * +-Li-+
+ * | ?  |
+ * +----+
+ * 
+ * +-??-+
+ * |....|
+ * +----+
+ * @endverbatim
+ *
+ * Into:
+ * 
+ * @verbatim
+ * +-Li-+
+ * | ?  | <-
+ * +----+  |
+ *         |
+ * +-??-+-St*+
+ * +....| ?  |
+ * +----+----+
+ * @endverbatim
  * 
  * @param inTread The context tread of execution.
  * @param opIn The input slot.
@@ -227,6 +331,26 @@ sjme_errorCode sjme_nvm_cache_opStackPeek(
  * to process an instruction or forward to another method. This does remove
  * slots from the stack and should be followed
  * by @c sjme_nvm_cache_opDeleteFlood() when no longer needed.
+ *
+ * From:
+ *
+ * @verbatim
+ * +-??-+-St-+
+ * +....| ?  |
+ * +----+----+
+ * @endverbatim
+ *
+ * Into:
+ * 
+ * @verbatim
+ * +-??-+-St-+
+ * +....|~~~~|
+ * +----+----+
+ *         |
+ * +-TMP+  |
+ * | ?  | <-
+ * +----+
+ * @endverbatim
  * 
  * @param inTread The context tread of execution.
  * @param opInOut The flood to read values into.

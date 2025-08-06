@@ -13,8 +13,8 @@
 #include "unit.h"
 
 /**
- * DESCRIBE THIS.
- *  
+ * Tests @c sjme_nvm_cache_opIsoLocal() .
+ * 
  * @since 2025/07/21 
  */
 SJME_TEST_DECLARE(testCacheIsoLocal)
