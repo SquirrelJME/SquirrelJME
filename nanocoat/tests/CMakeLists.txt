@@ -64,6 +64,7 @@ add_library(BasicTestLib OBJECT
 	src/basic.c
 	src/blobs.c
 	src/mock.c
+	src/mockStackCache.c
 	src/unit.c
 	${basicTestSources}
 	${basicTestBlobs})
@@ -73,6 +74,7 @@ add_library(BasicTestLibPIC OBJECT
 	src/basic.c
 	src/blobs.c
 	src/mock.c
+	src/mockStackCache.c
 	src/unit.c
 	${basicTestSources}
 	${basicTestBlobs})

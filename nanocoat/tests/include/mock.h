@@ -20,6 +20,7 @@
 #include "sjme/debug.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/romInternal.h"
+#include "sjme/nvm/taskCache.h"
 
 #include "test.h"
 
@@ -434,6 +435,17 @@ sjme_jboolean sjme_mock_doRomMockLibrary(
 sjme_jboolean sjme_mock_doRomSuite(
 	sjme_attrInNotNull sjme_mock* inState,
 	sjme_attrInNotNull sjme_mock_configWorkData* inData);
+
+/**
+ * Initializes stack cache state.
+ * 
+ * @param test The input test state.
+ * @param outTread The output tread.
+ * @return Any resultant error, if any.
+ * @since 2025/08/07
+ */
+sjme_errorCode sjme_mock_initStackCache(sjme_attrInNotNull sjme_test* test,
+	sjme_attrOutNotNull sjme_nvm_cache_tread** outTread);
 
 /*--------------------------------------------------------------------------*/
 

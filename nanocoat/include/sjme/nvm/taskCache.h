@@ -362,6 +362,16 @@ sjme_errorCode sjme_nvm_cache_opStackPop(
 	sjme_attrInOutNotNull sjme_nvm_cache_flood* opInOut);
 
 /**
+ * Returns the pointer to the actual slot value.
+ * 
+ * @param inSlot The slot to get the value of.
+ * @return The resultant value pointer.
+ * @since 2025/08/07
+ */
+sjme_jvalueTyped* sjme_nvm_cache_slotValue(
+	sjme_attrInNotNull sjme_nvm_cache_slot* inSlot);
+
+/**
  * Allocates a flood variable on the stack.
  * 
  * @param n The number of items to allocate.

@@ -130,3 +130,21 @@ sjme_errorCode sjme_nvm_cache_opStackPop(
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+
+sjme_jvalueTyped* sjme_nvm_cache_slotValue(
+	sjme_attrInNotNull sjme_nvm_cache_slot* inSlot)
+{
+	sjme_threadLocal(sjme_jvalueTyped, invalid);
+
+	if (inSlot == NULL)
+		goto fail_invalid;
+	
+	sjme_todo("Impl?");
+	return &invalid;
+
+	/* Always return a valid pointer somewhere. */
+fail_invalid:
+	memset(&invalid, 0, sizeof(invalid));
+	invalid.t = SJME_JAVA_TYPE_ID_VOID;
+	return &invalid;
+}
