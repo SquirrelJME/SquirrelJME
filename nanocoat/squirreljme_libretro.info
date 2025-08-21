@@ -68,3 +68,6 @@ firmware7_opt = "true"
 
 # Additional notes:
 notes = "[1] SquirrelJME's class library, one of the listed firmwares, needs to be installed within the System directory."
+
+# Description
+description = "A port of the SquirrelJME Java ME 8 Virtual Machine emulator to libretro. Intended to be small, fast and maintain high compatibility, the core also supports older J2ME software and games designed for flip-phones."
