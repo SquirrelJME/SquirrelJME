@@ -37,6 +37,7 @@ public final class ScannerUtils
 	 * @return The sibling file based on the extension.
 	 * @since 2023/04/10
 	 */
+	@SuppressWarnings("SystemGetProperty")
 	@SquirrelJMEVendorApi
 	public static String siblingByExt(String __jar, String __ext)
 	{

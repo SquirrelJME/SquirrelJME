@@ -322,14 +322,10 @@ public class HuffmanTreeInt
 				// Print bit pattern otherwise
 				else
 				{
-					// Get mask and value
-					int msk = (int)(seq >>> 32L);
-					int val = (int)(seq);
-					
 					// Start from the highest bit first
-					int hib = Integer.bitCount(msk);
+					int hib = Integer.bitCount(seq);
 					for (int b = hib - 1; b >= 0; b--)
-						sb.append(((0 == (val & (1 << b))) ? '0' : '1'));
+						sb.append(((0 == (seq & (1 << b))) ? '0' : '1'));
 				}
 				
 				// End sequence data

@@ -24,6 +24,7 @@ import java.nio.file.Paths;
  *
  * @since 2021/08/08
  */
+@SuppressWarnings("unused")
 public class EmulatedRuntimeShelf
 {
 	/**

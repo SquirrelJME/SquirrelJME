@@ -646,6 +646,7 @@ public final class SpringMachine
 	 * {@inheritDoc}
 	 * @since 2018/09/13
 	 */
+	@SuppressWarnings("CallToThreadRun")
 	@Override
 	public final void run()
 	{
@@ -675,16 +676,7 @@ public final class SpringMachine
 		// The main although it executes in this context will always have the
 		// same exact logic as other threads running apart from this main
 		// thread, so no code is needed to be duplicated at all.
-		try
-		{
-			worker.run();
-		}
-		
-		// Either failed or threw exit exception
-		catch (RuntimeException e)
-		{
-			throw e;
-		}
+		worker.run();
 	}
 	
 	/**

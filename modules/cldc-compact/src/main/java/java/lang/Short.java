@@ -95,7 +95,7 @@ public final class Short
 	{
 		if (this == __o)
 			return true;
-		if (!(this instanceof Short))
+		if (__o.getClass() != Short.class)
 			return false;
 		
 		return this._value == ((Short)__o)._value;

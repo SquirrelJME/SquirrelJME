@@ -359,7 +359,7 @@ public class MutableJavaManifest
 				
 				// Write the character, but if a space was written early then
 				// do not write it
-				if ((c == ' ' && !newline) || c != ' ')
+				if (c != ' ' || !newline)
 					__w.append(c);
 				
 				// Set new column

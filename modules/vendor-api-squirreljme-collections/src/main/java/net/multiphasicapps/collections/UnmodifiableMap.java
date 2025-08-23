@@ -266,10 +266,11 @@ public final class UnmodifiableMap<K, V>
 		 * {@inheritDoc}
 		 * @since 2016/02/29
 		 */
+		@SuppressWarnings("EqualsDoesntCheckParameterClass")
 		@Override
-		public boolean equals(Object __a)
+		public boolean equals(Object __o)
 		{
-			return this.base.equals(__a);
+			return this.base.equals(__o);
 		}
 		
 		/**

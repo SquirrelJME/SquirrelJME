@@ -10,6 +10,7 @@
 package java.util;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ByteIntegerArray;
@@ -347,6 +348,7 @@ public class Arrays
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
+	@SuppressWarnings("SuspiciousSystemArraycopy")
 	@Api
 	public static <T, U> T[] copyOf(U[] __src, int __newLen,
 		Class<? extends T[]> __newType)
@@ -362,6 +364,7 @@ public class Arrays
 		T[] rv = ObjectShelf.<T[]>arrayNew(__newType,
 			__newLen);
 		
+		// Copy everything over
 		System.arraycopy(__src, 0,
 			rv, 0, Math.min(__newLen, __src.length));
 			

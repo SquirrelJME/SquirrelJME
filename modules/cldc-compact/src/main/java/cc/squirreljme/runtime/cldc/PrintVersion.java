@@ -99,6 +99,7 @@ public final class PrintVersion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/06/14
 	 */
+	@SuppressWarnings("SystemGetProperty")
 	private static void __print(Appendable __out, String __libSubVer)
 		throws IOException, NullPointerException
 	{

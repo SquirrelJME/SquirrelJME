@@ -180,6 +180,7 @@ public final class ApplicationHandler
 	 * @throws Throwable On any exception.
 	 * @since 2021/11/30
 	 */
+	@SuppressWarnings("ConfusingMainMethod")
 	@SquirrelJMEVendorApi
 	public static <T> void main(ApplicationInterface<T> __ai)
 		throws NullPointerException, Throwable

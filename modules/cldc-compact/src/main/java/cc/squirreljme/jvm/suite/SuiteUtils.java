@@ -41,6 +41,7 @@ public final class SuiteUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/06
 	 */
+	@SuppressWarnings("SystemGetProperty")
 	@SquirrelJMEVendorApi
 	public static String baseName(String __name)
 		throws NullPointerException
