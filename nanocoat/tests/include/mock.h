@@ -444,7 +444,8 @@ sjme_jboolean sjme_mock_doRomSuite(
  * @return Any resultant error, if any.
  * @since 2025/08/07
  */
-sjme_errorCode sjme_mock_initStackCache(sjme_attrInNotNull sjme_test* test,
+sjme_errorCode sjme_mock_initStackCache(
+	sjme_attrInNotNull sjme_test* test,
 	sjme_attrOutNotNull sjme_nvm_cache_tread** outTread);
 
 /*--------------------------------------------------------------------------*/

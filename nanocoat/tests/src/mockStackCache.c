@@ -11,9 +11,13 @@
 #include "mock.h"
 #include "sjme/nvm/taskCache.h"
 
-sjme_errorCode sjme_mock_initStackCache(sjme_attrInNotNull sjme_test* test,
+sjme_errorCode sjme_mock_initStackCache(
+	sjme_attrInNotNull sjme_test* test,
 	sjme_attrOutNotNull sjme_nvm_cache_tread** outTread)
 {
+	if (test == NULL || outTread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
