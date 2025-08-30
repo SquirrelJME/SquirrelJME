@@ -184,6 +184,11 @@ sjme_errorCode sjme_scritchui_cocoa_componentFocusGrab(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
+sjme_errorCode sjme_scritchui_cocoa_componentFocusHas(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jboolean* outHasFocus);
+
 sjme_errorCode sjme_scritchui_cocoa_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

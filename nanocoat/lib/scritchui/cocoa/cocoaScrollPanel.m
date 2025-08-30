@@ -32,7 +32,7 @@ sjme_errorCode sjme_scritchui_cocoa_scrollPanelNew(
 
 	/* Setup new scroll panel. */
 	cocoaScroll = [[SJMEScrollPanel new] initWithFrame:
-		NSMakeRect(0, 0, 20, 20)];
+		NSMakeRect(0, 0, 200, 200)];
 	cocoaClip = cocoaScroll.contentView;
 
 	/* Store it. */
@@ -47,10 +47,11 @@ sjme_errorCode sjme_scritchui_cocoa_scrollPanelNew(
 	[cocoaScroll setHasHorizontalScroller:YES];
 	[cocoaScroll setHasVerticalScroller:YES];
 
-#if 0
-	/* Auto-resize to the container this is in. */
-	[cocoaScroll setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
-#endif
+	/* Do not draw the background, make this always transparent. */
+	[cocoaScroll setDrawsBackground:NO];
+
+	/* Do not auto-resize constraints?? */
+	[cocoaScroll setTranslatesAutoresizingMaskIntoConstraints:NO];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

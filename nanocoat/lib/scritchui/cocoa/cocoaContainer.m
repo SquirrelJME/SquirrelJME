@@ -157,7 +157,6 @@ sjme_errorCode sjme_scritchui_cocoa_containerSetBounds(
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height)
 {
-	SJMEWindow* cocoaWindow;
 	NSView* cocoaView;
 	NSRect rect;
 

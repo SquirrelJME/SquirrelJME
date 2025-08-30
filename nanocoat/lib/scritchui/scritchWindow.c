@@ -34,6 +34,30 @@ static sjme_errorCode sjme_scritchui_baseCloseListener(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_core_intern_locateInWindow(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_uiWindow* outWindow)
+{
+	sjme_scritchui_uiComponent at;
+	
+	if (inState == NULL || inComponent == NULL || outWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Start at the parent of the component, find the window. */
+	for (at = inComponent->parent; at != NULL; at = at->parent)
+		if (at->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
+		{
+			/* Return this as the window. */
+			*outWindow = (sjme_scritchui_uiWindow)at;
+			return SJME_ERROR_NONE;
+		}
+	
+	/* Not found. */
+	*outWindow = NULL;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_core_windowContentMinimumSize(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,

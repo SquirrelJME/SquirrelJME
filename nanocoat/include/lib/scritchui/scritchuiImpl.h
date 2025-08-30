@@ -549,6 +549,21 @@ typedef sjme_errorCode (*sjme_scritchui_intern_initComponentFunc)(
 		sjme_scritchui_uiType uiType);
 
 /**
+ * Locates the window that the component is within.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component to look at.
+ * @param outWindow The resultant window, may be @c NULL if there is no
+ * associated window.
+ * @return Any resultant error, if any.
+ * @since 2025/08/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_locateInWindowFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_uiWindow* outWindow);
+
+/**
  * Maps the given screen internally.
  * 
  * @param inState The input state.
@@ -705,6 +720,9 @@ struct sjme_scritchui_internFunctions
 	
 	/** Common component initialization. */
 	sjme_scritchui_intern_initComponentFunc initComponent;
+	
+	/** Locates the window a given component is in. */
+	sjme_scritchui_intern_locateInWindowFunc locateInWindow;
 	
 	/** Maps the given screen. */
 	sjme_scritchui_intern_mapScreenFunc mapScreen;

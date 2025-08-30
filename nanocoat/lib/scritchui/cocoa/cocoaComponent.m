@@ -15,10 +15,66 @@ sjme_errorCode sjme_scritchui_cocoa_componentFocusGrab(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
 {
+	sjme_errorCode error;
+	sjme_scritchui_uiWindow inWindow;
+	SJMEWindow* cocoaWindow;
+	NSView* cocoaView;
+
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Does nothing because you cannot forcibly grab focus. */
+	/* Locate the window this is in. */
+	inWindow = NULL;
+	if (sjme_error_is(error = inState->intern->locateInWindow(inState,
+		inComponent, &inWindow)))
+		return sjme_error_default(error);
+
+	/* If this is not in any window, then we cannot really grab focus. */
+	if (inWindow == NULL)
+		return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+
+	/* Recover the view and window. */
+	cocoaWindow = inWindow->component.common.handle[SJME_SUI_COCOA_H_NSVIEW];
+	cocoaView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+	/* Attempt to make the given view the first responder. */
+	[cocoaWindow makeFirstResponder:cocoaView];
+
+	/* Success?. */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+}
+
+sjme_errorCode sjme_scritchui_cocoa_componentFocusHas(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jboolean* outHasFocus)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiWindow inWindow;
+	SJMEWindow* cocoaWindow;
+	NSView* cocoaView;
+
+	if (inState == NULL || inComponent == NULL || outHasFocus == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Locate the window this is in. */
+	inWindow = NULL;
+	if (sjme_error_is(error = inState->intern->locateInWindow(inState,
+		inComponent, &inWindow)))
+		return sjme_error_default(error);
+
+	/* If this is not in any window, then we cannot really check focus. */
+	if (inWindow == NULL)
+		return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+
+	/* Recover the view and window. */
+	cocoaWindow = inWindow->component.common.handle[SJME_SUI_COCOA_H_NSVIEW];
+	cocoaView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+	/* Does this actually have focus in the window? */
+	*outHasFocus = ([[cocoaWindow firstResponder] isEqual:cocoaView]);
+
+	/* Success?. */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 

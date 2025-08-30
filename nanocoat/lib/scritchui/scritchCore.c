@@ -193,6 +193,7 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	sjme_sm(.getView, sjme_scritchui_core_intern_getView),
 	sjme_sm(.initCommon, sjme_scritchui_core_intern_initCommon),
 	sjme_sm(.initComponent, sjme_scritchui_core_intern_initComponent),
+	sjme_sm(.locateInWindow, sjme_scritchui_core_intern_locateInWindow),
 	sjme_sm(.mapScreen, sjme_scritchui_core_intern_mapScreen),
 	sjme_sm(.menuItemActivate, sjme_scritchui_intern_menuItemActivate),
 	sjme_sm(.menuItemActivateById, sjme_scritchui_intern_menuItemActivateById),
