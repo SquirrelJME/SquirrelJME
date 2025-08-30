@@ -222,8 +222,17 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetMenuBar(
 		[cocoaMenu setMain:YES];
 #endif
 	}
+
+	/* Otherwise, remove it from the global menu. */
 	else
+	{
 		[cocoaApp setMainMenu:nil];
+
+		/* Make sure this is no longer a main menu. */
+#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 12, 0)
+		[cocoaMenu setMain:NO];
+#endif
+	}
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

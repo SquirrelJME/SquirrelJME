@@ -79,6 +79,75 @@ sjme_errorCode sjme_scritchui_cocoa_containerAdd(
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
+sjme_errorCode sjme_scritchui_cocoa_containerRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
+	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent)
+{
+	SJMEWindow* cocoaWindow;
+	SJMEScrollPanel* cocoaScroll;
+	SJMEPanel* cocoaPanel;
+	NSView* cocoaView;
+
+	if (inState == NULL || inContainer == NULL || inContainerData == NULL ||
+		removeComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* What is being removed? */
+	cocoaView = removeComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+	/* Removing from a window? */
+	if (inContainer->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
+	{
+		/* Recover the window. */
+		cocoaWindow = inContainer->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+		/* Remove the sub-view. */
+		[[cocoaWindow contentView] removeSubview:cocoaView];
+	}
+
+	/* Removing from regular panel? */
+	else if (inContainer->common.type == SJME_SCRITCHUI_TYPE_PANEL)
+	{
+		/* Recover. */
+		cocoaPanel = inContainer->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+		/* Remove it. */
+		[cocoaPanel removeSubview:cocoaView];
+
+		/* Refresh the panel. */
+		[cocoaPanel setNeedsDisplay:true];
+	}
+
+	/* Removing from a scroll panel? */
+	else if (inContainer->common.type == SJME_SCRITCHUI_TYPE_SCROLL_PANEL)
+	{
+		/* Recover the scroll panel. */
+		cocoaScroll = inContainer->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+		/* Remove the document, if this is the one. */
+		if ([cocoaScroll documentView] == cocoaView)
+		{
+			/* Set nothing. */
+			[cocoaScroll setDocumentView:nil];
+
+			/* Refresh everything. */
+			[cocoaScroll setNeedsDisplay:true];
+		}
+	}
+
+	/* Not implemented! */
+	else
+	{
+		sjme_todo("Impl? %d", inContainer->common.type);
+		return sjme_error_notImplemented(inContainer->common.type);
+	}
+
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+}
+
 sjme_errorCode sjme_scritchui_cocoa_containerSetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
@@ -114,33 +183,6 @@ sjme_errorCode sjme_scritchui_cocoa_containerSetBounds(
 
 	/* Update. */
 	[cocoaView setNeedsDisplay:YES];
-
-	/* Success? */
-	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
-}
-
-sjme_errorCode sjme_scritchui_cocoa_componentSize(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrOutNullable sjme_jint* outWidth,
-	sjme_attrOutNullable sjme_jint* outHeight)
-{
-	NSView* cocoaView;
-	NSRect base;
-
-	if (inState == NULL || inComponent == NULL ||
-		(outWidth == NULL && outHeight == NULL))
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* What is being adjusted? */
-	cocoaView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
-
-	/* Are the frame coordinates in device or PDF space? */
-	base = [cocoaView frame];
-	if (outWidth != NULL)
-		*outWidth = abs((sjme_jint)base.size.width);
-	if (outHeight != NULL)
-		*outHeight = abs((sjme_jint)base.size.height);
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
