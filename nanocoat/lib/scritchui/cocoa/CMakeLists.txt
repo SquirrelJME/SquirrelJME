@@ -72,6 +72,11 @@ endif()
 # ScritchUI requires a normalized library name
 squirreljme_target_binary_name(ScritchUICocoa
 	"squirreljme-scritchui-cocoa")
+squirreljme_target_binary_output(ScritchUICocoa
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+
+# Generate exports
+squirreljme_target_shared_library_exports(ScritchUICocoa)
 
 # Apple and GNUStep specific link options
 if(SQUIRRELJME_IS_APPLE_DESKTOP)
