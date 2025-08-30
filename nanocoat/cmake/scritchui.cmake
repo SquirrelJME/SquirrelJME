@@ -47,7 +47,7 @@ macro(squirreljme_scritchany_build area capArea ifVar subDir targetBase)
 
 		# Include the target into the collection list
 		file(APPEND "${CMAKE_BINARY_DIR}/libsquirreljme-scritch${area}.list"
-			"${targetBase}")
+			"${targetBase}\n")
 
 		# What is the library called?
 		get_target_property(libraryName Scritch${capArea}${targetBase}
