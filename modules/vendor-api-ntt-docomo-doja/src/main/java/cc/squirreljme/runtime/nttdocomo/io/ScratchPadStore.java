@@ -11,15 +11,18 @@ package cc.squirreljme.runtime.nttdocomo.io;
 
 import cc.squirreljme.jvm.launch.IModeProperty;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
+import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
@@ -36,7 +39,7 @@ public final class ScratchPadStore
 	
 	/** The record store key prefix. */
 	private static final String _STORE_KEY_PREFIX =
-		"SquirrelJME-i-Appli-";
+		"ScratchPad-";
 	
 	/** STO Header size. */
 	private static final int _STO_HEADER_LEN =
@@ -75,23 +78,44 @@ public final class ScratchPadStore
 		this._data = data;
 		try (RecordStore store = this.__rmsStore())
 		{
+			// Do we need to seed?
+			boolean needSeed = false;
+			
 			// Nothing was actually created ever?
 			if (store.getNumRecords() <= 0)
-			{
-				ScratchPadStore.__seed(__pad, data);
-				return;
-			}
+				needSeed = true;
 			
-			// Read in the data
-			if (__length != store.getRecord(0, data, 0))
-				Debugging.debugNote("i-appli record size mismatch?");
+			// Read in the data, the length is invalid or does not match
+			// then it has to be seeded
+			else
+				try
+				{
+					if (__length != store.getRecord(1, data, 0))
+						needSeed = true;
+				}
+				catch (RecordStoreException __e)
+				{
+					if (Debugging.ENABLED)
+						__e.printStackTrace();
+					
+					needSeed = true;
+				}
+				
+			// Do we actually need to seed the data?
+			if (needSeed)
+				ScratchPadStore.__seed(__pad, data);
 		}
 		
 		// {@squirreljme.error AH0m Could not read pre-existing data from
 		// the record store.}
 		catch (RecordStoreException __e)
 		{
-			throw new IOException("AH0m", __e);
+			if (Debugging.ENABLED)
+				__e.printStackTrace();
+			
+			IOException toss = new ConnectionNotFoundException("AH0m");
+			toss.initCause(__e);
+			throw toss;
 		}
 	}
 	
@@ -115,13 +139,16 @@ public final class ScratchPadStore
 				if (store.getNumRecords() <= 0)
 					store.addRecord(data, 0, data.length);
 				else
-					store.setRecord(0, data, 0, data.length);
+					store.setRecord(1, data, 0, data.length);
 			}
 			
 			// {@squirreljme.error AH0l Could not write scratch pad to the
 			// record store.}
 			catch (RecordStoreException __e)
 			{
+				if (Debugging.ENABLED)
+					__e.printStackTrace();
+				
 				throw new IOException("AH0l", __e);
 			}
 		}
@@ -141,10 +168,13 @@ public final class ScratchPadStore
 		throws IndexOutOfBoundsException
 	{
 		byte[] data = this._data;
-		if (__pos < 0 || __length < 0 || (__pos + __length) < 0 ||
-			(__pos + __length) > data.length)
+		if (__pos < 0 || __length < 0 || (__pos + __length) < 0)
 			throw new IndexOutOfBoundsException("IOOB");
 		
+		// Do not read past the end
+		if ((__pos + __length) > data.length)
+			return new ByteArrayInputStream(data, __pos,
+				data.length - __pos);
 		return new ByteArrayInputStream(data, __pos, __length);
 	}
 	
@@ -164,9 +194,11 @@ public final class ScratchPadStore
 	public OutputStream outputStream(int __pos, int __len)
 		throws IndexOutOfBoundsException, IOException
 	{
+		// There would normally be a (__pos + __len) > data.length check
+		// here, however there could be a stream past the bounds which
+		// is dropped
 		byte[] data = this._data;
-		if (__pos < 0 || __len < 0 || (__pos + __len) < 0 ||
-			(__pos + __len) > data.length)
+		if (__pos < 0 || __len < 0 || (__pos + __len) < 0)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		return new ScratchPadOutputTransaction(this, __pos, __len);
@@ -190,13 +222,23 @@ public final class ScratchPadStore
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0)
 			throw new IndexOutOfBoundsException("IOOB");
+		
+		// No data to actually write? This was a very pointless transaction
+		if (__o >= __b.length)
+			return;
 		
 		// Perform the copy
 		synchronized (this)
 		{
-			System.arraycopy(__b, 0, this._data, __o, __l);
+			// Do not write past the end
+			if ((__o + __l) > __b.length)
+				ObjectShelf.arrayCopy(__b, 0,
+					this._data, __o, __b.length - __o);
+			else
+				ObjectShelf.arrayCopy(__b, 0,
+					this._data, __o, __l);
 		}
 	}
 	
@@ -282,11 +324,15 @@ public final class ScratchPadStore
 		// Try to find the library that contains the seed
 		JarPackageBracket lib = null;
 		for (JarPackageBracket maybeLib : JarPackageShelf.libraries())
-			if (libName.equals(JarPackageShelf.libraryPath(maybeLib)))
+		{
+			String checkName = JarPackageShelf.libraryPath(maybeLib);
+			if (libName.equals(checkName) ||
+				libName.equals(SuiteUtils.baseName(checkName)))
 			{
 				lib = maybeLib;
 				break;
 			}
+		}
 		
 		// Not found?
 		if (lib == null)
@@ -366,7 +412,8 @@ public final class ScratchPadStore
 			}
 			catch (IOException __e)
 			{
-				__e.printStackTrace();
+				if (Debugging.ENABLED)
+					__e.printStackTrace();
 				
 				// Ignore
 				return;

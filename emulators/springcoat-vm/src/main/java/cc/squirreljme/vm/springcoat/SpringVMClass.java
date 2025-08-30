@@ -43,7 +43,8 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/07/21
  */
 public final class SpringVMClass
-	implements HasAccessibleFlags, SpringClass
+	extends SpringBaseClass
+	implements HasAccessibleFlags
 {
 	/** The name of this class. */
 	protected final ClassName name;
@@ -104,9 +105,6 @@ public final class SpringVMClass
 	
 	/** The base index for our own instance fields. */
 	final int _fieldLookupBase;
-	
-	/** The class instance. */
-	SpringObject _instance;
 	
 	/** Has this class been initialized? */
 	private volatile boolean _initialized;
@@ -340,15 +338,7 @@ public final class SpringVMClass
 	@Override
 	public final SpringObject classObject()
 	{
-		synchronized (this)
-		{
-			SpringObject rv = this._instance;
-			if (rv == null)
-				throw new IllegalStateException("No Class<?> for " +
-					this.name);
-			
-			return rv;
-		}
+		return this;
 	}
 	
 	/**
@@ -1017,10 +1007,6 @@ public final class SpringVMClass
 	@Override
 	public void setClassObject(SpringObject __rv)
 	{
-		synchronized (this)
-		{
-			this._instance = __rv;
-		}
 	}
 	
 	/**

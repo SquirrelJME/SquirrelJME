@@ -13,8 +13,8 @@
  * @since 2024/09/02
  */
 
-#ifndef SQUIRRELJME_TESTTRAVERSE_H
-#define SQUIRRELJME_TESTTRAVERSE_H
+#ifndef SJME_C_TESTTRAVERSE_H
+#define SJME_C_TESTTRAVERSE_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/traverse.h"

@@ -213,7 +213,7 @@ public final class StringBuilder
 		// Copy from another StringBuilder
 		else if (__v instanceof StringBuilder)
 		{
-			System.arraycopy(((StringBuilder)__v)._buffer, __s,
+			ObjectShelf.arrayCopy(((StringBuilder)__v)._buffer, __s,
 				buffer, at, len);
 			at += len;
 		}
@@ -411,7 +411,7 @@ public final class StringBuilder
 		
 		// Move everything down from above, if any
 		char[] buffer = this._buffer;
-		System.arraycopy(buffer, realEnd,
+		ObjectShelf.arrayCopy(buffer, realEnd,
 			buffer, __fromInclusive, at - deleteLen);
 		at -= deleteLen;
 		
@@ -636,7 +636,7 @@ public final class StringBuilder
 		
 		// First move all characters on the right to the end so that this can
 		// properly fit
-		System.arraycopy(buffer, __dx,
+		ObjectShelf.arrayCopy(buffer, __dx,
 			buffer, __dx + len, at - __dx);
 		
 		// Can use quicker native operation due to String?
@@ -650,7 +650,7 @@ public final class StringBuilder
 		// Insert from another StringBuilder?
 		else if (__v instanceof StringBuilder)
 		{
-			System.arraycopy(((StringBuilder)__v)._buffer, __s,
+			ObjectShelf.arrayCopy(((StringBuilder)__v)._buffer, __s,
 				buffer, __dx, len);
 		}
 		
@@ -714,7 +714,7 @@ public final class StringBuilder
 		
 		// First move all characters on the right to the end so that this can
 		// properly fit
-		System.arraycopy(buffer, __dx,
+		ObjectShelf.arrayCopy(buffer, __dx,
 			buffer, __dx + 1, at - __dx);
 		/*for (int i = at - 1, o = i + 1; i >= __dx; i--, o--)
 			buffer[o] = buffer[i];*/

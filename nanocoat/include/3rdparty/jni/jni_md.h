@@ -10,12 +10,12 @@
 #ifndef __SQUIRRELJME_JNI_MD_H__
 #define __SQUIRRELJME_JNI_MD_H__
 
-#if defined(__linux__) || defined(SJME_CONFIG_HAS_LINUX)
-	#include "jni_linux.h"
-#elif defined(_WIN32) || defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(_WIN32) || defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	#include "jni_win.h"
-#elif defined(__APPLE__) || defined(SJME_CONFIG_HAS_MACOS)
+#elif defined(__APPLE__) || defined(SJME_CONFIG_HAS_OS_MACOS)
 	#include "jni_mac.h"
+#else
+	#include "jni_unix.h"
 #endif
 
 #endif /* __SQUIRRELJME_JNI_MD_H__ */

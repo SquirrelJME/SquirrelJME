@@ -82,7 +82,8 @@ public class Command
 	 *
 	 * @param __sl The short label of the command.
 	 * @param __type The type of command this is.
-	 * @param __pri The priority of the command.
+	 * @param __pri The priority of the command, higher values are lower
+	 * priority.
 	 * @throws IllegalArgumentException If the command type is not valid.
 	 * @throws NullPointerException If no short label was specified.
 	 * @since 2017/02/28
@@ -99,7 +100,8 @@ public class Command
 	 *
 	 * @param __sl The short label of the command.
 	 * @param __type The type of command this is.
-	 * @param __pri The priority of the command.
+	 * @param __pri The priority of the command, higher values are lower
+	 * priority.
 	 * @param __implspec If true this is an implementation specific command
 	 * which the returned labels are always blank except that internally they
 	 * use the passed strings.
@@ -119,7 +121,8 @@ public class Command
 	 * @param __sl The short label of the command.
 	 * @param __ll The long label of the command, may be {@code null}.
 	 * @param __type The type of command this is.
-	 * @param __pri The priority of the command.
+	 * @param __pri The priority of the command, higher values are lower
+	 * priority.
 	 * @throws IllegalArgumentException If the command type is not valid.
 	 * @throws NullPointerException If no short label was specified.
 	 * @since 2017/02/28
@@ -138,7 +141,8 @@ public class Command
 	 * @param __ll The long label of the command, may be {@code null}.
 	 * @param __i The image used on the command, may be {@code null}.
 	 * @param __type The type of command this is.
-	 * @param __pri The priority of the command.
+	 * @param __pri The priority of the command, higher values are lower
+	 * priority.
 	 * @throws IllegalArgumentException If the command type is not valid.
 	 * @throws NullPointerException If no short label was specified.
 	 * @since 2017/02/28
@@ -157,7 +161,8 @@ public class Command
 	 * @param __ll The long label of the command, may be {@code null}.
 	 * @param __i The image used on the command, may be {@code null}.
 	 * @param __type The type of command this is.
-	 * @param __pri The priority of the command.
+	 * @param __pri The priority of the command, higher values are lower
+	 * priority.
 	 * @param __implspec If true this is an implementation specific command
 	 * which the returned labels are always blank except that internally they
 	 * use the passed strings.

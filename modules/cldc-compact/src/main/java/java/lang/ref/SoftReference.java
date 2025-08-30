@@ -9,7 +9,7 @@
 
 package java.lang.ref;
 
-import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * In SquirrelJME this is just a {@link WeakReference}, note that this is not
@@ -19,8 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  * @param <T> The type used.
  * @since 2022/06/19
  */
-@Deprecated
-@Api
+@SquirrelJMEVendorApi
 public class SoftReference<T>
 	extends WeakReference<T>
 {
@@ -31,8 +30,7 @@ public class SoftReference<T>
 	 * @deprecated Only in SquirrelJME, not in standard Java ME 8.
 	 * @since 2022/06/19
 	 */
-	@Deprecated
-	@Api
+	@SquirrelJMEVendorApi
 	public SoftReference(T __v)
 	{
 		super(__v, null);
@@ -50,8 +48,7 @@ public class SoftReference<T>
 	 * @deprecated Only in SquirrelJME, not in standard Java ME 8.
 	 * @since 2022/06/19
 	 */
-	@Deprecated
-	@Api
+	@SquirrelJMEVendorApi
 	public SoftReference(T __v, ReferenceQueue<? super T> __q)
 	{
 		super(__v, __q);

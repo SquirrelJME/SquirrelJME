@@ -14,11 +14,15 @@ import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
-import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
-import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.BucketShelf;
+import cc.squirreljme.jvm.mle.brackets.BucketBracket;
+import cc.squirreljme.jvm.mle.constants.StandardBucketType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.brackets.BucketObject;
 import cc.squirreljme.vm.springcoat.brackets.TaskObject;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
@@ -36,7 +40,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.WeakHashMap;
 import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
@@ -146,6 +149,10 @@ public final class SpringMachine
 	private final Collection<CallbackThread> _cbThreads =
 		new LinkedList<>();
 	
+	/** Cache for buckets. */
+	private final BucketObject[] _buckets =
+		new BucketObject[StandardBucketType.NUM_BUCKETS];
+	
 	/** For internal threads, initially set their verbosity. */
 	volatile int _verboseInternal;
 	
@@ -216,6 +223,41 @@ public final class SpringMachine
 				__cl.bootLibrary().name(),
 				SpringMachine._nextVmNumber++,
 				System.identityHashCode(this));
+		}
+	}
+	
+	/**
+	 * Returns the bucket bracket.
+	 *
+	 * @param __id The bucket ID.
+	 * @return The resultant bucket.
+	 * @since 2025/04/25
+	 */
+	public BucketObject bucket(int __id)
+	{
+		BucketObject[] buckets = this._buckets;
+		if (__id < 0 || __id >= buckets.length)
+			throw new SpringMLECallError("IOOB");
+		
+		// Is the bucket already cached?
+		BucketObject result = buckets[__id];
+		if (result != null)
+			return result;
+		
+		// Otherwise load in the bucket
+		try
+		{
+			// Obtain the bucket
+			result = new BucketObject(this,
+				BucketShelf.bucket(__id));
+			
+			// Cache and use it
+			buckets[__id] = result;
+			return result;
+		}
+		catch (MLECallError __e)
+		{
+			throw new SpringMLECallError(__e.getMessage(), __e);
 		}
 	}
 	
@@ -604,6 +646,7 @@ public final class SpringMachine
 	 * {@inheritDoc}
 	 * @since 2018/09/13
 	 */
+	@SuppressWarnings("CallToThreadRun")
 	@Override
 	public final void run()
 	{
@@ -633,16 +676,7 @@ public final class SpringMachine
 		// The main although it executes in this context will always have the
 		// same exact logic as other threads running apart from this main
 		// thread, so no code is needed to be duplicated at all.
-		try
-		{
-			worker.run();
-		}
-		
-		// Either failed or threw exit exception
-		catch (RuntimeException e)
-		{
-			throw e;
-		}
+		worker.run();
 	}
 	
 	/**

@@ -10,9 +10,11 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.io.PipeInputStream;
 import java.io.InputStream;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Contract;
@@ -49,7 +51,8 @@ public final class JarPackageShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native boolean equals(
-		JarPackageBracket __a, JarPackageBracket __b)
+		@NotNull JarPackageBracket __a,
+		@NotNull JarPackageBracket __b)
 		throws MLECallError;
 	
 	/**
@@ -80,28 +83,58 @@ public final class JarPackageShelf
 	 * representation of the JAR file in string form.
 	 * 
 	 * @param __jar The JAR to get the path of.
-	 * @return The path of the given JAR.
+	 * @return The path of the given JAR, may be {@code null} if there is no
+	 * valid representable path.
 	 * @throws MLECallError If the JAR is not valid.
 	 * @since 2020/10/31
 	 */
 	@SquirrelJMEVendorApi
+	@Nullable
 	public static native String libraryPath(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 	
 	/**
-	 * Opens the resource from the input stream.
+	 * Opens the give resource from the given Jar as an input stream.
 	 *
 	 * @param __jar The JAR to open.
 	 * @param __rc The resource to load from the given JAR.
-	 * @return Input stream to the resource, may be {@code null} if it does
-	 * not exist.
+	 * @return A pipe to read the given resource, may be {@code null} if it
+	 * does not exist.
+	 * @throws MLECallError If the JAR is not valid or the resource was not
+	 * specified.
+	 * @since 2025/07/06
+	 */
+	@SquirrelJMEVendorApi
+	@Nullable
+	public static final InputStream openResource(
+		@NotNull JarPackageBracket __jar,
+		@NotNull String __rc)
+		throws MLECallError
+	{
+		if (__jar == null || __rc == null)
+			throw new MLECallError("NARG");
+		
+		// Open piped resource
+		PipeBracket pipe = JarPackageShelf.openResourcePipe(__jar, __rc);
+		if (pipe == null)
+			return null;
+		return new PipeInputStream(pipe);
+	}
+	
+	/**
+	 * Opens the give resource from the given Jar as a native pipe.
+	 *
+	 * @param __jar The JAR to open.
+	 * @param __rc The resource to load from the given JAR.
+	 * @return A pipe to read the given resource, may be {@code null} if it
+	 * does not exist.
 	 * @throws MLECallError If the JAR is not valid or the resource was not
 	 * specified.
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
 	@Nullable
-	public static native InputStream openResource(
+	public static native PipeBracket openResourcePipe(
 		@NotNull JarPackageBracket __jar,
 		@NotNull String __rc)
 		throws MLECallError;

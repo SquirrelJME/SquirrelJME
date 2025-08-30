@@ -348,6 +348,7 @@ public class Arrays
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
+	@SuppressWarnings("SuspiciousSystemArraycopy")
 	@Api
 	public static <T, U> T[] copyOf(U[] __src, int __newLen,
 		Class<? extends T[]> __newType)
@@ -360,9 +361,10 @@ public class Arrays
 			throw new NegativeArraySizeException("NASE");
 		
 		// Allocate array in the target type
-		T[] rv = ObjectShelf.<T[]>arrayNew(TypeShelf.classToType(__newType),
+		T[] rv = ObjectShelf.<T[]>arrayNew(__newType,
 			__newLen);
 		
+		// Copy everything over
 		System.arraycopy(__src, 0,
 			rv, 0, Math.min(__newLen, __src.length));
 			

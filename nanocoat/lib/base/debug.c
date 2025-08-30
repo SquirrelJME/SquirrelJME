@@ -7,19 +7,20 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "sjme/config.h"
 
-#include "sjme/stdTypes.h"
-
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	#define WIN32_LEAN_AND_MEAN 1
 	
 	#include <windows.h>
-	#include <debugapi.h>
+	
+	#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_NT_4)
+		#include <debugapi.h>
+	#endif
 
 	#undef WIN32_LEAN_AND_MEAN
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
+	#include <signal.h>
 #endif
 
 #include "sjme/debug.h"
@@ -29,24 +30,105 @@
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
 
-SJME_DYLIB_EXPORT sjme_debug_handlerFunctions* sjme_debug_handlers = NULL;
+/** The crash function to call. */
+sjme_threadLocal(sjme_thread_mainFunc, sjme_debug_crashFunc);
 
-void sjme_debug_abort(void)
+/** The parameter to pass to the crash function. */
+sjme_threadLocal(sjme_thread_parameter, sjme_debug_crashFuncParam);
+
+sjme_attrExport sjme_debug_handlerFunctions* sjme_debug_handlers = NULL;
+
+#if defined(SJME_CONFIG_HAS_OS_POSIX)
+static void sjme_debug_crashPosix(int signalId)
 {
-	/* Use specific abort handler? */
-	if (sjme_debug_handlers != NULL && sjme_debug_handlers->abort != NULL)
-		if (sjme_debug_handlers->abort())
-			return;
+	sjme_thread_mainFunc crashFunc;
+	sjme_thread_parameter crashParam;
 
-#if defined(SJME_CONFIG_HAS_WINDOWS)
-	/* When running tests without a debugger this will pop up about 1000 */
-	/* dialogs saying the program aborted, so only abort on debugging. */
-	if (!IsDebuggerPresent())
-		return;
+	/* No longer handle the signal, otherwise an infinite loop occurs. */
+	signal(signalId, SIG_DFL);
+	
+	/* Call the crash function, if it was set. */
+	crashFunc = sjme_debug_crashFunc;
+	crashParam = sjme_debug_crashFuncParam;
+	if (crashFunc != NULL)
+		crashFunc(crashParam);
+	
+	/* Raise the signal in this process, so that it actually crashes. */
+	raise(signalId);
+}
 #endif
 
-	/* Otherwise use C abort handler. */
-	abort();
+sjme_jboolean sjme_debug_abort(sjme_errorCode error)
+{
+	static sjme_atomic_sjme_jint didAbort;
+
+	/* Only trigger abort once. */
+	if (sjme_atomic_sjme_jint_compareSet(&didAbort, 0, 1))
+	{
+		/* Use specific abort handler? */
+		if (sjme_debug_handlers != NULL && sjme_debug_handlers->abort != NULL)
+			if (sjme_debug_handlers->abort(error))
+				return SJME_JNI_TRUE;
+
+#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_NT_4)
+		/* When running tests without a debugger this will pop up about 1000 */
+		/* dialogs saying the program aborted, so only abort on debugging. */
+		if (!IsDebuggerPresent())
+			return;
+
+#if defined(SJME_CONFIG_DEBUG) && \
+	!(defined(__MINGW32__) || defined(__MINGW64__))
+		/* Do not pop up an annoying dialog. */
+		_set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
+
+		/* Breakpoint. */
+		__debugbreak();
+#endif
+#endif
+		
+		/* Use C abort handler. */
+		abort();
+
+		/* We skipped abort, so clear it. */
+		sjme_atomic_sjme_jint_compareSet(&didAbort, 1, 0);
+
+		/* Triggered abort. */
+		return SJME_JNI_TRUE;
+	}
+
+	/* Did not trigger. */
+	return SJME_JNI_FALSE;
+}
+
+void sjme_debug_crashContext(
+	sjme_attrInNullable sjme_thread_mainFunc crashFunc,
+	sjme_attrInNullable sjme_thread_parameter crashParam)
+{
+	/* Just replaces the other. */
+	sjme_debug_crashFunc = crashFunc;
+	sjme_debug_crashFuncParam = crashParam;
+}
+
+sjme_errorCode sjme_debug_crashRegister(void)
+{
+#if defined(SJME_CONFIG_HAS_OS_POSIX)
+	sjme_errorCode error;
+
+	/* These are the general memory and computation related signals. */
+	error = SJME_ERROR_NONE;
+	if (signal(SIGSEGV, sjme_debug_crashPosix) == SIG_ERR)
+		error = SJME_ERROR_INVALID_ARGUMENT;
+	if (signal(SIGBUS, sjme_debug_crashPosix) == SIG_ERR)
+		error = SJME_ERROR_INVALID_ARGUMENT;
+	if (signal(SIGILL, sjme_debug_crashPosix) == SIG_ERR)
+		error = SJME_ERROR_INVALID_ARGUMENT;
+	if (signal(SIGFPE, sjme_debug_crashPosix) == SIG_ERR)
+		error = SJME_ERROR_INVALID_ARGUMENT;
+	
+	return error;
+#else
+	return SJME_ERROR_NOT_IMPLEMENTED;
+#endif
 }
 
 /**
@@ -168,12 +250,13 @@ void sjme_genericMessage(sjme_lpcstr file, int line,
 	if (sjme_debug_handlers != NULL && sjme_debug_handlers->message != NULL)
 		handled = sjme_debug_handlers->message(
 			fullBuf, buf);
-	
+
+	/* Make sure it gets written somewhere. */
 	if (!handled)
+	{
 		fprintf(stderr, "%s\n", fullBuf);
-	
-	/* Make sure it gets written. */
-	fflush(stderr);
+		fflush(stderr);
+	}
 #endif
 }
 
@@ -215,10 +298,8 @@ sjme_errorCode sjme_dieR(sjme_lpcstr file, int line,
 	va_end(list);
 	
 	/* Exit and stop. */
-	sjme_debug_abort();
-	
-	/* Exit after abort happens, it can be ignored in debugging. */
-	sjme_debug_exit(EXIT_FAILURE);
+	if (sjme_debug_abort(SJME_ERROR_UNKNOWN_NEGATIVE))
+		sjme_debug_exit(EXIT_FAILURE);
 	
 	/* Never reaches, but returns false naturally. */
 	return SJME_ERROR_UNKNOWN;
@@ -313,9 +394,7 @@ void sjme_todoR(sjme_lpcstr file, int line,
 	va_end(list);
 	
 	/* Exit and stop. */
-	sjme_debug_abort();
-	
-	/* Exit after abort happens, it can be ignored in debugging. */
-	sjme_debug_exit(EXIT_FAILURE);
+	if (sjme_debug_abort(SJME_ERROR_UNKNOWN_NEGATIVE))
+		sjme_debug_exit(EXIT_FAILURE);
 }
 

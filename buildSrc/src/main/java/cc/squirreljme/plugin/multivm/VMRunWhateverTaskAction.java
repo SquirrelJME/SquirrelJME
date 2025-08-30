@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
@@ -53,6 +54,13 @@ public class VMRunWhateverTaskAction
 		
 		// Get the Jar to Run
 		String jar = System.getProperty("jar");
+		if (jar == null || jar.isEmpty())
+		{
+			Map<String, ?> properties = __task.getProject()
+				.getRootProject().getProperties();
+			if (properties.containsKey("jar"))
+				jar = Objects.toString(properties.get("jar"));
+		}
 		if (jar == null || jar.isEmpty())
 			jar = System.getenv("SQUIRRELJME_JAR");
 		

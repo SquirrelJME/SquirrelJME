@@ -13,8 +13,8 @@
  * @since 2024/04/06
  */
 
-#ifndef SQUIRRELJME_CORE_H
-#define SQUIRRELJME_CORE_H
+#ifndef SJME_C_CORE_H
+#define SJME_C_CORE_H
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -36,7 +36,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
 
 sjme_errorCode sjme_scritchui_core_choiceGetSelectedIndex(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -213,12 +213,12 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
-	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy);
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
 
 sjme_errorCode sjme_scritchui_core_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,

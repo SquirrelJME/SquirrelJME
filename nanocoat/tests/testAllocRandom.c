@@ -61,7 +61,7 @@ SJME_TEST_DECLARE(testAllocRandom)
 	
 	/* Initialize the PRNG. */
 	memset(&random, 0, sizeof(random));
-	if (!sjme_randomInit(&random, 12345, 67890))
+	if (!sjme_random_init(&random, 12345, 67890))
 		return sjme_unit_fail(test, "Could not initialize PRNG?");
 	
 	/* Perform many small allocations. */
@@ -70,7 +70,7 @@ SJME_TEST_DECLARE(testAllocRandom)
 	{
 		/* Determine size to allocate. */
 		linkLen = 0;
-		if (!sjme_randomNextIntMax(&random, &linkLen, 32))
+		if (!sjme_random_nextIntMax(&random, &linkLen, 32))
 			return sjme_unit_fail(test, "Could not random size %d %d.",
 				(int)i, (int)linkLen);
 		linkLen += sizeof(linkLen); 
@@ -100,7 +100,7 @@ SJME_TEST_DECLARE(testAllocRandom)
 	{
 		/* Which link do we want to clear? */
 		desire = -1;
-		if (!sjme_randomNextIntMax(&random, &desire,
+		if (!sjme_random_nextIntMax(&random, &desire,
 				NUM_RANDOM))
 			return sjme_unit_fail(test, "Could not desire %d.",
 				(int)i);
@@ -133,7 +133,7 @@ SJME_TEST_DECLARE(testAllocRandom)
 		
 		/* Determine size to allocate. */
 		linkLen = 0;
-		if (!sjme_randomNextIntMax(&random, &linkLen, 32))
+		if (!sjme_random_nextIntMax(&random, &linkLen, 32))
 			return sjme_unit_fail(test, "Could not random size %d %d.",
 				(int)i, (int)linkLen);
 		linkLen += sizeof(linkLen); 

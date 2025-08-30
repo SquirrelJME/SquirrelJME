@@ -13,8 +13,8 @@
  * @since 2023/07/26
  */
 
-#ifndef SQUIRRELJME_UTIL_H
-#define SQUIRRELJME_UTIL_H
+#ifndef SJME_C_UTIL_H
+#define SJME_C_UTIL_H
 
 #include "sjme/error.h"
 #include "sjme/stdTypes.h"
@@ -113,7 +113,7 @@ sjme_jint sjme_compare_null(
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
-sjme_errorCode sjme_randomInit(
+sjme_errorCode sjme_random_init(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue sjme_jint seedHi,
 	sjme_attrInValue sjme_jint seedLo);
@@ -126,7 +126,7 @@ sjme_errorCode sjme_randomInit(
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
-sjme_errorCode sjme_randomInitL(
+sjme_errorCode sjme_random_initL(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue sjme_jlong seed);
 	
@@ -138,9 +138,19 @@ sjme_errorCode sjme_randomInitL(
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
-sjme_errorCode sjme_randomNextInt(
+sjme_errorCode sjme_random_nextInt(
 	sjme_attrInOutNotNull sjme_random* random,
 	sjme_attrOutNotNull sjme_jint* outValue);
+	
+/**
+ * Returns the next random value.
+ * 
+ * @param random The random state.
+ * @return The next random value.
+ * @since 2025/07/19
+ */
+sjme_jint sjme_random_nextIntR(
+	sjme_attrInOutNotNull sjme_random* random);
 	
 /**
  * Returns the next random value within the given range.
@@ -151,7 +161,7 @@ sjme_errorCode sjme_randomNextInt(
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
-sjme_errorCode sjme_randomNextIntMax(
+sjme_errorCode sjme_random_nextIntMax(
 	sjme_attrInOutNotNull sjme_random* random,
 	sjme_attrOutNotNull sjme_jint* outValue,
 	sjme_attrInPositiveNonZero sjme_jint maxValue);
@@ -278,6 +288,28 @@ sjme_jchar sjme_swap_ushort(
  */
 #define sjme_swap_short(in) ((sjme_jchar)sjme_swap_ushort((sjme_jchar)(in)))
 
+#if defined(SJME_CONFIG_BIG_ENDIAN)
+	/** A big endian unsigned short value. */
+	#define sjme_big_ushort(v) ((sjme_jushort)(v))
+#else
+	/** A big endian unsigned short value. */
+	#define sjme_big_ushort(v) (sjme_swap_ushort((v)))
+#endif
+
+/** A big endian signed short value. */
+#define sjme_big_short(v) ((sjme_jshort)sjme_big_ushort((v)))
+
+#if defined(SJME_CONFIG_BIG_ENDIAN)
+	/** A big endian unsigned integer value. */
+	#define sjme_big_uint(v) ((sjme_juint)(v))
+#else
+	/** A big endian unsigned integer value. */
+	#define sjme_big_uint(v) (sjme_swap_uint((v)))
+#endif
+
+/** A big endian signed integer value. */
+#define sjme_big_int(v) ((sjme_jint)sjme_big_uint((v)))
+	
 /**
  * Performs @c memmove() followed by shifting up by 8 the destination buffer,
  * then following a byte swap.
@@ -319,6 +351,28 @@ sjme_errorCode sjme_swap_uint_memmove(
 sjme_jint sjme_tree_find(void* tree, void* what,
 	const sjme_tree_findFunc* functions);
 
+/**
+ * Aligns the given address to the given alignment.
+ * 
+ * @param addr The address to align.
+ * @param align The alignment to use.
+ * @return The resultant aligned address.
+ * @since 2025/02/10
+ */
+sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
+	sjme_intPointer align);
+
+/**
+ * Aligns the given address to the given alignment.
+ * 
+ * @param addr The address to align.
+ * @param align The alignment to use.
+ * @return The resultant aligned address.
+ * @since 2025/06/15
+ */
+#define sjme_util_alignToP(addr, align) \
+	((sjme_pointer)sjme_util_alignTo(((sjme_intPointer)(addr)), (align)))
+	
 /**
  * Returns the number of bits in the value.
  * 
@@ -418,7 +472,7 @@ sjme_errorCode sjme_util_lpstrTrimEnd(
  * @param addr The address to access.
  * @return The address of the un-aligned address, or a pointer to a wrapper
  * which contains the value to be read.
- * @since 2025/01/011
+ * @since 2025/01/11
  */
 const sjme_jshort* sjme_util_memUnaligned16(void* addr);
 	
@@ -430,9 +484,35 @@ const sjme_jshort* sjme_util_memUnaligned16(void* addr);
  * @param addr The address to access.
  * @return The address of the un-aligned address, or a pointer to a wrapper
  * which contains the value to be read.
- * @since 2025/01/011
+ * @since 2025/01/11
  */
 #define sjme_util_memUnaligned16(addr) ((const sjme_jshort*)(addr))
+	
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_UNALIGNED32)
+	
+/**
+ * Accesses an address for reading in an unaligned way.
+ *
+ * @param addr The address to access.
+ * @return The address of the un-aligned address, or a pointer to a wrapper
+ * which contains the value to be read.
+ * @since 2025/03/02
+ */
+const sjme_jint* sjme_util_memUnaligned32(void* addr);
+	
+#else
+	
+/**
+ * Accesses an address in an unaligned way.
+ *
+ * @param addr The address to access.
+ * @return The address of the un-aligned address, or a pointer to a wrapper
+ * which contains the value to be read.
+ * @since 2025/03/02
+ */
+#define sjme_util_memUnaligned32(addr) ((const sjme_jint*)(addr))
 	
 #endif
 

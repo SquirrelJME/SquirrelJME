@@ -13,8 +13,8 @@
  * @since 2024/08/09
  */
 
-#ifndef SQUIRRELJME_TOKENUTILS_H
-#define SQUIRRELJME_TOKENUTILS_H
+#ifndef SJME_C_TOKENUTILS_H
+#define SJME_C_TOKENUTILS_H
 
 #include "sjme/config.h"
 #include "sjme/stdTypes.h"
@@ -31,6 +31,22 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * A single token.
+ * 
+ * @param a The token.
+ * @since 2025/05/11
+ */
+#define SJME_TOKEN___(a) a
+	
+/**
+ * A single token.
+ * 
+ * @param a The token.
+ * @since 2025/05/11
+ */
+#define SJME_TOKEN(a) SJME_TOKEN___(a)
+	
 /**
  * Pastes two tokens together.
  * 
@@ -231,6 +247,10 @@ extern "C"
 /** Description of NanoCoat. */
 #define SQUIRRELJME_VERSION_NANOCOAT \
 	"Stack caching interpreter"
+
+/** Description of NanoCoat, without optimization. */
+#define SQUIRRELJME_VERSION_SPRINGCOAT \
+	"Non-optimizing SpringCoat compatibility mode"
 
 /**
  * Calculates the size of a struct member.

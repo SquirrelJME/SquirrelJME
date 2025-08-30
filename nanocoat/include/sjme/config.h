@@ -16,10 +16,15 @@
  * @since 2023/07/27
  */
 
-#ifndef SQUIRRELJME_CONFIG_H
-#define SQUIRRELJME_CONFIG_H
+#ifndef SJME_C_CONFIG_H
+#define SJME_C_CONFIG_H
 
 #include <stddef.h>
+
+/* Floating point header, determines if software floats should be used. */
+#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+	#include <float.h>
+#endif
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -29,7 +34,7 @@
 extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif     /* #ifdef __cplusplus */
-
+	
 /*--------------------------------------------------------------------------*/
 
 #if defined(__STDC__)
@@ -37,6 +42,16 @@ extern "C" {
 	#define SJME_CONFIG_HAS_C89
 	
 	#if defined(__STDC_VERSION__)
+		#if __STDC_VERSION__ >= 202311L
+			/** Has C23. */
+			#define SJME_CONFIG_HAS_C23
+		#endif
+		
+		#if __STDC_VERSION__ >= 201710L
+			/** Has C17. */
+			#define SJME_CONFIG_HAS_C17
+		#endif
+		
 		#if __STDC_VERSION__ >= 201112L
 			/** Has C11 support. */
 			#define SJME_CONFIG_HAS_C11
@@ -111,11 +126,18 @@ extern "C" {
 #if defined(__GNUC__) && !defined(SJME_CONFIG_HAS_CLANG)
 	/** GNU C Compiler. */
 	#define SJME_CONFIG_HAS_GCC
-	
-	/** Is the GCC version the specified version? */
-	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
-		(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
-		(defined(__GNUC_MINOR__) ? __GNUC_MINOR__ >= minor : 1)))
+
+	#if defined(__GNUC_MINOR__)
+		/** Is the GCC version the specified version? */
+		#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
+			(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
+			(__GNUC_MINOR__ >= minor)))
+	#else
+		/** Is the GCC version the specified version? */
+		#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) \
+			(__GNUC__ > major ? 1 : (__GNUC__ < major ? 0 : \
+			(0 >= minor)))
+	#endif
 #else
 	/** Is the GCC version the specified version? */
 	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
@@ -137,59 +159,135 @@ extern "C" {
 /* The current operating system. */
 #if defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN)
 	/** Emscripten (WASM). */
-	#define SJME_CONFIG_HAS_EMSCRIPTEN
+	#define SJME_CONFIG_HAS_OS_EMSCRIPTEN
 #elif defined(GEKKO)
 	#if defined(WIIU)
 		/** Nintendo Wii U is available. */
-		#define SJME_CONFIG_HAS_NINTENDO_WIIU
+		#define SJME_CONFIG_HAS_OS_NINTENDO_WIIU
 	#else
 		/** Nintendo Wii is available. */
-		#define SJME_CONFIG_HAS_NINTENDO_WII
+		#define SJME_CONFIG_HAS_OS_NINTENDO_WII
 	#endif
 #elif defined(__3DS__) || defined(_3DS)
 	/** Nintendo 3DS is available. */
-	#define SJME_CONFIG_HAS_NINTENDO_3DS
+	#define SJME_CONFIG_HAS_OS_NINTENDO_3DS
+#elif defined(PS2) || defined(_EE) || defined(_IOP) || defined(__PS2__)
+	/** Sony PlayStation 2. */
+	#define SJME_CONFIG_HAS_OS_SONY_PS2
 #elif defined(SDCC) || defined(__SDCC)
-	/** SDCC is available. */
-	#define SJME_CONFIG_HAS_SDCC
+	/** Baremetal system. */
+	#define SJME_CONFIG_HAS_OS_BAREMETAL
+#elif defined(__ANDROID__) || defined(__ANDROID_API__)
+	/** Android is available. */
+	#define SJME_CONFIG_HAS_OS_ANDROID
 #elif defined(__linux__) || defined(linux) || defined(__linux)
 	/** Linux is available. */
-	#define SJME_CONFIG_HAS_LINUX
+	#define SJME_CONFIG_HAS_OS_LINUX
 #elif defined(__CYGWIN__)
 	/** Cygwin is available. */
-	#define SJME_CONFIG_HAS_CYGWIN
+	#define SJME_CONFIG_HAS_OS_CYGWIN
 #elif defined(_WIN16) || defined(__WIN16__) || defined(__WIN16)
 	/** Using Windows 16-bit. */
-	#define SJME_CONFIG_HAS_WINDOWS_16
+	#define SJME_CONFIG_HAS_OS_WINDOWS_16
 
 	/** Windows is available however. */
-	#define SJME_CONFIG_HAS_WINDOWS 16
+	#define SJME_CONFIG_HAS_OS_WINDOWS 16
 #elif defined(_WIN32) || defined(__WIN32__) || \
 	defined(__WIN32) || defined(_WINDOWS)
 	/** Using Windows 32-bit. */
-	#define SJME_CONFIG_HAS_WINDOWS_32
+	#define SJME_CONFIG_HAS_OS_WINDOWS_32
 	
 	/** Windows is available. */
-	#define SJME_CONFIG_HAS_WINDOWS 32
+	#define SJME_CONFIG_HAS_OS_WINDOWS 32
 #elif defined(__APPLE__) && defined(__MACH__)
 	/** macOS 10+ is available. */
-	#define SJME_CONFIG_HAS_MACOS
+	#define SJME_CONFIG_HAS_OS_MACOS
 #elif defined(macintosh)
 	/** macOS Classic is available. */
-	#define SJME_CONFIG_HAS_MACOS_CLASSIC
+	#define SJME_CONFIG_HAS_OS_MACOS_CLASSIC
 #elif defined(__palmos__)
 	/** PalmOS is available. */
-	#define SJME_CONFIG_HAS_PALMOS
+	#define SJME_CONFIG_HAS_OS_PALMOS
+#elif defined(__SYMBIAN32__)
+	/** Is Symbian. */
+	#define SJME_CONFIG_HAS_OS_SYMBIAN
+#elif defined(__sun) || defined(__illumos__)
+	#if defined(__illumos__)
+		/** Is Illumos. */
+		#define SJME_CONFIG_HAS_OS_ILLUMOS
+	#endif
+	
+	/** Is Solaris. */
+	#define SJME_CONFIG_HAS_OS_SOLARIS
+#elif defined(NeXT)
+	/** Is NeXTStep. */
+	#define SJME_CONFIG_HAS_OS_NEXTSTEP
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || \
 	defined(__OpenBSD__) || defined(__bsdi__) || \
 	defined(__DragonFly__) || defined(__MidnightBSD__)
 	/** BSD is available. */
-	#define SJME_CONFIG_HAS_BSD
+	#define SJME_CONFIG_HAS_OS_BSD
 #elif defined(__BEOS__) || defined(__HAIKU__)
 	/** BeOS/Haiku is available. */
-	#define SJME_CONFIG_HAS_BEOS
+	#define SJME_CONFIG_HAS_OS_BEOS
+#elif defined(MSDOS) || defined(__MSDOS__) || defined(_MSDOS) || \
+	defined(__DOS__)
+	/** Is Microsoft Dos. */
+	#define SJME_CONFIG_HAS_OS_PC_DOS
 #endif
 
+#if defined(SJME_CONFIG_HAS_OS_ANDROID) || \
+	defined(SJME_CONFIG_HAS_OS_BSD) || \
+	defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
+	defined(SJME_CONFIG_HAS_OS_LINUX) || \
+	defined(SJME_CONFIG_HAS_OS_MACOS) || \
+	defined(SJME_CONFIG_HAS_OS_NEXTSTEP) || \
+	defined(SJME_CONFIG_HAS_OS_SOLARIS)
+	/** POSIX is available. */
+	#define SJME_CONFIG_HAS_OS_POSIX
+#endif
+
+/** Windows 8. */
+#define SJME_CONFIG_WINDOWS_8 0x0600
+
+/** Windows XP */
+#define SJME_CONFIG_WINDOWS_XP 0x0501
+
+/** Windows Vista. */
+#define SJME_CONFIG_WINDOWS_VISTA 0x0600
+
+/** Windows NT 4.0 */
+#define SJME_CONFIG_WINDOWS_NT_4 0x0400
+
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	/* Include the Windows SDK versioning information, if available. */
+	#if defined(SJME_CONFIG_HAS_SDKDDKVER_H)
+		#include <sdkddkver.h>
+	#endif
+
+	/** Windows version is at least the given version. */
+	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) (WINVER >= winVer)
+
+	#if SJME_CONFIG_WINDOWS_VERSION_LEAST(SJME_CONFIG_WINDOWS_VISTA)
+		/** Windows NT version is at least the given version. */
+		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) \
+			SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer)
+	#elif defined(_WIN32_WINNT)
+		/** Windows NT version is at least the given version. */
+		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) \
+			(_WIN32_WINNT >= winVer)
+	#else
+		/** Windows NT version is at least the given version. */
+		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
+	#endif
+#else
+	/** Windows version is at least the given version. */
+	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) 0
+
+	/** Windows NT version is at least the given version. */
+	#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
+#endif
+	
 /** Possibly detect endianess. */
 #if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
 	!defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
@@ -300,13 +398,24 @@ extern "C" {
 #if SJME_CONFIG_HAS_POINTER == 32
 	/** Has 32-bit pointer. */
 	#define SJME_CONFIG_HAS_POINTER32
+
+	/** Bytes per pointer. */
+	#define SJME_POINTER_BYTES 4
 #endif
 
 #if SJME_CONFIG_HAS_POINTER == 64
 	/** Has 64-bit pointer. */
 	#define SJME_CONFIG_HAS_POINTER64
+
+	/** Bytes per pointer. */
+	#define SJME_POINTER_BYTES 8
 #endif
 
+#if !defined(SJME_POINTER_BYTES)
+	/** Bytes per pointer. */
+	#define SJME_POINTER_BYTES (SJME_CONFIG_HAS_POINTER / 8)
+#endif
+	
 #if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010) || \
 	defined(SJME_CONFIG_HAS_GCC) || \
 	defined(SJME_CONFIG_HAS_CLANG) || \
@@ -413,6 +522,9 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/** Allocate on the stack. */
 	#define sjme_alloca(size) _alloca((size))
+
+	/** Free stack allocated data. */
+	#define sjme_alloca_free(ptr) ((void)ptr)
 #endif
 
 /* Visual C SAL 2.0 Annotations. */
@@ -608,6 +720,11 @@ extern "C" {
 	#define sjme_attrInOutNotNull sjme_attrInNotNull sjme_attrOutNotNull 
 #endif
 
+#if !defined(sjme_attrInOutNullable)
+	/** Takes input and produces output. */
+	#define sjme_attrInOutNullable sjme_attrInNullable sjme_attrOutNullable 
+#endif
+
 #if !defined(sjme_attrInNotNullBuf)
 	/** Input to buffer. */
 	#define sjme_attrInNotNullBuf(lenArg) sjme_attrInNotNull
@@ -669,11 +786,19 @@ extern "C" {
 #if !defined(sjme_alloca)
 	/** Allocate on the stack. */
 	#define sjme_alloca(size) alloca((size))
+
+	/** Free stack allocated data. */
+	#define sjme_alloca_free(ptr) ((void)ptr)
 #endif
 
 #if !defined(sjme_inline)
-	/** Inline function. */
-	#define sjme_inline inline
+	#if !defined(SJME_CONFIG_HAS_MSVC) || SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+		/** Inline function. */
+		#define sjme_inline inline
+	#else
+		/** Inline function. */
+		#define sjme_inline __inline
+	#endif
 #endif
 
 #if !defined(sjme_noOptimize)
@@ -681,13 +806,16 @@ extern "C" {
 	#define sjme_noOptimize
 #endif
 
-#if defined(SJME_CONFIG_HAS_MACOS) && (defined(SJME_CONFIG_HAS_ARCH_IA32) || \
+#if defined(SJME_CONFIG_HAS_OS_MACOS) && (defined(SJME_CONFIG_HAS_ARCH_IA32) || \
 	defined(SJME_CONFIG_HAS_ARCH_POWERPC))
 	/** Supports macOS Darwin kernel Atomic Access */
 	#define SJME_CONFIG_HAS_ATOMIC_DARWIN
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/** Supports Windows Atomic Access. */
 	#define SJME_CONFIG_HAS_ATOMIC_WIN32
+#elif defined(SJME_CONFIG_HAS_OS_SONY_PS2)
+	/** Use volatile atomics. */
+	#define SJME_CONFIG_HAS_ATOMIC_VOLATILE
 #elif defined(SJME_CONFIG_HAS_C11) && !defined(__STDC_NO_ATOMICS__)
 	/** Supports C11 atomics. */
 	#define SJME_CONFIG_HAS_ATOMIC_C11
@@ -710,33 +838,34 @@ extern "C" {
 		defined(SJME_CONFIG_HAS_ATOMIC_DARWIN) || \
 		defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
 		defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY) || \
-		defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
+		defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
+		defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
 		/** Atomics are supported. */
 		#define SJME_CONFIG_HAS_ATOMIC
 	#else
 		/** Use old atomic handling. */
-		#define SJME_CONFIG_HAS_ATOMIC_OLD
-
+		#define SJME_CONFIG_HAS_ATOMIC_VOLATILE
+		
 		/** Atomics are supported. */
 		#define SJME_CONFIG_HAS_ATOMIC
 	#endif
 #endif
 
-#if defined(SJME_CONFIG_HAS_LINUX) || \
-	defined(SJME_CONFIG_HAS_BSD) || \
-    defined(SJME_CONFIG_HAS_BEOS)
+#if defined(SJME_CONFIG_HAS_OS_LINUX) || \
+	defined(SJME_CONFIG_HAS_OS_BSD) || \
+    defined(SJME_CONFIG_HAS_OS_BEOS)
 	/** Dynamic library path name as static define. */
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
 		"lib" x ".so"
-#elif defined(SJME_CONFIG_HAS_CYGWIN)
+#elif defined(SJME_CONFIG_HAS_OS_CYGWIN)
 	/** Dynamic library path name as static define. */
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
 		"lib" x ".dll"
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/** Dynamic library path name as static define. */
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
 		"" x ".dll"
-#elif defined(SJME_CONFIG_HAS_MACOS)
+#elif defined(SJME_CONFIG_HAS_OS_MACOS)
 	/** Dynamic library path name as static define. */
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
 		"lib" x ".dylib"
@@ -745,19 +874,26 @@ extern "C" {
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) NULL
 #endif
 
+/* DOS: Threading not supported. */
 /* Nintendo 3DS: devkitPro has broken/unimplemented pthreads. */
-#if defined(SJME_CONFIG_HAS_NINTENDO_3DS)
-	/** Use fallback threading regardless of the system. */
-	#define SJME_CONFIG_HAS_THREADS_FALLBACK
+/* Or if proper multithreaded volatiles are not supported. */
+#if defined(SJME_CONFIG_HAS_OS_PC_DOS) || \
+	defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
+	defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
+	/** Single threaded only. */
+	#define SJME_CONFIG_ONLY_THREAD_SINGLE
 #endif
 
-#if defined(SJME_CONFIG_HAS_WINDOWS_16)
-	#define SJME_CALL FAR PASCAL
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
-	#define SJME_CALL __stdcall 
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS_16)
+	/** SquirrelJME exported calling convention. */
+	#define sjme_attrExportCall FAR PASCAL
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_32)
+	/** SquirrelJME exported calling convention. */
+	#define sjme_attrExportCall __stdcall
 #else
-	/** SquirrelJME calling convention. */
-	#define SJME_CALL
+	/** SquirrelJME exported calling convention. */
+	#define sjme_attrExportCall
 #endif
 
 #if defined(SJME_CONFIG_HAS_MSVC)
@@ -793,6 +929,17 @@ extern "C" {
 	#define sjme_alignPointer
 #endif
 
+#if defined(SJME_CONFIG_HAS_C23)
+	/** Packed enumeration. */
+	#define sjme_attrPackedEnumByte(name) name : sjme_jbyte
+#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	/** Packed enumeration. */
+	#define sjme_attrPackedEnumByte(name) __attribute__((packed)) name
+#else
+	/** Packed enumeration. */
+	#define sjme_attrPackedEnumByte(name) name
+#endif
+	
 #if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Packed structure. */
 	#define sjme_packed __attribute__((packed))
@@ -801,25 +948,25 @@ extern "C" {
 	#define sjme_packed
 #endif
 	
-#if defined(SJME_CONFIG_HAS_NINTENDO_3DS) || \
-	defined(SJME_CONFIG_HAS_NINTENDO_WIIU) || \
-    defined(SJME_CONFIG_HAS_NINTENDO_WII) || \
-    defined(SJME_CONFIG_HAS_SDCC)
+#if defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
+	defined(SJME_CONFIG_HAS_OS_NINTENDO_WIIU) || \
+    defined(SJME_CONFIG_HAS_OS_NINTENDO_WII) || \
+    defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	/* Disable errno support. */
 	#define SJME_CONFIG_HAS_NO_ERRNO 1
 #endif
 
-#if defined(SJME_CONFIG_HAS_SDCC)
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	/** Has no standard C I/O support. */
 	#define SJME_CONFIG_HAS_NO_STDIO 1
 #endif
 
-#if defined(SJME_CONFIG_HAS_SDCC)
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	/** Has no abort() call. */
 	#define SJME_CONFIG_HAS_NO_ABORT 1
 #endif
 
-#if defined(SJME_CONFIG_HAS_SDCC)
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	/** Has no exit() call. */
 	#define SJME_CONFIG_HAS_NO_EXIT 1
 #endif
@@ -829,30 +976,26 @@ extern "C" {
 	/** No vsnprintf() */
 	#define SJME_CONFIG_HAS_NO_VSNPRINTF 1
 #endif
-		
-/* Missing standard C functions. */
-#if defined(SJME_CONFIG_HAS_NO_ERRNO) || \
-	defined(SJME_CONFIG_HAS_NO_SNPRINTF) || \
-    defined(SJME_CONFIG_HAS_NO_STDARG) || \
-    defined(SJME_CONFIG_HAS_NO_VARARGS) || \
-    defined(SJME_CONFIG_HAS_NO_VSNPRINTF)
-	#include "sjme/stdGone.h"
-#endif
 
 /** Disable all linting of any kind. */
 #define sjme_noLint(what) (what) /* NOLINT */ /* ReSharper disable once all */
 
-#if defined(SJME_CONFIG_HAS_MSVC)
+#if !defined(SJME_CONFIG_HAS_NO_THREAD_LOCAL)
+	#if defined(SJME_CONFIG_HAS_MSVC)
+		/** Thread local storage. */
+		#define sjme_threadLocal(type, name) \
+			static sjme_align32 type __declspec(thread) name;
+	#elif defined(SJME_CONFIG_HAS_GCC) || \
+		defined(SJME_CONFIG_HAS_CLANG)
+		/** Thread local storage. */
+		#define sjme_threadLocal(type, name) \
+			static sjme_align32 __thread type name
+	#endif
+#endif
+
+#if !defined(sjme_threadLocal)
 	/** Thread local storage. */
-	#define sjme_attrThreadLocal(type, name) \
-		static sjme_align32 type __declspec(thread) name;
-#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
-	/** Thread local storage. */
-	#define sjme_attrThreadLocal(type, name) \
-		static sjme_align32 __thread type name
-#else
-	/** Thread local storage. */
-	#define sjme_attrThreadLocal(type, name) \
+	#define sjme_threadLocal(type, name) \
 		static sjme_align32 type name
 #endif
 
@@ -860,6 +1003,9 @@ extern "C" {
 	defined(SJME_CONFIG_HAS_ARCH_POWERPC)
 	/** Has no support for unaligned 16-bit access. */
 	#define SJME_CONFIG_HAS_NO_UNALIGNED16
+	
+	/** Has no support for unaligned 32-bit access. */
+	#define SJME_CONFIG_HAS_NO_UNALIGNED32
 #endif
 
 #if defined(SJME_CONFIG_HAS_ARCH_IA16)
@@ -875,6 +1021,162 @@ extern "C" {
 	#pragma warning(disable: 4114)
 #endif
 
+/** Bitfield count for @c sjme_jboolean . */
+#define sjme_booleanBit 2
+
+/* Clang is completely broken with FLT_ROUNDS. */ 
+#if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_MSVC)
+	/** Assuming floating point rounds to nearest. */
+	#define SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST
+#elif !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+	#if defined(FLT_ROUNDS) && FLT_ROUNDS == 1
+		/** Has floating point that rounds to nearest. */
+		#define SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST
+	#endif
+#endif
+	
+/* 32-bit floating point matches Java? */
+#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H) && \
+	(defined(SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST) || \
+		defined(SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST)) && \
+	defined(FLT_EVAL_METHOD) && (FLT_EVAL_METHOD == 0) && \
+	defined(FLT_RADIX) && (FLT_RADIX == 2)
+	/* Compatible single floating point? */
+	#if !defined(SJME_CONFIG_HAS_FLOAT_SOFT) && \
+		defined(FLT_MANT_DIG) && (FLT_MANT_DIG == 24) && \
+		((defined(FLT_HAS_SUBNORM) && (FLT_HAS_SUBNORM == 1)) || \
+		(defined(__FLT_HAS_DENORM__) && (__FLT_HAS_DENORM__ == 1)))
+		/** Hardware single floating point. */
+		#define SJME_CONFIG_HAS_FLOAT_HARD
+	#endif
+
+	/* Compatible double floating point? */
+	#if !defined(SJME_CONFIG_HAS_DOUBLE_SOFT) && \
+		defined(DBL_MANT_DIG) && (DBL_MANT_DIG == 53) && \
+		((defined(DBL_HAS_SUBNORM) && (DBL_HAS_SUBNORM == 1)) || \
+		(defined(__DBL_HAS_DENORM__) && (__DBL_HAS_DENORM__ == 1)))
+		/** Hardware double floating point. */
+		#define SJME_CONFIG_HAS_DOUBLE_HARD
+	#endif
+#endif
+
+#if defined(SJME_CONFIG_ASSUME_FLOAT_HARD)
+	/** Assumed to have hardware floating point. */
+	#define SJME_CONFIG_HAS_FLOAT_HARD
+#endif
+
+#if defined(SJME_CONFIG_ASSUME_DOUBLE_HARD)
+	/** Assumed to have hardware double point. */
+	#define SJME_CONFIG_HAS_DOUBLE_HARD
+#endif
+
+#if !defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	/** Has software single floating point. */
+	#define SJME_CONFIG_HAS_FLOAT_SOFT
+#endif
+
+#if !defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/** Has software double floating point. */
+	#define SJME_CONFIG_HAS_DOUBLE_SOFT
+#endif
+
+#if defined(SJME_CONFIG_HAS_GCC)
+	/** Optimize this specific function. */
+	#define sjme_attrOptimize __attribute__((optimize("-O3")))
+#else
+	/** Optimize this specific function. */
+	#define sjme_attrOptimize
+#endif
+
+#if defined(SJME_CONFIG_HAS_C99) || \
+	SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+	/** Constant-ish struct member set. */
+	#define sjme_sm(dot, val) dot = val
+#else
+	/** Constant-ish struct member set. */
+	#define sjme_sm(dot, val) val
+#endif
+
+/** Bitfield count for @c sjme_jboolean . */
+#define sjme_booleanBit 2
+
+/* Clang is completely broken with FLT_ROUNDS. */ 
+#if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_MSVC)
+	/** Assuming floating point rounds to nearest. */
+	#define SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST
+#elif !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+	#if defined(FLT_ROUNDS) && FLT_ROUNDS == 1
+		/** Has floating point that rounds to nearest. */
+		#define SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST
+	#endif
+#endif
+	
+/* 32-bit floating point matches Java? */
+#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H) && \
+	(defined(SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST) || \
+		defined(SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST)) && \
+	defined(FLT_EVAL_METHOD) && (FLT_EVAL_METHOD == 0) && \
+	defined(FLT_RADIX) && (FLT_RADIX == 2)
+	/* Compatible single floating point? */
+	#if !defined(SJME_CONFIG_HAS_FLOAT_SOFT) && \
+		defined(FLT_MANT_DIG) && (FLT_MANT_DIG == 24) && \
+		((defined(FLT_HAS_SUBNORM) && (FLT_HAS_SUBNORM == 1)) || \
+		(defined(__FLT_HAS_DENORM__) && (__FLT_HAS_DENORM__ == 1)))
+		/** Hardware single floating point. */
+		#define SJME_CONFIG_HAS_FLOAT_HARD
+	#endif
+
+	/* Compatible double floating point? */
+	#if !defined(SJME_CONFIG_HAS_DOUBLE_SOFT) && \
+		defined(DBL_MANT_DIG) && (DBL_MANT_DIG == 53) && \
+		((defined(DBL_HAS_SUBNORM) && (DBL_HAS_SUBNORM == 1)) || \
+		(defined(__DBL_HAS_DENORM__) && (__DBL_HAS_DENORM__ == 1)))
+		/** Hardware double floating point. */
+		#define SJME_CONFIG_HAS_DOUBLE_HARD
+	#endif
+#endif
+
+#if !defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	/** Has software single floating point. */
+	#define SJME_CONFIG_HAS_FLOAT_SOFT
+#endif
+
+#if !defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/** Has software double floating point. */
+	#define SJME_CONFIG_HAS_DOUBLE_SOFT
+#endif
+
+#if defined(SJME_CONFIG_HAS_AMIGA) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_16) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE) || \
+	defined(SJME_CONFIG_HAS_OS_PALMOS) || \
+	defined(SJME_CONFIG_HAS_OS_BAREMETAL)
+	/** Use a minimal amount of memory. */
+	#define SJME_CONFIG_HAS_LOW_MEMORY
+#endif
+
+/* Multi-threading is not possible if this is set. */
+#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	#if defined(SJME_CONFIG_HAS_THREADS_FALLBACK)
+		#undef SJME_CONFIG_HAS_THREADS_FALLBACK
+	#endif
+
+	#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+		#undef SJME_CONFIG_HAS_THREADS_PTHREAD
+	#endif
+
+	#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
+		#undef SJME_CONFIG_HAS_THREADS_WIN32
+	#endif
+
+	#if defined(SJME_CONFIG_HAS_THREADS_ATOMIC)
+		#undef SJME_CONFIG_HAS_THREADS_ATOMIC
+	#endif
+#endif
+	
+/* Missing standard C functions, always include these. */
+#include "sjme/stdGone.h"
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

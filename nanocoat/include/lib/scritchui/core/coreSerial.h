@@ -13,8 +13,8 @@
  * @since 2024/04/16
  */
 
-#ifndef SQUIRRELJME_CORESERIAL_H
-#define SQUIRRELJME_CORESERIAL_H
+#ifndef SJME_C_CORESERIAL_H
+#define SJME_C_CORESERIAL_H
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -301,14 +301,14 @@ typedef enum sjme_scritchui_serialType
 	inListener; \
 	 \
 	/** Any front-end data to set as needed. */ \
-	sjme_frontEnd* volatile copyFrontEnd
+	sjme_frontEndBindable* volatile copyFrontEnd
 
 /** The name for serial data. */
 #define SDX_STRUCT_NAME(where, what) \
 	SJME_TOKEN_PASTE4(sjme_scritch, where, _serialData_, what)
 
 #define SDX_STRUCT_DEF(where, what, items) \
-	typedef volatile struct SDX_STRUCT_NAME(where, what) \
+	typedef struct SDX_STRUCT_NAME(where, what) \
 	{ \
 		items \
 	} SDX_STRUCT_NAME(where, what)
@@ -471,12 +471,12 @@ SDU_STRUCT_DEF(hardwareGraphics,
 	SDX_VAR(sjme_jint, bw);
 	SDX_VAR(sjme_jint, bh);
 	SDX_VARP(const sjme_scritchui_pencilLockFunctions, inLockFuncs);
-	SDX_VARP(const sjme_frontEnd, inLockFrontEndCopy);
+	SDX_VARP(const sjme_frontEndBindable, inLockFrontEndCopy);
 	SDX_VAR(sjme_jint, sx);
 	SDX_VAR(sjme_jint, sy);
 	SDX_VAR(sjme_jint, sw);
 	SDX_VAR(sjme_jint, sh);
-	SDX_VARP(const sjme_frontEnd, pencilFrontEndCopy););
+	SDX_VARP(const sjme_frontEndBindable, pencilFrontEndCopy););
 
 SDU_STRUCT_DEF(labelSetString,
 	SDX_VAR(sjme_scritchui_uiCommon, inCommon);
@@ -656,7 +656,7 @@ SDP_STRUCT_DEF(drawPixel,
 
 SDP_STRUCT_DEF(drawSubstring,
 	SDX_VAR(sjme_scritchui_pencil, g);
-	SDX_VARP(const sjme_charSeq, s);
+	SDX_VAR(sjme_charSeq, s);
 	SDX_VAR(sjme_jint, o);
 	SDX_VAR(sjme_jint, l);
 	SDX_VAR(sjme_jint, x);
@@ -765,7 +765,7 @@ SDP_STRUCT_DEF(translate,
  * 
  * @since 2024/04/17
  */
-typedef volatile union sjme_scritchui_serialDataUnion
+typedef union sjme_scritchui_serialDataUnion
 {
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
@@ -864,7 +864,7 @@ typedef volatile union sjme_scritchui_serialDataUnion
  * 
  * @since 2024/04/17
  */
-typedef volatile struct sjme_scritchui_serialData
+typedef struct sjme_scritchui_serialData
 {
 	/** The type of call this is. */
 	volatile sjme_scritchui_serialType type;
@@ -1054,12 +1054,12 @@ sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
-	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy);
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
 	
 sjme_errorCode sjme_scritchui_coreSerial_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -1263,7 +1263,7 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawPixel(
 	
 sjme_errorCode sjme_scritchpen_coreSerial_drawSubstring(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull const sjme_charSeq* s,
+	sjme_attrInNotNull const sjme_charSeq s,
 	sjme_attrInPositive sjme_jint o, 
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrInValue sjme_jint x,

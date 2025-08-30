@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
@@ -157,14 +158,28 @@ public final class DebugShelf
 		@NotNull TracePointBracket __point);
 	
 	/**
-	 * Traces the entire stack, the top-most trace point in the stack is always
-	 * first.
+	 * Traces the entire stack, the top-most trace point (frame) in the stack
+	 * is always first element.
 	 *
 	 * @return The stack trace.
 	 * @since 2020/06/11
 	 */
 	@SquirrelJMEVendorApi
 	public static native TracePointBracket[] traceStack();
+	
+	/**
+	 * Traces the stack for a throwable.
+	 *
+	 * @param __throwable The throwable to trace.
+	 * @return The stack trace of the given throwable.
+	 * @throws MLECallError On null arguments or if this is
+	 * not a {@link Throwable}.
+	 * @since 2025/07/05
+	 */
+	@SquirrelJMEVendorApi
+	public static native TracePointBracket[] traceThrowable(
+		@NotNull Throwable __throwable)
+		throws MLECallError;
 	
 	/**
 	 * Starts performing verbose virtual machine outputs for debugging.

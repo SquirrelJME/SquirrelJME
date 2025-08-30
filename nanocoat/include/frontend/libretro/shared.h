@@ -13,10 +13,13 @@
  * @since 2023/11/22
  */
 
-#ifndef SQUIRRELJME_SHARED_H
-#define SQUIRRELJME_SHARED_H
+#ifndef SJME_C_SHARED_H
+#define SJME_C_SHARED_H
 
+#include "sjme/nvm/modelessStars.h"
 #include "3rdparty/libretro/libretro.h"
+#include "sjme/native.h"
+#include "sjme/nvm/nvm.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -70,25 +73,36 @@ typedef enum sjme_libretro_extra_id
 } sjme_libretro_extra_id;
 
 /**
- * Environment callback.
- * 
- * @param cmd The command to call.
- * @param data The data to pass.
- * @return A boolean depending on success or failure.
- * @since 2023/11/22
+ * Globals for RetroArch.
+ *
+ * @since 2025/07/05
  */
-extern retro_environment_t sjme_libretro_envCallback;
+typedef struct sjme_libretro_globalStruct
+{
+	/** Environment callback. */
+	retro_environment_t envCallback;
 
-/**
- * Callback for video refresh.
- * 
- * @param data The buffer data.
- * @param width The buffer width.
- * @param height The buffer height.
- * @param pitch The buffer pitch.
- * @since 2023/11/22
- */
-extern retro_video_refresh_t sjme_libretro_videoRefreshCallback;
+	/** Callback for video refresh. */
+	retro_video_refresh_t videoRefreshCallback;
+
+	/** VFS interface. */
+	struct retro_vfs_interface_info vfs;
+
+	/** The allocation pool. */
+	sjme_alloc_pool allocPool;
+
+	/** The global VM state. */
+	sjme_nvm inState;
+
+	/** Modeless stars. */
+	sjme_modelessStarState modelessStars;
+} sjme_libretro_globalStruct;
+
+/** RetroArch native abstraction layer. */
+extern const sjme_nal sjme_libretro_nal;
+
+/** RetroArch globals. */
+extern sjme_libretro_globalStruct sjme_libretro_globals;
 
 /**
  * Returns the interface to the SquirrelJME Extension interface.

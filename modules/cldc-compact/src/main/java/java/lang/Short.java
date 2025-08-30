@@ -35,7 +35,7 @@ public final class Short
 	/** The class representing the primitive type. */
 	@Api
 	public static final Class<Short> TYPE =
-		TypeShelf.<Short>typeToClass(TypeShelf.typeOfShort());
+		(Class<Short>)TypeShelf.typeOfShort();
 	
 	/** The value of this integer. */
 	private final short _value;
@@ -95,7 +95,7 @@ public final class Short
 	{
 		if (this == __o)
 			return true;
-		if (!(this instanceof Short))
+		if (__o.getClass() != Short.class)
 			return false;
 		
 		return this._value == ((Short)__o)._value;

@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../include/sjme/config.h"
+#include "sjme/config.h"
 
 /**
  * Returns the platform.
@@ -27,29 +27,29 @@ int main(int argc, char** argv)
 	
 	if (argc > 1 && strcmp("-p", argv[1]) == 0)
 	{
-#if defined(SJME_CONFIG_HAS_NINTENDO_3DS)
+#if defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS)
 		platform = "3ds";
-#elif defined(SJME_CONFIG_HAS_BEOS)
+#elif defined(SJME_CONFIG_HAS_OS_BEOS)
 		platform = "beos";
-#elif defined(SJME_CONFIG_HAS_BSD)
+#elif defined(SJME_CONFIG_HAS_OS_BSD)
 		platform = "bsd";
-#elif defined(SJME_CONFIG_HAS_DOS)
-		platform = "dos";
-#elif defined(SJME_CONFIG_HAS_CYGWIN)
+#elif defined(SJME_CONFIG_HAS_OS_PC_DOS)
+		platform = "pcdos";
+#elif defined(SJME_CONFIG_HAS_OS_CYGWIN)
 		platform = "cygwin";
-#elif defined(SJME_CONFIG_HAS_LINUX)
+#elif defined(SJME_CONFIG_HAS_OS_LINUX)
 		platform = "linux";
-#elif defined(SJME_CONFIG_HAS_MACOS_CLASSIC)
+#elif defined(SJME_CONFIG_HAS_OS_MACOS_CLASSIC)
 		platform = "macos";
-#elif defined(SJME_CONFIG_HAS_MACOS)
+#elif defined(SJME_CONFIG_HAS_OS_MACOS)
 		platform = "macosx";
-#elif defined(SJME_CONFIG_HAS_PALMOS)
+#elif defined(SJME_CONFIG_HAS_OS_PALMOS)
 		platform = "palmos";
-#elif defined(SJME_CONFIG_HAS_WINDOWS_16)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS_16)
 		platform = "win16";
-#elif defined(SJME_CONFIG_HAS_WINDOWS_32)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS_32)
 		platform = "win32";
-#elif defined(SJME_CONFIG_HAS_WINDOWS_CE)
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS_CE)
 		platform = "wince";
 #else
 		platform = "unknown";

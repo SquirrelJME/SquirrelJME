@@ -13,8 +13,8 @@
  * @since 2024/07/12
  */
 
-#ifndef SQUIRRELJME_CORERASTER_H
-#define SQUIRRELJME_CORERASTER_H
+#ifndef SJME_C_CORERASTER_H
+#define SJME_C_CORERASTER_H
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
@@ -277,7 +277,7 @@ sjme_errorCode sjme_scritchpen_core_drawPixel(
 	
 sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull const sjme_charSeq* s,
+	sjme_attrInNotNull const sjme_charSeq s,
 	sjme_attrInPositive sjme_jint o, 
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrInValue sjme_jint x,

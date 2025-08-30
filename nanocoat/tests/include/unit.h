@@ -13,8 +13,8 @@
  * @since 2023/11/11
  */
 
-#ifndef SQUIRRELJME_UNIT_H
-#define SQUIRRELJME_UNIT_H
+#ifndef SJME_C_UNIT_H
+#define SJME_C_UNIT_H
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"

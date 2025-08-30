@@ -11,9 +11,10 @@ package cc.squirreljme.runtime.nttdocomo.io;
 
 import cc.squirreljme.jvm.launch.IModeProperty;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IntegerList;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
-import cc.squirreljme.runtime.nttdocomo.DoJaRuntime;
+import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -122,6 +123,9 @@ public final class ScratchPadParams
 				}
 				catch (NumberFormatException __e)
 				{
+					if (Debugging.ENABLED)
+						__e.printStackTrace();
+					
 					// {@squirreljme.error AH07 Scratch pad property is badly
 					// formatted and contains an invalid number. (The
 					// property)}

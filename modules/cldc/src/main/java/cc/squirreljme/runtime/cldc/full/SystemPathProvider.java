@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.full;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,6 +19,7 @@ import java.nio.file.Paths;
  *
  * @since 2024/02/25
  */
+@SquirrelJMEVendorApi
 public abstract class SystemPathProvider
 {
 	/**
@@ -26,6 +28,7 @@ public abstract class SystemPathProvider
 	 * @return The cache path.
 	 * @since 2024/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public abstract Path cache();
 	
 	/**
@@ -34,6 +37,7 @@ public abstract class SystemPathProvider
 	 * @return The config path.
 	 * @since 2024/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public abstract Path config();
 	
 	/**
@@ -42,6 +46,7 @@ public abstract class SystemPathProvider
 	 * @return The cache path.
 	 * @since 2024/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public abstract Path data();
 	
 	/**
@@ -50,6 +55,7 @@ public abstract class SystemPathProvider
 	 * @return The state path.
 	 * @since 2024/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public abstract Path state();
 	
 	/**
@@ -60,6 +66,7 @@ public abstract class SystemPathProvider
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public final Path of(SystemPath __path)
 		throws NullPointerException
 	{
@@ -93,6 +100,7 @@ public abstract class SystemPathProvider
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public final Path ofFallback(SystemPath __path)
 		throws NullPointerException
 	{
@@ -116,6 +124,7 @@ public abstract class SystemPathProvider
 	 * @return The system path provider.
 	 * @since 2024/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public static SystemPathProvider provider()
 	{
 		String osName = System.getProperty("os.name")

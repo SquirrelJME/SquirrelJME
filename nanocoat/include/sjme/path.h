@@ -13,8 +13,8 @@
  * @since 2024/08/09
  */
 
-#ifndef SQUIRRELJME_PATH_H
-#define SQUIRRELJME_PATH_H
+#ifndef SJME_C_PATH_H
+#define SJME_C_PATH_H
 
 #include "sjme/config.h"
 #include "sjme/error.h"
@@ -38,12 +38,12 @@ extern "C"
 /** The maximum path length in SquirrelJME. */
 #define SJME_MAX_PATH 1024
 
-#if defined(SJME_CONFIG_HAS_DOS)
+#if defined(SJME_CONFIG_HAS_OS_PC_DOS)
 	/** Short paths. */
-	#defne SJME_PATH_SHORT
+	#define SJME_PATH_SHORT
 #endif
 
-#if defined(SJME_CONFIG_HAS_WINDOWS) || defined(SJME_CONFIG_HAS_MACOS_CLASSIC)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || defined(SJME_CONFIG_HAS_OS_MACOS_CLASSIC)
 	/** Separator for PATH and classpath. */
 	#define SJME_CONFIG_PATH_SEPARATOR ";"
 #else
@@ -60,10 +60,10 @@ extern "C"
 /** UNIX path style. */
 #define SJME_CONFIG_PATH_STYLE_UNIX 3
 
-#if defined(SJME_CONFIG_HAS_WINDOWS) || defined(SJME_CONFIG_HAS_DOS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || defined(SJME_CONFIG_HAS_OS_PC_DOS)
 	/** Path style in use. */
 	#define SJME_CONFIG_PATH_STYLE SJME_CONFIG_PATH_STYLE_DOS
-#elif defined(SJME_CONFIG_HAS_MACOS_CLASSIC)
+#elif defined(SJME_CONFIG_HAS_OS_MACOS_CLASSIC)
 	/** Path style in use. */
 	#define SJME_CONFIG_PATH_STYLE SJME_CONFIG_PATH_STYLE_MACOS_CLASSIC
 #else
@@ -94,6 +94,7 @@ extern "C"
  * root component if there is one.
  * @param outBase The pointer to the path base.
  * @param outLen The length of the path name.
+ * @param outIsRoot Is this the root directory?
  * @return Any resultant error, if any. Returns @c SJME_ERROR_NO_SUCH_ELEMENT
  * if the root component was requested and there was none.
  * @since 2024/08/10
@@ -103,7 +104,8 @@ sjme_errorCode sjme_path_getName(
 	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrInNegativeOnePositive sjme_jint inName,
 	sjme_attrOutNullable sjme_lpcstr* outBase,
-	sjme_attrOutNullable sjme_jint* outLen);
+	sjme_attrOutNullable sjme_jint* outLen,
+	sjme_jboolean* outIsRoot);
 
 /**
  * Gets the given name at the given index.
@@ -119,6 +121,7 @@ sjme_errorCode sjme_path_getName(
  * @param outLen The length of the path name.
  * @param outCount The number of name components, exclusive to all the
  * other arguments.
+ * @param outIsRoot Is this the root directory?
  * @return Any resultant error, if any. Returns @c SJME_ERROR_NO_SUCH_ELEMENT
  * if the root component was requested and there was none.
  * @since 2024/08/10
@@ -132,7 +135,8 @@ sjme_errorCode sjme_path_getNameF(
 	sjme_attrOutNullable sjme_lpcstr* outEnd,
 	sjme_attrOutNullable sjme_jint* outEndDx,
 	sjme_attrOutNullable sjme_jint* outLen,
-	sjme_attrOutNullable sjme_jint* outCount);
+	sjme_attrOutNullable sjme_jint* outCount,
+	sjme_jboolean* outIsRoot);
 
 /**
  * Gets the number of names that appear in the given path.

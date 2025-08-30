@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -51,7 +52,7 @@ public final class Attribute
 		
 		// Copy the array
 		byte[] clone = new byte[__l];
-		System.arraycopy(__b, __o, clone, 0, __l);
+		ObjectShelf.arrayCopy(__b, __o, clone, 0, __l);
 		this._data = clone;
 	}
 	

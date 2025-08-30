@@ -45,9 +45,6 @@ public final class String
 	private static final char _MIN_TRIM_CHAR =
 		' ';
 	
-	/** The known intern state. */
-	boolean _knownIntern;
-	
 	/**
 	 * Initializes a new empty string.
 	 *
@@ -152,7 +149,7 @@ public final class String
 	public String(byte[] __b, String __e)
 		throws NullPointerException, UnsupportedEncodingException
 	{
-		this(__b, 0, __b.length, CodecFactory.decoder(__e));
+		this(__b, 0,  __b.length, CodecFactory.decoder(__e));
 	}
 	
 	/**
@@ -677,16 +674,9 @@ public final class String
 	@Api
 	public String intern()
 	{
-		// We already know this is an intern string?
-		if (this._knownIntern)
-			return this;
-		
-		// Set intern state if this is as such
+		// Is this already intern?
 		if (StringShelf.stringIsIntern(this))
-		{
-			this._knownIntern = true;
 			return this;
-		}
 		
 		// Not intern, so make an intern string
 		return StringShelf.stringValueOf(true, this);
@@ -699,6 +689,7 @@ public final class String
 	 * @since 2017/08/15
 	 */
 	@Api
+	@SuppressWarnings("Since15")
 	public boolean isEmpty()
 	{
 		return StringShelf.stringLength(this) == 0;

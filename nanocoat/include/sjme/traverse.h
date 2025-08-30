@@ -13,8 +13,8 @@
  * @since 2024/09/01
  */
 
-#ifndef SQUIRRELJME_TRAVERSE_H
-#define SQUIRRELJME_TRAVERSE_H
+#ifndef SJME_C_TRAVERSE_H
+#define SJME_C_TRAVERSE_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/tokenUtils.h"

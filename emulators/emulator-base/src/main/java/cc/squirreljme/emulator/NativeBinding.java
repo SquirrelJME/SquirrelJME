@@ -22,6 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 
 /**
@@ -93,7 +95,7 @@ public final class NativeBinding
 			NativeBinding.loadedLibPath = libFile;
 				
 			// Debug
-			if (Debugging.ENABLED)
+			if (Debugging.VERBOSE)
 			{
 				System.err.printf("Java Version: %s%n",
 					System.getProperty("java.version"));
@@ -104,7 +106,7 @@ public final class NativeBinding
 			System.load(libFile.toString());
 			
 			// Debug
-			if (Debugging.ENABLED)
+			if (Debugging.VERBOSE)
 				System.err.printf("Java Over-Layer: Binding methods...%n");
 			
 			// Bind methods
@@ -112,10 +114,10 @@ public final class NativeBinding
 				throw new RuntimeException("Could not bind methods!");
 			
 			// Debug
-			if (Debugging.ENABLED)
+			if (Debugging.VERBOSE)
 				System.err.printf("Java Over-Layer: Methods bound!%n");
 		}
-		catch (IOException e)
+		catch (LinkageError e)
 		{
 			throw new RuntimeException("Could not load library.", e);
 		}
@@ -123,7 +125,7 @@ public final class NativeBinding
 		// Track execution time
 		finally
 		{
-			if (Debugging.ENABLED)
+			if (Debugging.VERBOSE)
 				System.err.printf("Java Over-Layer: Loading took %dms%n",
 					(System.nanoTime() - loadNs) / 1_000_000L);
 		}
@@ -142,11 +144,11 @@ public final class NativeBinding
 	 * @param __libBaseName The library base name.
 	 * @param __map Should the name be mapped?
 	 * @return The loaded library.
-	 * @throws IOException On read/write errors.
+	 * @throws LinkageError On read/write errors.
 	 * @since 2020/12/01
 	 */
 	public static Path libFromResources(String __libBaseName, boolean __map)
-		throws IOException
+		throws LinkageError
 	{
 		// Find the library to load
 		String libName;
@@ -156,7 +158,8 @@ public final class NativeBinding
 			libName = __libBaseName;
 		
 		// Debug
-		System.err.printf("Java Over-Layer: Locating %s...%n", libName);
+		if (Debugging.VERBOSE)
+			System.err.printf("Java Over-Layer: Locating %s...%n", libName);
 		
 		// Timing for extraction
 		long startNs = System.nanoTime();
@@ -164,11 +167,11 @@ public final class NativeBinding
 		// Copy resource to the output
 		Path tempDir = null;
 		Path libFile = null;
-		try (InputStream in = NativeBinding.class.
-			getResourceAsStream("/" + libName))
+		try (InputStream in = NativeBinding.class.getResourceAsStream(
+			NativeBinding.nativePrefix() + "/" + libName))
 		{
 			if (in == null)
-				throw new IOException(String.format(
+				throw new LinkageError(String.format(
 					"Library %s not found in resource.", libName));
 			
 			// Place all the native libraries in the same location
@@ -183,8 +186,9 @@ public final class NativeBinding
 			libFile = tempDir.resolve(libName);
 			
 			// Debug
-			System.err.printf("Java Over-Layer: Extracting %s...%n",
-				libName);
+			if (Debugging.VERBOSE)
+				System.err.printf("Java Over-Layer: Extracting %s...%n",
+					libName);
 			
 			// Write to the disk as we can only load there
 			try (OutputStream out = Files.newOutputStream(libFile,
@@ -213,8 +217,9 @@ public final class NativeBinding
 				new PathCleanup(libFile, tempDir));
 		
 			// Debug
-			System.err.printf("Java Over-Layer: Extracted to %s...%n",
-				libFile);
+			if (Debugging.VERBOSE)
+				System.err.printf("Java Over-Layer: Extracted to %s...%n",
+					libFile);
 			
 			// Use this path
 			return libFile;
@@ -235,14 +240,15 @@ public final class NativeBinding
 				e.addSuppressed(f);
 			}
 			
-			throw new IOException("Could not copy native library.", e);
+			throw new LinkageError("Could not copy native library.", e);
 		}
 		
 		// Track execution time
 		finally
 		{
-			System.err.printf("Java Over-Layer: Extraction took %dms%n",
-				(System.nanoTime() - startNs) / 1_000_000L);
+			if (Debugging.VERBOSE)
+				System.err.printf("Java Over-Layer: Extraction took %dms%n",
+					(System.nanoTime() - startNs) / 1_000_000L);
 		}
 	}
 	
@@ -277,6 +283,54 @@ public final class NativeBinding
 		
 		// Call main
 		ReflectionShelf.invokeMain(TypeShelf.findType(targetMain), targetArgs);
+	}
+	
+	/**
+	 * Returns the name of the native operating system.
+	 *
+	 * @return The native operating system name.
+	 * @since 2025/05/11
+	 */
+	public static String nativeOs()
+	{
+		// Normalize OS name
+		String osName = System.getProperty("os.name")
+			.toLowerCase(Locale.ROOT)
+			.replaceAll("[\\s<>:\"/\\\\|?*]", "");
+		if (osName.contains("windows"))
+			return "windows";
+		else if (osName.contains("mac os") || osName.contains("macos"))
+			return "macos";
+		else if (osName.contains("linux"))
+			return "linux";
+		else if (osName.contains("solaris"))
+			return "solaris";
+		else if (osName.contains("bsd"))
+			return "bsd";
+		return osName;
+	}
+	
+	/**
+	 * Determines the native directory.
+	 *
+	 * @return The native directory.
+	 * @since 2025/03/29
+	 */
+	public static String nativePrefix()
+	{
+		// Normalize OS name
+		String osName = NativeBinding.nativeOs();
+		
+		// Normalize OS arch
+		String osArch = System.getProperty("os.arch")
+			.toLowerCase(Locale.ROOT)
+			.replaceAll("[\\s<>:\"/\\\\|?*]", "");
+		if (osArch.equalsIgnoreCase("arm64") ||
+			osArch.equalsIgnoreCase("arm64-v8") ||
+			osArch.equalsIgnoreCase("aarch64"))
+			osArch = "aarch64";
+		
+		return "/natives/" + osName + "/" + osArch;
 	}
 	
 	/**

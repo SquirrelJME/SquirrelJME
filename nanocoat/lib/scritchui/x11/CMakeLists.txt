@@ -7,8 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # We need to know where X11 is
-find_package(PkgConfig)
-pkg_check_modules(X11 REQUIRED x11)
+squirreljme_include("find-x11.cmake")
 
 # Declare base library
 add_library(ScritchUIX11 SHARED
@@ -52,3 +51,9 @@ target_link_libraries(ScritchUIX11
 # ScritchUI requires a normalized library name
 squirreljme_target_binary_name(ScritchUIX11
 	"squirreljme-scritchui-x11")
+squirreljme_target_binary_output(ScritchUIX11
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+
+# Generate exports
+squirreljme_target_shared_library_exports(ScritchUIX11)
+

@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchChoiceBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.util.ArrayList;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Image;
@@ -38,6 +39,11 @@ public final class ChoiceManager
 	/** The API for calling ScritchUI functions. */
 	@SquirrelJMEVendorApi
 	protected final ScritchInterface scritchApi;
+	
+	/** The cached choice items. */
+	@SquirrelJMEVendorApi
+	final ArrayList<CachedChoice> _cache =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the choice manager.
@@ -77,9 +83,22 @@ public final class ChoiceManager
 	public void delete(int __atIndex)
 		throws IndexOutOfBoundsException
 	{
+		if (__atIndex < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Perform upsert operation
 		try
 		{
-			this.scritchApi.choice().choiceDelete(this._widget, __atIndex);
+			// Setup executor
+			__ExecChoiceDelete__ upsert = new __ExecChoiceDelete__(
+				this.scritchApi, this._widget, __atIndex, this._cache);
+			
+			// Wait for it to run and finish
+			this.scritchApi.eventLoop().loopExecuteWait(upsert);
+			
+			// Return whatever result
+			if (upsert._error != null)
+				throw upsert._error;
 		}
 		catch (MLECallError __e)
 		{
@@ -95,13 +114,44 @@ public final class ChoiceManager
 	@SquirrelJMEVendorApi
 	public void deleteAll()
 	{
+		// Perform upsert operation
 		try
 		{
-			this.scritchApi.choice().choiceDeleteAll(this._widget);
+			// Setup executor
+			__ExecChoiceDelete__ upsert = new __ExecChoiceDelete__(
+				this.scritchApi, this._widget, -1, this._cache);
+			
+			// Wait for it to run and finish
+			this.scritchApi.eventLoop().loopExecuteWait(upsert);
+			
+			// Return whatever result
+			if (upsert._error != null)
+				throw upsert._error;
 		}
 		catch (MLECallError __e)
 		{
 			throw __e.throwDistinct();
+		}
+	}
+	
+	/**
+	 * Returns cached choice information.
+	 *
+	 * @param __i The index to access.
+	 * @return The cached choice information.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @since 2025/04/18
+	 */
+	@SquirrelJMEVendorApi
+	public CachedChoice getCached(int __i)
+		throws IndexOutOfBoundsException
+	{
+		if (__i < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		synchronized (this._cache)
+		{
+			return this._cache.get(__i);
 		}
 	}
 	
@@ -116,7 +166,8 @@ public final class ChoiceManager
 	{
 		try
 		{
-			return this.scritchApi.choice().choiceGetSelectedIndex(this._widget);
+			return this.scritchApi.choice()
+				.choiceGetSelectedIndex(this._widget);
 		}
 		catch (MLECallError __e)
 		{
@@ -152,7 +203,7 @@ public final class ChoiceManager
 			// Setup executor
 			__ExecChoiceUpsert__ upsert = new __ExecChoiceUpsert__(
 				this.scritchApi, this._widget, true, __atIndex,
-				__str, __img);
+				__str, __img, this._cache);
 			
 			// Wait for it to run and finish
 			this.scritchApi.eventLoop().loopExecuteWait(upsert);
@@ -194,7 +245,7 @@ public final class ChoiceManager
 			// Setup executor and storage
 			__ExecChoiceUpsert__ upsert = new __ExecChoiceUpsert__(
 				this.scritchApi, this._widget, false, __atIndex,
-				__str, __img);
+				__str, __img, this._cache);
 			
 			// Wait for it to run and finish
 			this.scritchApi.eventLoop().loopExecuteWait(upsert);

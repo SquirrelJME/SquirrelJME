@@ -112,10 +112,10 @@ static sjme_errorCode sjme_stream_inputMemoryRead(
 /** Input memory functions. */
 static const sjme_stream_inputFunctions sjme_stream_inputMemoryFunctions =
 {
-	.available = sjme_stream_inputMemoryAvailable,
-	.close = sjme_stream_inputMemoryClose,
-	.init = sjme_stream_inputMemoryInit,
-	.read = sjme_stream_inputMemoryRead,
+	sjme_sm(.available, sjme_stream_inputMemoryAvailable),
+	sjme_sm(.close, sjme_stream_inputMemoryClose),
+	sjme_sm(.init, sjme_stream_inputMemoryInit),
+	sjme_sm(.read, sjme_stream_inputMemoryRead),
 };
 
 static sjme_errorCode sjme_stream_outputMemoryClose(
@@ -153,7 +153,7 @@ static sjme_errorCode sjme_stream_outputMemoryInit(
 static sjme_errorCode sjme_stream_outputMemoryWrite(
 	sjme_attrInNotNull sjme_stream_output stream,
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
-	sjme_attrInNotNull sjme_cpointer buf,
+	sjme_attrInNotNull sjme_buffer buf,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
 	uintptr_t realBuf;
@@ -182,9 +182,10 @@ static sjme_errorCode sjme_stream_outputMemoryWrite(
 
 static const sjme_stream_outputFunctions sjme_stream_outputMemoryFunctions =
 {
-	.close = sjme_stream_outputMemoryClose,
-	.init = sjme_stream_outputMemoryInit,
-	.write = sjme_stream_outputMemoryWrite,
+	sjme_sm(.close, sjme_stream_outputMemoryClose),
+	sjme_sm(.flush, NULL),
+	sjme_sm(.init, sjme_stream_outputMemoryInit),
+	sjme_sm(.write, sjme_stream_outputMemoryWrite),
 };
 
 sjme_errorCode sjme_stream_inputOpenMemory(

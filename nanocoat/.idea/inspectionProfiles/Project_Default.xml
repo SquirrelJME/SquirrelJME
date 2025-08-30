@@ -1,6 +1,7 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="120e4cd2-a98e-38df-b005-641e475e2612" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ClangTidy" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppDFAConstantConditions" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
     <inspection_tool class="CppDFAConstantFunctionResult" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
@@ -10,7 +11,47 @@
     <inspection_tool class="CppParameterMayBeConstPtrOrRef" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppRedundantElseKeywordInsideCompoundStatement" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantParentheses" enabled="false" level="HINT" enabled_by_default="false" />
+    <inspection_tool class="CppReplaceMemsetWithZeroInitialization" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppTooWideScope" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="CustomRegExpInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myConfigurations">
+        <list>
+          <RegExpInspectionConfiguration>
+            <option name="description" value="SquirrelJME memmove frontEnd to copy" />
+            <option name="name" value="SquirrelJME memmove frontEnd to copy" />
+            <option name="problemDescriptor" value="squirreljme-memmove-frontend" />
+            <option name="suppressId" value="squirreljme-memmove-frontend" />
+            <option name="uuid" value="b23c1e9e-fc2e-333a-94a8-25c517e51f85" />
+            <option name="patterns">
+              <list>
+                <InspectionPattern>
+                  <option name="regExp" value="memmove\(([^,]+)frontEnd,([ \t\r\n]*)([^,]+)frontEnd,[ \t\r\n]*sizeof(.*)\);" />
+                  <option name="_fileType" value="C/C++" />
+                  <option name="searchContext" value="ANY" />
+                  <option name="replacement" value="sjme_frontEnd_copy($1frontEnd,$2$3frontEnd);" />
+                </InspectionPattern>
+              </list>
+            </option>
+          </RegExpInspectionConfiguration>
+          <RegExpInspectionConfiguration>
+            <option name="description" value="SquirrelJME Suspicious ArgV Set" />
+            <option name="name" value="SquirrelJME Suspicious ArgV Set" />
+            <option name="problemDescriptor" value="squirreljme_argv_set" />
+            <option name="suppressId" value="squirreljme_argv_set" />
+            <option name="uuid" value="120e4cd2-a98e-38df-b005-641e475e2612" />
+            <option name="patterns">
+              <list>
+                <InspectionPattern>
+                  <option name="regExp" value="argV-&gt;.*=.*[;\n]" />
+                  <option name="_fileType" value="C/C++" />
+                  <option name="searchContext" value="ANY" />
+                </InspectionPattern>
+              </list>
+            </option>
+          </RegExpInspectionConfiguration>
+        </list>
+      </option>
+    </inspection_tool>
     <inspection_tool class="Deprecations" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="EditorConfigEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HashLoopInspection" enabled="false" level="ERROR" enabled_by_default="false" />
@@ -35,6 +76,8 @@
     <inspection_tool class="SubMultipleDefinitions" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SubUnresolvable" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="TruthinessInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnqualifiedFieldAccess" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnqualifiedMethodAccess" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnreachableCallsOfFunction" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnreachableCode" enabled="false" level="ERROR" enabled_by_default="false" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
     <inspection_tool class="UnreachableCodeJS" enabled="false" level="WARNING" enabled_by_default="false" />

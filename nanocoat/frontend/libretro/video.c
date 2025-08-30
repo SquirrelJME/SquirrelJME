@@ -38,5 +38,5 @@ sjme_attrUnused RETRO_API void retro_get_system_av_info(
 sjme_attrUnused RETRO_API void retro_set_video_refresh(
 	retro_video_refresh_t refresh)
 {
-	sjme_libretro_videoRefreshCallback = refresh;
+	sjme_libretro_globals.videoRefreshCallback = refresh;
 }

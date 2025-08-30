@@ -41,7 +41,7 @@ public interface VMStatisticType
 	
 	/**
 	 * The number of possible threads, if the virtual machine is
-	 * {@link ThreadModelType#SINGLE_COOP_THREAD} then this should always
+	 * {@link ThreadModelType#SINGLE_THREAD_COOP} then this should always
 	 * return 1.
 	 */
 	@SquirrelJMEVendorApi

@@ -41,7 +41,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2024/08/04
  */
 public class SpringVisClass
-	implements SpringClass
+	extends SpringBaseClass
 {
 	/** The class flags for a vis class. */
 	public static final ClassFlags CLASS_FLAGS =
@@ -103,7 +103,7 @@ public class SpringVisClass
 	@Override
 	public SpringObject classObject()
 	{
-		throw Debugging.todo();
+		return this;
 	}
 	
 	/**
@@ -524,7 +524,6 @@ public class SpringVisClass
 	@Override
 	public void setClassObject(SpringObject __rv)
 	{
-		throw Debugging.todo();
 	}
 	
 	/**

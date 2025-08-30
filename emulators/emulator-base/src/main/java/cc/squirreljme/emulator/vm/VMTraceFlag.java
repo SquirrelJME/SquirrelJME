@@ -73,6 +73,14 @@ public enum VMTraceFlag
 	/** Ignored exceptions. */
 	IGNORED_EXCEPTIONS("ignoredException",
 		VerboseDebugFlag.IGNORED_EXCEPTION),
+	
+	/** Not on the main thread. */
+	NOT_MAIN_THREAD("notMainThread",
+		VerboseDebugFlag.NOT_MAIN_THREAD),
+	
+	/** In default classes only. */
+	DEFAULT_PACKAGE("defaultPackage",
+		VerboseDebugFlag.DEFAULT_PACKAGE),
 
 	/* End. */
 	;

@@ -32,7 +32,7 @@ public final class ResourceBasedSuiteManager
 	implements VMSuiteManager
 {
 	/** The class to get resources from. */
-	protected final Class<?> actingclass;
+	public final Class<?> actingclass;
 	
 	/** The prefix for libraries. */
 	protected final String prefix;

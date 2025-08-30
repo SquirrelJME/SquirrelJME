@@ -9,7 +9,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import net.multiphasicapps.classfile.ClassName;
 
@@ -52,17 +51,6 @@ public abstract class AbstractGhostObject
 	{
 		throw new SpringVirtualMachineException(
 			"Ghost objects cannot have monitors: " + this.toString());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/05/31
-	 */
-	@Override
-	public RefLinkHolder refLink()
-	{
-		throw new SpringVirtualMachineException(
-			"Ghost objects cannot have refLinks: " + this.toString());
 	}
 	
 	/**

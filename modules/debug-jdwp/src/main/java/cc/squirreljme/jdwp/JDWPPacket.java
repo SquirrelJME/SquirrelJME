@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import java.io.Closeable;
 import java.io.DataOutputStream;
@@ -238,7 +239,7 @@ public final class JDWPPacket
 				// Can we get away with only copying part of the array?
 				byte[] ourData = this._data;
 				if (ourData != null && ourData.length >= data.length)
-					System.arraycopy(data, 0,
+					ObjectShelf.arrayCopy(data, 0,
 						ourData, 0, data.length);
 				
 				// Larger size, we already did clone the source array so
@@ -869,7 +870,7 @@ public final class JDWPPacket
 			// Otherwise make a copy of it
 			int len = this._length;
 			byte[] result = new byte[len];
-			System.arraycopy(data, 0,
+			ObjectShelf.arrayCopy(data, 0,
 				result, 0, len);
 			
 			// Use the result
@@ -1286,7 +1287,7 @@ public final class JDWPPacket
 				this._data = (data = new byte[__dataLen]);
 			
 			// Copy it in quickly
-			System.arraycopy(__data, 0,
+			ObjectShelf.arrayCopy(__data, 0,
 				data, 0, __dataLen);
 			
 			// Common header bits

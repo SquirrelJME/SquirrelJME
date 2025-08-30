@@ -9,13 +9,18 @@
 
 package cc.squirreljme.plugin;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import org.gradle.internal.os.OperatingSystem;
 import org.gradle.process.ExecSpec;
@@ -27,6 +32,21 @@ import org.gradle.process.ExecSpec;
  */
 public final class Responsify
 {
+	/** {@code /dev/null}. */
+	private static final File DEV_NULL;
+	
+	/** Cached responsify check. */
+	private static final Map<Path, Boolean> _CACHED =
+		new TreeMap<>();
+	
+	static
+	{
+		if (OperatingSystem.current().isWindows())
+			DEV_NULL = new File("NUL");
+		else
+			DEV_NULL = new File("/dev/null");
+	}
+	
 	/**
 	 * Not used.
 	 *
@@ -55,20 +75,31 @@ public final class Responsify
 		for (String arg : __args)
 			args.add(arg);
 		
-		// If not running on Windows, we do not have to worry about creating
-		// a mini file just to hold all the command line arguments, joy!
 		// Only handle certain kinds of arguments
 		String exe = (!args.isEmpty() ? args.get(0) : null);
-		if (exe == null || !OperatingSystem.current().isWindows())
+		if (exe == null)
 			return args;
 		
-		if (!(exe.toLowerCase().endsWith("java.exe")))
+		// Must be the Java executable
+		if (!exe.endsWith("java.exe") && !exe.endsWith("java"))
+			return args;
+		
+		// It must already not be responsified
+		if (args.size() >= 2 && args.get(1) != null &&
+			args.get(1).startsWith("@"))
+			return args;
+		
+		// Eclipse Adoptium just randomly got rid of response file support, so
+		// check if it is supported in the target Java
+		if (!Responsify.__supported(Paths.get(exe).toAbsolutePath()
+			.normalize()))
 			return args;
 		
 		// Setup temporary file
 		try
 		{
-			Path responseFile = Files.createTempFile("sjme", "r");
+			Path responseFile = Files.createTempFile(
+				"response", ".txt");
 			Runtime.getRuntime().addShutdownHook(new Thread(() ->
 				{
 					try
@@ -105,7 +136,7 @@ public final class Responsify
 			
 			// Refer to this
 			return Arrays.asList(exe,
-				"@" + responseFile.toAbsolutePath());
+				"@" + responseFile.toAbsolutePath().normalize());
 		}
 		
 		// Fallback since the file failed to be created
@@ -188,5 +219,116 @@ public final class Responsify
 			throw new NullPointerException("NARG");
 		
 		return Responsify.into(new ProcessBuilder(), __args);
+	}
+	
+	/**
+	 * Checks if response files are supported because Eclipse Adoptium just
+	 * decided to get rid of them.
+	 *
+	 * @param __exe The executable to check.
+	 * @return If they are supported.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/01
+	 */
+	private static boolean __supported(Path __exe)
+		throws NullPointerException
+	{
+		if (__exe == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (Responsify.class)
+		{
+			// Do we already know the result for the given executable?
+			if (Responsify._CACHED.containsKey(__exe))
+				return Responsify._CACHED.get(__exe);
+		}
+		
+		// Need to make a fake response file
+		Path tempFile = null;
+		Process process = null;
+		try
+		{
+			// Setup new temp file
+			tempFile = Files.createTempFile("response", ".txt");
+			
+			// -version should be supported by everything and is valid
+			// when passed nothing
+			Files.write(tempFile, Arrays.asList("-version"),
+				StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
+				StandardOpenOption.CREATE);
+			
+			// Try running the Java command
+			ProcessBuilder builder = new ProcessBuilder(
+				__exe.toString(),
+				"@" + tempFile.toAbsolutePath().normalize());
+			
+			// We do not care where this goes
+			builder.redirectError(
+				ProcessBuilder.Redirect.to(Responsify.DEV_NULL));
+			builder.redirectOutput(
+				ProcessBuilder.Redirect.to(Responsify.DEV_NULL));
+			
+			// Start the process
+			process = builder.start();
+			try
+			{
+				// Wait for a result
+				int result;
+				if (!process.waitFor(2500, TimeUnit.MILLISECONDS))
+					result = 1;
+				else
+					result = process.exitValue();
+				
+				// Make sure it is terminated
+				process.destroyForcibly();
+				
+				// If executing help was successful, then it is supported,
+				// otherwise it is not. Cache for later so we do not have
+				// to check this all the time
+				boolean supported = (result == 0);
+				synchronized (Responsify.class)
+				{
+					Responsify._CACHED.put(__exe, supported);
+				}
+				
+				// Use the result
+				return supported;
+			}
+			catch (InterruptedException __e)
+			{
+				// Was interrupted, so assume not supported as the user could
+				// not wait for it
+				synchronized (Responsify.class)
+				{
+					Responsify._CACHED.put(__exe, false);
+					return false;
+				}
+			}
+		}
+		catch (IOException __failed)
+		{
+			// Assume it is not supported
+			synchronized (Responsify.class)
+			{
+				Responsify._CACHED.put(__exe, false);
+				return false;
+			}
+		}
+		finally
+		{
+			// Kill the process
+			if (process != null)
+				process.destroyForcibly();
+			
+			// Cleanup
+			try
+			{
+				if (tempFile != null)
+					Files.deleteIfExists(tempFile);
+			}
+			catch (IOException ignored)
+			{
+			}
+		}
 	}
 }

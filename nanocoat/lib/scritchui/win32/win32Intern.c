@@ -11,6 +11,12 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
+#if defined(MK_XBUTTON1) && defined(MK_XBUTTON2) && \
+	defined(WM_XBUTTONDOWN) && defined(WM_XBUTTONUP)
+	/** Has extra buttons. */
+	#define SJME_CONFIG_HAS_XBUTTONS 1
+#endif
+
 static sjme_jint sjme_scritchui_win32_keyModifiers(void)
 {
 	sjme_jint result;
@@ -142,7 +148,7 @@ static sjme_jint sjme_scritchui_win32_keyCode(sjme_jint inKey)
 			return SJME_SCRITCHINPUT_KEY_NUMPAD_DECIMAL;
 		case VK_DIVIDE:
 			return SJME_SCRITCHINPUT_KEY_NUMPAD_DIVIDE;
-#if 0
+#if defined(VK_NUMPAD_ENTER)
 		case VK_NUMPAD_ENTER:
 			return SJME_SCRITCHINPUT_KEY_NUMPAD_ENTER;
 #endif
@@ -191,11 +197,13 @@ static sjme_jint sjme_scritchui_win32_mouseButtons(sjme_jint inMod)
 	if (inMod & MK_MBUTTON)
 		result |= (1 << 2);
 	
+#if defined(SJME_CONFIG_HAS_XBUTTONS)
 	/* Extra side buttons. */
 	if (inMod & MK_XBUTTON1)
 		result |= (1 << 3);
 	if (inMod & MK_XBUTTON2)
 		result |= (1 << 4);
+#endif
 	
 	return result;
 }
@@ -513,8 +521,12 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_MOUSE(
 	/* Normalize press. */
 	pressed = SJME_JNI_FALSE;
 	if (message == WM_LBUTTONDOWN || message == WM_MBUTTONDOWN ||
-		message == WM_RBUTTONDOWN || message == WM_XBUTTONDOWN)
+		message == WM_RBUTTONDOWN)
 		pressed = SJME_JNI_TRUE;
+#if defined(SJME_CONFIG_HAS_XBUTTONS)
+	else if (message == WM_XBUTTONDOWN)
+		pressed = SJME_JNI_TRUE;
+#endif
 	
 	/* Normalize button, oddly the window events here are right-handed */
 	/* mice while the modifiers in wParam are left-handed, but then also */
@@ -601,7 +613,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	sjme_scritchui_pencil pencil;
 	sjme_scritchui_pencilFont defaultFont;
 	sjme_scritchui_listener_paint* infoPaintCore;
-	sjme_frontEnd frontEnd;
+	sjme_frontEndBindable frontEnd;
 	HDC hDc;
 	PAINTSTRUCT paintInfo;
 	sjme_jint w, h, tx, ty;
@@ -677,8 +689,8 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	
 	/* Setup frontend info. */
 	memset(&frontEnd, 0, sizeof(frontEnd));
-	frontEnd.wrapper = hWnd;
-	frontEnd.data = hDc;
+	frontEnd.base.wrapper = hWnd;
+	frontEnd.base.data = hDc;
 	
 	/* Setup pencil. */
 	pencil = &paintable->pencil;
@@ -770,7 +782,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_SCROLL(
 		inComponent, &rect)))
 		return sjme_error_default(error);
 	
-#if 0
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("View rect: (%d, %d) [%d, %d]",
 		rect.s.x, rect.s.y, rect.d.width, rect.d.height);
@@ -977,7 +989,7 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
-#if 0 && defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("Win32 message: %p %d %p %p)",
 		hWnd, message, wParam, lParam);
@@ -1031,8 +1043,10 @@ sjme_errorCode sjme_scritchui_win32_intern_windowProc(
 		case WM_MBUTTONUP:
 		case WM_RBUTTONDOWN:
 		case WM_RBUTTONUP:
+#if defined(SJME_CONFIG_HAS_XBUTTONS)
 		case WM_XBUTTONDOWN:
 		case WM_XBUTTONUP:
+#endif
 		case WM_MOUSEMOVE:
 			error = sjme_scritchui_win32_windowProc_MOUSE(
 				inState, hWnd, message, wParam, lParam, &useResult);

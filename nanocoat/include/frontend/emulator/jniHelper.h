@@ -13,8 +13,8 @@
  * @since 2023/12/08
  */
 
-#ifndef SQUIRRELJME_JNIHELPER_H
-#define SQUIRRELJME_JNIHELPER_H
+#ifndef SJME_C_JNIHELPER_H
+#define SJME_C_JNIHELPER_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"

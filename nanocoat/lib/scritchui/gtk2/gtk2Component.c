@@ -51,7 +51,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	sjme_scritchui_listener_paint* infoCore;
 	sjme_scritchui_pencil pencil;
 	sjme_jint w, h;
-	sjme_frontEnd frontEnd;
+	sjme_frontEndBindable frontEnd;
 	sjme_scritchui_pencilFont defaultFont;
 	GdkRectangle clipRect;
 	
@@ -85,8 +85,8 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	
 	/* Setup frontend info. */
 	memset(&frontEnd, 0, sizeof(frontEnd));
-	frontEnd.wrapper = widget->window;
-	frontEnd.data = widget->style->fg_gc[widget->state];
+	frontEnd.base.wrapper = widget->window;
+	frontEnd.base.data = widget->style->fg_gc[widget->state];
 	
 	/* A default font is required. */
 	defaultFont = NULL;

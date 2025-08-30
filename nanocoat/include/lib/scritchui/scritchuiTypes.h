@@ -13,8 +13,8 @@
  * @since 2024/04/02
  */
 
-#ifndef SQUIRRELJME_SCRITCHUITYPES_H
-#define SQUIRRELJME_SCRITCHUITYPES_H
+#ifndef SJME_C_SCRITCHUITYPES_H
+#define SJME_C_SCRITCHUITYPES_H
 
 #include "sjme/atomic.h"
 #include "lib/scritchui/scritchui.h"
@@ -43,13 +43,13 @@ extern "C" {
 typedef struct sjme_scritchui_pencilLockState
 {
 	/** Spin lock for access to the buffer. */
-	sjme_thread_spinLock spinLock;
+	sjme_alignPointer sjme_thread_spinLock spinLock;
 	
 	/** The times this was opened. */
-	sjme_atomic_sjme_jint count;
+	sjme_alignPointer sjme_atomic_sjme_jint count;
 	
 	/** The front end source for drawing. */
-	sjme_frontEnd source;
+	sjme_frontEndBindable source;
 	
 	/** The base address where drawing should occur. */
 	sjme_pointer base;
@@ -91,7 +91,7 @@ struct sjme_scritchui_pencilBase
 	sjme_scritchui_pencilPrimFunctions prim;
 	
 	/** Front end information for paint. */
-	sjme_frontEnd frontEnd;
+	sjme_frontEndBindable frontEnd;
 	
 	/** The pixel format used. */
 	sjme_gfx_pixelFormat pixelFormat;
@@ -345,7 +345,7 @@ struct sjme_scritchui_uiPaintableBase
 	sjme_intPointer extra;
 	
 	/** Is this currently in paint? */
-	sjme_atomic_sjme_jint inPaint;
+	sjme_alignPointer sjme_atomic_sjme_jint inPaint;
 	
 	/** Belayed painting. */
 	sjme_scritchui_rect belayRect;

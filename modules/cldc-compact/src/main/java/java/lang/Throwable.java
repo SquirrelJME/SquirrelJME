@@ -12,6 +12,7 @@ package java.lang;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -42,6 +43,10 @@ public class Throwable
 	/** Was a cause initialized already? */
 	private boolean _initCause;
 	
+	/** The stack trace for this throwable. */
+	@SquirrelJMEVendorApi
+	volatile TracePointBracket[] _stackTrace;
+	
 	/**
 	 * The cause of this exception, note this is writeable because of
 	 * {@link #initCause(Throwable)}. This is mostly just for older versions
@@ -49,10 +54,6 @@ public class Throwable
 	 * constructor.
 	 */
 	private Throwable _cause;
-	
-	/** The stack trace for this throwable (in mostly-raw form). */
-	@SuppressWarnings("unused")
-	private TracePointBracket[] _stack;
 	
 	/**
 	 * Initializes a throwable with no cause or message.
@@ -64,7 +65,8 @@ public class Throwable
 	{
 		this._message = null;
 		
-		this._stack = DebugShelf.traceStack();
+		// Generate the stack trace
+		this._stackTrace = DebugShelf.traceThrowable(this);
 	}
 	
 	/**
@@ -78,7 +80,8 @@ public class Throwable
 	{
 		this._message = __m;
 		
-		this._stack = DebugShelf.traceStack();
+		// Generate the stack trace
+		this._stackTrace = DebugShelf.traceThrowable(this);
 	}
 	
 	/**
@@ -95,7 +98,8 @@ public class Throwable
 		this._initCause = true;
 		this._cause = __t;
 		
-		this._stack = DebugShelf.traceStack();
+		// Generate the stack trace
+		this._stackTrace = DebugShelf.traceThrowable(this);
 	}
 	
 	/**
@@ -113,7 +117,8 @@ public class Throwable
 		this._initCause = true;
 		this._cause = __t;
 		
-		this._stack = DebugShelf.traceStack();
+		// Generate the stack trace
+		this._stackTrace = DebugShelf.traceThrowable(this);
 	}
 	
 	/**
@@ -170,7 +175,7 @@ public class Throwable
 	public Throwable fillInStackTrace()
 	{
 		// Get stack trace, ignore this method
-		this._stack = DebugShelf.traceStack();
+		this._stackTrace = DebugShelf.traceThrowable(this);
 		
 		return this;
 	}

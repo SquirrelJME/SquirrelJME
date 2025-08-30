@@ -70,8 +70,17 @@ public class ShiftJisDecoder
 			if (__l < 2)
 				return -1;
 			
+			// Corrects these two specific characters to match the Unicode
+			// specification
+			byte b = __b[__o + 1];
+			if (a == 0x81)
+				if (b == 0x5C)
+					return 0x2015 | 0x2_0000;
+				else if (b == 0x5F)
+					return 0x005C | 0x2_0000;
+			
 			// Decode
-			int z = ShiftJisDecoder.loadTable().decode((byte)a, __b[__o + 1]);
+			int z = ShiftJisDecoder.loadTable().decode((byte)a, b);
 			return (z < 0 ? 0xFFFD : z) | 0x2_0000;
 		}
 		

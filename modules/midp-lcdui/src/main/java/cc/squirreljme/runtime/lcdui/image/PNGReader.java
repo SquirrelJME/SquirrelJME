@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
@@ -195,7 +196,7 @@ public class PNGReader
 							// Write in all the data
 							// for (int i = 0, o = gn; i < xn; i++, o++)
 							// 	imageChunk[o] = xtrachunk[i];
-							System.arraycopy(xtrachunk, 0,
+							ObjectShelf.arrayCopy(xtrachunk, 0,
 								imageChunk, gn, xn);
 						}
 						

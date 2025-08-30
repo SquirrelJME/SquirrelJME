@@ -42,6 +42,14 @@ squirreljme
 	optionalDependenciesTest += project(':modules:lcdui-demo')
 }
 
+jar {
+	manifest {
+		attributes(
+			"MicroEdition-Profile": "MEEP-8.0"
+		)
+	}
+}
+
 dependencies
 {
 	api project(":modules:cldc-compact")

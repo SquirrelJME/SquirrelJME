@@ -93,8 +93,13 @@ public interface VMDescriptionType
 	byte PATH_SEPARATOR =
 		13;
 	
+	/** The virtual machine info. */
+	@SquirrelJMEVendorApi
+	byte VM_INFO =
+		14;
+	
 	/** The current number of properties. */
 	@SquirrelJMEVendorApi
 	byte NUM_TYPES =
-		13;
+		15;
 }

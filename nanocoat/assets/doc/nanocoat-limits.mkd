@@ -1,0 +1,20 @@
+# NanoCoat Absolute Limits
+
+This is a non-exact list of the absolute theoretical limits within
+NanoCoat. It is not intended to be 100% accurate and may contain an
+error level of up to 5% depending on the system environment.
+
+ * Classes:
+   * Fields:
+     * _static_/_instance_ _per-Java-type_ in entire chain: `32767`
+   * Methods:
+     * _static_/_instance_ in entire chain: `32767`
+ * Memory:
+   * Arrays:
+     * `Object`: `536,870,911 members` or `268,435,455 members`
+     * `long`/`double`: `268,435,455 members`
+     * `int`/`float`: `536,870,911 members`
+     * `short`/`char`: `1,073,741,823 members`
+     * `byte`/`boolean`: `2,147,483,647 members`
+   * Region: `2,147,483,647 bytes` or `2047 MiB`
+   * Single: `2,147,483,647 bytes` or `2047 MiB`

@@ -96,6 +96,45 @@ macro(squirreljme_multilib_static_target_include_directories libBase)
 		${libBaseIncludes})
 endmacro()
 
+# Add compile definitions to multilib library
+macro(squirreljme_multilib_target_compile_definitions target scope what)
+	# Set on object target
+	target_compile_definitions(${target} ${scope}
+		${what})
+
+	# Set on static target
+	target_compile_definitions(${target}Static ${scope}
+		${what})
+
+	# And on static FPIC target
+	if(SQUIRRELJME_ENABLE_FPIC)
+		target_compile_definitions(${target}PIC ${scope}
+			${what})
+	endif()
+
+	# And on the library target
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		target_compile_definitions(${target}DyLib ${scope}
+			${what})
+	endif()
+endmacro()
+
+# Change the name of the library
+macro(squirreljme_multilib_target_binary_name target name)
+	# Set on static target
+	squirreljme_target_binary_name(${target}Static ${name})
+
+	# And on static FPIC target
+	if(SQUIRRELJME_ENABLE_FPIC)
+		squirreljme_target_binary_name(${target}PIC ${name})
+	endif()
+
+	# And on the library target
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		squirreljme_target_binary_name(${target}DyLib ${name})
+	endif()
+endmacro()
+
 # Add include directories to multilib library
 macro(squirreljme_multilib_target_include_directories libBase)
 	# Use static variant
@@ -172,6 +211,14 @@ macro(squirreljme_multilib_target_link_libraries libBase)
 		${libBaseLibs})
 endmacro()
 
+# Link multilib against required core libraries
+macro(squirreljme_multilib_target_link_libraries_required libBase)
+	# Dynamic library output
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		squirreljme_target_link_libraries_required(${libBase}DyLib)
+	endif()
+endmacro()
+
 # Output locations for binaries
 macro(squirreljme_multilib_target_binary_output libBase where)
 	# Static library output
@@ -206,7 +253,7 @@ macro(squirreljme_multilib_add_dependency libBase dependOn)
 	# Only link for the dynamic library
 	if(SQUIRRELJME_ENABLE_DYLIB)
 		add_dependencies(${libBase}DyLib
-			${dependOn})
+			${dependOn}PIC)
 	endif()
 endmacro()
 

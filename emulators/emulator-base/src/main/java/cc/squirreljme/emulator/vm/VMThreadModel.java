@@ -19,17 +19,20 @@ import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 public enum VMThreadModel
 {
 	/** Single cooperative thread. */
-	SINGLE_COOP_THREAD(ThreadModelType.SINGLE_COOP_THREAD),
+	SINGLE_THREAD_COOP(ThreadModelType.SINGLE_THREAD_COOP),
+	
+	/** Single preemptive cooperative thread. */
+	SINGLE_THREAD_PREEMPT(ThreadModelType.SINGLE_THREAD_PREEMPT),
 	
 	/** Simultaneous Multi-Threading. */
-	SIMULTANEOUS_MULTI_THREAD(ThreadModelType.SIMULTANEOUS_MULTI_THREAD),
+	MULTI_THREAD(ThreadModelType.MULTI_THREAD),
 	
 	/* End. */
 	;
 	
 	/** The default thread model. */
 	public static final VMThreadModel DEFAULT =
-		VMThreadModel.SIMULTANEOUS_MULTI_THREAD;
+		VMThreadModel.MULTI_THREAD;
 	
 	/** The model ID. */
 	public final int model;
@@ -61,11 +64,14 @@ public enum VMThreadModel
 		{
 			case "single":
 			case "coop":
-				return VMThreadModel.SINGLE_COOP_THREAD;
+				return VMThreadModel.SINGLE_THREAD_COOP;
+				
+			case "shared":
+				return VMThreadModel.SINGLE_THREAD_PREEMPT;
 			
 			case "multi":
 			case "smt":
-				return VMThreadModel.SIMULTANEOUS_MULTI_THREAD;
+				return VMThreadModel.MULTI_THREAD;
 			
 			default:
 				return VMThreadModel.DEFAULT;

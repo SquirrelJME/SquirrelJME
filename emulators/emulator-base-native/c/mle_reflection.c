@@ -11,7 +11,7 @@
 
 #define REFLECTION_CLASSNAME "cc/squirreljme/emulator/EmulatedReflectionShelf"
 
-#define INVOKEMAIN_DESC "(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;[Ljava/lang/String;)V"
+#define INVOKEMAIN_DESC "(Ljava/lang/Class;[Ljava/lang/String;)V"
 
 JNIEXPORT void JNICALL Impl_mle_ReflectionShelf_invokeMain(JNIEnv* env,
 	jclass classy, jobject type, jobject args)

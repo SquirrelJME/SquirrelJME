@@ -259,11 +259,7 @@ public class List
 	public String getString(int __i)
 		throws IndexOutOfBoundsException
 	{
-		throw Debugging.todo();
-		/*
-		return this._items.get(__i)._label;
-		
-		 */
+		return this._choices.getCached(__i).getString();
 	}
 	
 	/**

@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFFontElementType;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFImageElementType;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFPlatformFlag;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLineStyle;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
@@ -73,15 +74,6 @@ public interface ScritchLAFInterface
 	int lafFocusBorderStyle(boolean __focused);
 	
 	/**
-	 * Are alerts natively supported?
-	 *
-	 * @return If alerts are natively supported?
-	 * @since 2025/02/09
-	 */
-	@SquirrelJMEVendorApi
-	boolean lafHasAlerts();
-	
-	/**
 	 * Returns the image size that best represents the given element.
 	 *
 	 * @param __elem The element to get.
@@ -99,11 +91,12 @@ public interface ScritchLAFInterface
 		throws MLECallError;
 	
 	/**
-	 * Returns whether dark mode is currently in use.
+	 * Platform flags used in ScritchUI.
 	 *
-	 * @return If dark mode is in use.
-	 * @since 2024/03/24
+	 * @return The platform flags used.
+	 * @since 2025/05/15
 	 */
 	@SquirrelJMEVendorApi
-	boolean lafIsDarkMode();
+	@MagicConstant(valuesFromClass = ScritchLAFPlatformFlag.class)
+	int lafPlatformFlags();
 }

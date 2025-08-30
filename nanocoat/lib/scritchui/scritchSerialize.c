@@ -43,7 +43,7 @@
 	sdData.type = (key); \
 	sdData.error = SJME_ERROR_UNKNOWN; \
 	sdData.state = inState; \
-	serial = &sdData.data.what; } while (0)
+	serial = (void*)&sdData.data.what; } while (0)
 
 /** The name for serial data. */
 #define SDX_STRUCT_NAME(where, what) \
@@ -65,7 +65,7 @@
 /** Check for being in the loop. */
 #define SJME_SDU_LOOP_CHECK(what) \
 	do { \
-		error = SJME_ERROR_NOT_IMPLEMENTED; \
+		error = SJME_NUM_ERROR_CODES; \
 		direct = SJME_JNI_FALSE; \
 		 \
 		if (inState->api->loopIsInThread == NULL || \
@@ -79,7 +79,7 @@
 
 /** Common shared chunk of forwarding code, to reduce duplicates. */
 #define SJME_SDU_CHUNK(what, whatType, directInvokeArgs) \
-	SJME_SDX_VARS(what); \
+	SJME_SDX_VARS(what) \
 	SJME_SDU_VARS(what); \
 	 \
 	SJME_SDU_PRE_CHECK; \
@@ -133,7 +133,7 @@
 /** Check for being in the loop. */
 #define SJME_SDP_LOOP_CHECK(what) \
 	do { \
-		error = SJME_ERROR_NOT_IMPLEMENTED; \
+		error = SJME_NUM_ERROR_CODES; \
 		direct = SJME_JNI_FALSE; \
 		 \
 		if (inState->api->loopIsInThread == NULL || \
@@ -147,7 +147,7 @@
 
 /** Common shared chunk of forwarding code, to reduce duplicates. */
 #define SJME_SDP_CHUNK(what, whatType, directInvokeArgs) \
-	SJME_SDX_VARS(what); \
+	SJME_SDX_VARS(what) \
 	SJME_SDP_VARS(what); \
 	 \
 	SJME_SDP_PRE_CHECK; \
@@ -199,7 +199,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	
 	/* Restore info. */
 	state = sdData->state;
-	as = &sdData->data;
+	as = (void*)&sdData->data;
 	
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
@@ -1240,12 +1240,12 @@ sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
-	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy)
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy)
 {
 	SJME_SDU_CHUNK(hardwareGraphics,
 		SJME_SCRITCHUI_SERIAL_UI_HARDWARE_GRAPHICS,
@@ -1861,7 +1861,7 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawPixel(
 	
 sjme_errorCode sjme_scritchpen_coreSerial_drawSubstring(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull const sjme_charSeq* s,
+	sjme_attrInNotNull const sjme_charSeq s,
 	sjme_attrInPositive sjme_jint o, 
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrInValue sjme_jint x,

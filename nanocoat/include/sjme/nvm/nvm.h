@@ -13,8 +13,8 @@
  * @since 2023/07/25
  */
 
-#ifndef SQUIRRELJME_NVM_H
-#define SQUIRRELJME_NVM_H
+#ifndef SJME_C_NVM_H
+#define SJME_C_NVM_H
 
 #include <setjmp.h>
 
@@ -25,6 +25,7 @@
 #include "sjme/alloc.h"
 #include "sjme/list.h"
 #include "sjme/atomic.h"
+#include "sjme/native.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -51,18 +52,8 @@ typedef sjme_jint sjme_pcAddr;
  */
 typedef sjme_jint sjme_staticLinkageType;
 
-struct sjme_jobjectBase
-{
-	/** The reference count of this object, zero it becomes GCed. */
-	sjme_jint refCount;
-};
-
-/**
- * Throwable type.
- * 
- * @since 2023/07/25
- */
-typedef sjme_jobject sjme_jthrowable;
+/** Single byte code storage type. */
+typedef sjme_jubyte sjme_byteCode;
 
 typedef union sjme_anyData
 {
@@ -86,6 +77,65 @@ typedef struct sjme_any
 } sjme_any;
 
 /**
+ * Represents an identifier to an interface.
+ * 
+ * @since 2025/03/26
+ */
+typedef struct sjme_jinterfaceIDBase sjme_jinterfaceIDBase;
+
+/**
+ * Represents an identifier to an interface.
+ * 
+ * @since 2025/03/26
+ */
+typedef sjme_jinterfaceIDBase* sjme_jinterfaceID;
+
+/**
+ * Represents an identifier to a member.
+ * 
+ * @since 2025/02/26
+ */
+typedef struct sjme_jmemberIDBase sjme_jmemberIDBase;
+
+/**
+ * Represents an identifier to a member.
+ * 
+ * @since 2025/02/26
+ */
+typedef sjme_jmemberIDBase* sjme_jmemberID;
+
+/**
+ * Represents an identifier to a method.
+ * 
+ * @since 2024/10/19
+ */
+typedef struct sjme_jmethodIDBase sjme_jmethodIDBase;
+
+/**
+ * Represents an identifier to a method.
+ * 
+ * @since 2024/10/19
+ */
+typedef sjme_jmethodIDBase* sjme_jmethodID;
+
+/**
+ * Represents an identifier to a field.
+ * 
+ * @since 2025/02/26
+ */
+typedef struct sjme_jfieldIDBase sjme_jfieldIDBase;
+
+/**
+ * Represents an identifier to a field.
+ * 
+ * @since 2025/02/26
+ */
+typedef sjme_jfieldIDBase* sjme_jfieldID;
+
+/** List of fields. */
+SJME_LIST_DECLARE(sjme_jfieldID, 0);
+
+/**
  * The type of structure a type is.
  * 
  * @since 2024/08/09
@@ -94,21 +144,54 @@ typedef enum sjme_nvm_structType
 {
 	/** Unknown. */
 	SJME_NVM_STRUCT_UNKNOWN,
+
+	/** Array instance. */
+	SJME_NVM_STRUCT_ARRAY_INSTANCE,
+
+	/** A Jar package instance pointer object. */
+	SJME_NVM_STRUCT_BRACKET_JAR_PACKAGE_INSTANCE,
+
+	/** Pipe bracket. */
+	SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE,
+
+	/** A trace point instance pointer object. */
+	SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE,
 	
 	/** Class information. */
 	SJME_NVM_STRUCT_CLASS_INFO,
 	
+	/** A single class instance. */
+	SJME_NVM_STRUCT_CLASS_INSTANCE,
+	
 	/** Method code. */
 	SJME_NVM_STRUCT_CODE,
+
+	/** Field identifier. */
+	SJME_NVM_STRUCT_FIELD_ID,
 	
 	/** Field information. */
 	SJME_NVM_STRUCT_FIELD_INFO,
 	
+	/** Thread frame. */
+	SJME_NVM_STRUCT_FRAME,
+	
 	/** Identifier. */
 	SJME_NVM_STRUCT_IDENTIFIER,
+
+	/** Interface binding. */ 
+	SJME_NVM_STRUCT_INTERFACE_ID,
+	
+	/** The classes a class is. */
+	SJME_NVM_STRUCT_IS_CLASSES,
+	
+	/** Method binding. */
+	SJME_NVM_STRUCT_METHOD_ID,
 	
 	/** Method information. */
 	SJME_NVM_STRUCT_METHOD_INFO,
+	
+	/** Object Instance. */
+	SJME_NVM_STRUCT_OBJECT_INSTANCE,
 	
 	/** Rom Library. */
 	SJME_NVM_STRUCT_ROM_LIBRARY,
@@ -121,6 +204,9 @@ typedef enum sjme_nvm_structType
 	
 	/** NanoCoat state. */
 	SJME_NVM_STRUCT_STATE,
+
+	/** A string instance. */
+	SJME_NVM_STRUCT_STRING_INSTANCE,
 	
 	/** A string pool. */
 	SJME_NVM_STRUCT_STRING_POOL,
@@ -128,8 +214,26 @@ typedef enum sjme_nvm_structType
 	/** A string in the string pool. */
 	SJME_NVM_STRUCT_STRING_POOL_STRING,
 	
+	/** A single task. */
+	SJME_NVM_STRUCT_TASK,
+
+	/** Task intern strings. */
+	SJME_NVM_STRUCT_TASK_STRINGS,
+	
+	/** A single thread. */
+	SJME_NVM_STRUCT_THREAD_INSTANCE,
+	
+	/** Class loader. */
+	SJME_NVM_STRUCT_VM_CLASS_LOADER,
+
+	/** An instance of a @c Reference . */
+	SJME_NVM_STRUCT_WEAK_INSTANCE,
+	
 	/** The number of structure types. */
-	SJME_NVM_NUM_STRUCT
+	SJME_NVM_NUM_STRUCT,
+
+	/** Any object instance. */
+	SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE = SJME_NVM_NUM_STRUCT + 3
 } sjme_nvm_structType;
 
 /**
@@ -145,6 +249,27 @@ typedef struct sjme_nvm_commonBase sjme_nvm_commonBase;
  * @since 2024/08/10
  */
 typedef sjme_nvm_commonBase* sjme_nvm_common;
+
+/** Cast to array. */
+#define SJME_AS_JARRAY(x) ((sjme_jarray)(x))
+
+/** Cast to array pointer. */
+#define SJME_AS_JARRAYP(x) ((sjme_jarray*)(x))
+	
+/** Cast to object. */
+#define SJME_AS_JOBJECT(x) ((sjme_jobject)(x))
+
+/** Cast to pointer to object. */
+#define SJME_AS_JOBJECTP(x) ((sjme_jobject*)(x))
+	
+/** Cast to class. */
+#define SJME_AS_JCLASS(x) ((sjme_jclass)(x))
+
+/** Cast to pointer to object. */
+#define SJME_AS_JCLASSP(x) ((sjme_jclass*)(x))
+
+/** As a member ID. */
+#define SJME_AS_JMEMBERID(x) ((sjme_jmemberID)(x))
 
 /** Cast to common type. */
 #define SJME_AS_NVM_COMMON(x) ((sjme_nvm_common)(x))
@@ -188,546 +313,14 @@ typedef sjme_nvm_frameBase* sjme_nvm_frame;
 typedef struct sjme_nvm_threadBase sjme_nvm_threadBase;
 
 /**
- * Exception stack trace mechanism storage.
- *
- * @since 2023/12/08
- */
-typedef struct sjme_exceptTrace sjme_exceptTrace;
-
-/**
  * A thread within SquirrelJME.
  * 
  * @since 2024/08/08
  */
 typedef sjme_nvm_threadBase* sjme_nvm_thread;
 
-struct sjme_nvm_threadBase
-{
-	/** The VM state this thread is in. */
-	sjme_nvm inState;
-	
-	/** The wrapper in the front end. */
-	sjme_frontEnd frontEnd;
-	
-	/** The thread ID. */
-	sjme_jint threadId;
-	
-	/** The top of the stack. */
-	sjme_nvm_frame top;
-	
-	/** The number of frames. */
-	sjme_jint numFrames;
-
-	/** Current exception handler go back. */
-	sjme_exceptTrace* except;
-};
-
-typedef struct sjme_static_constValue
-{
-	/** Integer value. */
-	sjme_jint jint;
-	
-	/** Long value. */
-	sjme_jlong jlong;
-	
-	/** Float value. */
-	sjme_jfloat jfloat;
-	
-	/** Double value. */
-	sjme_jdouble jdouble;
-	
-	/** String value. */
-	sjme_lpcstr jstring;
-	
-	/** Class name. */
-	sjme_lpcstr jclass;
-} sjme_static_constValue;
-
-/**
- * Represents a field type.
- * 
- * @since 2023/08/10
- */
-typedef struct sjme_static_fieldType
-{
-	/** The hash code for the field type. */
-	sjme_jint hashCode;
-	
-	/** The field descriptor. */
-	sjme_lpcstr descriptor;
-	
-	/** The basic type. */
-	sjme_basicTypeId basicType;
-} sjme_static_fieldType;
-
-typedef struct sjme_static_classField
-{
-	/** Field name. */
-	sjme_lpstr name;
-	
-	/** The field type. */
-	const sjme_static_fieldType* type;
-	
-	/** Flags. */
-	sjme_jint flags;
-	
-	/** The constant value type. */
-	sjme_basicTypeId valueType;
-	
-	/** The value. */
-	sjme_static_constValue value;
-} sjme_static_classField;
-
-typedef struct sjme_static_classFields
-{
-	/** The number of fields. */
-	sjme_jint count;
-	
-	/** Fields. */
-	sjme_static_classField fields[sjme_flexibleArrayCount];
-} sjme_static_classFields;
-
-/**
- * Type used for method code functions.
- * 
- * @param currentState The current virtual machine state.
- * @param currentThread The current virtual machine thread.
- * @return Will return @c SJME_JNI_TRUE if execution completed without throwing
- * a @c Throwable object.
- * @since 2023/07/25
- */
-typedef sjme_jboolean (*sjme_methodCodeFunction)(
-	sjme_nvm currentState,
-	sjme_nvm_thread currentThread);
-
-/**
- * The variable mapping and setup for any given method.
- * 
- * @since 2023/08/09
- */
-typedef struct sjme_static_classCodeLimits
-{
-	/** The maximum number of @c sjme_basicTypeId local/stack variables. */
-	const sjme_jubyte maxVariables[SJME_NUM_JAVA_TYPE_IDS];
-} sjme_static_classCodeLimits;
-
-/**
- * Contains information about method code and how variables should be placed
- * on execution and stack handling.
- * 
- * @since 2023/08/09
- */
-typedef struct sjme_static_classCode
-{
-	/** The variable count and thrown index count used. */
-	const sjme_static_classCodeLimits* limits;
-	
-	/** The index where thrown objects are placed. */
-	sjme_jshort thrownVarIndex;
-	
-	/** The method code. */
-	sjme_methodCodeFunction code;
-} sjme_static_classCode;
-
-/**
- * Represents a standard Java method type, using field descriptors.
- * 
- * @since 2023/08/10
- */
-typedef struct sjme_static_methodType
-{
-	/** The hash code for the method type. */
-	sjme_jint hashCode;
-	
-	/** The descriptor for the method type. */
-	sjme_lpcstr descriptor;
-	
-	/** The return type. */
-	const sjme_static_fieldType* returnType;
-	
-	/** The number of arguments. */
-	sjme_jint argCount;
-	
-	/** The arguments to the method. */
-	const sjme_static_fieldType* argTypes[sjme_flexibleArrayCount];
-} sjme_static_methodType;
-
-typedef struct sjme_static_classMethod
-{
-	/** Method name. */
-	sjme_lpcstr name;
-	
-	/** Flags. */
-	sjme_jint flags;
-	
-	/** Name typed. */
-	const sjme_static_methodType* type;
-	
-	/** Method code and any pertaining information. */
-	const sjme_static_classCode* code;
-} sjme_static_classMethod;
-
-typedef struct sjme_static_classMethods
-{
-	/** The number of methods. */
-	sjme_jint count;
-	
-	/** Methods. */
-	sjme_static_classMethod methods[sjme_flexibleArrayCount];
-} sjme_static_classMethods;
-
-typedef struct sjme_static_classInterface
-{
-	sjme_lpcstr interfaceName;
-} sjme_static_classInterface;
-
-typedef struct sjme_static_classInterfaces
-{
-	/** The number of interfaces. */
-	sjme_jint count;
-	
-	/** Interfaces. */
-	sjme_static_classInterface interfaces[sjme_flexibleArrayCount];
-} sjme_static_classInterfaces;
-
-typedef struct sjme_static_resource
-{
-	/** The resource path. */
-	sjme_lpcstr path;
-	
-	/** The hash for the path. */
-	sjme_jint pathHash;
-	
-	/** The size of the resource. */
-	sjme_jint size;
-	
-	/** The resource data. */
-	const sjme_jbyte data[sjme_flexibleArrayCount];
-} sjme_static_resource;
-
-typedef struct sjme_static_linkage_data_classObject
-{
-	/** The class name. */
-	sjme_lpcstr className;
-} sjme_static_linkage_data_classObject;
-
-typedef struct sjme_static_linkage_data_fieldAccess
-{
-	/** Is this static? */
-	sjme_jboolean isStatic;
-	
-	/** Is this a store? */
-	sjme_jboolean isStore;
-	
-	/** The source method name. */
-	sjme_lpcstr sourceMethodName;
-	
-	/** The source method type. */
-	sjme_lpcstr sourceMethodType;
-	
-	/** The target class. */
-	sjme_lpcstr targetClass;
-	
-	/** The target field name. */
-	sjme_lpcstr targetFieldName;
-	
-	/** The target field type. */
-	sjme_lpcstr targetFieldType;
-} sjme_static_linkage_data_fieldAccess;
-
-typedef struct sjme_static_linkage_data_invokeSpecial
-{
-	/** The source method name. */
-	sjme_lpcstr sourceMethodName;
-	
-	/** The source method type. */
-	sjme_lpcstr sourceMethodType;
-	
-	/** The target class. */
-	sjme_lpcstr targetClass;
-	
-	/** The target method name. */
-	sjme_lpcstr targetMethodName;
-	
-	/** The target method type. */
-	sjme_lpcstr targetMethodType;
-} sjme_static_linkage_data_invokeSpecial;
-
-typedef struct sjme_static_linkage_data_invokeNormal
-{
-	/** Is this a static invocation? */
-	sjme_jboolean isStatic;
-
-	/** The source method name. */
-	sjme_lpcstr sourceMethodName;
-	
-	/** The source method type. */
-	sjme_lpcstr sourceMethodType;
-	
-	/** The target class. */
-	sjme_lpcstr targetClass;
-	
-	/** The target method name. */
-	sjme_lpcstr targetMethodName;
-	
-	/** The target method type. */
-	sjme_lpcstr targetMethodType;
-} sjme_static_linkage_data_invokeNormal;
-
-typedef struct sjme_static_linkage_data_stringObject
-{
-	/** The string value. */
-	sjme_lpcstr string;
-} sjme_static_linkage_data_stringObject;
-
-typedef union sjme_static_linkage_data
-{
-	/** Reference to class object. */
-	sjme_static_linkage_data_classObject classObject;
-	
-	/** Field access. */
-	sjme_static_linkage_data_fieldAccess fieldAccess;
-	
-	/** Special invocation. */
-	sjme_static_linkage_data_invokeSpecial invokeSpecial;
-	
-	/** Normal invocation. */
-	sjme_static_linkage_data_invokeNormal invokeNormal;
-	
-	/** String object. */
-	sjme_static_linkage_data_stringObject stringObject;
-} sjme_static_linkage_data;
-
-/**
- * Static linkage.
- * 
- * @since 2023/07/25
- */
-typedef struct sjme_static_linkage
-{
-	/** The type of linkage this is. */
-	sjme_staticLinkageType type;
-	
-	/** Linkage data. */
-	sjme_static_linkage_data data;
-} sjme_static_linkage;
-
-typedef struct sjme_static_linkages
-{
-	/** The number of linkages. */
-	sjme_jint count;
-	
-	/** The define linkages. */
-	sjme_static_linkage linkages[sjme_flexibleArrayCount];
-} sjme_static_linkages;
-
-typedef struct sjme_dynamic_linkage_data_classObject
-{
-	int todo;
-} sjme_dynamic_linkage_data_classObject;
-
-typedef struct sjme_dynamic_linkage_data_fieldAccess
-{
-	int todo;
-} sjme_dynamic_linkage_data_fieldAccess;
-
-typedef struct sjme_dynamic_linkage_data_invokeSpecial
-{
-	int todo;
-} sjme_dynamic_linkage_data_invokeSpecial;
-
-typedef struct sjme_dynamic_linkage_data_invokeNormal
-{
-	int todo;
-} sjme_dynamic_linkage_data_invokeNormal;
-
-typedef struct sjme_dynamic_linkage_data_stringObject
-{
-	int todo;
-} sjme_dynamic_linkage_data_stringObject;
-
-typedef union sjme_dynamic_linkage_data
-{
-	/** Reference to class object. */
-	sjme_dynamic_linkage_data_classObject classObject;
-	
-	/** Field access. */
-	sjme_dynamic_linkage_data_fieldAccess fieldAccess;
-	
-	/** Special invocation. */
-	sjme_dynamic_linkage_data_invokeSpecial invokeSpecial;
-	
-	/** Normal invocation. */
-	sjme_dynamic_linkage_data_invokeNormal invokeNormal;
-	
-	/** String object. */
-	sjme_dynamic_linkage_data_stringObject stringObject;
-} sjme_dynamic_linkage_data;
-
-/**
- * Dynamic linkage.
- * 
- * @since 2023/07/25
- */
-typedef struct sjme_dynamic_linkage
-{
-	/** The type of linkage this is. */
-	sjme_staticLinkageType type;
-	
-	/** Linkage data. */
-	sjme_dynamic_linkage_data data;
-} sjme_dynamic_linkage;
-
-/**
- * Represents the frame of a stack tread.
- * 
- * @since 2023/11/15
- */
-typedef struct sjme_nvm_frameTread
-{
-	/** The number of items in this tread. */
-	sjme_jint count;
-	
-	/** The base index for the stack index. */
-	sjme_jint stackBaseIndex;
-	
-	/** The maximum size this tread can be. */
-	sjme_jint max;
-	
-	/** Values within the tread. */
-	union
-	{
-		/** Integer values. */
-		sjme_jint jints[sjme_flexibleArrayCountUnion];
-		
-		/** Long values. */
-		sjme_jlong jlongs[sjme_flexibleArrayCountUnion];
-		
-		/** Float values. */
-		sjme_jfloat jfloats[sjme_flexibleArrayCountUnion];
-		
-		/** Double values. */
-		sjme_jdouble jdoubles[sjme_flexibleArrayCountUnion];
-		
-		/** Object references. */
-		sjme_jobject jobjects[sjme_flexibleArrayCountUnion];
-	} values;
-} sjme_nvm_frameTread;
-
-/**
- * Calculates the size of a frame tread for a given type.
- * 
- * @param type The type to get the size for.
- * @param count The number if items to store.
- * @return The size in bytes for the tread.
- * @since 2023/11/15
- */
-#define SJME_SIZEOF_FRAME_TREAD(type, count, baseType) \
-	(sizeof(sjme_nvm_frameTread) + \
-	/* Need to handle cases where values could be aligned up... */ \
-	(offsetof(sjme_nvm_frameTread, values.SJME_TOKEN_PASTE(baseType,s)[0]) - \
-		offsetof(sjme_nvm_frameTread, values)) + \
-	(sizeof(type) * (size_t)(count)))
-
-/**
- * Represents information on a frame's stack storage.
- * 
- * @since 2023/11/16
- */
-typedef struct sjme_nvm_frameStack
-{
-	/** The number of items in the stack. */
-	sjme_jint count;
-	
-	/** The current limit of this structure. */
-	sjme_jint limit;
-	
-	/** The stack order. */
-	sjme_javaTypeId order[sjme_flexibleArrayCount];
-} sjme_nvm_frameStack;
-
-/**
- * Calculates the size of a frame stack.
- * 
- * @param count The number if items to store.
- * @return The size in bytes for the tread.
- * @since 2023/11/16
- */
-#define SJME_SIZEOF_FRAME_STACK(count) \
-	(sizeof(sjme_nvm_frameStack) + \
-	(sizeof(sjme_javaTypeId) * (size_t)(count)))
-
-typedef struct sjme_nvm_frameLocalMap
-{
-	/** The maximum number of locals. */
-	sjme_jint max;
-	
-	/** Mapping of a specific variable to a given type index. */
-	union
-	{
-		sjme_jbyte to[SJME_NUM_JAVA_TYPE_IDS];
-	} maps[sjme_flexibleArrayCount];
-} sjme_nvm_frameLocalMap;
-
-/**
- * Calculates the size of the frame local variable map.
- * 
- * @param count The number of items in the mapping.
- * @return The size in bytes of the local mapping.
- * @since 2023/11/26
- */
-#define SJME_SIZEOF_FRAME_LOCAL_MAP(count) \
-	(sizeof(sjme_nvm_frameLocalMap) + \
-	(SJME_SIZEOF_STRUCT_MEMBER(sjme_nvm_frameLocalMap, maps[0]) * (count)))
-
-struct sjme_nvm_frameBase
-{
-	/** The thread this frame is in. */
-	sjme_nvm_thread inThread;
-	
-	/** The wrapper in the front end. */
-	sjme_frontEnd frontEnd;
-	
-	/** The parent frame. */
-	sjme_nvm_frame parent;
-	
-	/** The frame index in the thread. */
-	sjme_jint frameIndex;
-	
-	/** The current program counter. */
-	sjme_pcAddr pc;
-	
-	/** Object which is waiting to be thrown for exception handling. */
-	sjme_jobject waitingThrown;
-	
-	/** Frame linkage. */
-	sjme_dynamic_linkage* linkage;
-	
-	/** Temporary stack. */
-	sjme_any* tempStack;
-	
-	/** Reference to this. */
-	sjme_jobject thisRef;
-	
-	/** Class reference. */
-	sjme_jclass classObjectRef;
-	
-	/** The current stack information. */
-	sjme_nvm_frameStack* stack;
-	
-	/** Treads for the stack and locals. */
-	sjme_nvm_frameTread* treads[SJME_NUM_BASIC_TYPE_IDS];
-	
-	/** Mapping of local variables to the tread indexes per type. */
-	const sjme_nvm_frameLocalMap* localMap;
-};
-
-/**
- * Contains the payload information.
- * 
- * @since 2023/07/27
- */
-typedef struct sjme_payload_config sjme_payload_config;
+/** List of threads. */
+SJME_LIST_DECLARE(sjme_nvm_thread, 0);
 
 /**
  * Hook for garbage collection detection and/or cancel capability.
@@ -763,21 +356,37 @@ typedef struct sjme_nvm_bootParam sjme_nvm_bootParam;
  *
  * @since 2023/12/12
  */
-typedef struct sjme_rom_suiteBase sjme_rom_suiteBase;
+typedef struct sjme_nvm_rom_suiteBase sjme_nvm_rom_suiteBase;
 
 /**
  * Opaque suite structure type.
  *
  * @since 2023/12/22
  */
-typedef struct sjme_rom_suiteBase* sjme_rom_suite;
+typedef sjme_nvm_rom_suiteBase* sjme_nvm_rom_suite;
 
 /**
  * Structure for a single task.
  *
  * @since 2023/12/17
  */
-typedef struct sjme_nvm_taskBase* sjme_nvm_task;
+typedef struct sjme_nvm_taskBase sjme_nvm_taskBase;
+/**
+ * Structure for a single task.
+ *
+ * @since 2023/12/17
+ */
+typedef sjme_nvm_taskBase* sjme_nvm_task;
+	
+/** List of tasks. */
+SJME_LIST_DECLARE(sjme_nvm_task, 0);
+	
+/**
+ * The configuration that stores the information needed for starting the task.
+ *
+ * @since 2023/12/17
+ */
+typedef struct sjme_nvm_task_taskNewConfig sjme_nvm_task_taskNewConfig;
 
 struct sjme_nvm_commonBase
 {
@@ -785,25 +394,130 @@ struct sjme_nvm_commonBase
 	sjme_closeableBase closeable;
 	
 	/** The type of item this is. */
-	sjme_nvm_structType type;	
+	sjme_nvm_structType type;
+
+	/** The magic number for NVM objects. */
+	sjme_jint magic;
 	
 	/** The wrapper in the front end. */
 	sjme_frontEnd frontEnd;
 	
 	/** The lock to access this common item. */
-	sjme_thread_spinLock lock;
+	sjme_alignPointer sjme_thread_spinLock lock;
+
+	/** Specific close handler. */
+	sjme_closeable_closeHandlerFunc specificClose;
 };
 
+/**
+ * The schedule mode for threads.
+ *
+ * @since 2025/01/05
+ */
+typedef enum sjme_nvm_threadScheduleMode
+{
+	/** Thread is undefined schedule. */
+	SJME_NVM_THREAD_UNDEFINED_SCHEDULE = 0,
+	
+	/** Thread is scheduled. */
+	SJME_NVM_THREAD_SCHEDULED = 1,
+
+	/** Thread is unscheduled. */
+	SJME_NVM_THREAD_UNSCHEDULED = 2,
+
+	/** The number of scheduled modes. */
+	SJME_NVM_THREAD_NUM_SCHEDULE_MODE = 3,
+} sjme_nvm_threadScheduleMode;
+
+/**
+ * Sub-schedule for thread scheduling.
+ *
+ * @since 2025/01/06
+ */
+typedef struct sjme_nvm_threadSubSchedule
+{
+	/** The number of scheduled threads. */
+	sjme_jint count;
+		
+	/** The list of threads in order. */
+	sjme_list_sjme_nvm_thread* order;
+} sjme_nvm_threadSubSchedule;
+	
+/**
+ * Thread scheduling system per mode.
+ * 
+ * @since 2025/01/05
+ */
+typedef struct sjme_nvm_threadSchedule
+{
+	/** The thread model in use. */
+	sjme_nvm_mle_threadModel model;
+	
+	/** The lock for scheduling. */
+	sjme_thread_spinLock lock;
+	
+	/** The schedules for each mode. */
+	sjme_nvm_threadSubSchedule mode[SJME_NVM_THREAD_NUM_SCHEDULE_MODE];
+} sjme_nvm_threadSchedule;
+
+/**
+ * The state and/or task termination level.
+ *
+ * @since 2025/06/29
+ */
+typedef enum sjme_nvm_terminateLevel
+{
+	/** Not terminating. */
+	SJME_NVM_TERMINATE_NOT = 0,
+
+	/** Entering the cleanup phase. */
+	SJME_NVM_TERMINATE_CLEANUP = 1,
+
+	/** Done terminating. */
+	SJME_NVM_TERMINATE_COMPLETE = 2,
+} sjme_nvm_terminateLevel;
+	
+/**
+ * Determines how initial boot is belayed.
+ *
+ * @since 2025/07/15
+ */
+typedef enum sjme_nvm_bootBelayType
+{
+	/** No belay on boot. */
+	SJME_NVM_BOOT_BELAY_NONE = 0,
+
+	/** Belay enter of main entry point. */
+	SJME_NVM_BOOT_BELAY_MAIN = 1,
+
+	/** Belay creation of task. */
+	SJME_NVM_BOOT_BELAY_TASK = 2,
+
+	/** Belay creation of task and main. */
+	SJME_NVM_BOOT_BELAY_TASK_MAIN = 3,
+} sjme_nvm_bootBelayType;
+
+/**
+ * The clutter level to use.
+ *
+ * @since 2025/07/15
+ */
+typedef enum sjme_nvm_bootClutterLevel
+{
+	/** Release clutter level. */
+	SJME_NVM_BOOT_CLUTTER_RELEASE = 0,
+	
+	/** Debug clutter level. */
+	SJME_NVM_BOOT_CLUTTER_DEBUG = 1,
+} sjme_nvm_bootClutterLevel;
+	
 struct sjme_nvm_stateBase
 {
 	/** Common data. */
 	sjme_nvm_commonBase common;
 	
-	/** The memory pool to use for allocations. */
+	/** The memory pool to use for all allocations. */
 	sjme_alloc_pool allocPool;
-
-	/** The reserved memory pool. */
-	sjme_alloc_pool reservedPool;
 
 	/** The copy of the input boot parameters. */
 	const sjme_nvm_bootParam* bootParamCopy;
@@ -811,9 +525,72 @@ struct sjme_nvm_stateBase
 	/** Hooks for the state. */
 	const sjme_nvm_stateHooks* hooks;
 
-	/* The suite containing all the libraries. */
-	sjme_rom_suite suite;
+	/** The native abstraction layer to use. */
+	const sjme_nal* nal;
+
+	/** The suite containing all the libraries. */
+	sjme_nvm_rom_suite suite;
+	
+	/** The tasks that are currently existing. */
+	sjme_list_sjme_nvm_task* tasks;
+
+	/** The number of running tasks. */
+	sjme_atomic_sjme_jint numRunningTasks;
+	
+	/** The next identifier for tasks. */
+	sjme_atomic_sjme_jint nextTaskId;
+	
+	/** The next identifier for tasks. */
+	sjme_atomic_sjme_jint nextThreadId;
+	
+	/** The thread model in use. */
+	sjme_nvm_mle_threadModel threadModel;
+
+	/** The thread schedule. */
+	sjme_nvm_threadSchedule* schedule;
+	
+	/** The state @c sjme_nvm_terminateLevel ? */
+	sjme_atomic_sjme_jint terminating;
+
+	/** The initial task configuration. */
+	sjme_nvm_task_taskNewConfig* initTaskConfig;
+
+	/** The last emitted exit code. */
+	sjme_atomic_sjme_jint lastExitCode;
 };
+
+/**
+ * Specifies how the PC address should be adjusted.
+ *
+ * @since 2025/01/11
+ */
+typedef struct sjme_nvm_byteCode_pcNew sjme_nvm_byteCode_pcNew;
+
+/**
+ * Standard ROM library structure.
+ *
+ * @since 2023/12/12
+ */
+typedef struct sjme_nvm_rom_libraryBase sjme_nvm_rom_libraryBase;
+
+/**
+ * Standard ROM library structure.
+ *
+ * @since 2023/12/12
+ */
+typedef sjme_nvm_rom_libraryBase* sjme_nvm_rom_library;
+
+/** List of ROM libraries. */
+SJME_LIST_DECLARE(sjme_nvm_rom_library, 0);
+
+/** The type ID of ROM libraries. */
+#define SJME_TYPEOF_BASIC_sjme_nvm_rom_library SJME_BASIC_TYPE_ID_OBJECT
+
+/** Type size multiplier. */
+extern const sjme_jint sjme_nvm_typeMul[SJME_NUM_BASIC_TYPE_IDS];
+
+/** Type promotion. */
+extern const sjme_jint sjme_nvm_typePromote[SJME_NUM_BASIC_TYPE_IDS];
 
 /**
  * Method initialization start.
@@ -829,6 +606,35 @@ struct sjme_nvm_stateBase
  */
 #define SJME_NANOCOAT_END_CALL ((sjme_pcAddr)-2)
 
+/** Casts pointer to a pointer to a @c sjme_jstring . */
+#define SJME_AS_JSTRINGP(p) ((sjme_jstring*)(p))
+	
+/**
+ * Allows for optional debug abort when a virtual machine error occurs
+ * within the virtual machine.
+ *
+ * @param vmContext Virtual machine context.
+ * @param error The error code to use for the virtual machine error.
+ * @return One of the virtual machine error related error codes.
+ * @since 2025/02/16
+ */
+sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInNotNull void* vmContext,
+	sjme_attrInValue sjme_errorCode error);
+
+/**
+ * Allows for optional debug abort when a virtual machine error occurs
+ * within the virtual machine.
+ *
+ * @param vmContext Virtual machine context.
+ * @param error The error code to use for the virtual machine error.
+ * @return One of the virtual machine error related error codes.
+ * @since 2025/02/16
+ */
+#define sjme_error_vmError(vmContext, error) \
+	sjme_error_vmErrorR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, \
+	(vmContext), (error))
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

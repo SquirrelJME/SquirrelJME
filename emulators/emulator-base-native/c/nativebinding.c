@@ -16,7 +16,7 @@
 #include "squirreljme.h"
 #include "sjme/dylib.h"
 
-static sjme_jboolean sjme_jni_abortHandler(void)
+static sjme_jboolean sjme_jni_abortHandler(sjme_errorCode error)
 {
 	jsize resultLen;
 	JavaVM* vm;
@@ -38,7 +38,7 @@ static sjme_jboolean sjme_jni_abortHandler(void)
 
 	/* Print stack trace, would use FatalError, however that prints to */
 	/* stdout for some reason. */
-	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
+	sjme_jni_throwVMException(env, sjme_error_default(error));
 	(*env)->ExceptionDescribe(env);
 
 	/* Call abort! */
@@ -66,8 +66,10 @@ sjme_debug_handlerFunctions sjme_jni_debugHandlers =
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	// Used to indicate that something might be happened
 	fprintf(stderr, "JNI Sub-Level: Loading Library...\n");
+#endif
 
 	// Support Java 7!
 	return JNI_VERSION_1_6;
@@ -79,16 +81,21 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 {
 	jint rv = 0;
 
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* It is happening! */
 	fprintf(stderr, "JNI Sub-Level: Binding Methods...\n");
+#endif
 
 	/* Use these debug handlers. */
 	sjme_debug_handlers = &sjme_jni_debugHandlers;
 
 	/* Initialize all functions. */
+	rv |= mleAudioStreamInit(env, classy);
+	rv |= mleBucketInit(env, classy);
 	rv |= mleDebugInit(env, classy);
 	rv |= mleJarInit(env, classy);
 	rv |= mleMathInit(env, classy);
+	rv |= mleMathAccelInit(env, classy);
 	rv |= mleMidiInit(env, classy);
 	rv |= mleNativeArchiveInit(env, classy);
 	rv |= mleObjectInit(env, classy);
@@ -107,8 +114,10 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 	rv |= mleNativeScritchDylibInit(env, classy);
 	rv |= mleNativeScritchInterfaceInit(env, classy);
 
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* It happened! */
 	fprintf(stderr, "JNI Sub-Level: Methods are now bound!\n");
+#endif
 
 	return rv;
 }

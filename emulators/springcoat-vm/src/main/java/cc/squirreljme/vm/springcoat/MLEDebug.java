@@ -15,6 +15,7 @@ import cc.squirreljme.jdwp.host.trips.JDWPTripVmState;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
@@ -67,7 +68,7 @@ public enum MLEDebug
 				throw new SpringMLECallError("Not a Throwable.");
 			
 			return ((SpringSimpleObject)object).fieldByNameAndType(
-				false, "_stack",
+				false, "_stackTrace",
 				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;")
 				.get();
 		}
@@ -231,6 +232,22 @@ public enum MLEDebug
 		}
 	},
 	
+	/** {@link DebugShelf#traceThrowable(Throwable)}. */
+	TRACE_THROWABLE(MLEDispatcher.methodKey("traceThrowable",
+		TracePointBracket[].class, Throwable.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/07/06
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// Just do the same as trace stack
+			return MLEDebug.TRACE_STACK.handle(__thread);
+		}
+	},
+	
 	/** {@link DebugShelf#verbose(int)}. */
 	VERBOSE("verbose:(I)I")
 	{
@@ -314,5 +331,4 @@ public enum MLEDebug
 	{
 		return this.key;
 	}
-	
 }

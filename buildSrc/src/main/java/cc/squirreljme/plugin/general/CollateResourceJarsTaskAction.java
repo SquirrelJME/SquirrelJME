@@ -142,20 +142,16 @@ public class CollateResourceJarsTaskAction
 					String name = entry.getName();
 					jarContent.add(name);
 					
-					// Find where it goes
-					Path diskFile = CollateResourceJarsTaskAction
-						.nameToDiskFile(jarOut, name);
-					
 					// Setup parent
-					Files.createDirectories(diskFile.getParent());
+					Files.createDirectories(jarOut.getParent());
 					
 					// Note it
 					__task.getLogger().lifecycle(
 						String.format("Adding %s...",
-							outBase.relativize(diskFile)));
+							outBase.relativize(jarOut)));
 					
 					// Copy down file
-					try (OutputStream out = Files.newOutputStream(diskFile,
+					try (OutputStream out = Files.newOutputStream(jarOut,
 							StandardOpenOption.WRITE,
 							StandardOpenOption.TRUNCATE_EXISTING,
 							StandardOpenOption.CREATE))
@@ -172,19 +168,7 @@ public class CollateResourceJarsTaskAction
 					}
 				}
 			}
-			
-			// Write resource list
-			Path rcListBase =
-				jarOut.resolve("META-INF").resolve("squirreljme");
-			Path rcListPath =
-				rcListBase.resolve("resources.list");
-			Files.createDirectories(rcListBase);
-			CollateResourceJarsTaskAction.writeList(rcListPath, jarContent);
 		}
-		
-		// Write the suite list
-		CollateResourceJarsTaskAction.writeList(
-			outBase.resolve("suites.list"), suiteList);
 	}
 	
 	/**

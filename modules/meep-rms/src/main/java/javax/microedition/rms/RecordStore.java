@@ -9,18 +9,22 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.jvm.suite.SuiteIdentifier;
+import cc.squirreljme.jvm.suite.SuiteName;
+import cc.squirreljme.jvm.suite.SuiteVendor;
+import cc.squirreljme.jvm.suite.SuiteVersion;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
-import cc.squirreljme.runtime.rms.SuiteIdentifier;
-import cc.squirreljme.runtime.rms.TemporaryVinylRecord;
-import cc.squirreljme.runtime.rms.VinylLock;
-import cc.squirreljme.runtime.rms.VinylRecord;
+import cc.squirreljme.runtime.midlet.MeepRuntime;
+import cc.squirreljme.runtime.rms.RecordIteration;
+import cc.squirreljme.runtime.rms.RecordSession;
+import cc.squirreljme.runtime.rms.RecordStoreSession;
+import cc.squirreljme.runtime.rms.RecordUtils;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.IdentityLinkedHashSet;
 
@@ -55,79 +59,51 @@ public class RecordStore
 	public static final int AUTHMODE_PRIVATE =
 		0;
 	
-	/** The vinyl record where everything is stored. */
-	static final VinylRecord _VINYL;
-	
-	/** Existing record stores. */
-	static final Map<Integer, RecordStore> _STORE_CACHE =
-		new LinkedHashMap<>();
+	/** Record stores which have been opened. */
+	private static final List<RecordStore> _existing =
+		new ArrayList<>();
 	
 	/** Identity map for listeners */
 	private final Set<RecordListener> _listeners =
 		new IdentityLinkedHashSet<>();
 	
-	/** The volume ID. */
-	private final int _vid;
+	/** Internal synchronization lock. */
+	final Object _lock =
+		new Object();
 	
-	/** The name. */
+	/** The owner of this record. */
+	private final SuiteIdentifier _owner;
+	
+	/** The name of this record. */
 	private final String _name;
 	
-	/** Write to this? */
-	private final boolean _write;
+	/** Is this our own record? */
+	private final boolean _isSelf;
 	
-	/** How many times has this been opened? */
-	private volatile int _opens;
+	/** Cached meta information accessor. */
+	private volatile RecordStoreInfo _metaRef;
 	
-	/**
-	 * Initializes the record store manager.
-	 *
-	 * @since 2017/02/27
-	 */
-	static
-	{
-		// See if there is a service, this will fall back to an implementation
-		// that is not shared and will only exist as long as the current
-		// program is running
-		VinylRecord vr;
-		try
-		{
-			Debugging.todoNote("Implement storage backed RMS.");
-			String vclass = null;//Debugging.<String>todoObject();
-			vr = (vclass == null ? new TemporaryVinylRecord() :
-				(VinylRecord)Class.forName(vclass).newInstance());
-		}
-		
-		// If it fails to initialize, just use a blank one
-		catch (ClassNotFoundException|IllegalAccessException|
-			InstantiationException e)
-		{
-			vr = new TemporaryVinylRecord();
-		}
-		
-		// Set
-		_VINYL = vr;
-	}
+	/** The number of times this has been opened. */
+	private volatile int _openCount;
 	
 	/**
-	 * Initializes the access to the record store.
+	 * Initializes the record store handler.
 	 *
-	 * @param __vid The volume ID.
-	 * @param __name The name.
-	 * @param __w Write to this?
+	 * @param __owner The owning suite name and vendor.
+	 * @param __name The name of this record.
+	 * @param __self Is this a record we own? 
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/14
+	 * @since 2025/04/15
 	 */
-	@Api
-	private RecordStore(int __vid, String __name, boolean __w)
+	RecordStore(SuiteIdentifier __owner, String __name, boolean __self)
 		throws NullPointerException
 	{
-		if (__name == null)
+		if (__owner == null || __name == null)
 			throw new NullPointerException("NARG");
 		
-		this._vid = __vid;
+		this._owner = __owner;
 		this._name = __name;
-		this._write = __w;
-		this._opens = 1;
+		this._isSelf = __self;
 	}
 	
 	/**
@@ -156,33 +132,52 @@ public class RecordStore
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 ||
+			(__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		/* {@squirreljme.error DC01 Cannot write record to read-only store.} */
-		if (!this._write)
-			throw new RecordStoreException("DC01");
+		int id;
+		RecordListener[] listeners;
 		
-		// Used for later
-		int rv;
-		RecordListener[] listeners = this.__listeners();
-		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Add the page
-			rv = vinyl.pageAdd(this._vid, __b, __o, __l, __tag);
-			RecordStore.__checkError(rv);
+			/* {@squirreljme.error DC01 Cannot write record to read-only
+			store.} */
+			if (!this.__info().__isSelfWritable())
+				throw new RecordStoreException("DC01");
+			
+			// Used for later broadcasting
+			listeners = this.__listeners();
+			
+			// Open new session with the given tag
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				// Allocate a new ID
+				id = session.nextId(true,
+					MeepRuntime.versionBefore(8, 0));
+				
+				// Set tag for the ID
+				session.setTag(id, __tag);
+				
+				// Open sub-session
+				try (RecordSession sub = session.open(id))
+				{
+					// Write all bytes into it
+					sub.writeAll(__b, __o, __l);
+				}
+			}
 		}
 		
-		// Report to the listeners
-		for (RecordListener l : listeners)
-			l.recordAdded(this, rv);
-		return rv;
+		// Broadcast to listeners
+		if (listeners != null)
+			for (RecordListener listener : listeners)
+				listener.recordAdded(this, id);
+		
+		// Return resultant ID
+		return id;
 	}
 	
 	/**
@@ -225,20 +220,15 @@ public class RecordStore
 		if (__l == null)
 			return;
 		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		// Add listener
+		synchronized (this._lock)
 		{
-			// No effect if closed
-			if (this._opens <= 0)
+			// Do nothing if closed
+			if (this._openCount <= 0)
 				return;
 			
-			// Add listener
-			Set<RecordListener> listeners = this._listeners;
-			synchronized (listeners)
-			{
-				listeners.add(__l);
-			}
+			// Only gets added once
+			this._listeners.add(__l);
 		}
 	}
 	
@@ -269,17 +259,19 @@ public class RecordStore
 	public void closeRecordStore()
 		throws RecordStoreNotOpenException, RecordStoreException
 	{
-		// Lock the record, so that only a single thread is messing with the
-		// open counts and such
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
-			// Check open
-			this.__checkOpen();
+			// Fail if already closed
+			if (this._openCount <= 0)
+				throw new RecordStoreNotOpenException("CLSD");
 			
-			// If closed then remove all the listeners
-			if ((--this._opens) <= 0)
-				this._listeners.clear();
+			// Otherwise reduce, if we are fully closed then remove this from
+			// the existing set of record stores
+			if ((--this._openCount) <= 0)
+				synchronized (RecordStore.class)
+				{
+					RecordStore._existing.remove(this);
+				}
 		}
 	}
 	
@@ -298,24 +290,26 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreNotOpenException,
 			RecordStoreException, SecurityException
 	{
-		// Used later
-		RecordListener[] listeners = this.__listeners();
-		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		RecordListener[] listeners;
+		synchronized (this)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Delete it
-			int rv = vinyl.pageDelete(this._vid, __id);
-			RecordStore.__checkError(rv);
+			// Used for later broadcasting
+			listeners = this.__listeners();
+			
+			// Delete the given record
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				session.delete(__id);
+			}
 		}
 		
 		// Report to the listeners
-		for (RecordListener l : listeners)
-			l.recordDeleted(this, __id);
+		if (listeners != null)
+			for (RecordListener l : listeners)
+				l.recordDeleted(this, __id);
 	}
 	
 	/**
@@ -324,11 +318,12 @@ public class RecordStore
 	 * If a comparator is not specified then the traversal order is not
 	 * defined.
 	 *
-	 * @param __f An optional filter used to filter records, may be
+	 * @param __filter An optional filter used to filter records, may be
 	 * {@code null}.
-	 * @param __c An optional comparator used to modify the sort order, may
-	 * be {@code null}.
-	 * @param __ku If {@code true} then the enumeration is kept up to date.
+	 * @param __comparator An optional comparator used to modify the sort
+	 * order, may be {@code null}.
+	 * @param __keepUpdated If {@code true} then the enumeration is kept up
+	 * to date.
 	 * @param __tags The tags to use for basic filtering, if this is empty then
 	 * an empty enumeration will be returned, if this is {@code null} then all
 	 * tags will be selected.
@@ -337,38 +332,42 @@ public class RecordStore
 	 * @since 2017/02/26
 	 */
 	@Api
-	public RecordEnumeration enumerateRecords(RecordFilter __f,
-		RecordComparator __c, boolean __ku, int[] __tags)
+	public RecordEnumeration enumerateRecords(RecordFilter __filter,
+		RecordComparator __comparator, boolean __keepUpdated, int[] __tags)
 		throws RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
-		// Build one and perform a rebuild to initialize it
-		__VolumeEnumeration__ rv = new __VolumeEnumeration__(this, __f,
-			__c, __ku, __tags);
-		rv.rebuild();
-		
-		// Use it
-		return rv;
+		synchronized (this._lock)
+		{
+			// Check open
+			this.__checkOpen();
+			
+			// Build new enumeration
+			return new __Enumerator__(this, this._lock, __filter, __comparator,
+				__keepUpdated, __tags);
+		}
 	}
 	
 	/**
-	 * Calls {@code enumerateRecords(__f, __c, __ku, null)}.
+	 * Calls {@code enumerateRecords(__filter, __comparator, __keepUpdated,
+	 * null)}.
 	 *
-	 * @param __f As forwarded.
-	 * @param __c As forwarded.
-	 * @param __ku As forwarded.
-	 * @return As forwarded.
+	 * @param __filter An optional filter used to filter records, may be
+	 * {@code null}.
+	 * @param __comparator An optional comparator used to modify the sort
+	 * order, may be {@code null}.
+	 * @param __keepUpdated If {@code true} then the enumeration is kept up
+	 * to date.
+	 * @return The enumeration over the records.
 	 * @throws RecordStoreNotOpenException As forwarded.
 	 * @since 2017/02/26
 	 */
 	@Api
-	public RecordEnumeration enumerateRecords(RecordFilter __f,
-		RecordComparator __c, boolean __ku)
+	public RecordEnumeration enumerateRecords(RecordFilter __filter,
+		RecordComparator __comparator, boolean __keepUpdated)
 		throws RecordStoreNotOpenException
 	{
-		return this.enumerateRecords(__f, __c, __ku, null);
+		return this.enumerateRecords(__filter, __comparator, __keepUpdated,
+			null);
 	}
 	
 	/**
@@ -382,34 +381,20 @@ public class RecordStore
 	public long getLastModified()
 		throws RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			long[] time = new long[1];
-			int rv = vinyl.volumeModTime(this._vid, time);
-			
-			try
+			try (RecordStoreSession session = this.__info().__meta())
 			{
-				RecordStore.__checkError(rv);
+				return session.lastModified();
 			}
-			catch (RecordStoreException e)
+			catch (RecordStoreException __e)
 			{
-				if (e instanceof RecordStoreNotOpenException)
-					throw (RecordStoreNotOpenException)e;
-				
-				/* {@squirreljme.error DC02 Could not get the record store
-				time.} */
-				throw new RuntimeException("DC02", e);
+				throw RecordUtils.wrap(
+					new RecordStoreNotOpenException(__e.getMessage()), __e);
 			}
-			
-			return time[0];
 		}
 	}
 	
@@ -424,10 +409,13 @@ public class RecordStore
 	public String getName()
 		throws RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
-		return this._name;
+		synchronized (this._lock)
+		{
+			// Check open
+			this.__checkOpen();
+			
+			return this._name;
+		}
 	}
 	
 	/**
@@ -447,18 +435,22 @@ public class RecordStore
 	public int getNextRecordID()
 		throws RecordStoreException, RecordStoreNotOpenException
 	{
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this)
 		{
-			// Check open
-			this.__checkOpen();
-			
-			// Get next ID as a guess
-			int rv = vinyl.pageNextId(this._vid);
-			RecordStore.__checkError(rv);
-			
-			return rv;
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				// Check open
+				this.__checkOpen();
+				
+				// Get the next available ID without allocating
+				return session.nextId(false,
+					MeepRuntime.versionBefore(8, 0));
+			}
+			catch (RecordStoreException __e)
+			{
+				throw RecordUtils.wrap(
+					new RecordStoreNotOpenException(__e.getMessage()), __e);
+			}
 		}
 	}
 	
@@ -473,38 +465,21 @@ public class RecordStore
 	public int getNumRecords()
 		throws RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this)
 		{
-			// Get record list
-			int[] pages = vinyl.pageList(this._vid);
-			
-			// Check for error
-			if (pages.length > 0)
-				try
-				{
-					RecordStore.__checkError(pages[0]);
-				}
-				catch (RecordStoreNotOpenException e)
-				{
-					throw e;
-				}
-				catch (RecordStoreException e)
-				{
-					/* {@squirreljme.error DC03 Error getting list of
-					records.} */
-					RecordStoreNotOpenException t =
-						new RecordStoreNotOpenException("DC03");
-					t.initCause(e);
-					throw t;
-				}
-			
-			// Return array size
-			return pages.length;
+			// The ID count is the record count
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				// Check open
+				this.__checkOpen();
+				
+				return session.ids().length;
+			}
+			catch (RecordStoreException __e)
+			{
+				throw RecordUtils.wrap(
+					new RecordStoreNotOpenException(__e.getMessage()), __e);
+			}
 		}
 	}
 	
@@ -525,28 +500,32 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
-		// This volume
-		int vid = this._vid;
-		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this)
 		{
-			// Need to know the size of the record
-			int size = vinyl.pageSize(vid, __id);
-			RecordStore.__checkError(size);
+			// Check open
+			this.__checkOpen();
 			
-			// Allocate data to read from it
-			byte[] rv = new byte[size];
-			
-			// Read data
-			int read = vinyl.pageRead(vid, __id, rv, 0, size);
-			RecordStore.__checkError(read);
-			
-			return rv;
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				// Not found?
+				int[] ids = session.ids();
+				if (Arrays.binarySearch(ids, __id) < 0)
+					return null;
+				
+				// Open existing session
+				try (RecordSession sub = session.open(__id))
+				{
+					// No data?
+					int length = sub.length();
+					if (length <= 0)
+						return new byte[0];
+					
+					// Read in data chunk
+					byte[] result = new byte[length];
+					sub.read(result, 0, length);
+					return result;
+				}
+			}
 		}
 	}
 	
@@ -575,34 +554,32 @@ public class RecordStore
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0)
+		if (__o < 0 || __o > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		// This volume
-		int vid = this._vid;
-		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Need to know the size of the record
-			int size = vinyl.pageSize(vid, __id);
-			RecordStore.__checkError(size);
-			
-			/* {@squirreljme.error DC04 The record does not fit into the
-			output.} */
-			if (size < 0 || (__o + size) > __b.length)
-				throw new ArrayIndexOutOfBoundsException("DC04");
-			
-			// Read data
-			int read = vinyl.pageRead(vid, __id, __b, __o, size);
-			RecordStore.__checkError(read);
-			
-			// Size is used as the return value
-			return size;
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				// Open existing session
+				try (RecordSession sub = session.open(__id))
+				{
+					// No data?
+					int length = sub.length();
+					if (length <= 0)
+						return 0;
+					
+					// How much data can actually be read?
+					int limit = Math.min(__b.length - __o, length);
+					
+					// Read in data chunk
+					sub.read(__b, __o, limit);
+					return limit;
+				}
+			}
 		}
 	}
 	
@@ -622,19 +599,18 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Need to know the size of the record
-			int size = vinyl.pageSize(this._vid, __id);
-			RecordStore.__checkError(size);
-			
-			// Return it
-			return size;
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				try (RecordSession sub = session.open(__id))
+				{
+					return sub.length();
+				}
+			}
 		}
 	}
 	
@@ -649,11 +625,22 @@ public class RecordStore
 	public RecordStoreInfo getRecordStoreInfo()
 		throws RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
-		// Just quickly create
-		return new RecordStoreInfo(this._vid);
+		synchronized (this._lock)
+		{
+			// Check open
+			this.__checkOpen();
+			
+			// Load info
+			try
+			{
+				return this.__info();
+			}
+			catch (RecordStoreException __e)
+			{
+				throw RecordUtils.wrap(
+					new RecordStoreNotOpenException(__e.getMessage()), __e);
+			}
+		}
 	}
 	
 	/**
@@ -705,18 +692,16 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Get and check tag
-			int rv = vinyl.pageTag(this._vid, __id);
-			RecordStore.__checkError(rv);
-			
-			return rv;
+			// Get tag
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				return session.getTag(__id);
+			}
 		}
 	}
 	
@@ -732,30 +717,22 @@ public class RecordStore
 	public int getVersion()
 		throws RecordStoreNotOpenException
 	{
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			int rv = vinyl.volumeModCount(this._vid);
-			
-			try
+			// This would be in the meta-info
+			try (RecordStoreSession session = this.__info().__meta())
 			{
-				RecordStore.__checkError(rv);
+				return session.getInteger(
+					RecordStoreSession.MODIFICATION_COUNT, 0);
 			}
-			catch (RecordStoreException e)
+			catch (RecordStoreException __e)
 			{
-				if (e instanceof RecordStoreNotOpenException)
-					throw (RecordStoreNotOpenException)e;
-				
-				/* {@squirreljme.error DC05 Could not get the record store
-				version.} */
-				throw new RuntimeException("DC05", e);
+				throw RecordUtils.wrap(
+					new RecordStoreNotOpenException(__e.getMessage()), __e);
 			}
-			
-			return rv;
 		}
 	}
 	
@@ -773,20 +750,10 @@ public class RecordStore
 		if (__l == null)
 			return;
 		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		// Remove listener
+		synchronized (this._lock)
 		{
-			// No effect if closed
-			if (this._opens <= 0)
-				return;
-			
-			// Remove listener
-			Set<RecordListener> listeners = this._listeners;
-			synchronized (listeners)
-			{
-				listeners.remove(__l);
-			}
+			this._listeners.remove(__l);
 		}
 	}
 	
@@ -813,11 +780,17 @@ public class RecordStore
 		throws IllegalArgumentException, IllegalStateException,
 			RecordStoreException, SecurityException
 	{
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
-			throw Debugging.todo();
+			// Check open
+			this.__checkOpen();
+			
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				session.setAccess(__auth, __write,
+					session.getString(RecordStoreSession.PASSWORD,
+						""));
+			}
 		}
 	}
 	
@@ -848,31 +821,44 @@ public class RecordStore
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 ||
+			(__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		/* {@squirreljme.error DC06 Cannot write record to read-only store.} */
-		if (!this._write)
-			throw new RecordStoreException("DC06");
+		RecordListener[] listeners;
 		
-		// Used for later
-		RecordListener[] listeners = this.__listeners();
-		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
 			// Check open
 			this.__checkOpen();
 			
-			// Set the page
-			__id = vinyl.pageSet(this._vid, __id, __b, __o, __l, __tag);
-			RecordStore.__checkError(__id);
+			/* {@squirreljme.error DC01 Cannot write record to read-only
+			store.} */
+			if (!this.__info().__isSelfWritable())
+				throw new RecordStoreException("DC01");
+			
+			// Used for later broadcasting
+			listeners = this.__listeners();
+			
+			// Open existing session, set a new tag
+			try (RecordStoreSession session = this.__info().__meta())
+			{
+				// Set tag for the ID
+				session.setTag(__id, __tag);
+				
+				// Open sub-session
+				try (RecordSession sub = session.open(__id))
+				{
+					// Write all bytes into it
+					sub.writeAll(__b, __o, __l);
+				}
+			}
 		}
 		
-		// Report to the listeners
-		for (RecordListener l : listeners)
-			l.recordChanged(this, __id);
+		// Broadcast to listeners
+		if (listeners != null)
+			for (RecordListener listener : listeners)
+				listener.recordChanged(this, __id);
 	}
 	
 	/**
@@ -908,42 +894,49 @@ public class RecordStore
 	private void __checkOpen()
 		throws RecordStoreNotOpenException
 	{
-		/* {@squirreljme.error DC07 This record store is not open.} */
-		if (this._opens <= 0)
-			throw new RecordStoreNotOpenException("DC07");
-	}
-	
-	/**
-	 * Lists the pages that exist within this record store.
-	 *
-	 * @return The page IDs.
-	 * @since 2019/05/13
-	 */
-	final int[] __listPages()
-		throws RecordStoreNotOpenException
-	{
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		synchronized (this._lock)
 		{
-			// Check open
-			this.__checkOpen();
-			
-			return vinyl.pageList(this._vid);
+			/* {@squirreljme.error DC07 This record store is not open.} */
+			if (this._openCount <= 0)
+				throw new RecordStoreNotOpenException("DC07");
 		}
 	}
 	
 	/**
-	 * Returns all of the listeners for this record store.
+	 * Returns all the listeners for this record store.
 	 *
-	 * @return The listeners.
+	 * @return The listeners, or {@code null if there are none}.
 	 * @since 2019/04/15
 	 */
 	private RecordListener[] __listeners()
 	{
-		Set<RecordListener> listeners = this._listeners;
-		return listeners.<RecordListener>toArray(
-			new RecordListener[listeners.size()]);
+		synchronized (this._lock)
+		{
+			Set<RecordListener> listeners = this._listeners;
+			if (listeners.isEmpty())
+				return null;
+			return listeners.toArray(new RecordListener[listeners.size()]);
+		}
+	}
+	
+	/**
+	 * Returns the meta information accessor for this record store.
+	 *
+	 * @return The meta info accessor.
+	 * @since 2025/04/16
+	 */
+	final RecordStoreInfo __info()
+		throws RecordStoreException
+	{
+		RecordStoreInfo result = this._metaRef;
+		if (result == null)
+		{
+			result = new RecordStoreInfo(this._owner, this._name, this._isSelf,
+				this._lock);
+			this._metaRef = result;
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -955,7 +948,7 @@ public class RecordStore
 	 * {@link RecordListener#recordDeleted(RecordStore, int)}
 	 * listeners associated with the given record store.
 	 *
-	 * @param __n The name of the record store to delete.
+	 * @param __name The name of the record store to delete.
 	 * @throws RecordStoreException If the record store cannot be deleted due
 	 * to being owned by another suite or deletion is not possible.
 	 * @throws RecordStoreNotFoundException If the given record store was not
@@ -963,42 +956,24 @@ public class RecordStore
 	 * @since 2017/02/26
 	 */
 	@Api
-	public static void deleteRecordStore(String __n)
+	public static void deleteRecordStore(String __name)
 		throws NullPointerException, RecordStoreException,
 			RecordStoreNotFoundException
 	{
-		if (__n == null)
+		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		// Our suite identifier to find our own records
-		long mysid = SuiteIdentifier.currentIdentifier();
-		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		// Open record under ourself
+		SuiteIdentifier self = ApplicationHandler.suiteIdentifier();
+		try (RecordStore store = RecordStore.__openRecordStore(__name,
+			self.vendor().toString(), self.name().toString(), false,
+			RecordStore.AUTHMODE_ANY, true, null))
 		{
-			// Try to locate our record
-			int got = -1;
-			for (int rid : vinyl.volumeList())
+			try (RecordStoreSession session = store.__info().__meta())
 			{
-				// Another suite's volume
-				if (mysid != vinyl.volumeSuiteIdentifier(rid))
-					continue;
-				
-				// Found the record?
-				if (__n.equals(vinyl.volumeName(rid)))
-				{
-					got = -1;
-					break;
-				}
+				// Purge the record
+				session.purge();
 			}
-			
-			/* {@squirreljme.error DC08 Cannot delete the specified record
-			store because it does not exist. (The name of the store)} */
-			if (got == -1)
-				throw new RecordStoreNotFoundException("DC08 " + __n);
-			
-			throw Debugging.todo();
 		}
 	}
 	
@@ -1014,27 +989,18 @@ public class RecordStore
 	@Api
 	public static String[] listRecordStores()
 	{
-		// Our suite identifier to find our own records
-		long mysid = SuiteIdentifier.currentIdentifier();
+		List<String> result = new ArrayList<>();
 		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
-		{
-			List<String> rv = new ArrayList<>();
-			
-			// Go through all IDs and locate record store info
-			for (int rid : vinyl.volumeList())
-			{
-				// Do not add records which belong to another suite
-				if (mysid != vinyl.volumeSuiteIdentifier(rid))
-					continue;
-				
-				rv.add(vinyl.volumeName(rid));
-			}
-			
-			return rv.<String>toArray(new String[rv.size()]);
-		}
+		// Match records owned by ourselves
+		SuiteIdentifier self = ApplicationHandler.suiteIdentifier();
+		for (RecordIteration iteration : RecordStoreSession.locateAll())
+			if (self.equals(iteration.owner))
+				result.add(iteration.name);
+		
+		// If there are none, then this will be null
+		if (result.isEmpty())
+			return null;
+		return result.toArray(new String[result.size()]);
 	}
 	
 	/**
@@ -1081,7 +1047,8 @@ public class RecordStore
 			SecureRecordStoreException, SecurityException
 	{
 		return RecordStore.__openRecordStore(__n,
-			ApplicationHandler.currentVendor(), ApplicationHandler.currentName(),
+			ApplicationHandler.currentVendor(),
+			ApplicationHandler.currentName(),
 			__create, __auth, __write, __pass);
 	}
 	
@@ -1108,7 +1075,8 @@ public class RecordStore
 			RecordStoreFullException, RecordStoreNotFoundException,
 			SecureRecordStoreException, SecurityException
 	{
-		return RecordStore.openRecordStore(__n, __create, __auth, __write, "");
+		return RecordStore.openRecordStore(__n, __create, __auth,
+			__write, "");
 	}
 	
 	/**
@@ -1151,7 +1119,7 @@ public class RecordStore
 	 * @param __n The name of the record store, must consist of 1 to 32
 	 * Unicode characters.
 	 * @param __vend The vendor of the other suite.
-	 * @param __suite The suite.
+	 * @param __suite The suite name.
 	 * @param __pass The password to the record store.
 	 * @return The opened record store.
 	 * @throws IllegalArgumentException If the name, vendor, or suite names
@@ -1173,8 +1141,8 @@ public class RecordStore
 			RecordStoreNotFoundException, SecureRecordStoreException,
 			SecurityException
 	{
-		return RecordStore.__openRecordStore(__n, __vend, __suite, false,
-			RecordStore.AUTHMODE_ANY, false, __pass);
+		return RecordStore.__openRecordStore(__n, __vend, __suite,
+			false, RecordStore.AUTHMODE_ANY, false, __pass);
 	}
 	
 	/**
@@ -1202,37 +1170,6 @@ public class RecordStore
 	}
 	
 	/**
-	 * Checks for an error and throws an exception potentially.
-	 *
-	 * @param __id The ID to check, negative indicates error.
-	 * @throws RecordStoreException If there is an error.
-	 * @since 2019/05/01
-	 */
-	private static void __checkError(int __id)
-		throws RecordStoreException
-	{
-		// Error was detected
-		if (__id < 0)
-		{
-			/* {@squirreljme.error DC09 Could not add the record, there might
-			not be enough free space available.} */
-			if (__id == VinylRecord.ERROR_NO_MEMORY)
-				throw new RecordStoreFullException("DC09");
-			
-			/* {@squirreljme.error DC0a No such record store exists.} */
-			if (__id == VinylRecord.ERROR_NO_VOLUME)
-				throw new RecordStoreNotFoundException("DC0a");
-			
-			/* {@squirreljme.error DC0b No such record exists.} */
-			if (__id == VinylRecord.ERROR_NO_PAGE)
-				throw new InvalidRecordIDException("DC0b");
-			
-			/* {@squirreljme.error DC0c Unknown record store error. (Error)} */
-			throw new RecordStoreException("DC0c " + __id);
-		}
-	}
-	
-	/**
 	 * Attempts to open and optionally create the record store for the
 	 * specified MIDlet.
 	 *
@@ -1244,6 +1181,8 @@ public class RecordStore
 	 *
 	 * @param __name The name of the record store, must consist of 1 to 32
 	 * Unicode characters.
+	 * @param __vend The vendor of the other suite.
+	 * @param __suite The suite name.
 	 * @param __create If {@code true} then if the record store does not
 	 * exist it will be created.
 	 * @param __auth The authorization mode of the record which may permit
@@ -1252,6 +1191,7 @@ public class RecordStore
 	 * @param __write If {@code true} then the record store may be written to
 	 * by other suites. If the record already exists then this argument will be
 	 * ignored.
+	 * @param __pass The password to use for the record, this is optional.
 	 * @return The newly opened or created record store, if the record store
 	 * is already open then it will return the already open one.
 	 * @throws IllegalArgumentException If the name is not valid or the
@@ -1284,59 +1224,85 @@ public class RecordStore
 		if (namelen < 1 || namelen > 32)
 			throw new IllegalArgumentException("DC0d " + __name);
 		
-		// Get identifier, used to find the record
-		long sid = SuiteIdentifier.identifier(__vend, __suite),
-			mysid = SuiteIdentifier.currentIdentifier();
+		// Determine the owner of the suite
+		SuiteIdentifier owner = new SuiteIdentifier(new SuiteName(__suite),
+			new SuiteVendor(__vend), SuiteVersion.MIN_VERSION);
 		
-		// Lock
-		VinylRecord vinyl = RecordStore._VINYL;
-		try (VinylLock lock = vinyl.lock())
+		// Determine if this is our own suite's record store
+		SuiteIdentifier self = ApplicationHandler.suiteIdentifier();
+		boolean isSelf = owner.equals(self);
+		
+		// Check to see if this suite is already in memory
+		RecordStore result = null;
+		synchronized (RecordStore.class)
 		{
-			// Go through all records and try to find a pre-existing one
-			int rv = -1;
-			for (int rid : vinyl.volumeList())
+			// Look through record stores we know about already
+			List<RecordStore> existing = RecordStore._existing;
+			int freeSlot = -1;
+			for (int i = 0, n = existing.size(); i < n; i++)
 			{
-				// Belongs to another suite?
-				if (sid != vinyl.volumeSuiteIdentifier(rid))
-					continue;
-				
-				// Same name?
-				if (__name.equals(vinyl.volumeName(rid)))
+				// Ignore blank slots
+				RecordStore check = existing.get(i);
+				if (check == null)
 				{
-					rv = rid;
+					freeSlot = i;
+					continue;
+				}
+				
+				// Is this the record store we want?
+				if (owner.equals(check._owner) && __name.equals(check._name))
+				{
+					result = check;
 					break;
 				}
 			}
 			
-			// Open a record which already exists
-			if (rv >= 0)
+			// Need to set up a new store cache?
+			if (result == null)
 			{
-				// Use a pre-cached store
-				Map<Integer, RecordStore> cache = RecordStore._STORE_CACHE;
-				RecordStore rs = cache.get(rv);
-				if (rs == null)
-					cache.put(rv, (rs = new RecordStore(rv, __name,
-						sid == mysid || vinyl.volumeOtherWritable(rv))));
+				// Setup new accessor
+				result = new RecordStore(owner, __name, isSelf);
 				
-				// Increment the open count
-				rs._opens++;
-				return rs;
+				// Store cache at the free slot we found
+				if (freeSlot < 0)
+					existing.add(result);
+				else
+					existing.set(freeSlot, result);
 			}
-			
-			/* {@squirreljme.error DC0e Could not find the specified record
-			store. (The name; The vendor; The suite)} */
-			if (!__create)
-				throw new RecordStoreNotFoundException(
-					String.format("DC0e %s %s %s", __name, __vend, __suite));
-			
-			/* {@squirreljme.error DC0f Could not create the record, it is
-			likely that there is not enough space remaining.} */
-			rv = vinyl.volumeCreate(sid, __name, __write);
-			if (rv < 0)
-				throw new RecordStoreFullException("DC0f");
-			
-			// Since we created it, we can just return the info
-			return new RecordStore(rv, __name, sid == mysid || __write);
+		}
+		
+		// We need to lock on the store's lock
+		synchronized (result._lock)
+		{
+			try (RecordStoreSession session = result.__info().__meta())
+			{
+				// If this does not exist, we may need to initialize it
+				if (!session.valid())
+				{
+					/* {@squirreljme.error DC0e Could not find the specified record
+					store. (The name; The vendor; The suite)} */
+					if (!__create || !isSelf)
+						throw new RecordStoreNotFoundException(
+							String.format("DC0e %s %s %s", __name, __vend,
+								__suite));
+					
+					// Set the access mode
+					session.setAccess(__auth, __write, __pass);
+				}
+				
+				// Not isSelf and is not other writable?
+				/* {@squirreljme.error DC0f Could not open record store of
+				another suite as it is not marked as other writable.} */
+				if (!isSelf && session.valid() &&
+					!result.__info().isWriteable())
+					throw new RecordStoreException(
+						String.format("DC0f %s %s %s", __name, __vend,
+							__suite));
+				
+				// Return the resultant store, after bumping the count
+				result._openCount += 1;
+				return result;
+			}
 		}
 	}
 }

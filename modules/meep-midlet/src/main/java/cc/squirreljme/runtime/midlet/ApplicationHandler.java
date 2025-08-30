@@ -10,6 +10,10 @@
 package cc.squirreljme.runtime.midlet;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.suite.SuiteIdentifier;
+import cc.squirreljme.jvm.suite.SuiteName;
+import cc.squirreljme.jvm.suite.SuiteVendor;
+import cc.squirreljme.jvm.suite.SuiteVersion;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.midlet.MIDlet;
@@ -39,11 +43,17 @@ public final class ApplicationHandler
 	@SquirrelJMEVendorApi
 	private static volatile Runnable _idleTask;
 	
+	/** The identifier for this suite. */
+	@SquirrelJMEVendorApi
+	private static volatile SuiteIdentifier _identifier;
+	
 	/** The current vendor. */
-	private static String _CURRENT_VENDOR;
+	@SquirrelJMEVendorApi
+	private static volatile String _CURRENT_VENDOR;
 	
 	/** The current name. */
-	private static String _CURRENT_NAME;
+	@SquirrelJMEVendorApi
+	private static volatile String _CURRENT_NAME;
 	
 	/** The time to wait after termination. */
 	private static final int _TERM_WAIT_TIME =
@@ -170,6 +180,7 @@ public final class ApplicationHandler
 	 * @throws Throwable On any exception.
 	 * @since 2021/11/30
 	 */
+	@SuppressWarnings("ConfusingMainMethod")
 	@SquirrelJMEVendorApi
 	public static <T> void main(ApplicationInterface<T> __ai)
 		throws NullPointerException, Throwable
@@ -328,6 +339,29 @@ public final class ApplicationHandler
 			ApplicationHandler._CURRENT_NAME = __name;
 			ApplicationHandler._CURRENT_VENDOR = __vend;
 		}
+	}
+	
+	/**
+	 * Returns the suite identifier for this application.
+	 *
+	 * @return The suite identifier for this application.
+	 * @since 2025/04/15
+	 */
+	@SquirrelJMEVendorApi
+	public static SuiteIdentifier suiteIdentifier()
+	{
+		// Already cached?
+		SuiteIdentifier result = ApplicationHandler._identifier;
+		if (result != null)
+			return result;
+		
+		// Build and cache
+		result = new SuiteIdentifier(
+			new SuiteName(ApplicationHandler.currentName()),
+			new SuiteVendor(ApplicationHandler.currentVendor()),
+			SuiteVersion.MIN_VERSION);
+		ApplicationHandler._identifier = result;
+		return result;
 	}
 	
 	/**

@@ -14,7 +14,7 @@
 #include "sjme/debug.h"
 #include "sjme/util.h"
 
-typedef struct sjme_stream_inputSeekableInitData
+typedef struct sjme_stream_seekableInitData
 {
 	/** The seekable to access. */
 	sjme_seekable seekable;
@@ -27,7 +27,7 @@ typedef struct sjme_stream_inputSeekableInitData
 	
 	/** Forward close? */
 	sjme_jboolean forwardClose;
-} sjme_stream_inputSeekableInitData;
+} sjme_stream_seekableInitData;
 
 static sjme_errorCode sjme_stream_inputSeekableAvailable(
 	sjme_attrInNotNull sjme_stream_input stream,
@@ -48,9 +48,9 @@ static sjme_errorCode sjme_stream_inputSeekableClose(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Only forward close if it was requested. */
-	if (inImplState->forwardClose)
+	if (inImplState->flags.forwardClose)
 		if (sjme_error_is(error = sjme_closeable_close(
-			SJME_AS_CLOSEABLE(inImplState->handle))))
+			SJME_AS_CLOSEABLE(inImplState->handle.p))))
 			return sjme_error_default(error);
 	
 	/* Success! */
@@ -62,18 +62,18 @@ static sjme_errorCode sjme_stream_inputSeekableInit(
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
 	sjme_attrInNullable sjme_pointer data)
 {
-	sjme_stream_inputSeekableInitData* init;
+	sjme_stream_seekableInitData* init;
 	
 	init = data;
 	if (stream == NULL || inImplState == NULL || data == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Set parameters. */
-	inImplState->handle = init->seekable;
+	inImplState->handle.p = init->seekable;
 	inImplState->offset = init->base;
 	inImplState->index = 0;
 	inImplState->length = init->length;
-	inImplState->forwardClose = init->forwardClose;
+	inImplState->flags.forwardClose = init->forwardClose;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -98,7 +98,7 @@ static sjme_errorCode sjme_stream_inputSeekableRead(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Recover seekable. */
-	seekable = inImplState->handle;
+	seekable = inImplState->handle.p;
 	if (seekable == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
@@ -132,10 +132,10 @@ static sjme_errorCode sjme_stream_inputSeekableRead(
 
 static const sjme_stream_inputFunctions sjme_stream_inputSeekableFunctions =
 {
-	.available = sjme_stream_inputSeekableAvailable,
-	.init = sjme_stream_inputSeekableInit,
-	.close = sjme_stream_inputSeekableClose,
-	.read = sjme_stream_inputSeekableRead,
+	sjme_sm(.available, sjme_stream_inputSeekableAvailable),
+	sjme_sm(.init, sjme_stream_inputSeekableInit),
+	sjme_sm(.close, sjme_stream_inputSeekableClose),
+	sjme_sm(.read, sjme_stream_inputSeekableRead),
 };
 
 sjme_errorCode sjme_stream_inputOpenSeekable(
@@ -146,7 +146,7 @@ sjme_errorCode sjme_stream_inputOpenSeekable(
 	sjme_attrInValue sjme_jboolean forwardClose)
 {
 	sjme_errorCode error;
-	sjme_stream_inputSeekableInitData init;
+	sjme_stream_seekableInitData init;
 	
 	if (seekable == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -164,5 +164,114 @@ sjme_errorCode sjme_stream_inputOpenSeekable(
 	/* Open base stream. */
 	return sjme_stream_inputOpen(seekable->allocPool,
 		outStream, &sjme_stream_inputSeekableFunctions,
+		&init, NULL);
+}
+
+static sjme_errorCode sjme_stream_outputSeekableClose(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_outputSeekableFlush(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_stream_outputSeekableInit(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState,
+	sjme_attrInNullable sjme_pointer data)
+{
+	sjme_stream_seekableInitData* init;
+	
+	init = data;
+	if (stream == NULL || inImplState == NULL || data == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Set parameters. */
+	inImplState->handle.p = init->seekable;
+	inImplState->offset = init->base;
+	inImplState->index = 0;
+	inImplState->length = init->length;
+	inImplState->flags.forwardClose = init->forwardClose;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_stream_outputSeekableWrite(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState,
+	sjme_attrInNotNull sjme_buffer buf,
+	sjme_attrInPositiveNonZero sjme_jint length)
+{
+	sjme_errorCode error;
+	sjme_seekable seekable;
+	
+	if (stream == NULL || inImplState == NULL || buf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (length < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Do not bother if writing nothing. */
+	if (length == 0)
+		return SJME_ERROR_NONE;
+
+	/* Recover the seekable. */
+	seekable = inImplState->handle.p;
+
+	/* Forward to the output seekable. */
+	if (sjme_error_is(error = sjme_seekable_write(seekable,
+		buf, inImplState->offset, length)))
+		return sjme_error_default(error);
+
+	/* Shift offset forward. */
+	inImplState->offset += length;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static const sjme_stream_outputFunctions sjme_stream_outputSeekableFunctions =
+{
+	sjme_sm(.close, sjme_stream_outputSeekableClose),
+	sjme_sm(.flush, sjme_stream_outputSeekableFlush),
+	sjme_sm(.init, sjme_stream_outputSeekableInit),
+	sjme_sm(.write, sjme_stream_outputSeekableWrite),
+};
+
+sjme_errorCode sjme_stream_outputOpenSeekable(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_stream_output* outStream,
+	sjme_attrInPositive sjme_jint base,
+	sjme_attrInNegativeOnePositive sjme_jint length,
+	sjme_attrInValue sjme_jboolean forwardClose)
+{
+	sjme_errorCode error;
+	sjme_stream_seekableInitData init;
+	
+	if (seekable == NULL || outStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (length < -1 || (length >= 0 && (base < 0 || (base + length) < 0)))
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Setup initialize. */
+	memset(&init, 0, sizeof(init));
+	init.seekable = seekable;
+	init.base = base;
+	init.length = length;
+	init.forwardClose = forwardClose;
+	
+	/* Open base stream. */
+	return sjme_stream_outputOpen(seekable->allocPool,
+		outStream, &sjme_stream_outputSeekableFunctions,
 		&init, NULL);
 }

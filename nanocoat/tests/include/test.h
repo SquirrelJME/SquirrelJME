@@ -13,8 +13,8 @@
  * @since 2023/08/09
  */
 
-#ifndef SQUIRRELJME_TEST_H
-#define SQUIRRELJME_TEST_H
+#ifndef SJME_C_TEST_H
+#define SJME_C_TEST_H
 
 #include <setjmp.h>
 
@@ -22,6 +22,7 @@
 #include "sjme/debug.h"
 #include "sjme/error.h"
 #include "sjme/test/externTest.h"
+#include "sjme/native.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -33,6 +34,9 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/** Native abstraction layer for tests. */
+extern const sjme_nal sjme_nal_test;
 
 /**
  * The result of a test.

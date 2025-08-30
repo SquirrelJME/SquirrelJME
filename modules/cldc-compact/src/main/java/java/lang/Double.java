@@ -60,7 +60,7 @@ public final class Double
 	/** The class representing the primitive type. */
 	@Api
 	public static final Class<Double> TYPE =
-		TypeShelf.<Double>typeToClass(TypeShelf.typeOfDouble());
+		(Class<Double>)TypeShelf.typeOfDouble();
 	
 	/** The value for this double. */
 	private final double _value;
@@ -174,10 +174,16 @@ public final class Double
 		return (int)this._value;
 	}
 	
+	/**
+	 * Returns whether this value represents an infinity.
+	 *
+	 * @return Whether this value represents an infinity.
+	 * @since 2025/06/07
+	 */
 	@Api
 	public boolean isInfinite()
 	{
-		throw Debugging.todo();
+		return Double.isInfinite(this._value);
 	}
 	
 	/**
@@ -257,10 +263,19 @@ public final class Double
 		return MathShelf.rawDoubleToLong(__v);
 	}
 	
+	/**
+	 * Returns whether this value represents an infinity.
+	 *
+	 * @param __v The value to check.
+	 * @return Whether this value represents an infinity.
+	 * @since 2025/06/07
+	 */
 	@Api
-	public static boolean isInfinite(double __a)
+	public static boolean isInfinite(double __v)
 	{
-		throw Debugging.todo();
+		long raw = Double.doubleToRawLongBits(__v);
+		return raw == -4503599627370496L ||
+			raw == 9218868437227405312L;
 	}
 	
 	/**

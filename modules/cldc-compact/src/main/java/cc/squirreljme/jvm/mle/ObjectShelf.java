@@ -9,10 +9,8 @@
 
 package cc.squirreljme.jvm.mle;
 
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Blocking;
@@ -72,6 +70,19 @@ public final class ObjectShelf
 		@NotNull boolean[] __dest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __len);
+	
+	/**
+	 * Clones the given array.
+	 *
+	 * @param __array The array to clone.
+	 * @return The resultant cloned array.
+	 * @throws MLECallError On null arguments, or if this is not an array.
+	 * @since 2025/06/22
+	 */
+	@NotNull
+	@SquirrelJMEVendorApi
+	public static native Object arrayClone(@NotNull Object __array)
+		throws MLECallError;
 	
 	/**
 	 * Copies the given arrays. If the source and destination are the same
@@ -412,7 +423,7 @@ public final class ObjectShelf
 	 * @since 2020/06/09
 	 */
 	@SquirrelJMEVendorApi
-	public static native <T> T arrayNew(@NotNull TypeBracket __type,
+	public static native <T> T arrayNew(@NotNull Class<?> __type,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __len);
 	
 	/**
@@ -458,7 +469,7 @@ public final class ObjectShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native boolean isInstance(@NotNull Object __o,
-		@NotNull TypeBracket __type)
+		@NotNull Class<?> __type)
 		throws MLECallError;
 	
 	/**
@@ -470,7 +481,7 @@ public final class ObjectShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native Object newInstance(@NotNull TypeBracket __type);
+	public static native Object newInstance(@NotNull Class<?> __type);
 	
 	/**
 	 * Notifies the monitors holding onto this object.

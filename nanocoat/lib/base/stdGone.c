@@ -48,8 +48,13 @@ int snprintf(
 	
 	va_start(args, format);
 
-	/* Perform the printing, note this is always available. */
-	vsnprintf(buf, bufSize, format, args);
+	/* Perform the printing. */
+#if defined(MSC_VER)
+	result = _vsnprintf(buf, bufSize, format, args);
+	buf[bufSize - 1] = 0;
+#else
+	result = vsnprintf(buf, bufSize, format, args);
+#endif
 	
 	va_end(args);
 	

@@ -25,8 +25,8 @@ static sjme_errorCode sjme_scritchui_fb_listenerInput(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Get owning state and component. */
-	topState = inComponent->common.frontEnd.data;
-	topComponent = inComponent->common.frontEnd.wrapper;
+	topState = inComponent->common.frontEnd.base.data;
+	topComponent = inComponent->common.frontEnd.base.wrapper;
 	
 	/* Get target listener. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(topComponent, input);
@@ -54,8 +54,8 @@ static sjme_errorCode sjme_scritchui_fb_listenerPaint(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Get owning state and component. */
-	topState = inComponent->common.frontEnd.data;
-	topComponent = inComponent->common.frontEnd.wrapper;
+	topState = inComponent->common.frontEnd.base.data;
+	topComponent = inComponent->common.frontEnd.base.wrapper;
 	
 	/* Get the top component's paint. */
 	topPaint = NULL;
@@ -86,8 +86,8 @@ static sjme_errorCode sjme_scritchui_fb_listenerSize(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Get owning state and component. */
-	topState = inComponent->common.frontEnd.data;
-	topComponent = inComponent->common.frontEnd.wrapper;
+	topState = inComponent->common.frontEnd.base.data;
+	topComponent = inComponent->common.frontEnd.base.wrapper;
 	
 	/* Get target listener. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(topComponent, size);
@@ -111,8 +111,8 @@ static sjme_errorCode sjme_scritchui_fb_listenerVisible(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Get owning state and component. */
-	topState = inComponent->common.frontEnd.data;
-	topComponent = inComponent->common.frontEnd.wrapper;
+	topState = inComponent->common.frontEnd.base.data;
+	topComponent = inComponent->common.frontEnd.base.wrapper;
 	
 	/* Get target listener. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(topComponent, visible);
@@ -234,7 +234,7 @@ sjme_errorCode sjme_scritchui_fb_componentSetInputListener(
 	sjme_errorCode error;
 	sjme_scritchui wrappedState;
 	sjme_scritchui_uiComponent wrappedComponent;
-	sjme_frontEnd wrappedFrontEnd;
+	sjme_frontEndBindable wrappedFrontEnd;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -272,7 +272,7 @@ sjme_errorCode sjme_scritchui_fb_componentSetPaintListener(
 	sjme_scritchui_uiPaintable paint;
 	sjme_scritchui wrappedState;
 	sjme_scritchui_uiComponent wrappedComponent;
-	sjme_frontEnd wrappedFrontEnd;
+	sjme_frontEndBindable wrappedFrontEnd;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -315,7 +315,7 @@ sjme_errorCode sjme_scritchui_fb_componentSetSizeListener(
 	sjme_errorCode error;
 	sjme_scritchui wrappedState;
 	sjme_scritchui_uiComponent wrappedComponent;
-	sjme_frontEnd wrappedFrontEnd;
+	sjme_frontEndBindable wrappedFrontEnd;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -352,7 +352,7 @@ sjme_errorCode sjme_scritchui_fb_componentSetVisibleListener(
 	sjme_errorCode error;
 	sjme_scritchui wrappedState;
 	sjme_scritchui_uiComponent wrappedComponent;
-	sjme_frontEnd wrappedFrontEnd;
+	sjme_frontEndBindable wrappedFrontEnd;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

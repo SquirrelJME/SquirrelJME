@@ -507,17 +507,6 @@ public class ScritchUnifiedWrapper
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public boolean isPanelOnly()
-	{
-		return this.api.environment().isPanelOnly();
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 *
 	 * @return
 	 * @since 2024/12/22
@@ -581,18 +570,6 @@ public class ScritchUnifiedWrapper
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/02/09
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public boolean lafHasAlerts()
-	{
-		return this.api.environment().lookAndFeel()
-			.lafHasAlerts();
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2024/08/02
 	 */
 	@Override
@@ -619,13 +596,13 @@ public class ScritchUnifiedWrapper
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/08/02
+	 * @since 2025/05/15
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public boolean lafIsDarkMode()
+	public int lafPlatformFlags()
 	{
-		return this.api.environment().lookAndFeel().lafIsDarkMode();
+		return this.api.environment().lookAndFeel().lafPlatformFlags();
 	}
 	
 	/**

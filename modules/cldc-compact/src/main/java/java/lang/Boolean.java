@@ -36,7 +36,7 @@ public final class Boolean
 	/** The class representing the primitive type. */
 	@Api
 	public static final Class<Boolean> TYPE =
-		TypeShelf.<Boolean>typeToClass(TypeShelf.typeOfBoolean());
+		(Class<Boolean>)TypeShelf.typeOfBoolean();
 	
 	/** The value of this boolean. */
 	private final boolean _value;

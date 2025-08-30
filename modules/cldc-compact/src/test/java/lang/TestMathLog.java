@@ -9,6 +9,7 @@
 
 package lang;
 
+import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import java.util.Random;
 import net.multiphasicapps.tac.TestRunnable;
 
@@ -35,7 +36,7 @@ public class TestMathLog
 		// Linear sequence of values
 		for (int i = -2; i <= 128; i++)
 			this.secondary(String.format("value-%03d", i),
-				Double.doubleToRawLongBits(Math.log(i)));
+				Double.doubleToRawLongBits(ExtraMath.log(i)));
 		
 		// Random sequence of bits, generate NaN and such
 		Random rand = new Random(0xDEADBEEF);
@@ -43,7 +44,7 @@ public class TestMathLog
 		{
 			long raw = rand.nextLong();
 			this.secondary(String.format("random-%d", raw),
-				Double.doubleToRawLongBits(Math.log(
+				Double.doubleToRawLongBits(ExtraMath.log(
 					Double.longBitsToDouble(raw))));
 		}
 	}

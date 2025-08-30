@@ -13,8 +13,8 @@
  * @since 2024/05/14
  */
 
-#ifndef SQUIRRELJME_GTK2INTERN_H
-#define SQUIRRELJME_GTK2INTERN_H
+#ifndef SJME_C_GTK2INTERN_H
+#define SJME_C_GTK2INTERN_H
 
 #include "lib/scritchui/gtk2/gtk2.h"
 #include "lib/scritchui/scritchui.h"
@@ -63,8 +63,8 @@ typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_reconnectSignalFunc)(
 	sjme_attrInNotNull GtkWidget* inWidget,
 	sjme_attrInNotNull void* inOnWhat,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore,
-	sjme_attrInNotNull void* inListener,
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd,
+	sjme_attrInNotNull sjme_undefinedFunction inListener,
+	sjme_attrInNullable sjme_frontEndBindable* copyFrontEnd,
 	sjme_attrInNotNull GCallback inGtkCallback,
 	sjme_attrInValue sjme_jboolean isAfter,
 	sjme_attrInPositiveNonZero sjme_jint numSignals,
@@ -133,8 +133,8 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 	sjme_attrInNotNull GtkWidget* inWidget,
 	sjme_attrInNotNull void* inOnWhat,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore,
-	sjme_attrInNotNull void* inListener,
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd,
+	sjme_attrInNotNull sjme_undefinedFunction inListener,
+	sjme_attrInNullable sjme_frontEndBindable* copyFrontEnd,
 	sjme_attrInNotNull GCallback inGtkCallback,
 	sjme_attrInValue sjme_jboolean isAfter,
 	sjme_attrInPositiveNonZero sjme_jint numSignals,

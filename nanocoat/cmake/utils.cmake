@@ -9,6 +9,11 @@
 
 # Echo commands accordingly
 set(CMAKE_EXECUTE_PROCESS_COMMAND_ECHO STDERR)
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.18")
+	set(SQUIRRELJME_ECHO_ERROR ECHO_ERROR_VARIABLE)
+else()
+	set(SQUIRRELJME_ECHO_ERROR)
+endif()
 
 # Debugging?
 if(SQUIRRELJME_IS_DEBUG)
@@ -140,10 +145,17 @@ message(STATUS "CONFIGURE: -------------------------------------------------")
 execute_process(
 	COMMAND ${SJME_UTIL_CFG}
 	WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}"
-	RESULT_VARIABLE SJME_UTIL_CFG_RESULT)
+	RESULT_VARIABLE SJME_UTIL_CFG_RESULT
+	OUTPUT_VARIABLE SJME_UTIL_CFG_STDOUT
+	ERROR_VARIABLE SJME_UTIL_CFG_STDERR
+	${SQUIRRELJME_ECHO_ERROR})
 
-# Configure Failed?
+# Report status?
+message(STATUS "Configure: ${SJME_UTIL_CFG_STDOUT}")
+message(STATUS "Configure: ${SJME_UTIL_CFG_STDERR}")
 if(NOT SJME_UTIL_CFG_RESULT EQUAL 0)
+	message(STATUS "Configure: ${SJME_UTIL_CFG_STDOUT}")
+	message(STATUS "Configure: ${SJME_UTIL_CFG_STDERR}")
 	message(FATAL_ERROR "Configure failed with: ${SJME_UTIL_CFG_RESULT}")
 endif()
 
@@ -155,10 +167,17 @@ execute_process(
 	COMMAND "${SJME_FIRST_CMAKE}"
 		"--build" "${SQUIRRELJME_UTIL_DIR}"
 	RESULT_VARIABLE SJME_UTIL_BLD_RESULT
-	WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
+	WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}"
+	OUTPUT_VARIABLE SJME_FIRST_CMAKE_STDOUT
+	ERROR_VARIABLE SJME_FIRST_CMAKE_STDERR
+	${SQUIRRELJME_ECHO_ERROR})
 
-# Build Failed?
+# Build report?
+message(STATUS "Build: ${SJME_FIRST_CMAKE_STDOUT}")
+message(STATUS "Build: ${SJME_FIRST_CMAKE_STDERR}")
 if(NOT SJME_UTIL_BLD_RESULT EQUAL 0)
+	message(STATUS "Configure: ${SJME_FIRST_CMAKE_STDOUT}")
+	message(STATUS "Configure: ${SJME_FIRST_CMAKE_STDERR}")
 	message(FATAL_ERROR "Build failed with: ${SJME_UTIL_BLD_RESULT}")
 endif()
 
@@ -413,7 +432,7 @@ function(squirreljme_sourceize_dir inputDir outputDir)
 endfunction()
 
 # Set variable for dynamic library import
-macro(squirreljme_library_set var target)
+macro(squirreljme_util_library_set var target)
 	if(MSVC)
 		set(${var}
 			"${SQUIRRELJME_UTIL_DIR}/${SQUIRRELJME_HOST_DYLIB_PREFIX}${target}.lib")

@@ -74,26 +74,37 @@ sjme_attrUnused RETRO_API void retro_set_environment(
 	enum retro_pixel_format pixelFormat;
 	
 	/* Store the callback pointer. */
-	sjme_libretro_envCallback = environment;
+	sjme_libretro_globals.envCallback = environment;
 
 	/* Control input. */
 	retro_set_controller_port_device(0, 0);
 	
 	/* Playing with no software is supported. */
 	supportsNoGame = true;
-	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME,
+	sjme_libretro_globals.envCallback(
+		RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME,
 		(void*)&supportsNoGame);
 	
 	/* Declare extension interface for special functions. */
-	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_PROC_ADDRESS_CALLBACK,
+	sjme_libretro_globals.envCallback(
+		RETRO_ENVIRONMENT_SET_PROC_ADDRESS_CALLBACK,
 		(void*)sjme_libretro_extInterface());
 	
 	/* Pixel format. */
 	pixelFormat = RETRO_PIXEL_FORMAT_XRGB8888;
-	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT,
+	sjme_libretro_globals.envCallback(
+		RETRO_ENVIRONMENT_SET_PIXEL_FORMAT,
 		(void*)&pixelFormat);
 
 	/* Core options. */
-	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_VARIABLES,
+	sjme_libretro_globals.envCallback(
+		RETRO_ENVIRONMENT_SET_VARIABLES,
 		(void*)&sjme_libretro_coreVariables);
+
+	/* Lookup VFS interface. */
+	sjme_libretro_globals.vfs.required_interface_version = 1;
+	if (!sjme_libretro_globals.envCallback(
+		RETRO_ENVIRONMENT_GET_VFS_INTERFACE,
+		(void*)&sjme_libretro_globals.vfs))
+		sjme_libretro_globals.vfs.iface = NULL;
 }

@@ -31,6 +31,9 @@ target_link_libraries(npapi PUBLIC
 	${SQUIRRELJME_LINK_LIBRARIES_Base}
 	${SQUIRRELJME_LINK_LIBRARIES_Core})
 
+# Link required libraries
+squirreljme_target_link_libraries_required(npapi)
+
 # Where should this library be output?
 squirreljme_target_binary_output(npapi
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")

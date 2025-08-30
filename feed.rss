@@ -17,8 +17,116 @@
 		rel="self" />
 
 	<!-- Update these accordingly! -->
-	<pubDate>Thu, 06 Mar 2025 20:00 EST</pubDate>
-	<lastBuildDate>Thu, 06 Mar 2025 20:00 EST</lastBuildDate>
+	<pubDate>Sat, 07 Jun 2025 21:00 EDT</pubDate>
+	<lastBuildDate>Sat, 07 Jun 2025 21:00 EDT</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">a494c4aa-8ebd-4c93-a84c-b65405866d8e</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250607_2100.mkd</link>
+		<pubDate>Sat, 07 Jun 2025 21:00 EDT</pubDate>
+
+		<title>DoJa audio support has been merged in!</title>
+		<description>Back in May, _Guy Perfect_ kindly wrote and donated an MA-3 music emulator
+for DoJa! This has now been merged in! This is supported for both Windows
+and Linux. For Linux you will need Open Source System support, either
+natively, with ALSA emulation (`snd_pcm_oss` and `alsa-oss`), or with
+the PulseAudio/PipeWire daemon `osspd`.
+
+Do note that if audio is playing for DoJa in _SpringCoat_ the performance
+will be very sluggish as there is no acceleration support currently, you
+will have to run the _Hosted_ version.
+
+There may be some audio issues on Windows as that is not my main development
+system.</description>
+	</item>
+
+	<!-- Not current -->
+
+	<item>
+		<guid isPermaLink="false">d4ff685b-5e4e-4ae6-aeeb-ee82bc4ede51</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250530_1230.mkd</link>
+		<pubDate>Fri, 30 May 2025 12:30 EDT</pubDate>
+
+		<title>SquirrelJME and FreeJ2ME-Plus can share saves!</title>
+		<description>In cooperation with the developer of FreeJ2ME-Plus, a derivation of
+SquirrelJME's existing save format was created which now both emulators
+implement which means that saves are sharable between the two emulators!
+
+The format consists of a JSON metadata file along with basic binaries of
+record data, so it is very simple and easy to implement.
+
+A specification is available at https://squirreljme.cc/doc/trunk/assets/doc/save-format.mkd.</description>
+	</item>
+
+	<item>
+		<guid isPermaLink="false">ff39f3a8-5382-4fe6-8124-dd0fca7f1f1a</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250524_1900.mkd</link>
+		<pubDate>Sat, 24 May 2025 19:00 EDT</pubDate>
+
+		<title>There is now an installer!</title>
+		<description>An installer for Windows, Linux, and macOS is now available! There
+additionally is update functionality, which should work. It should now be
+easier to use the standalone version without having to install a Java SE
+virtual machine yourself and using the command line, unless you still wish to.</description>
+	</item>
+
+	<item>
+		<guid isPermaLink="false">818c13b6-b248-49a6-91dc-4c6d7c607765</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250522_1900.mkd</link>
+		<pubDate>Thu, 22 May 2025 19:00 EDT</pubDate>
+
+		<title>Belated April and May Update!</title>
+		<description>Okay, so I kind of forgot to post an update last month! Oops, I knew I
+was forgetting something!
+
+In May there was a kindly contributed MA-3 music emulator donated to
+SquirrelJME by the alias of _Guy Perfect_, which means that SquirrelJME will
+soon get sound support for both MIDP and DoJa! I am currently working on
+integrating this taking a break from NanoCoat's execution work to get this
+into the standalone! Will definitely have an update once that is in!
+
+There were some important compatibility improvements in April, which will
+definitely improve things! SquirrelJME now changes the functionality of
+certain API functions depending on the platform version requested by the
+software. There have been changes over the course of both Java ME and DoJa
+where the behavior of methods just changed! Now this is correctly handled
+and as such, graphically everything looks far better and less glitchy!
+
+The other major compatibility improvement is that the Record Management
+System, or RMS, now is implemented in a proper way and is stored to disk. So
+any data or progress that an application/game saves will be stored and
+resumes. This also applies to DoJa as well!
+
+There were additional minor compatibility fixes with DoJa due to some
+software requiring very lenient scratchpad behavior, as such this has been
+additionally applied to SquirrelJME. This mostly fixes the Legacy of Network
+and Phantom of Network games.
+
+The number pad now properly works and inverts accordingly so that it matches
+the layout of the dial-pad, since keyboard number pads have the calculator
+layout.
+
+Work on NanoCoat code execution continues, not much to say there!</description>
+	</item>
+
+	<item>
+		<guid isPermaLink="false">67fab4da-ae95-46e6-a328-a3c8f4af8c64</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250330_0400.mkd</link>
+		<pubDate>Sun, 30 Mar 2025 04:00 EDT</pubDate>
+
+		<title>March Update!</title>
+		<description>SquirrelJME now has a single standalone Jar which is multi-platform, so now
+it will be easier to run it without having to fully know what your system is.
+
+I decided to just merge in the calendar implementation despite it being
+incomplete, since it was a very long-lived branch that I just wanted to close.
+A large number of DoJa software requires a calendar implementation, so this
+should be an initial first-step for that.
+
+Other than that, there has been continued work on NanoCoat which is
+progressing well. Currently, I am working on the main startup sequence for
+applications.</description>
+	</item>
 
 	<item>
 		<guid isPermaLink="false">2eb7abe1-609d-42fc-a309-8f1540c3ee5d</guid>
@@ -34,8 +142,6 @@ operations, which fixes a large number of graphical glitches, freezes, and
 crashes due to changes in how modern hardware works. Other than that, I have
 been progressing rather nicely with NanoCoat which has been very nice.</description>
 	</item>
-
-	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">2595fd13-e811-41ae-93f4-0fc3645bdd1b</guid>

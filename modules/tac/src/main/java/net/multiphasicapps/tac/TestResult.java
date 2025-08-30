@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
 import cc.squirreljme.jvm.mle.TypeShelf;
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
@@ -347,10 +346,10 @@ public final class TestResult
 			TestResult.__loadClassValues(__otherKeys, multiParams, rv, at);
 			
 			// Then load any results that are specified in interfaces
-			for (TypeBracket implement :
-				TypeShelf.interfaces(TypeShelf.classToType(at)))
+			for (Class<?> implement :
+				TypeShelf.interfaces(at))
 				TestResult.__loadClassValues(__otherKeys, multiParams, rv,
-					TypeShelf.typeToClass(implement));
+					implement);
 		}
 		
 		// Done

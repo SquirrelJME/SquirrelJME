@@ -7,7 +7,7 @@ plugins {
 
 apply plugin: "com.github.johnrengelman.shadow"
 
-description = "SquirrelJME Java Class Dumper."
+description = "SquirrelJME Java Class Dumper"
 mainClassName = "cc.squirreljme.javap.Main"
 
 tasks.register("mimeDecode", MimeDecodeResourcesTask.class,

@@ -13,8 +13,8 @@
  * @since 2024/08/09
  */
 
-#ifndef SQUIRRELJME_ERROR_H
-#define SQUIRRELJME_ERROR_H
+#ifndef SJME_C_ERROR_H
+#define SJME_C_ERROR_H
 
 #include "sjme/stdTypes.h"
 
@@ -423,9 +423,126 @@ typedef enum sjme_errorCode
 
 	/** Invalid instruction. */
 	SJME_ERROR_INVALID_INSTRUCTION = -127,
+
+	/** Generic linkage error. */
+	SJME_ERROR_LINKAGE_ERROR = -128,
+
+	/** The super class is not a valid class. */
+	SJME_ERROR_SUPER_CLASS_INVALID = -129,
+
+	/** The super class is not a valid class. */
+	SJME_ERROR_NO_FIELD = -130,
+
+	/** The class loader is not valid. */
+	SJME_ERROR_INVALID_CLASS_LOADER = -131,
+
+	/** Purely virtual method call. */
+	SJME_ERROR_PURE_VIRTUAL_CALL = -132,
+
+	/** Array is of negative size. */
+	SJME_ERROR_NEGATIVE_ARRAY_SIZE = -133,
+
+	/** MLE Call error. */
+	SJME_ERROR_MLE_CALL = -134,
+
+	/** Invalid MLE Shelf. */
+	SJME_ERROR_UNKNOWN_MLE_SHELF = -135,
+
+	/** Invalid MLE Function. */
+	SJME_ERROR_UNKNOWN_MLE_FUNCTION = -136,
+
+	/** MLE call is not compatible. */
+	SJME_ERROR_INCOMPATIBLE_MLE_CALL = -137,
+
+	/** Return type is incorrect. */
+	SJME_ERROR_WRONG_RETURN_TYPE = -138,
+
+	/** The code address is not valid. */
+	SJME_ERROR_INVALID_CODE_ADDRESS = -139,
+
+	/** Stack pointer is null. */
+	SJME_ERROR_NULL_STACK_POINTER = -140,
+
+	/** Array index is out of bounds. */
+	SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS = -141,
+
+	/** No audio system is available. */
+	SJME_ERROR_HEADLESS_AUDIO = -142,
+
+	/** Unsupported audio format. */
+	SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT = -143,
+
+	/** Audio has been destroyed. */
+	SJME_ERROR_AUDIO_DESTROYED = -144,
+
+	/** The state is mismatched. */
+	SJME_ERROR_AUDIO_STATE_MISMATCH = -145,
+
+	/** No audio resources are available. */
+	SJME_ERROR_AUDIO_NO_RESOURCES = -146,
+
+	/** Mismatch between audio formats. */
+	SJME_ERROR_AUDIO_FORMAT_MISMATCH = -147,
+
+	/** Audio triggering failed. */
+	SJME_ERROR_AUDIO_TRIGGER_FAILED = -148,
+
+	/** Audio write failed. */
+	SJME_ERROR_AUDIO_WRITE_FAILED = -149,
+
+	/** Failed to prepare audio. */
+	SJME_ERROR_AUDIO_PREPARE_FAILED = -150,
+
+	/** Invalid PC adjustment. */
+	SJME_ERROR_INVALID_PC_ADJUST = -151,
+
+	/** An instruction is not valid. */
+	SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION = -152,
+
+	/** An instruction has an invalid length. */
+	SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION_LENGTH = -153,
+
+	/** Class member access is denied. */
+	SJME_ERROR_MEMBER_ACCESS_DENIED = -154,
+
+	/** Field is not direct. */
+	SJME_ERROR_FIELD_NOT_DIRECT = -155,
+
+	/** Could not initialize static string value. */
+	SJME_ERROR_STATIC_STRING_INIT = -156,
+
+	/** Doubly tossed exception. */
+	SJME_ERROR_DOUBLE_TOSS = -157,
+
+	/** Uncaught exception. */
+	SJME_ERROR_UNCAUGHT_EXCEPTION = -158,
+
+	/** Object is not valid. */
+	SJME_ERROR_INVALID_OBJECT = -159,
+
+	/** Walk encountered an unknown type. */
+	SJME_ERROR_WALK_UNKNOWN_TYPE = -160,
+
+	/** Skip the elements of items. */
+	SJME_ERROR_WALK_SKIP_ELEMENTS = -161,
+
+	/** Invalid preceding type. */
+	SJME_ERROR_CBOR_INVALID_PRECEDE = -162,
+
+	/** ROM is not valid. */
+	SJME_ERROR_INVALID_ROM = -163,
+
+	/** An unexpected object was matched, it should be another object. */
+	SJME_ERROR_OBJECT_MISMATCHED = -164,
+
+	/** An object was garbage collected when it should not have been. */
+	SJME_ERROR_OBJECT_GONE = -165,
+
+	/** There is still an active GC commit. */
+	SJME_ERROR_ACTIVE_GC_COMMIT = -166,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -128,
+	SJME_NUM_ERROR_CODES = -167,
 } sjme_errorCode;
 
 /**
@@ -489,6 +606,18 @@ sjme_errorCode sjme_error_default(
  */
 sjme_errorCode sjme_error_defaultOr(
 	sjme_errorCode error, sjme_errorCode otherwise);
+
+/**
+ * Masks the given error with another.
+ *
+ * @param error The error code to be masked.
+ * @param mask The error to mask with.
+ * @return Returns @c mask .
+ * @since 2025/04/08
+ */
+sjme_errorCode sjme_error_mask(
+	sjme_attrInValue sjme_errorCode error,
+	sjme_attrInValue sjme_errorCode mask);
 
 /*--------------------------------------------------------------------------*/
 

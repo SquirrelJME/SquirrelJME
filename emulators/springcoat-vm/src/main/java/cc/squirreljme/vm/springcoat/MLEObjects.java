@@ -9,21 +9,25 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
+import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
+import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.vm.OverlayVMClassLibrary;
 import cc.squirreljme.vm.RawVMClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.springcoat.brackets.AudioConnectionObject;
+import cc.squirreljme.vm.springcoat.brackets.AudioStreamObject;
+import cc.squirreljme.vm.springcoat.brackets.BucketObject;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.brackets.MidiDeviceObject;
 import cc.squirreljme.vm.springcoat.brackets.MidiPortObject;
 import cc.squirreljme.vm.springcoat.brackets.NativeArchiveEntryObject;
 import cc.squirreljme.vm.springcoat.brackets.NativeArchiveObject;
 import cc.squirreljme.vm.springcoat.brackets.PipeObject;
-import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
-import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.callbacks.NativeImageLoadCallbackAdapter;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -120,6 +124,104 @@ public final class MLEObjects
 				"Not a NativeArchiveEntryObject.");
 		
 		return (NativeArchiveEntryObject)__object; 
+	}
+	
+	/**
+	 * Returns the object as an array.
+	 *
+	 * @param __object The object.
+	 * @return The resultant array.
+	 * @throws SpringMLECallError If this is not an array.
+	 * @since 2025/06/22
+	 */
+	public static SpringArrayObject array(Object __object)
+		throws SpringMLECallError
+	{
+		return MLEObjects.notNull(SpringArrayObject.class, __object);
+	}
+	
+	/**
+	 * Returns the audio connection object.
+	 *
+	 * @param __object The object to get from.
+	 * @return The resultant audio connection.
+	 * @throws SpringMLECallError If this is not the given object.
+	 * @since 2025/06/07
+	 */
+	public static AudioConnectionBracket audioConnection(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof AudioConnectionObject))
+			throw new SpringMLECallError(
+				"Not a AudioConnectionObject.");
+		
+		return ((AudioConnectionObject)__object).connection;
+	}
+	
+	/**
+	 * Returns the audio stream object.
+	 *
+	 * @param __object The object to get from.
+	 * @return The resultant audio stream.
+	 * @throws SpringMLECallError If this is not the given object.
+	 * @since 2025/06/07
+	 */
+	public static AudioStreamBracket audioStream(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof AudioStreamObject))
+			throw new SpringMLECallError(
+				"Not a AudioStreamObject.");
+		
+		return ((AudioStreamObject)__object).stream;
+	}
+	
+	/**
+	 * Returns the bucket object.
+	 *
+	 * @param __object The object to check.
+	 * @return The resultant bucket.
+	 * @throws SpringMLECallError If this is not a bucket.
+	 * @since 2025/04/25
+	 */
+	public static BucketBracket bucket(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof BucketObject))
+			throw new SpringMLECallError(
+				"Not a BucketObject.");
+		
+		return ((BucketObject)__object).bucket;
+	}
+	
+	/**
+	 * Returns the direct byte array.
+	 *
+	 * @param __object The byte array to obtain.
+	 * @return The resultant byte array.
+	 * @throws SpringMLECallError If this is not a byte array.
+	 * @since 2025/04/25
+	 */
+	public static byte[] byteArray(Object __object)
+		throws SpringMLECallError
+	{
+		return MLEObjects.notNull(
+			SpringArrayObjectByte.class, __object).array();
+	}
+	
+	/**
+	 * Returns the direct character array.
+	 *
+	 * @param __object The character array to obtain.
+	 * @return The resultant character array.
+	 * @throws SpringMLECallError If this is not a character array.
+	 * @since 2025/04/25
+	 */
+	public static char[] charArray(Object __object)
+		throws SpringMLECallError
+	{
+		return MLEObjects.notNull(
+			SpringArrayObjectChar.class, __object).array();
 	}
 	
 	/**
@@ -282,23 +384,6 @@ public final class MLEObjects
 	}
 	
 	/**
-	 * Checks if this is a {@link RefLinkObject}.
-	 * 
-	 * @param __object The object to check.
-	 * @return As a {@link RefLinkObject} if this is one.
-	 * @throws SpringMLECallError If this is not a {@link RefLinkObject}.
-	 * @since 2020/06/28
-	 */
-	public static RefLinkObject refLink(Object __object)
-		throws SpringMLECallError
-	{
-		if (!(__object instanceof RefLinkObject))
-			throw new SpringMLECallError("Not a RefLinkObject.");
-		
-		return (RefLinkObject)__object; 
-	}
-	
-	/**
 	 * Checks if this is a simple object.
 	 * 
 	 * @param __object The object to check.
@@ -312,6 +397,40 @@ public final class MLEObjects
 			throw new SpringMLECallError("Not a SpringSimpleObject.");
 		
 		return (SpringSimpleObject)__object; 
+	}
+	
+	/**
+	 * Checks if this is a simple object.
+	 * 
+	 * @param __object The object to check.
+	 * @return The simple object or {@code null} if this is not.
+	 * @throws SpringMLECallError If not a simple object.
+	 * @since 2025/06/21
+	 */
+	public static SpringSimpleObject simpleOptional(Object __object)
+	{
+		// Null is acceptable.
+		if (__object == null || __object == SpringNullObject.NULL)
+			return null;
+		
+		return MLEObjects.simple(__object); 
+	}
+	
+	/**
+	 * Returns the directly represented string, or {@code null} if the
+	 * reference is {@code null}.
+	 *
+	 * @param __object The string object.
+	 * @return The resultant string or {@code null}.
+	 * @since 2025/04/25
+	 */
+	public static String string(Object __object)
+	{
+		if (__object == null || __object == SpringNullObject.NULL)
+			return null;
+		
+		return MLEObjects.notNull(
+			SpringStringObject.class, __object).toString();
 	}
 	
 	/**
@@ -377,20 +496,17 @@ public final class MLEObjects
 	}
 	
 	/**
-	 * Checks if this is a {@link TypeObject}.
-	 * 
-	 * @param __object The object to check.
-	 * @return As a {@link TypeObject} if this is one.
-	 * @throws SpringMLECallError If this is not a {@link TypeObject}.
-	 * @since 2020/06/22
+	 * Casts this to a class type.
+	 *
+	 * @param __object The input object.
+	 * @return The resultant class.
+	 * @since 2025/07/05
 	 */
-	public static TypeObject type(Object __object)
-		throws SpringMLECallError
+	public static SpringClass type(Object __object)
 	{
-		if (!(__object instanceof TypeObject))
-			throw new SpringMLECallError("Not a TypeObject.");
+		if (!(__object instanceof SpringClass))
+			throw new SpringMLECallError("Not a SpringClass.");
 		
-		return (TypeObject)__object; 
+		return (SpringClass)__object; 
 	}
-	
 }

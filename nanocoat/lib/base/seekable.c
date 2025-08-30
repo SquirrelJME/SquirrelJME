@@ -47,10 +47,9 @@ sjme_errorCode sjme_seekable_open(
 	
 	/* These are required. */
 	if (inFunctions->size == NULL ||
-		inFunctions->read == NULL ||
 		inFunctions->init == NULL ||
 		inFunctions->close == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Setup result. */
 	result = NULL;
@@ -64,8 +63,11 @@ sjme_errorCode sjme_seekable_open(
 	result->allocPool = allocPool;
 	result->functions = inFunctions;
 	if (copyFrontEnd != NULL)
-		memmove(&result->frontEnd,
-			copyFrontEnd, sizeof(*copyFrontEnd));
+		sjme_frontEnd_copy(&result->frontEnd,
+			copyFrontEnd);
+
+	/* Set default size cache. */
+	sjme_atomic_sjme_jint_set(&result->cachedSize, -1);
 	
 	/* Initialize. */
 	if (sjme_error_is(error = result->functions->init(result,
@@ -114,7 +116,7 @@ sjme_errorCode sjme_seekable_read(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	if (seekable->functions->read == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Lock seekable. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
@@ -158,7 +160,7 @@ sjme_errorCode sjme_seekable_readReverse(
 		return SJME_ERROR_UNALIGNED_ACCESS;
 	
 	if (seekable->functions->read == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Setup temporary buffer. */
 	tempBuf = sjme_alloca(length);
@@ -228,7 +230,20 @@ sjme_errorCode sjme_seekable_size(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (seekable->functions->size == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
+
+	/* Non-volatile size and it was cached? */
+	size = -1;
+	if (!seekable->implState.flags.volatileSize)
+	{
+		/* Check the cache. */
+		size = sjme_atomic_sjme_jint_get(&seekable->cachedSize);
+		if (size >= 0)
+		{
+			*outSize = size;
+			return SJME_ERROR_NONE;
+		}
+	}
 		
 	/* Lock seekable. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
@@ -236,9 +251,12 @@ sjme_errorCode sjme_seekable_size(
 		return sjme_error_default(error);
 	
 	/* Forward size call. */
-	size = -1;
 	error = seekable->functions->size(seekable,
 		&seekable->implState, &size);
+
+	/* Store the cached size. */
+	if (!seekable->implState.flags.volatileSize && size >= 0)
+		sjme_atomic_sjme_jint_set(&seekable->cachedSize, size);
 	
 	/* Release lock. */
 	if (sjme_error_is(sjme_thread_spinLockRelease(&seekable->lock,
@@ -252,4 +270,39 @@ sjme_errorCode sjme_seekable_size(
 	/* Success! */
 	*outSize = size;
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_seekable_write(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_buffer inBuf,
+	sjme_attrInPositive sjme_jint seekBase,
+	sjme_attrInPositive sjme_jint length)
+{
+	sjme_errorCode error;
+	
+	if (seekable == NULL || inBuf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (seekBase < 0 || length < 0 || (seekBase + length) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	if (seekable->functions->write == NULL)
+		return sjme_error_notImplemented(0);
+	
+	/* Lock seekable. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&seekable->lock)))
+		return sjme_error_default(error);
+	
+	/* Forward write. */
+	error = seekable->functions->write(seekable,
+		&seekable->implState, inBuf, seekBase, length);
+	
+	/* Release lock. */
+	if (sjme_error_is(sjme_thread_spinLockRelease(&seekable->lock,
+		NULL)))
+		return sjme_error_default(error);
+	
+	/* Success? */
+	return error;
 }

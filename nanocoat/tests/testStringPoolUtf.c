@@ -22,12 +22,12 @@ static const sjme_lpcstr testUtf = "Squirrels!";
  */
 SJME_TEST_DECLARE(testStringPoolUtf)
 {
-	sjme_stringPool stringPool;
-	sjme_stringPool_string string, stringTwo;
+	sjme_nvm_stringPool stringPool;
+	sjme_nvm_stringPool_string string, stringTwo;
 	
 	/* Create string pool. */
 	stringPool = NULL;
-	if (sjme_error_is(test->error = sjme_stringPool_new(
+	if (sjme_error_is(test->error = sjme_nvm_stringPool_new(
 		test->pool, &stringPool)) ||
 		stringPool == NULL)
 		return sjme_unit_fail(test, "Could not create pool.");
@@ -39,9 +39,8 @@ SJME_TEST_DECLARE(testStringPoolUtf)
 	
 	/* Locate string. */
 	string = NULL;
-	if (sjme_error_is(test->error = sjme_stringPool_locateUtf(
-		stringPool, testUtf, -1,
-		&string)) || string == NULL)
+	if (sjme_error_is(test->error = sjme_nvm_stringPool_locateUtf(
+		stringPool, &string, testUtf, 0, -1)) || string == NULL)
 		return sjme_unit_fail(test, "Could not locate string?");
 	
 	/* We are using this, so count it. */
@@ -50,12 +49,11 @@ SJME_TEST_DECLARE(testStringPoolUtf)
 		return sjme_unit_fail(test, "Could not count string?");
 	
 	/* Check to make sure it is valid. */
-	sjme_unit_equalI(test, 10, string->length,
+	sjme_unit_equalI(test, 10, string->seq->length,
 		"Length incorrect?");
-	sjme_unit_notEqualP(test, testUtf, string->seq.context,
-		"Copy was not made?");
-	sjme_unit_notEqualP(test, testUtf, &string->chars[0],
-		"Copy was not made?");
+	sjme_unit_notEqualI(test,
+		0, strcmp("Squirrels!", sjme_charSeq_tempUtf(string->seq)),
+		"String not equal?");
 	
 	/* Should be first. */
 	sjme_unit_equalP(test, string, stringPool->strings->elements[0],
@@ -63,9 +61,8 @@ SJME_TEST_DECLARE(testStringPoolUtf)
 		
 	/* Locate string, again. */
 	stringTwo = NULL;
-	if (sjme_error_is(test->error = sjme_stringPool_locateUtf(
-		stringPool, testUtf, -1,
-		&stringTwo)) || stringTwo == NULL)
+	if (sjme_error_is(test->error = sjme_nvm_stringPool_locateUtf(
+		stringPool, &stringTwo, testUtf, 0, -1)) || stringTwo == NULL)
 		return sjme_unit_fail(test, "Could not locate second string?");
 	
 	/* We are using this, so count it. */

@@ -13,32 +13,143 @@
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/nvmFunc.h"
 #include "sjme/nvm/payload.h"
+#include "sjme/nvm/loop.h"
 #include "test.h"
 
 int main(int argc, sjme_lpstr* argv)
 {
-	sjme_nvm_bootParam bootConfig;
-	sjme_nvm state;
-	sjme_jint exitCode;
+	sjme_errorCode error;
+	sjme_alloc_pool pool;
+	sjme_nvm_bootParam bootParam;
+	sjme_jint exitCode, i, n;
+	sjme_seekable bootSeek;
+	sjme_nvm_rom_suite bootSuite;
+	sjme_list_sjme_lpstr* classpath;
+	sjme_list_sjme_lpstr* mainArgs;
+	sjme_nvm inState;
+	sjme_jboolean terminated;
+	const sjme_nal* nal;
+	sjme_lpstr classpathSplice;
 	
-	/* Setup boot configuration. */
-	memset(&bootConfig, 0, sizeof(bootConfig));
-	bootConfig.payload = &sjme_payload_config_data;
+	/* Incorrect number of arguments? */
+	if (argc < 5)
+	{
+		sjme_message("Not enough arguments to TAC executable.");
+		return EXIT_FAILURE;
+	}
+
+	/* Register the crash handler. */
+	sjme_debug_crashRegister();
+	
+	/* Debug. */
+	for (i = 0; i < argc; i++)
+		sjme_message("argv[%d]: %s", i, argv[i]);
+	
+	/* Use default NAL to obtain the boot Jar. */
+	nal = &sjme_nal_default;
+	
+	/* Allocate main pool. */
+	pool = NULL;
+	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&pool,
+		1048576 * 16)) || pool == NULL)
+		goto fail_poolInit;
+	
+	/* Open seekable to the boot Jar. */
+	bootSeek = NULL;
+	if (sjme_error_is(error = nal->fileOpen(pool, argv[1],
+		&bootSeek, SJME_NAL_OPEN_READ)) || bootSeek == NULL)
+		goto fail_openBootJar;
+	
+	/* Load boot suite. */
+	bootSuite = NULL;
+	if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipSeekable(
+		pool, &bootSuite, bootSeek, SJME_NVM_BOOT_CLUTTER_RELEASE)) ||
+		bootSuite == NULL)
+		goto fail_loadBootJar;
+	
+	/* Splice up the classpath. */
+	n = strlen(argv[3]) + 1;
+	classpathSplice = NULL;
+	if (sjme_error_is(error = sjme_alloc(pool, n + 1,
+		(sjme_pointer*)&classpathSplice)) || classpathSplice == NULL)
+		goto fail_splicePath;
+	
+	/* Turn colons into NULs for splitting. */
+	for (i = 0; i < n; i++)
+		if (argv[3][i] == ':')
+			classpathSplice[i] = '\0';
+		else
+			classpathSplice[i] = argv[3][i];
+	classpathSplice[n] = '\0';
+	
+	/* Setup classpath to use. */
+	classpath = NULL;
+	if (sjme_error_is(error = sjme_list_flattenArgNul(pool,
+		&classpath, classpathSplice)) ||
+		classpath == NULL)
+		goto fail_initClasspath;
+	
+	/* Debug. */
+	for (i = 0; i < classpath->length; i++)
+		sjme_message("classpath[%d]: %s", i, classpath->elements[i]);
+		
+	/* Setup main arguments to use. */
+	mainArgs = NULL;
+	if (sjme_error_is(error = sjme_list_newV(pool, sjme_lpstr,
+		0, 1, &mainArgs, argv[4])) || mainArgs == NULL)
+		goto fail_initMainArgs;
+	
+	/* Setup boot parameters. */
+	memset(&bootParam, 0, sizeof(bootParam));
+	bootParam.nal = &sjme_nal_test;
+	bootParam.bootSuite = bootSuite;
+	bootParam.mainClass = "net.multiphasicapps.tac.MainSingleRunner";
+	bootParam.mainClassPathByName = (const sjme_list_sjme_lpcstr*)classpath;
+	bootParam.mainArgs = (const sjme_list_sjme_lpcstr*)mainArgs;
 	
 	/* Boot the virtual machine. */
-	state = NULL;
-	if (sjme_error_is(sjme_nvm_boot(NULL, NULL, &bootConfig,
-		&state)))
-		return EXIT_FAILURE;
-		
-	/* Constantly ticks the virtual machine until it stops. */
-	while (sjme_nvm_tick(state, -1, NULL))
-		;
-		
-	/* Cleanup the virtual machine. */
-	exitCode = EXIT_FAILURE;
-	if (!sjme_nvm_destroy(state, &exitCode))
-		return EXIT_FAILURE;
+	inState = NULL;
+	if (sjme_error_is(error = sjme_nvm_boot(pool,
+		&bootParam, &inState, NULL)))
+		goto fail_boot;
 	
+	/* Iterate the virtual machine loop. */
+	sjme_messageB("--------------------------------------------------------");
+	for (terminated = SJME_JNI_FALSE; !terminated;)
+	{
+		/* Let other threads run. */
+		sjme_thread_yield();
+		
+		/* Tick the virtual machine. */
+		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, -1,
+			NULL, &terminated)))
+		{
+			/* Fail unless this was interrupted. */
+			if (error == SJME_ERROR_INTERRUPTED)
+				continue;
+			
+			goto fail_loop;
+		}
+	}
+	sjme_messageB("--------------------------------------------------------");
+	
+	/* Destroy the VM before exit. */
+	exitCode = -1;
+	if (sjme_error_is(error = sjme_nvm_destroy(inState, &exitCode)))
+		goto fail_destroy;
+	
+	/* Return with the exit code. */
 	return exitCode;
+	
+fail_destroy:
+fail_loop:
+fail_boot:
+fail_initMainArgs:
+fail_initClasspath:
+fail_splicePath:
+fail_loadBootJar:
+fail_openBootJar:
+fail_poolInit:
+	sjme_message("Failed TAC test: %d", error);
+	return EXIT_FAILURE;
 }

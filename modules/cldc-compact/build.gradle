@@ -65,12 +65,12 @@ squirreljme
 	proGuardOptions += ["-keepclassmembers", "class",
 		"java.lang.Throwable", "{",
 			"cc.squirreljme.jvm.mle.brackets.TracePointBracket[]",
-				"_stack", ";",
+				"_stackTrace", ";",
 		"}"]
 	proGuardOptions += ["-keepclassmembernames", "class",
 		"java.lang.Throwable", "{",
 			"cc.squirreljme.jvm.mle.brackets.TracePointBracket[]",
-				"_stack", ";",
+				"_stackTrace", ";",
 		"}"]
 	
 	// Class has hidden fields that are directly accessed

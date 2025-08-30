@@ -14,10 +14,7 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import java.io.IOException;
-import java.io.InputStream;
 import org.intellij.lang.annotations.PrintFormat;
 import org.jetbrains.annotations.Range;
 
@@ -107,7 +104,7 @@ public final class ErrorCode
 		String __prefix = "XX";
 		
 		// Determine the prefix that should be used
-		TypeBracket throwingClass = ErrorCode.__throwingClass();
+		Class<?> throwingClass = ErrorCode.__throwingClass();
 		if (throwingClass != null)
 			__prefix = ErrorCode.__locatePrefix(
 				ErrorCode.__unComponent(throwingClass));
@@ -164,7 +161,7 @@ public final class ErrorCode
 	 * @return The prefix for the throwing class.
 	 * @since 2023/07/19
 	 */
-	private static String __locatePrefix(TypeBracket __throwingClass)
+	private static String __locatePrefix(Class<?> __throwingClass)
 	{
 		// Ignore here
 		if (__throwingClass == null)
@@ -195,15 +192,14 @@ public final class ErrorCode
 	 * @return The class throwing this.
 	 * @since 2023/07/19
 	 */
-	private static TypeBracket __throwingClass()
+	private static Class<?> __throwingClass()
 	{
 		// Get the stack trace
 		TracePointBracket[] trace = DebugShelf.traceStack();
 		
 		// Find out who called us
 		String selfClassRt = ErrorCode.class.getName();
-		String selfClassBn = TypeShelf.binaryName(
-			TypeShelf.classToType(ErrorCode.class));
+		String selfClassBn = TypeShelf.binaryName(ErrorCode.class);
 		for (int i = 0, n = trace.length; i < n; i++)
 		{
 			TracePointBracket point = trace[i];
@@ -218,7 +214,7 @@ public final class ErrorCode
 				continue;
 			
 			// Resolve class
-			TypeBracket found = TypeShelf.findType(atClass);
+			Class<?> found = TypeShelf.findType(atClass);
 			if (found != null)
 				return found;
 		}
@@ -234,7 +230,7 @@ public final class ErrorCode
 	 * @return The root component.
 	 * @since 2023/07/19
 	 */
-	private static TypeBracket __unComponent(TypeBracket __in)
+	private static Class<?> __unComponent(Class<?> __in)
 	{
 		if (__in == null)
 			return null;

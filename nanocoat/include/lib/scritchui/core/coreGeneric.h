@@ -13,8 +13,8 @@
  * @since 2024/07/22
  */
 
-#ifndef SQUIRRELJME_COREGENERIC_H
-#define SQUIRRELJME_COREGENERIC_H
+#ifndef SJME_C_COREGENERIC_H
+#define SJME_C_COREGENERIC_H
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiTypes.h"

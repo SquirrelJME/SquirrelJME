@@ -6,48 +6,97 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Docker is used for testing
-squirreljme_include("docker.cmake")
-
 # Define library
-add_library(libJvm SHARED
+squirreljme_multilib_add_library(libJvm
 	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:CorePIC>
-	revProto.c
-	vmInit.c
-	vmNativeLib.c)
+	$<TARGET_OBJECTS:ScritchUICorePIC>
+	$<TARGET_OBJECTS:ScritchUIFBPIC>
+	niInit.c
+	vmArray.c
+	vmCompiler.c
+	vmCore.c
+	vmDebug.c
+	vmFile.c
+	vmFloat.c
+	vmIoNet.c
+	vmObject.c
+	vmObjectInput.c
+	vmOther.c
+	vmPackage.c
+	vmReflect.c
+	vmRuntime.c
+	vmSecurity.c
+	vmString.c
+	vmSystem.c
+	vmThread.c
+	vmThrowable.c)
 
-# Always make this position independent
-if(SQUIRRELJME_ENABLE_FPIC)
-	set_property(TARGET libJvm
-		PROPERTY POSITION_INDEPENDENT_CODE ON)
-endif()
+# Executable launcher
+add_executable(SquirrelJME
+	lnStart.c)
 
 # The base SquirrelJME core needs to be built
-add_dependencies(libJvm
-	CorePIC)
+squirreljme_multilib_add_dependency(libJvm
+	Core)
+squirreljme_multilib_add_dependency(libJvm
+	Base)
+add_dependencies(SquirrelJME
+	libJvmStatic)
+
+# If using official JNI/JVM headers we need this definition to be set
+squirreljme_multilib_target_compile_definitions(libJvm PRIVATE
+	_JNI_IMPLEMENTATION_=1)
+squirreljme_multilib_target_compile_definitions(libJvm PRIVATE
+	SJME_JNI_IMPLEMENTATION=1)
+target_compile_definitions(SquirrelJME PRIVATE
+	_JNI_IMPLEMENTATION_=1)
+target_compile_definitions(SquirrelJME PRIVATE
+	SJME_JNI_IMPLEMENTATION=1)
 
 # We need to find all of the includes and such
-target_include_directories(libJvm PUBLIC
+squirreljme_multilib_target_include_directories(libJvm PRIVATE
 	"${CMAKE_SOURCE_DIR}/include")
-target_include_directories(libJvm SYSTEM PRIVATE
+target_include_directories(SquirrelJME PRIVATE
+	"${CMAKE_SOURCE_DIR}/include")
+squirreljme_multilib_target_include_directories(libJvm SYSTEM PRIVATE
 	${JNI_INCLUDE_DIRS}
 	${JAVA_INCLUDE_PATH}
-	${JAVA_INCLUDE_PATH2})
+	${JAVA_INCLUDE_PATH2}
+	${JVM_INCLUDE_DIRS})
+target_include_directories(SquirrelJME SYSTEM PRIVATE
+	${JNI_INCLUDE_DIRS}
+	${JAVA_INCLUDE_PATH}
+	${JAVA_INCLUDE_PATH2}
+	${JVM_INCLUDE_DIRS})
 
 # Libraries needed to be linked with for the DyLib to function
-target_link_libraries(libJvm PUBLIC
+squirreljme_multilib_target_link_libraries(libJvm PUBLIC
 	${SQUIRRELJME_LINK_LIBRARIES_Base}
 	${SQUIRRELJME_LINK_LIBRARIES_Core})
 
-# Where should this library be output?
-squirreljme_target_binary_output(libJvm
+# The JVM launcher needs the actual JVM library
+target_link_libraries(SquirrelJME PRIVATE
+	libJvmStatic)
+
+# Link required libraries
+squirreljme_target_link_libraries_required(libJvm)
+squirreljme_target_link_libraries_required(SquirrelJME)
+
+# Where should the executable be output?
+squirreljme_target_binary_output(SquirrelJME
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
-# Use a conforming name for the library
-squirreljme_target_binary_name(libJvm
-	"jvm")
+# Specify name for the JVM library
+squirreljme_multilib_target_binary_name(libJvm
+	"squirreljme")
+squirreljme_target_binary_name(SquirrelJME
+	"squirreljme")
 
 # Exports for Windows, etc.
-squirreljme_target_shared_library_exports(libJvm)
+if(SQUIRRELJME_ENABLE_DYLIB)
+	squirreljme_target_shared_library_exports(libJvmDyLib)
+endif()
+
+
 

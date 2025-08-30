@@ -351,8 +351,10 @@ public final class CMakeUtils
 			procBuilder.directory(__workDir.toFile());
 		
 		// Use more CPUs!
-		procBuilder.environment().put("CMAKE_BUILD_PARALLEL_LEVEL",
+		Map<String, String> env = procBuilder.environment();
+		env.put("CMAKE_BUILD_PARALLEL_LEVEL",
 			Integer.toString(VMTestTaskAction.physicalProcessorCount()));
+		env.put("SQUIRRELJME_GRADLE", "YES");
 		
 		// Log the output somewhere
 		if (__in != null)
@@ -427,13 +429,9 @@ public final class CMakeUtils
 		VersionNumber version = CMakeUtils.cmakeExeVersion();
 		__task.getLogger().lifecycle("CMake version: " + version);
 		
-		// Force 32-bit compile?
-		String genPlatform;
-		if (OperatingSystem.current().isWindows() &&
-			CMakeUtils.is32BitHost() && CMakeUtils.isX86Host())
-			genPlatform = "-DCMAKE_GENERATOR_PLATFORM=Win32";
-		else
-			genPlatform = "-DXXIGNORETHISXX=1";
+		// Where is the Java home directory? Used to find JNI
+		Path javaHome = Paths.get(System.getProperty("java.home"))
+			.toAbsolutePath();
 		
 		// Configure CMake first before we continue with anything
 		// Note that newer CMake has a better means of specifying the path
@@ -443,8 +441,13 @@ public final class CMakeUtils
 				"configure",
 				__task.getProject().getBuildDir().toPath(),
 				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
-				"-DSQUIRRELJME_GRADLE=" + __task.cmakeRules.get(0),
-				genPlatform,
+				"-DSQUIRRELJME_GRADLE=YES",
+				String.format("-DSQUIRRELJME_VERSION_BUILD=%s",
+					VMHelpers.buildVersion(__task.getProject())),
+				String.format("-DJAVA_HOME=%s",
+					javaHome),
+				CMakeUtils.generatorPlatform(false),
+				CMakeUtils.generatorPlatform(true),
 				"-S", cmakeSource.toAbsolutePath().toString(),
 				"-B", cmakeBuild.toAbsolutePath().toString());
 		
@@ -455,8 +458,11 @@ public final class CMakeUtils
 				"configure",
 				__task.getProject().getBuildDir().toPath(),
 				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
-				"-DSQUIRRELJME_GRADLE=" + __task.cmakeRules.get(0),
-				genPlatform,
+				"-DSQUIRRELJME_GRADLE=YES",
+				String.format("-DJAVA_HOME=%s",
+					javaHome),
+				CMakeUtils.generatorPlatform(false),
+				CMakeUtils.generatorPlatform(true),
 				cmakeSource.toAbsolutePath().toString());
 	}
 	
@@ -583,6 +589,24 @@ public final class CMakeUtils
 		
 		// It is not or unknown
 		return false;
+	}
+	
+	/**
+	 * Returns the CMake generator platform to use.
+	 *
+	 * @param __val Is this the value or the {@code -A} switch?
+	 * @return The generator platform to use.
+	 * @since 2025/04/11
+	 */
+	public static String generatorPlatform(boolean __val)
+	{
+		// Force 32-bit compile?
+		if (OperatingSystem.current().isWindows() &&
+			CMakeUtils.is32BitHost() && CMakeUtils.isX86Host())
+			return (!__val ? "-A" : "Win32");
+		
+		// Not forced to change
+		return (!__val ? "-DSJME_X=1" : "-DSJME_Y=1");
 	}
 	
 	/**

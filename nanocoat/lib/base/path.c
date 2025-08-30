@@ -17,7 +17,8 @@ sjme_errorCode sjme_path_getName(
 	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrInNegativeOnePositive sjme_jint inName,
 	sjme_attrOutNullable sjme_lpcstr* outBase,
-	sjme_attrOutNullable sjme_jint* outLen)
+	sjme_attrOutNullable sjme_jint* outLen,
+	sjme_attrOutNullable sjme_jboolean* outIsRoot)
 {
 	if (inPath == NULL || (outBase == NULL && outLen == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -27,7 +28,7 @@ sjme_errorCode sjme_path_getName(
 		inPathLen, inName,
 		outBase, NULL,
 		NULL, NULL,
-		outLen, NULL);
+		outLen, NULL, outIsRoot);
 }
 
 sjme_errorCode sjme_path_getNameF(
@@ -39,7 +40,8 @@ sjme_errorCode sjme_path_getNameF(
 	sjme_attrOutNullable sjme_lpcstr* outEnd,
 	sjme_attrOutNullable sjme_jint* outEndDx,
 	sjme_attrOutNullable sjme_jint* outLen,
-	sjme_attrOutNullable sjme_jint* outCount)
+	sjme_attrOutNullable sjme_jint* outCount,
+	sjme_attrOutNullable sjme_jboolean* outIsRoot)
 {
 	sjme_lpcstr at, end, base;
 	sjme_lpcstr stop;
@@ -84,7 +86,7 @@ sjme_errorCode sjme_path_getNameF(
 		len = end - at;
 		rem = stop - end;
 
-#if 0 && defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("Root look: %c", at[0]);
 #endif
@@ -132,16 +134,21 @@ sjme_errorCode sjme_path_getNameF(
 		/* Did not find, increment up. */
 		end++;
 	}
-
+	
 #if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
-	sjme_message("Root path found: `%.*s` <- `%s`",
-		(int)(rootEnd - rootBase), rootBase, inPath);
+	if (rootBase != NULL && rootEnd != NULL)
+		sjme_message("Root path found: `%.*s` <- `%s`",
+			(int)(rootEnd - rootBase), rootBase, inPath);
 #endif
 	
 	/* Did we want the root component? */
 	if (inName == -1)
 	{
+		/* Root element? */
+		if (outIsRoot != NULL)
+			*outIsRoot = SJME_JNI_TRUE;
+		
 		/* There was none. */
 		if (rootBase == NULL || rootEnd == NULL)
 			return SJME_ERROR_NO_SUCH_ELEMENT;
@@ -162,6 +169,10 @@ sjme_errorCode sjme_path_getNameF(
 		return SJME_ERROR_NONE;
 	}
 	
+	/* Going forward, nothing is the root */
+	if (outIsRoot != NULL)
+		*outIsRoot = SJME_JNI_FALSE;
+	
 	/* Start from the path unless a root was specified. */
 	at = (rootEnd != NULL ? rootEnd : &inPath[0]);
 	
@@ -176,7 +187,7 @@ sjme_errorCode sjme_path_getNameF(
 		rem = stop - end;
 		frag = -1;
 		
-#if 0 && defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("Name look: %c", end[0]);
 #endif
@@ -197,7 +208,7 @@ sjme_errorCode sjme_path_getNameF(
 			frag = 1;
 		
 #elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_UNIX
-		/* Directory specifier? */
+			/* Directory specifier? */
 			hit = (end[0] == '/');
 			frag = 1;
 #else
@@ -279,8 +290,8 @@ sjme_errorCode sjme_path_getNameCount(
 	/* Use the pathname get to determine the root count. */
 	result = -1;
 	if (sjme_error_is(error = sjme_path_getNameF(inPath, inPathLen,
-		INT32_MAX, NULL, NULL,
-		NULL, NULL, NULL, &result)) ||
+			INT32_MAX, NULL, NULL,
+			NULL, NULL, NULL, &result, NULL)) ||
 		result < 0)
 		return sjme_error_default(error);
 	
@@ -308,7 +319,7 @@ sjme_errorCode sjme_path_hasRoot(
 	if (sjme_error_is(error = sjme_path_getNameF(inPath, inPathLen,
 		-1,
 		NULL, NULL, NULL, NULL,
-		&len, NULL)) || len <= 0)
+		&len, NULL, NULL)) || len <= 0)
 	{
 		/* Does not have one? */
 		if (error == SJME_ERROR_NO_SUCH_ELEMENT)
@@ -343,11 +354,11 @@ sjme_errorCode sjme_path_resolveAppend(
 	if (outPath == NULL || subPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (outPathLen <= 0 || subBaseLen < 0)
+	if (outPathLen <= 0 || subPathLen < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Nothing to do? */
-	if (subBaseLen == 0)
+	if (subPathLen == 0)
 		return SJME_ERROR_NONE;
 	
 	/* Need to check how many characters to potentially add. */
@@ -382,7 +393,7 @@ sjme_errorCode sjme_path_resolveAppend(
 		return SJME_ERROR_NONE;
 	
 	/* Setup result for no-overwrite operation. */
-	resultBytes = sizeof(*result) * outPathLen;
+	resultBytes = sizeof(*result) * (outPathLen + 2);
 	result = sjme_alloca(resultBytes);
 	if (result == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
@@ -399,8 +410,8 @@ sjme_errorCode sjme_path_resolveAppend(
 			subBase = NULL;
 			subBaseLen = -1;
 			if (sjme_error_is(error = sjme_path_getName(
-				subPath, subPathLen,
-				subName, &subBase, &subBaseLen)) ||
+					subPath, subPathLen,
+					subName, &subBase, &subBaseLen, NULL)) ||
 				subBase == NULL || subBaseLen < 0)
 			{
 				/* Ignore missing root. */
@@ -432,18 +443,29 @@ sjme_errorCode sjme_path_resolveAppend(
 			if (sjme_error_is(error = sjme_path_resolveAppend(result,
 				outPathLen, subBase, subBaseLen)))
 				return sjme_error_default(error);
+			
+			/* Recalculate output length. */
+			outLen = strlen(result);
+			
+			/* Add directory separator, if needed. */
+			if (outLen > 0 && subName < subNames - 1)
+			{
+				sepLen = strlen(SJME_CONFIG_FILE_SEPARATOR) + 1; 
+				memmove(&result[outLen], SJME_CONFIG_FILE_SEPARATOR,
+					sizeof(*result) * sepLen);
+			}
 		}
 	}
 	
-	/* Single path only. */
+	/* Single path only, cannot be blank. */
 	else
 	{
 		/* Gets single subcomponent details. */
 		subBase = NULL;
 		subBaseLen = -1;
 		if (sjme_error_is(error = sjme_path_getName(
-			subPath, subPathLen,
-			0, &subBase, &subBaseLen)) ||
+				subPath, subPathLen,
+				0, &subBase, &subBaseLen, NULL)) ||
 			subBase == NULL || subBaseLen < 0)
 			return sjme_error_default(error);
 		
@@ -452,15 +474,23 @@ sjme_errorCode sjme_path_resolveAppend(
 		sjme_message("Append single: `%.*s`",
 			subBaseLen, subBase);
 #endif
-		
 		/* Recalculate output length. */
 		outLen = strlen(result);
 		
-		/* Add directory separator. */
-		sepLen = strlen(SJME_CONFIG_FILE_SEPARATOR) + 1; 
-		memmove(&result[outLen], SJME_CONFIG_FILE_SEPARATOR,
-			sizeof(*result) * sepLen);
-			
+		/* Add directory separator if the path is not empty and it does */
+		/* not end a separator. */
+		if (outLen > 0 &&
+			strcmp(&result[outLen - 1], SJME_CONFIG_FILE_SEPARATOR)
+#if SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_DOS
+			|| strcmp(&result[outLen - 1], "/")
+#endif
+			)
+		{
+			sepLen = strlen(SJME_CONFIG_FILE_SEPARATOR) + 1; 
+			memmove(&result[outLen], SJME_CONFIG_FILE_SEPARATOR,
+				sizeof(*result) * sepLen);
+		}
+		
 		/* Recalculate output length. */
 		outLen = strlen(result);
 		

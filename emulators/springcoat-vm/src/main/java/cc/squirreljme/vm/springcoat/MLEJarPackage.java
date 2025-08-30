@@ -9,14 +9,17 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.emulator.terminal.InputTerminalPipe;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.vm.RawVMClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
+import cc.squirreljme.vm.springcoat.brackets.PipeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
@@ -133,9 +136,9 @@ public enum MLEJarPackage
 		}
 	},
 	
-	/** {@link JarPackageShelf#openResource(JarPackageBracket, String)}. */
-	OPEN_RESOURCE("openResource:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"JarPackageBracket;Ljava/lang/String;)Ljava/io/InputStream;")
+	/** {@link JarPackageShelf#openResourcePipe(JarPackageBracket, String)}. */
+	OPEN_RESOURCE(MLEDispatcher.methodKey("openResourcePipe",
+		PipeBracket.class, JarPackageBracket.class, String.class))
 	{
 		/**
 		 * {@inheritDoc}
@@ -152,13 +155,15 @@ public enum MLEJarPackage
 				throw new SpringMLECallError("Null resource string.");
 			
 			// Locate the resource
-			try (InputStream in = jar.library().resourceAsStream(rcName))
+			try
 			{
-				// Not found
+				// Is the resource valid?
+				InputStream in = jar.library().resourceAsStream(rcName);
 				if (in == null)
 					return SpringNullObject.NULL;
 				
-				return __thread.proxyInputStream(in);
+				return new PipeObject(__thread.machine,
+					new InputTerminalPipe(in));
 			}
 			
 			// Could not read it

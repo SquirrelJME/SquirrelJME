@@ -14,12 +14,22 @@
 
 static const struct sjme_scritchui_pencilImplFunctions pencilFunc_NAME(_) =
 {
+	SJME_JNI_FALSE,
+	sjme_sm(.close, NULL),
+	sjme_sm(.copyArea, NULL),
+	sjme_sm(.drawHorizSrc, NULL),
+	sjme_sm(.drawHorizSrcOver, NULL),
+	sjme_sm(.drawLineSrc, NULL),
+	sjme_sm(.drawLineSrcOver, NULL),
+	sjme_sm(.drawPixelSrc, NULL),
+	sjme_sm(.drawPixelSrcOver, NULL),
+	sjme_sm(.mapColor, NULL),
 #if defined(pencilRawScanCopy)
-	.rawScanGet = sjme_scritchui_basicRawScanGet,
-	.rawScanPutPure = sjme_scritchui_basicRawScanPutPure,
+	sjme_sm(.rawScanGet, sjme_scritchui_basicRawScanGet),
+	sjme_sm(.rawScanPutPure, sjme_scritchui_basicRawScanPutPure),
 #else
-	.rawScanGet = pencilFunc_NAME(RawScanGet),
-	.rawScanPutPure = pencilFunc_NAME(RawScanPutPure),
+	sjme_sm(.rawScanGet, pencilFunc_NAME(RawScanGet)),
+	sjme_sm(.rawScanPutPure, pencilFunc_NAME(RawScanPutPure)),
 #endif
 };
 

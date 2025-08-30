@@ -9,11 +9,14 @@
 
 package cc.squirreljme.jvm.launch;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * Utilities for the suite scanner.
  *
  * @since 2024/01/06
  */
+@SquirrelJMEVendorApi
 public final class ScannerUtils
 {
 	/**
@@ -34,14 +37,21 @@ public final class ScannerUtils
 	 * @return The sibling file based on the extension.
 	 * @since 2023/04/10
 	 */
+	@SuppressWarnings("SystemGetProperty")
+	@SquirrelJMEVendorApi
 	public static String siblingByExt(String __jar, String __ext)
 	{
 		// Get . and /, so we can determine how to handle the name
 		int lastDot = __jar.lastIndexOf('.');
 		int lastSlash = __jar.lastIndexOf('/');
 		
+		// System dependent slash
+		String fileSep = System.getProperty("file.separator");
+		int lastSep = (fileSep != null && fileSep.length() == 1 ?
+			__jar.lastIndexOf(fileSep.charAt(0)) : -1);
+		
 		// Is there an actual extension?
-		if (lastDot >= 0 && lastDot > lastSlash)
+		if (lastDot >= 0 && lastDot > Math.max(lastSlash, lastSep))
 			return __jar.substring(0, lastDot) + __ext;
 		
 		// Just append it otherwise

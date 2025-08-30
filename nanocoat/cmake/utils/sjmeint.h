@@ -13,8 +13,8 @@
  * @since 2023/12/01
  */
 
-#ifndef SQUIRRELJME_SJMEINT_H
-#define SQUIRRELJME_SJMEINT_H
+#ifndef SJME_C_SJMEINT_H
+#define SJME_C_SJMEINT_H
 
 #if defined(_MSC_VER)
 	typedef unsigned __int8 uint8_t;

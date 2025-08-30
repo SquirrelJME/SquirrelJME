@@ -13,8 +13,8 @@
  * @since 2024/07/16
  */
 
-#ifndef SQUIRRELJME_FB_H
-#define SQUIRRELJME_FB_H
+#ifndef SJME_C_FB_H
+#define SJME_C_FB_H
 
 #include "sjme/config.h"
 #include "sjme/debug.h"
@@ -79,7 +79,7 @@ sjme_errorCode sjme_scritchui_fb_biSetListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(void),
-	sjme_attrInOutNotNull sjme_frontEnd* wrappedFrontEnd);
+	sjme_attrInOutNotNull sjme_frontEndBindable* wrappedFrontEnd);
 
 sjme_errorCode sjme_scritchui_fb_choiceItemInsert(
 	sjme_attrInNotNull sjme_scritchui inState,

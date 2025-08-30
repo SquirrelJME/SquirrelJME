@@ -13,8 +13,8 @@
  * @since 2024/09/13
  */
 
-#ifndef SQUIRRELJME_CLASSYPATCH_H
-#define SQUIRRELJME_CLASSYPATCH_H
+#ifndef SJME_C_CLASSYPATCH_H
+#define SJME_C_CLASSYPATCH_H
 
 #include "sjme/nvm/classy.h"
 

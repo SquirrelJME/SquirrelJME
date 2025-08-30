@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import java.io.File;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.Delete;
@@ -25,25 +26,6 @@ public enum NativePortSupport
 	/** NanoCoat. */
 	NANOCOAT
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/09/03
-		 */
-		@Override
-		public Task cleanTask(Task __nativeTask,
-			SourceTargetClassifier __classifier)
-			throws NullPointerException
-		{
-			if (__nativeTask == null || __classifier == null)
-				throw new NullPointerException("NARG");
-			
-			Project project = __nativeTask.getProject();
-			TaskContainer tasks = project.getTasks();
-			
-			return tasks.create("clean" +
-					TaskInitialization.uppercaseFirst(__nativeTask.getName()),
-				NanoCoatBuiltInCleanTask.class, __classifier, __nativeTask);
-		}
 	},
 	
 	/* End. */
@@ -106,13 +88,16 @@ public enum NativePortSupport
 		cleanTask.setDescription("Cleans the ROM output from " +
 			__nativeTask.getName() + ".");
 		cleanTask.delete(project.provider(() -> 
-			__nativeTask.getOutputs().getFiles().getSingleFile()));
+			__nativeTask.getOutputs().getFiles()));
 		
 		// The clean task is up-to-date if the files were already
 		// deleted or do not exist
-		cleanTask.getOutputs().upToDateWhen((__task) -> 
-			!__nativeTask.getOutputs().getFiles().getSingleFile()
-				.exists());
+		cleanTask.getOutputs().upToDateWhen((__task) -> {
+			for (File f : __nativeTask.getOutputs().getFiles().getFiles())
+				if (f.exists())
+					return false;
+			return true;
+		});
 		
 		return cleanTask;
 	}

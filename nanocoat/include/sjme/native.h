@@ -13,9 +13,10 @@
  * @since 2023/07/29
  */
 
-#ifndef SQUIRRELJME_NATIVE_H
-#define SQUIRRELJME_NATIVE_H
+#ifndef SJME_C_NATIVE_H
+#define SJME_C_NATIVE_H
 
+#include "nvm/mleConst.h"
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
 #include "sjme/seekable.h"
@@ -32,6 +33,23 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * The native file open mode.
+ *
+ * @since 2025/07/10
+ */
+typedef enum sjme_nal_openMode
+{
+	/** Read. */
+	SJME_NAL_OPEN_READ = 1,
+
+	/** Write existing file. */
+	SJME_NAL_OPEN_WRITE_EXIST = 2,
+
+	/** Write and truncate file. */
+	SJME_NAL_OPEN_WRITE_TRUNCATE = 3,
+} sjme_nal_openMode;
+	
+/**
  * Returns the current time in milliseconds as per the Java
  * method @c System::currentTimeMillis() .
  * 
@@ -40,8 +58,7 @@ extern "C" {
  * @since 2023/05/23
  */
 typedef sjme_errorCode (*sjme_nal_currentTimeMillisFunc)(
-	sjme_attrOutNotNull sjme_jlong* result)
-	sjme_attrCheckReturn;
+	sjme_attrOutNotNull sjme_jlong* result);
 
 /**
  * Opens the given file natively.
@@ -49,13 +66,15 @@ typedef sjme_errorCode (*sjme_nal_currentTimeMillisFunc)(
  * @param allocPool The pool for allocations.
  * @param inPath The path to open.
  * @param outSeekable The seekable to open within.
+ * @param openMode The open mode for the file.
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
 typedef sjme_errorCode (*sjme_nal_fileOpenFunc)(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
-	sjme_attrOutNotNull sjme_seekable* outSeekable);
+	sjme_attrOutNotNull sjme_seekable* outSeekable,
+	sjme_attrInValue sjme_nal_openMode openMode);
 
 /**
  * Reads from the system environment a variable.
@@ -70,8 +89,7 @@ typedef sjme_errorCode (*sjme_nal_fileOpenFunc)(
 typedef sjme_errorCode (*sjme_nal_getEnvFunc)(
 	sjme_attrInNotNull sjme_attrOutNotNullBuf(len) sjme_lpstr buf,
 	sjme_attrInPositiveNonZero sjme_jint bufLen,
-	sjme_attrInNotNull sjme_lpcstr env)
-	sjme_attrCheckReturn; 
+	sjme_attrInNotNull sjme_lpcstr env); 
 
 /**
  * Returns the current nanosecond monotonic class as per the Java
@@ -82,21 +100,50 @@ typedef sjme_errorCode (*sjme_nal_getEnvFunc)(
  * @since 2023/05/23
  */
 typedef sjme_errorCode (*sjme_nal_nanoTimeFunc)(
-	sjme_attrOutNotNull sjme_jlong* result)
-	sjme_attrCheckReturn;
+	sjme_attrOutNotNull sjme_jlong* result);
 
 /**
- * Formatted text to standard stream.
- * 
- * @param format The format string.
- * @param ... Format arguments.
- * @return Any resultant error code.
- * @since 2024/08/08
+ * Flushes the given output stream.
+ *
+ * @return Any resultant error.
+ * @since 2025/03/03
  */
-typedef sjme_errorCode (*sjme_nal_stdFFunc)(
-	sjme_attrInNotNull sjme_lpcstr format,
-	...);
+typedef sjme_errorCode (*sjme_nal_stdIoFlush)(void);
+	
+/**
+ * Writes data to a standard output type stream.
+ *
+ * @param buf The data buffer to write.
+ * @param off The offset into the buffer.
+ * @param len The number of bytes to write.
+ * @return Any resultant error, if any.
+ * @since 2025/02/25
+ */
+typedef sjme_errorCode (*sjme_nal_stdOFunc)(
+	sjme_attrInNotNullBuf(len) sjme_cpointer buf,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositiveNonZero sjme_jint len);
 
+/**
+ * Contains the needed function calls to perform calls to standard streams.
+ *
+ * @since 2025/03/03
+ */
+typedef struct sjme_nal_stdIo
+{
+	/** Close function. */
+	sjme_jboolean (*close)(void);
+	
+	/** Reads from the input. */
+	sjme_jboolean (*in)(void);
+
+	/** Writes to the output. */
+	sjme_nal_stdOFunc out;
+
+	/** Flushes the output stream. */
+	sjme_nal_stdIoFlush flush;
+} sjme_nal_stdIo;
+	
 /**
  * Native Abstraction Layer functions.
  * 
@@ -115,12 +162,9 @@ typedef struct sjme_nal
 	
 	/** Get the current monotonic nanosecond time. */
 	sjme_nal_nanoTimeFunc nanoTime;
-	
-	/** Formatted output to standard error. */
-	sjme_nal_stdFFunc stdErrF;
-	
-	/** Formatted output to standard output. */
-	sjme_nal_stdFFunc stdOutF;
+
+	/** Standard input/output pipes. */
+	sjme_nal_stdIo stdIo[SJME_NVM_MLE_NUM_STD_PIPES];
 } sjme_nal;
 
 /** Default native abstraction layer. */
@@ -150,6 +194,20 @@ sjme_errorCode sjme_nal_errno(sjme_jint errNum);
 
 #endif
 
+/**
+ * Writes to the given output.
+ * 
+ * @param outFunc The output function.
+ * @param format The format specifier.
+ * @param ... The format data.
+ * @return On any resultant error, if any.
+ * @since 2025/02/24
+ */
+sjme_errorCode sjme_nal_stdF(
+	sjme_attrInNotNull sjme_nal_stdOFunc outFunc,
+	sjme_attrInNotNull sjme_lpcstr format,
+	...);
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

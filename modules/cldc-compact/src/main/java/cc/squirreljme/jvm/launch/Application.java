@@ -36,6 +36,10 @@ public abstract class Application
 	public static final String OVERRIDE_LOCALE =
 		"cc.squirreljme.override.locale";
 	
+	/** The microedition profiles in use. */ 
+	public static final String MICROEDITION_PROFILES = 
+		"microedition.profiles";
+	
 	/** The JAR this references. */
 	protected final JarPackageBracket jar;
 	

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.cicd;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -69,6 +70,7 @@ public class FossilCommand
 		if (__path == null || __target == null)
 			throw new NullPointerException("NARG");
 		
+		System.err.printf("Storing %s...%n", __target);
 		this.exec("uv", "add",
 			__path.toAbsolutePath().toString(), "--as", __target);
 	}
@@ -137,7 +139,9 @@ public class FossilCommand
 		
 		// Run multiple times, in the event the database is locked...
 		List<IOException> fails = new ArrayList<>();
-		for (int i = 0; i < FossilCommand.RETRY_COUNT; i++)
+		for (int i = 0, retryHoldOff = FossilCommand.RETRY_DELAY;
+			i < FossilCommand.RETRY_COUNT;
+			i++, retryHoldOff += FossilCommand.RETRY_DELAY)
 			try
 			{
 				// Setup process
@@ -154,10 +158,13 @@ public class FossilCommand
 					return;
 				
 				// Mark failure
-				fails.add(new IOException("Exited with " + exit));
+				fails.add(new IOException(
+					String.format("Attempt %d exited with %d", i, exit)));
 				
 				// Wait a bit before running it again
-				Thread.sleep(FossilCommand.RETRY_DELAY);
+				System.err.printf("Retrying in %d seconds...%n",
+					retryHoldOff);
+				Thread.sleep(retryHoldOff);
 			}
 			catch (InterruptedException __e)
 			{
@@ -179,24 +186,9 @@ public class FossilCommand
 	 */
 	public static FossilCommand instance()
 	{
-		// Windows or not?
-		String exeName;
-		if (System.getProperty("os.name").toLowerCase().contains("windows"))
-			exeName = "fossil.exe";
-		else
-			exeName = "fossil";
-		
-		// Use system PATH
-		String paths = System.getenv("PATH");
-		if (paths != null)
-			for (String path : paths.split(Pattern.quote(File.pathSeparator)))
-			{
-				Path maybe = Paths.get(path, exeName);
-				if (Files.exists(maybe) && Files.isExecutable(maybe))
-					return new FossilCommand(maybe);
-			}
-		
-		// Not found
+		Path path = Utils.findExecutable("fossil");
+		if (path != null)
+			return new FossilCommand(path);
 		return null;
 	}
 }

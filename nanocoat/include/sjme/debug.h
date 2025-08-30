@@ -13,11 +13,12 @@
  * @since 2023/07/27
  */
 
-#ifndef SQUIRRELJME_DEBUG_H
-#define SQUIRRELJME_DEBUG_H
+#ifndef SJME_C_DEBUG_H
+#define SJME_C_DEBUG_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
+#include "sjme/multithread.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -141,7 +142,7 @@ void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 #endif
 
 /**
- * Prints a debug message
+ * Prints a debug message.
  * 
  * @param message The @c printf style message.
  * @param ... Any @c printf style arguments.
@@ -149,6 +150,16 @@ void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  */
 #define sjme_message(...) SJME_ONLY_IN_DEBUG_EXPR( \
 	sjme_messageR(SJME_DEBUG_FILE_LINE_FUNC, SJME_JNI_FALSE, __VA_ARGS__))
+
+/**
+ * Prints a debug message without the preface.
+ * 
+ * @param message The @c printf style message.
+ * @param ... Any @c printf style arguments.
+ * @since 2025/02/16
+ */
+#define sjme_messageB(...) SJME_ONLY_IN_DEBUG_EXPR( \
+	sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE, __VA_ARGS__))
 
 /**
  * Indicates a fatal error and exits the program.
@@ -215,9 +226,30 @@ void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 /**
  * Potentially debug aborts.
  *
+ * @param error The emitted error.
+ * @return If an abort was triggered, then @c SJME_JNI_TRUE is called.
  * @since 2023/12/21
  */
-void sjme_debug_abort(void);
+sjme_jboolean sjme_debug_abort(sjme_errorCode error);
+
+/**
+ * Set the context thread for the crash handler.
+ * 
+ * @param crashFunc The crash function to call.
+ * @param crashParam The crash parameter to pass.
+ * @since 2025/06/27
+ */
+void sjme_debug_crashContext(
+	sjme_attrInNullable sjme_thread_mainFunc crashFunc,
+	sjme_attrInNullable sjme_thread_parameter crashParam);
+
+/**
+ * Registers the crash handler.
+ * 
+ * @return Any resultant error, if any.
+ * @since 2025/06/27
+ */
+sjme_errorCode sjme_debug_crashRegister(void);
 
 /**
  * Shorted the path of the specified file for debug printing purposes.
@@ -247,7 +279,7 @@ sjme_errorCode sjme_error_fatalR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  */
 #define sjme_error_fatal(error) \
 	sjme_error_fatalR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, error)
-
+	
 /**
  * Allows for optional debug abort when unimplemented code is hit.
  *
@@ -296,11 +328,12 @@ sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 /**
  * Handles specific debug abort scenarios.
  *
+ * @param error The emitted error code.
  * @return Return @c SJME_JNI_TRUE if it was handled and abort should be
  * cancelled, otherwise @c SJME_JNI_FALSE will continue aborting.
  * @since 2023/12/21
  */
-typedef sjme_jboolean (*sjme_debug_abortHandlerFunc)(void);
+typedef sjme_jboolean (*sjme_debug_abortHandlerFunc)(sjme_errorCode error);
 
 /**
  * Handler for specific debug exit scenarios.
@@ -351,4 +384,4 @@ typedef struct sjme_debug_handlerFunctions
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_DEBUG_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_DEBUG_H */
+#endif /* SJME_C_DEBUG_H */

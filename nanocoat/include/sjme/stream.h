@@ -14,14 +14,15 @@
  * @since 2023/12/30
  */
 
-#ifndef SQUIRRELJME_STREAM_H
-#define SQUIRRELJME_STREAM_H
+#ifndef SJME_C_STREAM_H
+#define SJME_C_STREAM_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
 #include "sjme/alloc.h"
 #include "sjme/closeable.h"
 #include "sjme/seekable.h"
+#include "sjme/native.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -63,6 +64,20 @@ typedef struct sjme_stream_outputBase sjme_stream_outputBase;
 typedef sjme_stream_outputBase* sjme_stream_output;
 
 /**
+ * Stream handle.
+ *
+ * @since 2025/07/04
+ */
+typedef struct sjme_stream_handle
+{
+	/** Pointer. */
+	sjme_pointer p;
+
+	/** Function handle. */
+	sjme_undefinedFunction f;
+} sjme_stream_handle;
+	
+/**
  * Implementation state within streams.
  * 
  * @since 2024/08/11
@@ -73,10 +88,10 @@ typedef struct sjme_stream_implState
 	sjme_alloc_pool allocPool;
 	
 	/** Internal handle. */
-	sjme_pointer handle;
+	sjme_stream_handle handle;
 	
 	/** Second internal handle. */
-	sjme_pointer handleTwo;
+	sjme_stream_handle handleTwo;
 	
 	/** Internal buffer. */
 	sjme_jubyte* buffer;
@@ -92,12 +107,16 @@ typedef struct sjme_stream_implState
 	
 	/** Internal length. */
 	sjme_jint length;
+
+	/** Flags. */
+	struct sjme_packed
+	{
+		/** Forward close? */
+		sjme_jboolean forwardClose : sjme_booleanBit;
 	
-	/** Forward close? */
-	sjme_jboolean forwardClose;
-	
-	/** EOF hit? */
-	sjme_jboolean hitEof;
+		/** EOF hit? */
+		sjme_jboolean hitEof : sjme_booleanBit;
+	} flags;
 } sjme_stream_implState;
 
 /**
@@ -211,6 +230,18 @@ typedef sjme_errorCode (*sjme_stream_outputCloseFunc)(
 	sjme_attrInNotNull sjme_stream_implState* inImplState);
 
 /**
+ * Flushes the given output stream.
+ *
+ * @param stream The output stream to flush.
+ * @param inImplState The implementation state.
+ * @return On any resultant error, if any.
+ * @since 2025/03/03
+ */
+typedef sjme_errorCode (*sjme_stream_outputFlushFunc)(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState);
+
+/**
  * Initializes the new output stream.
  * 
  * @param stream The current stream.
@@ -237,7 +268,7 @@ typedef sjme_errorCode (*sjme_stream_outputInitFunc)(
 typedef sjme_errorCode (*sjme_stream_outputWriteFunc)(
 	sjme_attrInNotNull sjme_stream_output stream,
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
-	sjme_attrInNotNull sjme_cpointer buf,
+	sjme_attrInNotNull sjme_buffer buf,
 	sjme_attrInPositiveNonZero sjme_jint length);
 
 /**
@@ -249,6 +280,9 @@ typedef struct sjme_stream_outputFunctions
 {
 	/** Closes the specified stream. */
 	sjme_stream_outputCloseFunc close;
+
+	/** Flushes the given stream. */
+	sjme_stream_outputFlushFunc flush;
 	
 	/** Stream initialization. */
 	sjme_stream_outputInitFunc init;
@@ -340,7 +374,7 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 
 /**
  * Provides an input stream to read data from a seekable, note that
- * unlike @c sjme_seekable_regionLockAsInputStream there is no locking
+ * unlike @c sjme_seekable_regionLock there is no locking
  * involved and as such there may be a performance penalty or otherwise.
  *
  * @param seekable The seekable to access.
@@ -373,7 +407,7 @@ sjme_errorCode sjme_stream_inputOpenSeekable(
 sjme_errorCode sjme_stream_inputRead(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
-	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
+	sjme_attrOutNotNullBuf(length) sjme_buffer dest,
 	sjme_attrInPositive sjme_jint length);
 
 /**
@@ -465,6 +499,18 @@ sjme_errorCode sjme_stream_inputReadValueJB(
 sjme_errorCode sjme_stream_inputReadValueJI(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_jint* outValue);
+
+/**
+ * Reads a Java long from the given stream.
+ *
+ * @param stream The stream to read from.
+ * @param outValue The resultant value.
+ * @return On any error, if any.
+ * @since 2025/07/04
+ */
+sjme_errorCode sjme_stream_inputReadValueJJ(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_jlong* outValue);
 
 /**
  * Reads a Java short from the given stream.
@@ -599,6 +645,16 @@ typedef sjme_errorCode (*sjme_stream_outputByteArrayFinishFunc)(
 	sjme_attrInNullable sjme_pointer data);
 
 /**
+ * Flushes the given output stream.
+ * 
+ * @param stream The stream to flush.
+ * @return Any resultant error, if any.
+ * @since 2025/03/03
+ */
+sjme_errorCode sjme_stream_outputFlush(
+	sjme_attrInNotNull sjme_stream_output stream);
+
+/**
  * Opens an output stream.
  * 
  * @param allocPool The pool to allocate within. 
@@ -653,7 +709,7 @@ sjme_errorCode sjme_stream_outputOpenByteArrayTo(
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInPositive sjme_jint initialLimit,
 	sjme_attrInNotNull sjme_stream_resultByteArray* result);
-
+	
 /**
  * Opens an output stream which writes to the given block of memory, note that
  * when it reaches the end of the block it will fail to write following it.
@@ -670,6 +726,41 @@ sjme_errorCode sjme_stream_outputOpenMemory(
 	sjme_attrOutNotNull sjme_stream_output* outStream,
 	sjme_attrInNotNull sjme_pointer base,
 	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Provides an output stream to write data to a seekable, note that
+ * unlike @c sjme_seekable_regionLock there is no locking
+ * involved and as such there may be a performance penalty or otherwise.
+ *
+ * @param seekable The seekable to access.
+ * @param outStream The resultant stream.
+ * @param base The base address within the seekable.
+ * @param length The number of bytes to stream.
+ * @param forwardClose If the input stream is closed, should the seekable
+ * also be closed?
+ * @return Any resultant error, if any.
+ * @since 2025/07/10
+ */
+sjme_errorCode sjme_stream_outputOpenSeekable(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_stream_output* outStream,
+	sjme_attrInPositive sjme_jint base,
+	sjme_attrInNegativeOnePositive sjme_jint length,
+	sjme_attrInValue sjme_jboolean forwardClose);
+
+/**
+ * Opens a stream to a NAL output.
+ * 
+ * @param allocPool The allocation pool to allocate within.
+ * @param outStream The resultant stream.
+ * @param nal The NAL to write to.
+ * @return Any resultant error, if any.
+ * @since 2025/03/03
+ */
+sjme_errorCode sjme_stream_outputOpenStdIo(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_stream_output* outStream,
+	sjme_attrInNotNull sjme_nal_stdIo* nal);
 
 /**
  * Writes to the given output stream.

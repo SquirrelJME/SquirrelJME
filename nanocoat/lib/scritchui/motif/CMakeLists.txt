@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # We need to know where Motif is
-find_package(Motif)
+squirreljme_include("find-motif.cmake")
 
 # Declare base library
 add_library(ScritchUIMotif SHARED
@@ -49,3 +49,8 @@ target_link_libraries(ScritchUIMotif
 # ScritchUI requires a normalized library name
 squirreljme_target_binary_name(ScritchUIMotif
 	"squirreljme-scritchui-motif")
+squirreljme_target_binary_output(ScritchUIMotif
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+
+# Generate exports
+squirreljme_target_shared_library_exports(ScritchUIMotif)

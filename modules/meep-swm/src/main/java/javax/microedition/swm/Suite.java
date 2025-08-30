@@ -236,6 +236,7 @@ public class Suite
 	 * in the manifest. The system suite always returns an empty iterator.
 	 * @since 2016/06/24
 	 */
+	@SuppressWarnings("OverflowingLoopIndex")
 	@Api
 	public Iterator<String> getMIDlets()
 	{

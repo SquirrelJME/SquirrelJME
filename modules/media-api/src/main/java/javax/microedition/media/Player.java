@@ -10,6 +10,8 @@
 package javax.microedition.media;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import org.intellij.lang.annotations.Language;
+import org.intellij.lang.annotations.MagicConstant;
 
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 @Api
@@ -50,15 +52,18 @@ public interface Player
 	void deallocate();
 	
 	@Api
+	@Language("mime-type-reference")
 	String getContentType();
 	
 	@Api
 	long getDuration();
 	
 	@Api
-	long getMediaTime();
+	long getMediaTime()
+		throws IllegalStateException;
 	
 	@Api
+	@MagicConstant(valuesFromClass = Player.class)
 	int getState();
 	
 	@Api
@@ -79,8 +84,16 @@ public interface Player
 	void setLoopCount(int __count)
 		throws IllegalArgumentException, IllegalStateException;
 	
+	/**
+	 * Sets the media time of playback in microseconds.
+	 *
+	 * @param __micros The microseconds to start playback at.
+	 * @return The actually set microseconds.
+	 * @throws MediaException If the media time could not be set.
+	 * @since 2025/05/31
+	 */
 	@Api
-	long setMediaTime(long __now)
+	long setMediaTime(long __micros)
 		throws MediaException;
 	
 	@Api

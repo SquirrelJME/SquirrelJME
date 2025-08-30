@@ -35,13 +35,13 @@ public final class ResourceBasedClassLibrary
 	implements VMClassLibrary
 {
 	/** The class to get resources from. */
-	protected final Class<?> actingclass;
+	public final Class<?> actingclass;
 	
 	/** The prefix for entries. */
-	protected final String prefix;
+	public final String prefix;
 	
 	/** The name of this library. */
-	protected final String name;
+	public final String name;
 	
 	/** Resources in this class. */
 	private String[] _resources;

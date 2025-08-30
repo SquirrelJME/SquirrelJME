@@ -61,7 +61,7 @@ public final class Float
 	/** The class representing the primitive type. */
 	@Api
 	public static final Class<Float> TYPE =
-		TypeShelf.<Float>typeToClass(TypeShelf.typeOfFloat());
+		(Class<Float>)TypeShelf.typeOfFloat();
 	
 	/** The stored value. */
 	private final float _value;
@@ -182,10 +182,16 @@ public final class Float
 		return (int)this._value;
 	}
 	
+	/**
+	 * Returns whether this value represents an infinity.
+	 *
+	 * @return Whether this value represents an infinity.
+	 * @since 2025/06/07
+	 */
 	@Api
 	public boolean isInfinite()
 	{
-		throw Debugging.todo();
+		return Float.isInfinite(this._value);
 	}
 	
 	/**
@@ -282,10 +288,18 @@ public final class Float
 		return MathShelf.rawIntToFloat(__b);
 	}
 	
+	/**
+	 * Returns whether the given value represents an infinity.
+	 *
+	 * @param __v The value to check.
+	 * @return Whether the given value represents an infinity.
+	 * @since 2025/06/07
+	 */
 	@Api
-	public static boolean isInfinite(float __a)
+	public static boolean isInfinite(float __v)
 	{
-		throw Debugging.todo();
+		int raw = Float.floatToRawIntBits(__v);
+		return raw == -8388608 || raw == 2139095040;
 	}
 	
 	/**

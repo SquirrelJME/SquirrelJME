@@ -13,8 +13,8 @@
  * @since 2024/07/30
  */
 
-#ifndef SQUIRRELJME_TOOLBOXINTERN_H
-#define SQUIRRELJME_TOOLBOXINTERN_H
+#ifndef SJME_C_TOOLBOXINTERN_H
+#define SJME_C_TOOLBOXINTERN_H
 
 /* Anti-C++. */
 #ifdef __cplusplus

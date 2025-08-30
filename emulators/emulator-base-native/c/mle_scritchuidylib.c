@@ -18,6 +18,8 @@
 #include "sjme/debug.h"
 #include "sjme/dylib.h"
 
+#define SJME_JNI_MEMORY (64 * 1048576)
+
 /** The class being implemented. */
 #define IMPL_CLASS "cc/squirreljme/emulator/scritchui/dylib/" \
 	"NativeScritchDylib"
@@ -97,9 +99,6 @@
 	DESC_LONG DESC_LONG DESC_LONG \
 	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER ")" DESC_VOID
 
-#define FORWARD_DESC___envIsPanelOnly "(" \
-	DESC_LONG ")" DESC_BOOLEAN
-
 #define FORWARD_DESC___fontDerive "(" \
 	DESC_LONG DESC_LONG DESC_INT DESC_INT ")" DESC_LONG
 
@@ -112,8 +111,8 @@
 
 #define FORWARD_DESC___lafElementColor "(" \
 	DESC_LONG DESC_LONG DESC_INT ")" DESC_INT
-#define FORWARD_DESC___lafHasAlerts "(" \
-	DESC_LONG ")" DESC_BOOLEAN
+#define FORWARD_DESC___lafPlatformFlags "(" \
+	DESC_LONG ")" DESC_INT
 
 #define FORWARD_DESC___labelSetString "(" \
 	DESC_LONG DESC_LONG DESC_STRING ")" DESC_VOID
@@ -206,7 +205,8 @@ typedef struct mle_callbackData
 	jmethodID javaCallbackId;
 } mle_callbackData;
 
-static void mle_scritchUiStoreCallback(JNIEnv* env, sjme_frontEnd* outFrontEnd,
+static void mle_scritchUiStoreCallback(JNIEnv* env,
+	sjme_frontEndBindable* outFrontEnd,
 	jobject javaListener)
 {
 	sjme_errorCode error;
@@ -218,7 +218,7 @@ static void mle_scritchUiStoreCallback(JNIEnv* env, sjme_frontEnd* outFrontEnd,
 
 static void mle_scritchUiRecoverCallback(JNIEnv* env,
 	sjme_scritchui_uiComponent inComponent,
-	sjme_frontEnd* frontEndP,
+	sjme_frontEndBindable* frontEndP,
 	sjme_lpcstr methodName,
 	sjme_lpcstr methodType,
 	mle_callbackData* callbackData)
@@ -226,10 +226,10 @@ static void mle_scritchUiRecoverCallback(JNIEnv* env,
 	jclass listenerClass;
 
 	/* Get the object that represents the component. */
-	callbackData->onWhat = (jobject)inComponent->common.frontEnd.wrapper;
+	callbackData->onWhat = (jobject)inComponent->common.frontEnd.base.wrapper;
 
 	/* Recover the callback we want to call. */
-	callbackData->javaCallback = frontEndP->wrapper;
+	callbackData->javaCallback = frontEndP->base.wrapper;
 
 	/* Get class of the listener. */
 	listenerClass = (*env)->GetObjectClass(env, callbackData->javaCallback);
@@ -252,7 +252,7 @@ static void mle_scritchUiRecoverEnv(
 	jint error;
 
 	/* Restore VM. */
-	vm = (JavaVM*)inState->common.frontEnd.data;
+	vm = (JavaVM*)inState->common.frontEnd.base.data;
 
 	/* Relocate env. */
 	env = NULL;
@@ -272,7 +272,7 @@ static void mle_simpleListenerSet(JNIEnv* env,
 	sjme_scritchui_voidListenerFunc wrapListener)
 {
 	sjme_errorCode error;
-	sjme_frontEnd newFrontEnd;
+	sjme_frontEndBindable newFrontEnd;
 
 	if (state == NULL || component == NULL)
 	{
@@ -282,7 +282,7 @@ static void mle_simpleListenerSet(JNIEnv* env,
 
 	if (setListenerFunc == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 		return;
 	}
 
@@ -463,8 +463,8 @@ static sjme_errorCode mle_scritchUiListenerMenuItemActivate(
 	skippy = (*env)->CallBooleanMethod(env,
 		callbackData.javaCallback, callbackData.javaCallbackId,
 
-		(jobject)inWindow->component.common.frontEnd.wrapper,
-		(jobject)activatedItem->common.frontEnd.wrapper);
+		(jobject)inWindow->component.common.frontEnd.base.wrapper,
+		(jobject)activatedItem->common.frontEnd.base.wrapper);
 
 	/* Failed? */
 	if (sjme_jni_checkVMException(env))
@@ -594,15 +594,15 @@ static sjme_errorCode mle_scritchUiListenerSizeSuggest(
 	/* Do we have a subcomponent? */
 	subObject = NULL;
 	if (subComponent != NULL)
-		subObject = (jobject)subComponent->common.frontEnd.wrapper;
+		subObject = (jobject)subComponent->common.frontEnd.base.wrapper;
 
 	/* Forward call. */
 	(*env)->CallVoidMethod(env,
 		callbackData.javaCallback, callbackData.javaCallbackId,
 
-		(jobject)inView->common.frontEnd.wrapper,
+		(jobject)inView->common.frontEnd.base.wrapper,
 		(subComponent == NULL ? NULL :
-			(jobject)subComponent->common.frontEnd.wrapper),
+			(jobject)subComponent->common.frontEnd.base.wrapper),
 		subDim->width,
 		subDim->height);
 
@@ -620,7 +620,7 @@ static sjme_errorCode mle_scritchUiListenerView(
 	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect)
 {
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return SJME_ERROR_NATIVE_WIDGET_FAILURE;
 }
 
 static sjme_errorCode mle_scritchUiListenerVisible(
@@ -748,7 +748,7 @@ static sjme_thread_result sjme_attrThreadCall mle_bindEventThread(
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
 
 	/* Restore VM. */
-	vm = (JavaVM*)state->common.frontEnd.data;
+	vm = (JavaVM*)state->common.frontEnd.base.data;
 
 	/* If this thread is already attached, only attach once. */
 	checkEnv = NULL;
@@ -802,7 +802,7 @@ static sjme_errorCode mlePencilLock(
 		return sjme_error_default(error);
 
 	/* Get buffer to access. */
-	buf = state->source.wrapper;
+	buf = state->source.base.wrapper;
 	if (buf == NULL)
 		return SJME_ERROR_RESOURCE_NOT_FOUND;
 
@@ -845,7 +845,7 @@ static sjme_errorCode mlePencilLockRelease(
 		return sjme_error_default(error);
 
 	/* Get buffer to access. */
-	buf = state->source.wrapper;
+	buf = state->source.base.wrapper;
 
 	/* Release buffer. */
 	if (sjme_error_is(error = sjme_jni_arrayReleaseElements(env,
@@ -972,7 +972,7 @@ JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	/* Need to attach an object to it? */
-	instance = font->common.frontEnd.wrapper;
+	instance = font->common.frontEnd.base.wrapper;
 	if (instance == NULL)
 	{
 		/* Find constructor. */
@@ -1272,7 +1272,7 @@ JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	jlong componentP)
 {
 	sjme_todo("Impl?");
-	sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+	sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 	return NULL;
 }
 
@@ -1297,7 +1297,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 	if (state->api->componentSize == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 		return 0;
 	}
 
@@ -1332,7 +1332,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	component = (sjme_scritchui_uiComponent)componentP;
 
 	/* Forward call. */
-	error = SJME_ERROR_NOT_IMPLEMENTED;
+	error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
 	if (state->api->componentRepaint == NULL ||
 		sjme_error_is(error = state->api->componentRepaint(
 			state, component, x, y, w, h)))
@@ -1358,7 +1358,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	component = (sjme_scritchui_uiComponent)componentP;
 
 	/* Forward call. */
-	error = SJME_ERROR_NOT_IMPLEMENTED;
+	error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
 	if (state->api->componentRevalidate == NULL ||
 		sjme_error_is(error = state->api->componentRevalidate(
 			state, component)))
@@ -1478,7 +1478,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 	if (state->api->componentSize == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 		return 0;
 	}
 
@@ -1517,7 +1517,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Not implemented? */
 	if (state->api->containerAdd == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 		return;
 	}
 
@@ -1551,7 +1551,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Not implemented? */
 	if (state->api->containerRemoveAll == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 		return;
 	}
 
@@ -1587,7 +1587,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Not implemented? */
 	if (state->api->containerSetBounds == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 		return;
 	}
 
@@ -1599,24 +1599,6 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, error);
 		return;
 	}
-}
-
-JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
-	__envIsPanelOnly)(JNIEnv* env, jclass classy, jlong stateP)
-{
-	sjme_scritchui state;
-
-	if (stateP == 0)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
-
-	/* Restore. */
-	state = (sjme_scritchui)stateP;
-
-	/* Depends on whatever is in the state. */
-	return state->isPanelOnly;
 }
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1658,7 +1640,7 @@ JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	jintArray pal, jint sx, jint sy, jint sw, jint sh)
 {
 	sjme_errorCode error;
-	sjme_frontEnd frontSource;
+	sjme_frontEndBindable frontSource;
 	sjme_scritchui_pencil result;
 	sjme_alloc_weak resultWeak;
 	sjme_scritchui state;
@@ -1755,8 +1737,8 @@ JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	return rgb;
 }
 
-JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
-	__lafHasAlerts)(JNIEnv* env, jclass classy, jlong stateP)
+JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__lafPlatformFlags)(JNIEnv* env, jclass classy, jlong stateP)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
@@ -1770,7 +1752,7 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	/* Ask the native API. */
-	return state->hasAlerts;
+	return state->platformFlags;
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1796,7 +1778,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Not implemented? */
 	if (state->api->labelSetString == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 		return;
 	}
 
@@ -1824,9 +1806,9 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	(JNIEnv* env, jclass classy, jstring libPath, jstring name)
 {
 #define BUF_SIZE 128
+	char buf[BUF_SIZE];
 	sjme_errorCode error;
 	sjme_dylib lib;
-	char buf[BUF_SIZE];
 	sjme_scritchui_dylibApiFunc apiInitFunc;
 	const char* libPathChars;
 	jboolean libPathCharsCopy;
@@ -1834,7 +1816,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	jboolean nameCharsCopy;
 	sjme_alloc_pool pool;
 	sjme_scritchui state;
-	sjme_frontEnd frontEnd;
+	sjme_frontEndBindable frontEnd;
 	sjme_debug_handlerFunctions** dylibDebugHandlers;
 
 	/* Use these debug handlers. */
@@ -1846,7 +1828,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	/* We need a pool for allocations. */
 	pool = NULL;
 	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&pool,
-		4 * 1048576)) || pool == NULL)
+		SJME_JNI_MEMORY)) || pool == NULL)
 		goto fail_poolInit;
 
 	/* Resolve path. */
@@ -1858,8 +1840,9 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	nameChars = (*env)->GetStringUTFChars(env, name, &nameCharsCopy);
 
 	memset(buf, 0, sizeof(buf));
-	snprintf(buf, BUF_SIZE - 2,
-		"sjme_scritchui_dylibApi%s", nameChars);
+	snprintf(buf, BUF_SIZE - 2, "%s%s",
+		SJME_TOKEN_STRING_PP(SJME_SCRITCHUI_DYLIB_SYMBOL_PREFIX),
+		nameChars);
 	buf[BUF_SIZE - 1] = 0;
 
 	/* Release name. */
@@ -1932,7 +1915,7 @@ fail_dyLibOpen:
 fail_poolInit:
 	/* Delete pool. */
 	if (pool != NULL)
-		free(pool);
+		free((void*)pool);
 
 	/* Fail. */
 	sjme_jni_throwMLECallError(env, sjme_error_default(error));
@@ -1957,7 +1940,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __listNew)
 
 	if (state->api->listNew == NULL)
 	{
-		error = SJME_ERROR_NOT_IMPLEMENTED;
+		error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
 		goto fail_newList;
 	}
 
@@ -2110,7 +2093,7 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	state = (sjme_scritchui)stateP;
 
 	/* Query API. */
-	error = SJME_ERROR_NOT_IMPLEMENTED;
+	error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
 	inThread = SJME_JNI_FALSE;
 	if (state->api->loopIsInThread == NULL ||
 		sjme_error_is(error = state->api->loopIsInThread(state,
@@ -2139,7 +2122,7 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	/* Query API. */
-	error = SJME_ERROR_NOT_IMPLEMENTED;
+	error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
 	terminated = SJME_JNI_FALSE;
 	if (state->api->loopIterate == NULL ||
 		sjme_error_is(error = state->api->loopIterate(state,
@@ -2172,7 +2155,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuBarNew)
 	/* Not implemented? */
 	if (state->api->menuBarNew == NULL)
 	{
-		error = SJME_ERROR_NOT_IMPLEMENTED;
+		error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
 		goto fail_new;
 	}
 
@@ -2215,7 +2198,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuInsert)
 	/* Not implemented? */
 	if (state->api->menuInsert == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 		return;
 	}
 
@@ -2243,7 +2226,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuItemNew)
 	/* Not implemented? */
 	if (state->api->menuItemNew == NULL)
 	{
-		error = SJME_ERROR_NOT_IMPLEMENTED;
+		error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
 		goto fail_new;
 	}
 
@@ -2282,7 +2265,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuNew)
 	/* Not implemented? */
 	if (state->api->menuNew == NULL)
 	{
-		error = SJME_ERROR_NOT_IMPLEMENTED;
+		error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
 		goto fail_new;
 	}
 
@@ -2322,7 +2305,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuRemoveAll)
 	/* Not implemented? */
 	if (state->api->menuRemoveAll == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 		return;
 	}
 
@@ -2374,7 +2357,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	panel = (sjme_scritchui_uiPanel)panelP;
 
 	/* Forward call. */
-	error = SJME_ERROR_NOT_IMPLEMENTED;
+	error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
 	if (state->api->panelEnableFocus == NULL ||
 		sjme_error_is(error = state->api->panelEnableFocus(state,
 			panel, (sjme_jboolean)enableFocus,
@@ -2407,7 +2390,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
 	/* Not implemented? */
 	if (state->api->panelNew == NULL)
 	{
-		error = SJME_ERROR_NOT_IMPLEMENTED;
+		error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
 		goto fail_newPanel;
 	}
 
@@ -2484,7 +2467,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 	sjme_message("Before Screen Call");
 
 	/* Request screen information. */
-	error = SJME_ERROR_NOT_IMPLEMENTED;
+	error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
 	if (state->api->screens == NULL ||
 		sjme_error_is(error = state->api->screens(state,
 			screens, &numScreenPs)))
@@ -2535,7 +2518,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __scrollPanelNew)
 	/* Not implemented? */
 	if (state->api->scrollPanelNew == NULL)
 	{
-		error = SJME_ERROR_NOT_IMPLEMENTED;
+		error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
 		goto fail_newPanel;
 	}
 
@@ -2576,7 +2559,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Not implemented? */
 	if (state->api->viewSetArea == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 		return;
 	}
 
@@ -2770,7 +2753,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Not implemented? */
 	if (state->api->windowSetMenuBar == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 		return;
 	}
 
@@ -2826,7 +2809,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Not implemented? */
 	if (state->api->windowSetVisible == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
 		return;
 	}
 
@@ -2860,12 +2843,11 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __containerAdd),
 	FORWARD_list(NativeScritchDylib, __containerRemoveAll),
 	FORWARD_list(NativeScritchDylib, __containerSetBounds),
-	FORWARD_list(NativeScritchDylib, __envIsPanelOnly),
 	FORWARD_list(NativeScritchDylib, __fontDerive),
 	FORWARD_list(NativeScritchDylib, __hardwareGraphics),
 	FORWARD_list(NativeScritchDylib, __labelSetString),
 	FORWARD_list(NativeScritchDylib, __lafElementColor),
-	FORWARD_list(NativeScritchDylib, __lafHasAlerts),
+	FORWARD_list(NativeScritchDylib, __lafPlatformFlags),
 	FORWARD_list(NativeScritchDylib, __linkInit),
 	FORWARD_list(NativeScritchDylib, __listNew),
 	FORWARD_list(NativeScritchDylib, __loopExecute),

@@ -24,8 +24,8 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilDrawHoriz(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover context. */
-	drawable = (GdkDrawable*)g->frontEnd.wrapper;
-	gc = (GdkGC*)g->frontEnd.data;
+	drawable = (GdkDrawable*)g->frontEnd.base.wrapper;
+	gc = (GdkGC*)g->frontEnd.base.data;
 	
 	/* Draw line. */
 	gdk_draw_line(drawable, gc, x, y, x + w, y);
@@ -48,8 +48,8 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilDrawLine(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover context. */
-	drawable = (GdkDrawable*)g->frontEnd.wrapper;
-	gc = (GdkGC*)g->frontEnd.data;
+	drawable = (GdkDrawable*)g->frontEnd.base.wrapper;
+	gc = (GdkGC*)g->frontEnd.base.data;
 	
 	/* Draw line. */
 	gdk_draw_line(drawable, gc, x1, y1, x2, y2);
@@ -75,8 +75,8 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanGet(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover context. */
-	drawable = (GdkDrawable*)g->frontEnd.wrapper;
-	gc = (GdkGC*)g->frontEnd.data;
+	drawable = (GdkDrawable*)g->frontEnd.base.wrapper;
+	gc = (GdkGC*)g->frontEnd.base.data;
 	
 	/* Get region from the server. */
 	pix = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE,
@@ -112,8 +112,8 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanPutPure(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover context. */
-	drawable = (GdkDrawable*)g->frontEnd.wrapper;
-	gc = (GdkGC*)g->frontEnd.data;
+	drawable = (GdkDrawable*)g->frontEnd.base.wrapper;
+	gc = (GdkGC*)g->frontEnd.base.data;
 	
 	/* Setup pixbuf for raw drawing. */
 	pix = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE,
@@ -142,7 +142,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetAlphaColor(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover context. */
-	gc = (GdkGC*)g->frontEnd.data;
+	gc = (GdkGC*)g->frontEnd.base.data;
 	
 	/* Setup color, note that GTK is 16-bit. */
 	/* We ignore alpha as that is not supported by GTK. */
@@ -178,7 +178,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetClip(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover context. */
-	gc = (GdkGC*)g->frontEnd.data;
+	gc = (GdkGC*)g->frontEnd.base.data;
 	
 	/* Fill in clip. */
 	memset(&rect, 0, sizeof(rect));
@@ -206,7 +206,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetStrokeStyle(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover context. */
-	gc = (GdkGC*)g->frontEnd.data;
+	gc = (GdkGC*)g->frontEnd.base.data;
 	
 	/* Which style is used? */
 	if (style == SJME_SCRITCHUI_PENCIL_STROKE_DOTTED)
@@ -225,17 +225,17 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetStrokeStyle(
 
 const sjme_scritchui_pencilImplFunctions sjme_scritchui_gtk2_pencilFunctions =
 {
-	.copyArea = NULL,
-	.drawHorizSrc = sjme_scritchui_gtk2_pencilDrawHoriz,
-	.drawHorizSrcOver = NULL,
-	.drawLineSrc = sjme_scritchui_gtk2_pencilDrawLine,
-	.drawLineSrcOver = NULL,
-	.drawPixelSrc = NULL,
-	.drawPixelSrcOver = NULL,
-	.rawScanGet = sjme_scritchui_gtk2_pencilRawScanGet,
-	.rawScanPutPure = sjme_scritchui_gtk2_pencilRawScanPutPure,
-	.setAlphaColor = sjme_scritchui_gtk2_pencilSetAlphaColor,
-	.setBlendingMode = NULL,
-	.setClip = sjme_scritchui_gtk2_pencilSetClip,
-	.setStrokeStyle = sjme_scritchui_gtk2_pencilSetStrokeStyle,
+	sjme_sm(.copyArea, NULL),
+	sjme_sm(.drawHorizSrc, sjme_scritchui_gtk2_pencilDrawHoriz),
+	sjme_sm(.drawHorizSrcOver, NULL),
+	sjme_sm(.drawLineSrc, sjme_scritchui_gtk2_pencilDrawLine),
+	sjme_sm(.drawLineSrcOver, NULL),
+	sjme_sm(.drawPixelSrc, NULL),
+	sjme_sm(.drawPixelSrcOver, NULL),
+	sjme_sm(.rawScanGet, sjme_scritchui_gtk2_pencilRawScanGet),
+	sjme_sm(.rawScanPutPure, sjme_scritchui_gtk2_pencilRawScanPutPure),
+	sjme_sm(.setAlphaColor, sjme_scritchui_gtk2_pencilSetAlphaColor),
+	sjme_sm(.setBlendingMode, NULL),
+	sjme_sm(.setClip, sjme_scritchui_gtk2_pencilSetClip),
+	sjme_sm(.setStrokeStyle, sjme_scritchui_gtk2_pencilSetStrokeStyle),
 };

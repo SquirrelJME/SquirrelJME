@@ -105,7 +105,7 @@ sjme_errorCode sjme_stream_inputOpen(
 	
 	/* These are required. */
 	if (inFunctions->read == NULL || inFunctions->init == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Allocate result. */
 	result = NULL;
@@ -121,8 +121,8 @@ sjme_errorCode sjme_stream_inputOpen(
 	
 	/* Copy front end? */
 	if (copyFrontEnd != NULL)
-		memmove(&result->frontEnd, copyFrontEnd,
-			sizeof(*copyFrontEnd));
+		sjme_frontEnd_copy(&result->frontEnd, copyFrontEnd);
+	result->frontEnd.bindType = SJME_FRONTEND_BINDLESS;
 		
 	/* Call sub-init. */
 	if (sjme_error_is(error = result->functions->init(result,
@@ -411,6 +411,27 @@ sjme_errorCode sjme_stream_inputReadValueJI(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_stream_inputReadValueJJ(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_jlong* outValue)
+{
+	sjme_errorCode error;
+	sjme_jvalue value;
+	
+	if (stream == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Read in value. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_stream_inputReadValueJ(
+		stream, SJME_BASIC_TYPE_ID_LONG, &value)))
+		return sjme_error_default(error);
+	
+	/* Give the value! */
+	*outValue = value.j;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_stream_inputReadValueJS(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_jshort* outValue)
@@ -432,6 +453,21 @@ sjme_errorCode sjme_stream_inputReadValueJS(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_stream_outputFlush(
+	sjme_attrInNotNull sjme_stream_output stream)
+{
+	sjme_stream_outputFlushFunc flush;
+	
+	if (stream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Only perform the flush if it is actually supported. */
+	flush = stream->functions->flush;
+	if (flush == NULL)
+		return SJME_ERROR_NONE;
+	return flush(stream, &stream->implState);
+}
+
 sjme_errorCode sjme_stream_outputOpen(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
@@ -447,7 +483,7 @@ sjme_errorCode sjme_stream_outputOpen(
 	
 	/* These are required. */
 	if (inFunctions->write == NULL || inFunctions->init == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented(0);
 	
 	/* Allocate result. */
 	result = NULL;
@@ -463,8 +499,8 @@ sjme_errorCode sjme_stream_outputOpen(
 	
 	/* Copy front end? */
 	if (copyFrontEnd != NULL)
-		memmove(&result->frontEnd, copyFrontEnd,
-			sizeof(*copyFrontEnd));
+		sjme_frontEnd_copy(&result->frontEnd, copyFrontEnd);
+	result->frontEnd.bindType = SJME_FRONTEND_BINDLESS;
 		
 	/* Call sub-init. */
 	if (sjme_error_is(error = result->functions->init(result,

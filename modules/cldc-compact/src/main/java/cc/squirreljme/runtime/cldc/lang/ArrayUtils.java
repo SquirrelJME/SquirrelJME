@@ -10,8 +10,6 @@
 package cc.squirreljme.runtime.cldc.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
-import cc.squirreljme.jvm.mle.TypeShelf;
-import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.IntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
@@ -803,8 +801,7 @@ public final class ArrayUtils
 		
 		// Allocate array of this type
 		int numElem = __dims[__skip];
-		Object rv = ObjectShelf.arrayNew(
-			TypeShelf.classToType(__type), numElem);
+		Object rv = ObjectShelf.arrayNew(__type, numElem);
 		
 		// Need to determine the type for setting
 		int type = ArrayUtils.arrayType(rv);

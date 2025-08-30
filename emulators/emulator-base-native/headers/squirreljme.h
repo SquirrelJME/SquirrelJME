@@ -17,10 +17,13 @@
 #include "sjme/charSeq.h"
 
 /** Initializing methods. */
+jint JNICALL mleAudioStreamInit(JNIEnv* env, jclass classy);
+jint JNICALL mleBucketInit(JNIEnv* env, jclass classy);
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
 jint JNICALL mleDylibBaseObjectInit(JNIEnv* env, jclass classy);
 jint JNICALL mleJarInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMathInit(JNIEnv* env, jclass classy);
+jint JNICALL mleMathAccelInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMidiInit(JNIEnv* env, jclass classy);
 jint JNICALL mleNativeArchiveInit(JNIEnv* env, jclass classy);
 jint JNICALL mleNativeScritchCallbackInit(JNIEnv* env, jclass classy);
@@ -58,6 +61,9 @@ jint JNICALL forwardCallStaticInteger(JNIEnv* env,
 jlong JNICALL forwardCallStaticLong(JNIEnv* env,
 	const char* const classy, const char* const name, const char* const type,
 	...);
+jdouble JNICALL forwardCallStaticDouble(JNIEnv* env,
+	const char* const classy, const char* const name, const char* const type,
+	...);
 jobject JNICALL forwardCallStaticObject(JNIEnv* env,
 	const char* const classy, const char* const name, const char* const type,
 	...);
@@ -83,6 +89,11 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	{FORWARD_stringy(methodName), \
 	FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName)), \
 	(void*)Impl_mle_ ## className ## _ ## methodName}
+
+#define FORWARD_listAlt(className, methodName, alt) \
+	{FORWARD_stringy(methodName), \
+	FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName ## _ ## alt)), \
+	(void*)Impl_mle_ ## className ## _ ## methodName ## _ ## alt}
 
 #define FORWARD_IMPL_none()
 
@@ -116,6 +127,18 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 			pass); \
 	}
 
+#define FORWARD_IMPL_ALT(className, methodName, alt, rtype, rjava, args, pass) \
+	JNIEXPORT rtype JNICALL Impl_mle_ ## className ## _ ## methodName ## _ ## alt( \
+		JNIEnv* env, jclass classy args) \
+	{ \
+		return FORWARD_paste(forwardCallStatic, rjava)(env, \
+			FORWARD_NATIVE_CLASS, \
+			FORWARD_stringy(methodName), \
+			FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName ## _ ## alt)) \
+			pass); \
+	}
+
+#define DESC_METHOD(rv, args) "(" args ")" rv
 #define DESC_ARRAY(x) "[" x
 #define DESC_CLASS(x) "L" x ";"
 #define DESC_BOOLEAN "Z"
@@ -133,12 +156,22 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_STRING DESC_CLASS("java/lang/String")
 #define DESC_BYTE_BUFFER DESC_CLASS("java/nio/ByteBuffer")
 
+#define DESC_AUDIOSTREAM \
+	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/AudioStreamBracket")
+#define DESC_AUDIOCONN DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/brackets/AudioConnectionBracket")
+#define DESC_BUCKET \
+	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/BucketBracket")
 #define DESC_JARPACKAGE \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/JarPackageBracket")
 #define DESC_PENCIL \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilBracket")
 #define DESC_PENCILFONT \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilFontBracket")
+#define DESC_PIPE \
+	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PipeBracket")
+#define DESC_MIDIPORT \
+	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/MidiPortBracket")
 
 #define DESC_DYLIB_COLLECTOR \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/__Collector__")
@@ -155,6 +188,10 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_DYLIB_PENCILFONT \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilFontObject")
 
+#define DESC_AUDIOPLAYER \
+	DESC_CLASS("cc/squirreljme/jvm/mle/callbacks/AudioStreamPlayer")
+#define DESC_AUDIORENDERER \
+	DESC_CLASS("cc/squirreljme/jvm/mle/callbacks/AudioStreamRenderer")
 #define DESC_SCRITCHUI_ACTIVATE_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchActivateListener")
 #define DESC_SCRITCHUI_CLOSE_LISTENER DESC_CLASS( \
@@ -244,6 +281,15 @@ jintArray sjme_jni_mappedArrayInt(JNIEnv* env,
 void sjme_jni_throwMLECallError(JNIEnv* env, sjme_errorCode code);
 
 /**
+ * Throws a @c NullPointerException .
+ *
+ * @param env The current Java environment.
+ * @param code The error code.
+ * @since 2025/05/11
+ */
+void sjme_jni_throwNullPointerException(JNIEnv* env);
+
+/**
  * Throws the given throwable type.
  *
  * @param env The current Java environment.
@@ -305,8 +351,10 @@ sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
  * @return Any resultant error, if any.
  * @since 2024/06/27
  */
-sjme_errorCode sjme_jni_fillFrontEnd(JNIEnv* env, sjme_frontEnd* into,
-	jobject ref);
+sjme_errorCode sjme_jni_fillFrontEnd(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_frontEndBindable* into,
+	sjme_attrInNullable jobject ref);
 
 /**
  * Recovers the Java environment pointer.
@@ -340,7 +388,7 @@ sjme_errorCode sjme_jni_recoverEnvThis(
  */
 sjme_errorCode sjme_jni_recoverEnvFrontEnd(
 	sjme_attrInOutNotNull JNIEnv** outEnv,
-	sjme_attrInNotNull const sjme_frontEnd* inFrontEnd);
+	sjme_attrInNotNull const sjme_frontEndBindable* inFrontEnd);
 
 /**
  * Initializes a character sequence from a Java String.
@@ -351,9 +399,9 @@ sjme_errorCode sjme_jni_recoverEnvFrontEnd(
  * @return Any resultant error, if any.
  * @since 2024/06/26
  */
-sjme_errorCode sjme_jni_jstringCharSeqStatic(
+sjme_errorCode sjme_jni_charSeq(
 	sjme_attrInNotNull JNIEnv* env,
-	sjme_attrInOutNotNull sjme_charSeq* inOutSeq,
+	sjme_attrInOutNotNull sjme_charSeqStatic* inOutSeq,
 	sjme_attrInNotNull jstring inString);
 
 /**

@@ -9,8 +9,11 @@
 package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import cc.squirreljme.runtime.gcf.InputStreamConnection;
+import cc.squirreljme.runtime.media.AbstractMidiControl;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -19,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
@@ -30,12 +32,10 @@ import javax.microedition.media.control.MIDIControl;
  *
  * @since 2022/04/24
  */
+@SquirrelJMEVendorApi
 public class MidiPlayer
 	extends AbstractPlayer
 {
-	/** The tracker which plays MIDIs, one at a time. */
-	private static volatile MidiTracker _TRACKER;
-	
 	/** Magic number for MThd. */
 	private static final int MTHD_MAGIC =
 		0x4D546864;
@@ -44,17 +44,16 @@ public class MidiPlayer
 	private static final int MTRK_MAGIC =
 		0x4D54726B;
 	
+	/** The tracker which plays MIDIs, one at a time. */
+	private static volatile MidiTracker _TRACKER;
+	
 	/** The control used to emit MIDI sounds. */
-	protected final MIDIControl midiControl;
+	@SquirrelJMEVendorApi
+	protected final AbstractMidiControl midiControl;
 	
-	/** The un-realized input stream. */
-	private volatile InputStream _unrealizedIn;
-	
-	/** The MIDI track data. */
-	private volatile byte[] _data;
-	
-	/** Tracks within the MIDI. */
-	private volatile MTrkParser[] _tracks;
+	/** The MIDI player this is using. */
+	@SquirrelJMEVendorApi
+	protected final Player midiPlayer;
 	
 	/** The number of nanoseconds per tick division. */
 	volatile long _nanosPerTickDiv =
@@ -63,6 +62,16 @@ public class MidiPlayer
 	/** The tick division used. */
 	volatile long _tickDiv =
 		-1;
+	
+	/** The MIDI track data. */
+	private volatile byte[] _data;
+	
+	/** Tracks within the MIDI. */
+	private volatile MTrkParser[] _tracks;
+	
+	/** The un-realized input stream. */
+	@SquirrelJMEVendorApi
+	private volatile InputStreamConnection _unrealizedIn;
 	
 	/**
 	 * Initializes the MIDI player.
@@ -73,7 +82,7 @@ public class MidiPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/24
 	 */
-	public MidiPlayer(InputStream __in)
+	public MidiPlayer(InputStreamConnection __in)
 		throws IOException, MediaException, NullPointerException
 	{
 		super("audio/midi");
@@ -83,48 +92,15 @@ public class MidiPlayer
 		
 		// We need a player to emit the MIDI events to
 		Player midiPlayer = Manager.createPlayer(Manager.MIDI_DEVICE_LOCATOR);
-		this.midiControl = (MIDIControl)midiPlayer.getControl(
+		this.midiPlayer = midiPlayer;
+		this.midiControl = (AbstractMidiControl)midiPlayer.getControl(
 			MIDIControl.class.getName());
 		
 		// For later realization
 		this._unrealizedIn = __in;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2022/04/24
-	 */
-	@Override
-	protected void becomingRealized()
-		throws MediaException
-	{
-		try
-		{
-			// If data is already here, stop
-			byte[] data = this._data;
-			if (data != null)
-				return;
-			
-			// Otherwise 
-			synchronized (this)
-			{
-				// Double check?
-				data = this._data;
-				if (data != null)
-					return;
-				
-				// Read in the data and drop the unrealized stream
-				this._data = StreamUtils.readAll(this._unrealizedIn);
-				this._unrealizedIn = null;
-			}
-		}
-		catch (IOException e)
-		{
-			// {@squirreljme.error EA0f Failed to realize MIDI data.}
-			MediaException toss = new MediaException("EA0f");
-			toss.initCause(e);
-			throw toss;
-		}
+		
+		// Register the MIDI controller
+		this.registerControl(this.midiControl);
 	}
 	
 	/**
@@ -135,6 +111,9 @@ public class MidiPlayer
 	protected void becomingPrefetched()
 		throws MediaException
 	{
+		// Make sure the MIDI player is started
+		this.midiPlayer.start();
+		
 		// Tracks that are loaded
 		List<MTrkParser> tracks = new ArrayList<>();
 		
@@ -246,11 +225,59 @@ public class MidiPlayer
 	 * @since 2022/04/24
 	 */
 	@Override
-	protected void becomingStarted()
+	protected void becomingRealized()
+		throws MediaException
+	{
+		try
+		{
+			// If data is already here, stop
+			byte[] data = this._data;
+			if (data != null)
+				return;
+			
+			// Otherwise 
+			synchronized (this)
+			{
+				// Double check?
+				data = this._data;
+				if (data != null)
+					return;
+				
+				// Data is already destroyed?
+				if (this._unrealizedIn == null)
+					throw new MediaException("GONE");
+				
+				// Read in the data and drop the unrealized stream
+				try (InputStream in = this._unrealizedIn.openInputStream())
+				{
+					this._data = StreamUtils.readAll(in);
+				}
+			}
+		}
+		catch (IOException e)
+		{
+			// {@squirreljme.error EA0f Failed to realize MIDI data.}
+			MediaException toss = new MediaException("EA0f");
+			toss.initCause(e);
+			throw toss;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return
+	 * @since 2022/04/24
+	 */
+	@Override
+	protected boolean becomingStarted()
 		throws MediaException
 	{
 		// We just need to set up the tracker
 		MidiPlayer.__createTracker(this);
+		
+		// Do set the new state
+		return true;
 	}
 	
 	/**
@@ -286,24 +313,34 @@ public class MidiPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2022/04/25
+	 * @since 2025/06/15
 	 */
 	@Override
-	protected long determineDuration()
+	protected long clockGet()
+	{
+		synchronized (MidiPlayer.class)
+		{
+			MidiTracker tracker = MidiPlayer._TRACKER;
+			if (tracker != null)
+				return tracker.micros();
+			return Player.TIME_UNKNOWN;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/15
+	 */
+	@Override
+	protected void clockSet(long __micros)
 		throws MediaException
 	{
-		// MIDI needs to be prefetched first, so we know the track and MIDI
-		// header details
-		this.prefetch();
-		
-		// The length of the MIDI is the duration of the longest track
-		int highestTickDivDuration = 0;
-		for (MTrkParser track : this._tracks)
-			highestTickDivDuration = Math.max(highestTickDivDuration,
-				track.tickDivDuration());
-		
-		// The actual song length is basic multiplication
-		return highestTickDivDuration * this._nanosPerTickDiv;
+		synchronized (MidiPlayer.class)
+		{
+			MidiTracker tracker = MidiPlayer._TRACKER;
+			if (tracker != null)
+				tracker.fastForward(__micros);
+		}
 	}
 	
 	@Override
@@ -338,31 +375,30 @@ public class MidiPlayer
 		this._tracks = null;
 	}
 	
-	@Override
-	public Control getControl(String __control)
-	{
-		throw Debugging.todo();
-	}
-	
 	/**
 	 * {@inheritDoc}
-	 * @since 2022/04/24
+	 * @since 2022/04/25
 	 */
 	@Override
-	public Control[] getControls()
-	{
-		return new Control[]{this.midiControl};
-	}
-	
-	@Override
-	public long getMediaTime()
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public long setMediaTime(long __now)
+	protected long determineDuration()
 		throws MediaException
+	{
+		// MIDI needs to be prefetched first, so we know the track and MIDI
+		// header details
+		this.prefetch();
+		
+		// The length of the MIDI is the duration of the longest track
+		int highestTickDivDuration = 0;
+		for (MTrkParser track : this._tracks)
+			highestTickDivDuration = Math.max(highestTickDivDuration,
+				track.tickDivDuration());
+		
+		// The actual song length is basic multiplication
+		return highestTickDivDuration * this._nanosPerTickDiv;
+	}
+	
+	@Override
+	protected void useVolume(int __volume)
 	{
 		throw Debugging.todo();
 	}

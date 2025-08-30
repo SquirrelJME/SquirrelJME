@@ -10,6 +10,7 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
 
 /**
  * Mutable i-mode image.
@@ -28,7 +29,7 @@ class __MutableImage__
 	 * @since 2024/01/06
 	 */
 	__MutableImage__(javax.microedition.lcdui.Image __midpImage,
-		__BGColor__ __bgColor)
+		BGColor __bgColor)
 		throws NullPointerException
 	{
 		super(__midpImage, __bgColor);

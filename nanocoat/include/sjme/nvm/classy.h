@@ -13,14 +13,12 @@
  * @since 2024/01/01
  */
 
-#ifndef SQUIRRELJME_CLASSY_H
-#define SQUIRRELJME_CLASSY_H
+#ifndef SJME_C_CLASSY_H
+#define SJME_C_CLASSY_H
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/stringPool.h"
-#include "sjme/seekable.h"
 #include "sjme/list.h"
-#include "sjme/nvm/descriptor.h"
 #include "sjme/stream.h"
 
 /* Anti-C++. */
@@ -39,101 +37,132 @@ extern "C" {
  * 
  * @since 2024/09/13
  */
-typedef enum sjme_class_version
+typedef enum sjme_nvm_class_version
 {
 	/** CLDC 1.1 (JSR 30). */
-	SJME_CLASS_CLDC_1_0 = 2949123,
+	SJME_NVM_CLASS_CLDC_1_0 = 2949123,
 	
 	/** CLDC 1.1 (JSR 139). */
-	SJME_CLASS_CLDC_1_1 = 3080192,
+	SJME_NVM_CLASS_CLDC_1_1 = 3080192,
 	
 	/** CLDC 8. */
-	SJME_CLASS_CLDC_1_8 = 3342336,
-} sjme_class_version;
+	SJME_NVM_CLASS_CLDC_1_8 = 3342336,
+} sjme_nvm_class_version;
+
+/**
+ * The number of member index sets possible.
+ * 
+ * @since 2024/10/28
+ */
+typedef enum sjme_nvm_class_instanceType
+{
+	/** Static members. */
+	SJME_NVM_CLASS_MEMBER_STATIC = 0,
+	
+	/** Instance members. */
+	SJME_NVM_CLASS_MEMBER_INSTANCE = 1,
+	
+	/** The number of member indexes. */
+	SJME_NVM_CLASS_NUM_INSTANCE_TYPE = 2,
+} sjme_nvm_class_instanceType;
 
 /**
  * Core class information structure.
  *
  * @since 2024/01/01
  */
-typedef struct sjme_class_infoCore sjme_class_infoCore;
+typedef struct sjme_nvm_class_infoCore sjme_nvm_class_infoCore;
 
 /**
  * Opaque class information structure.
  *
  * @since 2024/01/01
  */
-typedef struct sjme_class_infoCore* sjme_class_info;
+typedef struct sjme_nvm_class_infoBase* sjme_nvm_class_info;
+
+/**
+ * List of class information.
+ * 
+ * @since 2024/10/19
+ */
+SJME_LIST_DECLARE(sjme_nvm_class_info, 0);
 
 /**
  * Opaque constant pool information.
  * 
  * @since 2024/09/13
  */
-typedef struct sjme_class_poolInfoCore sjme_class_poolInfoCore;
+typedef struct sjme_nvm_class_poolInfoCore sjme_nvm_class_poolInfoCore;
 
 /**
- * A @c SJME_CLASS_POOL_TYPE_CLASS which represents a class or interface.
+ * A @c SJME_NVM_CLASS_POOL_TYPE_CLASS which represents a class or interface.
  *
  * @since 2024/01/04
  */
-typedef struct sjme_class_poolEntryClass sjme_class_poolEntryClass;
+typedef struct sjme_nvm_class_poolEntryClass sjme_nvm_class_poolEntryClass;
 
 /**
  * Opaque constant pool information.
  * 
  * @since 2024/09/13
  */
-typedef sjme_class_poolInfoCore* sjme_class_poolInfo;
+typedef struct sjme_nvm_class_poolInfoBase sjme_nvm_class_poolInfoBase;
+
+/**
+ * Opaque constant pool information.
+ * 
+ * @since 2024/09/13
+ */
+typedef sjme_nvm_class_poolInfoBase* sjme_nvm_class_poolInfo;
 
 /**
  * Core method information structure.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_class_methodInfoCore sjme_class_methodInfoCore;
+typedef struct sjme_nvm_class_methodInfoBase sjme_nvm_class_methodInfoBase;
 
 /**
  * Opaque method information structure.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_class_methodInfoCore* sjme_class_methodInfo;
+typedef sjme_nvm_class_methodInfoBase* sjme_nvm_class_methodInfo;
 
 /**
  * Method list.
  *
  * @since 2024/01/03
  */
-SJME_LIST_DECLARE(sjme_class_methodInfo, 0);
+SJME_LIST_DECLARE(sjme_nvm_class_methodInfo, 0);
 
-/** The basic type of @c sjme_class_methodInfo . */
-#define SJME_TYPEOF_BASIC_sjme_class_methodInfo \
+/** The basic type of @c sjme_nvm_class_methodInfo . */
+#define SJME_TYPEOF_BASIC_sjme_nvm_class_methodInfo \
 	SJME_BASIC_TYPE_ID_OBJECT
 
 /**
- * Core field information structure.
+ * Base field information structure.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_class_fieldInfoCore sjme_class_fieldInfoCore;
+typedef struct sjme_nvm_class_fieldInfoBase sjme_nvm_class_fieldInfoBase;
 
 /**
  * Opaque field information structure.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_class_fieldInfoCore* sjme_class_fieldInfo;
+typedef sjme_nvm_class_fieldInfoBase* sjme_nvm_class_fieldInfo;
 
 /**
  * Field list.
  *
  * @since 2024/01/03
  */
-SJME_LIST_DECLARE(sjme_class_fieldInfo, 0);
+SJME_LIST_DECLARE(sjme_nvm_class_fieldInfo, 0);
 
-/** The basic type of @c sjme_class_fieldInfo . */
-#define SJME_TYPEOF_BASIC_sjme_class_fieldInfo \
+/** The basic type of @c sjme_nvm_class_fieldInfo . */
+#define SJME_TYPEOF_BASIC_sjme_nvm_class_fieldInfo \
 	SJME_BASIC_TYPE_ID_OBJECT
 
 /**
@@ -141,7 +170,7 @@ SJME_LIST_DECLARE(sjme_class_fieldInfo, 0);
  *
  * @since 2024/01/03
  */
-typedef struct sjme_class_exceptionHandler
+typedef struct sjme_nvm_class_exceptionHandler
 {
 	/** The range of the exception where it applies. */
 	sjme_rangeShort range;
@@ -150,14 +179,14 @@ typedef struct sjme_class_exceptionHandler
 	sjme_jshort handlerPc;
 
 	/** The type that this catches. */
-	sjme_class_poolEntryClass* handles;
-} sjme_class_exceptionHandler;
+	sjme_nvm_class_poolEntryClass* handles;
+} sjme_nvm_class_exceptionHandler;
 
 /** A list of exceptions. */
-SJME_LIST_DECLARE(sjme_class_exceptionHandler, 0);
+SJME_LIST_DECLARE(sjme_nvm_class_exceptionHandler, 0);
 
-/** The basic type of @c sjme_class_exceptionHandler . */
-#define SJME_TYPEOF_BASIC_sjme_class_exceptionHandler \
+/** The basic type of @c sjme_nvm_class_exceptionHandler . */
+#define SJME_TYPEOF_BASIC_sjme_nvm_class_exceptionHandler \
 	SJME_BASIC_TYPE_ID_OBJECT
 
 /**
@@ -165,429 +194,468 @@ SJME_LIST_DECLARE(sjme_class_exceptionHandler, 0);
  *
  * @since 2024/01/03
  */
-typedef struct sjme_class_codeInfoCore sjme_class_codeInfoCore;
+typedef struct sjme_nvm_class_codeInfoBase sjme_nvm_class_codeInfoBase;
 
 /**
  * Opaque method code structure.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_class_codeInfoCore* sjme_class_codeInfo;
+typedef sjme_nvm_class_codeInfoBase* sjme_nvm_class_codeInfo;
 
 /**
  * Access flags.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_class_accessFlags
+typedef struct sjme_nvm_class_accessFlags
 {
 	/** Is this public? */
-	sjme_jboolean public : 1;
+	sjme_jboolean public : sjme_booleanBit;
 
 	/** Is this protected? */
-	sjme_jboolean protected : 1;
+	sjme_jboolean protected : sjme_booleanBit;
 	
 	/** Is this private? */
-	sjme_jboolean private : 1;
-} sjme_class_accessFlags;
+	sjme_jboolean private : sjme_booleanBit;
+} sjme_nvm_class_accessFlags;
 
 /**
  * Class flags.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_class_classFlags
+typedef struct sjme_nvm_class_classFlags
 {
 	/** Access flags. */
-	sjme_class_accessFlags access;
+	sjme_nvm_class_accessFlags access;
 
 	/** Is the class final? */
-	sjme_jboolean final : 1;
+	sjme_jboolean final : sjme_booleanBit;
 
 	/** Is the class super? */
-	sjme_jboolean super : 1;
+	sjme_jboolean super : sjme_booleanBit;
 
 	/** Is the class an interface? */
-	sjme_jboolean interface : 1;
+	sjme_jboolean interface : sjme_booleanBit;
 
 	/** Is the class abstract? */
-	sjme_jboolean abstract : 1;
+	sjme_jboolean abstract : sjme_booleanBit;
 
 	/** Is the class synthetic? */
-	sjme_jboolean synthetic : 1;
+	sjme_jboolean synthetic : sjme_booleanBit;
 
 	/** Is the class an annotation? */
-	sjme_jboolean annotation : 1;
+	sjme_jboolean annotation : sjme_booleanBit;
 
 	/** Is the class an enum? */
-	sjme_jboolean enumeration : 1;
-} sjme_class_classFlags;
+	sjme_jboolean enumeration : sjme_booleanBit;
+} sjme_nvm_class_classFlags;
 
 /**
  * Common member flags.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_class_memberFlags
+typedef struct sjme_nvm_class_memberFlags
 {
 	/** Access flags. */
-	sjme_class_accessFlags access;
+	sjme_nvm_class_accessFlags access;
 
 	/** Static member? */
-	sjme_jboolean isStatic : 1;
+	sjme_jboolean isStatic : sjme_booleanBit;
 
 	/** Final member? */
-	sjme_jboolean final : 1;
+	sjme_jboolean final : sjme_booleanBit;
 
 	/** Synthetic member? */
-	sjme_jboolean synthetic : 1;
-} sjme_class_memberFlags;
+	sjme_jboolean synthetic : sjme_booleanBit;
+} sjme_nvm_class_memberFlags;
 
 /**
  * Field flags.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_class_fieldFlags
+typedef struct sjme_nvm_class_fieldFlags
 {
 	/** Common member flags. */
-	sjme_class_memberFlags member;
+	sjme_nvm_class_memberFlags member;
 
 	/** Is this volatile? */
-	sjme_jboolean isVolatile : 1;
+	sjme_jboolean isVolatile : sjme_booleanBit;
 
 	/** Is this transient? */
-	sjme_jboolean transient : 1;
+	sjme_jboolean transient : sjme_booleanBit;
 
 	/** Is this an enumeration. */
-	sjme_jboolean enumeration : 1;
-} sjme_class_fieldFlags;
+	sjme_jboolean enumeration : sjme_booleanBit;
+} sjme_nvm_class_fieldFlags;
 
 /**
  * Method flags.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_class_methodFlags
+typedef struct sjme_nvm_class_methodFlags
 {
 	/** Common member flags. */
-	sjme_class_memberFlags member;
+	sjme_nvm_class_memberFlags member;
 
 	/** Synchronized, monitor entry/exit on call? */
-	sjme_jboolean synchronized : 1;
+	sjme_jboolean synchronized : sjme_booleanBit;
 
 	/** Bridge method, generated by the compiler? */
-	sjme_jboolean bridge : 1;
+	sjme_jboolean bridge : sjme_booleanBit;
 
 	/** Variadic arguments? */
-	sjme_jboolean varargs : 1;
+	sjme_jboolean varargs : sjme_booleanBit;
 
 	/** Is this a native method? */
-	sjme_jboolean native : 1;
+	sjme_jboolean native : sjme_booleanBit;
 
 	/** Abstract? */
-	sjme_jboolean abstract : 1;
+	sjme_jboolean abstract : sjme_booleanBit;
 
 	/** Strict floating point? */
-	sjme_jboolean strictfp : 1;
-} sjme_class_methodFlags;
+	sjme_jboolean strictfp : sjme_booleanBit;
+} sjme_nvm_class_methodFlags;
 
 /**
  * The type that a constant pool entry may be.
  *
  * @since 2024/01/04
  */
-typedef enum sjme_class_poolType
+typedef enum sjme_nvm_class_poolType
 {
 	/** Null entry. */
-	SJME_CLASS_POOL_TYPE_NULL = 0,
+	SJME_NVM_CLASS_POOL_TYPE_NULL = 0,
 
 	/** Modified UTF. */
-	SJME_CLASS_POOL_TYPE_UTF = 1,
+	SJME_NVM_CLASS_POOL_TYPE_UTF = 1,
 
 	/** Unused 2. */
-	SJME_CLASS_POOL_TYPE_UNUSED_2 = 2,
+	SJME_NVM_CLASS_POOL_TYPE_UNUSED_2 = 2,
 
 	/** Integer constant. */
-	SJME_CLASS_POOL_TYPE_INTEGER = 3,
+	SJME_NVM_CLASS_POOL_TYPE_INTEGER = 3,
 
 	/** Float constant. */
-	SJME_CLASS_POOL_TYPE_FLOAT = 4,
+	SJME_NVM_CLASS_POOL_TYPE_FLOAT = 4,
 
 	/** Long constant. */
-	SJME_CLASS_POOL_TYPE_LONG = 5,
+	SJME_NVM_CLASS_POOL_TYPE_LONG = 5,
 
 	/** Double constant. */
-	SJME_CLASS_POOL_TYPE_DOUBLE = 6,
+	SJME_NVM_CLASS_POOL_TYPE_DOUBLE = 6,
 
 	/** Class constant. */
-	SJME_CLASS_POOL_TYPE_CLASS = 7,
+	SJME_NVM_CLASS_POOL_TYPE_CLASS = 7,
 
 	/** String constant. */
-	SJME_CLASS_POOL_TYPE_STRING = 8,
+	SJME_NVM_CLASS_POOL_TYPE_STRING = 8,
 
 	/** Field reference. */
-	SJME_CLASS_POOL_TYPE_FIELD = 9,
+	SJME_NVM_CLASS_POOL_TYPE_FIELD = 9,
 
 	/** Method reference. */
-	SJME_CLASS_POOL_TYPE_METHOD = 10,
+	SJME_NVM_CLASS_POOL_TYPE_METHOD = 10,
 
 	/** Interface method reference. */
-	SJME_CLASS_POOL_TYPE_INTERFACE_METHOD = 11,
+	SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD = 11,
 
 	/** Name and type. */
-	SJME_CLASS_POOL_TYPE_NAME_AND_TYPE = 12,
+	SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE = 12,
 
 	/** Unused 13. */
-	SJME_CLASS_POOL_TYPE_UNUSED_13 = 13,
+	SJME_NVM_CLASS_POOL_TYPE_UNUSED_13 = 13,
 
 	/** Unused 14. */
-	SJME_CLASS_POOL_TYPE_UNUSED_14 = 14,
+	SJME_NVM_CLASS_POOL_TYPE_UNUSED_14 = 14,
 
 	/** Method handle. */
-	SJME_CLASS_POOL_TYPE_METHOD_HANDLE = 15,
+	SJME_NVM_CLASS_POOL_TYPE_METHOD_HANDLE = 15,
 
 	/** Method type. */
-	SJME_CLASS_POOL_TYPE_METHOD_TYPE = 16,
+	SJME_NVM_CLASS_POOL_TYPE_METHOD_TYPE = 16,
 
 	/** Unused 17. */
-	SJME_CLASS_POOL_TYPE_UNUSED_17 = 17,
+	SJME_NVM_CLASS_POOL_TYPE_UNUSED_17 = 17,
 
 	/** Invoke dynamic. */
-	SJME_CLASS_POOL_TYPE_INVOKE_DYNAMIC = 18,
+	SJME_NVM_CLASS_POOL_TYPE_INVOKE_DYNAMIC = 18,
 
 	/** The number of pool types. */
 	SJME_NUM_CLASS_POOL_TYPE
-} sjme_class_poolType;
+} sjme_nvm_class_poolType;
 
-struct sjme_class_poolEntryClass
+struct sjme_nvm_class_poolEntryClass
 {
 	/** The type of entry that this is. */
-	sjme_class_poolType type;
+	sjme_nvm_class_poolType type;
 	
 	/** The index where the descriptor is located. */
 	sjme_jshort descriptorIndex;
 	
 	/** The descriptor this represents. */
-	sjme_stringPool_string descriptor;
+	sjme_nvm_stringPool_string descriptor;
+
+	/** The hash of the descriptor. */
+	sjme_jint descriptorHash;
 };
 
 /**
- * A @c SJME_CLASS_POOL_TYPE_DOUBLE which represents a double constant.
+ * A @c SJME_NVM_CLASS_POOL_TYPE_DOUBLE which represents a double constant.
  *
  * @since 2024/01/04
  */
-typedef struct sjme_class_poolEntryDouble
+typedef struct sjme_nvm_class_poolEntryDouble
 {
 	/** The type of entry that this is. */
-	sjme_class_poolType type;
+	sjme_nvm_class_poolType type;
 	
 	/** The constant value. */
-	sjme_jdouble value;
-} sjme_class_poolEntryDouble;
+	sjme_align64 sjme_jdouble value;
+} sjme_nvm_class_poolEntryDouble;
 
 /**
- * A @c SJME_CLASS_POOL_TYPE_NAME_AND_TYPE which represents a name and type
- * of a member without the class.
+ * A @c SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE which represents a name and type
+ * of member without the class.
  *
  * @since 2024/01/04
  */
-typedef struct sjme_class_poolEntryNameAndType sjme_class_poolEntryNameAndType;
+typedef struct sjme_nvm_class_poolEntryNameAndType
+	sjme_nvm_class_poolEntryNameAndType;
 
 /**
- * Either @c SJME_CLASS_POOL_TYPE_FIELD , @c SJME_CLASS_POOL_TYPE_METHOD ,
- * or @c SJME_CLASS_POOL_TYPE_INTERFACE_METHOD which represents a reference
+ * Either @c SJME_NVM_CLASS_POOL_TYPE_FIELD ,
+ * @c SJME_NVM_CLASS_POOL_TYPE_METHOD ,
+ * or @c SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD which represents a reference
  * to a class member.
  *
  * @since 2024/01/04
  */
-typedef struct sjme_class_poolEntryMember
+typedef struct sjme_nvm_class_poolEntryMember
 {
 	/** The type of entry that this is. */
-	sjme_class_poolType type;
+	sjme_nvm_class_poolType type;
 	
 	/** The index where the class is located. */
 	sjme_jshort inClassIndex;
 
 	/** The class this refers to. */
-	const sjme_class_poolEntryClass* inClass;
+	const sjme_nvm_class_poolEntryClass* inClass;
 	
 	/** The index where the name and type is located. */
 	sjme_jshort nameAndTypeIndex;
 
 	/** The name and type used. */
-	const sjme_class_poolEntryNameAndType* nameAndType;
-} sjme_class_poolEntryMember;
+	const sjme_nvm_class_poolEntryNameAndType* nameAndType;
+
+	/** The number of static arguments slots. */
+	sjme_jint staticArgSlots;
+
+	/** The return value slots. */
+	sjme_jint rvSlots;
+} sjme_nvm_class_poolEntryMember;
 
 /**
- * A @c SJME_CLASS_POOL_TYPE_FLOAT which represents a float constant.
+ * A @c SJME_NVM_CLASS_POOL_TYPE_FLOAT which represents a float constant.
  *
  * @since 2024/01/04
  */
-typedef struct sjme_class_poolEntryFloat
+typedef struct sjme_nvm_class_poolEntryFloat
 {
 	/** The type of entry that this is. */
-	sjme_class_poolType type;
+	sjme_nvm_class_poolType type;
 	
 	/** The constant value. */
 	sjme_jfloat value;
-} sjme_class_poolEntryFloat;
+} sjme_nvm_class_poolEntryFloat;
 
 /**
- * A @c SJME_CLASS_POOL_TYPE_INTEGER which represents an integer constant.
+ * A @c SJME_NVM_CLASS_POOL_TYPE_INTEGER which represents an integer constant.
  *
  * @since 2024/01/04
  */
-typedef struct sjme_class_poolEntryInteger
+typedef struct sjme_nvm_class_poolEntryInteger
 {
 	/** The type of entry that this is. */
-	sjme_class_poolType type;
+	sjme_nvm_class_poolType type;
 	
 	/** The constant value. */
 	sjme_jint value;
-} sjme_class_poolEntryInteger;
+} sjme_nvm_class_poolEntryInteger;
 
 /**
- * A @c SJME_CLASS_POOL_TYPE_LONG which represents a long constant.
+ * A @c SJME_NVM_CLASS_POOL_TYPE_LONG which represents a long constant.
  *
  * @since 2024/01/04
  */
-typedef struct sjme_class_poolEntryLong
+typedef struct sjme_nvm_class_poolEntryLong
 {
 	/** The type of entry that this is. */
-	sjme_class_poolType type;
+	sjme_nvm_class_poolType type;
 	
 	/** The constant value. */
-	sjme_jlong value;
-} sjme_class_poolEntryLong;
+	sjme_align64 sjme_jlong value;
+} sjme_nvm_class_poolEntryLong;
 
 /**
- * A @c SJME_CLASS_POOL_TYPE_STRING which represents a string constant.
+ * A @c SJME_NVM_CLASS_POOL_TYPE_STRING which represents a string constant.
  * 
  * @since 2024/09/20
  */
-typedef struct sjme_class_poolEntryString
+typedef struct sjme_nvm_class_poolEntryString
 {
 	/** The type of entry that this is. */
-	sjme_class_poolType type;
+	sjme_nvm_class_poolType type;
 	
 	/** The index where the value is located. */
 	sjme_jshort valueIndex;
 	
 	/** The type. */
-	sjme_stringPool_string value;
-} sjme_class_poolEntryString;
+	sjme_nvm_stringPool_string value;
+} sjme_nvm_class_poolEntryString;
 
-struct sjme_class_poolEntryNameAndType
+struct sjme_nvm_class_poolEntryNameAndType
 {
 	/** The type of entry that this is. */
-	sjme_class_poolType type;
+	sjme_nvm_class_poolType type;
 	
 	/** The index where the name is located. */
 	sjme_jshort nameIndex;
 	
 	/** The name. */
-	sjme_stringPool_string name;
+	sjme_nvm_stringPool_string name;
 	
 	/** The index where the descriptor is located. */
 	sjme_jshort descriptorIndex;
 
 	/** The type. */
-	sjme_stringPool_string descriptor;
+	sjme_nvm_stringPool_string descriptor;
+	
+	/** The identifier hash. */
+	sjme_jint idHash;
 };
 
 /**
- * A @c SJME_CLASS_POOL_TYPE_UTF which is a modified UTF-8 entry.
+ * A @c SJME_NVM_CLASS_POOL_TYPE_UTF which is a modified UTF-8 entry.
  *
  * @since 2024/01/04
  */
-typedef struct sjme_class_poolEntryUtf
+typedef struct sjme_nvm_class_poolEntryUtf
 {
 	/** The type of entry that this is. */
-	sjme_class_poolType type;
+	sjme_nvm_class_poolType type;
 	
 	/** The UTF data for this entry. */
-	sjme_stringPool_string utf;
-} sjme_class_poolEntryUtf;
+	sjme_nvm_stringPool_string utf;
+} sjme_nvm_class_poolEntryUtf;
 
 /**
  * Represents a single constant pool entry.
  *
  * @since 2024/01/04
  */
-typedef union sjme_class_poolEntry
+typedef union sjme_nvm_class_poolEntry
 {
 	/** The type of entry that this is. */
-	sjme_class_poolType type;
+	sjme_nvm_class_poolType type;
 	
 	/** Class. */
-	sjme_class_poolEntryClass classRef;
+	sjme_nvm_class_poolEntryClass classRef;
 
 	/** Double. */
-	sjme_class_poolEntryDouble constDouble;
+	sjme_nvm_class_poolEntryDouble constDouble;
 
 	/** Float. */
-	sjme_class_poolEntryFloat constFloat;
+	sjme_nvm_class_poolEntryFloat constFloat;
 
 	/** Integer. */
-	sjme_class_poolEntryInteger constInteger;
+	sjme_nvm_class_poolEntryInteger constInteger;
 
 	/** Long. */
-	sjme_class_poolEntryLong constLong;
+	sjme_nvm_class_poolEntryLong constLong;
 	
 	/** String constant. */
-	sjme_class_poolEntryString constString;
+	sjme_nvm_class_poolEntryString constString;
 
 	/** A class member. */
-	sjme_class_poolEntryMember member;
+	sjme_nvm_class_poolEntryMember member;
 
 	/** Name and type. */
-	sjme_class_poolEntryNameAndType nameAndType;
+	sjme_nvm_class_poolEntryNameAndType nameAndType;
 
 	/** UTF pool entry. */
-	sjme_class_poolEntryUtf utf;
-} sjme_class_poolEntry;
+	sjme_nvm_class_poolEntryUtf utf;
+} sjme_nvm_class_poolEntry;
 
 /** A list of constant pool entries. */
-SJME_LIST_DECLARE(sjme_class_poolEntry, 0);
+SJME_LIST_DECLARE(sjme_nvm_class_poolEntry, 0);
 
-struct sjme_class_poolInfoCore
+struct sjme_nvm_class_poolInfoBase
 {
 	/** The common NanoCoat base. */
 	sjme_nvm_commonBase common;
 	
 	/** Constant pool entries. */
-	sjme_list_sjme_class_poolEntry* pool;
+	sjme_list_sjme_nvm_class_poolEntry* pool;
 };
 
-struct sjme_class_infoCore
+struct sjme_nvm_class_infoBase
 {
 	/** The common NanoCoat base. */
 	sjme_nvm_commonBase common;
 	
+	/** The file name of this class. */
+	sjme_lpcstr fileName;
+	
+	/** The hash of the file name. */
+	sjme_jint fileNameHash;
+	
 	/** The constant pool of this class. */
-	sjme_class_poolInfo pool;
+	sjme_nvm_class_poolInfo pool;
 	
 	/** The class version. */
-	sjme_class_version version;
+	sjme_nvm_class_version version;
 	
 	/** Class flags. */
-	sjme_class_classFlags flags;
+	sjme_nvm_class_classFlags flags;
+	
+	/** The package this class is in. */
+	sjme_nvm_stringPool_string inPackage;
 
 	/** The name of this class. */
-	sjme_stringPool_string name;
+	sjme_nvm_stringPool_string name;
 
 	/** The superclass of this class. */
-	sjme_stringPool_string superName;
+	sjme_nvm_stringPool_string superName;
+
+	/** The runtime name as returned by @c Class.getName() . */
+	sjme_nvm_stringPool_string runtimeName;
 
 	/** The interfaces this class implements. */
-	sjme_list_sjme_stringPool_string* interfaceNames;
+	sjme_list_sjme_nvm_stringPool_string* interfaceNames;
 
 	/** Fields within the method. */
-	sjme_list_sjme_class_fieldInfo* fields;
+	sjme_list_sjme_nvm_class_fieldInfo* fields;
+	
+	/** The field count per type. */
+	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
+		[SJME_NUM_EXTENDED_JAVA_TYPE_IDS];
+	
+	/** The method count per type. */
+	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
 
 	/** Methods within the class. */
-	sjme_list_sjme_class_methodInfo* methods;
+	sjme_list_sjme_nvm_class_methodInfo* methods;
+
+	/** Is this an array? */
+	sjme_jboolean isArray;
+
+	/** The library this came from. */
+	sjme_nvm_rom_library library;
 };
 
 /**
@@ -595,7 +663,7 @@ struct sjme_class_infoCore
  *
  * @since 2024/01/08
  */
-typedef struct sjme_class_fieldConstVal
+typedef struct sjme_nvm_class_fieldConstVal
 {
 	/** The type of value. */
 	sjme_javaTypeId type;
@@ -607,65 +675,135 @@ typedef struct sjme_class_fieldConstVal
 		sjme_jvalue java;
 
 		/** Constant string. */
-		sjme_stringPool_string string;
+		sjme_nvm_stringPool_string string;
 	} value;
-} sjme_class_fieldConstVal;
+} sjme_nvm_class_fieldConstVal;
 
-struct sjme_class_fieldInfoCore
+struct sjme_nvm_class_fieldInfoBase
 {
 	/** The common NanoCoat base. */
 	sjme_nvm_commonBase common;
 
 	/** Field flags. */
-	sjme_class_fieldFlags flags;
+	sjme_nvm_class_fieldFlags flags;
 	
 	/** The name of this field. */
-	sjme_stringPool_string name;
+	sjme_nvm_stringPool_string name;
 	
 	/** The type of this field. */
-	sjme_stringPool_string type;
+	sjme_nvm_stringPool_string type;
+
+	/** The identifier hash. */
+	sjme_jint idHash;
 
 	/** The constant value, if any. */
-	sjme_class_fieldConstVal constVal;
+	sjme_nvm_class_fieldConstVal constVal;
+	
+	/** The Java type of this field. */
+	sjme_javaTypeId javaType;
+	
+	/** The basic type of this field. */
+	sjme_basicTypeId basicType;
+	
+	/** The extended type of this field. */
+	sjme_extendedTypeId extendedType;
+	
+	/** The index of this field within its basic type. */
+	sjme_jint typedIndex;
 };
+	
+/** Bits to assist in quicker method determinations. */
+typedef struct sjme_nvm_class_methodInfoBits
+{
+	/** Is this a static initializer? */
+	sjme_jboolean isStaticInit : sjme_booleanBit;
 
-struct sjme_class_methodInfoCore
+	/** Is this an instance initializer? */
+	sjme_jboolean isInstanceInit : sjme_booleanBit;
+} sjme_nvm_class_methodInfoBits;
+
+struct sjme_nvm_class_methodInfoBase
 {
 	/** The common NanoCoat base. */
 	sjme_nvm_commonBase common;
 
 	/** Method flags. */
-	sjme_class_methodFlags flags;
+	sjme_nvm_class_methodFlags flags;
+
+	/** The identifier hash. */
+	sjme_jint idHash;
 	
 	/** The name of this method. */
-	sjme_stringPool_string name;
+	sjme_nvm_stringPool_string name;
 	
 	/** The type of this method. */
-	sjme_stringPool_string type;
+	sjme_nvm_stringPool_string type;
+
+	/** The argument count for the type. */
+	sjme_jint argC;
+
+	/** Argument types. */
+	sjme_javaTypeId* argT;
+
+	/** Return type. */
+	sjme_javaTypeId argR;
 
 	/** The method code, if it is not native. */
-	sjme_class_codeInfo code;
+	sjme_nvm_class_codeInfo code;
+	
+	/** The index of this method in the class. */
+	sjme_jshort typedIndex;
+	
+	/** The class this is in. */
+	sjme_nvm_class_info inClass;
+
+	/** Bits to assist in quicker method determinations. */
+	sjme_nvm_class_methodInfoBits bits;
 };
 
-struct sjme_class_codeInfoCore
+/**
+ * Stores the maximum count for a variable of a given type.
+ *
+ * @since 2025/01/30
+ */
+typedef struct sjme_nvm_class_codePerType
+{
+	/** The maximum number of local variables. */
+	sjme_jshort locals;
+
+	/** The maximum number of stack variables. */
+	sjme_jshort stack;
+
+	/** The map of local variables to actual local slots. */
+	sjme_jshort* localMap;
+} sjme_nvm_class_codePerType;
+
+/** The ID for all types. */
+#define SJME_NVM_CODE_INFO_ALL_TYPES SJME_NUM_JAVA_TYPE_IDS
+
+/** The number of per types. */
+#define SJME_NVM_CODE_INFO_NUM_TYPE_IDS \
+	(SJME_NVM_CODE_INFO_ALL_TYPES + 1)
+
+struct sjme_nvm_class_codeInfoBase
 {
 	/** The common NanoCoat base. */
 	sjme_nvm_commonBase common;
 	
 	/** The method which contains this code. */
-	sjme_class_methodInfo inMethod;
-
-	/** Maximum number of locals. */
-	sjme_jint maxLocals;
-
-	/** Maximum number of stack entries. */
-	sjme_jint maxStack;
+	sjme_nvm_class_methodInfo inMethod;
+	
+	/** Maximum per specific type. */
+	sjme_nvm_class_codePerType perType[SJME_NVM_CODE_INFO_NUM_TYPE_IDS];
 
 	/** Exception table. */
-	sjme_list_sjme_class_exceptionHandler* exceptions;
+	sjme_list_sjme_nvm_class_exceptionHandler* exceptions;
+
+	/** The raw code length. */
+	sjme_jint rawCodeLen;
 
 	/** Method byte code. */
-	sjme_list_sjme_jubyte code;
+	sjme_byteCode* rawCode;
 };
 
 /**
@@ -673,16 +811,16 @@ struct sjme_class_codeInfoCore
  *
  * @since 2024/01/09
  */
-typedef struct sjme_class_stackMap
+typedef struct sjme_nvm_class_stackMap
 {
 	/** Todo. */
 	int todo;
-} sjme_class_stackMap;
+} sjme_nvm_class_stackMap;
 
 /**
  * Handler function for attribute parsing.
  * 
- * @param inPool The allocation pool.
+ * @param allocPool The allocation pool.
  * @param inConstPool The constant pool.
  * @param inStringPool The string pool.
  * @param context The passed context.
@@ -693,12 +831,12 @@ typedef struct sjme_class_stackMap
  * @return Any resultant error, if any.
  * @since 2024/09/21
  */
-typedef sjme_errorCode (*sjme_class_parseAttributeHandlerFunc)(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
-	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
-	sjme_attrInNotNull sjme_stringPool inStringPool,
+typedef sjme_errorCode (*sjme_nvm_class_parseAttributeFunc)(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
 	sjme_attrInNotNull sjme_pointer context,
-	sjme_attrInNotNull sjme_lpcstr attrName,
+	sjme_attrInNotNull sjme_charSeq attrName,
 	sjme_attrInNotNull sjme_stream_input attrStream,
 	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
 	sjme_attrInPositive sjme_jint attrLen);
@@ -708,35 +846,99 @@ typedef sjme_errorCode (*sjme_class_parseAttributeHandlerFunc)(
  * 
  * @since 2024/09/25
  */
-typedef struct sjme_class_parseAttributeHandlerInfo
+typedef struct sjme_nvm_class_parseAttributeHandler
 {
 	/** The name to handle. */
 	sjme_lpcstr name;
 	
 	/** The handler for the attribute. */
-	sjme_class_parseAttributeHandlerFunc handler;
-} sjme_class_parseAttributeHandlerInfo;
+	sjme_nvm_class_parseAttributeFunc handler;
+} sjme_nvm_class_parseAttributeHandler;
+
+/**
+ * Calculates the @c sjme_javaTypeId for the given method descriptor.
+ * 
+ * @param allocPool The allocation pool to use for @c outArgT .
+ * @param typeDesc The input method descriptor.
+ * @param outArgC Output argument count.
+ * @param outArgT Output argument types.
+ * @param outArgR Output return type of method.
+ * @return Any resultant error, if any.
+ * @since 2025/02/16
+ */
+sjme_errorCode sjme_nvm_class_calcMethodArgs(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_charSeq typeDesc,
+	sjme_attrInNotNull sjme_jint* outArgC,
+	sjme_attrInNotNull sjme_javaTypeId** outArgT,
+	sjme_attrInNotNull sjme_javaTypeId* outArgR);
+
+/**
+ * Counts the number of slots a field descriptor takes up.
+ * 
+ * @param inDesc The descriptor to count.
+ * @param outSlots The number of used slots.
+ * @param atP The pointer to the current character index, will be incremented
+ * after a read occurs.
+ * @return Any resultant error, if any.
+ * @since 2025/06/19
+ */
+sjme_errorCode sjme_nvm_class_descriptorFieldSlots(
+	sjme_attrInNotNull sjme_charSeq inDesc,
+	sjme_attrOutNotNull sjme_jint* outSlots,
+	sjme_attrInOutNullable sjme_jint* atP);
+
+/**
+ * Counts the number of slots a method descriptor takes up.
+ * 
+ * @param inDesc The descriptor to count.
+ * @param outArgSlots The number of argument slots.
+ * @param outRvSlots The number of return value slots.
+ * @return Any resultant error, if any.
+ * @since 2025/06/19
+ */
+sjme_errorCode sjme_nvm_class_descriptorMethodSlots(
+	sjme_attrInNotNull sjme_charSeq inDesc,
+	sjme_attrOutNotNull sjme_jint* outArgSlots,
+	sjme_attrOutNotNull sjme_jint* outRvSlots);
+	
+/**
+ * Determines the @c sjme_javaTypeId or @c sjme_basicTypeId type for the
+ * given descriptor.
+ * 
+ * @param desc The input descriptor. 
+ * @param outJavaType The resultant Java type.
+ * @param outBasicType The resultant basic type.
+ * @param outExtendedType The resultant extended type.
+ * @return Any resultant error, if any.
+ * @since 2024/10/28
+ */
+sjme_errorCode sjme_nvm_class_descriptorToType(
+	sjme_attrInNotNull sjme_charSeq desc,
+	sjme_attrOutNotNull sjme_javaTypeId* outJavaType,
+	sjme_attrOutNullable sjme_basicTypeId* outBasicType,
+	sjme_attrOutNullable sjme_extendedTypeId* outExtendedType);
 
 /**
  * Parses a single class and loads its class information.
  *
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param inStream The stream to parse from when reading the class.
  * @param inStringPool The pool for strings existing in memory already.
  * @param outClass The resultant class information
  * @return Any resultant error code, if any.
  * @since 2024/01/03
  */
-sjme_errorCode sjme_class_parse(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
+sjme_errorCode sjme_nvm_class_parse(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrInNotNull sjme_stringPool inStringPool,
-	sjme_attrOutNotNull sjme_class_info* outClass);
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
+	sjme_attrOutNotNull sjme_nvm_class_info* outClass);
 
 /**
  * Parses attributes.
  * 
- * @param inPool The allocation pool.
+ * @param allocPool The allocation pool.
  * @param inStream The stream to read from.
  * @param inConstPool The constant pool.
  * @param inStringPool The string pool.
@@ -745,34 +947,34 @@ sjme_errorCode sjme_class_parse(
  * @return Any resultant error, if any.
  * @since 2024/09/21
  */
-sjme_errorCode sjme_class_parseAttributes(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
+sjme_errorCode sjme_nvm_class_parseAttributes(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
-	sjme_attrInNotNull sjme_stringPool inStringPool,
-	sjme_attrInNotNull const sjme_class_parseAttributeHandlerInfo* handlers,
+	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
+	sjme_attrInNotNull const sjme_nvm_class_parseAttributeHandler* handlers,
 	sjme_attrInNotNull sjme_pointer context);
 
 /**
  * Parses the constant pool of an input class.
  * 
- * @param inPool The input pool. 
+ * @param allocPool The input pool. 
  * @param inStream The stream to read from.
  * @param inStringPool The string pool for reused strings.
  * @param outPool The resultant read constant pool.
  * @return Any resultant error, if any.
  * @since 2024/09/13
  */
-sjme_errorCode sjme_class_parseConstantPool(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
+sjme_errorCode sjme_nvm_class_parseConstantPool(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrInNotNull sjme_stringPool inStringPool,
-	sjme_attrOutNotNull sjme_class_poolInfo* outPool);
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
+	sjme_attrOutNotNull sjme_nvm_class_poolInfo* outPool);
 
 /**
  * Parses a single field.
  * 
- * @param inPool The allocation pool to use.
+ * @param allocPool The allocation pool to use.
  * @param inStream The stream to read from.
  * @param inConstPool The class constant pool.
  * @param inStringPool The string pool used.
@@ -780,17 +982,17 @@ sjme_errorCode sjme_class_parseConstantPool(
  * @return Any resultant error, if any.
  * @since 2024/09/21
  */
-sjme_errorCode sjme_class_parseField(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
+sjme_errorCode sjme_nvm_class_parseField(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
-	sjme_attrInNotNull sjme_stringPool inStringPool,
-	sjme_attrOutNotNull sjme_class_fieldInfo* outField);
+	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
+	sjme_attrOutNotNull sjme_nvm_class_fieldInfo* outField);
 
 /**
  * Parses a single method.
  * 
- * @param inPool The allocation pool to use.
+ * @param allocPool The allocation pool to use.
  * @param inStream The stream to read from.
  * @param inConstPool The class constant pool.
  * @param inStringPool The string pool used.
@@ -798,12 +1000,47 @@ sjme_errorCode sjme_class_parseField(
  * @return Any resultant error, if any.
  * @since 2024/09/21
  */
-sjme_errorCode sjme_class_parseMethod(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
+sjme_errorCode sjme_nvm_class_parseMethod(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrInNotNull sjme_class_poolInfo inConstPool,
-	sjme_attrInNotNull sjme_stringPool inStringPool,
-	sjme_attrInOutNotNull sjme_class_methodInfo* outMethod);
+	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
+	sjme_attrInOutNotNull sjme_nvm_class_methodInfo* outMethod);
+
+/**
+ * Checks if the binary name is valid.
+ * 
+ * @param binaryName The binary name to check.
+ * @return Any resultant error, if any.
+ * @since 2025/03/16
+ */
+sjme_errorCode sjme_nvm_class_validBinaryName(
+	sjme_attrInNotNull sjme_charSeq binaryName);
+
+/** Pool class reference class. */
+#define SJME_P_C_N(entry) \
+	((entry)->classRef.descriptor)
+
+/** Pool member entry. */
+#define SJME_P_M(entry) \
+	((entry)->member)
+
+/** Pool member entry class. */
+#define SJME_P_M_C(entry) \
+	(SJME_P_M(entry).inClass->descriptor)
+
+/** Pool member entry name. */
+#define SJME_P_M_N(entry) \
+	(SJME_P_M(entry).nameAndType->name)
+
+/** Pool member entry type. */
+#define SJME_P_M_T(entry) \
+	(SJME_P_M(entry).nameAndType->descriptor)
+
+/** Calculates the identifier hash for a member. */
+#define sjme_nvm_class_idHashMember(name, type) \
+	(sjme_charSeq_hashR((name)) ^ \
+		sjme_util_intReverse(sjme_charSeq_hashR((type))))
 
 /*--------------------------------------------------------------------------*/
 

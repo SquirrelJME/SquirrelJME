@@ -46,3 +46,4 @@ else()
 	macro(squirreljme_executable_strip target)
 	endmacro()
 endif()
+

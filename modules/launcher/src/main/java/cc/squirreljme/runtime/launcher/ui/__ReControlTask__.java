@@ -75,7 +75,7 @@ final class __ReControlTask__
 				try
 				{
 					int status = TaskShelf.status(task);
-					recover = (status != TaskStatusType.ALIVE);
+					recover = (status == TaskStatusType.EXITED);
 				}
 				catch (MLECallError e)
 				{

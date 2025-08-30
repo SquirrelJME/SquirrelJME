@@ -18,9 +18,11 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.Flow;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -42,6 +44,7 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
+	@Range(from = 0, to = Integer.MAX_VALUE)
 	public static native int aliveThreadCount(boolean __includeMain,
 		boolean __includeDaemon);
 	
@@ -57,7 +60,7 @@ public final class ThreadShelf
 	@SquirrelJMEVendorApi
 	public static native VMThreadBracket createVMThread(
 		@Flow(target = "this._vmThread") @NotNull Thread __javaThread,
-		String __name)
+		@Nullable String __name)
 		throws MLECallError;
 	
 	/**
@@ -85,6 +88,7 @@ public final class ThreadShelf
 	 * @since 2021/05/08
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native VMThreadBracket currentVMThread();
 	
 	/**
@@ -115,32 +119,6 @@ public final class ThreadShelf
 		throws MLECallError;
 	
 	/**
-	 * Marks the thread as being started.
-	 *
-	 * @param __javaThread The thread to mark started.
-	 * @throws MLECallError If {@code __javaThread} is null.
-	 * @since 2020/06/17
-	 */
-	@SquirrelJMEVendorApi
-	public static native void javaThreadFlagStarted(
-		@NotNull Thread __javaThread)
-		throws MLECallError;
-	
-	/**
-	 * Has this Java thread been started?
-	 *
-	 * @param __javaThread The Java thread.
-	 * @return If this thread has been started.
-	 * @throws MLECallError If {@code __javaThread} is null.
-	 * @since 2020/06/17
-	 */
-	@SquirrelJMEVendorApi
-	@Flow(source = "this._started")
-	public static native boolean javaThreadIsStarted(
-		@NotNull Thread __javaThread)
-		throws MLECallError;
-	
-	/**
 	 * Returns the runnable for the given Java thread.
 	 *
 	 * @param __javaThread The Java thread.
@@ -153,20 +131,6 @@ public final class ThreadShelf
 	@Flow(source = "this._runnable")
 	public static native Runnable javaThreadRunnable(
 		@NotNull Thread __javaThread)
-		throws MLECallError;
-	
-	/**
-	 * Sets if the thread is alive or not.
-	 *
-	 * @param __javaThread The Java thread.
-	 * @param __set If this is to be alive or not. If this is {@code true}
-	 * then the active count goes up, otherwise it shall go down.
-	 * @throws MLECallError If {@code __javaThread} is null.
-	 * @since 2020/06/17
-	 */
-	@SquirrelJMEVendorApi
-	public static native void javaThreadSetAlive(@NotNull Thread __javaThread,
-		boolean __set)
 		throws MLECallError;
 	
 	/**
@@ -192,7 +156,7 @@ public final class ThreadShelf
 	public static native int model();
 	
 	/**
-	 * Runs the main entry point for the current process and gives it all of
+	 * Runs the main entry point for the current process and gives it all
 	 * the arguments that were specified on program initialization.
 	 *
 	 * @since 2020/06/17
@@ -276,19 +240,6 @@ public final class ThreadShelf
 		throws MLECallError;
 	
 	/**
-	 * Signals that the thread has ended and is no longer considered to be
-	 * alive.
-	 * 
-	 * @param __vmThread The virtual machine thread.
-	 * @throws MLECallError If {@code __vmThread} is null.
-	 * @since 2021/03/14
-	 */
-	@SquirrelJMEVendorApi
-	public static native void vmThreadEnd(
-		@NotNull VMThreadBracket __vmThread)
-		throws MLECallError;
-	
-	/**
 	 * Returns the thread ID for the given thread.
 	 *
 	 * @param __vmThread The virtual machine thread.
@@ -314,6 +265,19 @@ public final class ThreadShelf
 		throws MLECallError;
 	
 	/**
+	 * Checks if the given thread is alive.
+	 * 
+	 * @param __vmThread If the thread is alive.
+	 * @return If the thread is alive or not.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/03/07
+	 */
+	@SquirrelJMEVendorApi
+	public static native boolean vmThreadIsAlive(
+		@NotNull VMThreadBracket __vmThread)
+		throws MLECallError;
+	
+	/**
 	 * Checks if the given thread is a main thread.
 	 *
 	 * @param __vmThread The thread to check.
@@ -323,6 +287,20 @@ public final class ThreadShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native boolean vmThreadIsMain(
+		@NotNull VMThreadBracket __vmThread)
+		throws MLECallError;
+	
+	/**
+	 * Has this thread been started?
+	 *
+	 * @param __vmThread The VM thread.
+	 * @return If this thread has been started.
+	 * @throws MLECallError If {@code __vmThread} is null.
+	 * @since 2025/03/07
+	 */
+	@SquirrelJMEVendorApi
+	@Flow(source = "this._started")
+	public static native boolean vmThreadIsStarted(
 		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
 	
@@ -343,7 +321,8 @@ public final class ThreadShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native void vmThreadSetPriority(
-		@NotNull VMThreadBracket __vmThread, int __p)
+		@NotNull VMThreadBracket __vmThread,
+		@Range(from = Thread.MIN_PRIORITY, to = Thread.MAX_PRIORITY) int __p)
 		throws MLECallError;
 	
 	/**
@@ -389,6 +368,7 @@ public final class ThreadShelf
 	 */
 	@SquirrelJMEVendorApi
 	@Blocking
-	public static native boolean waitForUpdate(int __ms)
+	public static native boolean waitForUpdate(
+		@Range(from = 0, to = Integer.MAX_VALUE) int __ms)
 		throws MLECallError;
 }

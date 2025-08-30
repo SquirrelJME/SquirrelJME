@@ -13,8 +13,8 @@
  * @since 2023/12/12
  */
 
-#ifndef SQUIRRELJME_ROM_H
-#define SQUIRRELJME_ROM_H
+#ifndef SJME_C_ROM_H
+#define SJME_C_ROM_H
 
 #include "sjme/nvm/nvm.h"
 #include "sjme/list.h"
@@ -22,6 +22,7 @@
 #include "sjme/stream.h"
 #include "sjme/seekable.h"
 #include "sjme/zip.h"
+#include "sjme/nvm/classy.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -35,90 +36,29 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * Standard ROM library structure.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_rom_libraryBase sjme_rom_libraryBase;
-
-/** Synthetic library structure. */
-typedef sjme_rom_libraryBase* sjme_rom_library;
-
-/** List of ROM libraries. */
-SJME_LIST_DECLARE(sjme_rom_library, 0);
-
-/** The type ID of ROM libraries. */
-#define SJME_TYPEOF_BASIC_sjme_rom_library SJME_BASIC_TYPE_ID_OBJECT
-
-/**
- * Common cache between suites and libraries.
- *
- * @since 2023/12/20
- */
-typedef struct sjme_rom_cache
-{
-	/** The allocation pool to use. */
-	sjme_alloc_pool allocPool;
-
-	/** Wrapped object, if applicable. */
-	sjme_frontEnd frontEnd;
-} sjme_rom_cache;
-
-/**
- * Internal cache for ROM libraries.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_rom_libraryCache
-{
-	/** Common cache data. */
-	sjme_rom_cache common;
-
-	/** Cached size of the library. */
-	sjme_jint size;
-
-	/** Is raw access checked? */
-	sjme_jboolean checkedRawAccess : 1;
-
-	/** Is raw access valid. */
-	sjme_jboolean validRawAccess : 1;
-} sjme_rom_libraryCache;
-
-/**
- * Internal cache for ROM suites.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_rom_suiteCache
-{
-	/** Common cache data. */
-	sjme_rom_cache common;
-
-	/** Libraries that exist within the suite. */
-	sjme_list_sjme_rom_library* libraries;
-} sjme_rom_suiteCache;
-
-/**
  * Functions used to access a single library.
  *
  * @since 2023/12/12
  */
-typedef struct sjme_rom_libraryFunctions sjme_rom_libraryFunctions;
+typedef struct sjme_nvm_rom_libraryFunctions sjme_nvm_rom_libraryFunctions;
 
 /**
  * Functions used to access a suite, which is an entire ROM.
  *
  * @since 2023/12/12
  */
-typedef struct sjme_rom_suiteFunctions sjme_rom_suiteFunctions;
+typedef struct sjme_nvm_rom_suiteFunctions sjme_nvm_rom_suiteFunctions;
 
-struct sjme_rom_libraryBase
+struct sjme_nvm_rom_libraryBase
 {
 	/** Common data. */
 	sjme_nvm_commonBase common;
 	
 	/** Functions used to access library information. */
-	const sjme_rom_libraryFunctions* functions;
+	const sjme_nvm_rom_libraryFunctions* functions;
+	
+	/** The allocation pool to use. */
+	sjme_alloc_pool allocPool;
 	
 	/** The handle, may be to a seekable. */
 	sjme_pointer handle;
@@ -135,8 +75,23 @@ struct sjme_rom_libraryBase
 	/** Hash of the library name. */
 	sjme_jint nameHash;
 
-	/** Internal cache, used by internal library functions. */
-	sjme_rom_libraryCache cache;
+	/** Cached raw size of the library. */
+	sjme_jint rawSize;
+
+	/** Is raw access checked? */
+	sjme_jboolean checkedRawAccess;
+
+	/** Is raw access valid. */
+	sjme_jboolean validRawAccess;
+	
+	/** Generally a lock on cached class information. */
+	sjme_thread_rwLock rwLock;
+	
+	/** Class information that has already been loaded for this library. */
+	sjme_list_sjme_nvm_class_info* classInfos;
+	
+	/** The string pool for this specific library. */
+	sjme_nvm_stringPool stringPool;
 };
 
 /**
@@ -146,8 +101,8 @@ struct sjme_rom_libraryBase
  * @return Any resultant error, if any.
  * @since 2024/08/16
  */
-typedef sjme_errorCode (*sjme_rom_libraryCloseFunc)(
-	sjme_attrInNotNull sjme_rom_library inLibrary);
+typedef sjme_errorCode (*sjme_nvm_rom_libraryCloseFunc)(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary);
 
 /**
  * Initializes the library.
@@ -157,11 +112,11 @@ typedef sjme_errorCode (*sjme_rom_libraryCloseFunc)(
  * @return Any resultant error, if any.
  * @since 2023/12/29
  */
-typedef sjme_errorCode (*sjme_rom_libraryInitFunc)(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+typedef sjme_errorCode (*sjme_nvm_rom_libraryInitFunc)(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrInNullable sjme_pointer data);
 
-typedef sjme_errorCode (*sjme_rom_libraryPathFunc)();
+typedef sjme_errorCode (*sjme_nvm_rom_libraryPathFunc)();
 
 /**
  * Access the direct raw data of a given library.
@@ -173,8 +128,8 @@ typedef sjme_errorCode (*sjme_rom_libraryPathFunc)();
  * @return Any resultant error, if any.
  * @since 2023/12/30
  */
-typedef sjme_errorCode (*sjme_rom_libraryRawData)(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+typedef sjme_errorCode (*sjme_nvm_rom_libraryRawData)(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint srcPos,
 	sjme_attrInPositive sjme_jint length);
@@ -190,9 +145,23 @@ typedef sjme_errorCode (*sjme_rom_libraryRawData)(
  * @return Any resultant error code.
  * @since 2023/12/30
  */
-typedef sjme_errorCode (*sjme_rom_libraryRawSizeFunc)(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+typedef sjme_errorCode (*sjme_nvm_rom_libraryRawSizeFunc)(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_jint* outSize);
+
+/**
+ * Does the given resource exist?
+ * 
+ * @param inLibrary The library to read the resource from.
+ * @param outExists The output of whether the resource exists.
+ * @param resourceName The name of the resource.
+ * @return Any resultant error code.
+ * @since 2024/10/26
+ */
+typedef sjme_errorCode (*sjme_nvm_rom_libraryResourceExistsFunc)(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_jboolean* outExists,
+	sjme_attrInNotNull sjme_lpcstr resourceName);
 
 /**
  * Opens the given resource as a stream.
@@ -203,15 +172,15 @@ typedef sjme_errorCode (*sjme_rom_libraryRawSizeFunc)(
  * @return Any resultant error code.
  * @since 2023/12/30
  */
-typedef sjme_errorCode (*sjme_rom_libraryResourceStreamFunc)(
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+typedef sjme_errorCode (*sjme_nvm_rom_libraryResourceStreamFunc)(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr resourceName);
 
 /**
  * Obtains the default launch parameters from the given suite.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param inSuite The suite to get the launch parameters from.
  * @param outMainClass The main class to launch.
  * @param outMainArgs The arguments to pass to the main class.
@@ -220,9 +189,9 @@ typedef sjme_errorCode (*sjme_rom_libraryResourceStreamFunc)(
  * @return Any resultant error, if any.
  * @since 2024/08/16
  */
-typedef sjme_errorCode (*sjme_rom_suiteDefaultLaunchFunc)(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
-	sjme_attrInNotNull sjme_rom_suite inSuite,
+typedef sjme_errorCode (*sjme_nvm_rom_suiteDefaultLaunchFunc)(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
 	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
@@ -236,8 +205,8 @@ typedef sjme_errorCode (*sjme_rom_suiteDefaultLaunchFunc)(
  * @return Any error state.
  * @since 2023/12/15
  */
-typedef sjme_errorCode (*sjme_rom_suiteInitFunc)(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
+typedef sjme_errorCode (*sjme_nvm_rom_suiteInitFunc)(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrInNullable sjme_pointer data);
 
 /**
@@ -250,9 +219,9 @@ typedef sjme_errorCode (*sjme_rom_suiteInitFunc)(
  * @return Any resultant error code.
  * @since 2023/12/18
  */
-typedef sjme_errorCode (*sjme_rom_suiteLibraryIdFunc)(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
-	sjme_attrInNotNull sjme_rom_library inLibrary,
+typedef sjme_errorCode (*sjme_nvm_rom_suiteLibraryIdFunc)(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_jint* outId);
 
 /**
@@ -263,65 +232,88 @@ typedef sjme_errorCode (*sjme_rom_suiteLibraryIdFunc)(
  * @return Any resultant error code.
  * @since 2023/12/21
  */
-typedef sjme_errorCode (*sjme_rom_suiteListLibrariesFunc)(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibraries);
+typedef sjme_errorCode (*sjme_nvm_rom_suiteListLibrariesFunc)(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibraries);
 
-typedef sjme_errorCode (*sjme_rom_suiteLoadLibraryFunc)();
+typedef sjme_errorCode (*sjme_nvm_rom_suiteLoadLibraryFunc)();
 
-struct sjme_rom_libraryFunctions
+struct sjme_nvm_rom_libraryFunctions
 {
 	/** Closes the library. */
-	sjme_rom_libraryCloseFunc close;
+	sjme_nvm_rom_libraryCloseFunc close;
 	
 	/** Initializes the library, implementation specific. */
-	sjme_rom_libraryInitFunc init;
+	sjme_nvm_rom_libraryInitFunc init;
 
 	/** Function to get the path of a library. */
-	sjme_rom_libraryPathFunc path;
+	sjme_nvm_rom_libraryPathFunc path;
 
 	/** Access of raw bytes of the input library. */
-	sjme_rom_libraryRawData rawData;
+	sjme_nvm_rom_libraryRawData rawData;
 
 	/** The size of this library. */
-	sjme_rom_libraryRawSizeFunc rawSize;
+	sjme_nvm_rom_libraryRawSizeFunc rawSize;
+	
+	/** Does the given resource exist? */
+	sjme_nvm_rom_libraryResourceExistsFunc resourceExists;
 
 	/** Access a resource as a stream. */
-	sjme_rom_libraryResourceStreamFunc resourceStream;
+	sjme_nvm_rom_libraryResourceStreamFunc resourceStream;
 };
 
-struct sjme_rom_suiteFunctions
+struct sjme_nvm_rom_suiteFunctions
 {
 	/** Optional default launch parameters. */
-	sjme_rom_suiteDefaultLaunchFunc defaultLaunch;
+	sjme_nvm_rom_suiteDefaultLaunchFunc defaultLaunch;
 	
-	/** Initialize suite cache. */
-	sjme_rom_suiteInitFunc init;
+	/** Initialize suite. */
+	sjme_nvm_rom_suiteInitFunc init;
 
 	/** Returns the ID of the given library. */
-	sjme_rom_suiteLibraryIdFunc libraryId;
+	sjme_nvm_rom_suiteLibraryIdFunc libraryId;
 
 	/** Lists the libraries in the suite. */
-	sjme_rom_suiteListLibrariesFunc list;
+	sjme_nvm_rom_suiteListLibrariesFunc list;
 
 	/** Loads a single library. */
-	sjme_rom_suiteLoadLibraryFunc loadLibrary;
+	sjme_nvm_rom_suiteLoadLibraryFunc loadLibrary;
 };
 
-struct sjme_rom_suiteBase
+struct sjme_nvm_rom_suiteBase
 {
 	/** Common data. */
 	sjme_nvm_commonBase common;
 	
 	/** Functions. */
-	const sjme_rom_suiteFunctions* functions;
+	const sjme_nvm_rom_suiteFunctions* functions;
+	
+	/** The allocation pool to use. */
+	sjme_alloc_pool allocPool;
 	
 	/** The handle, may be to a seekable. */
 	sjme_pointer handle;
+	
+	/** Libraries that exist within the suite. */
+	sjme_list_sjme_nvm_rom_library* libraries;
 
-	/** Internal cache, used by suite implementations. */
-	sjme_rom_suiteCache cache;
+	/** The clutter level to use. */
+	sjme_nvm_bootClutterLevel clutterLevel;
 };
+
+/**
+ * Attempts to load a class from the given library, caching it accordingly.
+ * 
+ * @param inLibrary The input library.
+ * @param outClassInfo The resultant parsed classed.
+ * @param fileName The name of the file.
+ * @return Any resultant error, if any.
+ * @since 2024/10/25 
+ */
+sjme_errorCode sjme_nvm_rom_libraryCacheClass(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_nvm_class_info* outClassInfo,
+	sjme_attrInNotNull sjme_lpcstr fileName);
 
 /**
  * Initializes a library from a Zip that is already loaded.
@@ -334,9 +326,9 @@ struct sjme_rom_suiteBase
  * @return Any resultant error, if any.
  * @since 2024/08/16
  */
-sjme_errorCode sjme_rom_libraryFromZip(
+sjme_errorCode sjme_nvm_rom_libraryFromZip(
 	sjme_attrInNotNull sjme_alloc_pool pool,
-	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNullable sjme_lpcstr prefix,
 	sjme_attrInNotNull sjme_zip zip);
@@ -352,9 +344,9 @@ sjme_errorCode sjme_rom_libraryFromZip(
  * @return Any resultant error, if any.
  * @since 2024/01/01
  */
-sjme_errorCode sjme_rom_libraryFromZipMemory(
+sjme_errorCode sjme_nvm_rom_libraryFromZipMemory(
 	sjme_attrInNotNull sjme_alloc_pool pool,
-	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNotNull sjme_cpointer base,
 	sjme_attrInPositive sjme_jint length);
@@ -370,9 +362,9 @@ sjme_errorCode sjme_rom_libraryFromZipMemory(
  * @return Any resultant error, if any.
  * @since 2024/01/01
  */
-sjme_errorCode sjme_rom_libraryFromZipSeekable(
+sjme_errorCode sjme_nvm_rom_libraryFromZipSeekable(
 	sjme_attrInNotNull sjme_alloc_pool pool,
-	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNotNull sjme_seekable seekable);
 
@@ -384,14 +376,14 @@ sjme_errorCode sjme_rom_libraryFromZipSeekable(
  * @return On any resultant error.
  * @since 2023/12/27
  */
-sjme_errorCode sjme_rom_libraryHash(
-	sjme_attrInNotNull sjme_rom_library library,
+sjme_errorCode sjme_nvm_rom_libraryHash(
+	sjme_attrInNotNull sjme_nvm_rom_library library,
 	sjme_attrOutNotNull sjme_jint* outHash);
 
 /**
  * Makes a virtual library from the given functions.
  *
- * @param pool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param outLibrary The output library.
  * @param libName The library name.
  * @param data Any data to forward to the initializer.
@@ -400,12 +392,12 @@ sjme_errorCode sjme_rom_libraryHash(
  * @return Any error code.
  * @since 2023/12/29
  */
-sjme_errorCode sjme_rom_libraryNew(
-	sjme_attrInNotNull sjme_alloc_pool pool,
-	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+sjme_errorCode sjme_nvm_rom_libraryNew(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNullable sjme_pointer data,
-	sjme_attrInNotNull const sjme_rom_libraryFunctions* inFunctions,
+	sjme_attrInNotNull const sjme_nvm_rom_libraryFunctions* inFunctions,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
 /**
@@ -418,8 +410,8 @@ sjme_errorCode sjme_rom_libraryNew(
  * @return Any resultant error if any.
  * @since 2023/12/30
  */
-sjme_errorCode sjme_rom_libraryRawRead(
-	sjme_attrInNotNull sjme_rom_library library,
+sjme_errorCode sjme_nvm_rom_libraryRawRead(
+	sjme_attrInNotNull sjme_nvm_rom_library library,
 	sjme_attrOutNotNullBuf(length) sjme_pointer destPtr,
 	sjme_attrInPositive sjme_jint srcPos,
 	sjme_attrInPositive sjme_jint length);
@@ -438,8 +430,8 @@ sjme_errorCode sjme_rom_libraryRawRead(
  * @return Any resultant error if any.
  * @since 2023/12/30
  */
-sjme_errorCode sjme_rom_libraryRawReadIter(
-	sjme_attrInNotNull sjme_rom_library library,
+sjme_errorCode sjme_nvm_rom_libraryRawReadIter(
+	sjme_attrInNotNull sjme_nvm_rom_library library,
 	sjme_attrOutNotNullBuf(length) void* destPtr,
 	sjme_attrInPositive sjme_jint destOffset,
 	sjme_attrInPositive sjme_jint srcPos,
@@ -454,8 +446,8 @@ sjme_errorCode sjme_rom_libraryRawReadIter(
  * @return Any resultant error code.
  * @since 2023/12/30
  */
-sjme_errorCode sjme_rom_libraryRawSize(
-	sjme_attrInNotNull sjme_rom_library library,
+sjme_errorCode sjme_nvm_rom_libraryRawSize(
+	sjme_attrInNotNull sjme_nvm_rom_library library,
 	sjme_attrOutNotNull sjme_jint* outSize);
 
 /**
@@ -467,9 +459,23 @@ sjme_errorCode sjme_rom_libraryRawSize(
  * @return On any errors, if any.
  * @since 2023/12/31
  */
-sjme_errorCode sjme_rom_libraryResourceAsStream(
-	sjme_attrInNotNull sjme_rom_library library,
+sjme_errorCode sjme_nvm_rom_libraryResourceAsStream(
+	sjme_attrInNotNull sjme_nvm_rom_library library,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull sjme_lpcstr rcName);
+
+/**
+ * Checks if the given resource exists.
+ * 
+ * @param inLibrary The input library. 
+ * @param outExists If this exists or not.
+ * @param rcName The resource name.
+ * @return Any resultant error, if any.
+ * @since 2024/10/26
+ */
+sjme_errorCode sjme_nvm_rom_libraryResourceExists(
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_jboolean* outExists,
 	sjme_attrInNotNull sjme_lpcstr rcName);
 
 /**
@@ -481,10 +487,10 @@ sjme_errorCode sjme_rom_libraryResourceAsStream(
  * @return Any resultant error state.
  * @since 2023/12/18
  */
-sjme_errorCode sjme_rom_resolveClassPathById(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
+sjme_errorCode sjme_nvm_rom_resolveClassPathById(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrInNotNull const sjme_list_sjme_jint* inIds,
-	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
+	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs);
 
 /**
  * Resolves the class path library by their name.
@@ -495,15 +501,15 @@ sjme_errorCode sjme_rom_resolveClassPathById(
  * @return Any resultant error state.
  * @since 2023/12/18
  */
-sjme_errorCode sjme_rom_resolveClassPathByName(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
+sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrInNotNull const sjme_list_sjme_lpcstr* inNames,
-	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
+	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs);
 
 /**
  * Obtains the default launch parameters from the given suite.
  * 
- * @param inPool The pool to allocate within.
+ * @param allocPool The pool to allocate within.
  * @param inSuite The suite to get the launch parameters from.
  * @param outMainClass The main class to launch.
  * @param outMainArgs The arguments to pass to the main class.
@@ -512,9 +518,9 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
  * @return Any resultant error, if any.
  * @since 2024/08/16
  */
-sjme_errorCode sjme_rom_suiteDefaultLaunch(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
-	sjme_attrInNotNull sjme_rom_suite inSuite,
+sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
 	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
@@ -529,26 +535,11 @@ sjme_errorCode sjme_rom_suiteDefaultLaunch(
  * @param numInSuites The number of input suites.
  * @return
  */
-sjme_errorCode sjme_rom_suiteFromMerge(
+sjme_errorCode sjme_nvm_rom_suiteFromMerge(
 	sjme_attrInNotNull sjme_alloc_pool pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull sjme_rom_suite* inSuites,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
+	sjme_attrInNotNull sjme_nvm_rom_suite* inSuites,
 	sjme_attrInPositive sjme_jint numInSuites);
-
-/**
- * Scans the payload for suites
- *
- * @param pool The pool to allocate within.
- * @param outSuite The output resultant suite, if there would be nothing in
- * here then this outputs @c NULL .
- * @param payloadConfig The payload configuration used.
- * @return Any error status.
- * @since 2023/12/15
- */
-sjme_errorCode sjme_rom_suiteFromPayload(
-	sjme_attrInNotNull sjme_alloc_pool pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull const sjme_payload_config* payloadConfig);
 
 /**
  * Initializes a suite from a Zip.
@@ -556,13 +547,15 @@ sjme_errorCode sjme_rom_suiteFromPayload(
  * @param pool The pool to use for allocations.
  * @param outSuite The resultant suite.
  * @param seekable The seekable to access the Zip through.
+ * @param clutterLevel The clutter level to use for the ROM by default.
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
-sjme_errorCode sjme_rom_suiteFromZipSeekable(
+sjme_errorCode sjme_nvm_rom_suiteFromZipSeekable(
 	sjme_attrInNotNull sjme_alloc_pool pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull sjme_seekable seekable);
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrInValue sjme_nvm_bootClutterLevel clutterLevel);
 
 /**
  * Returns all of the libraries which are available within this suite.
@@ -572,9 +565,9 @@ sjme_errorCode sjme_rom_suiteFromZipSeekable(
  * @return Any resultant error state.
  * @since 2023/12/20
  */
-sjme_errorCode sjme_rom_suiteLibraries(
-	sjme_attrInNotNull sjme_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
+sjme_errorCode sjme_nvm_rom_suiteLibraries(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs);
 
 /**
  * Makes a virtual suite from the given functions.
@@ -583,15 +576,17 @@ sjme_errorCode sjme_rom_suiteLibraries(
  * @param outSuite The output suite.
  * @param data Any data to pass to the initializer.
  * @param inFunctions The functions which define how to access the suite.
+ * @param clutterLevel The clutter level to use.
  * @param copyFrontEnd Input front end initialization, is optional.
  * @return Any error code.
  * @since 2023/12/15
  */
-sjme_errorCode sjme_rom_suiteNew(
+sjme_errorCode sjme_nvm_rom_suiteNew(
 	sjme_attrInNotNull sjme_alloc_pool pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNullable sjme_pointer data,
-	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,
+	sjme_attrInNotNull const sjme_nvm_rom_suiteFunctions* inFunctions,
+	sjme_attrInValue sjme_nvm_bootClutterLevel clutterLevel,
 	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
 /*--------------------------------------------------------------------------*/

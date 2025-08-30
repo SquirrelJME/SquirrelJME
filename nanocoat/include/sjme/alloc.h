@@ -13,8 +13,8 @@
  * @since 2023/11/18
  */
 
-#ifndef SQUIRRELJME_ALLOC_H
-#define SQUIRRELJME_ALLOC_H
+#ifndef SJME_C_ALLOC_H
+#define SJME_C_ALLOC_H
 
 #include "sjme/frontEnd.h"
 #include "sjme/stdTypes.h"
@@ -114,13 +114,13 @@ typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
 struct sjme_alloc_weakBase
 {
 	/** Is this weak reference valid? */
-	sjme_atomic_sjme_jint valid;
+	sjme_alignPointer sjme_atomic_sjme_jint valid;
 	
 	/** The link this points to, @c NULL if freed. */
 	sjme_alloc_link link;
 	
 	/** The count for this weak reference, zero will free this reference. */
-	sjme_atomic_sjme_jint count;
+	sjme_alignPointer sjme_atomic_sjme_jint count;
 	
 	/** The pointer this points to, @c NULL if freed. */
 	sjme_pointer pointer;
@@ -129,7 +129,7 @@ struct sjme_alloc_weakBase
 	sjme_alloc_weakEnqueueFunc enqueue;
 	
 	/** Is this in an enqueue? */
-	sjme_atomic_sjme_jint inEnqueue;
+	sjme_alignPointer sjme_atomic_sjme_jint inEnqueue;
 };
 
 struct sjme_alloc_linkBase
@@ -196,6 +196,9 @@ struct sjme_alloc_linkBase
 	(offsetof(sjme_alloc_linkBase, block) + (((size_t)(size)) * \
 	sizeof(sjme_jubyte)))
 
+/** Magic number for the pool. */
+#define SJME_ALLOC_POOL_MAGIC INT32_C(0x4C6F6C21)
+
 /**
  * Structure which stores the pooled memory allocator.
  * 
@@ -213,7 +216,7 @@ struct sjme_alloc_poolBase
 	sjme_jint size;
 	
 	/** Whole pool spin lock. */
-	sjme_thread_spinLock spinLock;
+	sjme_alignPointer sjme_thread_spinLock spinLock;
 	
 	/** Free and used space information. */
 	struct
@@ -481,6 +484,16 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakUnRef)(
 	sjme_attrInNotNull sjme_pointer addr
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
+/**
+ * Returns the number of weak references to this that are left.
+ * 
+ * @param addr The address to check.
+ * @return The number of references left.
+ * @since 2025/07/10
+ */
+sjme_jint sjme_alloc_weakRefLeftR(
+	sjme_attrInNotNull sjme_pointer addr);
+	
 /**
  * Creates or returns a weak reference to the given block. If the reference
  * already exists, then it will be incremented.

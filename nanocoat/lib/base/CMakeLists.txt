@@ -11,6 +11,7 @@ squirreljme_multilib_add_library(Base
 	alloc.c
 	atomic.c
 	bitStream.c
+	cbor.c
 	charSeq.c
 	circleBuffer.c
 	closeable.c
@@ -34,6 +35,7 @@ squirreljme_multilib_add_library(Base
 	streamInflate.c
 	streamMemory.c
 	streamSeekable.c
+	streamStdIo.c
 	traverse.c
 	tree.c
 	util.c

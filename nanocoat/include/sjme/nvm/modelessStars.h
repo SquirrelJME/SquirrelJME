@@ -13,8 +13,8 @@
  * @since 2023/11/28
  */
 
-#ifndef SQUIRRELJME_MODELESSSTARS_H
-#define SQUIRRELJME_MODELESSSTARS_H
+#ifndef SJME_C_MODELESSSTARS_H
+#define SJME_C_MODELESSSTARS_H
 
 #include "sjme/error.h"
 #include "sjme/nvm/nvm.h"
@@ -45,7 +45,10 @@ typedef struct sjme_modelessStarColor
 typedef struct sjme_modelessStar
 {
 	/** Is this star shining? */
-	sjme_jboolean shining : 1;
+	sjme_jboolean shining : sjme_booleanBit;
+	
+	/** Is this star corrupt? */
+	sjme_jboolean corrupt : sjme_booleanBit;
 	
 	/** The X coordinate. */
 	sjme_jint x;
@@ -99,7 +102,10 @@ typedef struct sjme_modelessStarState
 	sjme_jint lockStarCreationLast;
 	
 	/** First go latched? */
-	sjme_jboolean latchedFirstGo : 1;
+	sjme_jboolean latchedFirstGo : sjme_booleanBit;
+
+	/** The emitted error code. */
+	sjme_atomic_sjme_jint errorCode;
 } sjme_modelessStarState;
 
 /**

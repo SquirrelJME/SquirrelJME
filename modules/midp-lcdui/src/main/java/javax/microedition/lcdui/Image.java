@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -244,7 +245,7 @@ public class Image
 			// Copy data, arraycopy is much faster of an operation!
 			/*for (int sx = __x; sx < ex; sx++)
 				__b[dstoff++] = data[srcoff++] | opqmask;*/
-			System.arraycopy(data, srcoff,
+			ObjectShelf.arrayCopy(data, srcoff,
 				__b, dstoff, ex - __x);
 			
 			// If not using alpha, then force all pixels to have the given
@@ -601,7 +602,7 @@ public class Image
 		{
 			int[] copy = new int[area];
 			
-			System.arraycopy(__rgb, 0,
+			ObjectShelf.arrayCopy(__rgb, 0,
 				copy, 0, area);
 			
 			__rgb = copy;

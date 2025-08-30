@@ -15,7 +15,6 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
@@ -24,7 +23,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
-import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
+import cc.squirreljme.runtime.cldc.io.PipeOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -48,15 +47,13 @@ public final class System
 	@Api
 	public static final PrintStream err =
 		new __CanSetPrintStream__(new PrintStream(
-			new ConsoleOutputStream(StandardPipeType.STDERR,
-				true), true));
+			PipeOutputStream.stdErr(), true));
 	
 	/** Standard output stream (stdout). */
 	@Api
 	public static final PrintStream out =
 		new __CanSetPrintStream__(new PrintStream(
-			new ConsoleOutputStream(StandardPipeType.STDOUT,
-				false), true));
+			PipeOutputStream.stdOut(), true));
 	
 	/**
 	 * Not used.
@@ -135,15 +132,10 @@ public final class System
 		if (__src == __dest && __srcOff == __destOff)
 			return;
 		
-		// We can use the native type system within MLE to knock off a few
-		// branch possibilities
-		TypeBracket srcType = TypeShelf.classToType(srcClass);
-		TypeBracket component = TypeShelf.component(srcType);
-		
 		// Primitive types can be copied at full speed as they do not require
 		// any references are otherwise to be counted or garbage collection to
 		// be managed
-		if (TypeShelf.isPrimitive(component))
+		if (TypeShelf.isPrimitive(TypeShelf.component(srcClass)))
 		{
 			// More common primitives
 			if (srcClass == byte[].class)
@@ -175,7 +167,7 @@ public final class System
 			
 			/* {@squirreljme.error ZZ1h Not a primitive array type.} */
 			else
-				throw new Error("ZZ1h");
+				throw Debugging.oops("ZZ1h");
 		}
 		
 		// There is no native handler for manual object array copies due to
@@ -343,12 +335,8 @@ public final class System
 		
 		/* {@squirreljme.error ZZ1z Cannot request a system property which has
 		a blank key.} */
-		if (__k.equals(""))
+		if (__k.isEmpty())
 			throw new IllegalArgumentException("ZZ1z");
-		
-		// Short circuit for run-time detection
-		if (__k.equals("cc.squirreljme.isruntime"))
-			return "true";
 		
 		// Not allowed to do this?
 		System.getSecurityManager().checkPropertyAccess(__k);
@@ -385,6 +373,11 @@ public final class System
 				// The version of the Java virtual machine (fixed value)
 			case "java.version":
 				return "1.8.0";
+				
+				// The info for the Java VM
+			case "java.vm.info":
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.VM_INFO);
 				
 				// The version of the JVM (full)
 			case "java.vm.version":

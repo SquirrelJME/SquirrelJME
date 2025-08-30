@@ -68,9 +68,8 @@ sjme_errorCode sjme_scritchpen_core_drawRect(
 	return SJME_ERROR_NONE;
 	
 fail_any:
-	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
-		return sjme_error_default(error);
+	/* Release lock before failing */
+	sjme_scritchpen_core_lockRelease(g);
 	
 	return sjme_error_default(error);
 }
@@ -118,9 +117,8 @@ sjme_errorCode sjme_scritchpen_core_drawTriangle(
 	return SJME_ERROR_NONE;
 	
 fail_any:
-	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
-		return sjme_error_default(error);
+	/* Release lock before failing */
+	sjme_scritchpen_core_lockRelease(g);
 	
 	return sjme_error_default(error);
 }
@@ -171,9 +169,8 @@ sjme_errorCode sjme_scritchpen_core_fillRect(
 	return error;
 	
 fail_any:
-	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
-		return sjme_error_default(error);
+	/* Release lock before failing */
+	sjme_scritchpen_core_lockRelease(g);
 	
 	return sjme_error_default(error);
 }
@@ -206,9 +203,8 @@ sjme_errorCode sjme_scritchpen_core_fillTriangle(
 	return sjme_error_notImplemented(0);
 	
 fail_any:
-	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
-		return sjme_error_default(error);
+	/* Release lock before failing */
+	sjme_scritchpen_core_lockRelease(g);
 	
 	return sjme_error_default(error);
 }

@@ -10,12 +10,12 @@
 package cc.squirreljme.jvm.aot;
 
 import cc.squirreljme.jvm.manifest.JavaManifest;
+import cc.squirreljme.runtime.cldc.io.PipeInputStream;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.ByteArrayInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -168,8 +168,8 @@ public class Main
 			commitFossil, commitGit);
 		
 		// Use explicit input/output
-		try (InputStream in = new StandardInputStream();
-			OutputStream out = System.out)
+		try (InputStream in = PipeInputStream.stdIn();
+			 OutputStream out = System.out)
 		{
 			// Which mode should occur?
 			switch (mode)

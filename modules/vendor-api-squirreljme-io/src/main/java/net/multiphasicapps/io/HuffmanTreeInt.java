@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -321,14 +322,10 @@ public class HuffmanTreeInt
 				// Print bit pattern otherwise
 				else
 				{
-					// Get mask and value
-					int msk = (int)(seq >>> 32L);
-					int val = (int)(seq);
-					
 					// Start from the highest bit first
-					int hib = Integer.bitCount(msk);
+					int hib = Integer.bitCount(seq);
 					for (int b = hib - 1; b >= 0; b--)
-						sb.append(((0 == (val & (1 << b))) ? '0' : '1'));
+						sb.append(((0 == (seq & (1 << b))) ? '0' : '1'));
 				}
 				
 				// End sequence data
@@ -361,7 +358,7 @@ public class HuffmanTreeInt
 		
 		// Copy the old array over
 		if (table != null)
-			System.arraycopy(table, 0,
+			ObjectShelf.arrayCopy(table, 0,
 				becomes, 0, rv);
 		
 		// The end bits become invalidated
@@ -392,7 +389,7 @@ public class HuffmanTreeInt
 		
 		// Copy the old array over
 		if (values != null)
-			System.arraycopy(values, 0,
+			ObjectShelf.arrayCopy(values, 0,
 				becomes, 0, rv);
 		
 		// Set new table

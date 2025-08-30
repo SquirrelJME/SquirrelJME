@@ -21,6 +21,7 @@ import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.Profile;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +38,11 @@ import java.util.Objects;
 public class IModeApplication
 	extends Application
 {
+	/** The vendor for DoJa applications. */
+	@SquirrelJMEVendorApi
+	public static final String VENDOR =
+		"Keitai-DoJa";
+	
 	/** The Jar path. */
 	protected final String jarPath;
 	
@@ -169,36 +175,9 @@ public class IModeApplication
 	@Override
 	public DependencyInfo loaderDependencies()
 	{
-		// This determines which library set to load
-		Map<String, String> adfProps = this._adfProps;
-		String config = Objects.toString(
-			adfProps.get(IModeProperty._CONFIGURATION_VER),
-			adfProps.get(IModeProperty._KVM_VER));
-		String profile = adfProps.get(IModeProperty._PROFILE_VER);
-		String scratchPad = adfProps.get(IModeProperty._SP_SIZE);
-		
-		// Used as heuristic for versioning
-		String drawArea = adfProps.get(IModeProperty._DRAW_AREA);
-		
-		// Try to guess a reasonable version to use
-		if (config == null || config.isEmpty())
-			config = "CLDC-1.1";
-		if (profile == null || profile.isEmpty())
-		{
-			// The AppType property essentially specifies that this is a Star
-			// application, otherwise it will be a DoJa application
-			if (adfProps.get(IModeProperty._APP_TYPE) != null)
-				profile = "Star-1.0";
-			
-			// Based on which properties exist, try to guess the specific
-			// version of DoJa used...
-			else if (scratchPad != null && scratchPad.indexOf(',') > 0)
-				profile = "DoJa-3.0";
-			else if (drawArea != null)
-				profile = "DoJa-2.0";
-			else
-				profile = "DoJa-1.0";
-		}
+		// Determine and depend on the given configuration and profile pair
+		String config = this.__configuration();
+		String profile = this.__profile();
 		
 		return new DependencyInfo(new Configuration(config),
 			new Profile(profile));
@@ -253,6 +232,79 @@ public class IModeApplication
 		return this.__properties();
 	}
 	
+	/**
+	 * Determines the Java ME configuration.
+	 *
+	 * @return Determines the Java ME configuration.
+	 * @since 2025/04/09
+	 */
+	private String __configuration()
+	{
+		Map<String, String> adfProps = this._adfProps;
+		
+		// Use the modern parameter first
+		String modern = adfProps.get(IModeProperty._CONFIGURATION_VER);
+		if (modern != null && !modern.isEmpty())
+			return modern;
+		
+		// Followed by the older setting
+		String legacy = adfProps.get(IModeProperty._KVM_VER);
+		if (legacy != null && !legacy.isEmpty())
+			return legacy;
+		
+		// Default to the oldest
+		return "CLDC-1.0";
+	}
+	
+	/**
+	 * Determines the DoJa profile.
+	 *
+	 * @return Determines the DoJa profile.
+	 * @since 2025/04/09
+	 */
+	private String __profile()
+	{
+		// Is a profile specified?
+		Map<String, String> adfProps = this._adfProps;
+		String profile = adfProps.get(IModeProperty._PROFILE_VER);
+		if (profile != null && !profile.isEmpty())
+			return profile;
+		
+		// The configuration is used to determine newer DoJa versions
+		Configuration config = new Configuration(this.__configuration());
+		
+		// Used as heuristics for versioning
+		String scratchPad = adfProps.get(IModeProperty._SP_SIZE);
+		String drawArea = adfProps.get(IModeProperty._DRAW_AREA);
+		String useBrowser = adfProps.get(IModeProperty._USE_BROWSER);
+		String launchApp = adfProps.get(IModeProperty._LAUNCH_APP);
+		
+		// The AppType property essentially specifies that this is a Star
+		// application, otherwise it will be a DoJa application
+		if (adfProps.get(IModeProperty._APP_TYPE) != null)
+			return "Star-1.0";
+			
+		// Based on which properties exist, try to guess the specific
+		// version of DoJa used...
+		else if (config.is("CLDC") &&
+			config.version().atLeast(1, 1))
+			return "DoJa-4.0";
+		else if ((scratchPad != null && scratchPad.indexOf(',') > 0) ||
+			launchApp != null)
+			return "DoJa-3.0";
+		else if (drawArea != null || useBrowser != null)
+			return "DoJa-2.0";
+		
+		// Unknown
+		return "DoJa-1.0";
+	}
+	
+	/**
+	 * Determines the system properties to use.
+	 *
+	 * @return The system properties to use.
+	 * @since 2021/12/01
+	 */
 	private Map<String, String> __properties()
 	{
 		Map<String, String> adfProps = this._adfProps;
@@ -268,11 +320,17 @@ public class IModeApplication
 			adfProps.get(IModeProperty._APP_NAME),
 			adfProps.get(IModeProperty._APP_CLASS));
 		rv.put(IModeProperty.NAME_PROPERTY, nameProp);
-		rv.put(IModeProperty.VENDOR_PROPERTY, "SquirrelJME-i-Mode");
+		rv.put(IModeProperty.VENDOR_PROPERTY,
+			IModeApplication.VENDOR);
 		
 		// Encoding and locale override
 		rv.put(Application.OVERRIDE_ENCODING, "shift-jis");
 		rv.put(Application.OVERRIDE_LOCALE, "ja-JP");
+		
+		// Set the profile used
+		String profile = this.__profile();
+		rv.put(Application.MICROEDITION_PROFILES, profile);
+		rv.put(IModeProperty.DOJA_PROFILE_PROPERTY, profile);
 		
 		// Scratch pad sizes
 		String spSize = adfProps.get(IModeProperty._SP_SIZE);

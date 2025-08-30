@@ -19,192 +19,191 @@
 /** Window manager information. */
 static const sjme_scritchui_wmInfo sjme_scritchUI_coreWmInfo =
 {
-	.defaultTitle = "SquirrelJME",
-	.xwsClass = "squirreljme",
+	sjme_sm(.defaultTitle, "SquirrelJME"),
+	sjme_sm(.xwsClass, "squirreljme"),
 };
 
 /** Core dispatch functions for serial calls. */
 static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 {
 	/* As normal. */
-	.apiFlags = NULL,
-	.choiceGetSelectedIndex = sjme_scritchui_coreSerial_choiceGetSelectedIndex,
-	.choiceItemGet = sjme_scritchui_coreSerial_choiceItemGet,
-	.choiceItemInsert = sjme_scritchui_coreSerial_choiceItemInsert,
-	.choiceItemRemove = sjme_scritchui_coreSerial_choiceItemRemove,
-	.choiceItemRemoveAll = sjme_scritchui_coreSerial_choiceItemRemoveAll,
-	.choiceItemSetEnabled = sjme_scritchui_coreSerial_choiceItemSetEnabled,
-	.choiceItemSetImage = sjme_scritchui_coreSerial_choiceItemSetImage,
-	.choiceItemSetSelected = sjme_scritchui_coreSerial_choiceItemSetSelected,
-	.choiceItemSetString = sjme_scritchui_coreSerial_choiceItemSetString,
-	.choiceLength = sjme_scritchui_coreSerial_choiceLength,
-	.componentFocusGrab = sjme_scritchui_coreSerial_componentFocusGrab,
-	.componentFocusHas = sjme_scritchui_coreSerial_componentFocusHas,
-	.componentGetParent = sjme_scritchui_coreSerial_componentGetParent,
-	.componentPosition = sjme_scritchui_coreSerial_componentPosition,
-	.componentRepaint = sjme_scritchui_coreSerial_componentRepaint,
-	.componentRevalidate = sjme_scritchui_coreSerial_componentRevalidate,
-	.componentSetActivateListener =
-		sjme_scritchui_coreSerial_componentSetActivateListener,
-	.componentSetInputListener =
-		sjme_scritchui_coreSerial_componentSetInputListener,
-	.componentSetPaintListener =
-		sjme_scritchui_coreSerial_componentSetPaintListener,
-	.componentSetSizeListener =
-		sjme_scritchui_coreSerial_componentSetSizeListener,
-	.componentSetValueUpdateListener = 
-		sjme_scritchui_coreSerial_componentSetValueUpdateListener,
-	.componentSetVisibleListener =
-		sjme_scritchui_coreSerial_componentSetVisibleListener,
-	.componentSize = sjme_scritchui_coreSerial_componentSize,
-	.containerAdd = sjme_scritchui_coreSerial_containerAdd,
-	.containerRemove = sjme_scritchui_coreSerial_containerRemove,
-	.containerRemoveAll = sjme_scritchui_coreSerial_containerRemoveAll,
-	.containerSetBounds = sjme_scritchui_coreSerial_containerSetBounds,
-	.fontBuiltin = sjme_scritchui_coreSerial_fontBuiltin,
-	.fontDerive = sjme_scritchui_coreSerial_fontDerive,
-	.fontList = sjme_scritchui_coreSerial_fontList,
-	.hardwareGraphics = sjme_scritchui_coreSerial_hardwareGraphics,
-	.labelSetString = sjme_scritchui_coreSerial_labelSetString,
-	.listNew = sjme_scritchui_coreSerial_listNew,
-	.lafDpiProject = sjme_scritchui_coreSerial_lafDpiProject,
-	.lafElementColor = sjme_scritchui_coreSerial_lafElementColor,
+	sjme_sm(.choiceGetSelectedIndex, sjme_scritchui_coreSerial_choiceGetSelectedIndex),
+	sjme_sm(.choiceItemGet, sjme_scritchui_coreSerial_choiceItemGet),
+	sjme_sm(.choiceItemInsert, sjme_scritchui_coreSerial_choiceItemInsert),
+	sjme_sm(.choiceItemRemove, sjme_scritchui_coreSerial_choiceItemRemove),
+	sjme_sm(.choiceItemRemoveAll, sjme_scritchui_coreSerial_choiceItemRemoveAll),
+	sjme_sm(.choiceItemSetEnabled, sjme_scritchui_coreSerial_choiceItemSetEnabled),
+	sjme_sm(.choiceItemSetImage, sjme_scritchui_coreSerial_choiceItemSetImage),
+	sjme_sm(.choiceItemSetSelected, sjme_scritchui_coreSerial_choiceItemSetSelected),
+	sjme_sm(.choiceItemSetString, sjme_scritchui_coreSerial_choiceItemSetString),
+	sjme_sm(.choiceLength, sjme_scritchui_coreSerial_choiceLength),
+	sjme_sm(.componentFocusGrab, sjme_scritchui_coreSerial_componentFocusGrab),
+	sjme_sm(.componentFocusHas, sjme_scritchui_coreSerial_componentFocusHas),
+	sjme_sm(.componentGetParent, sjme_scritchui_coreSerial_componentGetParent),
+	sjme_sm(.componentPosition, sjme_scritchui_coreSerial_componentPosition),
+	sjme_sm(.componentRepaint, sjme_scritchui_coreSerial_componentRepaint),
+	sjme_sm(.componentRevalidate, sjme_scritchui_coreSerial_componentRevalidate),
+	sjme_sm(.componentSetActivateListener,
+		sjme_scritchui_coreSerial_componentSetActivateListener),
+	sjme_sm(.componentSetInputListener,
+		sjme_scritchui_coreSerial_componentSetInputListener),
+	sjme_sm(.componentSetPaintListener,
+		sjme_scritchui_coreSerial_componentSetPaintListener),
+	sjme_sm(.componentSetSizeListener,
+		sjme_scritchui_coreSerial_componentSetSizeListener),
+	sjme_sm(.componentSetValueUpdateListener, 
+		sjme_scritchui_coreSerial_componentSetValueUpdateListener),
+	sjme_sm(.componentSetVisibleListener,
+		sjme_scritchui_coreSerial_componentSetVisibleListener),
+	sjme_sm(.componentSize, sjme_scritchui_coreSerial_componentSize),
+	sjme_sm(.containerAdd, sjme_scritchui_coreSerial_containerAdd),
+	sjme_sm(.containerRemove, sjme_scritchui_coreSerial_containerRemove),
+	sjme_sm(.containerRemoveAll, sjme_scritchui_coreSerial_containerRemoveAll),
+	sjme_sm(.containerSetBounds, sjme_scritchui_coreSerial_containerSetBounds),
+	sjme_sm(.fontBuiltin, sjme_scritchui_coreSerial_fontBuiltin),
+	sjme_sm(.fontDerive, sjme_scritchui_coreSerial_fontDerive),
+	sjme_sm(.fontList, sjme_scritchui_coreSerial_fontList),
+	sjme_sm(.hardwareGraphics, sjme_scritchui_coreSerial_hardwareGraphics),
+	sjme_sm(.labelSetString, sjme_scritchui_coreSerial_labelSetString),
+	sjme_sm(.lafDpiProject, sjme_scritchui_coreSerial_lafDpiProject),
+	sjme_sm(.lafElementColor, sjme_scritchui_coreSerial_lafElementColor),
+	sjme_sm(.listNew, sjme_scritchui_coreSerial_listNew),
 
 	/* Loops are unchanged. */
-	.loopExecute = sjme_scritchui_core_loopExecute,
-	.loopExecuteLater = sjme_scritchui_core_loopExecuteLater,
-	.loopExecuteWait = sjme_scritchui_core_loopExecuteWait,
-	.loopIsInThread = sjme_scritchui_core_loopIsInThread,
-	.loopIterate = sjme_scritchui_core_loopIterate,
+	sjme_sm(.loopExecute, sjme_scritchui_core_loopExecute),
+	sjme_sm(.loopExecuteLater, sjme_scritchui_core_loopExecuteLater),
+	sjme_sm(.loopExecuteWait, sjme_scritchui_core_loopExecuteWait),
+	sjme_sm(.loopIsInThread, sjme_scritchui_core_loopIsInThread),
+	sjme_sm(.loopIterate, sjme_scritchui_core_loopIterate),
 
 	/* As normal. */
-	.menuBarNew = sjme_scritchui_coreSerial_menuBarNew,
-	.menuInsert = sjme_scritchui_coreSerial_menuInsert,
-	.menuItemNew = sjme_scritchui_coreSerial_menuItemNew,
-	.menuNew = sjme_scritchui_coreSerial_menuNew,
-	.menuRemove = sjme_scritchui_coreSerial_menuRemove,
-	.menuRemoveAll = sjme_scritchui_coreSerial_menuRemoveAll,
-	.objectDelete = sjme_scritchui_coreSerial_objectDelete,
-	.panelEnableFocus = sjme_scritchui_coreSerial_panelEnableFocus,
-	.panelNew = sjme_scritchui_coreSerial_panelNew,
-	.screenSetListener = sjme_scritchui_coreSerial_screenSetListener,
-	.screens = sjme_scritchui_coreSerial_screens,
-	.scrollPanelNew = sjme_scritchui_coreSerial_scrollPanelNew,
-	.viewGetView = sjme_scritchui_coreSerial_viewGetView,
-	.viewSetArea = sjme_scritchui_coreSerial_viewSetArea,
-	.viewSetSizeSuggestListener =
-		sjme_scritchui_coreSerial_viewSetSizeSuggestListener,
-	.viewSetView = sjme_scritchui_coreSerial_viewSetView,
-	.viewSetViewListener = sjme_scritchui_coreSerial_viewSetViewListener,
-	.windowContentMinimumSize =
-		sjme_scritchui_coreSerial_windowContentMinimumSize,
-	.windowNew = sjme_scritchui_coreSerial_windowNew,
-	.windowSetCloseListener = sjme_scritchui_coreSerial_windowSetCloseListener,
-	.windowSetMenuBar = sjme_scritchui_coreSerial_windowSetMenuBar,
-	.windowSetMenuItemActivateListener =
-		sjme_scritchui_coreSerial_windowSetMenuItemActivateListener,
-	.windowSetVisible = sjme_scritchui_coreSerial_windowSetVisible,
+	sjme_sm(.menuBarNew, sjme_scritchui_coreSerial_menuBarNew),
+	sjme_sm(.menuInsert, sjme_scritchui_coreSerial_menuInsert),
+	sjme_sm(.menuItemNew, sjme_scritchui_coreSerial_menuItemNew),
+	sjme_sm(.menuNew, sjme_scritchui_coreSerial_menuNew),
+	sjme_sm(.menuRemove, sjme_scritchui_coreSerial_menuRemove),
+	sjme_sm(.menuRemoveAll, sjme_scritchui_coreSerial_menuRemoveAll),
+	sjme_sm(.objectDelete, sjme_scritchui_coreSerial_objectDelete),
+	sjme_sm(.panelEnableFocus, sjme_scritchui_coreSerial_panelEnableFocus),
+	sjme_sm(.panelNew, sjme_scritchui_coreSerial_panelNew),
+	sjme_sm(.screenSetListener, sjme_scritchui_coreSerial_screenSetListener),
+	sjme_sm(.screens, sjme_scritchui_coreSerial_screens),
+	sjme_sm(.scrollPanelNew, sjme_scritchui_coreSerial_scrollPanelNew),
+	sjme_sm(.viewGetView, sjme_scritchui_coreSerial_viewGetView),
+	sjme_sm(.viewSetArea, sjme_scritchui_coreSerial_viewSetArea),
+	sjme_sm(.viewSetView, sjme_scritchui_coreSerial_viewSetView),
+	sjme_sm(.viewSetSizeSuggestListener,
+		sjme_scritchui_coreSerial_viewSetSizeSuggestListener),
+	sjme_sm(.viewSetViewListener, sjme_scritchui_coreSerial_viewSetViewListener),
+	sjme_sm(.windowContentMinimumSize,
+		sjme_scritchui_coreSerial_windowContentMinimumSize),
+	sjme_sm(.windowNew, sjme_scritchui_coreSerial_windowNew),
+	sjme_sm(.windowSetCloseListener, sjme_scritchui_coreSerial_windowSetCloseListener),
+	sjme_sm(.windowSetMenuBar, sjme_scritchui_coreSerial_windowSetMenuBar),
+	sjme_sm(.windowSetMenuItemActivateListener,
+		sjme_scritchui_coreSerial_windowSetMenuItemActivateListener),
+	sjme_sm(.windowSetVisible, sjme_scritchui_coreSerial_windowSetVisible),
 };
 
 /** Core Function set for ScritchUI. */
 static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 {
-	.apiFlags = NULL,
-	.choiceGetSelectedIndex = sjme_scritchui_core_choiceGetSelectedIndex,
-	.choiceItemGet = sjme_scritchui_core_choiceItemGet,
-	.choiceItemInsert = sjme_scritchui_core_choiceItemInsert,
-	.choiceItemRemove = sjme_scritchui_core_choiceItemRemove,
-	.choiceItemRemoveAll = sjme_scritchui_core_choiceItemRemoveAll,
-	.choiceItemSetEnabled = sjme_scritchui_core_choiceItemSetEnabled,
-	.choiceItemSetImage = sjme_scritchui_core_choiceItemSetImage,
-	.choiceItemSetSelected = sjme_scritchui_core_choiceItemSetSelected,
-	.choiceItemSetString = sjme_scritchui_core_choiceItemSetString,
-	.choiceLength = sjme_scritchui_core_choiceLength,
-	.componentFocusGrab = sjme_scritchui_core_componentFocusGrab,
-	.componentFocusHas = sjme_scritchui_core_componentFocusHas,
-	.componentGetParent = sjme_scritchui_core_componentGetParent,
-	.componentPosition = sjme_scritchui_core_componentPosition,
-	.componentRepaint = sjme_scritchui_core_componentRepaint,
-	.componentRevalidate = sjme_scritchui_core_componentRevalidate,
-	.componentSetActivateListener =
-		sjme_scritchui_core_componentSetActivateListener,
-	.componentSetInputListener = sjme_scritchui_core_componentSetInputListener,
-	.componentSetPaintListener = sjme_scritchui_core_componentSetPaintListener,
-	.componentSetSizeListener = sjme_scritchui_core_componentSetSizeListener,
-	.componentSetValueUpdateListener = 
-		sjme_scritchui_core_componentSetValueUpdateListener,
-	.componentSetVisibleListener =
-		sjme_scritchui_core_componentSetVisibleListener,
-	.componentSize = sjme_scritchui_core_componentSize,
-	.containerAdd = sjme_scritchui_core_containerAdd,
-	.containerRemove = sjme_scritchui_core_containerRemove,
-	.containerRemoveAll = sjme_scritchui_core_containerRemoveAll,
-	.containerSetBounds = sjme_scritchui_core_containerSetBounds,
-	.fontBuiltin = sjme_scritchui_core_fontBuiltin,
-	.fontDerive = sjme_scritchui_core_fontDerive,
-	.fontList = sjme_scritchui_core_fontList,
-	.hardwareGraphics = sjme_scritchpen_core_hardwareGraphics,
-	.labelSetString = sjme_scritchui_core_labelSetString,
-	.lafDpiProject = sjme_scritchui_core_lafDpiProject,
-	.lafElementColor = sjme_scritchui_core_lafElementColor,
-	.listNew = sjme_scritchui_core_listNew,
-	.loopExecute = sjme_scritchui_core_loopExecute,
-	.loopExecuteLater = sjme_scritchui_core_loopExecuteLater,
-	.loopExecuteWait = sjme_scritchui_core_loopExecuteWait,
-	.loopIsInThread = sjme_scritchui_core_loopIsInThread,
-	.loopIterate = sjme_scritchui_core_loopIterate,
-	.menuBarNew = sjme_scritchui_core_menuBarNew,
-	.menuInsert = sjme_scritchui_core_menuInsert,
-	.menuItemNew = sjme_scritchui_core_menuItemNew,
-	.menuNew = sjme_scritchui_core_menuNew,
-	.menuRemove = sjme_scritchui_core_menuRemove,
-	.menuRemoveAll = sjme_scritchui_core_menuRemoveAll,
-	.objectDelete = sjme_scritchui_core_objectDelete,
-	.panelEnableFocus = sjme_scritchui_core_panelEnableFocus,
-	.panelNew = sjme_scritchui_core_panelNew,
-	.screenSetListener = sjme_scritchui_core_screenSetListener,
-	.screens = sjme_scritchui_core_screens,
-	.scrollPanelNew = sjme_scritchui_core_scrollPanelNew,
-	.viewGetView = sjme_scritchui_core_viewGetView,
-	.viewSetArea = sjme_scritchui_core_viewSetArea,
-	.viewSetView = sjme_scritchui_core_viewSetView,
-	.viewSetSizeSuggestListener =
-		sjme_scritchui_core_viewSetSizeSuggestListener,
-	.viewSetViewListener = sjme_scritchui_core_viewSetViewListener,
-	.windowContentMinimumSize = sjme_scritchui_core_windowContentMinimumSize,
-	.windowNew = sjme_scritchui_core_windowNew,
-	.windowSetCloseListener = sjme_scritchui_core_windowSetCloseListener,
-	.windowSetMenuBar = sjme_scritchui_core_windowSetMenuBar,
-	.windowSetMenuItemActivateListener =
-		sjme_scritchui_core_windowSetMenuItemActivateListener,
-	.windowSetVisible = sjme_scritchui_core_windowSetVisible,
+	sjme_sm(.choiceGetSelectedIndex, sjme_scritchui_core_choiceGetSelectedIndex),
+	sjme_sm(.choiceItemGet, sjme_scritchui_core_choiceItemGet),
+	sjme_sm(.choiceItemInsert, sjme_scritchui_core_choiceItemInsert),
+	sjme_sm(.choiceItemRemove, sjme_scritchui_core_choiceItemRemove),
+	sjme_sm(.choiceItemRemoveAll, sjme_scritchui_core_choiceItemRemoveAll),
+	sjme_sm(.choiceItemSetEnabled, sjme_scritchui_core_choiceItemSetEnabled),
+	sjme_sm(.choiceItemSetImage, sjme_scritchui_core_choiceItemSetImage),
+	sjme_sm(.choiceItemSetSelected, sjme_scritchui_core_choiceItemSetSelected),
+	sjme_sm(.choiceItemSetString, sjme_scritchui_core_choiceItemSetString),
+	sjme_sm(.choiceLength, sjme_scritchui_core_choiceLength),
+	sjme_sm(.componentFocusGrab, sjme_scritchui_core_componentFocusGrab),
+	sjme_sm(.componentFocusHas, sjme_scritchui_core_componentFocusHas),
+	sjme_sm(.componentGetParent, sjme_scritchui_core_componentGetParent),
+	sjme_sm(.componentPosition, sjme_scritchui_core_componentPosition),
+	sjme_sm(.componentRepaint, sjme_scritchui_core_componentRepaint),
+	sjme_sm(.componentRevalidate, sjme_scritchui_core_componentRevalidate),
+	sjme_sm(.componentSetActivateListener,
+		sjme_scritchui_core_componentSetActivateListener),
+	sjme_sm(.componentSetInputListener, sjme_scritchui_core_componentSetInputListener),
+	sjme_sm(.componentSetPaintListener, sjme_scritchui_core_componentSetPaintListener),
+	sjme_sm(.componentSetSizeListener, sjme_scritchui_core_componentSetSizeListener),
+	sjme_sm(.componentSetValueUpdateListener, 
+		sjme_scritchui_core_componentSetValueUpdateListener),
+	sjme_sm(.componentSetVisibleListener,
+		sjme_scritchui_core_componentSetVisibleListener),
+	sjme_sm(.componentSize, sjme_scritchui_core_componentSize),
+	sjme_sm(.containerAdd, sjme_scritchui_core_containerAdd),
+	sjme_sm(.containerRemove, sjme_scritchui_core_containerRemove),
+	sjme_sm(.containerRemoveAll, sjme_scritchui_core_containerRemoveAll),
+	sjme_sm(.containerSetBounds, sjme_scritchui_core_containerSetBounds),
+	sjme_sm(.fontBuiltin, sjme_scritchui_core_fontBuiltin),
+	sjme_sm(.fontDerive, sjme_scritchui_core_fontDerive),
+	sjme_sm(.fontList, sjme_scritchui_core_fontList),
+	sjme_sm(.hardwareGraphics, sjme_scritchpen_core_hardwareGraphics),
+	sjme_sm(.labelSetString, sjme_scritchui_core_labelSetString),
+	sjme_sm(.lafDpiProject, sjme_scritchui_core_lafDpiProject),
+	sjme_sm(.lafElementColor, sjme_scritchui_core_lafElementColor),
+	sjme_sm(.listNew, sjme_scritchui_core_listNew),
+	sjme_sm(.loopExecute, sjme_scritchui_core_loopExecute),
+	sjme_sm(.loopExecuteLater, sjme_scritchui_core_loopExecuteLater),
+	sjme_sm(.loopExecuteWait, sjme_scritchui_core_loopExecuteWait),
+	sjme_sm(.loopIsInThread, sjme_scritchui_core_loopIsInThread),
+	sjme_sm(.loopIterate, sjme_scritchui_core_loopIterate),
+	sjme_sm(.menuBarNew, sjme_scritchui_core_menuBarNew),
+	sjme_sm(.menuInsert, sjme_scritchui_core_menuInsert),
+	sjme_sm(.menuItemNew, sjme_scritchui_core_menuItemNew),
+	sjme_sm(.menuNew, sjme_scritchui_core_menuNew),
+	sjme_sm(.menuRemove, sjme_scritchui_core_menuRemove),
+	sjme_sm(.menuRemoveAll, sjme_scritchui_core_menuRemoveAll),
+	sjme_sm(.objectDelete, sjme_scritchui_core_objectDelete),
+	sjme_sm(.panelEnableFocus, sjme_scritchui_core_panelEnableFocus),
+	sjme_sm(.panelNew, sjme_scritchui_core_panelNew),
+	sjme_sm(.screenSetListener, sjme_scritchui_core_screenSetListener),
+	sjme_sm(.screens, sjme_scritchui_core_screens),
+	sjme_sm(.scrollPanelNew, sjme_scritchui_core_scrollPanelNew),
+	sjme_sm(.viewGetView, sjme_scritchui_core_viewGetView),
+	sjme_sm(.viewSetArea, sjme_scritchui_core_viewSetArea),
+	sjme_sm(.viewSetView, sjme_scritchui_core_viewSetView),
+	sjme_sm(.viewSetSizeSuggestListener,
+		sjme_scritchui_core_viewSetSizeSuggestListener),
+	sjme_sm(.viewSetViewListener, sjme_scritchui_core_viewSetViewListener),
+	sjme_sm(.windowContentMinimumSize, sjme_scritchui_core_windowContentMinimumSize),
+	sjme_sm(.windowNew, sjme_scritchui_core_windowNew),
+	sjme_sm(.windowSetCloseListener, sjme_scritchui_core_windowSetCloseListener),
+	sjme_sm(.windowSetMenuBar, sjme_scritchui_core_windowSetMenuBar),
+	sjme_sm(.windowSetMenuItemActivateListener,
+		sjme_scritchui_core_windowSetMenuItemActivateListener),
+	sjme_sm(.windowSetVisible, sjme_scritchui_core_windowSetVisible),
 };
 
 /** Internal functions for ScritchUI implementations. */
 static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 {
-	.bindFocus = sjme_scritchui_core_intern_bindFocus,
-	.containerMaxSize = sjme_scritchui_core_intern_containerMaxSize,
-	.fontBuiltin = sjme_scritchui_core_intern_fontBuiltin,
-	.getChoice = sjme_scritchui_core_intern_getChoice,
-	.getContainer = sjme_scritchui_core_intern_getContainer,
-	.getLabeled = sjme_scritchui_core_intern_getLabeled,
-	.getMenuHasChildren = sjme_scritchui_core_intern_getMenuHasChildren,
-	.getMenuHasParent = sjme_scritchui_core_intern_getMenuHasParent,
-	.getPaintable = sjme_scritchui_core_intern_getPaintable,
-	.getView = sjme_scritchui_core_intern_getView,
-	.initCommon = sjme_scritchui_core_intern_initCommon,
-	.initComponent = sjme_scritchui_core_intern_initComponent,
-	.mapScreen = sjme_scritchui_core_intern_mapScreen,
-	.menuItemActivate = sjme_scritchui_intern_menuItemActivate,
-	.menuItemActivateById = sjme_scritchui_intern_menuItemActivateById,
-	.setSimpleListener = sjme_scritchui_core_intern_setSimpleListener,
-	.updateVisibleContainer =
-		sjme_scritchui_core_intern_updateVisibleContainer,
-	.updateVisibleComponent =
-		sjme_scritchui_core_intern_updateVisibleComponent,
-	.updateVisibleWindow = sjme_scritchui_core_intern_updateVisibleWindow,
-	.viewSuggest = sjme_scritchui_core_intern_viewSuggest,
+	sjme_sm(.bindFocus, sjme_scritchui_core_intern_bindFocus),
+	sjme_sm(.containerMaxSize, sjme_scritchui_core_intern_containerMaxSize),
+	sjme_sm(.fontBuiltin, sjme_scritchui_core_intern_fontBuiltin),
+	sjme_sm(.getChoice, sjme_scritchui_core_intern_getChoice),
+	sjme_sm(.getContainer, sjme_scritchui_core_intern_getContainer),
+	sjme_sm(.getLabeled, sjme_scritchui_core_intern_getLabeled),
+	sjme_sm(.getMenuHasChildren, sjme_scritchui_core_intern_getMenuHasChildren),
+	sjme_sm(.getMenuHasParent, sjme_scritchui_core_intern_getMenuHasParent),
+	sjme_sm(.getPaintable, sjme_scritchui_core_intern_getPaintable),
+	sjme_sm(.getView, sjme_scritchui_core_intern_getView),
+	sjme_sm(.initCommon, sjme_scritchui_core_intern_initCommon),
+	sjme_sm(.initComponent, sjme_scritchui_core_intern_initComponent),
+	sjme_sm(.mapScreen, sjme_scritchui_core_intern_mapScreen),
+	sjme_sm(.menuItemActivate, sjme_scritchui_intern_menuItemActivate),
+	sjme_sm(.menuItemActivateById, sjme_scritchui_intern_menuItemActivateById),
+	sjme_sm(.setSimpleListener, sjme_scritchui_core_intern_setSimpleListener),
+	sjme_sm(.updateVisibleContainer,
+		sjme_scritchui_core_intern_updateVisibleContainer),
+	sjme_sm(.updateVisibleComponent,
+		sjme_scritchui_core_intern_updateVisibleComponent),
+	sjme_sm(.updateVisibleWindow,
+		sjme_scritchui_core_intern_updateVisibleWindow),
+	sjme_sm(.viewSuggest, sjme_scritchui_core_intern_viewSuggest),
 };
 
 static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
@@ -273,7 +272,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd,
 	sjme_attrInNullable sjme_scritchui wrappedState,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals)
 {
@@ -305,8 +304,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 
 	/* Use provided front end if a core interface. */
 	if (initFrontEnd != NULL)
-		memmove(&state->common.frontEnd, initFrontEnd,
-			sizeof(*initFrontEnd));
+		sjme_frontEnd_copy(&state->common.frontEnd, initFrontEnd);
 	
 	/* Common initialize. */
 	if (sjme_error_is(error = state->intern->initCommon(state,
@@ -315,7 +313,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 		goto fail_commonInit;
 	
 	/* By default, everything is panel only. */
-	state->isPanelOnly = SJME_JNI_TRUE;
+	state->platformFlags |= SJME_SCRITCHUI_LAF_PLATFORM_PANEL_ONLY;
 	
 	/* Loop initialization. */
 	if (wrappedState != NULL)
@@ -410,7 +408,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd)
 {
 	sjme_errorCode error;
 	sjme_jboolean isFbWrapper; 
@@ -613,7 +611,7 @@ sjme_pointer sjme_scritchui_checkCast(sjme_scritchui_uiType inType,
 	common = inPtr;
 	if (common->type != inType)
 	{
-		sjme_debug_abort();
+		sjme_debug_abort(SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 		return NULL;
 	}
 	
@@ -633,7 +631,7 @@ sjme_pointer sjme_scritchui_checkCast_component(sjme_pointer inPtr)
 	if (common->type < SJME_SCRITCHUI_TYPE_FONT ||
 		common->type >= SJME_NUM_SCRITCHUI_UI_TYPES)
 	{
-		sjme_debug_abort();
+		sjme_debug_abort(SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 		return NULL;
 	}
 	
@@ -654,7 +652,7 @@ sjme_pointer sjme_scritchui_checkCast_container(sjme_pointer inPtr)
 		common->type != SJME_SCRITCHUI_TYPE_SCROLL_PANEL &&
 		common->type != SJME_SCRITCHUI_TYPE_WINDOW)
 	{
-		sjme_debug_abort();
+		sjme_debug_abort(SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 		return NULL;
 	}
 
@@ -675,7 +673,7 @@ sjme_pointer sjme_scritchui_checkCast_menuKind(sjme_pointer inPtr)
 		common->type != SJME_SCRITCHUI_TYPE_MENU_BAR &&
 		common->type != SJME_SCRITCHUI_TYPE_MENU_ITEM)
 	{
-		sjme_debug_abort();
+		sjme_debug_abort(SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 		return NULL;
 	}
 	

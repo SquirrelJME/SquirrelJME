@@ -25,7 +25,6 @@ import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
-import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
@@ -220,8 +219,11 @@ public final class SpringThreadWorker
 		
 		// The called constructor will allocate the space needed to store
 		// this object, strings always are allocated in a special way however
-		if ("java/lang/String".equals(__cl.name().toString()))
+		String desire = __cl.name().toString();
+		if ("java/lang/String".equals(desire))
 			return new SpringStringObject(__cl, null);
+		else if ("java/lang/ref/WeakReference".equals(desire))
+			return new SpringWeakObject(__cl);
 		return new SpringSimpleObject(__cl);
 	}
 	
@@ -441,21 +443,8 @@ public final class SpringThreadWorker
 					return rv;
 				
 				// Resolve the input class, so it is initialized
-				SpringClass resClass = (__noclassres ? this.loadClass(name) :
+				rv = (__noclassres ? this.loadClass(name) :
 					this.resolveClass(name));
-				
-				// Resolve the class object
-				SpringClass classClass = this.resolveClass(
-					new ClassName("java/lang/Class"));
-				
-				// Initialize class with special class index and some class
-				// information
-				rv = this.newInstance(classClass.name(), new MethodDescriptor(
-					"(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)V"),
-					new TypeObject(machine, resClass));
-				
-				// Store it
-				classClass.setClassObject(rv);
 				
 				// Cache and use it
 				com.put(name, rv);
@@ -1388,12 +1377,32 @@ public final class SpringThreadWorker
 	 */
 	public boolean verboseCheck(int __flags)
 	{
-		// Was tracing enabled for this flag?
-		if ((this.machine._globalTrace & __flags) != 0)
-			return true;
+		VMTraceFlagTracker verbose = this._verbose;
 		
+		// Determine the current frame level
 		SpringThreadFrame frame = this.thread.currentFrame();
-		return this._verbose.check((frame == null ? 0 : frame.level), __flags);
+		int level = (frame == null ? 0 : frame.level);
+		
+		// Are these exclusion flags applicable?
+		boolean excludeMain = ((this.machine._globalTrace &
+			VerboseDebugFlag.NOT_MAIN_THREAD) != 0) ||
+			verbose.check(level, VerboseDebugFlag.NOT_MAIN_THREAD);
+		boolean excludeNonDef = ((this.machine._globalTrace &
+			VerboseDebugFlag.DEFAULT_PACKAGE) != 0) ||
+			verbose.check(level, VerboseDebugFlag.DEFAULT_PACKAGE);
+		
+		// Excluding the main thread?
+		if (excludeMain && this.thread.isMain())
+			return false;
+		
+		// Excluding non-default classes?
+		if (excludeNonDef && frame != null && frame.springClass != null &&
+			!"".equals(frame.springClass.name().inPackage().toString()))
+			return false;
+		
+		// Otherwise, if it is set globally or locally per frame
+		return ((this.machine._globalTrace & __flags) != 0) ||
+			verbose.check(level, __flags);
 	}
 	
 	/**
@@ -2039,8 +2048,8 @@ public final class SpringThreadWorker
 					// Compare double, NaN is positive
 				case InstructionIndex.DCMPG:
 					{
-						double b = frame.<Float>popFromStack(Float.class),
-							a = frame.<Float>popFromStack(Float.class);
+						double b = frame.<Double>popFromStack(Double.class),
+							a = frame.<Double>popFromStack(Double.class);
 						
 						if (Double.isNaN(a) || Double.isNaN(b))
 							frame.pushToStack(1);
@@ -3630,14 +3639,17 @@ public final class SpringThreadWorker
 		// that is the simplest action
 		catch (SpringException e)
 		{
-			// Verbose debug?
-			if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION))
+			// Verbose debug? Or always emit if method is missing
+			if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION) ||
+				(e instanceof SpringNoSuchMethodException))
 			{
 				this.verboseEmit("-------------------------------");
 				this.verboseEmit("Exception, %s: %s",
 					e.getClass().getName(), e.getMessage());
 				
-				e.printStackTrace();
+				this.thread.printStackTrace(System.err);
+				this.verboseEmit("...............................");
+				e.printStackTrace(System.err);
 				
 				this.verboseEmit("-------------------------------");
 			}
@@ -3782,7 +3794,8 @@ public final class SpringThreadWorker
 		
 		// Re-lookup the method since we need to the right one! Then invoke it
 		else
-			this.__vmEnterFrame(objClass.lookupMethod(false, ref.memberNameAndType()), args);
+			this.__vmEnterFrame(objClass.lookupMethod(false,
+				ref.memberNameAndType()), args);
 	}
 	
 	/**

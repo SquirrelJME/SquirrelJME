@@ -13,8 +13,8 @@
  * @since 2024/01/08
  */
 
-#ifndef SQUIRRELJME_ATOMIC_H
-#define SQUIRRELJME_ATOMIC_H
+#ifndef SJME_C_ATOMIC_H
+#define SJME_C_ATOMIC_H
 
 #if defined(SJME_MEMIO_ATOMIC_C11)
 	#include <stdatomic.h>
@@ -164,7 +164,7 @@ extern "C" {
 	defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
 	defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
 	defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY) || \
-	defined(SJME_CONFIG_HAS_ATOMIC_OLD)
+	defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
 
 /**
  * Declares an atomic type.
@@ -213,7 +213,10 @@ SJME_ATOMIC_DECLARE(sjme_jobject, 0);
 /** Atomic @c sjme_jclass. */
 SJME_ATOMIC_DECLARE(sjme_jclass, 0);
 
-#if defined(SJME_CONFIG_HAS_ATOMIC_OLD)
+/** Atomic @c sjme_charSeq. */
+SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
+
+#if defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
 
 /**
  * Disable interrupts.

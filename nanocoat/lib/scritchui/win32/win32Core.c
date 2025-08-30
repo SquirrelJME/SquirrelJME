@@ -11,7 +11,7 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
-static LRESULT sjme_scritchui_win32_windowProcForward(
+static LRESULT WINAPI sjme_scritchui_win32_windowProcForward(
 	HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	sjme_scritchui inState;
@@ -41,64 +41,64 @@ static LRESULT sjme_scritchui_win32_windowProcForward(
 
 static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 {
-	.apiInit = sjme_scritchui_win32_apiInit,
-	.choiceItemInsert = NULL,
-	.choiceItemRemove = NULL,
-	.choiceItemSetEnabled = NULL,
-	.choiceItemSetImage = NULL,
-	.choiceItemSetSelected = NULL,
-	.choiceItemSetString = NULL,
-	.componentFocusGrab = sjme_scritchui_win32_componentFocusGrab,
-	.componentFocusHas = sjme_scritchui_win32_componentFocusHas,
-	.componentPosition = sjme_scritchui_win32_componentPosition,
-	.componentRepaint = sjme_scritchui_win32_componentRepaint,
-	.componentRevalidate = sjme_scritchui_win32_componentRevalidate,
-	.componentSetActivateListener = NULL,
-	.componentSetInputListener = NULL,
-	.componentSetPaintListener =
-		sjme_scritchui_win32_componentSetPaintListener,
-	.componentSetSizeListener = NULL,
-	.componentSetVisibleListener = NULL,
-	.componentSize = sjme_scritchui_win32_componentSize,
-	.containerAdd = sjme_scritchui_win32_containerAdd,
-	.containerRemove = sjme_scritchui_win32_containerRemove,
-	.containerSetBounds = sjme_scritchui_win32_containerSetBounds,
-	.hardwareGraphics = NULL,
-	.labelSetString = sjme_scritchui_win32_labelSetString,
-	.lafDpiProject = NULL,
-	.lafElementColor = sjme_scritchui_win32_lafElementColor,
-	.listNew = NULL,
-	.loopExecute = NULL,
-	.loopExecuteLater = sjme_scritchui_win32_loopExecuteLater,
-	.loopExecuteWait = NULL,
-	.loopIterate = sjme_scritchui_win32_loopIterate,
-	.menuBarNew = sjme_scritchui_win32_menuBarNew,
-	.menuInsert = sjme_scritchui_win32_menuInsert,
-	.menuItemNew = sjme_scritchui_win32_menuItemNew,
-	.menuNew = sjme_scritchui_win32_menuNew,
-	.menuRemove = sjme_scritchui_win32_menuRemove,
-	.panelEnableFocus = sjme_scritchui_win32_panelEnableFocus,
-	.panelNew = sjme_scritchui_win32_panelNew,
-	.screens = sjme_scritchui_win32_screens,
-	.scrollPanelNew = sjme_scritchui_win32_scrollPanelNew,
-	.viewGetView = sjme_scritchui_win32_viewGetView,
-	.viewSetArea = sjme_scritchui_win32_viewSetArea,
-	.viewSetView = sjme_scritchui_win32_viewSetView,
-	.viewSetViewListener = NULL,
-	.windowContentMinimumSize = sjme_scritchui_win32_windowContentMinimumSize,
-	.windowNew = sjme_scritchui_win32_windowNew,
-	.windowSetCloseListener = NULL,
-	.windowSetMenuBar = sjme_scritchui_win32_windowSetMenuBar,
-	.windowSetVisible = sjme_scritchui_win32_windowSetVisible,
+	sjme_sm(.apiInit, sjme_scritchui_win32_apiInit),
+	sjme_sm(.choiceItemInsert, NULL),
+	sjme_sm(.choiceItemRemove, NULL),
+	sjme_sm(.choiceItemSetEnabled, NULL),
+	sjme_sm(.choiceItemSetImage, NULL),
+	sjme_sm(.choiceItemSetSelected, NULL),
+	sjme_sm(.choiceItemSetString, NULL),
+	sjme_sm(.componentFocusGrab, sjme_scritchui_win32_componentFocusGrab),
+	sjme_sm(.componentFocusHas, sjme_scritchui_win32_componentFocusHas),
+	sjme_sm(.componentPosition, sjme_scritchui_win32_componentPosition),
+	sjme_sm(.componentRepaint, sjme_scritchui_win32_componentRepaint),
+	sjme_sm(.componentRevalidate, sjme_scritchui_win32_componentRevalidate),
+	sjme_sm(.componentSetActivateListener, NULL),
+	sjme_sm(.componentSetInputListener, NULL),
+	sjme_sm(.componentSetPaintListener,
+		sjme_scritchui_win32_componentSetPaintListener),
+	sjme_sm(.componentSetSizeListener, NULL),
+	sjme_sm(.componentSetVisibleListener, NULL),
+	sjme_sm(.componentSize, sjme_scritchui_win32_componentSize),
+	sjme_sm(.containerAdd, sjme_scritchui_win32_containerAdd),
+	sjme_sm(.containerRemove, sjme_scritchui_win32_containerRemove),
+	sjme_sm(.containerSetBounds, sjme_scritchui_win32_containerSetBounds),
+	sjme_sm(.hardwareGraphics, NULL),
+	sjme_sm(.labelSetString, sjme_scritchui_win32_labelSetString),
+	sjme_sm(.lafDpiProject, NULL),
+	sjme_sm(.lafElementColor, sjme_scritchui_win32_lafElementColor),
+	sjme_sm(.listNew, NULL),
+	sjme_sm(.loopExecute, NULL),
+	sjme_sm(.loopExecuteLater, sjme_scritchui_win32_loopExecuteLater),
+	sjme_sm(.loopExecuteWait, NULL),
+	sjme_sm(.loopIterate, sjme_scritchui_win32_loopIterate),
+	sjme_sm(.menuBarNew, sjme_scritchui_win32_menuBarNew),
+	sjme_sm(.menuInsert, sjme_scritchui_win32_menuInsert),
+	sjme_sm(.menuItemNew, sjme_scritchui_win32_menuItemNew),
+	sjme_sm(.menuNew, sjme_scritchui_win32_menuNew),
+	sjme_sm(.menuRemove, sjme_scritchui_win32_menuRemove),
+	sjme_sm(.panelEnableFocus, sjme_scritchui_win32_panelEnableFocus),
+	sjme_sm(.panelNew, sjme_scritchui_win32_panelNew),
+	sjme_sm(.screens, sjme_scritchui_win32_screens),
+	sjme_sm(.scrollPanelNew, sjme_scritchui_win32_scrollPanelNew),
+	sjme_sm(.viewGetView, sjme_scritchui_win32_viewGetView),
+	sjme_sm(.viewSetArea, sjme_scritchui_win32_viewSetArea),
+	sjme_sm(.viewSetView, sjme_scritchui_win32_viewSetView),
+	sjme_sm(.viewSetViewListener, NULL),
+	sjme_sm(.windowContentMinimumSize, sjme_scritchui_win32_windowContentMinimumSize),
+	sjme_sm(.windowNew, sjme_scritchui_win32_windowNew),
+	sjme_sm(.windowSetCloseListener, NULL),
+	sjme_sm(.windowSetMenuBar, sjme_scritchui_win32_windowSetMenuBar),
+	sjme_sm(.windowSetVisible, sjme_scritchui_win32_windowSetVisible),
 };
 
 static const sjme_scritchui_implInternFunctions
 	sjme_scritchui_win32InternFunctions =
 {
-	.getLastError = sjme_scritchui_win32_intern_getLastError,
-	.recoverComponent = sjme_scritchui_win32_intern_recoverComponent,
-	.windowProc = sjme_scritchui_win32_intern_windowProc,
-	.windowProcWin32 = sjme_scritchui_win32_windowProcForward,
+	sjme_sm(.getLastError, sjme_scritchui_win32_intern_getLastError),
+	sjme_sm(.recoverComponent, sjme_scritchui_win32_intern_recoverComponent),
+	sjme_sm(.windowProc, sjme_scritchui_win32_intern_windowProc),
+	sjme_sm(.windowProcWin32, sjme_scritchui_win32_windowProcForward),
 };
 
 static sjme_thread_result sjme_attrThreadCall sjme_scritchui_win32_loopMain(
@@ -132,7 +132,10 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_win32_loopMain(
 	else
 	{
 		voidWindow = CreateWindowEx(
-			WS_EX_NOACTIVATE | WS_EX_NOPARENTNOTIFY,
+#if defined(WS_EX_NOACTIVATE)
+			WS_EX_NOACTIVATE |
+#endif
+			WS_EX_NOPARENTNOTIFY,
 			"Static",
 			"SquirrelJME Void",
 			WS_DISABLED | WS_OVERLAPPED,
@@ -172,12 +175,12 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_win32_loopMain(
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
-sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(win32)(
+sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(win32)(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
@@ -212,6 +215,9 @@ sjme_errorCode sjme_scritchui_win32_apiInit(
 	
 	/* This is a standard desktop. */
 	inState->wmType = SJME_SCRITCHUI_WM_TYPE_STANDARD_DESKTOP;
+
+	/* The number pad uses the calculator layout. */
+	inState->platformFlags |= SJME_SCRITCHUI_LAF_PLATFORM_NUMPAD_CALC_LAYOUT;
 	
 	/* Are we on Windows 9x? */
 	memset(&winVer, 0, sizeof(winVer));

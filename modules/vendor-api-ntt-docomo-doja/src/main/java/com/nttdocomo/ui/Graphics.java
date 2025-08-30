@@ -11,8 +11,10 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import cc.squirreljme.runtime.nttdocomo.ui.EightBitImageStore;
-import com.nttdocomo.opt.ui.Graphics2;
+import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
+import cc.squirreljme.runtime.nttdocomo.ui.LockFlush;
 import javax.microedition.lcdui.game.Sprite;
 
 /**
@@ -23,7 +25,6 @@ import javax.microedition.lcdui.game.Sprite;
  */
 @Api
 public class Graphics
-	extends Graphics2
 {
 	/** {@code #00FF00} via {@link #getColorOfName(int)}. */
 	@Api
@@ -122,10 +123,10 @@ public class Graphics
 	public static final int YELLOW = 6;
 	
 	/** The background color for {@link #clearRect(int, int, int, int)}. */
-	private final __BGColor__ _bgColor;
+	private final BGColor _bgColor;
 	
 	/** The flush handler, which is optional. */
-	private final __LockFlush__ _lockFlush;
+	private final LockFlush _lockFlush;
 	
 	/** The base graphics to forward to. */
 	private final javax.microedition.lcdui.Graphics _graphics;
@@ -133,6 +134,12 @@ public class Graphics
 	/** The default image flip mode. */
 	private volatile int _flipMode =
 		Graphics.FLIP_NONE;
+	
+	/** Emoji color determination. */
+	private volatile boolean _emojiColor;
+	
+	/** Is this disposed? */
+	private volatile boolean _disposed;
 	
 	/**
 	 * Wraps the given graphics object.
@@ -145,8 +152,8 @@ public class Graphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/14
 	 */
-	Graphics(javax.microedition.lcdui.Graphics __g, __BGColor__ __bgColor,
-		__LockFlush__ __flush)
+	protected Graphics(javax.microedition.lcdui.Graphics __g,
+		BGColor __bgColor, LockFlush __flush)
 		throws NullPointerException
 	{
 		if (__g == null)
@@ -172,6 +179,8 @@ public class Graphics
 		if (__w == 0 || __h == 0)
 			return;
 		
+		this.__checkDispose();
+		
 		javax.microedition.lcdui.Graphics graphics = this._graphics;
 		
 		// The clearing is just drawing the standard background color over
@@ -180,7 +189,7 @@ public class Graphics
 		try
 		{
 			// Use background color of the display
-			graphics.setAlphaColor(this._bgColor._bgColor);
+			graphics.setAlphaColor(this._bgColor.bgColor);
 			
 			// Use standard rectangular draw
 			graphics.fillRect(__x, __y, __w, __h);
@@ -196,13 +205,21 @@ public class Graphics
 	@Api
 	public Graphics copy()
 	{
+		this.__checkDispose();
+		
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Disposes the current graphics context.
+	 *
+	 * @since 2025/06/15
+	 */
 	@Api
 	public void dispose()
 	{
-		throw Debugging.todo();
+		// Set dispose flag, which is only considered on DoJa 2
+		this._disposed = true;
 	}
 	
 	/**
@@ -238,6 +255,8 @@ public class Graphics
 	public void drawArc(int __x, int __y, int __w, int __h,
 		int __startAngle, int __arcAngle)
 	{
+		this.__checkDispose();
+		
 		this._graphics.drawArc(__x, __y, __w, __h, __startAngle, __arcAngle);
 	}
 	
@@ -245,6 +264,9 @@ public class Graphics
 	public void drawChars(char[] __c, int __x, int __y, int __off, int __len)
 		throws IllegalArgumentException
 	{
+		this.__checkDispose();
+		
+		// TODO: Support default emoji color
 		throw Debugging.todo();
 	}
 	
@@ -254,6 +276,9 @@ public class Graphics
 	{
 		if (__i == null)
 			throw new NullPointerException("NARG");
+		
+		this.__checkDispose();
+		
 		
 		this.drawImage(__i, __x, __y, 0, 0,
 			__i.getWidth(), __i.getHeight());
@@ -267,6 +292,9 @@ public class Graphics
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
+		this.__checkDispose();
+		
+		
 		// Forward to other call, as it simplifies the shared logic
 		this.drawScaledImage(__i,
 			__dx, __dy, __w, __h,
@@ -276,6 +304,8 @@ public class Graphics
 	@Api
 	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
+		this.__checkDispose();
+		
 		this._graphics.drawLine(__x1, __y1, __x2, __y2);
 	}
 	
@@ -283,6 +313,8 @@ public class Graphics
 	public void drawPolyline(int[] __x, int[] __y, int __n)
 		throws IllegalArgumentException
 	{
+		this.__checkDispose();
+		
 		throw Debugging.todo();
 	}
 	
@@ -298,6 +330,8 @@ public class Graphics
 		if (__w == 0 || __h == 0)
 			return;
 		
+		this.__checkDispose();
+		
 		this._graphics.drawRect(__x, __y, __w, __h);
 	}
 	
@@ -310,6 +344,8 @@ public class Graphics
 			throw new NullPointerException("NARG");
 		if (__dw < 0 || __dh < 0 || __sw < 0 || __sh < 0)
 			throw new IllegalArgumentException("ILLA");
+		
+		this.__checkDispose();
 		
 		// Which image is being drawn?
 		javax.microedition.lcdui.Image target;
@@ -364,6 +400,9 @@ public class Graphics
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
+		this.__checkDispose();
+		
+		// TODO: Support default emoji color
 		this._graphics.drawString(__s, __x, __y,
 			javax.microedition.lcdui.Graphics.BASELINE);
 	}
@@ -392,6 +431,8 @@ public class Graphics
 	public void fillArc(int __x, int __y, int __w, int __h,
 		int __startAngle, int __arcAngle)
 	{
+		this.__checkDispose();
+		
 		this._graphics.fillArc(__x, __y, __w, __h, __startAngle, __arcAngle);
 	}
 	
@@ -399,6 +440,8 @@ public class Graphics
 	public void fillPolygon(int[] __x, int[] __y, int __n)
 		throws IllegalArgumentException
 	{
+		this.__checkDispose();
+		
 		throw Debugging.todo();
 	}
 	
@@ -414,6 +457,8 @@ public class Graphics
 		if (__w == 0 || __h == 0)
 			return;
 		
+		this.__checkDispose();
+		
 		this._graphics.fillRect(__x, __y, __w, __h);
 	}
 	
@@ -426,9 +471,11 @@ public class Graphics
 	@Api
 	public void lock()
 	{
-		__LockFlush__ lockFlush = this._lockFlush;
+		this.__checkDispose();
+		
+		LockFlush lockFlush = this._lockFlush;
 		if (lockFlush != null)
-			lockFlush.__lock();
+			lockFlush.lock();
 	}
 	
 	/**
@@ -444,6 +491,8 @@ public class Graphics
 	@Api
 	public void setClip(int __x, int __y, int __w, int __h)
 	{
+		this.__checkDispose();
+		
 		this._graphics.setClip(__x, __y, __w, __h);
 	}
 	
@@ -459,7 +508,13 @@ public class Graphics
 	public void setColor(int __c)
 		throws IllegalArgumentException
 	{
-		this._graphics.setColor(__c);
+		this.__checkDispose();
+		
+		// Before 4.0, alpha is completely excluded from the color
+		if (DoJaRuntime.versionBefore(4, 0))
+			this._graphics.setAlphaColor(__c | 0xFF_000000);
+		else
+			this._graphics.setAlphaColor(__c);
 	}
 	
 	/**
@@ -484,6 +539,8 @@ public class Graphics
 			__mode != Graphics.FLIP_VERTICAL)
 			throw new IllegalArgumentException("AH1f " + __mode);
 		
+		this.__checkDispose();
+		
 		// Set it
 		this._flipMode = __mode;
 	}
@@ -502,6 +559,8 @@ public class Graphics
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
+		this.__checkDispose();
+		
 		this._graphics.setFont(__f._midpFont);
 	}
 	
@@ -515,9 +574,159 @@ public class Graphics
 	@Api
 	public void setOrigin(int __x, int __y)
 	{
+		this.__checkDispose();
+		
 		javax.microedition.lcdui.Graphics graphics = this._graphics;
 		graphics.translate(__x - graphics.getTranslateX(),
 			__y - graphics.getTranslateY());
+	}
+	
+	/**
+	 * Sets whether emoji colors are determined by {@link #setColor(int)} or
+	 * by the system.
+	 *
+	 * @param __enabled If emoji color is determined by {@link #setColor(int)}.
+	 * @since 2025/06/15
+	 */
+	@Api
+	public void setPictoColorEnabled(boolean __enabled)
+	{
+		this.__checkDispose();
+		
+		this._emojiColor = __enabled;
+		
+		// TODO: Support default emoji color
+		Debugging.todoNote("Support default emoji color.");
+	}
+	
+	/**
+	 * Sets the pixel at the given coordinates with the current color.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @since 2025/06/15
+	 */
+	@Api
+	public void setPixel(int __x, int __y)
+	{
+		this.__checkDispose();
+		
+		javax.microedition.lcdui.Graphics graphics = this._graphics;
+		graphics.drawLine(__x, __y, __x + 1, __y);
+	}
+	
+	/**
+	 * Sets the pixel at the given coordinates with the given color.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __rgb The {@link #getColorOfRGB(int, int, int)} to use.
+	 * @since 2025/06/15
+	 */
+	@Api
+	public void setPixel(int __x, int __y, int __rgb)
+	{
+		this.__checkDispose();
+		
+		javax.microedition.lcdui.Graphics graphics = this._graphics;
+		int oldColor = graphics.getAlphaColor();
+		try
+		{
+			// There is no alpha before DoJa 4
+			if (DoJaRuntime.versionBefore(4, 0))
+				graphics.setAlphaColor(__rgb | 0xFF_000000);
+			else
+				graphics.setAlphaColor(__rgb);
+			
+			graphics.drawLine(__x, __y, __x + 1, __y);
+		}
+		finally
+		{
+			graphics.setAlphaColor(oldColor);
+		}
+	}
+	
+	/**
+	 * Draws the given buffer as RGB data.
+	 *
+	 * @param __x The destination X coordinate.
+	 * @param __y The destination Y coordinate.
+	 * @param __w The buffer width.
+	 * @param __h The buffer height.
+	 * @param __buf The buffer pixel data.
+	 * @param __off The offset into the buffer.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or calculated
+	 * length is outside the buffer bounds.
+	 * @throws IllegalArgumentException If the width and/or height are zero
+	 * or negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/15
+	 */
+	@Api
+	public void setPixels(int __x, int __y, int __w, int __h, int[] __buf,
+		int __off)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
+	{
+		if (__buf == null)
+			throw new NullPointerException("NARG");
+		if (__w <= 0 || __h <= 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		int len = __w * __h;
+		if (__off < 0 || (__off + len) > __buf.length || (__off + len) < 0)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		this.__checkDispose();
+		
+		// Draw the RGB data, alpha is only considered valid when at least
+		// DoJa 4 since this has the same behavior as getColorOfRGB()
+		javax.microedition.lcdui.Graphics graphics = this._graphics;
+		graphics.drawRGB(__buf, __off, len, __x, __y, __w, __h,
+			DoJaRuntime.versionLeast(4, 0));
+	}
+	
+	/**
+	 * Same as {@link #setPixel(int, int, int)}.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __rgb The {@link #getColorOfRGB(int, int, int)} to use.
+	 * @since 2025/06/15
+	 */
+	@Api
+	public void setRGBPixel(int __x, int __y, int __rgb)
+	{
+		this.__checkDispose();
+		
+		this.setPixel(__x, __y, __rgb);
+	}
+	
+	/**
+	 * Same as {@link #setPixels(int, int, int, int, int[], int)}.
+	 *
+	 * @param __x The destination X coordinate.
+	 * @param __y The destination Y coordinate.
+	 * @param __w The buffer width.
+	 * @param __h The buffer height.
+	 * @param __buf The buffer pixel data.
+	 * @param __off The offset into the buffer.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or calculated
+	 * length is outside the buffer bounds.
+	 * @throws IllegalArgumentException If the width and/or height are zero
+	 * or negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/15
+	 */
+	@Api
+	public void setRGBPixels(int __x, int __y, int __w, int __h, int[] __buf,
+		int __off)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
+	{
+		this.__checkDispose();
+		
+		this.setPixels(__x, __y, __w, __h, __buf, __off);
 	}
 	
 	/**
@@ -531,9 +740,26 @@ public class Graphics
 	@Api
 	public void unlock(boolean __forced)
 	{
-		__LockFlush__ lockFlush = this._lockFlush;
+		this.__checkDispose();
+		
+		LockFlush lockFlush = this._lockFlush;
 		if (lockFlush != null)
-			lockFlush.__unlock(__forced);
+			lockFlush.unlock(__forced);
+	}
+	
+	/**
+	 * Checks whether the current graphics is disposed, note that this fails
+	 * only on DoJa 2 and up.
+	 *
+	 * @throws UIException If this has been disposed.
+	 * @since 2025/06/15
+	 */
+	private void __checkDispose()
+		throws UIException
+	{
+		if (DoJaRuntime.versionLeast(2, 0))
+			if (this._disposed)
+				throw new UIException(UIException.ILLEGAL_STATE);
 	}
 	
 	/**
@@ -578,40 +804,48 @@ public class Graphics
 	public static int getColorOfName(int __name)
 		throws IllegalArgumentException
 	{
+		// Before 4.0, negative values are never returned
+		int alphaMask;
+		if (DoJaRuntime.versionBefore(4, 0))
+			alphaMask = 0;
+		else
+			alphaMask = 0xFF_000000;
+		
+		// Depends on the color name
 		switch (__name)
 		{
 			case Graphics.AQUA:
-				return 0x00FFFF;
+				return 0x00FFFF | alphaMask;
 			case Graphics.BLACK:
-				return 0x000000;
+				return 0x000000 | alphaMask;
 			case Graphics.BLUE:
-				return 0x0000FF;
+				return 0x0000FF | alphaMask;
 			case Graphics.FUCHSIA:
-				return 0xFF00FF;
+				return 0xFF00FF | alphaMask;
 			case Graphics.GRAY:
-				return 0x808080;
+				return 0x808080 | alphaMask;
 			case Graphics.GREEN:
-				return 0x008000;
+				return 0x008000 | alphaMask;
 			case Graphics.LIME:
-				return 0x00FF00;
+				return 0x00FF00 | alphaMask;
 			case Graphics.MAROON:
-				return 0x800000;
+				return 0x800000 | alphaMask;
 			case Graphics.NAVY:
-				return 0x000080;
+				return 0x000080 | alphaMask;
 			case Graphics.OLIVE:
-				return 0x808000;
+				return 0x808000 | alphaMask;
 			case Graphics.PURPLE:
-				return 0x800080;
+				return 0x800080 | alphaMask;
 			case Graphics.RED:
-				return 0xFF0000;
+				return 0xFF0000 | alphaMask;
 			case Graphics.SILVER:
-				return 0xC0C0C0;
+				return 0xC0C0C0 | alphaMask;
 			case Graphics.TEAL:
-				return 0x008080;
+				return 0x008080 | alphaMask;
 			case Graphics.WHITE:
-				return 0xFFFFFF;
+				return 0xFFFFFF | alphaMask;
 			case Graphics.YELLOW:
-				return 0xFFFF00;
+				return 0xFFFF00 | alphaMask;
 		}
 		
 		// {@squirreljme.error AH0r Invalid color. (The color)}
@@ -621,6 +855,9 @@ public class Graphics
 	@Api
 	public static int getColorOfRGB(int __r, int __g, int __b)
 	{
+		// Before 4.0, negative values are never returned
+		if (DoJaRuntime.versionBefore(4, 0))
+			return Graphics.getColorOfRGB(__r, __g, __b, 0);
 		return Graphics.getColorOfRGB(__r, __g, __b, 255);
 	}
 	
@@ -665,8 +902,8 @@ public class Graphics
 	private static javax.microedition.lcdui.Image __recoverImage(Image __i)
 		throws UIException
 	{
-		if (__i instanceof __MIDPImage__)
-			return ((__MIDPImage__)__i).__midpImage();
+		if (__i != null)
+			return __i._midpImage;
 		
 		// Mutable image
 		else if (__i instanceof __MutableImage__)

@@ -40,7 +40,6 @@
       <option name="VISIBILITY" value="protected" />
       <option name="REPLACE_NULL_CHECK" value="false" />
       <option name="REPLACE_SUM" value="false" />
-      <option name="ENUM_FIELD_ANNOTATION_WRAP" value="2" />
       <option name="BLANK_LINES_AROUND_FIELD_WITH_ANNOTATIONS" value="1" />
       <option name="CLASS_NAMES_IN_JAVADOC" value="3" />
       <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99" />
@@ -50,6 +49,7 @@
       </option>
       <option name="IMPORT_LAYOUT_TABLE">
         <value>
+          <package name="" withSubpackages="true" static="false" module="true" />
           <package name="" withSubpackages="true" static="false" />
           <package name="" withSubpackages="true" static="true" />
         </value>

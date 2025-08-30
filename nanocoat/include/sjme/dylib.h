@@ -13,8 +13,8 @@
  * @since 2024/03/27
  */
 
-#ifndef SQUIRRELJME_DYLIB_H
-#define SQUIRRELJME_DYLIB_H
+#ifndef SJME_C_DYLIB_H
+#define SJME_C_DYLIB_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/error.h"
@@ -31,15 +31,16 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-#if defined(SJME_CONFIG_HAS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/** Symbol is exported through a library. */
-	#define SJME_DYLIB_EXPORT __declspec(dllexport)
-#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	#define sjme_attrExport __declspec(dllexport)
+#elif defined(SJME_CONFIG_HAS_GCC) || \
+	defined(SJME_CONFIG_HAS_CLANG)
 	/** Symbol is exported through a library. */
-	#define SJME_DYLIB_EXPORT __attribute__((visibility("default")))
+	#define sjme_attrExport __attribute__((visibility("default")))
 #else
 	/** Symbol is exported through a library. */
-	#define SJME_DYLIB_EXPORT
+	#define sjme_attrExport
 #endif
 
 #if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
@@ -118,7 +119,7 @@ sjme_errorCode sjme_dylib_self(
 	sjme_attrInOutNotNull sjme_dylib* outLib);
 
 /** The debug handlers to use. */
-extern SJME_DYLIB_EXPORT
+extern sjme_attrExport
 	sjme_debug_handlerFunctions* sjme_debug_handlers;
 
 /*--------------------------------------------------------------------------*/

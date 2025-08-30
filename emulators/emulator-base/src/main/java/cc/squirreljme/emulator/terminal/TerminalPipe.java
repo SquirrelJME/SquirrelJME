@@ -22,6 +22,17 @@ public interface TerminalPipe
 	extends Closeable
 {
 	/**
+	 * Returns the number of bytes that are available for read.
+	 *
+	 * @return The number of bytes available for read.
+	 * @throws IOException If this failed to be determined.
+	 * @throws MLECallWouldFail If this is not an input pipe.
+	 * @since 2025/07/09
+	 */
+	int available()
+		throws IOException, MLECallWouldFail;
+	
+	/**
 	 * Closes the output.
 	 * 
 	 * @throws IOException On close errors.
@@ -41,6 +52,20 @@ public interface TerminalPipe
 		throws IOException;
 	
 	/**
+	 * Reads a single byte from the given pipe.
+	 * 
+	 * @return The value of the given byte or EOF.
+	 * @throws IOException On read errors.
+	 * @throws MLECallWouldFail If the offset and/or length are
+	 * negative or exceed the array bounds or on null arguments.
+	 * @since 2020/07/06
+	 */
+	int read()
+		throws IOException, MLECallWouldFail;
+	
+	/**
+	 * Reads from the given pipe.
+	 * 
 	 * @param __b The buffer.
 	 * @param __o The offset into the buffer.
 	 * @param __l The length.

@@ -15,68 +15,68 @@
 /** GTK Function set for Scritch UI. */
 static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 {
-	.apiInit = sjme_scritchui_gtk2_apiInit,
-	.choiceItemInsert = NULL,
-	.choiceItemRemove = NULL,
-	.choiceItemSetEnabled = NULL,
-	.choiceItemSetImage = NULL,
-	.choiceItemSetSelected = NULL,
-	.choiceItemSetString = NULL,
-	.componentFocusGrab = sjme_scritchui_gtk2_componentFocusGrab,
-	.componentFocusHas = sjme_scritchui_gtk2_componentFocusHas,
-	.componentPosition = NULL,
-	.componentRepaint = sjme_scritchui_gtk2_componentRepaint,
-	.componentRevalidate = sjme_scritchui_gtk2_componentRevalidate,
-	.componentSetActivateListener = NULL,
-	.componentSetInputListener = sjme_scritchui_gtk2_componentSetInputListener,
-	.componentSetPaintListener = sjme_scritchui_gtk2_componentSetPaintListener,
-	.componentSetSizeListener = sjme_scritchui_gtk2_componentSetSizeListener,
-	.componentSetVisibleListener = NULL,
-	.componentSize = sjme_scritchui_gtk2_componentSize,
-	.containerAdd = sjme_scritchui_gtk2_containerAdd,
-	.containerRemove = sjme_scritchui_gtk2_containerRemove,
-	.containerSetBounds = sjme_scritchui_gtk2_containerSetBounds,
-	.labelSetString = sjme_scritchui_gtk2_labelSetString,
-	.lafDpiProject = NULL,
-	.lafElementColor = sjme_scritchui_gtk2_lafElementColor,
-	.listNew = NULL,
-	.loopExecute = NULL,
-	.loopExecuteLater = sjme_scritchui_gtk2_loopExecuteLater,
-	.loopExecuteWait = NULL,
-	.loopIterate = NULL,
-	.menuBarNew = sjme_scritchui_gtk2_menuBarNew,
-	.menuInsert = sjme_scritchui_gtk2_menuInsert,
-	.menuItemNew = sjme_scritchui_gtk2_menuItemNew,
-	.menuNew = sjme_scritchui_gtk2_menuNew,
-	.menuRemove = sjme_scritchui_gtk2_menuRemove,
-	.panelEnableFocus = sjme_scritchui_gtk2_panelEnableFocus,
-	.panelNew = sjme_scritchui_gtk2_panelNew,
-	.screens = sjme_scritchui_gtk2_screens,
-	.scrollPanelNew = sjme_scritchui_gtk2_scrollPanelNew,
-	.viewGetView = sjme_scritchui_gtk2_viewGetView,
-	.viewSetArea = sjme_scritchui_gtk2_viewSetArea,
-	.viewSetView = sjme_scritchui_gtk2_viewSetView,
-	.viewSetViewListener = sjme_scritchui_gtk2_viewSetViewListener,
-	.windowContentMinimumSize = sjme_scritchui_gtk2_windowContentMinimumSize,
-	.windowNew = sjme_scritchui_gtk2_windowNew,
-	.windowSetCloseListener = sjme_scritchui_gtk2_windowSetCloseListenerFunc,
-	.windowSetMenuBar = sjme_scritchui_gtk2_windowSetMenuBar,
-	.windowSetVisible = sjme_scritchui_gtk2_windowSetVisible,
+	sjme_sm(.apiInit, sjme_scritchui_gtk2_apiInit),
+	sjme_sm(.choiceItemInsert, NULL),
+	sjme_sm(.choiceItemRemove, NULL),
+	sjme_sm(.choiceItemSetEnabled, NULL),
+	sjme_sm(.choiceItemSetImage, NULL),
+	sjme_sm(.choiceItemSetSelected, NULL),
+	sjme_sm(.choiceItemSetString, NULL),
+	sjme_sm(.componentFocusGrab, sjme_scritchui_gtk2_componentFocusGrab),
+	sjme_sm(.componentFocusHas, sjme_scritchui_gtk2_componentFocusHas),
+	sjme_sm(.componentPosition, NULL),
+	sjme_sm(.componentRepaint, sjme_scritchui_gtk2_componentRepaint),
+	sjme_sm(.componentRevalidate, sjme_scritchui_gtk2_componentRevalidate),
+	sjme_sm(.componentSetActivateListener, NULL),
+	sjme_sm(.componentSetInputListener, sjme_scritchui_gtk2_componentSetInputListener),
+	sjme_sm(.componentSetPaintListener, sjme_scritchui_gtk2_componentSetPaintListener),
+	sjme_sm(.componentSetSizeListener, sjme_scritchui_gtk2_componentSetSizeListener),
+	sjme_sm(.componentSetVisibleListener, NULL),
+	sjme_sm(.componentSize, sjme_scritchui_gtk2_componentSize),
+	sjme_sm(.containerAdd, sjme_scritchui_gtk2_containerAdd),
+	sjme_sm(.containerRemove, sjme_scritchui_gtk2_containerRemove),
+	sjme_sm(.containerSetBounds, sjme_scritchui_gtk2_containerSetBounds),
+	sjme_sm(.labelSetString, sjme_scritchui_gtk2_labelSetString),
+	sjme_sm(.lafDpiProject, NULL),
+	sjme_sm(.lafElementColor, sjme_scritchui_gtk2_lafElementColor),
+	sjme_sm(.listNew, NULL),
+	sjme_sm(.loopExecute, NULL),
+	sjme_sm(.loopExecuteLater, sjme_scritchui_gtk2_loopExecuteLater),
+	sjme_sm(.loopExecuteWait, NULL),
+	sjme_sm(.loopIterate, NULL),
+	sjme_sm(.menuBarNew, sjme_scritchui_gtk2_menuBarNew),
+	sjme_sm(.menuInsert, sjme_scritchui_gtk2_menuInsert),
+	sjme_sm(.menuItemNew, sjme_scritchui_gtk2_menuItemNew),
+	sjme_sm(.menuNew, sjme_scritchui_gtk2_menuNew),
+	sjme_sm(.menuRemove, sjme_scritchui_gtk2_menuRemove),
+	sjme_sm(.panelEnableFocus, sjme_scritchui_gtk2_panelEnableFocus),
+	sjme_sm(.panelNew, sjme_scritchui_gtk2_panelNew),
+	sjme_sm(.screens, sjme_scritchui_gtk2_screens),
+	sjme_sm(.scrollPanelNew, sjme_scritchui_gtk2_scrollPanelNew),
+	sjme_sm(.viewGetView, sjme_scritchui_gtk2_viewGetView),
+	sjme_sm(.viewSetArea, sjme_scritchui_gtk2_viewSetArea),
+	sjme_sm(.viewSetView, sjme_scritchui_gtk2_viewSetView),
+	sjme_sm(.viewSetViewListener, sjme_scritchui_gtk2_viewSetViewListener),
+	sjme_sm(.windowContentMinimumSize, sjme_scritchui_gtk2_windowContentMinimumSize),
+	sjme_sm(.windowNew, sjme_scritchui_gtk2_windowNew),
+	sjme_sm(.windowSetCloseListener, sjme_scritchui_gtk2_windowSetCloseListenerFunc),
+	sjme_sm(.windowSetMenuBar, sjme_scritchui_gtk2_windowSetMenuBar),
+	sjme_sm(.windowSetVisible, sjme_scritchui_gtk2_windowSetVisible),
 };
 
 /** Internal implementation functions. */
 static const sjme_scritchui_implInternFunctions
 	sjme_scritchui_gtk2InternFunctions =
 {
-	.accelUpdate = sjme_scritchui_gtk2_intern_accelUpdate,
-	.checkError = sjme_scritchui_gtk2_intern_checkError,
-	.disconnectSignal = sjme_scritchui_gtk2_intern_disconnectSignal,
-	.reconnectSignal = sjme_scritchui_gtk2_intern_reconnectSignal,
-	.mapGtkToScritchKey = sjme_scritchui_gtk2_intern_mapGtkToScritchKey,
-	.mapGtkToScritchMod = sjme_scritchui_gtk2_intern_mapGtkToScritchMod,
-	.mapScritchToGtkKey = sjme_scritchui_gtk2_intern_mapScritchToGtkKey,
-	.mapScritchToGtkMod = sjme_scritchui_gtk2_intern_mapScritchToGtkMod,
-	.widgetInit = sjme_scritchui_gtk2_intern_widgetInit,
+	sjme_sm(.accelUpdate, sjme_scritchui_gtk2_intern_accelUpdate),
+	sjme_sm(.checkError, sjme_scritchui_gtk2_intern_checkError),
+	sjme_sm(.disconnectSignal, sjme_scritchui_gtk2_intern_disconnectSignal),
+	sjme_sm(.reconnectSignal, sjme_scritchui_gtk2_intern_reconnectSignal),
+	sjme_sm(.mapGtkToScritchKey, sjme_scritchui_gtk2_intern_mapGtkToScritchKey),
+	sjme_sm(.mapGtkToScritchMod, sjme_scritchui_gtk2_intern_mapGtkToScritchMod),
+	sjme_sm(.mapScritchToGtkKey, sjme_scritchui_gtk2_intern_mapScritchToGtkKey),
+	sjme_sm(.mapScritchToGtkMod, sjme_scritchui_gtk2_intern_mapScritchToGtkMod),
+	sjme_sm(.widgetInit, sjme_scritchui_gtk2_intern_widgetInit),
 };
 
 static sjme_thread_result sjme_scritchui_gtk2_loopMain(
@@ -125,12 +125,12 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
-sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
+sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(gtk2)(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
@@ -163,6 +163,9 @@ sjme_errorCode sjme_scritchui_gtk2_apiInit(
 	
 	/* This is a standard desktop. */
 	inState->wmType = SJME_SCRITCHUI_WM_TYPE_STANDARD_DESKTOP;
+
+	/* The number pad uses the calculator layout. */
+	inState->platformFlags |= SJME_SCRITCHUI_LAF_PLATFORM_NUMPAD_CALC_LAYOUT;
 		
 	/* Debug. */
 	sjme_message("GTK thread setup...");

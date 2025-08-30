@@ -12,6 +12,41 @@
 #include "sjme/stdTypes.h"
 #include "sjme/util.h"
 #include "sjme/debug.h"
+#include "sjme/atomic.h"
+
+static sjme_errorCode sjme_random_generate(
+	sjme_attrInOutNotNull sjme_random* random,
+	sjme_attrOutNotNull sjme_jint* outValue,
+	sjme_attrInRange(0, 32) sjme_jint bits)
+{
+	sjme_jint result;
+	sjme_jlong seed;
+	
+	if (random == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (bits < 0 || bits > 32)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Emit barrier. */
+	sjme_atomic_barrier();
+	
+	/* Update the seed */
+	seed.full = (random->seed.full * INT64_C(0x5DEECE66D) + INT64_C(0xB)) &
+		((INT64_C(1) << INT64_C(48)) - INT64_C(1));
+	random->seed.full = seed.full;
+
+	/* Calculate resultant value. */
+	result = (sjme_jint)((sjme_julongNative)seed.full >>
+		(UINT64_C(48) - bits));
+	
+	/* Emit barrier. */
+	sjme_atomic_barrier();
+
+	/* Success! */
+	*outValue = result;
+	return SJME_ERROR_NONE;
+}
 
 sjme_jint sjme_compare_null(
 	sjme_attrInNullable sjme_cpointer a,
@@ -29,47 +64,72 @@ sjme_jint sjme_compare_null(
 	return 1;
 }
 
-/**
- * Initializes the random number generator.
- * 
- * @param outRandom The random state to initialize. 
- * @param seedHi The high seed value.
- * @param seedLo The low seed value.
- * @return Returns @c SJME_JNI_TRUE on success.
- * @since 2023/12/02
- */
-sjme_errorCode sjme_randomInit(
+sjme_errorCode sjme_random_init(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue sjme_jint seedHi,
 	sjme_attrInValue sjme_jint seedLo)
 {
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_jlong seed;
+
+	/* Unwrap seed. */
+	seed.part.lo = seedLo;
+	seed.part.hi = seedHi;
+	return sjme_random_initL(outRandom, seed);
 }
 
-sjme_errorCode sjme_randomInitL(
+sjme_errorCode sjme_random_initL(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue sjme_jlong seed)
 {
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	if (outRandom == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Emit barrier. */
+	sjme_atomic_barrier();
+
+	/* Set seed value. */
+	outRandom->seed.full = (seed.full ^ INT64_C(0x5DEECE66D)) &
+		((INT64_C(1) << INT64_C(48)) - INT64_C(1));
+	
+	/* Emit barrier. */
+	sjme_atomic_barrier();
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_randomNextInt(
+sjme_errorCode sjme_random_nextInt(
 	sjme_attrInOutNotNull sjme_random* random,
 	sjme_attrOutNotNull sjme_jint* outValue)
 {
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward to the generator. */
+	return sjme_random_generate(random, outValue, 32);
+}
+
+sjme_jint sjme_random_nextIntR(
+	sjme_attrInOutNotNull sjme_random* random)
+{
+	sjme_jint result;
+	
+	if (random == NULL)
+		return 0;
+
+	/* Load next random. */
+	result = 0;
+	if (sjme_error_is(sjme_random_generate(random, &result, 32)))
+		return 0;
+
+	/* Return it. */
+	return result;
 }
 	
-sjme_errorCode sjme_randomNextIntMax(
+sjme_errorCode sjme_random_nextIntMax(
 	sjme_attrInOutNotNull sjme_random* random,
 	sjme_attrOutNotNull sjme_jint* outValue,
 	sjme_attrInPositiveNonZero sjme_jint maxValue)
 {
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index)
@@ -304,7 +364,7 @@ sjme_jint sjme_string_length(sjme_lpcstr string)
 sjme_jint sjme_string_lengthN(sjme_lpcstr string, sjme_jint limit)
 {
 	sjme_jint result;
-	sjme_jint c;
+	sjme_jint c, rawIndex;
 	sjme_lpcstr p;
 	
 	if (string == NULL || limit < 0)
@@ -312,7 +372,8 @@ sjme_jint sjme_string_lengthN(sjme_lpcstr string, sjme_jint limit)
 
 	/* Read until end of string. */
 	result = 0;
-	for (p = string; *p != 0 && result < limit;)
+	rawIndex = 0;
+	for (p = string; *p != 0 && result < limit && rawIndex < limit; rawIndex++)
 	{
 		/* Decode character. */
 		c = sjme_string_decodeChar(p, &p);
@@ -425,6 +486,22 @@ sjme_errorCode sjme_swap_uint_memmove(
 	return SJME_ERROR_NONE;
 }
 
+sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
+	sjme_intPointer align)
+{
+	sjme_intPointer mod;
+	
+	/* Force alignment to be valid. */
+	if (align <= 0)
+		align = 1;
+
+	/* Perform alignment. */
+	mod = (addr % align);
+	if (mod == 0)
+		return addr;
+	return addr + (align - mod);
+}
+
 sjme_juint sjme_util_intBitCountU(
 	sjme_attrInValue sjme_juint v)
 {
@@ -524,7 +601,7 @@ sjme_errorCode sjme_util_intToBinary(
 		*(wp++) = ((inVal & sh) != 0 ? '1' : '0');
 	
 	/* End with NUL. */
-	*(wp++) = '\0';
+	*(wp) = '\0';
 	return SJME_ERROR_NONE;
 }
 
@@ -578,23 +655,60 @@ sjme_errorCode sjme_util_lpstrTrimEnd(
 
 #if defined(SJME_CONFIG_HAS_NO_UNALIGNED16)
 
+/** Filler for unaligned 16-bit access. */
+#define SJME_UTIL_UNALIGNED_16_FILL 8
+
 const sjme_jshort* sjme_util_memUnaligned16(void* addr)
 {
-	sjme_attrThreadLocal(sjme_jshort, temp);
+	sjme_threadLocal(sjme_jshort, temp[SJME_UTIL_UNALIGNED_16_FILL]);
+	sjme_threadLocal(sjme_atomic_sjme_jint, fill);
+	sjme_jshort* into;
 	sjme_jubyte* bytes;
 
 	/* Map in. */
+	into = &temp[sjme_atomic_sjme_jint_getAdd(&fill, 1) &
+		(SJME_UTIL_UNALIGNED_16_FILL - 1)];
 	bytes = addr;
 #if defined(SJME_CONFIG_HAS_BIG_ENDIAN)
-	temp = ((bytes[0] & 0xFF) << 8) |
+	(*into) = ((bytes[0] & 0xFF) << 8) |
 		(bytes[1] & 0xFF);
 #else
-	temp = ((bytes[1] & 0xFF) << 8) |
+	(*into) = ((bytes[1] & 0xFF) << 8) |
 		(bytes[0] & 0xFF);
 #endif
 
 	/* Return address of temporary. */
-	return &temp;
+	return into;
+}
+
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_UNALIGNED32)
+
+/** Filler for unaligned 32-bit access. */
+#define SJME_UTIL_UNALIGNED_32_FILL 4
+
+const sjme_jint* sjme_util_memUnaligned32(void* addr)
+{
+	sjme_threadLocal(sjme_jint, temp[SJME_UTIL_UNALIGNED_32_FILL]);
+	sjme_threadLocal(sjme_atomic_sjme_jint, fill);
+	sjme_jint* into;
+	sjme_jushort* shorts;
+
+	/* Map in. */
+	into = &temp[sjme_atomic_sjme_jint_getAdd(&fill, 1) &
+		(SJME_UTIL_UNALIGNED_32_FILL - 1)];
+	shorts = addr;
+#if defined(SJME_CONFIG_HAS_BIG_ENDIAN)
+	(*into) = (((*sjme_util_memUnaligned16(&shorts[0])) & 0xFFFF) << 16) |
+		((*sjme_util_memUnaligned16(&shorts[1])) & 0xFF);
+#else
+	(*into) = (((*sjme_util_memUnaligned16(&shorts[1])) & 0xFFFF) << 16) |
+		((*sjme_util_memUnaligned16(&shorts[0])) & 0xFF);
+#endif
+
+	/* Return address of temporary. */
+	return into;
 }
 
 #endif

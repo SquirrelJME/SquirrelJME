@@ -16,9 +16,7 @@ import cc.squirreljme.jvm.launch.IModeApplication;
 import cc.squirreljme.jvm.launch.SuiteScanner;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.ReflectionShelf;
-import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.midlet.MIDlet;
@@ -84,11 +82,10 @@ public class DoJaMIDletAdapter
 		
 		// Try to find the entry class
 		String maybeClass = app.loaderEntryClass();
-		TypeBracket type;
+		Class<?> type;
 		try
 		{
-			type = TypeShelf.classToType(
-				Class.forName(maybeClass));
+			type = Class.forName(maybeClass);
 		}
 		catch (ClassNotFoundException __e)
 		{

@@ -65,14 +65,14 @@ static sjme_errorCode sjme_stream_outputByteArrayClose(
 	
 	/* Initialize result. */
 	memset(&result, 0, sizeof(result));
-	result.array = inImplState->buffer;
+	result.array = (void*)inImplState->buffer;
 	result.length = stream->totalWritten;
 	result.free = SJME_JNI_TRUE;
-	result.whatever = inImplState->handleTwo;
+	result.whatever = inImplState->handleTwo.p;
 	
 	/* Recover finisher. */
-	finish = inImplState->handle;
-	finishData = inImplState->handleTwo;
+	finish = (sjme_stream_outputByteArrayFinishFunc)inImplState->handle.f;
+	finishData = inImplState->handleTwo.p;
 	
 	/* Call the finish handler, if there is one. */
 	if (finish != NULL)
@@ -118,8 +118,8 @@ static sjme_errorCode sjme_stream_outputByteArrayInit(
 	
 	/* Setup state. */
 	inImplState->buffer = initBuf;
-	inImplState->handle = init->finish;
-	inImplState->handleTwo = init->finishData;
+	inImplState->handle.f = (sjme_undefinedFunction)init->finish;
+	inImplState->handleTwo.p = init->finishData;
 	inImplState->limit = init->initialLimit;
 	
 	/* Success! */
@@ -135,7 +135,7 @@ fail_initBufAlloc:
 static sjme_errorCode sjme_stream_outputByteArrayWrite(
 	sjme_attrInNotNull sjme_stream_output stream,
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
-	sjme_attrInNotNull sjme_cpointer buf,
+	sjme_attrInNotNull sjme_buffer buf,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
 #define GROW_SIZE 32
@@ -181,9 +181,10 @@ static sjme_errorCode sjme_stream_outputByteArrayWrite(
 
 static const sjme_stream_outputFunctions sjme_stream_outputByteArrayFunctions =
 {
-	.close = sjme_stream_outputByteArrayClose,
-	.init = sjme_stream_outputByteArrayInit,
-	.write = sjme_stream_outputByteArrayWrite,
+	sjme_sm(.close, sjme_stream_outputByteArrayClose),
+	sjme_sm(.flush, NULL),
+	sjme_sm(.init, sjme_stream_outputByteArrayInit),
+	sjme_sm(.write, sjme_stream_outputByteArrayWrite),
 };
 
 sjme_errorCode sjme_stream_outputOpenByteArray(

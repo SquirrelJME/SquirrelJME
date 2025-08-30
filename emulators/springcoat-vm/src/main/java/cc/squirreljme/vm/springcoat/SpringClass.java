@@ -43,7 +43,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/07/21
  */
 public interface SpringClass
-	extends HasAccessibleFlags
+	extends HasAccessibleFlags, SpringObject
 {
 	/**
 	 * Returns the class loader which loaded this class.
@@ -173,7 +173,7 @@ public interface SpringClass
 	
 	/**
 	 * Checks if this class can be assigned from the target class, that is
-	 * {@code this = (ThisClass)__o}.
+	 * {@code this == (ThisClass)__o}.
 	 *
 	 * This is the same as {@link Class#isInstance(Object)} except it works
 	 * only on class representations.

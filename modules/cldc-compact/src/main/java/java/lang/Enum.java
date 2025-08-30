@@ -10,7 +10,6 @@
 package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
@@ -181,7 +180,7 @@ public abstract class Enum<E extends Enum<E>>
 			throw new NullPointerException("NARG");
 		
 		/* {@squirreljme.error ZZ3x Type is not an enumeration. (The type)} */
-		TypeBracket type = TypeShelf.classToType(__cl);
+		Class<?> type = __cl;
 		if (!TypeShelf.isEnum(type))
 			throw new ClassCastException("ZZ3x " + __cl);
 		

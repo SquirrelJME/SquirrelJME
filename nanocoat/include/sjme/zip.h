@@ -13,8 +13,8 @@
  * @since 2023/12/31
  */
 
-#ifndef SQUIRRELJME_ZIP_H
-#define SQUIRRELJME_ZIP_H
+#ifndef SJME_C_ZIP_H
+#define SJME_C_ZIP_H
 
 #include "sjme/stream.h"
 #include "sjme/seekable.h"
@@ -67,7 +67,7 @@ typedef struct sjme_zipBase
 	sjme_seekable seekable;
 	
 	/** The lock for accessing the Zip. */
-	sjme_thread_spinLock lock;
+	sjme_alignPointer sjme_thread_spinLock lock;
 } sjme_zipBase;
 
 /**

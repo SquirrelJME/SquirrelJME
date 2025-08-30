@@ -26,3 +26,6 @@ add_dependencies(libJri
 target_include_directories(libJri PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
 	"${CMAKE_SOURCE_DIR}/include/3rdparty/jri")
+
+# Link required libraries
+squirreljme_target_link_libraries_required(libJri)

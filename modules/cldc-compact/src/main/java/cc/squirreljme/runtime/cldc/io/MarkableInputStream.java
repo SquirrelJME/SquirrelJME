@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -143,7 +144,7 @@ public class MarkableInputStream
 			int oldLen = writeAt - readAt;
 			
 			// Slam all the bytes down
-			System.arraycopy((oldCache == null ? cache : oldCache), readAt,
+			ObjectShelf.arrayCopy((oldCache == null ? cache : oldCache), readAt,
 				cache, 0, oldLen);
 			
 			// Set new position parameters
@@ -281,7 +282,7 @@ public class MarkableInputStream
 			int copyLen = Math.min(cacheReadLimit, left);
 			
 			// Copy the buffer over
-			System.arraycopy(cache, readAt,
+			ObjectShelf.arrayCopy(cache, readAt,
 				__b, outAt, copyLen);
 			
 			// Adjust parameters
@@ -333,7 +334,7 @@ public class MarkableInputStream
 			
 			// Copy what we can into the target buffer
 			int copyLimit = Math.min(rc, left);
-			System.arraycopy(cache, readAt,
+			ObjectShelf.arrayCopy(cache, readAt,
 				__b, outAt, copyLimit);
 			outAt += copyLimit; 
 			left -= copyLimit;

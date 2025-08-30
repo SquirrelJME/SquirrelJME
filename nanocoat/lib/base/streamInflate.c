@@ -36,7 +36,7 @@ static sjme_errorCode sjme_stream_inputInflateClose(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Do nothing if already closed. */
-	state = inImplState->handle;
+	state = inImplState->handle.p;
 	if (state == NULL)
 		return SJME_ERROR_NONE;
 	
@@ -45,7 +45,7 @@ static sjme_errorCode sjme_stream_inputInflateClose(
 		return sjme_error_default(error);
 	
 	/* The state is now not valid. */
-	inImplState->handle = NULL;
+	inImplState->handle.p = NULL;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -63,7 +63,7 @@ static sjme_errorCode sjme_stream_inputInflateInit(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Set data. */
-	inImplState->handle = init->handle;
+	inImplState->handle.p = init->handle;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -88,7 +88,7 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Recover state, fail if closed. */
-	inState = inImplState->handle;
+	inState = inImplState->handle.p;
 	if (inState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
@@ -109,9 +109,10 @@ static sjme_errorCode sjme_stream_inputInflateRead(
 /** Input deflate functions. */
 static const sjme_stream_inputFunctions sjme_stream_inputInflateFunctions =
 {
-	.close = sjme_stream_inputInflateClose,
-	.init = sjme_stream_inputInflateInit,
-	.read = sjme_stream_inputInflateRead,
+	sjme_sm(.available, NULL),
+	sjme_sm(.close, sjme_stream_inputInflateClose),
+	sjme_sm(.init, sjme_stream_inputInflateInit),
+	sjme_sm(.read, sjme_stream_inputInflateRead),
 };
 
 sjme_errorCode sjme_stream_inputOpenInflate(

@@ -38,4 +38,7 @@ dependencies {
 	// Jackson, for JSON APIs
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr353:2.17.2'
 	implementation 'org.glassfish:javax.json:1.1'
+	
+	// Install4J, for building installers (10.0.9 supports Java 8)
+	implementation 'com.install4j.gradle:com.install4j.gradle.gradle.plugin:10.0.9'
 }

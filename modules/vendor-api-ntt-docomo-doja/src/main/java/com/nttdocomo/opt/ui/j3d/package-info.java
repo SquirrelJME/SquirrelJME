@@ -13,4 +13,4 @@
  * @since 2024/08/11
  */
 
-package com.nttdocomo.ui.j3d;
+package com.nttdocomo.opt.ui.j3d;

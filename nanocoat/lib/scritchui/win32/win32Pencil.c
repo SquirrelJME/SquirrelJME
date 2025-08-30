@@ -26,8 +26,8 @@ static sjme_errorCode sjme_scritchui_win32_pencilUpdatePen(
 	
 	/* Recover window and drawing context. */
 	inState = g->common.state;
-	hWnd = g->frontEnd.wrapper;
-	hDc = g->frontEnd.data;
+	hWnd = g->frontEnd.base.wrapper;
+	hDc = g->frontEnd.base.data;
 	
 	/* Setup pen details. */
 	memset(&penInfo, 0, sizeof(penInfo));
@@ -66,7 +66,7 @@ static sjme_errorCode sjme_scritchui_win32_pencilDrawHorizSrc(
 	
 	/* Recover window and drawing context. */
 	inState = g->common.state;
-	hDc = g->frontEnd.data;
+	hDc = g->frontEnd.base.data;
 	
 	/* Draw line. */
 	MoveToEx(hDc, x, y, NULL);
@@ -91,7 +91,7 @@ static sjme_errorCode sjme_scritchui_win32_pencilDrawLineSrc(
 	
 	/* Recover window and drawing context. */
 	inState = g->common.state;
-	hDc = g->frontEnd.data;
+	hDc = g->frontEnd.base.data;
 	
 	/* Draw line. */
 	MoveToEx(hDc, x1, y1, NULL);
@@ -118,8 +118,8 @@ static sjme_errorCode sjme_scritchui_win32_pencilRawScanGet(
 	
 	/* Recover window and drawing context. */
 	inState = g->common.state;
-	hWnd = g->frontEnd.wrapper;
-	hDc = g->frontEnd.data;
+	hWnd = g->frontEnd.base.wrapper;
+	hDc = g->frontEnd.base.data;
 
 #if 0
 	return sjme_error_notImplemented(0);
@@ -147,8 +147,8 @@ static sjme_errorCode sjme_scritchui_win32_pencilRawScanPutPure(
 	
 	/* Recover window and drawing context. */
 	inState = g->common.state;
-	hWnd = g->frontEnd.wrapper;
-	hDc = g->frontEnd.data;
+	hWnd = g->frontEnd.base.wrapper;
+	hDc = g->frontEnd.base.data;
 	
 	/* Allocate bitmap info. */
 	bmpLen = sizeof(BITMAPINFO) + (sizeof(DWORD) * 4);
@@ -214,8 +214,8 @@ static sjme_errorCode sjme_scritchui_win32_pencilSetClip(
 	
 	/* Recover window and drawing context. */
 	inState = g->common.state;
-	hWnd = g->frontEnd.wrapper;
-	hDc = g->frontEnd.data;
+	hWnd = g->frontEnd.base.wrapper;
+	hDc = g->frontEnd.base.data;
 	
 	/* Setup clipping region. */
 	SetLastError(0);
@@ -252,17 +252,20 @@ static sjme_errorCode sjme_scritchui_win32_pencilSetStrokeStyle(
 
 const sjme_scritchui_pencilImplFunctions sjme_scritchui_win32_pencilFunctions =
 {
-	.copyArea = NULL,
-	.drawHorizSrc = sjme_scritchui_win32_pencilDrawHorizSrc,
-	.drawHorizSrcOver = NULL,
-	.drawLineSrc = sjme_scritchui_win32_pencilDrawLineSrc,
-	.drawLineSrcOver = NULL,
-	.drawPixelSrc = NULL,
-	.drawPixelSrcOver = NULL,
-	.rawScanGet = sjme_scritchui_win32_pencilRawScanGet,
-	.rawScanPutPure = sjme_scritchui_win32_pencilRawScanPutPure,
-	.setAlphaColor = sjme_scritchui_win32_pencilSetAlphaColor,
-	.setBlendingMode = NULL,
-	.setClip = sjme_scritchui_win32_pencilSetClip,
-	.setStrokeStyle = sjme_scritchui_win32_pencilSetStrokeStyle,
+	SJME_JNI_FALSE,
+	sjme_sm(.close, NULL),
+	sjme_sm(.copyArea, NULL),
+	sjme_sm(.drawHorizSrc, sjme_scritchui_win32_pencilDrawHorizSrc),
+	sjme_sm(.drawHorizSrcOver, NULL),
+	sjme_sm(.drawLineSrc, sjme_scritchui_win32_pencilDrawLineSrc),
+	sjme_sm(.drawLineSrcOver, NULL),
+	sjme_sm(.drawPixelSrc, NULL),
+	sjme_sm(.drawPixelSrcOver, NULL),
+	sjme_sm(.mapColor, NULL),
+	sjme_sm(.rawScanGet, sjme_scritchui_win32_pencilRawScanGet),
+	sjme_sm(.rawScanPutPure, sjme_scritchui_win32_pencilRawScanPutPure),
+	sjme_sm(.setAlphaColor, sjme_scritchui_win32_pencilSetAlphaColor),
+	sjme_sm(.setBlendingMode, NULL),
+	sjme_sm(.setClip, sjme_scritchui_win32_pencilSetClip),
+	sjme_sm(.setStrokeStyle, sjme_scritchui_win32_pencilSetStrokeStyle),
 };

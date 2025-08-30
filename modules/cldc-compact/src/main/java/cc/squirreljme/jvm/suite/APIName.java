@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 
 /**
@@ -16,10 +17,12 @@ import cc.squirreljme.runtime.cldc.util.StringUtils;
  *
  * @since 2017/11/30
  */
+@SquirrelJMEVendorApi
 public final class APIName
 	implements Comparable<APIName>
 {
 	/** The name of the API. */
+	@SquirrelJMEVendorApi
 	protected final String string;
 	
 	/**
@@ -30,6 +33,7 @@ public final class APIName
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
+	@SquirrelJMEVendorApi
 	public APIName(String __n)
 		throws InvalidSuiteException, NullPointerException
 	{

@@ -13,8 +13,8 @@
  * @since 2024/09/28
  */
 
-#ifndef SQUIRRELJME_TESTCLOSEABLE_H
-#define SQUIRRELJME_TESTCLOSEABLE_H
+#ifndef SJME_C_TESTCLOSEABLE_H
+#define SJME_C_TESTCLOSEABLE_H
 
 #include "sjme/alloc.h"
 #include "sjme/closeable.h"
@@ -32,7 +32,7 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 sjme_errorCode testCloseable_new(
-	sjme_attrInNotNull sjme_alloc_pool inPool,
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_closeable* outCloseable,
 	sjme_attrInNotNull sjme_closeable_closeHandlerFunc handlerFunc,
 	sjme_attrInValue sjme_jboolean isRefCounted);

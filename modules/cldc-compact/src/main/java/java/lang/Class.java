@@ -13,9 +13,9 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.lang.ClassAssertion;
 import java.io.InputStream;
 
 /**
@@ -28,19 +28,6 @@ import java.io.InputStream;
 @Api
 public final class Class<T>
 {
-	/** This is the prefix that is used for assertion checks. */
-	private static final String _ASSERTION_PREFIX =
-		"cc.squirreljme.runtime.noassert.";
-	
-	/** The type shelf for this class. */
-	private final TypeBracket _type;
-	
-	/** Has the assertion status been checked already? */
-	private volatile boolean _checkedAssert;
-	
-	/** Is this class being asserted? */
-	private volatile boolean _useAssert;
-	
 	/**
 	 * Initializes the class reference holder.
 	 *
@@ -48,13 +35,11 @@ public final class Class<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/07
 	 */
-	private Class(TypeBracket __type)
+	private Class(Class<?> __type)
 		throws NullPointerException
 	{
 		if (__type == null)
 			throw new NullPointerException("NARG");
-		
-		this._type = __type;
 	}
 	
 	/**
@@ -93,7 +78,7 @@ public final class Class<T>
 	 * Casts the object to this class, checking it.
 	 *
 	 * @param __o The object to cast.
-	 * @return The casted object.
+	 * @return The cast object.
 	 * @throws ClassCastException If the type is not matched.
 	 * @since 2018/09/29
 	 */
@@ -117,7 +102,7 @@ public final class Class<T>
 	}
 	
 	/**
-	 * Returns whether or not assertions should be enabled in the specified
+	 * Returns whether assertions should be enabled in the specified
 	 * class, this is used internally by the virtual machine to determine if
 	 * assertions should fail or not.
 	 *
@@ -133,12 +118,7 @@ public final class Class<T>
 	@Api
 	public boolean desiredAssertionStatus()
 	{
-		// If assertions have been checked, they do not have to be rechecked
-		if (this._checkedAssert)
-			return this._useAssert;
-		
-		// Otherwise check it
-		return this.__checkAssertionStatus();
+		return ClassAssertion.desiredAssertionStatus(this);
 	}
 	
 	/**
@@ -150,7 +130,7 @@ public final class Class<T>
 	@Api
 	public String getName()
 	{
-		return TypeShelf.runtimeName(this._type);
+		return TypeShelf.runtimeName(this);
 	}
 	
 	/**
@@ -199,7 +179,8 @@ public final class Class<T>
 			want = __name.substring(1);
 		else
 		{
-			String binName = TypeShelf.binaryPackageName(this._type);
+			String binName = TypeShelf.binaryPackageName(
+				this);
 			
 			if (binName.isEmpty())
 				want = __name;
@@ -208,7 +189,8 @@ public final class Class<T>
 		}
 		
 		// If our class is within a JAR try to search our own JAR first
-		JarPackageBracket inJar = TypeShelf.inJar(this._type);
+		JarPackageBracket inJar = TypeShelf.inJar(
+			this);
 		if (inJar != null)
 		{
 			InputStream rv = JarPackageShelf.openResource(inJar, want);
@@ -235,10 +217,10 @@ public final class Class<T>
 	 * @since 2017/03/29
 	 */
 	@Api
+	@SuppressWarnings("unchecked")
 	public Class<? super T> getSuperclass()
 	{
-		TypeBracket rv = TypeShelf.superClass(this._type);
-		return (rv == null ? null : TypeShelf.typeToClass(rv));
+		return (Class<? super T>)TypeShelf.superClass(this);
 	}
 	
 	/**
@@ -250,7 +232,7 @@ public final class Class<T>
 	@Api
 	public boolean isArray()
 	{
-		return TypeShelf.isArray(this._type);
+		return TypeShelf.isArray(this);
 	}
 	
 	/**
@@ -276,8 +258,7 @@ public final class Class<T>
 		if (this == __cl)
 			return true;
 			
-		return TypeShelf.isAssignableFrom(this._type,
-			TypeShelf.classToType(__cl));
+		return TypeShelf.isAssignableFrom(this, __cl);
 	}
 	
 	/**
@@ -289,7 +270,7 @@ public final class Class<T>
 	@Api
 	public boolean isInterface()
 	{
-		return TypeShelf.isInterface(this._type);
+		return TypeShelf.isInterface(this);
 	}
 	
 	/**
@@ -327,7 +308,7 @@ public final class Class<T>
 	{
 		Debugging.todoNote("Implement newInstance() access checks.");
 		
-		Object rv = ObjectShelf.newInstance(this._type);
+		Object rv = ObjectShelf.newInstance(this);
 		if (rv == null)
 			throw new OutOfMemoryError("OOME");
 		
@@ -342,48 +323,10 @@ public final class Class<T>
 	public String toString()
 	{
 		// Arrays and primitive types essentially just use the binary name
-		TypeBracket type = this._type;
-		if (TypeShelf.isArray(type) || TypeShelf.isPrimitive(type))
-			return TypeShelf.binaryName(type);
+		if (TypeShelf.isArray(this) || TypeShelf.isPrimitive(this))
+			return TypeShelf.binaryName(this);
 		
 		return (this.isInterface() ? "interface " : "class ") + this.getName();
-	}
-	
-	/**
-	 * This checks whether assertions should be **disabled** for this class (or
-	 * for the entire package).
-	 *
-	 * @return The assertions status to use.
-	 * @since 2016/10/09
-	 */
-	private boolean __checkAssertionStatus()
-	{
-		// Default to true
-		boolean rv = true;
-		
-		// Determine class name
-		String cn = this.getName();
-		String prop = Class._ASSERTION_PREFIX + cn;
-		
-		// Disabled for this class?
-		if (Boolean.getBoolean(prop))
-			rv = false;
-		
-		// Disabled for this package?
-		else
-		{
-			// Find last dot, if there is none then this is just the default
-			// package so never bother checking the package
-			int ld = cn.lastIndexOf('.');
-			if (ld > 0 && Boolean.getBoolean(prop.substring(0,
-				prop.length() - (cn.length() - ld))))
-				rv = false;
-		}
-		
-		// Set as marked
-		this._checkedAssert = true;
-		this._useAssert = rv;
-		return rv;
 	}
 	
 	/**
@@ -415,14 +358,14 @@ public final class Class<T>
 		
 		/* {@squirreljme.error ZZ0z Could not find the specified class. (The
 		name of the class)} */
-		TypeBracket found = TypeShelf.findType(
+		Class<?> found = TypeShelf.findType(
 			__n.replace('.', '/'));
 		if (found == null)
 			throw new ClassNotFoundException("ZZ0z " + __n);
 		
 		// The name will have to be converted to binary form since that is
 		// what is internally used
-		return TypeShelf.typeToClass(found);
+		return found;
 	}
 }
 

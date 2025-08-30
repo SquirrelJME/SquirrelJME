@@ -14,6 +14,8 @@ project(libEmulatorBase
     LANGUAGES C)
 
 # Support bases
+include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/cmake-patch.cmake"
+	NO_POLICY_SCOPE)
 include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/pre-fixes.cmake"
     NO_POLICY_SCOPE)
 include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/utils.cmake"
@@ -33,9 +35,12 @@ message(STATUS "NanoCoat include is: ${nanocoatIncludePath}")
 # Declare library
 add_library(libEmulatorBase SHARED
 	c/jniHelper.c
+	c/mle_audiostream.c
+	c/mle_bucket.c
 	c/mle_debug.c
 	c/mle_jar.c
 	c/mle_math.c
+	c/mle_mathaccel.c
 	c/mle_midi.c
 	c/mle_nativearchive.c
 	c/mle_object.c
@@ -64,7 +69,7 @@ target_include_directories(libEmulatorBase PUBLIC
 
 # Libraries for the build
 get_filename_component(nanocoatLibPath
-	"${CMAKE_SOURCE_DIR}/../emulator-base/build/cmake-libsNativeNanoCoat"
+	"${CMAKE_SOURCE_DIR}/../emulator-base/build/cmake-libsNativeUI"
 	ABSOLUTE)
 message(STATUS "NanoCoat lib is: ${nanocoatLibPath}")
 target_link_directories(libEmulatorBase PUBLIC
@@ -99,3 +104,6 @@ set_target_properties(libEmulatorBase PROPERTIES
 # Always make this position independent
 set_property(TARGET libEmulatorBase
 	PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+# Library Exports
+squirreljme_target_shared_library_exports(libEmulatorBase)

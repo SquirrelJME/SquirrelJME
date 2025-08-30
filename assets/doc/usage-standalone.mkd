@@ -79,6 +79,9 @@ The available options are:
      * `/path/to/directory/**`
      * `/path/to/directory/*.*`
      * `wildcard=/path/to/directory`
+ * `-Xrom:(path)`
+   * Specifies the SpringCoat ROM that should be used by the virtual
+     machine.
  * `-Xscritchui:(ui)`
    * Rather than the default, use a specific user interface library.
    * This may also be set by using `cc.squirreljme.scritchui`.
@@ -87,17 +90,20 @@ The available options are:
      given VisualVM snapshot file.
  * `-XstartOnFirstThread`
    * Ignored.
- * `-Xthread:(single|coop|multi|smt)`
+ * `-Xthread:(single|coop|shared|multi|smt)`
    * Sets the threading mode of the virtual machine.
    * `single`/`coop` -- Single threaded using cooperative multitasking.
+   * `shared` -- Single threaded using preemptive multitasking.
    * `multi`/`smt` -- Multi threaded using asynchronous multitasking.
  * `-Xtrace:option[,option[,...]]` -- Trace options
    * `all` -- Enable all.
    * `allocation` -- Allocations such as `new`.
    * `classInitialize` -- Class is initialized.
+   * `defaultPackage` -- In default package only.
    * `ignoredException` -- Exception that may be ignored.
    * `instructions` -- Instructions being executed.
    * `invokeStatic` -- Static invocations.
+   * `notMainThread` -- Do not trace on the main thread.
    * `methodEntry` -- Entry of methods.
    * `methodExit` -- Exit of methods.
    * `missingClass` -- Class does not exist.
@@ -157,8 +163,13 @@ To override the defaults, you may instead use the following, if any start
 with `~` that is replaced with `$HOME` or `%USERPROFILE%`:
 
  * `SQUIRRELJME_CACHE_HOME` for _Cache_ path.
+   * Alternatively the property `cc.squirreljme.cache.home`.
  * `SQUIRRELJME_CONFIG_HOME` for _Configuration_ path.
+   * Alternatively the property `cc.squirreljme.config.home`.
  * `SQUIRRELJME_DATA_HOME` for _Data_ path.
+   * Alternatively the property `cc.squirreljme.data.home`.
+ * `SQUIRRELJME_STATE_HOME` for _State_ path.
+   * Alternatively the property `cc.squirreljme.state.home`.
 
 SquirrelJME will automatically add to system properties for a properties file:
 
@@ -192,12 +203,18 @@ command `java -XstartOnFirstThread -jar squirreljme-standalone.jar`, as this
 forces OpenJDK and derivatives to have the Cocoa event loop on the first
 thread, which is required for it to work correctly.
 
-## Scaling
+## Framing/Scaling
 
-SquirrelJME supports scaling of any MIDP `Canvas`, to override the default
-scale factor you may specify:
+SquirrelJME supports framing and scaling of any MIDP `Canvas`, to override
+the default scale factor you may specify:
 
- * System property:
-   * `cc.squirreljme.scale=(multiplier|WxH)`
- * Environment Variable:
-   * `SQUIRRELJME_SCALE=(multiplier|WxH)`
+ * Framing -- Sets the default resolution of SquirrelJME
+   * System property:
+     * `cc.squirreljme.frame=WxH`
+   * Environment Variable:
+     * `SQUIRRELJME_FRAME=WxH`
+ * Scaling -- Sets the output resolution that the frame is scaled to
+   * System property:
+     * `cc.squirreljme.scale=(multiplier|WxH)`
+   * Environment Variable:
+     * `SQUIRRELJME_SCALE=(multiplier|WxH)`

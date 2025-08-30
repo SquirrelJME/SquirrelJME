@@ -9,8 +9,9 @@
 
 package com.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
+import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
+import cc.squirreljme.runtime.nttdocomo.ui.LockFlush;
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Graphics;
 
@@ -43,6 +44,10 @@ final class __MIDPCanvas__
 			throw new NullPointerException("NARG");
 		
 		this._imodeCanvas = __imodeCanvas;
+		
+		// This is drawn transparent, as we double buffer and never wipe
+		// what is drawn
+		this.setPaintMode(false);
 	}
 	
 	/**
@@ -105,29 +110,37 @@ final class __MIDPCanvas__
 		if (rv == null)
 			return;
 		
-		// Draw with this buffer size
-		int w = rv.getWidth();
-		int h = rv.getHeight();
-		
-		// Perform a standard paint within i-mode using our double buffered
-		// image
+		// Only draw if not being called out of thread, this is a shim of
+		// sorts for DoJa applications that either draw correctly or draw
+		// themselves in the main loop when they should not
+		LockFlush lockFlush = rv._lockFlush;
 		DoubleBuffer doubleBuffer = this._doubleBuffer;
-		__BGColor__ bgColor = rv._bgColor;
-		Graphics mg = doubleBuffer.getGraphics(w, h);
-		com.nttdocomo.ui.Graphics g = new com.nttdocomo.ui.Graphics(
-			mg, bgColor, null);
+		if (!lockFlush.outOfThread())
+		{
+			// Draw with this buffer size
+			int w = rv.getWidth();
+			int h = rv.getHeight();
+			
+			// Perform a standard paint within i-mode using our double buffered
+			// image
+			BGColor bgColor = rv._bgColor;
+			Graphics mg = doubleBuffer.getGraphics(w, h);
+			com.nttdocomo.ui.Graphics g = new __Graphics2__(mg,
+				bgColor, lockFlush);
+			
+			// Forward paint call
+			rv.paint(g);
+		}
 		
-		// Fill with the background color
-		/*int oldColor = mg.getAlphaColor();
-		mg.setAlphaColor(bgColor._bgColor | 0xFF_000000);
-		mg.fillRect(0, 0, w, h);
-		mg.setAlphaColor(oldColor);*/
-		
-		// Forward paint call
-		rv.paint(g);
-		
-		// Paint the buffer to the given target
-		doubleBuffer.flush();
-		doubleBuffer.paint(__g);
+		// Regardless of whether this drawn in another thread incorrectly,
+		// a number of DoJa software depends on the actual proper drawing to
+		// perform the actual buffer update
+		// If the buffer is locked, do not update as the view will flicker
+		if (!lockFlush.isLocked())
+		{
+			// Paint the buffer to the given target
+			doubleBuffer.flush();
+			doubleBuffer.paint(__g);
+		}
 	}
 }

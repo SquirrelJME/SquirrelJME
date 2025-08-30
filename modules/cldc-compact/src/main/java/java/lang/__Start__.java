@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.UncaughtExceptionHandler;
 import java.util.Objects;
@@ -24,13 +25,16 @@ import java.util.Objects;
  * @since 2020/05/31
  */
 @SuppressWarnings("unused")
+@SquirrelJMEVendorApi
 final class __Start__
 {
 	/** The time to wait between each termination. */
+	@SquirrelJMEVendorApi
 	private static final int _TERM_WAIT_TIME =
 		30_000;
 	
 	/** Exit code for un-handled main exceptions. */
+	@SquirrelJMEVendorApi
 	private static final int _UNHANDLED_EXIT_CODE =
 		61;
 	
@@ -40,20 +44,14 @@ final class __Start__
 	 *
 	 * @since 2020/05/31
 	 */
+	@SquirrelJMEVendorApi
 	static void __base()
 	{
-		// Get both of our thread infos
-		Thread javaThread = ThreadShelf.currentJavaThread();
-		VMThreadBracket vmThread = ThreadShelf.toVMThread(javaThread);
-		
 		// We will need to catch any exceptions that the thread throws and
 		// have some fallback logic for handling it
+		VMThreadBracket vmThread = ThreadShelf.currentVMThread();
 		try
 		{
-			// Mark the thread as alive
-			ThreadShelf.javaThreadFlagStarted(javaThread);
-			ThreadShelf.javaThreadSetAlive(javaThread, true);
-			
 			// Execute the thread, if we are the main thread we use an
 			// alternative run
 			if (ThreadShelf.vmThreadIsMain(vmThread))
@@ -64,6 +62,7 @@ final class __Start__
 			{
 				// Use the thread's runnable or otherwise run the thread itself
 				// if none was used
+				Thread javaThread = ThreadShelf.currentJavaThread();
 				Runnable run = ThreadShelf.javaThreadRunnable(javaThread);
 				if (run == null)
 					run = javaThread;
@@ -93,14 +92,6 @@ final class __Start__
 					"No message."), DebugShelf.getThrowableTrace(t));
 			}
 		}
-		
-		// Make sure the thread is not marked as being alive on termination
-		finally
-		{
-			// Mark the thread as dead
-			ThreadShelf.javaThreadSetAlive(javaThread, false);
-			ThreadShelf.vmThreadEnd(vmThread);
-		}
 	}
 	
 	/**
@@ -108,6 +99,7 @@ final class __Start__
 	 *
 	 * @since 2020/05/31
 	 */
+	@SquirrelJMEVendorApi
 	static void __main()
 	{
 		// Debug

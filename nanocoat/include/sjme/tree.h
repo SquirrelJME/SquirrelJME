@@ -16,8 +16,8 @@
  * @since 2024/01/03
  */
 
-#ifndef SQUIRRELJME_TREE_H
-#define SQUIRRELJME_TREE_H
+#ifndef SJME_C_TREE_H
+#define SJME_C_TREE_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/tokenUtils.h"
@@ -151,7 +151,7 @@ extern "C" {
 	struct rawNodeName \
 	{ \
 		/** Is this red? Or black? */ \
-		sjme_jboolean red : 1; \
+		sjme_jboolean red : sjme_booleanBit; \
 	\
 		/** The node to the left. */ \
 		rawNodeName* left; \

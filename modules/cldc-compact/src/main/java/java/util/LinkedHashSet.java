@@ -10,6 +10,7 @@
 package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is a set which is backed by a hash table except that the iterator
@@ -80,6 +81,12 @@ public class LinkedHashSet<E>
 	public LinkedHashSet(Collection<? extends E> __s)
 	{
 		super(__s);
+	}
+	
+	@Override
+	public Object clone()
+	{
+		throw Debugging.todo();
 	}
 }
 

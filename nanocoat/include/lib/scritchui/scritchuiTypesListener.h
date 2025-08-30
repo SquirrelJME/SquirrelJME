@@ -13,8 +13,8 @@
  * @since 2024/07/29
  */
 
-#ifndef SQUIRRELJME_SCRITCHUITYPESLISTENER_H
-#define SQUIRRELJME_SCRITCHUITYPESLISTENER_H
+#ifndef SJME_C_SCRITCHUITYPESLISTENER_H
+#define SJME_C_SCRITCHUITYPESLISTENER_H
 
 #include "lib/scritchui/scritchui.h"
 
@@ -52,7 +52,7 @@ typedef enum sjme_scritchui_listenerClass
 	typedef struct SJME_TOKEN_PASTE(sjme_scritchui_listener_, what) \
 	{ \
 		/** Front end data. */ \
-		sjme_frontEnd frontEnd; \
+		sjme_frontEndBindable frontEnd; \
 		 \
 		/** Extra data as required. */ \
 		sjme_intPointer extra; \

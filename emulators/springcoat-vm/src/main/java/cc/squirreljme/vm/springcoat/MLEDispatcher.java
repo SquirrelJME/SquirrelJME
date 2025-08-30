@@ -10,8 +10,11 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.AtomicShelf;
+import cc.squirreljme.jvm.mle.AudioStreamShelf;
+import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.MathAccelShelf;
 import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.MidiShelf;
 import cc.squirreljme.jvm.mle.NativeArchiveShelf;
@@ -26,6 +29,9 @@ import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
+import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
+import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -47,6 +53,14 @@ public enum MLEDispatcher
 	ATOMIC("cc/squirreljme/jvm/mle/AtomicShelf",
 		MLEAtomic.values()),
 	
+	/** {@link AudioStreamShelf}. */
+	AUDIO_STREAM("cc/squirreljme/jvm/mle/AudioStreamShelf",
+		MLEAudioStream.values()),
+	
+	/** {@link BucketShelf}. */
+	BUCKET("cc/squirreljme/jvm/mle/BucketShelf",
+		MLEBucket.values()),
+	
 	/** {@link DebugShelf}. */
 	DEBUG("cc/squirreljme/jvm/mle/DebugShelf",
 		MLEDebug.values()),
@@ -58,6 +72,10 @@ public enum MLEDispatcher
 	/** {@link MathShelf}. */
 	MATH("cc/squirreljme/jvm/mle/MathShelf",
 		MLEMath.values()),
+	
+	/** {@link MathAccelShelf}. */
+	MATH_ACCEL("cc/squirreljme/jvm/mle/MathAccelShelf",
+		MLEMathAccel.values()),
 	
 	/** {@link MidiShelf}. */
 	MIDI("cc/squirreljme/jvm/mle/MidiShelf",
@@ -216,5 +234,69 @@ public enum MLEDispatcher
 				String.format("Unwrapped MLECallError calling %s:%s",
 					__class, __func), e);
 		}
+	}
+	
+	/**
+	 * Builds a method key.
+	 *
+	 * @param __name The method name.
+	 * @param __rv The return value.
+	 * @param __args The arguments.
+	 * @return The resultant key.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/07
+	 */
+	protected static String methodKey(String __name, Object __rv,
+		Object... __args)
+		throws NullPointerException
+	{
+		if (__name == null || __rv == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// Start with the base name
+		sb.append(__name);
+		sb.append(':');
+		
+		// Handle each argument
+		sb.append('(');
+		for (Object arg : __args)
+			sb.append(MLEDispatcher.__methodArg(arg));
+		sb.append(')');
+		
+		// Handle return value
+		sb.append(MLEDispatcher.__methodArg(__rv));
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Calculates the argument string.
+	 *
+	 * @param __arg The argument to calculate.
+	 * @return The resultant string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/06/07
+	 */
+	private static String __methodArg(Object __arg)
+		throws NullPointerException
+	{
+		if (__arg == null)
+			throw new NullPointerException("NARG");
+		
+		// Use the class name
+		if (__arg instanceof Class)
+		{
+			Class<?> classy = (Class<?>)__arg;
+			if (classy.isArray())
+				return "[" + MLEDispatcher.__methodArg(
+					classy.getComponentType());
+			return "L" + (classy).getName()
+				.replace('.', '/') + ";";
+		}
+		
+		// Otherwise treat as a string
+		return (String)__arg;
 	}
 }

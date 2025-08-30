@@ -150,11 +150,21 @@ macro(squirreljme_target_shared_library_exports target)
 			${target} RUNTIME_OUTPUT_DIRECTORY_${firstConfig})
 		get_target_property(squirreljme_dylib_output_name
 			${target} RUNTIME_OUTPUT_NAME_${firstConfig})
-	else()
+	endif()
+
+	if(NOT squirreljme_dylib_output_dir)
 		get_target_property(squirreljme_dylib_output_dir
 			${target} RUNTIME_OUTPUT_DIRECTORY)
+	endif()
+	if(NOT squirreljme_dylib_output_name)
 		get_target_property(squirreljme_dylib_output_name
 			${target} RUNTIME_OUTPUT_NAME)
+	endif()
+
+	# If not set, use the default
+	if(NOT squirreljme_dylib_output_dir)
+		set(squirreljme_dylib_output_dir
+			"${CMAKE_CURRENT_BINARY_DIR}")
 	endif()
 
 	if(MSVC)
@@ -162,6 +172,14 @@ macro(squirreljme_target_shared_library_exports target)
 			"/IMPLIB:${squirreljme_dylib_output_dir}/${squirreljme_dylib_output_name}.lib")
 	endif()
 endmacro()
+
+# VC8 and Older
+if(MSVC AND "${MSVC_VERSION}" LESS_EQUAL 1400)
+	# Make sure the multi-byte character set is used
+	remove_definitions(-D_UNICODE)
+	remove_definitions(-DUNICODE)
+	add_definitions(-D_MBCS)
+endif()
 
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	# Turn some warnings into errors
@@ -177,14 +195,28 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	if(SQUIRRELJME_HAS_GCC_FVISIBILITY_HIDDEN)
 		add_compile_options("-fvisibility=hidden")
 	endif()
+
+	# Pedantic warnings?
+	check_c_compiler_flag("-Wpedantic" SQUIRRELJME_HAS_WARN_PEDANTIC)
+	if(SQUIRRELJME_HAS_WARN_PEDANTIC)
+		add_compile_options("-Wpedantic")
+	endif()
+
+	# Can we set the no execute flag for the link?
+	check_c_compiler_flag("-Wl,-z,noexecstack" SQUIRRELJME_HAS_NOEXECSTACK)
+	if(SQUIRRELJME_HAS_NOEXECSTACK)
+		add_compile_options("-Wl,-z,noexecstack")
+	endif()
 endif()
 
 # Quick compilation check
 macro(squirreljme_try_compile noun target source cdef)
+	message(NOTICE "Checking compile of ${noun}...")
 	try_compile(${target}
 		"${CMAKE_CURRENT_BINARY_DIR}"
 		SOURCES "${CMAKE_CURRENT_LIST_DIR}/${source}.c"
 		CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
+			"-DINCLUDE_DIRECTORIES=${CMAKE_SOURCE_DIR}/include"
 		LINK_LIBRARIES ${CMAKE_THREAD_LIBS_INIT}
 		OUTPUT_VARIABLE ${target}_OUTPUT)
 
@@ -195,6 +227,59 @@ macro(squirreljme_try_compile noun target source cdef)
 			${cdef}=1)
 	endif()
 endmacro()
+
+# Find headers
+include(CheckIncludeFile)
+
+# float.h available?
+CHECK_INCLUDE_FILE("float.h" SJME_CONFIG_HAS_FLOAT_H)
+if(NOT SJME_CONFIG_HAS_FLOAT_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_FLOAT_H=1)
+endif()
+
+# dlfcn.h available?
+CHECK_INCLUDE_FILE("dlfcn.h" SJME_CONFIG_HAS_DLFCN_H)
+if(NOT SJME_CONFIG_HAS_DLFCN_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_DLFCN_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_DLFCN_H=1)
+endif()
+
+# stdarg.h available?
+CHECK_INCLUDE_FILE("stdarg.h" SJME_CONFIG_HAS_STDARG_H)
+if(NOT SJME_CONFIG_HAS_STDARG_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_STDARG_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_STDARG_H=1)
+endif()
+
+# inttypes.h available?
+CHECK_INCLUDE_FILE("inttypes.h" SJME_CONFIG_HAS_INTTYPES_H)
+if(NOT SJME_CONFIG_HAS_INTTYPES_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_INTTYPES_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_INTTYPES_H=1)
+endif()
+
+# varargs.h available?
+CHECK_INCLUDE_FILE("varargs.h" SJME_CONFIG_HAS_VARARGS_H)
+if(NOT SJME_CONFIG_HAS_VARARGS_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_VARARGS_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_VARARGS_H=1)
+endif()
+
+# threads.h available?
+CHECK_INCLUDE_FILE("threads.h" SJME_CONFIG_HAS_THREADS_H)
+if(NOT SJME_CONFIG_HAS_THREADS_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_C11_THREADS=1)
+endif()
+
+# Is the SDK version header information available?
+CHECK_INCLUDE_FILE("sdkddkver.h" WIN32_SDKDDKVER_INCLUDE)
+if(WIN32_SDKDDKVER_INCLUDE)
+	add_compile_definitions(SJME_CONFIG_HAS_SDKDDKVER_H=1)
+endif()
 
 # snprintf() available?
 squirreljme_try_compile("snprintf()"
@@ -212,21 +297,21 @@ squirreljme_try_compile("vsnprintf() with varargs.h"
 	"tryVSNPrintFV"
 	SJME_CONFIG_HAS_NO_VSNPRINTFV)
 
-# stdarg.h available?
-squirreljme_try_compile("stdarg.h"
-	SQUIRRELJME_STDARG_TRY_VALID
-	"tryStdArgH"
-	SJME_CONFIG_HAS_NO_STDARG)
+# Can use thread local?
+squirreljme_try_compile("sjme_threadLocal"
+	SQUIRRELJME_C11_THREADS_TRY_THREAD_LOCAL
+	"tryThreadLocal"
+	SJME_CONFIG_HAS_NO_THREAD_LOCAL)
 
-# varargs.h available?
-squirreljme_try_compile("varargs.h"
-	SQUIRRELJME_VARARGS_TRY_VALID
-	"tryVarArgsH"
-	SJME_CONFIG_HAS_NO_VARARGS)
+# Locate the math library, if applicable
+find_library(SQUIRRELJME_LIBM m)
+message(STATUS "libm: ${SQUIRRELJME_LIBM}")
 
-# threads.h available?
-squirreljme_try_compile("threads.h"
-	SQUIRRELJME_C11_THREADS_TRY_VALID
-	"tryThreadsH"
-	SJME_CONFIG_HAS_NO_C11_THREADS)
-
+# Link against required libraries
+macro(squirreljme_target_link_libraries_required target)
+	# Math library?
+	if(SQUIRRELJME_LIBM)
+		target_link_libraries(${target} PRIVATE
+			"${SQUIRRELJME_LIBM}")
+	endif()
+endmacro()

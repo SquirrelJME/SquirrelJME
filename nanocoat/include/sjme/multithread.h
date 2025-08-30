@@ -13,23 +13,11 @@
  * @since 2023/12/16
  */
 
-#ifndef SQUIRRELJME_MULTITHREAD_H
-#define SQUIRRELJME_MULTITHREAD_H
+#ifndef SJME_C_MULTITHREAD_H
+#define SJME_C_MULTITHREAD_H
 
 #include "sjme/config.h"
 #include "sjme/error.h"
-
-#if defined(SJME_CONFIG_HAS_THREADS_FALLBACK)
-	/* Clear pthreads. */
-	#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
-		#undef SJME_CONFIG_HAS_THREADS_PTHREAD
-	#endif
-
-	/* Clear Win32 threads. */ 
-	#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
-		#undef SJME_CONFIG_HAS_THREADS_WIN32
-	#endif
-#endif
 
 #if defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	#define WIN32_LEAN_AND_MEAN 1
@@ -42,10 +30,6 @@
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	#include <pthread.h>
 	#include <errno.h>
-#else
-	#if !defined(SJME_CONFIG_HAS_THREADS_ATOMIC)
-		#define SJME_CONFIG_HAS_THREADS_ATOMIC
-	#endif
 #endif
 
 #include "sjme/stdTypes.h"
@@ -63,13 +47,16 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 /* clang-format off */ /* @formatter:off */
 
+/** The thread identifier. */
+typedef sjme_intPointer sjme_thread_id;
+	
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	/** A single thread. */
 	typedef pthread_t sjme_alignPointer sjme_thread;
 
 	/* On these systems pthread_t is a pointer. */
-	#if defined(SJME_CONFIG_HAS_MACOS) || \
-		defined(SJME_CONFIG_HAS_EMSCRIPTEN)
+	#if defined(SJME_CONFIG_HAS_OS_MACOS) || \
+		defined(SJME_CONFIG_HAS_OS_EMSCRIPTEN)
 		/** The thread type. */
 		#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
 	
@@ -91,6 +78,9 @@ extern "C" {
 	
 	/** Null thread handle. */
 	#define SJME_THREAD_NULL ((unsigned long)0)
+
+	/** Thread parameter as a pointer. */
+	#define SJME_THREAD_PARAM_POINTER(p) ((sjme_pointer)(p))
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((sjme_pointer)(err))
@@ -103,13 +93,13 @@ extern "C" {
 	#define sjme_attrThreadCall
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/** A single thread. */
-	typedef HANDLE sjme_alignPointer sjme_thread;
+	typedef DWORD sjme_thread;
 
 	/** The thread type. */
-	#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
+	#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_jint
 
 	/** Is a thread a pointer? */
-	#define SJME_TYPEOF_IS_POINTER_sjme_thread 1
+	#define SJME_TYPEOF_IS_POINTER_sjme_thread 0
 	
 	/** Thread result. */
 	typedef DWORD sjme_thread_result;
@@ -118,43 +108,49 @@ extern "C" {
 	typedef LPVOID sjme_thread_parameter;
 	
 	/** Null thread handle. */
-	#define SJME_THREAD_NULL NULL
+	#define SJME_THREAD_NULL 0
+
+	/** Thread parameter as a pointer. */
+	#define SJME_THREAD_PARAM_POINTER(p) ((sjme_pointer)(p))
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((DWORD)(err))
 
 	/** Thread result cast to error. */
 	#define SJME_THREAD_RESULT_AS_ERROR(result) ((sjme_errorCode)(result))
+
+	/** Bump Thread. */
+	#define SJME_THREAD_BUMP(x) ((x) + 1)
+
+	/** Unbump Thread. */
+	#define SJME_THREAD_UNBUMP(x) ((x) - 1)
 	
 	/** Calling convention to use for thread entry points. */
 	#define sjme_attrThreadCall WINAPI
 #else
-	/** Threads not supported. */
-	typedef volatile struct sjme_alignPointer sjme_thread_unsupported
-	{
-		sjme_alignPointer int unsupported;
-	} sjme_thread_unsupported;
-	
 	/** A single thread. */
-	typedef sjme_thread_unsupported* sjme_thread;
+	typedef sjme_jint sjme_thread;
 
 	/** The thread type. */
-	#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_pointer
+	#define SJME_TYPEOF_BASIC_sjme_thread SJME_TYPEOF_BASIC_sjme_int
 
 	/** Is a thread a pointer? */
-	#define SJME_TYPEOF_IS_POINTER_sjme_thread 1
+	#define SJME_TYPEOF_IS_POINTER_sjme_thread 0
 	
 	/** Thread result. */
-	typedef int sjme_thread_result;
+	typedef sjme_jint sjme_thread_result;
 	
 	/** Thread parameter. */
 	typedef sjme_pointer sjme_thread_parameter;
 	
 	/** Null thread handle. */
-	#define SJME_THREAD_NULL NULL
+	#define SJME_THREAD_NULL 0
+
+	/** Thread parameter as a pointer. */
+	#define SJME_THREAD_PARAM_POINTER(p) ((sjme_pointer)(p))
 	
 	/** Error as thread result. */
-	#define SJME_THREAD_RESULT(err) ((int)(err))
+	#define SJME_THREAD_RESULT(err) ((sjme_jint)(err))
 
 	/** Thread result cast to error. */
 	#define SJME_THREAD_RESULT_AS_ERROR(result) ((sjme_errorCode)(result))
@@ -246,7 +242,7 @@ sjme_jboolean sjme_thread_equal(
  */
 sjme_errorCode sjme_thread_new(
 	sjme_attrInOutNotNull sjme_thread* outThread,
-	sjme_attrInNullable sjme_intPointer* outThreadId,
+	sjme_attrInNullable sjme_thread_id* outThreadId,
 	sjme_attrInNotNull sjme_thread_mainFunc inMain,
 	sjme_attrInNullable sjme_thread_parameter anything);
 
@@ -315,6 +311,16 @@ sjme_errorCode sjme_thread_spinLockRelease(
 	sjme_attrInNotNull sjme_thread_spinLock* inLock,
 	sjme_attrOutNullable sjme_jint* outCount);
 
+/**
+ * Sleeps for the given time duration.
+ * 
+ * @param millis The number of milliseconds to sleep for.
+ * @param nanos The number of nanoseconds to sleep for.
+ * @since 2025/05/16
+ */
+void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
+	sjme_attrInPositive sjme_jint nanos);
+	
 /**
  * Yields execution.
  * 

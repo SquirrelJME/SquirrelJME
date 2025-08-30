@@ -130,6 +130,35 @@ public class EmulatedTerminalShelf
 	}
 	
 	/**
+	 * Reads a single byte from the given pipe into the output buffer.
+	 *
+	 * @param __fd The pipe to read from.
+	 * @return One of {@link PipeErrorType} or the value of the read byte
+	 * within the range of {@code [0, 255]}.
+	 * @throws MLECallError If {@code __fd} is not valid, or {@code __b} is
+	 * {@code null}.
+	 * @since 2025/07/06
+	 */
+	public static int read(PipeBracket __fd)
+		throws MLECallError
+	{
+		if (__fd == null)
+			throw new MLECallError("NARG");
+		
+		try
+		{
+			int rv = EmulatedTerminalShelf.__input(__fd).read();
+			return (rv < 0 ? PipeErrorType.END_OF_FILE : rv);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			
+			return PipeErrorType.IO_EXCEPTION;
+		}
+	}
+	
+	/**
 	 * Reads from the given pipe into the output buffer.
 	 *
 	 * @param __fd The {@link StandardPipeType} to read from.

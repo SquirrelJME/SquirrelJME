@@ -73,7 +73,8 @@ sjme_errorCode sjme_error_default(
 sjme_errorCode sjme_error_defaultOr(
 	sjme_errorCode error, sjme_errorCode otherwise)
 {
-	if (!sjme_error_is(error) || error == SJME_ERROR_UNKNOWN)
+	if (!sjme_error_is(error) || error == SJME_ERROR_UNKNOWN ||
+		error == SJME_ERROR_UNKNOWN_NEGATIVE)
 	{
 		if (!sjme_error_is(otherwise))
 			return SJME_ERROR_UNKNOWN;
@@ -82,4 +83,11 @@ sjme_errorCode sjme_error_defaultOr(
 	}
 
 	return error;
+}
+
+sjme_errorCode sjme_error_mask(
+	sjme_attrUnused sjme_attrInValue sjme_errorCode error,
+	sjme_attrInValue sjme_errorCode mask)
+{
+	return sjme_error_default(mask);
 }

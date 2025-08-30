@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
-//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+//	 Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
@@ -13,8 +13,8 @@
  * @since 2023/12/17
  */
 
-#ifndef SQUIRRELJME_LIST_H
-#define SQUIRRELJME_LIST_H
+#ifndef SJME_C_LIST_H
+#define SJME_C_LIST_H
 
 #include "sjme/stdTypes.h"
 #include "sjme/debug.h"
@@ -30,7 +30,7 @@
 		#define SJME_CXX_SQUIRRELJME_LIST_H
 extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif     /* #ifdef __cplusplus */
+#endif	 /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
 
@@ -66,9 +66,13 @@ extern "C" {
 		sjme_jint elementOffset; \
 	 \
 		/** The elements in the list. */ \
-		SJME_TOKEN_TYPE(type, numPointerStars) \
+		sjme_alignPointer SJME_TOKEN_TYPE(type, numPointerStars) \
 			elements[sjme_flexibleArrayCount]; \
 	} SJME_LIST_NAME(type, numPointerStars)
+
+/** Offset to the element values. */
+#define SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars) \
+	offsetof(SJME_LIST_NAME(type, numPointerStars), elements)
 
 /**
  * Calculates the static size of a list.
@@ -81,8 +85,8 @@ extern "C" {
  */
 #define SJME_SIZEOF_LIST(type, numPointerStars, count) \
 	(sizeof(SJME_LIST_NAME(type, numPointerStars)) + \
-	(offsetof(SJME_LIST_NAME(type, numPointerStars), elements) - \
-		offsetof(SJME_LIST_NAME(type, numPointerStars), elements)) + \
+	(SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars) - \
+		SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars)) + \
 	(sizeof(SJME_TOKEN_TYPE(type, numPointerStars)) * (size_t)(count)))
 
 /** List of @c sjme_jbyte. */
@@ -181,7 +185,7 @@ sjme_errorCode sjme_list_allocR(
 	sjme_list_allocR((allocPool), (inLength), \
 		(sjme_pointer*)(outList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
-		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars), \
 		sizeof(**(outList)) SJME_DEBUG_ONLY_COMMA \
 		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
@@ -222,10 +226,10 @@ sjme_errorCode sjme_list_copyR(
  */
 #define sjme_list_copy(allocPool, inNewLength, inOldList, outNewList, type, \
 	numPointerStars) \
-    sjme_list_copyR((allocPool), (inNewLength), (inOldList), \
+	sjme_list_copyR((allocPool), (inNewLength), (inOldList), \
 		(sjme_pointer*)(outNewList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
-		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars), \
 		sizeof(**(outNewList)) SJME_DEBUG_ONLY_COMMA \
 		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
@@ -261,8 +265,52 @@ sjme_errorCode sjme_list_directInitR(
 	sjme_list_directInitR((inLength), \
 		(sjme_pointer)(outList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
-		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars), \
 		sizeof(*(outList)))
+
+/**
+ * Injects into the given list a free matching @c NULL slot.
+ *
+ * @param allocPool The pool to allocate within.
+ * @param growSize The size to grow by.
+ * @param inOutList The input and output list.
+ * @param injectValuePtr The value to inject.
+ * @param elementSize The size of the list elements.
+ * @param elementOffset The offset of elements in the list.
+ * @param pointerCheck A check to see if it is a valid pointer.
+ * @return Any resultant error code, if any.
+ * @since 2025/05/26
+ */
+sjme_errorCode sjme_list_injectGrowR(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInPositive sjme_jint growSize,
+	sjme_attrInOutNotNull sjme_pointer* inOutList,
+	sjme_attrInNotNull sjme_pointer injectValuePtr,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Injects into the given list a free matching @c NULL slot.
+ *
+ * @param allocPool The pool to allocate within.
+ * @param growSize The size to grow by.
+ * @param inOutList The input and output list.
+ * @param injectValuePtr The value to inject.
+ * @param type The list type.
+ * @param numPointerStars The number of pointer stars.
+ * @return Any error state.
+ * @since 2025/05/26
+ */
+#define sjme_list_injectGrow(allocPool, growSize, inOutList, \
+	injectValuePtr, type, numPointerStars) \
+	sjme_list_injectGrowR((allocPool), (growSize), \
+		(sjme_pointer*)(inOutList), (sjme_pointer)(injectValuePtr), \
+		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
+		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		sizeof(**(inOutList)) SJME_DEBUG_ONLY_COMMA \
+		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Create a new list with the given set of arguments.
@@ -309,7 +357,7 @@ sjme_errorCode sjme_list_newAR(
 	sjme_list_newAR((allocPool), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		sizeof(type), \
-		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars), \
 		sizeof(**(outList)), SJME_TYPEOF_BASIC(type), (numPointerStars), \
 		(inLength), (sjme_pointer*)(outList), (sjme_pointer)(inElements))
 
@@ -358,7 +406,7 @@ sjme_errorCode sjme_list_newVR(
 	sjme_list_newVR((allocPool), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		sizeof(type), \
-		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars), \
 		sizeof(**(outList)), SJME_TYPEOF_BASIC(type), (numPointerStars), \
 		(inLength), (sjme_pointer*)(outList), __VA_ARGS__)
 
@@ -407,7 +455,7 @@ sjme_errorCode sjme_list_newVAR(
 	sjme_list_newVAR((allocPool), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)),  \
 		sizeof(type), \
-		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars), \
 		sizeof(**(outList)), SJME_TYPEOF_BASIC(type), (numPointerStars), \
 		(inLength), (sjme_pointer*)(outList), (elements))
 
@@ -480,10 +528,10 @@ sjme_errorCode sjme_list_replaceR(
  */
 #define sjme_list_replace(allocPool, inNewLength, inOutList, \
 	type, numPointerStars) \
-    sjme_list_replaceR((allocPool), (inNewLength), \
+	sjme_list_replaceR((allocPool), (inNewLength), \
 		(sjme_pointer*)(inOutList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
-		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars), \
 		sizeof(**(inOutList)) SJME_DEBUG_ONLY_COMMA \
 		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
@@ -570,6 +618,6 @@ sjme_errorCode sjme_list_sort(
 		#undef SJME_CXX_SQUIRRELJME_LIST_H
 		#undef SJME_CXX_IS_EXTERNED
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_LIST_H */
-#endif     /* #ifdef __cplusplus */
+#endif	 /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_LIST_H */

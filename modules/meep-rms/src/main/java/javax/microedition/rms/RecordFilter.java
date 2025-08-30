@@ -22,7 +22,6 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 @Api
 public interface RecordFilter
 {
-	@Api
 	/**
 	 * Checks whether the given record is a match for the criteria of this
 	 * filter.
@@ -32,6 +31,7 @@ public interface RecordFilter
 	 * @return {@code true} if the specified record is a match.
 	 * @since 2017/02/26
 	 */
+	@Api
 	boolean matches(byte[] __b);
 }
 

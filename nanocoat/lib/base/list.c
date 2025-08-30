@@ -293,7 +293,7 @@ sjme_errorCode sjme_list_flattenArgNul(
 	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
 	sjme_attrInNotNull sjme_lpcstr inNulString)
 {
-	sjme_jint count, i;
+	sjme_jint count, i, allocLen;
 	sjme_lpcstr at;
 	sjme_lpcstr* argV;
 	
@@ -305,13 +305,14 @@ sjme_errorCode sjme_list_flattenArgNul(
 	for (at = inNulString; *at != '\0'; at += strlen(at) + 1)
 		count++;
 	
-	/* Allocate. */	
-	argV = sjme_alloca(count * sizeof(*argV));
+	/* Allocate. */
+	allocLen = sizeof(*argV) * (count + 1);
+	argV = sjme_alloca(allocLen);
 	if (argV == NULL)
 		return sjme_error_outOfMemory(allocPool, 0);
+	memset(argV, 0, allocLen);
 	
 	/* Allocate temporary argument set. */
-	memset(argV, 0, count * sizeof(*argV));
 	i = 0;
 	for (at = inNulString; *at != '\0' && i < count;
 		at += strlen(at) + 1, i++)
@@ -320,6 +321,77 @@ sjme_errorCode sjme_list_flattenArgNul(
 	/* Perform the flattening. */
 	return sjme_list_flattenArgCV(allocPool,
 		(sjme_list_sjme_lpstr**)outList, count, argV);
+}
+
+static sjme_jint sjme_list_injectGrowComparator(sjme_cpointer a,
+	sjme_cpointer b, int elementSize)
+{
+	if (a == NULL || b == NULL || elementSize <= 0)
+		return -1;
+
+	return memcmp(a, b, elementSize);
+}
+
+sjme_errorCode sjme_list_injectGrowR(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInPositive sjme_jint growSize,
+	sjme_attrInOutNotNull sjme_pointer* inOutList,
+	sjme_attrInNotNull sjme_pointer injectValuePtr,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
+{
+	sjme_errorCode error;
+	sjme_jint freeSlot, n;
+	sjme_jubyte* nothing;
+
+	if (allocPool == NULL || inOutList == NULL || injectValuePtr == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (elementSize <= 0 || elementOffset < 0 || growSize <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* There is no list here? */
+	freeSlot = -1;
+	n = 0;
+	if ((*inOutList) == NULL)
+		goto skip_grow;
+
+	/* Allocate nothing to compare against. */
+	nothing = sjme_alloca(elementSize);
+	if (nothing == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	memset(nothing, 0, elementSize);
+
+	/* Find the first free slot. */
+	n = ((sjme_list_void*)(*inOutList))->length;
+	if (sjme_error_is(error = sjme_list_search(*inOutList,
+		sjme_list_injectGrowComparator, &nothing, &freeSlot)))
+		return sjme_error_default(error);
+
+	/* No free slot found, grow the list. */
+skip_grow:
+	if (freeSlot < 0)
+	{
+		/* Grow the list. */
+		if (sjme_error_is(error = sjme_list_replaceR(allocPool,
+			n + growSize,
+			inOutList, elementSize, elementOffset, pointerCheck
+			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)))
+			return sjme_error_default(error);
+
+		/* The free slot is at the end. */
+		freeSlot = n;
+	}
+
+	/* Store here. */
+skip_store:
+	memmove(SJME_POINTER_OFFSET((*inOutList),
+		elementOffset + (elementSize * freeSlot)), injectValuePtr, elementSize);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_list_newAR(
@@ -436,7 +508,7 @@ sjme_errorCode sjme_list_newVAR(
 				/* Type not implemented. */
 			default:
 				sjme_todo("Implement: %d", basicTypeId);
-				return SJME_ERROR_NOT_IMPLEMENTED;
+				return sjme_error_notImplemented(0);
 		}
 	}
 
@@ -488,8 +560,30 @@ sjme_errorCode sjme_list_search(
 	sjme_attrInNotNull sjme_cpointer findWhat,
 	sjme_attrOutNotNull sjme_jint* outIndex)
 {
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_list_void* list;
+	sjme_jint i, n;
+	sjme_pointer base;
+
+	if (inList == NULL || comparator == NULL || findWhat == NULL ||
+		outIndex == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Look in a void list. */
+	list = (sjme_list_void*)inList;
+
+	/* Go through the entire list. */
+	base = SJME_POINTER_OFFSET(list, list->elementOffset);
+	for (i = 0, n = list->length; i < n;
+		i++, base = SJME_POINTER_OFFSET(base, list->elementSize))
+		if (0 == comparator(base, findWhat, list->elementSize))
+		{
+			*outIndex = i;
+			return SJME_ERROR_NONE;
+		}
+
+	/* Not found. */
+	*outIndex = -1;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_list_searchBinary(
@@ -499,7 +593,7 @@ sjme_errorCode sjme_list_searchBinary(
 	sjme_attrOutNotNull sjme_jint* outIndex)
 {
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_list_searchReverse(
@@ -509,7 +603,7 @@ sjme_errorCode sjme_list_searchReverse(
 	sjme_attrOutNotNull sjme_jint* outIndex)
 {
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_list_sort(
@@ -517,5 +611,5 @@ sjme_errorCode sjme_list_sort(
 	sjme_attrInNotNull sjme_comparator comparator)
 {
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented(0);
 }

@@ -15,10 +15,10 @@ forwardMethod JNICALL findForwardMethod(JNIEnv* env,
 	const char* const classy, const char* const name, const char* const type)
 {
 	forwardMethod result;
-	
+
 	result.xclass = (*env)->FindClass(env, classy);
 	result.xmeth = (*env)->GetStaticMethodID(env, result.xclass, name, type);
-	
+
 	return result;
 }
 
@@ -57,12 +57,12 @@ jint JNICALL forwardCallStaticInteger(JNIEnv* env,
 	...)
 {
 	jint rv;
-	
+
 	SQUEAK_PREF;
 	DEBUG_CALL;
 	rv = (*env)->CallStaticIntMethodV(env, call.xclass, call.xmeth, vaArgs);
 	SQUEAK_POST;
-	
+
 	return rv;
 }
 
@@ -71,12 +71,26 @@ jlong JNICALL forwardCallStaticLong(JNIEnv* env,
 	...)
 {
 	jlong rv;
-	
+
 	SQUEAK_PREF;
 	DEBUG_CALL;
 	rv = (*env)->CallStaticLongMethodV(env, call.xclass, call.xmeth, vaArgs);
 	SQUEAK_POST;
-	
+
+	return rv;
+}
+
+jdouble JNICALL forwardCallStaticDouble(JNIEnv* env,
+	const char* const classy, const char* const name, const char* const type,
+	...)
+{
+	jdouble rv;
+
+	SQUEAK_PREF;
+	DEBUG_CALL;
+	rv = (*env)->CallStaticDoubleMethodV(env, call.xclass, call.xmeth, vaArgs);
+	SQUEAK_POST;
+
 	return rv;
 }
 
@@ -85,12 +99,12 @@ jobject JNICALL forwardCallStaticObject(JNIEnv* env,
 	...)
 {
 	jobject rv;
-	
+
 	SQUEAK_PREF;
 	DEBUG_CALL;
 	rv = (*env)->CallStaticObjectMethodV(env, call.xclass, call.xmeth, vaArgs);
 	SQUEAK_POST;
-	
+
 	return rv;
 }
 
@@ -99,12 +113,12 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	...)
 {
 	jboolean rv;
-	
+
 	SQUEAK_PREF;
 	DEBUG_CALL;
 	rv = (*env)->CallStaticBooleanMethodV(env, call.xclass, call.xmeth, vaArgs);
 	SQUEAK_POST;
-	
+
 	return rv;
 }
-	
+

@@ -13,16 +13,16 @@
  * @since 2024/10/03
  */
 
-#ifndef SQUIRRELJME_STDGONE_H
-#define SQUIRRELJME_STDGONE_H
+#ifndef SJME_C_STDGONE_H
+#define SJME_C_STDGONE_H
 
 #include "sjme/config.h"
 
-#if defined(SJME_CONFIG_HAS_NO_STDARG)
-	#if defined(SJME_CONFIG_HAS_NO_VARARGS)
-		#include <varargs.h>
-	#else
+#if defined(SJME_CONFIG_HAS_NO_STDARG_H)
+	#if defined(SJME_CONFIG_HAS_NO_VARARGS_H)
 		#error No stdarg or varargs?
+	#else
+		#include <varargs.h>
 	#endif
 #else
 	#include <stdarg.h>
@@ -32,12 +32,29 @@
 	#include <threads.h>
 #endif
 
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/* Needed for alloca. */
+	#include <malloc.h>
+#endif
+
+#include <stdio.h>
+#include <string.h>
+
 #if defined(SJME_CONFIG_HAS_STDINT)
 	#include <stdint.h>
 #else
 	#if !SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
 		#include <limits.h>
 	#endif
+#endif
+
+#if defined(SJME_CONFIG_HAS_INTTYPES_H)
+	#include <inttypes.h>
+#endif
+
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	/* Needed for alloca(). */
+	#include <malloc.h>
 #endif
 
 /* Anti-C++. */
@@ -97,6 +114,9 @@ extern "C"
 		/** Maximum unsigned 16-bit integer. */
 		#define UINT16_MAX USHRT_MAX
 
+		/** Signed 16-bit constant. */
+		#define INT16_C(x) x
+
 		/** Signed 32-bit integer. */
 		typedef signed __int32 int32_t;
 
@@ -149,6 +169,13 @@ extern "C"
 	#endif
 #endif
 
+#if !defined(SJME_CONFIG_HAS_INTTYPES_H)
+	#if defined(SJME_CONFIG_HAS_MSVC)
+		/** @c printf() 64-bit decimal specifier. */
+		#define PRId64 "I64"
+	#endif
+#endif
+
 #if defined(SJME_CONFIG_HAS_NO_ABORT)
 void abort();
 #endif
@@ -173,6 +200,19 @@ int vsnprintf(
 	sjme_attrInValue va_list args);
 #endif
 
+/* Older MSVC does not have va_copy(). */
+#if defined(SJME_CONFIG_HAS_MSVC) && \
+	!SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010) && \
+	!defined(va_copy)
+	/** Copy argument lists. */
+	#define va_copy(d, s) ((d) = (s))
+#endif
+
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/** Compare two strings without regarding case. */
+	#define strcasecmp stricmp
+#endif
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

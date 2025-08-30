@@ -18,7 +18,7 @@
 #include "classes.zip.h"
 
 typedef sjme_errorCode (*testRunFunc)(sjme_test* test,
-	sjme_class_info info);
+	sjme_nvm_class_info info);
 
 typedef struct testClassInfo
 {
@@ -122,8 +122,8 @@ SJME_TEST_DECLARE(testClassParse)
 	sjme_zip zip;
 	sjme_zip_entry zipEntry;
 	sjme_stream_input in;
-	sjme_class_info info;
-	sjme_stringPool stringPool;
+	sjme_nvm_class_info info;
+	sjme_nvm_stringPool stringPool;
 	
 	/* Load the Zip that is full of classes. */
 	zip = NULL;
@@ -142,7 +142,7 @@ SJME_TEST_DECLARE(testClassParse)
 		
 		/* Setup string pool. */
 		stringPool = NULL;
-		if (sjme_error_is(test->error = sjme_stringPool_new(
+		if (sjme_error_is(test->error = sjme_nvm_stringPool_new(
 			test->pool, &stringPool)) ||
 			stringPool == NULL)
 			return sjme_unit_fail(test, "Could not create string pool.");
@@ -167,7 +167,7 @@ SJME_TEST_DECLARE(testClassParse)
 		
 		/* Load the class. */
 		info = NULL;
-		if (sjme_error_is(test->error = sjme_class_parse(test->pool,
+		if (sjme_error_is(test->error = sjme_nvm_class_parse(test->pool,
 			in, stringPool, &info)) ||
 			info == NULL)
 			return sjme_unit_fail(test, "Could not parse %s: %d",

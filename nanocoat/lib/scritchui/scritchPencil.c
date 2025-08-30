@@ -25,7 +25,10 @@ sjme_errorCode sjme_scritchpen_core_close(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Release the front-end. */
-	return sjme_frontEnd_release(g, &g->common.frontEnd);
+	if (g->common.frontEnd.base.bindType != SJME_FRONTEND_BINDLESS)
+		return sjme_frontEnd_release(g,
+			SJME_AS_FE_BINDABLEP(&g->common.frontEnd));
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchpen_core_lock(
@@ -82,9 +85,12 @@ sjme_errorCode sjme_scritchpen_core_lockRelease(
 		state = &g->lockState;
 		
 		/* Forward if release is needed. */
-		if (sjme_atomic_sjme_jint_getAdd(&state->count, -1) == 1)
+		if (sjme_atomic_sjme_jint_getAdd(&state->count, -1) <= 1)
+		{
+			sjme_atomic_sjme_jint_set(&state->count, 0);
 			if (sjme_error_is(error = g->lock->lockRelease(g)))
 				return sjme_error_default(error);
+		}
 		
 		/* Release the spin lock. */
 		if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -99,74 +105,74 @@ sjme_errorCode sjme_scritchpen_core_lockRelease(
 /** Core pencil functions. */
 static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 {
-	.close = sjme_scritchpen_core_close,
-	.copyArea = sjme_scritchpen_core_copyArea,
-	.drawChar = sjme_scritchpen_core_drawChar,
-	.drawChars = sjme_scritchpen_core_drawChars,
-	.drawHoriz = sjme_scritchpen_core_drawHoriz,
-	.drawLine = sjme_scritchpen_core_drawLine,
-	.drawPixel = sjme_scritchpen_core_drawPixel,
-	.drawRect = sjme_scritchpen_core_drawRect,
-	.drawSubstring = sjme_scritchpen_core_drawSubstring,
-	.drawTriangle = sjme_scritchpen_core_drawTriangle,
-	.drawXRGB32Region = sjme_scritchpen_core_drawXRGB32Region,
-	.fillRect = sjme_scritchpen_core_fillRect,
-	.fillTriangle = sjme_scritchpen_core_fillTriangle,
-	.mapColor = sjme_scritchpen_core_mapColor,
-	.setAlphaColor = sjme_scritchpen_core_setAlphaColor,
-	.setBlendingMode = sjme_scritchpen_core_setBlendingMode,
-	.setClip = sjme_scritchpen_core_setClip,
-	.setDefaultFont = sjme_scritchpen_core_setDefaultFont,
-	.setDefaults = sjme_scritchpen_core_setDefaults,
-	.setFont = sjme_scritchpen_core_setFont,
-	.setParametersFrom = sjme_scritchpen_core_setParametersFrom,
-	.setStrokeStyle = sjme_scritchpen_core_setStrokeStyle,
-	.translate = sjme_scritchpen_core_translate,
+	sjme_sm(.close, sjme_scritchpen_core_close),
+	sjme_sm(.copyArea, sjme_scritchpen_core_copyArea),
+	sjme_sm(.drawChar, sjme_scritchpen_core_drawChar),
+	sjme_sm(.drawChars, sjme_scritchpen_core_drawChars),
+	sjme_sm(.drawHoriz, sjme_scritchpen_core_drawHoriz),
+	sjme_sm(.drawLine, sjme_scritchpen_core_drawLine),
+	sjme_sm(.drawPixel, sjme_scritchpen_core_drawPixel),
+	sjme_sm(.drawRect, sjme_scritchpen_core_drawRect),
+	sjme_sm(.drawSubstring, sjme_scritchpen_core_drawSubstring),
+	sjme_sm(.drawTriangle, sjme_scritchpen_core_drawTriangle),
+	sjme_sm(.drawXRGB32Region, sjme_scritchpen_core_drawXRGB32Region),
+	sjme_sm(.fillRect, sjme_scritchpen_core_fillRect),
+	sjme_sm(.fillTriangle, sjme_scritchpen_core_fillTriangle),
+	sjme_sm(.mapColor, sjme_scritchpen_core_mapColor),
+	sjme_sm(.setAlphaColor, sjme_scritchpen_core_setAlphaColor),
+	sjme_sm(.setBlendingMode, sjme_scritchpen_core_setBlendingMode),
+	sjme_sm(.setClip, sjme_scritchpen_core_setClip),
+	sjme_sm(.setDefaultFont, sjme_scritchpen_core_setDefaultFont),
+	sjme_sm(.setDefaults, sjme_scritchpen_core_setDefaults),
+	sjme_sm(.setFont, sjme_scritchpen_core_setFont),
+	sjme_sm(.setParametersFrom, sjme_scritchpen_core_setParametersFrom),
+	sjme_sm(.setStrokeStyle, sjme_scritchpen_core_setStrokeStyle),
+	sjme_sm(.translate, sjme_scritchpen_core_translate),
 };
 
 /** Core pencil functions, serialized to the event thread. */
 static const sjme_scritchui_pencilFunctions
 	sjme_scritchpen_coreSerial_functions =
 {
-	.close = sjme_scritchpen_core_close,
-	.copyArea = sjme_scritchpen_coreSerial_copyArea,
-	.drawChar = sjme_scritchpen_coreSerial_drawChar,
-	.drawChars = sjme_scritchpen_coreSerial_drawChars,
-	.drawHoriz = sjme_scritchpen_coreSerial_drawHoriz,
-	.drawLine = sjme_scritchpen_coreSerial_drawLine,
-	.drawPixel = sjme_scritchpen_coreSerial_drawPixel,
-	.drawRect = sjme_scritchpen_coreSerial_drawRect,
-	.drawSubstring = sjme_scritchpen_coreSerial_drawSubstring,
-	.drawTriangle = sjme_scritchpen_coreSerial_drawTriangle,
-	.drawXRGB32Region = sjme_scritchpen_coreSerial_drawXRGB32Region,
-	.fillRect = sjme_scritchpen_coreSerial_fillRect,
-	.fillTriangle = sjme_scritchpen_coreSerial_fillTriangle,
-	.mapColor = sjme_scritchpen_coreSerial_mapColor,
-	.setAlphaColor = sjme_scritchpen_coreSerial_setAlphaColor,
-	.setBlendingMode = sjme_scritchpen_coreSerial_setBlendingMode,
-	.setClip = sjme_scritchpen_coreSerial_setClip,
-	.setDefaultFont = sjme_scritchpen_coreSerial_setDefaultFont,
-	.setDefaults = sjme_scritchpen_coreSerial_setDefaults,
-	.setFont = sjme_scritchpen_coreSerial_setFont,
-	.setParametersFrom = sjme_scritchpen_coreSerial_setParametersFrom,
-	.setStrokeStyle = sjme_scritchpen_coreSerial_setStrokeStyle,
-	.translate = sjme_scritchpen_coreSerial_translate,
+	sjme_sm(.close, sjme_scritchpen_core_close),
+	sjme_sm(.copyArea, sjme_scritchpen_coreSerial_copyArea),
+	sjme_sm(.drawChar, sjme_scritchpen_coreSerial_drawChar),
+	sjme_sm(.drawChars, sjme_scritchpen_coreSerial_drawChars),
+	sjme_sm(.drawHoriz, sjme_scritchpen_coreSerial_drawHoriz),
+	sjme_sm(.drawLine, sjme_scritchpen_coreSerial_drawLine),
+	sjme_sm(.drawPixel, sjme_scritchpen_coreSerial_drawPixel),
+	sjme_sm(.drawRect, sjme_scritchpen_coreSerial_drawRect),
+	sjme_sm(.drawSubstring, sjme_scritchpen_coreSerial_drawSubstring),
+	sjme_sm(.drawTriangle, sjme_scritchpen_coreSerial_drawTriangle),
+	sjme_sm(.drawXRGB32Region, sjme_scritchpen_coreSerial_drawXRGB32Region),
+	sjme_sm(.fillRect, sjme_scritchpen_coreSerial_fillRect),
+	sjme_sm(.fillTriangle, sjme_scritchpen_coreSerial_fillTriangle),
+	sjme_sm(.mapColor, sjme_scritchpen_coreSerial_mapColor),
+	sjme_sm(.setAlphaColor, sjme_scritchpen_coreSerial_setAlphaColor),
+	sjme_sm(.setBlendingMode, sjme_scritchpen_coreSerial_setBlendingMode),
+	sjme_sm(.setClip, sjme_scritchpen_coreSerial_setClip),
+	sjme_sm(.setDefaultFont, sjme_scritchpen_coreSerial_setDefaultFont),
+	sjme_sm(.setDefaults, sjme_scritchpen_coreSerial_setDefaults),
+	sjme_sm(.setFont, sjme_scritchpen_coreSerial_setFont),
+	sjme_sm(.setParametersFrom, sjme_scritchpen_coreSerial_setParametersFrom),
+	sjme_sm(.setStrokeStyle, sjme_scritchpen_coreSerial_setStrokeStyle),
+	sjme_sm(.translate, sjme_scritchpen_coreSerial_translate),
 };
 
 /** Utility functions. */
 static const sjme_scritchui_pencilUtilFunctions
 	sjme_scritchpen_coreUtil_functions =
 {
-	.blendRGBInto = sjme_scritchpen_coreUtil_blendRGBInto,
-	.applyAnchor = sjme_scritchpen_coreUtil_applyAnchor,
-	.applyRotateScale = sjme_scritchpen_coreUtil_applyRotateScale,
-	.applyTranslate = sjme_scritchpen_coreUtil_applyTranslate,
-	.rawScanBytes = sjme_scritchpen_coreUtil_rawScanBytes,
-	.rgbScanFill = sjme_scritchpen_coreUtil_rgbScanFill,
-	.rgbScanGet = sjme_scritchpen_coreUtil_rgbScanGet,
-	.rgbScanPut = sjme_scritchpen_coreUtil_rgbScanPut,
-	.rgbToRawScan = sjme_scritchpen_coreUtil_rgbToRawScan,
-	.rawScanToRgb = sjme_scritchpen_coreUtil_rawScanToRgb,
+	sjme_sm(.blendRGBInto, sjme_scritchpen_coreUtil_blendRGBInto),
+	sjme_sm(.applyAnchor, sjme_scritchpen_coreUtil_applyAnchor),
+	sjme_sm(.applyRotateScale, sjme_scritchpen_coreUtil_applyRotateScale),
+	sjme_sm(.applyTranslate, sjme_scritchpen_coreUtil_applyTranslate),
+	sjme_sm(.rawScanBytes, sjme_scritchpen_coreUtil_rawScanBytes),
+	sjme_sm(.rgbScanFill, sjme_scritchpen_coreUtil_rgbScanFill),
+	sjme_sm(.rgbScanGet, sjme_scritchpen_coreUtil_rgbScanGet),
+	sjme_sm(.rgbScanPut, sjme_scritchpen_coreUtil_rgbScanPut),
+	sjme_sm(.rgbToRawScan, sjme_scritchpen_coreUtil_rgbToRawScan),
+	sjme_sm(.rawScanToRgb, sjme_scritchpen_coreUtil_rawScanToRgb),
 };
 
 sjme_errorCode sjme_scritchpen_initStatic(
@@ -174,7 +180,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInValue sjme_jint tx,
 	sjme_attrInValue sjme_jint ty,
@@ -182,7 +188,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
-	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
+	sjme_attrInNullable const sjme_frontEndBindable* copyFrontEnd)
 {
 	sjme_scritchui_pencilBase result;
 	
@@ -274,8 +280,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	
 	/* Copy lock front end source? */
 	if (inLockFuncs != NULL && inLockFrontEndCopy != NULL)
-		memmove(&result.lockState.source, inLockFrontEndCopy,
-			sizeof(result.lockState.source));
+		sjme_frontEnd_copy(&result.lockState.source, inLockFrontEndCopy);
 	
 	/* Is there an alpha channel? */
 	/* Note that alpha can only be supported if we can read the underlying */
@@ -288,8 +293,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	
 	/* Copy in front end? */
 	if (copyFrontEnd != NULL)
-		memmove(&result.frontEnd, copyFrontEnd,
-			sizeof(*copyFrontEnd));
+		sjme_frontEnd_copy(&result.frontEnd, copyFrontEnd);
 	
 	/* Raw scan put, must be implemented always. */
 	result.prim.rawScanPutPure = result.impl->rawScanPutPure;
@@ -340,12 +344,12 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
-	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy)
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil result;

@@ -13,8 +13,8 @@
  * @since 2024/03/27
  */
 
-#ifndef SQUIRRELJME_SCRITCHUI_H
-#define SQUIRRELJME_SCRITCHUI_H
+#ifndef SJME_C_SCRITCHUI_H
+#define SJME_C_SCRITCHUI_H
 
 #include "sjme/config.h"
 #include "sjme/multithread.h"
@@ -27,6 +27,7 @@
 #include "sjme/alloc.h"
 #include "sjme/dylib.h"
 #include "sjme/stream.h"
+#include "lib/scritchany/scritchany.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -139,17 +140,6 @@ typedef enum sjme_scritchui_uiType
 typedef sjme_pointer sjme_scritchui_handle;
 
 /**
- * API Flags for ScritchUI.
- * 
- * @since 2024/03/29
- */
-typedef enum sjme_scritchui_apiFlag
-{
-	/** Only panels are supported for this interface. */
-	SJME_SCRITCHUI_API_FLAG_PANEL_ONLY = 1,
-} sjme_scritchui_apiFlag;
-
-/**
  * Which type of screen update has occurred?
  * 
  * @since 2024/04/09
@@ -234,6 +224,26 @@ typedef enum sjme_scritchui_choiceType
 	/** The number of choice types. */
 	SJME_SCRITCHUI_NUM_CHOICE_TYPES = 3,
 } sjme_scritchui_choiceType;
+
+/**
+ * Indicates a flag that specifies how a look and feel operates.
+ *
+ * @since 2025/05/15
+ */
+typedef enum sjme_scritchui_lafPlatformFlag
+{
+	/** Dark mode is enabled. */
+	SJME_SCRITCHUI_LAF_PLATFORM_DARK_MODE = 1,
+
+	/** The number pad follows the calculator layout. */
+	SJME_SCRITCHUI_LAF_PLATFORM_NUMPAD_CALC_LAYOUT = 2,
+
+	/** Panel only interface. */
+	SJME_SCRITCHUI_LAF_PLATFORM_PANEL_ONLY = 4,
+
+	/** Are native alerts available? */
+	SJME_SCRITCHUI_LAF_PLATFORM_HAS_ALERTS = 8,
+} sjme_scritchui_lafPlatformFlag;
 
 /**
  * The element color type for look and feel.
@@ -652,7 +662,7 @@ typedef struct sjme_scritchui_pencilLockFunctions
 #define SJME_SCRITCHUI_SET_LISTENER_ARGS(what) \
 	sjme_attrInNullable SJME_TOKEN_PASTE3(sjme_scritchui_, what, \
 		ListenerFunc) inListener, \
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd
+	sjme_attrInNullable sjme_frontEndBindable* copyFrontEnd
 
 /**
  * Listener that is called when an item is activated.
@@ -827,18 +837,6 @@ typedef sjme_errorCode (*sjme_scritchui_visibleListenerFunc)(
 typedef sjme_errorCode (*sjme_scritchui_voidListenerFunc)(void);
 
 /**
- * Obtains the flags which describe the interface.
- * 
- * @param inState The input ScritchUI state.
- * @param outFlags The output flags for this interface.
- * @return Any error code if applicable.
- * @since 2024/03/29
- */
-typedef sjme_errorCode (*sjme_scritchui_apiFlagsFunc)(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrOutNotNull sjme_jint outFlags);
-
-/**
  * Initializes the native UI interface needed by ScritchUI.
  * 
  * @param inPool The allocation pool to use.
@@ -855,7 +853,7 @@ typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
 
 /**
  * Gets the first selected index of a choice or otherwise @c -1 .
@@ -1349,12 +1347,12 @@ typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
-	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy);
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
 
 /**
  * Sets the label of the specified component.
@@ -1804,9 +1802,6 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetVisibleFunc)(
 
 struct sjme_scritchui_apiFunctions
 {
-	/** API flags. */
-	SJME_SCRITCHUI_QUICK_API(apiFlags);
-	
 	/** Get the first selected index of a choice. */
 	SJME_SCRITCHUI_QUICK_API(choiceGetSelectedIndex);
 	
@@ -2024,8 +2019,10 @@ struct sjme_scritchui_uiCommonBase
 	/**
 	 * Front-end data for this, note that ScritchUI implementations must not
 	 * use this for information as this is only to be used by front-ends.
+	 *
+	 * Bindings may be used as needed.
 	 */
-	sjme_frontEnd frontEnd;
+	sjme_frontEndBindable frontEnd;
 	
 	/** Opaque native handles for this, as needed. */
 	sjme_scritchui_handle handle[SJME_SCRITCHUI_NUM_COMMON_HANDLES];
@@ -2146,7 +2143,7 @@ struct sjme_scritchui_loopQueueChunk
 typedef struct sjme_scritchui_loopQueue
 {
 	/** The lock for the queue items. */
-	sjme_thread_spinLock lock;
+	sjme_alignPointer sjme_thread_spinLock lock;
 	
 	/** The first chunk. */
 	sjme_scritchui_loopQueueChunk* firstChunk;
@@ -2191,13 +2188,13 @@ struct sjme_scritchui_stateBase
 	sjme_thread loopThread;
 	
 	/** The current loop thread ID, if applicable. */
-	sjme_intPointer loopThreadId;
+	sjme_thread_id loopThreadId;
 	
 	/** Loop thread initializer if one was passed. */
 	sjme_thread_mainFunc loopThreadInit;
 	
 	/** Indicator that the main loop is ready for execution. */
-	sjme_atomic_sjme_jint loopThreadReady;
+	sjme_alignPointer sjme_atomic_sjme_jint loopThreadReady;
 	
 	/** The available screens. */
 	sjme_list_sjme_scritchui_uiScreen* screens;
@@ -2215,7 +2212,7 @@ struct sjme_scritchui_stateBase
 	sjme_scritchui wrappedState;
 	
 	/** Reference to owning state. */
-	sjme_atomic_sjme_pointer topState;
+	sjme_alignPointer sjme_atomic_sjme_pointer topState;
 	
 	/** The next ID for opaque menu items. */
 	sjme_jint nextMenuItemId;
@@ -2228,16 +2225,10 @@ struct sjme_scritchui_stateBase
 
 	/** The loop queue for manual event loops. */
 	sjme_alignPointer sjme_scritchui_loopQueue loopQueue;
-	
-	/** Is this a panel only interface? */
-	sjme_jboolean isPanelOnly;
 
-	/** Does this have alert support? */
-	sjme_jboolean hasAlerts;
+	/** Platform flags (@c sjme_scritchui_lafPlatformFlag ). */
+	sjme_jint platformFlags;
 };
-
-/* If dynamic libraries are not supported, we cannot do this. */
-#if !defined(SJME_CONFIG_SCRITCHUI_NO_DYLIB)
 
 /**
  * Initializes the API through the dynamic library.
@@ -2252,30 +2243,36 @@ struct sjme_scritchui_stateBase
  * @return Any error code that may occur.
  * @since 2024/03/29
  */
-typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
+typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchui_dylibApiFunc)(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
 
 /** The base name for the ScritchUI dynamic library. */
 #define SJME_SCRITCHUI_DYLIB_NAME_BASE \
-	"squirreljme-scritchui-"
+	SJME_SCRITCHANY_DYLIB_NAME_BASE(ui)
 
 /** The name of the dynamic library for ScritchUI. */
 #define SJME_SCRITCHUI_DYLIB_NAME(x) \
-	SJME_SCRITCHUI_DYLIB_NAME_BASE SJME_TOKEN_STRING_PP(x)
+	SJME_SCRITCHANY_DYLIB_NAME(ui, x)
 
 /** The path name for the dynamic library for ScritchUI. */
 #define SJME_SCRITCHUI_DYLIB_PATHNAME(x) \
-	SJME_CONFIG_DYLIB_PATHNAME(SJME_SCRITCHUI_DYLIB_NAME(x))
+	SJME_SCRITCHANY_DYLIB_PATHNAME(ui, x)
+
+/** The prefix for the dynamic library. */
+#define SJME_SCRITCHUI_DYLIB_SYMBOL_PREFIX \
+	SJME_SCRITCHANY_DYLIB_SYMBOL_PREFIX(ui)
 
 /** The symbol to use with @c sjme_scritchui_dylibApiFunc . */
 #define SJME_SCRITCHUI_DYLIB_SYMBOL(x) \
-	SJME_TOKEN_PASTE(sjme_scritchui_dylibApi, x)
-		
-#endif
+	SJME_SCRITCHANY_DYLIB_SYMBOL(ui, x)
+
+/** Declares the API export . */
+#define SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(x) \
+	SJME_SCRITCHANY_DYLIB_SYMBOL_DECLARE(ui, x)
 
 /**
  * Check cast of a given type.

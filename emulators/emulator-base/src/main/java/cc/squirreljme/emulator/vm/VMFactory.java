@@ -13,8 +13,10 @@ import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.jdwp.host.JDWPHostFactory;
 import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.AvailableSuites;
+import cc.squirreljme.jvm.launch.ScannerUtils;
 import cc.squirreljme.jvm.launch.SuiteScanner;
 import cc.squirreljme.jvm.manifest.JavaManifest;
+import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
@@ -34,6 +36,7 @@ import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -91,6 +95,15 @@ public abstract class VMFactory
 	private static final String STANDALONE_DIRECTORY_DEBUG =
 		"X-SquirrelJME-Standalone-Internal-Debug-Jar-Root";
 	
+	/** Extra Jar Extensions. */
+	private static final String[] _EXTRA_EXT =
+		new String[] {
+			".adf", ".ADF", ".jad", ".JAD", ".jam", ".JAM", ".sec", ".SEC", 
+			".sp", ".SP", ".sp0", ".SP0", ".sp1", ".SP1", ".sp2", ".SP2", 
+			".sp3", ".SP3", ".sp4", ".SP4", ".sp5", ".SP5", ".sp6", ".SP6", 
+			".sp7", ".SP7", ".sp8", ".SP8", ".sp9", ".SP9", ".sto", ".STO"
+		};
+	
 	/** The separator character. */
 	private static final char SEPARATOR_CHAR;
 	
@@ -99,6 +112,8 @@ public abstract class VMFactory
 	
 	static
 	{
+		
+		
 		// Determine the path separator character
 		String sepString = System.getProperty("path.separator");
 		SEPARATOR_CHAR = (sepString == null || sepString.isEmpty() ? ':' :
@@ -172,18 +187,7 @@ public abstract class VMFactory
 		VMThreadModel threadModel = VMThreadModel.DEFAULT;
 		
 		// Load our own META-INF/MANIFEST.MF for some special properties
-		JavaManifest metaManifest = null;
-		try (InputStream in = VMFactory.class
-			.getResourceAsStream("/META-INF/MANIFEST.MF"))
-		{
-			Debugging.debugNote("GOT MANIFEST: %s", in);
-			if (in != null)
-				metaManifest = new JavaManifest(in);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		JavaManifest metaManifest = VMFactory.__findManifest();
 		
 		// Initial trace bits
 		int initTraceBits = 0;
@@ -192,6 +196,9 @@ public abstract class VMFactory
 		boolean didJar = false;
 		String rawJarPath = null;
 		String rawJarEntry = null;
+		
+		// Was the -version switch used?
+		String didVersion = null;
 		
 		// Clutter level of the library
 		String clutterLevel = "release";
@@ -216,6 +223,8 @@ public abstract class VMFactory
 		// -zero
 		// -client
 		// -server
+		// -version
+		// --version
 		// -XstartOnFirstThread
 		// -Xscritchui:(ui)
 		// Optionally `-jar`
@@ -299,7 +308,7 @@ public abstract class VMFactory
 			else if (item.startsWith("-Xlibraries:"))
 			{
 				for (String entry : VMFactory.__unSeparateClassPath(
-					item.substring(item.indexOf(':') + 1)))
+					item.substring(item.indexOf(':') + 1), false))
 					VMFactory.__addPaths(libraries, entry);
 			}
 			
@@ -329,7 +338,8 @@ public abstract class VMFactory
 					throw new IllegalArgumentException("Classpath missing.");
 				
 				// Extract path elements
-				for (String entry : VMFactory.__unSeparateClassPath(strings))
+				for (String entry : VMFactory.__unSeparateClassPath(strings,
+					false))
 					VMFactory.__addPaths(suiteClasspath, entry);
 			}
 			
@@ -369,6 +379,10 @@ public abstract class VMFactory
 					item.substring("-Xscritchui:".length()));
 			}
 			
+			// Version information (stdout/stderr)
+			else if (item.equals("-version") || item.equals("--version"))
+				didVersion = item;
+			
 			// Unknown
 			else
 				throw new IllegalArgumentException(String.format(
@@ -389,13 +403,35 @@ public abstract class VMFactory
 			String defLib = metaManifest.getMainAttributes().getValue(
 				VMFactory.STANDALONE_LIBRARY);
 			if (defLib != null && !defLib.isEmpty())
-				for (String entry : VMFactory.__unSeparateClassPath(defLib))
+				for (String entry : VMFactory.__unSeparateClassPath(defLib,
+					true))
 					VMFactory.__addPaths(libraries, entry);
 		}
 		
-		// Did not do -jar, so do normal command line parse
+		// Version output
 		String mainClass;
-		if (!didJar)
+		if (didVersion != null)
+		{
+			mainClass = "cc.squirreljme.runtime.cldc.PrintVersion";
+			mainArgs.add(didVersion);
+			mainArgs.add(Objects.toString(metaManifest.getMainAttributes()
+				.getValue("X-SquirrelJME-BuildVersion"),
+				"tarball"));
+			
+			// Forces no -jar
+			didJar = false;
+			
+			// Default class path for launching
+			String defCp = metaManifest.getMainAttributes().getValue(
+				VMFactory.STANDALONE_CLASSPATH);
+			if (defCp != null && !defCp.isEmpty())
+				for (String entry : VMFactory.__unSeparateClassPath(defCp,
+					true))
+					VMFactory.__addPaths(suiteClasspath, entry);
+		}
+		
+		// Did not do -jar, so do normal command line parse
+		else if (!didJar)
 		{
 			// Main class is here
 			mainClass = queue.pollFirst();
@@ -415,7 +451,8 @@ public abstract class VMFactory
 				String defCp = metaManifest.getMainAttributes().getValue(
 					VMFactory.STANDALONE_CLASSPATH);
 				if (defCp != null && !defCp.isEmpty())
-					for (String entry : VMFactory.__unSeparateClassPath(defCp))
+					for (String entry : VMFactory.__unSeparateClassPath(defCp,
+						true))
 						VMFactory.__addPaths(suiteClasspath, entry);
 				
 				// Default parameter?
@@ -425,11 +462,26 @@ public abstract class VMFactory
 					mainArgs.add(defParam);
 			}
 		}
+		
+		// -jar switch
 		else
 		{
 			// Make sure this exists in the library path
 			if (!libraries.contains(rawJarPath))
 				libraries.add(rawJarPath);
+			
+			// Add any other extensions adjacent to the Jar
+			Path jarPath = Paths.get(rawJarPath);
+			if (Files.exists(jarPath))
+				for (String ext : VMFactory._EXTRA_EXT)
+				{
+					Path tryFile = jarPath.resolveSibling(
+						ScannerUtils.siblingByExt(
+							jarPath.getFileName().toString(), ext));
+					
+					if (Files.exists(tryFile))
+						libraries.add(tryFile.toString());
+				}
 			
 			mainClass = null;
 		}
@@ -476,8 +528,9 @@ public abstract class VMFactory
 				continue;
 			
 			// Note it
-			Debugging.debugNote("Registering %s (%s)",
-				normalName, path);
+			if (Debugging.VERBOSE)
+				Debugging.debugNote("Registering %s (%s)",
+					normalName, path);
 			
 			// Is there a built-in resource based for this JAR itself?
 			VMClassLibrary place;
@@ -502,11 +555,18 @@ public abstract class VMFactory
 				new NameOverrideClassLibrary(place, normalName);
 			suites.put(normalName, target);
 			
-			// Is this a Jar we are launching?
+			// Is this the Jar we are launching?
 			if (rawJarPath != null)
+			{
+				String rawBasePath = SuiteUtils.baseName(rawJarPath);
 				if (rawJarPath.equals(normalName) ||
-					rawJarPath.equals(library))
+					rawJarPath.equals(library) ||
+					rawBasePath.equals(normalName) ||
+					rawBasePath.equals(library) ||
+					rawBasePath.equals(SuiteUtils.baseName(normalName)) ||
+					rawBasePath.equals(SuiteUtils.baseName(library)))
 					jarLib = target;
+			}
 		}
 		
 		// Go through the class path and normalize the names so that it finds
@@ -617,10 +677,13 @@ public abstract class VMFactory
 		int exitCode = -1;
 		try
 		{
-			// Debug
-			Debugging.debugNote("Starting virtual machine (in %s)...",
-				mainClass);
-			Debugging.debugNote("Args: %s", Arrays.asList(__args));
+			if (Debugging.VERBOSE)
+			{
+				// Debug
+				Debugging.debugNote("Starting virtual machine (in %s)...",
+					mainClass);
+				Debugging.debugNote("Args: %s", Arrays.asList(__args));
+			}
 			
 			// Run the VM
 			VirtualMachine vm = VMFactory.mainVm(vmName,
@@ -706,8 +769,8 @@ public abstract class VMFactory
 	 * @since 2018/11/17
 	 */
 	public static VirtualMachine mainVm(String __vm, ProfilerSnapshot __ps,
-		JDWPHostFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __sm,
-		String[] __cp,
+		JDWPHostFactory __jdwp, VMThreadModel __threadModel,
+		VMSuiteManager __sm, String[] __cp,
 		String __bootcl, Map<String, String> __sprops, String... __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
@@ -863,6 +926,155 @@ public abstract class VMFactory
 	}
 	
 	/**
+	 * Attempts to locate the main manifest.
+	 *
+	 * @return The manifest.
+	 * @since 2025/05/23
+	 */
+	private static JavaManifest __findManifest()
+	{
+		// Try various names
+		for (String name : Arrays.asList("/META-INF/MANIFEST.MF",
+			"META-INF/MANIFEST.MF", "/SQUIRRELJME-STANDALONE.MF",
+			"SQUIRRELJME-STANDALONE.MF"))
+		{
+			JavaManifest result = VMFactory.__findManifest(name);
+			if (result != null)
+				return result;
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
+	 * Attempts to locate the manifest.
+	 *
+	 * @param __name The name of the resource.
+	 * @return The manifest.
+	 * @since 2025/05/23
+	 */
+	private static JavaManifest __findManifest(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// From VMFactory pivot?
+		JavaManifest result = VMFactory.__findManifest(
+			VMFactory.class, __name);
+		if (result != null)
+			return result;
+		
+		// From the VMFactory class loader?
+		result = VMFactory.__findManifest(
+			VMFactory.class.getClassLoader(), __name);
+		if (result != null)
+			return result;
+		
+		// From the system class loader?
+		result = VMFactory.__findManifest(
+			ClassLoader.getSystemClassLoader(), __name);
+		if (result != null)
+			return result;
+		
+		// Not found
+		return null;
+	}
+	
+	/**
+	 * Finds a manifest from the specified class loader.
+	 *
+	 * @param __classLoader The class loader.
+	 * @param __rc The resource name.
+	 * @return The resultant manifest.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/05/23
+	 */
+	private static JavaManifest __findManifest(ClassLoader __classLoader,
+		String __rc)
+		throws NullPointerException
+	{
+		if (__classLoader == null || __rc == null)
+			throw new NullPointerException("NARG");
+		
+		try
+		{
+			// Look everywhere for it
+			Enumeration<URL> rcs = __classLoader.getResources(__rc);
+			while (rcs.hasMoreElements())
+			{
+				URL url = rcs.nextElement();
+				try (InputStream in = url.openStream())
+				{
+					JavaManifest result = VMFactory.__findManifest(
+						new JavaManifest(in));
+					if (result != null)
+						return result;
+				}
+				catch (IOException ignored)
+				{
+				}
+			}
+		}
+		catch (IOException ignored)
+		{
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
+	 * Finds a manifest from the pivot class.
+	 *
+	 * @param __pivot The pivot class.
+	 * @param __rc The resource name.
+	 * @return The resultant manifest.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/05/23
+	 */
+	private static JavaManifest __findManifest(Class<?> __pivot, String __rc)
+		throws NullPointerException
+	{
+		if (__pivot == null || __rc == null)
+			throw new NullPointerException("NARG");
+		
+		try (InputStream in = __pivot.getResourceAsStream(__rc))
+		{
+			if (in != null)
+				return VMFactory.__findManifest(new JavaManifest(in));
+		}
+		catch (IOException ignored)
+		{
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
+	 * Checks the manifest to see if it is valid.
+	 *
+	 * @param __in The input manifest.
+	 * @return The resultant manifest if valid, otherwise {@code null}.
+	 * @since 2025/05/23
+	 */
+	private static JavaManifest __findManifest(JavaManifest __in)
+	{
+		if (__in == null)
+			return null;
+		
+		// Check for SquirrelJME keys
+		JavaManifestAttributes attr = __in.getMainAttributes();
+		if (attr.getValue(VMFactory.STANDALONE_LIBRARY) != null ||
+			attr.getValue("X-SquirrelJME-BuildVersion") != null)
+			return __in;
+		
+		return null;
+	}
+	
+	/**
 	 * Tries to get a property from a passed map otherwise reads from the
 	 * system properties used.
 	 *
@@ -963,17 +1175,25 @@ public abstract class VMFactory
 		__name = __name.substring(0, lastDot);
 		
 		// Chop down potential foo"-0.4.0" from the end
-		for (int n = __name.length(), i = n - 1; i >= 0; i--)
+		int lastDash = __name.indexOf('-');
+		if (lastDash >= 0)
 		{
-			char c = __name.charAt(i);
+			// Is there a dot after the dash?
+			int dotAfterDash = __name.indexOf('.', lastDash);
 			
-			// Still potentially a version bit
-			if (c == '.' || c == '-' || (c >= '0' && c <= '9'))
-				__name = __name.substring(0, i);
-			
-			// Do not need
-			else
-				break;
+			if (dotAfterDash >= 0)
+				for (int n = __name.length(), i = n - 1; i >= 0; i--)
+				{
+					char c = __name.charAt(i);
+					
+					// Still potentially a version bit
+					if (c == '.' || c == '-' || (c >= '0' && c <= '9'))
+						__name = __name.substring(0, i);
+						
+					// Do not need
+					else
+						break;
+				}
 		}
 		
 		// Use this name
@@ -1109,7 +1329,8 @@ public abstract class VMFactory
 		// Class path to the environment?
 		String classPath = System.getenv("SQUIRRELJME_CLASSPATH");
 		if (classPath != null)
-			for (String path : VMFactory.__unSeparateClassPath(classPath))
+			for (String path : VMFactory.__unSeparateClassPath(classPath,
+				false))
 				VMFactory.__addPathsWildcard(__libraries, path);
 		
 		// Java Home Directory?
@@ -1246,12 +1467,13 @@ public abstract class VMFactory
 	
 	/**
 	 * Merges path entries for the classpath.
-	 * 
+	 *
 	 * @param __in The input string.
+	 * @param __def Use the default separator as well.
 	 * @return The un-separated string.
 	 * @since 2022/06/13
 	 */
-	private static String[] __unSeparateClassPath(String __in)
+	private static String[] __unSeparateClassPath(String __in, boolean __def)
 	{
 		List<String> result = new ArrayList<>();
 		
@@ -1259,7 +1481,10 @@ public abstract class VMFactory
 		for (int i = 0, n = __in.length(); i < n; i++)
 		{
 			// Get location of the next colon
+			// Fallback to default if specified
 			int dx = __in.indexOf(VMFactory.SEPARATOR_CHAR, i);
+			if (__def && dx < 0)
+				dx = __in.indexOf(':', i);
 			if (dx < 0)
 				dx = n;
 			

@@ -2,7 +2,13 @@ import cc.squirreljme.plugin.general.CollateResourceJarsTask
 import cc.squirreljme.plugin.multivm.*
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier
 
-import java.util.regex.Pattern
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import java.nio.file.StandardOpenOption
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 plugins
 {
@@ -64,21 +70,27 @@ static String flatClasspath(Project project) {
 String MERGED_PREFIX = "SQUIRRELJME.SQC"
 String MERGED_PREFIX_DEBUG = "SQUIRRELJME-DEBUG.SQC"
 
-tasks.register("collateResourceJars",
+/*tasks.register("collateResourceJars",
 	CollateResourceJarsTask.class,
 	processResources, ClutterLevel.RELEASE, MERGED_PREFIX)
 tasks.register("collateResourceJarsDebug",
 	CollateResourceJarsTask.class,
-	processResources, ClutterLevel.DEBUG, MERGED_PREFIX_DEBUG)
+	processResources, ClutterLevel.DEBUG, MERGED_PREFIX_DEBUG)*/
+
+TaskProvider<Task> romRelease = rootProject.tasks.named("romSpringCoatRelease")
+TaskProvider<Task> romDebug = rootProject.tasks.named("romSpringCoatDebug")
 
 // Jar Configuration
 jar {
-	dependsOn processResources, collateResourceJars, collateResourceJarsDebug
-	mustRunAfter collateResourceJars, collateResourceJarsDebug
+	dependsOn processResources, romRelease, romDebug
+	mustRunAfter romRelease, romDebug
 	
 	// We need to set specific manifest properties
 	manifest {
 		attributes \
+			"X-SquirrelJME-BuildVersion": project.provider({ -> 
+					VMHelpers.buildVersion(project)
+				}),
 			"X-SquirrelJME-Standalone-Main-Class":
 				"javax.microedition.midlet.__MainHandler__",
 			"X-SquirrelJME-Standalone-Parameter":
@@ -99,10 +111,87 @@ jar {
 	}
 }
 
+def finalizeShadowJar = tasks.register("finalizeShadowJar", {
+	group = "squirreljme"
+	description = "Finalizes the result of shadowJar."
+	
+	/*inputs.file(project.provider { -> shadowJar.outputs.files.singleFile})
+	outputs.file(project.provider { -> shadowJar.outputs.files.singleFile})*/
+	
+	outputs.upToDateWhen { Task __task ->
+		// If missing, this is not up to date
+		java.nio.file.Path srcPath = shadowJar.outputs.files.singleFile.toPath()
+		if (!Files.exists(srcPath)) {
+			return false
+		}
+		
+		// Must have the standalone entry, if it does we do not have to touch
+		// it
+		try (ZipFile zip = new ZipFile(srcPath.toFile())) {
+			return zip.getEntry("SQUIRRELJME-STANDALONE.MF") != null
+		}
+	}
+	
+	doLast {
+		java.nio.file.Path srcPath = shadowJar.outputs.files.singleFile.toPath()
+		java.nio.file.Path tmpPath = Files.createTempFile("final", ".jar")
+		
+		boolean wroteSquirrel = false
+		try (ZipOutputStream dst = new ZipOutputStream(
+				Files.newOutputStream(tmpPath, StandardOpenOption.WRITE,
+					StandardOpenOption.TRUNCATE_EXISTING,
+					StandardOpenOption.CREATE));
+			ZipInputStream src = new ZipInputStream(
+				Files.newInputStream(srcPath, StandardOpenOption.READ))) {
+			for (;;) {
+				ZipEntry entry = src.getNextEntry()
+				if (entry == null) {
+					break
+				}
+				
+				// Skip directories
+				if (entry.isDirectory()) {
+					continue
+				}
+				
+				// Do not write entry twice.
+				if (wroteSquirrel && entry.name == "SQUIRRELJME-STANDALONE.MF") {
+					continue
+				}
+				
+				// Read all input bytes
+				byte[] data = VMHelpers.readAll(src)
+				
+				// Write output
+				dst.putNextEntry(entry)
+				dst.write(data)
+				dst.closeEntry()
+				
+				// If this is the manifest, duplicate it
+				if (entry.name == "META-INF/MANIFEST.MF") {
+					dst.putNextEntry(new ZipEntry("SQUIRRELJME-STANDALONE.MF"))
+					dst.write(data)
+					dst.closeEntry()
+
+					wroteSquirrel = true
+				}
+			}
+			
+			// Finalize
+			dst.finish()
+			dst.flush()
+			dst.close()
+		}
+		
+		Files.move(tmpPath, srcPath, StandardCopyOption.REPLACE_EXISTING)
+	}
+})
+
 // Configuration for ShadowJar
 shadowJar {
-	dependsOn collateResourceJars, collateResourceJarsDebug
-	mustRunAfter collateResourceJars, collateResourceJarsDebug
+	dependsOn romRelease, romDebug
+	mustRunAfter romRelease, romDebug
+	finalizedBy finalizeShadowJar
 	
 	// Always SquirrelJME
 	archiveBaseName.set("squirreljme-standalone")
@@ -110,23 +199,18 @@ shadowJar {
 	// Always merge service files, otherwise multiple VMs will just not work
 	mergeServiceFiles()
 	
+	// Inherit all files
+	duplicatesStrategy = DuplicatesStrategy.INHERIT
+	
 	// Set the suffix of the JAR to be the OS name and arch, since there is
 	// a dynamic library within for it
 	archiveClassifier.set(project.provider({ ->
-			String osName = System.getProperty("os.name").toLowerCase()
-			String osArch = System.getProperty("os.arch").toLowerCase()
-			
-			// Normalize OS names
-			if (osName.contains("windows"))
-				osName = "windows"
-			else if (osName.contains("mac os") || osName.contains("macos"))
-				osName = "macos"
-			
-			// Make sure there are no spaces or weird characters such as for
-			// Windows
-			return (osName + "-" + osArch).replaceAll(
-				Pattern.compile("[\\s<>:\"/\\\\|?*]"), "")
+			return (String)rootProject.squirreljmeSystemDash
 		}))
+	
+	// Include the SpringCoat ROMs
+	from zipTree(romRelease.get().outputs.files.singleFile).getAsFileTree()
+	from zipTree(romDebug.get().outputs.files.singleFile).getAsFileTree()
 	
 	// Exclude IntelliJ Annotations, they are not needed
 	exclude "org/jetbrains/annotations/*.class"
