@@ -108,6 +108,13 @@ static sjme_jint sjme_scritchui_cocoa_mapKey(
 		case NSClearLineFunctionKey:
 		case NSClearDisplayFunctionKey:
 			return SJME_SCRITCHINPUT_KEY_DELETE;
+
+		case NSBackspaceKey:
+			return SJME_SCRITCHINPUT_KEY_BACKSPACE;
+		case NSCarriageReturnKey:
+			return SJME_SCRITCHINPUT_KEY_ENTER;
+		case NSDeleteKey:
+			return SJME_SCRITCHINPUT_KEY_DELETE;
 	}
 
 	/* Not changed. */
