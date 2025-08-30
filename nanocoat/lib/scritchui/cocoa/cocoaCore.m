@@ -158,12 +158,12 @@ static sjme_thread_result sjme_scritchui_cocoa_loopMain(
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
-sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(cocoa)(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(cocoa)(
+	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
+	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;

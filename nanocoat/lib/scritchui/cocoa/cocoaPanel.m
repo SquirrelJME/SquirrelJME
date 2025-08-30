@@ -38,7 +38,7 @@
 	sjme_scritchui_listener_paint* infoCore;
 	sjme_scritchui_pencil pencil;
 	sjme_jint x, y, w, h, vw, vh;
-	sjme_frontEnd frontEnd;
+	sjme_frontEndBindable frontEnd;
 	sjme_scritchui_pencilFont defaultFont;
 	NSGraphicsContext* context;
 	NSAffineTransform* matrix;
@@ -71,8 +71,8 @@
 
 	/* Setup frontend info. */
 	memset(&frontEnd, 0, sizeof(frontEnd));
-	frontEnd.wrapper = self;
-	frontEnd.data = (sjme_frontEndData)context;
+	frontEnd.base.wrapper = self;
+	frontEnd.base.data = (sjme_frontEndData)context;
 
 	/* A default font is required. */
 	defaultFont = NULL;

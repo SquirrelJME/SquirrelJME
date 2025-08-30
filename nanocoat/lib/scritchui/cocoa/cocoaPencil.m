@@ -105,8 +105,8 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawHoriz(
 
 	/* Recover view and context. */
 	inState = g->common.state;
-	nsView = g->frontEnd.wrapper;
-	context = g->frontEnd.data;
+	nsView = g->frontEnd.base.wrapper;
+	context = g->frontEnd.base.data;
 
 	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
@@ -147,8 +147,8 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilDrawLine(
 
 	/* Recover view and context. */
 	inState = g->common.state;
-	nsView = g->frontEnd.wrapper;
-	context = g->frontEnd.data;
+	nsView = g->frontEnd.base.wrapper;
+	context = g->frontEnd.base.data;
 
 	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
@@ -189,8 +189,8 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilRawScanGet(
 
 	/* Recover view and image representation. */
 	inState = g->common.state;
-	nsView = g->frontEnd.wrapper;
-	imageRep = g->frontEnd.data;
+	nsView = g->frontEnd.base.wrapper;
+	imageRep = g->frontEnd.base.data;
 	if (inState == NULL || nsView == NULL || nsView == nil ||
 		imageRep == NULL || imageRep == nil)
 		return SJME_ERROR_ILLEGAL_STATE;
@@ -217,8 +217,8 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilRawScanPutPure(
 
 	/* Recover view and image representation. */
 	inState = g->common.state;
-	nsView = g->frontEnd.wrapper;
-	context = g->frontEnd.data;
+	nsView = g->frontEnd.base.wrapper;
+	context = g->frontEnd.base.data;
 	if (inState == NULL || nsView == NULL || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
@@ -260,8 +260,8 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetAlphaColor(
 
 	/* Recover view and context. */
 	inState = g->common.state;
-	nsView = g->frontEnd.wrapper;
-	context = g->frontEnd.data;
+	nsView = g->frontEnd.base.wrapper;
+	context = g->frontEnd.base.data;
 
 	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
@@ -292,8 +292,8 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetClip(
 
 	/* Recover view and context. */
 	inState = g->common.state;
-	nsView = g->frontEnd.wrapper;
-	context = g->frontEnd.data;
+	nsView = g->frontEnd.base.wrapper;
+	context = g->frontEnd.base.data;
 
 	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
@@ -316,8 +316,8 @@ static sjme_errorCode sjme_scritchui_cocoa_pencilSetStrokeStyle(
 
 	/* Recover view and context. */
 	inState = g->common.state;
-	nsView = g->frontEnd.wrapper;
-	context = g->frontEnd.data;
+	nsView = g->frontEnd.base.wrapper;
+	context = g->frontEnd.base.data;
 
 	if (inState == NULL || nsView == NULL || nsView == nil || context == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
