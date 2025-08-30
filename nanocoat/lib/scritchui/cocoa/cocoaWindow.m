@@ -218,21 +218,15 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetMenuBar(
 		[cocoaApp setMainMenu:cocoaMenu];
 
 		/* Set this to be the main menu for the application. */
+		/* GNUStep has its own global "main" menu we need to keep track of. */
 #if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 12, 0)
 		[cocoaMenu setMain:YES];
 #endif
 	}
 
-	/* Otherwise, remove it from the global menu. */
+	/* Otherwise, set no global menu. */
 	else
-	{
 		[cocoaApp setMainMenu:nil];
-
-		/* Make sure this is no longer a main menu. */
-#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 12, 0)
-		[cocoaMenu setMain:NO];
-#endif
-	}
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -244,6 +238,8 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 	sjme_attrInValue sjme_jboolean isVisible)
 {
 	SJMEWindow* cocoaWindow;
+	SJMEMenu* cocoaMenu;
+	NSApplication* cocoaApp;
 	sjme_errorCode error;
 	sjme_scritchui_dim size;
 	NSRect scale;
@@ -303,6 +299,33 @@ sjme_errorCode sjme_scritchui_cocoa_windowSetVisible(
 			inState, SJME_SUI_CAST_CONTAINER(inWindow))))
 			return inState->implIntern->checkError(inState,
 				sjme_error_default(error));
+	}
+
+	/* Window is invisible. */
+	else
+	{
+		cocoaApp = inState->common.handle[SJME_SUI_COCOA_H_NSAPP];
+
+		/* We do not want the main menu to stick around if this is the */
+		/* existing main menu. */
+		if (inWindow->menuBar != NULL)
+		{
+			/* Recover the menu. */
+			cocoaMenu = inWindow->menuBar->menuKind
+				.common.handle[SJME_SUI_COCOA_H_NSMENU];
+
+			/* Make sure the main menu is no longer set as the app main */
+			/* menu. */
+			if ([cocoaApp mainMenu] == cocoaMenu)
+				[cocoaApp setMainMenu:nil];
+
+			/* On GNUStep, if we do not do this, then the menu */
+			/* from an invisible window will persist as an extra mini-menu */
+			/* that floats around, which is not desired. */
+#if SJME_CONFIG_GNUSTEP_GUI_VERSION_LEAST(0, 12, 0)
+			[cocoaMenu setMain:NO];
+#endif
+		}
 	}
 
 	/* Success? */
