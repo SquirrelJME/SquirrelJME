@@ -156,6 +156,7 @@ sjme_errorCode sjme_scritchui_cocoa_componentSize(
 {
 	NSView* cocoaView;
 	NSRect base;
+	sjme_jint w, h;
 
 	if (inState == NULL || inComponent == NULL ||
 		(outWidth == NULL && outHeight == NULL))
@@ -166,10 +167,19 @@ sjme_errorCode sjme_scritchui_cocoa_componentSize(
 
 	/* Are the frame coordinates in device or PDF space? */
 	base = [cocoaView frame];
+	w = abs((sjme_jint)base.size.width);
+	h = abs((sjme_jint)base.size.height);
+
+	/* Determine the actual component size. */
+	inState->apiInThread->lafDpiProject(inState, inComponent,
+		SJME_JNI_TRUE,
+		0, 0, &w, &h);
+
+	/* Return the resultant size. */
 	if (outWidth != NULL)
-		*outWidth = abs((sjme_jint)base.size.width);
+		*outWidth = w;
 	if (outHeight != NULL)
-		*outHeight = abs((sjme_jint)base.size.height);
+		*outHeight = h;
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

@@ -17,6 +17,37 @@
 	return [super initWithFrame:frame];
 }
 
+- (BOOL)drawsBackground
+{
+	/* Do not render the background so that everything is always transparent */
+	/* so that any control under this gets drawn is not obscured. */
+	return NO;
+}
+
+- (BOOL)autohidesScrollers
+{
+	/* Always make the scrollbar visible. */
+	return NO;
+}
+
+- (BOOL)hasVerticalScroller
+{
+	/* Always make the scrollbar visible. */
+	return YES;
+}
+
+- (BOOL)hasHorizontalScroller
+{
+	/* Always make the scrollbar visible. */
+	return YES;
+}
+
+- (BOOL) translatesAutoresizingMaskIntoConstraints
+{
+	/* Do not auto-resize constraints?? */
+	return NO;
+}
+
 @end
 
 sjme_errorCode sjme_scritchui_cocoa_scrollPanelNew(
@@ -32,7 +63,7 @@ sjme_errorCode sjme_scritchui_cocoa_scrollPanelNew(
 
 	/* Setup new scroll panel. */
 	cocoaScroll = [[SJMEScrollPanel new] initWithFrame:
-		NSMakeRect(0, 0, 200, 200)];
+		NSMakeRect(0, 0, 20, 20)];
 	cocoaClip = cocoaScroll.contentView;
 
 	/* Store it. */
@@ -42,16 +73,11 @@ sjme_errorCode sjme_scritchui_cocoa_scrollPanelNew(
 		cocoaClip;
 	cocoaScroll->scritchScroll = inScrollPanel;
 
-	/* Always have a scrollbar. */
-	[cocoaScroll setAutohidesScrollers:NO];
-	[cocoaScroll setHasHorizontalScroller:YES];
-	[cocoaScroll setHasVerticalScroller:YES];
-
-	/* Do not draw the background, make this always transparent. */
-	[cocoaScroll setDrawsBackground:NO];
-
-	/* Do not auto-resize constraints?? */
-	[cocoaScroll setTranslatesAutoresizingMaskIntoConstraints:NO];
+	NSButton* button = [NSButton new];
+	[button setTitle:@"Test"];
+	[button setNeedsDisplay:YES];
+	[button setButtonType:NSRadioButton];
+	[cocoaScroll setDocumentView:button];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

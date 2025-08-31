@@ -38,6 +38,12 @@ sjme_errorCode sjme_scritchui_cocoa_viewGetView(
 			SJME_JNI_TRUE,
 			&outViewRect->s.x, &outViewRect->s.y,
 			&outViewRect->d.width, &outViewRect->d.height);
+
+#if defined(SJME_CONFIG_DEBUG)
+		/* Debug. */
+		sjme_message("NSScrollView.getFrameSize(%d, %d)",
+			outViewRect->d.width, outViewRect->d.height);
+#endif
 	}
 
 	/* Not implemented! */
@@ -80,6 +86,12 @@ sjme_errorCode sjme_scritchui_cocoa_viewSetArea(
 		/* Set new clip. */
 		[cocoaScroll setFrameSize:NSMakeSize(areaW, areaH)];
 		[cocoaScroll setNeedsDisplay:YES];
+
+#if defined(SJME_CONFIG_DEBUG)
+		/* Debug. */
+		sjme_message("NSScrollView.setFrameSize(%d, %d)",
+			areaW, areaH);
+#endif
 	}
 
 	/* Not implemented! */

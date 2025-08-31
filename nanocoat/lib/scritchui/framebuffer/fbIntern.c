@@ -569,7 +569,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	/* Obtain all the look and feel colors, if any fail fallback to default. */
 	memset(lafColors, 0, sizeof(lafColors));
 	for (i = 0; i < SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR; i++)
-		if (sjme_error_is(error = inState->apiInThread->lafElementColor(
+		if (sjme_error_is(inState->apiInThread->lafElementColor(
 			inState, inComponent,
 			&lafColors[i], i)))
 			lafColors[i] = 0xFF000000;
