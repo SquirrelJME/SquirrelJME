@@ -668,7 +668,7 @@ sjme_errorCode sjme_scritchui_core_componentSetInputListener(
 			(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
 				inComponent, input),
 			(sjme_scritchui_voidListenerFunc)coreListener,
-			copyFrontEnd)))
+			NULL)))
 			return sjme_error_default(error);
 	}
 
