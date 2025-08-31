@@ -56,7 +56,7 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		
 	/* Get font to use if there is no change in it. */
 	noFont = NULL;
-	if (sjme_error_is(error = inState->api->fontBuiltin(inState,
+	if (sjme_error_is(error = inState->apiInThread->fontBuiltin(inState,
 		&noFont)) || noFont == NULL)
 		return sjme_error_default(error);
 	

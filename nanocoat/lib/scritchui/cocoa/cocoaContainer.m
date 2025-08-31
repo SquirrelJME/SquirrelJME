@@ -127,7 +127,7 @@ sjme_errorCode sjme_scritchui_cocoa_containerRemove(
 		cocoaScroll = inContainer->common.handle[SJME_SUI_COCOA_H_NSVIEW];
 
 		/* Remove the document, if this is the one. */
-		if ([cocoaScroll documentView] == cocoaView)
+		if ([[cocoaScroll documentView] isEqual:cocoaView])
 		{
 			/* Set nothing. */
 			[cocoaScroll setDocumentView:nil];

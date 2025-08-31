@@ -40,6 +40,7 @@
 	sjme_jint x, y, w, h, vw, vh;
 	sjme_frontEndBindable frontEnd;
 	sjme_scritchui_pencilFont defaultFont;
+	sjme_scritchui_uiPaintable paintable;
 	NSGraphicsContext* context;
 	NSAffineTransform* matrix;
 
@@ -50,10 +51,20 @@
 	/* Recover graphics context. */
 	context = [NSGraphicsContext currentContext];
 
-	/* Get listener info, ignore if there is none. */
-	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(&inPanel->paint, paint);
-	if (infoCore->callback == NULL)
+	/* Is this paintable? */
+	paintable = NULL;
+	if (sjme_error_is(error = inState->intern->getPaintable(inState,
+		SJME_SUI_CAST_COMPONENT(inPanel),
+		&paintable)) || paintable == NULL)
 		goto skip_nothing;
+
+	/* Get listener info, ignore if there is none. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(paintable, paint);
+	if (infoCore->callback == NULL)
+	{
+		error = SJME_ERROR_NO_LISTENER;
+		goto skip_nothing;
+	}
 
 	/* The dirty rect is in PDF space, it needs to be converted. */
 	/* The super frame needs to be used as well. */
@@ -305,6 +316,7 @@ sjme_errorCode sjme_scritchui_cocoa_panelEnableFocus(
 	sjme_attrInValue sjme_jboolean enableFocus,
 	sjme_attrInValue sjme_jboolean defaultFocus)
 {
+	sjme_errorCode error;
 	SJMEPanel* cocoaPanel;
 
 	if (inState == NULL || inPanel == NULL)
@@ -313,6 +325,15 @@ sjme_errorCode sjme_scritchui_cocoa_panelEnableFocus(
 	/* Recover panel. */
 	cocoaPanel =
 		(SJMEPanel*)inPanel->component.common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+	/* Make sure this is set now as Cocoa needs it early. */
+	inPanel->enableFocus = enableFocus;
+
+	/* Grab focus? */
+	if (enableFocus && defaultFocus)
+		if (sjme_error_is(error = inState->apiInThread->componentFocusGrab(
+			inState, SJME_SUI_CAST_COMPONENT(inPanel))))
+			return sjme_error_default(error);
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

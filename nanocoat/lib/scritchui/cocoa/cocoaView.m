@@ -35,7 +35,7 @@ sjme_errorCode sjme_scritchui_cocoa_viewGetView(
 		outViewRect->d.width = abs((sjme_jint)rect.size.width);
 		outViewRect->d.height = abs((sjme_jint)rect.size.height);
 		inState->apiInThread->lafDpiProject(inState, inComponent,
-			SJME_JNI_TRUE,
+			SJME_JNI_FALSE,
 			&outViewRect->s.x, &outViewRect->s.y,
 			&outViewRect->d.width, &outViewRect->d.height);
 
@@ -80,7 +80,7 @@ sjme_errorCode sjme_scritchui_cocoa_viewSetArea(
 		areaW = inViewArea->width;
 		areaH = inViewArea->height;
 		inState->apiInThread->lafDpiProject(inState, inComponent,
-			SJME_JNI_FALSE,
+			SJME_JNI_TRUE,
 			0, 0, &areaW, &areaH);
 
 		/* Set new clip. */

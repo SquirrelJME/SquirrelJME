@@ -48,6 +48,17 @@
 	return NO;
 }
 
+- (void)drawRect:(NSRect)dirtyRect
+{
+	/* Debug. */
+	sjme_message("NSScrollView.drawRect() [%d, %d, %d, %d]",
+		(int)dirtyRect.origin.x, (int)dirtyRect.origin.y,
+		(int)dirtyRect.size.width, (int)dirtyRect.size.height);
+
+	/* Make sure the super panel is drawn. */
+	[super drawRect:dirtyRect];
+}
+
 @end
 
 sjme_errorCode sjme_scritchui_cocoa_scrollPanelNew(
@@ -63,7 +74,7 @@ sjme_errorCode sjme_scritchui_cocoa_scrollPanelNew(
 
 	/* Setup new scroll panel. */
 	cocoaScroll = [[SJMEScrollPanel new] initWithFrame:
-		NSMakeRect(0, 0, 20, 20)];
+		NSMakeRect(0, 0, 300, 300)];
 	cocoaClip = cocoaScroll.contentView;
 
 	/* Store it. */
@@ -72,12 +83,6 @@ sjme_errorCode sjme_scritchui_cocoa_scrollPanelNew(
 	inScrollPanel->component.common.handle[SJME_SUI_COCOA_H_NSVIEWB] =
 		cocoaClip;
 	cocoaScroll->scritchScroll = inScrollPanel;
-
-	NSButton* button = [NSButton new];
-	[button setTitle:@"Test"];
-	[button setNeedsDisplay:YES];
-	[button setButtonType:NSRadioButton];
-	[cocoaScroll setDocumentView:button];
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

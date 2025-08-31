@@ -688,7 +688,8 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 					/* Load in string. */
 					memset(&seq, 0, sizeof(seq));
 					if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-						&seq, dlAt->data.text.string, 0, -1)))
+						&seq, dlAt->data.text.string,
+						0, -1)))
 						goto fail_charSeqLoad;
 					
 					/* Determine how long the string is. */
@@ -703,7 +704,8 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 					
 					/* Selection buffer. */
 					if (sg != NULL && doSel)
-						sg->apiInThread->drawSubstring(sg, &seq, 0, seqLen,
+						sg->apiInThread->drawSubstring(sg, &seq, 0,
+							seqLen,
 							0, 0, 0);
 					
 					/* If disabled, cross it out. */
