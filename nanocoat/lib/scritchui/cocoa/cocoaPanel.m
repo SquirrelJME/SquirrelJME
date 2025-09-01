@@ -66,6 +66,11 @@
 		goto skip_nothing;
 	}
 
+	sjme_message("RealPaint? %p (%p) %p %p", inPanel,
+		inPanel->component.common.frontEnd.base.wrapper,
+		inPanel->paint.listeners[0].paint.callback,
+		inPanel->paint.listeners[1].paint.callback);
+
 	/* The dirty rect is in PDF space, it needs to be converted. */
 	/* The super frame needs to be used as well. */
 	x = dirtyRect.origin.x;
@@ -167,6 +172,9 @@ skip_nothing:
 
 	/* Flush graphics. */
 	[context flushGraphics];
+
+	/* Not failed here. */
+	return;
 
 	/* Failed? */
 fail_noImageRep:
@@ -352,7 +360,7 @@ sjme_errorCode sjme_scritchui_cocoa_panelNew(
 	/* Setup new panel. */
 	cocoaPanel = [SJMEPanel new];
 
-	/* Store it. */
+	/* Link together. */
 	inPanel->component.common.handle[SJME_SUI_COCOA_H_NSVIEW] = cocoaPanel;
 	cocoaPanel->scritchPanel = inPanel;
 

@@ -67,21 +67,17 @@ sjme_errorCode sjme_scritchui_cocoa_scrollPanelNew(
 	sjme_attrInNullable sjme_pointer ignored)
 {
 	SJMEScrollPanel* cocoaScroll;
-	NSClipView* cocoaClip;
 
 	if (inState == NULL || inScrollPanel == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Setup new scroll panel. */
 	cocoaScroll = [[SJMEScrollPanel new] initWithFrame:
-		NSMakeRect(0, 0, 300, 300)];
-	cocoaClip = cocoaScroll.contentView;
+		NSMakeRect(0, 0, 100, 100)];
 
 	/* Store it. */
 	inScrollPanel->component.common.handle[SJME_SUI_COCOA_H_NSVIEW] =
 		cocoaScroll;
-	inScrollPanel->component.common.handle[SJME_SUI_COCOA_H_NSVIEWB] =
-		cocoaClip;
 	cocoaScroll->scritchScroll = inScrollPanel;
 
 	/* Success? */

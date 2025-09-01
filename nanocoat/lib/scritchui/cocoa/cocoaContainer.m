@@ -72,6 +72,9 @@ sjme_errorCode sjme_scritchui_cocoa_containerAdd(
 		return sjme_error_notImplemented(inContainer->common.type);
 	}
 
+	/* Make sure the view is NOT hidden. */
+	[cocoaView setHidden:NO];
+
 	/* Refresh. */
 	[cocoaView setNeedsDisplay:true];
 
@@ -144,6 +147,9 @@ sjme_errorCode sjme_scritchui_cocoa_containerRemove(
 		return sjme_error_notImplemented(inContainer->common.type);
 	}
 
+	/* The view can be made hidden as it is no longer in a container. */
+	[cocoaView setHidden:YES];
+
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
@@ -157,7 +163,9 @@ sjme_errorCode sjme_scritchui_cocoa_containerSetBounds(
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height)
 {
+	sjme_errorCode error;
 	NSView* cocoaView;
+	NSView* parentView;
 	NSRect rect;
 
 	if (inState == NULL || inContainer == NULL || inComponent == NULL)
@@ -165,6 +173,14 @@ sjme_errorCode sjme_scritchui_cocoa_containerSetBounds(
 
 	/* What is being adjusted? */
 	cocoaView = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+	/* Project coordinates to screen space. */
+	if (sjme_error_is(error = inState->apiInThread->lafDpiProject(inState,
+		inComponent,
+		SJME_JNI_TRUE,
+		&x, &y,
+		&width, &height)))
+		return sjme_error_default(error);
 
 	/* Set bounds for the view itself, only considers size. */
 	rect.origin.x = 0;
@@ -182,6 +198,16 @@ sjme_errorCode sjme_scritchui_cocoa_containerSetBounds(
 
 	/* Update. */
 	[cocoaView setNeedsDisplay:YES];
+	if (inComponent->parent != NULL)
+		if (inComponent->parent->common.type != SJME_SCRITCHUI_TYPE_WINDOW)
+		{
+			/* Load the parent view. */
+			parentView = inComponent->parent->common
+				.handle[SJME_SUI_COCOA_H_NSVIEW];
+
+			/* Make sure it gets updated. */
+			[parentView setNeedsDisplay:YES];
+		}
 
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

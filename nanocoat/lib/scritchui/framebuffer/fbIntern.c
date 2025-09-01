@@ -364,6 +364,11 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 		paintListener, NULL)))
 		return sjme_error_default(error);
 	
+	sjme_message("SoftPaint! %p (%p) %p %p", wrappedPanel,
+		wrappedPanel->component.common.frontEnd.base.wrapper,
+		wrappedPanel->paint.listeners[0].paint.callback,
+		wrappedPanel->paint.listeners[1].paint.callback);
+	
 	/* Success! */
 	*outWState = wState;
 	return SJME_ERROR_NONE;

@@ -26,7 +26,8 @@ sjme_errorCode sjme_scritchui_cocoa_viewGetView(
 	if (inComponent->common.type == SJME_SCRITCHUI_TYPE_SCROLL_PANEL)
 	{
 		/* Obtain rect. */
-		cocoaClip = inComponent->common.handle[SJME_SUI_COCOA_H_NSVIEWB];
+		cocoaClip = ((SJMEScrollPanel*)inComponent->common
+			.handle[SJME_SUI_COCOA_H_NSVIEW]).contentView;
 		rect = [cocoaClip documentRect];
 
 		/* Project coordinates. */

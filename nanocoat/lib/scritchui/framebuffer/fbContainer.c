@@ -33,7 +33,7 @@ sjme_errorCode sjme_scritchui_fb_containerAdd(
 	wrappedAddComponent =
 		addComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
-	/* Forward call. */
+	/* Forward add. */
 	return wrappedState->apiInThread->containerAdd(wrappedState,
 		wrappedInContainer, wrappedAddComponent);
 }
@@ -58,7 +58,7 @@ sjme_errorCode sjme_scritchui_fb_containerRemove(
 	wrappedRemoveComponent =
 		removeComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
-	/* Forward repaint. */
+	/* Forward remove. */
 	return wrappedState->apiInThread->containerRemove(wrappedState,
 		wrappedInContainer,
 		wrappedRemoveComponent);
