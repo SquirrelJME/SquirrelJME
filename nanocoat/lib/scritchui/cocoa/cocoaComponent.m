@@ -154,6 +154,7 @@ sjme_errorCode sjme_scritchui_cocoa_componentSize(
 	sjme_attrOutNullable sjme_jint* outWidth,
 	sjme_attrOutNullable sjme_jint* outHeight)
 {
+	sjme_errorCode error;
 	NSView* cocoaView;
 	NSRect base;
 	sjme_jint w, h;
@@ -171,9 +172,11 @@ sjme_errorCode sjme_scritchui_cocoa_componentSize(
 	h = abs((sjme_jint)base.size.height);
 
 	/* Determine the actual component size. */
-	inState->apiInThread->lafDpiProject(inState, inComponent,
+	if (sjme_error_is(error = inState->apiInThread->lafDpiProject(inState,
+		inComponent,
 		SJME_JNI_TRUE,
-		0, 0, &w, &h);
+		0, 0, &w, &h)))
+		return sjme_error_default(error);
 
 	/* Return the resultant size. */
 	if (outWidth != NULL)

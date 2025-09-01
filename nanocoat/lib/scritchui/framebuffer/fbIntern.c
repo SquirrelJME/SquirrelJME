@@ -14,6 +14,30 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "lib/scritchui/framebuffer/fbIntern.h"
 
+#if defined(SJME_CONFIG_DEBUG)
+
+/** Declares the debug marker. */
+#define sjme_scritchui_fb_markerDeclare() sjme_jint line
+
+/** Emits a debug marker. */
+#define sjme_scritchui_fb_marker() line = __LINE__
+
+/** Uses a debug marker. */
+#define sjme_scritchui_fb_markerUse() (line)
+
+#else
+
+/** Declares the debug marker. */
+#define sjme_scritchui_fb_markerDeclare() (void)
+
+/** Emits a debug marker. */
+#define sjme_scritchui_fb_marker() (void)
+
+/** Uses a debug marker. */
+#define sjme_scritchui_fb_markerUse() (-1)
+
+#endif
+
 static sjme_errorCode sjme_scritchui_fb_selLock(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
@@ -529,6 +553,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	sjme_scritchui_lafElementColorType colorType;
 	sjme_scritchui_rect useFocusRect;
 	sjme_scritchui_dim suggestDim;
+	sjme_scritchui_fb_markerDeclare();
 	
 	if (inState == NULL || g == NULL || dlFull == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -549,6 +574,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		wState = inComponent->common.handle[SJME_SUI_FB_H_WSTATE];
 	
 		/* Read in component size. */
+		sjme_scritchui_fb_marker();
 		if (sjme_error_is(error = inState->apiInThread->componentSize(
 			inState, inComponent, &cW, &cH)))
 			goto fail_componentSize;
@@ -562,6 +588,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	memset(&useFocusRect, 0, sizeof(useFocusRect));
 	
 	/* Does the selection buffer need initializing? */
+	sjme_scritchui_fb_marker();
 	sg = NULL;
 	if (wState != NULL)
 		if (sjme_error_is(error = sjme_scritchui_fb_intern_makeSelBuf(
@@ -658,11 +685,13 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		if (sg != NULL && doSel)
 		{
 			/* Copy all the translation and otherwise here. */
+			sjme_scritchui_fb_marker();
 			if (sjme_error_is(error = sg->apiInThread->setParametersFrom(sg,
 				g)))
 				goto fail_sgCopyParam;
 			
 			/* The color is the selection index. */
+			sjme_scritchui_fb_marker();
 			if (sjme_error_is(error = sg->apiInThread->setAlphaColor(sg,
 				0xFF000000 | dlAt->selection)))
 				goto fail_sgSelColor;
@@ -774,7 +803,8 @@ fail_lafColor:
 fail_selBufInit:
 fail_componentSize:
 	/* Debug. */
-	sjme_message("FB Render Failed: %d", error);
+	sjme_message("FB Render Failed: %d %d",
+		error, sjme_scritchui_fb_markerUse());
 	
 	return sjme_error_default(error);
 }
