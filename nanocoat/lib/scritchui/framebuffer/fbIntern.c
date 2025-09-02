@@ -590,7 +590,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	/* Does the selection buffer need initializing? */
 	sjme_scritchui_fb_marker();
 	sg = NULL;
-	if (wState != NULL)
+	if (wState != NULL && inComponent != NULL)
 		if (sjme_error_is(error = sjme_scritchui_fb_intern_makeSelBuf(
 			inState, inComponent, wState, &sg, cW, cH)))
 			goto fail_selBufInit;
