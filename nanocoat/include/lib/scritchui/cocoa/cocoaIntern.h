@@ -118,6 +118,9 @@ extern NSString* const sjme_scritchui_cocoa_loopExecuteNotif;
  */
 @interface SJMESuperObject : NSObject
 {
+@public
+	/** The automatic releasing pool. */
+	NSAutoreleasePool* autoPool;
 }
 
 + (void)postNotification:(NSNotification *)notif;

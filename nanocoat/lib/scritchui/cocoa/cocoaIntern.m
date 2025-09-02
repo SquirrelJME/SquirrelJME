@@ -142,6 +142,9 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 	/* Get the current application. */
 	currentApp = [NSApplication sharedApplication];
 
+	/* Setup autorelease pool. */
+	self->autoPool = [NSAutoreleasePool new];
+
 	/* We want SquirrelJME to be activated because this is a UI! */
 	/* Whatever we are running on, just drop it and set this. */
 #if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_6)
@@ -180,12 +183,16 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 	SJMELoopExecute* loopExecuteInfo;
 	sjme_errorCode error;
 	sjme_scritchui inState;
+	NSDictionary* dict;
 	NSThread* currentThread;
 	NSThread* desireThread;
+	SJMESuperObject* superObj;
 
 	/* Recover info. */
-	loopExecuteInfo = [[notif userInfo] objectForKey:@"loopExecuteInfo"];
+	dict = [notif userInfo];
+	loopExecuteInfo = [dict objectForKey:@"loopExecuteInfo"];
 	inState = loopExecuteInfo->scritchState;
+	superObj = (SJMESuperObject*)inState->common.handle[SJME_SUI_COCOA_H_SUPER];
 
 	/* Can only be on the main thread. */
 	currentThread = [NSThread currentThread];
@@ -217,12 +224,10 @@ NSString* const sjme_scritchui_cocoa_loopExecuteNotif =
 	NSWindow* baseWindow;
 
 	/* Determine if this is a window type we care about. */
+	/* Forward to our own handler, if it is. */
 	baseWindow = notif.object;
 	if ([baseWindow class] != [SJMEWindow class])
-		return;
-
-	/* Forward to our own handler. */
-	[((SJMEWindow*)baseWindow)windowDidResize:notif];
+		[((SJMEWindow*)baseWindow)windowDidResize:notif];
 }
 
 @end

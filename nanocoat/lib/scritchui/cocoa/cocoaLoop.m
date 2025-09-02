@@ -20,11 +20,12 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 	sjme_jboolean inThread;
 	NSApplication* currentApp;
 	NSNotificationCenter* notifCenter;
-	SJMESuperObject* super;
+	SJMESuperObject* superObj;
 	NSDictionary* dict;
 	SJMELoopExecute* loopExecuteInfo;
 	NSThread* mainThread;
 	NSNotification* notif;
+	NSAutoreleasePool* autoPool;
 
 	if (inState == NULL || callback == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -33,25 +34,29 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 	currentApp =
 		(NSApplication*)inState->common.handle[SJME_SUI_COCOA_H_NSAPP];
 	mainThread = (NSThread*)inState->common.handle[SJME_SUI_COCOA_H_NSTHREAD];
-	super = (SJMESuperObject*)inState->common.handle[SJME_SUI_COCOA_H_SUPER];
+	superObj = (SJMESuperObject*)inState->common.handle[SJME_SUI_COCOA_H_SUPER];
 
 	/* Are we in the event loop thread? */
 	if (sjme_error_is(error = inState->api->loopIsInThread(inState,
 		&inThread)))
 		return sjme_error_default(error);
 
+	/* Make sure a pool is setup. */
+	autoPool = [NSAutoreleasePool allocWithZone:NSDefaultMallocZone()];
+
 	/* Setup dictionary parameters. */
 	loopExecuteInfo = [SJMELoopExecute new];
 	loopExecuteInfo->scritchState = inState;
 	loopExecuteInfo->callback = callback;
 	loopExecuteInfo->anything = anything;
+
 	dict = [NSDictionary dictionaryWithObject:loopExecuteInfo
 		forKey:@"loopExecuteInfo"];
 
 	/* Build notification. */
 	notif = [NSNotification
 		notificationWithName:sjme_scritchui_cocoa_loopExecuteNotif
-		object:super
+		object:superObj
 		userInfo:dict];
 
 	/* If we are not, we need to post a notification via selector. */
@@ -74,10 +79,10 @@ sjme_errorCode sjme_scritchui_cocoa_loopExecuteLater(
 #elif SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_5) || \
     SJME_CONFIG_GNUSTEP_BASE_VERSION_LEAST(1, 15, 4)
 		/* Post notification. */
-		[[super class] performSelector:@selector(postNotification:)
-			onThread:mainThread
-			withObject:notif
-			waitUntilDone:NO];
+		[[superObj class] performSelector:@selector(postNotification:)
+								 onThread:mainThread
+							   withObject:notif
+							waitUntilDone:NO];
 
 		/* Success? */
 		return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
