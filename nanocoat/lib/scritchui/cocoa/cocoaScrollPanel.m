@@ -17,6 +17,18 @@
 	return [super initWithFrame:frame];
 }
 
+- (BOOL)autoresizesSubviews
+{
+	/* Do not automatically resize subviews! */
+	return NO;
+}
+
+- (NSUInteger)autoresizingMask
+{
+	/* Do not automatically resize views. */
+	return NSViewNotSizable;
+}
+
 - (BOOL)drawsBackground
 {
 	/* Do not render the background so that everything is always transparent */
@@ -40,6 +52,17 @@
 {
 	/* Always make the scrollbar visible. */
 	return YES;
+}
+
+- (BOOL)isFlipped
+{
+	/* Flip back origin be the top-left corner, which is far easier. */
+	return YES;
+}
+
+- (NSBorderType)borderType
+{
+	return NSGrooveBorder;
 }
 
 - (BOOL) translatesAutoresizingMaskIntoConstraints

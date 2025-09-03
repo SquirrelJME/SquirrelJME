@@ -36,7 +36,8 @@ sjme_errorCode sjme_scritchui_cocoa_containerAdd(
 		cocoaWindow = inContainer->common.handle[SJME_SUI_COCOA_H_NSVIEW];
 
 		/* Use this as the view. */
-		[[cocoaWindow contentView] addSubview:cocoaView];
+		[[cocoaWindow contentView] addSubview:cocoaView
+			positioned:NSWindowAbove relativeTo:nil];
 	}
 
 	/* Adding to regular panel? */
@@ -46,7 +47,8 @@ sjme_errorCode sjme_scritchui_cocoa_containerAdd(
 		cocoaPanel = inContainer->common.handle[SJME_SUI_COCOA_H_NSVIEW];
 
 		/* Add it in. */
-		[cocoaPanel addSubview:cocoaView];
+		[cocoaPanel addSubview:cocoaView
+			positioned:NSWindowAbove relativeTo:nil];
 
 		/* Refresh. */
 		[cocoaPanel setNeedsDisplay:true];
@@ -182,14 +184,15 @@ sjme_errorCode sjme_scritchui_cocoa_containerSetBounds(
 		&width, &height)))
 		return sjme_error_default(error);
 
-	/* Set bounds for the view itself, only considers size. */
+	/* Set bounds for the view itself, only considers size as the origin */
+	/* should always be (0, 0). */
 	rect.origin.x = 0;
 	rect.origin.y = 0;
 	rect.size.width = abs(width);
 	rect.size.height = abs(height);
 	[cocoaView setBounds:rect];
 
-	/* Then set bounds for the frame. */
+	/* Then set bounds for the frame within its super view. */
 	rect.origin.x = x;
 	rect.origin.y = y;
 	rect.size.width = abs(width);

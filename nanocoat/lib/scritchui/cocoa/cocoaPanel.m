@@ -18,6 +18,18 @@
 	return (scritchPanel->enableFocus ? YES : NO);
 }
 
+- (BOOL)autoresizesSubviews
+{
+	/* Do not automatically resize subviews! */
+	return NO;
+}
+
+- (NSUInteger)autoresizingMask
+{
+	/* Do not automatically resize views. */
+	return NSViewNotSizable;
+}
+
 - (BOOL)canBecomeKeyView
 {
 	/* Set if focus is enabled. */
@@ -58,6 +70,11 @@
 		&paintable)) || paintable == NULL)
 		goto skip_nothing;
 
+	sjme_message("RealPaint? %p (%p) %p %p", inPanel,
+		inPanel->component.common.frontEnd.base.wrapper,
+		inPanel->paint.listeners[0].paint.callback,
+		inPanel->paint.listeners[1].paint.callback);
+
 	/* Get listener info, ignore if there is none. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(paintable, paint);
 	if (infoCore->callback == NULL)
@@ -65,11 +82,6 @@
 		error = SJME_ERROR_NO_LISTENER;
 		goto skip_nothing;
 	}
-
-	sjme_message("RealPaint? %p (%p) %p %p", inPanel,
-		inPanel->component.common.frontEnd.base.wrapper,
-		inPanel->paint.listeners[0].paint.callback,
-		inPanel->paint.listeners[1].paint.callback);
 
 	/* The dirty rect is in PDF space, it needs to be converted. */
 	/* The super frame needs to be used as well. */
@@ -212,10 +224,8 @@ fail_project:
 
 - (BOOL)isFlipped
 {
-	/* Flipped backed origin be the top-left, which is far easier. */
-	/* However, it does not actually work on GNUstep so do not bother. */
-	/* Also, framing completely breaks if used as windows cannot be flipped. */
-	return NO;
+	/* Flip back origin be the top-left corner, which is far easier. */
+	return YES;
 }
 
 - (BOOL)isOpaque
