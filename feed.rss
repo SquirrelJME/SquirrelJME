@@ -17,8 +17,36 @@
 		rel="self" />
 
 	<!-- Update these accordingly! -->
-	<pubDate>Sat, 07 Jun 2025 21:00 EDT</pubDate>
-	<lastBuildDate>Sat, 07 Jun 2025 21:00 EDT</lastBuildDate>
+	<pubDate>Thu, 04 Sept 2025 20:00 EDT</pubDate>
+	<lastBuildDate>Thu, 04 Sept 2025 20:00 EDT</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">bbfac411-6381-41b3-b0d0-618ed3ef1a4a</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20250904_2000.mkd</link>
+		<pubDate>Thu, 04 Sept 2025 20:00 EDT</pubDate>
+
+		<title>Development Is Resuming</title>
+		<description>My father passed away in late July which has made for a difficult August,
+along with getting the flu for a few weeks as well which definitely did not
+help. So for the lack of updates and such for both months, is due to these
+two reasons. Thank you for understanding.
+
+Early July I have merged in NanoCoat's code execution which is a major chunk
+of the virtual machine and is a major milestone. Just before my father passed
+away, I started work on implementing the stack cached interpreter which is
+a science heavy and very theoretical piece of code that would effectively
+be a major performance increase for NanoCoat. Stack caching is pretty
+important as it takes care of about 90% of the performance gains, so once
+this is done then NanoCoat should be executing quite quickly.
+
+For now though as I work on that in the background, I will continue the code
+execution bits and work on getting NanoCoat functional and operational first.
+It will run, but it will not be the most optimal performance wise. It will
+still be faster than SpringCoat since it is running in native code and does
+not need to have the JVM's JIT compiler to compile the interpreter.
+
+Other than that, there is not much else to update!</description>
+	</item>
 
 	<item>
 		<guid isPermaLink="false">a494c4aa-8ebd-4c93-a84c-b65405866d8e</guid>

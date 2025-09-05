@@ -1,0 +1,24 @@
+# Development Is Resuming
+
+My father passed away in late July which has made for a difficult August,
+along with getting the flu for a few weeks as well which definitely did not
+help. So for the lack of updates and such for both months, is due to these
+two reasons. Thank you for understanding.
+
+Early July I have merged in NanoCoat's code execution which is a major chunk
+of the virtual machine and is a major milestone. Just before my father passed
+away, I started work on implementing the stack cached interpreter which is
+a science heavy and very theoretical piece of code that would effectively
+be a major performance increase for NanoCoat. Stack caching is pretty
+important as it takes care of about 90% of the performance gains, so once
+this is done then NanoCoat should be executing quite quickly.
+
+For now though as I work on that in the background, I will continue the code
+execution bits and work on getting NanoCoat functional and operational first.
+It will run, but it will not be the most optimal performance wise. It will
+still be faster than SpringCoat since it is running in native code and does
+not need to have the JVM's JIT compiler to compile the interpreter.
+
+Other than that, there is not much else to update!
+
+
