@@ -105,12 +105,14 @@ static const sjme_javaTypeId sjme_nvm_byteCode_returnTypes[6] =
 SJME_NVM_BYTECODE_SLOW(IfAX)
 {
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Pop single object value. */
 	memset(&value, 0, sizeof(value));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, NULL, &value)))
+		SJME_JAVA_TYPE_ID_OBJECT, &commit, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
@@ -121,18 +123,24 @@ SJME_NVM_BYTECODE_SLOW(IfAX)
 			*sjme_util_memUnaligned16(&relRawCode[1]));
 	}
 
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
+
 	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(IfX)
 {
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Pop single integer value. */
 	memset(&value, 0, sizeof(value));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, NULL, &value)))
+		SJME_JAVA_TYPE_ID_INTEGER, &commit, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
@@ -142,6 +150,10 @@ SJME_NVM_BYTECODE_SLOW(IfX)
 		pcNew->adjust = sjme_big_short(
 			*sjme_util_memUnaligned16(&relRawCode[1]));
 	}
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 
 	SJME_NVM_BYTECODE_EXIT;
 }

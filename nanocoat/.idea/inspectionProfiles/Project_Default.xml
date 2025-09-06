@@ -1,6 +1,7 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="9d34d9f4-ee61-3835-9287-5f135f283b71" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
     <inspection_tool class="ClangTidy" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppDFAConstantConditions" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
     <inspection_tool class="CppDFAConstantFunctionResult" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
@@ -45,6 +46,23 @@
                   <option name="regExp" value="argV-&gt;.*=.*[;\n]" />
                   <option name="_fileType" value="C/C++" />
                   <option name="searchContext" value="ANY" />
+                </InspectionPattern>
+              </list>
+            </option>
+          </RegExpInspectionConfiguration>
+          <RegExpInspectionConfiguration>
+            <option name="description" value="SquirrelJME No Commit Used In Stack Pop" />
+            <option name="name" value="SquirrelJME No Commit Used In Stack Pop" />
+            <option name="problemDescriptor" value="SquirrelJME No Commit Used In Stack Pop" />
+            <option name="suppressId" value="squirreljme_nocommitpop" />
+            <option name="uuid" value="9d34d9f4-ee61-3835-9287-5f135f283b71" />
+            <option name="patterns">
+              <list>
+                <InspectionPattern>
+                  <option name="regExp" value="sjme_nvm_task_frameStackPopA?\([^,]+,[^,]+,[ \t\r\n]*NULL[ \t\r\n]*,[^,)]+\)" />
+                  <option name="_fileType" value="C/C++" />
+                  <option name="searchContext" value="ANY" />
+                  <option name="flags" value="64" />
                 </InspectionPattern>
               </list>
             </option>

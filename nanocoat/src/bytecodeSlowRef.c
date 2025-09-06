@@ -284,10 +284,12 @@ SJME_NVM_BYTECODE_SLOW(ArrayLength)
 {
 	sjme_jarray array;
 	sjme_jvalueTyped value, result;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Pop single object value. */
 	memset(&value, 0, sizeof(value));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		SJME_JAVA_TYPE_ID_OBJECT, NULL, &value)))
 		return sjme_error_vmError(inFrame, error);
