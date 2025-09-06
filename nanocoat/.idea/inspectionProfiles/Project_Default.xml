@@ -1,7 +1,6 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
-    <inspection_tool class="120e4cd2-a98e-38df-b005-641e475e2612" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ClangTidy" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppDFAConstantConditions" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
     <inspection_tool class="CppDFAConstantFunctionResult" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
@@ -9,6 +8,7 @@
     <inspection_tool class="CppJoinDeclarationAndAssignment" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppParameterMayBeConst" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppParameterMayBeConstPtrOrRef" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="CppRedundantElseKeyword" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantElseKeywordInsideCompoundStatement" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantParentheses" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppReplaceMemsetWithZeroInitialization" enabled="false" level="WEAK WARNING" enabled_by_default="false" />

@@ -1308,7 +1308,10 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 		}
 		
 		/* Count up. */
-		was = sjme_atomic_sjme_jint_getAdd(&result->count, 1);
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+		was =
+#endif
+			sjme_atomic_sjme_jint_getAdd(&result->count, 1);
 		
 		/* Emit barrier. */
 		sjme_atomic_barrier();

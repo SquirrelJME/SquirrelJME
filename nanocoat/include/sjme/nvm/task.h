@@ -226,15 +226,37 @@ struct sjme_frame_frameStacks
 	sjme_jint orderLength;
 };
 
+/** The number of items to store in a current GC commit. */
+#define SJME_NVM_FRAME_NUM_GC_COMMIT 8
+
 /**
  * Garbage collection commit for stack popping and otherwise.
  *
  * @since 2025/07/20
  */
-typedef struct sjme_nvm_frame_gcCommit
+typedef struct sjme_nvm_frame_gcCommit sjme_nvm_frame_gcCommit;
+
+struct sjme_nvm_frame_gcCommit
 {
-	int todo;
-} sjme_nvm_frame_gcCommit;
+	/** The objects waiting to be garbage collected. */
+	struct
+	{
+		/** The object that is waiting. */
+		sjme_jobject l;
+
+		/** The number of times it should be garbage collected. */
+		sjme_jint count;
+	} objects[SJME_NVM_FRAME_NUM_GC_COMMIT];
+
+	/** Is this a dynamically allocated commit? */
+	sjme_jboolean isDynamic;
+
+	/** The previous commit in the chain. */
+	sjme_nvm_frame_gcCommit* prev;
+
+	/** The next commit in the chain if there are more items. */
+	sjme_nvm_frame_gcCommit* next;
+};
 
 /**
  * The type of GC consideration to make.
@@ -666,7 +688,33 @@ sjme_jclass sjme_nvm_task_commonClassR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInRange(0, SJME_NVM_TASK_NUM_COMMON_CLASS)
 		sjme_nvm_task_commonClassId commonId);
-	
+
+/**
+ * Commits any pending garbage collection.
+ * 
+ * @param inFrame The frame to commit within.
+ * @param commit Any pending garbage collection actions to be committed.
+ * @return Any resultant error, if any.
+ * @since 2025/09/06
+ */
+sjme_errorCode sjme_nvm_task_frameCommit(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit);
+
+/**
+ * Pushes an object to be commited for later garbage collection.
+ * 
+ * @param inFrame The frame to push the commit within.
+ * @param commit The commit to push into.
+ * @param pushObject The object to be pushed.
+ * @return Any resultant error, if any.
+ * @since 2025/09/06
+ */
+sjme_errorCode sjme_nvm_task_frameCommitPush(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNotNull sjme_jobject pushObject);
+
 /**
  * Locates the exception handler to use for exceptions.
  * 
@@ -812,8 +860,8 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
  * 
  * @param inFrame The frame to pop from.
  * @param typeId The type ID to pop.
- * @param copiedElsewhere Is this value copied elsewhere?
- * @param commit
+ * @param commit The commit to the garbage collector when the value is no
+ * longer needed.
  * @param outValue The resultant value.
  * @return Any resultant error, if any.
  * @since 2025/02/16
@@ -821,7 +869,6 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
 sjme_errorCode sjme_nvm_task_frameStackPop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInValue sjme_jboolean copiedElsewhere,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jvalueTyped* outValue);
 
@@ -831,7 +878,8 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
  * 
  * @param inFrame The frame to pop from.
  * @param copiedElsewhere Are these values copied elsewhere?
- * @param commit
+ * @param commit The commit to the garbage collector when the value is no
+ * longer needed.
  * @param argC The number of values to pop.
  * @param argT The types of values to pop.
  * @param argV The resultant values which were popped.
@@ -927,7 +975,6 @@ sjme_errorCode sjme_nvm_task_frameTreadAddr(
  * @param typeId The type to read.
  * @param typeIndex The type index to set.
  * @param outValue The resultant value.
- * @param copiedElsewhere Valued is copied elsewhere?
  * @param eraseOld Erase the old value in the slot?
  * @return Any resultant error, if any.
  * @since 2025/02/16
@@ -937,7 +984,6 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere,
 	sjme_attrInValue sjme_jboolean eraseOld);
 	
 /**

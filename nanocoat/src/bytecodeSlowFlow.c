@@ -110,7 +110,7 @@ SJME_NVM_BYTECODE_SLOW(IfAX)
 	/* Pop single object value. */
 	memset(&value, 0, sizeof(value));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, SJME_JNI_FALSE, NULL, &value)))
+		SJME_JAVA_TYPE_ID_OBJECT, NULL, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
@@ -132,7 +132,7 @@ SJME_NVM_BYTECODE_SLOW(IfX)
 	/* Pop single integer value. */
 	memset(&value, 0, sizeof(value));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, SJME_JNI_TRUE, NULL, &value)))
+		SJME_JAVA_TYPE_ID_INTEGER, NULL, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
@@ -155,10 +155,10 @@ SJME_NVM_BYTECODE_SLOW(IfICmpX)
 	memset(&b, 0, sizeof(b));
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, SJME_JNI_TRUE, NULL, &b)))
+		SJME_JAVA_TYPE_ID_INTEGER, NULL, &b)))
 		return sjme_error_vmError(inFrame, error);
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, SJME_JNI_TRUE, NULL, &a)))
+		SJME_JAVA_TYPE_ID_INTEGER, NULL, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
@@ -181,10 +181,10 @@ SJME_NVM_BYTECODE_SLOW(IfACmpX)
 	memset(&b, 0, sizeof(b));
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, SJME_JNI_TRUE, NULL, &b)))
+		SJME_JAVA_TYPE_ID_OBJECT, NULL, &b)))
 		return sjme_error_vmError(inFrame, error);
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, SJME_JNI_TRUE, NULL, &a)))
+		SJME_JAVA_TYPE_ID_OBJECT, NULL, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
@@ -242,7 +242,7 @@ SJME_NVM_BYTECODE_SLOW(LookupSwitch)
 	/* Read in switch value. */
 	memset(&value, 0, sizeof(value));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, SJME_JNI_TRUE, NULL, &value)))
+		SJME_JAVA_TYPE_ID_INTEGER, NULL, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Table is completely empty, skip everything. */
@@ -327,7 +327,7 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 		/* Pop value. */
 		memset(&result, 0, sizeof(result));
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			desire, SJME_JNI_TRUE, NULL, &result)))
+			desire, NULL, &result)))
 			return sjme_error_vmError(inFrame, error);
 
 		/* Push onto the parent stack. */
@@ -369,7 +369,7 @@ SJME_NVM_BYTECODE_SLOW(TableSwitch)
 	/* Read in switch value. */
 	memset(&value, 0, sizeof(value));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, SJME_JNI_TRUE, NULL, &value)))
+		SJME_JAVA_TYPE_ID_INTEGER, NULL, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Would be a default jump? */

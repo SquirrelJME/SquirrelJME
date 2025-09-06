@@ -117,6 +117,9 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 {
 	sjme_alloc_weak weak;
 	sjme_errorCode error;
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_jint oldCount;
+#endif
 	
 	if (object == NULL)
 		return SJME_ERROR_NULL_STACK_POINTER;
@@ -131,20 +134,25 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 		return sjme_error_default(error);
 
 #if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
-		"GC DN-1: %p (%s) %d -> %d",
-		object, 
-		(object->isClass != NULL ?
-			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),
-		sjme_atomic_sjme_jint_get(&weak->count) + 1,
-		sjme_atomic_sjme_jint_get(&weak->count));
+	/* Get old count for debugging. */
+	oldCount = sjme_atomic_sjme_jint_get(&weak->count);
 #endif
 
 	/* Reduce the count on this. */
 	if (sjme_error_is(error = sjme_alloc_weakUnRef(object)) ||
 		weak == NULL)
 		return sjme_error_default(error);
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
+		"GC DN-1: %p (%s) %d -> %d",
+		object, 
+		(object->isClass != NULL ?
+			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),
+		oldCount,
+		sjme_atomic_sjme_jint_get(&weak->count));
+#endif
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -156,6 +164,9 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 {
 	sjme_alloc_weak weak;
 	sjme_errorCode error;
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_jint oldCount;
+#endif
 	
 	if (object == NULL)
 		return SJME_ERROR_NULL_STACK_POINTER;
@@ -163,9 +174,19 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 	/* Must be a valid object type. */
 	if (!sjme_nvm_isAR(object, SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
 		return SJME_ERROR_INVALID_OBJECT;
-
+	
 	/* This must be a valid weak as well! */
 	weak = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakRefGet(object, &weak)) ||
+		weak == NULL)
+		return sjme_error_default(error);
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Recover old count for debugging. */
+	oldCount = sjme_atomic_sjme_jint_get(&weak->count);
+#endif
+
+	/* Count up. */
 	if (sjme_error_is(error = sjme_alloc_weakRef(object, &weak)) ||
 		weak == NULL)
 		return sjme_error_default(error);
@@ -177,7 +198,7 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 		object,
 		(object->isClass != NULL ?
 			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),
-		sjme_atomic_sjme_jint_get(&weak->count) - 1,
+		oldCount,
 		sjme_atomic_sjme_jint_get(&weak->count));
 #endif
 
