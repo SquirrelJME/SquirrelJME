@@ -792,6 +792,12 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 		allocSize, inType,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		return sjme_error_vmError(contextThread, error);
+
+	/* The object refers to the class now, so make sure the class */
+	/* does not get GCed. */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(
+		SJME_AS_JOBJECT(inClass))))
+		return sjme_error_vmError(contextThread, error);
 	
 	/* Setup object. */
 	result->isClass = inClass;
