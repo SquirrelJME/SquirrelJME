@@ -227,7 +227,7 @@ struct sjme_frame_frameStacks
 };
 
 /** The number of items to store in a current GC commit. */
-#define SJME_NVM_FRAME_NUM_GC_COMMIT 8
+#define SJME_NVM_FRAME_NUM_GC_COMMIT 4
 
 /**
  * Garbage collection commit for stack popping and otherwise.

@@ -39,16 +39,18 @@ SJME_NVM_BYTECODE_SLOW(Dup)
 SJME_NVM_BYTECODE_SLOW(DupX1)
 {
 	sjme_jvalueTyped a, b;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Pop the top two items on the stack. */
+	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_NARROW, NULL, &b)))
-		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_NARROW, NULL, &a)))
+		SJME_STACK_TYPE_NARROW, &commit, &b)))
+		return sjme_error_vmError(inFrame, error);
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_STACK_TYPE_NARROW, &commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push them back, duplicate the first popped item. */
@@ -60,6 +62,10 @@ SJME_NVM_BYTECODE_SLOW(DupX1)
 		return sjme_error_vmError(inFrame, error);
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&b)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
@@ -179,12 +185,18 @@ SJME_NVM_BYTECODE_SLOW(DupTwoX2)
 SJME_NVM_BYTECODE_SLOW(Pop)
 {
 	sjme_jvalueTyped top;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Pop value and discard. */
+	memset(&commit, 0, sizeof(commit));
 	memset(&top, 0, sizeof(top));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_NARROW, NULL, &top)))
+		SJME_STACK_TYPE_NARROW, &commit, &top)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */

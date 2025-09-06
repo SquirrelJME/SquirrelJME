@@ -161,16 +161,18 @@ SJME_NVM_BYTECODE_SLOW(IfX)
 SJME_NVM_BYTECODE_SLOW(IfICmpX)
 {
 	sjme_jvalueTyped a, b;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Pop both integer values. */
+	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, NULL, &b)))
+		SJME_JAVA_TYPE_ID_INTEGER, &commit, &b)))
 		return sjme_error_vmError(inFrame, error);
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, NULL, &a)))
+		SJME_JAVA_TYPE_ID_INTEGER, &commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
@@ -181,22 +183,28 @@ SJME_NVM_BYTECODE_SLOW(IfICmpX)
 			*sjme_util_memUnaligned16(&relRawCode[1]));
 	}
 
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
+
 	SJME_NVM_BYTECODE_EXIT;
 }
 
 SJME_NVM_BYTECODE_SLOW(IfACmpX)
 {
 	sjme_jvalueTyped a, b;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Pop both integer values. */
+	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, NULL, &b)))
+		SJME_JAVA_TYPE_ID_OBJECT, &commit, &b)))
 		return sjme_error_vmError(inFrame, error);
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, NULL, &a)))
+		SJME_JAVA_TYPE_ID_OBJECT, &commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
@@ -206,6 +214,10 @@ SJME_NVM_BYTECODE_SLOW(IfACmpX)
 		pcNew->adjust = sjme_big_short(
 			*sjme_util_memUnaligned16(&relRawCode[1]));
 	}
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 
 	SJME_NVM_BYTECODE_EXIT;
 }
@@ -238,6 +250,7 @@ SJME_NVM_BYTECODE_SLOW(LookupSwitch)
 	sjme_jint pivot, divLo, base;
 	sjme_jint matchKey, desire;
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Determine the relative base for parameters. */
@@ -253,8 +266,9 @@ SJME_NVM_BYTECODE_SLOW(LookupSwitch)
 
 	/* Read in switch value. */
 	memset(&value, 0, sizeof(value));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, NULL, &value)))
+		SJME_JAVA_TYPE_ID_INTEGER, &commit, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Table is completely empty, skip everything. */
@@ -308,6 +322,10 @@ skip_default:
 		*sjme_util_memUnaligned32(&relRawCode[paramBase]));
 	
 skip_matched:
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
+	
 	SJME_NVM_BYTECODE_EXIT;
 }
 
@@ -322,6 +340,7 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 {
 	sjme_javaTypeId desire;
 	sjme_jvalueTyped result;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Must be returning the same type. */
@@ -330,6 +349,7 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 		return sjme_error_vmError(inFrame, SJME_ERROR_WRONG_RETURN_TYPE);
 
 	/* If not returning void, pop value to return onto the parent stack. */
+	memset(&commit, 0, sizeof(commit));
 	if (desire != SJME_JAVA_TYPE_ID_VOID)
 	{
 		/* Must push onto something. */
@@ -339,23 +359,21 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 		/* Pop value. */
 		memset(&result, 0, sizeof(result));
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			desire, NULL, &result)))
+			desire, &commit, &result)))
 			return sjme_error_vmError(inFrame, error);
 
 		/* Push onto the parent stack. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 			inFrame->parent, &result)))
 			return sjme_error_vmError(inFrame, error);
-
-		/* If this is an object, we need to count it up as when the frame */
-		/* is cleared it will be uncounted. */
-		if (desire == SJME_JAVA_TYPE_ID_OBJECT && result.v.l != NULL)
-			if (sjme_error_is(error = sjme_nvm_instance_countUp(result.v.l)))
-				return sjme_error_vmError(inFrame, error);
 	}
 
 	/* Pop the current frame. */
 	pcNew->popFrame = SJME_JNI_TRUE;
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
@@ -364,6 +382,7 @@ SJME_NVM_BYTECODE_SLOW(TableSwitch)
 {
 	sjme_jint paramBase, lo, hi, tableCount;
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Determine the relative base for parameters. */
@@ -380,8 +399,9 @@ SJME_NVM_BYTECODE_SLOW(TableSwitch)
 
 	/* Read in switch value. */
 	memset(&value, 0, sizeof(value));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, NULL, &value)))
+		SJME_JAVA_TYPE_ID_INTEGER, &commit, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Would be a default jump? */
@@ -394,6 +414,10 @@ SJME_NVM_BYTECODE_SLOW(TableSwitch)
 	else
 		pcNew->adjust = sjme_big_int(*sjme_util_memUnaligned32(
 			&relRawCode[paramBase + 12 + (4 * (value.v.i - lo))]));
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
