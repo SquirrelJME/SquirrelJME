@@ -58,16 +58,32 @@ SJME_NVM_MLE_FUNCTION_DECL(binaryPackageName)
 
 SJME_NVM_MLE_FUNCTION_DECL(classToType)
 {
-	sjme_jobject inType;
+	sjme_jclass inType;
 
 	/* Must be an actual object type. */
-	inType = argV[0].v.l;
+	inType = (sjme_jclass)argV[0].v.l;
 	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Note that types in NanoCoat are just pure classes, so they are 1:1. */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
-	argR->v.l = inType;
+	argR->v.l = (sjme_jobject)inType;
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(component)
+{
+	sjme_jclass inType;
+
+	/* Must be an actual object type. */
+	inType = (sjme_jclass)argV[0].v.l;
+	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Return the component type of the class. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = SJME_AS_JOBJECT(
+		sjme_atomic_sjme_jclass_get(&inType->componentType));
 	return SJME_ERROR_NONE;
 }
 
@@ -158,6 +174,21 @@ SJME_NVM_MLE_FUNCTION_DECL(inJar)
 
 	/* Success! */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(isPrimitive)
+{
+	sjme_jclass inType;
+	
+	/* Must be an actual class type. */
+	inType = (sjme_jclass)argV[0].v.l;
+	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Return whether this is primitive or not */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = (inType->typeId != SJME_JAVA_TYPE_ID_OBJECT);
 	return SJME_ERROR_NONE;
 }
 
@@ -298,10 +329,10 @@ SJME_NVM_MLE_SHELF_DECLARE(TypeShelf) =
 	SJME_NVM_MLE_DEFINE(classToType,
 		SJME_MD(SJME_MD_CLASS, SJME_MD_CLASS),
 		"L", "L"),
-#if 0
 	SJME_NVM_MLE_DEFINE(component,
-		SJME_MD(,),
-		""),
+		SJME_MD(SJME_MD_CLASS, SJME_MD_CLASS),
+		"L", "L"),
+#if 0
 	SJME_NVM_MLE_DEFINE(componentRoot,
 		SJME_MD(,),
 		""),
@@ -345,10 +376,10 @@ SJME_NVM_MLE_SHELF_DECLARE(TypeShelf) =
 	SJME_NVM_MLE_DEFINE(isInterface,
 		SJME_MD(,),
 		""),
-	SJME_NVM_MLE_DEFINE(isPrimitive,
-		SJME_MD(,),
-		""),
 #endif
+	SJME_NVM_MLE_DEFINE(isPrimitive,
+		SJME_MD(SJME_MD_Z, SJME_MD_CLASS),
+		"I", "L"),
 	SJME_NVM_MLE_DEFINE(objectType,
 		SJME_MD(SJME_MD_CLASS, SJME_MD_OBJECT),
 		"L", "L"),
