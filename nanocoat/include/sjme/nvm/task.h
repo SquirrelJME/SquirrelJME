@@ -764,8 +764,6 @@ sjme_errorCode sjme_nvm_task_frameLocalClear(
  * @param typeId The type to read.
  * @param localIndex The index of the local.
  * @param outValue The output value.
- * @param copiedElsewhere Is this value copied elsewhere? This affects
- * reference counting and garbage collection.
  * @return Any resultant error, if any.
  * @since 2025/07/18
  */
@@ -773,8 +771,7 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint localIndex,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere);
+	sjme_attrInNotNull sjme_jvalueTyped* outValue);
 
 /**
  * Pushes the specified local to the stack.

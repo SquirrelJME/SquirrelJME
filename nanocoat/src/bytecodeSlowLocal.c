@@ -86,9 +86,7 @@ SJME_NVM_BYTECODE_SLOW(XLoad)
 	/* Push copy of the local to the stack. */
 	type = sjme_nvm_byteCode_xLoadType[id - 21];
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalPush(
-		inFrame,
-		type,
-		index)))
+		inFrame, type, index)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */

@@ -256,8 +256,7 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint localIndex,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere)
+	sjme_attrInNotNull sjme_jvalueTyped* outValue)
 {
 	sjme_nvm_class_codePerType* perType;
 	sjme_jint mappedSlot;
@@ -301,7 +300,7 @@ sjme_errorCode sjme_nvm_task_frameLocalPush(
 	/* Read local index. */
 	memset(&tempValue, 0, sizeof(tempValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalGet(inFrame,
-		typeId, localIndex, &tempValue, SJME_JNI_FALSE)))
+		typeId, localIndex, &tempValue)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Forward to stack. */
@@ -577,7 +576,7 @@ sjme_errorCode sjme_nvm_task_frameStackPopA(
 	/* Always pop from the end first. */
 	for (i = argC - 1; i >= 0; i--)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			argT[i], NULL, &argV[i])))
+			argT[i], commit, &argV[i])))
 			return sjme_error_vmError(inFrame, error);
 
 	/* Success! */

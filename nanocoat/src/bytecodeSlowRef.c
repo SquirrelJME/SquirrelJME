@@ -47,6 +47,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	sjme_jobject instance;
 	sjme_nvm_class_methodInfo target;
 	sjme_jmethodID virtualId;
+	sjme_nvm_frame_gcCommit commit;
 
 	if (inFrame == NULL || methodId == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -74,11 +75,12 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	memset(argV, 0, sizeof(*argV) * (argC + 2));
 	
 	/* Pull in stack arguments for the call. */
+	memset(&commit, 0, sizeof(commit));
 	argVParam = (!isStatic ? &argV[1] : argV);
 	if (target->argC != 0)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(
 			inFrame, SJME_JNI_FALSE,
-			NULL, target->argC, target->argT, argVParam)))
+			&commit, target->argC, target->argT, argVParam)))
 			return sjme_error_vmError(inFrame, error);
 
 	/* Pop instance. */
@@ -132,6 +134,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	}
 
 	/* If native, perform an MLE call. */
+	mleError = SJME_ERROR_NONE;
 	if (target->flags.native && isStatic)
 	{
 		/* Perform the native call. */
@@ -146,21 +149,12 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			&mleArgR,
 			argC, argV);
 
-		/* GC any arguments that are objects, since they are no longer */
-		/* referenced. */
-		for (i = 0; i < argC; i++)
-			if (argV[i].t == SJME_JAVA_TYPE_ID_OBJECT &&
-				argV[i].v.l != NULL)
-				if (sjme_error_is(error = sjme_nvm_instance_countDown(
-					argV[i].v.l)))
-					return sjme_error_vmError(inFrame, error);
-
 		/* Recover and check MLE error. */
 		if (sjme_error_is(error = mleError))
 		{
 			/* MLECallError is a valid response. */
 			if (error == SJME_ERROR_MLE_CALL)
-				return SJME_ERROR_MLE_CALL;
+				goto skip_mleFailed;
 			
 #if defined(SJME_CONFIG_DEBUG)
 			/* Unknown/Unimplemented method. */
@@ -209,7 +203,14 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			return sjme_error_vmError(inFrame, error);
 	}
 
-	/* Success! */
+	/* Commit any pending GC objects. */
+skip_mleFailed:
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+			return sjme_error_vmError(inFrame, error);
+
+	/* Success? */
+	if (sjme_error_is(mleError))
+		return sjme_error_default(mleError);
 	return SJME_ERROR_NONE;
 }
 
