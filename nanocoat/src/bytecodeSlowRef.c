@@ -359,8 +359,15 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 		sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
 			desireClass, SJME_O_C(value.v.l))))
 	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Emit exception. */
+		if (sjme_error_is(error = sjme_nvm_task_threadEmit(SJME_F_T(inFrame),
+			SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_CLASS_CAST,
+			"CAST %s %s",
+			(value.v.l == NULL ? "NULL" :
+				sjme_charSeq_tempUtf(value.v.l->isClass->binaryName)),
+			(desireClass == NULL ? "NULL" :
+				sjme_charSeq_tempUtf(desireClass->binaryName)))))
+			return sjme_error_vmError(inFrame, error);
 	}
 	
 	/* Success? */

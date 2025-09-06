@@ -206,6 +206,66 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_nvm_instance_defaultInit(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrOutNullable sjme_nvm_frame* outFrame,
+	sjme_attrInNotNull sjme_jobject inObject,
+	sjme_attrInNotNull sjme_lpcstr inDesc,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalueTyped* argV)
+{
+	sjme_errorCode error;
+	sjme_jmethodID defaultCon;
+	sjme_nvm_frame subFrame;
+	sjme_jint callC;
+	sjme_jvalueTyped* callV;
+
+	if (contextThread == NULL || inObject == NULL || inDesc == NULL ||
+		(argC > 0 && argV == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (argC < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Locate the default constructor. */
+	defaultCon = NULL;
+	if (sjme_error_is(sjme_nvm_vmClass_methodIDByNameTypeU(
+		inObject->isClass, contextThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
+		SJME_JNI_TRUE, "<init>", inDesc,
+		&defaultCon)) || defaultCon == NULL)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Allocate space for arguments to pass. */
+	callC = argC + 1;
+	callV = sjme_alloca(sizeof(*callV) * (callC + 1));
+	if (callV == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	memset(callV, 0, sizeof(*callV) * (callC + 1));
+
+	/* Copy over arguments. */
+	if (argC > 0 && argV != NULL)
+		memmove(&callV[1], &argV[0], sizeof(argV[0]) * argC);
+
+	/* Set base instance argument. */
+	callV[0].t = SJME_JAVA_TYPE_ID_OBJECT;
+	callV[0].v.l = inObject;
+	
+	/* Call the default constructor. */
+	subFrame = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadEnter(contextThread,
+		&subFrame, defaultCon, SJME_NVM_CLASS_MEMBER_INSTANCE,
+		callC, callV)) || subFrame == NULL)
+		return sjme_error_vmError(contextThread,
+			sjme_error_defaultOr(error, SJME_ERROR_MLE_CALL));
+
+	/* Give the resultant frame that was created. */
+	if (outFrame != NULL)
+		*outFrame = subFrame;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_nvm_rawFieldValue* sjme_nvm_instance_fieldAccessor(
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_jfieldID field)

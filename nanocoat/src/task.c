@@ -224,6 +224,10 @@ sjme_errorCode sjme_nvm_task_commonClass(
 			commonName = "Ljava/lang/Class;";
 			break;
 
+		case SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_CLASS_CAST:
+			commonName = "Ljava/lang/ClassCastException;";
+			break;
+
 		case SJME_NVM_TASK_COMMON_CLASS_JAR_PACKAGE:
 			commonName = "Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;";
 			break;

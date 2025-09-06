@@ -476,6 +476,27 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**
+ * Calls the default constructor with the given arguments, this will load the
+ * first argument object automatically so it is not needed.
+ * 
+ * @param contextThread The thread this is being called within.
+ * @param outFrame The resultant frame that was entered for the constructor.
+ * @param inObject The object to call the default constructor for.
+ * @param inDesc The descriptor of the constructor to call.
+ * @param argC The argument count.
+ * @param argV The argument values.
+ * @return Any resultant error, if any.
+ * @snce 2025/09/06
+ */
+sjme_errorCode sjme_nvm_instance_defaultInit(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrOutNullable sjme_nvm_frame* outFrame,
+	sjme_attrInNotNull sjme_jobject inObject,
+	sjme_attrInNotNull sjme_lpcstr inDesc,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalueTyped* argV);
+	
+/**
  * The default accessor for fields.
  * 
  * @param instance The instance to access.

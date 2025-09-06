@@ -403,6 +403,9 @@ typedef enum sjme_nvm_task_commonClassId
 	/** @c java.lang.Class . */
 	SJME_NVM_TASK_COMMON_CLASS_CLASS,
 
+	/** @c java.lang.ClassCastException. */
+	SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_CLASS_CAST,
+
 	/** @c cc.squirreljme.jvm.mle.brackets.JarPackageBracket . */
 	SJME_NVM_TASK_COMMON_CLASS_JAR_PACKAGE,
 	
@@ -1115,6 +1118,22 @@ sjme_jboolean sjme_nvm_task_taskScheduleYes(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jboolean* isRunning);
+
+/**
+ * Emits an exception with the given message.
+ * 
+ * @param inThread The thread to emit within.
+ * @param commonClass The commit class to emit.
+ * @param message The message to use for the message.
+ * @param ... Any formatted parameters to the message.
+ * @return Any resultant error, if any.
+ * @since 2025/09/06
+ */
+sjme_errorCode sjme_nvm_task_threadEmit(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInValue sjme_nvm_task_commonClassId commonClass,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	...) sjme_attrFormatOuter(2, 3);
 
 /**
  * Enters a frame for the given exact method within the thread.

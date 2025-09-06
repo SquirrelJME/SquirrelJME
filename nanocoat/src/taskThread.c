@@ -125,6 +125,67 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_nvm_task_threadEmit(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInValue sjme_nvm_task_commonClassId commonClass,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	...)
+{
+#define BUF_SIZE 256
+	sjme_errorCode error;
+	sjme_jclass tossClass;
+	sjme_jobject toss;
+	sjme_jvalueTyped argV[1];
+	sjme_cchar buf[BUF_SIZE];
+	va_list copy;
+	
+	if (inThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Locate the class to toss. */
+	tossClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_commonClass(inThread,
+		commonClass, &tossClass, SJME_JNI_TRUE)) || tossClass == NULL)
+		return sjme_error_default(error);
+
+	/* Allocate new instance of object. */
+	toss = NULL;
+	if (sjme_error_is(error = sjme_nvm_instance_objectNew(inThread,
+		-1, SJME_NVM_STRUCT_OBJECT_INSTANCE,
+		&toss, tossClass)) || toss == NULL)
+		return sjme_error_default(error);
+
+	/* Build string. */
+	va_start(copy, message);
+
+	memset(buf, 0, sizeof(buf));
+	vsnprintf(buf, BUF_SIZE - 1, message, copy);
+	buf[BUF_SIZE - 1] = '\0';
+	
+	va_end(copy);
+
+	/* Setup string argument. */
+	memset(&argV, 0, sizeof(argV));
+	argV[0].t = SJME_JAVA_TYPE_ID_OBJECT;
+	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
+		inThread, SJME_AS_JSTRINGP(&argV[0].v.l), SJME_JNI_FALSE, buf)))
+		return sjme_error_default(error);
+
+	/* Initialize exception. */
+	if (sjme_error_is(error = sjme_nvm_instance_defaultInit(inThread,
+		NULL, toss, "(Ljava/lang/String;)V", 1, argV)))
+		return sjme_error_default(error);
+
+	/* Set as tossed! */
+	if (!sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
+		NULL, toss))
+		return SJME_ERROR_DOUBLE_TOSS;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+#undef BUF_SIZE
+}
+
 sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame,

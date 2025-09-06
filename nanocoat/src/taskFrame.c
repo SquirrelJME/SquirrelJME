@@ -425,12 +425,14 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 	sjme_errorCode error;
 	sjme_jvalueTyped temp;
 	sjme_frame_frameStacks* stack;
+	sjme_nvm_frame_gcCommit commit;
 	
 	if (inFrame == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Keep draining the stack until nothing is left. */
 	stack = &inFrame->stack;
+	memset(&commit, 0, sizeof(commit));
 	while (stack->orderTop - stack->orderFront)
 	{
 		/* Peek top value. */
@@ -441,9 +443,13 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 
 		/* Pop it. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			temp.t, NULL, &temp)))
+			temp.t, &commit, &temp)))
 			return sjme_error_vmError(inFrame, error);
 	}
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
