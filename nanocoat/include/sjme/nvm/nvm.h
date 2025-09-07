@@ -271,6 +271,9 @@ typedef sjme_nvm_commonBase* sjme_nvm_common;
 /** As a member ID. */
 #define SJME_AS_JMEMBERID(x) ((sjme_jmemberID)(x))
 
+/** As a throwable. */
+#define SJME_AS_JTHROWABLE(x) ((sjme_jthrowable)(x))
+
 /** Cast to common type. */
 #define SJME_AS_NVM_COMMON(x) ((sjme_nvm_common)(x))
 

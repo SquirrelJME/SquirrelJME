@@ -271,8 +271,11 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		currentFrame->lastIv = iv;
 
 		/* Do not handle the instruction if there is an exception waiting. */
+		/* But as long as we are still below the toss level. */
 		tossed = sjme_atomic_sjme_jobject_get(&inThread->tossed);
-		if (tossed != NULL)
+		tossedLevel = sjme_atomic_sjme_jint_get(&inThread->tossedLevel);
+		if (tossed != NULL && (tossedLevel < 0 ||
+			inThread->numFrames < tossedLevel))
 			goto skip_thrown;
 
 #if defined(SJME_CONFIG_DEBUG)
@@ -285,14 +288,14 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		memmove(&pcNew, &pcDefault, sizeof(pcNew));
 		if (sjme_error_is(error = lutFunc(currentFrame, iv, ev, &pcNew)))
 			goto fail_any;
-
-		/* If recycling, do not actually make any progress, just re-run. */
-		if (pcNew.type == SJME_NVM_BYTECODE_PC_RECYCLE)
-			continue;
 		
 		/* Has an exception been thrown? */
 		tossed = sjme_atomic_sjme_jobject_get(&inThread->tossed);
 		tossedLevel = sjme_atomic_sjme_jint_get(&inThread->tossedLevel);
+
+		/* If recycling, we can skip handling exceptions here. */
+		if (pcNew.type == SJME_NVM_BYTECODE_PC_RECYCLE)
+			continue;
 		
 skip_thrown:
 		/* Are we handling an exception, and we are running below any */
@@ -348,6 +351,12 @@ skip_thrown:
 				pcNew.popFrame = SJME_JNI_TRUE;
 			}
 		}
+		
+		/* If recycling, do not commit to actually making progress. This is */
+		/* here in the event we entered a default constructor for an */
+		/* implicit exception, and it has to initialize a class. */
+		if (pcNew.type == SJME_NVM_BYTECODE_PC_RECYCLE)
+			continue;
 
 		/* Popping the current frame? */
 		if (pcNew.popFrame)

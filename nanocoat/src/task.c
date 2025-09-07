@@ -486,7 +486,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 
 #if defined(SJME_CONFIG_DEBUG)
 	else
-		sjme_message("Blank throwable?");
+		sjme_message("THROWABLE HAS BLANK TRACE!");
 #endif
 
 	/* Success! */

@@ -51,7 +51,7 @@ int main(int argc, sjme_lpstr* argv)
 	/* Allocate main pool. */
 	pool = NULL;
 	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&pool,
-		1048576 * 16)) || pool == NULL)
+		1048576 * 32)) || pool == NULL)
 		goto fail_poolInit;
 	
 	/* Open seekable to the boot Jar. */

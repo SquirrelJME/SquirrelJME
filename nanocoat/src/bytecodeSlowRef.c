@@ -368,6 +368,13 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 			(desireClass == NULL ? "NULL" :
 				sjme_charSeq_tempUtf(desireClass->binaryName)))))
 			return sjme_error_vmError(inFrame, error);
+		
+		/* Check for recycle, class load and/or static constructor. */
+		if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+		{
+			pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+			return SJME_ERROR_NONE;
+		}
 	}
 	
 	/* Success? */

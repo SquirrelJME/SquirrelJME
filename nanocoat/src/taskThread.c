@@ -134,7 +134,7 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 #define BUF_SIZE 256
 	sjme_errorCode error;
 	sjme_jclass tossClass;
-	sjme_jobject toss;
+	sjme_jobject toss, oldTossed;
 	sjme_jvalueTyped argV[1];
 	sjme_cchar buf[BUF_SIZE];
 	va_list copy;
@@ -158,7 +158,23 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 	/* Set as tossed! */
 	if (!sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
 		NULL, toss))
-		return SJME_ERROR_DOUBLE_TOSS;
+	{
+		/* Get the old tossed to print it out. */
+		oldTossed = sjme_atomic_sjme_jobject_get(&inThread->tossed);
+
+		/* Print it out. */
+		sjme_message("DROPPING DOUBLE TOSSED EXCEPTION:");
+		if (sjme_error_is(error = sjme_nvm_task_stackTraceThrowable(
+			inThread, SJME_AS_JTHROWABLE(oldTossed))))
+			return sjme_error_default(error);
+
+		/* Set new value. */
+		sjme_atomic_sjme_jobject_set(&inThread->tossed, toss);
+
+		/* Count down the old toss since it is no longer stored. */
+		if (sjme_error_is(error = sjme_nvm_instance_countDown(oldTossed)))
+			return sjme_error_default(error);
+	}
 
 	/* Set level so we can run the constructor. */
 	sjme_atomic_sjme_jint_set(&inThread->tossedLevel, inThread->numFrames);
