@@ -353,7 +353,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("Is %s a %s?",
 		(value.v.l == NULL ? "NULL" :
 			sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->binaryName)),

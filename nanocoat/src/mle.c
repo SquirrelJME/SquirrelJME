@@ -89,9 +89,11 @@ sjme_errorCode sjme_mle_mleCallFunction(
 		argR == NULL || (argC > 0 && argV == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+#if defined(SJME_CONFIG_DEBUG_MLE)
 	/* Debug. */
 	sjme_message("MLE.%s %s",
 		function->name, function->type);
+#endif
 	
 	/* Check arguments. */
 	for (i = 0; i < argC; i++)

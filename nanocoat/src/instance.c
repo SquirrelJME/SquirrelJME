@@ -59,7 +59,7 @@ sjme_errorCode sjme_nvm_instance_countBalanceR(
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_GC)
 	sjme_alloc_weak weak;
 #endif
 
@@ -72,7 +72,7 @@ sjme_errorCode sjme_nvm_instance_countBalanceR(
 				SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
 				return SJME_ERROR_INVALID_OBJECT;
 		
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_GC)
 		if (oldV != NULL)
 		{
 			/* Recover the weak reference to get the count. */
@@ -117,7 +117,7 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 {
 	sjme_alloc_weak weak;
 	sjme_errorCode error;
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_GC)
 	sjme_jint oldCount;
 #endif
 	
@@ -133,7 +133,7 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 	if (sjme_error_is(error = sjme_alloc_weakRefGet(object, &weak)))
 		return sjme_error_default(error);
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_GC)
 	/* Get old count for debugging. */
 	oldCount = sjme_atomic_sjme_jint_get(&weak->count);
 #endif
@@ -143,7 +143,7 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 		weak == NULL)
 		return sjme_error_default(error);
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_GC)
 	/* Debug. */
 	sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
 		"GC DN-1: %p (%s) %d -> %d",
@@ -164,7 +164,7 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 {
 	sjme_alloc_weak weak;
 	sjme_errorCode error;
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_GC)
 	sjme_jint oldCount;
 #endif
 	
@@ -181,7 +181,7 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 		weak == NULL)
 		return sjme_error_default(error);
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_GC)
 	/* Recover old count for debugging. */
 	oldCount = sjme_atomic_sjme_jint_get(&weak->count);
 #endif
@@ -191,7 +191,7 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 		weak == NULL)
 		return sjme_error_default(error);
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_GC)
 	/* Debug. */
 	sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
 		"GC UP+1: %p (%s) %d -> %d",
@@ -289,10 +289,14 @@ sjme_nvm_rawFieldValue* sjme_nvm_instance_fieldAccessor(
 		if (instance != (sjme_jobject)field->member.inClass)
 			goto fail_voidless;
 
-		/* Values is based on the static chunk. */
+#if defined(SJME_CONFIG_DEBUG_FIELD)
+		/* Debug. */
 		sjme_message("STATIC %p->%p + %d",
 			instance, ((sjme_jclass)instance)->staticChunk,
 			field->pointerOffset);
+#endif
+
+		/* Values is based on the static chunk. */
 		return SJME_POINTER_OFFSET(((sjme_jclass)instance)->staticChunk,
 			field->pointerOffset);
 	}
@@ -304,10 +308,14 @@ sjme_nvm_rawFieldValue* sjme_nvm_instance_fieldAccessor(
 		if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_OBJECT_INSTANCE))
 			goto fail_voidless;
 		
-		/* Value is based on the object itself, from the basis of */
-		/* its allocation size. */
+#if defined(SJME_CONFIG_DEBUG_FIELD)
+		/* Debug. */
 		sjme_message("INSTANCE %p + %d",
 			instance, field->pointerOffset);
+#endif
+		
+		/* Value is based on the object itself, from the basis of */
+		/* its allocation size. */
 		return SJME_POINTER_OFFSET((sjme_pointer)instance,
 			field->pointerOffset);
 	}

@@ -861,7 +861,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_TREAD)
 			/* Debug. */
 			sjme_messageB("%2d@%3d: [%d] %p ->",
 				inFrame->index, inFrame->pc, typeIndex,
@@ -955,7 +955,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_TREAD)
 			/* Debug. */
 			sjme_messageB("%2d@%3d: [%d] %p <- %p",
 				inFrame->index, inFrame->pc, typeIndex,

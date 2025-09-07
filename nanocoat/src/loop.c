@@ -278,7 +278,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 			inThread->numFrames < tossedLevel))
 			goto skip_thrown;
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_BYTECODES)
 		/* Debug. */
 		sjme_messageB("%2d@%3d: %s", 
 			frameIndex, currentFrame->pc, sjme_nvm_byteCode_names[iv]);

@@ -1173,6 +1173,34 @@ extern "C" {
 		#undef SJME_CONFIG_HAS_THREADS_ATOMIC
 	#endif
 #endif
+
+/* More verbosity? */
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+	#if !defined(SJME_CONFIG_DEBUG_BYTECODES)
+		/** Print out bytecodes. */
+		#define SJME_CONFIG_DEBUG_BYTECODES
+	#endif
+
+	#if !defined(SJME_CONFIG_DEBUG_FIELD)
+		/** Print out field access operations. */
+		#define SJME_CONFIG_DEBUG_FIELD
+	#endif
+
+	#if !defined(SJME_CONFIG_DEBUG_GC)
+		/** Print out GC operations. */
+		#define SJME_CONFIG_DEBUG_GC
+	#endif
+
+	#if !defined(SJME_CONFIG_DEBUG_MLE)
+		/** Print out MLE operations. */
+		#define SJME_CONFIG_DEBUG_MLE
+	#endif
+	
+	#if !defined(SJME_CONFIG_DEBUG_TREAD)
+		/** Print out tread operations. */
+		#define SJME_CONFIG_DEBUG_TREAD
+	#endif
+#endif
 	
 /* Missing standard C functions, always include these. */
 #include "sjme/stdGone.h"

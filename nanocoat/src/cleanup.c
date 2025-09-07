@@ -326,10 +326,13 @@ static sjme_errorCode sjme_nvm_threadFrameClose(
 static sjme_errorCode sjme_nvm_instanceClose(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
+	static sjme_jint tripped;
+	
 	if (closeable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_message("TODO: sjme_nvm_instanceClose()");
+	if ((tripped++) == 0)
+		sjme_message("TODO: sjme_nvm_instanceClose()");
 	return SJME_ERROR_NONE;
 }
 
@@ -387,8 +390,10 @@ static sjme_errorCode sjme_nvm_closeHandler(
 	if (common == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+#if defined(SJME_CONFIG_DEBUG_GC)
 	/* Debug. */
 	sjme_message("GC FREE: %d:%p", common->type, common);
+#endif
 
 	/* Forward to specific handler. */
 	return common->specificClose(SJME_AS_CLOSEABLE(common));
