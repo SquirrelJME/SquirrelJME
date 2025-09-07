@@ -17,6 +17,11 @@ else()
 	cmake_minimum_required(VERSION 3.13)
 endif()
 
+# Default to release if no build type is specified
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE "Release" CACHE FORCE)
+endif()
+
 # Easier includes
 include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
 

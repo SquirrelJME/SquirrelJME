@@ -449,7 +449,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 	sjme_jclass throwableClass;
 	sjme_nvm_task_stackTraceState traceState;
 	sjme_jint i;
-	sjme_jfieldID messageId;
+	sjme_jfieldID messageId, causeId;
 	sjme_jstring message;
 	sjme_nvm_rawFieldValue* accessor;
 	sjme_charSeq messageSeq;
@@ -472,6 +472,14 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 		SJME_NVM_CLASS_MEMBER_INSTANCE, SJME_JNI_FALSE,
 		"_message", "Ljava/lang/String;", &messageId)))
 		messageId = NULL;
+
+	/* Locate the cause field as well, if possible... */
+	causeId = NULL;
+	if (sjme_error_is(sjme_nvm_vmClass_fieldIDByNameTypeU(throwableClass,
+		contextThread,
+		SJME_NVM_CLASS_MEMBER_INSTANCE, SJME_JNI_FALSE,
+		"_cause", "Ljava/lang/Throwable;", &causeId)))
+		causeId = NULL;
 
 	/* Is the message field valid? */
 	printedMessage = SJME_JNI_FALSE;
@@ -537,6 +545,22 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 	else
 		sjme_message("THROWABLE HAS BLANK TRACE!");
 #endif
+
+	/* Recurse into cause? */
+	if (causeId != NULL)
+	{
+		/* Actually try to access it. */
+		accessor = sjme_nvm_instance_fieldAccessor(
+			SJME_AS_JOBJECT(inThrowable), causeId);
+
+		/* Recurse. */
+		if (accessor != NULL && accessor->l.p != NULL)
+		{
+			sjme_messageB("CAUSED BY:");
+			return sjme_nvm_task_stackTraceThrowable(contextThread,
+				SJME_AS_JTHROWABLE(accessor->l.p));
+		}
+	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;
