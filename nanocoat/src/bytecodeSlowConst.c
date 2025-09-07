@@ -96,6 +96,8 @@ SJME_NVM_BYTECODE_SLOW(BIPush)
 	memset(&value, 0, sizeof(value));
 	value.t = SJME_JAVA_TYPE_ID_INTEGER;
 	value.v.i = (sjme_jbyte)relRawCode[1];
+	if ((value.v.i & INT32_C(0x80)) != 0)
+		value.v.i |= INT32_C(0xFFFFFF00);
 
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
@@ -275,6 +277,8 @@ SJME_NVM_BYTECODE_SLOW(SIPush)
 	memset(&value, 0, sizeof(value));
 	value.t = SJME_JAVA_TYPE_ID_INTEGER;
 	value.v.i = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
+	if ((value.v.i & INT32_C(0x8000)) != 0)
+		value.v.i |= INT32_C(0xFFFF0000);
 
 	/* Push to stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(

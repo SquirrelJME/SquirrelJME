@@ -276,10 +276,12 @@ enum __PrintFConversion__
 				case 'X':
 				case 'x':	return __PrintFConversion__.HEXADECIMAL_INTEGER;
 				case 'E':
-				case 'e':	return __PrintFConversion__.SCIENTIFIC_DECIMAL_FLOAT;
+				case 'e':	return __PrintFConversion__
+					.SCIENTIFIC_DECIMAL_FLOAT;
 				case 'f':	return __PrintFConversion__.NORMAL_DECIMAL_FLOAT;
 				case 'G':
-				case 'g':	return __PrintFConversion__.SCIENTIFIC_OR_NORMAL_DECIMAL_FLOAT;
+				case 'g':	return __PrintFConversion__
+					.SCIENTIFIC_OR_NORMAL_DECIMAL_FLOAT;
 				
 				default:
 					return null;
@@ -288,8 +290,10 @@ enum __PrintFConversion__
 		// A date format
 		switch (__s)
 		{
-			case 'H':	return __PrintFConversion__.TIME_MILITARY_HOUR_TWO_DIGIT_LEADING_ZERO;
-			case 'I':	return __PrintFConversion__.TIME_STANDARD_HOUR_TWO_DIGIT_LEADING_ZERO;
+			case 'H':	return __PrintFConversion__
+				.TIME_MILITARY_HOUR_TWO_DIGIT_LEADING_ZERO;
+			case 'I':	return __PrintFConversion__
+				.TIME_STANDARD_HOUR_TWO_DIGIT_LEADING_ZERO;
 			case 'k':	return __PrintFConversion__.TIME_MILITARY_HOUR;
 			case 'l':	return __PrintFConversion__.TIME_STANDARD_HOUR;
 			case 'M':	return __PrintFConversion__.TIME_MINUTE;
@@ -301,17 +305,22 @@ enum __PrintFConversion__
 			case 's':	return __PrintFConversion__.TIME_UNIX_SECONDS;
 			case 'Q':	return __PrintFConversion__.TIME_UNIX_MILLISECONDS;
 			case 'h':
-			case 'b':	return __PrintFConversion__.DATE_ABBREVIATED_MONTH_NAME;
+			case 'b':	return __PrintFConversion__
+				.DATE_ABBREVIATED_MONTH_NAME;
 			case 'a':	return __PrintFConversion__.DATE_ABBREVIATED_DAY_NAME;
-			case 'C':	return __PrintFConversion__.DATE_CENTURY_TWO_DIGIT_LEADING_ZERO;
+			case 'C':	return __PrintFConversion__
+				.DATE_CENTURY_TWO_DIGIT_LEADING_ZERO;
 			case 'Y':	return __PrintFConversion__.DATE_YEAR_FOUR_DIGITS;
 			case 'y':	return __PrintFConversion__.DATE_YEAR_LAST_TWO_DIGITS;
 			case 'j':	return __PrintFConversion__.DATE_DAY_OF_YEAR;
-			case 'm':	return __PrintFConversion__.DATE_MONTH_TWO_DIGIT_LEADING_ZERO;
-			case 'd':	return __PrintFConversion__.DATE_DAY_TWO_DIGIT_LEADING_ZERO;
+			case 'm':	return __PrintFConversion__
+				.DATE_MONTH_TWO_DIGIT_LEADING_ZERO;
+			case 'd':	return __PrintFConversion__
+				.DATE_DAY_TWO_DIGIT_LEADING_ZERO;
 			case 'e':	return __PrintFConversion__.DATE_DAY;
 			case 'R':	return __PrintFConversion__.DATE_TIME_MILITARY;
-			case 'T':	return __PrintFConversion__.DATE_TIME_MILITARY_WITH_SECONDS;
+			case 'T':	return __PrintFConversion__
+				.DATE_TIME_MILITARY_WITH_SECONDS;
 			case 'r':	return __PrintFConversion__.DATE_TIME_STANDARD;
 			case 'D':	return __PrintFConversion__.DATE_MONTH_DAY_YEAR;
 			case 'F':	return __PrintFConversion__.DATE_ISO8601;
