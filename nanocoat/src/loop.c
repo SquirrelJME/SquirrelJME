@@ -13,6 +13,7 @@
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/loop.h"
+#include "sjme/nvm/jdwp.h"
 #include "sjme/debug.h"
 
 static sjme_thread_result sjme_attrThreadCall sjme_nvm_loop_tickCrash(
@@ -86,6 +87,11 @@ sjme_errorCode sjme_nvm_loop_tick(
 
 	if (maxTics < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Is there a debugger attached? If so we should poll it. */
+	if (inState->jdwp != NULL)
+		if (sjme_error_is(error = sjme_jdwp_sessionPoll(inState->jdwp)))
+			return sjme_error_default(error);
 
 	/* Calculate initial remaining tics. */
 	remaining = (maxTics < 0 ? -1 : maxTics);

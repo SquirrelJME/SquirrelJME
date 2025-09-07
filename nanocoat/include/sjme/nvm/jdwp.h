@@ -30,6 +30,111 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * A JDWP command set.
+ *
+ * @since 2025/09/07
+ */
+typedef enum sjme_jdwp_commandSet
+{
+	/** Unknown. */
+	SJME_JDWP_COMMAND_SET_UNKNOWN = -1,
+	
+	/** Virtual machine. */
+	SJME_JDWP_COMMAND_SET_VIRTUAL_MACHINE = 1,
+
+	/** Reference types. */
+	SJME_JDWP_COMMAND_SET_REFERENCE_TYPE = 2,
+
+	/** Class types. */
+	SJME_JDWP_COMMAND_SET_CLASS_TYPE = 3,
+
+	/** Methods. */
+	SJME_JDWP_COMMAND_SET_METHODS = 6,
+
+	/** Objects. */
+	SJME_JDWP_COMMAND_SET_OBJECT_REFERENCE = 9,
+
+	/** Strings. */
+	SJME_JDWP_COMMAND_SET_STRING_REFERENCE = 10,
+
+	/** Threads. */
+	SJME_JDWP_COMMAND_SET_THREAD_REFERENCE = 11,
+
+	/** Thread groups. */
+	SJME_JDWP_COMMAND_SET_THREAD_GROUP_REFERENCE = 12,
+
+	/** Arrays. */
+	SJME_JDWP_COMMAND_SET_ARRAY_REFERENCE = 13,
+
+	/** Class loaders. */
+	SJME_JDWP_COMMAND_SET_CLASS_LOADER = 14,
+
+	/** Events. */
+	SJME_JDWP_COMMAND_SET_EVENT_REQUEST = 15,
+
+	/** Stack frames. */
+	SJME_JDWP_COMMAND_SET_STACK_FRAMES = 16,
+
+	/** Object references. */
+	SJME_JDWP_COMMAND_SET_CLASS_OBJECT_REFERENCE = 17,
+} sjme_jdwp_commandSet;
+
+/**
+ * A JDWP command.
+ *
+ * @since 2025/09/07
+ */
+typedef enum sjme_jdwp_command
+{
+	/** Unknown. */
+	SJME_JDWP_COMMAND_UNKNOWN = -1,
+} sjme_jdwp_command;
+	
+/**
+ * JDWP packet structure.
+ *
+ * @since 2025/09/07
+ */
+typedef struct sjme_jdwp_packet
+{
+	/** Is this a reply packet? */
+	sjme_jboolean isReply;
+
+	/** The packet flags. */
+	sjme_jbyte flags;
+
+	/** The packet id. */
+	sjme_jint id;
+
+	/** The packet header. */
+	union
+	{
+		/** The header if this is a command set. */
+		struct
+		{
+			/** The command set of a packet. */
+			sjme_jdwp_commandSet commandSet;
+
+			/** The command. */
+			sjme_jdwp_command command;
+		} command;
+
+		/** The header if this is a reply. */
+		struct
+		{
+			/** The error code. */
+			sjme_jshort error;
+		} reply;
+	} header;
+
+	/** The length of the data. */
+	sjme_jint length;
+
+	/** The actual packet data. */
+	sjme_alignPointer sjme_jbyte data[sjme_flexibleArrayCount];
+} sjme_jdwp_packet;
+	
 struct sjme_jdwpBase
 {
 	/** The allocation pool to use. */
@@ -44,6 +149,18 @@ struct sjme_jdwpBase
 	/** The stream to write data to the remote debugger. */
 	sjme_stream_output out;
 };
+
+/**
+ * Receives the next packet.
+ * 
+ * @param session The session to read from.
+ * @param outPacket The resultant packet, will be @c NULL if no packet was read.
+ * @return Any resultant error, if any.
+ * @since 2025/09/07
+ */
+sjme_errorCode sjme_jdwp_commReceive(
+	sjme_attrInNotNull sjme_jdwp session,
+	sjme_attrOutNotNull sjme_jdwp_packet* outPacket);
 
 /**
  * Initializes a new JDWP session.
@@ -86,6 +203,17 @@ sjme_errorCode sjme_jdwp_sessionNewTcpNetwork(
 	sjme_attrInRange(0, 65535) sjme_jint port);
 
 #endif
+
+/**
+ * Polls the JDWP session and perform any needed actions, this is considered
+ * the main loop for JDWP.
+ * 
+ * @param session The session to poll.
+ * @return Any resultant error, if any.
+ * @since 2025/09/07
+ */
+sjme_errorCode sjme_jdwp_sessionPoll(
+	sjme_attrInNotNull sjme_jdwp session);
 
 /*--------------------------------------------------------------------------*/
 

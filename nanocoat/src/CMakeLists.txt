@@ -28,6 +28,8 @@ squirreljme_multilib_add_static_library(Core
 	gfx.c
 	instance.c
 	jdwp.c
+	jdwpComm.c
+	jdwpLoop.c
 	jdwpTcp.c
 	loop.c
 	mle.c
