@@ -155,7 +155,15 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 		&toss, tossClass)) || toss == NULL)
 		return sjme_error_default(error);
 
-	/* Build string. */
+	/* Set as tossed! */
+	if (!sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
+		NULL, toss))
+		return SJME_ERROR_DOUBLE_TOSS;
+
+	/* Set level so we can run the constructor. */
+	sjme_atomic_sjme_jint_set(&inThread->tossedLevel, inThread->numFrames);
+
+	/* Build message string. */
 	va_start(copy, message);
 
 	memset(buf, 0, sizeof(buf));
@@ -175,11 +183,6 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 	if (sjme_error_is(error = sjme_nvm_instance_defaultInit(inThread,
 		NULL, toss, "(Ljava/lang/String;)V", 1, argV)))
 		return sjme_error_default(error);
-
-	/* Set as tossed! */
-	if (!sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
-		NULL, toss))
-		return SJME_ERROR_DOUBLE_TOSS;
 
 	/* Count up once as it is now stored in tossed. */
 	if (sjme_error_is(error = sjme_nvm_instance_countUp(toss)))
@@ -471,13 +474,9 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	topIndex = inThread->numFrames - 1;
 	if (topIndex <= -1)
 		return SJME_ERROR_INVALID_THREAD_STATE;
-
-	/* Cannot pop if anything is still committed. */
-	topFrame = inThread->frames->elements[topIndex];
-	if (topFrame->commit != NULL)
-		return sjme_error_vmError(inThread, SJME_ERROR_ACTIVE_GC_COMMIT);
-
+	
 	/* Clear the stack. */
+	topFrame = inThread->frames->elements[topIndex];
 	if (sjme_error_is(error = sjme_nvm_task_frameStackClear(topFrame)))
 		return sjme_error_vmError(inThread, error);
 
@@ -525,6 +524,7 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 			/* Clear it. */
 			sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
 				uncaught, NULL);
+			sjme_atomic_sjme_jint_set(&inThread->tossedLevel, -1);
 
 			/* Count it down. */
 			if (sjme_error_is(error = sjme_nvm_instance_countDown(uncaught)))

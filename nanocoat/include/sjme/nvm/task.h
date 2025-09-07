@@ -328,9 +328,6 @@ struct sjme_nvm_frameBase
 	/** The index of this frame. */
 	sjme_jint index;
 
-	/** The currrent commit on the frame. */
-	sjme_nvm_frame_gcCommit* commit;
-
 	/** Frame state flags. */
 	sjme_packed struct
 	{
@@ -611,6 +608,9 @@ struct sjme_nvm_threadBase
 
 	/** A @c Throwable which has been thrown. */
 	sjme_atomic_sjme_jobject tossed;
+
+	/** The current frame level that the throwable was tossed at. */
+	sjme_atomic_sjme_jint tossedLevel;
 
 	/** Thread specific flags. */
 	struct

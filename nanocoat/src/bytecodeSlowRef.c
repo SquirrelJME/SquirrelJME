@@ -1226,6 +1226,10 @@ SJME_NVM_BYTECODE_SLOW(Throw)
 		NULL, toss.v.l))
 		return sjme_error_vmError(inFrame, SJME_ERROR_DOUBLE_TOSS);
 
+	/* Set the toss level very high as we are not running any implicit */
+	/* constructors! */
+	sjme_atomic_sjme_jint_set(&SJME_F_T(inFrame)->tossedLevel, INT32_MAX);
+
 	/* Count up since it is now also in tossed. */
 	if (sjme_error_is(error = sjme_nvm_instance_countUp(toss.v.l)))
 		return sjme_error_vmError(inFrame, error);

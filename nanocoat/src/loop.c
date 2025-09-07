@@ -128,7 +128,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_attrOutNullable sjme_jboolean* isTerminated)
 {
 	sjme_errorCode error;
-	sjme_jint frameIndex, remaining;
+	sjme_jint frameIndex, remaining, tossedLevel;
 	sjme_nvm_frame currentFrame;
 	sjme_nvm_class_codeInfo currentCode;
 	sjme_byteCode* rawCode;
@@ -159,6 +159,8 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	currentFrame = NULL;
 	currentCode = NULL;
 	rawCode = NULL;
+	tossed = NULL;
+	tossedLevel = -1;
 	
 	/* Continuous code execution. */
 	inTask = SJME_T_K(inThread);
@@ -288,15 +290,21 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		if (pcNew.type == SJME_NVM_BYTECODE_PC_RECYCLE)
 			continue;
 		
-		/* Every instruction is required to fully GC commit! */
-		if (currentFrame->commit != NULL)
-			return sjme_error_vmError(inThread, SJME_ERROR_ACTIVE_GC_COMMIT);
-
 		/* Has an exception been thrown? */
 		tossed = sjme_atomic_sjme_jobject_get(&inThread->tossed);
+		tossedLevel = sjme_atomic_sjme_jint_get(&inThread->tossedLevel);
+		
 skip_thrown:
-		if (tossed != NULL)
+		/* Are we handling an exception, and we are running below any */
+		/* implicit initialization frames? */
+		if (tossed != NULL && (tossedLevel >= 0 &&
+			inThread->numFrames <= tossedLevel))
 		{
+			/* We are finished running the constructor, so set the toss */
+			/* level to a very high amount so any sub-calls are not done */
+			/* freely. */
+			sjme_atomic_sjme_jint_set(&inThread->tossedLevel, INT32_MAX);
+			
 			/* Find exception handler to jump to. */
 			handled = SJME_JNI_FALSE;
 			if (sjme_error_is(error = sjme_nvm_task_frameHandler(
@@ -310,6 +318,9 @@ skip_thrown:
 				if (!sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
 					tossed, NULL))
 					goto fail_any;
+
+				/* Clear the tossed level. */
+				sjme_atomic_sjme_jint_set(&inThread->tossedLevel, -1);
 
 				/* Clear the stack. */
 				if (sjme_error_is(error = sjme_nvm_task_frameStackClear(
