@@ -18,6 +18,8 @@
 	#endif
 #endif
 
+#include <sjme/nvm/cleanup.h>
+
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleConst.h"
 #include "sjme/nvm/mleShelves.h"
@@ -203,8 +205,62 @@ SJME_NVM_MLE_FUNCTION_DECL(systemEnv)
 
 SJME_NVM_MLE_FUNCTION_DECL(systemProperty)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jstring key, loaded;
+	sjme_jint ik, iv, n;
+	const sjme_list_sjme_lpcstr* sysProps;
+	sjme_charSeq keySeq;
+	sjme_lpcstr keyString, k, v;
+
+	/* Read in key value, must be a valid string! */
+	key = (sjme_jstring)argV[0].v.l;
+	if (!sjme_nvm_isAR(key, SJME_NVM_STRUCT_STRING_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Has the sequence ever been initialized? */
+	keySeq = sjme_atomic_sjme_charSeq_get(&key->seq);
+	if (keySeq == NULL)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Determine the key to use. */
+	keyString = sjme_charSeq_tempUtf(keySeq);
+
+	/* Look within the init config, if it is valid. */
+	sysProps = (SJME_F_K(inFrame)->initConfig != NULL &&
+		SJME_F_K(inFrame)->initConfig->sysProps != NULL ?
+		SJME_F_K(inFrame)->initConfig->sysProps : NULL);
+	if (sysProps != NULL)
+		for (ik = 0, iv = ik + 1, n = sysProps->length; iv < n; ik++, iv++)
+		{
+			/* Load in key and value. */
+			k = sysProps->elements[ik];
+			v = sysProps->elements[iv];
+
+			/* Skip if missing. */
+			if (k == NULL || v == NULL)
+				continue;
+
+			/* Is this a match? */
+			if (strcasecmp(k, v) == 0)
+			{
+				/* Load in string value. */
+				loaded = NULL;
+				if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
+					SJME_F_T(inFrame), &loaded, SJME_JNI_TRUE, v)) ||
+					loaded == NULL)
+					return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
+
+				/* Use the loaded string value. */
+				argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+				argR->v.l = SJME_AS_JOBJECT(loaded);
+				return SJME_ERROR_NONE;
+			}
+		}
+
+	/* Not found. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = NULL;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(vmDescription)
