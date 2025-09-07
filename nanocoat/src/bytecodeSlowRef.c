@@ -1138,6 +1138,13 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
+	/* Check for recycle, class load and/or static constructor. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
+	
 	/* Lookup field in the class. */
 	fieldId = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_fieldIDByNameType(
