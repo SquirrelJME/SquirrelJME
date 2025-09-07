@@ -73,6 +73,9 @@ typedef struct sjme_stream_handle
 	/** Pointer. */
 	sjme_pointer p;
 
+	/** Integer based value. */
+	sjme_intPointer i;
+
 	/** Function handle. */
 	sjme_undefinedFunction f;
 } sjme_stream_handle;

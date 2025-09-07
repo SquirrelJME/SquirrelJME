@@ -33,10 +33,28 @@
  *
  * @since 2025/09/07
  */
-typedef struct sjme_stream_biNetSocket
+typedef struct sjme_stream_biNetSocketData
 {
-	int todo;
-} sjme_stream_biNetSocket;
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
+	/** The socket descriptor. */
+	SOCKET sfd;
+
+	/** The listening file descriptor. */
+	SOCKET lfd;
+
+	/** The remote file descriptor. */
+	SOCKET rfd;
+#elif defined(SJME_CONFIG_NETWORK_POSIX)
+	/** The socket file descriptor. */
+	int sfd;
+
+	/** The listening file descriptor. */
+	int lfd;
+
+	/** The remote file descriptor. */
+	int rfd;
+#endif
+} sjme_stream_biNetSocketData;
 
 static sjme_errorCode sjme_stream_inputNetClose(
 	sjme_attrInNotNull sjme_stream_input stream,
@@ -54,11 +72,18 @@ static sjme_errorCode sjme_stream_inputNetInit(
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
 	sjme_attrInNullable sjme_pointer data)
 {
-	if (stream == NULL || inImplState == NULL || data == NULL)
+	sjme_stream_biNetSocketData* socketData;
+
+	socketData = (sjme_stream_biNetSocketData*)data;
+	if (stream == NULL || inImplState == NULL || socketData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Just copy the FDs over. */
+	inImplState->handle.i = socketData->sfd;
+	inImplState->handleTwo.i = socketData->rfd;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_stream_inputNetRead(
@@ -114,11 +139,18 @@ static sjme_errorCode sjme_stream_outputNetInit(
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
 	sjme_attrInNullable sjme_pointer data)
 {
-	if (stream == NULL || inImplState == NULL || data == NULL)
+	sjme_stream_biNetSocketData* socketData;
+
+	socketData = (sjme_stream_biNetSocketData*)data;
+	if (stream == NULL || inImplState == NULL || socketData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Just copy the FDs over. */
+	inImplState->handle.i = socketData->sfd;
+	inImplState->handleTwo.i = socketData->rfd;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_stream_outputNetWrite(
@@ -157,13 +189,19 @@ sjme_errorCode sjme_stream_biOpenTcpUdp(
 	sjme_errorCode error;
 	sjme_stream_input rawIn;
 	sjme_stream_output rawOut;
+	sjme_stream_biNetSocketData data;
 #if defined(SJME_CONFIG_NETWORK_WINDOWS)
-#elif defined(SJME_CONFIG_NETWORK_POSIX)
+#elif defined(SJME_CONFIG_NETWORK_POSIX_2001)
 #define PORT_BUF_SIZE 16
 	sjme_cchar portBuf[PORT_BUF_SIZE];
+	int sfd, lfd, rfd, oldErrno;
 	struct addrinfo posixHints;
 	struct addrinfo* posixAddress;
-	int fd, lfd, rfd, oldErrno;
+	struct addrinfo* tryAddress;
+#elif defined(SJME_CONFIG_NETWORK_POSIX_OLD)
+	int sfd, lfd, rfd, oldErrno;
+	struct hostent* posixHost;
+	struct sockaddr_in posixAddress;
 #else
 	#error Unsupported networking?
 #endif
@@ -176,16 +214,21 @@ sjme_errorCode sjme_stream_biOpenTcpUdp(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Initialize blank stream state. */
+	memset(&data, 0, sizeof(data));
+	error = SJME_ERROR_NONE;
 	rawIn = NULL;
 	rawOut = NULL;
 
 #if defined(SJME_CONFIG_NETWORK_WINDOWS)
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
-#elif defined(SJME_CONFIG_NETWORK_POSIX)
+#elif defined(SJME_CONFIG_NETWORK_POSIX_2001)
 	/* Wipe everything. */
 	memset(&posixHints, 0, sizeof(posixHints));
-	memset(&posixAddress, 0, sizeof(posixAddress));
+	tryAddress = NULL;
+	posixAddress = NULL;
+	oldErrno = 0;
+	sfd = -1;
 	lfd = -1;
 	rfd = -1;
 
@@ -203,11 +246,116 @@ sjme_errorCode sjme_stream_biOpenTcpUdp(
 		&posixHints, &posixAddress))
 		return sjme_nal_errno(errno);
 
+	/* There can actually be multiple addresses to lookup. */
+	for (tryAddress = posixAddress; tryAddress != NULL;
+		tryAddress = tryAddress->ai_next)
+	{
+		/* Open the appropriate socket. */
+		sfd = socket(tryAddress->ai_family,
+			tryAddress->ai_socktype,
+			tryAddress->ai_protocol);
+		if (sfd < 0)
+			goto fail_socket;
+	
+		/* Listening for a connection? */
+		if (listening)
+		{
+			/* Bind to address? */
+			if (address != NULL)
+				if (0 != bind(sfd, tryAddress->ai_addr,
+					tryAddress->ai_addrlen))
+					goto fail_bind;
+			
+			/* Listen for a connection. */
+			lfd = listen(sfd, 1);
+			if (lfd < 0)
+				goto fail_listen;
+
+			/* Accept the next incoming connection. */
+			rfd = accept(lfd, NULL, 0);
+			if (rfd < 0)
+				goto fail_accept;
+		}
+
+		/* Connecting instead. */
+		else
+		{
+			/* Connect to the remote system. */
+			rfd = connect(sfd, tryAddress->ai_addr,
+				tryAddress->ai_addrlen);
+			if (rfd < 0)
+				goto fail_connect;
+		}
+
+		/* Success, break out. */
+		break;
+
+		/* Failure states. */
+fail_socket:
+fail_bind:
+fail_listen:
+fail_accept:
+fail_connect:
+		/* Will be trashed. */
+		oldErrno = errno;
+
+		/* Close remote socket. */
+		if (rfd > 0)
+		{
+			close(rfd);
+			rfd = -1;
+		}
+
+		/* Close listening socket. */
+		if (lfd > 0)
+		{
+			close(lfd);
+			lfd = -1;
+		}
+
+		/* Close socket, if it is open. */
+		if (sfd > 0)
+		{
+			close(sfd);
+			sfd = -1;
+		}
+	}
+
+	/* All attempted addresses failed? */
+	if (sfd < 0 || rfd < 0)
+		goto fail_allAddress;
+
+	/* Set socket info. */
+	data.sfd = sfd;
+	data.lfd = lfd;
+	data.rfd = rfd;
+#elif defined(SJME_CONFIG_NETWORK_POSIX_OLD)
+	/* Wipe everything. */
+	posixHost = NULL;
+	memset(&posixAddress, 0, sizeof(posixAddress));
+	oldErrno = 0;
+	lfd = -1;
+	rfd = -1;
+
+	/* Lookup host. */
+	if (address != NULL)
+	{
+		posixHost = gethostbyname(address);
+		if (posixHost == NULL)
+			goto fail_lookupHost;
+	}
+
+	/* Convert address. */
+	if (address != NULL)
+		memmove(&posixAddress.sin_addr,
+			posixHost->h_addr, posixHost->h_length);
+	posixAddress.sin_family = AF_INET;
+	posixAddress.sin_port = htons(port);
+	
 	/* Open the appropriate socket. */
-	fd = socket(posixAddress->ai_family,
-		posixAddress->ai_socktype,
-		posixAddress->ai_protocol);
-	if (fd < 0)
+	sfd = socket(posixAddress.sin_family,
+		(isUdp ? SOCK_DGRAM : SOCK_STREAM), 0);
+	if (sfd < 0)
 		goto fail_socket;
 
 	/* Listening for a connection? */
@@ -215,11 +363,12 @@ sjme_errorCode sjme_stream_biOpenTcpUdp(
 	{
 		/* Bind to address? */
 		if (address != NULL)
-			if (0 != bind(fd, posixAddress->ai_addr, posixAddress->ai_addrlen))
+			if (0 != bind(sfd, (struct sockaddr*)&posixAddress,
+				sizeof(posixAddress)))
 				goto fail_bind;
-			
+		
 		/* Listen for a connection. */
-		lfd = listen(fd, port);
+		lfd = listen(sfd, 1);
 		if (lfd < 0)
 			goto fail_listen;
 
@@ -233,15 +382,42 @@ sjme_errorCode sjme_stream_biOpenTcpUdp(
 	else
 	{
 		/* Connect to the remote system. */
-		rfd = connect(fd, posixAddress->ai_addr, posixAddress->ai_addrlen);
+		rfd = connect(sfd, (struct sockaddr*)&posixAddress,
+			sizeof(posixAddress));
 		if (rfd < 0)
 			goto fail_connect;
 	}
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Set socket info. */
+	data.sfd = sfd;
+	data.lfd = lfd;
+	data.rfd = rfd;
 #else
 	#error Unsupported networking?
+#endif
+
+	/* Open output stream. */
+	if (sjme_error_is(error = sjme_stream_outputOpen(allocPool,
+		&rawOut, &sjme_stream_outputNetFunctions,
+		&data, NULL)) || rawOut == NULL)
+		goto fail_openOut;
+
+	/* Open input stream. */
+	if (sjme_error_is(error = sjme_stream_inputOpen(allocPool,
+		&rawIn, &sjme_stream_inputNetFunctions,
+		&data, NULL)) || rawIn == NULL)
+		goto fail_openIn;
+
+	/* Any implementation specific cleanup. */
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
+#elif defined(SJME_CONFIG_NETWORK_POSIX_2001)
+	/* We do not need the address info anymore. */
+	if (posixAddress != NULL)
+	{
+		freeaddrinfo(posixAddress);
+		posixAddress = NULL;
+	}
+#elif defined(SJME_CONFIG_NETWORK_POSIX_OLD)
 #endif
 
 	/* Do we not care about the input stream? Close it! */
@@ -258,7 +434,7 @@ sjme_errorCode sjme_stream_biOpenTcpUdp(
 	{
 		if (sjme_error_is(error = sjme_closeable_close(
 			SJME_AS_CLOSEABLE(rawOut))))
-			goto fail_closeIn;
+			goto fail_closeOut;
 		rawOut = NULL;
 	}
 
@@ -270,26 +446,38 @@ sjme_errorCode sjme_stream_biOpenTcpUdp(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
-	
+
 fail_closeIn:
+fail_closeOut:
+fail_openIn:
 	if (rawIn != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(rawIn));
+fail_openOut:
 	if (rawOut != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(rawOut));
-	return sjme_error_default(error);
-	
+
+	/* Earlier implementation specific failures. */
 #if defined(SJME_CONFIG_NETWORK_WINDOWS)
-#elif defined(SJME_CONFIG_NETWORK_POSIX)
+#elif defined(SJME_CONFIG_NETWORK_POSIX_2001)
+fail_allAddress:
+	/* Delete address info. */
+	if (posixAddress != NULL)
+	{
+		freeaddrinfo(posixAddress);
+		posixAddress = NULL;
+	}
+	
+	#undef PORT_BUF_SIZE
+#elif defined(SJME_CONFIG_NETWORK_POSIX_OLD)
+	/* Failure states. */
 fail_socket:
 fail_bind:
 fail_listen:
 fail_accept:
 fail_connect:
 	/* Will be trashed. */
-	oldErrno = errno;
-
-	/* Delete address info. */
-	freeaddrinfo(posixAddress);
+	if (oldErrno == 0)
+		oldErrno = errno;
 
 	/* Close remote socket. */
 	if (rfd > 0)
@@ -300,12 +488,24 @@ fail_connect:
 		close(lfd);
 
 	/* Close socket, if it is open. */
-	if (fd > 0)
-		close(fd);
+	if (sfd > 0)
+		close(sfd);
+	
+fail_lookupHost:
+	if (oldErrno == 0)
+		oldErrno = errno;
+#endif
 
-	/* Return the creation failure. */
+	/* Is a standard error set? */
+	if (sjme_error_is(error))
+		return sjme_error_default(error);
+
+	/* Use errno, if possible. */
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#elif defined(SJME_CONFIG_NETWORK_POSIX)
 	return sjme_nal_errno(oldErrno);
-	#undef PORT_BUF_SIZE
 #endif
 }
 

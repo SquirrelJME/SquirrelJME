@@ -43,7 +43,7 @@
 #if defined(SJME_CONFIG_HAS_STDINT)
 	#include <stdint.h>
 #else
-	#if !SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+	#if !SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
 		#include <limits.h>
 	#endif
 #endif
@@ -70,14 +70,14 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 #if defined(SJME_CONFIG_HAS_MSVC)
-	#if !SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+	#if !SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
 		/** The current function. */
 		#define __func__ __FUNCTION__
 	#endif
 #endif
 
 #if !defined(SJME_CONFIG_HAS_STDINT)
-	#if !SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+	#if !SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
 		/** Signed 8-bit integer. */
 		typedef signed __int8 int8_t;
 
@@ -202,7 +202,7 @@ int vsnprintf(
 
 /* Older MSVC does not have va_copy(). */
 #if defined(SJME_CONFIG_HAS_MSVC) && \
-	!SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010) && \
+	!SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010) && \
 	!defined(va_copy)
 	/** Copy argument lists. */
 	#define va_copy(d, s) ((d) = (s))

@@ -23,7 +23,7 @@
 #include <windows.h>
 #include <mmsystem.h>
 
-#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_XP)
+#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_XP)
 	#include <mmreg.h>
 #endif
 

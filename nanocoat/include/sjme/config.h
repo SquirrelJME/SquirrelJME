@@ -84,13 +84,13 @@ extern "C" {
 #endif
 	
 /** Visual Studio 6 */
-#define SJME_VERSION_MSVC_6 1200
+#define SJME_CONFIG_MSVC_VERSION_6 1200
 
 /** Visual Studio 2005 */
-#define SJME_VERSION_MSVC_2005 1400
+#define SJME_CONFIG_MSVC_VERSION_2005 1400
 
 /** Visual Studio 2010 */
-#define SJME_VERSION_MSVC_2010 1600
+#define SJME_CONFIG_MSVC_VERSION_2010 1600
 
 #if defined(__WATCOMC__)
 	/** Watcom C Compiler. */
@@ -235,29 +235,68 @@ extern "C" {
 	/** Is Microsoft Dos. */
 	#define SJME_CONFIG_HAS_OS_PC_DOS
 #endif
+	
+/** POSIX 1990. */
+#define SJME_CONFIG_POSIX_VERSION_1990 1
 
-#if defined(SJME_CONFIG_HAS_OS_ANDROID) || \
-	defined(SJME_CONFIG_HAS_OS_BSD) || \
-	defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
-	defined(SJME_CONFIG_HAS_OS_LINUX) || \
-	defined(SJME_CONFIG_HAS_OS_MACOS) || \
-	defined(SJME_CONFIG_HAS_OS_NEXTSTEP) || \
-	defined(SJME_CONFIG_HAS_OS_SOLARIS)
+/** POSIX 1992. */
+#define SJME_CONFIG_POSIX_VERSION_1992 2
+
+/** POSIX 1993. */
+#define SJME_CONFIG_POSIX_VERSION_1993 199309L
+
+/** POSIX 1995. */
+#define SJME_CONFIG_POSIX_VERSION_1995 199506L
+
+/** POSIX 2001. */
+#define SJME_CONFIG_POSIX_VERSION_2001 200112L
+
+/** POSIX 2008. */
+#define SJME_CONFIG_POSIX_VERSION_2008 200809L
+
+#if defined(_POSIX_C_SOURCE)
 	/** POSIX is available. */
 	#define SJME_CONFIG_HAS_OS_POSIX
+#else
+	/* These OSes have POSIX. */
+	#if defined(SJME_CONFIG_HAS_OS_ANDROID) || \
+		defined(SJME_CONFIG_HAS_OS_BSD) || \
+		defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
+		defined(SJME_CONFIG_HAS_OS_LINUX) || \
+		defined(SJME_CONFIG_HAS_OS_MACOS) || \
+		defined(SJME_CONFIG_HAS_OS_NEXTSTEP) || \
+		defined(SJME_CONFIG_HAS_OS_SOLARIS)
+		/** POSIX is available. */
+		#define SJME_CONFIG_HAS_OS_POSIX
+	#endif
+#endif
+
+#if defined(SJME_CONFIG_HAS_OS_POSIX)
+	#if defined(_POSIX_C_SOURCE)
+		/** POSIX version is at least the given version. */
+		#define SJME_CONFIG_POSIX_VERSION_LEAST(posixVer) \
+			(_POSIX_C_SOURCE > SJME_CONFIG_POSIX_VERSION_1990)
+	#else
+			/** POSIX version is at least the given version. */
+		#define SJME_CONFIG_POSIX_VERSION_LEAST(posixVer) \
+			(posixVer > SJME_CONFIG_POSIX_VERSION_1990)
+	#endif
+#else
+	/** POSIX version is at least the given version. */
+	#define SJME_CONFIG_POSIX_VERSION_LEAST(posixVer) 0
 #endif
 
 /** Windows 8. */
-#define SJME_CONFIG_WINDOWS_8 0x0600
+#define SJME_CONFIG_WINDOWS_VERSION_8 0x0600
 
 /** Windows XP */
-#define SJME_CONFIG_WINDOWS_XP 0x0501
+#define SJME_CONFIG_WINDOWS_VERSION_XP 0x0501
 
 /** Windows Vista. */
-#define SJME_CONFIG_WINDOWS_VISTA 0x0600
+#define SJME_CONFIG_WINDOWS_VERSION_VISTA 0x0600
 
 /** Windows NT 4.0 */
-#define SJME_CONFIG_WINDOWS_NT_4 0x0400
+#define SJME_CONFIG_WINDOWS_VERSION_NT_4 0x0400
 
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/* Include the Windows SDK versioning information, if available. */
@@ -268,24 +307,24 @@ extern "C" {
 	/** Windows version is at least the given version. */
 	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) (WINVER >= winVer)
 
-	#if SJME_CONFIG_WINDOWS_VERSION_LEAST(SJME_CONFIG_WINDOWS_VISTA)
+	#if SJME_CONFIG_WINDOWS_VERSION_LEAST(SJME_CONFIG_WINDOWS_VERSION_VISTA)
 		/** Windows NT version is at least the given version. */
-		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) \
+		#define SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(winVer) \
 			SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer)
 	#elif defined(_WIN32_WINNT)
 		/** Windows NT version is at least the given version. */
-		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) \
+		#define SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(winVer) \
 			(_WIN32_WINNT >= winVer)
 	#else
 		/** Windows NT version is at least the given version. */
-		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
+		#define SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(winVer) 0
 	#endif
 #else
 	/** Windows version is at least the given version. */
 	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) 0
 
 	/** Windows NT version is at least the given version. */
-	#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
+	#define SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(winVer) 0
 #endif
 	
 /** Possibly detect endianess. */
@@ -416,7 +455,7 @@ extern "C" {
 	#define SJME_POINTER_BYTES (SJME_CONFIG_HAS_POINTER / 8)
 #endif
 	
-#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010) || \
+#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010) || \
 	defined(SJME_CONFIG_HAS_GCC) || \
 	defined(SJME_CONFIG_HAS_CLANG) || \
 	defined(SJME_CONFIG_HAS_C99)
@@ -528,7 +567,7 @@ extern "C" {
 #endif
 
 /* Visual C SAL 2.0 Annotations. */
-#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
 	#include <sal.h>
 
 	/** Return value must be checked. */
@@ -571,7 +610,7 @@ extern "C" {
 	#define sjme_attrOutRange(lo, hi) _Out_range_((lo), (hi))
 
 /* Older Visual C++. */
-#elif SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_6)
+#elif SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_6)
 	#include <sal.h>
 
 	/** Return value must be checked. */
@@ -793,7 +832,7 @@ extern "C" {
 
 #if !defined(sjme_inline)
 	#if !defined(SJME_CONFIG_HAS_MSVC) || \
-		SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+		SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
 		/** Inline function. */
 		#define sjme_inline inline
 	#else
@@ -1090,7 +1129,7 @@ extern "C" {
 #endif
 
 #if defined(SJME_CONFIG_HAS_C99) || \
-	SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+	SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
 	/** Constant-ish struct member set. */
 	#define sjme_sm(dot, val) dot = val
 #else
@@ -1211,6 +1250,14 @@ extern "C" {
 	defined(SJME_CONFIG_HAS_SYS_SOCKET_H)
 	/** Use POSIX networking. */
 	#define SJME_CONFIG_NETWORK_POSIX
+	
+	#if SJME_CONFIG_POSIX_VERSION_LEAST(SJME_CONFIG_POSIX_VERSION_2001)
+		/** Use POSIX 2001 networking. */
+		#define SJME_CONFIG_NETWORK_POSIX_2001
+	#else
+		/** Use Old POSIX networking. */
+		#define SJME_CONFIG_NETWORK_POSIX_OLD
+	#endif
 #else
 	/** Networking not supported. */
 	#define SJME_CONFIG_NETWORK_NONE
