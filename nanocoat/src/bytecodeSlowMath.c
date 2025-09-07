@@ -452,8 +452,11 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_USHR:
-			result.v.i = (sjme_jint)(((sjme_juint)a.v.i) >>
-				((sjme_juint)(b.v.i & 0x1F)));
+			/* Reverse masking so that the entire operation happens */
+			/* purely with signed values. */
+			result.v.i = INT32_C(0x7FFFFFFF) >> (b.v.i & 0x1F);
+			result.v.i = INT32_C(1) << (31 - (b.v.i & 0x1F));
+			result.v.i &= a.v.i >> (b.v.i & 0x1F);
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_AND:
@@ -515,8 +518,11 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_USHR:
-			result.v.j.full = (int64_t)(((uint64_t)a.v.j.full) >>
-				((uint64_t)(b.v.j.full & 0x3FL)));
+			/* Reverse masking so that the entire operation happens */
+			/* purely with signed values. */
+			result.v.j.full = INT64_C(0x7FFFFFFF) >> (b.v.j.full & 0x3FL);
+			result.v.j.full = INT64_C(1) << (63 - (b.v.j.full & 0x3FL));
+			result.v.j.full &= a.v.j.full >> (b.v.j.full & 0x3FL);
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_AND:

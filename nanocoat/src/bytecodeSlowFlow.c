@@ -20,56 +20,56 @@ typedef sjme_jboolean (*sjme_nvm_byteCode_compareIFunc)(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b);
 
-sjme_jboolean sjme_nvm_byteCode_compareAEq(
+static sjme_jboolean sjme_nvm_byteCode_compareAEq(
 	sjme_attrInValue sjme_jobject a,
 	sjme_attrInValue sjme_jobject b)
 {
 	return a == b;
 }
 
-sjme_jboolean sjme_nvm_byteCode_compareANe(
+static sjme_jboolean sjme_nvm_byteCode_compareANe(
 	sjme_attrInValue sjme_jobject a,
 	sjme_attrInValue sjme_jobject b)
 {
 	return a != b;
 }
 
-sjme_jboolean sjme_nvm_byteCode_compareIEq(
+static sjme_jboolean sjme_nvm_byteCode_compareIEq(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b)
 {
 	return a == b;
 }
 
-sjme_jboolean sjme_nvm_byteCode_compareIGe(
+static sjme_jboolean sjme_nvm_byteCode_compareIGe(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b)
 {
 	return a >= b;
 }
 
-sjme_jboolean sjme_nvm_byteCode_compareIGt(
+static sjme_jboolean sjme_nvm_byteCode_compareIGt(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b)
 {
 	return a > b;
 }
 
-sjme_jboolean sjme_nvm_byteCode_compareILe(
+static sjme_jboolean sjme_nvm_byteCode_compareILe(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b)
 {
 	return a <= b;
 }
 
-sjme_jboolean sjme_nvm_byteCode_compareILt(
+static sjme_jboolean sjme_nvm_byteCode_compareILt(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b)
 {
 	return a < b;
 }
 
-sjme_jboolean sjme_nvm_byteCode_compareINe(
+static sjme_jboolean sjme_nvm_byteCode_compareINe(
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b)
 {
