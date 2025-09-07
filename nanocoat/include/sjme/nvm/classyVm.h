@@ -268,6 +268,29 @@ sjme_errorCode sjme_nvm_vmClass_fieldIDByNameType(
 	sjme_attrOutNotNull sjme_jfieldID* outID);
 	
 /**
+ * Locates a field in the given class by name and type.
+ * 
+ * @param inClass The class to look within.
+ * @param contextThread The context thread.
+ * @param instanceType The type of field instance to locate.
+ * @param required Is this a required lookup?
+ * @param inName The name of the field to resolve.
+ * @param inType The type of the field to resolve.
+ * @param outID The resultant field.
+ * @return Any resultant error, if any.
+ * @since 2025/09/06
+ */
+sjme_errorCode sjme_nvm_vmClass_fieldIDByNameTypeU(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInValue sjme_jboolean required,
+	sjme_attrInPositive sjme_lpcstr inName,
+	sjme_attrInPositive sjme_lpcstr inType,
+	sjme_attrOutNotNull sjme_jfieldID* outID);
+	
+/**
  * Locates the source field in the given class chain for the given static
  * or instance field ID, which would be the source target field for the given
  * field slot.

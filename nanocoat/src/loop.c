@@ -280,8 +280,11 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 
 #if defined(SJME_CONFIG_DEBUG_BYTECODES)
 		/* Debug. */
-		sjme_messageB("%2d@%3d: %s", 
-			frameIndex, currentFrame->pc, sjme_nvm_byteCode_names[iv]);
+		sjme_messageB("%2d@%3d: %s (%s.%s %s)", 
+			frameIndex, currentFrame->pc, sjme_nvm_byteCode_names[iv],
+			sjme_charSeq_tempUtf(currentFrame->inClass->binaryName),
+			sjme_charSeq_tempUtf(currentFrame->inMethod->member.name->seq),
+			sjme_charSeq_tempUtf(currentFrame->inMethod->member.type->seq));
 #endif
 
 		/* Execute handler. */

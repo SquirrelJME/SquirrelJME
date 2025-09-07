@@ -1514,6 +1514,37 @@ sjme_errorCode sjme_nvm_vmClass_fieldIDByNameType(
 	return sjme_error_vmError(contextThread, SJME_ERROR_NO_FIELD);
 }
 
+sjme_errorCode sjme_nvm_vmClass_fieldIDByNameTypeU(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInValue sjme_jboolean required,
+	sjme_attrInPositive sjme_lpcstr inName,
+	sjme_attrInPositive sjme_lpcstr inType,
+	sjme_attrOutNotNull sjme_jfieldID* outID)
+{
+	sjme_errorCode error;
+	sjme_charSeqStatic wrapName, wrapType;
+	
+	if (inName == NULL || inType == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Wrap sequences. */
+	memset(&wrapName, 0, sizeof(wrapName));
+	memset(&wrapType, 0, sizeof(wrapType));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&wrapName,
+		inName, 0, -1)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&wrapType,
+		inType, 0, -1)))
+		return sjme_error_default(error);
+
+	/* Forward. */
+	return sjme_nvm_vmClass_fieldIDByNameType(inClass, contextThread,
+		instanceType, required, &wrapName, &wrapType, outID);
+}
+
 sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)

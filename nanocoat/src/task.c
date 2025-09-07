@@ -446,18 +446,65 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 	sjme_errorCode error;
 	sjme_jarray pointArray;
 	sjme_jbracketTrace point;
+	sjme_jclass throwableClass;
 	sjme_nvm_task_stackTraceState traceState;
 	sjme_jint i;
+	sjme_jfieldID messageId;
+	sjme_jstring message;
+	sjme_nvm_rawFieldValue* accessor;
+	sjme_charSeq messageSeq;
+	sjme_jboolean printedMessage;
 	
 	if (inThrowable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Must be Throwable. */
+	throwableClass = sjme_nvm_task_commonClassR(contextThread,
+			SJME_NVM_TASK_COMMON_CLASS_THROWABLE);
 	if (!sjme_nvm_vmClass_isAssignableFrom(contextThread,
-		sjme_nvm_task_commonClassR(contextThread,
-			SJME_NVM_TASK_COMMON_CLASS_THROWABLE),
-			inThrowable->object.isClass))
+		throwableClass, inThrowable->object.isClass))
 		return SJME_ERROR_CLASS_CAST;
+
+	/* Locate the message field, if at all possible... */
+	messageId = NULL;
+	if (sjme_error_is(sjme_nvm_vmClass_fieldIDByNameTypeU(throwableClass,
+		contextThread,
+		SJME_NVM_CLASS_MEMBER_INSTANCE, SJME_JNI_FALSE,
+		"_message", "Ljava/lang/String;", &messageId)))
+		messageId = NULL;
+
+	/* Is the message field valid? */
+	printedMessage = SJME_JNI_FALSE;
+	if (messageId != NULL)
+	{
+		/* Can we get the accessor for the field? */
+		accessor = sjme_nvm_instance_fieldAccessor(
+			SJME_AS_JOBJECT(inThrowable), messageId);
+		if (accessor != NULL && accessor->l.p != NULL)
+		{
+			/* Is this a valid string? */
+			message = SJME_AS_JSTRING(accessor->l.p);
+			if (sjme_nvm_isAR(message, SJME_NVM_STRUCT_STRING_INSTANCE))
+			{
+				/* If the sequence is valid, print it. */
+				messageSeq = sjme_atomic_sjme_charSeq_get(&message->seq);
+				if (messageSeq != NULL)
+				{
+					sjme_messageB("EXCEPTION %s: %s",
+						sjme_charSeq_tempUtf(
+							inThrowable->object.isClass->binaryName),
+						sjme_charSeq_tempUtf(messageSeq));
+					printedMessage = SJME_JNI_TRUE;
+				}
+			}
+		}
+	}
+
+	/* If we did not print the message, we can at least print the class. */
+	if (!printedMessage)
+		sjme_messageB("EXCEPTION %s",
+			sjme_charSeq_tempUtf(
+				inThrowable->object.isClass->binaryName));
 
 	/* There may be trace points in this. */
 	pointArray = (sjme_jarray)sjme_atomic_sjme_intPointer_get(
