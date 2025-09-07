@@ -274,6 +274,12 @@ typedef sjme_nvm_commonBase* sjme_nvm_common;
 /** As a throwable. */
 #define SJME_AS_JTHROWABLE(x) ((sjme_jthrowable)(x))
 
+/** As a Jar Package Bracket. */
+#define SJME_AS_B_JARPACKAGE(x) ((sjme_jbracketJarPackage)(x))
+
+/** As a pointer to a Jar Package Bracket. */
+#define SJME_AS_B_JARPACKAGEP(x) ((sjme_jbracketJarPackage*)(x))
+
 /** Cast to common type. */
 #define SJME_AS_NVM_COMMON(x) ((sjme_nvm_common)(x))
 

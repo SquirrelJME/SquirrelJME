@@ -177,6 +177,42 @@ SJME_NVM_MLE_FUNCTION_DECL(inJar)
 	return SJME_ERROR_NONE;
 }
 
+SJME_NVM_MLE_FUNCTION_DECL(interfaces)
+{
+	sjme_errorCode error;
+	sjme_jclass inType;
+	sjme_list_sjme_jclass* interfaceClasses;
+	sjme_jarray result;
+	sjme_jint i, n;
+	
+	/* Must be an actual class type. */
+	inType = (sjme_jclass)argV[0].v.l;
+	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Get the interface classes. */
+	interfaceClasses = inType->interfaceClasses;
+	n = (interfaceClasses == NULL ? 0 : interfaceClasses->length);
+
+	/* Allocate resultant array. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
+		SJME_F_T(inFrame), &result,
+		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
+			SJME_NVM_TASK_COMMON_CLASS_CLASS), n) || result == NULL))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Copy everything over. */
+	if (interfaceClasses != NULL)
+		for (i = 0; i < n; i++)
+			result->e.l[i] = SJME_AS_JOBJECT(interfaceClasses->elements[i]);
+
+	/* Success! */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = SJME_AS_JOBJECT(result);
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(isPrimitive)
 {
 	sjme_jclass inType;
@@ -228,6 +264,22 @@ SJME_NVM_MLE_FUNCTION_DECL(runtimeName)
 	
 	/* Return the given string. */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(superClass)
+{
+	sjme_jclass inType;
+	
+	/* Must be an actual class type. */
+	inType = (sjme_jclass)argV[0].v.l;
+	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Return the direct super class. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = SJME_AS_JOBJECT(
+		sjme_atomic_sjme_jclass_get(&inType->superClass));
 	return SJME_ERROR_NONE;
 }
 
@@ -357,10 +409,10 @@ SJME_NVM_MLE_SHELF_DECLARE(TypeShelf) =
 	SJME_NVM_MLE_DEFINE(inJar,
 		SJME_MD(SJME_MD_JAR_PACKAGE, SJME_MD_CLASS),
 		"L", "L"),
-#if 0
 	SJME_NVM_MLE_DEFINE(interfaces,
-		SJME_MD(,),
-		""),
+		SJME_MD(SJME_MD_A(SJME_MD_CLASS), SJME_MD_CLASS),
+		"L", "L"),
+#if 0
 	SJME_NVM_MLE_DEFINE(isArray,
 		SJME_MD(,),
 		""),
@@ -386,11 +438,9 @@ SJME_NVM_MLE_SHELF_DECLARE(TypeShelf) =
 	SJME_NVM_MLE_DEFINE(runtimeName,
 		SJME_MD(SJME_MD_STRING, SJME_MD_CLASS),
 		"L", "L"),
-#if 0
 	SJME_NVM_MLE_DEFINE(superClass,
-		SJME_MD(,),
-		""),
-#endif
+		SJME_MD(SJME_MD_CLASS, SJME_MD_CLASS),
+		"L", "L"),
 	SJME_NVM_MLE_DEFINE(typeOfBoolean,
 		SJME_MD(SJME_MD_CLASS,),
 		"L", ),
