@@ -9,7 +9,7 @@
 
 #include "sjme/nvm/jdwp.h"
 
-#if !defined(SJME_CONFIG_HAS_NO_NETWORKING)
+#if !defined(SJME_CONFIG_NETWORK_NONE)
 
 /*--------------------------------------------------------------------------*/
 

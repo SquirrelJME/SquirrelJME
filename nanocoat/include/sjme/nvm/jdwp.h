@@ -77,7 +77,7 @@ sjme_errorCode sjme_jdwp_sessionNew(
 	sjme_attrInNotNull sjme_stream_input in,
 	sjme_attrInNotNull sjme_stream_output out);
 
-#if !defined(SJME_CONFIG_HAS_NO_NETWORKING)
+#if !defined(SJME_CONFIG_NETWORK_NONE)
 
 /**
  * Initializes a new JDWP session that is connected over a TCP network.

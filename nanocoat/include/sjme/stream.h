@@ -832,7 +832,7 @@ sjme_errorCode sjme_stream_outputWriteValueJ(
 	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS) sjme_basicTypeId typeId,
 	...);
 
-#if !defined(SJME_CONFIG_HAS_NO_NETWORKING)
+#if !defined(SJME_CONFIG_NETWORK_NONE)
 
 /**
  * Binds and opens a stream to the given TCP/UDP remote host somewhere on

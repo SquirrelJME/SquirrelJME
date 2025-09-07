@@ -93,10 +93,10 @@ static sjme_errorCode sjme_stream_outputStdIoWrite(
 
 static const sjme_stream_outputFunctions sjme_stream_outputStdIoFunctions =
 {
-	.close = sjme_stream_outputStdIoClose,
-	.flush = sjme_stream_outputStdIoFlush,
-	.init = sjme_stream_outputStdIoInit,
-	.write = sjme_stream_outputStdIoWrite,
+	sjme_sm(.close, sjme_stream_outputStdIoClose),
+	sjme_sm(.flush, sjme_stream_outputStdIoFlush),
+	sjme_sm(.init, sjme_stream_outputStdIoInit),
+	sjme_sm(.write, sjme_stream_outputStdIoWrite),
 };
 
 sjme_errorCode sjme_stream_outputOpenStdIo(

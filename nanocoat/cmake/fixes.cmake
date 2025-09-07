@@ -275,6 +275,12 @@ if(NOT SJME_CONFIG_HAS_THREADS_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_C11_THREADS=1)
 endif()
 
+# sys/socket.h available?
+CHECK_INCLUDE_FILE("sys/socket.h" SJME_CONFIG_HAS_SYS_SOCKET_H)
+if(NOT SJME_CONFIG_HAS_SYS_SOCKET_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_SYS_SOCKET_H=1)
+endif()
+
 # Is the SDK version header information available?
 CHECK_INCLUDE_FILE("sdkddkver.h" WIN32_SDKDDKVER_INCLUDE)
 if(WIN32_SDKDDKVER_INCLUDE)

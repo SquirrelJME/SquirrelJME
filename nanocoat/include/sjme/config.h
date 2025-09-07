@@ -1202,6 +1202,19 @@ extern "C" {
 		#define SJME_CONFIG_DEBUG_TREAD
 	#endif
 #endif
+
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE)
+	/** Use Windows networking. */
+	#define SJME_CONFIG_NETWORK_WINDOWS
+#elif !defined(SJME_CONFIG_HAS_NO_SYS_SOCKET_H) || \
+	defined(SJME_CONFIG_HAS_SYS_SOCKET_H)
+	/** Use POSIX networking. */
+	#define SJME_CONFIG_NETWORK_POSIX
+#else
+	/** Networking not supported. */
+	#define SJME_CONFIG_NETWORK_NONE
+#endif
 	
 /* Missing standard C functions, always include these. */
 #include "sjme/stdGone.h"
