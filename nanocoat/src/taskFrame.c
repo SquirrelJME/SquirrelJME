@@ -76,6 +76,7 @@ sjme_errorCode sjme_nvm_task_frameCommitPush(
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jobject pushObject)
 {
+	sjme_errorCode error;
 	sjme_nvm_frame_gcCommit* at;
 	sjme_nvm_frame_gcCommit* freeCommit;
 	sjme_jint i, freeIndex;
@@ -115,9 +116,30 @@ sjme_errorCode sjme_nvm_task_frameCommitPush(
 		/* Success! */
 		return SJME_ERROR_NONE;
 	}
+
+	/* Allocate a new commit. */
+	freeCommit = NULL;
+	if (sjme_error_is(error = sjme_alloc(SJME_F_S(inFrame)->allocPool,
+		sizeof(*freeCommit), (sjme_pointer*)&freeCommit)) ||
+		freeCommit == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* This is dynamically allocated! */
+	freeCommit->isDynamic = SJME_JNI_TRUE;
+
+	/* Link in, just use the start as it is simpler. */
+	freeCommit->prev = commit;
+	freeCommit->next = commit->next;
+	if (commit->next != NULL)
+		commit->next->prev = freeCommit;
+	commit->next = freeCommit;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Store in the first slot. */
+	freeCommit->objects[0].l = pushObject;
+	freeCommit->objects[0].count = 1;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_task_frameHandler(

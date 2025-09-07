@@ -49,6 +49,8 @@ SJME_NVM_MLE_FUNCTION_DECL(weakInit)
 	/* Set weak data. */
 	sjme_atomic_sjme_jobject_compareSet(&weak->pointer,
 		NULL, pointer);
+	sjme_atomic_sjme_jint_compareSet(&weak->pointerId,
+		0, pointer->identityHash);
 	sjme_atomic_sjme_jobject_compareSet(&weak->queue,
 		NULL, queue);
 	
@@ -66,11 +68,81 @@ fail_beenInit:
 	return SJME_ERROR_MLE_CALL;
 }
 
+SJME_NVM_MLE_FUNCTION_DECL(weakGet)
+{
+	sjme_errorCode error;
+	sjme_jweak weak;
+	sjme_jobject pointer;
+	sjme_jint pointerId;
+	
+	/* Must be a weak reference. */
+	weak = (sjme_jweak)argV[0].v.l;
+	if (!sjme_nvm_isAR(weak, SJME_NVM_STRUCT_WEAK_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+	
+	/* If never initialized, this will always be null. */
+	if (!sjme_atomic_sjme_jint_get(&weak->beenInit))
+	{
+		argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+		argR->v.l = NULL;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Lock reference. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&weak->object.common.lock)))
+		return sjme_error_vmError(inFrame,
+			sjme_error_mask(error, SJME_ERROR_MLE_CALL));
+
+	/* Load the pointer value and its identity hash. */
+	pointer = sjme_atomic_sjme_jobject_get(&weak->pointer);
+	pointerId = sjme_atomic_sjme_jint_get(&weak->pointerId);
+
+	/* Can we determine that this object is invalid? */
+	if (pointer == NULL ||
+		!sjme_nvm_isAR(pointer, SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE) ||
+		(pointer != NULL && pointer->identityHash != pointerId) ||
+		sjme_alloc_weakCount(pointer) <= 0)
+	{
+		/* If the pointer is still set, however we determined the object is */
+		/* now invalid we can push this to the reference queue if it has */
+		/* yet to be done. */
+		if (pointer != NULL)
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+		
+		/* Invalid. */
+		argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+		argR->v.l = NULL;
+	}
+
+	/* Otherwise, it is valid! */
+	else
+	{
+		argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+		argR->v.l = pointer;
+	}
+	
+	/* Unlock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&weak->object.common.lock, NULL)))
+		return sjme_error_vmError(inFrame,
+			sjme_error_mask(error, SJME_ERROR_MLE_CALL));
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_SHELF_DECLARE(ReferenceShelf) =
 {
 	SJME_NVM_MLE_DEFINE(weakInit,
 		SJME_MD(SJME_MD_V, SJME_MD_REFERENCE SJME_MD_OBJECT
 			SJME_MD_REFERENCE_QUEUE),
 		"V", "LLL"),
+	SJME_NVM_MLE_DEFINE(weakGet,
+		SJME_MD(SJME_MD_OBJECT, SJME_MD_REFERENCE),
+		"L", "L"),
 	SJME_NVM_MLE_STOP()
 };

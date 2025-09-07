@@ -461,6 +461,16 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
+ * Returns the count of a weak reference.
+ * 
+ * @param addr The address to get the weak count for.
+ * @return The count of the weak, or @c -1 if it is not weak.
+ * @since 2025/09/06
+ */
+sjme_jint sjme_alloc_weakCount(
+	sjme_attrInNullable sjme_pointer addr);
+	
+/**
  * Deletes a weak reference by un-counting it, if the count reaches zero
  * then this weak will be freed if that was requested.
  * 

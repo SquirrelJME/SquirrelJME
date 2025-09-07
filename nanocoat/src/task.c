@@ -136,12 +136,14 @@ sjme_errorCode sjme_nvm_task_bracketJarPackage(
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(&globals->lock)))
 		return sjme_error_default(error);
 
-	/* Check pre-existing brackets. */
+	/* Check pre-existing brackets, note that it is possible for there */
+	/* to be blank slots for quick ordering. */
 	result = NULL;
 	brackets = globals->jarBrackets;
 	if (brackets != NULL)
 		for (i = 0, n = brackets->length; i < n; i++)
-			if (inLibrary == brackets->elements[i]->library)
+			if (brackets->elements[i] != NULL &&
+				inLibrary == brackets->elements[i]->library)
 			{
 				result = brackets->elements[i];
 				break;

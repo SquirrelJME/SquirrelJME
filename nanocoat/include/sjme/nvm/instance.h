@@ -380,6 +380,9 @@ struct sjme_jweakBase
 	/** The object this points to. */
 	sjme_atomic_sjme_jobject pointer;
 
+	/** The ID of the pointer. */
+	sjme_atomic_sjme_jint pointerId;
+
 	/** The reference queue. */
 	sjme_atomic_sjme_jobject queue;
 };
