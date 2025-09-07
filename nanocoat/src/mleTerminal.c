@@ -216,7 +216,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(read, multi)
 	/* Read call. */
 	readCount = INT32_MIN;
 	if (sjme_error_is(error = sjme_stream_inputRead(pipe->stream.in,
-		&readCount, &buf->e.b[off], len)) || readCount < 0)
+		&readCount, &buf->e.b[off], len)) || readCount < -1)
 		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
 
 	/* Success! */
