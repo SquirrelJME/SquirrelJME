@@ -30,20 +30,6 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-/**
- * JDWP state structure.
- *
- * @since 2025/09/07
- */
-typedef struct sjme_jdwpBase sjme_jdwpBase;
-
-/**
- * JDWP state structure.
- *
- * @since 2025/09/07
- */
-typedef sjme_jdwpBase* sjme_jdwp;
-
 struct sjme_jdwpBase
 {
 	/** The allocation pool to use. */

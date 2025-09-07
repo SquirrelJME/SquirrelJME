@@ -402,6 +402,20 @@ SJME_LIST_DECLARE(sjme_nvm_task, 0);
  * @since 2023/12/17
  */
 typedef struct sjme_nvm_task_taskNewConfig sjme_nvm_task_taskNewConfig;
+	
+/**
+ * JDWP state structure.
+ *
+ * @since 2025/09/07
+ */
+typedef struct sjme_jdwpBase sjme_jdwpBase;
+
+/**
+ * JDWP state structure.
+ *
+ * @since 2025/09/07
+ */
+typedef sjme_jdwpBase* sjme_jdwp;
 
 struct sjme_nvm_commonBase
 {
@@ -572,6 +586,9 @@ struct sjme_nvm_stateBase
 
 	/** The last emitted exit code. */
 	sjme_atomic_sjme_jint lastExitCode;
+
+	/** The JDWP debugger state. */
+	sjme_jdwp jdwp;
 };
 
 /**

@@ -106,6 +106,11 @@ int main(int argc, sjme_lpstr* argv)
 	bootParam.mainClass = "net.multiphasicapps.tac.MainSingleRunner";
 	bootParam.mainClassPathByName = (const sjme_list_sjme_lpcstr*)classpath;
 	bootParam.mainArgs = (const sjme_list_sjme_lpcstr*)mainArgs;
+
+	/* JDWP Debugging. */
+	bootParam.jdwpAddress = "localhost";
+	bootParam.jdwpPort = 5005;
+	bootParam.jdwpListening = SJME_JNI_FALSE;
 	
 	/* Boot the virtual machine. */
 	inState = NULL;

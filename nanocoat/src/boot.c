@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <sjme/nvm/jdwp.h>
+
 #include "sjme/nvm/allocSizeOf.h"
 #include "sjme/nvm/boot.h"
 #include "sjme/debug.h"
@@ -446,6 +448,18 @@ sjme_errorCode sjme_nvm_boot(
 			initTaskConfig, &initTask)) || initTask == NULL)
 			goto fail_initTask;
 	}
+
+#if !defined(SJME_CONFIG_NETWORK_NONE)
+	/* Using JDWP for this virtual machine? */
+	if (bootParamCopy->jdwpPort > 0 || bootParamCopy->jdwpAddress != NULL ||
+		bootParamCopy->jdwpListening)
+		if (sjme_error_is(error = sjme_jdwp_sessionNewTcpNetwork(allocPool,
+			result, &result->jdwp,
+			bootParamCopy->jdwpListening,
+			bootParamCopy->jdwpAddress,
+			bootParamCopy->jdwpPort)) || result->jdwp == NULL)
+			sjme_message("Failed to establish JDWP connection: %d", error);
+#endif
 	
 	/* Return newly created VM. */
 	*outState = result;
@@ -696,7 +710,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_jboolean jarSpecified;
 	sjme_nal_stdOFunc helpOut;
 	sjme_nal_stdIoFlush helpFlush;
-	sjme_lpcstr bootRom, helpOpt, versionOpt;
+	sjme_lpcstr bootRom, helpOpt, versionOpt, tempUtf, tempTwo;
 	
 	if (allocPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -787,7 +801,36 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xjdwp:"))
 		{
-			sjme_todo("Impl? %s", argv[argAt]);
+			/* Simpler to use as UTF. */
+			tempUtf = sjme_charSeq_tempUtf(&argSeq);
+			
+			/* Only the port specified? We are listening... */
+			if (sjme_charSeq_charAtR(&argSeq,
+				strlen("-Xjdwp:") == ':'))
+			{
+				outParam->jdwpListening = SJME_JNI_TRUE;
+				outParam->jdwpAddress = NULL;
+				outParam->jdwpPort = atoi(&tempUtf[strlen("-Xjdwp:")]);
+			}
+
+			/* Otherwise we are connecting to an address. */
+			else
+			{
+				/* Find the last colon, in the event of IPv6. */
+				tempTwo = strrchr(tempUtf, ':');
+				if (tempTwo == NULL)
+					return SJME_ERROR_INVALID_ARGUMENT;
+
+				/* Duplicate address. */
+				if (sjme_error_is(error = sjme_alloc_strdup(allocPool,
+					&outParam->jdwpAddress, tempUtf)))
+					return sjme_error_default(error);
+				
+				/* Fill in. */
+				outParam->jdwpListening = SJME_JNI_FALSE;
+				outParam->jdwpAddress[tempTwo - tempUtf] = '\0';
+				outParam->jdwpPort = atoi(&tempTwo[1]);
+			}
 		}
 		
 		/* -Xrom:(path) */

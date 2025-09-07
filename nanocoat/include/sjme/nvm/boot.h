@@ -98,6 +98,15 @@ struct sjme_nvm_bootParam
 
 	/** Do not optimize. */
 	sjme_jboolean noOptimize;
+
+	/** Is JDWP listening for a connection? */
+	sjme_jboolean jdwpListening;
+
+	/** The address for JDWP. */
+	sjme_lpstr jdwpAddress;
+
+	/** The port for JDWP. */
+	sjme_jint jdwpPort;
 };
 
 /**
