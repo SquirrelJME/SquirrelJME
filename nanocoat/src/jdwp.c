@@ -64,7 +64,7 @@ sjme_errorCode sjme_jdwp_sessionNew(
 	result->inState = inState;
 	result->in = in;
 	result->out = out;
-
+	
 	/* Success! */
 	*outSession = result;
 	return SJME_ERROR_NONE;

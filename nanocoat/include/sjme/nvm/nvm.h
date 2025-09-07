@@ -18,8 +18,8 @@
 
 #include <setjmp.h>
 
-#include "sjme/closeable.h"
 #include "sjme/config.h"
+#include "sjme/closeable.h"
 #include "sjme/stdTypes.h"
 #include "sjme/tokenUtils.h"
 #include "sjme/alloc.h"

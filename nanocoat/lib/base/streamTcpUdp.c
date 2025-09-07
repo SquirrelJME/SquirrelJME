@@ -22,6 +22,7 @@
 	#include <netdb.h>
 	#include <unistd.h>
 	#include <fcntl.h>
+	#include <poll.h>
 
 	#if defined(SJME_CONFIG_HAS_OS_LINUX) || \
 		defined(SJME_CONFIG_HAS_OS_BSD)
@@ -71,6 +72,7 @@ static sjme_errorCode sjme_stream_inputNetAvailable(
 #if defined(SJME_CONFIG_NETWORK_WINDOWS)
 #elif defined(SJME_CONFIG_NETWORK_POSIX)
 	int rfd, avail;
+	struct pollfd fds;
 #endif
 	
 	if (stream == NULL || inImplState == NULL || outAvail == NULL)
@@ -83,6 +85,16 @@ static sjme_errorCode sjme_stream_inputNetAvailable(
 	/* Recover descriptor, if it is closed then nothing is available. */
 	rfd = inImplState->handleTwo.i;
 	if (rfd < 0)
+	{
+		*outAvail = 0;
+		return SJME_ERROR_NONE;
+	}
+
+	/* The descriptor needs to be polled first. */
+	memset(&fds, 0, sizeof(fds));
+	fds.fd = rfd;
+	fds.events = POLLIN;
+	if (poll(&fds, 1, 0) < 1)
 	{
 		*outAvail = 0;
 		return SJME_ERROR_NONE;

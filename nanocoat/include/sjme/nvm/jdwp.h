@@ -16,6 +16,7 @@
 #ifndef SJME_C_JDWP_H
 #define SJME_C_JDWP_H
 
+#include "sjme/config.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/stream.h"
 
@@ -26,7 +27,7 @@
 		#define SJME_CXX_SQUIRRELJME_JDWP_H
 extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif     /* #ifdef __cplusplus */
+#endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
 
@@ -134,6 +135,39 @@ typedef struct sjme_jdwp_packet
 	/** The actual packet data. */
 	sjme_alignPointer sjme_jbyte data[sjme_flexibleArrayCount];
 } sjme_jdwp_packet;
+
+/**
+ * Function for any task that needs to be performed for JDWP.
+ *
+ * @param session The debugging session.
+ * @param packet The optional packet associated with the task.
+ * @param extraData Any optional extra data for the job.
+ * @since 2025/09/07
+ */
+typedef sjme_errorCode (*sjme_jdwp_taskFunction)(
+	sjme_attrInNotNull sjme_jdwp session,
+	sjme_attrInNullable sjme_jdwp_packet* packet,
+	sjme_attrInValue sjme_intPointer extraData);
+
+/**
+ * Represents a task that is waiting to be completed.
+ *
+ * @since 2025/09/07
+ */
+typedef struct sjme_jdwp_taskItem
+{
+	/** The function to execute. */
+	sjme_jdwp_taskFunction function;
+
+	/** The packet data. */
+	sjme_jdwp_packet* packet;
+
+	/** Any extra data as needed. */
+	sjme_intPointer extraData;
+} sjme_jdwp_taskItem;
+
+/** The maximum number of tasks that can be waiting for completion. */
+#define SJME_JDWP_MAX_WAITING_TASKS 32
 	
 struct sjme_jdwpBase
 {
@@ -142,25 +176,41 @@ struct sjme_jdwpBase
 
 	/** The virtual machine state to access. */
 	sjme_nvm inState;
+
+	/** The lock for polling input. */
+	sjme_thread_spinLock inLock;
 	
 	/** The stream to read data from the remote debugger. */
 	sjme_stream_input in;
 
+	/** The lock for writing output packets. */
+	sjme_thread_spinLock outLock;
+
 	/** The stream to write data to the remote debugger. */
 	sjme_stream_output out;
+
+	/** The lock for task handling. */
+	sjme_thread_spinLock taskLock;
+
+	/** The tasks to execute. */
+	sjme_jdwp_taskItem tasks[SJME_JDWP_MAX_WAITING_TASKS];
+
+	/** The number of tasks awaiting execution. */
+	sjme_atomic_sjme_jint awaitingTasks;
 };
 
 /**
  * Receives the next packet.
  * 
  * @param session The session to read from.
- * @param outPacket The resultant packet, will be @c NULL if no packet was read.
+ * @param outPacket The resultant packet, will
+ * be @c NULL if no packet was read.
  * @return Any resultant error, if any.
  * @since 2025/09/07
  */
 sjme_errorCode sjme_jdwp_commReceive(
 	sjme_attrInNotNull sjme_jdwp session,
-	sjme_attrOutNotNull sjme_jdwp_packet* outPacket);
+	sjme_attrOutNotNull sjme_jdwp_packet** outPacket);
 
 /**
  * Initializes a new JDWP session.
@@ -215,6 +265,22 @@ sjme_errorCode sjme_jdwp_sessionNewTcpNetwork(
 sjme_errorCode sjme_jdwp_sessionPoll(
 	sjme_attrInNotNull sjme_jdwp session);
 
+/**
+ * Pushes a task to be performed.
+ * 
+ * @param session The debugging session.
+ * @param function The function to call.
+ * @param packet The optional packet to reference.
+ * @param extraData Any extra data to use.
+ * @return Any resultant error, if any.
+ * @since 2025/09/07
+ */
+sjme_errorCode sjme_jdwp_taskPush(
+	sjme_attrInNotNull sjme_jdwp session,
+	sjme_attrInNotNull sjme_jdwp_taskFunction function,
+	sjme_attrInNullable sjme_jdwp_packet* packet,
+	sjme_attrInValue sjme_intPointer extraData);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
@@ -224,6 +290,6 @@ sjme_errorCode sjme_jdwp_sessionPoll(
 		#undef SJME_CXX_SQUIRRELJME_JDWP_H
 		#undef SJME_CXX_IS_EXTERNED
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_JDWP_H */
-#endif     /* #ifdef __cplusplus */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_JDWP_H */

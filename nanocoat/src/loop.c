@@ -88,11 +88,6 @@ sjme_errorCode sjme_nvm_loop_tick(
 	if (maxTics < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	/* Is there a debugger attached? If so we should poll it. */
-	if (inState->jdwp != NULL)
-		if (sjme_error_is(error = sjme_jdwp_sessionPoll(inState->jdwp)))
-			return sjme_error_default(error);
-
 	/* Calculate initial remaining tics. */
 	remaining = (maxTics < 0 ? -1 : maxTics);
 
@@ -148,6 +143,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_jvalueTyped push;
 	sjme_nvm_task inTask;
 	sjme_nvm inState;
+	sjme_jdwp jdwp;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -172,9 +168,15 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	inTask = SJME_T_K(inThread);
 	inState = SJME_T_S(inThread);
 	frameIndex = -2;
+	jdwp = inState->jdwp;
 	memset(&pcNew, 0, sizeof(pcNew));
 	while sjme_noLint(remaining == -1 || remaining > 0)
 	{
+		/* Is there a debugger attached? If so we should poll it. */
+		if (jdwp != NULL)
+			if (sjme_error_is(error = sjme_jdwp_sessionPoll(jdwp)))
+				return sjme_error_default(error);
+			
 		/* If this task is terminating, unwind everything. */
 		if (sjme_atomic_sjme_jint_get(&inTask->terminate) !=
 			SJME_NVM_TERMINATE_NOT)
