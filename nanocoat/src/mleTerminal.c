@@ -46,14 +46,47 @@ static sjme_jint sjme_nvm_mleFunc_mleTerminal_mapIoException(
 
 SJME_NVM_MLE_FUNCTION_DECL(available)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jbracketPipe pipe;
+
+	/* Must be an actual pipe. */
+	pipe = (sjme_jbracketPipe)argV[0].v.l;
+	if (!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Not an input pipe? */
+	if (pipe->isOutput)
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Determine number of bytes available. */
+	if (sjme_error_is(error = sjme_stream_inputAvailable(pipe->stream.in,
+		&argR->v.i)))
+		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
+
+	/* Success! */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(close)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jbracketPipe pipe;
+
+	/* Must be an actual pipe. */
+	pipe = (sjme_jbracketPipe)argV[0].v.l;
+	if (!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Close it. */
+	if (sjme_error_is(error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(pipe->stream.closeable))))
+		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
+	
+	/* Success! */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = 0;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(flush)
