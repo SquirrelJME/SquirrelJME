@@ -25,6 +25,7 @@ sjme_errorCode sjme_jdwp_sessionNew(
 	sjme_errorCode error;
 	sjme_jbyte handshake[SJME_JDWP_HANDSHAKE_LEN];
 	sjme_jint readLen;
+	sjme_jdwp result;
 	
 	if (allocPool == NULL || inState == NULL || outSession == NULL ||
 		in == NULL || out == NULL)
@@ -51,7 +52,21 @@ sjme_errorCode sjme_jdwp_sessionNew(
 	if (0 != memcmp(&handshake[0], SJME_JDWP_HANDSHAKE,
 		SJME_JDWP_HANDSHAKE_LEN))
 		return SJME_ERROR_JDWP_BAD_HANDSHAKE;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Allocate resultant state structure. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc(allocPool,
+		sizeof(*result), (sjme_pointer*)&result)) || result == NULL)
+		return sjme_error_default(error);
+
+	/* Initialize structure. */
+	result->allocPool = allocPool;
+	result->inState = inState;
+	result->in = in;
+	result->out = out;
+
+	/* Success! */
+	*outSession = result;
+	return SJME_ERROR_NONE;
 }
+
