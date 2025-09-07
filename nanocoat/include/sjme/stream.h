@@ -832,6 +832,33 @@ sjme_errorCode sjme_stream_outputWriteValueJ(
 	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS) sjme_basicTypeId typeId,
 	...);
 
+#if !defined(SJME_CONFIG_HAS_NO_NETWORKING)
+
+/**
+ * Binds and opens a stream to the given TCP/UDP remote host somewhere on
+ * a network. 
+ * 
+ * @param allocPool The allocation pool to use.
+ * @param netIn The stream for reading input data from the remote host.
+ * @param netOut The stream for writing output data to the remote host.
+ * @param isUdp Should this be a UDP connection?
+ * @param listening Is this listening for a connection?
+ * @param address The address to connect to or to bind to.
+ * @param port The port to connect to or to bind to.
+ * @return Any resultant error, if any.
+ * @since 2025/09/07
+ */
+sjme_errorCode sjme_stream_biOpenTcpUdp(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNullable sjme_stream_input* netIn,
+	sjme_attrOutNullable sjme_stream_output* netOut,
+	sjme_attrInValue sjme_jboolean isUdp,
+	sjme_attrInValue sjme_jboolean listening,
+	sjme_attrInNullable sjme_lpcstr address,
+	sjme_attrInRange(0, 65535) sjme_jint port);
+
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

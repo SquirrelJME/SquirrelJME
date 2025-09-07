@@ -792,7 +792,8 @@ extern "C" {
 #endif
 
 #if !defined(sjme_inline)
-	#if !defined(SJME_CONFIG_HAS_MSVC) || SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+	#if !defined(SJME_CONFIG_HAS_MSVC) || \
+		SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
 		/** Inline function. */
 		#define sjme_inline inline
 	#else
