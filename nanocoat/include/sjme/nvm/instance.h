@@ -330,6 +330,9 @@ struct sjme_jclassBase
 
 	/** Static field data chunk. */
 	sjme_pointer staticChunk;
+
+	/** The number of dimensions for this array type. */
+	sjme_atomic_sjme_jint numDimensions;
 };
 
 struct sjme_jstringBase

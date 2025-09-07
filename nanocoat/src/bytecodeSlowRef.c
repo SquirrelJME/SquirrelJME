@@ -352,6 +352,15 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 		SJME_JAVA_TYPE_ID_OBJECT, &value, SJME_JNI_FALSE)))
 		return sjme_error_vmError(inFrame, error);
 
+	/* Debug. */
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_message("Is %s a %s?",
+		(value.v.l == NULL ? "NULL" :
+			sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->binaryName)),
+		(desireClass == NULL ? "NULL" :
+			sjme_charSeq_tempUtf(desireClass->binaryName)));
+#endif
+
 	/* Not a match? */
 	/* b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b) */
 	if (value.v.l != NULL &&
@@ -364,7 +373,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 			SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_CLASS_CAST,
 			"CAST %s %s",
 			(value.v.l == NULL ? "NULL" :
-				sjme_charSeq_tempUtf(value.v.l->isClass->binaryName)),
+				sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->binaryName)),
 			(desireClass == NULL ? "NULL" :
 				sjme_charSeq_tempUtf(desireClass->binaryName)))))
 			return sjme_error_vmError(inFrame, error);

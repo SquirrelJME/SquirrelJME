@@ -650,6 +650,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	sjme_atomic_sjme_jclass_compareSet(&componentType->phantomArrayType,
 		NULL, inClass);
 
+	/* Set dimension count to be one higher than the component type. */
+	sjme_atomic_sjme_jint_set(&inClass->numDimensions,
+		sjme_atomic_sjme_jint_get(&componentType->numDimensions) + 1);
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -1634,6 +1638,7 @@ sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 {
 	sjme_list_sjme_jclass* fromClasses;
 	sjme_jint i, n;
+	sjme_jint canDims, fromDims;
 
 	if (contextThread == NULL || canAssignTo == NULL || fromClass == NULL)
 		return SJME_JNI_FALSE;
@@ -1641,6 +1646,33 @@ sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 	/* Same exact class is simple. */
 	if (canAssignTo == fromClass)
 		return SJME_JNI_TRUE;
+
+	/* Everything can be assigned to object! */
+	if (canAssignTo == sjme_nvm_task_commonClassR(contextThread,
+		SJME_NVM_TASK_COMMON_CLASS_OBJECT))
+		return SJME_JNI_TRUE;
+
+	/* We need to compare if we can put an array in another array. */
+	canDims = sjme_atomic_sjme_jint_get(&canAssignTo->numDimensions);
+	fromDims = sjme_atomic_sjme_jint_get(&fromClass->numDimensions);
+	if (canDims > 0 || fromDims > 0)
+	{
+		/* One side has reached zero, while the other side has not, */
+		/* so there is no possible assignment here. */
+		/* Note we want to do this only when zero is hit because it is */
+		/* possible to store Float[][] into Object[], so we need to handle */
+		/* situations like this. */
+		if ((canDims == 0) != (fromDims == 0))
+			return SJME_JNI_FALSE;
+		
+		/* Recurse into the component type for the classes, since any array */
+		/* of one component can fit in an array of another component. */
+		return sjme_nvm_vmClass_isAssignableFrom(contextThread,
+			sjme_atomic_sjme_jclass_get(
+				&canAssignTo->componentType),
+			sjme_atomic_sjme_jclass_get(
+				&fromClass->componentType));
+	}
 
 	/* Get the list of classes the source class is. */
 	/* b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b). */
