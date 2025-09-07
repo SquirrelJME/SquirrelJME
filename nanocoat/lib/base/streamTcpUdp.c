@@ -17,6 +17,9 @@
 	#include <winsock2.h>
 #elif defined(SJME_CONFIG_NETWORK_POSIX)
 	#include <sys/socket.h>
+	#include <sys/types.h>
+	#include <netdb.h>
+	#include <unistd.h>
 #else
 	#error Unsupported networking?
 #endif
@@ -156,6 +159,11 @@ sjme_errorCode sjme_stream_biOpenTcpUdp(
 	sjme_stream_output rawOut;
 #if defined(SJME_CONFIG_NETWORK_WINDOWS)
 #elif defined(SJME_CONFIG_NETWORK_POSIX)
+#define PORT_BUF_SIZE 16
+	sjme_cchar portBuf[PORT_BUF_SIZE];
+	struct addrinfo posixHints;
+	struct addrinfo* posixAddress;
+	int fd, lfd, rfd, oldErrno;
 #else
 	#error Unsupported networking?
 #endif
@@ -175,6 +183,61 @@ sjme_errorCode sjme_stream_biOpenTcpUdp(
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 #elif defined(SJME_CONFIG_NETWORK_POSIX)
+	/* Wipe everything. */
+	memset(&posixHints, 0, sizeof(posixHints));
+	memset(&posixAddress, 0, sizeof(posixAddress));
+	lfd = -1;
+	rfd = -1;
+
+	/* Determine bind/connect address hints, if any */
+	posixHints.ai_family = AF_UNSPEC;
+	posixHints.ai_socktype = (isUdp ? SOCK_DGRAM : SOCK_STREAM);
+	posixHints.ai_flags = (listening && address == NULL ? AI_PASSIVE : AI_ALL);
+
+	/* Convert port to string. */
+	memset(portBuf, 0, sizeof(portBuf));
+	snprintf(portBuf, PORT_BUF_SIZE - 1, "%d", port);
+
+	/* Lookup address. */
+	if (0 != getaddrinfo(address, portBuf,
+		&posixHints, &posixAddress))
+		return sjme_nal_errno(errno);
+
+	/* Open the appropriate socket. */
+	fd = socket(posixAddress->ai_family,
+		posixAddress->ai_socktype,
+		posixAddress->ai_protocol);
+	if (fd < 0)
+		goto fail_socket;
+
+	/* Listening for a connection? */
+	if (listening)
+	{
+		/* Bind to address? */
+		if (address != NULL)
+			if (0 != bind(fd, posixAddress->ai_addr, posixAddress->ai_addrlen))
+				goto fail_bind;
+			
+		/* Listen for a connection. */
+		lfd = listen(fd, port);
+		if (lfd < 0)
+			goto fail_listen;
+
+		/* Accept the next incoming connection. */
+		rfd = accept(lfd, NULL, 0);
+		if (rfd < 0)
+			goto fail_accept;
+	}
+
+	/* Connecting instead. */
+	else
+	{
+		/* Connect to the remote system. */
+		rfd = connect(fd, posixAddress->ai_addr, posixAddress->ai_addrlen);
+		if (rfd < 0)
+			goto fail_connect;
+	}
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 #else
@@ -214,6 +277,36 @@ fail_closeIn:
 	if (rawOut != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(rawOut));
 	return sjme_error_default(error);
+	
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
+#elif defined(SJME_CONFIG_NETWORK_POSIX)
+fail_socket:
+fail_bind:
+fail_listen:
+fail_accept:
+fail_connect:
+	/* Will be trashed. */
+	oldErrno = errno;
+
+	/* Delete address info. */
+	freeaddrinfo(posixAddress);
+
+	/* Close remote socket. */
+	if (rfd > 0)
+		close(rfd);
+
+	/* Close listening socket. */
+	if (lfd > 0)
+		close(lfd);
+
+	/* Close socket, if it is open. */
+	if (fd > 0)
+		close(fd);
+
+	/* Return the creation failure. */
+	return sjme_nal_errno(oldErrno);
+	#undef PORT_BUF_SIZE
+#endif
 }
 
 /*--------------------------------------------------------------------------*/

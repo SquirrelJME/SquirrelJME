@@ -432,6 +432,9 @@ sjme_errorCode sjme_nal_errno(sjme_jint errNum)
 		case ENOENT:
 			return SJME_ERROR_FILE_NOT_FOUND;
 
+		case ECONNREFUSED:
+			return SJME_ERROR_CONNECTION_REFUSED;
+
 		default:
 			return SJME_ERROR_UNKNOWN;
 	}

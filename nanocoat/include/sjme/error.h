@@ -540,9 +540,12 @@ typedef enum sjme_errorCode
 
 	/** There is still an active GC commit. */
 	SJME_ERROR_ACTIVE_GC_COMMIT = -166,
+
+	/** Connection refused. */
+	SJME_ERROR_CONNECTION_REFUSED = -167,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -167,
+	SJME_NUM_ERROR_CODES = -168,
 } sjme_errorCode;
 
 /**
