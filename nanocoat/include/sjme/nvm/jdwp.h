@@ -91,7 +91,18 @@ typedef enum sjme_jdwp_command
 	/** Unknown. */
 	SJME_JDWP_COMMAND_UNKNOWN = -1,
 } sjme_jdwp_command;
-	
+
+/**
+ * JDWP Packet flags.
+ *
+ * @since 2025/09/07
+ */
+typedef enum sjme_jdwp_packetFlag
+{
+	/** The packet is a reply. */
+	SJME_JDWP_FLAG_REPLY = 0x80,
+} sjme_jdwp_packetFlag;
+
 /**
  * JDWP packet structure.
  *
@@ -99,11 +110,8 @@ typedef enum sjme_jdwp_command
  */
 typedef struct sjme_jdwp_packet
 {
-	/** Is this a reply packet? */
-	sjme_jboolean isReply;
-
 	/** The packet flags. */
-	sjme_jbyte flags;
+	sjme_jubyte flags;
 
 	/** The packet id. */
 	sjme_jint id;
@@ -135,6 +143,10 @@ typedef struct sjme_jdwp_packet
 	/** The actual packet data. */
 	sjme_alignPointer sjme_jbyte data[sjme_flexibleArrayCount];
 } sjme_jdwp_packet;
+
+/** Is the given packet a reply packet? */
+#define SJME_JDWP_IS_REPLY(packet) \
+	(((packet)->flags & SJME_JDWP_FLAG_REPLY) != 0)
 
 /**
  * Function for any task that needs to be performed for JDWP.
@@ -168,6 +180,9 @@ typedef struct sjme_jdwp_taskItem
 
 /** The maximum number of tasks that can be waiting for completion. */
 #define SJME_JDWP_MAX_WAITING_TASKS 32
+
+/** The maximum number of packets that can be discarded at once. */
+#define SJME_JDWP_MAX_PACKET_DISCARDS 64
 	
 struct sjme_jdwpBase
 {
@@ -197,6 +212,19 @@ struct sjme_jdwpBase
 
 	/** The number of tasks awaiting execution. */
 	sjme_atomic_sjme_jint awaitingTasks;
+
+	/** The lock for discarded packets. */
+	sjme_thread_spinLock discardLock;
+
+	/** Discarded packets. */
+	struct
+	{
+		/** The length of this discard. */
+		sjme_jint length;
+
+		/** The packet that has been discarded. */
+		sjme_jdwp_packet* packet;
+	} discards[SJME_JDWP_MAX_PACKET_DISCARDS];
 };
 
 /**
@@ -211,6 +239,34 @@ struct sjme_jdwpBase
 sjme_errorCode sjme_jdwp_commReceive(
 	sjme_attrInNotNull sjme_jdwp session,
 	sjme_attrOutNotNull sjme_jdwp_packet** outPacket);
+
+/**
+ * Allocates a packet within the session, which may pull from a set of
+ * previously allocated packets that have been discard.
+ * 
+ * @param session The session to allocate a packet within.
+ * @param length The length of the packet.
+ * @param outPacket The resultant packet.
+ * @return Any resultant error, if any.
+ * @since 2025/09/07
+ */
+sjme_errorCode sjme_jdwp_packetAlloc(
+	sjme_attrInNotNull sjme_jdwp session,
+	sjme_attrInPositive sjme_jint length,
+	sjme_attrOutNotNull sjme_jdwp_packet** outPacket);
+
+/**
+ * Discards the packet, this may place the packet into an internal discard
+ * buffer so that allocations can be reused.
+ * 
+ * @param session The session the packet should be discarded into.
+ * @param packet The packet to discard.
+ * @return Any resultant error, if any.
+ * @since 2025/09/07
+ */
+sjme_errorCode sjme_jdwp_packetDiscard(
+	sjme_attrInNotNull sjme_jdwp session,
+	sjme_attrInNotNull sjme_jdwp_packet* packet);
 
 /**
  * Initializes a new JDWP session.
