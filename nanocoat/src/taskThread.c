@@ -181,6 +181,10 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 		NULL, toss))
 		return SJME_ERROR_DOUBLE_TOSS;
 
+	/* Count up once as it is now stored in tossed. */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(toss)))
+		return sjme_error_default(error);
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 #undef BUF_SIZE
@@ -517,6 +521,14 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 				inThread, (sjme_jthrowable)uncaught)))
 				sjme_message("Uncaught throwable, print error %d",
 					error);
+
+			/* Clear it. */
+			sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
+				uncaught, NULL);
+
+			/* Count it down. */
+			if (sjme_error_is(error = sjme_nvm_instance_countDown(uncaught)))
+				return sjme_error_vmError(inThread, error);
 			
 			/* Fail. */
 			return sjme_error_vmError(inThread,

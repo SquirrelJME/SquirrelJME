@@ -323,6 +323,18 @@ skip_thrown:
 				if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 					currentFrame, &push)))
 					goto fail_any;
+
+				/* Lower the count as it is now on the stack and now gone */
+				/* from tossed. */
+				if (sjme_error_is(error = sjme_nvm_instance_countDown(tossed)))
+					goto fail_any;
+			}
+
+			/* If not handled, pop the frame so we put the exception onto */
+			/* the caller's stack. */
+			else
+			{
+				pcNew.popFrame = SJME_JNI_TRUE;
 			}
 		}
 

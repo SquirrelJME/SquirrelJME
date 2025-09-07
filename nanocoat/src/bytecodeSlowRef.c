@@ -1207,12 +1207,14 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 SJME_NVM_BYTECODE_SLOW(Throw)
 {
 	sjme_jvalueTyped toss;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in object to toss. */
 	memset(&toss, 0, sizeof(toss));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, NULL, &toss)))
+		SJME_JAVA_TYPE_ID_OBJECT, &commit, &toss)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Cannot be null. */
@@ -1224,8 +1226,13 @@ SJME_NVM_BYTECODE_SLOW(Throw)
 		NULL, toss.v.l))
 		return sjme_error_vmError(inFrame, SJME_ERROR_DOUBLE_TOSS);
 
-	/* Always pop the frame. */
-	pcNew->popFrame = SJME_JNI_TRUE;
+	/* Count up since it is now also in tossed. */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(toss.v.l)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;

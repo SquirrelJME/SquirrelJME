@@ -315,6 +315,11 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		commonName, doInit)) || result == NULL)
 		return sjme_error_vmError(contextThread, error);
 
+	/* Count it up once since it is a global class. */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(
+		SJME_AS_JOBJECT(result))))
+		return sjme_error_vmError(contextThread, error);
+
 	/* Cache for later. */
 	sjme_atomic_sjme_jclass_compareSet(
 		&contextThread->inTask->globals.commonClasses[commonId],
@@ -452,28 +457,37 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 			inThrowable->object.isClass))
 		return SJME_ERROR_CLASS_CAST;
 
-	/* Must be an array type. */
+	/* There may be trace points in this. */
 	pointArray = (sjme_jarray)sjme_atomic_sjme_intPointer_get(
 		&inThrowable->object.special);
-	if (!sjme_nvm_isAR(pointArray, SJME_NVM_STRUCT_ARRAY_INSTANCE))
-		return SJME_ERROR_CLASS_CAST;
-
-	/* Go through and extract points per each. */
-	memset(&traceState, 0, sizeof(traceState));
-	for (i = 0; i < pointArray->length; i++)
+	if (pointArray != NULL)
 	{
-		/* Must be a trace point. */
-		point = (sjme_jbracketTrace)pointArray->e.l[i];
-		if (!sjme_nvm_isAR(point,
-			SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE))
+		/* Not an array? */
+		if (!sjme_nvm_isAR(pointArray, SJME_NVM_STRUCT_ARRAY_INSTANCE))
 			return SJME_ERROR_CLASS_CAST;
 
-		/* Step trace. */
-		if (sjme_error_is(error = sjme_nvm_task_stackTraceStep(
-			&traceState, point->capture.inClass, point->capture.inCode,
-			point->capture.lastPc, point->capture.lastIv)))
-			return sjme_error_default(error);
+		/* Go through and extract points per each. */
+		memset(&traceState, 0, sizeof(traceState));
+		for (i = 0; i < pointArray->length; i++)
+		{
+			/* Must be a trace point. */
+			point = (sjme_jbracketTrace)pointArray->e.l[i];
+			if (!sjme_nvm_isAR(point,
+				SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE))
+				return SJME_ERROR_CLASS_CAST;
+
+			/* Step trace. */
+			if (sjme_error_is(error = sjme_nvm_task_stackTraceStep(
+				&traceState, point->capture.inClass, point->capture.inCode,
+				point->capture.lastPc, point->capture.lastIv)))
+				return sjme_error_default(error);
+		}
 	}
+
+#if defined(SJME_CONFIG_DEBUG)
+	else
+		sjme_message("Blank throwable?");
+#endif
 
 	/* Success! */
 	return SJME_ERROR_NONE;
