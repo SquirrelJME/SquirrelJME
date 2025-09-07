@@ -224,6 +224,11 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_nvm_frame result;
 	sjme_jboolean isStatic;
 	sjme_jvalueTyped* argVParam;
+#if defined(SJME_CONFIG_DEBUG)
+#define ARG_BUF_SIZE 128
+	sjme_jint argBufLen;
+	sjme_cchar argBuf[ARG_BUF_SIZE];
+#endif
 	
 	if (inThread == NULL || outFrame == NULL || inMethod == NULL ||
 		(argC != 0 && argV == NULL))
@@ -330,6 +335,54 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	
 	/* Set frame as active. */
 	inThread->numFrames++;
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Print out arguments. */
+	memset(argBuf, 0, sizeof(argBuf));
+	for (i = 0; i < argC && argV != NULL; i++)
+	{
+		/* Out of room? */
+		argBufLen = strlen(argBuf);
+		if (argBufLen >= ARG_BUF_SIZE - 1)
+			break;
+		
+		/* Comma? */
+		if (i > 0)
+			snprintf(&argBuf[argBufLen], (ARG_BUF_SIZE - argBufLen) - 1,
+				", ");
+		
+		/* Out of room? */
+		argBufLen = strlen(argBuf);
+		if (argBufLen >= ARG_BUF_SIZE - 1)
+			break;
+
+		/* A value. */
+		if (argV[i].t == SJME_JAVA_TYPE_ID_INTEGER)
+			snprintf(&argBuf[argBufLen],
+				(ARG_BUF_SIZE - argBufLen) - 1,
+				"%d", argV[i].v.i);
+		else if (argV[i].t == SJME_JAVA_TYPE_ID_LONG)
+			snprintf(&argBuf[argBufLen],
+				(ARG_BUF_SIZE - argBufLen) - 1,
+				"%"PRId64, argV[i].v.j.full);
+		else if (argV[i].t == SJME_JAVA_TYPE_ID_OBJECT)
+			snprintf(&argBuf[argBufLen],
+				(ARG_BUF_SIZE - argBufLen) - 1,
+				"%p", (void*)argV[i].v.l);
+		else
+			snprintf(&argBuf[argBufLen],
+				(ARG_BUF_SIZE - argBufLen) - 1,
+				"?");
+	}
+	
+	/* Emit. */
+	sjme_messageB("ENTER %s.%s %s: (%s)",
+		sjme_charSeq_tempUtf(targetInfo->inClass->name->seq),
+		sjme_charSeq_tempUtf(targetInfo->name->seq),
+		sjme_charSeq_tempUtf(targetInfo->type->seq),
+		argBuf);
+#undef ARG_BUF_SIZE
+#endif
 
 	/* Success! */
 	*outFrame = result;

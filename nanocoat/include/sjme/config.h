@@ -632,7 +632,7 @@ extern "C" {
 	 * @since 2023/08/05
 	 */
 	#define sjme_attrFormatOuter(formatIndex, vaIndex) \
-		__attribute__((format(__printf__, formatIndex + 1, vaIndex + 1)))
+		__attribute__((__format__(__printf__, formatIndex + 1, vaIndex + 1)))
 	
 	/** Indicates a callback. */
 	#define sjme_attrCallback __attribute__((callback))

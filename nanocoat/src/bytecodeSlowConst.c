@@ -95,7 +95,7 @@ SJME_NVM_BYTECODE_SLOW(BIPush)
 	/* Setup value to push. */
 	memset(&value, 0, sizeof(value));
 	value.t = SJME_JAVA_TYPE_ID_INTEGER;
-	value.v.i = (sjme_jbyte)relRawCode[1];
+	value.v.i = relRawCode[1];
 	if ((value.v.i & INT32_C(0x80)) != 0)
 		value.v.i |= INT32_C(0xFFFFFF00);
 
