@@ -18,8 +18,15 @@
 #elif defined(SJME_CONFIG_NETWORK_POSIX)
 	#include <sys/socket.h>
 	#include <sys/types.h>
+	#include <sys/ioctl.h>
 	#include <netdb.h>
 	#include <unistd.h>
+	#include <fcntl.h>
+
+	#if defined(SJME_CONFIG_HAS_OS_LINUX) || \
+		defined(SJME_CONFIG_HAS_OS_BSD)
+		#include <netinet/tcp.h>
+	#endif
 #else
 	#error Unsupported networking?
 #endif
@@ -56,6 +63,48 @@ typedef struct sjme_stream_biNetSocketData
 #endif
 } sjme_stream_biNetSocketData;
 
+static sjme_errorCode sjme_stream_inputNetAvailable(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrInNotNull sjme_stream_implState* inImplState,
+	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail)
+{
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
+#elif defined(SJME_CONFIG_NETWORK_POSIX)
+	int rfd, avail;
+#endif
+	
+	if (stream == NULL || inImplState == NULL || outAvail == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#elif defined(SJME_CONFIG_NETWORK_POSIX)
+	/* Recover descriptor, if it is closed then nothing is available. */
+	rfd = inImplState->handleTwo.i;
+	if (rfd < 0)
+	{
+		*outAvail = 0;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Try to read the bytes available. */
+	avail = -1;
+	if (ioctl(rfd, FIONREAD, &avail) < 0 || avail < 0)
+	{
+		*outAvail = 0;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Success! */
+	*outAvail = avail;
+	return SJME_ERROR_NONE;
+#else
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#endif
+}
+
 static sjme_errorCode sjme_stream_inputNetClose(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrInNotNull sjme_stream_implState* inImplState)
@@ -63,8 +112,16 @@ static sjme_errorCode sjme_stream_inputNetClose(
 	if (stream == NULL || inImplState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#elif defined(SJME_CONFIG_NETWORK_POSIX)
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#else
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#endif
 }
 
 static sjme_errorCode sjme_stream_inputNetInit(
@@ -93,20 +150,52 @@ static sjme_errorCode sjme_stream_inputNetRead(
 	sjme_attrOutNotNullBuf(length) sjme_pointer dest,
 	sjme_attrInPositive sjme_jint length)
 {
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
+#elif defined(SJME_CONFIG_NETWORK_POSIX)
+	int rfd, rc;
+#endif
+	
 	if (stream == NULL || inImplState == NULL || readCount == NULL ||
 		dest == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (length < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
-	
+
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#elif defined(SJME_CONFIG_NETWORK_POSIX)
+	/* Recover descriptor, if it is closed always read EOF. */
+	rfd = inImplState->handleTwo.i;
+	if (rfd < 0)
+		return SJME_ERROR_END_OF_FILE;
+
+	/* Read in any data. */
+	rc = read(rfd, dest, length);
+	if (rc < 0)
+	{
+		/* This may occur if the socket is non-blocking. */
+		if (errno == EAGAIN)
+			rc = 0;
+		else
+			return sjme_nal_errno(errno);
+	}
+
+	/* Set read count. */
+	*readCount = rc;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+#else
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#endif
 }
 
 static const sjme_stream_inputFunctions sjme_stream_inputNetFunctions =
 {
-	sjme_sm(.available, NULL),
+	sjme_sm(.available, sjme_stream_inputNetAvailable),
 	sjme_sm(.close, sjme_stream_inputNetClose),
 	sjme_sm(.init, sjme_stream_inputNetInit),
 	sjme_sm(.read, sjme_stream_inputNetRead),
@@ -119,19 +208,79 @@ static sjme_errorCode sjme_stream_outputNetClose(
 	if (stream == NULL || inImplState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#elif defined(SJME_CONFIG_NETWORK_POSIX)
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#else
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#endif
 }
 
 static sjme_errorCode sjme_stream_outputNetFlush(
 	sjme_attrInNotNull sjme_stream_output stream,
 	sjme_attrInNotNull sjme_stream_implState* inImplState)
 {
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
+#elif defined(SJME_CONFIG_NETWORK_POSIX)
+	int sfd, rfd, opt;
+	socklen_t optLen;
+#endif
+	
 	if (stream == NULL || inImplState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#elif defined(SJME_CONFIG_NETWORK_POSIX)
+	/* Recover descriptor, if it is closed then fail. */
+	rfd = inImplState->handleTwo.i;
+	if (rfd < 0)
+		return SJME_ERROR_IO_EXCEPTION;
+
+	/* Sync the data. */
+	if (fdatasync(rfd) < 0)
+	{
+		/* Flushing might not be supported for this. */
+		if (errno != EINVAL)
+			return sjme_nal_errno(errno);
+
+		/* On Linux and BSD we can force TCP No Delay as a flush, which */
+		/* is very hackish. */
+#if defined(SJME_CONFIG_HAS_OS_LINUX) || \
+	defined(SJME_CONFIG_HAS_OS_BSD)
+		/* This only works on the core socket. */
+		sfd = inImplState->handle.i;
+		
+		/* Perform the rather hackish flush. */
+		opt = 0;
+		optLen = sizeof(opt);
+		if (getsockopt(sfd, IPPROTO_TCP,
+			TCP_NODELAY, (char*)&opt, &optLen) >= 0)
+		{
+			/* Turn it on. */
+			opt = 1;
+			setsockopt(sfd, IPPROTO_TCP, TCP_NODELAY,
+				(char*)&opt, sizeof(opt));
+
+			/* Then turn it off. */
+			opt = 0;
+			setsockopt(sfd, IPPROTO_TCP, TCP_NODELAY,
+				(char*)&opt, sizeof(opt));
+		}
+#endif
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+#else
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#endif
 }
 
 static sjme_errorCode sjme_stream_outputNetInit(
@@ -159,14 +308,36 @@ static sjme_errorCode sjme_stream_outputNetWrite(
 	sjme_attrInNotNull sjme_buffer buf,
 	sjme_attrInPositiveNonZero sjme_jint length)
 {
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
+#elif defined(SJME_CONFIG_NETWORK_POSIX)
+	int rfd;
+#endif
+	
 	if (stream == NULL || inImplState == NULL || buf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (length < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
+#if defined(SJME_CONFIG_NETWORK_WINDOWS)
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#elif defined(SJME_CONFIG_NETWORK_POSIX)
+	/* Recover descriptor, if it is closed then fail. */
+	rfd = inImplState->handleTwo.i;
+	if (rfd < 0)
+		return SJME_ERROR_IO_EXCEPTION;
+
+	/* Attempt writing. */
+	if (write(rfd, buf, length) != length)
+		return sjme_nal_errno(errno);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+#else
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#endif
 }
 
 static const sjme_stream_outputFunctions sjme_stream_outputNetFunctions =
@@ -194,16 +365,14 @@ sjme_errorCode sjme_stream_biOpenTcpUdp(
 #elif defined(SJME_CONFIG_NETWORK_POSIX_2001)
 #define PORT_BUF_SIZE 16
 	sjme_cchar portBuf[PORT_BUF_SIZE];
-	int sfd, lfd, rfd, oldErrno;
+	int sfd, lfd, rfd, oldErrno, flags;
 	struct addrinfo posixHints;
 	struct addrinfo* posixAddress;
 	struct addrinfo* tryAddress;
 #elif defined(SJME_CONFIG_NETWORK_POSIX_OLD)
-	int sfd, lfd, rfd, oldErrno;
+	int sfd, lfd, rfd, oldErrno, flags;
 	struct hostent* posixHost;
 	struct sockaddr_in posixAddress;
-#else
-	#error Unsupported networking?
 #endif
 	
 	if (allocPool == NULL || (netIn == NULL && netOut == NULL) ||
@@ -281,10 +450,12 @@ sjme_errorCode sjme_stream_biOpenTcpUdp(
 		else
 		{
 			/* Connect to the remote system. */
-			rfd = connect(sfd, tryAddress->ai_addr,
-				tryAddress->ai_addrlen);
-			if (rfd < 0)
+			if (connect(sfd, tryAddress->ai_addr,
+				tryAddress->ai_addrlen) < 0)
 				goto fail_connect;
+
+			/* The remote descriptor is just the socket itself. */
+			rfd = sfd;
 		}
 
 		/* Success, break out. */
@@ -382,10 +553,12 @@ fail_connect:
 	else
 	{
 		/* Connect to the remote system. */
-		rfd = connect(sfd, (struct sockaddr*)&posixAddress,
-			sizeof(posixAddress));
-		if (rfd < 0)
+		if (connect(sfd, (struct sockaddr*)&posixAddress,
+			sizeof(posixAddress)) < 0)
 			goto fail_connect;
+
+		/* The remote descriptor is just the socket itself. */
+		rfd = sfd;
 	}
 	
 	/* Set socket info. */
@@ -394,6 +567,13 @@ fail_connect:
 	data.rfd = rfd;
 #else
 	#error Unsupported networking?
+#endif
+
+#if defined(SJME_CONFIG_NETWORK_POSIX)
+	/* Attempt to make the socket non-blocking. */
+	flags = fcntl(rfd, F_GETFL, 0);
+	if (flags >= 0)
+		fcntl(rfd, F_SETFL, flags | O_NONBLOCK);
 #endif
 
 	/* Open output stream. */

@@ -543,9 +543,12 @@ typedef enum sjme_errorCode
 
 	/** Connection refused. */
 	SJME_ERROR_CONNECTION_REFUSED = -167,
+
+	/** JDWP handshake not valid. */
+	SJME_ERROR_JDWP_BAD_HANDSHAKE = -168,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -168,
+	SJME_NUM_ERROR_CODES = -169,
 } sjme_errorCode;
 
 /**
