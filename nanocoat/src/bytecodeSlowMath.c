@@ -35,12 +35,14 @@
 SJME_NVM_BYTECODE_SLOW(CastDoubleToX)
 {
 	sjme_jvalueTyped in, out;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read input value. */
+	memset(&commit, 0, sizeof(commit));
 	memset(&in, 0, sizeof(in));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_DOUBLE, NULL, &in)))
+		SJME_JAVA_TYPE_ID_DOUBLE, &commit, &in)))
 		return sjme_error_vmError(inFrame, error);
 
 #if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
@@ -80,6 +82,10 @@ SJME_NVM_BYTECODE_SLOW(CastDoubleToX)
 	/* Push to the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&out)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
@@ -232,8 +238,9 @@ SJME_NVM_BYTECODE_SLOW(CastLongToX)
 
 	/* Read input value. */
 	memset(&in, 0, sizeof(in));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, NULL, &in)))
+		SJME_JAVA_TYPE_ID_LONG, &commit, &in)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Determine output value. */
@@ -274,6 +281,10 @@ SJME_NVM_BYTECODE_SLOW(CastLongToX)
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&out)))
 		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
@@ -281,16 +292,18 @@ SJME_NVM_BYTECODE_SLOW(CastLongToX)
 SJME_NVM_BYTECODE_SLOW(CompareDouble)
 {
 	sjme_jvalueTyped a, b, result;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Read in both values. */
+	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_DOUBLE, NULL, &b)))
-		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_DOUBLE, NULL, &a)))
+		SJME_JAVA_TYPE_ID_DOUBLE, &commit, &b)))
+		return sjme_error_vmError(inFrame, error);
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_DOUBLE, &commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Is NaN? */
@@ -315,6 +328,10 @@ SJME_NVM_BYTECODE_SLOW(CompareDouble)
 	result.t = SJME_JAVA_TYPE_ID_INTEGER;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&result)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
@@ -371,16 +388,18 @@ SJME_NVM_BYTECODE_SLOW(CompareFloat)
 SJME_NVM_BYTECODE_SLOW(CompareLong)
 {
 	sjme_jvalueTyped a, b, result;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Read in both values. */
+	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, NULL, &b)))
-		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, NULL, &a)))
+		SJME_JAVA_TYPE_ID_LONG, &commit, &b)))
+		return sjme_error_vmError(inFrame, error);
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_LONG, &commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Compare the values. */
@@ -395,6 +414,10 @@ SJME_NVM_BYTECODE_SLOW(CompareLong)
 	result.t = SJME_JAVA_TYPE_ID_INTEGER;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&result)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
@@ -466,16 +489,18 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 {
 	sjme_jvalueTyped a, b, result;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in both values. */
+	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, NULL, &b)))
-		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, NULL, &a)))
+		SJME_JAVA_TYPE_ID_LONG, &commit, &b)))
+		return sjme_error_vmError(inFrame, error);
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_LONG, &commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Perform the math. */
@@ -516,6 +541,10 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&result)))
 		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
@@ -523,16 +552,18 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 SJME_NVM_BYTECODE_SLOW(MathDouble)
 {
 	sjme_jvalueTyped a, b, result;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in both values. */
+	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_DOUBLE, NULL, &b)))
-		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_DOUBLE, NULL, &a)))
+		SJME_JAVA_TYPE_ID_DOUBLE, &commit, &b)))
+		return sjme_error_vmError(inFrame, error);
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_DOUBLE, &commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 #if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
@@ -571,6 +602,10 @@ SJME_NVM_BYTECODE_SLOW(MathDouble)
 	result.t = SJME_JAVA_TYPE_ID_DOUBLE;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&result)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
@@ -699,16 +734,18 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 SJME_NVM_BYTECODE_SLOW(MathLong)
 {
 	sjme_jvalueTyped a, b, result;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in both values. */
+	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, NULL, &b)))
-		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, NULL, &a)))
+		SJME_JAVA_TYPE_ID_LONG, &commit, &b)))
+		return sjme_error_vmError(inFrame, error);
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_LONG, &commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Perform the math. */
@@ -744,6 +781,10 @@ SJME_NVM_BYTECODE_SLOW(MathLong)
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&result)))
 		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
@@ -771,12 +812,14 @@ SJME_NVM_BYTECODE_SLOW(MathNegateFloat)
 SJME_NVM_BYTECODE_SLOW(MathNegateInt)
 {
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in value to negate. */
 	memset(&value, 0, sizeof(value));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, NULL, &value)))
+		SJME_JAVA_TYPE_ID_INTEGER, &commit, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Negate it. */
@@ -785,6 +828,10 @@ SJME_NVM_BYTECODE_SLOW(MathNegateInt)
 	/* Push it back to the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame, &value)))
 		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
@@ -792,12 +839,14 @@ SJME_NVM_BYTECODE_SLOW(MathNegateInt)
 SJME_NVM_BYTECODE_SLOW(MathNegateLong)
 {
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in value to negate. */
 	memset(&value, 0, sizeof(value));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_LONG, NULL, &value)))
+		SJME_JAVA_TYPE_ID_LONG, &commit, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Negate it. */
@@ -805,6 +854,10 @@ SJME_NVM_BYTECODE_SLOW(MathNegateLong)
 
 	/* Push it back to the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
