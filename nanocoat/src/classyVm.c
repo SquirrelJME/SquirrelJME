@@ -1289,12 +1289,20 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			inClass->object.isClass, contextThread)))
 			goto fail_initClassType;
 
-	/* Call static constructor, if one exists. */
+	/* Locate the static initializer. */
 	staticInit = NULL;
-	if (!sjme_error_is(sjme_nvm_vmClass_methodIDByNameTypeU(
+	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameTypeU(
 		inClass, contextThread, SJME_NVM_CLASS_MEMBER_STATIC,
 		SJME_JNI_FALSE, "<clinit>", "()V",
-		&staticInit)) && staticInit != NULL)
+		&staticInit)) || staticInit == NULL)
+	{
+		/* There was an error other than no method. */
+		if (error != SJME_ERROR_NO_METHOD)
+			goto fail_findStaticInit;
+	}
+
+	/* Call static constructor, if one exists. */
+	if (staticInit != NULL)
 	{
 		/* Enter the initializer and let it run. */
 		ignoreFrame = NULL;
@@ -1328,6 +1336,7 @@ fail_findClassType:
 fail_releaseLock:
 fail_checkLoad:
 fail_runStaticInit:
+fail_findStaticInit:
 	/* Cache load error. */
 	sjme_atomic_sjme_jint_compareSet(&inClass->error,
 		SJME_ERROR_NONE, sjme_error_default(error));

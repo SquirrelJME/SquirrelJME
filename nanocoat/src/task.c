@@ -374,7 +374,7 @@ sjme_errorCode sjme_nvm_task_stackTraceStep(
 	/* | IN java.lang.Class (Class.java) */
 	traceState->nowClass = atClass;
 	if (traceState->nowClass != traceState->lastClass)
-		sjme_messageB(" | IN %s (%s)",
+		sjme_emitB(" | IN %s (%s)",
 			sjme_charSeq_tempUtf(traceState->nowClass->binaryName),
 				"<UNKNOWN>");
 
@@ -389,9 +389,9 @@ sjme_errorCode sjme_nvm_task_stackTraceStep(
 			traceState->pc < traceState->nowCode->rawCodeLen ?
 			traceState->nowCode->rawCode[traceState->pc] & 0xFF : -1));
 	if (traceState->nowCode == NULL || traceState->nowMethod == NULL)
-		sjme_messageB(" | PURE VIRTUAL");
+		sjme_emitB(" | PURE VIRTUAL");
 	else
-		sjme_messageB(" | .%s:%s @%xh (:%d #%s@%d)",
+		sjme_emitB(" | .%s:%s @%xh (:%d #%s@%d)",
 			sjme_charSeq_tempUtf(traceState->nowMethod->name->seq),
 			sjme_charSeq_tempUtf(traceState->nowMethod->type->seq),
 			traceState->pc,
@@ -498,7 +498,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 				messageSeq = sjme_atomic_sjme_charSeq_get(&message->seq);
 				if (messageSeq != NULL)
 				{
-					sjme_messageB("EXCEPTION %s: %s",
+					sjme_emitB("EXCEPTION %s: %s",
 						sjme_charSeq_tempUtf(
 							inThrowable->object.isClass->binaryName),
 						sjme_charSeq_tempUtf(messageSeq));
@@ -510,7 +510,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 
 	/* If we did not print the message, we can at least print the class. */
 	if (!printedMessage)
-		sjme_messageB("EXCEPTION %s",
+		sjme_emitB("EXCEPTION %s: <NO MESSAGE>",
 			sjme_charSeq_tempUtf(
 				inThrowable->object.isClass->binaryName));
 
@@ -556,7 +556,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 		/* Recurse. */
 		if (accessor != NULL && accessor->l.p != NULL)
 		{
-			sjme_messageB("CAUSED BY:");
+			sjme_emitB("CAUSED BY:");
 			return sjme_nvm_task_stackTraceThrowable(contextThread,
 				SJME_AS_JTHROWABLE(accessor->l.p));
 		}

@@ -61,14 +61,18 @@ squirreljme
 				";",
 		"}"]
 	
-	// Throwable has the internal stack trace
+	// Throwable has the internal stack trace, message, and cause
 	proGuardOptions += ["-keepclassmembers", "class",
 		"java.lang.Throwable", "{",
+			"java.lang.String", "_message", ";",
+			"java.lang.Throwable", "_cause", ";",
 			"cc.squirreljme.jvm.mle.brackets.TracePointBracket[]",
 				"_stackTrace", ";",
 		"}"]
 	proGuardOptions += ["-keepclassmembernames", "class",
 		"java.lang.Throwable", "{",
+			"java.lang.String", "_message", ";",
+			"java.lang.Throwable", "_cause", ";",
 			"cc.squirreljme.jvm.mle.brackets.TracePointBracket[]",
 				"_stackTrace", ";",
 		"}"]

@@ -345,6 +345,13 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 		SJME_P_C_N(entry)->seq,
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
+	
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
 
 	/* Pop object from the stack. */
 	memset(&value, 0, sizeof(value));
@@ -419,6 +426,13 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 		SJME_F_CL(inFrame), &desireClass, SJME_F_T(inFrame),
 		SJME_P_M_C(entry)->seq, SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
+	
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
 	
 	/* Lookup field in the class. */
 	fieldId = NULL;
@@ -544,6 +558,13 @@ SJME_NVM_BYTECODE_SLOW(InstanceOf)
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
+
 	/* Is this the given class? */
 	memset(&result, 0, sizeof(result));
 	if (check.v.l == NULL)
@@ -658,6 +679,13 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 		SJME_P_M_C(entry)->seq,
 		SJME_JNI_TRUE)) || refClass == NULL)
 		return sjme_error_vmError(inFrame, error);
+
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
 
 	/* The target method needs to be found dynamically. */
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
@@ -798,6 +826,13 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 		SJME_P_M_C(entry)->seq,
 		SJME_JNI_TRUE)) || refClass == NULL)
 		return sjme_error_vmError(inFrame, error);
+
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
 	
 	/* Lookup target method. */
 	target = NULL;
@@ -887,6 +922,13 @@ SJME_NVM_BYTECODE_SLOW(New)
 		SJME_P_C_N(entry)->seq,
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
+	
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
 
 	/* Allocate new instance of the given object. */
 	memset(&result, 0, sizeof(result));
@@ -1011,6 +1053,13 @@ SJME_NVM_BYTECODE_SLOW(NewArrayA)
 		SJME_JNI_TRUE)) || componentType == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
+	
 	/* Read in array length. */
 	memset(&length, 0, sizeof(length));
 	memset(&commit, 0, sizeof(commit));
@@ -1068,6 +1117,13 @@ SJME_NVM_BYTECODE_SLOW(NewArrayMulti)
 		SJME_P_C_N(entry)->seq, SJME_JNI_TRUE)) ||
 		rootComponentType == NULL)
 		return sjme_error_vmError(inFrame, error);
+	
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
 
 	/* How many dimensions to read? */
 	dims = relRawCode[3] & 0xFF;
@@ -1213,6 +1269,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	/* Push result to the stack. */
 	if (!isPut)
 	{
+		/* Place onto the stack. */
 		value.t = fieldId->javaType;
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 			inFrame, &value)))

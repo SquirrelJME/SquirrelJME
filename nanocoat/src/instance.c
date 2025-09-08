@@ -482,8 +482,12 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 			else
 				direct->l.check = stackType->v.l->identityHash;
 		}
+
+		/* Read in value. */
 		else
+		{
 			stackType->v.l = direct->l.p;
+		}
 	}
 	
 	/* No promotion/demotion needed. */

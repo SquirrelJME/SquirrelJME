@@ -162,6 +162,17 @@ void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE, __VA_ARGS__))
 
 /**
+ * Prints a message without the preface, this prints even if debugging
+ * is disabled.
+ * 
+ * @param message The @c printf style message.
+ * @param ... Any @c printf style arguments.
+ * @since 2025/09/07
+ */
+#define sjme_emitB(...) \
+	sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE, __VA_ARGS__)
+
+/**
  * Indicates a fatal error and exits the program.
  * 
  * @param file The file printing from.
