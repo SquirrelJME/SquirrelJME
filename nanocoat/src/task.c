@@ -230,6 +230,10 @@ sjme_errorCode sjme_nvm_task_commonClass(
 			commonName = "Ljava/lang/ClassCastException;";
 			break;
 
+		case SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_LINKAGE_ERROR:
+			commonName = "Ljava/lang/LinkageError;";
+			break;
+
 		case SJME_NVM_TASK_COMMON_CLASS_JAR_PACKAGE:
 			commonName = "Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;";
 			break;

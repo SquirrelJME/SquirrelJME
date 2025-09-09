@@ -66,6 +66,7 @@ squirreljme
 		"java.lang.Throwable", "{",
 			"java.lang.String", "_message", ";",
 			"java.lang.Throwable", "_cause", ";",
+			"boolean", "_initCause", ";",
 			"cc.squirreljme.jvm.mle.brackets.TracePointBracket[]",
 				"_stackTrace", ";",
 		"}"]
@@ -73,6 +74,7 @@ squirreljme
 		"java.lang.Throwable", "{",
 			"java.lang.String", "_message", ";",
 			"java.lang.Throwable", "_cause", ";",
+			"boolean", "_initCause", ";",
 			"cc.squirreljme.jvm.mle.brackets.TracePointBracket[]",
 				"_stackTrace", ";",
 		"}"]

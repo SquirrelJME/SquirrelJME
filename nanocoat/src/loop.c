@@ -359,6 +359,26 @@ skip_thrown:
 			/* the caller's stack. */
 			else
 			{
+				/* If there is an uncaught exception in a static initializer */
+				/* then we need to set an actual linkage error here. */
+				if (currentFrame->flags.isStaticInit)
+				{
+					/* Mark the class as bad. */
+					sjme_atomic_sjme_jint_compareSet(
+						&currentFrame->inClass->error,
+						SJME_ERROR_NONE,
+						sjme_error_default(SJME_ERROR_LINKAGE_ERROR));
+					
+					/* Emit the exception to the caller. */
+					if (sjme_error_is(error = sjme_nvm_task_threadEmit(
+						inThread,
+						SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_LINKAGE_ERROR,
+						SJME_AS_JTHROWABLE(tossed),
+						"Uncaught in <clinit>.")))
+						goto fail_any;
+				}
+				
+				/* Leave the frame. */
 				pcNew.popFrame = SJME_JNI_TRUE;
 			}
 		}

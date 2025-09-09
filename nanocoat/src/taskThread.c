@@ -128,13 +128,16 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 sjme_errorCode sjme_nvm_task_threadEmit(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrInValue sjme_nvm_task_commonClassId commonClass,
+	sjme_attrInNullable sjme_jthrowable cause,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
 	...)
 {
 #define BUF_SIZE 256
 	sjme_errorCode error;
-	sjme_jclass tossClass;
-	sjme_jobject toss, oldTossed;
+	sjme_jclass tossClass, throwableClass;
+	sjme_jthrowable toss, oldTossed;
+	sjme_jfieldID initCauseID, causeID;
+	sjme_nvm_rawFieldValue* accessor;
 	sjme_jvalueTyped argV[1];
 	sjme_cchar buf[BUF_SIZE];
 	va_list copy;
@@ -152,28 +155,39 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 	toss = NULL;
 	if (sjme_error_is(error = sjme_nvm_instance_objectNew(inThread,
 		-1, SJME_NVM_STRUCT_OBJECT_INSTANCE,
-		&toss, tossClass)) || toss == NULL)
+		SJME_AS_JOBJECTP(&toss), tossClass)) || toss == NULL)
 		return sjme_error_default(error);
 
 	/* Set as tossed! */
+	oldTossed = NULL;
 	if (!sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
-		NULL, toss))
+		NULL, SJME_AS_JOBJECT(toss)))
 	{
 		/* Get the old tossed to print it out. */
-		oldTossed = sjme_atomic_sjme_jobject_get(&inThread->tossed);
+		oldTossed = SJME_AS_JTHROWABLE(
+			sjme_atomic_sjme_jobject_get(&inThread->tossed));
 
-		/* Print it out. */
-		sjme_message("DROPPING DOUBLE TOSSED EXCEPTION:");
-		if (sjme_error_is(error = sjme_nvm_task_stackTraceThrowable(
-			inThread, SJME_AS_JTHROWABLE(oldTossed))))
-			return sjme_error_default(error);
+		/* Print it out, assuming it is not our cause. */
+		if (oldTossed != cause)
+		{
+			sjme_message("DROPPING DOUBLE TOSSED EXCEPTION:");
+			if (sjme_error_is(error = sjme_nvm_task_stackTraceThrowable(
+				inThread, SJME_AS_JTHROWABLE(oldTossed))))
+				return sjme_error_default(error);
+		}
 
 		/* Set new value. */
-		sjme_atomic_sjme_jobject_set(&inThread->tossed, toss);
+		sjme_atomic_sjme_jobject_set(&inThread->tossed,
+			SJME_AS_JOBJECT(toss));
 
-		/* Count down the old toss since it is no longer stored. */
-		if (sjme_error_is(error = sjme_nvm_instance_countDown(oldTossed)))
-			return sjme_error_default(error);
+		/* Count down the old toss since it is no longer stored, if it */
+		/* is not our cause. */
+		if (oldTossed != cause)
+		{
+			if (sjme_error_is(error = sjme_nvm_instance_countDown(
+				SJME_AS_JOBJECT(oldTossed))))
+				return sjme_error_default(error);
+		}
 	}
 
 	/* Set level so we can run the constructor. */
@@ -197,12 +211,61 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 
 	/* Initialize exception. */
 	if (sjme_error_is(error = sjme_nvm_instance_defaultInit(inThread,
-		NULL, toss, "(Ljava/lang/String;)V", 1, argV)))
+		NULL, SJME_AS_JOBJECT(toss),
+		"(Ljava/lang/String;)V", 1, argV)))
 		return sjme_error_default(error);
 
 	/* Count up once as it is now stored in tossed. */
-	if (sjme_error_is(error = sjme_nvm_instance_countUp(toss)))
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(
+		SJME_AS_JOBJECT(toss))))
 		return sjme_error_default(error);
+
+	/* Initialize cause, if there is one to set. */
+	if (cause != NULL)
+	{
+		/* Locate the throwable class. */
+		throwableClass = NULL;
+		if (sjme_error_is(error = sjme_nvm_task_commonClass(inThread,
+			SJME_NVM_TASK_COMMON_CLASS_THROWABLE, &throwableClass,
+			SJME_JNI_TRUE)))
+			return sjme_error_default(error);
+
+		/* Lookup initCause to flag it on. */
+		initCauseID = NULL;
+		if (sjme_error_is(error = sjme_nvm_vmClass_fieldIDByNameTypeU(
+			throwableClass, inThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
+			SJME_JNI_TRUE,
+			"_initCause", "Z",
+			&initCauseID)) || initCauseID == NULL)
+			return sjme_error_default(error);
+
+		/* Lookup cause, to set it. */
+		causeID = NULL;
+		if (sjme_error_is(error = sjme_nvm_vmClass_fieldIDByNameTypeU(
+			throwableClass, inThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
+			SJME_JNI_TRUE,
+			"_cause", "Ljava/lang/Throwable;",
+			&causeID)) || causeID == NULL)
+			return sjme_error_default(error);
+
+		/* Flag cause as initialized. */
+		accessor = sjme_nvm_instance_fieldAccessor(
+			SJME_AS_JOBJECT(toss), initCauseID);
+		accessor->v.z = SJME_JNI_TRUE;
+
+		/* Set actual cause now, and its check value. */
+		accessor = sjme_nvm_instance_fieldAccessor(
+			SJME_AS_JOBJECT(toss), causeID);
+		accessor->l.p = SJME_AS_JOBJECT(toss);
+		accessor->l.check = toss->object.identityHash;
+
+		/* If we are not just replacing the tossed exception that was */
+		/* already sitting around as being tossed, count it up. */
+		if (oldTossed != cause)
+			if (sjme_error_is(error = sjme_nvm_instance_countUp(
+				SJME_AS_JOBJECT(cause))))
+				return sjme_error_default(error);
+	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;
