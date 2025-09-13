@@ -1,0 +1,17 @@
+# 2025/09/12
+
+## 19:07
+
+I have not written a note in a long time, but I probably should get back to it.
+I do like writing notes! This cute basic HTML interface is pretty charming
+indeed.
+
+I just had this idea for NanoCoat tests that are very basic. These tests are
+just static methods which return a value, the expected value is in a static
+field. NanoCoat could then load these up and then execute them accordingly.
+The purpose is just to be really tiny without needing to initialize the
+bigger TAC system which is very huge. I currently am running into issues where
+some incorrectly implemented instructions or otherwise are making it so TAC
+tests do not run... so I need to solve this by basically adding mini tests
+for every single instruction. Will be tedious but in the long run it should
+really help out.
