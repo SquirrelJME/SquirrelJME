@@ -12,7 +12,7 @@
 .class public ${slashy}/${NAME}
 .super java/lang/Object
 
-.field public static final EXPECTED I = 0
+.field public static final "EXPECTED" I = 0
 
 .method public static nanoTest()I
 .limit stack 2

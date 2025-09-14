@@ -10,7 +10,7 @@
 .class public nanocoat/NanoTestByteCodeNop
 .super java/lang/Object
 
-.field public static final EXPECTED_VOID I = 0
+.field public static final "EXPECTED_VOID" I = 0
 
 .method public static nanoTest()V
 .limit stack 2
