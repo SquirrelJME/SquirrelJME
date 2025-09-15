@@ -121,15 +121,16 @@ public final class VMHelpers
 	
 	/**
 	 * Returns a collection of the tests that are available.
-	 * 
+	 *
 	 * @param __project The project to check.
 	 * @param __sourceSet The source set for the project.
+	 * @param __nanoTests NanoCoat tests?
 	 * @return The list of available tests.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/07
 	 */
 	public static Map<String, CandidateTestFiles> availableTests(
-		Project __project, String __sourceSet)
+		Project __project, String __sourceSet, boolean __nanoTests)
 		throws NullPointerException
 	{
 		if (__project == null || __sourceSet == null)
@@ -234,7 +235,7 @@ public final class VMHelpers
 			CandidateTestFiles candidate = entry.getValue();
 			
 			// Ignore if this does not match the expected name form
-			if (!TestDetection.isTest(testName))
+			if (!TestDetection.isTest(testName, __nanoTests))
 				continue;
 			
 			// If this is not a primary test, then it does not get to be added
@@ -1634,7 +1635,7 @@ public final class VMHelpers
 		throws NullPointerException
 	{
 		Map<String, CandidateTestFiles> available =
-			VMHelpers.availableTests(__project, __sourceSet);
+			VMHelpers.availableTests(__project, __sourceSet, false);
 		
 		// If specifying a single test to run only specify that
 		String singleTest = System.getProperty(
