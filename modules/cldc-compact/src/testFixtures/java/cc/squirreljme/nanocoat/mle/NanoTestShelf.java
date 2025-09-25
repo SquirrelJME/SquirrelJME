@@ -29,6 +29,14 @@ public final class NanoTestShelf
 	}
 	
 	/**
+	 * There was a result, however it was void.
+	 *
+	 * @since 2025/09/24
+	 */
+	@SquirrelJMEVendorApi
+	public static native void result();
+	
+	/**
 	 * The specified value was the given result.
 	 *
 	 * @param __v The result value.
