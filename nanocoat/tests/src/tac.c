@@ -16,6 +16,15 @@
 #include "sjme/nvm/loop.h"
 #include "test.h"
 
+/**
+ * Main entry for TAC tests, these are higher level and are more complex
+ * requiring a fully working Java environment.
+ * 
+ * @param argc Argument count.
+ * @param argv Arguments.
+ * @return Standard exit codes.
+ * @since 2025/09/24
+ */
 int main(int argc, sjme_lpstr* argv)
 {
 	sjme_errorCode error;

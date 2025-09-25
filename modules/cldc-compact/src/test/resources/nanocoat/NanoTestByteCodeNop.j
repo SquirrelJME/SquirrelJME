@@ -12,7 +12,7 @@
 
 .field public static final "EXPECTED_VOID" I = 0
 
-.method public static nanoTest()V
+.method public static main(Ljava/lang/String;)V
 .limit stack 2
 	nop
 	return

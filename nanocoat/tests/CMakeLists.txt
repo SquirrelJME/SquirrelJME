@@ -87,6 +87,7 @@ add_executable(BasicTest
 # Nano executable
 add_executable(NanoTest
 	src/nano.c
+	src/tacNal.c
 	$<TARGET_OBJECTS:Base>
 	$<TARGET_OBJECTS:Core>
 	$<TARGET_OBJECTS:BasicTestLib>)
