@@ -77,6 +77,20 @@ add_library(BasicTestLibPIC OBJECT
 	${basicTestSources}
 	${basicTestBlobs})
 
+# Initialize executable for basic tests, which contains everything
+add_executable(BasicTest
+	src/basicMain.c
+	$<TARGET_OBJECTS:Base>
+	$<TARGET_OBJECTS:Core>
+	$<TARGET_OBJECTS:BasicTestLib>)
+
+# Nano executable
+add_executable(NanoTest
+	src/nano.c
+	$<TARGET_OBJECTS:Base>
+	$<TARGET_OBJECTS:Core>
+	$<TARGET_OBJECTS:BasicTestLib>)
+
 # TAC executable
 add_executable(TACTest
 	src/tac.c
@@ -85,16 +99,10 @@ add_executable(TACTest
 	$<TARGET_OBJECTS:Core>
 	$<TARGET_OBJECTS:BasicTestLib>)
 
-# Initialize executable for basic tests, which contains everything
-add_executable(BasicTest
-	src/basicMain.c
-	$<TARGET_OBJECTS:Base>
-	$<TARGET_OBJECTS:Core>
-	$<TARGET_OBJECTS:BasicTestLib>)
-
 # Make them both static
-squirreljme_static_executable(TACTest)
 squirreljme_static_executable(BasicTest)
+squirreljme_static_executable(NanoTest)
+squirreljme_static_executable(TACTest)
 
 # Make sure we have our headers included accordingly
 target_include_directories(BasicTestLib PUBLIC
@@ -121,6 +129,12 @@ target_include_directories(BasicTest PUBLIC
 	"${CMAKE_CURRENT_BINARY_DIR}"
 	"${CMAKE_CURRENT_BINARY_DIR}/blobs")
 
+target_include_directories(NanoTest PUBLIC
+	"${CMAKE_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_BINARY_DIR}"
+	"${CMAKE_CURRENT_BINARY_DIR}/blobs")
+
 target_include_directories(TACTest PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_SOURCE_DIR}/include"
@@ -132,12 +146,17 @@ add_dependencies(BasicTest Core)
 target_link_libraries(BasicTest PUBLIC
 	Core)
 
+add_dependencies(NanoTest Core)
+target_link_libraries(TACTest PUBLIC
+	Core)
+
 add_dependencies(TACTest Core)
 target_link_libraries(TACTest PUBLIC
 	Core)
 
 # Link required libraries
 squirreljme_target_link_libraries_required(BasicTest)
+squirreljme_target_link_libraries_required(NanoTest)
 squirreljme_target_link_libraries_required(TACTest)
 
 # Include debugging info for tests
@@ -209,10 +228,12 @@ foreach(basicTestSource ${basicTestSources})
 		"{\"${basicTestName}\", ${basicTestName}},\n")
 endforeach()
 
-# Load in TAC tests from rom/squirreljme-(slow-)test.list
+# Load in TAC/Nano tests from rom/squirreljme-(slow-)test.(list|nano)
 foreach(testListFile
 	"${CMAKE_SOURCE_DIR}/rom/squirreljme-test.list"
-	"${CMAKE_SOURCE_DIR}/rom/squirreljme-slow-test.list")
+	"${CMAKE_SOURCE_DIR}/rom/squirreljme-test.nano"
+	"${CMAKE_SOURCE_DIR}/rom/squirreljme-slow-test.list"
+	"${CMAKE_SOURCE_DIR}/rom/squirreljme-slow-test.nano")
 	# Not actually here?
 	if (NOT EXISTS "${testListFile}")
 		continue()
@@ -221,23 +242,47 @@ foreach(testListFile
 	# Note it
 	message(STATUS "Using tests from ${testListFile}...")
 
+	# Are these nano tests?
+	string(FIND "${testListFile}" ".nano"
+		testIsNano)
+
 	# Are these the debug test variants?
-	string(FIND "${testListFile}" "squirreljme-slow-test.list"
+	string(FIND "${testListFile}" "-slow-"
 		testDebugVariant)
-	if("${testDebugVariant}" GREATER_EQUAL "0")
-		set(tacPrefix "tac-debug")
+
+	# Determine the prefix to use
+	if("${testIsNano}" GREATER_EQUAL "0")
+		if("${testDebugVariant}" GREATER_EQUAL "0")
+			set(tacPrefix "nano-debug")
+		else()
+			set(tacPrefix "nano")
+		endif()
 	else()
-		set(tacPrefix "tac")
+		if("${testDebugVariant}" GREATER_EQUAL "0")
+			set(tacPrefix "tac-debug")
+		else()
+			set(tacPrefix "tac")
+		endif()
 	endif()
 
 	# Determine actual Jar name
-	string(REPLACE ".list" ".jar" testJarFile "${testListFile}")
+	if("${testIsNano}" GREATER_EQUAL "0")
+		string(REPLACE ".nano" ".jar" testJarFile "${testListFile}")
+	else()
+		string(REPLACE ".list" ".jar" testJarFile "${testListFile}")
+	endif()
 
 	# Read in all lines
 	file(STRINGS "${testListFile}" testList)
 
+	# Notice
+	if("${testIsNano}" GREATER_EQUAL "0")
+		message(DEBUG "Looking for Nano Tests...")
+	else()
+		message(DEBUG "Looking for TAC Tests...")
+	endif()
+
 	# Register TAC tests
-	message(DEBUG "Looking for TAC Tests...")
 	foreach(test ${testList})
 		# Turn into list
 		string(REPLACE "|" ";" tacTestNameList "${test}")
@@ -248,12 +293,24 @@ foreach(testListFile
 		set(tacTestName "${test}")
 		set(tacTestLongName "${tacPrefix}:${tacTestJar}:${tacTestClass}")
 
-		# Register it
-		message(STATUS "TAC Test: ${tacTestLongName}")
-		add_test(NAME "${tacTestLongName}"
-			WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-			COMMAND TACTest "${testJarFile}"
-				"${tacTestJar}" "${tacTestClassPath}" "${tacTestClass}")
+		# Notice and register it
+		if("${testIsNano}" GREATER_EQUAL "0")
+			message(STATUS "Nano Test: ${tacTestLongName}")
+
+			# Register it
+			add_test(NAME "${tacTestLongName}"
+				WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+				COMMAND NanoTest "${testJarFile}"
+					"${tacTestJar}" "${tacTestClassPath}" "${tacTestClass}")
+		else()
+			message(STATUS "TAC Test: ${tacTestLongName}")
+
+			# Register it
+			add_test(NAME "${tacTestLongName}"
+				WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+				COMMAND TACTest "${testJarFile}"
+					"${tacTestJar}" "${tacTestClassPath}" "${tacTestClass}")
+		endif()
 
 		# Code for skipped tests
 		set_property(TEST "${tacTestLongName}"

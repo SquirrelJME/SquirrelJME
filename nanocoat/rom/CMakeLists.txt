@@ -6,5 +6,4 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Look for any Jars and their built-in equivalents...
-message("Look for Jars...")
+# Placeholder
