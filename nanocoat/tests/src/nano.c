@@ -16,6 +16,33 @@
 #include "sjme/nvm/loop.h"
 #include "test.h"
 
+sjme_errorCode sjme_test_nano_nativeCall(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_jmethodID methodID,
+	sjme_attrInNotNull sjme_nvm_class_methodInfo methodInfo,
+	sjme_attrInNotNull sjme_jvalueTyped* argR,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalueTyped* argV)
+{
+	if (inFrame == NULL || methodID == NULL || argR == NULL || argR == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (argC < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (argC > 0 && argV == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static const sjme_nvm_stateHooks sjme_test_nano_hooks =
+{
+	sjme_sm(.gc, NULL),
+	sjme_sm(.nativeCall, sjme_test_nano_nativeCall),
+};
+
 /**
  * NanoTests are meant to be as light as possible, only requiring the
  * target class and anything it relies upon. The purpose of these is to
@@ -117,6 +144,10 @@ int main(int argc, sjme_lpstr* argv)
 	bootParam.mainClass = argv[4];
 	bootParam.mainClassPathByName = (const sjme_list_sjme_lpcstr*)classpath;
 	bootParam.mainArgs = (const sjme_list_sjme_lpcstr*)mainArgs;
+
+	/* Hooks specifically for NanoTest. */
+	bootParam.hooks = &sjme_test_nano_hooks;
+	bootParam.hookData = &result;
 
 	/* JDWP Debugging. */
 	bootParam.jdwpAddress = "localhost";

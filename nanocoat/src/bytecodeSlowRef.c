@@ -143,9 +143,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 
 		/* Invoke MLE call. */
 		mleError = sjme_mle_mleCall(inFrame,
-			target->inClass->name->seq,
-			target->name->seq,
-			target->type->seq,
+			virtualId, target,
 			&mleArgR,
 			argC, argV);
 

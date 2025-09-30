@@ -470,7 +470,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	if (pool == NULL || size <= 0 || outAddr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG_ALLOC)
 	if ((size * 8) == SJME_CONFIG_HAS_POINTER)
 		sjme_message("Alloc of single pointer in %s (%s:%d).",
 			func, file, line);
@@ -556,7 +556,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		goto fail_noMemory;
 	}
 
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG_ALLOC)
 	/* Debug. */
 	sjme_message("Found link at %p: %d bytes, we need %d with split %d.",
 		scanLink, (int)scanLink->blockSize, (int)roundSize, (int)splitBlock);
@@ -1193,7 +1193,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakDelete)(
 	newCount = (count > 1 ? count - 1 : 0);
 		
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG_ALLOC)
 	sjme_messageR(file, line, func, SJME_JNI_FALSE,
 		"Weak ref %p (%p) count down to %d.",
 		weak->pointer, weak, newCount);
@@ -1327,7 +1327,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 		}
 		
 		/* Count up. */
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG_ALLOC)
 		was =
 #endif
 			sjme_atomic_sjme_jint_getAdd(&result->count, 1);
@@ -1336,7 +1336,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 		sjme_atomic_barrier();
 		
 		/* Debug. */
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG_ALLOC)
 		sjme_messageR(file, line, func, SJME_JNI_FALSE,
 			"Weak ref %p (%p) count up to %d.",
 			result->pointer, result, was + 1);
@@ -1370,7 +1370,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 	link->weak = result;
 	
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG_ALLOC)
 	sjme_messageR(file, line, func, SJME_JNI_FALSE,
 		"Weak ref new %p (%p).",
 		result->pointer, result);

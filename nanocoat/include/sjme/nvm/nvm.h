@@ -16,8 +16,6 @@
 #ifndef SJME_C_NVM_H
 #define SJME_C_NVM_H
 
-#include <setjmp.h>
-
 #include "sjme/config.h"
 #include "sjme/closeable.h"
 #include "sjme/stdTypes.h"
@@ -134,7 +132,21 @@ typedef sjme_jfieldIDBase* sjme_jfieldID;
 
 /** List of fields. */
 SJME_LIST_DECLARE(sjme_jfieldID, 0);
+	
+/**
+ * Core method information structure.
+ *
+ * @since 2024/01/03
+ */
+typedef struct sjme_nvm_class_methodInfoBase sjme_nvm_class_methodInfoBase;
 
+/**
+ * Opaque method information structure.
+ *
+ * @since 2024/01/03
+ */
+typedef sjme_nvm_class_methodInfoBase* sjme_nvm_class_methodInfo;
+	
 /**
  * The type of structure a type is.
  * 
@@ -345,8 +357,31 @@ SJME_LIST_DECLARE(sjme_nvm_thread, 0);
  * @return Returns @c SJME_JNI_TRUE if garbage collection should continue.
  * @since 2023/11/17
  */
-typedef sjme_jboolean (*sjme_nvm_stateHookGcFunc)(sjme_nvm_frame frame,
-	sjme_jobject gcWhat);
+typedef sjme_jboolean (*sjme_nvm_stateHookGcFunc)(
+	sjme_attrInNotNull sjme_nvm_frame frame,
+	sjme_attrInNotNull sjme_jobject gcWhat);
+
+/**
+ * This is called when a native method does not exist in the MLE layer to
+ * allow for any customized shelves and/or other native method handling as
+ * needed.
+ * 
+ * @param inFrame The frame this is being called from.
+ * @param methodID The method ID being called.
+ * @param methodInfo The method information being called.
+ * @param argR The return value of the call.
+ * @param argC The argument count.
+ * @param argV The argument values.
+ * @return Any resultant error, if any.
+ * @since 2025/09/26
+ */
+typedef sjme_errorCode (*sjme_nvm_stateHookNativeCallFunc)(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_jmethodID methodID,
+	sjme_attrInNotNull sjme_nvm_class_methodInfo methodInfo,
+	sjme_attrInNotNull sjme_jvalueTyped* argR,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalueTyped* argV);
 
 /**
  * Hooks for alternative function.
@@ -357,6 +392,9 @@ typedef struct sjme_nvm_stateHooks
 {
 	/** Garbage collection. */
 	sjme_nvm_stateHookGcFunc gc;
+
+	/** Perform a native call. */
+	sjme_nvm_stateHookNativeCallFunc nativeCall;
 } sjme_nvm_stateHooks;
 
 /**
@@ -553,6 +591,9 @@ struct sjme_nvm_stateBase
 	
 	/** Hooks for the state. */
 	const sjme_nvm_stateHooks* hooks;
+
+	/** Data for hooks. */
+	sjme_pointer hookData;
 
 	/** The native abstraction layer to use. */
 	const sjme_nal* nal;

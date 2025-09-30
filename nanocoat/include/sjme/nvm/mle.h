@@ -86,9 +86,8 @@ typedef struct sjme_nvm_mle
  * Performs a MLE native function call.
  * 
  * @param inFrame The frame this is being called from.
- * @param className The class to target.
- * @param methodName The method name.
- * @param methodType The method type.
+ * @param methodID The method ID.
+ * @param methodInfo The method info.
  * @param argR The return value of the call.
  * @param argC The argument count.
  * @param argV The argument values.
@@ -97,9 +96,8 @@ typedef struct sjme_nvm_mle
  */
 sjme_errorCode sjme_mle_mleCall(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_charSeq className,
-	sjme_attrInNotNull sjme_charSeq methodName,
-	sjme_attrInNotNull sjme_charSeq methodType,
+	sjme_attrInNotNull sjme_jmethodID methodID,
+	sjme_attrInNotNull sjme_nvm_class_methodInfo methodInfo,
 	sjme_attrInNotNull sjme_jvalueTyped* argR,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV);

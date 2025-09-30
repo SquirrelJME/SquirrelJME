@@ -107,6 +107,12 @@ struct sjme_nvm_bootParam
 
 	/** The port for JDWP. */
 	sjme_jint jdwpPort;
+	
+	/** Hooks for the state. */
+	const sjme_nvm_stateHooks* hooks;
+
+	/** Optional hook data. */
+	sjme_pointer hookData;
 };
 
 /**

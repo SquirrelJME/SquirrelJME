@@ -1841,7 +1841,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 				/* Debug. */
 				sjme_message("Read UTF: %s",
-					utf->chars);
+					sjme_charSeq_tempUtf(utf->seq));
 #endif
 				
 				/* Store and count up entry as we are using it now. */

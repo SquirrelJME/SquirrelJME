@@ -47,27 +47,38 @@ static const sjme_cchar sjme_nvm_mleTToA[SJME_NUM_JAVA_TYPE_IDS + 2] =
 
 sjme_errorCode sjme_mle_mleCall(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_charSeq className,
-	sjme_attrInNotNull sjme_charSeq methodName,
-	sjme_attrInNotNull sjme_charSeq methodType,
+	sjme_attrInNotNull sjme_jmethodID methodID,
+	sjme_attrInNotNull sjme_nvm_class_methodInfo methodInfo,
 	sjme_attrInNotNull sjme_jvalueTyped* argR,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV)
 {
+	sjme_errorCode error;
 	const sjme_nvm_mle* major;
+	sjme_nvm inState;
 	
-	if (inFrame == NULL || className == NULL || methodName == NULL ||
-		methodType == NULL || argR == NULL || (argC > 0 && argV == NULL))
+	if (inFrame == NULL || methodID == NULL || methodInfo == NULL ||
+		argR == NULL || (argC > 0 && argV == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (argC < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
-
+	
 	/* Look for the shelf. */
 	for (major = sjme_nvm_mleShelves; major->className != NULL; major++)
-		if (sjme_charSeq_equalsUtfR(className, major->className))
-			return sjme_mle_mleCallShelf(inFrame, major, methodName,
-				methodType, argR, argC, argV);
+		if (sjme_charSeq_equalsUtfR(methodInfo->inClass->name->seq,
+			major->className))
+			return sjme_mle_mleCallShelf(inFrame, major,
+				methodInfo->name->seq,
+				methodInfo->type->seq, argR, argC, argV);
+
+	/* If this is reached, then we need to forward to a native handler... */
+	inState = SJME_F_S(inFrame);
+	if (inState->hooks != NULL && inState->hooks->nativeCall != NULL)
+		if (sjme_error_is(error = inState->hooks->nativeCall(inFrame,
+			methodID, methodInfo, argR, argC, argV)))
+			return sjme_error_defaultOr(error,
+				SJME_ERROR_UNKNOWN_MLE_SHELF);
 
 	/* Not found. */
 	return SJME_ERROR_UNKNOWN_MLE_SHELF;

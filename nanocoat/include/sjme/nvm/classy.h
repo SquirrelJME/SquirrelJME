@@ -116,20 +116,6 @@ typedef struct sjme_nvm_class_poolInfoBase sjme_nvm_class_poolInfoBase;
 typedef sjme_nvm_class_poolInfoBase* sjme_nvm_class_poolInfo;
 
 /**
- * Core method information structure.
- *
- * @since 2024/01/03
- */
-typedef struct sjme_nvm_class_methodInfoBase sjme_nvm_class_methodInfoBase;
-
-/**
- * Opaque method information structure.
- *
- * @since 2024/01/03
- */
-typedef sjme_nvm_class_methodInfoBase* sjme_nvm_class_methodInfo;
-
-/**
  * Method list.
  *
  * @since 2024/01/03

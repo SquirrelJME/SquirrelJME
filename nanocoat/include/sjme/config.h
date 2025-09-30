@@ -1242,6 +1242,19 @@ extern "C" {
 	#endif
 #endif
 
+/* Stable verbose printouts. */
+#if defined(SJME_CONFIG_DEBUG_VERBOSE_STABLE)
+	#if !defined(SJME_CONFIG_DEBUG_ALLOC)
+		/** Allocation printouts. */
+		#define SJME_CONFIG_DEBUG_ALLOC
+	#endif
+
+	#if !defined(SJME_CONFIG_DEBUG_CIRCLEBUF)
+		/** Circle buffer printouts. */
+		#define SJME_CONFIG_DEBUG_CIRCLEBUF
+	#endif
+#endif
+
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
 	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE)
 	/** Use Windows networking. */

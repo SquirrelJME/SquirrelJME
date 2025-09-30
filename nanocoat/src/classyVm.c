@@ -461,7 +461,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("Binding %d/%d methods...",
-		inClass->methodCount[0], inClass->methodCount[1]);
+		inClass->methods[0].count, inClass->methods[1].count);
 #endif
 	
 	/* Bind individual methods. */
@@ -1962,7 +1962,8 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadF(
 	
 	/* Debug. */
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
-	sjme_message("Need to find class: %s", binaryName);
+	sjme_message("Need to find class: %s",
+		sjme_charSeq_tempUtf(fieldName));
 #endif
 	
 	/* Grab the write lock on top of this. */

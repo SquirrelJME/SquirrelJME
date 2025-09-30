@@ -313,6 +313,8 @@ sjme_errorCode sjme_nvm_boot(
 	/* Set parameters accordingly. */
 	result->allocPool = allocPool;
 	result->nal = param->nal;
+	result->hooks = param->hooks;
+	result->hookData = param->hookData;
 	
 	/* Initialize base for suite merging. */
 	memset(mergeSuites, 0, sizeof(mergeSuites));
