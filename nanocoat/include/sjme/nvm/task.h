@@ -499,7 +499,7 @@ typedef struct sjme_nvm_task_globals
 	sjme_list_sjme_jbracketJarPackage* jarBrackets;
 	
 	/** The main thread. */
-	sjme_nvm_thread mainThread;
+	sjme_atomic_sjme_pointer mainThread;
 
 	/** No optimization? */
 	sjme_jboolean noOptimize;
@@ -518,6 +518,9 @@ typedef enum sjme_nvm_task_threadCountType
 	
 	/** Await terminate. */
 	SJME_NVM_THREAD_COUNT_AWAIT_CLEANUP = 3,
+
+	/** Count for the main thread. */
+	SJME_NVM_THREAD_COUNT_MAIN = 4,
 
 	/** The number of thread counts. */
 	SJME_NVM_THREAD_NUM_COUNT_TYPE = 4,
@@ -540,7 +543,7 @@ struct sjme_nvm_taskBase
 	/** The current task status. */
 	sjme_nvm_task_statusType status;
 
-	/** Task @c sjme_nvm_task_terminateLevel level. */
+	/** Task @c sjme_nvm_terminateLevel level. */
 	sjme_atomic_sjme_jint terminate;
 
 	/** The number of threads based on the count. */
@@ -1240,13 +1243,16 @@ sjme_errorCode sjme_nvm_task_threadLeave(
  * @param inTask The task to create the thread in.
  * @param outThread The resultant thread.
  * @param threadName The name of the new thread.
+ * @param isMain Is this the main thread? If a main thread already exists
+ * then this parameter will have no effect.
  * @return On any errors, if any.
  * @since 2024/10/15
  */
 sjme_errorCode sjme_nvm_task_threadNew(
 	sjme_attrInNotNull sjme_nvm_task inTask,
 	sjme_attrOutNotNull sjme_nvm_thread* outThread,
-	sjme_attrInNotNull sjme_lpcstr threadName);
+	sjme_attrInNotNull sjme_lpcstr threadName,
+	sjme_attrInValue sjme_jboolean isMain);
 
 /**
  * Starts the specified thread.

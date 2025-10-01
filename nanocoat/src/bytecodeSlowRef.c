@@ -167,7 +167,19 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 				return sjme_error_vmError(inFrame, error);
 			}
 #endif
-
+			/* Emit linkage error otherwise. */
+			else if (error == SJME_ERROR_UNKNOWN_NATIVE_FUNCTION ||
+				error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
+				error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
+			{
+				sjme_nvm_task_threadEmit(SJME_F_T(inFrame),
+					SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_LINKAGE_ERROR,
+					NULL, "LINK %s.%s %s",
+					sjme_charSeq_tempUtf(target->inClass->name->seq),
+					sjme_charSeq_tempUtf(target->name->seq),
+					sjme_charSeq_tempUtf(target->type->seq));
+			}
+			
 			/* Anything else is considered a failure. */
 			return sjme_error_vmError(inFrame, error);
 		}

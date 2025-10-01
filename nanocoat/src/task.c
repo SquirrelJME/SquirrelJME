@@ -591,7 +591,7 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 		return sjme_error_default(error);
 
 	/* Main thread already set? */
-	if (inTask->globals.mainThread != NULL)
+	if (sjme_atomic_sjme_pointer_get(&inTask->globals.mainThread) != NULL)
 		goto fail_mainExists;
 
 	/* Quicker to reference this way. */
@@ -603,12 +603,9 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	/* Setup main thread, all threads start in java.lang.__Start__! */
 	mainThread = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadNew(inTask,
-		&mainThread, "main")) || mainThread == NULL)
+		&mainThread, "main", SJME_JNI_TRUE)) ||
+		mainThread == NULL)
 		goto fail_taskNewThread;
-
-	/* The main thread gets flagged as the main thread. */
-	inTask->globals.mainThread = mainThread;
-	mainThread->isMain = SJME_JNI_TRUE;
 
 	/* Adjust the main class name, turn periods into slashes. */
 	memset(adjustMain, 0, sizeof(adjustMain));
@@ -1210,6 +1207,11 @@ sjme_jboolean sjme_nvm_task_taskScheduleYes(
 		sjme_atomic_sjme_jint_getAdd(
 			&inTask->numThreads[SJME_NVM_THREAD_COUNT_AWAIT_CLEANUP],
 			1);
+
+		/* If this is the main thread, then reduce count. */
+		if (inThread->isMain)
+			sjme_atomic_sjme_jint_getAdd(
+				&inTask->numThreads[SJME_NVM_THREAD_COUNT_MAIN], -1);
 
 		/* Reduce total thread count. */
 		sjme_atomic_sjme_jint_getAdd(

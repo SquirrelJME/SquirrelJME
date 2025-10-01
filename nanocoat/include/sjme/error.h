@@ -546,9 +546,12 @@ typedef enum sjme_errorCode
 
 	/** JDWP handshake not valid. */
 	SJME_ERROR_JDWP_BAD_HANDSHAKE = -168,
+
+	/** Unknown native function. */
+	SJME_ERROR_UNKNOWN_NATIVE_FUNCTION = -169,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -169,
+	SJME_NUM_ERROR_CODES = -170,
 } sjme_errorCode;
 
 /**

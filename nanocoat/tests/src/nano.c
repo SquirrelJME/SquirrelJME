@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+#include "sjme/nvm/task.h"
 #include "sjme/nvm/boot.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/nvmFunc.h"
@@ -16,7 +17,16 @@
 #include "sjme/nvm/loop.h"
 #include "test.h"
 
-sjme_errorCode sjme_test_nano_nativeCall(
+typedef struct sjme_test_nano_result
+{
+	/** Was this captured? */
+	sjme_jboolean captured;
+
+	/** The value captured. */
+	sjme_jvalueTyped value;
+} sjme_test_nano_result;
+
+static sjme_errorCode sjme_test_nano_nativeCall(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_jmethodID methodID,
 	sjme_attrInNotNull sjme_nvm_class_methodInfo methodInfo,
@@ -24,6 +34,8 @@ sjme_errorCode sjme_test_nano_nativeCall(
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV)
 {
+	sjme_test_nano_result* result;
+	
 	if (inFrame == NULL || methodID == NULL || argR == NULL || argR == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -32,9 +44,34 @@ sjme_errorCode sjme_test_nano_nativeCall(
 
 	if (argC > 0 && argV == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Recover result. */
+	result = SJME_F_S(inFrame)->hookData;
+	if (result == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Is this the correct class and method? */
+	if (!sjme_charSeq_equalsUtfR(methodInfo->inClass->name->seq,
+			"cc/squirreljme/nanocoat/mle/NanoTestShelf") ||
+		!sjme_charSeq_equalsUtfR(methodInfo->name->seq,
+			"result"))
+		return SJME_ERROR_UNKNOWN_NATIVE_FUNCTION;
+
+	/* Wrong argument count? */
+	if (argC != 0 && argC != 1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Was a result already captured? */
+	if (result->captured)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Capture data. */
+	result->captured = SJME_JNI_TRUE;
+	if (argC == 1)
+		memmove(&result->value, &argV[0], sizeof(argV[0]));
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static const sjme_nvm_stateHooks sjme_test_nano_hooks =
@@ -68,6 +105,7 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_jboolean terminated;
 	const sjme_nal* nal;
 	sjme_lpstr classpathSplice;
+	sjme_test_nano_result result;
 	
 	/* Incorrect number of arguments? */
 	if (argc < 5)
@@ -136,6 +174,9 @@ int main(int argc, sjme_lpstr* argv)
 	if (sjme_error_is(error = sjme_list_alloc(pool, 0, &mainArgs,
 		sjme_lpstr, 0)) || mainArgs == NULL)
 		goto fail_initMainArgs;
+
+	/* Clear result for later test expectations. */
+	memset(&result, 0, sizeof(result));
 	
 	/* Setup boot parameters. */
 	memset(&bootParam, 0, sizeof(bootParam));
@@ -184,6 +225,17 @@ int main(int argc, sjme_lpstr* argv)
 	exitCode = -1;
 	if (sjme_error_is(error = sjme_nvm_destroy(inState, &exitCode)))
 		goto fail_destroy;
+
+	/* If the exit was successful, check test result. */
+	if (exitCode == 0)
+	{
+		/* If not captured, then the test fails. */
+		if (!result.captured)
+			return EXIT_FAILURE;
+
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
 	
 	/* Return with the exit code. */
 	return exitCode;

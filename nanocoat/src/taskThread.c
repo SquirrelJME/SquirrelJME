@@ -675,7 +675,8 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 sjme_errorCode sjme_nvm_task_threadNew(
 	sjme_attrInNotNull sjme_nvm_task inTask,
 	sjme_attrOutNotNull sjme_nvm_thread* outThread,
-	sjme_attrInNotNull sjme_lpcstr threadName)
+	sjme_attrInNotNull sjme_lpcstr threadName,
+	sjme_attrInValue sjme_jboolean isMain)
 {
 	sjme_errorCode error;
 	sjme_nvm_thread result;
@@ -770,6 +771,23 @@ sjme_errorCode sjme_nvm_task_threadNew(
 		&inTask->numThreads[SJME_NVM_THREAD_COUNT_ALL], 1);
 	sjme_atomic_sjme_jint_getAdd(
 		&inTask->numThreads[SJME_NVM_THREAD_COUNT_NORMAL], 1);
+	
+	/* The main thread gets flagged as the main thread. */
+	if (isMain)
+	{
+		/* Set the main thread, if not set. */
+		if (sjme_atomic_sjme_pointer_compareSet(
+			&inTask->globals.mainThread, NULL, result))
+		{
+			/* Record that this is the actual main thread. */
+			result->isMain = SJME_JNI_TRUE;
+
+			/* Make sure the count is just one. */
+			sjme_atomic_sjme_jint_compareSet(
+				&inTask->numThreads[SJME_NVM_THREAD_COUNT_MAIN],
+				0, 1);
+		}
+	}
 	
 	/* Release task specific lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(

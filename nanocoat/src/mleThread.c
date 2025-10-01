@@ -14,8 +14,32 @@
 
 SJME_NVM_MLE_FUNCTION_DECL(aliveThreadCount)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_jboolean includeMain, includeDaemon;
+	sjme_jint count;
+	sjme_nvm_task inTask;
+
+	/* Including main and/or daemon threads? */
+	includeMain = (argV[0].v.i != 0);
+	includeDaemon = (argV[1].v.i != 0);
+
+	/* Working with the frame's task. */
+	inTask = SJME_F_K(inFrame);
+
+	/* Get the base thread count. */
+	count = sjme_atomic_sjme_jint_get(&inTask->numThreads[
+		(includeDaemon ? SJME_NVM_THREAD_COUNT_ALL :
+			SJME_NVM_THREAD_COUNT_NORMAL)]);
+
+	/* If not including the main thread, reduce by the count which should */
+	/* always be one. */
+	if (!includeMain)
+		count -= sjme_atomic_sjme_jint_get(
+			&inTask->numThreads[SJME_NVM_THREAD_COUNT_MAIN]);
+
+	/* Return the count. */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = count;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(createVMThread)

@@ -75,10 +75,16 @@ sjme_errorCode sjme_mle_mleCall(
 	/* If this is reached, then we need to forward to a native handler... */
 	inState = SJME_F_S(inFrame);
 	if (inState->hooks != NULL && inState->hooks->nativeCall != NULL)
+	{
+		/* Perform the native call. */
 		if (sjme_error_is(error = inState->hooks->nativeCall(inFrame,
 			methodID, methodInfo, argR, argC, argV)))
 			return sjme_error_defaultOr(error,
 				SJME_ERROR_UNKNOWN_MLE_SHELF);
+
+		/* Successful otherwise. */
+		return SJME_ERROR_NONE;
+	}
 
 	/* Not found. */
 	return SJME_ERROR_UNKNOWN_MLE_SHELF;
