@@ -67,7 +67,7 @@ sjme_errorCode sjme_seekable_open(
 			copyFrontEnd);
 
 	/* Set default size cache. */
-	sjme_atomic_sjme_jint_set(&result->cachedSize, -1);
+	sjme_atomic_s(sjme_jint, &result->cachedSize, -1);
 	
 	/* Initialize. */
 	if (sjme_error_is(error = result->functions->init(result,
@@ -237,7 +237,7 @@ sjme_errorCode sjme_seekable_size(
 	if (!seekable->implState.flags.volatileSize)
 	{
 		/* Check the cache. */
-		size = sjme_atomic_sjme_jint_get(&seekable->cachedSize);
+		size = sjme_atomic_g(sjme_jint, &seekable->cachedSize);
 		if (size >= 0)
 		{
 			*outSize = size;
@@ -256,7 +256,7 @@ sjme_errorCode sjme_seekable_size(
 
 	/* Store the cached size. */
 	if (!seekable->implState.flags.volatileSize && size >= 0)
-		sjme_atomic_sjme_jint_set(&seekable->cachedSize, size);
+		sjme_atomic_s(sjme_jint, &seekable->cachedSize, size);
 	
 	/* Release lock. */
 	if (sjme_error_is(sjme_thread_spinLockRelease(&seekable->lock,

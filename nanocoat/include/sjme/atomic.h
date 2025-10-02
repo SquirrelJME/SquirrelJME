@@ -216,6 +216,121 @@ SJME_ATOMIC_DECLARE(sjme_jclass, 0);
 /** Atomic @c sjme_charSeq. */
 SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
 
+/**
+ * Chain gets from two atomic values which are in a structure with each
+ * other.
+ *
+ * Equivalent to @code refTop->structIsh @endcode .
+ * 
+ * @param type The atomic type.
+ * @param refTop The top reference.
+ * @param structIsh The sub-structure member reference.
+ * @return The resultant sub-structure member value.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_chainGetGet(type, refTop, structIsh) \
+	sjme_atomic_g(type, (&sjme_atomic_g(type, (refTop)) structIsh))
+
+/**
+ * Chain gets from a sub-structure of an atomic, which is also an atomic,
+ * then sets the atomic value.
+ *
+ * Equivalent to @code refTop->structIsh = set @endcode .
+ * 
+ * @param type The atomic type.
+ * @param refTop The top reference.
+ * @param structIsh The sub-structure member reference.
+ * @param set The value to set.
+ * @return The old value of the sub-structure member value.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_chainGetSet(type, refTop, structIsh, set) \
+	sjme_atomic_s(type, (&sjme_atomic_g(type, (refTop)) structIsh), set)
+
+/**
+ * Copies the value of one atomic to another.
+ * 
+ * @param type The type of the atomic.
+ * @param dst The destination atomic.
+ * @param src The source atomic.
+ * @return The old value.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_copy(type, dst, src) \
+	sjme_atomic_s(type, dst, sjme_atomic_g(type, src))
+	
+/**
+ * Compares the atomic to the given value then sets it if it is the given
+ * value.
+ * 
+ * @param type The atomic type.
+ * @param ref The atomic reference.
+ * @param cmp The value to compare against.
+ * @param set The value to set, if the existing value is the given value.
+ * @return If the value matched then @c SJME_JNI_TRUE and the new value will
+ * be set, otherwise @c SJME_JNI_FALSE and there are no changes.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_cs(type, ref, cmp, set) \
+	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _compareSet)((ref), (cmp), (set))
+
+/**
+ * Gets the atomic value.
+ * 
+ * @param type The atomic type.
+ * @param ref The atomic reference.
+ * @return The current value of the atomic.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_g(type, ref) \
+	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _get)((ref))
+
+/**
+ * Gets the value of the atomic then adds to it. This is only valid for
+ * non-pointer types.
+ * 
+ * @param type The atomic type.
+ * @param ref The atomic reference.
+ * @param add The value to add to the given type.
+ * @return The previous value before the add.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_ga(type, ref, add) \
+	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _getAdd)((ref), (add))
+
+/**
+ * Returns the pointer value of an atomic, disregarding type. This is mostly
+ * a utility macro when a type is not needed.
+ * 
+ * @param ref The atomic reference.
+ * @return The pointer value.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_pg(ref) \
+	sjme_atomic_g(sjme_pointer, (sjme_atomic_sjme_pointer*)(ref))
+
+/**
+ * Directly set pointer atomic to @c NULL .
+ * 
+ * @param ref The reference to set to NULL.
+ * @return The old value.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_psNull(ref) \
+	sjme_atomic_s(sjme_pointer, (sjme_atomic_sjme_pointer*)(ref), NULL)
+	
+/**
+ * Sets the new value of the atomic and returns the old value.
+ * 
+ * @param type The atomic type.
+ * @param ref The atomic reference.
+ * @param set The new value to set.
+ * @return The old value of the atomic.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_s(type, ref, set) \
+	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _set)((ref), (set))
+
 #if defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
 
 /**

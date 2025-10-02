@@ -106,6 +106,7 @@ int main(int argc, sjme_lpstr* argv)
 	const sjme_nal* nal;
 	sjme_lpstr classpathSplice;
 	sjme_test_nano_result result;
+	sjme_jint allocCount;
 	
 	/* Incorrect number of arguments? */
 	if (argc < 5)
@@ -231,15 +232,36 @@ int main(int argc, sjme_lpstr* argv)
 	{
 		/* If not captured, then the test fails. */
 		if (!result.captured)
-			return EXIT_FAILURE;
+		{
+			error = SJME_ERROR_NO_TEST_RESULT;
+			goto fail_notCaptured;
+		}
 
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
 	}
+
+	/* There must be no memory blocks allocated, destruction should be */
+	/* in an entirely clean slate with nothing left over. */
+	allocCount = -1;
+	if (sjme_error_is(error = sjme_alloc_poolSpaceTotalSize(pool,
+		NULL, NULL, NULL,
+		&allocCount)) || allocCount < 0)
+		goto fail_countBlocks;
+
+	/* There must be zero blocks. */
+	if (allocCount != 0)
+	{
+		error = SJME_ERROR_MEMORY_EXISTS;
+		goto fail_existingBlocks;
+	}
 	
 	/* Return with the exit code. */
 	return exitCode;
-	
+
+fail_existingBlocks:
+fail_countBlocks:
+fail_notCaptured:
 fail_destroy:
 fail_loop:
 fail_boot:

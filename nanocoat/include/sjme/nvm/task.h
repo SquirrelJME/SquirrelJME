@@ -153,6 +153,23 @@ typedef struct sjme_frame_frameStack sjme_frame_frameStack;
  */
 typedef struct sjme_frame_frameStacks sjme_frame_frameStacks;
 
+/**
+ * This is called when a frame is waiting for a condition to be met.
+ *
+ * @param inFrame The frame that is waiting on the condition.
+ * @param condition The condition value that was passed in, this may be
+ * anything.
+ * @param stackPush If the condition should push any value to the stack,
+ * then this should be set to a value other than void.
+ * @return Any resultant error, if any, @c SJME_ERROR_NOT_MATCHED means
+ * that the condition has not been met yet.
+ * @since 2025/10/02
+ */
+typedef sjme_errorCode (*sjme_nvm_frame_conditionFunc)(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInValue sjme_intPointer condition,
+	sjme_attrOutNotNull sjme_jvalueTyped* stackPush);
+	
 struct sjme_frame_threadStacks
 {
 	/** The storage for the stack. */
@@ -327,6 +344,13 @@ struct sjme_nvm_frameBase
 
 	/** The index of this frame. */
 	sjme_jint index;
+
+	/** Waiting condition. */
+	struct
+	{
+		/** The function to call for the condition. */
+		sjme_nvm_frame_conditionFunc function;
+	} condition;
 
 	/** Frame state flags. */
 	sjme_packed struct
@@ -538,7 +562,7 @@ struct sjme_nvm_taskBase
 	sjme_nvm inState;
 	
 	/** The exit code of the task. */
-	sjme_jint exitCode;
+	sjme_atomic_sjme_jint exitCode;
 	
 	/** The current task status. */
 	sjme_nvm_task_statusType status;
@@ -590,6 +614,9 @@ struct sjme_nvm_threadBase
 	
 	/** The wrapper in the front end. */
 	sjme_frontEnd frontEnd;
+
+	/** The native thread, if applicable. */
+	sjme_atomic_sjme_thread nativeThread;
 	
 	/** The thread ID. */
 	sjme_jint threadId;
@@ -617,6 +644,9 @@ struct sjme_nvm_threadBase
 
 	/** The current frame level that the throwable was tossed at. */
 	sjme_atomic_sjme_jint tossedLevel;
+
+	/** If this thread is interrupted. */
+	sjme_atomic_sjme_jint interrupted;
 
 	/** Thread specific flags. */
 	struct
@@ -1010,6 +1040,24 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_attrOutNotNull sjme_jvalueTyped* oldValue);
 
 /**
+ * Specifies that the given frame should wait for the given condition to be
+ * met before execution can continue.
+ * 
+ * @param inFrame The frame that is waiting for the condition.
+ * @param conditionFunc The condition function to wait on.
+ * @param timeout The timeout before the condition will expire, if this
+ * is @c -1 then this will wait forever.
+ * @param value The condition parameter, this may be anything. 
+ * @return Any resultant error, if any.
+ * @since 2025/10/02
+ */
+sjme_errorCode sjme_nvm_task_frameWaitFor(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_conditionFunc conditionFunc,
+	sjme_attrInNegativeOnePositive sjme_jint timeout,
+	sjme_attrInValue sjme_intPointer value);
+	
+/**
  * Prints the stack trace for a thread using the standard compact SquirrelJME
  * style stack traces.
  * 
@@ -1104,12 +1152,15 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
  * 
  * @param inState The virtual machine state.
  * @param inThread The thread to un-schedule.
+ * @param msResting The time to spend resting at the minimum, if zero then
+ * this is just a yield and the thread will wake back up as soon as possible.
  * @return Any resultant error, if any.
  * @since 2025/06/29
  */
 sjme_errorCode sjme_nvm_task_taskScheduleOut(
 	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull sjme_nvm_thread inThread);
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInPositive sjme_jint msResting);
 
 /**
  * Determines if the given thread can be scheduled.
@@ -1120,7 +1171,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleOut(
  * @return Any resultant error, if any.
  * @since 2025/06/29
  */
-sjme_jboolean sjme_nvm_task_taskScheduleYes(
+sjme_errorCode sjme_nvm_task_taskScheduleYes(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jboolean* isRunning);
@@ -1226,6 +1277,30 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 sjme_errorCode sjme_nvm_task_threadFrameNext(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame);
+
+/**
+ * Interrupts the given thread.
+ * 
+ * @param inThread The thread to interrupt.
+ * @return Any resultant error, if any.
+ * @since 2025/10/02
+ */
+sjme_errorCode sjme_nvm_task_threadInterrupt(
+	sjme_attrInNotNull sjme_nvm_thread inThread);
+
+/**
+ * Checks if the given thread is in the interrupt state, then optionally
+ * clears it.
+ * 
+ * @param inThread The thread to check if interrupted.
+ * @param clear If the interrupt signal should be cleared.
+ * @return Any resultant error, if any, interrupted threads
+ * will be @c SJME_ERROR_INTERRUPTED.
+ * @since 2025/10/02
+ */
+sjme_errorCode sjme_nvm_task_threadInterruptCheck(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInValue sjme_jboolean clear);
 	
 /**
  * Leaves a frame of execution.

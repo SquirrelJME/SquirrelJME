@@ -66,7 +66,7 @@ sjme_errorCode sjme_jdwp_sessionPoll(
 	/* But only if there are still task spaces available, so we do not */
 	/* flood. */
 	nextPacket = NULL;
-	if (sjme_atomic_sjme_jint_get(
+	if (sjme_atomic_g(sjme_jint, 
 		&session->awaitingTasks) < SJME_JDWP_WAITING_TASK_LATCH)
 		if (sjme_error_is(error = sjme_jdwp_commReceive(session, &nextPacket)))
 			return sjme_error_default(error);

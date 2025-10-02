@@ -320,7 +320,17 @@ sjme_errorCode sjme_thread_spinLockRelease(
  */
 void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
 	sjme_attrInPositive sjme_jint nanos);
-	
+
+/**
+ * Wakes the given thread, if possible.
+ * 
+ * @param inThread The thread to wake.
+ * @return Any resultant error, if any.
+ * @since 2025/10/02
+ */
+sjme_errorCode sjme_thread_wake(
+	sjme_attrInNotNull sjme_thread inThread);
+
 /**
  * Yields execution.
  * 

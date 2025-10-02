@@ -148,7 +148,9 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			argC, argV);
 
 		/* Recover and check MLE error. */
-		if (sjme_error_is(error = mleError))
+		/* Ignore cancelled calls. */
+		if (error != SJME_ERROR_CANCEL_MLE_CALL &&
+			sjme_error_is(error = mleError))
 		{
 			/* MLECallError is a valid response. */
 			if (error == SJME_ERROR_MLE_CALL)
@@ -184,15 +186,20 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			return sjme_error_vmError(inFrame, error);
 		}
 
-		/* Wrong type? */
-		if (mleArgR.t != target->argR)
-			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_METHOD_TYPE);
+		/* Only push a value if not cancelled. */
+		if (error != SJME_ERROR_CANCEL_MLE_CALL)
+		{
+			/* Wrong type? */
+			if (mleArgR.t != target->argR)
+				return sjme_error_vmError(inFrame,
+					SJME_ERROR_INVALID_METHOD_TYPE);
 
-		/* Is there a return value being pushed to the stack? */
-		if (mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
-			if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-				inFrame, &mleArgR)))
-				return sjme_error_vmError(inFrame, error);
+			/* Is there a return value being pushed to the stack? */
+			if (mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
+				if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+					inFrame, &mleArgR)))
+					return sjme_error_vmError(inFrame, error);
+		}
 	}
 
 	/* Enter new stack frame for the target method, or at least try. */
@@ -391,7 +398,8 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 			NULL,
 			"CAST %s %s",
 			(value.v.l == NULL ? "NULL" :
-				sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->binaryName)), (desireClass == NULL ? "NULL" :
+				sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->binaryName)),
+					(desireClass == NULL ? "NULL" :
 				sjme_charSeq_tempUtf(desireClass->binaryName)))))
 			return sjme_error_vmError(inFrame, error);
 		
@@ -1312,13 +1320,13 @@ SJME_NVM_BYTECODE_SLOW(Throw)
 		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
 
 	/* Set thrown exception. */
-	if (!sjme_atomic_sjme_jobject_compareSet(&SJME_F_T(inFrame)->tossed,
+	if (!sjme_atomic_cs(sjme_jobject, &SJME_F_T(inFrame)->tossed,
 		NULL, toss.v.l))
 		return sjme_error_vmError(inFrame, SJME_ERROR_DOUBLE_TOSS);
 
 	/* Set the toss level very high as we are not running any implicit */
 	/* constructors! */
-	sjme_atomic_sjme_jint_set(&SJME_F_T(inFrame)->tossedLevel, INT32_MAX);
+	sjme_atomic_s(sjme_jint, &SJME_F_T(inFrame)->tossedLevel, INT32_MAX);
 
 	/* Count up since it is now also in tossed. */
 	if (sjme_error_is(error = sjme_nvm_instance_countUp(toss.v.l)))
@@ -1362,7 +1370,7 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 
 	/* Make sure the array is actually valid. */
 	arrayType = sjme_nvm_byteCode_xArrayType[id - 46];
-	componentType = sjme_atomic_sjme_jclass_get(
+	componentType = sjme_atomic_g(sjme_jclass, 
 		&array->object.isClass->componentType);
 	if (array == NULL || componentType == NULL ||
 		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
@@ -1488,7 +1496,7 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
 
 	/* Make sure the array is actually valid. */
-	componentType = sjme_atomic_sjme_jclass_get(
+	componentType = sjme_atomic_g(sjme_jclass, 
 		&SJME_AO_C(array)->componentType);
 	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
 		!SJME_AO_C(array)->info->isArray ||

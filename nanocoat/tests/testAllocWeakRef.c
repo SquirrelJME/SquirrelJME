@@ -39,7 +39,7 @@ SJME_TEST_DECLARE(testAllocWeakRef)
 	
 	/* This should be marked valid. */
 	sjme_unit_equalI(test,
-		sjme_atomic_sjme_jint_get(&weak->valid), SJME_ALLOC_WEAK_VALID,
+		sjme_atomic_g(sjme_jint, &weak->valid), SJME_ALLOC_WEAK_VALID,
 		"Weak reference not marked valid?");
 	
 	/* Get the block link. */
@@ -48,9 +48,9 @@ SJME_TEST_DECLARE(testAllocWeakRef)
 		return sjme_unit_fail(test, "Could not get block link?");
 	
 	/* Should be this pointer. */
-	sjme_unit_equalP(test, weak->pointer, p,
+	sjme_unit_equalP(test, sjme_atomic_pg(&weak->pointer), p,
 		"Weak pointer not allocated pointer?");
-	sjme_unit_equalP(test, weak->link, link,
+	sjme_unit_equalP(test, sjme_atomic_pg(&weak->link), link,
 		"Weak pointer not allocated link?");
 	sjme_unit_equalP(test, link->weak, weak,
 		"Link weak not allocated weak?");
@@ -60,7 +60,7 @@ SJME_TEST_DECLARE(testAllocWeakRef)
 		"Enqueue was set?");
 	
 	/* Reference count should be zero. */
-	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 0,
+	sjme_unit_equalI(test, sjme_atomic_g(sjme_jint, &weak->count), 0,
 		"Reference count not one?");
 	
 	/* Count up. */
@@ -73,7 +73,7 @@ SJME_TEST_DECLARE(testAllocWeakRef)
 		"Different or un-passed weak pointer?");
 	
 	/* Reference count should be one. */
-	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 1,
+	sjme_unit_equalI(test, sjme_atomic_g(sjme_jint, &weak->count), 1,
 		"Reference count not one?");
 	
 	/* Success! */

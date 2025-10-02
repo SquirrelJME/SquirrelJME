@@ -263,7 +263,7 @@ static sjme_errorCode sjme_scritchui_basePaintListener(
 	}
 	
 	/* Forward to callback. */
-	sjme_atomic_sjme_jint_set(&paint->inPaint, 1);
+	sjme_atomic_s(sjme_jint, &paint->inPaint, 1);
 	error = callback(inState, inComponent, g, sw, sh, special);
 
 #if defined(SJME_CONFIG_DEBUG)
@@ -273,7 +273,7 @@ static sjme_errorCode sjme_scritchui_basePaintListener(
 #endif
 	
 	/* No longer painting. */
-	sjme_atomic_sjme_jint_set(&paint->inPaint, 0);
+	sjme_atomic_s(sjme_jint, &paint->inPaint, 0);
 	
 	/* Success or failure! */
 fail_noListener:
@@ -574,7 +574,7 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 	/* If we are in a paint, we need to delay painting by a single frame */
 	/* otherwise the native UI might get stuck not repainting or end up */
 	/* in an infinite loop. */
-	if (sjme_atomic_sjme_jint_get(&paint->inPaint) != 0)
+	if (sjme_atomic_g(sjme_jint, &paint->inPaint) != 0)
 	{
 		/* Store paint properties. */
 		paint->belayRect.s.x = x;

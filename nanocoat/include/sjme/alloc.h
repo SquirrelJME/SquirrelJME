@@ -110,6 +110,12 @@ typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
 
 /** Weak reference is valid. */
 #define SJME_ALLOC_WEAK_VALID UINT32_C(0x58657221)
+	
+/** Allocation links are pointers. */
+#define SJME_TYPEOF_IS_POINTER_sjme_alloc_link 1
+
+/** Atomic debug link. */
+SJME_ATOMIC_DECLARE(sjme_alloc_link, 0);
 
 struct sjme_alloc_weakBase
 {
@@ -117,13 +123,13 @@ struct sjme_alloc_weakBase
 	sjme_alignPointer sjme_atomic_sjme_jint valid;
 	
 	/** The link this points to, @c NULL if freed. */
-	sjme_alloc_link link;
+	sjme_atomic_sjme_alloc_link link;
 	
 	/** The count for this weak reference, zero will free this reference. */
 	sjme_alignPointer sjme_atomic_sjme_jint count;
 	
 	/** The pointer this points to, @c NULL if freed. */
-	sjme_pointer pointer;
+	sjme_atomic_sjme_pointer pointer;
 	
 	/** The data to call for when this is removed or the count changes. */
 	sjme_alloc_weakEnqueueFunc enqueue;
@@ -141,19 +147,19 @@ struct sjme_alloc_linkBase
 	sjme_alloc_pool pool;
 	
 	/** Previous link. */
-	sjme_alloc_link prev;
+	sjme_atomic_sjme_alloc_link prev;
 	
 	/** Next link. */
-	sjme_alloc_link next;
+	sjme_atomic_sjme_alloc_link next;
 	
 	/** The space this is in. */
 	sjme_alloc_poolSpace space;
 	
 	/** The previous free link. */
-	sjme_alloc_link freePrev;
+	sjme_atomic_sjme_alloc_link freePrev;
 	
 	/** The next free link. */
-	sjme_alloc_link freeNext;
+	sjme_atomic_sjme_alloc_link freeNext;
 	
 	/** The weak reference this is attached to. */
 	sjme_alloc_weak weak;
@@ -235,16 +241,16 @@ struct sjme_alloc_poolBase
 	sjme_alloc_pool nextPool;
 	
 	/** The front chain link. */
-	sjme_alloc_link frontLink;
+	sjme_atomic_sjme_alloc_link frontLink;
 	
 	/** The back chain link. */
-	sjme_alloc_link backLink;
+	sjme_atomic_sjme_alloc_link backLink;
 		
 	/** The first free link in the chain. */
-	sjme_alloc_link freeFirstLink;
+	sjme_atomic_sjme_alloc_link freeFirstLink;
 		
 	/** The last free link in the chain. */
-	sjme_alloc_link freeLastLink;
+	sjme_atomic_sjme_alloc_link freeLastLink;
 	
 	/** The memory block. */
 	sjme_jubyte block[sjme_flexibleArrayCount];
@@ -306,6 +312,7 @@ sjme_errorCode sjme_alloc_poolDestroy(
  * the value of @c outUsable .
  * @param outReserved The total reserved space within the pool.
  * @param outUsable The total usable space within the pool.
+ * @param outAllocBlocks The number of allocated blocks within the pool.
  * @return Any error or otherwise success.
  * @since 2023/12/11
  */
@@ -313,7 +320,8 @@ sjme_errorCode sjme_alloc_poolSpaceTotalSize(
 	sjme_attrInNotNull const sjme_alloc_pool pool,
 	sjme_attrOutNullable sjme_jint* outTotal,
 	sjme_attrOutNullable sjme_jint* outReserved,
-	sjme_attrOutNullable sjme_jint* outUsable);
+	sjme_attrOutNullable sjme_jint* outUsable,
+	sjme_attrOutNullable sjme_jint* outAllocBlocks);
 
 /**
  * Allocates memory within the given pool.

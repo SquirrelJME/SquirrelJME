@@ -584,7 +584,7 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	
 /** Get super class. */
 #define SJME_C_SU(cl) \
-	(sjme_atomic_sjme_jclass_get(&(cl)->superClass))
+	(sjme_atomic_g(sjme_jclass, &(cl)->superClass))
 	
 /*--------------------------------------------------------------------------*/
 

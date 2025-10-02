@@ -645,7 +645,7 @@ sjme_errorCode sjme_scritchui_core_intern_fontBuiltin(
 	
 	/* If we are using a top level state, grab the font from there so */
 	/* that we have a consistent default to use. */
-	topState = sjme_atomic_sjme_pointer_get(&inState->topState);
+	topState = sjme_atomic_g(sjme_pointer, &inState->topState);
 	if (topState != NULL)
 		return topState->api->fontBuiltin(topState, outFont);
 	

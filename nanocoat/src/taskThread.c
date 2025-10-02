@@ -160,12 +160,12 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 
 	/* Set as tossed! */
 	oldTossed = NULL;
-	if (!sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
+	if (!sjme_atomic_cs(sjme_jobject, &inThread->tossed,
 		NULL, SJME_AS_JOBJECT(toss)))
 	{
 		/* Get the old tossed to print it out. */
 		oldTossed = SJME_AS_JTHROWABLE(
-			sjme_atomic_sjme_jobject_get(&inThread->tossed));
+			sjme_atomic_g(sjme_jobject, &inThread->tossed));
 
 		/* Print it out, assuming it is not our cause. */
 		if (oldTossed != cause)
@@ -177,7 +177,7 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 		}
 
 		/* Set new value. */
-		sjme_atomic_sjme_jobject_set(&inThread->tossed,
+		sjme_atomic_s(sjme_jobject, &inThread->tossed,
 			SJME_AS_JOBJECT(toss));
 
 		/* Count down the old toss since it is no longer stored, if it */
@@ -191,7 +191,7 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 	}
 
 	/* Set level so we can run the constructor. */
-	sjme_atomic_sjme_jint_set(&inThread->tossedLevel, inThread->numFrames);
+	sjme_atomic_s(sjme_jint, &inThread->tossedLevel, inThread->numFrames);
 
 	/* Build message string. */
 	va_start(copy, message);
@@ -301,7 +301,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Cannot a new frame if terminating. */
-	if (sjme_atomic_sjme_jint_get(&SJME_T_K(inThread)->terminate) !=
+	if (sjme_atomic_g(sjme_jint, &SJME_T_K(inThread)->terminate) !=
 		SJME_NVM_TERMINATE_NOT)
 		return SJME_ERROR_INVALID_THREAD_STATE;
 	
@@ -355,7 +355,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 
 	/* Set frame details, needed for local set. */
 	result->inClass = inMethod->member.inClass;
-	result->id = sjme_atomic_sjme_jint_getAdd(
+	result->id = sjme_atomic_ga(sjme_jint, 
 		&SJME_T_K(inThread)->nextFrameId, 1) + 1;
 	result->index = inThread->numFrames;
 	result->inMethod = inMethod;
@@ -590,6 +590,62 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 #undef SJME_NVM_FRAME_GROW_SIZE
 }
 
+sjme_errorCode sjme_nvm_task_threadInterrupt(
+	sjme_attrInNotNull sjme_nvm_thread inThread)
+{
+	sjme_nvm inState;
+	sjme_errorCode error;
+	
+	if (inThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Set interrupt flag. */
+	sjme_atomic_s(sjme_jint, &inThread->interrupted, 1);
+
+	/* Schedule the thread, if not multithreaded. */
+	inState = SJME_T_S(inThread);
+	if (inState->threadModel != SJME_NVM_MLE_THREAD_MULTI)
+	{
+		/* Schedule in the thread. */
+		if (sjme_error_is(error = sjme_nvm_task_taskScheduleIn(inState,
+			inThread)))
+			return sjme_error_default(error);
+	}
+
+	/* Otherwise, attempt waking it, if possible. */
+	else
+	{
+		/* Attempt thread wake. */
+		if (sjme_error_is(error = sjme_thread_wake(
+			sjme_atomic_g(sjme_thread, &inThread->nativeThread))))
+			return sjme_error_default(error);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_task_threadInterruptCheck(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInValue sjme_jboolean clear)
+{
+	sjme_jboolean set;
+	
+	if (inThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Clear or just get the value? */
+	if (clear)
+		set = sjme_atomic_cs(sjme_jint, &inThread->interrupted, 1, 0);
+	else
+		set = (sjme_atomic_g(sjme_jint, &inThread->interrupted) != 0);
+
+	/* If this was set, then return interrupted, otherwise not. */
+	if (set)
+		return SJME_ERROR_INTERRUPTED;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_task_threadLeave(
 	sjme_attrInNotNull sjme_nvm_thread inThread)
 {
@@ -634,7 +690,7 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	if (topIndex == 0)
 	{
 		/* Set as finishing. */
-		sjme_atomic_sjme_jint_compareSet(&inThread->start,
+		sjme_atomic_cs(sjme_jint, &inThread->start,
 			SJME_NVM_THREAD_START_STANDARD,
 			SJME_NVM_THREAD_START_FINISHING);
 
@@ -644,7 +700,7 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 			return sjme_error_vmError(inThread, error);
 		
 		/* There is still an uncaught exception? */
-		uncaught = sjme_atomic_sjme_jobject_get(&inThread->tossed);
+		uncaught = sjme_atomic_g(sjme_jobject, &inThread->tossed);
 		if (uncaught != NULL)
 		{
 			/* Print it out. */
@@ -654,9 +710,9 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 					error);
 
 			/* Clear it. */
-			sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
+			sjme_atomic_cs(sjme_jobject, &inThread->tossed,
 				uncaught, NULL);
-			sjme_atomic_sjme_jint_set(&inThread->tossedLevel, -1);
+			sjme_atomic_s(sjme_jint, &inThread->tossedLevel, -1);
 
 			/* Count it down. */
 			if (sjme_error_is(error = sjme_nvm_instance_countDown(uncaught)))
@@ -689,7 +745,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Cannot start a new thread if terminating. */
-	if (sjme_atomic_sjme_jint_get(&inTask->terminate) !=
+	if (sjme_atomic_g(sjme_jint, &inTask->terminate) !=
 		SJME_NVM_TERMINATE_NOT)
 		return SJME_ERROR_INVALID_THREAD_STATE;
 
@@ -730,7 +786,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	/* Fill out basic details. */
 	result->inState = inState;
 	result->inTask = inTask;
-	result->threadId = 1 + sjme_atomic_sjme_jint_getAdd(
+	result->threadId = 1 + sjme_atomic_ga(sjme_jint, 
 		&inState->nextThreadId, 1);
 	result->object.identityHash =
 		sjme_nvm_instance_calcIdentityHash(inTask, result);
@@ -767,25 +823,24 @@ sjme_errorCode sjme_nvm_task_threadNew(
 
 	/* Increase task thread count, for both all and normal. Normal gets */
 	/* an add because a thread gets daemon being set later. */
-	sjme_atomic_sjme_jint_getAdd(
+	sjme_atomic_ga(sjme_jint, 
 		&inTask->numThreads[SJME_NVM_THREAD_COUNT_ALL], 1);
-	sjme_atomic_sjme_jint_getAdd(
+	sjme_atomic_ga(sjme_jint, 
 		&inTask->numThreads[SJME_NVM_THREAD_COUNT_NORMAL], 1);
 	
 	/* The main thread gets flagged as the main thread. */
 	if (isMain)
 	{
 		/* Set the main thread, if not set. */
-		if (sjme_atomic_sjme_pointer_compareSet(
+		if (sjme_atomic_cs(sjme_pointer, 
 			&inTask->globals.mainThread, NULL, result))
 		{
 			/* Record that this is the actual main thread. */
 			result->isMain = SJME_JNI_TRUE;
 
 			/* Make sure the count is just one. */
-			sjme_atomic_sjme_jint_compareSet(
-				&inTask->numThreads[SJME_NVM_THREAD_COUNT_MAIN],
-				0, 1);
+			sjme_atomic_ga(sjme_jint, 
+				&inTask->numThreads[SJME_NVM_THREAD_COUNT_MAIN], 1);
 		}
 	}
 	
@@ -829,7 +884,7 @@ sjme_errorCode sjme_nvm_task_threadStart(
 		return SJME_ERROR_INVALID_THREAD_STATE;
 
 	/* Threads can only be started once! */
-	if (!sjme_atomic_sjme_jint_compareSet(&inThread->start,
+	if (!sjme_atomic_cs(sjme_jint, &inThread->start,
 		SJME_NVM_THREAD_START_NEVER,
 		SJME_NVM_THREAD_START_STANDARD))
 		return SJME_ERROR_INVALID_THREAD_STATE;
@@ -935,7 +990,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 		goto fail_dupSeq;
 
 	/* Set sequence. */
-	if (!sjme_atomic_sjme_charSeq_compareSet(&result->seq,
+	if (!sjme_atomic_cs(sjme_charSeq, &result->seq,
 		NULL, strSeq))
 		goto fail_collided;
 	
@@ -985,7 +1040,7 @@ fail_countInIntern:
 fail_collided:
 fail_dupSeq:
 	if (!isIntern && result != NULL)
-		sjme_atomic_sjme_charSeq_set(&result->seq, NULL);
+		sjme_atomic_s(sjme_charSeq, &result->seq, NULL);
 	if (strSeq != NULL)
 		sjme_alloc_free(strSeq);
 fail_replaceList:

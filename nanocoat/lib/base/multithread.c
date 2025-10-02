@@ -13,6 +13,10 @@
 #include "sjme/config.h"
 #include "sjme/multithread.h"
 
+#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+	#include <signal.h>
+#endif
+
 #if defined(SJME_CONFIG_HAS_OS_LINUX)
 	#include <sched.h>
 #elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
@@ -28,6 +32,14 @@
 #if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
 /** The only available thread. */
 static const sjme_thread sjme_singleCurrent;
+#endif
+
+#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+static void sjme_thread_pthreadResume(int signalId)
+{
+	/* No longer handle the signal, otherwise an infinite loop occurs. */
+	signal(signalId, SIG_IGN);
+}
 #endif
 
 sjme_errorCode sjme_thread_current(
@@ -94,6 +106,7 @@ sjme_errorCode sjme_thread_new(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+	static sjme_jboolean signalInit;
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 #endif
 	sjme_thread result;
@@ -112,6 +125,16 @@ sjme_errorCode sjme_thread_new(
 	sjme_atomic_barrier();
 
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+	/* If the signal handler was not yet setup, then set it up. */
+	if (!signalInit)
+	{
+		/* Register the signal handler. */
+		signal(SIGUSR1, sjme_thread_pthreadResume);
+		
+		/* Is now setup. */
+		signalInit = SJME_JNI_TRUE;
+	}
+	
 	/* Setup new thread. */
 	if (0 != pthread_create(&result, NULL,
 		inMain, anything))
@@ -170,7 +193,7 @@ sjme_errorCode sjme_thread_rwLockGrabRead(
 		
 		/* The write count determines if we cannot get this lock. */
 		sjme_atomic_barrier();
-		writeCount = sjme_atomic_sjme_jint_get(&inLock->writeCount);
+		writeCount = sjme_atomic_g(sjme_jint, &inLock->writeCount);
 		sjme_atomic_barrier();
 			
 		/* Release the read lock. */
@@ -218,7 +241,7 @@ sjme_errorCode sjme_thread_rwLockGrabWrite(
 		return sjme_error_default(error);
 		
 	/* Bump up the write lock count. */
-	writeCount = sjme_atomic_sjme_jint_getAdd(&inLock->writeCount,
+	writeCount = sjme_atomic_ga(sjme_jint, &inLock->writeCount,
 		1);
 		
 	/* Grab the write lock next. */
@@ -278,7 +301,7 @@ sjme_errorCode sjme_thread_rwLockReleaseWrite(
 		return sjme_error_default(error);
 	
 	/* Lower the write count. */
-	writeCount = sjme_atomic_sjme_jint_getAdd(&inLock->writeCount,
+	writeCount = sjme_atomic_ga(sjme_jint, &inLock->writeCount,
 		-1);
 	
 	/* Is the write lock completely clear now? If so release the read lock. */
@@ -313,7 +336,7 @@ sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
 	for (keepSpinning = SJME_JNI_TRUE; keepSpinning;)
 	{
 		/* Grab the peek lock. */
-		while (SJME_JNI_FALSE == sjme_atomic_sjme_thread_compareSet(
+		while (SJME_JNI_FALSE == sjme_atomic_cs(sjme_thread, 
 			&inLock->poke, SJME_THREAD_NULL, current))
 		{
 			sjme_atomic_barrier();
@@ -322,18 +345,18 @@ sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
 		}
 		
 		/* We own the lock already, or we just owned it, so count up. */
-		if (sjme_atomic_sjme_thread_compareSet(&inLock->owner,
+		if (sjme_atomic_cs(sjme_thread, &inLock->owner,
 			current, current) ||
-			sjme_atomic_sjme_thread_compareSet(&inLock->owner,
+			sjme_atomic_cs(sjme_thread, &inLock->owner,
 				SJME_THREAD_NULL, current))
 		{
-			sjme_atomic_sjme_jint_getAdd(&inLock->count, 1);
+			sjme_atomic_ga(sjme_jint, &inLock->count, 1);
 			
 			keepSpinning = SJME_JNI_FALSE;
 		}
 		
 		/* Clear the peek lock. */
-		sjme_atomic_sjme_thread_compareSet(&inLock->poke,
+		sjme_atomic_cs(sjme_thread, &inLock->poke,
 			current, SJME_THREAD_NULL);
 	}
 		
@@ -364,7 +387,7 @@ sjme_errorCode sjme_thread_spinLockRelease(
 			SJME_ERROR_INVALID_THREAD_STATE);
 	
 	/* Grab the peek lock. */
-	while (SJME_JNI_FALSE == sjme_atomic_sjme_thread_compareSet(
+	while (SJME_JNI_FALSE == sjme_atomic_cs(sjme_thread, 
 		&inLock->poke, SJME_THREAD_NULL, current))
 	{
 		sjme_atomic_barrier();
@@ -374,22 +397,22 @@ sjme_errorCode sjme_thread_spinLockRelease(
 	
 	/* We own the lock hopefully, so count down. */
 	count = -1;
-	if ((owned = sjme_atomic_sjme_thread_compareSet(&inLock->owner,
+	if ((owned = sjme_atomic_cs(sjme_thread, &inLock->owner,
 		current, current)))
 	{
 		/* If we count down to zero, then we no longer own the lock. */
-		if ((count = sjme_atomic_sjme_jint_getAdd(&inLock->count,
+		if ((count = sjme_atomic_ga(sjme_jint, &inLock->count,
 			-1)) <= 1)
 		{
-			sjme_atomic_sjme_thread_set(&inLock->owner,
+			sjme_atomic_s(sjme_thread, &inLock->owner,
 				SJME_THREAD_NULL);
-			sjme_atomic_sjme_jint_set(&inLock->count,
+			sjme_atomic_s(sjme_jint, &inLock->count,
 				(count = 0));
 		}
 	}
 	
 	/* Clear the peek lock. */
-	sjme_atomic_sjme_thread_compareSet(&inLock->poke,
+	sjme_atomic_cs(sjme_thread, &inLock->poke,
 		current, SJME_THREAD_NULL);
 		
 	/* Do this just for good measure for the wierd CPUs. */
@@ -399,7 +422,7 @@ sjme_errorCode sjme_thread_spinLockRelease(
 	/* Do we not own the lock? */
 	if (!owned)
 		sjme_message("Lock %p owner %p is not %p",
-			inLock, sjme_atomic_sjme_thread_get(&inLock->owner), current);
+			inLock, sjme_atomic_g(sjme_thread, &inLock->owner), current);
 #endif
 	
 	/* Give the lock count that is left. */
@@ -452,6 +475,22 @@ void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
 	nanosleep(&request, NULL);
 	
 #else
+#endif
+}
+
+sjme_errorCode sjme_thread_wake(
+	sjme_attrInNotNull sjme_thread inThread)
+{
+	if (inThread == SJME_THREAD_NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
+	/* Send the user signal to the thread, to force wake it. */
+	pthread_kill(inThread, SIGUSR1);
+#else
+	/* No native support. */
+	return SJME_ERROR_NONE;
 #endif
 }
 

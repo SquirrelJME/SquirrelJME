@@ -72,7 +72,7 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Recover the top level state. */
-	inState = sjme_atomic_sjme_pointer_get(&wrappedState->topState);
+	inState = sjme_atomic_g(sjme_pointer, &wrappedState->topState);
 	if (inState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 

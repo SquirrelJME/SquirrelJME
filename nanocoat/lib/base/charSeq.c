@@ -448,7 +448,7 @@ sjme_errorCode sjme_charSeq_hash(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Does the hash need to be calculated? */
-	result = sjme_atomic_sjme_jint_get(&inSeq->hash);
+	result = sjme_atomic_g(sjme_jint, &inSeq->hash);
 	if (result == 0)
 	{
 		/* Calculate the hashCode(), the JavaDoc gives the following formula:
@@ -465,7 +465,7 @@ sjme_errorCode sjme_charSeq_hash(
 		}
 
 		/* Store hash. */
-		sjme_atomic_sjme_jint_compareSet(&inSeq->hash, 0, result);
+		sjme_atomic_cs(sjme_jint, &inSeq->hash, 0, result);
 	}
 
 	/* The hash is always precalculated. */

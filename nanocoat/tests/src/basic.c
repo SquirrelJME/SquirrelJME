@@ -64,7 +64,9 @@ void sjme_test_leakCheck(sjme_alloc_pool pool)
 	sjme_alloc_link link;
 	
 	/* Go through every link. */
-	for (link = pool->frontLink; link != NULL; link = link->next)
+	for (link = sjme_atomic_g(sjme_alloc_link, &pool->frontLink);
+		link != NULL;
+		link = sjme_atomic_g(sjme_alloc_link, &link->next))
 		if (link->space == SJME_ALLOC_POOL_SPACE_USED)
 		{
 			/* Indicate it leaked */

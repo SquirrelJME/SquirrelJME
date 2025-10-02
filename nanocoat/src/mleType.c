@@ -83,7 +83,7 @@ SJME_NVM_MLE_FUNCTION_DECL(component)
 	/* Return the component type of the class. */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
 	argR->v.l = SJME_AS_JOBJECT(
-		sjme_atomic_sjme_jclass_get(&inType->componentType));
+		sjme_atomic_g(sjme_jclass, &inType->componentType));
 	return SJME_ERROR_NONE;
 }
 
@@ -100,7 +100,7 @@ SJME_NVM_MLE_FUNCTION_DECL(findType)
 		return SJME_ERROR_MLE_CALL;
 
 	/* The sequence must be valid. */
-	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &string->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
 
@@ -279,7 +279,7 @@ SJME_NVM_MLE_FUNCTION_DECL(superClass)
 	/* Return the direct super class. */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
 	argR->v.l = SJME_AS_JOBJECT(
-		sjme_atomic_sjme_jclass_get(&inType->superClass));
+		sjme_atomic_g(sjme_jclass, &inType->superClass));
 	return SJME_ERROR_NONE;
 }
 

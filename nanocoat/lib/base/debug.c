@@ -63,7 +63,7 @@ sjme_jboolean sjme_debug_abort(sjme_errorCode error)
 	static sjme_atomic_sjme_jint didAbort;
 
 	/* Only trigger abort once. */
-	if (sjme_atomic_sjme_jint_compareSet(&didAbort, 0, 1))
+	if (sjme_atomic_cs(sjme_jint, &didAbort, 0, 1))
 	{
 		/* Use specific abort handler? */
 		if (sjme_debug_handlers != NULL && sjme_debug_handlers->abort != NULL)
@@ -90,7 +90,7 @@ sjme_jboolean sjme_debug_abort(sjme_errorCode error)
 		abort();
 
 		/* We skipped abort, so clear it. */
-		sjme_atomic_sjme_jint_compareSet(&didAbort, 1, 0);
+		sjme_atomic_cs(sjme_jint, &didAbort, 1, 0);
 
 		/* Triggered abort. */
 		return SJME_JNI_TRUE;

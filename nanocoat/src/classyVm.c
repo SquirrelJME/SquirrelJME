@@ -645,14 +645,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 		return sjme_error_vmError(contextThread, error);
 
 	/* Set component type, and tha phantom back link for quicker lookup. */
-	sjme_atomic_sjme_jclass_compareSet(&inClass->componentType,
+	sjme_atomic_cs(sjme_jclass, &inClass->componentType,
 		NULL, componentType);
-	sjme_atomic_sjme_jclass_compareSet(&componentType->phantomArrayType,
+	sjme_atomic_cs(sjme_jclass, &componentType->phantomArrayType,
 		NULL, inClass);
 
 	/* Set dimension count to be one higher than the component type. */
-	sjme_atomic_sjme_jint_set(&inClass->numDimensions,
-		sjme_atomic_sjme_jint_get(&componentType->numDimensions) + 1);
+	sjme_atomic_s(sjme_jint, &inClass->numDimensions,
+		sjme_atomic_g(sjme_jint, &componentType->numDimensions) + 1);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -1007,9 +1007,9 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	
 	/* Initialize base fields. */
 	result->binaryName = dupName;
-	sjme_atomic_sjme_jint_set(&result->error, SJME_ERROR_NONE);
-	sjme_atomic_sjme_jint_set(&result->isLoaded, 0);
-	sjme_atomic_sjme_jint_set(&result->isInitialized, autoLoad);
+	sjme_atomic_s(sjme_jint, &result->error, SJME_ERROR_NONE);
+	sjme_atomic_s(sjme_jint, &result->isLoaded, 0);
+	sjme_atomic_s(sjme_jint, &result->isInitialized, autoLoad);
 	
 	/* Store into the output slot immediately for recursive loading. */
 	*outSlot = result;
@@ -1060,7 +1060,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Error state occurred? */
-	error = sjme_atomic_sjme_jint_get(&inClass->error);
+	error = sjme_atomic_g(sjme_jint, &inClass->error);
 	if (sjme_error_is(error))
 		return sjme_error_default(error);
 	
@@ -1068,19 +1068,19 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	allocPool = contextThread->inState->allocPool;
 	
 	/* Needs loading first? */
-	if (sjme_atomic_sjme_jint_get(
+	if (sjme_atomic_g(sjme_jint, 
 		&inClass->isLoaded) == SJME_VM_CLASS_INIT_LOAD_NEVER)
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkLoad(inClass,
 			contextThread)))
 			goto fail_checkLoad;
 	
 	/* Set to be currently initializing. */
-	if (!sjme_atomic_sjme_jint_compareSet(&inClass->isInitialized,
+	if (!sjme_atomic_cs(sjme_jint, &inClass->isInitialized,
 		SJME_VM_CLASS_INIT_LOAD_NEVER,
 		SJME_VM_CLASS_INIT_LOAD_CURRENT))
 	{
 		/* Does not need to be initialized? */
-		if (sjme_atomic_sjme_jint_get(
+		if (sjme_atomic_g(sjme_jint, 
 			&inClass->isInitialized) != SJME_VM_CLASS_INIT_LOAD_NEVER)
 			return SJME_ERROR_NONE;
 		
@@ -1132,7 +1132,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			goto fail_findSuper;
 		
 		/* Set superclass. */
-		sjme_atomic_sjme_jclass_set(&inClass->superClass,
+		sjme_atomic_s(sjme_jclass, &inClass->superClass,
 			superClass);
 	}
 	
@@ -1272,7 +1272,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			goto fail_initStatics;
 	
 	/* Set as initialized now. */
-	if (!sjme_atomic_sjme_jint_compareSet(&inClass->isInitialized,
+	if (!sjme_atomic_cs(sjme_jint, &inClass->isInitialized,
 		SJME_VM_CLASS_INIT_LOAD_CURRENT,
 		SJME_VM_CLASS_INIT_LOAD_DONE))
 		goto fail_markDone;
@@ -1338,7 +1338,7 @@ fail_checkLoad:
 fail_runStaticInit:
 fail_findStaticInit:
 	/* Cache load error. */
-	sjme_atomic_sjme_jint_compareSet(&inClass->error,
+	sjme_atomic_cs(sjme_jint, &inClass->error,
 		SJME_ERROR_NONE, sjme_error_default(error));
 	
 	return sjme_error_vmError(contextThread, error);
@@ -1356,12 +1356,12 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Error state occurred? */
-	error = sjme_atomic_sjme_jint_get(&inClass->error);
+	error = sjme_atomic_g(sjme_jint, &inClass->error);
 	if (sjme_error_is(error))
 		return sjme_error_vmError(contextThread, error);
 	
 	/* Does not need to be loaded? */
-	if (sjme_atomic_sjme_jint_get(
+	if (sjme_atomic_g(sjme_jint, 
 		&inClass->isLoaded) != SJME_VM_CLASS_INIT_LOAD_NEVER)
 		return SJME_ERROR_NONE;
 		
@@ -1380,7 +1380,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 		return sjme_error_default(error);
 	
 	/* Set to be currently loading. */
-	if (!sjme_atomic_sjme_jint_compareSet(&inClass->isLoaded,
+	if (!sjme_atomic_cs(sjme_jint, &inClass->isLoaded,
 		SJME_VM_CLASS_INIT_LOAD_NEVER,
 		SJME_VM_CLASS_INIT_LOAD_CURRENT))
 		goto skip_doubleCalled;
@@ -1423,7 +1423,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	inClass->isClasses = isClasses;
 	
 	/* Set as done! */
-	sjme_atomic_sjme_jint_compareSet(&inClass->isLoaded,
+	sjme_atomic_cs(sjme_jint, &inClass->isLoaded,
 		SJME_VM_CLASS_INIT_LOAD_CURRENT,
 		SJME_VM_CLASS_INIT_LOAD_DONE);
 	
@@ -1448,7 +1448,7 @@ fail_releaseLock:
 fail_badState:
 fail_badName:
 	/* Cache load error. */
-	sjme_atomic_sjme_jint_compareSet(&inClass->error,
+	sjme_atomic_cs(sjme_jint, &inClass->error,
 		SJME_ERROR_NONE, sjme_error_default(error));
 	
 	return sjme_error_vmError(contextThread, error);
@@ -1693,8 +1693,8 @@ sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 		return SJME_JNI_TRUE;
 
 	/* We need to compare if we can put an array in another array. */
-	canDims = sjme_atomic_sjme_jint_get(&canAssignTo->numDimensions);
-	fromDims = sjme_atomic_sjme_jint_get(&fromClass->numDimensions);
+	canDims = sjme_atomic_g(sjme_jint, &canAssignTo->numDimensions);
+	fromDims = sjme_atomic_g(sjme_jint, &fromClass->numDimensions);
 	if (canDims > 0 || fromDims > 0)
 	{
 		/* One side has reached zero, while the other side has not, */
@@ -1708,9 +1708,9 @@ sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 		/* Recurse into the component type for the classes, since any array */
 		/* of one component can fit in an array of another component. */
 		return sjme_nvm_vmClass_isAssignableFrom(contextThread,
-			sjme_atomic_sjme_jclass_get(
+			sjme_atomic_g(sjme_jclass, 
 				&canAssignTo->componentType),
-			sjme_atomic_sjme_jclass_get(
+			sjme_atomic_g(sjme_jclass, 
 				&fromClass->componentType));
 	}
 
@@ -2014,7 +2014,7 @@ skip_foundClass:
 		goto fail_releaseRead;
 		
 	/* From this point implicitly initialize as it is being requested. */
-	if (doInit && sjme_atomic_sjme_jint_get(
+	if (doInit && sjme_atomic_g(sjme_jint, 
 		&maybe->isLoaded) == SJME_VM_CLASS_INIT_LOAD_NEVER)
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
 			maybe, contextThread)))

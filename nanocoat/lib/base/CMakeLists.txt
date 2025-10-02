@@ -9,6 +9,7 @@
 # Declare Base library
 squirreljme_multilib_add_library(Base
 	alloc.c
+	allocAtomic.c
 	atomic.c
 	bitStream.c
 	cbor.c

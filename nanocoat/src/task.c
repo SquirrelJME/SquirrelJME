@@ -56,7 +56,7 @@ static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* No change in schedule state? */
-	wasMode = sjme_atomic_sjme_jint_get(&inThread->scheduleMode);
+	wasMode = sjme_atomic_g(sjme_jint, &inThread->scheduleMode);
 	if (wasMode == modeTo)
 		return SJME_ERROR_NONE;
 
@@ -76,7 +76,7 @@ static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 			if (fromOrder->elements[i] == inThread)
 			{
 				/* Set the schedule to undefined as it is not in one. */
-				sjme_atomic_sjme_jint_set(&inThread->scheduleMode,
+				sjme_atomic_s(sjme_jint, &inThread->scheduleMode,
 					SJME_NVM_THREAD_UNDEFINED_SCHEDULE);
 				fromOrder->elements[i] = NULL;
 
@@ -108,7 +108,7 @@ static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 		toSub->order = toOrder;
 
 	/* Mark the thread as being scheduled in the given target. */
-	sjme_atomic_sjme_jint_set(&inThread->scheduleMode, modeTo);
+	sjme_atomic_s(sjme_jint, &inThread->scheduleMode, modeTo);
 
 	/* Success! */
 skip_noPlace:
@@ -210,7 +210,7 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Already cached? */
-	result = sjme_atomic_sjme_jclass_get(
+	result = sjme_atomic_g(sjme_jclass, 
 		&contextThread->inTask->globals.commonClasses[commonId]);
 	if (result != NULL)
 	{
@@ -327,7 +327,7 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		return sjme_error_vmError(contextThread, error);
 
 	/* Cache for later. */
-	sjme_atomic_sjme_jclass_compareSet(
+	sjme_atomic_cs(sjme_jclass, 
 		&contextThread->inTask->globals.commonClasses[commonId],
 		NULL, result);
 
@@ -499,7 +499,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 			if (sjme_nvm_isAR(message, SJME_NVM_STRUCT_STRING_INSTANCE))
 			{
 				/* If the sequence is valid, print it. */
-				messageSeq = sjme_atomic_sjme_charSeq_get(&message->seq);
+				messageSeq = sjme_atomic_g(sjme_charSeq, &message->seq);
 				if (messageSeq != NULL)
 				{
 					sjme_emitB("EXCEPTION %s: %s",
@@ -519,7 +519,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 				inThrowable->object.isClass->binaryName));
 
 	/* There may be trace points in this. */
-	pointArray = (sjme_jarray)sjme_atomic_sjme_intPointer_get(
+	pointArray = (sjme_jarray)sjme_atomic_g(sjme_intPointer, 
 		&inThrowable->object.special);
 	if (pointArray != NULL)
 	{
@@ -591,7 +591,7 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 		return sjme_error_default(error);
 
 	/* Main thread already set? */
-	if (sjme_atomic_sjme_pointer_get(&inTask->globals.mainThread) != NULL)
+	if (sjme_atomic_g(sjme_pointer, &inTask->globals.mainThread) != NULL)
 		goto fail_mainExists;
 
 	/* Quicker to reference this way. */
@@ -812,7 +812,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	/* Refer to owning state and set identifier. */
 	result->inState = inState;
 	result->classLoader = classLoader;
-	result->id = 1 + sjme_atomic_sjme_jint_getAdd(
+	result->id = 1 + sjme_atomic_ga(sjme_jint, 
 		&inState->nextTaskId, 1);
 	result->strings = strings;
 	result->initConfig = initConfigCopy;
@@ -854,7 +854,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 		goto fail_stateLockRelease;
 	
 	/* Add to the running task count. */
-	sjme_atomic_sjme_jint_getAdd(&inState->numRunningTasks, 1);
+	sjme_atomic_ga(sjme_jint, &inState->numRunningTasks, 1);
 
 	/* Not belaying main start? Then start the main thread. */
 	if ((initConfigCopy->belay & SJME_NVM_BOOT_BELAY_MAIN) == 0)
@@ -930,7 +930,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleDelete(
 		return SJME_ERROR_NONE;
 
 	/* Ignore if already deleted. */
-	if (sjme_atomic_sjme_jint_get(&inThread->scheduleMode) ==
+	if (sjme_atomic_g(sjme_jint, &inThread->scheduleMode) ==
 		SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
 		return SJME_ERROR_NONE;
 
@@ -979,7 +979,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleIn(
 		return SJME_ERROR_NONE;
 
 	/* Ignore if already scheduled. */
-	if (sjme_atomic_sjme_jint_get(&inThread->scheduleMode) ==
+	if (sjme_atomic_g(sjme_jint, &inThread->scheduleMode) ==
 			SJME_NVM_THREAD_SCHEDULED)
 		return SJME_ERROR_NONE;
 
@@ -1027,7 +1027,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 	
 	/* Default state. */
 	nextThread = NULL;
-	terminated = sjme_atomic_sjme_jint_get(&inState->terminating);
+	terminated = sjme_atomic_g(sjme_jint, &inState->terminating);
 
 	/* Terminating already? Or no-effect when multithreaded. */
 	if (terminated || inState->threadModel == SJME_NVM_MLE_THREAD_MULTI)
@@ -1038,7 +1038,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 	}
 	
 	/* If no tasks are left alive, stop VM execution. */
-	if (sjme_atomic_sjme_jint_get(&inState->numRunningTasks) <= 0)
+	if (sjme_atomic_g(sjme_jint, &inState->numRunningTasks) <= 0)
 	{
 		*runThread = NULL;
 		*isTerminated = SJME_JNI_TRUE;
@@ -1127,7 +1127,8 @@ fail_checkRunning:
 
 sjme_errorCode sjme_nvm_task_taskScheduleOut(
 	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull sjme_nvm_thread inThread)
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInPositive sjme_jint msResting)
 {
 	sjme_errorCode error;
 	sjme_nvm_threadSchedule* schedule;
@@ -1135,12 +1136,15 @@ sjme_errorCode sjme_nvm_task_taskScheduleOut(
 	if (inState == NULL || inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	if (msResting < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
 	/* No effect in multi-threading. */
 	if (SJME_T_S(inThread)->threadModel == SJME_NVM_MLE_THREAD_MULTI)
 		return SJME_ERROR_NONE;
 
 	/* Ignore if already unscheduled. */
-	if (sjme_atomic_sjme_jint_get(&inThread->scheduleMode) ==
+	if (sjme_atomic_g(sjme_jint, &inThread->scheduleMode) ==
 		SJME_NVM_THREAD_UNSCHEDULED)
 		return SJME_ERROR_NONE;
 
@@ -1169,7 +1173,7 @@ fail_move:
 	return sjme_error_default(error);
 }
 
-sjme_jboolean sjme_nvm_task_taskScheduleYes(
+sjme_errorCode sjme_nvm_task_taskScheduleYes(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jboolean* isRunning)
@@ -1183,7 +1187,7 @@ sjme_jboolean sjme_nvm_task_taskScheduleYes(
 	
 	/* If this is a callback thread, only consider if it has at least */
 	/* one actively running frame. */
-	start = sjme_atomic_sjme_jint_get(&inThread->start);
+	start = sjme_atomic_g(sjme_jint, &inThread->start);
 	if (start == SJME_NVM_THREAD_START_CALLBACK)
 	{
 		if (inThread->numFrames > 0)
@@ -1198,38 +1202,38 @@ sjme_jboolean sjme_nvm_task_taskScheduleYes(
 	else if (start == SJME_NVM_THREAD_START_FINISHING)
 	{
 		/* Mark as finished. */
-		sjme_atomic_sjme_jint_compareSet(&inThread->start,
+		sjme_atomic_cs(sjme_jint, &inThread->start,
 			SJME_NVM_THREAD_START_FINISHING,
 			SJME_NVM_THREAD_START_FINISHED);
 
 		/* This thread is awaiting termination. */
 		inTask = SJME_T_K(inThread);
-		sjme_atomic_sjme_jint_getAdd(
+		sjme_atomic_ga(sjme_jint, 
 			&inTask->numThreads[SJME_NVM_THREAD_COUNT_AWAIT_CLEANUP],
 			1);
 
 		/* If this is the main thread, then reduce count. */
 		if (inThread->isMain)
-			sjme_atomic_sjme_jint_getAdd(
+			sjme_atomic_ga(sjme_jint, 
 				&inTask->numThreads[SJME_NVM_THREAD_COUNT_MAIN], -1);
 
 		/* Reduce total thread count. */
-		sjme_atomic_sjme_jint_getAdd(
+		sjme_atomic_ga(sjme_jint, 
 			&inTask->numThreads[SJME_NVM_THREAD_COUNT_ALL], -1);
 
 		/* Non-daemon or daemon thread? */
 		if (inThread->flags.isDaemon)
-			sjme_atomic_sjme_jint_getAdd(
+			sjme_atomic_ga(sjme_jint, 
 				&inTask->numThreads[SJME_NVM_THREAD_COUNT_DAEMON], -1);
 		else
 		{
 			/* How many threads are left? */
-			left = sjme_atomic_sjme_jint_getAdd(
+			left = sjme_atomic_ga(sjme_jint, 
 				&inTask->numThreads[SJME_NVM_THREAD_COUNT_NORMAL], -1) - 1;
 
 			/* If there are no threads left, then start termination. */
 			if (left <= 0)
-				sjme_atomic_sjme_jint_compareSet(&inTask->terminate,
+				sjme_atomic_cs(sjme_jint, &inTask->terminate,
 					SJME_NVM_TERMINATE_NOT,
 					SJME_NVM_TERMINATE_CLEANUP);
 		}

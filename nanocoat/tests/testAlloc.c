@@ -23,6 +23,7 @@ SJME_TEST_DECLARE(testAlloc)
 	sjme_alloc_link link;
 	sjme_alloc_link freeFirstFixed;
 	sjme_alloc_link freeLastFixed;
+	sjme_alloc_link lp;
 	
 	/* Allocate data on the stack so it gets cleared. */
 	chunkLen = 32768;
@@ -38,8 +39,8 @@ SJME_TEST_DECLARE(testAlloc)
 		return sjme_unit_fail(test, "Could not initialize static pool?");
 	
 	/* Store these as they should be untouched. */
-	freeFirstFixed = pool->freeFirstLink;
-	freeLastFixed = pool->freeLastLink;
+	freeFirstFixed = sjme_atomic_g(sjme_alloc_link, &pool->freeFirstLink);
+	freeLastFixed = sjme_atomic_g(sjme_alloc_link, &pool->freeLastLink);
 	
 	/* Allocate some memory in the pool. */
 	block = NULL;
@@ -67,16 +68,22 @@ SJME_TEST_DECLARE(testAlloc)
 		"Block size not divisible by 8?");
 	
 	/* The edge of the block should be the right side. */
-	sjme_unit_equalP(test, &link->block[link->blockSize], link->next,
+	sjme_unit_equalP(test, &link->block[link->blockSize],
+		sjme_atomic_g(sjme_alloc_link, &link->next),
 		"Block to the right not at the edge of this one?");
 	
 	/* The left edge should be the same as well. */
-	sjme_unit_equalP(test, &link->prev->block[link->prev->blockSize], link,
+	lp = sjme_atomic_g(sjme_alloc_link, &link->prev);
+	sjme_unit_equalP(test, &lp->block[lp->blockSize], link,
 		"This block on at the edge of the left side block?");
 	
 	/* There should be no free prev and next. */
-	sjme_unit_equalP(test, link->freeNext, NULL, "Free next not cleared?");
-	sjme_unit_equalP(test, link->freePrev, NULL, "Free prev not cleared?");
+	sjme_unit_equalP(test,
+		sjme_atomic_g(sjme_alloc_link, &link->freeNext),
+		NULL, "Free next not cleared?");
+	sjme_unit_equalP(test,
+		sjme_atomic_g(sjme_alloc_link, &link->freePrev),
+		NULL, "Free prev not cleared?");
 		
 	/* Link should be marked used. */
 	sjme_unit_equalI(test, link->space, SJME_ALLOC_POOL_SPACE_USED,
@@ -86,17 +93,23 @@ SJME_TEST_DECLARE(testAlloc)
 	sjme_unit_equalP(test, block, &link->block[0], "Wrong block pointers?");
 	
 	/** The previous block should still be the front link. */
-	sjme_unit_equalP(test, link->prev, pool->frontLink,
+	sjme_unit_equalP(test,
+		sjme_atomic_g(sjme_alloc_link, &link->prev),
+		sjme_atomic_g(sjme_alloc_link, &pool->frontLink),
 		"Block prev not pointing to the front link?");
 	
 	/* Next link should be the backlink's previous. */
-	sjme_unit_equalP(test, link->next, pool->backLink->prev,
+	sjme_unit_equalP(test,
+		sjme_atomic_g(sjme_alloc_link, &link->next),
+		sjme_atomic_chainGetGet(sjme_alloc_link, &pool->backLink, ->prev),
 		"Back link previous is not the next free block?");
 	
 	/* The fixed links should be unchanged. */
-	sjme_unit_equalP(test, pool->freeFirstLink, freeFirstFixed,
+	sjme_unit_equalP(test,
+		sjme_atomic_g(sjme_alloc_link, &pool->freeFirstLink), freeFirstFixed,
 		"First free link changed after alloc?");
-	sjme_unit_equalP(test, pool->freeLastLink, freeLastFixed,
+	sjme_unit_equalP(test,
+		sjme_atomic_g(sjme_alloc_link, &pool->freeLastLink), freeLastFixed,
 		"First free link changed after alloc?");
 	
 	/* Free the block. */
@@ -115,19 +128,25 @@ SJME_TEST_DECLARE(testAlloc)
 	sjme_unit_equalP(test, link->weak, NULL, "Weak link is set?");
 	
 	/* The fixed links should be unchanged. */
-	sjme_unit_equalP(test, pool->freeFirstLink, freeFirstFixed,
+	sjme_unit_equalP(test,
+		sjme_atomic_g(sjme_alloc_link, &pool->freeFirstLink), freeFirstFixed,
 		"First free link changed after free?");
-	sjme_unit_equalP(test, pool->freeLastLink, freeLastFixed,
+	sjme_unit_equalP(test,
+		sjme_atomic_g(sjme_alloc_link, &pool->freeLastLink), freeLastFixed,
 		"First free link changed after free?");
 	
 	/* There should be a previous and next free link. */
-	sjme_unit_notEqualP(test, link->freeNext, NULL, "Free next not reset?");
-	sjme_unit_notEqualP(test, link->freePrev, NULL, "Free prev not reset?");
+	sjme_unit_notEqualP(test, sjme_atomic_g(sjme_alloc_link, &link->freeNext),
+		NULL, "Free next not reset?");
+	sjme_unit_notEqualP(test, sjme_atomic_g(sjme_alloc_link, &link->freePrev),
+		NULL, "Free prev not reset?");
 	
 	/* Next block should be the tail, for merging back in. */
-	sjme_unit_equalP(test, link->prev, pool->frontLink,
+	sjme_unit_equalP(test, sjme_atomic_g(sjme_alloc_link, &link->prev),
+		sjme_atomic_g(sjme_alloc_link, &pool->frontLink),
 		"Block next not pointing to the front link?");
-	sjme_unit_equalP(test, link->next, pool->backLink,
+	sjme_unit_equalP(test, sjme_atomic_g(sjme_alloc_link, &link->next),
+		sjme_atomic_g(sjme_alloc_link, &pool->backLink),
 		"Block next not pointing to the back link?");
 	
 	/* Success. */

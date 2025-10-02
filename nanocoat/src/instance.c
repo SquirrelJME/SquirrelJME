@@ -86,8 +86,8 @@ sjme_errorCode sjme_nvm_instance_countBalanceR(
 				(oldV->isClass != NULL ?
 					sjme_charSeq_tempUtf(oldV->isClass->binaryName) :
 					"?"),
-				sjme_atomic_sjme_jint_get(&weak->count),
-				sjme_atomic_sjme_jint_get(&weak->count));
+				sjme_atomic_g(sjme_jint, &weak->count),
+				sjme_atomic_g(sjme_jint, &weak->count));
 		}
 #endif
 
@@ -135,7 +135,7 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 
 #if defined(SJME_CONFIG_DEBUG_GC)
 	/* Get old count for debugging. */
-	oldCount = sjme_atomic_sjme_jint_get(&weak->count);
+	oldCount = sjme_atomic_g(sjme_jint, &weak->count);
 #endif
 
 	/* Reduce the count on this. */
@@ -151,7 +151,7 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 		(object->isClass != NULL ?
 			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),
 		oldCount,
-		sjme_atomic_sjme_jint_get(&weak->count));
+		sjme_atomic_g(sjme_jint, &weak->count));
 #endif
 
 	/* Success! */
@@ -183,7 +183,7 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 
 #if defined(SJME_CONFIG_DEBUG_GC)
 	/* Recover old count for debugging. */
-	oldCount = sjme_atomic_sjme_jint_get(&weak->count);
+	oldCount = sjme_atomic_g(sjme_jint, &weak->count);
 #endif
 
 	/* Count up. */
@@ -199,7 +199,7 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 		(object->isClass != NULL ?
 			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),
 		oldCount,
-		sjme_atomic_sjme_jint_get(&weak->count));
+		sjme_atomic_g(sjme_jint, &weak->count));
 #endif
 
 	/* Success! */
@@ -573,7 +573,7 @@ sjme_errorCode sjme_nvm_instance_monitorEnter(
 		return sjme_error_vmError(contextThread, error);
 
 	/* Count up the monitor since we do have the lock. */
-	sjme_atomic_sjme_jint_getAdd(&instance->monitorCount, 1);
+	sjme_atomic_ga(sjme_jint, &instance->monitorCount, 1);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -589,7 +589,7 @@ sjme_errorCode sjme_nvm_instance_monitorExit(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* There are no monitor locks on this instance? */
-	if (sjme_atomic_sjme_jint_get(&instance->monitorCount) < 0)
+	if (sjme_atomic_g(sjme_jint, &instance->monitorCount) < 0)
 		return SJME_ERROR_NOT_LOCK_OWNER;
 	
 	/* Release the lock on the object. */
@@ -598,7 +598,7 @@ sjme_errorCode sjme_nvm_instance_monitorExit(
 		return sjme_error_vmError(contextThread, error);
 
 	/* We did a successful release, so count the locks down. */
-	sjme_atomic_sjme_jint_getAdd(&instance->monitorCount, -1);
+	sjme_atomic_ga(sjme_jint, &instance->monitorCount, -1);
 
 	/* Success! */
 	return SJME_ERROR_NONE;

@@ -44,9 +44,9 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	renderInfo->clock = inState->clock.clock;
 	
 	/* Get the latency to determine the sample count. */
-	latency = (sjme_atomic_sjme_jint_get(&inState->pollDelayMillis) *
+	latency = (sjme_atomic_g(sjme_jint, &inState->pollDelayMillis) *
 		1000000);
-	if (sjme_atomic_sjme_jint_get(&inState->pollDelayNanos) > 0)
+	if (sjme_atomic_g(sjme_jint, &inState->pollDelayNanos) > 0)
 		latency += 1000000;
 
 	/* Calculate the expected number of samples. */

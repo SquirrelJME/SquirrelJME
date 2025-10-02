@@ -46,7 +46,7 @@ SJME_NVM_MLE_FUNCTION_DECL(encoding)
 #endif
 
 	/* Cached? */
-	encoding = sjme_atomic_sjme_jint_get(&cached);
+	encoding = sjme_atomic_g(sjme_jint, &cached);
 	if (encoding != SJME_NVM_MLE_ENCODING_UNSPECIFIED)
 		goto skip_cached;
 
@@ -91,7 +91,7 @@ SJME_NVM_MLE_FUNCTION_DECL(encoding)
 	/* Fallback to UTF-8 if unspecified. */
 	if (encoding == SJME_NVM_MLE_ENCODING_UNSPECIFIED)
 		encoding = SJME_NVM_MLE_ENCODING_UTF8;
-	sjme_atomic_sjme_jint_set(&cached, encoding);
+	sjme_atomic_s(sjme_jint, &cached, encoding);
 
 	/* Return the given encoding. */
 skip_cached:
@@ -102,8 +102,19 @@ skip_cached:
 
 SJME_NVM_MLE_FUNCTION_DECL(exit)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_nvm_task inTask;
+
+	/* Set the exit code to use. */
+	inTask = SJME_F_K(inFrame);
+	sjme_atomic_s(sjme_jint, &inTask->exitCode, argV[0].v.i);
+	
+	/* Have this task start termination. */
+	sjme_atomic_cs(sjme_jint, &inTask->terminate,
+		SJME_NVM_TERMINATE_NOT,
+		SJME_NVM_TERMINATE_CLEANUP);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(garbageCollect)
@@ -140,7 +151,7 @@ SJME_NVM_MLE_FUNCTION_DECL(locale)
 #endif
 
 	/* Cached? */
-	locale = sjme_atomic_sjme_jint_get(&cached);
+	locale = sjme_atomic_g(sjme_jint, &cached);
 	if (locale != SJME_NVM_MLE_LOCALE_UNSPECIFIED)
 		goto skip_cached;
 	
@@ -165,7 +176,7 @@ SJME_NVM_MLE_FUNCTION_DECL(locale)
 	/* Fallback to US English if unspecified. */
 	if (locale == SJME_NVM_MLE_LOCALE_UNSPECIFIED)
 		locale = SJME_NVM_MLE_LOCALE_US_ENGLISH;
-	sjme_atomic_sjme_jint_set(&cached, locale);
+	sjme_atomic_s(sjme_jint, &cached, locale);
 
 	/* Return the given locale. */
 skip_cached:
@@ -218,7 +229,7 @@ SJME_NVM_MLE_FUNCTION_DECL(systemProperty)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Has the sequence ever been initialized? */
-	keySeq = sjme_atomic_sjme_charSeq_get(&key->seq);
+	keySeq = sjme_atomic_g(sjme_charSeq, &key->seq);
 	if (keySeq == NULL)
 		return SJME_ERROR_MLE_CALL;
 

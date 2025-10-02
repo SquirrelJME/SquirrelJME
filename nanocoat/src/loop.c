@@ -62,12 +62,12 @@ sjme_errorCode sjme_nvm_loop_main(
 
 	/* Success! */
 	if (exitCode != NULL)
-		*exitCode = sjme_atomic_sjme_jint_get(&inState->lastExitCode);
+		*exitCode = sjme_atomic_g(sjme_jint, &inState->lastExitCode);
 	return SJME_ERROR_NONE;
 	
 fail_loop:
 	if (exitCode != NULL)
-		*exitCode = sjme_atomic_sjme_jint_get(&inState->lastExitCode);
+		*exitCode = sjme_atomic_g(sjme_jint, &inState->lastExitCode);
 	return sjme_error_default(error);
 }
 
@@ -178,7 +178,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 				return sjme_error_default(error);
 			
 		/* If this task is terminating, unwind everything. */
-		if (sjme_atomic_sjme_jint_get(&inTask->terminate) !=
+		if (sjme_atomic_g(sjme_jint, &inTask->terminate) !=
 			SJME_NVM_TERMINATE_NOT)
 		{
 			/* Leave all thread frames. */
@@ -187,7 +187,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 					goto fail_any;
 
 			/* All threads have been cleaned up? */
-			if ((sjme_atomic_sjme_jint_getAdd(
+			if ((sjme_atomic_ga(sjme_jint, 
 				&inTask->numThreads[SJME_NVM_THREAD_COUNT_AWAIT_CLEANUP],
 				-1) - 1) <= 0)
 			{
@@ -196,13 +196,13 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 					*isTerminated = SJME_JNI_TRUE;
 
 				/* Flag task as cleaned up. */
-				sjme_atomic_sjme_jint_compareSet(&inTask->terminate,
+				sjme_atomic_cs(sjme_jint, &inTask->terminate,
 					SJME_NVM_TERMINATE_CLEANUP,
 					SJME_NVM_TERMINATE_COMPLETE);
 
 				/* Reduce the running task count. */
 				/* This might be the final thread to reduce this to zero. */
-				if ((sjme_atomic_sjme_jint_getAdd(&inState->numRunningTasks,
+				if ((sjme_atomic_ga(sjme_jint, &inState->numRunningTasks,
 					-1) - 1) <= 0)
 				{
 					if (isTerminated)
@@ -233,6 +233,15 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 			currentFrame = inThread->frames->elements[frameIndex];
 			currentCode = currentFrame->inCode;
 			rawCode = currentCode->rawCode;
+		}
+
+		/* If the frame is waiting for a condition to be met, then */
+		/* everything else must not be done until that is actually met. */
+		/* This will force sleep until such is met. */
+		if (sjme_noLint(currentFrame)->condition.function != NULL)
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
 		}
 
 		/* Read instruction vector. */
@@ -280,8 +289,8 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 
 		/* Do not handle the instruction if there is an exception waiting. */
 		/* But as long as we are still below the toss level. */
-		tossed = sjme_atomic_sjme_jobject_get(&inThread->tossed);
-		tossedLevel = sjme_atomic_sjme_jint_get(&inThread->tossedLevel);
+		tossed = sjme_atomic_g(sjme_jobject, &inThread->tossed);
+		tossedLevel = sjme_atomic_g(sjme_jint, &inThread->tossedLevel);
 		if (tossed != NULL && (tossedLevel < 0 ||
 			inThread->numFrames < tossedLevel))
 			goto skip_thrown;
@@ -301,8 +310,8 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 			goto fail_any;
 		
 		/* Has an exception been thrown? */
-		tossed = sjme_atomic_sjme_jobject_get(&inThread->tossed);
-		tossedLevel = sjme_atomic_sjme_jint_get(&inThread->tossedLevel);
+		tossed = sjme_atomic_g(sjme_jobject, &inThread->tossed);
+		tossedLevel = sjme_atomic_g(sjme_jint, &inThread->tossedLevel);
 
 		/* If recycling, we can skip handling exceptions here. */
 		if (pcNew.type == SJME_NVM_BYTECODE_PC_RECYCLE)
@@ -317,7 +326,7 @@ skip_thrown:
 			/* We are finished running the constructor, so set the toss */
 			/* level to a very high amount so any sub-calls are not done */
 			/* freely. */
-			sjme_atomic_sjme_jint_set(&inThread->tossedLevel, INT32_MAX);
+			sjme_atomic_s(sjme_jint, &inThread->tossedLevel, INT32_MAX);
 			
 			/* Find exception handler to jump to. */
 			handled = SJME_JNI_FALSE;
@@ -329,12 +338,12 @@ skip_thrown:
 			if (handled)
 			{
 				/* No longer handle the exception. */
-				if (!sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
+				if (!sjme_atomic_cs(sjme_jobject, &inThread->tossed,
 					tossed, NULL))
 					goto fail_any;
 
 				/* Clear the tossed level. */
-				sjme_atomic_sjme_jint_set(&inThread->tossedLevel, -1);
+				sjme_atomic_s(sjme_jint, &inThread->tossedLevel, -1);
 
 				/* Clear the stack. */
 				if (sjme_error_is(error = sjme_nvm_task_frameStackClear(
@@ -364,7 +373,7 @@ skip_thrown:
 				if (currentFrame->flags.isStaticInit)
 				{
 					/* Mark the class as bad. */
-					sjme_atomic_sjme_jint_compareSet(
+					sjme_atomic_cs(sjme_jint, 
 						&currentFrame->inClass->error,
 						SJME_ERROR_NONE,
 						sjme_error_default(SJME_ERROR_LINKAGE_ERROR));

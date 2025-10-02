@@ -33,14 +33,14 @@ SJME_TEST_DECLARE(testSpinLock)
 	error = sjme_thread_spinLockGrab(&lock);
 	sjme_unit_equalI(test, error, SJME_ERROR_NONE,
 		"Spin lock grab failed?");
-	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&lock.count), 1,
+	sjme_unit_equalI(test, sjme_atomic_g(sjme_jint, &lock.count), 1,
 		"Spin lock count not one?");
 		
 	/* Lock. */
 	error = sjme_thread_spinLockGrab(&lock);
 	sjme_unit_equalI(test, error, SJME_ERROR_NONE,
 		"Spin lock grab again failed?");
-	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&lock.count), 2,
+	sjme_unit_equalI(test, sjme_atomic_g(sjme_jint, &lock.count), 2,
 		"Spin lock count not two?");
 	
 	/* Unlock. */
@@ -50,7 +50,7 @@ SJME_TEST_DECLARE(testSpinLock)
 		"Spin lock release failed?");
 	sjme_unit_equalI(test, count, 1,
 		"Unlock count is not one?");
-	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&lock.count), 1,
+	sjme_unit_equalI(test, sjme_atomic_g(sjme_jint, &lock.count), 1,
 		"Spin lock count not one?");
 		
 	/* Unlock. */
@@ -60,7 +60,7 @@ SJME_TEST_DECLARE(testSpinLock)
 		"Spin lock release again failed?");
 	sjme_unit_equalI(test, count, 0,
 		"Unlock count is not zero?");
-	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&lock.count), 0,
+	sjme_unit_equalI(test, sjme_atomic_g(sjme_jint, &lock.count), 0,
 		"Spin lock count not zero?");
 	
 	/* Test done. */

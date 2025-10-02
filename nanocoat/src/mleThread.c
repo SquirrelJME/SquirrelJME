@@ -12,6 +12,47 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+static sjme_errorCode sjme_nvm_mleFunc_waitForUpdateCheck(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInValue sjme_intPointer condition,
+	sjme_attrOutNotNull sjme_jvalueTyped* stackPush)
+{
+	sjme_errorCode error;
+	
+	if (inFrame == NULL || stackPush == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Was this actually interrupted? */
+	if (sjme_error_is(error = sjme_nvm_task_threadInterruptCheck(
+		SJME_F_T(inFrame), SJME_JNI_TRUE)))
+	{
+		if (error != SJME_ERROR_INTERRUPTED)
+			return sjme_error_default(error);
+
+		/* Return as interrupted! */
+		stackPush->t = SJME_BASIC_TYPE_ID_INTEGER;
+		stackPush->v.i = 1;
+		
+		/* Stop waiting! */
+		return SJME_ERROR_NONE;
+	}
+
+	/* Did the frame count actually change? */
+	if (condition != sjme_atomic_g(sjme_jint,
+		&SJME_F_K(inFrame)->numThreads[SJME_NVM_THREAD_COUNT_ALL]))
+	{
+		/* Not interrupted. */
+		stackPush->t = SJME_BASIC_TYPE_ID_INTEGER;
+		stackPush->v.i = 0;
+		
+		/* Stop waiting! */
+		return SJME_ERROR_NONE;
+	}
+
+	/* Still waiting for it to complete. */
+	return SJME_ERROR_NOT_MATCHED;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(aliveThreadCount)
 {
 	sjme_jboolean includeMain, includeDaemon;
@@ -26,14 +67,14 @@ SJME_NVM_MLE_FUNCTION_DECL(aliveThreadCount)
 	inTask = SJME_F_K(inFrame);
 
 	/* Get the base thread count. */
-	count = sjme_atomic_sjme_jint_get(&inTask->numThreads[
+	count = sjme_atomic_g(sjme_jint, &inTask->numThreads[
 		(includeDaemon ? SJME_NVM_THREAD_COUNT_ALL :
 			SJME_NVM_THREAD_COUNT_NORMAL)]);
 
 	/* If not including the main thread, reduce by the count which should */
 	/* always be one. */
 	if (!includeMain)
-		count -= sjme_atomic_sjme_jint_get(
+		count -= sjme_atomic_g(sjme_jint, 
 			&inTask->numThreads[SJME_NVM_THREAD_COUNT_MAIN]);
 
 	/* Return the count. */
@@ -50,8 +91,10 @@ SJME_NVM_MLE_FUNCTION_DECL(createVMThread)
 
 SJME_NVM_MLE_FUNCTION_DECL(currentExitCode)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* This is just a read of the value. */
+	argR->t = SJME_BASIC_TYPE_ID_INTEGER;
+	argR->v.i = sjme_atomic_g(sjme_jint, &SJME_F_K(inFrame)->exitCode);
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(currentJavaThread)
@@ -122,7 +165,7 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	mainClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(task->classLoader,
 		&mainClass, SJME_F_T(inFrame),
-		sjme_atomic_sjme_charSeq_get(
+		sjme_atomic_g(sjme_charSeq, 
 			&task->globals.mainClassName->seq), SJME_JNI_TRUE)) ||
 		mainClass == NULL)
 		return sjme_error_vmError(inFrame, error);
@@ -252,8 +295,70 @@ SJME_NVM_MLE_FUNCTION_DECL(vmThreadTask)
 
 SJME_NVM_MLE_FUNCTION_DECL(waitForUpdate)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_nvm inState;
+	sjme_jboolean interrupted, forget;
+	sjme_jint ms;
+
+	/* How long to rest for? */
+	ms = argV[0].v.i;
+	if (ms < 0)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Forget that we executed this method? */
+	forget = SJME_JNI_FALSE;
+	
+	/* Wait for an update on multithreaded systems. */
+	inState = SJME_F_S(inFrame);
+	if (inState->threadModel == SJME_NVM_MLE_THREAD_MULTI)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Single threaded thread operation. */
+	else
+	{
+		/* Check interrupt pre-sleep. */
+		if (sjme_error_is(error = sjme_nvm_task_threadInterruptCheck(
+			SJME_F_T(inFrame), SJME_JNI_TRUE)))
+		{
+			/* Some other error? */
+			if (error != SJME_ERROR_INTERRUPTED)
+				return sjme_error_default(error);
+
+			/* This was actually interrupted. */
+			argR->v.i = 1;
+			return SJME_ERROR_NONE;
+		}
+		
+		/* Schedule out this thread. */
+		if (sjme_error_is(error =
+			sjme_nvm_task_taskScheduleOut(inState, SJME_F_T(inFrame), ms)))
+			return sjme_error_default(error);
+
+		/* Because we just scheduled out this, this call cannot complete. */
+		forget = SJME_JNI_TRUE;
+	}
+
+	/* Not finishing this call? We need to wait for the count to change */
+	if (forget)
+	{
+		/* Wait for an update to occur. */
+		if (sjme_error_is(error = sjme_nvm_task_frameWaitFor(inFrame,
+			sjme_nvm_mleFunc_waitForUpdateCheck, ms,
+			sjme_atomic_g(sjme_jint,
+				&SJME_F_K(inFrame)->numThreads[SJME_NVM_THREAD_COUNT_ALL]))))
+			return sjme_error_default(error);
+
+		/* We must not push the value to the stack, it is done in the */
+		/* condition. */
+		return SJME_ERROR_CANCEL_MLE_CALL;
+	}
+	
+	/* Not interrupted, and finished. */
+	argR->v.i = 0;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_SHELF_DECLARE(ThreadShelf) =

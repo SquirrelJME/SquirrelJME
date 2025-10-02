@@ -175,9 +175,9 @@ static sjme_errorCode sjme_nvm_walk_coreDoAtomicInt(
 	/* Recover the value. */
 	memset(&value, 0, sizeof(value));
 	if (at->isPointer)
-		value.v.i = sjme_atomic_sjme_jint_get(*at->valueP.pointer);
+		value.v.i = sjme_atomic_g(sjme_jint, *at->valueP.pointer);
 	else
-		value.v.i = sjme_atomic_sjme_jint_get(at->valueP.atomicInt);
+		value.v.i = sjme_atomic_g(sjme_jint, at->valueP.atomicInt);
 
 	/* Set type and write value. */
 	value.t = SJME_JAVA_TYPE_ID_INTEGER;

@@ -549,9 +549,18 @@ typedef enum sjme_errorCode
 
 	/** Unknown native function. */
 	SJME_ERROR_UNKNOWN_NATIVE_FUNCTION = -169,
+
+	/** No test result occurred. */
+	SJME_ERROR_NO_TEST_RESULT = -170,
+
+	/** Memory exists. */
+	SJME_ERROR_MEMORY_EXISTS = -171,
+
+	/** Cancel MLE call. */
+	SJME_ERROR_CANCEL_MLE_CALL = -172,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -170,
+	SJME_NUM_ERROR_CODES = -173,
 } sjme_errorCode;
 
 /**

@@ -77,7 +77,7 @@ SJME_NVM_MLE_FUNCTION_DECL(openResourcePipe)
 		return SJME_ERROR_MLE_CALL;
 
 	/* The sequence must be valid. */
-	seq = sjme_atomic_sjme_charSeq_get(&rcName->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &rcName->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
 

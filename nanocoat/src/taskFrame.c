@@ -1011,3 +1011,19 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
+
+sjme_errorCode sjme_nvm_task_frameWaitFor(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_conditionFunc conditionFunc,
+	sjme_attrInNegativeOnePositive sjme_jint timeout,
+	sjme_attrInValue sjme_intPointer value)
+{
+	if (inFrame == NULL || conditionFunc == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (timeout < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}

@@ -76,7 +76,7 @@ SJME_TEST_DECLARE(testAllocWeakDelete)
 	
 	/* Weak reference should be invalid. */
 	sjme_unit_notEqualI(test,
-		sjme_atomic_sjme_jint_get(&wasWeak->valid),
+		sjme_atomic_g(sjme_jint, &wasWeak->valid),
 		SJME_ALLOC_WEAK_VALID,
 		"Weak reference not marked invalid?");
 	

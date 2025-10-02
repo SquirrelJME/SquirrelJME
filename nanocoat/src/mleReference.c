@@ -32,7 +32,7 @@ SJME_NVM_MLE_FUNCTION_DECL(weakInit)
 		return SJME_ERROR_MLE_CALL;
 
 	/* We can check if this was initialized before we even grab the lock. */
-	if (sjme_atomic_sjme_jint_get(&weak->beenInit))
+	if (sjme_atomic_g(sjme_jint, &weak->beenInit))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Lock reference. */
@@ -42,16 +42,16 @@ SJME_NVM_MLE_FUNCTION_DECL(weakInit)
 			sjme_error_mask(error, SJME_ERROR_MLE_CALL));
 
 	/* Double check initialization, it can only happen once. */
-	if (!sjme_atomic_sjme_jint_compareSet(&weak->beenInit,
+	if (!sjme_atomic_cs(sjme_jint, &weak->beenInit,
 		SJME_JNI_FALSE, SJME_JNI_TRUE))
 		goto fail_beenInit;
 
 	/* Set weak data. */
-	sjme_atomic_sjme_jobject_compareSet(&weak->pointer,
+	sjme_atomic_cs(sjme_jobject, &weak->pointer,
 		NULL, pointer);
-	sjme_atomic_sjme_jint_compareSet(&weak->pointerId,
+	sjme_atomic_cs(sjme_jint, &weak->pointerId,
 		0, pointer->identityHash);
-	sjme_atomic_sjme_jobject_compareSet(&weak->queue,
+	sjme_atomic_cs(sjme_jobject, &weak->queue,
 		NULL, queue);
 	
 	/* Unlock. */
@@ -81,7 +81,7 @@ SJME_NVM_MLE_FUNCTION_DECL(weakGet)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* If never initialized, this will always be null. */
-	if (!sjme_atomic_sjme_jint_get(&weak->beenInit))
+	if (!sjme_atomic_g(sjme_jint, &weak->beenInit))
 	{
 		argR->t = SJME_JAVA_TYPE_ID_OBJECT;
 		argR->v.l = NULL;
@@ -95,8 +95,8 @@ SJME_NVM_MLE_FUNCTION_DECL(weakGet)
 			sjme_error_mask(error, SJME_ERROR_MLE_CALL));
 
 	/* Load the pointer value and its identity hash. */
-	pointer = sjme_atomic_sjme_jobject_get(&weak->pointer);
-	pointerId = sjme_atomic_sjme_jint_get(&weak->pointerId);
+	pointer = sjme_atomic_g(sjme_jobject, &weak->pointer);
+	pointerId = sjme_atomic_g(sjme_jint, &weak->pointerId);
 
 	/* Can we determine that this object is invalid? */
 	if (pointer == NULL ||

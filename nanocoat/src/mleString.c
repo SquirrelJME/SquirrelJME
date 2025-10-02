@@ -27,7 +27,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringCharAt)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has the sequence ever been initialized? */
-	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &string->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
 
@@ -61,8 +61,8 @@ SJME_NVM_MLE_FUNCTION_DECL(stringEquals)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Both sequences must be initialized. */
-	seqA = sjme_atomic_sjme_charSeq_get(&a->seq);
-	seqB = sjme_atomic_sjme_charSeq_get(&b->seq);
+	seqA = sjme_atomic_g(sjme_charSeq, &a->seq);
+	seqB = sjme_atomic_g(sjme_charSeq, &b->seq);
 	if (seqA == NULL || seqB == NULL)
 		return SJME_ERROR_MLE_CALL;
 	
@@ -84,7 +84,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringHash)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Has the sequence ever been initialized? */
-	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &string->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
 
@@ -123,7 +123,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, chars)
 		return sjme_error_vmError(inFrame, error);
 
 	/* The sequence must not already be set. */
-	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &string->seq);
 	if (seq != NULL)
 		goto fail_hasSeq;
 
@@ -135,7 +135,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, chars)
 		goto fail_initSeq;
 
 	/* Set sequence. */
-	if (!sjme_atomic_sjme_charSeq_compareSet(&string->seq,
+	if (!sjme_atomic_cs(sjme_charSeq, &string->seq,
 		NULL, seq))
 	{
 		error = SJME_ERROR_ILLEGAL_STATE;
@@ -192,7 +192,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringLength)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has the sequence ever been initialized? */
-	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &string->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
 
@@ -232,7 +232,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has the sequence ever been initialized? */
-	seq = sjme_atomic_sjme_charSeq_get(&source->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &source->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
 
@@ -316,7 +316,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Has the sequence ever been initialized? */
-	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &string->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
 

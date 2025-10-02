@@ -35,7 +35,7 @@ static sjme_errorCode sjme_closeable_autoEnqueue(
 #endif
 	
 	/* Only close once! */
-	if (sjme_atomic_sjme_jint_compareSet(&closeable->isClosed,
+	if (sjme_atomic_cs(sjme_jint, &closeable->isClosed,
 		0, 1))
 	{
 		/* Call the close handler. */

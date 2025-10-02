@@ -139,7 +139,7 @@ sjme_errorCode sjme_scritchaudio_core_peerNoneDispatch(
 	
 	/* Explicit no-peer is a full disconnect, it can only happen once. */
 	if (explicit)
-		if (!sjme_atomic_sjme_jint_compareSet(&inConn->disconnecting,
+		if (!sjme_atomic_cs(sjme_jint, &inConn->disconnecting,
 			0, 1))
 			return SJME_ERROR_NONE;
 
