@@ -547,7 +547,7 @@ typedef enum sjme_nvm_task_threadCountType
 	SJME_NVM_THREAD_COUNT_MAIN = 4,
 
 	/** The number of thread counts. */
-	SJME_NVM_THREAD_NUM_COUNT_TYPE = 4,
+	SJME_NVM_THREAD_NUM_COUNT_TYPE = 5,
 } sjme_nvm_task_threadCountType;
 	
 struct sjme_nvm_taskBase

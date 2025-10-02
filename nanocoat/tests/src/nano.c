@@ -128,14 +128,18 @@ int main(int argc, sjme_lpstr* argv)
 	/* Allocate main pool. */
 	runPool = NULL;
 	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&runPool,
-		1048576 * 4)) || runPool == NULL)
+		1048576 * 8)) || runPool == NULL)
 		goto fail_poolInit;
 	
 	/* Allocate parameter pool. */
+#if 1
+	paramPool = runPool;
+#else
 	paramPool = NULL;
 	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&paramPool,
 		1048576 * 4)) || paramPool == NULL)
 		goto fail_poolInit;
+#endif
 	
 	/* Open seekable to the boot Jar. */
 	bootSeek = NULL;
