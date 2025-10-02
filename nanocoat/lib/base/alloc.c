@@ -1683,7 +1683,8 @@ sjme_jint sjme_alloc_weakRefLeftR(
 #if defined(SJME_CONFIG_DEBUG)
 
 sjme_errorCode sjme_alloc_poolDump(
-	sjme_attrInNotNull sjme_alloc_pool allocPool)
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInValue sjme_jboolean onlyUsed)
 {
 	sjme_alloc_link rover;
 
@@ -1694,6 +1695,11 @@ sjme_errorCode sjme_alloc_poolDump(
 	for (rover = sjme_atomic_g(sjme_alloc_link, &allocPool->frontLink);
 		rover != NULL; rover = sjme_atomic_g(sjme_alloc_link, &rover->next))
 	{
+		/* Only care about used space? */
+		if (onlyUsed && rover->space != SJME_ALLOC_POOL_SPACE_USED)
+			continue;
+		
+		/* Print link information. */
 		sjme_messageR(NULL, -1, NULL,
 			SJME_JNI_TRUE,
 			"Link %08p: %s %dB in %s (%s:%d)",

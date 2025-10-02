@@ -744,11 +744,13 @@ sjme_errorCode sjme_alloc_weakRefGet(
  * Dumps the entire pool.
  *
  * @param allocPool The pool to dump.
+ * @param onlyUsed Only print used values?
  * @return Any resultant error, if any.
  * @since 2024/08/16
  */
 sjme_errorCode sjme_alloc_poolDump(
-	sjme_attrInNotNull sjme_alloc_pool allocPool);
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInValue sjme_jboolean onlyUsed);
 
 #endif
 

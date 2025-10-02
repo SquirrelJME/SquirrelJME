@@ -197,7 +197,7 @@ sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 #if defined(SJME_CONFIG_DEBUG)
 	/* Dump entire pool contents. */
 	if (allocPool != NULL)
-		sjme_alloc_poolDump(allocPool);
+		sjme_alloc_poolDump(allocPool, SJME_JNI_FALSE);
 
 	/* It could be huge... */
 	sjme_todoR(file, line, func, "OUT OF MEMORY %p: %d %p!",

@@ -94,7 +94,7 @@ static const sjme_nvm_stateHooks sjme_test_nano_hooks =
 int main(int argc, sjme_lpstr* argv)
 {
 	sjme_errorCode error;
-	sjme_alloc_pool pool;
+	sjme_alloc_pool runPool, paramPool;
 	sjme_nvm_bootParam bootParam;
 	sjme_jint exitCode, i, n;
 	sjme_seekable bootSeek;
@@ -126,28 +126,34 @@ int main(int argc, sjme_lpstr* argv)
 	nal = &sjme_nal_default;
 	
 	/* Allocate main pool. */
-	pool = NULL;
-	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&pool,
-		1048576 * 32)) || pool == NULL)
+	runPool = NULL;
+	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&runPool,
+		1048576 * 4)) || runPool == NULL)
+		goto fail_poolInit;
+	
+	/* Allocate parameter pool. */
+	paramPool = NULL;
+	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&paramPool,
+		1048576 * 4)) || paramPool == NULL)
 		goto fail_poolInit;
 	
 	/* Open seekable to the boot Jar. */
 	bootSeek = NULL;
-	if (sjme_error_is(error = nal->fileOpen(pool, argv[1],
+	if (sjme_error_is(error = nal->fileOpen(paramPool, argv[1],
 		&bootSeek, SJME_NAL_OPEN_READ)) || bootSeek == NULL)
 		goto fail_openBootJar;
 	
 	/* Load boot suite. */
 	bootSuite = NULL;
 	if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipSeekable(
-		pool, &bootSuite, bootSeek, SJME_NVM_BOOT_CLUTTER_RELEASE)) ||
+		paramPool, &bootSuite, bootSeek, SJME_NVM_BOOT_CLUTTER_RELEASE)) ||
 		bootSuite == NULL)
 		goto fail_loadBootJar;
 	
 	/* Splice up the classpath. */
 	n = strlen(argv[3]) + 1;
 	classpathSplice = NULL;
-	if (sjme_error_is(error = sjme_alloc(pool, n + 1,
+	if (sjme_error_is(error = sjme_alloc(paramPool, n + 1,
 		(sjme_pointer*)&classpathSplice)) || classpathSplice == NULL)
 		goto fail_splicePath;
 	
@@ -161,7 +167,7 @@ int main(int argc, sjme_lpstr* argv)
 	
 	/* Setup classpath to use. */
 	classpath = NULL;
-	if (sjme_error_is(error = sjme_list_flattenArgNul(pool,
+	if (sjme_error_is(error = sjme_list_flattenArgNul(paramPool,
 		&classpath, classpathSplice)) ||
 		classpath == NULL)
 		goto fail_initClasspath;
@@ -172,7 +178,7 @@ int main(int argc, sjme_lpstr* argv)
 		
 	/* Setup main arguments to use, of which there are none. */
 	mainArgs = NULL;
-	if (sjme_error_is(error = sjme_list_alloc(pool, 0, &mainArgs,
+	if (sjme_error_is(error = sjme_list_alloc(paramPool, 0, &mainArgs,
 		sjme_lpstr, 0)) || mainArgs == NULL)
 		goto fail_initMainArgs;
 
@@ -198,7 +204,7 @@ int main(int argc, sjme_lpstr* argv)
 	
 	/* Boot the virtual machine. */
 	inState = NULL;
-	if (sjme_error_is(error = sjme_nvm_boot(pool,
+	if (sjme_error_is(error = sjme_nvm_boot(runPool,
 		&bootParam, &inState, NULL)))
 		goto fail_boot;
 	
@@ -244,7 +250,7 @@ int main(int argc, sjme_lpstr* argv)
 	/* There must be no memory blocks allocated, destruction should be */
 	/* in an entirely clean slate with nothing left over. */
 	allocCount = -1;
-	if (sjme_error_is(error = sjme_alloc_poolSpaceTotalSize(pool,
+	if (sjme_error_is(error = sjme_alloc_poolSpaceTotalSize(runPool,
 		NULL, NULL, NULL,
 		&allocCount)) || allocCount < 0)
 		goto fail_countBlocks;
@@ -252,6 +258,12 @@ int main(int argc, sjme_lpstr* argv)
 	/* There must be zero blocks. */
 	if (allocCount != 0)
 	{
+#if defined(SJME_CONFIG_DEBUG)
+		/* Dump memory state. */
+		sjme_alloc_poolDump(runPool, SJME_JNI_TRUE);
+#endif
+		
+		/* Fail. */
 		error = SJME_ERROR_MEMORY_EXISTS;
 		goto fail_existingBlocks;
 	}
@@ -259,7 +271,6 @@ int main(int argc, sjme_lpstr* argv)
 	/* Return with the exit code. */
 	return exitCode;
 
-fail_existingBlocks:
 fail_countBlocks:
 fail_notCaptured:
 fail_destroy:
@@ -271,6 +282,14 @@ fail_splicePath:
 fail_loadBootJar:
 fail_openBootJar:
 fail_poolInit:
+	
+#if defined(SJME_CONFIG_DEBUG)
+	/* Always dump memory state for any other error. */
+	if (runPool != NULL)
+		sjme_alloc_poolDump(runPool, SJME_JNI_TRUE);
+#endif
+	
+fail_existingBlocks:
 	sjme_message("Failed NanoTest: %d", error);
 	return EXIT_FAILURE;
 }
