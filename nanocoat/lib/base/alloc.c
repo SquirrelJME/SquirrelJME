@@ -1707,7 +1707,7 @@ sjme_errorCode sjme_alloc_poolDump(
 				(rover->space == SJME_ALLOC_POOL_SPACE_USED ? "USED" : "FREE"),
 				rover->blockSize,
 				rover->debugFunction,
-				rover->debugFile,
+				sjme_debug_shortenFile(rover->debugFile),
 				rover->debugLine);
 	}
 
