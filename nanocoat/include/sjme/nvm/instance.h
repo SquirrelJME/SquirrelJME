@@ -326,7 +326,7 @@ struct sjme_jclassBase
 	sjme_atomic_sjme_jclass componentType;
 
 	/** The phantom array type of this class. */
-	sjme_atomic_sjme_jclass phantomArrayType;
+	sjme_phantom phantomArrayType;
 
 	/** Static field data chunk. */
 	sjme_pointer staticChunk;

@@ -472,8 +472,8 @@ struct sjme_nvm_commonBase
 	/** The lock to access this common item. */
 	sjme_alignPointer sjme_thread_spinLock lock;
 
-	/** Specific close handler. */
-	sjme_closeable_closeHandlerFunc specificClose;
+	/** Specific close handler, if needed. */
+	sjme_closeable_closeHandlerFunc preClose;
 };
 
 /**
@@ -630,6 +630,12 @@ struct sjme_nvm_stateBase
 
 	/** The JDWP debugger state. */
 	sjme_jdwp jdwp;
+
+	/** Main task exit code. */
+	sjme_atomic_sjme_jint mainExitCode;
+
+	/** Main task reference. */
+	sjme_phantom phantomMainTask;
 };
 
 /**

@@ -134,6 +134,15 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_random . */
 	SJME_NVM_WALK_PSEUDO_RANDOM = -32,
+
+	/** @c sjme_basicTypeId . */
+	SJME_NVM_WALK_PSEUDO_BASIC_TYPE_ID = -33,
+
+	/** @c sjme_nvm_rawArrayValues . */
+	SJME_NVM_WALK_PSEUDO_RAW_ARRAY_VALUES = -34,
+
+	/** @c sjme_atomic_sjme_intPointer . */
+	SJME_NVM_WALK_PSEUDO_ATOMIC_INT_POINTER = -35,
 } sjme_nvm_walk_pseudoType;
 
 /**
@@ -320,6 +329,9 @@ struct sjme_nvm_walk_state
 
 	/** The current breadth of this step. */
 	sjme_nvm_walk_breadthType breadth;
+
+	/** Do not perform any diving. */
+	sjme_jboolean noDive : sjme_booleanBit;
 };
 
 struct sjme_nvm_walk_step
@@ -344,6 +356,9 @@ struct sjme_nvm_walk_step
 
 	/** The structure type. */
 	sjme_jint typeId;
+
+	/** Custom logic walker. */
+	sjme_nvm_walk_stepOuterFunc customWalk;
 };
 
 struct sjme_nvm_walk_stepSelect

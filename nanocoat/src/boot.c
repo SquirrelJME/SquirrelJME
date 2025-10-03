@@ -673,30 +673,19 @@ sjme_errorCode sjme_nvm_defaultDir(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
+sjme_errorCode sjme_nvm_destroy(
+	sjme_attrInNotNull sjme_nvm state,
+	sjme_attrOutNullable sjme_jint* exitCode)
 {
 	if (state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_message("Implement NVM destroy");
-	return SJME_ERROR_NONE;
-#if 0
-	/* Free sub-structures. */
-	if (SJME_JNI_TRUE)
-		sjme_todo("sjme_nvm_destroy()");
-		
-	/* Free main structure. */
-	if (SJME_JNI_TRUE)
-		sjme_todo("sjme_nvm_destroy()");
+	/* Copy out the exit code, if requested. */
+	if (exitCode != NULL)
+		*exitCode = sjme_atomic_g(sjme_jint, &state->mainExitCode);
 	
-	/* Set exit code, if requested. */
-	if (SJME_JNI_TRUE)
-		sjme_todo("sjme_nvm_destroy()");
-	
-	/* Finished. */
-	sjme_todo("sjme_nvm_destroy()");
-	return sjme_error_notImplemented(0);
-#endif
+	/* Forward to the normal cleanup process. */
+	return sjme_closeable_close(SJME_AS_CLOSEABLE(state));
 }
 
 sjme_errorCode sjme_nvm_parseCommandLine(

@@ -44,7 +44,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 			continue;
 
 		/* Is there a phantom trace point here? */
-		point = (sjme_jbracketTrace)sjme_atomic_g(sjme_jobject, 
+		point = (sjme_jbracketTrace)sjme_atomic_pg(
 			&atFrame->phantomTracePoint);
 		if (point != NULL && sjme_nvm_isAR(point,
 			SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE))

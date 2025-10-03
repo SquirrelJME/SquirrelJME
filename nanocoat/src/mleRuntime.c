@@ -107,6 +107,11 @@ SJME_NVM_MLE_FUNCTION_DECL(exit)
 	/* Set the exit code to use. */
 	inTask = SJME_F_K(inFrame);
 	sjme_atomic_s(sjme_jint, &inTask->exitCode, argV[0].v.i);
+
+	/* If this is the main task, also set the exit code there. */
+	if (inTask->isMain)
+		sjme_atomic_s(sjme_jint, &SJME_F_S(inFrame)->mainExitCode,
+			argV[0].v.i);
 	
 	/* Have this task start termination. */
 	sjme_atomic_cs(sjme_jint, &inTask->terminate,

@@ -647,7 +647,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	/* Set component type, and tha phantom back link for quicker lookup. */
 	sjme_atomic_cs(sjme_jclass, &inClass->componentType,
 		NULL, componentType);
-	sjme_atomic_cs(sjme_jclass, &componentType->phantomArrayType,
+	sjme_atomic_pcs(&componentType->phantomArrayType,
 		NULL, inClass);
 
 	/* Set dimension count to be one higher than the component type. */

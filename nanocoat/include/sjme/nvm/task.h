@@ -340,7 +340,7 @@ struct sjme_nvm_frameBase
 	sjme_jint id;
 
 	/** Phantom tracepoint reference, for recycling. */
-	sjme_atomic_sjme_jobject phantomTracePoint;
+	sjme_phantom phantomTracePoint;
 
 	/** The index of this frame. */
 	sjme_jint index;
@@ -593,6 +593,9 @@ struct sjme_nvm_taskBase
 
 	/** The identity hashcode generator. */
 	sjme_random idHash;
+
+	/** Is this the main task. */
+	sjme_jboolean isMain;
 };
 
 struct sjme_nvm_threadBase

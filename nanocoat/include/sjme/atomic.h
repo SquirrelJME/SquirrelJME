@@ -217,6 +217,13 @@ SJME_ATOMIC_DECLARE(sjme_jclass, 0);
 SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
 
 /**
+ * Phantom pointer.
+ *
+ * @since 2025/10/03
+ */
+typedef sjme_atomic_sjme_pointer sjme_phantom;
+
+/**
  * Chain gets from two atomic values which are in a structure with each
  * other.
  *
@@ -298,6 +305,20 @@ SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
 #define sjme_atomic_ga(type, ref, add) \
 	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _getAdd)((ref), (add))
 
+/**
+ * Compares the pointer atomic, without regards to type, to the given value
+ * then sets it if it is the given value.
+ * 
+ * @param ref The atomic pointer reference.
+ * @param cmp The value to compare against.
+ * @param set The value to set, if the existing value is the given value.
+ * @return If the value matched then @c SJME_JNI_TRUE and the new value will
+ * be set, otherwise @c SJME_JNI_FALSE and there are no changes.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_pcs(ref, cmp, set) \
+	sjme_atomic_cs(sjme_pointer, (sjme_atomic_sjme_pointer*)(ref), (cmp), (set))
+	
 /**
  * Returns the pointer value of an atomic, disregarding type. This is mostly
  * a utility macro when a type is not needed.

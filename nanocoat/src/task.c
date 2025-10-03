@@ -860,6 +860,10 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	if ((initConfigCopy->belay & SJME_NVM_BOOT_BELAY_MAIN) == 0)
 		if (sjme_error_is(error = sjme_nvm_task_taskEnterMain(result, NULL)))
 			goto fail_enterMain;
+
+	/* Is this the main/first task? */
+	if (sjme_atomic_pcs(&inState->phantomMainTask, NULL, result))
+		result->isMain = SJME_JNI_TRUE;
 	
 	/* Release task specific lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
