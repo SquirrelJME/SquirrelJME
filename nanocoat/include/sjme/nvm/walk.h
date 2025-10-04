@@ -143,6 +143,12 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_atomic_sjme_intPointer . */
 	SJME_NVM_WALK_PSEUDO_ATOMIC_INT_POINTER = -35,
+
+	/** @c sjme_nvm_threadSubSchedule . */
+	SJME_NVM_WALK_PSEUDO_THREAD_SUB_SCHEDULE = -36,
+
+	/** @c sjme_nvm_task_pipeRedirectType . */
+	SJME_NVM_WALK_PSEUDO_TASK_PIPE_REDIRECT_TYPE = -37,
 } sjme_nvm_walk_pseudoType;
 
 /**
