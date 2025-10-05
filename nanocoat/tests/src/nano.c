@@ -93,6 +93,7 @@ static const sjme_nvm_stateHooks sjme_test_nano_hooks =
  */
 int main(int argc, sjme_lpstr* argv)
 {
+#define BUF_SIZE 128
 	sjme_errorCode error;
 	sjme_alloc_pool runPool, paramPool;
 	sjme_nvm_bootParam bootParam;
@@ -107,6 +108,12 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_lpstr classpathSplice;
 	sjme_test_nano_result result;
 	sjme_jint allocCount;
+	sjme_jclass mainClass;
+	sjme_nvm_task mainTask;
+	sjme_cchar mainName[BUF_SIZE];
+	sjme_list_sjme_jfieldID* fields;
+	sjme_jvalueTyped expected;
+	sjme_jfieldID field;
 	
 	/* Incorrect number of arguments? */
 	if (argc < 5)
@@ -188,6 +195,7 @@ int main(int argc, sjme_lpstr* argv)
 
 	/* Clear result for later test expectations. */
 	memset(&result, 0, sizeof(result));
+	result.value.t = SJME_JAVA_TYPE_ID_VOID;
 	
 	/* Setup boot parameters. */
 	memset(&bootParam, 0, sizeof(bootParam));
@@ -208,10 +216,67 @@ int main(int argc, sjme_lpstr* argv)
 	
 	/* Boot the virtual machine. */
 	inState = NULL;
+	mainTask = NULL;
 	if (sjme_error_is(error = sjme_nvm_boot(runPool,
-		&bootParam, &inState, NULL)))
+		&bootParam, &inState, &mainTask)) ||
+		inState == NULL || mainTask == NULL)
 		goto fail_boot;
+
+	/* Convert main class to slashes. */
+	memset(&mainName, 0, sizeof(mainName));
+	snprintf(mainName, BUF_SIZE - 1, "%s", argv[4]);
+	for (i = 0; i < BUF_SIZE; i++)
+		if (mainName[i] == '.')
+			mainName[i] = '/';
 	
+	/* Locate the main class, to get the expected value. */
+	mainClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadU(
+		mainTask->classLoader, &mainClass,
+		sjme_atomic_g(sjme_nvm_thread, &mainTask->globals.mainThread),
+		mainName, SJME_JNI_TRUE) || mainClass == NULL))
+		goto fail_findMain;
+
+	/* Set expected value to something invalid. */
+	memset(&expected, 0, sizeof(expected));
+	expected.t = SJME_NUM_BASIC_TYPE_IDS;
+
+	/* Find the expected value field. */
+	fields = mainClass->fields[SJME_NVM_CLASS_MEMBER_STATIC].binds;
+	for (i = 0, n = fields->length; i < n; i++)
+	{
+		/* Is this wanting void? */
+		field = fields->elements[i];
+		if (sjme_charSeq_equalsUtfR(field->info->name->seq,
+			"EXPECTED_VOID"))
+		{
+			expected.t = SJME_JAVA_TYPE_ID_VOID;
+			break;
+		}
+
+		/* Otherwise, any other type. */
+		else if (sjme_charSeq_equalsUtfR(field->info->name->seq,
+			"EXPECTED"))
+		{
+			/* Constant value not set? */
+			if (field->info->constVal.type == SJME_NUM_JAVA_TYPE_IDS)
+			{
+				error = SJME_ERROR_NO_SUCH_ELEMENT;
+				goto fail_noConstant;
+			}
+
+			/* Copy over. */
+			memmove(&expected, &field->info->constVal, sizeof(expected));
+		}
+	}
+
+	/* No field was found? */
+	if (expected.t == SJME_NUM_BASIC_TYPE_IDS)
+	{
+		error = SJME_ERROR_NO_FIELD;
+		goto fail_noExpected;
+	}
+
 	/* Iterate the virtual machine loop. */
 	sjme_messageB("--------------------------------------------------------");
 	for (terminated = SJME_JNI_FALSE; !terminated;)
@@ -247,8 +312,20 @@ int main(int argc, sjme_lpstr* argv)
 			goto fail_notCaptured;
 		}
 
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Compare directly. */
+		if (memcmp(&result.value, &expected, sizeof(expected)) != 0)
+		{
+			/* Debug. */
+			sjme_emitB("Failed test: got %d:%08x.%08x, expected %d:%08x.%08x",
+				result.value.t,
+					result.value.v.j.part.hi, result.value.v.j.part.lo,
+				expected.t,
+					expected.v.j.part.hi, expected.v.j.part.lo);
+			
+			/* Fail. */
+			error = SJME_ERROR_NOT_MATCHED;
+			goto fail_unexpected;
+		}
 	}
 
 	/* There must be no memory blocks allocated, destruction should be */
@@ -275,6 +352,10 @@ int main(int argc, sjme_lpstr* argv)
 	/* Return with the exit code. */
 	return exitCode;
 
+fail_unexpected:
+fail_noConstant:
+fail_noExpected:
+fail_findMain:
 fail_countBlocks:
 fail_notCaptured:
 fail_destroy:
@@ -296,4 +377,5 @@ fail_poolInit:
 fail_existingBlocks:
 	sjme_message("Failed NanoTest: %d", error);
 	return EXIT_FAILURE;
+#undef BUF_SIZE
 }

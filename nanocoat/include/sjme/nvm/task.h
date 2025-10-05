@@ -523,7 +523,7 @@ typedef struct sjme_nvm_task_globals
 	sjme_list_sjme_jbracketJarPackage* jarBrackets;
 	
 	/** The main thread. */
-	sjme_atomic_sjme_pointer mainThread;
+	sjme_atomic_sjme_nvm_thread mainThread;
 
 	/** No optimization? */
 	sjme_jboolean noOptimize;

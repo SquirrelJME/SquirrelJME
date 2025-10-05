@@ -2135,6 +2135,31 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(
 #undef BUFSIZE
 }
 
+sjme_errorCode sjme_nvm_vmClass_loaderLoadU(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_lpcstr className,
+	sjme_attrInValue sjme_jboolean doInit)
+{
+	sjme_errorCode error;
+	sjme_charSeqStatic seq;
+	
+	if (inLoader == NULL || outClass == NULL || contextThread == NULL ||
+		className == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Setup sequence. */
+	memset(&seq, 0, sizeof(seq));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&seq,
+		className, 0, -1)))
+		return sjme_error_default(error);
+	
+	/* Forward. */
+	return sjme_nvm_vmClass_loaderLoad(inLoader, outClass,
+		contextThread, &seq, doInit);
+}
+
 sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrOutNotNull sjme_nvm_vmClass_loader* outLoader,

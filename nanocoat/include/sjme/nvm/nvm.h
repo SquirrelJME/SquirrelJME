@@ -346,6 +346,12 @@ typedef struct sjme_nvm_threadBase sjme_nvm_threadBase;
  */
 typedef sjme_nvm_threadBase* sjme_nvm_thread;
 
+/** NVM threads are pointers. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_thread 1
+
+/** Threads. */
+SJME_ATOMIC_DECLARE(sjme_nvm_thread, 0);
+
 /** List of threads. */
 SJME_LIST_DECLARE(sjme_nvm_thread, 0);
 

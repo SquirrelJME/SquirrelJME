@@ -591,7 +591,7 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 		return sjme_error_default(error);
 
 	/* Main thread already set? */
-	if (sjme_atomic_g(sjme_pointer, &inTask->globals.mainThread) != NULL)
+	if (sjme_atomic_g(sjme_nvm_thread, &inTask->globals.mainThread) != NULL)
 		goto fail_mainExists;
 
 	/* Quicker to reference this way. */

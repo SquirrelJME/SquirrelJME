@@ -832,7 +832,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	if (isMain)
 	{
 		/* Set the main thread, if not set. */
-		if (sjme_atomic_cs(sjme_pointer, 
+		if (sjme_atomic_cs(sjme_nvm_thread, 
 			&inTask->globals.mainThread, NULL, result))
 		{
 			/* Record that this is the actual main thread. */

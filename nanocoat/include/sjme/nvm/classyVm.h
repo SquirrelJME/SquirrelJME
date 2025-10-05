@@ -471,6 +471,25 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(
 	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS) sjme_basicTypeId basicType);
 
 /**
+ * Loads the specified class by the given binary name.
+ * 
+ * @param inLoader The loader to use. 
+ * @param outClass The resultant class.
+ * @param contextThread The thread where any constructors can be called if
+ * needed.
+ * @param className The class to load.
+ * @param doInit Initialize this class?
+ * @return Any resultant error, if any.
+ * @since 2025/10/04
+ */
+sjme_errorCode sjme_nvm_vmClass_loaderLoadU(
+	sjme_attrInNotNull sjme_nvm_vmClass_loader inLoader,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_lpcstr className,
+	sjme_attrInValue sjme_jboolean doInit);
+
+/**
  * Initializes a new class loader.
  * 
  * @param inState The input state.
