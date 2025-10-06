@@ -78,7 +78,14 @@ typedef struct sjme_nvm_class_infoCore sjme_nvm_class_infoCore;
  *
  * @since 2024/01/01
  */
-typedef struct sjme_nvm_class_infoBase* sjme_nvm_class_info;
+typedef struct sjme_nvm_class_infoBase sjme_nvm_class_infoBase;
+
+/**
+ * Opaque class information structure.
+ *
+ * @since 2024/01/01
+ */
+typedef  sjme_nvm_class_infoBase* sjme_nvm_class_info;
 
 /**
  * List of class information.

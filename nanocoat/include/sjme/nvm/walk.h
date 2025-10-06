@@ -149,6 +149,12 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_nvm_task_pipeRedirectType . */
 	SJME_NVM_WALK_PSEUDO_TASK_PIPE_REDIRECT_TYPE = -37,
+
+	/** @c sjme_nvm_class_version . */
+	SJME_NVM_WALK_PSEUDO_CLASS_VERSION = -38,
+
+	/** @c sjme_nvm_class_classFlags . */
+	SJME_NVM_WALK_PSEUDO_CLASS_FLAGS = -39,
 } sjme_nvm_walk_pseudoType;
 
 /**
