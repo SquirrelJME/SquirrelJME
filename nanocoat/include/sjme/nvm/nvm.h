@@ -478,8 +478,8 @@ struct sjme_nvm_commonBase
 	/** The lock to access this common item. */
 	sjme_alignPointer sjme_thread_spinLock lock;
 
-	/** Specific close handler, if needed. */
-	sjme_closeable_closeHandlerFunc preClose;
+	/** Post close after the pre-close initial walk state. */
+	sjme_closeable_closeHandlerFunc postClose;
 };
 
 /**

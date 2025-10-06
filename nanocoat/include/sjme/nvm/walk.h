@@ -273,6 +273,9 @@ typedef union sjme_nvm_walk_pointer
 	/** Atomic integer. */
 	sjme_atomic_sjme_jint* atomicInt;
 
+	/** Atomic object. */
+	sjme_atomic_sjme_jobject* atomicObject;
+
 	/** Closeable. */
 	sjme_closeableBase* closeable;
 } sjme_nvm_walk_pointer;

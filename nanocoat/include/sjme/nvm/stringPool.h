@@ -38,14 +38,14 @@ extern "C"
  * 
  * @since 2024/09/14
  */
-typedef struct sjme_nvm_stringPool_base sjme_nvm_stringPool_base;
+typedef struct sjme_nvm_stringPoolBase sjme_nvm_stringPoolBase;
 
 /**
  * Represents a pool of strings.
  * 
  * @since 2024/09/14
  */
-typedef sjme_nvm_stringPool_base* sjme_nvm_stringPool;
+typedef sjme_nvm_stringPoolBase* sjme_nvm_stringPool;
 
 /**
  * Represents a single pooled string.
@@ -64,7 +64,7 @@ typedef sjme_nvm_stringPool_stringBase* sjme_nvm_stringPool_string;
 /** A list of string pool strings. */
 SJME_LIST_DECLARE(sjme_nvm_stringPool_string, 0);
 
-struct sjme_nvm_stringPool_base
+struct sjme_nvm_stringPoolBase
 {
 	/** The virtual machine common base. */
 	sjme_nvm_commonBase common;

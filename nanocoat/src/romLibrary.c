@@ -235,12 +235,6 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 		&classInfos, sjme_nvm_class_info, 0)) || classInfos == NULL)
 		goto fail_allocInfos;
 	
-	/* Allocate string pool. */
-	stringPool = NULL;
-	if (sjme_error_is(error = sjme_nvm_stringPool_new(allocPool,
-		&stringPool)) || stringPool == NULL)
-		goto fail_allocStringPool;
-	
 	/* Allocate result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(
@@ -248,6 +242,12 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 		sizeof(*result), SJME_NVM_STRUCT_ROM_LIBRARY,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_alloc;
+	
+	/* Allocate string pool for this specific library. */
+	stringPool = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_new(allocPool,
+		&stringPool)) || stringPool == NULL)
+		goto fail_allocStringPool;
 	
 	/* Setup result. */
 	result->allocPool = allocPool;
@@ -279,12 +279,12 @@ fail_refUp:
 fail_strdup:
 fail_init:
 fail_commonInit:
-fail_alloc:
-	if (result != NULL)
-		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 fail_allocStringPool:
 	if (stringPool != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(stringPool));
+fail_alloc:
+	if (result != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 fail_allocInfos:
 	if (classInfos != NULL)
 		sjme_alloc_free(classInfos);

@@ -182,6 +182,11 @@ int main(int argc, sjme_lpstr* argv)
 		&classpath, classpathSplice)) ||
 		classpath == NULL)
 		goto fail_initClasspath;
+
+	/* No longer needed. */
+	if (sjme_error_is(error = sjme_alloc_free(classpathSplice)))
+		goto fail_freeSplice;
+	classpathSplice = NULL;
 	
 	/* Debug. */
 	for (i = 0; i < classpath->length; i++)
@@ -203,7 +208,9 @@ int main(int argc, sjme_lpstr* argv)
 	bootParam.bootSuite = bootSuite;
 	bootParam.mainClass = argv[4];
 	bootParam.mainClassPathByName = (const sjme_list_sjme_lpcstr*)classpath;
+	bootParam.freeMainClassPathByName = SJME_JNI_TRUE;
 	bootParam.mainArgs = (const sjme_list_sjme_lpcstr*)mainArgs;
+	bootParam.freeMainArgs = SJME_JNI_TRUE;
 
 	/* Hooks specifically for NanoTest. */
 	bootParam.hooks = &sjme_test_nano_hooks;
@@ -352,6 +359,7 @@ int main(int argc, sjme_lpstr* argv)
 	/* Return with the exit code. */
 	return exitCode;
 
+fail_free:
 fail_unexpected:
 fail_noConstant:
 fail_noExpected:
@@ -362,6 +370,7 @@ fail_destroy:
 fail_loop:
 fail_boot:
 fail_initMainArgs:
+fail_freeSplice:
 fail_initClasspath:
 fail_splicePath:
 fail_loadBootJar:
