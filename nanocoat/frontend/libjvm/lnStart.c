@@ -137,7 +137,8 @@ int main(int argc, sjme_lpcstr* argv)
 			goto fail_enterMain;
 		
 		/* Run main loop. */
-		if (sjme_error_is(error = sjme_nvm_loop_main(inTask->inState,
+		if (sjme_error_is(error = sjme_nvm_loop_main(
+			sjme_atomic_g(sjme_nvm, &inTask->inState),
 			&exitCode)))
 			goto fail_mainLoop;
 	}

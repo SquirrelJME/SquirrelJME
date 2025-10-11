@@ -43,20 +43,6 @@ extern "C"
 SJME_LIST_DECLARE(sjme_jclass, 0);
 
 /**
- * Base structure for the class loader.
- * 
- * @since 2024/09/08
- */
-typedef struct sjme_nvm_vmClass_loaderBase sjme_nvm_vmClass_loaderBase;
-
-/**
- * Virtual machine equivalent to Java's @c ClassLoader .
- * 
- * @since 2024/09/08
- */
-typedef sjme_nvm_vmClass_loaderBase* sjme_nvm_vmClass_loader;
-
-/**
  * The basic type of call for a method.
  * 
  * @since 2024/11/07

@@ -91,6 +91,13 @@
 		SJME_NVM_WALK_PSEUDO_LIST, -1, NULL), \
 	subDef
 
+/** Walk step a phantom pointer. */
+#define SJME_WS_PHANTOM(memberName, subDef) \
+	SJME_WS_FULL(memberName, \
+		SJME_JNI_TRUE, SJME_NUM_JAVA_TYPE_IDS, \
+		SJME_NVM_WALK_PSEUDO_PHANTOM, -1, NULL), \
+	subDef
+
 /** Walk step a list value (value). */
 #define SJME_WS_LIST_V(memberName, subDef) \
 	SJME_WS_FULL(memberName, \
@@ -292,7 +299,8 @@ SJME_WALK_END();
 SJME_WALK_BEGIN(SJME_NVM_STRUCT_TASK)
 	SJME_WS_NORM_V(object, SJME_NVM_STRUCT_OBJECT_INSTANCE),
 	SJME_WS_JAVA_V(id, SJME_JAVA_TYPE_ID_INTEGER),
-	SJME_WS_NORM_P(inState, SJME_NVM_STRUCT_STATE),
+	SJME_WS_PHANTOM(inState,
+		SJME_WS_NORM_P(inState, SJME_NVM_STRUCT_STATE)),
 	SJME_WS_JAVA_V(exitCode, SJME_JAVA_TYPE_ID_INTEGER),
 	SJME_WS_NORM_V(status, SJME_NVM_WALK_PSEUDO_TASK_STATUS_TYPE),
 	SJME_WS_NORM_V(terminate, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
@@ -300,7 +308,7 @@ SJME_WALK_BEGIN(SJME_NVM_STRUCT_TASK)
 		SJME_WS_NORM_V(numThreads, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT)),
 	SJME_WS_LIST_P(threads,
 		SJME_WS_NORM_P(threads, SJME_NVM_STRUCT_THREAD_INSTANCE)),
-	SJME_WS_NORM_P(classLoader, SJME_NVM_WALK_PSEUDO_CLASS_LOADER),
+	SJME_WS_NORM_P(classLoader, SJME_NVM_STRUCT_VM_CLASS_LOADER),
 	SJME_WS_NORM_P(strings, SJME_NVM_WALK_PSEUDO_TASK_STRINGS),
 	SJME_WS_NORM_V(globals, SJME_NVM_WALK_PSEUDO_TASK_GLOBALS),
 	SJME_WS_NORM_V(nextFrameId, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
@@ -345,6 +353,19 @@ SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_THREAD_SUB_SCHEDULE)
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
+#define SJME_WALK_CURRENT sjme_nvm_vmClass_loaderBase
+SJME_WALK_BEGIN(SJME_NVM_STRUCT_VM_CLASS_LOADER)
+	SJME_WS_NORM_V(common, SJME_NVM_WALK_PSEUDO_COMMON),
+	SJME_WS_NORM_P(inState, SJME_NVM_STRUCT_STATE),
+	SJME_WS_NORM_V(rwLock, SJME_NVM_WALK_PSEUDO_RW_LOCK),
+	SJME_WS_LIST_P(classPath,
+		SJME_WS_NORM_P(classPath, SJME_NVM_STRUCT_ROM_LIBRARY)),
+	SJME_WS_LIST_P(classes,
+		SJME_WS_NORM_P(classes, SJME_NVM_STRUCT_CLASS_INSTANCE)),
+	SJME_WS_NORM_P(nullStrings, SJME_NVM_STRUCT_STRING_POOL),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
 #define SJME_WALK_CURRENT sjme_thread_rwLock
 SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_RW_LOCK)
 	SJME_WS_NORM_P(read, SJME_NVM_WALK_PSEUDO_SPIN_LOCK),
@@ -374,6 +395,7 @@ static const sjme_nvm_walk_pseudoType sjme_nvm_walk_pseudoOnly[] =
 	SJME_NVM_WALK_PSEUDO_MLE_THREAD_MODEL,
 	SJME_NVM_WALK_PSEUDO_NAL,
 	SJME_NVM_WALK_PSEUDO_NVM_STRUCT_TYPE,
+	SJME_NVM_WALK_PSEUDO_PHANTOM,
 	SJME_NVM_WALK_PSEUDO_POINTER,
 	SJME_NVM_WALK_PSEUDO_PRIMITIVE,
 	SJME_NVM_WALK_PSEUDO_RAW_ARRAY_VALUES,
@@ -415,6 +437,8 @@ const sjme_nvm_walk_stepSelect sjme_nvm_walk_select[] =
 		SJME_NVM_WALK_PSEUDO_THREAD_SCHEDULE),
 	SJME_WALK_SELECT(sjme_nvm_threadSubSchedule,
 		SJME_NVM_WALK_PSEUDO_THREAD_SUB_SCHEDULE),
+	SJME_WALK_SELECT(sjme_nvm_vmClass_loaderBase,
+		SJME_NVM_STRUCT_VM_CLASS_LOADER),
 
 	/* No more walk structures defines. */
 	SJME_WALK_SELECT_END()
@@ -539,7 +563,8 @@ static sjme_errorCode sjme_nvm_walkItem(
 	{
 		/* Diving into a normal structure? */
 		if (at->typeId != SJME_NVM_WALK_PSEUDO_LIST &&
-			at->typeId != SJME_NVM_WALK_PSEUDO_FIXED_ARRAY)
+			at->typeId != SJME_NVM_WALK_PSEUDO_FIXED_ARRAY &&
+			at->typeId != SJME_NVM_WALK_PSEUDO_PHANTOM)
 		{
 			/* We can only dive into known types. */
 			if (sjme_error_is(error = sjme_nvm_select(at->typeId, &select)))
@@ -697,6 +722,26 @@ static sjme_errorCode sjme_nvm_walkList(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_walkPhantom(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at,
+	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
+{
+	if (root == NULL || at == NULL || function == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Mismatched parent or in some other bad state? */
+	if (at->parent != parent)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Set the type to be phantom. */
+	at->isPhantom = SJME_JNI_TRUE;
+	
+	/* Directly walk on this! */
+	return sjme_nvm_walkItem(root, parent, at, function);
+}
+
 static sjme_errorCode sjme_nvm_walkStruct(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
@@ -749,7 +794,8 @@ static sjme_errorCode sjme_nvm_walkStruct(
 		
 		/* Is this a variant? That is an array or list. */
 		if (subStep.typeId == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY ||
-			subStep.typeId == SJME_NVM_WALK_PSEUDO_LIST)
+			subStep.typeId == SJME_NVM_WALK_PSEUDO_LIST ||
+			subStep.typeId == SJME_NVM_WALK_PSEUDO_PHANTOM)
 		{
 			stepAdd = 2;
 			subStep.variantStep = (currentStep + 1);
@@ -820,6 +866,8 @@ sjme_errorCode sjme_nvm_walk(
 			outer = sjme_nvm_walkArray;
 		else if (at->typeId == SJME_NVM_WALK_PSEUDO_LIST)
 			outer = sjme_nvm_walkList;
+		else if (at->typeId == SJME_NVM_WALK_PSEUDO_PHANTOM)
+			outer = sjme_nvm_walkPhantom;
 		else
 			outer = sjme_nvm_walkStruct;
 

@@ -79,6 +79,9 @@ typedef sjme_jbracketTraceBase* sjme_jbracketTrace;
 /** Is a pointer for @c sjme_jbracketTrace ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jbracketTrace \
 	SJME_TYPEOF_IS_POINTER_sjme_jobject
+
+/** Atomic trace points. */
+SJME_ATOMIC_DECLARE(sjme_jbracketTrace, 0);
 	
 /**
  * Pipe bracket.

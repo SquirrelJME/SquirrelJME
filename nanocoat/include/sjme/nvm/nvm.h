@@ -346,15 +346,6 @@ typedef struct sjme_nvm_threadBase sjme_nvm_threadBase;
  */
 typedef sjme_nvm_threadBase* sjme_nvm_thread;
 
-/** NVM threads are pointers. */
-#define SJME_TYPEOF_IS_POINTER_sjme_nvm_thread 1
-
-/** Threads. */
-SJME_ATOMIC_DECLARE(sjme_nvm_thread, 0);
-
-/** List of threads. */
-SJME_LIST_DECLARE(sjme_nvm_thread, 0);
-
 /**
  * Hook for garbage collection detection and/or cancel capability.
  * 
@@ -460,6 +451,53 @@ typedef struct sjme_jdwpBase sjme_jdwpBase;
  * @since 2025/09/07
  */
 typedef sjme_jdwpBase* sjme_jdwp;
+
+/**
+ * Base structure for the class loader.
+ * 
+ * @since 2024/09/08
+ */
+typedef struct sjme_nvm_vmClass_loaderBase sjme_nvm_vmClass_loaderBase;
+
+/**
+ * Virtual machine equivalent to Java's @c ClassLoader .
+ * 
+ * @since 2024/09/08
+ */
+typedef sjme_nvm_vmClass_loaderBase* sjme_nvm_vmClass_loader;
+
+/** List of threads. */
+SJME_LIST_DECLARE(sjme_nvm_thread, 0);
+
+/** NVM threads are pointers. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_thread 1
+
+/** Atomic NVM thread. */
+SJME_ATOMIC_DECLARE(sjme_nvm_thread, 0);
+
+/** NVM states are pointers. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm 1
+
+/** Atomic NVM State. */
+SJME_ATOMIC_DECLARE(sjme_nvm, 0);
+
+/** NVM tasks are pointers. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_task 1
+
+/** Atomic NVM task. */
+SJME_ATOMIC_DECLARE(sjme_nvm_task, 0);
+
+/** NVM frames are pointers. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_frame 1
+
+/** Atomic NVM frame. */
+SJME_ATOMIC_DECLARE(sjme_nvm_frame, 0);
+
+/** Class loaders are pointers. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_vmClass_loader 1
+
+/** Atomic class loader. */
+SJME_ATOMIC_DECLARE(sjme_nvm_vmClass_loader, 0);
 
 struct sjme_nvm_commonBase
 {
@@ -629,7 +667,7 @@ struct sjme_nvm_stateBase
 	sjme_atomic_sjme_jint terminating;
 
 	/** The initial task configuration. */
-	sjme_nvm_task_taskNewConfig* initTaskConfig;
+	const sjme_nvm_task_taskNewConfig* initTaskConfig;
 
 	/** The last emitted exit code. */
 	sjme_atomic_sjme_jint lastExitCode;
@@ -641,7 +679,7 @@ struct sjme_nvm_stateBase
 	sjme_atomic_sjme_jint mainExitCode;
 
 	/** Main task reference. */
-	sjme_phantom phantomMainTask;
+	sjme_phantom(sjme_nvm_task) phantomMainTask;
 };
 
 /**

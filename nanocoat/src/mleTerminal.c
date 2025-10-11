@@ -128,7 +128,7 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 	
 	/* Has a pipe already been created? We want single brackets for each */
 	/* standard pipe that exists. */
-	globals = &inFrame->inTask->globals;
+	globals = &sjme_atomic_g(sjme_nvm_task, &inFrame->inTask)->globals;
 	pipe = globals->stdPipes[type];
 	if (pipe != NULL)
 		goto skip_validPipe;
@@ -151,7 +151,7 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 		pipe->isOutput = (type != SJME_NVM_MLE_STD_PIPE_STDIN);
 		
 		/* Input pipe. */
-		nal = inFrame->inState->nal;
+		nal = sjme_atomic_g(sjme_nvm, &inFrame->inState)->nal;
 		if (type == SJME_NVM_MLE_STD_PIPE_STDIN)
 		{
 			sjme_todo("Impl?");
@@ -162,7 +162,8 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 		else
 		{
 			if (sjme_error_is(error = sjme_stream_outputOpenStdIo(
-				inFrame->inState->allocPool, &pipe->stream.out,
+				sjme_atomic_g(sjme_nvm, &inFrame->inState)->allocPool,
+				&pipe->stream.out,
 				(sjme_pointer)&nal->stdIo[type])) ||
 				pipe->stream.out == NULL)
 				goto fail_badOpen;

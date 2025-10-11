@@ -350,7 +350,8 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 
 	/* Perform stack and thread re-framing. */
 	if (sjme_error_is(error = sjme_nvm_task_stackReframe(
-		inThread->inState, inThread, result, targetInfo)))
+		sjme_atomic_g(sjme_nvm, &inThread->inState),
+		inThread, result, targetInfo)))
 		return sjme_error_vmError(inThread, error);
 
 	/* Set frame details, needed for local set. */
@@ -359,9 +360,9 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		&SJME_T_K(inThread)->nextFrameId, 1) + 1;
 	result->index = inThread->numFrames;
 	result->inMethod = inMethod;
-	result->inState = SJME_F_S(inThread);
-	result->inThread = inThread;
-	result->inTask = SJME_T_K(inThread);
+	sjme_atomic_s(sjme_nvm, &result->inState, SJME_F_S(inThread));
+	sjme_atomic_s(sjme_nvm_thread, &result->inThread, inThread);
+	sjme_atomic_s(sjme_nvm_task, &result->inTask, SJME_T_K(inThread));
 	result->inCode = targetInfo->code;
 	result->pool = targetInfo->code->inMethod->inClass->pool;
 
@@ -377,9 +378,10 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 
 	/* Link to parent. */
 	if (inThread->numFrames == 0)
-		result->parent = NULL;
+		sjme_atomic_s(sjme_nvm_frame, &result->parent, NULL);
 	else
-		result->parent = inThread->frames->elements[inThread->numFrames - 1];
+		sjme_atomic_s(sjme_nvm_frame, &result->parent,
+			inThread->frames->elements[inThread->numFrames - 1]);
 	
 	/* Setup initial locals, which are copied in from arguments. */
 	if (argV != NULL)
@@ -476,7 +478,7 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* There must be a task. */
-	inTask = inThread->inTask;
+	inTask = sjme_atomic_g(sjme_nvm_task, &inThread->inTask);
 	if (inTask == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
@@ -575,7 +577,8 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 	else
 	{
 		/* Allocate new blank frame. */
-		if (sjme_error_is(error = sjme_nvm_alloc(inThread->inState,
+		if (sjme_error_is(error = sjme_nvm_alloc(
+			sjme_atomic_g(sjme_nvm, &inThread->inState),
 			sizeof(*result), SJME_NVM_STRUCT_FRAME,
 			SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 			return sjme_error_default(error);
@@ -751,7 +754,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 
 	/* Allocate stack storage. */
 	storage = NULL;
-	inState = inTask->inState;
+	inState = SJME_T_S(inTask);
 	if (sjme_error_is(error = sjme_alloc(inState->allocPool,
 		SJME_NVM_THREAD_STACK_SIZE, &storage)) || storage == NULL)
 		goto fail_allocStorage;
@@ -784,8 +787,8 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	}
 	
 	/* Fill out basic details. */
-	result->inState = inState;
-	result->inTask = inTask;
+	sjme_atomic_s(sjme_nvm, &result->inState, inState);
+	sjme_atomic_s(sjme_nvm_task, &result->inTask, inTask);
 	result->threadId = 1 + sjme_atomic_ga(sjme_jint, 
 		&inState->nextThreadId, 1);
 	result->object.identityHash =
@@ -893,7 +896,7 @@ sjme_errorCode sjme_nvm_task_threadStart(
 	inThread->status = SJME_NVM_THREAD_STATUS_RUNNING;
 
 	/* Schedule the thread for execution. */
-	if (sjme_error_is(error = sjme_nvm_task_taskScheduleIn(inThread->inState,
+	if (sjme_error_is(error = sjme_nvm_task_taskScheduleIn(SJME_T_S(inThread),
 		inThread)))
 		return sjme_error_default(error);
 
@@ -929,7 +932,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 		return sjme_error_default(error);
 
 	/* If interned, we need to lock on all the strings. */
-	strings = inThread->inTask->strings;
+	strings = SJME_T_K(inThread)->strings;
 	interns = strings->interns;
 	blankIntern = NULL;
 	if (isIntern)
@@ -1003,7 +1006,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 			/* Reallocate list. */
 			n = (interns == NULL ? 0 : interns->length);
 			if (sjme_error_is(error = sjme_list_replace(
-				inThread->inState->allocPool,
+				SJME_T_S(inThread)->allocPool,
 				n + SJME_INTERN_GROW,
 				&strings->interns,
 				sjme_jstring, 0)) || strings->interns == NULL)

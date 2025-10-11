@@ -800,7 +800,8 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 	
 	/* Setup object. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(contextThread->inState,
+	if (sjme_error_is(error = sjme_nvm_alloc(
+		sjme_atomic_g(sjme_nvm, &contextThread->inState),
 		allocSize, inType,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		return sjme_error_vmError(contextThread, error);

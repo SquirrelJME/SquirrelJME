@@ -211,7 +211,8 @@ sjme_errorCode sjme_nvm_task_commonClass(
 
 	/* Already cached? */
 	result = sjme_atomic_g(sjme_jclass, 
-		&contextThread->inTask->globals.commonClasses[commonId]);
+		&sjme_atomic_g(sjme_nvm_task, &contextThread->inTask)
+		->globals.commonClasses[commonId]);
 	if (result != NULL)
 	{
 		*outClass = result;
@@ -328,7 +329,8 @@ sjme_errorCode sjme_nvm_task_commonClass(
 
 	/* Cache for later. */
 	sjme_atomic_cs(sjme_jclass, 
-		&contextThread->inTask->globals.commonClasses[commonId],
+		&sjme_atomic_g(sjme_nvm_task, &contextThread->inTask)
+		->globals.commonClasses[commonId],
 		NULL, result);
 
 	/* Success! */
@@ -595,7 +597,7 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 		goto fail_mainExists;
 
 	/* Quicker to reference this way. */
-	inState = inTask->inState;
+	inState = sjme_atomic_g(sjme_nvm, &inTask->inState);
 
 	/* Recover the initial config. */
 	initConfigCopy = inTask->initConfig;
@@ -802,15 +804,24 @@ sjme_errorCode sjme_nvm_task_taskNew(
 		SJME_AS_NVM_COMMONP(&strings))) || strings == NULL)
 		goto fail_allocStrings;
 	
-	/* Initialize a new class loader for the current classpath. */
+	/* Initialize a new class loader for the current classpath, if one */
+	/* has not been passed by the initial task configuration. */
 	classLoader = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_loaderNew(
-		inState, &classLoader,
-		initConfigCopy->classPath)) || classLoader == NULL)
-		goto fail_initClassLoader;
+	if (initConfig->classLoader == NULL)
+	{
+		/* Set one up now. */
+		if (sjme_error_is(error = sjme_nvm_vmClass_loaderNew(
+			inState, &classLoader,
+			initConfigCopy->classPath)) || classLoader == NULL)
+			goto fail_initClassLoader;
+	}
+
+	/* Otherwise, use the specified classloader. */
+	else
+		classLoader = initConfig->classLoader;
 	
 	/* Refer to owning state and set identifier. */
-	result->inState = inState;
+	sjme_atomic_s(sjme_nvm, &result->inState, inState);
 	result->classLoader = classLoader;
 	result->id = 1 + sjme_atomic_ga(sjme_jint, 
 		&inState->nextTaskId, 1);
@@ -855,6 +866,11 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	
 	/* Add to the running task count. */
 	sjme_atomic_ga(sjme_jint, &inState->numRunningTasks, 1);
+
+	/* Refer to the classloader as we are using it, before we enter main */
+	/* as weird stuff can happen if not. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(classLoader, NULL)))
+		goto fail_countLoader;
 
 	/* Not belaying main start? Then start the main thread. */
 	if ((initConfigCopy->belay & SJME_NVM_BOOT_BELAY_MAIN) == 0)
@@ -903,6 +919,7 @@ fail_copyInitConfig:
 	return sjme_error_default(error);
 
 	/* Post state lock, when accessing state is no longer needed. */
+fail_countLoader:
 fail_enterMain:
 fail_stateLockRelease:
 	/* Unlock task before fail. */

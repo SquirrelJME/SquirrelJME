@@ -53,6 +53,7 @@ squirreljme_multilib_add_static_library(Core
 	mleType.c
 	modelessStars.c
 	nvm.c
+	nvmAtomic.c
 	rom.c
 	romLibrary.c
 	romLibraryZip.c
@@ -61,7 +62,6 @@ squirreljme_multilib_add_static_library(Core
 	stackMap.c
 	stringPool.c
 	task.c
-	taskAtomic.c
 	taskFrame.c
 	taskThread.c
 	tread.c

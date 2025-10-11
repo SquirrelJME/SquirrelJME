@@ -16,6 +16,7 @@
 static sjme_errorCode sjme_seekable_closeHandler(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
+	sjme_errorCode error;
 	sjme_seekable seekable;
 	
 	/* Recover seekable. */
@@ -25,8 +26,9 @@ static sjme_errorCode sjme_seekable_closeHandler(
 	
 	/* Forward to close handler. */
 	if (seekable->functions->close != NULL)
-		return seekable->functions->close(seekable,
-			&seekable->implState);
+		if (sjme_error_is(error = seekable->functions->close(seekable,
+			&seekable->implState)))
+			return sjme_error_default(error);
 	
 	/* No handler, just success. */
 	return SJME_ERROR_NONE;

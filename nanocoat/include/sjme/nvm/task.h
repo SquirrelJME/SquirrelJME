@@ -298,16 +298,16 @@ struct sjme_nvm_frameBase
 	sjme_nvm_commonBase common;
 
 	/** The state this frame is in. */
-	sjme_nvm inState;
+	sjme_phantom(sjme_nvm) inState;
 
 	/** The thread this frame is in. */
-	sjme_nvm_thread inThread;
+	sjme_phantom(sjme_nvm_thread) inThread;
 
 	/** The task this is in. */
-	sjme_nvm_task inTask;
+	sjme_phantom(sjme_nvm_task) inTask;
 
 	/** The parent frame. */
-	sjme_nvm_frame parent;
+	sjme_phantom(sjme_nvm_frame) parent;
 	
 	/** The current program counter. */
 	sjme_pcAddr pc;
@@ -340,7 +340,7 @@ struct sjme_nvm_frameBase
 	sjme_jint id;
 
 	/** Phantom tracepoint reference, for recycling. */
-	sjme_phantom phantomTracePoint;
+	sjme_phantom(sjme_jbracketTrace) phantomTracePoint;
 
 	/** The index of this frame. */
 	sjme_jint index;
@@ -394,6 +394,9 @@ struct sjme_nvm_task_taskNewConfig
 	
 	/** The class loader for this task. */
 	sjme_nvm_vmClass_loader classLoader;
+
+	/** The classpath is a strong reference. */
+	sjme_jboolean strongClassPath;
 
 	/** The belay for the task. */
 	sjme_nvm_bootBelayType belay;
@@ -559,7 +562,7 @@ struct sjme_nvm_taskBase
 	sjme_jint id;
 	
 	/** The state machine which owns this task. */
-	sjme_nvm inState;
+	sjme_phantom(sjme_nvm) inState;
 	
 	/** The exit code of the task. */
 	sjme_atomic_sjme_jint exitCode;
@@ -604,10 +607,10 @@ struct sjme_nvm_threadBase
 	sjme_jobjectBase object;
 	
 	/** The VM state this thread is in. */
-	sjme_nvm inState;
+	sjme_phantom(sjme_nvm) inState;
 	
 	/** The owning task. */
-	sjme_nvm_task inTask;
+	sjme_phantom(sjme_nvm_task) inTask;
 
 	/** The @c sjme_nvm_thread_startType of the thread. */
 	sjme_atomic_sjme_jint start;
@@ -1392,25 +1395,32 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
 	sjme_attrInNotNull sjme_lpcstr inUtf);
 
 /** Frame thread. */
-#define SJME_F_T(frame) ((frame)->inThread)
+#define SJME_F_T(frame) \
+	sjme_atomic_g(sjme_nvm_thread, &(frame)->inThread)
 
 /** Frame task. */
-#define SJME_F_K(frame) ((frame)->inTask)
+#define SJME_F_K(frame) \
+	sjme_atomic_g(sjme_nvm_task, &(frame)->inTask)
 
 /** Frame classloader. */
-#define SJME_F_CL(frame) ((frame)->inTask->classLoader)
+#define SJME_F_CL(frame) \
+	(sjme_atomic_g(sjme_nvm_task, &(frame)->inTask)->classLoader)
 
 /** Frame state. */
-#define SJME_F_S(frame) ((frame)->inTask->inState)
+#define SJME_F_S(frame) \
+	sjme_atomic_g(sjme_nvm, &SJME_F_K(frame)->inState)
 
 /** Thread state. */
-#define SJME_T_S(thread) ((thread)->inState)
+#define SJME_T_S(thread) \
+	sjme_atomic_g(sjme_nvm, &(thread)->inState)
 
 /** Thread task. */
-#define SJME_T_K(thread) ((thread)->inTask)
+#define SJME_T_K(thread) \
+	sjme_atomic_g(sjme_nvm_task, &(thread)->inTask)
 
 /** Thread classloader. */
-#define SJME_T_CL(thread) ((thread)->inTask->classLoader)
+#define SJME_T_CL(thread) \
+	(sjme_atomic_g(sjme_nvm_task, &(thread)->inTask)->classLoader)
 	
 /*--------------------------------------------------------------------------*/
 

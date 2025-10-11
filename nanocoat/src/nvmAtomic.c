@@ -7,7 +7,18 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/nvm/task.h"
 #include "sjme/atomicImpl.h"
+#include "sjme/nvm/mleBrackets.h"
+#include "sjme/nvm/nvm.h"
+
+SJME_ATOMIC_FUNCTION(sjme_jbracketTrace, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_nvm, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_nvm_task, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_nvm_frame, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_nvm_thread, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_nvm_vmClass_loader, 0)

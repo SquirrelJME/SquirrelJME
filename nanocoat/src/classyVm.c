@@ -807,7 +807,7 @@ static sjme_errorCode sjme_nvm_vmClass_isClassesAdd(
 
 	/* Grow the list. */
 	if (sjme_error_is(error = sjme_list_replace(
-		contextThread->inState->allocPool,
+		sjme_atomic_g(sjme_nvm, &contextThread->inState)->allocPool,
 		n + IS_CLASSES_GROW, inOutClasses, sjme_jclass, 0)) ||
 		(*inOutClasses) == NULL)
 		return sjme_error_default(error);
@@ -1063,7 +1063,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		return sjme_error_default(error);
 	
 	/* Need these in order to work at all. */
-	allocPool = contextThread->inState->allocPool;
+	allocPool = sjme_atomic_g(sjme_nvm, &contextThread->inState)->allocPool;
 	
 	/* Needs loading first? */
 	if (sjme_atomic_g(sjme_jint, 
@@ -1257,7 +1257,8 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		/* Initialize binds. */
 		fieldBinds = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitFieldBinds(
-			contextThread->inState, loader, inClass, i, contextThread,
+			sjme_atomic_g(sjme_nvm, &contextThread->inState),
+			loader, inClass, i, contextThread,
 			&fieldBinds)) || fieldBinds == NULL)
 			goto fail_bindFields;
 		inClass->fields[i].binds = fieldBinds;
@@ -1411,7 +1412,8 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 
 	/* Allocate base for is-classes. */
 	isClasses = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(contextThread->inState,
+	if (sjme_error_is(error = sjme_nvm_alloc(
+		sjme_atomic_g(sjme_nvm, &contextThread->inState),
 		sizeof(*isClasses), SJME_NVM_STRUCT_IS_CLASSES,
 		SJME_AS_NVM_COMMONP(&isClasses))) ||
 		isClasses == NULL)
@@ -1803,7 +1805,7 @@ sjme_errorCode sjme_nvm_vmClass_isClasses(
 		{
 			/* Allocate interface binds. */
 			if (sjme_error_is(error = sjme_list_alloc(
-				contextThread->inState->allocPool,
+				sjme_atomic_g(sjme_nvm, &contextThread->inState)->allocPool,
 				numInterfaces, &interfaceBinds, sjme_jinterfaceID, 0)) ||
 				interfaceBinds == NULL)
 				goto fail_allocBinds;
@@ -1823,7 +1825,8 @@ sjme_errorCode sjme_nvm_vmClass_isClasses(
 				/* Allocate interface bind. */
 				interfaceBind = NULL;
 				if (sjme_error_is(error = sjme_nvm_alloc(
-					contextThread->inState, sizeof(*interfaceBind),
+					sjme_atomic_g(sjme_nvm, &contextThread->inState),
+					sizeof(*interfaceBind),
 					SJME_NVM_STRUCT_INTERFACE_ID,
 					SJME_AS_NVM_COMMONP(&interfaceBind))) ||
 					interfaceBind == NULL)

@@ -102,8 +102,8 @@ typedef enum sjme_nvm_walk_pseudoType
 	/** Fixed size array . */
 	SJME_NVM_WALK_PSEUDO_FIXED_ARRAY = -21,
 
-	/** @c sjme_nvm_vmClass_loader . */
-	SJME_NVM_WALK_PSEUDO_CLASS_LOADER = -22,
+	/** UNUSED . */
+	SJME_NVM_WALK_PSEUDO_UNUSED_22 = -22,
 
 	/** @c sjme_nvm_taskStrings . */
 	SJME_NVM_WALK_PSEUDO_TASK_STRINGS = -23,
@@ -164,6 +164,9 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_charSeq . */
 	SJME_NVM_WALK_PSEUDO_CHAR_SEQ = -42,
+
+	/** Phantom back reference . */
+	SJME_NVM_WALK_PSEUDO_PHANTOM = -43,
 } sjme_nvm_walk_pseudoType;
 
 /**
@@ -359,6 +362,9 @@ struct sjme_nvm_walk_state
 
 	/** Current parsed string value. */
 	sjme_lpcstr lpstr;
+
+	/** Does this point to a phantom atomic reference? */
+	sjme_jboolean isPhantom;
 };
 
 struct sjme_nvm_walk_step

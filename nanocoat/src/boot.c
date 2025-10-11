@@ -431,15 +431,15 @@ sjme_errorCode sjme_nvm_boot(
 			goto fail_allocSchedule;
 
 	/* Setup task details. */
-	initTaskConfig = result->initTaskConfig;
+	initTaskConfig = (sjme_nvm_task_taskNewConfig*)result->initTaskConfig;
 	initTaskConfig->stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
 	initTaskConfig->stdErr = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
-	initTaskConfig->classPath = classPath;
 	initTaskConfig->mainClass = result->bootParamCopy->mainClass;
 	initTaskConfig->mainArgs = result->bootParamCopy->mainArgs;
 	initTaskConfig->sysProps = result->bootParamCopy->sysProps;
 	initTaskConfig->belay = result->bootParamCopy->belay;
 	initTaskConfig->noOptimize = result->bootParamCopy->noOptimize;
+	initTaskConfig->classPath = classPath;
 
 	/* Only create the task if not belaying it. */
 	initTask = NULL;

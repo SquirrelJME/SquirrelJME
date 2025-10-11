@@ -11,6 +11,7 @@
 #include "sjme/nvm/boot.h"
 #include "sjme/nvm/instance.h"
 #include "sjme/nvm/rom.h"
+#include "sjme/nvm/task.h"
 #include "sjme/nvm/walk.h"
 
 #define SJME_CLEANUP_DECL \
@@ -82,6 +83,8 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 		/* down accordingly. Naturally NVM structures are always positive */
 		/* type identifiers. */
 		if (at->typeId >= 0 && at->valueP.value != at->baseStruct.value &&
+			!at->isPhantom &&
+			*at->valueP.pointer != NULL &&
 			sjme_nvm_isAR(*at->valueP.pointer,
 				SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
 		{
@@ -94,12 +97,14 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 			sjme_atomic_s(sjme_jobject, at->valueP.atomicObject, NULL);
 		}
 
-		/* Types which can be closed. */
-		else if ((at->typeId == SJME_NVM_STRUCT_ROM_SUITE ||
-			at->typeId == SJME_NVM_STRUCT_ROM_LIBRARY ||
-			at->typeId == SJME_NVM_STRUCT_STRING_POOL ||
-			at->typeId == SJME_NVM_STRUCT_STRING_POOL_STRING) &&
-			*at->valueP.pointer != NULL)
+		/* Any structure type can be closed, if not an object. */
+		/* And it is not phantom (points back to a parent). */
+		else if (at->typeId > SJME_NVM_STRUCT_UNKNOWN &&
+			!at->isPhantom &&
+			*at->valueP.pointer != NULL &&
+			at->valueP.value != at->baseStruct.value &&
+			!sjme_nvm_isAR(*at->valueP.pointer,
+				SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
 		{
 			/* Close it. */
 			if (sjme_error_is(error = sjme_closeable_close(
@@ -152,7 +157,7 @@ static sjme_errorCode sjme_nvm_cleanup_close(
 	/* Perform a generic walk close. */
 	if (sjme_error_is(error = sjme_nvm_walk_start(common, common->type,
 		&sjme_nvm_cleanup_walkFunctions, NULL)))
-		return sjme_error_default(error);
+		goto fail_walk;
 
 	/* Is there a post-close handler for this? */
 	/* Cleanup any sub-structures that would otherwise normally */
@@ -161,14 +166,27 @@ static sjme_errorCode sjme_nvm_cleanup_close(
 	{
 		/* Call handler. */
 		if (sjme_error_is(error = common->postClose(closeable)))
-			return sjme_error_default(error);
+			goto fail_handler;
 
 		/* Clear it since it was performed. */
 		common->postClose = NULL;
 	}
+	
+	/* Unlock self, in the event native locks claim resources. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(&common->lock,
+		NULL)))
+		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+
+fail_handler:
+fail_walk:
+	/* Release before failing. */
+	sjme_thread_spinLockRelease(&common->lock, NULL);
+
+	/* Fail. */
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_nvm_cleanup_postRomLibrary(
@@ -267,12 +285,27 @@ static sjme_errorCode sjme_nvm_cleanup_postState(
 	sjme_errorCode error;
 	sjme_nvm inState;
 	sjme_nvm_bootParam* bootParam;
+	sjme_nvm_task_taskNewConfig* initTask;
+	sjme_list_sjme_nvm_task* tasks;
+	sjme_jint i, n;
 	SJME_CLEANUP_DECL;
 
 	/* Recover. */
 	inState = (sjme_nvm)closeable;
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Cleanup all tasks. */
+	tasks = inState->tasks;
+	if (tasks != NULL)
+	{
+		/* Call close on every task. */
+		for (n = tasks->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(tasks->elements[i]);
+		
+		/* Free tasks. */
+		SJME_SIMPLE_FREE(inState->tasks);
+	}
 
 	/* Boot parameters? */
 	bootParam = (sjme_nvm_bootParam*)inState->bootParamCopy;
@@ -291,6 +324,22 @@ static sjme_errorCode sjme_nvm_cleanup_postState(
 		
 		/* Free the outer structure. */
 		SJME_SIMPLE_FREE(inState->bootParamCopy);
+	}
+
+	/* Initial task configuration? */
+	initTask = (sjme_nvm_task_taskNewConfig*)inState->initTaskConfig;
+	if (initTask != NULL)
+	{
+		/* The other fields are direct references to bootParamCopy. */
+		/* initTask->classPath */
+		/* initTask->sysProps */
+		/* initTask->mainArgs */
+		
+		/* Count down class loader. */
+		SJME_SIMPLE_CLOSE(initTask->classLoader);
+
+		/* Free self. */
+		SJME_SIMPLE_FREE(inState->initTaskConfig);
 	}
 
 	return SJME_ERROR_NONE;
@@ -334,7 +383,6 @@ static sjme_errorCode sjme_nvm_cleanup_postStringPool(
 	return SJME_ERROR_NONE;
 }
 
-
 static sjme_errorCode sjme_nvm_cleanup_postStringPoolString(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -355,6 +403,55 @@ static sjme_errorCode sjme_nvm_cleanup_postStringPoolString(
 		if (sjme_error_is(error = sjme_charSeq_delete(seq)))
 			return sjme_error_default(error);
 	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_cleanup_postVmClassLoader(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_errorCode error;
+	sjme_nvm_vmClass_loader classLoader;
+	sjme_list_sjme_nvm_rom_library* classPath;
+	sjme_list_sjme_jclass* classes;
+	sjme_jint i, n;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	classLoader = (sjme_nvm_vmClass_loader)closeable;
+	if (classLoader == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Close loaded classes. */
+	classes = classLoader->classes;
+	if (classes != NULL)
+	{
+		/* Close each class. */
+		for (n = classes->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(classes->elements[i]);
+		
+		/* Free class list. */
+		SJME_SIMPLE_FREE(classLoader->classes);
+	}
+
+	/* Close all used libraries in the classpath. */
+	classPath = classLoader->classPath;
+	if (classPath != NULL)
+	{
+		/* Close each library. */
+		for (n = classPath->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(classPath->elements[i]);
+		
+		/* Free classpath list. */
+		SJME_SIMPLE_FREE(classLoader->classPath);
+	}
+	
+	/* Cleanup null strings. */
+	SJME_SIMPLE_CLOSE(classLoader->nullStrings);
+
+	/* Stop referring to the state. */
+	SJME_SIMPLE_CLOSE(classLoader->inState);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -413,6 +510,10 @@ sjme_errorCode sjme_nvm_allocR(
 
 		case SJME_NVM_STRUCT_STRING_POOL_STRING:
 			postClose = sjme_nvm_cleanup_postStringPoolString;
+			break;
+			
+		case SJME_NVM_STRUCT_VM_CLASS_LOADER:
+			postClose = sjme_nvm_cleanup_postVmClassLoader;
 			break;
 		
 			/* No specific close being used. */

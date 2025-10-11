@@ -144,14 +144,17 @@ sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 		stateContext = NULL;
 		if (sjme_nvm_isAR(vmContext, SJME_NVM_STRUCT_FRAME))
 		{
-			stateContext = ((sjme_nvm_frame)vmContext)->inState;
+			stateContext = sjme_atomic_g(sjme_nvm,
+				&((sjme_nvm_frame)vmContext)->inState);
 			sjme_nvm_task_stackTraceThread(
-				((sjme_nvm_frame)vmContext)->inThread);
+				sjme_atomic_g(sjme_nvm_thread,
+					&((sjme_nvm_frame)vmContext)->inThread));
 		}
 		else if (sjme_nvm_isAR(vmContext,
 			SJME_NVM_STRUCT_THREAD_INSTANCE))
 		{
-			stateContext = ((sjme_nvm_thread)vmContext)->inState;
+			stateContext = sjme_atomic_g(sjme_nvm,
+				&((sjme_nvm_thread)vmContext)->inState);
 			sjme_nvm_task_stackTraceThread(vmContext);
 		}
 

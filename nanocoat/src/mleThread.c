@@ -157,7 +157,7 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	sjme_jint i, n;
 
 	/* Recover task. */
-	task = inFrame->inTask;
+	task = sjme_atomic_g(sjme_nvm_task, &inFrame->inTask);
 	if (task == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 

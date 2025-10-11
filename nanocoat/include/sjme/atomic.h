@@ -181,6 +181,9 @@ extern "C" {
 		SJME_TOKEN_TYPE(type, numPointerStars) \
 			sjme_alignPointer volatile value; \
 	} SJME_ATOMIC_NAME(type, numPointerStars); \
+	typedef SJME_ATOMIC_NAME(type, numPointerStars) \
+		SJME_TOKEN_PASTE_PP(SJME_ATOMIC_NAME(type, numPointerStars), \
+		_phantom); \
 	SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars)
 
 #else
@@ -217,11 +220,12 @@ SJME_ATOMIC_DECLARE(sjme_jclass, 0);
 SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
 
 /**
- * Phantom pointer.
+ * Phantom atomic reference.
  *
- * @since 2025/10/03
+ * @since 2025/10/11
  */
-typedef sjme_atomic_sjme_pointer sjme_phantom;
+#define sjme_phantom(type) \
+	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _phantom)
 
 /**
  * Chain gets from two atomic values which are in a structure with each
