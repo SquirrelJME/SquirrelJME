@@ -728,6 +728,8 @@ static sjme_errorCode sjme_nvm_walkPhantom(
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
 	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
 {
+	sjme_errorCode error;
+	
 	if (root == NULL || at == NULL || function == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -739,7 +741,12 @@ static sjme_errorCode sjme_nvm_walkPhantom(
 	at->isPhantom = SJME_JNI_TRUE;
 	
 	/* Directly walk on this! */
-	return sjme_nvm_walkItem(root, parent, at, function);
+	if (sjme_error_is(error = sjme_nvm_walkItem(root, parent, at, function)))
+		return sjme_error_default(error);
+
+	/* Set to no longer be phantom before leaving. */
+	at->isPhantom = SJME_JNI_FALSE;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_nvm_walkStruct(
