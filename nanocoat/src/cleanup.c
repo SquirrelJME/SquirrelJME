@@ -58,7 +58,7 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 	if (root == NULL || at == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_GC) && 0
 	/* Debug. */
 	sjme_message("GC Walk: %s %s %p (%d)->#%d (%d)",
 		(at->stage == SJME_NVM_WALK_STAGE_PRE ? "PRE" : "STEPS"),

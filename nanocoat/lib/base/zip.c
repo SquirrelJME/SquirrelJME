@@ -105,7 +105,7 @@ static sjme_errorCode sjme_zip_close(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_ZIP)
 	sjme_message("Zip close %p", zip);
 #endif
 	
@@ -284,7 +284,7 @@ sjme_errorCode sjme_zip_entryRead(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG_ZIP)
 	sjme_message("Open Zip entry: %s",
 		inEntry->name);
 #endif
@@ -319,7 +319,7 @@ sjme_errorCode sjme_zip_entryRead(
 	actualDataPos = localHeaderPos + SJME_ZIP_LOCAL_LENGTH +
 		lens[0] + lens[1];
 
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG_ZIP)
 	/* Debug. */
 	sjme_message("Lens: %d %d", lens[0], lens[1]);
 	sjme_message("Entry data at %d", actualDataPos);
@@ -606,7 +606,7 @@ sjme_errorCode sjme_zip_openSeekable(
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_ZIP)
 	/* Debug. */
 	sjme_message("Zip starts at %d", archiveStartPos);
 #endif

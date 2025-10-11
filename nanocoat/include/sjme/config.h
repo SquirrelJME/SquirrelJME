@@ -1253,6 +1253,16 @@ extern "C" {
 		/** Circle buffer printouts. */
 		#define SJME_CONFIG_DEBUG_CIRCLEBUF
 	#endif
+
+	#if !defined(SJME_CONFIG_DEBUG_CLOSEABLE)
+		/** Debug closeable objects. */
+		#define SJME_CONFIG_DEBUG_CLOSEABLE
+	#endif
+
+	#if !defined(SJME_CONFIG_DEBUG_ZIP)
+		/** Debug Zip files. */
+		#define SJME_CONFIG_DEBUG_ZIP
+	#endif
 #endif
 
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
