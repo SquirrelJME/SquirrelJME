@@ -605,9 +605,11 @@ sjme_errorCode sjme_zip_openSeekable(
 		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
-	
+
+#if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
 	sjme_message("Zip starts at %d", archiveStartPos);
+#endif
 	
 	/* Store info. */
 	result->allocPool = allocPool;

@@ -186,6 +186,11 @@ static sjme_errorCode sjme_nvm_cleanup_postRomLibrary(
 	if (library == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Call main close on the library. */
+	if (library->functions != NULL && library->functions->close != NULL)
+		if (sjme_error_is(error = library->functions->close(library)))
+			return sjme_error_default(error);
+
 	/* Close any class information. */
 	classInfos = library->classInfos;
 	if (classInfos != NULL)
@@ -205,6 +210,13 @@ static sjme_errorCode sjme_nvm_cleanup_postRomLibrary(
 		/* Free the list. */
 		SJME_SIMPLE_FREE(library->classInfos);
 	}
+
+	/* Free other allocated fields. */
+	SJME_SIMPLE_FREE(library->prefix);
+	SJME_SIMPLE_FREE(library->name);
+
+	/* Stop referring to the string pool. */
+	SJME_SIMPLE_CLOSE(library->stringPool);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
