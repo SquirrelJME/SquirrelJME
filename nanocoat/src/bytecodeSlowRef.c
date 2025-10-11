@@ -62,7 +62,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	target = methodId->info[callType];
 
 	/* Static-ness is wrong? */
-	isStatic = target->flags.member.isStatic;
+	isStatic = SJME_NVM_ACC_IS(target->flags, STATIC);
 	if (isStatic && instanceType != SJME_NVM_CLASS_MEMBER_STATIC &&
 		callType != SJME_NVM_CALL_NON_VIRTUAL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
@@ -135,7 +135,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 
 	/* If native, perform an MLE call. */
 	mleError = SJME_ERROR_NONE;
-	if (target->flags.native && isStatic)
+	if (SJME_NVM_ACC_IS(target->flags, NATIVE) && isStatic)
 	{
 		/* Perform the native call. */
 		memset(&mleArgR, 0, sizeof(mleArgR));
@@ -206,7 +206,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	else
 	{
 		/* Cannot be native. */
-		if (target->flags.native)
+		if (SJME_NVM_ACC_IS(target->flags, NATIVE))
 			return sjme_error_vmError(inFrame, SJME_ERROR_PURE_VIRTUAL_CALL);
 		
 		/* Enter the frame. */
@@ -464,7 +464,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Not an instance field? */
-	if (fieldId->flags.member.isStatic)
+	if (SJME_NVM_ACC_IS(fieldId->flags, STATIC))
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Check access for calling this method. */
@@ -479,10 +479,10 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	if (isPut)
 	{
 		/* Cannot be final unless we are in a static initializer. */
-		if (fieldId->flags.member.final)
+		if (SJME_NVM_ACC_IS(fieldId->flags, FINAL))
 		{
 			/* Cannot write static final fields. */
-			if (fieldId->flags.member.isStatic)
+			if (SJME_NVM_ACC_IS(fieldId->flags, STATIC))
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 			
@@ -733,10 +733,10 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	inSuper = sjme_nvm_vmClass_isSuperClass(currentClass,
 		refClass);
 	isInit = refMethod->bits.isInstanceInit;
-	isPrivate = SJME_M_AF(refMethod).private;
-	isPackagePrivate = (!SJME_M_AF(refMethod).private &&
-		!SJME_M_AF(refMethod).protected &&
-		!SJME_M_AF(refMethod).public);
+	isPrivate = SJME_NVM_ACC_IS(SJME_M_AF(refMethod), PRIVATE);
+	isPackagePrivate = (!SJME_NVM_ACC_IS(SJME_M_AF(refMethod), PRIVATE) &&
+		!SJME_NVM_ACC_IS(SJME_M_AF(refMethod), PROTECTED) &&
+		!SJME_NVM_ACC_IS(SJME_M_AF(refMethod), PUBLIC));
 	
 	/* Call superclass method instead? */
 	if ((!isPrivate && !isPackagePrivate) && inSuper && !isInit)
@@ -1231,7 +1231,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Not a static field? */
-	if (!fieldId->flags.member.isStatic)
+	if (!SJME_NVM_ACC_IS(fieldId->flags, STATIC))
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Check access for calling this method. */
@@ -1246,10 +1246,10 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	if (isPut)
 	{
 		/* Cannot be final unless we are in a static initializer. */
-		if (fieldId->flags.member.final)
+		if (SJME_NVM_ACC_IS(fieldId->flags, FINAL))
 		{
 			/* Cannot write instance final fields. */
-			if (!fieldId->flags.member.isStatic)
+			if (!SJME_NVM_ACC_IS(fieldId->flags, STATIC))
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 			

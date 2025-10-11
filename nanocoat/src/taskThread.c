@@ -315,7 +315,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		return sjme_error_vmError(inThread, SJME_ERROR_PURE_VIRTUAL_CALL);
 
 	/* Is the target static? */
-	isStatic = targetInfo->flags.member.isStatic;
+	isStatic = SJME_NVM_ACC_IS(targetInfo->flags, STATIC);
 	if (isStatic && callType != SJME_NVM_CALL_NON_VIRTUAL)
 		return sjme_error_vmError(inThread,
 			SJME_ERROR_CLASS_CHANGED);
@@ -366,7 +366,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	result->pool = targetInfo->code->inMethod->inClass->pool;
 
 	/* If static, refer to the class, otherwise refer to the instance. */
-	if (inMethod->flags.member.isStatic)
+	if (SJME_NVM_ACC_IS(inMethod->flags, STATIC))
 		result->instance = SJME_AS_JOBJECT(result->inClass);
 	else if (argV != NULL)
 		result->instance = argV[0].v.l;

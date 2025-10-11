@@ -10,4 +10,4 @@
 #include "sjme/nvm/task.h"
 #include "sjme/atomicImpl.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_thread, 0);
+SJME_ATOMIC_FUNCTION(sjme_nvm_thread, 0)

@@ -201,6 +201,14 @@ SJME_WALK_BEGIN(SJME_NVM_STRUCT_CLASS_INFO)
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
+#define SJME_WALK_CURRENT sjme_nvm_class_poolInfoBase
+SJME_WALK_BEGIN(SJME_NVM_STRUCT_POOL)
+	SJME_WS_NORM_V(common, SJME_NVM_WALK_PSEUDO_COMMON),
+	SJME_WS_LIST_P(pool,
+		SJME_WS_NORM_P(pool, SJME_NVM_WALK_PSEUDO_POOL_ENTRY)),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
 #define SJME_WALK_CURRENT sjme_nvm_commonBase
 SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_COMMON)
 	SJME_WS_NORM_V(closeable, SJME_NVM_WALK_PSEUDO_CLOSEABLE),
@@ -270,6 +278,13 @@ SJME_WALK_BEGIN(SJME_NVM_STRUCT_STRING_POOL)
 	SJME_WS_NORM_P(allocPool, SJME_NVM_WALK_PSEUDO_ALLOC_POOL),
 	SJME_WS_LIST_P(strings,
 		SJME_WS_NORM_P(strings, SJME_NVM_STRUCT_STRING_POOL_STRING)),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
+#define SJME_WALK_CURRENT sjme_nvm_stringPool_stringBase
+SJME_WALK_BEGIN(SJME_NVM_STRUCT_STRING_POOL_STRING)
+	SJME_WS_NORM_V(common, SJME_NVM_WALK_PSEUDO_COMMON),
+	SJME_WS_NORM_P(seq, SJME_NVM_WALK_PSEUDO_CHAR_SEQ),
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
@@ -347,6 +362,9 @@ static const sjme_nvm_walk_pseudoType sjme_nvm_walk_pseudoOnly[] =
 	SJME_NVM_WALK_PSEUDO_BASIC_TYPE_ID,
 	SJME_NVM_WALK_PSEUDO_BIND_TYPE,
 	SJME_NVM_WALK_PSEUDO_BOOT_BELAY_TYPE,
+	SJME_NVM_WALK_PSEUDO_CHAR_SEQ,
+	SJME_NVM_WALK_PSEUDO_CLASS_FLAGS,
+	SJME_NVM_WALK_PSEUDO_CLASS_VERSION,
 	SJME_NVM_WALK_PSEUDO_CLOSE_HANDLER,
 	SJME_NVM_WALK_PSEUDO_CLUTTER_LEVEL,
 	SJME_NVM_WALK_PSEUDO_FIXED_ARRAY,
@@ -382,10 +400,14 @@ const sjme_nvm_walk_stepSelect sjme_nvm_walk_select[] =
 	SJME_WALK_SELECT(sjme_jobjectBase, SJME_NVM_STRUCT_OBJECT_INSTANCE),
 	SJME_WALK_SELECT(sjme_nvm_class_infoBase,
 		SJME_NVM_STRUCT_CLASS_INFO),
+	SJME_WALK_SELECT(sjme_nvm_class_poolInfoBase,
+		SJME_NVM_STRUCT_POOL),
 	SJME_WALK_SELECT(sjme_nvm_rom_libraryBase, SJME_NVM_STRUCT_ROM_LIBRARY),
 	SJME_WALK_SELECT(sjme_nvm_rom_suiteBase, SJME_NVM_STRUCT_ROM_SUITE),
 	SJME_WALK_SELECT(sjme_nvm_stateBase, SJME_NVM_STRUCT_STATE),
 	SJME_WALK_SELECT(sjme_nvm_stringPoolBase, SJME_NVM_STRUCT_STRING_POOL),
+	SJME_WALK_SELECT(sjme_nvm_stringPool_stringBase,
+		SJME_NVM_STRUCT_STRING_POOL_STRING),
 	SJME_WALK_SELECT(sjme_nvm_taskBase, SJME_NVM_STRUCT_TASK),
 	SJME_WALK_SELECT(sjme_nvm_task_taskNewConfig,
 		SJME_NVM_WALK_PSEUDO_INIT_TASK_CONFIG),
@@ -451,6 +473,9 @@ static sjme_errorCode sjme_nvm_walkItem(
 	if (at->parent != parent)
 		return SJME_ERROR_ILLEGAL_STATE;
 
+	/* Always clear string data. */
+	at->lpstr = NULL;
+
 	/* Walk on this item. */
 	if (at->breadth == SJME_NVM_WALK_BREADTH_LEVEL)
 	{
@@ -482,6 +507,17 @@ static sjme_errorCode sjme_nvm_walkItem(
 					/* Some other weird size? */
 					else
 						at->typeId = oldTypeId;
+					break;
+
+					/* String data? */
+				case SJME_NVM_WALK_PSEUDO_LPSTR:
+					if (at->valueP.value != NULL)
+						at->lpstr = at->valueP.value;
+
+					/* Character sequence? */
+				case SJME_NVM_WALK_PSEUDO_CHAR_SEQ:
+					if (at->valueP.value != NULL)
+						at->lpstr = sjme_charSeq_tempUtf(at->valueP.value);
 					break;
 
 					/* Not aliased. */

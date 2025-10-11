@@ -29,60 +29,6 @@
 /** CLDC 8 max version. */
 #define SJME_NVM_CLASS_CLDC_1_8_MAX INT32_C(3407872)
 
-/** Public. */
-#define SJME_NVM_CLASS_ACC_PUBLIC INT16_C(0x0001)
-
-/** Private. */
-#define SJME_NVM_CLASS_ACC_PRIVATE INT16_C(0x0002)
-
-/** Protected. */
-#define SJME_NVM_CLASS_ACC_PROTECTED INT16_C(0x0004)
-
-/** Static member. */
-#define SJME_NVM_CLASS_ACC_STATIC INT16_C(0x0008)
-
-/** Final class or member. */
-#define SJME_NVM_CLASS_ACC_FINAL INT16_C(0x0010)
-
-/** Alternative @c invokesuper logic. */
-#define SJME_NVM_CLASS_ACC_SUPER INT16_C(0x0020)
-
-/** Synchronized method. */
-#define SJME_NVM_CLASS_ACC_SYNCHRONIZED INT16_C(0x0020)
-
-/** Bridge method. */
-#define SJME_NVM_CLASS_ACC_BRIDGE INT16_C(0x0040)
-
-/** Variable arguments. */
-#define SJME_NVM_CLASS_ACC_VARARGS INT16_C(0x0080)
-
-/** Native method. */
-#define SJME_NVM_CLASS_ACC_NATIVE INT16_C(0x0100)
-
-/** Class is an interface. */
-#define SJME_NVM_CLASS_ACC_INTERFACE INT16_C(0x0200)
-
-/** Abstract class or method. */
-#define SJME_NVM_CLASS_ACC_ABSTRACT INT16_C(0x0400)
-
-/** Strict floating point method. */
-#define SJME_NVM_CLASS_ACC_STRICTFP INT16_C(0x0800)
-
-/** Synthetic class or member. */
-#define SJME_NVM_CLASS_ACC_SYNTHETIC INT16_C(0x1000)
-
-/** Field is volatile. */
-#define SJME_NVM_CLASS_ACC_VOLATILE INT16_C(0x0040)
-
-/** Field is transient. */
-#define SJME_NVM_CLASS_ACC_TRANSIENT INT16_C(0x0080)
-
-/** Class is an annotation. */
-#define SJME_NVM_CLASS_ACC_ANNOTATION INT16_C(0x2000)
-
-/** Class is an enum. */
-#define SJME_NVM_CLASS_ACC_ENUM INT16_C(0x4000)
-
 static sjme_errorCode sjme_nvm_class_readPoolRefIndex(
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inClassPool,
@@ -148,30 +94,37 @@ static sjme_errorCode sjme_nvm_class_classFlagsParse(
 		return sjme_error_default(error);
 	
 	/* Translate to bitfield. */
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PUBLIC) != 0)
-		outFlags->access.public = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_FINAL) != 0)
-		outFlags->final = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_SUPER) != 0)
-		outFlags->super = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_INTERFACE) != 0)
-		outFlags->interface = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_ABSTRACT) != 0)
-		outFlags->abstract = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_SYNTHETIC) != 0)
-		outFlags->synthetic = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_ANNOTATION) != 0)
-		outFlags->annotation = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_ENUM) != 0)
-		outFlags->enumeration = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_NVM_ACC_PUBLIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PUBLIC;
+	if ((rawFlags & SJME_NVM_ACC_FINAL) != 0)
+		(*outFlags) |= SJME_NVM_ACC_FINAL;
+	if ((rawFlags & SJME_NVM_ACC_SUPER) != 0)
+		(*outFlags) |= SJME_NVM_ACC_SUPER;
+	if ((rawFlags & SJME_NVM_ACC_INTERFACE) != 0)
+		(*outFlags) |= SJME_NVM_ACC_INTERFACE;
+	if ((rawFlags & SJME_NVM_ACC_ABSTRACT) != 0)
+		(*outFlags) |= SJME_NVM_ACC_ABSTRACT;
+	if ((rawFlags & SJME_NVM_ACC_SYNTHETIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_SYNTHETIC;
+	if ((rawFlags & SJME_NVM_ACC_ANNOTATION) != 0)
+		(*outFlags) |= SJME_NVM_ACC_ANNOTATION;
+	if ((rawFlags & SJME_NVM_ACC_ENUM) != 0)
+		(*outFlags) |= SJME_NVM_ACC_ENUM;
 	
 	/* Cannot be abstract and final. */
+	if (((*outFlags) & (SJME_NVM_ACC_ABSTRACT | SJME_NVM_ACC_FINAL)) ==
+		(SJME_NVM_ACC_ABSTRACT | SJME_NVM_ACC_FINAL))
+		return SJME_ERROR_INVALID_CLASS_FLAGS;
+	
 	/* Annotation must be an interface. */
+	if (((*outFlags) & (SJME_NVM_ACC_ANNOTATION | SJME_NVM_ACC_INTERFACE)) ==
+		SJME_NVM_ACC_ANNOTATION)
+		return SJME_ERROR_INVALID_CLASS_FLAGS;
+	
 	/* Interface must be abstract and not final, super, or enum */
-	if ((outFlags->abstract && outFlags->final) ||
-		(outFlags->annotation && !outFlags->interface) ||
-		(outFlags->interface && (!outFlags->abstract ||
-			outFlags->final || outFlags->super || outFlags->enumeration)))
+	if (((*outFlags) & (SJME_NVM_ACC_INTERFACE)) != 0)
+		if (((*outFlags) & (SJME_NVM_ACC_ABSTRACT | SJME_NVM_ACC_FINAL |
+			SJME_NVM_ACC_SUPER | SJME_NVM_ACC_ENUM)) != SJME_NVM_ACC_ABSTRACT)
 		return SJME_ERROR_INVALID_CLASS_FLAGS;
 	
 	/* Success! */
@@ -344,31 +297,32 @@ static sjme_errorCode sjme_nvm_class_fieldFlagsParse(
 	
 	/* Translate to bitfield. */
 	memset(outFlags, 0, sizeof(*outFlags));
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PUBLIC) != 0)
-		outFlags->member.access.public = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PRIVATE) != 0)
-		outFlags->member.access.private = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PROTECTED) != 0)
-		outFlags->member.access.protected = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_STATIC) != 0)
-		outFlags->member.isStatic = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_FINAL) != 0)
-		outFlags->member.final = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_VOLATILE) != 0)
-		outFlags->isVolatile = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_TRANSIENT) != 0)
-		outFlags->transient = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_ENUM) != 0)
-		outFlags->enumeration = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_SYNTHETIC) != 0)
-		outFlags->member.synthetic = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_NVM_ACC_PUBLIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PUBLIC;
+	if ((rawFlags & SJME_NVM_ACC_PRIVATE) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PRIVATE;
+	if ((rawFlags & SJME_NVM_ACC_PROTECTED) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PROTECTED;
+	if ((rawFlags & SJME_NVM_ACC_STATIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_STATIC;
+	if ((rawFlags & SJME_NVM_ACC_FINAL) != 0)
+		(*outFlags) |= SJME_NVM_ACC_FINAL;
+	if ((rawFlags & SJME_NVM_ACC_VOLATILE) != 0)
+		(*outFlags) |= SJME_NVM_ACC_VOLATILE;
+	if ((rawFlags & SJME_NVM_ACC_TRANSIENT) != 0)
+		(*outFlags) |= SJME_NVM_ACC_TRANSIENT;
+	if ((rawFlags & SJME_NVM_ACC_ENUM) != 0)
+		(*outFlags) |= SJME_NVM_ACC_ENUM;
+	if ((rawFlags & SJME_NVM_ACC_SYNTHETIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_SYNTHETIC;
 	
 	/* Can only have a single access mode. */
+	if (sjme_util_intBitCountU((*outFlags) & SJME_NVM_ACC_ACCESS_MASK) > 1)
+		return SJME_ERROR_INVALID_FIELD_FLAGS;
+	
 	/* Cannot be both final and volatile. */
-	if (((outFlags->member.access.public +
-		outFlags->member.access.protected +
-		outFlags->member.access.private) > 1) ||
-		(outFlags->member.final && outFlags->isVolatile))
+	if (((*outFlags) & (SJME_NVM_ACC_FINAL | SJME_NVM_ACC_VOLATILE)) ==
+		(SJME_NVM_ACC_FINAL | SJME_NVM_ACC_VOLATILE))
 		return SJME_ERROR_INVALID_FIELD_FLAGS;
 	
 	/* Success! */
@@ -676,41 +630,42 @@ static sjme_errorCode sjme_nvm_class_methodFlagsParse(
 	
 	/* Translate to bitfield. */
 	memset(outFlags, 0, sizeof(*outFlags));
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PUBLIC) != 0)
-		outFlags->member.access.public = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PRIVATE) != 0)
-		outFlags->member.access.private = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PROTECTED) != 0)
-		outFlags->member.access.protected = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_STATIC) != 0)
-		outFlags->member.isStatic = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_FINAL) != 0)
-		outFlags->member.final = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_SYNCHRONIZED) != 0)
-		outFlags->synchronized = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_BRIDGE) != 0)
-		outFlags->bridge = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_VARARGS) != 0)
-		outFlags->varargs = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_NATIVE) != 0)
-		outFlags->native = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_ABSTRACT) != 0)
-		outFlags->abstract = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_STRICTFP) != 0)
-		outFlags->strictfp = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_SYNTHETIC) != 0)
-		outFlags->member.synthetic = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_NVM_ACC_PUBLIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PUBLIC;
+	if ((rawFlags & SJME_NVM_ACC_PRIVATE) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PRIVATE;
+	if ((rawFlags & SJME_NVM_ACC_PROTECTED) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PROTECTED;
+	if ((rawFlags & SJME_NVM_ACC_STATIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_STATIC;
+	if ((rawFlags & SJME_NVM_ACC_FINAL) != 0)
+		(*outFlags) |= SJME_NVM_ACC_FINAL;
+	if ((rawFlags & SJME_NVM_ACC_SYNCHRONIZED) != 0)
+		(*outFlags) |= SJME_NVM_ACC_SYNCHRONIZED;
+	if ((rawFlags & SJME_NVM_ACC_BRIDGE) != 0)
+		(*outFlags) |= SJME_NVM_ACC_BRIDGE;
+	if ((rawFlags & SJME_NVM_ACC_VARARGS) != 0)
+		(*outFlags) |= SJME_NVM_ACC_VARARGS;
+	if ((rawFlags & SJME_NVM_ACC_NATIVE) != 0)
+		(*outFlags) |= SJME_NVM_ACC_NATIVE;
+	if ((rawFlags & SJME_NVM_ACC_ABSTRACT) != 0)
+		(*outFlags) |= SJME_NVM_ACC_ABSTRACT;
+	if ((rawFlags & SJME_NVM_ACC_STRICTFP) != 0)
+		(*outFlags) |= SJME_NVM_ACC_STRICTFP;
+	if ((rawFlags & SJME_NVM_ACC_SYNTHETIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_SYNTHETIC;
 	
 	/* Can only have a single access mode. */
-	/* Abstract cannot be final, private, static, strict, or synchronized. */
-	if (((outFlags->member.access.public +
-		outFlags->member.access.protected +
-		outFlags->member.access.private) > 1) ||
-		(outFlags->abstract && (outFlags->member.final ||
-			outFlags->native || outFlags->member.access.private ||
-			outFlags->member.isStatic || outFlags->strictfp ||
-			outFlags->synchronized)))
+	if (sjme_util_intBitCountU((*outFlags) & SJME_NVM_ACC_ACCESS_MASK) > 1)
 		return SJME_ERROR_INVALID_METHOD_FLAGS;
+	
+	/* Abstract cannot be final, private, static, strict, or synchronized. */
+	if (SJME_NVM_ACC_IS(*outFlags, ABSTRACT))
+		if (((*outFlags) & (SJME_NVM_ACC_ABSTRACT | SJME_NVM_ACC_FINAL |
+			SJME_NVM_ACC_PRIVATE | SJME_NVM_ACC_STATIC |
+			SJME_NVM_ACC_STRICTFP |
+			SJME_NVM_ACC_SYNCHRONIZED)) != SJME_NVM_ACC_ABSTRACT)
+			return SJME_ERROR_INVALID_METHOD_FLAGS;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -1508,7 +1463,8 @@ sjme_errorCode sjme_nvm_class_parse(
 	{
 		/* Determine the type index for its slot. */
 		field = fields->elements[i];
-		field->typedIndex = result->fieldCount[(field->flags.member.isStatic ? 
+		field->typedIndex = result->fieldCount[
+			((field->flags & SJME_NVM_ACC_STATIC) != 0 ? 
 			SJME_NVM_CLASS_MEMBER_STATIC : SJME_NVM_CLASS_MEMBER_INSTANCE)]
 			[field->extendedType]++;
 		
@@ -1559,7 +1515,7 @@ sjme_errorCode sjme_nvm_class_parse(
 		/* Determine the type index for its slot. */
 		method = methods->elements[i];
 		method->typedIndex = result->methodCount[
-			(method->flags.member.isStatic ? 
+			((method->flags & SJME_NVM_ACC_STATIC) != 0 ? 
 			SJME_NVM_CLASS_MEMBER_STATIC : SJME_NVM_CLASS_MEMBER_INSTANCE)]++;
 		
 		/* Overflowed? */

@@ -589,9 +589,9 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	sjme_attrInPositive sjme_jint methodId,
 	sjme_attrOutNotNull sjme_nvm_class_methodInfo* outInfo);
 
-/** Member access flags. */
+/** Member flags. */
 #define SJME_M_AF(of) \
-	((of)->flags.member.access)
+	((of)->flags)
 
 /** Member name. */
 #define SJME_M_N(of) \

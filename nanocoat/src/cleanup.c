@@ -322,6 +322,32 @@ static sjme_errorCode sjme_nvm_cleanup_postStringPool(
 	return SJME_ERROR_NONE;
 }
 
+
+static sjme_errorCode sjme_nvm_cleanup_postStringPoolString(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_errorCode error;
+	sjme_charSeq seq;
+	sjme_nvm_stringPool_string string;
+	
+	/* Recover. */
+	string = (sjme_nvm_stringPool_string)closeable;
+	if (string == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Delete the character sequence. */
+	seq = string->seq;
+	if (seq != NULL)
+	{
+		string->seq = NULL;
+		if (sjme_error_is(error = sjme_charSeq_delete(seq)))
+			return sjme_error_default(error);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_allocR(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
@@ -371,6 +397,10 @@ sjme_errorCode sjme_nvm_allocR(
 
 		case SJME_NVM_STRUCT_STRING_POOL:
 			postClose = sjme_nvm_cleanup_postStringPool;
+			break;
+
+		case SJME_NVM_STRUCT_STRING_POOL_STRING:
+			postClose = sjme_nvm_cleanup_postStringPoolString;
 			break;
 		
 			/* No specific close being used. */

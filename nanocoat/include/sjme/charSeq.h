@@ -44,6 +44,16 @@ typedef sjme_jchar (*sjme_charSeq_charAtFunc)(
 	sjme_attrInPositive sjme_jint inIndex);
 
 /**
+ * Deletes the given character sequence.
+ * 
+ * @param inSeq The input character sequence.
+ * @return Any resultant error, if any.
+ * @since 2025/10/11
+ */
+typedef sjme_errorCode (*sjme_charSeq_deleteFunc)(
+	sjme_attrInNotNull sjme_charSeq inSeq);
+
+/**
  * Returns the length of the character sequence.
  * 
  * @param inSeq The input character sequence.
@@ -67,6 +77,9 @@ typedef struct sjme_charSeq_functions
 	
 	/** The length of the character sequence. */
 	sjme_charSeq_lengthFunc length;
+
+	/** Handle freeing of sequence resources. */ 
+	sjme_charSeq_deleteFunc delete;
 } sjme_charSeq_functions;
 
 /**
@@ -220,6 +233,16 @@ sjme_jchar sjme_charSeq_charAtR(
 	sjme_attrInPositive sjme_jint inIndex);
 
 /**
+ * Deletes the given character sequence.
+ * 
+ * @param seq The sequence to delete.
+ * @return On any resultant error, if any.
+ * @since 2025/10/11
+ */
+sjme_errorCode sjme_charSeq_delete(
+	sjme_attrInNotNull sjme_charSeq seq);
+	
+/**
  * Makes a copy of the given character sequence.
  * 
  * @param allocPool The allocation pool to allocate within.
@@ -232,7 +255,7 @@ sjme_errorCode sjme_charSeq_dup(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_charSeq* destCopy,
 	sjme_attrInNotNull sjme_charSeq sourceFrom);
-
+	
 /**
  * Duplicates a character sequence to the given buffer.
  * 
@@ -472,7 +495,7 @@ sjme_errorCode sjme_charSeq_newWide(
 	sjme_attrInNegativeOnePositive sjme_jint limitLen);
 
 /**
- * Allocates a new static wide character sequence.
+ * Initializes a new static wide character sequence.
  * 
  * @param inOutSeq The input/output sequence.
  * @param wide The input wide bytes for the string.

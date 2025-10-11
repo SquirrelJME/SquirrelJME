@@ -150,10 +150,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 	fields = inClass->info->fields;
 	count = 0;
 	for (i = at = 0, n = fields->length; i < n; i++)
-	{
+	{		
 		/* Count fields with the same staticness. */
 		field = fields->elements[i];
-		if (field->flags.member.isStatic == isStatic)
+		if (SJME_NVM_ACC_IS(field->flags, STATIC) == isStatic)
 			count++;
 	}
 	
@@ -172,7 +172,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 	{
 		/* Skip fields that have the wrong staticness. */
 		field = fields->elements[i];
-		if (field->flags.member.isStatic != isStatic)
+		if (SJME_NVM_ACC_IS(field->flags, STATIC) != isStatic)
 			continue;
 
 		/* Allocate resultant ID. */
@@ -331,8 +331,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	/* Static as well. */
 	if (thisInfo->bits.isInstanceInit ||
 		thisInfo->bits.isStaticInit ||
-		thisInfo->flags.member.access.private ||
-		thisInfo->flags.member.isStatic)
+		SJME_NVM_ACC_IS(thisInfo->flags, PRIVATE) ||
+		SJME_NVM_ACC_IS(thisInfo->flags, STATIC))
 	{
 		/* Just to self always. */
 		result->info[SJME_NVM_CALL_NON_VIRTUAL] = thisInfo;
@@ -368,13 +368,13 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 			continue;
 		
 		/* Private methods just go poof. */
-		if (found->flags.member.access.private)
+		if (SJME_NVM_ACC_IS(found->flags, PRIVATE))
 			continue;
 			
 		/* Package private methods in different packages go poof. */
-		if (!found->flags.member.access.private &&
-			!found->flags.member.access.protected &&
-			!found->flags.member.access.public)
+		if (!SJME_NVM_ACC_IS(found->flags, PRIVATE) &&
+			!SJME_NVM_ACC_IS(found->flags, PROTECTED) &&
+			!SJME_NVM_ACC_IS(found->flags, PUBLIC))
 		{
 			/* Not in same package, skip. */
 			if (!sjme_charSeq_equalsR(
@@ -384,7 +384,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		}
 		
 		/* Ignore static difference. */
-		if (thisInfo->flags.member.isStatic != wantStatic)
+		if (SJME_NVM_ACC_IS(thisInfo->flags, STATIC) != wantStatic)
 			continue;
 		
 		/* Instance initializers never get copied. */
@@ -394,7 +394,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 			continue;
 		
 		/* If the current scan is final, then oops! */
-		if (thisScan != NULL && thisScan->flags.member.final)
+		if (thisScan != NULL && SJME_NVM_ACC_IS(thisScan->flags, FINAL))
 			goto fail_changed;
 		
 		/* Shift up and set. */
@@ -622,9 +622,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	info->version = SJME_NVM_CLASS_CLDC_1_8;
 	info->name = thisName;
 	info->superName = superName;
-	info->flags.access.public = SJME_JNI_TRUE;
-	info->flags.final = SJME_JNI_TRUE;
-	info->flags.synthetic = SJME_JNI_TRUE;
+	info->flags = SJME_NVM_ACC_PUBLIC | SJME_NVM_ACC_FINAL |
+		SJME_NVM_ACC_SYNTHETIC;
 	info->isArray = SJME_JNI_TRUE;
 
 	/* Set synthetic class info. */
@@ -695,9 +694,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitPrimitive(
 	info->version = SJME_NVM_CLASS_CLDC_1_8;
 	info->name = thisName;
 	info->superName = NULL;
-	info->flags.access.public = SJME_JNI_TRUE;
-	info->flags.final = SJME_JNI_TRUE;
-	info->flags.synthetic = SJME_JNI_TRUE;
+	info->flags = SJME_NVM_ACC_PUBLIC | SJME_NVM_ACC_FINAL |
+		SJME_NVM_ACC_SYNTHETIC;
 
 	/* Set synthetic class info. */
 	inClass->info = info;
@@ -1609,7 +1607,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 			return sjme_error_vmError(NULL, SJME_ERROR_NO_FIELD);
 		
 		/* If the static flag, index, and type matches, this is the one! */
-		if (field->flags.member.isStatic == wantStatic &&
+		if (SJME_NVM_ACC_IS(field->flags, STATIC) == wantStatic &&
 			field->typedIndex == (fieldId - base) &&
 			field->javaType == extendedType)
 		{
@@ -1789,7 +1787,7 @@ sjme_errorCode sjme_nvm_vmClass_isClasses(
 				break;
 
 			/* Is this an interface? */
-			if (checkClass->info->flags.interface)
+			if (SJME_NVM_ACC_IS(checkClass->info->flags, INTERFACE))
 				numInterfaces++;
 		}
 
@@ -1818,7 +1816,8 @@ sjme_errorCode sjme_nvm_vmClass_isClasses(
 			{
 				/* Not an interface? */
 				checkClass = result->elements[i];
-				if (checkClass == NULL || !checkClass->info->flags.interface)
+				if (checkClass == NULL ||
+					!SJME_NVM_ACC_IS(checkClass->info->flags, INTERFACE))
 					continue;
 
 				/* Allocate interface bind. */
@@ -2352,8 +2351,8 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 	}
 
 	/* Properly found method? */
-	if (selfFound != NULL && selfFound->flags.member.access.public &&
-		!selfFound->flags.abstract)
+	if (selfFound != NULL && SJME_NVM_ACC_IS(selfFound->flags, PUBLIC) &&
+		!SJME_NVM_ACC_IS(selfFound->flags, ABSTRACT))
 	{
 		*outID = selfFound;
 		return SJME_ERROR_NONE;
@@ -2512,7 +2511,7 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 			return sjme_error_vmError(NULL, SJME_ERROR_NO_METHOD);
 		
 		/* If the static flag and the index matches, this is the one! */
-		if (method->flags.member.isStatic == wantStatic &&
+		if (SJME_NVM_ACC_IS(method->flags, STATIC) == wantStatic &&
 			method->typedIndex == (methodId - base))
 		{
 			*outInfo = method;

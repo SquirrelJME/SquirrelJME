@@ -155,6 +155,15 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_nvm_class_classFlags . */
 	SJME_NVM_WALK_PSEUDO_CLASS_FLAGS = -39,
+
+	/** @c sjme_nvm_class_poolEntry . */
+	SJME_NVM_WALK_PSEUDO_POOL_ENTRY = -40,
+
+	/** @c sjme_nvm_class_accessFlags . */
+	SJME_NVM_WALK_PSEUDO_CLASS_FLAGS_ACCESS = -41,
+
+	/** @c sjme_charSeq . */
+	SJME_NVM_WALK_PSEUDO_CHAR_SEQ = -42,
 } sjme_nvm_walk_pseudoType;
 
 /**
@@ -347,6 +356,9 @@ struct sjme_nvm_walk_state
 
 	/** Do not perform any diving. */
 	sjme_jboolean noDive : sjme_booleanBit;
+
+	/** Current parsed string value. */
+	sjme_lpcstr lpstr;
 };
 
 struct sjme_nvm_walk_step
