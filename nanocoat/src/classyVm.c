@@ -629,6 +629,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	/* Set synthetic class info. */
 	inClass->info = info;
 
+	/* Count up info. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(info, NULL)))
+		return sjme_error_default(error);
+
 	/* Determine component type class name. */
 	memset(componentTypeName, 0, sizeof(componentTypeName));
 	snprintf(componentTypeName, SJME_NVM_CLASS_NAME_LIMIT - 1,
@@ -700,6 +704,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitPrimitive(
 	/* Set synthetic class info. */
 	inClass->info = info;
 
+	/* Count up info. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(info, NULL)))
+		return sjme_error_default(error);
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -764,6 +772,12 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 	
 	/* Set class info. */
 	inClass->info = info;
+	
+	/* Count up info. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(info, NULL)))
+		return sjme_error_default(error);
+
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
