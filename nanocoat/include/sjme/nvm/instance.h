@@ -212,7 +212,7 @@ struct sjme_nvm_isClassesBase
 	sjme_nvm_commonBase common;
 	
 	/** The classes that this class @c implements / @c extends . */
-	sjme_list(sjme_jclass)* classes;
+	sjme_list(sjme_phantom(sjme_jclass))* classes;
 };
 
 /**

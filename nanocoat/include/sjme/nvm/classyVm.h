@@ -343,14 +343,15 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
  * @param contextThread The context thread.
  * @param canAssignTo Can @c fromClass be assigned to this class?
  * @param fromClass The class to check if this can be assigned to.
- * @return If the class is assignable from the given class.
+ * @return Any resultant error code, if any, will return
+ * error @c SJME_ERROR_CLASS_CAST if this is not assignable.
  * @since 2025/02/16
  */
-sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
+sjme_errorCode sjme_nvm_vmClass_isAssignableFrom(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jclass canAssignTo,
 	sjme_attrInNotNull sjme_jclass fromClass);
-	
+
 /**
  * Returns the is-classes for the given class.
  *
@@ -363,7 +364,7 @@ sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 sjme_errorCode sjme_nvm_vmClass_isClasses(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jclass inClass,
-	sjme_attrOutNotNull sjme_list(sjme_jclass)** outIsClasses);
+	sjme_attrOutNotNull sjme_list(sjme_phantom(sjme_jclass))** outIsClasses);
 
 /**
  * Is the other class a super class of the base class?

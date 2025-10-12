@@ -14,6 +14,8 @@ sjme_errorCode sjme_nvm_access_checkCompatibleField(
 	sjme_attrInNotNull sjme_jfieldID fieldId,
 	sjme_attrInNotNull sjme_jvalueTyped* checkValue)
 {
+	sjme_errorCode error;
+	
 	if (contextThread == NULL || fieldId == NULL || checkValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -29,9 +31,14 @@ sjme_errorCode sjme_nvm_access_checkCompatibleField(
 			return SJME_ERROR_NONE;
 		
 		/* If this is not assignable, then something is wrong. */
-		if (!sjme_nvm_vmClass_isAssignableFrom(contextThread,
-			fieldId->objectType, checkValue->v.l->isClass))
-			return SJME_ERROR_CLASS_CHANGED;
+		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+			contextThread,
+			fieldId->objectType, checkValue->v.l->isClass)))
+		{
+			if (error == SJME_ERROR_CLASS_CAST)
+				return SJME_ERROR_CLASS_CHANGED;
+			return sjme_error_default(error);
+		}
 	}
 	
 	/* Success! */

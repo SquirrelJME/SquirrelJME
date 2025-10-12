@@ -769,7 +769,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 
 static sjme_errorCode sjme_nvm_vmClass_isClassesAdd(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrOutNotNull sjme_list(sjme_jclass)** inOutClasses,
+	sjme_attrOutNotNull sjme_list(sjme_phantom(sjme_jclass))** inOutClasses,
 	sjme_attrInNotNull sjme_jclass addClass)
 {
 #define IS_CLASSES_GROW 8
@@ -788,7 +788,8 @@ static sjme_errorCode sjme_nvm_vmClass_isClassesAdd(
 		n = (*inOutClasses)->length;
 		for (i = 0; i < n; i++)
 		{
-			checkClass = (*inOutClasses)->elements[i];
+			checkClass = sjme_atomic_g(sjme_jclass,
+				&(*inOutClasses)->elements[i]);
 			if (checkClass == addClass)
 				return SJME_ERROR_NONE;
 			
@@ -801,7 +802,8 @@ static sjme_errorCode sjme_nvm_vmClass_isClassesAdd(
 	/* Is there a known free slot? */
 	if (freeSlot >= 0)
 	{
-		(*inOutClasses)->elements[freeSlot] = addClass;
+		sjme_atomic_s(sjme_jclass, &(*inOutClasses)->elements[freeSlot],
+			addClass);
 		return SJME_ERROR_NONE;
 	}
 
@@ -816,7 +818,7 @@ static sjme_errorCode sjme_nvm_vmClass_isClassesAdd(
 	freeSlot = n;
 
 	/* Store into this slot. */
-	(*inOutClasses)->elements[freeSlot] = addClass;
+	sjme_atomic_s(sjme_jclass, &(*inOutClasses)->elements[freeSlot], addClass);
 	return SJME_ERROR_NONE;
 #undef IS_CLASSES_GROW
 }
@@ -825,7 +827,7 @@ static sjme_errorCode sjme_nvm_vmClass_isClassesSub(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jclass rootClass,
 	sjme_attrInNotNull sjme_jclass pivotClass,
-	sjme_attrOutNotNull sjme_list(sjme_jclass)** inOutClasses)
+	sjme_attrOutNotNull sjme_list(sjme_phantom(sjme_jclass))** inOutClasses)
 {
 	sjme_errorCode error;
 	sjme_jint i, n;
@@ -838,7 +840,8 @@ static sjme_errorCode sjme_nvm_vmClass_isClassesSub(
 	/* If this class was already added to the target, then do not process. */
 	if (*inOutClasses != NULL)
 		for (i = 0, n = (*inOutClasses)->length; i < n; i++)
-			if ((*inOutClasses)->elements[i] == pivotClass)
+			if (sjme_atomic_g(sjme_jclass, &(*inOutClasses)->elements[i]) ==
+				pivotClass)
 				return SJME_ERROR_NONE;
 	
 	/* Handle super class. */
@@ -1671,26 +1674,27 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 		contextThread, &wrapSeq, doInit);
 }
 
-sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
+sjme_errorCode sjme_nvm_vmClass_isAssignableFrom(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jclass canAssignTo,
 	sjme_attrInNotNull sjme_jclass fromClass)
 {
-	sjme_list(sjme_jclass)* fromClasses;
+	sjme_errorCode error;
+	sjme_list(sjme_phantom(sjme_jclass))* fromClasses;
 	sjme_jint i, n;
 	sjme_jint canDims, fromDims;
 
 	if (contextThread == NULL || canAssignTo == NULL || fromClass == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Same exact class is simple. */
 	if (canAssignTo == fromClass)
-		return SJME_JNI_TRUE;
+		return SJME_ERROR_NONE;
 
 	/* Everything can be assigned to object! */
 	if (canAssignTo == sjme_nvm_task_commonClassR(contextThread,
 		SJME_NVM_TASK_COMMON_CLASS_OBJECT))
-		return SJME_JNI_TRUE;
+		return SJME_ERROR_NONE;
 
 	/* We need to compare if we can put an array in another array. */
 	canDims = sjme_atomic_g(sjme_jint, &canAssignTo->numDimensions);
@@ -1703,7 +1707,7 @@ sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 		/* possible to store Float[][] into Object[], so we need to handle */
 		/* situations like this. */
 		if ((canDims == 0) != (fromDims == 0))
-			return SJME_JNI_FALSE;
+			return SJME_ERROR_CLASS_CAST;
 		
 		/* Recurse into the component type for the classes, since any array */
 		/* of one component can fit in an array of another component. */
@@ -1717,27 +1721,28 @@ sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 	/* Get the list of classes the source class is. */
 	/* b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b). */
 	fromClasses = NULL;
-	if (sjme_error_is(sjme_nvm_vmClass_isClasses(
+	if (sjme_error_is(error = sjme_nvm_vmClass_isClasses(
 		contextThread, fromClass, &fromClasses)) || fromClasses == NULL)
-		return SJME_JNI_FALSE;
+		return sjme_error_defaultOr(error, SJME_ERROR_CLASS_CAST);
 
 	/* Can any of these classes be assigned to this? */
 	for (i = 0, n = fromClasses->length; i < n; i++)
-		if (canAssignTo == fromClasses->elements[i])
-			return SJME_JNI_TRUE;
+		if (canAssignTo == sjme_atomic_g(sjme_jclass,
+			&fromClasses->elements[i]))
+			return SJME_ERROR_NONE;
 
 	/* Failed to find a match. */
-	return SJME_JNI_FALSE;
+	return SJME_ERROR_CLASS_CAST;
 }
 
 sjme_errorCode sjme_nvm_vmClass_isClasses(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jclass inClass,
-	sjme_attrOutNotNull sjme_list(sjme_jclass)** outIsClasses)
+	sjme_attrOutNotNull sjme_list(sjme_phantom(sjme_jclass))** outIsClasses)
 {
 	sjme_errorCode error;
 	sjme_nvm_isClasses isClasses;
-	sjme_list(sjme_jclass)* result;
+	sjme_list(sjme_phantom(sjme_jclass))* result;
 	sjme_jint i, n, numInterfaces, at;
 	sjme_jclass checkClass;
 	sjme_list(sjme_jinterfaceID)* interfaceBinds;
@@ -1784,7 +1789,7 @@ sjme_errorCode sjme_nvm_vmClass_isClasses(
 		for (i = 0; i < n; i++)
 		{
 			/* End of the is-classes list. */
-			checkClass = result->elements[i];
+			checkClass = sjme_atomic_g(sjme_jclass, &result->elements[i]);
 			if (checkClass == NULL)
 				break;
 
@@ -1817,7 +1822,7 @@ sjme_errorCode sjme_nvm_vmClass_isClasses(
 			for (i = 0, at = 0; i < n; i++)
 			{
 				/* Not an interface? */
-				checkClass = result->elements[i];
+				checkClass = sjme_atomic_g(sjme_jclass, &result->elements[i]);
 				if (checkClass == NULL ||
 					!SJME_NVM_ACC_IS(checkClass->info->flags, INTERFACE))
 					continue;
@@ -2266,7 +2271,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 {
 	sjme_errorCode error;
 	sjme_jclass objectClass, interfaceClass, check;
-	sjme_list(sjme_jclass)* interfaceIsClasses;
+	sjme_list(sjme_phantom(sjme_jclass))* interfaceIsClasses;
 	sjme_jint wantHash, i, n;
 	sjme_jmethodID interfaceMethod, selfFound;
 	
@@ -2309,7 +2314,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 	for (i = 0, n = interfaceIsClasses->length; i < n; i++)
 	{
 		/* Skip any blank slots. */
-		check = interfaceIsClasses->elements[i];
+		check = sjme_atomic_g(sjme_jclass, &interfaceIsClasses->elements[i]);
 		if (check == NULL)
 			continue;
 

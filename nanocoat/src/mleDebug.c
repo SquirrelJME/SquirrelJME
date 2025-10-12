@@ -111,10 +111,11 @@ SJME_NVM_MLE_FUNCTION_DECL(traceThrowable)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Must be of the throwable class! */
-	if (!sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
+	if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+		SJME_F_T(inFrame),
 		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
-			SJME_NVM_TASK_COMMON_CLASS_THROWABLE), throwable->object.isClass))
-		return SJME_ERROR_MLE_CALL;
+			SJME_NVM_TASK_COMMON_CLASS_THROWABLE), throwable->object.isClass)))
+		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 
 	/* We can just call the above. */
 	memset(&result, 0, sizeof(result));

@@ -187,8 +187,9 @@ sjme_errorCode sjme_nvm_task_frameHandler(
 			return sjme_error_vmError(inFrame, error);
 		
 		/* Is this the matching handler? */
-		if (tossedClass == checkClass || sjme_nvm_vmClass_isAssignableFrom(
-			SJME_F_T(inFrame), tossedClass, checkClass))
+		if (tossedClass == checkClass ||
+			!sjme_error_is(sjme_nvm_vmClass_isAssignableFrom(
+				SJME_F_T(inFrame), tossedClass, checkClass)))
 		{
 			/* We are handling this. */
 			*handled = SJME_JNI_TRUE;

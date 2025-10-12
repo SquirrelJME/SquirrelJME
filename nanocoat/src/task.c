@@ -467,9 +467,9 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 	/* Must be Throwable. */
 	throwableClass = sjme_nvm_task_commonClassR(contextThread,
 			SJME_NVM_TASK_COMMON_CLASS_THROWABLE);
-	if (!sjme_nvm_vmClass_isAssignableFrom(contextThread,
-		throwableClass, inThrowable->object.isClass))
-		return SJME_ERROR_CLASS_CAST;
+	if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(contextThread,
+		throwableClass, inThrowable->object.isClass)))
+		return sjme_error_mask(error, SJME_ERROR_CLASS_CAST);
 
 	/* Locate the message field, if at all possible... */
 	messageId = NULL;

@@ -100,11 +100,15 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 				SJME_ERROR_NULL_STACK_POINTER);
 		
 		/* Must be the same or a compatible class as the call site. */
-		if (!sjme_nvm_vmClass_isAssignableFrom(
+		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
 			SJME_F_T(inFrame),
 			methodId->member.inClass,
-			SJME_O_C(instance)))
-			return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+			SJME_O_C(instance))))
+		{
+			if (error == SJME_ERROR_CLASS_CAST)
+				return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+			return sjme_error_default(error);
+		}
 		
 		/* Need to relookup the method if virtual, to call the right one. */
 		if (callType == SJME_NVM_CALL_VIRTUAL)
@@ -125,11 +129,16 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			
 			/* Since the method has changed, we need to check again that */
 			/* the target is still valid. This is mostly for sanity. */
-			if (!sjme_nvm_vmClass_isAssignableFrom(
+			if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
 				SJME_F_T(inFrame),
 				methodId->member.inClass,
-				SJME_O_C(instance)))
-				return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+				SJME_O_C(instance))))
+			{
+				if (error == SJME_ERROR_CLASS_CAST)
+					return sjme_error_vmError(inFrame,
+						SJME_ERROR_CLASS_CHANGED);
+				return sjme_error_default(error);
+			}
 		}
 	}
 
@@ -387,11 +396,16 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 
 	/* Not a match? */
 	/* b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b) */
+	error = SJME_ERROR_NONE;
 	if (value.v.l != NULL &&
 		!(SJME_O_C(value.v.l) == desireClass ||
-		sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
-			desireClass, SJME_O_C(value.v.l))))
+		sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+			SJME_F_T(inFrame),
+			desireClass, SJME_O_C(value.v.l)))))
 	{
+		if (sjme_error_is(error) && error != SJME_ERROR_CLASS_CAST)
+			return sjme_error_default(error);
+		
 		/* Emit exception. */
 		if (sjme_error_is(error = sjme_nvm_task_threadEmit(SJME_F_T(inFrame),
 			SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_CLASS_CAST,
@@ -588,8 +602,18 @@ SJME_NVM_BYTECODE_SLOW(InstanceOf)
 	if (check.v.l == NULL)
 		result.v.i = SJME_JNI_FALSE;
 	else
-		result.v.i = sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
-			desireClass, SJME_O_C(check.v.l));
+	{
+		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+			SJME_F_T(inFrame),
+			desireClass, SJME_O_C(check.v.l))))
+		{
+			if (error != SJME_ERROR_CLASS_CAST)
+				return sjme_error_default(error);
+			result.v.i = SJME_JNI_FALSE;
+		}
+		else
+			result.v.i = SJME_JNI_TRUE;
+	}
 
 	/* Push result to the stack. */
 	result.t = SJME_JAVA_TYPE_ID_INTEGER;
