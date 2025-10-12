@@ -41,6 +41,20 @@ extern "C"
  * @since 2024/10/22
  */
 SJME_LIST_DECLARE(sjme_jclass, 0);
+	
+/**
+ * A list of atomic references to classes.
+ * 
+ * @since 2025/10/12
+ */
+SJME_LIST_DECLARE(sjme_atomic_sjme_jclass, 0);
+	
+/**
+ * A list of phantom references to classes.
+ * 
+ * @since 2025/10/12
+ */
+SJME_LIST_DECLARE(sjme_phantom(sjme_jclass), 0);
 
 /**
  * The basic type of call for a method.

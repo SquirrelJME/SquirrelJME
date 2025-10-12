@@ -189,6 +189,25 @@ fail_walk:
 	return sjme_error_default(error);
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postIsClasses(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_errorCode error;
+	sjme_nvm_isClasses isClasses;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	isClasses = (sjme_nvm_isClasses)closeable;
+	if (isClasses == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Free the class list, every class here is phantom regardless. */
+	SJME_SIMPLE_FREE(isClasses->classes);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postRomLibrary(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -492,6 +511,10 @@ sjme_errorCode sjme_nvm_allocR(
 	postClose = NULL;
 	switch (inType)
 	{
+		case SJME_NVM_STRUCT_IS_CLASSES:
+			postClose = sjme_nvm_cleanup_postIsClasses;
+			break;
+		
 		case SJME_NVM_STRUCT_ROM_LIBRARY:
 			postClose = sjme_nvm_cleanup_postRomLibrary;
 			break;
