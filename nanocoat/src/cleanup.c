@@ -15,6 +15,7 @@
 #include "sjme/nvm/walk.h"
 
 #define SJME_CLEANUP_DECL \
+	sjme_errorCode error; \
 	sjme_pointer temp
 
 #define SJME_SIMPLE_CLOSE(ptr) \
@@ -192,7 +193,6 @@ fail_walk:
 static sjme_errorCode sjme_nvm_cleanup_postIsClasses(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
-	sjme_errorCode error;
 	sjme_nvm_isClasses isClasses;
 	SJME_CLEANUP_DECL;
 	
@@ -211,7 +211,6 @@ static sjme_errorCode sjme_nvm_cleanup_postIsClasses(
 static sjme_errorCode sjme_nvm_cleanup_postRomLibrary(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
-	sjme_errorCode error;
 	sjme_nvm_rom_library library;
 	sjme_list(sjme_nvm_class_info)* classInfos;
 	sjme_nvm_class_info classInfo;
@@ -262,7 +261,6 @@ static sjme_errorCode sjme_nvm_cleanup_postRomLibrary(
 static sjme_errorCode sjme_nvm_cleanup_postRomSuite(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
-	sjme_errorCode error;
 	sjme_nvm_rom_suite suite;
 	sjme_list(sjme_nvm_rom_library)* libraries;
 	sjme_jint i, n;
@@ -301,7 +299,6 @@ static sjme_errorCode sjme_nvm_cleanup_postRomSuite(
 static sjme_errorCode sjme_nvm_cleanup_postState(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
-	sjme_errorCode error;
 	sjme_nvm inState;
 	sjme_nvm_bootParam* bootParam;
 	sjme_nvm_task_taskNewConfig* initTask;
@@ -367,7 +364,6 @@ static sjme_errorCode sjme_nvm_cleanup_postState(
 static sjme_errorCode sjme_nvm_cleanup_postStringPool(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
-	sjme_errorCode error;
 	sjme_nvm_stringPool pool;
 	sjme_list(sjme_nvm_stringPool_string)* strings;
 	sjme_nvm_stringPool_string string;
@@ -427,10 +423,38 @@ static sjme_errorCode sjme_nvm_cleanup_postStringPoolString(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postTaskStrings(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_nvm_taskStrings taskStrings;
+	sjme_list_sjme_jstring* interns;
+	sjme_jint i, n;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	taskStrings = (sjme_nvm_taskStrings)closeable;
+	if (taskStrings == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Free interned strings. */
+	interns = taskStrings->interns;
+	if (interns != NULL)
+	{
+		/* Free each one. */
+		for (n = interns->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(interns->elements[i]);
+		
+		/* Free the list. */
+		SJME_SIMPLE_FREE(taskStrings->interns);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postVmClassLoader(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
-	sjme_errorCode error;
 	sjme_nvm_vmClass_loader classLoader;
 	sjme_list(sjme_nvm_rom_library)* classPath;
 	sjme_list(sjme_jclass)* classes;
@@ -533,6 +557,10 @@ sjme_errorCode sjme_nvm_allocR(
 
 		case SJME_NVM_STRUCT_STRING_POOL_STRING:
 			postClose = sjme_nvm_cleanup_postStringPoolString;
+			break;
+
+		case SJME_NVM_STRUCT_TASK_STRINGS:
+			postClose = sjme_nvm_cleanup_postTaskStrings;
 			break;
 			
 		case SJME_NVM_STRUCT_VM_CLASS_LOADER:

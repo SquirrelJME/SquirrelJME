@@ -105,8 +105,8 @@ typedef enum sjme_nvm_walk_pseudoType
 	/** @c sjme_javaTypeId . */
 	SJME_NVM_WALK_PSEUDO_JAVA_TYPE_ID = -22,
 
-	/** @c sjme_nvm_taskStrings . */
-	SJME_NVM_WALK_PSEUDO_TASK_STRINGS = -23,
+	/** Unused 23. */
+	SJME_NVM_WALK_PSEUDO_UNUSED_23 = -23,
 
 	/** @c sjme_nvm_task_globals . */ 
 	SJME_NVM_WALK_PSEUDO_TASK_GLOBALS = -24,
@@ -173,6 +173,9 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_nvm_jclass_methods . */
 	SJME_NVM_WALK_PSEUDO_CLASS_METHODS = -45,
+
+	/** @c sjme_nvm_jfieldAccessFunc . */
+	SJME_NVM_WALK_PSEUDO_FIELD_ACCESSOR_FUNC = -46,
 } sjme_nvm_walk_pseudoType;
 
 /**
