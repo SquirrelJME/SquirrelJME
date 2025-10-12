@@ -709,6 +709,12 @@ SJME_LIST_DECLARE(sjme_nvm_rom_library, 0);
 /** The type ID of ROM libraries. */
 #define SJME_TYPEOF_BASIC_sjme_nvm_rom_library SJME_BASIC_TYPE_ID_OBJECT
 
+/** ROM libraries are pointers. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_rom_library 1
+
+/** Atomic ROM library reference. */
+SJME_ATOMIC_DECLARE(sjme_nvm_rom_library, 0);
+
 /** Type size multiplier. */
 extern const sjme_jint sjme_nvm_typeMul[SJME_NUM_BASIC_TYPE_IDS];
 

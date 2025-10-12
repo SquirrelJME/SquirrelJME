@@ -15,9 +15,11 @@ SJME_ATOMIC_FUNCTION(sjme_jbracketTrace, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_nvm, 0)
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_task, 0)
-
 SJME_ATOMIC_FUNCTION(sjme_nvm_frame, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_nvm_rom_library, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_nvm_task, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_nvm_thread, 0)
 

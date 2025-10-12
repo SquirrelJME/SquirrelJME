@@ -158,7 +158,7 @@ SJME_NVM_MLE_FUNCTION_DECL(inJar)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Is there no actual library here? */
-	library = inType->info->library;
+	library = sjme_atomic_g(sjme_nvm_rom_library, &inType->info->library);
 	if (library == NULL)
 	{
 		argR->t = SJME_JAVA_TYPE_ID_OBJECT;

@@ -85,7 +85,7 @@ typedef struct sjme_nvm_class_infoBase sjme_nvm_class_infoBase;
  *
  * @since 2024/01/01
  */
-typedef  sjme_nvm_class_infoBase* sjme_nvm_class_info;
+typedef sjme_nvm_class_infoBase* sjme_nvm_class_info;
 
 /**
  * List of class information.
@@ -664,7 +664,7 @@ struct sjme_nvm_class_infoBase
 	sjme_jboolean isArray;
 
 	/** The library this came from. */
-	sjme_nvm_rom_library library;
+	sjme_phantom(sjme_nvm_rom_library) library;
 };
 
 /**

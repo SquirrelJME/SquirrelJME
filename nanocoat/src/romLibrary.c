@@ -131,7 +131,11 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 		goto fail_countUp;
 
 	/* The library this came from. */
-	maybe->library = inLibrary;
+	sjme_atomic_s(sjme_nvm_rom_library, &maybe->library, inLibrary);
+
+	/* Count up library. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(inLibrary, NULL)))
+		goto fail_countLibrary;
 	
 	/* File name is needed for caching. */
 	maybe->fileName = dupFileName;
@@ -154,7 +158,8 @@ skip_foundInfo:
 	/* Success! */
 	*outClassInfo = maybe;
 	return SJME_ERROR_NONE;
-	
+
+fail_countLibrary:
 fail_countUp:
 fail_dupName:
 	if (dupFileName != NULL)
@@ -173,7 +178,7 @@ fail_openRc:
 fail_findFree:
 	/* Release write lock before failing. */
 	sjme_thread_rwLockReleaseWrite(&inLibrary->rwLock, NULL);
-	
+
 fail_findItem:
 fail_releaseGrab:
 fail_releaseWrite:

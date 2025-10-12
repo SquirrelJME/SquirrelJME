@@ -302,6 +302,18 @@ typedef union sjme_nvm_walk_pointer
 
 	/** Closeable. */
 	sjme_closeableBase* closeable;
+
+	/** ROM library. */
+	sjme_nvm_rom_library romLibrary;
+
+	/** ROM suite. */
+	sjme_nvm_rom_suite romSuite;
+
+	/** Java object. */
+	sjme_jobject jobject;
+
+	/** Java class. */
+	sjme_jclass jclass;
 } sjme_nvm_walk_pointer;
 
 struct sjme_nvm_walk_state
