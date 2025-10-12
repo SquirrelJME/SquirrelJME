@@ -211,7 +211,7 @@ struct sjme_jdwpBase
 	sjme_jdwp_taskItem tasks[SJME_JDWP_MAX_WAITING_TASKS];
 
 	/** The number of tasks awaiting execution. */
-	sjme_atomic_sjme_jint awaitingTasks;
+	sjme_atomic(sjme_jint) awaitingTasks;
 
 	/** The lock for discarded packets. */
 	sjme_thread_spinLock discardLock;

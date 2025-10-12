@@ -20,10 +20,10 @@
 
 sjme_errorCode sjme_nvm_rom_resolveClassPathById(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrInNotNull const sjme_list_sjme_jint* inIds,
-	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs)
+	sjme_attrInNotNull const sjme_list(sjme_jint)* inIds,
+	sjme_attrOutNotNull sjme_list(sjme_nvm_rom_library)** outLibs)
 {
-	sjme_list_sjme_nvm_rom_library* suiteLibs;
+	sjme_list(sjme_nvm_rom_library)* suiteLibs;
 	sjme_errorCode error;
 	sjme_jint length, i, numLibs, at, libId;
 	sjme_nvm_rom_library* working;
@@ -119,10 +119,10 @@ sjme_errorCode sjme_nvm_rom_resolveClassPathById(
 
 sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrInNotNull const sjme_list_sjme_lpcstr* inNames,
-	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs)
+	sjme_attrInNotNull const sjme_list(sjme_lpcstr)* inNames,
+	sjme_attrOutNotNull sjme_list(sjme_nvm_rom_library)** outLibs)
 {
-	sjme_list_sjme_nvm_rom_library* suiteLibs;
+	sjme_list(sjme_nvm_rom_library)* suiteLibs;
 	sjme_errorCode error;
 	sjme_jint length, i, at, hash, numSuiteLibs;
 	sjme_nvm_rom_library* working;

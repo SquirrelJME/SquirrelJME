@@ -17,9 +17,9 @@
 #define SJME_C_STRINGPOOL_H
 
 #include "sjme/charSeq.h"
-#include "sjme/list.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/stream.h"
+#include "sjme/list.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -73,7 +73,7 @@ struct sjme_nvm_stringPoolBase
 	sjme_alloc_pool allocPool;
 	
 	/** Strings which are in the pool. */
-	sjme_list_sjme_nvm_stringPool_string* strings;
+	sjme_list(sjme_nvm_stringPool_string)* strings;
 };
 
 struct sjme_nvm_stringPool_stringBase

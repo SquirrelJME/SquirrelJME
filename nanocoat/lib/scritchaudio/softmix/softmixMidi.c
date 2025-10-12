@@ -11,7 +11,7 @@
 
 sjme_errorCode sjme_scritchaudio_softmix_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInOutNotNull sjme_list_sjme_scritchaudio_midiPort* inOutPorts,
+	sjme_attrInOutNotNull sjme_list(sjme_scritchaudio_midiPort)* inOutPorts,
 	sjme_attrOutNotNull sjme_jint* outNumPorts)
 {
 	sjme_todo("Impl?");

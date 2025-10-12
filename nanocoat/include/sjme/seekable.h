@@ -252,7 +252,7 @@ struct sjme_seekableBase
 	sjme_alloc_pool allocPool;
 
 	/** The cached seekable size. */
-	sjme_atomic_sjme_jint cachedSize;
+	sjme_atomic(sjme_jint) cachedSize;
 };
 
 /**

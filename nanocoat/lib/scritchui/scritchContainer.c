@@ -20,8 +20,8 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent)
 {
 	sjme_scritchui_uiContainer container;
-	sjme_list_sjme_scritchui_uiComponent* list;
-	sjme_list_sjme_scritchui_uiComponent* newList;
+	sjme_list(sjme_scritchui_uiComponent)* list;
+	sjme_list(sjme_scritchui_uiComponent)* newList;
 	sjme_errorCode error;
 	sjme_jint freeSlot, i, n;
 	
@@ -147,7 +147,7 @@ sjme_errorCode sjme_scritchui_core_containerRemove(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiContainer container;
-	sjme_list_sjme_scritchui_uiComponent* list;
+	sjme_list(sjme_scritchui_uiComponent)* list;
 	sjme_jint i, n;
 	
 	if (inState == NULL || inContainer == NULL || removeComponent == NULL)
@@ -218,7 +218,7 @@ sjme_errorCode sjme_scritchui_core_containerRemoveAll(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiContainer container;
-	sjme_list_sjme_scritchui_uiComponent* list;
+	sjme_list(sjme_scritchui_uiComponent)* list;
 	sjme_scritchui_uiComponent remove;
 	sjme_jint i, n;
 	
@@ -505,7 +505,7 @@ sjme_errorCode sjme_scritchui_core_intern_updateVisibleContainer(
 	sjme_attrInValue sjme_jboolean isVisible)
 {
 	sjme_errorCode error;
-	sjme_list_sjme_scritchui_uiComponent* list;
+	sjme_list(sjme_scritchui_uiComponent)* list;
 	sjme_scritchui_uiComponent sub;
 	sjme_scritchui_uiContainer container;
 	sjme_jint i, n;

@@ -149,7 +149,7 @@ sjme_errorCode sjme_nvm_task_frameHandler(
 	sjme_attrInOutNotNull sjme_nvm_byteCode_pcNew* pcNew)
 {
 	sjme_errorCode error;
-	sjme_list_sjme_nvm_class_exceptionHandler* handlers;
+	sjme_list(sjme_nvm_class_exceptionHandler)* handlers;
 	sjme_nvm_class_exceptionHandler* handler;
 	sjme_nvm_vmClass_loader loader;
 	sjme_jclass checkClass, tossedClass;
@@ -386,7 +386,7 @@ sjme_errorCode sjme_nvm_task_framePool(
 		sjme_nvm_class_poolType inTypeB,
 	...)
 {
-	sjme_list_sjme_nvm_class_poolEntry* pool;
+	sjme_list(sjme_nvm_class_poolEntry)* pool;
 	sjme_nvm_class_poolEntry* result;
 	sjme_jint argType;
 	va_list arg;

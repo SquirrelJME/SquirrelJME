@@ -46,7 +46,7 @@ sjme_errorCode sjme_scritchaudio_winmm_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrInNotNull sjme_scritchaudio_source inSource)
 {
-	sjme_list_sjme_scritchaudio_source* sources;
+	sjme_list(sjme_scritchaudio_source)* sources;
 	sjme_jint i, n;
 
 	if (inState == NULL || inStream == NULL || inSource == NULL)

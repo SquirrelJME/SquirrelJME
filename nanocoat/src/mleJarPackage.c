@@ -15,7 +15,7 @@
 SJME_NVM_MLE_FUNCTION_DECL(classPath)
 {
 	sjme_errorCode error;
-	sjme_list_sjme_nvm_rom_library* libraries;
+	sjme_list(sjme_nvm_rom_library)* libraries;
 	sjme_jint i, n;
 	sjme_jarray result;
 

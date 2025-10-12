@@ -23,7 +23,7 @@
 #define SJME_NVM_ROM_CLASS_INFO_GROW 16
 
 static sjme_errorCode sjme_nvm_rom_libraryCacheClassCheck(
-	sjme_attrInNotNull sjme_list_sjme_pointer* inList,
+	sjme_attrInNotNull sjme_list(sjme_pointer)* inList,
 	sjme_attrInPositive sjme_jint checkIndex,
 	sjme_attrInNotNull sjme_pointer checkP,
 	sjme_attrInValue sjme_jint againstI,
@@ -51,7 +51,7 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 	sjme_jboolean exists;
 	sjme_jint freeSlot;
 	sjme_nvm_class_info maybe;
-	sjme_list_sjme_nvm_class_info* classInfos;
+	sjme_list(sjme_nvm_class_info)* classInfos;
 	sjme_stream_input stream;
 	sjme_lpstr dupFileName;
 	
@@ -216,7 +216,7 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 {
 	sjme_errorCode error;
 	sjme_nvm_rom_library result;
-	sjme_list_sjme_nvm_class_info* classInfos;
+	sjme_list(sjme_nvm_class_info)* classInfos;
 	sjme_nvm_stringPool stringPool;
 
 	if (allocPool == NULL || outLibrary == NULL || inFunctions == NULL ||

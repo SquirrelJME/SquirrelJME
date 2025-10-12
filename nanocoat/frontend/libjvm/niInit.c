@@ -28,7 +28,7 @@
 #define SJME_JVM_INIT_MEMORY (64 * 1048576)
 
 /** The global NVM state for the JNI wrapper. */
-static sjme_atomic_sjme_pointer sjme_jni_nvm_state;
+static sjme_atomic(sjme_pointer) sjme_jni_nvm_state;
 
 /**
  * Creates a new Java Virtual Machine.
@@ -55,7 +55,7 @@ jint JNICALL JNI_CreateJavaVM(
 	sjme_jint argc, i, o;
 	sjme_lpcstr* argv;
 	sjme_nvm_task_taskNewConfig taskConfig;
-	sjme_list_sjme_nvm_rom_library* classPath;
+	sjme_list(sjme_nvm_rom_library)* classPath;
 
 	if (pvm == NULL || penv == NULL || args == NULL)
 		return JNI_EINVAL;

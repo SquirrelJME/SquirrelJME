@@ -25,8 +25,8 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 {
 	sjme_errorCode error;
 	sjme_jint hash, i, n, firstFree, length;
-	sjme_list_sjme_nvm_stringPool_string* strings;
-	sjme_list_sjme_nvm_stringPool_string* oldStrings;
+	sjme_list(sjme_nvm_stringPool_string)* strings;
+	sjme_list(sjme_nvm_stringPool_string)* oldStrings;
 	sjme_nvm_stringPool_string result;
 	sjme_nvm_stringPool_string possible;
 	sjme_alloc_weak weak;
@@ -288,7 +288,7 @@ sjme_errorCode sjme_nvm_stringPool_new(
 {
 	sjme_errorCode error;
 	sjme_nvm_stringPool result;
-	sjme_list_sjme_nvm_stringPool_string* strings;
+	sjme_list(sjme_nvm_stringPool_string)* strings;
 	
 	if (allocPool == NULL || outStringPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

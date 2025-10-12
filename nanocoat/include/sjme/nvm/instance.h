@@ -115,10 +115,10 @@ struct sjme_jobjectBase
 	sjme_jclass isClass;
 
 	/** The monitor of monitor counts. */
-	sjme_atomic_sjme_jint monitorCount;
+	sjme_atomic(sjme_jint) monitorCount;
 	
 	/** Special value, if needed. */
-	sjme_atomic_sjme_intPointer special;
+	sjme_atomic(sjme_intPointer) special;
 };
 
 struct sjme_jthrowableBase
@@ -212,7 +212,7 @@ struct sjme_nvm_isClassesBase
 	sjme_nvm_commonBase common;
 	
 	/** The classes that this class @c implements / @c extends . */
-	sjme_list_sjme_jclass* classes;
+	sjme_list(sjme_jclass)* classes;
 };
 
 /**
@@ -249,7 +249,7 @@ typedef struct sjme_nvm_jclass_fields
 	sjme_intPointer offset[SJME_NUM_EXTENDED_JAVA_TYPE_IDS];
 	
 	/** Field bindings for this class. */
-	sjme_list_sjme_jfieldID* binds;
+	sjme_list(sjme_jfieldID)* binds;
 
 	/** The allocation size of this class. */
 	sjme_jint allocSize;
@@ -272,7 +272,7 @@ typedef struct sjme_nvm_jclass_methods
 	sjme_jshort count;
 	
 	/** Method bindings for this class. */
-	sjme_list_sjme_jmethodID* binds;
+	sjme_list(sjme_jmethodID)* binds;
 } sjme_nvm_jclass_methods;
 
 struct sjme_jclassBase
@@ -287,22 +287,22 @@ struct sjme_jclassBase
 	sjme_jint binaryHash;
 	
 	/** Error emitted when loading/initializing. */
-	sjme_atomic_sjme_jint error; 
+	sjme_atomic(sjme_jint) error; 
 	
 	/** Has the backing class data been loaded? */
-	sjme_atomic_sjme_jint isLoaded;
+	sjme_atomic(sjme_jint) isLoaded;
 	
 	/** Is this class initialized? */
-	sjme_atomic_sjme_jint isInitialized;
+	sjme_atomic(sjme_jint) isInitialized;
 	
 	/** The parsed class file information. */
 	sjme_nvm_class_info info;
 	
 	/** The super class of this class. */
-	sjme_atomic_sjme_jclass superClass;
+	sjme_atomic(sjme_jclass) superClass;
 	
 	/** Interface classes for this class. */
-	sjme_list_sjme_jclass* interfaceClasses;
+	sjme_list(sjme_jclass)* interfaceClasses;
 
 	/** Fields. */
 	sjme_nvm_jclass_fields fields[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
@@ -311,7 +311,7 @@ struct sjme_jclassBase
 	sjme_nvm_jclass_methods methods[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
 	
 	/** Interface method binds. */
-	sjme_list_sjme_jinterfaceID* interfaceBinds;
+	sjme_list(sjme_jinterfaceID)* interfaceBinds;
 	
 	/** The classes this implements or extends. */
 	sjme_nvm_isClasses isClasses;
@@ -323,7 +323,7 @@ struct sjme_jclassBase
 	sjme_basicTypeId arrayTypeId;
 
 	/** The component type of this class, if it is an array. */
-	sjme_atomic_sjme_jclass componentType;
+	sjme_atomic(sjme_jclass) componentType;
 
 	/** The phantom array type of this class. */
 	sjme_phantom(sjme_jclass) phantomArrayType;
@@ -332,7 +332,7 @@ struct sjme_jclassBase
 	sjme_pointer staticChunk;
 
 	/** The number of dimensions for this array type. */
-	sjme_atomic_sjme_jint numDimensions;
+	sjme_atomic(sjme_jint) numDimensions;
 };
 
 struct sjme_jstringBase
@@ -341,7 +341,7 @@ struct sjme_jstringBase
 	sjme_jobjectBase object;
 
 	/** The sequence of characters which make up the string. */
-	sjme_atomic_sjme_charSeq seq;
+	sjme_atomic(sjme_charSeq) seq;
 
 	/** Intern based information. */
 	struct
@@ -375,16 +375,16 @@ struct sjme_jweakBase
 	sjme_jobjectBase object;
 
 	/** Has this been initialized? */
-	sjme_atomic_sjme_jint beenInit;
+	sjme_atomic(sjme_jint) beenInit;
 
 	/** The object this points to. */
-	sjme_atomic_sjme_jobject pointer;
+	sjme_atomic(sjme_jobject) pointer;
 
 	/** The ID of the pointer. */
-	sjme_atomic_sjme_jint pointerId;
+	sjme_atomic(sjme_jint) pointerId;
 
 	/** The reference queue. */
-	sjme_atomic_sjme_jobject queue;
+	sjme_atomic(sjme_jobject) queue;
 };
 
 /**
@@ -529,7 +529,7 @@ sjme_errorCode sjme_nvm_instance_initFields(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_pointer chunk,
-	sjme_attrInNotNull sjme_list_sjme_jfieldID* fields,
+	sjme_attrInNotNull sjme_list(sjme_jfieldID)* fields,
 	sjme_attrInNotNull sjme_nvm_jclass_fields* placements);
 
 /**

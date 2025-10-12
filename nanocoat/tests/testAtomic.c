@@ -22,8 +22,8 @@
  */
 SJME_TEST_DECLARE(testAtomic)
 {
-	sjme_atomic_sjme_jint atomInt;
-	sjme_atomic_sjme_pointer atomPtr;
+	sjme_atomic(sjme_jint) atomInt;
+	sjme_atomic(sjme_pointer) atomPtr;
 
 	/* Seed to some invalid value. */
 	atomInt.value = 666;

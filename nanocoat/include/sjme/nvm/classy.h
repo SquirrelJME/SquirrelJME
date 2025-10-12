@@ -609,7 +609,7 @@ struct sjme_nvm_class_poolInfoBase
 	sjme_nvm_commonBase common;
 	
 	/** Constant pool entries. */
-	sjme_list_sjme_nvm_class_poolEntry* pool;
+	sjme_list(sjme_nvm_class_poolEntry)* pool;
 };
 
 struct sjme_nvm_class_infoBase
@@ -645,10 +645,10 @@ struct sjme_nvm_class_infoBase
 	sjme_nvm_stringPool_string runtimeName;
 
 	/** The interfaces this class implements. */
-	sjme_list_sjme_nvm_stringPool_string* interfaceNames;
+	sjme_list(sjme_nvm_stringPool_string)* interfaceNames;
 
 	/** Fields within the method. */
-	sjme_list_sjme_nvm_class_fieldInfo* fields;
+	sjme_list(sjme_nvm_class_fieldInfo)* fields;
 	
 	/** The field count per type. */
 	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
@@ -658,7 +658,7 @@ struct sjme_nvm_class_infoBase
 	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
 
 	/** Methods within the class. */
-	sjme_list_sjme_nvm_class_methodInfo* methods;
+	sjme_list(sjme_nvm_class_methodInfo)* methods;
 
 	/** Is this an array? */
 	sjme_jboolean isArray;
@@ -806,7 +806,7 @@ struct sjme_nvm_class_codeInfoBase
 	sjme_nvm_class_codePerType perType[SJME_NVM_CODE_INFO_NUM_TYPE_IDS];
 
 	/** Exception table. */
-	sjme_list_sjme_nvm_class_exceptionHandler* exceptions;
+	sjme_list(sjme_nvm_class_exceptionHandler)* exceptions;
 
 	/** The raw code length. */
 	sjme_jint rawCodeLen;

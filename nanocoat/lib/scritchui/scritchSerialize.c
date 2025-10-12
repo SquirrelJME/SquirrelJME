@@ -1216,7 +1216,7 @@ sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 
 sjme_errorCode sjme_scritchui_coreSerial_fontList(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
 	sjme_attrOutNullable sjme_jint* outMaxFonts)
 {

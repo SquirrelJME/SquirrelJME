@@ -220,7 +220,7 @@ typedef struct sjme_mock_configDataRomSuite
 	sjme_nvm_rom_suiteFunctions functions;
 
 	/** Pre-made library cache set. */
-	sjme_list_sjme_nvm_rom_library* cacheLibraries;
+	sjme_list(sjme_nvm_rom_library)* cacheLibraries;
 } sjme_mock_configDataRomSuite;
 
 /**

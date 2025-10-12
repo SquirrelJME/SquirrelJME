@@ -181,7 +181,7 @@ SJME_NVM_MLE_FUNCTION_DECL(interfaces)
 {
 	sjme_errorCode error;
 	sjme_jclass inType;
-	sjme_list_sjme_jclass* interfaceClasses;
+	sjme_list(sjme_jclass)* interfaceClasses;
 	sjme_jarray result;
 	sjme_jint i, n;
 	

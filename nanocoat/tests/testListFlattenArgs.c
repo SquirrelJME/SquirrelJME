@@ -30,13 +30,13 @@ static sjme_lpcstr testArgV[4] = {
  */
 SJME_TEST_DECLARE(testListFlattenArgs)
 {
-	sjme_list_sjme_lpcstr* list;
+	sjme_list(sjme_lpcstr)* list;
 	sjme_jint i;
 
 	/* Test array load of list. */
 	list = NULL;
 	if (sjme_error_is(sjme_list_flattenArgCV(test->pool,
-		(sjme_list_sjme_lpstr**)&list,
+		(sjme_list(sjme_lpstr)**)&list,
 		testArgC, testArgV)) || list == NULL)
 		sjme_unit_fail(test, "Could not build flattened list?");
 

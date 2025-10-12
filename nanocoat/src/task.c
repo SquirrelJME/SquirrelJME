@@ -42,8 +42,8 @@ static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 	sjme_nvm_threadSchedule* schedule;
 	sjme_nvm_threadSubSchedule* fromSub;
 	sjme_nvm_threadSubSchedule* toSub;
-	sjme_list_sjme_nvm_thread* fromOrder;
-	sjme_list_sjme_nvm_thread* toOrder;
+	sjme_list(sjme_nvm_thread)* fromOrder;
+	sjme_list(sjme_nvm_thread)* toOrder;
 	sjme_nvm_threadScheduleMode wasMode;
 	sjme_jint i, n, freeSlot;
 	
@@ -122,7 +122,7 @@ sjme_errorCode sjme_nvm_task_bracketJarPackage(
 {
 	sjme_errorCode error;
 	sjme_nvm_task_globals* globals;
-	sjme_list_sjme_jbracketJarPackage* brackets;
+	sjme_list(sjme_jbracketJarPackage)* brackets;
 	sjme_jbracketJarPackage result;
 	sjme_jint i, n;
 	
@@ -582,7 +582,7 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	sjme_nvm_thread mainThread;
 	sjme_jint i, n;
 	const sjme_nvm_task_taskNewConfig* initConfigCopy;
-	sjme_list_sjme_jstring* argStrings;
+	sjme_list(sjme_jstring)* argStrings;
 	
 	if (inTask == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -700,8 +700,8 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_attrOutNullable sjme_nvm_task* outTask)
 {
 	sjme_errorCode error;
-	sjme_list_sjme_nvm_task* tasks;
-	sjme_list_sjme_nvm_thread* threads;
+	sjme_list(sjme_nvm_task)* tasks;
+	sjme_list(sjme_nvm_thread)* threads;
 	sjme_jint i, n, freeSlot;
 	sjme_nvm_task result;
 	sjme_nvm_vmClass_loader classLoader;
@@ -1036,11 +1036,11 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 {
 	sjme_errorCode error;
 	sjme_nvm_threadSchedule* schedule;
-	sjme_list_sjme_nvm_thread* order;
+	sjme_list(sjme_nvm_thread)* order;
 	sjme_nvm_thread nextThread, checkThread;
 	sjme_jboolean terminated, isRunning;
 	sjme_jint i, n, mode;
-	sjme_list_sjme_nvm_task* tasks;
+	sjme_list(sjme_nvm_task)* tasks;
 	sjme_nvm_task checkTask;
 	
 	if (inState == NULL || runThread == NULL || isTerminated == NULL)

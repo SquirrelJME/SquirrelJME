@@ -60,7 +60,7 @@ static void sjme_debug_crashPosix(int signalId)
 
 sjme_jboolean sjme_debug_abort(sjme_errorCode error)
 {
-	static sjme_atomic_sjme_jint didAbort;
+	static sjme_atomic(sjme_jint) didAbort;
 
 	/* Only trigger abort once. */
 	if (sjme_atomic_cs(sjme_jint, &didAbort, 0, 1))

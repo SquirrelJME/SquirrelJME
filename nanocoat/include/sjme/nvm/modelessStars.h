@@ -105,7 +105,7 @@ typedef struct sjme_modelessStarState
 	sjme_jboolean latchedFirstGo : sjme_booleanBit;
 
 	/** The emitted error code. */
-	sjme_atomic_sjme_jint errorCode;
+	sjme_atomic(sjme_jint) errorCode;
 } sjme_modelessStarState;
 
 /**

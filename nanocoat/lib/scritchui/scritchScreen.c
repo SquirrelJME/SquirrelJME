@@ -20,8 +20,8 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 {
 	sjme_errorCode error;
 	sjme_jint numOldScreens, i;
-	sjme_list_sjme_scritchui_uiScreen* oldScreens;
-	sjme_list_sjme_scritchui_uiScreen* newScreens;
+	sjme_list(sjme_scritchui_uiScreen)* oldScreens;
+	sjme_list(sjme_scritchui_uiScreen)* newScreens;
 	sjme_scritchui_uiScreen maybe;
 	
 	if (inState == NULL || outScreen == NULL)

@@ -126,7 +126,7 @@ struct sjme_charSeqStatic
 	sjme_jint length;
 
 	/** The hashcode for this string. */
-	sjme_atomic_sjme_jint hash;
+	sjme_atomic(sjme_jint) hash;
 
 	/** The sequence data. */
 	sjme_alignPointer union

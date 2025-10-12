@@ -20,7 +20,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 	sjme_jint count, i, into;
 	sjme_jarray result;
 	sjme_nvm_frame atFrame;
-	sjme_list_sjme_nvm_frame* frames;
+	sjme_list(sjme_nvm_frame)* frames;
 	sjme_jbracketTrace point;
 
 	/* Which thread is being operated one? */

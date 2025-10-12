@@ -15,7 +15,7 @@
 
 static sjme_errorCode sjme_scritchui_core_choiceCalculate(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_list_sjme_scritchui_uiChoiceItem* items)
+	sjme_attrInNotNull sjme_list(sjme_scritchui_uiChoiceItem)* items)
 {
 	if (inState == NULL || items == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -203,8 +203,8 @@ sjme_errorCode sjme_scritchui_core_choiceItemInsert(
 	sjme_errorCode error;
 	sjme_scritchui_uiChoice choice;
 	sjme_scritchui_uiChoiceItem inject;
-	sjme_list_sjme_scritchui_uiChoiceItem* choiceItems;
-	sjme_list_sjme_scritchui_uiChoiceItem* newItems;
+	sjme_list(sjme_scritchui_uiChoiceItem)* choiceItems;
+	sjme_list(sjme_scritchui_uiChoiceItem)* newItems;
 	sjme_jint atIndex, i, o, n;
 	
 	if (inState == NULL || inComponent == NULL || inOutIndex == NULL)

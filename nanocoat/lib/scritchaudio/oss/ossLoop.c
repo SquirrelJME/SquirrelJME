@@ -24,7 +24,7 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	sjme_pointer buf;
 	sjme_jint bufSize, i, n;
 	sjme_scritchaudio_source source;
-	sjme_list_sjme_scritchaudio_source* sources;
+	sjme_list(sjme_scritchaudio_source)* sources;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

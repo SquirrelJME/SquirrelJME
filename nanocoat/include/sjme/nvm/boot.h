@@ -70,13 +70,13 @@ struct sjme_nvm_bootParam
 	sjme_nvm_rom_suite librarySuite;
 
 	/** The class path for main by library IDs. */
-	const sjme_list_sjme_jint* mainClassPathById;
+	const sjme_list(sjme_jint)* mainClassPathById;
 
 	/** Free @c mainClassPathById ? */
 	sjme_jboolean freeMainClassPathById;
 
 	/** The class path for main by names. */
-	const sjme_list_sjme_lpcstr* mainClassPathByName;
+	const sjme_list(sjme_lpcstr)* mainClassPathByName;
 
 	/** Free @c mainClassPathByName ? */
 	sjme_jboolean freeMainClassPathByName;
@@ -85,13 +85,13 @@ struct sjme_nvm_bootParam
 	sjme_lpcstr mainClass;
 
 	/** Main arguments. */
-	const sjme_list_sjme_lpcstr* mainArgs;
+	const sjme_list(sjme_lpcstr)* mainArgs;
 
 	/** Free @c mainArgs ? */
 	sjme_jboolean freeMainArgs;
 
 	/** System properties. */
-	const sjme_list_sjme_lpcstr* sysProps;
+	const sjme_list(sjme_lpcstr)* sysProps;
 
 	/** Free @c sysProps ? */
 	sjme_jboolean freeSysProps;

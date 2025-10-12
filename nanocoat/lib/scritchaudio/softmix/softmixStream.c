@@ -63,7 +63,7 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 	sjme_scritchaudio inState, sourceState;
 	sjme_scritchaudio_stream inStream, wrappedStream, sourceStream;
 	sjme_scritchaudio_source source;
-	sjme_list_sjme_scritchaudio_source* sources;
+	sjme_list(sjme_scritchaudio_source)* sources;
 	sjme_scritchaudio_renderInfo sourceInfo;
 	sjme_jint i, n;
 	

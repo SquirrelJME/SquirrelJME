@@ -22,9 +22,9 @@ sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
-	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outByName)
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outMainArgs,
+	sjme_attrOutNotNull sjme_list(sjme_jint)** outById,
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outByName)
 {
 	sjme_errorCode error;
 	
@@ -74,10 +74,10 @@ sjme_errorCode sjme_nvm_rom_suiteFromMerge(
 
 sjme_errorCode sjme_nvm_rom_suiteLibraries(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs)
+	sjme_attrOutNotNull sjme_list(sjme_nvm_rom_library)** outLibs)
 {
 	sjme_nvm_rom_suiteListLibrariesFunc listFunc;
-	sjme_list_sjme_nvm_rom_library* result;
+	sjme_list(sjme_nvm_rom_library)* result;
 	sjme_errorCode error;
 	sjme_jint i, n;
 

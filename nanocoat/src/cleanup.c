@@ -213,7 +213,7 @@ static sjme_errorCode sjme_nvm_cleanup_postRomLibrary(
 {
 	sjme_errorCode error;
 	sjme_nvm_rom_library library;
-	sjme_list_sjme_nvm_class_info* classInfos;
+	sjme_list(sjme_nvm_class_info)* classInfos;
 	sjme_nvm_class_info classInfo;
 	sjme_jint i, n;
 	SJME_CLEANUP_DECL;
@@ -264,7 +264,7 @@ static sjme_errorCode sjme_nvm_cleanup_postRomSuite(
 {
 	sjme_errorCode error;
 	sjme_nvm_rom_suite suite;
-	sjme_list_sjme_nvm_rom_library* libraries;
+	sjme_list(sjme_nvm_rom_library)* libraries;
 	sjme_jint i, n;
 	sjme_nvm_rom_library library;
 	SJME_CLEANUP_DECL;
@@ -305,7 +305,7 @@ static sjme_errorCode sjme_nvm_cleanup_postState(
 	sjme_nvm inState;
 	sjme_nvm_bootParam* bootParam;
 	sjme_nvm_task_taskNewConfig* initTask;
-	sjme_list_sjme_nvm_task* tasks;
+	sjme_list(sjme_nvm_task)* tasks;
 	sjme_jint i, n;
 	SJME_CLEANUP_DECL;
 
@@ -369,7 +369,7 @@ static sjme_errorCode sjme_nvm_cleanup_postStringPool(
 {
 	sjme_errorCode error;
 	sjme_nvm_stringPool pool;
-	sjme_list_sjme_nvm_stringPool_string* strings;
+	sjme_list(sjme_nvm_stringPool_string)* strings;
 	sjme_nvm_stringPool_string string;
 	sjme_jint i, n;
 	SJME_CLEANUP_DECL;
@@ -432,8 +432,8 @@ static sjme_errorCode sjme_nvm_cleanup_postVmClassLoader(
 {
 	sjme_errorCode error;
 	sjme_nvm_vmClass_loader classLoader;
-	sjme_list_sjme_nvm_rom_library* classPath;
-	sjme_list_sjme_jclass* classes;
+	sjme_list(sjme_nvm_rom_library)* classPath;
+	sjme_list(sjme_jclass)* classes;
 	sjme_jint i, n;
 	SJME_CLEANUP_DECL;
 	

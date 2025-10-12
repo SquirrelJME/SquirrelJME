@@ -38,7 +38,7 @@ SJME_NVM_MLE_FUNCTION_DECL(currentTimeMillis)
 
 SJME_NVM_MLE_FUNCTION_DECL(encoding)
 {
-	static sjme_atomic_sjme_jint cached;
+	static sjme_atomic(sjme_jint) cached;
 	sjme_nvm_mle_builtInEncodingType encoding;
 	const char* codeType;
 #if defined(SJME_CONFIG_HAS_OS_POSIX)
@@ -149,7 +149,7 @@ SJME_NVM_MLE_FUNCTION_DECL(lineEnding)
 
 SJME_NVM_MLE_FUNCTION_DECL(locale)
 {
-	static sjme_atomic_sjme_jint cached;
+	static sjme_atomic(sjme_jint) cached;
 	sjme_nvm_mle_builtInLocaleType locale;
 #if defined(SJME_CONFIG_HAS_OS_POSIX)
 	sjme_lpcstr set;
@@ -224,7 +224,7 @@ SJME_NVM_MLE_FUNCTION_DECL(systemProperty)
 	sjme_errorCode error;
 	sjme_jstring key, loaded;
 	sjme_jint ik, iv, n;
-	const sjme_list_sjme_lpcstr* sysProps;
+	const sjme_list(sjme_lpcstr)* sysProps;
 	sjme_charSeq keySeq;
 	sjme_lpcstr keyString, k, v;
 

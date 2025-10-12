@@ -331,7 +331,7 @@ sjme_errorCode sjme_nvm_instance_initFields(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_pointer chunk,
-	sjme_attrInNotNull sjme_list_sjme_jfieldID* fields,
+	sjme_attrInNotNull sjme_list(sjme_jfieldID)* fields,
 	sjme_attrInNotNull sjme_nvm_jclass_fields* placements)
 {
 	sjme_errorCode error;

@@ -405,7 +405,7 @@ typedef sjme_errorCode (*sjme_scritchaudio_peerConnectFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchaudio_queryMidiPortsFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInOutNotNull sjme_list_sjme_scritchaudio_midiPort* inOutPorts,
+	sjme_attrInOutNotNull sjme_list(sjme_scritchaudio_midiPort)* inOutPorts,
 	sjme_attrOutNotNull sjme_jint* outNumPorts);
 
 /**
@@ -666,22 +666,22 @@ struct sjme_scritchaudioBase
 	sjme_thread_id loopThreadId;
 
 	/** The loop thread is ready. */
-	sjme_atomic_sjme_jint loopThreadReady;
+	sjme_atomic(sjme_jint) loopThreadReady;
 	
 	/** Wrapped ScritchAudio state, if this is a wrapper. */
 	sjme_scritchaudio wrappedState;
 	
 	/** Reference to the owning state. */
-	sjme_alignPointer sjme_atomic_sjme_pointer topState;
+	sjme_alignPointer sjme_atomic(sjme_pointer) topState;
 
 	/** Bugs. */
 	sjme_scritchaudio_bugs bugs;
 
 	/** The delay between manual polls (Millis). */
-	sjme_atomic_sjme_jint pollDelayMillis;
+	sjme_atomic(sjme_jint) pollDelayMillis;
 
 	/** The delay between manual polls (Nanos). */
-	sjme_atomic_sjme_jint pollDelayNanos;
+	sjme_atomic(sjme_jint) pollDelayNanos;
 
 	/** The output audio stream. */
 	sjme_scritchaudio_stream stream;
@@ -731,10 +731,10 @@ struct sjme_scritchaudio_connectionBase
 	sjme_scritchaudio_peerNoneFunc noPeers;
 
 	/** The connections this is connected to. */
-	sjme_list_sjme_scritchaudio_connection* peers;
+	sjme_list(sjme_scritchaudio_connection)* peers;
 
 	/** Is this disconnecting? */
-	sjme_atomic_sjme_jint disconnecting;
+	sjme_atomic(sjme_jint) disconnecting;
 };
 
 struct sjme_scritchaudio_streamBase
@@ -752,7 +752,7 @@ struct sjme_scritchaudio_streamBase
 	sjme_scritchaudio_channels channels;
 
 	/** The sources attached to this stream. */
-	sjme_list_sjme_scritchaudio_source* sources;
+	sjme_list(sjme_scritchaudio_source)* sources;
 
 	/** Stream data. */
 	struct

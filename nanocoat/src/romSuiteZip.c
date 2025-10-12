@@ -50,9 +50,9 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
-	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outByName)
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outMainArgs,
+	sjme_attrOutNotNull sjme_list(sjme_jint)** outById,
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outByName)
 {
 #define BUF_SIZE 256
 #define LOCATE_SIZE 128
@@ -63,8 +63,8 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	sjme_jint valid;
 	sjme_cchar buf[BUF_SIZE];
 	sjme_lpstr str;
-	sjme_list_sjme_lpstr* strings;
-	sjme_list_sjme_jint* ints;
+	sjme_list(sjme_lpstr)* strings;
+	sjme_list(sjme_jint)* ints;
 	sjme_lpcstr clutterPrefix;
 	sjme_cchar locate[LOCATE_SIZE];
 	
@@ -257,7 +257,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteLibraryId(
 	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_jint* outId)
 {
-	sjme_list_sjme_nvm_rom_library* libs;
+	sjme_list(sjme_nvm_rom_library)* libs;
 	sjme_jint i, n;
 	
 	if (inSuite == NULL || inLibrary == NULL || outId == NULL)
@@ -282,7 +282,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteLibraryId(
 
 static sjme_errorCode sjme_nvm_rom_zipSuiteListLibraries(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibraries)
+	sjme_attrOutNotNull sjme_list(sjme_nvm_rom_library)** outLibraries)
 {
 #define LOCATE_SIZE 128
 	sjme_errorCode error;
@@ -290,8 +290,8 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteListLibraries(
 	sjme_zip_entry zipEntry;
 	sjme_stream_input inputStream;
 	sjme_alloc_pool allocPool;
-	sjme_list_sjme_lpstr* suiteNames;
-	sjme_list_sjme_nvm_rom_library* result;
+	sjme_list(sjme_lpstr)* suiteNames;
+	sjme_list(sjme_nvm_rom_library)* result;
 	sjme_nvm_rom_library lib;
 	sjme_jint n, i;
 	sjme_cchar prefix[SJME_MAX_PATH];

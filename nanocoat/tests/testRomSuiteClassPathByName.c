@@ -78,9 +78,9 @@ SJME_TEST_DECLARE(testRomSuiteClassPathByName)
 {
 	sjme_mock mockState;
 	sjme_nvm_rom_suite suite;
-	sjme_list_sjme_lpcstr* forwardNames;
-	sjme_list_sjme_lpcstr* backwardNames;
-	sjme_list_sjme_nvm_rom_library* result;
+	sjme_list(sjme_lpcstr)* forwardNames;
+	sjme_list(sjme_lpcstr)* backwardNames;
+	sjme_list(sjme_nvm_rom_library)* result;
 
 	/* Initialize mocks. */
 	memset(&mockState, 0, sizeof(mockState));

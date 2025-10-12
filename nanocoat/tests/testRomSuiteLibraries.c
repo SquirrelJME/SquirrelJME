@@ -16,7 +16,7 @@
 #include "unit.h"
 
 /** Just easily returned accordingly. */
-static sjme_list_sjme_nvm_rom_library testFakeSuiteList =
+static sjme_list(sjme_nvm_rom_library) testFakeSuiteList =
 {
 	sjme_sm(.length, 0),
 	.elementSize = sizeof(sjme_nvm_rom_library)
@@ -24,7 +24,7 @@ static sjme_list_sjme_nvm_rom_library testFakeSuiteList =
 
 static sjme_errorCode testSuiteList(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibraries)
+	sjme_attrOutNotNull sjme_list(sjme_nvm_rom_library)** outLibraries)
 {
 	*outLibraries = &testFakeSuiteList;
 	return SJME_ERROR_NONE;
@@ -66,7 +66,7 @@ SJME_TEST_DECLARE(testRomSuiteLibraries)
 {
 	sjme_mock mockState;
 	sjme_nvm_rom_suite suite;
-	sjme_list_sjme_nvm_rom_library* libraries;
+	sjme_list(sjme_nvm_rom_library)* libraries;
 	sjme_errorCode error;
 
 	/* Initialize mocks. */

@@ -47,7 +47,7 @@ SJME_LIST_DECLARE(sjme_jclass, 0);
  * 
  * @since 2025/10/12
  */
-SJME_LIST_DECLARE(sjme_atomic_sjme_jclass, 0);
+SJME_LIST_DECLARE(sjme_atomic(sjme_jclass), 0);
 	
 /**
  * A list of phantom references to classes.
@@ -94,7 +94,7 @@ struct sjme_jinterfaceIDBase
 	sjme_jint descriptorHash;
 
 	/** The methods which are bound to this interface instance. */
-	sjme_list_sjme_jmethodID* methods;
+	sjme_list(sjme_jmethodID)* methods;
 };
 	
 struct sjme_jmemberIDBase
@@ -211,10 +211,10 @@ struct sjme_nvm_vmClass_loaderBase
 	sjme_thread_rwLock rwLock;
 	
 	/** The class path to use. */
-	sjme_list_sjme_nvm_rom_library* classPath;
+	sjme_list(sjme_nvm_rom_library)* classPath;
 	
 	/** Classes which have been loaded. */
-	sjme_list_sjme_jclass* classes;
+	sjme_list(sjme_jclass)* classes;
 
 	/** String pool for classes which do not come from suites or libraries. */
 	sjme_nvm_stringPool nullStrings;
@@ -363,7 +363,7 @@ sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 sjme_errorCode sjme_nvm_vmClass_isClasses(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jclass inClass,
-	sjme_attrOutNotNull sjme_list_sjme_jclass** outIsClasses);
+	sjme_attrOutNotNull sjme_list(sjme_jclass)** outIsClasses);
 
 /**
  * Is the other class a super class of the base class?
@@ -501,7 +501,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadU(
 sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrOutNotNull sjme_nvm_vmClass_loader* outLoader,
-	sjme_attrInNotNull sjme_list_sjme_nvm_rom_library* classPath);
+	sjme_attrInNotNull sjme_list(sjme_nvm_rom_library)* classPath);
 
 /**
  * Looks up a method ID from an interface call.

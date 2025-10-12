@@ -33,8 +33,8 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_jint exitCode, i, n;
 	sjme_seekable bootSeek;
 	sjme_nvm_rom_suite bootSuite;
-	sjme_list_sjme_lpstr* classpath;
-	sjme_list_sjme_lpstr* mainArgs;
+	sjme_list(sjme_lpstr)* classpath;
+	sjme_list(sjme_lpstr)* mainArgs;
 	sjme_nvm inState;
 	sjme_jboolean terminated;
 	const sjme_nal* nal;
@@ -113,8 +113,8 @@ int main(int argc, sjme_lpstr* argv)
 	bootParam.nal = &sjme_nal_test;
 	bootParam.bootSuite = bootSuite;
 	bootParam.mainClass = "net.multiphasicapps.tac.MainSingleRunner";
-	bootParam.mainClassPathByName = (const sjme_list_sjme_lpcstr*)classpath;
-	bootParam.mainArgs = (const sjme_list_sjme_lpcstr*)mainArgs;
+	bootParam.mainClassPathByName = (const sjme_list(sjme_lpcstr)*)classpath;
+	bootParam.mainArgs = (const sjme_list(sjme_lpcstr)*)mainArgs;
 
 	/* JDWP Debugging. */
 	bootParam.jdwpAddress = "localhost";

@@ -220,6 +220,14 @@ SJME_ATOMIC_DECLARE(sjme_jclass, 0);
 SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
 
 /**
+ * Atomic reference.
+ *
+ * @since 2025/10/11
+ */
+#define sjme_atomic(type) \
+	SJME_TOKEN_PASTE_PP(sjme_atomic_, type)
+
+/**
  * Phantom atomic reference.
  *
  * @since 2025/10/11
@@ -321,7 +329,7 @@ SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
  * @since 2025/10/02
  */
 #define sjme_atomic_pcs(ref, cmp, set) \
-	sjme_atomic_cs(sjme_pointer, (sjme_atomic_sjme_pointer*)(ref), (cmp), (set))
+	sjme_atomic_cs(sjme_pointer, (sjme_atomic(sjme_pointer)*)(ref), (cmp), (set))
 	
 /**
  * Returns the pointer value of an atomic, disregarding type. This is mostly
@@ -332,7 +340,7 @@ SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
  * @since 2025/10/02
  */
 #define sjme_atomic_pg(ref) \
-	sjme_atomic_g(sjme_pointer, (sjme_atomic_sjme_pointer*)(ref))
+	sjme_atomic_g(sjme_pointer, (sjme_atomic(sjme_pointer)*)(ref))
 
 /**
  * Directly set pointer atomic to @c NULL .
@@ -342,7 +350,7 @@ SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
  * @since 2025/10/02
  */
 #define sjme_atomic_psNull(ref) \
-	sjme_atomic_s(sjme_pointer, (sjme_atomic_sjme_pointer*)(ref), NULL)
+	sjme_atomic_s(sjme_pointer, (sjme_atomic(sjme_pointer)*)(ref), NULL)
 	
 /**
  * Sets the new value of the atomic and returns the old value.

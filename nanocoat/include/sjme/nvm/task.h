@@ -381,16 +381,16 @@ struct sjme_nvm_task_taskNewConfig
 	sjme_nvm_task_pipeRedirectType stdErr;
 
 	/** The class path to use. */
-	sjme_list_sjme_nvm_rom_library* classPath;
+	sjme_list(sjme_nvm_rom_library)* classPath;
 
 	/** Main class to start in. */
 	sjme_lpcstr mainClass;
 
 	/** Main arguments. */
-	const sjme_list_sjme_lpcstr* mainArgs;
+	const sjme_list(sjme_lpcstr)* mainArgs;
 
 	/** System properties. */
-	const sjme_list_sjme_lpcstr* sysProps;
+	const sjme_list(sjme_lpcstr)* sysProps;
 	
 	/** The class loader for this task. */
 	sjme_nvm_vmClass_loader classLoader;
@@ -411,7 +411,7 @@ struct sjme_nvm_taskStringsBase
 	sjme_nvm_commonBase common;
 
 	/** The interned strings. */
-	sjme_list_sjme_jstring* interns;
+	sjme_list(sjme_jstring)* interns;
 };
 
 /**
@@ -514,19 +514,19 @@ typedef struct sjme_nvm_task_globals
 	sjme_jstring mainClassName;
 
 	/** Main arguments, as objects. */
-	sjme_list_sjme_jstring* mainArgs;
+	sjme_list(sjme_jstring)* mainArgs;
 
 	/** Common classes. */
-	sjme_atomic_sjme_jclass commonClasses[SJME_NVM_TASK_NUM_COMMON_CLASS];
+	sjme_atomic(sjme_jclass) commonClasses[SJME_NVM_TASK_NUM_COMMON_CLASS];
 
 	/** The default accessor for fields. */
 	sjme_nvm_jfieldAccessFunc accessor;
 
 	/** Cached @c sjme_jbracketJarPackage for libraries. */
-	sjme_list_sjme_jbracketJarPackage* jarBrackets;
+	sjme_list(sjme_jbracketJarPackage)* jarBrackets;
 	
 	/** The main thread. */
-	sjme_atomic_sjme_nvm_thread mainThread;
+	sjme_atomic(sjme_nvm_thread) mainThread;
 
 	/** No optimization? */
 	sjme_jboolean noOptimize;
@@ -565,19 +565,19 @@ struct sjme_nvm_taskBase
 	sjme_phantom(sjme_nvm) inState;
 	
 	/** The exit code of the task. */
-	sjme_atomic_sjme_jint exitCode;
+	sjme_atomic(sjme_jint) exitCode;
 	
 	/** The current task status. */
 	sjme_nvm_task_statusType status;
 
 	/** Task @c sjme_nvm_terminateLevel level. */
-	sjme_atomic_sjme_jint terminate;
+	sjme_atomic(sjme_jint) terminate;
 
 	/** The number of threads based on the count. */
-	sjme_atomic_sjme_jint numThreads[SJME_NVM_THREAD_NUM_COUNT_TYPE];
+	sjme_atomic(sjme_jint) numThreads[SJME_NVM_THREAD_NUM_COUNT_TYPE];
 	
 	/** The threads within the current task. */
-	sjme_list_sjme_nvm_thread* threads;
+	sjme_list(sjme_nvm_thread)* threads;
 	
 	/** The class loader for this specific task. */
 	sjme_nvm_vmClass_loader classLoader;
@@ -589,7 +589,7 @@ struct sjme_nvm_taskBase
 	sjme_nvm_task_globals globals;
 
 	/** The next frame ID for this task, used for JDWP and debugging. */
-	sjme_atomic_sjme_jint nextFrameId;
+	sjme_atomic(sjme_jint) nextFrameId;
 
 	/** The task initialization configuration. */
 	const sjme_nvm_task_taskNewConfig* initConfig;
@@ -613,7 +613,7 @@ struct sjme_nvm_threadBase
 	sjme_phantom(sjme_nvm_task) inTask;
 
 	/** The @c sjme_nvm_thread_startType of the thread. */
-	sjme_atomic_sjme_jint start;
+	sjme_atomic(sjme_jint) start;
 	
 	/** The current thread status. */
 	sjme_nvm_thread_statusType status;
@@ -622,7 +622,7 @@ struct sjme_nvm_threadBase
 	sjme_frontEnd frontEnd;
 
 	/** The native thread, if applicable. */
-	sjme_atomic_sjme_thread nativeThread;
+	sjme_atomic(sjme_thread) nativeThread;
 	
 	/** The thread ID. */
 	sjme_jint threadId;
@@ -637,22 +637,22 @@ struct sjme_nvm_threadBase
 	sjme_jint numFrames;
 	
 	/** The stack frames. */
-	sjme_list_sjme_nvm_frame* frames;
+	sjme_list(sjme_nvm_frame)* frames;
 
 	/** The stack information for the entire thread. */
 	sjme_frame_threadStacks stack;
 
 	/** What is the @c sjme_nvm_threadScheduleMode of this thread? */
-	sjme_atomic_sjme_jint scheduleMode;
+	sjme_atomic(sjme_jint) scheduleMode;
 
 	/** A @c Throwable which has been thrown. */
-	sjme_atomic_sjme_jobject tossed;
+	sjme_atomic(sjme_jobject) tossed;
 
 	/** The current frame level that the throwable was tossed at. */
-	sjme_atomic_sjme_jint tossedLevel;
+	sjme_atomic(sjme_jint) tossedLevel;
 
 	/** If this thread is interrupted. */
-	sjme_atomic_sjme_jint interrupted;
+	sjme_atomic(sjme_jint) interrupted;
 
 	/** Thread specific flags. */
 	struct

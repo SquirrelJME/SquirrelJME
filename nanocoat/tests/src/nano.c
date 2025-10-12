@@ -100,8 +100,8 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_jint exitCode, i, n;
 	sjme_seekable bootSeek;
 	sjme_nvm_rom_suite bootSuite;
-	sjme_list_sjme_lpstr* classpath;
-	sjme_list_sjme_lpstr* mainArgs;
+	sjme_list(sjme_lpstr)* classpath;
+	sjme_list(sjme_lpstr)* mainArgs;
 	sjme_nvm inState;
 	sjme_jboolean terminated;
 	const sjme_nal* nal;
@@ -111,7 +111,7 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_jclass mainClass;
 	sjme_nvm_task mainTask;
 	sjme_cchar mainName[BUF_SIZE];
-	sjme_list_sjme_jfieldID* fields;
+	sjme_list(sjme_jfieldID)* fields;
 	sjme_jvalueTyped expected;
 	sjme_jfieldID field;
 	
@@ -207,9 +207,9 @@ int main(int argc, sjme_lpstr* argv)
 	bootParam.nal = &sjme_nal_test;
 	bootParam.bootSuite = bootSuite;
 	bootParam.mainClass = argv[4];
-	bootParam.mainClassPathByName = (const sjme_list_sjme_lpcstr*)classpath;
+	bootParam.mainClassPathByName = (const sjme_list(sjme_lpcstr)*)classpath;
 	bootParam.freeMainClassPathByName = SJME_JNI_TRUE;
-	bootParam.mainArgs = (const sjme_list_sjme_lpcstr*)mainArgs;
+	bootParam.mainArgs = (const sjme_list(sjme_lpcstr)*)mainArgs;
 	bootParam.freeMainArgs = SJME_JNI_TRUE;
 
 	/* Hooks specifically for NanoTest. */

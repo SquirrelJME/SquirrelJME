@@ -28,8 +28,8 @@ static sjme_errorCode sjme_nvm_vmClass_bindInterface(
 {
 	sjme_errorCode error;
 	sjme_jint i, n, at;
-	sjme_list_sjme_jmethodID* methods;
-	sjme_list_sjme_jmethodID* fromMethods;
+	sjme_list(sjme_jmethodID)* methods;
+	sjme_list(sjme_jmethodID)* fromMethods;
 	sjme_jmethodID target, use;
 	sjme_jclass isInterface;
 	
@@ -120,14 +120,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrOutNotNull sjme_list_sjme_jfieldID** outList)
+	sjme_attrOutNotNull sjme_list(sjme_jfieldID)** outList)
 {
 	sjme_errorCode error;
 	sjme_jfieldID id;
-	sjme_list_sjme_jfieldID* result;
+	sjme_list(sjme_jfieldID)* result;
 	sjme_jint at, count, i, n, typeMul;
 	sjme_nvm_class_fieldInfo field;
-	sjme_list_sjme_nvm_class_fieldInfo* fields;
+	sjme_list(sjme_nvm_class_fieldInfo)* fields;
 	sjme_jboolean isStatic;
 	sjme_nvm_jclass_fields* placements;
 	sjme_javaTypeId extendedType;
@@ -432,13 +432,13 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInValue sjme_nvm_class_instanceType instanceType,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrOutNotNull sjme_list_sjme_jmethodID** outList)
+	sjme_attrOutNotNull sjme_list(sjme_jmethodID)** outList)
 {
 	sjme_errorCode error;
 	sjme_jclass superClass;
 	sjme_nvm_class_methodInfo methodInfo;
 	sjme_jint i, n;
-	sjme_list_sjme_jmethodID* result;
+	sjme_list(sjme_jmethodID)* result;
 	sjme_jmethodID bind;
 	
 	if (inLoader == NULL || inClass == NULL || contextThread == NULL ||
@@ -710,7 +710,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 	sjme_attrInNotNull sjme_nvm_vmClass_loader classLoader)
 {
 	sjme_errorCode error;
-	sjme_list_sjme_nvm_rom_library* classPath;
+	sjme_list(sjme_nvm_rom_library)* classPath;
 	sjme_nvm_class_info info;
 	sjme_nvm_rom_library tryLib;
 	sjme_jint i, n;
@@ -769,7 +769,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 
 static sjme_errorCode sjme_nvm_vmClass_isClassesAdd(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrOutNotNull sjme_list_sjme_jclass** inOutClasses,
+	sjme_attrOutNotNull sjme_list(sjme_jclass)** inOutClasses,
 	sjme_attrInNotNull sjme_jclass addClass)
 {
 #define IS_CLASSES_GROW 8
@@ -825,7 +825,7 @@ static sjme_errorCode sjme_nvm_vmClass_isClassesSub(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jclass rootClass,
 	sjme_attrInNotNull sjme_jclass pivotClass,
-	sjme_attrOutNotNull sjme_list_sjme_jclass** inOutClasses)
+	sjme_attrOutNotNull sjme_list(sjme_jclass)** inOutClasses)
 {
 	sjme_errorCode error;
 	sjme_jint i, n;
@@ -870,7 +870,7 @@ static sjme_errorCode sjme_nvm_vmClass_isClassesSub(
 }
 
 static sjme_errorCode sjme_nvm_vmClass_loaderLoadCheck(
-	sjme_attrInNotNull sjme_list_sjme_pointer* inList,
+	sjme_attrInNotNull sjme_list(sjme_pointer)* inList,
 	sjme_attrInPositive sjme_jint checkIndex,
 	sjme_attrInNotNull sjme_pointer checkP,
 	sjme_attrInValue sjme_jint againstI,
@@ -1045,10 +1045,10 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_nvm_vmClass_loader loader;
 	sjme_jint i, n;
 	sjme_jclass superClass, interface;
-	sjme_list_sjme_jclass* interfaces;
+	sjme_list(sjme_jclass)* interfaces;
 	sjme_alloc_pool allocPool;
-	sjme_list_sjme_jmethodID* methodBinds;
-	sjme_list_sjme_jfieldID* fieldBinds;
+	sjme_list(sjme_jmethodID)* methodBinds;
+	sjme_list(sjme_jfieldID)* fieldBinds;
 	sjme_jint allocSize;
 	sjme_extendedTypeId extendedType;
 	sjme_jmethodID staticInit;
@@ -1466,7 +1466,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldIDByNameType(
 {
 	sjme_errorCode error;
 	sjme_jint i;
-	sjme_list_sjme_jfieldID* fields;
+	sjme_list(sjme_jfieldID)* fields;
 	sjme_jfieldID field;
 	sjme_jclass pivot;
 	sjme_jint wantHash;
@@ -1563,7 +1563,7 @@ sjme_errorCode sjme_nvm_vmClass_fieldSourceByIndex(
 	sjme_attrInPositive sjme_jint fieldId,
 	sjme_attrOutNotNull sjme_nvm_class_fieldInfo* outInfo)
 {
-	sjme_list_sjme_nvm_class_fieldInfo* fields;
+	sjme_list(sjme_nvm_class_fieldInfo)* fields;
 	sjme_jint i, n, base;
 	sjme_jclass atClass;
 	sjme_jboolean wantStatic;
@@ -1676,7 +1676,7 @@ sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 	sjme_attrInNotNull sjme_jclass canAssignTo,
 	sjme_attrInNotNull sjme_jclass fromClass)
 {
-	sjme_list_sjme_jclass* fromClasses;
+	sjme_list(sjme_jclass)* fromClasses;
 	sjme_jint i, n;
 	sjme_jint canDims, fromDims;
 
@@ -1733,14 +1733,14 @@ sjme_jboolean sjme_nvm_vmClass_isAssignableFrom(
 sjme_errorCode sjme_nvm_vmClass_isClasses(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jclass inClass,
-	sjme_attrOutNotNull sjme_list_sjme_jclass** outIsClasses)
+	sjme_attrOutNotNull sjme_list(sjme_jclass)** outIsClasses)
 {
 	sjme_errorCode error;
 	sjme_nvm_isClasses isClasses;
-	sjme_list_sjme_jclass* result;
+	sjme_list(sjme_jclass)* result;
 	sjme_jint i, n, numInterfaces, at;
 	sjme_jclass checkClass;
-	sjme_list_sjme_jinterfaceID* interfaceBinds;
+	sjme_list(sjme_jinterfaceID)* interfaceBinds;
 	sjme_jinterfaceID interfaceBind;
 	
 	if (contextThread == NULL || inClass == NULL || outIsClasses == NULL)
@@ -1930,7 +1930,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadF(
 {
 	sjme_errorCode error;
 	sjme_jint hash, freeSlot;
-	sjme_list_sjme_jclass* classes;
+	sjme_list(sjme_jclass)* classes;
 	sjme_jclass maybe;
 	
 	if (inLoader == NULL || outClass == NULL || contextThread == NULL ||
@@ -2165,12 +2165,12 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadU(
 sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrOutNotNull sjme_nvm_vmClass_loader* outLoader,
-	sjme_attrInNotNull sjme_list_sjme_nvm_rom_library* classPath)
+	sjme_attrInNotNull sjme_list(sjme_nvm_rom_library)* classPath)
 {
 	sjme_errorCode error;
 	sjme_nvm_vmClass_loader result;
-	sjme_list_sjme_nvm_rom_library* dup;
-	sjme_list_sjme_jclass* classes;
+	sjme_list(sjme_nvm_rom_library)* dup;
+	sjme_list(sjme_jclass)* classes;
 	sjme_nvm_rom_library lib;
 	sjme_jint i, n, cldcCompact;
 	sjme_nvm_stringPool nullStrings;
@@ -2266,7 +2266,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 {
 	sjme_errorCode error;
 	sjme_jclass objectClass, interfaceClass, check;
-	sjme_list_sjme_jclass* interfaceIsClasses;
+	sjme_list(sjme_jclass)* interfaceIsClasses;
 	sjme_jint wantHash, i, n;
 	sjme_jmethodID interfaceMethod, selfFound;
 	
@@ -2380,7 +2380,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 {
 	sjme_errorCode error;
 	sjme_jint i, n;
-	sjme_list_sjme_jmethodID* methods;
+	sjme_list(sjme_jmethodID)* methods;
 	sjme_jmethodID method;
 	sjme_jint wantHash;
 	
@@ -2471,7 +2471,7 @@ sjme_errorCode sjme_nvm_vmClass_methodSourceByIndex(
 	sjme_attrInPositive sjme_jint methodId,
 	sjme_attrOutNotNull sjme_nvm_class_methodInfo* outInfo)
 {
-	sjme_list_sjme_nvm_class_methodInfo* methods;
+	sjme_list(sjme_nvm_class_methodInfo)* methods;
 	sjme_jint i, n, base;
 	sjme_jclass atClass;
 	sjme_jboolean wantStatic;

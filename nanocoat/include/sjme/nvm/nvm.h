@@ -551,7 +551,7 @@ typedef struct sjme_nvm_threadSubSchedule
 	sjme_jint count;
 		
 	/** The list of threads in order. */
-	sjme_list_sjme_nvm_thread* order;
+	sjme_list(sjme_nvm_thread)* order;
 } sjme_nvm_threadSubSchedule;
 	
 /**
@@ -646,16 +646,16 @@ struct sjme_nvm_stateBase
 	sjme_nvm_rom_suite suite;
 	
 	/** The tasks that are currently existing. */
-	sjme_list_sjme_nvm_task* tasks;
+	sjme_list(sjme_nvm_task)* tasks;
 
 	/** The number of running tasks. */
-	sjme_atomic_sjme_jint numRunningTasks;
+	sjme_atomic(sjme_jint) numRunningTasks;
 	
 	/** The next identifier for tasks. */
-	sjme_atomic_sjme_jint nextTaskId;
+	sjme_atomic(sjme_jint) nextTaskId;
 	
 	/** The next identifier for tasks. */
-	sjme_atomic_sjme_jint nextThreadId;
+	sjme_atomic(sjme_jint) nextThreadId;
 	
 	/** The thread model in use. */
 	sjme_nvm_mle_threadModel threadModel;
@@ -664,19 +664,19 @@ struct sjme_nvm_stateBase
 	sjme_nvm_threadSchedule* schedule;
 	
 	/** The state @c sjme_nvm_terminateLevel ? */
-	sjme_atomic_sjme_jint terminating;
+	sjme_atomic(sjme_jint) terminating;
 
 	/** The initial task configuration. */
 	const sjme_nvm_task_taskNewConfig* initTaskConfig;
 
 	/** The last emitted exit code. */
-	sjme_atomic_sjme_jint lastExitCode;
+	sjme_atomic(sjme_jint) lastExitCode;
 
 	/** The JDWP debugger state. */
 	sjme_jdwp jdwp;
 
 	/** Main task exit code. */
-	sjme_atomic_sjme_jint mainExitCode;
+	sjme_atomic(sjme_jint) mainExitCode;
 
 	/** Main task reference. */
 	sjme_phantom(sjme_nvm_task) phantomMainTask;

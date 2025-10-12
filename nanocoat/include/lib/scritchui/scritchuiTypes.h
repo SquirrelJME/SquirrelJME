@@ -46,7 +46,7 @@ typedef struct sjme_scritchui_pencilLockState
 	sjme_alignPointer sjme_thread_spinLock spinLock;
 	
 	/** The times this was opened. */
-	sjme_alignPointer sjme_atomic_sjme_jint count;
+	sjme_alignPointer sjme_atomic(sjme_jint) count;
 	
 	/** The front end source for drawing. */
 	sjme_frontEndBindable source;
@@ -234,13 +234,13 @@ struct sjme_scritchui_uiChoiceBase
 	sjme_jint numItems;
 	
 	/** The items on this list. */
-	sjme_list_sjme_scritchui_uiChoiceItem* items;
+	sjme_list(sjme_scritchui_uiChoiceItem)* items;
 };
 
 struct sjme_scritchui_uiContainerBase
 {
 	/** Components within the container. */
-	sjme_list_sjme_scritchui_uiComponent* components;
+	sjme_list(sjme_scritchui_uiComponent)* components;
 };
 
 struct sjme_scritchui_uiLabeledBase
@@ -276,7 +276,7 @@ struct sjme_scritchui_uiMenuHasChildrenBase
 	sjme_jint numChildren;
 	
 	/** The children to this. */
-	sjme_list_sjme_scritchui_uiMenuKind* children;
+	sjme_list(sjme_scritchui_uiMenuKind)* children;
 };
 
 struct sjme_scritchui_uiMenuHasParentBase
@@ -345,7 +345,7 @@ struct sjme_scritchui_uiPaintableBase
 	sjme_intPointer extra;
 	
 	/** Is this currently in paint? */
-	sjme_alignPointer sjme_atomic_sjme_jint inPaint;
+	sjme_alignPointer sjme_atomic(sjme_jint) inPaint;
 	
 	/** Belayed painting. */
 	sjme_scritchui_rect belayRect;

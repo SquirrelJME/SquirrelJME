@@ -913,7 +913,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 #define SJME_INTERN_GROW 32
 	sjme_errorCode error;
 	sjme_nvm_taskStrings strings;
-	sjme_list_sjme_jstring* interns;
+	sjme_list(sjme_jstring)* interns;
 	sjme_jstring* blankIntern;
 	sjme_jstring result;
 	sjme_jint hash, length, i, n;

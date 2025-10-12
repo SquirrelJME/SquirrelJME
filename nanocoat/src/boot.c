@@ -272,7 +272,7 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_nvm_task_taskNewConfig* initTaskConfig;
 	const sjme_nvm_bootParam* bootParamCopy;
 	sjme_nvm_task initTask;
-	sjme_list_sjme_nvm_rom_library* classPath;
+	sjme_list(sjme_nvm_rom_library)* classPath;
 	
 	if (allocPool == NULL || param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -384,9 +384,9 @@ sjme_errorCode sjme_nvm_boot(
 		if (sjme_error_is(error = sjme_nvm_rom_suiteDefaultLaunch(allocPool,
 			result->suite,
 			(sjme_lpstr*)&bootParamCopy->mainClass,
-			(sjme_list_sjme_lpstr**)&bootParamCopy->mainArgs,
-			(sjme_list_sjme_jint**)&bootParamCopy->mainClassPathById,
-			(sjme_list_sjme_lpstr**)
+			(sjme_list(sjme_lpstr)**)&bootParamCopy->mainArgs,
+			(sjme_list(sjme_jint)**)&bootParamCopy->mainClassPathById,
+			(sjme_list(sjme_lpstr)**)
 				&bootParamCopy->mainClassPathByName)))
 			goto fail_defaultLaunch;
 

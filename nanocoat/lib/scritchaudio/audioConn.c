@@ -75,7 +75,7 @@ static sjme_errorCode sjme_scritchaudio_core_peerNoneSource(
 {
 	sjme_errorCode error;
 	sjme_scritchaudio_stream inStream;
-	sjme_list_sjme_scritchaudio_source* sources;
+	sjme_list(sjme_scritchaudio_source)* sources;
 	sjme_jint i, n;
 	
 	if (inState == NULL || inSource == NULL)
@@ -159,7 +159,7 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 	sjme_errorCode error;
 	sjme_jint i, n;
 	sjme_scritchaudio_connection peer;
-	sjme_list_sjme_scritchaudio_connection* peers;
+	sjme_list(sjme_scritchaudio_connection)* peers;
 	sjme_thread_spinLock* sharedLock;
 	
 	if (inState == NULL || inConn == NULL)
@@ -289,7 +289,7 @@ sjme_errorCode sjme_scritchaudio_core_peerDisconnect(
 	sjme_attrInValue sjme_jboolean explicit)
 {
 	sjme_errorCode error;
-	sjme_list_sjme_scritchaudio_connection* peers;
+	sjme_list(sjme_scritchaudio_connection)* peers;
 	sjme_scritchaudio_connection check;
 	sjme_jint numPeers, i, n;
 	sjme_jboolean wasFound;

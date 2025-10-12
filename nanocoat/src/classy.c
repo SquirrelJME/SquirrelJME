@@ -415,7 +415,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	sjme_nvm_class_codeInfo result;
 	sjme_jubyte* rawCode;
 	sjme_jubyte* rawCodeUnalign;
-	sjme_list_sjme_nvm_class_exceptionHandler* excepts;
+	sjme_list(sjme_nvm_class_exceptionHandler)* excepts;
 	sjme_nvm_class_exceptionHandler* except;
 	sjme_nvm_class_codePerType* perType;
 	sjme_jshort* localMap;
@@ -1220,9 +1220,9 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_nvm_class_poolEntry* thisName;
 	sjme_nvm_class_poolEntry* superName;
 	sjme_nvm_class_poolEntry* interfaceName;
-	sjme_list_sjme_nvm_stringPool_string* interfaceNames;
-	sjme_list_sjme_nvm_class_fieldInfo* fields;
-	sjme_list_sjme_nvm_class_methodInfo* methods;
+	sjme_list(sjme_nvm_stringPool_string)* interfaceNames;
+	sjme_list(sjme_nvm_class_fieldInfo)* fields;
+	sjme_list(sjme_nvm_class_methodInfo)* methods;
 	sjme_nvm_class_fieldInfo field;
 	sjme_nvm_class_methodInfo method;
 	sjme_lpstr packageName;
@@ -1642,7 +1642,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 	sjme_jshort count;
 	sjme_jint index;
 	sjme_jbyte tag;
-	sjme_list_sjme_nvm_class_poolEntry* entries;
+	sjme_list(sjme_nvm_class_poolEntry)* entries;
 	sjme_nvm_class_poolEntry* entry;
 	sjme_nvm_class_poolEntry* target;
 	sjme_nvm_stringPool_string utf;

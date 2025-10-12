@@ -134,8 +134,16 @@ SJME_LIST_DECLARE(sjme_jobject, 0);
 /** List of @c sjme_jstring . */
 SJME_LIST_DECLARE(sjme_jstring, 0);
 
+/**
+ * List reference.
+ *
+ * @since 2025/10/12
+ */
+#define sjme_list(type) \
+	SJME_TOKEN_PASTE_PP(sjme_list_, type)
+
 /** Void list. */
-typedef sjme_list_sjme_jint sjme_list_void;
+typedef sjme_list(sjme_jint) sjme_list_void;
 
 /** Cast to void list. */
 #define SJME_AS_LIST_VOID(x) ((sjme_list_void*)(x))
@@ -144,10 +152,10 @@ typedef sjme_list_sjme_jint sjme_list_void;
 #define SJME_AS_LISTP_VOID(x) ((sjme_list_void**)(x))
 
 /** Cast to pointer list. */
-#define SJME_AS_LIST_POINTER(x) ((sjme_list_sjme_pointer*)(x))
+#define SJME_AS_LIST_POINTER(x) ((sjme_list(sjme_pointer)*)(x))
 
 /** Cast to pointer list. */
-#define SJME_AS_LISTP_POINTER(x) ((sjme_list_sjme_pointer**)(x))
+#define SJME_AS_LISTP_POINTER(x) ((sjme_list(sjme_pointer)**)(x))
 
 /**
  * Allocates a given list generically.
@@ -474,7 +482,7 @@ sjme_errorCode sjme_list_newVAR(
  */
 sjme_errorCode sjme_list_flattenArgCV(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outList,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNull sjme_lpcstr* argV);
 
@@ -489,7 +497,7 @@ sjme_errorCode sjme_list_flattenArgCV(
  */
 sjme_errorCode sjme_list_flattenArgNul(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outList,
 	sjme_attrInNotNull sjme_lpcstr inNulString);
 
 /**

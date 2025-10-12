@@ -16,7 +16,7 @@
 typedef struct sjme_scritchui_core_waitData
 {
 	/** The signal to trigger on. */
-	sjme_atomic_sjme_jint signal;
+	sjme_atomic(sjme_jint) signal;
 	
 	/** The callback to execute. */
 	sjme_thread_mainFunc callback;

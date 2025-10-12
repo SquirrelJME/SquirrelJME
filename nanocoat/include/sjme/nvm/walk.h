@@ -295,10 +295,10 @@ typedef union sjme_nvm_walk_pointer
 	sjme_nvm_structType* nvmStructType;
 
 	/** Atomic integer. */
-	sjme_atomic_sjme_jint* atomicInt;
+	sjme_atomic(sjme_jint)* atomicInt;
 
 	/** Atomic object. */
-	sjme_atomic_sjme_jobject* atomicObject;
+	sjme_atomic(sjme_jobject)* atomicObject;
 
 	/** Closeable. */
 	sjme_closeableBase* closeable;

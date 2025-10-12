@@ -1316,7 +1316,7 @@ typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_fontListFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
 	sjme_attrOutNullable sjme_jint* outMaxFonts);
 
@@ -2194,10 +2194,10 @@ struct sjme_scritchui_stateBase
 	sjme_thread_mainFunc loopThreadInit;
 	
 	/** Indicator that the main loop is ready for execution. */
-	sjme_alignPointer sjme_atomic_sjme_jint loopThreadReady;
+	sjme_alignPointer sjme_atomic(sjme_jint) loopThreadReady;
 	
 	/** The available screens. */
-	sjme_list_sjme_scritchui_uiScreen* screens;
+	sjme_list(sjme_scritchui_uiScreen)* screens;
 	
 	/** The window manager type used. */
 	sjme_scritchui_windowManagerType wmType;
@@ -2212,7 +2212,7 @@ struct sjme_scritchui_stateBase
 	sjme_scritchui wrappedState;
 	
 	/** Reference to owning state. */
-	sjme_alignPointer sjme_atomic_sjme_pointer topState;
+	sjme_alignPointer sjme_atomic(sjme_pointer) topState;
 	
 	/** The next ID for opaque menu items. */
 	sjme_jint nextMenuItemId;
@@ -2221,7 +2221,7 @@ struct sjme_scritchui_stateBase
 	sjme_scritchui_bugs bugs;
 
 	/** Font cache. */
-	sjme_list_sjme_scritchui_pencilFont* fontCache;
+	sjme_list(sjme_scritchui_pencilFont)* fontCache;
 
 	/** The loop queue for manual event loops. */
 	sjme_alignPointer sjme_scritchui_loopQueue loopQueue;

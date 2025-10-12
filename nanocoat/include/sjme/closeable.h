@@ -66,7 +66,7 @@ typedef sjme_errorCode (*sjme_closeable_closeHandlerFunc)(
 struct sjme_closeableBase
 {
 	/** Has this been closed? */
-	sjme_alignPointer sjme_atomic_sjme_jint isClosed;
+	sjme_alignPointer sjme_atomic(sjme_jint) isClosed;
 	
 	/** Is this a reference counting closeable? */
 	sjme_jboolean refCounting;

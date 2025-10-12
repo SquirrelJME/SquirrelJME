@@ -661,7 +661,7 @@ sjme_errorCode sjme_util_lpstrTrimEnd(
 const sjme_jshort* sjme_util_memUnaligned16(void* addr)
 {
 	sjme_threadLocal(sjme_jshort, temp[SJME_UTIL_UNALIGNED_16_FILL]);
-	sjme_threadLocal(sjme_atomic_sjme_jint, fill);
+	sjme_threadLocal(sjme_atomic(sjme_jint), fill);
 	sjme_jshort* into;
 	sjme_jubyte* bytes;
 
@@ -691,7 +691,7 @@ const sjme_jshort* sjme_util_memUnaligned16(void* addr)
 const sjme_jint* sjme_util_memUnaligned32(void* addr)
 {
 	sjme_threadLocal(sjme_jint, temp[SJME_UTIL_UNALIGNED_32_FILL]);
-	sjme_threadLocal(sjme_atomic_sjme_jint, fill);
+	sjme_threadLocal(sjme_atomic(sjme_jint), fill);
 	sjme_jint* into;
 	sjme_jushort* shorts;
 

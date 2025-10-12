@@ -38,8 +38,8 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem)
 {
 	sjme_errorCode error;
-	sjme_list_sjme_scritchui_uiMenuKind* childList;
-	sjme_list_sjme_scritchui_uiMenuKind* newList;
+	sjme_list(sjme_scritchui_uiMenuKind)* childList;
+	sjme_list(sjme_scritchui_uiMenuKind)* newList;
 	sjme_scritchui_uiMenuHasChildren parentMenu;
 	sjme_scritchui_uiMenuHasParent childMenu;
 	sjme_jint i, o, n;
@@ -184,7 +184,7 @@ sjme_errorCode sjme_scritchui_core_menuRemove(
 	sjme_errorCode error;
 	sjme_scritchui_uiMenuHasChildren parentMenu;
 	sjme_scritchui_uiMenuHasParent childMenu;
-	sjme_list_sjme_scritchui_uiMenuKind* childList;
+	sjme_list(sjme_scritchui_uiMenuKind)* childList;
 	sjme_scritchui_uiMenuKind childAt;
 	sjme_jint i, o, n;
 	
