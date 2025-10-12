@@ -450,6 +450,7 @@ static const sjme_nvm_walk_pseudoType sjme_nvm_walk_pseudoOnly[] =
 	SJME_NVM_WALK_PSEUDO_CLOSE_HANDLER,
 	SJME_NVM_WALK_PSEUDO_CLUTTER_LEVEL,
 	SJME_NVM_WALK_PSEUDO_FIXED_ARRAY,
+	SJME_NVM_WALK_PSEUDO_JAVA_TYPE_ID,
 	SJME_NVM_WALK_PSEUDO_LIBRARY_FUNCTIONS,
 	SJME_NVM_WALK_PSEUDO_LIST,
 	SJME_NVM_WALK_PSEUDO_LPSTR,
@@ -464,6 +465,7 @@ static const sjme_nvm_walk_pseudoType sjme_nvm_walk_pseudoOnly[] =
 	SJME_NVM_WALK_PSEUDO_SUITE_FUNCTIONS,
 	SJME_NVM_WALK_PSEUDO_TASK_PIPE_REDIRECT_TYPE,
 	SJME_NVM_WALK_PSEUDO_TASK_STATUS_TYPE,
+	SJME_NVM_WALK_PSEUDO_UNSPECIFIED_BINARY,
 
 	/* End. */
 	0,
@@ -567,7 +569,7 @@ static sjme_errorCode sjme_nvm_walkItem(
 	if (at->breadth == SJME_NVM_WALK_BREADTH_LEVEL)
 	{
 		/* Store old type IDs. */
-		oldTypeId = at->typeId;
+		oldTypeId = at->typeId.i;
 		oldJavaType = at->javaType;
 
 		/* Aliased type? */
@@ -581,7 +583,7 @@ static sjme_errorCode sjme_nvm_walkItem(
 				case SJME_NVM_WALK_PSEUDO_BIND_TYPE:
 				case SJME_NVM_WALK_PSEUDO_TASK_STATUS_TYPE:
 				case SJME_NVM_WALK_PSEUDO_FIXED_ARRAY:
-					at->typeId = SJME_NVM_WALK_PSEUDO_PRIMITIVE;
+					at->typeId.i = SJME_NVM_WALK_PSEUDO_PRIMITIVE;
 					if (inStep->size == 1)
 						at->javaType = SJME_BASIC_TYPE_ID_BYTE;
 					else if (inStep->size == 2)
@@ -593,7 +595,7 @@ static sjme_errorCode sjme_nvm_walkItem(
 
 					/* Some other weird size? */
 					else
-						at->typeId = oldTypeId;
+						at->typeId.i = oldTypeId;
 					break;
 
 					/* String data? */
@@ -617,7 +619,7 @@ static sjme_errorCode sjme_nvm_walkItem(
 			return sjme_error_default(error);
 
 		/* Restore old types. */
-		at->typeId = oldTypeId;
+		at->typeId.i = oldTypeId;
 		at->javaType = oldJavaType;
 	}
 
@@ -625,13 +627,13 @@ static sjme_errorCode sjme_nvm_walkItem(
 	else if (at->breadth == SJME_NVM_WALK_BREADTH_DIVE && !at->noDive)
 	{
 		/* Diving into a normal structure? */
-		if (at->typeId != SJME_NVM_WALK_PSEUDO_LIST &&
-			at->typeId != SJME_NVM_WALK_PSEUDO_FIXED_ARRAY &&
-			at->typeId != SJME_NVM_WALK_PSEUDO_PHANTOM &&
-			at->typeId != SJME_NVM_WALK_PSEUDO_ATOMIC)
+		if (at->typeId.i != SJME_NVM_WALK_PSEUDO_LIST &&
+			at->typeId.i != SJME_NVM_WALK_PSEUDO_FIXED_ARRAY &&
+			at->typeId.i != SJME_NVM_WALK_PSEUDO_PHANTOM &&
+			at->typeId.i != SJME_NVM_WALK_PSEUDO_ATOMIC)
 		{
 			/* We can only dive into known types. */
-			if (sjme_error_is(error = sjme_nvm_select(at->typeId, &select)))
+			if (sjme_error_is(error = sjme_nvm_select(at->typeId.i, &select)))
 				return sjme_error_default(error);
 		}
 		
@@ -707,7 +709,7 @@ static sjme_errorCode sjme_nvm_walkArray(
 		/* Set item specific data. */
 		subStep.index = i;
 		subStep.inStep = variantStep;
-		subStep.typeId = variantStep->typeId;
+		subStep.typeId.i = variantStep->typeId;
 		subStep.javaType = variantStep->javaType;
 		subStep.isPointer = variantStep->isPointer;
 
@@ -799,7 +801,7 @@ static sjme_errorCode sjme_nvm_walkList(
 		/* Set item specific data. */
 		subStep.index = i;
 		subStep.inStep = variantStep;
-		subStep.typeId = variantStep->typeId;
+		subStep.typeId.i = variantStep->typeId;
 		subStep.javaType = variantStep->javaType;
 		subStep.isPointer = variantStep->isPointer;
 
@@ -885,16 +887,16 @@ static sjme_errorCode sjme_nvm_walkStruct(
 		
 		/* Set item specific data. */
 		subStep.index = atIndex;
-		subStep.typeId = currentStep->typeId;
+		subStep.typeId.i = currentStep->typeId;
 		subStep.javaType = currentStep->javaType;
 		subStep.isPointer = currentStep->isPointer;
 		subStep.inStep = currentStep;
 		
 		/* Is this a variant? That is an array or list. */
-		if (subStep.typeId == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY ||
-			subStep.typeId == SJME_NVM_WALK_PSEUDO_LIST ||
-			subStep.typeId == SJME_NVM_WALK_PSEUDO_PHANTOM ||
-			subStep.typeId == SJME_NVM_WALK_PSEUDO_ATOMIC)
+		if (subStep.typeId.i == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY ||
+			subStep.typeId.i == SJME_NVM_WALK_PSEUDO_LIST ||
+			subStep.typeId.i == SJME_NVM_WALK_PSEUDO_PHANTOM ||
+			subStep.typeId.i == SJME_NVM_WALK_PSEUDO_ATOMIC)
 		{
 			stepAdd = 2;
 			subStep.variantStep = (currentStep + 1);
@@ -941,7 +943,7 @@ sjme_errorCode sjme_nvm_walk(
 		return SJME_ERROR_NONE;
 
 	/* Try to get a selection for the current item where applicable. */
-	if (sjme_error_is(error = sjme_nvm_select(at->typeId, &at->inSelect)))
+	if (sjme_error_is(error = sjme_nvm_select(at->typeId.i, &at->inSelect)))
 		return sjme_error_default(error);
 	
 	/* Start a walk into the structure. */
@@ -961,13 +963,13 @@ sjme_errorCode sjme_nvm_walk(
 		!skipElements; breadth++)
 	{
 		/* Determine the function used for outer stepping. */
-		if (at->typeId == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY)
+		if (at->typeId.i == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY)
 			outer = sjme_nvm_walkArray;
-		else if (at->typeId == SJME_NVM_WALK_PSEUDO_LIST)
+		else if (at->typeId.i == SJME_NVM_WALK_PSEUDO_LIST)
 			outer = sjme_nvm_walkList;
-		else if (at->typeId == SJME_NVM_WALK_PSEUDO_PHANTOM)
+		else if (at->typeId.i == SJME_NVM_WALK_PSEUDO_PHANTOM)
 			outer = sjme_nvm_walkPhantom;
-		else if (at->typeId == SJME_NVM_WALK_PSEUDO_ATOMIC)
+		else if (at->typeId.i == SJME_NVM_WALK_PSEUDO_ATOMIC)
 			outer = sjme_nvm_walkAtomic;
 		else
 			outer = sjme_nvm_walkStruct;
@@ -1049,7 +1051,7 @@ sjme_errorCode sjme_nvm_walk_start(
 		rootState.base.walkLayer = (sjme_intPointer)startAt;
 		rootState.baseStruct.walkLayer = (sjme_intPointer)startAt;
 		rootState.valueP.walkLayer = (sjme_intPointer)startAt;
-		rootState.typeId = typeId;
+		rootState.typeId.i = typeId;
 		rootState.javaType = SJME_NUM_JAVA_TYPE_IDS;
 		rootState.isPointer = SJME_JNI_TRUE;
 		rootState.inSelect = select;

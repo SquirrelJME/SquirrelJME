@@ -82,7 +82,7 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 		/* will end up garbage collecting too early. Objects get counted */
 		/* down accordingly. Naturally NVM structures are always positive */
 		/* type identifiers. */
-		if (at->typeId >= 0 && at->valueP.value != at->baseStruct.value &&
+		if (at->typeId.i >= 0 && at->valueP.value != at->baseStruct.value &&
 			!at->isPhantom &&
 			*at->valueP.pointer != NULL &&
 			sjme_nvm_isAR(*at->valueP.pointer,
@@ -99,7 +99,7 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 
 		/* Any structure type can be closed, if not an object. */
 		/* And it is not phantom (points back to a parent). */
-		else if (at->typeId > SJME_NVM_STRUCT_UNKNOWN &&
+		else if (at->typeId.i > SJME_NVM_STRUCT_UNKNOWN &&
 			!at->isPhantom &&
 			*at->valueP.pointer != NULL &&
 			at->valueP.value != at->baseStruct.value &&

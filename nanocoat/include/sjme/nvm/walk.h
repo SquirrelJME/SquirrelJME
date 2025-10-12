@@ -325,7 +325,17 @@ struct sjme_nvm_walk_state
 	sjme_nvm_walk_pointer valueP;
 
 	/** The current type being walked. */
-	sjme_jint typeId;
+	union
+	{
+		/** As integer. */
+		sjme_jint i;
+
+		/** As structure type. */
+		sjme_nvm_structType n;
+
+		/** As pseudo type. */
+		sjme_nvm_walk_pseudoType p;
+	} typeId;
 
 	/** The Java type being walked. */
 	sjme_javaTypeId javaType;
