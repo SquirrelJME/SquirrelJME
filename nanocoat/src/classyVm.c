@@ -2241,11 +2241,17 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	result->classPath = dup;
 	result->classes = classes;
 	result->nullStrings = nullStrings;
+
+	/* Count up all libraries as they are being used. */
+	for (n = dup->length, i = 0; i < n; i++)
+		if (sjme_error_is(error = sjme_alloc_weakRef(dup->elements[i], NULL)))
+			goto fail_countUp;
 	
 	/* Success! */
 	*outLoader = result;
 	return SJME_ERROR_NONE;
-	
+
+fail_countUp:
 fail_alloc:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));

@@ -91,8 +91,10 @@ sjme_errorCode sjme_nvm_rom_suiteLibraries(
 	/* Has this been processed already? */
 	if (inSuite->libraries != NULL)
 	{
+#if defined(SJME_CONFIG_DEBUG)
 		/* Debug. */
 		sjme_message("Using existing cache: %p", inSuite->libraries);
+#endif
 
 		*outLibs = inSuite->libraries;
 		return SJME_ERROR_NONE;
@@ -116,6 +118,12 @@ sjme_errorCode sjme_nvm_rom_suiteLibraries(
 
 	/* Store it within the cache. */
 	inSuite->libraries = result;
+
+	/* Since we are referring to all the libraries, count each one up. */
+	for (n = result->length, i = 0; i < n; i++)
+		if (sjme_error_is(error = sjme_alloc_weakRef(result->elements[i],
+			NULL)))
+			goto fail_countUp;
 	
 	/* All of these must be valid libraries. */
 	for (i = 0, n = result->length; i < n; i++)
@@ -135,6 +143,7 @@ sjme_errorCode sjme_nvm_rom_suiteLibraries(
 	return SJME_ERROR_NONE;
 
 fail_missingLib:
+fail_countUp:
 fail_list:
 	/* Release lock before failing. */
 	if (sjme_error_is(sjme_thread_spinLockRelease(
