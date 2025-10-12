@@ -54,8 +54,8 @@ typedef enum sjme_nvm_walk_pseudoType
 	/** @c sjme_nal . */
 	SJME_NVM_WALK_PSEUDO_NAL = -5,
 
-	/** @c sjme_atomic_sjme_jint . */
-	SJME_NVM_WALK_PSEUDO_ATOMIC_JINT = -6,
+	/** @c sjme_atomic_ types. */
+	SJME_NVM_WALK_PSEUDO_ATOMIC = -6,
 
 	/** @c sjme_nvm_mle_threadModel . */
 	SJME_NVM_WALK_PSEUDO_MLE_THREAD_MODEL = -7,
@@ -102,8 +102,8 @@ typedef enum sjme_nvm_walk_pseudoType
 	/** Fixed size array . */
 	SJME_NVM_WALK_PSEUDO_FIXED_ARRAY = -21,
 
-	/** UNUSED . */
-	SJME_NVM_WALK_PSEUDO_UNUSED_22 = -22,
+	/** @c sjme_javaTypeId . */
+	SJME_NVM_WALK_PSEUDO_JAVA_TYPE_ID = -22,
 
 	/** @c sjme_nvm_taskStrings . */
 	SJME_NVM_WALK_PSEUDO_TASK_STRINGS = -23,
@@ -141,8 +141,8 @@ typedef enum sjme_nvm_walk_pseudoType
 	/** @c sjme_nvm_rawArrayValues . */
 	SJME_NVM_WALK_PSEUDO_RAW_ARRAY_VALUES = -34,
 
-	/** @c sjme_atomic_sjme_intPointer . */
-	SJME_NVM_WALK_PSEUDO_ATOMIC_INT_POINTER = -35,
+	/** Unspecified stored binary data . */
+	SJME_NVM_WALK_PSEUDO_UNSPECIFIED_BINARY = -35,
 
 	/** @c sjme_nvm_threadSubSchedule . */
 	SJME_NVM_WALK_PSEUDO_THREAD_SUB_SCHEDULE = -36,
@@ -167,6 +167,12 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** Phantom back reference . */
 	SJME_NVM_WALK_PSEUDO_PHANTOM = -43,
+
+	/** @c sjme_nvm_jclass_fields . */
+	SJME_NVM_WALK_PSEUDO_CLASS_FIELDS = -44,
+
+	/** @c sjme_nvm_jclass_methods . */
+	SJME_NVM_WALK_PSEUDO_CLASS_METHODS = -45,
 } sjme_nvm_walk_pseudoType;
 
 /**
@@ -365,6 +371,9 @@ struct sjme_nvm_walk_state
 
 	/** Does this point to a phantom atomic reference? */
 	sjme_jboolean isPhantom;
+
+	/** Does this point to an atomic reference? */
+	sjme_jboolean isAtomic;
 };
 
 struct sjme_nvm_walk_step

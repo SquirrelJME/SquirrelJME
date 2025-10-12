@@ -91,7 +91,14 @@
 		SJME_NVM_WALK_PSEUDO_LIST, -1, NULL), \
 	subDef
 
-/** Walk step a phantom pointer. */
+/** Walk step a phantom (atomic) pointer. */
+#define SJME_WS_ATOMIC(memberName, subDef) \
+	SJME_WS_FULL(memberName, \
+		SJME_JNI_TRUE, SJME_NUM_JAVA_TYPE_IDS, \
+		SJME_NVM_WALK_PSEUDO_ATOMIC, -1, NULL), \
+	subDef
+
+/** Walk step an atomic pointer. */
 #define SJME_WS_PHANTOM(memberName, subDef) \
 	SJME_WS_FULL(memberName, \
 		SJME_JNI_TRUE, SJME_NUM_JAVA_TYPE_IDS, \
@@ -124,7 +131,8 @@
 
 #define SJME_WALK_CURRENT sjme_closeableBase
 SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_CLOSEABLE)
-	SJME_WS_NORM_V(isClosed, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
+	SJME_WS_ATOMIC(isClosed,
+		SJME_WS_JAVA_V(isClosed, SJME_JAVA_TYPE_ID_INTEGER)),
 	SJME_WS_JAVA_V(refCounting, SJME_BASIC_TYPE_ID_BOOLEAN),
 	SJME_WS_NORM_P(closeHandler,
 		SJME_NVM_WALK_PSEUDO_CLOSE_HANDLER),
@@ -149,13 +157,50 @@ SJME_WALK_BEGIN(SJME_NVM_STRUCT_ARRAY_INSTANCE)
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
+#define SJME_WALK_CURRENT sjme_jclassBase
+SJME_WALK_BEGIN(SJME_NVM_STRUCT_CLASS_INSTANCE)
+	SJME_WS_NORM_V(object, SJME_NVM_STRUCT_OBJECT_INSTANCE),
+	SJME_WS_NORM_P(binaryName, SJME_NVM_WALK_PSEUDO_CHAR_SEQ),
+	SJME_WS_JAVA_V(binaryHash, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_ATOMIC(error,
+		SJME_WS_JAVA_V(error, SJME_JAVA_TYPE_ID_INTEGER)),
+	SJME_WS_ATOMIC(isLoaded,
+		SJME_WS_JAVA_V(isLoaded, SJME_JAVA_TYPE_ID_INTEGER)),
+	SJME_WS_ATOMIC(isInitialized,
+		SJME_WS_JAVA_V(isInitialized, SJME_JAVA_TYPE_ID_INTEGER)),
+	SJME_WS_NORM_P(info, SJME_NVM_STRUCT_CLASS_INFO),
+	SJME_WS_ATOMIC(superClass,
+		SJME_WS_NORM_P(superClass, SJME_NVM_STRUCT_CLASS_INSTANCE)),
+	SJME_WS_LIST_P(interfaceClasses,
+		SJME_WS_NORM_P(interfaceClasses, SJME_NVM_STRUCT_CLASS_INSTANCE)),
+	SJME_WS_ARRY_V(fields,
+		SJME_WS_NORM_V(fields, SJME_NVM_WALK_PSEUDO_CLASS_FIELDS)),
+	SJME_WS_ARRY_V(methods,
+		SJME_WS_NORM_V(methods, SJME_NVM_WALK_PSEUDO_CLASS_METHODS)),
+	SJME_WS_LIST_P(interfaceBinds,
+		SJME_WS_NORM_P(interfaceBinds, SJME_NVM_STRUCT_INTERFACE_ID)),
+	SJME_WS_NORM_P(isClasses, SJME_NVM_STRUCT_IS_CLASSES),
+	SJME_WS_NORM_V(typeId, SJME_NVM_WALK_PSEUDO_JAVA_TYPE_ID),
+	SJME_WS_NORM_V(arrayTypeId, SJME_NVM_WALK_PSEUDO_BASIC_TYPE_ID),
+	SJME_WS_ATOMIC(componentType,
+		SJME_WS_NORM_P(componentType, SJME_NVM_STRUCT_CLASS_INSTANCE)),
+	SJME_WS_PHANTOM(phantomArrayType,
+		SJME_WS_NORM_P(phantomArrayType, SJME_NVM_STRUCT_CLASS_INSTANCE)),
+	SJME_WS_NORM_P(staticChunk, SJME_NVM_WALK_PSEUDO_UNSPECIFIED_BINARY),
+	SJME_WS_ATOMIC(numDimensions,
+		SJME_WS_JAVA_V(numDimensions, SJME_JAVA_TYPE_ID_INTEGER)),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
 #define SJME_WALK_CURRENT sjme_jobjectBase
 SJME_WALK_BEGIN(SJME_NVM_STRUCT_OBJECT_INSTANCE)
 	SJME_WS_NORM_V(common, SJME_NVM_WALK_PSEUDO_COMMON),
 	SJME_WS_JAVA_V(identityHash, SJME_JAVA_TYPE_ID_INTEGER),
 	SJME_WS_NORM_P(isClass, SJME_NVM_STRUCT_CLASS_INSTANCE),
-	SJME_WS_NORM_V(monitorCount, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
-	SJME_WS_NORM_V(special, SJME_NVM_WALK_PSEUDO_ATOMIC_INT_POINTER),
+	SJME_WS_ATOMIC(monitorCount,
+		SJME_WS_JAVA_V(monitorCount, SJME_JAVA_TYPE_ID_INTEGER)),
+	SJME_WS_ATOMIC(special,
+		SJME_WS_JAVA_V(special, SJME_JAVA_TYPE_ID_INTEGER)),
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
@@ -269,12 +314,16 @@ SJME_WALK_BEGIN(SJME_NVM_STRUCT_STATE)
 	SJME_WS_NORM_P(suite, SJME_NVM_STRUCT_ROM_SUITE),
 	SJME_WS_LIST_P(tasks,
 		SJME_WS_NORM_P(tasks, SJME_NVM_STRUCT_TASK)),
-	SJME_WS_NORM_V(numRunningTasks, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
-	SJME_WS_NORM_V(nextTaskId, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
-	SJME_WS_NORM_V(nextThreadId, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
+	SJME_WS_ATOMIC(numRunningTasks,
+		SJME_WS_JAVA_V(numRunningTasks, SJME_JAVA_TYPE_ID_INTEGER)),
+	SJME_WS_ATOMIC(nextTaskId,
+		SJME_WS_JAVA_V(nextTaskId, SJME_JAVA_TYPE_ID_INTEGER)),
+	SJME_WS_ATOMIC(nextThreadId,
+		SJME_WS_JAVA_V(nextThreadId, SJME_JAVA_TYPE_ID_INTEGER)),
 	SJME_WS_NORM_V(threadModel, SJME_NVM_WALK_PSEUDO_MLE_THREAD_MODEL),
 	SJME_WS_NORM_P(schedule, SJME_NVM_WALK_PSEUDO_THREAD_SCHEDULE),
-	SJME_WS_NORM_V(terminating, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
+	SJME_WS_ATOMIC(terminating,
+		SJME_WS_JAVA_V(terminating, SJME_JAVA_TYPE_ID_INTEGER)),
 	SJME_WS_NORM_P(initTaskConfig, SJME_NVM_WALK_PSEUDO_INIT_TASK_CONFIG),
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
@@ -303,15 +352,18 @@ SJME_WALK_BEGIN(SJME_NVM_STRUCT_TASK)
 		SJME_WS_NORM_P(inState, SJME_NVM_STRUCT_STATE)),
 	SJME_WS_JAVA_V(exitCode, SJME_JAVA_TYPE_ID_INTEGER),
 	SJME_WS_NORM_V(status, SJME_NVM_WALK_PSEUDO_TASK_STATUS_TYPE),
-	SJME_WS_NORM_V(terminate, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
+	SJME_WS_ATOMIC(terminate,
+		SJME_WS_JAVA_V(terminate, SJME_JAVA_TYPE_ID_INTEGER)),
 	SJME_WS_ARRY_V(numThreads,
-		SJME_WS_NORM_V(numThreads, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT)),
+		SJME_WS_ATOMIC(numThreads,
+			SJME_WS_JAVA_V(numThreads, SJME_JAVA_TYPE_ID_INTEGER))),
 	SJME_WS_LIST_P(threads,
 		SJME_WS_NORM_P(threads, SJME_NVM_STRUCT_THREAD_INSTANCE)),
 	SJME_WS_NORM_P(classLoader, SJME_NVM_STRUCT_VM_CLASS_LOADER),
 	SJME_WS_NORM_P(strings, SJME_NVM_WALK_PSEUDO_TASK_STRINGS),
 	SJME_WS_NORM_V(globals, SJME_NVM_WALK_PSEUDO_TASK_GLOBALS),
-	SJME_WS_NORM_V(nextFrameId, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
+	SJME_WS_ATOMIC(nextFrameId,
+		SJME_WS_JAVA_V(nextFrameId, SJME_JAVA_TYPE_ID_INTEGER)),
 	SJME_WS_NORM_P(initConfig,
 		SJME_NVM_WALK_PSEUDO_INIT_TASK_CONFIG),
 	SJME_WS_NORM_V(idHash,
@@ -369,7 +421,8 @@ SJME_WALK_END();
 #define SJME_WALK_CURRENT sjme_thread_rwLock
 SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_RW_LOCK)
 	SJME_WS_NORM_P(read, SJME_NVM_WALK_PSEUDO_SPIN_LOCK),
-	SJME_WS_NORM_V(writeCount, SJME_NVM_WALK_PSEUDO_ATOMIC_JINT),
+	SJME_WS_ATOMIC(writeCount,
+		SJME_WS_JAVA_V(writeCount, SJME_JAVA_TYPE_ID_INTEGER)),
 	SJME_WS_NORM_V(write, SJME_NVM_WALK_PSEUDO_SPIN_LOCK),
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
@@ -378,8 +431,7 @@ SJME_WALK_END();
 static const sjme_nvm_walk_pseudoType sjme_nvm_walk_pseudoOnly[] =
 {
 	SJME_NVM_WALK_PSEUDO_ALLOC_POOL,
-	SJME_NVM_WALK_PSEUDO_ATOMIC_INT_POINTER,
-	SJME_NVM_WALK_PSEUDO_ATOMIC_JINT,
+	SJME_NVM_WALK_PSEUDO_ATOMIC,
 	SJME_NVM_WALK_PSEUDO_BASIC_TYPE_ID,
 	SJME_NVM_WALK_PSEUDO_BIND_TYPE,
 	SJME_NVM_WALK_PSEUDO_BOOT_BELAY_TYPE,
@@ -419,6 +471,7 @@ const sjme_nvm_walk_stepSelect sjme_nvm_walk_select[] =
 
 	/* NVM Structures. */
 	SJME_WALK_SELECT(sjme_jarrayBase, SJME_NVM_STRUCT_ARRAY_INSTANCE),
+	SJME_WALK_SELECT(sjme_jclassBase, SJME_NVM_STRUCT_CLASS_INSTANCE),
 	SJME_WALK_SELECT(sjme_jobjectBase, SJME_NVM_STRUCT_OBJECT_INSTANCE),
 	SJME_WALK_SELECT(sjme_nvm_class_infoBase,
 		SJME_NVM_STRUCT_CLASS_INFO),
@@ -564,7 +617,8 @@ static sjme_errorCode sjme_nvm_walkItem(
 		/* Diving into a normal structure? */
 		if (at->typeId != SJME_NVM_WALK_PSEUDO_LIST &&
 			at->typeId != SJME_NVM_WALK_PSEUDO_FIXED_ARRAY &&
-			at->typeId != SJME_NVM_WALK_PSEUDO_PHANTOM)
+			at->typeId != SJME_NVM_WALK_PSEUDO_PHANTOM &&
+			at->typeId != SJME_NVM_WALK_PSEUDO_ATOMIC)
 		{
 			/* We can only dive into known types. */
 			if (sjme_error_is(error = sjme_nvm_select(at->typeId, &select)))
@@ -654,6 +708,33 @@ static sjme_errorCode sjme_nvm_walkArray(
 	}
 	
 	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_walkAtomic(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at,
+	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
+{
+	sjme_errorCode error;
+	
+	if (root == NULL || at == NULL || function == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Mismatched parent or in some other bad state? */
+	if (at->parent != parent)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Set the type to be atomic. */
+	at->isAtomic = SJME_JNI_TRUE;
+	
+	/* Directly walk on this! */
+	if (sjme_error_is(error = sjme_nvm_walkItem(root, parent, at, function)))
+		return sjme_error_default(error);
+
+	/* Set to no longer be atomic before leaving. */
+	at->isAtomic = SJME_JNI_FALSE;
 	return SJME_ERROR_NONE;
 }
 
@@ -802,7 +883,8 @@ static sjme_errorCode sjme_nvm_walkStruct(
 		/* Is this a variant? That is an array or list. */
 		if (subStep.typeId == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY ||
 			subStep.typeId == SJME_NVM_WALK_PSEUDO_LIST ||
-			subStep.typeId == SJME_NVM_WALK_PSEUDO_PHANTOM)
+			subStep.typeId == SJME_NVM_WALK_PSEUDO_PHANTOM ||
+			subStep.typeId == SJME_NVM_WALK_PSEUDO_ATOMIC)
 		{
 			stepAdd = 2;
 			subStep.variantStep = (currentStep + 1);
@@ -875,6 +957,8 @@ sjme_errorCode sjme_nvm_walk(
 			outer = sjme_nvm_walkList;
 		else if (at->typeId == SJME_NVM_WALK_PSEUDO_PHANTOM)
 			outer = sjme_nvm_walkPhantom;
+		else if (at->typeId == SJME_NVM_WALK_PSEUDO_ATOMIC)
+			outer = sjme_nvm_walkAtomic;
 		else
 			outer = sjme_nvm_walkStruct;
 

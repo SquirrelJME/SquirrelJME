@@ -155,40 +155,6 @@ static sjme_errorCode sjme_nvm_walk_coreDoAny(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_nvm_walk_coreDoAtomicInt(
-	sjme_attrInNotNull sjme_nvm_walk_state* root,
-	sjme_attrInNotNull sjme_nvm_walk_state* parent,
-	sjme_attrInNotNull sjme_nvm_walk_state* at)
-{
-	sjme_errorCode error;
-	sjme_nvm_walk_coreState* coreState;
-	sjme_jvalueTyped value;
-	
-	if (root == NULL || at == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Recover state. */
-	coreState = at->data;
-	if (coreState == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-	
-	/* Recover the value. */
-	memset(&value, 0, sizeof(value));
-	if (at->isPointer)
-		value.v.i = sjme_atomic_g(sjme_jint, *at->valueP.pointer);
-	else
-		value.v.i = sjme_atomic_g(sjme_jint, at->valueP.atomicInt);
-
-	/* Set type and write value. */
-	value.t = SJME_JAVA_TYPE_ID_INTEGER;
-	if (sjme_error_is(error = sjme_cbor_putMapEntryJ(coreState->out,
-		"v", &value)))
-		return sjme_error_default(error);
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
 static sjme_errorCode sjme_nvm_walk_coreDoPrimitive(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
@@ -248,8 +214,6 @@ typedef struct sjme_nvm_walk_coreHandler
 
 static const sjme_nvm_walk_coreHandler sjme_nvm_walk_coreHandlers[] =
 {
-	SJME_WALK_CORE_HANDLE(SJME_NVM_WALK_PSEUDO_ATOMIC_JINT,
-		sjme_nvm_walk_coreDoAtomicInt),
 	SJME_WALK_CORE_HANDLE(SJME_NVM_WALK_PSEUDO_PRIMITIVE,
 		sjme_nvm_walk_coreDoPrimitive),
 	SJME_WALK_CORE_END()
