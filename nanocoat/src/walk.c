@@ -48,7 +48,7 @@
 		sjme_sm(.memberSize, inMemberSize), \
 		sjme_sm(.javaType, inJavaType), \
 		sjme_sm(.typeId, inNvmId), \
-		sjme_sm(.customWalk, customWalkFunc) \
+		sjme_sm(.customStep, customWalkFunc) \
 	}
 
 /** Walk step a primitive value (pointer). */
@@ -66,10 +66,15 @@
 	SJME_WS_FULL(memberName, \
 		SJME_JNI_TRUE, SJME_NUM_JAVA_TYPE_IDS, structType, -1, NULL)
 
-/** Walk with custom logic. */
+/** Walk with custom logic (value). */
 #define SJME_WS_CUSTOM_V(memberName, structType, customFunc) \
 	SJME_WS_FULL(memberName, \
 		SJME_JNI_FALSE, SJME_NUM_JAVA_TYPE_IDS, structType, -1, customFunc)
+
+/** Walk with custom logic (pointer). */
+#define SJME_WS_CUSTOM_P(memberName, structType, customFunc) \
+	SJME_WS_FULL(memberName, \
+		SJME_JNI_TRUE, SJME_NUM_JAVA_TYPE_IDS, structType, -1, customFunc)
 
 /** Walk step another structure type (value). */
 #define SJME_WS_NORM_V(memberName, structType) \
@@ -122,9 +127,22 @@
 			sjme_sm(.memberSize, -1), \
 			sjme_sm(.javaType, 0), \
 			sjme_sm(.typeId, 0), \
-			sjme_sm(.customWalk, NULL) \
+			sjme_sm(.customStep, NULL) \
 		} \
 	}
+
+static sjme_errorCode sjme_nvm_walkCustomPoolEntries(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at,
+	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
+{
+	if (root == NULL || at == NULL || function == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
 
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
@@ -263,11 +281,18 @@ SJME_WALK_BEGIN(SJME_NVM_STRUCT_IS_CLASSES)
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
+#define SJME_WALK_CURRENT sjme_nvm_class_poolEntry
+SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_POOL_ENTRY)
+	SJME_WS_CUSTOM_V(type, SJME_NVM_WALK_PSEUDO_UNION,
+		sjme_nvm_walkCustomPoolEntries),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
 #define SJME_WALK_CURRENT sjme_nvm_class_poolInfoBase
 SJME_WALK_BEGIN(SJME_NVM_STRUCT_POOL)
 	SJME_WS_NORM_V(common, SJME_NVM_WALK_PSEUDO_COMMON),
 	SJME_WS_LIST_P(pool,
-		SJME_WS_NORM_P(pool, SJME_NVM_WALK_PSEUDO_POOL_ENTRY)),
+		SJME_WS_NORM_V(pool, SJME_NVM_WALK_PSEUDO_POOL_ENTRY)),
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
@@ -497,10 +522,12 @@ static const sjme_nvm_walk_pseudoType sjme_nvm_walk_pseudoOnly[] =
 	SJME_NVM_WALK_PSEUDO_POINTER,
 	SJME_NVM_WALK_PSEUDO_PRIMITIVE,
 	SJME_NVM_WALK_PSEUDO_RAW_ARRAY_VALUES,
+	SJME_NVM_WALK_PSEUDO_SPIN_LOCK,
 	SJME_NVM_WALK_PSEUDO_STATE_HOOKS,
 	SJME_NVM_WALK_PSEUDO_SUITE_FUNCTIONS,
 	SJME_NVM_WALK_PSEUDO_TASK_PIPE_REDIRECT_TYPE,
 	SJME_NVM_WALK_PSEUDO_TASK_STATUS_TYPE,
+	SJME_NVM_WALK_PSEUDO_UNION,
 	SJME_NVM_WALK_PSEUDO_UNSPECIFIED_BINARY,
 
 	/* End. */
@@ -513,6 +540,8 @@ const sjme_nvm_walk_stepSelect sjme_nvm_walk_select[] =
 	SJME_WALK_SELECT(sjme_closeableBase, SJME_NVM_WALK_PSEUDO_CLOSEABLE),
 	SJME_WALK_SELECT(sjme_frontEnd, SJME_NVM_WALK_PSEUDO_FRONT_END),
 	SJME_WALK_SELECT(sjme_nvm_bootParam, SJME_NVM_WALK_PSEUDO_BOOT_PARAM),
+	SJME_WALK_SELECT(sjme_nvm_class_poolEntry,
+		SJME_NVM_WALK_PSEUDO_POOL_ENTRY),
 	SJME_WALK_SELECT(sjme_nvm_commonBase, SJME_NVM_WALK_PSEUDO_COMMON),
 	SJME_WALK_SELECT(sjme_nvm_task_globals,
 		SJME_NVM_WALK_PSEUDO_TASK_GLOBALS),
@@ -595,6 +624,7 @@ static sjme_errorCode sjme_nvm_walkItem(
 	const sjme_nvm_walk_step* inStep;
 	sjme_jint oldTypeId;
 	sjme_javaTypeId oldJavaType;
+	sjme_jboolean skipDefault;
 	
 	if (root == NULL || at == NULL || function == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -655,9 +685,21 @@ static sjme_errorCode sjme_nvm_walkItem(
 					break;
 			}
 		
+		/* Does this have custom step logic/initialization? */
+		skipDefault = SJME_JNI_FALSE;
+		if (inStep != NULL && inStep->customStep != NULL)
+			if (sjme_error_is(error = inStep->customStep(root, parent,
+				at, function)))
+			{
+				if (error != SJME_ERROR_WALK_SKIP_CUSTOM_DEFAULT)
+					return sjme_error_default(error);
+				skipDefault = SJME_JNI_TRUE;
+			}
+		
 		/* Execute item handler. */
-		if (sjme_error_is(error = function(root, parent, at)))
-			return sjme_error_default(error);
+		if (!skipDefault)
+			if (sjme_error_is(error = function(root, parent, at)))
+				return sjme_error_default(error);
 
 		/* Restore old types. */
 		at->typeId.i = oldTypeId;
@@ -689,17 +731,22 @@ static sjme_errorCode sjme_nvm_walkItem(
 			at->baseStruct.walkLayer = at->base.walkLayer; 
 		}
 
-		/* Does this have custom walk logic? */
-		if (at->inStep->customWalk != NULL)
-		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
+		/* Does this have custom step logic/initialization? */
+		skipDefault = SJME_JNI_FALSE;
+		if (at->inStep->customStep != NULL)
+			if (sjme_error_is(error = at->inStep->customStep(root, parent,
+				at, function)))
+			{
+				if (error != SJME_ERROR_WALK_SKIP_CUSTOM_DEFAULT)
+					return sjme_error_default(error);
+				skipDefault = SJME_JNI_TRUE;
+			}
 		
 		/* Go back to the root item walking for this. */
-		if (sjme_error_is(error = sjme_nvm_walk(root, parent,
-			at, function)))
-			return sjme_error_default(error);
+		if (!skipDefault)
+			if (sjme_error_is(error = sjme_nvm_walk(root, parent,
+				at, function)))
+				return sjme_error_default(error);
 	}
 
 	/* Success! */
@@ -750,7 +797,7 @@ static sjme_errorCode sjme_nvm_walkArray(
 		/* Set item specific data. */
 		subStep.index = i;
 		subStep.inStep = variantStep;
-		subStep.typeId.i = variantStep->typeId;
+		subStep.typeId.i = variantStep->typeId.i;
 		subStep.javaType = variantStep->javaType;
 		subStep.isPointer = variantStep->isPointer;
 
@@ -842,7 +889,7 @@ static sjme_errorCode sjme_nvm_walkList(
 		/* Set item specific data. */
 		subStep.index = i;
 		subStep.inStep = variantStep;
-		subStep.typeId.i = variantStep->typeId;
+		subStep.typeId.i = variantStep->typeId.i;
 		subStep.javaType = variantStep->javaType;
 		subStep.isPointer = variantStep->isPointer;
 
@@ -922,13 +969,13 @@ static sjme_errorCode sjme_nvm_walkStruct(
 			currentStep->offset;
 
 		/* Determine the structure that is being walked. */
-		if (sjme_error_is(error = sjme_nvm_select(currentStep->typeId,
+		if (sjme_error_is(error = sjme_nvm_select(currentStep->typeId.i,
 			&subStep.inSelect)))
 			return sjme_error_default(error);
 		
 		/* Set item specific data. */
 		subStep.index = atIndex;
-		subStep.typeId.i = currentStep->typeId;
+		subStep.typeId.i = currentStep->typeId.i;
 		subStep.javaType = currentStep->javaType;
 		subStep.isPointer = currentStep->isPointer;
 		subStep.inStep = currentStep;

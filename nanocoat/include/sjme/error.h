@@ -558,9 +558,12 @@ typedef enum sjme_errorCode
 
 	/** Cancel MLE call. */
 	SJME_ERROR_CANCEL_MLE_CALL = -172,
+
+	/** Skip default walk action after custom step is performed. */
+	SJME_ERROR_WALK_SKIP_CUSTOM_DEFAULT = -173,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -173,
+	SJME_NUM_ERROR_CODES = -174,
 } sjme_errorCode;
 
 /**

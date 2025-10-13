@@ -67,11 +67,28 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 		at->base, at->root->typeId, at->index, at->typeId);
 #endif
 
-	/* If this is the root of the item, indicate we do not want to dive as */
-	/* we just want to run over items. */
+	/* If this is the root of the item, we may want to indicate that */
+	/* depending on the item type we may or may not want to dive. */
 	if (at->index < 0 && at->index != INT32_MIN)
 	{
-		at->noDive = SJME_JNI_TRUE;
+		/* Either we can perform. */
+		switch ((at->variantStep != NULL ? at->variantStep->typeId.i :
+			at->typeId.i))
+		{
+				/* The constant pool and pool entries are fine to do a */
+				/* normal walk since they mostly are constant or point */
+				/* to string pool strings. */
+			case SJME_NVM_STRUCT_POOL:
+			case SJME_NVM_WALK_PSEUDO_POOL_ENTRY:
+				break;
+			
+				/* Do not dive by default. */
+			default:
+				at->noDive = SJME_JNI_TRUE;
+				break;
+		}
+
+		/* Success! */
 		return SJME_ERROR_NONE;
 	}
 
@@ -83,7 +100,8 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 		/* will end up garbage collecting too early. Objects get counted */
 		/* down accordingly. Naturally NVM structures are always positive */
 		/* type identifiers. */
-		if (at->typeId.i >= 0 && at->valueP.value != at->baseStruct.value &&
+		if (at->typeId.i > SJME_NVM_STRUCT_UNKNOWN &&
+			at->valueP.value != at->baseStruct.value &&
 			!at->isPhantom &&
 			*at->valueP.pointer != NULL &&
 			sjme_nvm_isAR(*at->valueP.pointer,

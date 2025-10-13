@@ -105,8 +105,8 @@ typedef enum sjme_nvm_walk_pseudoType
 	/** @c sjme_javaTypeId . */
 	SJME_NVM_WALK_PSEUDO_JAVA_TYPE_ID = -22,
 
-	/** Unused 23. */
-	SJME_NVM_WALK_PSEUDO_UNUSED_23 = -23,
+	/** A @c union . */
+	SJME_NVM_WALK_PSEUDO_UNION = -23,
 
 	/** @c sjme_nvm_task_globals . */ 
 	SJME_NVM_WALK_PSEUDO_TASK_GLOBALS = -24,
@@ -319,6 +319,23 @@ typedef union sjme_nvm_walk_pointer
 	sjme_jclass jclass;
 } sjme_nvm_walk_pointer;
 
+/**
+ * The ID being walked.
+ *
+ * @since 2025/10/13
+ */
+typedef union sjme_nvm_walk_id
+{
+	/** As integer. */
+	sjme_jint i;
+
+	/** As structure type. */
+	sjme_nvm_structType n;
+
+	/** As pseudo type. */
+	sjme_nvm_walk_pseudoType p;
+} sjme_nvm_walk_id;
+
 struct sjme_nvm_walk_state
 {
 	/** The root state. */
@@ -340,17 +357,7 @@ struct sjme_nvm_walk_state
 	sjme_nvm_walk_pointer valueP;
 
 	/** The current type being walked. */
-	union
-	{
-		/** As integer. */
-		sjme_jint i;
-
-		/** As structure type. */
-		sjme_nvm_structType n;
-
-		/** As pseudo type. */
-		sjme_nvm_walk_pseudoType p;
-	} typeId;
+	sjme_nvm_walk_id typeId;
 
 	/** The Java type being walked. */
 	sjme_javaTypeId javaType;
@@ -422,10 +429,15 @@ struct sjme_nvm_walk_step
 	sjme_javaTypeId javaType;
 
 	/** The structure type. */
-	sjme_jint typeId;
+	sjme_nvm_walk_id typeId;
 
-	/** Custom logic walker. */
-	sjme_nvm_walk_stepOuterFunc customWalk;
+	/**
+	 * Custom step logic setup for walking. If the step function
+	 * returns @c SJME_ERROR_WALK_SKIP_CUSTOM_DEFAULT then the default
+	 * walk will not be performed, this assumes that the step handler
+	 * called the appropriate handler function.
+	 */
+	sjme_nvm_walk_stepOuterFunc customStep;
 };
 
 struct sjme_nvm_walk_stepSelect
