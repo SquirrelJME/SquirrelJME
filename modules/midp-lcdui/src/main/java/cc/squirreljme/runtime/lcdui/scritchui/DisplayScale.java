@@ -517,16 +517,12 @@ public abstract class DisplayScale
 		if (rv != null)
 			return rv;
 		
-		// Nokia
+		// Nokia, note that Nokia-MIDlet-Target-Display-Size exists also but
+		// acts as a recommendation to use if a desired aspect ratio is to
+		// be used. Do not use it in favor of preferring what the user
+		// desires aspect ratio wise.
 		rv = DisplayScale.__midlet(__midlet,
 			"Nokia-MIDlet-Original-Display-Size", false,
-			',');
-		if (rv != null)
-			return rv;
-		
-		// Nokia (alternative)
-		rv = DisplayScale.__midlet(__midlet,
-			"Nokia-MIDlet-Target-Display-Size", false,
 			',');
 		if (rv != null)
 			return rv;
