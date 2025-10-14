@@ -1,0 +1,8 @@
+# 2025/10/13
+
+## 17:53
+
+I am going to need a special custom handler for constant pool entries just by
+how dynamic everything there is, but I expected that. I also have the desire
+to build a SquirrelJME Phone with my embedded experience, which would be
+interesting to say the least.
