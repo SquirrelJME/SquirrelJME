@@ -565,10 +565,36 @@ public final class String
 		}
 	}
 	
+	/**
+	 * Copies characters from this string to the given character array.
+	 *
+	 * @param __from The source character index.
+	 * @param __to The destination character index, exclusive.
+	 * @param __dest The destination character array.
+	 * @param __destOff The offset into the array to write at.
+	 * @throws IndexOutOfBoundsException If the source indexes are not within
+	 * the bounds of the string, or the destination indexes are not within
+	 * the bounds of the array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/10/15
+	 */
 	@Api
-	public void getChars(int __a, int __b, char[] __c, int __d)
+	public void getChars(int __from, int __to, char[] __dest, int __destOff)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__dest == null)
+			throw new NullPointerException("NARG");
+		
+		int srcLen = this.length();
+		int copyLen = __to - __from;
+		if (__from < 0 || __from > __to || __to > srcLen || __to < 0 ||
+			__destOff < 0 || (__destOff + copyLen) > __dest.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Perform the actual copy
+		while (__from < __to)
+			__dest[__destOff++] =
+				StringShelf.stringCharAt(this, __from++);
 	}
 	
 	/**
