@@ -176,6 +176,36 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_nvm_jfieldAccessFunc . */
 	SJME_NVM_WALK_PSEUDO_FIELD_ACCESSOR_FUNC = -46,
+
+	/** Technically nothing. */
+	SJME_NVM_WALK_PSEUDO_POOL_TYPE_NULL = -47,
+
+	/** @c sjme_nvm_class_poolEntryUtf . */
+	SJME_NVM_WALK_PSEUDO_POOL_TYPE_UTF = -48,
+
+	/** @c sjme_nvm_class_poolEntryInteger . */
+	SJME_NVM_WALK_PSEUDO_POOL_TYPE_INTEGER = -49,
+
+	/** @c sjme_nvm_class_poolEntryFloat . */
+	SJME_NVM_WALK_PSEUDO_POOL_TYPE_FLOAT = -50,
+
+	/** @c sjme_nvm_class_poolEntryLong . */
+	SJME_NVM_WALK_PSEUDO_POOL_TYPE_LONG = -51,
+
+	/** @c sjme_nvm_class_poolEntryDouble . */
+	SJME_NVM_WALK_PSEUDO_POOL_TYPE_DOUBLE = -52,
+
+	/** @c sjme_nvm_class_poolEntryClass . */
+	SJME_NVM_WALK_PSEUDO_POOL_TYPE_CLASS = -53,
+
+	/** @c sjme_nvm_class_poolEntryString . */
+	SJME_NVM_WALK_PSEUDO_POOL_TYPE_STRING = -54,
+
+	/** @c sjme_nvm_class_poolEntryMember . */
+	SJME_NVM_WALK_PSEUDO_POOL_TYPE_MEMBER = -55,
+
+	/** @c sjme_nvm_class_poolEntryNameAndType . */
+	SJME_NVM_WALK_PSEUDO_POOL_TYPE_NAME_AND_TYPE = -56,
 } sjme_nvm_walk_pseudoType;
 
 /**
@@ -406,6 +436,9 @@ struct sjme_nvm_walk_state
 
 	/** Does this point to an atomic reference? */
 	sjme_jboolean isAtomic;
+
+	/** Step for an individual item type. */
+	sjme_nvm_walk_stepOuterFunc stepItem;
 };
 
 struct sjme_nvm_walk_step

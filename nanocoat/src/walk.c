@@ -137,11 +137,78 @@ static sjme_errorCode sjme_nvm_walkCustomPoolEntries(
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
 	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
 {
+	sjme_nvm_walk_state step;
+	sjme_nvm_class_poolEntry* poolEntry;
+	sjme_jint desireType;
+	
 	if (root == NULL || at == NULL || function == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Initialize sub-step, virtually same as self. */
+	memmove(&step, at, sizeof(step));
+	step.parent = at;
+
+	/* Which type ID to set? */
+	poolEntry = at->valueP.value;
+	desireType = 0;
+	switch (poolEntry->type)
+	{
+		case SJME_NVM_CLASS_POOL_TYPE_NULL:
+			desireType = SJME_NVM_WALK_PSEUDO_POOL_TYPE_NULL;
+			break;
+			
+		case SJME_NVM_CLASS_POOL_TYPE_UTF:
+			desireType = SJME_NVM_WALK_PSEUDO_POOL_TYPE_UTF;
+			break;
+			
+		case SJME_NVM_CLASS_POOL_TYPE_INTEGER:
+			desireType = SJME_NVM_WALK_PSEUDO_POOL_TYPE_INTEGER;
+			break;
+			
+		case SJME_NVM_CLASS_POOL_TYPE_FLOAT:
+			desireType = SJME_NVM_WALK_PSEUDO_POOL_TYPE_FLOAT;
+			break;
+			
+		case SJME_NVM_CLASS_POOL_TYPE_LONG:
+			desireType = SJME_NVM_WALK_PSEUDO_POOL_TYPE_LONG;
+			break;
+			
+		case SJME_NVM_CLASS_POOL_TYPE_DOUBLE:
+			desireType = SJME_NVM_WALK_PSEUDO_POOL_TYPE_DOUBLE;
+			break;
+			
+		case SJME_NVM_CLASS_POOL_TYPE_CLASS:
+			desireType = SJME_NVM_WALK_PSEUDO_POOL_TYPE_CLASS;
+			break;
+			
+		case SJME_NVM_CLASS_POOL_TYPE_STRING:
+			desireType = SJME_NVM_WALK_PSEUDO_POOL_TYPE_STRING;
+			break;
+			
+		case SJME_NVM_CLASS_POOL_TYPE_FIELD:
+		case SJME_NVM_CLASS_POOL_TYPE_METHOD:
+		case SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD:
+			desireType = SJME_NVM_WALK_PSEUDO_POOL_TYPE_MEMBER;
+			break;
+			
+		case SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE:
+			desireType = SJME_NVM_WALK_PSEUDO_POOL_TYPE_NAME_AND_TYPE;
+			break;
+			
+			/* Invalid. */
+		default:
+			return SJME_ERROR_WALK_UNKNOWN_TYPE;
+	}
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Set type ID for handling. */
+	step.typeId.i = desireType;
+
+	/* If level, call function handler. */
+	if (at->breadth == SJME_NVM_WALK_BREADTH_LEVEL)
+		return function(root, at, &step);
+
+	/* Otherwise at the dive level, we are going in! */
+	return step.stepItem(root, at, &step, function);
 }
 
 /* clang-format off */ /* @formatter:off */
@@ -283,6 +350,7 @@ SJME_WALK_END();
 
 #define SJME_WALK_CURRENT sjme_nvm_class_poolEntry
 SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_POOL_ENTRY)
+	SJME_WS_JAVA_V(type, SJME_JAVA_TYPE_ID_INTEGER),
 	SJME_WS_CUSTOM_V(type, SJME_NVM_WALK_PSEUDO_UNION,
 		sjme_nvm_walkCustomPoolEntries),
 SJME_WALK_END();
@@ -1149,6 +1217,7 @@ sjme_errorCode sjme_nvm_walk_start(
 		rootState.stage = stage;
 		rootState.data = anyData;
 		rootState.uniqueId = ++rootState.nextUniqueId;
+		rootState.stepItem = sjme_nvm_walkItem;
 		
 		/* Perform the recursive walk. */
 		if (sjme_error_is(error = sjme_nvm_walk(&rootState, NULL,
