@@ -350,7 +350,9 @@ SJME_WALK_END();
 
 #define SJME_WALK_CURRENT sjme_nvm_class_poolEntry
 SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_POOL_ENTRY)
+#if 0
 	SJME_WS_JAVA_V(type, SJME_JAVA_TYPE_ID_INTEGER),
+#endif
 	SJME_WS_CUSTOM_V(type, SJME_NVM_WALK_PSEUDO_UNION,
 		sjme_nvm_walkCustomPoolEntries),
 SJME_WALK_END();
