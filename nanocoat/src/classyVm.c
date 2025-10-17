@@ -653,6 +653,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	sjme_atomic_s(sjme_jint, &inClass->numDimensions,
 		sjme_atomic_g(sjme_jint, &componentType->numDimensions) + 1);
 
+	/* Count up references. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(thisName, NULL)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_alloc_weakRef(superName, NULL)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_alloc_weakRef(componentType, NULL)))
+		return sjme_error_default(error);
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -699,6 +707,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitPrimitive(
 
 	/* Set synthetic class info. */
 	inClass->info = info;
+	
+	/* Count up references. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(thisName, NULL)))
+		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;

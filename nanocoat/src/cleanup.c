@@ -226,6 +226,24 @@ static sjme_errorCode sjme_nvm_cleanup_postIsClasses(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postObject(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_jobject object;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	object = (sjme_jobject)closeable;
+	if (object == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Clear reference to class. */
+	SJME_SIMPLE_CLOSE(object->isClass);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postRomLibrary(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -518,6 +536,29 @@ static sjme_errorCode sjme_nvm_cleanup_postVmClassLoader(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_jboolean sjme_nvm_cleanup_typeIsObject(
+	sjme_attrInValue sjme_nvm_structType inType)
+{
+	switch (inType)
+	{
+			/* Yes. */
+		case SJME_NVM_STRUCT_ARRAY_INSTANCE:
+		case SJME_NVM_STRUCT_BRACKET_JAR_PACKAGE_INSTANCE:
+		case SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE:
+		case SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE:
+		case SJME_NVM_STRUCT_CLASS_INSTANCE:
+		case SJME_NVM_STRUCT_OBJECT_INSTANCE:
+		case SJME_NVM_STRUCT_STRING_INSTANCE:
+		case SJME_NVM_STRUCT_THREAD_INSTANCE:
+		case SJME_NVM_STRUCT_WEAK_INSTANCE:
+			return SJME_JNI_TRUE;
+
+			/* No. */
+		default:
+			return SJME_JNI_FALSE;
+	}
+}
+
 sjme_errorCode sjme_nvm_allocR(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
@@ -585,8 +626,10 @@ sjme_errorCode sjme_nvm_allocR(
 			postClose = sjme_nvm_cleanup_postVmClassLoader;
 			break;
 		
-			/* No specific close being used. */
+			/* Use object cleanup or nothing at all? */
 		default:
+			if (sjme_nvm_cleanup_typeIsObject(inType))
+				postClose = sjme_nvm_cleanup_postObject;
 			break;
 	}
 	
@@ -658,15 +701,7 @@ sjme_errorCode sjme_nvm_isA(
 		*outResult = SJME_JNI_FALSE;
 	else if (common->type == inType ||
 		(inType == SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE &&
-			(common->type == SJME_NVM_STRUCT_ARRAY_INSTANCE ||
-			common->type == SJME_NVM_STRUCT_BRACKET_JAR_PACKAGE_INSTANCE ||
-			common->type == SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE ||
-			common->type == SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE ||
-			common->type == SJME_NVM_STRUCT_CLASS_INSTANCE ||
-			common->type == SJME_NVM_STRUCT_OBJECT_INSTANCE ||
-			common->type == SJME_NVM_STRUCT_STRING_INSTANCE ||
-			common->type == SJME_NVM_STRUCT_THREAD_INSTANCE ||
-			common->type == SJME_NVM_STRUCT_WEAK_INSTANCE)))
+			sjme_nvm_cleanup_typeIsObject(common->type)))
 		*outResult = SJME_JNI_TRUE;
 	else
 		*outResult = SJME_JNI_FALSE;
