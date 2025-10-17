@@ -439,6 +439,9 @@ struct sjme_nvm_walk_state
 
 	/** Step for an individual item type. */
 	sjme_nvm_walk_stepOuterFunc stepItem;
+
+	/** Perform normal handling for custom items. */
+	sjme_nvm_walk_stepOuterFunc normalCustom;
 };
 
 struct sjme_nvm_walk_step
@@ -487,6 +490,18 @@ struct sjme_nvm_walk_stepSelect
 	/** The steps for walking. */
 	const sjme_nvm_walk_step* steps;
 };
+	
+/**
+ * Returns the walk handler for the given type.
+ * 
+ * @param typeId The type ID to select for.
+ * @param outSelect The handler for the selection.
+ * @return On any resultant error, if any.
+ * @since 2025/10/17
+ */
+sjme_errorCode sjme_nvm_select(
+	sjme_attrInValue sjme_jint typeId,
+	sjme_attrOutNotNull const sjme_nvm_walk_stepSelect** outSelect);
 
 /**
  * Performs a walking step.

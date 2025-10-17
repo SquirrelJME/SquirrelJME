@@ -230,11 +230,23 @@ SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
 /**
  * Phantom atomic reference.
  *
+ * @param type The type to reference.
  * @since 2025/10/11
  */
 #define sjme_phantom(type) \
 	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _phantom)
 
+/**
+ * 
+ * @param type The type to reference.
+ * @param numPointerStars The number of pointer stars.
+ * @since 2025/10/17
+ */
+#define sjme_phantomP(type, numPointerStars) \
+	SJME_TOKEN_PASTE4_PP(sjme_atomic_, type, \
+		SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_C##numPointerStars), _phantom)
+	
+	
 /**
  * Chain gets from two atomic values which are in a structure with each
  * other.
@@ -305,6 +317,19 @@ SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
 	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _get)((ref))
 
 /**
+ * Gets the atomic value.
+ * 
+ * @param type The atomic type.
+ * @param numPointerStars The number of pointer stars.
+ * @param ref The atomic reference.
+ * @return The current value of the atomic.
+ * @since 2025/10/17
+ */
+#define sjme_atomic_gP(type, numPointerStars, ref) \
+	SJME_TOKEN_PASTE4_PP(sjme_atomic_, type, \
+	SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_C##numPointerStars), _get)((ref))
+
+/**
  * Gets the value of the atomic then adds to it. This is only valid for
  * non-pointer types.
  * 
@@ -363,6 +388,20 @@ SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
  */
 #define sjme_atomic_s(type, ref, set) \
 	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _set)((ref), (set))
+	
+/**
+ * Sets the new value of the atomic and returns the old value.
+ * 
+ * @param type The atomic type.
+ * @param numPointerStars The number of pointer stars.
+ * @param ref The atomic reference.
+ * @param set The new value to set.
+ * @return The old value of the atomic.
+ * @since 2025/10/17
+ */
+#define sjme_atomic_sP(type, numPointerStars, ref, set) \
+	SJME_TOKEN_PASTE4_PP(sjme_atomic_, type, \
+	SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_C##numPointerStars), _set)((ref), (set))
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
 

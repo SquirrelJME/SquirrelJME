@@ -14,6 +14,8 @@
 #include "sjme/nvm/walkCustom.h"
 #include "sjme/nvm/classy.h"
 
+#pragma region(supportMacros)
+
 #define SJME_WALK_SELECT(cType, inStructType) \
 	{ \
 		sjme_sm(.typeName, SJME_TOKEN_STRING_PP(cType)), \
@@ -131,6 +133,9 @@
 		} \
 	}
 
+#pragma endregion(supportMacros)
+#pragma region(customWalkHandlers)
+
 static sjme_errorCode sjme_nvm_walkCustomPoolEntries(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
@@ -203,13 +208,11 @@ static sjme_errorCode sjme_nvm_walkCustomPoolEntries(
 	/* Set type ID for handling. */
 	step.typeId.i = desireType;
 
-	/* If level, call function handler. */
-	if (at->breadth == SJME_NVM_WALK_BREADTH_LEVEL)
-		return function(root, at, &step);
-
-	/* Otherwise at the dive level, we are going in! */
-	return step.stepItem(root, at, &step, function);
+	/* Normal post-custom logic after step setup. */
+	return step.normalCustom(root, at, &step, function);
 }
+
+#pragma endregion(customWalkHandlers)
 
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
@@ -259,6 +262,76 @@ SJME_WALK_END();
 SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_POOL_ENTRY)
 	SJME_WS_CUSTOM_V(type, SJME_NVM_WALK_PSEUDO_UNION,
 		sjme_nvm_walkCustomPoolEntries),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
+#define SJME_WALK_CURRENT sjme_nvm_class_poolEntry
+SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_POOL_TYPE_NULL)
+	SJME_WS_JAVA_V(type, SJME_JAVA_TYPE_ID_INTEGER),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
+#define SJME_WALK_CURRENT sjme_nvm_class_poolEntryClass
+SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_POOL_TYPE_CLASS)
+	SJME_WS_JAVA_V(type, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_JAVA_V(descriptorIndex, SJME_BASIC_TYPE_ID_SHORT),
+	SJME_WS_NORM_P(descriptor, SJME_NVM_STRUCT_STRING_POOL_STRING),
+	SJME_WS_JAVA_V(descriptorHash, SJME_JAVA_TYPE_ID_INTEGER),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
+#define SJME_WALK_CURRENT sjme_nvm_class_poolEntryInteger
+SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_POOL_TYPE_INTEGER)
+	SJME_WS_JAVA_V(type, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_JAVA_V(value, SJME_JAVA_TYPE_ID_INTEGER),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
+#define SJME_WALK_CURRENT sjme_nvm_class_poolEntryLong
+SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_POOL_TYPE_LONG)
+	SJME_WS_JAVA_V(type, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_JAVA_V(value, SJME_JAVA_TYPE_ID_LONG),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
+#define SJME_WALK_CURRENT sjme_nvm_class_poolEntryMember
+SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_POOL_TYPE_MEMBER)
+	SJME_WS_JAVA_V(type, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_JAVA_V(inClassIndex, SJME_BASIC_TYPE_ID_SHORT),
+	SJME_WS_PHANTOM(inClass,
+		SJME_WS_NORM_P(inClass, SJME_NVM_WALK_PSEUDO_POOL_TYPE_CLASS)),
+	SJME_WS_JAVA_V(nameAndTypeIndex, SJME_BASIC_TYPE_ID_SHORT),
+	SJME_WS_PHANTOM(nameAndType,
+		SJME_WS_NORM_P(nameAndType,
+			SJME_NVM_WALK_PSEUDO_POOL_TYPE_NAME_AND_TYPE)),
+	SJME_WS_JAVA_V(staticArgSlots, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_JAVA_V(rvSlots, SJME_JAVA_TYPE_ID_INTEGER),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
+#define SJME_WALK_CURRENT sjme_nvm_class_poolEntryNameAndType
+SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_POOL_TYPE_NAME_AND_TYPE)
+	SJME_WS_JAVA_V(type, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_JAVA_V(nameIndex, SJME_BASIC_TYPE_ID_SHORT),
+	SJME_WS_NORM_P(name, SJME_NVM_STRUCT_STRING_POOL_STRING),
+	SJME_WS_JAVA_V(descriptorIndex, SJME_BASIC_TYPE_ID_SHORT),
+	SJME_WS_NORM_P(descriptor, SJME_NVM_STRUCT_STRING_POOL_STRING),
+	SJME_WS_JAVA_V(idHash, SJME_JAVA_TYPE_ID_INTEGER),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
+#define SJME_WALK_CURRENT sjme_nvm_class_poolEntryString
+SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_POOL_TYPE_STRING)
+	SJME_WS_JAVA_V(type, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_JAVA_V(valueIndex, SJME_BASIC_TYPE_ID_SHORT),
+	SJME_WS_NORM_P(value, SJME_NVM_STRUCT_STRING_POOL_STRING),
+SJME_WALK_END();
+#undef SJME_WALK_CURRENT
+
+#define SJME_WALK_CURRENT sjme_nvm_class_poolEntryUtf
+SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_POOL_TYPE_UTF)
+	SJME_WS_JAVA_V(type, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_NORM_P(utf, SJME_NVM_STRUCT_STRING_POOL_STRING),
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
@@ -616,6 +689,22 @@ const sjme_nvm_walk_stepSelect sjme_nvm_walk_select[] =
 	SJME_WALK_SELECT(sjme_nvm_bootParam, SJME_NVM_WALK_PSEUDO_BOOT_PARAM),
 	SJME_WALK_SELECT(sjme_nvm_class_poolEntry,
 		SJME_NVM_WALK_PSEUDO_POOL_ENTRY),
+	SJME_WALK_SELECT(sjme_nvm_class_poolEntry,
+		SJME_NVM_WALK_PSEUDO_POOL_TYPE_NULL),
+	SJME_WALK_SELECT(sjme_nvm_class_poolEntryClass,
+		SJME_NVM_WALK_PSEUDO_POOL_TYPE_CLASS),
+	SJME_WALK_SELECT(sjme_nvm_class_poolEntryInteger,
+		SJME_NVM_WALK_PSEUDO_POOL_TYPE_INTEGER),
+	SJME_WALK_SELECT(sjme_nvm_class_poolEntryLong,
+		SJME_NVM_WALK_PSEUDO_POOL_TYPE_LONG),
+	SJME_WALK_SELECT(sjme_nvm_class_poolEntryMember,
+		SJME_NVM_WALK_PSEUDO_POOL_TYPE_MEMBER),
+	SJME_WALK_SELECT(sjme_nvm_class_poolEntryNameAndType,
+		SJME_NVM_WALK_PSEUDO_POOL_TYPE_NAME_AND_TYPE),
+	SJME_WALK_SELECT(sjme_nvm_class_poolEntryString,
+		SJME_NVM_WALK_PSEUDO_POOL_TYPE_STRING),
+	SJME_WALK_SELECT(sjme_nvm_class_poolEntryUtf,
+		SJME_NVM_WALK_PSEUDO_POOL_TYPE_UTF),
 	SJME_WALK_SELECT(sjme_nvm_commonBase, SJME_NVM_WALK_PSEUDO_COMMON),
 	SJME_WALK_SELECT(sjme_nvm_task_globals,
 		SJME_NVM_WALK_PSEUDO_TASK_GLOBALS),
@@ -656,38 +745,7 @@ const sjme_nvm_walk_stepSelect sjme_nvm_walk_select[] =
 /* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */
 
-static sjme_errorCode sjme_nvm_select(
-	sjme_attrInValue sjme_jint typeId,
-	sjme_attrOutNotNull const sjme_nvm_walk_stepSelect** outSelect)
-{
-	const sjme_nvm_walk_pseudoType* pseudo;
-	const sjme_nvm_walk_stepSelect* select;
-
-	if (outSelect == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Ignore purely pseudo items. */
-	for (pseudo = &sjme_nvm_walk_pseudoOnly[0]; *pseudo != 0; pseudo++)
-		if (typeId == *pseudo)
-		{
-			*outSelect = NULL;
-			return SJME_ERROR_NONE;
-		}
-
-	/* Locate the walk stepper. */
-	for (select = &sjme_nvm_walk_select[0]; select->typeName != NULL; select++)
-		if (typeId == select->typeId)
-		{
-			*outSelect = select;
-			return SJME_ERROR_NONE;
-		}
-
-	/* Not implemented. */
-	sjme_todo("Impl? %d", typeId);
-	return sjme_error_notImplemented(0);
-}
-
-static sjme_errorCode sjme_nvm_walkItem(
+static sjme_errorCode sjme_nvm_walk_doItem(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
@@ -827,7 +885,7 @@ static sjme_errorCode sjme_nvm_walkItem(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_nvm_walkArray(
+static sjme_errorCode sjme_nvm_walk_doArray(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
@@ -876,7 +934,7 @@ static sjme_errorCode sjme_nvm_walkArray(
 		subStep.isPointer = variantStep->isPointer;
 
 		/* Walk on this item. */
-		if (sjme_error_is(error = sjme_nvm_walkItem(root, at,
+		if (sjme_error_is(error = sjme_nvm_walk_doItem(root, at,
 			&subStep, function)))
 			return sjme_error_default(error);
 	}
@@ -885,7 +943,7 @@ static sjme_errorCode sjme_nvm_walkArray(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_nvm_walkAtomic(
+static sjme_errorCode sjme_nvm_walk_doAtomic(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
@@ -904,7 +962,7 @@ static sjme_errorCode sjme_nvm_walkAtomic(
 	at->isAtomic = SJME_JNI_TRUE;
 	
 	/* Directly walk on this! */
-	if (sjme_error_is(error = sjme_nvm_walkItem(root, parent, at, function)))
+	if (sjme_error_is(error = sjme_nvm_walk_doItem(root, parent, at, function)))
 		return sjme_error_default(error);
 
 	/* Set to no longer be atomic before leaving. */
@@ -912,7 +970,7 @@ static sjme_errorCode sjme_nvm_walkAtomic(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_nvm_walkList(
+static sjme_errorCode sjme_nvm_walk_doList(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
@@ -968,7 +1026,7 @@ static sjme_errorCode sjme_nvm_walkList(
 		subStep.isPointer = variantStep->isPointer;
 
 		/* Walk on this item. */
-		if (sjme_error_is(error = sjme_nvm_walkItem(root, at,
+		if (sjme_error_is(error = sjme_nvm_walk_doItem(root, at,
 			&subStep, function)))
 			return sjme_error_default(error);
 	}
@@ -977,7 +1035,7 @@ static sjme_errorCode sjme_nvm_walkList(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_nvm_walkPhantom(
+static sjme_errorCode sjme_nvm_walk_doPhantom(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
@@ -996,7 +1054,7 @@ static sjme_errorCode sjme_nvm_walkPhantom(
 	at->isPhantom = SJME_JNI_TRUE;
 	
 	/* Directly walk on this! */
-	if (sjme_error_is(error = sjme_nvm_walkItem(root, parent, at, function)))
+	if (sjme_error_is(error = sjme_nvm_walk_doItem(root, parent, at, function)))
 		return sjme_error_default(error);
 
 	/* Set to no longer be phantom before leaving. */
@@ -1004,7 +1062,7 @@ static sjme_errorCode sjme_nvm_walkPhantom(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_nvm_walkStruct(
+static sjme_errorCode sjme_nvm_walk_doStruct(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
@@ -1072,13 +1130,72 @@ static sjme_errorCode sjme_nvm_walkStruct(
 		}
 		
 		/* Walk on this item. */
-		if (sjme_error_is(error = sjme_nvm_walkItem(root, at,
+		if (sjme_error_is(error = sjme_nvm_walk_doItem(root, at,
 			&subStep, function)))
 			return sjme_error_default(error);
 	}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_walk_normalCustom(
+	sjme_attrInNotNull sjme_nvm_walk_state* root,
+	sjme_attrInNotNull sjme_nvm_walk_state* parent,
+	sjme_attrInNotNull sjme_nvm_walk_state* at,
+	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function)
+{
+	sjme_errorCode error;
+
+	if (root == NULL || at == NULL || function == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* A select is required for the new type. */
+	if (sjme_error_is(error = sjme_nvm_select(at->typeId.i,
+		&at->inSelect)))
+		return sjme_error_default(error);
+
+	/* Start at the first step. */
+	at->inStep = &at->inSelect->steps[0];
+	at->variantStep = NULL;
+
+	/* If level, call function handler. */
+	if (at->breadth == SJME_NVM_WALK_BREADTH_LEVEL)
+		return function(root, parent, at);
+
+	/* Otherwise at the dive level, we are going in! */
+	return sjme_nvm_walk/*at->stepItem*/(root, parent, at, function);
+}
+
+sjme_errorCode sjme_nvm_select(
+	sjme_attrInValue sjme_jint typeId,
+	sjme_attrOutNotNull const sjme_nvm_walk_stepSelect** outSelect)
+{
+	const sjme_nvm_walk_pseudoType* pseudo;
+	const sjme_nvm_walk_stepSelect* select;
+
+	if (outSelect == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Ignore purely pseudo items. */
+	for (pseudo = &sjme_nvm_walk_pseudoOnly[0]; *pseudo != 0; pseudo++)
+		if (typeId == *pseudo)
+		{
+			*outSelect = NULL;
+			return SJME_ERROR_NONE;
+		}
+
+	/* Locate the walk stepper. */
+	for (select = &sjme_nvm_walk_select[0]; select->typeName != NULL; select++)
+		if (typeId == select->typeId)
+		{
+			*outSelect = select;
+			return SJME_ERROR_NONE;
+		}
+
+	/* Not implemented. */
+	sjme_todo("Impl? %d", typeId);
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_walk(
@@ -1126,15 +1243,15 @@ sjme_errorCode sjme_nvm_walk(
 	{
 		/* Determine the function used for outer stepping. */
 		if (at->typeId.i == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY)
-			outer = sjme_nvm_walkArray;
+			outer = sjme_nvm_walk_doArray;
 		else if (at->typeId.i == SJME_NVM_WALK_PSEUDO_LIST)
-			outer = sjme_nvm_walkList;
+			outer = sjme_nvm_walk_doList;
 		else if (at->typeId.i == SJME_NVM_WALK_PSEUDO_PHANTOM)
-			outer = sjme_nvm_walkPhantom;
+			outer = sjme_nvm_walk_doPhantom;
 		else if (at->typeId.i == SJME_NVM_WALK_PSEUDO_ATOMIC)
-			outer = sjme_nvm_walkAtomic;
+			outer = sjme_nvm_walk_doAtomic;
 		else
-			outer = sjme_nvm_walkStruct;
+			outer = sjme_nvm_walk_doStruct;
 
 		/* Setup basic step. */
 		memmove(&subStep, at, sizeof(subStep));
@@ -1223,7 +1340,8 @@ sjme_errorCode sjme_nvm_walk_start(
 		rootState.stage = stage;
 		rootState.data = anyData;
 		rootState.uniqueId = ++rootState.nextUniqueId;
-		rootState.stepItem = sjme_nvm_walkItem;
+		rootState.stepItem = sjme_nvm_walk_doItem;
+		rootState.normalCustom = sjme_nvm_walk_normalCustom;
 		
 		/* Perform the recursive walk. */
 		if (sjme_error_is(error = sjme_nvm_walk(&rootState, NULL,

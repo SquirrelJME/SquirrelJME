@@ -436,6 +436,18 @@ typedef struct sjme_nvm_class_poolEntryDouble
 typedef struct sjme_nvm_class_poolEntryNameAndType
 	sjme_nvm_class_poolEntryNameAndType;
 
+/** Pool class entries are not pointers. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_class_poolEntryClass 0
+
+/** Atomic pointer to a @c sjme_nvm_class_poolEntryClass . */
+SJME_ATOMIC_DECLARE(sjme_nvm_class_poolEntryClass, 1);
+
+/** Pool name and type entries are not pointers. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_class_poolEntryNameAndType 0
+
+/** Atomic pointer to a @c sjme_nvm_class_poolEntryNameAndType . */
+SJME_ATOMIC_DECLARE(sjme_nvm_class_poolEntryNameAndType, 1);
+	
 /**
  * Either @c SJME_NVM_CLASS_POOL_TYPE_FIELD ,
  * @c SJME_NVM_CLASS_POOL_TYPE_METHOD ,
@@ -453,13 +465,13 @@ typedef struct sjme_nvm_class_poolEntryMember
 	sjme_jshort inClassIndex;
 
 	/** The class this refers to. */
-	const sjme_nvm_class_poolEntryClass* inClass;
+	sjme_phantomP(sjme_nvm_class_poolEntryClass, 1) inClass;
 	
 	/** The index where the name and type is located. */
 	sjme_jshort nameAndTypeIndex;
 
 	/** The name and type used. */
-	const sjme_nvm_class_poolEntryNameAndType* nameAndType;
+	sjme_phantomP(sjme_nvm_class_poolEntryNameAndType, 1) nameAndType;
 
 	/** The number of static arguments slots. */
 	sjme_jint staticArgSlots;
@@ -1036,15 +1048,18 @@ sjme_errorCode sjme_nvm_class_validBinaryName(
 
 /** Pool member entry class. */
 #define SJME_P_M_C(entry) \
-	(SJME_P_M(entry).inClass->descriptor)
+	(sjme_atomic_gP(sjme_nvm_class_poolEntryClass, 1, \
+		&SJME_P_M(entry).inClass)->descriptor)
 
 /** Pool member entry name. */
 #define SJME_P_M_N(entry) \
-	(SJME_P_M(entry).nameAndType->name)
+	(sjme_atomic_gP(sjme_nvm_class_poolEntryNameAndType, 1, \
+		&SJME_P_M(entry).nameAndType)->name)
 
 /** Pool member entry type. */
 #define SJME_P_M_T(entry) \
-	(SJME_P_M(entry).nameAndType->descriptor)
+	(sjme_atomic_gP(sjme_nvm_class_poolEntryNameAndType, 1, \
+		&SJME_P_M(entry).nameAndType)->descriptor)
 
 /** Calculates the identifier hash for a member. */
 #define sjme_nvm_class_idHashMember(name, type) \

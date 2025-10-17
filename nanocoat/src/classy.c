@@ -1878,8 +1878,9 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Set class. */
-				entry->member.inClass =
-					(const sjme_nvm_class_poolEntryClass*)target;
+				sjme_atomic_sP(sjme_nvm_class_poolEntryClass, 1,
+					&entry->member.inClass,
+					(sjme_nvm_class_poolEntryClass*)target);
 				
 				/* Needs to be a name and type. */
 				target = &entries->elements[entry->member.nameAndTypeIndex];
@@ -1890,8 +1891,9 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Set name and type. */
-				entry->member.nameAndType =
-					(const sjme_nvm_class_poolEntryNameAndType*)target;
+				sjme_atomic_sP(sjme_nvm_class_poolEntryNameAndType, 1,
+					&entry->member.nameAndType,
+					(sjme_nvm_class_poolEntryNameAndType*)target);
 				break;
 			
 			case SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE:

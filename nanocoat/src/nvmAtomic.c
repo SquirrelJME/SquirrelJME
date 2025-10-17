@@ -24,3 +24,7 @@ SJME_ATOMIC_FUNCTION(sjme_nvm_task, 0)
 SJME_ATOMIC_FUNCTION(sjme_nvm_thread, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_nvm_vmClass_loader, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_nvm_class_poolEntryClass, 1)
+
+SJME_ATOMIC_FUNCTION(sjme_nvm_class_poolEntryNameAndType, 1)

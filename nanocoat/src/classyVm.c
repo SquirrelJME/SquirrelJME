@@ -2298,7 +2298,8 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 	interfaceClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
 		SJME_T_CL(contextThread), &interfaceClass, contextThread,
-		forMember->inClass->descriptor->seq, SJME_JNI_TRUE)))
+		sjme_atomic_gP(sjme_nvm_class_poolEntryClass, 1,
+			&forMember->inClass)->descriptor->seq, SJME_JNI_TRUE)))
 		return sjme_error_vmError(contextThread,
 			sjme_error_defaultOr(error, SJME_ERROR_CLASS_CHANGED));
 
@@ -2329,8 +2330,11 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 		/* Lookup method. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
 			check, contextThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
-			SJME_JNI_FALSE, forMember->nameAndType->name->seq,
-			forMember->nameAndType->descriptor->seq,
+			SJME_JNI_FALSE,
+			sjme_atomic_gP(sjme_nvm_class_poolEntryNameAndType, 1,
+				&forMember->nameAndType)->name->seq,
+			sjme_atomic_gP(sjme_nvm_class_poolEntryNameAndType, 1,
+				&forMember->nameAndType)->descriptor->seq,
 			&interfaceMethod)))
 		{
 			/* This is considered valid. */
@@ -2355,8 +2359,11 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByInterface(
 	selfFound = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
 		objectClass, contextThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
-		SJME_JNI_FALSE, forMember->nameAndType->name->seq,
-		forMember->nameAndType->descriptor->seq,
+		SJME_JNI_FALSE,
+		sjme_atomic_gP(sjme_nvm_class_poolEntryNameAndType, 1,
+			&forMember->nameAndType)->name->seq,
+		sjme_atomic_gP(sjme_nvm_class_poolEntryNameAndType, 1,
+			&forMember->nameAndType)->descriptor->seq,
 		&selfFound)))
 	{
 		/* No method is considered valid enough. */
