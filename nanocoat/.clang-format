@@ -83,6 +83,8 @@ ColumnLimit: 79
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 NamespaceMacros:
   - SJME_WALK_BEGIN
+  - SJME_NVM_BYTECODE_SLOW
+  - SJME_NVM_BYTECODE_FAST
 ForEachMacros:
   - SJME_FOREACH_TODO
 IfMacros:
