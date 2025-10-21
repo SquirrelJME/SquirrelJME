@@ -7,7 +7,8 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: libjvm is effectively a OpenJDK/Hotspot API compatible library
 # that allows pre-existing code to be ported to SquirrelJME without needing
-# a rewrite. It effectively is a shim.
+# a rewrite. It effectively is a shim. It also contains the JNI library
+# implementation as well.
 
 # Define library
 squirreljme_multilib_add_library(libJvm

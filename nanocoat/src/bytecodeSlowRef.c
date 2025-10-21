@@ -102,7 +102,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		/* Must be the same or a compatible class as the call site. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
 			SJME_F_T(inFrame),
-			methodId->member.inClass,
+			sjme_atomic_g(sjme_jclass, &methodId->member.inClass),
 			SJME_O_C(instance))))
 		{
 			if (error == SJME_ERROR_CLASS_CAST)
@@ -131,7 +131,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			/* the target is still valid. This is mostly for sanity. */
 			if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
 				SJME_F_T(inFrame),
-				methodId->member.inClass,
+				sjme_atomic_g(sjme_jclass,
+					&methodId->member.inClass),
 				SJME_O_C(instance))))
 			{
 				if (error == SJME_ERROR_CLASS_CAST)
@@ -501,7 +502,8 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 			
 			/* Completely different class? */
-			if (fieldId->member.inClass != inFrame->inClass)
+			if (sjme_atomic_g(sjme_jclass, &fieldId->member.inClass) !=
+				inFrame->inClass)
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 
@@ -1278,7 +1280,8 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 			
 			/* Completely different class? */
-			if (fieldId->member.inClass != inFrame->inClass)
+			if (sjme_atomic_g(sjme_jclass, &fieldId->member.inClass) !=
+				inFrame->inClass)
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 
@@ -1305,7 +1308,8 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	/* the class this field truly exists in. */
 	if (sjme_error_is(error = sjme_nvm_instance_fieldAccessStack(
 		SJME_F_T(inFrame),
-		fieldId, SJME_AS_JOBJECT(fieldId->member.inClass), &value, isPut)))
+		fieldId, SJME_AS_JOBJECT(sjme_atomic_g(sjme_jclass,
+			&fieldId->member.inClass)), &value, isPut)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Push result to the stack. */

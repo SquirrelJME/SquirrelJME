@@ -103,7 +103,7 @@ struct sjme_jmemberIDBase
 	sjme_nvm_commonBase common;
 	
 	/** The class this member is in. */
-	sjme_jclass inClass;
+	sjme_phantom(sjme_jclass) inClass;
 
 	/** The identifier hash of this member. */
 	sjme_jint idHash;

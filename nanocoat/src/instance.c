@@ -286,7 +286,8 @@ sjme_nvm_rawFieldValue* sjme_nvm_instance_fieldAccessor(
 			goto fail_voidless;
 
 		/* Wrong class? */
-		if (instance != (sjme_jobject)field->member.inClass)
+		if (instance !=
+			(sjme_jobject)sjme_atomic_g(sjme_jclass, &field->member.inClass))
 			goto fail_voidless;
 
 #if defined(SJME_CONFIG_DEBUG_FIELD)

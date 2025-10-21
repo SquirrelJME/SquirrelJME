@@ -192,7 +192,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 		id->extendedType = field->extendedType;
 		id->flags = field->flags;
 		id->member.idHash = field->idHash;
-		id->member.inClass = inClass;
+		sjme_atomic_s(sjme_jclass, &id->member.inClass, inClass);
 		id->member.name = field->name;
 		id->member.type = field->type;
 
@@ -286,6 +286,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	sjme_nvm_class_methodInfo lastScan, thisScan;
 	sjme_jint i, n;
 	sjme_jboolean wantStatic;
+	sjme_jclass inClass;
 
 	if (inLoader == NULL || inState == NULL || thisClass == NULL ||
 		thisInfo == NULL || contextThread == NULL || outBind == NULL)
@@ -308,12 +309,13 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		goto fail_allocResult;
 
 	/* The context class is always the one which the method exists within. */
-	result->member.inClass = NULL;
+	inClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-		inLoader, &result->member.inClass, contextThread,
+		inLoader, &inClass, contextThread,
 		thisInfo->inClass->name->seq, SJME_JNI_FALSE)) ||
-		result->member.inClass == NULL)
+		inClass == NULL)
 		goto fail_contextClass;
+	sjme_atomic_s(sjme_jclass, &result->member.inClass, inClass);
 
 	/* The identifier hash is used for lookup. */
 	result->member.idHash = thisInfo->idHash;
@@ -2450,7 +2452,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 		{
 			/* Do not grab a static initializer for another class. */
 			if (method->bits.isStaticInit &&
-				method->member.inClass != inClass)
+				sjme_atomic_g(sjme_jclass, &method->member.inClass) != inClass)
 				continue;
 			
 			*outID = method;

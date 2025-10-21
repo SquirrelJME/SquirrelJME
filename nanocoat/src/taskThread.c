@@ -355,7 +355,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		return sjme_error_vmError(inThread, error);
 
 	/* Set frame details, needed for local set. */
-	result->inClass = inMethod->member.inClass;
+	result->inClass = sjme_atomic_g(sjme_jclass, &inMethod->member.inClass);
 	result->id = sjme_atomic_ga(sjme_jint, 
 		&SJME_T_K(inThread)->nextFrameId, 1) + 1;
 	result->index = inThread->numFrames;

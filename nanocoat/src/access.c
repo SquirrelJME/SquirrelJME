@@ -64,8 +64,8 @@ sjme_errorCode sjme_nvm_access_checkEToE(
 		return SJME_ERROR_NONE;
 
 	/* In the same class? */
-	fromClass = from->inClass;
-	toClass = to->inClass;
+	fromClass = sjme_atomic_g(sjme_jclass, &from->inClass);
+	toClass = sjme_atomic_g(sjme_jclass, &to->inClass);
 	if (fromClass == toClass)
 		return SJME_ERROR_NONE;
 
