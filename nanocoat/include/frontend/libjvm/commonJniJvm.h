@@ -8,24 +8,34 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Internals to libjvm.
+ * Common header for JNI and JVM.
  * 
- * @since 2025/06/25
+ * @since 2025/10/20
  */
 
-#ifndef SJME_C_INTERNALS_H
-#define SJME_C_INTERNALS_H
+#ifndef SJME_C_SQUIRRELJME_COMMONJNIJVM_H
+#define SJME_C_SQUIRRELJME_COMMONJNIJVM_H
 
-#include "sjme/error.h"
+#include "sjme/config.h"
+
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	#define WIN32_LEAN_AND_MEAN 1
+	
+	#include <windows.h>
+#endif
 
 #include <jni.h>
 #include <jvm.h>
+
+#include "sjme/debug.h"
+#include "frontend/libjvm/internals.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_INTERNALS_H
+#define SJME_CXX_SQUIRRELJME_COMMONJNIJVM_H
+
 extern "C"
 {
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
@@ -33,33 +43,15 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/** Accesses the JVM in the reserved space. */
-#define SJME_JNI_JVM_JVM(vm) ((vm)->reserved0)
-
-/** Accesses the JNI Environment in the reserved space. */
-#define SJME_JNI_JVM_ENV(vm) ((vm)->reserved1)
-
-/** Accesses the NanoCoat VM Task in the reserved space. */
-#define SJME_JNI_JVM_TASK(vm) ((vm)->reserved2)
-	
-/** Accesses the JVM in the reserved space. */
-#define SJME_JNI_ENV_JVM(env) ((env)->reserved1)
-
-/** Accesses the JNI Environment in the reserved space. */
-#define SJME_JNI_ENV_ENV(env) ((env)->reserved0)
-
-/** Accesses the NanoCoat VM Task in the reserved space. */
-#define SJME_JNI_ENV_TASK(env) ((env)->reserved2)
-
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_INTERNALS_H
+#ifdef SJME_CXX_SQUIRRELJME_COMMONJNIJVM_H
 }
-#undef SJME_CXX_INTERNALS_H
+#undef SJME_CXX_SQUIRRELJME_COMMONJNIJVM_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_INTERNALS_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_COMMONJNIJVM_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SJME_C_INTERNALS_H */
+#endif /* SJME_C_SQUIRRELJME_COMMONJNIJVM_H */

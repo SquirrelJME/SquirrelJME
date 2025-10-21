@@ -28,7 +28,7 @@
 #define SJME_JVM_INIT_MEMORY (64 * 1048576)
 
 /** The global NVM state for the JNI wrapper. */
-static sjme_atomic(sjme_pointer) sjme_jni_nvm_state;
+static sjme_atomic(sjme_nvm) sjme_jni_nvm_state;
 
 /**
  * Creates a new Java Virtual Machine.
@@ -91,7 +91,7 @@ jint JNICALL JNI_CreateJavaVM(
 		argv[o] = initArgs->options[i].optionString;
 
 	/* Check to see if an existing state exists to create a new task under. */
-	nvmState = sjme_atomic_g(sjme_pointer, &sjme_jni_nvm_state);
+	nvmState = sjme_atomic_g(sjme_nvm, &sjme_jni_nvm_state);
 	if (nvmState != NULL)
 	{
 		/* Use the pre-existing pool. */
@@ -153,7 +153,7 @@ jint JNICALL JNI_CreateJavaVM(
 			goto fail_nvmBoot;
 
 		/* Store global state. */
-		sjme_atomic_cs(sjme_pointer, &sjme_jni_nvm_state,
+		sjme_atomic_cs(sjme_nvm, &sjme_jni_nvm_state,
 			NULL, nvmState);
 	}
 

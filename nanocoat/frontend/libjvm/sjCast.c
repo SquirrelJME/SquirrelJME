@@ -7,30 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "frontend/libjvm/commonJniJvm.h"
+#include <sjme/debug.h>
 
-jlong JNICALL JVM_CurrentTimeMillis(JNIEnv* env, jclass ignored)
+#include "frontend/libjvm/sjCast.h"
+
+sjme_errorCode sjme_jni_joToSo(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrOutNotNull sjme_jobject* outSo,
+	sjme_attrInNotNull jobject inJo)
 {
 	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
-jlong JNICALL JVM_NanoTime(JNIEnv* env, jclass ignored)
+sjme_errorCode sjme_jni_soToJo(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull jobject* outJo,
+	sjme_attrOutNotNull sjme_jobject inSo)
 {
 	sjme_todo("Impl?");
-}
-
-void JNICALL JVM_ArrayCopy(JNIEnv* env,
-	jclass ignored,
-	jobject src,
-	jint src_pos,
-	jobject dst,
-	jint dst_pos,
-	jint length)
-{
-	sjme_todo("Impl?");
-}
-
-jobject JNICALL JVM_InitProperties(JNIEnv* env, jobject p)
-{
-	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }

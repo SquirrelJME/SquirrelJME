@@ -7,19 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/config.h"
+#include "frontend/libjvm/commonJniJvm.h"
 
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	#define WIN32_LEAN_AND_MEAN 1
-	
-	#include <windows.h>
-#endif
-
-#include <jni.h>
-#include <jvm.h>
-
-#include "sjme/debug.h"
-
+/**
+ * Returns the interface version of the JNI library.
+ * 
+ * @return The JNI library interface version.
+ * @since 2025/10/20
+ */
 jint JNICALL JVM_GetInterfaceVersion(void)
 {
 	sjme_todo("Impl?");

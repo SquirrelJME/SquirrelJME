@@ -5,6 +5,9 @@
 # SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
+# DESCRIPTION: libjvm is effectively a OpenJDK/Hotspot API compatible library
+# that allows pre-existing code to be ported to SquirrelJME without needing
+# a rewrite. It effectively is a shim.
 
 # Define library
 squirreljme_multilib_add_library(libJvm
@@ -13,6 +16,7 @@ squirreljme_multilib_add_library(libJvm
 	$<TARGET_OBJECTS:ScritchUICorePIC>
 	$<TARGET_OBJECTS:ScritchUIFBPIC>
 	niInit.c
+	sjCast.c
 	vmArray.c
 	vmCompiler.c
 	vmCore.c
