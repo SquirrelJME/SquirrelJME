@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <unistd.h>
+
 #include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/boot.h"
 #include "sjme/nvm/instance.h"
@@ -18,11 +20,30 @@
 	sjme_errorCode error; \
 	sjme_pointer temp
 
+#define SJME_CHARSEQ_DELETE(ptr) \
+	do { if ((ptr) != NULL) \
+	{ \
+		temp = (ptr); \
+		(ptr) = NULL; \
+		if (sjme_error_is(error = sjme_charSeq_delete(temp))) \
+			return sjme_error_default(error); \
+	} } while (0)
+
 #define SJME_SIMPLE_CLOSE(ptr) \
 	do { if ((ptr) != NULL) \
 	{ \
 		temp = (ptr); \
 		(ptr) = NULL; \
+		if (sjme_error_is(error = sjme_closeable_close(\
+			SJME_AS_CLOSEABLE(temp)))) \
+			return sjme_error_default(error); \
+	} } while (0)
+
+#define SJME_SIMPLE_CLOSE_ATOMIC(type, numPointerStars, ptr) \
+	do { temp = sjme_atomic_gP(type, numPointerStars, &(ptr)); \
+	if (temp != NULL) \
+	{ \
+		sjme_atomic_sP(type, numPointerStars, &(ptr), NULL); \
 		if (sjme_error_is(error = sjme_closeable_close(\
 			SJME_AS_CLOSEABLE(temp)))) \
 			return sjme_error_default(error); \
@@ -226,6 +247,87 @@ static sjme_errorCode sjme_nvm_cleanup_postIsClasses(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postClass(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_jclass classy;
+	sjme_list(sjme_jclass)* interfaces;
+	sjme_list(sjme_jinterfaceID)* iBinds;
+	sjme_list(sjme_jfieldID)* fBinds;
+	sjme_list(sjme_jmethodID)* mBinds;
+	sjme_nvm_class_instanceType instanceType;
+	sjme_jint i, n;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	classy = (sjme_jclass)closeable;
+	if (classy == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Cleanup basic class information. */
+	SJME_SIMPLE_CLOSE_ATOMIC(sjme_jclass, 0, classy->superClass);
+	SJME_SIMPLE_CLOSE_ATOMIC(sjme_jclass, 0, classy->componentType);
+	
+	/* Cleanup interfaces, if any. */
+	interfaces = classy->interfaceClasses;
+	if (interfaces != NULL)
+	{
+		/* Close each interface class. */
+		for (n = interfaces->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(interfaces->elements[i]);
+		
+		/* Free the list itself. */
+		SJME_SIMPLE_FREE(classy->interfaceClasses);
+	}
+
+	/* Cleanup interface binds. */
+	iBinds = classy->interfaceBinds;
+	if (iBinds != NULL)
+	{
+		/* Close each interface bind. */
+		for (n = iBinds->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(iBinds->elements[i]);
+		
+		/* Free the list. */
+		SJME_SIMPLE_FREE(classy->interfaceBinds);
+	}
+
+	/* Free field and method binds. */
+	for (instanceType = 0; instanceType < SJME_NVM_CLASS_NUM_INSTANCE_TYPE;
+		instanceType++)
+	{
+		/* Cleanup field binds. */
+		fBinds = classy->fields[instanceType].binds;
+		if (fBinds != NULL)
+		{
+			/* Close each one. */
+			for (n = fBinds->length, i = 0; i < n; i++)
+				SJME_SIMPLE_CLOSE(fBinds->elements[i]);
+
+			/* Free list. */
+			SJME_SIMPLE_FREE(classy->fields[instanceType].binds);
+		}
+
+		/* Cleanup method binds. */
+		mBinds = classy->methods[instanceType].binds;
+		if (mBinds != NULL)
+		{
+			/* Close each one. */
+			for (n = mBinds->length, i = 0; i < n; i++)
+				SJME_SIMPLE_CLOSE(mBinds->elements[i]);
+
+			/* Free list. */
+			SJME_SIMPLE_FREE(classy->methods[instanceType].binds);
+		}
+	}
+
+	/* Cleanup any remaining manual allocations. */
+	SJME_CHARSEQ_DELETE(classy->binaryName);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postObject(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -239,6 +341,11 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 	
 	/* Clear reference to class. */
 	SJME_SIMPLE_CLOSE(object->isClass);
+
+	/* Class specific cleanup? */
+	if (object->common.type == SJME_NVM_STRUCT_CLASS_INSTANCE)
+		if (sjme_error_is(error = sjme_nvm_cleanup_postClass(closeable)))
+			return sjme_error_default(error);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -463,7 +570,7 @@ static sjme_errorCode sjme_nvm_cleanup_postTaskStrings(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_nvm_taskStrings taskStrings;
-	sjme_list_sjme_jstring* interns;
+	sjme_list(sjme_jstring)* interns;
 	sjme_jint i, n;
 	SJME_CLEANUP_DECL;
 	

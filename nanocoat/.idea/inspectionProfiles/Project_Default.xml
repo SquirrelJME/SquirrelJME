@@ -67,6 +67,29 @@
               </list>
             </option>
           </RegExpInspectionConfiguration>
+          <RegExpInspectionConfiguration>
+            <option name="description" value="SquirrelJME Narrow Form Not Used" />
+            <option name="name" value="SquirrelJME Narrow Form Not Used" />
+            <option name="problemDescriptor" value="SquirrelJME Narrow Form Not Used" />
+            <option name="suppressId" value="squirreljme_narrowForm" />
+            <option name="uuid" value="cd028f03-2c1b-3e73-8713-8daffe49c4e0" />
+            <option name="patterns">
+              <list>
+                <InspectionPattern>
+                  <option name="regExp" value="sjme_list_([a-zA-Z0-9_]+)([ \t]+[^(.\-])" />
+                  <option name="_fileType" value="C/C++" />
+                  <option name="searchContext" value="EXCEPT_COMMENTS_AND_STRING_LITERALS" />
+                  <option name="replacement" value="sjme_list($1)$2" />
+                </InspectionPattern>
+                <InspectionPattern>
+                  <option name="regExp" value="sjme_atomic_([a-zA-Z0-9_]+)([ \t]+[^(.\-])" />
+                  <option name="_fileType" value="C/C++" />
+                  <option name="searchContext" value="EXCEPT_COMMENTS_AND_STRING_LITERALS" />
+                  <option name="replacement" value="sjme_atomic($1)$2" />
+                </InspectionPattern>
+              </list>
+            </option>
+          </RegExpInspectionConfiguration>
         </list>
       </option>
     </inspection_tool>
@@ -110,5 +133,6 @@
     <inspection_tool class="VariableLexicalBuiltIn" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="VariableShadows" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="VariableUnresolvable" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="cd028f03-2c1b-3e73-8713-8daffe49c4e0" enabled="true" level="WARNING" enabled_by_default="true" />
   </profile>
 </component>
