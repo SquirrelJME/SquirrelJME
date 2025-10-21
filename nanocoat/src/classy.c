@@ -2191,10 +2191,10 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 		result->type->seq);
 
 	/* Are these initializers? */
-	result->bits.isStaticInit = sjme_charSeq_equalsUtfR(
-		result->name->seq, "<clinit>");
-	result->bits.isInstanceInit = sjme_charSeq_equalsUtfR(
-		result->name->seq, "<init>");
+	if (sjme_charSeq_equalsUtfR(result->name->seq, "<clinit>"))
+		result->bits |= SJME_NVM_CLASS_INIT_STATIC;
+	else if (sjme_charSeq_equalsUtfR(result->name->seq, "<init>"))
+		result->bits |= SJME_NVM_CLASS_INIT_INSTANCE;
 	
 	/* Success! */
 	*outMethod = result;

@@ -331,8 +331,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	/* Constructors always bind to self. */
 	/* Along with any private methods. */
 	/* Static as well. */
-	if (thisInfo->bits.isInstanceInit ||
-		thisInfo->bits.isStaticInit ||
+	if (SJME_NVM_CLASS_INIT_IS(thisInfo->bits, ANY) ||
 		SJME_NVM_ACC_IS(thisInfo->flags, PRIVATE) ||
 		SJME_NVM_ACC_IS(thisInfo->flags, STATIC))
 	{
@@ -390,7 +389,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 			continue;
 		
 		/* Instance initializers never get copied. */
-		if (wantStatic && thisInfo->bits.isStaticInit &&
+		if (wantStatic && SJME_NVM_CLASS_INIT_IS(thisInfo->bits, STATIC) &&
 			!sjme_charSeq_equalsR(thisClass->info->name->seq,
 				found->name->seq))
 			continue;
@@ -2451,7 +2450,7 @@ sjme_errorCode sjme_nvm_vmClass_methodIDByNameType(
 			sjme_charSeq_equalsR(SJME_M_T(method)->seq, inType))
 		{
 			/* Do not grab a static initializer for another class. */
-			if (method->bits.isStaticInit &&
+			if (SJME_NVM_CLASS_INIT_IS(method->bits, STATIC) &&
 				sjme_atomic_g(sjme_jclass, &method->member.inClass) != inClass)
 				continue;
 			

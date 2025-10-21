@@ -292,6 +292,40 @@ typedef enum sjme_nvm_frame_considerGc
 	SJME_NVM_FRAME_CONSIDER_GC_COMMIT,
 } sjme_nvm_frame_considerGc;
 
+/**
+ * Frame state flags.
+ *
+ * @since 2025/10/21
+ */
+typedef enum sjme_nvm_frame_stateFlags
+{
+	/** Is this a static initializer? */
+	SJME_NVM_FRAME_STATE_INIT_STATIC = SJME_NVM_CLASS_INIT_STATIC,
+
+	/** Is this an instance initializer? */
+	SJME_NVM_FRAME_STATE_INIT_INSTANCE = SJME_NVM_CLASS_INIT_INSTANCE,
+
+	/** Is this any static initializer? */
+	SJME_NVM_FRAME_STATE_INIT_ANY = SJME_NVM_CLASS_INIT_ANY,
+	
+	/** Enter synchronization was performed. */
+	SJME_NVM_FRAME_STATE_SYNC_ENTER = INT8_C(0x4),
+
+	/** Exit synchronization was performed. */
+	SJME_NVM_FRAME_STATE_SYNC_EXIT = INT8_C(0x8),
+} sjme_nvm_frame_stateFlags;
+
+/**
+ * Checks if the given bits set a flag state for a frame.
+ * 
+ * @param bits The bits to check.
+ * @param x The check to make.
+ * @return Boolean of whether the given bit is set.
+ * @since 2025/10/21
+ */
+#define SJME_NVM_FRAME_STATE_IS(bits, x) \
+	(((bits) & SJME_TOKEN_PASTE_PP(SJME_NVM_FRAME_STATE_, x)) != 0)
+
 struct sjme_nvm_frameBase
 {
 	/** Common virtual machine structure. */
@@ -353,20 +387,7 @@ struct sjme_nvm_frameBase
 	} condition;
 
 	/** Frame state flags. */
-	sjme_packed struct
-	{
-		/** Enter synchronization was performed. */
-		sjme_jboolean synchronizedEnter : sjme_booleanBit;
-
-		/** Exit synchronization was performed. */
-		sjme_jboolean synchronizedExit : sjme_booleanBit;
-
-		/** Is this a static initializer? */
-		sjme_jboolean isStaticInit : sjme_booleanBit;
-
-		/** Is this an instance initializer? */
-		sjme_jboolean isInstanceInit : sjme_booleanBit;
-	} flags;
+	sjme_nvm_frame_stateFlags flags;
 };
 
 /** List of stack frames. */

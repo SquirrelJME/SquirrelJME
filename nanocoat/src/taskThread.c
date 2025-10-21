@@ -373,8 +373,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		result->instance = argV[0].v.l;
 
 	/* Used for final field setting. */
-	result->flags.isStaticInit = targetInfo->bits.isStaticInit;
-	result->flags.isInstanceInit = targetInfo->bits.isInstanceInit;
+	result->flags |= (targetInfo->bits & SJME_NVM_CLASS_INIT_ANY);
 
 	/* Link to parent. */
 	if (inThread->numFrames == 0)

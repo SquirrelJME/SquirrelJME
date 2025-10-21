@@ -733,15 +733,34 @@ struct sjme_nvm_class_fieldInfoBase
 	sjme_jint typedIndex;
 };
 	
-/** Bits to assist in quicker method determinations. */
-typedef struct sjme_nvm_class_methodInfoBits
+/**
+ * Bits to assist in quicker method determinations.
+ *
+ * @since 2025/07/05
+ */
+typedef enum sjme_nvm_class_methodInfoBits
 {
 	/** Is this a static initializer? */
-	sjme_jboolean isStaticInit : sjme_booleanBit;
+	SJME_NVM_CLASS_INIT_STATIC = INT8_C(0x1),
 
 	/** Is this an instance initializer? */
-	sjme_jboolean isInstanceInit : sjme_booleanBit;
+	SJME_NVM_CLASS_INIT_INSTANCE = INT8_C(0x2),
+
+	/** Is this any static initializer? */
+	SJME_NVM_CLASS_INIT_ANY = SJME_NVM_CLASS_INIT_STATIC |
+		SJME_NVM_CLASS_INIT_INSTANCE,
 } sjme_nvm_class_methodInfoBits;
+
+/**
+ * Checks if the given bits set a class initializer.
+ * 
+ * @param bits The bits to check.
+ * @param x The check to make.
+ * @return Boolean of whether the given bit is set.
+ * @since 2025/10/21
+ */
+#define SJME_NVM_CLASS_INIT_IS(bits, x) \
+	(((bits) & SJME_TOKEN_PASTE_PP(SJME_NVM_CLASS_INIT_, x)) != 0)
 
 struct sjme_nvm_class_methodInfoBase
 {

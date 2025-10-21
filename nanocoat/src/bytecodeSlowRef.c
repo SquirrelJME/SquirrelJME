@@ -508,7 +508,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 
 			/* We must be in an instance initializer. */
-			if (!inFrame->flags.isInstanceInit)
+			if (!SJME_NVM_FRAME_STATE_IS(inFrame->flags, INIT_INSTANCE))
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 		}
@@ -758,7 +758,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	inSameClass = (currentClass == refClass);
 	inSuper = sjme_nvm_vmClass_isSuperClass(currentClass,
 		refClass);
-	isInit = refMethod->bits.isInstanceInit;
+	isInit = SJME_NVM_CLASS_INIT_IS(refMethod->bits, INSTANCE);
 	isPrivate = SJME_NVM_ACC_IS(SJME_M_AF(refMethod), PRIVATE);
 	isPackagePrivate = (!SJME_NVM_ACC_IS(SJME_M_AF(refMethod), PRIVATE) &&
 		!SJME_NVM_ACC_IS(SJME_M_AF(refMethod), PROTECTED) &&
@@ -1286,7 +1286,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 
 			/* We must be in a static initializer. */
-			if (!inFrame->flags.isStaticInit)
+			if (!SJME_NVM_FRAME_STATE_IS(inFrame->flags, INIT_STATIC))
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 		}

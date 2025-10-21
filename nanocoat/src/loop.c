@@ -370,7 +370,7 @@ skip_thrown:
 			{
 				/* If there is an uncaught exception in a static initializer */
 				/* then we need to set an actual linkage error here. */
-				if (currentFrame->flags.isStaticInit)
+				if (SJME_NVM_FRAME_STATE_IS(currentFrame->flags, INIT_STATIC))
 				{
 					/* Mark the class as bad. */
 					sjme_atomic_cs(sjme_jint, 
