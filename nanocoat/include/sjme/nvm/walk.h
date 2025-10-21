@@ -206,6 +206,15 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @c sjme_nvm_class_poolEntryNameAndType . */
 	SJME_NVM_WALK_PSEUDO_POOL_TYPE_NAME_AND_TYPE = -56,
+
+	/** @c sjme_jmemberIDBase . */
+	SJME_NVM_WALK_PSEUDO_MEMBER_ID = -57,
+
+	/** @c sjme_nvm_class_methodFlags . */
+	SJME_NVM_WALK_PSEUDO_METHOD_FLAGS = -58,
+
+	/** @c sjme_nvm_class_methodInfoBits . */
+	SJME_NVM_WALK_PSEUDO_METHOD_INFO_BITS = -59,
 } sjme_nvm_walk_pseudoType;
 
 /**
