@@ -8,33 +8,22 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Common header for JNI and JVM.
+ * JNI Compatibility header.
  * 
- * @since 2025/10/20
+ * @since 2025/10/22
  */
 
-#ifndef SJME_C_SQUIRRELJME_COMMONJNIJVM_H
-#define SJME_C_SQUIRRELJME_COMMONJNIJVM_H
+#ifndef SJME_C_SQUIRRELJME_JNI_H
+#define SJME_C_SQUIRRELJME_JNI_H
 
 #include "sjme/config.h"
-
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	#define WIN32_LEAN_AND_MEAN 1
-	
-	#include <windows.h>
-#endif
-
-#include <sjme/jvm/use/useJni.h>
-#include <sjme/jvm/use/useJvm.h>
-
-#include "sjme/debug.h"
-#include "frontend/libjvm/internals.h"
+#include "sjme/jvm/jni_md.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_COMMONJNIJVM_H
+#define SJME_CXX_SQUIRRELJME_JNI_H
 
 extern "C"
 {
@@ -43,15 +32,34 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/** Constructs a JNI version. */
+#define SJME_JNI_VERSION(major, minor) \
+	((INT32_C(major) << INT32_C(4)) | INT32_C(minor))
+
+/** JNI 1.1. */
+#define JNI_VERSION_1_1 SJME_JNI_VERSION(1, 1)
+
+/** JNI 1.2. */
+#define JNI_VERSION_1_2 SJME_JNI_VERSION(1, 2)
+
+/** JNI 1.4. */
+#define JNI_VERSION_1_2 SJME_JNI_VERSION(1, 4)
+
+/** JNI 1.6. */
+#define JNI_VERSION_1_2 SJME_JNI_VERSION(1, 6)
+
+/** JNI 1.8. */
+#define JNI_VERSION_1_2 SJME_JNI_VERSION(1, 8)
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_COMMONJNIJVM_H
+#ifdef SJME_CXX_SQUIRRELJME_JNI_H
 }
-#undef SJME_CXX_SQUIRRELJME_COMMONJNIJVM_H
+#undef SJME_CXX_SQUIRRELJME_JNI_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_COMMONJNIJVM_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_JNI_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SJME_C_SQUIRRELJME_COMMONJNIJVM_H */
+#endif /* SJME_C_SQUIRRELJME_JNI_H */

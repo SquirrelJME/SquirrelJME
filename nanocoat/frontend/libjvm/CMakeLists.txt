@@ -51,11 +51,7 @@ add_dependencies(SquirrelJME
 
 # If using official JNI/JVM headers we need this definition to be set
 squirreljme_multilib_target_compile_definitions(libJvm PRIVATE
-	_JNI_IMPLEMENTATION_=1)
-squirreljme_multilib_target_compile_definitions(libJvm PRIVATE
 	SJME_JNI_IMPLEMENTATION=1)
-target_compile_definitions(SquirrelJME PRIVATE
-	_JNI_IMPLEMENTATION_=1)
 target_compile_definitions(SquirrelJME PRIVATE
 	SJME_JNI_IMPLEMENTATION=1)
 

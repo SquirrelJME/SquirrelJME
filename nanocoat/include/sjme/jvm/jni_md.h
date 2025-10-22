@@ -8,33 +8,21 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Common header for JNI and JVM.
+ * JNI Machine Definitions Compatibility header.
  * 
- * @since 2025/10/20
+ * @since 2025/10/22
  */
 
-#ifndef SJME_C_SQUIRRELJME_COMMONJNIJVM_H
-#define SJME_C_SQUIRRELJME_COMMONJNIJVM_H
+#ifndef SJME_C_SQUIRRELJME_JNI_MD_H
+#define SJME_C_SQUIRRELJME_JNI_MD_H
 
 #include "sjme/config.h"
-
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	#define WIN32_LEAN_AND_MEAN 1
-	
-	#include <windows.h>
-#endif
-
-#include <sjme/jvm/use/useJni.h>
-#include <sjme/jvm/use/useJvm.h>
-
-#include "sjme/debug.h"
-#include "frontend/libjvm/internals.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_COMMONJNIJVM_H
+#define SJME_CXX_SQUIRRELJME_JNI_MD_H
 
 extern "C"
 {
@@ -47,11 +35,11 @@ extern "C"
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_COMMONJNIJVM_H
+#ifdef SJME_CXX_SQUIRRELJME_JNI_MD_H
 }
-#undef SJME_CXX_SQUIRRELJME_COMMONJNIJVM_H
+#undef SJME_CXX_SQUIRRELJME_JNI_MD_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_COMMONJNIJVM_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_JNI_MD_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SJME_C_SQUIRRELJME_COMMONJNIJVM_H */
+#endif /* SJME_C_SQUIRRELJME_JNI_MD_H */

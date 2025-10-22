@@ -18,8 +18,8 @@
 
 #include "sjme/error.h"
 
-#include <jni.h>
-#include <jvm.h>
+#include <sjme/jvm/use/useJni.h>
+#include <sjme/jvm/use/useJvm.h>
 
 /* Anti-C++. */
 #ifdef __cplusplus
