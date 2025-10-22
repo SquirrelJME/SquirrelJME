@@ -74,6 +74,3 @@ squirreljme_multilib_add_static_library(Core
 # Include main headers
 squirreljme_multilib_static_target_include_directories(Core
 	"${CMAKE_SOURCE_DIR}/include")
-
-# Doxygen
-squirreljme_doxygen(Core)

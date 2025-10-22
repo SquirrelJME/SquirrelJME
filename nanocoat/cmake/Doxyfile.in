@@ -18,20 +18,21 @@ DOCSET_BUNDLE_ID = cc.squirreljme.squirreljme
 DOCSET_PUBLISHER_ID = cc.squirreljme
 DOCSET_PUBLISHER_NAME = Stephanie Gawroriski
 
-# Input/Output for CMake
-INPUT = @targetSources@
-OUTPUT_DIRECTORY = @CMAKE_CURRENT_BINARY_DIR@/docs/
+# Input/Output for CMake, note all documentation is in header files and
+# not sources as Doxygen assumes
+INPUT = @CMAKE_SOURCE_DIR@/include
+OUTPUT_DIRECTORY = @CMAKE_BINARY_DIR@/docs/
 INCLUDE_PATH = @CMAKE_SOURCE_DIR@/include
 EXAMPLE_PATH = @CMAKE_SOURCE_DIR@/include
+EXCLUDE = @CMAKE_SOURCE_DIR@/include/3rdparty
+FILE_PATTERNS = *.h
 
 # Look everywhere! This is disabled by default!
 RECURSIVE = YES
-EXTRACT_ALL = YES
+EXTRACT_ALL = NO
 EXTRACT_PRIVATE = NO
 EXTRACT_STATIC = NO
-INTERNAL_DOCS = YES
-INLINE_GROUPED_CLASSES = YES
-INLINE_SIMPLE_STRUCTS = YES
+INTERNAL_DOCS = NO
 
 # We like everything!
 GENERATE_HTML = YES
@@ -85,8 +86,3 @@ WARNINGS = YES
 
 # Do not show documentation for stuff inside
 HIDE_IN_BODY_DOCS = YES
-
-# Debugging??
-SOURCE_BROWSER = YES
-VERBATIM_HEADERS = YES
-SHOW_INCLUDE_FILES = YES
