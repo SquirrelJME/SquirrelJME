@@ -78,6 +78,16 @@ MACRO_EXPANSION = YES
 JAVADOC_AUTOBRIEF = YES
 QT_AUTOBRIEF = YES
 
+# Everything starts with sjme_, which not ignoring this would make the
+# index system pretty pointless
+IGNORE_PREFIX += sjme_nvm_ SJME_NVM_
+IGNORE_PREFIX += sjme_scritchaudio_ SJME_SCRITCHAUDIO_
+IGNORE_PREFIX += sjme_scritchinput_ SJME_SCRITCHINPUT_
+IGNORE_PREFIX += sjme_scritchui_ SJME_SCRITCHUI_
+IGNORE_PREFIX += sjme_scritchpen_ SJME_SCRITCHPEN_
+IGNORE_PREFIX += sjme_scritchany_ SJME_SCRITCHANY_
+IGNORE_PREFIX += sjme_ SJME_
+
 # Clang with SquirrelJME is kinda broken with Doxygen
 CLANG_ASSISTED_PARSING = NO
 
