@@ -84,5 +84,20 @@ CLANG_ASSISTED_PARSING = NO
 # Be very verbose
 WARNINGS = YES
 
+# Do not include sources, these are just headers
+SOURCE_BROWSER = NO
+INLINE_SOURCES = NO
+VERBATIM_HEADERS = NO
+
 # Do not show documentation for stuff inside
 HIDE_IN_BODY_DOCS = YES
+
+# The graphs are just too huge to be of any use
+HAVE_DOT = NO
+
+# Force DOT to be SVG, PNGs just do not work
+DOT_IMAGE_FORMAT = YES
+
+# UML is easier to read than whatever Doxygen decided to use for graphs
+UML_LOOK = YES
+

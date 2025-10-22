@@ -12,11 +12,12 @@ package cc.squirreljme.cicd;
 import java.io.IOException;
 
 /**
- * Main entry point delegation.
+ * Generates Doxygen documentation and stores it within the Fossil repository
+ * for user reference.
  *
  * @since 2025/10/22
  */
-public class Main
+public class MainDoxygen
 {
 	/**
 	 * Main entry point.
@@ -28,10 +29,5 @@ public class Main
 	public static void main(String... __args)
 		throws IOException
 	{
-		// Doxygen
-		MainDoxygen.main(__args);
-		
-		// Bundle
-		MainBundling.main(__args);
 	}
 }
